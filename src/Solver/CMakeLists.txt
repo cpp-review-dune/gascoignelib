@@ -7,7 +7,6 @@ ${STD_SRC}/LinAlg
 )
 
 SET(SOLVER_SRC 
-mginterpolator.cc
 stdsolver.cc
 stdmultilevelsolver.cc
 stdloop.cc
@@ -25,7 +24,6 @@ stdiomanager.cc
 solverdata.cc
 stdtimesolver.cc
 starter.cc
-mginterpolatornested.cc
 )
 
 ADD_LIBRARY(Solver ${SOLVER_SRC})

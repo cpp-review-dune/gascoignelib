@@ -6,6 +6,8 @@ ${STD_SRC}/LinAlg
 )
 
 SET(MESHINTERPRETOR_SRC 
+mginterpolatormatrix.cc
+mginterpolatornested.cc
 basicintegrator.cc
 galerkinintegrator.cc
 basicmeshinterpretor.cc

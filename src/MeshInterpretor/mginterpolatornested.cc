@@ -1,6 +1,8 @@
 #include  "mginterpolatornested.h"
 #include  "gascoignemeshtransfer.h"
 
+using namespace Gascoigne;
+
 /*--------------------------------------------------------*/
 
 void MgInterpolatorNested::init(const MeshTransferInterface* MT)
@@ -17,7 +19,7 @@ void MgInterpolatorNested::init(const MeshTransferInterface* MT)
 
 /*-----------------------------------------*/
   
-void MgInterpolatorNested::restrict_zero(Vector& uL, const Vector& ul) const
+void MgInterpolatorNested::restrict_zero(GlobalVector& uL, const GlobalVector& ul) const
 {
   for(int i=0;i<c2f.size();i++)  uL.equ_node(i,1.,c2f[i],ul);
   for(std::map<int,fixarray<2,int> >::const_iterator p=zweier.begin();
@@ -49,7 +51,7 @@ void MgInterpolatorNested::restrict_zero(Vector& uL, const Vector& ul) const
 
 /*-----------------------------------------*/
 
-void MgInterpolatorNested::prolongate_add(Vector& ul, const Vector& uL) const
+void MgInterpolatorNested::prolongate_add(GlobalVector& ul, const GlobalVector& uL) const
 {
   for(int i=0;i<c2f.size();i++)  ul.add_node(c2f[i],1.,i,uL);
   for(std::map<int,fixarray<2,int> >::const_iterator p=zweier.begin();
@@ -84,14 +86,14 @@ void MgInterpolatorNested::prolongate_add(Vector& ul, const Vector& uL) const
 
 /*-----------------------------------------*/
 
-void MgInterpolatorNested::SolutionTransfer(Vector& uL, const Vector& ul) const
+void MgInterpolatorNested::SolutionTransfer(GlobalVector& uL, const GlobalVector& ul) const
 {
   for(int i=0;i<c2f.size();i++)  uL.equ_node(i,1.,c2f[i],ul);
 }
 
 /*-----------------------------------------*/
 
-void MgInterpolatorNested::Pi(Vector& u) const
+void MgInterpolatorNested::Pi(GlobalVector& u) const
 {
   for(std::map<int,fixarray<2,int> >::const_iterator p=zweier.begin();
       p!=zweier.end();p++) {

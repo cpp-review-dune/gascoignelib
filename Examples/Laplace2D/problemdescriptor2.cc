@@ -39,6 +39,5 @@ void ProblemDescriptor2::ConstructDirichletData()
 
 void ProblemDescriptor2::ConstructNeumannData()
 {
-  cerr << "hallooo      ProblemDescriptor2::ConstructNeumannData()      \n";
   GetNeumannDataPointer() = new NeumannDataByExactSolution(GetEquation(),GetExactSolution());
 }

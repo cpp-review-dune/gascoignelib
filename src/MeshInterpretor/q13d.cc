@@ -6,7 +6,7 @@
 #include  "sparsestructure.h"
 #include  "hnstructureq13d.h"
 #include  "gascoignemesh.h"
-#include  "mginterpolator.h"
+#include  "mginterpolatormatrix.h"
 #include  "mginterpolatornested.h"
 #include  "gascoignemeshtransfer.h"
 
@@ -114,7 +114,7 @@ void Q13d::ConstructInterpolator(MgInterpolatorInterface* I, const MeshTransferI
       }
   }
 
-  MgInterpolator* IP = dynamic_cast<MgInterpolator*>(I);
+  MgInterpolatorMatrix* IP = dynamic_cast<MgInterpolatorMatrix*>(I);
   assert(IP);
   const GascoigneMeshTransfer* GT = dynamic_cast<const GascoigneMeshTransfer*>(MT);
   assert(GT);

@@ -1,11 +1,11 @@
-#include  "mginterpolator.h"
+#include  "mginterpolatormatrix.h"
 
 
 using namespace std;
 
 /*-----------------------------------------*/
   
-void MgInterpolator::restrict_zero(GlobalVector& uL, const GlobalVector& ul) const
+void MgInterpolatorMatrix::restrict_zero(GlobalVector& uL, const GlobalVector& ul) const
 {
   uL.zero();
   for(int i=0;i<ST.n();i++)
@@ -19,7 +19,7 @@ void MgInterpolator::restrict_zero(GlobalVector& uL, const GlobalVector& ul) con
 
 /*-----------------------------------------*/
   
-void MgInterpolator::prolongate_add(GlobalVector& ul, const GlobalVector& uL) const
+void MgInterpolatorMatrix::prolongate_add(GlobalVector& ul, const GlobalVector& uL) const
 {
   for(int i=0;i<ST.n();i++)
     {
@@ -32,7 +32,7 @@ void MgInterpolator::prolongate_add(GlobalVector& ul, const GlobalVector& uL) co
 
 /*-----------------------------------------*/
 
-void MgInterpolator::SolutionTransfer(GlobalVector& uL, const GlobalVector& ul) const 
+void MgInterpolatorMatrix::SolutionTransfer(GlobalVector& uL, const GlobalVector& ul) const 
 {
   uL.zero();
   for(int i=0;i<ST.n();i++)
