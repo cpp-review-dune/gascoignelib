@@ -2,6 +2,8 @@
 
 /*-----------------------------------------*/
 
+namespace Gascoigne
+{
 GascoigneMesh::GascoigneMesh() : mylevel(-1)
 {
 }
@@ -10,4 +12,5 @@ GascoigneMesh::GascoigneMesh() : mylevel(-1)
 
 GascoigneMesh::~GascoigneMesh()
 {
+}
 }

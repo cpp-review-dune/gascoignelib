@@ -1,7 +1,7 @@
 #ifndef  __DiplomantenAdaptor_h
 #define  __DiplomantenAdaptor_h
 
-#include "nvector.h"
+#include "gascoigne.h"
 #include "adaptordata.h"
 
 /*-----------------------------------------*/
@@ -26,24 +26,24 @@
 
 /*-----------------------------------------*/
 
+namespace Gascoigne
+{
 class DiplomantenAdaptor
 {
 protected:
 
-  typedef nvector<double>  dvector;
-  typedef nvector<int>     ivector;
-
   AdaptorData&             info;
-  const nvector<double>&   eta;
+  const DoubleVector&   eta;
   int ppp;
 
   void analyse() const;
 
 public:
 
-  DiplomantenAdaptor(AdaptorData&, const dvector& eta);
-  void refine(ivector& ref);
-  void MalteRefine(ivector& ref) const;
+  DiplomantenAdaptor(AdaptorData&, const DoubleVector& eta);
+  void refine(IntVector& ref);
+  void MalteRefine(IntVector& ref) const;
 };
+}
 
 #endif

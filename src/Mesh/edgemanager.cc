@@ -12,11 +12,12 @@
 #define HANGMAP  __gnu_cxx::hash_map<EdgeArray<2>,int,EdgeHash> 
 #endif
 
-using namespace Gascoigne;
 using namespace std;
 
 /*---------------------------------------------------*/
 
+namespace Gascoigne
+{
 EdgeManager::EdgeManager(vector<Edge>& e, vector<Quad>& q, 
 			 const IntVector& con, IntVector& eon) :
   edges(e), quads(q), co2n(con), eo2n(eon), QuadLaO(q) {}
@@ -578,6 +579,7 @@ void EdgeManager::NeighbourTester() const
 	    }
 	}
     }
+}
 }
 
 /*------------------------------------------------------*/

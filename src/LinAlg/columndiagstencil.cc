@@ -4,6 +4,8 @@ using namespace std;
 
 /*-------------------------------------------------------------*/
 
+namespace Gascoigne
+{
 void ColumnDiagStencil::memory(const SparseStructureInterface* SI)
 {
   ColumnStencil::memory(SI);
@@ -29,4 +31,5 @@ void ColumnDiagStencil::memory(int n, int nt)
 {
   ColumnStencil::memory(n,nt);
   sdiag.reservesize(n);
+}
 }

@@ -6,12 +6,14 @@
 /*-----------------------------------------*/
 
 
+namespace Gascoigne
+{
 class DiracRightHandSide : public RightHandSideData
 {
 protected:
 
   std::vector<Vertex2d>  v0;
-  nvector<double>   w;
+  DoubleVector   w;
   int mycomp, ncomp;
   double eps;
 
@@ -24,7 +26,7 @@ public:
       v0.resize(1,v);
     };
   DiracRightHandSide(int n, int m, const std::vector<Vertex2d>& v,
-		     const nvector<double>& w0)
+		     const DoubleVector& w0)
     : ncomp(n), mycomp(m), v0(v), w(w0)
     {
       eps = 1e-4;
@@ -50,10 +52,10 @@ public:
   
   int GetNcomp() const { return mycomp; }
   
-  const nvector<double>& GetWeights()    const { return w; }
+  const DoubleVector& GetWeights()    const { return w; }
   const std::vector<Vertex2d>& GetPoints2d() const 
     { return v0; }
 };
-
+}
 
 #endif

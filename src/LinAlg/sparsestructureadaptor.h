@@ -17,6 +17,8 @@
 #include  "sparsestructure.h"
 #include  <string>
 
+namespace Gascoigne
+{
 class SparseStructureAdaptor
 {
 public:
@@ -55,8 +57,8 @@ public:
     virtual int n() const=0; 
     virtual int nentries() const=0; 
     virtual void FillStencil(ColumnDiagStencil& S) const=0;
-    virtual nvector<int> GetIndicesDirichlet(int inode, const std::vector<int>& cv)const=0;
+    virtual IntVector GetIndicesDirichlet(int inode, const std::vector<int>& cv)const=0;
 };
-
+}
 
 #endif

@@ -6,6 +6,8 @@
 
 /*************************************************************/
 
+namespace Gascoigne
+{
 class PointRefiner
 {
   const MeshInterface& H;
@@ -78,7 +80,7 @@ class BallRefiner
 
   void BuildCellList(std::vector<int>&);
 };
-
+}
 
 /*************************************************************/
 

@@ -16,6 +16,8 @@
 #include  "gascoigne.h"
 #include  "solverinterface.h"
 
+namespace Gascoigne
+{
 class GhostVector : public BasicGhostVector
 {
 private:
@@ -45,7 +47,7 @@ public:
   void SetSolver(const SolverInterface* S) {__S=S;}
   const SolverInterface* GetSolver() const {return __S;}
 
-  Gascoigne::GlobalVector& GetGlobalVector() const {
+  GlobalVector& GetGlobalVector() const {
     assert(__S);
     __S->GetGV(*this);
   }
@@ -57,29 +59,29 @@ public:
   }
 
   double norm() {
-    Gascoigne::GlobalVector& v = GetSolver()->GetGV(*this);
+    GlobalVector& v = GetSolver()->GetGV(*this);
     return v.norm();
   }
   void zero() {
-    Gascoigne::GlobalVector& v = GetSolver()->GetGV(*this);
+    GlobalVector& v = GetSolver()->GetGV(*this);
     v.zero();
   }
   void equ(double d, const GhostVector& gw) {
-    Gascoigne::GlobalVector& v = GetSolver()->GetGV(*this);
-    Gascoigne::GlobalVector& w = gw.GetGlobalVector();
+    GlobalVector& v = GetSolver()->GetGV(*this);
+    GlobalVector& w = gw.GetGlobalVector();
     v.equ(d,w);
   }
   void add(double d1, const GhostVector& gw) {
-    Gascoigne::GlobalVector& v = GetSolver()->GetGV(*this);
-    Gascoigne::GlobalVector& w = gw.GetGlobalVector();
+    GlobalVector& v = GetSolver()->GetGV(*this);
+    GlobalVector& w = gw.GetGlobalVector();
     v.add(d1,w);
   }
   void sadd(double d1, double d2, const GhostVector& gw) {
-    Gascoigne::GlobalVector& v = GetSolver()->GetGV(*this);
-    Gascoigne::GlobalVector& w = gw.GetGlobalVector();
+    GlobalVector& v = GetSolver()->GetGV(*this);
+    GlobalVector& w = gw.GetGlobalVector();
     v.sadd(d1,d2,w);
   }
 };
-
+}
 
 #endif

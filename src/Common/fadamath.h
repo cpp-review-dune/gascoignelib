@@ -3,7 +3,7 @@
 
 #include "math.h"
 
-namespace GascoigneMath
+namespace Gascoigne
 {
 inline double pi()
 {

@@ -5,10 +5,11 @@
 #include  "baseq12d.h"
 
 using namespace std;
-using namespace Gascoigne;
 
 /* ----------------------------------------- */
 
+namespace Gascoigne
+{
 void Q1Gls2d::BasicInit(const ParamFile* pf)
 {
   assert(HN==NULL);
@@ -24,6 +25,7 @@ void Q1Gls2d::BasicInit(const ParamFile* pf)
   CellMeshInterpretor::GetFemPointer() =  new FiniteElement;
 
   CellMeshInterpretor::BasicInit(pf);
+}
 }
 
 /* ----------------------------------------- */

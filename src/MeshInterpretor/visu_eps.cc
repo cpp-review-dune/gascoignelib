@@ -3,10 +3,11 @@
 #include <fstream>
 
 using namespace std;
-using namespace Gascoigne;
 
 /* -------------------------------------------------- */
 
+namespace Gascoigne
+{
 VisuEPS::VisuEPS() : M(0)
 {
   INTOPT[WRITE_PATCH]  = 0;
@@ -95,10 +96,10 @@ void VisuEPS::WriteGrid(string fname,int iter)
   
   for (int i=0;i<M->nnodes();++i)
     {
-      x_min = GascoigneMath::min(x_min,M->vertex2d(i).x());
-      x_max = GascoigneMath::max(x_max,M->vertex2d(i).x());
-      y_min = GascoigneMath::min(y_min,M->vertex2d(i).y());
-      y_max = GascoigneMath::max(y_max,M->vertex2d(i).y());
+      x_min = Gascoigne::min(x_min,M->vertex2d(i).x());
+      x_max = Gascoigne::max(x_max,M->vertex2d(i).x());
+      y_min = Gascoigne::min(y_min,M->vertex2d(i).y());
+      y_max = Gascoigne::max(y_max,M->vertex2d(i).y());
     }
 
   offset.x()=x_min;
@@ -243,4 +244,5 @@ void VisuEPS::CombineLines()
     }
   while(changed);
 //   cerr << "Combined: " << combine << " of " << n_lines << " lines in " << steps << " steps.\n";
-}  
+}
+}

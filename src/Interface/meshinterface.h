@@ -18,6 +18,8 @@
 
 
 
+namespace Gascoigne
+{
 class MeshInterface
 {
 Vertex2d _v2;
@@ -38,9 +40,9 @@ public:
   virtual const Vertex2d& vertex2d(int i)  const { assert(0); return _v2;}
   virtual const Vertex3d& vertex3d(int i)  const { assert(0); return _v3;} 
   virtual std::set<int> GetColors()        const { assert(0); return std::set<int>();}
-  virtual Gascoigne::IntVector  IndicesOfCell(int iq) const { assert(0); return Gascoigne::IntVector();}
-  virtual const Gascoigne::IntVector* Vertexo2n()     const { assert(0); return NULL;}
-  virtual const Gascoigne::IntVector* CellOnBoundary(int color)   const { assert(0); return NULL;}  virtual const Gascoigne::IntVector* LocalOnBoundary(int color)  const { assert(0); return NULL;}
+  virtual IntVector  IndicesOfCell(int iq) const { assert(0); return IntVector();}
+  virtual const IntVector* Vertexo2n()     const { assert(0); return NULL;}
+  virtual const IntVector* CellOnBoundary(int color)   const { assert(0); return NULL;}  virtual const IntVector* LocalOnBoundary(int color)  const { assert(0); return NULL;}
 
   virtual int VtkType(int i) const {assert(0); return -1;}
 
@@ -80,6 +82,6 @@ public:
 // #define VTK_PARAMETRIC_TETRA_REGION 55
 // #define VTK_PARAMETRIC_HEX_REGION   56}
 };
-
+}
 
 #endif

@@ -1,23 +1,25 @@
 #ifndef  __entrymatrix_h
 #define  __entrymatrix_h
 
-#include  "nvector.h"
+#include  "gascoigne.h"
 #include  "gostream.h"
 
 /*-------------------------------------------------------------*/
 
+namespace Gascoigne
+{
 class EntryMatrix
 {
   protected :
 
-  typedef   nvector<double>::const_iterator  const_iterator;
-  typedef   nvector<double>::iterator        iterator;
-  typedef   std::vector<nvector<double> > Vector;
+  typedef   DoubleVector::const_iterator  const_iterator;
+  typedef   DoubleVector::iterator        iterator;
+  typedef   std::vector<DoubleVector>     Vector;
 
   int              ndof, mdof, ncomp, mcomp, nmdof, nmcomp;
   int              ind;
   //  iterator         pind;
-  nvector<double>  val;
+  DoubleVector  val;
 
   int dofindex (int i, int j) const {return nmcomp*(mdof*i+j);}
   int compindex(int c, int d) const {return mcomp*c+d;}
@@ -206,5 +208,5 @@ class EntryMatrix
 	}
     }
 };
-
+}
 #endif

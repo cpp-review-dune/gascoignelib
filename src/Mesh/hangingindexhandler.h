@@ -7,6 +7,8 @@
 
 /*-----------------------------------------*/
 
+namespace Gascoigne
+{
 class HangingIndexHandler
 {
  protected:
@@ -29,7 +31,7 @@ class HangingIndexHandler
     }
 
   void CopyLevel2Nibble
-  (const HangingIndexHandler& Lhih,nvector<int>& Vg2l);
+  (const HangingIndexHandler& Lhih,IntVector& Vg2l);
 
   // zugriff
 
@@ -38,6 +40,6 @@ class HangingIndexHandler
   std::map<int,fixarray<3,int> >* GetStructure()      { return &hnq2;}
   std::map<int,fixarray<9,int> >* GetStructureFace()  { return &hnq2face;}
 };
-
+}
 
 #endif

@@ -4,6 +4,8 @@ using namespace std;
 
 /*********************************************************************/
 
+namespace Gascoigne
+{
 Hang::Hang() : fixarray<3,int>(-1)
 {}
 
@@ -39,4 +41,5 @@ istream& operator>>(istream &s, Hang& A)
   s >> A.hanging() >> symbol;
   s >> A.rneighbour() >> A.cneighbour();
   return s;
+}
 }

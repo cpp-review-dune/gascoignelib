@@ -5,6 +5,8 @@
 
 /**************************************************/
 
+namespace Gascoigne
+{
 template<class T>
 class nmatrix : public nvector<T>
 {
@@ -524,6 +526,7 @@ public:
 	}
     }
 };
+}
 
 #endif
 

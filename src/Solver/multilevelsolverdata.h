@@ -9,6 +9,8 @@
 
 /**********************************************************/
 
+namespace Gascoigne
+{
 class MultiLevelSolverData
 {
   private:
@@ -25,7 +27,7 @@ class MultiLevelSolverData
     MultiLevelSolverData() { }
     virtual ~MultiLevelSolverData();
 
-    virtual void BasicInit(const Gascoigne::ParamFile *param);
+    virtual void BasicInit(const ParamFile *param);
     CGInfo &GetLInfo(std::string s = "State") const;
     NLInfo &GetNLInfo(std::string s = "State") const;
 
@@ -69,6 +71,7 @@ inline NLInfo &MultiLevelSolverData::GetNLInfo(std::string s) const
     std::cerr << "No such NonLinearInfo: \"" << s << "\"!" << std::endl;
     abort();
   }
+}
 }
 
 /**********************************************************/

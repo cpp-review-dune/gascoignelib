@@ -6,6 +6,8 @@ using namespace std;
 
 /********************************************************************/
 
+namespace Gascoigne
+{
 void Visualization::avs(const string& bname) const
 {
   string name = bname;
@@ -91,4 +93,5 @@ void Visualization::avs(const string& bname) const
     }
   out.close();
  if (showoutput) cout << "[" << name << "]\n";
+}
 }

@@ -16,6 +16,8 @@
 
 /*-----------------------------------------*/
 
+namespace Gascoigne
+{
 template<int DIM>
 class GlsIntegrator : public BasicIntegrator
 {
@@ -36,10 +38,11 @@ protected:
 
   std::string GetName() const {return "Gls";}
 
-  void Rhs(const RightHandSideData& RHS, Gascoigne::LocalVector& F, const FemInterface& FEM, const Gascoigne::LocalNodeData& Q) const {};
-  void Form(const Equation& EQ, Gascoigne::LocalVector& F, const FemInterface& FEM, const Gascoigne::LocalVector&U, const Gascoigne::LocalNodeData& Q) const;
-  void Matrix(const Equation& EQ, EntryMatrix& E, const FemInterface& FEM, const Gascoigne::LocalVector& U, const Gascoigne::LocalNodeData& Q) const;
+  void Rhs(const RightHandSideData& RHS, LocalVector& F, const FemInterface& FEM, const LocalNodeData& Q) const {};
+  void Form(const Equation& EQ, LocalVector& F, const FemInterface& FEM, const LocalVector&U, const LocalNodeData& Q) const;
+  void Matrix(const Equation& EQ, EntryMatrix& E, const FemInterface& FEM, const LocalVector& U, const LocalNodeData& Q) const;
 };
+}
 
 /*-----------------------------------------*/
 

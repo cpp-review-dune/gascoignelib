@@ -1,6 +1,6 @@
 #include  "localinitialcondition.h"
 
-
+using namespace Gascoigne;
 using namespace std;
 
 /* ----------------------------------------- */

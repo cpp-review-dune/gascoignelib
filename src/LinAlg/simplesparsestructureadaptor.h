@@ -13,6 +13,8 @@
 
 #include  "sparsestructureadaptor.h"
 
+namespace Gascoigne
+{
 class SimpleSparseStructureAdaptor : public SparseStructureAdaptor
 {
 public:
@@ -36,8 +38,8 @@ public:
 
   int index(int i, int c) const {return i;}
 
-  nvector<int> GetIndicesDirichlet(int inode, const std::vector<int>& cv) const{return nvector<int>(1,inode);}
+  IntVector GetIndicesDirichlet(int inode, const std::vector<int>& cv) const{return IntVector(1,inode);}
 };
-
+}
 
 #endif

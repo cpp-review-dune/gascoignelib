@@ -11,6 +11,8 @@ using namespace std;
 
 /*-----------------------------------------*/
 
+namespace Gascoigne
+{
 GnuplotData::GnuplotData(const string& s, const Vertex3d& _pos) : 
   plane(s), pos(_pos)
 {
@@ -112,9 +114,9 @@ void Visualization::gnuplot(const string& name) const
       assert(i);
       if (!i) continue;
 
-      nvector<double> x(i);
+      DoubleVector x(i);
       int comp = PointData->visucomp();
-      CompVector<double> f(comp);
+      GlobalVector f(comp);
       f.resize(i);
       i = 0;
       if (mesh->dimension()==3)
@@ -151,9 +153,9 @@ void Visualization::gnuplot(const string& name) const
 	}
 
 
-      nvector<int> C(x.size()); iota(C.begin(),C.end(),0);
+      IntVector C(x.size()); iota(C.begin(),C.end(),0);
 
-      typedef CompareObject<nvector<double> >  CoC;
+      typedef CompareObject<DoubleVector >  CoC;
       
       sort(C.begin(),C.end(),CoC(x));
             
@@ -178,4 +180,5 @@ void Visualization::gnuplot(const string& name) const
 	}
       out.close();
     }
+}
 }

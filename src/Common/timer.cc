@@ -13,6 +13,8 @@ using namespace std;
 
 /*-----------------------------------------*/
 
+namespace Gascoigne
+{
 Timer::Timer()
 {
 }
@@ -37,7 +39,7 @@ ostream& operator<<(ostream& os, const Timer& T)
       x.push_back(p->second.read());
       p++;
     }
-  nvector<int> C(x.size()); 
+  IntVector C(x.size()); 
   iota(C.begin(),C.end(),0);
   sort(C.begin(),C.end(),CompareObjectBigToSmall<vector<double> > (x));
   
@@ -52,3 +54,4 @@ ostream& operator<<(ostream& os, const Timer& T)
   os << "   Total       : " << st.GetTime() << endl << endl;
   return os;
 } 
+}

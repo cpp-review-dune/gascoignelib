@@ -4,10 +4,11 @@
 
 
 using namespace std;
-using namespace Gascoigne;
 
 /*-----------------------------------------*/
 
+namespace Gascoigne
+{
 double AllDomainFunctional::J(const FemFunction& U, const Vertex2d& V) const
 {
   return U[_comp].m();
@@ -48,4 +49,5 @@ double SubDomainFunctional::J(const FemFunction& U, const Vertex3d& V) const
   if ((V.z()>_z1) || (V.z()<_z0)) return 0.;
 
   return U[_comp].m();
+}
 }

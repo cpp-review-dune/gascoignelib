@@ -18,7 +18,7 @@ class LocalEquation : public Equation
   mutable double _us, _vs;
   mutable double _h, _k, _r;
  public:
-  LocalEquation(const Gascoigne::ParamFile* paramfile) {
+  LocalEquation(const ParamFile* paramfile) {
     DataFormatHandler DFH;
     DFH.insert("visc",&_visc,1.);
     DFH.insert("h",&_h,0.4);
@@ -42,7 +42,7 @@ class LocalEquation : public Equation
     P(1,1) = 1.;
   }
 
-  void Form(Gascoigne::VectorIterator b, const Gascoigne::FemFunction& U, const Gascoigne::TestFunction& N) const {
+  void Form(VectorIterator b, const FemFunction& U, const TestFunction& N) const {
     b[0] += _visc* (U[0].x()*N.x()+U[0].y()*N.y());
     b[1] += _visc* (U[1].x()*N.x()+U[1].y()*N.y());
     
@@ -54,7 +54,7 @@ class LocalEquation : public Equation
     b[1] += N.m() * (_k*_r* v - _k* s * v);
   }
 
-  void Matrix(EntryMatrix& A, const Gascoigne::FemFunction& U, const Gascoigne::TestFunction& M, const Gascoigne::TestFunction& N) const {
+  void Matrix(EntryMatrix& A, const FemFunction& U, const TestFunction& M, const TestFunction& N) const {
     A(0,0) += _visc* (M.x()*N.x()+M.y()*N.y());
     A(1,1) += _visc* (M.x()*N.x()+M.y()*N.y());
     
@@ -108,7 +108,7 @@ class ProblemDescriptor : public ProblemDescriptorBase
 public:
     
     std::string GetName() const {return "Local";}
-    void BasicInit(const Gascoigne::ParamFile* pf) {
+    void BasicInit(const ParamFile* pf) {
       GetEquationPointer() = new LocalEquation(GetParamFile());
       const LocalEquation* LEQ = dynamic_cast<const LocalEquation*>(GetEquation());
       GetInitialConditionPointer() = new LocalInitialCondition(LEQ);

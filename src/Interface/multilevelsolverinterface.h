@@ -16,6 +16,8 @@
 #include  "monitor.h"
 #include  "paramfile.h"
 
+namespace Gascoigne
+{
 class MultiLevelGhostVector;
 
 class MultiLevelSolverInterface
@@ -26,7 +28,7 @@ public:
   virtual ~MultiLevelSolverInterface() {}
 
   virtual std::string GetName() const=0;
-  virtual void BasicInit(const MeshAgentInterface* GMGM, const Gascoigne::ParamFile* paramfile)=0;
+  virtual void BasicInit(const MeshAgentInterface* GMGM, const ParamFile* paramfile)=0;
   // temporary
   virtual void ReInit(const ProblemDescriptorInterface& PDX)=0;
   virtual void SetMonitorPtr(Monitor* mon)=0;
@@ -58,11 +60,11 @@ public:
   virtual std::string Solve(MultiLevelGhostVector& x, const MultiLevelGhostVector& b) {
     return Solve(nlevels()-1,x,b);
   }
-  virtual void InterpolateSolution(MultiLevelGhostVector& u, const Gascoigne::GlobalVector& uold) const=0;
+  virtual void InterpolateSolution(MultiLevelGhostVector& u, const GlobalVector& uold) const=0;
   virtual double ComputeFunctional(MultiLevelGhostVector& f, const MultiLevelGhostVector& u, const Functional* FP) const=0;
-  virtual void Transfer(int l, Gascoigne::GlobalVector& ul, const Gascoigne::GlobalVector& uf) const {assert(0);}
-  virtual void SolutionTransfer(int l, Gascoigne::GlobalVector& ul, const Gascoigne::GlobalVector& uf) const {assert(0);}
+  virtual void Transfer(int l, GlobalVector& ul, const GlobalVector& uf) const {assert(0);}
+  virtual void SolutionTransfer(int l, GlobalVector& ul, const GlobalVector& uf) const {assert(0);}
 };
-
+}
 
 #endif

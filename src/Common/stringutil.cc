@@ -20,6 +20,8 @@ using namespace std;
 
 /*--------------------------------------*/
 
+namespace Gascoigne
+{
 string Int2String   (int a   )
 {
 #ifdef __OLDCOMPILER__
@@ -121,4 +123,5 @@ pair<string,vector<string> > SplitArgs(string s)
       args[i-1] = vs[i];
     }
   return make_pair(name,args);
+}
 }

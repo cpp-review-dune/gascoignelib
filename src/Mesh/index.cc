@@ -2,10 +2,11 @@
 
 
 using namespace std;
-using namespace Gascoigne;
 
 /*---------------------------------------------------*/
 
+namespace Gascoigne
+{
 Index::Index() {}
 
 /*---------------------------------------------------*/
@@ -116,6 +117,7 @@ void Index::InitHexs()
     {
       hg2l.insert(make_pair(hl2g[i],i));
     }
+}
 }
 
 /*---------------------------------------------------*/

@@ -4,11 +4,13 @@ using namespace std;
 
 /*-----------------------------------------*/
 
+namespace Gascoigne
+{
 GascoigneMeshTransferConstructor2d::GascoigneMeshTransferConstructor2d
 (const HierarchicalMesh2d* HM, GascoigneMeshTransfer* GMT,
  const LevelMesh2d* LMfine, const LevelMesh2d* LMcoarse)
 {
-  nvector<int>& c2f = GMT->GetC2f();
+  IntVector& c2f = GMT->GetC2f();
   map<int,fixarray<2,int> >& zweier = GMT->GetZweier();
   map<int,fixarray<4,int> >& vierer = GMT->GetVierer();
   map<int,int>&              CellEiner = GMT->GetCellEiner();
@@ -106,7 +108,7 @@ GascoigneMeshTransferConstructor3d::GascoigneMeshTransferConstructor3d
 //   cerr << "noch keine konstanten!\n";
 //   assert(0);
 
-  nvector<int>& c2f = GMT->GetC2f();
+  IntVector& c2f = GMT->GetC2f();
   map<int,fixarray<2,int> >& zweier = GMT->GetZweier();
   map<int,fixarray<4,int> >& vierer = GMT->GetVierer();
   map<int,fixarray<8,int> >& achter = GMT->GetAchter();
@@ -170,4 +172,5 @@ GascoigneMeshTransferConstructor3d::GascoigneMeshTransferConstructor3d
 	  zweier[ile]=n2;
 	}
     }
+}
 }

@@ -6,6 +6,8 @@ using namespace std;
 
 /*----------------------------------------------*/
 
+namespace Gascoigne
+{
 ostream& operator<<(ostream &s, const SparseStructure& A)
 {
   A.statistics(s);
@@ -131,17 +133,17 @@ void SparseStructure::enlarge_lu()
       for(set<int>::iterator p=rowbegin(i); p != rowend(i); ++p)
 	{
 	  int j = *p;
-	  imin = GascoigneMath::min_int(imin,j);
-	  imax = GascoigneMath::max_int(imax,j);
+	  imin = Gascoigne::min_int(imin,j);
+	  imax = Gascoigne::max_int(imax,j);
 	}
-      maxbw = GascoigneMath::max_int(maxbw,abs(imax-i));
-      maxbw = GascoigneMath::max_int(maxbw,abs(imin-i));
+      maxbw = Gascoigne::max_int(maxbw,abs(imax-i));
+      maxbw = Gascoigne::max_int(maxbw,abs(imin-i));
     }
   //cerr << "bandbreite: " << maxbw << endl;
   for(int i=0;i<n();i++)
     {
-      int imin = GascoigneMath::max_int(0,i-maxbw);
-      int imax = GascoigneMath::min_int(i+maxbw,n()-1);
+      int imin = Gascoigne::max_int(0,i-maxbw);
+      int imax = Gascoigne::min_int(i+maxbw,n()-1);
       for(int im=imin;im<=imax;im++)
 	{
 	  row(i).insert(im);
@@ -167,12 +169,12 @@ void SparseStructure::enlarge(const SparseStructure& S)
 
 /*----------------------------------------------*/
 
-void SparseStructure::enlarge_for_lu(const nvector<int>& p)
+void SparseStructure::enlarge_for_lu(const IntVector& p)
 {
   assert (p.size()==n());
   vector<set<int> > transpose(n());
 
-  nvector<int> q(n());
+  IntVector q(n());
   for (int i=0;i<n();++i)
     q[p[i]]=i;
   
@@ -203,4 +205,5 @@ void SparseStructure::enlarge_for_lu(const nvector<int>& p)
       
     }
   build_end();
+}
 }

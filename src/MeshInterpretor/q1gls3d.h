@@ -13,6 +13,8 @@
 #include  "q13d.h"
 #include  "glsintegrator.h"
 
+namespace Gascoigne
+{
 class Q1Gls3d : public Q13d
 {
 protected:
@@ -30,7 +32,8 @@ public:
   
   std::string GetName() const {return "Q1Gls3d";}
   
-  void BasicInit(const Gascoigne::ParamFile* pf);
+  void BasicInit(const ParamFile* pf);
 };
+}
 
 #endif

@@ -6,6 +6,8 @@
 
 /*-----------------------------------------*/
 
+namespace Gascoigne
+{
 class GascoigneMesh3d : public GascoigneMesh
 {
 protected:
@@ -32,7 +34,8 @@ public:
   const Vertex3d& vertex3d(int i) const { return nx[i];} 
   int  vertex_of_cell(int i, int ii) const { return nc[8*i+ii]; }
 
-  nvector<int>  IndicesOfCell(int iq) const;
+  IntVector  IndicesOfCell(int iq) const;
 };
+}
 
 #endif

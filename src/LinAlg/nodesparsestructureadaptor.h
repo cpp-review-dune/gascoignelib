@@ -15,6 +15,8 @@
 #include  "sparsestructureadaptor.h"
 
 
+namespace Gascoigne
+{
 class NodeSparseStructureAdaptor : public SparseStructureAdaptor
 {
 public:
@@ -40,8 +42,8 @@ public:
   int index(int i, int c) const {return i*_ncomp+c;}
 
   void FillStencil(ColumnDiagStencil& S) const;
-  nvector<int> GetIndicesDirichlet(int inode, const std::vector<int>& cv) const;
+  IntVector GetIndicesDirichlet(int inode, const std::vector<int>& cv) const;
 };
-
+}
 
 #endif

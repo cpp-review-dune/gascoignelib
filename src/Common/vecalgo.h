@@ -5,6 +5,8 @@
 #include  <set>
 #include  "fadamath.h"
 
+namespace Gascoigne
+{
 void transfer(int n, std::vector<int>& tr, const std::set<int>& del);
 void transfer(int n, std::vector<int>& tr, std::vector  <int>& del);
 
@@ -19,12 +21,13 @@ void compress(std::vector<C>& dst, const std::vector<int>& src) {
       if (j>=0)
 	{
 	  dst[j] = dst[i];
-	  mmax = GascoigneMath::max_int(mmax,j);
+	  mmax = max_int(mmax,j);
 	  //n++;
 	}
     }
   //dst.resize(n);
   dst.resize(mmax+1);
+}
 }
 
 #endif

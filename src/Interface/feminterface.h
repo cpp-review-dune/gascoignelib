@@ -8,6 +8,8 @@
 
 /*-----------------------------------------*/
 
+namespace Gascoigne
+{
 class FemInterface
 {
 public:
@@ -57,8 +59,8 @@ public:
 /*   virtual void init(const Matrix& M)=0; */
   virtual void ReInit(const Matrix& M) const=0;
 
-  virtual void  init_test_functions(Gascoigne::TestFunction& Phi, double w, int i) const=0;
+  virtual void  init_test_functions(TestFunction& Phi, double w, int i) const=0;
 };
-
+}
 
 #endif

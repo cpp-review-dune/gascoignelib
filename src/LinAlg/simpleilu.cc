@@ -5,6 +5,8 @@ using namespace std;
 
 /* ----------------------------------------- */
 
+namespace Gascoigne
+{
 void SimpleIlu::ReInit(int n, int nentries)
 {
   SimpleMatrix::ReInit(n,nentries);
@@ -14,7 +16,7 @@ void SimpleIlu::ReInit(int n, int nentries)
 
 /*-----------------------------------------*/
 
-void SimpleIlu::solve(nvector<double>& x) const
+void SimpleIlu::solve(DoubleVector& x) const
 {
   hin(x);
   forward ();
@@ -24,7 +26,7 @@ void SimpleIlu::solve(nvector<double>& x) const
 
 /*-----------------------------------------*/
 
-void SimpleIlu::solve_transpose(nvector<double>& x) const
+void SimpleIlu::solve_transpose(DoubleVector& x) const
 {
   hin(x);
   forward_transpose ();
@@ -34,7 +36,7 @@ void SimpleIlu::solve_transpose(nvector<double>& x) const
 
 /*-------------------------------------------------------------*/
 
-void SimpleIlu::hin(const nvector<double>& x) const
+void SimpleIlu::hin(const DoubleVector& x) const
 {
   int n = x.size();
   yp.reservesize(n);
@@ -44,7 +46,7 @@ void SimpleIlu::hin(const nvector<double>& x) const
 
 /*-------------------------------------------------------------*/
 
-void SimpleIlu::her(nvector<double>& x) const
+void SimpleIlu::her(DoubleVector& x) const
 {
   for(int i=0;i<ST.n();i++)  x[i] = yp[q[i]];
 }
@@ -180,4 +182,5 @@ void SimpleIlu::copy_entries(const MatrixInterface*  A)
 	    }
 	}
     }
+}
 }

@@ -9,11 +9,13 @@
 /*-----------------------------------------*/
 
 
+namespace Gascoigne
+{
 class GascoigneVisualization : public Visualization
 {
 private:
 
-  const Gascoigne::GlobalVector* _v;
+  const GlobalVector* _v;
 
   VisuDataInfo        VDI;
   VisuDataCompVector  VD;
@@ -23,10 +25,10 @@ public:
 
   GascoigneVisualization() : Visualization(), _v(NULL) {}
 
-  void AddVector(const Gascoigne::GlobalVector* v);
+  void AddVector(const GlobalVector* v);
 
 
 };
-
+}
 
 #endif

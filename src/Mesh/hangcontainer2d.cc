@@ -3,10 +3,11 @@
 
 
 using namespace std;
-using namespace Gascoigne;
 
 /*********************************************************************/
 
+namespace Gascoigne
+{
 bool HangContainer2d::ToBeDeleted(const EdgeVector& v) const
 {
   return (VertexToBeDeleted.find(v) != VertexToBeDeleted.end());
@@ -150,6 +151,7 @@ void HangContainer2d::ghost_refine(EdgeVector& edge, int f)
 	  VertexToBeCreated.insert(make_pair(edge,h));
 	}
     }
+}
 }
 
 /*********************************************************************/

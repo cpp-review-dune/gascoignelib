@@ -16,7 +16,7 @@
 /////////////////////////////////////////////
 
 
-class ProblemDescriptorInitial : public ProblemDescriptorBase
+class ProblemDescriptorInitial : public Gascoigne::ProblemDescriptorBase
 {
 public:
     std::string GetName() const {return "Initial";}

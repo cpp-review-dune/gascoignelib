@@ -8,7 +8,9 @@ using namespace std;
 
 /*-----------------------------------------*/
 
-DiplomantenAdaptor::DiplomantenAdaptor(AdaptorData& _info, const dvector& _eta) :
+namespace Gascoigne
+{
+DiplomantenAdaptor::DiplomantenAdaptor(AdaptorData& _info, const DoubleVector& _eta) :
   info(_info), eta(_eta)
 {
   if (info.dim()==2) ppp = 3;
@@ -26,10 +28,10 @@ void DiplomantenAdaptor::analyse() const
   //double s = 1.;
   double reduction = 1.-pow(0.5,info.local_conv());
 
-  nvector<int> C(eta.size()); 
+  IntVector C(eta.size()); 
   iota(C.begin(),C.end(),0);
 
-  typedef CompareObjectBigToSmall<nvector<double> >  CoC;
+  typedef CompareObjectBigToSmall<DoubleVector >  CoC;
 
   sort(C.begin(),C.end(),CoC(eta));
 
@@ -51,17 +53,17 @@ void DiplomantenAdaptor::analyse() const
 
 /*-----------------------------------------*/
 
-void DiplomantenAdaptor::MalteRefine(nvector<int>& ref) const
+void DiplomantenAdaptor::MalteRefine(IntVector& ref) const
 {
   if (eta.size()==0) return;
 
   double alpha = info.local_conv();  // lokale konvergenzordnung in h
   double beta  = info.global_conv(); // globale konvergenzordnung
   
-  nvector<int> C(eta.size()); 
+  IntVector C(eta.size()); 
   iota(C.begin(),C.end(),0);
 
-  typedef CompareObjectBigToSmall<nvector<double> >  CoC;
+  typedef CompareObjectBigToSmall<DoubleVector >  CoC;
 
   sort(C.begin(),C.end(),CoC(eta));
   
@@ -100,7 +102,7 @@ void DiplomantenAdaptor::MalteRefine(nvector<int>& ref) const
 
 /*-----------------------------------------*/
 
-void DiplomantenAdaptor::refine(nvector<int>& ref)
+void DiplomantenAdaptor::refine(IntVector& ref)
 {
   int n = eta.size();
 
@@ -110,10 +112,10 @@ void DiplomantenAdaptor::refine(nvector<int>& ref)
   double alpha = info.local_conv(); // konvergenzordnung
   double t     = 1.-pow(0.5,alpha);
   
-  nvector<int> C(eta.size()); 
+  IntVector C(eta.size()); 
   iota(C.begin(),C.end(),0);
 
-  typedef CompareObjectBigToSmall<nvector<double> >  CoC;
+  typedef CompareObjectBigToSmall<DoubleVector >  CoC;
 
   sort(C.begin(),C.end(),CoC(eta));
   
@@ -148,6 +150,7 @@ void DiplomantenAdaptor::refine(nvector<int>& ref)
     {
       ref[j] = C[j];
     }
+}
 }
 
 /*-----------------------------------------*/

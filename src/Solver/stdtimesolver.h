@@ -15,6 +15,8 @@
 
 /*-------------------------------------------------------------*/
 
+namespace Gascoigne
+{
 class StdTimeSolver : public virtual StdSolver
 {
 private:
@@ -42,7 +44,7 @@ public:
   StdTimeSolver();
   ~StdTimeSolver();
 
-  void BasicInit(int level, const Gascoigne::ParamFile* pfparamfile, const MeshInterface* MP);
+  void BasicInit(int level, const ParamFile* pfparamfile, const MeshInterface* MP);
 
   void RegisterMatrix();
   void ReInitMatrix();
@@ -57,5 +59,6 @@ public:
   std::string GetName() const;
   void L2Projection(BasicGhostVector& u);
 };
+}
 
 #endif

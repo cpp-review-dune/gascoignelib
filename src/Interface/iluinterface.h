@@ -5,6 +5,8 @@
 
 /*-------------------------------------------------------------*/
 
+namespace Gascoigne
+{
 class IluInterface
 {
   public:
@@ -17,12 +19,13 @@ class IluInterface
   virtual void zero()                  { assert(0);}                      
   virtual void compute_ilu ()          { assert(0);}           
   virtual void ReInit   (const SparseStructureInterface* A) { assert(0);}       
-  virtual void ConstructStructure(const nvector<int>& perm, const MatrixInterface& A)
+  virtual void ConstructStructure(const IntVector& perm, const MatrixInterface& A)
     { assert(0); }
   virtual void copy_entries(const MatrixInterface* A)      { assert(0); }  
-  virtual void solve       (CompVector<double>& x) const   { assert(0); }        
-  virtual void solve_transpose(CompVector<double>& x) const   { assert(0); }    
+  virtual void solve       (GlobalVector& x) const   { assert(0); }        
+  virtual void solve_transpose(GlobalVector& x) const   { assert(0); }    
   virtual std::ostream& Write(std::ostream &s) const       { assert(0); }
 };
+}
 
 #endif

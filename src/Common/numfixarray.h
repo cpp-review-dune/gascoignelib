@@ -7,6 +7,8 @@
 
 /*-------------------------------------------------*/
 
+namespace Gascoigne
+{
 template<int N, class T>
 class numfixarray  : public fixarray<N,T>
 {
@@ -89,7 +91,7 @@ inline double numfixarray<N,T>::norm_l8() const
   double d=0.;
   while( first != last)
     {
-      d = GascoigneMath::max(d,fabs(*first));
+      d = Gascoigne::max(d,fabs(*first));
       first++;
     }
   return d;
@@ -481,6 +483,7 @@ inline void numfixarray<N,T>::sadd (double a, double d, const numfixarray<N,T>& 
       (*first) = a*(*first) + d*(*first2++);
       first++;
     }
+}
 }
 
 #endif

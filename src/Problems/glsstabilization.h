@@ -2,15 +2,18 @@
 #define __GlsStabilization_h
 
 #include  "stabilization.h"
+#include  "gascoigne.h"
 
 /*-------------------------------------------*/
 
+namespace Gascoigne
+{
 class GlsStabilization : public Stabilization
 {
  protected:
 
   double _delta, _tau;
-  nvector<double> _sdelta;
+  DoubleVector _sdelta;
 
   void NavierStokes(double h, double visc);
 
@@ -36,5 +39,6 @@ class GlsStabilization : public Stabilization
     };
   void ConvectionDiffusion(double visc);
 };
+}
 
 #endif

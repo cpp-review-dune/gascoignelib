@@ -8,10 +8,11 @@
 #include  "stringutil.h"
 
 using namespace std;
-using namespace Gascoigne;
 
 /*------------------------------------------------------*/
 
+namespace Gascoigne
+{
 HierarchicalMesh::HierarchicalMesh() 
   : mnlevels(1), pdepth(1), withfaces(1), etapatcher(1)
  {}
@@ -163,7 +164,7 @@ void HierarchicalMesh::random_patch_refine(double p, int c)
   int nq = ncells();
   int nc = 1+static_cast<int>(p*nq);      
 
-  nc = GascoigneMath::min_int(nc,nq);
+  nc = Gascoigne::min_int(nc,nq);
   if (p<0) nc=0;
 
   IntVector cell_ref(nc), cell_coarse;
@@ -265,4 +266,5 @@ void HierarchicalMesh::update_edges(IntVector& SwappedEdge)
 	  edges[i].swapping(co2n[s]);
 	}
     }
+}
 }

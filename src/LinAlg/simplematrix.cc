@@ -5,6 +5,8 @@ using namespace std;
 
 /* ----------------------------------------- */
 
+namespace Gascoigne
+{
 ostream& SimpleMatrix::Write(ostream& os) const
 {
   int n = ST.n();
@@ -58,7 +60,7 @@ void SimpleMatrix::entry(niiterator start, niiterator stop, const EntryMatrix& M
 
 /* ----------------------------------------- */
 
-void SimpleMatrix::vmult_time(CompVector<double>& y, const CompVector<double>& x, const TimePattern& TP, double s) const
+void SimpleMatrix::vmult_time(GlobalVector& y, const GlobalVector& x, const TimePattern& TP, double s) const
 {
   int n = ST.n();
   assert(n==y.n());
@@ -83,13 +85,13 @@ void SimpleMatrix::vmult_time(CompVector<double>& y, const CompVector<double>& x
 
 /* ----------------------------------------- */
 
-void SimpleMatrix::vmult(nvector<double>& y, const nvector<double>& x, double d) const
+void SimpleMatrix::vmult(DoubleVector& y, const DoubleVector& x, double d) const
 {
   int n = ST.n();
   assert(n==y.size());
   assert(n==x.size());
 
-  nvector<double>::iterator py=y.begin();
+  DoubleVector::iterator py=y.begin();
   for(int i=0;i<n;i++)
     {
       for(int pos=ST.start(i);pos<ST.stop(i);pos++)
@@ -104,13 +106,13 @@ void SimpleMatrix::vmult(nvector<double>& y, const nvector<double>& x, double d)
 
 /* ----------------------------------------- */
 
-void SimpleMatrix::vmult_transpose(nvector<double>& y, const nvector<double>& x, double d) const
+void SimpleMatrix::vmult_transpose(DoubleVector& y, const DoubleVector& x, double d) const
 {
   int n = ST.n();
   assert(n==y.size());
   assert(n==x.size());
 
-  nvector<double>::const_iterator px=x.begin();
+  DoubleVector::const_iterator px=x.begin();
   for(int i=0;i<n;i++)
     {
       for(int pos=ST.start(i);pos<ST.stop(i);pos++)
@@ -125,7 +127,7 @@ void SimpleMatrix::vmult_transpose(nvector<double>& y, const nvector<double>& x,
 
 /*-----------------------------------------*/
 
-void SimpleMatrix::vmult_comp(int c, int d, CompVector<double>& y, const CompVector<double>& x, double s) const
+void SimpleMatrix::vmult_comp(int c, int d, GlobalVector& y, const GlobalVector& x, double s) const
 {
   int n = ST.n();
   assert(n==y.n());
@@ -143,7 +145,7 @@ void SimpleMatrix::vmult_comp(int c, int d, CompVector<double>& y, const CompVec
 
 /*-----------------------------------------*/
 
-void SimpleMatrix::vmult_comp_trans(int c, int d, CompVector<double>& y, const CompVector<double>& x, double s) const
+void SimpleMatrix::vmult_comp_trans(int c, int d, GlobalVector& y, const GlobalVector& x, double s) const
 {
   int n = ST.n();
   assert(n==y.n());
@@ -161,7 +163,7 @@ void SimpleMatrix::vmult_comp_trans(int c, int d, CompVector<double>& y, const C
 
 /*-----------------------------------------*/
 
-void SimpleMatrix::dirichlet(const nvector<int>& indices)
+void SimpleMatrix::dirichlet(const IntVector& indices)
 {
   for(int ii=0;ii<indices.size();ii++)
     {
@@ -219,4 +221,5 @@ void SimpleMatrix::entry_diag(int i, const nmatrix<double>& M)
 {
   int pos = ST.Find(i,i);
   value[pos] = M(0,0);
+}
 }

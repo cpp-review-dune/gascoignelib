@@ -5,6 +5,8 @@ using namespace std;
 
 /* --------------------------------------------------------------- */
 
+namespace Gascoigne
+{
 extern "C" void METIS_NodeND
 (int*, int*, int*, int*, int*, int*, int*);
 
@@ -29,7 +31,7 @@ CuthillMcKee::CuthillMcKee ()
 
 // /* --------------------------------------------------------------- */
 
-// void CuthillMcKee::Permutate    (nvector<int> &perm, const Vertex2d v)
+// void CuthillMcKee::Permutate    (IntVector &perm, const Vertex2d v)
 // {
 //   dimension=2;
 // //   dir2d=v;
@@ -38,7 +40,7 @@ CuthillMcKee::CuthillMcKee ()
 
 // /* --------------------------------------------------------------- */
 
-// void CuthillMcKee::Permutate    (nvector<int> &perm, const Vertex3d v)
+// void CuthillMcKee::Permutate    (IntVector &perm, const Vertex3d v)
 // {
 //   dimension=3;
 // //   dir3d=v;
@@ -47,7 +49,7 @@ CuthillMcKee::CuthillMcKee ()
 
 /* --------------------------------------------------------------- */
 
-void CuthillMcKee::Permutate (nvector<int> &perm)
+void CuthillMcKee::Permutate (IntVector &perm)
 {
   // mit metis graph aufbauen
   //
@@ -159,4 +161,4 @@ void CuthillMcKee::Permutate (nvector<int> &perm)
 //   if (dimension==3) return (((M->vertex3d(j)-M->vertex3d(i))*dir3d)>0);
 //   return 0;
 // }
-
+}

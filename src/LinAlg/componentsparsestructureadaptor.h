@@ -15,6 +15,8 @@
 #include  "nodesparsestructureadaptor.h"
 
 
+namespace Gascoigne
+{
 class ComponentSparseStructureAdaptor : public NodeSparseStructureAdaptor
 {
 public:
@@ -36,6 +38,6 @@ public:
   std::string GetName() const {return "Component";}
 
 };
-
+}
 
 #endif

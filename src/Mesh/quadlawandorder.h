@@ -25,6 +25,8 @@
 
 /*---------------------------------------------------*/
 
+namespace Gascoigne
+{
 class QuadLawAndOrder
 {
  protected:
@@ -95,5 +97,6 @@ class QuadLawAndOrder
   /* fuer mginterpolator */
   void globalvertices_of_edge(const Quad&, EdgeVector&, int) const;
 };
+}
 
 #endif

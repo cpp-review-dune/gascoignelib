@@ -5,6 +5,8 @@ using namespace std;
 
 /*-------------------------------------------------------------*/
 
+namespace Gascoigne
+{
 ostream& operator<<(ostream& s, const EntryMatrix& A)
 {
   s << A.Ndof()  << "\t" << A.Mdof() << endl;
@@ -24,4 +26,5 @@ ostream& operator<<(ostream& s, const EntryMatrix& A)
 	}
     }
   return s;
+}
 }

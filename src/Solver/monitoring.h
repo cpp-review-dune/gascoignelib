@@ -5,13 +5,15 @@
 
 /*---------------------------------------------------------*/
 
+namespace Gascoigne
+{
 class Monitoring
 {
  protected:
 
-  std::vector<nvector<double> > Juh, Je;
-  nvector<double>          eta, nnodes, ncells;
-  nvector<double>          Ju;
+  std::vector<DoubleVector > Juh, Je;
+  DoubleVector          eta, nnodes, ncells;
+  DoubleVector          Ju;
   int                      niter;
 
  public:
@@ -34,7 +36,7 @@ class Monitoring
 	}
       std::cout << "----------------------------------" << std::endl;
     }
-  void BasicInit(const nvector<double>& ju) 
+  void BasicInit(const DoubleVector& ju) 
     { 
       Ju = ju; 
     }
@@ -48,7 +50,7 @@ class Monitoring
       nnodes.resize(niter); nnodes[iter-1] = nodes;
       ncells.resize(niter); ncells[iter-1] = cells;
     }
-  void SetSolutionInformation(int iter, nvector<double> juh, double et)
+  void SetSolutionInformation(int iter, DoubleVector juh, double et)
     {
       assert(niter==iter);
       Juh[iter-1] = juh;
@@ -68,6 +70,7 @@ class Monitoring
       std::cout << eff(i) << std::endl;
     }
 };
+}
 
 /*---------------------------------------------------------*/
 

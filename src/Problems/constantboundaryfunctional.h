@@ -7,6 +7,8 @@
 /*-----------------------------------------*/
 
 
+namespace Gascoigne
+{
 class ConstantBoundaryFunctional : public BoundaryFunctional
 {
 protected:
@@ -31,9 +33,9 @@ public:
   void SetComp (int    c) {comp =c;}
   void SetValue(double v) {value=v;}
 
-  double J(const Gascoigne::FemFunction& U, const Vertex2d& v) const;
+  double J(const FemFunction& U, const Vertex2d& v) const;
 
 };
-
+}
 
 #endif

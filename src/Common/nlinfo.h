@@ -5,6 +5,8 @@
 
 /*************************************************************/
 
+namespace Gascoigne
+{
 class NLStatisticData : public StatisticData
 {
   int  _newmatrix;
@@ -108,5 +110,6 @@ class NLInfo
 };
 
 /*************************************************************/
+}
 
 #endif

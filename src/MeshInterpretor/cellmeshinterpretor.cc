@@ -5,10 +5,11 @@
 #include  "pressurefilter.h"
 
 using namespace std;
-using namespace Gascoigne;
 
 /* ----------------------------------------- */
 
+namespace Gascoigne
+{
 void CellMeshInterpretor::Structure(SparseStructureInterface* SI) const
 {
   SparseStructure* S = dynamic_cast<SparseStructure*>(SI);
@@ -17,7 +18,7 @@ void CellMeshInterpretor::Structure(SparseStructureInterface* SI) const
   S->build_begin(n());
   for(int iq=0;iq<GetMesh()->ncells();iq++)
     {
-      nvector<int> indices = GetLocalIndices(iq);
+      IntVector indices = GetLocalIndices(iq);
       S->build_add(indices.begin(), indices.end());
     }
   S->build_end();  
@@ -30,7 +31,7 @@ void CellMeshInterpretor::Transformation(FemInterface::Matrix& T, int iq) const
   int dim = GetMesh()->dimension();
   int ne = GetMesh()->nodes_per_cell(iq);
 
-  nvector<int> indices = GetMesh()->IndicesOfCell(iq);
+  IntVector indices = GetMesh()->IndicesOfCell(iq);
   assert(ne==indices.size());
 
   T.memory(dim,ne);
@@ -123,7 +124,7 @@ void CellMeshInterpretor::ComputeError(const GlobalVector& u, LocalVector& err, 
   err.reservesize(3);
   err = 0.;
 
-  CompVector<double> lerr(ncomp,3); 
+  GlobalVector lerr(ncomp,3); 
 
   nmatrix<double> T;
   
@@ -140,7 +141,7 @@ void CellMeshInterpretor::ComputeError(const GlobalVector& u, LocalVector& err, 
 	{
 	  err(0,c) += lerr(0,c);
 	  err(1,c) += lerr(1,c);
-	  err(2,c) = GascoigneMath::max(err(2,c),lerr(2,c));
+	  err(2,c) = Gascoigne::max(err(2,c),lerr(2,c));
 	}
     }
   for(int c=0;c<ncomp;c++)  
@@ -201,7 +202,7 @@ void CellMeshInterpretor::RhsNeumann(GlobalVector& f, const IntSet& Colors,  con
 
 /* ----------------------------------------- */
 
-void CellMeshInterpretor::InitFilter(nvector<double>& F) const
+void CellMeshInterpretor::InitFilter(DoubleVector& F) const
 {
   PressureFilter* PF = static_cast<PressureFilter*>(&F);
   assert(PF);
@@ -221,7 +222,7 @@ void CellMeshInterpretor::InitFilter(nvector<double>& F) const
       double cellsize = GetIntegrator()->MassMatrix(E,*GetFem());
       PF->AddDomainPiece(cellsize);
 
-      nvector<int> ind = GetMesh()->IndicesOfCell(iq);
+      IntVector ind = GetMesh()->IndicesOfCell(iq);
 
       for(int i=0;i<ind.size();i++)
  	{
@@ -248,7 +249,7 @@ int CellMeshInterpretor::RhsPoint(GlobalVector& f, const Functional* F) const
   assert(FP);
 
   int comp = FP->GetComp();
-  const nvector<double>& d = FP->weights();
+  const DoubleVector& d = FP->weights();
   int count = 0;
 
   if (GetMesh()->dimension()==2)
@@ -331,7 +332,7 @@ void CellMeshInterpretor::VertexTransformation(const nvector<Vertex2d>& p,
 
 int CellMeshInterpretor::GetCellNumber(const Vertex2d& p0, nvector<Vertex2d>& p) const
 {
-  nvector<double> a0(2),a1(2),b(2),n(2);
+  DoubleVector a0(2),a1(2),b(2),n(2);
   
   for(int iq=0; iq<GetMesh()->ncells(); ++iq)
     {
@@ -438,7 +439,7 @@ void CellMeshInterpretor::Transformation_HM(FemInterface::Matrix& T, const Hiera
   int dim = GetMesh()->dimension();
   int ne = GetMesh()->nodes_per_cell(iq);
 
-  nvector<int> indices = HM->GetVertices(iq);
+  IntVector indices = HM->GetVertices(iq);
   assert(ne==indices.size());
   swapIndices(indices);
 
@@ -468,7 +469,7 @@ void CellMeshInterpretor::Transformation_HM(FemInterface::Matrix& T, const Hiera
 
 void CellMeshInterpretor::GlobalToLocal_HM(LocalVector& U, const GlobalVector& u, const HierarchicalMesh* HM, int iq) const
 {
-  nvector<int> indices = HM->GetVertices(iq);
+  IntVector indices = HM->GetVertices(iq);
   swapIndices(indices);
 
   U.ReInit(u.ncomp(),indices.size());
@@ -481,7 +482,7 @@ void CellMeshInterpretor::GlobalToLocal_HM(LocalVector& U, const GlobalVector& u
 
 /* ----------------------------------------- */
 
-void CellMeshInterpretor::swapIndices(nvector<int>& indices) const
+void CellMeshInterpretor::swapIndices(IntVector& indices) const
 {
   assert(indices.size()>=4);
 
@@ -494,4 +495,5 @@ void CellMeshInterpretor::swapIndices(nvector<int>& indices) const
       indices[6] = indices[7];
       indices[7] = help;
     }
+}
 }

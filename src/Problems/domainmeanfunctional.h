@@ -6,6 +6,8 @@
 
 /*-----------------------------------------*/
 
+namespace Gascoigne
+{
 class AllDomainFunctional  : public virtual DomainFunctional
 {
 protected:
@@ -22,8 +24,8 @@ public:
   int    GetNcomp() const {return _ncomp;}
   int    GetComp()  const {return _comp;}
 
-  double J(const Gascoigne::FemFunction& U, const Vertex2d& v) const;
-  double J(const Gascoigne::FemFunction& U, const Vertex3d& v) const;
+  double J(const FemFunction& U, const Vertex2d& v) const;
+  double J(const FemFunction& U, const Vertex3d& v) const;
 };
 
 /*-----------------------------------------*/
@@ -43,9 +45,9 @@ public:
 
   void SetCoordinates(double x0, double x1, double y0, double y1);
 
-  double J(const Gascoigne::FemFunction& U, const Vertex2d& v) const;
-  double J(const Gascoigne::FemFunction& U, const Vertex3d& v) const;
+  double J(const FemFunction& U, const Vertex2d& v) const;
+  double J(const FemFunction& U, const Vertex3d& v) const;
 };
-
+}
 
 #endif

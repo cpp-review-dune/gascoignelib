@@ -1,19 +1,19 @@
 #ifndef  __Extrapolator_h
 #define  __Extrapolator_h
 
-#include  "nvector.h"
+#include  "gascoigne.h"
 
 /*-----------------------------------------*/
 
+namespace Gascoigne
+{
 class Extrapolator
 {
 protected:
 
-  typedef nvector<double> dvector;
-
-  std::vector<dvector> vals;
+  std::vector<DoubleVector> vals;
   
-  dvector  valextra, order;
+  DoubleVector  valextra, order;
 
 public:
 
@@ -21,9 +21,10 @@ public:
   ~Extrapolator();
 
   void Print();
-  void NewValues(const dvector& J);
+  void NewValues(const DoubleVector& J);
 
 };
+}
 
 /*-----------------------------------------*/
 

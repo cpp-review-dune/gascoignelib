@@ -5,6 +5,8 @@
 
 /*--------------------------------------------------------*/
 
+namespace Gascoigne
+{
 class MgInterpolatorInterface
 {
 public:
@@ -12,13 +14,14 @@ public:
   MgInterpolatorInterface() {}
   virtual ~MgInterpolatorInterface() {}
 
-  virtual void restrict_zero   (Gascoigne::GlobalVector&, const Gascoigne::GlobalVector&) const=0;
-  virtual void prolongate_add  (Gascoigne::GlobalVector&, const Gascoigne::GlobalVector&) const=0;
-  virtual void SolutionTransfer(Gascoigne::GlobalVector&, const Gascoigne::GlobalVector&) const=0;
-  virtual void SolutionTransferUp(Gascoigne::GlobalVector& ul, const Gascoigne::GlobalVector& uL) const {
+  virtual void restrict_zero   (GlobalVector&, const GlobalVector&) const=0;
+  virtual void prolongate_add  (GlobalVector&, const GlobalVector&) const=0;
+  virtual void SolutionTransfer(GlobalVector&, const GlobalVector&) const=0;
+  virtual void SolutionTransferUp(GlobalVector& ul, const GlobalVector& uL) const {
     prolongate_add(ul,uL); 
   }
-  virtual void Pi(Gascoigne::GlobalVector& u) const {assert(0);}
+  virtual void Pi(GlobalVector& u) const {assert(0);}
 };
+}
 
 #endif

@@ -7,6 +7,8 @@
 
 /*------------------------------------------------------*/
 
+namespace Gascoigne
+{
 class Hang : public fixarray<3,int>
 {
  public:
@@ -27,5 +29,6 @@ class Hang : public fixarray<3,int>
   friend std::ostream& operator<<(std::ostream &s, const Hang& A);
   friend std::istream& operator>>(std::istream &s, Hang& A);
 };
+}
 
 #endif

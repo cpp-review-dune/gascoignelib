@@ -6,11 +6,12 @@
 
 
 using namespace std;
-using namespace Gascoigne;
 
 /*-----------------------------------------*/
 
-MalteAdaptor::MalteAdaptor(const ParamFile* pf, const dvector& _eta) :
+namespace Gascoigne
+{
+MalteAdaptor::MalteAdaptor(const ParamFile* pf, const DoubleVector& _eta) :
   eta(_eta)
 {
   int idim = 0;
@@ -71,16 +72,16 @@ double MalteAdaptor::Expectation(double thetax, double thetay, double x, double 
 
 /*-----------------------------------------*/
 
-void MalteAdaptor::refine(nvector<int>& ref) const
+void MalteAdaptor::refine(IntVector& ref) const
 {
   if (etasum==0) return;
 
   int n = eta.size();
 
-  nvector<int> C(n); 
+  IntVector C(n); 
   iota(C.begin(),C.end(),0);
 
-  typedef CompareObjectBigToSmall<nvector<double> >  CoC;
+  typedef CompareObjectBigToSmall<DoubleVector >  CoC;
 
   sort(C.begin(),C.end(),CoC(eta));
   
@@ -92,12 +93,12 @@ void MalteAdaptor::refine(nvector<int>& ref) const
   int ixmin = 0;
   int ixopt = ixmin;
 
-  int limit = GascoigneMath::min_int(n,(maxnodes-N)/(1+ppp));
+  int limit = Gascoigne::min_int(n,(maxnodes-N)/(1+ppp));
   
   for (int i=ixmin; i<limit; i++)
     {
       double x = float(i)*dx;
-      x = GascoigneMath::min(x,1.);
+      x = Gascoigne::min(x,1.);
       theta += eta[C[i]];
       double psi = Expectation(theta,x);
       if (psi<=minimum)
@@ -114,16 +115,16 @@ void MalteAdaptor::refine(nvector<int>& ref) const
 
 /*-----------------------------------------*/
 
-void MalteAdaptor::coarse(nvector<int>& coars) const
+void MalteAdaptor::coarse(IntVector& coars) const
 {
   coars.resize(0);
   if (etasum==0) return;
 
   int n = eta.size();
-  nvector<int> C(n); 
+  IntVector C(n); 
   iota(C.begin(),C.end(),0);
 
-  typedef CompareObjectBigToSmall<nvector<double> >  CoC;
+  typedef CompareObjectBigToSmall<DoubleVector >  CoC;
 
   sort(C.begin(),C.end(),CoC(eta));
   
@@ -136,16 +137,16 @@ void MalteAdaptor::coarse(nvector<int>& coars) const
 
 /*-----------------------------------------*/
 
-void MalteAdaptor::refine_and_coarse(nvector<int>& ref, nvector<int>& coars) const
+void MalteAdaptor::refine_and_coarse(IntVector& ref, IntVector& coars) const
 {
   if (etasum==0) return;
 
   int n = eta.size();
 
-  nvector<int> C(n); 
+  IntVector C(n); 
   iota(C.begin(),C.end(),0);
 
-  typedef CompareObjectBigToSmall<nvector<double> >  CoC;
+  typedef CompareObjectBigToSmall<DoubleVector >  CoC;
 
   sort(C.begin(),C.end(),CoC(eta));
   
@@ -155,7 +156,7 @@ void MalteAdaptor::refine_and_coarse(nvector<int>& ref, nvector<int>& coars) con
   int ixopt = ixmin;
   double fac = 0.5;
 
-  nvector<double>  g(n,0.);
+  DoubleVector  g(n,0.);
   g[0] = eta[C[0]];
   for (int i=1; i<n; i++)
     {
@@ -169,13 +170,13 @@ void MalteAdaptor::refine_and_coarse(nvector<int>& ref, nvector<int>& coars) con
       double x = float(ix)*dx;
       double y = float(zeta)/(1-zeta) * (maxnodes*fac-n-ix*(zeta-1)) / n;
       
-      y = GascoigneMath::min(y,1.);
-      y = GascoigneMath::max(y,0.);
+      y = Gascoigne::min(y,1.);
+      y = Gascoigne::max(y,0.);
       
       int iy = static_cast<int>(y * n);
       
       double thetax = g[ix];
-      double thetay = g[GascoigneMath::min_int(n-iy,n-1)];
+      double thetay = g[Gascoigne::min_int(n-iy,n-1)];
       double psi = Expectation(thetax,thetay,x,y);
       
       if (psi<=minimum)
@@ -195,7 +196,7 @@ void MalteAdaptor::refine_and_coarse(nvector<int>& ref, nvector<int>& coars) con
 
 /*-----------------------------------------*/
 
-void MalteAdaptor::refine(nvector<int>& ref, nvector<int>& coars) const
+void MalteAdaptor::refine(IntVector& ref, IntVector& coars) const
 {
   coars.resize(0);
   ref  .resize(0);
@@ -212,6 +213,7 @@ void MalteAdaptor::refine(nvector<int>& ref, nvector<int>& coars) const
       return;
     }
   refine_and_coarse(ref,coars);
+}
 }
 
 /*-----------------------------------------*/

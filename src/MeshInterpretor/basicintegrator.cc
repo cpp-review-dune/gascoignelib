@@ -2,10 +2,11 @@
 
 
 using namespace std;
-using namespace Gascoigne;
 
 /*---------------------------------------------------------*/
 
+namespace Gascoigne
+{
 BasicIntegrator::BasicIntegrator() : IntegratorInterface() 
 {
 }
@@ -54,4 +55,5 @@ void BasicIntegrator::universal_point(FemFunction& UH, const LocalVector& U, con
 	  UH[c].add(U(i,c),NN[i]);
 	}
     }
+}
 }

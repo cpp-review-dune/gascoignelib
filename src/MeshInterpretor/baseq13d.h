@@ -17,16 +17,17 @@
 
 /**************************************************/
 
+namespace Gascoigne
+{
 class BaseQ13d : public Base3d
 {
  protected:
 
   typedef  std::pair<int,int> pint;
-  typedef  nvector<double>    Vector;
 
   fixarray<2,double>          a,b;
 
-  mutable nvector<double> dxy, dxz, dyz, dxyz;
+  mutable DoubleVector dxy, dxz, dyz, dxyz;
 
   void BasicInit()
     {
@@ -61,6 +62,7 @@ class BaseQ13d : public Base3d
 
   void point(const Vertex3d& s) const;
 };
+}
 
 #undef NDOF
 #undef NDOF1d

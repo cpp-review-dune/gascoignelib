@@ -2,14 +2,17 @@
 #define __base2d_h
 
 #include  "base.h"
+#include  "gascoigne.h"
 
 /**************************************************/
 
+namespace Gascoigne
+{
 class Base2d : public Base
 {
  protected:
 
-  mutable nvector<double>             N;
+  mutable DoubleVector                N;
   mutable std::vector<Vertex2d>       DN;
 
   mutable Vertex2d  bn, bt;
@@ -50,5 +53,6 @@ class Base2d : public Base
     }
   
 };
+}
 
 #endif

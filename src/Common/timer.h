@@ -5,11 +5,14 @@
 #include  <iostream>
 
 #include  "stopwatch.h"
+#include  "gascoigne.h"
 #include  <string>
 #include  <cassert>
 
 /*-----------------------------------------*/
 
+namespace Gascoigne
+{
 class Timer
 {
 protected:
@@ -96,7 +99,7 @@ public:
     }
   friend std::ostream& operator<<(std::ostream& os, const Timer& T);
 };
-
+}
 
 
 #endif

@@ -14,10 +14,11 @@
 
 
 using namespace std;
-using namespace Gascoigne;
 
 /*---------------------------------------------------*/
 
+namespace Gascoigne
+{
 FaceManager::FaceManager(vector<Edge>& e, vector<Hex>& q, 
 			 const IntVector& con, IntVector& eon) :
   edges(e), hexs(q), co2n(con), eo2n(eon), HexLaO(q) {}
@@ -559,4 +560,5 @@ void FaceManager::SwappedFaces()
 	    }
 	}
     }
+}
 }

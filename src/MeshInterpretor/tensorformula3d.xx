@@ -2,6 +2,8 @@
 
 /*------------------------------------------------------------*/
 
+namespace Gascoigne
+{
 template<int N, class Line>
 TensorFormula3d<N,Line>::TensorFormula3d<N,Line>() 
   : IntegrationFormula3d(N*N*N)
@@ -23,6 +25,7 @@ TensorFormula3d<N,Line>::TensorFormula3d<N,Line>()
 	    }
 	}
     }
+}
 }
 
 /*------------------------------------------------------------*/

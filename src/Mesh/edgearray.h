@@ -6,6 +6,8 @@
 
 /*-----------------------------------------*/
 
+namespace Gascoigne
+{
 template<int N>
 class EdgeArray : public fixarray<N,int>
 {
@@ -39,6 +41,7 @@ class EdgeArrayCompare
     return !(EA1==EA2);
   }
 };
+}
 
 /*------------------------------------------------------*/
 

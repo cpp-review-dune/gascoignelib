@@ -13,6 +13,8 @@
 
 
 
+namespace Gascoigne
+{
 class SparseStructureInterface
 {
 private:
@@ -32,6 +34,6 @@ public:
   virtual ~SparseStructureInterface() {}
 
 };
-
+}
 
 #endif

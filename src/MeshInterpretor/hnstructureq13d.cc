@@ -3,10 +3,11 @@
 
 
 using namespace std;
-using namespace Gascoigne;
 
 /*-----------------------------------------*/
 
+namespace Gascoigne
+{
 HNStructureQ13d::HNStructureQ13d() : HNStructureQ12d(), faces(NULL)
 {}
 
@@ -160,7 +161,7 @@ fixarray<2,int> HNStructureQ13d::GetHangingEdge(int i) const
 
 /*----------------------------------------------*/
 
-void HNStructureQ13d::CondenseHanging(nvector<int>& indices) const
+void HNStructureQ13d::CondenseHanging(IntVector& indices) const
 {
   CondenseHanging2er(indices);
   CondenseHanging4er(indices);
@@ -168,7 +169,7 @@ void HNStructureQ13d::CondenseHanging(nvector<int>& indices) const
 
 /*----------------------------------------------*/
 
-void HNStructureQ13d::CondenseHanging(EntryMatrix& E, nvector<int>& indices) const
+void HNStructureQ13d::CondenseHanging(EntryMatrix& E, IntVector& indices) const
 {
   CondenseHanging2er(E,indices);
   CondenseHanging4er(E,indices);
@@ -176,9 +177,9 @@ void HNStructureQ13d::CondenseHanging(EntryMatrix& E, nvector<int>& indices) con
 
 /*----------------------------------------------*/
 
-void HNStructureQ13d::CondenseHanging4er(EntryMatrix& E, nvector<int>& indices) const
+void HNStructureQ13d::CondenseHanging4er(EntryMatrix& E, IntVector& indices) const
 {
-  nvector<int> x(0), y(0);
+  IntVector x(0), y(0);
 
   for(int ii=0; ii<8; ii++)
     {
@@ -233,7 +234,7 @@ void HNStructureQ13d::CondenseHanging4er(EntryMatrix& E, nvector<int>& indices) 
 
 /*----------------------------------------------*/
 
-void HNStructureQ13d::Couplings(nvector<int>& indices) const
+void HNStructureQ13d::Couplings(IntVector& indices) const
 {
   // fuer Structure (nicht bigstencil)
   //
@@ -242,8 +243,8 @@ void HNStructureQ13d::Couplings(nvector<int>& indices) const
   int linecount = 0;
   int quadcount = 0;
 
-  nvector<int>::const_iterator p0 = indices.begin();
-  nvector<int>::const_iterator p1 = indices.end();
+  IntVector::const_iterator p0 = indices.begin();
+  IntVector::const_iterator p1 = indices.end();
 
   for(int i=0; i<8; i++)
     {
@@ -261,7 +262,7 @@ void HNStructureQ13d::Couplings(nvector<int>& indices) const
 	  // entweder gibt es newindex schon oder muss hinzugefuegt werden
 	  //
 	  int newindex = line[k];
-	  nvector<int>::const_iterator p = find(p0,p1,newindex);
+	  IntVector::const_iterator p = find(p0,p1,newindex);
 	  if (p==p1)
 	    {
 	      ind = newindex;
@@ -284,7 +285,7 @@ void HNStructureQ13d::Couplings(nvector<int>& indices) const
       for(int k=0; k<4; k++) 
 	{
 	  int newindex = face[k];
-	  nvector<int>::const_iterator p = find(p0,p1,newindex);
+	  IntVector::const_iterator p = find(p0,p1,newindex);
 	  if (p==p1)
 	    {
 	      ind = newindex;
@@ -299,9 +300,9 @@ void HNStructureQ13d::Couplings(nvector<int>& indices) const
 
 /*----------------------------------------------*/
 
-void HNStructureQ13d::CondenseHanging2er(EntryMatrix& E, nvector<int>& indices) const
+void HNStructureQ13d::CondenseHanging2er(EntryMatrix& E, IntVector& indices) const
 {
-  nvector<int> x(0), y(0);
+  IntVector x(0), y(0);
 
   for(int ii=0; ii<8; ii++)
     {
@@ -344,7 +345,7 @@ void HNStructureQ13d::CondenseHanging2er(EntryMatrix& E, nvector<int>& indices) 
 
 /*----------------------------------------------*/
 
-void HNStructureQ13d::CondenseHanging2er(nvector<int>& indices) const
+void HNStructureQ13d::CondenseHanging2er(IntVector& indices) const
 {
   for(int ii=0; ii<8; ii++)
     {
@@ -373,7 +374,7 @@ void HNStructureQ13d::CondenseHanging2er(nvector<int>& indices) const
 
 /*----------------------------------------------*/
 
-void HNStructureQ13d::CondenseHanging4er(nvector<int>& indices) const
+void HNStructureQ13d::CondenseHanging4er(IntVector& indices) const
 {
   for(int ii=0; ii<8; ii++)
     {
@@ -401,6 +402,7 @@ void HNStructureQ13d::CondenseHanging4er(nvector<int>& indices) const
 	    }
 	}
     }
+}
 }
 
 /*----------------------------------------------*/

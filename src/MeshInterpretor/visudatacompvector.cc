@@ -1,10 +1,11 @@
 #include  "visudatacompvector.h"
 
 using namespace std;
-using namespace Gascoigne;
 
 /*---------------------------------------------------*/
 
+namespace Gascoigne
+{
 VisuDataCompVector::VisuDataCompVector()  
   : VisuData(), _v(NULL)
 {
@@ -45,4 +46,5 @@ int    VisuDataCompVector::visun()        const
 double VisuDataCompVector::visudata(int i, int c) const 
 {
   return (*_v)(i,c);
+}
 }

@@ -16,7 +16,7 @@ public:
   LocalSolver() : StdSolver() {};
   ~LocalSolver() {}
 
-  double Integral(const Gascoigne::GlobalVector& u) const
+  double Integral(const GlobalVector& u) const
     {
       HNAverage(u);
       assert(GetMeshInterpretor()->HNZeroCheck(u)==0);
@@ -66,7 +66,7 @@ int main(int argc, char** argv)
   MeshAgent M;
   M.BasicInit(&paramfile);
 
-  Gascoigne::GlobalVector u(1);
+  GlobalVector u(1);
 
   for (int iter=1; iter<=niter; iter++)
     {

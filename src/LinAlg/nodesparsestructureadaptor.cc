@@ -4,6 +4,8 @@ using namespace std;
 
 /*-----------------------------------------*/
 
+namespace Gascoigne
+{
 void NodeSparseStructureAdaptor::FillStencil(ColumnDiagStencil& S) const
 {
   S.start(0) = 0;
@@ -33,12 +35,13 @@ void NodeSparseStructureAdaptor::FillStencil(ColumnDiagStencil& S) const
 
 /*-----------------------------------------*/
 
-nvector<int> NodeSparseStructureAdaptor::GetIndicesDirichlet(int inode, const vector<int>& cv) const
+IntVector NodeSparseStructureAdaptor::GetIndicesDirichlet(int inode, const vector<int>& cv) const
 {
-  nvector<int> indices(cv.size());
+  IntVector indices(cv.size());
   for(int ic=0;ic<cv.size();ic++)
     {
       indices[ic] = index(inode,cv[ic]);
     }
   return indices;
+}
 }

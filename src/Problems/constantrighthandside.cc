@@ -4,6 +4,8 @@ using namespace std;
 
 /*-----------------------------------------*/
 
+namespace Gascoigne
+{
 ConstantRightHandSideData::ConstantRightHandSideData
 (const vector<string>& args) 
   : RightHandSideData()
@@ -33,4 +35,5 @@ double ConstantRightHandSideData::operator()(int c, const Vertex3d& v)const
 {
   if(c==comp) return d;
   return 0.;
+}
 }

@@ -13,6 +13,8 @@
 
 
 
+namespace Gascoigne
+{
 class Data
 {
 public:
@@ -31,6 +33,6 @@ public:
 
   virtual std::string GetName() const=0;
 };
-
+}
 
 #endif

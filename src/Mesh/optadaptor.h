@@ -1,11 +1,13 @@
 #ifndef __optadaptor_h
 #define __optadaptor_h
 
-#include "nvector.h"
+#include "gascoigne.h"
 #include "adaptordata.h"
 
 /*********************************************************************/
 
+namespace Gascoigne
+{
 class OptAdaptor
 {
  protected:
@@ -16,19 +18,20 @@ class OptAdaptor
   double co, dd, pp, factor;
 
   AdaptorData&             info;
-  const nvector<double>&   vol;
-        nvector<double>&   eta;
+  const DoubleVector&   vol;
+        DoubleVector&   eta;
 
   void prepare();
 
 public:
 
-  OptAdaptor  (AdaptorData&, nvector<double>&, const nvector<double>&);
+  OptAdaptor  (AdaptorData&, DoubleVector&, const DoubleVector&);
 
-  void refine (nvector<int>&);
-  void coarse (nvector<int>&);
-  void RefineGnuplot (nvector<int>&);
+  void refine (IntVector&);
+  void coarse (IntVector&);
+  void RefineGnuplot (IntVector&);
 };
+}
 
 /*********************************************************************/
 

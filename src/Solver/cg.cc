@@ -3,4 +3,7 @@
 
 /********************************************************************/
 
+namespace Gascoigne
+{
 // template CG<SolverInterface,StdMultiLevelSolver,NewMultiLevelGhostVector>;
+}

@@ -8,24 +8,24 @@
 /*-----------------------------------------*/
 
 
+namespace Gascoigne
+{
 class VisuDataNVector : public VisuData
 {
 protected:
 
-  typedef  nvector<double>  Vector;
-
-  const Vector* vp;
+  const DoubleVector* vp;
 
 public:
 
 
-  VisuDataNVector(const Vector& v) : vp(&v) {} 
+  VisuDataNVector(const DoubleVector& v) : vp(&v) {} 
 
   int    visucomp()     const {return 1;}
   int    visun()        const {return vp->size();}
   double visudata(int i,int c) const { return (*vp)[i];}
 
 };
-
+}
 
 #endif

@@ -5,6 +5,8 @@ using namespace std;
 
 /*-------------------------------------------------------------------------*/
 
+namespace Gascoigne
+{
 VisuDataInfo& VisuDataInfo::operator=(const VisuDataInfo& V)
 {
   scalars = V.Scalars();
@@ -41,4 +43,5 @@ void VisuDataInfo::AddScalars(int ncomp, string def)
       compose_name_without_dot(name,c);
       AddScalar(name,c);
     }
+}
 }

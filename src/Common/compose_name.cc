@@ -3,6 +3,8 @@
 
 using namespace std;
 
+namespace Gascoigne
+{
 void compose_name(string& s, int i)
 {
   char cname[100];
@@ -46,4 +48,5 @@ void compose_name_without_dot(string& s, int i)
   char cname[30];
   sprintf(cname,"%s%03d",s.c_str(),i);
   s = cname;  
+}
 }

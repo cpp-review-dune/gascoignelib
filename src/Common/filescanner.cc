@@ -4,8 +4,10 @@
 #include  "stlio.h"
 
 using namespace std;
-using namespace Gascoigne;
 
+namespace Gascoigne
+{
+  
 /***************************************************/
 
 FileScanner::FileScanner(DataFormatHandler& D) : DH(D)
@@ -263,4 +265,5 @@ void FileScanner::print(const string& blockname) const
   cout << "=====================" << endl;
   cout << blocksymbol << " " << blockname << endl << endl;
   DH.print(cout);
+}
 }

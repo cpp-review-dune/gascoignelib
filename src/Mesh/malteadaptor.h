@@ -1,7 +1,7 @@
 #ifndef  __MalteAdaptor_h
 #define  __MalteAdaptor_h
 
-#include  "nvector.h"
+#include  "gascoigne.h"
 #include  "adaptordata.h"
 #include  "paramfile.h"
 
@@ -18,28 +18,28 @@
 /// theta(x) = int_0^x eta(t)dt
 //
 
+namespace Gascoigne
+{
 class MalteAdaptor
 {
 protected:
 
-  typedef nvector<double>  dvector;
-  typedef nvector<int>     ivector;
-
-  const  nvector<double>&   eta;
+  const  DoubleVector&   eta;
   int    ppp, coarsening, refining, maxnodes, N;
   double etasum, gamma, alpha, beta, yfactor;
 
   double Expectation(double theta, double x) const;
   double Expectation(double thetax, double thetay, double x, double y) const;
   double ExpectationCoarsening(double theta, double x) const;
-  void   refine_and_coarse(ivector& ref, ivector& coarse) const;
+  void   refine_and_coarse(IntVector& ref, IntVector& coarse) const;
 
 public:
 
-  MalteAdaptor(const Gascoigne::ParamFile* pf, const dvector& eta);
-  void coarse(nvector<int>& coarse) const;
-  void refine(nvector<int>& ref) const;
-  void refine(ivector& ref, ivector& coarse) const;
+  MalteAdaptor(const ParamFile* pf, const DoubleVector& eta);
+  void coarse(IntVector& coarse) const;
+  void refine(IntVector& ref) const;
+  void refine(IntVector& ref, IntVector& coarse) const;
 };
+}
 
 #endif

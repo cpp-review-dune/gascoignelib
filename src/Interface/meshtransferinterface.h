@@ -13,6 +13,8 @@
 
 
 
+namespace Gascoigne
+{
 class MeshTransferInterface
 {
 private:
@@ -32,6 +34,6 @@ public:
   virtual ~MeshTransferInterface() {}
 
 };
-
+}
 
 #endif

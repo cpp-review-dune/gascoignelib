@@ -6,6 +6,8 @@ using namespace std;
 
 /********************************************************************/
 
+namespace Gascoigne
+{
 void Visualization::gmv(const string& bname) const
 {
   string name = bname;
@@ -39,4 +41,5 @@ void Visualization::gmv(const string& bname) const
   file << "endgmv" << endl;
   file.close();
  if (showoutput) cout << "[" << name << "]\n";
+}
 }

@@ -4,6 +4,8 @@ using namespace std;
 
 /*-------------------------------------------------------------*/
   
+namespace Gascoigne
+{
 void TwinStencil::diagonalfirst()
 {
   // has to be called if later on an ilu factorization is performed
@@ -56,4 +58,5 @@ void TwinStencil::memory(const SparseStructureInterface* SA)
 {
   ColumnStencil::memory(SA);
   diagonalfirst();
+}
 }

@@ -13,6 +13,8 @@
 
 
 
+namespace Gascoigne
+{
 class StencilInterface
 {
 private:
@@ -31,5 +33,6 @@ public:
   StencilInterface() {}
   virtual ~StencilInterface() {}
 };
+}
 
 #endif

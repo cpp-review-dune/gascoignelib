@@ -2,6 +2,8 @@
 
 /*--------------------------------------------------------------*/
 
+namespace Gascoigne
+{
 GlsStabilization::GlsStabilization() : Stabilization()
 {
   _delta = _tau = 0.;
@@ -37,4 +39,5 @@ void GlsStabilization::ConvectionDiffusion(double visc)
       val  += _dtfactor/dt;
     }
   _sdelta[0] = sdelta0 / val;
+}
 }

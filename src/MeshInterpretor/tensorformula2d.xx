@@ -2,6 +2,8 @@
 
 /*------------------------------------------------------------*/
 
+namespace Gascoigne
+{
 template<int N, class LineFormula>
 TensorFormula2d<N,LineFormula>::TensorFormula2d<N,LineFormula>() 
   : IntegrationFormula2d(N*N)
@@ -21,4 +23,5 @@ TensorFormula2d<N,LineFormula>::TensorFormula2d<N,LineFormula>()
 	  w(i) = L.w(ix)*L.w(iy);
 	}
     }
+}
 }

@@ -12,6 +12,8 @@
 
 /*-----------------------------------------------------------*/
 
+namespace Gascoigne
+{
 template<int N, int E>
 class Cell :  public fixarray<N,int>   /* das sind die vertex-no. */
 {
@@ -20,7 +22,7 @@ class Cell :  public fixarray<N,int>   /* das sind die vertex-no. */
   /* Data */
 
   int              qlevel, qfather;
-  Gascoigne::IntVector         qchilds;
+  IntVector         qchilds;
   fixarray<E,int>  qedges;            /* edge numbers */
 
  public:
@@ -81,8 +83,8 @@ class Cell :  public fixarray<N,int>   /* das sind die vertex-no. */
   int   edge  (int i) const { return qedges[i];}          
   int&  edge  (int i)       { return qedges[i];}          
 
-  const Gascoigne::IntVector&  childs()       const { return qchilds;}          
-        Gascoigne::IntVector&  childs()             { return qchilds;}          
+  const IntVector&  childs()       const { return qchilds;}          
+        IntVector&  childs()             { return qchilds;}          
   const fixarray<N,int>& vertex() const { return (*this);}
         fixarray<N,int>& vertex()       { return (*this);}
   const fixarray<E,int>& edges()  const { return qedges;}
@@ -148,6 +150,7 @@ inline int Cell<N,E>::global2local(int gi) const
       if (vertex(i)==gi) return i;
     }
   return -1;
+}
 }
 
 /*---------------------------------------------------*/

@@ -8,6 +8,8 @@
 
 /*--------------------------------------------------------------*/
 
+namespace Gascoigne
+{
 class LevelMesh3d : public Index
 {
  protected:
@@ -18,9 +20,9 @@ class LevelMesh3d : public Index
   const HierarchicalMesh3d* HMP;
 
   void check_leveljump() const;
-  void fill_opis(Gascoigne::IntSet& dst, Gascoigne::IntSet& oldquads) const;
-  void fill_enkel(Gascoigne::IntSet& dst, const Hex& Q) const;
-  void fill_childs(Gascoigne::IntSet& dst, const Hex& Q) const;
+  void fill_opis(IntSet& dst, IntSet& oldquads) const;
+  void fill_enkel(IntSet& dst, const Hex& Q) const;
+  void fill_childs(IntSet& dst, const Hex& Q) const;
   bool EnkelUniform(const Hex& Q) const;
   bool BuildFathers(std::set<int>&  Vaeter) const;
   int  hexindex  (int i) const { return Index::Hexl2g(i);}
@@ -46,19 +48,20 @@ class LevelMesh3d : public Index
 
   const Hex&   hex  (int i) const { return HMP->hex(hexindex(i));}
 
-  void BasicInit(const Gascoigne::IntSet& n, const Gascoigne::IntSet& o);
+  void BasicInit(const IntSet& n, const IntSet& o);
 
   /*----- Functions fuer Patch-----*/
 
-  void construct_lists(Gascoigne::IntSet& newquads, Gascoigne::IntSet& oldquads) const;
+  void construct_lists(IntSet& newquads, IntSet& oldquads) const;
 
   void ConstructHangingStructureQuadratic(QuadraticHNStructure3& hnq2,
 					  QuadraticHNStructure9& hnq2face) const;
 
   void InitBoundaryHandler(BoundaryIndexHandler& BI) const;
-  bool ConstructCellIndOfPatch(nvector<int>& dstc) const;
-  void ConstructIndOfPatch(nvector<Gascoigne::IntVector>& dstv) const;
+  bool ConstructCellIndOfPatch(IntVector& dstc) const;
+  void ConstructIndOfPatch(nvector<IntVector>& dstv) const;
 };
+}
 
 /*---------------------------------------------------*/
 

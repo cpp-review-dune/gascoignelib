@@ -10,6 +10,8 @@ using namespace std;
 
 /* ----------------------------------------- */
 
+namespace Gascoigne
+{
 PointIlu::PointIlu(int ncomp, string type) : SimpleIlu(), IluInterface(), _ncomp(ncomp)  
 {
   if(type=="node")
@@ -44,7 +46,7 @@ void PointIlu::ReInit(const SparseStructureInterface* S)
 
 /* ----------------------------------------- */
 
-void PointIlu::ConstructStructure(const nvector<int>& perm, const MatrixInterface& A)
+void PointIlu::ConstructStructure(const IntVector& perm, const MatrixInterface& A)
 {
   assert(p.size()==perm.size());
   assert(q.size()==perm.size());
@@ -67,9 +69,9 @@ void PointIlu::ConstructStructure(const nvector<int>& perm, const MatrixInterfac
   int zmax = 1;
   for(int i=0;i<n;i++)
     {
-      zmax = max(zmax,AS->rowsize(i));
+      zmax = Gascoigne::max_int(zmax,AS->rowsize(i));
     }
-  nvector<int> ppi(zmax), picol(zmax);
+  IntVector ppi(zmax), picol(zmax);
 
   ST.start(0) = 0;
   for(int i=0;i<n;i++)
@@ -84,7 +86,7 @@ void PointIlu::ConstructStructure(const nvector<int>& perm, const MatrixInterfac
 	  picol[count++] = q[AS->col(pos)];
 	}
       iota(ppi.begin(),ppi.begin()+ni,0);
-      sort(ppi.begin(),ppi.begin()+ni,CompareLess<nvector<int> >(picol));
+      sort(ppi.begin(),ppi.begin()+ni,CompareLess<IntVector >(picol));
 
       for(int ii=0;ii<ni;ii++)
 	{
@@ -117,4 +119,5 @@ void PointIlu::modify(int c, double s)
 	  value[ST.diag(i)] += s*sum;
 	}
     }
+}
 }

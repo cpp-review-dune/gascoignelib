@@ -6,6 +6,8 @@ using namespace std;
 /* ============== VecDirection =================================== */
 /* =============================================================== */
 
+namespace Gascoigne
+{
 VecDirection::VecDirection (const MeshInterface* m)
 {
   M=m;
@@ -14,7 +16,7 @@ VecDirection::VecDirection (const MeshInterface* m)
 
 /* --------------------------------------------------------------- */
 
-void VecDirection::Permutate (nvector<int> &perm)
+void VecDirection::Permutate (IntVector &perm)
 {
   assert(dimension==M->dimension());
   stable_sort(perm.begin(),perm.end(), *this);
@@ -22,7 +24,7 @@ void VecDirection::Permutate (nvector<int> &perm)
 
 /* --------------------------------------------------------------- */
 
-void VecDirection::Permutate (nvector<int> &perm,nvector<double> v)
+void VecDirection::Permutate (IntVector &perm,DoubleVector v)
 {
   if (v.size()==0) 
     {
@@ -66,7 +68,7 @@ bool VecDirection::operator()(int i,int j) const
 
 StreamDirection::StreamDirection (const MeshInterface* m,
 				  const StencilInterface *s,
-				  const CompVector<double>& x):
+				  const GlobalVector& x):
   X(x)
 {
   M=m;
@@ -78,7 +80,7 @@ StreamDirection::StreamDirection (const MeshInterface* m,
 
 /* --------------------------------------------------------------- */
 
-void StreamDirection::Permutate    (nvector<int> &perm)
+void StreamDirection::Permutate    (IntVector &perm)
 {
   assert(dimension==M->dimension());
   assert(perm.size()==M->nnodes());
@@ -91,8 +93,8 @@ void StreamDirection::Permutate    (nvector<int> &perm)
   Vertex3d h3;
 				   // Zu allen Knoten den Nachfolger
 				   // und Vorgaenger finden.
-  nvector<int> next(n,-1);
-  nvector<int> prev(n,-1);
+  IntVector next(n,-1);
+  IntVector prev(n,-1);
 				   // Matrixzeilen durchlaufen
   for (int row=0;row<n;++row)
     {
@@ -164,7 +166,7 @@ void StreamDirection::Permutate    (nvector<int> &perm)
 
 /* --------------------------------------------------------------- */
 
-void StreamDirection::Permutate    (nvector<int> &perm,const nvector<int> d)
+void StreamDirection::Permutate    (IntVector &perm,const IntVector d)
 {
   dimension=d.size();
   assert(dimension>1);
@@ -224,4 +226,4 @@ double StreamDirection::est(int i,int j) const
       return sc/n;
     }
 }
-
+}

@@ -16,6 +16,8 @@
 
 /*-----------------------------------------------------*/
 
+namespace Gascoigne
+{
 template<int DIM, int BDIM, class TRAFO, class BASE>
 class FiniteElement : public FemInterface
 {
@@ -50,8 +52,9 @@ class FiniteElement : public FemInterface
   /// depreciated
   void ReInit(const Matrix& M) const { T.ReInit(M); }
 
-  void  init_test_functions(Gascoigne::TestFunction& Phi, double w, int i) const;
+  void  init_test_functions(TestFunction& Phi, double w, int i) const;
 };
+}
 
 /*-----------------------------------------------------*/
 

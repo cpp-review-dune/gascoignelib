@@ -1,10 +1,11 @@
 #include  "stokesgls3d.h"
 #include  "filescanner.h"
 
-using namespace Gascoigne;
 
 /*-----------------------------------------*/
 
+namespace Gascoigne
+{
 StokesGls3d::~StokesGls3d()
 {
 }
@@ -36,7 +37,7 @@ void StokesGls3d::glspoint(double h, const FemFunction& U, const Vertex3d& v)con
 
 /*-----------------------------------------*/
 
-void StokesGls3d::L(nvector<double>& dst, const FemFunction& U) const
+void StokesGls3d::L(DoubleVector& dst, const FemFunction& U) const
 {
   dst[0] = Divergence(U);
   dst[1] = U[0].x();
@@ -63,6 +64,7 @@ void StokesGls3d::LMatrix(nmatrix<double>& A, const FemFunction& U, const TestFu
   A(1,0) = N.x();
   A(2,0) = N.y();
   A(3,0) = N.z();
+}
 }
 
 /*-----------------------------------------*/

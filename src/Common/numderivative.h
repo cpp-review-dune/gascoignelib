@@ -1,6 +1,8 @@
 #ifndef __numderivative_h
 #define __numderivative_h
 
+namespace Gascoigne
+{
 template <class C, class MAT, class VEC>
 void numderivative(C& application, MAT& M, const VEC& x, double eps=1.e-4)
 {
@@ -26,6 +28,7 @@ void numderivative(C& application, MAT& M, const VEC& x, double eps=1.e-4)
       //xp[i] -= eps;
       xp[i] /= 1.+eps;
     }
+}
 }
 
 #endif

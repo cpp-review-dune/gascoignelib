@@ -7,11 +7,11 @@
 /*-----------------------------------------*/
 
 
+namespace Gascoigne
+{
 class NonlinearFunction
 {
 protected:
-
-  typedef  nvector<double>           Vector;
 
 public:
 
@@ -20,5 +20,6 @@ public:
   virtual double operator()(const Vertex2d& v, const FemFunction& U) const=0;
   virtual double operator()(const Vertex3d& v, const FemFunction& U) const {};
 };
+}
 
 #endif

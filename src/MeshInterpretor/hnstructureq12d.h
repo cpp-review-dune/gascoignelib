@@ -5,12 +5,14 @@
 
 /*-----------------------------------------*/
 
+namespace Gascoigne
+{
 class HNStructureQ12d : public HNStructureQ1
 {
 protected:
 
   const std::map<int,EdgeVector>*        edges;
-  nvector<double>                        wei;
+  DoubleVector                        wei;
   fixarray<4,fixarray<3,int> >           lnoe, lnop;
 
   double weight(int i) const { return wei[i];}
@@ -26,14 +28,15 @@ public:
   void ReInit(const MeshInterface* m);
   
   void MatrixDiag(int ncomp, MatrixInterface& A) const;
-  void Average(Gascoigne::GlobalVector& u) const;
-  void Distribute(Gascoigne::GlobalVector& u) const;
-  void Zero(Gascoigne::GlobalVector& u) const;
-  bool ZeroCheck(const Gascoigne::GlobalVector& u) const;
+  void Average(GlobalVector& u) const;
+  void Distribute(GlobalVector& u) const;
+  void Zero(GlobalVector& u) const;
+  bool ZeroCheck(const GlobalVector& u) const;
   
-  void CondenseHanging(nvector<int>& indices) const;
-  void CondenseHanging(EntryMatrix& E, nvector<int>& indices) const;
-  void CondenseHangingPatch(EntryMatrix& E, nvector<int>& indices) const;
+  void CondenseHanging(IntVector& indices) const;
+  void CondenseHanging(EntryMatrix& E, IntVector& indices) const;
+  void CondenseHangingPatch(EntryMatrix& E, IntVector& indices) const;
 };
+}
 
 #endif

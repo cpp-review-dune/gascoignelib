@@ -3,6 +3,8 @@
 
 /*---------------------------------------------------*/
 
+namespace Gascoigne
+{
 class HangEdgeSort{
 protected:
   const EdgeManager& HR;
@@ -26,5 +28,6 @@ public:
       return !HR.EdgeIsHanging(i) && HR.EdgeIsHanging(j);
     }
 };
+}
 
 #endif

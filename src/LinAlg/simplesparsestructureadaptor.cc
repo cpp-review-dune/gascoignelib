@@ -2,6 +2,8 @@
 
 /*-----------------------------------------*/
 
+namespace Gascoigne
+{
 void SimpleSparseStructureAdaptor::FillStencil(ColumnDiagStencil& S) const
 {
   S.start(0) = 0;
@@ -18,4 +20,5 @@ void SimpleSparseStructureAdaptor::FillStencil(ColumnDiagStencil& S) const
 	  S.col(first+id++) = *p;
 	}
     }
+}
 }

@@ -5,6 +5,8 @@
 
 /*------------------------------------------------------------*/
 
+namespace Gascoigne
+{
 typedef IntegrationFormulaBase<1>  IntegrationFormula1d;
 typedef IntegrationFormulaBase<2>  IntegrationFormula2d;
 typedef IntegrationFormulaBase<3>  IntegrationFormula3d;
@@ -110,6 +112,7 @@ typedef TensorFormula3d<2,LineTrapez> HexTrapez;
 typedef TensorFormula3d<2,LineGauss2> HexGauss8; 
 typedef TensorFormula3d<3,LineGauss3> HexGauss27; 
 typedef TensorFormula3d<4,LineGauss4> HexGauss64; 
+}
 
 /*------------------------------------------------------------*/
 

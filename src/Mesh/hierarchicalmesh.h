@@ -16,6 +16,8 @@
 
 /*---------------------------------------------------*/
 
+namespace Gascoigne
+{
 class HierarchicalMesh : public MeshInterface
 {
  protected :
@@ -27,24 +29,24 @@ class HierarchicalMesh : public MeshInterface
   typedef  fixarray<2,int>                    EdgeVector;
   typedef  fixarray<4,int>                    FaceVector;
   typedef  std::vector<Edge>                  EdgeVec;
-  typedef  Gascoigne::IntSet::iterator        IntSetIt;   
-  typedef  Gascoigne::IntSet::const_iterator  IntSetCIt;
+  typedef  IntSet::iterator        IntSetIt;   
+  typedef  IntSet::const_iterator  IntSetCIt;
  
   /*  Data  */
 
   int       mnlevels, pdepth, etapatcher;
-  Gascoigne::IntVector    vo2n, eo2n, co2n;
+  IntVector    vo2n, eo2n, co2n;
   EdgeVec   edges;
   
-  void  update_edges(Gascoigne::IntVector&);
+  void  update_edges(IntVector&);
   virtual int   FindPatchDepth() const=0;
-  virtual void  FillVertexLevels(Gascoigne::IntVector& dst) const=0;
-  virtual void  RefineCoarseNodes(Gascoigne::IntSet& dst, const Gascoigne::IntVector& refnodes,
-				  const Gascoigne::IntVector& vertexlevel) const=0;
-  virtual void  VertexToCells(Gascoigne::IntVector& dst, const Gascoigne::IntSet& src, 
-			      const Gascoigne::IntVector& vertexlevel) const=0;
-  virtual void VertexToCellsCoarsening(Gascoigne::IntVector& dst, const Gascoigne::IntSet& src, 
-			       const Gascoigne::IntVector& vertexlevel) const=0;
+  virtual void  FillVertexLevels(IntVector& dst) const=0;
+  virtual void  RefineCoarseNodes(IntSet& dst, const IntVector& refnodes,
+				  const IntVector& vertexlevel) const=0;
+  virtual void  VertexToCells(IntVector& dst, const IntSet& src, 
+			      const IntVector& vertexlevel) const=0;
+  virtual void VertexToCellsCoarsening(IntVector& dst, const IntSet& src, 
+			       const IntVector& vertexlevel) const=0;
 
   public:
 
@@ -62,9 +64,9 @@ class HierarchicalMesh : public MeshInterface
   int  nlevels()                const { return 1+mnlevels;}
   int  nedges ()                const { return edges.size();}
 
-  const Gascoigne::IntVector*  Vertexo2n()    const { return &vo2n;}
-  const Gascoigne::IntVector*  Edgeo2n  ()    const { return &eo2n;}
-  const Gascoigne::IntVector*  Cello2n  ()    const { return &co2n;}
+  const IntVector*  Vertexo2n()    const { return &vo2n;}
+  const IntVector*  Edgeo2n  ()    const { return &eo2n;}
+  const IntVector*  Cello2n  ()    const { return &co2n;}
 
   int Vertexo2n(int i)          const { assert(i<vo2n.size());return vo2n[i];}
   int Edgeo2n  (int i)          const { assert(i<eo2n.size());return eo2n[i];}
@@ -78,16 +80,16 @@ class HierarchicalMesh : public MeshInterface
 
   virtual int    Vater(const int i) const
     {assert(0); return 0;}
-  virtual Gascoigne::IntVector Nachkommen(const int i) const
-    {assert(0); return Gascoigne::IntVector();}
-  virtual Gascoigne::IntVector Geschwister(const int i) const
-    {assert (0); return Gascoigne::IntVector();}
-  virtual Gascoigne::IntVector Kinder(const int i) const
-    {assert(0); return Gascoigne::IntVector();}
+  virtual IntVector Nachkommen(const int i) const
+    {assert(0); return IntVector();}
+  virtual IntVector Geschwister(const int i) const
+    {assert (0); return IntVector();}
+  virtual IntVector Kinder(const int i) const
+    {assert(0); return IntVector();}
     
   void SetParameters(std::string gridname, int patchdepth, int epatcher);
   void ReadFile(const std::string& gridname);
-  void ReadParameters(const Gascoigne::ParamFile* pf);
+  void ReadParameters(const ParamFile* pf);
   void global_refine  (int k);
   void random_refine  (double, int k=1);
   void random_patch_refine  (double, int k=1);
@@ -99,7 +101,7 @@ class HierarchicalMesh : public MeshInterface
   virtual int ncells ()         const =0;
   int patchdepth()              const {return pdepth;}
   virtual int nactivedescendants(int i)      const=0;
-  virtual Gascoigne::IntVector GetVertices(int c) const=0;
+  virtual IntVector GetVertices(int c) const=0;
   
   bool CellIsCurved(int iq) const  { return GetBoundaryCellOfCurved(iq)!=-1;}
 
@@ -107,13 +109,13 @@ class HierarchicalMesh : public MeshInterface
 
   virtual void read_inp (const std::string&)=0;
   virtual void read_gup (const std::string&)=0;
-  virtual void refine(const Gascoigne::IntVector&, const Gascoigne::IntVector&)=0;
-  virtual void patch_refine(Gascoigne::IntVector&, Gascoigne::IntVector&)=0;
-  virtual void vertex_patch_refine(Gascoigne::IntVector& ref, Gascoigne::IntVector& coarse);
-  virtual void vertex_patch_refine(Gascoigne::IntVector&);
+  virtual void refine(const IntVector&, const IntVector&)=0;
+  virtual void patch_refine(IntVector&, IntVector&)=0;
+  virtual void vertex_patch_refine(IntVector& ref, IntVector& coarse);
+  virtual void vertex_patch_refine(IntVector&);
   virtual void GetAwakePatchs(std::set<int>&) const =0;
   virtual void GetAwakeCells(std::set<int>&) const =0;
-  virtual void ConstructQ2PatchMesh(Gascoigne::IntVector& pm) const=0;
+  virtual void ConstructQ2PatchMesh(IntVector& pm) const=0;
   virtual std::set<int> CellNeighbours(int i) const 
     { std::cerr << "no CellNeighbours"; abort(); return std::set<int>();}
 
@@ -122,6 +124,7 @@ class HierarchicalMesh : public MeshInterface
   virtual void AddShape(int col, BoundaryFunction<2>* f) {assert(0);}
   virtual void AddShape(int col, BoundaryFunction<3>* f) {assert(0);}
 };
+}
 
 /*---------------------------------------------------*/
 

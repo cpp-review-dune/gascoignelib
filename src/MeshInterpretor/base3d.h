@@ -2,14 +2,17 @@
 #define __base3d_h
 
 #include  "base.h"
+#include  "gascoigne.h"
 
 /**************************************************/
 
+namespace Gascoigne
+{
 class Base3d : public Base
 {
  protected:
 
-  mutable nvector<double>             N;
+  mutable DoubleVector             N;
   mutable std::vector<Vertex3d>       DN;
   mutable fixarray<2,int>             face;
   mutable Vertex3d  bn, bt;
@@ -63,5 +66,6 @@ class Base3d : public Base
       point(s);
     }
 };
+}
 
 #endif

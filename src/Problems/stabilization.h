@@ -5,6 +5,8 @@
 
 /*-------------------------------------------*/
 
+namespace Gascoigne
+{
 class Stabilization
 {
  protected:
@@ -47,5 +49,6 @@ class Stabilization
       _alpha = alpha0 / denom;
     }
 };
+}
 
 #endif

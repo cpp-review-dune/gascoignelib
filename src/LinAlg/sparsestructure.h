@@ -1,7 +1,6 @@
 #ifndef __sparsestructure_h
 #define __sparsestructure_h
 
-#include  <set>
 #include  <vector>
 #include  "columnstencil.h"
 #include  "nvector.h"
@@ -9,11 +8,13 @@
 
 /*------------------------------------------------------------------------*/
 
+namespace Gascoigne
+{
 class SparseStructure : public SparseStructureInterface
 {
   protected:
 
-    typedef  std::set<int>     Row;
+    typedef  IntSet            Row;
     typedef  std::vector<Row>  Indices;    
 
     int       sntot;
@@ -44,22 +45,22 @@ class SparseStructure : public SparseStructureInterface
 	assert((i>=0)&&(i<sindices.size()));
 	return  sindices[i];
       }
-    std::set<int>::iterator            rowbegin(int i)
+    IntSet::iterator            rowbegin(int i)
       {
 	assert((i>=0)&&(i<sindices.size()));
 	return  row(i).begin();
       }
-    std::set<int>::iterator            rowend(int i)
+    IntSet::iterator            rowend(int i)
       {
 	assert((i>=0)&&(i<sindices.size()));
 	return  row(i).end();
       }
-    std::set<int>::const_iterator      rowbegin(int i)  const
+    IntSet::const_iterator      rowbegin(int i)  const
       {
 	assert((i>=0)&&(i<sindices.size()));
 	return  row(i).begin();
       }
-    std::set<int>::const_iterator      rowend(int i)    const
+    IntSet::const_iterator      rowend(int i)    const
       {
 	assert((i>=0)&&(i<sindices.size()));
 	return  row(i).end();
@@ -103,7 +104,8 @@ class SparseStructure : public SparseStructureInterface
   
     void  enlarge(const SparseStructure&);
     void  enlarge_lu();
-    void  enlarge_for_lu(const nvector<int>& perm);
+    void  enlarge_for_lu(const IntVector& perm);
 };
+}
 
 #endif

@@ -15,6 +15,8 @@
 
 /*-----------------------------------------*/
 
+namespace Gascoigne
+{
 template<int DIM>
 class GalerkinGlsIntegrator : public GalerkinIntegrator<DIM>
 {
@@ -30,9 +32,10 @@ class GalerkinGlsIntegrator : public GalerkinIntegrator<DIM>
 
   std::string GetName() const {return "GalerkinGlsIntegrator";}
 
-  void Form(const Equation& EQ, Gascoigne::LocalVector& F, const FemInterface& FEM, const Gascoigne::LocalVector&U, const Gascoigne::LocalNodeData& Q) const;
-  void Matrix(const Equation& EQ, EntryMatrix& E, const FemInterface& FEM, const Gascoigne::LocalVector& U, const Gascoigne::LocalNodeData& Q) const;
+  void Form(const Equation& EQ, LocalVector& F, const FemInterface& FEM, const LocalVector&U, const LocalNodeData& Q) const;
+  void Matrix(const Equation& EQ, EntryMatrix& E, const FemInterface& FEM, const LocalVector& U, const LocalNodeData& Q) const;
 };
+}
 
 /*-----------------------------------------*/
 

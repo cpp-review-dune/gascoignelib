@@ -7,10 +7,11 @@
 
 
 using namespace std;
-using namespace Gascoigne;
 
 /*****************************************************************/
 
+namespace Gascoigne
+{
 Monitor::Monitor() : prec(6)
 {
   aos = "Gascoigne";
@@ -201,7 +202,7 @@ void Monitor::mesh(int nc, int nl)
 
 /*******************************************************************/
 
-void Monitor::post_nonlinear(const dvector& Ju, double eta, int ncells,
+void Monitor::post_nonlinear(const DoubleVector& Ju, double eta, int ncells,
 			     int cg, int dcg)
 {
   sprintf (message,"cg dnl: %d %d",cg,dcg);
@@ -327,7 +328,7 @@ void Monitor::PrintResults(double d) const
 
 /*******************************************************************/
 
-void Monitor::PrintResults(const ivector& iv) const
+void Monitor::PrintResults(const IntVector& iv) const
 {
   ofstream   file(texfile.c_str(),ios::app);
   if(!file)  error_io(texfile);
@@ -337,7 +338,7 @@ void Monitor::PrintResults(const ivector& iv) const
 
 /*******************************************************************/
 
-void Monitor::PrintResults(const dvector& dv) const
+void Monitor::PrintResults(const DoubleVector& dv) const
 {
   ofstream   file(texfile.c_str(),ios::app);
   if(!file)  error_io(texfile);
@@ -370,7 +371,7 @@ void Monitor::PrintHeader(ostream& os) const
 /*******************************************************************/
 
 void Monitor::PrintAscii
-(ostream& os, const ivector& iv) const
+(ostream& os, const IntVector& iv) const
 {
   os.precision(prec);
   os << iv;
@@ -379,7 +380,7 @@ void Monitor::PrintAscii
 /*******************************************************************/
 
 void Monitor::PrintAscii
-(ostream& os, const dvector& dv) const
+(ostream& os, const DoubleVector& dv) const
 {
   os.precision(prec);
   os.setf(ios::scientific,ios::floatfield);
@@ -392,4 +393,5 @@ void Monitor::PrintAscii
 (ostream& os, const string& s) const
 {
   os << s;
+}
 }

@@ -4,10 +4,11 @@
 
 
 using namespace std;
-using namespace Gascoigne;
 
 /*---------------------------------------------------*/
 
+namespace Gascoigne
+{
 template<class C>
 void delete_cells(const IntSet& coarselist, 
 		  vector<C>& liste, 
@@ -58,4 +59,4 @@ template void delete_cells<Hex>(const IntSet&, vector<Hex>&,
 
 template void delete_cells<BoundaryCell<4> >(const IntSet&, vector<BoundaryCell<4> >&, 
 				const vector<int>&, const vector<int>&);
-				
+}				

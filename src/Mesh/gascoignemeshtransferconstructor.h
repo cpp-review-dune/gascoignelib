@@ -7,6 +7,8 @@
 
 /*-----------------------------------------*/
 
+namespace Gascoigne
+{
 class GascoigneMeshTransferConstructor2d
 {
 public:
@@ -24,6 +26,7 @@ public:
   GascoigneMeshTransferConstructor3d(const HierarchicalMesh3d* HM, GascoigneMeshTransfer* GMT, 
 				     const LevelMesh3d* LMfine, const LevelMesh3d* LMcoarse);
 };
+}
 
 /*-----------------------------------------*/
 

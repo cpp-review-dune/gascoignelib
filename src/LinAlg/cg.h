@@ -9,6 +9,8 @@
 // P = Preconditioner
 // V = Vector
 
+namespace Gascoigne
+{
 template <class S, class P, class V>
 class CG
 {
@@ -21,6 +23,7 @@ public:
 
   void solve(V& x, const V& b, CGInfo& info);
 };
+}
 
 /********************************************************************/
 

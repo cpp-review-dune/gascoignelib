@@ -5,14 +5,16 @@
 
 /*---------------------------------------------------*/
 
+namespace Gascoigne
+{
 class LevelComparer2d
 {
   const HierarchicalMesh2d&   Mesh;
-  const nvector<int>& v;
+  const IntVector& v;
 
   public:
   
-  LevelComparer2d(const HierarchicalMesh2d& HM, const nvector<int>& vv) : 
+  LevelComparer2d(const HierarchicalMesh2d& HM, const IntVector& vv) : 
     Mesh(HM), v(vv) {};
 
   int size() const { return v.size(); }
@@ -21,6 +23,7 @@ class LevelComparer2d
       return Mesh.quad(v[i]).level();
     }
 };
+}
 
 /*---------------------------------------------------*/
 

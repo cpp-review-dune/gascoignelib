@@ -8,12 +8,14 @@
 
 /*-------------------------------------------------------------------------*/
 
+namespace Gascoigne
+{
 class VisuEPS
 {
   protected:  
 
   typedef std::pair<int,int> Line;
-  typedef nvector<std::set<int> > Lines;
+  typedef nvector<IntSet> Lines;
 
   const PatchMesh* M;
 
@@ -65,5 +67,6 @@ class VisuEPS
     M = PMP;}
   void WriteGrid(std::string fname, int iter);
 };
+}
 
 #endif

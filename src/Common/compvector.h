@@ -7,6 +7,8 @@
 
 /*------------------------------------------------------*/
 
+namespace Gascoigne
+{
 template<class T>
 class CompVector : public nvector<T>
 {
@@ -211,7 +213,7 @@ class CompVector : public nvector<T>
       
       while( first < last)
 	{
-	  d = GascoigneMath::max( d, fabs(*first));
+	  d = Gascoigne::max( d, fabs(*first));
 	  first += N;
 	}
       return d;
@@ -224,7 +226,7 @@ class CompVector : public nvector<T>
       
       while( first < last)
 	{
-	  d = GascoigneMath::min( d, *first);
+	  d = Gascoigne::min( d, *first);
 	  first += N;
 	}
       return d;
@@ -237,7 +239,7 @@ class CompVector : public nvector<T>
       
       while( first < last)
 	{
-	  d = GascoigneMath::max( d, *first);
+	  d = Gascoigne::max( d, *first);
 	  first += N;
 	}
       return d;
@@ -250,7 +252,7 @@ class CompVector : public nvector<T>
       
       while( first < last)
 	{
-	  (*first) = GascoigneMath::max(val,(*first));
+	  (*first) = Gascoigne::max(val,(*first));
 	  first += N;
 	}
     }
@@ -414,5 +416,6 @@ class CompVector : public nvector<T>
       in >> cc;
     }
 };
+}
 
 #endif

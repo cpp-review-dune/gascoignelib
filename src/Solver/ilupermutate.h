@@ -5,22 +5,24 @@
 #include  "compvector.h"
 #include  "columnstencil.h"
 
+namespace Gascoigne
+{
 class StreamDirection 
 {
     int      dimension;
     int      dx,dy,dz;
     const MeshInterface* M;
     const ColumnStencil* S;
-    const CompVector<double>&  X;
+    const GlobalVector&  X;
 
-    void Permutate    (nvector<int> &perm);
+    void Permutate    (IntVector &perm);
     
     
   public:
     StreamDirection (const MeshInterface* m, const StencilInterface *s,
-		     const CompVector<double>& x);
+		     const GlobalVector& x);
     
-    void Permutate    (nvector<int> &perm,const nvector<int> d);
+    void Permutate    (IntVector &perm,const IntVector d);
     
     bool operator() (int i,int j) const;
     double est      (int i,int j) const;
@@ -33,15 +35,16 @@ class VecDirection
     int      dimension;
     const MeshInterface* M;
 
-    void Permutate    (nvector<int> &perm);
+    void Permutate    (IntVector &perm);
     
   public:
     VecDirection (const MeshInterface* m);
 
-    void Permutate    (nvector<int> &perm,nvector<double> v);
+    void Permutate    (IntVector &perm,DoubleVector v);
 
     bool operator()(int i,int j) const;
 };
+}
 
 #endif
 

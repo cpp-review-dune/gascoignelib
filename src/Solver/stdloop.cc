@@ -9,10 +9,11 @@
 #include  "stdsolver.h"
 
 using namespace std;
-using namespace Gascoigne;
 
 /*-----------------------------------------*/
 
+namespace Gascoigne
+{
 StdLoop::StdLoop() : BasicLoop()//, _paramfile(NULL)
 {
   _estimator = _extrapolate = "none";
@@ -57,10 +58,10 @@ void StdLoop::BasicInit(const ParamFile* paramfile)
 
 /*-------------------------------------------------------*/
 
-nvector<double> StdLoop::ComputeFunctionals(MultiLevelGhostVector& f, MultiLevelGhostVector& u, const vector<const Functional*>& J) const
+DoubleVector StdLoop::ComputeFunctionals(MultiLevelGhostVector& f, MultiLevelGhostVector& u, const vector<const Functional*>& J) const
 {
   int n = J.size(); 
-  nvector<double> j(n,0.);
+  DoubleVector j(n,0.);
   if (n==0) return j;
 
   cout << "\nFunctionals: ";
@@ -75,7 +76,7 @@ nvector<double> StdLoop::ComputeFunctionals(MultiLevelGhostVector& f, MultiLevel
 
 /*-----------------------------------------*/
 
-void StdLoop::EtaVisu(string name, int i, const nvector<double>& eta) const
+void StdLoop::EtaVisu(string name, int i, const DoubleVector& eta) const
 {
   Visualization Visu;
   Visu.format("vtk");
@@ -92,10 +93,10 @@ void StdLoop::EtaVisu(string name, int i, const nvector<double>& eta) const
 
 /*-------------------------------------------------*/
 
-nvector<double> StdLoop::GetExactValues() const
+DoubleVector StdLoop::GetExactValues() const
 {
   int n = _FV.size(); 
-  nvector<double> j(n,0.);
+  DoubleVector j(n,0.);
   for(int i=0; i<n; i++)
     {
       j[i] = _FV[i]->ExactValue();
@@ -105,9 +106,9 @@ nvector<double> StdLoop::GetExactValues() const
 
 /*-------------------------------------------------*/
 
-nvector<double> StdLoop::Functionals(MultiLevelGhostVector& u, MultiLevelGhostVector& f)
+DoubleVector StdLoop::Functionals(MultiLevelGhostVector& u, MultiLevelGhostVector& f)
 {
-  nvector<double> J  = ComputeFunctionals(f,u,_FV);
+  DoubleVector J  = ComputeFunctionals(f,u,_FV);
   _JErr.resize(J.size());
   if (J.size())
     {
@@ -136,7 +137,7 @@ nvector<double> StdLoop::Functionals(MultiLevelGhostVector& u, MultiLevelGhostVe
 
 /*-------------------------------------------------*/
 
-double StdLoop::Estimator(nvector<double>& eta, MultiLevelGhostVector& u, MultiLevelGhostVector& f)
+double StdLoop::Estimator(DoubleVector& eta, MultiLevelGhostVector& u, MultiLevelGhostVector& f)
 {
   double est = 0.;
   if (_estimator=="energy")
@@ -161,7 +162,7 @@ double StdLoop::Estimator(nvector<double>& eta, MultiLevelGhostVector& u, MultiL
 
 /*-------------------------------------------------*/
 
-void StdLoop::AdaptMesh(const nvector<double>& eta)
+void StdLoop::AdaptMesh(const DoubleVector& eta)
 {
   if     (_refiner=="global") GetMeshAgent()->global_refine(1);
   else if(_refiner=="random") 
@@ -172,7 +173,7 @@ void StdLoop::AdaptMesh(const nvector<double>& eta)
     }
   else if(_refiner=="eta") 
     {
-      nvector<int> refnodes, coarsenodes;
+      IntVector refnodes, coarsenodes;
 
       MalteAdaptor A(_paramfile,eta);
       A.refine(refnodes,coarsenodes);
@@ -181,7 +182,7 @@ void StdLoop::AdaptMesh(const nvector<double>& eta)
     }
   else if(_refiner=="dip") 
     {
-      nvector<int> refnodes, coarsenodes;
+      IntVector refnodes, coarsenodes;
 
       AdaptorData info;
       info.rfactor() = 1.; 
@@ -231,10 +232,10 @@ void StdLoop::run(const ProblemDescriptorInterface* PD)
       ComputeGlobalErrors(u);
       
       _clock_functionals.start();
-      nvector<double> juh = Functionals(u,f);
+      DoubleVector juh = Functionals(u,f);
       _clock_functionals.stop();
 
-      nvector<double> eta;
+      DoubleVector eta;
 
       _clock_estimate.start();
       if (_estimator!="none")
@@ -250,6 +251,7 @@ void StdLoop::run(const ProblemDescriptorInterface* PD)
 	}
       _clock_estimate.stop();
      }
+}
 }
 
 /*-------------------------------------------------*/

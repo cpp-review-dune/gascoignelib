@@ -22,12 +22,14 @@
 
 /**************************************************/
 
+namespace Gascoigne
+{
 class BaseQ12d : public Base2d
 {
  protected:
 
   fixarray<2,double>          a,b;
-  mutable nvector<double> dxy;
+  mutable DoubleVector dxy;
 
   void BasicInit();
 
@@ -50,6 +52,7 @@ class BaseQ12d : public Base2d
   double phi_xy(int i) const {assert(0); return dxy[i];}
   const Vertex2d &  phi_grad (int i) const {return DN [i];}
 };
+}
 
 #undef NDOF
 #undef NDOF1d

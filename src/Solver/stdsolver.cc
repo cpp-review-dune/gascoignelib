@@ -25,10 +25,11 @@
 #include  "glsequation.h"
 
 using namespace std;
-using namespace Gascoigne;
 
 /*-----------------------------------------*/
 
+namespace Gascoigne
+{
 StdSolver::StdSolver() : 
   _MP(NULL), _MAP(NULL), _MIP(NULL), _PDX(NULL), _PrimalSolve(1),
   omega_domain(0.), _mylevel(-1), _directsolver(0), _ZP(NULL), _paramfile(NULL), _HM(NULL)
@@ -224,7 +225,7 @@ void StdSolver::ReInitVector()
       if(p->second==NULL) 
 	{
 	  //int n = GetMeshInterpretor()->n();
-	  p->second = new CompVector<double>;
+	  p->second = new GlobalVector;
 	  p->second->ncomp() = ncomp;
 	}
       ResizeVector(p->second,gv.GetType());
@@ -248,7 +249,7 @@ double StdSolver::NewtonNorm(const BasicGhostVector& u) const
 
 /*-----------------------------------------*/
 
-void StdSolver::ResizeVector(CompVector<double>* x, string type) const
+void StdSolver::ResizeVector(GlobalVector* x, string type) const
 {
   int n = GetMeshInterpretor()->n();
 //   cerr << "StdSolver::ResizeVector() n="<<n<<endl; 
@@ -513,7 +514,7 @@ void StdSolver::BoundaryInit(BasicGhostVector& Gu)  const
   
   int color = 0;
   int ncomp = GetProblemDescriptor()->GetEquation()->ncomp();
-  nvector<double> y(ncomp);
+  DoubleVector y(ncomp);
   
   int dim = GetMesh()->dimension();
   for (int ind=0; ind<GetMesh()->nnodes(); ind++)
@@ -778,9 +779,9 @@ void StdSolver::modify_ilu(IluInterface& I,int ncomp) const
 
 /* -------------------------------------------------------*/
 
-void StdSolver::PermutateIlu(const CompVector<double>& u) const
+void StdSolver::PermutateIlu(const GlobalVector& u) const
 {
-  nvector<int> perm(GetMesh()->nnodes());
+  IntVector perm(GetMesh()->nnodes());
   
   iota(perm.begin(),perm.end(),0);
   
@@ -846,7 +847,7 @@ void StdSolver::VisuGrid(const string& name, int i) const
 
 /*-----------------------------------------*/
 
-double StdSolver::EnergyEstimator(nvector<double>& eta, const BasicGhostVector& gu, BasicGhostVector& gf) const
+double StdSolver::EnergyEstimator(DoubleVector& eta, const BasicGhostVector& gu, BasicGhostVector& gf) const
 {
   const GlobalVector& u = GetGV(gu);
 
@@ -927,12 +928,12 @@ void StdSolver::ConstructInterpolator(MgInterpolatorInterface* I, const MeshTran
 
 /* -------------------------------------------------------*/
 
-nvector<double> StdSolver::IntegrateSolutionVector(const GlobalVector& u) const
+DoubleVector StdSolver::IntegrateSolutionVector(const GlobalVector& u) const
 {
   HNAverage(u);
   //assert(GetMeshInterpretor()->HNZeroCheck(u)==0);
 
-  nvector<double> dst = PF.IntegrateVector(u);
+  DoubleVector dst = PF.IntegrateVector(u);
   HNZero(u);
   return dst;
 }
@@ -964,4 +965,5 @@ void StdSolver::SubtractMeanAlgebraic(GlobalVector& x) const
 {
   if (PF.Active())
     PF.SubtractMeanAlgebraic(x);
+}
 }

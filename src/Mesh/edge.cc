@@ -4,6 +4,8 @@ using namespace std;
 
 /*---------------------------------------------------*/
 
+namespace Gascoigne
+{
 Edge& Edge::operator=(const Edge& e)
 {
   c1 = e.master();
@@ -68,6 +70,7 @@ istream& operator>>(istream &s, Edge& A)
   s >> A.master() >> A.LocalMasterIndex() >> A.slave() >> A.LocalSlaveIndex();
 
   return s;
+}
 }
 
 /*---------------------------------------------------*/

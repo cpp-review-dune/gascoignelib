@@ -3,10 +3,11 @@
 
 
 using namespace std;
-using namespace Gascoigne;
 
 /*-----------------------------------------*/
 
+namespace Gascoigne
+{
 NavierStokesGls3d::~NavierStokesGls3d() {}
 
 /*-----------------------------------------*/
@@ -57,7 +58,7 @@ void NavierStokesGls3d::glspoint
   
 /*-----------------------------------------*/
 
-void NavierStokesGls3d::L(nvector<double>& dst, const FemFunction& U) const
+void NavierStokesGls3d::L(DoubleVector& dst, const FemFunction& U) const
 {
   dst[0] = Divergence(U);
   dst[1] = Convection(U,U[1]) + U[0].x();
@@ -109,6 +110,7 @@ void NavierStokesGls3d::LMatrix(nmatrix<double>& A,
   A(2,3) =      U[2].z()*N.m();
   A(3,1) =      U[3].x()*N.m();
   A(3,2) =      U[3].y()*N.m();
+}
 }
 
 /*-----------------------------------------*/

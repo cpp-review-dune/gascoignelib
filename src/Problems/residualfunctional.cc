@@ -6,6 +6,8 @@ using namespace std;
 
 /*-----------------------------------------*/
 
+namespace Gascoigne
+{
 ResidualFunctional::ResidualFunctional() : _DD(NULL) { _scale = 0.;}
 
 /*-----------------------------------------*/
@@ -35,4 +37,5 @@ void ResidualFunctional::Construct(const vector<string>& args)
       _col.insert(color);
     }
   _DD  = new DirichletDataByColor(GetComp(),GetColors(),GetScale());
+}
 }

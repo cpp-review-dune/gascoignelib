@@ -3,10 +3,11 @@
 
 
 using namespace std;
-using namespace Gascoigne;
 
 /*--------------------------------------------------------*/
 
+namespace Gascoigne
+{
 void MgInterpolatorNested::BasicInit(const MeshTransferInterface* MT)
 {
   const GascoigneMeshTransfer* GT = dynamic_cast<const GascoigneMeshTransfer*>(MT);
@@ -114,4 +115,5 @@ void MgInterpolatorNested::Pi(GlobalVector& u) const
     u.add_node(il,-0.25,c2f[n4[3]],u);
   }
   for(int i=0;i<c2f.size();i++)  u.node_zero(c2f[i]);
+}
 }

@@ -6,10 +6,11 @@
 
 
 using namespace std;
-using namespace Gascoigne;
 
 /*---------------------------------------------------*/
 
+namespace Gascoigne
+{
 LevelMesh3d::LevelMesh3d(const HierarchicalMesh* hmp) : 
   Index()   
 {
@@ -179,7 +180,7 @@ void LevelMesh3d::ConstructIndOfPatch(nvector<IntVector>& dst) const
 
 /*---------------------------------------------------*/
 
-bool LevelMesh3d::ConstructCellIndOfPatch(nvector<int>& dst) const
+bool LevelMesh3d::ConstructCellIndOfPatch(IntVector& dst) const
 {
   set<int>  Vaeter;
   BuildFathers(Vaeter);
@@ -558,4 +559,5 @@ void LevelMesh3d::InitBoundaryHandler(BoundaryIndexHandler& BI) const
       BI.GetCell ().insert(make_pair(color,v1));
       BI.GetLocal().insert(make_pair(color,v2));
     }
+}
 }

@@ -4,10 +4,11 @@
 
 
 using namespace std;
-using namespace Gascoigne;
 
 /*-------------------------------------------------------*/
 
+namespace Gascoigne
+{
 BoundaryManager::BoundaryManager(const ParamFile* pf)
 {
   DataFormatHandler DF;
@@ -38,4 +39,5 @@ ostream& BoundaryManager::print(ostream& s) const
   s << "colneu:\t" << colneu << endl;
   s << "dirvec:\t" << dirvec << endl;
   return s;
+}
 }

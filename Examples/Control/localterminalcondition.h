@@ -16,7 +16,7 @@
 #include  "initialcondition.h"
 #include  "localequation.h"
 
-class LocalTerminalCondition : public InitialCondition
+class LocalTerminalCondition : public Gascoigne::InitialCondition
 {
 public:
 
@@ -39,7 +39,7 @@ public:
   int GetNcomp() const {return 1;}  
 
   void SetFemData(Gascoigne::FemData& Q) const;
-  double operator()(int c, const Vertex2d& v) const;
+  double operator()(int c, const Gascoigne::Vertex2d& v) const;
 };
 
 

@@ -5,6 +5,8 @@ using namespace std;
 
 /* ----------------------------------------- */
 
+namespace Gascoigne
+{
 void Visualization::_vtk_pointdata(ofstream& out) const
 {
  if (PointData)
@@ -191,4 +193,5 @@ void Visualization::vtk(const string& bname) const
   _vtk_celldata(out);
  
  out.close();
+}
 }

@@ -14,6 +14,8 @@
 #include  <string>
 #include  <iostream>
 
+namespace Gascoigne
+{
 class BasicGhostVector : public std::string
 {
 private:
@@ -53,6 +55,6 @@ public:
   }
 
 };
-
+}
 
 #endif

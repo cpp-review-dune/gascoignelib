@@ -1,10 +1,11 @@
 #include "edgeinfocontainer.h"
 
 using namespace std;
-using namespace Gascoigne;
 
 /**********************************************************/
 
+namespace Gascoigne
+{
 template<int DIM>
 EdgeInfoContainer<DIM>::~EdgeInfoContainer<DIM>()
 {
@@ -166,3 +167,4 @@ void EdgeInfoContainer<DIM>::ShowStatistics() const
 
 template class EdgeInfoContainer<2>;
 template class EdgeInfoContainer<3>;
+}

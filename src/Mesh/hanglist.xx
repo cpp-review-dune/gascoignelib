@@ -2,6 +2,8 @@
 
 /*********************************************************************/
 
+namespace Gascoigne
+{
 template<int N>
 HangList<N>& HangList<N>::operator=(const HangList<N>& A)
 {
@@ -101,4 +103,5 @@ void HangList<N>::make_consistent(HangList<N>& DH)
 	}
     }
   if(n!=0)  std::cerr << "make_consistent: " << n << std::endl;
+}
 }

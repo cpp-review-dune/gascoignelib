@@ -2,10 +2,13 @@
 #define  __IntegrationFormulaBase_h
 
 #include  "integrationformulainterface.h"
+#include  "gascoigne.h"
 
 /*-----------------------------------------*/
 
 
+namespace Gascoigne
+{
 template<int DIM>
 class IntegrationFormulaBase : public IntegrationFormulaInterface
 {
@@ -14,7 +17,7 @@ private:
   typedef Vertex<DIM>   VERTEX;
 
   int                 _in;
-  nvector<double>     _iw;
+  DoubleVector     _iw;
   std::vector<VERTEX> _ic;
 
 protected:
@@ -38,7 +41,7 @@ public:
  
   int    n()                 const { return _in;}
   double w(int k)            const { return _iw[k];}
-  const nvector<double>& w() const { return _iw;}
+  const DoubleVector& w() const { return _iw;}
 
   double& w(int k) { return _iw[k];}
   VERTEX& c(int k) { return _ic[k];}
@@ -47,6 +50,6 @@ public:
   const std::vector<VERTEX>& c()  const { return _ic;}
 
 };
-
+}
 
 #endif

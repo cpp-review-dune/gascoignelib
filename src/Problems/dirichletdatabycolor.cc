@@ -1,10 +1,11 @@
 #include  "dirichletdatabycolor.h"
 
 using namespace std;
-using namespace Gascoigne;
 
 /*-----------------------------------------*/
 
+namespace Gascoigne
+{
 DirichletDataByColor::DirichletDataByColor(int c, const set<int>& cl, double s)
   : DirichletData(), comp(c), col(cl), scale(s)
 {
@@ -45,4 +46,5 @@ void DirichletDataByColor::operator()
 set<int> DirichletDataByColor::preferred_colors()const 
 {
   return col;
+}
 }

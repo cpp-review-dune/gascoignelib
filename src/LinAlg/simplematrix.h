@@ -19,12 +19,14 @@
 #include  "compvector.h"
 
 
+namespace Gascoigne
+{
 class SimpleMatrix : virtual public MatrixInterface
 {
 protected:
 
   ColumnDiagStencil  ST;
-  nvector<double> value; 
+  DoubleVector value; 
 
 public:
 
@@ -47,16 +49,16 @@ public:
     void ReInit(const SparseStructureInterface* S);
     void ReInit(int n, int nentries);
     void entry(niiterator start, niiterator stop, const EntryMatrix& M, double s=1.);
-    void vmult(nvector<double>& y, const nvector<double>& x, double d=1.) const;
-    void vmult_transpose(nvector<double>& y, const nvector<double>& x, double d=1.) const;
-    void vmult_comp(int c, int d, CompVector<double>& y, const CompVector<double>& x, double s=1.) const;
-    void vmult_comp_trans(int c, int d, CompVector<double>& y, const CompVector<double>& x, double s=1.) const;
-    void vmult_time(CompVector<double>& y, const CompVector<double>& x, const TimePattern& TP, double s=1.) const;
-    void dirichlet(const nvector<int>& indices);
+    void vmult(DoubleVector& y, const DoubleVector& x, double d=1.) const;
+    void vmult_transpose(DoubleVector& y, const DoubleVector& x, double d=1.) const;
+    void vmult_comp(int c, int d, GlobalVector& y, const GlobalVector& x, double s=1.) const;
+    void vmult_comp_trans(int c, int d, GlobalVector& y, const GlobalVector& x, double s=1.) const;
+    void vmult_time(GlobalVector& y, const GlobalVector& x, const TimePattern& TP, double s=1.) const;
+    void dirichlet(const IntVector& indices);
 
     void transpose();
     void entry_diag(int i, const nmatrix<double>& M);
 };
-
+}
 
 #endif

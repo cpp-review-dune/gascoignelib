@@ -9,6 +9,8 @@
 /*-----------------------------------------*/
 
 
+namespace Gascoigne
+{
 class MgInterpolatorNested : public virtual MgInterpolatorInterface
 {
 private:
@@ -18,7 +20,7 @@ private:
   std::map<int,fixarray<4,int> >  vierer;
   std::map<int,fixarray<8,int> >  achter;
 
-  nvector<int>                c2f;
+  IntVector                c2f;
 
 public:
 
@@ -27,12 +29,12 @@ public:
 
   void BasicInit(const MeshTransferInterface* MT);
   
-  void restrict_zero   (Gascoigne::GlobalVector&, const Gascoigne::GlobalVector&) const;
-  void prolongate_add  (Gascoigne::GlobalVector&, const Gascoigne::GlobalVector&) const;
-  void SolutionTransfer(Gascoigne::GlobalVector&, const Gascoigne::GlobalVector&) const;
-  void Pi    (Gascoigne::GlobalVector& u) const;
+  void restrict_zero   (GlobalVector&, const GlobalVector&) const;
+  void prolongate_add  (GlobalVector&, const GlobalVector&) const;
+  void SolutionTransfer(GlobalVector&, const GlobalVector&) const;
+  void Pi    (GlobalVector& u) const;
 
 };
-
+}
 
 #endif

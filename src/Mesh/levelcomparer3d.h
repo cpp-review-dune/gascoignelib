@@ -6,14 +6,16 @@
 
 /*---------------------------------------------------*/
 
+namespace Gascoigne
+{
 class LevelComparer3d
 {
   const HierarchicalMesh3d&   Mesh;
-  const Gascoigne::IntVector& v;
+  const IntVector& v;
 
   public:
   
-  LevelComparer3d(const HierarchicalMesh3d& HM, const Gascoigne::IntVector& vv) : 
+  LevelComparer3d(const HierarchicalMesh3d& HM, const IntVector& vv) : 
     Mesh(HM), v(vv) {};
 
   int size() const { return v.size(); }
@@ -22,6 +24,7 @@ class LevelComparer3d
       return Mesh.hex(v[i]).level();
     }
 };
+}
 
 /*---------------------------------------------------*/
 

@@ -6,6 +6,8 @@ using namespace std;
 
 /********************************************************************/
 
+namespace Gascoigne
+{
 void Visualization::vu(const string& bname) const
 {
   string name = bname;
@@ -68,4 +70,5 @@ void Visualization::vu(const string& bname) const
 	}
     }
   file.close();
+}
 }

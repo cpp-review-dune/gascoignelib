@@ -4,6 +4,8 @@ using namespace std;
 
 /************************************************************/
 
+namespace Gascoigne
+{
 bool PointRefiner::VertexInQuad(int i)
 {
   Vertex2d V0 = H.vertex2d(H.vertex_of_cell(i,0));
@@ -18,7 +20,7 @@ bool PointRefiner::VertexInQuad(int i)
 
   A.gauss_jordan();
 
-  nvector<double> y(2), z(2);
+  DoubleVector y(2), z(2);
   y[0] = V.x()-V0.x();
   y[1] = V.y()-V0.y();
 
@@ -150,8 +152,4 @@ void BallRefiner::BuildCellList(vector<int>& dst)
     }
   cerr << endl;
 }
-
-
-
-
-
+}

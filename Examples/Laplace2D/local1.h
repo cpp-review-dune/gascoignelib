@@ -11,28 +11,28 @@
 
 /*---------------------------------------------------*/
 
-class PolynomialExactSolution : public ExactSolution
+class PolynomialExactSolution : public Gascoigne::ExactSolution
 {
  public:
   std::string GetName() const {return "PolynomialExactSolution";}
   int GetNcomp() const { return 1; }
-  double operator()(int c, const Vertex2d& v) const{
+  double operator()(int c, const Gascoigne::Vertex2d& v) const{
     //   return v.x()*(1.-v.x())*v.y()*(1.-v.y());
     return v.x()*(1.-v.x())*v.y()*(1.-v.y()) *  (exp(v.x()+v.y()));
   }
 };
 
 // for use with slit.param !!
-class SlitExactSolution : public ExactSolution
+class SlitExactSolution : public Gascoigne::ExactSolution
 {
 public:
-  double operator()(int c, const Vertex2d& v)const 
+  double operator()(int c, const Gascoigne::Vertex2d& v)const 
   {
     double x = v.x();
     double y = v.y();
     double r = sqrt(x*x+y*y);
     
-    double pi = GascoigneMath::pi();
+    double pi = Gascoigne::pi();
     double theta;
 
     double fx = fabs(x);
@@ -54,17 +54,17 @@ public:
   }
 };
 
-class ProblemDescriptor : public ProblemDescriptorBase
+class ProblemDescriptor : public Gascoigne::ProblemDescriptorBase
 {
  public:
   
   std::string GetName() const {return "Local";}
   void BasicInit(const Gascoigne::ParamFile* pf) {
-    GetEquationPointer() = new Laplace2d;
+    GetEquationPointer() = new Gascoigne::Laplace2d;
     GetExactSolutionPointer() = new PolynomialExactSolution();
-    GetRightHandSideDataPointer() = new RightHandSideDataByEquation(GetEquation(), GetExactSolution());
-    GetDirichletDataPointer() = new DirichletDataByExactSolution(GetExactSolution());
-    GetBoundaryManagerPointer() = new BoundaryManager(pf);
+    GetRightHandSideDataPointer() = new Gascoigne::RightHandSideDataByEquation(GetEquation(), GetExactSolution());
+    GetDirichletDataPointer() = new Gascoigne::DirichletDataByExactSolution(GetExactSolution());
+    GetBoundaryManagerPointer() = new Gascoigne::BoundaryManager(pf);
     
     ProblemDescriptorBase::BasicInit(pf);
   }
@@ -72,7 +72,7 @@ class ProblemDescriptor : public ProblemDescriptorBase
 
 /*---------------------------------------------------*/
 
-class LocalDragFunctional : public virtual ResidualFunctional
+class LocalDragFunctional : public virtual Gascoigne::ResidualFunctional
 {
  public:
   LocalDragFunctional() : ResidualFunctional()
@@ -83,11 +83,11 @@ class LocalDragFunctional : public virtual ResidualFunctional
       ExactValue() = 1./8.;
       beautifulname = "LocalDrag";
 
-      _DD  = new DirichletDataByColor(GetComp(),GetColors(),GetScale());
+      _DD  = new Gascoigne::DirichletDataByColor(GetComp(),GetColors(),GetScale());
     }
 };
 
-class LocalDomainFunctional : public virtual AllDomainFunctional
+class LocalDomainFunctional : public virtual Gascoigne::AllDomainFunctional
 {
  public:
   LocalDomainFunctional() : AllDomainFunctional(1,0)

@@ -12,9 +12,12 @@
 ///
 /////////////////////////////////////////////
 
+namespace Gascoigne
+{
 class InitialCondition : public RightHandSideData
 {
 public:
 };
+}
 
 #endif

@@ -6,11 +6,12 @@
 
 
 using namespace std;
-using namespace Gascoigne;
 
 /*-----------------------------------------*/
 
-NCAdaptor::NCAdaptor(const ParamFile* paramfile, const nvector<double>& _eta) 
+namespace Gascoigne
+{
+NCAdaptor::NCAdaptor(const ParamFile* paramfile, const DoubleVector& _eta) 
   :  eta(_eta)
 {
   DataFormatHandler DH;
@@ -29,12 +30,12 @@ NCAdaptor::NCAdaptor(const ParamFile* paramfile, const nvector<double>& _eta)
 
 /*-----------------------------------------*/
 
-void NCAdaptor::refine(nvector<int>& ref, nvector<int>& coars) const
+void NCAdaptor::refine(IntVector& ref, IntVector& coars) const
 {
   int n = eta.size();
-  nvector<int> C(n); 
+  IntVector C(n); 
   iota(C.begin(),C.end(),0);
-  typedef CompareObjectBigToSmall<nvector<double> >  CoC;
+  typedef CompareObjectBigToSmall<DoubleVector >  CoC;
   sort(C.begin(),C.end(),CoC(eta));
 
   double eta_limit = _p*etasum;
@@ -49,4 +50,5 @@ void NCAdaptor::refine(nvector<int>& ref, nvector<int>& coars) const
       ref.push_back(C[i]);
       i++;
     }
+}
 }

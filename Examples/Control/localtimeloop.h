@@ -15,7 +15,7 @@
 
 
 
-class LocalTimeLoop : public StdTimeLoop
+class LocalTimeLoop : public Gascoigne::StdTimeLoop
 {
 private:
 
@@ -36,13 +36,13 @@ public:
 
   void AddNodeVector(std::string filename);
   void DeleteNodeVector();
-  void NewMesh(const ProblemDescriptorInterface* PD);
+  void NewMesh(const Gascoigne::ProblemDescriptorInterface* PD);
 
-  void ReInit(const ProblemDescriptorInterface* PD);
+  void ReInit(const Gascoigne::ProblemDescriptorInterface* PD);
 
-  void init(std::string, int, const ProblemDescriptorInterface* PD);
-  void forward(std::string iname, int first, int last, const ProblemDescriptorInterface* PD);
-  void backward(std::string iname, std::string name, int first, int last, const ProblemDescriptorInterface* PD);
+  void init(std::string, int, const Gascoigne::ProblemDescriptorInterface* PD);
+  void forward(std::string iname, int first, int last, const Gascoigne::ProblemDescriptorInterface* PD);
+  void backward(std::string iname, std::string name, int first, int last, const Gascoigne::ProblemDescriptorInterface* PD);
 
 };
 

@@ -17,6 +17,8 @@
 #include  "simplematrix.h"
 
 
+namespace Gascoigne
+{
 class UmfIlu : virtual public IluInterface, public SimpleMatrix
 {
 public:
@@ -44,11 +46,11 @@ public:
     
     void ReInit(const SparseStructureInterface* SS);
     void copy_entries(const MatrixInterface&  A);
-    void ConstructStructure(const nvector<int>& perm, const MatrixInterface& A);
+    void ConstructStructure(const IntVector& perm, const MatrixInterface& A);
     void Factorize();
-    void Solve(nvector<double>& x, const nvector<double>& b);
-    void SolveTranspose(nvector<double>& x, const nvector<double>& b);
+    void Solve(DoubleVector& x, const DoubleVector& b);
+    void SolveTranspose(DoubleVector& x, const DoubleVector& b);
 };
-
+}
 
 #endif

@@ -1,10 +1,11 @@
 #include "edgeinfo.h"
 
 using namespace std;
-using namespace Gascoigne;
 
 /**********************************************************/
 
+namespace Gascoigne
+{
 template<int DIM>
 void EdgeInfo<DIM>::BasicInit(const Edge* edge, int ncomp, const fixarray<2*DIM-2,int>& vertex)
 {
@@ -59,3 +60,4 @@ void EdgeInfo<DIM>::ShowStatistics() const
 
 template class EdgeInfo<2>;
 template class EdgeInfo<3>;
+}

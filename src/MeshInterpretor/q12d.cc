@@ -12,10 +12,11 @@
 #include  "hnstructureq12d.h"
 
 using namespace std;
-using namespace Gascoigne;
 
 /* ----------------------------------------- */
 
+namespace Gascoigne
+{
 Q12d::Q12d() : Q1()
 {
 }
@@ -66,7 +67,7 @@ void Q12d::StrongDirichletVector(GlobalVector& u, const DirichletData& BF, int c
 {
   const GascoigneMesh* GMP = dynamic_cast<const GascoigneMesh*>(GetMesh());
   assert(GMP);
-  nvector<double> ff(u.ncomp(),0.);
+  DoubleVector ff(u.ncomp(),0.);
   const IntVector& bv = *GMP->VertexOnBoundary(col);
 
   GlobalToGlobalData();
@@ -193,13 +194,13 @@ void Q12d::ConstructInterpolator(MgInterpolatorInterface* I, const MeshTransferI
   const map<int,fixarray<2,int> >& zweier = GT->GetZweier();
   const map<int,fixarray<4,int> >& vierer = GT->GetVierer();
   const map<int,fixarray<8,int> >& achter = GT->GetAchter();
-  const nvector<int>& c2f    = GT->GetC2f();
+  const IntVector& c2f    = GT->GetC2f();
 
   int n  = c2f.size() +   zweier.size() +   vierer.size() +   achter.size();
   int nt = c2f.size() + 2*zweier.size() + 4*vierer.size() + 8*achter.size();
 
   ColumnStencil& ST = IP->GetStencil();
-  nvector<double>& val = IP->GetAlpha();
+  DoubleVector& val = IP->GetAlpha();
 
   SparseStructure SS;
 
@@ -275,7 +276,7 @@ void Q12d::ConstructInterpolator(MgInterpolatorInterface* I, const MeshTransferI
 
 /* ----------------------------------------- */
 
-void Q12d::EnergyEstimator(EdgeInfoContainer<2>& EIC, nvector<double>& eta, const GlobalVector& u, const Equation& EQ, const RightHandSideData& RHS) const
+void Q12d::EnergyEstimator(EdgeInfoContainer<2>& EIC, DoubleVector& eta, const GlobalVector& u, const Equation& EQ, const RightHandSideData& RHS) const
 {
   EnergyEstimatorIntegrator<2> EEI;
   const HierarchicalMesh2d*    HM = dynamic_cast<const HierarchicalMesh2d*>(EIC.GetMesh());
@@ -294,7 +295,7 @@ void Q12d::EnergyEstimator(EdgeInfoContainer<2>& EIC, nvector<double>& eta, cons
 
 /* ----------------------------------------- */
 
-void Q12d::EnergyEstimatorZeroRhs(EdgeInfoContainer<2>& EIC, nvector<double>& eta, const GlobalVector& u, const Equation& EQ) const
+void Q12d::EnergyEstimatorZeroRhs(EdgeInfoContainer<2>& EIC, DoubleVector& eta, const GlobalVector& u, const Equation& EQ) const
 {
   EnergyEstimatorIntegrator<2> EEI;
   const HierarchicalMesh2d*    HM = dynamic_cast<const HierarchicalMesh2d*>(EIC.GetMesh());
@@ -350,7 +351,7 @@ void Q12d::EEJumps(EdgeInfoContainer<2>& EIC, const GlobalVector& u, const Energ
 
 /* ----------------------------------------- */
 
-void Q12d::EEJumpNorm(EdgeInfoContainer<2>& EIC, nvector<double>& eta, const EnergyEstimatorIntegrator<2>& EEI, const HierarchicalMesh2d* HM) const
+void Q12d::EEJumpNorm(EdgeInfoContainer<2>& EIC, DoubleVector& eta, const EnergyEstimatorIntegrator<2>& EEI, const HierarchicalMesh2d* HM) const
 {
   nmatrix<double> T;
 
@@ -380,7 +381,7 @@ void Q12d::EEJumpNorm(EdgeInfoContainer<2>& EIC, nvector<double>& eta, const Ene
 
 /* ----------------------------------------- */
 
-void Q12d::EEResidual(nvector<double>& eta, const GlobalVector& u, const Equation& EQ, const RightHandSideData& RHS, const EnergyEstimatorIntegrator<2>& EEI) const
+void Q12d::EEResidual(DoubleVector& eta, const GlobalVector& u, const Equation& EQ, const RightHandSideData& RHS, const EnergyEstimatorIntegrator<2>& EEI) const
 {
   nmatrix<double> T;
 
@@ -404,7 +405,7 @@ void Q12d::EEResidual(nvector<double>& eta, const GlobalVector& u, const Equatio
 
 /* ----------------------------------------- */
 
-void Q12d::EEResidualZeroRhs(nvector<double>& eta, const GlobalVector& u, const Equation& EQ, const EnergyEstimatorIntegrator<2>& EEI) const
+void Q12d::EEResidualZeroRhs(DoubleVector& eta, const GlobalVector& u, const Equation& EQ, const EnergyEstimatorIntegrator<2>& EEI) const
 {
   nmatrix<double> T;
 
@@ -423,4 +424,5 @@ void Q12d::EEResidualZeroRhs(nvector<double>& eta, const GlobalVector& u, const 
       eta[GetMesh()->vertex_of_cell(iq,in)] += 0.25 * sqrt(res);
     }
   }
+}
 }

@@ -15,10 +15,11 @@
 #include  "giota.h"
 
 using namespace std;
-using namespace Gascoigne;
 
 /*------------------------------------------------------*/
 
+namespace Gascoigne
+{
 HierarchicalMesh2d::HierarchicalMesh2d() 
   : HierarchicalMesh(), QuadLaO(quads) {}
 
@@ -141,15 +142,15 @@ int    HierarchicalMesh2d::Vater(const int i) const
 
 /*------------------------------------------------------*/
 
-nvector<int> HierarchicalMesh2d::Nachkommen(const int i) const
+IntVector HierarchicalMesh2d::Nachkommen(const int i) const
 {
-  nvector<int> k = Kinder(i);
+  IntVector k = Kinder(i);
   if (k.size()==0) return k;
-  nvector<int> k1;
+  IntVector k1;
   int ks=k.size();
   for (int i=0;i<ks;++i)
     {
-      nvector<int> k1 = Nachkommen(k[i]);
+      IntVector k1 = Nachkommen(k[i]);
       for (int j=0;j<k1.size();++j) k.push_back(k1[j]);
     }
   return k;
@@ -169,7 +170,7 @@ int HierarchicalMesh2d::nactivedescendants(int i)      const
 
 /*------------------------------------------------------*/
 
-nvector<int> HierarchicalMesh2d::GetVertices(int c) const
+IntVector HierarchicalMesh2d::GetVertices(int c) const
 {  
   IntVector v;
   for (int i=0;i<quads[c].nvertexs();++i)
@@ -179,7 +180,7 @@ nvector<int> HierarchicalMesh2d::GetVertices(int c) const
 
 /*------------------------------------------------------*/
 
-nvector<int> HierarchicalMesh2d::Kinder     (const int i) const
+IntVector HierarchicalMesh2d::Kinder     (const int i) const
 {
   IntVector k = quad(i).childs();
   return k;
@@ -188,7 +189,7 @@ nvector<int> HierarchicalMesh2d::Kinder     (const int i) const
 /*------------------------------------------------------*/
 
 
-nvector<int> HierarchicalMesh2d::Geschwister(const int i) const
+IntVector HierarchicalMesh2d::Geschwister(const int i) const
 {
   const Quad& q = quad(i);
   int father = q.father();
@@ -251,7 +252,7 @@ void HierarchicalMesh2d::ghostglobalcoarse(HangContainer2d& hangset,
   Set2Vec(coarse,cellcoarse);
   LevelComparer2d  lc(*this,coarse);
   
-  nvector<int> BTS(lc.size()); iota(BTS.begin(),BTS.end(),0);
+  IntVector BTS(lc.size()); iota(BTS.begin(),BTS.end(),0);
   sort(BTS.begin(),BTS.end(),CompareObjectBigToSmall<LevelComparer2d> (lc));
   
   for (int cp=0; cp<coarse.size(); cp++)
@@ -864,7 +865,7 @@ void HierarchicalMesh2d::post_refine2d()
   mnlevels = 0;
   for(int i=0;i<quads.size();i++)
     {
-      mnlevels = GascoigneMath::max_int(mnlevels,quads[i].level());
+      mnlevels = Gascoigne::max_int(mnlevels,quads[i].level());
     }
 }
 
@@ -1010,12 +1011,12 @@ void HierarchicalMesh2d::GetAwakePatchs(set<int>& v) const
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh2d::ConstructQ2PatchMesh(nvector<int>& q2patchmesh) const
+void HierarchicalMesh2d::ConstructQ2PatchMesh(IntVector& q2patchmesh) const
 {
-  typedef set<int>::iterator It;
-  set<int> patche;
+  typedef IntSet::iterator It;
+  IntSet patche;
   GetAwakePatchs(patche);
-  vector<set<int> > patch_on_level(nlevels());
+  vector<IntSet> patch_on_level(nlevels());
   q2patchmesh.resize(0);
   for (It it = patche.begin();it!=patche.end();++it)
     patch_on_level[quads[*it].level()].insert(*it);
@@ -1031,7 +1032,7 @@ void HierarchicalMesh2d::ConstructQ2PatchMesh(nvector<int>& q2patchmesh) const
 	  int v = quads[*it].father();
 	  assert(v!=-1);
 	  q2patchmesh.push_back(v);
-	  nvector<int> nk = Nachkommen(v);
+	  IntVector nk = Nachkommen(v);
 	  for (int i=0;i<nk.size();++i)
 	    patch_on_level[quads[nk[i]].level()].erase(nk[i]);
 	  it = patch_on_level[l].begin();
@@ -1662,8 +1663,8 @@ int HierarchicalMesh2d::regular_grid2d_three(IntSet& CellRef,
       for (int j=0; j<4; j++)
 	{
 	  int k = q[j];
-	  maxlevel[k] = GascoigneMath::max_int( maxlevel[k], lev);
-	  minlevel[k] = GascoigneMath::min_int( minlevel[k], lev);
+	  maxlevel[k] = Gascoigne::max_int( maxlevel[k], lev);
+	  minlevel[k] = Gascoigne::min_int( minlevel[k], lev);
 	}
     }
   set<int> cand;
@@ -1726,7 +1727,7 @@ int HierarchicalMesh2d::regular_grid2d_three(IntSet& CellRef,
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh2d::GetMinMaxLevels(nvector<int>& maxi, nvector<int>& mini,
+void HierarchicalMesh2d::GetMinMaxLevels(IntVector& maxi, IntVector& mini,
 					 const IntSet& CellRef) const
 {
   // set maximal levels for vertices
@@ -1743,8 +1744,8 @@ void HierarchicalMesh2d::GetMinMaxLevels(nvector<int>& maxi, nvector<int>& mini,
       for (int j=0; j<4; j++)
 	{
 	  int k = q[j];
-	  maxi[k] = GascoigneMath::max_int( maxi[k], lev);
-	  mini[k] = GascoigneMath::min_int( mini[k], lev);
+	  maxi[k] = Gascoigne::max_int( maxi[k], lev);
+	  mini[k] = Gascoigne::min_int( mini[k], lev);
 	}
     }
 }
@@ -1753,7 +1754,7 @@ void HierarchicalMesh2d::GetMinMaxLevels(nvector<int>& maxi, nvector<int>& mini,
 
 int HierarchicalMesh2d::regular_grid2d_three_refine(IntSet& CellRef) const
 {
-  nvector<int> maxlevel, minlevel;
+  IntVector maxlevel, minlevel;
 
   GetMinMaxLevels(maxlevel,minlevel,CellRef);
   
@@ -1803,7 +1804,7 @@ int HierarchicalMesh2d::regular_grid2d_three_coarse(IntSet& CellRef,
       {
 	const Quad& q = quad(*p);
 	int lev = q.level();
-	maxl = GascoigneMath::max_int(maxl,lev);
+	maxl = Gascoigne::max_int(maxl,lev);
       }
     LevelCellCoarse.resize(maxl+1);
     p = CellCoarse.begin();
@@ -1817,7 +1818,7 @@ int HierarchicalMesh2d::regular_grid2d_three_coarse(IntSet& CellRef,
   int coarse = 0;
   for (int i=maxl; i>=0; i--)
     {
-      nvector<int> maxlevel, minlevel;
+      IntVector maxlevel, minlevel;
 
       GetMinMaxLevels(maxlevel,minlevel,CellRef);
   
@@ -1908,7 +1909,7 @@ void HierarchicalMesh2d::FillVertexLevels(IntVector& dst) const
       for (int j=0; j<4; j++)
 	{
 	  int k = Q[j];
-	  dst[k] = GascoigneMath::min_int(dst[k],level);
+	  dst[k] = Gascoigne::min_int(dst[k],level);
 	}
     }
 }
@@ -1943,7 +1944,7 @@ void HierarchicalMesh2d::RefineCoarseNodes
 	  int minlevel = vertexlevel[QF[0]];
 	  for (int v=1; v<4; v++)
 	    {
-	      minlevel = GascoigneMath::min_int(minlevel,vertexlevel[QF[v]]);
+	      minlevel = Gascoigne::min_int(minlevel,vertexlevel[QF[v]]);
 	    }
 	  for (int v=0; v<4; v++)
 	    {
@@ -2102,7 +2103,7 @@ void HierarchicalMesh2d::patch_refine
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh2d::FillVolumes(nvector<double>& vol) const
+void HierarchicalMesh2d::FillVolumes(DoubleVector& vol) const
 {
   vol.resize(ncells(),0.);
   for (int i=0; i<ncells(); i++)
@@ -2138,6 +2139,7 @@ void HierarchicalMesh2d::writeq2(const IntVector &a,const vector<int> & b,int np
 	}
       aus.close();
     }
+}
 }
 
 /*---------------------------------------------------*/

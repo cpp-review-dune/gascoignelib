@@ -32,6 +32,8 @@
 
 /*---------------------------------------------------------*/
 
+namespace Gascoigne
+{
 class SolverInterface
 {
  protected:
@@ -42,7 +44,7 @@ class SolverInterface
 
   virtual std::string GetName() const=0;
 
-  virtual void BasicInit(int level, const Gascoigne::ParamFile* paramfile, const MeshInterface* MP)=0;
+  virtual void BasicInit(int level, const ParamFile* paramfile, const MeshInterface* MP)=0;
   
   virtual void SetProblem(const ProblemDescriptorInterface& PDX)=0;
   virtual const ProblemDescriptorInterface* GetProblemDescriptor() const { assert(0);}
@@ -62,9 +64,9 @@ class SolverInterface
 
   virtual void VisuGrid(const std::string& name, int i) const {assert(0);}
 
-  virtual void AddNodeVector(const std::string&, const Gascoigne::GlobalVector* q) {assert(0);}
-  virtual void AddCellVector(const std::string&, const Gascoigne::GlobalCellVector* q) {assert(0);}
-  virtual void AddParameterVector(const std::string&, const Gascoigne::GlobalParameterVector* q) {assert(0);}
+  virtual void AddNodeVector(const std::string&, const GlobalVector* q) {assert(0);}
+  virtual void AddCellVector(const std::string&, const GlobalCellVector* q) {assert(0);}
+  virtual void AddParameterVector(const std::string&, const GlobalParameterVector* q) {assert(0);}
   virtual void DeleteNodeVector(const std::string&)  {assert(0);}
   virtual void DeleteCellVector(const std::string&) {assert(0);}
   virtual void DeleteParameterVector(const std::string&) {assert(0);}
@@ -73,10 +75,10 @@ class SolverInterface
   /// vector - manamgement
   //
 
-  virtual void ResizeVector(Gascoigne::GlobalVector* x, std::string type) const=0;
+  virtual void ResizeVector(GlobalVector* x, std::string type) const=0;
   virtual void RegisterVector(const BasicGhostVector& g)=0;
-  virtual Gascoigne::GlobalVector& GetGV(BasicGhostVector& u) const=0;
-  virtual const Gascoigne::GlobalVector& GetGV(const BasicGhostVector& u) const=0;
+  virtual GlobalVector& GetGV(BasicGhostVector& u) const=0;
+  virtual const GlobalVector& GetGV(const BasicGhostVector& u) const=0;
 
   //
   /// vector - hanging nodes
@@ -86,10 +88,10 @@ class SolverInterface
   virtual void HNZero      (const BasicGhostVector& x) const=0;
   virtual void HNDistribute(BasicGhostVector& x) const=0;
 
-  virtual void HNAverage   (const Gascoigne::GlobalVector& x) const=0;
-  virtual void HNZero      (const Gascoigne::GlobalVector& x) const=0;
-  virtual bool HNZeroCheck(const Gascoigne::GlobalVector& x) const=0;
-  virtual void HNDistribute(Gascoigne::GlobalVector& x) const=0;
+  virtual void HNAverage   (const GlobalVector& x) const=0;
+  virtual void HNZero      (const GlobalVector& x) const=0;
+  virtual bool HNZeroCheck(const GlobalVector& x) const=0;
+  virtual void HNDistribute(GlobalVector& x) const=0;
 
   //
   /// vector - io
@@ -103,7 +105,7 @@ class SolverInterface
   /// vector - interpolation
   //
 
-  virtual void InterpolateSolution(BasicGhostVector& u, const Gascoigne::GlobalVector& uold) const=0;
+  virtual void InterpolateSolution(BasicGhostVector& u, const GlobalVector& uold) const=0;
 
   //
   /// vector - rhs (integration)
@@ -126,7 +128,7 @@ class SolverInterface
   /// vector - boundary condition
   //
 
-  virtual void SetBoundaryVector(Gascoigne::GlobalVector& f) const=0;
+  virtual void SetBoundaryVector(GlobalVector& f) const=0;
   virtual void SetBoundaryVector(BasicGhostVector& f) const=0;
   virtual void SetBoundaryVectorZero(BasicGhostVector& Gf) const=0;
 
@@ -162,9 +164,9 @@ class SolverInterface
   /// vector - "postprocessing"
   //
 
-  virtual void ComputeError(const BasicGhostVector& u, Gascoigne::GlobalVector& err) const=0;
+  virtual void ComputeError(const BasicGhostVector& u, GlobalVector& err) const=0;
   virtual double ComputeFunctional(BasicGhostVector& f, const BasicGhostVector& u, const Functional* FP) const=0;
-  virtual double EnergyEstimator(nvector<double>& eta, const BasicGhostVector& u, BasicGhostVector& f) const=0;
+  virtual double EnergyEstimator(DoubleVector& eta, const BasicGhostVector& u, BasicGhostVector& f) const=0;
 
   //
   /// vector - initialize
@@ -173,6 +175,6 @@ class SolverInterface
   virtual void BoundaryInit(BasicGhostVector& u) const=0;
   virtual void SolutionInit(BasicGhostVector& u) const=0;
 };
-
+}
 #endif
 

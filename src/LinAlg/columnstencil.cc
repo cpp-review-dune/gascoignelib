@@ -6,6 +6,8 @@ using namespace std;
 
 /*-------------------------------------------------------------*/
   
+namespace Gascoigne
+{
 ostream& operator<<(ostream &s, const ColumnStencil& A)
 {
   s << "start:\n"<< A.start() << endl;
@@ -43,4 +45,5 @@ void ColumnStencil::memory(const SparseStructureInterface* SI)
 	  id++;
 	}
     }
+}
 }

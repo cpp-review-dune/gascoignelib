@@ -27,6 +27,8 @@
 
 /*-----------------------------------------*/
 
+namespace Gascoigne
+{
 class BasicLoop
 {
 private:
@@ -55,13 +57,13 @@ protected:
   double _p;
 
   std::string _reload, _initial;
-  const Gascoigne::ParamFile*  _paramfile;
+  const ParamFile*  _paramfile;
   
 
   Monitor           Mon;
   StdIoManager      IOM;
 
-  CompVector<double> _GlobalErr;
+  GlobalVector _GlobalErr;
 
   // new vectors
 
@@ -73,19 +75,20 @@ protected:
   virtual void ComputeGlobalErrors(const MultiLevelGhostVector& u);
 
   virtual void InitSolution(MultiLevelGhostVector& u);
-  virtual void CopyVector(Gascoigne::GlobalVector& dst, MultiLevelGhostVector& src);
-  virtual void CopyVector(MultiLevelGhostVector& dst, Gascoigne::GlobalVector& src);
+  virtual void CopyVector(GlobalVector& dst, MultiLevelGhostVector& src);
+  virtual void CopyVector(MultiLevelGhostVector& dst, GlobalVector& src);
 
 public:
 
   BasicLoop();
   virtual ~BasicLoop();
 
-  virtual void BasicInit(const Gascoigne::ParamFile* paramfile);
+  virtual void BasicInit(const ParamFile* paramfile);
 
   void run(const ProblemDescriptorInterface* PD);
   void ClockOutput() const;
 };
+}
 
 /*-----------------------------------------*/
 

@@ -1,12 +1,14 @@
 #ifndef __numerusclaususadaptor
 #define __numerusclaususadaptor
 
-#include  "nvector.h"
+#include  "gascoigne.h"
 #include  "paramfile.h"
 #include  <string>
 
 /*-----------------------------------------------------------*/
 
+namespace Gascoigne
+{
 class NCAdaptor
 {
 protected:
@@ -14,12 +16,13 @@ protected:
   int    _n;
   double _p;
   double  etasum;
-  const  nvector<double>&   eta;
+  const  DoubleVector&   eta;
 
 public:
 
-  NCAdaptor(const Gascoigne::ParamFile* paramfile, const nvector<double>& eta);
-  void refine(nvector<int>& ref, nvector<int>& coarse) const;
+  NCAdaptor(const ParamFile* paramfile, const DoubleVector& eta);
+  void refine(IntVector& ref, IntVector& coarse) const;
 };
+}
 
 #endif

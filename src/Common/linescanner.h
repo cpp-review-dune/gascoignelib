@@ -7,6 +7,8 @@
 
 /***************************************************/
 
+namespace Gascoigne
+{
 class LineScanner
 {
   std::ifstream fp;
@@ -23,6 +25,7 @@ public:
   void split(std::vector<std::string>& words, const char& c) const;
   void split(std::vector<std::string>& words, const std::vector<char>& c) const;
 };
+}
 
 /***************************************************/
 

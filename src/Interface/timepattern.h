@@ -3,6 +3,9 @@
 
 #include  "nmatrix.h"
 
+namespace Gascoigne
+{
 typedef nmatrix<double> TimePattern;
+}
 
 #endif

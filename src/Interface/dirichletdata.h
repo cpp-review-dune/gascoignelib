@@ -21,6 +21,8 @@
 
 /*-----------------------------------------*/
 
+namespace Gascoigne
+{
 class DirichletData : public Application
 {
 protected:
@@ -32,12 +34,12 @@ public:
 
   virtual std::string GetName() const=0;
 
-  virtual void operator()(Gascoigne::DoubleVector& b, const Vertex2d& v, int col) const {}
-  virtual void operator()(Gascoigne::DoubleVector& b, const Vertex3d& v, int col) const {}
+  virtual void operator()(DoubleVector& b, const Vertex2d& v, int col) const {}
+  virtual void operator()(DoubleVector& b, const Vertex3d& v, int col) const {}
 
   virtual std::set<int> preferred_colors()const {return std::set<int>();}
 
 };
-
+}
 
 #endif

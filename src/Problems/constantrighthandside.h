@@ -5,6 +5,8 @@
 
 /*-----------------------------------------*/
 
+namespace Gascoigne
+{
 class ZeroRightHandSideData : public RightHandSideData
 {
 protected :
@@ -124,5 +126,6 @@ public:
       return 1.;
     }
 };
+}
 
 #endif

@@ -8,6 +8,8 @@
 
 /*-------------------------------------------------*/
 
+namespace Gascoigne
+{
 template<int N, class T>
 class fixarray
 {
@@ -158,7 +160,7 @@ template<int N,class T>
 std::ostream& operator<<(std::ostream &s, const fixarray<N,T>& A);
 template<int N,class T>
 std::istream& operator>>(std::istream &s, fixarray<N,T>& A);
-
+}
 
 
 #endif

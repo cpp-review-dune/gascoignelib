@@ -2,10 +2,11 @@
 #include  "gascoignemesh.h"
 
 using namespace std;
-using namespace Gascoigne;
 
 /* ----------------------------------------- */
 
+namespace Gascoigne
+{
 Q1::Q1() : CellMeshInterpretor(), HN(NULL) 
 {
 }
@@ -30,10 +31,10 @@ void Q1::ReInit(const MeshInterface* MP)
 
 void Q1::LocalToGlobal(MatrixInterface& A, EntryMatrix& E, int iq, double s) const
 {
-  nvector<int> indices = GetLocalIndices(iq);
+  IntVector indices = GetLocalIndices(iq);
   HN->CondenseHanging(E,indices);
-  nvector<int>::const_iterator  start = indices.begin();
-  nvector<int>::const_iterator  stop  = indices.end();
+  IntVector::const_iterator  start = indices.begin();
+  IntVector::const_iterator  stop  = indices.end();
   A.entry(start,stop,__E,s);
 }
 
@@ -173,7 +174,7 @@ void Q1::Structure(SparseStructureInterface* SI) const
   S->build_begin(n());
   for(int iq=0;iq<GetMesh()->ncells();iq++)
     {
-      nvector<int> indices = GetLocalIndices(iq);
+      IntVector indices = GetLocalIndices(iq);
       HN->CondenseHanging(indices);
       S->build_add(indices.begin(), indices.end());
     }
@@ -197,6 +198,7 @@ void Q1::MassMatrix(MatrixInterface& A) const
   CellMeshInterpretor::MassMatrix(A);
 
   HN->MatrixDiag(1,A);  
+}
 }
 
 /*----------------------------------------------*/

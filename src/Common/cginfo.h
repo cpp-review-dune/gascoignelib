@@ -5,6 +5,8 @@
 
 /*************************************************************/
 
+namespace Gascoigne
+{
 class StatisticData
 {
   double  _lastrate, _rate;
@@ -118,6 +120,7 @@ class CGInfo
   bool check(double res, double corr=0.);
   void reset();
 };
+}
 
 /*************************************************************/
 

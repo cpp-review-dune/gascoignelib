@@ -1,10 +1,11 @@
 #include  "laplace3d.h"
 #include  "filescanner.h"
 
-using namespace Gascoigne;
 
 /*-----------------------------------------*/
 
+namespace Gascoigne
+{
 Laplace3d::Laplace3d(const ParamFile* pf) : 
   Laplace2d(pf)
 {
@@ -29,6 +30,7 @@ void Laplace3d::Matrix(EntryMatrix& A, const FemFunction& U, const TestFunction&
 {
   A(0,0) += visc* (M.x()*N.x()+M.y()*N.y()+M.z()*N.z());
   A(0,0) += (betax * M.x() + betay * M.y() + betaz * M.z()) * N.m();
+}
 }
 
 /*-----------------------------------------*/

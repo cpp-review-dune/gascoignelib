@@ -12,6 +12,8 @@
 
 /******************************************************/
 
+namespace Gascoigne
+{
 template<int DIM>
 class CurvedShapes : public std::map<int,BoundaryFunction<DIM>* >
 {
@@ -38,6 +40,7 @@ class CurvedShapes : public std::map<int,BoundaryFunction<DIM>* >
 
   bool empty() const {return (size()==0);}
 };
+}
 
 /******************************************************/
 

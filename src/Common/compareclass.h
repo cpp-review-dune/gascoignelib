@@ -6,6 +6,8 @@
 
 /*********************************************************/
 
+namespace Gascoigne
+{
 template<class T>
 class CompareLess
 {
@@ -62,6 +64,7 @@ class CompareObjectBigToSmall
   bool operator()(int i, int j) const
     { return P[j]<P[i]; }
 };
+}
 
 #endif
 

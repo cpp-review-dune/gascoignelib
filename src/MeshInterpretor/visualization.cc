@@ -6,10 +6,11 @@
 
 
 using namespace std;
-using namespace Gascoigne;
 
 /********************************************************************/
 
+namespace Gascoigne
+{
 Visualization::Visualization() 
   : mesh(0), PointData(0), CellData(0),
     filename("none"), GP(0)
@@ -70,7 +71,7 @@ void Visualization::read_parameters(const ParamFile* pf)
   double time;
 
   vector<string>  planes(0);
-  nvector<double> gnupos(0);
+  DoubleVector gnupos(0);
 
   DataFormatHandler DH;
   DH.insert("step"     ,& pstep     ,1);
@@ -356,4 +357,5 @@ void Visualization::output_solution(ofstream& file, int c) const
     {
       file << PointData->visudata(ind,c) << " ";
     }
+}
 }

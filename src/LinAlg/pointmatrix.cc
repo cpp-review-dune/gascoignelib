@@ -9,6 +9,8 @@ using namespace std;
 
 /* ----------------------------------------- */
 
+namespace Gascoigne
+{
 PointMatrix::PointMatrix(int ncomp, string type) : MatrixInterface(), _ncomp(ncomp)  
 {
   if(type=="node")
@@ -46,7 +48,7 @@ void PointMatrix::ReInit(const SparseStructureInterface* S)
 
 /* ----------------------------------------- */
 
-void PointMatrix::vmult(CompVector<double>& y, const CompVector<double>& x, double d) const
+void PointMatrix::vmult(GlobalVector& y, const GlobalVector& x, double d) const
 {
   assert(SSAP->GetName()=="Node");
   SimpleMatrix::vmult(y,x,d);
@@ -54,7 +56,7 @@ void PointMatrix::vmult(CompVector<double>& y, const CompVector<double>& x, doub
 
 /* ----------------------------------------- */
 
-void PointMatrix::vmult_transpose(CompVector<double>& y, const CompVector<double>& x, double d) const
+void PointMatrix::vmult_transpose(GlobalVector& y, const GlobalVector& x, double d) const
 {
   assert(SSAP->GetName()=="Node");
   SimpleMatrix::vmult_transpose(y,x,d);
@@ -72,13 +74,13 @@ void PointMatrix::dirichlet(int inode, const vector<int>& cv)
 
 void PointMatrix::entry_diag(int i, const nmatrix<double>& M)
 {
-  nvector<int> cv(_ncomp); iota(cv.begin(),cv.end(),0);
+  IntVector cv(_ncomp); iota(cv.begin(),cv.end(),0);
   dirichlet(i,cv);
 }
 
 /*-----------------------------------------*/
 
-void PointMatrix::entry(const nvector<int>::const_iterator start, const nvector<int>::const_iterator stop, const EntryMatrix& M, double s)
+void PointMatrix::entry(const IntVector::const_iterator start, const IntVector::const_iterator stop, const EntryMatrix& M, double s)
 {
   int n = stop-start;
 
@@ -198,4 +200,5 @@ void PointMatrix::RestrictMatrix(const MgInterpolatorMatrix& I, const PointMatri
 // 	    }
 // 	}
 //     }
+}
 }

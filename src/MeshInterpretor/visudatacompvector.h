@@ -6,23 +6,26 @@
 
 /*----------------------------------------------*/
 
+namespace Gascoigne
+{
 class VisuDataCompVector : public VisuData
 {
  protected:
 
-  const Gascoigne::GlobalVector* _v;
+  const GlobalVector* _v;
 
  public:
 
   VisuDataCompVector();
-  VisuDataCompVector(const Gascoigne::GlobalVector& v);
+  VisuDataCompVector(const GlobalVector& v);
 
-  void SetGlobalVector(const Gascoigne::GlobalVector* v);
+  void SetGlobalVector(const GlobalVector* v);
 
   int    visucomp()     const;
   int    visun()        const;
   double visudata(int i,int c) const;
 };
+}
 
 /***************************************************************/
 

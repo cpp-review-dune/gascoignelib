@@ -6,12 +6,13 @@
 
 /*-----------------------------------------------------*/
 
+namespace Gascoigne
+{
 template<class BASE>
 class Transformation2d
 {
  protected:
 
-  typedef nvector<double>    Vector;
   typedef nmatrix<double>    Matrix;
 
   BASE            B;
@@ -185,6 +186,7 @@ inline double  Transformation2d<BASE>::G() const
   Vertex2d xt;
   dt.mult(xt,*B.tangent2d());
   return xt.norm_l2();
+}
 }
 
 #endif

@@ -17,6 +17,8 @@
 
 /*-----------------------------------------*/
 
+namespace Gascoigne
+{
 class ExactSolution : public Application
 {
 protected:
@@ -57,6 +59,6 @@ public:
   virtual double yz        (int c, const Vertex3d& v)const;
   virtual double xz        (int c, const Vertex3d& v)const;
 };
-
+}
 
 #endif

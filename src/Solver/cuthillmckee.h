@@ -22,6 +22,8 @@
  * 
  */
 
+namespace Gascoigne
+{
 class CuthillMcKee 
 {
     const ColumnStencil* S;
@@ -35,11 +37,12 @@ class CuthillMcKee
     CuthillMcKee (const StencilInterface *s);
     CuthillMcKee ();
 
-    void Permutate    (nvector<int> &perm);
-//     void Permutate    (nvector<int> &perm, const Vertex2d v);
-//     void Permutate    (nvector<int> &perm, const Vertex3d v);
+    void Permutate    (IntVector &perm);
+//     void Permutate    (IntVector &perm, const Vertex2d v);
+//     void Permutate    (IntVector &perm, const Vertex3d v);
     
 //     bool operator()(int i,int j) const;
 };
+}
 
 #endif

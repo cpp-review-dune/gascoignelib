@@ -6,6 +6,8 @@
 
 /*-----------------------------------------*/
 
+namespace Gascoigne
+{
 class GnuplotData
 {
 protected:
@@ -25,5 +27,6 @@ public:
   double SetVertex (const Vertex2d& v) const;
   double SetVertex (const Vertex3d& v) const;
 };
+}
 
 #endif

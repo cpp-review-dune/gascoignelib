@@ -5,6 +5,8 @@
 
 /**********************************************************/
 
+namespace Gascoigne
+{
 class ProblemDescriptorBase : public ProblemDescriptorInterface
 {
 
@@ -18,11 +20,11 @@ class ProblemDescriptorBase : public ProblemDescriptorInterface
   DirichletData      *DD;
   NeumannData        *ND;
   
-  const Gascoigne::ParamFile* _paramfile;
+  const ParamFile* _paramfile;
   
  protected:
   
-  const Gascoigne::ParamFile* GetParamFile() const {return _paramfile;}
+  const ParamFile* GetParamFile() const {return _paramfile;}
   
   Equation*& GetEquationPointer() { return EQ;}
   BoundaryManager*& GetBoundaryManagerPointer() { return BM;}
@@ -58,7 +60,7 @@ class ProblemDescriptorBase : public ProblemDescriptorInterface
     return os;
   }
   
-  void BasicInit(const Gascoigne::ParamFile* pf) {
+  void BasicInit(const ParamFile* pf) {
     _paramfile = pf;
     if(GetBoundaryManagerPointer()==NULL)
       {
@@ -83,6 +85,7 @@ class ProblemDescriptorBase : public ProblemDescriptorInterface
     if (IC)  IC  -> SetTime(time,dt);
   }
 };
+}
 
 /**********************************************************/
 

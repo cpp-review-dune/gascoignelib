@@ -10,10 +10,11 @@
 #include  "stdmultilevelsolver.h"
 
 using namespace std;
-using namespace Gascoigne;
 
 /*-----------------------------------------*/
 
+namespace Gascoigne
+{
 BasicLoop::BasicLoop() : _paramfile(NULL), _MA(NULL), _ML(NULL), _iter(0), IOM("Results")
 {
   _reload  = "none";
@@ -275,6 +276,7 @@ void BasicLoop::run(const ProblemDescriptorInterface* PD)
 	  GetMeshAgent()->global_refine(1);
 	}
      }
+}
 }
 
 /*-------------------------------------------------*/

@@ -12,11 +12,11 @@
 
 /*-----------------------------------------*/
 
+namespace Gascoigne
+{
 class Functional : public Application
 {
 protected:
-
-  typedef  nvector<double>         Vector;
 
   double  exact;
   bool    exactisknown;
@@ -41,6 +41,6 @@ public:
 
   std::string BeautifulName() const { return beautifulname;}
 };
-
+}
 
 #endif

@@ -2,6 +2,8 @@
 
 /*------------------------------------------------------------------*/
 
+namespace Gascoigne
+{
 BaseQ13d::BaseQ13d() 
 {
   BasicInit();
@@ -35,6 +37,7 @@ void BaseQ13d::point(const Vertex3d& s) const
 //       dyz[i]     = px * dy * dz;
 //       dxyz[i]    = dx * dy * dz;
     }
+}
 }
 
 /*------------------------------------------------------------------*/

@@ -6,11 +6,13 @@
 
 /*-----------------------------------------*/
 
-class PressureFilter : public nvector<double> 
+namespace Gascoigne
+{
+class PressureFilter : public DoubleVector 
 {
  protected:
 
-  nvector<int> component;
+  IntVector component;
   double       domainsize;
 
  public:
@@ -18,17 +20,18 @@ class PressureFilter : public nvector<double>
   PressureFilter() ;
   ~PressureFilter();
 
-  void SetComponents(const nvector<int>& c) { component = c;}
+  void SetComponents(const IntVector& c) { component = c;}
   bool Active() const { return component.size()>0;}
 
   void ReInit(int n);
 
   void AddDomainPiece(double val) { domainsize += val;}
 
-  nvector<double> IntegrateVector(const Gascoigne::GlobalVector& u) const;
-  void SubtractMean(Gascoigne::GlobalVector& u) const;
-  void SubtractMeanAlgebraic(Gascoigne::GlobalVector& u) const;
+  DoubleVector IntegrateVector(const GlobalVector& u) const;
+  void SubtractMean(GlobalVector& u) const;
+  void SubtractMeanAlgebraic(GlobalVector& u) const;
 };
+}
 
 /*-----------------------------------------*/
 

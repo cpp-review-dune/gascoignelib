@@ -11,6 +11,8 @@ using namespace std;
 
 /*********************************************************************/
 
+namespace Gascoigne
+{
 template<int N>
 ostream& operator<<(ostream &s, const HangList<N>& A)
 {
@@ -53,5 +55,6 @@ template ostream& operator<<(ostream &s, const HangList<2>& A);
 template ostream& operator<<(ostream &s, const HangList<4>& A);
 template istream& operator>>(istream &s, HangList<2>& A);
 template istream& operator>>(istream &s, HangList<4>& A);
+}
 
 #undef HANGMAP

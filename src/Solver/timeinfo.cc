@@ -9,6 +9,8 @@ using namespace std;
 
 /*-----------------------------------------*/
 
+namespace Gascoigne
+{
 TimeInfo::TimeInfo()
 {
   BasicInit();
@@ -204,6 +206,7 @@ void TimeInfo::SpecifyScheme(int i)
       ReInitTheta();
       if (_actualscheme=="FractionalTheta") _deltat *= 3.;
     }
+}
 }
 
 /*-----------------------------------------*/

@@ -2,6 +2,8 @@
 #define __cgmatrix_h
 
 
+namespace Gascoigne
+{
 template <class MT,class VT,class MEM, class INFO>
 inline int CgMatrix(const MT& M, VT& x, const VT& b, MEM& mem, INFO& info)
 {
@@ -52,6 +54,7 @@ inline int CgMatrix(const MT& M, VT& x, const VT& b, MEM& mem, INFO& info)
   }
   if (reached<0) return 1;
   return 0;
+}
 }
 
 #endif

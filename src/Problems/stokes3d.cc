@@ -1,9 +1,10 @@
 #include  "stokes3d.h"
 
-using namespace Gascoigne;
 
 /*-----------------------------------------*/
 
+namespace Gascoigne
+{
 Stokes3d::~Stokes3d()
 {
 }
@@ -75,6 +76,7 @@ void Stokes3d::Matrix(EntryMatrix& A, const FemFunction& U, const TestFunction& 
   A(1,1) += visc*laplace;
   A(2,2) += visc*laplace;
   A(3,3) += visc*laplace;
+}
 }
 
 /*-----------------------------------------*/

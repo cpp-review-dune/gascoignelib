@@ -5,6 +5,8 @@
 
 /*-----------------------------------------*/
 
+namespace Gascoigne
+{
 class IntegrationFormulaEdge1 : public IntegrationFormula2d
 {
 protected:
@@ -19,6 +21,6 @@ protected:
     }
 
 };
-
+}
 
 #endif

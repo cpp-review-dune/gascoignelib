@@ -6,10 +6,11 @@
 
 
 using namespace std;
-using namespace Gascoigne;
 
 /*-----------------------------------------*/
 
+namespace Gascoigne
+{
 MeshAgent::MeshAgent() : MeshAgentInterface(), HMP(NULL), GMG(NULL), _dimension(-1)
 {
 }
@@ -170,15 +171,15 @@ void MeshAgent::random_patch_refine(double p, int n)
 
 /*-----------------------------------------*/
 
-void MeshAgent::refine_nodes(nvector<int>& refnodes)
+void MeshAgent::refine_nodes(IntVector& refnodes)
 {
-  nvector<int> coarsenodes(0);
+  IntVector coarsenodes(0);
   refine_nodes(refnodes,coarsenodes);
 }
 
 /*-----------------------------------------*/
 
-void MeshAgent::refine_nodes(nvector<int>& refnodes, nvector<int>& coarsenodes)
+void MeshAgent::refine_nodes(IntVector& refnodes, IntVector& coarsenodes)
 {
   assert(HMP);
   HMP->vertex_patch_refine(refnodes,coarsenodes);
@@ -187,9 +188,9 @@ void MeshAgent::refine_nodes(nvector<int>& refnodes, nvector<int>& coarsenodes)
 
 /*-----------------------------------------*/
 
-void MeshAgent::refine_cells(nvector<int>& ref)
+void MeshAgent::refine_cells(IntVector& ref)
 {
-  nvector<int> refnodes;
+  IntVector refnodes;
   
   for (int i=0; i<ref.size(); i++)
     {
@@ -200,4 +201,5 @@ void MeshAgent::refine_cells(nvector<int>& ref)
 	}
     }
   refine_nodes(refnodes);
+}
 }

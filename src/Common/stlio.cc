@@ -4,6 +4,8 @@
 
 using namespace std;
 
+namespace Gascoigne
+{
 
 // /*-------------------------------------------------------------------*/
 
@@ -86,14 +88,14 @@ using namespace std;
 //   return s;
 // }
 
-void write_data(const CompVector<double>& v,ostream& s)
+void write_data(const GlobalVector& v,ostream& s)
 {
   s << v.n() << endl
     << v.ncomp() << endl
     << v << endl;
 }
 
-void read_data(CompVector<double>& v, istream& s)
+void read_data(GlobalVector& v, istream& s)
 {
   int n;
   int ncomp;
@@ -172,7 +174,7 @@ template void write_data(const fixarray<9,int>&,ostream& );
 template void write_data(const vector<int>&,ostream& );
 template void write_data(const vector<Vertex<2> >&,ostream& );
 template void write_data(const vector<Vertex<3> >&,ostream& );
-template void write_data(const vector<nvector<int> >&,ostream& );
+template void write_data(const vector<IntVector >&,ostream& );
 template void write_data(const vector<fixarray<4,int> >&,ostream& );
 template void write_data(const vector<fixarray<8,int> >&,ostream& );
 template void write_data(const vector<set<int> >&,ostream& );
@@ -186,10 +188,10 @@ template void read_data(fixarray<9,int>&, istream& );
 template void read_data(vector<int>&, istream& );
 template void read_data(vector<Vertex<2> > &, istream& );
 template void read_data(vector<Vertex<3> > &, istream& );
-template void read_data(vector<nvector<int> >&, istream& );
+template void read_data(vector<IntVector >&, istream& );
 template void read_data(vector<fixarray<4,int> >&, istream& );
 template void read_data(vector<fixarray<8,int> >&, istream& );
 template void read_data(vector<set<int> >&, istream& );
 template void read_data(set<int> &, istream& );
 
-
+}

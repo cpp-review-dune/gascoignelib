@@ -15,6 +15,8 @@ using namespace std;
 /*-------------------------------------------------*/
 /*-------------------------------------------------*/
 
+namespace Gascoigne
+{
 extern "C" int umfpack_di_symbolic
 (
     int n,
@@ -161,7 +163,7 @@ void UmfIlu::copy_entries(const MatrixInterface&  A)
 
 /*-------------------------------------------------------------*/
 
-void UmfIlu::ConstructStructure(const nvector<int>& perm, const MatrixInterface& A)
+void UmfIlu::ConstructStructure(const IntVector& perm, const MatrixInterface& A)
 {
 }
 
@@ -193,7 +195,7 @@ void UmfIlu::Factorize()
 
 /*-----------------------------------------*/
 
-void UmfIlu::Solve(nvector<double>& x, const nvector<double>& b)
+void UmfIlu::Solve(DoubleVector& x, const DoubleVector& b)
 {
   const ColumnStencil* SA = dynamic_cast<const ColumnStencil*>(AP->GetStencil());
   assert(SA);
@@ -215,7 +217,7 @@ void UmfIlu::Solve(nvector<double>& x, const nvector<double>& b)
 
 /*-----------------------------------------*/
 
-void UmfIlu::SolveTranspose(nvector<double>& x, const nvector<double>& b)
+void UmfIlu::SolveTranspose(DoubleVector& x, const DoubleVector& b)
 {
   const ColumnStencil* SA = dynamic_cast<const ColumnStencil*>(AP->GetStencil());
   assert(SA);
@@ -234,7 +236,7 @@ void UmfIlu::SolveTranspose(nvector<double>& x, const nvector<double>& b)
 	cerr << "umfpack_di_solve failed\n"; exit(1);
       }
 }
-
+}
  
 #undef UMFPACK_OK     
 #undef UMFPACK_INFO   

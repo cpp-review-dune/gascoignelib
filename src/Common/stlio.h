@@ -4,6 +4,7 @@
 #include  "fixarray.h"
 #include  <string>
 #include  "compvector.h"
+#include  "gascoigne.h"
 
 #include  <vector>
 #include  <set>
@@ -19,6 +20,8 @@
 
 /*---------------------------------------------*/
 
+namespace Gascoigne
+{
 
 // std::ostream& operator<<(std::ostream &s, const std::map<int,fixarray<4,int> >& A);
 // std::ostream& operator<<(std::ostream &s, const std::map<std::string,std::string>& A);
@@ -113,8 +116,8 @@ std::ostream& operator<<(std::ostream& os, const std::map<T,S>& s)
 /*---------------------------------------------*/
 
 
-void write_data(const CompVector<double>& v,std::ostream& s);
-void read_data(       CompVector<double>& v,std::istream& s);
+void write_data(const GlobalVector& v,std::ostream& s);
+void read_data(       GlobalVector& v,std::istream& s);
 
 void write_data(const int& v,std::ostream& s);
 void read_data(int& v,std::istream& s)       ;
@@ -203,7 +206,7 @@ void read_data(HASHMAP<T,S>& v,std::istream& s)
       v[fi]=se;
     }
 }
-
+}
 
 #undef HASHMAP
 

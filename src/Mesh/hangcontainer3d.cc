@@ -3,10 +3,11 @@
 
 
 using namespace std;
-using namespace Gascoigne;
 
 /*********************************************************************/
 
+namespace Gascoigne
+{
 HangContainer3d::HangContainer3d(HangList<2>& lh2, HangList<4>& lh3) : 
   HangContainer2d(lh2),
   FaceHanging(lh3) {}
@@ -338,6 +339,7 @@ void HangContainer3d::line_refine(EdgeVector& edge, int f,
 //   Hang h(-1,-1,-1);
 //   VertexToBeCreated.insert(make_pair(edge,h));
 // }
+}
 
 /*********************************************************************/
 

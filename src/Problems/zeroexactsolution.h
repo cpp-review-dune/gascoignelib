@@ -16,6 +16,8 @@
 #include  "exactsolution.h"
 
 
+namespace Gascoigne
+{
 class ZeroExactSolution : public ExactSolution
 {
 public:
@@ -39,6 +41,6 @@ public:
   double operator()(int c, const Vertex2d& v)const {return 0.;}
 
 };
-
+}
 
 #endif

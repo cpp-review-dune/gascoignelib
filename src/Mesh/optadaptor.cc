@@ -8,8 +8,10 @@ using namespace std;
 
 /*********************************************************************/
 
+namespace Gascoigne
+{
 OptAdaptor::OptAdaptor
-(AdaptorData& inf, nvector<double>& e,const nvector<double>& v) 
+(AdaptorData& inf, DoubleVector& e,const DoubleVector& v) 
 : info(inf), eta(e), vol(v)
 {
   p = info.dim();
@@ -35,8 +37,8 @@ OptAdaptor::OptAdaptor
 
 void OptAdaptor::prepare()
 {
-  n_aimed = GascoigneMath::max_int(1,static_cast<int>(info.rfactor()*info.ncells()));
-  n_aimed = GascoigneMath::min_int(info.maxnodes(),n_aimed);
+  n_aimed = Gascoigne::max_int(1,static_cast<int>(info.rfactor()*info.ncells()));
+  n_aimed = Gascoigne::min_int(info.maxnodes(),n_aimed);
 
   info.reset();
 
@@ -66,8 +68,8 @@ void OptAdaptor::prepare()
 	  double h_aimed = co * pow(eta[i],-1./alpha);
 	  double fac = h/h_aimed;
 	  eta[i] = fac;
-	  min = GascoigneMath::min(min,fac);
-	  max = GascoigneMath::max(max,fac);
+	  min = Gascoigne::min(min,fac);
+	  max = Gascoigne::max(max,fac);
 	}
     }
   info.minf() = min;
@@ -77,7 +79,7 @@ void OptAdaptor::prepare()
 
 /*********************************************************************/
 
-void OptAdaptor::coarse(nvector<int>& coarselist)
+void OptAdaptor::coarse(IntVector& coarselist)
 {
   //  eta = h/h_aimed
 
@@ -128,12 +130,12 @@ void OptAdaptor::coarse(nvector<int>& coarselist)
 
 /*********************************************************************/
 
-void OptAdaptor::refine(nvector<int>& reflist)
+void OptAdaptor::refine(IntVector& reflist)
 {
   reflist.resize(0);
 
-  nvector<int> C(eta.size()); iota(C.begin(),C.end(),0);
-  sort(C.begin(),C.end(),CompareObjectBigToSmall<nvector<double> > (eta)); 
+  IntVector C(eta.size()); iota(C.begin(),C.end(),0);
+  sort(C.begin(),C.end(),CompareObjectBigToSmall<DoubleVector > (eta)); 
   
   int i = 0; used = 0;
 
@@ -153,14 +155,14 @@ void OptAdaptor::refine(nvector<int>& reflist)
 
 /*********************************************************************/
 
-void OptAdaptor::RefineGnuplot(nvector<int>& reflist)
+void OptAdaptor::RefineGnuplot(IntVector& reflist)
 {
   reflist.resize(0);
 
-  nvector<int> C(eta.size()); 
+  IntVector C(eta.size()); 
   iota(C.begin(),C.end(),0);
 
-  typedef CompareObjectBigToSmall<nvector<double> >  CoC;
+  typedef CompareObjectBigToSmall<DoubleVector >  CoC;
 
   sort(C.begin(),C.end(),CoC(eta)); 
   
@@ -197,6 +199,7 @@ void OptAdaptor::RefineGnuplot(nvector<int>& reflist)
 
   info.nr() += i;
   marge     -= used;
+}
 }
 
 /*********************************************************************/

@@ -6,6 +6,8 @@
 
 /**************************************************/
 
+namespace Gascoigne
+{
 class Base
 {
  protected:
@@ -43,5 +45,6 @@ class Base
   virtual void point_boundary_3d(int, const Vertex2d&) const
     { error("point_boundary");}  
 };
+}
 
 #endif

@@ -43,7 +43,7 @@ class ProblemDescriptor : public ProblemDescriptorBase
 public:
     
     std::string GetName() const {return "Local";}
-    void BasicInit(const Gascoigne::ParamFile* pf) {
+    void BasicInit(const ParamFile* pf) {
       GetEquationPointer() = new NavierStokesGls3d(GetParamFile());
       GetDirichletDataPointer() = new BenchMarkDirichletData();
       ProblemDescriptorBase::BasicInit(pf);

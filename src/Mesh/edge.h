@@ -6,6 +6,8 @@
 
 /***********************************************/
 
+namespace Gascoigne
+{
 class Edge
 {
  protected:
@@ -37,6 +39,7 @@ class Edge
   friend std::ostream& operator<<(std::ostream &s, const Edge& A);
   friend std::istream& operator>>(std::istream &s, Edge& A);
 };
+}
 
 /***********************************************/
 

@@ -3,6 +3,9 @@
 
 /*-----------------------------------------*/
 
+namespace Gascoigne
+{
 GascoigneMeshTransfer::GascoigneMeshTransfer()
 {
+}
 }

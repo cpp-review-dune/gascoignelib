@@ -13,8 +13,10 @@
 
 #include  "stencilinterface.h"
 #include  "sparsestructureinterface.h"
-#include  "nvector.h"
+#include  "gascoigne.h"
 
+namespace Gascoigne
+{
 class ColumnStencil : public virtual StencilInterface
 {
 private:
@@ -29,7 +31,7 @@ protected:
 /* 	assert(0); */
 /*       }  */
   }  
-  nvector<int>   scol, sstart;
+  IntVector   scol, sstart;
 
 public:
 
@@ -41,10 +43,10 @@ public:
   ColumnStencil() : StencilInterface() {}
   ~ColumnStencil() {}
 
-  const nvector<int>&  col()    const { return scol; }
-        nvector<int>&  col()          { return scol; }
-  const nvector<int>&  start()  const { return sstart; }
-        nvector<int>&  start()        { return sstart; }
+  const IntVector&  col()    const { return scol; }
+        IntVector&  col()          { return scol; }
+  const IntVector&  start()  const { return sstart; }
+        IntVector&  start()        { return sstart; }
 
   int  n()        const { return sstart.size()-1;}
   int  nentries() const { return scol.size();}
@@ -97,6 +99,6 @@ public:
     return os;
   }
 };
-
+}
 
 #endif

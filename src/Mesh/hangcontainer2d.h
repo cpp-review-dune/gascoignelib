@@ -6,6 +6,8 @@
 
 /*********************************************************************/
 
+namespace Gascoigne
+{
 class HangContainer2d
 {
  protected:
@@ -37,10 +39,10 @@ class HangContainer2d
 
   void make_consistent() { VertexToBeCreated.make_consistent(VertexToBeDeleted);}
 
-  void load_elimination(Gascoigne::IntVector&) const;
+  void load_elimination(IntVector&) const;
 
-  void update_olds (Gascoigne::IntVector&, const Gascoigne::IntVector&);
-  void update_news (const Gascoigne::IntVector&,int);
+  void update_olds (IntVector&, const IntVector&);
+  void update_news (const IntVector&,int);
 
   int  vertex_index (const EdgeVector&) const;
 
@@ -49,6 +51,7 @@ class HangContainer2d
 
   void NeighbourSwapper();
 };
+}
 
 /*********************************************************************/
 

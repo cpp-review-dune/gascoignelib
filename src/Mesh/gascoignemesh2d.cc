@@ -2,6 +2,8 @@
 
 /*-----------------------------------------*/
 
+namespace Gascoigne
+{
 GascoigneMesh2d::GascoigneMesh2d()
 {
 }
@@ -14,9 +16,9 @@ GascoigneMesh2d::~GascoigneMesh2d()
 
 /*---------------------------------------------------*/
 
-nvector<int> GascoigneMesh2d::IndicesOfCell(int iq) const
+IntVector GascoigneMesh2d::IndicesOfCell(int iq) const
 {
-  nvector<int> indices(4);
+  IntVector indices(4);
 
   int iq4 = iq*4;
 
@@ -26,4 +28,5 @@ nvector<int> GascoigneMesh2d::IndicesOfCell(int iq) const
   indices[3] = nc[iq4+2];
 
   return indices;
+}
 }

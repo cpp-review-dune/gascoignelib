@@ -22,21 +22,23 @@
 
 /*---------------------------------------------------------------*/
 
+namespace Gascoigne
+{
 class BoundaryManager
 {
  public:
 
-  typedef  std::map<int,Gascoigne::IntVector>::const_iterator  const_iterator;
+  typedef  std::map<int,IntVector>::const_iterator  const_iterator;
 
  protected:
 
   std::set<int>                 coldir, colneu;
-  std::map<int,Gascoigne::IntVector>       dirvec;
+  std::map<int,IntVector>       dirvec;
 
  public:
 
   BoundaryManager() {}
-  BoundaryManager(const Gascoigne::ParamFile* pf);
+  BoundaryManager(const ParamFile* pf);
   virtual ~BoundaryManager() {}
 
   virtual std::string GetName() const {return "Std";}
@@ -53,11 +55,11 @@ class BoundaryManager
 
   std::ostream& print(std::ostream& s) const;
 
-  virtual const Gascoigne::IntSet&    GetNeumannColors      (     ) const { return colneu;}
-  virtual const Gascoigne::IntSet&    GetDirichletColors    (     ) const { return coldir;}
-  virtual const Gascoigne::IntVector& GetDirichletComponents(int c) const 
+  virtual const IntSet&    GetNeumannColors      (     ) const { return colneu;}
+  virtual const IntSet&    GetDirichletColors    (     ) const { return coldir;}
+  virtual const IntVector& GetDirichletComponents(int c) const 
     { 
-      std::map<int,Gascoigne::IntVector>::const_iterator p = dirvec.find(c);
+      std::map<int,IntVector>::const_iterator p = dirvec.find(c);
       if(p==dirvec.end())
 	{
 	  std::cerr << "BoundaryManager::Components()\n";
@@ -68,5 +70,6 @@ class BoundaryManager
       return p->second;
     }
 };
+}
 
 #endif

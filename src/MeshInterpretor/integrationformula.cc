@@ -4,6 +4,8 @@
 
 /*------------------------------------------------------------*/
 
+namespace Gascoigne
+{
 template class IntegrationFormulaBase<1>;
 template class IntegrationFormulaBase<2>;
 template class IntegrationFormulaBase<3>;
@@ -28,5 +30,6 @@ template class TensorFormula3d<2,LineTrapez>;
 template class TensorFormula3d<2,LineGauss2>;
 template class TensorFormula3d<3,LineGauss3>;
 template class TensorFormula3d<4,LineGauss4>;
+}
 
 /*------------------------------------------------------------*/

@@ -3,10 +3,11 @@
 #include  "stdtimesolver.h"
 
 using namespace std;
-using namespace Gascoigne;
 
 /*-----------------------------------------*/
 
+namespace Gascoigne
+{
 void StdTimeLoop::BasicInit(const ParamFile* paramfile)
 {
   StdLoop::BasicInit(paramfile);
@@ -54,7 +55,7 @@ void StdTimeLoop::adaptive_run(const ProblemDescriptorInterface* PD)
   GetMultiLevelSolver()->RegisterVector(u);
   GetMultiLevelSolver()->RegisterVector(f);
   
-  nvector<double> eta;
+  DoubleVector eta;
 
   for (_iter=1; _iter<=_niter; _iter++)
     {
@@ -145,7 +146,7 @@ void StdTimeLoop::run(const ProblemDescriptorInterface* PD)
   GetMultiLevelSolver()->RegisterVector(u);
   GetMultiLevelSolver()->RegisterVector(f);
   
-  nvector<double> eta;
+  DoubleVector eta;
   
   GetMultiLevelSolver()->ReInit(*PD);
   
@@ -187,6 +188,6 @@ void StdTimeLoop::run(const ProblemDescriptorInterface* PD)
       Functionals(u,f);
     }
 }
-
+}
 
 

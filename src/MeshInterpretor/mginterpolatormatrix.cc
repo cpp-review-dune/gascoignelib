@@ -2,10 +2,11 @@
 
 
 using namespace std;
-using namespace Gascoigne;
 
 /*-----------------------------------------*/
   
+namespace Gascoigne
+{
 void MgInterpolatorMatrix::restrict_zero(GlobalVector& uL, const GlobalVector& ul) const
 {
   uL.zero();
@@ -44,4 +45,5 @@ void MgInterpolatorMatrix::SolutionTransfer(GlobalVector& uL, const GlobalVector
 	    uL.add_node(ST.col(pos),val[pos],i,ul);
 	}
     }
+}
 }

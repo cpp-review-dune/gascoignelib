@@ -14,15 +14,15 @@
 #include  "cellmeshinterpretor.h"
 #include  "hnstructureinterface.h"
 
+namespace Gascoigne
+{
 class Q1 : public CellMeshInterpretor
 {
 protected:
 
-  typedef Gascoigne::GlobalVector GlobalVector;
-
   HNStructureInterface*    HN;
 
-  nvector<int> GetLocalIndices(int iq) const {
+  IntVector GetLocalIndices(int iq) const {
     return GetMesh()->IndicesOfCell(iq);
   }
   void LocalToGlobal(MatrixInterface& A, EntryMatrix& E, int iq, double s) const;
@@ -56,6 +56,7 @@ public:
   void MassMatrix(MatrixInterface& A) const;
   void Structure(SparseStructureInterface* SI) const;
 };
+}
 
 
 #endif

@@ -10,6 +10,8 @@
 
 /*-----------------------------------------*/
 
+namespace Gascoigne
+{
 class GascoigneMeshConstructor
 {
 protected:
@@ -26,11 +28,11 @@ protected:
   virtual void Construct3d(GascoigneMesh* NM, const LevelMesh3d* LM) const;
 
   virtual LevelMesh2d* GascoigneMeshConstructor::LevelUpdate2d(GascoigneMesh* GM,
-						     const Gascoigne::IntSet& newquads, 
-						     const Gascoigne::IntSet& oldquads) const;
+						     const IntSet& newquads, 
+						     const IntSet& oldquads) const;
   virtual LevelMesh3d* GascoigneMeshConstructor::LevelUpdate3d(GascoigneMesh* GM,
-						     const Gascoigne::IntSet& newquads, 
-						     const Gascoigne::IntSet& oldquads) const;
+						     const IntSet& newquads, 
+						     const IntSet& oldquads) const;
   virtual void Loop2d();
   virtual void Loop3d();
 
@@ -41,6 +43,6 @@ public:
 
   virtual void BasicInit();
 };
-
+}
 
 #endif

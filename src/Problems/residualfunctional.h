@@ -9,11 +9,11 @@
 /*-----------------------------------------*/
 
 
+namespace Gascoigne
+{
 class ResidualFunctional : public Functional
 {
 protected:
-
-  typedef  nvector<double>           Vector;
 
   int            _comp;
   std::set<int>  _col;
@@ -44,6 +44,6 @@ public:
 
   const DirichletData* GetDirichletData() const {return _DD;}
 };
-
+}
 
 #endif

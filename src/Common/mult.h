@@ -3,6 +3,8 @@
 
 #include "fadamath.h"
 
+namespace Gascoigne
+{
 template<class MATRIX1, class MATRIX2, class MATRIX3>
 void multeq(MATRIX1& M, const MATRIX2& A, const MATRIX3& B)
 {
@@ -111,7 +113,7 @@ template<class MATRIX, class VECTOR>
 void backward(VECTOR& dst, const MATRIX& M, const VECTOR& src)
     {
       int i,j;
-      int nu = GascoigneMath::min_int(M.m(),M.n());
+      int nu = min_int(M.m(),M.n());
       double s;
       for (i=nu-1;i>=0;i--)
 	{
@@ -120,6 +122,7 @@ void backward(VECTOR& dst, const MATRIX& M, const VECTOR& src)
 	  dst[i] = s/M(i,i);
 	}
     }
+}
 
 #endif
 

@@ -4,6 +4,8 @@ using namespace std;
 
 /*---------------------------------------------------*/
 
+namespace Gascoigne
+{
 template<int DIM>
 void BoundaryFunction<DIM>::grad(Vector& dst, const Vector& src) const 
 {
@@ -60,3 +62,4 @@ void BoundaryFunction<DIM>::newton(Vector& dst) const
 
 template class BoundaryFunction<2>;
 template class BoundaryFunction<3>;
+}

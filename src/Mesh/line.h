@@ -3,6 +3,8 @@
 
 #include  "cell.h"
 
+namespace Gascoigne
+{
 class Line : public Cell<2>
 {
  protected:
@@ -13,5 +15,6 @@ class Line : public Cell<2>
 
   int nnchild() { return 2;}
 };
+}
 
 #endif

@@ -3,6 +3,8 @@
 
 /**********************************************************/
 
+namespace Gascoigne
+{
 double ParabelFunction(double x, double n0, double n1)
 {
   return -4.*(x-n0)*(x-n1)/((n0-n1)*(n0-n1));
@@ -23,6 +25,7 @@ double PlugFlowFunction(double x, double a, double b, double stiff)
   double h = fabs(a-b);
 
   return tanh(stiff/h*(x-a)) * tanh(stiff/h*(-x+b));
+}
 }
 
 /**********************************************************/

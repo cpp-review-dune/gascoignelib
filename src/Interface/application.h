@@ -13,6 +13,8 @@
 
 #include  "gascoigne.h"
 
+namespace Gascoigne
+{
 class Application
 {
 private:
@@ -39,15 +41,15 @@ public:
   virtual void SetTime(double time) const { _time = time;}
   virtual void SetTime(double time, double dt) const { _time = time; _dt = dt;}
 
-  virtual void SetFemData(Gascoigne::FemData& q) const {}
-  virtual void SetParameterData(Gascoigne::LocalParameterData& q) const {}
+  virtual void SetFemData(FemData& q) const {}
+  virtual void SetParameterData(LocalParameterData& q) const {}
 
   virtual int GetNcomp() const {assert(0); return -1;}
 
   int size()const{std::cerr<< "Application: never use \"size()\"\n"; assert(0); return -1;}
   int ncomp()const{std::cerr<< "Application: never use \"ncomp()\"\n"; assert(0); return -1;}
 };
-
+}
 
 #endif
 

@@ -18,9 +18,9 @@ class GlobalData
 {
  public:
 
-  Gascoigne::GlobalNodeData      _node;
-  Gascoigne::GlobalCellData      _cell;
-  Gascoigne::GlobalParameterData _parameter;
+  GlobalNodeData      _node;
+  GlobalCellData      _cell;
+  GlobalParameterData _parameter;
 
 //
 ////  Con(De)structor 
@@ -29,8 +29,8 @@ class GlobalData
   GlobalData() {}
   ~GlobalData() {}
 
-  void AddNodeVector(const std::string& name, const Gascoigne::GlobalVector* d) {
-//    const Gascoigne::GlobalVector* nd = dynamic_cast<const Gascoigne::GlobalVector*>(d);
+  void AddNodeVector(const std::string& name, const GlobalVector* d) {
+//    const GlobalVector* nd = dynamic_cast<const GlobalVector*>(d);
     assert(d!=NULL);
     if(!_node.insert(std::make_pair(name,d)).second)
     {
@@ -38,8 +38,8 @@ class GlobalData
     }
   }
   
-  void AddCellVector(const std::string& name, const Gascoigne::GlobalCellVector* d) {
-//    const Gascoigne::GlobalVector* nd = dynamic_cast<const Gascoigne::GlobalVector*>(d);
+  void AddCellVector(const std::string& name, const GlobalCellVector* d) {
+//    const GlobalVector* nd = dynamic_cast<const GlobalVector*>(d);
     assert(d!=NULL);
     if(!_cell.insert(std::make_pair(name,d)).second)
     {
@@ -47,8 +47,8 @@ class GlobalData
     }
   }
   
-  void AddParameterVector(const std::string& name, const Gascoigne::GlobalParameterVector* d) {
-//    const Gascoigne::GlobalVector* nd = dynamic_cast<const Gascoigne::GlobalVector*>(d);
+  void AddParameterVector(const std::string& name, const GlobalParameterVector* d) {
+//    const GlobalVector* nd = dynamic_cast<const GlobalVector*>(d);
     assert(d!=NULL);
     if(!_parameter.insert(std::make_pair(name,d)).second)
     {
@@ -77,9 +77,9 @@ class GlobalData
     }
   }
 
-  const Gascoigne::GlobalNodeData& GetNodeData() const {return _node;}
-  const Gascoigne::GlobalCellData& GetCellData() const {return _cell;}
-  const Gascoigne::GlobalParameterData& GetParameterData() const {return _parameter;}
+  const GlobalNodeData& GetNodeData() const {return _node;}
+  const GlobalCellData& GetCellData() const {return _cell;}
+  const GlobalParameterData& GetParameterData() const {return _parameter;}
 };
 }
 

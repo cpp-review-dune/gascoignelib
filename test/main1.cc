@@ -67,7 +67,7 @@ public:
 class ProblemDescriptor : public ProblemDescriptorBase
 {
  public:
-  void BasicInit(const Gascoigne::ParamFile* pf) {
+  void BasicInit(const ParamFile* pf) {
     GetEquationPointer() = new LocalEquation;
     GetExactSolutionPointer() = new LocalExactSolution();
     GetRightHandSideDataPointer() = new RightHandSideDataByEquation(GetEquation(), GetExactSolution());

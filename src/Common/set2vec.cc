@@ -2,6 +2,9 @@
 
 using namespace std;
 
+namespace Gascoigne
+{
+
 /*---------------------------------------------------*/
 
 void Set2Vec(vector<int>& v, const set<int>& h)
@@ -24,4 +27,5 @@ void Vec2Set(set<int>& h, const vector<int>& v)
     {
       h.insert(v[i]);
     }
+}
 }

@@ -8,6 +8,8 @@
 
 /**********************************************************/
 
+namespace Gascoigne
+{
 template<int DIM>
 class EdgeInfoContainer : public nvector<EdgeInfo<DIM>*>
 {
@@ -29,5 +31,6 @@ class EdgeInfoContainer : public nvector<EdgeInfo<DIM>*>
 
   void ShowStatistics() const;
 };
+}
 
 #endif

@@ -14,6 +14,8 @@
 #include  "basicghostvector.h"
 #include  "multilevelsolverinterface.h"
 
+namespace Gascoigne
+{
 class MultiLevelGhostVector : public BasicGhostVector
 {
 private:
@@ -44,12 +46,12 @@ public:
 
   int n() const {assert(__S); return __S->nlevels();}
 
-  const Gascoigne::GlobalVector& Vector(int l) const {
+  const GlobalVector& Vector(int l) const {
     assert(__S);
     return __S->GetSolver(l)->GetGV(*this);
   }
 
-  Gascoigne::GlobalVector& Vector(int l) {
+  GlobalVector& Vector(int l) {
     assert(__S);
     return __S->GetSolver(l)->GetGV(*this);
   }
@@ -85,6 +87,6 @@ public:
     }
   }
 };
-
+}
 
 #endif

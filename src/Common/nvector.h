@@ -13,6 +13,8 @@
 
 /*----------------------------------------------*/
 
+namespace Gascoigne
+{
 template<class T>
 class nvector : public std::vector<T>
 {
@@ -176,7 +178,7 @@ inline double nvector<T>::norm_l8() const
   double n(0);
   while( first != last)
     {
-      n = GascoigneMath::max(n,fabs(*first));
+      n = Gascoigne::max(n,fabs(*first));
       first++;
     }
   return n;
@@ -255,7 +257,7 @@ inline double nvector<T>::max() const
 
   while( first != last)
     {
-      d = GascoigneMath::max( d, fabs((*first)));
+      d = Gascoigne::max( d, fabs((*first)));
       first++;
     }
   return d;
@@ -273,7 +275,7 @@ inline double nvector<T>::min() const
 
   while( first != last)
     {
-      d = GascoigneMath::min( d, fabs((*first)));
+      d = Gascoigne::min( d, fabs((*first)));
       first++;
     }
   return d;
@@ -506,6 +508,7 @@ inline int nvector<T>::find(const T& x) const
 }
 
 /**********************************************************/
+}
 
 #endif
 

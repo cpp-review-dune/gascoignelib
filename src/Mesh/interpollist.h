@@ -6,6 +6,8 @@
 
 /*---------------------------------------------------*/
 
+namespace Gascoigne
+{
 template <int N>
 class InterpolElement : public fixarray<N,int>
 {
@@ -37,5 +39,6 @@ class InterpolationList : public std::vector<InterpolElement<N> >
       push_back(I);
     }
 };
+}
 
 #endif

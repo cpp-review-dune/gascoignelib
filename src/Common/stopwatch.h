@@ -12,6 +12,8 @@
 
 /*----------------------------------------------------*/
 
+namespace Gascoigne
+{
 class Time
 {
  protected:
@@ -57,5 +59,6 @@ class StopWatch
   double stop() ;
   double read() const;
 };
+}
 
 #endif

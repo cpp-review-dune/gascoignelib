@@ -2,10 +2,11 @@
 #include  "gascoignemeshtransferconstructor.h"
 
 using namespace std;
-using namespace Gascoigne;
 
 /*---------------------------------------------------*/
 
+namespace Gascoigne
+{
 GascoigneMeshConstructor::GascoigneMeshConstructor
 (const HierarchicalMesh* hm, GascoigneMultiGridMesh* gmg)
   : HM(hm), GMG(gmg), finestlevel(0)
@@ -19,7 +20,7 @@ void GascoigneMeshConstructor::BasicInit()
   if (HM->dimension()==2) Loop2d();
   else                    Loop3d();
 
-  nvector<int>& v1 = *GMG->GetGascoigneMesh(0)->Vertexo2n();
+  IntVector& v1 = *GMG->GetGascoigneMesh(0)->Vertexo2n();
   v1.reservesize(HM->Vertexo2n()->size());
   v1 = *HM->Vertexo2n();
 }
@@ -131,7 +132,7 @@ void GascoigneMeshConstructor::Construct2d
 
   assert(NM);
 
-  nvector<int>& nc = NM->GetCellVector();
+  IntVector& nc = NM->GetCellVector();
   vector<Vertex2d>& nx = NM->GetVertexVector();
 
   // zellen
@@ -179,7 +180,7 @@ void GascoigneMeshConstructor::Construct3d
 
   assert(NM);
 
-  nvector<int>& nc = NM->GetCellVector();
+  IntVector& nc = NM->GetCellVector();
   vector<Vertex3d>& nx = NM->GetVertexVector();
 
   // zellen
@@ -229,12 +230,12 @@ void GascoigneMeshConstructor::PatchToCell2d
   // nur im Parallelen gebraucht
   // Liste von Patchen auf die Zellen
 
-  nvector<int> ci;
+  IntVector ci;
   LM->ConstructCellIndOfPatch(ci);
 
   int np = ci.size();
 
-  nvector<nvector<int> >& patch2cell=PIH.GetAllPatch2Cell();
+  nvector<IntVector >& patch2cell=PIH.GetAllPatch2Cell();
   patch2cell.resize(np);
 
   const HierarchicalMesh2d* HM2d = dynamic_cast<const HierarchicalMesh2d*>(HM);
@@ -262,12 +263,12 @@ void GascoigneMeshConstructor::PatchToCell3d
   // nur im Parallelen gebraucht
   // Liste von Patchen auf die Zellen
 
-  nvector<int> ci;
+  IntVector ci;
   LM->ConstructCellIndOfPatch(ci);
 
   int np = ci.size();
 
-  nvector<nvector<int> >& patch2cell = PIH.GetAllPatch2Cell();
+  nvector<IntVector >& patch2cell = PIH.GetAllPatch2Cell();
   patch2cell.resize(np);
 
   const HierarchicalMesh3d* HM3d = dynamic_cast<const HierarchicalMesh3d*>(HM);
@@ -284,6 +285,7 @@ void GascoigneMeshConstructor::PatchToCell3d
 	  assert(patch2cell[i][p]>=0);
 	}
     }
+}
 }
 
 /*-----------------------------------------*/

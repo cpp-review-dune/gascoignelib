@@ -14,8 +14,9 @@
 
 
 using namespace std;
-using namespace Gascoigne;
 
+namespace Gascoigne
+{
 typedef  triple<int,int,int>          tint;
 
 /*------------------------------------------------------*/
@@ -903,7 +904,7 @@ int HierarchicalMesh3d::nactivedescendants(int i)      const
 
 /*------------------------------------------------------*/
 
-nvector<int> HierarchicalMesh3d::GetVertices(int c) const
+IntVector HierarchicalMesh3d::GetVertices(int c) const
 {  
   IntVector v;
   for (int i=0;i<hexs[c].nvertexs();++i)
@@ -913,15 +914,15 @@ nvector<int> HierarchicalMesh3d::GetVertices(int c) const
 
 /*------------------------------------------------------*/
 
-nvector<int> HierarchicalMesh3d::Nachkommen(const int i) const
+IntVector HierarchicalMesh3d::Nachkommen(const int i) const
 {
-  nvector<int> k = Kinder(i);
+  IntVector k = Kinder(i);
   if (k.size()==0) return k;
-  nvector<int> k1;
+  IntVector k1;
   int ks=k.size();
   for (int i=0;i<ks;++i)
     {
-      nvector<int> k1 = Nachkommen(k[i]);
+      IntVector k1 = Nachkommen(k[i]);
       for (int j=0;j<k1.size();++j) k.push_back(k1[j]);
     }
   return k;
@@ -929,7 +930,7 @@ nvector<int> HierarchicalMesh3d::Nachkommen(const int i) const
 
 /*------------------------------------------------------*/
 
-nvector<int> HierarchicalMesh3d::Kinder     (const int i) const
+IntVector HierarchicalMesh3d::Kinder     (const int i) const
 {
   IntVector k = hex(i).childs();
   return k;
@@ -937,7 +938,7 @@ nvector<int> HierarchicalMesh3d::Kinder     (const int i) const
 
 /*------------------------------------------------------*/
 
-nvector<int> HierarchicalMesh3d::Geschwister(const int i) const
+IntVector HierarchicalMesh3d::Geschwister(const int i) const
 {
   const Hex& q = hex(i);
   int father = q.father();
@@ -997,7 +998,7 @@ void HierarchicalMesh3d::GetAwakePatchs(set<int>& v) const
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh3d::ConstructQ2PatchMesh(nvector<int>& q2patchmesh) const
+void HierarchicalMesh3d::ConstructQ2PatchMesh(IntVector& q2patchmesh) const
 {
   typedef set<int>::iterator It;
   set<int> patche;
@@ -1019,7 +1020,7 @@ void HierarchicalMesh3d::ConstructQ2PatchMesh(nvector<int>& q2patchmesh) const
 	  int v = hexs[*it].father();
 	  assert(v!=-1);
 	  q2patchmesh.push_back(v);
-	  nvector<int> nk = Nachkommen(v);
+	  IntVector nk = Nachkommen(v);
 	  for (int i=0;i<nk.size();++i)
 	    patch_on_level[hexs[nk[i]].level()].erase(nk[i]);
 	  it = patch_on_level[l].begin();
@@ -1539,7 +1540,7 @@ int HierarchicalMesh3d::regular_grid3d_two(IntVector& celllist,
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh3d::GetMinMaxLevels(nvector<int>& maxi, nvector<int>& mini,
+void HierarchicalMesh3d::GetMinMaxLevels(IntVector& maxi, IntVector& mini,
 					 const IntSet& CellRef) const
 {
   // set maximal levels for vertices
@@ -1556,8 +1557,8 @@ void HierarchicalMesh3d::GetMinMaxLevels(nvector<int>& maxi, nvector<int>& mini,
       for (int j=0; j<8; j++)
 	{
 	  int k = q[j];
-	  maxi[k] = GascoigneMath::max_int( maxi[k], lev);
-	  mini[k] = GascoigneMath::min_int( mini[k], lev);
+	  maxi[k] = Gascoigne::max_int( maxi[k], lev);
+	  mini[k] = Gascoigne::min_int( mini[k], lev);
 	}
     }
 }
@@ -1566,7 +1567,7 @@ void HierarchicalMesh3d::GetMinMaxLevels(nvector<int>& maxi, nvector<int>& mini,
 
 int HierarchicalMesh3d::regular_grid3d_three_refine(IntSet& CellRef) const
 {
-  nvector<int> maxlevel, minlevel;
+  IntVector maxlevel, minlevel;
 
   GetMinMaxLevels(maxlevel,minlevel,CellRef);
   
@@ -1615,7 +1616,7 @@ int HierarchicalMesh3d::regular_grid3d_three_coarse(IntSet& CellRef,
       {
 	const Hex& q = hex(*p);
 	int lev = q.level();
-	maxl = GascoigneMath::max_int(maxl,lev);
+	maxl = Gascoigne::max_int(maxl,lev);
       }
     LevelCellCoarse.resize(maxl+1);
     p = CellCoarse.begin();
@@ -1629,7 +1630,7 @@ int HierarchicalMesh3d::regular_grid3d_three_coarse(IntSet& CellRef,
   int coarse = 0;
   for (int i=maxl; i>=0; i--)
     {
-      nvector<int> maxlevel, minlevel;
+      IntVector maxlevel, minlevel;
 
       GetMinMaxLevels(maxlevel,minlevel,CellRef);
   
@@ -1717,7 +1718,7 @@ void HierarchicalMesh3d::FillVertexLevels(IntVector& dst) const
       for (int j=0; j<8; j++)
 	{
 	  int k = Q[j];
-	  dst[k] = GascoigneMath::min_int(dst[k],level);
+	  dst[k] = Gascoigne::min_int(dst[k],level);
 	}
     }
 }
@@ -1752,7 +1753,7 @@ void HierarchicalMesh3d::RefineCoarseNodes
 	  int minlevel = vertexlevel[QF[0]];
 	  for (int v=1; v<8; v++)
 	    {
-	      minlevel = GascoigneMath::min_int(minlevel,vertexlevel[QF[v]]);
+	      minlevel = Gascoigne::min_int(minlevel,vertexlevel[QF[v]]);
 	    }
 	  for (int v=0; v<8; v++)
 	    {
@@ -1921,7 +1922,7 @@ void HierarchicalMesh3d::post_refine3d()
   mnlevels = 0;
   for(int i=0;i<hexs.size();i++)
     {
-      mnlevels = GascoigneMath::max_int(mnlevels,hexs[i].level());
+      mnlevels = Gascoigne::max_int(mnlevels,hexs[i].level());
     }
 }
 
@@ -2000,6 +2001,7 @@ void HierarchicalMesh3d::check_mesh3d() const
 	exit(1);
       }
   }
+}
 }
 
 /*---------------------------------------------------*/

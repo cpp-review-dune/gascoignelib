@@ -5,6 +5,8 @@
 
 /*------------------------------------------------------------------*/
 
+namespace Gascoigne
+{
 BaseQ12d::BaseQ12d()  
 {
   BasicInit();
@@ -36,6 +38,7 @@ void BaseQ12d::point(const Vertex2d& s) const
       DN [i].y() = psi   (ix,s.x()) * psi_x (iy,s.y());
 //       dxy[i]     = psi_x(ix,s.x()) * psi_x(iy,s.y());
     }
+}
 }
 
 /*------------------------------------------------------------------*/

@@ -7,9 +7,11 @@
 #include "nvector.h"
 #include "mult.h"
 
+namespace Gascoigne
+{
 static int             KMAX = 30-1;
 static nmatrix<double> H(KMAX+1, KMAX);
-static nvector<double> gmresgamma(KMAX+1), ci(KMAX), si(KMAX);
+static DoubleVector gmresgamma(KMAX+1), ci(KMAX), si(KMAX);
 static int             firstvector;
 
 /*
@@ -17,8 +19,8 @@ static int             firstvector;
    triagonal structure by givens rotation of the last column
 */
 
-inline void givens_rotation(nvector<double>& h, nvector<double>& b, 
-			    nvector<double>& ci, nvector<double>& si, int col)
+inline void givens_rotation(DoubleVector& h, DoubleVector& b, 
+			    DoubleVector& ci, DoubleVector& si, int col)
 {
   for (int i=0 ; i<col ; i++)
     {
@@ -68,7 +70,7 @@ inline int dgmres(MATRIX& A, VECTOR& x, VECTOR& b,
   int k0   = info.iteration();
   int kmax = mem.n()-1;
   //nmatrix<double> H(kmax+1, kmax);
-  //nvector<double> gamma(kmax+1), ci(kmax), si(kmax);
+  //DoubleVector gamma(kmax+1), ci(kmax), si(kmax);
 
   //firstvector = 0;
   if (!firstvector)
@@ -119,7 +121,7 @@ inline int dgmres(MATRIX& A, VECTOR& x, VECTOR& b,
 
     /* Orthogonalization */
     
-    nvector<double> h(kmax);
+    DoubleVector h(kmax);
     for (i=0 ; i<dim ; i++)
     {
       h[i] = vv * mem[i];
@@ -159,7 +161,7 @@ inline int dgmres(MATRIX& A, VECTOR& x, VECTOR& b,
   
   /*  Calculate solution  */  
 
-  nvector<double> h(dim);
+  DoubleVector h(dim);
   nmatrix<double> H1(dim+1,dim);
 
   for (i=0 ; i<dim+1 ; i++)
@@ -183,6 +185,7 @@ inline int dgmres(MATRIX& A, VECTOR& x, VECTOR& b,
   }
   
   return reached;
+}
 }
 
 #endif

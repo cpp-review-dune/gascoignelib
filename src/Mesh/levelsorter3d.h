@@ -5,6 +5,8 @@
 
 /*---------------------------------------------------*/
 
+namespace Gascoigne
+{
 class LevelSorter3d
 {
 protected:
@@ -19,6 +21,7 @@ public:
       return ( HM.hex(i).level() > HM.hex(j).level() );
     }
 };
+}
 
 /*---------------------------------------------------*/
 

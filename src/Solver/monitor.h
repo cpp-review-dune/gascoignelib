@@ -7,11 +7,14 @@
 #include  "cginfo.h"
 #include  "nlinfo.h"
 #include  "paramfile.h"
+#include  "gascoigne.h"
 #include  <string>
 
 
 /*******************************************************************/
 
+namespace Gascoigne
+{
 class Monitor
 {
   int    prec;
@@ -19,9 +22,6 @@ class Monitor
   int    ps, _newmatrix;
 
  protected:
-
-  typedef std::vector<double> dvector;
-  typedef std::vector<int>    ivector;
 
   std::vector<std::string>  header;
   std::string          format;
@@ -38,8 +38,8 @@ class Monitor
   void  PrintAscii (std::ostream& os, const std::string&) const;
   void  PrintAscii (std::ostream& os, int    i) const {os <<i;} 
   void  PrintAscii (std::ostream& os, double d) const {os.precision(prec);os <<d;} 
-  void  PrintAscii (std::ostream& os, const ivector&) const;
-  void  PrintAscii (std::ostream& os, const dvector&) const;
+  void  PrintAscii (std::ostream& os, const IntVector&) const;
+  void  PrintAscii (std::ostream& os, const DoubleVector&) const;
   void  PrintHeader(std::ostream& os) const;
 
  public:
@@ -60,10 +60,10 @@ class Monitor
   void  failed_step   ();
   void  pre_monitor   (char*);
   void  post_monitor  ();
-  void  init          (const Gascoigne::ParamFile* pf, int);
+  void  init          (const ParamFile* pf, int);
   void  mesh          (int,int);
   void  pre_nonlinear (int);
-  void  post_nonlinear(const dvector&, double, int,int,int);
+  void  post_nonlinear(const DoubleVector&, double, int,int,int);
   void  nonlinear_step(const CGInfo&, const NLInfo&);
   int&  new_matrix()  { return _newmatrix;};
 
@@ -75,12 +75,13 @@ class Monitor
   void  PrintResults   (const std::string& s="\n") const;
   void  PrintResults   (double) const;
   void  PrintResults   (int) const;
-  void  PrintResults   (const ivector& iv) const;
-  void  PrintResults   (const dvector& dv) const;
+  void  PrintResults   (const IntVector& iv) const;
+  void  PrintResults   (const DoubleVector& dv) const;
 
   void PrintInfoSummary(const NLInfo& nlinfo) const;
   void PrintInfoSummary(const CGInfo& nlinfo) const;
 };
+}
 
 /*******************************************************************/
 

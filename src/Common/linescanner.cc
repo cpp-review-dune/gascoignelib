@@ -5,6 +5,9 @@
 
 using namespace std;
 
+namespace Gascoigne
+{
+
 /***************************************************/
 
 LineScanner::LineScanner(const string& filename) : 
@@ -133,3 +136,4 @@ int LineScanner::NextLine(vector<string>& words, const vector<int>& w)
 
 /***************************************************/
 
+}

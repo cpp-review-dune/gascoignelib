@@ -17,6 +17,8 @@
 
 /*------------------------------------------------------*/
 
+namespace Gascoigne
+{
 class FixArrayHash
 {
  public:
@@ -66,6 +68,7 @@ std::ostream& operator<<(std::ostream &s, const HangList<N>& A);
 
 template<int N>
 std::istream& operator>>(std::istream &s, HangList<N>& A);
+}
 
 /*------------------------------------------------------*/
 

@@ -9,10 +9,11 @@
 #include  "mginterpolatornested.h"
 
 using namespace std;
-using namespace Gascoigne;
 
 /*-------------------------------------------------------------*/
 
+namespace Gascoigne
+{
 StdMultiLevelSolver::~StdMultiLevelSolver()
 {
   //ViewProtocoll();
@@ -185,7 +186,7 @@ void StdMultiLevelSolver::NewSolvers()
 {
   oldnlevels = _SP.size();
 
-  int nl = GascoigneMath::max_int(nlevels(),oldnlevels);
+  int nl = Gascoigne::max_int(nlevels(),oldnlevels);
   _SP.resize(nl,NULL);
   ComputeLevel = _SP.size()-1;
 
@@ -318,7 +319,7 @@ void StdMultiLevelSolver::vmulteqgmres(MultiLevelGhostVector& y, const MultiLeve
 
 void StdMultiLevelSolver::precondition(MultiLevelGhostVector& x, MultiLevelGhostVector& y)
 {
-  int clevel=GascoigneMath::max_int(DataP->CoarseLevel(),0);
+  int clevel=Gascoigne::max_int(DataP->CoarseLevel(),0);
   if(DataP->CoarseLevel() == -1) clevel = FinestLevel(); 
 
   DataP->GetLInfo("Precond").reset();
@@ -342,7 +343,7 @@ void StdMultiLevelSolver::LinearMg(int finelevel, int coarselevel, MultiLevelGho
   assert(finelevel>=clevel);
 
   int nl = nlevels();
-  nvector<double> res(nl,0.), rw(nl,0.);
+  DoubleVector res(nl,0.), rw(nl,0.);
 
   _mg0.Vector(finelevel).equ(1.,f.Vector(finelevel));
   
@@ -488,7 +489,7 @@ void StdMultiLevelSolver::NewtonLinearSolve(MultiLevelGhostVector& x, const Mult
   
   x.zero();
 
-  int clevel=GascoigneMath::max_int(DataP->CoarseLevel() ,0);
+  int clevel=Gascoigne::max_int(DataP->CoarseLevel() ,0);
   if(DataP->CoarseLevel() == -1) clevel = FinestLevel(); 
   LinearMg(ComputeLevel,clevel,x,b, info);
 
@@ -668,4 +669,5 @@ void StdMultiLevelSolver::Transfer(int l, GlobalVector& ul, const GlobalVector& 
 {
   assert(_Interpolator[l-1]);
   _Interpolator[l-1]->SolutionTransfer(ul,uf);
+}
 }

@@ -7,6 +7,8 @@
 
 /*-----------------------------------------*/
 
+namespace Gascoigne
+{
 class GascoigneMultiGridMesh
 {
 protected:
@@ -44,6 +46,6 @@ public:
     assert((l>=0)&&(l<T.size()));
     return T[l];}
 };
-
+}
 
 #endif

@@ -3,6 +3,8 @@
 
 /*---------------------------------------------------*/
 
+namespace Gascoigne
+{
 class LevelSorter2d
 {
 protected:
@@ -34,5 +36,6 @@ public:
       return (!LR.EdgeIsHangingGlobalIndex(i) && LR.EdgeIsHangingGlobalIndex(j));
     }
 };
+}
 
 #endif

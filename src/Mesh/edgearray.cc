@@ -2,6 +2,8 @@
 
 /*--------------------------------------------------------------*/
 
+namespace Gascoigne
+{
 template<int N>
 EdgeArray<N>::EdgeArray<N>() : fixarray<N,int>() {}
 
@@ -75,6 +77,7 @@ bool EdgeArray<4>::operator==(const fixarray<4,int>& A) const
 int EdgeArray<4>::sum() const 
 { 
   return (*this)[0]+(*this)[1]+(*this)[2]+(*this)[3];
+}
 }
 
 /*--------------------------------------------------------------*/

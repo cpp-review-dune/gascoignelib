@@ -1,11 +1,12 @@
 #include "adaptordata.h"
 #include "filescanner.h"
 
-using namespace Gascoigne;
 using namespace std;
 
 /*****************************************************************/
 
+namespace Gascoigne
+{
 void AdaptorData::ErrorMessage(const string& str1, const string& str2) const
 {
   cout << "AdaptorData: " << str1 << " " << str2 << " ?" << endl;
@@ -106,4 +107,5 @@ void AdaptorData::reset()
 {
   indr = inr = inc = 0;
   ieta = 0.; 
+}
 }

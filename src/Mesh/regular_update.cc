@@ -3,10 +3,11 @@
 
 
 using namespace std;
-using namespace Gascoigne;
 
 /*----------------------------------------------*/
 
+namespace Gascoigne
+{
 void regular_update(IntSet& hr, IntSet& hc, IntVector& vr, IntVector& vc)
 {
   for (int i=0; i<vr.size(); i++)
@@ -21,4 +22,5 @@ void regular_update(IntSet& hr, IntSet& hc, IntVector& vr, IntVector& vc)
   sort(vr.begin(),vr.end());
   int n = unique(vr.begin(),vr.end()) - vr.begin();
   vr.reserve(n); vr.resize(n);
+}
 }

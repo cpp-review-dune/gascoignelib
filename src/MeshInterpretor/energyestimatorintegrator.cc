@@ -1,10 +1,11 @@
 #include "energyestimatorintegrator.h"
 
 using namespace std;
-using namespace Gascoigne;
 
 /**********************************************************/
 
+namespace Gascoigne
+{
 template<int DIM>
 void EnergyEstimatorIntegrator<DIM>::BasicInit()
 {
@@ -148,3 +149,4 @@ double EnergyEstimatorIntegrator<DIM>::ResidualZeroRhs(const LocalVector& U, con
 
 template class EnergyEstimatorIntegrator<2>;
 template class EnergyEstimatorIntegrator<3>;
+}

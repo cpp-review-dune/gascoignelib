@@ -6,6 +6,8 @@
 
 /*-----------------------------------------*/
 
+namespace Gascoigne
+{
 GascoigneMultiGridMesh::GascoigneMultiGridMesh()
 {
 }
@@ -78,4 +80,5 @@ void GascoigneMultiGridMesh::ReInit(int dim, int nlevels)
     {
       T[l] = NewTransfer(dim);
     }
+}
 }

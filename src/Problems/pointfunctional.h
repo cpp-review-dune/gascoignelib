@@ -7,13 +7,15 @@
 
 /*-----------------------------------------*/
 
+namespace Gascoigne
+{
 class PointFunctional : public Functional
 {
 protected:
 
   std::vector<Vertex2d>  v2d;
   std::vector<Vertex3d>  v3d;
-  nvector<double>        w;
+  DoubleVector        w;
   std::vector<int>       ids;
   std::string            type;
 
@@ -43,12 +45,12 @@ public:
   int size() const {return w.size();}
   const std::vector<Vertex2d>& points2d()    const { return v2d;}
   const std::vector<Vertex3d>& points3d()    const { return v3d;}
-  const nvector<double>&  weights()          const { return w;}
+  const DoubleVector&  weights()          const { return w;}
   const std::string& GetType()               const { return type;}
   const std::vector<int>& GetIds()           const { return ids;}
 
   int GetComp() const { return mycomp; }
 };
-
+}
 
 #endif

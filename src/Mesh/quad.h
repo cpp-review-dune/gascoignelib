@@ -3,6 +3,9 @@
 
 #include  "cell.h"
 
+namespace Gascoigne
+{
 typedef  Cell<4,4> Quad;
+}
 
 #endif

@@ -6,6 +6,8 @@ using namespace std;
 /*------------------------------------------------*/
 /*------------------------------------------------*/
 
+namespace Gascoigne
+{
 template<int N,class T>
 ostream& operator<<(ostream &s, const fixarray<N,T>& A)
 {
@@ -62,4 +64,4 @@ template istream& operator>>(istream &, fixarray<4,int>& );
 template istream& operator>>(istream &, fixarray<6,int>& );
 template istream& operator>>(istream &, fixarray<8,int>& );
 template istream& operator>>(istream &, fixarray<9,int>& );
-
+}

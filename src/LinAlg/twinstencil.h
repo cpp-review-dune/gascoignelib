@@ -13,6 +13,8 @@
 
 #include  "columnstencil.h"
 
+namespace Gascoigne
+{
 class TwinStencil : public ColumnStencil
 {
  protected:
@@ -30,6 +32,6 @@ class TwinStencil : public ColumnStencil
   // sollte protected sein, wird aber im moment in "constructstructure" von ilu benutzt
   void diagonalfirst();
 };
-
+}
 
 #endif

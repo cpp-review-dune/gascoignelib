@@ -6,6 +6,8 @@
 
 /*-----------------------------------------*/
 
+namespace Gascoigne
+{
 class HNStructureQ13d : public HNStructureQ12d
 {
 protected:
@@ -17,11 +19,11 @@ protected:
 
   const std::map<int,FaceVector>*        faces;
 
-  void CondenseHanging2er(nvector<int>& indices) const;
-  void CondenseHanging4er(nvector<int>& indices) const;
+  void CondenseHanging2er(IntVector& indices) const;
+  void CondenseHanging4er(IntVector& indices) const;
 
-  void CondenseHanging2er(EntryMatrix& E, nvector<int>& indices) const;
-  void CondenseHanging4er(EntryMatrix& E, nvector<int>& indices) const;
+  void CondenseHanging2er(EntryMatrix& E, IntVector& indices) const;
+  void CondenseHanging4er(EntryMatrix& E, IntVector& indices) const;
 
   fixarray<4,int> GetHangingFace(int i) const;
   fixarray<2,int> GetHangingEdge(int i) const;
@@ -39,16 +41,17 @@ public:
   void MatrixDiag(int ncomp, MatrixInterface& A) const;
   void SparseStructureDiag(SparseStructure* A) const;
   
-  void Average(Gascoigne::GlobalVector& u) const;
-  void Distribute(Gascoigne::GlobalVector& u) const;
-  void Zero(Gascoigne::GlobalVector& u) const;
-  bool ZeroCheck(const Gascoigne::GlobalVector& u) const;
+  void Average(GlobalVector& u) const;
+  void Distribute(GlobalVector& u) const;
+  void Zero(GlobalVector& u) const;
+  bool ZeroCheck(const GlobalVector& u) const;
   
-  void Couplings(nvector<int>& indices) const;
+  void Couplings(IntVector& indices) const;
   
-  void CondenseHanging(nvector<int>& indices) const;
-  void CondenseHanging(EntryMatrix&, nvector<int>&) const;
-  void CondenseHangingPatch(EntryMatrix& E, nvector<int>& indices) const {}
+  void CondenseHanging(IntVector& indices) const;
+  void CondenseHanging(EntryMatrix&, IntVector&) const;
+  void CondenseHangingPatch(EntryMatrix& E, IntVector& indices) const {}
 };
+}
 
 #endif

@@ -5,6 +5,8 @@
 
 /*-----------------------------------------*/
 
+namespace Gascoigne
+{
 class TimeInfo
 {
 protected:
@@ -45,5 +47,6 @@ public:
   void iteration_backward(int i);
   void SpecifyScheme(int i);
 };
+}
 
 #endif

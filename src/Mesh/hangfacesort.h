@@ -5,6 +5,8 @@
 
 /*---------------------------------------------------*/
 
+namespace Gascoigne
+{
 class HangFaceSort{
 
 protected:
@@ -36,5 +38,6 @@ public:
       return !HR.EdgeIsHanging(i) && HR.EdgeIsHanging(j);
     }
 };
+}
 
 #endif

@@ -37,7 +37,7 @@ class LocalNeumannData : public NeumannData
 public:
   string GetName() const {return "Local";}
   int GetNcomp() const {return 3;}
-  void operator()(Gascoigne::VectorIterator b, const Gascoigne::TestFunction& N, const Vertex2d& v, const Vertex2d& n, int col) const {
+  void operator()(VectorIterator b, const TestFunction& N, const Vertex2d& v, const Vertex2d& n, int col) const {
 
     //b.zero();
   //assert(b.size()==3);
@@ -93,7 +93,7 @@ public:
 class ProblemDescriptor : public ProblemDescriptorBase
 {
  public:
-  void BasicInit(const Gascoigne::ParamFile* pf) {
+  void BasicInit(const ParamFile* pf) {
     GetEquationPointer() = new LocalEquation;
     GetDirichletDataPointer() = new ZeroDirichletData();
     GetNeumannDataPointer() = new LocalNeumannData();

@@ -17,6 +17,9 @@ using namespace std;
 
 /*----------------------------------------------------*/
 
+namespace Gascoigne
+{
+
 double Time::GetTotalSeconds () const 
 {
   return sec+60.*min+3600.*hour+24.*3600.*day;
@@ -97,9 +100,4 @@ double StopWatch::read() const
   if (running) return -1;
   return T.GetTotalSeconds(); 
 } 
-
-
-
-
-
-
+}

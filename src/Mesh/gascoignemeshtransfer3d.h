@@ -7,6 +7,8 @@
 /*-----------------------------------------*/
 
 
+namespace Gascoigne
+{
 class GascoigneMeshTransfer3d : public GascoigneMeshTransfer
 {
 protected:
@@ -18,6 +20,6 @@ public:
 GascoigneMeshTransfer3d();
 
 };
-
+}
 
 #endif

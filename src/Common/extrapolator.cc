@@ -2,6 +2,9 @@
 
 using namespace std;
 
+namespace Gascoigne
+{
+
 /*-----------------------------------------*/
 
 Extrapolator::Extrapolator() {}
@@ -27,7 +30,7 @@ void Extrapolator::Print()
 
 /*-----------------------------------------*/
 
-void Extrapolator::NewValues(const dvector& J)
+void Extrapolator::NewValues(const DoubleVector& J)
 {
   int n = J.size();
   if (!vals.size())
@@ -57,4 +60,5 @@ void Extrapolator::NewValues(const dvector& J)
           valextra[i] = j;
         }
     }
+}
 }

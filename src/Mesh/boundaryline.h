@@ -3,6 +3,9 @@
 
 #include  "boundarycell.h"
 
+namespace Gascoigne
+{
 typedef  BoundaryCell<2> BoundaryLine;
+}
 
 #endif

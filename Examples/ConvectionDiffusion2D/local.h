@@ -33,7 +33,7 @@ class ProblemDescriptor : public ProblemDescriptorBase
 public:
     
     std::string GetName() const {return "Local";}
-    void BasicInit(const Gascoigne::ParamFile* pf) {
+    void BasicInit(const ParamFile* pf) {
       GetEquationPointer() = new LocalEquation(GetParamFile());
       GetDirichletDataPointer() = new LocalDirichletData;
       ProblemDescriptorBase::BasicInit(pf);

@@ -10,6 +10,8 @@
 
 /*-------------------------------------------------------------*/
 
+namespace Gascoigne
+{
 class MatrixInterface
 {
  public:
@@ -33,7 +35,7 @@ class MatrixInterface
   //
   /// for matrix assembling
   //
-  typedef nvector<int>::const_iterator niiterator;
+  typedef IntVector::const_iterator niiterator;
 
   virtual void entry(niiterator start, niiterator stop, const EntryMatrix& M, double s=1.) { assert(0);}
 
@@ -51,10 +53,11 @@ class MatrixInterface
   //
   ///
   //
-  virtual void vmult(CompVector<double>& y, const CompVector<double>& x, double s=1.) const  { assert(0);}
-  virtual void vmult_transpose(CompVector<double>& y, const CompVector<double>& x, double s=1.) const  { assert(0);}
-  virtual void vmult_time(CompVector<double>& y, const CompVector<double>& x, const TimePattern& TP, double s=1.) const { assert(0);}
+  virtual void vmult(GlobalVector& y, const GlobalVector& x, double s=1.) const  { assert(0);}
+  virtual void vmult_transpose(GlobalVector& y, const GlobalVector& x, double s=1.) const  { assert(0);}
+  virtual void vmult_time(GlobalVector& y, const GlobalVector& x, const TimePattern& TP, double s=1.) const { assert(0);}
 };
+}
 
 /*-------------------------------------------------------------*/
 

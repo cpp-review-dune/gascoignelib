@@ -3,7 +3,9 @@
 #include  "stringutil.h"
 
 using namespace std;
-using namespace Gascoigne;
+
+namespace Gascoigne
+{
 
 /***************************************************/
 
@@ -116,7 +118,7 @@ void DataFormatHandler::insert(const string& nm, map<int,IntVector >* pos)
 
 /*-----------------------------------------*/
 
-void DataFormatHandler::insert(const string& nm, set<int>* pos)
+void DataFormatHandler::insert(const string& nm, IntSet* pos)
 {
   string type = "set<int>";
   string name = nm;
@@ -330,7 +332,7 @@ void DataFormatHandler::setvalue(const string& name, vector<string>& value)
     }  
 }
 
-void DataFormatHandler::setvalue(const string& name, set<int>& value)
+void DataFormatHandler::setvalue(const string& name, IntSet& value)
 {
   TypeSetInt::const_iterator p;
   p = TSI.find(name);
@@ -502,3 +504,5 @@ void DataFormatHandler::print(ostream& s) const
 }
 
 /***************************************************/
+
+}

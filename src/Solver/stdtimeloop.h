@@ -7,6 +7,8 @@
 /*-----------------------------------------*/
 
 
+namespace Gascoigne
+{
 class StdTimeLoop : public StdLoop
 {
 protected:
@@ -22,11 +24,11 @@ public:
 
   StdTimeLoop() : StdLoop() {}
 
-  void BasicInit(const Gascoigne::ParamFile* paramfile);
+  void BasicInit(const ParamFile* paramfile);
 
   void run(const ProblemDescriptorInterface* PD);
   void adaptive_run(const ProblemDescriptorInterface* PD);
 };
-
+}
 
 #endif

@@ -3,10 +3,11 @@
 
 
 using namespace std;
-using namespace Gascoigne;
 
 /*-----------------------------------------*/
 
+namespace Gascoigne
+{
 HNStructureQ12d::HNStructureQ12d() : edges(NULL), wei(3)
 {
   wei[0] =  0.5; 
@@ -59,7 +60,7 @@ const fixarray<3,int>& HNStructureQ12d::regular_nodes(int i) const
 
 /*----------------------------------------------*/
 
-void HNStructureQ12d::CondenseHanging(nvector<int>& indices) const
+void HNStructureQ12d::CondenseHanging(IntVector& indices) const
 {
   assert(indices.size()==lnoe.size());
   for(int ii=0; ii<indices.size(); ii++)
@@ -80,7 +81,7 @@ void HNStructureQ12d::CondenseHanging(nvector<int>& indices) const
 
 /*----------------------------------------------*/
 
-void HNStructureQ12d::CondenseHanging(EntryMatrix& E, nvector<int>& indices) const
+void HNStructureQ12d::CondenseHanging(EntryMatrix& E, IntVector& indices) const
 {
   assert(indices.size()==lnoe.size());
   for(int ii=0; ii<indices.size(); ii++)
@@ -109,7 +110,7 @@ void HNStructureQ12d::CondenseHanging(EntryMatrix& E, nvector<int>& indices) con
 
 /*----------------------------------------------*/
 
-void HNStructureQ12d::CondenseHangingPatch(EntryMatrix& E, nvector<int>& indices) const
+void HNStructureQ12d::CondenseHangingPatch(EntryMatrix& E, IntVector& indices) const
 {
   assert(indices.size()==9);
 
@@ -200,4 +201,4 @@ void HNStructureQ12d::MatrixDiag(int ncomp, MatrixInterface& A) const
       A.entry_diag(p->first,M);
     }
 }
-
+}

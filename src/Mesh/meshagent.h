@@ -10,6 +10,8 @@ using namespace std;
 
 /*-----------------------------------------*/
 
+namespace Gascoigne
+{
 class MeshAgent : public virtual MeshAgentInterface
 {
 protected:
@@ -36,7 +38,7 @@ public:
   void AddShape(int col, BoundaryFunction<2>* f) { _curved2d[col] = f;}
   void AddShape(int col, BoundaryFunction<3>* f) { _curved3d[col] = f;}
 
-  void BasicInit(const Gascoigne::ParamFile* pf);
+  void BasicInit(const ParamFile* pf);
   void BasicInit(int dim, std::string meshname, int prerefine);
 
   const GascoigneMultiGridMesh& GetMultiGrid() const {return *GMG;}
@@ -55,14 +57,14 @@ public:
   void write_gup(const std::string& fname) const;
   void global_refine(int n);
   void random_patch_refine(double p, int n);
-  void refine_nodes(nvector<int>& refnodes, nvector<int>& coarsenodes);
-  void refine_nodes(nvector<int>& refnodes);
-  void refine_cells(nvector<int>& ref);
+  void refine_nodes(IntVector& refnodes, IntVector& coarsenodes);
+  void refine_nodes(IntVector& refnodes);
+  void refine_cells(IntVector& ref);
 
   const GascoigneMeshTransfer* GetTransfer(int l) const {return GMG->GetTransfer(l);}
 
   const HierarchicalMesh* getHierarchicalMesh() const { return HMP;}
 };
-
+}
 
 #endif

@@ -5,6 +5,9 @@
 
 using namespace std;
 
+namespace Gascoigne
+{
+
 /*******************************************************************/
 
 ostream& operator<<(ostream &s, const NLStatisticData& A)
@@ -128,7 +131,7 @@ void NLInfo::reset()
 void NLInfo::compute_reduction_rate()
 {
   double b = CD.residual()/CD.firstresidual();
-  double p = 1./GascoigneMath::max_int(1,CD.iteration());
+  double p = 1./max_int(1,CD.iteration());
   SD.rate() = pow(b,p);  
 
   if (CD.iteration()>1)
@@ -236,7 +239,7 @@ bool NLInfo::check(int iter, double resi, double cori)
     {
       CD.status() = "diverged";
     }
-  else if ( CD.residual()< GascoigneMath::max(CD.aimedresidual(),UD.globaltol()) )
+  else if ( CD.residual()< max(CD.aimedresidual(),UD.globaltol()) )
     {
       CD.status() = "converged";
     }
@@ -277,4 +280,4 @@ bool NLInfo::check(int iter, double resi, double cori)
 
   return 1;
 }
-
+}

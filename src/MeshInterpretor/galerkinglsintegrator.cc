@@ -1,9 +1,10 @@
 #include "galerkinglsintegrator.h"
 
-using namespace Gascoigne;
 
 /*-----------------------------------------*/
 
+namespace Gascoigne
+{
 template<int DIM>
 void GalerkinGlsIntegrator<DIM>::Form(const Equation& EQ, LocalVector& F, const FemInterface& FEM, const LocalVector& U, const LocalNodeData& Q) const
 {
@@ -24,3 +25,4 @@ void GalerkinGlsIntegrator<DIM>::Matrix(const Equation& EQ, EntryMatrix& E, cons
 
 template class GalerkinGlsIntegrator<2>;
 template class GalerkinGlsIntegrator<3>;
+}

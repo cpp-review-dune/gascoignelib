@@ -1,10 +1,11 @@
 #include  "coarsehierarchicalmesh3d.h"
 #include  "set2vec.h"
 
-using namespace Gascoigne;
 
 /*---------------------------------------------------*/
 
+namespace Gascoigne
+{
 CoarseHierarchicalMesh3d::CoarseHierarchicalMesh3d
 (const HierarchicalMesh3d& HM) :  HierarchicalMesh3d(HM){}
 
@@ -127,6 +128,7 @@ void CoarseHierarchicalMesh3d::GetCoarsedList(IntVector& coarse)
       if (j>=0)
 	coarse.push_back(j);
     }
+}
 }
 
 /*---------------------------------------------------*/

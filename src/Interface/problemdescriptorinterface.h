@@ -25,6 +25,8 @@
 /////////////////////////////////////////////
 
 
+namespace Gascoigne
+{
 class ProblemDescriptorInterface
 {
 public:
@@ -32,7 +34,7 @@ public:
   ProblemDescriptorInterface() {}
   virtual ~ProblemDescriptorInterface() {}
   
-  virtual void BasicInit(const Gascoigne::ParamFile* pf) {}
+  virtual void BasicInit(const ParamFile* pf) {}
 
   virtual std::string GetName() const=0;
   virtual std::ostream& OutputSettings(std::ostream& os) const=0;
@@ -46,6 +48,6 @@ public:
   virtual const Equation*        GetEquation        () const=0;
   virtual const BoundaryManager* GetBoundaryManager () const=0;
 };
-
+}
 
 #endif

@@ -25,6 +25,8 @@
 
 /*---------------------------------------------------*/
 
+namespace Gascoigne
+{
 class HexLawAndOrder
 {
  protected:
@@ -103,5 +105,6 @@ class HexLawAndOrder
   fixarray<9,int> PatchVerticesOfFace(int hex, int face) const;
   fixarray<9,int> GiveOrdering(const fixarray<9,int>& F, const Hex& qfn) const;
 };
+}
 
 #endif

@@ -1,10 +1,11 @@
 #include  "galerkinintegrator.h"
 
 using namespace std;
-using namespace Gascoigne;
 
 /* ----------------------------------------- */
 
+namespace Gascoigne
+{
 template<int DIM>
 GalerkinIntegrator<DIM>::GalerkinIntegrator<DIM>() : BasicIntegrator() 
 {
@@ -271,7 +272,7 @@ void GalerkinIntegrator<DIM>::ErrorsByExactSolution(LocalVector& dst, const FemI
 	  dst(0,c) += UH[c].m();
 	  dst(1,c) += UH[c].x() + UH[c].y();
 	  if (DIM==3) dst(1,c) += UH[c].z();
-	  dst(2,c) = GascoigneMath::max(dst(2,c),sqrt(UH[c].m()/weight));
+	  dst(2,c) = Gascoigne::max(dst(2,c),sqrt(UH[c].m()/weight));
 	}
     }
 }
@@ -280,3 +281,4 @@ void GalerkinIntegrator<DIM>::ErrorsByExactSolution(LocalVector& dst, const FemI
 
 template class GalerkinIntegrator<2>;
 template class GalerkinIntegrator<3>;
+}

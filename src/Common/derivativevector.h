@@ -5,6 +5,8 @@
 
 /*--------------------------------------------------------*/
 
+namespace Gascoigne
+{
 class DerivativeVector : public numfixarray<6,double>
 {
  public:
@@ -25,6 +27,7 @@ class DerivativeVector : public numfixarray<6,double>
   double& n() { return (*this)[4]; }
   double& D() { return (*this)[5]; }
 };
+}
 
 /*--------------------------------------------------------*/
 

@@ -1,9 +1,10 @@
 #include  "gascoignevisualization.h"
 
-using namespace Gascoigne;
 
 /*-----------------------------------------*/
 
+namespace Gascoigne
+{
 void GascoigneVisualization::AddVector(const GlobalVector* v) 
 {
   assert(mesh);
@@ -35,4 +36,5 @@ void GascoigneVisualization::AddVector(const GlobalVector* v)
 
   SetPointData(&VD);
   SetPointDataInfo(&VDI);
+}
 }

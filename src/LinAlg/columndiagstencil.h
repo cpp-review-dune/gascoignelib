@@ -13,11 +13,13 @@
 
 #include  "columnstencil.h"
 
+namespace Gascoigne
+{
 class ColumnDiagStencil : public ColumnStencil
 {
 protected:
 
-  nvector<int>   sdiag;
+  IntVector   sdiag;
 
 public:
 
@@ -27,13 +29,14 @@ public:
   ColumnDiagStencil() : ColumnStencil() {}
   ~ColumnDiagStencil() {}
 
-  const nvector<int>&  diag() const { return sdiag; }
-        nvector<int>&  diag()       { return sdiag; }
+  const IntVector&  diag() const { return sdiag; }
+        IntVector&  diag()       { return sdiag; }
         int&           diag(int i)       { return sdiag[i]; } 
   const int&           diag(int i) const { return sdiag[i]; } 
 
   void memory(int n, int nt);
   void memory(const SparseStructureInterface*);
 };
+}
 
 #endif

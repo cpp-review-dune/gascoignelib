@@ -7,11 +7,13 @@
 
 /********************************************************************/
 
+namespace Gascoigne
+{
 class WriteBackUp
 {
  public:
 
-  WriteBackUp(const Gascoigne::GlobalVector&, const std::string&);
+  WriteBackUp(const GlobalVector&, const std::string&);
 };
 
 /********************************************************************/
@@ -20,7 +22,7 @@ class WriteBackUpBinary
 {
  public:
 
-  WriteBackUpBinary(const Gascoigne::GlobalVector&, const std::string&);
+  WriteBackUpBinary(const GlobalVector&, const std::string&);
 };
 
 /********************************************************************/
@@ -30,7 +32,7 @@ class ReadBackUp
  public:
 
   ReadBackUp(const std::string&, int&, int&);
-  ReadBackUp(Gascoigne::GlobalVector&, const std::string&);
+  ReadBackUp(GlobalVector&, const std::string&);
 };
 
 /********************************************************************/
@@ -39,7 +41,7 @@ class ReadBackUpResize
 {
  public:
 
-  ReadBackUpResize(Gascoigne::GlobalVector&, const std::string&);
+  ReadBackUpResize(GlobalVector&, const std::string&);
 };
 
 /********************************************************************/
@@ -48,8 +50,9 @@ class ReadBackUpBinary
 {
  public:
 
-  ReadBackUpBinary(Gascoigne::GlobalVector&, const std::string&);
+  ReadBackUpBinary(GlobalVector&, const std::string&);
 };
+}
 
 /********************************************************************/
 

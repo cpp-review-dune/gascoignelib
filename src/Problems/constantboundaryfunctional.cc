@@ -2,10 +2,11 @@
 
 
 using namespace std;
-using namespace Gascoigne;
 
 /*-----------------------------------------*/
 
+namespace Gascoigne
+{
 ConstantBoundaryFunctional::ConstantBoundaryFunctional()
 {
 }
@@ -41,4 +42,5 @@ double ConstantBoundaryFunctional::J
 (const FemFunction& U, const Vertex2d& v) const
 {
   return value*U[comp].m();
+}
 }

@@ -6,6 +6,8 @@
 
 /*---------------------------------------------------*/
 
+namespace Gascoigne
+{
 template<int DIM>
 class BoundaryFunction
 {
@@ -24,6 +26,7 @@ public :
   virtual void grad(Vector& dst, const Vector& src) const;
   void newton(Vector&) const;
 };
+}
 
 /*---------------------------------------------------*/
 

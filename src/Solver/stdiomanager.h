@@ -16,6 +16,8 @@
 #include  "solverinterface.h"
 
 
+namespace Gascoigne
+{
 class StdIoManager
 {
 public:
@@ -38,6 +40,6 @@ protected:
     StdIoManager(const std::string& dirname);
     
 };
-
+}
 
 #endif

@@ -2,10 +2,11 @@
 #include  "glsequation.h"
 
 using namespace std;
-using namespace Gascoigne;
 
 /*-----------------------------------------*/
 
+namespace Gascoigne
+{
 template<int DIM>
 GlsIntegrator<DIM>::GlsIntegrator<DIM>() : BasicIntegrator()
 {
@@ -137,7 +138,7 @@ void GlsIntegrator<DIM>::Matrix(const Equation& EQ, EntryMatrix& E, const FemInt
 	  NS[d].zero();
 	  MS[d].zero();
 	}
-      nvector<double> DS(ncomp,0.);
+      DoubleVector DS(ncomp,0.);
       for (int j=0; j<FEM.n(); j++)
 	{
 	  for(int d=0; d<ncomp; d++)
@@ -166,3 +167,4 @@ void GlsIntegrator<DIM>::Matrix(const Equation& EQ, EntryMatrix& E, const FemInt
 
 template class GlsIntegrator<2>;
 template class GlsIntegrator<3>;
+}

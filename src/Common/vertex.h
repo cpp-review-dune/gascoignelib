@@ -4,6 +4,8 @@
 #include "numfixarray.h"
 
 /*------------------------------------------------------------*/
+namespace Gascoigne
+{
 
 template<int N>
 class Vertex : public numfixarray<N,double>
@@ -42,5 +44,6 @@ public:
 typedef  Vertex<1>   Vertex1d; 
 typedef  Vertex<2>   Vertex2d; 
 typedef  Vertex<3>   Vertex3d; 
+}
 
 #endif

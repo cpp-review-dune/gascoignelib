@@ -6,6 +6,8 @@
 
 /***************************************************/
 
+namespace Gascoigne
+{
 class FileScanner
 {
   DataFormatHandler& DH;
@@ -18,11 +20,12 @@ class FileScanner
   
 public:
   
-  FileScanner(DataFormatHandler& D, const Gascoigne::ParamFile* pf, const std::string& b="");
+  FileScanner(DataFormatHandler& D, const ParamFile* pf, const std::string& b="");
   FileScanner(DataFormatHandler& D);
-  void readfile(const Gascoigne::ParamFile* pf, const std::string& blockname);
+  void readfile(const ParamFile* pf, const std::string& blockname);
   void NoComplain() { complain=0; }
 };
+}
 
 /***************************************************/
 

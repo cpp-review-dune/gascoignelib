@@ -15,7 +15,7 @@
 /////////////////////////////////////////////
 
 
-class ProblemDescriptorForward : public ProblemDescriptorBase
+class ProblemDescriptorForward : public Gascoigne::ProblemDescriptorBase
 {
 public:
     

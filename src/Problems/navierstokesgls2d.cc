@@ -2,10 +2,11 @@
 #include  "filescanner.h"
 
 using namespace std;
-using namespace Gascoigne;
 
 /*-----------------------------------------*/
 
+namespace Gascoigne
+{
 NavierStokesGls2d::~NavierStokesGls2d()
 {
 }
@@ -47,7 +48,7 @@ void NavierStokesGls2d::glspoint(double h, const FemFunction& U, const Vertex2d&
 
 /*-----------------------------------------*/
 
-void NavierStokesGls2d::L(nvector<double>& dst, const FemFunction& U) const
+void NavierStokesGls2d::L(DoubleVector& dst, const FemFunction& U) const
 {
   dst[0] = Divergence(U);
   dst[1] = Convection(U,U[1]) + U[0].x();
@@ -87,8 +88,9 @@ void NavierStokesGls2d::LMatrix(nmatrix<double>& A, const FemFunction& U, const 
 
 /*-----------------------------------------*/
 
-void NavierStokesGls2d::SMatrix(nvector<double>& dst, const FemFunction& U, const FemFunction& M, const FemFunction& N) const
+void NavierStokesGls2d::SMatrix(DoubleVector& dst, const FemFunction& U, const FemFunction& M, const FemFunction& N) const
 {
   dst[1] = ST.delta() * Convection(M,N[1]);
   dst[2] = ST.delta() * Convection(M,N[2]);
+}
 }

@@ -19,6 +19,8 @@
 #include  "mginterpolatormatrix.h"
 
 
+namespace Gascoigne
+{
 class PointMatrix : public SimpleMatrix, virtual public MatrixInterface
 {
 public:
@@ -46,8 +48,8 @@ public:
     void zero() {
       SimpleMatrix::zero();
     }
-    void vmult(CompVector<double>& y, const CompVector<double>& x, double d=1.) const;
-    void vmult_transpose(CompVector<double>& y, const CompVector<double>& x, double d=1.) const;
+    void vmult(GlobalVector& y, const GlobalVector& x, double d=1.) const;
+    void vmult_transpose(GlobalVector& y, const GlobalVector& x, double d=1.) const;
 
     const StencilInterface* GetStencil() const { return SimpleMatrix::GetStencil();}
     void ReInit(const SparseStructureInterface* S);
@@ -64,6 +66,6 @@ public:
 
     void RestrictMatrix(const MgInterpolatorMatrix& I, const PointMatrix& Ah);
 };
-
+}
 
 #endif

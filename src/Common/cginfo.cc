@@ -7,6 +7,8 @@ using namespace std;
 
 /*******************************************************************/
 
+namespace Gascoigne
+{
 ostream& operator<<(ostream &s, const StatisticData& A)
 {
   s << "StatisticData\n";
@@ -89,7 +91,7 @@ void ControlData::reset()
 void CGInfo::compute_reduction_rate()
 {
   double b = CD.residual()/CD.firstresidual();
-  double p = 1./GascoigneMath::max_int(1,CD.iteration());
+  double p = 1./max_int(1,CD.iteration());
   SD.rate() = pow(b,p);  
 }
 
@@ -164,7 +166,7 @@ bool CGInfo::check(double resi, double cori)
       compute_reduction_rate();
       CD.previousresidual() = res;
     }
-  if ( CD.residual()< GascoigneMath::max(CD.aimedresidual(),UD.globaltol()) )
+  if ( CD.residual()< max(CD.aimedresidual(),UD.globaltol()) )
     {
       CD.status() = "converged";
     }
@@ -189,4 +191,5 @@ bool CGInfo::check(double resi, double cori)
   if (CD.status()=="running")  return 0;
 
   return 1;
+}
 }

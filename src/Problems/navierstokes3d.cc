@@ -2,10 +2,11 @@
 
 
 using namespace std;
-using namespace Gascoigne;
 
 /*-----------------------------------------*/
 
+namespace Gascoigne
+{
 NavierStokes3d::~NavierStokes3d() {}
 
 /*-----------------------------------------*/
@@ -90,16 +91,16 @@ void NavierStokes3d::Matrix
 
   double tau = cut * _h;
 
-  A(1,1) += GascoigneMath::max(U[1].x()*MN, -tau);
-  A(2,2) += GascoigneMath::max(U[2].y()*MN, -tau);
-  A(3,3) += GascoigneMath::max(U[3].z()*MN, -tau);
+  A(1,1) += Gascoigne::max(U[1].x()*MN, -tau);
+  A(2,2) += Gascoigne::max(U[2].y()*MN, -tau);
+  A(3,3) += Gascoigne::max(U[3].z()*MN, -tau);
 
-  A(1,2) += GascoigneMath::min(U[1].y()*MN, tau);
-  A(1,3) += GascoigneMath::min(U[1].z()*MN, tau);
-  A(2,1) += GascoigneMath::min(U[2].x()*MN, tau);
-  A(2,3) += GascoigneMath::min(U[2].z()*MN, tau);
-  A(3,1) += GascoigneMath::min(U[3].x()*MN, tau);
-  A(3,2) += GascoigneMath::min(U[3].y()*MN, tau);
+  A(1,2) += Gascoigne::min(U[1].y()*MN, tau);
+  A(1,3) += Gascoigne::min(U[1].z()*MN, tau);
+  A(2,1) += Gascoigne::min(U[2].x()*MN, tau);
+  A(2,3) += Gascoigne::min(U[2].z()*MN, tau);
+  A(3,1) += Gascoigne::min(U[3].x()*MN, tau);
+  A(3,2) += Gascoigne::min(U[3].y()*MN, tau);
 }
 
 /*-----------------------------------------*/
@@ -107,6 +108,7 @@ void NavierStokes3d::Matrix
 string NavierStokes3d::GetName() const 
 { 
   return "NavierStokes3d";
+}
 }
 
 /*-----------------------------------------*/

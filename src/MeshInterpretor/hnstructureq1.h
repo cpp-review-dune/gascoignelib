@@ -6,6 +6,8 @@
 
 /*-----------------------------------------*/
 
+namespace Gascoigne
+{
 class HNStructureQ1 : public virtual HNStructureInterface
 {
 protected:
@@ -19,6 +21,7 @@ public:
   HNStructureQ1() {}
   ~HNStructureQ1() {}
 };
+}
 
 /*-----------------------------------------*/
 

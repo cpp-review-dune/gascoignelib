@@ -16,7 +16,7 @@
 #include  "initialcondition.h"
 #include  "localequation.h"
 
-class LocalInitialCondition : public InitialCondition
+class LocalInitialCondition : public Gascoigne::InitialCondition
 {
 protected:
 
@@ -32,7 +32,7 @@ public:
   
   std::string GetName() const { return "Local";}
   int GetNcomp() const {return ncomp;}  
-  double operator()(int c, const Vertex2d& v) const;
+  double operator()(int c, const Gascoigne::Vertex2d& v) const;
 };
 
 

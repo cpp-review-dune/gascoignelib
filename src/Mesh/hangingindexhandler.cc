@@ -4,6 +4,8 @@ using namespace std;
 
 /*-----------------------------------------*/
 
+namespace Gascoigne
+{
 HangingIndexHandler::HangingIndexHandler()
 {
   hnq2.clear();
@@ -13,7 +15,7 @@ HangingIndexHandler::HangingIndexHandler()
 /*-----------------------------------------*/
 
 void HangingIndexHandler::CopyLevel2Nibble
-(const HangingIndexHandler& Lhih,nvector<int>& Vg2l)
+(const HangingIndexHandler& Lhih,IntVector& Vg2l)
 {
   hnq2.clear();
   hnq2face.clear();
@@ -54,4 +56,5 @@ void HangingIndexHandler::CopyLevel2Nibble
       assert(gut==9);
       hnq2face[lf]=tmp;
     }
+}
 }

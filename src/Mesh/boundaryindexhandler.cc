@@ -4,10 +4,11 @@
 #include  "stlio.h"
 
 using namespace std;
-using namespace Gascoigne;
 
 /*--------------------------------------------------------------*/
 
+namespace Gascoigne
+{
 ostream& operator<<(ostream &s, const BoundaryIndexHandler& A)
 {
   const IntSet& colors = A.GetColors();
@@ -84,7 +85,7 @@ void BoundaryIndexHandler::clear()
 /*--------------------------------------------------------------*/
 
 
-const nvector<int>& BoundaryIndexHandler::Verteces(int color) const 
+const IntVector& BoundaryIndexHandler::Verteces(int color) const 
 {
   VecMap::const_iterator p = verteces.find(color);
   if(p==verteces.end())
@@ -98,7 +99,7 @@ const nvector<int>& BoundaryIndexHandler::Verteces(int color) const
 
 /*--------------------------------------------------------------*/
 
-const nvector<int>& BoundaryIndexHandler::Cells(int color) const 
+const IntVector& BoundaryIndexHandler::Cells(int color) const 
 { 
   VecMap::const_iterator p = cells.find(color);
   if(p==cells.end())
@@ -111,7 +112,7 @@ const nvector<int>& BoundaryIndexHandler::Cells(int color) const
 
 /*--------------------------------------------------------------*/
 
-const nvector<int>& BoundaryIndexHandler::Localind(int color) const 
+const IntVector& BoundaryIndexHandler::Localind(int color) const 
 { 
   VecMap::const_iterator p = localci.find(color);
   if(p==localci.end())
@@ -120,4 +121,5 @@ const nvector<int>& BoundaryIndexHandler::Localind(int color) const
       abort();
     }
   return p->second;
+}
 }

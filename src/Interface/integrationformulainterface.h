@@ -6,6 +6,8 @@
 
 /*------------------------------------------------------------*/
 
+namespace Gascoigne
+{
 class IntegrationFormulaInterface
 {
 public:
@@ -21,6 +23,7 @@ public:
   virtual void xi(Vertex2d& v, int k) const {assert(0);}
   virtual void xi(Vertex3d& v, int k) const {assert(0);}
 };
+}
 
 /*------------------------------------------------------------*/
 

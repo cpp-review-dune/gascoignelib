@@ -3,10 +3,11 @@
 #include  "compose_name.h"
 
 using namespace std;
-using namespace Gascoigne;
 
 /*-------------------------------------------------------------*/
   
+namespace Gascoigne
+{
 StdTimeSolver::StdTimeSolver()
   : StdSolver(), _MMP(NULL), _dt(0.), _theta(0.), _time(0.), _rhs(0.)
 {}
@@ -232,4 +233,5 @@ void StdTimeSolver::L2Projection(BasicGhostVector& Gu)
       double betacg = -(r*g)/(d*g);
       d.sequ(betacg,1.,r);
     }
+}
 }

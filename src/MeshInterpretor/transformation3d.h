@@ -6,12 +6,13 @@
 
 /*-----------------------------------------------------*/
 
+namespace Gascoigne
+{
 template<class BASE>
 class Transformation3d
 {
  protected:
 
-  typedef nvector<double>    Vector;
   typedef nmatrix<double>    Matrix;
 
   BASE            B;
@@ -213,6 +214,7 @@ inline double  Transformation3d<BASE>::G() const
   double h = d1phi*d2phi-d12phi*d12phi;
   assert(h>=0);
   return sqrt(h);
+}
 }
 
 #endif

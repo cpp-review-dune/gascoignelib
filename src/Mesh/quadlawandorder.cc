@@ -4,6 +4,8 @@ using namespace std;
 
 /*----------------------------------------------------------------------*/
 
+namespace Gascoigne
+{
 int QuadLawAndOrder::local_edge(const Quad& f, const EdgeVector& globaledge) const
 {
   // globaledge muss sortiert sein !!!!!
@@ -266,4 +268,5 @@ QuadLawAndOrder::QuadLawAndOrder(vector<Quad>& q) :
 
 //   Pilot p;
 //   p.check();
+}
 }

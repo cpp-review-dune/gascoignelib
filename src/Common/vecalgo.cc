@@ -5,6 +5,9 @@
 
 using namespace std;
 
+namespace Gascoigne
+{
+
 /*************************************************************/
 
 void transfer(int n, vector<int>& tr, const set<int>& del)
@@ -51,4 +54,4 @@ void transfer(int n, vector<int>& tr, vector<int>& del)
 	}
     }
 }
-
+}

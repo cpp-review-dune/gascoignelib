@@ -1,10 +1,11 @@
 #include  "laplace2d.h"
 #include  "filescanner.h"
 
-using namespace Gascoigne;
 
 /*-----------------------------------------*/
 
+namespace Gascoigne
+{
 Laplace2d:: Laplace2d()
 {
   gamma = 0.;
@@ -48,6 +49,7 @@ void Laplace2d::Form(VectorIterator b, const FemFunction& U, const TestFunction&
 void Laplace2d::Matrix(EntryMatrix& A, const FemFunction& U, const TestFunction& M, const TestFunction& N) const
 {
   A(0,0) += visc* (M.x()*N.x()+M.y()*N.y());
+}
 }
 
 /*-----------------------------------------*/

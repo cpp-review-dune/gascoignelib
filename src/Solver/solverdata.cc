@@ -3,10 +3,11 @@
 
 
 using namespace std;
-using namespace Gascoigne;
 
 /*-----------------------------------------*/
 
+namespace Gascoigne
+{
 SolverData::SolverData() :
   pfilter(0)
 {
@@ -61,4 +62,5 @@ void SolverData::Init(const ParamFile* pf, int ncomp)
 
   assert(ilum.size()==ncomp);
   assert(stream_direction.size()<=ncomp);
+}
 }

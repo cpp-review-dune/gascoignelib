@@ -14,6 +14,8 @@
 #include  "simpleilu.h"
 #include  "sparsestructureadaptor.h"
 
+namespace Gascoigne
+{
 class PointIlu : public SimpleIlu, virtual public IluInterface
 {
 protected:
@@ -38,7 +40,7 @@ public:
       SimpleIlu::zero();
     }
     
-    void ConstructStructure(const nvector<int>& perm, const MatrixInterface& A);
+    void ConstructStructure(const IntVector& perm, const MatrixInterface& A);
     void modify(int c, double s);
     void copy_entries(const MatrixInterface*  A) {
       SimpleIlu::copy_entries(A);
@@ -46,13 +48,13 @@ public:
     void compute_ilu() {
       SimpleIlu::compute_ilu();
     }
-    void solve(CompVector<double>& x) const {
+    void solve(GlobalVector& x) const {
       SimpleIlu::solve(x);
     }
-    void solve_transpose(CompVector<double>& x) const {
+    void solve_transpose(GlobalVector& x) const {
       SimpleIlu::solve_transpose(x);
     }
 };
-
+}
 
 #endif

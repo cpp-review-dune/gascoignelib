@@ -3,10 +3,11 @@
 #include "stringutil.h"
 
 using namespace std;
-using namespace Gascoigne;
 
 /**********************************************************/
 
+namespace Gascoigne
+{
 MultiLevelSolverData::~MultiLevelSolverData()
 {
   map<string,CGInfo *>::iterator p = __L.begin();
@@ -121,4 +122,5 @@ void MultiLevelSolverData::BasicInit(const ParamFile *param)
   GetLInfo("Precond").user().maxiter()   = prec_maxiter;
   GetLInfo("Precond").user().printstep() = prec_pstep;
   GetLInfo("Precond").user().text()      = "PrecInfo";
+}
 }

@@ -9,6 +9,8 @@
 
 /*-------------------------------------------------------------------------*/
 
+namespace Gascoigne
+{
 class VisuDataInfo
 {
  protected:
@@ -51,5 +53,6 @@ class VisuDataInfo
   viterator vbegin() const {return vectors.begin();}
   viterator vend  () const {return vectors.end();}
 };
+}
 
 #endif

@@ -4,10 +4,11 @@
 #include  "set2vec.h"
 
 using namespace std;
-using namespace Gascoigne;
  
 /*---------------------------------------------------*/
 
+namespace Gascoigne
+{
 LevelMesh2d::LevelMesh2d(const HierarchicalMesh* hmp) 
   : Index()
 {
@@ -138,7 +139,7 @@ bool LevelMesh2d::BuildFathers(set<int>&  Vaeter) const
 
 /*-----------------------------------------*/
 
-bool LevelMesh2d::ConstructCellIndOfPatch(nvector<int>& dst) const
+bool LevelMesh2d::ConstructCellIndOfPatch(IntVector& dst) const
 {
   set<int>  Vaeter;
   BuildFathers(Vaeter);
@@ -500,6 +501,7 @@ void LevelMesh2d::InitBoundaryHandler(BoundaryIndexHandler& BI) const
       BI.GetCell().insert(make_pair(color,v1));
       BI.GetLocal().insert(make_pair(color,v2));
     }
+}
 }
 
 /*--------------------------------------------------------------*/

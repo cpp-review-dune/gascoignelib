@@ -14,7 +14,7 @@
 
 #include  "meshagent.h"
 
-class LocalMeshAgent : public MeshAgent
+class LocalMeshAgent : public Gascoigne::MeshAgent
 {
 private:
 

@@ -7,6 +7,8 @@
 /*-----------------------------------------*/
 
 
+namespace Gascoigne
+{
 class DirichletDataByExactSolution : public DirichletData
 {
 protected:
@@ -20,14 +22,14 @@ public:
 
   std::string GetName() const {return "ExactSolution";}
   
-  void operator()(Gascoigne::DoubleVector& b, const Vertex2d& v, int col)const{
+  void operator()(DoubleVector& b, const Vertex2d& v, int col)const{
     for(int c=0;c<b.size();c++) b[c] = (*ES)(c,v);
   }
-  void operator()(Gascoigne::DoubleVector& b, const Vertex3d& v, int col)const{
+  void operator()(DoubleVector& b, const Vertex3d& v, int col)const{
     for(int c=0;c<b.size();c++) b[c] = (*ES)(c,v);
   }
 
 };
-
+}
 
 #endif

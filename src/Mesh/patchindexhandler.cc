@@ -2,9 +2,11 @@
 
 /*-----------------------------------------*/
 
-nvector<int> PatchIndexHandler::CoarseIndices(int iq) const
+namespace Gascoigne
 {
-  nvector<int> indices;
+IntVector PatchIndexHandler::CoarseIndices(int iq) const
+{
+  IntVector indices;
 
   assert(iq>=0);
   assert(iq<indexofpatch.size());
@@ -32,4 +34,5 @@ nvector<int> PatchIndexHandler::CoarseIndices(int iq) const
       indices[7] = indexofpatch[iq][26];
     }
   return indices;
+}
 }

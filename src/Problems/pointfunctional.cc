@@ -4,6 +4,8 @@ using namespace std;
 
 /*-----------------------------------------*/
 
+namespace Gascoigne
+{
 PointFunctional::~PointFunctional()
 {
 }
@@ -91,6 +93,7 @@ void PointFunctional::Init(const vector<string>& args)
       cerr << "unknown type: " << type << endl;
       abort();
     }
+}
 }
 
 /*-----------------------------------------*/

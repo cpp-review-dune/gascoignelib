@@ -7,6 +7,8 @@
 
 /*-----------------------------------------*/
 
+namespace Gascoigne
+{
 class StokesGls3d : public Stokes3d, public virtual GlsEquation
 {
 protected:
@@ -20,22 +22,23 @@ public:
 
   ~StokesGls3d();
   StokesGls3d();
-  StokesGls3d(const Gascoigne::ParamFile* pf);
+  StokesGls3d(const ParamFile* pf);
 
   std::string GetName() const { return "StokesGls3d";}
 
   //
   /// Computation of gls stabilization parameters
   //
-  void glspoint(double h, const Gascoigne::FemFunction& U, const Vertex3d& v) const;
+  void glspoint(double h, const FemFunction& U, const Vertex3d& v) const;
   //
   /// for Galerkin-Least-Squares
   //
-  void L(nvector<double>& dst, const Gascoigne::FemFunction& U) const;
-  void S(nmatrix<double>& dst, const Gascoigne::FemFunction& U, const Gascoigne::TestFunction& N) const;
+  void L(DoubleVector& dst, const FemFunction& U) const;
+  void S(nmatrix<double>& dst, const FemFunction& U, const TestFunction& N) const;
 
-  void LMatrix(nmatrix<double>& dst, const Gascoigne::FemFunction& U, const Gascoigne::TestFunction& N) const;
+  void LMatrix(nmatrix<double>& dst, const FemFunction& U, const TestFunction& N) const;
 
 };
+}
 
 #endif

@@ -8,6 +8,8 @@
 /*-----------------------------------------*/
 
 
+namespace Gascoigne
+{
 class RightHandSideDataByEquation : public RightHandSideData
 {
 protected:
@@ -26,8 +28,8 @@ public:
   double operator()(int c, const Vertex2d& v)const 
     {
       int n = _EQ->ncomp();
-      nvector<double> b(n,0.);
-      Gascoigne::FemFunction U(n);
+      DoubleVector b(n,0.);
+      FemFunction U(n);
       for (int i=0; i<n; i++)
 	{
 	  U[i].n() = 0.;
@@ -40,7 +42,7 @@ public:
       if (GetTimeStep()>0.)
 	{
 	  double eps = 1.e-6;
-	  nvector<double> ut(n,0.);
+	  DoubleVector ut(n,0.);
 	  double time = GetTime();
 	 _ES->SetTime(time+0.5*eps);
 	  for (int i=0; i<n; i++)
@@ -60,8 +62,8 @@ public:
   double operator()(int c, const Vertex3d& v)const 
     {
       int n = _EQ->ncomp();
-      nvector<double> b(n,0.);
-      Gascoigne::FemFunction U(n);
+      DoubleVector b(n,0.);
+      FemFunction U(n);
       for (int i=0; i<n; i++)
 	{
 	  U[i].n() = 0.;
@@ -75,7 +77,7 @@ public:
       if (GetTimeStep()>0.)
 	{
 	  double eps = 1.e-6;
-	  nvector<double> ut(n,0.);
+	  DoubleVector ut(n,0.);
 	  double time = GetTime();
 	 _ES->SetTime(time+0.5*eps);
 	  for (int i=0; i<n; i++)
@@ -94,6 +96,6 @@ public:
     }
 
 };
-
+}
 
 #endif

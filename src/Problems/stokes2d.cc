@@ -1,10 +1,11 @@
 #include  "stokes2d.h"
 #include  "filescanner.h"
 
-using namespace Gascoigne;
 
 /*-----------------------------------------*/
 
+namespace Gascoigne
+{
 Stokes2d::~Stokes2d()
 {
 }
@@ -87,6 +88,7 @@ void Stokes2d::Matrix(EntryMatrix& A, const FemFunction& U, const TestFunction& 
   double laplace = Laplace(M,N);
   A(1,1) += visc*laplace;
   A(2,2) += visc*laplace;
+}
 }
 
 /*------------------------------------------------------*/

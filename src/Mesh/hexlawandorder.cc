@@ -6,6 +6,8 @@ using namespace std;
 
 /*----------------------------------------------------------------------*/
 
+namespace Gascoigne
+{
 HexLawAndOrder::HexLawAndOrder(vector<Hex>& h) : 
   hexs(h)
 {
@@ -629,4 +631,5 @@ fixarray<9,int> HexLawAndOrder::GiveOrdering(const fixarray<9,int>& F, const Hex
     }
   assert(found>=0); 
   return hnpf[found];
+}
 }

@@ -11,6 +11,8 @@
 
 /*---------------------------------------------------*/
 
+namespace Gascoigne
+{
 class HierarchicalMesh3d : public HierarchicalMesh
 {
   protected :
@@ -43,13 +45,13 @@ class HierarchicalMesh3d : public HierarchicalMesh
 
   /*  Functionen  */
   int    Vater(const int i) const;
-  Gascoigne::IntVector Nachkommen(const int i) const;
-  Gascoigne::IntVector Geschwister(const int i) const;
-  Gascoigne::IntVector Kinder     (const int i) const;
+  IntVector Nachkommen(const int i) const;
+  IntVector Geschwister(const int i) const;
+  IntVector Kinder     (const int i) const;
   
   void post_refine3d();
 
-  void delete_vertexs3d(const Gascoigne::IntVector&);
+  void delete_vertexs3d(const IntVector&);
 
   void new_edge_vertex3d(int, const EdgeVector&);
   void new_face_vertex3d(int, const FaceVector&);
@@ -64,56 +66,56 @@ class HierarchicalMesh3d : public HierarchicalMesh
 
   void  build_neighbours() const;
 
-  void prepare3d  (const Gascoigne::IntVector&, const Gascoigne::IntVector&, Gascoigne::IntSet&, Gascoigne::IntSet&);
-  void new_hexs   (const HangContainer3d&, const Gascoigne::IntVector&, 
-		   const Gascoigne::IntVector&, int, const Gascoigne::IntSet&);
+  void prepare3d  (const IntVector&, const IntVector&, IntSet&, IntSet&);
+  void new_hexs   (const HangContainer3d&, const IntVector&, 
+		   const IntVector&, int, const IntSet&);
   void ghost_fill_neighbours2d();
   void ghost_fill_neighbours3d();
   void UpdateHangs(HangContainer3d& hangset,
-		   const Gascoigne::IntSet& cellref, 
-		   const Gascoigne::IntSet& cellcoarse);
-  void FaceCoarse(HangContainer3d&, const Gascoigne::IntSet&) const;
-  void FaceRefine(HangContainer3d&, const Gascoigne::IntSet&) const;
+		   const IntSet& cellref, 
+		   const IntSet& cellcoarse);
+  void FaceCoarse(HangContainer3d&, const IntSet&) const;
+  void FaceRefine(HangContainer3d&, const IntSet&) const;
   void UpdateHangingEdges(HangContainer3d& hangset,
-			  const Gascoigne::IntSet& cellref, 
-			  const Gascoigne::IntSet& cellcoarse) const;
-  void boundary_prepare3d(Gascoigne::IntSet&, Gascoigne::IntSet&, Gascoigne::IntSet&, const HangContainer3d&);
-  void new_boundary3d    (Gascoigne::IntSet&, Gascoigne::IntSet&,Gascoigne::IntSet&);
-  void new_vertexs3d     (HangContainer3d&, const Gascoigne::IntVector&, const Gascoigne::IntSet&);
-  void basic_refine3d    (HangContainer3d&, const Gascoigne::IntSet&, const Gascoigne::IntSet&);
+			  const IntSet& cellref, 
+			  const IntSet& cellcoarse) const;
+  void boundary_prepare3d(IntSet&, IntSet&, IntSet&, const HangContainer3d&);
+  void new_boundary3d    (IntSet&, IntSet&,IntSet&);
+  void new_vertexs3d     (HangContainer3d&, const IntVector&, const IntSet&);
+  void basic_refine3d    (HangContainer3d&, const IntSet&, const IntSet&);
   void basic_fill_neighbours3d();
-  void boundary_newton3d      (Gascoigne::IntSet&);
-  void inner_vertex_newton3d (const Gascoigne::IntVector&, const Gascoigne::IntSet&, const Gascoigne::IntSet&);
-  void update_boundary_data3d(const Gascoigne::IntSet&);
-  void new_bquads            (const Gascoigne::IntVector&, const Gascoigne::IntVector&, const Gascoigne::IntSet&);
+  void boundary_newton3d      (IntSet&);
+  void inner_vertex_newton3d (const IntVector&, const IntSet&, const IntSet&);
+  void update_boundary_data3d(const IntSet&);
+  void new_bquads            (const IntVector&, const IntVector&, const IntSet&);
   void new_middle_vertex3d   (int,int);
 
-  int  regular_grid3d_one  (Gascoigne::IntSet&, Gascoigne::IntVector&, const Gascoigne::IntSet&, const Gascoigne::IntSet&);
-  int  regular_grid3d_one  (Gascoigne::IntVector&, Gascoigne::IntVector&, const Gascoigne::IntSet&, const Gascoigne::IntSet&);
-  int  regular_grid3d_two  (Gascoigne::IntVector&, const Gascoigne::IntSet&);
-  int  regular_grid3d_three_refine(Gascoigne::IntSet&) const;
-  int  regular_grid3d_three_coarse(Gascoigne::IntSet&, Gascoigne::IntSet&) const;
+  int  regular_grid3d_one  (IntSet&, IntVector&, const IntSet&, const IntSet&);
+  int  regular_grid3d_one  (IntVector&, IntVector&, const IntSet&, const IntSet&);
+  int  regular_grid3d_two  (IntVector&, const IntSet&);
+  int  regular_grid3d_three_refine(IntSet&) const;
+  int  regular_grid3d_three_coarse(IntSet&, IntSet&) const;
 
-  void GetMinMaxLevels(nvector<int>& maxi, nvector<int>& mini,
-		       const Gascoigne::IntSet& CellRef) const;
+  void GetMinMaxLevels(IntVector& maxi, IntVector& mini,
+		       const IntSet& CellRef) const;
 
   void init_edges3d();
-  void LoadFathers3d(Gascoigne::IntVector& v) const;
+  void LoadFathers3d(IntVector& v) const;
 
-  void    _refine3d (Gascoigne::IntSet&, Gascoigne::IntSet&, const Gascoigne::IntVector&, const Gascoigne::IntVector&);
+  void    _refine3d (IntSet&, IntSet&, const IntVector&, const IntVector&);
   void FillNeighbourFaces(const Hex& father, const FaceVector& Face,
 			  int rneigh);
   void FillNeighbourFaces(int M, int S, const FaceVector& Face);
   void   InitHexOfCurved();
   int   FindPatchDepth() const;
-  void  FillVertexLevels(Gascoigne::IntVector& dst) const;
-  void  RefineCoarseNodes(Gascoigne::IntSet& dst, const Gascoigne::IntVector& refnodes,
-        		  const Gascoigne::IntVector& vertexlevel) const;
-  void  VertexToCells(Gascoigne::IntVector& dst, const Gascoigne::IntSet& src, 
-		      const Gascoigne::IntVector& vertexlevel) const;
-  void VertexToCellsCoarsening(Gascoigne::IntVector& dst, const Gascoigne::IntSet& src, 
-			       const Gascoigne::IntVector& vertexlevel) const;
-  void recursive_childs(int q, Gascoigne::IntVector& ref, int d) const;
+  void  FillVertexLevels(IntVector& dst) const;
+  void  RefineCoarseNodes(IntSet& dst, const IntVector& refnodes,
+        		  const IntVector& vertexlevel) const;
+  void  VertexToCells(IntVector& dst, const IntSet& src, 
+		      const IntVector& vertexlevel) const;
+  void VertexToCellsCoarsening(IntVector& dst, const IntSet& src, 
+			       const IntVector& vertexlevel) const;
+  void recursive_childs(int q, IntVector& ref, int d) const;
 
   const CurvedShapes<3>& GetCurvedShapes() const { return _curvedshapes;}
   CurvedShapes<3>& GetCurvedShapes() { return _curvedshapes;}
@@ -123,7 +125,7 @@ class HierarchicalMesh3d : public HierarchicalMesh
   HierarchicalMesh3d();
   HierarchicalMesh3d(const HierarchicalMesh3d& H);
   HierarchicalMesh3d& operator=(const HierarchicalMesh3d& H);
-  HierarchicalMesh3d(const Gascoigne::ParamFile* paramfile);
+  HierarchicalMesh3d(const ParamFile* paramfile);
   ~HierarchicalMesh3d() {  GetCurvedShapes().clear();}
 
   std::string GetName() const {return "HierarchicalMesh3d";}
@@ -176,8 +178,8 @@ class HierarchicalMesh3d : public HierarchicalMesh
 
   void   global_coarse3d();
 
-  void   refine      (const Gascoigne::IntVector&, const Gascoigne::IntVector&);
-  void   patch_refine(Gascoigne::IntVector&, Gascoigne::IntVector&);
+  void   refine      (const IntVector&, const IntVector&);
+  void   patch_refine(IntVector&, IntVector&);
   //  int    smooth_edges();
   void   FillAllBoundaryLines();
 
@@ -190,12 +192,12 @@ class HierarchicalMesh3d : public HierarchicalMesh
   void  GetVertexesOfFace(fixarray<5,int>&, int) const;
   void GetAwakePatchs(std::set<int>&) const;
   void GetAwakeCells(std::set<int>&) const;
-  void ConstructQ2PatchMesh(Gascoigne::IntVector& pm) const;
+  void ConstructQ2PatchMesh(IntVector& pm) const;
   std::set<int> GetColors() const;
 
   
   int nactivedescendants(int i)      const;
-  Gascoigne::IntVector GetVertices(int c) const;
+  IntVector GetVertices(int c) const;
 
   int GetBoundaryCellOfCurved(int iq) const
     {
@@ -210,6 +212,7 @@ class HierarchicalMesh3d : public HierarchicalMesh
     GetCurvedShapes().AddShape(col,f);
   }
 };
+}
 
 /*---------------------------------------------------*/
 

@@ -16,6 +16,8 @@
 #include  "gascoigne.h"
 #include  "integratorinterface.h"
 
+namespace Gascoigne
+{
 class BasicIntegrator : public IntegratorInterface
 {
  private:
@@ -23,14 +25,14 @@ class BasicIntegrator : public IntegratorInterface
   
  protected:
   
-  mutable Gascoigne::FemFunction   NNN;
-  mutable Gascoigne::TestFunction  NN, MM;
-  mutable Gascoigne::FemFunction   UH;
-  mutable Gascoigne::FemData       QH;
+  mutable FemFunction   NNN;
+  mutable TestFunction  NN, MM;
+  mutable FemFunction   UH;
+  mutable FemData       QH;
   
-  void  universal_point(const FemInterface& FEM, Gascoigne::FemFunction& UH, const Gascoigne::LocalVector& U) const;
-  void  universal_point(const FemInterface& FEM, Gascoigne::FemData& QH, const Gascoigne::LocalNodeData& Q) const;
-  void  universal_point(Gascoigne::FemFunction& UH, const Gascoigne::LocalVector& U, const Gascoigne::FemFunction& NN) const;
+  void  universal_point(const FemInterface& FEM, FemFunction& UH, const LocalVector& U) const;
+  void  universal_point(const FemInterface& FEM, FemData& QH, const LocalNodeData& Q) const;
+  void  universal_point(FemFunction& UH, const LocalVector& U, const FemFunction& NN) const;
   
  public:
   
@@ -43,6 +45,6 @@ class BasicIntegrator : public IntegratorInterface
   ~BasicIntegrator() {}
   
 };
-
+}
 
 #endif

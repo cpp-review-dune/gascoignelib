@@ -18,7 +18,7 @@
 
 
 
-class ProblemDescriptorTerminal : public ProblemDescriptorBase
+class ProblemDescriptorTerminal : public Gascoigne::ProblemDescriptorBase
 {
 public:
     std::string GetName() const {return "Terminal";}

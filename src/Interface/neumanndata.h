@@ -22,6 +22,8 @@
 
 /*-----------------------------------------*/
 
+namespace Gascoigne
+{
 class NeumannData : public Application
 {
 protected:
@@ -33,9 +35,9 @@ public:
 
   virtual std::string GetName() const=0;
   
-  virtual void operator()(Gascoigne::VectorIterator b, const Gascoigne::TestFunction& N, const Vertex2d& v, const Vertex2d& n, int color) const {assert(0);}
-  virtual void operator()(Gascoigne::VectorIterator b, const Gascoigne::TestFunction& N, const Vertex3d& v, const Vertex3d& n, int color) const {assert(0);}
+  virtual void operator()(VectorIterator b, const TestFunction& N, const Vertex2d& v, const Vertex2d& n, int color) const {assert(0);}
+  virtual void operator()(VectorIterator b, const TestFunction& N, const Vertex3d& v, const Vertex3d& n, int color) const {assert(0);}
 };
-
+}
 
 #endif

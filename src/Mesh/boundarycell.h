@@ -5,6 +5,8 @@
 
 #define NEDGES 1
 
+namespace Gascoigne
+{
 template<int N>
 class BoundaryCell : public Cell<N,NEDGES>
 {
@@ -73,6 +75,7 @@ class BoundaryCell : public Cell<N,NEDGES>
       return s;
     }
 };
+}
 
 #undef NEDGES
 

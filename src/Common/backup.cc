@@ -3,8 +3,9 @@
 #include <fstream>
 
 using namespace std;
-using namespace Gascoigne;
 
+namespace Gascoigne
+{
 /********************************************************************/
 
 ReadBackUp::ReadBackUp(const string& name, int& size, int& comp)
@@ -40,7 +41,7 @@ ReadBackUp::ReadBackUp(GlobalVector& u, const string& name)
     }
   assert(u.n()==size);
 
-  int v = GascoigneMath::max_int(u.ncomp(),comp);
+  int v = max_int(u.ncomp(),comp);
   
   double d;
   for (int i=0; i<u.n(); i++)
@@ -85,7 +86,7 @@ ReadBackUpResize::ReadBackUpResize(GlobalVector& u, const string& name)
     }
   assert(u.n()==size);
 
-  int v = GascoigneMath::max_int(u.ncomp(),comp);
+  int v = max_int(u.ncomp(),comp);
   
   double d;
   for (int i=0; i<u.n(); i++)
@@ -173,4 +174,4 @@ ReadBackUpBinary::ReadBackUpBinary(GlobalVector& u, const string& bname)
 }
 
 /********************************************************************/
-
+}
