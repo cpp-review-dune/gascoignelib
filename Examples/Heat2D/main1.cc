@@ -14,8 +14,8 @@ int main(int argc, char** argv)
   LPD.BasicInit(paramfile);
 
   StdTimeLoop loop;
-  loop.BasicInit(paramfile,&LPD);
-  loop.run();
+  loop.BasicInit(paramfile);
+  loop.run(&LPD);
 
   return 0;
 }

@@ -37,6 +37,20 @@ void StdTimeSolver::SetTimeData(double d, double th, double ti)
 
 /*-------------------------------------------------------------*/
 
+void StdTimeSolver::SetProblem(const ProblemDescriptorInterface& PDX)
+{
+  StdSolver::SetProblem(PDX);
+
+  const Equation* EQ = GetProblemDescriptor()->GetEquation();
+  assert(EQ);
+  EQ->SetTimePattern(GetTimePattern());
+
+  int ncomp = EQ->ncomp();
+  if (GetMassMatrixPointer()==NULL) GetMassMatrixPointer() = NewMassMatrix(ncomp,_matrixtype);
+}
+
+/*-------------------------------------------------------------*/
+
 MatrixInterface* StdTimeSolver::NewMassMatrix(int ncomp, const string& matrixtype)
 {
   return new SimpleMatrix;
@@ -67,29 +81,9 @@ void StdTimeSolver::MemoryMatrix()
 
 /*-------------------------------------------------------------*/
   
-void StdTimeSolver::_BasicInit()
+void StdTimeSolver::BasicInit(int level, const string& paramfile, const MeshInterface* MP)
 {
-  const Equation* EQ = GetProblemDescriptor()->GetEquation();
-  assert(EQ);
-  EQ->SetTimePattern(GetTimePattern());
-
-  int ncomp = EQ->ncomp();
-  GetMassMatrixPointer() = NewMassMatrix(ncomp,_matrixtype);
-
-  Gg.SetName("g");
-  Gr.SetName("r");
-  Gd.SetName("d");
-  RegisterVector(Gg);
-  RegisterVector(Gr);
-  RegisterVector(Gd);
-}
-
-/*-------------------------------------------------------------*/
-  
-void StdTimeSolver::BasicInit(int level, const string& paramfile, const MeshInterface* MP, const ProblemDescriptorInterface* PDX)
-{
-  StdSolver::BasicInit(level, paramfile, MP, PDX);
-  StdTimeSolver::_BasicInit();
+  StdSolver::BasicInit(level, paramfile, MP);
 }
 
 /*-------------------------------------------------------*/
@@ -159,8 +153,17 @@ void StdTimeSolver::RhsL2Projection(BasicGhostVector& f, const BasicGhostVector&
 
 /*-------------------------------------------------------*/
 
-void StdTimeSolver::L2Projection(BasicGhostVector& Gu, const BasicGhostVector& Gf) const
+void StdTimeSolver::L2Projection(BasicGhostVector& Gu, const BasicGhostVector& Gf)
 {
+  BasicGhostVector Gg, Gr, Gd;
+
+  Gg.SetName("g");
+  Gr.SetName("r");
+  Gd.SetName("d");
+  RegisterVector(Gg);
+  RegisterVector(Gr);
+  RegisterVector(Gd);
+
   GlobalVector& u = GetGV(Gu);
   const GlobalVector& f = GetGV(Gf);
   GlobalVector& g = GetGV(Gg);

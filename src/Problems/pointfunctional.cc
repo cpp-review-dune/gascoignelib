@@ -9,16 +9,16 @@ PointFunctional::~PointFunctional()
 /*-----------------------------------------*/
 
 PointFunctional::PointFunctional
-(const Equation& EQ, const std::vector<std::string>& args)  
+(const std::vector<std::string>& args)  
   : Functional(), v2d(0), v3d(0), w(0)
 {
-  Init(EQ,args);
+  Init(args);
 }
 
 /*-----------------------------------------*/
 
 
-void PointFunctional::Init(const Equation& EQ, const std::vector<std::string>& args)
+void PointFunctional::Init(const std::vector<std::string>& args)
 {
   type = args[0];
       

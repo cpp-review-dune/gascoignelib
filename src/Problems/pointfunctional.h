@@ -21,10 +21,10 @@ protected:
   
 public:
 
-  PointFunctional(const Equation& EQ, const std::vector<std::string>& args);
+  PointFunctional(const std::vector<std::string>& args);
   ~PointFunctional();
 
-  void Init(const Equation& EQ, const std::vector<std::string>& args);
+  void Init(const std::vector<std::string>& args);
   
   std::string GetName() const {return "PointFunctional";}
 

@@ -38,7 +38,7 @@ void FunctionalManager::Print(std::ostream& os) const
 
 /*-----------------------------------------*/
 
-void FunctionalManager::ConstructSet(const std::string& paramfile, const Equation& EQ)
+void FunctionalManager::ConstructSet(const std::string& paramfile)
 {
   // erstmal names einlesen
 
@@ -71,7 +71,7 @@ void FunctionalManager::ConstructSet(const std::string& paramfile, const Equatio
   FF.resize(n);
   for (int i=0; i<n; i++)
     {
-      Construct(i, functional[i],EQ);
+      Construct(i, functional[i]);
 //       FF[i]->GetName() = names[i];
     }
   gnames.clear();
@@ -91,14 +91,14 @@ void FunctionalManager::ConstructSet(const std::string& paramfile, const Equatio
 /*-----------------------------------------*/
 
 void FunctionalManager::Construct
-(int i, const std::vector<std::string>& functional, const Equation& EQ)
+(int i, const std::vector<std::string>& functional)
 {
   const std::string& type     = functional[0];
   const std::string& params   = functional[1];
   const std::string& exactval = functional[2];
   const std::string& grid     = functional[3];
 
-  FF[i] = ConstructFunctional(type,params,EQ);
+  FF[i] = ConstructFunctional(type,params);
 
   double exact = 0.;
   if (exactval!="unknown") 
@@ -125,7 +125,7 @@ const Functional* FunctionalManager::GetFunctional  (const std::string& name) co
 /*-----------------------------------------*/
 
 Functional* FunctionalManager::ConstructFunctional
-(const std::string& name, const std::string& param, const Equation& EQ)
+(const std::string& name, const std::string& param)
 {
   std::vector<std::string> args = StringSplit(param.c_str(),'_');
 
@@ -135,19 +135,19 @@ Functional* FunctionalManager::ConstructFunctional
     }
   if(name=="residual")
     {
-      return new ResidualFunctional(EQ, args);
+      return new ResidualFunctional(args);
     }
   if(name=="point")
     {
-      return new PointFunctional(EQ,args);
+      return new PointFunctional(args);
     }
   if(name=="domainmean")
     {
-      return new DomainMeanFunctional(EQ,args);
+      return new DomainMeanFunctional(args);
     }
   if(name=="constantboundary")
     {
-      return new ConstantBoundaryFunctional(EQ,args);
+      return new ConstantBoundaryFunctional(args);
     }
   if(name=="nusselt")
     {

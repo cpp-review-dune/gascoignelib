@@ -4,8 +4,6 @@
 #include  "functional.h"
 #include  "dirichletdata.h"
 #include  "righthandsidedata.h"
-#include  "equation.h"
-#include  "nvector.h"
 
 /*-----------------------------------------*/
 
@@ -21,9 +19,9 @@ protected:
   std::vector<std::string>             names, gnames;
 
   virtual Functional* ConstructFunctional
-    (const std::string& name, const std::string& params, const Equation& EQ);
+    (const std::string& name, const std::string& params);
 
-  void Construct(int i, const std::vector<std::string>& functional, const Equation& EQ);
+  void Construct(int i, const std::vector<std::string>& functional);
 
 public:
 
@@ -32,7 +30,7 @@ public:
 
   void Print(std::ostream& os) const;
 
-  void ConstructSet(const std::string& paramfile, const Equation& EQ);
+  void ConstructSet(const std::string& paramfile);
 
   const Functional*   GetFunctional  (const std::string& name) const;
 

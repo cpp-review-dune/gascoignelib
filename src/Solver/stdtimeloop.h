@@ -21,10 +21,10 @@ public:
 
   StdTimeLoop() : StdLoop() {}
 
-  void BasicInit(const std::string& pfile, const ProblemDescriptorInterface* PD);
+  void BasicInit(const std::string& pfile);
 
-  void run();
-  void adaptive_run();
+  void run(const ProblemDescriptorInterface* PD);
+  void adaptive_run(const ProblemDescriptorInterface* PD);
 };
 
 

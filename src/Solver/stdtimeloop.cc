@@ -6,9 +6,9 @@ using namespace std;
 
 /*-----------------------------------------*/
 
-void StdTimeLoop::BasicInit(const string& paramfile, const ProblemDescriptorInterface* PD)
+void StdTimeLoop::BasicInit(const string& paramfile)
 {
-  StdLoop::BasicInit(paramfile, PD);
+  StdLoop::BasicInit(paramfile);
 
   double tbegin, tend, deltat, theta;
   int    neuler;
@@ -49,7 +49,7 @@ string StdTimeLoop::SolveTimePrimal(NewMultiLevelGhostVector& u, NewMultiLevelGh
 
 /*-------------------------------------------------*/
 
-void StdTimeLoop::adaptive_run()
+void StdTimeLoop::adaptive_run(const ProblemDescriptorInterface* PD)
 {
   NewMultiLevelGhostVector u("u"), f("f");
   CompVector<double> ualt;
@@ -58,7 +58,7 @@ void StdTimeLoop::adaptive_run()
   GetMultiLevelSolver()->RegisterVector(f);
   
   nvector<double> eta;
-  
+
   for (_iter=1; _iter<=_niter; _iter++)
     {
       cout << "\n================== " << _iter << "================";
@@ -66,7 +66,7 @@ void StdTimeLoop::adaptive_run()
       cout << " " << GetMeshAgent()->ncells() << endl;
       
       info.iteration(_iter);
-      GetMultiLevelSolver()->NewMesh();
+      GetMultiLevelSolver()->ReInit(*PD);
       
       GetMultiLevelSolver()->InterpolateSolution(u,ualt);
 
@@ -117,7 +117,7 @@ void StdTimeLoop::L2Projection(NewMultiLevelGhostVector& u, NewMultiLevelGhostVe
 
 /*-------------------------------------------------*/
 
-void StdTimeLoop::run()
+void StdTimeLoop::run(const ProblemDescriptorInterface* PD)
 {
   NewMultiLevelGhostVector u("u"), f("f"), ualt("ualt");
   u.SetMultiLevelSolver(GetMultiLevelSolver());
@@ -129,6 +129,7 @@ void StdTimeLoop::run()
   
   nvector<double> eta;
   
+  GetMultiLevelSolver()->SetProblem(*PD);
   GetMultiLevelSolver()->NewMesh();
 
   StdTimeSolver* TSS = dynamic_cast<StdTimeSolver*>(GetMultiLevelSolver()->GetSolver());

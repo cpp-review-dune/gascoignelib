@@ -101,9 +101,9 @@ public:
   StdLoop();
   virtual ~StdLoop();
 
-  virtual void BasicInit(const std::string& pfile, const ProblemDescriptorInterface* PD);
+  virtual void BasicInit(const std::string& pfile);
 
-  void run();
+  void run(const ProblemDescriptorInterface* PD);
 };
 
 /*-----------------------------------------*/

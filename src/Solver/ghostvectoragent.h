@@ -46,6 +46,13 @@ public:
       if(find(g)!=end()) return;
       insert(std::make_pair(g,(GlobalVector*) NULL));
     }
+  void Delete(std::string g) 
+    {
+      iterator p=find(g);
+      if(p==end()) return;
+      delete p->second; 
+      erase(p);
+    }
 
   GlobalVector& operator()(const GhostVector& g) 
     {

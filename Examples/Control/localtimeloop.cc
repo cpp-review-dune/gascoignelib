@@ -12,7 +12,8 @@ using namespace std;
 void LocalTimeLoop::BasicInit(const string& paramfile, const ProblemDescriptorInterface* PD)
 {
   GetMeshAgentPointer() = new LocalMeshAgent;
-  StdTimeLoop::BasicInit(paramfile,PD);
+  StdTimeLoop::BasicInit(paramfile);
+  GetMultiLevelSolver()->SetProblem(*PD);
 }
 
 /* ----------------------------------------- */

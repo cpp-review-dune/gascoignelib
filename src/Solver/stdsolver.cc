@@ -34,9 +34,9 @@ StdSolver::StdSolver() :
 
 StdSolver::~StdSolver()
 {
-  if(_MAP) delete _MAP;  _MAP=NULL;
-  if(_MIP) delete _MIP;  _MIP=NULL;
-  if(_ZP) delete _ZP;  _ZP=NULL;
+  if(_MAP) delete _MAP; _MAP=NULL;
+  if(_MIP) delete _MIP; _MIP=NULL;
+  if(_ZP)  delete _ZP;  _ZP=NULL;
 }
 
 /*-------------------------------------------------------*/
@@ -63,6 +63,21 @@ void StdSolver::SetProblem(const ProblemDescriptorInterface& PDX)
 {
   _PDX = &PDX;
   assert(_PDX);
+
+  const Equation*  EQ = GetProblemDescriptor()->GetEquation();
+  assert(EQ);
+  int ncomp = EQ->ncomp();
+
+  Dat.Init(_paramfile,ncomp);
+
+  if (_MAP==NULL)
+    GetMatrixPointer() = NewMatrix(ncomp, _matrixtype);
+
+  if (_MIP==NULL)
+    GetIluPointer   () = NewIlu   (ncomp, _matrixtype);
+ 
+  MemoryVector();
+  MemoryMatrix();
 }
 
 /*-------------------------------------------------------*/
@@ -73,19 +88,19 @@ void StdSolver::NewMesh(int level, const MeshInterface* mp)
   assert(_MP);
 
   GetMeshInterpretor()->ReInit(_MP);
-  MemoryVector();
-  MemoryMatrix();
+  if (_PDX)
+    {
+      MemoryVector();
+      MemoryMatrix();
+    }
 }
 
 /*-------------------------------------------------------*/
 
-void StdSolver::BasicInit(int level, const string& pfile, const MeshInterface* MP, const ProblemDescriptorInterface* PDX)
+void StdSolver::BasicInit(int level, const string& pfile, const MeshInterface* MP)
 {
   _paramfile = pfile;
   _mylevel=level;
-
-  _PDX = PDX;
-  assert(_PDX);
 
   DataFormatHandler DFH;
   DFH.insert("matrixtype" , &_matrixtype, "point_node");
@@ -100,18 +115,13 @@ void StdSolver::BasicInit(int level, const string& pfile, const MeshInterface* M
     {
       _directsolver=1;
     }
-  
+
   int dimension = MP->dimension();
-  const Equation*  EQ = GetProblemDescriptor()->GetEquation();
-  assert(EQ);
-  int ncomp = EQ->ncomp();
-  Dat.Init(_paramfile,ncomp);
 
-  GetMeshInterpretorPointer()  =  NewMeshInterpretor(dimension, _discname);
+  GetMeshInterpretorPointer() = NewMeshInterpretor(dimension, _discname);
+  assert(_ZP);
+
   GetMeshInterpretor()->BasicInit(_paramfile);
-
-  GetMatrixPointer() = NewMatrix(ncomp, _matrixtype);
-  GetIluPointer   () = NewIlu(ncomp, _matrixtype);
 }
 
 /*-------------------------------------------------------*/
@@ -120,25 +130,15 @@ MeshInterpretorInterface* StdSolver::NewMeshInterpretor(int dimension, const str
 {
   if(dimension==2)
     {
-      if (discname=="Q1")
-	{
-	  return new Q12d;
-	}
-      else if (discname=="Q1Gls")
-	{
-	  return new Q1Gls2d;
-	}
+      if (discname=="Q1")         return new Q12d;
+      else if (discname=="Q1Gls") return new Q1Gls2d;
+      else    assert(0);
     }
   else if(dimension==3)
     {
-      if (discname=="Q1")
-	{
-	  return new Q13d;
-	}
-      else if (discname=="Q1Gls")
-	{
-	  return new Q1Gls3d;
-	}
+      if (discname=="Q1")          return new Q13d;
+      else if (discname=="Q1Gls")  return new Q1Gls3d;
+      else assert(0);
     }
   else
     {
@@ -151,37 +151,18 @@ MeshInterpretorInterface* StdSolver::NewMeshInterpretor(int dimension, const str
 
 MatrixInterface* StdSolver::NewMatrix(int ncomp, const string& matrixtype) 
 {
-  if(_directsolver)
-    {
-      return new PointMatrix(ncomp,"node");
-    }
-  if(matrixtype=="point_node")
-    {
-      return new PointMatrix(ncomp,"node");
-    }
-  else
-    {
-      return new PointMatrix(ncomp,"component");
-    }
+  if(_directsolver)            return new PointMatrix(ncomp,"node");
+  if(matrixtype=="point_node") return new PointMatrix(ncomp,"node");
+  else                         return new PointMatrix(ncomp,"component");
 }
 
 /*-------------------------------------------------------------*/
 
 IluInterface* StdSolver::NewIlu(int ncomp, const string& matrixtype) 
 {
-  if(_directsolver)
-    {
-//       cout << "_____\n\tmatrixtype=" << "DIRECTSOLVER" << "_____\n" << endl;
-      return new UmfIlu(GetMatrix());
-    }
-  if(_matrixtype=="point_node")
-    {
-      return new PointIlu(ncomp,"node");
-    }
-  else
-    {
-      return new PointIlu(ncomp,"component");
-    }
+  if(_directsolver)             return new UmfIlu(GetMatrix());
+  if(_matrixtype=="point_node") return new PointIlu(ncomp,"node");
+  else                          return new PointIlu(ncomp,"component");
 }
 
 /*-------------------------------------------------------*/

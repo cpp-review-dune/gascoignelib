@@ -25,7 +25,6 @@ private:
 protected:
 
 
-  mutable BasicGhostVector Gg, Gr, Gd;
   double dt, theta, time;
 
   const MatrixInterface* GetMassMatrix() const {return _MMP;}
@@ -37,23 +36,23 @@ protected:
 
   virtual MatrixInterface* NewMassMatrix(int ncomp, const string& matrixtype);
   void MemoryMatrix();
-  void _BasicInit();
 
 public:
   
   StdTimeSolver();
   ~StdTimeSolver();
 
-  void BasicInit(int level,const std::string& paramfile, const MeshInterface* MP, const ProblemDescriptorInterface* PDX);
+  void BasicInit(int level,const std::string& paramfile, const MeshInterface* MP);
 
   void SetTimeData(double d, double th, double ti);
+  void SetProblem(const ProblemDescriptorInterface& PDX);
 
   void TimeRhs(BasicGhostVector& f, const BasicGhostVector& u) const;
   void Residual (BasicGhostVector& y, const BasicGhostVector& x, double d) const;
   void AssembleMatrix(BasicGhostVector& u, double d);
   std::string GetName() const;
   void RhsL2Projection(BasicGhostVector& f, const BasicGhostVector& u) const;
-  void L2Projection(BasicGhostVector& u, const BasicGhostVector& f) const;
+  void L2Projection(BasicGhostVector& u, const BasicGhostVector& f);
 };
 
 #endif

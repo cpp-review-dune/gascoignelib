@@ -81,7 +81,7 @@ class StdMultiLevelSolver : public MultiLevelSolverInterface
     _MlVectors.insert(g);
   }
   void MemoryVector();
-  void BasicInit(const MeshAgentInterface* GMGM, const string& paramfile, const ProblemDescriptorInterface* PDX);
+  void BasicInit(const MeshAgentInterface* GMGM, const string& paramfile);
   // Zugriff
 
   virtual void SetState(const string& s) {
@@ -104,6 +104,7 @@ class StdMultiLevelSolver : public MultiLevelSolverInterface
 
   void SetMonitorPtr(Monitor* mon) { MON = mon;}
 
+  void ReInit(const ProblemDescriptorInterface& PDX);
   void NewMesh();
   void SetProblem(const ProblemDescriptorInterface& PDX);
 

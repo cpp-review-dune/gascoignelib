@@ -12,8 +12,8 @@ int main(int argc, char** argv)
   LPD.BasicInit(S.GetParamFile());
 
   StdLoop loop;
-  loop.BasicInit(S.GetParamFile(),&LPD);
-  loop.run();
+  loop.BasicInit(S.GetParamFile());
+  loop.run(&LPD);
 
   return 0;
 }

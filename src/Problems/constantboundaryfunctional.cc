@@ -16,18 +16,16 @@ ConstantBoundaryFunctional::~ConstantBoundaryFunctional()
 /*-----------------------------------------*/
 
 ConstantBoundaryFunctional::ConstantBoundaryFunctional
-(const Equation& EQ, const std::vector<std::string>& args)
+(const std::vector<std::string>& args)
 {
-  Construct(EQ,args);
+  Construct(args);
 }
 
 /*-----------------------------------------*/
 
 void ConstantBoundaryFunctional::Construct
-(const Equation& EQ, const std::vector<std::string>& args)
+(const std::vector<std::string>& args)
 {
-  int ncomp = EQ.ncomp();
-  
   // Baustelle
   AddColor(atoi(args[0].c_str()));
   comp  = atoi(args[1].c_str());

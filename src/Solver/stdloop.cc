@@ -40,7 +40,7 @@ StdLoop::~StdLoop()
 
 /*-----------------------------------------*/
 
-void StdLoop::BasicInit(const string& paramfile, const ProblemDescriptorInterface* PD)
+void StdLoop::BasicInit(const string& paramfile)
 {
   //_PD = const_cast<ProblemDescriptorInterface*>(&PD);
   _paramfile = paramfile;
@@ -88,10 +88,10 @@ void StdLoop::BasicInit(const string& paramfile, const ProblemDescriptorInterfac
 
   //
   StdLoop::NewFunctionalManager();
-  GetFunctionalManager()->ConstructSet(_paramfile,*(PD->GetEquation()));
+  GetFunctionalManager()->ConstructSet(_paramfile);
   //
 
-  GetMultiLevelSolver()->BasicInit(GetMeshAgent(),_paramfile,PD);
+  GetMultiLevelSolver()->BasicInit(GetMeshAgent(),_paramfile);
   GetMultiLevelSolver()->SetMonitorPtr(&Mon);
 }
 
@@ -373,7 +373,7 @@ void StdLoop::CopyVector(NewMultiLevelGhostVector& dst, GlobalVector& src)
 
 /*-------------------------------------------------*/
 
-void StdLoop::run()
+void StdLoop::run(const ProblemDescriptorInterface* PD)
 {
   NewMultiLevelGhostVector u("u"), f("f");
   u.SetMultiLevelSolver(GetMultiLevelSolver());
@@ -393,7 +393,8 @@ void StdLoop::run()
       Moning.SetMeshInformation(_iter,GetMeshAgent()->nnodes(),GetMeshAgent()->ncells());
       
       _clock_newmesh.start();
-      GetMultiLevelSolver()->NewMesh();
+
+      GetMultiLevelSolver()->ReInit(*PD);
       GetMultiLevelSolver()->InterpolateSolution(u,ualt);
       GetMultiLevelSolver()->GetSolver()->Visu("Results/interpolate",u,_iter);
 

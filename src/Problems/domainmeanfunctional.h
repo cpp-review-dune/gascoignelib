@@ -16,7 +16,7 @@ protected:
 
 public:
 
-  DomainMeanFunctional(const Equation& EQ, const std::vector<std::string>& args);
+  DomainMeanFunctional(const std::vector<std::string>& args);
   ~DomainMeanFunctional() {}
 
   std::string GetName() const {return "domain_mean";}

@@ -19,9 +19,9 @@ public:
 
 
   ConstantBoundaryFunctional();
-  ConstantBoundaryFunctional(const Equation& EQ, const std::vector<std::string>& args);
+  ConstantBoundaryFunctional(const std::vector<std::string>& args);
   ~ConstantBoundaryFunctional();
-  void Construct(const Equation& EQ, const std::vector<std::string>& args);
+  void Construct(const std::vector<std::string>& args);
   
   std::string GetName() const {return "ConstantBoundaryFunctional";}
 

@@ -8,9 +8,9 @@ ResidualFunctional::ResidualFunctional() : _DD(NULL) { _scale = 0.;}
 
 /*-----------------------------------------*/
 
-ResidualFunctional::ResidualFunctional(const Equation& EQ, const std::vector<std::string>& args) : _DD(NULL)
+ResidualFunctional::ResidualFunctional(const std::vector<std::string>& args) : _DD(NULL)
 {
-  Construct(EQ,args);
+  Construct(args);
 }
 
 /*-----------------------------------------*/
@@ -22,10 +22,8 @@ ResidualFunctional::~ResidualFunctional()
 
 /*-----------------------------------------*/
 
-void ResidualFunctional::Construct(const Equation& EQ, const std::vector<std::string>& args) 
+void ResidualFunctional::Construct(const std::vector<std::string>& args) 
 {
-  int ncomp = EQ.ncomp();
-
   _comp = atoi(args[0].c_str());
   _scale = atof(args[1].c_str());
   _col.clear();

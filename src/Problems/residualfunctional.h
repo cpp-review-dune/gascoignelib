@@ -4,7 +4,6 @@
 #include  "functional.h"
 #include  <string>
 #include  <set>
-#include  "equation.h"
 #include  "dirichletdata.h"
 
 /*-----------------------------------------*/
@@ -25,10 +24,10 @@ protected:
 public:
 
   ResidualFunctional();
-  ResidualFunctional(const Equation& EQ, const std::vector<std::string>& args);
+  ResidualFunctional(const std::vector<std::string>& args);
   ~ResidualFunctional();
 
-  void Construct(const Equation& EQ, const std::vector<std::string>& args);
+  void Construct(const std::vector<std::string>& args);
 
   std::string GetName() const {return "ResidualFunctional";}
 

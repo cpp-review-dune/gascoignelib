@@ -1,7 +1,6 @@
 #ifndef  __NewGhostVectorAgent_h
 #define  __NewGhostVectorAgent_h
 
-
 /////////////////////////////////////////////
 ////
 ////@brief
@@ -22,14 +21,7 @@ using namespace Gascoigne;
 
 class NewGhostVectorAgent : public map<NewGhostVector,GlobalVector*>
 {
-private:
-
-
-protected:
-
-
 public:
-
 
 //
 ////  Con(De)structor 
@@ -72,6 +64,14 @@ public:
 	  insert(std::make_pair(g,(GlobalVector*) NULL));
 	}
     }
+  void Delete(BasicGhostVector& mg) 
+    {
+      iterator p=find(mg);
+      if(p==end()) return;
+      delete p->second; 
+      erase(p);
+    }
+
 
   GlobalVector& operator()(const NewGhostVector& g) 
     {
