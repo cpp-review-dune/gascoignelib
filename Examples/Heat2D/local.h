@@ -72,6 +72,8 @@ class LocalEquation : public Equation
   }
 };
 
+/* ----------------------------------------- */
+
 class LocalInitialCondition : public InitialCondition
 {
 private:
@@ -103,12 +105,15 @@ public:
   }
 };
 
+/* ----------------------------------------- */
+
 class ProblemDescriptor : public ProblemDescriptorBase
 {
 public:
     
     std::string GetName() const {return "Local";}
     void BasicInit(const ParamFile* pf) {
+      GetParamFilePointer() = pf;
       GetEquationPointer() = new LocalEquation(GetParamFile());
       const LocalEquation* LEQ = dynamic_cast<const LocalEquation*>(GetEquation());
       GetInitialConditionPointer() = new LocalInitialCondition(LEQ);

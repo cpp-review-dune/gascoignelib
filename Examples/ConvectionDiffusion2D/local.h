@@ -28,12 +28,15 @@ class LocalDirichletData : public DirichletData
 
 };
 
+/* ----------------------------------------- */
+
 class ProblemDescriptor : public ProblemDescriptorBase
 {
 public:
     
     std::string GetName() const {return "Local";}
     void BasicInit(const ParamFile* pf) {
+      GetParamFilePointer() = pf;
       GetEquationPointer() = new LocalEquation(GetParamFile());
       GetDirichletDataPointer() = new LocalDirichletData;
       ProblemDescriptorBase::BasicInit(pf);

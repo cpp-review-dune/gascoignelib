@@ -25,12 +25,15 @@ class PolynomialExactSolution : public Gascoigne::ExactSolution
     }
 };
 
+/*---------------------------------------------------*/
+
 class ProblemDescriptor : public Gascoigne::ProblemDescriptorBase
 {
  public:
   
   std::string GetName() const {return "Local";}
   void BasicInit(const Gascoigne::ParamFile* pf) {
+    GetParamFilePointer() = pf;
     GetEquationPointer() = new Gascoigne::Laplace3d(GetParamFile());
     GetExactSolutionPointer() = new PolynomialExactSolution();
     GetRightHandSideDataPointer() = new Gascoigne::RightHandSideDataByEquation(GetEquation(), GetExactSolution());

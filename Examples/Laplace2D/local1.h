@@ -54,6 +54,8 @@ public:
   }
 };
 
+/*---------------------------------------------------*/
+
 class ProblemDescriptor : public Gascoigne::ProblemDescriptorBase
 {
  public:

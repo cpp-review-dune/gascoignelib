@@ -40,6 +40,8 @@ public:
   virtual std::ostream& OutputSettings(std::ostream& os) const=0;
   virtual void SetTime(double time, double dt) const=0;
 
+  virtual const ParamFile* GetParamFile() const=0;
+
   virtual const RightHandSideData*  GetRightHandSideData() const=0;
   virtual const DirichletData*      GetDirichletData    () const=0;
   virtual const NeumannData*        GetNeumannData      () const=0;

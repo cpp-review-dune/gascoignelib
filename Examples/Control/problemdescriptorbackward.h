@@ -21,6 +21,7 @@ class ProblemDescriptorBackward : public Gascoigne::ProblemDescriptorBase
   std::string GetName() const {return "Backward";}
 
   void BasicInit(const Gascoigne::ParamFile* pf) {
+    GetParamFilePointer() = pf;
     GetEquationPointer() = new BackwardEquation(GetParamFile());
     ProblemDescriptorBase::BasicInit(pf);
   }

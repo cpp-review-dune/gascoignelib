@@ -44,6 +44,7 @@ public:
     
     std::string GetName() const {return "Local";}
     void BasicInit(const ParamFile* pf) {
+      GetParamFilePointer() = pf;
       GetEquationPointer() = new NavierStokesGls3d(GetParamFile());
       GetDirichletDataPointer() = new BenchMarkDirichletData();
       ProblemDescriptorBase::BasicInit(pf);

@@ -23,6 +23,8 @@ class PolynomialExactSolution : public Gascoigne::ExactSolution
   }
 };
 
+/*---------------------------------------------------*/
+
 class ProblemDescriptor : public Gascoigne::ProblemDescriptorBase
 {
  public:

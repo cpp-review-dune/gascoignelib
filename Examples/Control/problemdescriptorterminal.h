@@ -23,10 +23,11 @@ class ProblemDescriptorTerminal : public Gascoigne::ProblemDescriptorBase
 public:
     std::string GetName() const {return "Terminal";}
 
-  void BasicInit(const Gascoigne::ParamFile* pf) {
-    GetEquationPointer() = new LocalEquation(GetParamFile());
-    GetInitialConditionPointer() = new LocalTerminalCondition();
-    ProblemDescriptorBase::BasicInit(pf);
+    void BasicInit(const Gascoigne::ParamFile* pf) {
+      GetParamFilePointer() = pf;
+      GetEquationPointer() = new LocalEquation(GetParamFile());
+      GetInitialConditionPointer() = new LocalTerminalCondition();
+      ProblemDescriptorBase::BasicInit(pf);
   }
 
 };

@@ -22,6 +22,7 @@ public:
   std::string GetName() const {return "Forward";}
 
   void BasicInit(const Gascoigne::ParamFile* pf) {
+    GetParamFilePointer() = pf;
     GetEquationPointer() = new LocalEquation(GetParamFile());
     ProblemDescriptorBase::BasicInit(pf);
   }

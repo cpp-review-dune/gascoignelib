@@ -20,11 +20,11 @@ class ProblemDescriptorBase : public ProblemDescriptorInterface
   DirichletData      *DD;
   NeumannData        *ND;
   
-  const ParamFile* _paramfile;
+  const ParamFile *_paramfile;
   
  protected:
   
-  const ParamFile* GetParamFile() const {return _paramfile;}
+  const ParamFile*& GetParamFilePointer() {return _paramfile;}
   
   Equation*& GetEquationPointer() { return EQ;}
   BoundaryManager*& GetBoundaryManagerPointer() { return BM;}
@@ -61,7 +61,10 @@ class ProblemDescriptorBase : public ProblemDescriptorInterface
   }
   
   void BasicInit(const ParamFile* pf) {
-    _paramfile = pf;
+    if(GetParamFile()==NULL)
+      {
+	GetParamFilePointer() = pf;
+      }
     if(GetBoundaryManagerPointer()==NULL)
       {
 	GetBoundaryManagerPointer() = new BoundaryManager();
@@ -69,6 +72,8 @@ class ProblemDescriptorBase : public ProblemDescriptorInterface
     GetBoundaryManager()->BasicInit(_paramfile);
   }
   
+  const ParamFile* GetParamFile() const {return _paramfile;}
+
   const RightHandSideData*  GetRightHandSideData() const { return  RHS;}
   const DirichletData*      GetDirichletData()     const { return  DD;}
   const NeumannData*        GetNeumannData()       const { return  ND;}
