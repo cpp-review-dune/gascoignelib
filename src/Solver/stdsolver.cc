@@ -106,6 +106,7 @@ void StdSolver::SetProblem(const ProblemDescriptorInterface& PDX)
   int ncomp = EQ->ncomp();
   
   Dat.Init(_paramfile,ncomp);
+  PF.SetComponents(Dat.GetPfilter());
 }
 
 /*-------------------------------------------------------*/
@@ -145,7 +146,6 @@ void StdSolver::BasicInit(int level, const ParamFile* paramfile, const MeshInter
   GetMeshInterpretorPointer() = NewMeshInterpretor(dimension, _discname);
   assert(_ZP);
 
-  PF.SetComponents(Dat.GetPfilter());
   GetMeshInterpretor()->BasicInit(_paramfile);
 }
 
