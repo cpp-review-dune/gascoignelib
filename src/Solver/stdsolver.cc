@@ -21,12 +21,19 @@
 
 #include  "diracrighthandside.h"
 
-#include  "q1gls2d.h"
-#include  "q1gls3d.h"
+#include  "q12d.h"
 #include  "q22d.h"
-#include  "q23d.h"
+#include  "q1gls2d.h"
+#include  "q2gls2d.h"
+#include  "q1lps2d.h"
+#include  "q2lps2d.h"
+#include  "q13d.h"
+#include  "q1gls3d.h"
+#include  "q1lps3d.h"
+#include  "q2lps3d.h"
 
 #include  "glsequation.h"
+#include  "lpsequation.h"
 
 using namespace std;
 
@@ -54,16 +61,37 @@ StdSolver::~StdSolver()
 
 void StdSolver::_check_consistency(const Equation* EQ,const MeshInterpretorInterface* MP) const
 {
-  const GlsEquation* GLS = dynamic_cast<const GlsEquation*>(EQ);
-  if(GLS)
-    {
-      if( (MP->GetName()!="Q1Gls2d") && (MP->GetName()!="Q1Gls3d") )
-	{
-	  cerr << "StdSolver::_check_consistency: not a consistent MeshInterpretor\n";
-	  assert(0);
-	  exit(-111);
-	}
-    }
+  bool glseq = false, glsmi = false;
+  
+  if(dynamic_cast<const GlsEquation*>(EQ))
+  {
+    glseq = true;
+  }
+  if(MP->GetName()=="Q1Gls2d" || MP->GetName()=="Q2Gls2d" || MP->GetName()=="Q1Gls3d" || MP->GetName()=="Q2Gls3d")
+  {
+    glsmi = true;
+  }
+  if(!(glseq && glsmi) && !(!glseq && !glsmi))
+  {
+    cerr << "MeshInterpretor \"" << MP->GetName() << "\" doesn't go with type of given Equation!" << endl;
+    abort();
+  }
+  
+  bool lpseq = false, lpsmi = false;
+  
+  if(dynamic_cast<const LpsEquation*>(EQ))
+  {
+    lpseq = true;
+  }
+  if(MP->GetName()=="Q1Lps2d" || MP->GetName()=="Q2Lps2d" || MP->GetName()=="Q1Lps3d" || MP->GetName()=="Q2Lps3d")
+  {
+    lpsmi = true;
+  }
+  if(!(lpseq && lpsmi) && !(!lpseq && !lpsmi))
+  {
+    cerr << "MeshInterpretor \"" << MP->GetName() << "\" doesn't go with type of given Equation!" << endl;
+    abort();
+  }
 }
 
 /*-------------------------------------------------------*/
@@ -158,31 +186,35 @@ void StdSolver::BasicInit(int level, const ParamFile* paramfile, const MeshInter
 
 MeshInterpretorInterface* StdSolver::NewMeshInterpretor(int dimension, const string& discname)
 {
-  if(dimension==2)
+  if (dimension==2)
     {
-      if (discname=="Q1")         return new Q12d;
-      else if (discname=="Q2")    return new Q22d;
-      else if (discname=="Q1Gls") return new Q1Gls2d;
+      if      (discname=="Q1")     return new Q12d;
+      else if (discname=="Q2")     return new Q22d;
+      else if (discname=="Q1Gls")  return new Q1Gls2d;
+      else if (discname=="Q2Gls")  return new Q2Gls2d;
+      else if (discname=="Q1Lps")  return new Q1Lps2d;
+      else if (discname=="Q2Lps")  return new Q2Lps2d;
       else 
 	{         
-	  cerr << " StdSolver::NewMeshInterpretor()\tunknown discname="<<discname<<endl;
+	  cerr << " Solver::NewMeshInterpretor()\tunknown discname=" << discname << endl;
 	  abort();
 	}
     }
-  else if(dimension==3)
+  else if (dimension==3)
     {
-      if (discname=="Q1")          return new Q13d;
-      else if (discname=="Q2")     return new Q23d;
+      if      (discname=="Q1")     return new Q13d;
       else if (discname=="Q1Gls")  return new Q1Gls3d;
+      else if (discname=="Q1Lps")  return new Q1Lps3d;
+      else if (discname=="Q2Lps")  return new Q2Lps3d;
       else 
 	{         
-	  cerr << " StdSolver::NewMeshInterpretor()\tunknown discname="<<discname<<endl;
+	  cerr << " Solver::NewMeshInterpretor()\tunknown discname=" << discname << endl;
 	  abort();
 	}
     }
   else
     {
-      cerr << "StdSolver::NewMeshInterpretor() dimension=\""<<dimension<<"\""<<endl;
+      cerr << " Solver::NewMeshInterpretor()\tdimension must either 2 or 3" << endl;
       abort();
     }
 }
