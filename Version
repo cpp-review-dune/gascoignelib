@@ -4,6 +4,8 @@ Version 18.06.2004
 1) Umfpack wird nur noch benutzt, falls WITHUMFPACK gesetzt ist.
 * schmich:
 2) umfilu.cc verwendet jetzt die Aufrufe von Umfpack v4.1 und neuer; die alten sind bislang nur auskommentiert.
+   Fuer Linux kompilierte libumfpack.a und libamd.a unter /home/people/schmich/Open4All verfuegbar.
+3) Flag WITHUMFPACK durch __WITHUMFPACK__ ersetzt.
 
 
 Version 30.05.2004
