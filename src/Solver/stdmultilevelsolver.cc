@@ -599,6 +599,6 @@ void StdMultiLevelSolver::SolutionTransfer(int l, GlobalVector& ul, const Global
   GetSolver(l)->HNAverage(uf);
   assert(_Interpolator[l-1]);
   _Interpolator[l-1]->SolutionTransfer(ul,uf);
-  GetSolver(l)->HNZero(ul);
+  GetSolver(l)->HNZero(uf);
   GetSolver(l-1)->SetBoundaryVector(ul);
 }

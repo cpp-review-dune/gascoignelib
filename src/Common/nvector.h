@@ -465,11 +465,20 @@ inline void nvector<T>::sadd (const T& a, const T& d, const nvector<T>& v)
 template<class T>
 inline void nvector<T>::BinWrite(std::ostream& out) const
 {
-  std::cerr << "nvector<T>::BinWrite\n\tkaputt wegen gcc 3.1\n"; exit(1);
-//   out << size() << std::endl << "[";
-//   int laenge = reinterpret_cast<const char*>(end()) - reinterpret_cast<const char*>(begin());
-//   out.write (reinterpret_cast<const char*>(begin()),laenge);
-//   out << "]";  
+//#ifdef __OLDCOMPILER__
+//  out << size() << std::endl << "[";
+//  int laenge = reinterpret_cast<const char*>(end()) - reinterpret_cast<const char*>(begin());
+//  out.write (reinterpret_cast<const char*>(begin()),laenge);
+//  out << "]";  
+//#else
+//  std::cerr << "nvector<T>::BinWrite\n\tkaputt wegen gcc 3.1\n"; exit(1);
+//#endif
+  out << size() << std::endl << "[";
+  for(int i=0; i<size(); i++)
+    {
+      out.write (reinterpret_cast<const char*>(&(operator[](i))),sizeof(operator[](i)));
+    }
+  out << "]"; 
 }
 
 /**********************************************************/
@@ -477,14 +486,26 @@ inline void nvector<T>::BinWrite(std::ostream& out) const
 template<class T>
 inline void nvector<T>::BinRead(std::istream& in)
 {
-  std::cerr << "nvector<T>::BinRead\n\tkaputt wegen gcc 3.1\n"; exit(1);
-//   char c;
-//   int  n;
-//   in >> n >> c;
-//   resize(n);
-//   int laenge = reinterpret_cast<const char*>(end()) - reinterpret_cast<const char*>(begin());
-//   in.read (reinterpret_cast<void*>(begin()),laenge);
-//   in >> c;  
+//#ifdef __OLDCOMPILER__
+//  char c;
+//  int  n;
+//  in >> n >> c;
+//  resize(n);
+//  int laenge = reinterpret_cast<const char*>(end()) - reinterpret_cast<const char*>(begin());
+//  in.read (reinterpret_cast<void*>(begin()),laenge);
+//  in >> c;  
+//#else
+//  std::cerr << "nvector<T>::BinRead\n\tkaputt wegen gcc 3.1\n"; exit(1);
+//#endif
+  char c;
+  int  n;
+  in >> n >> c;
+  resize(n);
+  for(int i=0; i<size(); i++)
+    {
+      in.read(reinterpret_cast<char*>(&(operator[](i))),sizeof(operator[](i)));
+    }
+  in >> c;
 }
 
 /**********************************************************/

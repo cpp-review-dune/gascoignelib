@@ -155,7 +155,7 @@ MatrixInterface* StdSolver::NewMatrix(int ncomp, const string& matrixtype)
     {
       return new PointMatrix(ncomp,"node");
     }
-  if(_matrixtype=="point_node")
+  if(matrixtype=="point_node")
     {
       return new PointMatrix(ncomp,"node");
     }
@@ -245,6 +245,11 @@ void StdSolver::HNZero(const GlobalVector& x) const {
   GlobalVector& v = const_cast<GlobalVector&>(x);
   GetMeshInterpretor()->HNZero(v);
 }
+bool StdSolver::HNZeroCheck(const GlobalVector& x) const {
+  assert(GetMeshInterpretor()->n()==x.n());
+  GlobalVector& v = const_cast<GlobalVector&>(x);
+  return GetMeshInterpretor()->HNZeroCheck(v);
+}
 void StdSolver::HNDistribute(GlobalVector& x) const {
   GetMeshInterpretor()->HNDistribute(x);
 }
@@ -328,7 +333,14 @@ void StdSolver::MatrixResidual(GlobalVector& y, const GlobalVector& x, const Glo
 
 /*-------------------------------------------------------*/
 
-void StdSolver::SetBoundaryVectorZero(BasicGhostVector& f) const
+void StdSolver::SetBoundaryVectorZero(BasicGhostVector& gf) const
+{
+  SetBoundaryVectorZero(GetGV(gf));
+}
+
+/*-------------------------------------------------------*/
+
+void StdSolver::SetBoundaryVectorZero(GlobalVector& f) const
 {
   const BoundaryManager* BM = GetProblemDescriptor()->GetBoundaryManager();
   const IntSet& Colors = BM->GetDirichletColors();
@@ -337,7 +349,7 @@ void StdSolver::SetBoundaryVectorZero(BasicGhostVector& f) const
     {
       int col = *p;
       const IntVector& comp = BM->GetDirichletComponents(col);
-      GetMeshInterpretor()->StrongDirichletVectorZero(GetGV(f), col, comp);
+      GetMeshInterpretor()->StrongDirichletVectorZero(f, col, comp);
     }
 }
 

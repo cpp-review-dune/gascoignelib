@@ -216,6 +216,7 @@ class StdSolver : public virtual SolverInterface
   void HNDistribute(BasicGhostVector& x) const;
   void HNAverage   (const GlobalVector& x) const;
   void HNZero      (const GlobalVector& x) const;
+  bool HNZeroCheck(const GlobalVector& x) const;
   void HNDistribute(GlobalVector& x) const;
 
   //
@@ -251,6 +252,7 @@ class StdSolver : public virtual SolverInterface
   void SetBoundaryVector(GlobalVector& f) const;
   void SetBoundaryVector(BasicGhostVector& f) const;
   void SetBoundaryVectorZero(BasicGhostVector& Gf) const;
+  void SetBoundaryVectorZero(GlobalVector& f) const;
 
   //
   /// vector - linear algebra

@@ -1,1 +1,24 @@
-Version 11.2003
+
+Version 12.2003
+===============
+
+* roland: src
+Mesh* replaced by MeshInterface* 
+MgTransferInterface new introduced
+bug for hanging nodes reintroduced
+
+* roland: CMakeLists.txt
+redesigned
+
+Version 01.2004 (07.01.2004)
+============================
+
+* braack: src/Solver/stdmultilevelsolver.cc
+bug fixed (SolutionTransfer hanging nodes)
+
+* meidner: src/Common/nvector.h, compvector.h
+BinaryWrite BinaryRead rewritten and tested
+
+* meidner: Examples/Control
+updated
+

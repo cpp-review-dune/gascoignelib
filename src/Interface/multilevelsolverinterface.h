@@ -22,15 +22,6 @@ class MultiLevelSolverInterface
 {
 public:
 
-
-private:
-
-
-protected:
-
-
-public:
-
   MultiLevelSolverInterface() {}
   virtual ~MultiLevelSolverInterface() {}
 

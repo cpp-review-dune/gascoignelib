@@ -387,30 +387,46 @@ class CompVector : public nvector<T>
   
   void BinWrite(std::ostream& out) const
     {
-#ifdef __OLDCOMPILER__
+//#ifdef __OLDCOMPILER__
+//      out << ncomp() << " " << n() << std::endl << "[";
+//      int laenge = reinterpret_cast<const char*>(end()) - reinterpret_cast<const char*>(begin());
+//      out.write (reinterpret_cast<const char*>(begin()),laenge);
+//      out << "]";  
+//#else
+//      std::cerr << "CompVector<T>::BinWrite\n\tkaputt wegen gcc 3.1\n"; exit(1);
+//#endif
       out << ncomp() << " " << n() << std::endl << "[";
-      int laenge = reinterpret_cast<const char*>(end()) - reinterpret_cast<const char*>(begin());
-      out.write (reinterpret_cast<const char*>(begin()),laenge);
-      out << "]";  
-#else
-      std::cerr << "CompVector<T>::BinWrite\n\tkaputt wegen gcc 3.1\n"; exit(1);
-#endif
+      for(int i=0; i<size(); i++)
+        {
+          out.write (reinterpret_cast<const char*>(&(operator[](i))),sizeof(operator[](i)));
+        }
+      out << "]"; 
     }
 
   void BinRead(std::istream& in)
     {
-#ifdef __OLDCOMPILER__
+//#ifdef __OLDCOMPILER__
+//      char cc;
+//      int  c,n;
+//      in >> c >> n >> cc;
+//      ncomp() = c;
+//      resize(n);
+//      int laenge = reinterpret_cast<const char*>(end()) - reinterpret_cast<const char*>(begin());
+//      in.read (reinterpret_cast<void*>(begin()),laenge);
+//      in >> cc;  
+//#else
+//      std::cerr << "CompVector<T>::BinRead\n\tkaputt wegen gcc 3.1\n"; exit(1);
+//#endif
       char cc;
       int  c,n;
       in >> c >> n >> cc;
       ncomp() = c;
       resize(n);
-      int laenge = reinterpret_cast<const char*>(end()) - reinterpret_cast<const char*>(begin());
-      in.read (reinterpret_cast<void*>(begin()),laenge);
-      in >> cc;  
-#else
-      std::cerr << "CompVector<T>::BinRead\n\tkaputt wegen gcc 3.1\n"; exit(1);
-#endif
+      for(int i=0; i<size(); i++)
+        {
+          in.read(reinterpret_cast<char*>(&(operator[](i))),sizeof(operator[](i)));
+        }
+      in >> cc;
     }
 };
 

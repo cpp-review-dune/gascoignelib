@@ -80,6 +80,7 @@ class SolverInterface
 
   virtual void HNAverage   (const GlobalVector& x) const=0;
   virtual void HNZero      (const GlobalVector& x) const=0;
+  virtual bool HNZeroCheck(const GlobalVector& x) const=0;
   virtual void HNDistribute(GlobalVector& x) const=0;
 
   //
