@@ -25,7 +25,7 @@ public:
   Q1Gls2d() : Q12d() {}
   ~Q1Gls2d() {}
   
-  std::string GetName() const {return "Q1Gls";}
+  std::string GetName() const {return "Q1Gls2d";}
   
   void BasicInit(const Gascoigne::ParamFile* pf);
 };

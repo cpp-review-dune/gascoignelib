@@ -17,7 +17,6 @@ NavierStokesGls2d::NavierStokesGls2d()
 {
   penalty = 0.; visc = 0.01;
   
-  ST.xeta0 = 6.;
   ST.delta0 = ST.alpha0 = 0.2;
   ST.xeta0 = 6.; 
 }

@@ -2,6 +2,7 @@
 #include  "visualization.h"
 #include  "filescanner.h"
 #include  "gascoignemeshconstructor.h"
+#include  "stringutil.h"
 
 
 using namespace std;
@@ -33,7 +34,30 @@ void MeshAgent::ReInit()
 
 /*-----------------------------------------*/
 
-void MeshAgent::BasicInit(int dim, string inpname, int prerefine)
+void MeshAgent::ReadMesh(int dim, string meshname, int prerefine)
+{
+  vector<string> s = StringSplit(meshname.c_str(),'.');
+  string suff = s[s.size()-1];
+
+  if(suff=="inp")
+    {
+      HMP->read_inp(meshname);
+    }
+  else if(suff=="gup")
+    {
+      HMP->read_gup(meshname);
+    }
+  else
+    {
+      cerr << "MeshAgent::read():\tunknown suffix " << suff << endl;
+      assert(0);
+    }
+  HMP->global_refine(prerefine);
+}
+
+/*-----------------------------------------*/
+
+void MeshAgent::BasicInit(int dim, string meshname, int prerefine)
 {
   _dimension = dim;
   if (_dimension==2)
@@ -50,8 +74,7 @@ void MeshAgent::BasicInit(int dim, string inpname, int prerefine)
     }
   assert(HMP);
 
-  HMP->read_inp(inpname);
-  HMP->global_refine(prerefine);
+  ReadMesh(dim, meshname, prerefine);
 
   GMG = NewMultiGridMesh();
 
@@ -60,7 +83,7 @@ void MeshAgent::BasicInit(int dim, string inpname, int prerefine)
 
 /*-----------------------------------------*/
 
-void MeshAgent::BasicInit(string inpname, int prerefine, std::map<int,BoundaryFunction<2>* >& curved)
+void MeshAgent::BasicInit(string meshname, int prerefine, std::map<int,BoundaryFunction<2>* >& curved)
 {
   _dimension = 2;
   HMP = new HierarchicalMesh2d;
@@ -71,8 +94,7 @@ void MeshAgent::BasicInit(string inpname, int prerefine, std::map<int,BoundaryFu
       HMP->AddShape(p->first,p->second);
     }
 
-  HMP->read_inp(inpname);
-  HMP->global_refine(prerefine);
+  ReadMesh(_dimension, meshname, prerefine);
 
   GMG = NewMultiGridMesh();
 
@@ -81,7 +103,7 @@ void MeshAgent::BasicInit(string inpname, int prerefine, std::map<int,BoundaryFu
 
 /*-----------------------------------------*/
 
-void MeshAgent::BasicInit(string inpname, int prerefine, std::map<int,BoundaryFunction<3>* >& curved)
+void MeshAgent::BasicInit(string meshname, int prerefine, std::map<int,BoundaryFunction<3>* >& curved)
 {
   _dimension = 3;
   HMP = new HierarchicalMesh3d;
@@ -92,8 +114,7 @@ void MeshAgent::BasicInit(string inpname, int prerefine, std::map<int,BoundaryFu
 //       HMP->AddShape(p->first,p->second);
     }
 
-  HMP->read_inp(inpname);
-  HMP->global_refine(prerefine);
+  ReadMesh(_dimension, meshname, prerefine);
 
   GMG = NewMultiGridMesh();
 

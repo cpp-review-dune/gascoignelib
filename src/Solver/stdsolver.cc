@@ -22,6 +22,8 @@
 
 #include  "edgeinfocontainer.h"
 
+#include  "glsequation.h"
+
 using namespace std;
 using namespace Gascoigne;
 
@@ -40,6 +42,22 @@ StdSolver::~StdSolver()
   if(_MAP) delete _MAP; _MAP=NULL;
   if(_MIP) delete _MIP; _MIP=NULL;
   if(_ZP)  delete _ZP;  _ZP=NULL;
+}
+
+/*-------------------------------------------------------*/
+
+void StdSolver::_check_consistency(const Equation* EQ,const MeshInterpretorInterface* MP) const
+{
+  const GlsEquation* GLS = dynamic_cast<const GlsEquation*>(EQ);
+  if(GLS)
+    {
+      if( (MP->GetName()!="Q1Gls2d") && (MP->GetName()!="Q1Gls3d") )
+	{
+	  cerr << "StdSolver::_check_consistency: not a  concistent MeshInterpretor\n";
+	  assert(0);
+	  exit(-111);
+	}
+    }
 }
 
 /*-------------------------------------------------------*/
@@ -453,6 +471,7 @@ void StdSolver::Residual(GlobalVector& y, const GlobalVector& x, double d) const
 
   const Equation* EQ = GetProblemDescriptor()->GetEquation();
   assert(EQ);
+  _check_consistency(EQ,GetMeshInterpretor());
   GetMeshInterpretor()->Form(y,x,*EQ,d);
 
   HNZero(x);

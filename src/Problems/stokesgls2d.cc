@@ -12,7 +12,11 @@ StokesGls2d::~StokesGls2d()
 /*-----------------------------------------*/
 
 StokesGls2d::StokesGls2d() : Stokes2d(), GlsEquation()
-{}
+{
+  penalty = 0.; 
+  visc = 1.;
+  ST.alpha0 = 1.;
+}
  
 /*-----------------------------------------*/
 

@@ -20,6 +20,7 @@ protected:
   virtual GascoigneMultiGridMesh* NewMultiGridMesh() {return new GascoigneMultiGridMesh;}
 
   virtual void ReInit();
+  virtual void ReadMesh(int dim, std::string meshname, int prerefine);
 
   GascoigneMesh*  GMesh(int l) { return GMG->GetGascoigneMesh(l);}
 
@@ -29,9 +30,9 @@ public:
   ~MeshAgent();
 
   void BasicInit(const Gascoigne::ParamFile* pf);
-  void BasicInit(int dim, std::string inpname, int prerefine);
-  void BasicInit(std::string inpname, int prerefine, std::map<int,BoundaryFunction<2>* >& curved);
-  void BasicInit(std::string inpname, int prerefine, std::map<int,BoundaryFunction<3>* >& curved);
+  void BasicInit(int dim, std::string meshname, int prerefine);
+  void BasicInit(std::string meshname, int prerefine, std::map<int,BoundaryFunction<2>* >& curved);
+  void BasicInit(std::string meshname, int prerefine, std::map<int,BoundaryFunction<3>* >& curved);
 
   const GascoigneMultiGridMesh& GetMultiGrid() const {return *GMG;}
   GascoigneMultiGridMesh& GetMultiGrid() {return *GMG;}

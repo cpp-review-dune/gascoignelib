@@ -1,18 +1,19 @@
-# Doxyfile 1.2.13-20020210
+# Doxyfile 1.2.17
 
 #---------------------------------------------------------------------------
 # General configuration options
 #---------------------------------------------------------------------------
-PROJECT_NAME           = GascoigneStd
-PROJECT_NUMBER         = 1
-OUTPUT_DIRECTORY       = /home/roland/Programs2003/GascoigneStd/doc/GascoigneStd
+PROJECT_NAME           = 
+PROJECT_NUMBER         = 
+OUTPUT_DIRECTORY       = 
 OUTPUT_LANGUAGE        = English
-EXTRACT_ALL            = YES
+EXTRACT_ALL            = NO
 EXTRACT_PRIVATE        = NO
 EXTRACT_STATIC         = NO
 EXTRACT_LOCAL_CLASSES  = YES
-HIDE_UNDOC_MEMBERS     = YES
-HIDE_UNDOC_CLASSES     = YES
+HIDE_UNDOC_MEMBERS     = NO
+HIDE_UNDOC_CLASSES     = NO
+HIDE_FRIEND_COMPOUNDS  = NO
 BRIEF_MEMBER_DESC      = YES
 REPEAT_BRIEF           = YES
 ALWAYS_DETAILED_SEC    = NO
@@ -37,6 +38,7 @@ TAB_SIZE               = 8
 GENERATE_TODOLIST      = YES
 GENERATE_TESTLIST      = YES
 GENERATE_BUGLIST       = YES
+GENERATE_DEPRECATEDLIST= YES
 ALIASES                = 
 ENABLED_SECTIONS       = 
 MAX_INITIALIZER_LINES  = 30
@@ -54,15 +56,9 @@ WARN_LOGFILE           =
 #---------------------------------------------------------------------------
 # configuration options related to the input files
 #---------------------------------------------------------------------------
-INPUT                  = /home/roland/Programs2003/GascoigneStd/src/Common/ \
-                         /home/roland/Programs2003/GascoigneStd/src/Interface/ \
-                         /home/roland/Programs2003/GascoigneStd/src/LinAlg/ \
-                         /home/roland/Programs2003/GascoigneStd/src/Mesh/ \
-                         /home/roland/Programs2003/GascoigneStd/src/MeshInterpretor/ \
-                         /home/roland/Programs2003/GascoigneStd/src/Problems/ \
-                         /home/roland/Programs2003/GascoigneStd/src/Solver/
+INPUT                  = /home/perm/becker/Programs/GascoigneStd/src/
 FILE_PATTERNS          = 
-RECURSIVE              = NO
+RECURSIVE              = YES
 EXCLUDE                = 
 EXCLUDE_SYMLINKS       = NO
 EXCLUDE_PATTERNS       = 
@@ -139,6 +135,8 @@ MAN_LINKS              = NO
 # configuration options related to the XML output
 #---------------------------------------------------------------------------
 GENERATE_XML           = NO
+XML_SCHEMA             = 
+XML_DTD                = 
 #---------------------------------------------------------------------------
 # configuration options for the AutoGen Definitions output
 #---------------------------------------------------------------------------
