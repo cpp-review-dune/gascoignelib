@@ -44,19 +44,40 @@ void BasicLoop::ClockOutput() const
 void BasicLoop::BasicInit(const ParamFile* paramfile)
 {
   _paramfile = paramfile;
+  std::string s_copy_param_file;
 
   DataFormatHandler DFH;
-  DFH.insert("niter",       &_niter,        1);
-  DFH.insert("initial",     &_initial,      "boundary");
-  DFH.insert("reload",      &_reload,       "none");
-  DFH.insert("writebupgup", &_writeBupGup,  true);
-  DFH.insert("resultsdir",  &_s_resultsdir, "Results");
+  DFH.insert("niter",              &_niter,             1);
+  DFH.insert("initial",            &_initial,           "boundary");
+  DFH.insert("reload",             &_reload,            "none");
+  DFH.insert("writebupgup",        &_writeBupGup,       true);
+  DFH.insert("resultsdir",         &_s_resultsdir,      "Results");
+  DFH.insert("copy_param_file",    &s_copy_param_file,  "no");
   FileScanner FS(DFH);
   FS.NoComplain();
   FS.readfile(_paramfile,"Loop");
 
   Mon.init(_paramfile,1);
   Mon.set_directory(_s_resultsdir);
+
+  // copy paramfile to Results directory?
+  if(s_copy_param_file!="no"){ 
+    std::string s_paramfile= paramfile->GetName();
+
+    if(s_copy_param_file=="yes"){
+      std::string cp_cmd = "cp "+s_paramfile+" "+_s_resultsdir; 
+      //std::cout << "CP CMD:" << cp_cmd << "\n"; 
+      system(cp_cmd.c_str()); 
+    }else if(s_copy_param_file=="yes-with-date"){
+      std::string cp_cmd = "cp "+s_paramfile+" "+_s_resultsdir + "/" + s_paramfile + "-`date +\"%Y.%m.%d-%H%M\"`" ; 
+      //std::cout << "CP CMD:" << cp_cmd << "\n"; 
+      system(cp_cmd.c_str()); 
+    }else {
+      std::cerr << __FILE__ << ":" << __LINE__ << ": bad copy_param_file parameter value="<< s_copy_param_file << std::endl;
+      std::cerr << __FILE__ << ":" << __LINE__ << ": possible values: no, yes, yes-with-date"<< std::endl;
+    }
+  }
+
 
   assert((_reload=="none") || (_initial=="file"));
 
@@ -100,10 +121,10 @@ void BasicLoop::PrintMeshInformation(int outputlevel) const
   if(outputlevel)
     {
       for(int l=0;l<GetMeshAgent()->nlevels();l++)
-	{
-	  const MeshInterface* M = GetMeshAgent()->GetMesh(l);
-	  cout << l << " [n,c] " << M->nnodes() << " " << M->ncells() << endl;
-	}
+        {
+          const MeshInterface* M = GetMeshAgent()->GetMesh(l);
+          cout << l << " [n,c] " << M->nnodes() << " " << M->ncells() << endl;
+        }
     }
 }
 
