@@ -12,8 +12,11 @@ initial     analytic
 //Block Mesh
 
 dimension   2
-prerefine   4
+prerefine   5
 gridname    rect.inp
+
+//prerefine 0
+//gridname    test.gup
 
 //Block Multilevelsolver
 
