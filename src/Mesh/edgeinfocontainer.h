@@ -14,6 +14,7 @@ namespace Gascoigne
 class EdgeInfoContainerInterface
 {
  public:
+
   EdgeInfoContainerInterface() {}
   virtual ~EdgeInfoContainerInterface() {}
 

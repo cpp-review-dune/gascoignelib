@@ -4,7 +4,6 @@
 #include  <string>
 #include  "gascoigne.h"
 #include  "ghostvector.h"
-#include  "stlio.h"
 
 
 namespace Gascoigne
@@ -23,79 +22,20 @@ class GhostVectorAgent : public std::map<GhostVector,GlobalVector*>
 {
 public:
 
+  typedef std::map<GhostVector,GlobalVector*>::const_iterator const_iterator;
+  typedef std::map<GhostVector,GlobalVector*>::iterator       iterator;
+
 //
 ////  Con(De)structor 
 //
 
-  typedef std::map<GhostVector,GlobalVector*>::const_iterator const_iterator;
-  typedef std::map<GhostVector,GlobalVector*>::iterator       iterator;
+  GhostVectorAgent();
+  ~GhostVectorAgent();
 
-  GhostVectorAgent() {}
-  ~GhostVectorAgent()
-    {
-      iterator p=begin();
-      while(p!=end())
-        { 
-          // 	  std::cerr << "GhostVectorAgent loesche:\t"<<p->first << endl;
-          if(p->second) 
-            {
-              delete p->second; 
-              p->second=NULL;
-            } 
-          p++;
-        }
-    }
+  void Register(const BasicGhostVector& mg, const SolverInterface* S);
+  void Delete(BasicGhostVector& mg);
 
-  void Register(const BasicGhostVector& mg, const SolverInterface* S) 
-    {
-      const std::string& name = mg.GetName();
-      GhostVector g(S,name,mg.GetType());
-      iterator p = find(mg);
-      if(p!=end())
-        {
-          assert(p->first.GetSolver()==S);
-          // std::cerr << "GhostVectorAgent::Register():\t already registered"<<std::endl;
-          // std::cerr << g << "\t out of"<<std::endl;
-          // std::cerr << *this << std::endl;
-          // abort();
-        }
-      else
-        {
-          insert(std::make_pair(g,static_cast<GlobalVector*>(NULL)));
-        }
-    }
-  void Delete(BasicGhostVector& mg) 
-    {
-      iterator p=find(mg);
-      if(p==end()) return;
-      delete p->second; 
-      erase(p);
-    }
-
-
-  GlobalVector& operator()(const GhostVector& g) 
-    {
-      iterator p = find(g);
-      if(p==end())
-        {
-          std::cerr << __FILE__ << ":" << __LINE__ << ": GhostVectorAgent::operator(): ERROR:"<<std::endl;
-          std::cerr << __FILE__ << ":" << __LINE__ << ": Ghostvector '"<< g <<"' not found in list of: '"<< *this <<"'"<<std::endl;;
-          //std::cerr << "GhostVectorAgent::operator():\t Ghostvector '"<< g <<"' not found in list of: '"<< *this <<"'"<<std::endl;;
-          //std::cerr << g << "\t out of \n";
-          //std::cerr << *this << "\n";
-          abort();
-        }
-      GlobalVector* vp = p->second;
-      if(vp==NULL) 
-        {
-          std::cerr <<  "GhostVectorAgent  GlobalVector* NULL\t" << p->first << std::endl;
-          std::cerr << *this << std::endl;
-          abort();
-        }
-      assert(vp);
-      return *vp;
-    }
-
+  GlobalVector& operator()(const GhostVector& g);
 };
 }
 

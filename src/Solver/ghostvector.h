@@ -26,9 +26,7 @@ private:
 
 protected:
 
-
 public:
-
 
 //
 ////  Con(De)structor 

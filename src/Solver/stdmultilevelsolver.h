@@ -84,8 +84,7 @@ class StdMultiLevelSolver : public MultiLevelSolverInterface
 
   std::string GetName() const {return "StdMultiLevelSolver";}
 
-  void RegisterVectorAndMemory(const MultiLevelGhostVector& g);
-  void RegisterVectorAndMemory();
+  void RegisterVectorsOnSolvers();
   void RegisterVector(MultiLevelGhostVector& g);
   void RegisterMatrix();
   void ReInitMatrix();

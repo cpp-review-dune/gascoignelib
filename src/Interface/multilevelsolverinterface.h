@@ -61,8 +61,8 @@ namespace Gascoigne
       //
 
       virtual void RegisterVector(MultiLevelGhostVector& g)=0;
-      virtual void RegisterVectorAndMemory(const MultiLevelGhostVector& g)=0;
-      virtual void RegisterVectorAndMemory()=0;
+      //virtual void RegisterVectorAndMemory(const MultiLevelGhostVector& g)=0;
+      virtual void RegisterVectorsOnSolvers()=0;
       virtual void RegisterMatrix()=0;
 
       //

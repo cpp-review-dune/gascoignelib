@@ -309,8 +309,6 @@ void StdLoop::AdaptMesh(const DoubleVector& eta)
 void StdLoop::run(const ProblemDescriptorInterface* PD)
 {
   MultiLevelGhostVector u("u"), f("f");
-  u.SetMultiLevelSolver(GetMultiLevelSolver());
-  f.SetMultiLevelSolver(GetMultiLevelSolver());
   GlobalVector  ualt;
 
   GetMultiLevelSolver()->RegisterVector(u);

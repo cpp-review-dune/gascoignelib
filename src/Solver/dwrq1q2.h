@@ -14,6 +14,8 @@ class DwrQ1Q2
   const ProblemDescriptorInterface* primalproblem;
   DiscretizationInterface*         discretization;
 
+  virtual DiscretizationInterface* GetOtherDiscretization() const;
+
   double ScalarProduct(nvector<double>& eta, const GlobalVector& f, 
 		       const GlobalVector& z) const;
 

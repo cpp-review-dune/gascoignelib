@@ -39,12 +39,12 @@ namespace Gascoigne
       mutable GlobalData __q;
 
     protected:
-      const GlobalData& GetGlobalData() const {return __q;}
 
     public:
       DiscretizationInterface() {}
       virtual ~DiscretizationInterface() {}
 
+      const GlobalData& GetGlobalData() const {return __q;}
       //
       //// Functions called from the Solver
       //

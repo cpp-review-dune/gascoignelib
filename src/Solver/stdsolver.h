@@ -200,13 +200,10 @@ class StdSolver : public virtual SolverInterface
     
   void RegisterMatrix();
   void ResizeVector(GlobalVector* x, std::string type) const;
-  void RegisterVector(const BasicGhostVector& g) {_NGVA.Register(g,this);}
-  GlobalVector& GetGV(BasicGhostVector& u) const {
-    return _NGVA(u);
-  }
-  const GlobalVector& GetGV(const BasicGhostVector& u) const {
-    return _NGVA(u);
-  }
+  void RegisterVector(const BasicGhostVector& g);
+
+        GlobalVector& GetGV(      BasicGhostVector& u) const { return _NGVA(u);}
+  const GlobalVector& GetGV(const BasicGhostVector& u) const { return _NGVA(u);}
 
   //
   /// vector - hanging nodes

@@ -343,23 +343,29 @@ void StdSolver::ReInitMatrix()
 
 /*-------------------------------------------------------*/
 
+void StdSolver::RegisterVector(const BasicGhostVector& g) 
+{
+  _NGVA.Register(g,this);
+}
+
+/*-------------------------------------------------------*/
+
 void StdSolver::ReInitVector()
 {
   int ncomp = GetProblemDescriptor()->GetEquation()->GetNcomp();
   
-  GhostVectorAgent::iterator p = _NGVA.begin();
-  while(p!=_NGVA.end())
+  for (GhostVectorAgent::iterator p=_NGVA.begin(); p!=_NGVA.end(); p++)
     {
       const GhostVector& gv = p->first;
       assert(gv.GetSolver()==this);
-      if(p->second==NULL) 
+      if (p->second==NULL) 
         {
-          //int n = GetDiscretization()->n();
           p->second = new GlobalVector;
-          p->second->ncomp() = ncomp;
+	  
+	  if (gv.GetNcomp()==-1) gv.SetNcomp(ncomp);
+          p->second->ncomp() = gv.GetNcomp();
         }
       ResizeVector(p->second,gv.GetType());
-      p++;
     }
 }
 
@@ -492,7 +498,6 @@ void StdSolver::MatrixResidual(GlobalVector& y, const GlobalVector& x, const Glo
   y.equ(1.,b);
   vmult(y,x,-1.);
   SubtractMeanAlgebraic(y);
-  //SubtractMean(y);
 }
 
 /*-------------------------------------------------------*/
@@ -1196,10 +1201,12 @@ void StdSolver::MemoryVector(BasicGhostVector& v)
 
   const GhostVector& gv = p->first;
   assert(gv.GetSolver()==this);
+  int ncomp = GetProblemDescriptor()->GetEquation()->GetNcomp();
   if(p->second==NULL) 
     {
       p->second = new CompVector<double>;
-      p->second->ncomp() = GetProblemDescriptor()->GetEquation()->GetNcomp();
+      if (p->first.GetNcomp()==-1) p->first.SetNcomp(ncomp);
+      p->second->ncomp() = p->first.GetNcomp();
     }
   ResizeVector(p->second,gv.GetType());
 }

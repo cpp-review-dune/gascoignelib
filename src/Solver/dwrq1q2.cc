@@ -56,6 +56,24 @@ double DwrQ1Q2::ScalarProductWithFluctuations(nvector<double>& eta, const BasicG
   return ScalarProduct(eta,f,dz);
 }
 
+
+/*--------------------------------------------------------*/
+
+DiscretizationInterface* DwrQ1Q2::GetOtherDiscretization() const
+{
+  DiscretizationInterface* D;
+
+  if (S.GetMesh()->dimension()==2) 
+    {
+      D = new DwrFem2d;    
+    }
+  else
+    {
+      D = new DwrFem3d;
+    }
+  return D;
+}
+
 /*-------------------------------------------------------*/
 
 void DwrQ1Q2::PrimalResidualsHigher(BasicGhostVector& gf, const BasicGhostVector& gu)
@@ -69,15 +87,8 @@ void DwrQ1Q2::PrimalResidualsHigher(BasicGhostVector& gf, const BasicGhostVector
   S.Rhs(gf,-0.5);
   S.Form(gf,gu,0.5);
 
-  DiscretizationInterface* D;
-  if (S.GetMesh()->dimension()==2)
-    {
-      D = new DwrFem2d;
-    }
-  else
-    {
-      D = new DwrFem3d;
-    }
+  DiscretizationInterface* D = GetOtherDiscretization();
+
   D->BasicInit(S.GetParamfile());
   D->ReInit(S.GetMesh());
   S.GetDiscretizationPointer() = D;
@@ -114,15 +125,8 @@ void DwrQ1Q2::DualResidualsHigher(BasicGhostVector& gf,
   // residual respect Q2 test functions
   //
   {  
-    DiscretizationInterface* D;
-    if (S.GetMesh()->dimension()==2)
-      {
-	D = new DwrFem2d;
-      }
-    else
-      {
-	D = new DwrFem3d;
-      }
+    DiscretizationInterface* D = GetOtherDiscretization();
+
     D->BasicInit(S.GetParamfile());
     D->ReInit(S.GetMesh());
     S.GetDiscretizationPointer() = D;
