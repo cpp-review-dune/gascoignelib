@@ -94,13 +94,10 @@ void MeshAgent::BasicInit(int dim, string meshname, int prerefine)
 
 void MeshAgent::BasicInit(const ParamFile* paramfile)
 {
-  string gridname;
-  int prerefine;
-
   DataFormatHandler DFH;
-  DFH.insert("dimension",&_dimension,2);
-  DFH.insert("gridname" ,&gridname,"none");      // inp oder gup Format 
-  DFH.insert("prerefine",&prerefine,0);
+  DFH.insert("dimension",&_dimension);
+  DFH.insert("gridname" ,&_gridname);      // inp oder gup Format 
+  DFH.insert("prerefine",&_prerefine);
   FileScanner FS(DFH);
   FS.NoComplain();
   FS.readfile(paramfile,"Mesh");
@@ -127,11 +124,20 @@ void MeshAgent::BasicInit(const ParamFile* paramfile)
     }
   assert(HMP);
  
-  ReadMesh(_dimension, gridname, prerefine);
+  ReadMesh(_dimension, _gridname, _prerefine);
 
   GMG = NewMultiGridMesh();
 
   ReInit();
+}
+
+/*-----------------------------------------*/
+
+void MeshAgent::SetDefaultValues(int dim, string gridname, int prerefine)
+{
+  _dimension = dim;
+  _gridname  = gridname;
+  _prerefine = prerefine;
 }
 
 /*-----------------------------------------*/

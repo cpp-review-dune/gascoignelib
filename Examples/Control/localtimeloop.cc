@@ -13,7 +13,6 @@ using namespace Gascoigne;
 void LocalTimeLoop::BasicInit(const ParamFile* paramfile)
 {
   GetMeshAgentPointer() = new LocalMeshAgent;
-  GetMeshAgent()->BasicInit(paramfile);
   StdTimeLoop::BasicInit(paramfile);
 }
 
@@ -22,6 +21,7 @@ void LocalTimeLoop::BasicInit(const ParamFile* paramfile)
 void LocalTimeLoop::NewMesh(const ProblemDescriptorInterface* PD)
 {
   GetMultiLevelSolver()->ReInit(*PD);
+  GetSolverInfos()->GetNLInfo().control().matrixmustbebuild() = 1;
   
   cout << "\nLocalTimeLoop::NewMesh(): Mesh [l,nn,nc]: ";
   cout << GetMeshAgent()->nlevels() << " " << GetMeshAgent()->nnodes() << " " << GetMeshAgent()->ncells() << endl;
@@ -71,6 +71,7 @@ void LocalTimeLoop::DeleteNodeVector()
 void LocalTimeLoop::ReInit(const ProblemDescriptorInterface* PD)
 {
   GetMultiLevelSolver()->ReInit(*PD);
+  GetSolverInfos()->GetNLInfo().control().matrixmustbebuild() = 1;
 }
 
 /* ----------------------------------------- */
@@ -86,6 +87,7 @@ void LocalTimeLoop::init(string name, int iter, const ProblemDescriptorInterface
   GetMultiLevelSolver()->RegisterVector(ualt);
 
   GetMultiLevelSolver()->ReInit(*PD);
+  GetSolverInfos()->GetNLInfo().control().matrixmustbebuild() = 1;
 
   cerr << "§§§§§§§§§§§§§§§§§§§§§§\n";
   //NewMesh();
@@ -125,6 +127,7 @@ void LocalTimeLoop::backward(string iname, string name, int first, int last, con
   nvector<double> eta;
   
   GetMultiLevelSolver()->ReInit(*PD);
+  GetSolverInfos()->GetNLInfo().control().matrixmustbebuild() = 1;
 
   GetMultiLevelSolver()->GetSolver()->Read(u,iname);
 
@@ -185,6 +188,7 @@ void LocalTimeLoop::forward(string iname, int first, int last, const ProblemDesc
   nvector<double> eta;
   
   GetMultiLevelSolver()->ReInit(*PD);
+  GetSolverInfos()->GetNLInfo().control().matrixmustbebuild() = 1;
 
   GetMultiLevelSolver()->GetSolver()->Read(u,iname);
 

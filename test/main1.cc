@@ -40,11 +40,7 @@ public:
       int dim=2;
       int prerefine=3;
       string inpname("square.inp");
-      dynamic_cast<MeshAgent*>(GetMeshAgent())->BasicInit(dim, inpname, prerefine);
-    }
-  else
-    {
-      dynamic_cast<MeshAgent*>(GetMeshAgent())->BasicInit(paramfile);
+      GetMeshAgent()->SetDefaultValues(dim,inpname,prerefine);
     }
 
   StdLoop::BasicInit(paramfile);

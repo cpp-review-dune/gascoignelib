@@ -16,7 +16,8 @@ class MeshAgent : public virtual MeshAgentInterface
 {
 protected:
 
-  int _dimension;
+  int _dimension,_prerefine;
+  std::string    _gridname;
   map<int,BoundaryFunction<2>* > _curved2d;
   map<int,BoundaryFunction<3>* > _curved3d;
 
@@ -40,6 +41,8 @@ public:
 
   void BasicInit(const ParamFile* pf);
   void BasicInit(int dim, std::string meshname, int prerefine);
+
+  void SetDefaultValues(int dim, std::string gridname, int prerefine);
 
   const GascoigneMultiGridMesh& GetMultiGrid() const {return *GMG;}
   GascoigneMultiGridMesh& GetMultiGrid() {return *GMG;}

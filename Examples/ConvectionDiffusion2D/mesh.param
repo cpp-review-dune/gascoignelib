@@ -10,12 +10,6 @@ estimator    none
 initial      boundary
 refiner      global
 
-//Block Mesh
-
-dim          2
-gridname     nsbench4.inp
-prerefine    3
-
 //Block BoundaryManager
 
 dirichlet        3      4 8 80

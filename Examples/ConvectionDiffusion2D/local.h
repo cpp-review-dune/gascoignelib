@@ -84,7 +84,12 @@ class BenchMarkMeshAgent : public MeshAgent
       Vertex2d v(2.,2.);
       RK.BasicInit(v,r);
 
+      int dim=2;
+      int prerefine=3;
+      std::string inpname("nsbench4.inp");
+
       AddShape(80,&RK);
+      SetDefaultValues(dim,inpname,prerefine);
     }
 };
 

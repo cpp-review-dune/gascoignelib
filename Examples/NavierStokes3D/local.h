@@ -99,7 +99,7 @@ class BenchMarkMeshAgent : public MeshAgent
       std::string inpname("nsbench4.inp");
 
       AddShape(80,&RK);
-      BasicInit(dim,inpname,prerefine);
+      SetDefaultValues(dim,inpname,prerefine);
     }
 };
 

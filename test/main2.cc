@@ -82,7 +82,7 @@ public:
   int dim=2;
   int prerefine=0;
   string inpname("mesh3.gup");
-  dynamic_cast<MeshAgent*>(GetMeshAgent())->BasicInit(dim, inpname, prerefine);
+  GetMeshAgent()->SetDefaultValues(dim,inpname,prerefine);
 
   GetMultiLevelSolverPointer() = new LocalMultiLevelSolver;
   StdLoop::BasicInit(paramfile);

@@ -27,6 +27,7 @@ void LocalLoop::run(const ProblemDescriptorInterface* PD)
 
   _clock_newmesh.start();
   GetMultiLevelSolver()->ReInit(*PD);
+  GetSolverInfos()->GetNLInfo().control().matrixmustbebuild() = 1;
   _clock_newmesh.stop();
 
   int nlevels = MP->nlevels();
