@@ -1,6 +1,7 @@
 #include  "dirichletdatabycolor.h"
 
 using namespace std;
+using namespace Gascoigne;
 
 /*-----------------------------------------*/
 
@@ -23,7 +24,7 @@ DirichletDataByColor::DirichletDataByColor(const vector<string>& args)
 /*-----------------------------------------*/
 
 void DirichletDataByColor::operator()
-(Vector& b, const Vertex2d& v, int color) const
+(DoubleVector& b, const Vertex2d& v, int color) const
 {
   b.zero();
 
@@ -33,7 +34,7 @@ void DirichletDataByColor::operator()
 /*-----------------------------------------*/
 
 void DirichletDataByColor::operator()
-(Vector& b, const Vertex3d& v, int color) const
+(DoubleVector& b, const Vertex3d& v, int color) const
 {
   b.zero();
   if(col.find(color)!=col.end()) b[comp] = scale;

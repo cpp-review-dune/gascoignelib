@@ -166,7 +166,11 @@ void StdTimeSolver::AssembleMatrix(const BasicGhostVector& gu, double d)
 void StdTimeSolver::L2Projection(BasicGhostVector& Gu)
 {
   const InitialCondition* IC = GetProblemDescriptor()->GetInitialCondition();
-  if(IC==NULL) return;
+  if(IC==NULL)
+  {
+    cerr << "No InitialCondition given!" << endl;
+    abort();
+  }
 
   GlobalVector& u = GetGV(Gu);
 

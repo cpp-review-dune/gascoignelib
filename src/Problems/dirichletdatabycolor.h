@@ -23,8 +23,8 @@ public:
   std::string GetName() const {return "DirichletDataByColor";}
 
   std::set<int> preferred_colors()const;
-  void operator()(Vector& b, const Vertex2d& V,int color) const;
-  void operator()(Vector& b, const Vertex3d& V,int color) const;
+  void operator()(Gascoigne::DoubleVector& b, const Vertex2d& V,int color) const;
+  void operator()(Gascoigne::DoubleVector& b, const Vertex3d& V,int color) const;
 };
 
 

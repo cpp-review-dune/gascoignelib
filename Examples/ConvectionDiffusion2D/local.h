@@ -18,7 +18,7 @@ class LocalDirichletData : public DirichletData
 {
  public:
   std::string GetName() const {return "Local";}
-  void operator()(Vector& b, const Vertex2d& v, int col) const {
+  void operator()(DoubleVector& b, const Vertex2d& v, int col) const {
     if(col!=80) {
       b[0] = 0.;
     } else {

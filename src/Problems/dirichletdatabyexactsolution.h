@@ -20,10 +20,10 @@ public:
 
   std::string GetName() const {return "ExactSolution";}
   
-  void operator()(Vector& b, const Vertex2d& v, int col)const{
+  void operator()(Gascoigne::DoubleVector& b, const Vertex2d& v, int col)const{
     for(int c=0;c<b.size();c++) b[c] = (*ES)(c,v);
   }
-  void operator()(Vector& b, const Vertex3d& v, int col)const{
+  void operator()(Gascoigne::DoubleVector& b, const Vertex3d& v, int col)const{
     for(int c=0;c<b.size();c++) b[c] = (*ES)(c,v);
   }
 

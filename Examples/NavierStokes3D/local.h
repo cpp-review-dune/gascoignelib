@@ -23,7 +23,7 @@ public:
     vmax = 0.45;
   }
   std::string GetName() const {return "Bench";}
-  void operator()(Vector& b, const Vertex3d& v, int color) const {
+  void operator()(DoubleVector& b, const Vertex3d& v, int color) const {
 
     double x = v.x();  double y = v.y(); double z = v.z();
     

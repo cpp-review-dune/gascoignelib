@@ -387,9 +387,12 @@ void StdSolver::SetBoundaryVector(GlobalVector& f) const
   const BoundaryManager* BM = GetProblemDescriptor()->GetBoundaryManager();
   const Equation*        EQ = GetProblemDescriptor()->GetEquation();
   const DirichletData*   DD = GetProblemDescriptor()->GetDirichletData();
-  if(DD==NULL) {
-    if(BM->GetDirichletColors().size()!=0) {
-      SetBoundaryVectorZero(f);
+  if(DD==NULL) 
+  {
+    if(BM->GetDirichletColors().size()!=0) 
+    {
+      cerr << "No DirichetData given but DirichetColors in ParamFile!" << endl;
+      abort();
     }
     return;
   }
