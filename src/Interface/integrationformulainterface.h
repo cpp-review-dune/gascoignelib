@@ -15,8 +15,8 @@ protected:
 
 public:
 
-  IntegrationFormulaInterface();
-  IntegrationFormulaInterface(int n);
+  IntegrationFormulaInterface() {}
+  IntegrationFormulaInterface(int n) {}
   IntegrationFormulaInterface(const IntegrationFormulaInterface& IF) : iw(IF.w())
     {
       in = IF.n();
@@ -26,9 +26,9 @@ public:
 
   void init(int n);
 
-  int    n()                 const { return in;}
-  double w(int k)            const { return iw[k];}
-  const nvector<double>& w() const { return iw;}
+  virtual int    n()                 const { return in;}
+  virtual double w(int k)            const { return iw[k];}
+  virtual const nvector<double>& w() const { return iw;}
 
   virtual void xi(Vertex1d& v, int k) const {}
   virtual void xi(Vertex2d& v, int k) const {}
