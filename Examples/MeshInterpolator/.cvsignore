@@ -7,3 +7,6 @@ CMakeSystem.cmake
 CMakeTmp
 Makefile
 cmake*
+Results*
+gascoigne*
+MeshInterpolator
