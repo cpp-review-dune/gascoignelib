@@ -125,6 +125,7 @@ void StdMultiLevelSolver::MemoryVector()
 
 void StdMultiLevelSolver::SetProblem(const ProblemDescriptorInterface& PDX)
 {
+  _PD = &PDX;
   for(int level=0; level<nlevels(); ++level)  
     {
       int solverlevel = nlevels()-1-level;
@@ -133,6 +134,7 @@ void StdMultiLevelSolver::SetProblem(const ProblemDescriptorInterface& PDX)
       
       _SP[solverlevel]->SetProblem(PDX);
     }
+  DataP->nlinfo.control().matrixmustbebuild() = 1;
 }
 
 /*-------------------------------------------------------------*/
@@ -551,6 +553,8 @@ void StdMultiLevelSolver::BoundaryInit(NewMultiLevelGhostVector& u) const
 
 string StdMultiLevelSolver::Solve(int level, NewMultiLevelGhostVector& u, const NewMultiLevelGhostVector& b)
 {
+  DataP->nlinfo.control().matrixmustbebuild() = 1;
+
   ComputeLevel = level;
 
   string status;
