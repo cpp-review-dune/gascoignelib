@@ -22,6 +22,7 @@ class CompVector : public nvector<T>
   int ncomp() const { return N; }
   int& ncomp() { return N; }
 
+  ~CompVector() {}
   CompVector()                             : nvector<T>()      , N(0)  {}
   CompVector(int NN)                       : nvector<T>()      , N(NN) {}
   CompVector(int NN, size_t n)             : nvector<T>(NN*n)  , N(NN) {}

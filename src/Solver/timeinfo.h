@@ -23,6 +23,7 @@ public:
   TimeInfo();
 
   void ReInit();
+  void ReInit(double det);
   void BasicInit();
 
   double  dt   () const;

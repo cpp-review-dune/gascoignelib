@@ -49,6 +49,15 @@ void TimeInfo::ReInit()
 
 /*-----------------------------------------*/
 
+void TimeInfo::ReInit(double det)
+{
+  _time   = _tbegin;
+  _deltat = det;
+  _iter = 0;
+}
+
+/*-----------------------------------------*/
+
 int TimeInfo::ftstep() const
 {
   if (_iter<=1) return 0;

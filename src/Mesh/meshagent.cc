@@ -85,6 +85,8 @@ void MeshAgent::BasicInit(int dim, string meshname, int prerefine)
 
 void MeshAgent::BasicInit(string meshname, int prerefine, std::map<int,BoundaryFunction<2>* >& curved)
 {
+  cout << "MeshAgent::BasicInit with SHAPES" << endl;
+
   _dimension = 2;
   HMP = new HierarchicalMesh2d;
 

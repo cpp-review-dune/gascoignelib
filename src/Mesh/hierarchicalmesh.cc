@@ -13,13 +13,13 @@ using namespace Gascoigne;
 /*------------------------------------------------------*/
 
 HierarchicalMesh::HierarchicalMesh() 
-  : mnlevels(1), pdepth(0), withfaces(1), etapatcher(1)
+  : mnlevels(1), pdepth(1), withfaces(1), etapatcher(1)
  {}
 
 /*------------------------------------------------------*/
 
 HierarchicalMesh::HierarchicalMesh(const HierarchicalMesh& H)
-  : mnlevels(1), pdepth(0), withfaces(1), etapatcher(1)
+  : mnlevels(1), pdepth(1), withfaces(1), etapatcher(1)
 {
   *this = H;
 }

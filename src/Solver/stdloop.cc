@@ -48,7 +48,7 @@ void StdLoop::BasicInit(const ParamFile* paramfile)
   DFH.insert("coarse",&_coarse,0);
   DFH.insert("nmax",&_nmax,100000);
   DFH.insert("refiner",&_refiner,"global");
-  DFH.insert("estimator",&_estimator,"energy");
+  DFH.insert("estimator",&_estimator,"none");
   DFH.insert("extrapolate",&_extrapolate,"no");
   FileScanner FS(DFH);
   FS.NoComplain();

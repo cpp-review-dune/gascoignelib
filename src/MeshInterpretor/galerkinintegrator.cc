@@ -96,7 +96,7 @@ void GalerkinIntegrator<DIM>::RhsNeumann(const NeumannData& f, LocalVector& F, c
 template<int DIM>
 void GalerkinIntegrator<DIM>::Form(const Equation& EQ, LocalVector& F, const FemInterface& FEM, const LocalVector& U, const LocalData& Q) const
 {
-  F.ReInit(U.ncomp(),FEM.n());
+  F.ReInit(EQ.ncomp(),FEM.n());
 
   const IntegrationFormulaInterface& IF = FormFormula();
 

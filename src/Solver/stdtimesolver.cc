@@ -190,26 +190,26 @@ void StdTimeSolver::L2Projection(BasicGhostVector& Gu, const BasicGhostVector& G
 
   u.zero();
   if (f.norm()<1.e-16) return;
-  // ??????????? geandert: war vorher
-//   r.equ(-1,f);
-//   d.equ(-1,f);
-  // was zur loesung -u fuehrte
+
   r.equ(1,f);
   d.equ(1,f);
   double Res = r*r;
   double FirstRes = Res;
   cerr << "\t\tcg " << 0 << "\t" << sqrt(FirstRes) << endl;
 
+  TimePattern TP(u.ncomp());
+  TP.zero();
+  for (int i=0; i<u.ncomp(); i++) TP(i,i) = 1.;
+
   for(int iter=1;iter<=MaxIter;iter++)
     {
       g.zero();
-      GetMassMatrix()->vmult_time(g,d,GetTimePattern());
+      GetMassMatrix()->vmult_time(g,d,TP);
       double lambda = Res/(g*d);
 
       u.add(lambda,d);
       r.add(-lambda,g);
 
-      double ResOld = Res;
       Res = r*r;
       cerr << "\t\tcg " << iter << "\t" << sqrt(Res) << "\n";
       if (Res<Tol*Tol*FirstRes) 
