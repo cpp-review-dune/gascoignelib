@@ -19,13 +19,13 @@ class BasicMeshInterpretor : public MeshInterpretorInterface
 {
  private:
   
-  const MeshInterface*           __MP;
+  const MeshInterface*  __MP;
   FemInterface*         __FEM;
   IntegratorInterface*  __INT;
   
  protected:
 
-  mutable EntryMatrix __E;
+  mutable EntryMatrix            __E;
   mutable Gascoigne::LocalVector __F;
   mutable Gascoigne::LocalVector __U;
 
