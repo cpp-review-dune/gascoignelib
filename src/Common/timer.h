@@ -6,6 +6,7 @@
 
 #include  "stopwatch.h"
 #include  <string>
+#include  <cassert>
 
 /*-----------------------------------------*/
 
