@@ -1,8 +1,6 @@
 #ifndef __Equation_h
 #define __Equation_h
 
-#include  <vector>
-#include  <set>
 #include  <string>
 
 #include  "gascoigne.h"
@@ -30,13 +28,6 @@ class Equation
   mutable double _time, _dt;
   
  protected:
-
-  typedef  nvector<double>        Vector;
-  typedef  std::set<int>          IntSet;
-  typedef Gascoigne::FemFunction  FemFunction;
-  typedef Gascoigne::FemData      FemData;
-  typedef Gascoigne::TestFunction TestFunction;
-
   double GetTime() const {return _time;}
   double GetTimeStep() const {return _dt;}
 
@@ -54,7 +45,7 @@ class Equation
 
   virtual int  ncomp() const=0;
 
-  virtual void OperatorStrong(Vector& b, const FemFunction& U) const { assert(0);} 
+  virtual void OperatorStrong(Gascoigne::DoubleVector& b, const Gascoigne::FemFunction& U) const { assert(0);} 
 
   virtual bool MatrixIsTransposed() const {return 0;}
 
@@ -66,57 +57,53 @@ class Equation
   // --------------------------------------
   //
   
-  virtual void point(double h, const FemFunction& U, const Vertex2d& v) const {}
-  virtual void point(double h, const FemFunction& U, const Vertex3d& v) const {}
+  virtual void point(double h, const Gascoigne::FemFunction& U, const Vertex2d& v) const {}
+  virtual void point(double h, const Gascoigne::FemFunction& U, const Vertex3d& v) const {}
   
-  virtual void pointmatrix(double h, const FemFunction& U, const Vertex2d& v) const {
+  virtual void pointmatrix(double h, const Gascoigne::FemFunction& U, const Vertex2d& v) const {
     point(h,U,v);
   }
-  virtual void pointmatrix(double h, const FemFunction& U, const Vertex3d& v) const {
-    point(h,U,v);
-  }
-  
-  virtual void point(double h, const FemFunction& U, Gascoigne::FemData& QH, const Vertex2d& v) const {
-    point(h,U,v);
-  }
-  virtual void point(double h, const FemFunction& U, Gascoigne::FemData& QH, const Vertex3d& v) const {
+  virtual void pointmatrix(double h, const Gascoigne::FemFunction& U, const Vertex3d& v) const {
     point(h,U,v);
   }
   
-  virtual void pointmatrix(double h, const FemFunction& U, Gascoigne::FemData& QH, const Vertex2d& v) const {
+  virtual void point(double h, const Gascoigne::FemFunction& U, Gascoigne::FemData& QH, const Vertex2d& v) const {
+    point(h,U,v);
+  }
+  virtual void point(double h, const Gascoigne::FemFunction& U, Gascoigne::FemData& QH, const Vertex3d& v) const {
+    point(h,U,v);
+  }
+  
+  virtual void pointmatrix(double h, const Gascoigne::FemFunction& U, Gascoigne::FemData& QH, const Vertex2d& v) const {
     point(h,U,QH,v);
   }
-  virtual void pointmatrix(double h, const FemFunction& U, Gascoigne::FemData& QH, const Vertex3d& v) const {
+  virtual void pointmatrix(double h, const Gascoigne::FemFunction& U, Gascoigne::FemData& QH, const Vertex3d& v) const {
     point(h,U,QH,v);
   }
 
   virtual void pointboundary
-    (double h, const FemFunction& U, const Vertex2d& v, 
+    (double h, const Gascoigne::FemFunction& U, const Vertex2d& v, 
      const Vertex2d& n) const {assert(0);}
 
   virtual void pointboundary 
-    (double h, const FemFunction& U, const Vertex3d& v, 
+    (double h, const Gascoigne::FemFunction& U, const Vertex3d& v, 
      const Vertex3d& n) const {assert(0);}
 
-  virtual IntSet GetBoundaryColors() const { return IntSet();}
+  virtual Gascoigne::IntSet GetBoundaryColors() const { return Gascoigne::IntSet();}
 
-  virtual void SetParameterData(Gascoigne::LocalData& q) const { }
+  virtual void SetParameterData(Gascoigne::LocalParameterData& q) const { }
 
   //
   // ---------------------------------------------
   //
 
-  virtual void Form(Gascoigne::VectorIterator b, const FemFunction& U, const TestFunction& N) const {assert(0);}
+  virtual void Form(Gascoigne::VectorIterator b, const Gascoigne::FemFunction& U, const Gascoigne::TestFunction& N) const {assert(0);}
 
-  virtual void Matrix(EntryMatrix& A, const FemFunction& U, const TestFunction& M, const TestFunction& N) const {assert(0);}
+  virtual void Matrix(EntryMatrix& A, const Gascoigne::FemFunction& U, const Gascoigne::TestFunction& M, const Gascoigne::TestFunction& N) const {assert(0);}
 
-  virtual void BoundaryResidual 
-    (int col, Vector& b, const FemFunction& U, 
-     const TestFunction& N) const {assert(0);}
+  virtual void BoundaryResidual(int col, Gascoigne::DoubleVector& b, const Gascoigne::FemFunction& U, const Gascoigne::TestFunction& N) const {assert(0);}
 
-  virtual void BoundaryMatrix
-    (int col, EntryMatrix& D, const FemFunction& U, 
-     const TestFunction& M, const TestFunction& N) const {assert(0);}
+  virtual void BoundaryMatrix(int col, EntryMatrix& D, const Gascoigne::FemFunction& U, const Gascoigne::TestFunction& M, const Gascoigne::TestFunction& N) const {assert(0);}
 };
 
 

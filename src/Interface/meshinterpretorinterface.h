@@ -51,9 +51,9 @@ public:
 
   virtual void AddNodeVector(const std::string& name, const Gascoigne::GlobalVector* q) const {__q.AddNodeVector(name,q);}
   virtual void DeleteNodeVector(const std::string& name) const {__q.DeleteNodeVector(name);}
-  virtual void AddCellVector(const std::string& name, const Gascoigne::GlobalVector* q) const {__q.AddCellVector(name,q);}
+  virtual void AddCellVector(const std::string& name, const Gascoigne::GlobalCellVector* q) const {__q.AddCellVector(name,q);}
   virtual void DeleteCellVector(const std::string& name) const {__q.DeleteCellVector(name);}
-  virtual void AddParameterVector(const std::string& name, const Gascoigne::GlobalVector* q) const {__q.AddParameterVector(name,q);}
+  virtual void AddParameterVector(const std::string& name, const Gascoigne::GlobalParameterVector* q) const {__q.AddParameterVector(name,q);}
   virtual void DeleteParameterVector(const std::string& name) const {__q.DeleteParameterVector(name);}
 
   virtual void BasicInit(const Gascoigne::ParamFile* pf)=0;

@@ -29,7 +29,7 @@ class BasicIntegrator : public IntegratorInterface
   mutable Gascoigne::FemData       QH;
   
   void  universal_point(const FemInterface& FEM, Gascoigne::FemFunction& UH, const Gascoigne::LocalVector& U) const;
-  void  universal_point(const FemInterface& FEM, Gascoigne::FemData& QH, const Gascoigne::LocalData& Q) const;
+  void  universal_point(const FemInterface& FEM, Gascoigne::FemData& QH, const Gascoigne::LocalNodeData& Q) const;
   void  universal_point(Gascoigne::FemFunction& UH, const Gascoigne::LocalVector& U, const Gascoigne::FemFunction& NN) const;
   
  public:

@@ -25,8 +25,8 @@ class EnergyEstimatorIntegrator : public BasicIntegrator
 
     void   Jumps(Gascoigne::LocalVector& F, const FemInterface& FEM, const Gascoigne::LocalVector& U, int ile) const;
     double JumpNorm(const FemInterface& FEM, fixarray<2*DIM-2,double> jumps, int ile) const;
-    double Residual(const Gascoigne::LocalVector& U, const FemInterface& FEM, const Equation& EQ, const RightHandSideData& RHS, const Gascoigne::LocalData& Q) const;
-    double ResidualZeroRhs(const Gascoigne::LocalVector& U, const FemInterface& FEM, const Equation& EQ, const Gascoigne::LocalData& Q) const;
+    double Residual(const Gascoigne::LocalVector& U, const FemInterface& FEM, const Equation& EQ, const RightHandSideData& RHS, const Gascoigne::LocalNodeData& Q) const;
+    double ResidualZeroRhs(const Gascoigne::LocalVector& U, const FemInterface& FEM, const Equation& EQ, const Gascoigne::LocalNodeData& Q) const;
 };
 
 /**********************************************************/

@@ -30,27 +30,27 @@ class GlobalData
   ~GlobalData() {}
 
   void AddNodeVector(const std::string& name, const Gascoigne::GlobalVector* d) {
-    const Gascoigne::GlobalVector* nd = dynamic_cast<const Gascoigne::GlobalVector*>(d);
-    assert(nd!=NULL);
-    if(!_node.insert(std::make_pair(name,nd)).second)
+//    const Gascoigne::GlobalVector* nd = dynamic_cast<const Gascoigne::GlobalVector*>(d);
+    assert(d!=NULL);
+    if(!_node.insert(std::make_pair(name,d)).second)
     {
       std::cerr << "NodeVector \"" << name << "\" already added" << std::endl;
     }
   }
   
-  void AddCellVector(const std::string& name, const Gascoigne::GlobalVector* d) {
-    const Gascoigne::GlobalVector* nd = dynamic_cast<const Gascoigne::GlobalVector*>(d);
-    assert(nd!=NULL);
-    if(!_cell.insert(std::make_pair(name,nd)).second)
+  void AddCellVector(const std::string& name, const Gascoigne::GlobalCellVector* d) {
+//    const Gascoigne::GlobalVector* nd = dynamic_cast<const Gascoigne::GlobalVector*>(d);
+    assert(d!=NULL);
+    if(!_cell.insert(std::make_pair(name,d)).second)
     {
       std::cerr << "CellVector \"" << name << "\" already added" << std::endl;
     }
   }
   
-  void AddParameterVector(const std::string& name, const Gascoigne::GlobalVector* d) {
-    const Gascoigne::GlobalVector* nd = dynamic_cast<const Gascoigne::GlobalVector*>(d);
-    assert(nd!=NULL);
-    if(!_parameter.insert(std::make_pair(name,nd)).second)
+  void AddParameterVector(const std::string& name, const Gascoigne::GlobalParameterVector* d) {
+//    const Gascoigne::GlobalVector* nd = dynamic_cast<const Gascoigne::GlobalVector*>(d);
+    assert(d!=NULL);
+    if(!_parameter.insert(std::make_pair(name,d)).second)
     {
       std::cerr << "ParameterVector \"" << name << "\" already added" << std::endl;
     }

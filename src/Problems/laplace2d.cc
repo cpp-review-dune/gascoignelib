@@ -23,7 +23,7 @@ Laplace2d::Laplace2d(const ParamFile* pf) : Equation()
  
 /*-----------------------------------------*/
 
-void Laplace2d::OperatorStrong(Vector& b, const FemFunction& U)const
+void Laplace2d::OperatorStrong(DoubleVector& b, const FemFunction& U)const
 {
   b[0] -= visc*U[0].D();
 }

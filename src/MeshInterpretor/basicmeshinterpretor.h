@@ -27,8 +27,8 @@ class BasicMeshInterpretor : public MeshInterpretorInterface
   mutable Gascoigne::LocalVector __F;
   mutable Gascoigne::LocalVector __U;
 
-  mutable Gascoigne::LocalData   __Q;
-  mutable Gascoigne::LocalData   __qq;
+  mutable Gascoigne::LocalNodeData        __Q;
+  mutable Gascoigne::LocalParameterData   __qq;
   
   const MeshInterface* GetMesh() const { assert(__MP); return __MP;}
 

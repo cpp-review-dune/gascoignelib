@@ -39,7 +39,7 @@ class NavierStokes3d : public NavierStokes2d
 
   void SetTimePattern(TimePattern& P) const;
 
-  void OperatorStrong(Vector& b, const Gascoigne::FemFunction& U) const;
+  void OperatorStrong(Gascoigne::DoubleVector& b, const Gascoigne::FemFunction& U) const;
 
   void point(double h, const Gascoigne::FemFunction& U, const Vertex3d& v) const 
     { 

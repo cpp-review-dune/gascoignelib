@@ -28,7 +28,7 @@ GalerkinIntegrator<DIM>::GalerkinIntegrator<DIM>() : BasicIntegrator()
 /* ----------------------------------------- */
 
 template<int DIM>
-void GalerkinIntegrator<DIM>::Rhs(const RightHandSideData& f, LocalVector& F, const FemInterface& FEM, const LocalData& Q) const
+void GalerkinIntegrator<DIM>::Rhs(const RightHandSideData& f, LocalVector& F, const FemInterface& FEM, const LocalNodeData& Q) const
 {
   F.ReInit(f.GetNcomp(),FEM.n());
 
@@ -56,7 +56,7 @@ void GalerkinIntegrator<DIM>::Rhs(const RightHandSideData& f, LocalVector& F, co
 /* ----------------------------------------- */
 
 template<int DIM>
-void GalerkinIntegrator<DIM>::RhsNeumann(const NeumannData& f, LocalVector& F, const FemInterface& FEM, int ile, int col, const LocalData& Q) const
+void GalerkinIntegrator<DIM>::RhsNeumann(const NeumannData& f, LocalVector& F, const FemInterface& FEM, int ile, int col, const LocalNodeData& Q) const
 {
   assert(DIM==2);
   F.ReInit(f.GetNcomp(),FEM.n());
@@ -87,7 +87,7 @@ void GalerkinIntegrator<DIM>::RhsNeumann(const NeumannData& f, LocalVector& F, c
 /* ----------------------------------------- */
 
 template<int DIM>
-void GalerkinIntegrator<DIM>::Form(const Equation& EQ, LocalVector& F, const FemInterface& FEM, const LocalVector& U, const LocalData& Q) const
+void GalerkinIntegrator<DIM>::Form(const Equation& EQ, LocalVector& F, const FemInterface& FEM, const LocalVector& U, const LocalNodeData& Q) const
 {
   F.ReInit(EQ.ncomp(),FEM.n());
 
@@ -155,7 +155,7 @@ double GalerkinIntegrator<DIM>::MassMatrix(EntryMatrix& E, const FemInterface& F
 /* ----------------------------------------- */
 
 template<int DIM>
-void GalerkinIntegrator<DIM>::Matrix(const Equation& EQ, EntryMatrix& E, const FemInterface& FEM, const LocalVector& U, const LocalData& Q) const
+void GalerkinIntegrator<DIM>::Matrix(const Equation& EQ, EntryMatrix& E, const FemInterface& FEM, const LocalVector& U, const LocalNodeData& Q) const
 {
   NNN.resize(FEM.n());
   E.SetDimensionDof(FEM.n(),FEM.n());
@@ -213,7 +213,7 @@ void GalerkinIntegrator<DIM>::RhsPoint
 /* ----------------------------------------- */
 
 template<int DIM>
-double GalerkinIntegrator<DIM>::ComputeDomainFunctional(const DomainFunctional& F, const FemInterface& FEM, const LocalVector& U, const LocalData& Q) const
+double GalerkinIntegrator<DIM>::ComputeDomainFunctional(const DomainFunctional& F, const FemInterface& FEM, const LocalVector& U, const LocalNodeData& Q) const
 {
   const IntegrationFormulaInterface& IF = FormFormula();
 
@@ -237,7 +237,7 @@ double GalerkinIntegrator<DIM>::ComputeDomainFunctional(const DomainFunctional& 
 /* ----------------------------------------- */
 
 template<int DIM>
-void GalerkinIntegrator<DIM>::ErrorsByExactSolution(LocalVector& dst, const FemInterface& FE, const ExactSolution& ES, const LocalVector& U, const LocalData& Q) const
+void GalerkinIntegrator<DIM>::ErrorsByExactSolution(LocalVector& dst, const FemInterface& FE, const ExactSolution& ES, const LocalVector& U, const LocalNodeData& Q) const
 {
   const IntegrationFormulaInterface& IF = ErrorFormula();
 

@@ -21,7 +21,7 @@ class Laplace2d : public virtual Equation
 
   int    ncomp      () const {return 1;}
 
-  void OperatorStrong(Vector& b, const Gascoigne::FemFunction& U) const;
+  void OperatorStrong(Gascoigne::DoubleVector& b, const Gascoigne::FemFunction& U) const;
 
   void SetTimePattern(TimePattern& P) const;
 

@@ -12,10 +12,10 @@ BasicIntegrator::BasicIntegrator() : IntegratorInterface()
 
 /*---------------------------------------------------------*/
 
-void BasicIntegrator::universal_point(const FemInterface& FEM, FemData& QH, const LocalData& Q) const
+void BasicIntegrator::universal_point(const FemInterface& FEM, FemData& QH, const LocalNodeData& Q) const
 {
   QH.clear();
-  LocalData::const_iterator p=Q.begin();
+  LocalNodeData::const_iterator p=Q.begin();
   for(; p!=Q.end(); p++)
     {
       universal_point(FEM, QH[p->first], p->second);

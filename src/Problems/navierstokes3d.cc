@@ -31,7 +31,7 @@ NavierStokes3d::NavierStokes3d(const ParamFile* pf)
 
 /*-----------------------------------------*/
 
-void NavierStokes3d::OperatorStrong(Vector& b, const FemFunction& U) const
+void NavierStokes3d::OperatorStrong(DoubleVector& b, const FemFunction& U) const
 {
   b[0] = Divergence(U);
   b[1] = Convection(U,U[1]) - visc * U[1].D() + U[0].x();

@@ -26,7 +26,7 @@ public:
   NavierStokes2d();
   NavierStokes2d(const Gascoigne::ParamFile* pf);
 
-  void OperatorStrong(Vector& b, const Gascoigne::FemFunction& U) const;
+  void OperatorStrong(Gascoigne::DoubleVector& b, const Gascoigne::FemFunction& U) const;
 
   std::string GetName() const { return "NavierStokes2d";}
   double Getpenalty()const {return penalty;}
