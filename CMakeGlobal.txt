@@ -13,29 +13,6 @@ MARK_AS_ADVANCED(LIBRARY_OUTPUT_PATH)
 #############################################
 
 #
-#  caching the variables from the .gascoignerc file
-#
-
-
-##
-## das folgende hab ich auskommentiert, weil es zum uebersschreiben der variablen 
-## aus dem .gascoignrc fuehrt.
-## dafuer muss man die etwas kompliziertere definition in .gascoignerc in kauf nehmen.
-##
-#SET(GASCOIGNE_STD                  ${GASCOIGNE_STD}                  CACHE PATH   "GascoigneStd input directory")
-#SET(GASCOIGNE_EXECUTABLE_OUTPUT_PREFIX        ${GASCOIGNE_EXECUTABLE_OUTPUT_PREFIX}        CACHE PATH   "Output path prefix, prepended onto output directories.")
-#SET(GASCOIGNE_LIBRARY_OUTPUT_PREFIX        ${GASCOIGNE_LIBRARY_OUTPUT_PREFIX}        CACHE PATH   "Output path prefix, prepended onto output directories.")
-
-#SET(GASCOIGNE_CXX_FLAGS            ${GASCOIGNE_CXX_FLAGS}            CACHE STRING "Flags used by the compiler during all build types.")
-#SET(GASCOIGNE_COMPILER_DEFINITIONS ${GASCOIGNE_COMPILER_DEFINITIONS} CACHE STRING "Add -D define flags to command line for environments.")
-##
-##
-##
-
-
-#############################################
-
-#
 #  set up user-specific paths
 #
 
@@ -45,8 +22,8 @@ IF(USE_ARCH)
   EXEC_PROGRAM(arch OUTPUT_VARIABLE ARCH)
 ENDIF(USE_ARCH)
 
-SET(LIBRARY_OUTPUT_PATH    ${GASCOIGNE_LIBRARY_OUTPUT_PATH}/${ARCH} CACHE PATH "Single output directory for building all libraries." FORCE)
-SET(EXECUTABLE_OUTPUT_PATH ${GASCOIGNE_EXECUTABLE_OUTPUT_PATH}/${ARCH} CACHE PATH "Single output directory for building all executables." FORCE)
+SET(LIBRARY_OUTPUT_PATH    ${GASCOIGNE_LIBRARY_OUTPUT_PATH}/${ARCH} CACHE PATH "Single output directory for building all libraries.")
+SET(EXECUTABLE_OUTPUT_PATH ${GASCOIGNE_EXECUTABLE_OUTPUT_PATH}/${ARCH} CACHE PATH "Single output directory for building all executables.")
 
 
 
