@@ -175,7 +175,9 @@ void StdLoop::AdaptMesh(const DoubleVector& eta)
     {
       //scheinbar hat es nicht gereicht *nichts* zu tun, also rufe ich
       //random_patch_refine mit parameter auf die nichts veraendern, tom
-      GetMeshAgent()->random_patch_refine(-0.1,0);
+      //GetMeshAgent()->random_patch_refine(-0.1,0);
+      //besser :)
+      GetMeshAgent()->global_refine(0);
     }
   else if(_refiner=="random") 
     {
