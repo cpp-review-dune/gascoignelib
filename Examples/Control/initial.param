@@ -9,6 +9,6 @@ gridname    Results/mesh.gup
 solver             instat
 
 //Block Solver
-disc       Q1
+discname       Q1
 
 //Block Nix

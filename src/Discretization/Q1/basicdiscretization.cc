@@ -102,7 +102,7 @@ void BasicDiscretization::LocalToGlobal(MatrixInterface& A, EntryMatrix& E, int 
   IntVector indices = GetLocalIndices(iq);
   IntVector::const_iterator  start = indices.begin();
   IntVector::const_iterator  stop  = indices.end();
-  A.entry(start,stop,__E,s);
+  A.entry(start,stop,E,s);
 }
 
 /*-----------------------------------------*/

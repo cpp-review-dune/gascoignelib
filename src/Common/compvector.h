@@ -39,9 +39,7 @@ class CompVector : public nvector<T>
 
   CompVector(const CompVector& u)
     {
-      N = u.ncomp();
-      nvector<T>::reservesize(u.size());
-      copy(u.begin(),u.end(),begin());
+    ReInit(u);
     }
 
    CompVector& operator=(double d)
@@ -60,8 +58,14 @@ class CompVector : public nvector<T>
   const T& operator()(int i, int c) const {return *(start(i)+c);}
   T&       operator()(int i, int c)       {return *(start(i)+c);}
 
-  void ReInit(size_t ncomp, size_t n) {N=ncomp; reservesize(n);}
-
+  void ReInit(size_t ncomp, size_t n) {assert(ncomp); N=ncomp; reservesize(n);}
+  
+  void ReInit(const CompVector& u) {
+    N = u.ncomp();
+    nvector<T>::reservesize(u.size());
+    copy(u.begin(),u.end(),begin());
+  }
+  
   void reservesize(size_t n, const T& s=0) { nvector<T>::reservesize(n*N,s); }
   void reservesize(const CompVector& u) 
     {

@@ -27,7 +27,7 @@ nonlinear_rho 	0.009
 
 //Block Solver
 
-disc       Q1
+discname       Q1
 iterpre                 2
 iterpost                2
 iterexact              10

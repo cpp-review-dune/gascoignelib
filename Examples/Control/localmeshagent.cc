@@ -9,34 +9,24 @@ using namespace Gascoigne;
 
 void LocalMeshAgent::BasicInit(const ParamFile* paramfile)
 {
-  cerr << "\t§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§\n";
-  cerr << "\t i don't read any paramfile!\n";
-  cerr << "\t§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§\n";
-
-  DataFormatHandler DFH;
   string gridname("Results/forward.00000.gup");
-  DFH.insert("gridname" ,&gridname,"none");
-  DFH.insert("dimension",&_dimension,0);
-  FileScanner FS(DFH);
-  FS.NoComplain();
-  FS.readfile(paramfile,"Mesh");
+  int dimension=0;
+  int prerefine=0;
 
-  cerr << "\t§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§\n";
-  cerr << "\t i read Mesh from ";
-  cerr << gridname << endl;
-  cerr << "\t§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§\n";
+  MeshAgent::SetDefaultValues(dimension, gridname, prerefine);
+  MeshAgent::ReadParamFile(paramfile);
 
-  if (_dimension==2)
+  if (GetDimension()==2)
     {
       HMP = new HierarchicalMesh2d;
     }
-  else if (_dimension==3)
+  else if (GetDimension()==3)
     {
       HMP = new HierarchicalMesh3d;
     }
   else
     {
-      cout << "dimension of Mesh ? " << _dimension << endl;
+      cout << "dimension of Mesh ? " << GetDimension() << endl;
     }
 
   int patchdepth=1;

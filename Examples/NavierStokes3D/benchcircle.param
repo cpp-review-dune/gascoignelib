@@ -46,7 +46,7 @@ nonlinear_damp          10
 
 //Block Solver
 
-disc 	                Q1Gls
+discname 	                Q1Gls
 iterpre                 4
 iterpost                4
 iterexact               8

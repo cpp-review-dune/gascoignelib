@@ -126,7 +126,7 @@ void IntegratorWithSecond<DIM>::hesse(const FemInterface& E, FemData& QH, const 
 template<int DIM>
 double IntegratorWithSecond<DIM>::ComputeDomainFunctional(const DomainFunctional& F, const FemInterface& FEM, const LocalVector& U, const LocalNodeData& Q) const
 {
-  const IntegrationFormulaInterface& IF = FormFormula();
+  const IntegrationFormulaInterface& IF = *FormFormula();
 
   Vertex<DIM> x, xi;
   double j = 0.;
@@ -157,7 +157,7 @@ void IntegratorWithSecond<DIM>::Rhs(const DomainRightHandSide& f, LocalVector& F
 {
   F.ReInit(f.GetNcomp(),FEM.n());
 
-  const IntegrationFormulaInterface& IF = FormFormula();
+  const IntegrationFormulaInterface& IF = *FormFormula();
 
   F.zero();
   Vertex<DIM> x, xi;

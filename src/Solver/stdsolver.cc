@@ -198,7 +198,7 @@ void StdSolver::BasicInit(int level, const ParamFile* paramfile, const MeshInter
   DataFormatHandler DFH;
   DFH.insert("matrixtype" , &_matrixtype);
   DFH.insert("ndirect"    , &_ndirect);
-  DFH.insert("disc", &_discname);
+  DFH.insert("discname", &_discname);
   FileScanner FS(DFH);
   FS.NoComplain();
   FS.readfile(_paramfile,"Solver");

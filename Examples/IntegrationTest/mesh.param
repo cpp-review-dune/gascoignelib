@@ -7,7 +7,7 @@ patchdepth   1
 
 //Block Solver
 
-disc       Q1
+discname       Q1
 ndirect              1000
 pfilter     1 0
 

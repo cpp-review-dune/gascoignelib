@@ -14,13 +14,20 @@ namespace Gascoigne
 {
 class MeshAgent : public virtual MeshAgentInterface
 {
-protected:
+private:
 
   int _dimension,_prerefine;
   std::string    _gridname;
   map<int,BoundaryFunction<2>* > _curved2d;
   map<int,BoundaryFunction<3>* > _curved3d;
 
+protected:
+
+		int GetDimension() const {return _dimension;}	
+	int GetPrerefine() const {return _prerefine;}	
+	std::string GetGridname() const {return _gridname;}
+
+		
   HierarchicalMesh*         HMP;
   GascoigneMultiGridMesh*   GMG;
 
@@ -39,9 +46,10 @@ public:
   void AddShape(int col, BoundaryFunction<2>* f) { _curved2d[col] = f;}
   void AddShape(int col, BoundaryFunction<3>* f) { _curved3d[col] = f;}
 
+  void ReadParamFile(const ParamFile* paramfile);
   void BasicInit(const ParamFile* pf);
 
-  void SetDefaultValues(int dim, std::string gridname, int prerefine);
+  void SetDefaultValues(int dimension, std::string gridname, int prerefine);
 
   const GascoigneMultiGridMesh& GetMultiGrid() const {return *GMG;}
   GascoigneMultiGridMesh& GetMultiGrid() {return *GMG;}

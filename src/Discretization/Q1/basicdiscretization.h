@@ -26,7 +26,7 @@ class BasicDiscretization : public DiscretizationInterface
   
  protected:
 
-  mutable EntryMatrix            __E;
+  mutable EntryMatrix __E;
   mutable LocalVector __F;
   mutable LocalVector __U;
 

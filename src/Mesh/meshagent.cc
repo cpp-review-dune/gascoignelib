@@ -58,7 +58,7 @@ void MeshAgent::ReadMesh(int dim, string meshname, int prerefine)
 
 /*-----------------------------------------*/
 
-void MeshAgent::BasicInit(const ParamFile* paramfile)
+void MeshAgent::ReadParamFile(const ParamFile* paramfile)
 {
   DataFormatHandler DFH;
   DFH.insert("dimension",&_dimension);
@@ -67,6 +67,13 @@ void MeshAgent::BasicInit(const ParamFile* paramfile)
   FileScanner FS(DFH);
   FS.NoComplain();
   FS.readfile(paramfile,"Mesh");
+}
+
+/*-----------------------------------------*/
+
+void MeshAgent::BasicInit(const ParamFile* paramfile)
+{
+  MeshAgent::ReadParamFile(paramfile);
 
   if (_dimension==2)
     {
@@ -99,9 +106,9 @@ void MeshAgent::BasicInit(const ParamFile* paramfile)
 
 /*-----------------------------------------*/
 
-void MeshAgent::SetDefaultValues(int dim, string gridname, int prerefine)
+void MeshAgent::SetDefaultValues(int dimension, string gridname, int prerefine)
 {
-  _dimension = dim;
+  _dimension = dimension;
   _gridname  = gridname;
   _prerefine = prerefine;
 }

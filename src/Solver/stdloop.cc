@@ -146,7 +146,9 @@ double StdLoop::Estimator(DoubleVector& eta, MultiLevelGhostVector& u, MultiLeve
       StdSolver* S = dynamic_cast<StdSolver*>(GetMultiLevelSolver()->GetSolver());
       assert(S);
       
-      S->GetHierarchicalMeshPointer() = dynamic_cast<MeshAgent*>(GetMeshAgent())->GetHierarchicalMesh();
+      MeshAgent* MA = dynamic_cast<MeshAgent*>(GetMeshAgent());
+      assert(MA);
+      S->GetHierarchicalMeshPointer() = MA -> GetHierarchicalMesh();
 
       EnergyEstimator E(*S);
       est = E.Estimator(eta,u,f);

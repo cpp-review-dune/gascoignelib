@@ -65,6 +65,10 @@ namespace Gascoigne
         std::cerr << "\"MeshInterface::LocalOnBoundary\" not written!" << std::endl;
         abort();
       }
+      virtual const IntVector* VertexOnBoundary(int col) const {
+        std::cerr << "\"MeshInterface::VertexOnBoundary\" not written!" << std::endl;
+        abort();
+      }
 
       virtual int VtkType(int i) const=0;
 

@@ -28,7 +28,7 @@ nonlinear_tol		1e-4
 
 //Block Solver
 
-disc 	                Q1Gls
+discname 	                Q1Gls
 ilum                    3  0.01  0.1  0.1
 ndirect			200
 

@@ -24,7 +24,7 @@ nonlinear_tol        1.e-12
 
 //Block Solver
 
-disc       Q2
+discname       Q2
 ndirect              1000
 
 //Block Nix

@@ -49,7 +49,7 @@ linear_tol		1.e-2
 
 //Block Solver
 
-disc         Q1
+discname         Q1
 matrixtype   umf
 iterpre                 1
 iterpost                1

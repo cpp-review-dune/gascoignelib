@@ -8,7 +8,7 @@ namespace Gascoigne
 {
 template<int DIM>
 GalerkinIntegrator<DIM>::GalerkinIntegrator<DIM>() : BasicIntegrator(),
-  IFF(0), IFE(0), IFB(0), IFM(0)
+  IFF(NULL), IFE(NULL), IFB(NULL), IFM(NULL)
 {
 }
 
@@ -44,18 +44,10 @@ void GalerkinIntegrator<DIM>::BasicInit()
 template<int DIM>
 GalerkinIntegrator<DIM>::~GalerkinIntegrator<DIM>()
 {
-  if(FormFormulaPointer())
-  {
-    delete FormFormulaPointer();
-  }
-  if(ErrorFormulaPointer())
-  {
-    delete ErrorFormulaPointer();
-  }
-  if(BoundaryFormulaPointer())
-  {
-    delete BoundaryFormulaPointer();
-  }
+  if(FormFormulaPointer()){delete FormFormulaPointer();}
+  if(ErrorFormulaPointer()){delete ErrorFormulaPointer();}
+  if(BoundaryFormulaPointer()){delete BoundaryFormulaPointer();}
+  if(MassFormulaPointer()){delete MassFormulaPointer();}
 }
 
 /* ----------------------------------------- */
@@ -65,24 +57,24 @@ void GalerkinIntegrator<DIM>::Rhs(const DomainRightHandSide& f, LocalVector& F, 
 {
   F.ReInit(f.GetNcomp(),FEM.n());
 
-  const IntegrationFormulaInterface& IF = FormFormula();
+  const IntegrationFormulaInterface& IF = *FormFormula();
 
   F.zero();
   Vertex<DIM> x, xi;
   for (int k=0; k<IF.n(); k++)
     {
-      IF.xi(xi,k);
-      FEM.point(xi);
-      double vol = FEM.J();
-      double weight  = IF.w(k) * vol;
-      BasicIntegrator::universal_point(FEM,QH,Q);
-      f.SetFemData(QH);
-      FEM.x(x);
-      for (int i=0;i<FEM.n();i++)
-	{
-	  FEM.init_test_functions(NN,weight,i);
-	  f(F.start(i),NN,x);
-	}
+		IF.xi(xi,k);
+		FEM.point(xi);
+		double vol = FEM.J();
+		double weight  = IF.w(k) * vol;
+		BasicIntegrator::universal_point(FEM,QH,Q);
+		f.SetFemData(QH);
+		FEM.x(x);
+		for (int i=0;i<FEM.n();i++)
+			{
+			FEM.init_test_functions(NN,weight,i);
+			f(F.start(i),NN,x);
+			}
     }
 }
 
@@ -93,7 +85,7 @@ void GalerkinIntegrator<DIM>::BoundaryRhs(const BoundaryRightHandSide& f, LocalV
 {
   F.ReInit(f.GetNcomp(),FEM.n());
 
-  const IntegrationFormulaInterface& IF = BoundaryFormula();
+  const IntegrationFormulaInterface& IF = *BoundaryFormula();
   F.zero();
   Vertex<DIM> x, n;
   Vertex<DIM-1> xi;
@@ -123,7 +115,7 @@ void GalerkinIntegrator<DIM>::Form(const Equation& EQ, LocalVector& F, const Fem
 {
   F.ReInit(EQ.GetNcomp(),FEM.n());
 
-  const IntegrationFormulaInterface& IF = FormFormula();
+  const IntegrationFormulaInterface& IF = *FormFormula();
 
   F.zero();
   Vertex<DIM> x, xi;
@@ -155,7 +147,7 @@ void GalerkinIntegrator<DIM>::AdjointForm(const Equation& EQ, LocalVector& F, co
 {
   F.ReInit(EQ.GetNcomp(),FEM.n());
 
-  const IntegrationFormulaInterface& IF = FormFormula();
+  const IntegrationFormulaInterface& IF = *FormFormula();
 
   F.zero();
   Vertex<DIM> x, xi;
@@ -217,7 +209,7 @@ void GalerkinIntegrator<DIM>::BoundaryForm(const BoundaryEquation& BE, LocalVect
 {
   F.ReInit(BE.GetNcomp(),FEM.n());
 
-  const IntegrationFormulaInterface& IF = BoundaryFormula();
+  const IntegrationFormulaInterface& IF = *BoundaryFormula();
 
   F.zero();
   Vertex<DIM> x,n;
@@ -254,29 +246,29 @@ double GalerkinIntegrator<DIM>::MassMatrix(EntryMatrix& E, const FemInterface& F
   E.SetDimensionComp(ncomp,ncomp);
   E.resize();
   E.zero();
-  const IntegrationFormulaInterface& IF = MassFormula();
+  const IntegrationFormulaInterface& IF = *MassFormula();
 
   Vertex<DIM> x, xi;
   double omega = 0.;
   for (int k=0; k<IF.n(); k++)
     {
-      IF.xi(xi,k);
-      FEM.point(xi);
-      double vol = FEM.J();
-      double weight  = IF.w(k) * vol;
-      omega += weight;
-      for (int i=0;i<FEM.n();i++)
-	{
-	  FEM.init_test_functions(NNN[i],1.,i);
-	}
-      for (int i=0;i<FEM.n();i++)
-	{
-	  for (int j=0;j<FEM.n();j++)
-	    {
-	      E.SetDofIndex(i,j);
-	      E(0,0) += weight * NNN[j].m()*NNN[i].m();
-	    }
-	}
+		IF.xi(xi,k);
+		FEM.point(xi);
+		double vol = FEM.J();
+		double weight  = IF.w(k) * vol;
+		omega += weight;
+		for (int i=0;i<FEM.n();i++)
+			{
+			FEM.init_test_functions(NNN[i],1.,i);
+			}
+		for (int i=0;i<FEM.n();i++)
+			{
+			for (int j=0;j<FEM.n();j++)
+				{
+				E.SetDofIndex(i,j);
+				E(0,0) += weight * NNN[j].m()*NNN[i].m();
+				}
+			}
     }
   return omega;
 }
@@ -292,7 +284,7 @@ void GalerkinIntegrator<DIM>::Matrix(const Equation& EQ, EntryMatrix& E, const F
   E.resize();
   E.zero();
 
-  const IntegrationFormulaInterface& IF = FormFormula();
+  const IntegrationFormulaInterface& IF = *FormFormula();
 
   Vertex<DIM> x, xi;
   for (int k=0; k<IF.n(); k++)
@@ -310,17 +302,17 @@ void GalerkinIntegrator<DIM>::Matrix(const Equation& EQ, EntryMatrix& E, const F
 
       double sw = sqrt(weight);
       for (int i=0;i<FEM.n();i++)
-	{
-	  FEM.init_test_functions(NNN[i],sw,i);
-	}
+				{
+				FEM.init_test_functions(NNN[i],sw,i);
+				}
       for (int j=0; j<FEM.n(); j++)
-	{
-	  for (int i=0; i<FEM.n(); i++)
-	    {
-	      E.SetDofIndex(i,j);
-	      EQ.Matrix(E,UH,NNN[j],NNN[i]);
-	    }
-	}
+				{
+				for (int i=0; i<FEM.n(); i++)
+					{
+					E.SetDofIndex(i,j);
+					EQ.Matrix(E,UH,NNN[j],NNN[i]);
+					}
+				}
     }
 }
 
@@ -335,7 +327,7 @@ void GalerkinIntegrator<DIM>::BoundaryMatrix (const BoundaryEquation& BE, EntryM
   E.resize();
   E.zero();
 
-  const IntegrationFormulaInterface& IF = BoundaryFormula();
+  const IntegrationFormulaInterface& IF = *BoundaryFormula();
 
   Vertex<DIM> x,n;
   Vertex<DIM-1> xi;
@@ -417,7 +409,7 @@ double GalerkinIntegrator<DIM>::ComputePointValue(const FemInterface& E, const V
 template<int DIM>
 double GalerkinIntegrator<DIM>::ComputeDomainFunctional(const DomainFunctional& F, const FemInterface& FEM, const LocalVector& U, const LocalNodeData& Q) const
 {
-  const IntegrationFormulaInterface& IF = FormFormula();
+  const IntegrationFormulaInterface& IF = *FormFormula();
 
   Vertex<DIM> x, xi;
   double j = 0.;
@@ -441,7 +433,7 @@ double GalerkinIntegrator<DIM>::ComputeDomainFunctional(const DomainFunctional& 
 template<int DIM>
 void GalerkinIntegrator<DIM>::ErrorsByExactSolution(LocalVector& dst, const FemInterface& FE, const ExactSolution& ES, const LocalVector& U, const LocalNodeData& Q) const
 {
-  const IntegrationFormulaInterface& IF = ErrorFormula();
+  const IntegrationFormulaInterface& IF = *ErrorFormula();
 
   Vertex<DIM> x, xi;
   dst.zero();
