@@ -201,10 +201,10 @@ MeshInterpretorInterface* StdSolver::NewMeshInterpretor(int dimension, const str
       else if (discname=="Q1Lps")  return new Q1Lps2d;
       else if (discname=="Q2Lps")  return new Q2Lps2d;
       else 
-	{         
-	  cerr << " Solver::NewMeshInterpretor()\tunknown discname=" << discname << endl;
-	  abort();
-	}
+        {         
+          cerr << " Solver::NewMeshInterpretor()\tunknown discname=" << discname << endl;
+          abort();
+        }
     }
   else if (dimension==3)
     {
@@ -214,10 +214,10 @@ MeshInterpretorInterface* StdSolver::NewMeshInterpretor(int dimension, const str
       else if (discname=="Q1Lps")  return new Q1Lps3d;
       else if (discname=="Q2Lps")  return new Q2Lps3d;
       else 
-	{         
-	  cerr << " Solver::NewMeshInterpretor()\tunknown discname=" << discname << endl;
-	  abort();
-	}
+        {         
+          cerr << " Solver::NewMeshInterpretor()\tunknown discname=" << discname << endl;
+          abort();
+        }
     }
   else
     {
@@ -279,7 +279,10 @@ IluInterface* StdSolver::NewIlu(int ncomp, const string& matrixtype)
 #ifdef __WITH_UMFPACK__
   if(_directsolver)             return new UmfIlu(GetMatrix());
 #endif
-  if(matrixtype=="point_node")  return new PointIlu(ncomp,"node");
+  // analog zu NewMatrix muss hier auch _directsolver eingehen, 
+  // sonst gibts aerger nachher beim 
+  // GetIlu()->copy_entries(GetMatrix());
+  if(_directsolver || matrixtype=="point_node")  return new PointIlu(ncomp,"node");
   
   else if (matrixtype=="block")
   {
@@ -343,11 +346,11 @@ void StdSolver::ReInitVector()
       const GhostVector& gv = p->first;
       assert(gv.GetSolver()==this);
       if(p->second==NULL) 
-	{
-	  //int n = GetMeshInterpretor()->n();
-	  p->second = new GlobalVector;
-	  p->second->ncomp() = ncomp;
-	}
+        {
+          //int n = GetMeshInterpretor()->n();
+          p->second = new GlobalVector;
+          p->second->ncomp() = ncomp;
+        }
       ResizeVector(p->second,gv.GetType());
       p++;
     }
@@ -1000,10 +1003,15 @@ void StdSolver::modify_ilu(IluInterface& I,int ncomp) const
 
 void StdSolver::PermutateIlu(const GlobalVector& u) const
 {
-  IntVector perm(GetMesh()->nnodes());
+  int n = GetMatrix()->GetStencil()->n();
+  IntVector perm(n);
   
   iota(perm.begin(),perm.end(),0);
   
+  // if (0 && _mylevel==0 && _directsolver)
+  //   {
+  //     // don't do anything if we're on the lowest level and solving directly
+  //   } else
   if (_Dat.GetIluSort()=="cuthillmckee")
     {
       CuthillMcKee    cmc(GetMatrix()->GetStencil());

@@ -53,9 +53,15 @@ void CuthillMcKee::Permutate (IntVector &perm)
 {
   // mit metis graph aufbauen
   //
-  int n = S->n();
 
-  perm.resize(n);
+  //diese methode wird in StdSolver::PermutateIlu aufgerufen
+  //unmittelbar davor *wird* perm schon richtig gesized und mit iota gefuellt
+  //dieser code:
+  //  int n = S->n();
+  //  perm.resize(n);
+  //sollte hier nicht aufgerufen werden, sondern ueberpruefen ob perm von der groesse her stimmt
+  int n = S->n();
+  assert(n==perm.size());
 
   vector<int> adj(n+1,0);
   vector<int> adjncy;
@@ -66,12 +72,12 @@ void CuthillMcKee::Permutate (IntVector &perm)
   for (int r=0;r<n;++r)
     {
       for (int p=S->start(r); p<S->stop(r);++p)
-	{
-	  c = S->col(p);
-	  if (r==c) continue;
-	  ++count;
-	  adjncy.push_back(c);
-	}
+        {
+          c = S->col(p);
+          if (r==c) continue;
+          ++count;
+          adjncy.push_back(c);
+        }
       adj[r+1]=count;
     }
   int numflag = 0;
