@@ -43,9 +43,9 @@ class Stabilization
       _h = h;
       double denom = xeta0 * visc / (h*h);
       if(dt>0.)
-	{
-	  denom += _dtfactor/dt;
-	}
+        {
+          denom += _dtfactor/dt;
+        }
       _alpha = alpha0 / denom;
     }
 };

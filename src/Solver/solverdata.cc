@@ -15,6 +15,8 @@ namespace Gascoigne
   {
     DataFormatHandler DFH;
     
+    _pfilter.resize(0);
+
     DFH.insert("pfilter" , &_pfilter);
     DFH.insert("exact_lu", &exact_lu, 0);
     DFH.insert("enlarge" , &enlarge , 0);
@@ -44,11 +46,11 @@ namespace Gascoigne
     
     if ((ilusort=="streamdirection")&&(stream_direction.size()==0))
       {
-	cerr << "Bei \n\tilusort\tstreamdiretion\nmuss" << endl
-	     << "\tstream_direction\n"
-	     << "mit Komponenten, nach denen sortiert wird, "
-	     << "angegeben werden.\n";
-	abort();
+        cerr << "Bei \n\tilusort\tstreamdiretion\nmuss" << endl
+             << "\tstream_direction\n"
+             << "mit Komponenten, nach denen sortiert wird, "
+             << "angegeben werden.\n";
+        abort();
       }
   }
 

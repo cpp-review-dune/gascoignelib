@@ -696,19 +696,19 @@ void StdSolver::SolutionInit(BasicGhostVector& Gu)  const
   for (int ind=0; ind<GetMesh()->nnodes(); ind++)
     {
       if (GetMesh()->dimension()==2)
-	{
-	  for (int c=0; c<u.ncomp(); c++)
-	    {
-	      u(ind,c) = (*u0)(c,GetMesh()->vertex2d(ind));
-	    }
-	}
-      else
-	{
-	  for (int c=0; c<u.ncomp(); c++)
-	    {
-	      u(ind,c) = (*u0)(c,GetMesh()->vertex3d(ind));
-	    }
-	}
+        {
+          for (int c=0; c<u.ncomp(); c++)
+            {
+              u(ind,c) = (*u0)(c,GetMesh()->vertex2d(ind));
+            }
+        }
+            else
+        {
+          for (int c=0; c<u.ncomp(); c++)
+            {
+              u(ind,c) = (*u0)(c,GetMesh()->vertex3d(ind));
+            }
+        }
     }
 }
 

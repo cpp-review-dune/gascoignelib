@@ -26,14 +26,14 @@ class Monitoring
       std::cout << "-- nn   nc   j   eta   je   eff --" << std::endl;
       std::cout << "----------------------------------" << std::endl;
       for (int i=0; i<Juh.size(); i++)
-	{
-	  std::cout << nnodes[i] << " ";
-	  std::cout << ncells[i] << " ";
-	  std::cout << Juh[i] << " ";
-	  std::cout << eta[i] << " ";
-	  std::cout << Je[i] << " ";
-	  std::cout << eff(i) << std::endl;
-	}
+        {
+          std::cout << nnodes[i] << " ";
+          std::cout << ncells[i] << " ";
+          std::cout << Juh[i] << " ";
+          std::cout << eta[i] << " ";
+          std::cout << Je[i] << " ";
+          std::cout << eff(i) << std::endl;
+        }
       std::cout << "----------------------------------" << std::endl;
     }
   void BasicInit(const DoubleVector& ju) 

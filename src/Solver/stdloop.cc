@@ -175,8 +175,8 @@ double StdLoop::Estimator(DoubleVector& eta, MultiLevelGhostVector& u, MultiLeve
 void StdLoop::AdaptMesh(const DoubleVector& eta,std::string refine_or_coarsen_step)
 {
   //das gleichzeitige vergroebern und verfeinern FUNKTIONIERT nicht
-  //wer das machen moechte, muss stattdessen und zwei getrennten laeufen 
-  //das gitter vergroebern, reinit+interpolate und dann das gitter verfeinern
+  //wer das machen moechte, muss stattdessen in zwei getrennten laeufen 
+  //das gitter verfeinern, reinit+interpolate und dann das gitter vergroebern
   if(refine_or_coarsen_step=="refine") ;
   else if(refine_or_coarsen_step=="coarsen") ;
   else {
@@ -184,12 +184,17 @@ void StdLoop::AdaptMesh(const DoubleVector& eta,std::string refine_or_coarsen_st
     assert(0);
   }
 
-  if     (_refiner=="global") {
+  if (_refiner=="global") {
     if(refine_or_coarsen_step=="refine"){
       GetMeshAgent()->global_refine(1);
     }
   }  
-  else if(_refiner=="none") GetMeshAgent()->global_refine(0);
+  else if(_refiner=="none")
+    {
+      // global_refine klappt doch nicht... ??
+      //GetMeshAgent()->global_refine(0);
+      GetMeshAgent()->random_patch_refine(-0.1,0);
+    }
   else if(_refiner=="random") 
     {
       if (GetMeshAgent()->nnodes()>_nmax) _p *= 0.5;
@@ -252,7 +257,12 @@ void StdLoop::AdaptMesh(const DoubleVector& eta)
   //das gitter vergroebern, reinit+interpolate und dann das gitter verfeinern
   //das entsprechend die methode AdaptMesh(eta,refine_or_coarsen_step) aufrufen
   if     (_refiner=="global") GetMeshAgent()->global_refine(1);
-  else if(_refiner=="none")   GetMeshAgent()->global_refine(0);
+  else if(_refiner=="none") 
+    {
+      // global_refine klappt doch nicht... ??
+      // GetMeshAgent()->global_refine(0);
+      GetMeshAgent()->random_patch_refine(-0.1,0);
+    }  
   else if(_refiner=="random") 
     {
       if (GetMeshAgent()->nnodes()>_nmax) _p *= 0.5;
