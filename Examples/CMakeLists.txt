@@ -5,7 +5,6 @@ SUBDIRS(
   NavierStokes3D 
   Heat2D 
   ConvectionDiffusion2D 
-  Control
   IntegrationTest
   Functionals
   MeshInterpolator

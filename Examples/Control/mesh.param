@@ -1,7 +1,0 @@
-//Block Mesh
-
-dimension   2
-prerefine   4
-gridname    rect.inp
-
-//Block Nix
