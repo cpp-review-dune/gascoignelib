@@ -50,6 +50,7 @@ void StdLoop::BasicInit(const ParamFile* paramfile)
   DFH.insert("refiner",    &_refiner,     "global");
   DFH.insert("estimator",  &_estimator,   "none");
   DFH.insert("extrapolate",&_extrapolate, "no");
+  DFH.insert("resultsdir", &_s_resultsdir, "Results");
   FileScanner FS(DFH);
   FS.NoComplain();
   FS.readfile(_paramfile,"Loop");
@@ -149,7 +150,7 @@ double StdLoop::Estimator(DoubleVector& eta, MultiLevelGhostVector& u, MultiLeve
       EnergyEstimator E(*S);
       est = E.Estimator(eta,u,f);
       //est = GetMultiLevelSolver()->GetSolver()->EnergyEstimator(eta, u, f);
-      EtaVisu("Results/eta",_iter,eta);
+      EtaVisu(_s_resultsdir+"/eta",_iter,eta);
     }
   else 
     {
@@ -170,6 +171,12 @@ double StdLoop::Estimator(DoubleVector& eta, MultiLevelGhostVector& u, MultiLeve
 void StdLoop::AdaptMesh(const DoubleVector& eta)
 {
   if     (_refiner=="global") GetMeshAgent()->global_refine(1);
+  else if(_refiner=="none") 
+    {
+      //scheinbar hat es nicht gereicht *nichts* zu tun, also rufe ich
+      //random_patch_refine mit parameter auf die nichts veraendern, tom
+      GetMeshAgent()->random_patch_refine(-0.1,0);
+    }
   else if(_refiner=="random") 
     {
       if (GetMeshAgent()->nnodes()>_nmax) _p *= 0.5;
@@ -223,7 +230,7 @@ void StdLoop::run(const ProblemDescriptorInterface* PD)
       GetSolverInfos()->GetNLInfo().control().matrixmustbebuild() = 1;
       GetMultiLevelSolver()->ReInit(*PD);
       GetMultiLevelSolver()->InterpolateSolution(u,ualt);
-      GetMultiLevelSolver()->GetSolver()->Visu("Results/interpolate",u,_iter);
+      GetMultiLevelSolver()->GetSolver()->Visu(_s_resultsdir+"/interpolate",u,_iter);
 
       _clock_newmesh.stop();
 

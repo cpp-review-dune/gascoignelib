@@ -93,7 +93,7 @@ void StdTimeLoop::adaptive_run(const ProblemDescriptorInterface* PD)
 
       GetMultiLevelSolver()->GetSolver()->TimeRhs(2,f);
       SolveTimePrimal(u,f);
-      Output(u,"Results/solve");
+      Output(u,_s_resultsdir+"/solve");
       
       StdSolver* S = dynamic_cast<StdSolver*>(GetMultiLevelSolver()->GetSolver());
       assert(S);
@@ -130,7 +130,7 @@ void StdTimeLoop::InitSolution(MultiLevelGhostVector& u)
   if (_initial=="analytic") 
     {
       GetMultiLevelSolver()->GetSolver()->L2Projection(u);
-      GetMultiLevelSolver()->GetSolver()->Write(u.finest(),"Results/initialu");
+      GetMultiLevelSolver()->GetSolver()->Write(u.finest(),_s_resultsdir+"/initialu");
     }
   else
     {
@@ -163,7 +163,7 @@ void StdTimeLoop::run(const ProblemDescriptorInterface* PD)
   InitSolution(u);
   
   GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(u);
-  GetMultiLevelSolver()->GetSolver()->Visu("Results/solve",u.finest(),0);
+  GetMultiLevelSolver()->GetSolver()->Visu(_s_resultsdir+"/solve",u.finest(),0);
 
   for (_iter=1; _iter<=_niter; _iter++)
     {
@@ -186,7 +186,7 @@ void StdTimeLoop::run(const ProblemDescriptorInterface* PD)
       GetMultiLevelSolver()->GetSolver()->TimeRhs(2,f);
 
       SolveTimePrimal(u,f);
-      Output(u,"Results/solve");
+      Output(u,_s_resultsdir+"/solve");
 
       Functionals(u,f);
     }

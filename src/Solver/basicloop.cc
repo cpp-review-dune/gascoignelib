@@ -46,16 +46,17 @@ void BasicLoop::BasicInit(const ParamFile* paramfile)
   _paramfile = paramfile;
 
   DataFormatHandler DFH;
-  DFH.insert("niter",       &_niter,       1);
-  DFH.insert("initial",     &_initial,     "boundary");
-  DFH.insert("reload",      &_reload,      "none");
-  DFH.insert("writebupgup", &_writeBupGup, true);
+  DFH.insert("niter",       &_niter,        1);
+  DFH.insert("initial",     &_initial,      "boundary");
+  DFH.insert("reload",      &_reload,       "none");
+  DFH.insert("writebupgup", &_writeBupGup,  true);
+  DFH.insert("resultsdir",  &_s_resultsdir, "Results");
   FileScanner FS(DFH);
   FS.NoComplain();
   FS.readfile(_paramfile,"Loop");
 
   Mon.init(_paramfile,1);
-  Mon.set_directory("Results");
+  Mon.set_directory(_s_resultsdir);
 
   assert((_reload=="none") || (_initial=="file"));
 
@@ -140,7 +141,7 @@ void BasicLoop::WriteMeshAndSolution(const string& filename, const MultiLevelGho
 void BasicLoop::WriteSolution(const MultiLevelGhostVector& u) const
 {
   _clock_write.start();
-  string filename = "Results/solution";
+  string filename = _s_resultsdir+"/solution";
   compose_name(filename,_iter);
   GetMultiLevelSolver()->GetSolver()->Write(u.finest(),filename);
   cout << "[" << filename << ".bup]" << endl;
@@ -152,7 +153,7 @@ void BasicLoop::WriteSolution(const MultiLevelGhostVector& u) const
 void BasicLoop::WriteMesh() const
 {
   _clock_write.start();
-  string filename = "Results/mesh";
+  string filename = _s_resultsdir+"/mesh";
   compose_name(filename,_iter);
   GetMeshAgent()->write_gup(filename);
   cout << " [" << filename << ".gup]" << endl;
@@ -174,7 +175,7 @@ void BasicLoop::InitSolution(MultiLevelGhostVector& u)
     }
   GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(u);
   GetMultiLevelSolver()->GetSolver()->SubtractMean(u);
-  GetMultiLevelSolver()->GetSolver()->Visu("Results/solve",u,0);
+  GetMultiLevelSolver()->GetSolver()->Visu(_s_resultsdir+"/solve",u,0);
 }
 
 /*-------------------------------------------------*/
@@ -265,7 +266,7 @@ void BasicLoop::run(const ProblemDescriptorInterface* PD)
       GetSolverInfos()->GetNLInfo().control().matrixmustbebuild() = 1;
       GetMultiLevelSolver()->ReInit(*PD);
       GetMultiLevelSolver()->InterpolateSolution(u,ualt);
-      GetMultiLevelSolver()->GetSolver()->Visu("Results/interpolate",u,_iter);
+      GetMultiLevelSolver()->GetSolver()->Visu(_s_resultsdir+"/interpolate",u,_iter);
 
       _clock_newmesh.stop();
 

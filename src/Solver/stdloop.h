@@ -33,6 +33,7 @@ protected:
   int _nmin, _nmax, _coarse;
   double _p;
   std::string _estimator, _extrapolate, _refiner;
+  std::string _s_resultsdir;
   DoubleVector _JErr;
   Extrapolator    Extra;
 
