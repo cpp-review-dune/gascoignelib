@@ -1,5 +1,4 @@
 SUBDIRS(
-  IntegrationTest 
   Laplace2D 
   Laplace3D 
   NavierStokes2D 
