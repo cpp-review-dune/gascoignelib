@@ -2,9 +2,12 @@
 #define __visudatacompvector_h
 
 #include  "visudata.h"
-#include  "compvector.h"
+#include  "gascoigne.h"
 
-/***************************************************************/
+using namespace std;
+using namespace Gascoigne;
+
+/*----------------------------------------------*/
 
 // alle ncomps gleich grosss !!!!!!!!!
 
@@ -12,20 +15,23 @@ class VisuDataCompVector : public VisuData
 {
  protected:
 
-  typedef const CompVector<double>* VectorPointer;
-  std::vector<VectorPointer> vvp;
-  std::vector<int> isizes;
+  vector<const GlobalVector*> vvp;
+  vector<int>           isizes;
 
-  std::pair<int,int> GetIndex(int c) const;
+  pair<int,int> GetIndex(int c) const;
 
 
  public:
 
   virtual ~VisuDataCompVector(){}
   VisuDataCompVector();
-  VisuDataCompVector(const CompVector<double>& v);
+  VisuDataCompVector(const GlobalVector& v);
 
-  void AddVector(const CompVector<double>& v);
+  void Clear() {
+    vvp.clear();
+    isizes.clear();
+  }
+  void AddGlobalVector(const GlobalVector* v);
   virtual int    visucomp()     const;
   int    visun()        const;
   virtual double visudata(int i,int c) const;

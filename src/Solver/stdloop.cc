@@ -79,11 +79,11 @@ void StdLoop::EtaVisu(string name, int i, const nvector<double>& eta)
   Visu.format("vtk");
   Visu.set_name(name);
   Visu.step(i);
-  VisuDataInfo        VDI(1);
+  VisuDataInfo     VDI(1);
   VisuDataNVector  VD(eta);
   
   Visu.SetPointData(&VD);
-  Visu.SetMesh(*GetMeshAgent()->GetMesh(0));
+  Visu.SetMesh(GetMeshAgent()->GetMesh(0));
   Visu.SetPointDataInfo(&VDI);
   Visu.write();
 }

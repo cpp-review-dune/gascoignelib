@@ -12,28 +12,30 @@ VisuDataCompVector::VisuDataCompVector()
 
 /*---------------------------------------------------*/
 
-VisuDataCompVector::VisuDataCompVector(const CompVector<double>& v)  
+VisuDataCompVector::VisuDataCompVector(const GlobalVector& v)  
 : VisuData()
 {
   isizes.push_back(0);
-  AddVector(v);
+  AddGlobalVector(&v);
 }
 
 /*---------------------------------------------------*/
 
-void VisuDataCompVector::AddVector(const CompVector<double>& v)
+void VisuDataCompVector::AddGlobalVector(const GlobalVector* v)
 {
-  vvp.push_back(&v);
+  assert(v);
+
+  vvp.push_back(v);
   assert(vvp.size());
   assert(vvp[0]);
-  if(v.n()!=vvp[0]->n())
+  if(v->n()!=vvp[0]->n())
     {
       cerr << "VisuDataCompVector::AddVector()" << endl;
       cerr << "n unterschiedlich gross\n";
       abort();
     }
   int n = isizes[isizes.size()-1];
-  isizes.push_back(n+v.ncomp());
+  isizes.push_back(n+v->ncomp());
 //   cerr << "isizes\n";
 //   copy(isizes.begin(),isizes.end(),ostream_iterator<int>(cerr," "));
 //   cerr << endl;

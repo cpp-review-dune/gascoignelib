@@ -17,7 +17,7 @@ public:
     Visualization(), VDI(u.ncomp()), VD(u)
     {
       SetPointData(&VD);
-      SetMesh(M);
+      SetMesh(&M);
 
       if (u.ncomp()>2) 
 	{

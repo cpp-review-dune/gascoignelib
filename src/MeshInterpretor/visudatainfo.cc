@@ -33,9 +33,9 @@ VisuDataInfo::VisuDataInfo(const VisuData& D, string def)
 
 /*-------------------------------------------------------------------------*/
 
-VisuDataInfo::VisuDataInfo(int nc, string def)
+void VisuDataInfo::AddScalars(int ncomp, string def)
 {
-  for(int c=0;c<nc;c++)
+  for(int c=0;c<ncomp;c++)
     {
       string name(def);
       compose_name_without_dot(name,c);

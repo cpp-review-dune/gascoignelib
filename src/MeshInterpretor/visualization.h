@@ -10,7 +10,7 @@
 #include  <stdio.h>
 #include  <fstream>
 
-/*-------------------------------------------------------------------------*/
+/*--------------------------------------------------*/
 
 class Visualization
 {
@@ -18,11 +18,11 @@ class Visualization
 
   /* Data */
 
-  const MeshInterface*     mesh;
-  const VisuData*     PointData;
-  const VisuData*     CellData;
-  const VisuDataInfo*        PointDataInfo;
-  const VisuDataInfo*        CellDataInfo;
+  const MeshInterface*   mesh;
+  const VisuData*        PointData;
+  const VisuData*        CellData;
+  const VisuDataInfo*    PointDataInfo;
+  const VisuDataInfo*    CellDataInfo;
 
   std::string  filename;
   std::string  stepname;
@@ -91,7 +91,7 @@ class Visualization
   Visualization(const Visualization&);
   Visualization& operator=(const Visualization&);
 
-  void SetMesh(const MeshInterface& M) {mesh = &M;}
+  void SetMesh(const MeshInterface* M) {mesh = M;}
 
   /* Functions */
 

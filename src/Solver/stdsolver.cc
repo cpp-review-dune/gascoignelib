@@ -12,7 +12,7 @@
 #include  "ilupermutate.h"
 #include  "cuthillmckee.h"
 #include  "stopwatch.h"
-#include  "cfdvisualization.h"
+#include  "gascoignevisualization.h"
 #include  "backup.h"
 #include  "pointfunctional.h"
 #include  "visu_eps.h"
@@ -766,7 +766,10 @@ void StdSolver::Visu(const string& name, const BasicGhostVector& gu, int i) cons
 {
   HNAverage(gu);
 
-  CfdVisualization Visu(GetGV(gu),*GetMesh());
+  GascoigneVisualization Visu;
+  Visu.SetMesh(GetMesh());  
+  Visu.AddVector(&GetGV(gu));
+
   Visu.read_parameters(_paramfile);
   Visu.set_name(name);
   Visu.step(i);

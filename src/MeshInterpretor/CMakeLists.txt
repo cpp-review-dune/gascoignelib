@@ -1,5 +1,4 @@
 SET(MESHINTERPRETOR_SRC 
-  avs.cc
   baseq12d.cc
   baseq12dwith.cc
   baseq13d.cc
@@ -7,14 +6,11 @@ SET(MESHINTERPRETOR_SRC
   basicintegrator.cc
   basicmeshinterpretor.cc
   cellmeshinterpretor.cc
-  cellvisu.cc
   finiteelement2d.cc
   finiteelement3d.cc
   galerkinglsintegrator.cc
   galerkinintegrator.cc
   glsintegrator.cc
-  gmv.cc
-  gnuplot.cc
   hnstructureq12d.cc
   hnstructureq13d.cc
   integrationformula1d.cc
@@ -30,12 +26,17 @@ SET(MESHINTERPRETOR_SRC
   q1gls2d.cc
   q1gls3d.cc
   transformation2d.cc
+
   visualization.cc
+  gascoignevisualization.cc
   visudatacompvector.cc
   visudatacompvectorfunction.cc
   visudatainfo.cc
   visudatarhs.cc
   visu_eps.cc
+  avs.cc
+  gmv.cc
+  gnuplot.cc
   vtk.cc
   vu.cc
 )
