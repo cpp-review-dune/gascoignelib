@@ -143,10 +143,13 @@ void GalerkinIntegrator<DIM>::MassMatrix(EntryMatrix& E, const FemInterface& FEM
       double weight  = IF.w(k) * vol;
       for (int i=0;i<FEM.n();i++)
 	{
+	  FEM.init_test_functions(NNN[i],weight,i);
 	  for (int j=0;j<FEM.n();j++)
 	    {
+	      FEM.init_test_functions(MM,1.,j);
 	      E.SetDofIndex(i,j);
-	      E(0,0) += weight*FEM.N(i)*FEM.N(j);
+// 	      E(0,0) += weight*FEM.N(i)*FEM.N(j);
+	      E(0,0) += weight * MM.m()*NNN[i].m();
 	    }
 	}
     }
@@ -288,7 +291,7 @@ double GalerkinIntegrator<DIM>::MeanMatrix(EntryMatrix& E, const FemInterface& F
   Vertex<DIM> xi;
   double omega = 0.;
 
-  FemFunction NI(FEM.n()), NJ(FEM.n());
+//   FemFunction NI(FEM.n()), NJ(FEM.n());
   for (int k=0; k<IF.n(); k++)
     {
       IF.xi(xi,k);
@@ -297,17 +300,20 @@ double GalerkinIntegrator<DIM>::MeanMatrix(EntryMatrix& E, const FemInterface& F
       double weight  = IF.w(k) * vol;
       omega += weight;
 
+//       for(int i=0; i<FEM.n(); i++)
+// 	{
+// 	  NJ[i].m() = FEM.N(i);
+// 	  NI[i].m() = weight * NJ[i].m();
+// 	}
       for(int i=0; i<FEM.n(); i++)
 	{
-	  NJ[i].m() = FEM.N(i);
-	  NI[i].m() = weight * NJ[i].m();
-	}
-      for(int i=0; i<FEM.n(); i++)
-	{
+	  FEM.init_test_functions(NNN[i],weight,i);
 	  for(int j=0; j<FEM.n(); j++)
 	    {
+	      FEM.init_test_functions(MM,1.,j);
 	      E.SetDofIndex(i,j);
-	      E(0,0) += NI[i].m()*NJ[j].m();
+// 	      E(0,0) += NI[i].m()*NJ[j].m();
+	      E(0,0) += NNN[i].m()*MM.m();
 	    }
 	}
     }
