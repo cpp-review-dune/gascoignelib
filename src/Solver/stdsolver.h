@@ -107,7 +107,7 @@ class StdSolver : public virtual SolverInterface
   /// new interface-function for indivisual size of vectors
   //
 
-  void Rhs(GlobalVector& f, double d=1.) const;
+  virtual void Rhs(GlobalVector& f, double d=1.) const;
 
   virtual double ComputeFunctional(GlobalVector& f, const GlobalVector& u, const Functional* FP) const;
     

@@ -838,7 +838,7 @@ double StdSolver::ComputeResidualFunctional(GlobalVector& f, const GlobalVector&
 
 void StdSolver::Rhs(BasicGhostVector& f, double d) const
 {
-  StdSolver::Rhs(GetGV(f),d);
+  Rhs(GetGV(f),d);
 }
 
 /*-------------------------------------------------------*/
