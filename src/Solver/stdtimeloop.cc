@@ -129,8 +129,7 @@ void StdTimeLoop::run(const ProblemDescriptorInterface* PD)
   
   nvector<double> eta;
   
-  GetMultiLevelSolver()->SetProblem(*PD);
-  GetMultiLevelSolver()->NewMesh();
+  GetMultiLevelSolver()->ReInit(*PD);
 
   StdTimeSolver* TSS = dynamic_cast<StdTimeSolver*>(GetMultiLevelSolver()->GetSolver());
   assert(TSS);

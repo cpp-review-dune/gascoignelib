@@ -39,14 +39,14 @@ void StdTimeSolver::SetTimeData(double d, double th, double ti)
 
 void StdTimeSolver::SetProblem(const ProblemDescriptorInterface& PDX)
 {
-  StdSolver::SetProblem(PDX);
-
-  const Equation* EQ = GetProblemDescriptor()->GetEquation();
+  const Equation* EQ = PDX.GetEquation();
   assert(EQ);
   EQ->SetTimePattern(GetTimePattern());
 
   int ncomp = EQ->ncomp();
   if (GetMassMatrixPointer()==NULL) GetMassMatrixPointer() = NewMassMatrix(ncomp,_matrixtype);
+  
+  StdSolver::SetProblem(PDX);
 }
 
 /*-------------------------------------------------------------*/
@@ -163,6 +163,8 @@ void StdTimeSolver::L2Projection(BasicGhostVector& Gu, const BasicGhostVector& G
   RegisterVector(Gg);
   RegisterVector(Gr);
   RegisterVector(Gd);
+
+  MemoryVector();
 
   GlobalVector& u = GetGV(Gu);
   const GlobalVector& f = GetGV(Gf);
