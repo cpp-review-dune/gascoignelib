@@ -25,7 +25,7 @@ public:
   std::string GetName() const {return "Bench";}
   void operator()(Vector& b, const Vertex2d& v, int color) const {
 
-    double x = v.x();  double y = v.y();
+    double y = v.y();
     
     b.zero();
     if (color!=80)
