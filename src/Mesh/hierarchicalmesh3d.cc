@@ -29,7 +29,7 @@ HierarchicalMesh3d::HierarchicalMesh3d()
 HierarchicalMesh3d::HierarchicalMesh3d(const ParamFile* paramfile) 
   : HierarchicalMesh(), HexLaO(hexs)
 {
-  ReadParameters(paramfile);
+  BasicInit(paramfile);
 }
 
 /*------------------------------------------------------*/

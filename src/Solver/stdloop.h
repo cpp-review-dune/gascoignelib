@@ -38,9 +38,6 @@ protected:
   DoubleVector _JErr;
   Extrapolator    Extra;
 
-  // ist wohl zuviel (schon in BasicLoop):
-/*   GlobalVector _GlobalErr; */
-
   // new vectors
 
   DoubleVector ComputeFunctionals(MultiLevelGhostVector& f, MultiLevelGhostVector& u, const std::vector<const Functional*>& J) const;

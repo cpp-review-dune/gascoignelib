@@ -17,7 +17,7 @@ namespace Gascoigne
     public:
       PatchMesh() {};
       virtual ~PatchMesh() {}
-  
+ 
       virtual bool       HasPatch()                        const=0;
       virtual int        npatches()                        const=0;
       virtual int        nodes_per_patch()                 const=0;

@@ -103,7 +103,7 @@ void BasicLoop::BasicInit(const ParamFile* paramfile)
   GetMultiLevelSolver()->BasicInit(GetMeshAgent(),_paramfile);
   GetMultiLevelSolver()->SetMonitorPtr(&Mon);
 
-  if (GetSolverInfos()==NULL)
+  if (GetSolverInfosPointer()==NULL)
     {
       GetSolverInfosPointer() = new SolverInfos;
     }

@@ -26,6 +26,8 @@ public:
   GascoigneMesh();
   virtual ~GascoigneMesh();
 
+	void BasicInit(const ParamFile* pf) {assert(0);}
+
   const IntVector&               GetCellVector()          const  { return nc;}
   const PatchIndexHandler&    GetPatchIndexHandler()   const  { return PatchHandler;}
   const BoundaryIndexHandler&    GetBoundaryIndexHandler()const  { return BoundaryHandler;}

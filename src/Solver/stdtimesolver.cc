@@ -110,14 +110,14 @@ void StdTimeSolver::BasicInit(int level, const ParamFile* paramfile, const MeshI
 
 /*-------------------------------------------------------*/
 
-void StdTimeSolver::IC(BasicGhostVector& f, double d) const
+void Gascoigne::StdTimeSolver::InitialCondition(BasicGhostVector& f, double d) const
 {
-  StdTimeSolver::IC(GetGV(f),d);
+  StdTimeSolver::InitialCondition(GetGV(f),d);
 }
 
 /*-------------------------------------------------------*/
 
-void StdTimeSolver::IC(GlobalVector& f, double d) const
+void Gascoigne::StdTimeSolver::InitialCondition(GlobalVector& f, double d) const
 {
   HNAverageData();
 
@@ -220,7 +220,7 @@ void StdTimeSolver::L2Projection(BasicGhostVector& Gu) const
   u.zero();
   f.zero();
 
-  IC(f);
+  InitialCondition(f);
 
   PrecondCGMass(u,f,TP);
 }

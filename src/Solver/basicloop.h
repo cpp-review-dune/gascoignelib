@@ -49,15 +49,15 @@ protected:
   MeshAgentInterface*& GetMeshAgentPointer() { return _MA;}
   MultiLevelSolverInterface*& GetMultiLevelSolverPointer() { return _ML;}
 
-  const MeshAgentInterface* GetMeshAgent() const { return _MA;}
-  const MultiLevelSolverInterface* GetMultiLevelSolver() const { return _ML;}
+  const MeshAgentInterface* GetMeshAgent() const { assert(_MA); return _MA;}
+  const MultiLevelSolverInterface* GetMultiLevelSolver() const { assert(_ML); return _ML;}
 
-  MeshAgentInterface* GetMeshAgent() { return _MA;}
-  MultiLevelSolverInterface* GetMultiLevelSolver() { return _ML;}
+  MeshAgentInterface* GetMeshAgent() { assert(_MA); return _MA;}
+  MultiLevelSolverInterface* GetMultiLevelSolver() { assert(_ML); return _ML;}
 
         SolverInfos*& GetSolverInfosPointer() { return _SI;}
-        SolverInfos* GetSolverInfos()         { return _SI;}
-  const SolverInfos* GetSolverInfos() const   { return _SI;}
+        SolverInfos* GetSolverInfos()         { assert(_SI); return _SI;}
+  const SolverInfos* GetSolverInfos() const   { assert(_SI); return _SI;}
 
   mutable StopWatch   _clock_newmesh, _clock_solve, _clock_functionals, _clock_write, _clock_estimate;
 

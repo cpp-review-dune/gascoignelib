@@ -89,7 +89,7 @@ class HierarchicalMesh : public MeshInterface
     
   void SetParameters(std::string gridname, int patchdepth, int epatcher);
   void ReadFile(const std::string& gridname);
-  void ReadParameters(const ParamFile* pf);
+  void BasicInit(const ParamFile* pf);
   void global_refine  (int k);
   void global_patch_coarsen (int k);
   void random_refine  (double, int k=1);

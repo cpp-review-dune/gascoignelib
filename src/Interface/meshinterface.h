@@ -6,6 +6,7 @@
 #include  <set>
 #include  <string>
 #include  "gascoigne.h"
+#include  "paramfile.h"
 
 namespace Gascoigne
 {
@@ -28,6 +29,8 @@ namespace Gascoigne
     public:
       MeshInterface() {}
       virtual ~MeshInterface() {}
+
+		  virtual void BasicInit(const ParamFile* pf)=0;
 
       virtual std::string GetName() const=0;
 

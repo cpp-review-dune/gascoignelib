@@ -38,7 +38,7 @@ protected:
   TimePattern& GetTimePattern() {return _TP;}
 
   virtual MatrixInterface* NewMassMatrix(int ncomp, const std::string& matrixtype);
-  virtual void IC(GlobalVector& f, double d=1.) const;
+  virtual void InitialCondition(GlobalVector& f, double d=1.) const;
   virtual std::string PrecondCGMass(GlobalVector& u, GlobalVector& f, const TimePattern& TP, double s=1.) const;
 
 public:
@@ -54,7 +54,7 @@ public:
   void SetTimeData(double dt, double theta, double time, double oldrhs = -1., double newrhs = 1.);
   void SetProblem(const ProblemDescriptorInterface& PDX);
 
-  void IC(BasicGhostVector& f, double d=1.) const;
+  void InitialCondition(BasicGhostVector& f, double d=1.) const;
   void TimeRhsOperator(BasicGhostVector& f, const BasicGhostVector& u) const;
   void TimeRhs(int k, BasicGhostVector& f) const;
   void Form (BasicGhostVector& y, const BasicGhostVector& x, double d) const;

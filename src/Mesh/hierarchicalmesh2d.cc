@@ -28,7 +28,7 @@ HierarchicalMesh2d::HierarchicalMesh2d()
 HierarchicalMesh2d::HierarchicalMesh2d(const ParamFile* paramfile) 
   : HierarchicalMesh(), QuadLaO(quads)
 {
-  ReadParameters(paramfile);
+  BasicInit(paramfile);
 }
 
 /*------------------------------------------------------*/

@@ -50,7 +50,7 @@ namespace Gascoigne
 
       virtual void BasicInit(int level, const ParamFile* paramfile, const MeshInterface* MP)=0;
   
-      virtual void SetProblem(const ProblemDescriptorInterface& PDX)=0;
+      virtual void SetProblem(const ProblemDescriptorInterface& PD)=0;
       virtual const ProblemDescriptorInterface* GetProblemDescriptor() const=0;
       virtual const ParamFile* GetParamfile() const=0;
       virtual DiscretizationInterface*& GetDiscretizationPointer()=0;
@@ -125,7 +125,7 @@ namespace Gascoigne
         std::cerr << "\"SolverInterface::TimeRhs\" not written!" << std::endl;
         abort();
       }
-      virtual void IC(BasicGhostVector& f, double d=1.) const {
+      virtual void InitialCondition(BasicGhostVector& f, double d=1.) const {
         std::cerr << "\"SolverInterface::IC\" not written!" << std::endl;
         abort();
       }

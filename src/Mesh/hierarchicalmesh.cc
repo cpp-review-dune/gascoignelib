@@ -96,7 +96,7 @@ void HierarchicalMesh::SetParameters(string gridname, int patchdepth, int epatch
 
 /*------------------------------------------------------*/
 
-void HierarchicalMesh::ReadParameters(const ParamFile* pf)
+void HierarchicalMesh::BasicInit(const ParamFile* pf)
 {
   int    patchdepth,epatcher;
   int    prerefine;
