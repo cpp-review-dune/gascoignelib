@@ -107,6 +107,15 @@ class NLInfo
  std::string check_damping (int, double);
  void reset();
  void new_matrix();
+
+ std::string CheckMatrix() {
+   status = nlinfo.control().status();
+   if (status!="converged")
+     {
+       control().matrixmustbebuild() = 1;
+     }
+   return status;
+ }
 };
 
 /*************************************************************/
