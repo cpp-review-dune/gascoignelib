@@ -29,7 +29,6 @@ void LocalLoop::run2(const ProblemDescriptorInterface* PD)
   _clock_newmesh.stop();
 
   int nlevels = MP->nlevels();
-  dat.resize(nlevels);
   for(int l=nlevels-1;l>=0;l--)
     {
       GlobalVector& d = MP->GetSolver(l)->GetGV(dat);
@@ -40,9 +39,9 @@ void LocalLoop::run2(const ProblemDescriptorInterface* PD)
 	}
       else
 	{
-	  MP->GetSolver(l)->GetGV(dat).ncomp() = MP->GetSolver(l)->GetGV(dat).ncomp();
+	  d.ncomp() = MP->GetSolver(l+1)->GetGV(dat).ncomp();
 	  MP->GetSolver(l)->ReInitVector(dat);
- 	  MP->Transfer(l+1,MP->GetSolver(l)->GetGV(dat),MP->GetSolver(l+1)->GetGV(dat));
+ 	  MP->Transfer(l+1,d,MP->GetSolver(l+1)->GetGV(dat));
 	}
       MP->GetSolver(l)->AddNodeVector("beta",dat);
     }

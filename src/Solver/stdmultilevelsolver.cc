@@ -791,7 +791,7 @@ void StdMultiLevelSolver::precondition(VectorInterface& x, VectorInterface& y)
 
 void StdMultiLevelSolver::Equ(VectorInterface& dst, double s, const VectorInterface& src) const
 {
-  for(int l=0; l<FinestLevel(); l++)
+  for(int l=0; l<nlevels(); l++)
     {
       const StdSolver* S = dynamic_cast<const StdSolver*>(GetSolver(l));
       S->Equ(dst,s,src);
@@ -802,7 +802,7 @@ void StdMultiLevelSolver::Equ(VectorInterface& dst, double s, const VectorInterf
 
 void StdMultiLevelSolver::Zero(VectorInterface& dst) const
 {
-  for(int l=0; l<FinestLevel(); l++)
+  for(int l=0; l<nlevels(); l++)
     {
       const StdSolver* S = dynamic_cast<const StdSolver*>(GetSolver(l));
       S->Zero(dst);
