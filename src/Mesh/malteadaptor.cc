@@ -94,7 +94,7 @@ void MalteAdaptor::refine(IntVector& ref) const
   int ixopt = ixmin;
 
   int limit = Gascoigne::min_int(n,(maxnodes-N)/(1+ppp));
-  
+
   for (int i=ixmin; i<limit; i++)
     {
       double x = float(i)*dx;
@@ -107,10 +107,9 @@ void MalteAdaptor::refine(IntVector& ref) const
 	  ixopt = i;
 	}
     }
-  cout << ref << endl;
   //file.close();
 
-  ref.insert(ref.begin(),C.begin(),C.begin()+ixopt);
+  ref.insert(ref.begin(),C.begin(),C.begin()+ixopt+1);
 }
 
 /*-----------------------------------------*/
