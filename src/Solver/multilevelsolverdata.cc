@@ -9,8 +9,8 @@ using namespace Gascoigne;
 
 MultiLevelSolverData::~MultiLevelSolverData()
 {
-  map<string,CGInfo *>::iterator p = _L.begin();
-  while(p != _L.end())
+  map<string,CGInfo *>::iterator p = __L.begin();
+  while(p != __L.end())
   { 
     if(p->second) 
     {
@@ -36,10 +36,10 @@ MultiLevelSolverData::~MultiLevelSolverData()
 
 void MultiLevelSolverData::BasicInit(const ParamFile *param)
 {
-  _L["State"]   = new CGInfo();
+  __L["State"]   = new CGInfo();
   _NL["State"]  = new NLInfo(GetLInfo());
   
-  _L["Precond"] = new CGInfo();
+  __L["Precond"] = new CGInfo();
 
   _countresidual = 0; 
   

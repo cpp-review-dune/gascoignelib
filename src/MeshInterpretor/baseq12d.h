@@ -47,7 +47,7 @@ class BaseQ12d : public Base2d
   double phi_xx(int i) const {return 0.;}
   double phi_yy(int i) const {return 0.;}
 /*   double phi_xy(int i) const {return 0.;} */
-  double phi_xy(int i) const {return dxy[i];}
+  double phi_xy(int i) const {assert(0); return dxy[i];}
   const Vertex2d &  phi_grad (int i) const {return DN [i];}
 };
 

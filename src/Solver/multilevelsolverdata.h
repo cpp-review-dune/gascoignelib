@@ -18,8 +18,8 @@ class MultiLevelSolverData
     int _countresidual, _coarselevel, _gmresmemsize, _projectionflag;
     double _mgomega;
     
-    std::map<std::string,CGInfo *> _L;
-    std::map<std::string,NLInfo *> _NL;
+    std::map<std::string,CGInfo*> __L;
+    std::map<std::string,NLInfo*> _NL;
 
   public:
     MultiLevelSolverData() { }
@@ -45,8 +45,8 @@ class MultiLevelSolverData
 
 inline CGInfo &MultiLevelSolverData::GetLInfo(std::string s) const
 {
-  std::map<std::string,CGInfo *>::const_iterator iter = _L.find(s);
-  if(iter != _L.end())
+  std::map<std::string,CGInfo *>::const_iterator iter = __L.find(s);
+  if(iter != __L.end())
   {
     return *iter->second; 
   }

@@ -48,7 +48,6 @@ class FiniteElement : public FemInterface
   void point(const Vertex<DIM>&) const;
   void point_boundary(int ie, const Vertex<BDIM>& s1) const;
   /// depreciated
-  void init (const Matrix& M) { assert(0); T.init(M); }
   void ReInit(const Matrix& M) const { T.ReInit(M); }
 
   void  init_test_functions(Gascoigne::TestFunction& Phi, double w, int i) const;

@@ -33,10 +33,10 @@ class BaseQ13d : public Base3d
       N.resize(NDOF);  DN.resize(NDOF);  
       a[0] = 1.;  b[0] = -1.;
       a[1] = 0.;  b[1] =  1.;
-      dxy.reservesize(NDOF);
-      dxz.reservesize(NDOF);
-      dyz.reservesize(NDOF);
-      dxyz.reservesize(NDOF);
+/*       dxy.reservesize(NDOF); */
+/*       dxz.reservesize(NDOF); */
+/*       dyz.reservesize(NDOF); */
+/*       dxyz.reservesize(NDOF); */
     }
   double psi_x(int i, double x)      const { return b[i]; }
 
@@ -53,10 +53,10 @@ class BaseQ13d : public Base3d
   double phi_xx(int i) const {return 0.;}
   double phi_yy(int i) const {return 0.;}
   double phi_zz(int i) const {return 0.;}
-  double phi_xy(int i) const {return dxy[i];}
-  double phi_xz(int i) const {return dxz[i];}
-  double phi_yz(int i) const {return dyz[i];}
-  double phi_xyz(int i) const {return dxyz[i];}
+  double phi_xy(int i) const {assert(0); return dxy[i];}
+  double phi_xz(int i) const {assert(0); return dxz[i];}
+  double phi_yz(int i) const {assert(0); return dyz[i];}
+  double phi_xyz(int i) const {assert(0); return dxyz[i];}
   const Vertex3d &  phi_grad (int i) const { return DN[i];}
 
   void point(const Vertex3d& s) const;
