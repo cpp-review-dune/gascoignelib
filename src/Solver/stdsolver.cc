@@ -184,23 +184,27 @@ void StdSolver::MemoryMatrix()
 void StdSolver::MemoryVector()
 {
   int ncomp = GetProblemDescriptor()->GetEquation()->ncomp();
-  {
-    GhostVectorAgent::iterator p = _NGVA.begin();
-    while(p!=_NGVA.end())
-      {
-	const GhostVector& gv = p->first;
-	assert(gv.GetSolver()==this);
-	if(p->second==NULL) 
-	  {
-// 	    cerr << "***** new **** " << gv << endl;
-	    p->second = new CompVector<double>;
-	    p->second->ncomp() = ncomp;
-	  }
-// 	cerr << "***** ReSizeVector **** " << gv << endl;
-	ResizeVector(p->second,gv.GetType());
-	p++;
-      }
-  }
+  
+  GhostVectorAgent::iterator p = _NGVA.begin();
+  while(p!=_NGVA.end())
+    {
+      const GhostVector& gv = p->first;
+      assert(gv.GetSolver()==this);
+      if(p->second==NULL) 
+	{
+	  p->second = new CompVector<double>;
+	  p->second->ncomp() = ncomp;
+	}
+      ResizeVector(p->second,gv.GetType());
+      p++;
+    }
+}
+
+/*-------------------------------------------------------*/
+
+void StdSolver::Zero(BasicGhostVector& dst) const
+{
+  GetGV(dst).zero();
 }
 
 /*-----------------------------------------*/

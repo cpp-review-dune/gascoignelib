@@ -264,6 +264,7 @@ class StdSolver : public virtual SolverInterface
   void smooth_pre(BasicGhostVector& y, const BasicGhostVector& x, BasicGhostVector& h) const;
   void smooth_exact(BasicGhostVector& y, const BasicGhostVector& x, BasicGhostVector& h) const;
   void smooth_post(BasicGhostVector& y, const BasicGhostVector& x, BasicGhostVector& h) const;
+  void Zero(BasicGhostVector& dst) const;
 
   //
   /// vector - additional

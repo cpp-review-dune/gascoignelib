@@ -61,7 +61,6 @@ class StdMultiLevelSolver : public MultiLevelSolverInterface
   virtual void mgstep(std::vector<double>& res, std::vector<double>& rw, int l, int maxl, int minl, std::string& p0, std::string p, NewMultiLevelGhostVector& u, NewMultiLevelGhostVector& b, NewMultiLevelGhostVector& v);
 
   virtual void Cg   (NewMultiLevelGhostVector& x, const NewMultiLevelGhostVector& f, CGInfo& info);
-  virtual void Gmres(NewMultiLevelGhostVector& x, const NewMultiLevelGhostVector& f, CGInfo& info);
 
  public:
 
@@ -77,8 +76,6 @@ class StdMultiLevelSolver : public MultiLevelSolverInterface
 //     _MlVectors.insert(&g);
     _MlVectors.insert(g);
   }
-  void MemoryVector();
-
   void BasicInit(const MeshAgentInterface* GMGM, const Gascoigne::ParamFile* paramfile);
 
   // Zugriff
@@ -127,7 +124,6 @@ class StdMultiLevelSolver : public MultiLevelSolverInterface
   virtual void SolutionTransfer(NewMultiLevelGhostVector& u) const;
   
   void precondition(NewMultiLevelGhostVector& x, NewMultiLevelGhostVector& y);
-  void vmulteqgmres(NewMultiLevelGhostVector& y, const NewMultiLevelGhostVector&  x) const;
   
   virtual void LinearMg(int minlevel, int maxlevel, NewMultiLevelGhostVector& u, const NewMultiLevelGhostVector& f, CGInfo&);
 

@@ -4,7 +4,6 @@
 #include  "compose_name.h"
 #include  "gascoignemultigridmesh.h"
 #include  "cg.h"
-#include  "gmres.h"
 #include  <iomanip>
 #include  "mginterpolatormatrix.h"
 #include  "mginterpolatornested.h"
@@ -105,25 +104,6 @@ void StdMultiLevelSolver::BasicInit(const MeshAgentInterface* MAP, const ParamFi
 
 /*-------------------------------------------------------------*/
 
-void StdMultiLevelSolver::MemoryVector()
-{
-  set<NewMultiLevelGhostVector>::const_iterator p = _MlVectors.begin();
-  for(p=_MlVectors.begin();p!=_MlVectors.end();p++) 
-    {
-      for(int level=0; level<nlevels(); ++level)  
-	{
-	  _SP[level]->RegisterVector(*p);
-	}
-    }
-  for(int level=0; level<nlevels(); ++level)  
-    {
-      StdSolver* S = dynamic_cast<StdSolver*>(GetSolver(level));
-      S->MemoryVector();
-    }
-}
-
-/*-------------------------------------------------------------*/
-
 void StdMultiLevelSolver::SetProblem(const ProblemDescriptorInterface& PDX)
 {
   _PD = &PDX;
@@ -212,8 +192,8 @@ void StdMultiLevelSolver::NewMgInterpolator()
 
   for(int l=0; l<nlevels()-1; ++l)  
     {
-      _Interpolator[l] = new MgInterpolatorMatrix;
-//       _Interpolator[l] = new MgInterpolatorNested;
+      //_Interpolator[l] = new MgInterpolatorMatrix;
+      _Interpolator[l] = new MgInterpolatorNested;
     }
   //
   // Interpolator [l] :   interpoliert   (l+1)->l  (fein->grob)
@@ -261,13 +241,6 @@ void StdMultiLevelSolver::InterpolateSolution(NewMultiLevelGhostVector& u, const
     {
       u.Vector(l).zero();
     }
-}
-
-/*-------------------------------------------------------------*/
-
-void StdMultiLevelSolver::vmulteqgmres(NewMultiLevelGhostVector& y, const NewMultiLevelGhostVector& x) const
-{
-  GetSolver(ComputeLevel)->vmulteqgmres(y(ComputeLevel),x(ComputeLevel));
 }
 
 /*-------------------------------------------------------------*/
@@ -378,18 +351,6 @@ void StdMultiLevelSolver::Cg(NewMultiLevelGhostVector& x, const NewMultiLevelGho
 
 /*-------------------------------------------------------------*/
 
-void StdMultiLevelSolver::Gmres(NewMultiLevelGhostVector& x, const NewMultiLevelGhostVector& f, CGInfo& info)
-{
-  assert(0);
-//   int n = DataP->gmresmemsize;
-
-//   GMRES<SolverInterface,StdMultiLevelSolver,GhostVector> gmres(*GetSolver(ComputeLevel),*this,n);
-  
-//   gmres.solve(x,f,info);
-}
-
-/*-------------------------------------------------------------*/
-
 void StdMultiLevelSolver::NewtonOutput(NLInfo& nlinfo) const
 {
   assert(MON!=0);
@@ -430,36 +391,17 @@ void StdMultiLevelSolver::NewtonMatrixControl(NewMultiLevelGhostVector& u, const
 
 void StdMultiLevelSolver::NewtonLinearSolve(NewMultiLevelGhostVector& x, const NewMultiLevelGhostVector& b, const NewMultiLevelGhostVector& u, CGInfo& info)
 {
+  assert(DataP->linearsolve=="mg");
+
   _clock_solve.start();
   info.reset();
   
-  string solve = DataP->linearsolve;
-  
   x.zero();
-  if(solve=="mg")
-    {
-      int clevel=GascoigneMath::max_int(DataP->coarselevel,0);
-      if(DataP->coarselevel==-1) clevel = FinestLevel(); 
-      LinearMg(ComputeLevel,clevel,x,b, info);
-    }
-//   else if(solve=="gmres")
-//     {
-//       GetSolver(ComputeLevel)->HNAverage(u);
-//       Gmres(x,b,info);
-//       GetSolver(ComputeLevel)->HNZero(u);
-//     }
-//   else if(solve=="cg")
-//     {
-//       GetSolver(ComputeLevel)->HNAverage(u);
-//       Cg(x,b,info);
-//       GetSolver(ComputeLevel)->HNZero(u);
-//     }
-  else
-    {
-      cerr << "StdMultiLevelSolver::NewtonLinearSolve\n";
-      cerr << "unknown linearsolve " << solve;
-      abort();
-    }
+
+  int clevel=GascoigneMath::max_int(DataP->coarselevel,0);
+  if(DataP->coarselevel==-1) clevel = FinestLevel(); 
+  LinearMg(ComputeLevel,clevel,x,b, info);
+
   GetSolver(ComputeLevel)->PressureFilterIntegrate(x(ComputeLevel));
   _clock_solve.stop();
 }

@@ -66,10 +66,10 @@ void LocalTimeLoop::init(string name, int iter)
   cerr << "§§§§§§§§§§§§§§§§§§§§§§\n";
   //NewMesh();
 
-  StdMultiLevelSolver* MS = dynamic_cast<StdMultiLevelSolver*>(GetMultiLevelSolver());
-  assert(MS);
-  MS->MemoryVector();
-  cerr << "§§§§§§§§§§§§§§§§§§§§§§\n";
+//   StdMultiLevelSolver* MS = dynamic_cast<StdMultiLevelSolver*>(GetMultiLevelSolver());
+//   assert(MS);
+//   MS->MemoryVector();
+//   cerr << "§§§§§§§§§§§§§§§§§§§§§§\n";
   
   nvector<double> eta;
 

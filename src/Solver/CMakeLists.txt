@@ -2,7 +2,6 @@ SET(SOLVER_SRC
   basicloop.cc
   cg.cc
   cuthillmckee.cc
-  gmres.cc
   ilupermutate.cc
   monitor.cc
   multilevelsolverdata.cc
