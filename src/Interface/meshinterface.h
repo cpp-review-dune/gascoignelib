@@ -48,7 +48,7 @@ namespace Gascoigne
         abort();
       }
       virtual const Vertex3d& vertex3d(int i)    const {
-        std::cerr << "\"MeshInterface::vertex2d\" not written!" << std::endl;
+        std::cerr << "\"MeshInterface::vertex3d\" not written!" << std::endl;
         abort();
       }
       virtual       IntSet     GetColors()                const=0;

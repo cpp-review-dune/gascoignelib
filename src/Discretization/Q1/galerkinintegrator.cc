@@ -22,14 +22,16 @@ void GalerkinIntegrator<DIM>::BasicInit()
       if (!FormFormulaPointer())     FormFormulaPointer() = new QuadGauss4;
       if (!ErrorFormulaPointer())    ErrorFormulaPointer() = new QuadGauss9;
       if (!BoundaryFormulaPointer()) BoundaryFormulaPointer() = new LineGauss2;
-      if (!MassFormulaPointer())     MassFormulaPointer() = new QuadTrapez;
+      if (!MassFormulaPointer())     MassFormulaPointer() = new QuadGauss4;;
+//      if (!MassFormulaPointer())     MassFormulaPointer() = new QuadTrapez;
     }
   else if (DIM==3)
     {
       if (!FormFormulaPointer())     FormFormulaPointer() = new HexGauss8;
       if (!ErrorFormulaPointer())    ErrorFormulaPointer() = new HexGauss27;
       if (!BoundaryFormulaPointer()) BoundaryFormulaPointer() = new QuadGauss4;
-      if (!MassFormulaPointer())     MassFormulaPointer() = new HexTrapez;
+      if (!MassFormulaPointer())     MassFormulaPointer() = new HexGauss8;
+//      if (!MassFormulaPointer())     MassFormulaPointer() = new HexTrapez;
     }
   assert(FormFormulaPointer());
   assert(ErrorFormulaPointer());
