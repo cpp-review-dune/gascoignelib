@@ -14,6 +14,8 @@ namespace Gascoigne
 class EdgeInfoContainerInterface
 {
  public:
+  EdgeInfoContainerInterface() {}
+  virtual ~EdgeInfoContainerInterface() {}
 
   virtual const HierarchicalMesh* GetMesh() const=0;
   virtual void BasicInit(const HierarchicalMesh*, int)=0;
