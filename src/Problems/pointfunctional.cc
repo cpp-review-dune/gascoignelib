@@ -48,7 +48,25 @@ void PointFunctional::Init(const Equation& EQ, const std::vector<std::string>& a
     }
   else if(type=="vertex3d")
     {
-      assert(0);
+      int n = atoi(args[1].c_str());
+      assert(n>0);
+      v3d.resize(n);
+      w.resize(n);
+      
+      //std::cerr << "n = " << n << std::endl;
+      int count=2;
+      assert(args.size()==2+n*5);
+      for(int ii=0; ii<n; ii++)
+	{
+	  mycomp = int(atof(args[count++].c_str()));
+	  double w0 = atof(args[count++].c_str());
+	  double x  = atof(args[count++].c_str());
+	  double y  = atof(args[count++].c_str());
+	  double z  = atof(args[count++].c_str());
+	  v3d[ii].x() = x;  v3d[ii].y() = y; v3d[ii].z() = z;
+	  w[ii] = w0;
+	  //std::cerr << "point: " << w0 << "\t" << v3d[ii] << std::endl;
+        }
     }
   else if(type=="id")
     {

@@ -13,8 +13,8 @@ gridname    square.inp
 
 names  2  drag domain
 //names  3  drag punkt domain
-//punkt  4  point     vertex_#no_comp_weight_x_y_comp_weight_x_y  ref_val yes 
-//punkt  4  point     vertex_1_0_1._0.5_0.5   0.06251189460355015 no
+//punkt  4  point     vertex2d_#no_comp_weight_x_y_comp_weight_x_y  ref_val yes 
+//punkt  4  point     vertex2d_1_0_1._0.5_0.5   0.06251189460355015 no
 //drag   4  residual  comp_scale_color  refval    no
 drag   4  residual   0_1._1  0.166666666666666   no
 domain 4  domainmean 0_0._1._0._1. 0.02776989201546093 no

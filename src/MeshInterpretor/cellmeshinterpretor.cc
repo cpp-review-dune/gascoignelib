@@ -372,7 +372,11 @@ int CellMeshInterpretor::RhsPoint(GlobalVector& f, const Vertex3d& p0, int comp,
     {
       if (GetMesh()->vertex3d(i)==p0) found = i;
     }
-  if (found<0) return 0;
+  if (found<0)
+  {
+    cerr << "point is not a mesh point!!!\n";
+    return 0;
+  }
 
   f(found,comp) = d;
   
