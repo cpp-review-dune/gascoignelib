@@ -8,7 +8,11 @@ using namespace std;
 
 namespace Gascoigne
 {
-ResidualFunctional::ResidualFunctional() : _DD(NULL) { _scale = 0.;}
+ResidualFunctional::ResidualFunctional() : _DD(NULL) 
+{ 
+  _comp = 0;
+  _scale = 1.;
+}
 
 /*-----------------------------------------*/
 

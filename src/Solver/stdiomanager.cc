@@ -9,6 +9,6 @@ namespace Gascoigne
 {
 StdIoManager::StdIoManager(const string& dirname)
 {
-  cerr << dirname + "/IO" << endl;
+  //cerr << dirname + "/IO" << endl;
 }
 }

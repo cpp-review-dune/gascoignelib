@@ -7,7 +7,7 @@
 
 namespace Gascoigne
 {
-class Stabilization
+  class Stabilization
 {
  protected:
 
@@ -24,7 +24,7 @@ class Stabilization
 
  public:
 
-  Stabilization() :  xeta0(6.), alpha0(0.2), dt(0.), _dtfactor(1.), _norm(0.) {}
+  Stabilization() : xeta0(6.), alpha0(0.2), dt(0.), _dtfactor(1.), _norm(0.) {}
   ~Stabilization() {}
 
   double alpha0, xeta0;

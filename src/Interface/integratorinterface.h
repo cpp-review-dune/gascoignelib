@@ -47,6 +47,8 @@ namespace Gascoigne
         std::cerr << "\"IntegratorInterface::Form\" not written!" << std::endl;
         abort();
       }
+      virtual void AdjointForm(const Equation& EQ, LocalVector& F, const FemInterface& FEM, const LocalVector& U, const LocalNodeData& Q) const { assert(0);};
+
       virtual void BoundaryRhs(const BoundaryRightHandSide& RHS, LocalVector& F, const FemInterface& FEM, int ile, 
           int col, const LocalNodeData& Q) const {
         std::cerr << "\"IntegratorInterface::BoundaryRhs\" not written!" << std::endl;

@@ -28,7 +28,7 @@ public:
   Q2Lps2d() : Q22d() {}
   ~Q2Lps2d() {}
 
-  std::string GetName() const {return "Q2Lps";}
+  std::string GetName() const {return "Q2Lps2d";}
   
   void BasicInit(const ParamFile* paramfile);
 };

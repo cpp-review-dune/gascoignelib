@@ -341,7 +341,7 @@ void StdLoop::run(const ProblemDescriptorInterface* PD)
       GetSolverInfos()->GetNLInfo().control().matrixmustbebuild() = 1;
       GetMultiLevelSolver()->ReInit(*PD);
       GetMultiLevelSolver()->InterpolateSolution(u,ualt);
-      GetMultiLevelSolver()->GetSolver()->Visu(_s_resultsdir+"/interpolate",u,_iter);
+      //      GetMultiLevelSolver()->GetSolver()->Visu("Results/interpolate",u,_iter);
 
       _clock_newmesh.stop();
 

@@ -77,6 +77,26 @@ void PatchDiscretization::Form(GlobalVector& f, const GlobalVector& u, const Equ
 
 /* ----------------------------------------- */
 
+void PatchDiscretization::AdjointForm(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const
+{
+  nmatrix<double> T;
+
+  GlobalToGlobalData();
+  EQ.SetParameterData(__qq);
+
+  for(int iq=0;iq<GetPatchMesh()->npatches();++iq)
+    {
+      Transformation(T,iq);
+      GetFem()->ReInit(T);
+
+      GlobalToLocal(__U,u,iq);
+      GetIntegrator()->AdjointForm(EQ,__F,*GetFem(),__U,__Q);
+      LocalToGlobal(f,__F,iq,d);
+    }
+}
+
+/* ----------------------------------------- */
+
 void PatchDiscretization::Matrix(MatrixInterface& A, const GlobalVector& u, const Equation& EQ, double d) const
 {
   nmatrix<double> T;

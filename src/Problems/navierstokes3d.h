@@ -51,6 +51,7 @@ class NavierStokes3d : public NavierStokes2d
   void Form(VectorIterator b, const FemFunction& U, const TestFunction& N) const;
 
   void Matrix(EntryMatrix& A, const FemFunction& U, const TestFunction& M, const TestFunction& N) const;
+  void MatrixLoop(EntryMatrix& A, const FemFunction& U, const FemFunction& M, const FemFunction& N) const;
 };
 }
 

@@ -13,6 +13,7 @@
 
 #include  "basicintegrator.h"
 #include  "integrationformula.h"
+#include  "lpsequation.h"
 
 namespace Gascoigne
 {
@@ -23,7 +24,7 @@ class LpsIntegrator : public BasicIntegrator
 protected:
 
   mutable FemFunction   UHP;
-  mutable FemFunction   NLPS, MLPS;
+  mutable FemFunction   NLPS, MLPS, MMM;
   void Projection(const FemInterface& FEM) const;
   double  CellWeight;
 
@@ -31,6 +32,8 @@ protected:
 
   const IntegrationFormulaInterface& FormFormula() const { return *_IF;}
   double Volume2MeshSize(double vol) const { return pow(vol,1./float(DIM));}
+  void Init(const LpsEquation& LEQ, const FemInterface& FEM, const LocalVector& U, 
+	    const LocalNodeData& Q) const;
 
 public:
 
@@ -43,8 +46,8 @@ public:
 
   std::string GetName() const {return "Lps";}
 
-  void Form(const Equation& EQ, LocalVector& F, const FemInterface& FEM, const LocalVector&U, const LocalNodeData& Q) const;
-  void Matrix(const Equation& EQ, EntryMatrix& E, const FemInterface& FEM, const LocalVector& U, const LocalNodeData& Q) const;
+  virtual void Form(const Equation& EQ, LocalVector& F, const FemInterface& FEM, const LocalVector&U, const LocalNodeData& Q) const;
+  virtual void Matrix(const Equation& EQ, EntryMatrix& E, const FemInterface& FEM, const LocalVector& U, const LocalNodeData& Q) const;
 };
 
 /*-----------------------------------------*/

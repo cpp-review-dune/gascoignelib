@@ -1,5 +1,5 @@
-#ifndef  __DiscretizationInterface_h
-#define  __DiscretizationInterface_h
+#ifndef  __MeshInterpretorInterface_h
+#define  __MeshInterpretorInterface_h
 
 
 #include  <string>
@@ -27,13 +27,13 @@ namespace Gascoigne
   /////////////////////////////////////////////
   ///
   ///@brief
-  ///  ... comments DiscretizationInterface
+  ///  ... comments MeshInterpretorInterface
 
   ///
   ///
   /////////////////////////////////////////////
 
-  class DiscretizationInterface
+  class MeshInterpretorInterface
   {
     private:
       mutable GlobalData __q;
@@ -42,8 +42,8 @@ namespace Gascoigne
       const GlobalData& GetGlobalData() const {return __q;}
 
     public:
-      DiscretizationInterface() {}
-      virtual ~DiscretizationInterface() {}
+      MeshInterpretorInterface() {}
+      virtual ~MeshInterpretorInterface() {}
 
       //
       //// Functions called from the Solver
@@ -82,13 +82,13 @@ namespace Gascoigne
       virtual void AdjointForm(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const=0;
       virtual void BoundaryForm(GlobalVector& f, const GlobalVector& u, const IntSet& Colors, 
           const BoundaryEquation& BE, double d) const {
-        std::cerr << "\"DiscretizationInterface::BoundaryForm\" not written!" << std::endl;
+        std::cerr << "\"MeshInterpretorInterface::BoundaryForm\" not written!" << std::endl;
         abort();
       }
       virtual void Matrix(MatrixInterface& A, const GlobalVector& u, const Equation& EQ, double) const=0;
       virtual void BoundaryMatrix(MatrixInterface& A, const GlobalVector& u, const IntSet& Colors, const BoundaryEquation& BE, 
           double d) const {
-        std::cerr << "\"DiscretizationInterface::BoundaryMatrix\" not written!" << std::endl;
+        std::cerr << "\"MeshInterpretorInterface::BoundaryMatrix\" not written!" << std::endl;
         abort();
       }
       virtual void MassMatrix(MatrixInterface& M) const=0;
@@ -105,34 +105,34 @@ namespace Gascoigne
       virtual void HNAverageData() const {}
       virtual void HNZeroData   () const {}
       virtual void Interpolate(GlobalVector& u, const DomainInitialCondition& U) const {
-        std::cerr << "\"DiscretizationInterface::Interpolate\" not written!" << std::endl;
+        std::cerr << "\"MeshInterpretorInterface::Interpolate\" not written!" << std::endl;
         abort();
       }
       virtual void InterpolateSolution(GlobalVector& u, const GlobalVector& uold)const {
-        std::cerr << "\"DiscretizationInterface::InterpolateSolution\" not written!" << std::endl;
+        std::cerr << "\"MeshInterpretorInterface::InterpolateSolution\" not written!" << std::endl;
         abort();
       }
       virtual void StrongDirichletMatrix(MatrixInterface& A, int col, const std::vector<int>& comp) const {
-        std::cerr << "\"DiscretizationInterface::StrongDirichletmatrix\" not written!" << std::endl;
+        std::cerr << "\"MeshInterpretorInterface::StrongDirichletmatrix\" not written!" << std::endl;
         abort();
       }
       virtual void StrongDirichletMatrixOnlyRow(MatrixInterface& A, int col, const std::vector<int>& comp) const {
-        std::cerr << "\"DiscretizationInterface::StrongDirichletMatrixOnlyRow\" not written!" << std::endl;
+        std::cerr << "\"MeshInterpretorInterface::StrongDirichletMatrixOnlyRow\" not written!" << std::endl;
         abort();
       }
       virtual void StrongDirichletVector(GlobalVector& u, const DirichletData& BF, int col, const std::vector<int>& comp) const {
-        std::cerr << "\"DiscretizationInterface::StronDirichletVector\" not written!" << std::endl;
+        std::cerr << "\"MeshInterpretorInterface::StronDirichletVector\" not written!" << std::endl;
         abort();
       }
       virtual void StrongDirichletVectorZero(GlobalVector& u, int col, const std::vector<int>& comp) const {
-        std::cerr << "\"DiscretizationInterface::StrongDirichletVectorZero\" not written!" << std::endl;
+        std::cerr << "\"MeshInterpretorInterface::StrongDirichletVectorZero\" not written!" << std::endl;
         abort();
       }
 
       virtual void InitFilter(DoubleVector&) const=0;
 
       virtual void StabForm(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const {
-        std::cerr << "\"DiscretizationInterface::StabForm\" not written!" << std::endl;
+        std::cerr << "\"MeshInterpretorInterface::StabForm\" not written!" << std::endl;
         abort();
       }
 
@@ -143,7 +143,7 @@ namespace Gascoigne
       virtual double ComputePointFunctional(const GlobalVector& u, const PointFunctional& FP) const=0;
 
       virtual void ConstructInterpolator(MgInterpolatorInterface* I, const MeshTransferInterface* MT) {
-        std::cerr << "\"DiscretizationInterface::ConstructInterpolator\" not written!" << std::endl;
+        std::cerr << "\"MeshInterpretorInterface::ConstructInterpolator\" not written!" << std::endl;
         abort();
       }
   };

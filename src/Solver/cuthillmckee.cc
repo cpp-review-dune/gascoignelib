@@ -54,7 +54,6 @@ void CuthillMcKee::Permutate (IntVector &perm)
 {
   // mit metis graph aufbauen
   //
-
   //diese methode wird in StdSolver::PermutateIlu aufgerufen
   //unmittelbar davor *wird* perm schon richtig gesized und mit iota gefuellt
   //dieser code:

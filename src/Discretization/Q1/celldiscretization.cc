@@ -78,6 +78,28 @@ void CellDiscretization::Form(GlobalVector& f, const GlobalVector& u, const Equa
     }
 }
 
+
+/* ----------------------------------------- */
+
+void CellDiscretization::AdjointForm(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const
+{
+  nmatrix<double> T;
+  
+  GlobalToGlobalData();
+  EQ.SetParameterData(__qq);
+  
+  for(int iq=0;iq<GetMesh()->ncells();++iq)
+    {
+      Transformation(T,iq);
+      GetFem()->ReInit(T);
+
+      GlobalToLocal(__U,u,iq);
+      
+      GetIntegrator()->AdjointForm(EQ,__F,*GetFem(),__U,__Q);
+      LocalToGlobal(f,__F,iq,d);
+    }
+}
+
 /* ----------------------------------------- */
 
 void CellDiscretization::BoundaryForm(GlobalVector& f, const GlobalVector& u, const IntSet& Colors, const BoundaryEquation& BE, double d) const

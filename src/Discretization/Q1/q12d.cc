@@ -123,8 +123,8 @@ void Q12d::InterpolateSolutionByPatches(GlobalVector& u, const GlobalVector& uol
   nvector<bool> habschon(GetMesh()->nnodes(),0);  
 
   assert(vo2n.size()==uold.n());
-  assert(u.ncomp()==uold.ncomp());
   assert(GetMesh()->nnodes()==u.n());
+  assert(u.ncomp()==uold.ncomp());
 
   for(int i=0;i<vo2n.size();i++)
     {

@@ -52,8 +52,8 @@ namespace Gascoigne
   
       virtual void SetProblem(const ProblemDescriptorInterface& PDX)=0;
       virtual const ProblemDescriptorInterface* GetProblemDescriptor() const=0;
-
-//      virtual void SetState(const std::string& s)=0;
+      virtual const ParamFile* GetParamfile() const {assert(0); return NULL;}
+      virtual DiscretizationInterface*& GetDiscretizationPointer() { assert(0);};
 
       virtual bool DirectSolver() const=0;
   

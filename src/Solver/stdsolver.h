@@ -103,8 +103,6 @@ class StdSolver : public virtual SolverInterface
   virtual MatrixInterface* NewMatrix(int ncomp, const std::string& matrixtype); 
   virtual IluInterface* NewIlu(int ncomp, const std::string& matrixtype); 
 
-  virtual const ParamFile* GetParamfile() const { return _paramfile;}
-  virtual DiscretizationInterface*& GetDiscretizationPointer() { return _ZP;}
   //
   /// new interface-function for indivisual size of vectors
   //
@@ -135,9 +133,6 @@ class StdSolver : public virtual SolverInterface
   virtual void SetBoundaryVectorZero(GlobalVector& f) const;
   virtual void SetBoundaryVectorStrong(GlobalVector& f, const BoundaryManager& BM, const DirichletData& DD) const;
 
-  virtual void SubtractMean(GlobalVector& gx) const;
-  virtual void SubtractMeanAlgebraic(GlobalVector& gx) const;
-
  public:
 
   StdSolver();
@@ -148,10 +143,12 @@ class StdSolver : public virtual SolverInterface
   void BasicInit(int level, const ParamFile* paramfile, const MeshInterface* MP);
   void SetProblem(const ProblemDescriptorInterface& PDX);
   const ProblemDescriptorInterface* GetProblemDescriptor() const {assert(_PDX); return _PDX;}
+  const ParamFile* GetParamfile() const { return _paramfile;}
 
   void NewMesh(int l, const MeshInterface* MP);
 
   const MeshInterface* GetMesh() const {return _MP;}
+  virtual DiscretizationInterface*& GetDiscretizationPointer() { return _ZP;}
 
   // 0.2 Discretization
 
@@ -161,6 +158,9 @@ class StdSolver : public virtual SolverInterface
   void ReInitVector();
   void ReInitMatrix();
 
+  virtual void SubtractMean(GlobalVector& gx) const;
+  virtual void SubtractMeanAlgebraic(GlobalVector& gx) const;
+
   virtual double clock_vmult() const {return _vm.read();}
   virtual double clock_ilu  () const {return _il.read();}
   virtual double clock_solve() const {return _so.read();}
@@ -169,13 +169,6 @@ class StdSolver : public virtual SolverInterface
   virtual double clock_computesolver() const {return _cs.read();}
   virtual double clock_residual     () const {return _re.read();}
 
-//  void SetState(const std::string& s) {
-//    if     (s=="State")   _PrimalSolve = 1;
-//    else if(s=="Adjoint") _PrimalSolve = 0;
-//    else if(s=="Tangent") _PrimalSolve = 2;
-//    else abort();
-//  }
-  
   bool DirectSolver() const {return _directsolver;}
 
   void AddNodeVector(const std::string& name, const GlobalVector* q) {

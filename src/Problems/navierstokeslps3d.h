@@ -25,13 +25,16 @@ class NavierStokesLps3d : public NavierStokes3d, public virtual LpsEquation
   //
   /// Computation of lps stabilization parameters
   //
+  void init(const nmatrix<double>& H, const FemFunction& U, const Vertex3d& v) const;
   void lpspoint(double h, const FemFunction& U, const Vertex3d& v) const;
   //
   /// for local-projection stabilization (lps)
   //
   void StabForm(VectorIterator b, const FemFunction& U, const FemFunction& UP, const TestFunction& N) const;
+  void StabilizationResidual(LocalVector& F, const FemFunction& U, const FemFunction& UP, const FemFunction& N, const FemFunction& NP) const;
     
   void StabMatrix(EntryMatrix& A, const FemFunction& U, const TestFunction& Np, const DerivativeVector& Mp) const;
+  void StabilizationMatrix(EntryMatrix& A, const FemFunction& U, const FemFunction& UP, const FemFunction& M, const FemFunction& MP, const FemFunction& N, const FemFunction& NP) const;
 };
 }
 

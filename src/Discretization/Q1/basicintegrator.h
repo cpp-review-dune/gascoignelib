@@ -26,7 +26,7 @@ class BasicIntegrator : public IntegratorInterface
  protected:
   
   mutable FemFunction   NNN;
-  mutable TestFunction  NN, MM;
+  mutable TestFunction  NN;
   mutable FemFunction   UH;
   mutable FemData       QH;
   

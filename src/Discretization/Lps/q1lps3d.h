@@ -22,7 +22,7 @@ class Q1Lps3d : public Q13d
 {
  protected:
 
-  Q1LpsStab3d   S;
+  Q1LpsStab3d*   S;
 
 public:
 
@@ -44,32 +44,32 @@ public:
   void AddNodeVector(const std::string& name, const GlobalVector* q) const 
     {
       Q13d::AddNodeVector(name,q);
-      S.    AddNodeVector(name,q);
+      S->   AddNodeVector(name,q);
     }
   void DeleteNodeVector(const std::string& name) const 
     {
       Q13d::DeleteNodeVector(name);
-      S.    DeleteNodeVector(name);
+      S->   DeleteNodeVector(name);
     }
   void AddCellVector(const std::string& name, const GlobalCellVector* q) const 
     {
       Q13d::AddCellVector(name,q);
-      S.    AddCellVector(name,q);
+      S->   AddCellVector(name,q);
     }
   void DeleteCellVector(const std::string& name) const
     { 
       Q13d::DeleteCellVector(name);
-      S.    DeleteCellVector(name);
+      S->   DeleteCellVector(name);
     }
   void AddParameterVector(const std::string& name, const GlobalParameterVector* q) const 
     {
       Q13d::AddParameterVector(name,q);
-      S.    AddParameterVector(name,q);
+      S->   AddParameterVector(name,q);
    }
   void DeleteParameterVector(const std::string& name) const
     {
       Q13d::DeleteParameterVector(name);
-      S.    DeleteParameterVector(name);
+      S->   DeleteParameterVector(name);
     }
 };
 

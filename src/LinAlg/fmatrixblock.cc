@@ -187,12 +187,12 @@ void FMatrixBlock<N>::operator *= (const FMatrixBlock<N>& B)
 template<int N>
 void FMatrixBlock<N>::operator *= (double s)
 {
-  for (int i=0; i<N; i++)
+  nvector<float>::iterator       p(begin());
+  nvector<float>::const_iterator q(p+N*N);
+ 
+  for ( ; p!=q; p++)
     {
-      for (int j=0; j<N; j++)
-        {
-          value(i,j) *= s;
-        }      
+      *p *= s;
     }
 }
 
@@ -207,39 +207,30 @@ void FMatrixBlock<N>::inverse()
 /**********************************************************/
 
 template<int N>
-void FMatrixBlock<N>::submult(const FMatrixBlock<N>& B, const FMatrixBlock<N>& C)
-{
-  // this -= B*C
-
-  for (int i=0; i<N; i++)
-    {
-      for (int j=0; j<N; j++)
-        {
-          for (int k=0; k<N; k++)
-            {
-              value(i,j) -= B(i,k) * C(k,j);
-            }
-        }      
-    }
-}
-
-/**********************************************************/
-
-template<int N>
 void FMatrixBlock<N>::vmult(viterator p) const
 {
-  for (int j=0; j<N; j++)
+  
+  // copy old entries of vector in vhelp
+  //
+  nvector<double>::iterator       a = vhelp.begin();
+  nvector<double>::const_iterator b = a+N;
+  
+  for ( ; a!=b; a++)
     {
-      vhelp[j] = *(p+j);
+      *a = *p++;
     }
-  for (int j=0; j<N; j++)
+  p -= N;
+  a -= N;
+
+  nvector<float>::const_iterator q(begin());
+  for (viterator c=p; c!=p+N; c++)
     {
-      double dummy = 0.;
-      for (int k=0; k<N; k++)
+      *c = 0.;
+      for (; a!=b; a++)
 	{
-	  dummy += value(j,k) * vhelp[k];
+	  *c += *q++ * *a;
 	} 
-      *(p+j) = dummy;	
+      a -= N;
     }
   
 }
@@ -250,16 +241,6 @@ template FMatrixBlock<1>;
 template FMatrixBlock<2>;
 template FMatrixBlock<3>;
 template FMatrixBlock<4>;
-template FMatrixBlock<5>;
-template FMatrixBlock<6>;
-template FMatrixBlock<7>;
-template FMatrixBlock<8>;
-template FMatrixBlock<9>;
-template FMatrixBlock<10>;
-template FMatrixBlock<11>;
-template FMatrixBlock<18>;
-template FMatrixBlock<20>;
-template FMatrixBlock<12>;
 }
 
 /**********************************************************/

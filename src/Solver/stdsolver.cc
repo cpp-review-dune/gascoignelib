@@ -68,13 +68,14 @@ StdSolver::~StdSolver()
 void StdSolver::_check_consistency(const Equation* EQ,const DiscretizationInterface* MP) const
 {
   bool glseq = false, glsmi = false;
+  std::string eq = MP->GetName();
   
-  if(dynamic_cast<const GlsEquation*>(EQ))
-  {
-    glseq = true;
-  }
-  if(MP->GetName()=="Q1Gls2d" || MP->GetName()=="Q2Gls2d" || MP->GetName()=="Q1Gls3d" || MP->GetName()=="Q2Gls3d")
-  {
+  if (dynamic_cast<const GlsEquation*>(EQ))
+    {
+      glseq = true;
+    }
+  if (eq=="Q1Gls2d" || eq=="Q2Gls2d" || eq=="Q1Gls3d" || eq=="Q2Gls3d")
+    {
     glsmi = true;
   }
   if(!(glseq && glsmi) && !(!glseq && !glsmi))
@@ -83,21 +84,21 @@ void StdSolver::_check_consistency(const Equation* EQ,const DiscretizationInterf
     abort();
   }
   
-  bool lpseq = false, lpsmi = false;
+//   bool lpseq = false, lpsmi = false;
   
-  if(dynamic_cast<const LpsEquation*>(EQ))
-  {
-    lpseq = true;
-  }
-  if(MP->GetName()=="Q1Lps2d" || MP->GetName()=="Q2Lps2d" || MP->GetName()=="Q1Lps3d" || MP->GetName()=="Q2Lps3d")
-  {
-    lpsmi = true;
-  }
-  if(!(lpseq && lpsmi) && !(!lpseq && !lpsmi))
-  {
-    cerr << "Discretization \"" << MP->GetName() << "\" doesn't go with type of given Equation!" << endl;
-    abort();
-  }
+//   if(dynamic_cast<const LpsEquation*>(EQ))
+//   {
+//     lpseq = true;
+//   }
+//   if(MP->GetName()=="Q1Lps2d" || MP->GetName()=="Q2Lps2d" || MP->GetName()=="Q1Lps3d" || MP->GetName()=="Q2Lps3d")
+//   {
+//     lpsmi = true;
+//   }
+//   if(!(lpseq && lpsmi) && !(!lpseq && !lpsmi))
+//   {
+//     cerr << "Discretization \"" << MP->GetName() << "\" doesn't go with type of given Equation!" << endl;
+//     abort();
+//   }
 }
 
 /*-------------------------------------------------------*/
@@ -240,14 +241,6 @@ MatrixInterface* StdSolver::NewMatrix(int ncomp, const string& matrixtype)
     else if (ncomp==2)  return new SparseBlockMatrix<FMatrixBlock<2> >;
     else if (ncomp==3)  return new SparseBlockMatrix<FMatrixBlock<3> >;
     else if (ncomp==4)  return new SparseBlockMatrix<FMatrixBlock<4> >;
-    else if (ncomp==5)  return new SparseBlockMatrix<FMatrixBlock<5> >;
-    else if (ncomp==6)  return new SparseBlockMatrix<FMatrixBlock<6> >;
-    else if (ncomp==7)  return new SparseBlockMatrix<FMatrixBlock<7> >;
-    else if (ncomp==8)  return new SparseBlockMatrix<FMatrixBlock<8> >;
-    else if (ncomp==9)  return new SparseBlockMatrix<FMatrixBlock<9> >;
-    else if (ncomp==10) return new SparseBlockMatrix<FMatrixBlock<10> >;
-    else if (ncomp==11) return new SparseBlockMatrix<FMatrixBlock<11> >;
-    else if (ncomp==12) return new SparseBlockMatrix<FMatrixBlock<12> >;
     else
     {
       cerr << "No SparseBlockMatrix for " << ncomp << "components." << endl;
@@ -295,19 +288,6 @@ IluInterface* StdSolver::NewIlu(int ncomp, const string& matrixtype)
     else if (ncomp==2)  return new SparseBlockIlu<FMatrixBlock<2> >;
     else if (ncomp==3)  return new SparseBlockIlu<FMatrixBlock<3> >;
     else if (ncomp==4)  return new SparseBlockIlu<FMatrixBlock<4> >;
-    else if (ncomp==5)  return new SparseBlockIlu<FMatrixBlock<5> >;
-    else if (ncomp==6)  return new SparseBlockIlu<FMatrixBlock<6> >;
-    else if (ncomp==7)  return new SparseBlockIlu<FMatrixBlock<7> >;
-    else if (ncomp==8)  return new SparseBlockIlu<FMatrixBlock<8> >;
-    else if (ncomp==9)  return new SparseBlockIlu<FMatrixBlock<9> >;
-    else if (ncomp==10) return new SparseBlockIlu<FMatrixBlock<10> >;
-    else if (ncomp==11) return new SparseBlockIlu<FMatrixBlock<11> >;
-    else if (ncomp==12) return new SparseBlockIlu<FMatrixBlock<12> >;
-    else
-    {
-      cerr << "No SparseBlockIlu for " << ncomp << "components." << endl;
-      abort();
-    }
   }
   else if (matrixtype=="component") 
   {
@@ -319,17 +299,9 @@ IluInterface* StdSolver::NewIlu(int ncomp, const string& matrixtype)
     {
       return new SparseBlockIlu<CFDBlock3d>;
     }
-    else
-    {
-      cerr << "No SparseBlockIlu for " << ncomp << "components." << endl;
-      abort();
-    }
   }
-  else
-  {
-    cerr << "No such matrix type \"" << matrixtype<< "\"." << endl;
-    abort();
-  }
+  cerr << "No such matrix type \"" << matrixtype << "and ncomp \"." << ncomp << endl;
+  abort();
 }
 
 /*-------------------------------------------------------*/
@@ -377,7 +349,7 @@ void StdSolver::Zero(BasicGhostVector& dst) const
 
 double StdSolver::NewtonNorm(const BasicGhostVector& u) const
 {
-  return GetGV(u).norm();
+  return GetGV(u).norm_l8();
 }
 
 /*-----------------------------------------*/
@@ -1041,8 +1013,7 @@ void StdSolver::PermutateIlu(const GlobalVector& u) const
       VecDirection vd (GetMesh());
       vd.Permutate    (perm,_Dat.GetVectorDirection());
     }
-  
-  if(GetIlu()) GetIlu()->ConstructStructure(perm,*GetMatrix());
+  if (GetIlu()) GetIlu()->ConstructStructure(perm,*GetMatrix());
 }
 
 /* -------------------------------------------------------*/
@@ -1179,6 +1150,7 @@ void StdSolver::MemoryVector(BasicGhostVector& v)
     }
   ResizeVector(p->second,gv.GetType());
 }
+
 /*-----------------------------------------*/
 
 void StdSolver::DeleteVector(BasicGhostVector* p) const
@@ -1224,6 +1196,7 @@ void StdSolver::AssembleDualMatrix(const BasicGhostVector& gu, double d)
   HNAverage(gu);
 
   const Equation& EQ = *GetProblemDescriptor()->GetEquation();
+  M->zero();
   GetDiscretization()->Matrix(*M,GetGV(gu),EQ,d);
   M->transpose();
 

@@ -10,11 +10,20 @@ namespace Gascoigne
 template<int DIM>
 LpsIntegratorQ2<DIM>::LpsIntegratorQ2<DIM>() : LpsIntegrator<DIM>()
 {
+  int femn;
   if (DIM==2)
-    _IF = new QuadGauss9;
+    {
+      _IF = new QuadGauss9;
+      femn = 9;
+    }
   else
-    _IF = new HexGauss27;
+    {
+      _IF = new HexGauss27;
+      femn = 27;
+    }
   assert(_IF);
+
+  MMM.resize(femn);
 }
 
 /*----------------------------------------- */
@@ -24,17 +33,21 @@ LpsIntegratorQ2<DIM>::LpsIntegratorQ2<DIM>() : LpsIntegrator<DIM>()
 template<int DIM>
 LpsIntegratorQ1<DIM>::LpsIntegratorQ1<DIM>() : LpsIntegrator<DIM>()
 {
+  int femn;
   if (DIM==2)
     {
       _IF = new PatchFormula2d<4,QuadGauss4>;
       CellWeight = 0.25;
+      femn = 9;
     }
   else
     {
       _IF = new PatchFormula3d<8,HexGauss8>;
       CellWeight = 0.125;
+      femn = 27;
     }
   assert(_IF);
+  MMM.resize(femn);
 }
 
 /*-----------------------------------------*/

@@ -91,6 +91,8 @@ void GascoigneMeshConstructor::Loop3d()
       GascoigneMeshTransfer* T  = GMG->GetTransfer(level-1);
       
       FM->construct_lists(newquads,oldquads);
+      //      std::cout << "*** construct_lists " << level << "\t" << newquads.size() << " " << oldquads.size() << std::endl;
+
       CM = LevelUpdate3d(GM,newquads,oldquads);
 	  
       GascoigneMeshTransferConstructor3d(HMP,T,FM,CM);

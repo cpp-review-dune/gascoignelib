@@ -53,6 +53,7 @@ public:
   void Structure(SparseStructureInterface* S) const;
 
   void Form(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const;
+  void AdjointForm(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const;
   void Matrix(MatrixInterface& A, const GlobalVector& u, const Equation& EQ, double) const;
   void MassMatrix(MatrixInterface& M) const;
 

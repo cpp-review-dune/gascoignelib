@@ -27,7 +27,7 @@ MeshAgent::~MeshAgent()
 
 void MeshAgent::ReInit()
 {
-  GMG->ReInit(_dimension,HMP->nlevels());
+  GMG->ReInit(_dimension,HMP->nlevels()-HMP->patchdepth());
 
   GascoigneMeshConstructor MGM(HMP,GMG);
   MGM.BasicInit();

@@ -42,9 +42,31 @@ public:
   void   entry     (int i, int j, const EntryMatrix&, double s=1.);
   void   dual_entry(int i, int j, const EntryMatrix&, double s=1.);
   void   inverse ();
-  void   submult (const FMatrixBlock<N>&, const FMatrixBlock<N>&); 
   void   vmult   (viterator) const;
   void   mult    (FMatrixBlock<N>&, const FMatrixBlock<N>&) const; 
+
+  void   submult(const FMatrixBlock<N>& B, const FMatrixBlock<N>& C)
+  {
+    // this -= B*C
+    nvector<float>::iterator p(begin());
+    for (char i=0; i<N; i++)
+      {
+	for (char j=0; j<N; j++)
+	  {
+	    nvector<float>::const_iterator pC(C.begin()+j);
+	    nvector<float>::const_iterator pB(B.begin()+i*N);
+	    nvector<float>::const_iterator qB(pB+N);
+	    //for (int k=0; k<N; k++)
+	    for (; pB!=qB; pB++)
+	      {
+		//value(i,j) -= B(i,k) * C(k,j);
+		*p -= *pB * *pC;
+		pC += N;
+	      }
+	    p++;
+        }      
+      }
+  }
 
   void add(double s, const FMatrixBlock<N>& A)
     {
@@ -68,36 +90,17 @@ public:
   void cadd(double s, viterator p, const_viterator q0) const
     {
       const_iterator pm = begin();
-      for (int k=0; k<N; k++)
+      const_viterator pend = p+N;
+      for ( ; p!=pend; p++)
 	{
 	  double sum = 0.;
-	  for (int h=0; h<N; h++)
+	  const_viterator qend(q0+N);
+	  for (const_viterator q=q0; q!=qend; q++)
 	    {
-	      sum += *pm++ * (*(q0+h));
+	      sum +=  *pm++ * *q;
 	    }
-	  *p++ += s*sum;
+	  *p += s*sum;
 	}
-      p -= N;
-/*       const_iterator ende = q0+N; */
-/*       for (iterator pc = p; pc!=p+N; pc++) */
-/* 	{ */
-/* 	  double sum = 0.; */
-/* 	  for (const_iterator q00 = q0; q00<ende; q00++) */
-/* 	    { */
-/* 	      sum += *pm++ * *q00; */
-/* 	    } */
-/* 	  *pc += s*sum; */
-/* 	} */
-/*       for (int k=0; k<N; k++) */
-/* 	{ */
-/* 	  double sum = 0.; */
-/* 	  for (int h=0; h<N; h++) */
-/* 	  { */
-/* 	      sum += value(k,h) * (*(q0+h)); */
-/* 	  } */
-/* 	  *p++ += s*sum; */
-/* 	} */
-      /*      p -= N; */
     }
   void caddtrans(double s, viterator p, const_viterator q0) const
     {
@@ -113,21 +116,18 @@ public:
 	  p -= N;
 	  q0++;
 	}
-      q0 -= N;
     }
-  void subtract(viterator p, const_viterator q0) const
+  void subtract(viterator p0, const_viterator q0) const
     {
       const_iterator pm = begin();
 
-      for (int k=0; k<N; k++)
+      for (viterator p(p0); p!=p0+N; p++)
 	{
-	  for (int h=0; h<N; h++)
+	  for (const_viterator q(q0); q!=q0+N; q++)
 	    {
-	      *p -= *pm++ * (*(q0+h));
+	      *p -= *pm++ * *q;
 	    }
-	  p++;
 	}
-      p -= N;
     };
   std::ostream& print(std::ostream& s) const;
 

@@ -33,7 +33,7 @@ class Q1LpsStab : public PatchDiscretization
 
   Q1LpsStab() : PatchDiscretization() {};
   int n() const { return GetMesh()->nnodes();}
-  void BasicInit(const ParamFile* paramfile, const HNStructureInterface*);
+  virtual void BasicInit(const ParamFile* paramfile, const HNStructureInterface*);
 };
 
 /*----------------------------------------------*/

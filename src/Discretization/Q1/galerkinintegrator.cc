@@ -138,6 +138,68 @@ void GalerkinIntegrator<DIM>::Form(const Equation& EQ, LocalVector& F, const Fem
 /* ----------------------------------------- */
 
 template<int DIM>
+void GalerkinIntegrator<DIM>::AdjointForm(const Equation& EQ, LocalVector& F, const FemInterface& FEM, const LocalVector& Z, const LocalNodeData& Q) const
+{
+  F.ReInit(EQ.GetNcomp(),FEM.n());
+
+  const IntegrationFormulaInterface& IF = FormFormula();
+
+  F.zero();
+  Vertex<DIM> x, xi;
+
+  NNN.resize(FEM.n());
+  EntryMatrix E;
+  E.SetDimensionDof(FEM.n(),FEM.n());
+  E.SetDimensionComp(Z.ncomp(),Z.ncomp());
+  E.resize();
+  E.zero();
+
+  for (int k=0; k<IF.n(); k++)
+    {
+      IF.xi(xi,k);
+      FEM.point(xi);
+      double vol = FEM.J();
+      double h  = Volume2MeshSize(vol);
+      double weight  = IF.w(k) * vol;
+      BasicIntegrator::universal_point(FEM,UH,Z);
+      BasicIntegrator::universal_point(FEM,QH,Q);
+      FEM.x(x);
+      // EQ.pointmatrix(h,QH["u"],QH,x);
+      EQ.pointmatrix(h,QH["u"],x);
+      double sw = sqrt(weight);
+      for (int i=0; i<FEM.n(); i++)
+	{
+	  FEM.init_test_functions(NNN[i],sw,i);
+	}
+      for (int j=0; j<FEM.n(); j++)
+	{
+	  for (int i=0; i<FEM.n(); i++)
+	    {
+	      E.SetDofIndex(j,i);
+	      EQ.Matrix(E,QH["u"],NNN[i],NNN[j]);
+	    }
+	}
+    }
+  for (int i=0; i<FEM.n(); i++)
+    {
+      for (int c=0; c<Z.ncomp(); c++)
+	{
+	  double sum = 0.;
+	  for (int j=0; j<FEM.n(); j++)
+	    {
+	      for (int d=0; d<Z.ncomp(); d++)
+		{
+		  sum += E(j,i,d,c)*Z(j,d);
+		}
+	    }
+	  F(i,c) += sum;
+	}
+    }
+}
+
+/* ----------------------------------------- */
+
+template<int DIM>
 void GalerkinIntegrator<DIM>::BoundaryForm(const BoundaryEquation& BE, LocalVector& F, const FemInterface& FEM, const LocalVector& U, int ile, int col, LocalNodeData& Q) const
 {
   F.ReInit(BE.GetNcomp(),FEM.n());
@@ -194,11 +256,13 @@ double GalerkinIntegrator<DIM>::MassMatrix(EntryMatrix& E, const FemInterface& F
       for (int i=0;i<FEM.n();i++)
 	{
 	  FEM.init_test_functions(NNN[i],1.,i);
+	}
+      for (int i=0;i<FEM.n();i++)
+	{
 	  for (int j=0;j<FEM.n();j++)
 	    {
-	      FEM.init_test_functions(MM,1.,j);
 	      E.SetDofIndex(i,j);
-	      E(0,0) += weight * MM.m()*NNN[i].m();
+	      E(0,0) += weight * NNN[j].m()*NNN[i].m();
 	    }
 	}
     }
@@ -232,17 +296,17 @@ void GalerkinIntegrator<DIM>::Matrix(const Equation& EQ, EntryMatrix& E, const F
       EQ.SetFemData(QH);
       EQ.pointmatrix(h,UH,x);
 
+      double sw = sqrt(weight);
       for (int i=0;i<FEM.n();i++)
 	{
-	  FEM.init_test_functions(NNN[i],weight,i);
+	  FEM.init_test_functions(NNN[i],sw,i);
 	}
-      for (int j=0;j<FEM.n();j++)
+      for (int j=0; j<FEM.n(); j++)
 	{
-	  FEM.init_test_functions(MM,1.,j);
-	  for (int i=0;i<FEM.n();i++)
+	  for (int i=0; i<FEM.n(); i++)
 	    {
 	      E.SetDofIndex(i,j);
-	      EQ.Matrix(E,UH,MM,NNN[i]);
+	      EQ.Matrix(E,UH,NNN[j],NNN[i]);
 	    }
 	}
     }
@@ -275,17 +339,17 @@ void GalerkinIntegrator<DIM>::BoundaryMatrix (const BoundaryEquation& BE, EntryM
       double  weight = IF.w(k)*h;
       BE.SetFemData(QH);
       BE.pointmatrixboundary(h,UH,x,n);
+      double sw = sqrt(weight);
       for (int i=0;i<FEM.n();i++)
         {
-          FEM.init_test_functions(NNN[i],weight,i);
+          FEM.init_test_functions(NNN[i],sw,i);
         }
       for (int j=0;j<FEM.n();j++)
         {
-          FEM.init_test_functions(MM,1.,j);
           for (int i=0;i<FEM.n();i++)
             {
               E.SetDofIndex(i,j);
-              BE.Matrix(E,UH,MM,NNN[i],col);
+              BE.Matrix(E,UH,NNN[j],NNN[i],col);
             }
         }
     }

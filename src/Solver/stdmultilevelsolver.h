@@ -74,7 +74,6 @@ class StdMultiLevelSolver : public MultiLevelSolverInterface
   virtual void SolutionTransfer(MultiLevelGhostVector& u) const;
   virtual void SolutionTransfer(int high, int low, MultiLevelGhostVector& u) const;
   virtual void Transfer(int high, int low, MultiLevelGhostVector& u) const;
-  virtual void LinearMg(int minlevel, int maxlevel, MultiLevelGhostVector& u, const MultiLevelGhostVector& f, CGInfo&);
 
  public:
 
@@ -137,6 +136,8 @@ class StdMultiLevelSolver : public MultiLevelSolverInterface
   void BoundaryInit(MultiLevelGhostVector& u) const;
   
   void vmulteq(MultiLevelGhostVector& y, const MultiLevelGhostVector&  x) const;
+  
+  virtual void LinearMg(int minlevel, int maxlevel, MultiLevelGhostVector& u, const MultiLevelGhostVector& f, CGInfo&);
 
   double ComputeFunctional(MultiLevelGhostVector& f, const MultiLevelGhostVector& u, const Functional* FP) const;
 
@@ -145,10 +146,15 @@ class StdMultiLevelSolver : public MultiLevelSolverInterface
   void AssembleDualMatrix(MultiLevelGhostVector& u);
 
   // fuer gmres
+  
   virtual void precondition(MultiLevelGhostVector& x, MultiLevelGhostVector& y);
   virtual void MemoryVector(MultiLevelGhostVector& p);
   virtual void DeleteVector(MultiLevelGhostVector& p);
   virtual void Equ(MultiLevelGhostVector& dst, double s, const MultiLevelGhostVector& src)const;
+  void Zero(MultiLevelGhostVector& dst)const;
+
+  void AddNodeVector(const std::string& name, MultiLevelGhostVector& q);
+  void DeleteNodeVector(const std::string& q);
 };
 }
 

@@ -1,5 +1,4 @@
 #include  "lpsintegrator.h"
-#include  "lpsequation.h"
 #include  "integrationformula.h"
 
 using namespace std;
@@ -11,15 +10,12 @@ namespace Gascoigne
 template<int DIM>
 void LpsIntegrator<DIM>::Projection(const FemInterface& FEM) const
 {
+  for(int ii=0; ii<FEM.n(); ii++) 
+    {
+      FEM.init_test_functions(NLPS[ii],1.,ii);
+    }
   if (DIM==2)
     {
-      for(int ii=0; ii<FEM.n(); ii++) 
-	{
-	  FEM.init_test_functions(NLPS[ii],1.,ii);
-	  // 	  NLPS[ii].m() = FEM.N  (ii);
-// 	  NLPS[ii].x() = FEM.N_x(ii);
-// 	  NLPS[ii].y() = FEM.N_y(ii);
-	}
       NLPS[0].equ(-0.25, NLPS[4]);
       NLPS[2].equ(-0.25, NLPS[4]);
       NLPS[6].equ(-0.25, NLPS[4]);
@@ -32,14 +28,6 @@ void LpsIntegrator<DIM>::Projection(const FemInterface& FEM) const
     }
   else if (DIM==3)
     {
-      for(int ii=0; ii<FEM.n(); ii++) 
-	{
-	  FEM.init_test_functions(NLPS[ii],1.,ii);
-// 	  NLPS[ii].m() = FEM.N  (ii);
-// 	  NLPS[ii].x() = FEM.N_x(ii);
-// 	  NLPS[ii].y() = FEM.N_y(ii);
-// 	  NLPS[ii].z() = FEM.N_z(ii);
-	}
       NLPS[0] .equ(-0.125, NLPS[13]);
       NLPS[2] .equ(-0.125, NLPS[13]);
       NLPS[6] .equ(-0.125, NLPS[13]);
@@ -74,7 +62,6 @@ void LpsIntegrator<DIM>::Projection(const FemInterface& FEM) const
 template<int DIM>
 void LpsIntegrator<DIM>::Form(const Equation& EQ, LocalVector& F, const FemInterface& FEM, const LocalVector& U, const LocalNodeData& Q) const
 {
-  //assert(FEM.n()==9);
   NLPS.resize(FEM.n());
   MLPS.resize(FEM.n());
 
@@ -82,6 +69,7 @@ void LpsIntegrator<DIM>::Form(const Equation& EQ, LocalVector& F, const FemInter
 
   const IntegrationFormulaInterface& IF = FormFormula();
   Vertex<DIM> x, xi;
+
   for (int k=0; k<IF.n(); k++)
     {
       IF.xi(xi,k);
@@ -96,7 +84,7 @@ void LpsIntegrator<DIM>::Form(const Equation& EQ, LocalVector& F, const FemInter
       LEQ.SetFemData(QH);
       LEQ.lpspoint(h,UH,x);
 
-      Projection(FEM);
+      Projection(FEM);  // fuellt NLPS
       BasicIntegrator::universal_point(UHP,U,NLPS);
       for(int i=0;i<FEM.n();i++) MLPS[i].equ(weight,NLPS[i]);
             
@@ -115,7 +103,7 @@ void LpsIntegrator<DIM>::Matrix(const Equation& EQ, EntryMatrix& E, const FemInt
   assert(E.Ndof()==FEM.n());
   assert(E.Mdof()==FEM.n());
   assert(E.Ncomp()==U.ncomp());
-  //assert(FEM.n()==9);
+
   NLPS.resize(FEM.n());
   MLPS.resize(FEM.n());
 

@@ -17,7 +17,7 @@ namespace Gascoigne
 {
 StdMultiLevelSolver::~StdMultiLevelSolver()
 {
-  //ViewProtocoll();
+  ViewProtocoll();
 
   if(DataP) delete DataP; DataP=NULL;
 
@@ -68,7 +68,7 @@ void StdMultiLevelSolver::ViewProtocoll() const
     }
 
   cout << "  vmult\t\t\t" << vm << endl;
-  cout << "  ilu\t\t\t" << il << endl;
+  cout << "  smooth\t\t\t" << il << endl;
   cout << "  solve\t\t\t" << so << endl;
   cout << "  compute matrix\t" << ca << endl;
   cout << "  compute ilu\t\t" << ci << endl;
@@ -630,11 +630,7 @@ string StdMultiLevelSolver::LinearSolve(int level, MultiLevelGhostVector& u, con
   int clevel=Gascoigne::max_int(DataP->CoarseLevel() ,0);
   if(DataP->CoarseLevel() == -1) clevel = FinestLevel(); 
 
-//   cout << "  |u| = " << GetSolver(ComputeLevel)->GetGV(u).norm() << " \t";
-//   cout << "|b| = " << GetSolver(ComputeLevel)->GetGV(b).norm() << endl;
   LinearMg(ComputeLevel,clevel,u,b,info);
-//   cout << "->|u| = " << GetSolver(ComputeLevel)->GetGV(u).norm() << " \t";
-//   cout << "|b| = " << GetSolver(ComputeLevel)->GetGV(b).norm() << endl;
 
   GetSolver(ComputeLevel)->SubtractMean(u(ComputeLevel));
 
@@ -731,7 +727,6 @@ void StdMultiLevelSolver::AssembleDualMatrix(MultiLevelGhostVector& u)
     }
 }
 
-
 /*-------------------------------------------------------------*/
 
 void StdMultiLevelSolver::MemoryVector(MultiLevelGhostVector& v)
@@ -780,6 +775,39 @@ void StdMultiLevelSolver::Equ(MultiLevelGhostVector& dst, double s, const MultiL
     {
       const StdSolver* S = dynamic_cast<const StdSolver*>(GetSolver(l));
       S->Equ(dst(l),s,src(l));
+    }
+}
+
+/*-------------------------------------------------------------*/
+
+void StdMultiLevelSolver::Zero(MultiLevelGhostVector& dst) const
+{
+  for(int l=0; l<FinestLevel(); l++)
+    {
+      const StdSolver* S = dynamic_cast<const StdSolver*>(GetSolver(l));
+      S->Zero(dst(l));
+    }
+}
+
+/*-------------------------------------------------------------*/
+
+void StdMultiLevelSolver::AddNodeVector(const std::string& name, MultiLevelGhostVector& gq)
+{
+  Transfer(ComputeLevel,1,gq);
+  for(int l=0; l<nlevels(); l++)
+    {
+      const GlobalVector& q = GetSolver(l)->GetGV(gq);
+      GetSolver(l)->AddNodeVector(name,&q);
+    }
+}
+
+/*-------------------------------------------------------------*/
+
+void StdMultiLevelSolver::DeleteNodeVector(const std::string& name)
+{
+  for(int l=0; l<nlevels(); l++)
+    {
+      GetSolver(l)->DeleteNodeVector(name);
     }
 }
 

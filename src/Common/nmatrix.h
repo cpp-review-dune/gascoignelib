@@ -2,6 +2,7 @@
 #define __nmatrix_h
 
 #include  "nvector.h"
+#include  "giota.h"
 
 /**************************************************/
 
@@ -473,17 +474,13 @@ public:
   void gauss_jordan()
     {
       nvector<int> p(n());
-
-      int i,j,k,r;
-      double max, hr;
+      iota(p.begin(),p.end(),0);
       
-      for (i=0;i<n();i++) p[i] = i;
-      
-      for (j=0;j<n();j++)
+      for (int j=0;j<n();j++)
 	{
-	  max = fabs(value(j,j));
-	  r = j;
-	  for (i=j+1;i<n();i++)
+	  double max = fabs(value(j,j));
+	  int r = j;
+	  for (int i=j+1;i<n();i++)
 	    {
 	      if (fabs(value(i,j)) > max)
 		{
@@ -493,25 +490,29 @@ public:
 	    }
 	  if (r>j)
 	    {
-	      for (k=0;k<n();k++)
+	      for (int k=0; k<n(); k++)
 		{
-		  hr = value(j,k) ; value(j,k) = value(r,k) ; value(r,k) = hr;
+		  //swap(value(j,k),value(r,k));
+		  T h        = value(j,k);
+		  value(j,k) = value(r,k);
+		  value(r,k) = h;
 		}
-	      i = p[j] ; p[j] = p[r] ; p[r] = i;
+	      //swap(p[j],p[r]);
+	      int h = p[j]; p[j] = p[r]; p[r] = h;
 	    }
 	  
-	  hr = 1./value(j,j);
+	  double hr = 1./value(j,j);
 	  value(j,j) = hr;
-	  for (k=0;k<n();k++)
+	  for (int k=0;k<n();k++)
 	    {
 	      if (k==j) continue;
-	      for (i=0;i<n();i++)
+	      for (int i=0;i<n();i++)
 		{
 		  if (i==j) continue;
 		  value(i,k) -= value(i,j)*value(j,k)*hr;
 		}
 	    }
-	  for (i=0;i<n();i++)
+	  for (int i=0;i<n();i++)
 	    {
 	      value(i,j) *= hr;
 	      value(j,i) *= -hr;
@@ -519,10 +520,10 @@ public:
 	  value(j,j) = hr;
 	}
       nvector<double> hv(n());
-      for (i=0;i<n();i++)
+      for (int i=0;i<n();i++)
 	{
-	  for (k=0;k<n();k++) hv[p[k]] = value(i,k);
-	  for (k=0;k<n();k++) value(i,k) = hv[k];
+	  for (int k=0;k<n();k++) hv[p[k]] = value(i,k);
+	  for (int k=0;k<n();k++) value(i,k) = hv[k];
 	}
     }
 };

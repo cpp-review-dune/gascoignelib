@@ -170,7 +170,7 @@ inline int GMRESSPV::solve(VECTOR& x, const VECTOR& b, CGInfo& info)
   
   gamma[0] = rho;
 
-  reached = info.check(rho,0);
+ // reached = info.check(rho,0);
   
   A.Equ(v,1./rho,v);
   
@@ -191,6 +191,8 @@ inline int GMRESSPV::solve(VECTOR& x, const VECTOR& b, CGInfo& info)
 	}
       else
 	{
+          //A.Equ(p,0.,p);
+	  A.Zero(p);
 	  P.precondition(p,mem[last]);
 	  A.vmulteq(vv,p);
 	}      
@@ -223,7 +225,7 @@ TEMPLATE
 inline void GMRESSPV::solution(VECTOR& x, VECTOR& p, int dim)
 {
   nmatrix<double> H1(dim+1,dim);
-
+  H1.zero();	
   for (int j=0 ; j<dim ; j++)
     {
       for (int i=0 ; i<j+2; i++)
@@ -244,6 +246,7 @@ inline void GMRESSPV::solution(VECTOR& x, VECTOR& p, int dim)
       A.Zero(p);
       for (int i=0 ; i<dim ; i++)
 	A.Add(p,h[i], mem[i]);
+       A.Equ(mem[0],0.,mem[0]);
        P.precondition(mem[0],p);
        A.Add(x,1.,mem[0]);
     }

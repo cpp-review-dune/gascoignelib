@@ -8,9 +8,7 @@ namespace Gascoigne
 
 /*---------------------------------------------------*/
 
-DwrFem2d::DwrFem2d() : Q22d()
-{
-}
+DwrFem2d::DwrFem2d() : Q22d() {}
 
 /*---------------------------------------------------*/
 
@@ -67,6 +65,31 @@ void DwrFem2d::Form(GlobalVector& f, const GlobalVector& u, const Equation& EQ, 
 
       GlobalToLocal(__U,u,iq);
       I->Form(EQ,__F,HighOrderFem,LowOrderFem,__U,__Q);
+      PatchDiscretization::LocalToGlobal(f,__F,iq,d);
+    }
+}
+
+/*---------------------------------------------------*/
+
+void DwrFem2d::AdjointForm(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const
+{
+  nmatrix<double> TH,TL;
+
+  const IntegratorQ1Q2<2>* I = dynamic_cast<const IntegratorQ1Q2<2>*>(GetIntegrator());
+  assert(I);
+
+  const FemInterface& HighOrderFem(*GetFem());
+
+  for(int iq=0;iq<GetPatchMesh()->npatches();++iq)
+    {
+      Transformation  (TH,iq);
+      TransformationQ1(TL,iq);
+
+      HighOrderFem.ReInit(TH);
+      LowOrderFem .ReInit(TL);
+
+      GlobalToLocal(__U,u,iq);
+      I->AdjointForm(EQ,__F,HighOrderFem,LowOrderFem,__U,__Q);
       PatchDiscretization::LocalToGlobal(f,__F,iq,d);
     }
 }
