@@ -204,9 +204,17 @@ inline double  Transformation3d<BASE>::J() const
 template<class BASE>
 inline double  Transformation3d<BASE>::G() const  
 {
-  Vertex3d xt;
-  dt.mult(xt,B.tangent());
-  return xt.norm_l2();
+  double E=0,F=0,G=0;
+  const fixarray<2,int>& fc = B.faces();
+  for (int i=0;i<3;++i)
+    {
+      E+=dt(i,fc[0])*dt(i,fc[0]);
+      G+=dt(i,fc[1])*dt(i,fc[1]);
+      F+=dt(i,fc[0])*dt(i,fc[1]);
+    }
+  double H = E*G-F*F;
+  assert(H>=0);
+  return sqrt(H);
 }
 
 #endif
