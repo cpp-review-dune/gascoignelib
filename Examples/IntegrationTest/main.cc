@@ -69,8 +69,6 @@ int main(int argc, char** argv)
 
   for (int iter=1; iter<=niter; iter++)
     {
-      M.global_refine(1);
-
       LocalSolver S;
 
       const MeshInterface* MI = M.GetMesh(0);
@@ -89,5 +87,7 @@ int main(int argc, char** argv)
       double val = S.Integral(u);
       cout.precision(16);
       cout << iter << "\t" << u.n() << "\t" << val << endl;
+
+      M.global_refine(1);
     }
 }

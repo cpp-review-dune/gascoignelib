@@ -1,7 +1,7 @@
 //Block Mesh
 
 dimension   2
-prerefine   0
+prerefine   1
 gridname    square.inp
 patchdepth   1
 
