@@ -15,7 +15,7 @@ SET(GASCOIGNE_LIBRARY_OUTPUT_PREFIX "$ENV{HOME}/local/lib")
 SET(GASCOIGNE_EXECUTABLE_OUTPUT_PREFIX ".")
 
 OPTION(USE_ARCH "Use archictecture specifc paths" OFF)
-OPTION(COPY_PARAMFILES "Copy the Param and the INP files" OFF)
+OPTION(COPY_PARAMFILES "Copy the Param and the INP files" ON)
 
 #############################################
 #
@@ -40,4 +40,4 @@ OPTION(UMFPACK_WITH_AMD "libamd is needed for new libumfpack" OFF)
 #
 #  Build shared libraries instead of static ones
 #
-OPTION(BUILD_SHARED_LIBS "Build shared libraries" ON)
+OPTION(BUILD_SHARED_LIBS "Build shared libraries" OFF)
