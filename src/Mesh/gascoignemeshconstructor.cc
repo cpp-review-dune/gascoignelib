@@ -53,7 +53,7 @@ void GascoigneMeshConstructor::Loop2d()
       FM->construct_lists(newquads,oldquads);
       CM = LevelUpdate2d(GM,newquads,oldquads);
 	  
-      GascoigneMeshTransferConstructor2d GMTC(HMP,T,FM,CM);
+      GascoigneMeshTransferConstructor2d(HMP,T,FM,CM);
       
       delete FM;
       FM = CM;
@@ -92,7 +92,7 @@ void GascoigneMeshConstructor::Loop3d()
       FM->construct_lists(newquads,oldquads);
       CM = LevelUpdate3d(GM,newquads,oldquads);
 	  
-      GascoigneMeshTransferConstructor3d GMTC(HMP,T,FM,CM);
+      GascoigneMeshTransferConstructor3d(HMP,T,FM,CM);
       
       delete FM;
       FM = CM;

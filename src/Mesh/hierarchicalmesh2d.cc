@@ -508,18 +508,6 @@ void HierarchicalMesh2d::basic_refine2d(HangContainer2d& hangset,
   quads    .reserve(nc);
   quads    .resize(nc);
 
-  /// remember old hangs
-//   nvector<int> ohangs(0);
-//   HangList<2>::const_iterator p = hangset.NotAnyMore().begin();
-//   for (; p!=hangset.NotAnyMore().end(); p++)
-//     {
-//       const Hang& H = p->second;
-//       if (H.cneighbour()>=0)
-// 	{
-// 	  ohangs.push_back(H.hanging());
-// 	}
-//     }
-
   hangset.update_olds (vo2n,co2n);
   hangset.update_news (vnew, CellRefList.size());
 
@@ -536,11 +524,6 @@ void HierarchicalMesh2d::basic_refine2d(HangContainer2d& hangset,
 
   EM.Build(CellRefList,hangset);
 
-  // delete old hangs in vo2n
-//   for (int i=0; i<ohangs.size(); i++)
-//     {
-//       vo2n[ohangs[i]] = -1;
-//     }
 }
 
 /*---------------------------------------------------*/
