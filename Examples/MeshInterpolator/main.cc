@@ -1,6 +1,11 @@
-#include  "local.h"
+#include  "projectiondescriptor.h"
+#include  "stdmultilevelsolver.h"
+#include  "meshinterpolator.h"
+#include  "solverinfos.h"
+#include  "meshagent.h"
 
 using namespace Gascoigne;
+using namespace std;
 
 /*---------------------------------------------------*/
 
@@ -10,22 +15,60 @@ int main(int argc, char** argv)
   if(argc>=2) {
     paramfile.SetName(argv[1]);
   }
+  string finename = "start2";
   
-  /////////////
-  // Equation
-  /////////////
-//  ProblemDescriptor LPD;
-//  LPD.BasicInit(&paramfile);
   ProjectionProblemDescriptor PD;
   PD.BasicInit(&paramfile);
+  
+  ///////////////////////
+  // MESH 
+  ///////////////////////
 
-  /////////////
-  // Loop
-  /////////////
-  LocalLoop loop;
-  loop.BasicInit(&paramfile);
+  MeshAgent MA;
+  MA.BasicInit(&paramfile);
 
-  loop.run(&PD);
+  ///////////////////////
+  // MG Solver
+  ///////////////////////
+
+  StdMultiLevelSolver MLS;
+  MLS.BasicInit(&MA,&paramfile);
+  MLS.ReInit(PD);
+  MLS.GetSolver()->OutputSettings();
+    
+  SolverInfos SI;
+  SI.BasicInit(&paramfile);
+  SI.GetNLInfo().control().matrixmustbebuild() = 1;
+
+  ///////////////////////
+  // Vectors
+  ///////////////////////
+
+  MultiLevelGhostVector u("u"), f("f");
+  MLS.RegisterVector(u);
+  MLS.RegisterVector(f);
+  MLS.ReInit(PD);
+  
+  u.zero();
+  f.zero();
+ 
+  ///////////////////////
+  // Mesh Interpolator
+  ///////////////////////
+
+  MeshInterpolator MI;
+  MI.BasicInit(MLS.GetSolver(),&MA,finename,&PD);
+  MI.RhsForProjection(f);
+  
+  string coarsename = "Results/" + finename + ".projected";
+
+  Monitor moni;
+  moni.init(&paramfile,1);
+  moni.set_directory("Results");
+  MLS.SetMonitorPtr(&moni);
+
+  MLS.Solve(MLS.nlevels()-1,u,f,SI.GetNLInfo());
+  MLS.GetSolver()->Visu(coarsename,u,0);
 
   return 0;
 }
