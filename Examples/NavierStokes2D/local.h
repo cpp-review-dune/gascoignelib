@@ -30,8 +30,8 @@ public:
     b.zero();
     if (color!=80)
       {
-	double high = 4.1;
-	b[1] = vmax * ParabelFunction(y,0.,high);
+        double high = 4.1;
+        b[1] = vmax * ParabelFunction(y,0.,high);
       }
   }
 };
@@ -68,10 +68,10 @@ public :
   double operator()(const Vertex2d& c) const {
       double r = - _r;
       for (int i=0; i<2; i++)
-	{
-	  double dx = c[i]-_c[i];
-	  r += dx * dx;
-	}
+        {
+          double dx = c[i]-_c[i];
+          r += dx * dx;
+        }
       return r;
     }
 };
