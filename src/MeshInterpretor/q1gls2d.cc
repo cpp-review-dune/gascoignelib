@@ -15,10 +15,10 @@ void Q1Gls2d::BasicInit(const ParamFile* pf)
   HN = NewHNStructure();
   assert(HN);
 
-  assert(CellMeshInterpretor::GetIntegrator()==NULL);
+  assert(CellMeshInterpretor::GetIntegratorPointer()==NULL);
   CellMeshInterpretor::GetIntegratorPointer() =  new GalerkinGlsIntegrator<2>;
 
-  assert(CellMeshInterpretor::GetFem()==NULL);
+  assert(CellMeshInterpretor::GetFemPointer()==NULL);
   typedef Transformation2d<BaseQ12d>           TransQ1;
   typedef FiniteElement<2,1,TransQ1,BaseQ12d>  FiniteElement;
   CellMeshInterpretor::GetFemPointer() =  new FiniteElement;
