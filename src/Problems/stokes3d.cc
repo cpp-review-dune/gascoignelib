@@ -1,5 +1,7 @@
 #include  "stokes3d.h"
 
+using namespace Gascoigne;
+
 /*-----------------------------------------*/
 
 Stokes3d::~Stokes3d()

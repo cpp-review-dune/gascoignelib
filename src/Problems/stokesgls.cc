@@ -1,6 +1,8 @@
 #include  "stokesgls.h"
 #include  "filescanner.h"
 
+using namespace Gascoigne;
+
 /*-----------------------------------------*/
 
 StokesGls::~StokesGls()

@@ -4,6 +4,8 @@
 #include  "compose_name.h"
 #include  "filescanner.h"
 
+using namespace Gascoigne;
+
 /********************************************************************/
 
 Visualization::Visualization() 

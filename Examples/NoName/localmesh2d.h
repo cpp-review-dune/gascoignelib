@@ -7,8 +7,6 @@
 
 #include  <map>
 
-using namespace Gascoigne;
-
 /*-----------------------------------------*/
 
 class LocalMesh2d : public GascoigneMesh2d

@@ -1,6 +1,8 @@
 #include  "laplace3d.h"
 #include  "filescanner.h"
 
+using namespace Gascoigne;
+
 /*-----------------------------------------*/
 
 Laplace3d::Laplace3d(const ParamFile* pf) : 

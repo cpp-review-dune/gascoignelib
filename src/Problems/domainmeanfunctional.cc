@@ -2,6 +2,8 @@
 #include  "zerodirichletdata.h"
 #include  "constantrighthandside.h"
 
+using namespace Gascoigne;
+
 // /*-----------------------------------------*/
 
 DomainMeanFunctional::DomainMeanFunctional(const std::vector<std::string>& args) : DomainFunctional()

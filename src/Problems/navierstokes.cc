@@ -1,6 +1,8 @@
 #include  "navierstokes.h"
 #include  "filescanner.h"
 
+using namespace Gascoigne;
+
 /*-----------------------------------------*/
 
 NavierStokes::~NavierStokes()

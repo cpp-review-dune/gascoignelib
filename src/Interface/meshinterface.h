@@ -15,8 +15,6 @@
 #include  <set>
 #include  "gascoigne.h"
 
-using namespace Gascoigne;
-
 class MeshInterface
 {
 public:
@@ -35,11 +33,11 @@ public:
   virtual const Vertex2d& vertex2d(int i)  const { assert(0);}
   virtual const Vertex3d& vertex3d(int i)  const { assert(0);} 
   virtual std::set<int> GetColors()        const { assert(0);}
-  virtual IntVector  IndicesOfCell(int iq) const { assert(0);}
-  virtual const IntVector& Vertexo2n()     const { assert(0);}
+  virtual Gascoigne::IntVector  IndicesOfCell(int iq) const { assert(0);}
+  virtual const Gascoigne::IntVector& Vertexo2n()     const { assert(0);}
 
-  virtual const IntVector& CellOnBoundary(int color)   const { assert(0);}
-  virtual const IntVector& LocalOnBoundary(int color)  const { assert(0);}
+  virtual const Gascoigne::IntVector& CellOnBoundary(int color)   const { assert(0);}
+  virtual const Gascoigne::IntVector& LocalOnBoundary(int color)  const { assert(0);}
 
   virtual int VtkType(int i) const {assert(0);}
 

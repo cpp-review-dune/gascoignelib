@@ -24,8 +24,8 @@ public:
   int    GetNcomp() const {return _ncomp;}
   int    GetComp()  const {return _comp;}
 
-  double J(const FemFunction& U, const Vertex2d& v) const;
-  double J(const FemFunction& U, const Vertex3d& v) const;
+  double J(const Gascoigne::FemFunction& U, const Vertex2d& v) const;
+  double J(const Gascoigne::FemFunction& U, const Vertex3d& v) const;
 };
 
 

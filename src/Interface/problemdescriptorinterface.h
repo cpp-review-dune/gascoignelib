@@ -41,11 +41,11 @@ private:
   DirichletData      *DD;
   NeumannData        *ND;
 
-  const ParamFile* _paramfile;
+  const Gascoigne::ParamFile* _paramfile;
 
 protected:
 
-  const ParamFile* GetParamFile() const {return _paramfile;}
+  const Gascoigne::ParamFile* GetParamFile() const {return _paramfile;}
 
   Equation*& GetEquationPointer() { return EQ;}
   BoundaryManager*& GetBoundaryManagerPointer() { return BM;}
@@ -92,7 +92,7 @@ public:
     return os;
   }
   
-  virtual void BasicInit(const ParamFile* pf) {
+  virtual void BasicInit(const Gascoigne::ParamFile* pf) {
     _paramfile = pf;
 
     ConstructEquation         ();

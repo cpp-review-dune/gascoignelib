@@ -21,8 +21,8 @@ public:
   virtual ~BoundaryFunctional() {};
 
   virtual std::set<int> GetColors() const=0;
-  virtual double J(const FemFunction& U, const Vertex2d& v) const {assert(0);}
-  virtual void J(Vector& b, const FemFunction& U, const TestFunction& N) const {assert(0);}
+  virtual double J(const Gascoigne::FemFunction& U, const Vertex2d& v) const {assert(0);}
+  virtual void J(Vector& b, const Gascoigne::FemFunction& U, const TestFunction& N) const {assert(0);}
 
 };
 

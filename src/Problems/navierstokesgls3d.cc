@@ -1,6 +1,8 @@
 #include  "navierstokesgls3d.h"
 #include  "filescanner.h"
 
+using namespace Gascoigne;
+
 /*-----------------------------------------*/
 
 NavierStokesGls3d::~NavierStokesGls3d() {}

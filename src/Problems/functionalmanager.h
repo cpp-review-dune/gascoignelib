@@ -30,7 +30,7 @@ public:
 
   void Print(std::ostream& os) const;
 
-  void ConstructSet(const ParamFile* paramfile);
+  void ConstructSet(const Gascoigne::ParamFile* paramfile);
 
   const Functional*   GetFunctional  (const std::string& name) const;
 

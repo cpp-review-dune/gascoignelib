@@ -29,7 +29,7 @@ class NavierStokes3d : public NavierStokes
 
   ~NavierStokes3d();
   NavierStokes3d();
-  NavierStokes3d(const ParamFile* pf);
+  NavierStokes3d(const Gascoigne::ParamFile* pf);
 
   std::string GetName() const;
 
@@ -39,16 +39,16 @@ class NavierStokes3d : public NavierStokes
 
   void SetTimePattern(TimePattern& P) const;
 
-  void OperatorStrong(Vector& b, const FemFunction& U) const;
+  void OperatorStrong(Vector& b, const Gascoigne::FemFunction& U) const;
 
-  void point(double h, const FemFunction& U, const Vertex3d& v) const 
+  void point(double h, const Gascoigne::FemFunction& U, const Vertex3d& v) const 
     { 
       _h = h;
     }
 
-  void Form(VectorIterator b, const FemFunction& U, const TestFunction& N) const;
+  void Form(Gascoigne::VectorIterator b, const Gascoigne::FemFunction& U, const TestFunction& N) const;
 
-  void Matrix(EntryMatrix& A, const FemFunction& U, const TestFunction& M, const TestFunction& N) const;
+  void Matrix(EntryMatrix& A, const Gascoigne::FemFunction& U, const TestFunction& M, const TestFunction& N) const;
 };
 
 #endif

@@ -11,7 +11,7 @@ class Laplace3d : public Laplace
 
 public:
 
-  Laplace3d(const ParamFile* pf);
+  Laplace3d(const Gascoigne::ParamFile* pf);
 
   std::string GetName() const { return "Laplace3d";}
 
@@ -19,9 +19,9 @@ public:
   // Semilinear Form
   //
 
-  void Form(VectorIterator b, const FemFunction& U, const TestFunction& N) const;
+  void Form(Gascoigne::VectorIterator b, const Gascoigne::FemFunction& U, const TestFunction& N) const;
 
-  void Matrix(EntryMatrix& D, const FemFunction& U, const DerivativeVector& M, const TestFunction& N) const;
+  void Matrix(EntryMatrix& D, const Gascoigne::FemFunction& U, const DerivativeVector& M, const TestFunction& N) const;
 };
 
 

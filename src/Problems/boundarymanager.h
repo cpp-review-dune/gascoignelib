@@ -20,20 +20,18 @@
 #include  "gascoigne.h"
 #include  "paramfile.h"
 
-using namespace Gascoigne;
-
 /*---------------------------------------------------------------*/
 
 class BoundaryManager
 {
  public:
 
-  typedef  std::map<int,IntVector>::const_iterator  const_iterator;
+  typedef  std::map<int,Gascoigne::IntVector>::const_iterator  const_iterator;
 
  protected:
 
   std::set<int>                 coldir, colneu;
-  std::map<int,IntVector>       dirvec;
+  std::map<int,Gascoigne::IntVector>       dirvec;
 
   void AddDirichlet(int col, int c)    
     {
@@ -48,17 +46,17 @@ class BoundaryManager
  public:
 
   BoundaryManager() {}
-  BoundaryManager(const ParamFile* pf);
+  BoundaryManager(const Gascoigne::ParamFile* pf);
 
   virtual std::string GetName() const {return "Std";}
 
   std::ostream& print(std::ostream& s) const;
 
-  virtual const IntSet&    GetNeumannColors      (     ) const { return colneu;}
-  virtual const IntSet&    GetDirichletColors    (     ) const { return coldir;}
-  virtual const IntVector& GetDirichletComponents(int c) const 
+  virtual const Gascoigne::IntSet&    GetNeumannColors      (     ) const { return colneu;}
+  virtual const Gascoigne::IntSet&    GetDirichletColors    (     ) const { return coldir;}
+  virtual const Gascoigne::IntVector& GetDirichletComponents(int c) const 
     { 
-      std::map<int,IntVector>::const_iterator p = dirvec.find(c);
+      std::map<int,Gascoigne::IntVector>::const_iterator p = dirvec.find(c);
       if(p==dirvec.end())
 	{
 	  std::cerr << "BoundaryManager::Components()\n";

@@ -3,8 +3,6 @@
 
 #include  "equation.h"
 
-using namespace Gascoigne;
-
 /*-----------------------------------------*/
 
 class NavierStokes : public virtual Equation
@@ -17,18 +15,18 @@ protected:
   double Laplace(const DerivativeVector& U, 
 		 const TestFunction& N) const;
   
-  double Convection(const FemFunction& U, 
+  double Convection(const Gascoigne::FemFunction& U, 
 		    const TestFunction& N) const;
 
-  double Divergence(const FemFunction& U) const;
+  double Divergence(const Gascoigne::FemFunction& U) const;
 
 public:
 
   ~NavierStokes();
   NavierStokes();
-  NavierStokes(const ParamFile* pf);
+  NavierStokes(const Gascoigne::ParamFile* pf);
 
-  void OperatorStrong(Vector& b, const FemFunction& U) const;
+  void OperatorStrong(Vector& b, const Gascoigne::FemFunction& U) const;
 
   std::string GetName() const { return "NavierStokes";}
   double Getpenalty()const {return penalty;}
@@ -45,15 +43,15 @@ public:
   /// Computation of coefficients at each integration point.
   /// In the case of Navier-Stokes, this function is empty.
   //
-  void point(double h, const FemFunction& U, const Vertex2d& v) const { _h = h;}
+  void point(double h, const Gascoigne::FemFunction& U, const Vertex2d& v) const { _h = h;}
 
   //
   // Semilinear Form
   //
 
-  void Form(VectorIterator b, const FemFunction& U, const TestFunction& N) const;
+  void Form(Gascoigne::VectorIterator b, const Gascoigne::FemFunction& U, const TestFunction& N) const;
 
-  void Matrix(EntryMatrix& A, const FemFunction& U, const TestFunction& M, const TestFunction& N) const;
+  void Matrix(EntryMatrix& A, const Gascoigne::FemFunction& U, const TestFunction& M, const TestFunction& N) const;
 };
 
 #endif

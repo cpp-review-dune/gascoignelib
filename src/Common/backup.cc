@@ -2,11 +2,14 @@
 #include <cassert>
 #include <fstream>
 
+using namespace std;
+using namespace Gascoigne;
+
 /********************************************************************/
 
-ReadBackUp::ReadBackUp(const std::string& name, int& size, int& comp)
+ReadBackUp::ReadBackUp(const string& name, int& size, int& comp)
 {
-  std::ifstream file;
+  ifstream file;
   file.open(name.c_str());
   
   assert(file);
@@ -16,9 +19,9 @@ ReadBackUp::ReadBackUp(const std::string& name, int& size, int& comp)
 
 /********************************************************************/
 
-ReadBackUp::ReadBackUp(GlobalVector& u, const std::string& name)
+ReadBackUp::ReadBackUp(GlobalVector& u, const string& name)
 {
-  std::ifstream file;
+  ifstream file;
   file.open(name.c_str());
   
   assert(file);
@@ -28,12 +31,12 @@ ReadBackUp::ReadBackUp(GlobalVector& u, const std::string& name)
   file >> size;
   file >> comp;
 
-  std::cout << "BackUp   : reading " << name << ", ";
-  std::cout << comp<<" components, "<< size <<" nodes" <<std::endl;
+  cout << "BackUp   : reading " << name << ", ";
+  cout << comp<<" components, "<< size <<" nodes" <<endl;
 
   if (u.n()!=size)
     {
-      std::cout << "Incompatibility u.n() size " << u.n() << " " << size << std::endl;
+      cout << "Incompatibility u.n() size " << u.n() << " " << size << endl;
     }
   assert(u.n()==size);
 
@@ -48,7 +51,7 @@ ReadBackUp::ReadBackUp(GlobalVector& u, const std::string& name)
 	}
       for (int c=v; c<comp ;c++)  { file >> d;}
     }
-  std::string test;
+  string test;
   file >> test;
 
   assert(test=="BackUpEnd");
@@ -56,9 +59,9 @@ ReadBackUp::ReadBackUp(GlobalVector& u, const std::string& name)
 
 /********************************************************************/
 
-ReadBackUpResize::ReadBackUpResize(GlobalVector& u, const std::string& name)
+ReadBackUpResize::ReadBackUpResize(GlobalVector& u, const string& name)
 {
-  std::ifstream file;
+  ifstream file;
   file.open(name.c_str());
   
   assert(file);
@@ -68,15 +71,15 @@ ReadBackUpResize::ReadBackUpResize(GlobalVector& u, const std::string& name)
   file >> size;
   file >> comp;
 
-  std::cout << "BackUp   : reading " << name << ", ";
-  std::cout << comp<<" components, "<< size <<" nodes" <<std::endl;
+  cout << "BackUp   : reading " << name << ", ";
+  cout << comp<<" components, "<< size <<" nodes" <<endl;
 
 
   u.ReInit(comp,size);
 
   if (u.n()!=size)
     {
-      std::cout << "Incompatibility u.n() size " << u.n() << " " << size << std::endl;
+      cout << "Incompatibility u.n() size " << u.n() << " " << size << endl;
     }
   assert(u.n()==size);
 
@@ -91,7 +94,7 @@ ReadBackUpResize::ReadBackUpResize(GlobalVector& u, const std::string& name)
 	}
       for (int c=v; c<comp ;c++)  { file >> d;}
     }
-  std::string test;
+  string test;
   file >> test;
 
   assert(test=="BackUpEnd");
@@ -99,16 +102,16 @@ ReadBackUpResize::ReadBackUpResize(GlobalVector& u, const std::string& name)
 
 /********************************************************************/
 
-WriteBackUp::WriteBackUp(const GlobalVector& u, const std::string& bname)
+WriteBackUp::WriteBackUp(const GlobalVector& u, const string& bname)
 {
-  std::string name = bname + ".bup";
+  string name = bname + ".bup";
 
-  std::ofstream file;
+  ofstream file;
   file.open(name.c_str());
-  file.setf(std::ios::scientific,std::ios::floatfield);
+  file.setf(ios::scientific,ios::floatfield);
   
   assert(file);
-  file << u.n() << " " << u.ncomp() << std::endl;
+  file << u.n() << " " << u.ncomp() << endl;
 
   file.precision(10);
   for (int i=0; i<u.n(); i++)
@@ -117,42 +120,42 @@ WriteBackUp::WriteBackUp(const GlobalVector& u, const std::string& bname)
 	{
 	  file << u(i,c) << " ";
 	}
-      file << std::endl;
+      file << endl;
     }
-  file << "BackUpEnd" << std::endl;
+  file << "BackUpEnd" << endl;
   file.close();
 }
 
 /********************************************************************/
 
-WriteBackUpBinary::WriteBackUpBinary(const GlobalVector& u, const std::string& bname)
+WriteBackUpBinary::WriteBackUpBinary(const GlobalVector& u, const string& bname)
 {
-  std::string name(bname);
+  string name(bname);
   name += ".bup";
   
-  std::ofstream file;
+  ofstream file;
   file.open(name.c_str());
   
   if(!file)
     {
-      std::cerr << "BackUp: writing error" << std::endl;
+      cerr << "BackUp: writing error" << endl;
       exit(10);
     }
 
   u.BinWrite(file);
 
-  file << "BackUpEnd" << std::endl;
+  file << "BackUpEnd" << endl;
   file.close();
 }
 
 /********************************************************************/
 
-ReadBackUpBinary::ReadBackUpBinary(GlobalVector& u, const std::string& bname)
+ReadBackUpBinary::ReadBackUpBinary(GlobalVector& u, const string& bname)
 {
-  std::string name(bname);
+  string name(bname);
   name += ".bup";
 
-  std::ifstream file;
+  ifstream file;
   file.open(name.c_str());
   
   assert(file);
@@ -161,10 +164,10 @@ ReadBackUpBinary::ReadBackUpBinary(GlobalVector& u, const std::string& bname)
 
   u.BinRead(file);
 
-  std::cout << "BackUp   : reading " << name << ", ";
-  std::cout << u.ncomp() <<" components, "<< u.n() <<" nodes " << std::endl;
+  cout << "BackUp   : reading " << name << ", ";
+  cout << u.ncomp() <<" components, "<< u.n() <<" nodes " << endl;
 
-  std::string test;
+  string test;
   file >> test;
   assert(test=="BackUpEnd");
 }

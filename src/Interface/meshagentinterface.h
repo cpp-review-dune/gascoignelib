@@ -17,8 +17,6 @@
 #include  "paramfile.h"
 #include  <string>
 
-using namespace Gascoigne;
-
 class MeshAgentInterface
 {
 private:
@@ -38,7 +36,7 @@ public:
   virtual ~MeshAgentInterface() {}
 
 
-  virtual void BasicInit(const ParamFile* pf)=0;
+  virtual void BasicInit(const Gascoigne::ParamFile* pf)=0;
 
   virtual int nnodes() const=0;
   virtual int ncells() const=0;

@@ -13,15 +13,14 @@
 
 #include "gascoigne.h"
 
-using namespace Gascoigne;
 
 class GlobalData
 {
 public:
 
-  GlobalNodeData      _node;
-  GlobalCellData      _cell;
-  GlobalParameterData _parameter;
+  Gascoigne::GlobalNodeData      _node;
+  Gascoigne::GlobalCellData      _cell;
+  Gascoigne::GlobalParameterData _parameter;
 
 //
 ////  Con(De)structor 
@@ -30,40 +29,40 @@ public:
   GlobalData() {}
   ~GlobalData() {}
 
-  void AddNodeVector(const GlobalVector* d) {
-    const GlobalVector* nd = dynamic_cast<const GlobalVector*>(d);
+  void AddNodeVector(const Gascoigne::GlobalVector* d) {
+    const Gascoigne::GlobalVector* nd = dynamic_cast<const Gascoigne::GlobalVector*>(d);
     assert(nd!=NULL);
     _node.insert(nd);
   }
-  void AddCellVector(const GlobalVector* d) {
-    const GlobalVector* nd = dynamic_cast<const GlobalVector*>(d);
+  void AddCellVector(const Gascoigne::GlobalVector* d) {
+    const Gascoigne::GlobalVector* nd = dynamic_cast<const Gascoigne::GlobalVector*>(d);
     assert(nd!=NULL);
     _cell.insert(nd);
   }
-  void AddParameterVector(const GlobalVector* d) {
-    const GlobalVector* nd = dynamic_cast<const GlobalVector*>(d);
+  void AddParameterVector(const Gascoigne::GlobalVector* d) {
+    const Gascoigne::GlobalVector* nd = dynamic_cast<const Gascoigne::GlobalVector*>(d);
     assert(nd!=NULL);
     _parameter.insert(nd);
   }
-  void DeleteNodeVector(const GlobalVector* d) {
-    const GlobalVector* nd = dynamic_cast<const GlobalVector*>(d);
+  void DeleteNodeVector(const Gascoigne::GlobalVector* d) {
+    const Gascoigne::GlobalVector* nd = dynamic_cast<const Gascoigne::GlobalVector*>(d);
     assert(nd!=NULL);
     _node.erase(nd);
   }
-  void DeleteCellVector(const GlobalVector* d) {
-    const GlobalVector* nd = dynamic_cast<const GlobalVector*>(d);
+  void DeleteCellVector(const Gascoigne::GlobalVector* d) {
+    const Gascoigne::GlobalVector* nd = dynamic_cast<const Gascoigne::GlobalVector*>(d);
     assert(nd!=NULL);
     _cell.erase(nd);
   }
-  void DeleteParameterVector(const GlobalVector* d) {
-    const GlobalVector* nd = dynamic_cast<const GlobalVector*>(d);
+  void DeleteParameterVector(const Gascoigne::GlobalVector* d) {
+    const Gascoigne::GlobalVector* nd = dynamic_cast<const Gascoigne::GlobalVector*>(d);
     assert(nd!=NULL);
     _parameter.erase(nd);
   }
 
-  const GlobalNodeData& GetNodeData() const {return _node;}
-  const GlobalCellData& GetCellData() const {return _cell;}
-  const GlobalParameterData& GetParameterData() const {return _parameter;}
+  const Gascoigne::GlobalNodeData& GetNodeData() const {return _node;}
+  const Gascoigne::GlobalCellData& GetCellData() const {return _cell;}
+  const Gascoigne::GlobalParameterData& GetParameterData() const {return _parameter;}
 };
 
 

@@ -9,6 +9,8 @@
 #include  "constantboundaryfunctional.h"
 #include  "stringutil.h"
 
+using namespace Gascoigne;
+
 /*-----------------------------------------*/
 
 FunctionalManager::FunctionalManager()

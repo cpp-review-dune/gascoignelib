@@ -18,7 +18,7 @@ public:
 
   std::string GetName() const {return "zero";}
 
-  double J(const FemFunction& U, const Vertex2d& v) const{return 0.;}
+  double J(const Gascoigne::FemFunction& U, const Vertex2d& v) const{return 0.;}
 };
 
 

@@ -11,8 +11,6 @@
 #include  "fixarray.h"
 #include  "gascoigne.h"
 
-using namespace Gascoigne;
-
 /***************************************************/
 
 class DataFormatHandler
@@ -33,13 +31,13 @@ private:
   typedef std::map<std::string,fixarray<3,double>*>     TypeFix3Double;
 
   typedef std::map<std::string,std::vector<double>*>        TypeVectorDouble;
-  typedef std::map<std::string,IntVector*>           TypeVectorInt;
+  typedef std::map<std::string,Gascoigne::IntVector*>           TypeVectorInt;
   typedef std::map<std::string,std::vector<std::string>*>         TypeVectorString;
 
   typedef std::map<std::string,std::set<int>*>           TypeSetInt;
   typedef std::map<std::string,std::set<std::vector<std::string> >*>  TypeSetVectorString;
 
-  typedef std::map<std::string,std::map<int,IntVector >*> TypeMapIntVectorInt;
+  typedef std::map<std::string,std::map<int,Gascoigne::IntVector >*> TypeMapIntVectorInt;
 
   std::set<NameType>        NT;
   TypeString           TS;
@@ -76,13 +74,13 @@ public:
   void insert(const std::string&, fixarray<3,double>*);
 
   void insert(const std::string&, std::vector<double>*);
-  void insert(const std::string&, IntVector*);
+  void insert(const std::string&, Gascoigne::IntVector*);
   void insert(const std::string&, std::vector<std::string>*);
 
   void insert(const std::string&, std::set<int>*);
   void insert(const std::string&, std::set<std::vector<std::string> >*);
 
-  void insert(const std::string&, std::map<int,IntVector >*);
+  void insert(const std::string&, std::map<int,Gascoigne::IntVector >*);
   void insert(const std::string&, std::map<int,std::string>*);
 
   void insert(int, StringDouble*);
@@ -96,7 +94,7 @@ public:
   void insert(const std::string&, fixarray<2,double>*, fixarray<2,double>&);
   void insert(const std::string&, fixarray<3,double>*, fixarray<3,double>&);
   void insert(const std::string&, std::vector<double>*, std::vector<double>&);
-  void insert(const std::string&, IntVector*, IntVector&);
+  void insert(const std::string&, Gascoigne::IntVector*, Gascoigne::IntVector&);
 
   void get(std::string&, const std::string&);
 
@@ -109,12 +107,12 @@ public:
   void setvalue(const std::string&, fixarray<3,double>&);
 
   void setvalue(const std::string&, std::vector<double>&);
-  void setvalue(const std::string&, IntVector&);
+  void setvalue(const std::string&, Gascoigne::IntVector&);
   void setvalue(const std::string&, std::vector<std::string>&);
 
   void setvalue(const std::string&, std::set<int>&);
 
-  void setvalue(const std::string&, std::pair<int,IntVector >&);
+  void setvalue(const std::string&, std::pair<int,Gascoigne::IntVector >&);
 
   void setvalue(const std::string&, StringDouble&);
 

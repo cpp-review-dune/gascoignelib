@@ -17,22 +17,22 @@ class NavierStokesGls3d : public NavierStokes3d, public virtual GlsEquation
 
   ~NavierStokesGls3d();
   NavierStokesGls3d();
-  NavierStokesGls3d(const ParamFile* pf);
+  NavierStokesGls3d(const Gascoigne::ParamFile* pf);
 
   std::string GetName() const;
   //
   /// Computation of gls stabilization parameters
   //
-  void glspoint(double h, const FemFunction& U, const Vertex3d& v) const;
-  void glspointmatrix(double _h, const FemFunction& U, FemData& Q, const Vertex3d& v) const;
+  void glspoint(double h, const Gascoigne::FemFunction& U, const Vertex3d& v) const;
+  void glspointmatrix(double _h, const Gascoigne::FemFunction& U, Gascoigne::FemData& Q, const Vertex3d& v) const;
 
   //
   /// for Galerkin-Least-Squares
   //
-  void L(nvector<double>& dst, const FemFunction& U) const;
-  void S(nmatrix<double>& dst, const FemFunction& U, const TestFunction& N) const;
+  void L(nvector<double>& dst, const Gascoigne::FemFunction& U) const;
+  void S(nmatrix<double>& dst, const Gascoigne::FemFunction& U, const TestFunction& N) const;
 
-  void LMatrix(nmatrix<double>& dst, const FemFunction& U, const TestFunction& N) const;
+  void LMatrix(nmatrix<double>& dst, const Gascoigne::FemFunction& U, const TestFunction& N) const;
 };
 
 #endif

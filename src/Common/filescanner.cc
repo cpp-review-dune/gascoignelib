@@ -4,6 +4,7 @@
 #include  "stlio.h"
 
 using namespace std;
+using namespace Gascoigne;
 
 /***************************************************/
 

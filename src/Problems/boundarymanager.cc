@@ -2,6 +2,8 @@
 #include  "filescanner.h"
 #include  "stlio.h"
 
+using namespace Gascoigne;
+
 /*-------------------------------------------------------*/
 
 BoundaryManager::BoundaryManager(const ParamFile* pf)

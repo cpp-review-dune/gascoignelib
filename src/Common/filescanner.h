@@ -4,8 +4,6 @@
 #include  "dataformathandler.h"
 #include  "paramfile.h"
 
-using namespace Gascoigne;
-
 /***************************************************/
 
 class FileScanner
@@ -20,9 +18,9 @@ class FileScanner
   
 public:
   
-  FileScanner(DataFormatHandler& D, const ParamFile* pf, const std::string& b="");
+  FileScanner(DataFormatHandler& D, const Gascoigne::ParamFile* pf, const std::string& b="");
   FileScanner(DataFormatHandler& D);
-  void readfile(const ParamFile* pf, const std::string& blockname);
+  void readfile(const Gascoigne::ParamFile* pf, const std::string& blockname);
   void NoComplain() { complain=0; }
 };
 

@@ -21,8 +21,6 @@
 ///
 //////////////////////////////////////////////
 
-using namespace Gascoigne;
-
 /*-------------------------------------------------------------------------*/
 
 class Equation
@@ -54,7 +52,7 @@ class Equation
 
   virtual int  ncomp() const=0;
 
-  virtual void OperatorStrong(Vector& b, const FemFunction& U) const { assert(0);} 
+  virtual void OperatorStrong(Vector& b, const Gascoigne::FemFunction& U) const { assert(0);} 
 
   virtual bool MatrixIsTransposed() const {return 0;}
 
@@ -66,36 +64,36 @@ class Equation
   // --------------------------------------
   //
   
-  virtual void point(double h, const FemFunction& U, const Vertex2d& v) const {}
-  virtual void point(double h, const FemFunction& U, const Vertex3d& v) const {}
+  virtual void point(double h, const Gascoigne::FemFunction& U, const Vertex2d& v) const {}
+  virtual void point(double h, const Gascoigne::FemFunction& U, const Vertex3d& v) const {}
   
-  virtual void pointmatrix(double h, const FemFunction& U, const Vertex2d& v) const {
+  virtual void pointmatrix(double h, const Gascoigne::FemFunction& U, const Vertex2d& v) const {
     point(h,U,v);
   }
-  virtual void pointmatrix(double h, const FemFunction& U, const Vertex3d& v) const {
+  virtual void pointmatrix(double h, const Gascoigne::FemFunction& U, const Vertex3d& v) const {
     point(h,U,v);
   }
   
-  virtual void point(double h, const FemFunction& U, FemData& QH, const Vertex2d& v) const {
+  virtual void point(double h, const Gascoigne::FemFunction& U, Gascoigne::FemData& QH, const Vertex2d& v) const {
     point(h,U,v);
   }
-  virtual void point(double h, const FemFunction& U, FemData& QH, const Vertex3d& v) const {
+  virtual void point(double h, const Gascoigne::FemFunction& U, Gascoigne::FemData& QH, const Vertex3d& v) const {
     point(h,U,v);
 }
   
-  virtual void pointmatrix(double h, const FemFunction& U, FemData& QH, const Vertex2d& v) const {
+  virtual void pointmatrix(double h, const Gascoigne::FemFunction& U, Gascoigne::FemData& QH, const Vertex2d& v) const {
     point(h,U,QH,v);
   }
-  virtual void pointmatrix(double h, const FemFunction& U, FemData& QH, const Vertex3d& v) const {
+  virtual void pointmatrix(double h, const Gascoigne::FemFunction& U, Gascoigne::FemData& QH, const Vertex3d& v) const {
     point(h,U,QH,v);
   }
 
   virtual void pointboundary
-    (double h, const FemFunction& U, const Vertex2d& v, 
+    (double h, const Gascoigne::FemFunction& U, const Vertex2d& v, 
      const Vertex2d& n) const {assert(0);}
 
   virtual void pointboundary 
-    (double h, const FemFunction& U, const Vertex3d& v, 
+    (double h, const Gascoigne::FemFunction& U, const Vertex3d& v, 
      const Vertex3d& n) const {assert(0);}
 
   virtual IntSet GetBoundaryColors() const { return IntSet();}
@@ -104,16 +102,16 @@ class Equation
   // ---------------------------------------------
   //
 
-  virtual void Form(VectorIterator b, const FemFunction& U, const TestFunction& N) const {assert(0);}
+  virtual void Form(Gascoigne::VectorIterator b, const Gascoigne::FemFunction& U, const TestFunction& N) const {assert(0);}
 
-  virtual void Matrix(EntryMatrix& A, const FemFunction& U, const DerivativeVector& M, const TestFunction& N) const {assert(0);}
+  virtual void Matrix(EntryMatrix& A, const Gascoigne::FemFunction& U, const DerivativeVector& M, const TestFunction& N) const {assert(0);}
 
   virtual void BoundaryResidual 
-    (int col, Vector& b, const FemFunction& U, 
+    (int col, Vector& b, const Gascoigne::FemFunction& U, 
      const DerivativeVector& N) const {assert(0);}
 
   virtual void BoundaryMatrix
-    (int col, EntryMatrix& D, const FemFunction& U, 
+    (int col, EntryMatrix& D, const Gascoigne::FemFunction& U, 
      const DerivativeVector& M, const DerivativeVector& N) const {assert(0);}
 };
 

@@ -1,5 +1,6 @@
 #include  "constantboundaryfunctional.h"
 
+using namespace Gascoigne;
 
 /*-----------------------------------------*/
 

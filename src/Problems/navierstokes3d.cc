@@ -1,5 +1,7 @@
 #include  "navierstokes3d.h"
 
+using namespace Gascoigne;
+
 /*-----------------------------------------*/
 
 NavierStokes3d::~NavierStokes3d() {}

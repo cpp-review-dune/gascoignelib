@@ -3,6 +3,7 @@
 #include  "stringutil.h"
 
 using namespace std;
+using namespace Gascoigne;
 
 /***************************************************/
 

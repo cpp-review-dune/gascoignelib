@@ -15,21 +15,21 @@ class Laplace : public virtual Equation
   public:
 
   Laplace();
-  Laplace(const ParamFile* pf);
+  Laplace(const Gascoigne::ParamFile* pf);
 
   std::string GetName() const { return "Laplace";}
 
   int    ncomp      () const {return 1;}
 
-  void OperatorStrong(Vector& b, const FemFunction& U) const;
+  void OperatorStrong(Vector& b, const Gascoigne::FemFunction& U) const;
 
   void SetTimePattern(TimePattern& P) const;
 
-  void point(double h, const FemFunction& U, const Vertex2d& v) const {}
+  void point(double h, const Gascoigne::FemFunction& U, const Vertex2d& v) const {}
 
-  void Form(VectorIterator b, const FemFunction& U, const TestFunction& N) const;
+  void Form(Gascoigne::VectorIterator b, const Gascoigne::FemFunction& U, const TestFunction& N) const;
 
-  void Matrix(EntryMatrix& A, const FemFunction& U, const DerivativeVector& M, const TestFunction& N) const;
+  void Matrix(EntryMatrix& A, const Gascoigne::FemFunction& U, const DerivativeVector& M, const TestFunction& N) const;
 };
 
 

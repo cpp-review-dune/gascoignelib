@@ -14,13 +14,13 @@ protected:
   double penalty;
 
   double Laplace(const DerivativeVector& U, const TestFunction& N) const;
-  double Divergence(const FemFunction& U) const;
+  double Divergence(const Gascoigne::FemFunction& U) const;
 
 public:
 
   ~Stokes();
   Stokes();
-  Stokes(const ParamFile* pf);
+  Stokes(const Gascoigne::ParamFile* pf);
 
   std::string GetName() const { return "Stokes";}
 
@@ -31,15 +31,15 @@ public:
 
   void SetTimePattern(TimePattern& P) const;
   
-  void point(double _h, const FemFunction& U, const Vertex2d& v) const {}
+  void point(double _h, const Gascoigne::FemFunction& U, const Vertex2d& v) const {}
 
   //
   // Semilinear Form
   //
 
-  void Form(VectorIterator b, const FemFunction& U, const TestFunction& N) const;
+  void Form(Gascoigne::VectorIterator b, const Gascoigne::FemFunction& U, const TestFunction& N) const;
 
-  void Matrix(EntryMatrix& A, const FemFunction& U, const TestFunction& M, const TestFunction& N) const;
+  void Matrix(EntryMatrix& A, const Gascoigne::FemFunction& U, const TestFunction& M, const TestFunction& N) const;
 };
 
 #endif

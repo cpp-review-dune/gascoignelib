@@ -13,8 +13,6 @@
 
 #include  "gascoigne.h"
 
-using namespace Gascoigne;
-
 class Application
 {
 private:
@@ -41,7 +39,7 @@ public:
   virtual void SetTime(double time) const { _time = time;}
   virtual void SetTime(double time, double dt) const { _time = time; _dt = dt;}
 
-  virtual void SetFemData(const FemData& q) const {}
+  virtual void SetFemData(const Gascoigne::FemData& q) const {}
 
   virtual int GetNcomp() const {assert(0);}
 

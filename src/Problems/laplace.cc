@@ -1,6 +1,8 @@
 #include  "laplace.h"
 #include  "filescanner.h"
 
+using namespace Gascoigne;
+
 /*-----------------------------------------*/
 
 Laplace:: Laplace()

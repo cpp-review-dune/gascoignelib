@@ -17,7 +17,7 @@ public:
 
   ~NavierStokesGls();
   NavierStokesGls();
-  NavierStokesGls(const ParamFile* pf);
+  NavierStokesGls(const Gascoigne::ParamFile* pf);
 
   std::string GetName() const { return "NavierStokesGls";}
 
@@ -25,17 +25,17 @@ public:
   //
   /// Computation of gls stabilization parameters
   //
-  void glspoint(double h, const FemFunction& U, const Vertex2d& v) const;
+  void glspoint(double h, const Gascoigne::FemFunction& U, const Vertex2d& v) const;
 
   //
   /// for Galerkin-Least-Squares
   //
-  void L(nvector<double>& dst, const FemFunction& U) const;
-  void S(nmatrix<double>& dst, const FemFunction& U, const TestFunction& N) const;
+  void L(nvector<double>& dst, const Gascoigne::FemFunction& U) const;
+  void S(nmatrix<double>& dst, const Gascoigne::FemFunction& U, const TestFunction& N) const;
 
-  void LMatrix(nmatrix<double>& dst, const FemFunction& U, const TestFunction& N) const;
+  void LMatrix(nmatrix<double>& dst, const Gascoigne::FemFunction& U, const TestFunction& N) const;
 
-  void SMatrix(nvector<double>& dst, const FemFunction& U, const FemFunction& M, const FemFunction& N) const;
+  void SMatrix(nvector<double>& dst, const Gascoigne::FemFunction& U, const Gascoigne::FemFunction& M, const Gascoigne::FemFunction& N) const;
 };
 
 #endif

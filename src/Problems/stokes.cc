@@ -1,6 +1,8 @@
 #include  "stokes.h"
 #include  "filescanner.h"
 
+using namespace Gascoigne;
+
 /*-----------------------------------------*/
 
 Stokes::~Stokes()
