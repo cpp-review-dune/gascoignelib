@@ -4,7 +4,6 @@
 #include  "compose_name.h" 
 
 
-#define CLASS ComponentInformationBase
 namespace Gascoigne
 {
   
@@ -17,11 +16,11 @@ namespace Gascoigne
   ///
   /////////////////////////////////////////////
 
-std::string CLASS::GetName() const {
+std::string ComponentInformationBase::GetName() const {
   return "ComponentInformationBase";
 }
 
-const int CLASS::GetNScalars     () const{
+const int ComponentInformationBase::GetNScalars     () const{
   ProblemDescriptorInterface* ppdi = GetProblemDescriptorInterface();
   assert( ppdi );
 
@@ -63,19 +62,19 @@ const int CLASS::GetNScalars     () const{
 
   return ncomps;
 }
-void      CLASS::GetScalarName   (int i, std::string& s_name) const{
+void      ComponentInformationBase::GetScalarName   (int i, std::string& s_name) const{
   s_name="u";
   compose_name_without_dot(s_name,i); 
 }
-const int CLASS::GetNVectors     () const{
+const int ComponentInformationBase::GetNVectors     () const{
   int ncomps = GetNcomp();
   if( ncomps<=2) return 0;
   return 1;
 }
-void      CLASS::GetVectorName   (int i, std::string& s_name) const{
+void      ComponentInformationBase::GetVectorName   (int i, std::string& s_name) const{
   s_name="v";
 }
-void      CLASS::GetVectorIndices(int i, fixarray<3,int>& fa_vectorindices) const{
+void      ComponentInformationBase::GetVectorIndices(int i, fixarray<3,int>& fa_vectorindices) const{
   if ( GetDimension() ==2) {
     fa_vectorindices[0] = 1;
     fa_vectorindices[1] = 2;
@@ -91,6 +90,3 @@ void      CLASS::GetVectorIndices(int i, fixarray<3,int>& fa_vectorindices) cons
 }
 
 }
-
-#undef CLASS // ComponentInformation
-

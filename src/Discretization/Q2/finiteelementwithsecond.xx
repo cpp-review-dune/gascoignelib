@@ -1,7 +1,7 @@
 #include  "finiteelementwithsecond.h"
 
-using namespace Gascoigne;
-
+namespace Gascoigne
+{
 /*-----------------------------------------------------*/
 
 template<int DIM, int BDIM, class TRAFO, class BASE>
@@ -30,4 +30,4 @@ inline void  FiniteElementWithSecond<DIM,BDIM,TRAFO,BASE>::init_test_hesse(TestF
     N.D()      += N.aux("zz");
   }
 }
-
+}

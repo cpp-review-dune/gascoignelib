@@ -14,18 +14,20 @@
 
 /**********************************************************/
 
+namespace Gascoigne
+{
 template<int DIM>
-class IntegratorWithSecond : public Gascoigne::GalerkinIntegratorQ2<DIM>
+class IntegratorWithSecond : public GalerkinIntegratorQ2<DIM>
 {
   protected:
  
-  void point_hesse(const FemInterface& E, const Gascoigne::Vertex<DIM>& v) const;
+  void point_hesse(const FemInterface& E, const Vertex<DIM>& v) const;
 
-  void init_test_hesse(const Gascoigne::FemInterface& E, Gascoigne::TestFunction& N, double w, int i) const;
+  void init_test_hesse(const FemInterface& E, TestFunction& N, double w, int i) const;
 
-  void hesse(const Gascoigne::FemInterface& E, Gascoigne::FemFunction& UH, const Gascoigne::LocalVector& u) const;
+  void hesse(const FemInterface& E, FemFunction& UH, const LocalVector& u) const;
 
-  void hesse(const Gascoigne::FemInterface& E, Gascoigne::FemData& QH, const LocalNodeData& Q) const;
+  void hesse(const FemInterface& E, FemData& QH, const LocalNodeData& Q) const;
 
   public:
     
@@ -36,6 +38,7 @@ class IntegratorWithSecond : public Gascoigne::GalerkinIntegratorQ2<DIM>
   void Rhs(const DomainRightHandSide& RHS, LocalVector& F, const FemInterface& FEM, const LocalNodeData& Q) const;
 
 };
+}
 
 /**********************************************************/
 

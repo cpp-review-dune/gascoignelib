@@ -1,8 +1,9 @@
 #include "integratorwithsecond.h"
 
 using namespace std;
-using namespace Gascoigne;
 
+namespace Gascoigne
+{
 /**********************************************************/
 
 template<>
@@ -186,3 +187,5 @@ void IntegratorWithSecond<DIM>::Rhs(const DomainRightHandSide& f, LocalVector& F
 
 template class IntegratorWithSecond<2>;
 template class IntegratorWithSecond<3>;
+
+}

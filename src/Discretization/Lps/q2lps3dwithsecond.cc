@@ -2,8 +2,9 @@
 #include "integratorlpswithsecond.h"
 
 using namespace std;
-using namespace Gascoigne;
 
+namespace Gascoigne
+{
 /**********************************************************/
 
 void Q2Lps3dWithSecond::BasicInit(const ParamFile* paramfile)
@@ -22,4 +23,4 @@ void Q2Lps3dWithSecond::BasicInit(const ParamFile* paramfile)
 }
 
 /* ----------------------------------------- */
-
+}

@@ -4,9 +4,12 @@
 #include  "q22d.h"
 #include  "integratorwithsecond.h"
 
+namespace Gascoigne
+{
+
 /**********************************************************/
 
-class Q22dWithSecond : public Gascoigne::Q22d
+class Q22dWithSecond : public Q22d
 {
   protected:
 
@@ -14,9 +17,10 @@ class Q22dWithSecond : public Gascoigne::Q22d
    
     std::string GetName() const {return "Q22dWithSecond";}
     
-    void BasicInit(const Gascoigne::ParamFile* paramfile);
+    void BasicInit(const ParamFile* paramfile);
 };
 
 /**********************************************************/
 
+}
 #endif

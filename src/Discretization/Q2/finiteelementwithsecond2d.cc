@@ -6,8 +6,10 @@
 
 /*-----------------------------------------------------*/
 
+namespace Gascoigne
+{
 template class FiniteElement          <2, 1, Transformation2d<BaseQ22dWithSecond>, BaseQ22dWithSecond>;
 template class FiniteElementWithSecond<2, 1, Transformation2d<BaseQ22dWithSecond>, BaseQ22dWithSecond>;
-
+}
 /*-----------------------------------------------------*/
 

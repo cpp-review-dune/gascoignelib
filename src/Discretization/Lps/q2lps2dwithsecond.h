@@ -4,9 +4,12 @@
 #include  "q2lps2d.h"
 #include  "integratorlpswithsecond.h"
 
+namespace Gascoigne
+{
+
 /**********************************************************/
 
-class Q2Lps2dWithSecond : public Gascoigne::Q2Lps2d
+class Q2Lps2dWithSecond : public Q2Lps2d
 {
   protected:
 
@@ -14,9 +17,10 @@ class Q2Lps2dWithSecond : public Gascoigne::Q2Lps2d
    
     std::string GetName() const {return "Q2Lps2dWithSecond";}
     
-    void BasicInit(const Gascoigne::ParamFile* paramfile);
+    void BasicInit(const ParamFile* paramfile);
 };
 
 /**********************************************************/
 
+}
 #endif

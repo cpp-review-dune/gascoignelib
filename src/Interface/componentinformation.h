@@ -6,10 +6,6 @@
 #include  "filescanner.h"
 #include  "application.h"
 
-// include  "problemdescriptorinterface.h"
-
-
-#define CLASS ComponentInformation
 namespace Gascoigne
 {
   
@@ -23,7 +19,7 @@ namespace Gascoigne
   /////////////////////////////////////////////
 
   class ProblemDescriptorInterface;
-  class CLASS : public virtual Application
+  class ComponentInformation : public virtual Application
   {
     private:
       
@@ -32,8 +28,8 @@ namespace Gascoigne
       ProblemDescriptorInterface* PDI;
 
     public:
-      CLASS() { PDI=NULL;}
-      virtual ~CLASS() {}
+      ComponentInformation() { PDI=NULL;}
+      virtual ~ComponentInformation() {}
   
       virtual void BasicInit(const ParamFile* pf) {}
 
@@ -53,7 +49,5 @@ namespace Gascoigne
       virtual void      GetVectorIndices(int i, fixarray<3,int>& fa_vectorindices) const=0;
   };
 }
-
-#undef CLASS // ComponentInformation
 
 #endif // __ComponentInformation_h

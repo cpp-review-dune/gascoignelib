@@ -2,7 +2,9 @@
 #include "integratorwithsecond.h"
 
 using namespace std;
-using namespace Gascoigne;
+
+namespace Gascoigne
+{
 
 /**********************************************************/
 
@@ -23,3 +25,4 @@ void Q22dWithSecond::BasicInit(const ParamFile* paramfile)
 
 /* ----------------------------------------- */
 
+}

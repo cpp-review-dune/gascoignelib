@@ -1,6 +1,7 @@
 #include  "finiteelementwithsecond.h"
 
-
+namespace Gascoigne
+{
 template<int DIM, int BDIM, class TRAFO, class BASE>
 inline void FiniteElementWithSecond<DIM,BDIM,TRAFO,BASE>::ComputeHesse
 (const Vertex3d& xi) const
@@ -51,4 +52,5 @@ inline void FiniteElementWithSecond<DIM,BDIM,TRAFO,BASE>::ComputeHesse
       hesse[i](1,2) += yz;
       hesse[i](2,2) += zz;
     } 
+}
 }

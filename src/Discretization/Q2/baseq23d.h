@@ -9,6 +9,12 @@
 #include  "numfixarray.h"
 #include  "base3d.h"
 
+#define NDOF   27
+#define NDOF1d 3
+
+namespace Gascoigne
+{
+
 /////////////////////////////////////////////
 ///
 ///@brief
@@ -17,13 +23,6 @@
 ///
 ///
 /////////////////////////////////////////////
-
-#define NDOF   27
-#define NDOF1d 3
-
-namespace Gascoigne
-{
-/**************************************************/
 
 class BaseQ23d : public Base3d
 {

@@ -7,8 +7,6 @@
 
 #include  "componentinformation.h"
 
-
-#define CLASS ComponentInformationBase
 namespace Gascoigne
 {
   
@@ -21,15 +19,15 @@ namespace Gascoigne
   ///
   /////////////////////////////////////////////
 
-  class CLASS : public ComponentInformation
+  class ComponentInformationBase : public ComponentInformation
   {
     private:
       
     protected:
 
     public:
-      CLASS():ComponentInformation() {}
-      virtual ~CLASS() {}
+      ComponentInformationBase():ComponentInformation() {}
+      virtual ~ComponentInformationBase() {}
   
       virtual void BasicInit(const ParamFile* pf) {}
 
@@ -43,7 +41,5 @@ namespace Gascoigne
       virtual void      GetVectorIndices(int i, fixarray<3,int>& fa_vectorindices) const;
   };
 }
-
-#undef CLASS // ComponentInformationBase
 
 #endif // __ComponentInformationBase_h

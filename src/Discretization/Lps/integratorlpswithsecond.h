@@ -6,16 +6,19 @@
 
 /**********************************************************/
 
+namespace Gascoigne
+{
 template<int DIM>
-class IntegratorLpsWithSecond : public IntegratorWithSecond<DIM>, public Gascoigne::GalerkinLpsIntegratorQ2<DIM>
+class IntegratorLpsWithSecond : public IntegratorWithSecond<DIM>, public GalerkinLpsIntegratorQ2<DIM>
 {
   protected:
 
   public:
 
     std::string GetName() const {return "IntegratorLpsWithSecond";}
-    void BasicInit() { Gascoigne::GalerkinLpsIntegratorQ2<DIM>::BasicInit();}
+    void BasicInit() { GalerkinLpsIntegratorQ2<DIM>::BasicInit();}
 }; 
+}
 
 /**********************************************************/
 
