@@ -7,7 +7,6 @@
 
 #include  <map>
 
-using namespace std;
 using namespace Gascoigne;
 
 /*-----------------------------------------*/
@@ -17,7 +16,7 @@ class LocalMesh2d : public GascoigneMesh2d
 protected:
 
   int _count;
-  vector<nvector<double> > _q;
+  std::vector<nvector<double> > _q;
 
   std::map<int,BoundaryFunction<2>*>  MyShapes;
 

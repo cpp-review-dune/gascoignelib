@@ -13,13 +13,14 @@
 #include  "localmultilevelsolver.h"
 
 using namespace std;
+using namespace Gascoigne;
 
 /* ----------------------------------------- */
 
-void LocalLoop::BasicInit(const string& pfile, const ProblemDescriptorInterface* PD)
+void LocalLoop::BasicInit(const ParamFile* pfile)
 {
   GetMeshAgentPointer() = new LocalMeshAgent;
   GetMultiLevelSolverPointer() = new LocalMultiLevelSolver;
 
-  StdLoop::BasicInit(pfile,PD);
+  StdLoop::BasicInit(pfile);
 }

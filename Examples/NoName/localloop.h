@@ -13,7 +13,6 @@
 
 #include  "stdloop.h"
 
-using namespace std;
 
 class LocalLoop : public StdLoop
 {
@@ -33,7 +32,7 @@ public:
   LocalLoop() : StdLoop() {}
   ~LocalLoop() {}
 
-  void BasicInit(const string& pfile, const ProblemDescriptorInterface* PD);
+  void BasicInit(const Gascoigne::ParamFile* pfile);
 };
 
 

@@ -2,10 +2,11 @@
 #include  "usefullfunctionsbd.h"
 
 using namespace std;
+using namespace Gascoigne;
 
 /* ----------------------------------------- */
 
-LocalDirichletData::LocalDirichletData(const std::string& paramfile)
+LocalDirichletData::LocalDirichletData(const ParamFile* paramfile)
 {
   vmax = 0.3;
 }

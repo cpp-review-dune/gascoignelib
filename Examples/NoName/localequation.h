@@ -28,7 +28,7 @@ public:
 ////  Con(De)structor 
 //
 
-  LocalEquation(const std::string& paramfile) : NavierStokesGls(paramfile) {}
+  LocalEquation(const Gascoigne::ParamFile* paramfile) : NavierStokesGls(paramfile) {}
   ~LocalEquation() {}
 
   void point(double h, const FemFunction& U, const Vertex2d& v) const;

@@ -25,7 +25,7 @@ class LocalMeshAgent : public MeshAgent
   LocalMeshAgent() : MeshAgent() {}
 
   void refine_nodes(nvector<int>& refnodes, nvector<int>& coarsenodes) {
-    cerr << "§§§\n";
+    std::cerr << "§§§\n";
     assert(HMP);
     HMP->vertex_patch_refine(refnodes,coarsenodes);
     MeshAgent::ReInit();
