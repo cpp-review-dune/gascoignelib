@@ -548,11 +548,10 @@ double StdMultiLevelSolver::NewtonUpdate(double& rr, MultiLevelGhostVector& x, M
         cout << "      residuals in components L8: [";
         for(int i=0;i<ncomps;i++){
           double res_comp = r.Vector(ComputeLevel).CompNormL8(i);
-          if(i<ncomps-1){
-            cout << res_comp << ", "; 
-          }
+          cout << " " << res_comp; 
+          if(i<ncomps-1) cout << ","; 
         }
-        cout << "]" << endl;
+        cout << " ]" << endl;
       }
       
       if (message=="ok")       break;
