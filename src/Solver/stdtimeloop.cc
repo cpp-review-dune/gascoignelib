@@ -66,7 +66,7 @@ void StdTimeLoop::adaptive_run(const ProblemDescriptorInterface* PD)
       if (_iter==1) 
         {
           GetMultiLevelSolver()->GetSolver()->OutputSettings();
-          InitSolution(u,f);
+          InitSolution(u,*PD);
         }
 
       cout << "\n================== " << _iter << "================";
@@ -120,15 +120,14 @@ void StdTimeLoop::TimeInfoBroadcast()
 
 /*-------------------------------------------------*/
 
-void StdTimeLoop::InitSolution(MultiLevelGhostVector& u, MultiLevelGhostVector& f)
+void StdTimeLoop::InitSolution(MultiLevelGhostVector& u, const ProblemDescriptorInterface& PD)
 {
   if (_initial=="analytic") 
     {
       StdTimeSolver* TS = dynamic_cast<StdTimeSolver*>(GetMultiLevelSolver()->GetSolver());
       assert(TS);
-      f.zero();
-      TS->RhsL2Projection(f);
-      TS->L2Projection(u,f);
+      const InitialCondition* IC  = PD.GetInitialCondition();
+      TS->L2Projection(u,IC);
       TS->Write(u.finest(),"Results/initialu");
     }
   else
@@ -158,7 +157,7 @@ void StdTimeLoop::run(const ProblemDescriptorInterface* PD)
   TimeInfoBroadcast();
 
   // Anfangswerte
-  InitSolution(u,f);
+  InitSolution(u,*PD);
   
   GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(u);
   //GetMultiLevelSolver()->GetSolver()->Visu("Results/solve",u.finest(),0);

@@ -54,8 +54,7 @@ public:
   void Form (BasicGhostVector& y, const BasicGhostVector& x, double d) const;
   void AssembleMatrix(BasicGhostVector& u, double d);
   std::string GetName() const;
-  void RhsL2Projection(BasicGhostVector& f) const;
-  void L2Projection(BasicGhostVector& u, const BasicGhostVector& f);
+  void L2Projection(BasicGhostVector& u, const InitialCondition* IC);
 };
 
 #endif

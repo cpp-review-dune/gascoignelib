@@ -155,41 +155,39 @@ void StdTimeSolver::AssembleMatrix(BasicGhostVector& gu, double d)
   StdSolver::DirichletMatrix();
 }
 
+
+
 /*-------------------------------------------------------*/
 
-void StdTimeSolver::RhsL2Projection(BasicGhostVector& f) const
+void StdTimeSolver::L2Projection(BasicGhostVector& Gu, const InitialCondition* IC)
 {
-  const InitialCondition* IC  = GetProblemDescriptor()->GetInitialCondition();
   if(IC==NULL) return;
 
-  GetMeshInterpretor()->Rhs(GetGV(f),*IC,1.);
+  GlobalVector& u = GetGV(Gu);
 
-  HNDistribute(f);
-}
-
-/*-------------------------------------------------------*/
-
-void StdTimeSolver::L2Projection(BasicGhostVector& Gu, const BasicGhostVector& Gf)
-{
-  BasicGhostVector Gg, Gr, Gd;
+  BasicGhostVector Gg, Gr, Gd, Gf;
 
   Gg.SetName("g");
   Gr.SetName("r");
   Gd.SetName("d");
+  Gd.SetName("f");
   RegisterVector(Gg);
   RegisterVector(Gr);
   RegisterVector(Gd);
+  RegisterVector(Gf);
 
   ReInitVector();
-
-  GlobalVector& u = GetGV(Gu);
-  const GlobalVector& f = GetGV(Gf);
   GlobalVector& g = GetGV(Gg);
   GlobalVector& r = GetGV(Gr);
   GlobalVector& d = GetGV(Gd);
+  GlobalVector& f = GetGV(Gf);
 
   assert(u.ncomp()==g.ncomp());
   assert(u.n()==g.n());
+
+  f.zero();
+  GetMeshInterpretor()->Rhs(f,*IC,1.);
+  HNDistribute(f);
 
   int    MaxIter = 100;
   double Tol     = 1e-8;

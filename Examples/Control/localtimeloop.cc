@@ -103,7 +103,7 @@ void LocalTimeLoop::init(string name, int iter, const ProblemDescriptorInterface
   TimeInfoBroadcast();
 
   // Anfangswerte
-  InitSolution(u,f);
+  InitSolution(u,*PD);
   
   GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(u);
   _iter=iter;
