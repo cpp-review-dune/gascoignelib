@@ -53,49 +53,4 @@ void NavierStokesLps2d::StabMatrix(EntryMatrix& A,  const FemFunction& U,
   A(1,1) += betabeta;
   A(2,2) += betabeta;
 }
-
-/*-----------------------------------------*/
-
-void NavierStokesLps2d::StabilizationResidual(LocalVector& F, const FemFunction& U, 
-					      const FemFunction& UP, const FemFunction& N, 
-					      const FemFunction& NP) const
-{
-  double betaU1 = Convection(U,UP[1]);
-  double betaU2 = Convection(U,UP[2]);
-  for (int i=0; i<N.size(); i++)
-    {
-      VectorIterator b = F.start(i);
-      b[0] += ST.alpha() * Laplace(UP[0],NP[i]);
-      double betaN  = Convection(U,NP[i]);
-      b[1] += ST.delta() * betaU1*betaN;
-      b[2] += ST.delta() * betaU2*betaN;
-    }
-}
-
-/*-----------------------------------------*/
-
-void NavierStokesLps2d::StabilizationMatrix(EntryMatrix& A, const FemFunction& U, 
-					    const FemFunction& UP, const FemFunction& M, 
-					    const FemFunction& MP, const FemFunction& N, 
-					    const FemFunction& NP) const
-{
-  nvector<double> betaN(MP.size());
-  for (int i=0; i<MP.size(); i++)
-    {
-      betaN[i] = ST.delta() * Convection(U,NP[i]);
-    }
-  for (int j=0; j<MP.size(); j++)
-    {
-      double betaM = Convection(U,MP[j]);
-      for (int i=0; i<MP.size(); i++)
-	{
-	  A.SetDofIndex(i,j);
-	  double betabeta = betaM*betaN[i];
-	  A(0,0) += ST.alpha() * Laplace(MP[j],NP[i]);
-	  A(1,1) += betabeta;
-	  A(2,2) += betabeta;
-	}
-    }
-}
-
 }

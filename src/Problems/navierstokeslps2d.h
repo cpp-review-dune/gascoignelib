@@ -33,10 +33,6 @@ public:
   void StabForm(VectorIterator b, const FemFunction& U, const FemFunction& UP, const TestFunction& N) const;
     
   void StabMatrix(EntryMatrix& A, const FemFunction& U, const TestFunction& Np, const DerivativeVector& Mp) const;
-  
-  void StabilizationResidual(LocalVector& F, const FemFunction& U, const FemFunction& UP, const FemFunction& N, const FemFunction& NP) const;
-    
-  void StabilizationMatrix(EntryMatrix& A, const FemFunction& U, const FemFunction& UP, const FemFunction& M, const FemFunction& MP, const FemFunction& N, const FemFunction& NP) const;
 };
 }
 
