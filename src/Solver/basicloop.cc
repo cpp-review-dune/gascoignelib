@@ -32,7 +32,7 @@ BasicLoop::~BasicLoop()
 void BasicLoop::ClockOutput() const
 {
   cout << "************************************************************************\n\n";
-  cout << "BasicLoop\t\t\tTIME\n";
+  cout << "BasicLoop\t\tTIME\n";
   cout << "  NewMesh\t\t" << _clock_newmesh.read() << endl;
   cout << "  Solve\t\t\t" << _clock_solve.read() << endl;
   cout << "  Write\t\t\t" << _clock_write.read() << endl;
