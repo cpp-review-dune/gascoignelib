@@ -113,7 +113,7 @@ public:
   const BoundaryManager* GetBoundaryManager () const { return BM;}
   BoundaryManager* GetBoundaryManager () { return BM;}
 
-  void SetTime(double time, double dt) const {
+  virtual void SetTime(double time, double dt) const {
     if (EQ)  EQ  -> SetTime(time,dt);
     if (ES)  ES  -> SetTime(time,dt);
     if (RHS) RHS -> SetTime(time,dt);
