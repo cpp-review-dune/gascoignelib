@@ -53,7 +53,7 @@ void LocalTimeLoop::AddNodeVector(string filename)
 
 /* ----------------------------------------- */
 
-void LocalTimeLoop::init(string name, int iter)
+void LocalTimeLoop::init(string name, int iter, const ProblemDescriptorInterface* PD)
 {
   MultiLevelGhostVector u("u"), f("f"), ualt("ualt");
   u.SetMultiLevelSolver(GetMultiLevelSolver());
@@ -63,13 +63,15 @@ void LocalTimeLoop::init(string name, int iter)
   GetMultiLevelSolver()->RegisterVector(f);
   GetMultiLevelSolver()->RegisterVector(ualt);
 
+  GetMultiLevelSolver()->ReInit(*PD);
+
   cerr << "§§§§§§§§§§§§§§§§§§§§§§\n";
   //NewMesh();
 
 //   StdMultiLevelSolver* MS = dynamic_cast<StdMultiLevelSolver*>(GetMultiLevelSolver());
 //   assert(MS);
 //   MS->MemoryVector();
-//   cerr << "§§§§§§§§§§§§§§§§§§§§§§\n";
+  cerr << "§§§§§§§§§§§§§§§§§§§§§§\n";
   
   nvector<double> eta;
 

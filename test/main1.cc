@@ -1,5 +1,4 @@
 #include  "stdloop.h"
-#include  "starter.h"
 #include  "residualfunctional.h"
 #include  "dirichletdatabycolor.h"
 #include  "domainmeanfunctional.h"

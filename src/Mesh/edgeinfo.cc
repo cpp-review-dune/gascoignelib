@@ -86,3 +86,8 @@ int EdgeInfo<DIM>::getCount() const
 {
   return _count;
 }
+
+/**********************************************************/
+
+template EdgeInfo<2>;
+template EdgeInfo<3>;

@@ -5,7 +5,7 @@
 
 int main(int argc, char** argv)
 {
-  ParamFile paramfile("mesh2.param");
+  Gascoigne::ParamFile paramfile("mesh2.param");
   if(argc>=2) {
     paramfile.SetName(argv[1]);
   }

@@ -169,3 +169,8 @@ void EdgeInfoContainer<3>::modifyHanging()
 	}
     }
 }
+
+/**********************************************************/
+
+template EdgeInfoContainer<2>;
+template EdgeInfoContainer<3>;

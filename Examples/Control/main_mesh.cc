@@ -11,6 +11,8 @@ int main(int argc, char** argv)
 
   MeshAgent MA;
   MA.BasicInit(&paramfile);
+  system("rm -rf Results");
+  system("mkdir Results");
   MA.write_gup("Results/mesh");
 
   return 0;

@@ -35,7 +35,4 @@ class EdgeInfo
 
 /**********************************************************/
 
-template EdgeInfo<2>;
-template EdgeInfo<3>;
-
 #endif

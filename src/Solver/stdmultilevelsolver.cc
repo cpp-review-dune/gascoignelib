@@ -118,21 +118,6 @@ void StdMultiLevelSolver::SetProblem(const ProblemDescriptorInterface& PDX)
 
 /*-------------------------------------------------------------*/
 
-void StdMultiLevelSolver::MemoryVector()
-{
-  for(int level=0; level<nlevels(); ++level)  
-    {
-      int solverlevel = nlevels()-1-level;
-      assert(_SP[solverlevel]) ;
-      StdSolver* SP = dynamic_cast<StdSolver*>(_SP[solverlevel]);
-      assert(SP);
-      SP->MemoryVector();
-    }
-  DataP->nlinfo.control().matrixmustbebuild() = 1;
-}
-
-/*-------------------------------------------------------------*/
-
 SolverInterface* StdMultiLevelSolver::NewSolver(int solverlevel) 
 { 
   if(DataP->solver=="instat")

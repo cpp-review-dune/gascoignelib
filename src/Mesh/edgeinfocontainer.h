@@ -30,9 +30,4 @@ class EdgeInfoContainer : public nvector<EdgeInfo<DIM>*>
   void showStatistics() const;
 };
 
-/**********************************************************/
-
-template EdgeInfoContainer<2>;
-template EdgeInfoContainer<3>;
-
 #endif

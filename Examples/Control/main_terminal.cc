@@ -22,9 +22,8 @@ int main(int argc, char** argv)
 
   LocalTimeLoop loop;
   loop.BasicInit(&paramfile);
-  loop.NewMesh(&LPD);
   loop.AddNodeVector(name);
-  loop.init("Results/backward",last);
+  loop.init("Results/backward",last,&LPD);
 
   return 0;
 }
