@@ -112,6 +112,8 @@ public:
       GetEquationPointer() = new LocalEquation(GetParamFile());
       const LocalEquation* LEQ = dynamic_cast<const LocalEquation*>(GetEquation());
       GetInitialConditionPointer() = new LocalInitialCondition(LEQ);
+
+      ProblemDescriptorBase::BasicInit(pf);
     }
 };
 
