@@ -6,6 +6,8 @@
 
 namespace Gascoigne
 {
+
+
 NavierStokes2d::~NavierStokes2d()
 {
 }
@@ -118,12 +120,10 @@ void NavierStokes2d::Matrix(EntryMatrix& A, const FemFunction& U, const TestFunc
   
   double cut = _cut * _h;
   
-  A(1,1) += Gascoigne::max(U[1].x()*MN, -Cut);
-  A(2,2) += Gascoigne::max(U[2].y()*MN, -Cut);
-  A(1,2) += Gascoigne::min(U[1].y()*MN, Cut);
-  A(2,1) += Gascoigne::min(U[2].x()*MN, Cut);
+  A(1,1) += Gascoigne::max(U[1].x()*MN, -cut);
+  A(2,2) += Gascoigne::max(U[2].y()*MN, -cut);
+  A(1,2) += Gascoigne::min(U[1].y()*MN, cut);
+  A(2,1) += Gascoigne::min(U[2].x()*MN, cut);
 }
 
-/*-----------------------------------------*/
-
-
+}
