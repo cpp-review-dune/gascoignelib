@@ -1,6 +1,10 @@
 #ifndef  __Q2Lps3d_h
 #define  __Q2Lps3d_h
 
+#include  "q23d.h"
+
+namespace Gascoigne
+{
 
 /////////////////////////////////////////////
 ////
@@ -10,11 +14,6 @@
 ////
 ////
 /////////////////////////////////////////////
-
-#include  "q23d.h"
-
-namespace Gascoigne
-{
 
 class Q2Lps3d : public Q23d
 {

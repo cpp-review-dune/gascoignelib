@@ -2,6 +2,11 @@
 #define  __ParamFile_h
 
 
+#include  <string>
+
+namespace Gascoigne
+{
+
 /////////////////////////////////////////////
 ////
 ////@brief
@@ -11,12 +16,7 @@
 ////
 /////////////////////////////////////////////
 
-#include  <string>
-
-namespace Gascoigne
-{
-
-  class ParamFile : public std::string
+class ParamFile : public std::string
 {
 private:
 

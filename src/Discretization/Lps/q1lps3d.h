@@ -1,6 +1,12 @@
 #ifndef  __Q1Lps3d_h
 #define  __Q1Lps3d_h
 
+#include  "q13d.h"
+#include  "q1lpsstab.h"
+
+namespace Gascoigne
+{
+
 /////////////////////////////////////////////
 ////
 ////@brief
@@ -9,12 +15,6 @@
 ////
 ////
 /////////////////////////////////////////////
-
-#include  "q13d.h"
-#include  "q1lpsstab.h"
-
-namespace Gascoigne
-{
 
 /*----------------------------------------------*/
 

@@ -1,6 +1,11 @@
 #ifndef  __Q2Gls2d_h
 #define  __Q2Gls2d_h
 
+#include  "q22d.h"
+#include  "q22dwithsecond.h"
+
+namespace Gascoigne
+{
 
 /////////////////////////////////////////////
 ////
@@ -10,12 +15,6 @@
 ////
 ////
 /////////////////////////////////////////////
-
-#include  "q22d.h"
-#include  "q22dwithsecond.h"
-
-namespace Gascoigne
-{
 
 class Q2Gls2d : public Q22dWithSecond
 {

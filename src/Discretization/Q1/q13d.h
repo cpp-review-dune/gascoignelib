@@ -5,6 +5,9 @@
 #include  "edgeinfocontainer.h"
 #include  "energyestimatorintegrator.h"
 
+namespace Gascoigne
+{
+
 /////////////////////////////////////////////
 ////
 ////@brief
@@ -13,8 +16,6 @@
 ////
 /////////////////////////////////////////////
 
-namespace Gascoigne
-{
 class Q13d : public Q1
 {
  protected:

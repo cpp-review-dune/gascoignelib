@@ -2,6 +2,14 @@
 #define  __GlsIntegrator_h
 
 
+#include  "basicintegrator.h"
+#include  "integrationformula.h"
+
+/*-----------------------------------------*/
+
+namespace Gascoigne
+{
+
 /////////////////////////////////////////////
 ////
 ////@brief
@@ -11,13 +19,6 @@
 ////
 /////////////////////////////////////////////
 
-#include  "basicintegrator.h"
-#include  "integrationformula.h"
-
-/*-----------------------------------------*/
-
-namespace Gascoigne
-{
 template<int DIM>
 class GlsIntegrator : public BasicIntegrator
 {

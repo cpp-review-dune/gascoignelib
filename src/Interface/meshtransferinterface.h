@@ -2,7 +2,11 @@
 #define  __MeshTransferInterface_h
 
 
-/////////////////////////////////////////////
+
+namespace Gascoigne
+{
+
+  /////////////////////////////////////////////
 ////
 ////@brief
 ////  ... comments MeshTransferInterface
@@ -11,10 +15,6 @@
 ////
 /////////////////////////////////////////////
 
-
-
-namespace Gascoigne
-{
   class MeshTransferInterface
   {
     private:

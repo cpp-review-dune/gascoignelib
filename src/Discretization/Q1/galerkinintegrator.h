@@ -1,6 +1,11 @@
 #ifndef  __GalerkinIntegrator_h
 #define  __GalerkinIntegrator_h
 
+#include  "basicintegrator.h"
+#include  "integrationformula.h"
+
+namespace Gascoigne
+{
 
 /////////////////////////////////////////////
 ////
@@ -10,11 +15,6 @@
 ////
 /////////////////////////////////////////////
 
-#include  "basicintegrator.h"
-#include  "integrationformula.h"
-
-namespace Gascoigne
-{
 template<int DIM>
 class GalerkinIntegrator : public BasicIntegrator
 {

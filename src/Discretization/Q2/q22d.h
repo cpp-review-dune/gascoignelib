@@ -1,6 +1,11 @@
 #ifndef  __Q22d_h
 #define  __Q22d_h
 
+#include  "q2.h"
+
+namespace Gascoigne
+{
+
 /////////////////////////////////////////////
 ////
 ////@brief
@@ -10,10 +15,6 @@
 ////
 /////////////////////////////////////////////
 
-#include  "q2.h"
-
-namespace Gascoigne
-{
 class Q22d : public Q2
 {
 protected:

@@ -1,6 +1,10 @@
 #ifndef  __GalerkinIntegratorQ2_h
 #define  __GalerkinIntegratorQ2_h
 
+#include  "galerkinintegrator.h"
+
+namespace Gascoigne
+{
 
 /////////////////////////////////////////////
 ////
@@ -10,11 +14,6 @@
 ////
 ////
 /////////////////////////////////////////////
-
-#include  "galerkinintegrator.h"
-
-namespace Gascoigne
-{
 
 template<int DIM>
 class GalerkinIntegratorQ2 : virtual public GalerkinIntegrator<DIM>

@@ -1,6 +1,12 @@
 #ifndef  __Q1Gls3d_h
 #define  __Q1Gls3d_h
 
+#include  "q13d.h"
+#include  "glsintegrator.h"
+
+namespace Gascoigne
+{
+
 /////////////////////////////////////////////
 ////
 ////@brief
@@ -10,11 +16,6 @@
 ////
 /////////////////////////////////////////////
 
-#include  "q13d.h"
-#include  "glsintegrator.h"
-
-namespace Gascoigne
-{
 class Q1Gls3d : public Q13d
 {
 protected:

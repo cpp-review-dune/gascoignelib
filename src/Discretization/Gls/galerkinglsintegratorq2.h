@@ -2,6 +2,12 @@
 #define  __GalerkinGlsIntegratorQ2_h
 
 
+#include  "galerkinintegrator.h"
+#include  "glsintegratorq2.h"
+
+namespace Gascoigne
+{
+
 /////////////////////////////////////////////
 ////
 ////@brief
@@ -10,12 +16,6 @@
 ////
 ////
 /////////////////////////////////////////////
-
-#include  "galerkinintegrator.h"
-#include  "glsintegratorq2.h"
-
-namespace Gascoigne
-{
 
 template<int DIM>
 class GalerkinGlsIntegratorQ2 : public GalerkinIntegrator<DIM>

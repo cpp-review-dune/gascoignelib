@@ -2,6 +2,11 @@
 #define  __BasicIntegrator_h
 
 
+#include  "gascoigne.h"
+#include  "integratorinterface.h"
+
+namespace Gascoigne
+{
 
 /////////////////////////////////////////////
 ////
@@ -12,12 +17,6 @@
 ////
 /////////////////////////////////////////////
 
-
-#include  "gascoigne.h"
-#include  "integratorinterface.h"
-
-namespace Gascoigne
-{
 class BasicIntegrator : public IntegratorInterface
 {
  private:

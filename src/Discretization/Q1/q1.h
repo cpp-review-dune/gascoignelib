@@ -2,6 +2,13 @@
 #define  __Q1_h
 
 
+#include  "celldiscretization.h"
+#include  "hnstructureinterface.h"
+#include  "edgeinfocontainer.h"
+
+namespace Gascoigne
+{
+
 /////////////////////////////////////////////
 ////
 ////@brief
@@ -11,12 +18,6 @@
 ////
 /////////////////////////////////////////////
 
-#include  "celldiscretization.h"
-#include  "hnstructureinterface.h"
-#include  "edgeinfocontainer.h"
-
-namespace Gascoigne
-{
 class Q1 : public CellDiscretization
 {
 protected:

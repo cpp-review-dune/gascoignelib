@@ -1,6 +1,12 @@
 #ifndef  __Q1Lps2d_h
 #define  __Q1Lps2d_h
 
+#include  "q12d.h"
+#include  "q1lpsstab.h"
+
+namespace Gascoigne
+{
+
 /////////////////////////////////////////////
 ////
 ////@brief
@@ -9,12 +15,6 @@
 ////
 ////
 /////////////////////////////////////////////
-
-#include  "q12d.h"
-#include  "q1lpsstab.h"
-
-namespace Gascoigne
-{
 
 /*----------------------------------------------*/
 

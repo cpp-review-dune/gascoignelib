@@ -4,6 +4,8 @@
 
 #include  "baseq23d.h"
 
+namespace Gascoigne
+{
 
 /////////////////////////////////////////////
 ///
@@ -14,8 +16,6 @@
 ///
 /////////////////////////////////////////////
 
-namespace Gascoigne
-{
 
 class BaseQ23dWithSecond : public BaseQ23d
 {

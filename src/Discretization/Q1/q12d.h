@@ -1,6 +1,12 @@
 #ifndef  __Q1Simple_h
 #define  __Q1Simple_h
 
+#include  "q1.h"
+#include  "edgeinfocontainer.h"
+#include  "energyestimatorintegrator.h"
+
+namespace Gascoigne
+{
 
 /////////////////////////////////////////////
 ////
@@ -10,12 +16,6 @@
 ////
 /////////////////////////////////////////////
 
-#include  "q1.h"
-#include  "edgeinfocontainer.h"
-#include  "energyestimatorintegrator.h"
-
-namespace Gascoigne
-{
 class Q12d : public Q1
 {
  protected:

@@ -3,6 +3,14 @@
 
 #include  "base3d.h"
 
+#define NDOF   8
+#define NDOF1d 2
+
+/**************************************************/
+
+namespace Gascoigne
+{
+
 /////////////////////////////////////////////
 ///
 ///@brief
@@ -12,13 +20,6 @@
 ///
 /////////////////////////////////////////////
 
-#define NDOF   8
-#define NDOF1d 2
-
-/**************************************************/
-
-namespace Gascoigne
-{
 class BaseQ13d : public Base3d
 {
  protected:

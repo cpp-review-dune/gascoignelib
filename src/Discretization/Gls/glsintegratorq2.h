@@ -1,6 +1,10 @@
 #ifndef  __GlsIntegratorQ2_h
 #define  __GlsIntegratorQ2_h
 
+#include  "glsintegrator.h"
+
+namespace Gascoigne
+{
 
 /////////////////////////////////////////////
 ////
@@ -10,11 +14,6 @@
 ////
 ////
 /////////////////////////////////////////////
-
-#include  "glsintegrator.h"
-
-namespace Gascoigne
-{
 
 template<int DIM>
 class GlsIntegratorQ2 : public GlsIntegrator<DIM>

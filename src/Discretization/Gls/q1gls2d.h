@@ -1,6 +1,11 @@
 #ifndef  __Q1Gls2d_h
 #define  __Q1Gls2d_h
 
+#include  "q12d.h"
+
+namespace Gascoigne
+{
+
 /////////////////////////////////////////////
 ////
 ////@brief
@@ -10,10 +15,6 @@
 ////
 /////////////////////////////////////////////
 
-#include  "q12d.h"
-
-namespace Gascoigne
-{
 class Q1Gls2d : public Q12d
 {
 protected:

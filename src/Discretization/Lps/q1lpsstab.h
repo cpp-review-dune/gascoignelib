@@ -1,6 +1,12 @@
 #ifndef  __Q1LpsStab_h
 #define  __Q1LpsStab_h
 
+#include  "patchdiscretization.h"
+#include  "hnstructureinterface.h"
+
+namespace Gascoigne
+{
+
 /////////////////////////////////////////////
 ////
 ////@brief
@@ -9,12 +15,6 @@
 ////
 ////
 /////////////////////////////////////////////
-
-#include  "patchdiscretization.h"
-#include  "hnstructureinterface.h"
-
-namespace Gascoigne
-{
 
 /*----------------------------------------------*/
 

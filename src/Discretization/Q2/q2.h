@@ -1,6 +1,11 @@
 #ifndef  __Q2_h
 #define  __Q2_h
 
+#include  "patchdiscretization.h"
+#include  "hnstructureq1.h"
+
+namespace Gascoigne
+{
 
 /////////////////////////////////////////////
 ////
@@ -10,12 +15,6 @@
 ////
 ////
 /////////////////////////////////////////////
-
-#include  "patchdiscretization.h"
-#include  "hnstructureq1.h"
-
-namespace Gascoigne
-{
 
 class Q2 : public PatchDiscretization
 {

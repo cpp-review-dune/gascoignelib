@@ -1,6 +1,10 @@
 #ifndef  __Q2Lps2d_h
 #define  __Q2Lps2d_h
 
+#include  "q22d.h"
+
+namespace Gascoigne
+{
 
 /////////////////////////////////////////////
 ////
@@ -10,11 +14,6 @@
 ////
 ////
 /////////////////////////////////////////////
-
-#include  "q22d.h"
-
-namespace Gascoigne
-{
 
 class Q2Lps2d : public Q22d
 {

@@ -1,6 +1,14 @@
 #ifndef  __GalerkinGlsIntegrator_h
 #define  __GalerkinGlsIntegrator_h
 
+#include  "galerkinintegrator.h"
+#include  "glsintegrator.h"
+
+/*-----------------------------------------*/
+
+namespace Gascoigne
+{
+
 /////////////////////////////////////////////
 ////
 ////@brief
@@ -10,13 +18,6 @@
 ////
 /////////////////////////////////////////////
 
-#include  "galerkinintegrator.h"
-#include  "glsintegrator.h"
-
-/*-----------------------------------------*/
-
-namespace Gascoigne
-{
 template<int DIM>
 class GalerkinGlsIntegrator : public GalerkinIntegrator<DIM>
 {

@@ -5,6 +5,10 @@
 #include  "adaptordata.h"
 #include  "paramfile.h"
 
+
+namespace Gascoigne
+{
+
 //
 /// Minimizes E*L by global search,
 /// where E = extrapolated error estimator
@@ -18,8 +22,6 @@
 /// theta(x) = int_0^x eta(t)dt
 //
 
-namespace Gascoigne
-{
 class MalteAdaptor
 {
 protected:

@@ -6,16 +6,6 @@
 
 namespace Gascoigne
 {
-  
-  /////////////////////////////////////////////
-  ///
-  ///@brief
-  ///  ... comments ComponentInformation
-
-  ///
-  ///
-  /////////////////////////////////////////////
-
 std::string ComponentInformationBase::GetName() const {
   return "ComponentInformationBase";
 }

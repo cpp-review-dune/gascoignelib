@@ -8,6 +8,14 @@
 #include  "numfixarray.h"
 #include  "base2d.h"
 
+#define NDOF   4
+#define NDOF1d 2
+
+/**************************************************/
+
+namespace Gascoigne
+{
+
 /////////////////////////////////////////////
 ///
 ///@brief
@@ -17,13 +25,6 @@
 ///
 /////////////////////////////////////////////
 
-#define NDOF   4
-#define NDOF1d 2
-
-/**************************************************/
-
-namespace Gascoigne
-{
 class BaseQ12d : public Base2d
 {
  protected:
