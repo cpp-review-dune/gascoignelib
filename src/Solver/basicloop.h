@@ -64,6 +64,7 @@ protected:
   bool _writeBupGup;
 
   std::string _reload, _initial;
+  std::string _s_resultsdir;
   const ParamFile*  _paramfile;
   
 
