@@ -11,15 +11,14 @@ void LocalLoop::run(const ProblemDescriptorInterface* PD)
 {
   _iter=1;
   
-  VectorInterface u("u"), f("f");
+  VectorInterface u("u"), f("f"), dat("dat");
   GlobalVector  ualt;
 
   GetMultiLevelSolver()->RegisterVector(u);
   GetMultiLevelSolver()->RegisterVector(f);
+  GetMultiLevelSolver()->RegisterVector(dat);
 
   Monitoring  Moning;
-
-  vector<GlobalVector>  dat;
 
   MultiLevelSolverInterface* MP = GetMultiLevelSolver();
 
@@ -29,23 +28,22 @@ void LocalLoop::run(const ProblemDescriptorInterface* PD)
   _clock_newmesh.stop();
 
   int nlevels = MP->nlevels();
-  dat.resize(nlevels);
   for(int l=nlevels-1;l>=0;l--)
     {
       if(l==nlevels-1)
 	{
 	  string filename("solve.00003.bup");
-	  GlobalVector& d = dat[l];
-	  ReadBackUpResize(d,filename);
+	  ReadBackUpResize(MP->GetSolver(l)->GetGV(dat),filename);
 	}
       else
 	{
-	  dat[l].ncomp() = dat[l+1].ncomp();
-	  MP->GetSolver(l)->ResizeVector(&dat[l],"");
- 	  MP->Transfer(l+1,dat[l],dat[l+1]);
+          GlobalVector& d = MP->GetSolver(l)->GetGV(dat);
+          d.ncomp() = MP->GetSolver(l+1)->GetGV(dat).ncomp();
+          MP->GetSolver(l)->ResizeVector(&d,"");
+          MP->Transfer(l+1,d,MP->GetSolver(l+1)->GetGV(dat));
 	}
-        
-      MP->GetSolver(l)->AddNodeVector("beta",&dat[l]);
+
+      MP->GetSolver(l)->AddNodeVector("beta",dat);
     }
 
   MP->GetSolver()->OutputSettings();
