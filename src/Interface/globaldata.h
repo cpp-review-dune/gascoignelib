@@ -56,22 +56,13 @@ namespace Gascoigne
       }
       
       void DeleteNodeVector(const std::string& name) {
-        if(!_node.erase(name))
-        {
-          std::cerr << "NodeVector \"" << name << "\" cannot be deleted" << std::endl;
-        }
+        _node.erase(name);
       }
       void DeleteCellVector(const std::string& name) {
-        if(!_cell.erase(name))
-        {
-          std::cerr << "NodeVector \"" << name << "\" cannot be deleted" << std::endl;
-        }
+        _cell.erase(name);
       }
       void DeleteParameterVector(const std::string& name) {
-        if(!_parameter.erase(name))
-        {
-          std::cerr << "NodeVector \"" << name << "\" cannot be deleted" << std::endl;
-        }
+        _parameter.erase(name);
       }
 
       const GlobalNodeData& GetNodeData() const {
