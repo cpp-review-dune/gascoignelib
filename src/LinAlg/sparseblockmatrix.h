@@ -63,12 +63,7 @@ class SparseBlockMatrix : public MatrixInterface
 
   void ReInit   (const SparseStructureInterface*);
   void dirichlet(int i, const vector<int>& cv);
-
-/*-------------------------------------------------------------*/
-  
-/*   void FillInterfaceList(const nvector<int>&, nvector<int>&, nvector<float>& ) const; */
-  
-/*-------------------------------------------------------------*/
+  void dirichlet_only_row(int i, const vector<int>& cv);
 
   void zero();
   void entry(nvector<int>::const_iterator start, nvector<int>::const_iterator stop, const EntryMatrix& M, double s=1.);

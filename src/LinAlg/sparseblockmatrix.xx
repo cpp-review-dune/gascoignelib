@@ -186,6 +186,18 @@ void SparseBlockMatrix<B>::dirichlet(int i, const std::vector<int>& cv)
 /*-------------------------------------------------------------*/
 
 template<class B>
+void SparseBlockMatrix<B>::dirichlet_only_row(int i, const std::vector<int>& cv)
+{
+  for(int pos=US.start(i); pos<US.stop(i); pos++)
+    {
+      smat[pos].DirichletRow(cv);
+    }
+  smat[US.diag(i)].DirichletDiag(cv);
+}
+
+/*-------------------------------------------------------------*/
+
+template<class B>
 void SparseBlockMatrix<B>::vmult(GlobalVector& y, const GlobalVector& x, double s) const
 {
   for(int i=0; i<US.n(); i++)
