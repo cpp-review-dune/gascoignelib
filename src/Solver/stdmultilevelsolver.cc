@@ -15,10 +15,11 @@ using namespace std;
 
 StdMultiLevelSolver::~StdMultiLevelSolver()
 {
-  cout << "StdMultiLevelSolver\t TIME\n";
-  cout << "\tResidual\t" << _clock_residual.read() << endl;
-  cout << "\tSolve\t" << _clock_solve.read() << endl;
-  cout << "MATRIX\t TIME\n";
+  cout << "StdMultiLevelSolver\tTIME\n";
+  cout << "  Residual\t\t" << _clock_residual.read() << endl;
+  cout << "  Solve\t\t\t" << _clock_solve.read() << endl;
+  cout << "MATRIX\t\t\tTIME\n";
+
   double vm=0.;
   double il=0.;
   double so=0.;
@@ -36,12 +37,16 @@ StdMultiLevelSolver::~StdMultiLevelSolver()
       cs += S->clock_computesolver();
       re += S->clock_residual();
     }
-  cout << "\tvmult\t\t" << vm << endl;
-  cout << "\tilu\t\t" << il << endl;
-  cout << "\tsolve\t\t" << so << endl<<endl;
-  cout << "\tcompute\t\tmatrix\tilu\tsolve\t" << ca << "\t"<< ci << "\t" << cs << endl;
-  cout << "VECTOR\t TIME\n";
-  cout << "\tresidual\t\t" << re << endl;
+
+  cout << "  vmult\t\t\t" << vm << endl;
+  cout << "  ilu\t\t\t" << il << endl;
+  cout << "  solve\t\t\t" << so << endl;
+  cout << "  compute matrix\t" << ca << endl;
+  cout << "  compute ilu\t\t" << ci << endl;
+  cout << "  compute solver\t" << cs << endl;
+  cout << "VECTOR\t\t\tTIME\n";
+  cout << "  residual\t\t" << re << endl;
+  cout << "\n************************************************************************\n";
 
   //--------------------------------------------------//
 

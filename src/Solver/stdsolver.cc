@@ -50,11 +50,11 @@ void StdSolver::MatrixZero() const
 
 void StdSolver::OutputSettings() const
 {
-  cout << "====================================" << endl;
+  cout << "=====================================" << endl;
   cout << "Solver:          " << GetName() << endl;
   cout << "Discretization:  " << GetMeshInterpretor()->GetName()  << endl;
   GetProblemDescriptor()->OutputSettings(cout);
-  cout << "====================================" << endl;
+  cout << "=====================================" << endl;
 }
 
 /*-------------------------------------------------------*/

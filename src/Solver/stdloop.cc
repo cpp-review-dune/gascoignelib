@@ -25,12 +25,13 @@ StdLoop::StdLoop() : _paramfile("none"), _MA(NULL), _ML(NULL), _FMP(NULL), _PD(N
 
 StdLoop::~StdLoop()
 {
-  cout << "StdLoop\t TIME\n";
-  cout << "\tNewMesh\t" << _clock_newmesh.read() << endl;
-  cout << "\tSolve\t" << _clock_solve.read() << endl;
-  cout << "\tFunctionals\t" << _clock_functionals.read() << endl;
-  cout << "\tEstimate\t" << _clock_estimate.read() << endl;
-  cout << "\tWrite\t" << _clock_write.read() << endl;
+  cout << "************************************************************************\n\n";
+  cout << "StdLoop\t\t\tTIME\n";
+  cout << "  NewMesh\t\t" << _clock_newmesh.read() << endl;
+  cout << "  Solve\t\t\t" << _clock_solve.read() << endl;
+  cout << "  Functionals\t\t" << _clock_functionals.read() << endl;
+  cout << "  Estimate\t\t" << _clock_estimate.read() << endl;
+  cout << "  Write\t\t\t" << _clock_write.read() << endl;
 
   if(_MA  != NULL) {delete _MA; _MA=NULL;}
   if(_ML  != NULL) {delete _ML; _ML=NULL;}
