@@ -11,9 +11,7 @@ void LocalLoop::run(const ProblemDescriptorInterface* PD)
 {
   _iter=1;
   
-  MultiLevelGhostVector u("u"), f("f");
-  u.SetMultiLevelSolver(GetMultiLevelSolver());
-  f.SetMultiLevelSolver(GetMultiLevelSolver());
+  VectorInterface u("u"), f("f");
   GlobalVector  ualt;
 
   GetMultiLevelSolver()->RegisterVector(u);

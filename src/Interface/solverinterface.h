@@ -141,7 +141,7 @@ namespace Gascoigne
       /// vector - residual (integration)
       //
       virtual void Form(VectorInterface& y, const VectorInterface& x, double d) const=0;
-      virtual void AdjointForm(GlobalVector& y, const GlobalVector& x, double d) const { assert(0);}
+      virtual void AdjointForm(VectorInterface& y, const VectorInterface& x, double d) const { assert(0);}
 
       //
       /// vector - boundary condition
@@ -158,7 +158,7 @@ namespace Gascoigne
       virtual void residualgmres(VectorInterface& y, const VectorInterface& x, const VectorInterface& b) const=0;
       virtual void MatrixResidual(VectorInterface& y, const VectorInterface& x, const VectorInterface& b) const=0;
       virtual void vmult(VectorInterface& y, const VectorInterface& x, double d) const=0;
-      virtual void vmulteq(VectorInterface& y, const VectorInterface& x) const=0;
+      virtual void vmulteq(VectorInterface& y, const VectorInterface& x, double d) const=0;
       virtual void smooth_pre(VectorInterface& y, const VectorInterface& x, VectorInterface& h) const=0;
       virtual void smooth_exact(VectorInterface& y, const VectorInterface& x, VectorInterface& h) const=0;
       virtual void smooth_post(VectorInterface& y, const VectorInterface& x, VectorInterface& h) const=0;

@@ -80,8 +80,8 @@ void StdMultiLevelSolver::ViewProtocoll() const
 /*-------------------------------------------------------------*/
 
 StdMultiLevelSolver::StdMultiLevelSolver() : 
-  _MAP(NULL), oldnlevels(-1), _paramfile(NULL), MON(NULL), DataP(NULL),
-  _cor("cor"), _res("res"), _mg0("mg0"), _mg1("mg1")
+		_MAP(NULL), _cor("cor"), _res("res"), _mg0("mg0"), _mg1("mg1"),
+		oldnlevels(-1), _paramfile(NULL), MON(NULL), DataP(NULL)
 {
 }
 
@@ -293,7 +293,7 @@ void StdMultiLevelSolver::InterpolateSolution(VectorInterface& u, const GlobalVe
 
 void StdMultiLevelSolver::vmulteq(VectorInterface& y, const VectorInterface& x) const
 {
-  GetSolver(ComputeLevel)->vmulteq(y,x);
+  GetSolver(ComputeLevel)->vmulteq(y,x,1.);
 }
 
 /*-------------------------------------------------------------*/

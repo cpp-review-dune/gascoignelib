@@ -81,6 +81,9 @@ namespace Gascoigne
       virtual void SolutionTransfer(int l, GlobalVector& ul, const GlobalVector& uf) const=0;
       virtual void AssembleDualMatrix(VectorInterface& u)=0;
       virtual void vmulteq(VectorInterface& y, const VectorInterface&  x) const=0;
+
+      virtual void Equ(VectorInterface& dst, double s, const VectorInterface& src)const=0;
+      virtual void Zero(VectorInterface& dst)const=0;
   };
 }
 

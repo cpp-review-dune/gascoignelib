@@ -117,7 +117,7 @@ void DwrQ1Q2::DualResidualsHigher(VectorInterface& gf,
   //
   {
     S.Rhs     (gf, -0.5);
-    S.AdjointForm(S.GetGV(gf),S.GetGV(gz),0.5);
+    S.AdjointForm(gf,gz,0.5);
     S.SetBoundaryVectorZero(gf);
     S.HNDistribute(gf);
   }
@@ -128,7 +128,7 @@ void DwrQ1Q2::DualResidualsHigher(VectorInterface& gf,
     S.SetDiscretization(*D,true);
 
     S.Rhs     (gf,   0.5);
-    S.AdjointForm(S.GetGV(gf),S.GetGV(gz),-0.5);
+    S.AdjointForm(gf,gz,-0.5);
     S.SetBoundaryVectorZero(gf);
     S.HNDistribute(gf);
 

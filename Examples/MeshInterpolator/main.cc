@@ -45,13 +45,13 @@ int main(int argc, char** argv)
   // Vectors
   ///////////////////////
 
-  MultiLevelGhostVector u("u"), f("f");
+  VectorInterface u("u"), f("f");
   MLS.RegisterVector(u);
   MLS.RegisterVector(f);
   MLS.ReInit(PD);
   
-  u.zero();
-  f.zero();
+  MLS.Zero(u);
+  MLS.Zero(f);
  
   ///////////////////////
   // Mesh Interpolator

@@ -186,7 +186,7 @@ inline int GMRESSPV::solve(VECTOR& x, const VECTOR& b, CGInfo& info)
       VECTOR& vv = mem[dim];
       if (left_precondition)
 	{
-	  A.vmulteq(p, mem[last]);
+	  A.vmulteq(p, mem[last],1.);
 	  P.precondition(vv,p);
 	}
       else
@@ -194,7 +194,7 @@ inline int GMRESSPV::solve(VECTOR& x, const VECTOR& b, CGInfo& info)
           //A.Equ(p,0.,p);
 	  A.Zero(p);
 	  P.precondition(p,mem[last]);
-	  A.vmulteq(vv,p);
+	  A.vmulteq(vv,p,1.);
 	}      
       double s = orthogonalization(H[last],dim,vv);
       if (reortho_test(vv,s))

@@ -109,30 +109,16 @@ class StdSolver : public virtual SolverInterface
   virtual IluInterface* NewIlu(int ncomp, const std::string& matrixtype); 
 
   //
-  /// new interface-function for indivisual size of vectors
+  /// new interface-function for individual size of vectors
   //
 
-  virtual void Rhs(GlobalVector& f, double d=1.) const;
-
-  virtual void smooth(int niter, GlobalVector& x, const GlobalVector& y, GlobalVector& h) const;
-  virtual void PermutateIlu(const GlobalVector& u) const;
+  virtual void smooth(int niter, VectorInterface& x, const VectorInterface& y, VectorInterface& h) const;
+  virtual void PermutateIlu(const VectorInterface& gu) const;
   virtual void modify_ilu(IluInterface& I,int ncomp) const;
-  void AdjointForm(GlobalVector& y, const GlobalVector& x, double d) const;
 
-  void MatrixResidual(GlobalVector& y, const GlobalVector& x, const GlobalVector& b) const;
-  virtual void vmult(GlobalVector& y, const GlobalVector& x, double d) const;
-  virtual void vmulteq(GlobalVector& y, const GlobalVector& x, double d) const;
-
-  virtual DoubleVector IntegrateSolutionVector(const GlobalVector& u) const;
+  virtual DoubleVector IntegrateSolutionVector(const VectorInterface& u) const;
   virtual void _check_consistency(const Equation* EQ, const DiscretizationInterface* MP) const;
   virtual void DirichletMatrixOnlyRow() const;
-
-  virtual void SetBoundaryVector(GlobalVector& f) const;
-  virtual void SetBoundaryVectorZero(GlobalVector& f) const;
-  virtual void SetBoundaryVectorStrong(GlobalVector& f, const BoundaryManager& BM, const DirichletData& DD) const;
-
-  void HNAverage   (const GlobalVector& x) const;
-  void HNZero      (const GlobalVector& x) const;
 
  public:
 
@@ -159,8 +145,6 @@ class StdSolver : public virtual SolverInterface
   void ReInitVector();
   void ReInitMatrix();
 
-  virtual void SubtractMean(GlobalVector& gx) const;
-  virtual void SubtractMeanAlgebraic(GlobalVector& gx) const;
 
   virtual double clock_vmult() const {return _vm.read();}
   virtual double clock_ilu  () const {return _il.read();}
@@ -192,7 +176,6 @@ class StdSolver : public virtual SolverInterface
   }
 
   void OutputSettings() const;
-  virtual void Visu(const std::string& name, const GlobalVector& u, int i) const;
 
   void ConstructInterpolator(MgInterpolatorInterface* I, const MeshTransferInterface* MT);
   void VisuGrid(const std::string& name, int i) const;
@@ -248,6 +231,7 @@ class StdSolver : public virtual SolverInterface
   //
 
   void Form(VectorInterface& y, const VectorInterface& x, double d) const;
+  void AdjointForm(VectorInterface& y, const VectorInterface& x, double d) const;
 
   //
   /// vector - boundary condition
@@ -264,7 +248,7 @@ class StdSolver : public virtual SolverInterface
   void residualgmres(VectorInterface& y, const VectorInterface& x, const VectorInterface& b) const;
   void MatrixResidual(VectorInterface& y, const VectorInterface& x, const VectorInterface& b) const;
   void vmult  (VectorInterface& y, const VectorInterface& x, double d) const;
-  void vmulteq(VectorInterface& y, const VectorInterface& x) const;
+  void vmulteq(VectorInterface& y, const VectorInterface& x, double d) const;
   void smooth_pre(VectorInterface& y, const VectorInterface& x, VectorInterface& h) const;
   void smooth_exact(VectorInterface& y, const VectorInterface& x, VectorInterface& h) const;
   void smooth_post(VectorInterface& y, const VectorInterface& x, VectorInterface& h) const;
@@ -295,10 +279,10 @@ class StdSolver : public virtual SolverInterface
   void ComputeError(const VectorInterface& u, GlobalVector& err) const;
   double ComputeFunctional(VectorInterface& f, const VectorInterface& u, const Functional* FP) const;
 
-  virtual double ComputeBoundaryFunctional(GlobalVector& f, const GlobalVector& u, GlobalVector& z, const BoundaryFunctional* FP) const;
-  virtual double ComputeDomainFunctional(GlobalVector& f, const GlobalVector& u, GlobalVector& z, const DomainFunctional* FP) const;
-  virtual double ComputePointFunctional(GlobalVector& f, const GlobalVector& u, GlobalVector& z, const PointFunctional* NFP) const;
-  virtual double ComputeResidualFunctional(VectorInterface& f, const VectorInterface& u, GlobalVector& z, const ResidualFunctional* FP) const;
+  virtual double ComputeBoundaryFunctional(VectorInterface& f, const VectorInterface& u, VectorInterface& z, const BoundaryFunctional* FP) const;
+  virtual double ComputeDomainFunctional(VectorInterface& f, const VectorInterface& u, VectorInterface& z, const DomainFunctional* FP) const;
+  virtual double ComputePointFunctional(VectorInterface& f, const VectorInterface& u, VectorInterface& z, const PointFunctional* NFP) const;
+  virtual double ComputeResidualFunctional(VectorInterface& f, const VectorInterface& u, VectorInterface& z, const ResidualFunctional* FP) const;
 
   //
   /// vector - initialize

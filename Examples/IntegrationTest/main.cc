@@ -17,13 +17,14 @@ public:
   LocalSolver() : StdSolver() {};
   ~LocalSolver() {}
 
-  double Integral(const GlobalVector& u) const
+  double Integral(const VectorInterface& gu) const
     {
-      HNAverage(u);
+      const GlobalVector& u = GetGV(gu);
+      HNAverage(gu);
       assert(GetDiscretization()->HNZeroCheck(u)==0);
       
       nvector<double> dst = _PF.IntegrateVector(u);
-      HNZero(u);
+      HNZero(gu);
       return dst[0];
     }
   DiscretizationInterface* NewDiscretization(int dimension, const string& discname)
@@ -65,11 +66,18 @@ int main(int argc, char** argv)
   MeshAgent M;
   M.BasicInit(&paramfile);
 
-  GlobalVector u(1);
-
+  VectorInterface gu("u");
+  
   for (int iter=1; iter<=niter; iter++)
     {
       LocalSolver S;
+      S.RegisterVector(gu);
+		// S.ReInitVector(gu);
+		// das geht nicht, da es hier kein Problem gibt,
+		// bei dem die Anzahl der Componenten erfragt
+		// werden kann
+      GlobalVector& u=S.GetGV(gu);
+
 
       const MeshInterface* MI = M.GetMesh(0);
       S.BasicInit(iter,&paramfile,MI);
@@ -84,7 +92,7 @@ int main(int argc, char** argv)
 	  u(i,0) = f(x,y);
 	}
       
-      double val = S.Integral(u);
+      double val = S.Integral(gu);
       cout.precision(16);
       cout << iter << "\t" << u.n() << "\t" << val << endl;
 

@@ -78,10 +78,7 @@ void LocalTimeLoop::ReInit(const ProblemDescriptorInterface* PD)
 
 void LocalTimeLoop::init(string name, int iter, const ProblemDescriptorInterface* PD)
 {
-  MultiLevelGhostVector u("u"), f("f"), ualt("ualt");
-  u.SetMultiLevelSolver(GetMultiLevelSolver());
-  f.SetMultiLevelSolver(GetMultiLevelSolver());
-  ualt.SetMultiLevelSolver(GetMultiLevelSolver());
+  VectorInterface u("u"), f("f"), ualt("ualt");
   GetMultiLevelSolver()->RegisterVector(u);
   GetMultiLevelSolver()->RegisterVector(f);
   GetMultiLevelSolver()->RegisterVector(ualt);
@@ -116,10 +113,7 @@ void LocalTimeLoop::init(string name, int iter, const ProblemDescriptorInterface
 
 void LocalTimeLoop::backward(string iname, string name, int first, int last, const ProblemDescriptorInterface* PD)
 {
-  MultiLevelGhostVector u("u"), f("f"), ualt("ualt");
-  u.SetMultiLevelSolver(GetMultiLevelSolver());
-  f.SetMultiLevelSolver(GetMultiLevelSolver());
-  ualt.SetMultiLevelSolver(GetMultiLevelSolver());
+  VectorInterface u("u"), f("f"), ualt("ualt");
   GetMultiLevelSolver()->RegisterVector(u);
   GetMultiLevelSolver()->RegisterVector(f);
   GetMultiLevelSolver()->RegisterVector(ualt);
@@ -153,7 +147,7 @@ void LocalTimeLoop::backward(string iname, string name, int first, int last, con
       //
       // rhs fuer alten Zeitschritt
       //
-      f.zero();
+      GetMultiLevelSolver()->Zero(f);
       GetMultiLevelSolver()->GetSolver()->TimeRhsOperator(f,u);
       GetMultiLevelSolver()->GetSolver()->TimeRhs(1,f);
       
@@ -162,7 +156,7 @@ void LocalTimeLoop::backward(string iname, string name, int first, int last, con
       _timeinfo.iteration_backward(_iter);
       TimeInfoBroadcast();
 
-      ualt.equ(1.,u);
+      GetMultiLevelSolver()->Equ(ualt,1.,u);
 
       GetMultiLevelSolver()->GetSolver()->TimeRhs(2,f);
       SolveTimePrimal(u,f);
@@ -177,10 +171,7 @@ void LocalTimeLoop::backward(string iname, string name, int first, int last, con
 
 void LocalTimeLoop::forward(string iname, int first, int last, const ProblemDescriptorInterface* PD)
 {
-  MultiLevelGhostVector u("u"), f("f"), ualt("ualt");
-  u.SetMultiLevelSolver(GetMultiLevelSolver());
-  f.SetMultiLevelSolver(GetMultiLevelSolver());
-  ualt.SetMultiLevelSolver(GetMultiLevelSolver());
+  VectorInterface u("u"), f("f"), ualt("ualt");
   GetMultiLevelSolver()->RegisterVector(u);
   GetMultiLevelSolver()->RegisterVector(f);
   GetMultiLevelSolver()->RegisterVector(ualt);
@@ -210,7 +201,7 @@ void LocalTimeLoop::forward(string iname, int first, int last, const ProblemDesc
       //
       // rhs fuer alten Zeitschritt
       //
-      f.zero();
+      GetMultiLevelSolver()->Zero(f);
       GetMultiLevelSolver()->GetSolver()->TimeRhsOperator(f,u);
       GetMultiLevelSolver()->GetSolver()->TimeRhs(1,f);
       
@@ -219,7 +210,7 @@ void LocalTimeLoop::forward(string iname, int first, int last, const ProblemDesc
       _timeinfo.iteration(_iter);
       TimeInfoBroadcast();
 
-      ualt.equ(1.,u);
+      GetMultiLevelSolver()->Equ(ualt,1.,u);
 
       GetMultiLevelSolver()->GetSolver()->TimeRhs(2,f);
 
