@@ -91,8 +91,10 @@ class HierarchicalMesh : public MeshInterface
   void ReadFile(const std::string& gridname);
   void ReadParameters(const ParamFile* pf);
   void global_refine  (int k);
+  void global_patch_coarsen (int k);
   void random_refine  (double, int k=1);
   void random_patch_refine  (double, int k=1);
+  void random_patch_coarsen (double, int k=0);
   void random_double_patch_refine  (double, int k=1);
   void clear_transfer_lists();
   virtual void   write_gup(const std::string&) const =0;

@@ -133,6 +133,20 @@ void HierarchicalMesh::global_refine(int k)
 
 /*---------------------------------------------------*/
 
+void HierarchicalMesh::global_patch_coarsen(int k)
+{
+  IntVector cell_refine(0);
+
+  for (int i=0; i<k; i++)
+    {
+      IntVector cell_coarse( ncells() );
+      iota(cell_coarse.begin(),cell_coarse.end(),0);
+      patch_refine(cell_refine,cell_coarse);
+    }
+}
+
+/*---------------------------------------------------*/
+
 void HierarchicalMesh::random_refine(double p, int c)
 {
   int nq = ncells();
@@ -155,6 +169,30 @@ void HierarchicalMesh::random_refine(double p, int c)
       iota(cell_coarse.begin(),cell_coarse.end(),0);
     }
   refine(cell_ref,cell_coarse);
+}
+
+/*---------------------------------------------------*/
+
+void HierarchicalMesh::random_patch_coarsen(double p, int r)
+{
+  int nq = ncells();
+  int nc = 1+static_cast<int>(p*nq);      
+
+  nc = Gascoigne::min_int(nc,nq);
+  if (p<0) nc=0;
+
+  IntVector cell_coarsen(nc), cell_refine;
+  IntVector v(ncells());
+  iota(v.begin(),v.end(),0);
+  random_sample(v.begin(),v.end(),cell_coarsen.begin(),cell_coarsen.end());
+
+  if (r)
+    {
+      int nq = ncells();
+      cell_refine.resize(nq);
+      iota(cell_refine.begin(),cell_refine.end(),0);
+    }
+  patch_refine(cell_refine,cell_coarsen);
 }
 
 /*---------------------------------------------------*/
@@ -248,23 +286,23 @@ void HierarchicalMesh::update_edges(IntVector& SwappedEdge)
 
       int nm = co2n[m];
       if (nm>=0)
-	{
-	  edges[i].master() = nm;
-	  if (s>=0)
-	    {
-	      edges[i].slave() = co2n[s];
-	    }
-	}
+        {
+          edges[i].master() = nm;
+          if (s>=0)
+            {
+              edges[i].slave() = co2n[s];
+            }
+        }
       else
-	{
-	  if (s<0)
-	    {
-	      edges[i].master() = -1;
-	      SwappedEdge.push_back(i);
-	      continue;
-	    }
-	  edges[i].swapping(co2n[s]);
-	}
+        {
+          if (s<0)
+            {
+              edges[i].master() = -1;
+              SwappedEdge.push_back(i);
+              continue;
+            }
+          edges[i].swapping(co2n[s]);
+        }
     }
 }
 }

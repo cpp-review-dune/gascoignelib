@@ -72,17 +72,17 @@ void MeshAgent::BasicInit(int dim, string meshname, int prerefine)
     {
       HMP = new HierarchicalMesh2d;
       for(map<int,BoundaryFunction<2>* >::const_iterator p=_curved2d.begin();p!=_curved2d.end();p++)
-	{
-	  HMP->AddShape(p->first,p->second);
-	}
+        {
+          HMP->AddShape(p->first,p->second);
+        }
     }
   else if (_dimension==3)
     {
       HMP = new HierarchicalMesh3d;
       for(map<int,BoundaryFunction<3>* >::const_iterator p=_curved3d.begin();p!=_curved3d.end();p++)
-	{
-	  HMP->AddShape(p->first,p->second);
-	}
+        {
+          HMP->AddShape(p->first,p->second);
+        }
     }
   else
     {
@@ -113,17 +113,17 @@ void MeshAgent::BasicInit(const ParamFile* paramfile)
     {
       HMP = new HierarchicalMesh2d;
       for(map<int,BoundaryFunction<2>* >::const_iterator p=_curved2d.begin();p!=_curved2d.end();p++)
-	{
-	  HMP->AddShape(p->first,p->second);
-	}
+        {
+          HMP->AddShape(p->first,p->second);
+        }
     }
   else if (_dimension==3)
     {
       HMP = new HierarchicalMesh3d;
       for(map<int,BoundaryFunction<3>* >::const_iterator p=_curved3d.begin();p!=_curved3d.end();p++)
-	{
-	  HMP->AddShape(p->first,p->second);
-	}
+        {
+          HMP->AddShape(p->first,p->second);
+        }
     }
   else
     {
@@ -166,10 +166,28 @@ void MeshAgent::write_gup(const string& fname) const
 
 /*-----------------------------------------*/
 
+void MeshAgent::global_patch_coarsen(int n)
+{
+  assert(HMP);
+  HMP->global_patch_coarsen(n);
+  ReInit();
+}
+
+/*-----------------------------------------*/
+
 void MeshAgent::global_refine(int n)
 {
   assert(HMP);
   HMP->global_refine(n);
+  ReInit();
+}
+
+/*-----------------------------------------*/
+
+void MeshAgent::random_patch_coarsen(double p, int n)
+{
+  assert(HMP);
+  HMP->random_patch_coarsen(p,n);
   ReInit();
 }
 
@@ -209,9 +227,9 @@ void MeshAgent::refine_cells(IntVector& ref)
     {
       int cell = ref[i];
       for (int j=0; j<HMP->nodes_per_cell(cell); j++)
-	{
-	  refnodes.push_back(HMP->vertex_of_cell(cell,j));
-	}
+        {
+          refnodes.push_back(HMP->vertex_of_cell(cell,j));
+        }
     }
   refine_nodes(refnodes);
 }
