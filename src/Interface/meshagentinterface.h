@@ -14,6 +14,7 @@
 #include  "meshinterface.h"
 #include  "multigridmeshinterface.h"
 #include  "meshtransferinterface.h"
+#include  <string>
 
 class MeshAgentInterface
 {

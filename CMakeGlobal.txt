@@ -13,8 +13,9 @@ MARK_AS_ADVANCED(CMAKE_BUILD_TYPE)
 #  some general options
 #
 
-OPTION(USE_ARCH "Use archictecture specifc paths (ENV(ARCH))" OFF)
+OPTION(USE_ARCH "Use archictecture specifc paths (ENV(ARCH))" ON)
 OPTION(UMFPACK_WITH_AMD "libamd is needed for new libumfpack" OFF)
+OPTION(BUILD_SHARED_LIBS "Build shared libraries" OFF)
 
 #############################################
 
@@ -25,22 +26,17 @@ OPTION(UMFPACK_WITH_AMD "libamd is needed for new libumfpack" OFF)
 SET(GASCOIGNE_STD $ENV{GASCOIGNE}/GascoigneStd CACHE STRING "Path for GascoigneStd")
 
 IF(USE_ARCH)
-  SET(LIBRARY_OUTPUT_PATH $ENV{GASCOIGNE}/$ENV{ARCH}/lib CACHE PATH "Single output directory for building all libraries.")
-  SET(LIBRARY_PATHS_GUESS "$ENV{HOME}/local/$ENV{ARCH}/lib $ENV{GASCOIGNE}/$ENV{ARCH}/lib" CACHE STRING "guess for library path")
+  SET(LIBRARY_OUTPUT_PATH $ENV{GASBIN}/$ENV{ARCH}/lib CACHE PATH "Single output directory for building all libraries.")
+  SET(LIBRARY_PATHS_GUESS $ENV{HOME}/local/$ENV{ARCH}/lib $ENV{GASCOIGNE}/$ENV{ARCH}/lib)
+  SET(EXECUTABLE_OUTPUT_PATH $ENV{GASBIN}/$ENV{ARCH}/bin CACHE PATH "Single output directory for building all executables.")
 ELSE(USE_ARCH)
   SET(LIBRARY_OUTPUT_PATH $ENV{GASCOIGNE}/lib CACHE PATH "Single output directory for building all libraries.")
-  SET(LIBRARY_PATHS_GUESS 
-/usr/local/lib 
-$ENV{HOME}/local/lib 
-$ENV{GASCOIGNE}/lib
- CACHE STRING "guess for library path")
+  SET(LIBRARY_PATHS_GUESS /usr/local/lib $ENV{HOME}/local/lib $ENV{GASCOIGNE}/lib)
+  SET(EXECUTABLE_OUTPUT_PATH . CACHE PATH "Single output directory for building all executables.")
 ENDIF(USE_ARCH)
 
-SET(EXECUTABLE_OUTPUT_PATH . CACHE PATH "Single output directory for building all executables.")
 
 LINK_DIRECTORIES(${LIBRARY_OUTPUT_PATH})
-LINK_LIBRARIES(Solver Problems MeshInterpretor LinAlg Mesh Common)
-LINK_LIBRARIES(${METIS_LIBRARY} ${UMFPACK_LIBRARY})
 
 #############################################
 
@@ -48,12 +44,14 @@ LINK_LIBRARIES(${METIS_LIBRARY} ${UMFPACK_LIBRARY})
 #  additional libraries
 #
 
-FIND_LIBRARY(METIS_LIBRARY metis ${LIBRARY_PATHS_GUESS})
-FIND_LIBRARY(UMFPACK_LIBRARY umfpack ${LIBRARY_PATHS_GUESS})
+FIND_LIBRARY(METIS_LIBRARY metis PATHS ${LIBRARY_PATHS_GUESS})
+FIND_LIBRARY(UMFPACK_LIBRARY umfpack PATHS ${LIBRARY_PATHS_GUESS})
 
 IF(UMFPACK_WITH_AMD)
   FIND_LIBRARY(AMD_LIBRARY NAMES amd PATHS ${LIBRARY_PATHS_GUESS})
-  LINK_LIBRARIES(${AMD_LIBRARY})
+  SET(EXT_LIBS ${METIS_LIBRARY} ${UMFPACK_LIBRARY} ${AMD_LIBRARY})
+ELSE(UMFPACK_WITH_AMD)
+  SET(EXT_LIBS ${METIS_LIBRARY} ${UMFPACK_LIBRARY})
 ENDIF(UMFPACK_WITH_AMD)
 
 
