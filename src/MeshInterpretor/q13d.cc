@@ -213,7 +213,7 @@ void Q13d::ConstructInterpolator(MgInterpolatorInterface* I, const MeshTransferI
     MgInterpolatorNested* IP = dynamic_cast<MgInterpolatorNested*>(I);
     if(IP)
       {
-	IP->init(MT);
+	IP->BasicInit(MT);
 	return;
       }
   }

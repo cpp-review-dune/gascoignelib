@@ -7,12 +7,12 @@
 
 BaseQ12d::BaseQ12d()  
 {
-  init();
+  BasicInit();
 }
 
 /*------------------------------------------------------------------*/
 
-void BaseQ12d::init()
+void BaseQ12d::BasicInit()
 {
   N.resize(NDOF);  
   DN.resize(NDOF);  

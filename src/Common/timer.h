@@ -32,6 +32,7 @@ public:
 
   void init(const Timer& T)
     {
+      assert(0);
       for(const_iterator p = T.begin(); p!= T.end();p++)      add(p->first);
     }
 

@@ -54,7 +54,7 @@ public:
   virtual void  point_boundary(int ie, const Vertex2d& v) const
     { error("point_boundary 2d"); };
 
-  virtual void init(const Matrix& M)=0;
+/*   virtual void init(const Matrix& M)=0; */
   virtual void ReInit(const Matrix& M) const=0;
 
   virtual void  init_test_functions(Gascoigne::TestFunction& Phi, double w, int i) const=0;

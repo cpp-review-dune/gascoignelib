@@ -29,7 +29,7 @@ class BaseQ12d : public Base2d
   fixarray<2,double>          a,b;
   mutable nvector<double> dxy;
 
-  void init();
+  void BasicInit();
 
   double psi_x(int i, double x) const { return b[i]; }
 

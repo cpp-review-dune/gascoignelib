@@ -28,7 +28,7 @@ class BaseQ13d : public Base3d
 
   mutable nvector<double> dxy, dxz, dyz, dxyz;
 
-  void init()
+  void BasicInit()
     {
       N.resize(NDOF);  DN.resize(NDOF);  
       a[0] = 1.;  b[0] = -1.;

@@ -7,7 +7,7 @@ using namespace Gascoigne;
 
 /*--------------------------------------------------------*/
 
-void MgInterpolatorNested::init(const MeshTransferInterface* MT)
+void MgInterpolatorNested::BasicInit(const MeshTransferInterface* MT)
 {
   const GascoigneMeshTransfer* GT = dynamic_cast<const GascoigneMeshTransfer*>(MT);
 

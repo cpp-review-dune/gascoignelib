@@ -61,7 +61,7 @@ void EdgeManager::BSETest() const
 
 	  if (nachbar==-10) 
 	    {
-	      cout << "problem 2 in edge " << i << " " << e << " edgenumber " << edge << endl;
+	      cout << "problem 2 in edge " << i << " " << e << " edgenumber " << edge << " f= " << f << endl;
 	    }
 	}
     }

@@ -29,7 +29,7 @@ public:
   double  dt   () const;
   double theta() const;
   void iteration(int i);
-  void init(double tb, double det, double te, const std::string& sch, int ne, double t);
+  void ReInit(double tb, double det, double te, const std::string& sch, int ne, double t);
   void scale_timestep(double s) { _deltat *= s;}
   void stepback() { _time -= _deltat;}
   double time() const { return _time;}

@@ -67,7 +67,7 @@ int TimeInfo::ftstep() const
 
 /*-----------------------------------------*/
 
-void TimeInfo::init(double tb, double te, double det, const string& sch, int ne, double tt)
+void TimeInfo::ReInit(double tb, double te, double det, const string& sch, int ne, double tt)
 {
   _tbegin = tb;
   _time      = _tbegin;

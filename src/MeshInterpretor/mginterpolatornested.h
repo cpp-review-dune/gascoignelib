@@ -25,7 +25,7 @@ public:
 
   MgInterpolatorNested() : MgInterpolatorInterface() {}
 
-  void init(const MeshTransferInterface* MT);
+  void BasicInit(const MeshTransferInterface* MT);
   
   void restrict_zero   (Gascoigne::GlobalVector&, const Gascoigne::GlobalVector&) const;
   void prolongate_add  (Gascoigne::GlobalVector&, const Gascoigne::GlobalVector&) const;

@@ -30,17 +30,17 @@ public:
   
  public:
   
-  fixarray<N,T>()      { init(T());}
-  fixarray<N,T>(const T& d) { init(d);}
+  fixarray<N,T>()      { BasicInit(T());}
+  fixarray<N,T>(const T& d) { BasicInit(d);}
   fixarray<N,T>(const fixarray<N,T>& v)
     {
-      init(T());
+      BasicInit(T());
       array_copy(v.begin());
       //copy(v.begin(),v.end(),begin());
     }
   fixarray(const_iterator b)
     {
-      init(T());
+      BasicInit(T());
       array_copy(b);
     }
   
@@ -49,7 +49,7 @@ public:
 //       Destroy(begin(),end());
     }
   
-  void init(const T& d)
+  void BasicInit(const T& d)
     {
       // Braucht man das wirklich ???
 //       for(int i=0;i<N;i++)  construct(&(val[i]),d);

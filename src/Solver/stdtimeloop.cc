@@ -27,7 +27,7 @@ void StdTimeLoop::BasicInit(const ParamFile* paramfile)
   FS.NoComplain();
   FS.readfile(_paramfile,"Loop");
 
-  info.init(tbegin,tend,deltat,scheme,neuler,theta);
+  info.ReInit(tbegin,tend,deltat,scheme,neuler,theta);
 }
 
 /*-------------------------------------------------*/
