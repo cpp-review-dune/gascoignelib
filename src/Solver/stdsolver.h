@@ -301,10 +301,11 @@ class StdSolver : public virtual SolverInterface
   //
   virtual void MemoryVector(VectorInterface& p);
   virtual void DeleteVector(VectorInterface* p) const;
-  virtual double ScalarProduct(const VectorInterface& y, const VectorInterface& x) const;
-  virtual void Equ(VectorInterface& dst, double s, const VectorInterface& src) const;
-  virtual void Add(VectorInterface& dst, double s, const VectorInterface& src) const;
-  virtual double Norm(const VectorInterface& dst) const;  
+
+  double ScalarProduct(const VectorInterface& y, const VectorInterface& x) const;
+  void Equ(VectorInterface& dst, double s, const VectorInterface& src) const;
+  void Add(VectorInterface& dst, double s, const VectorInterface& src) const;
+  double Norm(const VectorInterface& dst) const;  
 };
 }
 
