@@ -31,13 +31,12 @@ protected:
 
 public:
 
-
 //
 ////  Con(De)structor 
 //
 
   LocalEquation(const Gascoigne::ParamFile* paramfile);
-  ~LocalEquation() {}
+  ~LocalEquation() {};
 
   std::string GetName() const {return "Local";}
 
@@ -51,12 +50,9 @@ public:
   
   void Matrix(Gascoigne::EntryMatrix& D, const Gascoigne::FemFunction& U, const Gascoigne::TestFunction& M, const Gascoigne::TestFunction& N) const;
 
-
   void L(Gascoigne::DoubleVector& dst, const Gascoigne::FemFunction& U) const;
   void S(Gascoigne::nmatrix<double>& dst, const Gascoigne::FemFunction& U, const Gascoigne::TestFunction& N) const;
   void LMatrix(Gascoigne::nmatrix<double>& dst, const Gascoigne::FemFunction& U, const Gascoigne::TestFunction& N) const;
-  
 };
-
 
 #endif

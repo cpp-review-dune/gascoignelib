@@ -1,7 +1,6 @@
 #include  "localequation.h"
 #include  "filescanner.h"
 
-
 using namespace std;
 using namespace Gascoigne;
 
