@@ -676,9 +676,9 @@ void StdSolver::BoundaryInit(BasicGhostVector& Gu)  const
       else        (*DD)(y,GetMesh()->vertex3d(ind),color);
       
       for (int c=0; c<u.ncomp(); c++)
-  	{
-	  u(ind,c) = y[c];
-	}
+        {
+          u(ind,c) = y[c];
+        }
     }
 }
 
