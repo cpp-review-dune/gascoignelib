@@ -11,7 +11,7 @@ namespace Gascoigne
 {
 /* ----------------------------------------- */
 
-void Q2Gls2d::BasicInit(const Gascoigne::ParamFile* paramfile)
+void Q2Gls2d::BasicInit(const ParamFile* paramfile)
 {
   assert(GetIntegrator()==NULL);
   GetIntegratorPointer() =  new GalerkinGlsIntegratorQ2<2>;

@@ -22,8 +22,8 @@ public:
 
   HNStructureQ23d();
 
-  void Average(Gascoigne::GlobalVector& u) const;
-  void Distribute(Gascoigne::GlobalVector& u) const;
+  void Average(GlobalVector& u) const;
+  void Distribute(GlobalVector& u) const;
   void CondenseHanging(EntryMatrix& E, IntVector& indices) const;
   void CondenseHanging(IntVector& indices) const;
   void CondenseHangingPatch(EntryMatrix& E, IntVector& indices) const { assert(0);}

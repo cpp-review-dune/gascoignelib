@@ -27,7 +27,7 @@ class DwrFem2d : public Q22d
   DwrFem2d();
   ~DwrFem2d() {}
 
-  void BasicInit(const Gascoigne::ParamFile* paramfile);
+  void BasicInit(const ParamFile* paramfile);
   void Form(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const;
   void Rhs(GlobalVector& f, const DomainRightHandSide& RHS, double s) const;
 };
@@ -48,7 +48,7 @@ class DwrFem3d : public Q23d
   DwrFem3d();
   ~DwrFem3d() {}
 
-  void BasicInit(const Gascoigne::ParamFile* paramfile);
+  void BasicInit(const ParamFile* paramfile);
   void Form(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const;
   void Rhs(GlobalVector& f, const DomainRightHandSide& RHS, double s) const;
 };

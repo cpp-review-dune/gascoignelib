@@ -41,7 +41,7 @@ public:
       lpspoint(h,U,Q,v);
     };
 
-  virtual void StabForm(Gascoigne::VectorIterator b, const FemFunction& U, const FemFunction& UP, const TestFunction& N) const=0;
+  virtual void StabForm(VectorIterator b, const FemFunction& U, const FemFunction& UP, const TestFunction& N) const=0;
 
   virtual void StabMatrix(EntryMatrix& A, const FemFunction& U, const TestFunction& Np, const DerivativeVector& Mp) const=0;
 };

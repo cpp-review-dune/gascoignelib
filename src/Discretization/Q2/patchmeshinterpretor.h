@@ -16,9 +16,9 @@
 #include  "basicmeshinterpretor.h"
 #include  "patchmesh.h"
 
+
 namespace Gascoigne
 {
-
 class PatchMeshInterpretor : public BasicMeshInterpretor
 {
 protected:
@@ -33,10 +33,11 @@ protected:
 
   virtual void Transformation(FemInterface::Matrix& T, int iq) const;
   virtual double compute_element_mean_matrix(int iq, EntryMatrix& E) const;
-  int RhsPoint(Gascoigne::GlobalVector& f, const Vertex2d& p0, int comp, double d) const;
-  int RhsPoint(Gascoigne::GlobalVector& f, const Vertex3d& p0, int comp, double d) const;
   virtual nmatrix<double> GetLocalInterpolationWeights(int iq) const { assert(0);}
 
+  virtual int GetPatchNumber(const Vertex2d& p0, Vertex2d& p) const { assert(0); }
+  virtual int GetPatchNumber(const Vertex3d& p0, Vertex3d& p) const { assert(0); }
+  
   const PatchMesh* GetPatchMesh() const {
     const PatchMesh* MP = dynamic_cast<const PatchMesh*>(GetMesh());
     assert(MP);
@@ -53,25 +54,25 @@ public:
 
   void Structure(SparseStructureInterface* S) const;
 
-  void Form(Gascoigne::GlobalVector& f, const Gascoigne::GlobalVector& u, const Equation& EQ, double d) const;
-  void Matrix(MatrixInterface& A, const Gascoigne::GlobalVector& u, const Equation& EQ, double) const;
+  void Form(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const;
+  void Matrix(MatrixInterface& A, const GlobalVector& u, const Equation& EQ, double) const;
   void MassMatrix(MatrixInterface& M) const;
 
-  void ComputeError(const Gascoigne::GlobalVector& u, Gascoigne::LocalVector& err, const ExactSolution* ES) const;
+  void ComputeError(const GlobalVector& u, LocalVector& err, const ExactSolution* ES) const;
 
-  void Rhs(Gascoigne::GlobalVector& f, const DomainRightHandSide& RHS, double s) const;
-  void DiracRhs(Gascoigne::GlobalVector& f, const RightHandSideData& RHS, double s) const;
-  int RhsPoint(Gascoigne::GlobalVector& f, const std::vector<Vertex2d>& p0, int comp, const nvector<double>& d) const;
-  int RhsPoint(Gascoigne::GlobalVector& f, const std::vector<Vertex3d>& p0, int comp, const nvector<double>& d) const;
-  void RhsNeumann(Gascoigne::GlobalVector& f, const Gascoigne::IntSet& Colors,  const NeumannData& NRHS, double s) const;
+  void Rhs(GlobalVector& f, const DomainRightHandSide& RHS, double s) const;
+  void DiracRhs(GlobalVector& f, const DiracRightHandSide& DRHS, double s) const;
+  void DiracRhsPoint(GlobalVector& f,const DiracRightHandSide& DRHS,const Vertex2d& p0,int i,double s) const;
+  void DiracRhsPoint(GlobalVector& f,const DiracRightHandSide& DRHS,const Vertex3d& p0,int i,double s) const;
+  
+  void RhsNeumann(GlobalVector& f, const IntSet& Colors,  const NeumannData& NRHS, double s) const;
 
   void InitFilter(nvector<double>&) const;
 
   // Functionals
-  double ComputeBoundaryFunctional(const Gascoigne::GlobalVector& u, const BoundaryFunctional& BF) const;
-  double ComputeDomainFunctional(const Gascoigne::GlobalVector& u, const DomainFunctional& F) const;
+  double ComputeBoundaryFunctional(const GlobalVector& u, const BoundaryFunctional& BF) const;
+  double ComputeDomainFunctional(const GlobalVector& u, const DomainFunctional& F) const;
 };
-
 }
 
 #endif

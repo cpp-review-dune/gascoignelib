@@ -28,7 +28,7 @@ public:
 
   std::string GetName() const {return "Q2Gls";}
   
-  void BasicInit(const Gascoigne::ParamFile* paramfile);
+  void BasicInit(const ParamFile* paramfile);
 };
 
 }

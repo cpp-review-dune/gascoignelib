@@ -10,7 +10,7 @@ namespace Gascoigne
 {
 /* ----------------------------------------- */
 
-void Q1LpsStab::BasicInit(const Gascoigne::ParamFile* paramfile, const HNStructureInterface* hn)
+void Q1LpsStab::BasicInit(const ParamFile* paramfile, const HNStructureInterface* hn)
 {
   PatchMeshInterpretor::BasicInit(paramfile);
   HN = hn;
@@ -30,7 +30,7 @@ void Q1LpsStab::LocalToGlobal(MatrixInterface& A, EntryMatrix& E, int iq, double
 
 /* ----------------------------------------- */
 
-void Q1LpsStab2d::BasicInit(const Gascoigne::ParamFile* paramfile, const HNStructureInterface* hn)
+void Q1LpsStab2d::BasicInit(const ParamFile* paramfile, const HNStructureInterface* hn)
 {
   assert(PatchMeshInterpretor::GetIntegrator()==NULL);
   PatchMeshInterpretor::GetIntegratorPointer() =  new LpsIntegratorQ1<2>;
@@ -45,7 +45,7 @@ void Q1LpsStab2d::BasicInit(const Gascoigne::ParamFile* paramfile, const HNStruc
 
 /* ----------------------------------------- */
 
-void Q1LpsStab3d::BasicInit(const Gascoigne::ParamFile* paramfile, const HNStructureInterface* hn)
+void Q1LpsStab3d::BasicInit(const ParamFile* paramfile, const HNStructureInterface* hn)
 {
   assert(PatchMeshInterpretor::GetIntegrator()==NULL);
   PatchMeshInterpretor::GetIntegratorPointer() =  new LpsIntegratorQ1<3>;

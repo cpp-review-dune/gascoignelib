@@ -27,6 +27,7 @@ class IntegratorQ1Q2 : public BasicIntegrator
 	   const FemInterface& FemL, const LocalNodeData& Q) const;
   void Form(const Equation& EQ, LocalVector& F, const FemInterface& FemH, 
 	    const FemInterface& FemL, const LocalVector& U, const LocalNodeData& Q) const;
+  void DiracRhsPoint(LocalVector& b, const FemInterface& E, const Vertex<DIM>& p, const DiracRightHandSide& DRHS, int i, const LocalNodeData& Q) const;
 };
 
 }

@@ -14,12 +14,13 @@
 
 namespace Gascoigne
 {
-
 class Q22d : public Q2
 {
 protected:
 
   nmatrix<double> GetLocalInterpolationWeights(int iq) const;
+  int GetPatchNumber(const Vertex2d& p0, Vertex2d& p) const;
+  void VertexTransformation(const Vertex2d& p0, Vertex2d& p, int iq) const;
 
 public:
 
@@ -32,10 +33,10 @@ public:
 
   std::string GetName() const {return "Q22d";}
   
-  void BasicInit(const Gascoigne::ParamFile* paramfile);
+  void BasicInit(const ParamFile* paramfile);
 
   void ConstructInterpolator(MgInterpolatorInterface* I, const MeshTransferInterface* GMT);
 };
-
 }
+
 #endif

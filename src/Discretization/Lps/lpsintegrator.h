@@ -22,8 +22,8 @@ class LpsIntegrator : public BasicIntegrator
 {
 protected:
 
-  mutable Gascoigne::FemFunction   UHP;
-  mutable Gascoigne::FemFunction   NLPS, MLPS;
+  mutable FemFunction   UHP;
+  mutable FemFunction   NLPS, MLPS;
   void Projection(const FemInterface& FEM) const;
   double  CellWeight;
 
@@ -57,14 +57,14 @@ protected:
 
   std::string GetName() const {return "LpsQ1";}
   void ResetMatrix(EntryMatrix& E, int n, int ncomp) const;
-  void VectorReinit(Gascoigne::LocalVector& F, int n, int ncomp) const;
+  void VectorReinit(LocalVector& F, int n, int ncomp) const;
 
 public:
 
   LpsIntegratorQ1<DIM>();
   ~LpsIntegratorQ1<DIM>() {}
 
-  void Form(const Equation& EQ, Gascoigne::LocalVector& F, const FemInterface& FEM, const LocalVector&U, const LocalNodeData& Q) const;
+  void Form(const Equation& EQ, LocalVector& F, const FemInterface& FEM, const LocalVector&U, const LocalNodeData& Q) const;
   void Matrix(const Equation& EQ, EntryMatrix& E, const FemInterface& FEM, const LocalVector& U, const LocalNodeData& Q) const;
 };
 

@@ -32,6 +32,9 @@ int Q2::n() const
 {
   return GetMesh()->nnodes();
 }
+
+/* ----------------------------------------- */
+
 int Q2::n_withouthanging() const
 {
   return GetMesh()->nnodes()-HN->nhnodes();

@@ -33,7 +33,7 @@ class Q1LpsStab : public PatchMeshInterpretor
 
   Q1LpsStab() : PatchMeshInterpretor() {};
   int n() const { return GetMesh()->nnodes();}
-  void BasicInit(const Gascoigne::ParamFile* paramfile, const HNStructureInterface*);
+  void BasicInit(const ParamFile* paramfile, const HNStructureInterface*);
 };
 
 /*----------------------------------------------*/
@@ -47,7 +47,7 @@ class Q1LpsStab2d : public Q1LpsStab
  public:
 
   Q1LpsStab2d() : Q1LpsStab() {};
-  void BasicInit(const Gascoigne::ParamFile* paramfile, const HNStructureInterface*);
+  void BasicInit(const ParamFile* paramfile, const HNStructureInterface*);
 };
 
 /*----------------------------------------------*/
@@ -61,7 +61,7 @@ class Q1LpsStab3d : public Q1LpsStab
  public:
 
   Q1LpsStab3d() : Q1LpsStab() {};
-  void BasicInit(const Gascoigne::ParamFile* paramfile, const HNStructureInterface*);
+  void BasicInit(const ParamFile* paramfile, const HNStructureInterface*);
 };
 
 /*----------------------------------------------*/

@@ -5,10 +5,10 @@
 
 using namespace std;
 
-namespace Gascoigne
-{
 /* ----------------------------------------- */
 
+namespace Gascoigne
+{
 void PatchMeshInterpretor::Structure(SparseStructureInterface* SI) const
 {
   SparseStructure* S = dynamic_cast<SparseStructure*>(SI);
@@ -56,8 +56,6 @@ void PatchMeshInterpretor::Transformation(FemInterface::Matrix& T, int iq) const
 }
 
 /* ----------------------------------------- */
-/* ----------------------------------------- */
-/* ----------------------------------------- */
 
 void PatchMeshInterpretor::Form(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const
 {
@@ -84,7 +82,7 @@ void PatchMeshInterpretor::Matrix(MatrixInterface& A, const GlobalVector& u, con
   nmatrix<double> T;
 
   GlobalToGlobalData();
-  EQ.SetParameterData(__qq);
+   EQ.SetParameterData(__qq);
 
   for(int iq=0;iq<GetPatchMesh()->npatches();++iq)
     {
@@ -219,7 +217,7 @@ void PatchMeshInterpretor::InitFilter(nvector<double>& F) const
       double cellsize = GetIntegrator()->MassMatrix(E,*GetFem());
       PF->AddDomainPiece(cellsize);
 
-      IntVector ind = *GetPatchMesh()->IndicesOfPatch(iq);
+      nvector<int> ind = *GetPatchMesh()->IndicesOfPatch(iq);
 
       for(int j=0; j<ind.size(); j++)
 	{
@@ -234,65 +232,96 @@ void PatchMeshInterpretor::InitFilter(nvector<double>& F) const
 
 /* ----------------------------------------- */
 
-void PatchMeshInterpretor::DiracRhs(GlobalVector& f, const RightHandSideData& RHS, double s) const
+void PatchMeshInterpretor::DiracRhs(GlobalVector& f, const DiracRightHandSide& DRHS, double s) const
 {
-  assert(0);
+  int dim = GetMesh()->dimension();
+  vector<int> comps = DRHS.GetComps();
+  int nn = comps.size();
+
+  vector<double> up(nn,0);
+ 
+  if (dim == 2)
+    {
+      vector<Vertex2d> v2d = DRHS.GetPoints2d();
+      assert(nn==v2d.size());
+      
+      for(int i=0;i<nn;++i)
+	{
+	  DiracRhsPoint(f,DRHS,v2d[i],i,s);
+	}
+    }
+  else if (dim == 3)
+    {
+      vector<Vertex3d> v3d = DRHS.GetPoints3d();
+      assert(nn==v3d.size());
+      for(int i=0;i<nn;++i)
+	{
+	  DiracRhsPoint(f,DRHS,v3d[i],i,s);
+	}
+    }
+  else
+    {
+      cerr << "wrong dim = " << dim << endl;
+      abort();
+    }
 }
 
 /* ----------------------------------------- */
 
-int PatchMeshInterpretor::RhsPoint(GlobalVector& f, const vector<Vertex2d>& p0, int comp, const nvector<double>& d) const
+void PatchMeshInterpretor::DiracRhsPoint(GlobalVector& f,const DiracRightHandSide& DRHS,const Vertex2d& p0,int i,double s) const
 {
-  int count = 0;
-  for (int i=0; i<p0.size(); i++)
-    {
-      count += RhsPoint(f,p0[i],comp,d[i]);
-    }
-  return count;
-}
+  __F.ReInit(f.ncomp(),GetFem()->n());
 
-/* ----------------------------------------- */
-
-int PatchMeshInterpretor::RhsPoint(GlobalVector& f, const vector<Vertex3d>& p0, int comp, const nvector<double>& d) const
-{
-  int count = 0;
-  for (int i=0; i<p0.size(); i++)
-    {
-      count += RhsPoint(f,p0[i],comp,d[i]);
-    }
-  return count;
-}
-
-/*-----------------------------------------*/
-
-int PatchMeshInterpretor::RhsPoint(GlobalVector& f, const Vertex2d& p0, int comp, double d) const
-{
-  assert(0);
-//   nvector<Vertex2d> p(4);
-//   Vertex2d Tranfo_p0;
+  Vertex2d Tranfo_p0;
    
-//   int iq=cell_number(p0,p);
-//   if (iq==-1) return 0;
-  
-//   Trafo(p,p0,Tranfo_p0);
-  
-//   Transformation(T,iq);
-//   GetFem()->ReInit(T);
-//   GetIntegrator()->RhsPoint(F,*GetFem(),Tranfo_p0,comp);
+  int iq = GetPatchNumber(p0,Tranfo_p0);
+  if (iq==-1)
+    {
+      cerr << "PatchMeshInterpretor::DiracRhsPoint point not found\n";
+      abort();
+    }
 
-//   LocalToGlobal(f,iq,__F,d);
+  nmatrix<double> T;
+  Transformation(T,iq);
+  GetFem()->ReInit(T);
+  
+  GlobalToLocalData(iq);
+  GlobalToGlobalData();
+  DRHS.SetParameterData(__qq);
 
-//   return 1;
+  GetIntegrator()->DiracRhsPoint(__F,*GetFem(),Tranfo_p0,DRHS,i,__Q);
+  LocalToGlobal(f,__F,iq,s);
 }
 
 /* ----------------------------------------- */
 
-int PatchMeshInterpretor::RhsPoint(GlobalVector& f, const Vertex3d& p0, int comp, double d) const
+void PatchMeshInterpretor::DiracRhsPoint(GlobalVector& f,const DiracRightHandSide& DRHS,const Vertex3d& p0,int i,double s) const
 {
-  assert(0);
+  __F.ReInit(f.ncomp(),GetFem()->n());
+
+  Vertex3d Tranfo_p0;
+   
+  int iq = GetPatchNumber(p0,Tranfo_p0);
+  if (iq==-1)
+    {
+      cerr << "PatchMeshInterpretor::DiracRhsPoint point not found\n";
+      abort();
+    }
+
+  nmatrix<double> T;
+  Transformation(T,iq);
+  GetFem()->ReInit(T);
+  
+  GlobalToLocalData(iq);
+  GlobalToGlobalData();
+  DRHS.SetParameterData(__qq);
+
+  GetIntegrator()->DiracRhsPoint(__F,*GetFem(),Tranfo_p0,DRHS,i,__Q);
+  LocalToGlobal(f,__F,iq,s);
 }
 
 /* ----------------------------------------- */
+
 double PatchMeshInterpretor::ComputeBoundaryFunctional(const GlobalVector& u, const BoundaryFunctional& BF) const 
 {
   assert(0);

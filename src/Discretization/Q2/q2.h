@@ -20,9 +20,6 @@ namespace Gascoigne
 class Q2 : public PatchMeshInterpretor
 {
 protected:
-
-  typedef Gascoigne::GlobalVector  GlobalVector; 
-
   HNStructureQ1*    HN;
 
   nvector<int> GetLocalIndices(int iq) const {

@@ -37,7 +37,7 @@ HNStructureQ23d::HNStructureQ23d() : HNStructureQ13d()
 
 /*-----------------------------------------*/
 
-void HNStructureQ23d::Average(Gascoigne::GlobalVector& u) const
+void HNStructureQ23d::Average(GlobalVector& u) const
 {
   for(const_fiterator p=faces->begin(); p!=faces->end(); p++)
     {
@@ -55,7 +55,7 @@ void HNStructureQ23d::Average(Gascoigne::GlobalVector& u) const
 
 /*-----------------------------------------*/
 
-void HNStructureQ23d::Distribute(Gascoigne::GlobalVector& u) const
+void HNStructureQ23d::Distribute(GlobalVector& u) const
 {
   for(const_fiterator p=faces->begin(); p!=faces->end(); p++)
     {
