@@ -335,6 +335,24 @@ class CompVector : public nvector<T>
         }
       return sqrt(d);
     }
+  nvector<double> CompNorm() const
+    {      
+      nvector<double> d(N,0.);
+
+      for(int c=0;c<N;c++)
+        {
+          const_iterator       first   = begin()  +c;
+	  const_iterator last   = end();
+      
+	  while( first < last)
+	    {
+	      d[c] += *first * *first;
+	      first += N;
+	    }
+	  d[c] = sqrt(d[c]);
+	}
+      return d;
+    }
   void Add(const nvector<double>& scp, const CompVector<T>& y)
     {
       for(int c=0;c<N;c++)
