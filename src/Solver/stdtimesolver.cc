@@ -50,7 +50,11 @@ void StdTimeSolver::SetProblem(const ProblemDescriptorInterface& PDX)
 {
   const Equation* EQ = PDX.GetEquation();
 
-  if (EQ) EQ->SetTimePattern(GetTimePattern());
+  if (EQ) 
+    {
+      GetTimePattern().reservesize(EQ->GetNcomp(),EQ->GetNcomp(),0.);
+      EQ->SetTimePattern(GetTimePattern());
+    }
   
   StdSolver::SetProblem(PDX);
 }

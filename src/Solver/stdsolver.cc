@@ -860,8 +860,9 @@ void StdSolver::Rhs(GlobalVector& f, double d) const
   
   if(NRHS)
     {
-       const BoundaryManager*  BM   = GetProblemDescriptor()->GetBoundaryManager();
-       GetMeshInterpretor()->RhsNeumann(f,BM->GetNeumannColors(),*NRHS,d);	  
+      assert(NRHS->GetNcomp()==f.ncomp());
+      const BoundaryManager*  BM   = GetProblemDescriptor()->GetBoundaryManager();
+      GetMeshInterpretor()->RhsNeumann(f,BM->GetNeumannColors(),*NRHS,d);	  
     }
   
 

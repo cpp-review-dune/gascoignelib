@@ -171,6 +171,7 @@ void BasicLoop::InitSolution(MultiLevelGhostVector& u)
   else if (_initial=="boundary") GetMultiLevelSolver()->GetSolver()->BoundaryInit(u);
   else
     {
+      cerr << "BasicLoop::InitSolution():\npossible values for init: \"analytic\", \"file\", \"boundary\"\n";
       assert(0);
     }
   GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(u);

@@ -1,13 +1,13 @@
 #ifndef __DomainRightHandSide_h
 #define __DomainRightHandSide_h
 
-#include "application.h"
-#include "vertex.h"
+#include  "application.h"
+#include  "vertex.h"
 
 namespace Gascoigne
 {
 
-/**********************************************************/
+/*-------------------------------------------------------*/
 
   class DomainRightHandSide : public virtual Application
   {

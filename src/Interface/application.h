@@ -13,6 +13,9 @@
 
 #include  "gascoigne.h"
 
+
+/*-------------------------------------------------------*/
+
 namespace Gascoigne
 {
   class Application

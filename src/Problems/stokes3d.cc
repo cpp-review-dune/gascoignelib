@@ -1,5 +1,6 @@
 #include  "stokes3d.h"
 
+#define P U[0]
 
 /*-----------------------------------------*/
 
@@ -44,9 +45,9 @@ void Stokes3d::Form(VectorIterator b, const FemFunction& U, const TestFunction& 
 
   ////////////// Momentum ////////////////////////////
 
-  b[1] -= U[0].m()*N.x();
-  b[2] -= U[0].m()*N.y();
-  b[3] -= U[0].m()*N.z();
+  b[1] -= P.m()*N.x();
+  b[2] -= P.m()*N.y();
+  b[3] -= P.m()*N.z();
 	  
   // viscous terms
   b[1] += _visc * Laplace(U[1],N);
@@ -80,3 +81,5 @@ void Stokes3d::Matrix(EntryMatrix& A, const FemFunction& U, const TestFunction& 
 }
 
 /*-----------------------------------------*/
+
+#undef P

@@ -1113,6 +1113,7 @@ void HierarchicalMesh2d::FillAllBoundaryLines()
       for(int e=0;e<4;++e)
 	{
 	  QuadLawOrder().global_edge_unsorted(edge,q,e);
+	  sort(edge.begin(),edge.end());
 	  HangBLList::iterator p = B.find(edge);
 	  if(p==B.end())  
 	    {

@@ -1,6 +1,7 @@
 #include  "stokes2d.h"
 #include  "filescanner.h"
 
+#define P U[0]
 
 /*-----------------------------------------*/
 
@@ -19,12 +20,11 @@ Stokes2d::Stokes2d() : Equation()
  
 /*-----------------------------------------*/
 
-void Stokes2d::SetTimePattern(TimePattern& P) const
+void Stokes2d::SetTimePattern(TimePattern& TP) const
 {
-  P.reservesize(GetNcomp(),GetNcomp(),0.);
-  P(0,0) = _penalty;
-  P(1,1) = 1.;
-  P(2,2) = 1.;
+  TP(0,0) = _penalty;
+  TP(1,1) = 1.;
+  TP(2,2) = 1.;
 }
 
 /*-----------------------------------------*/
@@ -63,8 +63,8 @@ void Stokes2d::Form(VectorIterator b, const FemFunction& U, const TestFunction& 
 
   ////////////// Momentum ////////////////////////////////////////////////
 
-  b[1] -= U[0].m()*N.x();
-  b[2] -= U[0].m()*N.y();
+  b[1] -= P.m()*N.x();
+  b[2] -= P.m()*N.y();
 	  
   // viscous terms
   b[1] += _visc * Laplace(U[1],N);
@@ -92,3 +92,5 @@ void Stokes2d::Matrix(EntryMatrix& A, const FemFunction& U, const TestFunction& 
 }
 
 /*------------------------------------------------------*/
+
+#undef P
