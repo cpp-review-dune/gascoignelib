@@ -204,7 +204,7 @@ void StdTimeSolver::AssembleMatrix(const BasicGhostVector& gu, double d)
   if (_dt==0.) return;
   assert(_theta>0.);
 
-  double scale = 1./(_dt*_theta);
+  double scale = d/(_dt*_theta);
   GetMatrix()->AddMassWithDifferentStencil(GetMassMatrix(),GetTimePattern(),scale);
 
   StdSolver::DirichletMatrix();
