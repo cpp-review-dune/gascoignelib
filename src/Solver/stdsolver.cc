@@ -157,13 +157,21 @@ MeshInterpretorInterface* StdSolver::NewMeshInterpretor(int dimension, const str
     {
       if (discname=="Q1")         return new Q12d;
       else if (discname=="Q1Gls") return new Q1Gls2d;
-      else    assert(0);
+      else 
+	{         
+	  cerr << " StdSolver::NewMeshInterpretor()\tunknown discname="<<discname<<endl;
+	  assert(0);
+	}
     }
   else if(dimension==3)
     {
       if (discname=="Q1")          return new Q13d;
       else if (discname=="Q1Gls")  return new Q1Gls3d;
-      else assert(0);
+      else 
+	{         
+	  cerr << " StdSolver::NewMeshInterpretor()\tunknown discname="<<discname<<endl;
+	  assert(0);
+	}
     }
   else
     {

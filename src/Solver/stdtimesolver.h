@@ -15,7 +15,7 @@
 
 /*-------------------------------------------------------------*/
 
-class StdTimeSolver : public StdSolver
+class StdTimeSolver : public virtual StdSolver
 {
 private:
 
