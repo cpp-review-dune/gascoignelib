@@ -33,4 +33,4 @@ SET(LOCAL_SRC
   localintegrator.cc
 )
 
-ADD_EXECUTABLE(Local LOCAL_SRC)
+ADD_EXECUTABLE(Local ${LOCAL_SRC})
