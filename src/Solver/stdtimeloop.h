@@ -11,7 +11,7 @@ class StdTimeLoop : public StdLoop
 {
 protected:
 
-  TimeInfo    info;
+  TimeInfo    _timeinfo;
   virtual std::string SolveTimePrimal(MultiLevelGhostVector& u, MultiLevelGhostVector& f);
 
   void TimeInfoBroadcast();

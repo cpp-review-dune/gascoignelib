@@ -387,7 +387,13 @@ void StdSolver::SetBoundaryVector(GlobalVector& f) const
   const BoundaryManager* BM = GetProblemDescriptor()->GetBoundaryManager();
   const Equation*        EQ = GetProblemDescriptor()->GetEquation();
   const DirichletData*   DD = GetProblemDescriptor()->GetDirichletData();
-  if(DD==NULL) return;
+  if(DD==NULL) {
+    if(BM->GetDirichletColors().size()!=0) {
+      cerr << "StdSolver::SetBoundaryVector:  no \"DirichletData\" but \"\"DirichletColors\"\"\n";
+      assert(0);
+    }
+    return;
+  }
   SetBoundaryVectorStrong(f, *BM,*EQ,*DD);
 }
 

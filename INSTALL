@@ -34,11 +34,11 @@ The other variables are optional.
 
 2) You can compile in the directory GascoigneStd, but it is a good idea 
 to do compile in an empty dir which we call <GAS_STD_OBJ> in the following,
-<GAS_STD_SRC> stands for GascoigneStd.
+<GAS_STD> stands for GascoigneStd.
 
 3) cd <GAS_STD_OBJ>
 
-4) ccmake <GAS_STD_SRC>
+4) ccmake <GAS_STD>
    Follow the instructions of ccmake, e.g. press "c" for configure,
    Validate the path for external libraries metis and umfpack.
    A newer version of umfpack needs the additional library libamd.a.

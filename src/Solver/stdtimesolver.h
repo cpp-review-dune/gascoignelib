@@ -25,7 +25,7 @@ private:
 protected:
 
 
-  double dt, theta, time, rhs;
+  double _dt, _theta, _time, _rhs;
 
   const MatrixInterface* GetMassMatrix() const {return _MMP;}
   MatrixInterface* GetMassMatrix() {return _MMP;}
@@ -46,10 +46,11 @@ public:
   void RegisterMatrix();
   void ReInitMatrix();
 
-  void SetTimeData(double d, double th, double ti, double rh = -1);
+  void SetTimeData(double dt, double theta, double time, double rhs = -1);
   void SetProblem(const ProblemDescriptorInterface& PDX);
 
-  void TimeRhs(BasicGhostVector& f, const BasicGhostVector& u) const;
+  void TimeRhsOperator(BasicGhostVector& f, const BasicGhostVector& u) const;
+  void TimeRhs(int k, BasicGhostVector& f) const;
   void Residual (BasicGhostVector& y, const BasicGhostVector& x, double d) const;
   void AssembleMatrix(BasicGhostVector& u, double d);
   std::string GetName() const;

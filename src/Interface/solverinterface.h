@@ -109,7 +109,8 @@ class SolverInterface
   /// vector - rhs (integration)
   //
 
-  virtual void TimeRhs(BasicGhostVector& f, const BasicGhostVector& u) const {assert(0);}
+  virtual void TimeRhsOperator(BasicGhostVector& f, const BasicGhostVector& u) const {assert(0);}
+  virtual void TimeRhs(int k, BasicGhostVector& f) const {assert(0);}
   virtual void Rhs(BasicGhostVector& f, double d=1.) const=0;
 
   //

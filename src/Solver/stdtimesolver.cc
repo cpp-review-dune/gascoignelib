@@ -8,7 +8,7 @@ using namespace Gascoigne;
 /*-------------------------------------------------------------*/
   
 StdTimeSolver::StdTimeSolver()
-  : StdSolver(), _MMP(NULL), dt(0.), theta(0.), time(0.)
+  : StdSolver(), _MMP(NULL), _dt(0.), _theta(0.), _time(0.), _rhs(0.)
 {}
 
 /*-------------------------------------------------------------*/
@@ -27,14 +27,16 @@ string StdTimeSolver::GetName() const
 
 /*-------------------------------------------------------------*/
   
-void StdTimeSolver::SetTimeData(double d, double th, double ti, double rh) 
+void StdTimeSolver::SetTimeData(double dt, double theta, double time, double rhs) 
 {
-  dt    = d;
-  theta = th;
-  time  = ti;
-  rhs   = (rh<0) ? (1.-theta)/theta : rh;
+  _dt    = dt;
+  _theta = theta;
+  _time  = time;
+//   _rhs   = (rh<0) ? (1.-theta)/theta : rh;
+  _rhs = rhs;
+  if(rhs<0)  _rhs = (1.-theta)/theta;
 
-  GetProblemDescriptor()->SetTime(time,dt);
+  GetProblemDescriptor()->SetTime(_time,_dt);
 }
 
 /*-------------------------------------------------------------*/
@@ -99,24 +101,27 @@ void StdTimeSolver::BasicInit(int level, const ParamFile* paramfile, const MeshI
 
 /*-------------------------------------------------------*/
 
-void StdTimeSolver::TimeRhs(BasicGhostVector& gf, const BasicGhostVector& gu) const
+void StdTimeSolver::TimeRhsOperator(BasicGhostVector& gf, const BasicGhostVector& gu) const
 {
-  assert(theta>0.);
-
-  double d = -(1.-theta)/theta;
-
+  assert(_theta>0.);
+  double d = -(1.-_theta)/_theta;
   StdSolver::Residual(gf,gu,d);
 
-  if (dt>0.)
+  if (_dt>0.)
     {
       GlobalVector& f = GetGV(gf);
       const GlobalVector& u = GetGV(gu);
       
-      d = 1./(dt*theta);
-
+      double d = 1./(_dt*_theta);
       GetMassMatrix()->vmult_time(f,u,GetTimePattern(),d);
     }
-  StdSolver::Rhs(gf,rhs);
+}
+
+/*-------------------------------------------------------*/
+
+void StdTimeSolver::TimeRhs(int k, BasicGhostVector& gf) const
+{
+  StdSolver::Rhs(gf,_rhs);
 }
 
 /*-------------------------------------------------------*/
@@ -125,10 +130,10 @@ void StdTimeSolver::Residual(BasicGhostVector& gy, const BasicGhostVector& gx, d
 {
   StdSolver::Residual(gy,gx,d);
 
-  if (dt==0.) return;
-  assert(theta>0.);
+  if (_dt==0.) return;
+  assert(_theta>0.);
 
-  double scale = d/(dt*theta);
+  double scale = d/(_dt*_theta);
 
   const GlobalVector& x = GetGV(gx);
   GlobalVector& y = GetGV(gy);
@@ -141,10 +146,10 @@ void StdTimeSolver::AssembleMatrix(BasicGhostVector& gu, double d)
 {
   StdSolver::AssembleMatrix(gu,d);
 
-  if (dt==0.) return;
-  assert(theta>0.);
+  if (_dt==0.) return;
+  assert(_theta>0.);
 
-  double scale = 1./(dt*theta);
+  double scale = 1./(_dt*_theta);
   GetMatrix()->AddMassWithDifferentStencil(GetMassMatrix(),GetTimePattern(),scale);
 
   StdSolver::DirichletMatrix();

@@ -137,7 +137,7 @@ void LocalTimeLoop::backward(string iname, string name, int first, int last, con
   //GetMultiLevelSolver()->GetSolver()->Visu("Results/solve",u,last);
 
   double T = 2000.;
-  info.ReInitBackward(last,T);
+  _timeinfo.ReInitBackward(last,T);
   TimeInfoBroadcast();
   for (_iter=last; _iter>=first; _iter--)
     {
@@ -151,15 +151,17 @@ void LocalTimeLoop::backward(string iname, string name, int first, int last, con
       // rhs fuer alten Zeitschritt
       //
       f.zero();
-      GetMultiLevelSolver()->GetSolver()->TimeRhs(f,u);
+      GetMultiLevelSolver()->GetSolver()->TimeRhsOperator(f,u);
+      GetMultiLevelSolver()->GetSolver()->TimeRhs(1,f);
       
       // neuer Zeitschritt
       //
-      info.iteration_backward(_iter);
+      _timeinfo.iteration_backward(_iter);
       TimeInfoBroadcast();
 
-			ualt.equ(1.,u);
+      ualt.equ(1.,u);
 
+      GetMultiLevelSolver()->GetSolver()->TimeRhs(2,f);
       SolveTimePrimal(u,f);
       Output(u,"Results/backward");
       Functionals(u,f);
@@ -199,23 +201,25 @@ void LocalTimeLoop::forward(string iname, int first, int last, const ProblemDesc
     {
       // umschalten von Euler ?
       //
-      info.SpecifyScheme(_iter);
-			TimeInfoBroadcast();
+      _timeinfo.SpecifyScheme(_iter);
+      TimeInfoBroadcast();
       //
       // rhs fuer alten Zeitschritt
       //
       f.zero();
-      GetMultiLevelSolver()->GetSolver()->TimeRhs(f,u);
+      GetMultiLevelSolver()->GetSolver()->TimeRhsOperator(f,u);
+      GetMultiLevelSolver()->GetSolver()->TimeRhs(1,f);
       
       // neuer Zeitschritt
       //
-      info.iteration(_iter);
+      _timeinfo.iteration(_iter);
       TimeInfoBroadcast();
 
       ualt.equ(1.,u);
 
-      SolveTimePrimal(u,f
-);
+      GetMultiLevelSolver()->GetSolver()->TimeRhs(1,f);
+
+      SolveTimePrimal(u,f);
       Output(u,"Results/forward");
       Functionals(u,f);
     }

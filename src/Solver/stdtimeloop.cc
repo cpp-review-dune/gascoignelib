@@ -27,15 +27,13 @@ void StdTimeLoop::BasicInit(const ParamFile* paramfile)
   FS.NoComplain();
   FS.readfile(_paramfile,"Loop");
 
-  info.ReInit(tbegin,tend,deltat,scheme,neuler,theta);
+  _timeinfo.ReInit(tbegin,tend,deltat,scheme,neuler,theta);
 }
 
 /*-------------------------------------------------*/
 
 string StdTimeLoop::SolveTimePrimal(MultiLevelGhostVector& u, MultiLevelGhostVector& f)
 {
-  GetMultiLevelSolver()->GetSolver()->Rhs(f,info.rhs());
-
   GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(f);
   GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(u);
 
@@ -77,19 +75,21 @@ void StdTimeLoop::adaptive_run(const ProblemDescriptorInterface* PD)
       
       // umschalten von Euler ?
       //
-      info.SpecifyScheme(_iter);
+      _timeinfo.SpecifyScheme(_iter);
       TimeInfoBroadcast();
       //
       // rhs fuer alten Zeitschritt
       //
       f.zero();
-      GetMultiLevelSolver()->GetSolver()->TimeRhs(f,u);
+      GetMultiLevelSolver()->GetSolver()->TimeRhsOperator(f,u);
+      GetMultiLevelSolver()->GetSolver()->TimeRhs(1,f);
       
       // neuer Zeitschritt
       //
-      info.iteration(_iter);
+      _timeinfo.iteration(_iter);
       TimeInfoBroadcast();
 
+      GetMultiLevelSolver()->GetSolver()->TimeRhs(2,f);
       SolveTimePrimal(u,f);
       Output(u,"Results/solve");
       
@@ -114,7 +114,7 @@ void StdTimeLoop::TimeInfoBroadcast()
     {
       StdTimeSolver* TS = dynamic_cast<StdTimeSolver*>(GetMultiLevelSolver()->GetSolver(l));
       assert(TS);
-      TS->SetTimeData(info.dt(), info.theta(), info.time(), info.oldrhs());
+      TS->SetTimeData(_timeinfo.dt(), _timeinfo.theta(), _timeinfo.time(), _timeinfo.oldrhs());
     }
 }
 
@@ -150,9 +150,6 @@ void StdTimeLoop::run(const ProblemDescriptorInterface* PD)
   nvector<double> eta;
   
   GetMultiLevelSolver()->ReInit(*PD);
-
-  StdTimeSolver* TSS = dynamic_cast<StdTimeSolver*>(GetMultiLevelSolver()->GetSolver());
-  assert(TSS);
   
   cout << "\nMesh [l,nn,nc]: ";
   cout << GetMeshAgent()->nlevels() << " " << GetMeshAgent()->nnodes() << " " << GetMeshAgent()->ncells() << endl;
@@ -170,18 +167,21 @@ void StdTimeLoop::run(const ProblemDescriptorInterface* PD)
     {
       // umschalten von Euler ?
       //
-      info.SpecifyScheme(_iter);
+      _timeinfo.SpecifyScheme(_iter);
       TimeInfoBroadcast();
       //
       // rhs fuer alten Zeitschritt
       //
       f.zero();
-      GetMultiLevelSolver()->GetSolver()->TimeRhs(f,u);
+      GetMultiLevelSolver()->GetSolver()->TimeRhsOperator(f,u);
+      GetMultiLevelSolver()->GetSolver()->TimeRhs(1,f);
       
       // neuer Zeitschritt
       //
-      info.iteration(_iter);
+      _timeinfo.iteration(_iter);
       TimeInfoBroadcast();
+
+      GetMultiLevelSolver()->GetSolver()->TimeRhs(2,f);
 
       SolveTimePrimal(u,f);
       Output(u,"Results/solve");
