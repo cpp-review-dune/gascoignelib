@@ -19,11 +19,11 @@ class IntegrationFormulaSummed1d : public IntegrationFormula1d
 
   IntegrationFormulaSummed1d(int n) : I(), IntegrationFormula1d()
     {
-      int    N = (int) pow(2,n);
+      int    N = static_cast<int>(pow(2.,n));
 
-      IntegrationFormula1d::BasicInit(N*I.n());
+      IntegrationFormula1d::ReInit(N*I.n());
 
-      int nn = (int) pow(2,n);
+      int nn = static_cast<int>(pow(2.,n));
       double d2 = pow(0.5,n);
 
       for(int i=0;i<N;i++)
@@ -34,14 +34,14 @@ class IntegrationFormulaSummed1d : public IntegrationFormula1d
 	  for(int ii=0;ii<I.n();ii++)
 	    {
 	      int index = i*I.n()+ii;
-	      iw[index] = d2 * I.w(ii);
+	      w(index) = d2 * I.w(ii);
 
-	      double x = I.xi(ii).x();
+	      double x = I.c(ii).x();
 
 	      x += dx;
 	      x *= d2;
 
-	      ic[index].x() = x;
+	      c(index).x() = x;
 	    }
 	}
     }
@@ -60,11 +60,11 @@ class IntegrationFormulaSummed2d : public IntegrationFormula2d
 
   IntegrationFormulaSummed2d(int n) : I(), IntegrationFormula2d()
     {
-      int    N = (int) pow(4,n);
+      int    N = static_cast<int>(pow(4.,n));
 
-      IntegrationFormula2d::BasicInit(N*I.n());
+      IntegrationFormula2d::ReInit(N*I.n());
 
-      int nn = (int) pow(2,n);
+      int nn = static_cast<int>(pow(2.,n));
       double d2 = pow(0.5,n);
       double d4 = pow(0.25,n);
 
@@ -79,10 +79,10 @@ class IntegrationFormulaSummed2d : public IntegrationFormula2d
 	  for(int ii=0;ii<I.n();ii++)
 	    {
 	      int index = i*I.n()+ii;
-	      iw[index] = d4 * I.w(ii);
+	      w(index) = d4 * I.w(ii);
 
-	      double x = I.xi(ii).x();
-	      double y = I.xi(ii).y();
+	      double x = I.c(ii).x();
+	      double y = I.c(ii).y();
 
 	      x += dx;
 	      y += dy;
@@ -90,8 +90,8 @@ class IntegrationFormulaSummed2d : public IntegrationFormula2d
 	      x *= d2;
 	      y *= d2;
 
-	      ic[index].x() = x;
-	      ic[index].y() = y;
+	      c(index).x() = x;
+	      c(index).y() = y;
 	    }
 	}
     }
