@@ -24,6 +24,8 @@ public:
   void Form(VectorIterator b, const FemFunction& U, const TestFunction& N) const;
 
   void Matrix(EntryMatrix& D, const FemFunction& U, const TestFunction& M, const TestFunction& N) const;
+
+  void OperatorStrong(DoubleVector& b, const FemFunction& U)const;
 };
 }
 

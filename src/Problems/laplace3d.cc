@@ -31,6 +31,13 @@ void Laplace3d::Matrix(EntryMatrix& A, const FemFunction& U, const TestFunction&
   A(0,0) += visc* (M.x()*N.x()+M.y()*N.y()+M.z()*N.z());
   A(0,0) += (betax * M.x() + betay * M.y() + betaz * M.z()) * N.m();
 }
-}
+
 
 /*-----------------------------------------*/
+
+void Laplace3d::OperatorStrong(DoubleVector& b, const FemFunction& U)const
+{
+  b[0] -= visc*U[0].D();
+  b[0] += betax * U[0].x() + betay * U[0].y() + betaz * U[0].z();
+}
+}

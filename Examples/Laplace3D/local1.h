@@ -17,7 +17,7 @@ class PolynomialExactSolution : public Gascoigne::ExactSolution
  public:
   std::string GetName() const {return "PolynomialExactSolution";}
   int GetNcomp() const { return 1; }
-  double operator()(int c, const Gascoigne::Vertex2d& v) const{
+  double operator()(int c, const Gascoigne::Vertex3d& v) const{
     return quadratic(v.x()) * quadratic(v.y()) * quadratic(v.z());
   }
 };
