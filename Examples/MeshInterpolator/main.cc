@@ -48,8 +48,7 @@ int main(int argc, char** argv)
   VectorInterface u("u"), f("f");
   MLS.ReInitVector(u);
   MLS.ReInitVector(f);
-  MLS.ReInit(PD);
-  
+ 
   MLS.Zero(u);
   MLS.Zero(f);
  
