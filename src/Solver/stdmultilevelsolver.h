@@ -85,6 +85,8 @@ class StdMultiLevelSolver : public MultiLevelSolverInterface
     for(int l=0;l<_SP.size();l++) _SP[l]->SetState(s);
   }
 
+  void StdMultiLevelSolver::MemoryVector();
+
   const CGInfo& GetLinearInfo   () const { return DataP->info;}
   const CGInfo& GetDualInfo     () const { return DataP->dualinfo;}
   const NLInfo& GetNonlinearInfo() const { return DataP->nlinfo;}

@@ -110,10 +110,23 @@ void StdMultiLevelSolver::SetProblem(const ProblemDescriptorInterface& PDX)
   for(int level=0; level<nlevels(); ++level)  
     {
       int solverlevel = nlevels()-1-level;
-
       assert(_SP[solverlevel]) ;
-      
       _SP[solverlevel]->SetProblem(PDX);
+    }
+  DataP->nlinfo.control().matrixmustbebuild() = 1;
+}
+
+/*-------------------------------------------------------------*/
+
+void StdMultiLevelSolver::MemoryVector()
+{
+  for(int level=0; level<nlevels(); ++level)  
+    {
+      int solverlevel = nlevels()-1-level;
+      assert(_SP[solverlevel]) ;
+      StdSolver* SP = dynamic_cast<StdSolver*>(_SP[solverlevel]);
+      assert(SP);
+      SP->MemoryVector();
     }
   DataP->nlinfo.control().matrixmustbebuild() = 1;
 }
