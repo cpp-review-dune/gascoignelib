@@ -67,7 +67,7 @@ protected:
 
   virtual std::string Solve(MultiLevelGhostVector& u, MultiLevelGhostVector& f, std::string name="Results/solve");
 
-  virtual void BasicLoop::PrintMeshInformation(int outputlevel=0) const;
+  virtual void PrintMeshInformation(int outputlevel=0) const;
   virtual void Output(const MultiLevelGhostVector& u, std::string name="Results/solve") const;
 
   virtual void ComputeGlobalErrors(const MultiLevelGhostVector& u);
