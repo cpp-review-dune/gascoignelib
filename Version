@@ -1,6 +1,11 @@
 Version 22.06.2004
 ==================
 *meidner
+1) eMail-Versand beim CVS-Commit eingebaut
+
+Version 22.06.2004
+==================
+*meidner
 1) RightHandSideData nur noch leere Basisklasse fuer DomainRightHandSide und DiracRightHandSide
 2) DiracRightHandSide und PointFunctional durch die von Boris erstellten NewDiracRightHandSide und 
    NewPointFunctional ersetzt.
