@@ -20,10 +20,10 @@ protected:
   FemInterface*         __FEM;
   IntegratorInterface*  __INT;
 
-  const FemInterface* GetFem() const {return __FEM;}
-  const IntegratorInterface* GetIntegrator() const {return __INT;}
-  IntegratorInterface*& GetIntegratorPointer() {return __INT;}
-  FemInterface*& GetFemPointer() {return __FEM;}
+  const FemInterface* GetFem() const {assert(__FEM); return __FEM;}
+  const IntegratorInterface* GetIntegrator() const {assert(__INT); return __INT;}
+  IntegratorInterface*& GetIntegratorPointer() {assert(__INT); return __INT;}
+  FemInterface*& GetFemPointer() {assert(__FEM); return __FEM;}
 
   void Transformation(FemInterface::Matrix& T, int iq) const;
 

@@ -53,7 +53,7 @@ void StdSolver::_check_consistency(const Equation* EQ,const MeshInterpretorInter
     {
       if( (MP->GetName()!="Q1Gls2d") && (MP->GetName()!="Q1Gls3d") )
 	{
-	  cerr << "StdSolver::_check_consistency: not a  concistent MeshInterpretor\n";
+	  cerr << "StdSolver::_check_consistency: not a consistent MeshInterpretor\n";
 	  assert(0);
 	  exit(-111);
 	}
@@ -102,6 +102,7 @@ void StdSolver::SetProblem(const ProblemDescriptorInterface& PDX)
   
   const Equation*  EQ = GetProblemDescriptor()->GetEquation();
   assert(EQ);
+  _check_consistency(EQ,GetMeshInterpretor());
   int ncomp = EQ->ncomp();
   
   Dat.Init(_paramfile,ncomp);
@@ -471,7 +472,6 @@ void StdSolver::Residual(GlobalVector& y, const GlobalVector& x, double d) const
 
   const Equation* EQ = GetProblemDescriptor()->GetEquation();
   assert(EQ);
-  _check_consistency(EQ,GetMeshInterpretor());
   GetMeshInterpretor()->Form(y,x,*EQ,d);
 
   HNZero(x);

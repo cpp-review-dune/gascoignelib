@@ -13,7 +13,6 @@ public:
   void BasicInit(const ParamFile* paramfile) 
     {
       GetMeshAgentPointer() = new BenchMarkMeshAgent;
-            
       StdLoop::BasicInit(paramfile);
     }
 };

@@ -6,6 +6,7 @@ SUBDIRS(
   Heat2D 
   ConvectionDiffusion2D 
   Control
+  NoName
 )
 
 LINK_LIBRARIES(${GASCOIGNE_LIBS})
