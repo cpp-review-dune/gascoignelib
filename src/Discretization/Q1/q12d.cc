@@ -285,8 +285,10 @@ void Q12d::ConstructInterpolator(MgInterpolatorInterface* I, const MeshTransferI
 
 /* ----------------------------------------- */
 
-void Q12d::EnergyEstimator(EdgeInfoContainer<2>& EIC, DoubleVector& eta, const GlobalVector& u, const Equation& EQ, const DomainRightHandSide& RHS) const
+void Q12d::EnergyEstimator(EdgeInfoContainer<2>& EIC, DoubleVector& eta, const GlobalVector& u, const Equation& EQ, const DomainRightHandSide* RHS) const
 {
+  // RHS may be NULL
+  //
   EnergyEstimatorIntegrator<2> EEI;
   const HierarchicalMesh2d*    HM = dynamic_cast<const HierarchicalMesh2d*>(EIC.GetMesh());
 
@@ -300,25 +302,6 @@ void Q12d::EnergyEstimator(EdgeInfoContainer<2>& EIC, DoubleVector& eta, const G
 
   // Residuenterme auswerten
   EEResidual(eta,u,EQ,RHS,EEI);
-}
-
-/* ----------------------------------------- */
-
-void Q12d::EnergyEstimatorZeroRhs(EdgeInfoContainer<2>& EIC, DoubleVector& eta, const GlobalVector& u, const Equation& EQ) const
-{
-  EnergyEstimatorIntegrator<2> EEI;
-  const HierarchicalMesh2d*    HM = dynamic_cast<const HierarchicalMesh2d*>(EIC.GetMesh());
-
-  EEI.BasicInit();
-
-  // Kanten initialisieren
-  EEJumps(EIC,u,EEI,HM);
-  
-  // Kantenintegrale auswerten
-  EEJumpNorm(EIC,eta,EEI,HM);
-
-  // Residuenterme auswerten
-  EEResidualZeroRhs(eta,u,EQ,EEI);
 }
 
 /* ----------------------------------------- */
@@ -380,9 +363,11 @@ void Q12d::EEJumpNorm(EdgeInfoContainer<2>& EIC, DoubleVector& eta, const Energy
           jump += EEI.JumpNorm(*GetFem(),EIC[edgenumber]->GetNorm(),ile);
         }
       }
+      double w =  0.25 * 0.5 * sqrt(jump);
       for (int in=0; in<4; in++)
       {
-        eta[HM->vertex_of_cell(iq,in)] += 0.25 * 0.5 * sqrt(jump);
+	int iv = HM->vertex_of_cell(iq,in);
+        eta[iv] += w;
       }
     }
   }
@@ -390,12 +375,12 @@ void Q12d::EEJumpNorm(EdgeInfoContainer<2>& EIC, DoubleVector& eta, const Energy
 
 /* ----------------------------------------- */
 
-void Q12d::EEResidual(DoubleVector& eta, const GlobalVector& u, const Equation& EQ, const DomainRightHandSide& RHS, const EnergyEstimatorIntegrator<2>& EEI) const
+void Q12d::EEResidual(DoubleVector& eta, const GlobalVector& u, const Equation& EQ, const DomainRightHandSide* RHS, const EnergyEstimatorIntegrator<2>& EEI) const
 {
   nmatrix<double> T;
 
   GlobalToGlobalData();
-  RHS.SetParameterData(__qq);
+  if (RHS) RHS->SetParameterData(__qq);
   
   for(int iq=0;iq<GetMesh()->ncells();++iq)
   {
@@ -405,32 +390,10 @@ void Q12d::EEResidual(DoubleVector& eta, const GlobalVector& u, const Equation& 
     GlobalToLocalData(iq);
     GlobalToLocal(__U,u,iq);
     double res = EEI.Residual(__U,*GetFem(),EQ,RHS,__Q);
+    double w = 0.25 * sqrt(res);
     for (int in=0; in<4; in++)
     {
-      eta[GetMesh()->vertex_of_cell(iq,in)] += 0.25 * sqrt(res);
-    }
-  }
-}
-
-/* ----------------------------------------- */
-
-void Q12d::EEResidualZeroRhs(DoubleVector& eta, const GlobalVector& u, const Equation& EQ, const EnergyEstimatorIntegrator<2>& EEI) const
-{
-  nmatrix<double> T;
-
-  GlobalToGlobalData();
-  
-  for(int iq=0;iq<GetMesh()->ncells();++iq)
-  {
-    Transformation(T,iq);
-    GetFem()->ReInit(T);
-        
-    GlobalToLocalData(iq);
-    GlobalToLocal(__U,u,iq);
-    double res = EEI.ResidualZeroRhs(__U,*GetFem(),EQ,__Q);
-    for (int in=0; in<4; in++)
-    {
-      eta[GetMesh()->vertex_of_cell(iq,in)] += 0.25 * sqrt(res);
+      eta[GetMesh()->vertex_of_cell(iq,in)] += w;
     }
   }
 }

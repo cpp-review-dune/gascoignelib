@@ -198,14 +198,13 @@ void CellDiscretization::MassMatrix(MatrixInterface& A) const
 
 void CellDiscretization::ComputeError(const GlobalVector& u, LocalVector& err, const ExactSolution* ES) const
 {
-//   const IntegrationFormulaInterface& IF = ErrorFormula();
-
   int ncomp = u.ncomp();
   err.ncomp() = ncomp;
   err.reservesize(3);
   err = 0.;
 
   GlobalVector lerr(ncomp,3); 
+  lerr.zero();
 
   nmatrix<double> T;
   
@@ -218,6 +217,7 @@ void CellDiscretization::ComputeError(const GlobalVector& u, LocalVector& err, c
       GetFem()->ReInit(T);
       GlobalToLocal(__U,u,iq);
       GetIntegrator()->ErrorsByExactSolution(lerr,*GetFem(),*ES,__U,__Q);
+
       for(int c=0;c<ncomp;c++)  
 	{
 	  err(0,c) += lerr(0,c);

@@ -463,17 +463,14 @@ void GalerkinIntegrator<DIM>::ErrorsByExactSolution(LocalVector& dst, const FemI
 	}
       for(int c=0; c<U.ncomp(); c++) 
 	{
-	  UH[c].m() *= weight*UH[c].m();
-	  UH[c].x() *= weight*UH[c].x();
-	  UH[c].y() *= weight*UH[c].y();
-	  if (DIM==3) UH[c].z() *= weight*UH[c].z();
-	}
-      for(int c=0; c<U.ncomp(); c++) 
-	{
-	  dst(0,c) += UH[c].m();
-	  dst(1,c) += UH[c].x() + UH[c].y();
-	  if (DIM==3) dst(1,c) += UH[c].z();
-	  dst(2,c) = Gascoigne::max(dst(2,c),sqrt(UH[c].m()/weight));
+	  // L2 Norm
+	  dst(0,c) += weight * UH[c].m() * UH[c].m();
+	  // H1 Seminorm
+	  double a = UH[c].x()*UH[c].x() + UH[c].y()*UH[c].y();
+	  if (DIM==3) a += UH[c].z() * UH[c].z();
+	  dst(1,c) += weight * a;
+	  // L8 Norm
+	  dst(2,c) = Gascoigne::max(dst(2,c),fabs(UH[c].m()));
 	}
     }
 }

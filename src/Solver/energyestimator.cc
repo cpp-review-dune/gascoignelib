@@ -42,13 +42,13 @@ double EnergyEstimator::Estimator(nvector<double>& eta, BasicGhostVector& gu,
       assert(DP);
       if(RHS)
       {
-        const DomainRightHandSide *DRHS = dynamic_cast<const DomainRightHandSide *>(RHS);
+        const DomainRightHandSide* DRHS = dynamic_cast<const DomainRightHandSide *>(RHS);
         assert(DRHS);
-        DP->EnergyEstimator(EIC,eta,u,*EQ,*DRHS);
+        DP->EnergyEstimator(EIC,eta,u,*EQ,DRHS);
       }
       else
       {
-        DP->EnergyEstimatorZeroRhs(EIC,eta,u,*EQ);
+        DP->EnergyEstimator(EIC,eta,u,*EQ,NULL);
       }
     }
   else if (S.GetMesh()->dimension()==3)
@@ -59,13 +59,9 @@ double EnergyEstimator::Estimator(nvector<double>& eta, BasicGhostVector& gu,
       assert(DP);
       if(RHS)
       {
-        const DomainRightHandSide *DRHS = dynamic_cast<const DomainRightHandSide *>(RHS);
+        const DomainRightHandSide* DRHS = dynamic_cast<const DomainRightHandSide *>(RHS);
         assert(DRHS);
-        DP->EnergyEstimator(EIC,eta,u,*EQ,*DRHS);
-      }
-      else
-      {
-        DP->EnergyEstimatorZeroRhs(EIC,eta,u,*EQ);
+        DP->EnergyEstimator(EIC,eta,u,*EQ,DRHS);
       }
     }
   S.HNZero(gu);

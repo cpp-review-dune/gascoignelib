@@ -19,7 +19,8 @@ class EnergyEstimatorIntegrator : public BasicIntegrator
     const IntegrationFormulaInterface& GetFormula() const {return *IF;}
 
   public:
-    EnergyEstimatorIntegrator<DIM>() : BasicIntegrator() { }
+
+    EnergyEstimatorIntegrator<DIM>();
     ~EnergyEstimatorIntegrator<DIM>();
 
     void BasicInit();
@@ -27,8 +28,7 @@ class EnergyEstimatorIntegrator : public BasicIntegrator
 
     void   Jumps(LocalVector& F, const FemInterface& FEM, const LocalVector& U, int ile) const;
     double JumpNorm(const FemInterface& FEM, fixarray<2*DIM-2,double> jumps, int ile) const;
-    double Residual(const LocalVector& U, const FemInterface& FEM, const Equation& EQ, const DomainRightHandSide& RHS, const LocalNodeData& Q) const;
-    double ResidualZeroRhs(const LocalVector& U, const FemInterface& FEM, const Equation& EQ, const LocalNodeData& Q) const;
+    double Residual(const LocalVector& U, const FemInterface& FEM, const Equation& EQ, const DomainRightHandSide* RHS, const LocalNodeData& Q) const;
 };
 }
 

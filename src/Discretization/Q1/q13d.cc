@@ -309,7 +309,7 @@ void Q13d::ConstructInterpolator(MgInterpolatorInterface* I, const MeshTransferI
 
 /* ----------------------------------------- */
 
-void Q13d::EnergyEstimator(EdgeInfoContainer<3>& EIC, DoubleVector& eta, const GlobalVector& u, const Equation& EQ, const DomainRightHandSide& RHS) const
+void Q13d::EnergyEstimator(EdgeInfoContainer<3>& EIC, DoubleVector& eta, const GlobalVector& u, const Equation& EQ, const DomainRightHandSide* RHS) const
 {
   EnergyEstimatorIntegrator<3> EEI;
   const HierarchicalMesh3d*    HM = dynamic_cast<const HierarchicalMesh3d*>(EIC.GetMesh());
@@ -324,25 +324,6 @@ void Q13d::EnergyEstimator(EdgeInfoContainer<3>& EIC, DoubleVector& eta, const G
 
   // Residuenterme auswerten
   EEResidual(eta,u,EQ,RHS,EEI);
-}
-
-/* ----------------------------------------- */
-
-void Q13d::EnergyEstimatorZeroRhs(EdgeInfoContainer<3>& EIC, DoubleVector& eta, const GlobalVector& u, const Equation& EQ) const
-{
-  EnergyEstimatorIntegrator<3> EEI;
-  const HierarchicalMesh3d*    HM = dynamic_cast<const HierarchicalMesh3d*>(EIC.GetMesh());
-
-  EEI.BasicInit();
-
-  // Kanten initialisieren
-  EEJumps(EIC,u,EEI,HM);
-  
-  // Kantenintegrale auswerten
-  EEJumpNorm(EIC,eta,EEI,HM);
-
-  // Residuenterme auswerten
-  EEResidualZeroRhs(eta,u,EQ,EEI);
 }
 
 /* ----------------------------------------- */
@@ -414,12 +395,12 @@ void Q13d::EEJumpNorm(EdgeInfoContainer<3>& EIC, DoubleVector& eta, const Energy
 
 /* ----------------------------------------- */
 
-void Q13d::EEResidual(DoubleVector& eta, const GlobalVector& u, const Equation& EQ, const DomainRightHandSide& RHS, const EnergyEstimatorIntegrator<3>& EEI) const
+void Q13d::EEResidual(DoubleVector& eta, const GlobalVector& u, const Equation& EQ, const DomainRightHandSide* RHS, const EnergyEstimatorIntegrator<3>& EEI) const
 {
   nmatrix<double> T;
 
   GlobalToGlobalData();
-  RHS.SetParameterData(__qq);
+  if (RHS) RHS->SetParameterData(__qq);
   
   for(int iq=0;iq<GetMesh()->ncells();++iq)
   {
@@ -429,29 +410,6 @@ void Q13d::EEResidual(DoubleVector& eta, const GlobalVector& u, const Equation& 
     GlobalToLocalData(iq);
     GlobalToLocal(__U,u,iq);
     double res = EEI.Residual(__U,*GetFem(),EQ,RHS,__Q);
-    for (int in=0; in<8; in++)
-    {
-      eta[GetMesh()->vertex_of_cell(iq,in)] += 0.125 * sqrt(res);
-    }
-  }
-}
-
-/* ----------------------------------------- */
-
-void Q13d::EEResidualZeroRhs(DoubleVector& eta, const GlobalVector& u, const Equation& EQ, const EnergyEstimatorIntegrator<3>& EEI) const
-{
-  nmatrix<double> T;
-
-  GlobalToGlobalData();
-  
-  for(int iq=0;iq<GetMesh()->ncells();++iq)
-  {
-    Transformation(T,iq);
-    GetFem()->ReInit(T);
-
-    GlobalToLocalData(iq);
-    GlobalToLocal(__U,u,iq);
-    double res = EEI.ResidualZeroRhs(__U,*GetFem(),EQ,__Q);
     for (int in=0; in<8; in++)
     {
       eta[GetMesh()->vertex_of_cell(iq,in)] += 0.125 * sqrt(res);

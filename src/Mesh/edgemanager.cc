@@ -56,7 +56,7 @@ void EdgeManager::BSETest() const
 	  int ml = E.LocalMasterIndex();
 	  int sl = E.LocalSlaveIndex();
 	  int nachbar = -10;
-	  int f = 0;
+	  int f = -1;
 	  if      (m==i) { nachbar = s; f = sl;}
 	  else if (s==i) { nachbar = m; f = ml;}
 
