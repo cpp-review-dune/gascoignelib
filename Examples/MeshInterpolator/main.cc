@@ -42,14 +42,11 @@ int main(int argc, char** argv)
   SI.GetNLInfo().control().matrixmustbebuild() = 1;
 
   ///////////////////////
-  // Vectors
+  // Rhs Vector
   ///////////////////////
 
-  VectorInterface u("u"), f("f");
-  MLS.ReInitVector(u);
+  VectorInterface f("f");
   MLS.ReInitVector(f);
- 
-  MLS.Zero(u);
   MLS.Zero(f);
  
   ///////////////////////
@@ -69,6 +66,10 @@ int main(int argc, char** argv)
   moni.init(&paramfile,1);
   moni.set_directory("Results");
   MLS.SetMonitorPtr(&moni);
+
+  VectorInterface u("u");
+  MLS.ReInitVector(u);
+  MLS.Zero(u);
 
   MLS.Solve(MLS.nlevels()-1,u,f,SI.GetNLInfo());
   MLS.GetSolver()->Visu(coarsename,u,0);
