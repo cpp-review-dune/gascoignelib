@@ -1,5 +1,6 @@
 #include  "integrationformula.h"
 #include  "tensorformula2d.xx"
+#include  "tensorformula3d.xx"
 
 /*------------------------------------------------------------*/
 
