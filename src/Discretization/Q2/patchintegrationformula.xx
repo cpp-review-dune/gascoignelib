@@ -1,0 +1,85 @@
+#include  "integrationformula.h"
+
+namespace Gascoigne
+{
+
+/*------------------------------------------------------------*/
+
+template<int N, class INT>
+PatchFormula2d<N,INT>::PatchFormula2d<N,INT>() : IntegrationFormula2d(4*N)
+{
+  INT         I;
+
+  assert(I.n()==N);
+
+  for(int ii=0;ii<4;ii++)
+    {
+      for(int i=0;i<N;i++)
+	{
+	  int j = N*ii+i;
+	  w(j) = 0.25*I.w(i);
+	  Vertex2d pi;
+	  I.xi(pi,i);
+	  if(ii==0)
+	    {
+	      c(j).x() = 0.5*pi.x();
+	      c(j).y() = 0.5*pi.y();
+	    }		    
+	  else if(ii==1)	    
+	    {		    
+	      c(j).x() = 0.5*pi.x()+0.5;
+	      c(j).y() = 0.5*pi.y();
+	    }		    
+	  else if(ii==2)	    
+	    {		    
+	      c(j).x() = 0.5*pi.x();
+	      c(j).y() = 0.5*pi.y()+0.5;
+	    }		    
+	  else		    
+	    {		    
+	      c(j).x() = 0.5*pi.x()+0.5;
+	      c(j).y() = 0.5*pi.y()+0.5;
+	    }
+	}
+    }
+}
+
+/*------------------------------------------------------------*/
+#include  "integrationformula.h"
+
+/*------------------------------------------------------------*/
+
+template<int N, class INT>
+PatchFormula3d<N,INT>::PatchFormula3d<N,INT>() : IntegrationFormula3d(8*N)
+{
+  INT         I;
+  if(I.n()!=N) {std::cerr << "PatchFormula3d: error\n";abort();}
+  for(int ii=0;ii<8;ii++)
+    {
+      for(int i=0;i<N;i++)
+	{
+	  int j = N*ii+i;
+	  w(j) = 0.125*I.w(i);
+	  Vertex3d pi;
+	  I.xi(pi,i);
+	  
+	  c(j).equ(0.5,pi);
+	  
+	  if (ii>=4)
+	    {
+	      c(j).z() += 0.5;
+	    }
+	  if(ii%2==1)	    
+	    {		    
+	      c(j).x() += 0.5;
+	    }	
+	  int jj = ii%4;
+	  if(jj>=2)	    
+	    {		    
+	      c(j).y() += 0.5;
+	    }		    
+	}
+    }
+}
+
+}
