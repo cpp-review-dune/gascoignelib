@@ -53,6 +53,10 @@ class StdMultiLevelSolver : public MultiLevelSolverInterface
   virtual void NewMgInterpolator();
   virtual void SolverNewMesh();
 
+  void RegisterVectorLocal(MultiLevelGhostVector& g){
+    _MlVectors.insert(g);
+  } 
+
   virtual void SetComputeLevel(int level) {ComputeLevel=level;}
 
   virtual double NewtonNorm(const MultiLevelGhostVector& u) const {
@@ -72,11 +76,8 @@ class StdMultiLevelSolver : public MultiLevelSolverInterface
 
   std::string GetName() const {return "StdMultiLevelSolver";}
 
-  void RegisterVector(MultiLevelGhostVector& g) {
-//     cerr << "*************registriere:\t"<<g<<endl;
-//     _MlVectors.insert(&g);
-    _MlVectors.insert(g);
-  }
+  void RegisterVector(MultiLevelGhostVector& g);
+
   void BasicInit(const MeshAgentInterface* GMGM, const Gascoigne::ParamFile* paramfile);
 
   // Zugriff

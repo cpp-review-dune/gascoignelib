@@ -32,6 +32,8 @@ void LocalTimeLoop::NewMesh(const ProblemDescriptorInterface* PD)
 
 void LocalTimeLoop::AddNodeVector(string filename)
 {
+  cerr << "adding vector: " << filename << endl;
+
   int nlevels = GetMultiLevelSolver()->nlevels();
   dat_node.resize(nlevels);
   for(int l=nlevels-1;l>=0;l--)
@@ -49,6 +51,13 @@ void LocalTimeLoop::AddNodeVector(string filename)
 	}
       GetMultiLevelSolver()->GetSolver(l)->AddNodeVector(&dat_node[l]);
     }
+}
+
+/* ----------------------------------------- */
+
+void LocalTimeLoop::ReInit(const ProblemDescriptorInterface* PD)
+{
+  GetMultiLevelSolver()->ReInit(*PD);
 }
 
 /* ----------------------------------------- */

@@ -37,6 +37,8 @@ public:
   void AddNodeVector(std::string filename);
   void NewMesh(const ProblemDescriptorInterface* PD);
 
+  void ReInit(const ProblemDescriptorInterface* PD);
+
   void init(std::string, int, const ProblemDescriptorInterface* PD);
   void forward(std::string iname, int first, int last, const ProblemDescriptorInterface* PD);
   void backward(std::string iname, std::string name, int first, int last, const ProblemDescriptorInterface* PD);

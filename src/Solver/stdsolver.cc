@@ -186,6 +186,7 @@ void StdSolver::MemoryVector()
   while(p!=_NGVA.end())
     {
       const GhostVector& gv = p->first;
+//       cerr << "StdSolver::MemoryVector()\t" << gv.GetName() << endl;
       assert(gv.GetSolver()==this);
       if(p->second==NULL) 
 	{

@@ -96,10 +96,10 @@ void StdMultiLevelSolver::BasicInit(const MeshAgentInterface* MAP, const ParamFi
   _res.SetMultiLevelSolver(this);
   _mg0.SetMultiLevelSolver(this);
   _mg1.SetMultiLevelSolver(this);
-  RegisterVector(_cor);
-  RegisterVector(_res);
-  RegisterVector(_mg0);
-  RegisterVector(_mg1);
+  RegisterVectorLocal(_cor);
+  RegisterVectorLocal(_res);
+  RegisterVectorLocal(_mg0);
+  RegisterVectorLocal(_mg1);
 }
 
 /*-------------------------------------------------------------*/
@@ -127,6 +127,22 @@ SolverInterface* StdMultiLevelSolver::NewSolver(int solverlevel)
   else
     {
       return new StdSolver;
+    }
+}
+
+/*-------------------------------------------------------------*/
+
+void StdMultiLevelSolver::RegisterVector(MultiLevelGhostVector& g) 
+{
+  //     cerr << "*************registriere:\t"<<g<<endl;
+  _MlVectors.insert(g);
+  for(int level=0; level<nlevels(); ++level)  
+    {
+      set<MultiLevelGhostVector>::const_iterator p = _MlVectors.begin();
+      while(p!=_MlVectors.end()) 
+	{
+	  _SP[level]->RegisterVector(*p++);
+	}
     }
 }
 

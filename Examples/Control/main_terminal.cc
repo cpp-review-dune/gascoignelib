@@ -22,6 +22,7 @@ int main(int argc, char** argv)
 
   LocalTimeLoop loop;
   loop.BasicInit(&paramfile);
+  loop.ReInit(&LPD);
   loop.AddNodeVector(name);
   loop.init("Results/backward",last,&LPD);
 
