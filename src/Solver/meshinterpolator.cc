@@ -18,7 +18,7 @@ class ProjectionRightHandSide : public DomainRightHandSide
   protected:
 
     int _ncomp;
-    mutable FemFunction _U;
+    mutable FemFunction __U;
 
   public:
 
@@ -31,18 +31,18 @@ class ProjectionRightHandSide : public DomainRightHandSide
     void SetFemData(FemData& q) const
     {
       assert(q.count("U")==1);
-      _U = q["U"];
+      __U = q["U"];
     }
 
     void operator()(VectorIterator b, const TestFunction& N, const Vertex2d& v) const 
     {
       for (int i=0; i<_ncomp; i++)
-        b[i] += _U[i].m() * N.m();
+        b[i] += __U[i].m() * N.m();
     }
     void operator()(VectorIterator b, const TestFunction& N, const Vertex3d& v) const 
     {
       for (int i=0; i<_ncomp; i++)
-        b[i] += _U[i].m() * N.m();
+        b[i] += __U[i].m() * N.m();
     }
 };
 
