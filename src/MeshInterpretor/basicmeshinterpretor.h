@@ -47,6 +47,8 @@ class BasicMeshInterpretor : public MeshInterpretorInterface
 
   virtual IntVector GetLocalIndices(int iq) const=0;
 
+  virtual void VertexTransformation(const nvector<Vertex2d>& p, const Vertex2d& p0, Vertex2d& tp) const;
+
  public:
   
   //
