@@ -204,15 +204,15 @@ inline double  Transformation3d<BASE>::J() const
 template<class BASE>
 inline double  Transformation3d<BASE>::G() const  
 {
-  double E=0,F=0,G=0;
+  double d1phi=0,d2phi=0,d12phi=0;
   const fixarray<2,int>& fc = B.faces();
   for (int i=0;i<3;++i)
     {
-      E+=dt(i,fc[0])*dt(i,fc[0]);
-      G+=dt(i,fc[1])*dt(i,fc[1]);
-      F+=dt(i,fc[0])*dt(i,fc[1]);
+      d1phi+=dt(i,fc[0])*dt(i,fc[0]);
+      d2phi+=dt(i,fc[1])*dt(i,fc[1]);
+      d12phi+=dt(i,fc[0])*dt(i,fc[1]);
     }
-  double H = E*G-F*F;
+  double h = d1phi*d2phi-d12phi*d12phi;
   assert(H>=0);
   return sqrt(H);
 }
