@@ -120,8 +120,8 @@ void TimeInfo::iteration_backward(int i)
 {
   assert(i<=_iter);
 
-  _time -= dt();
   _iter = i;
+  _time -= dt();
 
   string actualscheme = _scheme;
   if (_iter<=_neuler) actualscheme = "Euler";
@@ -137,8 +137,8 @@ void TimeInfo::iteration(int i)
 {
   assert(i>=_iter);
 
-  _time += dt();
   _iter = i;
+  _time += dt();
 
   string actualscheme = _scheme;
   if (_iter<=_neuler) actualscheme = "Euler";
