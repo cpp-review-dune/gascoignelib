@@ -222,7 +222,7 @@ void StdTimeSolver::L2Projection(BasicGhostVector& Gu)
 
   IC(f);
 
-  cout << PrecondCGMass(u,f,TP) << endl;
+  PrecondCGMass(u,f,TP);
   
   DeleteVector(&Gf);
 }
