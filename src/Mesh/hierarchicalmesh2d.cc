@@ -1462,6 +1462,7 @@ void HierarchicalMesh2d::read_gup(const string& bname)
 
   Blines.clear();
   edges.clear();
+  LineHang.clear();
 
   int n, dim;
   file >> dim >> symbol >> n >> symbol;

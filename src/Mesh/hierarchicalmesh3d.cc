@@ -1320,6 +1320,8 @@ void HierarchicalMesh3d::read_gup(const string& name)
 
   Bquads.clear();
   edges.clear();
+  QuadHang.clear();
+  LineHang.clear();
 
   int n;
   int dim;

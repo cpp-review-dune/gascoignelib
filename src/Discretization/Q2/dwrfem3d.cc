@@ -300,7 +300,7 @@ void Gascoigne::DwrFem3d::MassMatrix(MatrixInterface& A) const
       LowOrderFem .ReInit(TL);
 
       I->MassMatrix(__E,HighOrderFem,LowOrderFem);
-      PatchDiscretization::LocalToGlobal(A,__E,iq,1.);
+      LocalToGlobal(A,__E,iq,1.);
     }
 }
 }
