@@ -85,8 +85,11 @@ void StdMultiLevelSolver::BasicInit(const MeshAgentInterface* MAP, const ParamFi
   _MAP = MAP;
 
   _paramfile = paramfile;
-  assert(DataP==0);
-  DataP = new MultiLevelSolverData;
+  
+  if(!DataP)
+  {
+    DataP = new MultiLevelSolverData;
+  }
   DataP->BasicInit(_paramfile);
 
   _cor.SetName("cor");
