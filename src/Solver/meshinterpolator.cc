@@ -58,22 +58,26 @@ void MeshInterpolator::CheckCell(int oldNumber, int newNumber)
 
 /**********************************************************/
 
-void MeshInterpolator::Coarsen(GlobalVector& f, int newNumber)
+void MeshInterpolator::Coarsen(int newNumber)
 {
   for (int i=0; i<_New->nchilds(newNumber); i++)
   {
     if (_New->sleep(_New->child(newNumber,i)))
     {
-      Coarsen(f,_New->child(newNumber,i));
+      Coarsen(_New->child(newNumber,i));
     }
   }
   for (int i=0; i<_New->nodes_per_cell(newNumber); i++)
   {
     for (int j=0; j<_New->nodes_per_cell(newNumber); j++)
     {
-      for (int c=0; c<f.ncomp(); c++)
+      for (int s=0; s<_VecInt.size(); s++)
       {
-        f(_New->vertex_of_cell(newNumber,i),c) += _weights(i,j) * f(_New->vertex_of_cell(_New->child(newNumber,i),j),c);
+        GlobalVector& f = _VecInt[s];
+        for (int c=0; c<f.ncomp(); c++)
+        {
+          f(_New->vertex_of_cell(newNumber,i),c) += _weights(i,j) * f(_New->vertex_of_cell(_New->child(newNumber,i),j),c);
+        }
       }
     }
   }
@@ -83,9 +87,13 @@ void MeshInterpolator::Coarsen(GlobalVector& f, int newNumber)
     {
       if (j!=i)
       {
-        for (int c=0; c<f.ncomp(); c++)
+        for (int s=0; s<_VecInt.size(); s++)
         {
-          f(_New->vertex_of_cell(_New->child(newNumber,i),j),c) = 0.;
+          GlobalVector& f = _VecInt[s];
+          for (int c=0; c<f.ncomp(); c++)
+          {
+            f(_New->vertex_of_cell(_New->child(newNumber,i),j),c) = 0.;
+          }
         }
       }
     }
@@ -94,18 +102,18 @@ void MeshInterpolator::Coarsen(GlobalVector& f, int newNumber)
 
 /**********************************************************/
 
-void MeshInterpolator::Distribute(GlobalVector& f, int oldNumber, int newNumber)
+void MeshInterpolator::Distribute(int oldNumber, int newNumber)
 {
   if (_Old->sleep(oldNumber) && _New->sleep(newNumber))
   {
     for (int i=0; i<_Old->nchilds(oldNumber); i++)
     {
-      Distribute(f,_Old->child(oldNumber,i),_New->child(newNumber,i));
+      Distribute(_Old->child(oldNumber,i),_New->child(newNumber,i));
     }
   }
   else if (!_Old->sleep(oldNumber) && _New->sleep(newNumber))
   {
-    Coarsen(f,newNumber);
+    Coarsen(newNumber);
   }
   else if (!_Old->sleep(oldNumber) && !_New->sleep(newNumber))
   {
@@ -168,6 +176,13 @@ void MeshInterpolator::RefineAndInterpolate(HierarchicalMesh* Mesh, vector<Globa
 
 /**********************************************************/
 
+void MeshInterpolator::AddVectorIntermediate(GlobalVector u)
+{
+  _VecInt.push_back(u);
+}
+
+/**********************************************************/
+
 void MeshInterpolator::AddVectorOld(GlobalVector* u)
 {
   assert(GetOriginalSolverPointer());
@@ -194,6 +209,7 @@ void MeshInterpolator::BasicInit(SolverInterface* SI, MeshAgentInterface* MA, co
   _ToBeRef.clear();
   _ToBeRefNew.clear();
   _NewNodeNumber.clear();
+  _VecInt.clear();
   _VecOld.clear();
   _VecNew.clear();
 
@@ -315,14 +331,18 @@ void MeshInterpolator::RhsForProjection(BasicGhostVector& gf)
   GetSolver()->Rhs(_help);
   GetSolver()->DeleteNodeVector("U");
 
-  GlobalVector& help = GetSolver()->GetGV(_help);
+  AddVectorIntermediate(GetSolver()->GetGV(_help));
   for (set<int>::const_iterator pbc = _BaseCells.begin(); pbc!=_BaseCells.end(); pbc++)
   {
-    Distribute(help,*pbc,*pbc);
+    Distribute(*pbc,*pbc);
   }
 
   GlobalVector& f = GetOriginalSolver()->GetGV(gf);
   f.zero();
+
+  assert(_VecInt.size()==1);
+  GlobalVector help = _VecInt[0];
+
   for (int i=0; i<f.n(); i++)
   {
     for (int c=0; c<f.ncomp(); c++)
