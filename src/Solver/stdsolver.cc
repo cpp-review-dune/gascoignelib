@@ -204,7 +204,7 @@ IluInterface* StdSolver::NewIlu(int ncomp, const string& matrixtype)
 #ifdef __WITH_UMFPACK__
   if(_directsolver)             return new UmfIlu(GetMatrix());
 #endif
-  if(_matrixtype=="point_node") return new PointIlu(ncomp,"node");
+  if(matrixtype=="point_node")  return new PointIlu(ncomp,"node");
   else                          return new PointIlu(ncomp,"component");
 }
 

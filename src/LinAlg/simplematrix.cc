@@ -15,7 +15,7 @@ ostream& SimpleMatrix::Write(ostream& os) const
       os << i << endl;
       for(int pos=ST.start(i);pos<ST.stop(i);pos++)
 	{
-	  os << value[pos] << " ";
+	  os << ST.col(pos) << ": " << value[pos] << ", ";
 	}
       os << endl;
     }
@@ -222,4 +222,59 @@ void SimpleMatrix::entry_diag(int i, const nmatrix<double>& M)
   int pos = ST.Find(i,i);
   value[pos] = M(0,0);
 }
+
+/*-----------------------------------------*/
+
+void SimpleMatrix::PrepareJacobi()
+{
+  int n = ST.n();
+  
+  _diag.resize(n);
+  
+  for(int i=0; i<n; i++)
+  {
+    _diag[i] = value[ST.Find(i,i)];
+  }
+}
+/*-----------------------------------------*/
+
+void SimpleMatrix::JacobiVector(GlobalVector &y)
+{
+  int n = ST.n();
+  assert(n==y.n());
+  
+  for(int i=0; i<n; i++)
+  {
+    for(int c=0; c<y.ncomp(); c++)
+    {
+      y(i,c) /= sqrt(_diag[i]);
+    }
+  }
+}
+
+/*-----------------------------------------*/
+
+void SimpleMatrix::vmult_time_Jacobi(GlobalVector& y, const GlobalVector& x, const TimePattern& TP, double s) const
+{
+  int n = ST.n();
+  assert(n==y.n());
+  assert(n==x.n());
+  assert(x.ncomp()==y.ncomp());
+
+  for(int i=0;i<n;i++)
+    {
+      for(int pos=ST.start(i);pos<ST.stop(i);pos++)
+	{
+	  int j = ST.col(pos);
+	  for(int c=0;c<x.ncomp();c++)
+	    {
+	      for(int d=0;d<x.ncomp();d++)
+		{
+		  y(i,c) += s*value[pos]* TP(c,d) * x(j,d) / sqrt(_diag[i] * _diag[j]);
+		}
+	    }
+	}
+    }
+}
+
 }

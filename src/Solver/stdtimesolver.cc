@@ -195,9 +195,15 @@ void StdTimeSolver::L2Projection(BasicGhostVector& Gu)
   assert(u.ncomp()==g.ncomp());
   assert(u.n()==g.n());
 
+  SimpleMatrix *SM = dynamic_cast<SimpleMatrix *>(GetMassMatrix());
+  assert(SM);
+  SM->PrepareJacobi();
+
   f.zero();
   HNAverageData();
+
   GetMeshInterpretor()->Rhs(f,*IC,1.);
+  
   HNZeroData();
   HNDistribute(f);
 
@@ -206,6 +212,8 @@ void StdTimeSolver::L2Projection(BasicGhostVector& Gu)
 
   u.zero();
   if (f.norm()<1.e-16) return;
+
+  SM->JacobiVector(f);
 
   r.equ(1,f);
   d.equ(1,f);
@@ -220,7 +228,7 @@ void StdTimeSolver::L2Projection(BasicGhostVector& Gu)
   for(int iter=1;iter<=MaxIter;iter++)
     {
       g.zero();
-      GetMassMatrix()->vmult_time(g,d,TP);
+      SM->vmult_time_Jacobi(g,d,TP);
       double lambda = Res/(g*d);
 
       u.add(lambda,d);
@@ -230,10 +238,13 @@ void StdTimeSolver::L2Projection(BasicGhostVector& Gu)
       cout << "\t\tcg " << iter << "\t" << sqrt(Res) << "\n";
       if (Res<Tol*Tol*FirstRes) 
 	{
+          SM->JacobiVector(u);
 	  return;
 	}
       double betacg = -(r*g)/(d*g);
       d.sequ(betacg,1.,r);
     }
+
+  SM->JacobiVector(u);
 }
 }
