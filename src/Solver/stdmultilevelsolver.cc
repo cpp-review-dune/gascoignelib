@@ -517,7 +517,7 @@ double StdMultiLevelSolver::NewtonUpdate(double& rr, MultiLevelGhostVector& x, M
     
   string message = "";
 
-  for(int iter=0;iter<DataP->nlinfo.user().maxrelax();iter++)
+  for(int iter=0;iter<nlinfo.user().maxrelax();iter++)
     {
       if(iter>0)
 	{
