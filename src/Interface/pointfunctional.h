@@ -31,7 +31,10 @@ namespace Gascoigne
   
       virtual const std::vector<int>& GetComps() const { return _comps;}
 
-      virtual double J(const std::vector<double>& u) const {abort();}
+      virtual double J(const std::vector<double>& u) const {
+        std::cerr << "\"PointFunctional::J\" not written" << std::endl; 
+        abort();
+      }
   };
 }
 
