@@ -98,11 +98,6 @@ void StdMultiLevelSolver::BasicInit(const MeshAgentInterface* MAP, const ParamFi
     DataP = new StdMultiLevelSolverData;
   }
   DataP->BasicInit(_paramfile);
-
-  RegisterVector(_cor);
-  RegisterVector(_res);
-  RegisterVector(_mg0);
-  RegisterVector(_mg1);
 }
 
 /*-------------------------------------------------------------*/
@@ -134,23 +129,35 @@ SolverInterface* StdMultiLevelSolver::NewSolver(int solverlevel)
 
 /*-------------------------------------------------------------*/
 
-void StdMultiLevelSolver::RegisterVector(VectorInterface& g) 
+void StdMultiLevelSolver::RegisterVectors() 
 {
-  _MlVectors.insert(g);
+  assert(nlevels()==_SP.size());
+  for (int level=0; level<nlevels(); ++level)  
+    {
+      GetSolver(level)->RegisterVector(_cor);
+      GetSolver(level)->RegisterVector(_res);
+      GetSolver(level)->RegisterVector(_mg0);
+      GetSolver(level)->RegisterVector(_mg1);
+    }
 }
 
 /*-------------------------------------------------------------*/
 
-void StdMultiLevelSolver::RegisterVectorsOnSolvers() 
+void StdMultiLevelSolver::ReInitVectors()
 {
-  assert(nlevels()==_SP.size());
-  set<VectorInterface>::const_iterator p;
-  for(p=_MlVectors.begin(); p!=_MlVectors.end(); p++) 
+  ReInitVector(_cor);
+  ReInitVector(_res);
+  ReInitVector(_mg0);
+  ReInitVector(_mg1);
+}
+
+/*-------------------------------------------------------------*/
+
+void StdMultiLevelSolver::ReInitVector(VectorInterface& v)
+{
+  for (int level=0; level<nlevels(); ++level)  
     {
-      for (int level=0; level<nlevels(); ++level)  
-	{
-	  GetSolver(level)->RegisterVector(*p);
-	}
+      GetSolver(level)->ReInitVector(v);
     }
 }
 
@@ -202,14 +209,6 @@ void StdMultiLevelSolver::ReInitMatrix()
   for(int level=0; level<nlevels(); ++level)  
     {
       GetSolver(level)->ReInitMatrix();
-    }
-}
-
-void StdMultiLevelSolver::ReInitVector()
-{
-  for(int level=0; level<nlevels(); ++level)  
-    {
-      GetSolver(level)->ReInitVector();
     }
 }
 
@@ -270,9 +269,9 @@ void StdMultiLevelSolver::ReInit(const ProblemDescriptorInterface& PDX)
   NewMgInterpolator();
   SetProblem(PDX);
   RegisterMatrix();
-  RegisterVectorsOnSolvers();
+  RegisterVectors();
   ReInitMatrix();
-  ReInitVector();
+  ReInitVectors();
 }
 
 /*-------------------------------------------------------------*/
@@ -765,29 +764,14 @@ void StdMultiLevelSolver::AssembleDualMatrix(VectorInterface& u)
 
 /*-------------------------------------------------------------*/
 
-void StdMultiLevelSolver::MemoryVector(VectorInterface& v)
-{
-  RegisterVector(v);
-  for(int l=0; l<nlevels(); ++l)  
-    {
-      StdSolver* S = dynamic_cast<StdSolver*>(GetSolver(l));
-      S->MemoryVector(v);
-    }
-}
-
-/*-------------------------------------------------------------*/
-
 void StdMultiLevelSolver::DeleteVector(VectorInterface& v)
 {
-  _MlVectors.erase(v);
-    
   for(int l=0; l<nlevels(); ++l)  
     {
       const StdSolver* S = dynamic_cast<const StdSolver*>(GetSolver(l));
       S->DeleteVector(&v);
     }
 }
-
 
 /*-------------------------------------------------------------*/
 

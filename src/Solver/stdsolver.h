@@ -142,9 +142,7 @@ class StdSolver : public virtual SolverInterface
   const DiscretizationInterface* GetDiscretization() const {assert(_ZP); return _ZP;}
   DiscretizationInterface* GetDiscretization() {assert(_ZP); return _ZP;}
 
-  void ReInitVector();
   void ReInitMatrix();
-
 
   virtual double clock_vmult() const {return _vm.read();}
   virtual double clock_ilu  () const {return _il.read();}
@@ -185,8 +183,8 @@ class StdSolver : public virtual SolverInterface
   //
     
   void RegisterMatrix();
-  void ResizeVector(GlobalVector* x, std::string type) const;
   void RegisterVector(const VectorInterface& g);
+  void ReInitVector(VectorInterface& dst);
 
         GlobalVector& GetGV(      VectorInterface& u) const { return _NGVA(u);}
   const GlobalVector& GetGV(const VectorInterface& u) const { return _NGVA(u);}

@@ -44,7 +44,7 @@ inline void GMRESSPV::new_memory()
   compose_name(s,i);
   mem.resize(i+1,s);
   //mem[i].SetMultiLevelSolver(&P);
-  P.MemoryVector(mem[i]);
+  P.ReInitVector(mem[i]);
 }
 
 /********************************************************************/
@@ -148,7 +148,7 @@ inline int GMRESSPV::solve(VECTOR& x, const VECTOR& b, CGInfo& info)
 
   VECTOR p("gmresp");
   //p.SetMultiLevelSolver(&P);
-  P.MemoryVector(p);
+  P.ReInitVector(p);
   P.Equ(p,1.,v);
   
   if (left_precondition)

@@ -40,7 +40,6 @@ class StdMultiLevelSolver : public MultiLevelSolverInterface
 
 
   mutable VectorInterface _cor, _res, _mg0, _mg1;
-  std::set<VectorInterface>  _MlVectors;
 
   mutable StopWatch   _clock_residual, _clock_solve;
 
@@ -86,11 +85,11 @@ class StdMultiLevelSolver : public MultiLevelSolverInterface
 
   std::string GetName() const {return "StdMultiLevelSolver";}
 
-  void RegisterVectorsOnSolvers();
-  void RegisterVector(VectorInterface& g);
+  void RegisterVectors();
   void RegisterMatrix();
   void ReInitMatrix();
-  void ReInitVector();
+  void ReInitVectors();
+  void ReInitVector(VectorInterface& v);
 
   void BasicInit(const MeshAgentInterface* GMGM, const ParamFile* paramfile);
 
@@ -152,7 +151,6 @@ class StdMultiLevelSolver : public MultiLevelSolverInterface
   // fuer gmres
   
   virtual void precondition(VectorInterface& x, VectorInterface& y);
-  virtual void MemoryVector(VectorInterface& p);
   virtual void DeleteVector(VectorInterface& p);
   virtual void Equ(VectorInterface& dst, double s, const VectorInterface& src)const;
   void Zero(VectorInterface& dst)const;

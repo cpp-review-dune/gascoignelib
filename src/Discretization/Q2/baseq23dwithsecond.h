@@ -14,18 +14,20 @@
 ///
 /////////////////////////////////////////////
 
+namespace Gascoigne
+{
 
-class BaseQ23dWithSecond : public Gascoigne::BaseQ23d
+class BaseQ23dWithSecond : public BaseQ23d
 {
 private:
 
-  mutable Gascoigne::nvector<double> dxx, dxy, dxz, dyy, dyz, dzz;
+  mutable DoubleVector dxx, dxy, dxz, dyy, dyz, dzz;
 
 public:
 
   BaseQ23dWithSecond();
 
-  void   point(const Gascoigne::Vertex3d& s) const;
+  void   point(const Vertex3d& s) const;
 
   double phi_xx(int i) const {return dxx[i];}
   double phi_xy(int i) const {return dxy[i];}
@@ -33,8 +35,8 @@ public:
   double phi_yy(int i) const {return dyy[i];}
   double phi_yz(int i) const {return dyz[i];}
   double phi_zz(int i) const {return dzz[i];}
-
 };
+}
 
 
 #endif

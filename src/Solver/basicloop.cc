@@ -290,9 +290,6 @@ void BasicLoop::run(const ProblemDescriptorInterface* PD)
   VectorInterface u("u"), f("f");
   GlobalVector  ualt;
 
-  GetMultiLevelSolver()->RegisterVector(u);
-  GetMultiLevelSolver()->RegisterVector(f);
-  
   Monitoring Moning;
   
   for (_iter=1; _iter<=_niter; _iter++)
@@ -305,6 +302,8 @@ void BasicLoop::run(const ProblemDescriptorInterface* PD)
 
       GetSolverInfos()->GetNLInfo().control().matrixmustbebuild() = 1;
       GetMultiLevelSolver()->ReInit(*PD);
+      GetMultiLevelSolver()->ReInitVector(u);
+      GetMultiLevelSolver()->ReInitVector(f);
       GetMultiLevelSolver()->InterpolateSolution(u,ualt);
       GetMultiLevelSolver()->GetSolver()->Visu(_s_resultsdir+"/interpolate",u,_iter);
 

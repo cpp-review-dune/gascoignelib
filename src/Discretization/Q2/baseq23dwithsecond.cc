@@ -1,7 +1,8 @@
 #include  "baseq23dwithsecond.h"
 
 using namespace std;
-using namespace Gascoigne;
+
+namespace Gascoigne{
 
 #define NDOF   27
 #define NDOF1d 3
@@ -45,3 +46,5 @@ void BaseQ23dWithSecond::point(const Vertex3d& s) const
 #undef NDOF
 #undef NDOF1d
 #undef NDOF2d
+
+}

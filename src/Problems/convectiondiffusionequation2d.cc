@@ -23,6 +23,13 @@ void ConvectionDiffusionEquation2d::SetTimePattern(TimePattern& P) const
   P(0,0) = 1.;
 }
 
+/*-----------------------------------------*/
+
+void ConvectionDiffusionEquation2d::OperatorStrong(DoubleVector& b, const FemFunction& U)const
+{
+  b[0] += Convection(U[0]) - _visc*U[0].D();
+}
+ 
 /*---------------------------------------------------*/
 
 double ConvectionDiffusionEquation2d::Convection(const TestFunction& N) const

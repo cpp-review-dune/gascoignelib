@@ -38,7 +38,6 @@ namespace Gascoigne
       virtual void SetMonitorPtr(Monitor* mon)=0;
 
       virtual void ReInitMatrix()=0;
-      virtual void ReInitVector()=0;
 
       virtual int nlevels() const=0;
 
@@ -59,11 +58,10 @@ namespace Gascoigne
       /// vector - manamgement
       //
 
-      virtual void MemoryVector(VectorInterface& g)=0;
       virtual void DeleteVector(VectorInterface& g)=0;
-      virtual void RegisterVector(VectorInterface& g)=0;
-      virtual void RegisterVectorsOnSolvers()=0;
+      virtual void RegisterVectors()=0;
       virtual void RegisterMatrix()=0;
+      virtual void ReInitVector(VectorInterface& v)=0;
 
       //
       /// vector 

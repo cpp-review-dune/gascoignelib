@@ -372,20 +372,31 @@ void StdSolver::RegisterVector(const VectorInterface& g)
 
 /*-------------------------------------------------------*/
 
-void StdSolver::ReInitVector()
+void StdSolver::ReInitVector(VectorInterface& dst)
 {
   int ncomp = GetProblemDescriptor()->GetEquation()->GetNcomp();
   int n     = GetDiscretization()->n();
   
-  for (GhostVectorAgent::iterator p=_NGVA.begin(); p!=_NGVA.end(); p++)
+  // VectorInterface already registered ?
+  //
+  GhostVectorAgent::iterator p = _NGVA.find(dst);
+  if (p==_NGVA.end()) 
     {
-      if (p->second==NULL) 
-        {
-          p->second = new GlobalVector;
-	  p->second->ncomp() = ncomp;
-        }
-      p->second->reservesize(n);
+      _NGVA.Register(dst);
+      p = _NGVA.find(dst);
     }
+  assert(p!=_NGVA.end());
+  
+  // GlobalVector already registered ?
+  //
+  if (p->second==NULL) 
+    {
+      p->second = new GlobalVector;
+      p->second->ncomp() = ncomp;
+    }
+  // resize GlobalVector
+  //
+  p->second->reservesize(n);
 }
 
 /*-------------------------------------------------------*/
@@ -403,16 +414,6 @@ double StdSolver::NewtonNorm(const VectorInterface& u) const
 }
 
 /*-----------------------------------------*/
-
-void StdSolver::ResizeVector(GlobalVector* x, string type) const
-{
-  int n = GetDiscretization()->n();
-//   cerr << "StdSolver::ResizeVector() n="<<n<<endl; 
-  x->reservesize(n);
-}
-
-/*-----------------------------------------*/
-
 
 void StdSolver::HNAverageData() const {
   GetDiscretization()->HNAverageData();

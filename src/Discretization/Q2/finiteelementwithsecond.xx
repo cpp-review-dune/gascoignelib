@@ -20,12 +20,14 @@ inline void  FiniteElementWithSecond<DIM,BDIM,TRAFO,BASE>::init_test_hesse(TestF
   N.aux("xx") = w * hesse[i](0,0);
   N.aux("xy") = w * hesse[i](0,1);
   N.aux("yy") = w * hesse[i](1,1);
+  N.D()       = N.aux("xx")+N.aux("yy");
 
   if(DIM==3)
   {
     N.aux("xz") = w * hesse[i](0,2);
     N.aux("yz") = w * hesse[i](1,2);
     N.aux("zz") = w * hesse[i](2,2); 
+    N.D()      += N.aux("zz");
   }
 }
 

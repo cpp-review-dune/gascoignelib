@@ -313,11 +313,9 @@ void StdLoop::run(const ProblemDescriptorInterface* PD)
   VectorInterface u("u"), f("f");
   GlobalVector  ualt;
 
-  GetMultiLevelSolver()->RegisterVector(u);
-  GetMultiLevelSolver()->RegisterVector(f);
-  
   Monitoring Moning;
   
+  std :: cout << "++++++++++++++++++++== niter = " << _niter << "\n";
   for (_iter=1; _iter<=_niter; _iter++)
     {
       cout << "\n================== " << _iter << " ================";
@@ -328,8 +326,9 @@ void StdLoop::run(const ProblemDescriptorInterface* PD)
 
       GetSolverInfos()->GetNLInfo().control().matrixmustbebuild() = 1;
       GetMultiLevelSolver()->ReInit(*PD);
+      GetMultiLevelSolver()->ReInitVector(u);
+      GetMultiLevelSolver()->ReInitVector(f);
       GetMultiLevelSolver()->InterpolateSolution(u,ualt);
-      //      GetMultiLevelSolver()->GetSolver()->Visu("Results/interpolate",u,_iter);
 
       _clock_newmesh.stop();
 

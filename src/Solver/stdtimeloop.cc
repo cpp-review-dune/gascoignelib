@@ -53,14 +53,13 @@ void StdTimeLoop::adaptive_run(const ProblemDescriptorInterface* PD)
   VectorInterface u("u"), f("f");
   GlobalVector ualt;
   
-  GetMultiLevelSolver()->RegisterVector(u);
-  GetMultiLevelSolver()->RegisterVector(f);
-  
   DoubleVector eta;
 
   for (_iter=1; _iter<=_niter; _iter++)
     {
       GetMultiLevelSolver()->ReInit(*PD);
+      GetMultiLevelSolver()->ReInitVector(u);
+      GetMultiLevelSolver()->ReInitVector(f);
       TimeInfoBroadcast();
 
       GetMultiLevelSolver()->InterpolateSolution(u,ualt);
@@ -145,13 +144,13 @@ void StdTimeLoop::InitSolution(VectorInterface& u)
 void StdTimeLoop::run(const ProblemDescriptorInterface* PD)
 {
   VectorInterface u("u"), f("f");
-  GetMultiLevelSolver()->RegisterVector(u);
-  GetMultiLevelSolver()->RegisterVector(f);
   
   DoubleVector eta;
   
   GetSolverInfos()->GetNLInfo().control().matrixmustbebuild() = 1;
   GetMultiLevelSolver()->ReInit(*PD);
+  GetMultiLevelSolver()->ReInitVector(u);
+  GetMultiLevelSolver()->ReInitVector(f);
   
   cout << "\nMesh [l,nn,nc]: ";
   cout << GetMeshAgent()->nlevels() << " " << GetMeshAgent()->nnodes() << " " << GetMeshAgent()->ncells() << endl;

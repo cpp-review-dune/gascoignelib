@@ -2,7 +2,8 @@
 
 
 using namespace std;
-using namespace Gascoigne;
+
+namespace Gascoigne{
 
 #define NDOF   9
 #define NDOF1d 3
@@ -36,3 +37,5 @@ void BaseQ22dWithSecond::point(const Vertex2d& s) const
 
 #undef NDOF
 #undef NDOF1d
+
+}

@@ -61,7 +61,6 @@ namespace Gascoigne
       virtual const MeshInterface* GetMesh() const=0;
 
       virtual void RegisterMatrix()=0;
-      virtual void ReInitVector()=0;
       virtual void ReInitMatrix()=0;
 
       virtual void OutputSettings() const=0;
@@ -82,10 +81,10 @@ namespace Gascoigne
       //
       /// vector - manamgement
       //
-      virtual void ResizeVector(GlobalVector* x, std::string type) const=0;
       virtual void RegisterVector(const VectorInterface& g)=0;
       virtual GlobalVector& GetGV(VectorInterface& u) const=0;
       virtual const GlobalVector& GetGV(const VectorInterface& u) const=0;
+      virtual void ReInitVector(VectorInterface& dst)=0;
 
       //
       /// vector - hanging nodes

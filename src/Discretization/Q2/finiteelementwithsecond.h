@@ -21,6 +21,17 @@ class FiniteElementWithSecond : public Gascoigne::FiniteElement<DIM,BDIM,TRAFO,B
     
     FiniteElementWithSecond();
     
+    void point(const Gascoigne::Vertex<DIM>& v) const
+    {
+      Gascoigne::FiniteElement<DIM,BDIM,TRAFO,BASE>::point(v);
+      ComputeHesse(v);
+    }
+
+    void  init_test_functions(Gascoigne::TestFunction& Phi, double w, int i) const
+    {
+      Gascoigne::FiniteElement<DIM,BDIM,TRAFO,BASE>::init_test_functions(Phi,w,i);
+      init_test_hesse(Phi,w,i);
+    }
     void init_test_hesse(Gascoigne::TestFunction& N, double w, int i) const;
 };
 

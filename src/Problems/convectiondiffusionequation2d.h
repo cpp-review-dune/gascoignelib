@@ -28,6 +28,8 @@ public:
 
   int  GetNcomp()    const { return 1;}
 
+  void OperatorStrong(DoubleVector& b, const FemFunction& U) const;
+
   void point(double h, const FemFunction& U, FemData& Q, 
 	     const Vertex2d& v) const {}
 
