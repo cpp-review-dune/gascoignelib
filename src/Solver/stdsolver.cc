@@ -113,8 +113,8 @@ void StdSolver::MatrixZero() const
 void StdSolver::OutputSettings() const
 {
   cout << "=====================================" << endl;
-  cout << "Solver:          " << GetName() << endl;
-  cout << "Discretization:  " << GetDiscretization()->GetName()  << endl;
+  cout << "Solver:           " << GetName() << endl;
+  cout << "Discretization:   " << GetDiscretization()->GetName()  << endl;
   GetProblemDescriptor()->OutputSettings(cout);
   cout << "=====================================" << endl;
 }
