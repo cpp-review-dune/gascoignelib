@@ -67,7 +67,7 @@ protected:
 
 public:
 
-  ProblemDescriptorInterface() : EQ(NULL),BM(NULL),ES(NULL),IC(NULL),RHS(NULL),DD(NULL),ND(NULL)
+  ProblemDescriptorInterface() : EQ(NULL),BM(NULL),ES(NULL),IC(NULL),RHS(NULL),DD(NULL),ND(NULL),_paramfile(NULL)
 {}
   virtual ~ProblemDescriptorInterface() {
     if (EQ!=NULL)   { delete EQ; EQ=NULL;}
