@@ -1,4 +1,4 @@
-#include  "gmres.xx"
+#include  "../LinAlg/gmres.xx"
 #include  "stdmultilevelsolver.h"
 #include  "stdsolver.h"
 

@@ -1,5 +1,5 @@
 #include  "finiteelement.h"
-#include  "finiteelement.xx"
+#include  "../Q1/finiteelement.xx"
 #include  "transformation2d.h"
 #include  "transformation3d.h"
 #include  "baseq12d.h"

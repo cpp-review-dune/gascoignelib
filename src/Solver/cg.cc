@@ -1,4 +1,4 @@
-#include  "cg.xx"
+#include  "../LinAlg/cg.xx"
 #include  "stdmultilevelsolver.h"
 
 /********************************************************************/
