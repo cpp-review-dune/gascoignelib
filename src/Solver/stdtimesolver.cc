@@ -196,7 +196,7 @@ void StdTimeSolver::L2Projection(BasicGhostVector& Gu, const BasicGhostVector& G
   d.equ(1,f);
   double Res = r*r;
   double FirstRes = Res;
-  cerr << "\t\tcg " << 0 << "\t" << sqrt(FirstRes) << endl;
+  cout << "\t\tcg " << 0 << "\t" << sqrt(FirstRes) << endl;
 
   TimePattern TP(u.ncomp());
   TP.zero();
@@ -212,7 +212,7 @@ void StdTimeSolver::L2Projection(BasicGhostVector& Gu, const BasicGhostVector& G
       r.add(-lambda,g);
 
       Res = r*r;
-      cerr << "\t\tcg " << iter << "\t" << sqrt(Res) << "\n";
+      cout << "\t\tcg " << iter << "\t" << sqrt(Res) << "\n";
       if (Res<Tol*Tol*FirstRes) 
 	{
 	  return;
