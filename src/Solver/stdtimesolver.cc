@@ -52,33 +52,34 @@ void StdTimeSolver::SetProblem(const ProblemDescriptorInterface& PDX)
   const Equation* EQ = PDX.GetEquation();
   assert(EQ);
   EQ->SetTimePattern(GetTimePattern());
-
-  int ncomp = EQ->ncomp();
-  if (GetMassMatrixPointer()==NULL)
-    GetMassMatrixPointer() = NewMassMatrix(ncomp,_matrixtype);
   
   StdSolver::SetProblem(PDX);
 }
 
-/*-------------------------------------------------------------*/
+/*-------------------------------------------------------*/
 
-MatrixInterface* StdTimeSolver::NewMassMatrix(int ncomp, const string& matrixtype)
+void StdTimeSolver::RegisterMatrix()
 {
-  return new SimpleMatrix;
+  const Equation*  EQ = GetProblemDescriptor()->GetEquation();
+  assert(EQ);
+  int ncomp = EQ->ncomp();
+
+  if (GetMassMatrixPointer()==NULL)
+    GetMassMatrixPointer() = NewMassMatrix(ncomp,_matrixtype);
+  
+  StdSolver::RegisterMatrix();
 }
 
 /*-------------------------------------------------------*/
 
-void StdTimeSolver::MemoryMatrix()
+void StdTimeSolver::ReInitMatrix() 
 {
   ConstructPressureFilter();
-
   SparseStructure SA;
   GetMeshInterpretor()->Structure(&SA);
 
   GetMatrix()->ReInit(&SA);
   GetIlu()->ReInit(&SA);
-
   GetMassMatrix()->ReInit(&SA);
 
   GetMassMatrix()->zero();
@@ -90,6 +91,12 @@ void StdTimeSolver::MemoryMatrix()
 //   GetMassMatrix()->Write(file);
 }
 
+/*-------------------------------------------------------------*/
+
+MatrixInterface* StdTimeSolver::NewMassMatrix(int ncomp, const string& matrixtype)
+{
+  return new SimpleMatrix;
+}
 
 /*-------------------------------------------------------------*/
   
@@ -183,6 +190,9 @@ void StdTimeSolver::L2Projection(BasicGhostVector& Gu, const BasicGhostVector& G
   GlobalVector& g = GetGV(Gg);
   GlobalVector& r = GetGV(Gr);
   GlobalVector& d = GetGV(Gd);
+
+  assert(u.ncomp()==g.ncomp());
+  assert(u.n()==g.n());
 
   int    MaxIter = 100;
   double Tol     = 1e-8;

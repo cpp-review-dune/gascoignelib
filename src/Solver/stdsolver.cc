@@ -180,7 +180,7 @@ void StdSolver::ReInitMatrix()
 
   GetMatrix()->ReInit(&SA);
   GetIlu()->ReInit(&SA);
-};
+}
 
 /*-------------------------------------------------------*/
 

@@ -35,7 +35,6 @@ protected:
   TimePattern& GetTimePattern() {return _TP;}
 
   virtual MatrixInterface* NewMassMatrix(int ncomp, const std::string& matrixtype);
-  void MemoryMatrix();
 
 public:
   
@@ -43,6 +42,9 @@ public:
   ~StdTimeSolver();
 
   void BasicInit(int level, const Gascoigne::ParamFile* pfparamfile, const MeshInterface* MP);
+
+  void RegisterMatrix();
+  void ReInitMatrix();
 
   void SetTimeData(double d, double th, double ti);
   void SetProblem(const ProblemDescriptorInterface& PDX);
