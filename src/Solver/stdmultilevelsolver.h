@@ -125,6 +125,7 @@ class StdMultiLevelSolver : public MultiLevelSolverInterface
   virtual void BoundaryInit(MultiLevelGhostVector& u) const;
 
   virtual void SolutionTransfer(int high, int low, MultiLevelGhostVector& u) const;
+  virtual void Transfer(int high, int low, MultiLevelGhostVector& u) const;
   virtual void SolutionTransfer(MultiLevelGhostVector& u) const;
   
   void precondition(MultiLevelGhostVector& x, MultiLevelGhostVector& y);
@@ -137,6 +138,7 @@ class StdMultiLevelSolver : public MultiLevelSolverInterface
   double ComputeFunctional(MultiLevelGhostVector& f, const MultiLevelGhostVector& u, const Functional* FP) const;
 
   void SolutionTransfer(int l, Gascoigne::GlobalVector& ul, const Gascoigne::GlobalVector& uf) const;
+  void Transfer(int l, Gascoigne::GlobalVector& ul, const Gascoigne::GlobalVector& uf) const;
 };
 
 #endif

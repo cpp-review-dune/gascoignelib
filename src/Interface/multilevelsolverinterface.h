@@ -20,6 +20,9 @@ class MultiLevelGhostVector;
 
 class MultiLevelSolverInterface
 {
+ private:
+
+  typedef Gascoigne::GlobalVector  GlobalVector;
 public:
 
   MultiLevelSolverInterface() {}
@@ -57,9 +60,10 @@ public:
   virtual std::string Solve(MultiLevelGhostVector& x, const MultiLevelGhostVector& b) {
     return Solve(nlevels()-1,x,b);
   }
-  virtual void InterpolateSolution(MultiLevelGhostVector& u, const Gascoigne::GlobalVector& uold) const=0;
+  virtual void InterpolateSolution(MultiLevelGhostVector& u, const GlobalVector& uold) const=0;
   virtual double ComputeFunctional(MultiLevelGhostVector& f, const MultiLevelGhostVector& u, const Functional* FP) const=0;
-  virtual void SolutionTransfer(int l, Gascoigne::GlobalVector& ul, const Gascoigne::GlobalVector& uf) const {assert(0);}
+  virtual void Transfer(int l, GlobalVector& ul, const GlobalVector& uf) const {assert(0);}
+  virtual void SolutionTransfer(int l, GlobalVector& ul, const GlobalVector& uf) const {assert(0);}
 };
 
 

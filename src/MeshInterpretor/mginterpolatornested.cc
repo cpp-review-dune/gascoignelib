@@ -90,7 +90,7 @@ void MgInterpolatorNested::prolongate_add(GlobalVector& ul, const GlobalVector& 
 
 void MgInterpolatorNested::SolutionTransfer(GlobalVector& uL, const GlobalVector& ul) const
 {
-  for(int i=0;i<c2f.size();i++)  uL.equ_node(i,1.,c2f[i],ul);
+  for(int i=0;i<c2f.size();i++) uL.equ_node(i,1.,c2f[i],ul);
 }
 
 /*-----------------------------------------*/

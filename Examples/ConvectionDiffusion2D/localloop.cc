@@ -51,7 +51,7 @@ void LocalLoop::run()
 	{
 	  dat[l].ncomp() = dat[l+1].ncomp();
 	  MP->GetSolver(l)->ResizeVector(&dat[l],"");
- 	  MP->SolutionTransfer(l+1,dat[l],dat[l+1]);
+ 	  MP->Transfer(l+1,dat[l],dat[l+1]);
 	}
       MP->GetSolver(l)->AddNodeVector(&dat[l]);
     }

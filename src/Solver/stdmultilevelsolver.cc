@@ -616,6 +616,16 @@ double StdMultiLevelSolver::ComputeFunctional(MultiLevelGhostVector& f, const Mu
 
 /*-------------------------------------------------------------*/
 
+void StdMultiLevelSolver::Transfer(int high, int low, MultiLevelGhostVector& u) const
+{
+  for(int l=high;l>=low;l--)
+    {
+      Transfer(l,u.Vector(l-1),u.Vector(l));
+    }
+}
+
+/*-------------------------------------------------------------*/
+
 void StdMultiLevelSolver::SolutionTransfer(int high, int low, MultiLevelGhostVector& u) const
 {
   for(int l=high;l>=low;l--)
@@ -636,8 +646,15 @@ void StdMultiLevelSolver::SolutionTransfer(MultiLevelGhostVector& u) const
 void StdMultiLevelSolver::SolutionTransfer(int l, GlobalVector& ul, const GlobalVector& uf) const
 {
   GetSolver(l)->HNAverage(uf);
-  assert(_Interpolator[l-1]);
-  _Interpolator[l-1]->SolutionTransfer(ul,uf);
+  Transfer(l,ul,uf);
   GetSolver(l)->HNZero(uf);
   GetSolver(l-1)->SetBoundaryVector(ul);
+}
+
+/*-------------------------------------------------------------*/
+
+void StdMultiLevelSolver::Transfer(int l, GlobalVector& ul, const GlobalVector& uf) const
+{
+  assert(_Interpolator[l-1]);
+  _Interpolator[l-1]->SolutionTransfer(ul,uf);
 }
