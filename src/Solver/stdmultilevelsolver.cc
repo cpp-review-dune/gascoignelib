@@ -17,7 +17,7 @@ namespace Gascoigne
 {
 StdMultiLevelSolver::~StdMultiLevelSolver()
 {
-  ViewProtocoll();
+  //ViewProtocoll();
 
   if(DataP) delete DataP; DataP=NULL;
 

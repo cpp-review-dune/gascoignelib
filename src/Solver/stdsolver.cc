@@ -241,8 +241,6 @@ MatrixInterface* StdSolver::NewMatrix(int ncomp, const string& matrixtype)
     else if (ncomp==2)  return new SparseBlockMatrix<FMatrixBlock<2> >;
     else if (ncomp==3)  return new SparseBlockMatrix<FMatrixBlock<3> >;
     else if (ncomp==4)  return new SparseBlockMatrix<FMatrixBlock<4> >;
-    else if (ncomp==9)  return new SparseBlockMatrix<FMatrixBlock<9> >;
-    else if (ncomp==10) return new SparseBlockMatrix<FMatrixBlock<10> >;
     else
     {
       cerr << "No SparseBlockMatrix for " << ncomp << "components." << endl;
@@ -290,8 +288,6 @@ IluInterface* StdSolver::NewIlu(int ncomp, const string& matrixtype)
     else if (ncomp==2)  return new SparseBlockIlu<FMatrixBlock<2> >;
     else if (ncomp==3)  return new SparseBlockIlu<FMatrixBlock<3> >;
     else if (ncomp==4)  return new SparseBlockIlu<FMatrixBlock<4> >;
-    else if (ncomp==9)  return new SparseBlockIlu<FMatrixBlock<9> >;
-    else if (ncomp==10) return new SparseBlockIlu<FMatrixBlock<10> >;
     else
       {
         cerr << "No SparseBlockIlu for " << ncomp << "components." << endl;
@@ -645,6 +641,30 @@ void StdSolver::Form(GlobalVector& y, const GlobalVector& x, double d) const
 
 /*-------------------------------------------------------*/
 
+void StdSolver::AdjointForm(GlobalVector& y, const GlobalVector& x, double d) const
+{
+  HNAverage(x);
+  HNAverageData();
+
+  const Equation* EQ = GetProblemDescriptor()->GetEquation();
+  assert(EQ);
+  GetDiscretization()->AdjointForm(y,x,*EQ,d);
+
+  const BoundaryEquation* BE = GetProblemDescriptor()->GetBoundaryEquation();
+  if(BE)
+  {
+    const BoundaryManager* BM = GetProblemDescriptor()->GetBoundaryManager();
+    GetDiscretization()->BoundaryForm(y,x,BM->GetBoundaryEquationColors(),*BE,d);
+  }
+
+  HNZero(x);
+  HNZeroData();
+  HNDistribute(y);
+  SubtractMeanAlgebraic(y);
+}
+
+/*-------------------------------------------------------*/
+
 void StdSolver::BoundaryInit(BasicGhostVector& Gu)  const
 {
   GlobalVector& u = GetGV(Gu);
@@ -653,7 +673,7 @@ void StdSolver::BoundaryInit(BasicGhostVector& Gu)  const
     {
       u.zero();
       cerr << "StdSolver::BoundaryInit():\t No DirichletData !!\n";
-      return;
+      abort();
     }
   
   int color = 0;

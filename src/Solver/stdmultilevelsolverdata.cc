@@ -50,12 +50,5 @@ void StdMultiLevelSolverData::BasicInit(const ParamFile *param)
   precinfo.user().maxiter()   = prec_maxiter;
   precinfo.user().printstep() = prec_pstep;
   precinfo.user().text()      = "PrecInfo";
-
-  std::vector<std::string> v = StringSplit(_linearsolve.c_str(),'_');
-  if( (v.size()==2) && (v[0]=="gmres") )
-  {
-    _gmresmemsize = atoi(v[1].c_str());
-    _linearsolve = "gmres";
-  }
 }
 }

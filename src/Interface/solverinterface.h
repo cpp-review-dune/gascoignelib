@@ -138,6 +138,7 @@ namespace Gascoigne
       /// vector - residual (integration)
       //
       virtual void Form(BasicGhostVector& y, const BasicGhostVector& x, double d) const=0;
+      virtual void AdjointForm(GlobalVector& y, const GlobalVector& x, double d) const { assert(0);}
 
       //
       /// vector - boundary condition

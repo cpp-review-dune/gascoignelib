@@ -110,15 +110,12 @@ class StdSolver : public virtual SolverInterface
   void Rhs(GlobalVector& f, double d=1.) const;
 
   virtual double ComputeFunctional(GlobalVector& f, const GlobalVector& u, const Functional* FP) const;
-  virtual double ComputeBoundaryFunctional(GlobalVector& f, const GlobalVector& u, GlobalVector& z, const BoundaryFunctional* FP) const;
-  virtual double ComputeDomainFunctional(GlobalVector& f, const GlobalVector& u, GlobalVector& z, const DomainFunctional* FP) const;
-  virtual double ComputePointFunctional(GlobalVector& f, const GlobalVector& u, GlobalVector& z, const PointFunctional* NFP) const;
-  virtual double ComputeResidualFunctional(GlobalVector& f, const GlobalVector& u, GlobalVector& z, const ResidualFunctional* FP) const;
     
   virtual void smooth(int niter, GlobalVector& x, const GlobalVector& y, GlobalVector& h) const;
   virtual void PermutateIlu(const GlobalVector& u) const;
   virtual void modify_ilu(IluInterface& I,int ncomp) const;
   void Form(GlobalVector& y, const GlobalVector& x, double d) const;
+  void AdjointForm(GlobalVector& y, const GlobalVector& x, double d) const;
 
   void MatrixResidual(GlobalVector& y, const GlobalVector& x, const GlobalVector& b) const;
   virtual void vmult(GlobalVector& y, const GlobalVector& x, double d) const;
@@ -127,7 +124,6 @@ class StdSolver : public virtual SolverInterface
   virtual DoubleVector IntegrateSolutionVector(const GlobalVector& u) const;
   virtual void _check_consistency(const Equation* EQ, const DiscretizationInterface* MP) const;
   virtual void DirichletMatrixOnlyRow() const;
-  virtual void Visu(const std::string& name, const GlobalVector& u, int i) const;
 
   virtual void SetBoundaryVector(GlobalVector& f) const;
   virtual void SetBoundaryVectorZero(GlobalVector& f) const;
@@ -191,6 +187,7 @@ class StdSolver : public virtual SolverInterface
   }
 
   void OutputSettings() const;
+  virtual void Visu(const std::string& name, const GlobalVector& u, int i) const;
 
   void ConstructInterpolator(MgInterpolatorInterface* I, const MeshTransferInterface* MT);
   void VisuGrid(const std::string& name, int i) const;
@@ -294,6 +291,11 @@ class StdSolver : public virtual SolverInterface
 
   void ComputeError(const BasicGhostVector& u, GlobalVector& err) const;
   double ComputeFunctional(BasicGhostVector& f, const BasicGhostVector& u, const Functional* FP) const;
+
+  virtual double ComputeBoundaryFunctional(GlobalVector& f, const GlobalVector& u, GlobalVector& z, const BoundaryFunctional* FP) const;
+  virtual double ComputeDomainFunctional(GlobalVector& f, const GlobalVector& u, GlobalVector& z, const DomainFunctional* FP) const;
+  virtual double ComputePointFunctional(GlobalVector& f, const GlobalVector& u, GlobalVector& z, const PointFunctional* NFP) const;
+  virtual double ComputeResidualFunctional(GlobalVector& f, const GlobalVector& u, GlobalVector& z, const ResidualFunctional* FP) const;
 
   //
   /// vector - initialize

@@ -25,9 +25,7 @@ StdLoop::StdLoop() : BasicLoop()//, _paramfile(NULL)
 
 /*-----------------------------------------*/
 
-StdLoop::~StdLoop()
-{
-}
+StdLoop::~StdLoop() {}
 
 /*-----------------------------------------*/
 
@@ -57,7 +55,6 @@ void StdLoop::BasicInit(const ParamFile* paramfile)
   FileScanner FS(DFH);
   FS.NoComplain();
   FS.readfile(_paramfile,"Loop");
-
 }
 
 /*-------------------------------------------------------*/
