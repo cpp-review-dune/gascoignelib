@@ -29,7 +29,7 @@ class BasicMeshInterpretor : public MeshInterpretorInterface
 
   mutable Gascoigne::LocalData   __Q;
   
-  const MeshInterface* GetMesh() const {return __MP;}
+  const MeshInterface* GetMesh() const { assert(__MP); return __MP;}
 
   virtual void GlobalToLocal(Gascoigne::LocalVector& U, const Gascoigne::GlobalVector& u, int iq) const {
     GlobalToLocalSingle(U,u,iq);

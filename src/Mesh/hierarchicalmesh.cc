@@ -13,13 +13,13 @@ using namespace Gascoigne;
 /*------------------------------------------------------*/
 
 HierarchicalMesh::HierarchicalMesh() 
-  : mnlevels(1), pdepth(0), curvedshapes(0), withfaces(1), etapatcher(1)
+  : mnlevels(1), pdepth(0), withfaces(1), etapatcher(1)
  {}
 
 /*------------------------------------------------------*/
 
 HierarchicalMesh::HierarchicalMesh(const HierarchicalMesh& H)
-  : mnlevels(1), pdepth(0), curvedshapes(0), withfaces(1), etapatcher(1)
+  : mnlevels(1), pdepth(0), withfaces(1), etapatcher(1)
 {
   *this = H;
 }
@@ -28,7 +28,6 @@ HierarchicalMesh::HierarchicalMesh(const HierarchicalMesh& H)
 
 HierarchicalMesh::~HierarchicalMesh()
 {
-  if (curvedshapes!=NULL) delete curvedshapes; curvedshapes=NULL;
 }
 
 /*------------------------------------------------------*/
@@ -46,31 +45,9 @@ HierarchicalMesh& HierarchicalMesh::operator=(const HierarchicalMesh& H)
   eo2n      = H.Edgeo2n();
   co2n      = H.Cello2n();
 
-  
   edges     = H.edge();
   pdepth    = H.patchdepth();
   withfaces = H.withfaces;
-}
-
-/*------------------------------------------------------*/
-
-void HierarchicalMesh::NewCurvedShapes()
-{
-  if(!curvedshapes) curvedshapes = new CurvedShapes;
-}
-
-/*------------------------------------------------------*/
-
-void HierarchicalMesh::InitShapes(const set<vector<string> >&  curved)
-{
-  NewCurvedShapes();
-
-  set<vector<string> >::const_iterator  p=curved.begin();
-
-  for (;p!=curved.end(); p++)
-    {
-      curvedshapes->BasicInit(*p);
-    }
 }
 
 /*------------------------------------------------------*/
@@ -118,16 +95,14 @@ void HierarchicalMesh::SetParameters(string gridname, int patchdepth, int epatch
 
 void HierarchicalMesh::ReadParameters(const ParamFile* pf)
 {
-  int patchdepth,epatcher;
-  int prerefine;
+  int    patchdepth,epatcher;
+  int    prerefine;
   string gridname;
-  set<vector<string> >  curved;
 
   DataFormatHandler DFH;
 
   DFH.insert("gridname" ,&gridname,"none");      // inp oder gup Format 
   DFH.insert("prerefine",&prerefine,0);
-  DFH.insert("curvedboundary",&curved);
   DFH.insert("patchdepth",&patchdepth,1);
   DFH.insert("etapatcher",&epatcher,1);
 
@@ -135,7 +110,6 @@ void HierarchicalMesh::ReadParameters(const ParamFile* pf)
   FS.NoComplain();
   FS.readfile(pf, "Mesh");
 
-  InitShapes(curved);
   SetParameters(gridname,patchdepth,epatcher);
   global_refine(prerefine);
 }

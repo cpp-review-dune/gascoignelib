@@ -27,6 +27,8 @@ class HierarchicalMesh2d : public HierarchicalMesh
 
   /*  Data  */
 
+  CurvedShapes<2>    _curvedshapes;
+
   VertexVec2d        vertexs2d; 
 
   QuadVec            quads;
@@ -92,6 +94,9 @@ class HierarchicalMesh2d : public HierarchicalMesh
   void VertexToCellsCoarsening(Gascoigne::IntVector& dst, const Gascoigne::IntSet& src, 
 			       const Gascoigne::IntVector& vertexlevel) const;
   void recursive_childs(int q, Gascoigne::IntVector& ref, int d) const;
+
+  const CurvedShapes<2>& GetCurvedShapes() const { return _curvedshapes;}
+  CurvedShapes<2>& GetCurvedShapes() { return _curvedshapes;}
 
   public:
 
@@ -184,11 +189,14 @@ class HierarchicalMesh2d : public HierarchicalMesh
     }
 
   std::set<int>   CellNeighbours(int i)    const;
-  virtual void NewCurvedShapes();
 
   int neighbour(int c, int le) const;
   void FillVolumes(nvector<double>& vol) const;
   void writeq2(const Gascoigne::IntVector &a,const std::vector<int> & b,int np) const;
+
+  void AddShape(int col, BoundaryFunction<2>* f) {
+    GetCurvedShapes().AddShape(col,f);
+  }
 };
 
 /*---------------------------------------------------*/

@@ -72,9 +72,9 @@ pair<int,int> HierarchicalMesh3d::GetBoundaryInformation(int i) const
 
 const BoundaryFunction<3>* HierarchicalMesh3d::quad_shape(int i) const
 { 
-  if (curvedshapes==NULL) return 0;
+  if (GetCurvedShapes().empty()) return NULL;
 
-  if (curvedshapes->Curved(i)) return &(curvedshapes->GetShape3d(i));
+  if (GetCurvedShapes().Curved(i)) return &(GetCurvedShapes().GetShape(i));
  
   return 0;
 }
@@ -118,12 +118,12 @@ void HierarchicalMesh3d::InitHexOfCurved()
 {
   hexofcurved.clear();
 
-  if (curvedshapes==NULL) return;
+  if (GetCurvedShapes().empty()) return;
 
   for(int il=0;il<nbquads();++il)
     {
       const BoundaryQuad& B = bquad(il);
-      if (curvedshapes->Curved(B.material()))
+      if (GetCurvedShapes().Curved(B.material()))
 	{
 	  int iq = B.of_quad();
 	  hexofcurved.insert(make_pair(iq,il));
@@ -456,20 +456,20 @@ void HierarchicalMesh3d::Testing()
 
 void HierarchicalMesh3d::boundary_newton3d(IntSet& adjustvertex)
 {
-  if (curvedshapes==NULL) return;
+  if (GetCurvedShapes().empty()) return;
 
   for (int i=0; i<Bquads.size(); i++)
     {
       BoundaryQuad& bl = Bquads[i];
       int color = bl.material();
       
-      if (curvedshapes->Curved(color))
+      if (GetCurvedShapes().Curved(color))
 	{
 	  for (int j=0; j<4; j++)
 	    {
 	      int k = bl.vertex(j);
 
-	      curvedshapes->newton(color, vertexs3d[k]);
+	      GetCurvedShapes().newton(color, vertexs3d[k]);
 	      adjustvertex.insert(k);
 	    }
 	}
@@ -732,9 +732,7 @@ void HierarchicalMesh3d::inner_vertex_newton3d(const IntVector& vnew,
 					       const IntSet& CellRefList, 
 					       const IntSet& adjustvertex)
 {
-  if (curvedshapes==NULL) return;
-
-  if (curvedshapes->empty()) return;
+  if (GetCurvedShapes().empty()) return;
 
   // baue lokalen set auf um spaeter nicht alle hex zu justieren
   IntSet Hexset;

@@ -123,6 +123,7 @@ class SolverInterface
   /// vector - linear algebra
   //
   virtual double NewtonNorm(const BasicGhostVector& u) const=0;
+
   virtual void residualgmres(BasicGhostVector& y, const BasicGhostVector& x, const BasicGhostVector& b) const=0;
   virtual void MatrixResidual(BasicGhostVector& y, const BasicGhostVector& x, const BasicGhostVector& b) const=0;
   virtual void vmulteqgmres(BasicGhostVector& y, const BasicGhostVector& x) const=0;

@@ -1,7 +1,6 @@
 #include  "localloop.h"
 #include  "monitoring.h"
 #include  "backup.h"
-#include  "newmultilevelghostvector.h"
 
 using namespace std;
 using namespace Gascoigne;
@@ -10,7 +9,6 @@ using namespace Gascoigne;
 
 void LocalLoop::BasicInit(const ParamFile* paramfile)
 {
-//   GetMultiLevelSolverPointer() = new LocalMultiLevelSolver;
   LPD.BasicInit(paramfile);
   StdLoop::BasicInit(paramfile);
 }
@@ -21,7 +19,7 @@ void LocalLoop::run()
 {
   _iter=1;
   
-  NewMultiLevelGhostVector u("u"), f("f");
+  MultiLevelGhostVector u("u"), f("f");
   u.SetMultiLevelSolver(GetMultiLevelSolver());
   f.SetMultiLevelSolver(GetMultiLevelSolver());
   GlobalVector  ualt;
@@ -36,10 +34,8 @@ void LocalLoop::run()
   MultiLevelSolverInterface* MP = GetMultiLevelSolver();
 
   _clock_newmesh.start();
-  MP->NewMesh();
+  GetMultiLevelSolver()->ReInit(LPD);
   _clock_newmesh.stop();
-  
-  MP->SetProblem(LPD);
 
   int nlevels = MP->nlevels();
   dat.resize(nlevels);

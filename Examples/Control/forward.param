@@ -13,15 +13,6 @@ neuler      2
 scheme      Euler
 refiner     global
 
-//Block BoundaryManager
-
-//Block Functional
-
-names  1 domain
-//punkt  4  point     vertex_#no_comp_weight_x_y_comp_weight_x_y  ref_val yes 
-//punkt  4  point     vertex_1_0_1_450_150   0. no
-domain 4  domainmean 0_0._100._0._100. 0. no
-
 //Block Multilevelsolver
 
 solver             instat

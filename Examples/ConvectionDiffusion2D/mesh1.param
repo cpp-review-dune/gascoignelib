@@ -32,11 +32,6 @@ visc            0.001
 delta           0.
 alpha           0.5
 
-//Block Functional
-
-names  0
-//punkt  4  point     vertex_#no_comp_weight_x_y_comp_weight_x_y   0.1174 yes 
-
 //Block Multilevelsolver
 
 linear_maxiter          20

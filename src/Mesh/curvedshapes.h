@@ -12,31 +12,29 @@
 
 /******************************************************/
 
-class CurvedShapes
+template<int DIM>
+class CurvedShapes : public std::map<int,BoundaryFunction<DIM>* >
 {
- protected:
-  
-  std::set<int>                       colors;
-  std::map<int,BoundaryFunction<2>* > ShapeOfColor2d;
-  std::map<int,BoundaryFunction<3>* > ShapeOfColor3d;
-  
  public:
 
-  CurvedShapes();
-  ~CurvedShapes();
+  typedef typename std::map<int,BoundaryFunction<DIM>* >::iterator iterator;
 
-  const BoundaryFunction<2>& GetShape2d(int col) const { return *(ShapeOfColor2d.find(col)->second);}
-  const BoundaryFunction<3>& GetShape3d(int col) const { return *(ShapeOfColor3d.find(col)->second);}
+  ~CurvedShapes() {
+  for (iterator p=begin();p!=end();++p)
+    if (p->second) {delete p->second; p->second=NULL;}
+  }
 
-  void newton(int col,Vertex2d& V) { ShapeOfColor2d[col]->newton(V); }
-  void newton(int col,Vertex3d& V) { ShapeOfColor3d[col]->newton(V); };
+  const BoundaryFunction<DIM>& GetShape(int col) const { return *find(col)->second;}
 
-  virtual void BasicInit(const std::vector<std::string>& names);
-  void ReInit(const std::vector<BoundaryLine>& blines);
-  void ReInit(const std::vector<BoundaryQuad>& bquads);
+  void AddShape(int col, BoundaryFunction<DIM>* f) {
+    (*this)[col] = f;
+  }
+  
+  void newton(int col,Vertex<DIM>& V) { GetShape(col).newton(V); }
 
-  int Curved(int col) const;
-  int empty() const { return colors.size()==0;}
+  int Curved(int col) const { return (find(col)!=end());}
+
+  bool empty() const {return (size()==0);}
 };
 
 /******************************************************/

@@ -14,12 +14,6 @@ gridname    box.inp
 dirichlet       1 9
 dirichletcomp   9  1 0
 
-//Block Functional
-
-names  2  drag domain
-drag   4  residual  0_1._9  0.666666666666666   no
-domain 4  domainmean 0_0._1._0._1. 0.02776989201546093 no
-
 //Block Multilevelsolver
 
 linear_pstep       0

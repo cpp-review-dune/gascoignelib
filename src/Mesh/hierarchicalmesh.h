@@ -18,8 +18,7 @@
 
 class HierarchicalMesh : public MeshInterface
 {
-
-  protected :
+ protected :
 
   /*  typedef  */
 
@@ -36,7 +35,6 @@ class HierarchicalMesh : public MeshInterface
   int       mnlevels, pdepth, etapatcher;
   Gascoigne::IntVector    vo2n, eo2n, co2n;
   EdgeVec   edges;
-  CurvedShapes*       curvedshapes;
   
   void  update_edges(Gascoigne::IntVector&);
   virtual int   FindPatchDepth() const=0;
@@ -103,8 +101,6 @@ class HierarchicalMesh : public MeshInterface
   virtual int nactivedescendants(int i)      const=0;
   virtual Gascoigne::IntVector GetVertices(int c) const=0;
   
-
-  void InitShapes(const std::set<std::vector<std::string> >&  curved);
   bool CellIsCurved(int iq) const  { return GetBoundaryCellOfCurved(iq)!=-1;}
 
   virtual std::set<int> GetColors() const=0;
@@ -121,8 +117,10 @@ class HierarchicalMesh : public MeshInterface
   virtual std::set<int> CellNeighbours(int i) const 
     { std::cerr << "no CellNeighbours"; abort();}
 
-  virtual void NewCurvedShapes();
   virtual int  GetBoundaryCellOfCurved(int iq) const { return -1;}
+
+  virtual void AddShape(int col, BoundaryFunction<2>* f) {assert(0);}
+  virtual void AddShape(int col, BoundaryFunction<3>* f) {assert(0);}
 };
 
 /*---------------------------------------------------*/

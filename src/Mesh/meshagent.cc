@@ -60,6 +60,48 @@ void MeshAgent::BasicInit(int dim, string inpname, int prerefine)
 
 /*-----------------------------------------*/
 
+void MeshAgent::BasicInit(string inpname, int prerefine, std::map<int,BoundaryFunction<2>* >& curved)
+{
+  _dimension = 2;
+  HMP = new HierarchicalMesh2d;
+
+  std::map<int,BoundaryFunction<2>* >::iterator p=curved.begin();
+  for(p=curved.begin();p!=curved.end();p++)
+    {
+      HMP->AddShape(p->first,p->second);
+    }
+
+  HMP->read_inp(inpname);
+  HMP->global_refine(prerefine);
+
+  GMG = NewMultiGridMesh();
+
+  ReInit();
+}
+
+/*-----------------------------------------*/
+
+void MeshAgent::BasicInit(string inpname, int prerefine, std::map<int,BoundaryFunction<3>* >& curved)
+{
+  _dimension = 3;
+  HMP = new HierarchicalMesh3d;
+
+  std::map<int,BoundaryFunction<3>* >::iterator p=curved.begin();
+  for(p=curved.begin();p!=curved.end();p++)
+    {
+//       HMP->AddShape(p->first,p->second);
+    }
+
+  HMP->read_inp(inpname);
+  HMP->global_refine(prerefine);
+
+  GMG = NewMultiGridMesh();
+
+  ReInit();
+}
+
+/*-----------------------------------------*/
+
 void MeshAgent::BasicInit(const ParamFile* paramfile)
 {
   DataFormatHandler DFH;

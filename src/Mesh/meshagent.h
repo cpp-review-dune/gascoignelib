@@ -4,6 +4,7 @@
 #include  "meshagentinterface.h"
 #include  "hierarchicalmesh.h"
 #include  "gascoignemultigridmesh.h"
+#include  "boundaryfunction.h"
 
 /*-----------------------------------------*/
 
@@ -25,10 +26,12 @@ protected:
 public:
     
   MeshAgent();
-
-  void BasicInit(int dim, std::string inpname, int prerefine);
-  void BasicInit(const Gascoigne::ParamFile* pf);
   ~MeshAgent();
+
+  void BasicInit(const Gascoigne::ParamFile* pf);
+  void BasicInit(int dim, std::string inpname, int prerefine);
+  void BasicInit(std::string inpname, int prerefine, std::map<int,BoundaryFunction<2>* >& curved);
+  void BasicInit(std::string inpname, int prerefine, std::map<int,BoundaryFunction<3>* >& curved);
 
   const GascoigneMultiGridMesh& GetMultiGrid() const {return *GMG;}
   GascoigneMultiGridMesh& GetMultiGrid() {return *GMG;}

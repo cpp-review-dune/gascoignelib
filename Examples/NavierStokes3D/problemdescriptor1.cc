@@ -2,8 +2,6 @@
 #include  "stokesgls3d.h"
 #include  "navierstokesgls3d.h"
 #include  "benchmark3ddirichletdata.h"
-#include  "zerorighthandsidedata.h"
-#include  "zeroexactsolution.h"
 
 using namespace std;
 

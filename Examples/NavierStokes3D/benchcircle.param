@@ -32,13 +32,6 @@ visc            0.01
 delta           0.5
 alpha           0.5
 
-//Block Functional
-
-names  2  drag lift
-
-drag   4  residual  1_12.195122_80  6.1853329  yes
-lift   4  residual  2_12.195122_80  9.400984e-3  no
-
 //Block Multilevelsolver
 
 linear_maxiter          20

@@ -76,7 +76,7 @@ void Q12d::StrongDirichletVector(GlobalVector& u, const DirichletData& BF, int c
       if(c<0) {
 	cerr << "negative component: " << c << endl;
 	assert(0);
-      } else if(c>u.ncomp()){
+      } else if(c>=u.ncomp()){
 	cerr << "unknown component: " << c << endl;
 	assert(0);
       }

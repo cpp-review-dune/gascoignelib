@@ -12,7 +12,6 @@ SET(COMMON_SRC
   nmatrix.cc
   nvector.cc
   set2vec.cc
-  spline.cc
   stlio.cc
   stopwatch.cc
   stringutil.cc

@@ -55,7 +55,7 @@ void LocalTimeLoop::AddNodeVector(string filename)
 
 void LocalTimeLoop::init(string name, int iter)
 {
-  NewMultiLevelGhostVector u("u"), f("f"), ualt("ualt");
+  MultiLevelGhostVector u("u"), f("f"), ualt("ualt");
   u.SetMultiLevelSolver(GetMultiLevelSolver());
   f.SetMultiLevelSolver(GetMultiLevelSolver());
   ualt.SetMultiLevelSolver(GetMultiLevelSolver());
@@ -88,7 +88,7 @@ void LocalTimeLoop::init(string name, int iter)
 
 void LocalTimeLoop::backward(string iname, string name, int first, int last, const ProblemDescriptorInterface* PD)
 {
-  NewMultiLevelGhostVector u("u"), f("f"), ualt("ualt");
+  MultiLevelGhostVector u("u"), f("f"), ualt("ualt");
   u.SetMultiLevelSolver(GetMultiLevelSolver());
   f.SetMultiLevelSolver(GetMultiLevelSolver());
   ualt.SetMultiLevelSolver(GetMultiLevelSolver());
@@ -135,7 +135,7 @@ void LocalTimeLoop::backward(string iname, string name, int first, int last, con
 
 void LocalTimeLoop::forward(string iname, int first, int last, const ProblemDescriptorInterface* PD)
 {
-  NewMultiLevelGhostVector u("u"), f("f"), ualt("ualt");
+  MultiLevelGhostVector u("u"), f("f"), ualt("ualt");
   u.SetMultiLevelSolver(GetMultiLevelSolver());
   f.SetMultiLevelSolver(GetMultiLevelSolver());
   ualt.SetMultiLevelSolver(GetMultiLevelSolver());

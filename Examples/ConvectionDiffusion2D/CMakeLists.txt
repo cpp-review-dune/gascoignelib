@@ -2,7 +2,6 @@ SET(CONVECTIONDIFFUSION2D_SRC
   localdirichletdata.cc
   localequation.cc 
   localloop.cc
-  localmeshinterpretor.cc
   main1.cc 
   problemdescriptor1.cc
 )

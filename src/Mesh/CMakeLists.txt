@@ -5,7 +5,6 @@ SET(MESH_SRC
   coarsehierarchicalmesh2d.cc
   coarsehierarchicalmesh3d.cc
   curvedboundary.cc
-  curvedshapes.cc
   deletecells.cc
   delete_hex.cc
   diplomantenadaptor.cc
@@ -44,8 +43,6 @@ SET(MESH_SRC
   quadlawandorder.cc
   refiner.cc
   regular_update.cc
-  runderkreis.cc
-  splinecontour.cc
 )
 
 ADD_LIBRARY(Mesh MESH_SRC)

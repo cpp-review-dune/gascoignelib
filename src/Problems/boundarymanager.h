@@ -33,6 +33,13 @@ class BoundaryManager
   std::set<int>                 coldir, colneu;
   std::map<int,Gascoigne::IntVector>       dirvec;
 
+ public:
+
+  BoundaryManager() {}
+  BoundaryManager(const Gascoigne::ParamFile* pf);
+
+  virtual std::string GetName() const {return "Std";}
+
   void AddDirichlet(int col, int c)    
     {
       coldir.insert(col);
@@ -42,13 +49,6 @@ class BoundaryManager
     {
       colneu.insert(col);
     }
-
- public:
-
-  BoundaryManager() {}
-  BoundaryManager(const Gascoigne::ParamFile* pf);
-
-  virtual std::string GetName() const {return "Std";}
 
   std::ostream& print(std::ostream& s) const;
 

@@ -5,14 +5,13 @@ using namespace std;
 /*---------------------------------------------------*/
 
 template<int DIM>
-void BoundaryFunction<DIM>::grad
-(numfixarray<DIM,double>& dst, const numfixarray<DIM,double>& src) const 
+void BoundaryFunction<DIM>::grad(Vector& dst, const Vector& src) const 
 {
   double eps = 1e-6;
   
   for(int i=0;i<DIM;i++)
     {
-      numfixarray<DIM,double> cl(src), cr(src);
+      Vector cl(src), cr(src);
       cl[i] -= eps;
       cr[i] += eps;
       dst[i] = ((*this)(cr)-(*this)(cl))/(2.*eps);

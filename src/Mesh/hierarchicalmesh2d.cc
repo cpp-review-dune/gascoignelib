@@ -91,11 +91,9 @@ int HierarchicalMesh2d::FindPatchDepth() const
 
 const BoundaryFunction<2>* HierarchicalMesh2d::line_shape(int i) const
 {
-  if (curvedshapes==NULL) return 0;
-
-  if (curvedshapes->Curved(i)) return &(curvedshapes->GetShape2d(i));
- 
-  return 0;
+  if (GetCurvedShapes().empty()) return NULL;
+  if (GetCurvedShapes().Curved(i)) return &(GetCurvedShapes().GetShape(i));
+  return NULL;
 }
 
 /*------------------------------------------------------*/
@@ -116,13 +114,13 @@ void HierarchicalMesh2d::InitQuadOfCurved()
 {
   quadofcurved.clear();
 
-  if (curvedshapes==NULL) return;
+  if (GetCurvedShapes().empty()) return;
 
   for(int il=0;il<nblines();++il)
     {
       const BoundaryLine& B = bline(il);
 
-      if (curvedshapes->Curved(B.material()))
+      if (GetCurvedShapes().Curved(B.material()))
 	{
 	  int iq = B.of_quad();
 	  quadofcurved.insert(make_pair(iq,il));
@@ -645,7 +643,7 @@ void HierarchicalMesh2d::new_quads(const HangContainer2d& hangset,
 void HierarchicalMesh2d::inner_vertex_newton2d(const IntVector& vnew,
 					     const IntSet& CellRefList)
 {
-  if (curvedshapes==NULL) return;
+  if (GetCurvedShapes().empty()) return;
 
   fixarray<4,int> v;
   fixarray<2,int> w; 
@@ -751,17 +749,17 @@ void HierarchicalMesh2d::update_boundary_data2d(const IntSet& LCoarse)
 
 void HierarchicalMesh2d::boundary_newton2d()
 {
-  if (curvedshapes==NULL) return;
+  if (GetCurvedShapes().empty()) return;
 
   for (int i=0; i<Blines.size(); i++)
     {
       BoundaryLine& bl = Blines[i];
       int color = bl.material();
       
-      if (curvedshapes->Curved(color))
+      if (GetCurvedShapes().Curved(color))
 	{
-	  curvedshapes->newton(color, vertexs2d[bl.vertex(0)]);
-	  curvedshapes->newton(color, vertexs2d[bl.vertex(1)]);
+	  GetCurvedShapes().newton(color, vertexs2d[bl.vertex(0)]);
+	  GetCurvedShapes().newton(color, vertexs2d[bl.vertex(1)]);
 	}
     }
 };
@@ -1077,13 +1075,6 @@ set<int> HierarchicalMesh2d::CellNeighbours(int iq) const
 	}
     }
   return neighbors;
-}
-
-/*---------------------------------------------------*/
-
-void HierarchicalMesh2d::NewCurvedShapes() 
-{
-  HierarchicalMesh::NewCurvedShapes(); 
 }
 
 /*------------------------------------------------------*/

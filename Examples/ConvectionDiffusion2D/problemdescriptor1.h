@@ -27,7 +27,6 @@ private:
 protected:
 
   void ConstructEquation();
-  void ConstructRightHandSideData();
   void ConstructDirichletData();
   
 public:

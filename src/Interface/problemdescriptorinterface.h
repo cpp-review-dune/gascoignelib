@@ -62,7 +62,7 @@ protected:
   virtual void ConstructExactSolution() {}
   virtual void ConstructInitialCondition() {}
   virtual void ConstructBoundaryManager() {
-    BM = new BoundaryManager(_paramfile);
+    GetBoundaryManagerPointer() = new BoundaryManager(_paramfile);
   }
 
 public:
@@ -111,6 +111,7 @@ public:
   const ExactSolution*   GetExactSolution   () const { return ES;}
   const Equation*        GetEquation        () const { return EQ;}
   const BoundaryManager* GetBoundaryManager () const { return BM;}
+  BoundaryManager* GetBoundaryManager () { return BM;}
 
   void SetTime(double time, double dt) const {
     if (EQ)  EQ  -> SetTime(time,dt);

@@ -35,7 +35,7 @@ public:
   ~Q1();
 
   int n() const {
-    GetMesh()->nnodes();
+    return GetMesh()->nnodes();
   }
   //  const HNStructureQ1* GetHNStructure() const { return HN;}
 

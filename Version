@@ -1,4 +1,13 @@
 
+Version 21.02.2004
+===============
+
+* roland:
+1) gekruemmte raender sind nicht mehr in der bibliothek,
+sondern werden lokal erzeugt, siehe Example/NavierStokes2D
+2) diverses aufgeraeumt
+
+
 Version 17.02.2004
 ===============
 

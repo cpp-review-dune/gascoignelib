@@ -28,6 +28,8 @@ class HierarchicalMesh3d : public HierarchicalMesh
 
   /*  Data  */
 
+  CurvedShapes<3>    _curvedshapes;
+
   VertexVec3d        vertexs3d; 
 
   /* info fuer interpolation auf neues gitter */
@@ -112,6 +114,9 @@ class HierarchicalMesh3d : public HierarchicalMesh
   void VertexToCellsCoarsening(Gascoigne::IntVector& dst, const Gascoigne::IntSet& src, 
 			       const Gascoigne::IntVector& vertexlevel) const;
   void recursive_childs(int q, Gascoigne::IntVector& ref, int d) const;
+
+  const CurvedShapes<3>& GetCurvedShapes() const { return _curvedshapes;}
+  CurvedShapes<3>& GetCurvedShapes() { return _curvedshapes;}
 
   public:
 
@@ -198,9 +203,11 @@ class HierarchicalMesh3d : public HierarchicalMesh
       return -1;
     }
   void Testing();
-  virtual void NewCurvedShapes() { HierarchicalMesh::NewCurvedShapes(); };
-
   int neighbour(int c, int le) const;
+
+  void AddShape(int col, BoundaryFunction<3>* f) {
+    GetCurvedShapes().AddShape(col,f);
+  }
 };
 
 /*---------------------------------------------------*/

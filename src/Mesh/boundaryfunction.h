@@ -1,7 +1,7 @@
 #ifndef  __boundaryfunction_h
 #define  __boundaryfunction_h
 
-#include  "numfixarray.h"
+#include  "vertex.h"
 
 /*---------------------------------------------------*/
 
@@ -10,7 +10,7 @@ class BoundaryFunction
 {
 protected:
   
-  typedef numfixarray<DIM,double>  Vector;
+  typedef Vertex<DIM>  Vector;
   
 public :
   

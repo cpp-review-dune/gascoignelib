@@ -16,7 +16,7 @@
 #include  "monitor.h"
 #include  "paramfile.h"
 
-class NewMultiLevelGhostVector;
+class MultiLevelGhostVector;
 
 class MultiLevelSolverInterface
 {
@@ -29,8 +29,6 @@ public:
   virtual void BasicInit(const MeshAgentInterface* GMGM, const Gascoigne::ParamFile* paramfile)=0;
   // temporary
   virtual void ReInit(const ProblemDescriptorInterface& PDX)=0;
-  virtual void NewMesh()=0;
-  virtual void SetProblem(const ProblemDescriptorInterface& PDX)=0;
   virtual void SetMonitorPtr(Monitor* mon)=0;
 
   virtual int nlevels() const=0;
@@ -46,18 +44,18 @@ public:
   /// vector - manamgement
   //
 
-  virtual void RegisterVector(NewMultiLevelGhostVector& g)=0;
+  virtual void RegisterVector(MultiLevelGhostVector& g)=0;
 
   //
   /// vector 
   //
 
-  virtual std::string Solve(int level, NewMultiLevelGhostVector& x, const NewMultiLevelGhostVector& b)=0;
-  virtual std::string Solve(NewMultiLevelGhostVector& x, const NewMultiLevelGhostVector& b) {
+  virtual std::string Solve(int level, MultiLevelGhostVector& x, const MultiLevelGhostVector& b)=0;
+  virtual std::string Solve(MultiLevelGhostVector& x, const MultiLevelGhostVector& b) {
     return Solve(nlevels()-1,x,b);
   }
-  virtual void InterpolateSolution(NewMultiLevelGhostVector& u, const Gascoigne::GlobalVector& uold) const=0;
-  virtual double ComputeFunctional(NewMultiLevelGhostVector& f, const NewMultiLevelGhostVector& u, const Functional* FP) const=0;
+  virtual void InterpolateSolution(MultiLevelGhostVector& u, const Gascoigne::GlobalVector& uold) const=0;
+  virtual double ComputeFunctional(MultiLevelGhostVector& f, const MultiLevelGhostVector& u, const Functional* FP) const=0;
   virtual void SolutionTransfer(int l, Gascoigne::GlobalVector& ul, const Gascoigne::GlobalVector& uf) const {assert(0);}
 };
 
