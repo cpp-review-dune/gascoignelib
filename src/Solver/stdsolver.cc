@@ -389,8 +389,7 @@ void StdSolver::SetBoundaryVector(GlobalVector& f) const
   const DirichletData*   DD = GetProblemDescriptor()->GetDirichletData();
   if(DD==NULL) {
     if(BM->GetDirichletColors().size()!=0) {
-      cerr << "StdSolver::SetBoundaryVector:  no \"DirichletData\" but \"\"DirichletColors\"\"\n";
-      assert(0);
+      SetBoundaryVectorZero(f);
     }
     return;
   }
