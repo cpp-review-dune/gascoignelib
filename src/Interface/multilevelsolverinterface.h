@@ -31,6 +31,7 @@ public:
   virtual std::string GetName() const=0;
   virtual void BasicInit(const MeshAgentInterface* GMGM, const ParamFile* paramfile)=0;
   // temporary
+  virtual void SetProblem(const ProblemDescriptorInterface& PDX)=0;
   virtual void ReInit(const ProblemDescriptorInterface& PDX)=0;
   virtual void SetMonitorPtr(Monitor* mon)=0;
 
@@ -46,6 +47,8 @@ public:
 
   virtual void SetState(const std::string& s)=0;
   virtual void AssembleMatrix(MultiLevelGhostVector& u)=0;
+  virtual void ComputeIlu(MultiLevelGhostVector& u)=0;
+  virtual void ComputeIlu()=0;
 
   //
   /// vector - manamgement
