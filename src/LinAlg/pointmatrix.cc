@@ -166,9 +166,9 @@ void PointMatrix::AddMassWithDifferentStencil(const MatrixInterface* MP, const T
 
 /*-----------------------------------------*/
 
-void PointMatrix::RestrictMatrix(const MgInterpolator& I, const PointMatrix& Ah)
-{
-  assert(0);
+// void PointMatrix::RestrictMatrix(const MgInterpolatorMatrix& I, const PointMatrix& Ah)
+// {
+//   assert(0);
 //   const UnstructuredStencil& USH = GetStencil();
 //   const UnstructuredStencil& USh = Ah.GetStencil();
 
@@ -197,4 +197,4 @@ void PointMatrix::RestrictMatrix(const MgInterpolator& I, const PointMatrix& Ah)
 // 	    }
 // 	}
 //     }
-}
+//}

@@ -16,6 +16,8 @@ public:
 
   std::string GetName() const {return "Sinus"+Double2String(nx)+Double2String(ny)+Double2String(nz);}
 
+  int GetNcomp() const { return 1;}
+
   SinusExactSolution(const std::vector<std::string>& args)
     {
       if(args.size()==0)

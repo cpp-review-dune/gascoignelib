@@ -11,8 +11,8 @@ class MgInterpolatorInterface
 {
   
 public:
-
-  MgInterpolatorInterface(){}
+  
+  MgInterpolatorInterface() {}
   virtual ~MgInterpolatorInterface() {}
 
   virtual void restrict_zero   (GlobalVector&, const GlobalVector&) const=0;

@@ -25,11 +25,11 @@ private:
 protected:
 
   void _RangeErrorStartStop(int i, const vector<int>& vec) const {
-    if( !((i>=0)&&(i+1<sstart.size())) )
-      {
-	cerr << "start/stop out of range: i="<<i<< " vec.size() "<<vec.size()<<endl;
-	assert(0);
-      } 
+/*     if( !((i>=0)&&(i+1<sstart.size())) ) */
+/*       { */
+/* 	cerr << "start/stop out of range: i="<<i<< " vec.size() "<<vec.size()<<endl; */
+/* 	assert(0); */
+/*       }  */
   }  
   nvector<int>   scol, sstart;
 
