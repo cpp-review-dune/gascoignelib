@@ -3,9 +3,9 @@
 PROJECT_NAME           = Gascoigne
 STRIP_FROM_PATH        = /home/kroisos2/meidner/Gascoigne/Std/src
 INPUT                  = /home/kroisos2/meidner/Gascoigne/Std/src
-TAGFILES               = "../libstdc++.tag = http://gcc.gnu.org/onlinedocs/libstdc++/latest-doxygen"
-GENERATE_TAGFILE       = ../gascoigne.tag
+TAGFILES               = "libstdc++.tag = http://gcc.gnu.org/onlinedocs/libstdc++/latest-doxygen"
+GENERATE_TAGFILE       = gascoigne.tag
 HTML_HEADER            = headerFile
 HTML_FOOTER            = footerFile
-HTML_STYLESHEET        = styleSheetFile
+HTML_STYLESHEET        = doxygen.css
 GENERATE_LATEX         = YES
