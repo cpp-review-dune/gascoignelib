@@ -126,6 +126,7 @@ void GalerkinIntegrator<DIM>::Form(const Equation& EQ, LocalVector& F, const Fem
 template<int DIM>
 void GalerkinIntegrator<DIM>::MassMatrix(EntryMatrix& E, const FemInterface& FEM) const
 {
+  NNN.resize(FEM.n());
   E.SetDimensionDof(FEM.n(),FEM.n());
   int ncomp=1;
   E.SetDimensionComp(ncomp,ncomp);
