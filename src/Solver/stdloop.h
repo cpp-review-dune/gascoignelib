@@ -19,7 +19,7 @@ namespace Gascoigne
 ///
 //////////////////////////////////////////////
 
-class StdLoop : public BasicLoop
+class StdLoop : public virtual BasicLoop
 {
 private:
 

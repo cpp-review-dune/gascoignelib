@@ -9,7 +9,7 @@
 
 namespace Gascoigne
 {
-class StdTimeLoop : public StdLoop
+class StdTimeLoop : public virtual StdLoop
 {
 protected:
 
