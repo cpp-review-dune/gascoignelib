@@ -6,23 +6,42 @@
 
 /*-----------------------------------------*/
 
-class DomainMeanFunctional  : public virtual DomainFunctional
+class AllDomainFunctional  : public virtual DomainFunctional
 {
 protected:
 
-  std::string  _domain;
-  int          _comp, _ncomp;
-  double       _x0, _x1, _y0, _y1, _z0, _z1;
+  int  _comp, _ncomp;
 
 public:
 
-  DomainMeanFunctional(const std::vector<std::string>& args);
-  ~DomainMeanFunctional() {}
+  AllDomainFunctional(int nc, int c) { _ncomp = nc; _comp = c; }
+  ~AllDomainFunctional() {}
 
-  std::string GetName() const {return "domain_mean";}
+  std::string GetName() const {return "alldomain";}
 
   int    GetNcomp() const {return _ncomp;}
   int    GetComp()  const {return _comp;}
+
+  double J(const Gascoigne::FemFunction& U, const Vertex2d& v) const;
+  double J(const Gascoigne::FemFunction& U, const Vertex3d& v) const;
+};
+
+/*-----------------------------------------*/
+
+class SubDomainFunctional  : public AllDomainFunctional
+{
+protected:
+
+  double  _x0, _x1, _y0, _y1, _z0, _z1;
+
+public:
+
+  SubDomainFunctional(int nc, int c) : AllDomainFunctional(nc,c) {};
+  ~SubDomainFunctional() {}
+
+  std::string GetName() const {return "subdomain";}
+
+  void SetCoordinates(double x0, double x1, double y0, double y1);
 
   double J(const Gascoigne::FemFunction& U, const Vertex2d& v) const;
   double J(const Gascoigne::FemFunction& U, const Vertex3d& v) const;

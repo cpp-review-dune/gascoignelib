@@ -5,7 +5,6 @@ SET(PROBLEMS_SRC
   dirichletdatabycolor.cc
   domainmeanfunctional.cc
   exactsolution.cc
-  functionalmanager.cc
   glsstabilization.cc
   laplace3d.cc
   laplace.cc
