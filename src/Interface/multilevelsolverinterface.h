@@ -15,6 +15,7 @@
 #include  "solverinterface.h"
 #include  "monitor.h"
 #include  "paramfile.h"
+#include  "nlinfo.h"
 
 namespace Gascoigne
 {
@@ -56,9 +57,9 @@ public:
   /// vector 
   //
 
-  virtual std::string Solve(int level, MultiLevelGhostVector& x, const MultiLevelGhostVector& b)=0;
-  virtual std::string Solve(MultiLevelGhostVector& x, const MultiLevelGhostVector& b) {
-    return Solve(nlevels()-1,x,b);
+  virtual std::string Solve(int level, MultiLevelGhostVector& x, const MultiLevelGhostVector& b, NLInfo& nlinfo)=0;
+  virtual std::string Solve(MultiLevelGhostVector& x, const MultiLevelGhostVector& b, NLInfo& nlinfo) {
+    return Solve(nlevels()-1,x,b,nlinfo);
   }
   virtual void InterpolateSolution(MultiLevelGhostVector& u, const GlobalVector& uold) const=0;
   virtual double ComputeFunctional(MultiLevelGhostVector& f, const MultiLevelGhostVector& u, const Functional* FP) const=0;

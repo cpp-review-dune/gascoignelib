@@ -282,7 +282,7 @@ void StdMultiLevelSolver::NewMgInterpolator()
 void StdMultiLevelSolver::ReInit(const ProblemDescriptorInterface& PDX)
 {
   DataP->CountResidual() = 0;
-  DataP->GetNLInfo().control().matrixmustbebuild() = 1;
+  //  DataP->GetNLInfo().control().matrixmustbebuild() = 1;
 
   NewSolvers();
   SolverNewMesh();
@@ -319,13 +319,16 @@ void StdMultiLevelSolver::vmulteqgmres(MultiLevelGhostVector& y, const MultiLeve
 
 void StdMultiLevelSolver::precondition(MultiLevelGhostVector& x, MultiLevelGhostVector& y)
 {
+  assert(0);
+  CGInfo cginfo;// = DataP->GetLInfo("Precond");
+
   int clevel=Gascoigne::max_int(DataP->CoarseLevel(),0);
   if(DataP->CoarseLevel() == -1) clevel = FinestLevel(); 
 
-  DataP->GetLInfo("Precond").reset();
-  DataP->GetLInfo("Precond").check(0.,0.);
-//   LinearMg(FinestLevel(),clevel,x,y, DataP->GetLInfo("Precond"));
-  LinearMg(ComputeLevel,clevel,x,y, DataP->GetLInfo("Precond"));
+  cginfo.reset();
+  cginfo.check(0.,0.);
+//   LinearMg(FinestLevel(),clevel,x,y,cginfo);
+  LinearMg(ComputeLevel,clevel,x,y,cginfo);
 }
 
 /*-------------------------------------------------------------*/
@@ -577,6 +580,16 @@ void StdMultiLevelSolver::AssembleMatrix(MultiLevelGhostVector& u, NLInfo& nlinf
 
 /*-------------------------------------------------------------*/
 
+void StdMultiLevelSolver::ComputeIlu()
+{
+  for(int l=0;l<=ComputeLevel;l++)
+    {
+      GetSolver(l)->ComputeIlu();
+    }
+}
+
+/*-------------------------------------------------------------*/
+
 void StdMultiLevelSolver::ComputeIlu(MultiLevelGhostVector& u)
 {
   SolutionTransfer(u);
@@ -596,7 +609,7 @@ void StdMultiLevelSolver::BoundaryInit(MultiLevelGhostVector& u) const
 
 /*-------------------------------------------------------------*/
 
-string StdMultiLevelSolver::Solve(int level, MultiLevelGhostVector& u, const MultiLevelGhostVector& b)
+string StdMultiLevelSolver::Solve(int level, MultiLevelGhostVector& u, const MultiLevelGhostVector& b, NLInfo& nlinfo)
 {
   ComputeLevel = level;
 
@@ -604,9 +617,9 @@ string StdMultiLevelSolver::Solve(int level, MultiLevelGhostVector& u, const Mul
   if(DataP->NonLinearSolve() == "newton")
     {
       GetSolver(ComputeLevel)->HNAverage(u(ComputeLevel));
-      newton(*this,u,b,_res,_cor,DataP->GetNLInfo());
+      newton(*this,u,b,_res,_cor,nlinfo);
       GetSolver(ComputeLevel)->HNZero(u(ComputeLevel));
-      status = DataP->GetNLInfo().control().status();
+      status = nlinfo.control().status();
     }
   else
     {
@@ -614,7 +627,7 @@ string StdMultiLevelSolver::Solve(int level, MultiLevelGhostVector& u, const Mul
     }
   if (status!="converged")
     {
-      DataP->GetNLInfo().control().matrixmustbebuild() = 1;
+      nlinfo.control().matrixmustbebuild() = 1;
     }
   return status;
 }

@@ -103,8 +103,7 @@ void NavierStokes2d::Matrix(EntryMatrix& A, const FemFunction& U, const TestFunc
   double laplace = Laplace(M,N);
   
   ////////////// Continuity ////////////////////////////////////////////////
-  
-  //   A(0,0) += MN * alpha00;// * ST->h()* ST->h();
+
   A(0,1) += Mx;
   A(0,2) += My;
   
@@ -125,5 +124,5 @@ void NavierStokes2d::Matrix(EntryMatrix& A, const FemFunction& U, const TestFunc
   A(1,2) += Gascoigne::min(U[1].y()*MN, cut);
   A(2,1) += Gascoigne::min(U[2].x()*MN, cut);
 }
-
 }
+/*-----------------------------------------*/

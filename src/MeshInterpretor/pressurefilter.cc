@@ -4,7 +4,7 @@
 
 namespace Gascoigne
 {
-PressureFilter::PressureFilter() : DoubleVector(), domainsize(0.) {}
+PressureFilter::PressureFilter() : nvector<double>(), domainsize(0.),  nhanging(0) {}
 
 /*-----------------------------------------*/
 
@@ -12,11 +12,12 @@ PressureFilter::~PressureFilter() {}
 
 /*-----------------------------------------*/
 
-void PressureFilter::ReInit(int n)
+void PressureFilter::ReInit(int n, int nhn)
 {
   resize(n);
   zero();
   domainsize = 0.;
+  nhanging = nhn;
 }
 
 /*-----------------------------------------*/
@@ -65,10 +66,10 @@ void PressureFilter::SubtractMeanAlgebraic(GlobalVector& u) const
       double d = 0.;
       for (int j=0; j<u.n(); j++)
 	{
-	  d += u(j,comp);
+	  d += u(j,comp)* (*this)[j];
 	}      
-      d /= u.n();
-      
+      //d /= u.n();
+      d /= u.n() - nhanging;
       u.CompAdd(comp,-d);
     }
 }

@@ -15,7 +15,7 @@ using namespace std;
 
 namespace Gascoigne
 {
-BasicLoop::BasicLoop() : _paramfile(NULL), _MA(NULL), _ML(NULL), _iter(0), IOM("Results")
+  BasicLoop::BasicLoop() : _paramfile(NULL), _MA(NULL), _ML(NULL), _iter(0), IOM("Results"), _SI(NULL)
 {
   _reload  = "none";
 }
@@ -83,6 +83,13 @@ void BasicLoop::BasicInit(const ParamFile* paramfile)
 
   GetMultiLevelSolver()->BasicInit(GetMeshAgent(),_paramfile);
   GetMultiLevelSolver()->SetMonitorPtr(&Mon);
+
+  if (GetSolverInfos()==NULL)
+    {
+      _SI = new SolverInfos;
+      _SI->BasicInit(_paramfile);
+    }
+  assert(GetSolverInfos());
 }
 
 /*-------------------------------------------------------*/
@@ -181,7 +188,7 @@ string BasicLoop::Solve(MultiLevelGhostVector& u, MultiLevelGhostVector& f, stri
   GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(f.finest());
   GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(u.finest());
 
-  string status = GetMultiLevelSolver()->Solve(u,f);
+  string status = GetMultiLevelSolver()->Solve(u,f,GetSolverInfos()->GetNLInfo());
   _clock_solve.stop();
 
   _clock_write.start();
@@ -254,6 +261,7 @@ void BasicLoop::run(const ProblemDescriptorInterface* PD)
       
       _clock_newmesh.start();
 
+      GetSolverInfos()->GetNLInfo().control().matrixmustbebuild() = 1;
       GetMultiLevelSolver()->ReInit(*PD);
       GetMultiLevelSolver()->InterpolateSolution(u,ualt);
       GetMultiLevelSolver()->GetSolver()->Visu("Results/interpolate",u,_iter);

@@ -33,7 +33,8 @@ public:
 
   virtual int  dimension() const=0;
   virtual int  nnodes()    const=0;
-  virtual int  ncells()    const=0;
+  virtual int  nhanging()  const { return 0; }
+ virtual int  ncells()    const=0;
 
   virtual int  nodes_per_cell(int i)         const { assert(0); return -1;}
   virtual int  vertex_of_cell(int i, int ii)    const=0;

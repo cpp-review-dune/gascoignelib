@@ -157,8 +157,9 @@ class SolverInterface
   virtual void AssembleMatrix(const BasicGhostVector& u, double d=1.)=0;
   virtual void DirichletMatrix() const=0;
   virtual void MatrixZero() const=0;
-  virtual void ComputeIlu(const BasicGhostVector& u) const=0;
-  virtual void TransposeMatrix(const BasicGhostVector& u) const { assert(0);};
+  virtual void ComputeIlu(const BasicGhostVector& u) const { assert(0);}
+  virtual void ComputeIlu() const=0;
+  virtual void TransposeMatrix() const { assert(0);};
 
   //
   /// vector - "postprocessing"

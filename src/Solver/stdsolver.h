@@ -174,6 +174,7 @@ class StdSolver : public virtual SolverInterface
   bool DirectSolver() const {return _directsolver;}
 
   void AddNodeVector(const std::string& name, const GlobalVector* q) {
+    HNAverage(*q);
     GetMeshInterpretor()->AddNodeVector(name,q);
   }
   void AddCellVector(const std::string& name, const GlobalCellVector* q) {
@@ -286,6 +287,7 @@ class StdSolver : public virtual SolverInterface
   void DirichletMatrix() const;
   void MatrixZero() const;
   void ComputeIlu(const BasicGhostVector& u) const;
+  void ComputeIlu() const;
 
   //
   /// vector - "postprocessing"

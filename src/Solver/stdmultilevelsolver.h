@@ -112,7 +112,7 @@ class StdMultiLevelSolver : public MultiLevelSolverInterface
 
   // neue vektoren
 
-  std::string Solve(int level, MultiLevelGhostVector& x, const MultiLevelGhostVector& b);
+  std::string Solve(int level, MultiLevelGhostVector& x, const MultiLevelGhostVector& b, NLInfo& nlinfo);
   void InterpolateSolution(MultiLevelGhostVector& u, const GlobalVector& uold) const;
 
   virtual void NewtonVectorZero(MultiLevelGhostVector& w) const;
@@ -125,6 +125,7 @@ class StdMultiLevelSolver : public MultiLevelSolverInterface
   void AssembleMatrix(MultiLevelGhostVector& u);
   /// not used in the library -- might be used in local
   virtual void ComputeIlu(MultiLevelGhostVector& u);
+  virtual void ComputeIlu();
   
   virtual void BoundaryInit(MultiLevelGhostVector& u) const;
 

@@ -38,7 +38,7 @@ string StdTimeLoop::SolveTimePrimal(MultiLevelGhostVector& u, MultiLevelGhostVec
   GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(f);
   GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(u);
 
-  string status = GetMultiLevelSolver()->Solve(u,f);
+  string status = GetMultiLevelSolver()->Solve(u,f,GetSolverInfos()->GetNLInfo());
 
   return status;
 }

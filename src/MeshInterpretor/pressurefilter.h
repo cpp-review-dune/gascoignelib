@@ -14,6 +14,7 @@ class PressureFilter : public DoubleVector
 
   IntVector component;
   double       domainsize;
+  int          nhanging;
 
  public:
 
@@ -23,7 +24,7 @@ class PressureFilter : public DoubleVector
   void SetComponents(const IntVector& c) { component = c;}
   bool Active() const { return component.size()>0;}
 
-  void ReInit(int n);
+  void ReInit(int n, int nhn);
 
   void AddDomainPiece(double val) { domainsize += val;}
 

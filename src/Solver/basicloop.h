@@ -15,6 +15,7 @@
 #include  "stopwatch.h"
 #include  "paramfile.h"
 #include  "multilevelghostvector.h"
+#include  "solverinfos.h"
 
 //////////////////////////////////////////////
 //
@@ -35,7 +36,8 @@ private:
 
   MeshAgentInterface*        _MA;
   MultiLevelSolverInterface* _ML;
-
+  SolverInfos*               _SI;
+  
   void WriteMeshAndSolution(const std::string& filename, const MultiLevelGhostVector& u) const;
   void WriteSolution(const MultiLevelGhostVector& u) const;
   void WriteMesh() const;
@@ -50,6 +52,9 @@ protected:
 
   MeshAgentInterface* GetMeshAgent() { return _MA;}
   MultiLevelSolverInterface* GetMultiLevelSolver() { return _ML;}
+
+        SolverInfos* GetSolverInfos()       { return _SI;}
+  const SolverInfos* GetSolverInfos() const { return _SI;}
 
   mutable StopWatch   _clock_newmesh, _clock_solve, _clock_functionals, _clock_write, _clock_estimate;
 

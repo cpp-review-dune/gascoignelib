@@ -27,6 +27,7 @@ public:
   int  dimension() const {return 2;}
   int  nnodes()    const {return nx.size();}
   int  ncells()    const {return nc.size()/4;}
+  int  nhanging()  const { return HangingHandler.GetStructure()->size(); }
 
   int  nodes_per_cell(int i)  const { return 4;}
   int  VtkType(int i) const { return 9;}

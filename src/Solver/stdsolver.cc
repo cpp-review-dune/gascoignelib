@@ -350,6 +350,7 @@ void StdSolver::MatrixResidual(GlobalVector& y, const GlobalVector& x, const Glo
   y.equ(1.,b);
   vmult(y,x,-1.);
   SubtractMeanAlgebraic(y);
+  //  SubtractMean(y);
 }
 
 /*-------------------------------------------------------*/
@@ -494,7 +495,7 @@ void StdSolver::Form(GlobalVector& y, const GlobalVector& x, double d) const
 
   HNZero(x);
   HNDistribute(y);
-  SubtractMeanAlgebraic(y);
+  //SubtractMeanAlgebraic(y);
 
   _re.stop();
 }
@@ -741,6 +742,31 @@ void StdSolver::DirichletMatrix() const
 
 /* -------------------------------------------------------*/
 
+void StdSolver::ComputeIlu() const
+{
+  if(_directsolver)
+    {
+      _cs.start();
+      UmfIlu* UM = dynamic_cast<UmfIlu*>(GetIlu());
+      assert(UM);
+//       if(PrimalSolve==0) return;
+      UM->Factorize();
+      _cs.stop();
+    }
+  else
+    {
+      int ncomp = GetProblemDescriptor()->GetEquation()->ncomp();
+      _ci.start();
+      GetIlu()->zero();
+      GetIlu()->copy_entries(GetMatrix());
+      modify_ilu(*GetIlu(),ncomp);
+      GetIlu()->compute_ilu();
+      _ci.stop();
+    }
+}
+
+/* -------------------------------------------------------*/
+
 void StdSolver::ComputeIlu(const BasicGhostVector& gu) const
 {
   if(_directsolver)
@@ -931,8 +957,6 @@ void StdSolver::ConstructInterpolator(MgInterpolatorInterface* I, const MeshTran
 DoubleVector StdSolver::IntegrateSolutionVector(const GlobalVector& u) const
 {
   HNAverage(u);
-  //assert(GetMeshInterpretor()->HNZeroCheck(u)==0);
-
   DoubleVector dst = PF.IntegrateVector(u);
   HNZero(u);
   return dst;
@@ -964,6 +988,10 @@ void StdSolver::SubtractMean(GlobalVector& x) const
 void StdSolver::SubtractMeanAlgebraic(GlobalVector& x) const
 {
   if (PF.Active())
-    PF.SubtractMeanAlgebraic(x);
+    {
+      HNAverage(x);
+      PF.SubtractMeanAlgebraic(x);
+      HNZero(x);
+    }
 }
 }

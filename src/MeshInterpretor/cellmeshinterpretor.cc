@@ -209,7 +209,7 @@ void CellMeshInterpretor::InitFilter(DoubleVector& F) const
 
   if (!PF->Active()) return;
 
-  PF->ReInit(GetMesh()->nnodes());
+  PF->ReInit(GetMesh()->nnodes(),GetMesh()->nhanging());
   nmatrix<double> T;
   for(int iq=0; iq<GetMesh()->ncells(); ++iq)
     {
