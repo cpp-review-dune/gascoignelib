@@ -463,7 +463,10 @@ double CellDiscretization::ComputePointFunctional(const GlobalVector& u, const P
 	}
     }
   else
-    abort();
+    {
+      cout << "wronng dimension: dim = " << dim << endl;
+      abort();
+    }
 
   return FP.J(up);
 }

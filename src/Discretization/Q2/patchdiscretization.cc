@@ -2,6 +2,7 @@
 #include  <fstream>
 #include  "sparsestructure.h"
 #include  "pressurefilter.h"
+#include <ext/hash_set>
 
 using namespace std;
 
@@ -97,12 +98,62 @@ void PatchDiscretization::AdjointForm(GlobalVector& f, const GlobalVector& u, co
 
 /* ----------------------------------------- */
 
+void PatchDiscretization::BoundaryForm(GlobalVector& f, const GlobalVector& u, const IntSet& Colors, const BoundaryEquation& BE, double d) const
+{
+  nmatrix<double> T;
+  
+  GlobalToGlobalData();
+  BE.SetParameterData(__qq);
+
+ /// die cell2patch - liste
+
+  const nvector<nvector<int> >& patch2cell  =
+      GetGascoigneMesh()->GetPatchIndexHandler().GetAllPatch2Cell();
+   
+
+  nvector<int> cell2patch(GetMesh()->ncells());
+  for (int p=0;p<patch2cell.size();++p)
+    for (int i=0;i<patch2cell[p].size();++i)
+       cell2patch[patch2cell[p][i]]=p;
+  
+  for(IntSet::const_iterator p=Colors.begin();p!=Colors.end();p++)
+    {
+      int col = *p;
+
+      __gnu_cxx::hash_set<int> habschon;
+      
+      const IntVector& q = *GetMesh()->CellOnBoundary(col);
+      const IntVector& l = *GetMesh()->LocalOnBoundary(col);
+      for (int i=0; i<q.size(); i++)
+        {
+          int iq  = q[i];
+          int ip  = cell2patch[iq];
+	  
+	  // gabs den patch schon?
+          if (habschon.find(ip)!=habschon.end()) continue;
+	  habschon.insert(ip);
+
+          int ile = l[i];
+
+          Transformation(T,ip);
+          GetFem()->ReInit(T);
+
+          GlobalToLocal(__U,u,ip);
+
+          GetIntegrator()->BoundaryForm(BE,__F,*GetFem(),__U,ile,col,__Q);
+          LocalToGlobal(f,__F,ip,d);
+        }
+    }
+}
+
+/* ----------------------------------------- */
+
 void PatchDiscretization::Matrix(MatrixInterface& A, const GlobalVector& u, const Equation& EQ, double d) const
 {
   nmatrix<double> T;
 
   GlobalToGlobalData();
-   EQ.SetParameterData(__qq);
+  EQ.SetParameterData(__qq);
 
   for(int iq=0;iq<GetPatchMesh()->npatches();++iq)
     {
@@ -116,6 +167,54 @@ void PatchDiscretization::Matrix(MatrixInterface& A, const GlobalVector& u, cons
   
 //   ofstream file("MATRIX");
 //   A.Write(file);
+}
+
+/* ----------------------------------------- */
+
+void PatchDiscretization::BoundaryMatrix(MatrixInterface& A, const GlobalVector& u, const IntSet& Colors, const BoundaryEquation& BE, double d) const
+{
+  nmatrix<double> T;
+  
+  GlobalToGlobalData();
+  BE.SetParameterData(__qq);
+
+ /// die cell2patch - liste
+
+  const nvector<nvector<int> >& patch2cell  =
+      GetGascoigneMesh()->GetPatchIndexHandler().GetAllPatch2Cell();
+
+  nvector<int> cell2patch(GetMesh()->ncells());
+
+  for (int p=0;p<patch2cell.size();++p)
+    for (int i=0;i<patch2cell[p].size();++i)
+       cell2patch[patch2cell[p][i]]=p;  
+
+  for(IntSet::const_iterator p=Colors.begin();p!=Colors.end();p++)
+    {
+      int col = *p;
+     __gnu_cxx::hash_set<int> habschon;
+
+      const IntVector& q = *GetMesh()->CellOnBoundary(col);
+      const IntVector& l = *GetMesh()->LocalOnBoundary(col);
+      for (int i=0; i<q.size(); i++)
+        {
+          int iq  = q[i];
+          int ip  = cell2patch[iq];
+	  
+	  // gabs den patch schon?
+          if (habschon.find(ip)!=habschon.end()) continue;
+	  habschon.insert(ip);
+
+          int ile = l[i];
+          
+          Transformation(T,ip);
+          GetFem()->ReInit(T);
+
+          GlobalToLocal(__U,u,ip);
+          GetIntegrator()->BoundaryMatrix(BE,__E,*GetFem(),__U,ile,col,__Q);
+          LocalToGlobal(A,__E,ip,d);
+        }
+    }
 }
 
 /* ----------------------------------------- */
@@ -146,6 +245,10 @@ void PatchDiscretization::ComputeError(const GlobalVector& u, LocalVector& err, 
   CompVector<double> lerr(ncomp,3); 
 
   nmatrix<double> T;
+
+  GlobalToGlobalData();
+  ES->SetParameterData(__qq);
+
   for(int iq=0; iq<GetPatchMesh()->npatches(); iq++)
     {
       Transformation(T,iq);
@@ -171,6 +274,10 @@ void PatchDiscretization::ComputeError(const GlobalVector& u, LocalVector& err, 
 void PatchDiscretization::Rhs(GlobalVector& f, const DomainRightHandSide& RHS, double s) const
 {
   nmatrix<double> T;
+
+  GlobalToGlobalData();
+  RHS.SetParameterData(__qq);
+
   for(int iq=0;iq<GetPatchMesh()->npatches();++iq)
     {
       Transformation(T,iq);
@@ -187,22 +294,44 @@ void PatchDiscretization::Rhs(GlobalVector& f, const DomainRightHandSide& RHS, d
 void PatchDiscretization::BoundaryRhs(GlobalVector& f, const IntSet& Colors,  const BoundaryRightHandSide& NRHS, double s) const
 {
   nmatrix<double> T;
+
+  GlobalToGlobalData();
+  NRHS.SetParameterData(__qq);
+ /// die cell2patch - liste
+
+  const nvector<nvector<int> >& patch2cell  =
+      GetGascoigneMesh()->GetPatchIndexHandler().GetAllPatch2Cell();
+   
+
+  nvector<int> cell2patch(GetMesh()->ncells());
+  for (int p=0;p<patch2cell.size();++p)
+    for (int i=0;i<patch2cell[p].size();++i)
+       cell2patch[patch2cell[p][i]]=p;
+  
   for(IntSet::const_iterator p=Colors.begin();p!=Colors.end();p++)
     {
       int col = *p;
-      const IntVector& q = *GetPatchMesh()->CellOnBoundary(col);
-      const IntVector& l = *GetPatchMesh()->LocalOnBoundary(col);
+      __gnu_cxx::hash_set<int> habschon;
+
+      const IntVector& q = *GetMesh()->CellOnBoundary(col);
+      const IntVector& l = *GetMesh()->LocalOnBoundary(col);
       for (int i=0; i<q.size(); i++)
 	{
 	  int iq  = q[i];
+	  int ip  = cell2patch[iq];
+	  
+	  // gabs den patch schon?
+          if (habschon.find(ip)!=habschon.end()) continue;
+	  habschon.insert(ip);
+	  
 	  int ile = l[i];
 
-	  Transformation(T,iq);
+	  Transformation(T,ip);
 	  GetFem()->ReInit(T);
 
-	  GlobalToLocalData(iq);
+	  GlobalToLocalData(ip);
 	  GetIntegrator()->BoundaryRhs(NRHS,__F,*GetFem(),ile,col,__Q);
-	  LocalToGlobal(f,__F,iq,s);
+	  LocalToGlobal(f,__F,ip,s);
 	}
     }
 }
@@ -351,6 +480,9 @@ double PatchDiscretization::ComputeBoundaryFunctional(const GlobalVector& u, con
 
 double PatchDiscretization::ComputeDomainFunctional(const GlobalVector& u, const DomainFunctional& F) const 
 {
+  GlobalToGlobalData();
+  F.SetParameterData(__qq);
+  
   nmatrix<double> T;
   double j=0.;
   for(int iq=0;iq<GetPatchMesh()->npatches();++iq)
@@ -366,9 +498,84 @@ double PatchDiscretization::ComputeDomainFunctional(const GlobalVector& u, const
 
 /* ----------------------------------------- */
 
-double Gascoigne::PatchDiscretization::ComputePointFunctional(const GlobalVector& u, const PointFunctional& FP) const
+double PatchDiscretization::ComputePointFunctional(const GlobalVector& u, const PointFunctional& FP) const
 {
-  cerr << "\"PatchDiscretization::ComputePointFunctional\" not written!" << endl;
-  abort();
+  int dim = GetMesh()->dimension();
+  vector<int> comps = FP.GetComps();
+  int nn = comps.size();
+
+  vector<double> up(nn,0);
+ 
+  if (dim == 2)
+    {
+      vector<Vertex2d> v2d = FP.GetPoints2d();
+      assert(nn==v2d.size());
+      
+      for(int i=0;i<nn;++i)
+	{
+	  up[i] = ComputePointValue(u,v2d[i],comps[i]);
+	}
+    }
+  else if (dim == 3)
+    {
+      vector<Vertex3d> v3d = FP.GetPoints3d();
+      assert(nn==v3d.size());
+      for(int i=0;i<nn;++i)
+	{
+	  up[i] = ComputePointValue(u,v3d[i],comps[i]);
+	}
+    }
+  else
+    {
+      cout << "wronng dimension: dim = " << dim << endl;
+      abort();
+    }
+
+  return FP.J(up);
 }
+
+/* ----------------------------------------- */
+
+double PatchDiscretization::ComputePointValue(const GlobalVector& u, const Vertex2d& p0,int comp) const
+{
+  Vertex2d Tranfo_p0;
+
+  int iq = GetPatchNumber(p0,Tranfo_p0);
+  if (iq==-1)
+    {
+      cerr << "PatchDiscretization::ComputePointValue point not found\n";
+      abort();
+    }
+
+  nmatrix<double> T;
+  Transformation(T,iq);
+  GetFem()->ReInit(T);
+
+  GlobalToLocal(__U,u,iq);
+  
+  return GetIntegrator()->ComputePointValue(*GetFem(),Tranfo_p0,__U,comp);
+}
+
+/* ----------------------------------------- */
+
+double PatchDiscretization::ComputePointValue(const GlobalVector& u, const Vertex3d& p0,int comp) const
+{
+  Vertex3d Tranfo_p0;
+
+  int iq = GetPatchNumber(p0,Tranfo_p0);
+  if (iq==-1)
+    {
+      cerr << "CellDiscretization::ComputePointValue point not found\n";
+      abort();
+    }
+
+  nmatrix<double> T;
+  Transformation(T,iq);
+  GetFem()->ReInit(T);
+
+  GlobalToLocal(__U,u,iq);
+  
+  return GetIntegrator()->ComputePointValue(*GetFem(),Tranfo_p0,__U,comp);
+}
+
 }
