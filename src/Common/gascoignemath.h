@@ -1,5 +1,5 @@
-#ifndef __fadamath_h
-#define __fadamath_h
+#ifndef __gascoignemath_h
+#define __gascoignemath_h
 
 #include "math.h"
 

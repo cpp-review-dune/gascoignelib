@@ -1,6 +1,6 @@
 #include  "cginfo.h"
 #include  "math.h"
-#include  "fadamath.h"
+#include  "gascoignemath.h"
 #include  <iostream>
 
 using namespace std;

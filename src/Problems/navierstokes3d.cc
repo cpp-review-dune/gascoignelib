@@ -18,7 +18,7 @@ NavierStokes3d::NavierStokes3d() : NavierStokes2d() {}
 void NavierStokes3d::SetTimePattern(TimePattern& P) const
 {
   P.reservesize(ncomp(),ncomp(),0.);
-  P(0,0) = penalty;
+  P(0,0) = _penalty;
   P(1,1) = 1.;
   P(2,2) = 1.;
   P(3,3) = 1.;
@@ -35,9 +35,9 @@ NavierStokes3d::NavierStokes3d(const ParamFile* pf)
 void NavierStokes3d::OperatorStrong(DoubleVector& b, const FemFunction& U) const
 {
   b[0] = Divergence(U);
-  b[1] = Convection(U,U[1]) - visc * U[1].D() + U[0].x();
-  b[2] = Convection(U,U[2]) - visc * U[2].D() + U[0].y();
-  b[3] = Convection(U,U[3]) - visc * U[3].D() + U[0].z();
+  b[1] = Convection(U,U[1]) - _visc * U[1].D() + U[0].x();
+  b[2] = Convection(U,U[2]) - _visc * U[2].D() + U[0].y();
+  b[3] = Convection(U,U[3]) - _visc * U[3].D() + U[0].z();
 }
 
 /*-----------------------------------------*/
@@ -59,9 +59,9 @@ void NavierStokes3d::Form(VectorIterator b, const FemFunction& U, const TestFunc
   b[3] += Convection(U,U[3]) * N.m();
 
   // viscous terms
-  b[1] += visc * Laplace(U[1],N);
-  b[2] += visc * Laplace(U[2],N);
-  b[3] += visc * Laplace(U[3],N);
+  b[1] += _visc * Laplace(U[1],N);
+  b[2] += _visc * Laplace(U[2],N);
+  b[3] += _visc * Laplace(U[3],N);
 }
 
 /*-----------------------------------------*/
@@ -73,7 +73,7 @@ void NavierStokes3d::Matrix
      
   ////////////// Continuity ////////////////////////////////////////////////
 
-  A(0,0) += MN * penalty;
+  A(0,0) += MN * _penalty;
   A(0,1) += M.x()*N.m();
   A(0,2) += M.y()*N.m();
   A(0,3) += M.z()*N.m();
@@ -84,12 +84,12 @@ void NavierStokes3d::Matrix
   A(2,0) -= M.m()*N.y();
   A(3,0) -= M.m()*N.z();
 
-  double sum = Convection(U,M)*N.m() + visc*Laplace(M,N);
+  double sum = Convection(U,M)*N.m() + _visc*Laplace(M,N);
   A(1,1) += sum;
   A(2,2) += sum;
   A(3,3) += sum;
 
-  double tau = cut * _h;
+  double tau = _cut * _h;
 
   A(1,1) += Gascoigne::max(U[1].x()*MN, -tau);
   A(2,2) += Gascoigne::max(U[2].y()*MN, -tau);

@@ -14,7 +14,7 @@ NavierStokes2d::~NavierStokes2d()
 
 NavierStokes2d::NavierStokes2d() : Equation()
 {
-  penalty = 0.; visc = 0.01; _h = 0.;
+  _penalty = 0.; _visc = 0.01; _h = 0.;
 }
 
 /*-----------------------------------------*/
@@ -23,9 +23,9 @@ NavierStokes2d::NavierStokes2d(const ParamFile* pf) : Equation()
 {
   _h = 0.;
   DataFormatHandler DFH;
-  DFH.insert("visc" , &visc , 1.);
-  DFH.insert("cut"  , &cut  ,  1.e10);
-  DFH.insert("penalty",&penalty, 0.);
+  DFH.insert("visc" , &_visc , 1.);
+  DFH.insert("cut"  , &_cut  ,  1.e10);
+  DFH.insert("penalty",&_penalty, 0.);
 
   FileScanner FS(DFH, pf, "Equation");
 }
@@ -35,22 +35,20 @@ NavierStokes2d::NavierStokes2d(const ParamFile* pf) : Equation()
 void NavierStokes2d::OperatorStrong(DoubleVector& b, const FemFunction& U) const
 {
   b[0] = Divergence(U);
-  b[1] = Convection(U,U[1]) - visc * U[1].D() + U[0].x();
-  b[2] = Convection(U,U[2]) - visc * U[2].D() + U[0].y();
+  b[1] = Convection(U,U[1]) - _visc * U[1].D() + U[0].x();
+  b[2] = Convection(U,U[2]) - _visc * U[2].D() + U[0].y();
 }
 
 /*-----------------------------------------*/
 
-double NavierStokes2d::Laplace(const TestFunction& U, 
-				     const TestFunction& N) const
+double NavierStokes2d::Laplace(const TestFunction& U, const TestFunction& N) const
 {
   return U.x()*N.x() + U.y()*N.y();
 }
 
 /*-----------------------------------------*/
 
-double NavierStokes2d::Convection(const FemFunction& U, 
-					const TestFunction& N) const
+double NavierStokes2d::Convection(const FemFunction& U, const TestFunction& N) const
 {
   return U[1].m()*N.x() + U[2].m()*N.y();
 }
@@ -67,7 +65,7 @@ double NavierStokes2d::Divergence(const FemFunction& U) const
 void NavierStokes2d::SetTimePattern(TimePattern& P) const
 {
   P.reservesize(ncomp(),ncomp(),0.);
-  P(0,0) = penalty;
+  P(0,0) = _penalty;
   P(1,1) = 1.;
   P(2,2) = 1.;
 }
@@ -89,8 +87,8 @@ void NavierStokes2d::Form(VectorIterator b, const FemFunction& U, const TestFunc
   b[2] += Convection(U,U[2]) * N.m();
 
   // viscous terms
-  b[1] += visc * Laplace(U[1],N);
-  b[2] += visc * Laplace(U[2],N);
+  b[1] += _visc * Laplace(U[1],N);
+  b[2] += _visc * Laplace(U[2],N);
 }
 
 /*-----------------------------------------*/
@@ -101,31 +99,29 @@ void NavierStokes2d::Matrix(EntryMatrix& A, const FemFunction& U, const TestFunc
   double Mx = M.x()*N.m();
   double My = M.y()*N.m();
   double laplace = Laplace(M,N);
-     
+  
   ////////////// Continuity ////////////////////////////////////////////////
-
-//   A(0,0) += MN * alpha00;// * ST->h()* ST->h();
+  
+  //   A(0,0) += MN * alpha00;// * ST->h()* ST->h();
   A(0,1) += Mx;
   A(0,2) += My;
-
+  
   ////////////// Momentum ////////////////////////////////////////////////
 
   A(1,0) -= M.m()*N.x();
   A(2,0) -= M.m()*N.y();
-
-  double cl = Convection(U,M) * N.m() + visc*laplace;
-
+  
+  double cl = Convection(U,M) * N.m() + _visc*laplace;
+  
   A(1,1) += cl;
   A(2,2) += cl;
-
-  double Cut = cut * _h;
-
+  
+  double cut = _cut * _h;
+  
   A(1,1) += Gascoigne::max(U[1].x()*MN, -Cut);
   A(2,2) += Gascoigne::max(U[2].y()*MN, -Cut);
-
   A(1,2) += Gascoigne::min(U[1].y()*MN, Cut);
   A(2,1) += Gascoigne::min(U[2].x()*MN, Cut);
-}
 }
 
 /*-----------------------------------------*/

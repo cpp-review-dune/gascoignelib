@@ -16,7 +16,7 @@ NavierStokesGls2d::~NavierStokesGls2d()
 NavierStokesGls2d::NavierStokesGls2d() 
   : NavierStokes2d(), GlsEquation()
 {
-  penalty = 0.; visc = 0.01;
+  _penalty = 0.; _visc = 0.01;
   
   ST.delta0 = ST.alpha0 = 0.2;
   ST.xeta0 = 6.; 
@@ -28,13 +28,13 @@ NavierStokesGls2d::NavierStokesGls2d(const ParamFile* pf)
   : NavierStokes2d(), GlsEquation()
 {
   DataFormatHandler DFH;
-  DFH.insert("visc" , &visc , 0.01);
-  DFH.insert("cut"  , &cut  ,  1.e8);
+  DFH.insert("visc" , &_visc , 0.01);
+  DFH.insert("cut"  , &_cut  ,  1.e8);
   DFH.insert("alpha", &ST.alpha0, 0.25);
   DFH.insert("delta", &ST.delta0, 0.25);
   DFH.insert("tau"  , &ST.tau0  , 0.);
   DFH.insert("xeta" , &ST.xeta0, 6.);
-  DFH.insert("penalty",&penalty, 0.);
+  DFH.insert("penalty",&_penalty, 0.);
 
   FileScanner FS(DFH, pf, "Equation");
 }
@@ -43,7 +43,7 @@ NavierStokesGls2d::NavierStokesGls2d(const ParamFile* pf)
 
 void NavierStokesGls2d::glspoint(double h, const FemFunction& U, const Vertex2d& v)const
 {
-  ST.ReInit(h,visc,U[1].m(),U[2].m());
+  ST.ReInit(h,_visc,U[1].m(),U[2].m());
 }
 
 /*-----------------------------------------*/

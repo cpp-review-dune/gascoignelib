@@ -3,7 +3,7 @@
 
 #include  <vector>
 #include  <set>
-#include  "fadamath.h"
+#include  "gascoignemath.h"
 
 namespace Gascoigne
 {

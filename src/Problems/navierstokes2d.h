@@ -11,8 +11,8 @@ class NavierStokes2d : public virtual Equation
 {
 protected:
 
-  mutable double _h, visc;
-  double penalty,cut;
+  mutable double _h, _visc;
+  double _penalty,_cut;
 
   double Laplace(const TestFunction& U, 
 		 const TestFunction& N) const;
@@ -31,7 +31,7 @@ public:
   void OperatorStrong(DoubleVector& b, const FemFunction& U) const;
 
   std::string GetName() const { return "NavierStokes2d";}
-  double Getpenalty()const {return penalty;}
+  double Getpenalty()const {return _penalty;}
 
   int  ncomp() const { return 3; }
 

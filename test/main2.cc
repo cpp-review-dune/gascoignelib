@@ -21,12 +21,12 @@ class LocalEquation : public NavierStokesGls2d
 public:
   string GetName() const {return "Local";}
   LocalEquation() : NavierStokesGls2d() {
-  penalty = 0.; visc = 0.001;
+  _penalty = 0.; _visc = 0.001;
   ST.delta0 = 1.;
   ST.alpha0 = 1.;
   ST.xeta0 = 6.; 
   cerr << "----------------------------------------------\n";
-  cerr << visc << endl;
+  cerr << _visc << endl;
 }
 
 };

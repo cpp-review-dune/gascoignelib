@@ -2,7 +2,7 @@
 #define __numfixarray_h
 
 #include  "fixarray.h"
-#include  "fadamath.h"
+#include  "gascoignemath.h"
 #include  "nvector.h"
 
 /*-------------------------------------------------*/

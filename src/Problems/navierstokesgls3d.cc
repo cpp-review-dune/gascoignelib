@@ -20,13 +20,13 @@ NavierStokesGls3d::NavierStokesGls3d(const ParamFile* pf)
   : NavierStokes3d(), GlsEquation()
 {
   DataFormatHandler DFH;
-  DFH.insert("visc" , &visc , 0.01);
-  DFH.insert("cut"  , &cut  ,  1.e8);
+  DFH.insert("visc" , &_visc , 0.01);
+  DFH.insert("cut"  , &_cut  ,  1.e8);
   DFH.insert("alpha", &ST.alpha0, 0.25);
   DFH.insert("delta", &ST.delta0, 0.25);
   DFH.insert("tau"  , &ST.tau0  , 0.);
   DFH.insert("xeta" , &ST.xeta0, 6.);
-  DFH.insert("penalty",&penalty, 0.);
+  DFH.insert("penalty",&_penalty, 0.);
 
   FileScanner FS(DFH, pf, "Equation");
 }
@@ -44,7 +44,7 @@ void NavierStokesGls3d::glspointmatrix
 (double h, const FemFunction& U, FemData& Q, const Vertex3d& v) const
 {
   _h = h;
-  ST.ReInit(h,visc,U[1].m(),U[2].m(),U[3].m());
+  ST.ReInit(h,_visc,U[1].m(),U[2].m(),U[3].m());
 }
 
 /*-----------------------------------------*/
@@ -53,7 +53,7 @@ void NavierStokesGls3d::glspoint
 (double h, const FemFunction& U, const Vertex3d& v) const
 {
   _h = h;
-  ST.ReInit(h,visc,U[1].m(),U[2].m(),U[3].m());
+  ST.ReInit(h,_visc,U[1].m(),U[2].m(),U[3].m());
 }
   
 /*-----------------------------------------*/

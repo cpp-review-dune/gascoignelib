@@ -1,7 +1,7 @@
 #ifndef __mult_h
 #define __mult_h
 
-#include "fadamath.h"
+#include "gascoignemath.h"
 
 namespace Gascoigne
 {

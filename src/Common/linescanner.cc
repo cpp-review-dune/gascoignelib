@@ -1,5 +1,5 @@
 #include  "linescanner.h"
-#include  "fadamath.h"
+#include  "gascoignemath.h"
 #include  "stlio.h"
 #include  "stringutil.h"
 
