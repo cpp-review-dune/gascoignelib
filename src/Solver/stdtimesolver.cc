@@ -217,10 +217,12 @@ void StdTimeSolver::L2Projection(BasicGhostVector& Gu)
   TP.zero();
   for (int i=0; i<u.ncomp(); i++) TP(i,i) = 1.;
 
+  u.zero();
   f.zero();
+
   IC(f);
 
-  PrecondCGMass(u,f,TP);
+  cout << PrecondCGMass(u,f,TP) << endl;
   
   DeleteVector(&Gf);
 }
@@ -229,6 +231,9 @@ void StdTimeSolver::L2Projection(BasicGhostVector& Gu)
 
 string StdTimeSolver::PrecondCGMass(GlobalVector& u, GlobalVector& f, const TimePattern& TP, double s)
 {
+  bool reached;
+  int iter = 0;
+  
   BasicGhostVector Gg, Gr, Gd;
 
   Gg.SetName("g");
@@ -248,28 +253,31 @@ string StdTimeSolver::PrecondCGMass(GlobalVector& u, GlobalVector& f, const Time
 
   SimpleMatrix *SM = dynamic_cast<SimpleMatrix *>(GetMassMatrix());
   assert(SM);
-  SM->PrepareJacobi();
+  SM->PrepareJacobi(s);
 
-  int    MaxIter = 100;
-  double Tol     = 1e-8;
+  SM->vmult_time(f,u,TP,-s);
 
-  u.zero();
-
-  SM->JacobiVector(f);
+  SM->JacobiVector(u);
+  SM->JacobiVectorInv(f);
 
   r.equ(1,f);
   d.equ(1,f);
   double Res = r*r;
   double FirstRes = Res;
-  cout << "\t\tpcg " << 0 << "\t" << sqrt(FirstRes) << endl;
+  cout << "\t\tpcg " << iter << "\t" << sqrt(Res) << endl;
   
-  if (Res<1.e-16) 
+  if (sqrt(Res)<_Dat.GetCgMassGlobalTol()) 
   {
-    return "converged";
+    reached = true;
+  }
+  else
+  {
+    reached = false;
   }
 
-  for(int iter=1;iter<=MaxIter;iter++)
+  while(!reached && iter<_Dat.GetCgMassMaxIter())
     {
+      iter++;
       g.zero();
       SM->vmult_time_Jacobi(g,d,TP,s);
       double lambda = Res/(g*d);
@@ -278,24 +286,27 @@ string StdTimeSolver::PrecondCGMass(GlobalVector& u, GlobalVector& f, const Time
       r.add(-lambda,g);
 
       Res = r*r;
-      cout << "\t\tpcg " << iter << "\t" << sqrt(Res) << "\n";
-      if (Res<Tol*Tol*FirstRes) 
-	{
-          SM->JacobiVector(u);
-          DeleteVector(&Gg);
-          DeleteVector(&Gr);
-          DeleteVector(&Gd);
-	  return "converged";
-	}
+      cout << "\t\tpcg " << iter << "\t" << sqrt(Res) << endl;
+      if (Res < _Dat.GetCgMassTol() * _Dat.GetCgMassTol() * FirstRes || sqrt(Res)<_Dat.GetCgMassGlobalTol()) 
+      {
+        reached = true;
+      }
       double betacg = -(r*g)/(d*g);
       d.sequ(betacg,1.,r);
     }
 
-  SM->JacobiVector(u);
-
+  SM->JacobiVectorInv(u);
   DeleteVector(&Gg);
   DeleteVector(&Gr);
   DeleteVector(&Gd);
-  return "stagnation";
+
+  if(iter==_Dat.GetCgMassMaxIter())
+  {
+    return "too many iterations";
+  }
+  else
+  {
+    return "converged";
+  }
 }
 }

@@ -248,7 +248,7 @@ void SimpleMatrix::entry_diag(int i, const nmatrix<double>& M)
 
 /*-----------------------------------------*/
 
-void SimpleMatrix::PrepareJacobi()
+void SimpleMatrix::PrepareJacobi(double s)
 {
   int n = ST.n();
   
@@ -256,12 +256,29 @@ void SimpleMatrix::PrepareJacobi()
   
   for(int i=0; i<n; i++)
   {
-    _diag[i] = value[ST.Find(i,i)];
+    _diag[i] = s * value[ST.Find(i,i)];
   }
 }
+
 /*-----------------------------------------*/
 
 void SimpleMatrix::JacobiVector(GlobalVector &y)
+{
+  int n = ST.n();
+  assert(n==y.n());
+  
+  for(int i=0; i<n; i++)
+  {
+    for(int c=0; c<y.ncomp(); c++)
+    {
+      y(i,c) *= sqrt(_diag[i]);
+    }
+  }
+}
+
+/*-----------------------------------------*/
+
+void SimpleMatrix::JacobiVectorInv(GlobalVector &y)
 {
   int n = ST.n();
   assert(n==y.n());
@@ -293,7 +310,7 @@ void SimpleMatrix::vmult_time_Jacobi(GlobalVector& y, const GlobalVector& x, con
 	    {
 	      for(int d=0;d<x.ncomp();d++)
 		{
-		  y(i,c) += s*value[pos]* TP(c,d) * x(j,d) / sqrt(_diag[i] * _diag[j]);
+		  y(i,c) += s * value[pos]* TP(c,d) * x(j,d) / sqrt(_diag[i] * _diag[j]);
 		}
 	    }
 	}

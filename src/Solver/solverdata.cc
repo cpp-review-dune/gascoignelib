@@ -33,6 +33,10 @@ namespace Gascoigne
     DFH.insert("bicgstab_residual" ,&bicgstab_residual , "approx");
     DFH.insert("bicgstab_pstep" ,   &bicgstab_pstep ,     0);
     DFH.insert("bicgstab_miniter",  &bicgstab_miniter,    1.);
+
+    DFH.insert("cgmass_maxiter",    &_cgMassMaxIter,      100);
+    DFH.insert("cgmass_tol",        &_cgMassTol,          1.e-8);
+    DFH.insert("cgmass_globaltol",  &_cgMassGlobalTol,    1.e-14);
     
     FileScanner FS(DFH);
     FS.NoComplain();

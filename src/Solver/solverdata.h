@@ -25,6 +25,9 @@ class SolverData
     // ab wann im bicgstab ein Abbruchskriterium greift.
     // iter/miniter wird immer iteriert.
     double              bicgstab_miniter;
+    
+    int _cgMassMaxIter;
+    double _cgMassTol, _cgMassGlobalTol;
 
   public:
 
@@ -53,6 +56,10 @@ class SolverData
     std::string GetBiCGStabResidual()const { return bicgstab_residual;}
     std::string GetLinearSmooth()    const { return linear_smooth;}
     double GetBiCGStabMinIter()  const { return bicgstab_miniter;}
+
+    int GetCgMassMaxIter() const { return _cgMassMaxIter; }
+    double GetCgMassTol() const { return _cgMassTol; }
+    double GetCgMassGlobalTol() const { return _cgMassGlobalTol; }
 };
 }
 

@@ -57,8 +57,9 @@ public:
     void transpose();
     void entry_diag(int i, const nmatrix<double>& M);
     
-    void PrepareJacobi();
+    void PrepareJacobi(double s=1.);
     void JacobiVector(GlobalVector &y);
+    void JacobiVectorInv(GlobalVector &y);
     void vmult_time_Jacobi(GlobalVector& y, const GlobalVector& x, const TimePattern& TP, double s=1.) const;
 
 };
