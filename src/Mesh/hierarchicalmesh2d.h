@@ -104,6 +104,7 @@ class HierarchicalMesh2d : public HierarchicalMesh
   HierarchicalMesh2d(const HierarchicalMesh2d& H);
   HierarchicalMesh2d& operator=(const HierarchicalMesh2d& H);
   HierarchicalMesh2d(const Gascoigne::ParamFile* paramfile);
+  ~HierarchicalMesh2d()   {  GetCurvedShapes().clear();}
 
   std::string GetName() const {return "HierarchicalMesh2d";}
 

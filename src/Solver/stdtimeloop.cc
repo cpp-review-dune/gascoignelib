@@ -138,7 +138,8 @@ void StdTimeLoop::run(const ProblemDescriptorInterface* PD)
   GetMultiLevelSolver()->GetSolver()->OutputSettings();
   
   // Anfangswerte
-  L2Projection(u,f);
+  InitSolution(u);
+  //  L2Projection(u,f);
   
   GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(u);
   GetMultiLevelSolver()->GetSolver()->Visu("Results/solve",u,0);

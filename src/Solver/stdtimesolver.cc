@@ -106,13 +106,15 @@ void StdTimeSolver::TimeRhs(BasicGhostVector& gf, const BasicGhostVector& gu) co
 
   StdSolver::Residual(gf,gu,d);
 
-  GlobalVector& f = GetGV(gf);
-  const GlobalVector& u = GetGV(gu);
-
-  d = 1./(dt*theta);
-
-  GetMassMatrix()->vmult_time(f,u,GetTimePattern(),d);
-
+  if (dt>0.)
+    {
+      GlobalVector& f = GetGV(gf);
+      const GlobalVector& u = GetGV(gu);
+      
+      d = 1./(dt*theta);
+      
+      GetMassMatrix()->vmult_time(f,u,GetTimePattern(),d);
+    }
   StdSolver::Rhs(gf,1./theta);
 }
 

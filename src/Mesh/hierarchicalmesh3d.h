@@ -124,6 +124,7 @@ class HierarchicalMesh3d : public HierarchicalMesh
   HierarchicalMesh3d(const HierarchicalMesh3d& H);
   HierarchicalMesh3d& operator=(const HierarchicalMesh3d& H);
   HierarchicalMesh3d(const Gascoigne::ParamFile* paramfile);
+  ~HierarchicalMesh3d() {  GetCurvedShapes().clear();}
 
   std::string GetName() const {return "HierarchicalMesh3d";}
 
