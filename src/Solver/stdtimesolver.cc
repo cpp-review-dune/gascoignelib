@@ -171,6 +171,7 @@ void StdTimeSolver::L2Projection(BasicGhostVector& Gu, const BasicGhostVector& G
   double Tol     = 1e-8;
 
   u.zero();
+  if (f.norm()<1.e-16) return;
   // ??????????? geandert: war vorher
 //   r.equ(-1,f);
 //   d.equ(-1,f);
