@@ -33,8 +33,8 @@ public:
 
   virtual std::string GetName() const=0;
   
-  virtual void operator()(Gascoigne::VectorIterator b, const Gascoigne::TestFunction& N, const Vertex2d& v, const Vertex2d& n, int col) const {assert(0);}
-  virtual void operator()(Gascoigne::VectorIterator b, const Gascoigne::TestFunction& N, const Vertex3d& v, const Vertex3d& n, int col) const {assert(0);}
+  virtual void operator()(Gascoigne::VectorIterator b, const Gascoigne::TestFunction& N, const Vertex2d& v, const Vertex2d& n, int color) const {assert(0);}
+  virtual void operator()(Gascoigne::VectorIterator b, const Gascoigne::TestFunction& N, const Vertex3d& v, const Vertex3d& n, int color) const {assert(0);}
 };
 
 
