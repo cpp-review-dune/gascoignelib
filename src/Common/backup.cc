@@ -31,8 +31,8 @@ ReadBackUp::ReadBackUp(GlobalVector& u, const string& name)
   file >> size;
   file >> comp;
 
-  cout << "BackUp   : reading " << name << ", ";
-  cout << comp<<" components, "<< size <<" nodes" <<endl;
+  //  cout << "BackUp   : reading " << name << ", ";
+  //  cout << comp<<" components, "<< size <<" nodes" <<endl;
 
   if (u.n()!=size)
     {

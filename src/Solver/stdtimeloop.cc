@@ -34,9 +34,6 @@ void StdTimeLoop::BasicInit(const ParamFile* paramfile)
 
 string StdTimeLoop::SolveTimePrimal(MultiLevelGhostVector& u, MultiLevelGhostVector& f, string name)
 {
-  f.zero();
-  GetMultiLevelSolver()->GetSolver()->TimeRhs(f,u);
-  TimeInfoBroadcast();
   GetMultiLevelSolver()->GetSolver()->Rhs(f);
 
   GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(f);
@@ -157,9 +154,22 @@ void StdTimeLoop::run(const ProblemDescriptorInterface* PD)
 
   for (_iter=1; _iter<=_niter; _iter++)
     {
+      // umschalten von Euler ?
+      //
+      info.SpecifyScheme(_iter);
+      //
+      // rhs fuer alten Zeitschritt
+      //
+      f.zero();
+      GetMultiLevelSolver()->GetSolver()->TimeRhs(f,u);
+      
+      // neuer Zeitschritt
+      //
       info.iteration(_iter);
+      TimeInfoBroadcast();
 
       SolveTimePrimal(u,f);
+
       Functionals(u,f);
     }
 }

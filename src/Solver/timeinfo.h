@@ -13,7 +13,7 @@ protected:
   double _tbegin, _tend;
   int    _iter, _neuler;
   double _ftscale[3], _fttheta[3];
-  std::string _scheme;
+  std::string _scheme, _actualscheme;
   double _Theta;
 
   int ftstep() const;
@@ -39,6 +39,7 @@ public:
 
   void ReInitBackward(int niter, double endtime);
   void iteration_backward(int i);
+  void SpecifyScheme(int i);
 };
 
 #endif

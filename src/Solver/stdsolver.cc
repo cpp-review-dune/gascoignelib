@@ -846,26 +846,31 @@ double StdSolver::EnergyEstimator(nvector<double>& eta, const BasicGhostVector& 
     {
       EdgeInfoContainer<2> EIC;
       EIC.BasicInit(GetHierarchicalMesh(),u.ncomp());
+
+      const Q12d* DP = dynamic_cast<const Q12d*>(GetMeshInterpretor());
+      assert(DP);
       if(RHS)
       {
-        dynamic_cast<const Q12d*>(GetMeshInterpretor())->EnergyEstimator(EIC,eta,u,*EQ,*RHS);
+        DP->EnergyEstimator(EIC,eta,u,*EQ,*RHS);
       }
       else
       {
-        dynamic_cast<const Q12d*>(GetMeshInterpretor())->EnergyEstimatorZeroRhs(EIC,eta,u,*EQ);
+        DP->EnergyEstimatorZeroRhs(EIC,eta,u,*EQ);
       }
     }
   else if (GetMesh()->dimension()==3)
     {
       EdgeInfoContainer<3> EIC;
       EIC.BasicInit(GetHierarchicalMesh(),u.ncomp());
+      const Q13d* DP = dynamic_cast<const Q13d*>(GetMeshInterpretor());
+      assert(DP);
       if(RHS)
       {
-        dynamic_cast<const Q13d*>(GetMeshInterpretor())->EnergyEstimator(EIC,eta,u,*EQ,*RHS);
+        DP->EnergyEstimator(EIC,eta,u,*EQ,*RHS);
       }
       else
       {
-        dynamic_cast<const Q13d*>(GetMeshInterpretor())->EnergyEstimatorZeroRhs(EIC,eta,u,*EQ);
+        DP->EnergyEstimatorZeroRhs(EIC,eta,u,*EQ);
       }
     }
   HNZero(gu);
