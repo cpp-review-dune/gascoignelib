@@ -35,6 +35,8 @@ void StdMultiLevelSolverData::BasicInit(const ParamFile *param)
   DFH.insert("prec_pstep",    &prec_pstep,    0);
   DFH.insert("gmressize",     &_gmresmemsize, 10);
 
+  DFH.insert("show_comp_residuals",     &_i_show_comp_residuals, 0);
+
   FileScanner FS(DFH);
   FS.NoComplain();
   FS.readfile(param,"Multilevelsolver");

@@ -541,8 +541,20 @@ double StdMultiLevelSolver::NewtonUpdate(double& rr, MultiLevelGhostVector& x, M
 
       NewtonResidual(r,x,f);
       rr = NewtonNorm(r);
-      
       message = nlinfo.check_damping(iter,rr);
+
+      if(message=="ok" && DataP->ShowCompResiduals() ){
+        int ncomps = r.Vector(ComputeLevel).ncomp();
+        cout << "      residuals in components L8: [";
+        for(int i=0;i<ncomps;i++){
+          double res_comp = r.Vector(ComputeLevel).CompNormL8(i);
+          if(i<ncomps-1){
+            cout << res_comp << ", "; 
+          }
+        }
+        cout << "]" << endl;
+      }
+      
       if (message=="ok")       break;
       if (message=="continue") continue;
       if (message=="exploded") 

@@ -16,6 +16,7 @@ class StdMultiLevelSolverData
 
     std::string  _solver, _mgtype, _linearsolve, _nonlinearsolve;
     int          _countresidual, _coarselevel;
+    int          _i_show_comp_residuals;
     double       _mgomega;
     
     int        _gmresmemsize;
@@ -39,6 +40,8 @@ class StdMultiLevelSolverData
     int  GmresMemSize()    const { return _gmresmemsize; }
           CGInfo& GetPrecInfo()       { return precinfo;}
     const CGInfo& GetPrecInfo() const { return precinfo;}
+
+    int  ShowCompResiduals()    const { return _i_show_comp_residuals; }
 };
 
 /**********************************************************/
