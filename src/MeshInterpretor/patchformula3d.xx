@@ -1,0 +1,37 @@
+#include  "integrationformula.h"
+
+/*------------------------------------------------------------*/
+
+template<int N, class INT>
+PatchFormula3d<N,INT>::PatchFormula3d<N,INT>() : IntegrationFormula3d(8*N)
+{
+  INT         I;
+  if(I.n()!=N) {std::cerr << "PatchFormula3d: error\n";abort();}
+  for(int ii=0;ii<8;ii++)
+    {
+      for(int i=0;i<N;i++)
+	{
+	  int j = N*ii+i;
+	  iw[j] = 0.125*I.w(i);
+	  Vertex3d pi;
+	  I.xi(pi,i);
+	  
+	  ic[j].equ(0.5,pi);
+	  
+	  if (ii>=4)
+	    {
+	      ic[j].z() += 0.5;
+	    }
+	  if(ii%2==1)	    
+	    {		    
+	      ic[j].x() += 0.5;
+	    }	
+	  int jj = ii%4;
+	  if(jj>=2)	    
+	    {		    
+	      ic[j].y() += 0.5;
+	    }		    
+	}
+    }
+}
+

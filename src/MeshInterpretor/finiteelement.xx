@@ -1,0 +1,58 @@
+#include  "finiteelement.h"
+
+/*-----------------------------------------------------*/
+
+template<int DIM, int BDIM, class TRAFO, class BASE>
+ FiniteElement<DIM,BDIM,TRAFO,BASE>::FiniteElement<DIM,BDIM,TRAFO,BASE>() : 
+   T(), B() 
+{
+  grad.reserve(n());
+  grad.resize(n());
+}
+
+/*-----------------------------------------------------*/
+
+template<int DIM, int BDIM, class TRAFO, class BASE>
+ void  FiniteElement<DIM,BDIM,TRAFO,BASE>::ComputeGrad() const
+{
+  for(int i=0;i<n();i++)
+    {
+      grad[i].zero();
+      T.DTI().mult(grad[i],B.phi_grad(i));
+    }
+}
+
+/*-----------------------------------------------------*/
+
+template<int DIM, int BDIM, class TRAFO, class BASE>
+ void  FiniteElement<DIM,BDIM,TRAFO,BASE>::point(const Vertex<DIM>& xi) const
+{
+  T.point(xi);
+  B.point(xi);
+  ComputeGrad();
+  det = T.J();
+}
+
+/*-----------------------------------------------------*/
+
+template<int DIM, int BDIM, class TRAFO, class BASE>
+ void  FiniteElement<DIM,BDIM,TRAFO,BASE>::point_boundary(int ie, const Vertex<BDIM>& s) const
+{
+  T.point_boundary(ie,s);
+  B.point_boundary(ie,s);
+  ComputeGrad();
+}
+
+/*-----------------------------------------------------*/
+
+template<int DIM, int BDIM, class TRAFO, class BASE>
+void  FiniteElement<DIM,BDIM,TRAFO,BASE>::init_test_functions
+(DerivativeVector& Phi, double w, int i) const
+{
+  Phi.m() = w*N(i);
+  Phi.x() = w*N_x(i);
+  Phi.y() = w*N_y(i);
+  if (DIM==3) Phi.z() = w*N_z(i);
+}
+
+/*-----------------------------------------------------*/

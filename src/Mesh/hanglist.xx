@@ -1,0 +1,104 @@
+#include  "hanglist.h"
+
+/*********************************************************************/
+
+template<int N>
+HangList<N>& HangList<N>::operator=(const HangList<N>& A)
+{
+  const_iterator hp=A.begin();
+  while(hp!=A.end())
+    {
+      fixarray<N,int> fa(hp->first);
+      
+      Hang nh = hp->second;
+      
+      insert(std::make_pair(fa,nh));
+      hp++;
+    }
+  return *this;
+}
+
+/*********************************************************************/
+
+template<int N>
+void HangList<N>::move(HangList<N>& src, iterator& p)
+{
+  insert(std::make_pair(p->first,p->second));
+  src.erase(p->first);
+}
+
+/*********************************************************************/
+
+template<int N>
+void HangList<N>::update(const std::vector<int>& vo2n, const std::vector<int>& co2n)
+{
+  HangList<N> HangCopy(*this);
+  clear();
+  
+  const_iterator hp = HangCopy.begin();
+  while(hp!=HangCopy.end())
+    {
+      fixarray<N,int> fa(hp->first);
+      for (int i=0; i<N; i++) 
+	fa[i] = vo2n[fa[i]];
+      
+      int nh = hp->second.hanging();
+      if(nh>=0) nh = vo2n[nh];
+      
+      int nc = hp->second.cneighbour();
+      if(nc>=0) nc = co2n[nc];
+      
+      int nr = hp->second.rneighbour();
+      if(nr>=0) nr = co2n[nr];
+      
+      Hang h(nh,nr,nc);
+      insert(std::make_pair(fa,h));
+      hp++;
+    }
+}
+
+/*********************************************************************/
+
+template<int N>
+void HangList<N>::update(const std::vector<int>& vo2n)
+{
+  HangList<N> HangCopy(*this);
+  clear();
+  
+  const_iterator hp=HangCopy.begin();
+  while(hp!=HangCopy.end())
+    {
+      fixarray<N,int> fa(hp->first);
+      for (int i=0; i<N; i++) 
+	fa[i] = vo2n[fa[i]];
+      
+      int nh = hp->second.hanging();
+      int rn = hp->second.rneighbour();
+      int cn = hp->second.cneighbour();
+      if(nh>=0) nh = vo2n[nh];
+      
+      Hang hi(nh,rn,cn);
+
+      insert(std::make_pair(fa,hi));
+      hp++;
+    }
+}
+
+/*********************************************************************/
+
+template<int N>
+void HangList<N>::make_consistent(HangList<N>& DH)
+{
+  int n = 0;
+  for(iterator p = begin(); p!=end(); p++)
+    {
+      iterator q = DH.find(p->first);
+      if(q!=DH.end())
+	{
+	  n++;
+	  DH.erase(q);
+	  erase(p);
+	}
+    }
+  if(n!=0)  std::cerr << "make_consistent: " << n << std::endl;
+}

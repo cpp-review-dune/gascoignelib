@@ -1,0 +1,28 @@
+#include  "integrationformula.h"
+
+/*------------------------------------------------------------*/
+
+template<int N, class Line>
+TensorFormula3d<N,Line>::TensorFormula3d<N,Line>() 
+  : IntegrationFormula3d(N*N*N)
+{
+  Line L;
+  if(L.n()!=N) {std::cerr << "IntegrationFormulaTensor3d: error\n";abort();}
+  for(int ix=0;ix<N;ix++)
+    {
+      for(int iy=0;iy<N;iy++)
+	{
+	  for(int iz=0;iz<N;iz++)
+	    {
+	      int i = N*N*ix+N*iy+iz;
+	      Vertex1d pi;
+	      L.xi(pi,ix); ic[i].x() = pi.x();   
+	      L.xi(pi,iy); ic[i].y() = pi.x();   
+	      L.xi(pi,iz); ic[i].z() = pi.x();
+	      iw[i] = L.w(ix)*L.w(iy)*L.w(iz);
+	    }
+	}
+    }
+}
+
+/*------------------------------------------------------------*/

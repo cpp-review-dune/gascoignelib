@@ -1,0 +1,109 @@
+#ifndef __sparsestructure_h
+#define __sparsestructure_h
+
+#include  <set>
+#include  <vector>
+#include  "columnstencil.h"
+#include  "nvector.h"
+#include  "sparsestructureinterface.h"
+
+/*------------------------------------------------------------------------*/
+
+class SparseStructure : public SparseStructureInterface
+{
+  protected:
+
+    typedef  std::set<int>     Row;
+    typedef  std::vector<Row>  Indices;    
+
+    int       sntot;
+    Indices   sindices;
+
+    const ColumnStencil* US;
+
+  public:
+
+  typedef  Row::iterator         iterator; 
+  typedef  Row::const_iterator   const_iterator; 
+  
+  SparseStructure() : sntot(0),sindices(0) {}
+  SparseStructure(const ColumnStencil&);
+
+    int                n()              const { return sindices.size(); }
+    int                ntotal()         const { return sntot; }
+
+    const Indices&     indices()        const { return sindices; }
+
+    const Row&         row(int i)       const 
+      {
+	assert((i>=0)&&(i<sindices.size()));
+	return sindices[i];
+      } 
+    Row&               row(int i)
+      {
+	assert((i>=0)&&(i<sindices.size()));
+	return  sindices[i];
+      }
+    std::set<int>::iterator            rowbegin(int i)
+      {
+	assert((i>=0)&&(i<sindices.size()));
+	return  row(i).begin();
+      }
+    std::set<int>::iterator            rowend(int i)
+      {
+	assert((i>=0)&&(i<sindices.size()));
+	return  row(i).end();
+      }
+    std::set<int>::const_iterator      rowbegin(int i)  const
+      {
+	assert((i>=0)&&(i<sindices.size()));
+	return  row(i).begin();
+      }
+    std::set<int>::const_iterator      rowend(int i)    const
+      {
+	assert((i>=0)&&(i<sindices.size()));
+	return  row(i).end();
+      }
+    int                rowsize(int i)   const
+      {
+	assert((i>=0)&&(i<sindices.size()));
+	return  row(i).size();
+      }
+
+    const ColumnStencil* GetStencil() const { return US;}
+
+    friend std::ostream& operator<<(std::ostream &s, const SparseStructure& A);
+    void statistics(std::ostream&) const;
+
+    SparseStructure& operator=(const SparseStructure& B);
+    void build_begin(int n);
+    void build_clear(int i);
+    void build_add(int i, int j)
+      {
+	row(i).insert(j);
+      }
+    template<class IT>
+    void build_add(int i, IT lsf, IT lsl)
+      {
+	for(IT p=lsf;p!=lsl;p++) row(i).insert(*p);
+      }
+    template<class IT>
+    void build_add(IT lsf, IT lsl)
+      {
+	for(IT p=lsf;p!=lsl;p++) build_add(*p,lsf,lsl);
+      }
+    template<class IT>
+    void build_add(IT rf, IT rl, IT cf, IT cl)
+      {
+	for(IT p=rf;p!=rl;p++) build_add(*p,cf,cl);
+      }
+    void build_end();
+
+    void hanging_node(int,int,int);
+  
+    void  enlarge(const SparseStructure&);
+    void  enlarge_lu();
+    void  enlarge_for_lu(const nvector<int>& perm);
+};
+
+#endif

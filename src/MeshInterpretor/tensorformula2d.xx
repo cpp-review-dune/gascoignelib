@@ -1,0 +1,24 @@
+#include  "integrationformula.h"
+
+/*------------------------------------------------------------*/
+
+template<int N, class LineFormula>
+TensorFormula2d<N,LineFormula>::TensorFormula2d<N,LineFormula>() 
+  : IntegrationFormula2d(N*N)
+{
+  LineFormula L;
+
+  assert(L.n()==N);
+
+  for(int ix=0;ix<N;ix++)
+    {
+      for(int iy=0;iy<N;iy++)
+	{
+	  int i = N*ix+iy;
+	  Vertex1d pi;
+	  L.xi(pi,ix); ic[i].x() = pi.x();   
+	  L.xi(pi,iy); ic[i].y() = pi.x();
+	  iw[i] = L.w(ix)*L.w(iy);
+	}
+    }
+}

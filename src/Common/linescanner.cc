@@ -1,0 +1,133 @@
+#include  "linescanner.h"
+#include  "fadamath.h"
+#include  "stlio.h"
+#include  "stringutil.h"
+
+/***************************************************/
+
+LineScanner::LineScanner(const std::string& filename) : 
+  fp(filename.c_str()) 
+{  
+  if(!fp.is_open())
+    {
+      std::cout << "LineScanner::cannot open file " << filename << std::endl;
+      abort();
+    }
+};
+
+/***************************************************/
+
+LineScanner::~LineScanner()
+{  
+  fp.close();
+}
+
+/***************************************************/
+
+void LineScanner::split(std::vector<std::string>& words, const char& c) const
+{
+  // Splits each std::string of the std::vector "words"
+  // into separate std::strings due to separator "c"
+  // The result is stored again in "words"
+
+  std::vector<std::string> help(words);
+  words.resize(0);
+  for (int i=0; i<help.size(); i++)
+    {
+      std::vector<std::string> s = StringSplit(help[i].c_str(), c);
+      for (int j=0; j<s.size(); j++)
+	{
+	  if (s[j]!="") words.push_back(s[j]);
+	}      
+    }
+}
+
+/***************************************************/
+
+void LineScanner::split(std::vector<std::string>& words, const std::vector<char>& c) const
+{
+  for (int i=0; i<c.size(); i++)
+    {
+      split(words,c[i]);
+    }
+}
+
+/***************************************************/
+
+int LineScanner::NextLine(std::vector<double>& words)
+{
+  if (fp.eof()) return -1;
+
+  std::string toto;
+  getline(fp,toto);
+  std::vector<std::string> s1 = StringSplit(toto.c_str(),' ','\t');
+  
+  words.resize(s1.size());
+  for(int i=0;i<s1.size();i++) words[i] = atof(s1[i].c_str());
+
+  return words.size();
+}
+
+/***************************************************/
+
+int LineScanner::NextLine(std::vector<std::string>& words)
+{
+  if (fp.eof()) return -1;
+
+  std::string toto;
+  getline(fp,toto);
+
+  words.resize(0);
+
+  std::vector<std::string> s1 = StringSplit(toto.c_str(),' ');
+  if ( (s1.size()) && (s1[0]!="//Block") )
+    {
+      if( (toto[0]=='/') && (toto[1]=='/') )
+	{
+	  return 0;
+	}
+    }
+  std::string tab = "\t";
+  for (int i=0; i<s1.size(); i++)
+    {
+      std::vector<std::string> s2 = StringSplit(s1[i].c_str(),tab[0]);
+      for (int j=0; j<s2.size(); j++)
+	{
+	  if (s2[j]!="") words.push_back(s2[j]);
+	}
+    }
+  
+  return words.size();
+}
+
+/***************************************************/
+
+int LineScanner::NextLine(std::vector<std::string>& words, const std::vector<int>& w)
+{
+  // usefull to read formated FORTRAN data bases
+  // fills in "words" the std::strings of the next line
+  // word[i] has fixed lenght w[i]
+
+  if (fp.eof()) return -1;
+
+  std::string toto;
+  getline(fp,toto);
+
+  int j = 0;
+  for (int i=0; i<w.size(); i++)
+    {
+      if (j+w[i]<=toto.size())
+	{
+	  words[i] = toto.substr(j,w[i]);
+	}
+      else
+	{
+	  words[i] = "";
+	}
+      j += w[i];
+    }
+  return words.size(); 
+}
+
+/***************************************************/
+

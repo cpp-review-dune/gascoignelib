@@ -1,0 +1,87 @@
+StdLoop  TIME
+        NewMesh 1.95
+        Solve   12.26
+        Functionals     4.04
+        Estimate        2.78
+        Write   3.56
+StdMultiLevelSolver      TIME
+        Residual        1.3
+        Solve   3.42
+MATRIX   TIME
+        vmult           1.820000000000001
+        ilu             3.03
+        solve           0
+
+        compute         matrix  ilu     solve   2.01    2.77    0.02
+VECTOR   TIME
+        residual                1.96
+
+real    0m27.595s
+user    0m24.810s
+sys     0m1.150s
+.....................................................................
+StdLoop  TIME
+        NewMesh 2.12
+        Solve   25.05
+        Functionals     11.79
+        Estimate        2.96
+        Write   4.77
+StdMultiLevelSolver      TIME
+        Residual        6.16
+        Solve   4.45
+MATRIX   TIME
+        vmult           2.32
+        ilu             3.93
+        solve           0.01
+
+        compute         matrix  ilu     solve   6.23    3.71    0
+VECTOR   TIME
+        residual                9.42
+
+real    0m57.806s
+user    0m52.180s
+sys     0m1.560s
+........................................................................
+StdLoop  TIME
+        NewMesh 1.41
+        Solve   3.79
+        Functionals     2.12
+        Estimate        0.6900000000000001
+        Write   3.33
+StdMultiLevelSolver      TIME
+        Residual        0.83
+        Solve   0.2
+MATRIX   TIME
+        vmult           0.08
+        ilu             0.15
+        solve           0
+
+        compute         matrix  ilu     solve   0.74    0.5800000000000001      0
+VECTOR   TIME
+        residual                1.24
+
+real    0m14.151s
+user    0m11.170s
+sys     0m1.170s
+........................................................................
+StdLoop  TIME
+        NewMesh 1.37
+        Solve   3.61
+        Functionals     2.01
+        Estimate        0.66
+        Write   3.39
+StdMultiLevelSolver      TIME
+        Residual        0.73
+        Solve   0.21
+MATRIX   TIME
+        vmult           0.04
+        ilu             0.17
+        solve           0
+
+        compute         matrix  ilu     solve   0.71    0.5700000000000001      0.01
+VECTOR   TIME
+        residual                1.09
+
+real    0m13.120s
+user    0m10.680s
+sys     0m1.320s

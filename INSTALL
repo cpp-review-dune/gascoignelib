@@ -1,0 +1,42 @@
+****************************************************
+For installation, we require:
+****************************************************
+
+a) cmake, see
+http://www.cmake.org/HTML/Index.html
+(used as Makefile generator)
+
+
+b) umfpack
+http://www.cise.ufl.edu/research/sparse/umfpack/
+(used as direct sparse solver)
+
+
+c) metis
+http://www-users.cs.umn.edu/~karypis/metis/
+(used for optimisation of matrix storage)
+
+
+****************************************************
+Installation
+****************************************************
+
+1.) We denote the directory where this file is located by <GAS_STD_SRC>,
+e.g. ${HOME}/GascoigneStd. 
+
+2) We denote the directory where all object files, binaries and libs 
+should be created, by <GAS_STD_OBJ>, e.g.  ${HOME}/GasBin/Std/${ARCH}. 
+This path has to be created before beginning the instalation.
+
+3) cd <GAS_STD_OBJ>
+
+4) ccmake <GAS_STD_SRC>
+   Follow the instructions of ccmake, e.g. press "c" for configure,
+   Validate the path for external libraries metis and umfpack.
+   A newer version of umfpack needs the additional library libamd.a.
+   In this case, choose UMFPACK_WITH_AMD ON.
+   Press "c" several times, until all "*" disappear.
+   Press "g" for generate all Makefiles
+
+5) make
+

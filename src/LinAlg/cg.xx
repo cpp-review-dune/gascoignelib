@@ -1,0 +1,62 @@
+#include "cg.h"
+
+/********************************************************************/
+
+template <class S, class P, class V>
+void CG<S,P,V>::solve(V& x, const V& b, CGInfo& info)
+{
+  V g("g"),h("h"),d("d"),Ad("Ad");
+
+  precon.RegisterVector("g");
+  precon.ResizeVector  ("g");
+  precon.RegisterVector("h");
+  precon.ResizeVector  ("h");
+  precon.RegisterVector("d");
+  precon.ResizeVector  ("d");
+  solver.RegisterVector("Ad");
+  solver.ResizeVector  ("Ad");
+
+  solver.vmulteqgmres(g,x);
+  solver.GVsadd(1.,g,-1.,b);
+
+  double res = solver.GVl2norm(g);
+
+  if (res==0.) return;
+
+  precon.precondition(d,g);
+
+  double gh  = - solver.GVscp(g,d);
+
+  int reached = 0;
+
+  for (int it=0; !reached; it++)
+    {
+      solver.vmulteqgmres(Ad,d);
+
+      double alpha = gh / solver.GVscp(d,Ad);
+
+      solver.GVadd(g,alpha,Ad);
+      solver.GVadd(x,alpha,d );
+      res = sqrt(solver.GVscp(g,g));
+
+      reached = info.check(res);
+
+      if (reached) break;
+    
+      precon.precondition(h,g);
+      
+      double beta = gh;
+      gh   = solver.GVscp(g,h);
+      beta = gh/beta;
+      
+      solver.GVsadd(beta,d,-1.,h);
+    }
+
+  precon.DeleteVector("g");
+  precon.DeleteVector("h");
+  precon.DeleteVector("d");
+  solver.DeleteVector("Ad");
+}
+
+
+

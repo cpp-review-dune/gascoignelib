@@ -1,0 +1,38 @@
+//Block Loop
+
+niter       5
+refiner     global
+
+//Block Mesh
+
+dimension   3
+prerefine   2
+gridname    box.inp
+
+//Block BoundaryManager
+
+dirichlet       1 9
+dirichletcomp   9  1 0
+
+//Block Functional
+
+names  2  drag domain
+drag   4  residual  0_1._9  0.666666666666666   no
+domain 4  domainmean 0_0._1._0._1. 0.02776989201546093 no
+
+//Block Multilevelsolver
+
+linear_pstep       0
+nonlinear_pstep    0
+linear_maxiter          10
+linear_tol		1.e-2
+
+//Block Solver
+
+disc       Q1
+iterpre                 2
+iterpost                2
+iterexact              10
+ndirect              1000
+
+//Block Nix

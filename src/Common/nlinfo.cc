@@ -1,0 +1,278 @@
+#include "nlinfo.h"
+#include "math.h"
+#include "fadamath.h"
+#include  <iostream>
+
+/*******************************************************************/
+
+std::ostream& operator<<(std::ostream &s, const NLStatisticData& A)
+{
+  s << "NLStatisticData\n";
+  s << "newmatrix" <<"\t"<< A.newmatrix()<< std::endl;
+  s << "totalmatrix" <<"\t"<< A.totalmatrix()<< std::endl;
+  s << (StatisticData) A;
+  return s;
+}
+
+/*******************************************************************/
+
+std::ostream& operator<<(std::ostream &s, const NLControlData& A)
+{
+  s << "NLControlData\n";
+  s << "relax" <<"\t"<< A.relax()<< std::endl;
+  s << "newmatrix" <<"\t"<< A.newmatrix()<< std::endl;
+  s << "laststepbad" <<"\t"<< A.laststepbad()<< std::endl;
+  s << (ControlData) A;
+  return s;
+}
+
+/*******************************************************************/
+
+std::ostream& operator<<(std::ostream &s, const NLUserData& A)
+{
+  s << "NLUserData\n";
+  s << "rho" <<"\t"<< A.rho()<< std::endl;
+  s << "linrho" <<"\t"<< A.linrho()<< std::endl;
+  s << "maxrelax" <<"\t"<< A.maxrelax()<< std::endl;
+  s << (UserData) A;
+  return s;
+}
+
+/*******************************************************************/
+
+std::ostream& operator<<(std::ostream &s, const NLInfo& A)
+{
+  s << "NLInfo\n";
+  s << A.statistics()<<std::endl;
+  s << A.control()<<std::endl;
+  s << A.user()<<std::endl;
+  return s;
+}
+
+/*******************************************************************/
+
+void NLStatisticData::reset()
+{
+  StatisticData::reset();
+  _totalmatrix = 0;
+  _newmatrix = 0;
+}
+
+/*******************************************************************/
+
+NLControlData::NLControlData()
+{
+  _matrixmustbebuild = 1;
+}
+
+/*******************************************************************/
+
+void NLControlData::reset()
+{
+  ControlData::reset();
+  _relax     = 0;
+  _laststepbad = 0;
+//   _matrixmustbebuild=1;
+  //_newmatrix = 1;
+}
+
+/*******************************************************************/
+
+NLUserData::NLUserData() : UserData()
+{
+  breaktol()  = 1.e15;
+  maxrelax()  = 11;
+  rho()       = 0.3;
+  linrho()    = 1.;
+  maxresincrease() = 1.e3;
+}
+
+/*******************************************************************/
+
+void NLInfo::new_matrix()
+{
+  CD.newmatrix() = 1;
+}
+
+/*******************************************************************/
+
+NLInfo::NLInfo(CGInfo& info, double f, double t, int p, int m, const std::string& txt) :
+Linfo(info)
+{
+  UD.text() = txt;
+  
+  UD.maxiter  () = m;
+  UD.globaltol() = t;
+  UD.printstep() = p;
+  UD.tol()       = f;
+ 
+  CD.reset();
+  SD.reset();
+}
+
+/*******************************************************************/
+
+void NLInfo::reset()
+{
+  SD.newmatrix() = 0;
+  CD.reset();
+  //SD.reset();
+  Linfo.reset();
+  SD.rate() = 0.;
+}
+
+/*******************************************************************/
+
+void NLInfo::compute_reduction_rate()
+{
+  double b = CD.residual()/CD.firstresidual();
+  double p = 1./GascoigneMath::max_int(1,CD.iteration());
+  SD.rate() = pow(b,p);  
+
+  if (CD.iteration()>1)
+    {
+      SD.lastrate() = CD.residual()/CD.previousresidual();
+    }
+  else
+    SD.lastrate() = SD.rate();
+}
+
+/*******************************************************************/
+ 
+void NLInfo::matrix_control()
+{
+//   std::cerr << "NLInfo::matrix_control()\t";
+//   std::cerr << GetLinearInfo().statistics().lastrate()<<"\t"<<UD.linrho()<<std::endl;
+
+  bool nonlinbad = (SD.lastrate()>UD.rho());
+  bool linbad    = (GetLinearInfo().statistics().lastrate()>UD.linrho());
+
+  CD.newmatrix() = 0;
+  if( nonlinbad || linbad )
+    {
+      CD.newmatrix() = 1;
+      SD.totalmatrix()++;
+      SD.newmatrix()++;
+    }
+}
+
+/*******************************************************************/
+ 
+std::string NLInfo::check_damping(int dampit, double res)
+{
+  CD.residual() = fabs(res);
+  CD.relax()    = dampit;
+
+  if (CD.residual()>1.e20)     return "exploded"; 
+  if (!(CD.residual()<=1.e20)) return "exploded"; 
+
+  if (CD.residual()<=CD.previousresidual()) return "ok";
+  return "continue";
+}
+
+/*******************************************************************/
+ 
+bool NLInfo::check(double resi, double cori)
+{
+  check(CD.iteration(),resi,cori);
+}
+
+/*******************************************************************/
+ 
+bool NLInfo::check(int iter, double resi, double cori)
+{
+  double res=fabs(resi);
+
+  double cor=fabs(cori);
+  bool newiteration = 0;
+
+  if (CD.status()=="diverged")   return 1;
+  if (CD.status()=="stagnation") return 1;
+
+  if (CD.status()=="waiting")
+    {
+      newiteration = 1;
+    }
+  else if (iter>CD.iteration())
+    {
+      newiteration = 1;
+      CD.iteration()++;
+      SD.totaliter()++;
+    }
+
+  CD.status() = "running";
+
+  int thisstepbad = 0;
+
+  if (!CD.iteration())
+    {
+      CD.residual () = res;
+      CD.previousresidual() = res;
+      CD.correction() = cor;
+      CD.firstresidual() = res;
+      CD.aimedresidual() = res*UD.tol();
+    }
+  else
+    {
+      double r0 = CD.residual();
+      double c0 = CD.correction();
+      CD.residual () = res;
+      CD.correction() = cor;
+      compute_reduction_rate();
+      if (CD.residual()>=2.*CD.previousresidual())
+	{
+	  thisstepbad = 1;
+	}
+      if (newiteration) 
+	{
+	  CD.previousresidual()   = r0;
+	  CD.previouscorrection() = c0;
+	}
+    }
+
+  if (thisstepbad && CD.laststepbad())
+    {
+      CD.status() = "diverged";
+    }
+  else if ( CD.residual()< GascoigneMath::max(CD.aimedresidual(),UD.globaltol()) )
+    {
+      CD.status() = "converged";
+    }
+  else if ( (CD.iteration()>=UD.maxiter()) && (SD.rate()<1.) )//<0.95) )
+    {
+      CD.status() = "slow_convergence";
+    }
+  else if ( CD.iteration()>=UD.maxiter() )
+    {
+      CD.status() = "stagnation";
+    }
+  else if ( CD.residual()>UD.breaktol() )
+    {
+      CD.status() = "exploded";
+    }
+  else if (CD.iteration() && SD.lastrate()> UD.maxresincrease())
+    {
+      CD.status() = "exploded";
+    }
+  if (UD.printstep() && !(CD.iteration()%UD.printstep()) )
+    {
+      std::cout.setf(std::ios::scientific,std::ios::floatfield);
+      std::cout.precision(5);
+      std::cout << UD.text() << " " << CD.iteration() << "\t" << CD.residual();
+      std::cout << " [" << CD.correction()<< "] ";
+      std::cout << Linfo.control().residual();
+      std::cout << " [" << Linfo.control().correction() << "] ";
+      std::cout << "\t" << Linfo.control().iteration() << "\t";
+      std::cout << Linfo.statistics().rate() << std::endl;
+    }
+
+  CD.laststepbad() = thisstepbad;
+  matrix_control();
+
+  if (CD.status()=="running") return 0;
+
+  SD.totaliter() += CD.iteration();
+
+  return 1;
+}
+

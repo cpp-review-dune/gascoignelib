@@ -1,0 +1,29 @@
+#include  "integrationformula.h"
+
+/*------------------------------------------------------------*/
+
+template<int DIM>
+IntegrationFormula<DIM>::IntegrationFormula<DIM>() {}
+
+/*------------------------------------------------------------*/
+
+template<int DIM>
+IntegrationFormula<DIM>::IntegrationFormula<DIM>(int n) : 
+    IntegrationFormulaInterface(n)
+{
+  ic.reserve(n);      
+  ic.resize (n);
+}
+
+/*------------------------------------------------------------*/
+
+template<int DIM>
+void IntegrationFormula<DIM>::init(int n)
+{
+  IntegrationFormulaInterface::init(n);
+  ic.reserve(n);      
+  ic.resize (n);
+}
+
+/*------------------------------------------------------------*/
+

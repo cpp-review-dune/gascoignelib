@@ -1,0 +1,48 @@
+//Block Loop
+
+niter        2
+estimator    weighted
+initial      boundary
+refiner      global
+
+//Block Mesh
+
+dimension    2
+gridname     benchsimple.inp
+gridname     bigstokes.inp
+prerefine    1
+
+//Block BoundaryManager
+
+dirichlet        2      4 8
+
+dirichletcomp    4      2       1 2
+dirichletcomp    8      2       1 2
+
+//Block Equation
+
+visc            1.
+delta           0.2
+alpha           0.2
+
+//Block Functional
+
+names  1  drag
+//punkt  4  point     vertex_#no_comp_weight_x_y_comp_weight_x_y   0.1174 yes 
+drag   4  residual  1_50._4  0.    no
+//lift   4  residual  2_50._80  0.01061895  no
+//punkt  4  point     vertex_2_0_1._1.5_2._0_-1._2.5_2.   0.1176 no
+
+//Block Multilevelsolver
+
+linearsolve		mg
+nonlinear_tol		1e-4
+nonlinear_maxiter	10
+
+//Block Solver
+
+disc 	                Q1Gls
+ilum                    3  0.01  0.1  0.1
+ndirect			4000
+
+//Block nix
