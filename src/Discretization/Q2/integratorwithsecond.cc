@@ -108,7 +108,6 @@ void IntegratorWithSecond<3>::hesse(const FemInterface& E, FemFunction& UH, cons
 template<int DIM>
 void IntegratorWithSecond<DIM>::hesse(const FemInterface& E, FemData& QH, const LocalNodeData& Q) const
 {
-  QH.clear();
   LocalNodeData::const_iterator p=Q.begin();
   for(; p!=Q.end(); p++)
     {
