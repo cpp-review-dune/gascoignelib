@@ -9,7 +9,7 @@ void numderivative(C& application, MAT& M, const VEC& x, double eps=1.e-4)
   VEC up(x), u(x), xp(x);
   up.zero(); u.zero();
 
-  double ieps = 1./eps;
+//  double ieps = 1./eps;
   
   application.f(u,x);
   
