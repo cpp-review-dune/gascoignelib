@@ -121,7 +121,7 @@ void Visualization::_vtk_points(ofstream& out) const
     { 
       for (int i=0; i<nn; i++)
 	{
-	  out<<  mesh->vertex3d(i) << " " << 0 << endl;
+	  out<<  mesh->vertex3d(i) << endl;
 	}
     }
   else

@@ -16,6 +16,7 @@ using namespace Gascoigne;
 
 StdMultiLevelSolver::~StdMultiLevelSolver()
 {
+  cout << "\n************************************************************************\n\n";
   cout << "StdMultiLevelSolver\tTIME\n";
   cout << "  Residual\t\t" << _clock_residual.read() << endl;
   cout << "  Solve\t\t\t" << _clock_solve.read() << endl;
