@@ -23,8 +23,8 @@ class SolverInfos
     virtual ~SolverInfos();
 
     virtual void BasicInit(const ParamFile *param);
-    CGInfo &GetLInfo(std::string s = "State") const;
-    NLInfo &GetNLInfo(std::string s = "State") const;
+    CGInfo& GetLInfo(std::string s = "State") const;
+    NLInfo& GetNLInfo(std::string s = "State") const;
 };
 
 /*---------------------------------------------------------------*/

@@ -1,6 +1,6 @@
 #include  "transformation2d.h"
 #include  "baseq22dwithsecond.h"
-#include  "finiteelement.xx"
+#include  "../Q1/finiteelement.xx"
 #include  "finiteelementwithsecond.xx"
 #include  "finiteelementwithsecond2d.xx"
 

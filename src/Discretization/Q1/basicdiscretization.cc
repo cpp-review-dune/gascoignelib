@@ -6,7 +6,7 @@ using namespace std;
 
 namespace Gascoigne
 {
-BasicDiscretization::BasicDiscretization() : DiscretizationInterface()
+BasicDiscretization::BasicDiscretization() : DiscretizationInterface(), __MP(NULL)
 {
 }
 

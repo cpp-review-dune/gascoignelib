@@ -33,7 +33,7 @@ class BasicDiscretization : public DiscretizationInterface
   mutable LocalNodeData        __Q;
   mutable LocalParameterData   __qq;
   
-  const MeshInterface* GetMesh() const { assert(__MP); return __MP;}
+  virtual const MeshInterface* GetMesh() const { assert(__MP); return __MP;}
 
   virtual void GlobalToLocal(LocalVector& U, const GlobalVector& u, int iq) const {
     GlobalToLocalSingle(U,u,iq);

@@ -27,7 +27,7 @@ protected:
   IntegratorInterface*& GetIntegratorPointer() {return __INT;}
   FemInterface*& GetFemPointer() {return __FEM;}
 
-  void Transformation(FemInterface::Matrix& T, int iq) const;
+  virtual void Transformation(FemInterface::Matrix& T, int iq) const;
 
   double ComputePointValue(const GlobalVector& u, const Vertex2d& p0,int comp) const;
   double ComputePointValue(const GlobalVector& u, const Vertex3d& p0,int comp) const; 

@@ -7,7 +7,7 @@
 #include  "baseq22dwithsecond.h"
 #include  "transformation3d.h"
 #include  "baseq23dwithsecond.h"
-#include  "finiteelement.xx"
+#include  "../Q1/finiteelement.xx"
 #include  "finiteelementwithsecond.xx"
 #include  "finiteelementwithsecond2d.xx"
 #include  "finiteelementwithsecond3d.xx"

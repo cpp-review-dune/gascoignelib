@@ -708,7 +708,11 @@ void StdSolver::SolutionInit(BasicGhostVector& Gu)  const
 {
   GlobalVector& u = GetGV(Gu);
   const DomainInitialCondition* u0 = dynamic_cast<const DomainRightHandSide *>(GetProblemDescriptor()->GetInitialCondition());
-  assert(u0);
+  if(u0==NULL)
+		{
+		u.zero();
+		return;
+		}
 
   int ncomp = GetProblemDescriptor()->GetEquation()->GetNcomp();
   assert(ncomp==u.ncomp());

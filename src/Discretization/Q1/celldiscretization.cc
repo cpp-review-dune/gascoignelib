@@ -29,29 +29,29 @@ void CellDiscretization::Transformation(FemInterface::Matrix& T, int iq) const
 {
   int dim = GetMesh()->dimension();
   int ne = GetMesh()->nodes_per_cell(iq);
-
+	
   IntVector indices = GetMesh()->IndicesOfCell(iq);
   assert(ne==indices.size());
-
+	
   T.memory(dim,ne);
   if(dim==2)
     {
-      for(int ii=0;ii<ne;ii++)
-	{
-	  Vertex2d v = GetMesh()->vertex2d(indices[ii]);
-	  T(0,ii) = v.x();               
-	  T(1,ii) = v.y();
-	}
+		for(int ii=0;ii<ne;ii++)
+			{
+			Vertex2d v = GetMesh()->vertex2d(indices[ii]);
+			T(0,ii) = v.x();               
+			T(1,ii) = v.y();
+			}
     }
   else if(dim==3)
     {
-      for(int ii=0;ii<ne;ii++)
-	{
-	  Vertex3d v = GetMesh()->vertex3d(indices[ii]);
-	  T(0,ii) = v.x();               
-	  T(1,ii) = v.y();
-	  T(2,ii) = v.z();
-	}
+		for(int ii=0;ii<ne;ii++)
+			{
+			Vertex3d v = GetMesh()->vertex3d(indices[ii]);
+			T(0,ii) = v.x();               
+			T(1,ii) = v.y();
+			T(2,ii) = v.z();
+			}
     }
 }
 
@@ -189,8 +189,8 @@ void CellDiscretization::MassMatrix(MatrixInterface& A) const
       Transformation(T,iq);
       GetFem()->ReInit(T);
       GetIntegrator()->MassMatrix(__E,*GetFem());
-       LocalToGlobal(A,__E,iq,1.);
-       //      CellDiscretization::LocalToGlobal(A,__E,iq,1.);
+			LocalToGlobal(A,__E,iq,1.);
+			//      CellDiscretization::LocalToGlobal(A,__E,iq,1.);
     }
 }
 
