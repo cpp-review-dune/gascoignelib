@@ -6,6 +6,34 @@ namespace Gascoigne
 /*------------------------------------------------------------*/
 
 template<int N, class INT>
+PatchFormula1d<N,INT>::PatchFormula1d<N,INT>() : IntegrationFormula1d(2*N)
+{
+  INT         I;
+
+  assert(I.n()==N);
+
+  for(int ii=0;ii<2;ii++)
+    {
+      for(int i=0;i<N;i++)
+	{
+	  int j = N*ii+i;
+	  w(j) = 0.5*I.w(i);
+	  Vertex1d pi;
+	  I.xi(pi,i);
+	  if(ii==0)
+	    {
+	      c(j).x() = 0.5*pi.x();
+	    }		    
+	  else		    
+	    {		    
+	      c(j).x() = 0.5*pi.x()+0.5;
+	    }
+	}
+    }
+}
+
+/*------------------------------------------------------------*/
+template<int N, class INT>
 PatchFormula2d<N,INT>::PatchFormula2d<N,INT>() : IntegrationFormula2d(4*N)
 {
   INT         I;
@@ -43,9 +71,6 @@ PatchFormula2d<N,INT>::PatchFormula2d<N,INT>() : IntegrationFormula2d(4*N)
 	}
     }
 }
-
-/*------------------------------------------------------------*/
-#include  "integrationformula.h"
 
 /*------------------------------------------------------------*/
 

@@ -2,6 +2,7 @@
 #include "galerkinintegratorq2.h"
 #include "baseq22d.h"
 #include "integratorq1q2.h"
+#include <ext/hash_set>
 
 namespace Gascoigne
 {
@@ -52,6 +53,9 @@ void DwrFem2d::Form(GlobalVector& f, const GlobalVector& u, const Equation& EQ, 
 {
   nmatrix<double> TH,TL;
 
+  GlobalToGlobalData();
+  EQ.SetParameterData(__qq);
+
   const IntegratorQ1Q2<2>* I = dynamic_cast<const IntegratorQ1Q2<2>*>(GetIntegrator());
   assert(I);
 
@@ -77,6 +81,9 @@ void DwrFem2d::AdjointForm(GlobalVector& f, const GlobalVector& u, const Equatio
 {
   nmatrix<double> TH,TL;
 
+  GlobalToGlobalData();
+  EQ.SetParameterData(__qq);
+
   const IntegratorQ1Q2<2>* I = dynamic_cast<const IntegratorQ1Q2<2>*>(GetIntegrator());
   assert(I);
 
@@ -98,9 +105,67 @@ void DwrFem2d::AdjointForm(GlobalVector& f, const GlobalVector& u, const Equatio
 
 /* ----------------------------------------- */
 
+void DwrFem2d::BoundaryForm(GlobalVector& f, const GlobalVector& u, const IntSet& Colors, 
+    const BoundaryEquation& BE, double d) const
+{
+  nmatrix<double> TH,TL;
+
+  GlobalToGlobalData();
+  BE.SetParameterData(__qq);
+  
+  const IntegratorQ1Q2<2>* I = dynamic_cast<const IntegratorQ1Q2<2>*>(GetIntegrator());
+  assert(I);
+
+  const FemInterface& HighOrderFem(*GetFem());
+
+  const nvector<nvector<int> >& patch2cell  =
+      GetGascoigneMesh()->GetPatchIndexHandler().GetAllPatch2Cell();
+
+  nvector<int> cell2patch(GetMesh()->ncells());
+  for (int p=0;p<patch2cell.size();++p)
+    for (int i=0;i<patch2cell[p].size();++i)
+       cell2patch[patch2cell[p][i]]=p;
+  
+  for(IntSet::const_iterator p=Colors.begin();p!=Colors.end();p++)
+  {
+    int col = *p;
+
+    __gnu_cxx::hash_set<int> habschon;
+    
+    const IntVector& q = *GetMesh()->CellOnBoundary(col);
+    const IntVector& l = *GetMesh()->LocalOnBoundary(col);
+    for (int i=0; i<q.size(); i++)
+    {
+      int iq  = q[i];
+      int ip  = cell2patch[iq];
+      
+      // gabs den patch schon?
+      if (habschon.find(ip)!=habschon.end()) continue;
+      habschon.insert(ip);
+
+      int ile = l[i];
+
+      Transformation  (TH,ip);
+      TransformationQ1(TL,ip);
+
+      HighOrderFem.ReInit(TH);
+      LowOrderFem .ReInit(TL);
+
+      GlobalToLocal(__U,u,ip);
+      I->BoundaryForm(BE,__F,HighOrderFem,LowOrderFem,__U,ile,col,__Q);
+      PatchDiscretization::LocalToGlobal(f,__F,ip,d);
+    }
+  }
+}
+
+/* ----------------------------------------- */
+
 void DwrFem2d::Rhs(GlobalVector& f, const DomainRightHandSide& RHS, double s) const
 {
   nmatrix<double> TH,TL;
+
+  GlobalToGlobalData();
+  RHS.SetParameterData(__qq);
 
   const IntegratorQ1Q2<2>* I = dynamic_cast<const IntegratorQ1Q2<2>*>(GetIntegrator());
   assert(I);
@@ -119,5 +184,58 @@ void DwrFem2d::Rhs(GlobalVector& f, const DomainRightHandSide& RHS, double s) co
       I->Rhs(RHS,__F,HighOrderFem,LowOrderFem,__Q);
       PatchDiscretization::LocalToGlobal(f,__F,iq,s);
     }
+}
+
+/* ----------------------------------------- */
+
+void DwrFem2d::BoundaryRhs(GlobalVector& f, const IntSet& Colors,  const BoundaryRightHandSide& NRHS, double s) const
+{
+  nmatrix<double> TH,TL;
+
+  GlobalToGlobalData();
+  NRHS.SetParameterData(__qq);
+  
+  const IntegratorQ1Q2<2>* I = dynamic_cast<const IntegratorQ1Q2<2>*>(GetIntegrator());
+  assert(I);
+
+  const FemInterface& HighOrderFem(*GetFem());
+
+  const nvector<nvector<int> >& patch2cell  =
+      GetGascoigneMesh()->GetPatchIndexHandler().GetAllPatch2Cell();
+
+  nvector<int> cell2patch(GetMesh()->ncells());
+  for (int p=0;p<patch2cell.size();++p)
+    for (int i=0;i<patch2cell[p].size();++i)
+       cell2patch[patch2cell[p][i]]=p;
+  
+  for(IntSet::const_iterator p=Colors.begin();p!=Colors.end();p++)
+  {
+    int col = *p;
+    __gnu_cxx::hash_set<int> habschon;
+
+    const IntVector& q = *GetMesh()->CellOnBoundary(col);
+    const IntVector& l = *GetMesh()->LocalOnBoundary(col);
+    for (int i=0; i<q.size(); i++)
+    {
+      int iq  = q[i];
+      int ip  = cell2patch[iq];
+      
+      // gabs den patch schon?
+      if (habschon.find(ip)!=habschon.end()) continue;
+      habschon.insert(ip);
+      
+      int ile = l[i];
+
+      Transformation  (TH,ip);
+      TransformationQ1(TL,ip);
+
+      HighOrderFem.ReInit(TH);
+      LowOrderFem .ReInit(TL);
+
+      GlobalToLocalData(ip);
+      I->BoundaryRhs(NRHS,__F,HighOrderFem,LowOrderFem,ile,col,__Q);
+      PatchDiscretization::LocalToGlobal(f,__F,ip,s);
+    }
+  }
 }
 }

@@ -9,6 +9,11 @@ namespace Gascoigne
 /*------------------------------------------------------------*/
 
 template<int N, class INT>
+class PatchFormula1d : public IntegrationFormula1d{
+public: PatchFormula1d();};
+
+/*------------------------------------------------------------*/
+template<int N, class INT>
 class PatchFormula2d : public IntegrationFormula2d{
 public: PatchFormula2d();};
 

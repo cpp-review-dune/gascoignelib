@@ -21,16 +21,21 @@ class IntegratorQ1Q2 : public BasicIntegrator
   IntegratorQ1Q2<DIM>() : BasicIntegrator() {}
   ~IntegratorQ1Q2<DIM>() {}
 
-  std::string GetName() const {return "IntegratorQ1Q2";}  
+  std::string GetName() const {return "IntegratorQ1Q2";}
   void BasicInit();
 
   void Rhs(const DomainRightHandSide& RHS, LocalVector& F, const FemInterface& FemH, 
-	   const FemInterface& FemL, const LocalNodeData& Q) const;
+      const FemInterface& FemL, const LocalNodeData& Q) const;
   void Form(const Equation& EQ, LocalVector& F, const FemInterface& FemH, 
-	    const FemInterface& FemL, const LocalVector& U, const LocalNodeData& Q) const;
+      const FemInterface& FemL, const LocalVector& U, const LocalNodeData& Q) const;
   void AdjointForm(const Equation& EQ, LocalVector& F, const FemInterface& FemH, 
-	    const FemInterface& FemL, const LocalVector& U, const LocalNodeData& Q) const;
-  void DiracRhsPoint(LocalVector& b, const FemInterface& E, const Vertex<DIM>& p, const DiracRightHandSide& DRHS, int i, const LocalNodeData& Q) const;
+      const FemInterface& FemL, const LocalVector& U, const LocalNodeData& Q) const;
+  void BoundaryRhs(const BoundaryRightHandSide& RHS, LocalVector& F, const FemInterface& FemH, const FemInterface& FemL, 
+      int ile, int col, const LocalNodeData& Q) const;
+  void BoundaryForm(const BoundaryEquation& BE, LocalVector& F, const FemInterface& FemH, const FemInterface& FemL, 
+      const LocalVector& U, int ile, int col, LocalNodeData& Q) const;
+  void DiracRhsPoint(LocalVector& b, const FemInterface& E, const Vertex<DIM>& p, const DiracRightHandSide& DRHS, 
+      int i, const LocalNodeData& Q) const;
 };
 
 }

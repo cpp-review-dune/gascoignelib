@@ -154,6 +154,82 @@ void IntegratorQ1Q2<DIM>::Rhs(const DomainRightHandSide& RHS, LocalVector& F, co
 /*---------------------------------------------------*/
 
 template<int DIM>
+void IntegratorQ1Q2<DIM>::BoundaryRhs(const BoundaryRightHandSide& RHS, LocalVector& F, const FemInterface& FemH, 
+    const FemInterface& FemL, int ile, int col, const LocalNodeData& Q) const
+{
+  assert(FemH.n()==FemL.n());
+
+  F.ReInit(RHS.GetNcomp(),FemH.n());
+  F.zero();
+
+  IntegrationFormulaInterface* IF;
+  if (DIM==2) IF = new PatchFormula1d<3,LineGauss3>;
+  else        IF = new PatchFormula2d<9,QuadGauss9>;
+
+  Vertex<DIM> x, n;
+  Vertex<DIM-1> xi;
+
+  for (int k=0; k<IF->n(); k++)
+    {
+      IF->xi(xi,k);
+      FemH.point_boundary(ile,xi);
+      FemL.point_boundary(ile,xi);
+      BasicIntegrator::universal_point(FemL,QH,Q);
+      RHS.SetFemData(QH);
+      FemL.x(x);
+      FemL.normal(n);
+      double  h = FemL.G();
+      double  weight = IF->w(k)*h;
+      for (int i=0;i<FemH.n();i++)
+      {
+        FemH.init_test_functions(NN,weight,i);
+        RHS(F.start(i),NN,x,n,col);
+      }
+    }
+}
+
+/*---------------------------------------------------*/
+
+template<int DIM>
+void IntegratorQ1Q2<DIM>::BoundaryForm(const BoundaryEquation& BE, LocalVector& F, const FemInterface& FemH, 
+    const FemInterface& FemL, const LocalVector& U, int ile, int col, LocalNodeData& Q) const
+{
+  assert(FemH.n()==FemL.n());
+
+  F.ReInit(BE.GetNcomp(),FemH.n());
+  F.zero();
+
+  IntegrationFormulaInterface* IF;
+  if (DIM==2) IF = new PatchFormula1d<3,LineGauss3>;
+  else        IF = new PatchFormula2d<9,QuadGauss9>;
+  
+  Vertex<DIM> x,n;
+  Vertex<DIM-1> xi;
+
+  for (int k=0; k<IF->n(); k++)
+    {
+      IF->xi(xi,k);
+      FemH.point_boundary(ile,xi);
+      FemL.point_boundary(ile,xi);
+      BasicIntegrator::universal_point(FemL,UH,U);
+      BasicIntegrator::universal_point(FemL,QH,Q);
+      FemL.x(x);
+      FemL.normal(n);
+      double  h = FemL.G();
+      double  weight = IF->w(k)*h;
+      BE.SetFemData(QH);
+      BE.pointboundary(h,UH,x,n);
+      for (int i=0;i<FemH.n();i++)
+      {
+        FemH.init_test_functions(NN,weight,i);
+        BE.Form(F.start(i),UH,NN,col);
+      }
+    }
+}
+
+/*---------------------------------------------------*/
+
+template<int DIM>
 void IntegratorQ1Q2<DIM>::DiracRhsPoint(LocalVector& b, const FemInterface& E, const Vertex<DIM>& p, const DiracRightHandSide& DRHS, int j, const LocalNodeData& Q) const
 {
   b.zero();
