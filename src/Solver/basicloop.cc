@@ -274,7 +274,6 @@ void BasicLoop::run(const ProblemDescriptorInterface* PD)
 
 	  GetMeshAgent()->global_refine(1);
 	}
-      _clock_estimate.stop();
      }
 }
 
