@@ -15,7 +15,7 @@ SET(GASCOIGNE_LIBRARY_OUTPUT_PREFIX "$ENV{HOME}/local/lib")
 SET(GASCOIGNE_EXECUTABLE_OUTPUT_PREFIX ".")
 
 OPTION(USE_ARCH "Use archictecture specifc paths" OFF)
-OPTION(COPY_PARAMFILES OFF)
+OPTION(COPY_PARAMFILES "Copy the Param and the INP files" OFF)
 
 #############################################
 #
