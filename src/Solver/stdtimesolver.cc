@@ -32,7 +32,7 @@ void StdTimeSolver::SetTimeData(double d, double th, double ti, double rh)
   dt    = d;
   theta = th;
   time  = ti;
-  rhs   = (rh<0)?(1.-theta)/theta:rh;
+  rhs   = (rh<0) ? (1.-theta)/theta : rh;
 
   GetProblemDescriptor()->SetTime(time,dt);
 }
@@ -104,7 +104,7 @@ void StdTimeSolver::TimeRhs(BasicGhostVector& gf, const BasicGhostVector& gu) co
   assert(theta>0.);
 
   double d = -(1.-theta)/theta;
-	
+
   StdSolver::Residual(gf,gu,d);
 
   if (dt>0.)

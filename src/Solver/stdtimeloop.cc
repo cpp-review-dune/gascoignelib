@@ -68,10 +68,10 @@ void StdTimeLoop::adaptive_run(const ProblemDescriptorInterface* PD)
       GetMultiLevelSolver()->InterpolateSolution(u,ualt);
 
       if (_iter==1) 
-				{
-					GetMultiLevelSolver()->GetSolver()->OutputSettings();
-					InitSolution(u,f);
-				}
+        {
+          GetMultiLevelSolver()->GetSolver()->OutputSettings();
+          InitSolution(u,f);
+        }
 
       cout << "\n================== " << _iter << "================";
       cout << " [l,n,c] " << GetMeshAgent()->nlevels() << " " << GetMeshAgent()->nnodes();
@@ -80,7 +80,7 @@ void StdTimeLoop::adaptive_run(const ProblemDescriptorInterface* PD)
       // umschalten von Euler ?
       //
       info.SpecifyScheme(_iter);
-			TimeInfoBroadcast();
+      TimeInfoBroadcast();
       //
       // rhs fuer alten Zeitschritt
       //
@@ -99,11 +99,11 @@ void StdTimeLoop::adaptive_run(const ProblemDescriptorInterface* PD)
       cout << "eta " << eta.sum() << endl;
 
       if (_iter<_niter) 
-				{
-					CopyVector(ualt,u);
+        {
+          CopyVector(ualt,u);
 
-					AdaptMesh(eta);
-				}
+          AdaptMesh(eta);
+        }
     }
 }
 
