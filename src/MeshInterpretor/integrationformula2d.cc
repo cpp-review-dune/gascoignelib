@@ -1,11 +1,11 @@
 #include  "integrationformula.h"
-#include  "integrationformula.xx"
 #include  "tensorformula2d.xx"
 
 /*------------------------------------------------------------*/
 
-template class IntegrationFormula<1>;
-template class IntegrationFormula<2>;
+template class IntegrationFormulaBase<1>;
+template class IntegrationFormulaBase<2>;
+template class IntegrationFormulaBase<3>;
 
 /*------------------------------------------------------------*/
 
@@ -22,5 +22,10 @@ template class TensorFormula2d<7,LineGauss7  >;
 template class TensorFormula2d<8,LineGauss8  >;
 template class TensorFormula2d<9,LineGauss9  >;
 template class TensorFormula2d<10,LineGauss10>;
+
+template class TensorFormula3d<2,LineTrapez>;
+template class TensorFormula3d<2,LineGauss2>;
+template class TensorFormula3d<3,LineGauss3>;
+template class TensorFormula3d<4,LineGauss4>;
 
 /*------------------------------------------------------------*/
