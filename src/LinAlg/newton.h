@@ -2,7 +2,6 @@
 #define __newton_h
 
 #include  "nlinfo.h"
-#include  "ghostvector.h"
 
 template<class Operator, class Vector>
 void newton(Operator& S, Vector& u, const Vector& f, Vector& r, Vector& w, NLInfo& info);

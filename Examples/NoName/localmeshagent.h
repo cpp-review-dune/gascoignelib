@@ -15,7 +15,7 @@ class LocalMeshAgent : public MeshAgent
   
   void ReInit()
     {
-      GMG->ReInit(dimension,HMP->nlevels()-1);
+      GMG->ReInit(_dimension,HMP->nlevels()-1);
       LocalMeshConstructor MGM(HMP,GMG);
       MGM.BasicInit();
     }

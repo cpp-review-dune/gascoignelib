@@ -5,7 +5,7 @@
 #include  "solverinterface.h"
 #include  "gascoignemesh.h"
 #include  "solverdata.h"
-#include  "newghostvectoragent.h"
+#include  "ghostvectoragent.h"
 #include  "multigridmeshinterface.h"
 #include  "pointfunctional.h"
 #include  "residualfunctional.h"
@@ -48,7 +48,7 @@ class StdSolver : public virtual SolverInterface
 
   // 4. Vektoren
 
-  mutable NewGhostVectorAgent _NGVA;
+  mutable GhostVectorAgent _NGVA;
 
   // 5. Anwendungsklassen
 

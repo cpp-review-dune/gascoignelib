@@ -1,24 +1,24 @@
-#include  "navierstokes.h"
+#include  "navierstokes2d.h"
 #include  "filescanner.h"
 
 using namespace Gascoigne;
 
 /*-----------------------------------------*/
 
-NavierStokes::~NavierStokes()
+NavierStokes2d::~NavierStokes2d()
 {
 }
 
 /*-----------------------------------------*/
 
-NavierStokes::NavierStokes() : Equation()
+NavierStokes2d::NavierStokes2d() : Equation()
 {
   penalty = 0.; visc = 0.01; _h = 0.;
 }
 
 /*-----------------------------------------*/
 
-NavierStokes::NavierStokes(const ParamFile* pf) : Equation()
+NavierStokes2d::NavierStokes2d(const ParamFile* pf) : Equation()
 {
   _h = 0.;
   DataFormatHandler DFH;
@@ -31,7 +31,7 @@ NavierStokes::NavierStokes(const ParamFile* pf) : Equation()
 
 /*-----------------------------------------*/
 
-void NavierStokes::OperatorStrong(Vector& b, const FemFunction& U) const
+void NavierStokes2d::OperatorStrong(Vector& b, const FemFunction& U) const
 {
   b[0] = Divergence(U);
   b[1] = Convection(U,U[1]) - visc * U[1].D() + U[0].x();
@@ -40,7 +40,7 @@ void NavierStokes::OperatorStrong(Vector& b, const FemFunction& U) const
 
 /*-----------------------------------------*/
 
-double NavierStokes::Laplace(const TestFunction& U, 
+double NavierStokes2d::Laplace(const TestFunction& U, 
 				     const TestFunction& N) const
 {
   return U.x()*N.x() + U.y()*N.y();
@@ -48,7 +48,7 @@ double NavierStokes::Laplace(const TestFunction& U,
 
 /*-----------------------------------------*/
 
-double NavierStokes::Convection(const FemFunction& U, 
+double NavierStokes2d::Convection(const FemFunction& U, 
 					const TestFunction& N) const
 {
   return U[1].m()*N.x() + U[2].m()*N.y();
@@ -56,14 +56,14 @@ double NavierStokes::Convection(const FemFunction& U,
 
 /*-----------------------------------------*/
 
-double NavierStokes::Divergence(const FemFunction& U) const
+double NavierStokes2d::Divergence(const FemFunction& U) const
 {
   return U[1].x() + U[2].y();
 }
  
 /*-----------------------------------------*/
 
-void NavierStokes::SetTimePattern(TimePattern& P) const
+void NavierStokes2d::SetTimePattern(TimePattern& P) const
 {
   P.reservesize(ncomp(),ncomp(),0.);
   P(0,0) = penalty;
@@ -73,7 +73,7 @@ void NavierStokes::SetTimePattern(TimePattern& P) const
 
 /*-----------------------------------------*/
 
-void NavierStokes::Form(VectorIterator b, const FemFunction& U, const TestFunction& N) const
+void NavierStokes2d::Form(VectorIterator b, const FemFunction& U, const TestFunction& N) const
 {
   ////////////// Continuity ////////////////////////////////////////////////
 
@@ -94,7 +94,7 @@ void NavierStokes::Form(VectorIterator b, const FemFunction& U, const TestFuncti
 
 /*-----------------------------------------*/
 
-void NavierStokes::Matrix(EntryMatrix& A, const FemFunction& U, const TestFunction& M, const TestFunction& N) const
+void NavierStokes2d::Matrix(EntryMatrix& A, const FemFunction& U, const TestFunction& M, const TestFunction& N) const
 {
   double MN = M.m()*N.m();
   double Mx = M.x()*N.m();

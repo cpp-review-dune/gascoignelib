@@ -1,11 +1,11 @@
 #ifndef  __Stokes3d_h
 #define  __Stokes3d_h
 
-#include  "stokes.h"
+#include  "stokes2d.h"
 
 /*-----------------------------------------*/
 
-class Stokes3d : public Stokes
+class Stokes3d : public Stokes2d
 {
  protected:
 

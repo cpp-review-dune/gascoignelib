@@ -1,13 +1,13 @@
-#ifndef  __StokesGls_h
-#define  __StokesGls_h
+#ifndef  __StokesGls2d_h
+#define  __StokesGls2d_h
 
-#include  "stokes.h"
+#include  "stokes2d.h"
 #include  "glsequation.h"
 #include  "stabilization.h"
 
 /*-----------------------------------------*/
 
-class StokesGls : public Stokes, public virtual GlsEquation
+class StokesGls2d : public Stokes2d, public virtual GlsEquation
 {
 protected:
 
@@ -15,11 +15,11 @@ protected:
 
 public:
 
-  ~StokesGls();
-  StokesGls();
-  StokesGls(const Gascoigne::ParamFile* pf);
+  ~StokesGls2d();
+  StokesGls2d();
+  StokesGls2d(const Gascoigne::ParamFile* pf);
 
-  std::string GetName() const { return "StokesGls";}
+  std::string GetName() const { return "StokesGls2d";}
 
   //
   /// Computation of stabilization parameters

@@ -17,10 +17,11 @@ using namespace Gascoigne;
 
 /* ----------------------------------------- */
 
-void LocalLoop::BasicInit(const ParamFile* pfile)
+void LocalLoop::BasicInit(const ParamFile* paramfile)
 {
   GetMeshAgentPointer() = new LocalMeshAgent;
+  GetMeshAgent()->BasicInit(paramfile);
   GetMultiLevelSolverPointer() = new LocalMultiLevelSolver;
 
-  StdLoop::BasicInit(pfile);
+  StdLoop::BasicInit(paramfile);
 }

@@ -5,7 +5,7 @@ using namespace Gascoigne;
 
 /* ----------------------------------------- */
 
-BasicMeshInterpretor::BasicMeshInterpretor() : MeshInterpretorInterface(), __FEM(NULL), __INT(NULL)
+BasicMeshInterpretor::BasicMeshInterpretor() : MeshInterpretorInterface()
 {
 }
 
@@ -13,8 +13,6 @@ BasicMeshInterpretor::BasicMeshInterpretor() : MeshInterpretorInterface(), __FEM
 
 BasicMeshInterpretor::~BasicMeshInterpretor()
 {
-  if(__FEM==NULL) {delete __FEM; __FEM=NULL;}
-  if(__INT==NULL) {delete __INT; __INT=NULL;}
 }
 
 /* ----------------------------------------- */

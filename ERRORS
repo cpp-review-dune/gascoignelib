@@ -1,8 +1,0 @@
-----------------------------------
-
-ramp: /home/roland/Programs2003/Gascoigne3D/src/Solver/solverdata.cc:58: void SolverData::Init(const std::string&, int): Assertion `ilum.size()==ncomp' failed.
-A
-
-=====>    Falsche Gleichung in "LokalProblemDescriptor" bzgl. ILU
-
-----------------------------------------------------------------------------

@@ -1,35 +1,38 @@
 #ifndef  __GhostVectorAgent_h
 #define  __GhostVectorAgent_h
 
+/////////////////////////////////////////////
+////
+////@brief
+////  ... comments GhostVectorAgent
+
+////
+////
+/////////////////////////////////////////////
+
 #include  <string>
 #include  "gascoigne.h"
 #include  "ghostvector.h"
-#include  "compvector.h"
 #include  "stlio.h"
-
-/*-----------------------------------------*/
 
 class GhostVectorAgent : public std::map<GhostVector,Gascoigne::GlobalVector*>
 {
-protected:
-
-  Gascoigne::GlobalVector& Get(const GhostVector& g) 
-    {
-      return operator()(g);
-    }
-
 public:
+
+//
+////  Con(De)structor 
+//
 
   typedef std::map<GhostVector,Gascoigne::GlobalVector*>::const_iterator const_iterator;
   typedef std::map<GhostVector,Gascoigne::GlobalVector*>::iterator       iterator;
 
-  GhostVectorAgent() : std::map<GhostVector,Gascoigne::GlobalVector*>() {}
-
-  ~GhostVectorAgent() 
+  GhostVectorAgent() {}
+  ~GhostVectorAgent()
     {
       iterator p=begin();
       while(p!=end())
 	{ 
+// 	  std::cerr << "GhostVectorAgent loesche:\t"<<p->first << endl;
 	  if(p->second) 
 	    {
 	      delete p->second; 
@@ -39,18 +42,32 @@ public:
 	}
     }
 
-  void Register(std::string g) 
+  void Register(const BasicGhostVector& mg, const SolverInterface* S) 
     {
-      if(find(g)!=end()) return;
-      insert(std::make_pair(g,(Gascoigne::GlobalVector*) NULL));
+      const std::string& name = mg.GetName();
+      GhostVector g(S,name,mg.GetType());
+      iterator p = find(mg);
+      if(p!=end())
+	{
+// 	  std::cerr << "GhostVectorAgent::Register():\talrteady registered\n";
+	  assert(p->first.GetSolver()==S);
+// 	  std::cerr << g << "\t out of \n";
+// 	  std::cerr << *this << "\n";
+// 	  abort();
+	}
+      else
+	{
+	  insert(std::make_pair(g,(Gascoigne::GlobalVector*) NULL));
+	}
     }
-  void Delete(std::string g) 
+  void Delete(BasicGhostVector& mg) 
     {
-      iterator p=find(g);
+      iterator p=find(mg);
       if(p==end()) return;
       delete p->second; 
       erase(p);
     }
+
 
   Gascoigne::GlobalVector& operator()(const GhostVector& g) 
     {
@@ -65,37 +82,13 @@ public:
       Gascoigne::GlobalVector* vp = p->second;
       if(vp==NULL) 
 	{
-	  std::cerr <<  "GhostVectorAgent scheisse " << p->first << std::endl;
+	  std::cerr <<  "GhostVectorAgent  GlobalVector* NULL\t" << p->first << std::endl;
 	  std::cerr << *this << std::endl;
+	  abort();
 	}
       assert(vp);
       return *vp;
     }
-  
-  void GVequ(GhostVector Gx, double d, GhostVector Gy)
-  {
-    Get(Gx).equ(d,Get(Gy));
-  }
-  
-  void GVzero(GhostVector Gx)
-  {
-    Get(Gx).zero();
-  }
-
-  void GVadd(GhostVector Gx, double d, GhostVector Gy)
-  {
-    Get(Gx).add(d,Get(Gy));
-  }
-
-  void GVsadd(double d0, GhostVector Gx, double d, GhostVector Gy)
-  {
-    Get(Gx).sadd(d0,d,Get(Gy));
-  }
-  
-  double GVscp(GhostVector Gx, GhostVector Gy)
-  {
-    return Get(Gx)*Get(Gy);
-  }
 
 };
 

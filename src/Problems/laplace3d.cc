@@ -6,7 +6,7 @@ using namespace Gascoigne;
 /*-----------------------------------------*/
 
 Laplace3d::Laplace3d(const ParamFile* pf) : 
-  Laplace(pf)
+  Laplace2d(pf)
 {
   DataFormatHandler DFH;
   DFH.insert("betax",&betax,0.);

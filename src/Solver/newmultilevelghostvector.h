@@ -11,7 +11,6 @@
 ////
 /////////////////////////////////////////////
 
-#include  "newghostvector.h"
 #include  "basicghostvector.h"
 #include  "multilevelsolverinterface.h"
 

@@ -1,11 +1,11 @@
 #ifndef  __Laplace3d_h
 #define  __Laplace3d_h
 
-#include  "laplace.h"
+#include  "laplace2d.h"
 
 /*-----------------------------------------*/
 
-class Laplace3d : public Laplace
+class Laplace3d : public Laplace2d
 {
   double betax, betay, betaz;
 

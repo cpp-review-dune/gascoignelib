@@ -1,11 +1,11 @@
-#ifndef  __Laplace_h
-#define  __Laplace_h
+#ifndef  __Laplace2d_h
+#define  __Laplace2d_h
 
 #include  "equation.h"
 
 /*-----------------------------------------*/
 
-class Laplace : public virtual Equation
+class Laplace2d : public virtual Equation
 {
   protected:
   
@@ -14,10 +14,10 @@ class Laplace : public virtual Equation
   
   public:
 
-  Laplace();
-  Laplace(const Gascoigne::ParamFile* pf);
+  Laplace2d();
+  Laplace2d(const Gascoigne::ParamFile* pf);
 
-  std::string GetName() const { return "Laplace";}
+  std::string GetName() const { return "Laplace2d";}
 
   int    ncomp      () const {return 1;}
 

@@ -15,6 +15,14 @@ class CellMeshInterpretor : public BasicMeshInterpretor
 {
 protected:
 
+  FemInterface*         __FEM;
+  IntegratorInterface*  __INT;
+
+  const FemInterface* GetFem() const {return __FEM;}
+  const IntegratorInterface* GetIntegrator() const {return __INT;}
+  IntegratorInterface*& GetIntegratorPointer() {return __INT;}
+  FemInterface*& GetFemPointer() {return __FEM;}
+
   void Transformation(FemInterface::Matrix& T, int iq) const;
 
   int RhsPoint(Gascoigne::GlobalVector& f, const Vertex2d& p0, int comp, double d) const;
@@ -30,8 +38,11 @@ public:
   ////  Constructor 
   //
 
-  CellMeshInterpretor() : BasicMeshInterpretor() {}
-  ~CellMeshInterpretor() {}
+  CellMeshInterpretor() : BasicMeshInterpretor(), __FEM(NULL), __INT(NULL) {}
+  ~CellMeshInterpretor(){
+    if(__FEM==NULL) {delete __FEM; __FEM=NULL;}
+    if(__INT==NULL) {delete __INT; __INT=NULL;}
+  }
 
   std::string GetName() const {return "CellMeshInterpretor";}
 

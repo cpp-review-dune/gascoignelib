@@ -10,7 +10,7 @@ NavierStokes3d::~NavierStokes3d() {}
 
 /*-----------------------------------------*/
 
-NavierStokes3d::NavierStokes3d() : NavierStokes() {}
+NavierStokes3d::NavierStokes3d() : NavierStokes2d() {}
 
 /*-----------------------------------------*/
 
@@ -26,7 +26,7 @@ void NavierStokes3d::SetTimePattern(TimePattern& P) const
 /*-----------------------------------------*/
 
 NavierStokes3d::NavierStokes3d(const ParamFile* pf) 
-  : NavierStokes(pf) {}
+  : NavierStokes2d(pf) {}
 
 
 /*-----------------------------------------*/

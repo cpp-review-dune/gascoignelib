@@ -1,22 +1,22 @@
-#include  "stokesgls.h"
+#include  "stokesgls2d.h"
 #include  "filescanner.h"
 
 using namespace Gascoigne;
 
 /*-----------------------------------------*/
 
-StokesGls::~StokesGls()
+StokesGls2d::~StokesGls2d()
 {
 }
 
 /*-----------------------------------------*/
 
-StokesGls::StokesGls() : Stokes(), GlsEquation()
+StokesGls2d::StokesGls2d() : Stokes2d(), GlsEquation()
 {}
  
 /*-----------------------------------------*/
 
-StokesGls::StokesGls(const ParamFile* pf) : Stokes(), GlsEquation()
+StokesGls2d::StokesGls2d(const ParamFile* pf) : Stokes2d(), GlsEquation()
 {
   DataFormatHandler DFH;
   DFH.insert("visc" , &visc , 1.);
@@ -28,15 +28,14 @@ StokesGls::StokesGls(const ParamFile* pf) : Stokes(), GlsEquation()
 
 /*-----------------------------------------*/
 
-void StokesGls::glspoint
-(double h, const FemFunction& U, const Vertex2d& v)const
+void StokesGls2d::glspoint(double h, const FemFunction& U, const Vertex2d& v)const
 {
   ST.ReInit(h,visc);
 }
 
 /*-----------------------------------------*/
 
-void StokesGls::L(nvector<double>& dst, const FemFunction& U) const
+void StokesGls2d::L(nvector<double>& dst, const FemFunction& U) const
 {
   dst[0] = Divergence(U);
   dst[1] = U[0].x();
@@ -45,7 +44,7 @@ void StokesGls::L(nvector<double>& dst, const FemFunction& U) const
 
 /*-----------------------------------------*/
 
-void StokesGls::S(nmatrix<double>& dst, const FemFunction& U, 
+void StokesGls2d::S(nmatrix<double>& dst, const FemFunction& U, 
 		  const TestFunction& N) const
 {
   dst(0,1) = ST.alpha() * N.x();
@@ -57,7 +56,7 @@ void StokesGls::S(nmatrix<double>& dst, const FemFunction& U,
 
 /*-----------------------------------------*/
 
-void StokesGls::LMatrix(nmatrix<double>& A, 
+void StokesGls2d::LMatrix(nmatrix<double>& A, 
 			const FemFunction& U,
 			const TestFunction& V) const
 {

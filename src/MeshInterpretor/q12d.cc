@@ -36,12 +36,12 @@ void Q12d::BasicInit(const ParamFile* pf)
   assert(HN);
 
   assert(CellMeshInterpretor::GetIntegrator()==NULL);
-  BasicMeshInterpretor::GetIntegratorPointer() =  new GalerkinIntegrator<2>;
+  CellMeshInterpretor::GetIntegratorPointer() =  new GalerkinIntegrator<2>;
 
   assert(CellMeshInterpretor::GetFem()==NULL);
   typedef Transformation2d<BaseQ12d>           TransQ1;
   typedef FiniteElement<2,1,TransQ1,BaseQ12d>  FiniteElement;
-  BasicMeshInterpretor::GetFemPointer() =  new FiniteElement;
+  CellMeshInterpretor::GetFemPointer() =  new FiniteElement;
 
   CellMeshInterpretor::BasicInit(pf);
 }

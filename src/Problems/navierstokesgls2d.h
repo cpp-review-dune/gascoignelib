@@ -1,13 +1,13 @@
-#ifndef  __NavierStokesGls_h
-#define  __NavierStokesGls_h
+#ifndef  __NavierStokesGls2d_h
+#define  __NavierStokesGls2d_h
 
 #include  "glsequation.h"
-#include  "navierstokes.h"
+#include  "navierstokes2d.h"
 #include  "glsstabilization.h"
 
 /*-----------------------------------------*/
 
-class NavierStokesGls : public NavierStokes, public virtual GlsEquation
+class NavierStokesGls2d : public NavierStokes2d, public virtual GlsEquation
 {
 protected:
 
@@ -15,11 +15,11 @@ protected:
 
 public:
 
-  ~NavierStokesGls();
-  NavierStokesGls();
-  NavierStokesGls(const Gascoigne::ParamFile* pf);
+  ~NavierStokesGls2d();
+  NavierStokesGls2d();
+  NavierStokesGls2d(const Gascoigne::ParamFile* pf);
 
-  std::string GetName() const { return "NavierStokesGls";}
+  std::string GetName() const { return "NavierStokesGls2d";}
 
   void SetTime(double k)   { ST.DeltaT() = k;}
   //

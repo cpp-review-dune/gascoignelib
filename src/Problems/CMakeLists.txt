@@ -1,4 +1,15 @@
 SET(PROBLEMS_SRC 
+  laplace3d.cc
+  laplace2d.cc
+  stokes3d.cc
+  stokes2d.cc
+  stokesgls3d.cc
+  stokesgls2d.cc
+  navierstokes3d.cc
+  navierstokes2d.cc
+  navierstokesgls3d.cc
+  navierstokesgls2d.cc
+
   boundarymanager.cc
   constantboundaryfunctional.cc
   constantrighthandside.cc
@@ -6,18 +17,8 @@ SET(PROBLEMS_SRC
   domainmeanfunctional.cc
   exactsolution.cc
   glsstabilization.cc
-  laplace3d.cc
-  laplace.cc
-  navierstokes3d.cc
-  navierstokes.cc
-  navierstokesgls3d.cc
-  navierstokesgls.cc
   pointfunctional.cc
   residualfunctional.cc
-  stokes3d.cc
-  stokes.cc
-  stokesgls3d.cc
-  stokesgls.cc
   usefullfunctionsbd.cc
 )
 

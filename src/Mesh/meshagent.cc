@@ -9,7 +9,7 @@ using namespace Gascoigne;
 
 /*-----------------------------------------*/
 
-MeshAgent::MeshAgent() : MeshAgentInterface(), HMP(NULL), GMG(NULL), dimension(-1)
+MeshAgent::MeshAgent() : MeshAgentInterface(), HMP(NULL), GMG(NULL), _dimension(-1)
 {
 }
 
@@ -25,7 +25,7 @@ MeshAgent::~MeshAgent()
 
 void MeshAgent::ReInit()
 {
-  GMG->ReInit(dimension,HMP->nlevels());
+  GMG->ReInit(_dimension,HMP->nlevels());
 
   GascoigneMeshConstructor MGM(HMP,GMG);
   MGM.BasicInit();
@@ -33,25 +33,52 @@ void MeshAgent::ReInit()
 
 /*-----------------------------------------*/
 
+void MeshAgent::BasicInit(int dim, string inpname, int prerefine)
+{
+  _dimension = dim;
+  if (_dimension==2)
+    {
+      HMP = new HierarchicalMesh2d;
+    }
+  else if (_dimension==3)
+    {
+      HMP = new HierarchicalMesh3d;
+    }
+  else
+    {
+      cout << "dimension of Mesh ? " << _dimension << endl;
+    }
+  assert(HMP);
+
+  HMP->read_inp(inpname);
+  HMP->global_refine(prerefine);
+
+  GMG = NewMultiGridMesh();
+
+  ReInit();
+}
+
+/*-----------------------------------------*/
+
 void MeshAgent::BasicInit(const ParamFile* paramfile)
 {
   DataFormatHandler DFH;
-  DFH.insert("dimension",&dimension,2);
+  DFH.insert("dimension",&_dimension,2);
   FileScanner FS(DFH);
   FS.NoComplain();
   FS.readfile(paramfile,"Mesh");
 
-  if (dimension==2)
+  if (_dimension==2)
     {
       HMP = new HierarchicalMesh2d(paramfile);
     }
-  else if (dimension==3)
+  else if (_dimension==3)
     {
       HMP = new HierarchicalMesh3d(paramfile);
     }
   else
     {
-      cout << "dimension of Mesh ? " << dimension << endl;
+      cout << "dimension of Mesh ? " << _dimension << endl;
     }
   assert(HMP);
 

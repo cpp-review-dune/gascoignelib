@@ -1,4 +1,4 @@
-#include  "navierstokesgls.h"
+#include  "navierstokesgls2d.h"
 #include  "filescanner.h"
 
 using namespace std;
@@ -6,14 +6,14 @@ using namespace Gascoigne;
 
 /*-----------------------------------------*/
 
-NavierStokesGls::~NavierStokesGls()
+NavierStokesGls2d::~NavierStokesGls2d()
 {
 }
 
 /*-----------------------------------------*/
 
-NavierStokesGls::NavierStokesGls() 
-  : NavierStokes(), GlsEquation()
+NavierStokesGls2d::NavierStokesGls2d() 
+  : NavierStokes2d(), GlsEquation()
 {
   penalty = 0.; visc = 0.01;
   
@@ -24,8 +24,8 @@ NavierStokesGls::NavierStokesGls()
 
 /*-----------------------------------------*/
 
-NavierStokesGls::NavierStokesGls(const ParamFile* pf) 
-  : NavierStokes(), GlsEquation()
+NavierStokesGls2d::NavierStokesGls2d(const ParamFile* pf) 
+  : NavierStokes2d(), GlsEquation()
 {
   DataFormatHandler DFH;
   DFH.insert("visc" , &visc , 0.01);
@@ -41,14 +41,14 @@ NavierStokesGls::NavierStokesGls(const ParamFile* pf)
 
 /*-----------------------------------------*/
 
-void NavierStokesGls::glspoint(double h, const FemFunction& U, const Vertex2d& v)const
+void NavierStokesGls2d::glspoint(double h, const FemFunction& U, const Vertex2d& v)const
 {
   ST.ReInit(h,visc,U[1].m(),U[2].m());
 }
 
 /*-----------------------------------------*/
 
-void NavierStokesGls::L(nvector<double>& dst, const FemFunction& U) const
+void NavierStokesGls2d::L(nvector<double>& dst, const FemFunction& U) const
 {
   dst[0] = Divergence(U);
   dst[1] = Convection(U,U[1]) + U[0].x();
@@ -57,7 +57,7 @@ void NavierStokesGls::L(nvector<double>& dst, const FemFunction& U) const
 
 /*-----------------------------------------*/
 
-void NavierStokesGls::S(nmatrix<double>& dst, const FemFunction& U, const TestFunction& N) const
+void NavierStokesGls2d::S(nmatrix<double>& dst, const FemFunction& U, const TestFunction& N) const
 {
   dst(0,1) = ST.alpha() * N.x();
   dst(0,2) = ST.alpha() * N.y();
@@ -70,7 +70,7 @@ void NavierStokesGls::S(nmatrix<double>& dst, const FemFunction& U, const TestFu
 
 /*-----------------------------------------*/
 
-void NavierStokesGls::LMatrix(nmatrix<double>& A, const FemFunction& U, const TestFunction& N) const
+void NavierStokesGls2d::LMatrix(nmatrix<double>& A, const FemFunction& U, const TestFunction& N) const
 {
   A(0,1) = N.x();
   A(0,2) = N.y();
@@ -88,7 +88,7 @@ void NavierStokesGls::LMatrix(nmatrix<double>& A, const FemFunction& U, const Te
 
 /*-----------------------------------------*/
 
-void NavierStokesGls::SMatrix(nvector<double>& dst, const FemFunction& U, const FemFunction& M, const FemFunction& N) const
+void NavierStokesGls2d::SMatrix(nvector<double>& dst, const FemFunction& U, const FemFunction& M, const FemFunction& N) const
 {
   dst[1] = ST.delta() * Convection(M,N[1]);
   dst[2] = ST.delta() * Convection(M,N[2]);

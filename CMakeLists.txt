@@ -18,4 +18,4 @@ INCLUDE(CMakeGlobal.txt)
 # the following is local
 #
 
-SUBDIRS(src Examples)
+SUBDIRS(src test Examples)

@@ -6,7 +6,7 @@
 #include  "iluinterface.h"
 
 #include  "multigridmeshinterface.h"
-#include  "functionalmanager.h"
+#include  "functional.h"
 
 #include  "problemdescriptorinterface.h"
 #include  "meshinterface.h"

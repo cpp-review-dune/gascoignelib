@@ -1,11 +1,11 @@
 #ifndef  __NavierStokes3d_h
 #define  __NavierStokes3d_h
 
-#include  "navierstokes.h"
+#include  "navierstokes2d.h"
 
 /*-----------------------------------------*/
 
-class NavierStokes3d : public NavierStokes
+class NavierStokes3d : public NavierStokes2d
 {
   protected:
   

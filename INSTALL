@@ -18,15 +18,23 @@ http://www-users.cs.umn.edu/~karypis/metis/
 
 
 ****************************************************
+Architecture
+****************************************************
+
+The copiler known to work is gcc3.x.x
+
+
+****************************************************
 Installation
 ****************************************************
 
-1.) We denote the directory where this file is located by <GAS_STD_SRC>,
-e.g. ${HOME}/GascoigneStd. 
+1.) Copy the file "gascoignerc_example" to ${HOME}/.gascoignerc and 
+set the variable "GASCOIGNE_STD" to point to the location of GascoigneStd.
+The other variables are optional.
 
-2) We denote the directory where all object files, binaries and libs 
-should be created, by <GAS_STD_OBJ>, e.g.  ${HOME}/GasBin/Std/${ARCH}. 
-This path has to be created before beginning the instalation.
+2) You can compile in the directory GascoigneStd, but it is a good idea 
+to do compile in an empty dir which we call <GAS_STD_OBJ> in the following,
+<GAS_STD_SRC> stands for GascoigneStd.
 
 3) cd <GAS_STD_OBJ>
 

@@ -1,5 +1,5 @@
 #include  "problemdescriptor1.h"
-#include  "navierstokesgls.h"
+#include  "navierstokesgls2d.h"
 #include  "benchmarkdirichletdata.h"
 #include  "zerorighthandsidedata.h"
 #include  "zeroexactsolution.h"
@@ -10,7 +10,7 @@ using namespace std;
 
 void ProblemDescriptor1::ConstructEquation()
 {
-  GetEquationPointer() = new NavierStokesGls(GetParamFile());
+  GetEquationPointer() = new NavierStokesGls2d(GetParamFile());
 }
 
 /* ----------------------------------------- */

@@ -10,12 +10,12 @@ Stokes3d::~Stokes3d()
 
 /*-----------------------------------------*/
 
-Stokes3d::Stokes3d() : Stokes()
+Stokes3d::Stokes3d() : Stokes2d()
 {}
 
 /*-----------------------------------------*/
 
-Stokes3d::Stokes3d(const ParamFile* pf) : Stokes(pf)
+Stokes3d::Stokes3d(const ParamFile* pf) : Stokes2d(pf)
 {
 }
 

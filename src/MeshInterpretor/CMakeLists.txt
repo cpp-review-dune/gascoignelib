@@ -19,7 +19,6 @@ SET(MESHINTERPRETOR_SRC
   integrationformula.cc
   mginterpolatormatrix.cc
   mginterpolatornested.cc
-  patchmeshinterpretor.cc
   q12d.cc
   q13d.cc
   q1.cc

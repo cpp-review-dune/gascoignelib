@@ -16,12 +16,12 @@ void Q1Gls3d::BasicInit(const ParamFile* pf)
   assert(HN);
 
   assert(CellMeshInterpretor::GetIntegrator()==NULL);
-  BasicMeshInterpretor::GetIntegratorPointer() =  new GalerkinGlsIntegrator<3>;
+  CellMeshInterpretor::GetIntegratorPointer() =  new GalerkinGlsIntegrator<3>;
 
   assert(CellMeshInterpretor::GetFem()==NULL);
   typedef Transformation3d<BaseQ13d>           TransQ1;
   typedef FiniteElement<3,2,TransQ1,BaseQ13d>  FiniteElement;
-  BasicMeshInterpretor::GetFemPointer() =  new FiniteElement;
+  CellMeshInterpretor::GetFemPointer() =  new FiniteElement;
 
   CellMeshInterpretor::BasicInit(pf);
 }

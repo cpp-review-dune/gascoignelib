@@ -14,6 +14,7 @@
 #include  "stdiomanager.h"
 #include  "stopwatch.h"
 #include  "paramfile.h"
+#include  "newmultilevelghostvector.h"
 
 //////////////////////////////////////////////
 //

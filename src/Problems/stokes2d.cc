@@ -1,24 +1,24 @@
-#include  "stokes.h"
+#include  "stokes2d.h"
 #include  "filescanner.h"
 
 using namespace Gascoigne;
 
 /*-----------------------------------------*/
 
-Stokes::~Stokes()
+Stokes2d::~Stokes2d()
 {
 }
 
 /*-----------------------------------------*/
 
-Stokes::Stokes() : Equation()
+Stokes2d::Stokes2d() : Equation()
 {
   penalty = 0.; visc = 1.;
 }
  
 /*-----------------------------------------*/
 
-void Stokes::SetTimePattern(TimePattern& P) const
+void Stokes2d::SetTimePattern(TimePattern& P) const
 {
   P.reservesize(ncomp(),ncomp(),0.);
   P(0,0) = penalty;
@@ -28,7 +28,7 @@ void Stokes::SetTimePattern(TimePattern& P) const
 
 /*-----------------------------------------*/
 
-Stokes::Stokes(const ParamFile* pf) : Equation()
+Stokes2d::Stokes2d(const ParamFile* pf) : Equation()
 {
   DataFormatHandler DFH;
   DFH.insert("visc" , &visc , 1.);
@@ -39,7 +39,7 @@ Stokes::Stokes(const ParamFile* pf) : Equation()
 
 /*-----------------------------------------*/
 
-double Stokes::Laplace(const TestFunction& U, 
+double Stokes2d::Laplace(const TestFunction& U, 
 			       const TestFunction& N) const
 {
   return U.x()*N.x() + U.y()*N.y();
@@ -47,14 +47,14 @@ double Stokes::Laplace(const TestFunction& U,
 
 /*-----------------------------------------*/
 
-double Stokes::Divergence(const FemFunction& U) const
+double Stokes2d::Divergence(const FemFunction& U) const
 {
   return U[1].x() + U[2].y();
 }
 
 /*-----------------------------------------*/
 
-void Stokes::Form(VectorIterator b, const FemFunction& U, const TestFunction& N) const
+void Stokes2d::Form(VectorIterator b, const FemFunction& U, const TestFunction& N) const
 {
   ////////////// Continuity ////////////////////////////////////////////////
 
@@ -72,7 +72,7 @@ void Stokes::Form(VectorIterator b, const FemFunction& U, const TestFunction& N)
 
 /*-----------------------------------------*/
 
-void Stokes::Matrix(EntryMatrix& A, const FemFunction& U, const TestFunction& M, const TestFunction& N) const
+void Stokes2d::Matrix(EntryMatrix& A, const FemFunction& U, const TestFunction& M, const TestFunction& N) const
 {
   ////////////// Continuity ////////////////////////////////////////////////
 

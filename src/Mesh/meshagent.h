@@ -11,7 +11,7 @@ class MeshAgent : public virtual MeshAgentInterface
 {
 protected:
 
-  int dimension;
+  int _dimension;
 
   HierarchicalMesh*         HMP;
   GascoigneMultiGridMesh*   GMG;
@@ -26,6 +26,7 @@ public:
     
   MeshAgent();
 
+  void BasicInit(int dim, std::string inpname, int prerefine);
   void BasicInit(const Gascoigne::ParamFile* pf);
   ~MeshAgent();
 

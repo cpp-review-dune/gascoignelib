@@ -13,6 +13,7 @@ using namespace Gascoigne;
 void LocalTimeLoop::BasicInit(const ParamFile* paramfile)
 {
   GetMeshAgentPointer() = new LocalMeshAgent;
+  GetMeshAgent()->BasicInit(paramfile);
   StdTimeLoop::BasicInit(paramfile);
 }
 

@@ -1,11 +1,11 @@
-#ifndef  __NavierStokes_h
-#define  __NavierStokes_h
+#ifndef  __NavierStokes2d_h
+#define  __NavierStokes2d_h
 
 #include  "equation.h"
 
 /*-----------------------------------------*/
 
-class NavierStokes : public virtual Equation
+class NavierStokes2d : public virtual Equation
 {
 protected:
 
@@ -22,13 +22,13 @@ protected:
 
 public:
 
-  ~NavierStokes();
-  NavierStokes();
-  NavierStokes(const Gascoigne::ParamFile* pf);
+  ~NavierStokes2d();
+  NavierStokes2d();
+  NavierStokes2d(const Gascoigne::ParamFile* pf);
 
   void OperatorStrong(Vector& b, const Gascoigne::FemFunction& U) const;
 
-  std::string GetName() const { return "NavierStokes";}
+  std::string GetName() const { return "NavierStokes2d";}
   double Getpenalty()const {return penalty;}
 
   int  ncomp() const { return 3; }

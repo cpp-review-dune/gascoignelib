@@ -16,7 +16,7 @@ void LocalMeshAgent::BasicInit(const ParamFile* paramfile)
   DataFormatHandler DFH;
   string gridname("Results/forward.00000.gup");
   DFH.insert("gridname" ,&gridname,"none");
-  DFH.insert("dimension",&dimension,0);
+  DFH.insert("dimension",&_dimension,0);
   FileScanner FS(DFH);
   FS.NoComplain();
   FS.readfile(paramfile,"Mesh");
@@ -26,17 +26,17 @@ void LocalMeshAgent::BasicInit(const ParamFile* paramfile)
   cerr << gridname << endl;
   cerr << "\t§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§\n";
 
-  if (dimension==2)
+  if (_dimension==2)
     {
       HMP = new HierarchicalMesh2d;
     }
-  else if (dimension==3)
+  else if (_dimension==3)
     {
       HMP = new HierarchicalMesh3d;
     }
   else
     {
-      cout << "dimension of Mesh ? " << dimension << endl;
+      cout << "dimension of Mesh ? " << _dimension << endl;
     }
 
   int patchdepth=1;

@@ -1,5 +1,5 @@
 #include  "problemdescriptor1.h"
-#include  "laplace.h"
+#include  "laplace2d.h"
 #include  "dirichletdatabyexactsolution.h"
 #include  "righthandsidedatabyequation.h"
 #include  "polynomialexactsolution.h"
@@ -10,7 +10,7 @@ using namespace std;
 
 void ProblemDescriptor1::ConstructEquation()
 {
-  GetEquationPointer() = new Laplace;
+  GetEquationPointer() = new Laplace2d;
 }
 
 /* ----------------------------------------- */

@@ -107,8 +107,8 @@ void StdSolver::BasicInit(int level, const ParamFile* paramfile, const MeshInter
 
   DataFormatHandler DFH;
   DFH.insert("matrixtype" , &_matrixtype, "point_node");
-  DFH.insert("ndirect"    , &_ndirect   , 1);
-  DFH.insert("disc", &_discname, "unknown");
+  DFH.insert("ndirect"    , &_ndirect   , 100);
+  DFH.insert("disc", &_discname, "Q1");
   FileScanner FS(DFH);
   FS.NoComplain();
   FS.readfile(_paramfile,"Solver");
@@ -185,10 +185,10 @@ void StdSolver::MemoryVector()
 {
   int ncomp = GetProblemDescriptor()->GetEquation()->ncomp();
   {
-    NewGhostVectorAgent::iterator p = _NGVA.begin();
+    GhostVectorAgent::iterator p = _NGVA.begin();
     while(p!=_NGVA.end())
       {
-	const NewGhostVector& gv = p->first;
+	const GhostVector& gv = p->first;
 	assert(gv.GetSolver()==this);
 	if(p->second==NULL) 
 	  {

@@ -20,8 +20,6 @@ class BasicMeshInterpretor : public MeshInterpretorInterface
  private:
   
   const MeshInterface*  __MP;
-  FemInterface*         __FEM;
-  IntegratorInterface*  __INT;
   
  protected:
 
@@ -32,11 +30,6 @@ class BasicMeshInterpretor : public MeshInterpretorInterface
   mutable Gascoigne::LocalData   __Q;
   
   const MeshInterface* GetMesh() const {return __MP;}
-  const FemInterface* GetFem() const {return __FEM;}
-  const IntegratorInterface* GetIntegrator() const {return __INT;}
-
-  IntegratorInterface*& GetIntegratorPointer() {return __INT;}
-  FemInterface*& GetFemPointer() {return __FEM;}
 
   virtual void GlobalToLocal(Gascoigne::LocalVector& U, const Gascoigne::GlobalVector& u, int iq) const {
     GlobalToLocalSingle(U,u,iq);

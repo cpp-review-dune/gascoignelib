@@ -1,4 +1,14 @@
 
+Version 17.02.2004
+===============
+
+* roland:
+1) Version in reverse order
+2) dir test mit test1 (=Laplace2D)
+3) test1 ist ein bsp. ohne paramfile (profilaktisch)
+   !?   GetMesh()->BasicInit() wird nicht mehr von BasicLoop aufgerifen, falls der pointer !=NULL.
+
+
 Version 12.2003
 ===============
 
@@ -30,7 +40,7 @@ Version 01.2004 (23.01.2004)
   hierbei ist J ein vector<const Functional*>
 * Loops aufgeraeumt, nun ruft man "run(const ProblemDescriptorInterface*)" auf.
 
-
+ 
 Version 01.2004 (24.01.2004)
 ============================
 * roland: class ParamFile introduced

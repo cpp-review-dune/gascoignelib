@@ -1,12 +1,12 @@
-#ifndef  __Stokes_h
-#define  __Stokes_h
+#ifndef  __Stokes2d_h
+#define  __Stokes2d_h
 
 #include  "equation.h"
 #include  <string>
 
 /*-----------------------------------------*/
 
-class Stokes : public virtual Equation
+class Stokes2d : public virtual Equation
 {
 protected:
 
@@ -18,11 +18,11 @@ protected:
 
 public:
 
-  ~Stokes();
-  Stokes();
-  Stokes(const Gascoigne::ParamFile* pf);
+  ~Stokes2d();
+  Stokes2d();
+  Stokes2d(const Gascoigne::ParamFile* pf);
 
-  std::string GetName() const { return "Stokes";}
+  std::string GetName() const { return "Stokes2d";}
 
   int ncomp  () const { return 3; }
   //
