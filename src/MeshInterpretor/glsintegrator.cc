@@ -46,10 +46,12 @@ void GlsIntegrator<DIM>::Form(const Equation& EQ, LocalVector& F, const FemInter
       BasicIntegrator::universal_point(FEM,QH,Q);
       FEM.x(x);
       GEQ->glspoint(h,UH,QH,x);
+      Lu.zero();
       GEQ->L(Lu,UH);
       for (int i=0;i<FEM.n();i++)
         {
 	  FEM.init_test_functions(NN,weight,i);
+          A.zero();
 	  GEQ->S(A,UH,NN);
 	  
 	  for (int c=0; c<F.ncomp(); c++)
@@ -101,11 +103,12 @@ void GlsIntegrator<DIM>::Matrix(const Equation& EQ, EntryMatrix& E, const FemInt
       for (int i=0; i<FEM.n(); i++)
         {
           FEM.init_test_functions(NNN[i],1.,i);
-
+          LMat[i].zero();
           GEQ->LMatrix(LMat[i],UH,NNN[i]);
         }
       for (int i=0; i<FEM.n(); i++)
         {
+          SMat.zero();
           GEQ->S(SMat,UH,NNN[i]);
 	  SMat.equ(weight,SMat);
 
