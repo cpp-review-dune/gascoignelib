@@ -3,6 +3,7 @@
 #include  "meshinterpolator.h"
 #include  "solverinfos.h"
 #include  "meshagent.h"
+#include  "backup.h"
 
 using namespace Gascoigne;
 using namespace std;
@@ -55,11 +56,14 @@ int main(int argc, char** argv)
   ///////////////////////
   // Mesh Interpolator
   ///////////////////////
-
-  MeshInterpolator MI;
-  MI.BasicInit(MLS.GetSolver(),&MA,finename,&PD);
-  MI.RhsForProjection(f);
-  
+    {
+      MeshInterpolator MI;
+      MI.BasicInit(MLS.GetSolver()->GetDiscretization(),&MA,finename);
+      
+      GlobalVector uold;
+      ReadBackUpResize(uold,"start2.bup");
+      MI.RhsForProjection(MLS.GetSolver()->GetGV(f),uold);
+    }
   string coarsename = "Results/" + finename + ".projected";
 
   Monitor moni;
