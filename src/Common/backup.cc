@@ -61,7 +61,16 @@ ReadBackUp::ReadBackUp(GlobalVector& u, const string& name)
   string test;
   file >> test;
 
-  assert(test=="BackUpEnd");
+  if(test!="BackUpEnd")
+    {
+      cout << "error in " <<__FILE__ << ":" << __LINE__ << " : error, test=='"<<test<<"' should be =='BackUpEnd'"<<endl;
+      if( u.ncomp()!=comp)
+        {
+          cout << "probably, because: expected comp nr="<< u.ncomp() <<" NOT EQUAL the bup-file supplied comp nr="<<comp<<endl;
+        }
+      //assert(test=="BackUpEnd");
+      abort();
+    }
 }
 
 /********************************************************************/
