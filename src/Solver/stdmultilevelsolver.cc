@@ -113,7 +113,6 @@ void StdMultiLevelSolver::SetProblem(const ProblemDescriptorInterface& PDX)
       assert(GetSolver(solverlevel)) ;
       GetSolver(solverlevel)->SetProblem(PDX);
     }
-  DataP->nlinfo.control().matrixmustbebuild() = 1;
 }
 
 /*-------------------------------------------------------------*/
