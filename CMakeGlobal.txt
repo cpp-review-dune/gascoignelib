@@ -26,7 +26,6 @@ SET(LIBRARY_OUTPUT_PATH    ${GASCOIGNE_LIBRARY_OUTPUT_PATH}/${ARCH} CACHE PATH "
 SET(EXECUTABLE_OUTPUT_PATH ${GASCOIGNE_EXECUTABLE_OUTPUT_PATH}/${ARCH} CACHE PATH "Single output directory for building all executables.")
 
 
-
 #############################################
 
 #
