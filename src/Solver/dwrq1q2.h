@@ -35,7 +35,7 @@ class DwrQ1Q2
  public:
 
   DwrQ1Q2(SolverInterface& SR);
-  ~DwrQ1Q2() {};
+  virtual ~DwrQ1Q2() {};
 
   double Estimator(nvector<double>& eta, BasicGhostVector& gf, 
 		   const BasicGhostVector& gu, const BasicGhostVector& gz,
