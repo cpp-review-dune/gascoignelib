@@ -109,7 +109,7 @@ class NLInfo
  void new_matrix();
 
  std::string CheckMatrix() {
-   status = nlinfo.control().status();
+   std::string status = control().status();
    if (status!="converged")
      {
        control().matrixmustbebuild() = 1;

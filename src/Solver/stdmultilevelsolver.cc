@@ -634,17 +634,12 @@ string StdMultiLevelSolver::Solve(int level, MultiLevelGhostVector& u, const Mul
       GetSolver(ComputeLevel)->HNAverage(u(ComputeLevel));
       newton(*this,u,b,_res,_cor,nlinfo);
       GetSolver(ComputeLevel)->HNZero(u(ComputeLevel));
-      status = nlinfo.control().status();
+      return nlinfo.CheckMatrix();
     }
   else
     {
       assert(0);
     }
-  if (status!="converged")
-    {
-      nlinfo.control().matrixmustbebuild() = 1;
-    }
-  return status;
 }
 
 /*-------------------------------------------------------------*/
