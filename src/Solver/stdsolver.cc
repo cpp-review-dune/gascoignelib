@@ -119,8 +119,8 @@ void StdSolver::MatrixZero() const
 void StdSolver::OutputSettings() const
 {
   cout << "=====================================" << endl;
-  cout << "Solver:           " << GetName() << endl;
-  cout << "Discretization:   " << GetDiscretization()->GetName()  << endl;
+  cout << "Solver:               " << GetName() << endl;
+  cout << "Discretization:       " << GetDiscretization()->GetName()  << endl;
   GetProblemDescriptor()->OutputSettings(cout);
   cout << "=====================================" << endl;
 }
@@ -158,7 +158,6 @@ void StdSolver::SetDiscretization(DiscretizationInterface& DI, bool init)
 {
   if(init)
   {
-    DI.BasicInit(GetParamfile());
     DI.ReInit(GetMesh());
     DI.SetGlobalData(GetDiscretization()->GetGlobalData());
   }

@@ -71,6 +71,8 @@ DiscretizationInterface* DwrQ1Q2::GetOtherDiscretization() const
     {
       D = new DwrFem3d;
     }
+  
+  D->BasicInit(S.GetParamfile());
   return D;
 }
 
