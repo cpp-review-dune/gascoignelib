@@ -23,7 +23,7 @@ public:
 
 private:
 
-  mutable const FemFunction* q;
+  mutable const Gascoigne::FemFunction* q;
 
 protected:
 
@@ -38,7 +38,7 @@ public:
   std::string GetName() const { return "Local";}
   int GetNcomp() const {return 1;}  
 
-  void SetFemData(const FemData& Q) const;
+  void SetFemData(const Gascoigne::FemData& Q) const;
   double operator()(int c, const Vertex2d& v) const;
 };
 

@@ -18,7 +18,6 @@ class Functional : public Application
 protected:
 
   typedef  nvector<double>         Vector;
-  typedef  DerivativeVector  TestFunction;
 
   double  exact;
   bool    exactisknown;

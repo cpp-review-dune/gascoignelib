@@ -23,7 +23,7 @@ public:
 private:
 
 
-  mutable const FemFunction* q;
+  mutable const Gascoigne::FemFunction* q;
 
 protected:
 
@@ -35,17 +35,17 @@ public:
 //
 ///  Constructor 
 //
-  BackwardEquation(const ParamFile* paramfile);
+  BackwardEquation(const Gascoigne::ParamFile* paramfile);
 
-  void point(double h, const FemFunction& U, FemData& Q, const Vertex2d& v) const;
+  void point(double h, const Gascoigne::FemFunction& U, Gascoigne::FemData& Q, const Vertex2d& v) const;
 
   std::string GetName() const { return "Local";}
   int    ncomp      () const {return 1;}
   void SetTimePattern(TimePattern& P) const;
 
-  void Form(VectorIterator b, const FemFunction& U, const TestFunction& N) const;
+  void Form(Gascoigne::VectorIterator b, const Gascoigne::FemFunction& U, const Gascoigne::TestFunction& N) const;
 
-  void Matrix(EntryMatrix& A, const FemFunction& U, const DerivativeVector& M, const DerivativeVector& N) const;
+  void Matrix(EntryMatrix& A, const Gascoigne::FemFunction& U, const DerivativeVector& M, const DerivativeVector& N) const;
 
 };
 

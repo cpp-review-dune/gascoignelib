@@ -33,7 +33,6 @@ class Equation
 
   typedef  nvector<double>                Vector;
   typedef  std::set<int>                  IntSet;
-  typedef  DerivativeVector               TestFunction;
 
   double GetTime() const {return _time;}
   double GetTimeStep() const {return _dt;}
@@ -102,9 +101,9 @@ class Equation
   // ---------------------------------------------
   //
 
-  virtual void Form(Gascoigne::VectorIterator b, const Gascoigne::FemFunction& U, const TestFunction& N) const {assert(0);}
+  virtual void Form(Gascoigne::VectorIterator b, const Gascoigne::FemFunction& U, const Gascoigne::TestFunction& N) const {assert(0);}
 
-  virtual void Matrix(EntryMatrix& A, const Gascoigne::FemFunction& U, const DerivativeVector& M, const TestFunction& N) const {assert(0);}
+  virtual void Matrix(EntryMatrix& A, const Gascoigne::FemFunction& U, const DerivativeVector& M, const Gascoigne::TestFunction& N) const {assert(0);}
 
   virtual void BoundaryResidual 
     (int col, Vector& b, const Gascoigne::FemFunction& U, 

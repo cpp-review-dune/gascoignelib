@@ -1,6 +1,7 @@
 #include  "neumanndatabyexactsolution.h"
 
 using namespace std;
+using namespace Gascoigne;
 
 /* ----------------------------------------- */
 

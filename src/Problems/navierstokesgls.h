@@ -31,9 +31,9 @@ public:
   /// for Galerkin-Least-Squares
   //
   void L(nvector<double>& dst, const Gascoigne::FemFunction& U) const;
-  void S(nmatrix<double>& dst, const Gascoigne::FemFunction& U, const TestFunction& N) const;
+  void S(nmatrix<double>& dst, const Gascoigne::FemFunction& U, const Gascoigne::TestFunction& N) const;
 
-  void LMatrix(nmatrix<double>& dst, const Gascoigne::FemFunction& U, const TestFunction& N) const;
+  void LMatrix(nmatrix<double>& dst, const Gascoigne::FemFunction& U, const Gascoigne::TestFunction& N) const;
 
   void SMatrix(nvector<double>& dst, const Gascoigne::FemFunction& U, const Gascoigne::FemFunction& M, const Gascoigne::FemFunction& N) const;
 };

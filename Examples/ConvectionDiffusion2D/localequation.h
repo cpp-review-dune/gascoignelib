@@ -19,7 +19,7 @@ class LocalEquation : public GlsEquation
 private:
 
   mutable GlsStabilization ST;
-  mutable const FemFunction* q;
+  mutable const Gascoigne::FemFunction* q;
 
 protected:
 
@@ -35,26 +35,26 @@ public:
 ////  Con(De)structor 
 //
 
-  LocalEquation(const ParamFile* paramfile);
+  LocalEquation(const Gascoigne::ParamFile* paramfile);
   ~LocalEquation() {}
 
   std::string GetName() const {return "Local";}
 
   int  ncomp() const {return 1;}
 
-  void point(double h, const FemFunction& U, FemData& Q, const Vertex2d& v) const;
-  void glspoint(double h, const FemFunction& U, FemData& Q, const Vertex2d& v) const {
+  void point(double h, const Gascoigne::FemFunction& U, Gascoigne::FemData& Q, const Vertex2d& v) const;
+  void glspoint(double h, const Gascoigne::FemFunction& U, Gascoigne::FemData& Q, const Vertex2d& v) const {
     LocalEquation::point(h,U,Q,v);
   }
 
-  void Form(VectorIterator b, const FemFunction& U, const TestFunction& N) const;
+  void Form(Gascoigne::VectorIterator b, const Gascoigne::FemFunction& U, const Gascoigne::TestFunction& N) const;
   
-  void Matrix(EntryMatrix& D, const FemFunction& U, const DerivativeVector& M, const TestFunction& N) const;
+  void Matrix(EntryMatrix& D, const Gascoigne::FemFunction& U, const DerivativeVector& M, const Gascoigne::TestFunction& N) const;
 
 
-  void L(nvector<double>& dst, const FemFunction& U) const;
-  void S(nmatrix<double>& dst, const FemFunction& U, const TestFunction& N) const;
-  void LMatrix(nmatrix<double>& dst, const FemFunction& U, const TestFunction& N) const;
+  void L(nvector<double>& dst, const Gascoigne::FemFunction& U) const;
+  void S(nmatrix<double>& dst, const Gascoigne::FemFunction& U, const Gascoigne::TestFunction& N) const;
+  void LMatrix(nmatrix<double>& dst, const Gascoigne::FemFunction& U, const Gascoigne::TestFunction& N) const;
   
 };
 

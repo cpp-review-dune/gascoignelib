@@ -31,11 +31,11 @@ public:
   LocalEquation(const Gascoigne::ParamFile* paramfile) : NavierStokesGls(paramfile) {}
   ~LocalEquation() {}
 
-  void point(double h, const FemFunction& U, const Vertex2d& v) const;
+  void point(double h, const Gascoigne::FemFunction& U, const Vertex2d& v) const;
 
-  void Form(VectorIterator b, const FemFunction& U, const TestFunction& N) const;
+  void Form(VectorIterator b, const Gascoigne::FemFunction& U, const TestFunction& N) const;
 
-  void Matrix(EntryMatrix& A, const FemFunction& U, const TestFunction& M, const TestFunction& N) const;
+  void Matrix(EntryMatrix& A, const Gascoigne::FemFunction& U, const TestFunction& M, const TestFunction& N) const;
 
 };
 

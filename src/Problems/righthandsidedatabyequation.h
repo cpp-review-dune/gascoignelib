@@ -27,7 +27,7 @@ public:
     {
       int n = _EQ->ncomp();
       nvector<double> b(n,0.);
-      FemFunction U(n);
+      Gascoigne::FemFunction U(n);
       for (int i=0; i<n; i++)
 	{
 	  U[i].n() = 0.;
@@ -61,7 +61,7 @@ public:
     {
       int n = _EQ->ncomp();
       nvector<double> b(n,0.);
-      FemFunction U(n);
+      Gascoigne::FemFunction U(n);
       for (int i=0; i<n; i++)
 	{
 	  U[i].n() = 0.;

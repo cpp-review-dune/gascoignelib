@@ -55,12 +55,12 @@ public:
   /// describes the stabilization term of the PDE;
   /// can be chosen as -L^
   //
-  virtual void S(nmatrix<double>& dst, const Gascoigne::FemFunction& U, const TestFunction& N) const=0;
+  virtual void S(nmatrix<double>& dst, const Gascoigne::FemFunction& U, const Gascoigne::TestFunction& N) const=0;
 
   //
   /// describes the strong derivative of the PDE
   //
-  virtual void LMatrix(nmatrix<double>& dst, const Gascoigne::FemFunction& U, const TestFunction& N) const=0;
+  virtual void LMatrix(nmatrix<double>& dst, const Gascoigne::FemFunction& U, const Gascoigne::TestFunction& N) const=0;
 
   //
   /// describes the derivative of the stabilization term S;

@@ -10,13 +10,13 @@ class NavierStokes3d : public NavierStokes
   protected:
   
   double Laplace(const DerivativeVector& U, 
-		 const TestFunction& N) const
+		 const Gascoigne::TestFunction& N) const
     {
       return U.x()*N.x() + U.y()*N.y() + U.z()*N.z();
     }
   
   double Convection(const std::vector<DerivativeVector>& U, 
-		    const TestFunction& N) const
+		    const Gascoigne::TestFunction& N) const
     {
       return U[1].m()*N.x() + U[2].m()*N.y() + U[3].m()*N.z();
     }
@@ -46,9 +46,9 @@ class NavierStokes3d : public NavierStokes
       _h = h;
     }
 
-  void Form(Gascoigne::VectorIterator b, const Gascoigne::FemFunction& U, const TestFunction& N) const;
+  void Form(Gascoigne::VectorIterator b, const Gascoigne::FemFunction& U, const Gascoigne::TestFunction& N) const;
 
-  void Matrix(EntryMatrix& A, const Gascoigne::FemFunction& U, const TestFunction& M, const TestFunction& N) const;
+  void Matrix(EntryMatrix& A, const Gascoigne::FemFunction& U, const Gascoigne::TestFunction& M, const Gascoigne::TestFunction& N) const;
 };
 
 #endif

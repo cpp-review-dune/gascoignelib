@@ -13,7 +13,7 @@
 
 #include "gascoigne.h"
 
-
+namespace Gascoigne{
 class GlobalData
 {
 public:
@@ -64,6 +64,6 @@ public:
   const Gascoigne::GlobalCellData& GetCellData() const {return _cell;}
   const Gascoigne::GlobalParameterData& GetParameterData() const {return _parameter;}
 };
-
+}
 
 #endif

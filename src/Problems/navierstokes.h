@@ -13,10 +13,10 @@ protected:
   double penalty,cut;
 
   double Laplace(const DerivativeVector& U, 
-		 const TestFunction& N) const;
+		 const Gascoigne::TestFunction& N) const;
   
   double Convection(const Gascoigne::FemFunction& U, 
-		    const TestFunction& N) const;
+		    const Gascoigne::TestFunction& N) const;
 
   double Divergence(const Gascoigne::FemFunction& U) const;
 
@@ -49,9 +49,9 @@ public:
   // Semilinear Form
   //
 
-  void Form(Gascoigne::VectorIterator b, const Gascoigne::FemFunction& U, const TestFunction& N) const;
+  void Form(Gascoigne::VectorIterator b, const Gascoigne::FemFunction& U, const Gascoigne::TestFunction& N) const;
 
-  void Matrix(EntryMatrix& A, const Gascoigne::FemFunction& U, const TestFunction& M, const TestFunction& N) const;
+  void Matrix(EntryMatrix& A, const Gascoigne::FemFunction& U, const Gascoigne::TestFunction& M, const Gascoigne::TestFunction& N) const;
 };
 
 #endif

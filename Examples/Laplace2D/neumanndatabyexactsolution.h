@@ -39,7 +39,7 @@ public:
   std::string GetName() const {return "NeumannDataByExactSolution";}
   int GetNcomp() const { return _EQ->ncomp();}
 
-  void operator()(VectorIterator b, const TestFunction& N, const Vertex2d& v, const Vertex2d& n, int col) const;
+  void operator()(Gascoigne::VectorIterator b, const Gascoigne::TestFunction& N, const Vertex2d& v, const Vertex2d& n, int col) const;
  };
 
 

@@ -32,11 +32,11 @@ class MeshInterpretorInterface
 {
 private:
 
-  mutable GlobalData __q;
+  mutable Gascoigne::GlobalData __q;
 
 protected:
 
-  const GlobalData& GetGlobalData() const {return __q;}
+  const Gascoigne::GlobalData& GetGlobalData() const {return __q;}
 
 public:
 

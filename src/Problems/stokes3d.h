@@ -10,7 +10,7 @@ class Stokes3d : public Stokes
  protected:
 
   double Divergence(const Gascoigne::FemFunction& U) const;
-  double Laplace(const DerivativeVector& U, const TestFunction& N) const;
+  double Laplace(const DerivativeVector& U, const Gascoigne::TestFunction& N) const;
 
 public:
 
@@ -28,9 +28,9 @@ public:
   // Semilinear Form
   //
 
-  void Form(Gascoigne::VectorIterator b, const Gascoigne::FemFunction& U, const TestFunction& N) const;
+  void Form(Gascoigne::VectorIterator b, const Gascoigne::FemFunction& U, const Gascoigne::TestFunction& N) const;
 
-  void Matrix(EntryMatrix& A, const Gascoigne::FemFunction& U, const TestFunction& M, const TestFunction& N) const;
+  void Matrix(EntryMatrix& A, const Gascoigne::FemFunction& U, const Gascoigne::TestFunction& M, const Gascoigne::TestFunction& N) const;
 };
 
 #endif
