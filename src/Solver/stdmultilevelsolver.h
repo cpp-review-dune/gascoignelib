@@ -91,7 +91,7 @@ class StdMultiLevelSolver : public MultiLevelSolverInterface
 //  const NLInfo& GetNonlinearInfo() const { return DataP->GetNLInfo();}
   const ProblemDescriptorInterface* GetProblemDescriptor() const { return _PD;}
 
-  int nlevels()                 const { return GetMeshAgent()->nlevels();}
+  int nlevels()                 const { assert(GetMeshAgent()); return GetMeshAgent()->nlevels();}
   virtual int FinestLevel  ()  const { return nlevels()-1;}
   virtual int CoarsestLevel()  const { return 0;}
 

@@ -65,7 +65,7 @@ public:
   //
   /// describes the derivative of the stabilization term S;
   //
-  virtual void SMatrix(nvector<double>& dst, const Gascoigne::FemFunction& U, const Gascoigne::FemFunction& M, const Gascoigne::FemFunction& N) const {};
+  virtual void SMatrix(nvector<double>& dst, const Gascoigne::FemFunction& U, const Gascoigne::FemFunction& M, const Gascoigne::FemFunction& N) const {}
 };
 
 /*-----------------------------------------*/
