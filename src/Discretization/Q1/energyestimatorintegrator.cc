@@ -58,7 +58,11 @@ void EnergyEstimatorIntegrator<DIM>::Jumps(LocalVector& F, const FemInterface& F
 
     for (int c=0; c<U.ncomp(); c++)
     {
-      F(i,c) += n.x() * UH[c].x() + n.y() * UH[c].y() + n.z() * UH[c].z();
+      F(i,c) += n.x() * UH[c].x() + n.y() * UH[c].y();
+      if (DIM==3)
+      {
+        F(i,c) += n.z() * UH[c].z();
+      }
     }
   }
 }
