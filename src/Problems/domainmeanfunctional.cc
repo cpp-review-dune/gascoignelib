@@ -1,6 +1,4 @@
 #include  "domainmeanfunctional.h"
-#include  "zerodirichletdata.h"
-#include  "constantrighthandside.h"
 
 
 using namespace std;
