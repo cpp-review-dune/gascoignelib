@@ -37,7 +37,7 @@ namespace Gascoigne
         std::cerr << "\"Equation::OperatorStrong\" not written!" << std::endl;
         abort();
       } 
-      virtual void SetTimePattern(TimePattern& P) const {
+      virtual void SetTimePattern(TimePattern& TP) const {
         std::cerr << "\"Equation::SetTimePattern\" not written!" << std::endl;
         abort();
       } 
