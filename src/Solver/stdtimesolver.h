@@ -18,7 +18,7 @@
 class StdTimeSolver : public virtual StdSolver
 {
 private:
-
+  
   TimePattern       _TP;
   MatrixInterface*  _MMP;
 
