@@ -37,7 +37,7 @@ ReadBackUp::ReadBackUp(GlobalVector& u, const string& name)
 
   if (u.n()!=size)
     {
-      cout << "Incompatibility u.n() size " << u.n() << " " << size << endl;
+      cout << "Incompatibility u.n() size u.n()=" << u.n() << " file.n()=" << size << endl;
     }
   assert(u.n()==size);
 
@@ -47,11 +47,11 @@ ReadBackUp::ReadBackUp(GlobalVector& u, const string& name)
   for (int i=0; i<u.n(); i++)
     {
       for (int c=0; c<v; c++)  
-	{
-	  double val = 0.;
-	  file >> val;
-	  u(i,c) += val;
-	}
+        {
+          double val = 0.;
+          file >> val;
+          u(i,c) += val;
+        }
       for (int c=v; c<comp ;c++)  { file >> d;}
     }
   string test;

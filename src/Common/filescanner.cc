@@ -14,6 +14,7 @@ FileScanner::FileScanner(DataFormatHandler& D) : DH(D)
 {
   complain = 1;
   blocksymbol = "//Block";
+  _i_defaultvalues_level = 0;
 }
 
 /***************************************************/
@@ -22,6 +23,7 @@ FileScanner::FileScanner(DataFormatHandler& D, const ParamFile* pf, const string
 {
   complain = 1;
   blocksymbol = "//Block";
+  _i_defaultvalues_level = 0;
   readfile(pf,blockname);
 }
 
@@ -51,6 +53,55 @@ void FileScanner::readfile(const ParamFile* pf, const string& blockname)
   bool blockfound  = !searchblock;
   bool helpfound   = 0;
   string helpname = "HELP_ME";
+
+  // der folgende block macht es moeglich beliebig viele defaultwert-dateien anzugeben
+  // als massnahme gegen schleifen der inklusion gibt es den defaultvalues-zaehler
+  // bei jedem weiteren auslesen der defaultwerte der 'naechst-tiefen' datei wird der zaehler
+  // um eins hoch gezaehlt
+  //syntax:
+  //   //Block DefaultValues
+  //   files   3   file_a  file_b  file_c
+  //   file_a  settingsa.param
+  //   file_b  settingsb.param
+  //   file_c  settingsc.param
+  //
+  if(blockname!="DefaultValues"){
+     _i_defaultvalues_level++;
+     if( 10 < _i_defaultvalues_level ){
+       cerr<< __FILE__ << ":" << __LINE__ << ": there seems to be a 'Block DefaultValues' loop"<<endl;
+       cerr<< __FILE__ << ":" << __LINE__ << ": last used file: "<< pf->GetName() <<endl;
+       abort();
+     }
+     DataFormatHandler DFH;    
+     vector<string>    vs_files;
+     string            s_paramfile = pf->GetName();
+
+     DFH.insert("files",&vs_files);  
+     FileScanner FS(DFH);
+     FS._i_defaultvalues_level = _i_defaultvalues_level;
+     FS.NoComplain();
+     FS.readfile(pf,"DefaultValues");
+
+     for(int i=0;i<vs_files.size();i++){
+       DataFormatHandler DFH2;
+       string            s_filename;
+       string            s_keyname = vs_files[i];
+
+       DFH2.insert(s_keyname,&s_filename,"none");  
+       FileScanner FS(DFH2);
+       FS._i_defaultvalues_level = _i_defaultvalues_level;
+       FS.NoComplain();
+       FS.readfile(pf,"DefaultValues");
+
+       if(s_filename!="none" && s_filename!= s_paramfile){
+         ParamFile paramfile(s_filename);
+         FileScanner FS2(DH);
+         FS2._i_defaultvalues_level = _i_defaultvalues_level;
+         FS2.NoComplain();
+         FS2.readfile(&paramfile,blockname);
+       }
+     }
+  }    
   
   while (nwords>=0)
     {
@@ -112,22 +163,22 @@ void FileScanner::readfile(const ParamFile* pf, const string& blockname)
 
 void FileScanner::FormatToValue(const vector<string>& words)
 {
-  string fo;
+  string keyword_type;
   string keyword = words[0];
-  DH.get(fo,keyword);
+  DH.get(keyword_type,keyword);
 
   /*----------------------------------------------*/
 
-  if (fo=="string")
+  if (keyword_type=="string")
     {
       DH.setvalue(keyword,words[1]);
     }
-  else if (fo=="integer")
+  else if (keyword_type=="integer")
     {
       int value = atoi(words[1].c_str());
       DH.setvalue(keyword,value);
     }
-  else if (fo=="bool")
+  else if (keyword_type=="bool")
     {
       if(words[1]=="true" || words[1]=="1")
         {
@@ -138,12 +189,12 @@ void FileScanner::FormatToValue(const vector<string>& words)
           DH.setvalue(keyword,false);
         }
     }
-  else if (fo=="float")
+  else if (keyword_type=="float")
     {
       float value = atof(words[1].c_str());
       DH.setvalue(keyword,value);
     }
-  else if (fo=="double")
+  else if (keyword_type=="double")
     {
       double value = atof(words[1].c_str());
       DH.setvalue(keyword,value);
@@ -151,7 +202,7 @@ void FileScanner::FormatToValue(const vector<string>& words)
 
   /*----------------------------------------------*/
 
-  else if (fo=="fixarray<2,double>")
+  else if (keyword_type=="fixarray<2,double>")
     {
       fixarray<2,double> value;
       value[0] = atof(words[1].c_str());
@@ -161,7 +212,7 @@ void FileScanner::FormatToValue(const vector<string>& words)
 
   /*----------------------------------------------*/
 
-  else if (fo=="vector<double>")
+  else if (keyword_type=="vector<double>")
     {
       int n = atoi(words[1].c_str());
       _assert(words.size()>n+1,words);
@@ -175,7 +226,7 @@ void FileScanner::FormatToValue(const vector<string>& words)
           DH.setvalue(keyword,value);
         }
     }
-  else if (fo=="IntVector")
+  else if (keyword_type=="IntVector")
     {
       int n = atoi(words[1].c_str());
       _assert(words.size()>n+1,words);
@@ -190,7 +241,7 @@ void FileScanner::FormatToValue(const vector<string>& words)
           DH.setvalue(keyword,value);
         }
     }
-  else if (fo=="vector<string>")
+  else if (keyword_type=="vector<string>")
     {
       int n = atoi(words[1].c_str());
       _assert(words.size()>n+1,words);
@@ -207,7 +258,7 @@ void FileScanner::FormatToValue(const vector<string>& words)
 
   /*----------------------------------------------*/
 
-  else if (fo=="map<int,IntVector >")
+  else if (keyword_type=="map<int,IntVector >")
     {
       int col = atoi(words[1].c_str());
       int n   = atoi(words[2].c_str());
@@ -220,7 +271,7 @@ void FileScanner::FormatToValue(const vector<string>& words)
 
   /*----------------------------------------------*/
 
-  else if (fo=="set<vector<string> >")
+  else if (keyword_type=="set<vector<string> >")
     {
       int n = atoi(words[1].c_str());
       vector<string> value(n);
@@ -230,7 +281,7 @@ void FileScanner::FormatToValue(const vector<string>& words)
       DH.insertvalue(keyword,value);
     }
 
-  else if (fo=="set<int>")
+  else if (keyword_type=="set<int>")
     {
       int n = atoi(words[1].c_str());
       set<int> value;
@@ -246,12 +297,12 @@ void FileScanner::FormatToValue(const vector<string>& words)
 
   /*----------------------------------------------*/
 
-  else if (fo=="StringDouble")
+  else if (keyword_type=="StringDouble")
     {
       pair<string,double> p = make_pair(words[1], atof(words[2].c_str()));
       DH.setvalue(keyword,p);
     }
-  else if ((fo=="") && complain)
+  else if (keyword_type=="" && complain)
     {
       cerr << " ********  FileScanner::not found " << keyword << endl;
     }
