@@ -14,7 +14,7 @@ Stokes2d::~Stokes2d()
 
 Stokes2d::Stokes2d() : Equation()
 {
-  penalty = 0.; visc = 1.;
+  _penalty = 0.; _visc = 1.;
 }
  
 /*-----------------------------------------*/
@@ -22,7 +22,7 @@ Stokes2d::Stokes2d() : Equation()
 void Stokes2d::SetTimePattern(TimePattern& P) const
 {
   P.reservesize(ncomp(),ncomp(),0.);
-  P(0,0) = penalty;
+  P(0,0) = _penalty;
   P(1,1) = 1.;
   P(2,2) = 1.;
 }
@@ -32,8 +32,8 @@ void Stokes2d::SetTimePattern(TimePattern& P) const
 Stokes2d::Stokes2d(const ParamFile* pf) : Equation()
 {
   DataFormatHandler DFH;
-  DFH.insert("visc" , &visc , 1.);
-  DFH.insert("penalty",&penalty, 0.);
+  DFH.insert("visc" , &_visc , 1.);
+  DFH.insert("penalty",&_penalty, 0.);
 
   FileScanner FS(DFH, pf, "Equation");
 }
@@ -67,8 +67,8 @@ void Stokes2d::Form(VectorIterator b, const FemFunction& U, const TestFunction& 
   b[2] -= U[0].m()*N.y();
 	  
   // viscous terms
-  b[1] += visc * Laplace(U[1],N);
-  b[2] += visc * Laplace(U[2],N);
+  b[1] += _visc * Laplace(U[1],N);
+  b[2] += _visc * Laplace(U[2],N);
 }
 
 /*-----------------------------------------*/
@@ -86,8 +86,8 @@ void Stokes2d::Matrix(EntryMatrix& A, const FemFunction& U, const TestFunction& 
   A(2,0) -= M.m()*N.y();
 
   double laplace = Laplace(M,N);
-  A(1,1) += visc*laplace;
-  A(2,2) += visc*laplace;
+  A(1,1) += _visc*laplace;
+  A(2,2) += _visc*laplace;
 }
 }
 

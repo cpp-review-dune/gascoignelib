@@ -14,8 +14,8 @@ StokesGls2d::~StokesGls2d()
 
 StokesGls2d::StokesGls2d() : Stokes2d(), GlsEquation()
 {
-  penalty = 0.; 
-  visc = 1.;
+  _penalty = 0.; 
+  _visc = 1.;
   ST.alpha0 = 1.;
 }
  
@@ -24,9 +24,9 @@ StokesGls2d::StokesGls2d() : Stokes2d(), GlsEquation()
 StokesGls2d::StokesGls2d(const ParamFile* pf) : Stokes2d(), GlsEquation()
 {
   DataFormatHandler DFH;
-  DFH.insert("visc" , &visc , 1.);
+  DFH.insert("visc" , &_visc , 1.);
   DFH.insert("alpha", &ST.alpha0, 0.25);
-  DFH.insert("penalty",&penalty, 0.);
+  DFH.insert("penalty",&_penalty, 0.);
 
   FileScanner FS(DFH, pf, "Equation");
 }
@@ -35,7 +35,7 @@ StokesGls2d::StokesGls2d(const ParamFile* pf) : Stokes2d(), GlsEquation()
 
 void StokesGls2d::glspoint(double h, const FemFunction& U, const Vertex2d& v)const
 {
-  ST.ReInit(h,visc);
+  ST.ReInit(h,_visc);
 }
 
 /*-----------------------------------------*/

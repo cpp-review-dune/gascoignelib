@@ -12,8 +12,8 @@ class Stokes2d : public virtual Equation
 {
 protected:
 
-  double visc;
-  double penalty;
+  double _visc;
+  double _penalty;
 
   double Laplace(const TestFunction& U, const TestFunction& N) const;
   double Divergence(const FemFunction& U) const;
