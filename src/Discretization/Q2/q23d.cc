@@ -141,14 +141,19 @@ void Q23d::VertexTransformation(const Vertex3d& p0, Vertex3d& p, int iq) const
 
 void Q23d::BasicInit(const ParamFile* paramfile)
 {
-  assert(PatchDiscretization::GetIntegrator()==NULL);
-  PatchDiscretization::GetIntegratorPointer() =  new GalerkinIntegratorQ2<3>;
+  if(!PatchDiscretization::GetIntegrator())
+    PatchDiscretization::GetIntegratorPointer() =  new GalerkinIntegratorQ2<3>;
+  assert(GetIntegrator());
 
-  assert(PatchDiscretization::GetFem()==NULL);
-  typedef Transformation3d<BaseQ23d>           TransQ2;
-  typedef FiniteElement<3,2,TransQ2,BaseQ23d>  FiniteElement;
-
-  PatchDiscretization::GetFemPointer() =  new FiniteElement;
+  if(!PatchDiscretization::GetFem())
+    {
+      typedef Transformation3d<BaseQ23d>           TransQ2;
+      typedef FiniteElement<3,2,TransQ2,BaseQ23d>  FiniteElement;
+      
+      PatchDiscretization::GetFemPointer() =  new FiniteElement;
+    }
+  assert(GetFem());
+  
   PatchDiscretization::BasicInit(paramfile);
 }
 

@@ -737,7 +737,7 @@ void StdSolver::ComputeError(const BasicGhostVector& u, GlobalVector& err) const
 
 double StdSolver::ComputeFunctional(BasicGhostVector& gf, const BasicGhostVector& gu, const Functional* FP) const
 {
-  return StdSolver::ComputeFunctional(GetGV(gf),GetGV(gu),FP);
+  return ComputeFunctional(GetGV(gf),GetGV(gu),FP);
 }
 
 /*-------------------------------------------------------*/

@@ -139,12 +139,15 @@ void Q22d::BasicInit(const ParamFile* paramfile)
 {
   if (GetIntegrator()==NULL)
     PatchDiscretization::GetIntegratorPointer() =  new GalerkinIntegratorQ2<2>;
+  assert(GetIntegrator());
 
-  assert(PatchDiscretization::GetFem()==NULL);
   typedef Transformation2d<BaseQ22d>           TransQ2;
   typedef FiniteElement<2,1,TransQ2,BaseQ22d>  FiniteElement;
 
-  PatchDiscretization::GetFemPointer() =  new FiniteElement;
+  if (GetFem()==NULL)
+    PatchDiscretization::GetFemPointer() =  new FiniteElement;
+  assert(GetFem());
+
   PatchDiscretization::BasicInit(paramfile);
 }
 
