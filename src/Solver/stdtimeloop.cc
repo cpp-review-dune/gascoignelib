@@ -144,26 +144,24 @@ void StdTimeLoop::run(const ProblemDescriptorInterface* PD)
   cout << GetMeshAgent()->nlevels() << " " << GetMeshAgent()->nnodes() << " " << GetMeshAgent()->ncells() << endl;
   GetMultiLevelSolver()->GetSolver()->OutputSettings();
   
+  TimeInfoBroadcast();
+
   // Anfangswerte
   InitSolution(u,f);
   
   GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(u);
   //GetMultiLevelSolver()->GetSolver()->Visu("Results/solve",u.finest(),0);
 
-  f.zero();
   for (_iter=1; _iter<=_niter; _iter++)
     {
+      f.zero();
+      GetMultiLevelSolver()->GetSolver()->TimeRhs(f,u);
+
       info.iteration(_iter);
 
       TimeInfoBroadcast();
 
       SolveTimePrimal(u,f);
       Functionals(u,f);
-
-      if (_iter<_niter)
-	{
-	  f.zero();
-	  GetMultiLevelSolver()->GetSolver()->TimeRhs(f,u);
-	}
     }
 }
