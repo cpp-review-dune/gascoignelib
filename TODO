@@ -1,13 +1,18 @@
+***************************************************************
+11/05/2004
+***************************************************************
+
+Einlesen von Referenzloesungen von feinen Gittern
+auf grobes Gitter (Extraktion)
+
+
 
 ***************************************************************
 24/01/2004
 ***************************************************************
 
 cmake:
-- checken, o .gascoignerc vorhanden
-- GASCOIGNE_OUTPUT_PREFIX sollte standarmaessig den Wert ${GASCOIGNE_STD} haben
 - "make[5]: Circular Laplace2D-1.exe <- Laplace2D-1.exe dependency dropped." persists...
-- autimatisches Suchen von libumfpack.a usw war ganz schoen praktisch !!
 - Examples/NavierStokes2D berechnet keinen "drag" mehr.... 
 
 

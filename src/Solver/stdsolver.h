@@ -138,7 +138,7 @@ class StdSolver : public virtual SolverInterface
   void vmulteq(Gascoigne::GlobalVector& y, const Gascoigne::GlobalVector& x, double d) const;
 
   nvector<double> IntegrateSolutionVector(const Gascoigne::GlobalVector& u) const;
-  void _check_consistency(const Equation* EQ, const MeshInterpretorInterface* MP) const;
+  virtual void _check_consistency(const Equation* EQ, const MeshInterpretorInterface* MP) const;
 
  public:
 

@@ -12,7 +12,7 @@ int main(int argc, char** argv)
     paramfile.SetName(argv[1]);
   }
 
-  ProblemDescriptor1 LPD;
+  ProblemDescriptor LPD;
   LPD.BasicInit(&paramfile);
 
   LocalLoop loop;

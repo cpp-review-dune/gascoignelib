@@ -54,7 +54,7 @@ public:
 
 /* ----------------------------------------- */
 
-class ProblemDescriptor1 : public ProblemDescriptorInterface
+class ProblemDescriptor : public ProblemDescriptorInterface
 {
 protected:
 
