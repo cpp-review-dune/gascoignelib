@@ -41,7 +41,7 @@ namespace Gascoigne
   typedef std::map<const std::string,const GlobalCellVector*>       GlobalCellData;
   typedef std::map<const std::string,const GlobalParameterVector*>  GlobalParameterData;
   
-  typedef CompVector<double>                                        LocalCellVector;
+  typedef nvector<double>                                           LocalCellVector;
   typedef nvector<double>                                           LocalParameterVector;
   typedef std::map<const std::string,LocalVector>                   LocalNodeData;
   typedef std::map<const std::string,LocalCellVector>               LocalCellData;

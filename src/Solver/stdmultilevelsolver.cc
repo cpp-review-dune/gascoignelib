@@ -1,6 +1,5 @@
 #include  "stdmultilevelsolver.h"
 #include  "stdtimesolver.h"
-#include  "newton.h"
 #include  "compose_name.h"
 #include  "gascoignemultigridmesh.h"
 #include  "cg.h"
@@ -398,6 +397,26 @@ void StdMultiLevelSolver::Cg(MultiLevelGhostVector& x, const MultiLevelGhostVect
 //   cg.solve(x,f,info);
 }
 
+
+/*-------------------------------------------------------------*/
+
+void StdMultiLevelSolver::newton(MultiLevelGhostVector& u, const MultiLevelGhostVector& f, MultiLevelGhostVector& r, MultiLevelGhostVector& w, NLInfo& info)
+{
+  info.reset();
+  double rr = NewtonResidual(r,u,f);
+  bool reached = info.check(0,rr,0.);
+  NewtonOutput(info);
+  for(int it=1; !reached; it++)
+    {
+      NewtonMatrixControl(u,info);
+      NewtonVectorZero(w);
+      NewtonLinearSolve(w,r,info.GetLinearInfo());
+      double rw = NewtonUpdate(rr,u,w,r,f,info);
+      reached = info.check(it,rr,rw);
+      NewtonOutput(info);
+    }
+}
+
 /*-------------------------------------------------------------*/
 
 void StdMultiLevelSolver::NewtonOutput(NLInfo& nlinfo) const
@@ -677,7 +696,7 @@ string StdMultiLevelSolver::Solve(int level, MultiLevelGhostVector& u, const Mul
   if(DataP->NonLinearSolve() == "newton")
     {
       GetSolver(ComputeLevel)->HNAverage(u(ComputeLevel));
-      newton(*this,u,b,_res,_cor,nlinfo);
+      newton(u,b,_res,_cor,nlinfo);
       GetSolver(ComputeLevel)->HNZero(u(ComputeLevel));
       return nlinfo.CheckMatrix();
     }

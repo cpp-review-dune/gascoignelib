@@ -155,6 +155,8 @@ class StdMultiLevelSolver : public MultiLevelSolverInterface
 
   void AddNodeVector(const std::string& name, MultiLevelGhostVector& q);
   void DeleteNodeVector(const std::string& q);
+
+  void newton(MultiLevelGhostVector& u, const MultiLevelGhostVector& f, MultiLevelGhostVector& r, MultiLevelGhostVector& w, NLInfo& info);
 };
 }
 

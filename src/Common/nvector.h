@@ -98,13 +98,17 @@ public:
   double      norm_l1()     const;
   double      norm_l8()     const;
 
-  void reservesize(size_t n)
+  void ReInit(size_t n)
     {
       std::vector<T>::reserve(n); std::vector<T>::resize(n);
     }
   void memory(size_t n)
     {
-      std::vector<T>::reserve(n); std::vector<T>::resize(n);
+      ReInit(n);
+    }
+  void reservesize(size_t n)
+    {
+      ReInit(n);
     }
   void reservesize(size_t n, const T& s)
     {
