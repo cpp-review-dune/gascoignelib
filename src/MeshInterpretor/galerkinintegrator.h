@@ -64,6 +64,7 @@ public:
 
   void Jumps(Gascoigne::LocalVector& F, const FemInterface& FEM, const Gascoigne::LocalVector& U, int ile) const;
   void JumpNorm(double& norm, const FemInterface& FEM, fixarray<2*DIM-2,double> jumps, int ile) const;
+  void Residual(double& res, const Gascoigne::LocalVector& U, const FemInterface& FEM, const Equation& EQ, const RightHandSideData& RHS, const Gascoigne::LocalData& Q) const;
 };
 
 

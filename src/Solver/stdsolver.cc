@@ -815,22 +815,16 @@ void StdSolver::ConstructPressureFilter()
 
 double StdSolver::EnergyEstimator(nvector<double>& eta, const BasicGhostVector& gu, BasicGhostVector& gf) const
 {
-  //GlobalVector& f = GetGV(gf);
   const GlobalVector& u = GetGV(gu);
+
+  const Equation*          EQ  = GetProblemDescriptor()->GetEquation();
+  const RightHandSideData* RHS = GetProblemDescriptor()->GetRightHandSideData();
+
+  HNAverage(gu);
 
   eta.reservesize(u.n());
   eta.zero();
   
-//   const Equation*          EQ  = GetProblemDescriptor()->GetEquation();
-//   const RightHandSideData* RHS = GetProblemDescriptor()->GetRightHandSideData();
-
-  HNAverage(gu);
-
-//   f.zero();
-
-//   GetMeshInterpretor()->Rhs(f,*RHS,-1.);
-//   GetMeshInterpretor()->Form(f,u,*EQ,1.);
-
   if (GetMesh()->dimension()==2)
     {
       EdgeInfoContainer<2> EIC;
@@ -838,6 +832,7 @@ double StdSolver::EnergyEstimator(nvector<double>& eta, const BasicGhostVector& 
 
       dynamic_cast<const Q12d*>(GetMeshInterpretor())->Jumps(EIC,u);
       dynamic_cast<const Q12d*>(GetMeshInterpretor())->JumpNorm(EIC,eta);
+      dynamic_cast<const Q12d*>(GetMeshInterpretor())->Residual(eta,u,*EQ,*RHS);
     }
   else if (GetMesh()->dimension()==3)
     {
@@ -846,8 +841,8 @@ double StdSolver::EnergyEstimator(nvector<double>& eta, const BasicGhostVector& 
 
       dynamic_cast<const Q13d*>(GetMeshInterpretor())->Jumps(EIC,u);
       dynamic_cast<const Q13d*>(GetMeshInterpretor())->JumpNorm(EIC,eta);
+      dynamic_cast<const Q13d*>(GetMeshInterpretor())->Residual(eta,u,*EQ,*RHS);
     }
-  //HNDistribute(gf);
   HNZero(gu);
 
   return eta.norm();

@@ -388,5 +388,36 @@ void GalerkinIntegrator<DIM>::JumpNorm(double& norm, const FemInterface& FEM, fi
 
 /* ----------------------------------------- */
 
+template<int DIM>
+void GalerkinIntegrator<DIM>::Residual(double& res, const LocalVector& U, const FemInterface& FEM, const Equation& EQ, const RightHandSideData& RHS, const LocalData& Q) const
+{
+  DoubleVector F(U.ncomp());
+  const IntegrationFormulaInterface& IF = FormFormula();
+
+  F.zero();
+  Vertex<DIM> x, xi;
+
+  for (int k=0; k<IF.n(); k++)
+    {
+      IF.xi(xi,k);
+      FEM.point(xi);
+      double vol = FEM.J();
+      double h  = Volume2MeshSize(vol);
+      double weight  = IF.w(k) * vol;
+      BasicIntegrator::universal_point(FEM,UH,U);
+      BasicIntegrator::universal_point(FEM,QH,Q);
+      FEM.x(x);
+      EQ.point(h,UH,QH,x);
+      EQ.OperatorStrong(F,UH);
+      double value = 0.;
+      for (int c=0; c<U.ncomp(); c++)
+	{
+	  value += (RHS(c,x)-F[c])*(RHS(c,x)-F[c]);
+	}
+      res += h*h*weight * value;
+    }
+}
+
+
 template GalerkinIntegrator<2>;
 template GalerkinIntegrator<3>;

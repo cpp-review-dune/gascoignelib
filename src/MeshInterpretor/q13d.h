@@ -2,8 +2,6 @@
 #define  __Q1Simple3d_h
 
 #include  "q1.h"
-
-
 #include  "edgeinfocontainer.h"
 
 /////////////////////////////////////////////
@@ -38,9 +36,9 @@ public:
   void ConstructInterpolator(MgInterpolatorInterface* I, const MeshTransferInterface* MT);
   void StrongDirichletVector(Gascoigne::GlobalVector& u, const DirichletData& BF, int col, const std::vector<int>& comp) const;
 
-
-  void Jumps(EdgeInfoContainer<3>&, const Gascoigne::GlobalVector&) const;
-  void JumpNorm(EdgeInfoContainer<3>&, nvector<double>&) const;
+  void Jumps(EdgeInfoContainer<3>& EIC, const Gascoigne::GlobalVector& u) const;
+  void JumpNorm(EdgeInfoContainer<3>& EIC, nvector<double>& eta) const;
+  void Residual(nvector<double>& eta, const Gascoigne::GlobalVector& u, const Equation& EQ, const RightHandSideData& RHS) const;
 };
 
 

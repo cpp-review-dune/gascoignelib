@@ -273,3 +273,29 @@ void Q13d::JumpNorm(EdgeInfoContainer<3>& EIC, nvector<double>& eta) const
 	}
     }
 }
+
+/* ----------------------------------------- */
+
+void Q13d::Residual(nvector<double>& eta, const GlobalVector& u, const Equation& EQ, const RightHandSideData& RHS) const
+{
+  nmatrix<double> T;
+
+  GlobalToGlobalData();
+  RHS.SetParameterData(__q);
+  
+  for(int iq=0;iq<GetMesh()->ncells();++iq)
+    {
+      Transformation(T,iq);
+      GetFem()->ReInit(T);
+
+      GlobalToLocalData(iq);
+      GlobalToLocal(__U,u,iq);
+      double res = 0.;
+      dynamic_cast<const GalerkinIntegrator<3>*>(GetIntegrator())->Residual(res,__U,*GetFem(),EQ,RHS,__Q);
+      for (int in=0; in<8; in++)
+	{
+	  eta[GetMesh()->vertex_of_cell(iq,in)] += 0.125 * sqrt(res);
+	}
+    }
+}
+
