@@ -2,8 +2,6 @@
 #define  __LpsEquation_h
 
 #include "equation.h"
-#include "stabinterface.h"
-
 
 namespace Gascoigne
 {
@@ -23,8 +21,6 @@ namespace Gascoigne
     public:
       LpsEquation() {}
       ~LpsEquation() {}
-
-      virtual StabInterface& GetStabilization() const { assert(0);}
 
       virtual void init(const nmatrix<double>& H, const FemFunction& U, const Vertex2d& v) const {
         std::cerr << "\"LpsEquation::lpspoint\" not written!" << std::endl;
