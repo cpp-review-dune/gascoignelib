@@ -54,7 +54,7 @@ namespace Gascoigne
 {
 StdSolver::StdSolver() : 
   _MP(NULL), _HM(NULL), _MAP(NULL), _MIP(NULL), _ZP(NULL), _PDX(NULL), 
-  _mylevel(-1), _ndirect(1000), _directsolver(0), _discname("Q1"),
+  _distribute(true), _mylevel(-1), _ndirect(1000), _directsolver(0), _discname("Q1"),
   _matrixtype("point_node"), _PrimalSolve(1), _paramfile(NULL)
 // , omega_domain(0.) 
 {
@@ -671,7 +671,10 @@ void StdSolver::Form(GlobalVector& y, const GlobalVector& x, double d) const
 
   HNZero(x);
   HNZeroData();
-  HNDistribute(y);
+  if (distribute())
+  {
+    HNDistribute(y);
+  }
   SubtractMeanAlgebraic(y);
 
   _re.stop();
@@ -697,7 +700,10 @@ void StdSolver::AdjointForm(GlobalVector& y, const GlobalVector& x, double d) co
 
   HNZero(x);
   HNZeroData();
-  HNDistribute(y);
+  if (distribute())
+  {
+    HNDistribute(y);
+  }
   SubtractMeanAlgebraic(y);
 }
 
@@ -923,7 +929,10 @@ void StdSolver::Rhs(GlobalVector& f, double d) const
   
 
   HNZeroData();
-  HNDistribute(f);
+  if (distribute())
+  {
+    HNDistribute(f);
+  }
 }
 
 /*-------------------------------------------------------*/

@@ -8,6 +8,7 @@ SUBDIRS(
   Control
   IntegrationTest
   Functionals
+  MeshInterpolator
 )
 
 LINK_LIBRARIES(${GASCOIGNE_LIBS})

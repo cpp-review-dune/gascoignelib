@@ -131,6 +131,9 @@ class HierarchicalMesh2d : public HierarchicalMesh
   int  level(int i)                       const { return quads[i].level();}
   bool sleep(int i)                       const { return quads[i].sleep();}
 
+  int child(int i, int ii) const { return quads[i].child(ii); }
+  int nchilds(int i)       const { return quads[i].nchilds(); }
+
   int   QuadNeighbour(const Quad&, int)    const;
 
   const QuadLawAndOrder&    QuadLawOrder()    const { return QuadLaO; }

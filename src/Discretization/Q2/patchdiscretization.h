@@ -32,8 +32,6 @@ protected:
 
   virtual void Transformation(FemInterface::Matrix& T, int iq) const;
   virtual double compute_element_mean_matrix(int iq, EntryMatrix& E) const;
-  virtual nmatrix<double> GetLocalInterpolationWeights(int iq) const { assert(0);}
-
   virtual int GetPatchNumber(const Vertex2d& p0, Vertex2d& p) const { assert(0); }
   virtual int GetPatchNumber(const Vertex3d& p0, Vertex3d& p) const { assert(0); }
   
@@ -85,6 +83,9 @@ public:
   double ComputeBoundaryFunctional(const GlobalVector& u, const BoundaryFunctional& BF) const;
   double ComputeDomainFunctional(const GlobalVector& u, const DomainFunctional& F) const;
   double ComputePointFunctional(const GlobalVector& u, const PointFunctional& FP) const;
+
+  virtual nmatrix<double> GetLocalInterpolationWeights(int iq) const { assert(0);}
+
 };
 }
 

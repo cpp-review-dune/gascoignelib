@@ -19,8 +19,6 @@ class Q13d : public Q1
 {
  protected:
 
-  nmatrix<double> GetLocalInterpolationWeights() const;
-
   HNStructureInterface* NewHNStructure();
   
   void EEJumps(EdgeInfoContainer<3>& EIC, const GlobalVector& u, const EnergyEstimatorIntegrator<3>& EEI, const HierarchicalMesh3d* HM) const;
@@ -47,6 +45,8 @@ public:
   void StrongDirichletVector(GlobalVector& u, const DirichletData& BF, int col, const std::vector<int>& comp) const;
 
   void EnergyEstimator(EdgeInfoContainerInterface& EIC, DoubleVector& eta, const GlobalVector& u, const Equation& EQ, const DomainRightHandSide* RHS) const;
+
+  nmatrix<double> GetLocalInterpolationWeights() const;
 };
 }
 

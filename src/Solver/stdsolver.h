@@ -62,6 +62,7 @@ class StdSolver : public virtual SolverInterface
 
   // 6. Steuerparameter
 
+  bool                _distribute;
   int                 _mylevel;
 
   mutable int         _ndirect;
@@ -210,6 +211,9 @@ class StdSolver : public virtual SolverInterface
   //
   /// vector - hanging nodes
   //
+
+  bool distribute() const { return _distribute; }
+  void SetDistribute(bool dist) { _distribute = dist; }
 
   void HNAverage   (const BasicGhostVector& x) const;
   void HNZero      (const BasicGhostVector& x) const;

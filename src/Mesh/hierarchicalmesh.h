@@ -75,6 +75,9 @@ class HierarchicalMesh : public MeshInterface
   const Edge&    edge(int i)    const {assert(i<edges.size());return edges[i];}
   const EdgeVec& edge()         const { return edges;}
 
+  virtual int child(int i, int ii) const =0;
+  virtual int nchilds(int i)       const =0;
+
   virtual int  level(int i)   const =0;
   virtual bool sleep(int i)   const =0;
 

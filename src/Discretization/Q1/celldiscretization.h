@@ -32,8 +32,6 @@ protected:
   double ComputePointValue(const GlobalVector& u, const Vertex2d& p0,int comp) const;
   double ComputePointValue(const GlobalVector& u, const Vertex3d& p0,int comp) const; 
 
-  virtual nmatrix<double> GetLocalInterpolationWeights() const { assert(0); return nmatrix<double>();}
-
   virtual int GetCellNumber(const Vertex2d& p0, Vertex2d& p) const { assert(0); }
   virtual int GetCellNumber(const Vertex3d& p0, Vertex3d& p) const { assert(0); }
 
@@ -84,6 +82,8 @@ public:
   double ComputeDomainFunctional(const GlobalVector& u, const DomainFunctional& F) const;
 
   double ComputePointFunctional(const GlobalVector& u, const PointFunctional& FP) const;
+
+  virtual nmatrix<double> GetLocalInterpolationWeights() const { assert(0); return nmatrix<double>();}
 
 };
 }

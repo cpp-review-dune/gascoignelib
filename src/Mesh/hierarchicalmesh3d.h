@@ -152,6 +152,9 @@ class HierarchicalMesh3d : public HierarchicalMesh
   int  level(int i)                        const { return hexs[i].level();}
   bool sleep(int i)                        const { return hexs[i].sleep();}
 
+  int child(int i, int ii) const { return hexs[i].child(ii); }
+  int nchilds(int i)       const { return hexs[i].nchilds(); }
+
   const HexLawAndOrder&     HexLawOrder()     const { return HexLaO; }
   const LineHangList&       linehang()        const { return LineHang;}
   const QuadHangList&       quadhanglist()    const { return QuadHang; }

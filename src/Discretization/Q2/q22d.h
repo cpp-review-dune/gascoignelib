@@ -18,7 +18,6 @@ class Q22d : public Q2
 {
 protected:
 
-  nmatrix<double> GetLocalInterpolationWeights(int iq) const;
   int GetPatchNumber(const Vertex2d& p0, Vertex2d& p) const;
   void VertexTransformation(const Vertex2d& p0, Vertex2d& p, int iq) const;
 
@@ -36,6 +35,8 @@ public:
   void BasicInit(const ParamFile* paramfile);
 
   void ConstructInterpolator(MgInterpolatorInterface* I, const MeshTransferInterface* GMT);
+
+  nmatrix<double> GetLocalInterpolationWeights(int iq) const;
 };
 }
 

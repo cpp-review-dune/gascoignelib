@@ -46,6 +46,11 @@ public:
   void AddShape(int col, BoundaryFunction<2>* f) { _curved2d[col] = f;}
   void AddShape(int col, BoundaryFunction<3>* f) { _curved3d[col] = f;}
 
+        map<int,BoundaryFunction<2>* >& GetShapes2d()       { return _curved2d; }
+        map<int,BoundaryFunction<3>* >& GetShapes3d()       { return _curved3d; }
+  const map<int,BoundaryFunction<2>* >& GetShapes2d() const { return _curved2d; }
+  const map<int,BoundaryFunction<3>* >& GetShapes3d() const { return _curved3d; }
+
   void ReadParamFile(const ParamFile* paramfile);
   void BasicInit(const ParamFile* pf);
 
@@ -54,6 +59,7 @@ public:
   const GascoigneMultiGridMesh& GetMultiGrid() const {return *GMG;}
   GascoigneMultiGridMesh& GetMultiGrid() {return *GMG;}
 
+        HierarchicalMesh* GetHierarchicalMesh()       { return HMP;}
   const HierarchicalMesh* GetHierarchicalMesh() const { return HMP;}
 
   int nnodes() const {return GMG->GetGascoigneMesh(0)->nnodes();}

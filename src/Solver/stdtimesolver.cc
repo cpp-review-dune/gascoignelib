@@ -146,7 +146,10 @@ void Gascoigne::StdTimeSolver::InitialCondition(GlobalVector& f, double d) const
     }
 
   HNZeroData();
-  HNDistribute(f);
+  if (distribute())
+  {
+    HNDistribute(f);
+  }
 }
 
 /*-------------------------------------------------------*/
