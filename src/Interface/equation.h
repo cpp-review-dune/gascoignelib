@@ -57,7 +57,7 @@ class Equation
 
   virtual void SetDeltaT(double k){assert(0);}
   virtual void SetTimePattern(TimePattern& P) const{assert(0);}
-  virtual void SetTime(double time, double dt) {_time = time; _dt = dt;}
+  virtual void SetTime(double time, double dt) const {_time = time; _dt = dt;}
 
   //
   // --------------------------------------
