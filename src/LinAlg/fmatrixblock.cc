@@ -21,9 +21,9 @@ void  FMatrixBlock<N>::add(double s, const TimePattern& TP)
   for (int i=0; i<N; i++)
     {
       for (int j=0; j<N; j++)
-	{
-	  value(i,j) += s*TP(i,j);
-	}
+        {
+          value(i,j) += s*TP(i,j);
+        }
     }
 }
 
@@ -84,8 +84,8 @@ void FMatrixBlock<N>::entry(const nmatrix<double>& E)
   for (int c=0; c<N; c++)
     {
       for (int d=0; d<N; d++)
-	{
-  	  value(c,d) += E(c,d); 
+        {
+            value(c,d) += E(c,d); 
         }
     }
 }
@@ -98,8 +98,8 @@ void FMatrixBlock<N>::entry(int i, int j, const EntryMatrix& E, double s)
   for (int c=0; c<N; c++)
     {
       for (int d=0; d<N; d++)
-	{
-  	  value(c,d) += s * E(i,j,c,d); 
+        {
+            value(c,d) += s * E(i,j,c,d); 
         }
     }
 }
@@ -112,8 +112,8 @@ void FMatrixBlock<N>::dual_entry(int i, int j, const EntryMatrix& E, double s)
   for (int c=0; c<N; c++)
     {
       for (int d=0; d<N; d++)
-	{
-  	  value(c,d) += s * E(j,i,d,c); 
+        {
+            value(c,d) += s * E(j,i,d,c); 
         }
     }
 }
@@ -126,9 +126,9 @@ void FMatrixBlock<N>::transpose()
   for(int i=0;i<N;i++)
     {
       for(int j=0;j<i;j++)
-	{
-	  std::swap(value(i,j),value(j,i));
-	}
+        {
+          std::swap(value(i,j),value(j,i));
+        }
     }
 }
 
@@ -140,9 +140,9 @@ void FMatrixBlock<N>::transpose(FMatrixBlock<N>& A)
   for(int i=0;i<N;i++)
     {
       for(int j=0;j<N;j++)
-	{
-	  std::swap(value(i,j),A(j,i));
-	}
+        {
+          std::swap(value(i,j),A(j,i));
+        }
     }
 }
 
@@ -154,9 +154,9 @@ void FMatrixBlock<N>::copy_transpose(const FMatrixBlock<N>& A)
   for(int i=0;i<N;i++)
     {
       for(int j=0;j<N;j++)
-	{
-	  value(i,j)=A(j,i);
-	}
+        {
+          value(i,j)=A(j,i);
+        }
     }
 }
 
@@ -168,17 +168,17 @@ void FMatrixBlock<N>::operator *= (const FMatrixBlock<N>& B)
   for (int i=0; i<N; i++)
     {
       for (int j=0; j<N; j++)
-	{
-	  vhelp[j] = value(i,j);
-	}
+        {
+          vhelp[j] = value(i,j);
+        }
       for (int j=0; j<N; j++)
-	{
-	  value(i,j) = 0.;
-	  for (int k=0; k<N; k++)
-	    {
-	      value(i,j) += vhelp[k] * B(k,j);
-	    }
-	}      
+        {
+          value(i,j) = 0.;
+          for (int k=0; k<N; k++)
+            {
+              value(i,j) += vhelp[k] * B(k,j);
+            }
+        }      
     }
 }
 
@@ -190,9 +190,9 @@ void FMatrixBlock<N>::operator *= (double s)
   for (int i=0; i<N; i++)
     {
       for (int j=0; j<N; j++)
-	{
-	  value(i,j) *= s;
-	}      
+        {
+          value(i,j) *= s;
+        }      
     }
 }
 
@@ -214,12 +214,12 @@ void FMatrixBlock<N>::submult(const FMatrixBlock<N>& B, const FMatrixBlock<N>& C
   for (int i=0; i<N; i++)
     {
       for (int j=0; j<N; j++)
-	{
-	  for (int k=0; k<N; k++)
-	    {
-	      value(i,j) -= B(i,k) * C(k,j);
-	    }
-	}      
+        {
+          for (int k=0; k<N; k++)
+            {
+              value(i,j) -= B(i,k) * C(k,j);
+            }
+        }      
     }
 }
 
@@ -255,6 +255,8 @@ template FMatrixBlock<6>;
 template FMatrixBlock<7>;
 template FMatrixBlock<8>;
 template FMatrixBlock<9>;
+template FMatrixBlock<10>;
+template FMatrixBlock<11>;
 template FMatrixBlock<18>;
 template FMatrixBlock<20>;
 template FMatrixBlock<12>;
