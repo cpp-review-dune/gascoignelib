@@ -387,7 +387,6 @@ void StdSolver::SetBoundaryVector(BasicGhostVector& f) const
 void StdSolver::SetBoundaryVector(GlobalVector& f) const
 {
   const BoundaryManager* BM = GetProblemDescriptor()->GetBoundaryManager();
-  const Equation*        EQ = GetProblemDescriptor()->GetEquation();
   const DirichletData*   DD = GetProblemDescriptor()->GetDirichletData();
   if(DD==NULL) 
   {
@@ -398,12 +397,12 @@ void StdSolver::SetBoundaryVector(GlobalVector& f) const
     }
     return;
   }
-  SetBoundaryVectorStrong(f, *BM,*EQ,*DD);
+  SetBoundaryVectorStrong(f,*BM,*DD);
 }
 
 /*-------------------------------------------------------*/
 
-void StdSolver::SetBoundaryVectorStrong(GlobalVector& f, const BoundaryManager& BM, const Equation& EQ, const DirichletData& DD) const
+void StdSolver::SetBoundaryVectorStrong(GlobalVector& f, const BoundaryManager& BM, const DirichletData& DD) const
 {
   IntSet PrefCol = DD.preferred_colors();
   list<int> colors(BM.GetDirichletColors().begin(), 
@@ -646,7 +645,6 @@ double StdSolver::ComputePointFunctional(GlobalVector& f, const GlobalVector& u,
 
 double StdSolver::ComputeResidualFunctional(GlobalVector& f, const GlobalVector& u, GlobalVector& z, const ResidualFunctional* FP) const
 {
-  const Equation* EQ = GetProblemDescriptor()->GetEquation();
   const BoundaryManager* BM = GetProblemDescriptor()->GetBoundaryManager();
 
   HNAverage(u);
@@ -658,7 +656,7 @@ double StdSolver::ComputeResidualFunctional(GlobalVector& f, const GlobalVector&
   assert(ABD);
 
   z.zero();
-  SetBoundaryVectorStrong(z,*BM,*EQ,*ABD);
+  SetBoundaryVectorStrong(z,*BM,*ABD);
   
   HNAverage(z);
 

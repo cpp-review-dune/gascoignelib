@@ -131,7 +131,8 @@ class SolverInterface
   virtual void SetBoundaryVector(GlobalVector& f) const=0;
   virtual void SetBoundaryVector(BasicGhostVector& f) const=0;
   virtual void SetBoundaryVectorZero(BasicGhostVector& Gf) const=0;
-
+  virtual void SetBoundaryVectorStrong(GlobalVector& f, const BoundaryManager& BM, const DirichletData& DD) const=0;
+  
   //
   /// vector - linear algebra
   //
