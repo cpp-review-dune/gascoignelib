@@ -207,15 +207,11 @@ void StdTimeSolver::AssembleMatrix(const BasicGhostVector& gu, double d)
 
 /*-------------------------------------------------------*/
 
-void StdTimeSolver::L2Projection(BasicGhostVector& Gu)
+void StdTimeSolver::L2Projection(BasicGhostVector& Gu) const
 {
-  BasicGhostVector Gf;
-  Gf.SetName("ff");
-  RegisterVector(Gf);
-  ReInitVector();
-  
   GlobalVector& u = GetGV(Gu);
-  GlobalVector& f = GetGV(Gf);
+
+  GlobalVector f(u.ncomp(),u.n());
 
   TimePattern TP(u.ncomp());
   TP.zero();
@@ -227,35 +223,23 @@ void StdTimeSolver::L2Projection(BasicGhostVector& Gu)
   IC(f);
 
   PrecondCGMass(u,f,TP);
-  
-  DeleteVector(&Gf);
 }
 
 /*-------------------------------------------------------*/
 
-string StdTimeSolver::PrecondCGMass(GlobalVector& u, GlobalVector& f, const TimePattern& TP, double s)
+string StdTimeSolver::PrecondCGMass(GlobalVector& u, GlobalVector& f, const TimePattern& TP, double s) const
 {
   bool reached;
   int iter = 0;
   
-  BasicGhostVector Gg, Gr, Gd;
-
-  Gg.SetName("g");
-  Gr.SetName("r");
-  Gd.SetName("d");
-  RegisterVector(Gg);
-  RegisterVector(Gr);
-  RegisterVector(Gd);
-
-  ReInitVector();
-  GlobalVector& g = GetGV(Gg);
-  GlobalVector& r = GetGV(Gr);
-  GlobalVector& d = GetGV(Gd);
+  GlobalVector g(u.ncomp(),u.n());
+  GlobalVector r(u.ncomp(),u.n());
+  GlobalVector d(u.ncomp(),u.n());
 
   assert(u.ncomp()==g.ncomp());
   assert(u.n()==g.n());
 
-  SimpleMatrix *SM = dynamic_cast<SimpleMatrix *>(GetMassMatrix());
+  const SimpleMatrix *SM = dynamic_cast<const SimpleMatrix *>(GetMassMatrix());
   assert(SM);
   SM->PrepareJacobi(s);
 
@@ -300,9 +284,6 @@ string StdTimeSolver::PrecondCGMass(GlobalVector& u, GlobalVector& f, const Time
     }
 
   SM->JacobiVectorInv(u);
-  DeleteVector(&Gg);
-  DeleteVector(&Gr);
-  DeleteVector(&Gd);
 
   if(iter==_Dat.GetCgMassMaxIter())
   {

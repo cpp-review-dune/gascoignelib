@@ -39,7 +39,7 @@ protected:
 
   virtual MatrixInterface* NewMassMatrix(int ncomp, const std::string& matrixtype);
   virtual void IC(GlobalVector& f, double d=1.) const;
-  virtual std::string PrecondCGMass(GlobalVector& u, GlobalVector& f, const TimePattern& TP, double s=1.);
+  virtual std::string PrecondCGMass(GlobalVector& u, GlobalVector& f, const TimePattern& TP, double s=1.) const;
 
 public:
   
@@ -60,7 +60,7 @@ public:
   void Form (BasicGhostVector& y, const BasicGhostVector& x, double d) const;
   void AssembleMatrix(const BasicGhostVector& u, double d);
   std::string GetName() const;
-  void L2Projection(BasicGhostVector& u);
+  void L2Projection(BasicGhostVector& u) const;
 };
 }
 

@@ -248,7 +248,7 @@ void SimpleMatrix::entry_diag(int i, const nmatrix<double>& M)
 
 /*-----------------------------------------*/
 
-void SimpleMatrix::PrepareJacobi(double s)
+void SimpleMatrix::PrepareJacobi(double s) const
 {
   int n = ST.n();
   
@@ -262,7 +262,7 @@ void SimpleMatrix::PrepareJacobi(double s)
 
 /*-----------------------------------------*/
 
-void SimpleMatrix::JacobiVector(GlobalVector &y)
+void SimpleMatrix::JacobiVector(GlobalVector &y) const
 {
   int n = ST.n();
   assert(n==y.n());
@@ -278,7 +278,7 @@ void SimpleMatrix::JacobiVector(GlobalVector &y)
 
 /*-----------------------------------------*/
 
-void SimpleMatrix::JacobiVectorInv(GlobalVector &y)
+void SimpleMatrix::JacobiVectorInv(GlobalVector &y) const
 {
   int n = ST.n();
   assert(n==y.n());
