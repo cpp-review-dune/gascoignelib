@@ -53,10 +53,10 @@ public:
   void SetProblem(const ProblemDescriptorInterface& PDX);
 
   void InitialCondition(BasicGhostVector& f, double d=1.) const;
-  void TimeRhsOperator(BasicGhostVector& f, const BasicGhostVector& u) const;
+  void TimeRhsOperator(BasicGhostVector& f, const BasicGhostVector& u) const; 
   void TimeRhs(int k, BasicGhostVector& f) const;
-  void Form (BasicGhostVector& y, const BasicGhostVector& x, double d) const;
-  void AssembleMatrix(const BasicGhostVector& u, double d);
+  void Form (BasicGhostVector& y, const BasicGhostVector& x, double d) const; 
+  void AssembleMatrix(const BasicGhostVector& u, double d); 
   std::string GetName() const;
   void L2Projection(BasicGhostVector& u);
   
