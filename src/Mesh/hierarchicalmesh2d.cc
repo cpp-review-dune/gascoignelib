@@ -1394,7 +1394,11 @@ void HierarchicalMesh2d::write(const string& bname) const
 void HierarchicalMesh2d::write_gup(const string& bname) const
 {
   string name = bname;
-  name += ".gup";
+  int name_size=name.size();
+  if(name_size<4) name += ".gup";
+  if(name.substr(name_size-4,4)!=".gup"){
+    name += ".gup";
+  }
 
   ofstream out(name.c_str());
 
@@ -1432,7 +1436,13 @@ void HierarchicalMesh2d::write_gup(const string& bname) const
 
 void HierarchicalMesh2d::read_gup(const string& bname)
 {
-  string name = bname;// + ".gup";
+  string name = bname;
+  int name_size=name.size();
+  if(name_size<4) name += ".gup";
+  if(name.substr(name_size-4,4)!=".gup"){
+    name += ".gup";
+  }
+
   string symbol;
 
   ifstream file(name.c_str());
