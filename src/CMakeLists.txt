@@ -1,8 +1,9 @@
-SUBDIRS(
-  Common 
-  MeshInterpretor 
-  Solver
-  Problems 
-  Mesh 
-  LinAlg 
-)
+AUX_SOURCE_DIRECTORY(Common Common_SOURCES)
+AUX_SOURCE_DIRECTORY(MeshInterpretor MeshInterpretor_SOURCES)
+AUX_SOURCE_DIRECTORY(Solver Solver_SOURCES)
+AUX_SOURCE_DIRECTORY(Problems Problems_SOURCES)
+AUX_SOURCE_DIRECTORY(Mesh Mesh_SOURCES)
+AUX_SOURCE_DIRECTORY(LinAlg Problems_SOURCES)
+
+SET(GASCOIGNE_SOURCES ${Common_SOURCES} ${MeshInterpretor_SOURCES} ${Solver_SOURCES} ${Problems_SOURCES} ${LinAlg_SOURCES} ${Mesh_SOURCES})
+ADD_LIBRARY(Gascoigne ${GASCOIGNE_SOURCES})
