@@ -4,7 +4,6 @@ SET(MESH_SRC
   boundaryindexhandler.cc
   coarsehierarchicalmesh2d.cc
   coarsehierarchicalmesh3d.cc
-  curvedboundary.cc
   deletecells.cc
   delete_hex.cc
   diplomantenadaptor.cc
