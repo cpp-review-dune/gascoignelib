@@ -2,7 +2,7 @@
 
 dt          0.04
 niter       6000
-neuler      2
+neuler      0
 scheme      FractionalTheta
 scheme      CN
 //scheme      Euler
