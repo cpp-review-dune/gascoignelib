@@ -10,6 +10,7 @@ template SparseBlockMatrix<FMatrixBlock<3> >;
 template SparseBlockMatrix<FMatrixBlock<4> >;
 template SparseBlockMatrix<FMatrixBlock<5> >;
 template SparseBlockMatrix<FMatrixBlock<6> >;
+template SparseBlockMatrix<FMatrixBlock<7> >;
 
 template SparseBlockMatrix<CFDBlock3d>;
 }
