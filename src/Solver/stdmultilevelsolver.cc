@@ -450,7 +450,7 @@ double StdMultiLevelSolver::NewtonResidual(MultiLevelGhostVector& y, const Multi
   _clock_residual.start();
   DataP->CountResidual()++;
   y.Vector(ComputeLevel).equ(1.,b.Vector(ComputeLevel));
-  GetSolver(ComputeLevel)->Residual(y(ComputeLevel),x(ComputeLevel),-1.);
+  GetSolver(ComputeLevel)->Form(y(ComputeLevel),x(ComputeLevel),-1.);
   GetSolver(ComputeLevel)->SetBoundaryVectorZero(y(ComputeLevel));
   _clock_residual.stop();
   return NewtonNorm(y);

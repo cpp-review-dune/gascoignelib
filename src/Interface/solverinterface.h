@@ -117,7 +117,10 @@ class SolverInterface
   /// vector - residual (integration)
   //
 
-  virtual void Residual(BasicGhostVector& y, const BasicGhostVector& x, double d) const=0;
+  void Residual(BasicGhostVector& y, const BasicGhostVector& x, double d) const {
+    std::cerr << "\"SolverInterface::Residual(y,x,d)\" is renamed in \"SolverInterface::Form(y,x,d)\"\n"; assert(0);
+  }
+  virtual void Form(BasicGhostVector& y, const BasicGhostVector& x, double d) const=0;
 
   //
   /// vector - boundary condition

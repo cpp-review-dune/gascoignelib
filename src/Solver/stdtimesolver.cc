@@ -105,7 +105,7 @@ void StdTimeSolver::TimeRhsOperator(BasicGhostVector& gf, const BasicGhostVector
 {
   assert(_theta>0.);
   double d = -(1.-_theta)/_theta;
-  StdSolver::Residual(gf,gu,d);
+  StdSolver::Form(gf,gu,d);
 
   if (_dt>0.)
     {
@@ -126,9 +126,9 @@ void StdTimeSolver::TimeRhs(int k, BasicGhostVector& gf) const
 
 /*-------------------------------------------------------*/
 
-void StdTimeSolver::Residual(BasicGhostVector& gy, const BasicGhostVector& gx, double d) const
+void StdTimeSolver::Form(BasicGhostVector& gy, const BasicGhostVector& gx, double d) const
 {
-  StdSolver::Residual(gy,gx,d);
+  StdSolver::Form(gy,gx,d);
 
   if (_dt==0.) return;
   assert(_theta>0.);

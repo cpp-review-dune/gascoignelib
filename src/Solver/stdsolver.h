@@ -131,7 +131,7 @@ class StdSolver : public virtual SolverInterface
   void SubtractMeanAlgebraic(Gascoigne::GlobalVector& gx) const;
   virtual void PermutateIlu(const Gascoigne::GlobalVector& u) const;
   void modify_ilu(IluInterface& I,int ncomp) const;
-  void Residual(Gascoigne::GlobalVector& y, const Gascoigne::GlobalVector& x, double d) const;
+  void Form(Gascoigne::GlobalVector& y, const Gascoigne::GlobalVector& x, double d) const;
 
   void MatrixResidual(Gascoigne::GlobalVector& y, const Gascoigne::GlobalVector& x, const Gascoigne::GlobalVector& b) const;
   void vmult(Gascoigne::GlobalVector& y, const Gascoigne::GlobalVector& x, double d) const;
@@ -245,7 +245,7 @@ class StdSolver : public virtual SolverInterface
   /// vector - residual (integration)
   //
 
-  void Residual(BasicGhostVector& y, const BasicGhostVector& x, double d) const;
+  void Form(BasicGhostVector& y, const BasicGhostVector& x, double d) const;
 
   //
   /// vector - boundary condition

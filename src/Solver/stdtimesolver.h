@@ -51,7 +51,7 @@ public:
 
   void TimeRhsOperator(BasicGhostVector& f, const BasicGhostVector& u) const;
   void TimeRhs(int k, BasicGhostVector& f) const;
-  void Residual (BasicGhostVector& y, const BasicGhostVector& x, double d) const;
+  void Form (BasicGhostVector& y, const BasicGhostVector& x, double d) const;
   void AssembleMatrix(BasicGhostVector& u, double d);
   std::string GetName() const;
   void RhsL2Projection(BasicGhostVector& f) const;

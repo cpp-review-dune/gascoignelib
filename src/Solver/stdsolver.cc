@@ -472,14 +472,14 @@ void StdSolver::smooth_post(BasicGhostVector& x, const BasicGhostVector& y, Basi
 
 /*-------------------------------------------------------*/
 
-void StdSolver::Residual(BasicGhostVector& gy, const BasicGhostVector& gx, double d) const
+void StdSolver::Form(BasicGhostVector& gy, const BasicGhostVector& gx, double d) const
 {
-  Residual(GetGV(gy),GetGV(gx),d);
+  Form(GetGV(gy),GetGV(gx),d);
 }
 
 /*-------------------------------------------------------*/
 
-void StdSolver::Residual(GlobalVector& y, const GlobalVector& x, double d) const
+void StdSolver::Form(GlobalVector& y, const GlobalVector& x, double d) const
 {
   _re.start();
 
@@ -648,7 +648,7 @@ double StdSolver::ComputeResidualFunctional(GlobalVector& f, const GlobalVector&
   HNAverage(u);
   f.zero();
   Rhs(f);
-  Residual(f,u,-1.);
+  Form(f,u,-1.);
   
   const DirichletData* ABD = FP->GetDirichletData();
   assert(ABD);

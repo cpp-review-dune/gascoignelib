@@ -10,6 +10,7 @@
 #include  "stdmultilevelsolver.h"
 #include  "stdsolver.h"
 #include  "q1gls2d.h"
+#include  "problemdescriptorbase.h"
 
 using namespace std;
 using namespace Gascoigne;
@@ -89,24 +90,15 @@ public:
 };
 
 /*---------------------------------------------------*/
-class ProblemDescriptor : public ProblemDescriptorInterface
+class ProblemDescriptor : public ProblemDescriptorBase
 {
-protected:
-  void ConstructEquation() {
+ public:
+  void BasicInit(const Gascoigne::ParamFile* pf) {
     GetEquationPointer() = new LocalEquation;
-  }
-  void ConstructDirichletData() {
     GetDirichletDataPointer() = new ZeroDirichletData();
-  }
-  void ConstructNeumannData() {
     GetNeumannDataPointer() = new LocalNeumannData();
-  }
-  void ConstructBoundaryManager() {
-//     const ParamFile* paramfile = GetParamFile();
-//     GetBoundaryManagerPointer() = new BoundaryManager(paramfile);
-
-    const ParamFile* paramfile(NULL);
-    GetBoundaryManagerPointer() = new BoundaryManager(paramfile);
+    
+    GetBoundaryManagerPointer() = new BoundaryManager(pf);
     GetBoundaryManager()->AddDirichlet(3,1);
     GetBoundaryManager()->AddDirichlet(3,2);
     GetBoundaryManager()->AddDirichlet(8,1);
@@ -114,9 +106,9 @@ protected:
 
     GetBoundaryManager()->AddNeumann(1);
     GetBoundaryManager()->AddNeumann(2);
+
+    ProblemDescriptorBase::BasicInit(pf);
   }
- public:
-  ProblemDescriptor() : ProblemDescriptorInterface() {}
   std::string GetName() const {return "Local";}
 };
 
@@ -160,9 +152,7 @@ int main(int argc, char** argv)
   // Functionals
   /////////////
   LocalDomainFunctional j1;
-  std::vector<const Functional*> J(1);
-  J[0] = &j1;
-  loop.SetFunctionals(J);
+  loop.AddFunctional(&j1);
   
   loop.run(&LPD);
 

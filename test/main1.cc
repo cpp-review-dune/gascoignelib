@@ -6,6 +6,7 @@
 #include  "dirichletdatabyexactsolution.h"
 #include  "righthandsidedatabyequation.h"
 #include  "meshagent.h"
+#include  "problemdescriptorbase.h"
 
 using namespace std;
 using namespace Gascoigne;
@@ -63,30 +64,23 @@ public:
 };
 
 /*---------------------------------------------------*/
-class ProblemDescriptor : public ProblemDescriptorInterface
+class ProblemDescriptor : public ProblemDescriptorBase
 {
-protected:
-  void ConstructEquation() {
+ public:
+  void BasicInit(const Gascoigne::ParamFile* pf) {
     GetEquationPointer() = new LocalEquation;
-  }
-  void ConstructExactSolution() {
     GetExactSolutionPointer() = new LocalExactSolution();
-  }
-  void ConstructRightHandSideData() {
-      GetRightHandSideDataPointer() = new RightHandSideDataByEquation(GetEquation(), GetExactSolution());
-    }
-  void ConstructDirichletData() {
+    GetRightHandSideDataPointer() = new RightHandSideDataByEquation(GetEquation(), GetExactSolution());
     GetDirichletDataPointer() = new DirichletDataByExactSolution(GetExactSolution());
-  }
-  void ConstructBoundaryManager() {
-    GetBoundaryManagerPointer() = new BoundaryManager(GetParamFile());
+
+    GetBoundaryManagerPointer() = new BoundaryManager(pf);
     GetBoundaryManager()->AddDirichlet(1,0);
     GetBoundaryManager()->AddDirichlet(2,0);
     GetBoundaryManager()->AddDirichlet(3,0);
     GetBoundaryManager()->AddDirichlet(4,0);
+
+    ProblemDescriptorBase::BasicInit(pf);
   }
- public:
-  ProblemDescriptor() : ProblemDescriptorInterface() {}
   std::string GetName() const {return "Local";}
 };
 
@@ -130,9 +124,7 @@ int main(int argc, char** argv)
   // Functionals
   /////////////
   LocalDomainFunctional j1;
-  std::vector<const Functional*> J(1);
-  J[0] = &j1;
-  loop.SetFunctionals(J);
+  loop.AddFunctional(&j1);
   
   loop.run(&LPD);
 

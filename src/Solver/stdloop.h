@@ -52,7 +52,7 @@ public:
 
   void BasicInit(const Gascoigne::ParamFile* paramfile);
 
-  void SetFunctionals(const std::vector<const Functional*>& fv) { _FV =  fv;}
+  void AddFunctional(const Functional* fv) { _FV.push_back(fv);}
 
   void run(const ProblemDescriptorInterface* PD);
   void ClockOutput() const;
