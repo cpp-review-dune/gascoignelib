@@ -359,17 +359,17 @@ void StdLoop::run(const ProblemDescriptorInterface* PD)
           CopyVector(ualt,u);
 
           AdaptMesh(eta);
-          // wenn gleichzeitig verfeinert und vergroebert werden soll dann rufen Sie
-          // AdaptMesh zweimal folgendermassen auf:
-          //   
-          //    CopyVector(ualt,u);
-          //    AdaptMesh(eta,"refine");
-          //    GetSolverInfos()->GetNLInfo().control().matrixmustbebuild() = 1;
-          //    GetMultiLevelSolver()->ReInit(*PD);
-          //    GetMultiLevelSolver()->InterpolateSolution(u,ualt);
-          //    CopyVector(ualt,u);
-          //    AdaptMesh(eta,"coarsen");
-          //  
+          ///  wenn gleichzeitig verfeinert und vergroebert werden soll, dann rufen Sie
+          ///  AdaptMesh zweimal folgendermassen auf:
+          ///     
+          ///    CopyVector(ualt,u);
+          ///    AdaptMesh(eta,"refine");
+          ///    GetSolverInfos()->GetNLInfo().control().matrixmustbebuild() = 1;
+          ///    GetMultiLevelSolver()->ReInit(*PD);
+          ///    GetMultiLevelSolver()->InterpolateSolution(u,ualt);
+          ///    CopyVector(ualt,u);
+          ///    AdaptMesh(eta,"coarsen");
+          ///   
         }
       _clock_estimate.stop();
      }
