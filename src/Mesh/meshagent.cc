@@ -65,6 +65,8 @@ void MeshAgent::BasicInit(int dim, string meshname, int prerefine)
   cerr << "    SetDefaultValues(dim,meshname,prerefine)" << endl;
   cerr << "ersetzt werden!!!" << endl;
   cerr << "*********************************************************" << endl;
+  assert(0);
+
   _dimension = dim;
   if (_dimension==2)
     {
