@@ -22,3 +22,13 @@ BinaryWrite BinaryRead rewritten and tested
 * meidner: Examples/Control
 updated
 
+Version 01.2004 (23.01.2004)
+============================
+
+* FunctionalManager deleted
+  Nun ruft man aus dem main auf "loop.SetFunctionals(J);"
+  hierbei ist J ein vector<const Functional*>
+* Loops aufgeraeumt, nun ruft man "run(const ProblemDescriptorInterface*)" auf.
+
+
+

@@ -19,13 +19,20 @@ protected:
   std::set<int>  _col;
   double         _scale;
 
-  DirichletData*   _DD;
+  const DirichletData*   _DD;
 
 public:
 
   ResidualFunctional();
   ResidualFunctional(const std::vector<std::string>& args);
   ~ResidualFunctional();
+  ResidualFunctional(const ResidualFunctional& F) : Functional(F)
+    {
+       _comp = F.GetComp();
+       _col  = F.GetColors();
+       _scale = F.GetScale();
+        _DD = F.GetDirichletData();
+    }
 
   void Construct(const std::vector<std::string>& args);
 

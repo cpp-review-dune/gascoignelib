@@ -16,9 +16,10 @@ using namespace Gascoigne;
 
 /*-----------------------------------------*/
 
-StdLoop::StdLoop() : _paramfile("none"), _MA(NULL), _ML(NULL), _FMP(NULL), _iter(0), IOM("Results")
+StdLoop::StdLoop() : _paramfile("none"), _MA(NULL), _ML(NULL), _iter(0), IOM("Results")
 {
   _estimator = _extrapolate = _reload  = "none";
+  _FV.resize(0);
 }
 
 /*-----------------------------------------*/
@@ -35,14 +36,12 @@ StdLoop::~StdLoop()
 
   if(_MA  != NULL) {delete _MA; _MA=NULL;}
   if(_ML  != NULL) {delete _ML; _ML=NULL;}
-  if(_FMP!= NULL) {delete _FMP; _FMP=NULL;}
 }
 
 /*-----------------------------------------*/
 
 void StdLoop::BasicInit(const string& paramfile)
 {
-  //_PD = const_cast<ProblemDescriptorInterface*>(&PD);
   _paramfile = paramfile;
 
   DataFormatHandler DFH;
@@ -86,36 +85,22 @@ void StdLoop::BasicInit(const string& paramfile)
     }
   assert(GetMultiLevelSolver());
 
-  //
-  StdLoop::NewFunctionalManager();
-  GetFunctionalManager()->ConstructSet(_paramfile);
-  //
-
   GetMultiLevelSolver()->BasicInit(GetMeshAgent(),_paramfile);
   GetMultiLevelSolver()->SetMonitorPtr(&Mon);
 }
 
 /*-------------------------------------------------------*/
 
-void StdLoop::NewFunctionalManager()
+nvector<double> StdLoop::ComputeFunctionals(NewMultiLevelGhostVector& f, NewMultiLevelGhostVector& u, const vector<const Functional*>& J) const
 {
-  GetFunctionalManagerPointer() = new FunctionalManager;
-  assert(GetFunctionalManager());
-}
-
-/*-------------------------------------------------------*/
-
-nvector<double> StdLoop::ComputeAllFunctionals(NewMultiLevelGhostVector& f, NewMultiLevelGhostVector& u) const
-{
-  vector<string> fnames = GetFunctionalManager()->GetFunctionalNames();
-  int n = fnames.size(); 
+  int n = J.size(); 
   nvector<double> j(n,0.);
-  for(int i=0;i<n;i++)
+  for(int i=0; i<n; i++)
     {
-      const Functional* FP = GetFunctionalManager()->GetFunctional(fnames[i]);
-      assert(FP);
-      j[i] = GetMultiLevelSolver()->ComputeFunctional(f,u,FP);
+      j[i] = GetMultiLevelSolver()->ComputeFunctional(f,u,J[i]);
+      std::cout << J[i]->BeautifulName() << ": " << j[i] << "\t";
     }
+  std::cout << std::endl;
   return j;
 } 
 
@@ -229,14 +214,11 @@ string StdLoop::Solve(NewMultiLevelGhostVector& u, NewMultiLevelGhostVector& f, 
 
 nvector<double> StdLoop::GetExactValues() const
 {
-  vector<string> fnames = GetFunctionalManager()->GetFunctionalNames();
-  int n = fnames.size(); 
+  int n = _FV.size(); 
   nvector<double> j(n,0.);
-  for(int i=0;i<n;i++)
+  for(int i=0; i<n; i++)
     {
-      const Functional* FP = GetFunctionalManager()->GetFunctional(fnames[i]);
-      assert(FP);
-      j[i] = FP->ExactValue();
+      j[i] = _FV[i]->ExactValue();
     }
   return j; 
 }
@@ -245,8 +227,7 @@ nvector<double> StdLoop::GetExactValues() const
 
 nvector<double> StdLoop::Functionals(NewMultiLevelGhostVector& u, NewMultiLevelGhostVector& f)
 {
-  nvector<double> J  = ComputeAllFunctionals(f,u);
-  nvector<double> JE = GetExactValues();
+  nvector<double> J  = ComputeFunctionals(f,u,_FV);
   _JErr.resize(J.size());
   if (J.size())
     {
@@ -259,7 +240,7 @@ nvector<double> StdLoop::Functionals(NewMultiLevelGhostVector& u, NewMultiLevelG
       cout << "\nErrors  ";
       for(int i=0; i<J.size(); i++) 
 	{
-	  _JErr[i] = JE[i] - J[i];
+	  _JErr[i] = GetExactValues()[i] - J[i];
 	  cout << "\t" << _JErr[i] ;
 	}
       cout << endl;
@@ -277,27 +258,26 @@ nvector<double> StdLoop::Functionals(NewMultiLevelGhostVector& u, NewMultiLevelG
 
 double StdLoop::Estimator(nvector<double>& eta, NewMultiLevelGhostVector& u, NewMultiLevelGhostVector& f)
 {
-  vector<string> name = GetGridFunctionalNames();
   cout << "Estimator\t"; 
 
   cout << "Baustelle!!!!!\n";
   return 0.;
 
-  double est = 0.;
-  if (_estimator=="energy")
-    {
-      est = GetMultiLevelSolver()->GetSolver()->EnergyEstimator(eta, u, f);
-    }
-  else assert(0);
+//   double est = 0.;
+//   if (_estimator=="energy")
+//     {
+//       est = GetMultiLevelSolver()->GetSolver()->EnergyEstimator(eta, u, f);
+//     }
+//   else assert(0);
 
-  double eff = 0.;
-  if      ((_estimator=="weighted") && (_JErr.size()>0))      eff = est/_JErr[0];
-  else if ((_estimator=="energy")   && (_GlobalErr.size()>0)) eff = est/_GlobalErr(1,0);
-  if  (eff!=0.) cout << " @ " << eff << endl; 
+//   double eff = 0.;
+//   if      ((_estimator=="weighted") && (_JErr.size()>0))      eff = est/_JErr[0];
+//   else if ((_estimator=="energy")   && (_GlobalErr.size()>0)) eff = est/_GlobalErr(1,0);
+//   if  (eff!=0.) cout << " @ " << eff << endl; 
   
-  cout << endl; 
-  EtaVisu("Results/eta",_iter,eta);
-  return est;
+//   cout << endl; 
+//   EtaVisu("Results/eta",_iter,eta);
+//   return est;
 }
 
 /*-------------------------------------------------*/
@@ -305,8 +285,11 @@ double StdLoop::Estimator(nvector<double>& eta, NewMultiLevelGhostVector& u, New
 void StdLoop::ComputeGlobalErrors(const NewMultiLevelGhostVector& u)
 {
   GetMultiLevelSolver()->GetSolver()->ComputeError(u,_GlobalErr);
-  cout.precision(6);
-  cout << "\nGlobalErrors l2,h1,l8 " << _GlobalErr << endl;
+  if (_GlobalErr.size()>0)
+    {
+      cout.precision(6);
+      cout << "\nGlobalErrors l2,h1,l8 " << _GlobalErr << endl;
+    }
 }
 
 /*-------------------------------------------------*/

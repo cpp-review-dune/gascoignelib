@@ -23,7 +23,7 @@ protected:
   double  exact;
   bool    exactisknown;
 
-  string beautifulname;
+  std::string beautifulname;
 
 public:
 
@@ -41,7 +41,7 @@ public:
   double& ExactValue()       { exactisknown = 1; return exact;}
   bool ExactValueIsKnown() const { return exactisknown; }
 
-  string BeautifulName() const { return beautifulname;}
+  std::string BeautifulName() const { return beautifulname;}
 };
 
 

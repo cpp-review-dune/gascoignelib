@@ -34,6 +34,7 @@ public:
 
   Application() : _dt(0.),_time(0.) {}
   virtual ~Application() {}
+  Application(const Application&) {}
 
   virtual std::string GetName() const=0;
 

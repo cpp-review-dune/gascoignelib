@@ -9,7 +9,6 @@
 #include  "visualization.h"
 #include  "visudatacompvector.h"
 #include  "visudatanvector.h"
-#include  "functionalmanager.h"
 
 #include  "problemdescriptorinterface.h"
 #include  "stdiomanager.h"
@@ -30,9 +29,10 @@ class StdLoop
 {
 private:
 
-  FunctionalManager*         _FMP;
   MeshAgentInterface*        _MA;
   MultiLevelSolverInterface* _ML;
+
+  vector<const Functional*>   _FV;
 
   void WriteMeshAndSolution(const std::string& filename, const NewMultiLevelGhostVector& u) const;
   void WriteSolution(const NewMultiLevelGhostVector& u) const;
@@ -40,15 +40,13 @@ private:
   
 protected:
 
-  FunctionalManager*& GetFunctionalManagerPointer() { return _FMP;}
   MeshAgentInterface*& GetMeshAgentPointer() { return _MA;}
   MultiLevelSolverInterface*& GetMultiLevelSolverPointer() { return _ML;}
 
-  const FunctionalManager* GetFunctionalManager() const { return _FMP;}
+  const vector<const Functional*>& GetFunctionals() const { return _FV;}
   const MeshAgentInterface* GetMeshAgent() const { return _MA;}
   const MultiLevelSolverInterface* GetMultiLevelSolver() const { return _ML;}
 
-  FunctionalManager* GetFunctionalManager() { return _FMP;}
   MeshAgentInterface* GetMeshAgent() { return _MA;}
   MultiLevelSolverInterface* GetMultiLevelSolver() { return _ML;}
 
@@ -66,24 +64,13 @@ protected:
   nvector<double>    _JErr;
   CompVector<double> _GlobalErr;
 
-  std::vector<std::string> GetAllFunctionalNames () const {
-    assert(_FMP);
-    return _FMP->GetFunctionalNames();
-  }
-  std::vector<std::string> GetGridFunctionalNames() const {
-    assert(_FMP);
-    return _FMP->GetGridFunctionalNames();
-  }
-
-  virtual void NewFunctionalManager();
-
-
   // new vectors
 
   virtual std::string Solve(NewMultiLevelGhostVector& u, NewMultiLevelGhostVector& f, string name="Results/solve");
   virtual void StdLoop::Output(const NewMultiLevelGhostVector& u, string name="Results/solve") const;
 
-  nvector<double> ComputeAllFunctionals(NewMultiLevelGhostVector& f, NewMultiLevelGhostVector& u) const;
+  nvector<double> ComputeFunctionals(NewMultiLevelGhostVector& f, NewMultiLevelGhostVector& u, const vector<const Functional*>& J) const;
+
   nvector<double> GetExactValues() const;
 
   virtual void ComputeGlobalErrors(const NewMultiLevelGhostVector& u);
@@ -102,6 +89,8 @@ public:
   virtual ~StdLoop();
 
   virtual void BasicInit(const std::string& pfile);
+
+  void SetFunctionals(const vector<const Functional*>& fv) { _FV =  fv;}
 
   void run(const ProblemDescriptorInterface* PD);
 };
