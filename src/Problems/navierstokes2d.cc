@@ -66,7 +66,6 @@ double NavierStokes2d::Divergence(const FemFunction& U) const
 
 void NavierStokes2d::SetTimePattern(TimePattern& P) const
 {
-  P.reservesize(GetNcomp(),GetNcomp(),0.);
   P(0,0) = _penalty;
   P(1,1) = 1.;
   P(2,2) = 1.;

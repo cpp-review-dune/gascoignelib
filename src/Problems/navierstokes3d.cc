@@ -17,7 +17,6 @@ NavierStokes3d::NavierStokes3d() : NavierStokes2d() {}
 
 void NavierStokes3d::SetTimePattern(TimePattern& P) const
 {
-  P.reservesize(GetNcomp(),GetNcomp(),0.);
   P(0,0) = _penalty;
   P(1,1) = 1.;
   P(2,2) = 1.;
