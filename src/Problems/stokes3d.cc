@@ -57,12 +57,11 @@ void Stokes3d::Form(VectorIterator b, const FemFunction& U, const TestFunction& 
 
 void Stokes3d::Matrix(EntryMatrix& A, const FemFunction& U, const TestFunction& M, const TestFunction& N) const
 {
-  double MN = M.m()*N.m();
   double laplace = Laplace(M,N);
      
   ////////////// Continuity /////////////////////////////
 
-  A(0,0) += MN * penalty;
+  A(0,0) += M.m()*N.m() * penalty;
   A(0,1) += M.x()*N.m();
   A(0,2) += M.y()*N.m();
   A(0,3) += M.z()*N.m();
