@@ -49,6 +49,7 @@ class MatrixInterface
   /// for boundary conditions
   //
   virtual void dirichlet (int i, const std::vector<int>& cv)  { assert(0);}
+  virtual void dirichlet_only_row(int i, const std::vector<int>& indices)   { assert(0);}
 
   //
   ///

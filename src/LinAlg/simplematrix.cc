@@ -183,8 +183,31 @@ void SimpleMatrix::dirichlet(const IntVector& indices)
 		  if(ST.col(pos2)==i) 
 		    {
 		      value[pos2]=0.;
+		      break;
 		    }
 		}
+	    }
+	}
+    }
+}
+
+/*-----------------------------------------*/
+
+void SimpleMatrix::dirichlet_only_row(const IntVector& indices)
+{
+  for(int ii=0;ii<indices.size();ii++)
+    {
+      int i = indices[ii];
+      if(i<0) cerr << "SimpleMatrix::dirichlet indices: " << indices << endl;
+      assert(i>=0);
+
+      for(int pos=ST.start(i);pos<ST.stop(i);pos++)
+	{
+	  int j = ST.col(pos);
+	  if(j==i) value[pos]=1.;
+	  else 
+	    {
+	      value[pos] = 0.;
 	    }
 	}
     }

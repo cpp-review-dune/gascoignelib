@@ -267,7 +267,8 @@ class StdSolver : public virtual SolverInterface
   double NewtonNorm(const BasicGhostVector& u) const;
   void residualgmres(BasicGhostVector& y, const BasicGhostVector& x, const BasicGhostVector& b) const;
   void MatrixResidual(BasicGhostVector& y, const BasicGhostVector& x, const BasicGhostVector& b) const;
-  void vmulteqgmres(BasicGhostVector& y, const BasicGhostVector& x) const;
+  void vmult  (BasicGhostVector& y, const BasicGhostVector& x, double d) const;
+  void vmulteq(BasicGhostVector& y, const BasicGhostVector& x) const;
   void smooth_pre(BasicGhostVector& y, const BasicGhostVector& x, BasicGhostVector& h) const;
   void smooth_exact(BasicGhostVector& y, const BasicGhostVector& x, BasicGhostVector& h) const;
   void smooth_post(BasicGhostVector& y, const BasicGhostVector& x, BasicGhostVector& h) const;

@@ -1,6 +1,8 @@
 #ifndef  __UmfIlu_h
 #define  __UmfIlu_h
 
+#ifdef __WITH_UMFPACK__
+
 /////////////////////////////////////////////
 ///
 ///@brief
@@ -45,4 +47,5 @@ public:
 };
 }
 
+#endif
 #endif

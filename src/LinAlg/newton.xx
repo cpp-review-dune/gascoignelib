@@ -16,7 +16,7 @@ void newton(Operator& S, Vector& u, const Vector& f, Vector& r, Vector& w, NLInf
     {
       S.NewtonMatrixControl(u,info);
       S.NewtonVectorZero(w);
-      S.NewtonLinearSolve(w,r,u,info.GetLinearInfo());
+      S.NewtonLinearSolve(w,r,info.GetLinearInfo());
       double rw = S.NewtonUpdate(rr,u,w,r,f,info);
       reached = info.check(it,rr,rw);
       S.NewtonOutput(info);

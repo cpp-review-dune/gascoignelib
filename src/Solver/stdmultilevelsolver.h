@@ -112,13 +112,14 @@ class StdMultiLevelSolver : public MultiLevelSolverInterface
 
   // neue vektoren
 
+  std::string LinearSolve(int level, MultiLevelGhostVector& u, const MultiLevelGhostVector& b, CGInfo& info);
   std::string Solve(int level, MultiLevelGhostVector& x, const MultiLevelGhostVector& b, NLInfo& nlinfo);
   void InterpolateSolution(MultiLevelGhostVector& u, const GlobalVector& uold) const;
 
   virtual void NewtonVectorZero(MultiLevelGhostVector& w) const;
   virtual double NewtonResidual(MultiLevelGhostVector& y, const MultiLevelGhostVector& x, const MultiLevelGhostVector& b) const;
   virtual double NewtonUpdate(double& rr, MultiLevelGhostVector& x, MultiLevelGhostVector& dx, MultiLevelGhostVector& r, const MultiLevelGhostVector& f, NLInfo& nlinfo);
-  virtual void NewtonLinearSolve(MultiLevelGhostVector& x, const MultiLevelGhostVector& b, const MultiLevelGhostVector& u, CGInfo& info);
+  virtual void NewtonLinearSolve(MultiLevelGhostVector& x, const MultiLevelGhostVector& b, CGInfo& info);
   virtual void NewtonMatrixControl(MultiLevelGhostVector& u, NLInfo& nlinfo);
 
   virtual void AssembleMatrix(MultiLevelGhostVector& u, NLInfo& nlinfo);
@@ -133,7 +134,7 @@ class StdMultiLevelSolver : public MultiLevelSolverInterface
   virtual void Transfer(int high, int low, MultiLevelGhostVector& u) const;
   virtual void SolutionTransfer(MultiLevelGhostVector& u) const;
   
-  void vmulteqgmres(MultiLevelGhostVector& y, const MultiLevelGhostVector&  x) const;
+  void vmulteq(MultiLevelGhostVector& y, const MultiLevelGhostVector&  x) const;
   
   virtual void LinearMg(int minlevel, int maxlevel, MultiLevelGhostVector& u, const MultiLevelGhostVector& f, CGInfo&);
 

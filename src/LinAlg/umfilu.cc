@@ -1,6 +1,7 @@
 #include  "umfilu.h"
 #include  <fstream>
 
+#ifdef __WITH_UMFPACK__
 
 using namespace std;
  
@@ -257,3 +258,5 @@ void UmfIlu::SolveTranspose(DoubleVector& x, const DoubleVector& b)
 
 #undef UMFPACK_A	
 #undef UMFPACK_At	
+
+#endif

@@ -107,11 +107,8 @@ void StdSolver::SetProblem(const ProblemDescriptorInterface& PDX)
   assert(_PDX);
   
   const Equation*  EQ = GetProblemDescriptor()->GetEquation();
-  assert(EQ);
-  _check_consistency(EQ,GetMeshInterpretor());
-//  int ncomp = EQ->ncomp();
-  
-//   Dat.ReInit(_paramfile,ncomp);
+
+  if (EQ) _check_consistency(EQ,GetMeshInterpretor());
 }
 
 /*-------------------------------------------------------*/
@@ -342,13 +339,19 @@ void StdSolver::residualgmres(BasicGhostVector& gy, const BasicGhostVector& gx, 
   y.sadd(-1.,1.,b);
   SetBoundaryVectorZero(gy);
 }
+
 /*-----------------------------------------*/
 
-void StdSolver::vmulteqgmres(BasicGhostVector& gy, const BasicGhostVector& gx) const
+void StdSolver::vmult(BasicGhostVector& gy, const BasicGhostVector& gx, double d) const
 {
-  GlobalVector& y = GetGV(gy);
-  const GlobalVector& x = GetGV(gx);
-  vmulteq(y,x,1.);
+  vmult(GetGV(gy),GetGV(gx),d);
+}
+
+/*-----------------------------------------*/
+
+void StdSolver::vmulteq(BasicGhostVector& gy, const BasicGhostVector& gx) const
+{
+  vmulteq(GetGV(gy),GetGV(gx),1.);
 }
 
 /*-----------------------------------------*/

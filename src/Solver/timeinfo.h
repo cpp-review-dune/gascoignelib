@@ -46,6 +46,8 @@ public:
   void ReInitBackward(int niter, double endtime);
   void iteration_backward(int i);
   void SpecifyScheme(int i);
+  void RejectTimeStep(double d);
+  void ScaleTimeStep(double d);
 };
 }
 

@@ -57,6 +57,11 @@ public:
   /// vector 
   //
 
+  virtual std::string LinearSolve(int level, MultiLevelGhostVector& u, const MultiLevelGhostVector& b, CGInfo& info)=0;
+  virtual std::string LinearSolve(MultiLevelGhostVector& u, const MultiLevelGhostVector& b, CGInfo& info)
+    {
+      return LinearSolve(nlevels()-1,u,b,info);
+    }
   virtual std::string Solve(int level, MultiLevelGhostVector& x, const MultiLevelGhostVector& b, NLInfo& nlinfo)=0;
   virtual std::string Solve(MultiLevelGhostVector& x, const MultiLevelGhostVector& b, NLInfo& nlinfo) {
     return Solve(nlevels()-1,x,b,nlinfo);

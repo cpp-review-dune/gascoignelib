@@ -1,8 +1,6 @@
 #ifndef  __PointMatrix_h
 #define  __PointMatrix_h
 
-
-
 /////////////////////////////////////////////
 ///
 ///@brief
@@ -12,30 +10,21 @@
 ///
 /////////////////////////////////////////////
 
-
 #include  "matrixinterface.h"
 #include  "simplematrix.h"
 #include  "sparsestructureadaptor.h"
 #include  "mginterpolatormatrix.h"
 
-
 namespace Gascoigne
 {
 class PointMatrix : public SimpleMatrix, virtual public MatrixInterface
 {
-public:
-
-
-private:
-
-
 protected:
 
   int _ncomp;
   SparseStructureAdaptor* SSAP;
 
 public:
-
 
 //
 ///  Constructor 
@@ -57,6 +46,7 @@ public:
     void entry(niiterator start, niiterator stop, const EntryMatrix& M, double s=1.);
     void entry_diag(int i, const nmatrix<double>& M);
     void dirichlet (int i, const std::vector<int>& cv);
+    void dirichlet_only_row (int i, const std::vector<int>& cv);
 
     void transpose() {
       SimpleMatrix::transpose();

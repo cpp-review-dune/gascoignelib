@@ -149,7 +149,6 @@ int Visualization::active(int i) const
 
 void Visualization::step(int i)
 {
-  ii=i;
   if ( (pstep==-1) ||  (!active(i)) )
     {
       if (pstep<0) nexttime = time+tstep;

@@ -86,6 +86,7 @@ public:
   virtual void Interpolate(GlobalVector& u, const InitialCondition& RHS) const { assert(0);}
   virtual void InterpolateSolution(GlobalVector& u, const GlobalVector& uold)const { assert(0);}
   virtual void StrongDirichletMatrix(MatrixInterface& A, int col, const std::vector<int>& comp) const { assert(0);}
+  virtual void StrongDirichletMatrixOnlyRow(MatrixInterface& A, int col, const std::vector<int>& comp) const { assert(0);}
   virtual void StrongDirichletVector(GlobalVector& u, const DirichletData& BF, int col, const std::vector<int>& comp) const { assert(0);}
   virtual void StrongDirichletVectorZero(GlobalVector& u, int col, const std::vector<int>& comp) const { assert(0);}
 

@@ -49,8 +49,8 @@ void StdTimeSolver::SetTimeData(double dt, double theta, double time, double old
 void StdTimeSolver::SetProblem(const ProblemDescriptorInterface& PDX)
 {
   const Equation* EQ = PDX.GetEquation();
-  assert(EQ);
-  EQ->SetTimePattern(GetTimePattern());
+
+  if (EQ) EQ->SetTimePattern(GetTimePattern());
   
   StdSolver::SetProblem(PDX);
 }

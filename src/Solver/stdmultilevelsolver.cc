@@ -167,7 +167,7 @@ void StdMultiLevelSolver::RegisterVectorAndMemory(const MultiLevelGhostVector& g
       cerr << "Solvervector not ready\n";
       assert(0);
     }
-  //     cerr << "*************registriere:\t"<<g<<endl;
+  //cerr << "*************registriere:\t"<<g<<endl;
   _MlVectors.insert(g);
   for(int level=0; level<nlevels(); ++level)  
     {
@@ -317,9 +317,9 @@ void StdMultiLevelSolver::InterpolateSolution(MultiLevelGhostVector& u, const Gl
 
 /*-------------------------------------------------------------*/
 
-void StdMultiLevelSolver::vmulteqgmres(MultiLevelGhostVector& y, const MultiLevelGhostVector& x) const
+void StdMultiLevelSolver::vmulteq(MultiLevelGhostVector& y, const MultiLevelGhostVector& x) const
 {
-  GetSolver(ComputeLevel)->vmulteqgmres(y(ComputeLevel),x(ComputeLevel));
+  GetSolver(ComputeLevel)->vmulteq(y(ComputeLevel),x(ComputeLevel));
 }
 
 /*-------------------------------------------------------------*/
@@ -474,7 +474,7 @@ void StdMultiLevelSolver::NewtonMatrixControl(MultiLevelGhostVector& u, NLInfo& 
 
 /*-------------------------------------------------------------*/
 
-void StdMultiLevelSolver::NewtonLinearSolve(MultiLevelGhostVector& x, const MultiLevelGhostVector& b, const MultiLevelGhostVector& u, CGInfo& info)
+void StdMultiLevelSolver::NewtonLinearSolve(MultiLevelGhostVector& x, const MultiLevelGhostVector& b, CGInfo& info)
 {
   assert(DataP->LinearSolve() == "mg");
 
@@ -596,6 +596,33 @@ void StdMultiLevelSolver::BoundaryInit(MultiLevelGhostVector& u) const
 {
   for(int l=0;l<_SP.size();l++)
     GetSolver(l)->BoundaryInit(u(l));
+}
+
+/*-------------------------------------------------------------*/
+
+string StdMultiLevelSolver::LinearSolve(int level, MultiLevelGhostVector& u, const MultiLevelGhostVector& b, CGInfo& info)
+{
+  ComputeLevel = level;
+
+  GetSolver(ComputeLevel)->HNAverage(u(ComputeLevel));
+  
+  info.reset();
+  
+  int clevel=Gascoigne::max_int(DataP->CoarseLevel() ,0);
+  if(DataP->CoarseLevel() == -1) clevel = FinestLevel(); 
+
+//   cout << "  |u| = " << GetSolver(ComputeLevel)->GetGV(u).norm() << " \t";
+//   cout << "|b| = " << GetSolver(ComputeLevel)->GetGV(b).norm() << endl;
+  LinearMg(ComputeLevel,clevel,u,b,info);
+//   cout << "->|u| = " << GetSolver(ComputeLevel)->GetGV(u).norm() << " \t";
+//   cout << "|b| = " << GetSolver(ComputeLevel)->GetGV(b).norm() << endl;
+
+  GetSolver(ComputeLevel)->SubtractMean(u(ComputeLevel));
+
+  GetSolver(ComputeLevel)->HNZero(u(ComputeLevel));
+  string status = info.control().status();
+
+  return status;
 }
 
 /*-------------------------------------------------------------*/

@@ -140,7 +140,8 @@ class SolverInterface
 
   virtual void residualgmres(BasicGhostVector& y, const BasicGhostVector& x, const BasicGhostVector& b) const=0;
   virtual void MatrixResidual(BasicGhostVector& y, const BasicGhostVector& x, const BasicGhostVector& b) const=0;
-  virtual void vmulteqgmres(BasicGhostVector& y, const BasicGhostVector& x) const=0;
+  virtual void vmult(BasicGhostVector& y, const BasicGhostVector& x, double d) const { assert(0);}
+  virtual void vmulteq(BasicGhostVector& y, const BasicGhostVector& x) const { assert(0);}
   virtual void smooth_pre(BasicGhostVector& y, const BasicGhostVector& x, BasicGhostVector& h) const=0;
   virtual void smooth_exact(BasicGhostVector& y, const BasicGhostVector& x, BasicGhostVector& h) const=0;
   virtual void smooth_post(BasicGhostVector& y, const BasicGhostVector& x, BasicGhostVector& h) const=0;

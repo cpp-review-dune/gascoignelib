@@ -54,6 +54,19 @@ void Q1::StrongDirichletMatrix(MatrixInterface& A, int col, const vector<int>& c
 
 /* ----------------------------------------- */
 
+void Q1::StrongDirichletMatrixOnlyRow(MatrixInterface& A, int col, const vector<int>& comp) const
+{
+  const GascoigneMesh* GMP = dynamic_cast<const GascoigneMesh*>(GetMesh());
+  assert(GMP);
+  const IntVector& bv = *GMP->VertexOnBoundary(col);
+  for(int i=0;i<bv.size();i++)
+    {
+      A.dirichlet_only_row(bv[i], comp);
+    }  
+}
+
+/* ----------------------------------------- */
+
 void Q1::StrongDirichletVectorZero(GlobalVector& u, int col, const vector<int>& comp) const
 {
   const GascoigneMesh* GMP = dynamic_cast<const GascoigneMesh*>(GetMesh());

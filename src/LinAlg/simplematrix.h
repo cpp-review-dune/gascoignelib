@@ -1,8 +1,6 @@
 #ifndef  __SimpleMatrix_h
 #define  __SimpleMatrix_h
 
-
-
 /////////////////////////////////////////////
 ///
 ///@brief
@@ -12,12 +10,10 @@
 ///
 /////////////////////////////////////////////
 
-
 #include  "matrixinterface.h"
 #include  "columndiagstencil.h"
 #include  "sparsestructureadaptor.h"
 #include  "compvector.h"
-
 
 namespace Gascoigne
 {
@@ -56,6 +52,7 @@ public:
     void vmult_comp_trans(int c, int d, GlobalVector& y, const GlobalVector& x, double s=1.) const;
     void vmult_time(GlobalVector& y, const GlobalVector& x, const TimePattern& TP, double s=1.) const;
     void dirichlet(const IntVector& indices);
+    void dirichlet_only_row(const IntVector& indices);
 
     void transpose();
     void entry_diag(int i, const nmatrix<double>& M);

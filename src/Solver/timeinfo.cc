@@ -110,6 +110,13 @@ double TimeInfo::theta() const
 
 /*-----------------------------------------*/
 
+void TimeInfo::ScaleTimeStep(double d)
+{
+  _deltat *= d;
+}
+
+/*-----------------------------------------*/
+
 double TimeInfo::dt() const 
 {
   double h = 1.;
@@ -179,6 +186,14 @@ void TimeInfo::iteration_backward(int i)
   cout << "\n============= " << _iter << " ========== " << _actualscheme;
   cout << " [t,dt] "<< _time << " " << dt() << "\t";
   cout << endl;
+}
+
+/*-----------------------------------------*/
+
+void TimeInfo::RejectTimeStep(double d)
+{
+  _time -= dt();
+  _deltat *= d;
 }
 
 /*-----------------------------------------*/

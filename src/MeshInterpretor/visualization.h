@@ -36,10 +36,6 @@ class Visualization
   int     pstep, showoutput;
   double  time, tstep, nexttime;
 
-  // ??????????????????????
-  int ii;
-  // ??????????????????????
-
   /* Functions */
 
   void   BasicInit();
@@ -114,7 +110,6 @@ class Visualization
   void set_gnuplotdata(const std::vector<GnuplotData>& gp) { GP=gp; }
 
   void  step   (int);
-  int   GetStep() const {return ii;}
   int   active (int) const;
   void  format(const std::string&);
 

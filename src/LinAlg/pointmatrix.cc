@@ -72,6 +72,14 @@ void PointMatrix::dirichlet(int inode, const vector<int>& cv)
 
 /*-----------------------------------------*/
 
+void PointMatrix::dirichlet_only_row(int inode, const vector<int>& cv)
+{
+  assert(SSAP);
+  SimpleMatrix::dirichlet_only_row(SSAP->GetIndicesDirichlet(inode,cv));
+}
+
+/*-----------------------------------------*/
+
 void PointMatrix::entry_diag(int i, const nmatrix<double>& M)
 {
   IntVector cv(_ncomp); iota(cv.begin(),cv.end(),0);
