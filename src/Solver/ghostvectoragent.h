@@ -7,25 +7,23 @@
 #include  "compvector.h"
 #include  "stlio.h"
 
-using namespace Gascoigne;
-
 /*-----------------------------------------*/
 
-class GhostVectorAgent : public std::map<GhostVector,GlobalVector*>
+class GhostVectorAgent : public std::map<GhostVector,Gascoigne::GlobalVector*>
 {
 protected:
 
-  GlobalVector& Get(const GhostVector& g) 
+  Gascoigne::GlobalVector& Get(const GhostVector& g) 
     {
       return operator()(g);
     }
 
 public:
 
-  typedef std::map<GhostVector,GlobalVector*>::const_iterator const_iterator;
-  typedef std::map<GhostVector,GlobalVector*>::iterator       iterator;
+  typedef std::map<GhostVector,Gascoigne::GlobalVector*>::const_iterator const_iterator;
+  typedef std::map<GhostVector,Gascoigne::GlobalVector*>::iterator       iterator;
 
-  GhostVectorAgent() : std::map<GhostVector,GlobalVector*>() {}
+  GhostVectorAgent() : std::map<GhostVector,Gascoigne::GlobalVector*>() {}
 
   ~GhostVectorAgent() 
     {
@@ -44,7 +42,7 @@ public:
   void Register(std::string g) 
     {
       if(find(g)!=end()) return;
-      insert(std::make_pair(g,(GlobalVector*) NULL));
+      insert(std::make_pair(g,(Gascoigne::GlobalVector*) NULL));
     }
   void Delete(std::string g) 
     {
@@ -54,7 +52,7 @@ public:
       erase(p);
     }
 
-  GlobalVector& operator()(const GhostVector& g) 
+  Gascoigne::GlobalVector& operator()(const GhostVector& g) 
     {
       iterator p = find(g);
       if(p==end())
@@ -64,7 +62,7 @@ public:
 	  std::cerr << *this << "\n";
 	  abort();
 	}
-      GlobalVector* vp = p->second;
+      Gascoigne::GlobalVector* vp = p->second;
       if(vp==NULL) 
 	{
 	  std::cerr <<  "GhostVectorAgent scheisse " << p->first << std::endl;

@@ -35,7 +35,7 @@ void LocalEquation::Form(VectorIterator b, const FemFunction& U, const TestFunct
 
 /* ----------------------------------------- */
 
-void LocalEquation::Matrix(EntryMatrix& A, const FemFunction& U, const DerivativeVector& M, const TestFunction& N) const
+void LocalEquation::Matrix(EntryMatrix& A, const FemFunction& U, const TestFunction& M, const TestFunction& N) const
 {
   A(0,0) += visc* (M.x()*N.x()+M.y()*N.y());
   A(0,0) += betax()* M.x()*N.m();

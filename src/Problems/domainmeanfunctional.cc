@@ -2,11 +2,13 @@
 #include  "zerodirichletdata.h"
 #include  "constantrighthandside.h"
 
+
+using namespace std;
 using namespace Gascoigne;
 
 // /*-----------------------------------------*/
 
-DomainMeanFunctional::DomainMeanFunctional(const std::vector<std::string>& args) : DomainFunctional()
+DomainMeanFunctional::DomainMeanFunctional(const vector<string>& args) : DomainFunctional()
 {
   _x0 = 0.; _x1 = 0.; _y0 = 0.; _y1 = 0.; _z0 = 0.; _z1 = 0.;
   RightHandSideData* RH;
@@ -40,8 +42,8 @@ DomainMeanFunctional::DomainMeanFunctional(const std::vector<std::string>& args)
     }
   else
     {
-      std::cerr << "DomainMeanFunctional::DomainMeanFunctional()\n";
-      std::cerr << "wrong number of arguments: " << args.size() << std::endl;
+      cerr << "DomainMeanFunctional::DomainMeanFunctional()\n";
+      cerr << "wrong number of arguments: " << args.size() << endl;
    }  
 }
 

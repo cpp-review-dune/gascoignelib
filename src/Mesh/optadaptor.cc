@@ -4,6 +4,8 @@
 #include  <fstream>
 #include  "giota.h"
 
+using namespace std;
+
 /*********************************************************************/
 
 OptAdaptor::OptAdaptor
@@ -131,7 +133,7 @@ void OptAdaptor::refine(nvector<int>& reflist)
   reflist.resize(0);
 
   nvector<int> C(eta.size()); iota(C.begin(),C.end(),0);
-  std::sort(C.begin(),C.end(),CompareObjectBigToSmall<nvector<double> > (eta)); 
+  sort(C.begin(),C.end(),CompareObjectBigToSmall<nvector<double> > (eta)); 
   
   int i = 0; used = 0;
 
@@ -160,18 +162,18 @@ void OptAdaptor::RefineGnuplot(nvector<int>& reflist)
 
   typedef CompareObjectBigToSmall<nvector<double> >  CoC;
 
-  std::sort(C.begin(),C.end(),CoC(eta)); 
+  sort(C.begin(),C.end(),CoC(eta)); 
   
   int i = 0; used = 0;
 
-  std::ofstream cmdfile("cmd.gpl");
-  cmdfile << "plot  \"eta.dat\" using 1:2 title \"eta\" with lines lw 0" << std::endl;
-  cmdfile << " pause -1" << std::endl;
-  cmdfile << "plot  \"eta.dat\" using 1:3 title \"delta\" with lines lw 0"<<std::endl;
-  cmdfile << " pause -1" << std::endl;
+  ofstream cmdfile("cmd.gpl");
+  cmdfile << "plot  \"eta.dat\" using 1:2 title \"eta\" with lines lw 0" << endl;
+  cmdfile << " pause -1" << endl;
+  cmdfile << "plot  \"eta.dat\" using 1:3 title \"delta\" with lines lw 0"<<endl;
+  cmdfile << " pause -1" << endl;
   cmdfile.close();
 
-  std::ofstream file("eta.dat");
+  ofstream file("eta.dat");
 
   for(int ii=0;ii<eta.size();ii++)
     {
@@ -179,7 +181,7 @@ void OptAdaptor::RefineGnuplot(nvector<int>& reflist)
       if( (ii>=1) && (e>0) )
 	{
  	  double delta = eta[C[ii-1]]-e;
-	  file << ii << "\t" << e <<  "\t"<<  delta << std::endl;
+	  file << ii << "\t" << e <<  "\t"<<  delta << endl;
 	}
     }
 

@@ -4,6 +4,7 @@
 #include  "newmultilevelghostvector.h"
 
 using namespace std;
+using namespace Gascoigne;
 
 /*-----------------------------------------*/
 

@@ -28,7 +28,7 @@ double Stokes3d::Divergence(const FemFunction& U) const
 
 /*-----------------------------------------*/
 
-double Stokes3d::Laplace(const DerivativeVector& U, const TestFunction& N) const
+double Stokes3d::Laplace(const TestFunction& U, const TestFunction& N) const
 {
   return U.x()*N.x() + U.y()*N.y() + U.z()*N.z();
 }

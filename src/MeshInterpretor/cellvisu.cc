@@ -1,10 +1,12 @@
 #include "cellvisu.h"
 #include "visudatanvector.h"
 
+using namespace std;
+
 /*************************************************************/
 
 CellVisualization::CellVisualization
-(const MeshInterface& M, const nvector<double>& u, const std::string& name, int i)
+(const MeshInterface& M, const nvector<double>& u, const string& name, int i)
 {
   VisuDataNVector VD(u);
 

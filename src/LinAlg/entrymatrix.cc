@@ -1,12 +1,14 @@
 #include  "entrymatrix.h"
 
+using namespace std;
+
 
 /*-------------------------------------------------------------*/
 
-std::ostream& operator<<(std::ostream& s, const EntryMatrix& A)
+ostream& operator<<(ostream& s, const EntryMatrix& A)
 {
-  s << A.Ndof()  << "\t" << A.Mdof() << std::endl;
-  s << A.Ncomp()  << "\t" << A.Mcomp() << std::endl;
+  s << A.Ndof()  << "\t" << A.Mdof() << endl;
+  s << A.Ncomp()  << "\t" << A.Mcomp() << endl;
   for(int i=0;i<A.Ndof();i++)
     {
       for(int j=0;j<A.Mdof();j++)

@@ -40,7 +40,7 @@ void NavierStokes::OperatorStrong(Vector& b, const FemFunction& U) const
 
 /*-----------------------------------------*/
 
-double NavierStokes::Laplace(const DerivativeVector& U, 
+double NavierStokes::Laplace(const TestFunction& U, 
 				     const TestFunction& N) const
 {
   return U.x()*N.x() + U.y()*N.y();

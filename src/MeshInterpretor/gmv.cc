@@ -1,23 +1,25 @@
 #include  "visualization.h"
 #include  "errormacros.h"
 
+using namespace std;
+
 
 /********************************************************************/
 
-void Visualization::gmv(const std::string& bname) const
+void Visualization::gmv(const string& bname) const
 {
-  std::string name = bname;
+  string name = bname;
   name += ".gmv";
 
-  std::ofstream file(name.c_str());
+  ofstream file(name.c_str());
   FILE_ERROR(file,name);
   
-  file << "gmvinput ascii" << std::endl;
-  file << "nodes " << mesh->nnodes() << std::endl;
+  file << "gmvinput ascii" << endl;
+  file << "nodes " << mesh->nnodes() << endl;
   
   output_vertexs_by_component(file);
 
-  file << std::endl << "cells " << mesh->ncells() << std::endl;
+  file << endl << "cells " << mesh->ncells() << endl;
 
   output_quads(file,"quad 4 ");
   output_hexs (file,"hex 8 ");
@@ -25,16 +27,16 @@ void Visualization::gmv(const std::string& bname) const
   if (PointData)
     {
       CheckPointData();
-      file << "variable" << std::endl;
+      file << "variable" << endl;
       for(VisuDataInfo::siterator p=PointDataInfo->sbegin();p!=PointDataInfo->send();++p)
 	{
-	  file << p->first <<" 1" << std::endl;
+	  file << p->first <<" 1" << endl;
 	  output_solution(file,p->second);
-	  file << std::endl;
+	  file << endl;
 	}
-     file << "endvars" << std::endl;
+     file << "endvars" << endl;
     }
-  file << "endgmv" << std::endl;
+  file << "endgmv" << endl;
   file.close();
- if (showoutput) std::cout << "[" << name << "]\n";
+ if (showoutput) cout << "[" << name << "]\n";
 }

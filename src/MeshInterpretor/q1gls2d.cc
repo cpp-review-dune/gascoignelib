@@ -5,6 +5,7 @@
 #include  "baseq12d.h"
 
 using namespace std;
+using namespace Gascoigne;
 
 /* ----------------------------------------- */
 

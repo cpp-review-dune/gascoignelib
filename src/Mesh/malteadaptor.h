@@ -36,7 +36,7 @@ protected:
 
 public:
 
-  MalteAdaptor(const ParamFile* pf, const dvector& eta);
+  MalteAdaptor(const Gascoigne::ParamFile* pf, const dvector& eta);
   void coarse(nvector<int>& coarse) const;
   void refine(nvector<int>& ref) const;
   void refine(ivector& ref, ivector& coarse) const;

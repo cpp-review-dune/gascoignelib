@@ -4,6 +4,10 @@
 #include  "giota.h"
 #include  <fstream>
 
+
+using namespace std;
+using namespace Gascoigne;
+
 /*-----------------------------------------*/
 
 MalteAdaptor::MalteAdaptor(const ParamFile* pf, const dvector& _eta) :
@@ -78,7 +82,7 @@ void MalteAdaptor::refine(nvector<int>& ref) const
 
   typedef CompareObjectBigToSmall<nvector<double> >  CoC;
 
-  std::sort(C.begin(),C.end(),CoC(eta));
+  sort(C.begin(),C.end(),CoC(eta));
   
   //ofstream file("hyundai");
 
@@ -102,7 +106,7 @@ void MalteAdaptor::refine(nvector<int>& ref) const
 	  ixopt = i;
 	}
     }
-  std::cout << ref << std::endl;
+  cout << ref << endl;
   //file.close();
 
   ref.insert(ref.begin(),C.begin(),C.begin()+ixopt);
@@ -121,12 +125,12 @@ void MalteAdaptor::coarse(nvector<int>& coars) const
 
   typedef CompareObjectBigToSmall<nvector<double> >  CoC;
 
-  std::sort(C.begin(),C.end(),CoC(eta));
+  sort(C.begin(),C.end(),CoC(eta));
   
   int diff = N-maxnodes;
 
 
-  std::cout << "DIFF " << diff << std::endl;
+  cout << "DIFF " << diff << endl;
   if (diff>0)  coars.insert(coars.begin(),C.end()-diff,C.end());
 }
 
@@ -143,7 +147,7 @@ void MalteAdaptor::refine_and_coarse(nvector<int>& ref, nvector<int>& coars) con
 
   typedef CompareObjectBigToSmall<nvector<double> >  CoC;
 
-  std::sort(C.begin(),C.end(),CoC(eta));
+  sort(C.begin(),C.end(),CoC(eta));
   
   double theta  = 0.;
   double minimum = 1.e10;
@@ -184,7 +188,7 @@ void MalteAdaptor::refine_and_coarse(nvector<int>& ref, nvector<int>& coars) con
 	}
       if (x+y>1.01) break;
     }
-  //cout << "ref,coarse = " << ixopt << " " << iyopt << std::endl;
+  //cout << "ref,coarse = " << ixopt << " " << iyopt << endl;
   
   coars.insert(coars.begin(),C.end()-iyopt,C.end());
 

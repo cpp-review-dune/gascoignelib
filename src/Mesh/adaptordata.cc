@@ -1,11 +1,14 @@
 #include "adaptordata.h"
 #include "filescanner.h"
 
+using namespace Gascoigne;
+using namespace std;
+
 /*****************************************************************/
 
-void AdaptorData::ErrorMessage(const std::string& str1, const std::string& str2) const
+void AdaptorData::ErrorMessage(const string& str1, const string& str2) const
 {
-  std::cout << "AdaptorData: " << str1 << " " << str2 << " ?" << std::endl;
+  cout << "AdaptorData: " << str1 << " " << str2 << " ?" << endl;
   exit(1);
 }
 

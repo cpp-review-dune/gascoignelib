@@ -4,18 +4,16 @@
 #include "compareclass.h"
 #include  "gascoigne.h"
 
-using namespace Gascoigne;
-
 /*---------------------------------------------------*/
 
 class LevelComparer
 {
   const HierarchicalMesh&   Mesh;
-  const IntVector& v;
+  const Gascoigne::IntVector& v;
 
   public:
   
-  LevelComparer(const HierarchicalMesh& HM, const IntVector& vv) : 
+  LevelComparer(const HierarchicalMesh& HM, const Gascoigne::IntVector& vv) : 
     Mesh(HM), v(vv) {};
 
   int size() const { return v.size(); }

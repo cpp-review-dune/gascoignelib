@@ -1,6 +1,10 @@
 #include  "hnstructureq13d.h"
 #include  "gascoignemesh.h"
 
+
+using namespace std;
+using namespace Gascoigne;
+
 /*-----------------------------------------*/
 
 HNStructureQ13d::HNStructureQ13d() : HNStructureQ12d(), faces(NULL)
@@ -144,7 +148,7 @@ fixarray<4,int> HNStructureQ13d::GetHangingFace(int i) const
 
 fixarray<2,int> HNStructureQ13d::GetHangingEdge(int i) const
 {
-  std::map<int,EdgeVector>::const_iterator p = edges->find(i);
+  map<int,EdgeVector>::const_iterator p = edges->find(i);
   assert(p!=edges->end());
 	  
   fixarray<2,int> Edge;

@@ -1,6 +1,8 @@
 #include  "visudatainfo.h"
 #include  "compose_name.h"
 
+using namespace std;
+
 /*-------------------------------------------------------------------------*/
 
 VisuDataInfo& VisuDataInfo::operator=(const VisuDataInfo& V)
@@ -19,11 +21,11 @@ bool VisuDataInfo::operator!=(const VisuDataInfo& V) const
 
 /*-------------------------------------------------------------------------*/
 
-VisuDataInfo::VisuDataInfo(const VisuData& D, std::string def)
+VisuDataInfo::VisuDataInfo(const VisuData& D, string def)
 {
   for(int c=0;c<D.visucomp();c++)
     {
-      std::string name(def);
+      string name(def);
       compose_name_without_dot(name,c);
       AddScalar(name,c);
     }
@@ -31,11 +33,11 @@ VisuDataInfo::VisuDataInfo(const VisuData& D, std::string def)
 
 /*-------------------------------------------------------------------------*/
 
-VisuDataInfo::VisuDataInfo(int nc, std::string def)
+VisuDataInfo::VisuDataInfo(int nc, string def)
 {
   for(int c=0;c<nc;c++)
     {
-      std::string name(def);
+      string name(def);
       compose_name_without_dot(name,c);
       AddScalar(name,c);
     }

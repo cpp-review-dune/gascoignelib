@@ -1,6 +1,10 @@
 #include  "solverdata.h"
 #include  "filescanner.h"
 
+
+using namespace std;
+using namespace Gascoigne;
+
 /*-----------------------------------------*/
 
 SolverData::SolverData() :
@@ -48,7 +52,7 @@ void SolverData::Init(const ParamFile* pf, int ncomp)
 
   if ((ilusort=="streamdirection")&&(stream_direction.size()==0))
     {
-      std::cerr << "Bei \n\tilusort\tstreamdiretion\nmuss" << std::endl
+      cerr << "Bei \n\tilusort\tstreamdiretion\nmuss" << endl
 	   << "\tstream_direction\n"
 	   << "mit Komponenten, nach denen sortiert wird, "
 	   << "angegeben werden.\n";

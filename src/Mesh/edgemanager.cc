@@ -12,9 +12,12 @@
 #define HANGMAP  __gnu_cxx::hash_map<EdgeArray<2>,int,EdgeHash> 
 #endif
 
+using namespace Gascoigne;
+using namespace std;
+
 /*---------------------------------------------------*/
 
-EdgeManager::EdgeManager(std::vector<Edge>& e, std::vector<Quad>& q, 
+EdgeManager::EdgeManager(vector<Edge>& e, vector<Quad>& q, 
 			 const IntVector& con, IntVector& eon) :
   edges(e), quads(q), co2n(con), eo2n(eon), QuadLaO(q) {}
 
@@ -22,7 +25,7 @@ EdgeManager::EdgeManager(std::vector<Edge>& e, std::vector<Quad>& q,
 
 void EdgeManager::BSETest() const
 {
-  std::cout << "BSE Tester:\n";
+  cout << "BSE Tester:\n";
   IntVector x(edges.size());
   for (int i=0; i<quads.size(); i++)
     {
@@ -36,7 +39,7 @@ void EdgeManager::BSETest() const
     {
       if (x[i]>2)
 	{
-	  std::cout << "problem 1 in edge " << i << " " << x[i] << std::endl;
+	  cout << "problem 1 in edge " << i << " " << x[i] << endl;
 	}
     }
   for (int i=0; i<quads.size(); i++)
@@ -58,7 +61,7 @@ void EdgeManager::BSETest() const
 
 	  if (nachbar==-10) 
 	    {
-	      std::cout << "problem 2 in edge " << i << " " << e << " edgenumber " << edge << std::endl;
+	      cout << "problem 2 in edge " << i << " " << e << " edgenumber " << edge << endl;
 	    }
 	}
     }
@@ -124,8 +127,8 @@ void EdgeManager::Update()
       int s = edges[i].slave();
       if (m<0)
 	{
-	  std::cerr << "EdgeManager::update()" << std::endl;
-	  std::cerr << "Master negativ " << i << " " << m << std::endl;
+	  cerr << "EdgeManager::update()" << endl;
+	  cerr << "Master negativ " << i << " " << m << endl;
 	  abort();
 	}
       int nm = co2n[m];
@@ -179,7 +182,7 @@ void EdgeManager::InnerEdges(const IntSet& CellRefList)
 
 	  if (ic<0)
 	    {
-	      std::cout << "master = " << ic << std::endl;
+	      cout << "master = " << ic << endl;
 	    }
 
 	  Edge E(ic,ie);
@@ -217,7 +220,7 @@ void EdgeManager::OuterEdges(const HangContainer2d& hangset)
 	  EdgeVector edge;
 	  int hang   = p->second.hanging();
 	  int rneigh = p->second.rneighbour();
-	  std::pair<int,int> cp = QuadLaO.GetChildEdges(edge,p->first,hang,rneigh,i);
+	  pair<int,int> cp = QuadLaO.GetChildEdges(edge,p->first,hang,rneigh,i);
 
 	  int cellindex = cp.first;
 	  int edgeindex = cp.second;
@@ -243,7 +246,7 @@ void EdgeManager::OuterEdges(const HangContainer2d& hangset)
 		    }
 		  if (edgeindex<0)
 		    {
-		      std::cout << slave << " ###smallind 2 " << edgeindex << std::endl;
+		      cout << slave << " ###smallind 2 " << edgeindex << endl;
 		      exit(1);
 		    }
 		  quads[slave].edge(edgeindex) = n;
@@ -277,7 +280,7 @@ void EdgeManager::OldHangings(HangContainer2d& hangset,
 
       if (!quads[bigslave].sleep())
 	{
-	  std::cout << "BIGSLAVE sleeps" << std::endl;
+	  cout << "BIGSLAVE sleeps" << endl;
 	  exit(1);	      
 	}
       for (int i=0; i<2; i++)
@@ -285,13 +288,13 @@ void EdgeManager::OldHangings(HangContainer2d& hangset,
 	  EdgeVector edge;
 
 	  int rneigh = p->second.rneighbour();
-	  std::pair<int,int> cp = QuadLaO.GetChildEdges(edge,p->first,hang,rneigh,i);
+	  pair<int,int> cp = QuadLaO.GetChildEdges(edge,p->first,hang,rneigh,i);
 
 	  int gedge  = quads[cp.first].edge(cp.second);
 	  if (gedge<0)
 	    {
-	      std::swap(bigmaster,bigslave);
-	      std::swap(p->second.rneighbour(),p->second.cneighbour());
+	      swap(bigmaster,bigslave);
+	      swap(p->second.rneighbour(),p->second.cneighbour());
 
 	      rneigh = p->second.rneighbour();
 	      cp = QuadLaO.GetChildEdges(edge,p->first,hang,rneigh,i);
@@ -299,7 +302,7 @@ void EdgeManager::OldHangings(HangContainer2d& hangset,
 	      gedge  = quads[cp.first].edge(cp.second);
 	      if (gedge<0)
 		{
-		  std::cout << "###gedge negativ:" << bigmaster << " " << bigslave << std::endl;
+		  cout << "###gedge negativ:" << bigmaster << " " << bigslave << endl;
 		}
 	    }
 	  int ledge  = -1;
@@ -314,7 +317,7 @@ void EdgeManager::OldHangings(HangContainer2d& hangset,
 	    }
 	  if (ledge<0)
 	    {
-	      std::cout << slave << " ###ledge " << ledge << std::endl;
+	      cout << slave << " ###ledge " << ledge << endl;
 	      exit(1);
 	    }
 	  Edge& E = edges[gedge];
@@ -328,8 +331,8 @@ void EdgeManager::OldHangings(HangContainer2d& hangset,
 		}
 	      else
 		{
-		  std::cout << std::endl << "bad master" << master << ": ";
-		  std::cout << E.master() << "-" << E.slave()<< std::endl;
+		  cout << endl << "bad master" << master << ": ";
+		  cout << E.master() << "-" << E.slave()<< endl;
 		  exit(1);
 		}
 	    }
@@ -357,8 +360,8 @@ void EdgeManager::SwappedEdges()
     }
   if (m!=SwappedEdge.size())
     {
-      std::cout << "ERROR: Inconsistency in SwappedEdges2d" << std::endl;
-      std::cout << m << " " << SwappedEdge.size() << std::endl;
+      cout << "ERROR: Inconsistency in SwappedEdges2d" << endl;
+      cout << m << " " << SwappedEdge.size() << endl;
       exit(1);
     }
   for (int i=0; i<quads.size(); i++)
@@ -388,8 +391,8 @@ fixarray<2,int> EdgeManager::ChildrenOfEdge(int e) const
 
   if(s<0)   
     {
-      std::cerr << "EdgeManager::ChildrenOfEdge()";
-      std::cerr << "no slave\n";
+      cerr << "EdgeManager::ChildrenOfEdge()";
+      cerr << "no slave\n";
       abort();
     }
   fixarray<2,int> f;
@@ -421,7 +424,7 @@ void EdgeManager::DeleteEdges()
 	      int ne = eo2n[ Q.edge(e) ];
 	      if (ne<0)
 		{
-		  std::cout << "\neo2n " << ne;
+		  cout << "\neo2n " << ne;
 		  exit(1);
 		}
 	      Q.edge(e) = ne;
@@ -460,7 +463,7 @@ void EdgeManager::SortHangings()
 {
   // edges with hanging nodes swapped to the end of list
 
-  std::vector<int> perm(edges.size());
+  vector<int> perm(edges.size());
   iota(perm.begin(),perm.end(),0);
   stable_sort(perm.begin(),perm.end(),HangEdgeSort(*this));
   stable_sort(edges.begin(),edges.end(),HangEdgeSort2(*this));
@@ -469,7 +472,7 @@ void EdgeManager::SortHangings()
   while(EdgeIsHanging(i-1)) i--;
   int nhedge = edges.size()-i;
 
-  std::vector<int> permi(perm.size());
+  vector<int> permi(perm.size());
   for(int i=0;i<perm.size();i++) permi[perm[i]] = i;
 
   for(int i=0;i<quads.size();i++)
@@ -490,8 +493,8 @@ void EdgeManager::SortHangings()
       if(s<0) continue;
       if (quad(m).sleep() && !quad(s).sleep())
 	{
-	  std::swap(edges[i].master(),edges[i].slave());
-	  std::swap(edges[i].LocalMasterIndex(),edges[i].LocalSlaveIndex());
+	  swap(edges[i].master(),edges[i].slave());
+	  swap(edges[i].LocalMasterIndex(),edges[i].LocalSlaveIndex());
 	}
     }
 }
@@ -501,7 +504,7 @@ void EdgeManager::SortHangings()
 void EdgeManager::InitEdges()
 {
 //   typedef fixarray<2,int> EdgeVector;
-//   std::map<EdgeVector,int>  H;
+//   map<EdgeVector,int>  H;
 
   HANGMAP H;
 
@@ -514,7 +517,7 @@ void EdgeManager::InitEdges()
 	  e[0] = quads[i].vertex(j);
 	  e[1] = quads[i].vertex((j+1)%4);
 
-	  if (e[1]<e[0])  std::swap(e[0],e[1]);
+	  if (e[1]<e[0])  swap(e[0],e[1]);
 
 	  HANGMAP::iterator yes = H.find(e);
 
@@ -531,7 +534,7 @@ void EdgeManager::InitEdges()
 	      Edge E(i,j);
 	      int n = edges.size();
 	      edges.push_back(E);
-	      H.insert(std::make_pair(e,n));
+	      H.insert(make_pair(e,n));
 	      quads[i].edge(j) = n;
 	    }
 	}
@@ -543,7 +546,7 @@ void EdgeManager::InitEdges()
 void EdgeManager::NeighbourTester() const
 {
   int n = quads.size();
-  std::vector<fixarray<4,int> >  vecino(n);
+  vector<fixarray<4,int> >  vecino(n);
 
   for (int q=0; q<quads.size(); q++)
     {
@@ -552,7 +555,7 @@ void EdgeManager::NeighbourTester() const
 	  int ind = quads[q].edge(e);
 	  if (ind<0)
 	    {
-	      std::cout << "* Q=" << q << " edge=" << e << " " << ind << std::endl;
+	      cout << "* Q=" << q << " edge=" << e << " " << ind << endl;
 	    }
 	}
     }
@@ -574,7 +577,7 @@ void EdgeManager::NeighbourTester() const
 	  else
 	    {
 	      vecino[q][e]=-2;
-	      std::cout << "*q=" << q << " el=" << e << " eg=" << ind << ": m=" << m << " s=" << s << std::endl;
+	      cout << "*q=" << q << " el=" << e << " eg=" << ind << ": m=" << m << " s=" << s << endl;
 	    }
 	}
     }

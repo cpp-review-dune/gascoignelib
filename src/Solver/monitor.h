@@ -10,8 +10,6 @@
 #include  <string>
 
 
-using namespace Gascoigne;
-
 /*******************************************************************/
 
 class Monitor
@@ -62,7 +60,7 @@ class Monitor
   void  failed_step   ();
   void  pre_monitor   (char*);
   void  post_monitor  ();
-  void  init          (const ParamFile* pf, int);
+  void  init          (const Gascoigne::ParamFile* pf, int);
   void  mesh          (int,int);
   void  pre_nonlinear (int);
   void  post_nonlinear(const dvector&, double, int,int,int);

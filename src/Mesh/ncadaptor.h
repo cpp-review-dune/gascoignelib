@@ -5,8 +5,6 @@
 #include  "paramfile.h"
 #include  <string>
 
-using namespace Gascoigne;
-
 /*-----------------------------------------------------------*/
 
 class NCAdaptor
@@ -20,7 +18,7 @@ protected:
 
 public:
 
-  NCAdaptor(const ParamFile* paramfile, const nvector<double>& eta);
+  NCAdaptor(const Gascoigne::ParamFile* paramfile, const nvector<double>& eta);
   void refine(nvector<int>& ref, nvector<int>& coarse) const;
 };
 

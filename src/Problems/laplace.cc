@@ -45,7 +45,7 @@ void Laplace::Form(VectorIterator b, const FemFunction& U, const TestFunction& N
 
 /*-----------------------------------------*/
 
-void Laplace::Matrix(EntryMatrix& A, const FemFunction& U, const DerivativeVector& M, const TestFunction& N) const
+void Laplace::Matrix(EntryMatrix& A, const FemFunction& U, const TestFunction& M, const TestFunction& N) const
 {
   A(0,0) += visc* (M.x()*N.x()+M.y()*N.y());
 }

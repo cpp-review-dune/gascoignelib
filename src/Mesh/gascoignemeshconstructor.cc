@@ -2,6 +2,7 @@
 #include  "gascoignemeshtransferconstructor.h"
 
 using namespace std;
+using namespace Gascoigne;
 
 /*---------------------------------------------------*/
 
@@ -29,7 +30,7 @@ void GascoigneMeshConstructor::Loop2d()
 {
   finestlevel = 1;
 
-  std::set<int>  newquads, oldquads;
+  set<int>  newquads, oldquads;
   HM->GetAwakeCells(newquads);
  
   GascoigneMesh*  GM0 = GMG->GetGascoigneMesh(0);
@@ -68,7 +69,7 @@ void GascoigneMeshConstructor::Loop3d()
 {
   finestlevel = 1;
 
-  std::set<int>  newquads, oldquads;
+  set<int>  newquads, oldquads;
   HM->GetAwakeCells(newquads);
  
   GascoigneMesh*  GM0 = GMG->GetGascoigneMesh(0);
@@ -131,7 +132,7 @@ void GascoigneMeshConstructor::Construct2d
   assert(NM);
 
   nvector<int>& nc = NM->GetCellVector();
-  std::vector<Vertex2d>& nx = NM->GetVertexVector();
+  vector<Vertex2d>& nx = NM->GetVertexVector();
 
   // zellen
 
@@ -179,7 +180,7 @@ void GascoigneMeshConstructor::Construct3d
   assert(NM);
 
   nvector<int>& nc = NM->GetCellVector();
-  std::vector<Vertex3d>& nx = NM->GetVertexVector();
+  vector<Vertex3d>& nx = NM->GetVertexVector();
 
   // zellen
 

@@ -1,15 +1,17 @@
 #include  "dirichletdatabycolor.h"
 
+using namespace std;
+
 /*-----------------------------------------*/
 
-DirichletDataByColor::DirichletDataByColor(int c, const std::set<int>& cl, double s)
+DirichletDataByColor::DirichletDataByColor(int c, const set<int>& cl, double s)
   : DirichletData(), comp(c), col(cl), scale(s)
 {
 }
 
 /*-----------------------------------------*/
 
-DirichletDataByColor::DirichletDataByColor(const std::vector<std::string>& args)
+DirichletDataByColor::DirichletDataByColor(const vector<string>& args)
 {
   int n = args.size();
   comp  = atoi(args[0].c_str());
@@ -39,7 +41,7 @@ void DirichletDataByColor::operator()
 
 /*-----------------------------------------*/
 
-std::set<int> DirichletDataByColor::preferred_colors()const 
+set<int> DirichletDataByColor::preferred_colors()const 
 {
   return col;
 }

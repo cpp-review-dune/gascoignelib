@@ -33,15 +33,15 @@ class HangContainer3d : public HangContainer2d
   int nDel()  const { return VertexToBeDeleted.size()+FaceToBeDeleted.size(); }
   int nNew()  const { return VertexToBeCreated.size()+FaceToBeCreated.size(); }
 
-  void load_elimination (IntVector&) const;
+  void load_elimination (Gascoigne::IntVector&) const;
   int  vertex_index     (const EdgeVector& v) const
     {
       return HangContainer2d::vertex_index(v);
     }
   int  vertex_index(const FaceVector&) const;
 
-  void update_olds(const IntVector&, const IntVector&);
-  void update_news(const IntVector&, int);
+  void update_olds(const Gascoigne::IntVector&, const Gascoigne::IntVector&);
+  void update_news(const Gascoigne::IntVector&, int);
 
   void face_coarse(const FaceVector&, int, int);
   void face_refine(const FaceVector&, int);	

@@ -8,6 +8,8 @@
 #include  <sys/wait.h>
 #include  <unistd.h>
 
+using namespace std;
+
 /***********************************************************
  *****   ueberarbeitete und fehlerbereinigte Version   ***** 
  *****   Michael Schmich                  15.01.2002   *****
@@ -40,7 +42,7 @@ void Time::add(double s)
 
 /*----------------------------------------------------*/
 
-std::ostream& operator<<(std::ostream &s, const Time& A)
+ostream& operator<<(ostream &s, const Time& A)
 {
   if(A.GetDays()>0)
     {

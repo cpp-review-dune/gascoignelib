@@ -49,7 +49,7 @@ public:
 
   void Form(Gascoigne::VectorIterator b, const Gascoigne::FemFunction& U, const Gascoigne::TestFunction& N) const;
   
-  void Matrix(EntryMatrix& D, const Gascoigne::FemFunction& U, const DerivativeVector& M, const Gascoigne::TestFunction& N) const;
+  void Matrix(EntryMatrix& D, const Gascoigne::FemFunction& U, const Gascoigne::TestFunction& M, const Gascoigne::TestFunction& N) const;
 
 
   void L(nvector<double>& dst, const Gascoigne::FemFunction& U) const;

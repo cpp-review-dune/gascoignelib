@@ -7,7 +7,7 @@ using namespace Gascoigne;
 
 /* ----------------------------------------- */
 
-void LocalSolver::NewMeshInterpretor(int dimension, const std::string& discname)
+void LocalSolver::NewMeshInterpretor(int dimension, const string& discname)
 {
   GetMeshInterpretorPointer()  = new LocalMeshInterpretor;
 }

@@ -5,8 +5,6 @@
 #include  <stdio.h>
 #include  "paramfile.h"
 
-using namespace Gascoigne;
-
 class AdaptorData
 {
   int     inc,inr,indr,inactual,idim,mnodes,iorder;
@@ -64,7 +62,7 @@ public:
   AdaptorData();
 
   void reset();
-  void read (const ParamFile* pf);
+  void read (const Gascoigne::ParamFile* pf);
 };
 
 #endif

@@ -13,14 +13,12 @@
 #include  <string>
 #include  "paramfile.h"
 
-using namespace Gascoigne;
-
 class Starter
 {
 private:
 
   bool   _erase;
-  ParamFile* _paramfile;
+  Gascoigne::ParamFile* _paramfile;
 
 public:
 
@@ -32,7 +30,7 @@ public:
 
   ~Starter();
 
-  const ParamFile* GetParamFile() const {return _paramfile;}
+  const Gascoigne::ParamFile* GetParamFile() const {return _paramfile;}
 };
 
 

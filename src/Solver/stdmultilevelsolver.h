@@ -41,7 +41,7 @@ class StdMultiLevelSolver : public MultiLevelSolverInterface
   mutable int ComputeLevel;
   mutable int oldnlevels;
 
-  const ParamFile*  _paramfile;
+  const Gascoigne::ParamFile*  _paramfile;
 
   Monitor*         MON;
   MultiLevelSolverData*          DataP;
@@ -79,7 +79,7 @@ class StdMultiLevelSolver : public MultiLevelSolverInterface
   }
   void MemoryVector();
 
-  void BasicInit(const MeshAgentInterface* GMGM, const ParamFile* paramfile);
+  void BasicInit(const MeshAgentInterface* GMGM, const Gascoigne::ParamFile* paramfile);
 
   // Zugriff
 
@@ -110,7 +110,7 @@ class StdMultiLevelSolver : public MultiLevelSolverInterface
   // neue vektoren
 
   std::string Solve(int level, NewMultiLevelGhostVector& x, const NewMultiLevelGhostVector& b);
-  void InterpolateSolution(NewMultiLevelGhostVector& u, const GlobalVector& uold) const;
+  void InterpolateSolution(NewMultiLevelGhostVector& u, const Gascoigne::GlobalVector& uold) const;
 
   virtual double NewtonResidual(NewMultiLevelGhostVector& y, const NewMultiLevelGhostVector& x, const NewMultiLevelGhostVector& b) const;
   virtual double NewtonUpdate(double& rr, NewMultiLevelGhostVector& x, NewMultiLevelGhostVector& dx, NewMultiLevelGhostVector& r, const NewMultiLevelGhostVector& f, NLInfo& nlinfo);
@@ -135,7 +135,7 @@ class StdMultiLevelSolver : public MultiLevelSolverInterface
 
   double ComputeFunctional(NewMultiLevelGhostVector& f, const NewMultiLevelGhostVector& u, const Functional* FP) const;
 
-  void SolutionTransfer(int l, GlobalVector& ul, const GlobalVector& uf) const;
+  void SolutionTransfer(int l, Gascoigne::GlobalVector& ul, const Gascoigne::GlobalVector& uf) const;
 };
 
 #endif

@@ -1,5 +1,9 @@
 #include  "index.h"
 
+
+using namespace std;
+using namespace Gascoigne;
+
 /*---------------------------------------------------*/
 
 Index::Index() {}
@@ -27,26 +31,26 @@ Index& Index::operator=(const Index& I)
 
 /*---------------------------------------------------*/
 
-std::ostream& operator<<(std::ostream& os, const Index& I)
+ostream& operator<<(ostream& os, const Index& I)
 {
-  os << "Vertex l2g " << I.VertexSize()<<std::endl;
+  os << "Vertex l2g " << I.VertexSize()<<endl;
   os << I.Vertexl2g();
-  os << "Vertex g2l " << I.VertexSize()<<std::endl;
+  os << "Vertex g2l " << I.VertexSize()<<endl;
   os << I.Vertexg2l() << " ";
 
-  os << "Edge l2g " << I.EdgeSize()<<std::endl;
+  os << "Edge l2g " << I.EdgeSize()<<endl;
   os << I.Edgel2g();
-  os << "Edge g2l " << I.EdgeSize()<<std::endl;
+  os << "Edge g2l " << I.EdgeSize()<<endl;
   os << I.Edgeg2l() << " ";
 
-  os << "Hex l2g " << I.HexSize()<<std::endl;
+  os << "Hex l2g " << I.HexSize()<<endl;
   os << I.Hexl2g();
-  os << "Hex g2l " << I.HexSize()<<std::endl;
+  os << "Hex g2l " << I.HexSize()<<endl;
   os << I.Hexg2l() << " ";
 
-  os << "Quad l2g " << I.QuadSize()<<std::endl;
+  os << "Quad l2g " << I.QuadSize()<<endl;
   os << I.Quadl2g();
-  os << "Quad g2l " << I.QuadSize()<<std::endl;
+  os << "Quad g2l " << I.QuadSize()<<endl;
   os << I.Quadg2l() << " ";
 
   return os;
@@ -69,7 +73,7 @@ void Index::InitNodes(const IntSet& nodes)
   vg2l.clear();
   for(int i=0;i<n;i++)
     {
-      vg2l.insert(std::make_pair(vl2g[i],i));
+      vg2l.insert(make_pair(vl2g[i],i));
     }
 }
 
@@ -96,7 +100,7 @@ void Index::InitQuads()
   qg2l.clear();
   for(int i=0;i<n;i++)
     {
-      qg2l.insert(std::make_pair(ql2g[i],i));
+      qg2l.insert(make_pair(ql2g[i],i));
     }
 }
 
@@ -108,7 +112,7 @@ void Index::InitHexs()
   hg2l.clear();
   for(int i=0;i<n;i++)
     {
-      hg2l.insert(std::make_pair(hl2g[i],i));
+      hg2l.insert(make_pair(hl2g[i],i));
     }
 }
 

@@ -1,5 +1,7 @@
 #include  "hangingindexhandler.h"
 
+using namespace std;
+
 /*-----------------------------------------*/
 
 HangingIndexHandler::HangingIndexHandler()
@@ -16,10 +18,10 @@ void HangingIndexHandler::CopyLevel2Nibble
   hnq2.clear();
   hnq2face.clear();
       
-  std::map<int,fixarray<3,int> >::const_iterator it3=Lhih.GetStructure()->begin();
-  std::map<int,fixarray<9,int> >::const_iterator it9=Lhih.GetStructureFace()->begin();
-  std::map<int,fixarray<3,int> >::const_iterator end3=Lhih.GetStructure()->end();
-  std::map<int,fixarray<9,int> >::const_iterator end9=Lhih.GetStructureFace()->end();
+  map<int,fixarray<3,int> >::const_iterator it3=Lhih.GetStructure()->begin();
+  map<int,fixarray<9,int> >::const_iterator it9=Lhih.GetStructureFace()->begin();
+  map<int,fixarray<3,int> >::const_iterator end3=Lhih.GetStructure()->end();
+  map<int,fixarray<9,int> >::const_iterator end9=Lhih.GetStructureFace()->end();
 
   for (;it3!=end3;++it3)
     {

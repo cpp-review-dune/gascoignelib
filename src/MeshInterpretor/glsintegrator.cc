@@ -2,6 +2,7 @@
 #include  "glsequation.h"
 
 using namespace std;
+using namespace Gascoigne;
 
 /*-----------------------------------------*/
 
@@ -80,7 +81,7 @@ void GlsIntegrator<DIM>::Matrix(const Equation& EQ, EntryMatrix& E, const FemInt
   const IntegrationFormulaInterface& IFF = FormFormula();
 
   int ncomp = U.ncomp();
-  std::vector<nmatrix<double> >  LMat(FEM.n(),nmatrix<double>(ncomp,ncomp));
+  vector<nmatrix<double> >  LMat(FEM.n(),nmatrix<double>(ncomp,ncomp));
   nmatrix<double> SMat(ncomp,ncomp);
 
   for (int k=0; k<IFF.n(); k++)
@@ -130,7 +131,7 @@ void GlsIntegrator<DIM>::Matrix(const Equation& EQ, EntryMatrix& E, const FemInt
       GEQ->L(Lu,UH);
       Lu.equ(weight,Lu);
       
-      vector<DerivativeVector>   NS(ncomp),MS(ncomp);
+      vector<TestFunction>   NS(ncomp),MS(ncomp);
       for(int d=0; d<ncomp; d++)
 	{
 	  NS[d].zero();

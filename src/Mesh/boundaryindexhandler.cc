@@ -4,10 +4,11 @@
 #include  "stlio.h"
 
 using namespace std;
+using namespace Gascoigne;
 
 /*--------------------------------------------------------------*/
 
-std::ostream& operator<<(std::ostream &s, const BoundaryIndexHandler& A)
+ostream& operator<<(ostream &s, const BoundaryIndexHandler& A)
 {
   const IntSet& colors = A.GetColors();
   cerr << "All Colors: " <<  colors << endl;
@@ -59,14 +60,14 @@ void BoundaryIndexHandler::Equal
 /*--------------------------------------------------------------*/
 
 void BoundaryIndexHandler::CopySetToVector
-(const std::vector<IntSet>& H, const IntVector& colorvec, VecMap& dst) const
+(const vector<IntSet>& H, const IntVector& colorvec, VecMap& dst) const
 {
   for (int i=0; i<H.size(); i++)
     {
       IntVector v;
       Set2Vec(v,H[i]);
       int color = colorvec[i];
-      dst.insert(std::make_pair(color,v));
+      dst.insert(make_pair(color,v));
     }
 }
 
@@ -88,8 +89,8 @@ const nvector<int>& BoundaryIndexHandler::Verteces(int color) const
   VecMap::const_iterator p = verteces.find(color);
   if(p==verteces.end())
     {
-      std::cerr << "BoundaryIndexHandler::Verteces\tcolor not found: "
-	   << color << std::endl;
+      cerr << "BoundaryIndexHandler::Verteces\tcolor not found: "
+	   << color << endl;
       abort();
     }
   return p->second;
@@ -102,7 +103,7 @@ const nvector<int>& BoundaryIndexHandler::Cells(int color) const
   VecMap::const_iterator p = cells.find(color);
   if(p==cells.end())
     {
-      std::cerr << "BoundaryIndexHandler::Cells\tcolor not found: "<<color << std::endl;
+      cerr << "BoundaryIndexHandler::Cells\tcolor not found: "<<color << endl;
       abort();
     }
   return p->second;
@@ -115,7 +116,7 @@ const nvector<int>& BoundaryIndexHandler::Localind(int color) const
   VecMap::const_iterator p = localci.find(color);
   if(p==localci.end())
     {
-      std::cerr << "BoundaryIndexHandler::Localind\tcolor not found: "<<color << std::endl;
+      cerr << "BoundaryIndexHandler::Localind\tcolor not found: "<<color << endl;
       abort();
     }
   return p->second;

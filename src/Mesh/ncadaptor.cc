@@ -4,6 +4,10 @@
 #include  "filescanner.h"
 #include  <climits>
 
+
+using namespace std;
+using namespace Gascoigne;
+
 /*-----------------------------------------*/
 
 NCAdaptor::NCAdaptor(const ParamFile* paramfile, const nvector<double>& _eta) 
@@ -14,7 +18,7 @@ NCAdaptor::NCAdaptor(const ParamFile* paramfile, const nvector<double>& _eta)
 #ifdef __OLDCOMPILER__
   DH.insert("n"   ,& _n,INT_MAX);
 #else
-  DH.insert("n"   ,& _n,std::numeric_limits<int>::max());
+  DH.insert("n"   ,& _n,numeric_limits<int>::max());
 #endif
 
   DH.insert("p"  ,& _p,0.9);
@@ -31,7 +35,7 @@ void NCAdaptor::refine(nvector<int>& ref, nvector<int>& coars) const
   nvector<int> C(n); 
   iota(C.begin(),C.end(),0);
   typedef CompareObjectBigToSmall<nvector<double> >  CoC;
-  std::sort(C.begin(),C.end(),CoC(eta));
+  sort(C.begin(),C.end(),CoC(eta));
 
   double eta_limit = _p*etasum;
 

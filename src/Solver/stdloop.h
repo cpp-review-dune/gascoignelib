@@ -50,7 +50,7 @@ public:
   StdLoop();
   ~StdLoop();
 
-  void BasicInit(const ParamFile* paramfile);
+  void BasicInit(const Gascoigne::ParamFile* paramfile);
 
   void SetFunctionals(const std::vector<const Functional*>& fv) { _FV =  fv;}
 

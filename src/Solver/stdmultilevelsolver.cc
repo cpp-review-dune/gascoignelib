@@ -10,6 +10,7 @@
 #include  "mginterpolatornested.h"
 
 using namespace std;
+using namespace Gascoigne;
 
 /*-------------------------------------------------------------*/
 

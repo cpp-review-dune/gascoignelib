@@ -6,10 +6,10 @@ using namespace std;
 
 /*-------------------------------------------------------------*/
   
-std::ostream& operator<<(std::ostream &s, const ColumnStencil& A)
+ostream& operator<<(ostream &s, const ColumnStencil& A)
 {
-  s << "start:\n"<< A.start() << std::endl;
-  s << "col:\n"<< A.col() << std::endl;
+  s << "start:\n"<< A.start() << endl;
+  s << "col:\n"<< A.col() << endl;
   return s;
 }
 
@@ -36,7 +36,7 @@ void ColumnStencil::memory(const SparseStructureInterface* SI)
       int first = sstart[i];
       sstart[i+1] = first + SS->rowsize(i);
       int id = 0;
-      for(std::set<int>::const_iterator p=SS->rowbegin(i);
+      for(set<int>::const_iterator p=SS->rowbegin(i);
 	  p!=SS->rowend(i);p++)
 	{
 	  scol[first+id] = *p;

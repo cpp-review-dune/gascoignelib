@@ -2,8 +2,8 @@
 #include  "filescanner.h"
 #include  "gascoignemeshconstructor.h"
 
-
 using namespace std;
+using namespace Gascoigne;
 
 /*-----------------------------------------*/
 
@@ -36,7 +36,7 @@ void LocalMeshAgent::BasicInit(const ParamFile* paramfile)
     }
   else
     {
-      cout << "dimension of Mesh ? " << dimension << std::endl;
+      cout << "dimension of Mesh ? " << dimension << endl;
     }
 
   int patchdepth=1;

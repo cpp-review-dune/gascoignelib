@@ -13,8 +13,6 @@
 #include  "basicintegrator.h"
 #include  "integrationformula.h"
 
-using namespace Gascoigne;
-
 template<int DIM>
 class GalerkinIntegrator : public BasicIntegrator
 {
@@ -47,17 +45,17 @@ public:
   
   std::string GetName() const {return "Galerkin";}
 
-  void Rhs(const RightHandSideData& RHS, LocalVector& F, const FemInterface& FEM, const LocalData& Q) const;
-  void Form(const Equation& EQ, LocalVector& F, const FemInterface& FEM, const LocalVector& U, const LocalData& Q) const;
-  void Matrix(const Equation& EQ, EntryMatrix& E, const FemInterface& FEM, const LocalVector& U, const LocalData& Q) const;
+  void Rhs(const RightHandSideData& RHS, Gascoigne::LocalVector& F, const FemInterface& FEM, const Gascoigne::LocalData& Q) const;
+  void Form(const Equation& EQ, Gascoigne::LocalVector& F, const FemInterface& FEM, const Gascoigne::LocalVector& U, const Gascoigne::LocalData& Q) const;
+  void Matrix(const Equation& EQ, EntryMatrix& E, const FemInterface& FEM, const Gascoigne::LocalVector& U, const Gascoigne::LocalData& Q) const;
   void MassMatrix(EntryMatrix& E, const FemInterface& FEM) const;
 
-  void RhsPoint(LocalVector& b, const FemInterface& E, const Vertex<DIM>& p, int comp) const;
-  double ComputeDomainFunctional(const DomainFunctional& F, const FemInterface& FEM, const LocalVector& U, const LocalData& Q) const;
+  void RhsPoint(Gascoigne::LocalVector& b, const FemInterface& E, const Vertex<DIM>& p, int comp) const;
+  double ComputeDomainFunctional(const DomainFunctional& F, const FemInterface& FEM, const Gascoigne::LocalVector& U, const Gascoigne::LocalData& Q) const;
 
-  void ErrorsByExactSolution(LocalVector& dst, const FemInterface& FE, const ExactSolution& ES, const LocalVector& U, const LocalData& Q) const;
+  void ErrorsByExactSolution(Gascoigne::LocalVector& dst, const FemInterface& FE, const ExactSolution& ES, const Gascoigne::LocalVector& U, const Gascoigne::LocalData& Q) const;
 
-  void RhsNeumann(const NeumannData& RHS, LocalVector& F, const FemInterface& FEM, int ile, int col, const LocalData& Q) const;
+  void RhsNeumann(const NeumannData& RHS, Gascoigne::LocalVector& F, const FemInterface& FEM, int ile, int col, const Gascoigne::LocalData& Q) const;
 
 };
 

@@ -7,15 +7,17 @@
 #include  <algorithm>
 #include  "giota.h"
 
+using namespace std;
+
 /*-----------------------------------------*/
 
-GnuplotData::GnuplotData(const std::string& s, const Vertex3d& _pos) : 
+GnuplotData::GnuplotData(const string& s, const Vertex3d& _pos) : 
   plane(s), pos(_pos)
 {
   if ((plane!="x")  && (plane!="y")  && (plane!="z") &&
       (plane!="xz") && (plane!="yz") && (plane!="xy"))
     {
-      std::cerr << "GnuplotData::GnuplotData() plane=" << plane << std::endl;
+      cerr << "GnuplotData::GnuplotData() plane=" << plane << endl;
       abort();
     }
 }
@@ -29,7 +31,7 @@ GnuplotData::GnuplotData(const GnuplotData& GP) :
 
 /*-----------------------------------------*/
 
-void GnuplotData::SetName(std::string& filename) const
+void GnuplotData::SetName(string& filename) const
 {
   if (plane=="x") filename += "_x";
   if (plane=="y") filename += "_y";
@@ -73,7 +75,7 @@ double GnuplotData::SetVertex(const Vertex3d& v) const
 
 /********************************************************************/
 
-void Visualization::gnuplot(const std::string& name) const
+void Visualization::gnuplot(const string& name) const
 {
   if (!PointData) return;
 
@@ -142,16 +144,16 @@ void Visualization::gnuplot(const std::string& name) const
 
       typedef CompareObject<nvector<double> >  CoC;
       
-      std::sort(C.begin(),C.end(),CoC(x));
+      sort(C.begin(),C.end(),CoC(x));
             
-      std::string gnuname = name;
+      string gnuname = name;
       
       GP[k].SetName(gnuname);
       gnuname += ".gpl";
 
-      if (showoutput) std::cout << "[" << gnuname << "]\n";
+      if (showoutput) cout << "[" << gnuname << "]\n";
 
-      std::ofstream out(gnuname.c_str());
+      ofstream out(gnuname.c_str());
       FILE_ERROR(out,gnuname);
       
       for(int i=0;i<x.size();i++)
@@ -161,7 +163,7 @@ void Visualization::gnuplot(const std::string& name) const
 	    {
 	      out << "  " << f(C[i],c);
 	    }
-	  out <<  std::endl;
+	  out <<  endl;
 	}
       out.close();
     }

@@ -1,5 +1,7 @@
 #include  "gascoignemeshtransferconstructor.h"
 
+using namespace std;
+
 /*-----------------------------------------*/
 
 GascoigneMeshTransferConstructor2d::GascoigneMeshTransferConstructor2d
@@ -7,10 +9,10 @@ GascoigneMeshTransferConstructor2d::GascoigneMeshTransferConstructor2d
  const LevelMesh2d* LMfine, const LevelMesh2d* LMcoarse)
 {
   nvector<int>& c2f = GMT->GetC2f();
-  std::map<int,fixarray<2,int> >& zweier = GMT->GetZweier();
-  std::map<int,fixarray<4,int> >& vierer = GMT->GetVierer();
-  std::map<int,int>&              CellEiner = GMT->GetCellEiner();
-  std::map<int,fixarray<4,int> >& CellVierer = GMT->GetCellVierer();
+  map<int,fixarray<2,int> >& zweier = GMT->GetZweier();
+  map<int,fixarray<4,int> >& vierer = GMT->GetVierer();
+  map<int,int>&              CellEiner = GMT->GetCellEiner();
+  map<int,fixarray<4,int> >& CellVierer = GMT->GetCellVierer();
 
   const QuadLawAndOrder& LaO = HM->QuadLawOrder();
 
@@ -90,8 +92,8 @@ GascoigneMeshTransferConstructor2d::GascoigneMeshTransferConstructor2d
 	  zweier[ile]=n2;
 	}
     }
-//   std::ofstream file("MGI",std::ios::app);
-//   std::cout << "Matrix:\n" << M << std::endl;
+//   ofstream file("MGI",ios::app);
+//   cout << "Matrix:\n" << M << endl;
 }
 
 /*-----------------------------------------*/
@@ -100,16 +102,16 @@ GascoigneMeshTransferConstructor3d::GascoigneMeshTransferConstructor3d
 (const HierarchicalMesh3d* HM, GascoigneMeshTransfer* GMT,
  const LevelMesh3d* LMfine, const LevelMesh3d* LMcoarse)
 {
-//   std::cerr << "GascoigneMeshTransferConstructor::Construct3d()\n";
-//   std::cerr << "noch keine konstanten!\n";
+//   cerr << "GascoigneMeshTransferConstructor::Construct3d()\n";
+//   cerr << "noch keine konstanten!\n";
 //   assert(0);
 
   nvector<int>& c2f = GMT->GetC2f();
-  std::map<int,fixarray<2,int> >& zweier = GMT->GetZweier();
-  std::map<int,fixarray<4,int> >& vierer = GMT->GetVierer();
-  std::map<int,fixarray<8,int> >& achter = GMT->GetAchter();
-  std::map<int,int>& CellEiner = GMT->GetCellEiner();
-  std::map<int,fixarray<8,int> >& CellAchter = GMT->GetCellAchter();
+  map<int,fixarray<2,int> >& zweier = GMT->GetZweier();
+  map<int,fixarray<4,int> >& vierer = GMT->GetVierer();
+  map<int,fixarray<8,int> >& achter = GMT->GetAchter();
+  map<int,int>& CellEiner = GMT->GetCellEiner();
+  map<int,fixarray<8,int> >& CellAchter = GMT->GetCellAchter();
 
   const HexLawAndOrder& LaO = HM->HexLawOrder();
 

@@ -15,8 +15,6 @@
 #include  "feminterface.h"
 #include  "integratorinterface.h"
 
-using namespace Gascoigne;
-
 class BasicMeshInterpretor : public MeshInterpretorInterface
 {
  private:
@@ -28,10 +26,10 @@ class BasicMeshInterpretor : public MeshInterpretorInterface
  protected:
 
   mutable EntryMatrix __E;
-  mutable LocalVector __F;
-  mutable LocalVector __U;
+  mutable Gascoigne::LocalVector __F;
+  mutable Gascoigne::LocalVector __U;
 
-  mutable LocalData   __Q;
+  mutable Gascoigne::LocalData   __Q;
   
   const MeshInterface* GetMesh() const {return __MP;}
   const FemInterface* GetFem() const {return __FEM;}
@@ -40,14 +38,14 @@ class BasicMeshInterpretor : public MeshInterpretorInterface
   IntegratorInterface*& GetIntegratorPointer() {return __INT;}
   FemInterface*& GetFemPointer() {return __FEM;}
 
-  virtual void GlobalToLocal(LocalVector& U, const GlobalVector& u, int iq) const {
+  virtual void GlobalToLocal(Gascoigne::LocalVector& U, const Gascoigne::GlobalVector& u, int iq) const {
     GlobalToLocalSingle(U,u,iq);
     GlobalToLocalData(iq);
   }
   virtual void GlobalToLocalData(int iq) const;
 
-  virtual void GlobalToLocalSingle(LocalVector& U, const GlobalVector& u, int iq) const;
-  virtual void LocalToGlobal(GlobalVector& f, const LocalVector& F, int iq, double s) const;
+  virtual void GlobalToLocalSingle(Gascoigne::LocalVector& U, const Gascoigne::GlobalVector& u, int iq) const;
+  virtual void LocalToGlobal(Gascoigne::GlobalVector& f, const Gascoigne::LocalVector& F, int iq, double s) const;
   virtual void LocalToGlobal(MatrixInterface& A, EntryMatrix& E, int iq, double s) const;
 
   virtual nvector<int> GetLocalIndices(int iq) const=0;
@@ -61,7 +59,7 @@ class BasicMeshInterpretor : public MeshInterpretorInterface
   BasicMeshInterpretor();
   ~BasicMeshInterpretor();
   
-  void BasicInit(const ParamFile* pf) {}
+  void BasicInit(const Gascoigne::ParamFile* pf) {}
   void ReInit   (const MeshInterface* MP) {__MP=MP;}
 };
 

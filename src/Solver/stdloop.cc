@@ -61,13 +61,13 @@ nvector<double> StdLoop::ComputeFunctionals(NewMultiLevelGhostVector& f, NewMult
   nvector<double> j(n,0.);
   if (n==0) return j;
 
-  std::cout << "\nFunctionals: ";
+  cout << "\nFunctionals: ";
   for(int i=0; i<n; i++)
     {
       j[i] = GetMultiLevelSolver()->ComputeFunctional(f,u,J[i]);
-      std::cout << J[i]->BeautifulName() << " ";
+      cout << J[i]->BeautifulName() << " ";
     }
-  std::cout << std::endl;
+  cout << endl;
   return j;
 } 
 

@@ -47,7 +47,7 @@ template<int DIM, int BDIM, class TRAFO, class BASE>
 
 template<int DIM, int BDIM, class TRAFO, class BASE>
 void  FiniteElement<DIM,BDIM,TRAFO,BASE>::init_test_functions
-(DerivativeVector& Phi, double w, int i) const
+(Gascoigne::TestFunction& Phi, double w, int i) const
 {
   Phi.m() = w*N(i);
   Phi.x() = w*N_x(i);

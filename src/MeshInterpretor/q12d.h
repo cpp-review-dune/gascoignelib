@@ -30,11 +30,11 @@ public:
 
   std::string GetName() const {return "Q12d";}
   
-  void BasicInit(const ParamFile* pf);
+  void BasicInit(const Gascoigne::ParamFile* pf);
 
-  void Interpolate(GlobalVector& u, const InitialCondition& U) const;
+  void Interpolate(Gascoigne::GlobalVector& u, const InitialCondition& U) const;
   void ConstructInterpolator(MgInterpolatorInterface* I, const MeshTransferInterface* MT);
-  void StrongDirichletVector(GlobalVector& u, const DirichletData& BF, int col, const std::vector<int>& comp) const;
+  void StrongDirichletVector(Gascoigne::GlobalVector& u, const DirichletData& BF, int col, const std::vector<int>& comp) const;
 };
 
 

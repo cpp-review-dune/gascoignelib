@@ -9,6 +9,8 @@
 
 #define TABWIDTH 23
 
+using namespace std;
+
 /*-----------------------------------------*/
 
 Timer::Timer()
@@ -17,18 +19,18 @@ Timer::Timer()
 
 /*-----------------------------------------*/
 
-std::ostream& operator<<(std::ostream& os, const Timer& T)
+ostream& operator<<(ostream& os, const Timer& T)
 {
   StopWatch st = T.total();
   double tt = st.read();
   Timer::const_iterator p = T.begin();
   os.precision(2);
-  os.setf(std::ios::fixed, std::ios::floatfield);
+  os.setf(ios::fixed, ios::floatfield);
   os << " ------------------------------------\n";
   os << " --  Timing  ------------------------\n";
   os << " ------------------------------------\n";
-  std::vector<double>  x; 
-  std::vector<std::string>  s; 
+  vector<double>  x; 
+  vector<string>  s; 
   while(p!=T.end())
     {
       s.push_back(p->first);
@@ -37,16 +39,16 @@ std::ostream& operator<<(std::ostream& os, const Timer& T)
     }
   nvector<int> C(x.size()); 
   iota(C.begin(),C.end(),0);
-  std::sort(C.begin(),C.end(),CompareObjectBigToSmall<std::vector<double> > (x));
+  sort(C.begin(),C.end(),CompareObjectBigToSmall<vector<double> > (x));
   
   for (int i=0; i<x.size(); i++)
     {
-      os.setf(std::ios::left);
+      os.setf(ios::left);
       int l = s[C[i]].size();
-      os << std::setw(TABWIDTH-l) << s[C[i]] <<"  ";
-      os << T.Get(s[C[i]]).GetTime() << "  " << int(100.*x[C[i]]/tt) <<" \%"<<std::endl;
+      os << setw(TABWIDTH-l) << s[C[i]] <<"  ";
+      os << T.Get(s[C[i]]).GetTime() << "  " << int(100.*x[C[i]]/tt) <<" \%"<<endl;
     }
   os << " ------------------------------------\n";
-  os << "   Total       : " << st.GetTime() << std::endl << std::endl;
+  os << "   Total       : " << st.GetTime() << endl << endl;
   return os;
 } 

@@ -3,12 +3,10 @@
 
 #include  "gascoigne.h"
 
-using namespace Gascoigne;
-
 /*---------------------------------------------------*/
 
 template <class C>
-void delete_cells(const IntSet&, std::vector<C>&, const nvector<int>&, const nvector<int>&);
+void delete_cells(const Gascoigne::IntSet&, std::vector<C>&, const nvector<int>&, const nvector<int>&);
 
 /*---------------------------------------------------*/
 

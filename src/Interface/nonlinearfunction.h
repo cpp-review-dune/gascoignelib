@@ -1,7 +1,6 @@
 #ifndef  __NonlinearFunction_h
 #define  __NonlinearFunction_h
 
-#include  "derivativevector.h"
 #include  "nvector.h"
 #include  "vertex.h"
 

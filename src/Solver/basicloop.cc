@@ -40,7 +40,7 @@ void BasicLoop::ClockOutput() const
 
 /*-----------------------------------------*/
 
-void BasicLoop::BasicInit(const Gascoigne::ParamFile* paramfile)
+void BasicLoop::BasicInit(const ParamFile* paramfile)
 {
   _paramfile = paramfile;
 

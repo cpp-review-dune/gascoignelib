@@ -7,8 +7,6 @@
 #include  "stlio.h"
 #include  "gascoigne.h"
 
-using namespace Gascoigne;
-
 /*------------------------------------------*/
 
 class Index
@@ -17,7 +15,7 @@ class Index
 
   typedef  std::map<int,int>  IntMap;
 
-  IntVector  vl2g, el2g, hl2g, ql2g;
+  Gascoigne::IntVector  vl2g, el2g, hl2g, ql2g;
   IntMap     vg2l, eg2l, hg2l, qg2l;
 
  public:
@@ -28,9 +26,9 @@ class Index
   // Local To Global
   ////////////////
 
-  const IntVector&  Vertexl2g() const { return vl2g;}
-  const IntVector&  Edgel2g()   const { return el2g;}
-        IntVector&  Edgel2g()         { return el2g;}
+  const Gascoigne::IntVector&  Vertexl2g() const { return vl2g;}
+  const Gascoigne::IntVector&  Edgel2g()   const { return el2g;}
+        Gascoigne::IntVector&  Edgel2g()         { return el2g;}
 
   int Edgel2g  (int i)  const { return el2g[i];}
 
@@ -46,10 +44,10 @@ class Index
   
   int Vertexl2g(int i)  const { return vl2g[i];}
 
-        IntVector&  Quadl2g()         { return ql2g;}
-        IntVector&  Hexl2g()          { return hl2g;}
-  const IntVector&  Hexl2g()    const { return hl2g;}
-  const IntVector&  Quadl2g()   const { return ql2g;}
+        Gascoigne::IntVector&  Quadl2g()         { return ql2g;}
+        Gascoigne::IntVector&  Hexl2g()          { return hl2g;}
+  const Gascoigne::IntVector&  Hexl2g()    const { return hl2g;}
+  const Gascoigne::IntVector&  Quadl2g()   const { return ql2g;}
   int Quadl2g  (int i)  const { return ql2g[i];}
   int Hexl2g   (int i)  const { return hl2g[i];}
   const IntMap&  Quadg2l()   const { return qg2l;}
@@ -147,8 +145,8 @@ class Index
   
   friend std::ostream& operator<<(std::ostream& os, const Index& I);
 
-  void  InitNodes (const IntSet& nodes);
-  void  InitEdges (const IntSet& edges);
+  void  InitNodes (const Gascoigne::IntSet& nodes);
+  void  InitEdges (const Gascoigne::IntSet& edges);
   void  InitQuads ();
   void  InitHexs  ();
 };

@@ -1,5 +1,7 @@
 #include  "extrapolator.h"
 
+using namespace std;
+
 /*-----------------------------------------*/
 
 Extrapolator::Extrapolator() {}
@@ -10,17 +12,17 @@ Extrapolator::~Extrapolator() {}
 void Extrapolator::Print()
 {
   int n = order.size();
-  std::cout << "extra\t";
+  cout << "extra\t";
 
-  std::cout.precision(12);
+  cout.precision(12);
   for (int i=0; i<n; i++)
     {
-      std::cout << valextra[i];
-      std::cout.precision(4);
-      std::cout << " [" << order[i] << "]  ";
-      std::cout.precision(12);
+      cout << valextra[i];
+      cout.precision(4);
+      cout << " [" << order[i] << "]  ";
+      cout.precision(12);
     }
-  std::cout << std::endl;
+  cout << endl;
 }
 
 /*-----------------------------------------*/

@@ -5,16 +5,14 @@
 #include  <map>
 #include  "gascoigne.h"
 
-using namespace Gascoigne;
-
 /*-----------------------------------------*/
 
 class HangingIndexHandler
 {
  protected:
   
-  typedef  fixarray<2,int>  IntVector2;
-  typedef  fixarray<4,int>  IntVector4;
+  typedef  fixarray<2,int>  Gascoigne::IntVector2;
+  typedef  fixarray<4,int>  Gascoigne::IntVector4;
   
   std::map<int,fixarray<3,int> >  hnq2;
   std::map<int,fixarray<9,int> >  hnq2face;

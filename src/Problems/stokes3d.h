@@ -10,7 +10,7 @@ class Stokes3d : public Stokes
  protected:
 
   double Divergence(const Gascoigne::FemFunction& U) const;
-  double Laplace(const DerivativeVector& U, const Gascoigne::TestFunction& N) const;
+  double Laplace(const Gascoigne::TestFunction& U, const Gascoigne::TestFunction& N) const;
 
 public:
 

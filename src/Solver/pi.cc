@@ -1,5 +1,7 @@
 #include  "pi.h"
 
+using namespace std;
+
 /*-----------------------------------------*/
 
 Pi::Pi() {}
@@ -13,7 +15,7 @@ void Pi::vmult(CompVector<double>& y, const CompVector<double>& x,
   int ncomp = x.ncomp();
   assert(ncomp==y.ncomp());
   {
-    std::map<int,fixarray<2,int> >::const_iterator p;
+    map<int,fixarray<2,int> >::const_iterator p;
     for(p=edge.begin();p!=edge.end();p++)
       {
 	int i = p->first;
@@ -22,7 +24,7 @@ void Pi::vmult(CompVector<double>& y, const CompVector<double>& x,
       }
   }
   {
-    std::map<int,fixarray<4,int> >::const_iterator p;
+    map<int,fixarray<4,int> >::const_iterator p;
     for(p=face.begin();p!=face.end();p++)
       {
 	int i = p->first;
@@ -31,7 +33,7 @@ void Pi::vmult(CompVector<double>& y, const CompVector<double>& x,
       }
   }
   {
-    std::map<int,fixarray<8,int> >::const_iterator p;
+    map<int,fixarray<8,int> >::const_iterator p;
     for(p=cell.begin();p!=cell.end();p++)
       {
 	int i = p->first;
@@ -76,22 +78,22 @@ void Pi::Init2d(const GascoigneMesh2d* MP)
 	f[1] = ind[2];
 	f[2] = ind[6];
 	f[3] = ind[8];
-	face.insert(std::make_pair(ind[4],f));
+	face.insert(make_pair(ind[4],f));
       }
       {
 	fixarray<2,int> f;
 	f[0] = ind[0];
 	f[1] = ind[2];
-	edge.insert(std::make_pair(ind[1],f));
+	edge.insert(make_pair(ind[1],f));
 	f[0] = ind[0];
 	f[1] = ind[6];
-	edge.insert(std::make_pair(ind[3],f));
+	edge.insert(make_pair(ind[3],f));
 	f[0] = ind[2];
 	f[1] = ind[8];
-	edge.insert(std::make_pair(ind[5],f));
+	edge.insert(make_pair(ind[5],f));
 	f[0] = ind[6];
 	f[1] = ind[8];
-	edge.insert(std::make_pair(ind[7],f));
+	edge.insert(make_pair(ind[7],f));
       }
     }
 }
@@ -116,7 +118,7 @@ void Pi::Init3d(const GascoigneMesh3d* MP)
 	f[5] = ind[20];
 	f[6] = ind[24];
 	f[7] = ind[26];
-	cell.insert(std::make_pair(ind[13],f));
+	cell.insert(make_pair(ind[13],f));
       }
       {
 	fixarray<4,int> f;
@@ -124,61 +126,61 @@ void Pi::Init3d(const GascoigneMesh3d* MP)
 	f[1] = ind[2];
 	f[2] = ind[6];
 	f[3] = ind[8];
-	face.insert(std::make_pair(ind[4],f));
+	face.insert(make_pair(ind[4],f));
 	f[0] = ind[0];
 	f[1] = ind[2];
 	f[2] = ind[18];
 	f[3] = ind[20];
-	face.insert(std::make_pair(ind[10],f));
+	face.insert(make_pair(ind[10],f));
 	f[0] = ind[6];
 	f[1] = ind[8];
 	f[2] = ind[24];
 	f[3] = ind[26];
-	face.insert(std::make_pair(ind[16],f));
+	face.insert(make_pair(ind[16],f));
 	f[0] = ind[18];
 	f[1] = ind[20];
 	f[2] = ind[24];
 	f[3] = ind[26];
-	face.insert(std::make_pair(ind[22],f));
+	face.insert(make_pair(ind[22],f));
       }
       {
 	fixarray<2,int> f;
 	f[0] = ind[0];
 	f[1] = ind[2];
-	edge.insert(std::make_pair(ind[1],f));
+	edge.insert(make_pair(ind[1],f));
 	f[0] = ind[0];
 	f[1] = ind[6];
-	edge.insert(std::make_pair(ind[3],f));
+	edge.insert(make_pair(ind[3],f));
 	f[0] = ind[8];
 	f[1] = ind[2];
-	edge.insert(std::make_pair(ind[5],f));
+	edge.insert(make_pair(ind[5],f));
 	f[0] = ind[6];
 	f[1] = ind[8];
-	edge.insert(std::make_pair(ind[7],f));
+	edge.insert(make_pair(ind[7],f));
 	f[0] = ind[0];
 	f[1] = ind[18];
-	edge.insert(std::make_pair(ind[9],f));
+	edge.insert(make_pair(ind[9],f));
 	f[0] = ind[2];
 	f[1] = ind[20];
-	edge.insert(std::make_pair(ind[11],f));
+	edge.insert(make_pair(ind[11],f));
 	f[0] = ind[6];
 	f[1] = ind[24];
-	edge.insert(std::make_pair(ind[15],f));
+	edge.insert(make_pair(ind[15],f));
 	f[0] = ind[26];
 	f[1] = ind[8];
-	edge.insert(std::make_pair(ind[17],f));
+	edge.insert(make_pair(ind[17],f));
 	f[0] = ind[18];
 	f[1] = ind[20];
-	edge.insert(std::make_pair(ind[19],f));
+	edge.insert(make_pair(ind[19],f));
 	f[0] = ind[24];
 	f[1] = ind[18];
-	edge.insert(std::make_pair(ind[21],f));
+	edge.insert(make_pair(ind[21],f));
 	f[0] = ind[20];
 	f[1] = ind[26];
-	edge.insert(std::make_pair(ind[23],f));
+	edge.insert(make_pair(ind[23],f));
 	f[0] = ind[24];
 	f[1] = ind[26];
-	edge.insert(std::make_pair(ind[25],f));
+	edge.insert(make_pair(ind[25],f));
       }
     }
 }

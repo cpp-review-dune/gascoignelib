@@ -4,8 +4,6 @@
 #include  "hanglist.h"
 #include  "gascoigne.h"
 
-using namespace Gascoigne;
-
 /*********************************************************************/
 
 class HangContainer2d
@@ -39,10 +37,10 @@ class HangContainer2d
 
   void make_consistent() { VertexToBeCreated.make_consistent(VertexToBeDeleted);}
 
-  void load_elimination(IntVector&) const;
+  void load_elimination(Gascoigne::IntVector&) const;
 
-  void update_olds (const IntVector&, const IntVector&);
-  void update_news (const IntVector&,int);
+  void update_olds (const Gascoigne::IntVector&, const Gascoigne::IntVector&);
+  void update_news (const Gascoigne::IntVector&,int);
 
   int  vertex_index (const EdgeVector&) const;
 

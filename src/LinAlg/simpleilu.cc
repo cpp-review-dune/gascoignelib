@@ -175,7 +175,7 @@ void SimpleIlu::copy_entries(const MatrixInterface*  A)
 	    }
 	  if(!found)
 	    {
-	      std::cout << "not found " << std::endl;
+	      cout << "not found " << endl;
 	      abort();
 	    }
 	}

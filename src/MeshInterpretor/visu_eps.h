@@ -6,8 +6,6 @@
 #include <map>
 #include  "gascoigne.h"
 
-using namespace Gascoigne;
-
 /*-------------------------------------------------------------------------*/
 
 class VisuEPS

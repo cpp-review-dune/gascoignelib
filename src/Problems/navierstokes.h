@@ -12,7 +12,7 @@ protected:
   mutable double _h, visc;
   double penalty,cut;
 
-  double Laplace(const DerivativeVector& U, 
+  double Laplace(const Gascoigne::TestFunction& U, 
 		 const Gascoigne::TestFunction& N) const;
   
   double Convection(const Gascoigne::FemFunction& U, 

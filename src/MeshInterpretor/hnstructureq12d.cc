@@ -1,6 +1,10 @@
 #include  "hnstructureq12d.h"
 #include  "gascoignemesh.h"
 
+
+using namespace std;
+using namespace Gascoigne;
+
 /*-----------------------------------------*/
 
 HNStructureQ12d::HNStructureQ12d() : edges(NULL), wei(3)
@@ -45,7 +49,7 @@ void HNStructureQ12d::ReInit(const MeshInterface* M)
 
 const fixarray<3,int>& HNStructureQ12d::regular_nodes(int i) const 
 {
-  std::map<int,EdgeVector>::const_iterator p = edges->find(i);
+  map<int,EdgeVector>::const_iterator p = edges->find(i);
   if (p!=edges->end())
     {
       return p->second; 
@@ -89,7 +93,7 @@ void HNStructureQ12d::CondenseHanging(EntryMatrix& E, nvector<int>& indices) con
 
       const fixarray<3,int>& f = regular_nodes(hang);
 
-      if ((indices[p[2]]==f[0]) || (indices[p[2]]==f[1]) ) std::swap(p[0],p[2]);
+      if ((indices[p[2]]==f[0]) || (indices[p[2]]==f[1]) ) swap(p[0],p[2]);
 
       if      ( indices[p[0]]==f[0] )  hang = f[1];
       else if ( indices[p[0]]==f[1] )  hang = f[0];

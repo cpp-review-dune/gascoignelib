@@ -4,6 +4,7 @@
 #include  "set2vec.h"
 
 using namespace std;
+using namespace Gascoigne;
  
 /*---------------------------------------------------*/
 
@@ -41,7 +42,7 @@ bool LevelMesh2d::EdgeIsHangingGlobalIndex(int i) const
 
 /*---------------------------------------------------*/
 
-void LevelMesh2d::BasicInit(const std::set<int>& newq, const std::set<int>& oldq) 
+void LevelMesh2d::BasicInit(const set<int>& newq, const set<int>& oldq) 
 {
   // doch sortiert
 
@@ -62,7 +63,7 @@ void LevelMesh2d::InitCells(int n)
 {
   Index::Quadl2g().memory(n);
 
-  std::sort(Index::Quadl2g().begin(), Index::Quadl2g().end(), LevelSorter2d(*HMP));
+  sort(Index::Quadl2g().begin(), Index::Quadl2g().end(), LevelSorter2d(*HMP));
 
   Index::InitQuads();
 }
@@ -106,13 +107,13 @@ void LevelMesh2d::InitEdges(int n)
   Edgeg2l().clear();
   for(int i=0;i<Edgel2g().size();i++)
     {
-      Edgeg2l().insert(std::make_pair(Edgel2g()[i],i));
+      Edgeg2l().insert(make_pair(Edgel2g()[i],i));
     }
 }
 
 /*-----------------------------------------*/
 
-bool LevelMesh2d::BuildFathers(std::set<int>&  Vaeter) const
+bool LevelMesh2d::BuildFathers(set<int>&  Vaeter) const
 {
   for(int i=0; i<ncells();i++)
     {
@@ -139,14 +140,14 @@ bool LevelMesh2d::BuildFathers(std::set<int>&  Vaeter) const
 
 bool LevelMesh2d::ConstructCellIndOfPatch(nvector<int>& dst) const
 {
-  std::set<int>  Vaeter;
+  set<int>  Vaeter;
   BuildFathers(Vaeter);
 
   int nq = ncells()/4;
   dst.reservesize(nq);
 
   int count=0;
-  std::set<int>::const_iterator pf = Vaeter.begin();
+  set<int>::const_iterator pf = Vaeter.begin();
   while(pf!=Vaeter.end())
     {
       int findex = *pf;
@@ -165,7 +166,7 @@ bool LevelMesh2d::ConstructCellIndOfPatch(nvector<int>& dst) const
 
 void LevelMesh2d::ConstructIndOfPatch(nvector<IntVector>& dst) const
 {
-  std::set<int>  Vaeter;
+  set<int>  Vaeter;
   BuildFathers(Vaeter);
 
   int nq = ncells()/4;
@@ -173,7 +174,7 @@ void LevelMesh2d::ConstructIndOfPatch(nvector<IntVector>& dst) const
   dst.resize (nq,IntVector(9));
 
   int count=0;
-  std::set<int>::const_iterator pf = Vaeter.begin();
+  set<int>::const_iterator pf = Vaeter.begin();
   while(pf!=Vaeter.end())
     {
       int findex = *pf;
@@ -205,7 +206,7 @@ void LevelMesh2d::ConstructHangingStructureQuadratic(QuadraticHNStructure3& hnq2
 {
   hnq2.clear();
   int count=0;
-  std::set<int> habschon; 
+  set<int> habschon; 
   for (int i=0;i<ncells();i++)
     {
       const Quad& q = HMP->quad(Quadl2g(i));
@@ -257,14 +258,14 @@ void LevelMesh2d::ConstructHangingStructureQuadratic(QuadraticHNStructure3& hnq2
 	  
 	  for (int k=0; k<3; k++)  F[k] = Vertexg2l(F[k]);
 	  
-	  hnq2.insert(std::make_pair(hn,F));
+	  hnq2.insert(make_pair(hn,F));
 	  
 	  const Quad& qfc2 = HMP->quad(childs[1]);
 	  hn = Vertexg2l(HMP->QuadLawOrder().edge_vertex(qfc2,ne));
 	  
-	  std::swap(F[0],F[2]);
+	  swap(F[0],F[2]);
 	  
-	  hnq2.insert(std::make_pair(hn,F));
+	  hnq2.insert(make_pair(hn,F));
 	}
     }
 }
@@ -279,7 +280,7 @@ void LevelMesh2d::check_leveljump() const
       Phi.update(quad(c));
     }
   assert(! Phi.check());
-  //if(Phi.check()) std::cerr << "LevelMesh2d::check_leveljump() aenderb\n";
+  //if(Phi.check()) cerr << "LevelMesh2d::check_leveljump() aenderb\n";
 }
 
 /*---------------------------------------------------*/
@@ -368,9 +369,9 @@ void LevelMesh2d::construct_lists(IntSet& newquads, IntSet& oldquads) const
 
   check_leveljump();
 
-  std::set<int>     Opis;
+  set<int>     Opis;
   fill_opis(Opis,oldquads);
-  for(std::set<int>::const_iterator p=Opis.begin();p!=Opis.end();p++)
+  for(set<int>::const_iterator p=Opis.begin();p!=Opis.end();p++)
     {
       const Quad& Q = HMP->quad(*p);
       
@@ -389,7 +390,7 @@ void LevelMesh2d::construct_lists(IntSet& newquads, IntSet& oldquads) const
   while(1)
     {
       LevelJumper  Phi;
-      std::set<int>::const_iterator p;
+      set<int>::const_iterator p;
       for(p=newquads.begin(); p!=newquads.end(); p++)
 	{
 	  Phi.update(HMP->quad(*p));
@@ -417,7 +418,7 @@ void LevelMesh2d::construct_lists(IntSet& newquads, IntSet& oldquads) const
 	    }
 	}
       newquads = help;
-      //std::cerr << "\t Regular Iteration\t" << count++ << " " << rep << std::endl;
+      //cerr << "\t Regular Iteration\t" << count++ << " " << rep << endl;
     }
 }
 
@@ -449,17 +450,17 @@ void LevelMesh2d::InitBoundaryHandler(BoundaryIndexHandler& BI) const
   Set2Vec(colorvec,BI.GetColors());
 
   // compute inverse positions
-  std::map<int,int> inv;
+  map<int,int> inv;
 
   for (int i=0; i<colorvec.size(); i++)
     {
-      inv.insert(std::make_pair(colorvec[i],i));
+      inv.insert(make_pair(colorvec[i],i));
     }
   
   int nc = colorvec.size(); 
-  std::vector<std::set<int>  > H1(nc);  // for verteces
+  vector<set<int>  > H1(nc);  // for verteces
   // for cells and local indices
-  std::vector<std::set<fixarray<2,int> > >  H2(nc); 
+  vector<set<fixarray<2,int> > >  H2(nc); 
 
   for(IntSet::const_iterator q=blines.begin();
       q!=blines.end(); q++)
@@ -467,10 +468,10 @@ void LevelMesh2d::InitBoundaryHandler(BoundaryIndexHandler& BI) const
       const BoundaryLine& bl = HMP->bline(*q);
       int col = bl.material();
 
-      std::map<int,int>::const_iterator p = inv.find(col);
+      map<int,int>::const_iterator p = inv.find(col);
       if (p==inv.end())
 	{
-	  std::cout << "LevelMesh2d::BuildVertexOnBoundary()"<< std::endl;
+	  cout << "LevelMesh2d::BuildVertexOnBoundary()"<< endl;
 	  abort();
 	}
       int pos = p->second;
@@ -493,7 +494,7 @@ void LevelMesh2d::InitBoundaryHandler(BoundaryIndexHandler& BI) const
       IntVector v2(H2[i].size());
       int j = 0;
       
-      std::set<fixarray<2,int> >::const_iterator p;
+      set<fixarray<2,int> >::const_iterator p;
       for (p=H2[i].begin(); p!=H2[i].end(); p++)
 	{
 	  v1[j] = (*p)[0];
@@ -502,8 +503,8 @@ void LevelMesh2d::InitBoundaryHandler(BoundaryIndexHandler& BI) const
 	}
       int color = colorvec[i];
 
-      BI.GetCell().insert(std::make_pair(color,v1));
-      BI.GetLocal().insert(std::make_pair(color,v2));
+      BI.GetCell().insert(make_pair(color,v1));
+      BI.GetLocal().insert(make_pair(color,v2));
     }
 }
 

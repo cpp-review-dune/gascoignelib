@@ -6,6 +6,7 @@
 #include  "compose_name.h"
 
 using namespace std;
+using namespace Gascoigne;
 
 /*-----------------------------------------*/
 

@@ -43,8 +43,8 @@ void DiplomantenAdaptor::analyse() const
       double f = theta + eta[C[i]] * (x+1./ppp) + s/(reduction*eta.size());
       //theta += dx*dx;
       //double f = theta + dx * (x+1./ppp) + s/(reduction*eta.size());
-      file << x << " " << f << std::endl;
-      std::cout << x << " " << f << std::endl;
+      file << x << " " << f << endl;
+      cout << x << " " << f << endl;
     }
   file.close();
 }
@@ -115,7 +115,7 @@ void DiplomantenAdaptor::refine(nvector<int>& ref)
 
   typedef CompareObjectBigToSmall<nvector<double> >  CoC;
 
-  std::sort(C.begin(),C.end(),CoC(eta));
+  sort(C.begin(),C.end(),CoC(eta));
   
   int i;
   for(i=0; i<n; i++)

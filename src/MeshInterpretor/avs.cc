@@ -2,14 +2,16 @@
 #include  "errormacros.h"
 
 
+using namespace std;
+
 /********************************************************************/
 
-void Visualization::avs(const std::string& bname) const
+void Visualization::avs(const string& bname) const
 {
-  std::string name = bname;
+  string name = bname;
   name += ".inp";
   
-  std::ofstream out(name.c_str());
+  ofstream out(name.c_str());
   FILE_ERROR(out,name);
   
   int nc = CheckPointData();
@@ -24,20 +26,20 @@ void Visualization::avs(const std::string& bname) const
 	}
     }
   out << mesh->nnodes() << " " << mesh->ncells();
-  out << " " << nc << " 0 0 " << std::endl;
+  out << " " << nc << " 0 0 " << endl;
   
   if (mesh->dimension()==2)
     {
       for (int i=0; i<mesh->nnodes(); i++)
 	{
-	  out<< i+1 << " " << mesh->vertex2d(i) << " " << 0 << std::endl;
+	  out<< i+1 << " " << mesh->vertex2d(i) << " " << 0 << endl;
 	}
     }
   else
     {
       for (int i=0; i<mesh->nnodes(); i++)
 	{
-	  out<< i+1 << " " << mesh->vertex3d(i) << std::endl;
+	  out<< i+1 << " " << mesh->vertex3d(i) << endl;
 	}
     }
   if (mesh->dimension()==2)
@@ -49,7 +51,7 @@ void Visualization::avs(const std::string& bname) const
 	    {
 	      out << mesh->vertex_of_cell(c,i)+1 << " "; 
 	    }
-	  out << std::endl; 
+	  out << endl; 
 	} 
     }
   else
@@ -61,23 +63,23 @@ void Visualization::avs(const std::string& bname) const
 	    {
 	      out << mesh->vertex_of_cell(c,i)+1 << " "; 
 	    }
-	  out << std::endl; 
+	  out << endl; 
 	}     
     }
   if (PointData)
     {
       out << nc;
       for (int c=0; c<nc; c++) {out << " 1";}
-      out << std::endl;
+      out << endl;
       for(VisuDataInfo::siterator p=PointDataInfo->sbegin();p!=PointDataInfo->send();++p)
        {
-	 out << p->first << "," << std::endl;
+	 out << p->first << "," << endl;
        }
       if(CreateZero)  out << "null,";
 	 
       for (int ind=0; ind<PointData->visun(); ind++)
 	{
-	  out << std::endl << ind;
+	  out << endl << ind;
 	  for(VisuDataInfo::siterator p=PointDataInfo->sbegin();
 	      p!=PointDataInfo->send();++p)
 	    {
@@ -85,8 +87,8 @@ void Visualization::avs(const std::string& bname) const
 	    }
 	  if(CreateZero) out << " 0";
 	}
-      out << std::endl;
+      out << endl;
     }
   out.close();
- if (showoutput) std::cout << "[" << name << "]\n";
+ if (showoutput) cout << "[" << name << "]\n";
 }

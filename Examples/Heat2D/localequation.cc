@@ -49,7 +49,7 @@ void LocalEquation::Form(VectorIterator b, const FemFunction& U, const TestFunct
 
 /* ----------------------------------------- */
 
-void LocalEquation::Residual(Vector& b, const FemFunction& U, const DerivativeVector& N) const
+void LocalEquation::Residual(Vector& b, const FemFunction& U, const TestFunction& N) const
 {
   b[0] += _visc* (U[0].x()*N.x()+U[0].y()*N.y());
   b[1] += _visc* (U[1].x()*N.x()+U[1].y()*N.y());
@@ -64,7 +64,7 @@ void LocalEquation::Residual(Vector& b, const FemFunction& U, const DerivativeVe
 
 /* ----------------------------------------- */
 
-void LocalEquation::Matrix(EntryMatrix& A, const FemFunction& U, const DerivativeVector& M, const DerivativeVector& N) const
+void LocalEquation::Matrix(EntryMatrix& A, const FemFunction& U, const TestFunction& M, const TestFunction& N) const
 {
   A(0,0) += _visc* (M.x()*N.x()+M.y()*N.y());
   A(1,1) += _visc* (M.x()*N.x()+M.y()*N.y());

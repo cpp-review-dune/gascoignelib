@@ -5,6 +5,10 @@
 #include  "filescanner.h"
 #include  "stlio.h"
 
+
+using namespace std;
+using namespace Gascoigne;
+
 /*****************************************************************/
 
 Monitor::Monitor() : prec(6)
@@ -19,21 +23,21 @@ Monitor::Monitor() : prec(6)
 
 void Monitor::PrintInfoSummary(const CGInfo& info) const
 {
-  std::cout.precision(3);
-  std::cout.setf(std::ios::fixed,std::ios::floatfield);
-  std::cout << info.statistics().totaliter() << "\t";
+  cout.precision(3);
+  cout.setf(ios::fixed,ios::floatfield);
+  cout << info.statistics().totaliter() << "\t";
 
-  std::cout.setf(std::ios::scientific,std::ios::floatfield);
-  std::cout.precision(2);
-  std::cout << " { ";
-  std::cout << info.control().residual() << " ";
-  std::cout << info.control().firstresidual() << " (";
-  std::cout << info.control().correction() << ") ";
-  std::cout << "}\t";
+  cout.setf(ios::scientific,ios::floatfield);
+  cout.precision(2);
+  cout << " { ";
+  cout << info.control().residual() << " ";
+  cout << info.control().firstresidual() << " (";
+  cout << info.control().correction() << ") ";
+  cout << "}\t";
 
-  std::cout.precision(2);
-  std::cout.setf(std::ios::fixed,std::ios::floatfield);
-  std::cout << info.statistics().rate() << "\n";
+  cout.precision(2);
+  cout.setf(ios::fixed,ios::floatfield);
+  cout << info.statistics().rate() << "\n";
 }
 
 /*******************************************************************/
@@ -42,31 +46,31 @@ void Monitor::PrintInfoSummary(const NLInfo& nlinfo) const
 {
   const CGInfo& cginfo = nlinfo.GetLinearInfo();
 
-  std::cout.precision(3);
-  std::cout.setf(std::ios::fixed,std::ios::floatfield);
-  std::cout << nlinfo.statistics().totaliter() << " [";
-  std::cout << cginfo.statistics().totaliter() << "] M ";
-  std::cout << nlinfo.statistics().totalmatrix() << " ";
+  cout.precision(3);
+  cout.setf(ios::fixed,ios::floatfield);
+  cout << nlinfo.statistics().totaliter() << " [";
+  cout << cginfo.statistics().totaliter() << "] M ";
+  cout << nlinfo.statistics().totalmatrix() << " ";
 
-  std::cout.setf(std::ios::scientific,std::ios::floatfield);
-  std::cout.precision(2);
-  std::cout << " { ";
-  std::cout << nlinfo.control().residual() << " ";
-  std::cout << nlinfo.control().firstresidual() << " (";
-  std::cout << nlinfo.control().correction() << ") ";
-  std::cout << "}\t";
+  cout.setf(ios::scientific,ios::floatfield);
+  cout.precision(2);
+  cout << " { ";
+  cout << nlinfo.control().residual() << " ";
+  cout << nlinfo.control().firstresidual() << " (";
+  cout << nlinfo.control().correction() << ") ";
+  cout << "}\t";
 
-  std::cout.precision(2);
-  std::cout.setf(std::ios::fixed,std::ios::floatfield);
-  std::cout << nlinfo.statistics().rate() << " ";
-  std::cout << cginfo.statistics().rate() << "\n";
+  cout.precision(2);
+  cout.setf(ios::fixed,ios::floatfield);
+  cout << nlinfo.statistics().rate() << " ";
+  cout << cginfo.statistics().rate() << "\n";
 }
 
 /*****************************************************************/
 
-void Monitor::set_directory(const std::string& dir)
+void Monitor::set_directory(const string& dir)
 {
-  //std::cout << "Monitor::set_directory()\tdirectory = " << dir << std::endl;
+  //cout << "Monitor::set_directory()\tdirectory = " << dir << endl;
   directory = dir;
   texfile   = directory;
   texfile += "/TexResults";
@@ -75,11 +79,11 @@ void Monitor::set_directory(const std::string& dir)
   protokoll = directory;
   protokoll += "/Protokoll";
 
-  std::string command("mkdir -p ");
+  string command("mkdir -p ");
   command += dir;
   system(command.c_str());
 
-  std::ofstream tfile( texfile.c_str() );
+  ofstream tfile( texfile.c_str() );
   if(!tfile)
     {
       error_io(texfile);
@@ -90,14 +94,14 @@ void Monitor::set_directory(const std::string& dir)
     }
   tfile.close();
   
-  std::ofstream pfile( protokoll.c_str() );
+  ofstream pfile( protokoll.c_str() );
   if(!pfile)
     {
       error_io(protokoll);
     }
   pfile.close();
   
-  std::ofstream nfile( numfile.c_str() );
+  ofstream nfile( numfile.c_str() );
   if(!nfile)
     {
       error_io(numfile);
@@ -114,25 +118,25 @@ void Monitor::init(const ParamFile* pf, int c)
 {
   control   = c;
 
-  std::string dir;
+  string dir;
   DataFormatHandler   DFH;
   DFH.insert("directory"  , &dir,  ".");
   DFH.insert("format"  , &format,  "latex");
   DFH.insert("header"  , &header);
   FileScanner FS(DFH, pf, "Monitor");
 
-  if (header.size()>0) std::cout << "header:\n" << header << std::endl;
+  if (header.size()>0) cout << "header:\n" << header << endl;
 
   if(dir!=".")  set_directory(dir);
 }
 
 /*****************************************************************/
 
-void Monitor::error_io(const std::string& s) const
+void Monitor::error_io(const string& s) const
 {
-  std::cout << "Monitor::error_io()\n";
-  std::cout << "Fehler beim Oeffnen von " << s << std::endl;
-  std::cout << "directory = " << directory << std::endl;
+  cout << "Monitor::error_io()\n";
+  cout << "Fehler beim Oeffnen von " << s << endl;
+  cout << "directory = " << directory << endl;
   abort();
 }
 
@@ -143,7 +147,7 @@ void Monitor::pre_monitor(char* s)
   if(control>2)
     {
       m_length[m_counter++] = strlen(s);
-      std::cout << s;
+      cout << s;
     }
 }
 
@@ -154,9 +158,9 @@ void Monitor::post_monitor()
   if(control>2)
     {
       int l = m_length[--m_counter];
-      for(int i=0; i<l; i++) std::cout << "\b";
-      for(int i=0; i<l; i++) std::cout << " " ;
-      for(int i=0; i<l; i++) std::cout << "\b";
+      for(int i=0; i<l; i++) cout << "\b";
+      for(int i=0; i<l; i++) cout << " " ;
+      for(int i=0; i<l; i++) cout << "\b";
     }
 }
 
@@ -164,15 +168,15 @@ void Monitor::post_monitor()
 
 void Monitor::print_message()
 {
-  std::ofstream pfile( protokoll.c_str(),std::ios::app);
+  ofstream pfile( protokoll.c_str(),ios::app);
 
   if(!pfile)
   {
     error_io(protokoll);
   }
-  if (control) std::cout << message << std::endl;
+  if (control) cout << message << endl;
 
-  pfile << message << std::endl;
+  pfile << message << endl;
 
   sprintf (message,"");
   pfile.close();
@@ -290,9 +294,9 @@ void Monitor::nonlinear_step(const CGInfo& cginfo, const NLInfo& nlinfo)
 
 /*******************************************************************/
 
-void Monitor::PrintResults(const std::string& s) const
+void Monitor::PrintResults(const string& s) const
 {
-  std::ofstream   file(texfile.c_str(),std::ios::app);
+  ofstream   file(texfile.c_str(),ios::app);
   if(!file)  error_io(texfile);
   if(format=="latex")   PrintAscii(file,s);
   // ausser betrieb
@@ -305,7 +309,7 @@ void Monitor::PrintResults(const std::string& s) const
 
 void Monitor::PrintResults(int i) const
 {
-  std::ofstream   file(texfile.c_str(),std::ios::app);
+  ofstream   file(texfile.c_str(),ios::app);
   if(!file)  error_io(texfile);
   if(format=="latex")   PrintAscii(file,i);
   file.close();
@@ -315,7 +319,7 @@ void Monitor::PrintResults(int i) const
 
 void Monitor::PrintResults(double d) const
 {
-  std::ofstream   file(texfile.c_str(),std::ios::app);
+  ofstream   file(texfile.c_str(),ios::app);
   if(!file)  error_io(texfile);
   if(format=="latex")   PrintAscii(file,d);
   file.close();
@@ -325,7 +329,7 @@ void Monitor::PrintResults(double d) const
 
 void Monitor::PrintResults(const ivector& iv) const
 {
-  std::ofstream   file(texfile.c_str(),std::ios::app);
+  ofstream   file(texfile.c_str(),ios::app);
   if(!file)  error_io(texfile);
   if(format=="latex")   PrintAscii(file,iv);
   file.close();
@@ -335,7 +339,7 @@ void Monitor::PrintResults(const ivector& iv) const
 
 void Monitor::PrintResults(const dvector& dv) const
 {
-  std::ofstream   file(texfile.c_str(),std::ios::app);
+  ofstream   file(texfile.c_str(),ios::app);
   if(!file)  error_io(texfile);
   if(format=="latex")   PrintAscii(file,dv);
   file.close();
@@ -343,30 +347,30 @@ void Monitor::PrintResults(const dvector& dv) const
 
 /*******************************************************************/
 
-void Monitor::Print(const std::string& s, std::string se) const
+void Monitor::Print(const string& s, string se) const
 {
-  std::ofstream   file(texfile.c_str(),std::ios::app);
+  ofstream   file(texfile.c_str(),ios::app);
   if(!file)  error_io(texfile);
 
   file << s << se;
-  std::cout << s << se;
+  cout << s << se;
   file.close();
 }
 
 /*******************************************************************/
 
-void Monitor::PrintHeader(std::ostream& os) const
+void Monitor::PrintHeader(ostream& os) const
 {
   if(header.size()==0) return;
   for (int i=0; i<header.size()-1; i++) os << header[i] << " , "; 
-  os << header[header.size()-1] << std::endl;
+  os << header[header.size()-1] << endl;
 }
 
 
 /*******************************************************************/
 
 void Monitor::PrintAscii
-(std::ostream& os, const ivector& iv) const
+(ostream& os, const ivector& iv) const
 {
   os.precision(prec);
   os << iv;
@@ -375,17 +379,17 @@ void Monitor::PrintAscii
 /*******************************************************************/
 
 void Monitor::PrintAscii
-(std::ostream& os, const dvector& dv) const
+(ostream& os, const dvector& dv) const
 {
   os.precision(prec);
-  os.setf(std::ios::scientific,std::ios::floatfield);
+  os.setf(ios::scientific,ios::floatfield);
   os << dv;
 }
 
 /*******************************************************************/
 
 void Monitor::PrintAscii
-(std::ostream& os, const std::string& s) const
+(ostream& os, const string& s) const
 {
   os << s;
 }

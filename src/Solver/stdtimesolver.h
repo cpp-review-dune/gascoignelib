@@ -42,7 +42,7 @@ public:
   StdTimeSolver();
   ~StdTimeSolver();
 
-  void BasicInit(int level, const ParamFile* pfparamfile, const MeshInterface* MP);
+  void BasicInit(int level, const Gascoigne::ParamFile* pfparamfile, const MeshInterface* MP);
 
   void SetTimeData(double d, double th, double ti);
   void SetProblem(const ProblemDescriptorInterface& PDX);

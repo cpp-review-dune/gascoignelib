@@ -5,7 +5,7 @@ using namespace std;
 
 /* ----------------------------------------- */
 
-std::ostream& SimpleMatrix::Write(std::ostream& os) const
+ostream& SimpleMatrix::Write(ostream& os) const
 {
   int n = ST.n();
   for(int i=0;i<n;i++)

@@ -59,7 +59,7 @@ void StokesGls::S(nmatrix<double>& dst, const FemFunction& U,
 
 void StokesGls::LMatrix(nmatrix<double>& A, 
 			const FemFunction& U,
-			const DerivativeVector& V) const
+			const TestFunction& V) const
 {
   A(0,1) = V.x();
   A(0,2) = V.y();

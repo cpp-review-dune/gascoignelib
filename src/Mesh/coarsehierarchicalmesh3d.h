@@ -9,18 +9,18 @@ class CoarseHierarchicalMesh3d : public HierarchicalMesh3d
 {
   protected :
     
-  IntSet  CellRefList, CellCoarseList;
-  IntVector   cn2o;
+  Gascoigne::IntSet  CellRefList, CellCoarseList;
+  Gascoigne::IntVector   cn2o;
 
-  void loop(IntVector& dst);
+  void loop(Gascoigne::IntVector& dst);
 
   public:
   
   CoarseHierarchicalMesh3d(const HierarchicalMesh3d&);
   void BasicInit(int depth);
-  void GetRefinedList(IntVector&);
-  void GetCoarsedList(IntVector&);
-  void refine(const IntVector& cell_ref, const IntVector& cell_coarse);
+  void GetRefinedList(Gascoigne::IntVector&);
+  void GetCoarsedList(Gascoigne::IntVector&);
+  void refine(const Gascoigne::IntVector& cell_ref, const Gascoigne::IntVector& cell_coarse);
 };
 
 /*---------------------------------------------------*/

@@ -12,6 +12,10 @@
 #include  <fstream>
 #include  "giota.h"
 
+
+using namespace std;
+using namespace Gascoigne;
+
 typedef  triple<int,int,int>          tint;
 
 /*------------------------------------------------------*/
@@ -51,7 +55,7 @@ HierarchicalMesh3d& HierarchicalMesh3d::operator=(const HierarchicalMesh3d& H)
 
 /*------------------------------------------------------*/
 
-std::pair<int,int> HierarchicalMesh3d::GetBoundaryInformation(int i) const
+pair<int,int> HierarchicalMesh3d::GetBoundaryInformation(int i) const
 {
   int material = -1; 
   int le = -1;
@@ -61,7 +65,7 @@ std::pair<int,int> HierarchicalMesh3d::GetBoundaryInformation(int i) const
       material = bquad(ib).material();
       le       = bquad(ib).edge_in_quad();
     }
-  return std::make_pair(material,le);
+  return make_pair(material,le);
 }
 
 /*------------------------------------------------------*/
@@ -77,9 +81,9 @@ const BoundaryFunction<3>* HierarchicalMesh3d::quad_shape(int i) const
 
 /*------------------------------------------------------*/
 
-std::set<int> HierarchicalMesh3d::GetColors() const
+set<int> HierarchicalMesh3d::GetColors() const
 {
-  std::set<int> coleur;
+  set<int> coleur;
 
   for(int i=0;i<nbquads();i++)
     {
@@ -122,7 +126,7 @@ void HierarchicalMesh3d::InitHexOfCurved()
       if (curvedshapes->Curved(B.material()))
 	{
 	  int iq = B.of_quad();
-	  hexofcurved.insert(std::make_pair(iq,il));
+	  hexofcurved.insert(make_pair(iq,il));
 	}
     }
 }
@@ -177,7 +181,7 @@ void HierarchicalMesh3d::prepare3d(const IntVector& cell_ref,
 
   /* marks the father */
 
-  std::multiset<int> ff;
+  multiset<int> ff;
   
   for (IntSet::const_iterator hp = help.begin();
        hp != help.end(); ++hp)
@@ -185,7 +189,7 @@ void HierarchicalMesh3d::prepare3d(const IntVector& cell_ref,
       ff.insert(hex(*hp).father());
     }
 
-  for (std::multiset<int>::iterator fp = ff.begin();
+  for (multiset<int>::iterator fp = ff.begin();
        fp != ff.end(); ++fp)
     {
       if (ff.count(*fp)==8) 
@@ -442,8 +446,8 @@ void HierarchicalMesh3d::Testing()
       if(s<0) continue;
       if (!hex(m).sleep() && hex(s).sleep())
 	{ 
-	  std::swap(edges[i].master(),edges[i].slave());
-	  std::swap(edges[i].LocalMasterIndex(),edges[i].LocalSlaveIndex());
+	  swap(edges[i].master(),edges[i].slave());
+	  swap(edges[i].LocalMasterIndex(),edges[i].LocalSlaveIndex());
 	}
     }
 }
@@ -488,7 +492,7 @@ void HierarchicalMesh3d::boundary_prepare3d(IntSet& QuadRefList,
       lineglob[1] = bl.vertex(1);
       lineglob[2] = bl.vertex(2);
       lineglob[3] = bl.vertex(3);
-      std::sort(lineglob.begin(),lineglob.end());
+      sort(lineglob.begin(),lineglob.end());
       
       if (bl.sleep())
 	{
@@ -555,7 +559,7 @@ void HierarchicalMesh3d::new_bquads(const IntVector& lo2n,
 {
   int nci = 0;
 
-  std::vector<Quad> emptyq;
+  vector<Quad> emptyq;
 
   for(IntSetIt cp=LRef.begin(); cp!=LRef.end(); ++cp)
     {
@@ -565,7 +569,7 @@ void HierarchicalMesh3d::new_bquads(const IntVector& lo2n,
 
       BoundaryQuad& bqf = Bquads[father];
       // change father boundary
-      std::vector<int>& qc = bqf.childs();
+      vector<int>& qc = bqf.childs();
       qc.resize(4);
 
       int face = bqf.edge_in_quad();  // face index in hex
@@ -669,7 +673,7 @@ void HierarchicalMesh3d::new_hexs(const HangContainer3d& hangset,
 
       assert(father!=-1);
 
-      std::vector<int>&  qc = hexs[father].childs();
+      vector<int>&  qc = hexs[father].childs();
       qc.resize(8);
 
       int childlevel = hexs[father].level()+1;
@@ -710,9 +714,9 @@ void HierarchicalMesh3d::new_hexs(const HangContainer3d& hangset,
 
 	  if (ive<0)
 	    {
-	      std::cout << "Line " << lineglob << std::endl;
-	      std::cout << "new vertex " << ive << std::endl;
-	      std::cout << "father hex " << father << std::endl;
+	      cout << "Line " << lineglob << endl;
+	      cout << "new vertex " << ive << endl;
+	      cout << "father hex " << father << endl;
 	    }
 
 	  assert(ive>=0);
@@ -824,8 +828,8 @@ void HierarchicalMesh3d::init_quad(BoundaryQuad& newquad)
 	    }
 	}
     }
-  std::cerr << "BoundaryQuad has wrong vertex order !" << std::endl;
-  std::cerr << newquad;
+  cerr << "BoundaryQuad has wrong vertex order !" << endl;
+  cerr << newquad;
   assert(0);
 }
 
@@ -969,7 +973,7 @@ fixarray<4,int> HierarchicalMesh3d::ChildrenOfFace(int e) const
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh3d::GetAwakeCells(std::set<int>& v) const
+void HierarchicalMesh3d::GetAwakeCells(set<int>& v) const
 {
   for (int i=0; i<ncells(); i++)
     {
@@ -980,7 +984,7 @@ void HierarchicalMesh3d::GetAwakeCells(std::set<int>& v) const
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh3d::GetAwakePatchs(std::set<int>& v) const
+void HierarchicalMesh3d::GetAwakePatchs(set<int>& v) const
 {
   for (int i=0; i<ncells(); i++)
     {
@@ -997,10 +1001,10 @@ void HierarchicalMesh3d::GetAwakePatchs(std::set<int>& v) const
 
 void HierarchicalMesh3d::ConstructQ2PatchMesh(nvector<int>& q2patchmesh) const
 {
-  typedef std::set<int>::iterator It;
-  std::set<int> patche;
+  typedef set<int>::iterator It;
+  set<int> patche;
   GetAwakePatchs(patche);
-  std::vector<std::set<int> > patch_on_level(nlevels());
+  vector<set<int> > patch_on_level(nlevels());
   q2patchmesh.resize(0);
   for (It it = patche.begin();it!=patche.end();++it)
     patch_on_level[hexs[*it].level()].insert(*it);
@@ -1061,22 +1065,22 @@ int HierarchicalMesh3d::neighbour(int c, int le) const
 
 void HierarchicalMesh3d::FillAllBoundaryLines()
 {
-  std::cout << "HierarchicalMesh3d::FillAllBoundaryLines() not written" << std::endl;
+  cout << "HierarchicalMesh3d::FillAllBoundaryLines() not written" << endl;
   abort();
 }
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh3d::WriteAll(const std::string& name) const
+void HierarchicalMesh3d::WriteAll(const string& name) const
 {
-  std::ofstream out(name.c_str());
+  ofstream out(name.c_str());
 
-  out << dimension()  << " dimension" << std::endl;
-  out << nnodes() << " vertexs"   << std::endl;
-  out << mnlevels << " mnlevels"   << std::endl;
+  out << dimension()  << " dimension" << endl;
+  out << nnodes() << " vertexs"   << endl;
+  out << mnlevels << " mnlevels"   << endl;
 
-  std::cerr << "HierarchicalMesh3d::WriteAll()\n";
-  std::cerr << "not written 3d\n";
+  cerr << "HierarchicalMesh3d::WriteAll()\n";
+  cerr << "not written 3d\n";
 
   out.close();
   abort();
@@ -1084,43 +1088,43 @@ void HierarchicalMesh3d::WriteAll(const std::string& name) const
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh3d::write_inp(const std::string& name) const
+void HierarchicalMesh3d::write_inp(const string& name) const
 {
-  std::ofstream file(name.c_str());
+  ofstream file(name.c_str());
   if(!file.is_open())
     {
-      std::cerr << "HierarchicalMesh3d::write_inp()\n";
-      std::cerr << "cannot open file " << name << std::endl;
+      cerr << "HierarchicalMesh3d::write_inp()\n";
+      cerr << "cannot open file " << name << endl;
       abort();
     }
   
   int nt = ncells()+nbquads();
-  file <<nnodes()<<" "<<nt<<" "<<0<<" "<<0<<" "<<0<<std::endl;
+  file <<nnodes()<<" "<<nt<<" "<<0<<" "<<0<<" "<<0<<endl;
 
   
-  for(int i=0;i<nnodes();i++) file <<i<<" "<<vertex3d(i) << " " << std::endl;
+  for(int i=0;i<nnodes();i++) file <<i<<" "<<vertex3d(i) << " " << endl;
 
   for(int i=0;i<ncells();i++)
     {
-      file << i<<" "<<0<<" hex "<<hex(i).vertex()<<std::endl;
+      file << i<<" "<<0<<" hex "<<hex(i).vertex()<<endl;
     }
   for(int i=0;i<nbquads();i++)
     {
-      file << i<<" "<< bquad(i).material() <<" quad "<<bquad(i).vertex()<<std::endl;
+      file << i<<" "<< bquad(i).material() <<" quad "<<bquad(i).vertex()<<endl;
     }
 }
 
 /*---------------------------------------------------*/
 
-std::pair<bool,tint> HierarchicalMesh3d::check_inp(const std::string& name)
+pair<bool,tint> HierarchicalMesh3d::check_inp(const string& name)
 {
   //  detect some errors in input-file... and more
 
-  std::ifstream file(name.c_str());
+  ifstream file(name.c_str());
   if(!file.is_open())
     {
-      std::cerr << "HierarchicalMesh3d::check_inp()\n";
-      std::cerr << "cannot open file " << name << std::endl;
+      cerr << "HierarchicalMesh3d::check_inp()\n";
+      cerr << "cannot open file " << name << endl;
       abort();
     }
 
@@ -1141,8 +1145,8 @@ std::pair<bool,tint> HierarchicalMesh3d::check_inp(const std::string& name)
   fixarray<2,int> il;
   for(int i=0;i<nt;i++)
     {
-      std::string name;
-      std::string mat;
+      string name;
+      string mat;
       int ii;
       file >> ii >> mat  >> name;
       if(name=="hex")
@@ -1178,23 +1182,23 @@ std::pair<bool,tint> HierarchicalMesh3d::check_inp(const std::string& name)
   // fehlerabfragen ....
   if(nt!=(nl+nq+nh))
     {
-      std::cerr << "wrong number of cells: " << nt << std::endl;
-      std::cerr << "lines quads hexs: " << nl << " " << nq << " " << nh << std::endl;
+      cerr << "wrong number of cells: " << nt << endl;
+      cerr << "lines quads hexs: " << nl << " " << nq << " " << nh << endl;
       abort();
     }
 
   file.close();
 
-  return std::make_pair(first_one,make_triple(nl,nq,nh));
+  return make_pair(first_one,make_triple(nl,nq,nh));
 }
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh3d::read_inp(const std::string& name)
+void HierarchicalMesh3d::read_inp(const string& name)
 {
   // check mesh.....
 
-  std::pair<bool,tint> p = check_inp(name);
+  pair<bool,tint> p = check_inp(name);
   bool first_one = p.first;
   tint n = p.second;
 
@@ -1202,11 +1206,11 @@ void HierarchicalMesh3d::read_inp(const std::string& name)
   int nq = n.second;
   int nh = n.third;
 
-  std::ifstream file(name.c_str());
+  ifstream file(name.c_str());
   if(!file.is_open())
     {
-      std::cerr << "HierarchicalMesh3d::read_inp()\n";
-      std::cerr << "cannot open file " << name << std::endl;
+      cerr << "HierarchicalMesh3d::read_inp()\n";
+      cerr << "cannot open file " << name << endl;
       abort();
     }
 
@@ -1214,10 +1218,10 @@ void HierarchicalMesh3d::read_inp(const std::string& name)
 
   file >> nv >> nt >> n_unkonwn >> n_unkonwn >> n_unkonwn;
 
-  std::cout << "3D Mesh:  " << nv << " nodes, ";
-  std::cout << nl << " lines, ";
-  std::cout << nq << " quads, ";
-  std::cout << nh << " hexs" << std::endl;
+  cout << "3D Mesh:  " << nv << " nodes, ";
+  cout << nl << " lines, ";
+  cout << nq << " quads, ";
+  cout << nh << " hexs" << endl;
 
   vertexs3d.reserve(nv);
   vertexs3d.resize(nv,Vertex3d());
@@ -1240,7 +1244,7 @@ void HierarchicalMesh3d::read_inp(const std::string& name)
   int il = 0;
   for(int i=0;i<nt;i++)
     {
-      std::string name;	int unknown; std::string matstring;
+      string name;	int unknown; string matstring;
       file >> unknown >> matstring  >> name;
       if(name=="hex")
 	{
@@ -1265,40 +1269,40 @@ void HierarchicalMesh3d::read_inp(const std::string& name)
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh3d::write(const std::string& bname) const
+void HierarchicalMesh3d::write(const string& bname) const
 {
   write_gup(bname);
 }
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh3d::write_gup(const std::string& bname) const
+void HierarchicalMesh3d::write_gup(const string& bname) const
 {
-  std::string name = bname;
+  string name = bname;
   name += ".gup";
 
-  std::ofstream out(name.c_str());
+  ofstream out(name.c_str());
 
-  out << dimension()  << " dimension" << std::endl;
-  out << nnodes() << " vertexs"   << std::endl;
+  out << dimension()  << " dimension" << endl;
+  out << nnodes() << " vertexs"   << endl;
 
   for (int i=0; i<nnodes(); i++)
     {
-      out << " " << vertex3d(i) << std::endl;
+      out << " " << vertex3d(i) << endl;
     }
-  out << hexs.size() << " hexs" << std::endl;
+  out << hexs.size() << " hexs" << endl;
   for (int i=0; i<hexs.size(); i++)
     {
       out << hex(i);
     }
-  out << QuadHang << std::endl;
-  out << LineHang << std::endl;
-  out << Bquads.size() << " boundaryquads" << std::endl;
+  out << QuadHang << endl;
+  out << LineHang << endl;
+  out << Bquads.size() << " boundaryquads" << endl;
   for (int i=0; i<Bquads.size(); i++)
     {
-      out << Bquads[i].material() << " " << Bquads[i] << std::endl;
+      out << Bquads[i].material() << " " << Bquads[i] << endl;
     }
-  out << std::endl << edges.size() << " edges" << std::endl;
+  out << endl << edges.size() << " edges" << endl;
   for (int i=0; i<edges.size(); i++)
     {
       out << " " << edges[i];
@@ -1308,11 +1312,11 @@ void HierarchicalMesh3d::write_gup(const std::string& bname) const
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh3d::read_gup(const std::string& name)
+void HierarchicalMesh3d::read_gup(const string& name)
 {
-  std::string symbol;
+  string symbol;
 
-  std::ifstream file(name.c_str());
+  ifstream file(name.c_str());
 
   assert(file.is_open());
 
@@ -1322,7 +1326,7 @@ void HierarchicalMesh3d::read_gup(const std::string& name)
 
   assert(dim==3);
 
-  std::cout << "Mesh 3d  : ";
+  cout << "Mesh 3d  : ";
   vertexs3d.reserve(n);
   vertexs3d.resize(n);
 
@@ -1332,7 +1336,7 @@ void HierarchicalMesh3d::read_gup(const std::string& name)
     {
       file >> vertexs3d[i];
     }
-  std::cout << n << " nodes, ";
+  cout << n << " nodes, ";
 
   file >> n >> symbol;
 
@@ -1344,11 +1348,11 @@ void HierarchicalMesh3d::read_gup(const std::string& name)
     {
       file >> hexs[i];
     }
-  std::cout <<  n << " hexs, ";
+  cout <<  n << " hexs, ";
   file >> QuadHang;
-  std::cout << QuadHang.size() << " quadhangs, ";
+  cout << QuadHang.size() << " quadhangs, ";
   file >> LineHang;
-  std::cout << LineHang.size() << " linehangs, ";
+  cout << LineHang.size() << " linehangs, ";
   
   file >> n >> symbol;
   int number = 0;
@@ -1363,9 +1367,9 @@ void HierarchicalMesh3d::read_gup(const std::string& name)
     }
   number = n;
 
-  std::cout << number << " boundaryquads, ";
+  cout << number << " boundaryquads, ";
   file >> n >> symbol;
-  std::cout << n << " edges" << std::endl;
+  cout << n << " edges" << endl;
   if (symbol=="edges")
     {
       Edge e;
@@ -1421,7 +1425,7 @@ int HierarchicalMesh3d::regular_grid3d_one(IntSet& celllist,IntVector& coarsesub
 		  {
 		    assert(!hex(cn).sleep());
 
-		    std::pair<IntSetIt,bool> p = celllist.insert(cn);
+		    pair<IntSetIt,bool> p = celllist.insert(cn);
 		    if (p.second)  
 		      { 
 			n++;
@@ -1571,7 +1575,7 @@ int HierarchicalMesh3d::regular_grid3d_three_refine(IntSet& CellRef) const
 
   GetMinMaxLevels(maxlevel,minlevel,CellRef);
   
-  std::set<int> cand;
+  set<int> cand;
   for (int i=0; i<nnodes(); i++)
     {
       if (maxlevel[i]>=minlevel[i]+2)
@@ -1589,7 +1593,7 @@ int HierarchicalMesh3d::regular_grid3d_three_refine(IntSet& CellRef) const
       for (int j=0; j<8; j++)
 	{
 	  int k = q[j];
-	  std::set<int>::const_iterator p = cand.find(k);
+	  set<int>::const_iterator p = cand.find(k);
 	  if (p!=cand.end())
 	    {
 	      if (CellRef.find(i)==CellRef.end())
@@ -1609,7 +1613,7 @@ int HierarchicalMesh3d::regular_grid3d_three_coarse(IntSet& CellRef,
 						    IntSet& CellCoarse) const
 {
   int maxl = 0;
-  std::vector<IntSet> LevelCellCoarse;
+  vector<IntSet> LevelCellCoarse;
   {
     IntSet::const_iterator p = CellCoarse.begin();
     for ( ; p!= CellCoarse.end(); p++)
@@ -1946,12 +1950,12 @@ void HierarchicalMesh3d::new_face_vertex3d(int nv, const fixarray<4,int>& v)
 
 void HierarchicalMesh3d::new_vertex3d(int nv, const fixarray<6,int>& v)
 {
-  std::cout << "@ " << vertexs3d[nv] << "\t";
+  cout << "@ " << vertexs3d[nv] << "\t";
   double d = 1./6.;
   vertexs3d[nv].equ(d, vertexs3d[v[0]], d, vertexs3d[v[1]],
 		    d, vertexs3d[v[2]], d, vertexs3d[v[3]],
 		    d, vertexs3d[v[4]], d, vertexs3d[v[5]]);
-  std::cout << " -> " << vertexs3d[nv] << "\n";
+  cout << " -> " << vertexs3d[nv] << "\n";
 }
 
 /*---------------------------------------------------*/
@@ -1964,7 +1968,7 @@ void HierarchicalMesh3d::check_mesh3d() const
   int cmin = 0, cmax = hexs.size(); 
   int vmin = 0, vmax = nnodes(); 
 
-  for(std::vector<Hex>::const_iterator p = hexs.begin();
+  for(vector<Hex>::const_iterator p = hexs.begin();
       p!=hexs.end();p++)
     {
       const Hex& q = *p;
@@ -1974,8 +1978,8 @@ void HierarchicalMesh3d::check_mesh3d() const
 	{
 	  if((q.vertex(i)<vmin)||(q.vertex(i)>vmax))
 	    {
-	      std::cerr << "Vertex invalid in Cell: " << *p << " : ";
-	      std::cerr << q.vertex(i) << std::endl;
+	      cerr << "Vertex invalid in Cell: " << *p << " : ";
+	      cerr << q.vertex(i) << endl;
 	      exit(1);
 	    }
 	}
@@ -1984,8 +1988,8 @@ void HierarchicalMesh3d::check_mesh3d() const
 	{
 	  if((q.child(i)<cmin)||(q.child(i)>cmax))
 	    {
-	      std::cerr << "Chid invalid in Cell: " << *p << " : ";
-	      std::cerr << q.child(i) << std::endl; 
+	      cerr << "Chid invalid in Cell: " << *p << " : ";
+	      cerr << q.child(i) << endl; 
 	      exit(1);
 	    }
 	}
@@ -1998,8 +2002,8 @@ void HierarchicalMesh3d::check_mesh3d() const
     int cn = hp->second.cneighbour();
     if(cr==-1)
       {
-	std::cerr << "Refine Neighbour invalid in hang: ";
-	//std::cerr << *hp << std::endl;
+	cerr << "Refine Neighbour invalid in hang: ";
+	//cerr << *hp << endl;
 	exit(1);
       }
   }

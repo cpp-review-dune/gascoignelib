@@ -53,7 +53,7 @@ class FiniteElement : public FemInterface
 
   void SetNx(int n) {T.SetNx(n);}
 
-  void  init_test_functions(DerivativeVector& Phi, double w, int i) const;
+  void  init_test_functions(Gascoigne::TestFunction& Phi, double w, int i) const;
 };
 
 /*-----------------------------------------------------*/

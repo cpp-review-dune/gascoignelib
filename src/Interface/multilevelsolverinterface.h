@@ -26,7 +26,7 @@ public:
   virtual ~MultiLevelSolverInterface() {}
 
   virtual std::string GetName() const=0;
-  virtual void BasicInit(const MeshAgentInterface* GMGM, const ParamFile* paramfile)=0;
+  virtual void BasicInit(const MeshAgentInterface* GMGM, const Gascoigne::ParamFile* paramfile)=0;
   // temporary
   virtual void ReInit(const ProblemDescriptorInterface& PDX)=0;
   virtual void NewMesh()=0;
@@ -56,9 +56,9 @@ public:
   virtual std::string Solve(NewMultiLevelGhostVector& x, const NewMultiLevelGhostVector& b) {
     return Solve(nlevels()-1,x,b);
   }
-  virtual void InterpolateSolution(NewMultiLevelGhostVector& u, const GlobalVector& uold) const=0;
+  virtual void InterpolateSolution(NewMultiLevelGhostVector& u, const Gascoigne::GlobalVector& uold) const=0;
   virtual double ComputeFunctional(NewMultiLevelGhostVector& f, const NewMultiLevelGhostVector& u, const Functional* FP) const=0;
-  virtual void SolutionTransfer(int l, GlobalVector& ul, const GlobalVector& uf) const {assert(0);}
+  virtual void SolutionTransfer(int l, Gascoigne::GlobalVector& ul, const Gascoigne::GlobalVector& uf) const {assert(0);}
 };
 
 

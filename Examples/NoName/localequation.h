@@ -33,9 +33,9 @@ public:
 
   void point(double h, const Gascoigne::FemFunction& U, const Vertex2d& v) const;
 
-  void Form(VectorIterator b, const Gascoigne::FemFunction& U, const TestFunction& N) const;
+  void Form(Gascoigne::VectorIterator b, const Gascoigne::FemFunction& U, const Gascoigne::TestFunction& N) const;
 
-  void Matrix(EntryMatrix& A, const Gascoigne::FemFunction& U, const TestFunction& M, const TestFunction& N) const;
+  void Matrix(EntryMatrix& A, const Gascoigne::FemFunction& U, const Gascoigne::TestFunction& M, const Gascoigne::TestFunction& N) const;
 
 };
 

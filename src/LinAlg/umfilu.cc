@@ -147,9 +147,9 @@ void UmfIlu::ReInit(const SparseStructureInterface* SS)
     {
       umfpack_di_report_info(Control,Info);
       umfpack_di_report_status(Control,status);
-      std::ofstream file("MATRIX");
+      ofstream file("MATRIX");
 //       AP->Write(file);
-      std::cerr << "umfpack_symbolic failed\n"; exit(1);
+      cerr << "umfpack_symbolic failed\n"; exit(1);
     }
 }
 
@@ -186,7 +186,7 @@ void UmfIlu::Factorize()
     {
       umfpack_di_report_info(Control,Info);
       umfpack_di_report_status(Control,status);
-      std::cerr << "umfpack_numeric failed\n"; exit(1);
+      cerr << "umfpack_numeric failed\n"; exit(1);
     }
   //   umfpack_report_numeric("LU von A\n",Numeric,Control);
 }
@@ -209,7 +209,7 @@ void UmfIlu::Solve(nvector<double>& x, const nvector<double>& b)
       {
 	umfpack_di_report_info(Control,Info);
 	umfpack_di_report_status(Control,status);
-	std::cerr << "umfpack_di_solve failed\n"; exit(1);
+	cerr << "umfpack_di_solve failed\n"; exit(1);
       }
 }
 
@@ -231,7 +231,7 @@ void UmfIlu::SolveTranspose(nvector<double>& x, const nvector<double>& b)
       {
 	umfpack_di_report_info(Control,Info);
 	umfpack_di_report_status(Control,status);
-	std::cerr << "umfpack_di_solve failed\n"; exit(1);
+	cerr << "umfpack_di_solve failed\n"; exit(1);
       }
 }
 

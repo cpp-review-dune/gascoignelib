@@ -12,6 +12,7 @@
 #include  "hnstructureq12d.h"
 
 using namespace std;
+using namespace Gascoigne;
 
 /* ----------------------------------------- */
 
@@ -62,7 +63,7 @@ nmatrix<double> Q12d::GetLocalInterpolationWeights() const
 
 /* ----------------------------------------- */
 
-void Q12d::StrongDirichletVector(GlobalVector& u, const DirichletData& BF, int col, const std::vector<int>& comp) const
+void Q12d::StrongDirichletVector(GlobalVector& u, const DirichletData& BF, int col, const vector<int>& comp) const
 {
   const GascoigneMesh* GMP = dynamic_cast<const GascoigneMesh*>(GetMesh());
   assert(GMP);
@@ -137,20 +138,20 @@ void Q12d::ConstructInterpolator(MgInterpolatorInterface* I, const MeshTransferI
 
       SS.build_add(c2f[i],i);
     }
-  for(std::map<int,fixarray<2,int> >::const_iterator p=zweier.begin();
+  for(map<int,fixarray<2,int> >::const_iterator p=zweier.begin();
       p!=zweier.end();p++) 
     {
       int il = p->first;
       fixarray<2,int> n2 = p->second;
       for(int ii=0;ii<2;ii++) SS.build_add(il,n2[ii]);
     }
-  for(std::map<int,fixarray<4,int> >::const_iterator p=vierer.begin();
+  for(map<int,fixarray<4,int> >::const_iterator p=vierer.begin();
       p!=vierer.end();p++) {
     int il = p->first;
     fixarray<4,int> n4 = p->second;
     for(int ii=0;ii<4;ii++) SS.build_add(il,n4[ii]);
   }
-  for(std::map<int,fixarray<8,int> >::const_iterator p=achter.begin();
+  for(map<int,fixarray<8,int> >::const_iterator p=achter.begin();
       p!=achter.end();p++) {
     int il = p->first;
     fixarray<8,int> n8 = p->second;
@@ -172,7 +173,7 @@ void Q12d::ConstructInterpolator(MgInterpolatorInterface* I, const MeshTransferI
       
       val[pos] = 1.;
     }
-  for(std::map<int,fixarray<2,int> >::const_iterator p=zweier.begin();
+  for(map<int,fixarray<2,int> >::const_iterator p=zweier.begin();
       p!=zweier.end();p++) 
     {
       int il = p->first;
@@ -180,7 +181,7 @@ void Q12d::ConstructInterpolator(MgInterpolatorInterface* I, const MeshTransferI
       val[ST.Find(il,n2[0])] = 0.5;
       val[ST.Find(il,n2[1])] = 0.5;
     }
-  for(std::map<int,fixarray<4,int> >::const_iterator p=vierer.begin();
+  for(map<int,fixarray<4,int> >::const_iterator p=vierer.begin();
       p!=vierer.end();p++) {
     int il = p->first;
     fixarray<4,int> n4 = p->second;
@@ -189,7 +190,7 @@ void Q12d::ConstructInterpolator(MgInterpolatorInterface* I, const MeshTransferI
     val[ST.Find(il,n4[2])] = 0.25;
     val[ST.Find(il,n4[3])] = 0.25;
   }
-  for(std::map<int,fixarray<8,int> >::const_iterator p=achter.begin();
+  for(map<int,fixarray<8,int> >::const_iterator p=achter.begin();
       p!=achter.end();p++) {
     int il = p->first;
     fixarray<8,int> n8 = p->second;

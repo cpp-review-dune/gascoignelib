@@ -13,7 +13,7 @@ protected:
   double visc;
   double penalty;
 
-  double Laplace(const DerivativeVector& U, const Gascoigne::TestFunction& N) const;
+  double Laplace(const Gascoigne::TestFunction& U, const Gascoigne::TestFunction& N) const;
   double Divergence(const Gascoigne::FemFunction& U) const;
 
 public:

@@ -6,8 +6,6 @@
 #include  "meshtransferinterface.h"
 #include  <map>
 
-using namespace Gascoigne;
-
 /*-----------------------------------------*/
 
 
@@ -29,10 +27,10 @@ public:
 
   void init(const MeshTransferInterface* MT);
   
-  void restrict_zero   (GlobalVector&, const GlobalVector&) const;
-  void prolongate_add  (GlobalVector&, const GlobalVector&) const;
-  void SolutionTransfer(GlobalVector&, const GlobalVector&) const;
-  void Pi    (GlobalVector& u) const;
+  void restrict_zero   (Gascoigne::GlobalVector&, const Gascoigne::GlobalVector&) const;
+  void prolongate_add  (Gascoigne::GlobalVector&, const Gascoigne::GlobalVector&) const;
+  void SolutionTransfer(Gascoigne::GlobalVector&, const Gascoigne::GlobalVector&) const;
+  void Pi    (Gascoigne::GlobalVector& u) const;
 
 };
 

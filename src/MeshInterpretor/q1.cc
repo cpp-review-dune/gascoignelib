@@ -2,6 +2,7 @@
 #include  "gascoignemesh.h"
 
 using namespace std;
+using namespace Gascoigne;
 
 /* ----------------------------------------- */
 
@@ -53,7 +54,7 @@ nvector<int> Q1::GetLocalIndices(int iq) const
 
 /* ----------------------------------------- */
 
-void Q1::StrongDirichletMatrix(MatrixInterface& A, int col, const std::vector<int>& comp) const
+void Q1::StrongDirichletMatrix(MatrixInterface& A, int col, const vector<int>& comp) const
 {
   const GascoigneMesh* GMP = dynamic_cast<const GascoigneMesh*>(GetMesh());
   assert(GMP);
@@ -66,7 +67,7 @@ void Q1::StrongDirichletMatrix(MatrixInterface& A, int col, const std::vector<in
 
 /* ----------------------------------------- */
 
-void Q1::StrongDirichletVectorZero(GlobalVector& u, int col, const std::vector<int>& comp) const
+void Q1::StrongDirichletVectorZero(GlobalVector& u, int col, const vector<int>& comp) const
 {
   const GascoigneMesh* GMP = dynamic_cast<const GascoigneMesh*>(GetMesh());
   assert(GMP);

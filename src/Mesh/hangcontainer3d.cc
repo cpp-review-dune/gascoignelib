@@ -1,6 +1,10 @@
 #include "hangcontainer3d.h"
 #include "find_in_linehang.h"
 
+
+using namespace std;
+using namespace Gascoigne;
+
 /*********************************************************************/
 
 HangContainer3d::HangContainer3d(HangList<2>& lh2, HangList<4>& lh3) : 
@@ -54,14 +58,14 @@ void HangContainer3d::build_hanging_lines(const HangList<2>& oldhangs)
 	      if (old!=oldhangs.end())
 		{
 		  // alter Hang
-		  Hanging.insert(std::make_pair(edge,old->second));		  
+		  Hanging.insert(make_pair(edge,old->second));		  
 		}
 	      else
 		{
 		  int f = p->second.rneighbour();
 		  int c = p->second.cneighbour();
 		  Hang h(-1,f,c);
-		  Hanging.insert(std::make_pair(edge,h));
+		  Hanging.insert(make_pair(edge,h));
 		}
 	    }
 	}
@@ -72,7 +76,7 @@ void HangContainer3d::build_hanging_lines(const HangList<2>& oldhangs)
     {
       if (Hanging.find(p->first)==Hanging.end()) 
 	{
-	  NotAnyMoreHanging.insert(std::make_pair(p->first,p->second));
+	  NotAnyMoreHanging.insert(make_pair(p->first,p->second));
 	}
     } 
 }
@@ -126,7 +130,7 @@ void HangContainer3d::update_olds(const IntVector& v, const IntVector& c)
 
 void HangContainer3d::update_news(const IntVector& vnew, int offset)
 {
-  // std::cerr << "new_hangs()" << std::endl;
+  // cerr << "new_hangs()" << endl;
   // newhangs-hanging setzten fuer new-quad und linehang fuer die zukunft
   int i = offset;
   for (HangList<4>::iterator p = FaceToBeCreated.begin(); p!=FaceToBeCreated.end(); p++)
@@ -174,7 +178,7 @@ int HangContainer3d::vertex_index(const FaceVector& face) const
 
 void HangContainer3d::face_refine(const FaceVector& face, int f)
 {
-  std::pair<HangList<4>::iterator,bool> p = find_in_linehang(FaceHanging,face);
+  pair<HangList<4>::iterator,bool> p = find_in_linehang(FaceHanging,face);
   if(p.second)
     {
       // face haengt, aber Nachbar wird nun auch verfeinert
@@ -206,9 +210,9 @@ void HangContainer3d::face_refine(const FaceVector& face, int f)
 	  
 	  if (h.cneighbour()==f)
 	    {
-	      std::swap(h.rneighbour(),h.cneighbour());
+	      swap(h.rneighbour(),h.cneighbour());
 	    }
-	  FaceHanging.insert(std::make_pair(dp->first,h));
+	  FaceHanging.insert(make_pair(dp->first,h));
 	  FaceToBeDeleted.erase(dp);
 	}
       else
@@ -217,8 +221,8 @@ void HangContainer3d::face_refine(const FaceVector& face, int f)
 	  // in die zu kreierenden faces ein
 
 	  Hang h(-1,f,-1);
-	  FaceHanging.insert(std::make_pair(face,h));
-	  FaceToBeCreated.insert(std::make_pair(face,h)); 
+	  FaceHanging.insert(make_pair(face,h));
+	  FaceToBeCreated.insert(make_pair(face,h)); 
 	}
     }
 }
@@ -227,7 +231,7 @@ void HangContainer3d::face_refine(const FaceVector& face, int f)
 
 void HangContainer3d::face_coarse(const FaceVector& face, int f, int face_vertex)
 {
-  std::pair<HangList<4>::iterator,bool> p = find_in_linehang(FaceHanging,face);
+  pair<HangList<4>::iterator,bool> p = find_in_linehang(FaceHanging,face);
   
   if(p.second)
     {
@@ -239,15 +243,15 @@ void HangContainer3d::face_coarse(const FaceVector& face, int f, int face_vertex
 
       if (h.cneighbour()==f)
 	{
-	  std::swap(h.rneighbour(),h.cneighbour());
+	  swap(h.rneighbour(),h.cneighbour());
 	}
-      FaceToBeDeleted.insert(std::make_pair(Lp->first,h));
+      FaceToBeDeleted.insert(make_pair(Lp->first,h));
       FaceHanging.erase(Lp);
     }
   else
     {
       Hang  h(face_vertex,-1,f);
-      FaceHanging.insert(std::make_pair(face,h));
+      FaceHanging.insert(make_pair(face,h));
     }
 }
 
@@ -255,30 +259,30 @@ void HangContainer3d::face_coarse(const FaceVector& face, int f, int face_vertex
 
 void HangContainer3d::output() const
 {
-  std::cout << "HangContainer3d: " << std::endl;
-  std::cout << "FaceHanging  " << FaceHanging.size() << std::endl;
-  //  std::cout << FaceHanging <<std::endl;
-  std::cout << "FaceToBeCreated  " << FaceToBeCreated.size() << std::endl;
-  //std::cout << FaceToBeCreated << std::endl;
-  std::cout << "FaceToBeDeleted  " << FaceToBeDeleted.size() << std::endl;
-  //  std::cout << FaceToBeDeleted << std::endl;
-  std::cout << "FaceNotMore  " << FaceNotMore().size() << std::endl;
-  //  std::cout << FaceNotMore() << std::endl;
-  std::cout << "Hanging  " << Hanging.size() << std::endl;
-  //  std::cout << Hanging << std::endl;
-  std::cout << "VertexToBeCreated  " << VertexToBeCreated.size() << std::endl;
-  //  std::cout << VertexToBeCreated << std::endl;
-  std::cout << "VertexToBeDeleted  " << VertexToBeDeleted.size() << std::endl;
-  //  std::cout << VertexToBeDeleted << std::endl;
-  std::cout << "NotAnyMoreHanging  " << NotAnyMoreHanging.size() << std::endl;
-  //  std::cout << NotAnyMoreHanging << std::endl;
-  //  std::cout << NotAnyMoreHanging << std::endl;
+  cout << "HangContainer3d: " << endl;
+  cout << "FaceHanging  " << FaceHanging.size() << endl;
+  //  cout << FaceHanging <<endl;
+  cout << "FaceToBeCreated  " << FaceToBeCreated.size() << endl;
+  //cout << FaceToBeCreated << endl;
+  cout << "FaceToBeDeleted  " << FaceToBeDeleted.size() << endl;
+  //  cout << FaceToBeDeleted << endl;
+  cout << "FaceNotMore  " << FaceNotMore().size() << endl;
+  //  cout << FaceNotMore() << endl;
+  cout << "Hanging  " << Hanging.size() << endl;
+  //  cout << Hanging << endl;
+  cout << "VertexToBeCreated  " << VertexToBeCreated.size() << endl;
+  //  cout << VertexToBeCreated << endl;
+  cout << "VertexToBeDeleted  " << VertexToBeDeleted.size() << endl;
+  //  cout << VertexToBeDeleted << endl;
+  cout << "NotAnyMoreHanging  " << NotAnyMoreHanging.size() << endl;
+  //  cout << NotAnyMoreHanging << endl;
+  //  cout << NotAnyMoreHanging << endl;
 //   HangList<4>::const_iterator Np = FaceDeleting().begin();
 //   for (;Np!=FaceDeleting().end(); Np++)
 //     {
-//       std::cout << Np->first << " * " << Np->second.hanging() << std::endl;
+//       cout << Np->first << " * " << Np->second.hanging() << endl;
 //     }
-  std::cout << "-------------" << std::endl;
+  cout << "-------------" << endl;
 }
 
 /*********************************************************************/
@@ -290,7 +294,7 @@ void HangContainer3d::line_coarse(EdgeVector& edge, int f, int edge_vertex)
   if (p==Hanging.end())
     {
       Hang h(edge_vertex,f,-1);
-      VertexToBeDeleted.insert(std::make_pair(edge,h));
+      VertexToBeDeleted.insert(make_pair(edge,h));
     }
   else
     {
@@ -310,7 +314,7 @@ void HangContainer3d::line_refine(EdgeVector& edge, int f,
       if (p==oldhangs.end())
 	{
 	  Hang h(-1,f,-1);
-	  VertexToBeCreated.insert(std::make_pair(edge,h));
+	  VertexToBeCreated.insert(make_pair(edge,h));
 	}
     }
 }
@@ -332,7 +336,7 @@ void HangContainer3d::line_refine(EdgeVector& edge, int f,
 //       return; // vertex ist schon markiert zum kreieren
 //     }
 //   Hang h(-1,-1,-1);
-//   VertexToBeCreated.insert(std::make_pair(edge,h));
+//   VertexToBeCreated.insert(make_pair(edge,h));
 // }
 
 /*********************************************************************/

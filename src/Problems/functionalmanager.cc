@@ -9,6 +9,8 @@
 #include  "constantboundaryfunctional.h"
 #include  "stringutil.h"
 
+
+using namespace std;
 using namespace Gascoigne;
 
 /*-----------------------------------------*/
@@ -29,12 +31,12 @@ FunctionalManager::~FunctionalManager()
 
 /*-----------------------------------------*/
 
-void FunctionalManager::Print(std::ostream& os) const
+void FunctionalManager::Print(ostream& os) const
 {
-  os << "FunctionalManager: " << FF.size() << std::endl;
+  os << "FunctionalManager: " << FF.size() << endl;
   for(int i=0;i<FF.size();i++)
     {
-      os << "functional " << FF[i]->GetName() << std::endl;
+      os << "functional " << FF[i]->GetName() << endl;
     }
 }
 
@@ -53,11 +55,11 @@ void FunctionalManager::ConstructSet(const ParamFile* paramfile)
   
   int n = names.size();
 
-  // syntax fuer functional: 4 std::strings
+  // syntax fuer functional: 4 strings
   //         name type parameterlist exactvalue grid
 
 
-  std::vector<std::vector<std::string> > functional(n,std::vector<std::string>(5));
+  vector<vector<string> > functional(n,vector<string>(5));
   DataFormatHandler DFH;
 
   DFH.insert("names",&names);
@@ -79,26 +81,26 @@ void FunctionalManager::ConstructSet(const ParamFile* paramfile)
   gnames.clear();
   for (int i=0; i<n; i++)
     {
-      const std::string& grid = functional[i][3];
+      const string& grid = functional[i][3];
       if (grid=="yes") gnames.push_back(names[i]);
     }
-//   std::cerr << "\tAllFunctional\n";
+//   cerr << "\tAllFunctional\n";
 //   for (int i=0; i<n; i++)
 //     {
-//       std::cerr << "\t\t" << names[i] << "\t" << FF[i]->GetName()<<std::endl;
+//       cerr << "\t\t" << names[i] << "\t" << FF[i]->GetName()<<endl;
 //     }
-//   std::cerr << "\tGridFunctionals\n" << gnames << std::endl << std::endl;
+//   cerr << "\tGridFunctionals\n" << gnames << endl << endl;
 }
 
 /*-----------------------------------------*/
 
 void FunctionalManager::Construct
-(int i, const std::vector<std::string>& functional)
+(int i, const vector<string>& functional)
 {
-  const std::string& type     = functional[0];
-  const std::string& params   = functional[1];
-  const std::string& exactval = functional[2];
-  const std::string& grid     = functional[3];
+  const string& type     = functional[0];
+  const string& params   = functional[1];
+  const string& exactval = functional[2];
+  const string& grid     = functional[3];
 
   FF[i] = ConstructFunctional(type,params);
 
@@ -112,7 +114,7 @@ void FunctionalManager::Construct
 
 /*-----------------------------------------*/
 
-const Functional* FunctionalManager::GetFunctional  (const std::string& name) const 
+const Functional* FunctionalManager::GetFunctional  (const string& name) const 
 {
   for(int i=0;i<names.size();i++)
     {
@@ -127,9 +129,9 @@ const Functional* FunctionalManager::GetFunctional  (const std::string& name) co
 /*-----------------------------------------*/
 
 Functional* FunctionalManager::ConstructFunctional
-(const std::string& name, const std::string& param)
+(const string& name, const string& param)
 {
-  std::vector<std::string> args = StringSplit(param.c_str(),'_');
+  vector<string> args = StringSplit(param.c_str(),'_');
 
   if(name=="zero")
     {
@@ -155,7 +157,7 @@ Functional* FunctionalManager::ConstructFunctional
     {
       assert(0);
     }
-  std::cerr << "FunctionalManager::ConstructFunctional()\n";
-  std::cerr << "unknown functional name: " << name << std::endl;
+  cerr << "FunctionalManager::ConstructFunctional()\n";
+  cerr << "unknown functional name: " << name << endl;
   abort();
 }

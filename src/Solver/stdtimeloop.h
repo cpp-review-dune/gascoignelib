@@ -21,7 +21,7 @@ public:
 
   StdTimeLoop() : StdLoop() {}
 
-  void BasicInit(const ParamFile* paramfile);
+  void BasicInit(const Gascoigne::ParamFile* paramfile);
 
   void run(const ProblemDescriptorInterface* PD);
   void adaptive_run(const ProblemDescriptorInterface* PD);

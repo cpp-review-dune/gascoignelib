@@ -11,7 +11,7 @@ LocalSolver::LocalSolver() : StdSolver()
 
 /* ----------------------------------------- */
 
-MeshInterpretorInterface* LocalSolver::NewMeshInterpretor(int dimension, const std::string& discname)
+MeshInterpretorInterface* LocalSolver::NewMeshInterpretor(int dimension, const string& discname)
 {
   return new LocalMeshInterpretor;
 }

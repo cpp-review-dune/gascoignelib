@@ -1,5 +1,7 @@
 #include "ilupermutate.h"
 
+using namespace std;
+
 /* =============================================================== */
 /* ============== VecDirection =================================== */
 /* =============================================================== */
@@ -142,12 +144,12 @@ void StreamDirection::Permutate    (nvector<int> &perm)
   
   int count=0;
   int index=0;
-  std::set<int> start;
+  set<int> start;
   for (int i=0;i<n;++i) if (prev[i]==-1)
     start.insert(i);
     
   
-  for (std::set<int>::const_iterator i=start.begin();i!=start.end();++i)
+  for (set<int>::const_iterator i=start.begin();i!=start.end();++i)
     {
       int k=*i;
       do

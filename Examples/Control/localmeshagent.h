@@ -29,7 +29,7 @@ public:
 ////  Con(De)structor 
 //
   LocalMeshAgent() : MeshAgent() {}
-  void BasicInit(const ParamFile* paramfile);
+  void BasicInit(const Gascoigne::ParamFile* paramfile);
 
 };
 

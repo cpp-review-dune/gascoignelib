@@ -22,12 +22,12 @@ void TwinStencil::diagonalfirst()
 	}
       if (found==-1)
 	{
-	  std::cout << "UnstructuredStencil::diagonal not found " << i << std::endl;
+	  cout << "UnstructuredStencil::diagonal not found " << i << endl;
 	  abort();
 	}
       for (int pos=found; pos>first; pos--)
 	{
-	  std::swap(scol[pos],scol[pos-1]);
+	  swap(scol[pos],scol[pos-1]);
 	}
     }
 }

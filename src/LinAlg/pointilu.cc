@@ -67,7 +67,7 @@ void PointIlu::ConstructStructure(const nvector<int>& perm, const MatrixInterfac
   int zmax = 1;
   for(int i=0;i<n;i++)
     {
-      zmax = std::max(zmax,AS->rowsize(i));
+      zmax = max(zmax,AS->rowsize(i));
     }
   nvector<int> ppi(zmax), picol(zmax);
 

@@ -13,7 +13,7 @@ class CfdVisualization : public Visualization
 
 public:
 
-  CfdVisualization(const GlobalVector& u, const MeshInterface& M) : 
+  CfdVisualization(const Gascoigne::GlobalVector& u, const MeshInterface& M) : 
     Visualization(), VDI(u.ncomp()), VD(u)
     {
       SetPointData(&VD);

@@ -1,15 +1,17 @@
 #include  "visualization.h"
 #include  "errormacros.h"
 
+using namespace std;
+
 
 /********************************************************************/
 
-void Visualization::vu(const std::string& bname) const
+void Visualization::vu(const string& bname) const
 {
-  std::string name = bname;
+  string name = bname;
   name += ".pie";
 
-  std::string element;
+  string element;
   if (mesh->dimension()==2)
     {
       element = "LagrQuadr04";
@@ -19,10 +21,10 @@ void Visualization::vu(const std::string& bname) const
       element = "LagrHexae08";
     }
   
-  std::ofstream file(name.c_str());
+  ofstream file(name.c_str());
   FILE_ERROR(file,name);
 
-  file << "MAILLAGE MonMaillage( ) =\n{" << std::endl;
+  file << "MAILLAGE MonMaillage( ) =\n{" << endl;
   file << "   ZONE Zone( " << element << ", Nodes, Elements );\n};\n\n";
 
 //   if (symmetry)

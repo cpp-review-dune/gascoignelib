@@ -4,6 +4,10 @@
 #include  "leveljumper.h"
 #include  "set2vec.h"
 
+
+using namespace std;
+using namespace Gascoigne;
+
 /*---------------------------------------------------*/
 
 LevelMesh3d::LevelMesh3d(const HierarchicalMesh* hmp) : 
@@ -19,7 +23,7 @@ LevelMesh3d::~LevelMesh3d()
 
 /*---------------------------------------------------*/
 
-void LevelMesh3d::BasicInit(const std::set<int>& newh, const std::set<int>& oldh)
+void LevelMesh3d::BasicInit(const set<int>& newh, const set<int>& oldh)
 {
   int n = newh.size()+oldh.size();
   Index::Hexl2g().memory(n);
@@ -38,7 +42,7 @@ void LevelMesh3d::InitCells(int n)
 {
   Index::Hexl2g().memory(n);
 
-  std::sort(Index::Hexl2g().begin(), Index::Hexl2g().end(), LevelSorter3d(*HMP));
+  sort(Index::Hexl2g().begin(), Index::Hexl2g().end(), LevelSorter3d(*HMP));
 
   Index::InitHexs();
 }
@@ -79,13 +83,13 @@ void LevelMesh3d::InitEdges(int n)
   Edgeg2l().clear();
   for(int i=0;i<Edgel2g().size();i++)
     {
-      Edgeg2l().insert(std::make_pair(Edgel2g()[i],i));
+      Edgeg2l().insert(make_pair(Edgel2g()[i],i));
     }
 }
 
 /*-----------------------------------------*/
 
-bool LevelMesh3d::BuildFathers(std::set<int>&  Vaeter) const
+bool LevelMesh3d::BuildFathers(set<int>&  Vaeter) const
 {
   for(int i=0; i<ncells();i++)
     {
@@ -112,7 +116,7 @@ bool LevelMesh3d::BuildFathers(std::set<int>&  Vaeter) const
 
 void LevelMesh3d::ConstructIndOfPatch(nvector<IntVector>& dst) const
 {
-  std::set<int>  Vaeter;
+  set<int>  Vaeter;
   BuildFathers(Vaeter);
 
   int nh = ncells()/8;
@@ -120,7 +124,7 @@ void LevelMesh3d::ConstructIndOfPatch(nvector<IntVector>& dst) const
   dst.resize (nh,IntVector(27));
 
   int count=0;
-  std::set<int>::const_iterator pf = Vaeter.begin();
+  set<int>::const_iterator pf = Vaeter.begin();
   nmatrix<int> A(27,2);
 
   A(0,0) = 0; A(0,1) = 0;
@@ -177,14 +181,14 @@ void LevelMesh3d::ConstructIndOfPatch(nvector<IntVector>& dst) const
 
 bool LevelMesh3d::ConstructCellIndOfPatch(nvector<int>& dst) const
 {
-  std::set<int>  Vaeter;
+  set<int>  Vaeter;
   BuildFathers(Vaeter);
 
   int nh = ncells()/8;
   dst.reservesize(nh);
 
   int count=0;
-  std::set<int>::const_iterator pf = Vaeter.begin();
+  set<int>::const_iterator pf = Vaeter.begin();
 
   while(pf!=Vaeter.end())
     {
@@ -205,7 +209,7 @@ void LevelMesh3d::ConstructHangingStructureQuadratic(QuadraticHNStructure3& hnq2
   hnq2.clear();
   hnq2face.clear();
   int count=0;
-  std::set<int> habschon; 
+  set<int> habschon; 
 
   const HexLawAndOrder& HLaO = HMP->HexLawOrder();
 
@@ -274,7 +278,7 @@ void LevelMesh3d::ConstructHangingStructureQuadratic(QuadraticHNStructure3& hnq2
 
 	      for (int k=0; k<9; k++)  G[k] = Vertexg2l(F[G[k]]);
 	      
-	      hnq2face.insert(std::make_pair(hnl,G));
+	      hnq2face.insert(make_pair(hnl,G));
 
 	      fixarray<4,int> childface;
 	      HLaO.GetFace(childface,childs[j],nec);
@@ -288,12 +292,12 @@ void LevelMesh3d::ConstructHangingStructureQuadratic(QuadraticHNStructure3& hnq2
 		      int e0 = childface[e];
 		      int e1 = childface[(e+1)%4];
 
-		      if (e0==F[4]) std::swap(e1,e0);
+		      if (e0==F[4]) swap(e1,e0);
 		      if (e1!=F[4])
 			{
 			  if ((e0==F[1]) || (e0==F[3]) || (e0==F[5]) || (e0==F[7]))
 			    {
-			      std::swap(e1,e0);
+			      swap(e1,e0);
 			    }
 			}
 
@@ -316,13 +320,13 @@ void LevelMesh3d::ConstructHangingStructureQuadratic(QuadraticHNStructure3& hnq2
 		      else  assert(0);
 
 		      line[2] = Vertexg2l(last);
-		      hnq2.insert(std::make_pair(hne,line));
+		      hnq2.insert(make_pair(hne,line));
 		    }
 		}
 	    }
 	}
     }
-  //  std::cout << "****** LevelM 3d " << hnq2face.size() << " " << hnq2 .size() << std::endl;
+  //  cout << "****** LevelM 3d " << hnq2face.size() << " " << hnq2 .size() << endl;
 }
 
 /*---------------------------------------------------*/
@@ -419,9 +423,9 @@ void LevelMesh3d::construct_lists(IntSet& newhexs, IntSet& oldhexs) const
 
   check_leveljump();
 
-  std::set<int>  Opis;
+  set<int>  Opis;
   fill_opis(Opis,oldhexs);
-  for(std::set<int>::const_iterator p=Opis.begin();p!=Opis.end();p++)
+  for(set<int>::const_iterator p=Opis.begin();p!=Opis.end();p++)
     {
       const Hex& Q = HMP->hex(*p);
       
@@ -440,11 +444,11 @@ void LevelMesh3d::construct_lists(IntSet& newhexs, IntSet& oldhexs) const
   while(1)
     {
       LevelJumper  Phi;
-      for(std::set<int>::const_iterator p=newhexs.begin(); p!=newhexs.end(); p++)
+      for(set<int>::const_iterator p=newhexs.begin(); p!=newhexs.end(); p++)
 	{
 	  Phi.update(HMP->hex(*p));
 	}
-      for(std::set<int>::const_iterator p=oldhexs.begin(); p!=oldhexs.end(); p++)
+      for(set<int>::const_iterator p=oldhexs.begin(); p!=oldhexs.end(); p++)
 	{
 	  Phi.update(HMP->hex(*p));
 	}
@@ -452,7 +456,7 @@ void LevelMesh3d::construct_lists(IntSet& newhexs, IntSet& oldhexs) const
 
       int rep=0;
       IntSet help(newhexs);
-      for(std::set<int>::const_iterator p=newhexs.begin(); p!=newhexs.end(); p++)
+      for(set<int>::const_iterator p=newhexs.begin(); p!=newhexs.end(); p++)
 	{
 	  const Hex& q = HMP->hex(*p);
 	  if (!Phi.VertexOK(q))
@@ -467,7 +471,7 @@ void LevelMesh3d::construct_lists(IntSet& newhexs, IntSet& oldhexs) const
 	    }
 	}
       newhexs = help;
-//       std::cerr << "\t Regular Iteration\t" << count++ << " " << rep << std::endl;
+//       cerr << "\t Regular Iteration\t" << count++ << " " << rep << endl;
     }
 }
 
@@ -501,17 +505,17 @@ void LevelMesh3d::InitBoundaryHandler(BoundaryIndexHandler& BI) const
   Set2Vec(colorvec,BI.GetColors());
 
   // compute inverse positions
-  std::map<int,int> inv;
+  map<int,int> inv;
 
   for (int i=0; i<colorvec.size(); i++)
     {
-      inv.insert(std::make_pair(colorvec[i],i));
+      inv.insert(make_pair(colorvec[i],i));
     }
   
   int nc = colorvec.size(); 
-  std::vector<std::set<int>  > H1(nc);  // for verteces
+  vector<set<int>  > H1(nc);  // for verteces
   // for cells and local indices
-  std::vector<std::set<fixarray<2,int> > >  H2(nc); 
+  vector<set<fixarray<2,int> > >  H2(nc); 
 
   for(IntSet::const_iterator q=bquads.begin();
       q!=bquads.end(); q++)
@@ -519,10 +523,10 @@ void LevelMesh3d::InitBoundaryHandler(BoundaryIndexHandler& BI) const
       const BoundaryQuad& bl = HMP->bquad(*q);
       int col = bl.material();
 
-      std::map<int,int>::const_iterator p = inv.find(col);
+      map<int,int>::const_iterator p = inv.find(col);
       if (p==inv.end())
 	{
-	  std::cout << "BoundaryIndexHandler::init3d"<< std::endl;
+	  cout << "BoundaryIndexHandler::init3d"<< endl;
 	  abort();
 	}
       int pos = p->second;
@@ -544,7 +548,7 @@ void LevelMesh3d::InitBoundaryHandler(BoundaryIndexHandler& BI) const
       IntVector v2(H2[i].size());
       int j = 0;
       
-      std::set<fixarray<2,int> >::const_iterator p;
+      set<fixarray<2,int> >::const_iterator p;
       for (p=H2[i].begin(); p!=H2[i].end(); p++)
 	{
 	  v1[j] = (*p)[0];
@@ -553,7 +557,7 @@ void LevelMesh3d::InitBoundaryHandler(BoundaryIndexHandler& BI) const
 	}
       int color = colorvec[i];
 
-      BI.GetCell ().insert(std::make_pair(color,v1));
-      BI.GetLocal().insert(std::make_pair(color,v2));
+      BI.GetCell ().insert(make_pair(color,v1));
+      BI.GetLocal().insert(make_pair(color,v2));
     }
 }

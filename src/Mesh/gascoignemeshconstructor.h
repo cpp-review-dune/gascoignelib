@@ -8,8 +8,6 @@
 #include  "gascoignemesh3d.h"
 #include  "gascoigne.h"
 
-using namespace Gascoigne;
-
 /*-----------------------------------------*/
 
 class GascoigneMeshConstructor
@@ -28,11 +26,11 @@ protected:
   virtual void Construct3d(GascoigneMesh* NM, const LevelMesh3d* LM) const;
 
   virtual LevelMesh2d* GascoigneMeshConstructor::LevelUpdate2d(GascoigneMesh* GM,
-						     const IntSet& newquads, 
-						     const IntSet& oldquads) const;
+						     const Gascoigne::IntSet& newquads, 
+						     const Gascoigne::IntSet& oldquads) const;
   virtual LevelMesh3d* GascoigneMeshConstructor::LevelUpdate3d(GascoigneMesh* GM,
-						     const IntSet& newquads, 
-						     const IntSet& oldquads) const;
+						     const Gascoigne::IntSet& newquads, 
+						     const Gascoigne::IntSet& oldquads) const;
   virtual void Loop2d();
   virtual void Loop3d();
 

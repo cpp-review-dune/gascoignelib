@@ -2,10 +2,11 @@
 #include  "assert.h"
 
 using namespace std;
+using namespace Gascoigne;
 
 //-----------------------------------------------------------------//
 
-Starter::Starter(int argc, char** argv, const std::string& paramfile) 
+Starter::Starter(int argc, char** argv, const string& paramfile) 
 {    
   _paramfile = new ParamFile;
   if(argc>=2) 
@@ -19,7 +20,7 @@ Starter::Starter(int argc, char** argv, const std::string& paramfile)
       _erase = 1;
       pname = "_" + paramfile;
       _paramfile->SetName(pname);
-      //std::cout << "Paramfile ist: " << pname << std::endl;
+      //cout << "Paramfile ist: " << pname << endl;
       {
 	string cmd("rm -f ");
 	cmd += pname;

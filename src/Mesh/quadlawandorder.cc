@@ -1,5 +1,7 @@
 #include  "quadlawandorder.h"
 
+using namespace std;
+
 /*----------------------------------------------------------------------*/
 
 int QuadLawAndOrder::local_edge(const Quad& f, const EdgeVector& globaledge) const
@@ -12,7 +14,7 @@ int QuadLawAndOrder::local_edge(const Quad& f, const EdgeVector& globaledge) con
   int   li2 = lvle->first;
   int   gi2 = f.vertex(li2); 
 
-  if(std::find(globaledge.begin(),globaledge.end(),gi2)!=globaledge.end())
+  if(find(globaledge.begin(),globaledge.end(),gi2)!=globaledge.end())
     {
       return lvle->second;
     }
@@ -43,7 +45,7 @@ int QuadLawAndOrder::GlobalChildEdge(const EdgeVector& edge, int q, int j) const
 
 /*---------------------------------------------------*/
 
-std::pair<int,int> QuadLawAndOrder::GetChildEdges(EdgeVector& edge,
+pair<int,int> QuadLawAndOrder::GetChildEdges(EdgeVector& edge,
 					     const EdgeVector& bigedge, 
 					     int hanging, int bigquad, int i) const
 {
@@ -61,7 +63,7 @@ std::pair<int,int> QuadLawAndOrder::GetChildEdges(EdgeVector& edge,
       edge[1] = bigedge[1];
       iedge   = local_edge_index(q,edge);
     } 
-  return std::make_pair(q,iedge);
+  return make_pair(q,iedge);
 }
 
 /*----------------------------------------------------------------------*/
@@ -170,7 +172,7 @@ void QuadLawAndOrder::global_edge_unsorted(fixarray<2,int>& lineglob, const Quad
 
 /*----------------------------------------------------------------------*/
 
-void QuadLawAndOrder::globaledgechildren_of_father(std::vector<EdgeVector>& edges,
+void QuadLawAndOrder::globaledgechildren_of_father(vector<EdgeVector>& edges,
 						   const Quad& f) const
 {
   size_t n = 8;
@@ -187,7 +189,7 @@ void QuadLawAndOrder::globaledgechildren_of_father(std::vector<EdgeVector>& edge
   edges[6][0] = global_index(f,3); edges[6][1] = global_index(f,7);
   edges[7][0] = global_index(f,0); edges[7][1] = global_index(f,7);
       
-  for(int i=0;i<n;i++) std::sort(edges[i].begin(),edges[i].end());
+  for(int i=0;i<n;i++) sort(edges[i].begin(),edges[i].end());
 }
 
 /*----------------------------------------------------------------------*/
@@ -206,7 +208,7 @@ int QuadLawAndOrder::local_edge_index(int q, const EdgeVector& edge) const
 
 /*----------------------------------------------------------------------*/
 
-QuadLawAndOrder::QuadLawAndOrder(std::vector<Quad>& q) : 
+QuadLawAndOrder::QuadLawAndOrder(vector<Quad>& q) : 
   quads(q),
   vice(EdgeVector(2)), 
   childs_edge(EdgeVector(2)), 
@@ -240,17 +242,17 @@ QuadLawAndOrder::QuadLawAndOrder(std::vector<Quad>& q) :
   gc[8] = 0;  gv[8] = 2;
 
   lvlvle.resize(4);
-  lvlvle[0].insert(std::make_pair<int,int>(1,0));
-  lvlvle[0].insert(std::make_pair<int,int>(3,3));
+  lvlvle[0].insert(make_pair<int,int>(1,0));
+  lvlvle[0].insert(make_pair<int,int>(3,3));
   
-  lvlvle[1].insert(std::make_pair<int,int>(2,1));
-  lvlvle[1].insert(std::make_pair<int,int>(0,0));
+  lvlvle[1].insert(make_pair<int,int>(2,1));
+  lvlvle[1].insert(make_pair<int,int>(0,0));
   
-  lvlvle[2].insert(std::make_pair<int,int>(1,1));
-  lvlvle[2].insert(std::make_pair<int,int>(3,2));
+  lvlvle[2].insert(make_pair<int,int>(1,1));
+  lvlvle[2].insert(make_pair<int,int>(3,2));
   
-  lvlvle[3].insert(std::make_pair<int,int>(2,2));
-  lvlvle[3].insert(std::make_pair<int,int>(0,3));
+  lvlvle[3].insert(make_pair<int,int>(2,2));
+  lvlvle[3].insert(make_pair<int,int>(0,3));
 
   ieoc[0][0] = 1; ieoc[0][1] = 2;
   ieoc[1][0] = 2; ieoc[1][1] = 3;

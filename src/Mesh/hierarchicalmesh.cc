@@ -8,6 +8,7 @@
 #include  "stringutil.h"
 
 using namespace std;
+using namespace Gascoigne;
 
 /*------------------------------------------------------*/
 
@@ -60,11 +61,11 @@ void HierarchicalMesh::NewCurvedShapes()
 
 /*------------------------------------------------------*/
 
-void HierarchicalMesh::InitShapes(const std::set<std::vector<std::string> >&  curved)
+void HierarchicalMesh::InitShapes(const set<vector<string> >&  curved)
 {
   NewCurvedShapes();
 
-  std::set<std::vector<std::string> >::const_iterator  p=curved.begin();
+  set<vector<string> >::const_iterator  p=curved.begin();
 
   for (;p!=curved.end(); p++)
     {

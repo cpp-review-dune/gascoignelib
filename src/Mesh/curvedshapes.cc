@@ -2,15 +2,17 @@
 #include "splinecontour.h"
 #include "runderkreis.h"
 
+using namespace std;
+
 /******************************************************/
 
 CurvedShapes::~CurvedShapes()
 {
-  std::map<int,BoundaryFunction<2>* > ShapeOfColor2d;
-  std::map<int,BoundaryFunction<3>* > ShapeOfColor3d;
+  map<int,BoundaryFunction<2>* > ShapeOfColor2d;
+  map<int,BoundaryFunction<3>* > ShapeOfColor3d;
   colors.clear();
-  std::map<int,BoundaryFunction<2>* >::iterator it2d;
-  std::map<int,BoundaryFunction<3>* >::iterator it3d;
+  map<int,BoundaryFunction<2>* >::iterator it2d;
+  map<int,BoundaryFunction<3>* >::iterator it3d;
   for (it2d=ShapeOfColor2d.begin();it2d!=ShapeOfColor2d.end();++it2d)
     if (it2d->second) delete it2d->second; it2d=NULL;
   for (it3d=ShapeOfColor3d.begin();it3d!=ShapeOfColor3d.end();++it3d)
@@ -36,19 +38,19 @@ int CurvedShapes::Curved(int col) const
 
 /******************************************************/
 
-void CurvedShapes::ReInit(const std::vector<BoundaryLine>& blines)
+void CurvedShapes::ReInit(const vector<BoundaryLine>& blines)
 {
 }
 
 /******************************************************/
 
-void CurvedShapes::ReInit(const std::vector<BoundaryQuad>& bquads)
+void CurvedShapes::ReInit(const vector<BoundaryQuad>& bquads)
 {
 }
 
 /******************************************************/
 
-void CurvedShapes::BasicInit(const std::vector<std::string>& names)
+void CurvedShapes::BasicInit(const vector<string>& names)
 {
   if (names.size()<1) return;
 
@@ -56,7 +58,7 @@ void CurvedShapes::BasicInit(const std::vector<std::string>& names)
 
   if (names.size()<2) return;
 
-  std::string shapename = names[1];
+  string shapename = names[1];
 
   if (shapename=="Kreis")
     {
@@ -104,8 +106,8 @@ void CurvedShapes::BasicInit(const std::vector<std::string>& names)
     }
   else
     {
-      std::cerr << "CurvedShapes::init\n";
-      std::cerr << "shapename=" << shapename << " ???" << std::endl;
+      cerr << "CurvedShapes::init\n";
+      cerr << "shapename=" << shapename << " ???" << endl;
       exit(1);
     }
 }

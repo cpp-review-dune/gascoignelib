@@ -9,18 +9,18 @@ class NavierStokes3d : public NavierStokes
 {
   protected:
   
-  double Laplace(const DerivativeVector& U, 
+  double Laplace(const Gascoigne::TestFunction& U, 
 		 const Gascoigne::TestFunction& N) const
     {
       return U.x()*N.x() + U.y()*N.y() + U.z()*N.z();
     }
   
-  double Convection(const std::vector<DerivativeVector>& U, 
+  double Convection(const std::vector<Gascoigne::TestFunction>& U, 
 		    const Gascoigne::TestFunction& N) const
     {
       return U[1].m()*N.x() + U[2].m()*N.y() + U[3].m()*N.z();
     }
-  double Divergence(const std::vector<DerivativeVector>& U) const
+  double Divergence(const std::vector<Gascoigne::TestFunction>& U) const
     {
       return U[1].x() + U[2].y() + U[3].z();
     }

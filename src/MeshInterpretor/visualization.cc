@@ -4,6 +4,8 @@
 #include  "compose_name.h"
 #include  "filescanner.h"
 
+
+using namespace std;
 using namespace Gascoigne;
 
 /********************************************************************/
@@ -65,7 +67,7 @@ void Visualization::read_parameters(const ParamFile* pf)
 {
   double time;
 
-  std::vector<std::string>  planes(0);
+  vector<string>  planes(0);
   nvector<double> gnupos(0);
 
   DataFormatHandler DH;
@@ -91,7 +93,7 @@ void Visualization::read_parameters(const ParamFile* pf)
   if (gnupos.size())
     {
       Vertex3d V(gnupos[0],gnupos[1],gnupos[2]);
-      std::vector<GnuplotData> vgp;
+      vector<GnuplotData> vgp;
       for (int i=0; i<planes.size(); i++)
 	{
 	  vgp.push_back(GnuplotData(planes[i],V));
@@ -105,7 +107,7 @@ void Visualization::read_parameters(const ParamFile* pf)
 
 /********************************************************************/
 
-void Visualization::set_name(const std::string& s) 
+void Visualization::set_name(const string& s) 
 { 
   stepname = s;
   filename = stepname;
@@ -113,7 +115,7 @@ void Visualization::set_name(const std::string& s)
 
 /********************************************************************/
 
-void Visualization::format(const std::string& s)
+void Visualization::format(const string& s)
 {
   if      (s=="vtk")     vtka   = 1;
   else if (s=="gmv")     gmva   = 1;
@@ -161,14 +163,14 @@ void Visualization::write()
 {
   if(mesh==0)
     {
-      std::cerr << "Visualization::write()\n";
-      std::cerr << "mesh pointer not set\n";
+      cerr << "Visualization::write()\n";
+      cerr << "mesh pointer not set\n";
       abort();
     }
   if(filename=="none")
     {
-      std::cerr << "Visualization::write()\n";
-      std::cerr << "no filename set [use \"step(i)\"]\n";
+      cerr << "Visualization::write()\n";
+      cerr << "no filename set [use \"step(i)\"]\n";
       abort();
     }
 
@@ -177,7 +179,7 @@ void Visualization::write()
   if (vua)        vu(filename);
   if (gnua)       gnuplot(filename);
   if (vtka)       vtk(filename);
-  if (showoutput) std::cout << "[" << filename << "]\n";
+  if (showoutput) cout << "[" << filename << "]\n";
 }
 
 /********************************************************************/
@@ -186,7 +188,7 @@ int Visualization::CheckPointData() const
 {
   if(PointData==NULL) return 0;
 
-  std::set<int> comps;
+  set<int> comps;
 
   int pn = PointData->visucomp();
 
@@ -223,15 +225,15 @@ int Visualization::CheckCellData() const
 {
   if(!CellData) return 0;
 
-  std::set<int> comps;
+  set<int> comps;
 
   // scalars
   for(VisuDataInfo::siterator p=CellDataInfo->sbegin();p!=CellDataInfo->send();++p)
     {
       if( (p->second<0)||(p->second>=CellData->visucomp()))
 	{
-	  std::cerr << "Visualization::CheckCellData()\n";
-	  std::cerr << "scalar does not exist "<<p->second<<std::endl;
+	  cerr << "Visualization::CheckCellData()\n";
+	  cerr << "scalar does not exist "<<p->second<<endl;
 	  exit(1);
 	}
       comps.insert(p->second);
@@ -244,8 +246,8 @@ int Visualization::CheckCellData() const
 	{
 	  if( (p->second[i]<-1)||(p->second[i]>=CellData->visucomp()))
 	    {
-	      std::cerr << "Visualization::CheckCellData()\n";
-	      std::cerr << "vector component does not exist "<<p->second[i]<<std::endl;
+	      cerr << "Visualization::CheckCellData()\n";
+	      cerr << "vector component does not exist "<<p->second[i]<<endl;
 	      exit(1);
 	    }
 	  comps.insert(p->second[i]);
@@ -256,27 +258,27 @@ int Visualization::CheckCellData() const
 
 /********************************************************************/
 
-void Visualization::output_vertexs(std::ofstream& file) const
+void Visualization::output_vertexs(ofstream& file) const
 {
   if (mesh->dimension()==2)
     {
       for (int i=0; i<mesh->nnodes(); i++)
 	{
-	  file << mesh->vertex2d(i) << std::endl;
+	  file << mesh->vertex2d(i) << endl;
 	}
     }
   else
     {
       for (int i=0; i<mesh->nnodes(); i++)
 	{
-	  file << mesh->vertex3d(i) << std::endl;
+	  file << mesh->vertex3d(i) << endl;
 	}
     }
 }
 
 /********************************************************************/
 
-void Visualization::output_vertexs_by_component(std::ofstream& file) const
+void Visualization::output_vertexs_by_component(ofstream& file) const
 {
   if (mesh->dimension()==2)
     {
@@ -284,7 +286,7 @@ void Visualization::output_vertexs_by_component(std::ofstream& file) const
 	{
 	  file << " " << mesh->vertex2d(i).x();
 	}
-      file << std::endl;
+      file << endl;
       for (int i=0; i<mesh->nnodes(); i++)
 	{
 	  file << " " << mesh->vertex2d(i).y();
@@ -296,12 +298,12 @@ void Visualization::output_vertexs_by_component(std::ofstream& file) const
 	{
 	  file << " " << mesh->vertex3d(i).x();
 	}
-      file << std::endl;
+      file << endl;
       for (int i=0; i<mesh->nnodes(); i++)
 	{
 	  file << " " << mesh->vertex3d(i).y();
 	}
-      file << std::endl;
+      file << endl;
       for (int i=0; i<mesh->nnodes(); i++)
 	{
 	  file << " " << mesh->vertex3d(i).z();
@@ -311,7 +313,7 @@ void Visualization::output_vertexs_by_component(std::ofstream& file) const
 
 /********************************************************************/
 
-void Visualization::output_quads(std::ofstream& file, const std::string& text) const
+void Visualization::output_quads(ofstream& file, const string& text) const
 {
   if (mesh->dimension()==2)
     {
@@ -322,14 +324,14 @@ void Visualization::output_quads(std::ofstream& file, const std::string& text) c
 	    {
 	      file << mesh->vertex_of_cell(c,i)+1 << " "; 
 	    }
-	  file<<std::endl;      
+	  file<<endl;      
 	}
     }
 }
 
 /********************************************************************/
 
-void Visualization::output_hexs(std::ofstream& file, const std::string& text) const
+void Visualization::output_hexs(ofstream& file, const string& text) const
 {
   if (mesh->dimension()==3)
     {
@@ -340,14 +342,14 @@ void Visualization::output_hexs(std::ofstream& file, const std::string& text) co
 	    {
 	      file << mesh->vertex_of_cell(c,i)+1 << " "; 
 	    }
-	  file<<std::endl;      
+	  file<<endl;      
 	}
     }
 }
 
 /********************************************************************/
 
-void Visualization::output_solution(std::ofstream& file, int c) const
+void Visualization::output_solution(ofstream& file, int c) const
 {
   for (int ind=0; ind<PointData->visun(); ind++)
     {

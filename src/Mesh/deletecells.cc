@@ -3,11 +3,15 @@
 #include "hex.h"
 #include "boundarycell.h"
 
+
+using namespace std;
+using namespace Gascoigne;
+
 /*---------------------------------------------------*/
 
 template<class C>
 void delete_cells(const IntSet& coarselist, 
-		  std::vector<C>& liste, 
+		  vector<C>& liste, 
 		  const nvector<int>& co2n, const nvector<int>& vo2n)
 {
   for(unsigned oi=0;oi<co2n.size();++oi)
@@ -22,9 +26,9 @@ void delete_cells(const IntSet& coarselist,
 	      q.vertex(i) = vo2n[q.vertex(i)];
 	      if(q.vertex(i)==-1)
 		{
-		  std::cerr << "Vertex invalid in "<<oi<<" "<<ni<<std::endl;
-		  //std::cerr << vo2n[liste[oi].vertex(i)]<<std::endl;
-		  //std::cerr << q.vertex();
+		  cerr << "Vertex invalid in "<<oi<<" "<<ni<<endl;
+		  //cerr << vo2n[liste[oi].vertex(i)]<<endl;
+		  //cerr << q.vertex();
 		  abort();
 		}
 	    }
@@ -50,14 +54,14 @@ void delete_cells(const IntSet& coarselist,
 
 /*---------------------------------------------------*/
 
-template void delete_cells<Quad>(const IntSet&, std::vector<Quad>&, 
+template void delete_cells<Quad>(const IntSet&, vector<Quad>&, 
 				 const nvector<int>&, const nvector<int>&);
-template void delete_cells<Hex>(const IntSet&, std::vector<Hex>&, 
+template void delete_cells<Hex>(const IntSet&, vector<Hex>&, 
 				 const nvector<int>&, const nvector<int>&);
 
-template void delete_cells<BoundaryCell<2> >(const IntSet&, std::vector<BoundaryCell<2> >&, 
+template void delete_cells<BoundaryCell<2> >(const IntSet&, vector<BoundaryCell<2> >&, 
 				const nvector<int>&, const nvector<int>&);
 
-template void delete_cells<BoundaryCell<4> >(const IntSet&, std::vector<BoundaryCell<4> >&, 
+template void delete_cells<BoundaryCell<4> >(const IntSet&, vector<BoundaryCell<4> >&, 
 				const nvector<int>&, const nvector<int>&);
 				

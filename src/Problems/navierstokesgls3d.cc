@@ -1,6 +1,8 @@
 #include  "navierstokesgls3d.h"
 #include  "filescanner.h"
 
+
+using namespace std;
 using namespace Gascoigne;
 
 /*-----------------------------------------*/
@@ -30,7 +32,7 @@ NavierStokesGls3d::NavierStokesGls3d(const ParamFile* pf)
 
 /*-----------------------------------------*/
 
-std::string NavierStokesGls3d::GetName() const
+string NavierStokesGls3d::GetName() const
 {
   return "NavierStokesGls3d";
 }

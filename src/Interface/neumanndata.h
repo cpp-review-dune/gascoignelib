@@ -5,7 +5,6 @@
 #include  <set>
 #include  "nvector.h"
 #include  <string>
-#include  "derivativevector.h"
 #include  "gascoigne.h"
 #include  "application.h"
 

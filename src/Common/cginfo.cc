@@ -3,54 +3,56 @@
 #include  "fadamath.h"
 #include  <iostream>
 
+using namespace std;
+
 /*******************************************************************/
 
-std::ostream& operator<<(std::ostream &s, const StatisticData& A)
+ostream& operator<<(ostream &s, const StatisticData& A)
 {
   s << "StatisticData\n";
-  s << "rate" << "\t"<< A.rate() << std::endl;
-  s << "lastrate" <<"\t"<< A.lastrate() << std::endl;
-  s << "totaliter" <<"\t"<< A.totaliter() << std::endl;
+  s << "rate" << "\t"<< A.rate() << endl;
+  s << "lastrate" <<"\t"<< A.lastrate() << endl;
+  s << "totaliter" <<"\t"<< A.totaliter() << endl;
   return s;
 }
 
 /*******************************************************************/
 
-std::ostream& operator<<(std::ostream &s, const ControlData& A)
+ostream& operator<<(ostream &s, const ControlData& A)
 {
   s << "ControlData\n";
-  s << "status" <<"\t"<< A.status() << std::endl;
-  s << "firstresidual" <<"\t"<< A.firstresidual() << std::endl;
-  s << "residual" <<"\t"<< A.residual() << std::endl;
-  s << "aimedresidual" <<"\t"<< A.aimedresidual() << std::endl;
-  s << "previousresidual" << A.previousresidual() << std::endl;
-  s << "iteration" <<"\t"<< A.iteration() << std::endl;
-  s << "correction" <<"\t"<< A.correction() << std::endl;
-  s << "previouscorrection" <<"\t"<< A.previouscorrection() << std::endl;
+  s << "status" <<"\t"<< A.status() << endl;
+  s << "firstresidual" <<"\t"<< A.firstresidual() << endl;
+  s << "residual" <<"\t"<< A.residual() << endl;
+  s << "aimedresidual" <<"\t"<< A.aimedresidual() << endl;
+  s << "previousresidual" << A.previousresidual() << endl;
+  s << "iteration" <<"\t"<< A.iteration() << endl;
+  s << "correction" <<"\t"<< A.correction() << endl;
+  s << "previouscorrection" <<"\t"<< A.previouscorrection() << endl;
   return s;
 }
 
 /*******************************************************************/
 
-std::ostream& operator<<(std::ostream &s, const UserData& A)
+ostream& operator<<(ostream &s, const UserData& A)
 {
   s << "UserData\n";
-  s << "tol" <<"\t"<< A.tol() << std::endl;
-  s << "globaltol" <<"\t"<< A.globaltol() << std::endl;
-  s << "breaktol" <<"\t"<< A.breaktol() << std::endl;
-  s << "maxiter" <<"\t"<< A.maxiter() << std::endl;
-  s << "printstep" <<"\t"<< A.printstep() << std::endl;
+  s << "tol" <<"\t"<< A.tol() << endl;
+  s << "globaltol" <<"\t"<< A.globaltol() << endl;
+  s << "breaktol" <<"\t"<< A.breaktol() << endl;
+  s << "maxiter" <<"\t"<< A.maxiter() << endl;
+  s << "printstep" <<"\t"<< A.printstep() << endl;
   return s;
 }
 
 /*******************************************************************/
 
-std::ostream& operator<<(std::ostream &s, const CGInfo& A)
+ostream& operator<<(ostream &s, const CGInfo& A)
 {
   s << "CGInfo\n";
-  s << A.statistics()<<std::endl;
-  s << A.control()<<std::endl;
-  s << A.user()<<std::endl;
+  s << A.statistics()<<endl;
+  s << A.control()<<endl;
+  s << A.user()<<endl;
   return s;
 }
 
@@ -93,7 +95,7 @@ void CGInfo::compute_reduction_rate()
 
 /*******************************************************************/
 
-CGInfo::CGInfo(double f, double t, int p, int m, const std::string& txt)
+CGInfo::CGInfo(double f, double t, int p, int m, const string& txt)
 {
   UD.text() = txt;
   
@@ -109,7 +111,7 @@ CGInfo::CGInfo(double f, double t, int p, int m, const std::string& txt)
 
 /*******************************************************************/
 
-CGInfo::CGInfo(const std::string& txt)
+CGInfo::CGInfo(const string& txt)
 {
   UD.text() = txt;
   double f = 1.e-6;
@@ -180,8 +182,8 @@ bool CGInfo::check(double resi, double cori)
     }
   if (UD.printstep() && !(CD.iteration()%UD.printstep()) )
     {
-      std::cout << UD.text() << " " << CD.iteration() << " Res: " << CD.residual();
-      std::cout << " Cor: " << CD.correction()<< std::endl;
+      cout << UD.text() << " " << CD.iteration() << " Res: " << CD.residual();
+      cout << " Cor: " << CD.correction()<< endl;
     }
   CD.iteration()++;
   if (CD.status()=="running")  return 0;

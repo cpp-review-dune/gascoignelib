@@ -1,6 +1,7 @@
 #include  "meshagent.h"
 
 using namespace std;
+using namespace Gascoigne;
 
 /*---------------------------------------------------*/
 

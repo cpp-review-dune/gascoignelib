@@ -1,5 +1,7 @@
 #include "edge.h"
 
+using namespace std;
+
 /*---------------------------------------------------*/
 
 Edge& Edge::operator=(const Edge& e)
@@ -12,7 +14,7 @@ Edge& Edge::operator=(const Edge& e)
 
 /*---------------------------------------------------*/
 
-std::pair<int,int> Edge::EdgeNeighbour(int i) const
+pair<int,int> Edge::EdgeNeighbour(int i) const
 {
   //const Edge&  E = edge(quad(i).edge(e));
   int in = master();
@@ -22,7 +24,7 @@ std::pair<int,int> Edge::EdgeNeighbour(int i) const
       in = slave();
       il = LocalSlaveIndex();
     }
-  return std::make_pair(in,il);
+  return make_pair(in,il);
 }
 
 /*---------------------------------------------------*/
@@ -47,19 +49,19 @@ void Edge::setmaster(int newindex, int newlocal)
 
 /*---------------------------------------------------*/
 
-std::ostream& operator<<(std::ostream &s, const Edge& A)
+ostream& operator<<(ostream &s, const Edge& A)
 {
   s << A.master()  << " ";
   s << A.LocalMasterIndex()  << " ";
   s << A.slave()   << " ";
-  s << A.LocalSlaveIndex() << " "<< std::endl;
+  s << A.LocalSlaveIndex() << " "<< endl;
   
   return s;
 }
 
 /*---------------------------------------------------*/
 
-std::istream& operator>>(std::istream &s, Edge& A)
+istream& operator>>(istream &s, Edge& A)
 {
   s >> A.master() >> A.LocalMasterIndex() >> A.slave() >> A.LocalSlaveIndex();
 }

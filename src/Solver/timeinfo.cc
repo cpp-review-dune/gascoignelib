@@ -4,6 +4,8 @@
 #include  <stdio.h>
 #include  <cassert>
 
+using namespace std;
+
 /*-----------------------------------------*/
 
 TimeInfo::TimeInfo()
@@ -55,7 +57,7 @@ int TimeInfo::ftstep() const
 
 /*-----------------------------------------*/
 
-void TimeInfo::init(double tb, double te, double det, const std::string& sch, int ne, double tt)
+void TimeInfo::init(double tb, double te, double det, const string& sch, int ne, double tt)
 {
   _tbegin = tb;
   _time      = _tbegin;
@@ -112,12 +114,12 @@ void TimeInfo::iteration_backward(int i)
   _time -= dt();
   _iter = i;
 
-  std::string actualscheme = _scheme;
+  string actualscheme = _scheme;
   if (_iter<=_neuler) actualscheme = "Euler";
 
-  std::cout << "\n============= " << _iter << " ========== " << actualscheme;
-  std::cout << " [t,dt] "<< _time << " " << dt() << "\t";
-  std::cout << std::endl;
+  cout << "\n============= " << _iter << " ========== " << actualscheme;
+  cout << " [t,dt] "<< _time << " " << dt() << "\t";
+  cout << endl;
 }
 
 /*-----------------------------------------*/
@@ -129,12 +131,12 @@ void TimeInfo::iteration(int i)
   _time += dt();
   _iter = i;
 
-  std::string actualscheme = _scheme;
+  string actualscheme = _scheme;
   if (_iter<=_neuler) actualscheme = "Euler";
 
-  std::cout << "\n============= " << _iter << " ========== " << actualscheme;
-  std::cout << " [t,dt] "<< _time << " " << dt() << "\t";
-  std::cout << std::endl;
+  cout << "\n============= " << _iter << " ========== " << actualscheme;
+  cout << " [t,dt] "<< _time << " " << dt() << "\t";
+  cout << endl;
 }
 
 /*-----------------------------------------*/

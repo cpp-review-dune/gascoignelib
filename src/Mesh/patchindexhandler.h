@@ -3,33 +3,31 @@
 
 #include  "gascoigne.h"
 
-using namespace Gascoigne;
-
 /*-----------------------------------------*/
 
 class PatchIndexHandler
 {
 protected:
 
-  bool                    haspatch;
-  nvector<IntVector>      indexofpatch;
-  nvector<IntVector>      patch2cell;
+  bool                               haspatch;
+  nvector<Gascoigne::IntVector>      indexofpatch;
+  nvector<Gascoigne::IntVector>      patch2cell;
   
   int dim;
 
 public:
 
-  int&                GetDim()      { return dim;}
-  bool&               GetHasPatch() { return haspatch;}
-  nvector<IntVector>& GetIndex()    { return indexofpatch;}
+  int&                           GetDim()      { return dim;}
+  bool&                          GetHasPatch() { return haspatch;}
+  nvector<Gascoigne::IntVector>& GetIndex()    { return indexofpatch;}
 
-  IntVector&          GetPatch2Cell(int i)
+  Gascoigne::IntVector&          GetPatch2Cell(int i)
     { assert(i<patch2cell.size()); return patch2cell[i];}
-  const IntVector&    GetPatch2Cell(int i) const
+  const Gascoigne::IntVector&    GetPatch2Cell(int i) const
     { assert(i<patch2cell.size()); return patch2cell[i];}
   
-        nvector<IntVector>& GetAllPatch2Cell()       { return patch2cell; }
-  const nvector<IntVector>& GetAllPatch2Cell() const { return patch2cell; }
+        nvector<Gascoigne::IntVector>& GetAllPatch2Cell()       { return patch2cell; }
+  const nvector<Gascoigne::IntVector>& GetAllPatch2Cell() const { return patch2cell; }
   
   int npatches()    const { return indexofpatch.size();}
   bool HasPatch()   const { return haspatch;}

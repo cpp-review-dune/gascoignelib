@@ -12,23 +12,25 @@
 #define ISTRINGSTREAM istrstream 
 #else
 #include  <sstream>
-#define STRINGSTREAM  std::stringstream
-#define ISTRINGSTREAM std::istringstream
+#define STRINGSTREAM  stringstream
+#define ISTRINGSTREAM istringstream
 #endif
+
+using namespace std;
 
 /*--------------------------------------*/
 
-std::string Int2String   (int a   )
+string Int2String   (int a   )
 {
 #ifdef __OLDCOMPILER__
   char c[1+(int) log(a)];
   sprintf(c,"%d",a);
-  std::string r = c;
+  string r = c;
   return r;
 #else
   STRINGSTREAM ss;
   ss << a;
-  std::string r;
+  string r;
   r = ss.str();
   return r;
 #endif
@@ -36,40 +38,40 @@ std::string Int2String   (int a   )
 
 /*--------------------------------------*/
 
-std::string Double2String(double a)
+string Double2String(double a)
 {
   STRINGSTREAM ss;
   ss << a;
-  std::string r;
+  string r;
   r = ss.str();
   return r;
 }
 
 /*--------------------------------------*/
 
-std::string GetBase(const char* buf, char sep)
+string GetBase(const char* buf, char sep)
 {
-  std::vector<std::string> all= StringSplit(buf,sep);
+  vector<string> all= StringSplit(buf,sep);
   assert(all.size());
   return all[0];
 }
 
-std::string GetTail(const char* buf, char sep)
+string GetTail(const char* buf, char sep)
 {
-  std::vector<std::string> all= StringSplit(buf,sep);
+  vector<string> all= StringSplit(buf,sep);
   assert(all.size());
   return all[all.size()-1];
 }
 
 /*--------------------------------------*/
 
-std::vector<std::string> StringSplit(const char* buf, char sep)
+vector<string> StringSplit(const char* buf, char sep)
 {
-  std::vector<std::string> words;
+  vector<string> words;
   ISTRINGSTREAM is(buf);
   while (!is.eof())
     {
-      std::string t;
+      string t;
       getline(is,t,sep);
       if(t.size()==0) continue;
       if(t[0]!=sep) words.push_back(t);
@@ -77,21 +79,21 @@ std::vector<std::string> StringSplit(const char* buf, char sep)
   return words;
 }
 
-std::vector<std::string> StringSplit(const char* buf, char sep1, char sep2)
+vector<string> StringSplit(const char* buf, char sep1, char sep2)
 {
-  std::vector<std::string> words;
+  vector<string> words;
   ISTRINGSTREAM is(buf);
   while (!is.eof())
     {
-      std::string t;
+      string t;
       getline(is,t,sep1);
       if(t.size()==0) continue;
       if(t[0]!=sep1) words.push_back(t);
     }
-  std::vector<std::string> words2;
+  vector<string> words2;
   for(int i=0;i<words.size();i++)
     {
-      std::vector<std::string> s1 = StringSplit(words[i].c_str(),sep2);
+      vector<string> s1 = StringSplit(words[i].c_str(),sep2);
       copy(s1.begin(),s1.end(),back_inserter(words2));
     }
       
@@ -100,17 +102,17 @@ std::vector<std::string> StringSplit(const char* buf, char sep1, char sep2)
 
 /*-----------------------------------------*/
 
-std::pair<std::string,std::vector<std::string> > SplitArgs(std::string s)
+pair<string,vector<string> > SplitArgs(string s)
 {
-  std::vector<std::string> vs = StringSplit(s.c_str(),'_');
+  vector<string> vs = StringSplit(s.c_str(),'_');
   if(!vs.size())
     {
-      std::cerr << "SplitArgs()\t";
-      std::cerr << s << " --> " <<  vs << std::endl;
+      cerr << "SplitArgs()\t";
+      cerr << s << " --> " <<  vs << endl;
       abort();
     }
-  std::string name = vs[0];
-  std::vector<std::string> args(vs.size()-1);
+  string name = vs[0];
+  vector<string> args(vs.size()-1);
   for(int i=1;i<vs.size();i++)
     {
       args[i-1] = vs[i];

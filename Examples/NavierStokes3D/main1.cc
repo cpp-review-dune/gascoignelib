@@ -1,6 +1,8 @@
 #include  "problemdescriptor1.h"
 #include  "stdloop.h"
 
+using namespace Gascoigne;
+
 /*---------------------------------------------------*/
 
 int main(int argc, char** argv)

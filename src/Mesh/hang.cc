@@ -1,5 +1,7 @@
 #include "hang.h"
 
+using namespace std;
+
 /*********************************************************************/
 
 Hang::Hang() : fixarray<3,int>(-1)
@@ -21,7 +23,7 @@ Hang::Hang(int nh, int nr, int nc)
   
 /*********************************************************************/
 
-std::ostream& operator<<(std::ostream &s, const Hang& A)
+ostream& operator<<(ostream &s, const Hang& A)
 {
   s << A.hanging()    << " : ";
   s << A.rneighbour() << " ";
@@ -31,7 +33,7 @@ std::ostream& operator<<(std::ostream &s, const Hang& A)
 
 /*********************************************************************/
 
-std::istream& operator>>(std::istream &s, Hang& A)
+istream& operator>>(istream &s, Hang& A)
 {
   char symbol;
   s >> A.hanging() >> symbol;

@@ -43,7 +43,7 @@ void BackwardEquation::Form(VectorIterator b, const FemFunction& U, const TestFu
 
 /* ----------------------------------------- */
 
-void BackwardEquation::Matrix(EntryMatrix& A, const FemFunction& U, const DerivativeVector& M, const DerivativeVector& N) const
+void BackwardEquation::Matrix(EntryMatrix& A, const FemFunction& U, const TestFunction& M, const TestFunction& N) const
 {
   A(0,0) += _visc* (M.x()*N.x()+M.y()*N.y());
   A(0,0) += 2.*(*q)[0].m()*M.m()*N.m();

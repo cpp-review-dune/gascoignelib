@@ -1,6 +1,8 @@
 #include  "coarsehierarchicalmesh3d.h"
 #include  "set2vec.h"
 
+using namespace Gascoigne;
+
 /*---------------------------------------------------*/
 
 CoarseHierarchicalMesh3d::CoarseHierarchicalMesh3d

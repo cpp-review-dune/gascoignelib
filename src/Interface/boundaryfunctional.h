@@ -1,7 +1,6 @@
 #ifndef  __BoundaryFunctional_h
 #define  __BoundaryFunctional_h
 
-#include  "derivativevector.h"
 #include  "nvector.h"
 #include  <string>
 #include  <set>
@@ -12,7 +11,6 @@
 
 class BoundaryFunctional : public virtual Functional
 {
-protected:
 
 public:
 

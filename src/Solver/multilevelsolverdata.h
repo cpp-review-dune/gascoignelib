@@ -4,8 +4,6 @@
 #include  "nlinfo.h"
 #include  "paramfile.h"
 
-using namespace Gascoigne;
-
 /*-------------------------------------------------------------*/
 
 class MultiLevelSolverData
@@ -24,7 +22,7 @@ public:
 
   // constructors
 
-  MultiLevelSolverData(const ParamFile* pf);
+  MultiLevelSolverData(const Gascoigne::ParamFile* pf);
   ~MultiLevelSolverData();
 };
 

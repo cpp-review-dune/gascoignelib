@@ -19,7 +19,7 @@ class LocalTimeLoop : public StdTimeLoop
 {
 private:
 
-  std::vector<GlobalVector>  dat_node;
+  std::vector<Gascoigne::GlobalVector>  dat_node;
 
 protected:
 
@@ -32,7 +32,7 @@ public:
 //
 
   LocalTimeLoop() : StdTimeLoop() {}
-  void BasicInit(const ParamFile* paramfile);
+  void BasicInit(const Gascoigne::ParamFile* paramfile);
 
   void AddNodeVector(std::string filename);
   void NewMesh(const ProblemDescriptorInterface* PD);

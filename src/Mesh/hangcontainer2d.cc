@@ -1,6 +1,10 @@
 #include "hangcontainer2d.h"
 #include "find_in_linehang.h"
 
+
+using namespace std;
+using namespace Gascoigne;
+
 /*********************************************************************/
 
 bool HangContainer2d::ToBeDeleted(const EdgeVector& v) const
@@ -72,7 +76,7 @@ int HangContainer2d::vertex_index(const EdgeVector& edge) const
 
 void HangContainer2d::update_news(const IntVector& vnew, int i)
 {
-  // std::cerr << "new_hangs()" << std::endl;
+  // cerr << "new_hangs()" << endl;
   // newhangs-hanging setzten fuer new-quad und linehang fuer die zukunft
   
   for (HangList<2>::iterator p = VertexToBeCreated.begin(); p!=VertexToBeCreated.end(); p++)
@@ -100,14 +104,14 @@ void HangContainer2d::ghost_coarse(EdgeVector& edge, int f, int edge_vertex)
       /* vertex is hang and has to be deleted */
       if (e->second.cneighbour()==f)
 	{
-	  std::swap(e->second.rneighbour(),e->second.cneighbour());
+	  swap(e->second.rneighbour(),e->second.cneighbour());
 	}
       VertexToBeDeleted.move(Hanging,e);
     }
   else
     {
       Hang  h(edge_vertex,-1,f);
-      Hanging.insert(std::make_pair(edge,h));
+      Hanging.insert(make_pair(edge,h));
     }
 }
 
@@ -123,7 +127,7 @@ void HangContainer2d::ghost_refine(EdgeVector& edge, int f)
       assert(e==Hanging.end());
       if (d->second.cneighbour()==f)
 	{
-	  std::swap(d->second.rneighbour(),d->second.cneighbour());
+	  swap(d->second.rneighbour(),d->second.cneighbour());
 	}
       Hanging.move(VertexToBeDeleted,d);
     }
@@ -142,8 +146,8 @@ void HangContainer2d::ghost_refine(EdgeVector& edge, int f)
       else  // not in VertexToBeDeleted and not Hanging
 	{
 	  Hang h(-1,f,-1);
-	  Hanging.insert(std::make_pair(edge,h));
-	  VertexToBeCreated.insert(std::make_pair(edge,h));
+	  Hanging.insert(make_pair(edge,h));
+	  VertexToBeCreated.insert(make_pair(edge,h));
 	}
     }
 }

@@ -16,9 +16,7 @@
 #include  "newmultilevelghostvector.h"
 #include  "stlio.h"
 
-using namespace Gascoigne;
-
-class NewGhostVectorAgent : public std::map<NewGhostVector,GlobalVector*>
+class NewGhostVectorAgent : public std::map<NewGhostVector,Gascoigne::GlobalVector*>
 {
 public:
 
@@ -26,8 +24,8 @@ public:
 ////  Con(De)structor 
 //
 
-  typedef std::map<NewGhostVector,GlobalVector*>::const_iterator const_iterator;
-  typedef std::map<NewGhostVector,GlobalVector*>::iterator       iterator;
+  typedef std::map<NewGhostVector,Gascoigne::GlobalVector*>::const_iterator const_iterator;
+  typedef std::map<NewGhostVector,Gascoigne::GlobalVector*>::iterator       iterator;
 
   NewGhostVectorAgent() {}
   ~NewGhostVectorAgent()
@@ -60,7 +58,7 @@ public:
 	}
       else
 	{
-	  insert(std::make_pair(g,(GlobalVector*) NULL));
+	  insert(std::make_pair(g,(Gascoigne::GlobalVector*) NULL));
 	}
     }
   void Delete(BasicGhostVector& mg) 
@@ -72,7 +70,7 @@ public:
     }
 
 
-  GlobalVector& operator()(const NewGhostVector& g) 
+  Gascoigne::GlobalVector& operator()(const NewGhostVector& g) 
     {
       iterator p = find(g);
       if(p==end())
@@ -82,7 +80,7 @@ public:
 	  std::cerr << *this << "\n";
 	  abort();
 	}
-      GlobalVector* vp = p->second;
+      Gascoigne::GlobalVector* vp = p->second;
       if(vp==NULL) 
 	{
 	  std::cerr <<  "GhostVectorAgent  GlobalVector* NULL\t" << p->first << std::endl;

@@ -54,7 +54,7 @@ protected:
   double _p;
 
   std::string _reload, _initial;
-  const ParamFile*  _paramfile;
+  const Gascoigne::ParamFile*  _paramfile;
   
 
   Monitor           Mon;
@@ -70,8 +70,8 @@ protected:
   virtual void ComputeGlobalErrors(const NewMultiLevelGhostVector& u);
 
   virtual void InitSolution(NewMultiLevelGhostVector& u);
-  virtual void CopyVector(GlobalVector& dst, NewMultiLevelGhostVector& src);
-  virtual void CopyVector(NewMultiLevelGhostVector& dst, GlobalVector& src);
+  virtual void CopyVector(Gascoigne::GlobalVector& dst, NewMultiLevelGhostVector& src);
+  virtual void CopyVector(NewMultiLevelGhostVector& dst, Gascoigne::GlobalVector& src);
 
 public:
 

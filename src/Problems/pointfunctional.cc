@@ -1,5 +1,7 @@
 #include  "pointfunctional.h"
 
+using namespace std;
+
 /*-----------------------------------------*/
 
 PointFunctional::~PointFunctional()
@@ -9,7 +11,7 @@ PointFunctional::~PointFunctional()
 /*-----------------------------------------*/
 
 PointFunctional::PointFunctional
-(const std::vector<std::string>& args)  
+(const vector<string>& args)  
   : Functional(), v2d(0), v3d(0), w(0)
 {
   Init(args);
@@ -18,7 +20,7 @@ PointFunctional::PointFunctional
 /*-----------------------------------------*/
 
 
-void PointFunctional::Init(const std::vector<std::string>& args)
+void PointFunctional::Init(const vector<string>& args)
 {
   type = args[0];
       
@@ -32,7 +34,7 @@ void PointFunctional::Init(const std::vector<std::string>& args)
       v2d.resize(n);
       w.resize(n);
       
-      //std::cerr << "n = " << n << std::endl;
+      //cerr << "n = " << n << endl;
       int count=2;
       assert(args.size()==2+n*4);
       for(int ii=0; ii<n; ii++)
@@ -43,7 +45,7 @@ void PointFunctional::Init(const std::vector<std::string>& args)
 	  double y  = atof(args[count++].c_str());
 	  v2d[ii].x() = x;  v2d[ii].y() = y;
 	  w[ii] = w0;
-	  //std::cerr << "point: " << w0 << "\t" << v[ii] << std::endl;
+	  //cerr << "point: " << w0 << "\t" << v[ii] << endl;
 	}
     }
   else if(type=="vertex3d")
@@ -53,7 +55,7 @@ void PointFunctional::Init(const std::vector<std::string>& args)
       v3d.resize(n);
       w.resize(n);
       
-      //std::cerr << "n = " << n << std::endl;
+      //cerr << "n = " << n << endl;
       int count=2;
       assert(args.size()==2+n*5);
       for(int ii=0; ii<n; ii++)
@@ -65,7 +67,7 @@ void PointFunctional::Init(const std::vector<std::string>& args)
 	  double z  = atof(args[count++].c_str());
 	  v3d[ii].x() = x;  v3d[ii].y() = y; v3d[ii].z() = z;
 	  w[ii] = w0;
-	  //std::cerr << "point: " << w0 << "\t" << v3d[ii] << std::endl;
+	  //cerr << "point: " << w0 << "\t" << v3d[ii] << endl;
         }
     }
   else if(type=="id")
@@ -74,7 +76,7 @@ void PointFunctional::Init(const std::vector<std::string>& args)
       ids.resize(n);
       w  .resize(n);
       
-      std::cerr << "n = " << n << std::endl;
+      cerr << "n = " << n << endl;
       int count=2;
       for(int ii=0;ii<n;ii++)
 	{
@@ -85,8 +87,8 @@ void PointFunctional::Init(const std::vector<std::string>& args)
     }
   else
     {
-      std::cerr << "PointFunctional::PointFunctional()\n";
-      std::cerr << "unknown type: " << type << std::endl;
+      cerr << "PointFunctional::PointFunctional()\n";
+      cerr << "unknown type: " << type << endl;
       abort();
     }
 }

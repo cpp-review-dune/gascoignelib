@@ -5,8 +5,6 @@
 #include  <string>
 #include  "gascoigne.h"
 
-using namespace Gascoigne;
-
 /*-----------------------------------------------------------*/
 
 // N = no of nodes
@@ -22,7 +20,7 @@ class Cell :  public fixarray<N,int>   /* das sind die vertex-no. */
   /* Data */
 
   int              qlevel, qfather;
-  IntVector         qchilds;
+  Gascoigne::IntVector         qchilds;
   fixarray<E,int>  qedges;            /* edge numbers */
 
  public:
@@ -83,8 +81,8 @@ class Cell :  public fixarray<N,int>   /* das sind die vertex-no. */
   int   edge  (int i) const { return qedges[i];}          
   int&  edge  (int i)       { return qedges[i];}          
 
-  const IntVector&  childs()       const { return qchilds;}          
-        IntVector&  childs()             { return qchilds;}          
+  const Gascoigne::IntVector&  childs()       const { return qchilds;}          
+        Gascoigne::IntVector&  childs()             { return qchilds;}          
   const fixarray<N,int>& vertex() const { return (*this);}
         fixarray<N,int>& vertex()       { return (*this);}
   const fixarray<E,int>& edges()  const { return qedges;}

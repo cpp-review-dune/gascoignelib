@@ -3,49 +3,51 @@
 #include "fadamath.h"
 #include  <iostream>
 
+using namespace std;
+
 /*******************************************************************/
 
-std::ostream& operator<<(std::ostream &s, const NLStatisticData& A)
+ostream& operator<<(ostream &s, const NLStatisticData& A)
 {
   s << "NLStatisticData\n";
-  s << "newmatrix" <<"\t"<< A.newmatrix()<< std::endl;
-  s << "totalmatrix" <<"\t"<< A.totalmatrix()<< std::endl;
+  s << "newmatrix" <<"\t"<< A.newmatrix()<< endl;
+  s << "totalmatrix" <<"\t"<< A.totalmatrix()<< endl;
   s << (StatisticData) A;
   return s;
 }
 
 /*******************************************************************/
 
-std::ostream& operator<<(std::ostream &s, const NLControlData& A)
+ostream& operator<<(ostream &s, const NLControlData& A)
 {
   s << "NLControlData\n";
-  s << "relax" <<"\t"<< A.relax()<< std::endl;
-  s << "newmatrix" <<"\t"<< A.newmatrix()<< std::endl;
-  s << "laststepbad" <<"\t"<< A.laststepbad()<< std::endl;
+  s << "relax" <<"\t"<< A.relax()<< endl;
+  s << "newmatrix" <<"\t"<< A.newmatrix()<< endl;
+  s << "laststepbad" <<"\t"<< A.laststepbad()<< endl;
   s << (ControlData) A;
   return s;
 }
 
 /*******************************************************************/
 
-std::ostream& operator<<(std::ostream &s, const NLUserData& A)
+ostream& operator<<(ostream &s, const NLUserData& A)
 {
   s << "NLUserData\n";
-  s << "rho" <<"\t"<< A.rho()<< std::endl;
-  s << "linrho" <<"\t"<< A.linrho()<< std::endl;
-  s << "maxrelax" <<"\t"<< A.maxrelax()<< std::endl;
+  s << "rho" <<"\t"<< A.rho()<< endl;
+  s << "linrho" <<"\t"<< A.linrho()<< endl;
+  s << "maxrelax" <<"\t"<< A.maxrelax()<< endl;
   s << (UserData) A;
   return s;
 }
 
 /*******************************************************************/
 
-std::ostream& operator<<(std::ostream &s, const NLInfo& A)
+ostream& operator<<(ostream &s, const NLInfo& A)
 {
   s << "NLInfo\n";
-  s << A.statistics()<<std::endl;
-  s << A.control()<<std::endl;
-  s << A.user()<<std::endl;
+  s << A.statistics()<<endl;
+  s << A.control()<<endl;
+  s << A.user()<<endl;
   return s;
 }
 
@@ -96,7 +98,7 @@ void NLInfo::new_matrix()
 
 /*******************************************************************/
 
-NLInfo::NLInfo(CGInfo& info, double f, double t, int p, int m, const std::string& txt) :
+NLInfo::NLInfo(CGInfo& info, double f, double t, int p, int m, const string& txt) :
 Linfo(info)
 {
   UD.text() = txt;
@@ -141,8 +143,8 @@ void NLInfo::compute_reduction_rate()
  
 void NLInfo::matrix_control()
 {
-//   std::cerr << "NLInfo::matrix_control()\t";
-//   std::cerr << GetLinearInfo().statistics().lastrate()<<"\t"<<UD.linrho()<<std::endl;
+//   cerr << "NLInfo::matrix_control()\t";
+//   cerr << GetLinearInfo().statistics().lastrate()<<"\t"<<UD.linrho()<<endl;
 
   bool nonlinbad = (SD.lastrate()>UD.rho());
   bool linbad    = (GetLinearInfo().statistics().lastrate()>UD.linrho());
@@ -158,7 +160,7 @@ void NLInfo::matrix_control()
 
 /*******************************************************************/
  
-std::string NLInfo::check_damping(int dampit, double res)
+string NLInfo::check_damping(int dampit, double res)
 {
   CD.residual() = fabs(res);
   CD.relax()    = dampit;
@@ -256,14 +258,14 @@ bool NLInfo::check(int iter, double resi, double cori)
     }
   if (UD.printstep() && !(CD.iteration()%UD.printstep()) )
     {
-      std::cout.setf(std::ios::scientific,std::ios::floatfield);
-      std::cout.precision(5);
-      std::cout << UD.text() << " " << CD.iteration() << "\t" << CD.residual();
-      std::cout << " [" << CD.correction()<< "] ";
-      std::cout << Linfo.control().residual();
-      std::cout << " [" << Linfo.control().correction() << "] ";
-      std::cout << "\t" << Linfo.control().iteration() << "\t";
-      std::cout << Linfo.statistics().rate() << std::endl;
+      cout.setf(ios::scientific,ios::floatfield);
+      cout.precision(5);
+      cout << UD.text() << " " << CD.iteration() << "\t" << CD.residual();
+      cout << " [" << CD.correction()<< "] ";
+      cout << Linfo.control().residual();
+      cout << " [" << Linfo.control().correction() << "] ";
+      cout << "\t" << Linfo.control().iteration() << "\t";
+      cout << Linfo.statistics().rate() << endl;
     }
 
   CD.laststepbad() = thisstepbad;

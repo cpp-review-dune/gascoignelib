@@ -12,9 +12,13 @@
 #define HANGMAP  __gnu_cxx::hash_map<EdgeArray<4>,int,EdgeHash> 
 #endif
 
+
+using namespace std;
+using namespace Gascoigne;
+
 /*---------------------------------------------------*/
 
-FaceManager::FaceManager(std::vector<Edge>& e, std::vector<Hex>& q, 
+FaceManager::FaceManager(vector<Edge>& e, vector<Hex>& q, 
 			 const IntVector& con, IntVector& eon) :
   edges(e), hexs(q), co2n(con), eo2n(eon), HexLaO(q) {}
 
@@ -51,7 +55,7 @@ void FaceManager::InitFaces()
 	      Edge E(i,j);
 	      int n = edges.size();
 	      edges.push_back(E);
-	      H.insert(std::make_pair(e,n));
+	      H.insert(make_pair(e,n));
 	      hexs[i].edge(j) = n;
 	    }
 	}
@@ -199,15 +203,15 @@ void FaceManager::Check(const HangContainer3d& hangset) const
 
       if (!HM.sleep())
 	{
-	  std::cout << "Hex master has no childs " << M << std::endl;
-	  std::cout << "face " << p->first << std::endl;
+	  cout << "Hex master has no childs " << M << endl;
+	  cout << "face " << p->first << endl;
 	  ok = 0;
 	}
       if (!HS.sleep())
 	{
-	  std::cout << "Hex slave has no childs " << S << std::endl;
-	  std::cout <<  "face " << p->first << std::endl;
-	  std::cout << " slave " << HS << std::endl;
+	  cout << "Hex slave has no childs " << S << endl;
+	  cout <<  "face " << p->first << endl;
+	  cout << " slave " << HS << endl;
 	  ok = 0;
 	}
     }
@@ -220,7 +224,7 @@ void FaceManager::SortHangings()
 {
   // edges with hanging nodes swapped to the end of list
 
-  std::vector<int> perm(edges.size());
+  vector<int> perm(edges.size());
   iota(perm.begin(),perm.end(),0);
   stable_sort(perm.begin(),perm.end(),HangFaceSort(*this));
   stable_sort(edges.begin(),edges.end(),HangFaceSort2(*this));
@@ -229,7 +233,7 @@ void FaceManager::SortHangings()
   while(EdgeIsHanging(i-1)) i--;
   int nhedge = edges.size()-i;
 
-  std::vector<int> permi(perm.size());
+  vector<int> permi(perm.size());
   for(int i=0;i<perm.size();i++) permi[perm[i]] = i;
 
   for(int i=0;i<hexs.size();i++)
@@ -256,9 +260,9 @@ void FaceManager::SortHangings()
       if(s<0) continue;
       if (hex(m).sleep() && !hex(s).sleep())
 	{ 
-	  //std::cout << "Swapping " << m << " " << s << std::endl;
-	  std::swap(edges[i].master(),edges[i].slave());
-	  std::swap(edges[i].LocalMasterIndex(),edges[i].LocalSlaveIndex());
+	  //cout << "Swapping " << m << " " << s << endl;
+	  swap(edges[i].master(),edges[i].slave());
+	  swap(edges[i].LocalMasterIndex(),edges[i].LocalSlaveIndex());
 	}
     }
 }
@@ -344,7 +348,7 @@ void FaceManager::NeighbourTester() const
     {
       if (x[i]>2)
 	{
-	  std::cout << "BSE Test " << i << " " << x[i] << std::endl;
+	  cout << "BSE Test " << i << " " << x[i] << endl;
 	}
     }
   for (int i=0; i<hexs.size(); i++)
@@ -366,7 +370,7 @@ void FaceManager::NeighbourTester() const
 
 	  if (nachbar==-10) 
 	    {
-	      std::cout << "BSE Test " << i << " " << e << " edgenumber " << edge << std::endl;
+	      cout << "BSE Test " << i << " " << e << " edgenumber " << edge << endl;
 	    }
 	}
     }
@@ -387,7 +391,7 @@ void FaceManager::FillNeighbourFaces(const Hex& HM, const Hex& HS,
   int mf = HexLaO.ChildFace(MF);
   int sf = HexLaO.ChildFace(SF);
 
-  //  std::cout <<  std::endl << "FACE " << Face << std::endl;
+  //  cout <<  endl << "FACE " << Face << endl;
   for (int i=0; i<4; i++)
     {
       int master = m[i];
@@ -395,7 +399,7 @@ void FaceManager::FillNeighbourFaces(const Hex& HM, const Hex& HS,
       FaceVector face;
       HexLaO.GetFace(face,master,mf);
 
-      //      std::cout << master <<" master child face " << face << std::endl;
+      //      cout << master <<" master child face " << face << endl;
 
       int slave = -1; 
       int sj    = -1;
@@ -446,7 +450,7 @@ void FaceManager::OuterFaces(const HangContainer3d& hangset)
 
       for (int i=0; i<4; i++)
 	{
-	  std::pair<int,int> cp = HexLaO.GetChildFaces(p->first,rneigh,i);
+	  pair<int,int> cp = HexLaO.GetChildFaces(p->first,rneigh,i);
 
 	  int cellindex = cp.first;
 	  int edgeindex = cp.second;
@@ -497,18 +501,18 @@ void FaceManager::OldHangings(HangContainer3d& hangset,
 
       const FaceVector& F = p->first;
 
-//       std::cout << M << " Master " << HM;
+//       cout << M << " Master " << HM;
 //       for (int i=0; i<HS.nchilds(); i++)
 // 	{
 // 	  int j = HM.child(i);
-// 	  std::cout << j << "child " << hexs[j];
+// 	  cout << j << "child " << hexs[j];
 // 	}
-//       std::cout << S << " Slave " << HS << std::endl;
+//       cout << S << " Slave " << HS << endl;
 	  
 //       for (int i=0; i<HS.nchilds(); i++)
 // 	{
 // 	  int j = HS.child(i);
-// 	  std::cout << j << " hild " << hexs[j];
+// 	  cout << j << " hild " << hexs[j];
 // 	}
       
       int em = HexLaO.TestFaceOfOneChild(HM,F);

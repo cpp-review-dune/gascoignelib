@@ -2,7 +2,6 @@
 #define  __Functional_h
 
 #include  <string>
-#include  "derivativevector.h"
 #include  "equation.h"
 
 //////////////////////////////////////////////

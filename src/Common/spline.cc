@@ -1,5 +1,7 @@
 #include "spline.h"
 
+using namespace std;
+
 /*******************************************************/
 
 CubicSpline::CubicSpline(const Vector& xx, const Vector& yy) :
@@ -77,7 +79,7 @@ double CubicSpline::operator()(double x) const
 	  return alpha + beta*d + gamma*d*d + delta*d*d*d;
 	}
     }
-  std::cout << "error: spline out of range " << x << std::endl;
+  cout << "error: spline out of range " << x << endl;
   exit(1);
   return 0.;
 }

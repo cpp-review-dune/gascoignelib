@@ -1,5 +1,7 @@
 #include  "boundaryfunction.h"
 
+using namespace std;
+
 /*---------------------------------------------------*/
 
 template<int DIM>
@@ -38,9 +40,9 @@ void BoundaryFunction<DIM>::newton(Vector& dst) const
 
       if (fabs(bgrad)<=1.e-15)
 	{
-	  std::cerr << "BoundaryFunction<DIM>::newton()\n";
-	  std::cerr << "Grad=0 in boundary_newton (res= "<< res << " )\n";
-	  std::cerr << "iter " << i << std::endl;
+	  cerr << "BoundaryFunction<DIM>::newton()\n";
+	  cerr << "Grad=0 in boundary_newton (res= "<< res << " )\n";
+	  cerr << "iter " << i << endl;
 	  abort();
 	}
       res /= bgrad;
@@ -49,8 +51,8 @@ void BoundaryFunction<DIM>::newton(Vector& dst) const
     }
   if (fabs(res)>tol)
     {
-      std::cerr << "BoundaryFunction<DIM>::newton()\n";
-      std::cerr << "No Convergence in boundary_newton (res= "<< res << " )\n";
+      cerr << "BoundaryFunction<DIM>::newton()\n";
+      cerr << "No Convergence in boundary_newton (res= "<< res << " )\n";
       abort();
     }
 }

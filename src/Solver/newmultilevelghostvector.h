@@ -45,12 +45,12 @@ public:
 
   int n() const {assert(__S); return __S->nlevels();}
 
-  const GlobalVector& Vector(int l) const {
+  const Gascoigne::GlobalVector& Vector(int l) const {
     assert(__S);
     return __S->GetSolver(l)->GetGV(*this);
   }
 
-  GlobalVector& Vector(int l) {
+  Gascoigne::GlobalVector& Vector(int l) {
     assert(__S);
     return __S->GetSolver(l)->GetGV(*this);
   }

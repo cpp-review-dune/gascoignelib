@@ -31,7 +31,7 @@ public:
   LocalLoop() : StdLoop() {}
   ~LocalLoop() {}
 
-  void BasicInit(const ParamFile* paramfile);
+  void BasicInit(const Gascoigne::ParamFile* paramfile);
   void run();
 };
 

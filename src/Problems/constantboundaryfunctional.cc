@@ -1,5 +1,7 @@
 #include  "constantboundaryfunctional.h"
 
+
+using namespace std;
 using namespace Gascoigne;
 
 /*-----------------------------------------*/
@@ -17,7 +19,7 @@ ConstantBoundaryFunctional::~ConstantBoundaryFunctional()
 /*-----------------------------------------*/
 
 ConstantBoundaryFunctional::ConstantBoundaryFunctional
-(const std::vector<std::string>& args)
+(const vector<string>& args)
 {
   Construct(args);
 }
@@ -25,7 +27,7 @@ ConstantBoundaryFunctional::ConstantBoundaryFunctional
 /*-----------------------------------------*/
 
 void ConstantBoundaryFunctional::Construct
-(const std::vector<std::string>& args)
+(const vector<string>& args)
 {
   // Baustelle
   AddColor(atoi(args[0].c_str()));

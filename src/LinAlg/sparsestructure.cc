@@ -2,22 +2,24 @@
 #include  "fadamath.h"
 #include  "stlio.h"
 
+using namespace std;
+
 /*----------------------------------------------*/
 
-std::ostream& operator<<(std::ostream &s, const SparseStructure& A)
+ostream& operator<<(ostream &s, const SparseStructure& A)
 {
   A.statistics(s);
-  s << std::endl;
+  s << endl;
   for(int i=0;i<A.n();i++)
     {
-      s << i << " :: " << A.row(i)<<std::endl;
+      s << i << " :: " << A.row(i)<<endl;
     }
-  s << std::endl;
+  s << endl;
 }
 
 /*----------------------------------------------*/
 
-void SparseStructure::statistics(std::ostream &s) const
+void SparseStructure::statistics(ostream &s) const
 {
   s << n() << " " << ntotal() << "  " <<  ntotal()/(float) n();
 }
@@ -73,7 +75,7 @@ void SparseStructure::hanging_node(int hi, int n1, int n2)
   row(hi).erase(hi);
 
 
-  for (std::set<int>::const_iterator p=rowbegin(hi); p!=rowend(hi); p++)
+  for (set<int>::const_iterator p=rowbegin(hi); p!=rowend(hi); p++)
     {
       row(*p).erase(hi);
       row(*p).insert(n1);
@@ -87,7 +89,7 @@ void SparseStructure::hanging_node(int hi, int n1, int n2)
 
 
 //   // alte version, lief mit gascoigne !
-//   for (std::set<int>::const_iterator p=rowbegin(hi); p!=rowend(hi); p++)
+//   for (set<int>::const_iterator p=rowbegin(hi); p!=rowend(hi); p++)
 //     {
 //       if (*p!=hi)
 // 	{
@@ -123,7 +125,7 @@ void SparseStructure::enlarge_lu()
     {
       int imax = -1;
       int imin = n();
-      for(std::set<int>::iterator p=rowbegin(i); p != rowend(i); ++p)
+      for(set<int>::iterator p=rowbegin(i); p != rowend(i); ++p)
 	{
 	  int j = *p;
 	  imin = GascoigneMath::min_int(imin,j);
@@ -132,7 +134,7 @@ void SparseStructure::enlarge_lu()
       maxbw = GascoigneMath::max_int(maxbw,abs(imax-i));
       maxbw = GascoigneMath::max_int(maxbw,abs(imin-i));
     }
-  //std::cerr << "bandbreite: " << maxbw << std::endl;
+  //cerr << "bandbreite: " << maxbw << endl;
   for(int i=0;i<n();i++)
     {
       int imin = GascoigneMath::max_int(0,i-maxbw);
@@ -151,7 +153,7 @@ void SparseStructure::enlarge(const SparseStructure& S)
 {
   for(int i=0;i<n();i++)
     {
-      for(std::set<int>::iterator p=S.rowbegin(i); p != S.rowend(i); ++p)
+      for(set<int>::iterator p=S.rowbegin(i); p != S.rowend(i); ++p)
 	{
 	  int j = *p;
 	  row(i).insert(S.rowbegin(j),S.rowend(j));
@@ -165,26 +167,26 @@ void SparseStructure::enlarge(const SparseStructure& S)
 void SparseStructure::enlarge_for_lu(const nvector<int>& p)
 {
   assert (p.size()==n());
-  std::vector<std::set<int> > transpose(n());
+  vector<set<int> > transpose(n());
 
   nvector<int> q(n());
   for (int i=0;i<n();++i)
     q[p[i]]=i;
   
   for (int row=0;row<n();++row)
-    for (std::set<int>::iterator col=rowbegin(row);col!=rowend(row);++col)
+    for (set<int>::iterator col=rowbegin(row);col!=rowend(row);++col)
       transpose[*col].insert(row);
         
   for(int row=0; row<n(); row++)
     {
       int row1=p[row];
       
-      for (std::set<int>::iterator col1=rowbegin(row1);col1!=rowend(row1);++col1)
+      for (set<int>::iterator col1=rowbegin(row1);col1!=rowend(row1);++col1)
 	{
 	  int col = q[*col1];
 	  if (col>=row)
 	    {
-	      for(std::set<int>::iterator down1=transpose[row1].begin();down1!=transpose[row1].end();++down1)
+	      for(set<int>::iterator down1=transpose[row1].begin();down1!=transpose[row1].end();++down1)
 		{
 		  int down = q[*down1];
 		  if (down>row)

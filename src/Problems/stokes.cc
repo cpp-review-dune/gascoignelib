@@ -39,7 +39,7 @@ Stokes::Stokes(const ParamFile* pf) : Equation()
 
 /*-----------------------------------------*/
 
-double Stokes::Laplace(const DerivativeVector& U, 
+double Stokes::Laplace(const TestFunction& U, 
 			       const TestFunction& N) const
 {
   return U.x()*N.x() + U.y()*N.y();

@@ -4,7 +4,6 @@
 #include  "gascoigne.h"
 #include  "vertex.h"
 #include  <string>
-#include  "derivativevector.h"
 #include  "nvector.h"
 #include  "application.h"
 

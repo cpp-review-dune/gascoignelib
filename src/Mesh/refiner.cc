@@ -1,5 +1,7 @@
 #include "refiner.h"
 
+using namespace std;
+
 /************************************************************/
 
 bool PointRefiner::VertexInQuad(int i)
@@ -34,7 +36,7 @@ bool PointRefiner::VertexInQuad(int i)
 
 /************************************************************/
 
-void PointRefiner::BuildCellList(std::vector<int>& dst)
+void PointRefiner::BuildCellList(vector<int>& dst)
 {
   for (int i=0; i<H.ncells(); i++)
     {
@@ -70,7 +72,7 @@ bool CircleRefiner::QuadOnRadius(int q) const
 
 /************************************************************/
 
-void CircleRefiner::BuildCellList(std::vector<int>& dst)
+void CircleRefiner::BuildCellList(vector<int>& dst)
 {
   for (int i=0; i<H.ncells(); i++)
     {
@@ -109,14 +111,14 @@ bool CylinderRefiner::QuadInCylinder(int q) const
 
 /************************************************************/
 
-void CylinderRefiner::BuildCellList(std::vector<int>& dst)
+void CylinderRefiner::BuildCellList(vector<int>& dst)
 {
   for (int i=0; i<H.ncells(); i++)
     {
       if (QuadInCylinder(i))
 	dst.push_back(i);
     }
-  std::cerr << std::endl;
+  cerr << endl;
 }
 
 /************************************************************/
@@ -145,14 +147,14 @@ bool BallRefiner::QuadInBall(int q) const
 
 /************************************************************/
 
-void BallRefiner::BuildCellList(std::vector<int>& dst)
+void BallRefiner::BuildCellList(vector<int>& dst)
 {
   for (int i=0; i<H.ncells(); i++)
     {
       if (QuadInBall(i))
 	dst.push_back(i);
     }
-  std::cerr << std::endl;
+  cerr << endl;
 }
 
 

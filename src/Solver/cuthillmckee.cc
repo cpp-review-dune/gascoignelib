@@ -1,6 +1,8 @@
 #include "cuthillmckee.h"
 #include "ilupermutate.h"
 
+using namespace std;
+
 /* --------------------------------------------------------------- */
 
 extern "C" void METIS_NodeND
@@ -53,8 +55,8 @@ void CuthillMcKee::Permutate (nvector<int> &perm)
 
   perm.resize(n);
 
-  std::vector<int> adj(n+1,0);
-  std::vector<int> adjncy;
+  vector<int> adj(n+1,0);
+  vector<int> adjncy;
   
   int count=0;
   int c;
@@ -80,7 +82,7 @@ void CuthillMcKee::Permutate (nvector<int> &perm)
   options[5]=1;
   options[6]=0;
   options[7]=1;
-  std::vector<int> iperm(n);
+  vector<int> iperm(n);
 
   METIS_NodeND(&n,&adj[0],&adjncy[0],&numflag,&options[0],&perm[0],&iperm[0]);
   
@@ -130,17 +132,17 @@ void CuthillMcKee::Permutate (nvector<int> &perm)
 //        en=index;
 //      }
 
-//    std::vector<int> iperm(n);
+//    vector<int> iperm(n);
 //    for (int i=0;i<n;++i) iperm[perm[i]]=i;
   
 //    char s[10];
 //    sprintf(s,"l_%d",n);
-//    std::ofstream aus(s);
+//    ofstream aus(s);
 //    for (int r=0;r<n;++r)
 //      {
 //        int row = perm[r];
 //        for (int p = S->start(row);p!=S->stop(row);++p)
-//  	aus << r << "\t" << iperm[S->col(p)] << std::endl;
+//  	aus << r << "\t" << iperm[S->col(p)] << endl;
 //      }
   
 //    aus.close();

@@ -2,6 +2,10 @@
 #include  "filescanner.h"
 #include  "stringutil.h"
 
+
+using namespace std;
+using namespace Gascoigne;
+
 /*-------------------------------------------------------------*/
 
 MultiLevelSolverData::MultiLevelSolverData(const ParamFile* pf) 
@@ -65,7 +69,7 @@ MultiLevelSolverData::MultiLevelSolverData(const ParamFile* pf)
     }
 
   {
-    std::vector<std::string> v = StringSplit(linearsolve.c_str(),'_');
+    vector<string> v = StringSplit(linearsolve.c_str(),'_');
     if( (v.size()==2) && (v[0]=="gmres") )
       {
 	gmresmemsize = atoi(v[1].c_str());

@@ -5,8 +5,6 @@
 #include  "columnstencil.h"
 #include  "gascoigne.h"
 
-using namespace Gascoigne;
-
 
 /*-----------------------------------------*/
 
@@ -29,10 +27,9 @@ public:
   nvector<double>& GetAlpha() {return val;}
   double Alpha(int pos) const {return val[pos];}
 
-  void restrict_zero   (GlobalVector& uL, const GlobalVector& ul) const;
-  void prolongate_add  (GlobalVector& ul, const GlobalVector& uL) const;
-
-  void SolutionTransfer(GlobalVector& uL, const GlobalVector& ul) const;
+  void restrict_zero   (Gascoigne::GlobalVector& uL, const Gascoigne::GlobalVector& ul) const;
+  void prolongate_add  (Gascoigne::GlobalVector& ul, const Gascoigne::GlobalVector& uL) const;
+  void SolutionTransfer(Gascoigne::GlobalVector& uL, const Gascoigne::GlobalVector& ul) const;
 
 };
 

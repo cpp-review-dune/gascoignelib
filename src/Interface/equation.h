@@ -103,15 +103,15 @@ class Equation
 
   virtual void Form(Gascoigne::VectorIterator b, const Gascoigne::FemFunction& U, const Gascoigne::TestFunction& N) const {assert(0);}
 
-  virtual void Matrix(EntryMatrix& A, const Gascoigne::FemFunction& U, const DerivativeVector& M, const Gascoigne::TestFunction& N) const {assert(0);}
+  virtual void Matrix(EntryMatrix& A, const Gascoigne::FemFunction& U, const Gascoigne::TestFunction& M, const Gascoigne::TestFunction& N) const {assert(0);}
 
   virtual void BoundaryResidual 
     (int col, Vector& b, const Gascoigne::FemFunction& U, 
-     const DerivativeVector& N) const {assert(0);}
+     const Gascoigne::TestFunction& N) const {assert(0);}
 
   virtual void BoundaryMatrix
     (int col, EntryMatrix& D, const Gascoigne::FemFunction& U, 
-     const DerivativeVector& M, const DerivativeVector& N) const {assert(0);}
+     const Gascoigne::TestFunction& M, const Gascoigne::TestFunction& N) const {assert(0);}
 };
 
 

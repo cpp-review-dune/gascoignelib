@@ -3,6 +3,10 @@
 #include  "filescanner.h"
 #include  "gascoignemeshconstructor.h"
 
+
+using namespace std;
+using namespace Gascoigne;
+
 /*-----------------------------------------*/
 
 MeshAgent::MeshAgent() : MeshAgentInterface(), HMP(NULL), GMG(NULL), dimension(-1)
@@ -47,7 +51,7 @@ void MeshAgent::BasicInit(const ParamFile* paramfile)
     }
   else
     {
-      std::cout << "dimension of Mesh ? " << dimension << std::endl;
+      cout << "dimension of Mesh ? " << dimension << endl;
     }
   assert(HMP);
 
@@ -58,7 +62,7 @@ void MeshAgent::BasicInit(const ParamFile* paramfile)
 
 /*-----------------------------------------*/
 
-void MeshAgent::read_gup(const std::string& fname)
+void MeshAgent::read_gup(const string& fname)
 {
   assert(HMP);
   HMP->read_gup(fname);
@@ -67,7 +71,7 @@ void MeshAgent::read_gup(const std::string& fname)
 
 /*-----------------------------------------*/
 
-void MeshAgent::write_gup(const std::string& fname) const
+void MeshAgent::write_gup(const string& fname) const
 {
   assert(HMP);
   HMP->write_gup(fname);

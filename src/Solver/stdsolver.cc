@@ -21,6 +21,7 @@
 #include  "q1gls3d.h"
 
 using namespace std;
+using namespace Gascoigne;
 
 /*-----------------------------------------*/
 

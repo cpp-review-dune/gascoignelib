@@ -3,8 +3,6 @@
 
 #include  "gascoigne.h"
 
-using namespace Gascoigne;
-
-void regular_update(IntSet&, IntSet&, IntVector&, IntVector&);
+void regular_update(Gascoigne::IntSet&, Gascoigne::IntSet&, Gascoigne::IntVector&, Gascoigne::IntVector&);
 
 #endif

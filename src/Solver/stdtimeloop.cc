@@ -3,6 +3,7 @@
 #include  "stdtimesolver.h"
 
 using namespace std;
+using namespace Gascoigne;
 
 /*-----------------------------------------*/
 

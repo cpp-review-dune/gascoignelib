@@ -39,66 +39,66 @@ class HierarchicalMesh2d : public HierarchicalMesh
 
   void post_refine2d();
 
-  void delete_vertexs2d(const IntVector&);
+  void delete_vertexs2d(const Gascoigne::IntVector&);
 
   void new_edge_vertex2d(int, const EdgeVector&);
   void new_face_vertex2d(int, const FaceVector&);
 
   void  check_mesh2d() const;
-  void  prepare2d  (const IntVector&, const IntVector&, IntSet&, IntSet&);
+  void  prepare2d  (const Gascoigne::IntVector&, const Gascoigne::IntVector&, Gascoigne::IntSet&, Gascoigne::IntSet&);
   std::pair<bool,tint>  check_inp(const std::string&);
-  void  ghost2d    (HangContainer2d&, const IntSet&, const IntSet&);
-  void  ghostglobalcoarse(HangContainer2d&, const IntSet&);
+  void  ghost2d    (HangContainer2d&, const Gascoigne::IntSet&, const Gascoigne::IntSet&);
+  void  ghostglobalcoarse(HangContainer2d&, const Gascoigne::IntSet&);
   void  ghost_fill_neighbours2d();
   void  basic_fill_neighbours2d();
-  void  new_vertexs2d(HangContainer2d&, const IntVector&, const IntSet&);
-  void  new_quads(const HangContainer2d&, const IntVector&, const IntVector&, 
-		  int, const IntSet&);
+  void  new_vertexs2d(HangContainer2d&, const Gascoigne::IntVector&, const Gascoigne::IntSet&);
+  void  new_quads(const HangContainer2d&, const Gascoigne::IntVector&, const Gascoigne::IntVector&, 
+		  int, const Gascoigne::IntSet&);
 
-  void  change_hangs2d  (const IntVector&, const IntVector&);
-  void  change_vertexs2d(const IntVector&);
-  void  change_quads2d  (const IntVector&, const IntVector&);
-  void  boundary_prepare2d(IntSet&, IntSet&, IntSet&, const HangContainer2d&);
-  void  new_boundary2d    (IntSet&, IntSet&, IntSet&);
+  void  change_hangs2d  (const Gascoigne::IntVector&, const Gascoigne::IntVector&);
+  void  change_vertexs2d(const Gascoigne::IntVector&);
+  void  change_quads2d  (const Gascoigne::IntVector&, const Gascoigne::IntVector&);
+  void  boundary_prepare2d(Gascoigne::IntSet&, Gascoigne::IntSet&, Gascoigne::IntSet&, const HangContainer2d&);
+  void  new_boundary2d    (Gascoigne::IntSet&, Gascoigne::IntSet&, Gascoigne::IntSet&);
 
-  void  basic_refine2d(HangContainer2d&, const IntSet&, const IntSet&);
+  void  basic_refine2d(HangContainer2d&, const Gascoigne::IntSet&, const Gascoigne::IntSet&);
 
   void init_line           (BoundaryLine&);
-  void new_lines           (const IntVector&, const IntVector&, const IntSet&);
+  void new_lines           (const Gascoigne::IntVector&, const Gascoigne::IntVector&, const Gascoigne::IntSet&);
   void boundary_newton2d     ();
-  void inner_vertex_newton2d (const IntVector&, const IntSet&);
-  void update_boundary_data2d(const IntSet&);
+  void inner_vertex_newton2d (const Gascoigne::IntVector&, const Gascoigne::IntSet&);
+  void update_boundary_data2d(const Gascoigne::IntSet&);
 
-  int   regular_grid2d_one  (IntSet&, IntVector& , IntSet&, IntSet&) const;
-  int   regular_grid2d_two  (IntSet&, IntSet&) const;
-  int   regular_grid2d_three(IntSet&, IntSet&) const;
-  int   regular_grid2d_three_refine(IntSet&) const;
-  int   regular_grid2d_three_coarse(IntSet&, IntSet&) const;
+  int   regular_grid2d_one  (Gascoigne::IntSet&, Gascoigne::IntVector& , Gascoigne::IntSet&, Gascoigne::IntSet&) const;
+  int   regular_grid2d_two  (Gascoigne::IntSet&, Gascoigne::IntSet&) const;
+  int   regular_grid2d_three(Gascoigne::IntSet&, Gascoigne::IntSet&) const;
+  int   regular_grid2d_three_refine(Gascoigne::IntSet&) const;
+  int   regular_grid2d_three_coarse(Gascoigne::IntSet&, Gascoigne::IntSet&) const;
 
   void GetMinMaxLevels(nvector<int>& maxi, nvector<int>& mini,
-		       const IntSet& CellRef) const;
+		       const Gascoigne::IntSet& CellRef) const;
   void  init_edges2d();
 
-  void LoadFathers  (IntVector& v) const;
+  void LoadFathers  (Gascoigne::IntVector& v) const;
 
-  void    _refine2d (IntSet&, IntSet&, const IntVector&, const IntVector&);
+  void    _refine2d (Gascoigne::IntSet&, Gascoigne::IntSet&, const Gascoigne::IntVector&, const Gascoigne::IntVector&);
   void   InitQuadOfCurved();
   int   FindPatchDepth() const;
-  void  FillVertexLevels(IntVector& dst) const;
-  void  RefineCoarseNodes(IntSet& dst, const IntVector& refnodes,
-			  const IntVector& vertexlevel) const;
-  void  VertexToCells(IntVector& dst, const IntSet& src, 
-		      const IntVector& vertexlevel) const;
-  void VertexToCellsCoarsening(IntVector& dst, const IntSet& src, 
-			       const IntVector& vertexlevel) const;
-  void recursive_childs(int q, IntVector& ref, int d) const;
+  void  FillVertexLevels(Gascoigne::IntVector& dst) const;
+  void  RefineCoarseNodes(Gascoigne::IntSet& dst, const Gascoigne::IntVector& refnodes,
+			  const Gascoigne::IntVector& vertexlevel) const;
+  void  VertexToCells(Gascoigne::IntVector& dst, const Gascoigne::IntSet& src, 
+		      const Gascoigne::IntVector& vertexlevel) const;
+  void VertexToCellsCoarsening(Gascoigne::IntVector& dst, const Gascoigne::IntSet& src, 
+			       const Gascoigne::IntVector& vertexlevel) const;
+  void recursive_childs(int q, Gascoigne::IntVector& ref, int d) const;
 
   public:
 
   HierarchicalMesh2d();
   HierarchicalMesh2d(const HierarchicalMesh2d& H);
   HierarchicalMesh2d& operator=(const HierarchicalMesh2d& H);
-  HierarchicalMesh2d(const ParamFile* paramfile);
+  HierarchicalMesh2d(const Gascoigne::ParamFile* paramfile);
 
   std::string GetName() const {return "HierarchicalMesh2d";}
 
@@ -140,11 +140,11 @@ class HierarchicalMesh2d : public HierarchicalMesh
   /*  Functionen  */
 
   int    Vater(const int i) const;
-  IntVector Nachkommen(const int i) const;
-  IntVector Geschwister(const int i) const;
-  IntVector Kinder     (const int i) const;
+  Gascoigne::IntVector Nachkommen(const int i) const;
+  Gascoigne::IntVector Geschwister(const int i) const;
+  Gascoigne::IntVector Kinder     (const int i) const;
   int nactivedescendants(int i)      const;
-  IntVector GetVertices(int c) const;
+  Gascoigne::IntVector GetVertices(int c) const;
   
   void   write    (const std::string&) const;
   void   write_gup(const std::string&) const;
@@ -159,8 +159,8 @@ class HierarchicalMesh2d : public HierarchicalMesh
 
   void   global_coarse();
 
-  void   refine      (const IntVector&, const IntVector&);
-  void   patch_refine  (IntVector&, IntVector&);
+  void   refine      (const Gascoigne::IntVector&, const Gascoigne::IntVector&);
+  void   patch_refine  (Gascoigne::IntVector&, Gascoigne::IntVector&);
   int    smooth_edges();
   void   FillAllBoundaryLines();
 
@@ -174,7 +174,7 @@ class HierarchicalMesh2d : public HierarchicalMesh
   void  GetVertexesOfEdge(fixarray<2,int>&, int) const;
   void GetAwakePatchs(std::set<int>&) const;
   void GetAwakeCells(std::set<int>&) const;
-  void ConstructQ2PatchMesh(IntVector& pm) const;
+  void ConstructQ2PatchMesh(Gascoigne::IntVector& pm) const;
   std::set<int> GetColors() const;
   int GetBoundaryCellOfCurved(int iq) const
     {
@@ -188,7 +188,7 @@ class HierarchicalMesh2d : public HierarchicalMesh
 
   int neighbour(int c, int le) const;
   void FillVolumes(nvector<double>& vol) const;
-  void writeq2(const IntVector &a,const std::vector<int> & b,int np) const;
+  void writeq2(const Gascoigne::IntVector &a,const std::vector<int> & b,int np) const;
 };
 
 /*---------------------------------------------------*/

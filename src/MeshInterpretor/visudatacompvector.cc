@@ -1,5 +1,7 @@
 #include  "visudatacompvector.h"
 
+using namespace std;
+
 /*---------------------------------------------------*/
 
 VisuDataCompVector::VisuDataCompVector()  
@@ -26,15 +28,15 @@ void VisuDataCompVector::AddVector(const CompVector<double>& v)
   assert(vvp[0]);
   if(v.n()!=vvp[0]->n())
     {
-      std::cerr << "VisuDataCompVector::AddVector()" << std::endl;
-      std::cerr << "n unterschiedlich gross\n";
+      cerr << "VisuDataCompVector::AddVector()" << endl;
+      cerr << "n unterschiedlich gross\n";
       abort();
     }
   int n = isizes[isizes.size()-1];
   isizes.push_back(n+v.ncomp());
-//   std::cerr << "isizes\n";
-//   copy(isizes.begin(),isizes.end(),std::ostream_iterator<int>(std::cerr," "));
-//   std::cerr << std::endl;
+//   cerr << "isizes\n";
+//   copy(isizes.begin(),isizes.end(),ostream_iterator<int>(cerr," "));
+//   cerr << endl;
 }
 
 /*---------------------------------------------------*/
@@ -53,13 +55,13 @@ int    VisuDataCompVector::visun()        const
 
 /*---------------------------------------------------*/
 
-std::pair<int,int> VisuDataCompVector::GetIndex(int c) const
+pair<int,int> VisuDataCompVector::GetIndex(int c) const
 {
   for(int i=1;i<isizes.size();i++)
     {
-      if(c<isizes[i]) return std::make_pair(i-1,c-isizes[i-1]);
+      if(c<isizes[i]) return make_pair(i-1,c-isizes[i-1]);
     }
-  std::cerr << "Not Found\n";
+  cerr << "Not Found\n";
   abort();
 }
 
@@ -67,6 +69,6 @@ std::pair<int,int> VisuDataCompVector::GetIndex(int c) const
 
 double VisuDataCompVector::visudata(int i,int c) const 
 { 
-  std::pair<int,int> p = GetIndex(c);
+  pair<int,int> p = GetIndex(c);
   return *(vvp[p.first]->start(i) + p.second);
 }

@@ -2,9 +2,11 @@
 #include  <algorithm>
 #include  "edgearray.h"
 
+using namespace std;
+
 /*----------------------------------------------------------------------*/
 
-HexLawAndOrder::HexLawAndOrder(std::vector<Hex>& h) : 
+HexLawAndOrder::HexLawAndOrder(vector<Hex>& h) : 
   hexs(h)
 {
   // gibt die lokalen vertices einer face zurueck
@@ -309,7 +311,7 @@ void HexLawAndOrder::globalvertices_of_face(const Hex& q, fixarray<4,int>& f, in
 
 /*---------------------------------------------------*/
 
-std::pair<int,int> HexLawAndOrder::GetChildFaces(const FaceVector& bigedge, 
+pair<int,int> HexLawAndOrder::GetChildFaces(const FaceVector& bigedge, 
 					    int bighex, int i) const
 {
   // bigedge sind die vier vertex no der grossen face
@@ -323,10 +325,10 @@ std::pair<int,int> HexLawAndOrder::GetChildFaces(const FaceVector& bigedge,
 
 //   if ((bigeind>=6) || (bigeind<0))
 //     {
-//       std::cout << "\nHexLawAndOrder::GetChildFaces bigeind ";
-//       std::cout << bighex << " [" << bigedge << "] -> " << bigeind << std::endl; 
-//       std::cout << "Hex was " << hexs[bighex] << std::endl;
-//       return std::make_pair(-1,-1);
+//       cout << "\nHexLawAndOrder::GetChildFaces bigeind ";
+//       cout << bighex << " [" << bigedge << "] -> " << bigeind << endl; 
+//       cout << "Hex was " << hexs[bighex] << endl;
+//       return make_pair(-1,-1);
 //       //exit(1);
 //     }
 
@@ -334,7 +336,7 @@ std::pair<int,int> HexLawAndOrder::GetChildFaces(const FaceVector& bigedge,
   int ic      = ChildsOfFace(bigeind,i);
   int q       = hexs[bighex].child(ic);
   
-  return std::make_pair(q,iedge);
+  return make_pair(q,iedge);
 }
 
 /*----------------------------------------------------------------------*/
@@ -571,7 +573,7 @@ void HexLawAndOrder::GetGlobalOuterFaceOfChild
 
 /*----------------------------------------------------------------------*/
 
-void HexLawAndOrder::globalfacechildren_of_father(std::vector<FaceVector>& faces,
+void HexLawAndOrder::globalfacechildren_of_father(vector<FaceVector>& faces,
 						   const Hex& f) const
 {
   size_t n = 24;

@@ -16,9 +16,9 @@ class LevelMesh2d : public Index
   const HierarchicalMesh2d*  HMP;
 
   void check_leveljump() const;
-  void fill_opis(IntSet& dst, IntSet& oldquads) const;
-  void fill_enkel(IntSet& dst, const Quad& Q) const;
-  void fill_childs(IntSet& dst, const Quad& Q) const;
+  void fill_opis(Gascoigne::IntSet& dst, Gascoigne::IntSet& oldquads) const;
+  void fill_enkel(Gascoigne::IntSet& dst, const Quad& Q) const;
+  void fill_childs(Gascoigne::IntSet& dst, const Quad& Q) const;
   bool EnkelUniform(const Quad& Q) const;
   bool BuildFathers(std::set<int>&  Vaeter) const;
   void InitCells(int n);
@@ -45,14 +45,14 @@ class LevelMesh2d : public Index
 
   bool EdgeIsHangingGlobalIndex(int i) const;
 
-  void BasicInit(const IntSet& n, const IntSet& o);
+  void BasicInit(const Gascoigne::IntSet& n, const Gascoigne::IntSet& o);
 
   /*----- Functions for patches -----*/
 
-  void construct_lists(IntSet& newquads, IntSet& oldquads) const;
+  void construct_lists(Gascoigne::IntSet& newquads, Gascoigne::IntSet& oldquads) const;
   void ConstructHangingStructureQuadratic(QuadraticHNStructure3& hnq2) const;
   void InitBoundaryHandler(BoundaryIndexHandler& BI) const;
-  void ConstructIndOfPatch(nvector<IntVector>& dstv) const;
+  void ConstructIndOfPatch(nvector<Gascoigne::IntVector>& dstv) const;
   bool ConstructCellIndOfPatch(nvector<int>& dstc) const;
 };
 

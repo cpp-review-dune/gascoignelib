@@ -4,6 +4,7 @@
 #include  "pointfunctional.h"
 
 using namespace std;
+using namespace Gascoigne;
 
 /* ----------------------------------------- */
 
@@ -231,7 +232,7 @@ int CellMeshInterpretor::RhsPoint(GlobalVector& f, const Functional* F) const
 
   if (GetMesh()->dimension()==2)
     {
-      const std::vector<Vertex2d>& p0 = FP->points2d();
+      const vector<Vertex2d>& p0 = FP->points2d();
       
       for (int i=0; i<p0.size(); i++)
 	{
@@ -240,7 +241,7 @@ int CellMeshInterpretor::RhsPoint(GlobalVector& f, const Functional* F) const
     }
   else
     {
-      const std::vector<Vertex3d>& p0 = FP->points3d();
+      const vector<Vertex3d>& p0 = FP->points3d();
       
       for (int i=0; i<p0.size(); i++)
 	{
@@ -255,7 +256,7 @@ int CellMeshInterpretor::RhsPoint(GlobalVector& f, const Functional* F) const
 void CellMeshInterpretor::VertexTransformation(const nvector<Vertex2d>& p, 
 					       const Vertex2d& p0, Vertex2d& tp) const
 {
-  std::vector<double> DT(4);
+  vector<double> DT(4);
 
   double x0 = p[0].x();
   double x1 = p[1].x();

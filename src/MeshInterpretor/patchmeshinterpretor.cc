@@ -3,6 +3,7 @@
 #include  "sparsestructure.h"
 
 using namespace std;
+using namespace Gascoigne;
 
 /* ----------------------------------------- */
 
@@ -221,7 +222,7 @@ void PatchMeshInterpretor::DiracRhs(GlobalVector& f, const RightHandSideData& RH
 
 /* ----------------------------------------- */
 
-int PatchMeshInterpretor::RhsPoint(GlobalVector& f, const std::vector<Vertex2d>& p0, int comp, const nvector<double>& d) const
+int PatchMeshInterpretor::RhsPoint(GlobalVector& f, const vector<Vertex2d>& p0, int comp, const nvector<double>& d) const
 {
   int count = 0;
   for (int i=0; i<p0.size(); i++)
@@ -233,7 +234,7 @@ int PatchMeshInterpretor::RhsPoint(GlobalVector& f, const std::vector<Vertex2d>&
 
 /* ----------------------------------------- */
 
-int PatchMeshInterpretor::RhsPoint(GlobalVector& f, const std::vector<Vertex3d>& p0, int comp, const nvector<double>& d) const
+int PatchMeshInterpretor::RhsPoint(GlobalVector& f, const vector<Vertex3d>& p0, int comp, const nvector<double>& d) const
 {
   int count = 0;
   for (int i=0; i<p0.size(); i++)

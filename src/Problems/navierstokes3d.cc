@@ -1,5 +1,7 @@
 #include  "navierstokes3d.h"
 
+
+using namespace std;
 using namespace Gascoigne;
 
 /*-----------------------------------------*/
@@ -102,7 +104,7 @@ void NavierStokes3d::Matrix
 
 /*-----------------------------------------*/
 
-std::string NavierStokes3d::GetName() const 
+string NavierStokes3d::GetName() const 
 { 
   return "NavierStokes3d";
 }

@@ -2,6 +2,9 @@
 #include "compose_name.h"
 #include <fstream>
 
+using namespace std;
+using namespace Gascoigne;
+
 /* -------------------------------------------------- */
 
 VisuEPS::VisuEPS() : M(0)
@@ -27,7 +30,7 @@ void VisuEPS::SetOption(EPSOptions o, int v)
 	  SetOption(o,(double) (v));
 	  return;
 	}
-      std::cerr << "void VisuEPS::SetOption(" << o << "," << v << ")!";
+      cerr << "void VisuEPS::SetOption(" << o << "," << v << ")!";
       assert(0);
     }
   INTOPT[o]=v;
@@ -71,7 +74,7 @@ bool VisuEPS::InLine(int a,int b,int c) const
 
 /* -------------------------------------------------- */
 
-void VisuEPS::WriteGrid(std::string fname,int iter)
+void VisuEPS::WriteGrid(string fname,int iter)
 {
   assert(M);
 
@@ -124,7 +127,7 @@ void VisuEPS::WriteGrid(std::string fname,int iter)
     }
   else 
     {
-      std::vector<int> bu(4);
+      vector<int> bu(4);
       bu[0]=0;bu[1]=2;bu[2]=8;bu[3]=6;
       for (int i=0;i<M->npatches();++i)
 	{
@@ -132,7 +135,7 @@ void VisuEPS::WriteGrid(std::string fname,int iter)
 	  
 	  for (int j=0;j<4;++j)
 	    {
-	      std::pair<int,int>  pu(vop[bu[j]],vop[bu[(j+1)%4]]);
+	      pair<int,int>  pu(vop[bu[j]],vop[bu[(j+1)%4]]);
 	      Lexiko(pu);
 	      assert(pu.first!=pu.second);
 	      assert(pu.first<lines.size());
@@ -147,11 +150,11 @@ void VisuEPS::WriteGrid(std::string fname,int iter)
   // Linien auf einer Gerade zusammenfassen
   if (INTOPT[COMBINE_LINES]) CombineLines();
 
-  std::ofstream out(fname.c_str());
-  std::cout << "[" << fname << "]" << std::endl;
-  out << "%!PS-Adobe-2.0 EPSF-1.2" << std::endl
-      << "%%Title: Gascoigne OutPut" << std::endl
-      << "%%Creator: Gascoigne" << std::endl
+  ofstream out(fname.c_str());
+  cout << "[" << fname << "]" << endl;
+  out << "%!PS-Adobe-2.0 EPSF-1.2" << endl
+      << "%%Title: Gascoigne OutPut" << endl
+      << "%%Creator: Gascoigne" << endl
       << "%%BoundingBox: "
 	      // lower left corner
       << "0 0 "
@@ -159,27 +162,27 @@ void VisuEPS::WriteGrid(std::string fname,int iter)
       << static_cast<unsigned int>( (x_max-x_min) * scale )+1
       << ' '
       << static_cast<unsigned int>( (y_max-y_min) * scale )+1
-      << std::endl;
+      << endl;
   
   // define some abbreviations to keep
   // the output small:
   // m=move turtle to
   // x=execute lineto
-  out << "/m {moveto} bind def" << std::endl
-      << "/x {lineto} bind def" << std::endl;
+  out << "/m {moveto} bind def" << endl
+      << "/x {lineto} bind def" << endl;
   
-  //      << "/b {0 0 0 setrgbcolor} def" << std::endl
-  //      << "/r {1 0 0 setrgbcolor} def" << std::endl;
+  //      << "/b {0 0 0 setrgbcolor} def" << endl
+  //      << "/r {1 0 0 setrgbcolor} def" << endl;
   
-  out << "%%EndProlog" << std::endl << std::endl;
+  out << "%%EndProlog" << endl << endl;
   
-  out << DOUBLEOPT[LINEWIDTH] << " setlinewidth" << std::endl;
+  out << DOUBLEOPT[LINEWIDTH] << " setlinewidth" << endl;
   
   // Linienzuege malen
   for (int i=0;i<lines.size();++i)
     {
       int start = i;
-      std::set<int>::iterator it;
+      set<int>::iterator it;
 
       while (lines[i].size()>0)
 	{
@@ -197,10 +200,10 @@ void VisuEPS::WriteGrid(std::string fname,int iter)
 	      from = next;
 	      next = *it;
 	    }
-	  out << std::endl;
+	  out << endl;
 	}
     }
-  out << "stroke" << std::endl;
+  out << "stroke" << endl;
   out.close();
 }
 
@@ -217,11 +220,11 @@ void VisuEPS::CombineLines()
       changed = false;
       for (int i=0;i<lines.size();++i)
 	{
-	  for (std::set<int>::iterator it = lines[i].begin();it!=lines[i].end();++it)
+	  for (set<int>::iterator it = lines[i].begin();it!=lines[i].end();++it)
 	    {
 	      int next = *it;
 	      bool found = false;
-	      std::set<int>::iterator it1;
+	      set<int>::iterator it1;
 	      int nn;
 	      for (it1 = lines[next].begin();((it1!=lines[next].end())&(!found));++it1)
 		{

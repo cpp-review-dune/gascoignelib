@@ -2,13 +2,15 @@
 #include  "dirichletdatabycolor.h"
 #include  "constantrighthandside.h"
 
+using namespace std;
+
 /*-----------------------------------------*/
 
 ResidualFunctional::ResidualFunctional() : _DD(NULL) { _scale = 0.;}
 
 /*-----------------------------------------*/
 
-ResidualFunctional::ResidualFunctional(const std::vector<std::string>& args) : _DD(NULL)
+ResidualFunctional::ResidualFunctional(const vector<string>& args) : _DD(NULL)
 {
   Construct(args);
 }
@@ -22,7 +24,7 @@ ResidualFunctional::~ResidualFunctional()
 
 /*-----------------------------------------*/
 
-void ResidualFunctional::Construct(const std::vector<std::string>& args) 
+void ResidualFunctional::Construct(const vector<string>& args) 
 {
   _comp = atoi(args[0].c_str());
   _scale = atof(args[1].c_str());

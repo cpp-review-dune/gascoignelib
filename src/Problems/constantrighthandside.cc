@@ -1,15 +1,17 @@
 #include  "constantrighthandside.h"
 
+using namespace std;
+
 /*-----------------------------------------*/
 
 ConstantRightHandSideData::ConstantRightHandSideData
-(const std::vector<std::string>& args) 
+(const vector<string>& args) 
   : RightHandSideData()
 {
   if(args.size()!=3)
     {
-      std::cerr << "ConstantRightHandSideData::ConstantRightHandSideData()\n";
-      std::cerr << "wrong number of args (3): " << args.size() << std::endl;
+      cerr << "ConstantRightHandSideData::ConstantRightHandSideData()\n";
+      cerr << "wrong number of args (3): " << args.size() << endl;
       abort();
     }
   ncomp = atoi(args[0].c_str());

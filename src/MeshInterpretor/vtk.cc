@@ -109,7 +109,7 @@ void Visualization::_vtk_celldata(ofstream& out) const
 void Visualization::_vtk_points(ofstream& out) const
 {
   int nn = mesh->nnodes();
-  out << "POINTS " << nn << " FLOAT " << std::endl;
+  out << "POINTS " << nn << " FLOAT " << endl;
   if(mesh->dimension()==2)
     { 
       for (int i=0; i<nn; i++)
@@ -143,7 +143,7 @@ void Visualization::_vtk_cells(ofstream& out) const
       lenght += mesh->nodes_per_cell(c)+1;
     }
  
-  out << std::endl << "CELLS " << ne <<" " << lenght << std::endl;
+  out << endl << "CELLS " << ne <<" " << lenght << endl;
   
   for (int c=0; c<ne; c++)
     {
@@ -153,14 +153,14 @@ void Visualization::_vtk_cells(ofstream& out) const
 	{
 	  out << mesh->vertex_of_cell(c,ii) << " "; 
 	}
-      out << std::endl; 
+      out << endl; 
     }     
-  out << std::endl << "CELL_TYPES " << ne << std::endl;
+  out << endl << "CELL_TYPES " << ne << endl;
   for (int c=0; c<ne; c++)
     {
       out << mesh->VtkType(c) << " ";
     }
-  out << std::endl;
+  out << endl;
 }
 
 /* ----------------------------------------- */

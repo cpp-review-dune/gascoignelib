@@ -1,5 +1,7 @@
 #include "galerkinglsintegrator.h"
 
+using namespace Gascoigne;
+
 /*-----------------------------------------*/
 
 template<int DIM>

@@ -1,5 +1,7 @@
 #include  "visudatacompvectorfunction.h"
 
+using namespace std;
+
 static MySolutionFunction MYSF;
 
 /*---------------------------------------------------*/
@@ -41,20 +43,20 @@ int VisuDataCompVectorFunction::visucomp() const
 
 /*---------------------------------------------------*/
 
-std::pair<int,int> VisuDataCompVectorFunction::GetIndex(int c) const
+pair<int,int> VisuDataCompVectorFunction::GetIndex(int c) const
 {
   for(int i=0;i<isizes.size()-1;i++)
     {
-      if(c<isizes[i+1]+1) return std::make_pair(i,c-isizes[i]);
+      if(c<isizes[i+1]+1) return make_pair(i,c-isizes[i]);
     }
-  std::make_pair(0,c+100);
+  make_pair(0,c+100);
 }
 
 /*---------------------------------------------------*/
 
 double VisuDataCompVectorFunction::visudata(int i,int c) const 
 { 
-  std::pair<int,int> p = GetIndex(c);
+  pair<int,int> p = GetIndex(c);
 
   int comp = p.second;
 
