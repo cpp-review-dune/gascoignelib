@@ -1,11 +1,11 @@
 SET(NAVIERSTOKES2D_SRC
-main1.cc 
-problemdescriptor1.cc 
-benchmarkdirichletdata.cc
+  benchmarkdirichletdata.cc
+  main1.cc 
+  problemdescriptor1.cc 
 )
 
-IF(BUILD_EXAMPLES)
+IF(BUILD_EXECUTABLES)
   ADD_EXECUTABLE(NavierStokes2D NAVIERSTOKES2D_SRC)
-ENDIF(BUILD_EXAMPLES)
+ENDIF(BUILD_EXECUTABLES)
 
 

@@ -1,25 +1,38 @@
+#-----------------------------#
+PROJECT(LOCAL)
+#-----------------------------#
+
 #
-PROJECT(Local)
+# .gascoignerc contains the user depending settings
 #
-INCLUDE($ENV{GASCOIGNE}/GascoigneStd/CMakeGlobal.txt)
+
+INCLUDE($ENV{HOME}/.gascoignerc)
+
 #
+# CMakeGlobal.txt is intentended for use in derived projects
+#
+
+INCLUDE(${GASCOIGNE_STD}/CMakeGlobal.txt)
+
 LINK_LIBRARIES(${GASCOIGNE_LIBS})
-#
-ADD_EXECUTABLE(local 
 
-main.cc 
+SET(LOCAL_SRC
+  main.cc 
 
-problemdescriptor.cc 
-localdirichletdata.cc
-localequation.cc
+  problemdescriptor.cc 
+  localdirichletdata.cc
+  localequation.cc
 
-localmesh2d.cc
-localmeshconstructor.cc
+  localmesh2d.cc
+  localmeshconstructor.cc
 
-localloop.cc
-localmultilevelsolver.cc
-localsolver.cc
-localmeshinterpretor.cc
-localintegrator.cc
+  localloop.cc
+  localmultilevelsolver.cc
+  localsolver.cc
+  localmeshinterpretor.cc
+  localintegrator.cc
 )
 
+IF(BUILD_EXECUTABLES)
+  ADD_EXECUTABLE(Local LOCAL_SRC)
+ENDIF(BUILD_EXECUTABLES)

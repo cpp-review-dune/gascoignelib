@@ -1,56 +1,51 @@
-INCLUDE_DIRECTORIES(
-${STD_SRC}/Common
-${STD_SRC}/MeshInterpretor
-)
-
 SET(MESH_SRC 
-adaptordata.cc
-boundaryfunction.cc
-boundaryindexhandler.cc
-coarsehierarchicalmesh2d.cc
-coarsehierarchicalmesh3d.cc
-curvedboundary.cc
-curvedshapes.cc
-delete_hex.cc
-deletecells.cc
-diplomantenadaptor.cc
-edge.cc
-edgearray.cc
-edgemanager.cc
-facemanager.cc
-flacherkreis.cc
-gascoignemesh.cc
-gascoignemesh2d.cc
-gascoignemesh3d.cc
-gascoignemeshconstructor.cc
-gascoignemeshtransfer.cc
-gascoignemeshtransfer2d.cc
-gascoignemeshtransfer3d.cc
-gascoignemeshtransferconstructor.cc
-gascoignemultigridmesh.cc
-hang.cc
-hangcontainer2d.cc
-hangcontainer3d.cc
-hanglist.cc
-hanglistio.cc
-hexlawandorder.cc
-hierarchicalmesh.cc
-hierarchicalmesh2d.cc
-hierarchicalmesh3d.cc
-index.cc
-levelmesh2d.cc
-levelmesh3d.cc
-malteadaptor.cc
-meshagent.cc
-ncadaptor.cc
-hangingindexhandler.cc
-patchindexhandler.cc
-optadaptor.cc
-quadlawandorder.cc
-refiner.cc
-regular_update.cc
-runderkreis.cc
-splinecontour.cc
+  adaptordata.cc
+  boundaryfunction.cc
+  boundaryindexhandler.cc
+  coarsehierarchicalmesh2d.cc
+  coarsehierarchicalmesh3d.cc
+  curvedboundary.cc
+  curvedshapes.cc
+  deletecells.cc
+  delete_hex.cc
+  diplomantenadaptor.cc
+  edgearray.cc
+  edge.cc
+  edgemanager.cc
+  facemanager.cc
+  flacherkreis.cc
+  gascoignemesh2d.cc
+  gascoignemesh3d.cc
+  gascoignemesh.cc
+  gascoignemeshconstructor.cc
+  gascoignemeshtransfer2d.cc
+  gascoignemeshtransfer3d.cc
+  gascoignemeshtransfer.cc
+  gascoignemeshtransferconstructor.cc
+  gascoignemultigridmesh.cc
+  hang.cc
+  hangcontainer2d.cc
+  hangcontainer3d.cc
+  hangingindexhandler.cc
+  hanglist.cc
+  hanglistio.cc
+  hexlawandorder.cc
+  hierarchicalmesh2d.cc
+  hierarchicalmesh3d.cc
+  hierarchicalmesh.cc
+  index.cc
+  levelmesh2d.cc
+  levelmesh3d.cc
+  malteadaptor.cc
+  meshagent.cc
+  ncadaptor.cc
+  optadaptor.cc
+  patchindexhandler.cc
+  quadlawandorder.cc
+  refiner.cc
+  regular_update.cc
+  runderkreis.cc
+  splinecontour.cc
 )
 
-ADD_LIBRARY(Mesh ${MESH_SRC})
+ADD_LIBRARY(Mesh MESH_SRC)

@@ -1,8 +1,8 @@
 SUBDIRS(
-Common 
-MeshInterpretor 
-Solver
-Problems 
-Mesh 
-LinAlg 
+  Common 
+  MeshInterpretor 
+  Solver
+  Problems 
+  Mesh 
+  LinAlg 
 )

@@ -1,50 +1,43 @@
-INCLUDE_DIRECTORIES(
-${STD_SRC}/Common
-${STD_SRC}/Mesh
-${STD_SRC}/Solver
-${STD_SRC}/LinAlg
-)
-
 SET(MESHINTERPRETOR_SRC 
-mginterpolatormatrix.cc
-mginterpolatornested.cc
-basicintegrator.cc
-galerkinintegrator.cc
-basicmeshinterpretor.cc
-cellmeshinterpretor.cc
-patchmeshinterpretor.cc
-q1.cc
-q12d.cc
-q13d.cc
-q1gls2d.cc
-q1gls3d.cc
-galerkinglsintegrator.cc
-glsintegrator.cc
-avs.cc
-cellvisu.cc
-gmv.cc
-gnuplot.cc
-visu_eps.cc
-visualization.cc
-visudatacompvector.cc
-visudatacompvectorfunction.cc
-visudatainfo.cc
-visudatarhs.cc
-vtk.cc
-vu.cc
-baseq12d.cc
-baseq12dwith.cc
-baseq13d.cc
-baseq13dwith.cc
-finiteelement2d.cc
-finiteelement3d.cc
-hnstructureq12d.cc
-hnstructureq13d.cc
-integrationformula.cc
-integrationformula1d.cc
-integrationformula2d.cc
-integrationformula3d.cc
-transformation2d.cc
+  avs.cc
+  baseq12d.cc
+  baseq12dwith.cc
+  baseq13d.cc
+  baseq13dwith.cc
+  basicintegrator.cc
+  basicmeshinterpretor.cc
+  cellmeshinterpretor.cc
+  cellvisu.cc
+  finiteelement2d.cc
+  finiteelement3d.cc
+  galerkinglsintegrator.cc
+  galerkinintegrator.cc
+  glsintegrator.cc
+  gmv.cc
+  gnuplot.cc
+  hnstructureq12d.cc
+  hnstructureq13d.cc
+  integrationformula1d.cc
+  integrationformula2d.cc
+  integrationformula3d.cc
+  integrationformula.cc
+  mginterpolatormatrix.cc
+  mginterpolatornested.cc
+  patchmeshinterpretor.cc
+  q12d.cc
+  q13d.cc
+  q1.cc
+  q1gls2d.cc
+  q1gls3d.cc
+  transformation2d.cc
+  visualization.cc
+  visudatacompvector.cc
+  visudatacompvectorfunction.cc
+  visudatainfo.cc
+  visudatarhs.cc
+  visu_eps.cc
+  vtk.cc
+  vu.cc
 )
 
-ADD_LIBRARY(MeshInterpretor ${MESHINTERPRETOR_SRC})
+ADD_LIBRARY(MeshInterpretor MESHINTERPRETOR_SRC)
