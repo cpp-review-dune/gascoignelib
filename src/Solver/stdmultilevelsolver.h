@@ -122,6 +122,7 @@ class StdMultiLevelSolver : public MultiLevelSolverInterface
   virtual void NewtonVectorZero(MultiLevelGhostVector& w) const;
   virtual double NewtonResidual(MultiLevelGhostVector& y, const MultiLevelGhostVector& x, const MultiLevelGhostVector& b) const;
   virtual double NewtonUpdate(double& rr, MultiLevelGhostVector& x, MultiLevelGhostVector& dx, MultiLevelGhostVector& r, const MultiLevelGhostVector& f, NLInfo& nlinfo);
+  virtual void NewtonUpdateShowCompResiduals(MultiLevelGhostVector& x, MultiLevelGhostVector& r, const MultiLevelGhostVector& f);
   virtual void NewtonLinearSolve(MultiLevelGhostVector& x, const MultiLevelGhostVector& b, CGInfo& info);
   virtual void NewtonMatrixControl(MultiLevelGhostVector& u, NLInfo& nlinfo);
   virtual void NewtonOutput(NLInfo& nlinfo) const;

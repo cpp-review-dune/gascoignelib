@@ -57,12 +57,8 @@ namespace Gascoigne
       virtual int GetNcomp() const=0;
       virtual void Form(VectorIterator b, const FemFunction& U, const TestFunction& N) const=0;
       virtual void Matrix(EntryMatrix& A, const FemFunction& U, const TestFunction& M, const TestFunction& N) const=0;
-      virtual void PrepareCellIntegration(const MeshInterface *p_mesh, int cell_id, CompVector<double>& __U) const { ; }
-      virtual void UnprepareCellIntegration(int cell_id, CompVector<double>& __U) const {
-        // this method is called after the integration, and notifies the equation that
-        // the preparation settings are to be disgarded and are not valid anymore
-        // this is necessary to prevent use of faulty preparation settings
-      }
+      // .cell is analogous to .point
+      //virtual void cell(const MeshInterface* p_mesh, int cell_id, const LocalVector& U, const LocalNodeData& Q) const { }
   };
 }
 

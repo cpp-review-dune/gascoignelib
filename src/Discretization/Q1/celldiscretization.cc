@@ -72,9 +72,8 @@ void CellDiscretization::Form(GlobalVector& f, const GlobalVector& u, const Equa
       GetFem()->ReInit(T);
 
       GlobalToLocal(__U,u,iq);
-      EQ.PrepareCellIntegration(GetMesh(),iq,__U);
+      //EQ.cell(GetMesh(),iq,__U,__Q);
       GetIntegrator()->Form(EQ,__F,*GetFem(),__U,__Q);
-      EQ.UnprepareCellIntegration(iq,__U);
       LocalToGlobal(f,__F,iq,d);
     }
 }
@@ -95,7 +94,7 @@ void CellDiscretization::AdjointForm(GlobalVector& f, const GlobalVector& u, con
       GetFem()->ReInit(T);
 
       GlobalToLocal(__U,u,iq);
-      
+      //EQ.cell(GetMesh(),iq,__U,__Q);
       GetIntegrator()->AdjointForm(EQ,__F,*GetFem(),__U,__Q);
       LocalToGlobal(f,__F,iq,d);
     }
@@ -146,9 +145,8 @@ void CellDiscretization::Matrix(MatrixInterface& A, const GlobalVector& u, const
       GetFem()->ReInit(T);
 
       GlobalToLocal(__U,u,iq);
-      EQ.PrepareCellIntegration(GetMesh(),iq,__U);
+      //EQ.cell(GetMesh(),iq,__U,__Q);
       GetIntegrator()->Matrix(EQ,__E,*GetFem(),__U,__Q);
-      EQ.UnprepareCellIntegration(iq,__U);
       LocalToGlobal(A,__E,iq,d);
     }
 }

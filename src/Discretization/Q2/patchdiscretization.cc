@@ -71,6 +71,7 @@ void PatchDiscretization::Form(GlobalVector& f, const GlobalVector& u, const Equ
       GetFem()->ReInit(T);
 
       GlobalToLocal(__U,u,iq);
+      //EQ.cell(GetPatchMesh(),iq,__U,__Q);
       GetIntegrator()->Form(EQ,__F,*GetFem(),__U,__Q);
       LocalToGlobal(f,__F,iq,d);
     }
@@ -91,6 +92,7 @@ void PatchDiscretization::AdjointForm(GlobalVector& f, const GlobalVector& u, co
       GetFem()->ReInit(T);
 
       GlobalToLocal(__U,u,iq);
+      //EQ.cell(GetPatchMesh(),iq,__U,__Q);
       GetIntegrator()->AdjointForm(EQ,__F,*GetFem(),__U,__Q);
       LocalToGlobal(f,__F,iq,d);
     }
@@ -161,6 +163,7 @@ void PatchDiscretization::Matrix(MatrixInterface& A, const GlobalVector& u, cons
       GetFem()->ReInit(T);
 
       GlobalToLocal(__U,u,iq);
+      //EQ.cell(GetPatchMesh(),iq,__U,__Q);
       GetIntegrator()->Matrix(EQ,__E,*GetFem(),__U,__Q);
       LocalToGlobal(A,__E,iq,d);
     }

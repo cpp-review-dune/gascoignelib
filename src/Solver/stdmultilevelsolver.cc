@@ -483,6 +483,59 @@ void StdMultiLevelSolver::Gmres(MultiLevelGhostVector& x, const MultiLevelGhostV
 
 /*-------------------------------------------------------------*/
 
+void StdMultiLevelSolver::NewtonUpdateShowCompResiduals(MultiLevelGhostVector& x, MultiLevelGhostVector& r, const MultiLevelGhostVector& f){
+
+  if( DataP->ShowCompResidualNames() ) {
+    // nur beim ersten durchgang? :  cginfo.statistics().totaliter()
+    const ComponentInformation*  CI = GetProblemDescriptor()->GetComponentInformation();
+    cout << "                                  ";
+    int     ncomps = r.Vector(ComputeLevel).ncomp();
+    string  str;  
+    for(int i=0;i<ncomps;i++){
+      CI->GetScalarName(i,str);
+      printf("%-9.9s", str.c_str());
+      if(i<ncomps-1) cout << " "; 
+    }
+    cout << "  " << endl;
+  }
+
+  if( DataP->ShowNonLinearCompResiduals() )
+    {
+      int ncomps = r.Vector(ComputeLevel).ncomp();
+      cout << "      nonlin L8-comp-residuals: [";
+      for(int i=0;i<ncomps;i++){
+        double res_comp = r.Vector(ComputeLevel).CompNormL8(i)+1e-99;
+        printf(" %3.2e", res_comp);
+        if(i<ncomps-1) cout << ","; 
+      }
+      cout << " ]" << endl;
+    }
+
+  if( DataP->ShowLinearCompResiduals() ) 
+    { 
+      // da das residuum *moeglicherweise* nachher auch benutzt wird, mache hier einen backup 
+      GlobalVector  r_backup; 
+      GlobalVector &r_vector = r.Vector(ComputeLevel);
+      int ncomps = r_vector.ncomp(); 
+
+      r_backup.ncomp()  = ncomps;
+      r_backup.resize(r_vector.n());
+      r_backup.equ(1.,r_vector);
+   
+      GetSolver(ComputeLevel)->MatrixResidual(r, x, f);  
+
+      cout << "         lin L8-comp-residuals: ["; 
+      for(int i=0;i<ncomps;i++){ 
+        double res_comp = r_vector.CompNormL8(i)+1e-99; 
+        printf(" %3.2e", res_comp); 
+        if(i<ncomps-1) cout << ",";
+      } 
+      cout << " ]" << endl; 
+
+      r_vector.equ(1.,r_backup);
+    } 
+
+}
 double StdMultiLevelSolver::NewtonUpdate(double& rr, MultiLevelGhostVector& x, MultiLevelGhostVector& dx, MultiLevelGhostVector& r, const MultiLevelGhostVector& f, NLInfo& nlinfo)
 {
   const CGInfo& linfo = nlinfo.GetLinearInfo();
@@ -537,17 +590,7 @@ double StdMultiLevelSolver::NewtonUpdate(double& rr, MultiLevelGhostVector& x, M
         }
     }
 
-  if( DataP->ShowCompResiduals() )
-    {
-      int ncomps = r.Vector(ComputeLevel).ncomp();
-      cout << "      L8-residuals in components: [";
-      for(int i=0;i<ncomps;i++){
-        double res_comp = r.Vector(ComputeLevel).CompNormL8(i);
-        printf(" %3.2e", res_comp);
-        if(i<ncomps-1) cout << ","; 
-      }
-      cout << " ]" << endl;
-    }
+  NewtonUpdateShowCompResiduals(x, r, f);
 
   return NewtonNorm(dx);
 }

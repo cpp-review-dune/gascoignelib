@@ -390,9 +390,8 @@ void Q12d::EEResidual(DoubleVector& eta, const GlobalVector& u, const Equation& 
         
     GlobalToLocalData(iq);
     GlobalToLocal(__U,u,iq);
-    EQ.PrepareCellIntegration(GetMesh(),iq,__U); 
+    //EQ.cell(GetMesh(),iq,__U,__Q); 
     double res = EEI.Residual(__U,*GetFem(),EQ,RHS,__Q);
-    EQ.UnprepareCellIntegration(iq,__U); 
     double w = 0.25 * sqrt(res);
     for (int in=0; in<4; in++)
     {
