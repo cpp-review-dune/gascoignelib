@@ -11,7 +11,7 @@ void LocalLoop::BasicInit(const string& paramfile)
 {
 //   GetMultiLevelSolverPointer() = new LocalMultiLevelSolver;
   LPD.BasicInit(paramfile);
-  StdLoop::BasicInit(paramfile,LPD);
+  StdLoop::BasicInit(paramfile,&LPD);
 }
 
 /*-------------------------------------------------*/
@@ -35,7 +35,7 @@ void LocalLoop::run()
   MultiLevelSolverInterface* MP = GetMultiLevelSolver();
   
   _clock_newmesh.start();
-  MP->NewMesh(GetProblemDescriptor());
+  MP->NewMesh();
   _clock_newmesh.stop();
 
   int nlevels = MP->nlevels();

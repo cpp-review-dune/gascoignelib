@@ -13,6 +13,8 @@ public:
 
   Laplace3d(const std::string& filename);
 
+  std::string GetName() const { return "Laplace3d";}
+
   //
   // Semilinear Form
   //

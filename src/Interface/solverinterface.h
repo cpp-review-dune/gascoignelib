@@ -43,7 +43,7 @@ class SolverInterface
 
   virtual std::string GetName() const=0;
 
-  virtual void BasicInit(int level, const std::string& paramfile, const MeshInterface* MP, const ProblemDescriptorInterface& PDX)=0;
+  virtual void BasicInit(int level, const std::string& paramfile, const MeshInterface* MP, const ProblemDescriptorInterface* PDX)=0;
   
   virtual void SetProblem(const ProblemDescriptorInterface& PDX)=0;
   virtual void SetState(const std::string& s)=0;

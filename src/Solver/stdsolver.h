@@ -146,7 +146,7 @@ class StdSolver : public virtual SolverInterface
   StdSolver();
   ~StdSolver();
 
-  void BasicInit(int level, const std::string& pfile, const MeshInterface* MP, const ProblemDescriptorInterface& PDX);
+  void BasicInit(int level, const std::string& pfile, const MeshInterface* MP, const ProblemDescriptorInterface* PDX);
 
   void SetProblem(const ProblemDescriptorInterface& PDX);
   void NewMesh(int l, const MeshInterface* MP);

@@ -17,7 +17,6 @@ class Laplace : public virtual Equation
   Laplace();
   Laplace(const std::string& filename);
 
-
   std::string GetName() const { return "Laplace";}
 
   int    ncomp      () const {return 1;}

@@ -26,10 +26,9 @@ public:
   virtual ~MultiLevelSolverInterface() {}
 
   virtual std::string GetName() const=0;
-  virtual void BasicInit(const MeshAgentInterface* GMGM, const std::string& paramfile)=0;
+  virtual void BasicInit(const MeshAgentInterface* GMGM, const std::string& paramfile, const ProblemDescriptorInterface* PDX)=0;
   // temporary
-  virtual void BasicInit(MultiGridMeshInterface& GMGM, const std::string& paramfile) {cerr<< "Achtung: Aenderung: jetzt BasicInit(\"const\" MeshAgentInterface& GMGM, const std::string& paramfile)\n"; assert(0);};
-  virtual void NewMesh(const ProblemDescriptorInterface* PDX)=0;
+  virtual void NewMesh()=0;
   virtual void SetProblem(const ProblemDescriptorInterface& PDX)=0;
   virtual void SetMonitorPtr(Monitor* mon)=0;
 

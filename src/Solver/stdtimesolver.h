@@ -44,7 +44,7 @@ public:
   StdTimeSolver();
   ~StdTimeSolver();
 
-  void BasicInit(int level,const std::string& paramfile, const MeshInterface* MP, const ProblemDescriptorInterface& PDX);
+  void BasicInit(int level,const std::string& paramfile, const MeshInterface* MP, const ProblemDescriptorInterface* PDX);
 
   void SetTimeData(double d, double th, double ti);
 

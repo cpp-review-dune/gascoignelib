@@ -48,8 +48,9 @@ class StdMultiLevelSolver : public MultiLevelSolverInterface
 
   Monitor*         MON;
   MultiLevelSolverData*          DataP;
+  const ProblemDescriptorInterface*      _PD;
 
-  virtual void NewSolvers(const ProblemDescriptorInterface& PDX);
+  virtual void NewSolvers();
 
   virtual SolverInterface* NewSolver(int solverlevel);
   virtual void NewMgInterpolator();
@@ -80,7 +81,7 @@ class StdMultiLevelSolver : public MultiLevelSolverInterface
     _MlVectors.insert(g);
   }
   void MemoryVector();
-  void BasicInit(const MeshAgentInterface* GMGM, const string& paramfile);
+  void BasicInit(const MeshAgentInterface* GMGM, const string& paramfile, const ProblemDescriptorInterface* PDX);
   // Zugriff
 
   virtual void SetState(const string& s) {
@@ -90,9 +91,7 @@ class StdMultiLevelSolver : public MultiLevelSolverInterface
   const CGInfo& GetLinearInfo   () const { return DataP->info;}
   const CGInfo& GetDualInfo     () const { return DataP->dualinfo;}
   const NLInfo& GetNonlinearInfo() const { return DataP->nlinfo;}
-/*   CGInfo& GetLinearInfo   ()  { return DataP->info;} */
-/*   CGInfo& GetDualInfo     ()  { return DataP->dualinfo;} */
-/*   NLInfo& GetNonlinearInfo()  { return DataP->nlinfo;} */
+  const ProblemDescriptorInterface* GetProblemDescriptor() const { return _PD;}
 
   int nlevels()                 const { return GetMeshAgent()->nlevels();}
   virtual int FinestLevel  ()  const { return nlevels()-1;}
@@ -105,7 +104,7 @@ class StdMultiLevelSolver : public MultiLevelSolverInterface
 
   void SetMonitorPtr(Monitor* mon) { MON = mon;}
 
-  void NewMesh(const ProblemDescriptorInterface* PDX);
+  void NewMesh();
   void SetProblem(const ProblemDescriptorInterface& PDX);
 
   // neue vektoren

@@ -12,7 +12,7 @@ int main(int argc, char** argv)
   LPD.BasicInit(S.GetParamFile());
 
   StdLoop loop;
-  loop.BasicInit(S.GetParamFile(),LPD);
+  loop.BasicInit(S.GetParamFile(),&LPD);
   loop.run();
 
   return 0;

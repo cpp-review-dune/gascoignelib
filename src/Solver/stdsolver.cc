@@ -79,12 +79,12 @@ void StdSolver::NewMesh(int level, const MeshInterface* mp)
 
 /*-------------------------------------------------------*/
 
-void StdSolver::BasicInit(int level, const string& pfile, const MeshInterface* MP, const ProblemDescriptorInterface& PDX)
+void StdSolver::BasicInit(int level, const string& pfile, const MeshInterface* MP, const ProblemDescriptorInterface* PDX)
 {
   _paramfile = pfile;
   _mylevel=level;
 
-  _PDX = &PDX;
+  _PDX = PDX;
   assert(_PDX);
 
   DataFormatHandler DFH;
@@ -594,7 +594,7 @@ double StdSolver::ComputeDomainFunctional(GlobalVector& f, const GlobalVector& u
   HNAverage(u);
   double J = GetMeshInterpretor()->ComputeDomainFunctional(u,*FP);
   HNZero(u);
-  cerr << "StdSolver::ComputeDomainFunctional()\t" << J << endl;
+  //cerr << "StdSolver::ComputeDomainFunctional()\t" << J << endl;
   return J;
 }
 

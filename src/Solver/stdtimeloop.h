@@ -21,7 +21,7 @@ public:
 
   StdTimeLoop() : StdLoop() {}
 
-  void BasicInit(const std::string& pfile, const ProblemDescriptorInterface& PD);
+  void BasicInit(const std::string& pfile, const ProblemDescriptorInterface* PD);
 
   void run();
   void adaptive_run();

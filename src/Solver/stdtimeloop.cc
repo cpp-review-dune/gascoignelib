@@ -6,7 +6,7 @@ using namespace std;
 
 /*-----------------------------------------*/
 
-void StdTimeLoop::BasicInit(const string& paramfile, const ProblemDescriptorInterface& PD)
+void StdTimeLoop::BasicInit(const string& paramfile, const ProblemDescriptorInterface* PD)
 {
   StdLoop::BasicInit(paramfile, PD);
 
@@ -66,7 +66,7 @@ void StdTimeLoop::adaptive_run()
       cout << " " << GetMeshAgent()->ncells() << endl;
       
       info.iteration(_iter);
-      GetMultiLevelSolver()->NewMesh(GetProblemDescriptor());
+      GetMultiLevelSolver()->NewMesh();
       
       GetMultiLevelSolver()->InterpolateSolution(u,ualt);
 
@@ -129,7 +129,7 @@ void StdTimeLoop::run()
   
   nvector<double> eta;
   
-  GetMultiLevelSolver()->NewMesh(GetProblemDescriptor());
+  GetMultiLevelSolver()->NewMesh();
 
   StdTimeSolver* TSS = dynamic_cast<StdTimeSolver*>(GetMultiLevelSolver()->GetSolver());
   assert(TSS);

@@ -18,9 +18,6 @@
 
 class LocalLoop : public StdLoop
 {
-private:
-
-
 protected:
 
   ProblemDescriptor1 LPD;
@@ -36,7 +33,6 @@ public:
 
   void BasicInit(const std::string& paramfile);
   void run();
-
 };
 
 

@@ -79,9 +79,10 @@ StdMultiLevelSolver::StdMultiLevelSolver() :
 
 /*-------------------------------------------------------------*/
 
-void StdMultiLevelSolver::BasicInit(const MeshAgentInterface* MAP, const string& pfile)
+void StdMultiLevelSolver::BasicInit(const MeshAgentInterface* MAP, const string& pfile, const ProblemDescriptorInterface* PD)
 {
   _MAP = MAP;
+  _PD = PD;
 
   paramfile = pfile;
   assert(DataP==0);
@@ -150,7 +151,7 @@ SolverInterface* StdMultiLevelSolver::NewSolver(int solverlevel)
 
 /*-------------------------------------------------------------*/
 
-void StdMultiLevelSolver::NewSolvers(const ProblemDescriptorInterface& PDX)
+void StdMultiLevelSolver::NewSolvers()
 {
   oldnlevels = _SP.size();
 
@@ -169,7 +170,7 @@ void StdMultiLevelSolver::NewSolvers(const ProblemDescriptorInterface& PDX)
       if(_SP[solverlevel]==NULL) 
 	{
 	  _SP[solverlevel] = NewSolver(solverlevel);
- 	  _SP[solverlevel]->BasicInit(solverlevel,paramfile,MIP,PDX);
+ 	  _SP[solverlevel]->BasicInit(solverlevel,paramfile,MIP,_PD);
 	  
 	  set<NewMultiLevelGhostVector>::const_iterator p = _MlVectors.begin();
 	  while(p!=_MlVectors.end()) 
@@ -227,12 +228,12 @@ void StdMultiLevelSolver::NewMgInterpolator()
 
 /*-------------------------------------------------------------*/
 
-void StdMultiLevelSolver::NewMesh(const ProblemDescriptorInterface* PDX)
+void StdMultiLevelSolver::NewMesh()
 {
   DataP->countresidual = 0;
   DataP->nlinfo.control().matrixmustbebuild() = 1;
 
-  NewSolvers(*PDX);
+  NewSolvers();
   SolverNewMesh();
   NewMgInterpolator();
 }

@@ -16,7 +16,7 @@ using namespace Gascoigne;
 
 /*-----------------------------------------*/
 
-StdLoop::StdLoop() : _paramfile("none"), _MA(NULL), _ML(NULL), _FMP(NULL), _PD(NULL), _iter(0), IOM("Results")
+StdLoop::StdLoop() : _paramfile("none"), _MA(NULL), _ML(NULL), _FMP(NULL), _iter(0), IOM("Results")
 {
   _estimator = _extrapolate = _reload  = "none";
 }
@@ -40,9 +40,9 @@ StdLoop::~StdLoop()
 
 /*-----------------------------------------*/
 
-void StdLoop::BasicInit(const string& paramfile, const ProblemDescriptorInterface& PD)
+void StdLoop::BasicInit(const string& paramfile, const ProblemDescriptorInterface* PD)
 {
-  _PD = const_cast<ProblemDescriptorInterface*>(&PD);
+  //_PD = const_cast<ProblemDescriptorInterface*>(&PD);
   _paramfile = paramfile;
 
   DataFormatHandler DFH;
@@ -88,10 +88,10 @@ void StdLoop::BasicInit(const string& paramfile, const ProblemDescriptorInterfac
 
   //
   StdLoop::NewFunctionalManager();
-  GetFunctionalManager()->ConstructSet(_paramfile,*GetProblemDescriptor()->GetEquation());
+  GetFunctionalManager()->ConstructSet(_paramfile,*(PD->GetEquation()));
   //
 
-  GetMultiLevelSolver()->BasicInit(GetMeshAgent(),_paramfile);
+  GetMultiLevelSolver()->BasicInit(GetMeshAgent(),_paramfile,PD);
   GetMultiLevelSolver()->SetMonitorPtr(&Mon);
 }
 
@@ -305,6 +305,7 @@ double StdLoop::Estimator(nvector<double>& eta, NewMultiLevelGhostVector& u, New
 void StdLoop::ComputeGlobalErrors(const NewMultiLevelGhostVector& u)
 {
   GetMultiLevelSolver()->GetSolver()->ComputeError(u,_GlobalErr);
+  cout.precision(6);
   cout << "\nGlobalErrors l2,h1,l8 " << _GlobalErr << endl;
 }
 
@@ -392,7 +393,7 @@ void StdLoop::run()
       Moning.SetMeshInformation(_iter,GetMeshAgent()->nnodes(),GetMeshAgent()->ncells());
       
       _clock_newmesh.start();
-      GetMultiLevelSolver()->NewMesh(GetProblemDescriptor());
+      GetMultiLevelSolver()->NewMesh();
       GetMultiLevelSolver()->InterpolateSolution(u,ualt);
       GetMultiLevelSolver()->GetSolver()->Visu("Results/interpolate",u,_iter);
 

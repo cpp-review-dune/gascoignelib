@@ -86,7 +86,7 @@ void StdTimeSolver::_BasicInit()
 
 /*-------------------------------------------------------------*/
   
-void StdTimeSolver::BasicInit(int level, const string& paramfile, const MeshInterface* MP, const ProblemDescriptorInterface& PDX)
+void StdTimeSolver::BasicInit(int level, const string& paramfile, const MeshInterface* MP, const ProblemDescriptorInterface* PDX)
 {
   StdSolver::BasicInit(level, paramfile, MP, PDX);
   StdTimeSolver::_BasicInit();
