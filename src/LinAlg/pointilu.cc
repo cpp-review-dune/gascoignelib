@@ -82,24 +82,24 @@ void PointIlu::ConstructStructure(const IntVector& perm, const MatrixInterface& 
 
       int count=0;
       for(int pos=AS->start(pi);pos<AS->stop(pi);pos++)
-	{
-	  picol[count++] = q[AS->col(pos)];
-	}
+        {
+          picol[count++] = q[AS->col(pos)];
+        }
       iota(ppi.begin(),ppi.begin()+ni,0);
       sort(ppi.begin(),ppi.begin()+ni,CompareLess<IntVector >(picol));
 
       for(int ii=0;ii<ni;ii++)
-	{
-	  ST.col(ST.start(i)+ ii) = picol[ppi[ii]];
-	}
+        {
+          ST.col(ST.start(i)+ ii) = picol[ppi[ii]];
+        }
       for(int pos=ST.start(i);pos<ST.stop(i);pos++)
-	{
-	  if(ST.col(pos)==i)
-	    {
-	      ST.diag(i) = pos;
-	      continue;
-	    }
-	}
+        {
+          if(ST.col(pos)==i)
+            {
+              ST.diag(i) = pos;
+              continue;
+            }
+        }
     }
 } 
 /*-------------------------------------------------------------*/
@@ -109,15 +109,15 @@ void PointIlu::modify(int c, double s)
   for(int i=0;i<ST.n();++i)
     {
       if( (i%_ncomp) == c )
-	{
-	  double sum=0.;
-	  for(int pos=ST.start(i);pos<ST.stop(i);pos++)
-	    {
-	      sum += fabs(value[pos]);
-	    }
-	  sum -= fabs(value[ST.diag(i)]);
-	  value[ST.diag(i)] += s*sum;
-	}
+        {
+          double sum=0.;
+          for(int pos=ST.start(i);pos<ST.stop(i);pos++)
+            {
+              sum += fabs(value[pos]);
+            }
+          sum -= fabs(value[ST.diag(i)]);
+          value[ST.diag(i)] += s*sum;
+        }
     }
 }
 }

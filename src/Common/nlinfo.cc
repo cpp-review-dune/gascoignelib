@@ -224,14 +224,14 @@ bool NLInfo::check(int iter, double resi, double cori)
       CD.correction() = cor;
       compute_reduction_rate();
       if (CD.residual()>=2.*CD.previousresidual())
-	{
-	  thisstepbad = 1;
-	}
+        {
+          thisstepbad = 1;
+        }
       if (newiteration) 
-	{
-	  CD.previousresidual()   = r0;
-	  CD.previouscorrection() = c0;
-	}
+        {
+          CD.previousresidual()   = r0;
+          CD.previouscorrection() = c0;
+        }
     }
 
   if (thisstepbad && CD.laststepbad())

@@ -74,10 +74,10 @@ void SimpleIlu::backward() const
     {
       int ende = ST.diag(i); 
       for(int pos=ST.stop(i)-1; pos>ende; pos--)
-	{
-	  int j = ST.col(pos);
-	  yp[i] -= value[pos]*yp[j];
-	}
+        {
+          int j = ST.col(pos);
+          yp[i] -= value[pos]*yp[j];
+        }
       yp[i]  *= value[ende];
     }
 }
@@ -90,11 +90,11 @@ void SimpleIlu::forward_transpose() const
     {
       int ende = ST.diag(i); 
       for(int pos=ST.start(i); pos<ende; pos++)
-	{
-	  int j = ST.col(pos);
-	  int pos2 = ST.Find(j,i);
-	  yp[i] -= value[pos2]*yp[j];
-	}
+        {
+          int j = ST.col(pos);
+          int pos2 = ST.Find(j,i);
+          yp[i] -= value[pos2]*yp[j];
+        }
       yp[i]  *= value[ende];
     }
 }
@@ -107,11 +107,11 @@ void SimpleIlu::backward_transpose() const
     {
       int ende = ST.diag(i); 
       for(int pos=ST.stop(i)-1; pos>ende; pos--)
-	{
-	  int j = ST.col(pos);
-	  int pos2 = ST.Find(j,i);
-	  yp[i] -= value[pos2]*yp[j];
-	}
+        {
+          int j = ST.col(pos);
+          int pos2 = ST.Find(j,i);
+          yp[i] -= value[pos2]*yp[j];
+        }
     }
 }
 
@@ -122,25 +122,25 @@ void SimpleIlu::compute_ilu()
   for(int i=0; i<ST.n(); i++)
     {
       for (int pk=ST.start(i); pk<ST.diag(i); pk++)
-	{
-	  int k = ST.col(pk);
+        {
+          int k = ST.col(pk);
 
-	  value[pk] *= value[ST.diag(k)];
+          value[pk] *= value[ST.diag(k)];
 
-	  for (int pj=ST.diag(k)+1; pj<ST.stop(k); pj++)
-	    {
-	      int j  = ST.col(pj);
-	      // suche ph
-	      for (int ph=ST.start(i); ph<ST.stop(i); ph++)
-		{
-		  if (ST.col(ph)==j)
-		    {
-		      value[ph] -= value[pk]*value[pj];
-		      break;
-		    }
-		}
-	    }
-	}
+          for (int pj=ST.diag(k)+1; pj<ST.stop(k); pj++)
+            {
+              int j  = ST.col(pj);
+              // suche ph
+              for (int ph=ST.start(i); ph<ST.stop(i); ph++)
+                {
+                  if (ST.col(ph)==j)
+                    {
+                      value[ph] -= value[pk]*value[pj];
+                      break;
+                    }
+                }
+            }
+        }
       double d = value[ST.diag(i)];
       value[ST.diag(i)] = 1./d;
     }
@@ -161,26 +161,26 @@ void SimpleIlu::copy_entries(const MatrixInterface*  A)
       int pi = p[i];
 
       for(int posA=AS->start(pi); posA<AS->stop(pi); posA++)
-	{
-	  int j   = AS->col(posA);
-	  int pj  = q[j];
-	  bool found=0;
-	  for(int pos=ST.start(i); pos<ST.stop(i); pos++)
-	    {
-	      int k = ST.col(pos);
-	      if(k==pj)	
-		{
-		  value[pos] += AP->GetValue(posA);
-		  found=1;
-		  break;
-		}
-	    }
-	  if(!found)
-	    {
-	      cout << "not found " << endl;
-	      abort();
-	    }
-	}
+        {
+          int j   = AS->col(posA);
+          int pj  = q[j];
+          bool found=0;
+          for(int pos=ST.start(i); pos<ST.stop(i); pos++)
+            {
+              int k = ST.col(pos);
+              if(k==pj)	
+                {
+                  value[pos] += AP->GetValue(posA);
+                  found=1;
+                  break;
+                }
+            }
+          if(!found)
+            {
+              cout << "not found " << endl;
+              abort();
+            }
+        }
     }
 }
 }

@@ -15,13 +15,13 @@ void ColumnDiagStencil::memory(const SparseStructureInterface* SI)
   for(int i=0;i<n();i++)
     {
       for (int pos=sstart[i]; pos<sstart[i+1]; pos++)
-	{
-	  if (scol[pos]==i)
-	    {
-	      sdiag[i] = pos;
-	      break;
-	    }
-	}
+        {
+          if (scol[pos]==i)
+            {
+              sdiag[i] = pos;
+              break;
+            }
+        }
     }
 }
 

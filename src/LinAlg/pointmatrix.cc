@@ -96,19 +96,19 @@ void PointMatrix::entry(const IntVector::const_iterator start, const IntVector::
     {
       int i = *(start+ii);
       for(int c=0;c<_ncomp;c++)
-	{
-	  int iglob = SSAP->index(i,c);
-	  for(int jj=0;jj<n;jj++)
-	    {
-	      int j = *(start+jj);
-	      for(int d=0;d<_ncomp;d++)
-		{
-		  int jglob = SSAP->index(j,d);
-		  int pos = ST.Find(iglob,jglob);
-		  value[pos] += s*M(ii,jj,c,d);
-		}
-	    }
-	}
+        {
+          int iglob = SSAP->index(i,c);
+          for(int jj=0;jj<n;jj++)
+            {
+              int j = *(start+jj);
+              for(int d=0;d<_ncomp;d++)
+                {
+                  int jglob = SSAP->index(j,d);
+                  int pos = ST.Find(iglob,jglob);
+                  value[pos] += s*M(ii,jj,c,d);
+                }
+            }
+        }
     }
 }
 
@@ -130,29 +130,29 @@ void PointMatrix::AddMassWithDifferentStencil(const MatrixInterface* MP, const T
   for(int i=0;i<n;i++)
     {
       for(int pos=SMS->start(i);pos<SMS->stop(i);pos++)
-	{
-	  int j = SMS->col(pos);
-	  double m = s * SM->GetValue(pos);
+        {
+          int j = SMS->col(pos);
+          double m = s * SM->GetValue(pos);
 
-	  for(int c=0;c<_ncomp;c++)
-	    {
-	      int isystem = NSMS->index(i, c);
-	      for(int d=0;d<_ncomp;d++)
-		{
-		  int jsystem = NSMS->index(j, d);
-		  bool found=0;
-		  for(int pos2=ST.start(isystem);pos2<ST.stop(isystem);pos2++)
-		    {
-		      if(ST.col(pos2)==jsystem)
-			{
-			  found = 1;
-			  value[pos2] += m * TP(c,d);
-			}
-		    }
-		  if(!found) cerr << "not found ";
-		}
-	    }
-	}
+          for(int c=0;c<_ncomp;c++)
+            {
+              int isystem = NSMS->index(i, c);
+              for(int d=0;d<_ncomp;d++)
+                {
+                  int jsystem = NSMS->index(j, d);
+                  bool found=0;
+                  for(int pos2=ST.start(isystem);pos2<ST.stop(isystem);pos2++)
+                    {
+                      if(ST.col(pos2)==jsystem)
+                        {
+                          found = 1;
+                          value[pos2] += m * TP(c,d);
+                        }
+                    }
+                  if(!found) cerr << "not found ";
+                }
+            }
+        }
     }
 
 

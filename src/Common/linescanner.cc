@@ -41,9 +41,9 @@ void LineScanner::split(vector<string>& words, const char& c) const
     {
       vector<string> s = StringSplit(help[i].c_str(), c);
       for (int j=0; j<s.size(); j++)
-	{
-	  if (s[j]!="") words.push_back(s[j]);
-	}      
+        {
+          if (s[j]!="") words.push_back(s[j]);
+        }      
     }
 }
 
@@ -88,18 +88,18 @@ int LineScanner::NextLine(vector<string>& words)
   if ( (s1.size()) && (s1[0]!="//Block") )
     {
       if( (toto[0]=='/') && (toto[1]=='/') )
-	{
-	  return 0;
-	}
+        {
+          return 0;
+        }
     }
   string tab = "\t";
   for (int i=0; i<s1.size(); i++)
     {
       vector<string> s2 = StringSplit(s1[i].c_str(),tab[0]);
       for (int j=0; j<s2.size(); j++)
-	{
-	  if (s2[j]!="") words.push_back(s2[j]);
-	}
+        {
+          if (s2[j]!="") words.push_back(s2[j]);
+        }
     }
   
   return words.size();
@@ -122,13 +122,13 @@ int LineScanner::NextLine(vector<string>& words, const vector<int>& w)
   for (int i=0; i<w.size(); i++)
     {
       if (j+w[i]<=toto.size())
-	{
-	  words[i] = toto.substr(j,w[i]);
-	}
+        {
+          words[i] = toto.substr(j,w[i]);
+        }
       else
-	{
-	  words[i] = "";
-	}
+        {
+          words[i] = "";
+        }
       j += w[i];
     }
   return words.size(); 

@@ -14,9 +14,9 @@ ostream& SimpleMatrix::Write(ostream& os) const
     {
       os << i << endl;
       for(int pos=ST.start(i);pos<ST.stop(i);pos++)
-	{
-	  os << ST.col(pos) << ": " << value[pos] << ", ";
-	}
+        {
+          os << ST.col(pos) << ": " << value[pos] << ", ";
+        }
       os << endl;
     }
 
@@ -50,11 +50,11 @@ void SimpleMatrix::entry(niiterator start, niiterator stop, const EntryMatrix& M
     {
       int i = *(start+ii);
       for(int jj=0;jj<n;jj++)
-	{
-	  int j = *(start+jj);
-	  int pos = ST.Find(i,j);
-	  value[pos] += s*M(ii,jj,0,0);
-	}
+        {
+          int j = *(start+jj);
+          int pos = ST.Find(i,j);
+          value[pos] += s*M(ii,jj,0,0);
+        }
     }
 }
 
@@ -70,16 +70,16 @@ void SimpleMatrix::vmult_time(GlobalVector& y, const GlobalVector& x, const Time
   for(int i=0;i<n;i++)
     {
       for(int pos=ST.start(i);pos<ST.stop(i);pos++)
-	{
-	  int j = ST.col(pos);
-	  for(int c=0;c<x.ncomp();c++)
-	    {
-	      for(int d=0;d<x.ncomp();d++)
-		{
-		  y(i,c) += s*value[pos]* TP(c,d) * x(j,d);
-		}
-	    }
-	}
+        {
+          int j = ST.col(pos);
+          for(int c=0;c<x.ncomp();c++)
+            {
+              for(int d=0;d<x.ncomp();d++)
+                {
+                  y(i,c) += s*value[pos]* TP(c,d) * x(j,d);
+                }
+            }
+        }
     }
 }
 
@@ -95,11 +95,11 @@ void SimpleMatrix::vmult(DoubleVector& y, const DoubleVector& x, double d) const
   for(int i=0;i<n;i++)
     {
       for(int pos=ST.start(i);pos<ST.stop(i);pos++)
-	{
-	  int j = ST.col(pos);
-// 	  y[i] += d*value[pos]*x[j];
-	  *py += d*value[pos]*x[j];
-	}
+        {
+          int j = ST.col(pos);
+          // y[i] += d*value[pos]*x[j];
+          *py += d*value[pos]*x[j];
+        }
       py++;
     }
 }

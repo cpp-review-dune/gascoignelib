@@ -41,17 +41,17 @@ void transfer(int n, vector<int>& tr, vector<int>& del)
   for(int i=0;i<n;++i)
     {
       while ((del[pos]<i) && (pos<del.size()-1))
-	{
-	  pos++;
-	}
+        {
+          pos++;
+        }
       if (pos==del.size())
-	{
-	  tr[i] = count++;
-	}
+        {
+          tr[i] = count++;
+        }
       else if (del[pos]!=i)
-	{
-	  tr[i] = count++;
-	}
+        {
+          tr[i] = count++;
+        }
     }
 }
 }

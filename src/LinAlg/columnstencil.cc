@@ -39,11 +39,11 @@ void ColumnStencil::memory(const SparseStructureInterface* SI)
       sstart[i+1] = first + SS->rowsize(i);
       int id = 0;
       for(set<int>::const_iterator p=SS->rowbegin(i);
-	  p!=SS->rowend(i);p++)
-	{
-	  scol[first+id] = *p;
-	  id++;
-	}
+          p!=SS->rowend(i);p++)
+        {
+          scol[first+id] = *p;
+          id++;
+        }
     }
 }
 }
