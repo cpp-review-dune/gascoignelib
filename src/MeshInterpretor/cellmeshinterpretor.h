@@ -49,8 +49,8 @@ public:
 
   CellMeshInterpretor() : BasicMeshInterpretor(), __FEM(NULL), __INT(NULL) {}
   ~CellMeshInterpretor(){
-    if(__FEM==NULL) {delete __FEM; __FEM=NULL;}
-    if(__INT==NULL) {delete __INT; __INT=NULL;}
+    if(__FEM) {delete __FEM; __FEM=NULL;}
+    if(__INT) {delete __INT; __INT=NULL;}
   }
 
   std::string GetName() const {return "CellMeshInterpretor";}
