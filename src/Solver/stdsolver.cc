@@ -845,27 +845,46 @@ void StdSolver::PressureFilterIntegrate(BasicGhostVector& x) const
 
 /* -------------------------------------------------------*/
 
+nvector<double> StdSolver::IntegrateSolutionVector(const GlobalVector& u) const
+{
+  assert(PF.size());
+
+  HNAverage(u);
+  assert(GetMeshInterpretor()->HNZeroCheck(u)==0);
+
+  nvector<double> dst(u.ncomp(),0.);
+  nvector<double>::const_iterator pf = PF.begin();
+  
+  for (int j=0; j<u.n(); j++)
+    {
+      for (int c=0; c<u.ncomp(); c++)
+	{
+	  dst[c] += u(j,c)* *pf;
+	}      
+      pf++;
+    }  
+  HNZero(u);
+  return dst;
+}
+
+/* -------------------------------------------------------*/
+
 void StdSolver::PressureFilterIntegrate(GlobalVector& x) const
 {
+  // In each nonlinear step: applied to Newton correction,
+  // in each smoothing step
+  //
   if(Dat.GetPfilter().size()==0) return;
+  HNAverage(x);
 
-  int comp = 0;
-  HNZero(x);
-  assert(GetMeshInterpretor()->HNZeroCheck(x)==0);
+  nvector<double> mean = IntegrateSolutionVector(x);
 
   for (int i=0; i<Dat.GetPfilter().size(); i++)
     {
-      int comp = Dat.GetPfilter()[i];
-      double d = 0.;
-      nvector<double>::const_iterator pf = PF.begin();
-
-      for (int j=0; j<x.n(); j++)
-	{
-	  d += x(j,comp)* *pf++;;
-	}      
-      d /= -omega_domain;
-      x.CompAdd(comp,d);
-    }
+      int   comp = Dat.GetPfilter()[i];
+      double sub = mean[comp]/omega_domain;
+      x.CompAdd(comp,-sub);
+    }  
   HNZero(x);
 }
 
@@ -875,6 +894,7 @@ void StdSolver::PressureFilter(GlobalVector& x) const
 {
   if (Dat.GetPfilter().size()==0) return;
 
+  HNAverage(x);
   for (int i=0; i<Dat.GetPfilter().size(); i++)
     {
       int comp = Dat.GetPfilter()[i];
@@ -883,10 +903,9 @@ void StdSolver::PressureFilter(GlobalVector& x) const
 	{
 	  d += x(j,comp);
 	}      
-      d /= -1.*GetMeshInterpretor()->n_withouthanging();
+      d /= GetMeshInterpretor()->n();
       
-      x.CompAdd(comp,d);
-      // cerr << i << "  omega = " << d << endl;
+      x.CompAdd(comp,-d);
     }
   HNZero(x);
 }

@@ -180,34 +180,31 @@ void CellMeshInterpretor::RhsNeumann(GlobalVector& f, const Equation& EQ, const 
 
 /* ----------------------------------------- */
 
-double CellMeshInterpretor::compute_element_mean_matrix(int iq, EntryMatrix& E) const
-{
-  assert(0);
-}
-
-/* ----------------------------------------- */
-
 double CellMeshInterpretor::PressureFilter(nvector<double>& PF) const
 {
-  int nv = GetMesh()->nodes_per_cell(0); // = 4 oder 8
-  EntryMatrix  E(nv,1);
-
   PF.resize(n());
   PF.zero();
   double omega = 0.;
-  for(int iq=0;iq<GetMesh()->ncells();++iq)
+  nmatrix<double> T;
+  for(int iq=0; iq<GetMesh()->ncells(); ++iq)
     {
-      omega += compute_element_mean_matrix(iq,__E);
+      int nv = GetMesh()->nodes_per_cell(iq);
+      EntryMatrix  E(nv,1);
+
+      Transformation(T,iq);
+      GetFem()->ReInit(T);
+
+      omega += GetIntegrator()->MeanMatrix(E,*GetFem());
 
       nvector<int> ind = GetMesh()->IndicesOfCell(iq);
 
       for(int i=0;i<ind.size();i++)
-	{
+ 	{
 	  for(int j=0;j<ind.size();j++)
 	    {
-	      PF[ind[j]] += __E(i,j,0,0);
+	      PF[ind[j]] += E(i,j,0,0);
 	    }
-	}
+      	}
     }
   return omega;
 }
@@ -403,3 +400,6 @@ double CellMeshInterpretor::ComputeDomainFunctional(const GlobalVector& u, const
     }
   return j;
 }
+
+/* ----------------------------------------- */
+

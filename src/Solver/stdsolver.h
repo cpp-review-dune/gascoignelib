@@ -90,8 +90,6 @@ class StdSolver : public virtual SolverInterface
   const MeshInterpretorInterface* GetMeshInterpretor() const {assert(_ZP); return _ZP;}
   MeshInterpretorInterface* GetMeshInterpretor() {assert(_ZP); return _ZP;}
 
-  const ProblemDescriptorInterface* GetProblemDescriptor() const {assert(_PDX); return _PDX;}
-
   // 0.3 Matrizen
 
 //   const MatrixInterface* GetMatrix() const {assert(_MAP); return _MAP;}
@@ -139,14 +137,17 @@ class StdSolver : public virtual SolverInterface
   void vmult(Gascoigne::GlobalVector& y, const Gascoigne::GlobalVector& x, double d) const;
   void vmulteq(Gascoigne::GlobalVector& y, const Gascoigne::GlobalVector& x, double d) const;
 
+  nvector<double> IntegrateSolutionVector(const Gascoigne::GlobalVector& u) const;
+
  public:
 
   StdSolver();
   ~StdSolver();
 
   void BasicInit(int level, const Gascoigne::ParamFile* paramfile, const MeshInterface* MP);
-
   void SetProblem(const ProblemDescriptorInterface& PDX);
+  const ProblemDescriptorInterface* GetProblemDescriptor() const {assert(_PDX); return _PDX;}
+
   void NewMesh(int l, const MeshInterface* MP);
 
   virtual void MemoryVector();

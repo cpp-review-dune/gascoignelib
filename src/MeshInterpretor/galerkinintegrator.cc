@@ -273,5 +273,75 @@ void GalerkinIntegrator<DIM>::ErrorsByExactSolution(LocalVector& dst, const FemI
 
 /* ----------------------------------------- */
 
+template<int DIM>
+double GalerkinIntegrator<DIM>::MeanMatrix(EntryMatrix& E, const FemInterface& FEM) const
+{
+  E.zero();
+
+  const IntegrationFormulaInterface& IF = FormFormula();
+
+  Vertex<DIM> xi;
+  double omega = 0.;
+
+  FemFunction NI(FEM.n()), NJ(FEM.n());
+  for (int k=0; k<IF.n(); k++)
+    {
+      IF.xi(xi,k);
+      FEM.point(xi);
+      double vol = FEM.J();
+      double weight  = IF.w(k) * vol;
+      omega += weight;
+
+      for(int i=0; i<FEM.n(); i++)
+	{
+	  NJ[i].m() = FEM.N(i);
+	  NI[i].m() = weight * NJ[i].m();
+	}
+      for(int i=0; i<FEM.n(); i++)
+	{
+	  for(int j=0; j<FEM.n(); j++)
+	    {
+	      E.SetDofIndex(i,j);
+	      E(0,0) += NI[i].m()*NJ[j].m();
+	    }
+	}
+    }
+  return omega;
+
+
+
+
+//   int nv = MP->nodes_per_element(); // = 4 oder 8
+//   std::vector<DerivativeVector> NI(nv), NJ(nv);
+  
+//   double omega = 0.;
+//   Vertex2d xi;
+//   for(int k=0;k<IF.n();++k)
+//     {
+//       IF.xi(xi,k);  // nur in 2d !!!!!!!!!!!!!!
+//       FE.point(xi);
+//       double  J = FE.J();
+//       double  w =IF.w(k)*J;
+//       omega += w;
+      
+//       for(int i=0;i<nv;i++)
+// 	{
+// 	  NJ[i].m() = FE.N  (i);
+// 	  NI[i].m() = w * NJ[i].m();
+// 	}
+//       for(int i=0;i<nv;i++)
+// 	{
+// 	  for(int j=0;j<nv;j++)
+// 	    {
+// 	      E.SetDofIndex(i,j);
+// 	      E(0,0) += NI[i].m()*NJ[j].m();
+// 	    }
+// 	}
+//     }
+//   return omega;
+}
+
+/* ----------------------------------------- */
+
 template GalerkinIntegrator<2>;
 template GalerkinIntegrator<3>;

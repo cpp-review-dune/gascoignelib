@@ -45,6 +45,8 @@ class SolverInterface
   virtual void BasicInit(int level, const Gascoigne::ParamFile* paramfile, const MeshInterface* MP)=0;
   
   virtual void SetProblem(const ProblemDescriptorInterface& PDX)=0;
+  virtual const ProblemDescriptorInterface* GetProblemDescriptor() const { assert(0);}
+
   virtual void SetState(const std::string& s)=0;
 
   virtual bool DirectSolver() const=0;

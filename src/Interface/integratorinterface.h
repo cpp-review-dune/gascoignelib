@@ -41,6 +41,7 @@ public:
 
   virtual void RhsPoint(Gascoigne::LocalVector& F, const FemInterface& FEM, const Vertex2d& v, int) const { assert(0);};
   virtual void RhsPoint(Gascoigne::LocalVector& F, const FemInterface& FEM, const Vertex3d& v, int) const { assert(0);};
+  virtual double MeanMatrix(EntryMatrix& E, const FemInterface& FEM) const { assert(0);};
 };
 
 

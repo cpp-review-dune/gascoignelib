@@ -17,7 +17,6 @@ protected:
 
   void Transformation(FemInterface::Matrix& T, int iq) const;
 
-  virtual double compute_element_mean_matrix(int iq, EntryMatrix& E) const;
   int RhsPoint(Gascoigne::GlobalVector& f, const Vertex2d& p0, int comp, double d) const;
   int RhsPoint(Gascoigne::GlobalVector& f, const Vertex3d& p0, int comp, double d) const;
   virtual nmatrix<double> GetLocalInterpolationWeights() const { assert(0);}

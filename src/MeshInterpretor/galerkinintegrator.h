@@ -57,6 +57,7 @@ public:
 
   void RhsNeumann(const NeumannData& RHS, Gascoigne::LocalVector& F, const FemInterface& FEM, int ile, int col, const Gascoigne::LocalData& Q) const;
 
+  double MeanMatrix(EntryMatrix& E, const FemInterface& FEM) const;
 };
 
 

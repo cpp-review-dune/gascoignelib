@@ -198,12 +198,4 @@ void Q1::MassMatrix(MatrixInterface& A) const
   HN->MatrixDiag(1,A);  
 }
 
-/* ----------------------------------------- */
-
-double Q1::PressureFilter(nvector<double>& PF) const
-{
-  assert(0);
-}
-
-/* ----------------------------------------- */
-
+/*----------------------------------------------*/

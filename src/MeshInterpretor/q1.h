@@ -21,8 +21,8 @@ protected:
   HNStructureInterface*    HN;
 
   nvector<int> GetLocalIndices(int iq) const;
- void LocalToGlobal(MatrixInterface& A, EntryMatrix& E, int iq, double s) const;
-
+  void LocalToGlobal(MatrixInterface& A, EntryMatrix& E, int iq, double s) const;
+  
   virtual HNStructureInterface* NewHNStructure()=0;
 
 public:
@@ -47,7 +47,6 @@ public:
   bool HNZeroCheck (const Gascoigne::GlobalVector& x) const;
   void Matrix(MatrixInterface& A, const Gascoigne::GlobalVector& u, const Equation& EQ, double d) const;
   void MassMatrix(MatrixInterface& A) const;
-  double PressureFilter(nvector<double>& PF) const;
   void Structure(SparseStructureInterface* SI) const;
 };
 
