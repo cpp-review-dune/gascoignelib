@@ -373,8 +373,6 @@ public:
   
   void inverse2()
     {
-      T idet = 1./det();
-
       T a = value(0,0);
       T b = value(0,1);
       T c = value(1,0);
@@ -382,8 +380,9 @@ public:
       value(0,0) = d;
       value(0,1) = -b;
       value(1,0) = -c;
-      value(1,1) = d;
+      value(1,1) = a;
 
+      T idet = 1./(a*d-b*c);
       *this *= idet;
     }
 
