@@ -46,7 +46,7 @@ class LocalDragFunctional : public virtual ResidualFunctional
   LocalDragFunctional() : ResidualFunctional()
     {
       _comp = 0;
-      _col.insert(1);
+      _col.insert(9);
       _scale = 1;
       ExactValue() = 1./8.;
       beautifulname = "LocalDrag";
