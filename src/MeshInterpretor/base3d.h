@@ -18,7 +18,7 @@ class Base3d : public Base
   
   Base3d()  {}
   const Vertex3d&  normal () const {return bn;}
-  const Vertex3d&  tangent() const {std::cerr << "Base3d::tangent() not written!" << std::endl; assert(0);}
+  const Vertex3d&  tangent() const {return bt;}
 
   void point_boundary(int ie, const Vertex2d& s1) const
     {
