@@ -97,7 +97,7 @@ class Equation
 
   virtual IntSet GetBoundaryColors() const { return IntSet();}
 
-  virtual void SetParameterData(const Gascoigne::LocalData& q) const { }
+  virtual void SetParameterData(Gascoigne::LocalData& q) const { }
 
   //
   // ---------------------------------------------

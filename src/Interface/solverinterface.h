@@ -62,12 +62,12 @@ class SolverInterface
 
   virtual void VisuGrid(const std::string& name, int i) const {assert(0);}
 
-  virtual void AddNodeVector(const Gascoigne::GlobalVector* q) {assert(0);}
-  virtual void AddCellVector(const Gascoigne::GlobalVector* q) {assert(0);}
-  virtual void AddParameterVector(const Gascoigne::GlobalVector* q) {assert(0);}
-  virtual void DeleteNodeVector(const Gascoigne::GlobalVector* q)  {assert(0);}
-  virtual void DeleteCellVector(const Gascoigne::GlobalVector* q) {assert(0);}
-  virtual void DeleteParameterVector(const Gascoigne::GlobalVector* q) {assert(0);}
+  virtual void AddNodeVector(const std::string&, const Gascoigne::GlobalVector* q) {assert(0);}
+  virtual void AddCellVector(const std::string&, const Gascoigne::GlobalVector* q) {assert(0);}
+  virtual void AddParameterVector(const std::string&, const Gascoigne::GlobalVector* q) {assert(0);}
+  virtual void DeleteNodeVector(const std::string&)  {assert(0);}
+  virtual void DeleteCellVector(const std::string&) {assert(0);}
+  virtual void DeleteParameterVector(const std::string&) {assert(0);}
 
   //
   /// vector - manamgement

@@ -12,6 +12,8 @@
 /////////////////////////////////////////////
 
 #include  <set>
+#include  <map>
+#include  <string>
 #include  "compvector.h"
 #include  "derivativevector.h"
 
@@ -26,17 +28,17 @@ namespace Gascoigne
 
   typedef std::set<int>              IntSet;  
 
-//   typedef std::set<const NodeVector*>  GlobalNodeData;
-//   typedef std::set<const CellVector*>  GlobalCellData;
-//   typedef std::set<const ParameterVector*>  GlobalParameterData;
-  typedef std::set<const GlobalVector*>  GlobalNodeData;
-  typedef std::set<const GlobalVector*>  GlobalCellData;
-  typedef std::set<const GlobalVector*>  GlobalParameterData;
+//   typedef std::map<const std::string,const NodeVector*>  GlobalNodeData;
+//   typedef std::map<const std::string,const CellVector*>  GlobalCellData;
+//   typedef std::map<const std::string,const ParameterVector*>  GlobalParameterData;
+  typedef std::map<const std::string,const GlobalVector*>  GlobalNodeData;
+  typedef std::map<const std::string,const GlobalVector*>  GlobalCellData;
+  typedef std::map<const std::string,const GlobalVector*>  GlobalParameterData;
 
-  typedef std::vector<LocalVector>       LocalData;
-  typedef CompVector<double>::iterator   VectorIterator;
-  typedef std::vector<DerivativeVector>  FemFunction;
-  typedef std::vector<FemFunction>       FemData;
+  typedef std::map<const std::string,LocalVector>       LocalData;
+  typedef CompVector<double>::iterator                  VectorIterator;
+  typedef std::vector<DerivativeVector>                 FemFunction;
+  typedef std::map<const std::string,FemFunction>       FemData;
 
   typedef  DerivativeVector  TestFunction;
 };

@@ -170,23 +170,23 @@ class StdSolver : public virtual SolverInterface
   
   bool DirectSolver() const {return _directsolver;}
 
-  void AddNodeVector(const Gascoigne::GlobalVector* q) {
-    GetMeshInterpretor()->AddNodeVector(q);
+  void AddNodeVector(const std::string& name, const Gascoigne::GlobalVector* q) {
+    GetMeshInterpretor()->AddNodeVector(name,q);
   }
-  void AddCellVector(const Gascoigne::GlobalVector* q) {
-    GetMeshInterpretor()->AddCellVector(q);
+  void AddCellVector(const std::string& name, const Gascoigne::GlobalVector* q) {
+    GetMeshInterpretor()->AddCellVector(name,q);
   }
-  void AddParameterVector(const Gascoigne::GlobalVector* q) {
-    GetMeshInterpretor()->AddParameterVector(q);
+  void AddParameterVector(const std::string& name, const Gascoigne::GlobalVector* q) {
+    GetMeshInterpretor()->AddParameterVector(name,q);
   }
-  void DeleteNodeVector(const Gascoigne::GlobalVector* q)  {
-    GetMeshInterpretor()->DeleteNodeVector(q);
+  void DeleteNodeVector(const std::string& name)  {
+    GetMeshInterpretor()->DeleteNodeVector(name);
   }
-  void DeleteCellVector(const Gascoigne::GlobalVector* q) {
-    GetMeshInterpretor()->DeleteCellVector(q);
+  void DeleteCellVector(const std::string& name) {
+    GetMeshInterpretor()->DeleteCellVector(name);
   }
-  void DeleteParameterVector(const Gascoigne::GlobalVector* q) {
-    GetMeshInterpretor()->DeleteParameterVector(q);
+  void DeleteParameterVector(const std::string& name) {
+    GetMeshInterpretor()->DeleteParameterVector(name);
   }
 
   void OutputSettings() const;

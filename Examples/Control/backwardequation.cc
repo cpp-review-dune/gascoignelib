@@ -30,7 +30,7 @@ void BackwardEquation::SetTimePattern(TimePattern& P) const
 void BackwardEquation::point(double h, const FemFunction& U, FemData& Q, const Vertex2d& v) const
 {
   assert(Q.size()==1);
-  q = &Q[0];
+  q = &Q["u"];
 }
 
 /* ----------------------------------------- */

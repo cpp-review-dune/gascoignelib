@@ -38,7 +38,7 @@ public:
   std::string GetName() const { return "Local";}
   int GetNcomp() const {return 1;}  
 
-  void SetFemData(const Gascoigne::FemData& Q) const;
+  void SetFemData(Gascoigne::FemData& Q) const;
   double operator()(int c, const Vertex2d& v) const;
 };
 

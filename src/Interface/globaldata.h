@@ -16,7 +16,7 @@
 namespace Gascoigne{
 class GlobalData
 {
-public:
+ public:
 
   Gascoigne::GlobalNodeData      _node;
   Gascoigne::GlobalCellData      _cell;
@@ -29,35 +29,52 @@ public:
   GlobalData() {}
   ~GlobalData() {}
 
-  void AddNodeVector(const Gascoigne::GlobalVector* d) {
+  void AddNodeVector(const std::string& name, const Gascoigne::GlobalVector* d) {
     const Gascoigne::GlobalVector* nd = dynamic_cast<const Gascoigne::GlobalVector*>(d);
     assert(nd!=NULL);
-    _node.insert(nd);
+    if(!_node.insert(std::make_pair(name,nd)).second)
+    {
+      std::cerr << "NodeVector \"" << name << "\" already added" << std::endl;
+    }
   }
-  void AddCellVector(const Gascoigne::GlobalVector* d) {
+  
+  void AddCellVector(const std::string& name, const Gascoigne::GlobalVector* d) {
     const Gascoigne::GlobalVector* nd = dynamic_cast<const Gascoigne::GlobalVector*>(d);
     assert(nd!=NULL);
-    _cell.insert(nd);
+    if(!_cell.insert(std::make_pair(name,nd)).second)
+    {
+      std::cerr << "CellVector \"" << name << "\" already added" << std::endl;
+    }
   }
-  void AddParameterVector(const Gascoigne::GlobalVector* d) {
+  
+  void AddParameterVector(const std::string& name, const Gascoigne::GlobalVector* d) {
     const Gascoigne::GlobalVector* nd = dynamic_cast<const Gascoigne::GlobalVector*>(d);
     assert(nd!=NULL);
-    _parameter.insert(nd);
+    if(!_parameter.insert(std::make_pair(name,nd)).second)
+    {
+      std::cerr << "ParameterVector \"" << name << "\" already added" << std::endl;
+    }
   }
-  void DeleteNodeVector(const Gascoigne::GlobalVector* d) {
-    const Gascoigne::GlobalVector* nd = dynamic_cast<const Gascoigne::GlobalVector*>(d);
-    assert(nd!=NULL);
-    _node.erase(nd);
+  
+  void DeleteNodeVector(const std::string& name) {
+    if(!_node.erase(name))
+    {
+      std::cerr << "NodeVector \"" << name << "\" cannot be deleted" << std::endl;
+    }
   }
-  void DeleteCellVector(const Gascoigne::GlobalVector* d) {
-    const Gascoigne::GlobalVector* nd = dynamic_cast<const Gascoigne::GlobalVector*>(d);
-    assert(nd!=NULL);
-    _cell.erase(nd);
+  
+  void DeleteCellVector(const std::string& name) {
+    if(!_cell.erase(name))
+    {
+      std::cerr << "NodeVector \"" << name << "\" cannot be deleted" << std::endl;
+    }
   }
-  void DeleteParameterVector(const Gascoigne::GlobalVector* d) {
-    const Gascoigne::GlobalVector* nd = dynamic_cast<const Gascoigne::GlobalVector*>(d);
-    assert(nd!=NULL);
-    _parameter.erase(nd);
+  
+  void DeleteParameterVector(const std::string& name) {
+    if(!_parameter.erase(name))
+    {
+      std::cerr << "NodeVector \"" << name << "\" cannot be deleted" << std::endl;
+    }
   }
 
   const Gascoigne::GlobalNodeData& GetNodeData() const {return _node;}

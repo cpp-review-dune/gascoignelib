@@ -39,8 +39,8 @@ public:
   virtual void SetTime(double time) const { _time = time;}
   virtual void SetTime(double time, double dt) const { _time = time; _dt = dt;}
 
-  virtual void SetFemData(const Gascoigne::FemData& q) const {}
-  virtual void SetParameterData(const Gascoigne::LocalData& q) const {}
+  virtual void SetFemData(Gascoigne::FemData& q) const {}
+  virtual void SetParameterData(Gascoigne::LocalData& q) const {}
 
   virtual int GetNcomp() const {assert(0);}
 

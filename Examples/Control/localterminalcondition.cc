@@ -6,10 +6,10 @@ using namespace Gascoigne;
 
 /* ----------------------------------------- */
 
-void LocalTerminalCondition::SetFemData(const FemData& Q) const
+void LocalTerminalCondition::SetFemData(FemData& Q) const
 {
   assert(Q.size()==1);
-  q = &Q[0];
+  q = &Q["u"];
 }
 
 /* ----------------------------------------- */

@@ -35,6 +35,7 @@ public:
   void BasicInit(const Gascoigne::ParamFile* paramfile);
 
   void AddNodeVector(std::string filename);
+  void DeleteNodeVector();
   void NewMesh(const ProblemDescriptorInterface* PD);
 
   void ReInit(const ProblemDescriptorInterface* PD);

@@ -20,14 +20,11 @@ BasicMeshInterpretor::~BasicMeshInterpretor()
 void BasicMeshInterpretor::GlobalToLocalData(int iq) const
 {
   const GlobalNodeData& gd = GetGlobalData().GetNodeData();
+  __Q.clear();
   GlobalNodeData::const_iterator p=gd.begin();
-  __Q.resize(gd.size());
-  int i=0;
-  assert(gd.size()==__Q.size());
   for(; p!=gd.end(); p++)
     {
-      const GlobalVector& q=**p;
-      GlobalToLocalSingle(__Q[i++],q,iq);
+      GlobalToLocalSingle(__Q[p->first],*p->second,iq);
     }
 }
 
@@ -36,15 +33,11 @@ void BasicMeshInterpretor::GlobalToLocalData(int iq) const
 void BasicMeshInterpretor::GlobalToGlobalData() const
 {
   const GlobalParameterData& gd = GetGlobalData().GetParameterData();
+  __q.clear();
   GlobalParameterData::const_iterator p=gd.begin();
-  __q.resize(gd.size());
-  int i=0;
-  assert(gd.size()==__q.size());
   for(; p!=gd.end(); p++)
     {
-      const GlobalVector& q=**p;
-      __q[i].ReInit(q.ncomp(),q.size());
-      __q[i++] = q;
+      __q.insert(make_pair(p->first,*p->second));
     }
 }
 

@@ -53,7 +53,8 @@ void LocalLoop::run()
 	  MP->GetSolver(l)->ResizeVector(&dat[l],"");
  	  MP->Transfer(l+1,dat[l],dat[l+1]);
 	}
-      MP->GetSolver(l)->AddNodeVector(&dat[l]);
+        
+      MP->GetSolver(l)->AddNodeVector("beta",&dat[l]);
     }
 
   MP->GetSolver()->OutputSettings();

@@ -49,12 +49,12 @@ public:
 
   virtual std::string GetName() const=0;
 
-  virtual void AddNodeVector(const Gascoigne::GlobalVector* q) const {__q.AddNodeVector(q);}
-  virtual void DeleteNodeVector(const Gascoigne::GlobalVector* q) const {__q.DeleteNodeVector(q);}
-  virtual void AddCellVector(const Gascoigne::GlobalVector* q) const {__q.AddCellVector(q);}
-  virtual void DeleteCellVector(const Gascoigne::GlobalVector* q) const {__q.DeleteCellVector(q);}
-  virtual void AddParameterVector(const Gascoigne::GlobalVector* q) const {__q.AddParameterVector(q);}
-  virtual void DeleteParameterVector(const Gascoigne::GlobalVector* q) const {__q.DeleteParameterVector(q);}
+  virtual void AddNodeVector(const std::string& name, const Gascoigne::GlobalVector* q) const {__q.AddNodeVector(name,q);}
+  virtual void DeleteNodeVector(const std::string& name) const {__q.DeleteNodeVector(name);}
+  virtual void AddCellVector(const std::string& name, const Gascoigne::GlobalVector* q) const {__q.AddCellVector(name,q);}
+  virtual void DeleteCellVector(const std::string& name) const {__q.DeleteCellVector(name);}
+  virtual void AddParameterVector(const std::string& name, const Gascoigne::GlobalVector* q) const {__q.AddParameterVector(name,q);}
+  virtual void DeleteParameterVector(const std::string& name) const {__q.DeleteParameterVector(name);}
 
   virtual void BasicInit(const Gascoigne::ParamFile* pf)=0;
   virtual void ReInit   (const MeshInterface* M) { assert(0);};
