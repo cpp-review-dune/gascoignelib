@@ -22,8 +22,8 @@ protected:
 
   const FemInterface* GetFem() const {assert(__FEM); return __FEM;}
   const IntegratorInterface* GetIntegrator() const {assert(__INT); return __INT;}
-  IntegratorInterface*& GetIntegratorPointer() {assert(__INT); return __INT;}
-  FemInterface*& GetFemPointer() {assert(__FEM); return __FEM;}
+  IntegratorInterface*& GetIntegratorPointer() {return __INT;}
+  FemInterface*& GetFemPointer() {return __FEM;}
 
   void Transformation(FemInterface::Matrix& T, int iq) const;
 
