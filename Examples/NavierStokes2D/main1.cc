@@ -4,6 +4,9 @@
 #include  "meshagent.h"
 #include  "boundaryfunction.h"
 
+using namespace std;
+using namespace Gascoigne;
+
 /* ----------------------------------------- */
 class RunderKreis : public BoundaryFunction<2>
 {
