@@ -148,6 +148,7 @@ void StdTimeLoop::run(const ProblemDescriptorInterface* PD)
   
   DoubleVector eta;
   
+  GetSolverInfos()->GetNLInfo().control().matrixmustbebuild() = 1;
   GetMultiLevelSolver()->ReInit(*PD);
   
   cout << "\nMesh [l,nn,nc]: ";
