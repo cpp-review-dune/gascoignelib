@@ -4,6 +4,8 @@
 #include "integratorq1q2.h"
 #include <ext/hash_set>
 
+using namespace std;
+
 namespace Gascoigne
 {
 
@@ -45,6 +47,42 @@ void DwrFem2d::TransformationQ1(FemInterface::Matrix& T, int iq) const
       T(0,ii) = v.x();               
       T(1,ii) = v.y();
     }
+}
+
+/*---------------------------------------------------*/
+
+void DwrFem2d::DiracRhsPoint(GlobalVector& f,const DiracRightHandSide& DRHS,const Vertex2d& p0,int i,double s) const
+{
+  __F.ReInit(f.ncomp(),GetFem()->n());
+
+  Vertex2d Tranfo_p0;
+   
+  int iq = GetPatchNumber(p0,Tranfo_p0);
+  if (iq==-1)
+    {
+      cerr << "DwrFem2d::DiracRhsPoint point not found\n";
+      abort();
+    }
+
+  nmatrix<double> TH,TL;
+
+  Transformation  (TH,iq);
+  TransformationQ1(TL,iq);
+
+  const FemInterface& HighOrderFem(*GetFem());
+
+  HighOrderFem.ReInit(TH);
+  LowOrderFem .ReInit(TL);
+  
+  const IntegratorQ1Q2<2>* I = dynamic_cast<const IntegratorQ1Q2<2>*>(GetIntegrator());
+  assert(I);
+  
+  GlobalToLocalData(iq);
+  GlobalToGlobalData();
+  DRHS.SetParameterData(__qq);
+
+  I->DiracRhsPoint(__F,HighOrderFem,LowOrderFem,Tranfo_p0,DRHS,i,__Q);
+  PatchDiscretization::LocalToGlobal(f,__F,iq,s);
 }
 
 /*---------------------------------------------------*/

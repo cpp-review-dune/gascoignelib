@@ -34,8 +34,8 @@ class IntegratorQ1Q2 : public BasicIntegrator
       int ile, int col, const LocalNodeData& Q) const;
   void BoundaryForm(const BoundaryEquation& BE, LocalVector& F, const FemInterface& FemH, const FemInterface& FemL, 
       const LocalVector& U, int ile, int col, LocalNodeData& Q) const;
-  void DiracRhsPoint(LocalVector& b, const FemInterface& E, const Vertex<DIM>& p, const DiracRightHandSide& DRHS, 
-      int i, const LocalNodeData& Q) const;
+  void DiracRhsPoint(LocalVector& b, const FemInterface& FemH, const FemInterface& FemL, const Vertex<DIM>& p, 
+      const DiracRightHandSide& DRHS, int j, const LocalNodeData& Q) const;
 };
 
 }

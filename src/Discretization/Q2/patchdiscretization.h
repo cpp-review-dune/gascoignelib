@@ -52,6 +52,9 @@ protected:
   double ComputePointValue(const GlobalVector& u, const Vertex2d& p0,int comp) const;
   double ComputePointValue(const GlobalVector& u, const Vertex3d& p0,int comp) const; 
 
+  virtual void DiracRhsPoint(GlobalVector& f,const DiracRightHandSide& DRHS,const Vertex2d& p0,int i,double s) const;
+  virtual void DiracRhsPoint(GlobalVector& f,const DiracRightHandSide& DRHS,const Vertex3d& p0,int i,double s) const;
+
 public:
 
 //
@@ -73,8 +76,6 @@ public:
 
   void Rhs(GlobalVector& f, const DomainRightHandSide& RHS, double s) const;
   void DiracRhs(GlobalVector& f, const DiracRightHandSide& DRHS, double s) const;
-  void DiracRhsPoint(GlobalVector& f,const DiracRightHandSide& DRHS,const Vertex2d& p0,int i,double s) const;
-  void DiracRhsPoint(GlobalVector& f,const DiracRightHandSide& DRHS,const Vertex3d& p0,int i,double s) const;
   
   void BoundaryRhs(GlobalVector& f, const IntSet& Colors,  const BoundaryRightHandSide& NRHS, double s) const;
 

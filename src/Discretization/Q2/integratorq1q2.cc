@@ -230,19 +230,26 @@ void IntegratorQ1Q2<DIM>::BoundaryForm(const BoundaryEquation& BE, LocalVector& 
 /*---------------------------------------------------*/
 
 template<int DIM>
-void IntegratorQ1Q2<DIM>::DiracRhsPoint(LocalVector& b, const FemInterface& E, const Vertex<DIM>& p, const DiracRightHandSide& DRHS, int j, const LocalNodeData& Q) const
+void IntegratorQ1Q2<DIM>::DiracRhsPoint(LocalVector& b, const FemInterface& FemH, const FemInterface& FemL, 
+    const Vertex<DIM>& p, const DiracRightHandSide& DRHS, int j, const LocalNodeData& Q) const
 {
+  assert(FemH.n()==FemL.n());
   b.zero();
 
+  IntegrationFormulaInterface* IF;
+  if (DIM==2) IF = new PatchFormula2d<9,QuadGauss9>;
+  else        IF = new PatchFormula3d<27,HexGauss27>;
+
   Vertex<DIM> x;
-  E.point(p);     
-  E.x(x);
-  BasicIntegrator::universal_point(E,QH,Q);
+  FemH.point(p);
+  FemL.point(p);
+  FemL.x(x);
+  BasicIntegrator::universal_point(FemL,QH,Q);
   DRHS.SetFemData(QH);
 
-  for (int i=0; i<E.n(); i++)
+  for (int i=0; i<FemH.n(); i++)
     {
-      E.init_test_functions(NN,1.,i);
+      FemH.init_test_functions(NN,1.,i);
       DRHS.operator()(j,b.start(i),NN,x);
     }
 }

@@ -21,6 +21,8 @@ class DwrFem2d : public Q22d
   FiniteElement<2,1,TransQ1,BaseQ12dPatch>   LowOrderFem;
   
   void TransformationQ1(FemInterface::Matrix& T, int iq) const;
+  
+  void DiracRhsPoint(GlobalVector& f,const DiracRightHandSide& DRHS,const Vertex2d& p0,int i,double s) const;
 
  public:
 
@@ -45,6 +47,8 @@ class DwrFem3d : public Q23d
   FiniteElement<3,2,TransQ1,BaseQ13dPatch>   LowOrderFem;
   
   void TransformationQ1(FemInterface::Matrix& T, int iq) const;
+  
+  void DiracRhsPoint(GlobalVector& f,const DiracRightHandSide& DRHS,const Vertex3d& p0,int i,double s) const;
 
  public:
 
