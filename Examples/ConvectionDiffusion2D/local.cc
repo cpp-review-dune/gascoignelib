@@ -8,7 +8,7 @@ using namespace Gascoigne;
 
 /*-------------------------------------------------*/
 
-void LocalLoop::run2(const ProblemDescriptorInterface* PD)
+void LocalLoop::run(const ProblemDescriptorInterface* PD)
 {
   _iter=1;
   
