@@ -1,5 +1,5 @@
-#ifndef  __RightHandSideDataByEquation_h
-#define  __RightHandSideDataByEquation_h
+#ifndef  __RightHandSideByEquation_h
+#define  __RightHandSideByEquation_h
 
 #include  "domainrighthandside.h"
 #include  "exactsolution.h"
@@ -10,7 +10,7 @@
 
 namespace Gascoigne
 {
-class RightHandSideDataByEquation : public DomainRightHandSide
+class RightHandSideByEquation : public DomainRightHandSide
 {
 protected:
 
@@ -19,10 +19,10 @@ protected:
 
 public:
 
-  RightHandSideDataByEquation(const Equation* eq, const ExactSolution* es)
+  RightHandSideByEquation(const Equation* eq, const ExactSolution* es)
     : DomainRightHandSide(), _EQ(eq), _ES(es) { assert(es); assert(eq);}
   
-  std::string GetName() const { return "RightHandSideDataByEquation";} 
+  std::string GetName() const { return "RightHandSideByEquation";} 
   int GetNcomp() const { return _EQ->GetNcomp();}
 
   double operator()(int c, const Vertex2d& v)const 

@@ -4,7 +4,7 @@
 #include  "domainmeanfunctional.h"
 #include  "equation.h"
 #include  "dirichletdatabyexactsolution.h"
-#include  "righthandsidedatabyequation.h"
+#include  "righthandsidebyequation.h"
 #include  "meshagent.h"
 #include  "problemdescriptorbase.h"
 
@@ -66,7 +66,7 @@ class ProblemDescriptor : public ProblemDescriptorBase
   void BasicInit(const ParamFile* pf) {
     GetEquationPointer() = new LocalEquation;
     GetExactSolutionPointer() = new LocalExactSolution();
-    GetRightHandSideDataPointer() = new RightHandSideDataByEquation(GetEquation(), GetExactSolution());
+    GetRightHandSidePointer() = new RightHandSideByEquation(GetEquation(), GetExactSolution());
     GetDirichletDataPointer() = new DirichletDataByExactSolution(GetExactSolution());
 
     GetBoundaryManagerPointer() = new BoundaryManager(pf);

@@ -846,7 +846,7 @@ void StdSolver::Rhs(GlobalVector& f, double d) const
 {
   HNAverageData();
 
-  const Application* RHS  = GetProblemDescriptor()->GetRightHandSideData();
+  const Application* RHS  = GetProblemDescriptor()->GetRightHandSide();
   const BoundaryRightHandSide* NRHS = GetProblemDescriptor()->GetBoundaryRightHandSide();
 
   if(RHS)

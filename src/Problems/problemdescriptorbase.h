@@ -30,7 +30,7 @@ class ProblemDescriptorBase : public ProblemDescriptorInterface
   Equation*& GetEquationPointer() { return EQ;}
   BoundaryManager*& GetBoundaryManagerPointer() { return BM;}
   ExactSolution*& GetExactSolutionPointer() { return ES;}
-  Application*& GetRightHandSideDataPointer() { return RHS;}
+  Application*& GetRightHandSidePointer() { return RHS;}
   Application*& GetInitialConditionPointer() { return IC;}
   DirichletData*& GetDirichletDataPointer() { return DD;}
   BoundaryRightHandSide*& GetBoundaryRightHandSidePointer() { return BRHS;}
@@ -78,7 +78,7 @@ class ProblemDescriptorBase : public ProblemDescriptorInterface
   
   const ParamFile* GetParamFile() const {return _paramfile;}
 
-  const Application*           GetRightHandSideData    () const { return  RHS;}
+  const Application*           GetRightHandSide        () const { return  RHS;}
   const DirichletData*         GetDirichletData        () const { return  DD;}
   const BoundaryRightHandSide* GetBoundaryRightHandSide() const { return  BRHS;}
   const BoundaryEquation*      GetBoundaryEquation     () const { return  BE;}

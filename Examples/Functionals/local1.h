@@ -4,7 +4,7 @@
 #include  "problemdescriptorbase.h"
 #include  "laplace2d.h"
 #include  "dirichletdatabyexactsolution.h"
-#include  "righthandsidedatabyequation.h"
+#include  "righthandsidebyequation.h"
 #include  "dirichletdatabycolor.h"
 #include  "pointfunctional.h"
 #include  "residualfunctional.h"
@@ -32,7 +32,7 @@ class ProblemDescriptor : public Gascoigne::ProblemDescriptorBase
   void BasicInit(const Gascoigne::ParamFile* pf) {
     GetEquationPointer() = new Gascoigne::Laplace2d;
     GetExactSolutionPointer() = new PolynomialExactSolution();
-    GetRightHandSideDataPointer() = new Gascoigne::RightHandSideDataByEquation(GetEquation(), GetExactSolution());
+    GetRightHandSidePointer() = new Gascoigne::RightHandSideByEquation(GetEquation(), GetExactSolution());
     GetDirichletDataPointer() = new Gascoigne::DirichletDataByExactSolution(GetExactSolution());
     
     ProblemDescriptorBase::BasicInit(pf);

@@ -4,7 +4,7 @@
 #include  "problemdescriptorbase.h"
 #include  "laplace3d.h"
 #include  "dirichletdatabyexactsolution.h"
-#include  "righthandsidedatabyequation.h"
+#include  "righthandsidebyequation.h"
 #include  "residualfunctional.h"
 #include  "dirichletdatabycolor.h"
 #include  "domainmeanfunctional.h"
@@ -36,7 +36,7 @@ class ProblemDescriptor : public Gascoigne::ProblemDescriptorBase
     GetParamFilePointer() = pf;
     GetEquationPointer() = new Gascoigne::Laplace3d(GetParamFile());
     GetExactSolutionPointer() = new PolynomialExactSolution();
-    GetRightHandSideDataPointer() = new Gascoigne::RightHandSideDataByEquation(GetEquation(), GetExactSolution());
+    GetRightHandSidePointer() = new Gascoigne::RightHandSideByEquation(GetEquation(), GetExactSolution());
     GetDirichletDataPointer() = new Gascoigne::DirichletDataByExactSolution(GetExactSolution());
     
     ProblemDescriptorBase::BasicInit(pf);
