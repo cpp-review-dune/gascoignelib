@@ -17,8 +17,7 @@ ostream& operator<<(ostream &s, const HangList<N>& A)
   s << A.size() << " hangs" << endl;
   typename HANGMAP::const_iterator p = A.begin();
   
-  for (typename HANGMAP::const_iterator
-	 p = A.begin(); p!=A.end(); p++)
+  for (p = A.begin(); p!=A.end(); p++)
     {
       s << p->first << "-> " << p->second;
     }

@@ -187,8 +187,9 @@ bool StreamDirection::operator()(int i,int j) const
       double n  = sqrt(a[0]*a[0]+a[1]*a[1])*sqrt(X(i,dx)*X(i,dx)+X(i,dy)*X(i,dy));
       return (sc>0.75*n);
     }
-  if (dimension==3)
+  else
     {
+      assert(dimension==3);
       numfixarray<3,double> a = M->vertex3d(j)-M->vertex3d(i);
       double sc = a[0]*X(i,dx)+a[1]*X(i,dy)+a[2]*X(i,dz);
       double n  = sqrt(a[0]*a[0]+a[1]*a[1])*
@@ -212,8 +213,9 @@ double StreamDirection::est(int i,int j) const
       if (n<0.000001) return 0.51;
       return sc/n;
     }
-  if (dimension==3)
+  else
     {
+      assert(dimension==3);
       numfixarray<3,double> a = M->vertex3d(j)-M->vertex3d(i);
       double sc = a[0]*X(i,dx)+a[1]*X(i,dy)+a[2]*X(i,dz);
       double n  = sqrt(a[0]*a[0]+a[1]*a[1]+a[2]+a[3])*

@@ -62,15 +62,25 @@ bool GnuplotData::TestVertex(const Vertex3d& v) const
 
 double GnuplotData::SetVertex(const Vertex2d& v) const
 {
-  if (plane=="x") return v.y();
-  if (plane=="y") return v.x();
+  if      (plane=="x") return v.y();
+  else if (plane=="y") return v.x();
+  else 
+    {
+      assert(0);
+      return 0.;
+    }
 }
 
 double GnuplotData::SetVertex(const Vertex3d& v) const
 {
-  if (plane=="xz") return v.y();
-  if (plane=="yz") return v.x();
-  if (plane=="xy") return v.z();
+  if      (plane=="xz") return v.y();
+  else if (plane=="yz") return v.x();
+  else if (plane=="xy") return v.z();
+  else 
+    {
+      assert(0);
+      return 0.;
+    }
 }
 
 /********************************************************************/
