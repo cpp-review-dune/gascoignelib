@@ -151,8 +151,6 @@ bool LevelMesh2d::ConstructCellIndOfPatch(nvector<int>& dst) const
   while(pf!=Vaeter.end())
     {
       int findex = *pf;
-      const Quad& qf = HMP->quad(findex);
-
       dst[count] = findex;
      
       count++;
@@ -205,7 +203,6 @@ void LevelMesh2d::ConstructIndOfPatch(nvector<IntVector>& dst) const
 void LevelMesh2d::ConstructHangingStructureQuadratic(QuadraticHNStructure3& hnq2) const
 {
   hnq2.clear();
-  int count=0;
   set<int> habschon; 
   for (int i=0;i<ncells();i++)
     {
@@ -342,8 +339,6 @@ void LevelMesh2d::fill_enkel(IntSet& oldquads, const Quad& Q) const
 
 bool LevelMesh2d::EnkelUniform(const Quad& Q) const
 {
-  bool regular=1;
-  
   for (int ii=0; ii<Q.nchilds(); ii++)
     {
       int qccindex = Q.child(ii);
@@ -386,7 +381,6 @@ void LevelMesh2d::construct_lists(IntSet& newquads, IntSet& oldquads) const
     }
 
   // Iteration zum Regulaer machen (LevelJump)
-  int count = 0;
   while(1)
     {
       LevelJumper  Phi;

@@ -160,8 +160,6 @@ ReadBackUpBinary::ReadBackUpBinary(GlobalVector& u, const string& bname)
   
   assert(file);
 
-  int size, comp;
-
   u.BinRead(file);
 
   cout << "BackUp   : reading " << name << ", ";

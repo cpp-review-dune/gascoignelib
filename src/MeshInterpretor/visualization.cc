@@ -48,6 +48,8 @@ Visualization& Visualization::operator=(const Visualization& W)
   tstep     = W.tstep;
   nexttime  = W.nexttime;
   showoutput = W.showoutput;
+
+  return *this;
 }
 
 /********************************************************************/

@@ -51,7 +51,7 @@ void Visualization::vu(const string& bname) const
 
   if (PointData)
     {
-      int comp = CheckPointData();
+      CheckPointData();
       file << "SOLUTION Solution( ) =\n{\n";
       for(VisuDataInfo::siterator p=PointDataInfo->sbegin();p!=PointDataInfo->send();++p)
 	{

@@ -35,12 +35,12 @@ OptAdaptor::OptAdaptor
 
 void OptAdaptor::prepare()
 {
-  n_aimed = GascoigneMath::max_int(1,int(info.rfactor()*info.ncells()));
+  n_aimed = GascoigneMath::max_int(1,static_cast<int>(info.rfactor()*info.ncells()));
   n_aimed = GascoigneMath::min_int(info.maxnodes(),n_aimed);
 
   info.reset();
 
-  int alpha = int(pp+dd);
+  int alpha = static_cast<int>(pp+dd);
 
   info.eta() = eta.norm_l1();
 

@@ -126,6 +126,17 @@ void FileScanner::FormatToValue(const vector<string>& words)
       int value = atoi(words[1].c_str());
       DH.setvalue(keyword,value);
     }
+  else if (fo=="bool")
+    {
+      if(words[1]=="true" || words[1]=="1")
+        {
+          DH.setvalue(keyword,true);
+        }
+      else
+        {
+          DH.setvalue(keyword,false);
+        }
+    }
   else if (fo=="float")
     {
       float value = atof(words[1].c_str());

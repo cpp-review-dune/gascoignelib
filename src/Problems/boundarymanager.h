@@ -37,6 +37,7 @@ class BoundaryManager
 
   BoundaryManager() {}
   BoundaryManager(const Gascoigne::ParamFile* pf);
+  virtual ~BoundaryManager() {}
 
   virtual std::string GetName() const {return "Std";}
 

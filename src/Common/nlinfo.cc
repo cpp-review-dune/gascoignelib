@@ -12,7 +12,7 @@ ostream& operator<<(ostream &s, const NLStatisticData& A)
   s << "NLStatisticData\n";
   s << "newmatrix" <<"\t"<< A.newmatrix()<< endl;
   s << "totalmatrix" <<"\t"<< A.totalmatrix()<< endl;
-  s << (StatisticData) A;
+  s << static_cast<StatisticData>(A);
   return s;
 }
 
@@ -24,7 +24,7 @@ ostream& operator<<(ostream &s, const NLControlData& A)
   s << "relax" <<"\t"<< A.relax()<< endl;
   s << "newmatrix" <<"\t"<< A.newmatrix()<< endl;
   s << "laststepbad" <<"\t"<< A.laststepbad()<< endl;
-  s << (ControlData) A;
+  s << static_cast<ControlData>(A);
   return s;
 }
 
@@ -36,7 +36,7 @@ ostream& operator<<(ostream &s, const NLUserData& A)
   s << "rho" <<"\t"<< A.rho()<< endl;
   s << "linrho" <<"\t"<< A.linrho()<< endl;
   s << "maxrelax" <<"\t"<< A.maxrelax()<< endl;
-  s << (UserData) A;
+  s << static_cast<UserData>(A);
   return s;
 }
 
@@ -176,7 +176,7 @@ string NLInfo::check_damping(int dampit, double res)
  
 bool NLInfo::check(double resi, double cori)
 {
-  check(CD.iteration(),resi,cori);
+  return check(CD.iteration(),resi,cori);
 }
 
 /*******************************************************************/

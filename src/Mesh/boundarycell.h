@@ -49,7 +49,7 @@ class BoundaryCell : public Cell<N,NEDGES>
 	s << std::endl;*/
       return s;
     }
-  friend std::ostream& operator>>(std::istream &s, BoundaryCell& A)
+  friend std::istream& operator>>(std::istream &s, BoundaryCell& A)
     {
       std::string symbol;
       int n;
@@ -69,6 +69,8 @@ class BoundaryCell : public Cell<N,NEDGES>
 	}
       A.childs().resize(n);
       s >> A.childs();
+
+      return s;
     }
 };
 

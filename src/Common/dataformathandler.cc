@@ -238,6 +238,18 @@ void DataFormatHandler::setvalue(const string& name, int value)
     }  
 }
 
+void DataFormatHandler::setvalue(const string& name, bool value)
+{
+  TypeBool::const_iterator p;
+  p = TB.find(name);
+  if (p!=TB.end())
+    {
+      *(p->second) = value;
+      cout << *(p->second) << endl;
+      return;
+    }  
+}
+
 void DataFormatHandler::setvalue(const string& name, float value)
 {
   TypeFloat::const_iterator p;
@@ -380,7 +392,7 @@ string DataFormatHandler::search(string& fo, const string& name)
 
 void DataFormatHandler::get(string& f, const string& name)
 {
-  vector<string> s(13);
+  vector<string> s(14);
   s[0] = "string";
   s[1] = "integer";
   s[2] = "float";
@@ -394,6 +406,7 @@ void DataFormatHandler::get(string& f, const string& name)
   s[10] = "StringDouble";
   s[11] = "set<int>";
   s[12] = "fixarray<3,double>";
+  s[13] = "bool";
   f = "";
   for (int i=0; i<s.size(); i++)
     {

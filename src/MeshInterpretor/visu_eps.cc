@@ -27,7 +27,7 @@ void VisuEPS::SetOption(EPSOptions o, int v)
     {
       if (DOUBLEOPT.find(o)!=DOUBLEOPT.end()) 
 	{
-	  SetOption(o,(double) (v));
+	  SetOption(o,static_cast<double>(v));
 	  return;
 	}
       cerr << "void VisuEPS::SetOption(" << o << "," << v << ")!";
@@ -84,14 +84,11 @@ void VisuEPS::WriteGrid(string fname,int iter)
   compose_name(fname,iter);
   fname += ".eps";
 
-  int ncells = M->ncells();
-  int npatch = M->npatches();
 
   n_lines = 0;
   
   double x_max,x_min,y_max,y_min;
   double scale = 1;
-  double x1,x2,y1,y2;
   
   x_min=x_max = M->vertex2d(0).x();
   y_min=y_max = M->vertex2d(0).y();

@@ -51,6 +51,8 @@ HierarchicalMesh3d& HierarchicalMesh3d::operator=(const HierarchicalMesh3d& H)
   LineHang  = H.linehang();
   QuadHang  = H.quadhang();
   hexofcurved = H.GetHexOfCurved();
+
+  return *this;
 }
 
 /*------------------------------------------------------*/
@@ -574,7 +576,6 @@ void HierarchicalMesh3d::new_bquads(const IntVector& lo2n,
 
       int face = bqf.edge_in_quad();  // face index in hex
       int hexi = bqf.of_quad();       // hex index of father
-      int vm   = HexLaO.face_vertex(hex(hexi),face);
       FaceVector chvec;
       HexLaO.childs_of_face(chvec,hex(hexi),face);
 
@@ -954,7 +955,6 @@ nvector<int> HierarchicalMesh3d::Geschwister(const int i) const
 
 fixarray<4,int> HierarchicalMesh3d::ChildrenOfFace(int e) const
 {
-  int im = edge(e).LocalMasterIndex();
   int s  = edge(e).slave();
   int is = edge(e).LocalSlaveIndex();
 
@@ -1239,7 +1239,6 @@ void HierarchicalMesh3d::read_inp(const string& name)
   fixarray<2,int> ilv;
   int ih = 0;
   int iq = 0;
-  int il = 0;
   for(int i=0;i<nt;i++)
     {
       string name;	int unknown; string matstring;
@@ -1359,7 +1358,6 @@ void HierarchicalMesh3d::read_gup(const string& name)
   BoundaryQuad bol;
   for (int i=0; i<n; i++)
     {
-      int mat;
       file >> bol.material() >> bol;
       Bquads.push_back(bol);
     }
@@ -1513,7 +1511,6 @@ int HierarchicalMesh3d::regular_grid3d_two(IntVector& celllist,
 {
   /* detects more than 4 HangFaces on one Hex */
 
-  int nto = 0;
   IntVector nh(hexs.size());
   for (HangList<4>::const_iterator p = QuadHang.begin();
        p!=QuadHang.end(); p++)
@@ -1740,7 +1737,6 @@ void HierarchicalMesh3d::RefineCoarseNodes
       const Hex& Q = hexs[i];
       if (Q.sleep()) continue;
 
-      int level = Q.level();
       int f = Q.father();
       if (f<0)  continue;
 
@@ -1997,7 +1993,6 @@ void HierarchicalMesh3d::check_mesh3d() const
   for (HangList<4>::const_iterator  hp = QuadHang.begin(); hp!=QuadHang.end(); ++hp)
   {
     int cr = hp->second.rneighbour();
-    int cn = hp->second.cneighbour();
     if(cr==-1)
       {
 	cerr << "Refine Neighbour invalid in hang: ";

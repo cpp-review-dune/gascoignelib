@@ -27,6 +27,8 @@ Index& Index::operator=(const Index& I)
   hg2l  = I.Hexg2l();
   ql2g  = I.Quadl2g();
   qg2l  = I.Quadg2l();
+
+  return *this;
 }
 
 /*---------------------------------------------------*/

@@ -100,6 +100,7 @@ public:
 
   void setvalue(const std::string&, const std::string&);
   void setvalue(const std::string&, int);
+  void setvalue(const std::string&, bool);//neu
   void setvalue(const std::string&, float);
   void setvalue(const std::string&, double);
 

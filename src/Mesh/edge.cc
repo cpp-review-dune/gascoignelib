@@ -10,6 +10,8 @@ Edge& Edge::operator=(const Edge& e)
   c2 = e.slave();
   l1 = e.LocalMasterIndex();
   l2 = e.LocalSlaveIndex ();
+
+  return *this;
 }
 
 /*---------------------------------------------------*/
@@ -64,6 +66,8 @@ ostream& operator<<(ostream &s, const Edge& A)
 istream& operator>>(istream &s, Edge& A)
 {
   s >> A.master() >> A.LocalMasterIndex() >> A.slave() >> A.LocalSlaveIndex();
+
+  return s;
 }
 
 /*---------------------------------------------------*/

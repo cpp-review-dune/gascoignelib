@@ -17,6 +17,8 @@ ostream& SimpleMatrix::Write(ostream& os) const
 	}
       os << endl;
     }
+
+  return os;
 }
 
 /* ----------------------------------------- */

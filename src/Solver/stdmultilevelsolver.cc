@@ -493,10 +493,7 @@ void StdMultiLevelSolver::NewtonLinearSolve(MultiLevelGhostVector& x, const Mult
 
 double StdMultiLevelSolver::NewtonUpdate(double& rr, MultiLevelGhostVector& x, MultiLevelGhostVector& dx, MultiLevelGhostVector& r, const MultiLevelGhostVector& f, NLInfo& nlinfo)
 {
-  double r0 = rr;
   const CGInfo& linfo = nlinfo.GetLinearInfo();
-  bool nlok = !nlinfo.control().newmatrix();
-  bool lok  = linfo.control().status()=="converged";
   bool lex  = linfo.control().status()=="exploded";
 
   double nn = NewtonNorm(dx);

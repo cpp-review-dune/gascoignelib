@@ -130,7 +130,7 @@ inline double nvector<T>::norm() const
       n += ((*first)) * ((*first));
       first++;
     }
-  return sqrt((double)n);
+  return sqrt(static_cast<double>(n));
 }
 
 /**************************************************/

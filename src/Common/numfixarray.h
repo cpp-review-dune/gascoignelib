@@ -378,7 +378,7 @@ inline void numfixarray<N,T>::equ (double d, const numfixarray<N,T>& v,
   while(first != last)
     {
       (*first++) = d*(*first2++) + e*(*first3++) + f*(*first4++) + g*(*first5++) 
-		   + h*(*first5++) + i*(*first6++);
+		   + h*(*first6++) + i*(*first7++);
     }
 }
 

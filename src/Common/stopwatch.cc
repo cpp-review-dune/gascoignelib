@@ -27,7 +27,7 @@ double Time::GetTotalSeconds () const
 void Time::add(double s)
 {
   sec += s;
-  int su = int(sec)/60;
+  int su = static_cast<int>(sec)/60;
   
   sec -= 60.*su;
   min += su;
@@ -82,7 +82,7 @@ double StopWatch::stop()
 { 
   if (running) 
     {
-      double s = (double)(clock() - last_time) / (double)CLOCKS_PER_SEC;
+      double s = static_cast<double>(clock() - last_time) / static_cast<double>(CLOCKS_PER_SEC);
       add(s);
       running = 0;
     }

@@ -629,7 +629,6 @@ double StdSolver::ComputeResidualFunctional(GlobalVector& f, const GlobalVector&
 {
   const Equation* EQ = GetProblemDescriptor()->GetEquation();
   const BoundaryManager* BM = GetProblemDescriptor()->GetBoundaryManager();
-  const DirichletData* DD = GetProblemDescriptor()->GetDirichletData();
 
   HNAverage(u);
   f.zero();

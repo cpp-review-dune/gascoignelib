@@ -150,7 +150,7 @@ class fixarrayHash
 {
  public:
   template<int N, class T>
-    int operator()(const fixarray<N,T>& h) const { return (int) h[0];}
+    int operator()(const fixarray<N,T>& h) const { return static_cast<int>(h[0]);}
 };
 
 

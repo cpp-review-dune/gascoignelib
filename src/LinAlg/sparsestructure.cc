@@ -15,13 +15,15 @@ ostream& operator<<(ostream &s, const SparseStructure& A)
       s << i << " :: " << A.row(i)<<endl;
     }
   s << endl;
+
+  return s;
 }
 
 /*----------------------------------------------*/
 
 void SparseStructure::statistics(ostream &s) const
 {
-  s << n() << " " << ntotal() << "  " <<  ntotal()/(float) n();
+  s << n() << " " << ntotal() << "  " <<  ntotal()/static_cast<float>(n());
 }
 
 /*----------------------------------------------*/
@@ -32,8 +34,9 @@ SparseStructure& SparseStructure::operator=(const SparseStructure& A)
   sindices.resize (A.n());
   sntot = A.ntotal();
   sindices = A.indices();
-
   US = A.GetStencil();
+  
+  return *this;
 }
 
 /*----------------------------------------------*/

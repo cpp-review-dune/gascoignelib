@@ -57,7 +57,7 @@ public:
 	}
       else
 	{
-	  insert(std::make_pair(g,(Gascoigne::GlobalVector*) NULL));
+	  insert(std::make_pair(g,static_cast<Gascoigne::GlobalVector*>(NULL)));
 	}
     }
   void Delete(BasicGhostVector& mg) 

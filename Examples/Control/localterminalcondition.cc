@@ -18,7 +18,6 @@ double LocalTerminalCondition::operator()(int c, const Vertex2d& v) const
 {
   double x = v.x();
   double y = v.y();
-  double eps = 1.e-3;
 
   if(c==0)
     {

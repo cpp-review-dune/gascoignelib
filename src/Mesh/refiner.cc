@@ -88,9 +88,6 @@ void CircleRefiner::BuildCellList(vector<int>& dst)
 
 bool CylinderRefiner::QuadInCylinder(int q) const
 {
-  
-  int out=0;
-  int in=0;
   int i=0;
   double di[3];
   for (i=0; i<8; i++)
@@ -125,9 +122,6 @@ void CylinderRefiner::BuildCellList(vector<int>& dst)
 
 bool BallRefiner::QuadInBall(int q) const
 {
-  
-  int out=0;
-  int in=0;
   int i=0;
   double di[3];
   for (i=0; i<8; i++)

@@ -231,7 +231,6 @@ void FaceManager::SortHangings()
  
   int i=edges.size();
   while(EdgeIsHanging(i-1)) i--;
-  int nhedge = edges.size()-i;
 
   vector<int> permi(perm.size());
   for(int i=0;i<perm.size();i++) permi[perm[i]] = i;

@@ -231,7 +231,6 @@ int HexLawAndOrder::InnerEdge(const Hex& h, int i) const
 int HexLawAndOrder::GlobalInnerFace(int c, int i) const
 {
   const Hex& h = hexs[c];
-  int ic = h.child(i);
   int ie = InnerEdge(h,i);
   return h.edge(ie);
 }

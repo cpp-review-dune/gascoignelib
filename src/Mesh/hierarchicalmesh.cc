@@ -48,6 +48,8 @@ HierarchicalMesh& HierarchicalMesh::operator=(const HierarchicalMesh& H)
   edges     = H.edge();
   pdepth    = H.patchdepth();
   withfaces = H.withfaces;
+
+  return *this;
 }
 
 /*------------------------------------------------------*/
@@ -133,7 +135,7 @@ void HierarchicalMesh::global_refine(int k)
 void HierarchicalMesh::random_refine(double p, int c)
 {
   int nq = ncells();
-  int nc = 1+(int) (p*nq);      
+  int nc = 1+static_cast<int>(p*nq);      
   
   if (p<0) nc=0;
 
@@ -159,7 +161,7 @@ void HierarchicalMesh::random_refine(double p, int c)
 void HierarchicalMesh::random_patch_refine(double p, int c)
 {
   int nq = ncells();
-  int nc = 1+(int) (p*nq);      
+  int nc = 1+static_cast<int>(p*nq);      
 
   nc = GascoigneMath::min_int(nc,nq);
   if (p<0) nc=0;

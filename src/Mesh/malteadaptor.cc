@@ -149,7 +149,6 @@ void MalteAdaptor::refine_and_coarse(nvector<int>& ref, nvector<int>& coars) con
 
   sort(C.begin(),C.end(),CoC(eta));
   
-  double theta  = 0.;
   double minimum = 1.e10;
   double dx     = 1./n;
   int ixmin = 0;
@@ -163,7 +162,6 @@ void MalteAdaptor::refine_and_coarse(nvector<int>& ref, nvector<int>& coars) con
       g[i] = g[i-1] + eta[C[i]];
     }
   int iyopt = 0;
-  double dn = 1.-float(maxnodes)/N;
   int zeta = ppp+1;
   
   for (int ix=0; ix<n; ix++)
@@ -174,7 +172,7 @@ void MalteAdaptor::refine_and_coarse(nvector<int>& ref, nvector<int>& coars) con
       y = GascoigneMath::min(y,1.);
       y = GascoigneMath::max(y,0.);
       
-      int iy = int(y * n);
+      int iy = static_cast<int>(y * n);
       
       double thetax = g[ix];
       double thetay = g[GascoigneMath::min_int(n-iy,n-1)];

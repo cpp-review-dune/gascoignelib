@@ -29,7 +29,7 @@ public:
   /*
     Fonctions memoire
    */
-  void reservesize(size_t n, size_t m, T s = (T) 0.)
+  void reservesize(size_t n, size_t m, T s = static_cast<T>(0))
     {
       nn = n;
       mm = m;

@@ -51,7 +51,7 @@ inline int abs_int(int a)
 /* #endif */
 
 /* #ifndef FRAC */
-/* #define FRAC(x)  (fabs(x-int(x))) */
+/* #define FRAC(x)  (fabs(x-static_cast<int>(x))) */
 /* #endif */
 
 /* int ggt(int n1, int n2); */

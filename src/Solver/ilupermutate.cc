@@ -142,7 +142,6 @@ void StreamDirection::Permutate    (nvector<int> &perm)
   
   
   
-  int count=0;
   int index=0;
   set<int> start;
   for (int i=0;i<n;++i) if (prev[i]==-1)

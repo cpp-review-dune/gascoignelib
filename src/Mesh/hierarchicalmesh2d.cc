@@ -50,6 +50,8 @@ HierarchicalMesh2d& HierarchicalMesh2d::operator=(const HierarchicalMesh2d& H)
   LineHang  = H.linehang();
   // line shapes werden nicht kopiert sonst geht patchrefine in die britze
   quadofcurved = H.GetQuadOfCurved();
+
+  return *this;
 }
 
 /*------------------------------------------------------*/
@@ -203,7 +205,6 @@ nvector<int> HierarchicalMesh2d::Geschwister(const int i) const
 
 fixarray<2,int> HierarchicalMesh2d::ChildrenOfEdge(int e) const
 {
-  int im = edge(e).LocalMasterIndex();
   int s  = edge(e).slave();
   int is = edge(e).LocalSlaveIndex();
 
@@ -680,7 +681,6 @@ void HierarchicalMesh2d::new_vertexs2d(HangContainer2d& hangset,
 				     const IntSet& CellRefList)
 {
   int nv1 = CellRefList.size();
-  int nv2 = hangset.NToBeCreated();
 
   IntSetIt  cp=CellRefList.begin();
   for (int i=0; i<nv1; i++)
@@ -929,7 +929,6 @@ void HierarchicalMesh2d::check_mesh2d() const
   for (hp = LineHang.begin(); hp!=LineHang.end(); ++hp)
   {
     int cr = hp->second.rneighbour();
-    int cn = hp->second.cneighbour();
     assert(cr>=0);
   }
 }
@@ -1254,7 +1253,7 @@ pair<bool,triple<int,int,int> > HierarchicalMesh2d::check_inp(const string& name
     }
 
   bool first_one = 1;
-  int  nv, nl, nq, nh, nt;
+  int  nv, nl, nq, nt;
   int  n_unkonwn;
   file >> nv >> nt >> n_unkonwn >> n_unkonwn >> n_unkonwn;
 
@@ -1318,7 +1317,6 @@ void HierarchicalMesh2d::read_inp(const string& name)
 
   int nl = n.first;
   int nq = n.second;
-  int nh = n.third;
 
   ifstream file(name.c_str());
   if(!file.is_open())
@@ -1508,7 +1506,6 @@ void HierarchicalMesh2d::read_gup(const string& bname)
       BoundaryLine bol;
       for (int i=0; i<n; i++)
 	{
-	  int mat;
 	  file >> bol.material() >> bol;
 	  Blines.push_back(bol);
 	}
@@ -1929,7 +1926,6 @@ void HierarchicalMesh2d::RefineCoarseNodes
       const Quad& Q = quads[i];
       if (Q.sleep()) continue;
 
-      int level = Q.level();
       int f = Q.father();
       if (f<0)  continue;
 
@@ -1997,7 +1993,6 @@ void HierarchicalMesh2d::VertexToCellsCoarsening(IntVector& dst, const IntSet& s
     {
       const Quad& Q = quads[i];
       if (Q.sleep()) continue;
-      int level = Q.level();
       int count = 0;
       for (int j=0; j<4; j++)
 	{

@@ -53,7 +53,7 @@ class Monitor
   void SetBos(const std::string& s) {bos=s;}
 
   std::string&  aim_of_simulation()   { return aos;}
-  int   set_print_step   (int i) { ps  = i;}
+  int   set_print_step   (int i) { return ps = i;}
 
   void set_directory(const std::string& dir);
 

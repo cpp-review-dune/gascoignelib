@@ -385,7 +385,6 @@ void EdgeManager::SwappedEdges()
 
 fixarray<2,int> EdgeManager::ChildrenOfEdge(int e) const
 {
-  int im = edges[e].LocalMasterIndex();
   int s  = edges[e].slave();
   int is = edges[e].LocalSlaveIndex();
 
@@ -470,7 +469,6 @@ void EdgeManager::SortHangings()
  
   int i=edges.size();
   while(EdgeIsHanging(i-1)) i--;
-  int nhedge = edges.size()-i;
 
   vector<int> permi(perm.size());
   for(int i=0;i<perm.size();i++) permi[perm[i]] = i;
@@ -509,7 +507,6 @@ void EdgeManager::InitEdges()
   HANGMAP H;
 
   EdgeVector e;
-  int last = 0;
   for (int i=0; i<quads.size(); i++)
     {
       for (int j=0; j<4; j++)

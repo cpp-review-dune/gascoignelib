@@ -44,6 +44,8 @@ istream& operator>>(istream &s, HangList<N>& A)
       s >> ev >> symbol >> info;
       A.insert(make_pair(ev,info));
     }
+
+  return s; 
 }
 
 /*********************************************************************/

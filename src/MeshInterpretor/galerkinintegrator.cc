@@ -47,7 +47,6 @@ void GalerkinIntegrator<DIM>::Rhs(const RightHandSideData& f, LocalVector& F, co
       IF.xi(xi,k);
       FEM.point(xi);
       double vol = FEM.J();
-      double h  = Volume2MeshSize(vol);
       double weight  = IF.w(k) * vol;
       BasicIntegrator::universal_point(FEM,QH,Q);
       f.SetFemData(QH);
@@ -225,7 +224,6 @@ double GalerkinIntegrator<DIM>::ComputeDomainFunctional(const DomainFunctional& 
       IF.xi(xi,k);
       FEM.point(xi);
       double vol = FEM.J();
-      double h  = Volume2MeshSize(vol);
       double weight  = IF.w(k) * vol;
       BasicIntegrator::universal_point(FEM,UH,U);
       BasicIntegrator::universal_point(FEM,QH,Q);

@@ -39,7 +39,7 @@ void PointFunctional::Init(const vector<string>& args)
       assert(args.size()==2+n*4);
       for(int ii=0; ii<n; ii++)
 	{
-	  mycomp = int(atof(args[count++].c_str()));
+	  mycomp = static_cast<int>(atof(args[count++].c_str()));
 	  double w0 = atof(args[count++].c_str());
 	  double x  = atof(args[count++].c_str());
 	  double y  = atof(args[count++].c_str());
@@ -60,7 +60,7 @@ void PointFunctional::Init(const vector<string>& args)
       assert(args.size()==2+n*5);
       for(int ii=0; ii<n; ii++)
 	{
-	  mycomp = int(atof(args[count++].c_str()));
+	  mycomp = static_cast<int>(atof(args[count++].c_str()));
 	  double w0 = atof(args[count++].c_str());
 	  double x  = atof(args[count++].c_str());
 	  double y  = atof(args[count++].c_str());

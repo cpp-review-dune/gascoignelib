@@ -193,8 +193,8 @@ bool LevelMesh3d::ConstructCellIndOfPatch(nvector<int>& dst) const
   while(pf!=Vaeter.end())
     {
       int findex = *pf;
-      const Hex& hf = HMP->hex(findex);
       dst[count] = findex;
+
       count++;
       pf++;
     }
@@ -208,7 +208,6 @@ void LevelMesh3d::ConstructHangingStructureQuadratic(QuadraticHNStructure3& hnq2
 {
   hnq2.clear();
   hnq2face.clear();
-  int count=0;
   set<int> habschon; 
 
   const HexLawAndOrder& HLaO = HMP->HexLawOrder();
@@ -440,7 +439,6 @@ void LevelMesh3d::construct_lists(IntSet& newhexs, IntSet& oldhexs) const
     }
 
   // Iteration zum Regulaer machen (LevelJump)
-  int count = 0;
   while(1)
     {
       LevelJumper  Phi;

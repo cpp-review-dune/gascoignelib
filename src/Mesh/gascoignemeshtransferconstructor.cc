@@ -110,8 +110,6 @@ GascoigneMeshTransferConstructor3d::GascoigneMeshTransferConstructor3d
   map<int,fixarray<2,int> >& zweier = GMT->GetZweier();
   map<int,fixarray<4,int> >& vierer = GMT->GetVierer();
   map<int,fixarray<8,int> >& achter = GMT->GetAchter();
-  map<int,int>& CellEiner = GMT->GetCellEiner();
-  map<int,fixarray<8,int> >& CellAchter = GMT->GetCellAchter();
 
   const HexLawAndOrder& LaO = HM->HexLawOrder();
 
