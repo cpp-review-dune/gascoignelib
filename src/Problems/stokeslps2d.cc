@@ -51,7 +51,7 @@ void StokesLps2d::StabForm(VectorIterator b, const FemFunction& U, const FemFunc
 /*-----------------------------------------*/
 
 void StokesLps2d::StabMatrix(EntryMatrix& A,  const FemFunction& U, 
- const TestFunction& Np, const DerivativeVector& Mp) const
+ const TestFunction& Np, const TestFunction& Mp) const
 {
   double laplace = Laplace(Mp,Np);
 

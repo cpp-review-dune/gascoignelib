@@ -42,7 +42,7 @@ void NavierStokesLps2d::StabForm(VectorIterator b, const FemFunction& U, const F
 /*-----------------------------------------*/
 
 void NavierStokesLps2d::StabMatrix(EntryMatrix& A,  const FemFunction& U, 
- const TestFunction& Np, const DerivativeVector& Mp) const
+ const TestFunction& Np, const TestFunction& Mp) const
 {
   double laplace = Laplace(Mp,Np);
   double betaM = Convection(U,Mp);

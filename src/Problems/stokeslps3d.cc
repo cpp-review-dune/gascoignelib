@@ -49,7 +49,7 @@ void StokesLps3d::StabForm(VectorIterator b, const FemFunction& U, const FemFunc
 /*-----------------------------------------*/
 
 void StokesLps3d::StabMatrix(EntryMatrix& A,  const FemFunction& U, const TestFunction& Np, 
-			     const DerivativeVector& Mp) const
+			     const TestFunction& Mp) const
 {
   A(0,0) += ST.alpha() * Laplace(Mp,Np);
 }

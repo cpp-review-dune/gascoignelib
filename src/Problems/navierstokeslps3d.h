@@ -31,7 +31,7 @@ class NavierStokesLps3d : public NavierStokes3d, public virtual LpsEquation
   //
   void StabForm(VectorIterator b, const FemFunction& U, const FemFunction& UP, const TestFunction& N) const;
     
-  void StabMatrix(EntryMatrix& A, const FemFunction& U, const TestFunction& Np, const DerivativeVector& Mp) const;
+  void StabMatrix(EntryMatrix& A, const FemFunction& U, const TestFunction& Np, const TestFunction& Mp) const;
 };
 }
 

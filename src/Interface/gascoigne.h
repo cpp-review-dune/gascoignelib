@@ -31,9 +31,9 @@ namespace Gascoigne
   typedef std::set<int>                                             IntSet;  
 
   typedef CompVector<double>::iterator                              VectorIterator;
-  typedef std::vector<DerivativeVector>                             FemFunction;
 
   typedef  DerivativeVector                                         TestFunction;
+  typedef std::vector<TestFunction>                                 FemFunction;
   
   typedef CompVector<double>                                        GlobalCellVector;
   typedef nvector<double>                                           GlobalParameterVector;
