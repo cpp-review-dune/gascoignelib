@@ -9,6 +9,9 @@ namespace Gascoigne
 {
 class DerivativeVector : public numfixarray<6,double>
 {
+ private:
+  std::map<std::string,double> _M;
+
  public:
 
   ~DerivativeVector() {};
@@ -26,6 +29,20 @@ class DerivativeVector : public numfixarray<6,double>
   double& z() { return (*this)[3]; }
   double& n() { return (*this)[4]; }
   double& D() { return (*this)[5]; }
+
+  double aux(const std::string &name) const
+    {
+      std::map<std::string,double>::const_iterator p = _M.find(name);
+      if(p==_M.end())
+        {
+          std::cerr << name << " not found!" << std::endl;
+          abort();
+        }
+      return p->second;
+    }
+
+  double &aux(const std::string &name) { return _M[name]; }
+
 };
 }
 

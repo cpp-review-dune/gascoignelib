@@ -38,6 +38,11 @@
 #include  "q1lps3d.h"
 #include  "q2lps3d.h"
 
+#include "q2lps2dwithsecond.h"
+#include "q22dwithsecond.h"
+#include "q2lps3dwithsecond.h"
+#include "q23dwithsecond.h"
+
 #include  "glsequation.h"
 #include  "lpsequation.h"
 
@@ -195,13 +200,15 @@ DiscretizationInterface* StdSolver::NewDiscretization(int dimension, const strin
 {
   if (dimension==2)
     {
-      if      (discname=="Q1")     return new Q12d;
-      else if (discname=="Q2")     return new Q22d;
-      else if (discname=="Q1Gls")  return new Q1Gls2d;
-      else if (discname=="Q2Gls")  return new Q2Gls2d;
-      else if (discname=="Q1Lps")  return new Q1Lps2d;
-      else if (discname=="Q2Lps")  return new Q2Lps2d;
-      else 
+      if      (discname=="Q1")               return new Q12d;
+      else if (discname=="Q2")               return new Q22d;
+      else if (discname=="Q1Gls")            return new Q1Gls2d;
+      else if (discname=="Q2Gls")            return new Q2Gls2d;
+      else if (discname=="Q1Lps")            return new Q1Lps2d;
+      else if (discname=="Q2Lps")            return new Q2Lps2d;
+      else if (discname=="Q2WithSecond")     return new Q22dWithSecond;
+      else if (discname=="Q2LpsWithSecond")  return new Q2Lps2dWithSecond;
+    else 
         {         
           cerr << " Solver::NewDiscretization()\tunknown discname=" << discname << endl;
           abort();
@@ -209,11 +216,13 @@ DiscretizationInterface* StdSolver::NewDiscretization(int dimension, const strin
     }
   else if (dimension==3)
     {
-      if      (discname=="Q1")     return new Q13d;
-      else if (discname=="Q2")     return new Q23d;
-      else if (discname=="Q1Gls")  return new Q1Gls3d;
-      else if (discname=="Q1Lps")  return new Q1Lps3d;
-      else if (discname=="Q2Lps")  return new Q2Lps3d;
+      if      (discname=="Q1")               return new Q13d;
+      else if (discname=="Q2")               return new Q23d;
+      else if (discname=="Q1Gls")            return new Q1Gls3d;
+      else if (discname=="Q1Lps")            return new Q1Lps3d;
+      else if (discname=="Q2Lps")            return new Q2Lps3d;
+      else if (discname=="Q2WithSecond")     return new Q23dWithSecond;
+      else if (discname=="Q2LpsWithSecond")  return new Q2Lps3dWithSecond;
       else 
         {         
           cerr << " Solver::NewDiscretization()\tunknown discname=" << discname << endl;

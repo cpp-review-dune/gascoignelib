@@ -1,0 +1,34 @@
+#include  "finiteelementwithsecond.h"
+
+template<int DIM, int BDIM, class TRAFO, class BASE>
+inline void FiniteElementWithSecond<DIM,BDIM,TRAFO,BASE>::ComputeHesse
+(const Vertex2d& xi) const
+{
+  Matrix tmp(2,2);
+
+  const nvector<Matrix>& ddti = T.DDTI(xi);
+  Matrix dti_ = T.DTI();
+  dti_.transpose();
+  
+  for (int i=0;i<n();++i)
+    {
+		// linear transformation
+      hesse[i](0,0) = B.phi_xx(i);
+      hesse[i](1,0) = B.phi_xy(i);
+      hesse[i](0,1) = B.phi_xy(i);
+      hesse[i](1,1) = B.phi_yy(i);
+
+      T.DTI().mmult(tmp,hesse[i]);
+      tmp.mmult(hesse[i],dti_);
+      
+		// nonlinear transformation
+      double xx = B.phi_x(i) * ddti[0](0,0) + B.phi_y(i) * ddti[0](1,0);
+      double xy = B.phi_x(i) * ddti[0](0,1) + B.phi_y(i) * ddti[0](1,1);      
+      double yy = B.phi_x(i) * ddti[1](0,1) + B.phi_y(i) * ddti[1](1,1);
+
+      hesse[i](0,0) += xx;
+      hesse[i](1,0) += xy;
+      hesse[i](0,1) += xy;
+      hesse[i](1,1) += yy;
+    } 
+}

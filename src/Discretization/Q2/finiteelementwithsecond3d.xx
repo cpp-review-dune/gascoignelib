@@ -1,0 +1,54 @@
+#include  "finiteelementwithsecond.h"
+
+
+template<int DIM, int BDIM, class TRAFO, class BASE>
+inline void FiniteElementWithSecond<DIM,BDIM,TRAFO,BASE>::ComputeHesse
+(const Vertex3d& xi) const
+{
+  Matrix tmp(3,3);
+  
+  const nvector<Matrix>& ddti = T.DDTI(xi);
+  Matrix dti_ = T.DTI();
+  dti_.transpose();
+  
+  for (int i=0;i<n();++i)
+    {
+		// linear transformation
+      hesse[i](0,0) = B.phi_xx(i);
+      hesse[i](1,0) = B.phi_xy(i);
+      hesse[i](2,0) = B.phi_xz(i);
+
+      hesse[i](0,1) = B.phi_xy(i);
+      hesse[i](1,1) = B.phi_yy(i);
+      hesse[i](2,1) = B.phi_yz(i);
+
+      hesse[i](0,2) = B.phi_xz(i);
+      hesse[i](1,2) = B.phi_yz(i);
+      hesse[i](2,2) = B.phi_zz(i);
+      
+      T.DTI().mmult(tmp,hesse[i]);
+      tmp.mmult(hesse[i],dti_);
+      
+		// nonlinear transformation
+      double xx = B.phi_x(i)*ddti[0](0,0)+B.phi_y(i)*ddti[0](1,0)+B.phi_z(i)*ddti[0](2,0);
+      double xy = B.phi_x(i)*ddti[0](0,1)+B.phi_y(i)*ddti[0](1,1)+B.phi_z(i)*ddti[0](2,1);
+      double xz = B.phi_x(i)*ddti[0](0,2)+B.phi_y(i)*ddti[0](1,2)+B.phi_z(i)*ddti[0](2,2);
+
+      double yy = B.phi_x(i)*ddti[1](0,1)+B.phi_y(i)*ddti[1](1,1)+B.phi_z(i)*ddti[1](2,1);
+      double yz = B.phi_x(i)*ddti[1](0,2)+B.phi_y(i)*ddti[1](1,2)+B.phi_z(i)*ddti[1](2,2);
+
+      double zz = B.phi_x(i)*ddti[2](0,2)+B.phi_y(i)*ddti[2](1,2)+B.phi_z(i)*ddti[2](2,2);
+      
+      hesse[i](0,0) += xx;
+      hesse[i](1,0) += xy;
+      hesse[i](2,0) += xz;
+
+      hesse[i](0,1) += xy;
+      hesse[i](1,1) += yy;
+      hesse[i](2,1) += yz;
+
+      hesse[i](0,2) += xz;
+      hesse[i](1,2) += yz;
+      hesse[i](2,2) += zz;
+    } 
+}
