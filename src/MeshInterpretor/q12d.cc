@@ -117,6 +117,64 @@ void Q12d::Interpolate(GlobalVector& u, const InitialCondition& U) const
 
 /* ----------------------------------------- */
 
+void Q12d::InterpolateSolutionByPatches(GlobalVector& u, const GlobalVector& uold) const
+{
+  const IntVector& vo2n = GetMesh()->Vertexo2n();
+  nvector<bool> habschon(GetMesh()->nnodes(),0);  
+
+  assert(vo2n.size()==uold.n());
+
+  for(int i=0;i<vo2n.size();i++)
+    {
+      int in = vo2n[i];
+
+      if(in>=0) 
+	{
+	  u.equ_node(in,1.,i,uold);
+	  habschon[in] = 1;
+	}
+    }
+  nvector<fixarray<3,int> > nodes(4);
+  nodes[0][0] = 1; nodes[0][1] = 0;  nodes[0][2] = 2;
+  nodes[1][0] = 3; nodes[1][1] = 0;  nodes[1][2] = 6;
+  nodes[2][0] = 5; nodes[2][1] = 2;  nodes[2][2] = 8;
+  nodes[3][0] = 7; nodes[3][1] = 6;  nodes[3][2] = 8;
+ 
+  const PatchMesh* PM = dynamic_cast<const PatchMesh*>(GetMesh());
+  assert(PM);
+
+  for(int iq=0;iq<PM->npatches();++iq)
+    {
+      IntVector vi = PM->IndicesOfPatch(iq);
+
+      for(int j=0; j<nodes.size(); j++)
+	{
+	  int v  = vi[nodes[j][0]];
+	  int v1 = vi[nodes[j][1]];
+	  int v2 = vi[nodes[j][2]];
+	  assert(habschon[v1]);
+	  assert(habschon[v2]);
+	  if (habschon[v]==0) 
+	    {
+	      u.equ_node(v,0.5,v1,uold);
+	      u.add_node(v,0.5,v2,uold);
+	      habschon[v] = 1;
+	    }
+	}
+      int v = vi[4];
+      if (habschon[v]==0)
+	{
+	  u.equ_node(v,0.25,vi[0],uold);
+	  u.add_node(v,0.25,vi[2],uold);	  
+	  u.add_node(v,0.25,vi[6],uold);	  
+	  u.add_node(v,0.25,vi[8],uold);	  
+	  habschon[v] = 1;
+	}
+    }  
+}
+
+/* ----------------------------------------- */
+
 void Q12d::ConstructInterpolator(MgInterpolatorInterface* I, const MeshTransferInterface* MT)
 {
   {

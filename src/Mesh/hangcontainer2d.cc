@@ -46,7 +46,7 @@ void HangContainer2d::load_elimination(IntVector& v) const
 
 /*********************************************************************/
 
-void HangContainer2d::update_olds(const IntVector& v, const IntVector& c)
+void HangContainer2d::update_olds(IntVector& v, const IntVector& c)
 {
   VertexToBeCreated.update(v,c);
   VertexToBeDeleted.update(v,c);

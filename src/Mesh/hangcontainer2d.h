@@ -39,7 +39,7 @@ class HangContainer2d
 
   void load_elimination(Gascoigne::IntVector&) const;
 
-  void update_olds (const Gascoigne::IntVector&, const Gascoigne::IntVector&);
+  void update_olds (Gascoigne::IntVector&, const Gascoigne::IntVector&);
   void update_news (const Gascoigne::IntVector&,int);
 
   int  vertex_index (const EdgeVector&) const;

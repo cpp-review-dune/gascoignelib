@@ -33,13 +33,14 @@ public:
   
   void BasicInit(const Gascoigne::ParamFile* pf);
 
-  void Interpolate(Gascoigne::GlobalVector& u, const InitialCondition& U) const;
+  void Interpolate(GlobalVector& u, const InitialCondition& U) const;
+  void InterpolateSolutionByPatches(GlobalVector& u, const GlobalVector& uold) const;
   void ConstructInterpolator(MgInterpolatorInterface* I, const MeshTransferInterface* MT);
-  void StrongDirichletVector(Gascoigne::GlobalVector& u, const DirichletData& BF, int col, const std::vector<int>& comp) const;
+  void StrongDirichletVector(GlobalVector& u, const DirichletData& BF, int col, const std::vector<int>& comp) const;
 
-  void Jumps(EdgeInfoContainer<2>& EIC, const Gascoigne::GlobalVector& u) const;
+  void Jumps(EdgeInfoContainer<2>& EIC, const GlobalVector& u) const;
   void JumpNorm(EdgeInfoContainer<2>& EIC, nvector<double>& eta) const;
-  void Residual(nvector<double>& eta, const Gascoigne::GlobalVector& u, const Equation& EQ, const RightHandSideData& RHS) const;
+  void Residual(nvector<double>& eta, const GlobalVector& u, const Equation& EQ, const RightHandSideData& RHS) const;
 };
 
 

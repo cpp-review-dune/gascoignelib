@@ -92,6 +92,9 @@ void Q1::StrongDirichletVectorZero(GlobalVector& u, int col, const vector<int>& 
 
 void Q1::InterpolateSolution(GlobalVector& u, const GlobalVector& uold) const
 {
+  InterpolateSolutionByPatches(u,uold);
+  return;
+
   const IntVector& vo2n = GetMesh()->Vertexo2n();
   assert(vo2n.size()==uold.n());
 
@@ -140,7 +143,7 @@ void Q1::InterpolateSolution(GlobalVector& u, const GlobalVector& uold) const
     }
 }
 
-/* ----------------------------------------- */
+/*-----------------------------------------*/
 
 void Q1::HNAverage(GlobalVector& x) const
 {

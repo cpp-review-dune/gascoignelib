@@ -118,7 +118,7 @@ void HangContainer3d::load_elimination(IntVector& v) const
 
 /*********************************************************************/
 
-void HangContainer3d::update_olds(const IntVector& v, const IntVector& c)
+void HangContainer3d::update_olds(IntVector& v, const IntVector& c)
 {
   HangContainer2d::update_olds(v,c);
   FaceToBeCreated.update(v,c);

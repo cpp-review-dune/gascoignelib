@@ -2,7 +2,6 @@
 #define __hangcontainer3d_h
 
 #include "hangcontainer2d.h"
-//#include "bhanglist.h"
 
 /*********************************************************************/
 
@@ -40,7 +39,7 @@ class HangContainer3d : public HangContainer2d
     }
   int  vertex_index(const FaceVector&) const;
 
-  void update_olds(const Gascoigne::IntVector&, const Gascoigne::IntVector&);
+  void update_olds(Gascoigne::IntVector&, const Gascoigne::IntVector&);
   void update_news(const Gascoigne::IntVector&, int);
 
   void face_coarse(const FaceVector&, int, int);

@@ -18,6 +18,8 @@ class Q1 : public CellMeshInterpretor
 {
 protected:
 
+  typedef Gascoigne::GlobalVector GlobalVector;
+
   HNStructureInterface*    HN;
 
   nvector<int> GetLocalIndices(int iq) const;
@@ -41,13 +43,14 @@ public:
 
   void ReInit   (const MeshInterface* MP);
   void StrongDirichletMatrix(MatrixInterface& A, int col, const std::vector<int>& comp) const;
-  void StrongDirichletVectorZero(Gascoigne::GlobalVector& u, int col, const std::vector<int>& comp) const;
-  void InterpolateSolution(Gascoigne::GlobalVector& u, const Gascoigne::GlobalVector& uold)const;
-  void HNAverage   (Gascoigne::GlobalVector& x) const;
-  void HNDistribute(Gascoigne::GlobalVector& x) const;
-  void HNZero      (Gascoigne::GlobalVector& x) const;
-  bool HNZeroCheck (const Gascoigne::GlobalVector& x) const;
-  void Matrix(MatrixInterface& A, const Gascoigne::GlobalVector& u, const Equation& EQ, double d) const;
+  void StrongDirichletVectorZero(GlobalVector& u, int col, const std::vector<int>& comp) const;
+  void InterpolateSolution(GlobalVector& u, const GlobalVector& uold)const;
+  virtual void InterpolateSolutionByPatches(GlobalVector& u, const GlobalVector& uold) const {}
+  void HNAverage   (GlobalVector& x) const;
+  void HNDistribute(GlobalVector& x) const;
+  void HNZero      (GlobalVector& x) const;
+  bool HNZeroCheck (const GlobalVector& x) const;
+  void Matrix(MatrixInterface& A, const GlobalVector& u, const Equation& EQ, double d) const;
   void MassMatrix(MatrixInterface& A) const;
   void Structure(SparseStructureInterface* SI) const;
 };

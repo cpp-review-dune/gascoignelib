@@ -29,7 +29,8 @@ public:
   /*
     Fonctions memoire
    */
-  void reservesize(size_t n, size_t m, T s = static_cast<T>(0))
+  //void reservesize(size_t n, size_t m, T s = static_cast<T>(0))
+  void reservesize(size_t n, size_t m, T s)
     {
       nn = n;
       mm = m;
@@ -37,7 +38,8 @@ public:
     }
   void memory(size_t n, size_t m)
     {
-      nmatrix<T>::reservesize(n,m);
+      //nmatrix<T>::reservesize(n,m);
+      nmatrix<T>::reservesize(n,m,0);
     }
   void resize(size_t n)
     {
