@@ -69,9 +69,7 @@ void SolverInfos::BasicInit(const ParamFile *param)
   double prec_tol, prec_globaltol;
   int    prec_maxiter, prec_pstep;
 
-  string linearsolve;
-
-  DFH.insert("linearsolve",         &linearsolve,        "mg");
+  DFH.insert("linearsolve",         &_linearsolve,        "mg");
   DFH.insert("linear_tol",          &linear_tol,          1.e-2);
   DFH.insert("linear_globaltol",    &linear_globaltol,    1.e-12);
   DFH.insert("linear_maxiter",      &linear_maxiter,      10);
@@ -98,7 +96,7 @@ void SolverInfos::BasicInit(const ParamFile *param)
   GetLInfo().user().globaltol()          = linear_globaltol;
   GetLInfo().user().maxiter  ()          = linear_maxiter;
   GetLInfo().user().printstep()          = linear_pstep;
-  if (linearsolve=="mg")
+  if (_linearsolve=="mg")
     {
       GetLInfo().user().text() = "MGInfo";
     }

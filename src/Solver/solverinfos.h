@@ -16,6 +16,8 @@ class SolverInfos
     std::map<std::string,CGInfo*> __L;
     std::map<std::string,NLInfo*> _NL;
 
+    std::string _linearsolve;
+
   public:
     SolverInfos() { }
     virtual ~SolverInfos();
