@@ -118,7 +118,7 @@ void GalerkinIntegrator<DIM>::Form(const Equation& EQ, LocalVector& F, const Fem
 /* ----------------------------------------- */
 
 template<int DIM>
-void GalerkinIntegrator<DIM>::MassMatrix(EntryMatrix& E, const FemInterface& FEM) const
+double GalerkinIntegrator<DIM>::MassMatrix(EntryMatrix& E, const FemInterface& FEM) const
 {
   NNN.resize(FEM.n());
   E.SetDimensionDof(FEM.n(),FEM.n());
@@ -130,12 +130,14 @@ void GalerkinIntegrator<DIM>::MassMatrix(EntryMatrix& E, const FemInterface& FEM
   const IntegrationFormulaInterface& IF = FormFormula();
 
   Vertex<DIM> x, xi;
+  double omega = 0.;
   for (int k=0; k<IF.n(); k++)
     {
       IF.xi(xi,k);
       FEM.point(xi);
       double vol = FEM.J();
       double weight  = IF.w(k) * vol;
+      omega += weight;
       for (int i=0;i<FEM.n();i++)
 	{
 	  FEM.init_test_functions(NNN[i],1.,i);
@@ -147,6 +149,7 @@ void GalerkinIntegrator<DIM>::MassMatrix(EntryMatrix& E, const FemInterface& FEM
 	    }
 	}
     }
+  return omega;
 }
 
 /* ----------------------------------------- */
@@ -271,40 +274,6 @@ void GalerkinIntegrator<DIM>::ErrorsByExactSolution(LocalVector& dst, const FemI
 	  dst(2,c) = GascoigneMath::max(dst(2,c),sqrt(UH[c].m()/weight));
 	}
     }
-}
-
-/* ----------------------------------------- */
-
-template<int DIM>
-double GalerkinIntegrator<DIM>::MeanMatrix(EntryMatrix& E, const FemInterface& FEM) const
-{
-  E.zero();
-
-  const IntegrationFormulaInterface& IF = FormFormula();
-
-  Vertex<DIM> xi;
-  double omega = 0.;
-
-  for (int k=0; k<IF.n(); k++)
-    {
-      IF.xi(xi,k);
-      FEM.point(xi);
-      double vol = FEM.J();
-      double weight  = IF.w(k) * vol;
-      omega += weight;
-
-      for(int i=0; i<FEM.n(); i++)
-	{
-	  FEM.init_test_functions(NNN[i],weight,i);
-	  for(int j=0; j<FEM.n(); j++)
-	    {
-	      FEM.init_test_functions(MM,1.,j);
-	      E.SetDofIndex(i,j);
-	      E(0,0) += NNN[i].m()*MM.m();
-	    }
-	}
-    }
-  return omega;
 }
 
 /* ----------------------------------------- */

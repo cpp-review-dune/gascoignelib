@@ -2,6 +2,7 @@
 #include  "visudatacompvector.h"
 #include  "sparsestructure.h"
 #include  "pointfunctional.h"
+#include  "pressurefilter.h"
 
 using namespace std;
 using namespace Gascoigne;
@@ -200,11 +201,14 @@ void CellMeshInterpretor::RhsNeumann(GlobalVector& f, const IntSet& Colors,  con
 
 /* ----------------------------------------- */
 
-double CellMeshInterpretor::PressureFilter(nvector<double>& PF) const
+void CellMeshInterpretor::InitFilter(nvector<double>& F) const
 {
-  PF.resize(n());
-  PF.zero();
-  double omega = 0.;
+  PressureFilter* PF = static_cast<PressureFilter*>(&F);
+  assert(PF);
+
+  if (!PF->Active()) return;
+
+  PF->ReInit(GetMesh()->nnodes());
   nmatrix<double> T;
   for(int iq=0; iq<GetMesh()->ncells(); ++iq)
     {
@@ -214,7 +218,8 @@ double CellMeshInterpretor::PressureFilter(nvector<double>& PF) const
       Transformation(T,iq);
       GetFem()->ReInit(T);
 
-      omega += GetIntegrator()->MeanMatrix(E,*GetFem());
+      double cellsize = GetIntegrator()->MassMatrix(E,*GetFem());
+      PF->AddDomainPiece(cellsize);
 
       nvector<int> ind = GetMesh()->IndicesOfCell(iq);
 
@@ -222,11 +227,10 @@ double CellMeshInterpretor::PressureFilter(nvector<double>& PF) const
  	{
 	  for(int j=0;j<ind.size();j++)
 	    {
-	      PF[ind[j]] += E(i,j,0,0);
+	      F[ind[j]] += E(i,j,0,0);
 	    }
       	}
     }
-  return omega;
 }
 
 /* ----------------------------------------- */

@@ -18,8 +18,12 @@ public:
 
   double Integral(const Gascoigne::GlobalVector& u) const
     {
-      nvector<double> val = IntegrateSolutionVector(u);
-      return val[0];
+      HNAverage(u);
+      assert(GetMeshInterpretor()->HNZeroCheck(u)==0);
+      
+      nvector<double> dst = PF.IntegrateVector(u);
+      HNZero(u);
+      return dst[0];
     }
   MeshInterpretorInterface* NewMeshInterpretor(int dimension, const std::string& discname)
     {
@@ -28,12 +32,13 @@ public:
   void NewMesh(int l, const MeshInterface* MP)
     {
       StdSolver::NewMesh(l,MP);
-      ConstructPressureFilter();
+      GetMeshInterpretor()->InitFilter(PF);
     }
   void BasicInit(int level, const ParamFile* paramfile, const MeshInterface* MP)
     {
       StdSolver::BasicInit(level,paramfile,MP);
       Dat.Init(paramfile,1);
+      PF.SetComponents(Dat.GetPfilter());
     }
 };
 

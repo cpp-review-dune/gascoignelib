@@ -83,7 +83,7 @@ public:
   virtual void StrongDirichletVectorZero(Gascoigne::GlobalVector& u, int col, const std::vector<int>& comp) const { assert(0);}
 
 
-  virtual double PressureFilter(nvector<double>&) const {assert(0); return 0.;}
+  virtual void InitFilter(nvector<double>&) const { assert(0);}
 
   virtual void StabForm(Gascoigne::GlobalVector& f, const Gascoigne::GlobalVector& u, const Equation& EQ, double d) const {assert(0);}
 

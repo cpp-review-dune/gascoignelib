@@ -160,7 +160,8 @@ void LocalTimeLoop::backward(string iname, string name, int first, int last, con
 
 			ualt.equ(1.,u);
 
-      SolveTimePrimal(u,f,"Results/backward");
+      SolveTimePrimal(u,f);
+      Output(u,"Results/backward");
       Functionals(u,f);
 
       DeleteNodeVector();
@@ -213,7 +214,9 @@ void LocalTimeLoop::forward(string iname, int first, int last, const ProblemDesc
 
       ualt.equ(1.,u);
 
-      SolveTimePrimal(u,f,"Results/forward");
+      SolveTimePrimal(u,f
+);
+      Output(u,"Results/forward");
       Functionals(u,f);
     }
 }

@@ -68,7 +68,7 @@ public:
   int RhsPoint(Gascoigne::GlobalVector& f, const Functional* F) const;
   void RhsNeumann(Gascoigne::GlobalVector& f, const Gascoigne::IntSet& Colors,  const NeumannData& NRHS, double s) const;
 
-  double PressureFilter(nvector<double>&) const;
+  void InitFilter(nvector<double>&) const;
 
   // Functionals
   double ComputeBoundaryFunctional(const Gascoigne::GlobalVector& u, const BoundaryFunctional& BF) const;

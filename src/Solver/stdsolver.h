@@ -12,6 +12,7 @@
 #include  "meshinterpretorinterface.h"
 #include  "stopwatch.h"
 #include  "hierarchicalmesh.h"
+#include  "pressurefilter.h"
 
 //////////////////////////////////////////////
 ///
@@ -71,7 +72,7 @@ class StdSolver : public virtual SolverInterface
 
   // 5. sonstiges
   
-  nvector<double>      PF;
+  PressureFilter       PF;
   double               omega_domain;
 
   mutable StopWatch    _vm, _il, _so, _ca, _ci, _cs, _re;
@@ -126,11 +127,10 @@ class StdSolver : public virtual SolverInterface
   
   void SetBoundaryVectorStrong(Gascoigne::GlobalVector& f, const BoundaryManager& BM, const Equation& EQ, const DirichletData& DD) const;
   virtual void smooth(int niter, Gascoigne::GlobalVector& x, const Gascoigne::GlobalVector& y, Gascoigne::GlobalVector& h) const;
-  void PressureFilter(Gascoigne::GlobalVector& gx) const;
-  void PressureFilterIntegrate(Gascoigne::GlobalVector& gx) const;
+  void SubstractMean(Gascoigne::GlobalVector& gx) const;
+  void SubstractMeanAlgebraic(Gascoigne::GlobalVector& gx) const;
   virtual void PermutateIlu(const Gascoigne::GlobalVector& u) const;
   void modify_ilu(IluInterface& I,int ncomp) const;
-  void ConstructPressureFilter();
   void Residual(Gascoigne::GlobalVector& y, const Gascoigne::GlobalVector& x, double d) const;
 
   void MatrixResidual(Gascoigne::GlobalVector& y, const Gascoigne::GlobalVector& x, const Gascoigne::GlobalVector& b) const;
@@ -273,7 +273,7 @@ class StdSolver : public virtual SolverInterface
   /// vector - additional
   //
 
-  void PressureFilterIntegrate(BasicGhostVector& x) const;
+  void SubstractMean(BasicGhostVector& x) const;
 
   //
   /// vector - matrix

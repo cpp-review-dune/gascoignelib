@@ -145,6 +145,7 @@ void StdSolver::BasicInit(int level, const ParamFile* paramfile, const MeshInter
   GetMeshInterpretorPointer() = NewMeshInterpretor(dimension, _discname);
   assert(_ZP);
 
+  PF.SetComponents(Dat.GetPfilter());
   GetMeshInterpretor()->BasicInit(_paramfile);
 }
 
@@ -193,7 +194,7 @@ IluInterface* StdSolver::NewIlu(int ncomp, const string& matrixtype)
 
 void StdSolver::ReInitMatrix() 
 {
-  ConstructPressureFilter();
+  GetMeshInterpretor()->InitFilter(PF);
   SparseStructure SA;
   GetMeshInterpretor()->Structure(&SA);
 
@@ -283,7 +284,7 @@ void StdSolver::InterpolateSolution(BasicGhostVector& gu, const GlobalVector& uo
 
   u.zero();
   GetMeshInterpretor()->InterpolateSolution(u, uold);
-  PressureFilterIntegrate(gu);
+  SubstractMean(gu);
 }
 
 /*-----------------------------------------*/
@@ -339,7 +340,7 @@ void StdSolver::MatrixResidual(GlobalVector& y, const GlobalVector& x, const Glo
 {
   y.equ(1.,b);
   vmult(y,x,-1.);
-  PressureFilter(y);
+  SubstractMeanAlgebraic(y);
 }
 
 /*-------------------------------------------------------*/
@@ -415,7 +416,7 @@ void StdSolver::smooth(int niter, GlobalVector& x, const GlobalVector& y, Global
       MatrixResidual(h,x,y);
       GetIlu()->solve(h);
       x.add(omega,h);
-      PressureFilterIntegrate(x);
+      SubstractMean(x);
     }
   _il.stop();
 }
@@ -476,7 +477,7 @@ void StdSolver::Residual(GlobalVector& y, const GlobalVector& x, double d) const
 
   HNZero(x);
   HNDistribute(y);
-  PressureFilter(y);
+  SubstractMeanAlgebraic(y);
 
   _re.stop();
 }
@@ -822,14 +823,6 @@ void StdSolver::VisuGrid(const string& name, int i) const
 
 /*-----------------------------------------*/
 
-void StdSolver::ConstructPressureFilter()
-{
-   if(Dat.GetPfilter().size()==0) return;
-   omega_domain = GetMeshInterpretor()->PressureFilter(PF);
-}
-
-/*--------------------------------------------------------*/
-
 double StdSolver::EnergyEstimator(nvector<double>& eta, const BasicGhostVector& gu, BasicGhostVector& gf) const
 {
   const GlobalVector& u = GetGV(gu);
@@ -883,6 +876,7 @@ double StdSolver::EnergyEstimator(nvector<double>& eta, const BasicGhostVector& 
 void StdSolver::Read(BasicGhostVector& gu, const string& filename) const
 {
   GlobalVector& u = GetGV(gu);
+  u.zero();
   ReadBackUp(u,filename);
 }
 
@@ -910,74 +904,44 @@ void StdSolver::ConstructInterpolator(MgInterpolatorInterface* I, const MeshTran
 
 /* -------------------------------------------------------*/
 
-void StdSolver::PressureFilterIntegrate(BasicGhostVector& x) const
-{
-  PressureFilterIntegrate(GetGV(x));
-}
-
-/* -------------------------------------------------------*/
-
 nvector<double> StdSolver::IntegrateSolutionVector(const GlobalVector& u) const
 {
-  assert(PF.size());
-
   HNAverage(u);
   assert(GetMeshInterpretor()->HNZeroCheck(u)==0);
 
-  nvector<double> dst(u.ncomp(),0.);
-  nvector<double>::const_iterator pf = PF.begin();
-  
-  for (int j=0; j<u.n(); j++)
-    {
-      for (int c=0; c<u.ncomp(); c++)
-	{
-	  dst[c] += u(j,c)* *pf;
-	}      
-      pf++;
-    }  
+  nvector<double> dst = PF.IntegrateVector(u);
   HNZero(u);
   return dst;
 }
 
 /* -------------------------------------------------------*/
 
-void StdSolver::PressureFilterIntegrate(GlobalVector& x) const
+void StdSolver::SubstractMean(BasicGhostVector& x) const
+{
+  SubstractMean(GetGV(x));
+}
+
+/* -------------------------------------------------------*/
+
+void StdSolver::SubstractMean(GlobalVector& x) const
 {
   // In each nonlinear step: applied to Newton correction,
   // in each smoothing step
   //
-  if(Dat.GetPfilter().size()==0) return;
+  if (!PF.Active()) return;
+
   HNAverage(x);
-
-  nvector<double> mean = IntegrateSolutionVector(x);
-
-  for (int i=0; i<Dat.GetPfilter().size(); i++)
-    {
-      int   comp = Dat.GetPfilter()[i];
-      double sub = mean[comp]/omega_domain;
-      x.CompAdd(comp,-sub);
-    }  
+  PF.SubstractMean(x);
   HNZero(x);
 }
 
 /*---------------------------------------------------*/
 
-void StdSolver::PressureFilter(GlobalVector& x) const
+void StdSolver::SubstractMeanAlgebraic(GlobalVector& x) const
 {
-  if (Dat.GetPfilter().size()==0) return;
+  if (!PF.Active()) return;
 
   HNAverage(x);
-  for (int i=0; i<Dat.GetPfilter().size(); i++)
-    {
-      int comp = Dat.GetPfilter()[i];
-      double d = 0.;
-      for (int j=0; j<x.n(); j++)
-	{
-	  d += x(j,comp);
-	}      
-      d /= GetMeshInterpretor()->n();
-      
-      x.CompAdd(comp,-d);
-    }
+  PF.SubstractMeanAlgebraic(x);
   HNZero(x);
 }

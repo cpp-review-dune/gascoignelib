@@ -47,7 +47,9 @@ ReadBackUp::ReadBackUp(GlobalVector& u, const string& name)
     {
       for (int c=0; c<v; c++)  
 	{
-	  file >> u(i,c);
+	  double val = 0.;
+	  file >> val;
+	  u(i,c) += val;
 	}
       for (int c=v; c<comp ;c++)  { file >> d;}
     }

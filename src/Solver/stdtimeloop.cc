@@ -32,7 +32,7 @@ void StdTimeLoop::BasicInit(const ParamFile* paramfile)
 
 /*-------------------------------------------------*/
 
-string StdTimeLoop::SolveTimePrimal(MultiLevelGhostVector& u, MultiLevelGhostVector& f, string name)
+string StdTimeLoop::SolveTimePrimal(MultiLevelGhostVector& u, MultiLevelGhostVector& f)
 {
   GetMultiLevelSolver()->GetSolver()->Rhs(f,info.rhs());
 
@@ -40,8 +40,6 @@ string StdTimeLoop::SolveTimePrimal(MultiLevelGhostVector& u, MultiLevelGhostVec
   GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(u);
 
   string status = GetMultiLevelSolver()->Solve(u,f);
-
-  Output(u,name);
 
   return status;
 }
@@ -93,7 +91,8 @@ void StdTimeLoop::adaptive_run(const ProblemDescriptorInterface* PD)
       TimeInfoBroadcast();
 
       SolveTimePrimal(u,f);
-
+      Output(u,"Results/solve");
+      
       GetMultiLevelSolver()->GetSolver()->EnergyEstimator(eta, u, f);
 
       cout << "eta " << eta.sum() << endl;
@@ -130,6 +129,7 @@ void StdTimeLoop::InitSolution(MultiLevelGhostVector& u, MultiLevelGhostVector& 
       f.zero();
       TS->RhsL2Projection(f);
       TS->L2Projection(u,f);
+      TS->Write(u.finest(),"Results/initialu");
     }
   else
     {
@@ -184,6 +184,7 @@ void StdTimeLoop::run(const ProblemDescriptorInterface* PD)
       TimeInfoBroadcast();
 
       SolveTimePrimal(u,f);
+      Output(u,"Results/solve");
 
       Functionals(u,f);
     }

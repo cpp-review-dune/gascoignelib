@@ -66,7 +66,7 @@ void StdTimeSolver::RegisterMatrix()
 
 void StdTimeSolver::ReInitMatrix() 
 {
-  ConstructPressureFilter();
+  GetMeshInterpretor()->InitFilter(PF);
   SparseStructure SA;
   GetMeshInterpretor()->Structure(&SA);
 

@@ -6,6 +6,7 @@ SUBDIRS(
   Heat2D 
   ConvectionDiffusion2D 
   Control
+  IntegrationTest
   NoName
   IntegrationTest
 )
