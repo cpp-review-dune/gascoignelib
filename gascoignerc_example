@@ -6,29 +6,29 @@ SET(GASCOIGNE_STD "$ENV{HOME}/GascoigneStd")
 
 #############################################
 #
-#  Set the prefix of the executable and library output
+#  Set the path of the executable and library output
 #  directory (e. g. $ENV{HOME}/local, /usr/local, ...).
 #  If the switch USE_ARCH is turn ON, the subdirerctories for
 #  executables and libraries depend on the system architecture.
 #
-SET(GASCOIGNE_LIBRARY_OUTPUT_PREFIX "$ENV{HOME}/local/lib")
-SET(GASCOIGNE_EXECUTABLE_OUTPUT_PREFIX ".")
+SET(GASCOIGNE_LIBRARY_OUTPUT_PATH "$ENV{HOME}/local/lib" CACHE PATH "path for all libs including libGascoigneStd")
+SET(GASCOIGNE_EXECUTABLE_OUTPUT_PATH "." CACHE PATH "executable path")
 
 OPTION(USE_ARCH "Use archictecture specifc paths" OFF)
-OPTION(COPY_PARAMFILES "Copy the Param and the INP files" ON)
+OPTION(COPY_PARAMFILES "Copy the Param and the Inp files for examples" ON)
 
 #############################################
 #
 #  Set the flags used by the C++ compiler.
 #
-SET(GASCOIGNE_CXX_FLAGS "-O3")
+SET(GASCOIGNE_CXX_FLAGS "-O3" CACHE STRING "compiler flag")
 
 #############################################
 #
 #  Set -D define flags (e. g. -D_DEBUG or 
 #  -D__OLDCOMPILER__ for egcs).
 #
-SET(GASCOIGNE_COMPILER_DEFINITIONS "")
+SET(GASCOIGNE_COMPILER_DEFINITIONS "" CACHE STRING "compiler definitions")
 
 #############################################
 #

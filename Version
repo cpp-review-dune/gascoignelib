@@ -1,3 +1,11 @@
+Version 30.05.2004
+==================
+*becker:
+1) CMakeGlobal leicht geaendert: ERFORDERT ANpassung in .gascoignerc (s. gascoignerc_example) , da
+   i) die Steuervariablen hier um "CACH" ergaenzt werden
+   ii) die Variablen fuer die path auch "...PATH" statt "...PREFIX" heissen
+
+
 Version 27.05.2004
 ==================
 *becker:
