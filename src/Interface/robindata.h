@@ -2,6 +2,8 @@
 #define __RobinData_h
 
 #include "application.h"
+#include "vertex.h"
+#include "entrymatrix.h"
 
 namespace Gascoigne
 {

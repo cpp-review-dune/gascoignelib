@@ -161,7 +161,7 @@ void StdTimeLoop::run(const ProblemDescriptorInterface* PD)
   InitSolution(u);
   
   GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(u);
-  //GetMultiLevelSolver()->GetSolver()->Visu("Results/solve",u.finest(),0);
+  GetMultiLevelSolver()->GetSolver()->Visu("Results/solve",u.finest(),0);
 
   for (_iter=1; _iter<=_niter; _iter++)
     {
