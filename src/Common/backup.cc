@@ -25,7 +25,11 @@ ReadBackUp::ReadBackUp(GlobalVector& u, const string& name)
   ifstream file;
   file.open(name.c_str());
   
-  assert(file);
+  if(!file){
+    cerr << "backup file '"<< name << "' not found" << endl;
+    assert(file);
+    //abort();
+  }
 
   int size, comp;
 
