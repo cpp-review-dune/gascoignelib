@@ -21,7 +21,7 @@ public:
       HNAverage(u);
       assert(GetMeshInterpretor()->HNZeroCheck(u)==0);
       
-      nvector<double> dst = PF.IntegrateVector(u);
+      nvector<double> dst = _PF.IntegrateVector(u);
       HNZero(u);
       return dst[0];
     }
@@ -32,7 +32,7 @@ public:
   void NewMesh(int l, const MeshInterface* MP)
     {
       StdSolver::NewMesh(l,MP);
-      GetMeshInterpretor()->InitFilter(PF);
+      GetMeshInterpretor()->InitFilter(_PF);
     }
   void BasicInit(int level, const ParamFile* paramfile, const MeshInterface* MP)
     {

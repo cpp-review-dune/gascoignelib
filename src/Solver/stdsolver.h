@@ -69,14 +69,14 @@ class StdSolver : public virtual SolverInterface
   mutable std::string _discname;
   mutable std::string _matrixtype;
 
-  SolverData          Dat;
+  SolverData          _Dat;
   mutable int         _PrimalSolve;
   const ParamFile*    _paramfile;
 
   // 5. sonstiges
   
-  PressureFilter       PF;
-  double               omega_domain;
+  PressureFilter       _PF;
+/*   double               omega_domain; */
 
   mutable StopWatch    _vm, _il, _so, _ca, _ci, _cs, _re;
 
@@ -278,6 +278,7 @@ class StdSolver : public virtual SolverInterface
   //
 
   void SubtractMean(BasicGhostVector& x) const;
+  void SubtractMeanAlgebraic(BasicGhostVector& x) const;
 
   //
   /// vector - matrix

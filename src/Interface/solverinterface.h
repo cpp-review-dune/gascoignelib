@@ -150,6 +150,7 @@ class SolverInterface
   //
 
   virtual void SubtractMean(BasicGhostVector& x) const=0;
+  virtual void SubtractMeanAlgebraic(BasicGhostVector& x) const=0;
 
   //
   /// vector - matrix

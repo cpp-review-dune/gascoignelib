@@ -173,6 +173,7 @@ void BasicLoop::InitSolution(MultiLevelGhostVector& u)
       assert(0);
     }
   GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(u);
+  GetMultiLevelSolver()->GetSolver()->SubtractMean(u);
   GetMultiLevelSolver()->GetSolver()->Visu("Results/solve",u,0);
 }
 

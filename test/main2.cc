@@ -65,7 +65,7 @@ class LocalSolver : public StdSolver
   }
   void BasicInit(int level, const ParamFile* paramfile, const MeshInterface* MP) {
     DoubleVector d(3); d[0]=0.01; d[1]=0.1; d[2]=0.1; 
-    Dat.SetIluModify(d);
+    _Dat.SetIluModify(d);
     StdSolver::BasicInit(level, paramfile, MP);
   }  
 };

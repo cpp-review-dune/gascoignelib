@@ -73,7 +73,7 @@ void StdTimeSolver::RegisterMatrix()
 
 void StdTimeSolver::ReInitMatrix() 
 {
-  GetMeshInterpretor()->InitFilter(PF);
+  GetMeshInterpretor()->InitFilter(_PF);
   SparseStructure SA;
   GetMeshInterpretor()->Structure(&SA);
 

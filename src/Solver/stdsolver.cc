@@ -36,7 +36,8 @@ namespace Gascoigne
 {
 StdSolver::StdSolver() : 
   _MP(NULL), _MAP(NULL), _MIP(NULL), _PDX(NULL), _PrimalSolve(1),
-  omega_domain(0.), _mylevel(-1), _directsolver(0), _ZP(NULL), _paramfile(NULL), _HM(NULL)
+  //  omega_domain(0.), 
+  _mylevel(-1), _directsolver(0), _ZP(NULL), _paramfile(NULL), _HM(NULL)
 {
 }
 
@@ -152,8 +153,8 @@ void StdSolver::BasicInit(int level, const ParamFile* paramfile, const MeshInter
 
   GetMeshInterpretor()->BasicInit(_paramfile);
 
-  Dat.BasicInit(_paramfile);
-  PF.SetComponents(Dat.GetPfilter());
+  _Dat.BasicInit(_paramfile);
+  _PF.SetComponents(_Dat.GetPfilter());
 }
 
 /*-------------------------------------------------------*/
@@ -211,7 +212,7 @@ IluInterface* StdSolver::NewIlu(int ncomp, const string& matrixtype)
 
 void StdSolver::ReInitMatrix() 
 {
-  GetMeshInterpretor()->InitFilter(PF);
+  GetMeshInterpretor()->InitFilter(_PF);
   SparseStructure SA;
   GetMeshInterpretor()->Structure(&SA);
 
@@ -441,7 +442,7 @@ void StdSolver::SetBoundaryVectorStrong(GlobalVector& f, const BoundaryManager& 
 void StdSolver::smooth(int niter, GlobalVector& x, const GlobalVector& y, GlobalVector& h) const
 {
   _il.start();
-  double omega = Dat.GetOmega();
+  double omega = _Dat.GetOmega();
   for(int iter=0; iter<niter; iter++)
     {
       MatrixResidual(h,x,y);
@@ -456,7 +457,7 @@ void StdSolver::smooth(int niter, GlobalVector& x, const GlobalVector& y, Global
 
 void StdSolver::smooth_pre(BasicGhostVector& x, const BasicGhostVector& y, BasicGhostVector& help) const
 {
-  int niter = Dat.GetIterPre();
+  int niter = _Dat.GetIterPre();
   smooth(niter,GetGV(x),GetGV(y),GetGV(help));
 }
 
@@ -476,7 +477,7 @@ void StdSolver::smooth_exact(BasicGhostVector& x, const BasicGhostVector& y, Bas
   else
 #endif
     {
-      int niter = Dat.GetIterExact();
+      int niter = _Dat.GetIterExact();
       smooth(niter,GetGV(x),GetGV(y),GetGV(help));
     }
 }
@@ -485,7 +486,7 @@ void StdSolver::smooth_exact(BasicGhostVector& x, const BasicGhostVector& y, Bas
 
 void StdSolver::smooth_post(BasicGhostVector& x, const BasicGhostVector& y, BasicGhostVector& help) const
 {
-  int niter = Dat.GetIterPost();
+  int niter = _Dat.GetIterPost();
   smooth(niter,GetGV(x),GetGV(y),GetGV(help));
 }
 
@@ -845,11 +846,11 @@ void StdSolver::ComputeIlu(const BasicGhostVector& gu) const
 
 void StdSolver::modify_ilu(IluInterface& I,int ncomp) const 
 {
-  if(Dat.GetIluModify().size()==0) return;
-  assert(Dat.GetIluModify().size()==ncomp);
+  if(_Dat.GetIluModify().size()==0) return;
+  assert(_Dat.GetIluModify().size()==ncomp);
   for(int c=0;c<ncomp;c++)
     {
-      double s = Dat.GetIluModify(c);
+      double s = _Dat.GetIluModify(c);
       I.modify(c,s);
     }
 }
@@ -862,24 +863,24 @@ void StdSolver::PermutateIlu(const GlobalVector& u) const
   
   iota(perm.begin(),perm.end(),0);
   
-  if (Dat.GetIluSort()=="cuthillmckee")
+  if (_Dat.GetIluSort()=="cuthillmckee")
     {
       CuthillMcKee    cmc(GetMatrix()->GetStencil());
       cmc.Permutate      (perm);
     }
-  else if (Dat.GetIluSort()=="streamdirection")
+  else if (_Dat.GetIluSort()=="streamdirection")
     {
       const Equation*  EQ = GetProblemDescriptor()->GetEquation();
       assert(EQ);
       int ncomp = EQ->ncomp();
-      assert(Dat.GetStreamDirection().size()<=ncomp);
+      assert(_Dat.GetStreamDirection().size()<=ncomp);
       StreamDirection sd (GetMesh(),GetMatrix()->GetStencil(),u);
-      sd.Permutate       (perm,Dat.GetStreamDirection());
+      sd.Permutate       (perm,_Dat.GetStreamDirection());
     }
-  else if (Dat.GetIluSort()=="vectordirection")
+  else if (_Dat.GetIluSort()=="vectordirection")
     {
       VecDirection vd (GetMesh());
-      vd.Permutate    (perm,Dat.GetVectorDirection());
+      vd.Permutate    (perm,_Dat.GetVectorDirection());
     }
   
   if(GetIlu()) GetIlu()->ConstructStructure(perm,*GetMatrix());
@@ -1011,7 +1012,7 @@ void StdSolver::ConstructInterpolator(MgInterpolatorInterface* I, const MeshTran
 DoubleVector StdSolver::IntegrateSolutionVector(const GlobalVector& u) const
 {
   HNAverage(u);
-  DoubleVector dst = PF.IntegrateVector(u);
+  DoubleVector dst = _PF.IntegrateVector(u);
   HNZero(u);
   return dst;
 }
@@ -1030,12 +1031,19 @@ void StdSolver::SubtractMean(GlobalVector& x) const
   // In each nonlinear step: applied to Newton correction,
   // in each smoothing step
   //
-  if (PF.Active())
+  if (_PF.Active())
     {
       HNZeroCheck(x);
-      PF.SubtractMean(x);
+      _PF.SubtractMean(x);
       HNZero(x);
     }
+}
+
+/* -------------------------------------------------------*/
+
+void StdSolver::SubtractMeanAlgebraic(BasicGhostVector& x) const
+{
+  SubtractMeanAlgebraic(GetGV(x));
 }
 
 /*---------------------------------------------------*/
@@ -1043,10 +1051,10 @@ void StdSolver::SubtractMean(GlobalVector& x) const
 void StdSolver::SubtractMeanAlgebraic(GlobalVector& x) const
 {
   // applies to residuals
-  if (PF.Active())
+  if (_PF.Active())
     {
       HNZeroCheck(x);
-      PF.SubtractMeanAlgebraic(x);
+      _PF.SubtractMeanAlgebraic(x);
       HNZero(x);
     }
 }
