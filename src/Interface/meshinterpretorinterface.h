@@ -85,6 +85,8 @@ public:
 
   virtual double PressureFilter(nvector<double>&) const {assert(0);}
 
+  virtual void StabForm(Gascoigne::GlobalVector& f, const Gascoigne::GlobalVector& u, const Equation& EQ, double d) const {assert(0);}
+
   // Functionals
   virtual void ComputeError(const Gascoigne::GlobalVector& u, Gascoigne::LocalVector& err, const ExactSolution* ES) const { assert(0);};
   virtual double ComputeBoundaryFunctional(const Gascoigne::GlobalVector& u, const BoundaryFunctional& BF) const {assert(0);}
