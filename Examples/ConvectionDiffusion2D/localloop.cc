@@ -7,7 +7,7 @@ using namespace std;
 
 /*-----------------------------------------*/
 
-void LocalLoop::BasicInit(const string& paramfile)
+void LocalLoop::BasicInit(const ParamFile* paramfile)
 {
 //   GetMultiLevelSolverPointer() = new LocalMultiLevelSolver;
   LPD.BasicInit(paramfile);

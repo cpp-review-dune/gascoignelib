@@ -2,6 +2,9 @@
 #define  __multilevelsolverdata_h
 
 #include  "nlinfo.h"
+#include  "paramfile.h"
+
+using namespace Gascoigne;
 
 /*-------------------------------------------------------------*/
 
@@ -21,7 +24,7 @@ public:
 
   // constructors
 
-  MultiLevelSolverData(const std::string& filename);
+  MultiLevelSolverData(const ParamFile* pf);
   ~MultiLevelSolverData();
 };
 

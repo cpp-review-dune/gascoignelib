@@ -11,7 +11,7 @@ class Laplace3d : public Laplace
 
 public:
 
-  Laplace3d(const std::string& filename);
+  Laplace3d(const ParamFile* pf);
 
   std::string GetName() const { return "Laplace3d";}
 

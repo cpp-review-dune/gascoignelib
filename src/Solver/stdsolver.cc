@@ -26,7 +26,7 @@ using namespace std;
 
 StdSolver::StdSolver() : 
   _MP(NULL), _MAP(NULL), _MIP(NULL), _PDX(NULL), _PrimalSolve(1),
-  omega_domain(0.), _mylevel(-1), _directsolver(0), _ZP(NULL)
+  omega_domain(0.), _mylevel(-1), _directsolver(0), _ZP(NULL), _paramfile(NULL)
 {
 }
 
@@ -52,7 +52,7 @@ void StdSolver::OutputSettings() const
 {
   cout << "=====================================" << endl;
   cout << "Solver:          " << GetName() << endl;
-  cout << "Discretization:  " << GetMeshInterpretor()->GetName()  << endl;
+  cout << "MeshInterpretor:  " << GetMeshInterpretor()->GetName()  << endl;
   GetProblemDescriptor()->OutputSettings(cout);
   cout << "=====================================" << endl;
 }
@@ -97,9 +97,11 @@ void StdSolver::NewMesh(int level, const MeshInterface* mp)
 
 /*-------------------------------------------------------*/
 
-void StdSolver::BasicInit(int level, const string& pfile, const MeshInterface* MP)
+void StdSolver::BasicInit(int level, const ParamFile* paramfile, const MeshInterface* MP)
 {
-  _paramfile = pfile;
+  assert(MP);
+  _MP = MP;
+  _paramfile = paramfile;
   _mylevel=level;
 
   DataFormatHandler DFH;
@@ -108,9 +110,8 @@ void StdSolver::BasicInit(int level, const string& pfile, const MeshInterface* M
   DFH.insert("disc", &_discname, "unknown");
   FileScanner FS(DFH);
   FS.NoComplain();
-  FS.readfile(pfile,"Solver");
+  FS.readfile(_paramfile,"Solver");
 
-  assert(MP);
   if(MP->nnodes()<_ndirect) 
     {
       _directsolver=1;
@@ -765,7 +766,7 @@ void StdSolver::Visu(const string& name, const BasicGhostVector& gu, int i) cons
   HNAverage(gu);
 
   CfdVisualization Visu(GetGV(gu),*GetMesh());
-  Visu.read_parameters(".",_paramfile);
+  Visu.read_parameters(_paramfile);
   Visu.set_name(name);
   Visu.step(i);
   Visu.write();

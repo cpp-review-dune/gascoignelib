@@ -5,16 +5,17 @@
 
 int main(int argc, char** argv)
 {
-  std::string paramfile("benchcircle.param");
+  ParamFile paramfile("benchcircle.param");
   if(argc>=2) {
-    paramfile = argv[1];
+    paramfile.SetName(argv[1]);
   }
 
   ProblemDescriptor1 LPD;
-  LPD.BasicInit(paramfile);
+  LPD.BasicInit(&paramfile);
 
   StdLoop loop;
-  loop.BasicInit(paramfile);
+
+  loop.BasicInit(&paramfile);
   loop.run(&LPD);
 
   return 0;

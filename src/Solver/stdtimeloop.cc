@@ -6,7 +6,7 @@ using namespace std;
 
 /*-----------------------------------------*/
 
-void StdTimeLoop::BasicInit(const string& paramfile)
+void StdTimeLoop::BasicInit(const ParamFile* paramfile)
 {
   StdLoop::BasicInit(paramfile);
 

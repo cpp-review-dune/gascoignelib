@@ -38,7 +38,7 @@ void FunctionalManager::Print(std::ostream& os) const
 
 /*-----------------------------------------*/
 
-void FunctionalManager::ConstructSet(const std::string& paramfile)
+void FunctionalManager::ConstructSet(const ParamFile* paramfile)
 {
   // erstmal names einlesen
 

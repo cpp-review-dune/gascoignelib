@@ -116,10 +116,6 @@ void PatchMeshInterpretor::ComputeError(const GlobalVector& u, LocalVector& err,
 
   CompVector<double> lerr(ncomp,3); 
 
-//   int dim = GetPatchMesh()->dimension();
-//   int ne = GetPatchMesh()->nodes_per_element();
-//   nmatrix<double> T(dim, ne);
-
   nmatrix<double> T;
   for(int iq=0; iq<GetPatchMesh()->npatches(); iq++)
     {
@@ -193,7 +189,7 @@ double PatchMeshInterpretor::compute_element_mean_matrix(int iq, EntryMatrix& E)
 
 double PatchMeshInterpretor::PressureFilter(nvector<double>& PF) const
 {
-  int nv = GetPatchMesh()->nodes_per_cell(); // = 4 oder 8
+  int nv = GetPatchMesh()->nodes_per_cell(0); // = 4 oder 8
   EntryMatrix  E(nv,1);
 
   PF.resize(n());

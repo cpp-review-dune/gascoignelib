@@ -35,7 +35,7 @@ public:
 //
 ///  Constructor 
 //
-  BackwardEquation(const std::string& filename);
+  BackwardEquation(const ParamFile* paramfile);
 
   void point(double h, const FemFunction& U, FemData& Q, const Vertex2d& v) const;
 

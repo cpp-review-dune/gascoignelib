@@ -31,7 +31,7 @@ public:
   LocalLoop() : StdLoop() {}
   ~LocalLoop() {}
 
-  void BasicInit(const std::string& paramfile);
+  void BasicInit(const ParamFile* paramfile);
   void run();
 };
 

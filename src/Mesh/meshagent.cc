@@ -22,8 +22,6 @@ MeshAgent::~MeshAgent()
 void MeshAgent::ReInit()
 {
   GMG->ReInit(dimension,HMP->nlevels());
-  //vorher
-//   GMG->ReInit(dimension,HMP->nlevels()-1);
 
   GascoigneMeshConstructor MGM(HMP,GMG);
   MGM.BasicInit();
@@ -31,10 +29,10 @@ void MeshAgent::ReInit()
 
 /*-----------------------------------------*/
 
-void MeshAgent::BasicInit(const std::string& paramfile)
+void MeshAgent::BasicInit(const ParamFile* paramfile)
 {
   DataFormatHandler DFH;
-  DFH.insert("dimension",&dimension,0);
+  DFH.insert("dimension",&dimension,2);
   FileScanner FS(DFH);
   FS.NoComplain();
   FS.readfile(paramfile,"Mesh");
@@ -118,9 +116,10 @@ void MeshAgent::refine_cells(nvector<int>& ref)
   
   for (int i=0; i<ref.size(); i++)
     {
-      for (int j=0; j<HMP->nodes_per_cell(); j++)
+      int cell = ref[i];
+      for (int j=0; j<HMP->nodes_per_cell(cell); j++)
 	{
-	  refnodes.push_back(HMP->vertex_of_cell(ref[i],j));
+	  refnodes.push_back(HMP->vertex_of_cell(cell,j));
 	}
     }
   refine_nodes(refnodes);

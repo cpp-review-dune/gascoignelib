@@ -17,7 +17,7 @@ public:
 
   ~NavierStokesGls();
   NavierStokesGls();
-  NavierStokesGls(const std::string& paramfile);
+  NavierStokesGls(const ParamFile* pf);
 
   std::string GetName() const { return "NavierStokesGls";}
 

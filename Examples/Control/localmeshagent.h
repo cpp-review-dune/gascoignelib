@@ -29,7 +29,7 @@ public:
 ////  Con(De)structor 
 //
   LocalMeshAgent() : MeshAgent() {}
-  void BasicInit(const std::string& paramfile);
+  void BasicInit(const ParamFile* paramfile);
 
 };
 

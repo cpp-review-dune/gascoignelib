@@ -6,7 +6,11 @@
 
 #include  "cginfo.h"
 #include  "nlinfo.h"
+#include  "paramfile.h"
 #include  <string>
+
+
+using namespace Gascoigne;
 
 /*******************************************************************/
 
@@ -58,7 +62,7 @@ class Monitor
   void  failed_step   ();
   void  pre_monitor   (char*);
   void  post_monitor  ();
-  void  init          (const std::string& paramfile, int);
+  void  init          (const ParamFile* pf, int);
   void  mesh          (int,int);
   void  pre_nonlinear (int);
   void  post_nonlinear(const dvector&, double, int,int,int);

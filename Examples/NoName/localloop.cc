@@ -16,7 +16,7 @@ using namespace std;
 
 /* ----------------------------------------- */
 
-void LocalLoop::BasicInit(const string& pfile, const ProblemDescriptorInterface& PD)
+void LocalLoop::BasicInit(const string& pfile, const ProblemDescriptorInterface* PD)
 {
   GetMeshAgentPointer() = new LocalMeshAgent;
   GetMultiLevelSolverPointer() = new LocalMultiLevelSolver;

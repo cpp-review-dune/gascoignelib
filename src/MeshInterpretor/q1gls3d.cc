@@ -8,7 +8,7 @@ using namespace std;
 
 /* ----------------------------------------- */
 
-void Q1Gls3d::BasicInit(const std::string& paramfile)
+void Q1Gls3d::BasicInit(const ParamFile* pf)
 {
   assert(CellMeshInterpretor::GetIntegrator()==NULL);
   BasicMeshInterpretor::GetIntegratorPointer() =  new GalerkinGlsIntegrator<3>;
@@ -18,7 +18,7 @@ void Q1Gls3d::BasicInit(const std::string& paramfile)
   typedef FiniteElement<3,2,TransQ1,BaseQ13d>  FiniteElement;
   BasicMeshInterpretor::GetFemPointer() =  new FiniteElement;
 
-  CellMeshInterpretor::BasicInit(paramfile);
+  CellMeshInterpretor::BasicInit(pf);
 }
 
 /* ----------------------------------------- */

@@ -61,7 +61,7 @@ class BasicMeshInterpretor : public MeshInterpretorInterface
   BasicMeshInterpretor();
   ~BasicMeshInterpretor();
   
-  void BasicInit(const std::string& paramfile);
+  void BasicInit(const ParamFile* pf) {}
   void ReInit   (const MeshInterface* MP) {__MP=MP;}
 };
 

@@ -16,7 +16,7 @@ public:
 
   ~Stokes3d();
   Stokes3d();
-  Stokes3d(const std::string& filename);
+  Stokes3d(const ParamFile* pf);
 
   std::string GetName() const { return "Stokes3d";}
 

@@ -73,19 +73,19 @@ StdMultiLevelSolver::~StdMultiLevelSolver()
 /*-------------------------------------------------------------*/
 
 StdMultiLevelSolver::StdMultiLevelSolver() : 
-  paramfile(""), _MAP(NULL), DataP(NULL), MON(NULL),  oldnlevels(-1)
+  _paramfile(NULL), _MAP(NULL), DataP(NULL), MON(NULL),  oldnlevels(-1)
 {
 }
 
 /*-------------------------------------------------------------*/
 
-void StdMultiLevelSolver::BasicInit(const MeshAgentInterface* MAP, const string& pfile)
+void StdMultiLevelSolver::BasicInit(const MeshAgentInterface* MAP, const ParamFile* paramfile)
 {
   _MAP = MAP;
 
-  paramfile = pfile;
+  _paramfile = paramfile;
   assert(DataP==0);
-  DataP = new MultiLevelSolverData(paramfile);
+  DataP = new MultiLevelSolverData(_paramfile);
 
   _cor.SetName("cor");
   _res.SetName("res");
@@ -171,7 +171,7 @@ void StdMultiLevelSolver::NewSolvers()
       if(_SP[solverlevel]==NULL) 
 	{
 	  _SP[solverlevel] = NewSolver(solverlevel);
- 	  _SP[solverlevel]->BasicInit(solverlevel,paramfile,MIP);
+ 	  _SP[solverlevel]->BasicInit(solverlevel,_paramfile,MIP);
 	  
 	  set<NewMultiLevelGhostVector>::const_iterator p = _MlVectors.begin();
 	  while(p!=_MlVectors.end()) 

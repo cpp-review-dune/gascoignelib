@@ -118,15 +118,20 @@ class HierarchicalMesh3d : public HierarchicalMesh
   HierarchicalMesh3d();
   HierarchicalMesh3d(const HierarchicalMesh3d& H);
   HierarchicalMesh3d& operator=(const HierarchicalMesh3d& H);
-  HierarchicalMesh3d(const std::string& filename);
+  HierarchicalMesh3d(const ParamFile* paramfile);
+
+  std::string GetName() const {return "HierarchicalMesh3d";}
 
   /*  Zugriff  */
 
   int  dimension()            const { return 3;}
-  int  nodes_per_cell()    const { return 8;};
+
   int  nnodes   ()            const { return vertexs3d.size();}
   int  ncells   ()            const { return hexs.size();}
   int  nbquads  ()            const { return Bquads.size();}
+
+  int  nodes_per_cell(int i)  const { return 8;}
+  int  VtkType(int i) const { return 12;}
 
   const Vertex3d& vertex3d(int i)         const { return vertexs3d[i];}
 

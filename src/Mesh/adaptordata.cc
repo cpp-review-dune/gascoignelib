@@ -75,7 +75,7 @@ AdaptorData::AdaptorData()
 
 /*-------------------------------------------------*/
 
-void AdaptorData::read(const std::string& filename)
+void AdaptorData::read(const ParamFile* pf)
 {
   DataFormatHandler DH;
 
@@ -90,7 +90,7 @@ void AdaptorData::read(const std::string& filename)
   DH.insert("randomp"    ,& _randomp,0.1);
   DH.insert("dimension"  ,& idim,2);
 
-  FileScanner FS(DH,filename,"Adaptor");
+  FileScanner FS(DH,pf,"Adaptor");
 
 //   CheckFunctional();
 //   CheckAdaptor();

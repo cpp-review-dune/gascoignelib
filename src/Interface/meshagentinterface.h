@@ -14,7 +14,10 @@
 #include  "meshinterface.h"
 #include  "multigridmeshinterface.h"
 #include  "meshtransferinterface.h"
+#include  "paramfile.h"
 #include  <string>
+
+using namespace Gascoigne;
 
 class MeshAgentInterface
 {
@@ -35,7 +38,7 @@ public:
   virtual ~MeshAgentInterface() {}
 
 
-  virtual void BasicInit(const std::string& paramfile)=0;
+  virtual void BasicInit(const ParamFile* pf)=0;
 
   virtual int nnodes() const=0;
   virtual int ncells() const=0;

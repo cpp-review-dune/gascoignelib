@@ -2,7 +2,11 @@
 #define  __SolverData_h
 
 #include  "nvector.h"
+#include  "paramfile.h"
 #include  <string>
+
+using namespace Gascoigne;
+
 /*----------------------------------------------*/
 
 class SolverData
@@ -25,7 +29,7 @@ class SolverData
   public:
 
     SolverData();
-    void Init(const std::string& file, int ncomp);
+    void Init(const ParamFile* pf, int ncomp);
     ~SolverData();
 
     const nvector<int>& GetPfilter()const { return pfilter;}

@@ -13,8 +13,7 @@ Stokes3d::Stokes3d() : Stokes()
 
 /*-----------------------------------------*/
 
-Stokes3d::Stokes3d(const std::string& filename) : 
-  Stokes(filename)
+Stokes3d::Stokes3d(const ParamFile* pf) : Stokes(pf)
 {
 }
 

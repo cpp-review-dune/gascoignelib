@@ -17,5 +17,5 @@ void ProblemDescriptor1::ConstructEquation()
 
 void ProblemDescriptor1::ConstructDirichletData()
 {
-  GetDirichletDataPointer() = new BenchMarkDirichletData(GetParamFile());
+  GetDirichletDataPointer() = new BenchMarkDirichletData();
 }

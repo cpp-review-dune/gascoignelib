@@ -17,7 +17,7 @@ public:
 
   ~StokesGls();
   StokesGls();
-  StokesGls(const std::string& paramfile);
+  StokesGls(const ParamFile* pf);
 
   std::string GetName() const { return "StokesGls";}
 

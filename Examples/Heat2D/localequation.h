@@ -35,7 +35,7 @@ public:
 //
 ///  Constructor 
 //
-  LocalEquation(const std::string& filename);
+  LocalEquation(const ParamFile* paramfile);
 
   std::string GetName() const { return "Local";}
   int    ncomp      () const {return 2;}

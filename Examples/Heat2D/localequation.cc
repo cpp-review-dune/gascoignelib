@@ -6,14 +6,14 @@ using namespace std;
 
 /* ----------------------------------------- */
 
-LocalEquation::LocalEquation(const string& filename) : Equation()
+LocalEquation::LocalEquation(const ParamFile* paramfile) : Equation()
 {
   DataFormatHandler DFH;
   DFH.insert("visc",&_visc,1.);
   DFH.insert("h",&_h,0.4);
   DFH.insert("k",&_k,2.);
   DFH.insert("r",&_r,0.3);
-  FileScanner FS(DFH,filename,"Equation");
+  FileScanner FS(DFH,paramfile,"Equation");
 
   _us = (_r*_h)/(1.-_r);
   _vs = (1.-_us)*(_h+_us);

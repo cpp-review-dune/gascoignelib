@@ -9,7 +9,7 @@ using namespace std;
 
 /*-----------------------------------------*/
 
-void LocalTimeLoop::BasicInit(const string& paramfile, const ProblemDescriptorInterface* PD)
+void LocalTimeLoop::BasicInit(const ParamFile* paramfile, const ProblemDescriptorInterface* PD)
 {
   GetMeshAgentPointer() = new LocalMeshAgent;
   StdTimeLoop::BasicInit(paramfile);

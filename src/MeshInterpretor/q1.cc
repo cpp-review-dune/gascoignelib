@@ -5,8 +5,16 @@ using namespace std;
 
 /* ----------------------------------------- */
 
-Q1::Q1() : CellMeshInterpretor() 
+Q1::Q1() : CellMeshInterpretor(), HN(NULL) 
 {
+}
+
+/* ----------------------------------------- */
+
+Q1::~Q1()
+{
+  if (HN) delete HN;
+  HN = NULL;
 }
 
 /* ----------------------------------------- */
@@ -48,6 +56,7 @@ nvector<int> Q1::GetLocalIndices(int iq) const
 void Q1::StrongDirichletMatrix(MatrixInterface& A, int col, const std::vector<int>& comp) const
 {
   const GascoigneMesh* GMP = dynamic_cast<const GascoigneMesh*>(GetMesh());
+  assert(GMP);
   const IntVector& bv = GMP->VertexOnBoundary(col);
   for(int i=0;i<bv.size();i++)
     {
@@ -60,6 +69,7 @@ void Q1::StrongDirichletMatrix(MatrixInterface& A, int col, const std::vector<in
 void Q1::StrongDirichletVectorZero(GlobalVector& u, int col, const std::vector<int>& comp) const
 {
   const GascoigneMesh* GMP = dynamic_cast<const GascoigneMesh*>(GetMesh());
+  assert(GMP);
   const IntVector& bv = GMP->VertexOnBoundary(col);
   for(int i=0;i<bv.size();i++)
     {

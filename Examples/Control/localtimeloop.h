@@ -32,7 +32,7 @@ public:
 //
 
   LocalTimeLoop() : StdTimeLoop() {}
-  void BasicInit(const std::string& pfile, const ProblemDescriptorInterface* PD);
+  void BasicInit(const ParamFile* paramfile, const ProblemDescriptorInterface* PD);
 
   void AddNodeVector(string filename);
   void NewMesh();

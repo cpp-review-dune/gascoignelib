@@ -22,7 +22,7 @@ void compose_name(std::string& s, int i, std::string t)
   char cname[30];
   std::string format("%s");
   format += t;
-  format += "%05d";
+  //  format += "%05d";
   sprintf(cname,format.c_str(),s.c_str(),i);
   s = cname;  
 }

@@ -26,7 +26,7 @@ void CellMeshInterpretor::Structure(SparseStructureInterface* SI) const
 void CellMeshInterpretor::Transformation(FemInterface::Matrix& T, int iq) const
 {
   int dim = GetMesh()->dimension();
-  int ne = GetMesh()->nodes_per_cell();
+  int ne = GetMesh()->nodes_per_cell(iq);
 
   nvector<int> indices = GetMesh()->IndicesOfCell(iq);
   assert(ne==indices.size());
@@ -115,10 +115,6 @@ void CellMeshInterpretor::ComputeError(const GlobalVector& u, LocalVector& err, 
 
   CompVector<double> lerr(ncomp,3); 
 
-//   int dim = GetMesh()->dimension();
-//   int ne = GetMesh()->nodes_per_cell();
-//   nmatrix<double> T(dim, ne);
-
   nmatrix<double> T;
   for(int iq=0; iq<GetMesh()->ncells(); iq++)
     {
@@ -192,7 +188,7 @@ double CellMeshInterpretor::compute_element_mean_matrix(int iq, EntryMatrix& E) 
 
 double CellMeshInterpretor::PressureFilter(nvector<double>& PF) const
 {
-  int nv = GetMesh()->nodes_per_cell(); // = 4 oder 8
+  int nv = GetMesh()->nodes_per_cell(0); // = 4 oder 8
   EntryMatrix  E(nv,1);
 
   PF.resize(n());
@@ -315,10 +311,10 @@ int CellMeshInterpretor::GetCellNumber(const Vertex2d& p0, nvector<Vertex2d>& p)
 {
   nvector<double> a0(2),a1(2),b(2),n(2);
   
-  int nv = GetMesh()->nodes_per_cell(); // = 4 oder 8
-  p.resize(nv);
   for(int iq=0; iq<GetMesh()->ncells(); ++iq)
     {
+      int nv = GetMesh()->nodes_per_cell(iq); // = 4 oder 8
+      p.resize(nv);
       for (int j=0; j<nv; ++j)
 	{    
 	  p[j]=GetMesh()->vertex2d(GetMesh()->vertex_of_cell(iq,j));
@@ -343,12 +339,13 @@ int CellMeshInterpretor::RhsPoint(GlobalVector& f, const Vertex2d& p0, int comp,
 {
   __F.ReInit(f.ncomp(),GetFem()->n());
 
-  nvector<Vertex2d> p(GetMesh()->nodes_per_cell());
+  nvector<Vertex2d> p(8);
   Vertex2d Tranfo_p0;
    
+
   int iq = GetCellNumber(p0,p);
   if (iq==-1) return 0;
-  
+
   VertexTransformation(p,p0,Tranfo_p0);
 
   nmatrix<double> T;
@@ -356,7 +353,6 @@ int CellMeshInterpretor::RhsPoint(GlobalVector& f, const Vertex2d& p0, int comp,
   GetFem()->ReInit(T);
 
   GetIntegrator()->RhsPoint(__F,*GetFem(),Tranfo_p0,comp);
-
   LocalToGlobal(f,__F,iq,d);
 
   return 1;

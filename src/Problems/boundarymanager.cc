@@ -4,13 +4,13 @@
 
 /*-------------------------------------------------------*/
 
-BoundaryManager::BoundaryManager(const std::string& filename)
+BoundaryManager::BoundaryManager(const ParamFile* pf)
 {
   DataFormatHandler DF;
   DF.insert("dirichlet",&coldir);
   DF.insert("neumann"  ,&colneu);
   DF.insert("dirichletcomp",&dirvec);
-  FileScanner FS(DF,filename,"BoundaryManager");
+  FileScanner FS(DF,pf,"BoundaryManager");
 
   for(const_iterator p=dirvec.begin();p!=dirvec.end();p++)
     {

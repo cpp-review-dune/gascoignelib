@@ -21,8 +21,8 @@ void NavierStokes3d::SetTimePattern(TimePattern& P) const
 
 /*-----------------------------------------*/
 
-NavierStokes3d::NavierStokes3d(const std::string& filename) 
-  : NavierStokes(filename) {}
+NavierStokes3d::NavierStokes3d(const ParamFile* pf) 
+  : NavierStokes(pf) {}
 
 
 /*-----------------------------------------*/

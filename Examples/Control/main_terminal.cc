@@ -5,7 +5,7 @@
 
 int main(int argc, char** argv)
 {
-  std::string paramfile("initial.param");
+  ParamFile paramfile("initial.param");
   if(argc!=3) {
     cerr << "usage: \"terminal: name last\"";
   }
@@ -14,11 +14,11 @@ int main(int argc, char** argv)
 
 
   ProblemDescriptorTerminal LPD;
-  LPD.BasicInit(paramfile);
+  LPD.BasicInit(&paramfile);
   LPD.GetInitialCondition();
 
   LocalTimeLoop loop;
-  loop.BasicInit(paramfile,&LPD);
+  loop.BasicInit(&paramfile,&LPD);
   loop.NewMesh();
   loop.AddNodeVector(name);
   loop.init("Results/backward",last);

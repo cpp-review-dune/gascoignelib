@@ -35,7 +35,7 @@ public:
 ////  Con(De)structor 
 //
 
-  LocalEquation(const std::string& filename);
+  LocalEquation(const ParamFile* paramfile);
   ~LocalEquation() {}
 
   std::string GetName() const {return "Local";}

@@ -20,7 +20,7 @@ public:
 
   ~StokesGls3d();
   StokesGls3d();
-  StokesGls3d(const std::string& paramfile);
+  StokesGls3d(const ParamFile* pf);
 
   std::string GetName() const { return "StokesGls3d";}
 

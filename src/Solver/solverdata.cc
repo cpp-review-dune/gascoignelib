@@ -16,7 +16,7 @@ SolverData::~SolverData()
 
 /*-----------------------------------------*/
 
-void SolverData::Init(const std::string& filename, int ncomp)
+void SolverData::Init(const ParamFile* pf, int ncomp)
 {
   ilum.reservesize(ncomp);
   ilum.zero();
@@ -44,7 +44,7 @@ void SolverData::Init(const std::string& filename, int ncomp)
   
   FileScanner FS(DFH);
   FS.NoComplain();
-  FS.readfile(filename,"Solver");
+  FS.readfile(pf,"Solver");
 
   if ((ilusort=="streamdirection")&&(stream_direction.size()==0))
     {

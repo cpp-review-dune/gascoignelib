@@ -1,18 +1,20 @@
 #include  "problemdescriptor.h"
 #include  "localloop.h"
-#include  "starter.h"
 
 /*---------------------------------------------------*/
 
 int main(int argc, char** argv)
 {
-  Starter S(argc, argv, "bench.param");
+  std::string paramfile("bench.param");
+  if(argc>=2) {
+    paramfile = argv[1];
+  }
 
   ProblemDescriptor LPD;
-  LPD.BasicInit(S.GetParamFile());
+  LPD.BasicInit(paramfile);
 
   LocalLoop loop;
-  loop.BasicInit(S.GetParamFile(),LPD);
+  loop.BasicInit(paramfile,&LPD);
   loop.run();
 
   return 0;

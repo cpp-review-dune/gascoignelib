@@ -8,7 +8,7 @@
 
 Visualization::Visualization() 
   : mesh(0), PointData(0), CellData(0),
-    filename("none"), directory("."), GP(0)
+    filename("none"), GP(0)
 {
   init();
 }
@@ -31,7 +31,6 @@ Visualization::~Visualization()
 Visualization& Visualization::operator=(const Visualization& W)
 {
   stepname  = W.stepname;
-  directory = W.directory;
   title     = W.title;
   avsa      = W.avsa;
   gmva      = W.gmva;
@@ -51,8 +50,6 @@ Visualization& Visualization::operator=(const Visualization& W)
 
 void Visualization::init()
 {
-  set_directory(".");
-
   pstep = 1;
   avsa = gmva = vua = vigiea = gnua = teca = 0;
   time = 0.; tstep = 0.; nexttime = 0.;
@@ -62,10 +59,8 @@ void Visualization::init()
 
 /********************************************************************/
 
-void Visualization::read_parameters(const std::string& dname, const std::string& fname)
+void Visualization::read_parameters(const ParamFile* pf)
 {
-  set_directory(dname);
-
   double time;
 
   std::vector<std::string>  planes(0);
@@ -85,18 +80,7 @@ void Visualization::read_parameters(const std::string& dname, const std::string&
   DH.insert("tecplot"  ,& teca,0);
   DH.insert("avs"      ,& avsa,0);
 
-  std::string ffname = directory;
-  ffname += "/";
-  ffname += fname;
-  // BUBU das stimmt was mit dem pfad nicht.
-  ffname=fname;
-
-  FileScanner FS(DH,ffname,"Visualization");
-
-  std::string stepname2 = directory;
-  stepname2 += "/";
-  stepname2 += stepname;
-  stepname = stepname2;
+  FileScanner FS(DH,pf,"Visualization");
 
   if (time>0.) set_tstep(time);
 
@@ -119,19 +103,9 @@ void Visualization::read_parameters(const std::string& dname, const std::string&
 
 /********************************************************************/
 
-void Visualization::set_directory(const std::string& s) 
-{ 
-  directory   = s;
-}
-
-/********************************************************************/
-
 void Visualization::set_name(const std::string& s) 
 { 
-  stepname = directory;
-  stepname += "/";
-  stepname += s;
-  
+  stepname = s;
   filename = stepname;
 }
 
@@ -181,17 +155,6 @@ void Visualization::step(int i)
 
 /********************************************************************/
 
-void Visualization::preview()
-{
-  if (pstep<0) return;
-  
-  filename = directory;
-  filename += "/";
-  filename +="Preview";
-}
-
-/********************************************************************/
-
 void Visualization::write()
 {
   if(mesh==0)
@@ -203,7 +166,7 @@ void Visualization::write()
   if(filename=="none")
     {
       std::cerr << "Visualization::write()\n";
-      std::cerr << "no filename set [use \"step(i)\" or \"preview()\"]\n";
+      std::cerr << "no filename set [use \"step(i)\"]\n";
       abort();
     }
 

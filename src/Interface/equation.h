@@ -10,6 +10,7 @@
 #include  "entrymatrix.h"
 #include  "timepattern.h"
 #include  "exactsolution.h"
+#include  "paramfile.h"
 
 //////////////////////////////////////////////
 ///

@@ -19,12 +19,6 @@ BasicMeshInterpretor::~BasicMeshInterpretor()
 
 /* ----------------------------------------- */
 
-void BasicMeshInterpretor::BasicInit(const std::string& paramfile)
-{
-}
-
-/* ----------------------------------------- */
-
 void BasicMeshInterpretor::GlobalToLocalData(int iq) const
 {
   const GlobalNodeData& gd = GetGlobalData().GetNodeData();

@@ -115,7 +115,7 @@ void HierarchicalMesh::SetParameters(string gridname, int patchdepth, int epatch
 
 /*------------------------------------------------------*/
 
-void HierarchicalMesh::ReadParameters(const string& paramfile)
+void HierarchicalMesh::ReadParameters(const ParamFile* pf)
 {
   int patchdepth,epatcher;
   int prerefine;
@@ -132,7 +132,7 @@ void HierarchicalMesh::ReadParameters(const string& paramfile)
 
   FileScanner FS(DFH);
   FS.NoComplain();
-  FS.readfile(paramfile,"Mesh");
+  FS.readfile(pf, "Mesh");
 
   InitShapes(curved);
   SetParameters(gridname,patchdepth,epatcher);

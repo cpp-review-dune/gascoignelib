@@ -14,7 +14,7 @@
 #include  "meshagentinterface.h"
 #include  "solverinterface.h"
 #include  "monitor.h"
-//#include  "newmultilevelghostvector.h"
+#include  "paramfile.h"
 
 class NewMultiLevelGhostVector;
 
@@ -26,7 +26,7 @@ public:
   virtual ~MultiLevelSolverInterface() {}
 
   virtual std::string GetName() const=0;
-  virtual void BasicInit(const MeshAgentInterface* GMGM, const std::string& paramfile)=0;
+  virtual void BasicInit(const MeshAgentInterface* GMGM, const ParamFile* paramfile)=0;
   // temporary
   virtual void ReInit(const ProblemDescriptorInterface& PDX)=0;
   virtual void NewMesh()=0;

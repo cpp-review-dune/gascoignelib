@@ -15,14 +15,14 @@ StokesGls3d::StokesGls3d() : Stokes3d(), GlsEquation()
  
 /*-----------------------------------------*/
 
-StokesGls3d::StokesGls3d(const std::string& paramfile) : Stokes3d(), GlsEquation()
+StokesGls3d::StokesGls3d(const ParamFile* pf) : Stokes3d(), GlsEquation()
 {
   DataFormatHandler DFH;
   DFH.insert("visc" , &visc , 0.01);
   DFH.insert("alpha", &ST.alpha0, 0.25);
   DFH.insert("penalty",&penalty, 0.);
 
-  FileScanner FS(DFH,paramfile,"Equation");
+  FileScanner FS(DFH, pf, "Equation");
 }
 
 /*-----------------------------------------*/

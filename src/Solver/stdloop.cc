@@ -16,7 +16,7 @@ using namespace Gascoigne;
 
 /*-----------------------------------------*/
 
-StdLoop::StdLoop() : _paramfile("none"), _MA(NULL), _ML(NULL), _iter(0), IOM("Results")
+StdLoop::StdLoop() : _paramfile(NULL), _MA(NULL), _ML(NULL), _iter(0), IOM("Results")
 {
   _estimator = _extrapolate = _reload  = "none";
   _FV.resize(0);
@@ -40,7 +40,7 @@ StdLoop::~StdLoop()
 
 /*-----------------------------------------*/
 
-void StdLoop::BasicInit(const string& paramfile)
+void StdLoop::BasicInit(const ParamFile* paramfile)
 {
   _paramfile = paramfile;
 

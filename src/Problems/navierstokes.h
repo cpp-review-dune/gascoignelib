@@ -26,7 +26,7 @@ public:
 
   ~NavierStokes();
   NavierStokes();
-  NavierStokes(const std::string& filename);
+  NavierStokes(const ParamFile* pf);
 
   void OperatorStrong(Vector& b, const FemFunction& U) const;
 

@@ -4,7 +4,7 @@
 
 /*-------------------------------------------------------------*/
 
-MultiLevelSolverData::MultiLevelSolverData(const std::string& filename) 
+MultiLevelSolverData::MultiLevelSolverData(const ParamFile* pf) 
   : info("Lin"), dualinfo("Dual"), nlinfo(info), dualnlinfo(dualinfo), 
     countresidual(0)
 {
@@ -57,7 +57,7 @@ MultiLevelSolverData::MultiLevelSolverData(const std::string& filename)
 
   FileScanner FS(DFH);
   FS.NoComplain();
-  FS.readfile(filename,"Multilevelsolver");
+  FS.readfile(pf,"Multilevelsolver");
 
   if ((mgtype!="V") && (mgtype!="W") && (mgtype!="F"))
     {

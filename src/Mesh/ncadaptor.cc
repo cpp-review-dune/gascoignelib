@@ -6,7 +6,7 @@
 
 /*-----------------------------------------*/
 
-NCAdaptor::NCAdaptor(const std::string& filename, const nvector<double>& _eta) 
+NCAdaptor::NCAdaptor(const ParamFile* paramfile, const nvector<double>& _eta) 
   :  eta(_eta)
 {
   DataFormatHandler DH;
@@ -18,7 +18,7 @@ NCAdaptor::NCAdaptor(const std::string& filename, const nvector<double>& _eta)
 #endif
 
   DH.insert("p"  ,& _p,0.9);
-  FileScanner FS(DH,filename,"Adaptor");
+  FileScanner FS(DH, paramfile, "Adaptor");
 
   etasum = accumulate(eta.begin(),eta.end(),0.);
 }

@@ -41,11 +41,11 @@ private:
   DirichletData      *DD;
   NeumannData        *ND;
 
-  mutable std::string _paramfile;
+  const ParamFile* _paramfile;
 
 protected:
 
-  std::string GetParamFile() const {return _paramfile;}
+  const ParamFile* GetParamFile() const {return _paramfile;}
 
   Equation*& GetEquationPointer() { return EQ;}
   BoundaryManager*& GetBoundaryManagerPointer() { return BM;}
@@ -92,8 +92,8 @@ public:
     return os;
   }
   
-  virtual void BasicInit(const std::string& paramfile) {
-    _paramfile = paramfile;
+  virtual void BasicInit(const ParamFile* pf) {
+    _paramfile = pf;
 
     ConstructEquation         ();
     ConstructExactSolution    ();

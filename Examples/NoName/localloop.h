@@ -33,7 +33,7 @@ public:
   LocalLoop() : StdLoop() {}
   ~LocalLoop() {}
 
-  void BasicInit(const string& pfile, const ProblemDescriptorInterface& PD);
+  void BasicInit(const string& pfile, const ProblemDescriptorInterface* PD);
 };
 
 

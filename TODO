@@ -1,16 +1,22 @@
 ***************************************************************
-14/10/2003
+24/01/2004
 ***************************************************************
 
+cmake:
+- checken, o .gascoignerc vorhanden
+- GASCOIGNE_OUTPUT_PREFIX sollte standarmaessig den Wert ${GASCOIGNE_STD} haben
+- "make[5]: Circular Laplace2D-1.exe <- Laplace2D-1.exe dependency dropped." persists...
+- autimatisches Suchen von libumfpack.a usw war ganz schoen praktisch !!
+
+
 
 
 ***************************************************************
-vor  14/10/2003.......
+14/10/2003.......
 ***************************************************************
 
 * estimator
 * dip/Malte adaptor ??
-
 * stabilization
 * MG-Transfer
 * time als parameter/data
@@ -20,23 +26,3 @@ vor  14/10/2003.......
 * ueber vertex nachdenken 2d/3d
 * gascoigne.h
 * functions "memory" in nmatric etc. beseitigen
-
-
-	-- boris vexler ---
-* functionale etc.
-
-	-- thomas dunne ---
-* CMake (env-var)
-* CMake clean
-* tcl
-
-	-- thomas richter ---
-* ilupermutate/cuthmckee
-* Funktionstest
-
-	--- michael schmich ---
-* Zeitmessung
-* Matrix beschleunigen
-
-	--- dominik meidner---
-* instationeare (dual)

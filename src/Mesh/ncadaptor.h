@@ -2,7 +2,10 @@
 #define __numerusclaususadaptor
 
 #include  "nvector.h"
+#include  "paramfile.h"
 #include  <string>
+
+using namespace Gascoigne;
 
 /*-----------------------------------------------------------*/
 
@@ -17,7 +20,7 @@ protected:
 
 public:
 
-  NCAdaptor(const std::string& filename, const nvector<double>& eta);
+  NCAdaptor(const ParamFile* paramfile, const nvector<double>& eta);
   void refine(nvector<int>& ref, nvector<int>& coarse) const;
 };
 

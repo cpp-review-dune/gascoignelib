@@ -6,13 +6,13 @@ using namespace std;
 
 /*-----------------------------------------*/
 
-LocalEquation::LocalEquation(const std::string& filename) : Equation()
+LocalEquation::LocalEquation(const ParamFile* paramfile) : Equation()
 {
   DataFormatHandler DFH;
   DFH.insert("sigma",&sigma,0.);
   DFH.insert("visc",&visc,1.);
   DFH.insert("alpha", &ST.alpha0, 0.25);
-  FileScanner FS(DFH,filename,"Equation");
+  FileScanner FS(DFH,paramfile,"Equation");
 }
 
 /* ----------------------------------------- */

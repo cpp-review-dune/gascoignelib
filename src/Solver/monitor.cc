@@ -110,7 +110,7 @@ void Monitor::set_directory(const std::string& dir)
 
 /*****************************************************************/
 
-void Monitor::init(const std::string& paramfile, int c)
+void Monitor::init(const ParamFile* pf, int c)
 {
   control   = c;
 
@@ -119,7 +119,7 @@ void Monitor::init(const std::string& paramfile, int c)
   DFH.insert("directory"  , &dir,  ".");
   DFH.insert("format"  , &format,  "latex");
   DFH.insert("header"  , &header);
-  FileScanner FS(DFH,paramfile,"Monitor");
+  FileScanner FS(DFH, pf, "Monitor");
 
   if (header.size()>0) std::cout << "header:\n" << header << std::endl;
 

@@ -11,12 +11,12 @@ Laplace:: Laplace()
 
 /*-----------------------------------------*/
 
-Laplace::Laplace(const std::string& filename) : Equation()
+Laplace::Laplace(const ParamFile* pf) : Equation()
 {
   DataFormatHandler DFH;
   DFH.insert("gamma",&gamma,0.);
   DFH.insert("visc",&visc,1.);
-  FileScanner FS(DFH,filename,"Equation");
+  FileScanner FS(DFH,pf,"Equation");
 }
  
 /*-----------------------------------------*/

@@ -18,12 +18,17 @@ public:
   GascoigneMesh2d();
   ~GascoigneMesh2d();
 
+  std::string GetName() const {return "GascoigneMesh2d";}
+
   std::vector<Vertex2d>& GetVertexVector() {return nx;}
 
   int  dimension() const {return 2;}
   int  nnodes()    const {return nx.size();}
   int  ncells()    const {return nc.size()/4;}
-  int  nodes_per_cell()  const {return 4;}
+
+  int  nodes_per_cell(int i)  const { return 4;}
+  int  VtkType(int i) const { return 9;}
+
   const Vertex2d& vertex2d(int i) const { return nx[i];}
   int  vertex_of_cell(int i, int ii) const { return nc[4*i+ii]; }
   

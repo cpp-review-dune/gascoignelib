@@ -26,7 +26,7 @@ public:
     
   MeshAgent();
 
-  void BasicInit(const std::string& paramfile);
+  void BasicInit(const ParamFile* pf);
   ~MeshAgent();
 
   const GascoigneMultiGridMesh& GetMultiGrid() const {return *GMG;}

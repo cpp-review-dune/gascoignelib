@@ -79,9 +79,10 @@ void StdTimeSolver::MemoryMatrix()
 //   GetMassMatrix()->Write(file);
 }
 
+
 /*-------------------------------------------------------------*/
   
-void StdTimeSolver::BasicInit(int level, const string& paramfile, const MeshInterface* MP)
+void StdTimeSolver::BasicInit(int level, const ParamFile* paramfile, const MeshInterface* MP)
 {
   StdSolver::BasicInit(level, paramfile, MP);
 }

@@ -6,7 +6,7 @@
 
 /*-----------------------------------------*/
 
-MalteAdaptor::MalteAdaptor(const std::string& filename, const dvector& _eta) :
+MalteAdaptor::MalteAdaptor(const ParamFile* pf, const dvector& _eta) :
   eta(_eta)
 {
   int idim = 0;
@@ -21,7 +21,7 @@ MalteAdaptor::MalteAdaptor(const std::string& filename, const dvector& _eta) :
   DH.insert("alpha"      ,& alpha,2.);  // lokale Konvergenzordnung bzgl. h
   DH.insert("beta"       ,& beta,1.);   // Skalierung des Aufwandes bzgl. nnodes
 
-  FileScanner FS(DH,filename,"Adaptor");
+  FileScanner FS(DH,pf,"Adaptor");
 
   if (idim==2) ppp = 3;
   else ppp=7;

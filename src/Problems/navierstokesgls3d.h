@@ -17,7 +17,7 @@ class NavierStokesGls3d : public NavierStokes3d, public virtual GlsEquation
 
   ~NavierStokesGls3d();
   NavierStokesGls3d();
-  NavierStokesGls3d(const std::string& parmfile);
+  NavierStokesGls3d(const ParamFile* pf);
 
   std::string GetName() const;
   //

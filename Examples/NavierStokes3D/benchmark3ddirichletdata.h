@@ -23,7 +23,7 @@ public:
 //
 ///  Constructor 
 //
-  BenchMark3dDirichletData(const std::string& paramfile);
+  BenchMark3dDirichletData();
   std::string GetName() const {return "BenchMark3dDirichletData";}
   void operator()(Vector& b, const Vertex3d& v, int col) const;
 };

@@ -26,6 +26,7 @@
 #include  "mginterpolatorinterface.h"
 #include  "meshtransferinterface.h"
 #include  "globaldata.h"
+#include  "paramfile.h"
 
 using namespace Gascoigne;
 
@@ -58,7 +59,7 @@ public:
   virtual void AddParameterVector(const GlobalVector* q) const {__q.AddParameterVector(q);}
   virtual void DeleteParameterVector(const GlobalVector* q) const {__q.DeleteParameterVector(q);}
 
-  virtual void BasicInit(const std::string& paramfile)=0;
+  virtual void BasicInit(const ParamFile* pf)=0;
   virtual void ReInit   (const MeshInterface* M) { assert(0);};
 
   virtual int n() const=0;

@@ -18,6 +18,7 @@
 #include  <string>
 #include  "stlio.h"
 #include  "gascoigne.h"
+#include  "paramfile.h"
 
 using namespace Gascoigne;
 
@@ -47,7 +48,7 @@ class BoundaryManager
  public:
 
   BoundaryManager() {}
-  BoundaryManager(const std::string& filename);
+  BoundaryManager(const ParamFile* pf);
 
   virtual std::string GetName() const {return "Std";}
 

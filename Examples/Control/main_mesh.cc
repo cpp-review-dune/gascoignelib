@@ -4,13 +4,10 @@
 
 int main(int argc, char** argv)
 {
-  std::string paramfile("mesh.param");
-  if(argc>=2) {
-    paramfile = argv[1];
-  }
+  ParamFile paramfile("mesh.param");
 
   MeshAgent MA;
-  MA.BasicInit(paramfile);
+  MA.BasicInit(&paramfile);
   MA.write_gup("Results/mesh");
 
   return 0;

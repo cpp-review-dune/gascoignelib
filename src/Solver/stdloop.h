@@ -13,6 +13,7 @@
 #include  "problemdescriptorinterface.h"
 #include  "stdiomanager.h"
 #include  "stopwatch.h"
+#include  "paramfile.h"
 
 //////////////////////////////////////////////
 //
@@ -55,7 +56,8 @@ protected:
   int    _niter, _nmax, _nmin, _coarse, _iter;
   double _p;
 
-  std::string _paramfile, _refiner, _estimator, _extrapolate, _reload, _initial;
+  const ParamFile*  _paramfile;
+  std::string _refiner, _estimator, _extrapolate, _reload, _initial;
 
   Extrapolator      Extra;
   Monitor           Mon;
@@ -88,7 +90,7 @@ public:
   StdLoop();
   virtual ~StdLoop();
 
-  virtual void BasicInit(const std::string& pfile);
+  virtual void BasicInit(const ParamFile* paramfile);
 
   void SetFunctionals(const vector<const Functional*>& fv) { _FV =  fv;}
 

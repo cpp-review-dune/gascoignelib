@@ -43,8 +43,8 @@ class StdMultiLevelSolver : public MultiLevelSolverInterface
 
   mutable int ComputeLevel;
   mutable int oldnlevels;
-  
-  string          paramfile;
+
+  const ParamFile*  _paramfile;
 
   Monitor*         MON;
   MultiLevelSolverData*          DataP;
@@ -81,7 +81,9 @@ class StdMultiLevelSolver : public MultiLevelSolverInterface
     _MlVectors.insert(g);
   }
   void MemoryVector();
-  void BasicInit(const MeshAgentInterface* GMGM, const string& paramfile);
+
+  void BasicInit(const MeshAgentInterface* GMGM, const ParamFile* paramfile);
+
   // Zugriff
 
   virtual void SetState(const string& s) {

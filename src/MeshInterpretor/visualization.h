@@ -5,6 +5,7 @@
 #include  "visudata.h"
 #include  "visudatainfo.h"
 #include  "gnuplot.h"
+#include  "paramfile.h"
 
 #include  <stdio.h>
 #include  <fstream>
@@ -25,7 +26,6 @@ class Visualization
 
   std::string  filename;
   std::string  stepname;
-  std::string  directory;
   std::string  title;
 
   std::vector<GnuplotData> GP;
@@ -57,6 +57,13 @@ class Visualization
   int    CheckCellData() const;
   
   void output_solution(std::ofstream&, int) const;
+
+
+  void _vtk_pointdata(std::ofstream& out) const;
+  void _vtk_celldata(std::ofstream& out) const;
+  void _vtk_points(std::ofstream& out) const;
+  void _vtk_cells(std::ofstream& out) const;
+
 
  public:
 
@@ -90,9 +97,8 @@ class Visualization
 
   const std::string& get_name() const { return stepname;}
   void set_name       (const std::string&);
-  void set_directory  (const std::string&);
 
-  void read_parameters(const std::string&,const std::string&);
+  void read_parameters(const ParamFile* pf);
 
   void set_time(double t)       
     {
@@ -105,7 +111,6 @@ class Visualization
   void set_tstep(double t)      { pstep = -1; tstep = t; nexttime += t;}
   void set_gnuplotdata(const std::vector<GnuplotData>& gp) { GP=gp; }
 
-  void  preview();
   void  step   (int);
   int   GetStep() const {return ii;}
   int   active (int) const;

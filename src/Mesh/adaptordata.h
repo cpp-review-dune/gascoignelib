@@ -2,7 +2,10 @@
 #define __adaptordata_h
 
 #include  <string>
-#include <stdio.h>
+#include  <stdio.h>
+#include  "paramfile.h"
+
+using namespace Gascoigne;
 
 class AdaptorData
 {
@@ -61,7 +64,7 @@ public:
   AdaptorData();
 
   void reset();
-  void read (const std::string&);
+  void read (const ParamFile* pf);
 };
 
 #endif

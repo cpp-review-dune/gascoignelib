@@ -5,16 +5,13 @@
 
 int main(int argc, char** argv)
 {
-  std::string paramfile("initial.param");
-  if(argc>=2) {
-    paramfile = argv[1];
-  }
+  ParamFile paramfile("initial.param");
 
   ProblemDescriptorInitial LPD;
-  LPD.BasicInit(paramfile);
+  LPD.BasicInit(&paramfile);
 
   LocalTimeLoop loop;
-  loop.BasicInit(paramfile,&LPD);
+  loop.BasicInit(&paramfile,&LPD);
   loop.NewMesh();
   loop.init("Results/forward",0);
 

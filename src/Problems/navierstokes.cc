@@ -16,15 +16,15 @@ NavierStokes::NavierStokes() : Equation()
 
 /*-----------------------------------------*/
 
-NavierStokes::NavierStokes(const std::string& filename) : Equation()
+NavierStokes::NavierStokes(const ParamFile* pf) : Equation()
 {
   _h = 0.;
   DataFormatHandler DFH;
-  DFH.insert("visc" , &visc , 0.01);
+  DFH.insert("visc" , &visc , 1.);
   DFH.insert("cut"  , &cut  ,  1.e10);
   DFH.insert("penalty",&penalty, 0.);
 
-  FileScanner FS(DFH,filename,"Equation");
+  FileScanner FS(DFH, pf, "Equation");
 }
 
 /*-----------------------------------------*/

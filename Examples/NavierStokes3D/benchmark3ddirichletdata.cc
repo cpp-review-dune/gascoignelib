@@ -5,7 +5,7 @@ using namespace std;
 
 /* ----------------------------------------- */
 
-BenchMark3dDirichletData::BenchMark3dDirichletData(const std::string& paramfile)
+BenchMark3dDirichletData::BenchMark3dDirichletData()
 {
   vmax = 0.45;
 }

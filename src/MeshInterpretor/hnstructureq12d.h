@@ -5,7 +5,7 @@
 
 /*-----------------------------------------*/
 
-class HNStructureQ12d : public virtual HNStructureQ1
+class HNStructureQ12d : public HNStructureQ1
 {
 protected:
 
@@ -26,10 +26,10 @@ public:
   void ReInit(const MeshInterface* m);
   
   void MatrixDiag(int ncomp, MatrixInterface& A) const;
-  void Average(Vector& u) const;
-  void Distribute(Vector& u) const;
-  void Zero(Vector& u) const;
-  bool ZeroCheck(const Vector& u) const;
+  void Average(GlobalVector& u) const;
+  void Distribute(GlobalVector& u) const;
+  void Zero(GlobalVector& u) const;
+  bool ZeroCheck(const GlobalVector& u) const;
   
   void CondenseHanging(nvector<int>& indices) const;
   void CondenseHanging(EntryMatrix& E, nvector<int>& indices) const;

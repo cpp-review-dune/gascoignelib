@@ -5,7 +5,7 @@
 
 int main(int argc, char** argv)
 {
-  std::string paramfile("forward.param");
+  ParamFile paramfile("forward.param");
 
   if(argc!=4) {
     cerr << "usage: \"forward: name first last\"";
@@ -19,10 +19,10 @@ int main(int argc, char** argv)
   cerr << "************************************\n";
 
   ProblemDescriptorForward LPD;
-  LPD.BasicInit(paramfile);
+  LPD.BasicInit(&paramfile);
 
   LocalTimeLoop loop;
-  loop.BasicInit(paramfile,&LPD);
+  loop.BasicInit(&paramfile,&LPD);
   loop.forward(name,first,last);
 
   return 0;

@@ -14,15 +14,14 @@ StokesGls::StokesGls() : Stokes(), GlsEquation()
  
 /*-----------------------------------------*/
 
-StokesGls::StokesGls(const std::string& paramfile) : 
-  Stokes(), GlsEquation()
+StokesGls::StokesGls(const ParamFile* pf) : Stokes(), GlsEquation()
 {
   DataFormatHandler DFH;
-  DFH.insert("visc" , &visc , 0.01);
+  DFH.insert("visc" , &visc , 1.);
   DFH.insert("alpha", &ST.alpha0, 0.25);
   DFH.insert("penalty",&penalty, 0.);
 
-  FileScanner FS(DFH,paramfile,"Equation");
+  FileScanner FS(DFH, pf, "Equation");
 }
 
 /*-----------------------------------------*/

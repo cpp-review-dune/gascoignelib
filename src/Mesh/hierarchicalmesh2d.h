@@ -98,7 +98,9 @@ class HierarchicalMesh2d : public HierarchicalMesh
   HierarchicalMesh2d();
   HierarchicalMesh2d(const HierarchicalMesh2d& H);
   HierarchicalMesh2d& operator=(const HierarchicalMesh2d& H);
-  HierarchicalMesh2d(const std::string& filename);
+  HierarchicalMesh2d(const ParamFile* paramfile);
+
+  std::string GetName() const {return "HierarchicalMesh2d";}
 
   /*  Zugriff  */
 
@@ -106,7 +108,8 @@ class HierarchicalMesh2d : public HierarchicalMesh
   int  nnodes   ()           const { return vertexs2d.size();}
   int  ncells   ()           const { return quads.size();}
   int  nblines  ()           const { return Blines.size(); }
-  int  nodes_per_cell()   const { return 4;};
+  int  nodes_per_cell(int i)   const { return 4;}
+  int VtkType(int i) const { return 9;}
 
   const Vertex2d& vertex2d(int i)         const { return vertexs2d[i];}
 

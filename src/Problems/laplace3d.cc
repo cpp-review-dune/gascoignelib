@@ -3,14 +3,14 @@
 
 /*-----------------------------------------*/
 
-Laplace3d::Laplace3d(const std::string& filename) : 
-  Laplace(filename)
+Laplace3d::Laplace3d(const ParamFile* pf) : 
+  Laplace(pf)
 {
   DataFormatHandler DFH;
   DFH.insert("betax",&betax,0.);
   DFH.insert("betay",&betay,0.);
   DFH.insert("betaz",&betaz,0.);
-  FileScanner FS(DFH,filename,"Equation");
+  FileScanner FS(DFH, pf, "Equation");
 }
 
 /*-----------------------------------------*/

@@ -23,7 +23,7 @@ NavierStokesGls::NavierStokesGls()
 
 /*-----------------------------------------*/
 
-NavierStokesGls::NavierStokesGls(const std::string& paramfile) 
+NavierStokesGls::NavierStokesGls(const ParamFile* pf) 
   : NavierStokes(), GlsEquation()
 {
   DataFormatHandler DFH;
@@ -35,7 +35,7 @@ NavierStokesGls::NavierStokesGls(const std::string& paramfile)
   DFH.insert("xeta" , &ST.xeta0, 6.);
   DFH.insert("penalty",&penalty, 0.);
 
-  FileScanner FS(DFH,paramfile,"Equation");
+  FileScanner FS(DFH, pf, "Equation");
 }
 
 /*-----------------------------------------*/

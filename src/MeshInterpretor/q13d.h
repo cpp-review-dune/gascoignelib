@@ -17,6 +17,8 @@ class Q13d : public Q1
 
   nmatrix<double> GetLocalInterpolationWeights() const;
 
+  HNStructureInterface* NewHNStructure();
+
 public:
 
   //
@@ -24,11 +26,10 @@ public:
   //
   
   Q13d();
-  ~Q13d();
 
   std::string GetName() const {return "Q13d";}
   
-  void BasicInit(const std::string& paramfile);
+  void BasicInit(const ParamFile* pf);
 
   void Interpolate(GlobalVector& u, const InitialCondition& U) const;
   void ConstructInterpolator(MgInterpolatorInterface* I, const MeshTransferInterface* MT);

@@ -30,8 +30,8 @@ public:
   RightHandSideData() : Application() {}
   ~RightHandSideData() {}
 
-  virtual double operator()(int c, const Vertex2d& v) const {return 0.;}
-  virtual double operator()(int c, const Vertex3d& v) const {return 0.;}
+  virtual double operator()(int c, const Vertex2d& v) const {assert(0);}
+  virtual double operator()(int c, const Vertex3d& v) const {assert(0);}
 
   virtual void operator()(VectorIterator b, const TestFunction& N, const Vertex2d& v) const 
     {

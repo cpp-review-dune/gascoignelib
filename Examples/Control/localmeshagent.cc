@@ -7,7 +7,7 @@ using namespace std;
 
 /*-----------------------------------------*/
 
-void LocalMeshAgent::BasicInit(const std::string& paramfile)
+void LocalMeshAgent::BasicInit(const ParamFile* paramfile)
 {
   cerr << "\t§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§\n";
   cerr << "\t i don't read any paramfile!\n";

@@ -26,13 +26,13 @@ void Stokes::SetTimePattern(TimePattern& P) const
 
 /*-----------------------------------------*/
 
-Stokes::Stokes(const std::string& filename) : Equation()
+Stokes::Stokes(const ParamFile* pf) : Equation()
 {
   DataFormatHandler DFH;
-  DFH.insert("visc" , &visc , 0.01);
+  DFH.insert("visc" , &visc , 1.);
   DFH.insert("penalty",&penalty, 0.);
 
-  FileScanner FS(DFH,filename,"Equation");
+  FileScanner FS(DFH, pf, "Equation");
 }
 
 /*-----------------------------------------*/

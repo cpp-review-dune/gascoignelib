@@ -1,29 +1,35 @@
-#include "starter.h"
+#include  "starter.h"
+#include  "assert.h"
 
 using namespace std;
 
+//-----------------------------------------------------------------//
+
 Starter::Starter(int argc, char** argv, const std::string& paramfile) 
 {    
+  _paramfile = new ParamFile;
   if(argc>=2) 
     {
       _erase = 0;
-      _paramfile = argv[1];
+      _paramfile->SetName(argv[1]);
     } 
   else 
     {
+      string pname;
       _erase = 1;
-      _paramfile = "_" + paramfile;
-      //std::cout << "Paramfile ist: " << _paramfile << std::endl;
+      pname = "_" + paramfile;
+      _paramfile->SetName(pname);
+      //std::cout << "Paramfile ist: " << pname << std::endl;
       {
 	string cmd("rm -f ");
-	cmd += _paramfile;
+	cmd += pname;
 	if( system(cmd.c_str())) exit(-1);
       }
       {
 	string cmd("cp ");
 	cmd += paramfile;
 	cmd += " ";
-	cmd += _paramfile;
+	cmd += pname;
 	if( system(cmd.c_str())) exit(-1);
       }
       {
@@ -32,7 +38,7 @@ Starter::Starter(int argc, char** argv, const std::string& paramfile)
 	    string cmd("cat ");
 	    cmd += "common.param";
 	    cmd += " >> ";
-	    cmd += _paramfile;
+	    cmd += pname;
 	    if( system(cmd.c_str())) exit(-1);
 	  }
 	else
@@ -50,7 +56,8 @@ Starter::~Starter()
   if (_erase==1)
     {
       string cmd("rm -f ");
-      cmd += _paramfile;
+      assert(_paramfile);
+      cmd += _paramfile->GetName();
       if( system(cmd.c_str())) exit(-1);
     }
 }

@@ -24,6 +24,7 @@ HNStructureQ12d::HNStructureQ12d() : edges(NULL), wei(3)
 
 void HNStructureQ12d::SparseStructureDiag(SparseStructure* S) const
 {
+  assert(edges);
   for(const_iterator p=edges->begin();p!=edges->end();p++)
     {
       int i = p->first;
@@ -36,6 +37,7 @@ void HNStructureQ12d::SparseStructureDiag(SparseStructure* S) const
 void HNStructureQ12d::ReInit(const MeshInterface* M)
 {
   const GascoigneMesh* GM = dynamic_cast<const GascoigneMesh*>(M);
+  assert(GM);
   edges = GM->GetHangingIndexHandler().GetStructure();
 }
 
@@ -126,14 +128,15 @@ void HNStructureQ12d::CondenseHangingPatch(EntryMatrix& E, nvector<int>& indices
 /*----------------------------------------------*/
 
 int HNStructureQ12d::hanging(int i) const 
-{ 
+{
+  assert(edges);
   if (edges->find(i)!=edges->end()) return 1;
   return 0;
 }
 
 /*-----------------------------------------*/
 
-void HNStructureQ12d::Zero(Vector& u) const
+void HNStructureQ12d::Zero(GlobalVector& u) const
 {
   for(const_iterator p=edges->begin();p!=edges->end();p++)
     {
@@ -143,7 +146,7 @@ void HNStructureQ12d::Zero(Vector& u) const
 
 /*-----------------------------------------*/
 
-bool HNStructureQ12d::ZeroCheck(const Vector& u) const
+bool HNStructureQ12d::ZeroCheck(const GlobalVector& u) const
 {  
   for(const_iterator p=edges->begin();p!=edges->end();p++)
     {
@@ -158,7 +161,7 @@ bool HNStructureQ12d::ZeroCheck(const Vector& u) const
 
 /*-----------------------------------------*/
 
-void HNStructureQ12d::Average(Vector& u) const
+void HNStructureQ12d::Average(GlobalVector& u) const
 {
   for(const_iterator p=edges->begin();p!=edges->end();p++)
     {
@@ -169,7 +172,7 @@ void HNStructureQ12d::Average(Vector& u) const
 
 /*-----------------------------------------*/
 
-void HNStructureQ12d::Distribute(Vector& u) const
+void HNStructureQ12d::Distribute(GlobalVector& u) const
 {
   for(const_iterator p=edges->begin();p!=edges->end();p++)
     {

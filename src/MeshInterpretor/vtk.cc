@@ -1,83 +1,38 @@
 #include  "visualization.h"
 #include  "errormacros.h"
 
-/********************************************************************/
+using namespace std;
 
-void Visualization::vtk(const std::string& bname) const
+/* ----------------------------------------- */
+
+void Visualization::_vtk_pointdata(ofstream& out) const
 {
-  std::string name = bname;
-  name += ".vtk";
-
-  std::ofstream out(name.c_str());
-  FILE_ERROR(out,name);
-
-  int nn = mesh->nnodes();
-
-  out << "# vtk DataFile Version 3.1 "<<std::endl;
-  out << "output from mmail" << std::endl;
-  out << "ASCII" << std::endl;
-  out << "DATASET UNSTRUCTURED_GRID" << std::endl;
-  out << "POINTS " << nn << " FLOAT " << std::endl;
-  
-  int ne  = mesh->ncells();
-  int npe = mesh->nodes_per_cell();
-  int npf = 9;
-  if(mesh->dimension()==2)
-    { 
-      for (int i=0; i<nn; i++)
-	{
-	  out<<  mesh->vertex2d(i) << " " << 0 << std::endl;
-	}
-    }
-  else
-    {
-      npf = 12;
-      for (int i=0; i<nn; i++)
-	{
-	  out<<  mesh->vertex3d(i) << std::endl;
-	}
-    }
-  out << std::endl << "CELLS " << ne <<" " << (npe+1)*ne << std::endl;
-  for (int c=0; c<ne; c++)
-    {
-      out << npe << " ";
-      for(int i=0;i<npe;i++)
-	{
-	  out << mesh->vertex_of_cell(c,i) << " "; 
-	}
-      out << std::endl; 
-    }     
-  out << std::endl << "CELL_TYPES " << ne << std::endl;
-  for(int i=0;i<ne;i++) out << npf << " ";
-  out << std::endl << std::endl;
-
- //  Data
-
  if (PointData)
    {
+     int nn = mesh->nnodes();
      CheckPointData();
      for(VisuDataInfo::siterator p=PointDataInfo->sbegin();p!=PointDataInfo->send();++p)
        {
-	 if(p==PointDataInfo->sbegin()) out << "POINT_DATA " << nn << std::endl;
-	 out << "SCALARS "<< p->first <<" float "<< std::endl;
-	 out << "LOOKUP_TABLE default"<< std::endl;
+	 if(p==PointDataInfo->sbegin()) out << "POINT_DATA " << nn << endl;
+	 out << "SCALARS "<< p->first <<" float "<< endl;
+	 out << "LOOKUP_TABLE default"<< endl;
 	 for (int ind=0; ind<PointData->visun(); ind++)
 	   {
 	     if(mesh->dimension()==2)
 	       {
-		 out << PointData->visudata(ind,p->second,mesh->vertex2d(ind)) << std::endl;
+		 out << PointData->visudata(ind,p->second,mesh->vertex2d(ind)) << endl;
 	       }
 	     else
 	       {
-		 out << PointData->visudata(ind,p->second,mesh->vertex3d(ind)) << std::endl;
+		 out << PointData->visudata(ind,p->second,mesh->vertex3d(ind)) << endl;
 	       }
 	   }
-	 out << std::endl<< std::endl;
+	 out << endl<< endl;
 
        }
      for(VisuDataInfo::viterator p=PointDataInfo->vbegin();p!=PointDataInfo->vend();++p)
        {
-	 out << "VECTORS "<< p->first <<" float "<< std::endl;
+	 out << "VECTORS "<< p->first <<" float "<< endl;
 	 for (int ind=0; ind<PointData->visun(); ind++)
 	   {
 	     for(int ii=0;ii<2;ii++)
@@ -88,7 +43,7 @@ void Visualization::vtk(const std::string& bname) const
 		   }
 		 else
 		   {
-		     out << PointData->visudata(ind,p->second[ii],mesh->vertex3d(ind)) << std::endl;
+		     out << PointData->visudata(ind,p->second[ii],mesh->vertex3d(ind)) << endl;
 		   }
 	       }
 	     if(p->second[2]==-1)
@@ -99,30 +54,35 @@ void Visualization::vtk(const std::string& bname) const
 	       {
 		 out << PointData->visudata(ind,p->second[2]) << " ";
 	       }
-	     out << std::endl;
+	     out << endl;
 	   }
-	 out << std::endl<< std::endl;
+	 out << endl<< endl;
        }
    }
- 
+}
+
+/* ----------------------------------------- */
+
+void Visualization::_vtk_celldata(ofstream& out) const
+{
  if (CellData)
    {
      CheckCellData();
      for(VisuDataInfo::siterator p=CellDataInfo->sbegin();p!=CellDataInfo->send();++p)
        {
-	 if(p==CellDataInfo->sbegin()) out << "CELL_DATA " << mesh->ncells() << std::endl;
-	 out << "SCALARS "<< p->first <<" float "<< std::endl;
-	 out << "LOOKUP_TABLE default"<< std::endl;
+	 if(p==CellDataInfo->sbegin()) out << "CELL_DATA " << mesh->ncells() << endl;
+	 out << "SCALARS "<< p->first <<" float "<< endl;
+	 out << "LOOKUP_TABLE default"<< endl;
 
 	 for (int ind=0; ind<CellData->visun(); ind++)
 	   {
-	     out << CellData->visudata(ind,p->second) << std::endl;
+	     out << CellData->visudata(ind,p->second) << endl;
 	   }
-	 out << std::endl<< std::endl;
+	 out << endl<< endl;
        }
      for(VisuDataInfo::viterator p=CellDataInfo->vbegin();p!=CellDataInfo->vend();++p)
        {
-	 out << "VECTORS "<< p->first <<" float "<< std::endl;
+	 out << "VECTORS "<< p->first <<" float "<< endl;
 	 for (int ind=0; ind<CellData->visun(); ind++)
 	   {
 	     for(int ii=0;ii<2;ii++)
@@ -137,10 +97,98 @@ void Visualization::vtk(const std::string& bname) const
 	       {
 		 out << CellData->visudata(ind,p->second[2]) << " ";
 	       }
-	     out << std::endl;
+	     out << endl;
 	   }
-	 out << std::endl<< std::endl;
+	 out << endl<< endl;
        }
    }
+}
+
+/* ----------------------------------------- */
+
+void Visualization::_vtk_points(ofstream& out) const
+{
+  int nn = mesh->nnodes();
+  out << "POINTS " << nn << " FLOAT " << std::endl;
+  if(mesh->dimension()==2)
+    { 
+      for (int i=0; i<nn; i++)
+	{
+	  out<<  mesh->vertex2d(i) << " " << 0 << endl;
+	}
+    }
+  else if(mesh->dimension()==3)
+    { 
+      for (int i=0; i<nn; i++)
+	{
+	  out<<  mesh->vertex3d(i) << " " << 0 << endl;
+	}
+    }
+  else
+    {
+      assert(0);
+    }
+  out << endl;
+}
+
+/* ----------------------------------------- */
+
+void Visualization::_vtk_cells(ofstream& out) const
+{
+  int ne = mesh->ncells();
+
+  int lenght=0;
+  for (int c=0; c<ne; c++)
+    {
+      lenght += mesh->nodes_per_cell(c)+1;
+    }
+ 
+  out << std::endl << "CELLS " << ne <<" " << lenght << std::endl;
+  
+  for (int c=0; c<ne; c++)
+    {
+      int nle = mesh->nodes_per_cell(c);
+      out << nle << " ";
+      for(int ii=0;ii<nle;ii++)
+	{
+	  out << mesh->vertex_of_cell(c,ii) << " "; 
+	}
+      out << std::endl; 
+    }     
+  out << std::endl << "CELL_TYPES " << ne << std::endl;
+  for (int c=0; c<ne; c++)
+    {
+      out << mesh->VtkType(c) << " ";
+    }
+  out << std::endl;
+}
+
+/* ----------------------------------------- */
+
+void Visualization::vtk(const string& bname) const
+{
+  string name = bname;
+  name += ".vtk";
+
+  ofstream out(name.c_str());
+  FILE_ERROR(out,name);
+
+ //  Header
+
+  out << "# vtk DataFile Version 4.2 "<<endl;
+  out << "output from GascoigneStd" << endl;
+  out << "ASCII" << endl;
+  out << "DATASET UNSTRUCTURED_GRID" << endl;
+
+ //  Mesh
+
+  _vtk_points(out);
+  _vtk_cells(out);
+
+ //  Data
+
+  _vtk_pointdata(out);
+  _vtk_celldata(out);
+ 
  out.close();
 }

@@ -15,12 +15,12 @@ FileScanner::FileScanner(DataFormatHandler& D) : DH(D)
 
 /***************************************************/
 
-FileScanner::FileScanner(DataFormatHandler& D, const string& inputname,
+FileScanner::FileScanner(DataFormatHandler& D, const ParamFile* pf,
 			 const string& blockname) : DH(D)
 {
   complain = 1;
   blocksymbol = "//Block";
-  readfile(inputname,blockname);
+  readfile(pf,blockname);
 }
 
 /***************************************************/
@@ -33,8 +33,14 @@ void FileScanner::_assert(bool b, const vector<string>& words) const
 
 /***************************************************/
 
-void FileScanner::readfile(const string& inputname, const string& blockname)
+void FileScanner::readfile(const ParamFile* pf, const string& blockname)
 {
+  if(pf==NULL)
+    {
+      return;
+    }
+
+  string inputname = pf->GetName();
   LineScanner LS(inputname);
 
   vector<string> words;
@@ -66,7 +72,7 @@ void FileScanner::readfile(const string& inputname, const string& blockname)
 	  break;
 	}
     }
-  if (helpfound) print(inputname,blockname);
+  if (helpfound) print(blockname);
 
   if (!blockfound)
     {
@@ -240,8 +246,7 @@ void FileScanner::FormatToValue(const vector<string>& words)
 
 /***************************************************/
 
-void FileScanner::print(const string& inputname,
-			const string& blockname) const
+void FileScanner::print(const string& blockname) const
 {
   cout << "=====================" << endl;
   cout << blocksymbol << " " << blockname << endl << endl;

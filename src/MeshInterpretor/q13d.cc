@@ -9,6 +9,7 @@
 #include  "mginterpolatormatrix.h"
 #include  "mginterpolatornested.h"
 #include  "gascoignemeshtransfer.h"
+#include  "hnstructureq12d.h"
 
 using namespace std;
 
@@ -16,21 +17,23 @@ using namespace std;
 
 Q13d::Q13d() : Q1() 
 {
-  HN = new HNStructureQ13d;
 }
 
 /* ----------------------------------------- */
 
-Q13d::~Q13d()
+HNStructureInterface* Q13d::NewHNStructure()
 {
-  if (HN) delete HN;
-  HN = NULL;
+  return new HNStructureQ13d;
 }
 
 /* ----------------------------------------- */
 
-void Q13d::BasicInit(const std::string& paramfile)
+void Q13d::BasicInit(const ParamFile* pf)
 {
+  assert(HN==NULL);
+  HN = NewHNStructure();
+  assert(HN);
+
   assert(CellMeshInterpretor::GetIntegrator()==NULL);
   BasicMeshInterpretor::GetIntegratorPointer() =  new GalerkinIntegrator<3>;
 
@@ -39,7 +42,7 @@ void Q13d::BasicInit(const std::string& paramfile)
   typedef FiniteElement<3,2,TransQ1,BaseQ13d>  FiniteElement;
   BasicMeshInterpretor::GetFemPointer() =  new FiniteElement;
 
-  CellMeshInterpretor::BasicInit(paramfile);
+  CellMeshInterpretor::BasicInit(pf);
 }
 
 /* ----------------------------------------- */
@@ -68,6 +71,7 @@ nmatrix<double> Q13d::GetLocalInterpolationWeights() const
 void Q13d::StrongDirichletVector(GlobalVector& u, const DirichletData& BF, int col, const std::vector<int>& comp) const
 {
   const GascoigneMesh* GMP = dynamic_cast<const GascoigneMesh*>(GetMesh());
+  assert(GMP);
   nvector<double> ff(u.ncomp(),0.);
   const IntVector& bv = GMP->VertexOnBoundary(col);
 

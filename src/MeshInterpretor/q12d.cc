@@ -9,6 +9,7 @@
 #include  "mginterpolatormatrix.h"
 #include  "mginterpolatornested.h"
 #include  "gascoignemeshtransfer.h"
+#include  "hnstructureq12d.h"
 
 using namespace std;
 
@@ -16,21 +17,23 @@ using namespace std;
 
 Q12d::Q12d() : Q1()
 {
-  HN = new HNStructureQ12d;
 }
 
 /* ----------------------------------------- */
 
-Q12d::~Q12d()
+HNStructureInterface* Q12d::NewHNStructure()
 {
-  if (HN) delete HN;
-  HN = NULL;
+  return new HNStructureQ12d;
 }
 
 /* ----------------------------------------- */
 
-void Q12d::BasicInit(const std::string& paramfile)
+void Q12d::BasicInit(const ParamFile* pf)
 {
+  assert(HN==NULL);
+  HN = NewHNStructure();
+  assert(HN);
+
   assert(CellMeshInterpretor::GetIntegrator()==NULL);
   BasicMeshInterpretor::GetIntegratorPointer() =  new GalerkinIntegrator<2>;
 
@@ -39,7 +42,7 @@ void Q12d::BasicInit(const std::string& paramfile)
   typedef FiniteElement<2,1,TransQ1,BaseQ12d>  FiniteElement;
   BasicMeshInterpretor::GetFemPointer() =  new FiniteElement;
 
-  CellMeshInterpretor::BasicInit(paramfile);
+  CellMeshInterpretor::BasicInit(pf);
 }
 
 /* ----------------------------------------- */
@@ -47,7 +50,7 @@ void Q12d::BasicInit(const std::string& paramfile)
 nmatrix<double> Q12d::GetLocalInterpolationWeights() const
 {
   // w(i,j) = interpolation weight of node i to node j
-  int nn = GetMesh()->nodes_per_cell();
+  int nn = 4;//GetMesh()->nodes_per_cell();
   nmatrix<double> w(nn,nn);
   w.zero();
   w(0,1) =  0.5  ; w(0,2) =  0.5  ; w(0,3) =  0.25;
@@ -62,6 +65,7 @@ nmatrix<double> Q12d::GetLocalInterpolationWeights() const
 void Q12d::StrongDirichletVector(GlobalVector& u, const DirichletData& BF, int col, const std::vector<int>& comp) const
 {
   const GascoigneMesh* GMP = dynamic_cast<const GascoigneMesh*>(GetMesh());
+  assert(GMP);
   nvector<double> ff(u.ncomp(),0.);
   const IntVector& bv = GMP->VertexOnBoundary(col);
 

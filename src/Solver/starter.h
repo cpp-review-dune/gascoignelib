@@ -10,14 +10,17 @@
 ////
 /////////////////////////////////////////////
 
-#include <string>
+#include  <string>
+#include  "paramfile.h"
+
+using namespace Gascoigne;
 
 class Starter
 {
 private:
 
   bool   _erase;
-  std::string _paramfile;
+  ParamFile* _paramfile;
 
 public:
 
@@ -29,7 +32,7 @@ public:
 
   ~Starter();
 
-  std::string GetParamFile() const {return _paramfile;}
+  const ParamFile* GetParamFile() const {return _paramfile;}
 };
 
 

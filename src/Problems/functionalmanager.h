@@ -4,6 +4,7 @@
 #include  "functional.h"
 #include  "dirichletdata.h"
 #include  "righthandsidedata.h"
+#include  "paramfile.h"
 
 /*-----------------------------------------*/
 
@@ -18,8 +19,7 @@ protected:
   std::vector<Functional*>         FF;
   std::vector<std::string>             names, gnames;
 
-  virtual Functional* ConstructFunctional
-    (const std::string& name, const std::string& params);
+  virtual Functional* ConstructFunctional(const std::string& name, const std::string& params);
 
   void Construct(int i, const std::vector<std::string>& functional);
 
@@ -30,7 +30,7 @@ public:
 
   void Print(std::ostream& os) const;
 
-  void ConstructSet(const std::string& paramfile);
+  void ConstructSet(const ParamFile* paramfile);
 
   const Functional*   GetFunctional  (const std::string& name) const;
 

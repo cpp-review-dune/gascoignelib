@@ -14,6 +14,7 @@
 #include  "meshtransferinterface.h"
 #include  "basicghostvector.h"
 #include  "data.h"
+#include  "paramfile.h"
 
 //////////////////////////////////////////////
 ///
@@ -21,7 +22,7 @@
 /// Interface class for Solver
 
 ///  Some porporties
-///  - lives on oone level of the hierarchy
+///  - lives on one level of the hierarchy
 ///  - stores the matrices
 ///  - holds memory for vectors
 ///  - provides e.g. nonlinear and linear residuals of the equations
@@ -43,7 +44,7 @@ class SolverInterface
 
   virtual std::string GetName() const=0;
 
-  virtual void BasicInit(int level, const std::string& paramfile, const MeshInterface* MP)=0;
+  virtual void BasicInit(int level, const ParamFile* paramfile, const MeshInterface* MP)=0;
   
   virtual void SetProblem(const ProblemDescriptorInterface& PDX)=0;
   virtual void SetState(const std::string& s)=0;

@@ -24,7 +24,7 @@ void HNStructureQ13d::ReInit(const MeshInterface* M)
 
 /*-----------------------------------------*/
 
-bool HNStructureQ13d::ZeroCheck(const Vector& u) const
+bool HNStructureQ13d::ZeroCheck(const GlobalVector& u) const
 {  
   bool r = HNStructureQ12d::ZeroCheck(u);
   if (r) return r;
@@ -42,7 +42,7 @@ bool HNStructureQ13d::ZeroCheck(const Vector& u) const
 
 /*-----------------------------------------*/
 
-void HNStructureQ13d::Zero(Vector& u) const
+void HNStructureQ13d::Zero(GlobalVector& u) const
 {
   HNStructureQ12d::Zero(u);
 
@@ -55,7 +55,7 @@ void HNStructureQ13d::Zero(Vector& u) const
 
 /*-----------------------------------------*/
 
-void HNStructureQ13d::Average(Vector& u) const
+void HNStructureQ13d::Average(GlobalVector& u) const
 {
   HNStructureQ12d::Average(u);
 
@@ -69,7 +69,7 @@ void HNStructureQ13d::Average(Vector& u) const
 
 /*-----------------------------------------*/
 
-void HNStructureQ13d::Distribute(Vector& u) const
+void HNStructureQ13d::Distribute(GlobalVector& u) const
 {
   HNStructureQ12d::Distribute(u);
 

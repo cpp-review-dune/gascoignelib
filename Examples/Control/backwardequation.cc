@@ -6,11 +6,11 @@ using namespace std;
 
 /* ----------------------------------------- */
 
-BackwardEquation::BackwardEquation(const string& filename) : Equation()
+BackwardEquation::BackwardEquation(const ParamFile* paramfile) : Equation()
 {
   DataFormatHandler DFH;
   DFH.insert("visc",&_visc,1.);
-  FileScanner FS(DFH,filename,"Backward");
+  FileScanner FS(DFH, paramfile, "Backward");
 }
 
 /* ----------------------------------------- */

@@ -20,7 +20,7 @@ public:
 
   ~Stokes();
   Stokes();
-  Stokes(const std::string& filename);
+  Stokes(const ParamFile* pf);
 
   std::string GetName() const { return "Stokes";}
 

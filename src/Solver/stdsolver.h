@@ -67,7 +67,7 @@ class StdSolver : public virtual SolverInterface
 
   SolverData          Dat;
   mutable int         _PrimalSolve;
-  std::string         _paramfile;
+  const ParamFile*    _paramfile;
 
   // 5. sonstiges
   
@@ -146,7 +146,7 @@ class StdSolver : public virtual SolverInterface
   StdSolver();
   ~StdSolver();
 
-  void BasicInit(int level, const std::string& pfile, const MeshInterface* MP);
+  void BasicInit(int level, const ParamFile* paramfile, const MeshInterface* MP);
 
   void SetProblem(const ProblemDescriptorInterface& PDX);
   void NewMesh(int l, const MeshInterface* MP);

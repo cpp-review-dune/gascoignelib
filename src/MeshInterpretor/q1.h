@@ -12,16 +12,18 @@
 /////////////////////////////////////////////
 
 #include  "cellmeshinterpretor.h"
-#include  "hnstructureq1.h"
+#include  "hnstructureinterface.h"
 
 class Q1 : public CellMeshInterpretor
 {
 protected:
 
-  HNStructureQ1*    HN;
+  HNStructureInterface*    HN;
 
   nvector<int> GetLocalIndices(int iq) const;
  void LocalToGlobal(MatrixInterface& A, EntryMatrix& E, int iq, double s) const;
+
+  virtual HNStructureInterface* NewHNStructure()=0;
 
 public:
 
@@ -30,7 +32,7 @@ public:
 //
 
   Q1();
-  ~Q1() {}
+  ~Q1();
 
   int n() const;
   //  const HNStructureQ1* GetHNStructure() const { return HN;}

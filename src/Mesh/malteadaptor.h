@@ -1,8 +1,9 @@
 #ifndef  __MalteAdaptor_h
 #define  __MalteAdaptor_h
 
-#include "nvector.h"
-#include "adaptordata.h"
+#include  "nvector.h"
+#include  "adaptordata.h"
+#include  "paramfile.h"
 
 //
 /// Minimizes E*L by global search,
@@ -35,7 +36,7 @@ protected:
 
 public:
 
-  MalteAdaptor(const std::string& filename, const dvector& eta);
+  MalteAdaptor(const ParamFile* pf, const dvector& eta);
   void coarse(nvector<int>& coarse) const;
   void refine(nvector<int>& ref) const;
   void refine(ivector& ref, ivector& coarse) const;

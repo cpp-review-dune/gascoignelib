@@ -12,6 +12,7 @@
 #include  "vertex.h"
 #include  "compvector.h"
 #include  "gascoigne.h"
+#include  "paramfile.h"
 
 using namespace Gascoigne;
 using namespace std;
@@ -91,7 +92,7 @@ class HierarchicalMesh : public MeshInterface
     
   void SetParameters(string gridname, int patchdepth, int epatcher);
   void ReadFile(const string& gridname);
-  void ReadParameters(const string& paramfile);
+  void ReadParameters(const ParamFile* pf);
   void global_refine  (int k);
   void random_refine  (double, int k=1);
   void random_patch_refine  (double, int k=1);

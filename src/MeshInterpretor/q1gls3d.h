@@ -30,7 +30,7 @@ public:
   
   std::string GetName() const {return "Q1Gls3d";}
   
-  void BasicInit(const std::string& paramfile);
+  void BasicInit(const ParamFile* pf);
 };
 
 #endif

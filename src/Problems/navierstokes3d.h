@@ -29,7 +29,7 @@ class NavierStokes3d : public NavierStokes
 
   ~NavierStokes3d();
   NavierStokes3d();
-  NavierStokes3d(const std::string& filename);
+  NavierStokes3d(const ParamFile* pf);
 
   std::string GetName() const;
 
