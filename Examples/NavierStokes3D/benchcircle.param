@@ -6,7 +6,7 @@ coarsening    0
 //Block Loop
 
 niter        3
-estimator    weighted
+estimator    none
 initial      boundary
 refiner      global
 

@@ -1,7 +1,7 @@
 //Block Loop
 
 niter        3
-estimator    weighted
+estimator    none
 initial      boundary
 refiner      global
 
