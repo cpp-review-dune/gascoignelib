@@ -119,12 +119,12 @@ void BasicLoop::WriteMeshAndSolution(const string& filename, const MultiLevelGho
 //   name = filename + "_value";
   compose_name(name,_iter);
   GetMultiLevelSolver()->GetSolver()->Write(u.finest(),name);
-  cout << "[" << name << "]";
+  cout << "[" << name << ".bup]";
 
 //   name = filename + "_mesh";
 //   compose_name(name,_iter);
   GetMeshAgent()->write_gup(name);
-  cout << " [" << name << "]" << endl;
+  cout << " [" << name << ".gup]" << endl;
 }
 
 /*-------------------------------------------------*/
@@ -135,7 +135,7 @@ void BasicLoop::WriteSolution(const MultiLevelGhostVector& u) const
   string filename = "Results/solution";
   compose_name(filename,_iter);
   GetMultiLevelSolver()->GetSolver()->Write(u.finest(),filename);
-  cout << "[" << filename << "]";
+  cout << "[" << filename << ".bup]" << endl;
   _clock_write.stop();
 }
 
@@ -147,7 +147,7 @@ void BasicLoop::WriteMesh() const
   string filename = "Results/mesh";
   compose_name(filename,_iter);
   GetMeshAgent()->write_gup(filename);
-  cout << " [" << filename << "]" << endl;
+  cout << " [" << filename << ".gup]" << endl;
   _clock_write.stop();
 }
 

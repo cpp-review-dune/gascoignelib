@@ -73,7 +73,7 @@ void Visualization::read_parameters(const ParamFile* pf)
   DataFormatHandler DH;
   DH.insert("step"     ,& pstep     ,1);
   DH.insert("tstep"    ,& time       ,0.);
-  DH.insert("showoutput",& showoutput,0);
+  DH.insert("showoutput",& showoutput,1);
   DH.insert("gnuplot"  ,& planes);
   DH.insert("gnuposition",& gnupos);
   DH.insert("vtk"      ,& vtka, 1);
@@ -179,7 +179,7 @@ void Visualization::write()
   if (vua)        vu(filename);
   if (gnua)       gnuplot(filename);
   if (vtka)       vtk(filename);
-  if (showoutput) cout << "[" << filename << "]\n";
+  if (showoutput) cout << "[" << filename << ".vtk]\n";
 }
 
 /********************************************************************/
