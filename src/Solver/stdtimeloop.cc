@@ -34,6 +34,9 @@ void StdTimeLoop::BasicInit(const ParamFile* paramfile)
 
 string StdTimeLoop::SolveTimePrimal(MultiLevelGhostVector& u, MultiLevelGhostVector& f, string name)
 {
+  f.zero();
+  GetMultiLevelSolver()->GetSolver()->TimeRhs(f,u);
+  TimeInfoBroadcast();
   GetMultiLevelSolver()->GetSolver()->Rhs(f);
 
   GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(f);
@@ -60,6 +63,7 @@ void StdTimeLoop::adaptive_run(const ProblemDescriptorInterface* PD)
   
   nvector<double> eta;
 
+  TimeInfoBroadcast();
   for (_iter=1; _iter<=_niter; _iter++)
     {
       cout << "\n================== " << _iter << "================";
@@ -76,7 +80,6 @@ void StdTimeLoop::adaptive_run(const ProblemDescriptorInterface* PD)
 	  GetMultiLevelSolver()->GetSolver()->OutputSettings();
 	  InitSolution(u,f);
 	}
-      TimeInfoBroadcast();
 
       SolveTimePrimal(u,f);
       
@@ -154,12 +157,7 @@ void StdTimeLoop::run(const ProblemDescriptorInterface* PD)
 
   for (_iter=1; _iter<=_niter; _iter++)
     {
-      f.zero();
-      GetMultiLevelSolver()->GetSolver()->TimeRhs(f,u);
-
       info.iteration(_iter);
-
-      TimeInfoBroadcast();
 
       SolveTimePrimal(u,f);
       Functionals(u,f);
