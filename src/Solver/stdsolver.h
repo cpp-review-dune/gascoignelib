@@ -173,7 +173,6 @@ class StdSolver : public virtual SolverInterface
   bool DirectSolver() const {return _directsolver;}
 
   void AddNodeVector(const std::string& name, const GlobalVector* q) {
-    HNAverage(*q);
     GetMeshInterpretor()->AddNodeVector(name,q);
   }
   void AddCellVector(const std::string& name, const GlobalCellVector* q) {
@@ -222,6 +221,8 @@ class StdSolver : public virtual SolverInterface
   void HNZero      (const GlobalVector& x) const;
   bool HNZeroCheck(const GlobalVector& x) const;
   void HNDistribute(GlobalVector& x) const;
+  void HNAverageData() const;
+  void HNZeroData() const;
 
   //
   /// vector - io

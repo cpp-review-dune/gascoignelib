@@ -60,6 +60,9 @@ class BasicMeshInterpretor : public MeshInterpretorInterface
   
   void BasicInit(const ParamFile* pf) {}
   void ReInit   (const MeshInterface* MP) {__MP=MP;}
+  
+  void HNAverageData() const;
+  void HNZeroData   () const;
 };
 }
 

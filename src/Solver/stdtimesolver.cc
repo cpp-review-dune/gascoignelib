@@ -196,7 +196,9 @@ void StdTimeSolver::L2Projection(BasicGhostVector& Gu)
   assert(u.n()==g.n());
 
   f.zero();
+  HNAverageData();
   GetMeshInterpretor()->Rhs(f,*IC,1.);
+  HNZeroData();
   HNDistribute(f);
 
   int    MaxIter = 100;

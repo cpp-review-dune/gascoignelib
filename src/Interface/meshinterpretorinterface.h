@@ -79,6 +79,8 @@ public:
   virtual void HNDistribute(GlobalVector& x) const {}
   virtual void HNZero      (GlobalVector& x) const {}
   virtual bool HNZeroCheck (const GlobalVector& x) const { return 0;}
+  virtual void HNAverageData() const {}
+  virtual void HNZeroData   () const {}
   virtual void Interpolate(GlobalVector& u, const InitialCondition& RHS) const { assert(0);}
   virtual void InterpolateSolution(GlobalVector& u, const GlobalVector& uold)const { assert(0);}
   virtual void StrongDirichletMatrix(MatrixInterface& A, int col, const std::vector<int>& comp) const { assert(0);}

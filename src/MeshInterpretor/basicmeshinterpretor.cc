@@ -18,6 +18,34 @@ BasicMeshInterpretor::~BasicMeshInterpretor()
 
 /* ----------------------------------------- */
 
+void BasicMeshInterpretor::HNAverageData() const
+{
+  const GlobalNodeData& gd = GetGlobalData().GetNodeData();
+  GlobalNodeData::const_iterator p=gd.begin();
+  for(; p!=gd.end(); p++)
+    {
+      GlobalVector* v = const_cast<GlobalVector*>(p->second);
+      HNAverage(*v);
+//      cerr << "HNAverage " << p->first << endl;
+    }
+}
+
+/* ----------------------------------------- */
+
+void BasicMeshInterpretor::HNZeroData() const
+{
+  const GlobalNodeData& gd = GetGlobalData().GetNodeData();
+  GlobalNodeData::const_iterator p=gd.begin();
+  for(; p!=gd.end(); p++)
+    {
+      GlobalVector* v = const_cast<GlobalVector*>(p->second);
+      HNZero(*v);
+//      cerr << "HNZero " << p->first << endl;
+    }
+}
+
+/* ----------------------------------------- */
+
 void BasicMeshInterpretor::GlobalToLocalData(int iq) const
 {
   const GlobalNodeData& gd = GetGlobalData().GetNodeData();

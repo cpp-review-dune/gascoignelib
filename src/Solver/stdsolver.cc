@@ -282,6 +282,12 @@ bool StdSolver::HNZeroCheck(const GlobalVector& x) const {
 void StdSolver::HNDistribute(GlobalVector& x) const {
   GetMeshInterpretor()->HNDistribute(x);
 }
+void StdSolver::HNAverageData() const {
+  GetMeshInterpretor()->HNAverageData();
+}
+void StdSolver::HNZeroData() const {
+  GetMeshInterpretor()->HNZeroData();
+}
 
 void StdSolver::HNAverage(const BasicGhostVector& x) const {
   HNAverage(GetGV(x));
@@ -497,12 +503,14 @@ void StdSolver::Form(GlobalVector& y, const GlobalVector& x, double d) const
   _re.start();
 
   HNAverage(x);
+  HNAverageData();
 
   const Equation* EQ = GetProblemDescriptor()->GetEquation();
   assert(EQ);
   GetMeshInterpretor()->Form(y,x,*EQ,d);
 
   HNZero(x);
+  HNZeroData();
   HNDistribute(y);
   SubtractMeanAlgebraic(y);
 
@@ -622,8 +630,10 @@ double StdSolver::ComputeFunctional(GlobalVector& f, const GlobalVector& u, cons
 double StdSolver::ComputeBoundaryFunctional(GlobalVector& f, const GlobalVector& u, GlobalVector& z, const BoundaryFunctional* FP) const
 {
   HNAverage(u);
+  HNAverageData();
   double J = GetMeshInterpretor()->ComputeBoundaryFunctional(u,*FP);
   HNZero(u);
+  HNZeroData();
   return J;
 }
 
@@ -632,8 +642,10 @@ double StdSolver::ComputeBoundaryFunctional(GlobalVector& f, const GlobalVector&
 double StdSolver::ComputeDomainFunctional(GlobalVector& f, const GlobalVector& u, GlobalVector& z, const DomainFunctional* FP) const
 {
   HNAverage(u);
+  HNAverageData();
   double J = GetMeshInterpretor()->ComputeDomainFunctional(u,*FP);
   HNZero(u);
+  HNZeroData();
   //cerr << "StdSolver::ComputeDomainFunctional()\t" << J << endl;
   return J;
 }
@@ -643,8 +655,10 @@ double StdSolver::ComputeDomainFunctional(GlobalVector& f, const GlobalVector& u
 double StdSolver::ComputePointFunctional(GlobalVector& f, const GlobalVector& u, GlobalVector& z, const PointFunctional* FP) const
 {
   HNAverage(u);
+  HNAverageData();
   double J = GetMeshInterpretor()->ComputePointFunctional(u,FP);
   HNZero(u);
+  HNZeroData();
   return J;
 }
 
@@ -655,6 +669,7 @@ double StdSolver::ComputeResidualFunctional(GlobalVector& f, const GlobalVector&
   const BoundaryManager* BM = GetProblemDescriptor()->GetBoundaryManager();
 
   HNAverage(u);
+  HNAverageData();
   f.zero();
   Rhs(f);
   Form(f,u,-1.);
@@ -669,6 +684,7 @@ double StdSolver::ComputeResidualFunctional(GlobalVector& f, const GlobalVector&
 
   double J = z*f;
   HNZero(u);
+  HNZeroData();
   return J;
 }
 
@@ -683,10 +699,8 @@ void StdSolver::Rhs(BasicGhostVector& f, double d) const
 
 void StdSolver::Rhs(GlobalVector& f, double d) const
 {
-  //
-  // ACHTUNG !!!
-  // Data muessen geaveraged (und zero) werden !!!
-  //
+  HNAverageData();
+
   const RightHandSideData* RHS  = GetProblemDescriptor()->GetRightHandSideData();
   const NeumannData*       NRHS = GetProblemDescriptor()->GetNeumannData();
 
@@ -718,7 +732,8 @@ void StdSolver::Rhs(GlobalVector& f, double d) const
        }
     }
 
- HNDistribute(f);
+  HNZeroData();
+  HNDistribute(f);
 }
 
 /*-------------------------------------------------------*/
@@ -730,11 +745,13 @@ void StdSolver::AssembleMatrix(const BasicGhostVector& gu, double d)
 
   const GlobalVector& u = GetGV(gu);
   HNAverage(gu);
+  HNAverageData();
 
   GetMeshInterpretor()->Matrix(*GetMatrix(),u,*GetProblemDescriptor()->GetEquation(),d);
 
   DirichletMatrix();
   HNZero(gu);
+  HNZeroData();
 
   _ca.stop();
 }
@@ -905,6 +922,7 @@ double StdSolver::EnergyEstimator(DoubleVector& eta, const BasicGhostVector& gu,
   const RightHandSideData* RHS = GetProblemDescriptor()->GetRightHandSideData();
 
   HNAverage(gu);
+  HNAverageData();
 
   eta.reservesize(u.n());
   eta.zero();
@@ -945,6 +963,7 @@ double StdSolver::EnergyEstimator(DoubleVector& eta, const BasicGhostVector& gu,
       }
     }
   HNZero(gu);
+  HNZeroData();
 
   return eta.norm();
 }
