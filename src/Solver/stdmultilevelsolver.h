@@ -35,6 +35,8 @@ class StdMultiLevelSolver : public MultiLevelSolverInterface
   protected :
 
   const MeshAgentInterface* GetMeshAgent() const {return _MAP;}
+  std::vector<SolverInterface*>& GetSolverPointer() { return _SP; }
+  
 
   mutable VectorInterface _cor, _res, _mg0, _mg1;
   std::set<VectorInterface>  _MlVectors;
@@ -102,6 +104,8 @@ class StdMultiLevelSolver : public MultiLevelSolverInterface
   virtual int FinestLevel  ()  const { return nlevels()-1;}
   virtual int CoarsestLevel()  const { return 0;}
 
+  
+  
   SolverInterface* GetSolver(int l) {assert(l<_SP.size()); return _SP[l];}
   const SolverInterface* GetSolver(int l) const {assert(l<_SP.size()); return _SP[l];}
   SolverInterface* GetSolver() {assert(_SP.size()==nlevels()); return _SP[FinestLevel()];}
