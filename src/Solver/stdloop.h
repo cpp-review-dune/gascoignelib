@@ -32,6 +32,7 @@ protected:
 
   int _nmin, _nmax, _coarse;
   double _p;
+  int    _random_coarsening;
   std::string _estimator, _extrapolate, _refiner;
   std::string _s_resultsdir;
   DoubleVector _JErr;

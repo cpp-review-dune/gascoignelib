@@ -43,14 +43,15 @@ void StdLoop::BasicInit(const ParamFile* paramfile)
   BasicLoop::BasicInit(paramfile);
 
   DataFormatHandler DFH;
-  DFH.insert("nmin",       &_nmin,        1000);
-  DFH.insert("nmax",       &_nmax,        100000);
-  DFH.insert("p",          &_p,           0.1);
-  DFH.insert("coarse",     &_coarse,      0);
-  DFH.insert("refiner",    &_refiner,     "global");
-  DFH.insert("estimator",  &_estimator,   "none");
-  DFH.insert("extrapolate",&_extrapolate, "no");
-  DFH.insert("resultsdir", &_s_resultsdir, "Results");
+  DFH.insert("nmin",               &_nmin,              1000);
+  DFH.insert("nmax",               &_nmax,              100000);
+  DFH.insert("p",                  &_p,                 0.1);
+  DFH.insert("random_coarsening",  &_random_coarsening, 0);
+  DFH.insert("coarse",             &_coarse,            0);
+  DFH.insert("refiner",            &_refiner,           "global");
+  DFH.insert("estimator",          &_estimator,         "none");
+  DFH.insert("extrapolate",        &_extrapolate,       "no");
+  DFH.insert("resultsdir",         &_s_resultsdir,      "Results");
   FileScanner FS(DFH);
   FS.NoComplain();
   FS.readfile(_paramfile,"Loop");
@@ -183,7 +184,7 @@ void StdLoop::AdaptMesh(const DoubleVector& eta)
     {
       if (GetMeshAgent()->nnodes()>_nmax) _p *= 0.5;
       if (GetMeshAgent()->nnodes()<_nmin) _p *= 1.1;
-      GetMeshAgent()->random_patch_refine(_p,0);
+      GetMeshAgent()->random_patch_refine(_p,_random_coarsening);
     }
   else if(_refiner=="eta") 
     {
