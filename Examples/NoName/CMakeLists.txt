@@ -18,19 +18,6 @@ LINK_LIBRARIES(${GASCOIGNE_LIBS})
 
 SET(LOCAL_SRC
   main.cc 
-
-  problemdescriptor.cc 
-  localdirichletdata.cc
-  localequation.cc
-
-  localmesh2d.cc
-  localmeshconstructor.cc
-
-  localloop.cc
-  localmultilevelsolver.cc
-  localsolver.cc
-  localmeshinterpretor.cc
-  localintegrator.cc
 )
 
 ADD_EXECUTABLE(Local ${LOCAL_SRC})
