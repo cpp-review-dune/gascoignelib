@@ -28,6 +28,7 @@
 #include  "q1lps2d.h"
 #include  "q2lps2d.h"
 #include  "q13d.h"
+#include  "q23d.h"
 #include  "q1gls3d.h"
 #include  "q1lps3d.h"
 #include  "q2lps3d.h"
@@ -203,6 +204,7 @@ MeshInterpretorInterface* StdSolver::NewMeshInterpretor(int dimension, const str
   else if (dimension==3)
     {
       if      (discname=="Q1")     return new Q13d;
+      else if (discname=="Q2")     return new Q23d;
       else if (discname=="Q1Gls")  return new Q1Gls3d;
       else if (discname=="Q1Lps")  return new Q1Lps3d;
       else if (discname=="Q2Lps")  return new Q2Lps3d;
