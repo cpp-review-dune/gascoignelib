@@ -957,33 +957,33 @@ void HierarchicalMesh2d::init_edges2d()
 
 /*---------------------------------------------------*/
 
-// void HierarchicalMesh2d::GetVertexesOfEdge(fixarray<3,int>& v, int e) const
-// {
-//   const Edge& E = edge(e);
-//   const Quad* Q = &quad(E.master());
+void HierarchicalMesh2d::GetVertexesOfEdge(fixarray<3,int>& v, int e) const
+{
+  const Edge& E = edge(e);
+  const Quad* Q = &quad(E.master());
 
-//   int le = E.LocalMasterIndex();
-//   v[0] = (*Q)[le]; v[1] = (*Q)[(le+1)%4]; v[2] = -1;
+  int le = E.LocalMasterIndex();
+  v[0] = (*Q)[le]; v[1] = (*Q)[(le+1)%4]; v[2] = -1;
 
-//   if(!Q->sleep()) 
-//     {
-//       if (E.slave()==-1) return;
-//       Q = &quad(E.slave());
-//       le = E.LocalSlaveIndex();
-//     }
-//   v[2] = QuadLaO.edge_vertex(*Q,le);
-// }
+  if(!Q->sleep()) 
+    {
+      if (E.slave()==-1) return;
+      Q = &quad(E.slave());
+      le = E.LocalSlaveIndex();
+    }
+  v[2] = QuadLaO.edge_vertex(*Q,le);
+}
 
-// /*---------------------------------------------------*/
+/*---------------------------------------------------*/
 
-// void HierarchicalMesh2d::GetVertexesOfEdge(fixarray<2,int>& v, int e) const
-// {
-//   const Edge& E = edge(e);
-//   const Quad* Q = &quad(E.master());
+void HierarchicalMesh2d::GetVertexesOfEdge(fixarray<2,int>& v, int e) const
+{
+  const Edge& E = edge(e);
+  const Quad* Q = &quad(E.master());
 
-//   int le = E.LocalMasterIndex();
-//   v[0] = (*Q)[le]; v[1] = (*Q)[(le+1)%4];
-// }
+  int le = E.LocalMasterIndex();
+  v[0] = (*Q)[le]; v[1] = (*Q)[(le+1)%4];
+}
 
 /*---------------------------------------------------*/
 
