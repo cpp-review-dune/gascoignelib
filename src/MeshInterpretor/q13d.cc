@@ -200,3 +200,76 @@ void Q13d::ConstructInterpolator(MgInterpolatorInterface* I, const MeshTransferI
       }
   }
 }
+
+
+
+/* ----------------------------------------- */
+
+void Q13d::Jumps(EdgeInfoContainer<3>& EIC, const GlobalVector& u) const
+{
+  const HierarchicalMesh3d* HM = dynamic_cast<const HierarchicalMesh3d*>(EIC.getMesh());
+  fixarray<4,int>           vertexes;
+  nmatrix<double>           T;
+
+  for(int iq=0;iq<HM->ncells();++iq)
+    {
+      if (!(HM->sleep(iq)))
+	{
+	  Transformation_HM(T,HM,iq);
+	  GetFem()->ReInit(T);
+
+	  GlobalToLocal_HM(__U,u,HM,iq);
+	  
+	  for (int ile=0; ile<6; ile++)
+	    {
+	      dynamic_cast<const GalerkinIntegrator<3>*>(GetIntegrator())->Jumps(__F,*GetFem(),__U,ile);
+
+	      int facenumber = HM->face_of_hex(iq,ile);
+
+	      if (EIC[facenumber]==NULL)
+		{
+		  const Edge& edge = HM->edge(facenumber);
+		  HM->HexLawOrder().globalvertices_of_face(HM->hex(edge.master()),vertexes,edge.LocalMasterIndex());
+		  EIC[facenumber] = new EdgeInfo<3>();
+		  EIC[facenumber]->basicInit(&edge,u.ncomp(),vertexes);
+		}
+	      EIC[facenumber]->addNodes(__F);
+	    }
+	}
+    }
+
+  EIC.modifyHanging();
+}
+
+/* ----------------------------------------- */
+
+void Q13d::JumpNorm(EdgeInfoContainer<3>& EIC, nvector<double>& eta) const
+{
+  const HierarchicalMesh3d* HM = dynamic_cast<const HierarchicalMesh3d*>(EIC.getMesh());
+  nmatrix<double>           T;
+  int                       facenumber;
+  double                    jump;
+
+  for (int iq=0; iq<HM->ncells(); iq++)
+    {
+      if (!(HM->sleep(iq)))
+	{
+	  Transformation_HM(T,HM,iq);
+	  GetFem()->ReInit(T);
+
+	  jump = 0.;
+	  for (int ile=0; ile<6; ile++)
+	    {
+	      facenumber = HM->face_of_hex(iq,ile);
+	      if (EIC[facenumber]->getCount()==2)
+		{
+		  dynamic_cast<const GalerkinIntegrator<3>*>(GetIntegrator())->JumpNorm(jump,*GetFem(),EIC[facenumber]->getNorm(),ile);
+		}
+	    }
+	  for (int in=0; in<8; in++)
+	    {
+	      eta[HM->vertex_of_cell(iq,in)] += 0.125 * 0.5 * sqrt(jump);
+	    }
+	}
+    }
+}

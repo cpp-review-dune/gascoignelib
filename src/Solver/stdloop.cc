@@ -5,6 +5,8 @@
 #include  "monitoring.h"
 #include  "filescanner.h"
 #include  "stdmultilevelsolver.h"
+#include  "meshagent.h"
+#include  "stdsolver.h"
 
 using namespace std;
 using namespace Gascoigne;
@@ -27,7 +29,7 @@ StdLoop::~StdLoop()
 
 void StdLoop::ClockOutput() const
 {
-  BasicLoop();
+  BasicLoop::ClockOutput();
   cout << "  Functionals\t\t" << _clock_functionals.read() << endl;
   cout << "  Estimate\t\t" << _clock_estimate.read() << endl;
 }
@@ -136,17 +138,18 @@ nvector<double> StdLoop::Functionals(MultiLevelGhostVector& u, MultiLevelGhostVe
 
 double StdLoop::Estimator(nvector<double>& eta, MultiLevelGhostVector& u, MultiLevelGhostVector& f)
 {
-  cout << "Estimator\t"; 
+//   cout << "Estimator\t"; 
 
-  cout << "Baustelle!!!!!\n";
-  return 0.;
+//   cout << "Baustelle!!!!!\n";
+//   return 0.;
 
-//   double est = 0.;
-//   if (_estimator=="energy")
-//     {
-//       est = GetMultiLevelSolver()->GetSolver()->EnergyEstimator(eta, u, f);
-//     }
-//   else assert(0);
+  double est = 0.;
+  if (_estimator=="energy")
+    {
+      dynamic_cast<StdSolver*>(GetMultiLevelSolver()->GetSolver())->setHierarchicalMeshPointer(dynamic_cast<MeshAgent*>(GetMeshAgent())->getHierarchicalMesh());
+      est = GetMultiLevelSolver()->GetSolver()->EnergyEstimator(eta, u, f);
+    }
+  else assert(0);
 
 //   double eff = 0.;
 //   if      ((_estimator=="weighted") && (_JErr.size()>0))      eff = est/_JErr[0];
@@ -154,8 +157,8 @@ double StdLoop::Estimator(nvector<double>& eta, MultiLevelGhostVector& u, MultiL
 //   if  (eff!=0.) cout << " @ " << eff << endl; 
   
 //   cout << endl; 
-//   EtaVisu("Results/eta",_iter,eta);
-//   return est;
+  EtaVisu("Results/eta",_iter,eta);
+  return est;
 }
 
 /*-------------------------------------------------*/

@@ -215,3 +215,76 @@ void Q12d::ConstructInterpolator(MgInterpolatorInterface* I, const MeshTransferI
       }
   }
 }
+
+
+/* ----------------------------------------- */
+
+void Q12d::Jumps(EdgeInfoContainer<2>& EIC, const GlobalVector& u) const
+{
+  const HierarchicalMesh2d* HM = dynamic_cast<const HierarchicalMesh2d*>(EIC.getMesh());
+  fixarray<2,int>           vertexes;
+  nmatrix<double>           T;
+
+  for(int iq=0;iq<HM->ncells();++iq)
+    {
+      if (!(HM->sleep(iq)))
+	{
+	  Transformation_HM(T,HM,iq);
+	  GetFem()->ReInit(T);
+
+	  GlobalToLocal_HM(__U,u,HM,iq);
+	  
+	  for (int ile=0; ile<4; ile++)
+	    {
+	      dynamic_cast<const GalerkinIntegrator<2>*>(GetIntegrator())->Jumps(__F,*GetFem(),__U,ile);
+
+	      int edgenumber = HM->edge_of_quad(iq,ile);
+
+	      if (EIC[edgenumber]==NULL)
+		{
+		  const Edge& edge = HM->edge(edgenumber);
+		  HM->QuadLawOrder().globalvertices_of_edge(HM->quad(edge.master()),vertexes,edge.LocalMasterIndex());
+		  EIC[edgenumber] = new EdgeInfo<2>();
+		  EIC[edgenumber]->basicInit(&edge,u.ncomp(),vertexes);
+		}
+	      EIC[edgenumber]->addNodes(__F);
+	    }
+	}
+    }
+
+  EIC.modifyHanging();
+}
+
+/* ----------------------------------------- */
+
+void Q12d::JumpNorm(EdgeInfoContainer<2>& EIC, nvector<double>& eta) const
+{
+  const HierarchicalMesh2d* HM = dynamic_cast<const HierarchicalMesh2d*>(EIC.getMesh());
+  nmatrix<double>           T;
+  int                       edgenumber;
+  double                    jump;
+
+  for (int iq=0; iq<HM->ncells(); iq++)
+    {
+      if (!(HM->sleep(iq)))
+	{
+	  Transformation_HM(T,HM,iq);
+	  GetFem()->ReInit(T);
+
+	  jump = 0.;
+	  for (int ile=0; ile<4; ile++)
+	    {
+	      edgenumber = HM->edge_of_quad(iq,ile);
+	      if (EIC[edgenumber]->getCount()==2)
+		{
+		  dynamic_cast<const GalerkinIntegrator<2>*>(GetIntegrator())->JumpNorm(jump,*GetFem(),EIC[edgenumber]->getNorm(),ile);
+		}
+	    }
+	  for (int in=0; in<4; in++)
+	    {
+	      eta[HM->vertex_of_cell(iq,in)] += 0.25 * 0.5 * sqrt(jump);
+	    }
+	}
+    }
+}
+

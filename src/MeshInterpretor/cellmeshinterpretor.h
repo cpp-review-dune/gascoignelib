@@ -3,6 +3,8 @@
 
 #include  "basicmeshinterpretor.h"
 
+#include  "hierarchicalmesh.h"
+
 /////////////////////////////////////////////
 ///
 ///@brief
@@ -31,6 +33,13 @@ protected:
   int GetCellNumber(const Vertex2d& p0, nvector<Vertex2d>& p) const;
   void VertexTransformation(const nvector<Vertex2d>& p, 
 			    const Vertex2d& p0, Vertex2d& tp) const;
+
+  /////
+
+  void Transformation_HM(FemInterface::Matrix& T, const HierarchicalMesh* HM, int iq) const;
+  void GlobalToLocal_HM(Gascoigne::LocalVector& U, const Gascoigne::GlobalVector& u, const HierarchicalMesh* HM, int iq) const;
+  void swapIndices(nvector<int>& indices) const;
+
 
 public:
 

@@ -3,6 +3,9 @@
 
 #include  "q1.h"
 
+
+#include  "edgeinfocontainer.h"
+
 /////////////////////////////////////////////
 ////
 ////@brief
@@ -34,6 +37,10 @@ public:
   void Interpolate(Gascoigne::GlobalVector& u, const InitialCondition& U) const;
   void ConstructInterpolator(MgInterpolatorInterface* I, const MeshTransferInterface* MT);
   void StrongDirichletVector(Gascoigne::GlobalVector& u, const DirichletData& BF, int col, const std::vector<int>& comp) const;
+
+
+  void Jumps(EdgeInfoContainer<3>&, const Gascoigne::GlobalVector&) const;
+  void JumpNorm(EdgeInfoContainer<3>&, nvector<double>&) const;
 };
 
 

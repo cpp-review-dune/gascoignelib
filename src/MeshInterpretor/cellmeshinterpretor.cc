@@ -423,3 +423,67 @@ double CellMeshInterpretor::ComputeDomainFunctional(const GlobalVector& u, const
 
 /* ----------------------------------------- */
 
+/* ----------------------------------------- */
+
+void CellMeshInterpretor::Transformation_HM(FemInterface::Matrix& T, const HierarchicalMesh* HM, int iq) const
+{
+  int dim = GetMesh()->dimension();
+  int ne = GetMesh()->nodes_per_cell(iq);
+
+  nvector<int> indices = HM->GetVertices(iq);
+  assert(ne==indices.size());
+  swapIndices(indices);
+
+  T.memory(dim,ne);
+  if(dim==2)
+    {
+      for(int ii=0;ii<ne;ii++)
+	{
+	  Vertex2d v = GetMesh()->vertex2d(indices[ii]);
+	  T(0,ii) = v.x();               
+	  T(1,ii) = v.y();
+	}
+    }
+  else if(dim==3)
+    {
+      for(int ii=0;ii<ne;ii++)
+	{
+	  Vertex3d v = GetMesh()->vertex3d(indices[ii]);
+	  T(0,ii) = v.x();               
+	  T(1,ii) = v.y();
+	  T(2,ii) = v.z();
+	}
+    }
+}
+
+/* ----------------------------------------- */
+
+void CellMeshInterpretor::GlobalToLocal_HM(LocalVector& U, const GlobalVector& u, const HierarchicalMesh* HM, int iq) const
+{
+  nvector<int> indices = HM->GetVertices(iq);
+  swapIndices(indices);
+
+  U.ReInit(u.ncomp(),indices.size());
+  for(int ii=0; ii<indices.size(); ii++) 
+    {
+      int i = indices[ii];
+      U.equ_node(ii,i,u);
+    }
+}
+
+/* ----------------------------------------- */
+
+void CellMeshInterpretor::swapIndices(nvector<int>& indices) const
+{
+  assert(indices.size()>=4);
+
+  int help = indices[2];
+  indices[2] = indices[3];
+  indices[3] = help;
+  if (indices.size()==8)
+    {
+      help = indices[6];
+      indices[6] = indices[7];
+      indices[7] = help;
+    }
+}

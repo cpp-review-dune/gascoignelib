@@ -13,12 +13,18 @@ GalerkinIntegrator<DIM>::GalerkinIntegrator<DIM>() : BasicIntegrator()
       FormFormulaPointer() = new QuadGauss4;
       ErrorFormulaPointer() = new QuadGauss9;
       BoundaryFormulaPointer() = new LineGauss2;
+      xi[0].x() = 0.;
+      xi[1].x() = 1.;
     }
   else if (DIM==3)
     {
       FormFormulaPointer() = new HexGauss8;
       ErrorFormulaPointer() = new HexGauss27;
       BoundaryFormulaPointer() = new QuadGauss4;
+      xi[0].x() = 0.; xi[0].y() = 0.;
+      xi[1].x() = 1.; xi[1].y() = 0.;
+      xi[2].x() = 1.; xi[2].y() = 1.;
+      xi[3].x() = 0.; xi[3].y() = 1.;
     }
   assert(FormFormulaPointer());
   assert(ErrorFormulaPointer());
@@ -340,6 +346,44 @@ double GalerkinIntegrator<DIM>::MeanMatrix(EntryMatrix& E, const FemInterface& F
 // 	}
 //     }
 //   return omega;
+}
+
+/* ----------------------------------------- */
+
+template<int DIM>
+void GalerkinIntegrator<DIM>::Jumps(LocalVector& F, const FemInterface& FEM, const LocalVector& U, int ile) const
+{
+  Vertex<DIM> n;
+
+  F.ReInit(U.ncomp(),2*DIM-2);
+  F.zero();
+
+  for (int i=0; i<2*DIM-2; i++)
+    {
+      FEM.point_boundary(ile,xi[i]);
+      FEM.normal(n);
+
+      BasicIntegrator::universal_point(FEM,UH,U);
+
+      for (int c=0; c<U.ncomp(); c++)
+	{
+	  F(i,c) += n.x() * UH[c].x() + n.y() * UH[c].y() + n.z() * UH[c].z();
+	}
+    }
+}
+
+/* ----------------------------------------- */
+
+template<int DIM>
+void GalerkinIntegrator<DIM>::JumpNorm(double& norm, const FemInterface& FEM, fixarray<2*DIM-2,double> jumps, int ile) const
+{
+  for (int k=0; k<2*DIM-2; k++)
+    {
+      FEM.point_boundary(ile,xi[k]);
+      double h = Volume2MeshSize(FEM.J());
+      double weight = (1.-DIM/4.)*h*FEM.G();
+      norm += weight * jumps[k];
+    }
 }
 
 /* ----------------------------------------- */

@@ -11,6 +11,7 @@
 #include  "residualfunctional.h"
 #include  "meshinterpretorinterface.h"
 #include  "stopwatch.h"
+#include  "hierarchicalmesh.h"
 
 //////////////////////////////////////////////
 ///
@@ -34,6 +35,7 @@ class StdSolver : public virtual SolverInterface
   // 1. Gitter
 
   const MeshInterface*  _MP;
+  const HierarchicalMesh* _HM;
 
   // 2. Matrizen
 
@@ -295,6 +297,13 @@ class StdSolver : public virtual SolverInterface
 
   void BoundaryInit(BasicGhostVector& u) const;
   void SolutionInit(BasicGhostVector& u) const;
+
+  //
+  /// HierarchicalMesh
+  //
+
+  void setHierarchicalMeshPointer(const HierarchicalMesh*);
+
 };
 
 #endif

@@ -34,6 +34,8 @@ protected:
 
   double Volume2MeshSize(double vol) const { return pow(vol,1./float(DIM));}
 
+  fixarray<2*DIM-2,Vertex<DIM-1> > xi;
+
 public:
 
 //
@@ -58,6 +60,10 @@ public:
   void RhsNeumann(const NeumannData& RHS, Gascoigne::LocalVector& F, const FemInterface& FEM, int ile, int col, const Gascoigne::LocalData& Q) const;
 
   double MeanMatrix(EntryMatrix& E, const FemInterface& FEM) const;
+
+
+  void Jumps(Gascoigne::LocalVector& F, const FemInterface& FEM, const Gascoigne::LocalVector& U, int ile) const;
+  void JumpNorm(double& norm, const FemInterface& FEM, fixarray<2*DIM-2,double> jumps, int ile) const;
 };
 
 

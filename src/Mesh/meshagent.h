@@ -52,6 +52,8 @@ public:
   void refine_cells(nvector<int>& ref);
 
   const GascoigneMeshTransfer* GetTransfer(int l) const {return GMG->GetTransfer(l);}
+
+  const HierarchicalMesh* getHierarchicalMesh() const { return HMP;}
 };
 
 
