@@ -13,17 +13,17 @@ void EnergyEstimatorIntegrator<DIM>::BasicInit()
   {
     IF = new QuadGauss4;
     assert(IF);
-    xi[0].x() = 0.;
-    xi[1].x() = 1.;
+    _xi[0].x() = 0.;
+    _xi[1].x() = 1.;
   }
   else
   {
     IF = new HexGauss8;
     assert(IF);
-    xi[0].x() = 0.; xi[0].y() = 0.;
-    xi[1].x() = 1.; xi[1].y() = 0.;
-    xi[2].x() = 1.; xi[2].y() = 1.;
-    xi[3].x() = 0.; xi[3].y() = 1.;
+    _xi[0].x() = 0.; _xi[0].y() = 0.;
+    _xi[1].x() = 1.; _xi[1].y() = 0.;
+    _xi[2].x() = 1.; _xi[2].y() = 1.;
+    _xi[3].x() = 0.; _xi[3].y() = 1.;
   }
 }
 
@@ -51,7 +51,7 @@ void EnergyEstimatorIntegrator<DIM>::Jumps(LocalVector& F, const FemInterface& F
 
   for (int i=0; i<2*DIM-2; i++)
   {
-    FEM.point_boundary(ile,xi[i]);
+    FEM.point_boundary(ile,_xi[i]);
     FEM.normal(n);
 
     BasicIntegrator::universal_point(FEM,UH,U);
@@ -71,7 +71,7 @@ double EnergyEstimatorIntegrator<DIM>::JumpNorm(const FemInterface& FEM, fixarra
   double norm = 0.;
   for (int k=0; k<2*DIM-2; k++)
   {
-    FEM.point_boundary(ile,xi[k]);
+    FEM.point_boundary(ile,_xi[k]);
     double h = Volume2MeshSize(FEM.J());
     double weight = (1.-DIM/4.)*h*FEM.G();
     norm += weight * jumps[k];

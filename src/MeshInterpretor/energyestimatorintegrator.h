@@ -13,7 +13,7 @@ class EnergyEstimatorIntegrator : public BasicIntegrator
 {
   protected:
     const IntegrationFormulaInterface* IF;
-    fixarray<2*DIM-2,Vertex<DIM-1> >   xi;
+    fixarray<2*DIM-2,Vertex<DIM-1> >   _xi;
 
     double Volume2MeshSize(double vol) const { return pow(vol,1./float(DIM));}
     const IntegrationFormulaInterface& GetFormula() const {return *IF;}
