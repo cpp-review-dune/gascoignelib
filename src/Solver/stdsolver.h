@@ -89,7 +89,7 @@ class StdSolver : public virtual SolverInterface
   // 0.3 Matrizen
 
 //   const MatrixInterface* GetMatrix() const {assert(_MAP); return _MAP;}
-  MatrixInterface* GetMatrix() const {assert(_MAP); return _MAP;}
+  MatrixInterface* GetMatrix() const { return _MAP;}
   MatrixInterface*& GetMatrixPointer() {assert(_MAP==NULL); return _MAP;}
 
 //   const IluInterface* GetIlu() const {assert(_MIP); return _MIP;}

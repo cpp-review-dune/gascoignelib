@@ -13,6 +13,7 @@
 
 #include  "celldiscretization.h"
 #include  "hnstructureinterface.h"
+#include  "edgeinfocontainer.h"
 
 namespace Gascoigne
 {
@@ -57,6 +58,7 @@ public:
   void MassMatrix(MatrixInterface& A) const;
   void Structure(SparseStructureInterface* SI) const;
   void InitFilter(DoubleVector& F) const;
+  virtual void EnergyEstimator(EdgeInfoContainerInterface& EIC, DoubleVector& eta, const GlobalVector& u, const Equation& EQ, const DomainRightHandSide* RHS) const=0;
 };
 }
 

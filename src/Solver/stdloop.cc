@@ -150,20 +150,13 @@ double StdLoop::Estimator(DoubleVector& eta, MultiLevelGhostVector& u, MultiLeve
 
       EnergyEstimator E(*S);
       est = E.Estimator(eta,u,f);
-      //est = GetMultiLevelSolver()->GetSolver()->EnergyEstimator(eta, u, f);
       EtaVisu(_s_resultsdir+"/eta",_iter,eta);
     }
   else 
     {
-      cout << "Estimator\t"; 
-      cout << "Baustelle!!!!!\n";
+      cout << "Estimator " << _estimator << " unknown\n"; 
+      assert(0);
     }
-//   double eff = 0.;
-//   if      ((_estimator=="weighted") && (_JErr.size()>0))      eff = est/_JErr[0];
-//   else if ((_estimator=="energy")   && (_GlobalErr.size()>0)) eff = est/_GlobalErr(1,0);
-//   if  (eff!=0.) cout << " @ " << eff << endl; 
-  
-//   cout << endl; 
   return est;
 }
 
@@ -188,9 +181,7 @@ void StdLoop::AdaptMesh(const DoubleVector& eta,string refine_or_coarsen_step)
   }  
   else if(_refiner=="none")
     {
-      // global_refine klappt doch nicht... ??
-      //GetMeshAgent()->global_refine(0);
-      GetMeshAgent()->random_patch_refine(-0.1,0);
+      GetMeshAgent()->global_refine(0);
     }
   else if(_refiner=="random") 
     {

@@ -11,7 +11,8 @@ namespace Gascoigne{
 EnergyEstimator::EnergyEstimator(SolverInterface& SR) : S(SR) 
 { 
   primalproblem  = S.GetProblemDescriptor();
-  discretization = S.GetDiscretization();
+  discretization = dynamic_cast<Q1*>(S.GetDiscretization());
+  assert(discretization);
 }
 
 /*--------------------------------------------------------*/
@@ -33,37 +34,19 @@ double EnergyEstimator::Estimator(nvector<double>& eta, BasicGhostVector& gu,
   const StdSolver* SS = dynamic_cast<const StdSolver*>(&S);
   assert(SS);
 
-  if (S.GetMesh()->dimension()==2)
+  const DomainRightHandSide* DRHS = NULL;
+  if(RHS)
     {
-      EdgeInfoContainer<2> EIC;
-      EIC.BasicInit(SS->GetHierarchicalMesh(),u.ncomp());
+      DRHS = dynamic_cast<const DomainRightHandSide *>(RHS);
+      assert(DRHS);
+    }
+  EdgeInfoContainerInterface* EIC = NULL;
+  if      (S.GetMesh()->dimension()==2)  EIC = new EdgeInfoContainer<2>;
+  else if (S.GetMesh()->dimension()==3)  EIC = new EdgeInfoContainer<3>;
 
-      const Q12d* DP = dynamic_cast<const Q12d*>(discretization);
-      assert(DP);
-      if(RHS)
-      {
-        const DomainRightHandSide* DRHS = dynamic_cast<const DomainRightHandSide *>(RHS);
-        assert(DRHS);
-        DP->EnergyEstimator(EIC,eta,u,*EQ,DRHS);
-      }
-      else
-      {
-        DP->EnergyEstimator(EIC,eta,u,*EQ,NULL);
-      }
-    }
-  else if (S.GetMesh()->dimension()==3)
-    {
-      EdgeInfoContainer<3> EIC;
-      EIC.BasicInit(SS->GetHierarchicalMesh(),u.ncomp());
-      const Q13d* DP = dynamic_cast<const Q13d*>(discretization);
-      assert(DP);
-      if(RHS)
-      {
-        const DomainRightHandSide* DRHS = dynamic_cast<const DomainRightHandSide *>(RHS);
-        assert(DRHS);
-        DP->EnergyEstimator(EIC,eta,u,*EQ,DRHS);
-      }
-    }
+  EIC->BasicInit(SS->GetHierarchicalMesh(),u.ncomp());
+  discretization->EnergyEstimator(*EIC,eta,u,*EQ,DRHS);
+
   S.HNZero(gu);
   S.HNZeroData();
 

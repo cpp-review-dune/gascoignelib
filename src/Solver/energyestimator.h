@@ -1,6 +1,7 @@
 #ifndef __EnergyEstimator_h
 
 #include "solverinterface.h"
+#include "q1.h"
 
 /*-------------------------------------------------------*/
 
@@ -13,7 +14,7 @@ class EnergyEstimator
 
   SolverInterface& S;
   const ProblemDescriptorInterface* primalproblem;
-  DiscretizationInterface*          discretization;
+  Q1*                               discretization;
 
  public:
 

@@ -10,8 +10,17 @@
 
 namespace Gascoigne
 {
+
+class EdgeInfoContainerInterface
+{
+ public:
+
+  virtual const HierarchicalMesh* GetMesh() const=0;
+  virtual void BasicInit(const HierarchicalMesh*, int)=0;
+};
+
 template<int DIM>
-class EdgeInfoContainer : public nvector<EdgeInfo<DIM>*>
+  class EdgeInfoContainer : public virtual EdgeInfoContainerInterface, public nvector<EdgeInfo<DIM>*>
 {
 
  protected:

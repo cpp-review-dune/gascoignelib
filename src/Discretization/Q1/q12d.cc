@@ -285,20 +285,22 @@ void Q12d::ConstructInterpolator(MgInterpolatorInterface* I, const MeshTransferI
 
 /* ----------------------------------------- */
 
-void Q12d::EnergyEstimator(EdgeInfoContainer<2>& EIC, DoubleVector& eta, const GlobalVector& u, const Equation& EQ, const DomainRightHandSide* RHS) const
+void Q12d::EnergyEstimator(EdgeInfoContainerInterface& EIC, DoubleVector& eta, const GlobalVector& u, const Equation& EQ, const DomainRightHandSide* RHS) const
 {
   // RHS may be NULL
   //
   EnergyEstimatorIntegrator<2> EEI;
   const HierarchicalMesh2d*    HM = dynamic_cast<const HierarchicalMesh2d*>(EIC.GetMesh());
 
+  EdgeInfoContainer<2>& EICC = dynamic_cast<EdgeInfoContainer<2>&>(EIC);
+
   EEI.BasicInit();
 
   // Kanten initialisieren
-  EEJumps(EIC,u,EEI,HM);
+  EEJumps(EICC,u,EEI,HM);
   
   // Kantenintegrale auswerten
-  EEJumpNorm(EIC,eta,EEI,HM);
+  EEJumpNorm(EICC,eta,EEI,HM);
 
   // Residuenterme auswerten
   EEResidual(eta,u,EQ,RHS,EEI);
@@ -337,7 +339,6 @@ void Q12d::EEJumps(EdgeInfoContainer<2>& EIC, const GlobalVector& u, const Energ
       }
     }
   }
-
   EIC.ModifyHanging();
 }
 
@@ -360,7 +361,7 @@ void Q12d::EEJumpNorm(EdgeInfoContainer<2>& EIC, DoubleVector& eta, const Energy
         int edgenumber = HM->edge_of_quad(iq,ile);
         if (EIC[edgenumber]->GetCount()==2)
         {
-          jump += EEI.JumpNorm(*GetFem(),EIC[edgenumber]->GetNorm(),ile);
+	  jump += EEI.JumpNorm(*GetFem(),EIC[edgenumber]->GetNorm(),ile);
         }
       }
       double w =  0.25 * 0.5 * sqrt(jump);
@@ -425,11 +426,7 @@ int Q12d::GetCellNumber(const Vertex2d& p0, Vertex2d& p) const
         break;
       }
     }
-    
-    if(!found)
-    {
-      continue;
-    }
+    if(!found) continue;
     
     VertexTransformation(p0,p,iq);
     
@@ -440,21 +437,11 @@ int Q12d::GetCellNumber(const Vertex2d& p0, Vertex2d& p) const
         found = false;
       }
     }
-    
-    if(found)
-    {
-      break;
-    }
+    if(found) break;
   }
 
-  if(iq<GetMesh()->ncells())
-  {
-    return iq;
-  }
-  else
-  {
-    return -1;
-  }
+  if(iq<GetMesh()->ncells()) return iq;
+  else                       return -1;
 }
 
 /* ----------------------------------------- */

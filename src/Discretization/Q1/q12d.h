@@ -47,7 +47,7 @@ public:
   void ConstructInterpolator(MgInterpolatorInterface* I, const MeshTransferInterface* MT);
   void StrongDirichletVector(GlobalVector& u, const DirichletData& BF, int col, const std::vector<int>& comp) const;
 
-  void EnergyEstimator(EdgeInfoContainer<2>& EIC, DoubleVector& eta, const GlobalVector& u, const Equation& EQ, const DomainRightHandSide* RHS) const;
+  void EnergyEstimator(EdgeInfoContainerInterface& EIC, DoubleVector& eta, const GlobalVector& u, const Equation& EQ, const DomainRightHandSide* RHS) const;
 };
 }
 

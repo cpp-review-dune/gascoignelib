@@ -309,18 +309,20 @@ void Q13d::ConstructInterpolator(MgInterpolatorInterface* I, const MeshTransferI
 
 /* ----------------------------------------- */
 
-void Q13d::EnergyEstimator(EdgeInfoContainer<3>& EIC, DoubleVector& eta, const GlobalVector& u, const Equation& EQ, const DomainRightHandSide* RHS) const
+void Q13d::EnergyEstimator(EdgeInfoContainerInterface& EIC, DoubleVector& eta, const GlobalVector& u, const Equation& EQ, const DomainRightHandSide* RHS) const
 {
   EnergyEstimatorIntegrator<3> EEI;
   const HierarchicalMesh3d*    HM = dynamic_cast<const HierarchicalMesh3d*>(EIC.GetMesh());
 
+  EdgeInfoContainer<3>& EICC = dynamic_cast<EdgeInfoContainer<3>&>(EIC);
+
   EEI.BasicInit();
 
   // Kanten initialisieren
-  EEJumps(EIC,u,EEI,HM);
+  EEJumps(EICC,u,EEI,HM);
   
   // Kantenintegrale auswerten
-  EEJumpNorm(EIC,eta,EEI,HM);
+  EEJumpNorm(EICC,eta,EEI,HM);
 
   // Residuenterme auswerten
   EEResidual(eta,u,EQ,RHS,EEI);
