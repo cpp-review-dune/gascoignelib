@@ -72,8 +72,8 @@ void BasicLoop::BasicInit(const ParamFile* paramfile)
   if(GetMeshAgentPointer()==NULL)
     {
       GetMeshAgentPointer() = new MeshAgent;
-      GetMeshAgent()->BasicInit(_paramfile);
     }
+  GetMeshAgent()->BasicInit(_paramfile);
 
   if(GetMultiLevelSolverPointer()==NULL)
     {
@@ -86,10 +86,10 @@ void BasicLoop::BasicInit(const ParamFile* paramfile)
 
   if (GetSolverInfos()==NULL)
     {
-      _SI = new SolverInfos;
-      _SI->BasicInit(_paramfile);
+      GetSolverInfosPointer() = new SolverInfos;
     }
   assert(GetSolverInfos());
+  GetSolverInfos()->BasicInit(_paramfile);
 }
 
 /*-------------------------------------------------------*/

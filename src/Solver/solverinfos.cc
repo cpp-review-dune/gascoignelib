@@ -37,9 +37,7 @@ SolverInfos::~SolverInfos()
 CGInfo& SolverInfos::GetLInfo(std::string s) const
 {
   map<string,CGInfo *>::const_iterator iter = __L.find(s);
-
   assert(iter!=__L.end());
-
   return *iter->second; 
 }
 
