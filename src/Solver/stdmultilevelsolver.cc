@@ -186,8 +186,15 @@ void StdMultiLevelSolver::NewSolvers()
 {
   oldnlevels = _SP.size();
 
-  int nl = Gascoigne::max_int(nlevels(),oldnlevels);
-  _SP.resize(nl,NULL);
+  if (oldnlevels>nlevels())
+    {
+      for (int l=oldnlevels-1; l>=nlevels(); l--)
+	{
+	  delete _SP[l];
+	  _SP[l] = NULL;
+	}
+    }
+  _SP.resize(nlevels(),NULL);
   ComputeLevel = _SP.size()-1;
 
   for(int level=0; level<nlevels(); ++level)  
