@@ -58,47 +58,6 @@ void MeshAgent::ReadMesh(int dim, string meshname, int prerefine)
 
 /*-----------------------------------------*/
 
-void MeshAgent::BasicInit(int dim, string meshname, int prerefine)
-{
-  cerr << "*********************************************************" << endl;
-  cerr << "Der Aufruf BasicInit(dim,meshname,prerefine) sollte durch" << endl;
-  cerr << "    SetDefaultValues(dim,meshname,prerefine)" << endl;
-  cerr << "ersetzt werden!!!" << endl;
-  cerr << "*********************************************************" << endl;
-  assert(0);
-
-  _dimension = dim;
-  if (_dimension==2)
-    {
-      HMP = new HierarchicalMesh2d;
-      for(map<int,BoundaryFunction<2>* >::const_iterator p=_curved2d.begin();p!=_curved2d.end();p++)
-        {
-          HMP->AddShape(p->first,p->second);
-        }
-    }
-  else if (_dimension==3)
-    {
-      HMP = new HierarchicalMesh3d;
-      for(map<int,BoundaryFunction<3>* >::const_iterator p=_curved3d.begin();p!=_curved3d.end();p++)
-        {
-          HMP->AddShape(p->first,p->second);
-        }
-    }
-  else
-    {
-      cout << "dimension of Mesh ? " << _dimension << endl;
-    }
-  assert(HMP);
-
-  ReadMesh(dim, meshname, prerefine);
-
-  GMG = NewMultiGridMesh();
-
-  ReInit();
-}
-
-/*-----------------------------------------*/
-
 void MeshAgent::BasicInit(const ParamFile* paramfile)
 {
   DataFormatHandler DFH;

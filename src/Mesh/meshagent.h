@@ -40,7 +40,6 @@ public:
   void AddShape(int col, BoundaryFunction<3>* f) { _curved3d[col] = f;}
 
   void BasicInit(const ParamFile* pf);
-  void BasicInit(int dim, std::string meshname, int prerefine);
 
   void SetDefaultValues(int dim, std::string gridname, int prerefine);
 
