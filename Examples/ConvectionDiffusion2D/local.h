@@ -103,10 +103,10 @@ class LocalLoop : public StdLoop
 public:
   void BasicInit(const ParamFile* paramfile) 
     {
-      GetMeshAgentPointer() = new BenchMarkMeshAgent;
+      //GetMeshAgentPointer() = new BenchMarkMeshAgent;
       StdLoop::BasicInit(paramfile);
     }
-  void run(const ProblemDescriptorInterface* PD);
+  void run2(const ProblemDescriptorInterface* PD);
 };
 
 

@@ -1,22 +1,19 @@
 #include  "local.h"
 #include  "backup.h"
 #include  "monitoring.h"
+#include  "compose_name.h"
 
 using namespace std;
 using namespace Gascoigne;
 
 /*-------------------------------------------------*/
 
-void LocalLoop::run(const ProblemDescriptorInterface* PD)
+void LocalLoop::run2(const ProblemDescriptorInterface* PD)
 {
   _iter=1;
   
   VectorInterface u("u"), f("f"), dat("dat");
   GlobalVector  ualt;
-
-  GetMultiLevelSolver()->RegisterVector(u);
-  GetMultiLevelSolver()->RegisterVector(f);
-  GetMultiLevelSolver()->RegisterVector(dat);
 
   Monitoring  Moning;
 
@@ -24,25 +21,29 @@ void LocalLoop::run(const ProblemDescriptorInterface* PD)
 
   _clock_newmesh.start();
   GetMultiLevelSolver()->ReInit(*PD);
+  GetMultiLevelSolver()->ReInitVector(u);
+  GetMultiLevelSolver()->ReInitVector(f);
+  GetMultiLevelSolver()->ReInitVector(dat);
+
   GetSolverInfos()->GetNLInfo().control().matrixmustbebuild() = 1;
   _clock_newmesh.stop();
 
   int nlevels = MP->nlevels();
+  dat.resize(nlevels);
   for(int l=nlevels-1;l>=0;l--)
     {
+      GlobalVector& d = MP->GetSolver(l)->GetGV(dat);
       if(l==nlevels-1)
 	{
 	  string filename("solve.00003.bup");
-	  ReadBackUpResize(MP->GetSolver(l)->GetGV(dat),filename);
+	  ReadBackUpResize(d,filename);
 	}
       else
 	{
-          GlobalVector& d = MP->GetSolver(l)->GetGV(dat);
-          d.ncomp() = MP->GetSolver(l+1)->GetGV(dat).ncomp();
-          MP->GetSolver(l)->ResizeVector(&d,"");
-          MP->Transfer(l+1,d,MP->GetSolver(l+1)->GetGV(dat));
+	  MP->GetSolver(l)->GetGV(dat).ncomp() = MP->GetSolver(l)->GetGV(dat).ncomp();
+	  MP->GetSolver(l)->ReInitVector(dat);
+ 	  MP->Transfer(l+1,MP->GetSolver(l)->GetGV(dat),MP->GetSolver(l+1)->GetGV(dat));
 	}
-
       MP->GetSolver(l)->AddNodeVector("beta",dat);
     }
 
