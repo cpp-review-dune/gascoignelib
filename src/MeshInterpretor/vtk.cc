@@ -16,7 +16,7 @@ void Visualization::_vtk_pointdata(ofstream& out) const
      for(VisuDataInfo::siterator p=PointDataInfo->sbegin();p!=PointDataInfo->send();++p)
        {
 	 if(p==PointDataInfo->sbegin()) out << "POINT_DATA " << nn << endl;
-	 out << "SCALARS "<< p->first <<" float "<< endl;
+	 out << "SCALARS "<< p->first <<" double "<< endl;
 	 out << "LOOKUP_TABLE default"<< endl;
 	 for (int ind=0; ind<PointData->visun(); ind++)
 	   {
@@ -34,7 +34,7 @@ void Visualization::_vtk_pointdata(ofstream& out) const
        }
      for(VisuDataInfo::viterator p=PointDataInfo->vbegin();p!=PointDataInfo->vend();++p)
        {
-	 out << "VECTORS "<< p->first <<" float "<< endl;
+	 out << "VECTORS "<< p->first <<" double "<< endl;
 	 for (int ind=0; ind<PointData->visun(); ind++)
 	   {
 	     for(int ii=0;ii<2;ii++)
@@ -73,7 +73,7 @@ void Visualization::_vtk_celldata(ofstream& out) const
      for(VisuDataInfo::siterator p=CellDataInfo->sbegin();p!=CellDataInfo->send();++p)
        {
 	 if(p==CellDataInfo->sbegin()) out << "CELL_DATA " << mesh->ncells() << endl;
-	 out << "SCALARS "<< p->first <<" float "<< endl;
+	 out << "SCALARS "<< p->first <<" double "<< endl;
 	 out << "LOOKUP_TABLE default"<< endl;
 
 	 for (int ind=0; ind<CellData->visun(); ind++)
@@ -84,7 +84,7 @@ void Visualization::_vtk_celldata(ofstream& out) const
        }
      for(VisuDataInfo::viterator p=CellDataInfo->vbegin();p!=CellDataInfo->vend();++p)
        {
-	 out << "VECTORS "<< p->first <<" float "<< endl;
+	 out << "VECTORS "<< p->first <<" double "<< endl;
 	 for (int ind=0; ind<CellData->visun(); ind++)
 	   {
 	     for(int ii=0;ii<2;ii++)
