@@ -14,8 +14,6 @@ class DerivativeVector : public numfixarray<6,double>
 
  public:
 
-  ~DerivativeVector() {};
-
   double m() const { return (*this)[0]; }
   double x() const { return (*this)[1]; }
   double y() const { return (*this)[2]; }
