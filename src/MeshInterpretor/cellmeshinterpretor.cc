@@ -408,6 +408,9 @@ double CellMeshInterpretor::ComputeBoundaryFunctional(const GlobalVector& u, con
 
 double CellMeshInterpretor::ComputeDomainFunctional(const GlobalVector& u, const DomainFunctional& F) const 
 {
+  GlobalToGlobalData();
+  F.SetParameterData(__q);
+  
   nmatrix<double> T;
   double j=0.;
   for(int iq=0;iq<GetMesh()->ncells();++iq)
