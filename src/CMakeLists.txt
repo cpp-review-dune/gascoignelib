@@ -1,5 +1,4 @@
 AUX_SOURCE_DIRECTORY(Common Common_SOURCES)
-#AUX_SOURCE_DIRECTORY(MeshInterpretor MeshInterpretor_SOURCES)
 AUX_SOURCE_DIRECTORY(Discretization/Q1 DiscretizationQ1_SOURCES)
 AUX_SOURCE_DIRECTORY(Discretization/Q2 DiscretizationQ2_SOURCES)
 AUX_SOURCE_DIRECTORY(Discretization/Gls DiscretizationGls_SOURCES)
@@ -21,4 +20,4 @@ ${LinAlg_SOURCES}
 ${Mesh_SOURCES}
 )
 
-ADD_LIBRARY(GascoigneStd ${GASCOIGNE_SOURCES})
+ADD_LIBRARY("GascoigneStd${BUILD_ENDING}" ${GASCOIGNE_SOURCES})

@@ -3,6 +3,6 @@ IF(COPY_PARAMFILES)
   ADD_CUSTOM_TARGET(COPY ALL cp ${_SRC}/*.param ${_SRC}/*.inp .)
 ENDIF(COPY_PARAMFILES)
 
-ADD_EXECUTABLE(NavierStokes2D main.cc)
+ADD_EXECUTABLE("NavierStokes2D${BUILD_ENDING}" main.cc)
 
 

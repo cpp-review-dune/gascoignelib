@@ -8,36 +8,35 @@ SET(GASCOIGNE_STD "$ENV{HOME}/GascoigneStd")
 #
 #  Set the path of the executable and library output
 #  directory (e. g. $ENV{HOME}/local, /usr/local, ...).
-#  If the switch USE_ARCH is turn ON, the subdirerctories for
-#  executables and libraries depend on the system architecture.
 #
-SET(GASCOIGNE_LIBRARY_OUTPUT_PATH "$ENV{HOME}/local/lib" CACHE PATH "path for all libs including libGascoigneStd")
-SET(GASCOIGNE_EXECUTABLE_OUTPUT_PATH "." CACHE PATH "executable path")
-
-OPTION(USE_ARCH "Use archictecture specifc paths" OFF)
-OPTION(COPY_PARAMFILES "Copy the Param and the Inp files for examples" ON)
+SET(GASCOIGNE_LIBRARY_OUTPUT_PATH "$ENV{HOME}/local/lib")
+SET(GASCOIGNE_EXECUTABLE_OUTPUT_PATH ".")
 
 #############################################
 #
-#  Set the flags used by the C++ compiler.
+#  Set the predefinition of the flags used by the 
+#  C++ compiler like -Wall, ..
+#  The flags like -O3, -g, ... should be set by 
+#  the variable CMAKE_BUILD_TYPE which is 
+#  accessible in ccmake
 #
-SET(GASCOIGNE_CXX_FLAGS "-O3" CACHE STRING "compiler flag")
+SET(GASCOIGNE_CXX_FLAGS "" CACHE STRING "Compiler flags for Gascoigne")
 
 #############################################
 #
 #  Set -D define flags (e. g. -D_DEBUG or 
 #  -D__OLDCOMPILER__ for egcs).
 #
-SET(GASCOIGNE_COMPILER_DEFINITIONS "" CACHE STRING "compiler definitions")
+SET(GASCOIGNE_COMPILER_DEFINITIONS "" CACHE STRING "Compiler Definitions for Gascoigne")
 
 #############################################
 #
-#  If UMFPACK version 4.1 or higher is used, AMD library is needed.
-#
-OPTION(WITH_UMFPACK "umfpack is used" ON)
-
-#############################################
-#
-#  Build shared libraries instead of static ones
+#  Options
 #
 OPTION(BUILD_SHARED_LIBS "Build shared libraries" OFF)
+
+OPTION(WITH_UMFPACK "Use UMFPACK Version 4.1 or higher" ON)
+
+OPTION(COPY_PARAMFILES "Copy the Param and the Inp files for examples" ON)
+
+OPTION(MARK_WITH_BUILD_TYPE "Mark executables and libraries with the string given in CMAKE_BUILD_TYPE" OFF)

@@ -3,7 +3,7 @@ IF(COPY_PARAMFILES)
   ADD_CUSTOM_TARGET(COPY ALL cp ${_SRC}/*.param ${_SRC}/*.inp .)
 ENDIF(COPY_PARAMFILES)
 
-ADD_EXECUTABLE(Functionals main.cc)
+ADD_EXECUTABLE("Functionals${BUILD_ENDING}" main.cc)
 
 
 

@@ -3,6 +3,6 @@ IF(COPY_PARAMFILES)
   ADD_CUSTOM_TARGET(COPY ALL cp ${_SRC}/*.param ${_SRC}/*.inp ${_SRC}/*.gup .)
 ENDIF(COPY_PARAMFILES)
 
-ADD_EXECUTABLE(Heat2D main.cc)
+ADD_EXECUTABLE("Heat2D${BUILD_ENDING}" main.cc)
 
 

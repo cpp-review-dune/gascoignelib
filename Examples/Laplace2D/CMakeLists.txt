@@ -3,8 +3,8 @@ IF(COPY_PARAMFILES)
   ADD_CUSTOM_TARGET(COPY ALL cp ${_SRC}/*.param ${_SRC}/*.inp .)
 ENDIF(COPY_PARAMFILES)
 
-ADD_EXECUTABLE(Laplace2D-1 main1.cc)
-ADD_EXECUTABLE(Laplace2D-2 main2.cc) 
+ADD_EXECUTABLE("Laplace2D-1${BUILD_ENDING}" main1.cc)
+ADD_EXECUTABLE("Laplace2D-2${BUILD_ENDING}" main2.cc) 
 
 
 

@@ -3,5 +3,5 @@ IF(COPY_PARAMFILES)
   ADD_CUSTOM_TARGET(COPY ALL cp ${_SRC}/*.param ${_SRC}/*.inp ${_SRC}/*.gup ${_SRC}/*.bup .)
 ENDIF(COPY_PARAMFILES)
 
-ADD_EXECUTABLE(ConvectionDiffusion2D main.cc local.cc localequation.cc)
+ADD_EXECUTABLE("ConvectionDiffusion2D${BUILD_ENDING}" main.cc local.cc localequation.cc)
 
