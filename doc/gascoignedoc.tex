@@ -6,21 +6,41 @@
 \date{}
 \maketitle
 
-
+%
+%-------------------------------------------------------------
+%
 \section{Installation}
 
-
-suppose that Gascoigne is in directory "${HOME}/Programs"
-
-export GASCOIGNE= ${HOME}/Programs
-mkdir GascoigneStdCompile
-cd GascoigneStdCompile
-ccmake  ../GascoigneStd
-
-Variables used by ccmake:
 \begin{itemize}
-\item ....
+\item cd GascoigneStd
+\item cp gascoignerc\_example \${HOME}/.gascoignerc
+\item modify  \${HOME}/.gascoignerc
+\item ccmake .
+\item make 
 \end{itemize}
+
+%
+%-------------------------------------------------------------
+%
+\section{Structure de Gascoigne}
+
+There is a hierarchy of classes
+%
+\begin{tabbing}
+ ***********************\= ***************************\kill
+ StdLoop\> Loop over mesh-adaptation  ---- or in time\\
+ StdMultiLevelSolver\> \\
+ StdSolver\> \\
+ MeshInterpretor\>
+\end{tabbing}
+
+
+
+%
+%-------------------------------------------------------------
+%
+\section{Examples}
+
 
 
 \end{document}

@@ -258,7 +258,6 @@ void StdMultiLevelSolver::InterpolateSolution(NewMultiLevelGhostVector& u, const
 
   for(int l=0; l<FinestLevel(); l++)
     {
-//       u(l).zero();
       u.Vector(l).zero();
     }
 }

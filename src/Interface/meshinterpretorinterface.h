@@ -76,11 +76,11 @@ public:
   virtual void HNDistribute(Gascoigne::GlobalVector& x) const {}
   virtual void HNZero      (Gascoigne::GlobalVector& x) const {}
   virtual bool HNZeroCheck (const Gascoigne::GlobalVector& x) const { return 0;}
-  virtual void Interpolate(Gascoigne::GlobalVector& u, const InitialCondition& RHS) const { assert(0);};
-  virtual void InterpolateSolution(Gascoigne::GlobalVector& u, const Gascoigne::GlobalVector& uold)const { assert(0);};
-  virtual void StrongDirichletMatrix(MatrixInterface& A, int col, const std::vector<int>& comp) const { assert(0);};
-  virtual void StrongDirichletVector(Gascoigne::GlobalVector& u, const DirichletData& BF, int col, const std::vector<int>& comp) const { assert(0);};
-  virtual void StrongDirichletVectorZero(Gascoigne::GlobalVector& u, int col, const std::vector<int>& comp) const { assert(0);};
+  virtual void Interpolate(Gascoigne::GlobalVector& u, const InitialCondition& RHS) const { assert(0);}
+  virtual void InterpolateSolution(Gascoigne::GlobalVector& u, const Gascoigne::GlobalVector& uold)const { assert(0);}
+  virtual void StrongDirichletMatrix(MatrixInterface& A, int col, const std::vector<int>& comp) const { assert(0);}
+  virtual void StrongDirichletVector(Gascoigne::GlobalVector& u, const DirichletData& BF, int col, const std::vector<int>& comp) const { assert(0);}
+  virtual void StrongDirichletVectorZero(Gascoigne::GlobalVector& u, int col, const std::vector<int>& comp) const { assert(0);}
 
 
   virtual double PressureFilter(nvector<double>&) const {assert(0);}
