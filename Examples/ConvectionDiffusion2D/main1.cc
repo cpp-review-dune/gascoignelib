@@ -1,10 +1,12 @@
 #include  "localloop.h"
 
+using namespace Gascoigne;
+
 /*---------------------------------------------------*/
 
 int main(int argc, char** argv)
 {
-  Gascoigne::ParamFile paramfile("mesh1.param");
+  ParamFile paramfile("mesh1.param");
   if(argc>=2) {
     paramfile.SetName(argv[1]);
   }

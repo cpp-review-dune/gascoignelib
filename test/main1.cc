@@ -16,7 +16,7 @@ class LocalEquation : public Equation
 public:
   string GetName() const {return "Local";}
   int ncomp() const {return 1;}
-  void OperatorStrong(Vector& b, const Gascoigne::FemFunction& U) const {
+  void OperatorStrong(Vector& b, const FemFunction& U) const {
     b[0] += U[0].m() - U[0].D();
   }
   void Form(VectorIterator b, const FemFunction& U, const TestFunction& N) const {
