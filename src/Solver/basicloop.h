@@ -63,6 +63,7 @@ protected:
   mutable StopWatch   _clock_newmesh, _clock_solve, _clock_functionals, _clock_write, _clock_estimate;
 
   int    _niter, _iter;
+  bool _writeVtk;
   bool _writeBupGup;
   bool _writeInp;
 

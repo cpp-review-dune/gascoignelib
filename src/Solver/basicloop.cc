@@ -50,6 +50,7 @@ void BasicLoop::BasicInit(const ParamFile* paramfile)
   DFH.insert("niter",              &_niter,             1);
   DFH.insert("initial",            &_initial,           "boundary");
   DFH.insert("reload",             &_reload,            "none");
+  DFH.insert("writevtk",           &_writeVtk,          true);
   DFH.insert("writebupgup",        &_writeBupGup,       true);
   DFH.insert("writeinp"   ,        &_writeInp   ,      false);  
   DFH.insert("resultsdir",         &_s_resultsdir,      "Results");
@@ -133,8 +134,11 @@ void BasicLoop::PrintMeshInformation(int outputlevel) const
 
 void BasicLoop::Output(const MultiLevelGhostVector& u, string name) const
 {
-  GetMultiLevelSolver()->GetSolver()->Visu(name,u.finest(),_iter);
-//   GetMultiLevelSolver()->GetSolver()->VisuGrid(name,_iter);
+  if(_writeVtk)
+  {
+    GetMultiLevelSolver()->GetSolver()->Visu(name,u.finest(),_iter);
+  }
+  // GetMultiLevelSolver()->GetSolver()->VisuGrid(name,_iter);
   if(_writeBupGup)
   {   
     WriteMeshAndSolution(name,u);
