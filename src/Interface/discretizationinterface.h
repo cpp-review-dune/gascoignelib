@@ -45,6 +45,7 @@ namespace Gascoigne
       virtual ~DiscretizationInterface() {}
 
       const GlobalData& GetGlobalData() const {return __q;}
+      void SetGlobalData(const GlobalData& q) const {__q = q;}
       //
       //// Functions called from the Solver
       //

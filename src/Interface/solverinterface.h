@@ -51,9 +51,9 @@ namespace Gascoigne
       virtual void BasicInit(int level, const ParamFile* paramfile, const MeshInterface* MP)=0;
   
       virtual void SetProblem(const ProblemDescriptorInterface& PD)=0;
+      virtual void SetDiscretization(DiscretizationInterface& DI, bool init=false)=0;
       virtual const ProblemDescriptorInterface* GetProblemDescriptor() const=0;
       virtual const ParamFile* GetParamfile() const=0;
-      virtual DiscretizationInterface*& GetDiscretizationPointer()=0;
 
       virtual bool DirectSolver() const=0;
   

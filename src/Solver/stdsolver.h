@@ -95,6 +95,8 @@ class StdSolver : public virtual SolverInterface
 //   const IluInterface* GetIlu() const {assert(_MIP); return _MIP;}
   IluInterface* GetIlu() const {assert(_MIP); return _MIP;}
   IluInterface*& GetIluPointer() {assert(_MIP==NULL); return _MIP;}
+  
+  virtual DiscretizationInterface*& GetDiscretizationPointer() {return _ZP;}
 
   // 1. Initialisierung 
 	
@@ -140,13 +142,13 @@ class StdSolver : public virtual SolverInterface
 
   void BasicInit(int level, const ParamFile* paramfile, const MeshInterface* MP);
   void SetProblem(const ProblemDescriptorInterface& PDX);
+  void SetDiscretization(DiscretizationInterface& DI, bool init=false);
   const ProblemDescriptorInterface* GetProblemDescriptor() const {assert(_PDX); return _PDX;}
   const ParamFile* GetParamfile() const { return _paramfile;}
 
   void NewMesh(int l, const MeshInterface* MP);
 
   const MeshInterface* GetMesh() const {return _MP;}
-  virtual DiscretizationInterface*& GetDiscretizationPointer() { return _ZP;}
 
   // 0.2 Discretization
 

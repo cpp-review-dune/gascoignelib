@@ -89,15 +89,13 @@ void DwrQ1Q2::PrimalResidualsHigher(BasicGhostVector& gf, const BasicGhostVector
 
   DiscretizationInterface* D = GetOtherDiscretization();
 
-  D->BasicInit(S.GetParamfile());
-  D->ReInit(S.GetMesh());
-  S.GetDiscretizationPointer() = D;
+  S.SetDiscretization(*D,true);
       
   S.Rhs(gf,0.5);
   S.Form(gf,gu,-0.5);
   S.SetBoundaryVectorZero(gf);
   
-  S.GetDiscretizationPointer() = discretization;
+  S.SetDiscretization(*discretization);
   delete D;
 }
 
@@ -111,36 +109,32 @@ void DwrQ1Q2::DualResidualsHigher(BasicGhostVector& gf,
   S.GetGV(gf).zero();
   // dual problem
   S.SetProblem(PDI);
+  S.AddNodeVector("u",&S.GetGV(gu));
 
   // standard residual
   //
   {
-    S.AddNodeVector("u",&S.GetGV(gu));
     S.Rhs     (gf, -0.5);
     S.AdjointForm(S.GetGV(gf),S.GetGV(gz),0.5);
     S.SetBoundaryVectorZero(gf);
     S.HNDistribute(gf);
-    S.DeleteNodeVector("u");
   }
   // residual respect Q2 test functions
   //
   {  
     DiscretizationInterface* D = GetOtherDiscretization();
-
-    D->BasicInit(S.GetParamfile());
-    D->ReInit(S.GetMesh());
-    S.GetDiscretizationPointer() = D;
-    S.AddNodeVector("u",&S.GetGV(gu));
+    S.SetDiscretization(*D,true);
 
     S.Rhs     (gf,   0.5);
     S.AdjointForm(S.GetGV(gf),S.GetGV(gz),-0.5);
     S.SetBoundaryVectorZero(gf);
     S.HNDistribute(gf);
-    S.DeleteNodeVector("u");
 
-    S.GetDiscretizationPointer() = discretization;
+    S.SetDiscretization(*discretization);
     delete D;
   }
+
+  S.DeleteNodeVector("u");
   S.SetProblem(*primalproblem);
 }
 

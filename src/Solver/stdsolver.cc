@@ -154,6 +154,20 @@ void StdSolver::SetProblem(const ProblemDescriptorInterface& PDX)
 
 /*-------------------------------------------------------*/
 
+void StdSolver::SetDiscretization(DiscretizationInterface& DI, bool init)
+{
+  if(init)
+  {
+    DI.BasicInit(GetParamfile());
+    DI.ReInit(GetMesh());
+    DI.SetGlobalData(GetDiscretization()->GetGlobalData());
+  }
+  
+  GetDiscretizationPointer() = &DI;
+}
+
+/*-------------------------------------------------------*/
+
 void StdSolver::NewMesh(int level, const MeshInterface* mp)
 {
   _MP = mp;
