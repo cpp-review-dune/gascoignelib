@@ -71,9 +71,9 @@ public:
   virtual void Matrix(MatrixInterface& A, const GlobalVector& u, const Equation& EQ, double) const { assert(0);};
   virtual void MassMatrix(MatrixInterface& M) const {assert(0);}
   virtual void Rhs(GlobalVector& f, const RightHandSideData& RHS, double s) const { assert(0);};
-  virtual void DiracRhs(GlobalVector& f, const RightHandSideData& RHS, double s) const { assert(0);}
-  virtual void DiracRhsPoint(GlobalVector& f,const NewDiracRightHandSide* DRHS,const Vertex2d& p0,int i,double s) const{ assert(0);}
-  virtual void DiracRhsPoint(GlobalVector& f,const NewDiracRightHandSide* DRHS,const Vertex3d& p0,int i,double s) const{ assert(0);}
+  virtual void DiracRhs(GlobalVector& f, const NewDiracRightHandSide& DRHS, double s) const { assert(0);}
+  virtual void DiracRhsPoint(GlobalVector& f,const NewDiracRightHandSide& DRHS,const Vertex2d& p0,int i,double s) const{ assert(0);}
+  virtual void DiracRhsPoint(GlobalVector& f,const NewDiracRightHandSide& DRHS,const Vertex3d& p0,int i,double s) const{ assert(0);}
   virtual int RhsPoint(GlobalVector& f, const Functional* F) const { assert(0); return -1;}
   virtual void RhsNeumann(GlobalVector& f, const IntSet& Colors,  const NeumannData& NRHS, double s) const { assert(0);}
 

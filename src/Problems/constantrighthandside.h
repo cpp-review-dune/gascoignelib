@@ -7,20 +7,6 @@
 
 namespace Gascoigne
 {
-class ZeroRightHandSideData : public RightHandSideData
-{
-protected :
-  int ncomp;
-public  : 
-  ZeroRightHandSideData(int n) : ncomp(n), RightHandSideData(){}
- std::string GetName() const {return "zero";} 
- int GetNcomp() const {return ncomp;}
-  double operator()(int c, const Vertex2d& v)const {return 0.;}
-  double operator()(int c, const Vertex3d& v)const {return 0.;}
-};
-
-/*-----------------------------------------*/
-
 class OneRightHandSideData : public RightHandSideData
 {
   protected :

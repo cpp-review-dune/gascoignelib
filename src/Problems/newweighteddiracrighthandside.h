@@ -20,6 +20,7 @@ class NewWeightedDiracRightHandSide : public NewDiracRightHandSide
      
     double operator()(int i, const Vertex2d& v) const;
     double operator()(int i, const Vertex3d& v) const; 
+    std::string GetName() const { return "NewWeightedDiracRightHandSide"; }
 };
 }
 /**********************************************************/

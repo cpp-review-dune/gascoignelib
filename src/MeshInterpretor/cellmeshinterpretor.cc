@@ -236,22 +236,17 @@ void CellMeshInterpretor::InitFilter(DoubleVector& F) const
 
 /* ----------------------------------------- */
 
-void CellMeshInterpretor::DiracRhs(GlobalVector& f, const RightHandSideData& RHS, double s) const
+void CellMeshInterpretor::DiracRhs(GlobalVector& f, const NewDiracRightHandSide& DRHS, double s) const
 {
-  const NewDiracRightHandSide* DRHS = dynamic_cast<const NewDiracRightHandSide*>(&RHS);
-  assert(DRHS);
-
   int dim = GetMesh()->dimension();
-  vector<int> comps = DRHS->GetComps();
+  vector<int> comps = DRHS.GetComps();
   int nn = comps.size();
 
   vector<double> up(nn,0);
  
-  GlobalToGlobalData();
-
   if (dim == 2)
     {
-      vector<Vertex2d> v2d = DRHS->GetPoints2d();
+      vector<Vertex2d> v2d = DRHS.GetPoints2d();
       assert(nn==v2d.size());
       
       for(int i=0;i<nn;++i)
@@ -261,7 +256,7 @@ void CellMeshInterpretor::DiracRhs(GlobalVector& f, const RightHandSideData& RHS
     }
   else if (dim == 3)
     {
-      vector<Vertex3d> v3d = DRHS->GetPoints3d();
+      vector<Vertex3d> v3d = DRHS.GetPoints3d();
       assert(nn==v3d.size());
       for(int i=0;i<nn;++i)
 	{
@@ -277,7 +272,7 @@ void CellMeshInterpretor::DiracRhs(GlobalVector& f, const RightHandSideData& RHS
 
 /* ----------------------------------------- */
 
-void CellMeshInterpretor::DiracRhsPoint(GlobalVector& f,const NewDiracRightHandSide* DRHS,const Vertex2d& p0,int i,double s) const
+void CellMeshInterpretor::DiracRhsPoint(GlobalVector& f,const NewDiracRightHandSide& DRHS,const Vertex2d& p0,int i,double s) const
 {
   __F.ReInit(f.ncomp(),GetFem()->n());
 
@@ -291,6 +286,7 @@ void CellMeshInterpretor::DiracRhsPoint(GlobalVector& f,const NewDiracRightHandS
       abort();
     }
 
+  GlobalToLocalData(iq);
   VertexTransformation(p,p0,Tranfo_p0);
 
   nmatrix<double> T;
@@ -303,7 +299,7 @@ void CellMeshInterpretor::DiracRhsPoint(GlobalVector& f,const NewDiracRightHandS
 
 /* ----------------------------------------- */
 
-void CellMeshInterpretor::DiracRhsPoint(GlobalVector& f,const NewDiracRightHandSide* DRHS,const Vertex3d& p0,int i,double s) const
+void CellMeshInterpretor::DiracRhsPoint(GlobalVector& f,const NewDiracRightHandSide& DRHS,const Vertex3d& p0,int i,double s) const
 {
   cerr << "CellMeshInterpretor::DiracRhsPoint not written in 3d\n";
   abort();

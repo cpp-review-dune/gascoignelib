@@ -19,6 +19,9 @@
 
 #include  "newpointfunctional.h"
 
+#include  "diracrighthandside.h"
+#include  "newdiracrighthandside.h"
+
 #include  "q1gls2d.h"
 #include  "q1gls3d.h"
 
@@ -704,28 +707,31 @@ void StdSolver::Rhs(GlobalVector& f, double d) const
 
   if(RHS)
     {
-      if(RHS->GetName()=="DiracRightHandSide")
-	{
-	  cerr << "Use NewDiracRightHandSide\n";
-	  abort();
-	  //GetMeshInterpretor()->DiracRhs(f,*RHS,d);
-	}
-      else  if(RHS->GetName()=="NewDiracRightHandSide")
-	{
-	  GetMeshInterpretor()->DiracRhs(f,*RHS,d);
-	}
-      else if(RHS->GetName()!="zero")
-	{
-	  GetMeshInterpretor()->Rhs(f,*RHS,d);
-	}
+      const DiracRightHandSide *DRHS = dynamic_cast<const DiracRightHandSide *>(RHS);
+        if(DRHS)
+        {
+           cerr << "Use NewDiracRightHandSide\n";
+           abort();
+           //GetMeshInterpretor()->DiracRhs(f,*RHS,d);
+        }
+        else
+        {
+           const NewDiracRightHandSide * NDRHS = dynamic_cast<const NewDiracRightHandSide *>(RHS);
+           if(NDRHS)
+           {
+	     GetMeshInterpretor()->DiracRhs(f,*NDRHS,d);
+           }
+           else
+           {
+              GetMeshInterpretor()->Rhs(f,*RHS,d);
+           }
+        }
     }
+
   if(NRHS)
     {
-      if(NRHS->GetName()!="zero") 
-	{
-	  const BoundaryManager*  BM   = GetProblemDescriptor()->GetBoundaryManager();
-	  GetMeshInterpretor()->RhsNeumann(f,BM->GetNeumannColors(),*NRHS,d);	  
-	}
+       const BoundaryManager*  BM   = GetProblemDescriptor()->GetBoundaryManager();
+       GetMeshInterpretor()->RhsNeumann(f,BM->GetNeumannColors(),*NRHS,d);	  
     }
  HNDistribute(f);
 }

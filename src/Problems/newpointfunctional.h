@@ -23,10 +23,10 @@ class NewPointFunctional : public Functional
   virtual void BasicInit(const std::vector<Vertex2d>& v2d, const std::vector<int>& comps) {_v2d=v2d;_comps=comps;}
   virtual void BasicInit(const std::vector<Vertex3d>& v3d, const std::vector<int>& comps) {_v3d=v3d;_comps=comps;}
   
-  const std::vector<Vertex2d>& GetPoints2d() const { return _v2d;}
-  const std::vector<Vertex3d>& GetPoints3d() const { return _v3d;}
+  virtual const std::vector<Vertex2d>& GetPoints2d() const { return _v2d;}
+  virtual const std::vector<Vertex3d>& GetPoints3d() const { return _v3d;}
   
-  const std::vector<int>& GetComps()    const { return _comps;}
+  virtual const std::vector<int>& GetComps()    const { return _comps;}
 
   std::string GetName() const {return "NewPointFunctional";}
   

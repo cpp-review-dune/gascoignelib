@@ -46,9 +46,6 @@ public:
 	  b[c] += N.m()* (*this)(c,v);
 	}
     }
-/*   virtual const DoubleVector& GetWeights()   const { assert(0);  return ;} */
-/*   virtual const std::vector<Vertex2d>& GetPoints2d() const { assert(0); } */
-/*   virtual const std::vector<Vertex3d>& GetPoints3d() const { assert(0); } */
 };
 }
 
