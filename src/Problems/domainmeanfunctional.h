@@ -11,16 +11,18 @@ class DomainMeanFunctional  : public virtual DomainFunctional
 protected:
 
   std::string  _domain;
-  int          _comp;
+  int          _comp, _ncomp;
   double       _x0, _x1, _y0, _y1, _z0, _z1;
 
 public:
 
   DomainMeanFunctional(const Equation& EQ, const std::vector<std::string>& args);
+  ~DomainMeanFunctional() {}
 
   std::string GetName() const {return "domain_mean";}
 
-  int    GetComp() const {return _comp;}
+  int    GetNcomp() const {return _ncomp;}
+  int    GetComp()  const {return _comp;}
 
   double J(const FemFunction& U, const Vertex2d& v) const;
   double J(const FemFunction& U, const Vertex3d& v) const;

@@ -15,7 +15,7 @@
 /*-----------------------------------------*/
 
 
-class Functional
+class Functional : public Application
 {
 protected:
 
@@ -27,8 +27,8 @@ protected:
 
 public:
 
-  Functional() : exactisknown(0), exact(0.)  {}
-  virtual ~Functional() {}
+  Functional() : Application(), exactisknown(0), exact(0.)  {}
+  ~Functional() {}
 
   virtual std::string GetName() const=0;
 

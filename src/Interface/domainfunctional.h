@@ -17,15 +17,6 @@ class DomainFunctional : public virtual Functional
 {
 public:
 
-
-private:
-
-
-protected:
-
-
-public:
-
   DomainFunctional() : Functional() {}
   virtual ~DomainFunctional() {}
 

@@ -8,12 +8,13 @@ DomainMeanFunctional::DomainMeanFunctional(const Equation& EQ, const std::vector
 {
   _x0 = 0.; _x1 = 0.; _y0 = 0.; _y1 = 0.; _z0 = 0.; _z1 = 0.;
   RightHandSideData* RH;
-  int ncomp = EQ.ncomp();
+  _ncomp = EQ.ncomp();
   _comp = atoi(args[0].c_str());
   if (args.size()==1)
     {
       _domain = "all";
-      RH = new OneComponentRightHandSideData(ncomp,_comp);
+
+      RH = new OneComponentRightHandSideData(_ncomp,_comp);
     }
   else if (args.size()==5)
     {
@@ -22,7 +23,7 @@ DomainMeanFunctional::DomainMeanFunctional(const Equation& EQ, const std::vector
       _x1 = atof(args[2].c_str());
       _y0 = atof(args[3].c_str());
       _y1 = atof(args[4].c_str());
-      RH = new RectangleRightHandSideData(ncomp,_comp,_x0,_x1,_y0,_y1);
+      RH = new RectangleRightHandSideData(_ncomp,_comp,_x0,_x1,_y0,_y1);
     }
   else if (args.size()==7)
     {
@@ -33,7 +34,7 @@ DomainMeanFunctional::DomainMeanFunctional(const Equation& EQ, const std::vector
       _y1 = atof(args[4].c_str());
       _z0 = atof(args[5].c_str());
       _z1 = atof(args[6].c_str());
-      RH = new RectangleRightHandSideData(ncomp,_comp,_x0,_x1,_y0,_y1,_z0,_z1);
+      RH = new RectangleRightHandSideData(_ncomp,_comp,_x0,_x1,_y0,_y1,_z0,_z1);
     }
   else
     {

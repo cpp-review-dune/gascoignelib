@@ -18,6 +18,7 @@ protected:
 
   int            _comp;
   std::set<int>  _col;
+  double         _scale;
 
   DirichletData*   _DD;
 
@@ -31,8 +32,9 @@ public:
 
   std::string GetName() const {return "ResidualFunctional";}
 
-  int    GetComp() const {return _comp;}
+  int           GetComp()   const {return _comp;}
   std::set<int> GetColors() const {return _col;}
+  double        GetScale()  const { return _scale;}
 
   const DirichletData* GetDirichletData() const {return _DD;}
 };
