@@ -245,7 +245,6 @@ void DataFormatHandler::setvalue(const string& name, bool value)
   if (p!=TB.end())
     {
       *(p->second) = value;
-      cout << *(p->second) << endl;
       return;
     }  
 }
