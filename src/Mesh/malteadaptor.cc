@@ -28,8 +28,18 @@ MalteAdaptor::MalteAdaptor(const ParamFile* pf, const DoubleVector& _eta) :
 
   FileScanner FS(DH,pf,"Adaptor");
 
-  if (idim==2) ppp = 3;
-  else ppp=7;
+  if (idim==1) 
+  {
+    ppp = 1;
+  }
+  else if (idim==2) 
+  {
+    ppp = 3;
+  }
+  else
+  {
+    ppp=7;
+  }
 
   etasum = accumulate(eta.begin(),eta.end(),0.);
   gamma = pow(0.5,alpha)-1.;

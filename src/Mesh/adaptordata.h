@@ -34,6 +34,7 @@ public:
   int      order()    const {return iorder;}
   int&     order()          {return iorder;}
   int      dim()       const {return idim;}
+  int&     dim()             {return idim;}
   int      maxnodes()  const {return mnodes;}
   int      ncells()    const {return inactual;}
   int&     ncells()          {return inactual;}

@@ -13,8 +13,18 @@ namespace Gascoigne
 DiplomandenAdaptor::DiplomandenAdaptor(AdaptorData& _info, const DoubleVector& _eta) :
   info(_info), eta(_eta)
 {
-  if (info.dim()==2) ppp = 3;
-  else ppp=7;
+  if (info.dim()==1) 
+  {
+    ppp = 1;
+  }
+  else if (info.dim()==2)
+  {
+    ppp = 3;
+  }
+  else
+  {
+    ppp=7;
+  }
 
   assert(info.rfactor()<=1);
   assert(info.rfactor()>0);
