@@ -25,7 +25,7 @@ protected:
   virtual double compute_element_mean_matrix(int iq, EntryMatrix& E) const;
   int RhsPoint(GlobalVector& f, const Vertex2d& p0, int comp, double d) const;
   int RhsPoint(GlobalVector& f, const Vertex3d& p0, int comp, double d) const;
-  virtual nmatrix<double> GetLocalInterpolationWeights() const { assert(0);}
+  virtual nmatrix<double> GetLocalInterpolationWeights(int iq) const { assert(0);}
 
   const PatchMesh* GetPatchMesh() const {
     const PatchMesh* MP = dynamic_cast<const PatchMesh*>(GetMesh());

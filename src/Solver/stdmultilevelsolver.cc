@@ -560,7 +560,7 @@ void StdMultiLevelSolver::BoundaryInit(NewMultiLevelGhostVector& u) const
 
 string StdMultiLevelSolver::Solve(int level, NewMultiLevelGhostVector& u, const NewMultiLevelGhostVector& b)
 {
-  DataP->nlinfo.control().matrixmustbebuild() = 1;
+  //DataP->nlinfo.control().matrixmustbebuild() = 1;
 
   ComputeLevel = level;
 

@@ -119,13 +119,11 @@ void StdTimeLoop::L2Projection(NewMultiLevelGhostVector& u, NewMultiLevelGhostVe
 
 void StdTimeLoop::run(const ProblemDescriptorInterface* PD)
 {
-  NewMultiLevelGhostVector u("u"), f("f"), ualt("ualt");
+  NewMultiLevelGhostVector u("u"), f("f");
   u.SetMultiLevelSolver(GetMultiLevelSolver());
   f.SetMultiLevelSolver(GetMultiLevelSolver());
-  ualt.SetMultiLevelSolver(GetMultiLevelSolver());
   GetMultiLevelSolver()->RegisterVector(u);
   GetMultiLevelSolver()->RegisterVector(f);
-  GetMultiLevelSolver()->RegisterVector(ualt);
   
   nvector<double> eta;
   
@@ -147,8 +145,6 @@ void StdTimeLoop::run(const ProblemDescriptorInterface* PD)
   for (_iter=1; _iter<=_niter; _iter++)
     {
       info.iteration(_iter);
-
-      ualt.equ(1.,u);
 
       TimeInfoBroadcast();
 

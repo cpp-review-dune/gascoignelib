@@ -1,4 +1,5 @@
 SET(SOLVER_SRC 
+  basicloop.cc
   cg.cc
   cuthillmckee.cc
   gmres.cc

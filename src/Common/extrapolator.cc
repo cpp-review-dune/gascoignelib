@@ -10,14 +10,14 @@ Extrapolator::~Extrapolator() {}
 void Extrapolator::Print()
 {
   int n = order.size();
-  std::cout << "Extrapolated\t";
+  std::cout << "extra\t";
 
   std::cout.precision(12);
   for (int i=0; i<n; i++)
     {
-      std::cout << valextra[i] << " ";
+      std::cout << valextra[i];
       std::cout.precision(4);
-      std::cout << "[" << order[i] << "]\t";
+      std::cout << " [" << order[i] << "]  ";
       std::cout.precision(12);
     }
   std::cout << std::endl;

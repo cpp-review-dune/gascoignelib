@@ -1,14 +1,9 @@
 #include  "stdloop.h"
-#include  "meshagent.h"
-#include  "compose_name.h"
-#include  "backup.h"
 #include  "adaptordata.h"
 #include  "diplomantenadaptor.h"
 #include  "malteadaptor.h"
-#include  "filescanner.h"
 #include  "monitoring.h"
-#include  <iomanip>
-#include  "gostream.h"
+#include  "filescanner.h"
 #include  "stdmultilevelsolver.h"
 
 using namespace std;
@@ -16,9 +11,9 @@ using namespace Gascoigne;
 
 /*-----------------------------------------*/
 
-StdLoop::StdLoop() : _paramfile(NULL), _MA(NULL), _ML(NULL), _iter(0), IOM("Results")
+StdLoop::StdLoop() : BasicLoop()//, _paramfile(NULL)
 {
-  _estimator = _extrapolate = _reload  = "none";
+  _estimator = _extrapolate = "none";
   _FV.resize(0);
 }
 
@@ -26,22 +21,22 @@ StdLoop::StdLoop() : _paramfile(NULL), _MA(NULL), _ML(NULL), _iter(0), IOM("Resu
 
 StdLoop::~StdLoop()
 {
-  cout << "************************************************************************\n\n";
-  cout << "StdLoop\t\t\tTIME\n";
-  cout << "  NewMesh\t\t" << _clock_newmesh.read() << endl;
-  cout << "  Solve\t\t\t" << _clock_solve.read() << endl;
+}
+
+/*-----------------------------------------*/
+
+void StdLoop::ClockOutput() const
+{
+  BasicLoop();
   cout << "  Functionals\t\t" << _clock_functionals.read() << endl;
   cout << "  Estimate\t\t" << _clock_estimate.read() << endl;
-  cout << "  Write\t\t\t" << _clock_write.read() << endl;
-
-  if(_MA  != NULL) {delete _MA; _MA=NULL;}
-  if(_ML  != NULL) {delete _ML; _ML=NULL;}
 }
 
 /*-----------------------------------------*/
 
 void StdLoop::BasicInit(const ParamFile* paramfile)
 {
+  BasicLoop::BasicInit(paramfile);
   _paramfile = paramfile;
 
   DataFormatHandler DFH;
@@ -50,43 +45,12 @@ void StdLoop::BasicInit(const ParamFile* paramfile)
   DFH.insert("p",&_p,0.1);
   DFH.insert("coarse",&_coarse,0);
   DFH.insert("nmax",&_nmax,100000);
-  DFH.insert("niter",&_niter,6);
   DFH.insert("refiner",&_refiner,"eta");
   DFH.insert("estimator",&_estimator,"energy");
   DFH.insert("extrapolate",&_extrapolate,"no");
-  DFH.insert("initial",&_initial,"boundary");
-  DFH.insert("reload",&_reload,"none");
   FileScanner FS(DFH);
   FS.NoComplain();
   FS.readfile(_paramfile,"Loop");
-
-  Mon.init(_paramfile,1);
-  Mon.set_directory("Results");
-
-  assert((_reload=="none") || (_initial=="file"));
-
-  if ((_reload!="none") && (_initial!="file"))
-    {
-      cerr << "Please, add 'initial file' to Block StdLoop" << endl;
-      _initial = "file";
-    }
-  assert((_reload!="none") || (_initial!="file"));
-
-  if(GetMeshAgentPointer()==NULL)
-    {
-      GetMeshAgentPointer() = new MeshAgent;
-    }
-  assert(GetMeshAgent());
-  GetMeshAgent()->BasicInit(_paramfile);
-
-  if(GetMultiLevelSolverPointer()==NULL)
-    {
-      GetMultiLevelSolverPointer() = new StdMultiLevelSolver;
-    }
-  assert(GetMultiLevelSolver());
-
-  GetMultiLevelSolver()->BasicInit(GetMeshAgent(),_paramfile);
-  GetMultiLevelSolver()->SetMonitorPtr(&Mon);
 }
 
 /*-------------------------------------------------------*/
@@ -95,10 +59,13 @@ nvector<double> StdLoop::ComputeFunctionals(NewMultiLevelGhostVector& f, NewMult
 {
   int n = J.size(); 
   nvector<double> j(n,0.);
+  if (n==0) return j;
+
+  std::cout << "\nFunctionals: ";
   for(int i=0; i<n; i++)
     {
       j[i] = GetMultiLevelSolver()->ComputeFunctional(f,u,J[i]);
-      std::cout << J[i]->BeautifulName() << ": " << j[i] << "\t";
+      std::cout << J[i]->BeautifulName() << " ";
     }
   std::cout << std::endl;
   return j;
@@ -123,95 +90,6 @@ void StdLoop::EtaVisu(string name, int i, const nvector<double>& eta)
 
 /*-------------------------------------------------*/
 
-void StdLoop::Output(const NewMultiLevelGhostVector& u, string name) const
-{
-  GetMultiLevelSolver()->GetSolver()->Visu(name,u.finest(),_iter);
-//   GetMultiLevelSolver()->GetSolver()->VisuGrid(name,_iter);
-  WriteMeshAndSolution(name,u);
-}
-
-/*-------------------------------------------------*/
-
-void StdLoop::WriteMeshAndSolution(const string& filename, const NewMultiLevelGhostVector& u) const
-{
-  string name;
-  name = filename;
-//   name = filename + "_value";
-  compose_name(name,_iter);
-  GetMultiLevelSolver()->GetSolver()->Write(u.finest(),name);
-  cout << "[" << name << "]";
-
-//   name = filename + "_mesh";
-//   compose_name(name,_iter);
-  GetMeshAgent()->write_gup(name);
-  cout << " [" << name << "]" << endl;
-}
-
-/*-------------------------------------------------*/
-
-void StdLoop::WriteSolution(const NewMultiLevelGhostVector& u) const
-{
-  _clock_write.start();
-  string filename = "Results/solution";
-  compose_name(filename,_iter);
-  GetMultiLevelSolver()->GetSolver()->Write(u.finest(),filename);
-  cout << "[" << filename << "]";
-  _clock_write.stop();
-}
-
-/*-------------------------------------------------*/
-
-void StdLoop::WriteMesh() const
-{
-  _clock_write.start();
-  string filename = "Results/mesh";
-  compose_name(filename,_iter);
-  GetMeshAgent()->write_gup(filename);
-  cout << " [" << filename << "]" << endl;
-  _clock_write.stop();
-}
-
-/*-------------------------------------------------*/
-
-void StdLoop::InitSolution(NewMultiLevelGhostVector& u)
-{
-  u.zero();
-
-  if      (_initial=="analytic") GetMultiLevelSolver()->GetSolver()->SolutionInit(u);
-  else if (_initial=="file")     GetMultiLevelSolver()->GetSolver()->Read(u,_reload);
-  else if (_initial=="boundary") GetMultiLevelSolver()->GetSolver()->BoundaryInit(u);
-  else
-    {
-      assert(0);
-    }
-  GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(u);
-  GetMultiLevelSolver()->GetSolver()->Visu("Results/solve",u,0);
-}
-
-/*-------------------------------------------------*/
-
-string StdLoop::Solve(NewMultiLevelGhostVector& u, NewMultiLevelGhostVector& f, string name)
-{
-  _clock_solve.start();
-
-  f.zero();
-  GetMultiLevelSolver()->GetSolver()->Rhs(f.finest());
-
-  GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(f.finest());
-  GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(u.finest());
-
-  string status = GetMultiLevelSolver()->Solve(u,f);
-  _clock_solve.stop();
-
-  _clock_write.start();
-  Output(u,name);
-  _clock_write.stop();
-
-  return status;
-}
-
-/*-------------------------------------------------------*/
-
 nvector<double> StdLoop::GetExactValues() const
 {
   int n = _FV.size(); 
@@ -231,13 +109,13 @@ nvector<double> StdLoop::Functionals(NewMultiLevelGhostVector& u, NewMultiLevelG
   _JErr.resize(J.size());
   if (J.size())
     {
-      cout << "\nFunctionals  ";
+      cout << "\nvalue";
       cout.precision(16);
       for(int i=0; i<J.size(); i++) 
 	{
 	  cout << "\t" << J[i];
 	}
-      cout << "\nErrors  ";
+      cout << "\nerror";
       for(int i=0; i<J.size(); i++) 
 	{
 	  _JErr[i] = GetExactValues()[i] - J[i];
@@ -282,18 +160,6 @@ double StdLoop::Estimator(nvector<double>& eta, NewMultiLevelGhostVector& u, New
 
 /*-------------------------------------------------*/
 
-void StdLoop::ComputeGlobalErrors(const NewMultiLevelGhostVector& u)
-{
-  GetMultiLevelSolver()->GetSolver()->ComputeError(u,_GlobalErr);
-  if (_GlobalErr.size()>0)
-    {
-      cout.precision(6);
-      cout << "\nGlobalErrors l2,h1,l8 " << _GlobalErr << endl;
-    }
-}
-
-/*-------------------------------------------------*/
-
 void StdLoop::AdaptMesh(const nvector<double>& eta)
 {
   if     (_refiner=="global") GetMeshAgent()->global_refine(1);
@@ -323,35 +189,6 @@ void StdLoop::AdaptMesh(const nvector<double>& eta)
       GetMeshAgent()->refine_nodes(refnodes,coarsenodes);
     }
   else assert(0);
-}
-
-/*-------------------------------------------------*/
-
-void StdLoop::CopyVector(GlobalVector& dst, NewMultiLevelGhostVector& src)
-{
-  GetMultiLevelSolver()->GetSolver()->HNAverage(src);
-  
-  int nn = GetMultiLevelSolver()->GetSolver()->GetGV(src).n();
-  int cc = GetMultiLevelSolver()->GetSolver()->GetGV(src).ncomp();
-
-  dst.ncomp() = cc;
-  dst.resize(nn);
-  
-  dst.equ(1.,GetMultiLevelSolver()->GetSolver()->GetGV(src));
-  
-  GetMultiLevelSolver()->GetSolver()->HNZero(src);
-}
-
-/*-------------------------------------------------*/
-
-void StdLoop::CopyVector(NewMultiLevelGhostVector& dst, GlobalVector& src)
-{
-  int nn = src.n();
-  int cc = src.ncomp();
-
-  GetMultiLevelSolver()->GetSolver()->GetGV(dst).ncomp() = cc;
-  GetMultiLevelSolver()->GetSolver()->GetGV(dst).resize(nn);
-  GetMultiLevelSolver()->GetSolver()->GetGV(dst).equ(1.,src);
 }
 
 /*-------------------------------------------------*/
