@@ -144,7 +144,7 @@ void GalerkinIntegrator<DIM>::MassMatrix(EntryMatrix& E, const FemInterface& FEM
       double weight  = IF.w(k) * vol;
       for (int i=0;i<FEM.n();i++)
 	{
-	  FEM.init_test_functions(NNN[i],weight,i);
+	  FEM.init_test_functions(NNN[i],1.,i);
 	  for (int j=0;j<FEM.n();j++)
 	    {
 	      FEM.init_test_functions(MM,1.,j);
