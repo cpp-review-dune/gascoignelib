@@ -13,6 +13,7 @@
 
 #include  "vertex.h"
 #include  <set>
+#include  <string>
 #include  "gascoigne.h"
 
 class MeshInterface
