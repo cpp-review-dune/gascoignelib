@@ -10,6 +10,8 @@ class VisuData
  protected:
 
  public:
+
+
   virtual ~VisuData(){}
   virtual int    visucomp()     const {return 0;}
   virtual int    visun()        const {return 0;}

@@ -12,10 +12,9 @@ void GascoigneVisualization::AddVector(const GlobalVector* v)
   int ncomp = v->ncomp();
   assert(ncomp);
 
-  VD .Clear();
   VDI.Clear();
 
-  VD .AddGlobalVector(v);
+  VD .SetGlobalVector(v);
   VDI.AddScalars(ncomp);
 
   if (ncomp>2) 

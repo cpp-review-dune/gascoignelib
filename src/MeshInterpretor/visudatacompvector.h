@@ -9,29 +9,19 @@ using namespace Gascoigne;
 
 /*----------------------------------------------*/
 
-// alle ncomps gleich grosss !!!!!!!!!
-
 class VisuDataCompVector : public VisuData
 {
  protected:
 
-  vector<const GlobalVector*> vvp;
-  vector<int>           isizes;
-
-  pair<int,int> GetIndex(int c) const;
-
+  const GlobalVector* _v;
 
  public:
 
-  virtual ~VisuDataCompVector(){}
   VisuDataCompVector();
   VisuDataCompVector(const GlobalVector& v);
 
-  void Clear() {
-    vvp.clear();
-    isizes.clear();
-  }
-  void AddGlobalVector(const GlobalVector* v);
+  void SetGlobalVector(const GlobalVector* v);
+
   virtual int    visucomp()     const;
   int    visun()        const;
   virtual double visudata(int i,int c) const;

@@ -30,7 +30,6 @@ SET(MESHINTERPRETOR_SRC
   visualization.cc
   gascoignevisualization.cc
   visudatacompvector.cc
-  visudatacompvectorfunction.cc
   visudatainfo.cc
   visudatarhs.cc
   visu_eps.cc
