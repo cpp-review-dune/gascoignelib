@@ -3,7 +3,7 @@ Version 27.05.2004
 *becker:
 1) loop hat "AddFunctional" statt "SetFunctionals"
 2) SolverInterface::Residual() jetzt SolverInterface::Form()
-3) neu Klasse "ProblemDescriptorBase"  -- keine virtuellen Fkt "Construc..." mehr
+3) neu Klasse "ProblemDescriptorBase"  -- keine virtuellen Fkt "Construc..." meh
 
 
 Version 23.04.2004
