@@ -10,7 +10,7 @@ using namespace std;
 ostream& operator<<(ostream &s, const StatisticData& A)
 {
   s << "StatisticData\n";
-  s << "rate" << "\t"<< A.rate() << endl;
+  s << "rate    " << "\t"<< A.rate() << endl;
   s << "lastrate" <<"\t"<< A.lastrate() << endl;
   s << "totaliter" <<"\t"<< A.totaliter() << endl;
   return s;

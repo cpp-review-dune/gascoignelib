@@ -86,7 +86,8 @@ void StdMultiLevelSolver::BasicInit(const MeshAgentInterface* MAP, const ParamFi
 
   _paramfile = paramfile;
   assert(DataP==0);
-  DataP = new MultiLevelSolverData(_paramfile);
+  DataP = new MultiLevelSolverData;
+  DataP->BasicInit(_paramfile);
 
   _cor.SetName("cor");
   _res.SetName("res");
@@ -119,7 +120,7 @@ void StdMultiLevelSolver::SetProblem(const ProblemDescriptorInterface& PDX)
 
 SolverInterface* StdMultiLevelSolver::NewSolver(int solverlevel) 
 { 
-  if(DataP->solver=="instat")
+  if(DataP->Solver()=="instat")
     {
       return new StdTimeSolver;
     }
@@ -271,8 +272,8 @@ void StdMultiLevelSolver::NewMgInterpolator()
 
 void StdMultiLevelSolver::ReInit(const ProblemDescriptorInterface& PDX)
 {
-  DataP->countresidual = 0;
-  DataP->nlinfo.control().matrixmustbebuild() = 1;
+  DataP->CountResidual() = 0;
+  DataP->GetNLInfo().control().matrixmustbebuild() = 1;
 
   NewSolvers();
   SolverNewMesh();
@@ -310,13 +311,13 @@ void StdMultiLevelSolver::vmulteqgmres(MultiLevelGhostVector& y, const MultiLeve
 
 void StdMultiLevelSolver::precondition(MultiLevelGhostVector& x, MultiLevelGhostVector& y)
 {
-  int clevel=GascoigneMath::max_int(DataP->coarselevel,0);
-  if(DataP->coarselevel==-1) clevel = FinestLevel(); 
+  int clevel=GascoigneMath::max_int(DataP->CoarseLevel(),0);
+  if(DataP->CoarseLevel() == -1) clevel = FinestLevel(); 
 
-  DataP->precinfo.reset();
-  DataP->precinfo.check(0.,0.);
-//   LinearMg(FinestLevel(),clevel,x,y, DataP->precinfo);
-  LinearMg(ComputeLevel,clevel,x,y, DataP->precinfo);
+  DataP->GetLInfo("Precond").reset();
+  DataP->GetLInfo("Precond").check(0.,0.);
+//   LinearMg(FinestLevel(),clevel,x,y, DataP->GetLInfo("Precond"));
+  LinearMg(ComputeLevel,clevel,x,y, DataP->GetLInfo("Precond"));
 }
 
 /*-------------------------------------------------------------*/
@@ -342,7 +343,7 @@ void StdMultiLevelSolver::LinearMg(int finelevel, int coarselevel, MultiLevelGho
 
   for(int it=0; !reached; it++)
     {
-      string p = DataP->mgtype;
+      string p = DataP->MgType();
       string p0 = p;
       if(p=="F") p0="W";
       mgstep(res,rw,finelevel,finelevel,clevel,p0,p,u,_mg0,_mg1);
@@ -396,7 +397,7 @@ void StdMultiLevelSolver::mgstep(vector<double>& res, vector<double>& rw,
 	     
       GetSolver(l)   -> SetBoundaryVectorZero(v);
 
-      u.Vector(l).add(DataP->mgomega,v.Vector(l));
+      u.Vector(l).add(DataP->MgOmega(),v.Vector(l));
     
       GetSolver(l)->smooth_post(u,b,v);
     }
@@ -444,7 +445,7 @@ void StdMultiLevelSolver::NewtonVectorZero(MultiLevelGhostVector& w) const
 double StdMultiLevelSolver::NewtonResidual(MultiLevelGhostVector& y, const MultiLevelGhostVector& x,const MultiLevelGhostVector& b) const
 {
   _clock_residual.start();
-  DataP->countresidual++;
+  DataP->CountResidual()++;
   y.Vector(ComputeLevel).equ(1.,b.Vector(ComputeLevel));
   GetSolver(ComputeLevel)->Residual(y(ComputeLevel),x(ComputeLevel),-1.);
   GetSolver(ComputeLevel)->SetBoundaryVectorZero(y(ComputeLevel));
@@ -454,7 +455,7 @@ double StdMultiLevelSolver::NewtonResidual(MultiLevelGhostVector& y, const Multi
 
 /*-------------------------------------------------------------*/
 
-void StdMultiLevelSolver::NewtonMatrixControl(MultiLevelGhostVector& u, const NLInfo& nlinfo)
+void StdMultiLevelSolver::NewtonMatrixControl(MultiLevelGhostVector& u, NLInfo& nlinfo)
 {
   MON->new_matrix() = 0;
 
@@ -465,7 +466,7 @@ void StdMultiLevelSolver::NewtonMatrixControl(MultiLevelGhostVector& u, const NL
   
   MON->new_matrix() = 1;
 
-  AssembleMatrix(u);
+  AssembleMatrix(u,nlinfo);
   ComputeIlu(u);
 }
 
@@ -473,15 +474,15 @@ void StdMultiLevelSolver::NewtonMatrixControl(MultiLevelGhostVector& u, const NL
 
 void StdMultiLevelSolver::NewtonLinearSolve(MultiLevelGhostVector& x, const MultiLevelGhostVector& b, const MultiLevelGhostVector& u, CGInfo& info)
 {
-  assert(DataP->linearsolve=="mg");
+  assert(DataP->LinearSolve() == "mg");
 
   _clock_solve.start();
   info.reset();
   
   x.zero();
 
-  int clevel=GascoigneMath::max_int(DataP->coarselevel,0);
-  if(DataP->coarselevel==-1) clevel = FinestLevel(); 
+  int clevel=GascoigneMath::max_int(DataP->CoarseLevel() ,0);
+  if(DataP->CoarseLevel() == -1) clevel = FinestLevel(); 
   LinearMg(ComputeLevel,clevel,x,b, info);
 
   GetSolver(ComputeLevel)->PressureFilterIntegrate(x(ComputeLevel));
@@ -548,7 +549,7 @@ double StdMultiLevelSolver::NewtonUpdate(double& rr, MultiLevelGhostVector& x, M
 
 /*-------------------------------------------------------------*/
 
-void StdMultiLevelSolver::AssembleMatrix(MultiLevelGhostVector& u)
+void StdMultiLevelSolver::AssembleMatrix(MultiLevelGhostVector& u, NLInfo& nlinfo)
 {
   SolutionTransfer(u);
   for(int l=0;l<=ComputeLevel;l++)
@@ -556,7 +557,7 @@ void StdMultiLevelSolver::AssembleMatrix(MultiLevelGhostVector& u)
       GetSolver(l)->MatrixZero();
       GetSolver(l)->AssembleMatrix(u(l),1.);
     }
-  DataP->nlinfo.control().matrixmustbebuild() = 0;
+  nlinfo.control().matrixmustbebuild() = 0;
 }
 
 /*-------------------------------------------------------------*/
@@ -585,12 +586,12 @@ string StdMultiLevelSolver::Solve(int level, MultiLevelGhostVector& u, const Mul
   ComputeLevel = level;
 
   string status;
-  if(DataP->nonlinearsolve=="newton")
+  if(DataP->NonLinearSolve() == "newton")
     {
       GetSolver(ComputeLevel)->HNAverage(u(ComputeLevel));
-      newton(*this,u,b,_res,_cor,DataP->nlinfo);
+      newton(*this,u,b,_res,_cor,DataP->GetNLInfo());
       GetSolver(ComputeLevel)->HNZero(u(ComputeLevel));
-      status = DataP->nlinfo.control().status();
+      status = DataP->GetNLInfo().control().status();
     }
   else
     {
@@ -598,7 +599,7 @@ string StdMultiLevelSolver::Solve(int level, MultiLevelGhostVector& u, const Mul
     }
   if (status!="converged")
     {
-      DataP->nlinfo.control().matrixmustbebuild() = 1;
+      DataP->GetNLInfo().control().matrixmustbebuild() = 1;
     }
   return status;
 }

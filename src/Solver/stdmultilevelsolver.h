@@ -87,9 +87,8 @@ class StdMultiLevelSolver : public MultiLevelSolverInterface
     for(int l=0;l<_SP.size();l++) _SP[l]->SetState(s);
   }
 
-  const CGInfo& GetLinearInfo   () const { return DataP->info;}
-  const CGInfo& GetDualInfo     () const { return DataP->dualinfo;}
-  const NLInfo& GetNonlinearInfo() const { return DataP->nlinfo;}
+//  const CGInfo& GetLinearInfo   () const { return DataP->GetLInfo();}
+//  const NLInfo& GetNonlinearInfo() const { return DataP->GetNLInfo();}
   const ProblemDescriptorInterface* GetProblemDescriptor() const { return _PD;}
 
   int nlevels()                 const { return GetMeshAgent()->nlevels();}
@@ -116,9 +115,9 @@ class StdMultiLevelSolver : public MultiLevelSolverInterface
   virtual double NewtonResidual(MultiLevelGhostVector& y, const MultiLevelGhostVector& x, const MultiLevelGhostVector& b) const;
   virtual double NewtonUpdate(double& rr, MultiLevelGhostVector& x, MultiLevelGhostVector& dx, MultiLevelGhostVector& r, const MultiLevelGhostVector& f, NLInfo& nlinfo);
   virtual void NewtonLinearSolve(MultiLevelGhostVector& x, const MultiLevelGhostVector& b, const MultiLevelGhostVector& u, CGInfo& info);
-  virtual void NewtonMatrixControl(MultiLevelGhostVector& u, const NLInfo& nlinfo);
+  virtual void NewtonMatrixControl(MultiLevelGhostVector& u, NLInfo& nlinfo);
 
-  virtual void AssembleMatrix(MultiLevelGhostVector& u);
+  virtual void AssembleMatrix(MultiLevelGhostVector& u, NLInfo& nlinfo);
   /// not used in the library -- might be used in local
   virtual void ComputeIlu(MultiLevelGhostVector& u);
   
