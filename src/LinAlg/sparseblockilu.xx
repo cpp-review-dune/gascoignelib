@@ -1,0 +1,273 @@
+// -*- c++ -*-
+#include  "sparseblockilu.h"
+#include  "compareclass.h"
+
+#include  "giota.h"
+#include  "sparsestructure.h"
+
+/*-------------------------------------------------------------*/
+
+namespace Gascoigne
+{
+template<class B>
+SparseBlockIlu<B>::SparseBlockIlu<B>() : 
+  SparseBlockMatrix<B>(),  IluInterface()
+{
+  yp = new GlobalVector;
+}
+
+/*-------------------------------------------------------------*/
+
+template<class B>
+SparseBlockIlu<B>::SparseBlockIlu<B>(const SparseBlockIlu<B>& I) : 
+  SparseBlockMatrix<B>(I),  IluInterface()
+{
+  yp = new GlobalVector;
+} 
+
+/*-------------------------------------------------------------*/
+
+template<class B>
+SparseBlockIlu<B>::~SparseBlockIlu()
+{
+  if(yp) delete yp;
+}
+
+/*-------------------------------------------------------------*/
+
+template<class B>
+void SparseBlockIlu<B>::ReInit(const SparseStructureInterface* SI)
+{
+  const SparseStructure* S = dynamic_cast<const SparseStructure*>(SI);
+  assert(S);
+
+  int n = S->n();
+  int ntot = S->ntotal();
+
+  US.memory(n,ntot);
+
+  smat.reserve(ntot);
+  smat.resize (ntot);
+
+  assert(ntot>0);
+  nc = smat[0].ncomp();
+
+  p.reservesize(n,0);
+  q.reservesize(n,0);
+}
+
+/*-------------------------------------------------------------*/
+
+template<class B>
+void SparseBlockIlu<B>::ConstructStructure(const nvector<int>& perm, const MatrixInterface& MAP)
+{
+  const ColumnDiagStencil* SP = dynamic_cast<const ColumnDiagStencil*>(MAP.GetStencil());
+
+  int n = SP->n();
+  int ntot = SP->nentries();
+
+  US.memory(n,ntot);
+
+  assert(p.size()==perm.size());
+  p = perm;
+  for(int i=0;i<n;i++) q[p[i]] = 1;
+  for(int i=0;i<n;i++) 
+    {
+      assert(q[i]!=0);
+    }
+  for(int i=0;i<n;i++) q[p[i]] = i;
+
+  int zmax = 1;
+  for(int i=0;i<n;i++)
+    {
+      zmax = Gascoigne::max_int(zmax,SP->rowsize(i));
+    }
+  nvector<int> ppi(zmax), picol(zmax);
+
+  US.start(0) = 0;
+  for(int i=0;i<n;i++)
+    {
+      int pi = p[i];
+      int ni = SP->rowsize(pi);
+      US.start(i+1) = US.start(i) + ni;
+
+      int count=0;
+      for(int pos=SP->start(pi);pos<SP->stop(pi);pos++)
+	{
+	  picol[count++] = q[SP->col(pos)];
+	}
+      iota(ppi.begin(),ppi.begin()+ni,0);
+      sort(ppi.begin(),ppi.begin()+ni,CompareLess<nvector<int> >(picol));
+
+      for(int ii=0;ii<ni;ii++)
+	{
+	  US.col(US.start(i)+ ii) = picol[ppi[ii]];
+	}
+      for(int pos=US.start(i);pos<US.stop(i);pos++)
+	{
+	  if(US.col(pos)==i)
+	    {
+	      US.diag(i) = pos;
+	      continue;
+	    }
+	}
+    }
+}
+
+/*-------------------------------------------------------------*/
+
+template<class B>
+void SparseBlockIlu<B>::copy_entries(const MatrixInterface* A)
+{
+  const SparseBlockMatrix<B>* MM = dynamic_cast<const SparseBlockMatrix<B>*>(A);
+  assert(MM);
+  const ColumnDiagStencil* AS = dynamic_cast<const ColumnDiagStencil*>(MM->GetStencil());
+  assert(AS);
+
+  for(int i=0;i<US.n();i++)
+    {
+      int pi = p[i];
+
+      for(int posA=AS->start(pi); posA<AS->stop(pi); posA++)
+	{
+	  int j   = AS->col(posA);
+	  int pj  = q[j];
+	  bool found=0;
+	  for(int pos=US.start(i); pos<US.stop(i); pos++)
+	    {
+	      int k = US.col(pos);
+	      if(k==pj)	
+		{
+		  *mat(pos) += *MM->mat(posA);
+		  found=1;
+		  break;
+		}
+	    }
+	  if(!found)
+	    {
+	      std::cout << "not found " << std::endl;
+	      std::cout << *MM->mat(posA) << std::endl;
+	      
+//	      *mat(US.diag(i)) += *MM.mat(posA);	
+	    }
+	}
+    }
+}
+
+/*-------------------------------------------------------------*/
+
+template<class B>
+void SparseBlockIlu<B>::hin(const GlobalVector& x) const
+{
+  yp->ncomp() = x.ncomp();
+  yp->reservesize(x.n());
+
+  for(int i=0;i<US.n();i++)  yp->equ_node(i,1.,p[i],x);
+}
+
+/*-------------------------------------------------------------*/
+
+template<class B>
+void SparseBlockIlu<B>::her(GlobalVector& x) const
+{
+  for(int i=0;i<US.n();i++)  x.equ_node(i,1.,q[i],*yp);
+}
+
+/*-------------------------------------------------------------*/
+
+template<class B>
+void SparseBlockIlu<B>::forward() const
+{
+  for(int i=1; i<US.n(); i++)
+    {
+      int ende = US.diag(i); 
+      for(int pos=US.start(i); pos<ende; pos++)
+	{
+	  mat(pos)->subtract(yp->start(i),yp->start(US.col(pos)));
+	}
+    }
+}
+
+/*-------------------------------------------------------------*/
+
+template<class B>
+void SparseBlockIlu<B>::backward() const
+{
+  for(int i=US.n()-1; i>=0; i--)
+    {
+      int ende = US.diag(i); 
+      for(int pos=US.stop(i)-1; pos>ende; pos--)
+	{
+	  mat(pos)->subtract(yp->start(i),yp->start(US.col(pos)));
+	}
+      mat(US.diag(i))->vmult(yp->start(i));
+    }
+}
+
+/*-------------------------------------------------------------*/
+
+template<class B>
+void SparseBlockIlu<B>::solve(GlobalVector& x) const
+{
+  hin(x);
+  forward ();
+  backward();
+  her(x);
+}
+
+/*-------------------------------------------------------------*/
+
+template<class B>
+void SparseBlockIlu<B>::compute_ilu()
+{
+  for(int i=0; i<US.n(); i++)
+    {
+      for (int pk=US.start(i); pk<US.diag(i); pk++)
+	{
+	  int k = US.col(pk);
+
+	  *mat(pk) *= *mat(US.diag(k));   /*  a(i,k) *= a(k,k) */
+
+	  for (int pj=US.diag(k)+1; pj<US.stop(k); pj++)
+	    {
+	      int j  = US.col(pj);
+	      // suche ph
+	      for (int ph=US.start(i); ph<US.stop(i); ph++)
+		{
+		  if (US.col(ph)==j)
+		    {
+		      mat(ph) -> submult(*mat(pk),*mat(pj));
+		      break;
+		    }
+		}
+	    }
+	}
+      mat(US.diag(i)) -> inverse();
+    }
+}
+
+/*-------------------------------------------------------------*/
+
+template<class B>
+void SparseBlockIlu<B>::modify(int c, double s)
+{
+  for(int i=0;i<n();++i)
+    {
+      double sum=0.;
+      for(int pos=start(i);pos<stop(i);pos++)
+	{
+	   sum += fabs(smat[pos](c,c));
+	}
+      sum -= fabs(smat[diag(i)](c,c));
+      smat[diag(i)].diag(c) += s*sum;
+    }
+}
+
+/*-------------------------------------------------------------*/
+
+template<class B>
+std::ostream& SparseBlockIlu<B>::Write(std::ostream &s) const
+{
+  return SparseBlockMatrix<B>::Write(s);
+}
+}

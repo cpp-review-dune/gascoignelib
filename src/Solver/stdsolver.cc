@@ -6,11 +6,17 @@
 
 #include  "pointmatrix.h"
 #include  "pointilu.h"
+
+#include  "sparseblockilu.h"
+#include  "fmatrixblock.h"
+#include  "cfdblock3d.h"
+
 /*--------------------------------*/
 #ifdef __WITH_UMFPACK__
 #include  "umfilu.h"
 #endif
 /*--------------------------------*/
+
 #include  "ilupermutate.h"
 #include  "cuthillmckee.h"
 #include  "stopwatch.h"
@@ -224,9 +230,45 @@ MeshInterpretorInterface* StdSolver::NewMeshInterpretor(int dimension, const str
 
 MatrixInterface* StdSolver::NewMatrix(int ncomp, const string& matrixtype) 
 {
-  if(_directsolver)            return new PointMatrix(ncomp,"node");
-  if(matrixtype=="point_node") return new PointMatrix(ncomp,"node");
-  else                         return new PointMatrix(ncomp,"component");
+  if( _directsolver || matrixtype=="point_node")
+  {
+    return new PointMatrix(ncomp,"node");
+  }
+  else if (matrixtype=="block")
+  {
+    if      (ncomp==1)  return new SparseBlockMatrix<FMatrixBlock<1> >;
+    else if (ncomp==2)  return new SparseBlockMatrix<FMatrixBlock<2> >;
+    else if (ncomp==3)  return new SparseBlockMatrix<FMatrixBlock<3> >;
+    else if (ncomp==4)  return new SparseBlockMatrix<FMatrixBlock<4> >;
+    else if (ncomp==5)  return new SparseBlockMatrix<FMatrixBlock<5> >;
+    else if (ncomp==6)  return new SparseBlockMatrix<FMatrixBlock<6> >;
+    else
+    {
+      cerr << "No SparseBlockMatrix for " << ncomp << "components." << endl;
+      abort();
+    }
+  }
+  else if (matrixtype=="component")
+  {
+    return new PointMatrix(ncomp,"component");
+  }
+  else if (matrixtype=="cfd")
+  {
+    if (ncomp==4)
+    {
+      return new SparseBlockMatrix<CFDBlock3d>;
+    }
+    else
+    {
+      cerr << "No SparseBlockMatrix for " << ncomp << "components." << endl;
+      abort();
+    }
+  }
+  else
+  {
+    cerr << "No such matrix type \"" << matrixtype<< "\"." << endl;
+    abort();
+  }
 }
 
 /*-------------------------------------------------------------*/
@@ -237,7 +279,42 @@ IluInterface* StdSolver::NewIlu(int ncomp, const string& matrixtype)
   if(_directsolver)             return new UmfIlu(GetMatrix());
 #endif
   if(matrixtype=="point_node")  return new PointIlu(ncomp,"node");
-  else                          return new PointIlu(ncomp,"component");
+  
+  else if (matrixtype=="block")
+  {
+    if      (ncomp==1)  return new SparseBlockIlu<FMatrixBlock<1> >;
+    else if (ncomp==2)  return new SparseBlockIlu<FMatrixBlock<2> >;
+    else if (ncomp==3)  return new SparseBlockIlu<FMatrixBlock<3> >;
+    else if (ncomp==4)  return new SparseBlockIlu<FMatrixBlock<4> >;
+    else if (ncomp==5)  return new SparseBlockIlu<FMatrixBlock<5> >;
+    else if (ncomp==6)  return new SparseBlockIlu<FMatrixBlock<6> >;
+    else
+    {
+      cerr << "No SparseBlockIlu for " << ncomp << "components." << endl;
+      abort();
+    }
+  }
+  else if (matrixtype=="component") 
+  {
+    return new PointIlu(ncomp,"component");
+  }
+  else if (matrixtype=="cfd")
+  {
+    if (ncomp==4)  
+    {
+      return new SparseBlockIlu<CFDBlock3d>;
+    }
+    else
+    {
+      cerr << "No SparseBlockIlu for " << ncomp << "components." << endl;
+      abort();
+    }
+  }
+  else
+  {
+    cerr << "No such matrix type \"" << matrixtype<< "\"." << endl;
+    abort();
+  }
 }
 
 /*-------------------------------------------------------*/
