@@ -36,25 +36,24 @@ SparseStructure& SparseStructure::operator=(const SparseStructure& A)
   sindices.resize (A.n());
   sntot = A.ntotal();
   sindices = A.indices();
-  US = A.GetStencil();
   
   return *this;
 }
 
 /*----------------------------------------------*/
 
-SparseStructure::SparseStructure(const ColumnStencil& S) : US(&S)
-{
-  int n = S.n();
-  int ntot = S.nentries();
-  sindices.reserve(n);
-  sindices.resize (n);
-  sntot = ntot;
+// SparseStructure::SparseStructure(const ColumnStencil& S) : US(&S)
+// {
+//   int n = S.n();
+//   int ntot = S.nentries();
+//   sindices.reserve(n);
+//   sindices.resize (n);
+//   sntot = ntot;
 
-  for(int i=0;i<n;i++) 
-    for(int pos=S.start(i);pos<S.stop(i);pos++)
-      sindices[i].insert(S.col(pos));
-}
+//   for(int i=0;i<n;i++) 
+//     for(int pos=S.start(i);pos<S.stop(i);pos++)
+//       sindices[i].insert(S.col(pos));
+// }
 
 /*----------------------------------------------*/
 

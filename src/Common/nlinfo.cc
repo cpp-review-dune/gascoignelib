@@ -163,6 +163,18 @@ void NLInfo::matrix_control()
 
 /*******************************************************************/
  
+std::string NLInfo::CheckMatrix() 
+{
+  std::string status = control().status();
+  if (status!="converged")
+    {
+      control().matrixmustbebuild() = 1;
+    }
+  return status;
+}
+
+/*******************************************************************/
+ 
 string NLInfo::check_damping(int dampit, double res)
 {
   CD.residual() = fabs(res);

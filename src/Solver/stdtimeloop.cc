@@ -99,11 +99,13 @@ void StdTimeLoop::adaptive_run(const ProblemDescriptorInterface* PD)
       
       StdSolver* S = dynamic_cast<StdSolver*>(GetMultiLevelSolver()->GetSolver());
       assert(S);
-      EnergyEstimator E(*S);
-      double est = E.Estimator(eta,u,f);
-
-      cout << "eta " << est << endl;
-
+      if (_estimator=="energy")
+	{
+	  EnergyEstimator E(*S);
+	  double est = E.Estimator(eta,u,f);
+	  
+	  cout << "eta " << est << endl;
+	}
       if (_iter<_niter) 
         {
           CopyVector(ualt,u);

@@ -108,14 +108,7 @@ class NLInfo
  void reset();
  void new_matrix();
 
- std::string CheckMatrix() {
-   std::string status = control().status();
-   if (status!="converged")
-     {
-       control().matrixmustbebuild() = 1;
-     }
-   return status;
- }
+ std::string CheckMatrix();
 };
 
 /*************************************************************/

@@ -32,4 +32,5 @@ void ColumnDiagStencil::memory(int n, int nt)
   ColumnStencil::memory(n,nt);
   sdiag.reservesize(n);
 }
+
 }

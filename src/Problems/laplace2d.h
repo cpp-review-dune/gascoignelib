@@ -12,7 +12,6 @@ class Laplace2d : public virtual Equation
 {
   protected:
   
-  double gamma;
   mutable double visc;
   
   public:

@@ -248,7 +248,7 @@ void SimpleMatrix::entry_diag(int i, const nmatrix<double>& M)
 
 /*-----------------------------------------*/
 
-void SimpleMatrix::PrepareJacobi(double s) const
+void SimpleMatrix::PrepareJacobi(double s)
 {
   int n = ST.n();
   

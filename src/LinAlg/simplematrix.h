@@ -25,7 +25,7 @@ protected:
 
   ColumnDiagStencil  ST;
   DoubleVector value; 
-  mutable nvector<double> _diag;
+  DoubleVector _diag;
 
 public:
 
@@ -59,7 +59,7 @@ public:
     void transpose();
     void entry_diag(int i, const nmatrix<double>& M);
     
-    void PrepareJacobi(double s=1.) const;
+    void PrepareJacobi(double s=1.);
     void JacobiVector(GlobalVector &y) const;
     void JacobiVectorInv(GlobalVector &y) const;
     void vmult_time_Jacobi(GlobalVector& y, const GlobalVector& x, const TimePattern& TP, double s=1.) const;

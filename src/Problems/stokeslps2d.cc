@@ -28,6 +28,7 @@ StokesLps2d::StokesLps2d(const ParamFile* filename) :
   DFH.insert("visc" , &_visc , 0.01);
   DFH.insert("alpha", &ST.alpha0, 0.25);
   DFH.insert("xeta" , &ST.xeta0, 6.);
+  DFH.insert("xdtfactor" , &ST.dtfactor(), 1.);
   DFH.insert("penalty",&_penalty, 0.);
 
   FileScanner FS(DFH,filename,"Equation");

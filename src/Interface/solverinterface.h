@@ -132,7 +132,7 @@ namespace Gascoigne
         std::cerr << "\"SolverInterface::IC\" not written!" << std::endl;
         abort();
       }
-      virtual void L2Projection(BasicGhostVector& u) const {
+      virtual void L2Projection(BasicGhostVector& u)  {
         std::cerr << "\"SolverInterface::L2Projection\" not written!" << std::endl;
         abort();
       }

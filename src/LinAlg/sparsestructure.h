@@ -2,8 +2,7 @@
 #define __sparsestructure_h
 
 #include  <vector>
-#include  "columnstencil.h"
-#include  "nvector.h"
+#include  "gascoigne.h"
 #include  "sparsestructureinterface.h"
 
 /*------------------------------------------------------------------------*/
@@ -14,33 +13,28 @@ class SparseStructure : public SparseStructureInterface
 {
   protected:
 
-    typedef  IntSet            Row;
-    typedef  std::vector<Row>  Indices;    
+    typedef  std::vector<IntSet>  Indices;    
 
     int       sntot;
     Indices   sindices;
 
-    const ColumnStencil* US;
-
   public:
 
-  typedef  Row::iterator         iterator; 
-  typedef  Row::const_iterator   const_iterator; 
+  typedef  IntSet::iterator         iterator; 
+  typedef  IntSet::const_iterator   const_iterator; 
   
   SparseStructure() : sntot(0),sindices(0) {}
-  SparseStructure(const ColumnStencil&);
 
     int                n()              const { return sindices.size(); }
     int                ntotal()         const { return sntot; }
 
     const Indices&     indices()        const { return sindices; }
-
-    const Row&         row(int i)       const 
+    const IntSet&      row(int i)       const 
       {
 	assert((i>=0)&&(i<sindices.size()));
 	return sindices[i];
       } 
-    Row&               row(int i)
+    IntSet&             row(int i)
       {
 	assert((i>=0)&&(i<sindices.size()));
 	return  sindices[i];
@@ -70,8 +64,6 @@ class SparseStructure : public SparseStructureInterface
 	assert((i>=0)&&(i<sindices.size()));
 	return  row(i).size();
       }
-
-    const ColumnStencil* GetStencil() const { return US;}
 
     friend std::ostream& operator<<(std::ostream &s, const SparseStructure& A);
     void statistics(std::ostream&) const;

@@ -41,12 +41,7 @@ namespace Gascoigne
   void ReInit(double h, double visc)
     {
       _h = h;
-      double denom = xeta0 * visc / (h*h);
-      if(dt>0.)
-        {
-          denom += _dtfactor/dt;
-        }
-      _alpha = alpha0 / denom;
+      _alpha = alpha0 *h*h / (xeta0 * visc);
     }
 };
 }

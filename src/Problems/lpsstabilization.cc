@@ -22,12 +22,12 @@ void LpsStabilization::NavierStokes(double h, double visc)
 {
   _h = h;
 
-  double val  = xeta0 * visc/(h*h);
+  double val  = xeta0 * visc/(h*h) + _norm/h;
   double valc = xeta0 * visc/(h*h) + _norm/h;
 
   if(dt>0.)
     {
-      val  += _dtfactor/dt;
+      //val  += _dtfactor/dt;
       valc += _dtfactor/dt;
     }
   _alpha = alpha0 / val;

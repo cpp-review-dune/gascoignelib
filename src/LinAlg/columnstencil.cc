@@ -46,4 +46,23 @@ void ColumnStencil::memory(const SparseStructureInterface* SI)
         }
     }
 }
+
+/*-------------------------------------------------------------*/
+
+std::ostream& ColumnStencil::Write(std::ostream& os) const
+{
+  os << n() << "\t" << nentries() << "\n\n"<< sstart << "\n\n";
+  for(int i=0;i<n();i++)
+    {
+      for(int pos=start(i);pos<stop(i);pos++)
+	{
+	  os << col(pos) << " ";
+	}
+      os << std::endl;
+    }
+  return os;
+}
+
+/*-------------------------------------------------------------*/
+
 }

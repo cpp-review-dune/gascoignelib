@@ -212,7 +212,7 @@ void StdTimeSolver::AssembleMatrix(const BasicGhostVector& gu, double d)
 
 /*-------------------------------------------------------*/
 
-void StdTimeSolver::L2Projection(BasicGhostVector& Gu) const
+void StdTimeSolver::L2Projection(BasicGhostVector& Gu)
 {
   GlobalVector& u = GetGV(Gu);
 
@@ -232,7 +232,7 @@ void StdTimeSolver::L2Projection(BasicGhostVector& Gu) const
 
 /*-------------------------------------------------------*/
 
-string StdTimeSolver::PrecondCGMass(GlobalVector& u, GlobalVector& f, const TimePattern& TP, double s) const
+string StdTimeSolver::PrecondCGMass(GlobalVector& u, GlobalVector& f, const TimePattern& TP, double s)
 {
   bool reached;
   int iter = 0;
@@ -244,7 +244,7 @@ string StdTimeSolver::PrecondCGMass(GlobalVector& u, GlobalVector& f, const Time
   assert(u.ncomp()==g.ncomp());
   assert(u.n()==g.n());
 
-  const SimpleMatrix *SM = dynamic_cast<const SimpleMatrix *>(GetMassMatrix());
+  SimpleMatrix *SM = dynamic_cast<SimpleMatrix *>(GetMassMatrix());
   assert(SM);
   SM->PrepareJacobi(s);
 

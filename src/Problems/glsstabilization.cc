@@ -17,15 +17,14 @@ void GlsStabilization::NavierStokes(double h, double visc)
 {
   _h = h;
 
-  double val = xeta0 * visc/(h*h) + _norm/h;
-//   double val = xeta0 * visc/(h*h);
+  double val  = xeta0 * visc/(h*h) + _norm/h;
+  double valc = xeta0 * visc/(h*h) + _norm/h;
   if(dt>0.)
     {
-      val += _dtfactor/dt;
+      valc += _dtfactor/dt;
     }
-  val = 1./val;
-  _alpha = alpha0 * val;
-  _delta = delta0 * val;
+  _alpha = alpha0 / val;
+  _delta = delta0 / valc;
   _tau   = tau0   * _norm * _norm *_delta;
 }
 

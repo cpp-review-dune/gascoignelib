@@ -8,7 +8,6 @@ namespace Gascoigne
 {
 Laplace2d:: Laplace2d()
 {
-  gamma = 0.;
   visc = 1.;
 }
 
@@ -17,7 +16,6 @@ Laplace2d:: Laplace2d()
 Laplace2d::Laplace2d(const ParamFile* pf) : Equation()
 {
   DataFormatHandler DFH;
-  DFH.insert("gamma",&gamma,0.);
   DFH.insert("visc",&visc,1.);
   FileScanner FS(DFH,pf,"Equation");
 }
