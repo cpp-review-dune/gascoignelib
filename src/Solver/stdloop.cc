@@ -42,7 +42,7 @@ StdLoop::~StdLoop()
 
 void StdLoop::BasicInit(const string& paramfile, const ProblemDescriptorInterface& PD)
 {
-  _PD = &PD;
+  _PD = const_cast<ProblemDescriptorInterface*>(&PD);
   _paramfile = paramfile;
 
   DataFormatHandler DFH;

@@ -19,7 +19,7 @@ void LocalTimeLoop::BasicInit(const string& paramfile, const ProblemDescriptorIn
 
 void LocalTimeLoop::NewMesh()
 {
-  GetMultiLevelSolver()->NewMesh(*_PD);
+  GetMultiLevelSolver()->NewMesh(GetProblemDescriptor());
   
   cout << "\nLocalTimeLoop::NewMesh(): Mesh [l,nn,nc]: ";
   cout << GetMeshAgent()->nlevels() << " " << GetMeshAgent()->nnodes() << " " << GetMeshAgent()->ncells() << endl;
@@ -95,7 +95,7 @@ void LocalTimeLoop::backward(string iname, string name, int first, int last)
   
   nvector<double> eta;
   
-  GetMultiLevelSolver()->NewMesh(*_PD);
+  GetMultiLevelSolver()->NewMesh(GetProblemDescriptor());
 
   GetMultiLevelSolver()->GetSolver()->Read(u,iname);
 
@@ -142,7 +142,7 @@ void LocalTimeLoop::forward(string iname, int first, int last)
   
   nvector<double> eta;
   
-  GetMultiLevelSolver()->NewMesh(*_PD);
+  GetMultiLevelSolver()->NewMesh(GetProblemDescriptor());
 
   GetMultiLevelSolver()->GetSolver()->Read(u,iname);
 

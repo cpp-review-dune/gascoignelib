@@ -33,8 +33,7 @@ private:
   FunctionalManager*         _FMP;
   MeshAgentInterface*        _MA;
   MultiLevelSolverInterface* _ML;
-
-  const ProblemDescriptorInterface* _PD;
+  ProblemDescriptorInterface* _PD;
 
   void WriteMeshAndSolution(const std::string& filename, const NewMultiLevelGhostVector& u) const;
   void WriteSolution(const NewMultiLevelGhostVector& u) const;
@@ -45,14 +44,17 @@ protected:
   FunctionalManager*& GetFunctionalManagerPointer() { return _FMP;}
   MeshAgentInterface*& GetMeshAgentPointer() { return _MA;}
   MultiLevelSolverInterface*& GetMultiLevelSolverPointer() { return _ML;}
+  ProblemDescriptorInterface*& GetProblemDescriptorPointer() { return _PD;}
 
   const FunctionalManager* GetFunctionalManager() const { return _FMP;}
   const MeshAgentInterface* GetMeshAgent() const { return _MA;}
   const MultiLevelSolverInterface* GetMultiLevelSolver() const { return _ML;}
+  const ProblemDescriptorInterface* GetProblemDescriptor() const { return _PD;}
 
   FunctionalManager* GetFunctionalManager() { return _FMP;}
   MeshAgentInterface* GetMeshAgent() { return _MA;}
   MultiLevelSolverInterface* GetMultiLevelSolver() { return _ML;}
+  ProblemDescriptorInterface* GetProblemDescriptor() { return _PD;}
 
 
   mutable StopWatch   _clock_newmesh, _clock_solve, _clock_functionals, _clock_write, _clock_estimate;
@@ -65,8 +67,6 @@ protected:
   Extrapolator      Extra;
   Monitor           Mon;
   StdIoManager      IOM;
-
-  const ProblemDescriptorInterface* GetProblemDescriptor() const { return _PD;}
 
   nvector<double>    _JErr;
   CompVector<double> _GlobalErr;
