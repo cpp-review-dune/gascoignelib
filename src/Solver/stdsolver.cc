@@ -220,10 +220,10 @@ void StdSolver::ReInitVector()
   while(p!=_NGVA.end())
     {
       const GhostVector& gv = p->first;
-//       cerr << "StdSolver::MemoryVector()\t" << gv.GetName() << endl;
       assert(gv.GetSolver()==this);
       if(p->second==NULL) 
 	{
+	  //int n = GetMeshInterpretor()->n();
 	  p->second = new CompVector<double>;
 	  p->second->ncomp() = ncomp;
 	}
@@ -704,12 +704,12 @@ void StdSolver::Rhs(GlobalVector& f, double d) const
 
 /*-------------------------------------------------------*/
 
-void StdSolver::AssembleMatrix(BasicGhostVector& gu, double d)
+void StdSolver::AssembleMatrix(const BasicGhostVector& gu, double d)
 {
   _ca.start();
   assert(GetMatrix());
 
-  GlobalVector& u = GetGV(gu);
+  const GlobalVector& u = GetGV(gu);
   HNAverage(gu);
 
   GetMeshInterpretor()->Matrix(*GetMatrix(),u,*GetProblemDescriptor()->GetEquation(),d);
@@ -804,18 +804,25 @@ void StdSolver::PermutateIlu(const CompVector<double>& u) const
 
 void StdSolver::Visu(const string& name, const BasicGhostVector& gu, int i) const
 {
-  HNAverage(gu);
+  Visu(name,GetGV(gu),i);
+}
+
+/* -------------------------------------------------------*/
+
+void StdSolver::Visu(const string& name, const GlobalVector& u, int i) const
+{
+  HNAverage(u);
 
   GascoigneVisualization Visu;
   Visu.SetMesh(GetMesh());  
-  Visu.AddVector(&GetGV(gu));
+  Visu.AddVector(&u);
 
   Visu.read_parameters(_paramfile);
   Visu.set_name(name);
   Visu.step(i);
   Visu.write();
 
-  HNZero(gu);
+  HNZero(u);
 }
 
 /* -------------------------------------------------------*/
@@ -920,7 +927,7 @@ void StdSolver::ConstructInterpolator(MgInterpolatorInterface* I, const MeshTran
 nvector<double> StdSolver::IntegrateSolutionVector(const GlobalVector& u) const
 {
   HNAverage(u);
-  assert(GetMeshInterpretor()->HNZeroCheck(u)==0);
+  //assert(GetMeshInterpretor()->HNZeroCheck(u)==0);
 
   nvector<double> dst = PF.IntegrateVector(u);
   HNZero(u);
@@ -952,9 +959,6 @@ void StdSolver::SubtractMean(GlobalVector& x) const
 
 void StdSolver::SubtractMeanAlgebraic(GlobalVector& x) const
 {
-  if (!PF.Active()) return;
-
-  HNAverage(x);
-  PF.SubtractMeanAlgebraic(x);
-  HNZero(x);
+  if (PF.Active())
+    PF.SubtractMeanAlgebraic(x);
 }

@@ -42,6 +42,7 @@ public:
   virtual const SolverInterface* GetSolver() const=0;
 
   virtual void SetState(const std::string& s)=0;
+  virtual void AssembleMatrix(MultiLevelGhostVector& u)=0;
 
   //
   /// vector - manamgement

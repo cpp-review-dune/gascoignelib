@@ -53,7 +53,7 @@ public:
   void TimeRhsOperator(BasicGhostVector& f, const BasicGhostVector& u) const;
   void TimeRhs(int k, BasicGhostVector& f) const;
   void Form (BasicGhostVector& y, const BasicGhostVector& x, double d) const;
-  void AssembleMatrix(BasicGhostVector& u, double d);
+  void AssembleMatrix(const BasicGhostVector& u, double d);
   std::string GetName() const;
   void L2Projection(BasicGhostVector& u);
 };

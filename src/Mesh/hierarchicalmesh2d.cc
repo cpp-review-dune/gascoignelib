@@ -1396,6 +1396,7 @@ void HierarchicalMesh2d::write_gup(const string& bname) const
 
   ofstream out(name.c_str());
 
+  out.precision(16);
   out << dimension() << " dimension" << endl;
   out << nnodes() << " vertexs"   << endl;
 

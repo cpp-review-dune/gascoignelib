@@ -40,7 +40,7 @@ protected:
 
   nvector<double> GetExactValues() const;
 
-  virtual void EtaVisu(std::string name, int i, const nvector<double>& eta);
+  virtual void EtaVisu(std::string name, int i, const nvector<double>& eta) const;
   virtual void AdaptMesh(const nvector<double>& eta);
   virtual nvector<double> Functionals(MultiLevelGhostVector& u, MultiLevelGhostVector& f);
   virtual double Estimator(nvector<double>& eta, MultiLevelGhostVector& u, MultiLevelGhostVector& f);

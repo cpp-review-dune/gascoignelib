@@ -175,7 +175,6 @@ void Visualization::write()
       cerr << "no filename set [use \"step(i)\"]\n";
       abort();
     }
-
   if (avsa)       avs(filename);
   if (gmva)       gmv(filename);
   if (vua)        vu(filename);

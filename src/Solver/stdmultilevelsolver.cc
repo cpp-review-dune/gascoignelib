@@ -15,6 +15,32 @@ using namespace Gascoigne;
 
 StdMultiLevelSolver::~StdMultiLevelSolver()
 {
+  //ViewProtocoll();
+
+  if(DataP) delete DataP; DataP=NULL;
+
+  for(int i=0;i<_SP.size();i++) 
+    { 
+      if (_SP[i]) 
+	{
+	  delete _SP[i]; 
+	  _SP[i]=NULL; 
+	}
+    }
+   for(int i=0; i<_Interpolator.size(); i++)  
+    {
+      if (_Interpolator[i]) 
+	{
+	  delete _Interpolator[i]; 
+	  _Interpolator[i]=NULL;
+	}
+    }
+}
+
+/*-------------------------------------------------------------*/
+
+void StdMultiLevelSolver::ViewProtocoll() const
+{
   cout << "\n************************************************************************\n\n";
   cout << "StdMultiLevelSolver\tTIME\n";
   cout << "  Residual\t\t" << _clock_residual.read() << endl;
@@ -48,27 +74,6 @@ StdMultiLevelSolver::~StdMultiLevelSolver()
   cout << "VECTOR\t\t\tTIME\n";
   cout << "  residual\t\t" << re << endl;
   cout << "\n************************************************************************\n";
-
-  //--------------------------------------------------//
-
-  if(DataP) delete DataP; DataP=NULL;
-
-  for(int i=0;i<_SP.size();i++) 
-    { 
-      if (_SP[i]) 
-	{
-	  delete _SP[i]; 
-	  _SP[i]=NULL; 
-	}
-    }
-   for(int i=0; i<_Interpolator.size(); i++)  
-    {
-      if (_Interpolator[i]) 
-	{
-	  delete _Interpolator[i]; 
-	  _Interpolator[i]=NULL;
-	}
-    }
 }
 
 /*-------------------------------------------------------------*/
@@ -171,7 +176,7 @@ void StdMultiLevelSolver::RegisterVectorAndMemory(const MultiLevelGhostVector& g
 	  GetSolver(level)->RegisterVector(*p++);
 	}
     }
-  ReInitVector();
+  //ReInitVector();
 }
 
 /*-------------------------------------------------------------*/
@@ -284,7 +289,6 @@ void StdMultiLevelSolver::ReInit(const ProblemDescriptorInterface& PDX)
   SetProblem(PDX);
   RegisterMatrix();
   RegisterVectorAndMemory();
-
   ReInitMatrix();
   ReInitVector();
 }
@@ -552,7 +556,7 @@ double StdMultiLevelSolver::NewtonUpdate(double& rr, MultiLevelGhostVector& x, M
 
 /*-------------------------------------------------------------*/
 
-void StdMultiLevelSolver::AssembleMatrix(MultiLevelGhostVector& u, NLInfo& nlinfo)
+void StdMultiLevelSolver::AssembleMatrix(MultiLevelGhostVector& u)
 {
   SolutionTransfer(u);
   for(int l=0;l<=ComputeLevel;l++)
@@ -560,6 +564,13 @@ void StdMultiLevelSolver::AssembleMatrix(MultiLevelGhostVector& u, NLInfo& nlinf
       GetSolver(l)->MatrixZero();
       GetSolver(l)->AssembleMatrix(u(l),1.);
     }
+}
+
+/*-------------------------------------------------------------*/
+
+void StdMultiLevelSolver::AssembleMatrix(MultiLevelGhostVector& u, NLInfo& nlinfo)
+{
+  AssembleMatrix(u);
   nlinfo.control().matrixmustbebuild() = 0;
 }
 

@@ -75,7 +75,7 @@ nvector<double> StdLoop::ComputeFunctionals(MultiLevelGhostVector& f, MultiLevel
 
 /*-----------------------------------------*/
 
-void StdLoop::EtaVisu(string name, int i, const nvector<double>& eta) 
+void StdLoop::EtaVisu(string name, int i, const nvector<double>& eta) const
 {
   Visualization Visu;
   Visu.format("vtk");

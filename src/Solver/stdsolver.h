@@ -45,6 +45,8 @@ class StdSolver : public virtual SolverInterface
   
  protected:
 
+  typedef Gascoigne::GlobalVector GlobalVector;
+
   // 3. MeshInterpretor
 
   MeshInterpretorInterface*    _ZP;
@@ -116,28 +118,27 @@ class StdSolver : public virtual SolverInterface
 
   std::string GetName() const {return "StdSolver";}
 
-  void Rhs(Gascoigne::GlobalVector& f, double d=1.) const;
-  int RhsPoint(Gascoigne::GlobalVector& f, const PointFunctional* FP) const;
+  void Rhs(GlobalVector& f, double d=1.) const;
+  int RhsPoint(GlobalVector& f, const PointFunctional* FP) const;
 
-  double ComputeFunctional(Gascoigne::GlobalVector& f, const Gascoigne::GlobalVector& u, const Functional* FP) const;
-  double ComputeBoundaryFunctional(Gascoigne::GlobalVector& f, const Gascoigne::GlobalVector& u, Gascoigne::GlobalVector& z, const BoundaryFunctional* FP) const;
-  double ComputeDomainFunctional(Gascoigne::GlobalVector& f, const Gascoigne::GlobalVector& u, Gascoigne::GlobalVector& z, const DomainFunctional* FP) const;
-  double ComputePointFunctional(Gascoigne::GlobalVector& f, const Gascoigne::GlobalVector& u, Gascoigne::GlobalVector& z, const PointFunctional* FP) const;
-  double ComputeResidualFunctional(Gascoigne::GlobalVector& f, const Gascoigne::GlobalVector& u, Gascoigne::GlobalVector& z, const ResidualFunctional* FP) const;
+  double ComputeFunctional(GlobalVector& f, const GlobalVector& u, const Functional* FP) const;
+  double ComputeBoundaryFunctional(GlobalVector& f, const GlobalVector& u, GlobalVector& z, const BoundaryFunctional* FP) const;
+  double ComputeDomainFunctional(GlobalVector& f, const GlobalVector& u, GlobalVector& z, const DomainFunctional* FP) const;
+  double ComputePointFunctional(GlobalVector& f, const GlobalVector& u, GlobalVector& z, const PointFunctional* FP) const;
   
-  void SetBoundaryVectorStrong(Gascoigne::GlobalVector& f, const BoundaryManager& BM, const Equation& EQ, const DirichletData& DD) const;
-  virtual void smooth(int niter, Gascoigne::GlobalVector& x, const Gascoigne::GlobalVector& y, Gascoigne::GlobalVector& h) const;
-  void SubtractMean(Gascoigne::GlobalVector& gx) const;
-  void SubtractMeanAlgebraic(Gascoigne::GlobalVector& gx) const;
-  virtual void PermutateIlu(const Gascoigne::GlobalVector& u) const;
+  void SetBoundaryVectorStrong(GlobalVector& f, const BoundaryManager& BM, const Equation& EQ, const DirichletData& DD) const;
+  virtual void smooth(int niter, GlobalVector& x, const GlobalVector& y, GlobalVector& h) const;
+  void SubtractMean(GlobalVector& gx) const;
+  void SubtractMeanAlgebraic(GlobalVector& gx) const;
+  virtual void PermutateIlu(const GlobalVector& u) const;
   void modify_ilu(IluInterface& I,int ncomp) const;
-  void Form(Gascoigne::GlobalVector& y, const Gascoigne::GlobalVector& x, double d) const;
+  void Form(GlobalVector& y, const GlobalVector& x, double d) const;
 
-  void MatrixResidual(Gascoigne::GlobalVector& y, const Gascoigne::GlobalVector& x, const Gascoigne::GlobalVector& b) const;
-  void vmult(Gascoigne::GlobalVector& y, const Gascoigne::GlobalVector& x, double d) const;
-  void vmulteq(Gascoigne::GlobalVector& y, const Gascoigne::GlobalVector& x, double d) const;
+  void MatrixResidual(GlobalVector& y, const GlobalVector& x, const GlobalVector& b) const;
+  void vmult(GlobalVector& y, const GlobalVector& x, double d) const;
+  void vmulteq(GlobalVector& y, const GlobalVector& x, double d) const;
 
-  nvector<double> IntegrateSolutionVector(const Gascoigne::GlobalVector& u) const;
+  nvector<double> IntegrateSolutionVector(const GlobalVector& u) const;
   virtual void _check_consistency(const Equation* EQ, const MeshInterpretorInterface* MP) const;
 
  public:
@@ -171,13 +172,13 @@ class StdSolver : public virtual SolverInterface
   
   bool DirectSolver() const {return _directsolver;}
 
-  void AddNodeVector(const std::string& name, const Gascoigne::GlobalVector* q) {
+  void AddNodeVector(const std::string& name, const GlobalVector* q) {
     GetMeshInterpretor()->AddNodeVector(name,q);
   }
-  void AddCellVector(const std::string& name, const Gascoigne::GlobalVector* q) {
+  void AddCellVector(const std::string& name, const GlobalVector* q) {
     GetMeshInterpretor()->AddCellVector(name,q);
   }
-  void AddParameterVector(const std::string& name, const Gascoigne::GlobalVector* q) {
+  void AddParameterVector(const std::string& name, const GlobalVector* q) {
     GetMeshInterpretor()->AddParameterVector(name,q);
   }
   void DeleteNodeVector(const std::string& name)  {
@@ -192,20 +193,20 @@ class StdSolver : public virtual SolverInterface
 
   void OutputSettings() const;
 
- void ConstructInterpolator(MgInterpolatorInterface* I, const MeshTransferInterface* MT);
+  void ConstructInterpolator(MgInterpolatorInterface* I, const MeshTransferInterface* MT);
   void VisuGrid(const std::string& name, int i) const;
-
+  
   //
   /// vector - manamgement
   //
     
-    void RegisterMatrix();
-    void ResizeVector(Gascoigne::GlobalVector* x, std::string type) const;
+  void RegisterMatrix();
+  void ResizeVector(GlobalVector* x, std::string type) const;
   void RegisterVector(const BasicGhostVector& g) {_NGVA.Register(g,this);}
-  Gascoigne::GlobalVector& GetGV(BasicGhostVector& u) const {
+  GlobalVector& GetGV(BasicGhostVector& u) const {
     return _NGVA(u);
   }
-  const Gascoigne::GlobalVector& GetGV(const BasicGhostVector& u) const {
+  const GlobalVector& GetGV(const BasicGhostVector& u) const {
     return _NGVA(u);
   }
 
@@ -216,16 +217,17 @@ class StdSolver : public virtual SolverInterface
   void HNAverage   (const BasicGhostVector& x) const;
   void HNZero      (const BasicGhostVector& x) const;
   void HNDistribute(BasicGhostVector& x) const;
-  void HNAverage   (const Gascoigne::GlobalVector& x) const;
-  void HNZero      (const Gascoigne::GlobalVector& x) const;
-  bool HNZeroCheck(const Gascoigne::GlobalVector& x) const;
-  void HNDistribute(Gascoigne::GlobalVector& x) const;
+  void HNAverage   (const GlobalVector& x) const;
+  void HNZero      (const GlobalVector& x) const;
+  bool HNZeroCheck(const GlobalVector& x) const;
+  void HNDistribute(GlobalVector& x) const;
 
   //
   /// vector - io
   //
 
   void Visu(const std::string& name, const BasicGhostVector& u, int i) const;
+  void Visu(const std::string& name, const GlobalVector& u, int i) const;
   void Write(const BasicGhostVector& u, const std::string& filename) const;
   void Read(BasicGhostVector& u, const std::string& filename) const;
 
@@ -233,7 +235,7 @@ class StdSolver : public virtual SolverInterface
   /// vector - interpolation
   //
 
-  void InterpolateSolution(BasicGhostVector& u, const Gascoigne::GlobalVector& uold) const;
+  void InterpolateSolution(BasicGhostVector& u, const GlobalVector& uold) const;
 
   //
   /// vector - rhs (integration)
@@ -251,10 +253,10 @@ class StdSolver : public virtual SolverInterface
   /// vector - boundary condition
   //
 
-  void SetBoundaryVector(Gascoigne::GlobalVector& f) const;
+  void SetBoundaryVector(GlobalVector& f) const;
   void SetBoundaryVector(BasicGhostVector& f) const;
   void SetBoundaryVectorZero(BasicGhostVector& Gf) const;
-  void SetBoundaryVectorZero(Gascoigne::GlobalVector& f) const;
+  void SetBoundaryVectorZero(GlobalVector& f) const;
 
   //
   /// vector - linear algebra
@@ -279,7 +281,7 @@ class StdSolver : public virtual SolverInterface
   /// vector - matrix
   //
 
-  void AssembleMatrix(BasicGhostVector& u, double d);
+  void AssembleMatrix(const BasicGhostVector& u, double d);
   void DirichletMatrix() const;
   void MatrixZero() const;
   void ComputeIlu(const BasicGhostVector& u) const;
@@ -288,7 +290,7 @@ class StdSolver : public virtual SolverInterface
   /// vector - "postprocessing"
   //
 
-  void ComputeError(const BasicGhostVector& u, Gascoigne::GlobalVector& err) const;
+  void ComputeError(const BasicGhostVector& u, GlobalVector& err) const;
   double ComputeFunctional(BasicGhostVector& f, const BasicGhostVector& u, const Functional* FP) const;
   double EnergyEstimator(nvector<double>& eta, const BasicGhostVector& u, BasicGhostVector& f) const;
 
@@ -305,6 +307,9 @@ class StdSolver : public virtual SolverInterface
 
   const HierarchicalMesh*& GetHierarchicalMeshPointer() { return _HM; }
   const HierarchicalMesh*  GetHierarchicalMesh() const  { return _HM; }
+
+
+  virtual double ComputeResidualFunctional(GlobalVector& f, const GlobalVector& u, GlobalVector& z, const ResidualFunctional* FP) const;
 };
 
 #endif

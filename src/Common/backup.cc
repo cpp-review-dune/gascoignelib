@@ -115,7 +115,7 @@ WriteBackUp::WriteBackUp(const GlobalVector& u, const string& bname)
   assert(file);
   file << u.n() << " " << u.ncomp() << endl;
 
-  file.precision(10);
+  file.precision(16);
   for (int i=0; i<u.n(); i++)
     {
       for (int c=0; c<u.ncomp(); c++)  

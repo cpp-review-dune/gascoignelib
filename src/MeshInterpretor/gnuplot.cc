@@ -109,8 +109,9 @@ void Visualization::gnuplot(const string& name) const
 	      if (GP[k].TestVertex(V)) i++;
 	    }
 	}
+      assert(i);
       if (!i) continue;
-      
+
       nvector<double> x(i);
       int comp = PointData->visucomp();
       CompVector<double> f(comp);

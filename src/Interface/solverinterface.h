@@ -152,7 +152,7 @@ class SolverInterface
   /// vector - matrix
   //
 
-  virtual void AssembleMatrix(BasicGhostVector& u, double d=1.)=0;
+  virtual void AssembleMatrix(const BasicGhostVector& u, double d=1.)=0;
   virtual void DirichletMatrix() const=0;
   virtual void MatrixZero() const=0;
   virtual void ComputeIlu(const BasicGhostVector& u) const=0;

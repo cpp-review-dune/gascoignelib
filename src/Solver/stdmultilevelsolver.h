@@ -63,6 +63,8 @@ class StdMultiLevelSolver : public MultiLevelSolverInterface
   virtual void Cg   (MultiLevelGhostVector& x, const MultiLevelGhostVector& f, CGInfo& info);
   virtual void Gmres(MultiLevelGhostVector& x, const MultiLevelGhostVector& f, CGInfo& info);
 
+  virtual void ViewProtocoll() const;
+
  public:
 
   // Constructor
@@ -118,6 +120,7 @@ class StdMultiLevelSolver : public MultiLevelSolverInterface
   virtual void NewtonMatrixControl(MultiLevelGhostVector& u, NLInfo& nlinfo);
 
   virtual void AssembleMatrix(MultiLevelGhostVector& u, NLInfo& nlinfo);
+  void AssembleMatrix(MultiLevelGhostVector& u);
   /// not used in the library -- might be used in local
   virtual void ComputeIlu(MultiLevelGhostVector& u);
   

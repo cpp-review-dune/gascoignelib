@@ -146,7 +146,7 @@ void StdTimeSolver::Form(BasicGhostVector& gy, const BasicGhostVector& gx, doubl
 
 /*-------------------------------------------------------*/
 
-void StdTimeSolver::AssembleMatrix(BasicGhostVector& gu, double d)
+void StdTimeSolver::AssembleMatrix(const BasicGhostVector& gu, double d)
 {
   StdSolver::AssembleMatrix(gu,d);
 

@@ -15,13 +15,14 @@ protected:
   virtual std::string SolveTimePrimal(MultiLevelGhostVector& u, MultiLevelGhostVector& f);
 
   void TimeInfoBroadcast();
+  void InitSolution(MultiLevelGhostVector& u);
+  void InitSolution(MultiLevelGhostVector& u, MultiLevelGhostVector& f);
 
 public:
 
   StdTimeLoop() : StdLoop() {}
 
   void BasicInit(const Gascoigne::ParamFile* paramfile);
-  void InitSolution(MultiLevelGhostVector& u);
 
   void run(const ProblemDescriptorInterface* PD);
   void adaptive_run(const ProblemDescriptorInterface* PD);

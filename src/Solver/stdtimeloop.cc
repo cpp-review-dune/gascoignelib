@@ -122,6 +122,13 @@ void StdTimeLoop::TimeInfoBroadcast()
 
 void StdTimeLoop::InitSolution(MultiLevelGhostVector& u)
 {
+  StdLoop::InitSolution(u);
+}
+
+/*-------------------------------------------------*/
+
+void StdTimeLoop::InitSolution(MultiLevelGhostVector& u, MultiLevelGhostVector& f)
+{
   if (_initial=="analytic") 
     {
       StdTimeSolver* TS = dynamic_cast<StdTimeSolver*>(GetMultiLevelSolver()->GetSolver());
