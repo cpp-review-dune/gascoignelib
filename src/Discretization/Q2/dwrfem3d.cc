@@ -76,6 +76,31 @@ void DwrFem3d::Form(GlobalVector& f, const GlobalVector& u, const Equation& EQ, 
 
 /* ----------------------------------------- */
 
+void DwrFem3d::AdjointForm(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const
+{
+  nmatrix<double> TH,TL;
+
+  const IntegratorQ1Q2<3>* I = dynamic_cast<const IntegratorQ1Q2<3>*>(GetIntegrator());
+  assert(I);
+
+  const FemInterface& HighOrderFem(*GetFem());
+
+  for(int iq=0;iq<GetPatchMesh()->npatches();++iq)
+    {
+      Transformation  (TH,iq);
+      TransformationQ1(TL,iq);
+
+      HighOrderFem.ReInit(TH);
+      LowOrderFem .ReInit(TL);
+
+      GlobalToLocal(__U,u,iq);
+      I->AdjointForm(EQ,__F,HighOrderFem,LowOrderFem,__U,__Q);
+      PatchDiscretization::LocalToGlobal(f,__F,iq,d);
+    }
+}
+
+/* ----------------------------------------- */
+
 void DwrFem3d::Rhs(GlobalVector& f, const DomainRightHandSide& RHS, double s) const
 {
   nmatrix<double> TH,TL;

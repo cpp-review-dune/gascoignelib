@@ -51,6 +51,7 @@ class DwrFem3d : public Q23d
 
   void BasicInit(const ParamFile* paramfile);
   void Form(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const;
+  void AdjointForm(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const;
   void Rhs(GlobalVector& f, const DomainRightHandSide& RHS, double s) const;
 };
 }
