@@ -148,8 +148,8 @@ class StdMultiLevelSolver : public MultiLevelSolverInterface
   // fuer gmres
   
   virtual void precondition(MultiLevelGhostVector& x, MultiLevelGhostVector& y);
-  virtual void MemoryVector(MultiLevelGhostVector& p);
-  virtual void DeleteVector(MultiLevelGhostVector& p);
+  void MemoryVector(MultiLevelGhostVector& p);
+  void DeleteVector(MultiLevelGhostVector& p);
   virtual void Equ(MultiLevelGhostVector& dst, double s, const MultiLevelGhostVector& src)const;
   void Zero(MultiLevelGhostVector& dst)const;
 
