@@ -1,0 +1,9 @@
+*.o
+*~
+CMakeCCompiler.cmake
+CMakeCXXCompiler.cmake
+CMakeCache.txt
+CMakeSystem.cmake
+CMakeTmp
+Makefile
+cmake*
