@@ -14,11 +14,8 @@ protected:
   mutable double _h, _visc;
   double _penalty,_cut;
 
-  double Laplace(const TestFunction& U, 
-		 const TestFunction& N) const;
-  
-  double Convection(const FemFunction& U, 
-		    const TestFunction& N) const;
+  double Laplace(const TestFunction& U, const TestFunction& N) const;
+  double Convection(const FemFunction& U, const TestFunction& N) const;
 
   double Divergence(const FemFunction& U) const;
 
