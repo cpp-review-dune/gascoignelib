@@ -1,6 +1,6 @@
 IF(COPY_PARAMFILES)
   SET(_SRC ${GASCOIGNESTD_SOURCE_DIR}/Examples/Heat2D)
-  ADD_CUSTOM_TARGET(COPY ALL cp ${_SRC}/*.param ${_SRC}/*.inp .)
+  ADD_CUSTOM_TARGET(COPY ALL cp ${_SRC}/*.param ${_SRC}/*.inp ${_SRC}/*.gup .)
 ENDIF(COPY_PARAMFILES)
 
 ADD_EXECUTABLE(Heat2D main.cc)

@@ -108,7 +108,8 @@ void CellMeshInterpretor::MassMatrix(MatrixInterface& A) const
       Transformation(T,iq);
       GetFem()->ReInit(T);
       GetIntegrator()->MassMatrix(__E,*GetFem());
-      LocalToGlobal(A,__E,iq,1.);
+       LocalToGlobal(A,__E,iq,1.);
+       //      CellMeshInterpretor::LocalToGlobal(A,__E,iq,1.);
     }
 }
 
