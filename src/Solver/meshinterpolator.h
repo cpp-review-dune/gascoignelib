@@ -26,28 +26,23 @@ class MeshInterpolator
     std::vector<GlobalVector>         _VecInt,_VecOld,_VecNew;
     std::vector<int>                  _NewNodeNumber;
 
-    void CheckCell(int oldNumber, int newNumber);
-    void Coarsen(int newNumber);
+    void CheckCell (int oldNumber, int newNumber);
+    void Coarsen   (int newNumber);
     void Distribute(int oldNumber, int newNumber);
     void RefineAndInterpolate(HierarchicalMesh* Mesh, std::vector<GlobalVector>& u, const IntVector& refine, std::vector<bool>& done);
 
-          MeshAgent*& GetMeshAgentPointer()       { return _MA; }
           MeshAgent*  GetMeshAgent()              { assert(_MA); return _MA; }
     const MeshAgent*  GetMeshAgent()        const { assert(_MA); return _MA; }
 
-          MeshAgentInterface*& GetOriginalMeshAgentPointer()       { return _OMA; }
-          MeshAgent*           GetOriginalMeshAgent()              { assert(dynamic_cast<MeshAgent*>(_OMA)); return dynamic_cast<MeshAgent*>(_OMA); }
-    const MeshAgent*           GetOriginalMeshAgent()        const { assert(dynamic_cast<const MeshAgent*>(_OMA)); return dynamic_cast<const MeshAgent*>(_OMA); }
+          MeshAgentInterface*& GetOriginalMeshAgentPointer()    { return _OMA; }
+          MeshAgent*           GetOriginalMeshAgent()           { return dynamic_cast<MeshAgent*>(_OMA); }
+    const MeshAgent*           GetOriginalMeshAgent()     const { return dynamic_cast<const MeshAgent*>(_OMA); }
 
-          DiscretizationInterface*  GetOriginalDiscretization()              { assert(_ODI); return _ODI; }
-    const DiscretizationInterface*  GetOriginalDiscretization()        const { assert(_ODI); return _ODI; }
+          DiscretizationInterface*  GetOriginalDiscretization()       { assert(_ODI); return _ODI; }
+    const DiscretizationInterface*  GetOriginalDiscretization() const { assert(_ODI); return _ODI; }
 
           DiscretizationInterface*  GetDiscretization()              { assert(_DI); return _DI; }
     const DiscretizationInterface*  GetDiscretization()        const { assert(_DI); return _DI; }
-
-    virtual void AddVectorIntermediate(GlobalVector u);
-    virtual void AddVectorOld(GlobalVector u);
-    virtual void AddVectorNew(GlobalVector u);
 
   public:
 
@@ -57,6 +52,10 @@ class MeshInterpolator
     virtual void BasicInit(DiscretizationInterface* DI, MeshAgentInterface* MA, 
 			   const std::string& name);
     virtual void RhsForProjection(GlobalVector& gf, const GlobalVector& u);
+
+    virtual void AddVectorIntermediate(const GlobalVector& u);
+    virtual void AddVectorOld         (const GlobalVector& u);
+    virtual void AddVectorNew         (const GlobalVector& u);
 };
 }
 

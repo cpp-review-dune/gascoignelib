@@ -23,7 +23,7 @@ MeshInterpolator::~MeshInterpolator()
   {
     delete GetDiscretization();
   }
-  if (GetMeshAgentPointer())
+  if (_MA)
   {
     delete GetMeshAgent();
   }
@@ -181,25 +181,25 @@ void MeshInterpolator::RefineAndInterpolate(HierarchicalMesh* Mesh, vector<Globa
 
 /**********************************************************/
 
-void MeshInterpolator::AddVectorIntermediate(GlobalVector u)
+void MeshInterpolator::AddVectorIntermediate(const GlobalVector& u)
 {
   _VecInt.push_back(u);
 }
 
 /**********************************************************/
 
-void MeshInterpolator::AddVectorOld(GlobalVector u)
+void MeshInterpolator::AddVectorOld(const GlobalVector& u)
 {
   _VecOld.push_back(u);
-  GetDiscretization()->HNAverage(u);
+  //GetDiscretization()->HNAverage(u);
 }
 
 /**********************************************************/
 
-void MeshInterpolator::AddVectorNew(GlobalVector u)
+void MeshInterpolator::AddVectorNew(const GlobalVector& u)
 {
   _VecNew.push_back(u);
-  GetDiscretization()->HNAverage(u);
+  //GetDiscretization()->HNAverage(u);
 }
 
 /**********************************************************/
@@ -222,7 +222,7 @@ void MeshInterpolator::BasicInit(DiscretizationInterface* DI, MeshAgentInterface
   _ODI = DI;
 
   // neuen MeshAgent anlegen
-  GetMeshAgentPointer() = new MeshAgent;
+  _MA = new MeshAgent;
 
   GetMeshAgent()->GetShapes2d() = GetOriginalMeshAgent()->GetShapes2d();
   GetMeshAgent()->GetShapes3d() = GetOriginalMeshAgent()->GetShapes3d();
