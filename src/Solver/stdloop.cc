@@ -138,26 +138,24 @@ nvector<double> StdLoop::Functionals(MultiLevelGhostVector& u, MultiLevelGhostVe
 
 double StdLoop::Estimator(nvector<double>& eta, MultiLevelGhostVector& u, MultiLevelGhostVector& f)
 {
-//   cout << "Estimator\t"; 
-
-//   cout << "Baustelle!!!!!\n";
-//   return 0.;
-
   double est = 0.;
   if (_estimator=="energy")
     {
       dynamic_cast<StdSolver*>(GetMultiLevelSolver()->GetSolver())->setHierarchicalMeshPointer(dynamic_cast<MeshAgent*>(GetMeshAgent())->getHierarchicalMesh());
       est = GetMultiLevelSolver()->GetSolver()->EnergyEstimator(eta, u, f);
+      EtaVisu("Results/eta",_iter,eta);
     }
-  else assert(0);
-
+  else 
+    {
+      cout << "Estimator\t"; 
+      cout << "Baustelle!!!!!\n";
+    }
 //   double eff = 0.;
 //   if      ((_estimator=="weighted") && (_JErr.size()>0))      eff = est/_JErr[0];
 //   else if ((_estimator=="energy")   && (_GlobalErr.size()>0)) eff = est/_GlobalErr(1,0);
 //   if  (eff!=0.) cout << " @ " << eff << endl; 
   
 //   cout << endl; 
-  EtaVisu("Results/eta",_iter,eta);
   return est;
 }
 
