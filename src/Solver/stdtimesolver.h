@@ -25,7 +25,7 @@ private:
 protected:
 
 
-  double dt, theta, time;
+  double dt, theta, time, rhs;
 
   const MatrixInterface* GetMassMatrix() const {return _MMP;}
   MatrixInterface* GetMassMatrix() {return _MMP;}
@@ -46,7 +46,7 @@ public:
   void RegisterMatrix();
   void ReInitMatrix();
 
-  void SetTimeData(double d, double th, double ti);
+  void SetTimeData(double d, double th, double ti, double rh = -1);
   void SetProblem(const ProblemDescriptorInterface& PDX);
 
   void TimeRhs(BasicGhostVector& f, const BasicGhostVector& u) const;

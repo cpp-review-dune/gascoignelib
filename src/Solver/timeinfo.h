@@ -26,10 +26,14 @@ public:
   void ReInit(double det);
   void BasicInit();
 
-  double  dt   () const;
-  double theta() const;
+  double dt    () const;
+  double theta () const;
+  double oldrhs() const;
+  double rhs   () const;
+
   void iteration(int i);
   void ReInit(double tb, double det, double te, const std::string& sch, int ne, double t);
+  void ReInitTheta();
   void scale_timestep(double s) { _deltat *= s;}
   void stepback() { _time -= _deltat;}
   double time() const { return _time;}

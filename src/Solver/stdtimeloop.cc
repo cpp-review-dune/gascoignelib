@@ -19,8 +19,8 @@ void StdTimeLoop::BasicInit(const ParamFile* paramfile)
   DFH.insert("dt"    ,&deltat  ,1.);
   DFH.insert("tbegin",&tbegin  ,0.);
   DFH.insert("tend"  ,&tend    ,1.e4);
-  DFH.insert("neuler"  ,&neuler    ,10);
-  DFH.insert("scheme" ,&scheme   ,"Euler");
+  DFH.insert("neuler",&neuler  ,10);
+  DFH.insert("scheme",&scheme  ,"Euler");
   DFH.insert("theta" ,&theta   ,0.5);
   DFH.insert("reload",&_reload);
   FileScanner FS(DFH);
@@ -34,7 +34,7 @@ void StdTimeLoop::BasicInit(const ParamFile* paramfile)
 
 string StdTimeLoop::SolveTimePrimal(MultiLevelGhostVector& u, MultiLevelGhostVector& f, string name)
 {
-  GetMultiLevelSolver()->GetSolver()->Rhs(f);
+  GetMultiLevelSolver()->GetSolver()->Rhs(f,info.rhs());
 
   GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(f);
   GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(u);
@@ -51,7 +51,7 @@ string StdTimeLoop::SolveTimePrimal(MultiLevelGhostVector& u, MultiLevelGhostVec
 void StdTimeLoop::adaptive_run(const ProblemDescriptorInterface* PD)
 {
   MultiLevelGhostVector u("u"), f("f");
-  CompVector<double> ualt;
+  GlobalVector ualt;
   
   u.SetMultiLevelSolver(GetMultiLevelSolver());
   f.SetMultiLevelSolver(GetMultiLevelSolver());
@@ -60,37 +60,51 @@ void StdTimeLoop::adaptive_run(const ProblemDescriptorInterface* PD)
   
   nvector<double> eta;
 
-  TimeInfoBroadcast();
   for (_iter=1; _iter<=_niter; _iter++)
     {
+      GetMultiLevelSolver()->ReInit(*PD);
+      TimeInfoBroadcast();
+
+      GetMultiLevelSolver()->InterpolateSolution(u,ualt);
+
+      if (_iter==1) 
+				{
+					GetMultiLevelSolver()->GetSolver()->OutputSettings();
+					InitSolution(u,f);
+				}
+
       cout << "\n================== " << _iter << "================";
       cout << " [l,n,c] " << GetMeshAgent()->nlevels() << " " << GetMeshAgent()->nnodes();
       cout << " " << GetMeshAgent()->ncells() << endl;
       
-      info.iteration(_iter);
-      GetMultiLevelSolver()->ReInit(*PD);
+      // umschalten von Euler ?
+      //
+      info.SpecifyScheme(_iter);
+			TimeInfoBroadcast();
+      //
+      // rhs fuer alten Zeitschritt
+      //
+      f.zero();
+      GetMultiLevelSolver()->GetSolver()->TimeRhs(f,u);
       
-      GetMultiLevelSolver()->InterpolateSolution(u,ualt);
-
-      if (_iter==1) 
-	{
-	  GetMultiLevelSolver()->GetSolver()->OutputSettings();
-	  InitSolution(u,f);
-	}
+      // neuer Zeitschritt
+      //
+      info.iteration(_iter);
+      TimeInfoBroadcast();
 
       SolveTimePrimal(u,f);
-      
+
       GetMultiLevelSolver()->GetSolver()->EnergyEstimator(eta, u, f);
 
       cout << "eta " << eta.sum() << endl;
 
       if (_iter<_niter) 
-	{
-	  CopyVector(ualt,u);
+				{
+					CopyVector(ualt,u);
 
-	  AdaptMesh(eta);
-	}
-     }
+					AdaptMesh(eta);
+				}
+    }
 }
 
 /*-------------------------------------------------*/
@@ -101,7 +115,7 @@ void StdTimeLoop::TimeInfoBroadcast()
     {
       StdTimeSolver* TS = dynamic_cast<StdTimeSolver*>(GetMultiLevelSolver()->GetSolver(l));
       assert(TS);
-      TS->SetTimeData(info.dt(), info.theta(), info.time());
+      TS->SetTimeData(info.dt(), info.theta(), info.time(), info.oldrhs());
     }
 }
 
@@ -157,6 +171,7 @@ void StdTimeLoop::run(const ProblemDescriptorInterface* PD)
       // umschalten von Euler ?
       //
       info.SpecifyScheme(_iter);
+      TimeInfoBroadcast();
       //
       // rhs fuer alten Zeitschritt
       //

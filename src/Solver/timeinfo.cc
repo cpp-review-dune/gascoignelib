@@ -62,8 +62,9 @@ void TimeInfo::ReInit(double det)
 
 int TimeInfo::ftstep() const
 {
-  if (_iter<=1) return 0;
-  return (_iter-1)%3;
+  int step = (_iter-_neuler)%3;
+  while (step<0) step+=3;
+  return step;
 }
 
 /*-----------------------------------------*/
@@ -71,7 +72,7 @@ int TimeInfo::ftstep() const
 void TimeInfo::ReInit(double tb, double te, double det, const string& sch, int ne, double tt)
 {
   _tbegin = tb;
-  _time      = _tbegin;
+  _time   = _tbegin;
   _tend   = te;
   _deltat = det;
   _neuler = ne;
@@ -82,14 +83,19 @@ void TimeInfo::ReInit(double tb, double te, double det, const string& sch, int n
     _actualscheme = "Euler";
   else
     _actualscheme = sch;
+	
+  ReInitTheta();
+}
 
+/*-----------------------------------------*/
+
+void TimeInfo::ReInitTheta()
+{
   if      (_actualscheme=="CN"   )           _theta = 0.5;
   else if (_actualscheme=="Euler")           _theta = 1.;
   else if (_actualscheme=="FractionalTheta") _theta = 0.;
   else if (_actualscheme=="Theta")           _theta = _Theta;
   else assert(0);
-
-  if (_actualscheme=="FractionalTheta") _deltat *= 3.;
 }
 
 /*-----------------------------------------*/
@@ -114,6 +120,42 @@ double TimeInfo::dt() const
 
 /*-----------------------------------------*/
 
+double TimeInfo::oldrhs() const 
+{ 
+  if (_actualscheme=="FractionalTheta")
+    {
+      if (ftstep()==1)
+        {
+          return 0.;
+        }
+      else
+        {
+          return 1./_fttheta[0];
+        }
+    }
+  return (1.-_theta)/_theta;
+}
+
+/*-----------------------------------------*/
+
+double TimeInfo::rhs() const 
+{ 
+  if (_actualscheme=="FractionalTheta")
+    {
+      if (ftstep()==2)
+        {
+          return 1./_fttheta[1];
+        }
+      else
+        {
+          return 0.;
+        }
+    }
+  return 1.;
+}
+
+/*-----------------------------------------*/
+
 void TimeInfo::ReInitBackward(int niter, double endtime)
 {
   _iter = niter;
@@ -129,8 +171,8 @@ void TimeInfo::iteration_backward(int i)
   _iter = i;
   _time -= dt();
 
-  _actualscheme = _scheme;
-  if (_iter<=_neuler) _actualscheme = "Euler";
+//  _actualscheme = _scheme;
+//  if (_iter<=_neuler) _actualscheme = "Euler";
 
   cout << "\n============= " << _iter << " ========== " << _actualscheme;
   cout << " [t,dt] "<< _time << " " << dt() << "\t";
@@ -155,10 +197,12 @@ void TimeInfo::iteration(int i)
 
 void TimeInfo::SpecifyScheme(int i)
 {
-  if (i==_neuler)
+  if (i-1==_neuler)
     {
       cout << "Switching from Euler to " << _scheme << endl;
       _actualscheme = _scheme;
+      ReInitTheta();
+      if (_actualscheme=="FractionalTheta") _deltat *= 3.;
     }
 }
 

@@ -47,7 +47,7 @@ void LocalTimeLoop::AddNodeVector(string filename)
 	{
 	  dat_node[l].ncomp() = dat_node[l+1].ncomp();
 	  GetMultiLevelSolver()->GetSolver(l)->ResizeVector(&dat_node[l],"");
- 	  GetMultiLevelSolver()->Transfer(l+1,dat_node[l],dat_node[l+1]);
+	  GetMultiLevelSolver()->Transfer(l+1,dat_node[l],dat_node[l+1]);
 	}
       GetMultiLevelSolver()->GetSolver(l)->AddNodeVector("U",&dat_node[l]);
     }
@@ -100,6 +100,8 @@ void LocalTimeLoop::init(string name, int iter, const ProblemDescriptorInterface
   StdTimeSolver* TSS = dynamic_cast<StdTimeSolver*>(GetMultiLevelSolver()->GetSolver());
   assert(TSS);
   
+  TimeInfoBroadcast();
+
   // Anfangswerte
   InitSolution(u,f);
   
@@ -139,15 +141,24 @@ void LocalTimeLoop::backward(string iname, string name, int first, int last, con
   TimeInfoBroadcast();
   for (_iter=last; _iter>=first; _iter--)
     {
-      info.iteration_backward(_iter);
-
-      ualt.equ(1.,u);
-
       string aname(name);
-      compose_name(aname,_iter);
+      compose_name(aname,_iter+1);
       aname += ".bup";
       cerr << aname << endl;
       AddNodeVector(aname);
+			
+      //
+      // rhs fuer alten Zeitschritt
+      //
+      f.zero();
+      GetMultiLevelSolver()->GetSolver()->TimeRhs(f,u);
+      
+      // neuer Zeitschritt
+      //
+      info.iteration_backward(_iter);
+      TimeInfoBroadcast();
+
+			ualt.equ(1.,u);
 
       SolveTimePrimal(u,f,"Results/backward");
       Functionals(u,f);
@@ -185,7 +196,20 @@ void LocalTimeLoop::forward(string iname, int first, int last, const ProblemDesc
   TimeInfoBroadcast();
   for (_iter=first; _iter<=last; _iter++)
     {
+      // umschalten von Euler ?
+      //
+      info.SpecifyScheme(_iter);
+			TimeInfoBroadcast();
+      //
+      // rhs fuer alten Zeitschritt
+      //
+      f.zero();
+      GetMultiLevelSolver()->GetSolver()->TimeRhs(f,u);
+      
+      // neuer Zeitschritt
+      //
       info.iteration(_iter);
+      TimeInfoBroadcast();
 
       ualt.equ(1.,u);
 
