@@ -188,6 +188,22 @@ void GalerkinIntegrator<DIM>::Matrix(const Equation& EQ, EntryMatrix& E, const F
     }
 }
 
+/*-----------------------------------------------------------*/
+
+template<int DIM>
+void GalerkinIntegrator<DIM>::RhsPoint
+(LocalVector& F, const FemInterface& E, const Vertex<DIM>& p, int comp) const
+{
+  F.zero();
+
+  E.point(p);
+  for (int i=0; i<E.n(); i++)
+    {
+      E.init_test_functions(NN,1.,i);
+      F(i,comp) += NN.m();
+    }
+}
+
 /* ----------------------------------------- */
 
 template<int DIM>

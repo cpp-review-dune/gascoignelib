@@ -8,14 +8,9 @@ PointFunctional::~PointFunctional()
 
 /*-----------------------------------------*/
 
-PointFunctional::PointFunctional()  
-  : Functional(), v(0), w(0) {}
-
-/*-----------------------------------------*/
-
 PointFunctional::PointFunctional
 (const Equation& EQ, const std::vector<std::string>& args)  
-  : Functional(), v(0), w(0)
+  : Functional(), v2d(0), v3d(0), w(0)
 {
   Init(EQ,args);
 }
@@ -30,11 +25,11 @@ void PointFunctional::Init(const Equation& EQ, const std::vector<std::string>& a
   // syntax z.B:
   // MachnenPunkt 2  point vertex_1_2_0._0.5
 
-  if(type=="vertex")
+  if(type=="vertex2d")
     {
       int n = atoi(args[1].c_str());
       assert(n>0);
-      v.resize(n);
+      v2d.resize(n);
       w.resize(n);
       
       //std::cerr << "n = " << n << std::endl;
@@ -46,12 +41,14 @@ void PointFunctional::Init(const Equation& EQ, const std::vector<std::string>& a
 	  double w0 = atof(args[count++].c_str());
 	  double x  = atof(args[count++].c_str());
 	  double y  = atof(args[count++].c_str());
-	  v[ii].x() = x;  v[ii].y() = y;
+	  v2d[ii].x() = x;  v2d[ii].y() = y;
 	  w[ii] = w0;
 	  //std::cerr << "point: " << w0 << "\t" << v[ii] << std::endl;
 	}
-      //      ConstructByVertex(v,w);
-
+    }
+  else if(type=="vertex3d")
+    {
+      assert(0);
     }
   else if(type=="id")
     {
@@ -66,8 +63,6 @@ void PointFunctional::Init(const Equation& EQ, const std::vector<std::string>& a
 	  w  [ii] = atof(args[count++].c_str());
 	  ids[ii] = atoi(args[count++].c_str());
 	}
-      //      ConstructById(ids,w);
-
       assert(0);
     }
   else
@@ -78,24 +73,5 @@ void PointFunctional::Init(const Equation& EQ, const std::vector<std::string>& a
     }
 }
 
-
 /*-----------------------------------------*/
 
-// void PointFunctional::ConstructByVertex
-// (const std::vector<Vertex2d>& v0, const std::vector<double>& w0)
-// {
-//   v.resize(v0.size());
-//   w.resize(w0.size());
-//   v = v0;
-//   w = w0;
-// }
-
-/*-----------------------------------------*/
-
-// void PointFunctional::ConstructById(const std::vector<int>& ids0, const std::vector<double>& w0)
-// {
-//   ids.resize(ids0.size());
-//   w.resize(w0.size());
-//   ids = ids0;
-//   w = w0;
-// }

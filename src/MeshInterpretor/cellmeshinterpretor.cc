@@ -1,6 +1,7 @@
 #include  "cellmeshinterpretor.h"
 #include  "visudatacompvector.h"
 #include  "sparsestructure.h"
+#include  "pointfunctional.h"
 
 using namespace std;
 
@@ -223,28 +224,35 @@ void CellMeshInterpretor::DiracRhs(GlobalVector& f, const RightHandSideData& RHS
 
 /* ----------------------------------------- */
 
-int CellMeshInterpretor::RhsPoint(GlobalVector& f, const std::vector<Vertex2d>& p0, int comp, const nvector<double>& d) const
+int CellMeshInterpretor::RhsPoint(GlobalVector& f, const Functional* F) const
 {
+  const PointFunctional* FP = dynamic_cast<const PointFunctional*>(F);
+  assert(FP);
+
+  int comp = FP->GetComp();
+  const nvector<double>& d = FP->weights();
   int count = 0;
-  for (int i=0; i<p0.size(); i++)
+
+  if (GetMesh()->dimension()==2)
     {
-      count += RhsPoint(f,p0[i],comp,d[i]);
+      const std::vector<Vertex2d>& p0 = FP->points2d();
+      
+      for (int i=0; i<p0.size(); i++)
+	{
+	  count += RhsPoint(f,p0[i],comp,d[i]);
+	}
+    }
+  else
+    {
+      const std::vector<Vertex3d>& p0 = FP->points3d();
+      
+      for (int i=0; i<p0.size(); i++)
+	{
+	  count += RhsPoint(f,p0[i],comp,d[i]);
+	}
     }
   return count;
 }
-
-/* ----------------------------------------- */
-
-int CellMeshInterpretor::RhsPoint(GlobalVector& f, const std::vector<Vertex3d>& p0, int comp, const nvector<double>& d) const
-{
-  int count = 0;
-  for (int i=0; i<p0.size(); i++)
-    {
-      count += RhsPoint(f,p0[i],comp,d[i]);
-    }
-  return count;
-}
-
 
 /*-----------------------------------------*/
 
@@ -306,9 +314,9 @@ void CellMeshInterpretor::VertexTransformation(const nvector<Vertex2d>& p,
 int CellMeshInterpretor::GetCellNumber(const Vertex2d& p0, nvector<Vertex2d>& p) const
 {
   nvector<double> a0(2),a1(2),b(2),n(2);
-  p.resize(4);
   
   int nv = GetMesh()->nodes_per_cell(); // = 4 oder 8
+  p.resize(nv);
   for(int iq=0; iq<GetMesh()->ncells(); ++iq)
     {
       for (int j=0; j<nv; ++j)
@@ -316,7 +324,7 @@ int CellMeshInterpretor::GetCellNumber(const Vertex2d& p0, nvector<Vertex2d>& p)
 	  p[j]=GetMesh()->vertex2d(GetMesh()->vertex_of_cell(iq,j));
 	}
       int s=0;
-      for (int j=0;j<4;++j)    
+      for (int j=0;j<nv;++j)    
 	{
 	  n[0] =-p[(j+1)%4].y()+p[j].y();
 	  n[1] = p[(j+1)%4].x()-p[j].x();
@@ -324,7 +332,7 @@ int CellMeshInterpretor::GetCellNumber(const Vertex2d& p0, nvector<Vertex2d>& p)
 	  b[1] = p0.y()-p[j].y();
 	  if (n*b>=-1.e-15) ++s;
 	}
-      if (s==4) return iq;
+      if (s==nv) return iq;
     }
   return -1;
 }
@@ -333,17 +341,20 @@ int CellMeshInterpretor::GetCellNumber(const Vertex2d& p0, nvector<Vertex2d>& p)
 
 int CellMeshInterpretor::RhsPoint(GlobalVector& f, const Vertex2d& p0, int comp, double d) const
 {
-  nvector<Vertex2d> p(4);
+  __F.ReInit(f.ncomp(),GetFem()->n());
+
+  nvector<Vertex2d> p(GetMesh()->nodes_per_cell());
   Vertex2d Tranfo_p0;
    
   int iq = GetCellNumber(p0,p);
   if (iq==-1) return 0;
   
-  nmatrix<double> T;
   VertexTransformation(p,p0,Tranfo_p0);
-  
+
+  nmatrix<double> T;
   Transformation(T,iq);
   GetFem()->ReInit(T);
+
   GetIntegrator()->RhsPoint(__F,*GetFem(),Tranfo_p0,comp);
 
   LocalToGlobal(f,__F,iq,d);
@@ -355,10 +366,21 @@ int CellMeshInterpretor::RhsPoint(GlobalVector& f, const Vertex2d& p0, int comp,
 
 int CellMeshInterpretor::RhsPoint(GlobalVector& f, const Vertex3d& p0, int comp, double d) const
 {
-  assert(0);
+  // p0 must be mesh point !!!!
+  int found = -1;
+  for (int i=0; i<GetMesh()->nnodes(); i++)
+    {
+      if (GetMesh()->vertex3d(i)==p0) found = i;
+    }
+  if (found<0) return 0;
+
+  f(found,comp) = d;
+  
+  return 1;
 }
 
 /* ----------------------------------------- */
+
 double CellMeshInterpretor::ComputeBoundaryFunctional(const GlobalVector& u, const BoundaryFunctional& BF) const 
 {
   assert(0);

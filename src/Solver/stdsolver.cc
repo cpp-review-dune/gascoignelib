@@ -604,7 +604,8 @@ double StdSolver::ComputePointFunctional(GlobalVector& f, const GlobalVector& u,
 {
   f.zero();
 
-  RhsPoint(f,FP->points(), FP->GetComp(),FP->weights());
+  RhsPoint(f,FP);
+
   HNAverage(u);      
   double J = u*f;
   HNZero(u);
@@ -840,9 +841,9 @@ void StdSolver::Write(const BasicGhostVector& gu, const string& filename) const
 
 /*-------------------------------------------------------*/
 
-int StdSolver::RhsPoint(GlobalVector& f, const vector<Vertex2d>& p, int mycomp, const nvector<double>& s) const
+int StdSolver::RhsPoint(GlobalVector& f, const PointFunctional* FP) const
 {
-  return GetMeshInterpretor()->RhsPoint(f,p,mycomp,s);
+  return GetMeshInterpretor()->RhsPoint(f,FP);
 }
 
 /*-------------------------------------------------------*/

@@ -70,8 +70,7 @@ public:
   virtual void MassMatrix(MatrixInterface& M) const {assert(0);}
   virtual void Rhs(GlobalVector& f, const RightHandSideData& RHS, double s) const { assert(0);};
   virtual void DiracRhs(GlobalVector& f, const RightHandSideData& RHS, double s) const { assert(0);}
-  virtual int RhsPoint(GlobalVector& f, const std::vector<Vertex2d>& p0, int comp, const nvector<double>& d) const { assert(0);}
-  virtual int RhsPoint(GlobalVector& f, const std::vector<Vertex3d>& p0, int comp, const nvector<double>& d) const { assert(0);}
+  virtual int RhsPoint(GlobalVector& f, const Functional* F) const { assert(0);}
   virtual void RhsNeumann(GlobalVector& f, const Equation& EQ, const IntSet& Colors,  const NeumannData& NRHS, double s) const { assert(0);}
 
 

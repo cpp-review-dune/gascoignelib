@@ -6,7 +6,6 @@ SET(PROBLEMS_SRC
   domainmeanfunctional.cc
   exactsolution.cc
   functionalmanager.cc
-  functionalmanagerconstruct.cc
   glsstabilization.cc
   laplace3d.cc
   laplace.cc

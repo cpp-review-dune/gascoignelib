@@ -120,7 +120,7 @@ class StdSolver : public virtual SolverInterface
   std::string GetName() const {return "StdSolver";}
 
   void Rhs(GlobalVector& f, double d=1.) const;
-  int RhsPoint(GlobalVector& f, const std::vector<Vertex2d>& p, int mycomp, const nvector<double>& s) const;
+  int RhsPoint(GlobalVector& f, const PointFunctional* FP) const;
 
   double ComputeFunctional(GlobalVector& f, const GlobalVector& u, const Functional* FP) const;
   double ComputeBoundaryFunctional(GlobalVector& f, const GlobalVector& u, GlobalVector& z, const BoundaryFunctional* FP) const;

@@ -46,8 +46,7 @@ public:
 
   void Rhs(GlobalVector& f, const RightHandSideData& RHS, double s) const;
   void DiracRhs(GlobalVector& f, const RightHandSideData& RHS, double s) const;
-  int RhsPoint(GlobalVector& f, const std::vector<Vertex2d>& p0, int comp, const nvector<double>& d) const;
-  int RhsPoint(GlobalVector& f, const std::vector<Vertex3d>& p0, int comp, const nvector<double>& d) const;
+  int RhsPoint(GlobalVector& f, const Functional* F) const;
   void RhsNeumann(GlobalVector& f, const Equation& EQ, const IntSet& Colors,  const NeumannData& NRHS, double s) const;
 
   double PressureFilter(nvector<double>&) const;
