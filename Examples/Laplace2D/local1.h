@@ -39,16 +39,16 @@ public:
     double fy = fabs(y);
     if(fx)
       {
-	theta = atan(fy/fx);
+        theta = atan(fy/fx);
 
-	if     ( (x<0)&&(y>=0)) theta = pi-theta;
-	else if( (x<0)&&(y<0))  theta += pi;
-	else if( (x>0)&&(y<0))  theta = 2.*pi-theta;
+        if     ( (x<0)&&(y>=0)) theta = pi-theta;
+        else if( (x<0)&&(y<0))  theta += pi;
+        else if( (x>0)&&(y<0))  theta = 2.*pi-theta;
       }
     else
       {
-	if(y>=0) theta = 0.5*pi;
-	else     theta = 1.5*pi;
+        if(y>=0) theta = 0.5*pi;
+        else     theta = 1.5*pi;
       }
     return pow(r,0.5)*sin(0.5*theta);
   }
