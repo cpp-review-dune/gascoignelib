@@ -21,7 +21,7 @@ public:
   StdTimeLoop() : StdLoop() {}
 
   void BasicInit(const Gascoigne::ParamFile* paramfile);
-  void InitSolution(MultiLevelGhostVector& u, const ProblemDescriptorInterface& PD);
+  void InitSolution(MultiLevelGhostVector& u);
 
   void run(const ProblemDescriptorInterface* PD);
   void adaptive_run(const ProblemDescriptorInterface* PD);
