@@ -36,6 +36,8 @@ class IntegratorQ1Q2 : public BasicIntegrator
       const LocalVector& U, int ile, int col, LocalNodeData& Q) const;
   void DiracRhsPoint(LocalVector& b, const FemInterface& FemH, const FemInterface& FemL, const Vertex<DIM>& p, 
       const DiracRightHandSide& DRHS, int j, const LocalNodeData& Q) const;
+
+  double MassMatrix(EntryMatrix& E, const FemInterface& FemH, const FemInterface& FemL) const;
 };
 
 }

@@ -276,4 +276,28 @@ void DwrFem2d::BoundaryRhs(GlobalVector& f, const IntSet& Colors,  const Boundar
     }
   }
 }
+
+/* ----------------------------------------- */
+
+void Gascoigne::DwrFem2d::MassMatrix(MatrixInterface& A) const
+{
+  nmatrix<double> TH,TL;
+
+  const IntegratorQ1Q2<2>* I = dynamic_cast<const IntegratorQ1Q2<2>*>(GetIntegrator());
+  assert(I);
+
+  const FemInterface& HighOrderFem(*GetFem());
+
+  for(int iq=0;iq<GetPatchMesh()->npatches();++iq)
+    {
+      Transformation  (TH,iq);
+      TransformationQ1(TL,iq);
+
+      HighOrderFem.ReInit(TH);
+      LowOrderFem .ReInit(TL);
+
+      I->MassMatrix(__E,HighOrderFem,LowOrderFem);
+      PatchDiscretization::LocalToGlobal(A,__E,iq,1.);
+    }
+}
 }

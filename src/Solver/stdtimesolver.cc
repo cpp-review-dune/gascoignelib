@@ -296,4 +296,20 @@ string StdTimeSolver::PrecondCGMass(GlobalVector& u, GlobalVector& f, const Time
     return "converged";
   }
 }
+
+/*-------------------------------------------------------*/
+
+void StdTimeSolver::SetMassMatrix(Gascoigne::MatrixInterface &MM, bool init)
+{
+  if(init)
+  {
+    SparseStructure SA;
+    GetDiscretization()->Structure(&SA);
+
+    MM.ReInit(&SA);
+    MM.zero();
+    GetDiscretization()->MassMatrix(MM);
+  }
+  GetMassMatrixPointer() = &MM;
+}
 }

@@ -186,6 +186,7 @@ void IntegratorQ1Q2<DIM>::BoundaryRhs(const BoundaryRightHandSide& RHS, LocalVec
         RHS(F.start(i),NN,x,n,col);
       }
     }
+  delete IF;
 }
 
 /*---------------------------------------------------*/
@@ -225,6 +226,7 @@ void IntegratorQ1Q2<DIM>::BoundaryForm(const BoundaryEquation& BE, LocalVector& 
         BE.Form(F.start(i),UH,NN,col);
       }
     }
+  delete IF;
 }
 
 /*---------------------------------------------------*/
@@ -252,6 +254,59 @@ void IntegratorQ1Q2<DIM>::DiracRhsPoint(LocalVector& b, const FemInterface& FemH
       FemH.init_test_functions(NN,1.,i);
       DRHS.operator()(j,b.start(i),NN,x);
     }
+  delete IF;
+}
+
+/*---------------------------------------------------*/
+
+template<int DIM>
+double IntegratorQ1Q2<DIM>::IntegratorQ1Q2::MassMatrix(EntryMatrix& E, const FemInterface& FemH, 
+    const FemInterface& FemL) const
+{
+  FemFunction NnnH, NnnL;
+
+  NnnH.resize(FemH.n());
+  NnnL.resize(FemL.n());
+  
+  E.SetDimensionDof(FemH.n(),FemL.n());
+  int ncomp=1;
+  E.SetDimensionComp(ncomp,ncomp);
+  E.resize();
+  E.zero();
+  
+  IntegrationFormulaInterface* IF;
+  if (DIM==2) IF = new PatchFormula2d<9,QuadGauss9>;
+  else        IF = new PatchFormula3d<27,HexGauss27>;
+
+  Vertex<DIM> x, xi;
+  double omega = 0.;
+  for (int k=0; k<IF->n(); k++)
+  {
+    IF->xi(xi,k);
+    FemH.point(xi);
+    FemL.point(xi);
+    double vol = FemL.J();
+    double weight  = IF->w(k) * vol;
+    omega += weight;
+    for (int i=0;i<FemH.n();i++)
+    {
+      FemH.init_test_functions(NnnH[i],1.,i);
+    }
+    for (int i=0;i<FemL.n();i++)
+    {
+      FemL.init_test_functions(NnnL[i],1.,i);
+    }
+    for (int i=0;i<FemH.n();i++)
+    {
+      for (int j=0;j<FemL.n();j++)
+      {
+        E.SetDofIndex(i,j);
+        E(0,0) += weight * NnnH[i].m() * NnnL[j].m();
+      }
+    }
+  }
+  delete IF;
+  return omega;
 }
 
 /*---------------------------------------------------*/

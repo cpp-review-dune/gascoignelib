@@ -30,8 +30,6 @@ protected:
   double _dt, _theta, _time;
   fixarray<2,double> _rhs;
 
-  const MatrixInterface* GetMassMatrix() const {return _MMP;}
-  MatrixInterface* GetMassMatrix() {return _MMP;}
   MatrixInterface*& GetMassMatrixPointer() {return _MMP;}
 
   const TimePattern& GetTimePattern() const {return _TP;}
@@ -61,6 +59,10 @@ public:
   void AssembleMatrix(const BasicGhostVector& u, double d);
   std::string GetName() const;
   void L2Projection(BasicGhostVector& u) const;
+  
+  void SetMassMatrix(MatrixInterface &MM, bool init=false);
+  const MatrixInterface* GetMassMatrix() const {return _MMP;}
+  MatrixInterface* GetMassMatrix() {return _MMP;}
 };
 }
 
