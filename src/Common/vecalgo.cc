@@ -3,14 +3,12 @@
 #include  <algorithm>
 #include  "giota.h"
 
-using namespace std;
-
 namespace Gascoigne
 {
 
 /*************************************************************/
 
-void transfer(int n, vector<int>& tr, const set<int>& del)
+void transfer(int n, std::vector<int>& tr, const std::set<int>& del)
 {
   tr.resize(n,-1);
 
@@ -23,7 +21,7 @@ void transfer(int n, vector<int>& tr, const set<int>& del)
 
 /*************************************************************/
 
-void transfer(int n, vector<int>& tr, vector<int>& del)
+void transfer(int n, std::vector<int>& tr, std::vector<int>& del)
 {
   tr.resize(n,-1);
   if (del.size()==0)

@@ -1,17 +1,15 @@
 #include  "set2vec.h"
 
-using namespace std;
-
 namespace Gascoigne
 {
 
 /*---------------------------------------------------*/
 
-void Set2Vec(vector<int>& v, const set<int>& h)
+void Set2Vec(std::vector<int>& v, const std::set<int>& h)
 {
   v.resize(h.size());
   int j = 0;
-  for (set<int>::const_iterator p=h.begin();
+  for (std::set<int>::const_iterator p=h.begin();
        p!=h.end(); p++)
     {
       v[j++] = *p;
@@ -20,7 +18,7 @@ void Set2Vec(vector<int>& v, const set<int>& h)
 
 /*---------------------------------------------------*/
 
-void Vec2Set(set<int>& h, const vector<int>& v)
+void Vec2Set(std::set<int>& h, const std::vector<int>& v)
 {
   h.clear();
   for (int i=0; i<v.size(); i++)
