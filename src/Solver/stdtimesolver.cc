@@ -29,20 +29,11 @@ string StdTimeSolver::GetName() const
   
 void StdTimeSolver::SetTimeData(double d, double th, double ti) 
 {
-  std::cout << "* SetTimeData " << dt << " " << theta << " " << time << std::endl;
-  std::cout << "SetTimeData " << d << " " << th << " " << ti << std::endl;
-
   dt    = d;
-  std::cout << "SetTimeData dt OK" << d << " " << th << " " << ti << std::endl;
   theta = th;
-  std::cout << "SetTimeData theta OK" << d << " " << th << " " << ti << std::endl;
   time  = ti;
 
-  std::cout << "SetTimeData time OK" << dt << " " << theta << " " << time << std::endl;
-
   GetProblemDescriptor()->SetTime(time,dt);
-
-  std::cout << "SetTimeData OK" << std::endl;
 }
 
 /*-------------------------------------------------------------*/
