@@ -11,7 +11,6 @@ SET(MESH_SRC
   edge.cc
   edgemanager.cc
   facemanager.cc
-  flacherkreis.cc
   gascoignemesh2d.cc
   gascoignemesh3d.cc
   gascoignemesh.cc
