@@ -70,6 +70,18 @@ void Q12d::StrongDirichletVector(GlobalVector& u, const DirichletData& BF, int c
   nvector<double> ff(u.ncomp(),0.);
   const IntVector& bv = GMP->VertexOnBoundary(col);
 
+  for(int ii=0;ii<comp.size();ii++)
+    {
+      int c = comp[ii];
+      if(c<0) {
+	cerr << "negative component: " << c << endl;
+	assert(0);
+      } else if(c>u.ncomp()){
+	cerr << "unknown component: " << c << endl;
+	assert(0);
+      }
+    }
+
   for(int i=0;i<bv.size();i++)
     {
       int index = bv[i];

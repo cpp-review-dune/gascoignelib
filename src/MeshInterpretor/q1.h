@@ -34,7 +34,9 @@ public:
   Q1();
   ~Q1();
 
-  int n() const;
+  int n() const {
+    GetMesh()->nnodes();
+  }
   //  const HNStructureQ1* GetHNStructure() const { return HN;}
 
   void ReInit   (const MeshInterface* MP);

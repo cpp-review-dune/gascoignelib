@@ -20,13 +20,6 @@ Q1::~Q1()
 
 /* ----------------------------------------- */
 
-int Q1::n() const
-{
-  GetMesh()->nnodes();
-}
-
-/* ----------------------------------------- */
-
 void Q1::ReInit(const MeshInterface* MP)
 {
   CellMeshInterpretor::ReInit(MP);
@@ -72,12 +65,25 @@ void Q1::StrongDirichletVectorZero(GlobalVector& u, int col, const vector<int>& 
   const GascoigneMesh* GMP = dynamic_cast<const GascoigneMesh*>(GetMesh());
   assert(GMP);
   const IntVector& bv = GMP->VertexOnBoundary(col);
+
+  for(int ii=0;ii<comp.size();ii++)
+    {
+      int c = comp[ii];
+      if(c<0) {
+	cerr << "negative component: " << c << endl;
+	assert(0);
+      } else if(c>u.ncomp()){
+	cerr << "unknown component: " << c << endl;
+	assert(0);
+      }
+    }
+
   for(int i=0;i<bv.size();i++)
     {
       int index = bv[i];
-      for(int iii=0;iii<comp.size();iii++)
+      for(int ii=0;ii<comp.size();ii++)
 	{
-	  u( index,comp[iii] ) = 0.;
+	  u( index,comp[ii] ) = 0.;
 	}
     }  
 }
