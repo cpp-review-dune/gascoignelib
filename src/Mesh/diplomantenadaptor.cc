@@ -10,7 +10,7 @@ using namespace std;
 
 namespace Gascoigne
 {
-DiplomantenAdaptor::DiplomantenAdaptor(AdaptorData& _info, const DoubleVector& _eta) :
+DiplomandenAdaptor::DiplomandenAdaptor(AdaptorData& _info, const DoubleVector& _eta) :
   info(_info), eta(_eta)
 {
   if (info.dim()==2) ppp = 3;
@@ -22,7 +22,7 @@ DiplomantenAdaptor::DiplomantenAdaptor(AdaptorData& _info, const DoubleVector& _
 
 /*-----------------------------------------*/
 
-void DiplomantenAdaptor::analyse() const
+void DiplomandenAdaptor::analyse() const
 {
   double s = accumulate(eta.begin(),eta.end(),0.);
   //double s = 1.;
@@ -53,7 +53,7 @@ void DiplomantenAdaptor::analyse() const
 
 /*-----------------------------------------*/
 
-void DiplomantenAdaptor::MalteRefine(IntVector& ref) const
+void DiplomandenAdaptor::MalteRefine(IntVector& ref) const
 {
   if (eta.size()==0) return;
 
@@ -102,7 +102,7 @@ void DiplomantenAdaptor::MalteRefine(IntVector& ref) const
 
 /*-----------------------------------------*/
 
-void DiplomantenAdaptor::refine(IntVector& ref)
+void DiplomandenAdaptor::refine(IntVector& ref)
 {
   int n = eta.size();
 

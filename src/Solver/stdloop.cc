@@ -233,7 +233,7 @@ void StdLoop::AdaptMesh(const DoubleVector& eta,std::string refine_or_coarsen_st
 
       AdaptorData info;
       info.rfactor() = 1.; 
-      DiplomantenAdaptor A(info,eta);
+      DiplomandenAdaptor A(info,eta);
       A.refine(refnodes);
       if(refine_or_coarsen_step=="refine")  GetMeshAgent()->refine_nodes(refnodes,coarsenodes);
     }
@@ -296,7 +296,7 @@ void StdLoop::AdaptMesh(const DoubleVector& eta)
 
       AdaptorData info;
       info.rfactor() = 1.; 
-      DiplomantenAdaptor A(info,eta);
+      DiplomandenAdaptor A(info,eta);
       A.refine(refnodes);
       GetMeshAgent()->refine_nodes(refnodes,coarsenodes);
     }

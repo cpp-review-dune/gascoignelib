@@ -1,5 +1,5 @@
-#ifndef  __DiplomantenAdaptor_h
-#define  __DiplomantenAdaptor_h
+#ifndef  __DiplomandenAdaptor_h
+#define  __DiplomandenAdaptor_h
 
 #include "gascoigne.h"
 #include "adaptordata.h"
@@ -28,7 +28,7 @@
 
 namespace Gascoigne
 {
-class DiplomantenAdaptor
+class DiplomandenAdaptor
 {
 protected:
 
@@ -40,7 +40,7 @@ protected:
 
 public:
 
-  DiplomantenAdaptor(AdaptorData&, const DoubleVector& eta);
+  DiplomandenAdaptor(AdaptorData&, const DoubleVector& eta);
   void refine(IntVector& ref);
   void MalteRefine(IntVector& ref) const;
 };
