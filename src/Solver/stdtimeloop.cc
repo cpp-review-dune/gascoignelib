@@ -54,6 +54,8 @@ void StdTimeLoop::adaptive_run(const ProblemDescriptorInterface* PD)
   MultiLevelGhostVector u("u"), f("f");
   CompVector<double> ualt;
   
+  u.SetMultiLevelSolver(GetMultiLevelSolver());
+  f.SetMultiLevelSolver(GetMultiLevelSolver());
   GetMultiLevelSolver()->RegisterVector(u);
   GetMultiLevelSolver()->RegisterVector(f);
   
