@@ -11,12 +11,12 @@
 ////
 /////////////////////////////////////////////
 
-#include  "cellmeshinterpretor.h"
+#include  "celldiscretization.h"
 #include  "hnstructureinterface.h"
 
 namespace Gascoigne
 {
-class Q1 : public CellMeshInterpretor
+class Q1 : public CellDiscretization
 {
 protected:
 

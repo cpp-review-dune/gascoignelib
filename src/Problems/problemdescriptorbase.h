@@ -36,8 +36,8 @@ class ProblemDescriptorBase : public ProblemDescriptorInterface
   BoundaryRightHandSide*& GetBoundaryRightHandSidePointer() { return BRHS;}
   BoundaryEquation*& GetBoundaryEquationPointer() { return BE; }
 
-  BoundaryManager* GetBoundaryManager () { return BM;}
-
+  BoundaryManager* GetBoundaryManager() { return BM;}
+  
  public:
 
   ProblemDescriptorBase() : EQ(NULL),BM(NULL),ES(NULL),IC(NULL),RHS(NULL),DD(NULL),BRHS(NULL),BE(NULL),_paramfile(NULL) {}
@@ -65,11 +65,11 @@ class ProblemDescriptorBase : public ProblemDescriptorInterface
   }
   
   void BasicInit(const ParamFile* pf) {
-    if(GetParamFile()==NULL)
+    if(!GetParamFile())
       {
 	GetParamFilePointer() = pf;
       }
-    if(GetBoundaryManagerPointer()==NULL)
+    if(!GetBoundaryManagerPointer())
       {
 	GetBoundaryManagerPointer() = new BoundaryManager();
       }

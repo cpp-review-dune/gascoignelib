@@ -9,7 +9,6 @@
 #include  "multigridmeshinterface.h"
 #include  "pointfunctional.h"
 #include  "residualfunctional.h"
-#include  "meshinterpretorinterface.h"
 #include  "stopwatch.h"
 #include  "hierarchicalmesh.h"
 #include  "pressurefilter.h"
@@ -49,9 +48,9 @@ class StdSolver : public virtual SolverInterface
  protected:
 
 
-  // 3. MeshInterpretor
+  // 3. Discretization
 
-  MeshInterpretorInterface*    _ZP;
+  DiscretizationInterface*    _ZP;
 
   // 4. Vektoren
 
@@ -99,13 +98,13 @@ class StdSolver : public virtual SolverInterface
 
   // 1. Initialisierung 
 
-  virtual MeshInterpretorInterface* NewMeshInterpretor(int dimension, const std::string& discname);
+  virtual DiscretizationInterface* NewDiscretization(int dimension, const std::string& discname);
 
   virtual MatrixInterface* NewMatrix(int ncomp, const std::string& matrixtype); 
   virtual IluInterface* NewIlu(int ncomp, const std::string& matrixtype); 
 
   virtual const ParamFile* GetParamfile() const { return _paramfile;}
-  virtual MeshInterpretorInterface*& GetMeshInterpretorPointer() { return _ZP;}
+  virtual DiscretizationInterface*& GetDiscretizationPointer() { return _ZP;}
   //
   /// new interface-function for indivisual size of vectors
   //
@@ -128,7 +127,7 @@ class StdSolver : public virtual SolverInterface
   virtual void vmulteq(GlobalVector& y, const GlobalVector& x, double d) const;
 
   virtual DoubleVector IntegrateSolutionVector(const GlobalVector& u) const;
-  virtual void _check_consistency(const Equation* EQ, const MeshInterpretorInterface* MP) const;
+  virtual void _check_consistency(const Equation* EQ, const DiscretizationInterface* MP) const;
   virtual void DirichletMatrixOnlyRow() const;
   virtual void Visu(const std::string& name, const GlobalVector& u, int i) const;
 
@@ -154,10 +153,10 @@ class StdSolver : public virtual SolverInterface
 
   const MeshInterface* GetMesh() const {return _MP;}
 
-  // 0.2 MeshInterpretor
+  // 0.2 Discretization
 
-  const MeshInterpretorInterface* GetMeshInterpretor() const {assert(_ZP); return _ZP;}
-  MeshInterpretorInterface* GetMeshInterpretor() {assert(_ZP); return _ZP;}
+  const DiscretizationInterface* GetDiscretization() const {assert(_ZP); return _ZP;}
+  DiscretizationInterface* GetDiscretization() {assert(_ZP); return _ZP;}
 
   void ReInitVector();
   void ReInitMatrix();
@@ -180,22 +179,22 @@ class StdSolver : public virtual SolverInterface
   bool DirectSolver() const {return _directsolver;}
 
   void AddNodeVector(const std::string& name, const GlobalVector* q) {
-    GetMeshInterpretor()->AddNodeVector(name,q);
+    GetDiscretization()->AddNodeVector(name,q);
   }
   void AddCellVector(const std::string& name, const GlobalCellVector* q) {
-    GetMeshInterpretor()->AddCellVector(name,q);
+    GetDiscretization()->AddCellVector(name,q);
   }
   void AddParameterVector(const std::string& name, const GlobalParameterVector* q) {
-    GetMeshInterpretor()->AddParameterVector(name,q);
+    GetDiscretization()->AddParameterVector(name,q);
   }
   void DeleteNodeVector(const std::string& name)  {
-    GetMeshInterpretor()->DeleteNodeVector(name);
+    GetDiscretization()->DeleteNodeVector(name);
   }
   void DeleteCellVector(const std::string& name) {
-    GetMeshInterpretor()->DeleteCellVector(name);
+    GetDiscretization()->DeleteCellVector(name);
   }
   void DeleteParameterVector(const std::string& name) {
-    GetMeshInterpretor()->DeleteParameterVector(name);
+    GetDiscretization()->DeleteParameterVector(name);
   }
 
   void OutputSettings() const;

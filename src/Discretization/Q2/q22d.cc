@@ -138,14 +138,14 @@ void Q22d::VertexTransformation(const Vertex2d& p0, Vertex2d& p, int iq) const
 void Q22d::BasicInit(const ParamFile* paramfile)
 {
   if (GetIntegrator()==NULL)
-    PatchMeshInterpretor::GetIntegratorPointer() =  new GalerkinIntegratorQ2<2>;
+    PatchDiscretization::GetIntegratorPointer() =  new GalerkinIntegratorQ2<2>;
 
-  assert(PatchMeshInterpretor::GetFem()==NULL);
+  assert(PatchDiscretization::GetFem()==NULL);
   typedef Transformation2d<BaseQ22d>           TransQ2;
   typedef FiniteElement<2,1,TransQ2,BaseQ22d>  FiniteElement;
 
-  PatchMeshInterpretor::GetFemPointer() =  new FiniteElement;
-  PatchMeshInterpretor::BasicInit(paramfile);
+  PatchDiscretization::GetFemPointer() =  new FiniteElement;
+  PatchDiscretization::BasicInit(paramfile);
 }
 
 /* ----------------------------------------- */

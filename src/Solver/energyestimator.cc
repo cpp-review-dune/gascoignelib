@@ -11,7 +11,7 @@ namespace Gascoigne{
 EnergyEstimator::EnergyEstimator(SolverInterface& SR) : S(SR) 
 { 
   primalproblem  = S.GetProblemDescriptor();
-  discretization = S.GetMeshInterpretor();
+  discretization = S.GetDiscretization();
 }
 
 /*--------------------------------------------------------*/

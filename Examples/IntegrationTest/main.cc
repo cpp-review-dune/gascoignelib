@@ -19,20 +19,20 @@ public:
   double Integral(const GlobalVector& u) const
     {
       HNAverage(u);
-      assert(GetMeshInterpretor()->HNZeroCheck(u)==0);
+      assert(GetDiscretization()->HNZeroCheck(u)==0);
       
       nvector<double> dst = _PF.IntegrateVector(u);
       HNZero(u);
       return dst[0];
     }
-  MeshInterpretorInterface* NewMeshInterpretor(int dimension, const std::string& discname)
+  DiscretizationInterface* NewDiscretization(int dimension, const std::string& discname)
     {
       return new Q12d;
     }
   void NewMesh(int l, const MeshInterface* MP)
     {
       StdSolver::NewMesh(l,MP);
-      GetMeshInterpretor()->InitFilter(_PF);
+      GetDiscretization()->InitFilter(_PF);
     }
   void BasicInit(int level, const ParamFile* paramfile, const MeshInterface* MP)
     {

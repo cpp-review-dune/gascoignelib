@@ -26,56 +26,52 @@ namespace Gascoigne
 
 class BoundaryManager
 {
- public:
-
-  typedef  std::map<int,IntVector>::const_iterator  const_iterator;
-
  protected:
 
-  std::set<int>                 coldir, colneu, colrob;
-  std::map<int,IntVector>       dirvec;
+  IntSet                   _colsDirichlet, _colsRightHandSide, _colsEquation;
+  std::map<int,IntVector>  _compsDirichlet;
 
  public:
 
   BoundaryManager() {}
   virtual ~BoundaryManager() {}
 
-  BoundaryManager(const ParamFile* pf);
   void BasicInit(const ParamFile* pf);
 
   virtual std::string GetName() const {return "Std";}
 
-  void AddDirichlet(int col, int c)    
+  void AddDirichletData(int col, int c)    
     {
-      coldir.insert(col);
-      dirvec[col].push_back(c);
+      _colsDirichlet.insert(col);
+      _compsDirichlet[col].push_back(c);
     }
-  void AddNeumann(int col)    
+  void AddBoundaryRightHandSide(int col)    
     {
-      colneu.insert(col);
+      _colsRightHandSide.insert(col);
     }
-  void AddRobin(int col)    
+  void AddBoundaryEquation(int col)    
     {
-      colrob.insert(col);
+      _colsEquation.insert(col);
     }
 
   std::ostream& print(std::ostream& s) const;
 
-  virtual const IntSet&    GetDirichletColors    (     ) const { return coldir;}
-  virtual const IntVector& GetDirichletComponents(int c) const 
+  virtual const IntSet& GetBoundaryRightHandSideColors() const { return _colsRightHandSide; }
+  virtual const IntSet& GetBoundaryEquationColors     () const { return _colsEquation; }
+  virtual const IntSet& GetDirichletDataColors        () const { return _colsDirichlet; }
+
+  virtual const IntVector& GetDirichletDataComponents(int c) const 
     { 
-      std::map<int,IntVector>::const_iterator p = dirvec.find(c);
-      if(p==dirvec.end())
+      std::map<int,IntVector>::const_iterator p = _compsDirichlet.find(c);
+      if(p==_compsDirichlet.end())
 	{
-	  std::cerr << "BoundaryManager::Components()\n";
-	  std::cerr << "no such color " << c <<std::endl;
-	  std::cerr << "dirvec = " << dirvec << std::endl;
+	  std::cerr << "BoundaryManager::GetDirichletComponents()" << std::endl;
+	  std::cerr << "No such color " << c <<std::endl;
+	  std::cerr << "components = " << _compsDirichlet << std::endl;
 	  abort();
 	}
       return p->second;
     }
-  virtual const IntSet&    GetNeumannColors      (     ) const { return colneu;}
-  virtual const IntSet&    GetRobinColors        (     ) const { return colrob;}
 };
 }
 

@@ -1,4 +1,4 @@
-#include  "cellmeshinterpretor.h"
+#include  "celldiscretization.h"
 #include  "visudatacompvector.h"
 #include  "sparsestructure.h"
 #include  "pressurefilter.h"
@@ -9,7 +9,7 @@ using namespace std;
 
 namespace Gascoigne
 {
-void CellMeshInterpretor::Structure(SparseStructureInterface* SI) const
+void CellDiscretization::Structure(SparseStructureInterface* SI) const
 {
   SparseStructure* S = dynamic_cast<SparseStructure*>(SI);
   assert(S);
@@ -25,7 +25,7 @@ void CellMeshInterpretor::Structure(SparseStructureInterface* SI) const
 
 /* ----------------------------------------- */
 
-void CellMeshInterpretor::Transformation(FemInterface::Matrix& T, int iq) const
+void CellDiscretization::Transformation(FemInterface::Matrix& T, int iq) const
 {
   int dim = GetMesh()->dimension();
   int ne = GetMesh()->nodes_per_cell(iq);
@@ -59,7 +59,7 @@ void CellMeshInterpretor::Transformation(FemInterface::Matrix& T, int iq) const
 /* ----------------------------------------- */
 /* ----------------------------------------- */
 
-void CellMeshInterpretor::Form(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const
+void CellDiscretization::Form(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const
 {
   nmatrix<double> T;
   
@@ -80,7 +80,7 @@ void CellMeshInterpretor::Form(GlobalVector& f, const GlobalVector& u, const Equ
 
 /* ----------------------------------------- */
 
-void CellMeshInterpretor::BoundaryForm(GlobalVector& f, const GlobalVector& u, const IntSet& Colors, const BoundaryEquation& BE, double d) const
+void CellDiscretization::BoundaryForm(GlobalVector& f, const GlobalVector& u, const IntSet& Colors, const BoundaryEquation& BE, double d) const
 {
   nmatrix<double> T;
   
@@ -110,7 +110,7 @@ void CellMeshInterpretor::BoundaryForm(GlobalVector& f, const GlobalVector& u, c
 
 /* ----------------------------------------- */
 
-void CellMeshInterpretor::Matrix(MatrixInterface& A, const GlobalVector& u, const Equation& EQ, double d) const
+void CellDiscretization::Matrix(MatrixInterface& A, const GlobalVector& u, const Equation& EQ, double d) const
 {
   nmatrix<double> T;
   
@@ -130,7 +130,7 @@ void CellMeshInterpretor::Matrix(MatrixInterface& A, const GlobalVector& u, cons
 
 /* ----------------------------------------- */
 
-void CellMeshInterpretor::BoundaryMatrix(MatrixInterface& A, const GlobalVector& u, const IntSet& Colors, const BoundaryEquation& BE, double d) const
+void CellDiscretization::BoundaryMatrix(MatrixInterface& A, const GlobalVector& u, const IntSet& Colors, const BoundaryEquation& BE, double d) const
 {
   nmatrix<double> T;
   
@@ -159,7 +159,7 @@ void CellMeshInterpretor::BoundaryMatrix(MatrixInterface& A, const GlobalVector&
 
 /* ----------------------------------------- */
 
-void CellMeshInterpretor::MassMatrix(MatrixInterface& A) const
+void CellDiscretization::MassMatrix(MatrixInterface& A) const
 {
   nmatrix<double> T;
   for(int iq=0;iq<GetMesh()->ncells();++iq)
@@ -168,13 +168,13 @@ void CellMeshInterpretor::MassMatrix(MatrixInterface& A) const
       GetFem()->ReInit(T);
       GetIntegrator()->MassMatrix(__E,*GetFem());
        LocalToGlobal(A,__E,iq,1.);
-       //      CellMeshInterpretor::LocalToGlobal(A,__E,iq,1.);
+       //      CellDiscretization::LocalToGlobal(A,__E,iq,1.);
     }
 }
 
 /* ----------------------------------------- */
 
-void CellMeshInterpretor::ComputeError(const GlobalVector& u, LocalVector& err, const ExactSolution* ES) const
+void CellDiscretization::ComputeError(const GlobalVector& u, LocalVector& err, const ExactSolution* ES) const
 {
 //   const IntegrationFormulaInterface& IF = ErrorFormula();
 
@@ -212,7 +212,7 @@ void CellMeshInterpretor::ComputeError(const GlobalVector& u, LocalVector& err, 
 
 /* ----------------------------------------- */
 
-void CellMeshInterpretor::Rhs(GlobalVector& f, const DomainRightHandSide& RHS, double s) const
+void CellDiscretization::Rhs(GlobalVector& f, const DomainRightHandSide& RHS, double s) const
 {
   nmatrix<double> T;
   
@@ -232,7 +232,7 @@ void CellMeshInterpretor::Rhs(GlobalVector& f, const DomainRightHandSide& RHS, d
 
 /* ----------------------------------------- */
 
-void CellMeshInterpretor::BoundaryRhs(GlobalVector& f, const IntSet& Colors, const BoundaryRightHandSide& NRHS, double s) const
+void CellDiscretization::BoundaryRhs(GlobalVector& f, const IntSet& Colors, const BoundaryRightHandSide& NRHS, double s) const
 {
   nmatrix<double> T;
   
@@ -261,7 +261,7 @@ void CellMeshInterpretor::BoundaryRhs(GlobalVector& f, const IntSet& Colors, con
 
 /* ----------------------------------------- */
 
-void CellMeshInterpretor::InitFilter(DoubleVector& F) const
+void CellDiscretization::InitFilter(DoubleVector& F) const
 {
   PressureFilter* PF = static_cast<PressureFilter*>(&F);
   assert(PF);
@@ -295,7 +295,7 @@ void CellMeshInterpretor::InitFilter(DoubleVector& F) const
 
 /* ----------------------------------------- */
 
-void CellMeshInterpretor::DiracRhs(GlobalVector& f, const DiracRightHandSide& DRHS, double s) const
+void CellDiscretization::DiracRhs(GlobalVector& f, const DiracRightHandSide& DRHS, double s) const
 {
   int dim = GetMesh()->dimension();
   vector<int> comps = DRHS.GetComps();
@@ -331,7 +331,7 @@ void CellMeshInterpretor::DiracRhs(GlobalVector& f, const DiracRightHandSide& DR
 
 /* ----------------------------------------- */
 
-void CellMeshInterpretor::DiracRhsPoint(GlobalVector& f,const DiracRightHandSide& DRHS,const Vertex2d& p0,int i,double s) const
+void CellDiscretization::DiracRhsPoint(GlobalVector& f,const DiracRightHandSide& DRHS,const Vertex2d& p0,int i,double s) const
 {
   __F.ReInit(f.ncomp(),GetFem()->n());
 
@@ -340,7 +340,7 @@ void CellMeshInterpretor::DiracRhsPoint(GlobalVector& f,const DiracRightHandSide
   int iq = GetCellNumber(p0,Tranfo_p0);
   if (iq==-1)
     {
-      cerr << "CellMeshInterpretor::DiracRhsPoint point not found\n";
+      cerr << "CellDiscretization::DiracRhsPoint point not found\n";
       abort();
     }
   
@@ -358,7 +358,7 @@ void CellMeshInterpretor::DiracRhsPoint(GlobalVector& f,const DiracRightHandSide
 
 /* ----------------------------------------- */
 
-void CellMeshInterpretor::DiracRhsPoint(GlobalVector& f,const DiracRightHandSide& DRHS,const Vertex3d& p0,int i,double s) const
+void CellDiscretization::DiracRhsPoint(GlobalVector& f,const DiracRightHandSide& DRHS,const Vertex3d& p0,int i,double s) const
 {
   __F.ReInit(f.ncomp(),GetFem()->n());
 
@@ -367,7 +367,7 @@ void CellMeshInterpretor::DiracRhsPoint(GlobalVector& f,const DiracRightHandSide
   int iq = GetCellNumber(p0,Tranfo_p0);
   if (iq==-1)
     {
-      cerr << "CellMeshInterpretor::DiracRhsPoint point not found\n";
+      cerr << "CellDiscretization::DiracRhsPoint point not found\n";
       abort();
     }
   
@@ -385,7 +385,7 @@ void CellMeshInterpretor::DiracRhsPoint(GlobalVector& f,const DiracRightHandSide
 
 /*-----------------------------------------*/
 
-double CellMeshInterpretor::ComputeBoundaryFunctional(const GlobalVector& u, const BoundaryFunctional& BF) const 
+double CellDiscretization::ComputeBoundaryFunctional(const GlobalVector& u, const BoundaryFunctional& BF) const 
 {
   assert(0);
   return 0.;
@@ -393,7 +393,7 @@ double CellMeshInterpretor::ComputeBoundaryFunctional(const GlobalVector& u, con
 
 /* ----------------------------------------- */
 
-double CellMeshInterpretor::ComputeDomainFunctional(const GlobalVector& u, const DomainFunctional& F) const 
+double CellDiscretization::ComputeDomainFunctional(const GlobalVector& u, const DomainFunctional& F) const 
 {
   GlobalToGlobalData();
   F.SetParameterData(__qq);
@@ -413,7 +413,7 @@ double CellMeshInterpretor::ComputeDomainFunctional(const GlobalVector& u, const
 
 /* ----------------------------------------- */
 
-double CellMeshInterpretor::ComputePointFunctional(const GlobalVector& u, const PointFunctional& FP) const
+double CellDiscretization::ComputePointFunctional(const GlobalVector& u, const PointFunctional& FP) const
 {
   int dim = GetMesh()->dimension();
   vector<int> comps = FP.GetComps();
@@ -447,14 +447,14 @@ double CellMeshInterpretor::ComputePointFunctional(const GlobalVector& u, const 
 }
 /* ----------------------------------------- */
 
-double CellMeshInterpretor::ComputePointValue(const GlobalVector& u, const Vertex2d& p0,int comp) const
+double CellDiscretization::ComputePointValue(const GlobalVector& u, const Vertex2d& p0,int comp) const
 {
   Vertex2d Tranfo_p0;
 
   int iq = GetCellNumber(p0,Tranfo_p0);
   if (iq==-1)
     {
-      cerr << "CellMeshInterpretor::ComputePointValue point not found\n";
+      cerr << "CellDiscretization::ComputePointValue point not found\n";
       abort();
     }
 
@@ -469,14 +469,14 @@ double CellMeshInterpretor::ComputePointValue(const GlobalVector& u, const Verte
 
 /* ----------------------------------------- */
 
-double CellMeshInterpretor::ComputePointValue(const GlobalVector& u, const Vertex3d& p0,int comp) const
+double CellDiscretization::ComputePointValue(const GlobalVector& u, const Vertex3d& p0,int comp) const
 {
   Vertex3d Tranfo_p0;
 
   int iq = GetCellNumber(p0,Tranfo_p0);
   if (iq==-1)
     {
-      cerr << "CellMeshInterpretor::ComputePointValue point not found\n";
+      cerr << "CellDiscretization::ComputePointValue point not found\n";
       abort();
     }
 
@@ -491,7 +491,7 @@ double CellMeshInterpretor::ComputePointValue(const GlobalVector& u, const Verte
 
 /* ----------------------------------------- */
 
-void CellMeshInterpretor::Transformation_HM(FemInterface::Matrix& T, const HierarchicalMesh* HM, int iq) const
+void CellDiscretization::Transformation_HM(FemInterface::Matrix& T, const HierarchicalMesh* HM, int iq) const
 {
   int dim = GetMesh()->dimension();
   int ne = GetMesh()->nodes_per_cell(iq);
@@ -524,7 +524,7 @@ void CellMeshInterpretor::Transformation_HM(FemInterface::Matrix& T, const Hiera
 
 /* ----------------------------------------- */
 
-void CellMeshInterpretor::GlobalToLocal_HM(LocalVector& U, const GlobalVector& u, const HierarchicalMesh* HM, int iq) const
+void CellDiscretization::GlobalToLocal_HM(LocalVector& U, const GlobalVector& u, const HierarchicalMesh* HM, int iq) const
 {
   IntVector indices = HM->GetVertices(iq);
   swapIndices(indices);
@@ -539,7 +539,7 @@ void CellMeshInterpretor::GlobalToLocal_HM(LocalVector& U, const GlobalVector& u
 
 /* ----------------------------------------- */
 
-void CellMeshInterpretor::swapIndices(IntVector& indices) const
+void CellDiscretization::swapIndices(IntVector& indices) const
 {
   assert(indices.size()>=4);
 

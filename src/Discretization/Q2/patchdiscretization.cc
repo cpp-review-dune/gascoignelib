@@ -1,4 +1,4 @@
-#include  "patchmeshinterpretor.h"
+#include  "patchdiscretization.h"
 #include  <fstream>
 #include  "sparsestructure.h"
 #include  "pressurefilter.h"
@@ -9,7 +9,7 @@ using namespace std;
 
 namespace Gascoigne
 {
-void PatchMeshInterpretor::Structure(SparseStructureInterface* SI) const
+void PatchDiscretization::Structure(SparseStructureInterface* SI) const
 {
   SparseStructure* S = dynamic_cast<SparseStructure*>(SI);
   assert(S);
@@ -25,7 +25,7 @@ void PatchMeshInterpretor::Structure(SparseStructureInterface* SI) const
 
 /* ----------------------------------------- */
 
-void PatchMeshInterpretor::Transformation(FemInterface::Matrix& T, int iq) const
+void PatchDiscretization::Transformation(FemInterface::Matrix& T, int iq) const
 {
   int dim = GetPatchMesh()->dimension();
   int ne = GetPatchMesh()->nodes_per_patch();
@@ -57,7 +57,7 @@ void PatchMeshInterpretor::Transformation(FemInterface::Matrix& T, int iq) const
 
 /* ----------------------------------------- */
 
-void PatchMeshInterpretor::Form(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const
+void PatchDiscretization::Form(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const
 {
   nmatrix<double> T;
 
@@ -77,7 +77,7 @@ void PatchMeshInterpretor::Form(GlobalVector& f, const GlobalVector& u, const Eq
 
 /* ----------------------------------------- */
 
-void PatchMeshInterpretor::Matrix(MatrixInterface& A, const GlobalVector& u, const Equation& EQ, double d) const
+void PatchDiscretization::Matrix(MatrixInterface& A, const GlobalVector& u, const Equation& EQ, double d) const
 {
   nmatrix<double> T;
 
@@ -100,7 +100,7 @@ void PatchMeshInterpretor::Matrix(MatrixInterface& A, const GlobalVector& u, con
 
 /* ----------------------------------------- */
 
-void PatchMeshInterpretor::MassMatrix(MatrixInterface& A) const
+void PatchDiscretization::MassMatrix(MatrixInterface& A) const
 {
   nmatrix<double> T;
   for(int iq=0;iq<GetPatchMesh()->npatches();++iq)
@@ -114,7 +114,7 @@ void PatchMeshInterpretor::MassMatrix(MatrixInterface& A) const
 
 /* ----------------------------------------- */
 
-void PatchMeshInterpretor::ComputeError(const GlobalVector& u, LocalVector& err, const ExactSolution* ES) const
+void PatchDiscretization::ComputeError(const GlobalVector& u, LocalVector& err, const ExactSolution* ES) const
 {
 //   const IntegrationFormulaInterface& IF = ErrorFormula();
 
@@ -148,7 +148,7 @@ void PatchMeshInterpretor::ComputeError(const GlobalVector& u, LocalVector& err,
 
 /* ----------------------------------------- */
 
-void PatchMeshInterpretor::Rhs(GlobalVector& f, const DomainRightHandSide& RHS, double s) const
+void PatchDiscretization::Rhs(GlobalVector& f, const DomainRightHandSide& RHS, double s) const
 {
   nmatrix<double> T;
   for(int iq=0;iq<GetPatchMesh()->npatches();++iq)
@@ -164,7 +164,7 @@ void PatchMeshInterpretor::Rhs(GlobalVector& f, const DomainRightHandSide& RHS, 
 
 /* ----------------------------------------- */
 
-void PatchMeshInterpretor::BoundaryRhs(GlobalVector& f, const IntSet& Colors,  const BoundaryRightHandSide& NRHS, double s) const
+void PatchDiscretization::BoundaryRhs(GlobalVector& f, const IntSet& Colors,  const BoundaryRightHandSide& NRHS, double s) const
 {
   nmatrix<double> T;
   for(IntSet::const_iterator p=Colors.begin();p!=Colors.end();p++)
@@ -189,14 +189,14 @@ void PatchMeshInterpretor::BoundaryRhs(GlobalVector& f, const IntSet& Colors,  c
 
 /* ----------------------------------------- */
 
-double PatchMeshInterpretor::compute_element_mean_matrix(int iq, EntryMatrix& E) const
+double PatchDiscretization::compute_element_mean_matrix(int iq, EntryMatrix& E) const
 {
   assert(0);
 }
 
 /* ----------------------------------------- */
 
-void PatchMeshInterpretor::InitFilter(nvector<double>& F) const
+void PatchDiscretization::InitFilter(nvector<double>& F) const
 {
   PressureFilter* PF = static_cast<PressureFilter*>(&F);
   assert(PF);
@@ -232,7 +232,7 @@ void PatchMeshInterpretor::InitFilter(nvector<double>& F) const
 
 /* ----------------------------------------- */
 
-void PatchMeshInterpretor::DiracRhs(GlobalVector& f, const DiracRightHandSide& DRHS, double s) const
+void PatchDiscretization::DiracRhs(GlobalVector& f, const DiracRightHandSide& DRHS, double s) const
 {
   int dim = GetMesh()->dimension();
   vector<int> comps = DRHS.GetComps();
@@ -268,7 +268,7 @@ void PatchMeshInterpretor::DiracRhs(GlobalVector& f, const DiracRightHandSide& D
 
 /* ----------------------------------------- */
 
-void PatchMeshInterpretor::DiracRhsPoint(GlobalVector& f,const DiracRightHandSide& DRHS,const Vertex2d& p0,int i,double s) const
+void PatchDiscretization::DiracRhsPoint(GlobalVector& f,const DiracRightHandSide& DRHS,const Vertex2d& p0,int i,double s) const
 {
   __F.ReInit(f.ncomp(),GetFem()->n());
 
@@ -277,7 +277,7 @@ void PatchMeshInterpretor::DiracRhsPoint(GlobalVector& f,const DiracRightHandSid
   int iq = GetPatchNumber(p0,Tranfo_p0);
   if (iq==-1)
     {
-      cerr << "PatchMeshInterpretor::DiracRhsPoint point not found\n";
+      cerr << "PatchDiscretization::DiracRhsPoint point not found\n";
       abort();
     }
 
@@ -295,7 +295,7 @@ void PatchMeshInterpretor::DiracRhsPoint(GlobalVector& f,const DiracRightHandSid
 
 /* ----------------------------------------- */
 
-void PatchMeshInterpretor::DiracRhsPoint(GlobalVector& f,const DiracRightHandSide& DRHS,const Vertex3d& p0,int i,double s) const
+void PatchDiscretization::DiracRhsPoint(GlobalVector& f,const DiracRightHandSide& DRHS,const Vertex3d& p0,int i,double s) const
 {
   __F.ReInit(f.ncomp(),GetFem()->n());
 
@@ -304,7 +304,7 @@ void PatchMeshInterpretor::DiracRhsPoint(GlobalVector& f,const DiracRightHandSid
   int iq = GetPatchNumber(p0,Tranfo_p0);
   if (iq==-1)
     {
-      cerr << "PatchMeshInterpretor::DiracRhsPoint point not found\n";
+      cerr << "PatchDiscretization::DiracRhsPoint point not found\n";
       abort();
     }
 
@@ -322,14 +322,14 @@ void PatchMeshInterpretor::DiracRhsPoint(GlobalVector& f,const DiracRightHandSid
 
 /* ----------------------------------------- */
 
-double PatchMeshInterpretor::ComputeBoundaryFunctional(const GlobalVector& u, const BoundaryFunctional& BF) const 
+double PatchDiscretization::ComputeBoundaryFunctional(const GlobalVector& u, const BoundaryFunctional& BF) const 
 {
   assert(0);
 }
 
 /* ----------------------------------------- */
 
-double PatchMeshInterpretor::ComputeDomainFunctional(const GlobalVector& u, const DomainFunctional& F) const 
+double PatchDiscretization::ComputeDomainFunctional(const GlobalVector& u, const DomainFunctional& F) const 
 {
   nmatrix<double> T;
   double j=0.;
@@ -346,9 +346,9 @@ double PatchMeshInterpretor::ComputeDomainFunctional(const GlobalVector& u, cons
 
 /* ----------------------------------------- */
 
-double Gascoigne::PatchMeshInterpretor::ComputePointFunctional(const GlobalVector& u, const PointFunctional& FP) const
+double Gascoigne::PatchDiscretization::ComputePointFunctional(const GlobalVector& u, const PointFunctional& FP) const
 {
-  cerr << "\"PatchMeshInterpretor::ComputePointFunctional\" not written!" << endl;
+  cerr << "\"PatchDiscretization::ComputePointFunctional\" not written!" << endl;
   abort();
 }
 }

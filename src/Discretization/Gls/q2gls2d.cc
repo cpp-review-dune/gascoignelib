@@ -20,8 +20,8 @@ void Q2Gls2d::BasicInit(const ParamFile* paramfile)
   typedef Transformation2d<BaseQ12d>           TransQ1;
   typedef Transformation2d<BaseQ22d>           TransQ2;
   typedef FiniteElement<2,1,TransQ2,BaseQ22d>  FiniteElement;
-  PatchMeshInterpretor::GetFemPointer() =  new FiniteElement;
+  PatchDiscretization::GetFemPointer() =  new FiniteElement;
 
-  PatchMeshInterpretor::BasicInit(paramfile);
+  PatchDiscretization::BasicInit(paramfile);
 }
 }

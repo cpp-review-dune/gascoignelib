@@ -11,13 +11,13 @@
 ////
 /////////////////////////////////////////////
 
-#include  "patchmeshinterpretor.h"
+#include  "patchdiscretization.h"
 #include  "hnstructureq1.h"
 
 namespace Gascoigne
 {
 
-class Q2 : public PatchMeshInterpretor
+class Q2 : public PatchDiscretization
 {
 protected:
   HNStructureQ1*    HN;

@@ -59,7 +59,7 @@ class LocalBoundaryRightHandSide : public BoundaryRightHandSide
 /* ----------------------------------------- */
 class LocalSolver : public StdSolver
 {
-  MeshInterpretorInterface* NewMeshInterpretor(int dimension, const string& discname) {
+  DiscretizationInterface* NewDiscretization(int dimension, const string& discname) {
     return new Q1Gls2d;
   }
   void BasicInit(int level, const ParamFile* paramfile, const MeshInterface* MP) {
@@ -98,20 +98,19 @@ class ProblemDescriptor : public ProblemDescriptorBase
 {
  public:
   void BasicInit(const ParamFile* pf) {
-    GetEquationPointer() = new LocalEquation;
-    GetDirichletDataPointer() = new ZeroDirichletData();
+    GetEquationPointer()              = new LocalEquation;
+    GetDirichletDataPointer()         = new ZeroDirichletData();
     GetBoundaryRightHandSidePointer() = new LocalBoundaryRightHandSide();
     
-    GetBoundaryManagerPointer() = new BoundaryManager(pf);
-    GetBoundaryManager()->AddDirichlet(3,1);
-    GetBoundaryManager()->AddDirichlet(3,2);
-    GetBoundaryManager()->AddDirichlet(8,1);
-    GetBoundaryManager()->AddDirichlet(8,2);
-    
-    GetBoundaryManager()->AddNeumann(1);
-    GetBoundaryManager()->AddNeumann(2);
-    
     ProblemDescriptorBase::BasicInit(pf);
+    
+    GetBoundaryManager()->AddDirichletData(3,1);
+    GetBoundaryManager()->AddDirichletData(3,2);
+    GetBoundaryManager()->AddDirichletData(8,1);
+    GetBoundaryManager()->AddDirichletData(8,2);
+    
+    GetBoundaryManager()->AddBoundaryRightHandSide(1);
+    GetBoundaryManager()->AddBoundaryRightHandSide(2);
   }
   std::string GetName() const {return "Local";}
 };

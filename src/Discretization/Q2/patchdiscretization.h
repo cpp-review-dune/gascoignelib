@@ -1,7 +1,7 @@
-#ifndef  __PatchMeshInterpretor_h
-#define  __PatchMeshInterpretor_h
+#ifndef  __PatchDiscretization_h
+#define  __PatchDiscretization_h
 
-#include  "basicmeshinterpretor.h"
+#include  "basicdiscretization.h"
 #include  "patchmesh.h"
 
 
@@ -11,13 +11,13 @@ namespace Gascoigne
 /////////////////////////////////////////////
 ///
 ///@brief
-///  ... comments PatchMeshInterpretor
+///  ... comments PatchDiscretization
 
 ///
 ///
 /////////////////////////////////////////////
 
-class PatchMeshInterpretor : public BasicMeshInterpretor
+class PatchDiscretization : public BasicDiscretization
 {
 protected:
 
@@ -47,8 +47,8 @@ public:
 //
 ///  Constructor 
 //
-  PatchMeshInterpretor() : BasicMeshInterpretor(), __FEM(NULL), __INT(NULL) {}
-  std::string GetName() const {return "PatchMeshInterpretor";}
+  PatchDiscretization() : BasicDiscretization(), __FEM(NULL), __INT(NULL) {}
+  std::string GetName() const {return "PatchDiscretization";}
 
   void Structure(SparseStructureInterface* S) const;
 

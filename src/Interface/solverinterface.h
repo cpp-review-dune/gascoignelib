@@ -6,7 +6,7 @@
 #include  "iluinterface.h"
 
 #include  "multigridmeshinterface.h"
-#include  "meshinterpretorinterface.h"
+#include  "discretizationinterface.h"
 #include  "functional.h"
 
 #include  "problemdescriptorinterface.h"
@@ -32,7 +32,7 @@ namespace Gascoigne
   ///  - stores the matrices
   ///  - holds memory for vectors
   ///  - provides e.g. nonlinear and linear residuals of the equations
-  ///  - calls class MeshInterpretor
+  ///  - calls class Discretization
   ///
   //////////////////////////////////////////////
   
@@ -76,8 +76,8 @@ namespace Gascoigne
       virtual void DeleteCellVector(const std::string&)=0;
       virtual void DeleteParameterVector(const std::string&)=0;
 
-      virtual const MeshInterpretorInterface* GetMeshInterpretor() const=0;
-      virtual       MeshInterpretorInterface* GetMeshInterpretor()      =0;
+      virtual const DiscretizationInterface* GetDiscretization() const=0;
+      virtual       DiscretizationInterface* GetDiscretization()      =0;
 
       //
       /// vector - manamgement

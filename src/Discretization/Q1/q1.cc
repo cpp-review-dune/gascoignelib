@@ -8,7 +8,7 @@ using namespace std;
 
 namespace Gascoigne
 {
-Q1::Q1() : CellMeshInterpretor(), HN(NULL) 
+Q1::Q1() : CellDiscretization(), HN(NULL) 
 {
 }
 
@@ -24,7 +24,7 @@ Q1::~Q1()
 
 void Q1::ReInit(const MeshInterface* MP)
 {
-  CellMeshInterpretor::ReInit(MP);
+  CellDiscretization::ReInit(MP);
   HN->ReInit(MP);
 }
 
@@ -200,7 +200,7 @@ void Q1::Structure(SparseStructureInterface* SI) const
 
 void Q1::Matrix(MatrixInterface& A, const GlobalVector& u, const Equation& EQ, double d) const
 {
-  CellMeshInterpretor::Matrix(A,u,EQ,d);
+  CellDiscretization::Matrix(A,u,EQ,d);
 
   HN->MatrixDiag(u.ncomp(),A);
 }
@@ -209,7 +209,7 @@ void Q1::Matrix(MatrixInterface& A, const GlobalVector& u, const Equation& EQ, d
 
 void Q1::MassMatrix(MatrixInterface& A) const
 {
-  CellMeshInterpretor::MassMatrix(A);
+  CellDiscretization::MassMatrix(A);
 
   HN->MatrixDiag(1,A);  
 }

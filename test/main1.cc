@@ -64,18 +64,17 @@ class ProblemDescriptor : public ProblemDescriptorBase
 {
  public:
   void BasicInit(const ParamFile* pf) {
-    GetEquationPointer() = new LocalEquation;
+    GetEquationPointer()      = new LocalEquation;
     GetExactSolutionPointer() = new LocalExactSolution();
     GetRightHandSidePointer() = new RightHandSideByEquation(GetEquation(), GetExactSolution());
     GetDirichletDataPointer() = new DirichletDataByExactSolution(GetExactSolution());
 
-    GetBoundaryManagerPointer() = new BoundaryManager(pf);
-    GetBoundaryManager()->AddDirichlet(1,0);
-    GetBoundaryManager()->AddDirichlet(2,0);
-    GetBoundaryManager()->AddDirichlet(3,0);
-    GetBoundaryManager()->AddDirichlet(4,0);
-
     ProblemDescriptorBase::BasicInit(pf);
+    
+    GetBoundaryManager()->AddDirichletData(1,0);
+    GetBoundaryManager()->AddDirichletData(2,0);
+    GetBoundaryManager()->AddDirichletData(3,0);
+    GetBoundaryManager()->AddDirichletData(4,0);
   }
   std::string GetName() const {return "Local";}
 };

@@ -1,7 +1,7 @@
-#ifndef  __CellMeshInterpretor_h
-#define  __CellMeshInterpretor_h
+#ifndef  __CellDiscretization_h
+#define  __CellDiscretization_h
 
-#include  "basicmeshinterpretor.h"
+#include  "basicdiscretization.h"
 #include  "hierarchicalmesh.h"
 
 namespace Gascoigne
@@ -10,12 +10,12 @@ namespace Gascoigne
 /////////////////////////////////////////////
 ///
 ///@brief
-///  ... comments CellMeshInterpretor
+///  ... comments CellDiscretization
 ///
 ///
 /////////////////////////////////////////////
 
-class CellMeshInterpretor : public BasicMeshInterpretor
+class CellDiscretization : public BasicDiscretization
 {
 protected:
 
@@ -50,13 +50,13 @@ public:
   ////  Constructor 
   //
 
-  CellMeshInterpretor() : BasicMeshInterpretor(), __FEM(NULL), __INT(NULL) {}
-  ~CellMeshInterpretor(){
+  CellDiscretization() : BasicDiscretization(), __FEM(NULL), __INT(NULL) {}
+  ~CellDiscretization(){
     if(__FEM) {delete __FEM; __FEM=NULL;}
     if(__INT) {delete __INT; __INT=NULL;}
   }
 
-  std::string GetName() const {return "CellMeshInterpretor";}
+  std::string GetName() const {return "CellDiscretization";}
 
   void Structure(SparseStructureInterface* S) const;
 

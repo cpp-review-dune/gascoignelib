@@ -16,15 +16,15 @@ DwrFem3d::DwrFem3d() : Q23d()
 
 void DwrFem3d::BasicInit(const ParamFile*  paramfile)
 {
-  assert(PatchMeshInterpretor::GetIntegrator()==NULL);
-  PatchMeshInterpretor::GetIntegratorPointer() =  new IntegratorQ1Q2<3>;
+  assert(PatchDiscretization::GetIntegrator()==NULL);
+  PatchDiscretization::GetIntegratorPointer() =  new IntegratorQ1Q2<3>;
 
-  assert(PatchMeshInterpretor::GetFem()==NULL);
+  assert(PatchDiscretization::GetFem()==NULL);
   typedef Transformation3d<BaseQ23d>           TransQ2;
   typedef FiniteElement<3,2,TransQ2,BaseQ23d>  FiniteElement;
 
-  PatchMeshInterpretor::GetFemPointer() =  new FiniteElement;
-  PatchMeshInterpretor::BasicInit(paramfile);
+  PatchDiscretization::GetFemPointer() =  new FiniteElement;
+  PatchDiscretization::BasicInit(paramfile);
 }
 
 /*---------------------------------------------------*/
@@ -68,7 +68,7 @@ void DwrFem3d::Form(GlobalVector& f, const GlobalVector& u, const Equation& EQ, 
 
       GlobalToLocal(__U,u,iq);
       I->Form(EQ,__F,HighOrderFem,LowOrderFem,__U,__Q);
-      PatchMeshInterpretor::LocalToGlobal(f,__F,iq,d);
+      PatchDiscretization::LocalToGlobal(f,__F,iq,d);
     }
 }
 
@@ -93,7 +93,7 @@ void DwrFem3d::Rhs(GlobalVector& f, const DomainRightHandSide& RHS, double s) co
 
       GlobalToLocalData(iq);
       I->Rhs(RHS,__F,HighOrderFem,LowOrderFem,__Q);
-      PatchMeshInterpretor::LocalToGlobal(f,__F,iq,s);
+      PatchDiscretization::LocalToGlobal(f,__F,iq,s);
     }
 }
 }

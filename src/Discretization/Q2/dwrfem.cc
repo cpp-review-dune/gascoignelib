@@ -16,15 +16,15 @@ DwrFem2d::DwrFem2d() : Q22d()
 
 void DwrFem2d::BasicInit(const ParamFile*  paramfile)
 {
-  assert(PatchMeshInterpretor::GetIntegrator()==NULL);
-  PatchMeshInterpretor::GetIntegratorPointer() =  new IntegratorQ1Q2<2>;
+  assert(PatchDiscretization::GetIntegrator()==NULL);
+  PatchDiscretization::GetIntegratorPointer() =  new IntegratorQ1Q2<2>;
 
-  assert(PatchMeshInterpretor::GetFem()==NULL);
+  assert(PatchDiscretization::GetFem()==NULL);
   typedef Transformation2d<BaseQ22d>           TransQ2;
   typedef FiniteElement<2,1,TransQ2,BaseQ22d>  FiniteElement;
 
-  PatchMeshInterpretor::GetFemPointer() =  new FiniteElement;
-  PatchMeshInterpretor::BasicInit(paramfile);
+  PatchDiscretization::GetFemPointer() =  new FiniteElement;
+  PatchDiscretization::BasicInit(paramfile);
 }
 
 /*---------------------------------------------------*/
@@ -67,7 +67,7 @@ void DwrFem2d::Form(GlobalVector& f, const GlobalVector& u, const Equation& EQ, 
 
       GlobalToLocal(__U,u,iq);
       I->Form(EQ,__F,HighOrderFem,LowOrderFem,__U,__Q);
-      PatchMeshInterpretor::LocalToGlobal(f,__F,iq,d);
+      PatchDiscretization::LocalToGlobal(f,__F,iq,d);
     }
 }
 
@@ -92,7 +92,7 @@ void DwrFem2d::Rhs(GlobalVector& f, const DomainRightHandSide& RHS, double s) co
 
       GlobalToLocalData(iq);
       I->Rhs(RHS,__F,HighOrderFem,LowOrderFem,__Q);
-      PatchMeshInterpretor::LocalToGlobal(f,__F,iq,s);
+      PatchDiscretization::LocalToGlobal(f,__F,iq,s);
     }
 }
 }

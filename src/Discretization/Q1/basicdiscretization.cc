@@ -1,4 +1,4 @@
-#include  "basicmeshinterpretor.h"
+#include  "basicdiscretization.h"
 
 using namespace std;
 
@@ -6,19 +6,19 @@ using namespace std;
 
 namespace Gascoigne
 {
-BasicMeshInterpretor::BasicMeshInterpretor() : MeshInterpretorInterface()
+BasicDiscretization::BasicDiscretization() : DiscretizationInterface()
 {
 }
 
 /* ----------------------------------------- */
 
-BasicMeshInterpretor::~BasicMeshInterpretor()
+BasicDiscretization::~BasicDiscretization()
 {
 }
 
 /* ----------------------------------------- */
 
-void BasicMeshInterpretor::HNAverageData() const
+void BasicDiscretization::HNAverageData() const
 {
   const GlobalNodeData& gd = GetGlobalData().GetNodeData();
   GlobalNodeData::const_iterator p=gd.begin();
@@ -32,7 +32,7 @@ void BasicMeshInterpretor::HNAverageData() const
 
 /* ----------------------------------------- */
 
-void BasicMeshInterpretor::HNZeroData() const
+void BasicDiscretization::HNZeroData() const
 {
   const GlobalNodeData& gd = GetGlobalData().GetNodeData();
   GlobalNodeData::const_iterator p=gd.begin();
@@ -46,7 +46,7 @@ void BasicMeshInterpretor::HNZeroData() const
 
 /* ----------------------------------------- */
 
-void BasicMeshInterpretor::GlobalToLocalData(int iq) const
+void BasicDiscretization::GlobalToLocalData(int iq) const
 {
   const GlobalNodeData& gd = GetGlobalData().GetNodeData();
   __Q.clear();
@@ -59,7 +59,7 @@ void BasicMeshInterpretor::GlobalToLocalData(int iq) const
 
 /* ----------------------------------------- */
 
-void BasicMeshInterpretor::GlobalToGlobalData() const
+void BasicDiscretization::GlobalToGlobalData() const
 {
   const GlobalParameterData& gd = GetGlobalData().GetParameterData();
   __qq.clear();
@@ -72,7 +72,7 @@ void BasicMeshInterpretor::GlobalToGlobalData() const
 
 /* ----------------------------------------- */
 
-void BasicMeshInterpretor::GlobalToLocalSingle(LocalVector& U, const GlobalVector& u, int iq) const
+void BasicDiscretization::GlobalToLocalSingle(LocalVector& U, const GlobalVector& u, int iq) const
 {
   IntVector indices = GetLocalIndices(iq);
   U.ReInit(u.ncomp(),indices.size());
@@ -85,7 +85,7 @@ void BasicMeshInterpretor::GlobalToLocalSingle(LocalVector& U, const GlobalVecto
 
 /* ----------------------------------------- */
 
-void BasicMeshInterpretor::LocalToGlobal(GlobalVector& f, const LocalVector& F, int iq, double s) const
+void BasicDiscretization::LocalToGlobal(GlobalVector& f, const LocalVector& F, int iq, double s) const
 {
   IntVector indices = GetLocalIndices(iq);
   for(int ii=0; ii<indices.size(); ii++) 
@@ -97,7 +97,7 @@ void BasicMeshInterpretor::LocalToGlobal(GlobalVector& f, const LocalVector& F, 
 
 /* ----------------------------------------- */
 
-void BasicMeshInterpretor::LocalToGlobal(MatrixInterface& A, EntryMatrix& E, int iq, double s) const
+void BasicDiscretization::LocalToGlobal(MatrixInterface& A, EntryMatrix& E, int iq, double s) const
 {
   IntVector indices = GetLocalIndices(iq);
   IntVector::const_iterator  start = indices.begin();

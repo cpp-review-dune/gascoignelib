@@ -65,7 +65,7 @@ StdSolver::~StdSolver()
 
 /*-------------------------------------------------------*/
 
-void StdSolver::_check_consistency(const Equation* EQ,const MeshInterpretorInterface* MP) const
+void StdSolver::_check_consistency(const Equation* EQ,const DiscretizationInterface* MP) const
 {
   bool glseq = false, glsmi = false;
   
@@ -79,7 +79,7 @@ void StdSolver::_check_consistency(const Equation* EQ,const MeshInterpretorInter
   }
   if(!(glseq && glsmi) && !(!glseq && !glsmi))
   {
-    cerr << "MeshInterpretor \"" << MP->GetName() << "\" doesn't go with type of given Equation!" << endl;
+    cerr << "Discretization \"" << MP->GetName() << "\" doesn't go with type of given Equation!" << endl;
     abort();
   }
   
@@ -95,7 +95,7 @@ void StdSolver::_check_consistency(const Equation* EQ,const MeshInterpretorInter
   }
   if(!(lpseq && lpsmi) && !(!lpseq && !lpsmi))
   {
-    cerr << "MeshInterpretor \"" << MP->GetName() << "\" doesn't go with type of given Equation!" << endl;
+    cerr << "Discretization \"" << MP->GetName() << "\" doesn't go with type of given Equation!" << endl;
     abort();
   }
 }
@@ -113,7 +113,7 @@ void StdSolver::OutputSettings() const
 {
   cout << "=====================================" << endl;
   cout << "Solver:          " << GetName() << endl;
-  cout << "MeshInterpretor: " << GetMeshInterpretor()->GetName()  << endl;
+  cout << "Discretization: " << GetDiscretization()->GetName()  << endl;
   GetProblemDescriptor()->OutputSettings(cout);
   cout << "=====================================" << endl;
 }
@@ -142,7 +142,7 @@ void StdSolver::SetProblem(const ProblemDescriptorInterface& PDX)
   
   const Equation*  EQ = GetProblemDescriptor()->GetEquation();
 
-  if (EQ) _check_consistency(EQ,GetMeshInterpretor());
+  if (EQ) _check_consistency(EQ,GetDiscretization());
 }
 
 /*-------------------------------------------------------*/
@@ -152,7 +152,7 @@ void StdSolver::NewMesh(int level, const MeshInterface* mp)
   _MP = mp;
   assert(_MP);
 
-  GetMeshInterpretor()->ReInit(_MP);
+  GetDiscretization()->ReInit(_MP);
 }
 
 /*-------------------------------------------------------*/
@@ -179,10 +179,10 @@ void StdSolver::BasicInit(int level, const ParamFile* paramfile, const MeshInter
 
   int dimension = MP->dimension();
 
-  GetMeshInterpretorPointer() = NewMeshInterpretor(dimension, _discname);
+  GetDiscretizationPointer() = NewDiscretization(dimension, _discname);
   assert(_ZP);
 
-  GetMeshInterpretor()->BasicInit(_paramfile);
+  GetDiscretization()->BasicInit(_paramfile);
 
   _Dat.BasicInit(_paramfile);
   _PF.SetComponents(_Dat.GetPfilter());
@@ -190,7 +190,7 @@ void StdSolver::BasicInit(int level, const ParamFile* paramfile, const MeshInter
 
 /*-------------------------------------------------------*/
 
-MeshInterpretorInterface* StdSolver::NewMeshInterpretor(int dimension, const string& discname)
+DiscretizationInterface* StdSolver::NewDiscretization(int dimension, const string& discname)
 {
   if (dimension==2)
     {
@@ -202,7 +202,7 @@ MeshInterpretorInterface* StdSolver::NewMeshInterpretor(int dimension, const str
       else if (discname=="Q2Lps")  return new Q2Lps2d;
       else 
         {         
-          cerr << " Solver::NewMeshInterpretor()\tunknown discname=" << discname << endl;
+          cerr << " Solver::NewDiscretization()\tunknown discname=" << discname << endl;
           abort();
         }
     }
@@ -215,13 +215,13 @@ MeshInterpretorInterface* StdSolver::NewMeshInterpretor(int dimension, const str
       else if (discname=="Q2Lps")  return new Q2Lps3d;
       else 
         {         
-          cerr << " Solver::NewMeshInterpretor()\tunknown discname=" << discname << endl;
+          cerr << " Solver::NewDiscretization()\tunknown discname=" << discname << endl;
           abort();
         }
     }
   else
     {
-      cerr << " Solver::NewMeshInterpretor()\tdimension must either 2 or 3" << endl;
+      cerr << " Solver::NewDiscretization()\tdimension must either 2 or 3" << endl;
       abort();
     }
 }
@@ -336,9 +336,9 @@ IluInterface* StdSolver::NewIlu(int ncomp, const string& matrixtype)
 
 void StdSolver::ReInitMatrix() 
 {
-  GetMeshInterpretor()->InitFilter(_PF);
+  GetDiscretization()->InitFilter(_PF);
   SparseStructure SA;
-  GetMeshInterpretor()->Structure(&SA);
+  GetDiscretization()->Structure(&SA);
 
   GetMatrix()->ReInit(&SA);
   GetIlu()->ReInit(&SA);
@@ -357,7 +357,7 @@ void StdSolver::ReInitVector()
       assert(gv.GetSolver()==this);
       if(p->second==NULL) 
         {
-          //int n = GetMeshInterpretor()->n();
+          //int n = GetDiscretization()->n();
           p->second = new GlobalVector;
           p->second->ncomp() = ncomp;
         }
@@ -384,7 +384,7 @@ double StdSolver::NewtonNorm(const BasicGhostVector& u) const
 
 void StdSolver::ResizeVector(GlobalVector* x, string type) const
 {
-  int n = GetMeshInterpretor()->n();
+  int n = GetDiscretization()->n();
 //   cerr << "StdSolver::ResizeVector() n="<<n<<endl; 
   x->reservesize(n);
 }
@@ -393,25 +393,25 @@ void StdSolver::ResizeVector(GlobalVector* x, string type) const
 
 void StdSolver::HNAverage(const GlobalVector& x) const {
   GlobalVector& v = const_cast<GlobalVector&>(x);
-  GetMeshInterpretor()->HNAverage(v);
+  GetDiscretization()->HNAverage(v);
 }
 void StdSolver::HNZero(const GlobalVector& x) const {
   GlobalVector& v = const_cast<GlobalVector&>(x);
-  GetMeshInterpretor()->HNZero(v);
+  GetDiscretization()->HNZero(v);
 }
 bool StdSolver::HNZeroCheck(const GlobalVector& x) const {
-  assert(GetMeshInterpretor()->n()==x.n());
+  assert(GetDiscretization()->n()==x.n());
   GlobalVector& v = const_cast<GlobalVector&>(x);
-  return GetMeshInterpretor()->HNZeroCheck(v);
+  return GetDiscretization()->HNZeroCheck(v);
 }
 void StdSolver::HNDistribute(GlobalVector& x) const {
-  GetMeshInterpretor()->HNDistribute(x);
+  GetDiscretization()->HNDistribute(x);
 }
 void StdSolver::HNAverageData() const {
-  GetMeshInterpretor()->HNAverageData();
+  GetDiscretization()->HNAverageData();
 }
 void StdSolver::HNZeroData() const {
-  GetMeshInterpretor()->HNZeroData();
+  GetDiscretization()->HNZeroData();
 }
 
 void StdSolver::HNAverage(const BasicGhostVector& x) const {
@@ -431,7 +431,7 @@ void StdSolver::InterpolateSolution(BasicGhostVector& gu, const GlobalVector& uo
   GlobalVector& u = GetGV(gu);
 
   u.zero();
-  GetMeshInterpretor()->InterpolateSolution(u, uold);
+  GetDiscretization()->InterpolateSolution(u, uold);
   SubtractMean(gu);
 }
 
@@ -510,13 +510,13 @@ void StdSolver::SetBoundaryVectorZero(BasicGhostVector& gf) const
 void StdSolver::SetBoundaryVectorZero(GlobalVector& f) const
 {
   const BoundaryManager* BM = GetProblemDescriptor()->GetBoundaryManager();
-  const IntSet& Colors = BM->GetDirichletColors();
+  const IntSet& Colors = BM->GetDirichletDataColors();
   
   for(IntSet::const_iterator p=Colors.begin();p!=Colors.end();p++)
     {
       int col = *p;
-      const IntVector& comp = BM->GetDirichletComponents(col);
-      GetMeshInterpretor()->StrongDirichletVectorZero(f, col, comp);
+      const IntVector& comp = BM->GetDirichletDataComponents(col);
+      GetDiscretization()->StrongDirichletVectorZero(f, col, comp);
     }
 }
 
@@ -535,7 +535,7 @@ void StdSolver::SetBoundaryVector(GlobalVector& f) const
   const DirichletData*   DD = GetProblemDescriptor()->GetDirichletData();
   if(DD==NULL) 
   {
-    if(BM->GetDirichletColors().size()!=0) 
+    if(BM->GetDirichletDataColors().size()!=0) 
     {
       cerr << "No DirichetData given but DirichetColors in ParamFile!" << endl;
       abort();
@@ -557,8 +557,8 @@ void StdSolver::SetBoundaryVectorStrong(BasicGhostVector& f, const BoundaryManag
 void StdSolver::SetBoundaryVectorStrong(GlobalVector& f, const BoundaryManager& BM, const DirichletData& DD) const
 {
   IntSet PrefCol = DD.preferred_colors();
-  list<int> colors(BM.GetDirichletColors().begin(), 
-		   BM.GetDirichletColors().end());
+  list<int> colors(BM.GetDirichletDataColors().begin(), 
+		   BM.GetDirichletDataColors().end());
   
   for(IntSet::const_iterator p=PrefCol.begin();p!=PrefCol.end();p++)
     {
@@ -569,8 +569,8 @@ void StdSolver::SetBoundaryVectorStrong(GlobalVector& f, const BoundaryManager& 
   for(list<int>::const_iterator p=colors.begin();p!=colors.end();p++)
     {
       int col = *p;
-      const IntVector& comp = BM.GetDirichletComponents(col);
-      GetMeshInterpretor()->StrongDirichletVector(f, DD, col, comp);
+      const IntVector& comp = BM.GetDirichletDataComponents(col);
+      GetDiscretization()->StrongDirichletVector(f, DD, col, comp);
     }
 }
 
@@ -645,13 +645,13 @@ void StdSolver::Form(GlobalVector& y, const GlobalVector& x, double d) const
 
   const Equation* EQ = GetProblemDescriptor()->GetEquation();
   assert(EQ);
-  GetMeshInterpretor()->Form(y,x,*EQ,d);
+  GetDiscretization()->Form(y,x,*EQ,d);
 
   const BoundaryEquation* BE = GetProblemDescriptor()->GetBoundaryEquation();
   if(BE)
   {
     const BoundaryManager* BM = GetProblemDescriptor()->GetBoundaryManager();
-    GetMeshInterpretor()->BoundaryForm(y,x,BM->GetRobinColors(),*BE,d);
+    GetDiscretization()->BoundaryForm(y,x,BM->GetBoundaryEquationColors(),*BE,d);
   }
 
   HNZero(x);
@@ -728,7 +728,7 @@ void StdSolver::ComputeError(const BasicGhostVector& u, GlobalVector& err) const
 {
   if(GetProblemDescriptor()->GetExactSolution()==NULL) return;
   HNAverage(u);
-  GetMeshInterpretor()->ComputeError(GetGV(u),err,GetProblemDescriptor()->GetExactSolution());
+  GetDiscretization()->ComputeError(GetGV(u),err,GetProblemDescriptor()->GetExactSolution());
   HNZero(u);
 }
 
@@ -776,7 +776,7 @@ double StdSolver::ComputeBoundaryFunctional(GlobalVector& f, const GlobalVector&
 {
   HNAverage(u);
   HNAverageData();
-  double J = GetMeshInterpretor()->ComputeBoundaryFunctional(u,*FP);
+  double J = GetDiscretization()->ComputeBoundaryFunctional(u,*FP);
   HNZero(u);
   HNZeroData();
   return J;
@@ -788,7 +788,7 @@ double StdSolver::ComputeDomainFunctional(GlobalVector& f, const GlobalVector& u
 {
   HNAverage(u);
   HNAverageData();
-  double J = GetMeshInterpretor()->ComputeDomainFunctional(u,*FP);
+  double J = GetDiscretization()->ComputeDomainFunctional(u,*FP);
   HNZero(u);
   HNZeroData();
   //cerr << "StdSolver::ComputeDomainFunctional()\t" << J << endl;
@@ -801,7 +801,7 @@ double StdSolver::ComputePointFunctional(GlobalVector& f, const GlobalVector& u,
 {
   HNAverage(u);
   HNAverageData();
-  double J = GetMeshInterpretor()->ComputePointFunctional(u,*FP);
+  double J = GetDiscretization()->ComputePointFunctional(u,*FP);
   HNZero(u);
   HNZeroData();
   return J;
@@ -855,13 +855,13 @@ void StdSolver::Rhs(GlobalVector& f, double d) const
        const DomainRightHandSide *DRHS = dynamic_cast<const DomainRightHandSide *>(RHS);
        if(DRHS)
        {
-         GetMeshInterpretor()->Rhs(f,*DRHS,d);
+         GetDiscretization()->Rhs(f,*DRHS,d);
          done = true;
        }
        const DiracRightHandSide *NDRHS = dynamic_cast<const DiracRightHandSide *>(RHS);
        if(NDRHS)
        {
-         GetMeshInterpretor()->DiracRhs(f,*NDRHS,d);
+         GetDiscretization()->DiracRhs(f,*NDRHS,d);
          done =true;
        }
        if(!done)
@@ -875,7 +875,7 @@ void StdSolver::Rhs(GlobalVector& f, double d) const
     {
       assert(NRHS->GetNcomp()==f.ncomp());
       const BoundaryManager*  BM   = GetProblemDescriptor()->GetBoundaryManager();
-      GetMeshInterpretor()->BoundaryRhs(f,BM->GetNeumannColors(),*NRHS,d);	  
+      GetDiscretization()->BoundaryRhs(f,BM->GetBoundaryRightHandSideColors(),*NRHS,d);	  
     }
   
 
@@ -894,13 +894,13 @@ void StdSolver::AssembleMatrix(const BasicGhostVector& gu, double d)
   HNAverage(gu);
   HNAverageData();
 
-  GetMeshInterpretor()->Matrix(*GetMatrix(),u,*GetProblemDescriptor()->GetEquation(),d);
+  GetDiscretization()->Matrix(*GetMatrix(),u,*GetProblemDescriptor()->GetEquation(),d);
   
   const BoundaryEquation* BE = GetProblemDescriptor()->GetBoundaryEquation();
   if(BE)
   {
     const BoundaryManager* BM = GetProblemDescriptor()->GetBoundaryManager();
-    GetMeshInterpretor()->BoundaryMatrix(*GetMatrix(),u,BM->GetRobinColors(),*BE,d);
+    GetDiscretization()->BoundaryMatrix(*GetMatrix(),u,BM->GetBoundaryEquationColors(),*BE,d);
   }
 
   DirichletMatrix();
@@ -915,13 +915,13 @@ void StdSolver::AssembleMatrix(const BasicGhostVector& gu, double d)
 void StdSolver::DirichletMatrix() const
 {
   const BoundaryManager* BM = GetProblemDescriptor()->GetBoundaryManager();
-  const IntSet& Colors = BM->GetDirichletColors();
+  const IntSet& Colors = BM->GetDirichletDataColors();
   
   for(IntSet::const_iterator p=Colors.begin();p!=Colors.end();p++)
     {
       int col = *p;
-      const IntVector& comp = BM->GetDirichletComponents(col);
-      GetMeshInterpretor()->StrongDirichletMatrix(*GetMatrix(), col, comp);
+      const IntVector& comp = BM->GetDirichletDataComponents(col);
+      GetDiscretization()->StrongDirichletMatrix(*GetMatrix(), col, comp);
     }
 }
 
@@ -930,13 +930,13 @@ void StdSolver::DirichletMatrix() const
 void StdSolver::DirichletMatrixOnlyRow() const
 {
   const BoundaryManager* BM = GetProblemDescriptor()->GetBoundaryManager();
-  const IntSet& Colors = BM->GetDirichletColors();
+  const IntSet& Colors = BM->GetDirichletDataColors();
   
   for(IntSet::const_iterator p=Colors.begin();p!=Colors.end();p++)
     {
       int col = *p;
-      const IntVector& comp = BM->GetDirichletComponents(col);
-      GetMeshInterpretor()->StrongDirichletMatrixOnlyRow(*GetMatrix(), col, comp);
+      const IntVector& comp = BM->GetDirichletDataComponents(col);
+      GetDiscretization()->StrongDirichletMatrixOnlyRow(*GetMatrix(), col, comp);
     }
 }
 
@@ -1107,7 +1107,7 @@ void StdSolver::Write(const BasicGhostVector& gu, const string& filename) const
 
 void StdSolver::ConstructInterpolator(MgInterpolatorInterface* I, const MeshTransferInterface* MT)
 {
-  GetMeshInterpretor()->ConstructInterpolator(I,MT);
+  GetDiscretization()->ConstructInterpolator(I,MT);
 }
 
 /* -------------------------------------------------------*/
@@ -1224,7 +1224,7 @@ void StdSolver::AssembleDualMatrix(const BasicGhostVector& gu, double d)
   HNAverage(gu);
 
   const Equation& EQ = *GetProblemDescriptor()->GetEquation();
-  GetMeshInterpretor()->Matrix(*M,GetGV(gu),EQ,d);
+  GetDiscretization()->Matrix(*M,GetGV(gu),EQ,d);
   M->transpose();
 
   DirichletMatrixOnlyRow();

@@ -35,15 +35,15 @@ void Q12d::BasicInit(const ParamFile* pf)
   assert(HN==NULL);
   HN = NewHNStructure();
   assert(HN);
-  assert(CellMeshInterpretor::GetIntegratorPointer()==NULL);
-  CellMeshInterpretor::GetIntegratorPointer() =  new GalerkinIntegrator<2>;
+  assert(CellDiscretization::GetIntegratorPointer()==NULL);
+  CellDiscretization::GetIntegratorPointer() =  new GalerkinIntegrator<2>;
 
-  assert(CellMeshInterpretor::GetFemPointer()==NULL);
+  assert(CellDiscretization::GetFemPointer()==NULL);
   typedef Transformation2d<BaseQ12d>           TransQ1;
   typedef FiniteElement<2,1,TransQ1,BaseQ12d>  FiniteElement;
-  CellMeshInterpretor::GetFemPointer() =  new FiniteElement;
+  CellDiscretization::GetFemPointer() =  new FiniteElement;
 
-  CellMeshInterpretor::BasicInit(pf);
+  CellDiscretization::BasicInit(pf);
 }
 
 /* ----------------------------------------- */

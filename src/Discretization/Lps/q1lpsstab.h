@@ -10,7 +10,7 @@
 ////
 /////////////////////////////////////////////
 
-#include  "patchmeshinterpretor.h"
+#include  "patchdiscretization.h"
 #include  "hnstructureinterface.h"
 
 namespace Gascoigne
@@ -18,7 +18,7 @@ namespace Gascoigne
 
 /*----------------------------------------------*/
 
-class Q1LpsStab : public PatchMeshInterpretor
+class Q1LpsStab : public PatchDiscretization
 {
  protected:
 
@@ -31,7 +31,7 @@ class Q1LpsStab : public PatchMeshInterpretor
 
  public:
 
-  Q1LpsStab() : PatchMeshInterpretor() {};
+  Q1LpsStab() : PatchDiscretization() {};
   int n() const { return GetMesh()->nnodes();}
   void BasicInit(const ParamFile* paramfile, const HNStructureInterface*);
 };

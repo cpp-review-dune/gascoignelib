@@ -36,15 +36,15 @@ void Q13d::BasicInit(const ParamFile* pf)
   HN = NewHNStructure();
   assert(HN);
 
-  assert(CellMeshInterpretor::GetIntegratorPointer()==NULL);
-  CellMeshInterpretor::GetIntegratorPointer() =  new GalerkinIntegrator<3>;
+  assert(CellDiscretization::GetIntegratorPointer()==NULL);
+  CellDiscretization::GetIntegratorPointer() =  new GalerkinIntegrator<3>;
 
-  assert(CellMeshInterpretor::GetFemPointer()==NULL);
+  assert(CellDiscretization::GetFemPointer()==NULL);
   typedef Transformation3d<BaseQ13d>           TransQ1;
   typedef FiniteElement<3,2,TransQ1,BaseQ13d>  FiniteElement;
-  CellMeshInterpretor::GetFemPointer() =  new FiniteElement;
+  CellDiscretization::GetFemPointer() =  new FiniteElement;
 
-  CellMeshInterpretor::BasicInit(pf);
+  CellDiscretization::BasicInit(pf);
 }
 
 /* ----------------------------------------- */

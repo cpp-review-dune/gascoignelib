@@ -77,16 +77,16 @@ void StdTimeSolver::RegisterMatrix()
 
 void StdTimeSolver::ReInitMatrix() 
 {
-  GetMeshInterpretor()->InitFilter(_PF);
+  GetDiscretization()->InitFilter(_PF);
   SparseStructure SA;
-  GetMeshInterpretor()->Structure(&SA);
+  GetDiscretization()->Structure(&SA);
 
   GetMatrix()->ReInit(&SA);
   GetIlu()->ReInit(&SA);
   GetMassMatrix()->ReInit(&SA);
 
   GetMassMatrix()->zero();
-  GetMeshInterpretor()->MassMatrix(*GetMassMatrix());  
+  GetDiscretization()->MassMatrix(*GetMassMatrix());  
 
 //   string name("masse");
 //   compose_name(name,mylevel);
@@ -129,13 +129,13 @@ void Gascoigne::StdTimeSolver::IC(GlobalVector& f, double d) const
        const DomainInitialCondition *DRHS = dynamic_cast<const DomainRightHandSide *>(IC);
        if(DRHS)
        {
-         GetMeshInterpretor()->Rhs(f,*DRHS,d);
+         GetDiscretization()->Rhs(f,*DRHS,d);
          done = true;
        }
        const DiracInitialCondition *NDRHS = dynamic_cast<const DiracRightHandSide *>(IC);
        if(NDRHS)
        {
-         GetMeshInterpretor()->DiracRhs(f,*NDRHS,d);
+         GetDiscretization()->DiracRhs(f,*NDRHS,d);
          done =true;
        }
        if(!done)

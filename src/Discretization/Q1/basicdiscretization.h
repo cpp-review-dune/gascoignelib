@@ -1,8 +1,8 @@
-#ifndef  __BasicMeshInterpretor_h
-#define  __BasicMeshInterpretor_h
+#ifndef  __BasicDiscretization_h
+#define  __BasicDiscretization_h
 
 
-#include  "meshinterpretorinterface.h"
+#include  "discretizationinterface.h"
 #include  "feminterface.h"
 #include  "integratorinterface.h"
 
@@ -12,13 +12,13 @@ namespace Gascoigne
 /////////////////////////////////////////////
 ///
 ///@brief
-///  ... comments BasicMeshInterpretor
+///  ... comments BasicDiscretization
 
 ///
 ///
 /////////////////////////////////////////////
 
-class BasicMeshInterpretor : public MeshInterpretorInterface
+class BasicDiscretization : public DiscretizationInterface
 {
  private:
   
@@ -54,8 +54,8 @@ class BasicMeshInterpretor : public MeshInterpretorInterface
   ////  Constructor 
   //
   
-  BasicMeshInterpretor();
-  ~BasicMeshInterpretor();
+  BasicDiscretization();
+  ~BasicDiscretization();
   
   void BasicInit(const ParamFile* pf) {}
   void ReInit   (const MeshInterface* MP) {__MP=MP;}

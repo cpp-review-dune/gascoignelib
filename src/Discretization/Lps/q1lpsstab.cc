@@ -12,7 +12,7 @@ namespace Gascoigne
 
 void Q1LpsStab::BasicInit(const ParamFile* paramfile, const HNStructureInterface* hn)
 {
-  PatchMeshInterpretor::BasicInit(paramfile);
+  PatchDiscretization::BasicInit(paramfile);
   HN = hn;
   assert(HN);
 }
@@ -32,13 +32,13 @@ void Q1LpsStab::LocalToGlobal(MatrixInterface& A, EntryMatrix& E, int iq, double
 
 void Q1LpsStab2d::BasicInit(const ParamFile* paramfile, const HNStructureInterface* hn)
 {
-  assert(PatchMeshInterpretor::GetIntegrator()==NULL);
-  PatchMeshInterpretor::GetIntegratorPointer() =  new LpsIntegratorQ1<2>;
+  assert(PatchDiscretization::GetIntegrator()==NULL);
+  PatchDiscretization::GetIntegratorPointer() =  new LpsIntegratorQ1<2>;
   
-  assert(PatchMeshInterpretor::GetFem()==NULL);
+  assert(PatchDiscretization::GetFem()==NULL);
   typedef Transformation2d<BaseQ12d>           TransQ1;
   typedef FiniteElement<2,1,TransQ1,BaseQ12dPatch>  FiniteElement;
-  PatchMeshInterpretor::GetFemPointer() =  new FiniteElement;
+  PatchDiscretization::GetFemPointer() =  new FiniteElement;
   
   Q1LpsStab::BasicInit(paramfile,hn);  
 }
@@ -47,13 +47,13 @@ void Q1LpsStab2d::BasicInit(const ParamFile* paramfile, const HNStructureInterfa
 
 void Q1LpsStab3d::BasicInit(const ParamFile* paramfile, const HNStructureInterface* hn)
 {
-  assert(PatchMeshInterpretor::GetIntegrator()==NULL);
-  PatchMeshInterpretor::GetIntegratorPointer() =  new LpsIntegratorQ1<3>;
+  assert(PatchDiscretization::GetIntegrator()==NULL);
+  PatchDiscretization::GetIntegratorPointer() =  new LpsIntegratorQ1<3>;
   
-  assert(PatchMeshInterpretor::GetFem()==NULL);
+  assert(PatchDiscretization::GetFem()==NULL);
   typedef Transformation3d<BaseQ13d>           TransQ1;
   typedef FiniteElement<3,2,TransQ1,BaseQ13dPatch>  FiniteElement;
-  PatchMeshInterpretor::GetFemPointer() =  new FiniteElement;
+  PatchDiscretization::GetFemPointer() =  new FiniteElement;
   
   Q1LpsStab::BasicInit(paramfile,hn);  
 }

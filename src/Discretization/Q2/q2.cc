@@ -7,7 +7,7 @@ using namespace std;
 
 /* ----------------------------------------- */
 
-Q2::Q2() : PatchMeshInterpretor(), HN(NULL)
+Q2::Q2() : PatchDiscretization(), HN(NULL)
 {
 }
 
@@ -22,7 +22,7 @@ Q2::~Q2()
 
 void Q2::ReInit(const MeshInterface* MP)
 {
-  PatchMeshInterpretor::ReInit(MP);
+  PatchDiscretization::ReInit(MP);
   HN->ReInit(MP);
 }
 
@@ -168,7 +168,7 @@ bool Q2::HNZeroCheck(const GlobalVector& x) const
 
 void Q2::Matrix(MatrixInterface& A, const GlobalVector& u, const Equation& EQ, double d) const
 {
-  PatchMeshInterpretor::Matrix(A,u,EQ,d);
+  PatchDiscretization::Matrix(A,u,EQ,d);
 
   HN->MatrixDiag(u.ncomp(),A);
 }
@@ -177,7 +177,7 @@ void Q2::Matrix(MatrixInterface& A, const GlobalVector& u, const Equation& EQ, d
 
 void Q2::MassMatrix(MatrixInterface& A) const
 {
-  PatchMeshInterpretor::MassMatrix(A);
+  PatchDiscretization::MassMatrix(A);
 
   HN->MatrixDiag(1,A);  
 }

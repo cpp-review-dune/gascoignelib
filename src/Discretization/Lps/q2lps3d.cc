@@ -16,8 +16,8 @@ void Q2Lps3d::BasicInit(const ParamFile* paramfile)
   assert(GetFem()==NULL);
   typedef Transformation3d<BaseQ23d>           TransQ2;
   typedef FiniteElement<3,2,TransQ2,BaseQ23d>  FiniteElement;
-  PatchMeshInterpretor::GetFemPointer() =  new FiniteElement;
+  PatchDiscretization::GetFemPointer() =  new FiniteElement;
 
-  PatchMeshInterpretor::BasicInit(paramfile);
+  PatchDiscretization::BasicInit(paramfile);
 }
 }
