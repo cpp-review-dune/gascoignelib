@@ -53,6 +53,10 @@ class SolverInterface
   
   virtual void NewMesh(int l, const MeshInterface* MP)=0;
 
+  virtual void RegisterMatrix()=0;
+  virtual void ReInitVector()=0;
+  virtual void ReInitMatrix()=0;
+
   virtual void OutputSettings() const {assert(0);}
   virtual void ConstructInterpolator(MgInterpolatorInterface* I, const MeshTransferInterface* MT)=0;
 

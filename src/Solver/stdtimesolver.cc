@@ -176,7 +176,7 @@ void StdTimeSolver::L2Projection(BasicGhostVector& Gu, const BasicGhostVector& G
   RegisterVector(Gr);
   RegisterVector(Gd);
 
-  MemoryVector();
+  ReInitVector();
 
   GlobalVector& u = GetGV(Gu);
   const GlobalVector& f = GetGV(Gf);

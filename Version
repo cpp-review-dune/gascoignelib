@@ -8,6 +8,11 @@ sondern werden lokal erzeugt, siehe Example/NavierStokes2D
 2) diverses aufgeraeumt
 3) nur noch eine bib: libGascoigneStd.lib
 4) kein Starter mehr
+5) "StdMultiLevelSolver::RegisterVector" merkt sich nur den Namen;
+   zum nachtraeglichen Hinzufuegen von Vektoren gibt es
+	"StdMultiLevelSolver::RegisterVectorAndMemory"
+6) wer mir erklaert, warum die Fehler in Test1 nicht kleiner als 1e-6 sind,
+kriegt ein Bier von mir!
 
 
 Version 17.02.2004

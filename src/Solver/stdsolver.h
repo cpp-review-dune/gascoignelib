@@ -109,8 +109,6 @@ class StdSolver : public virtual SolverInterface
   virtual MatrixInterface* NewMatrix(int ncomp, const std::string& matrixtype); 
   virtual IluInterface* NewIlu(int ncomp, const std::string& matrixtype); 
 
-  virtual void MemoryMatrix();
-
   //
   /// new interface-function for indivisual size of vectors
   //
@@ -152,7 +150,8 @@ class StdSolver : public virtual SolverInterface
 
   void NewMesh(int l, const MeshInterface* MP);
 
-  virtual void MemoryVector();
+  void ReInitVector();
+  void ReInitMatrix();
 
   double clock_vmult() const {return _vm.read();}
   double clock_ilu  () const {return _il.read();}
@@ -198,8 +197,9 @@ class StdSolver : public virtual SolverInterface
   //
   /// vector - manamgement
   //
-
-  void ResizeVector(Gascoigne::GlobalVector* x, std::string type) const;
+    
+    void RegisterMatrix();
+    void ResizeVector(Gascoigne::GlobalVector* x, std::string type) const;
   void RegisterVector(const BasicGhostVector& g) {_NGVA.Register(g,this);}
   Gascoigne::GlobalVector& GetGV(BasicGhostVector& u) const {
     return _NGVA(u);

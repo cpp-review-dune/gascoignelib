@@ -31,6 +31,9 @@ public:
   virtual void ReInit(const ProblemDescriptorInterface& PDX)=0;
   virtual void SetMonitorPtr(Monitor* mon)=0;
 
+  virtual void ReInitMatrix()=0;
+  virtual void ReInitVector()=0;
+
   virtual int nlevels() const=0;
 
   virtual SolverInterface* GetSolver(int l)=0;

@@ -62,25 +62,31 @@ void StdSolver::OutputSettings() const
 
 /*-------------------------------------------------------*/
 
+void StdSolver::RegisterMatrix()
+{
+  const Equation*  EQ = GetProblemDescriptor()->GetEquation();
+  assert(EQ);
+  int ncomp = EQ->ncomp();
+  
+  if (_MAP==NULL)
+    GetMatrixPointer() = NewMatrix(ncomp, _matrixtype);
+  
+  if (_MIP==NULL)
+    GetIluPointer   () = NewIlu   (ncomp, _matrixtype);
+}
+
+/*-------------------------------------------------------*/
+
 void StdSolver::SetProblem(const ProblemDescriptorInterface& PDX)
 {
   _PDX = &PDX;
   assert(_PDX);
-
+  
   const Equation*  EQ = GetProblemDescriptor()->GetEquation();
   assert(EQ);
   int ncomp = EQ->ncomp();
-
+  
   Dat.Init(_paramfile,ncomp);
-
-  if (_MAP==NULL)
-    GetMatrixPointer() = NewMatrix(ncomp, _matrixtype);
-
-  if (_MIP==NULL)
-    GetIluPointer   () = NewIlu   (ncomp, _matrixtype);
- 
-  MemoryVector();
-  MemoryMatrix();
 }
 
 /*-------------------------------------------------------*/
@@ -166,7 +172,7 @@ IluInterface* StdSolver::NewIlu(int ncomp, const string& matrixtype)
 
 /*-------------------------------------------------------*/
 
-void StdSolver::MemoryMatrix() 
+void StdSolver::ReInitMatrix() 
 {
   ConstructPressureFilter();
   SparseStructure SA;
@@ -178,7 +184,7 @@ void StdSolver::MemoryMatrix()
 
 /*-------------------------------------------------------*/
 
-void StdSolver::MemoryVector()
+void StdSolver::ReInitVector()
 {
   int ncomp = GetProblemDescriptor()->GetEquation()->ncomp();
   

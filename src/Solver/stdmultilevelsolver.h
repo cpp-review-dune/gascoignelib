@@ -53,10 +53,6 @@ class StdMultiLevelSolver : public MultiLevelSolverInterface
   virtual void NewMgInterpolator();
   virtual void SolverNewMesh();
 
-  void RegisterVectorLocal(MultiLevelGhostVector& g){
-    _MlVectors.insert(g);
-  } 
-
   virtual void SetComputeLevel(int level) {ComputeLevel=level;}
 
   virtual double NewtonNorm(const MultiLevelGhostVector& u) const {
@@ -76,7 +72,12 @@ class StdMultiLevelSolver : public MultiLevelSolverInterface
 
   std::string GetName() const {return "StdMultiLevelSolver";}
 
+  void RegisterVectorAndMemory(const MultiLevelGhostVector& g);
+  void RegisterVectorAndMemory();
   void RegisterVector(MultiLevelGhostVector& g);
+  void RegisterMatrix();
+  void ReInitMatrix();
+  void ReInitVector();
 
   void BasicInit(const MeshAgentInterface* GMGM, const Gascoigne::ParamFile* paramfile);
 
@@ -95,6 +96,7 @@ class StdMultiLevelSolver : public MultiLevelSolverInterface
   virtual int FinestLevel  ()  const { return nlevels()-1;}
   virtual int CoarsestLevel()  const { return 0;}
 
+  SolverInterface*& GetSolverPointer(int l) {assert(l<_SP.size()); return _SP[l];}
   SolverInterface* GetSolver(int l) {assert(l<_SP.size()); return _SP[l];}
   const SolverInterface* GetSolver(int l) const {assert(l<_SP.size()); return _SP[l];}
   SolverInterface* GetSolver() {assert(_SP.size()==nlevels()); return _SP[FinestLevel()];}

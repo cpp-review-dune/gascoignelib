@@ -96,10 +96,10 @@ void StdMultiLevelSolver::BasicInit(const MeshAgentInterface* MAP, const ParamFi
   _res.SetMultiLevelSolver(this);
   _mg0.SetMultiLevelSolver(this);
   _mg1.SetMultiLevelSolver(this);
-  RegisterVectorLocal(_cor);
-  RegisterVectorLocal(_res);
-  RegisterVectorLocal(_mg0);
-  RegisterVectorLocal(_mg1);
+  RegisterVector(_cor);
+  RegisterVector(_res);
+  RegisterVector(_mg0);
+  RegisterVector(_mg1);
 }
 
 /*-------------------------------------------------------------*/
@@ -110,8 +110,8 @@ void StdMultiLevelSolver::SetProblem(const ProblemDescriptorInterface& PDX)
   for(int level=0; level<nlevels(); ++level)  
     {
       int solverlevel = nlevels()-1-level;
-      assert(_SP[solverlevel]) ;
-      _SP[solverlevel]->SetProblem(PDX);
+      assert(GetSolver(solverlevel)) ;
+      GetSolver(solverlevel)->SetProblem(PDX);
     }
   DataP->nlinfo.control().matrixmustbebuild() = 1;
 }
@@ -134,6 +134,30 @@ SolverInterface* StdMultiLevelSolver::NewSolver(int solverlevel)
 
 void StdMultiLevelSolver::RegisterVector(MultiLevelGhostVector& g) 
 {
+  _MlVectors.insert(g);
+}
+
+/*-------------------------------------------------------------*/
+
+void StdMultiLevelSolver::RegisterVectorAndMemory() 
+{
+  set<MultiLevelGhostVector>::const_iterator p;
+  for(p=_MlVectors.begin(); p!=_MlVectors.end(); p++) 
+    {
+      RegisterVectorAndMemory(*p);
+    }
+}
+
+/*-------------------------------------------------------------*/
+
+void StdMultiLevelSolver::RegisterVectorAndMemory(const MultiLevelGhostVector& g) 
+{
+  if(nlevels()!=_SP.size())
+    {
+      cerr << "StdMultiLevelSolver::RegisterVectorAndMemory(): registriere:\t"<<g<<endl;
+      cerr << "Solvervector not ready\n";
+      assert(0);
+    }
   //     cerr << "*************registriere:\t"<<g<<endl;
   _MlVectors.insert(g);
   for(int level=0; level<nlevels(); ++level)  
@@ -141,9 +165,10 @@ void StdMultiLevelSolver::RegisterVector(MultiLevelGhostVector& g)
       set<MultiLevelGhostVector>::const_iterator p = _MlVectors.begin();
       while(p!=_MlVectors.end()) 
 	{
-	  _SP[level]->RegisterVector(*p++);
+	  GetSolver(level)->RegisterVector(*p++);
 	}
     }
+  ReInitVector();
 }
 
 /*-------------------------------------------------------------*/
@@ -164,17 +189,37 @@ void StdMultiLevelSolver::NewSolvers()
       int solverlevel = nlevels()-1-level;
 
       // new Solvers
-      if(_SP[solverlevel]==NULL) 
+      if(GetSolver(solverlevel)==NULL) 
 	{
-	  _SP[solverlevel] = NewSolver(solverlevel);
- 	  _SP[solverlevel]->BasicInit(solverlevel,_paramfile,MIP);
-	  
-	  set<MultiLevelGhostVector>::const_iterator p = _MlVectors.begin();
-	  while(p!=_MlVectors.end()) 
-	    {
-	      _SP[solverlevel]->RegisterVector(*p++);
-	    }
+	  GetSolverPointer(solverlevel) = NewSolver(solverlevel);
+ 	  GetSolver(solverlevel)->BasicInit(solverlevel,_paramfile,MIP);
 	}
+    }
+}
+
+/*-------------------------------------------------------------*/
+
+void StdMultiLevelSolver::RegisterMatrix()
+{
+  for(int level=0; level<nlevels(); ++level)  
+    {
+      GetSolver(level)->RegisterMatrix();
+    }
+}
+
+void StdMultiLevelSolver::ReInitMatrix()
+{
+  for(int level=0; level<nlevels(); ++level)  
+    {
+      GetSolver(level)->ReInitMatrix();
+    }
+}
+
+void StdMultiLevelSolver::ReInitVector()
+{
+  for(int level=0; level<nlevels(); ++level)  
+    {
+      GetSolver(level)->ReInitVector();
     }
 }
 
@@ -188,7 +233,7 @@ void StdMultiLevelSolver::SolverNewMesh()
       assert(MIP);
 
       int solverlevel = nlevels()-1-level;
-      _SP[solverlevel]->NewMesh(solverlevel,MIP);
+      GetSolver(solverlevel)->NewMesh(solverlevel,MIP);
     }
 }
 
@@ -234,6 +279,11 @@ void StdMultiLevelSolver::ReInit(const ProblemDescriptorInterface& PDX)
   SolverNewMesh();
   NewMgInterpolator();
   SetProblem(PDX);
+  RegisterMatrix();
+  RegisterVectorAndMemory();
+
+  ReInitMatrix();
+  ReInitVector();
 }
 
 /*-------------------------------------------------------------*/
