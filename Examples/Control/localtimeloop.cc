@@ -49,7 +49,7 @@ void LocalTimeLoop::AddNodeVector(string filename)
 	  GetMultiLevelSolver()->GetSolver(l)->ResizeVector(&dat_node[l],"");
  	  GetMultiLevelSolver()->Transfer(l+1,dat_node[l],dat_node[l+1]);
 	}
-      GetMultiLevelSolver()->GetSolver(l)->AddNodeVector("u",&dat_node[l]);
+      GetMultiLevelSolver()->GetSolver(l)->AddNodeVector("U",&dat_node[l]);
     }
 }
 
@@ -59,10 +59,10 @@ void LocalTimeLoop::DeleteNodeVector()
 {
 
   int nlevels = GetMultiLevelSolver()->nlevels();
-  cerr << "deleting vectors" << endl;
+  cerr << "deleting vector" << endl;
   for(int l=nlevels-1;l>=0;l--)
     {
-      GetMultiLevelSolver()->GetSolver(l)->DeleteNodeVector("u");
+      GetMultiLevelSolver()->GetSolver(l)->DeleteNodeVector("U");
     }
 }
 

@@ -20,7 +20,7 @@ LocalEquation::LocalEquation(const ParamFile* paramfile) : Equation()
 
 void LocalEquation::point(double h, const FemFunction& U, FemData& Q, const Vertex2d& v) const
 {
-  assert(Q.size()==1);
+  assert(Q.count("beta"));
   q = &Q["beta"];
   ST.ReInit(h,visc,betax(),betay());
 }

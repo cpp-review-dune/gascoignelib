@@ -8,8 +8,8 @@ using namespace Gascoigne;
 
 void LocalTerminalCondition::SetFemData(FemData& Q) const
 {
-  assert(Q.size()==1);
-  q = &Q["u"];
+  assert(Q.count("U"));
+  q = &Q["U"];
 }
 
 /* ----------------------------------------- */
