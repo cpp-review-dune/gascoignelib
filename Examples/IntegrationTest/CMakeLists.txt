@@ -3,7 +3,9 @@ SET(IntegrationTest_SRC
 )
 
 SET(_SRC ${GASCOIGNESTD_SOURCE_DIR}/Examples/IntegrationTest)
-ADD_CUSTOM_TARGET(COPY ALL cp ${_SRC}/*.param ${_SRC}/*.inp .)
+IF(COPY_PARAMFILES)
+  ADD_CUSTOM_TARGET(COPY ALL cp ${_SRC}/*.param ${_SRC}/*.inp .)
+ENDIF(COPY_PARAMFILES)
 
 ADD_EXECUTABLE(IntegrationTest IntegrationTest_SRC)
 
