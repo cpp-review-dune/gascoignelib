@@ -18,6 +18,7 @@
 #include  "domainrighthandside.h"
 #include  "domainfunctional.h"
 #include  "neumanndata.h"
+#include  "robindata.h"
 
 #include  "diracrighthandside.h"
 
@@ -34,7 +35,9 @@ public:
 
   virtual void Rhs(const DomainRightHandSide& RHS, LocalVector& F, const FemInterface& FEM, const LocalNodeData& Q) const { assert(0);};
   virtual void Form(const Equation& EQ, LocalVector& F, const FemInterface& FEM, const LocalVector& U, const LocalNodeData& Q) const { assert(0);};
+  virtual void BoundaryForm(const RobinData& RD, LocalVector& F, const FemInterface& FEM, const LocalVector& U, int ile, int col, LocalNodeData& Q) const { assert(0); }
   virtual void Matrix(const Equation& EQ, EntryMatrix& E, const FemInterface& FEM, const LocalVector& U, const LocalNodeData& Q) const { assert(0);};
+  virtual void BoundaryMatrix (const RobinData& RD, EntryMatrix& E, const FemInterface& FEM, const LocalVector& U, int ile, int col, const LocalNodeData& Q) const { assert(0); }
   virtual double MassMatrix(EntryMatrix& E, const FemInterface& FEM) const { assert(0); return 0;};
 
   virtual void RhsNeumann(const NeumannData& RHS, LocalVector& F, const FemInterface& FEM, int ile, int col, const LocalNodeData& Q) const {assert(0);}

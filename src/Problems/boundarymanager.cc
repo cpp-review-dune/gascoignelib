@@ -22,6 +22,7 @@ void BoundaryManager::BasicInit(const ParamFile* pf)
   DataFormatHandler DF;
   DF.insert("dirichlet",&coldir);
   DF.insert("neumann"  ,&colneu);
+  DF.insert("robin"    ,&colrob);
   DF.insert("dirichletcomp",&dirvec);
   FileScanner FS(DF,pf,"BoundaryManager");
 

@@ -80,6 +80,36 @@ void CellMeshInterpretor::Form(GlobalVector& f, const GlobalVector& u, const Equ
 
 /* ----------------------------------------- */
 
+void CellMeshInterpretor::BoundaryForm(GlobalVector& f, const GlobalVector& u, const IntSet& Colors, const RobinData& RD, double d) const
+{
+  nmatrix<double> T;
+  
+  GlobalToGlobalData();
+  RD.SetParameterData(__qq);
+  
+  for(IntSet::const_iterator p=Colors.begin();p!=Colors.end();p++)
+    {
+      int col = *p;
+      const IntVector& q = *GetMesh()->CellOnBoundary(col);
+      const IntVector& l = *GetMesh()->LocalOnBoundary(col);
+      for (int i=0; i<q.size(); i++)
+        {
+          int iq  = q[i];
+          int ile = l[i];
+
+          Transformation(T,iq);
+          GetFem()->ReInit(T);
+
+          GlobalToLocal(__U,u,iq);
+
+          GetIntegrator()->BoundaryForm(RD,__F,*GetFem(),__U,ile,col,__Q);
+          LocalToGlobal(f,__F,iq,d);
+        }
+    }
+}
+
+/* ----------------------------------------- */
+
 void CellMeshInterpretor::Matrix(MatrixInterface& A, const GlobalVector& u, const Equation& EQ, double d) const
 {
   nmatrix<double> T;
@@ -95,6 +125,35 @@ void CellMeshInterpretor::Matrix(MatrixInterface& A, const GlobalVector& u, cons
       GlobalToLocal(__U,u,iq);
       GetIntegrator()->Matrix(EQ,__E,*GetFem(),__U,__Q);
       LocalToGlobal(A,__E,iq,d);
+    }
+}
+
+/* ----------------------------------------- */
+
+void CellMeshInterpretor::BoundaryMatrix(MatrixInterface& A, const GlobalVector& u, const IntSet& Colors, const RobinData& RD, double d) const
+{
+  nmatrix<double> T;
+  
+  GlobalToGlobalData();
+  RD.SetParameterData(__qq);
+  
+  for(IntSet::const_iterator p=Colors.begin();p!=Colors.end();p++)
+    {
+      int col = *p;
+      const IntVector& q = *GetMesh()->CellOnBoundary(col);
+      const IntVector& l = *GetMesh()->LocalOnBoundary(col);
+      for (int i=0; i<q.size(); i++)
+        {
+          int iq  = q[i];
+          int ile = l[i];
+          
+          Transformation(T,iq);
+          GetFem()->ReInit(T);
+
+          GlobalToLocal(__U,u,iq);
+          GetIntegrator()->BoundaryMatrix(RD,__E,*GetFem(),__U,ile,col,__Q);
+          LocalToGlobal(A,__E,iq,d);
+        }
     }
 }
 
@@ -173,7 +232,7 @@ void CellMeshInterpretor::Rhs(GlobalVector& f, const DomainRightHandSide& RHS, d
 
 /* ----------------------------------------- */
 
-void CellMeshInterpretor::RhsNeumann(GlobalVector& f, const IntSet& Colors,  const NeumannData& NRHS, double s) const
+void CellMeshInterpretor::RhsNeumann(GlobalVector& f, const IntSet& Colors, const NeumannData& NRHS, double s) const
 {
   nmatrix<double> T;
   

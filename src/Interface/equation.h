@@ -83,29 +83,15 @@ class Equation
     point(h,U,QH,v);
   }
 
-  virtual void pointboundary
-    (double h, const FemFunction& U, const Vertex2d& v, 
-     const Vertex2d& n) const {assert(0);}
-
-  virtual void pointboundary 
-    (double h, const FemFunction& U, const Vertex3d& v, 
-     const Vertex3d& n) const {assert(0);}
-
-  virtual IntSet GetBoundaryColors() const { return IntSet();}
-
   virtual void SetParameterData(LocalParameterData& q) const { }
 
   //
   // ---------------------------------------------
   //
 
-  virtual void Form(VectorIterator b, const FemFunction& U, const TestFunction& N) const {assert(0);}
+  virtual void Form(VectorIterator b, const FemFunction& U, const TestFunction& N) const=0;
 
-  virtual void Matrix(EntryMatrix& A, const FemFunction& U, const TestFunction& M, const TestFunction& N) const {assert(0);}
-
-  virtual void BoundaryResidual(int col, DoubleVector& b, const FemFunction& U, const TestFunction& N) const {assert(0);}
-
-  virtual void BoundaryMatrix(int col, EntryMatrix& D, const FemFunction& U, const TestFunction& M, const TestFunction& N) const {assert(0);}
+  virtual void Matrix(EntryMatrix& A, const FemFunction& U, const TestFunction& M, const TestFunction& N) const=0;
 };
 }
 

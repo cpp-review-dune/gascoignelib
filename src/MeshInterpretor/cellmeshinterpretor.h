@@ -60,7 +60,9 @@ public:
   void Structure(SparseStructureInterface* S) const;
 
   void Form(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const;
+  void BoundaryForm(GlobalVector& f, const GlobalVector& u, const IntSet& Colors, const RobinData& RD, double d) const;
   void Matrix(MatrixInterface& A, const GlobalVector& u, const Equation& EQ, double) const;
+  void BoundaryMatrix(MatrixInterface& A, const GlobalVector& u, const IntSet& Colors, const RobinData& RD, double d) const;
   void MassMatrix(MatrixInterface& M) const;
 
   void ComputeError(const GlobalVector& u, LocalVector& err, const ExactSolution* ES) const;

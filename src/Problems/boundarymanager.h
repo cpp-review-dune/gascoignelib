@@ -32,7 +32,7 @@ class BoundaryManager
 
  protected:
 
-  std::set<int>                 coldir, colneu;
+  std::set<int>                 coldir, colneu, colrob;
   std::map<int,IntVector>       dirvec;
 
  public:
@@ -54,10 +54,13 @@ class BoundaryManager
     {
       colneu.insert(col);
     }
+  void AddRobin(int col)    
+    {
+      colrob.insert(col);
+    }
 
   std::ostream& print(std::ostream& s) const;
 
-  virtual const IntSet&    GetNeumannColors      (     ) const { return colneu;}
   virtual const IntSet&    GetDirichletColors    (     ) const { return coldir;}
   virtual const IntVector& GetDirichletComponents(int c) const 
     { 
@@ -71,6 +74,8 @@ class BoundaryManager
 	}
       return p->second;
     }
+  virtual const IntSet&    GetNeumannColors      (     ) const { return colneu;}
+  virtual const IntSet&    GetRobinColors        (     ) const { return colrob;}
 };
 }
 

@@ -59,13 +59,12 @@ void GalerkinIntegrator<DIM>::Rhs(const DomainRightHandSide& f, LocalVector& F, 
 template<int DIM>
 void GalerkinIntegrator<DIM>::RhsNeumann(const NeumannData& f, LocalVector& F, const FemInterface& FEM, int ile, int col, const LocalNodeData& Q) const
 {
-  assert(DIM==2);
   F.ReInit(f.GetNcomp(),FEM.n());
 
   const IntegrationFormulaInterface& IF = BoundaryFormula();
   F.zero();
   Vertex<DIM> x, n;
-  Vertex1d xi;
+  Vertex<DIM-1> xi;
 
   for (int k=0; k<IF.n(); k++)
     {
@@ -113,6 +112,38 @@ void GalerkinIntegrator<DIM>::Form(const Equation& EQ, LocalVector& F, const Fem
 	  FEM.init_test_functions(NN,weight,i);
 	  EQ.Form(F.start(i),UH,NN);
 	}
+    }
+}
+
+/* ----------------------------------------- */
+
+template<int DIM>
+void GalerkinIntegrator<DIM>::BoundaryForm(const RobinData& RD, LocalVector& F, const FemInterface& FEM, const LocalVector& U, int ile, int col, LocalNodeData& Q) const
+{
+  F.ReInit(RD.GetNcomp(),FEM.n());
+
+  const IntegrationFormulaInterface& IF = BoundaryFormula();
+
+  F.zero();
+  Vertex<DIM> x,n;
+  Vertex<DIM-1> xi;
+
+  for (int k=0; k<IF.n(); k++)
+    {
+      IF.xi(xi,k);
+      FEM.point_boundary(ile,xi);
+      BasicIntegrator::universal_point(FEM,UH,U);
+      BasicIntegrator::universal_point(FEM,QH,Q);
+      FEM.x(x);
+      FEM.normal(n);
+      double  h = FEM.G();
+      double  weight = IF.w(k)*h;
+      RD.pointboundary(h,UH,QH,x,n);
+      for (int i=0;i<FEM.n();i++)
+        {
+          FEM.init_test_functions(NN,weight,i);
+          RD.Form(F.start(i),UH,NN,col);
+        }
     }
 }
 
@@ -192,6 +223,48 @@ void GalerkinIntegrator<DIM>::Matrix(const Equation& EQ, EntryMatrix& E, const F
 	      EQ.Matrix(E,UH,MM,NNN[i]);
 	    }
 	}
+    }
+}
+
+/*-----------------------------------------------------------*/
+
+template<int DIM>
+void GalerkinIntegrator<DIM>::BoundaryMatrix (const RobinData& RD, EntryMatrix& E, const FemInterface& FEM, const LocalVector& U, int ile, int col, const LocalNodeData& Q) const
+{
+  NNN.resize(FEM.n());
+  E.SetDimensionDof(FEM.n(),FEM.n());
+  E.SetDimensionComp(U.ncomp(),U.ncomp());
+  E.resize();
+  E.zero();
+
+  const IntegrationFormulaInterface& IF = BoundaryFormula();
+
+  Vertex<DIM> x,n;
+  Vertex<DIM-1> xi;
+  for (int k=0; k<IF.n(); k++)
+    {
+      IF.xi(xi,k);
+      FEM.point_boundary(ile,xi);
+      BasicIntegrator::universal_point(FEM,UH,U);
+      BasicIntegrator::universal_point(FEM,QH,Q);
+      FEM.x(x);
+      FEM.normal(n);
+      double  h = FEM.G();
+      double  weight = IF.w(k)*h;
+      RD.pointboundary(h,UH,QH,x,n);
+      for (int i=0;i<FEM.n();i++)
+        {
+          FEM.init_test_functions(NNN[i],weight,i);
+        }
+      for (int j=0;j<FEM.n();j++)
+        {
+          FEM.init_test_functions(MM,1.,j);
+          for (int i=0;i<FEM.n();i++)
+            {
+              E.SetDofIndex(i,j);
+              RD.Matrix(E,UH,MM,NNN[i],col);
+            }
+        }
     }
 }
 

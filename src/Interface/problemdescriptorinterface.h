@@ -10,6 +10,7 @@
 #include  "righthandsidedata.h"
 #include  "dirichletdata.h"
 #include  "neumanndata.h"
+#include  "robindata.h"
 #include  "exactsolution.h"
 #include  "initialcondition.h"
 #include  "boundarymanager.h"
@@ -45,6 +46,7 @@ public:
   virtual const RightHandSideData*  GetRightHandSideData() const=0;
   virtual const DirichletData*      GetDirichletData    () const=0;
   virtual const NeumannData*        GetNeumannData      () const=0;
+  virtual const RobinData*          GetRobinData        () const=0;
   virtual const InitialCondition*   GetInitialCondition () const=0;
   virtual const ExactSolution*   GetExactSolution   () const=0;
   virtual const Equation*        GetEquation        () const=0;

@@ -19,6 +19,7 @@ class ProblemDescriptorBase : public ProblemDescriptorInterface
   RightHandSideData  *RHS;
   DirichletData      *DD;
   NeumannData        *ND;
+  RobinData          *RD;
   
   const ParamFile *_paramfile;
   
@@ -33,20 +34,22 @@ class ProblemDescriptorBase : public ProblemDescriptorInterface
   RightHandSideData*& GetRightHandSideDataPointer() { return RHS;}
   DirichletData*& GetDirichletDataPointer() { return DD;}
   NeumannData*& GetNeumannDataPointer() { return ND;}
+  RobinData*& GetRobinDataPointer() { return RD; }
 
   BoundaryManager* GetBoundaryManager () { return BM;}
 
  public:
 
-  ProblemDescriptorBase() : EQ(NULL),BM(NULL),ES(NULL),IC(NULL),RHS(NULL),DD(NULL),ND(NULL),_paramfile(NULL) {}
+  ProblemDescriptorBase() : EQ(NULL),BM(NULL),ES(NULL),IC(NULL),RHS(NULL),DD(NULL),ND(NULL),RD(NULL),_paramfile(NULL) {}
   ~ProblemDescriptorBase() {
-    if (EQ!=NULL)   { delete EQ; EQ=NULL;}
-    if (BM!=NULL)   { delete BM; BM=NULL;}
-    if (ES!=NULL)   { delete ES; ES=NULL;}
-    if (IC!=NULL)   { delete IC; IC=NULL;}
+    if (EQ!=NULL)   { delete EQ;  EQ=NULL;}
+    if (BM!=NULL)   { delete BM;  BM=NULL;}
+    if (ES!=NULL)   { delete ES;  ES=NULL;}
+    if (IC!=NULL)   { delete IC;  IC=NULL;}
     if (RHS!=NULL)  { delete RHS; RHS=NULL;}
-    if (DD!=NULL)   { delete DD; DD=NULL;}
-    if (ND!=NULL)   { delete ND; ND=NULL;}
+    if (DD!=NULL)   { delete DD;  DD=NULL;}
+    if (ND!=NULL)   { delete ND;  ND=NULL;}
+    if (RD!=NULL)   { delete RD;  RD=NULL;}
   }
 
   std::ostream& OutputSettings(std::ostream& os) const {
@@ -55,6 +58,7 @@ class ProblemDescriptorBase : public ProblemDescriptorInterface
     if(RHS) os << "Rhs:             " << RHS->GetName() << std::endl;
     if(DD)  os << "DirichletData:   " << DD->GetName() << std::endl;
     if(ND)  os << "NeumannData:     " << ND->GetName() << std::endl;
+    if(RD)  os << "RobinData:       " << RD->GetName() << std::endl;
     if(ES)  os << "ExactSolution:   " << ES->GetName() << std::endl;
     if(IC)  os << "InitialCondition:" << IC->GetName() << std::endl;
     return os;
@@ -77,6 +81,7 @@ class ProblemDescriptorBase : public ProblemDescriptorInterface
   const RightHandSideData*  GetRightHandSideData() const { return  RHS;}
   const DirichletData*      GetDirichletData()     const { return  DD;}
   const NeumannData*        GetNeumannData()       const { return  ND;}
+  const RobinData*          GetRobinData()         const { return  RD;}
   const InitialCondition*   GetInitialCondition() const { return IC;}
   const ExactSolution*   GetExactSolution   () const { return ES;}
   const Equation*        GetEquation        () const { return EQ;}
@@ -88,6 +93,7 @@ class ProblemDescriptorBase : public ProblemDescriptorInterface
     if (RHS) RHS -> SetTime(time,dt);
     if (DD)  DD  -> SetTime(time,dt);
     if (ND)  ND  -> SetTime(time,dt);
+    if (RD)  RD  -> SetTime(time,dt);
     if (IC)  IC  -> SetTime(time,dt);
   }
 };

@@ -509,6 +509,13 @@ void StdSolver::Form(GlobalVector& y, const GlobalVector& x, double d) const
   assert(EQ);
   GetMeshInterpretor()->Form(y,x,*EQ,d);
 
+  const RobinData* RD = GetProblemDescriptor()->GetRobinData();
+  if(RD)
+  {
+    const BoundaryManager* BM = GetProblemDescriptor()->GetBoundaryManager();
+    GetMeshInterpretor()->BoundaryForm(y,x,BM->GetRobinColors(),*RD,d);
+  }
+
   HNZero(x);
   HNZeroData();
   HNDistribute(y);
@@ -748,6 +755,13 @@ void StdSolver::AssembleMatrix(const BasicGhostVector& gu, double d)
   HNAverageData();
 
   GetMeshInterpretor()->Matrix(*GetMatrix(),u,*GetProblemDescriptor()->GetEquation(),d);
+  
+  const RobinData* RD = GetProblemDescriptor()->GetRobinData();
+  if(RD)
+  {
+    const BoundaryManager* BM = GetProblemDescriptor()->GetBoundaryManager();
+    GetMeshInterpretor()->BoundaryMatrix(*GetMatrix(),u,BM->GetRobinColors(),*RD,d);
+  }
 
   DirichletMatrix();
   HNZero(gu);
