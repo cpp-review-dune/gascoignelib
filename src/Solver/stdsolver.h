@@ -108,8 +108,8 @@ class StdSolver : public virtual SolverInterface
 
   virtual MeshInterpretorInterface* NewMeshInterpretor(int dimension, const std::string& discname);
 
-  virtual MatrixInterface* NewMatrix(int ncomp, const string& matrixtype); 
-  virtual IluInterface* NewIlu(int ncomp, const string& matrixtype); 
+  virtual MatrixInterface* NewMatrix(int ncomp, const std::string& matrixtype); 
+  virtual IluInterface* NewIlu(int ncomp, const std::string& matrixtype); 
 
   virtual void MemoryMatrix();
 
@@ -198,7 +198,7 @@ class StdSolver : public virtual SolverInterface
   /// vector - manamgement
   //
 
-  void ResizeVector(GlobalVector* x, string type) const;
+  void ResizeVector(GlobalVector* x, std::string type) const;
   void RegisterVector(const BasicGhostVector& g) {_NGVA.Register(g,this);}
   GlobalVector& GetGV(BasicGhostVector& u) const {
     return _NGVA(u);

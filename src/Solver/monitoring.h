@@ -9,7 +9,7 @@ class Monitoring
 {
  protected:
 
-  vector<nvector<double> > Juh, Je;
+  std::vector<nvector<double> > Juh, Je;
   nvector<double>          eta, nnodes, ncells;
   nvector<double>          Ju;
   int                      niter;

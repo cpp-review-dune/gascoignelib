@@ -15,19 +15,17 @@
 #include  <string>
 #include  <map>
 
-using namespace std;
-
 template<class T>
 class PtrMgr
 {
 public:
 
-  typedef typename map<string,T*>::const_iterator const_iterator;
-  typedef typename map<string,T*>::iterator iterator;
+  typedef typename std::map<std::string,T*>::const_iterator const_iterator;
+  typedef typename std::map<std::string,T*>::iterator iterator;
 
 private:
 
-  map<string,T*>  _m;
+  std::map<std::string,T*>  _m;
 
 protected:
 
@@ -45,12 +43,12 @@ PtrMgr() {}
   }
 }
 
- const T* Get(const string& name) const {
+ const T* Get(const std::string& name) const {
    const_iterator p = _m.find(name);
    assert(p!=_m.end());
    return *p;
  }
- T*& GetPointer(const string& name) {
+ T*& GetPointer(const std::string& name) {
    return _m[name];
  }
  const_iterator first() const {

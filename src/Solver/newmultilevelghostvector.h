@@ -15,8 +15,6 @@
 #include  "basicghostvector.h"
 #include  "multilevelsolverinterface.h"
 
-using namespace std;
-
 class NewMultiLevelGhostVector : public BasicGhostVector
 {
 private:
@@ -34,9 +32,9 @@ public:
 //
 
   NewMultiLevelGhostVector() : __S(NULL), BasicGhostVector() {}
-  NewMultiLevelGhostVector(const string& name) : __S(NULL), BasicGhostVector(name) {}
-  NewMultiLevelGhostVector(const string& name, const string& type) : __S(NULL), BasicGhostVector(name,type) {}
-  NewMultiLevelGhostVector(const string& name, const string& type, const MultiLevelSolverInterface* S) : __S(S), BasicGhostVector(name,type) {}
+  NewMultiLevelGhostVector(const std::string& name) : __S(NULL), BasicGhostVector(name) {}
+  NewMultiLevelGhostVector(const std::string& name, const std::string& type) : __S(NULL), BasicGhostVector(name,type) {}
+  NewMultiLevelGhostVector(const std::string& name, const std::string& type, const MultiLevelSolverInterface* S) : __S(S), BasicGhostVector(name,type) {}
   NewMultiLevelGhostVector(const NewMultiLevelGhostVector& v) : BasicGhostVector(v) {
     SetMultiLevelSolver(v.GetMultiLevelSolver());
   }
@@ -70,8 +68,8 @@ public:
     return *this;
   }
 
-  friend ostream& operator<<(ostream& os, const NewMultiLevelGhostVector& g) {
-    os << "size:\t" << g.n() << endl;
+  friend std::ostream& operator<<(std::ostream& os, const NewMultiLevelGhostVector& g) {
+    os << "size:\t" << g.n() << std::endl;
     os << dynamic_cast<const BasicGhostVector&>(g);
     return os;
   }

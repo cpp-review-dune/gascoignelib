@@ -2,6 +2,8 @@
 #include  "stdio.h"
 #include  "stringutil.h"
 
+using namespace std;
+
 /***************************************************/
 
 void DataFormatHandler::insert(const string& nm, string* pos)

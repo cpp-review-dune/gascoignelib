@@ -16,7 +16,6 @@
 #include  "gascoigne.h"
 #include  "solverinterface.h"
 
-using namespace std;
 using namespace Gascoigne;
 
 class NewGhostVector : public BasicGhostVector
@@ -36,10 +35,10 @@ public:
 //
 
   NewGhostVector() : __S(NULL), BasicGhostVector() {}
-  NewGhostVector(const string& name) : __S(NULL), BasicGhostVector(name) {}
-  NewGhostVector(const string& name, const string& type) : __S(NULL), BasicGhostVector(name,type) {}
-  NewGhostVector(const SolverInterface* S, const string& name) : __S(S), BasicGhostVector(name) {}
-  NewGhostVector(const SolverInterface* S, const string& name, const string& type) : __S(S), BasicGhostVector(name,type) {}
+  NewGhostVector(const std::string& name) : __S(NULL), BasicGhostVector(name) {}
+  NewGhostVector(const std::string& name, const std::string& type) : __S(NULL), BasicGhostVector(name,type) {}
+  NewGhostVector(const SolverInterface* S, const std::string& name) : __S(S), BasicGhostVector(name) {}
+  NewGhostVector(const SolverInterface* S, const std::string& name, const std::string& type) : __S(S), BasicGhostVector(name,type) {}
   NewGhostVector(const NewGhostVector& v) : BasicGhostVector(v) {
     SetSolver(v.GetSolver());
   }
@@ -53,8 +52,8 @@ public:
     __S->GetGV(*this);
   }
 
-  friend ostream& operator<<(ostream& os, const NewGhostVector& g) {
-    os << "Solver:\t" << g.GetSolver() << endl;
+  friend std::ostream& operator<<(std::ostream& os, const NewGhostVector& g) {
+    os << "Solver:\t" << g.GetSolver() << std::endl;
     os << dynamic_cast<const BasicGhostVector&>(g);
     return os;
   }

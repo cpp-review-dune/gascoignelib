@@ -11,18 +11,18 @@ using namespace Gascoigne;
 class FileScanner
 {
   DataFormatHandler& DH;
-  string             blocksymbol;
+  std::string        blocksymbol;
   bool               complain;
 
-  void FormatToValue(const vector<string>& words);
-  void print(const string& blockname) const;
-  void _assert(bool b, const vector<string>& words) const;
+  void FormatToValue(const std::vector<std::string>& words);
+  void print(const std::string& blockname) const;
+  void _assert(bool b, const std::vector<std::string>& words) const;
   
 public:
   
-  FileScanner(DataFormatHandler& D, const ParamFile* pf, const string& b="");
+  FileScanner(DataFormatHandler& D, const ParamFile* pf, const std::string& b="");
   FileScanner(DataFormatHandler& D);
-  void readfile(const ParamFile* pf, const string& blockname);
+  void readfile(const ParamFile* pf, const std::string& blockname);
   void NoComplain() { complain=0; }
 };
 

@@ -14,6 +14,8 @@
 #include  <stdio.h>
 #include  "giota.h"
 
+using namespace std;
+
 /*------------------------------------------------------*/
 
 HierarchicalMesh2d::HierarchicalMesh2d() 

@@ -105,7 +105,7 @@ void Monitor::set_directory(const std::string& dir)
   nfile.close();
   sprintf (message,"");
 
-  cout << "set_directory:" << protokoll <<  "#" << endl;
+  //cout << "set_directory:" << protokoll <<  "#" << endl;
 }
 
 /*****************************************************************/

@@ -64,8 +64,8 @@ protected:
 
   // new vectors
 
-  virtual std::string Solve(NewMultiLevelGhostVector& u, NewMultiLevelGhostVector& f, string name="Results/solve");
-  virtual void Output(const NewMultiLevelGhostVector& u, string name="Results/solve") const;
+  virtual std::string Solve(NewMultiLevelGhostVector& u, NewMultiLevelGhostVector& f, std::string name="Results/solve");
+  virtual void Output(const NewMultiLevelGhostVector& u, std::string name="Results/solve") const;
 
   virtual void ComputeGlobalErrors(const NewMultiLevelGhostVector& u);
 

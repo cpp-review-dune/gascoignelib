@@ -66,7 +66,7 @@ class SolverInterface
   /// vector - manamgement
   //
 
-  virtual void ResizeVector(GlobalVector* x, string type) const=0;
+  virtual void ResizeVector(GlobalVector* x, std::string type) const=0;
   virtual void RegisterVector(const BasicGhostVector& g)=0;
   virtual GlobalVector& GetGV(BasicGhostVector& u) const=0;
   virtual const GlobalVector& GetGV(const BasicGhostVector& u) const=0;

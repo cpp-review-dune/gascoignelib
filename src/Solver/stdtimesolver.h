@@ -34,7 +34,7 @@ protected:
   const TimePattern& GetTimePattern() const {return _TP;}
   TimePattern& GetTimePattern() {return _TP;}
 
-  virtual MatrixInterface* NewMassMatrix(int ncomp, const string& matrixtype);
+  virtual MatrixInterface* NewMassMatrix(int ncomp, const std::string& matrixtype);
   void MemoryMatrix();
 
 public:

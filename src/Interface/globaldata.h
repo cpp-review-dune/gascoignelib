@@ -13,7 +13,6 @@
 
 #include "gascoigne.h"
 
-using namespace std;
 using namespace Gascoigne;
 
 class GlobalData

@@ -15,7 +15,6 @@
 #include  "paramfile.h"
 
 using namespace Gascoigne;
-using namespace std;
 
 /*---------------------------------------------------*/
 
@@ -26,11 +25,11 @@ class HierarchicalMesh : public MeshInterface
 
   /*  typedef  */
 
-  typedef  pair<int,int>      pint;
+  typedef  std::pair<int,int>      pint;
   typedef  triple<int,int,int>     tint;
   typedef  fixarray<2,int>         EdgeVector;
   typedef  fixarray<4,int>         FaceVector;
-  typedef  vector<Edge>       EdgeVec;
+  typedef  std::vector<Edge>       EdgeVec;
   typedef  IntSet::iterator        IntSetIt;   
   typedef  IntSet::const_iterator  IntSetCIt;
  
@@ -90,15 +89,15 @@ class HierarchicalMesh : public MeshInterface
   virtual IntVector Kinder(const int i) const
     {assert(0);}
     
-  void SetParameters(string gridname, int patchdepth, int epatcher);
-  void ReadFile(const string& gridname);
+  void SetParameters(std::string gridname, int patchdepth, int epatcher);
+  void ReadFile(const std::string& gridname);
   void ReadParameters(const ParamFile* pf);
   void global_refine  (int k);
   void random_refine  (double, int k=1);
   void random_patch_refine  (double, int k=1);
   void random_double_patch_refine  (double, int k=1);
   void clear_transfer_lists();
-  virtual void   write_gup(const string&) const =0;
+  virtual void   write_gup(const std::string&) const =0;
 
   virtual int dimension()       const { return 0;}
   virtual int ncells ()         const =0;
@@ -107,22 +106,22 @@ class HierarchicalMesh : public MeshInterface
   virtual IntVector GetVertices(int c) const=0;
   
 
-  void InitShapes(const set<vector<string> >&  curved);
+  void InitShapes(const std::set<std::vector<std::string> >&  curved);
   bool CellIsCurved(int iq) const  { return GetBoundaryCellOfCurved(iq)!=-1;}
 
-  virtual set<int> GetColors() const=0;
+  virtual std::set<int> GetColors() const=0;
 
-  virtual void read_inp (const string&)=0;
-  virtual void read_gup (const string&)=0;
+  virtual void read_inp (const std::string&)=0;
+  virtual void read_gup (const std::string&)=0;
   virtual void refine(const IntVector&, const IntVector&)=0;
   virtual void patch_refine(IntVector&, IntVector&)=0;
   virtual void vertex_patch_refine(IntVector& ref, IntVector& coarse);
   virtual void vertex_patch_refine(IntVector&);
-  virtual void GetAwakePatchs(set<int>&) const =0;
-  virtual void GetAwakeCells(set<int>&) const =0;
+  virtual void GetAwakePatchs(std::set<int>&) const =0;
+  virtual void GetAwakeCells(std::set<int>&) const =0;
   virtual void ConstructQ2PatchMesh(IntVector& pm) const=0;
-  virtual set<int> CellNeighbours(int i) const 
-    { cerr << "no CellNeighbours"; abort();}
+  virtual std::set<int> CellNeighbours(int i) const 
+    { std::cerr << "no CellNeighbours"; abort();}
 
   virtual void NewCurvedShapes();
   virtual int  GetBoundaryCellOfCurved(int iq) const { return -1;}

@@ -19,7 +19,7 @@ class LocalTimeLoop : public StdTimeLoop
 {
 private:
 
-  vector<GlobalVector>  dat_node;
+  std::vector<GlobalVector>  dat_node;
 
 protected:
 
@@ -34,12 +34,12 @@ public:
   LocalTimeLoop() : StdTimeLoop() {}
   void BasicInit(const ParamFile* paramfile);
 
-  void AddNodeVector(string filename);
+  void AddNodeVector(std::string filename);
   void NewMesh(const ProblemDescriptorInterface* PD);
 
-  void init(string,int);
-  void forward(string iname, int first, int last, const ProblemDescriptorInterface* PD);
-  void backward(string iname, string name, int first, int last, const ProblemDescriptorInterface* PD);
+  void init(std::string,int);
+  void forward(std::string iname, int first, int last, const ProblemDescriptorInterface* PD);
+  void backward(std::string iname, std::string name, int first, int last, const ProblemDescriptorInterface* PD);
 
 };
 

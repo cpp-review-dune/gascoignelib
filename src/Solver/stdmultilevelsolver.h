@@ -19,25 +19,22 @@
 #include  "mginterpolatorinterface.h"
 #include  "newmultilevelghostvector.h"
 
-
-using namespace std;
-
 /*-------------------------------------------------------------*/
 
 class StdMultiLevelSolver : public MultiLevelSolverInterface
 {
   private :
 
-  vector<SolverInterface*>  _SP;
+  std::vector<SolverInterface*>  _SP;
   const MeshAgentInterface* _MAP;
-  vector<MgInterpolatorInterface*>   _Interpolator;
+  std::vector<MgInterpolatorInterface*>   _Interpolator;
 
   protected :
 
   const MeshAgentInterface* GetMeshAgent() const {return _MAP;}
 
   mutable NewMultiLevelGhostVector _cor, _res, _mg0, _mg1;
-  set<NewMultiLevelGhostVector>  _MlVectors;
+  std::set<NewMultiLevelGhostVector>  _MlVectors;
 
   mutable StopWatch   _clock_residual, _clock_solve;
 
@@ -61,7 +58,7 @@ class StdMultiLevelSolver : public MultiLevelSolverInterface
   virtual double NewtonNorm(const NewMultiLevelGhostVector& u) const {
     return GetSolver(ComputeLevel)->NewtonNorm(u(ComputeLevel));
   }
-  virtual void mgstep(vector<double>& res, vector<double>& rw, int l, int maxl, int minl, string& p0, string p, NewMultiLevelGhostVector& u, NewMultiLevelGhostVector& b, NewMultiLevelGhostVector& v);
+  virtual void mgstep(std::vector<double>& res, std::vector<double>& rw, int l, int maxl, int minl, std::string& p0, std::string p, NewMultiLevelGhostVector& u, NewMultiLevelGhostVector& b, NewMultiLevelGhostVector& v);
 
   virtual void Cg   (NewMultiLevelGhostVector& x, const NewMultiLevelGhostVector& f, CGInfo& info);
   virtual void Gmres(NewMultiLevelGhostVector& x, const NewMultiLevelGhostVector& f, CGInfo& info);
@@ -73,7 +70,7 @@ class StdMultiLevelSolver : public MultiLevelSolverInterface
   StdMultiLevelSolver();
   ~StdMultiLevelSolver();
 
-  string GetName() const {return "StdMultiLevelSolver";}
+  std::string GetName() const {return "StdMultiLevelSolver";}
 
   void RegisterVector(NewMultiLevelGhostVector& g) {
 //     cerr << "*************registriere:\t"<<g<<endl;
@@ -86,7 +83,7 @@ class StdMultiLevelSolver : public MultiLevelSolverInterface
 
   // Zugriff
 
-  virtual void SetState(const string& s) {
+  virtual void SetState(const std::string& s) {
     for(int l=0;l<_SP.size();l++) _SP[l]->SetState(s);
   }
 
@@ -112,7 +109,7 @@ class StdMultiLevelSolver : public MultiLevelSolverInterface
 
   // neue vektoren
 
-  string Solve(int level, NewMultiLevelGhostVector& x, const NewMultiLevelGhostVector& b);
+  std::string Solve(int level, NewMultiLevelGhostVector& x, const NewMultiLevelGhostVector& b);
   void InterpolateSolution(NewMultiLevelGhostVector& u, const GlobalVector& uold) const;
 
   virtual double NewtonResidual(NewMultiLevelGhostVector& y, const NewMultiLevelGhostVector& x, const NewMultiLevelGhostVector& b) const;

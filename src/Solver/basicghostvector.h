@@ -14,17 +14,15 @@
 #include  <string>
 #include  <iostream>
 
-using namespace std;
-
-class BasicGhostVector : public string
+class BasicGhostVector : public std::string
 {
 private:
 
-  string _type;
+  std::string _type;
 
 protected:
 
-  string& GetName() {return *this;}
+  std::string& GetName() {return *this;}
 
 public:
 
@@ -34,23 +32,23 @@ public:
 //
 
   BasicGhostVector() : _type("node") {}
-  BasicGhostVector(const string& name) : string(name), _type("node") {}
-  BasicGhostVector(const string& name, const string& type) : string(name), _type(type) {}
+  BasicGhostVector(const std::string& name) : std::string(name), _type("node") {}
+  BasicGhostVector(const std::string& name, const std::string& type) : std::string(name), _type(type) {}
   BasicGhostVector(const BasicGhostVector& v) {
     SetName(v.GetName());
     SetType(v.GetType());
   }
   virtual ~BasicGhostVector() {}
 
-  void SetName(const string& name) {GetName()=name;}
-  void SetType(const string& type) {_type=type;}
+  void SetName(const std::string& name) {GetName()=name;}
+  void SetType(const std::string& type) {_type=type;}
 
-  const string& GetName() const {return *this;}
-  const string& GetType() const {return _type;}
+  const std::string& GetName() const {return *this;}
+  const std::string& GetType() const {return _type;}
 
-  friend ostream& operator<<(ostream& os, const BasicGhostVector& g) {
-    os << "Name:\t" << g.GetName() << endl;
-    os << "Type:\t" << g.GetType() << endl;
+  friend std::ostream& operator<<(std::ostream& os, const BasicGhostVector& g) {
+    os << "Name:\t" << g.GetName() << std::endl;
+    os << "Type:\t" << g.GetType() << std::endl;
     return os;
   }
 

@@ -16,10 +16,9 @@
 #include  "newmultilevelghostvector.h"
 #include  "stlio.h"
 
-using namespace std;
 using namespace Gascoigne;
 
-class NewGhostVectorAgent : public map<NewGhostVector,GlobalVector*>
+class NewGhostVectorAgent : public std::map<NewGhostVector,GlobalVector*>
 {
 public:
 
@@ -48,7 +47,7 @@ public:
 
   void Register(const BasicGhostVector& mg, const SolverInterface* S) 
     {
-      const string& name = mg.GetName();
+      const std::string& name = mg.GetName();
       NewGhostVector g(S,name,mg.GetType());
       iterator p = find(mg);
       if(p!=end())

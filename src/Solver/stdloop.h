@@ -20,11 +20,11 @@ class StdLoop : public BasicLoop
 {
 private:
 
-  vector<const Functional*>   _FV;
+  std::vector<const Functional*>   _FV;
 
 protected:
 
-  const vector<const Functional*>& GetFunctionals() const { return _FV;}
+  const std::vector<const Functional*>& GetFunctionals() const { return _FV;}
 
   mutable StopWatch   _clock_newmesh, _clock_solve, _clock_write;
 
@@ -39,7 +39,7 @@ protected:
 
   // new vectors
 
-  nvector<double> ComputeFunctionals(NewMultiLevelGhostVector& f, NewMultiLevelGhostVector& u, const vector<const Functional*>& J) const;
+  nvector<double> ComputeFunctionals(NewMultiLevelGhostVector& f, NewMultiLevelGhostVector& u, const std::vector<const Functional*>& J) const;
 
   nvector<double> GetExactValues() const;
 
@@ -55,7 +55,7 @@ public:
 
   void BasicInit(const ParamFile* paramfile);
 
-  void SetFunctionals(const vector<const Functional*>& fv) { _FV =  fv;}
+  void SetFunctionals(const std::vector<const Functional*>& fv) { _FV =  fv;}
 
   void run(const ProblemDescriptorInterface* PD);
   void ClockOutput() const;
