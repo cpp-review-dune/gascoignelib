@@ -76,17 +76,17 @@ protected:
 
   // new vectors
 
-  virtual std::string Solve(MultiLevelGhostVector& u, MultiLevelGhostVector& f, std::string name);
-  virtual std::string Solve(MultiLevelGhostVector& u, MultiLevelGhostVector& f){
-     return Solve(u, f, _s_resultsdir+"/solve");
-  }
+  virtual std::string Solve(MultiLevelGhostVector& u, MultiLevelGhostVector& f, std::string name); 
+  virtual std::string Solve(MultiLevelGhostVector& u, MultiLevelGhostVector& f){ 
+     return Solve(u, f, _s_resultsdir+"/solve"); 
+  } 
 
   virtual void PrintMeshInformation(int outputlevel=0) const;
 
-  virtual void Output(const MultiLevelGhostVector& u, std::string name) const;
-  virtual void Output(const MultiLevelGhostVector& u){
-    Output(u, _s_resultsdir+"/solve");
-  }  
+  virtual void Output(const MultiLevelGhostVector& u, std::string name) const; 
+  virtual void Output(const MultiLevelGhostVector& u){ 
+    Output(u, _s_resultsdir+"/solve"); 
+  }   
 
   virtual void ComputeGlobalErrors(const MultiLevelGhostVector& u);
 
