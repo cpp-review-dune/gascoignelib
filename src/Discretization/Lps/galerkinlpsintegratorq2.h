@@ -17,7 +17,7 @@
 namespace Gascoigne
 {
 template<int DIM>
-class GalerkinLpsIntegratorQ2 : public GalerkinIntegrator<DIM>
+class GalerkinLpsIntegratorQ2 : virtual public GalerkinIntegrator<DIM>
 {
 protected:
 
@@ -29,7 +29,24 @@ public:
 ////  Con(De)structor 
 //
 
-  GalerkinLpsIntegratorQ2<DIM>() : GalerkinIntegrator<DIM>() {}
+  GalerkinLpsIntegratorQ2<DIM>() {
+    if (DIM==2)
+      {
+	FormFormulaPointer() = new QuadGauss9;
+	ErrorFormulaPointer() = new QuadGauss16;
+	BoundaryFormulaPointer() = new LineGauss3;
+      }
+    else if (DIM==3)
+      {
+	FormFormulaPointer() = new HexGauss27;
+	ErrorFormulaPointer() = new HexGauss64;
+	BoundaryFormulaPointer() = new QuadGauss9;
+      }
+    assert(FormFormulaPointer());
+    assert(ErrorFormulaPointer());
+    assert(BoundaryFormulaPointer());
+  }
+  
   ~GalerkinLpsIntegratorQ2<DIM>() {}
 
   std::string GetName() const {return "GalerkinLpsIntegratorQ2";}

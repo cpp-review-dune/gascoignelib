@@ -17,7 +17,7 @@ namespace Gascoigne
 {
 
 template<int DIM>
-class GalerkinIntegratorQ2 : public GalerkinIntegrator<DIM>
+class GalerkinIntegratorQ2 : virtual public GalerkinIntegrator<DIM>
 {
 public:
 
