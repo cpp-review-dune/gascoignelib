@@ -6,6 +6,7 @@ Version 21.02.2004
 1) gekruemmte raender sind nicht mehr in der bibliothek,
 sondern werden lokal erzeugt, siehe Example/NavierStokes2D
 2) diverses aufgeraeumt
+3) nur noch eine bib: libGascoigneStd.lib
 
 
 Version 17.02.2004

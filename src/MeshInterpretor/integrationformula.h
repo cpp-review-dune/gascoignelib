@@ -102,12 +102,6 @@ public:  LineGauss10();};
 
 /*------------------------------------------------------------*/
 
-template<int N, class INT>
-class PatchFormula2d : public IntegrationFormula2d{
-public: PatchFormula2d();};
-
-/*------------------------------------------------------------*/
-
 template<int N, class LineFormula>
 class TensorFormula2d : public IntegrationFormula2d
 {
@@ -118,12 +112,6 @@ public: TensorFormula2d();};
 template<int N, class Line>
 class TensorFormula3d : public IntegrationFormula3d{
 public: TensorFormula3d();};
-
-/*------------------------------------------------------------*/
-
-template<int N, class INT>
-class PatchFormula3d : public IntegrationFormula3d{
-public: PatchFormula3d();};
 
 /*------------------------------------------------------------*/
 
