@@ -36,14 +36,17 @@ void MeshInterpolator::CheckCell(int oldNumber, int newNumber)
   {
     for (int i=0; i<_Old->nchilds(oldNumber); i++)
     {
-      CheckCell(_Old->child(oldNumber,i),_New->child(newNumber,i));
+      int oi = _Old->child(oldNumber,i);
+      int ni = _New->child(newNumber,i);
+      CheckCell(oi,ni);
     }
   }
   else
   {
     for (int i=0; i<_Old->nodes_per_cell(oldNumber); i++)
     {
-      _NewNodeNumber[_Old->vertex_of_cell(oldNumber,i)] = _New->vertex_of_cell(newNumber,i);
+      int oi = _Old->vertex_of_cell(oldNumber,i);
+      _NewNodeNumber[oi] = _New->vertex_of_cell(newNumber,i);
     }
     if (!_VecNew.empty() && _Old->sleep(oldNumber) && !_New->sleep(newNumber))
     {
@@ -67,33 +70,32 @@ void MeshInterpolator::Coarsen(int newNumber)
       Coarsen(_New->child(newNumber,i));
     }
   }
-  for (int i=0; i<_New->nodes_per_cell(newNumber); i++)
+  int npc = _New->nodes_per_cell(newNumber);
+  for (int i=0; i<npc; i++)
   {
-    for (int j=0; j<_New->nodes_per_cell(newNumber); j++)
+    int k = _New->vertex_of_cell(newNumber,i);
+    for (int j=0; j<npc; j++)
     {
+      int l = _New->vertex_of_cell(_New->child(newNumber,i),j);
       for (int s=0; s<_VecInt.size(); s++)
       {
-        GlobalVector& f = _VecInt[s];
-        for (int c=0; c<f.ncomp(); c++)
-        {
-          f(_New->vertex_of_cell(newNumber,i),c) += _weights(i,j) * f(_New->vertex_of_cell(_New->child(newNumber,i),j),c);
-        }
+	double w = _weights(i,j);
+	_VecInt[s].add_node(k,w,l);
       }
     }
   }
-  for (int i=0; i<_New->nodes_per_cell(newNumber); i++)
+  for (int i=0; i<npc; i++)
   {
-    for (int j=0; j<_New->nodes_per_cell(newNumber); j++)
+    int k = _New->vertex_of_cell(newNumber,i);
+    for (int j=0; j<npc; j++)
     {
       if (j!=i)
       {
+	int ni = _New->child(newNumber,i);
         for (int s=0; s<_VecInt.size(); s++)
         {
-          GlobalVector& f = _VecInt[s];
-          for (int c=0; c<f.ncomp(); c++)
-          {
-            f(_New->vertex_of_cell(_New->child(newNumber,i),j),c) = 0.;
-          }
+	  int l = _New->vertex_of_cell(ni,j);
+	  _VecInt[s].zero_node(l);
         }
       }
     }
@@ -115,10 +117,7 @@ void MeshInterpolator::Distribute(int oldNumber, int newNumber)
   {
     Coarsen(newNumber);
   }
-  else if (!_Old->sleep(oldNumber) && !_New->sleep(newNumber))
-  {
-  }
-  else
+  else if (_Old->sleep(oldNumber) || _New->sleep(newNumber))
   {
     cerr << "Das darf gar nicht passieren!!!" << endl;
     abort();
@@ -132,10 +131,12 @@ void MeshInterpolator::RefineAndInterpolate(HierarchicalMesh* Mesh, vector<Globa
   IntVector coarse(0);
   int oldcells = Mesh->ncells();
   Mesh->refine(refine,coarse);
-  done.resize(Mesh->nnodes(),false);
+
+  int nn = Mesh->nnodes();
+  done.resize(nn,false);
   for (int s=0; s<u.size(); s++)
   {
-    u[s].resize(Mesh->nnodes(),0.);
+    u[s].resize(nn,0.);
   }
   set<int> fathers;
   for (int cell=oldcells; cell<Mesh->ncells(); cell++)
@@ -144,30 +145,33 @@ void MeshInterpolator::RefineAndInterpolate(HierarchicalMesh* Mesh, vector<Globa
   }
   for (set<int>::const_iterator p = fathers.begin(); p!=fathers.end(); p++)
   {
-    for (int i=0; i<Mesh->nodes_per_cell(*p); i++)
+    int npc = Mesh->nodes_per_cell(*p);
+    for (int i=0; i<npc; i++)
     {
-      for (int j=0; j<Mesh->nodes_per_cell(*p); j++)
+      int ci = Mesh->child(*p,i);
+      for (int j=0; j<npc; j++)
       {
-        if (j!=i && !done[Mesh->vertex_of_cell(Mesh->child(*p,i),j)])
+	int l = Mesh->vertex_of_cell(ci,j);
+        if (j!=i && !done[l])
         {
+	  int k = Mesh->vertex_of_cell(ci,j);
           for (int s=0; s<u.size(); s++)
           {
-            GlobalVector &us = u[s];
-            for (int c=0; c<us.ncomp(); c++)
-            {
-              us(Mesh->vertex_of_cell(Mesh->child(*p,i),j),c) += _weights(i,j) * us(Mesh->vertex_of_cell(*p,i),c);
-            }
+	    double w = _weights(i,j);
+	    u[s].add_node(k,w,l);
           }
         }
       }
     }
-    for (int i=0; i<Mesh->nodes_per_cell(*p); i++)
+    for (int i=0; i<npc; i++)
     {
-      for (int j=0; j<Mesh->nodes_per_cell(*p); j++)
+      int ci = Mesh->child(*p,i);
+      for (int j=0; j<npc; j++)
       {
         if (j!=i)
         {
-          done[Mesh->vertex_of_cell(Mesh->child(*p,i),j)] = true;
+	  int k = Mesh->vertex_of_cell(ci,j);
+          done[k] = true;
         }
       }
     }
