@@ -100,6 +100,7 @@ double EnergyEstimatorIntegrator<DIM>::Residual(const LocalVector& U, const FemI
     BasicIntegrator::universal_point(FEM,UH,U);
     BasicIntegrator::universal_point(FEM,QH,Q);
     FEM.x(x);
+    RHS.SetFemData(QH);
     EQ.point(h,UH,QH,x);
     EQ.OperatorStrong(F,UH);
     double value = 0.;
