@@ -69,6 +69,7 @@ void SparseBlockIlu<B>::ConstructStructure(const nvector<int>& perm, const Matri
   US.memory(n,ntot);
 
   assert(p.size()==perm.size());
+
   p = perm;
   for(int i=0;i<n;i++) q[p[i]] = 1;
   for(int i=0;i<n;i++) 
@@ -93,24 +94,24 @@ void SparseBlockIlu<B>::ConstructStructure(const nvector<int>& perm, const Matri
 
       int count=0;
       for(int pos=SP->start(pi);pos<SP->stop(pi);pos++)
-	{
-	  picol[count++] = q[SP->col(pos)];
-	}
+        {
+          picol[count++] = q[SP->col(pos)];
+        }
       iota(ppi.begin(),ppi.begin()+ni,0);
       sort(ppi.begin(),ppi.begin()+ni,CompareLess<nvector<int> >(picol));
 
       for(int ii=0;ii<ni;ii++)
-	{
-	  US.col(US.start(i)+ ii) = picol[ppi[ii]];
-	}
+        {
+          US.col(US.start(i)+ ii) = picol[ppi[ii]];
+        }
       for(int pos=US.start(i);pos<US.stop(i);pos++)
-	{
-	  if(US.col(pos)==i)
-	    {
-	      US.diag(i) = pos;
-	      continue;
-	    }
-	}
+        {
+          if(US.col(pos)==i)
+            {
+              US.diag(i) = pos;
+              continue;
+            }
+        }
     }
 }
 
@@ -129,28 +130,28 @@ void SparseBlockIlu<B>::copy_entries(const MatrixInterface* A)
       int pi = p[i];
 
       for(int posA=AS->start(pi); posA<AS->stop(pi); posA++)
-	{
-	  int j   = AS->col(posA);
-	  int pj  = q[j];
-	  bool found=0;
-	  for(int pos=US.start(i); pos<US.stop(i); pos++)
-	    {
-	      int k = US.col(pos);
-	      if(k==pj)	
-		{
-		  *mat(pos) += *MM->mat(posA);
-		  found=1;
-		  break;
-		}
-	    }
-	  if(!found)
-	    {
-	      std::cout << "not found " << std::endl;
-	      std::cout << *MM->mat(posA) << std::endl;
-	      
-//	      *mat(US.diag(i)) += *MM.mat(posA);	
-	    }
-	}
+        {
+          int j   = AS->col(posA);
+          int pj  = q[j];
+          bool found=0;
+          for(int pos=US.start(i); pos<US.stop(i); pos++)
+            {
+              int k = US.col(pos);
+              if(k==pj)	
+          {
+            *mat(pos) += *MM->mat(posA);
+            found=1;
+            break;
+          }
+            }
+          if(!found)
+            {
+              std::cout << "not found " << std::endl;
+              std::cout << *MM->mat(posA) << std::endl;
+              
+      //	      *mat(US.diag(i)) += *MM.mat(posA);	
+            }
+        }
     }
 }
 
@@ -182,9 +183,9 @@ void SparseBlockIlu<B>::forward() const
     {
       int ende = US.diag(i); 
       for(int pos=US.start(i); pos<ende; pos++)
-	{
-	  mat(pos)->subtract(yp->start(i),yp->start(US.col(pos)));
-	}
+        {
+          mat(pos)->subtract(yp->start(i),yp->start(US.col(pos)));
+        }
     }
 }
 
@@ -197,9 +198,9 @@ void SparseBlockIlu<B>::backward() const
     {
       int ende = US.diag(i); 
       for(int pos=US.stop(i)-1; pos>ende; pos--)
-	{
-	  mat(pos)->subtract(yp->start(i),yp->start(US.col(pos)));
-	}
+        {
+          mat(pos)->subtract(yp->start(i),yp->start(US.col(pos)));
+        }
       mat(US.diag(i))->vmult(yp->start(i));
     }
 }
@@ -223,25 +224,25 @@ void SparseBlockIlu<B>::compute_ilu()
   for(int i=0; i<US.n(); i++)
     {
       for (int pk=US.start(i); pk<US.diag(i); pk++)
-	{
-	  int k = US.col(pk);
+        {
+          int k = US.col(pk);
 
-	  *mat(pk) *= *mat(US.diag(k));   /*  a(i,k) *= a(k,k) */
+          *mat(pk) *= *mat(US.diag(k));   /*  a(i,k) *= a(k,k) */
 
-	  for (int pj=US.diag(k)+1; pj<US.stop(k); pj++)
-	    {
-	      int j  = US.col(pj);
-	      // suche ph
-	      for (int ph=US.start(i); ph<US.stop(i); ph++)
-		{
-		  if (US.col(ph)==j)
-		    {
-		      mat(ph) -> submult(*mat(pk),*mat(pj));
-		      break;
-		    }
-		}
-	    }
-	}
+          for (int pj=US.diag(k)+1; pj<US.stop(k); pj++)
+            {
+              int j  = US.col(pj);
+              // suche ph
+              for (int ph=US.start(i); ph<US.stop(i); ph++)
+                {
+                  if (US.col(ph)==j)
+                    {
+                      mat(ph) -> submult(*mat(pk),*mat(pj));
+                      break;
+                    }
+                }
+            }
+        }
       mat(US.diag(i)) -> inverse();
     }
 }
@@ -255,9 +256,9 @@ void SparseBlockIlu<B>::modify(int c, double s)
     {
       double sum=0.;
       for(int pos=start(i);pos<stop(i);pos++)
-	{
-	   sum += fabs(smat[pos](c,c));
-	}
+        {
+           sum += fabs(smat[pos](c,c));
+        }
       sum -= fabs(smat[diag(i)](c,c));
       smat[diag(i)].diag(c) += s*sum;
     }

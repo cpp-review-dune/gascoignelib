@@ -44,12 +44,12 @@ public:
   virtual int Find(int i, int j) const
     {
       for(int ii=0;ii<n();ii++)
-	{
-	  if(row(ii)==i)
-	    {
-	      return ColumnStencil::Find(ii,j);
-	    }
-	}
+        {
+          if(row(ii)==i)
+            {
+              return ColumnStencil::Find(ii,j);
+            }
+        }
       std::cerr << "ColumnStencil::Find()";
       std::cerr << "no such coupling: "<<i <<" "<<j<<std::endl;
       abort();
@@ -62,11 +62,11 @@ public:
     os << sstart<<std::endl<<std::endl;
     for(int i=0;i<n();i++)
       {
-	for(int pos=start(i);pos<stop(i);pos++)
-	  {
-	    os << row(i) << ":" << col(pos)  << " ";
-	  }
-	os << std::endl;
+        for(int pos=start(i);pos<stop(i);pos++)
+          {
+            os << row(i) << ":" << col(pos)  << " ";
+          }
+        os << std::endl;
       }
     return os;
   }

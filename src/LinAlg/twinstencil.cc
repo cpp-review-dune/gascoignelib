@@ -15,22 +15,22 @@ void TwinStencil::diagonalfirst()
       int first = sstart[i];
       int found = -1;
       for (int pos=first; pos<sstart[i+1]; pos++)
-	{
-	  if (scol[pos]==i)
-	    {
-	      found=pos;
-	      break;
-	    }
-	}
-      if (found==-1)
-	{
-	  cout << "UnstructuredStencil::diagonal not found " << i << endl;
-	  abort();
-	}
-      for (int pos=found; pos>first; pos--)
-	{
-	  swap(scol[pos],scol[pos-1]);
-	}
+        {
+          if (scol[pos]==i)
+            {
+              found=pos;
+              break;
+            }
+        }
+            if (found==-1)
+        {
+          cout << "UnstructuredStencil::diagonal not found " << i << endl;
+          abort();
+        }
+            for (int pos=found; pos>first; pos--)
+        {
+          swap(scol[pos],scol[pos-1]);
+        }
     }
 }
 

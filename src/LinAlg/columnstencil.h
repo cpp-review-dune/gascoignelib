@@ -67,20 +67,20 @@ public:
       bool error = 1;
       int pos;
       for(pos=start(i);pos<stop(i);pos++)
-	{
-	  if(col(pos)==j)   
-	    {
-	      error = 0;
-	      break;
-	    }
-	}
+        {
+          if(col(pos)==j)   
+            {
+              error = 0;
+              break;
+            }
+        }
       if(error) 
-	{
-	  std::cerr << "UnstructuredStencil::Find()";
-	  std::cerr << "no such coupling: "<<i <<" "<<j<<std::endl;
-	  abort();
-	  return -1;
-	}
+        {
+          std::cerr << "UnstructuredStencil::Find()";
+          std::cerr << "no such coupling: "<<i <<" "<<j<<std::endl;
+          abort();
+          return -1;
+        }
       return pos;
     }
 
@@ -90,11 +90,11 @@ public:
     os << sstart<<std::endl<<std::endl;
     for(int i=0;i<n();i++)
       {
-	for(int pos=start(i);pos<stop(i);pos++)
-	  {
-	    os << col(pos) << " ";
-	  }
-	os << std::endl;
+        for(int pos=start(i);pos<stop(i);pos++)
+          {
+            os << col(pos) << " ";
+          }
+        os << std::endl;
       }
     return os;
   }
