@@ -1,6 +1,8 @@
 #ifndef __runderkreis_h
 #define __runderkreis_h
 
+#include <string>
+
 /* ----------------------------------------- */
 
 class RunderKreis : public BoundaryFunction<2>
@@ -9,7 +11,7 @@ class RunderKreis : public BoundaryFunction<2>
   Vertex2d center;
 public :
 
-  string GetName() const { return "RunderKreis";}
+  std::string GetName() const { return "RunderKreis";}
 
   void BasicInit(Vertex2d c, double r) 
     {

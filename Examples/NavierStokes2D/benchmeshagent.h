@@ -21,7 +21,7 @@ class BenchMarkMeshAgent : public MeshAgent
       RK.BasicInit(v,r);
 
       int prerefine=1;
-      string inpname("nsbench4.inp");
+      std::string inpname("nsbench4.inp");
       std::map<int,BoundaryFunction<2>* > shapes;
       shapes[80] = &RK;
 
