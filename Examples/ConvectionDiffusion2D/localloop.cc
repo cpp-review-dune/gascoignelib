@@ -1,6 +1,7 @@
 #include  "localloop.h"
-#include  "monitoring.h"
 #include  "backup.h"
+#include  "monitoring.h"
+#include  "localmeshagent.h"
 
 using namespace std;
 using namespace Gascoigne;
@@ -10,6 +11,7 @@ using namespace Gascoigne;
 void LocalLoop::BasicInit(const ParamFile* paramfile)
 {
   LPD.BasicInit(paramfile);
+  GetMeshAgentPointer() = new LocalMeshAgent;
   StdLoop::BasicInit(paramfile);
 }
 

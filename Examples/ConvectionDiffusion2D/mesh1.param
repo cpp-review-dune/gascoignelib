@@ -10,14 +10,6 @@ estimator    none
 initial      boundary
 refiner      global
 
-//Block Mesh
-
-dimension    2
-patchdepth   0
-gridname     ../NavierStokes2D/nsbench4.inp
-prerefine    3
-curvedboundary  5       80   Kreis 2. 2. 0.25
-
 //Block BoundaryManager
 
 dirichlet        3      4 8 80

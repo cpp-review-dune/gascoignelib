@@ -1,8 +1,6 @@
 #include  "problemdescriptor.h"
 #include  "localequation.h"
 #include  "localdirichletdata.h"
-#include  "zerorighthandsidedata.h"
-#include  "zeroexactsolution.h"
 
 using namespace std;
 

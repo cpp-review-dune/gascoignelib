@@ -1,8 +1,8 @@
 #ifndef __runderkreis_h
 #define __runderkreis_h
 
-#include  "boundaryfunction.h"
-#include  <string>
+#include "boundaryfunction.h"
+#include <string>
 
 /* ----------------------------------------- */
 

@@ -1,7 +1,5 @@
 #include  "problemdescriptor1.h"
 #include  "stdloop.h"
-#include  "meshagent.h"
-#include  "boundaryfunction.h"
 #include  "benchmeshagent.h"
 
 using namespace std;

@@ -1,7 +1,7 @@
 #ifndef  __LocalEquation_h
 #define  __LocalEquation_h
 
-#include  "navierstokesgls.h"
+#include  "navierstokesgls2d.h"
 
 /////////////////////////////////////////////
 ////
@@ -14,7 +14,7 @@
 
 
 
-class LocalEquation : public NavierStokesGls
+class LocalEquation : public NavierStokesGls2d
 {
 private:
 
@@ -28,7 +28,7 @@ public:
 ////  Con(De)structor 
 //
 
-  LocalEquation(const Gascoigne::ParamFile* paramfile) : NavierStokesGls(paramfile) {}
+  LocalEquation(const Gascoigne::ParamFile* paramfile) : NavierStokesGls2d(paramfile) {}
   ~LocalEquation() {}
 
   void point(double h, const Gascoigne::FemFunction& U, const Vertex2d& v) const;
