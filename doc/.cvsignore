@@ -1,4 +1,2 @@
-*.dvi
-*.aux
-*.log
-*.out
+html
+latex
