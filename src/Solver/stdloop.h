@@ -48,6 +48,7 @@ protected:
 
   virtual void EtaVisu(std::string name, int i, const DoubleVector& eta) const;
   virtual void AdaptMesh(const DoubleVector& eta);
+  virtual void AdaptMesh(const DoubleVector& eta,std::string refine_or_coarsen_step);
   virtual DoubleVector Functionals(MultiLevelGhostVector& u, MultiLevelGhostVector& f);
   virtual double Estimator(DoubleVector& eta, MultiLevelGhostVector& u, MultiLevelGhostVector& f);
 

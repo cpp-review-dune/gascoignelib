@@ -116,21 +116,21 @@ DoubleVector StdLoop::Functionals(MultiLevelGhostVector& u, MultiLevelGhostVecto
       cout << "\nvalue";
       cout.precision(16);
       for(int i=0; i<J.size(); i++) 
-	{
-	  cout << "\t" << J[i];
-	}
+        {
+          cout << "\t" << J[i];
+        }
       cout << "\nerror";
       for(int i=0; i<J.size(); i++) 
-	{
-	  _JErr[i] = GetExactValues()[i] - J[i];
-	  cout << "\t" << _JErr[i] ;
-	}
+        {
+          _JErr[i] = GetExactValues()[i] - J[i];
+          cout << "\t" << _JErr[i] ;
+        }
       cout << endl;
       if(_extrapolate=="yes")
-	{
-	  Extra.NewValues(J);
-	  Extra.Print();
-	}
+        {
+          Extra.NewValues(J);
+          Extra.Print();
+        }
       cout << endl;
     }
   return J;
@@ -169,22 +169,110 @@ double StdLoop::Estimator(DoubleVector& eta, MultiLevelGhostVector& u, MultiLeve
 
 /*-------------------------------------------------*/
 
-void StdLoop::AdaptMesh(const DoubleVector& eta)
+void StdLoop::AdaptMesh(const DoubleVector& eta,std::string refine_or_coarsen_step)
 {
-  if     (_refiner=="global") GetMeshAgent()->global_refine(1);
-  else if(_refiner=="none") 
-    {
-      //scheinbar hat es nicht gereicht *nichts* zu tun, also rufe ich
-      //random_patch_refine mit parameter auf die nichts veraendern, tom
-      //GetMeshAgent()->random_patch_refine(-0.1,0);
-      //besser :)
-      GetMeshAgent()->global_refine(0);
+  //das gleichzeitige vergroebern und verfeinern FUNKTIONIERT nicht
+  //wer das machen moechte, muss stattdessen und zwei getrennten laeufen 
+  //das gitter vergroebern, reinit+interpolate und dann das gitter verfeinern
+  if(refine_or_coarsen_step=="refine") ;
+  else if(refine_or_coarsen_step=="coarsen") ;
+  else {
+    std::cerr<<"the variable refine_or_coarsen_step has to be set, either to 'refine' or 'coarsen'"<<std::endl;
+    assert(0);
+  }
+
+  if     (_refiner=="global") {
+    if(refine_or_coarsen_step=="refine"){
+      GetMeshAgent()->global_refine(1);
     }
+  }  
+  else if(_refiner=="none") GetMeshAgent()->global_refine(0);
   else if(_refiner=="random") 
     {
       if (GetMeshAgent()->nnodes()>_nmax) _p *= 0.5;
       if (GetMeshAgent()->nnodes()<_nmin) _p *= 1.1;
+
+      if(refine_or_coarsen_step=="refine"){
+        GetMeshAgent()->random_patch_refine(_p,0);
+      }
+      if(refine_or_coarsen_step=="coarsen"){
+        if(_random_coarsening){
+          GetMeshAgent()->random_patch_coarsen(_p,0);
+        }
+      }
+    }
+  else if(_refiner=="random_refine") 
+    {
+      if(refine_or_coarsen_step=="refine"){
+        if (GetMeshAgent()->nnodes()>_nmax) _p *= 0.5;
+        if (GetMeshAgent()->nnodes()<_nmin) _p *= 1.1;
+        GetMeshAgent()->random_patch_refine(_p,0);
+      }
+    }
+  else if(_refiner=="random_coarsen") 
+    {
+      if(refine_or_coarsen_step=="coarsen"){
+        if (GetMeshAgent()->nnodes()>_nmax) _p *= 0.5;
+        if (GetMeshAgent()->nnodes()<_nmin) _p *= 1.1;
+        GetMeshAgent()->random_patch_coarsen(_p,0);
+      }
+    }
+  else if(_refiner=="eta") 
+    {
+      IntVector refnodes, coarsenodes,dummynodes;
+
+      MalteAdaptor A(_paramfile,eta);
+      A.refine(refnodes,coarsenodes);
+
+      if(refine_or_coarsen_step=="coarsen") GetMeshAgent()->refine_nodes(dummynodes,coarsenodes);
+      if(refine_or_coarsen_step=="refine")  GetMeshAgent()->refine_nodes(refnodes,dummynodes);
+    }
+  else if(_refiner=="dip") 
+    {
+      IntVector refnodes, coarsenodes;
+
+      AdaptorData info;
+      info.rfactor() = 1.; 
+      DiplomantenAdaptor A(info,eta);
+      A.refine(refnodes);
+      if(refine_or_coarsen_step=="refine")  GetMeshAgent()->refine_nodes(refnodes,coarsenodes);
+    }
+  else assert(0);
+}
+
+/*-------------------------------------------------*/
+
+void StdLoop::AdaptMesh(const DoubleVector& eta)
+{
+  //das gleichzeitige vergroebern und verfeinern FUNKTIONIERT nicht
+  //wer das machen moechte, sollte stattdessen zwei getrennte laeufe durchfuehren:
+  //das gitter vergroebern, reinit+interpolate und dann das gitter verfeinern
+  //das entsprechend die methode AdaptMesh(eta,refine_or_coarsen_step) aufrufen
+  if     (_refiner=="global") GetMeshAgent()->global_refine(1);
+  else if(_refiner=="none")   GetMeshAgent()->global_refine(0);
+  else if(_refiner=="random") 
+    {
+      if (GetMeshAgent()->nnodes()>_nmax) _p *= 0.5;
+      if (GetMeshAgent()->nnodes()<_nmin) _p *= 1.1;
+      if(_random_coarsening){
+        std::cerr<<"das gleichzeitige vergroebern und verfeinern FUNKTIONIERT nicht"<<std::endl;
+        std::cerr<<"fuehren Sie stattdessen zwei getrennte laeufe durch: random_refine, random_coarsen"<<std::endl;
+        std::cerr<<"rufen Sie dazu AdaptMesh(eta,refine_or_coarsen_step) auf"<<std::endl;
+        assert(0);
+      }
       GetMeshAgent()->random_patch_refine(_p,_random_coarsening);
+    }
+  else if(_refiner=="random_refine") 
+    {
+      if (GetMeshAgent()->nnodes()>_nmax) _p *= 0.5;
+      if (GetMeshAgent()->nnodes()<_nmin) _p *= 1.1;
+      GetMeshAgent()->random_patch_refine(_p,0);
+    }
+  else if(_refiner=="random_coarsen") 
+    {
+      if (GetMeshAgent()->nnodes()>_nmax) _p *= 0.5;
+      if (GetMeshAgent()->nnodes()<_nmin) _p *= 1.1;
+      GetMeshAgent()->random_patch_coarsen(_p,0);
     }
   else if(_refiner=="eta") 
     {
@@ -192,6 +280,13 @@ void StdLoop::AdaptMesh(const DoubleVector& eta)
 
       MalteAdaptor A(_paramfile,eta);
       A.refine(refnodes,coarsenodes);
+
+      if(refnodes.size()>0 && coarsenodes.size()>0){
+        std::cerr<<"das gleichzeitige vergroebern und verfeinern FUNKTIONIERT nicht"<<std::endl;
+        std::cerr<<"fuehren Sie stattdessen zwei getrennte laeufe durch, einmal vergroebern, einmal verfeinern"<<std::endl;
+        std::cerr<<"rufen Sie dazu AdaptMesh(eta,refine_or_coarsen_step) auf"<<std::endl;
+        assert(0);
+      }
 
       GetMeshAgent()->refine_nodes(refnodes,coarsenodes);
     }
@@ -238,11 +333,11 @@ void StdLoop::run(const ProblemDescriptorInterface* PD)
       _clock_newmesh.stop();
 
       if (_iter==1) 
-	{
-	  GetMultiLevelSolver()->GetSolver()->OutputSettings();
-	  InitSolution(u);
-	  Moning.BasicInit(GetExactValues());
-	}
+        {
+          GetMultiLevelSolver()->GetSolver()->OutputSettings();
+          InitSolution(u);
+          Moning.BasicInit(GetExactValues());
+        }
 
       Solve(u,f);
       ComputeGlobalErrors(u);
@@ -255,16 +350,16 @@ void StdLoop::run(const ProblemDescriptorInterface* PD)
 
       _clock_estimate.start();
       if (_estimator!="none")
-	{
-	  double est = Estimator(eta,u,f);
-	  Moning.SetSolutionInformation(_iter,juh,est);
-	}
+        {
+          double est = Estimator(eta,u,f);
+          Moning.SetSolutionInformation(_iter,juh,est);
+        }
       if (_iter<_niter) 
-	{
-	  CopyVector(ualt,u);
+        {
+          CopyVector(ualt,u);
 
-	  AdaptMesh(eta);
-	}
+          AdaptMesh(eta);
+        }
       _clock_estimate.stop();
      }
 }
