@@ -205,24 +205,43 @@ void StdTimeSolver::AssembleMatrix(const BasicGhostVector& gu, double d)
 
 void StdTimeSolver::L2Projection(BasicGhostVector& Gu)
 {
+  BasicGhostVector Gf;
+  Gf.SetName("ff");
+  RegisterVector(Gf);
+  ReInitVector();
+  
   GlobalVector& u = GetGV(Gu);
+  GlobalVector& f = GetGV(Gf);
 
-  BasicGhostVector Gg, Gr, Gd, Gf;
+  TimePattern TP(u.ncomp());
+  TP.zero();
+  for (int i=0; i<u.ncomp(); i++) TP(i,i) = 1.;
+
+  f.zero();
+  IC(f);
+
+  PrecondCGMass(u,f,TP);
+  
+  DeleteVector(&Gf);
+}
+
+/*-------------------------------------------------------*/
+
+string StdTimeSolver::PrecondCGMass(GlobalVector& u, GlobalVector& f, const TimePattern& TP, double s)
+{
+  BasicGhostVector Gg, Gr, Gd;
 
   Gg.SetName("g");
   Gr.SetName("r");
   Gd.SetName("d");
-  Gf.SetName("f");
   RegisterVector(Gg);
   RegisterVector(Gr);
   RegisterVector(Gd);
-  RegisterVector(Gf);
 
   ReInitVector();
   GlobalVector& g = GetGV(Gg);
   GlobalVector& r = GetGV(Gr);
   GlobalVector& d = GetGV(Gd);
-  GlobalVector& f = GetGV(Gf);
 
   assert(u.ncomp()==g.ncomp());
   assert(u.n()==g.n());
@@ -231,14 +250,10 @@ void StdTimeSolver::L2Projection(BasicGhostVector& Gu)
   assert(SM);
   SM->PrepareJacobi();
 
-  f.zero();
-  IC(f);
-
   int    MaxIter = 100;
   double Tol     = 1e-8;
 
   u.zero();
-  if (f.norm()<1.e-16) return;
 
   SM->JacobiVector(f);
 
@@ -247,15 +262,16 @@ void StdTimeSolver::L2Projection(BasicGhostVector& Gu)
   double Res = r*r;
   double FirstRes = Res;
   cout << "\t\tpcg " << 0 << "\t" << sqrt(FirstRes) << endl;
-
-  TimePattern TP(u.ncomp());
-  TP.zero();
-  for (int i=0; i<u.ncomp(); i++) TP(i,i) = 1.;
+  
+  if (Res<1.e-16) 
+  {
+    return "converged";
+  }
 
   for(int iter=1;iter<=MaxIter;iter++)
     {
       g.zero();
-      SM->vmult_time_Jacobi(g,d,TP);
+      SM->vmult_time_Jacobi(g,d,TP,s);
       double lambda = Res/(g*d);
 
       u.add(lambda,d);
@@ -266,7 +282,10 @@ void StdTimeSolver::L2Projection(BasicGhostVector& Gu)
       if (Res<Tol*Tol*FirstRes) 
 	{
           SM->JacobiVector(u);
-	  return;
+          DeleteVector(&Gg);
+          DeleteVector(&Gr);
+          DeleteVector(&Gd);
+	  return "converged";
 	}
       double betacg = -(r*g)/(d*g);
       d.sequ(betacg,1.,r);
@@ -277,6 +296,6 @@ void StdTimeSolver::L2Projection(BasicGhostVector& Gu)
   DeleteVector(&Gg);
   DeleteVector(&Gr);
   DeleteVector(&Gd);
-  DeleteVector(&Gf);
+  return "stagnation";
 }
 }

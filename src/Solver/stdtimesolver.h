@@ -39,6 +39,7 @@ protected:
 
   virtual MatrixInterface* NewMassMatrix(int ncomp, const std::string& matrixtype);
   virtual void IC(GlobalVector& f, double d=1.) const;
+  virtual std::string PrecondCGMass(GlobalVector& u, GlobalVector& f, const TimePattern& TP, double s=1.);
 
 public:
   
