@@ -371,6 +371,24 @@ public:
 
   /**************************************************/
   
+  void inverse2()
+    {
+      T idet = 1./det();
+
+      T a = value(0,0);
+      T b = value(0,1);
+      T c = value(1,0);
+      T d = value(1,1);
+      value(0,0) = d;
+      value(0,1) = -b;
+      value(1,0) = -c;
+      value(1,1) = d;
+
+      *this *= idet;
+    }
+
+  /**************************************************/
+  
   void inverse3()
     {
       T idet = 1./det();
@@ -401,6 +419,11 @@ public:
   
   void inverse()
     {
+      if (n()==2)
+	{
+	  inverse2();
+	  return;
+	}
       if (n()==3)
 	{
 	  inverse3();
