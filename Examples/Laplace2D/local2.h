@@ -34,7 +34,6 @@ class ProblemDescriptor : public Gascoigne::ProblemDescriptorBase
     GetRightHandSideDataPointer() = new Gascoigne::RightHandSideDataByEquation(GetEquation(), GetExactSolution());
     GetDirichletDataPointer() = new Gascoigne::DirichletDataByExactSolution(GetExactSolution());
     GetNeumannDataPointer() = new NeumannDataByExactSolution(GetEquation(),GetExactSolution());
-    GetBoundaryManagerPointer() = new Gascoigne::BoundaryManager(pf);
     
     ProblemDescriptorBase::BasicInit(pf);
   }

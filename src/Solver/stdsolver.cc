@@ -106,7 +106,7 @@ void StdSolver::SetProblem(const ProblemDescriptorInterface& PDX)
   const Equation*  EQ = GetProblemDescriptor()->GetEquation();
   assert(EQ);
   _check_consistency(EQ,GetMeshInterpretor());
-  int ncomp = EQ->ncomp();
+//  int ncomp = EQ->ncomp();
   
 //   Dat.ReInit(_paramfile,ncomp);
 }

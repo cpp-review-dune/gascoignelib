@@ -64,8 +64,9 @@ class ProblemDescriptorBase : public ProblemDescriptorInterface
     _paramfile = pf;
     if(GetBoundaryManagerPointer()==NULL)
       {
-	GetBoundaryManagerPointer() = new BoundaryManager(_paramfile);
+	GetBoundaryManagerPointer() = new BoundaryManager();
       }
+    GetBoundaryManager()->BasicInit(_paramfile);
   }
   
   const RightHandSideData*  GetRightHandSideData() const { return  RHS;}

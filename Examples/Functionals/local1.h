@@ -34,7 +34,6 @@ class ProblemDescriptor : public Gascoigne::ProblemDescriptorBase
     GetExactSolutionPointer() = new PolynomialExactSolution();
     GetRightHandSideDataPointer() = new Gascoigne::RightHandSideDataByEquation(GetEquation(), GetExactSolution());
     GetDirichletDataPointer() = new Gascoigne::DirichletDataByExactSolution(GetExactSolution());
-    GetBoundaryManagerPointer() = new Gascoigne::BoundaryManager(pf);
     
     ProblemDescriptorBase::BasicInit(pf);
   }
