@@ -44,7 +44,8 @@ void StdTimeSolver::SetProblem(const ProblemDescriptorInterface& PDX)
   EQ->SetTimePattern(GetTimePattern());
 
   int ncomp = EQ->ncomp();
-  if (GetMassMatrixPointer()==NULL) GetMassMatrixPointer() = NewMassMatrix(ncomp,_matrixtype);
+  if (GetMassMatrixPointer()==NULL)
+    GetMassMatrixPointer() = NewMassMatrix(ncomp,_matrixtype);
   
   StdSolver::SetProblem(PDX);
 }

@@ -34,11 +34,11 @@ void LocalLoop::run()
 
   MultiLevelSolverInterface* MP = GetMultiLevelSolver();
 
-  MP->SetProblem(LPD);
-  
   _clock_newmesh.start();
   MP->NewMesh();
   _clock_newmesh.stop();
+  
+  MP->SetProblem(LPD);
 
   int nlevels = MP->nlevels();
   dat.resize(nlevels);

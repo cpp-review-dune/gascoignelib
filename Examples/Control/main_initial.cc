@@ -11,8 +11,8 @@ int main(int argc, char** argv)
   LPD.BasicInit(&paramfile);
 
   LocalTimeLoop loop;
-  loop.BasicInit(&paramfile,&LPD);
-  loop.NewMesh();
+  loop.BasicInit(&paramfile);
+  loop.NewMesh(&LPD);
   loop.init("Results/forward",0);
 
   return 0;

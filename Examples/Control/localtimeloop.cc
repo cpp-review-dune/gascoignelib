@@ -9,18 +9,17 @@ using namespace std;
 
 /*-----------------------------------------*/
 
-void LocalTimeLoop::BasicInit(const ParamFile* paramfile, const ProblemDescriptorInterface* PD)
+void LocalTimeLoop::BasicInit(const ParamFile* paramfile)
 {
   GetMeshAgentPointer() = new LocalMeshAgent;
   StdTimeLoop::BasicInit(paramfile);
-  GetMultiLevelSolver()->SetProblem(*PD);
 }
 
 /* ----------------------------------------- */
 
-void LocalTimeLoop::NewMesh()
+void LocalTimeLoop::NewMesh(const ProblemDescriptorInterface* PD)
 {
-  GetMultiLevelSolver()->NewMesh();
+  GetMultiLevelSolver()->ReInit(*PD);
   
   cout << "\nLocalTimeLoop::NewMesh(): Mesh [l,nn,nc]: ";
   cout << GetMeshAgent()->nlevels() << " " << GetMeshAgent()->nnodes() << " " << GetMeshAgent()->ncells() << endl;
@@ -63,7 +62,8 @@ void LocalTimeLoop::init(string name, int iter)
   GetMultiLevelSolver()->RegisterVector(ualt);
 
   cerr << "§§§§§§§§§§§§§§§§§§§§§§\n";
-  // NewMesh();
+  //NewMesh();
+
   StdMultiLevelSolver* MS = dynamic_cast<StdMultiLevelSolver*>(GetMultiLevelSolver());
   assert(MS);
   MS->MemoryVector();
@@ -84,7 +84,7 @@ void LocalTimeLoop::init(string name, int iter)
 
 /* ----------------------------------------- */
 
-void LocalTimeLoop::backward(string iname, string name, int first, int last)
+void LocalTimeLoop::backward(string iname, string name, int first, int last, const ProblemDescriptorInterface* PD)
 {
   NewMultiLevelGhostVector u("u"), f("f"), ualt("ualt");
   u.SetMultiLevelSolver(GetMultiLevelSolver());
@@ -96,7 +96,7 @@ void LocalTimeLoop::backward(string iname, string name, int first, int last)
   
   nvector<double> eta;
   
-  GetMultiLevelSolver()->NewMesh();
+  GetMultiLevelSolver()->ReInit(*PD);
 
   GetMultiLevelSolver()->GetSolver()->Read(u,iname);
 
@@ -131,7 +131,7 @@ void LocalTimeLoop::backward(string iname, string name, int first, int last)
 
 /* ----------------------------------------- */
 
-void LocalTimeLoop::forward(string iname, int first, int last)
+void LocalTimeLoop::forward(string iname, int first, int last, const ProblemDescriptorInterface* PD)
 {
   NewMultiLevelGhostVector u("u"), f("f"), ualt("ualt");
   u.SetMultiLevelSolver(GetMultiLevelSolver());
@@ -143,7 +143,7 @@ void LocalTimeLoop::forward(string iname, int first, int last)
   
   nvector<double> eta;
   
-  GetMultiLevelSolver()->NewMesh();
+  GetMultiLevelSolver()->ReInit(*PD);
 
   GetMultiLevelSolver()->GetSolver()->Read(u,iname);
 

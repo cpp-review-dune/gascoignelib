@@ -10,6 +10,10 @@ using namespace std;
 
 void Q1Gls3d::BasicInit(const ParamFile* pf)
 {
+  assert(HN==NULL);
+  HN = NewHNStructure();
+  assert(HN);
+
   assert(CellMeshInterpretor::GetIntegrator()==NULL);
   BasicMeshInterpretor::GetIntegratorPointer() =  new GalerkinGlsIntegrator<3>;
 

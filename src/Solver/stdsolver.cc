@@ -52,7 +52,7 @@ void StdSolver::OutputSettings() const
 {
   cout << "=====================================" << endl;
   cout << "Solver:          " << GetName() << endl;
-  cout << "MeshInterpretor:  " << GetMeshInterpretor()->GetName()  << endl;
+  cout << "MeshInterpretor: " << GetMeshInterpretor()->GetName()  << endl;
   GetProblemDescriptor()->OutputSettings(cout);
   cout << "=====================================" << endl;
 }

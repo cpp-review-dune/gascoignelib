@@ -18,8 +18,8 @@ int main(int argc, char** argv)
   LPD.GetInitialCondition();
 
   LocalTimeLoop loop;
-  loop.BasicInit(&paramfile,&LPD);
-  loop.NewMesh();
+  loop.BasicInit(&paramfile);
+  loop.NewMesh(&LPD);
   loop.AddNodeVector(name);
   loop.init("Results/backward",last);
 

@@ -22,8 +22,8 @@ int main(int argc, char** argv)
   LPD.BasicInit(&paramfile);
 
   LocalTimeLoop loop;
-  loop.BasicInit(&paramfile,&LPD);
-  loop.forward(name,first,last);
+  loop.BasicInit(&paramfile);
+  loop.forward(name,first,last,&LPD);
 
   return 0;
 }

@@ -32,14 +32,14 @@ public:
 //
 
   LocalTimeLoop() : StdTimeLoop() {}
-  void BasicInit(const ParamFile* paramfile, const ProblemDescriptorInterface* PD);
+  void BasicInit(const ParamFile* paramfile);
 
   void AddNodeVector(string filename);
-  void NewMesh();
+  void NewMesh(const ProblemDescriptorInterface* PD);
 
   void init(string,int);
-  void forward(string iname, int first, int last);
-  void backward(string iname, string name, int first, int last);
+  void forward(string iname, int first, int last, const ProblemDescriptorInterface* PD);
+  void backward(string iname, string name, int first, int last, const ProblemDescriptorInterface* PD);
 
 };
 

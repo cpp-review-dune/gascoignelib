@@ -23,8 +23,8 @@ int main(int argc, char** argv)
   LPD.BasicInit(&paramfile);
 
   LocalTimeLoop loop;
-  loop.BasicInit(&paramfile,&LPD);
-  loop.backward(iname,name,first,last);
+  loop.BasicInit(&paramfile);
+  loop.backward(iname,name,first,last,&LPD);
 
   return 0;
 }
