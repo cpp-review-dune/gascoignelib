@@ -93,25 +93,40 @@ void MeshAgent::BasicInit(int dim, string meshname, int prerefine)
 
 void MeshAgent::BasicInit(const ParamFile* paramfile)
 {
+  string gridname;
+  int prerefine;
+
   DataFormatHandler DFH;
   DFH.insert("dimension",&_dimension,2);
+  DFH.insert("gridname" ,&gridname,"none");      // inp oder gup Format 
+  DFH.insert("prerefine",&prerefine,0);
   FileScanner FS(DFH);
   FS.NoComplain();
   FS.readfile(paramfile,"Mesh");
 
   if (_dimension==2)
     {
-      HMP = new HierarchicalMesh2d(paramfile);
+      HMP = new HierarchicalMesh2d;
+      for(map<int,BoundaryFunction<2>* >::const_iterator p=_curved2d.begin();p!=_curved2d.end();p++)
+	{
+	  HMP->AddShape(p->first,p->second);
+	}
     }
   else if (_dimension==3)
     {
-      HMP = new HierarchicalMesh3d(paramfile);
+      HMP = new HierarchicalMesh3d;
+      for(map<int,BoundaryFunction<3>* >::const_iterator p=_curved3d.begin();p!=_curved3d.end();p++)
+	{
+	  HMP->AddShape(p->first,p->second);
+	}
     }
   else
     {
       cout << "dimension of Mesh ? " << _dimension << endl;
     }
   assert(HMP);
+ 
+  ReadMesh(_dimension, gridname, prerefine);
 
   GMG = NewMultiGridMesh();
 
