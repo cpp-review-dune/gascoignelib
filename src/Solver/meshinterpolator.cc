@@ -216,7 +216,7 @@ void MeshInterpolator::BasicInit(DiscretizationInterface* DI, MeshAgentInterface
   _VecNew.clear();
 
   // Original-Solver und -MeshAgent speichern
-  GetOriginalMeshAgentPointer() = MA;
+  _OMA = MA;
 
   int dim = GetOriginalMeshAgent()->GetMesh(0)->dimension();
   _ODI = DI;

@@ -34,7 +34,6 @@ class MeshInterpolator
           MeshAgent*  GetMeshAgent()              { assert(_MA); return _MA; }
     const MeshAgent*  GetMeshAgent()        const { assert(_MA); return _MA; }
 
-          MeshAgentInterface*& GetOriginalMeshAgentPointer()    { return _OMA; }
           MeshAgent*           GetOriginalMeshAgent()           { return dynamic_cast<MeshAgent*>(_OMA); }
     const MeshAgent*           GetOriginalMeshAgent()     const { return dynamic_cast<const MeshAgent*>(_OMA); }
 
