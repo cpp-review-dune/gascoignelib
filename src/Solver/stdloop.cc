@@ -55,7 +55,7 @@ void StdLoop::BasicInit(const ParamFile* paramfile)
 
 /*-------------------------------------------------------*/
 
-nvector<double> StdLoop::ComputeFunctionals(NewMultiLevelGhostVector& f, NewMultiLevelGhostVector& u, const vector<const Functional*>& J) const
+nvector<double> StdLoop::ComputeFunctionals(MultiLevelGhostVector& f, MultiLevelGhostVector& u, const vector<const Functional*>& J) const
 {
   int n = J.size(); 
   nvector<double> j(n,0.);
@@ -103,7 +103,7 @@ nvector<double> StdLoop::GetExactValues() const
 
 /*-------------------------------------------------*/
 
-nvector<double> StdLoop::Functionals(NewMultiLevelGhostVector& u, NewMultiLevelGhostVector& f)
+nvector<double> StdLoop::Functionals(MultiLevelGhostVector& u, MultiLevelGhostVector& f)
 {
   nvector<double> J  = ComputeFunctionals(f,u,_FV);
   _JErr.resize(J.size());
@@ -134,7 +134,7 @@ nvector<double> StdLoop::Functionals(NewMultiLevelGhostVector& u, NewMultiLevelG
 
 /*-------------------------------------------------*/
 
-double StdLoop::Estimator(nvector<double>& eta, NewMultiLevelGhostVector& u, NewMultiLevelGhostVector& f)
+double StdLoop::Estimator(nvector<double>& eta, MultiLevelGhostVector& u, MultiLevelGhostVector& f)
 {
   cout << "Estimator\t"; 
 
@@ -195,7 +195,7 @@ void StdLoop::AdaptMesh(const nvector<double>& eta)
 
 void StdLoop::run(const ProblemDescriptorInterface* PD)
 {
-  NewMultiLevelGhostVector u("u"), f("f");
+  MultiLevelGhostVector u("u"), f("f");
   u.SetMultiLevelSolver(GetMultiLevelSolver());
   f.SetMultiLevelSolver(GetMultiLevelSolver());
   GlobalVector  ualt;
@@ -208,8 +208,7 @@ void StdLoop::run(const ProblemDescriptorInterface* PD)
   for (_iter=1; _iter<=_niter; _iter++)
     {
       cout << "\n================== " << _iter << " ================";
-      cout << " [l,n,c] " << GetMeshAgent()->nlevels() << " " << GetMeshAgent()->nnodes();
-      cout << " " << GetMeshAgent()->ncells() << endl;
+      PrintMeshInformation();
       Moning.SetMeshInformation(_iter,GetMeshAgent()->nnodes(),GetMeshAgent()->ncells());
       
       _clock_newmesh.start();

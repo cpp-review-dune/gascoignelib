@@ -89,11 +89,6 @@ void StdSolver::NewMesh(int level, const MeshInterface* mp)
   assert(_MP);
 
   GetMeshInterpretor()->ReInit(_MP);
-  if (_PDX)
-    {
-      MemoryVector();
-      MemoryMatrix();
-    }
 }
 
 /*-------------------------------------------------------*/
@@ -219,6 +214,7 @@ double StdSolver::NewtonNorm(const BasicGhostVector& u) const
 void StdSolver::ResizeVector(CompVector<double>* x, string type) const
 {
   int n = GetMeshInterpretor()->n();
+//   cerr << "StdSolver::ResizeVector() n="<<n<<endl; 
   x->reservesize(n);
 }
 

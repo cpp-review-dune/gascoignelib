@@ -155,7 +155,7 @@ void StdMultiLevelSolver::NewSolvers()
 	  _SP[solverlevel] = NewSolver(solverlevel);
  	  _SP[solverlevel]->BasicInit(solverlevel,_paramfile,MIP);
 	  
-	  set<NewMultiLevelGhostVector>::const_iterator p = _MlVectors.begin();
+	  set<MultiLevelGhostVector>::const_iterator p = _MlVectors.begin();
 	  while(p!=_MlVectors.end()) 
 	    {
 	      _SP[solverlevel]->RegisterVector(*p++);
@@ -213,25 +213,18 @@ void StdMultiLevelSolver::NewMgInterpolator()
 
 void StdMultiLevelSolver::ReInit(const ProblemDescriptorInterface& PDX)
 {
-  NewMesh();
-  SetProblem(PDX);
-}
-
-/*-------------------------------------------------------------*/
-
-void StdMultiLevelSolver::NewMesh()
-{
   DataP->countresidual = 0;
   DataP->nlinfo.control().matrixmustbebuild() = 1;
 
   NewSolvers();
   SolverNewMesh();
   NewMgInterpolator();
+  SetProblem(PDX);
 }
 
 /*-------------------------------------------------------------*/
 
-void StdMultiLevelSolver::InterpolateSolution(NewMultiLevelGhostVector& u, const GlobalVector& uold) const
+void StdMultiLevelSolver::InterpolateSolution(MultiLevelGhostVector& u, const GlobalVector& uold) const
 {
   if(oldnlevels<=0) return;
 
@@ -245,7 +238,14 @@ void StdMultiLevelSolver::InterpolateSolution(NewMultiLevelGhostVector& u, const
 
 /*-------------------------------------------------------------*/
 
-void StdMultiLevelSolver::precondition(NewMultiLevelGhostVector& x, NewMultiLevelGhostVector& y)
+void StdMultiLevelSolver::vmulteqgmres(MultiLevelGhostVector& y, const MultiLevelGhostVector& x) const
+{
+  GetSolver(ComputeLevel)->vmulteqgmres(y(ComputeLevel),x(ComputeLevel));
+}
+
+/*-------------------------------------------------------------*/
+
+void StdMultiLevelSolver::precondition(MultiLevelGhostVector& x, MultiLevelGhostVector& y)
 {
   int clevel=GascoigneMath::max_int(DataP->coarselevel,0);
   if(DataP->coarselevel==-1) clevel = FinestLevel(); 
@@ -258,7 +258,7 @@ void StdMultiLevelSolver::precondition(NewMultiLevelGhostVector& x, NewMultiLeve
 
 /*-------------------------------------------------------------*/
 
-void StdMultiLevelSolver::LinearMg(int finelevel, int coarselevel, NewMultiLevelGhostVector& u, const NewMultiLevelGhostVector& f, CGInfo& info)
+void StdMultiLevelSolver::LinearMg(int finelevel, int coarselevel, MultiLevelGhostVector& u, const MultiLevelGhostVector& f, CGInfo& info)
 {
   int clevel=coarselevel;
   for(int level=coarselevel;level<nlevels();level++)
@@ -291,7 +291,7 @@ void StdMultiLevelSolver::LinearMg(int finelevel, int coarselevel, NewMultiLevel
  
 void StdMultiLevelSolver::mgstep(vector<double>& res, vector<double>& rw, 
  int l, int finelevel, int coarselevel, string& p0, string p,
- NewMultiLevelGhostVector& u, NewMultiLevelGhostVector& b, NewMultiLevelGhostVector& v)
+ MultiLevelGhostVector& u, MultiLevelGhostVector& b, MultiLevelGhostVector& v)
 {
   if(l==coarselevel)
     {
@@ -341,12 +341,24 @@ void StdMultiLevelSolver::mgstep(vector<double>& res, vector<double>& rw,
 
 /*-------------------------------------------------------------*/
 
-void StdMultiLevelSolver::Cg(NewMultiLevelGhostVector& x, const NewMultiLevelGhostVector& f, CGInfo& info)
+void StdMultiLevelSolver::Cg(MultiLevelGhostVector& x, const MultiLevelGhostVector& f, CGInfo& info)
 {
   assert(0);
 //   CG<SolverInterface,StdMultiLevelSolver,GhostVector> cg(*(GetSolver(ComputeLevel)),*this);
   
 //   cg.solve(x,f,info);
+}
+
+/*-------------------------------------------------------------*/
+
+void StdMultiLevelSolver::Gmres(MultiLevelGhostVector& x, const MultiLevelGhostVector& f, CGInfo& info)
+{
+  assert(0);
+//   int n = DataP->gmresmemsize;
+
+//   GMRES<SolverInterface,StdMultiLevelSolver,GhostVector> gmres(*GetSolver(ComputeLevel),*this,n);
+  
+//   gmres.solve(x,f,info);
 }
 
 /*-------------------------------------------------------------*/
@@ -359,7 +371,14 @@ void StdMultiLevelSolver::NewtonOutput(NLInfo& nlinfo) const
 
 /*-------------------------------------------------------------*/
  
-double StdMultiLevelSolver::NewtonResidual(NewMultiLevelGhostVector& y, const NewMultiLevelGhostVector& x,const NewMultiLevelGhostVector& b) const
+void StdMultiLevelSolver::NewtonVectorZero(MultiLevelGhostVector& w) const
+{
+  w.zero();
+}
+
+/*-------------------------------------------------------------*/
+ 
+double StdMultiLevelSolver::NewtonResidual(MultiLevelGhostVector& y, const MultiLevelGhostVector& x,const MultiLevelGhostVector& b) const
 {
   _clock_residual.start();
   DataP->countresidual++;
@@ -372,7 +391,7 @@ double StdMultiLevelSolver::NewtonResidual(NewMultiLevelGhostVector& y, const Ne
 
 /*-------------------------------------------------------------*/
 
-void StdMultiLevelSolver::NewtonMatrixControl(NewMultiLevelGhostVector& u, const NLInfo& nlinfo)
+void StdMultiLevelSolver::NewtonMatrixControl(MultiLevelGhostVector& u, const NLInfo& nlinfo)
 {
   MON->new_matrix() = 0;
 
@@ -389,7 +408,7 @@ void StdMultiLevelSolver::NewtonMatrixControl(NewMultiLevelGhostVector& u, const
 
 /*-------------------------------------------------------------*/
 
-void StdMultiLevelSolver::NewtonLinearSolve(NewMultiLevelGhostVector& x, const NewMultiLevelGhostVector& b, const NewMultiLevelGhostVector& u, CGInfo& info)
+void StdMultiLevelSolver::NewtonLinearSolve(MultiLevelGhostVector& x, const MultiLevelGhostVector& b, const MultiLevelGhostVector& u, CGInfo& info)
 {
   assert(DataP->linearsolve=="mg");
 
@@ -408,7 +427,7 @@ void StdMultiLevelSolver::NewtonLinearSolve(NewMultiLevelGhostVector& x, const N
 
 /*-------------------------------------------------------------*/
 
-double StdMultiLevelSolver::NewtonUpdate(double& rr, NewMultiLevelGhostVector& x, NewMultiLevelGhostVector& dx, NewMultiLevelGhostVector& r, const NewMultiLevelGhostVector& f, NLInfo& nlinfo)
+double StdMultiLevelSolver::NewtonUpdate(double& rr, MultiLevelGhostVector& x, MultiLevelGhostVector& dx, MultiLevelGhostVector& r, const MultiLevelGhostVector& f, NLInfo& nlinfo)
 {
   double r0 = rr;
   const CGInfo& linfo = nlinfo.GetLinearInfo();
@@ -469,7 +488,7 @@ double StdMultiLevelSolver::NewtonUpdate(double& rr, NewMultiLevelGhostVector& x
 
 /*-------------------------------------------------------------*/
 
-void StdMultiLevelSolver::AssembleMatrix(NewMultiLevelGhostVector& u)
+void StdMultiLevelSolver::AssembleMatrix(MultiLevelGhostVector& u)
 {
   SolutionTransfer(u);
   for(int l=0;l<=ComputeLevel;l++)
@@ -482,7 +501,7 @@ void StdMultiLevelSolver::AssembleMatrix(NewMultiLevelGhostVector& u)
 
 /*-------------------------------------------------------------*/
 
-void StdMultiLevelSolver::ComputeIlu(NewMultiLevelGhostVector& u)
+void StdMultiLevelSolver::ComputeIlu(MultiLevelGhostVector& u)
 {
   SolutionTransfer(u);
   for(int l=0;l<=ComputeLevel;l++)
@@ -493,7 +512,7 @@ void StdMultiLevelSolver::ComputeIlu(NewMultiLevelGhostVector& u)
 
 /*-------------------------------------------------------------*/
 
-void StdMultiLevelSolver::BoundaryInit(NewMultiLevelGhostVector& u) const
+void StdMultiLevelSolver::BoundaryInit(MultiLevelGhostVector& u) const
 {
   for(int l=0;l<_SP.size();l++)
     GetSolver(l)->BoundaryInit(u(l));
@@ -501,7 +520,7 @@ void StdMultiLevelSolver::BoundaryInit(NewMultiLevelGhostVector& u) const
 
 /*-------------------------------------------------------------*/
 
-string StdMultiLevelSolver::Solve(int level, NewMultiLevelGhostVector& u, const NewMultiLevelGhostVector& b)
+string StdMultiLevelSolver::Solve(int level, MultiLevelGhostVector& u, const MultiLevelGhostVector& b)
 {
   ComputeLevel = level;
 
@@ -509,7 +528,7 @@ string StdMultiLevelSolver::Solve(int level, NewMultiLevelGhostVector& u, const 
   if(DataP->nonlinearsolve=="newton")
     {
       GetSolver(ComputeLevel)->HNAverage(u(ComputeLevel));
-      newnewton(*this,u,b,_res,_cor,DataP->nlinfo);
+      newton(*this,u,b,_res,_cor,DataP->nlinfo);
       GetSolver(ComputeLevel)->HNZero(u(ComputeLevel));
       status = DataP->nlinfo.control().status();
     }
@@ -526,14 +545,14 @@ string StdMultiLevelSolver::Solve(int level, NewMultiLevelGhostVector& u, const 
 
 /*-------------------------------------------------------------*/
 
-double StdMultiLevelSolver::ComputeFunctional(NewMultiLevelGhostVector& f, const NewMultiLevelGhostVector& u, const Functional* FP) const
+double StdMultiLevelSolver::ComputeFunctional(MultiLevelGhostVector& f, const MultiLevelGhostVector& u, const Functional* FP) const
 {
   return GetSolver(ComputeLevel)->ComputeFunctional(f(ComputeLevel),u(ComputeLevel),FP);
 }
 
 /*-------------------------------------------------------------*/
 
-void StdMultiLevelSolver::SolutionTransfer(int high, int low, NewMultiLevelGhostVector& u) const
+void StdMultiLevelSolver::SolutionTransfer(int high, int low, MultiLevelGhostVector& u) const
 {
   for(int l=high;l>=low;l--)
     {
@@ -543,7 +562,7 @@ void StdMultiLevelSolver::SolutionTransfer(int high, int low, NewMultiLevelGhost
 
 /*-------------------------------------------------------------*/
 
-void StdMultiLevelSolver::SolutionTransfer(NewMultiLevelGhostVector& u) const
+void StdMultiLevelSolver::SolutionTransfer(MultiLevelGhostVector& u) const
 {
   SolutionTransfer(ComputeLevel,1,u);
 }

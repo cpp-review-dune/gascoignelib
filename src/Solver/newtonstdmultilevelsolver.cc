@@ -1,5 +1,5 @@
 #include  "newton.xx"
 #include  "stdmultilevelsolver.h"
-#include  "newmultilevelghostvector.h"
+#include  "multilevelghostvector.h"
 
-template void newnewton(StdMultiLevelSolver& S, NewMultiLevelGhostVector& u, const NewMultiLevelGhostVector& f, NewMultiLevelGhostVector& r, NewMultiLevelGhostVector& w, NLInfo& info);
+template void newton(StdMultiLevelSolver& S, MultiLevelGhostVector& u, const MultiLevelGhostVector& f, MultiLevelGhostVector& r, MultiLevelGhostVector& w, NLInfo& info);

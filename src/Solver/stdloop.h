@@ -36,14 +36,14 @@ protected:
 
   // new vectors
 
-  nvector<double> ComputeFunctionals(NewMultiLevelGhostVector& f, NewMultiLevelGhostVector& u, const std::vector<const Functional*>& J) const;
+  nvector<double> ComputeFunctionals(MultiLevelGhostVector& f, MultiLevelGhostVector& u, const std::vector<const Functional*>& J) const;
 
   nvector<double> GetExactValues() const;
 
   virtual void EtaVisu(std::string name, int i, const nvector<double>& eta);
   virtual void AdaptMesh(const nvector<double>& eta);
-  virtual nvector<double> Functionals(NewMultiLevelGhostVector& u, NewMultiLevelGhostVector& f);
-  virtual double Estimator(nvector<double>& eta, NewMultiLevelGhostVector& u, NewMultiLevelGhostVector& f);
+  virtual nvector<double> Functionals(MultiLevelGhostVector& u, MultiLevelGhostVector& f);
+  virtual double Estimator(nvector<double>& eta, MultiLevelGhostVector& u, MultiLevelGhostVector& f);
 
 public:
 

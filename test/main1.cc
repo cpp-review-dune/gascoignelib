@@ -3,7 +3,7 @@
 #include  "residualfunctional.h"
 #include  "dirichletdatabycolor.h"
 #include  "domainmeanfunctional.h"
-#include  "laplace2d.h"
+#include  "equation.h"
 #include  "dirichletdatabyexactsolution.h"
 #include  "righthandsidedatabyequation.h"
 #include  "meshagent.h"
@@ -12,16 +12,20 @@ using namespace std;
 using namespace Gascoigne;
 
 /* ----------------------------------------- */
-class LocalEquation : public Laplace2d
+class LocalEquation : public Equation
 {
 public:
+  string GetName() const {return "Local";}
+  int ncomp() const {return 1;}
+  void OperatorStrong(Vector& b, const Gascoigne::FemFunction& U) const {
+    b[0] += U[0].m() - U[0].D();
+  }
   void Form(VectorIterator b, const FemFunction& U, const TestFunction& N) const {
-  b[0] += U[0].m()*N.m() + U[0].x()*N.x() + U[0].y()*N.y();
-}
+    b[0] += U[0].m()*N.m() + U[0].x()*N.x() + U[0].y()*N.y();
+  }
   void Matrix(EntryMatrix& A, const FemFunction& U, const TestFunction& M, const TestFunction& N) const {
-  A(0,0) +=  M.m()*N.m() +  M.x()*N.x() + M.y()*N.y();
-}
-
+    A(0,0) +=  M.m()*N.m() +  M.x()*N.x() + M.y()*N.y();
+  }
 };
 
 /* ----------------------------------------- */
@@ -47,22 +51,14 @@ public:
   LocalExactSolution() : ExactSolution() {}
 
   std::string GetName() const {return "LocalExactSolution";}
-  double operator()(int c, const Vertex2d& v)const{return v.x()*v.y()+11;}
+  double operator()(int c, const Vertex2d& v)const{return v.x()*v.y()+11.;}
   int GetNcomp() const { return 1; }
 };
 
 /*---------------------------------------------------*/
-
 class ProblemDescriptor : public ProblemDescriptorInterface
 {
-public:
-
-
-private:
-
-
 protected:
-
   void ConstructEquation() {
     GetEquationPointer() = new LocalEquation;
   }
@@ -75,21 +71,27 @@ protected:
   void ConstructDirichletData() {
     GetDirichletDataPointer() = new DirichletDataByExactSolution(GetExactSolution());
   }
-  
-public:
-  ProblemDescriptor() {}
+  void ConstructBoundaryManager() {
+    const ParamFile* paramfile(NULL);
+    GetBoundaryManagerPointer() = new BoundaryManager(paramfile);
+    GetBoundaryManager()->AddDirichlet(1,0);
+    GetBoundaryManager()->AddDirichlet(2,0);
+    GetBoundaryManager()->AddDirichlet(3,0);
+    GetBoundaryManager()->AddDirichlet(4,0);
+  }
+ public:
+  ProblemDescriptor() : ProblemDescriptorInterface() {}
   std::string GetName() const {return "Local";}
 };
 
 /*---------------------------------------------------*/
-
 class LocalDomainFunctional : public virtual AllDomainFunctional
 {
  public:
 
   LocalDomainFunctional() : AllDomainFunctional(1,0)
     {
-      ExactValue() = 0.02776989201546093;
+      ExactValue() = 11.25;
       beautifulname = "LocalDomain";
     }
   ~LocalDomainFunctional() {}

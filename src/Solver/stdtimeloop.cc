@@ -32,7 +32,7 @@ void StdTimeLoop::BasicInit(const ParamFile* paramfile)
 
 /*-------------------------------------------------*/
 
-string StdTimeLoop::SolveTimePrimal(NewMultiLevelGhostVector& u, NewMultiLevelGhostVector& f, string name)
+string StdTimeLoop::SolveTimePrimal(MultiLevelGhostVector& u, MultiLevelGhostVector& f, string name)
 {
   f.zero();
   GetMultiLevelSolver()->GetSolver()->TimeRhs(f,u);  // hier noch u=ualt !!
@@ -52,7 +52,7 @@ string StdTimeLoop::SolveTimePrimal(NewMultiLevelGhostVector& u, NewMultiLevelGh
 
 void StdTimeLoop::adaptive_run(const ProblemDescriptorInterface* PD)
 {
-  NewMultiLevelGhostVector u("u"), f("f");
+  MultiLevelGhostVector u("u"), f("f");
   CompVector<double> ualt;
   
   GetMultiLevelSolver()->RegisterVector(u);
@@ -107,7 +107,7 @@ void StdTimeLoop::TimeInfoBroadcast()
 
 /*-------------------------------------------------*/
 
-void StdTimeLoop::L2Projection(NewMultiLevelGhostVector& u, NewMultiLevelGhostVector& f)
+void StdTimeLoop::L2Projection(MultiLevelGhostVector& u, MultiLevelGhostVector& f)
 {
   StdTimeSolver* TS = dynamic_cast<StdTimeSolver*>(GetMultiLevelSolver()->GetSolver());
   assert(TS);
@@ -120,7 +120,7 @@ void StdTimeLoop::L2Projection(NewMultiLevelGhostVector& u, NewMultiLevelGhostVe
 
 void StdTimeLoop::run(const ProblemDescriptorInterface* PD)
 {
-  NewMultiLevelGhostVector u("u"), f("f");
+  MultiLevelGhostVector u("u"), f("f");
   u.SetMultiLevelSolver(GetMultiLevelSolver());
   f.SetMultiLevelSolver(GetMultiLevelSolver());
   GetMultiLevelSolver()->RegisterVector(u);

@@ -86,7 +86,24 @@ void BasicLoop::BasicInit(const ParamFile* paramfile)
 
 /*-------------------------------------------------------*/
 
-void BasicLoop::Output(const NewMultiLevelGhostVector& u, string name) const
+void BasicLoop::PrintMeshInformation(int outputlevel) const
+{
+  cout << " [l,n,c] " << GetMeshAgent()->nlevels() << " " << GetMeshAgent()->nnodes();
+  cout << " " << GetMeshAgent()->ncells() << endl;
+  
+  if(outputlevel)
+    {
+      for(int l=0;l<GetMeshAgent()->nlevels();l++)
+	{
+	  const MeshInterface* M = GetMeshAgent()->GetMesh(l);
+	  cout << l << " [n,c] " << M->nnodes() << " " << M->ncells() << endl;
+	}
+    }
+}
+
+/*-------------------------------------------------------*/
+
+void BasicLoop::Output(const MultiLevelGhostVector& u, string name) const
 {
   GetMultiLevelSolver()->GetSolver()->Visu(name,u.finest(),_iter);
 //   GetMultiLevelSolver()->GetSolver()->VisuGrid(name,_iter);
@@ -95,7 +112,7 @@ void BasicLoop::Output(const NewMultiLevelGhostVector& u, string name) const
 
 /*-------------------------------------------------*/
 
-void BasicLoop::WriteMeshAndSolution(const string& filename, const NewMultiLevelGhostVector& u) const
+void BasicLoop::WriteMeshAndSolution(const string& filename, const MultiLevelGhostVector& u) const
 {
   string name;
   name = filename;
@@ -112,7 +129,7 @@ void BasicLoop::WriteMeshAndSolution(const string& filename, const NewMultiLevel
 
 /*-------------------------------------------------*/
 
-void BasicLoop::WriteSolution(const NewMultiLevelGhostVector& u) const
+void BasicLoop::WriteSolution(const MultiLevelGhostVector& u) const
 {
   _clock_write.start();
   string filename = "Results/solution";
@@ -136,7 +153,7 @@ void BasicLoop::WriteMesh() const
 
 /*-------------------------------------------------*/
 
-void BasicLoop::InitSolution(NewMultiLevelGhostVector& u)
+void BasicLoop::InitSolution(MultiLevelGhostVector& u)
 {
   u.zero();
 
@@ -153,7 +170,7 @@ void BasicLoop::InitSolution(NewMultiLevelGhostVector& u)
 
 /*-------------------------------------------------*/
 
-string BasicLoop::Solve(NewMultiLevelGhostVector& u, NewMultiLevelGhostVector& f, string name)
+string BasicLoop::Solve(MultiLevelGhostVector& u, MultiLevelGhostVector& f, string name)
 {
   _clock_solve.start();
 
@@ -175,7 +192,7 @@ string BasicLoop::Solve(NewMultiLevelGhostVector& u, NewMultiLevelGhostVector& f
 
 /*-------------------------------------------------*/
 
-void BasicLoop::ComputeGlobalErrors(const NewMultiLevelGhostVector& u)
+void BasicLoop::ComputeGlobalErrors(const MultiLevelGhostVector& u)
 {
   GetMultiLevelSolver()->GetSolver()->ComputeError(u,_GlobalErr);
   if (_GlobalErr.size()>0)
@@ -187,7 +204,7 @@ void BasicLoop::ComputeGlobalErrors(const NewMultiLevelGhostVector& u)
 
 /*-------------------------------------------------------*/
 
-void BasicLoop::CopyVector(GlobalVector& dst, NewMultiLevelGhostVector& src)
+void BasicLoop::CopyVector(GlobalVector& dst, MultiLevelGhostVector& src)
 {
   GetMultiLevelSolver()->GetSolver()->HNAverage(src);
   
@@ -204,7 +221,7 @@ void BasicLoop::CopyVector(GlobalVector& dst, NewMultiLevelGhostVector& src)
 
 /*-------------------------------------------------*/
 
-void BasicLoop::CopyVector(NewMultiLevelGhostVector& dst, GlobalVector& src)
+void BasicLoop::CopyVector(MultiLevelGhostVector& dst, GlobalVector& src)
 {
   int nn = src.n();
   int cc = src.ncomp();
@@ -218,7 +235,7 @@ void BasicLoop::CopyVector(NewMultiLevelGhostVector& dst, GlobalVector& src)
 
 void BasicLoop::run(const ProblemDescriptorInterface* PD)
 {
-  NewMultiLevelGhostVector u("u"), f("f");
+  MultiLevelGhostVector u("u"), f("f");
   u.SetMultiLevelSolver(GetMultiLevelSolver());
   f.SetMultiLevelSolver(GetMultiLevelSolver());
   GlobalVector  ualt;
@@ -231,8 +248,7 @@ void BasicLoop::run(const ProblemDescriptorInterface* PD)
   for (_iter=1; _iter<=_niter; _iter++)
     {
       cout << "\n================== " << _iter << " ================";
-      cout << " [l,n,c] " << GetMeshAgent()->nlevels() << " " << GetMeshAgent()->nnodes();
-      cout << " " << GetMeshAgent()->ncells() << endl;
+      PrintMeshInformation();
       Moning.SetMeshInformation(_iter,GetMeshAgent()->nnodes(),GetMeshAgent()->ncells());
       
       _clock_newmesh.start();

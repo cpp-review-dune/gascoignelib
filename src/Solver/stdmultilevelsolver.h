@@ -17,7 +17,7 @@
 #include  "monitor.h"
 #include  "stopwatch.h"
 #include  "mginterpolatorinterface.h"
-#include  "newmultilevelghostvector.h"
+#include  "multilevelghostvector.h"
 
 /*-------------------------------------------------------------*/
 
@@ -33,8 +33,8 @@ class StdMultiLevelSolver : public MultiLevelSolverInterface
 
   const MeshAgentInterface* GetMeshAgent() const {return _MAP;}
 
-  mutable NewMultiLevelGhostVector _cor, _res, _mg0, _mg1;
-  std::set<NewMultiLevelGhostVector>  _MlVectors;
+  mutable MultiLevelGhostVector _cor, _res, _mg0, _mg1;
+  std::set<MultiLevelGhostVector>  _MlVectors;
 
   mutable StopWatch   _clock_residual, _clock_solve;
 
@@ -55,12 +55,13 @@ class StdMultiLevelSolver : public MultiLevelSolverInterface
 
   virtual void SetComputeLevel(int level) {ComputeLevel=level;}
 
-  virtual double NewtonNorm(const NewMultiLevelGhostVector& u) const {
+  virtual double NewtonNorm(const MultiLevelGhostVector& u) const {
     return GetSolver(ComputeLevel)->NewtonNorm(u(ComputeLevel));
   }
-  virtual void mgstep(std::vector<double>& res, std::vector<double>& rw, int l, int maxl, int minl, std::string& p0, std::string p, NewMultiLevelGhostVector& u, NewMultiLevelGhostVector& b, NewMultiLevelGhostVector& v);
+  virtual void mgstep(std::vector<double>& res, std::vector<double>& rw, int l, int maxl, int minl, std::string& p0, std::string p, MultiLevelGhostVector& u, MultiLevelGhostVector& b, MultiLevelGhostVector& v);
 
-  virtual void Cg   (NewMultiLevelGhostVector& x, const NewMultiLevelGhostVector& f, CGInfo& info);
+  virtual void Cg   (MultiLevelGhostVector& x, const MultiLevelGhostVector& f, CGInfo& info);
+  virtual void Gmres(MultiLevelGhostVector& x, const MultiLevelGhostVector& f, CGInfo& info);
 
  public:
 
@@ -71,7 +72,7 @@ class StdMultiLevelSolver : public MultiLevelSolverInterface
 
   std::string GetName() const {return "StdMultiLevelSolver";}
 
-  void RegisterVector(NewMultiLevelGhostVector& g) {
+  void RegisterVector(MultiLevelGhostVector& g) {
 //     cerr << "*************registriere:\t"<<g<<endl;
 //     _MlVectors.insert(&g);
     _MlVectors.insert(g);
@@ -101,35 +102,36 @@ class StdMultiLevelSolver : public MultiLevelSolverInterface
   void SetMonitorPtr(Monitor* mon) { MON = mon;}
 
   void ReInit(const ProblemDescriptorInterface& PDX);
-  void NewMesh();
   void SetProblem(const ProblemDescriptorInterface& PDX);
 
   // neue vektoren
 
-  std::string Solve(int level, NewMultiLevelGhostVector& x, const NewMultiLevelGhostVector& b);
-  void InterpolateSolution(NewMultiLevelGhostVector& u, const Gascoigne::GlobalVector& uold) const;
+  std::string Solve(int level, MultiLevelGhostVector& x, const MultiLevelGhostVector& b);
+  void InterpolateSolution(MultiLevelGhostVector& u, const Gascoigne::GlobalVector& uold) const;
 
-  virtual double NewtonResidual(NewMultiLevelGhostVector& y, const NewMultiLevelGhostVector& x, const NewMultiLevelGhostVector& b) const;
-  virtual double NewtonUpdate(double& rr, NewMultiLevelGhostVector& x, NewMultiLevelGhostVector& dx, NewMultiLevelGhostVector& r, const NewMultiLevelGhostVector& f, NLInfo& nlinfo);
-  virtual void NewtonLinearSolve(NewMultiLevelGhostVector& x, const NewMultiLevelGhostVector& b, const NewMultiLevelGhostVector& u, CGInfo& info);
-  virtual void NewtonMatrixControl(NewMultiLevelGhostVector& u, const NLInfo& nlinfo);
+  virtual void NewtonVectorZero(MultiLevelGhostVector& w) const;
+  virtual double NewtonResidual(MultiLevelGhostVector& y, const MultiLevelGhostVector& x, const MultiLevelGhostVector& b) const;
+  virtual double NewtonUpdate(double& rr, MultiLevelGhostVector& x, MultiLevelGhostVector& dx, MultiLevelGhostVector& r, const MultiLevelGhostVector& f, NLInfo& nlinfo);
+  virtual void NewtonLinearSolve(MultiLevelGhostVector& x, const MultiLevelGhostVector& b, const MultiLevelGhostVector& u, CGInfo& info);
+  virtual void NewtonMatrixControl(MultiLevelGhostVector& u, const NLInfo& nlinfo);
 
-  virtual void AssembleMatrix(NewMultiLevelGhostVector& u);
+  virtual void AssembleMatrix(MultiLevelGhostVector& u);
   /// not used in the library -- might be used in local
-  virtual void ComputeIlu(NewMultiLevelGhostVector& u);
+  virtual void ComputeIlu(MultiLevelGhostVector& u);
   
-  virtual void BoundaryInit(NewMultiLevelGhostVector& u) const;
+  virtual void BoundaryInit(MultiLevelGhostVector& u) const;
 
-  virtual void SolutionTransfer(int high, int low, NewMultiLevelGhostVector& u) const;
-  virtual void SolutionTransfer(NewMultiLevelGhostVector& u) const;
+  virtual void SolutionTransfer(int high, int low, MultiLevelGhostVector& u) const;
+  virtual void SolutionTransfer(MultiLevelGhostVector& u) const;
   
-  void precondition(NewMultiLevelGhostVector& x, NewMultiLevelGhostVector& y);
+  void precondition(MultiLevelGhostVector& x, MultiLevelGhostVector& y);
+  void vmulteqgmres(MultiLevelGhostVector& y, const MultiLevelGhostVector&  x) const;
   
-  virtual void LinearMg(int minlevel, int maxlevel, NewMultiLevelGhostVector& u, const NewMultiLevelGhostVector& f, CGInfo&);
+  virtual void LinearMg(int minlevel, int maxlevel, MultiLevelGhostVector& u, const MultiLevelGhostVector& f, CGInfo&);
 
   virtual void NewtonOutput(NLInfo& nlinfo) const;
 
-  double ComputeFunctional(NewMultiLevelGhostVector& f, const NewMultiLevelGhostVector& u, const Functional* FP) const;
+  double ComputeFunctional(MultiLevelGhostVector& f, const MultiLevelGhostVector& u, const Functional* FP) const;
 
   void SolutionTransfer(int l, Gascoigne::GlobalVector& ul, const Gascoigne::GlobalVector& uf) const;
 };

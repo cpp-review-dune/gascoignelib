@@ -14,7 +14,7 @@
 #include  "stdiomanager.h"
 #include  "stopwatch.h"
 #include  "paramfile.h"
-#include  "newmultilevelghostvector.h"
+#include  "multilevelghostvector.h"
 
 //////////////////////////////////////////////
 //
@@ -34,8 +34,8 @@ private:
   MeshAgentInterface*        _MA;
   MultiLevelSolverInterface* _ML;
 
-  void WriteMeshAndSolution(const std::string& filename, const NewMultiLevelGhostVector& u) const;
-  void WriteSolution(const NewMultiLevelGhostVector& u) const;
+  void WriteMeshAndSolution(const std::string& filename, const MultiLevelGhostVector& u) const;
+  void WriteSolution(const MultiLevelGhostVector& u) const;
   void WriteMesh() const;
   
 protected:
@@ -65,14 +65,16 @@ protected:
 
   // new vectors
 
-  virtual std::string Solve(NewMultiLevelGhostVector& u, NewMultiLevelGhostVector& f, std::string name="Results/solve");
-  virtual void Output(const NewMultiLevelGhostVector& u, std::string name="Results/solve") const;
+  virtual std::string Solve(MultiLevelGhostVector& u, MultiLevelGhostVector& f, std::string name="Results/solve");
 
-  virtual void ComputeGlobalErrors(const NewMultiLevelGhostVector& u);
+  virtual void BasicLoop::PrintMeshInformation(int outputlevel=0) const;
+  virtual void Output(const MultiLevelGhostVector& u, std::string name="Results/solve") const;
 
-  virtual void InitSolution(NewMultiLevelGhostVector& u);
-  virtual void CopyVector(Gascoigne::GlobalVector& dst, NewMultiLevelGhostVector& src);
-  virtual void CopyVector(NewMultiLevelGhostVector& dst, Gascoigne::GlobalVector& src);
+  virtual void ComputeGlobalErrors(const MultiLevelGhostVector& u);
+
+  virtual void InitSolution(MultiLevelGhostVector& u);
+  virtual void CopyVector(Gascoigne::GlobalVector& dst, MultiLevelGhostVector& src);
+  virtual void CopyVector(MultiLevelGhostVector& dst, Gascoigne::GlobalVector& src);
 
 public:
 
