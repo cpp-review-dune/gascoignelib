@@ -230,7 +230,7 @@ void FileScanner::FormatToValue(const vector<string>& words)
     {
       int n = atoi(words[1].c_str());
       _assert(words.size()>n+1,words);
-      //cerr << "-----" << n << " " << words.size() << endl;
+//       cerr << "-----" << n << " " << words.size() << endl;
       if (n>0)
         {
           IntVector value(n);

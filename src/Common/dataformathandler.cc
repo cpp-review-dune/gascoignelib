@@ -273,7 +273,6 @@ void DataFormatHandler::setvalue(const string& name, double value)
       return;
     }  
 }
-
 void DataFormatHandler::setvalue(const string& name, fixarray<2,double>& value)
 {
   TypeFix2Double::const_iterator p;
