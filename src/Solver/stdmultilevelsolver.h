@@ -88,7 +88,7 @@ class StdMultiLevelSolver : public MultiLevelSolverInterface
   void RegisterVectors();
   void RegisterMatrix();
   void ReInitMatrix();
-  void ReInitVectors();
+  void ReInitVector(VectorInterface& v, int comp);
   void ReInitVector(VectorInterface& v);
 
   void BasicInit(const MeshAgentInterface* GMGM, const ParamFile* paramfile);

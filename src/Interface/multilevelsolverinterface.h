@@ -61,6 +61,7 @@ namespace Gascoigne
       virtual void DeleteVector(VectorInterface& g)=0;
       virtual void RegisterVectors()=0;
       virtual void RegisterMatrix()=0;
+      virtual void ReInitVector(VectorInterface& v, int comp)=0;
       virtual void ReInitVector(VectorInterface& v)=0;
 
       //

@@ -185,6 +185,7 @@ class StdSolver : public virtual SolverInterface
   void RegisterMatrix();
   void RegisterVector(const VectorInterface& g);
   void ReInitVector(VectorInterface& dst);
+  void ReInitVector(VectorInterface& dst, int comp);
 
         GlobalVector& GetGV(      VectorInterface& u) const { return _NGVA(u);}
   const GlobalVector& GetGV(const VectorInterface& u) const { return _NGVA(u);}
@@ -299,7 +300,6 @@ class StdSolver : public virtual SolverInterface
   //
   /// for gmres
   //
-  virtual void MemoryVector(VectorInterface& p);
   virtual void DeleteVector(VectorInterface* p) const;
 
   double ScalarProduct(const VectorInterface& y, const VectorInterface& x) const;

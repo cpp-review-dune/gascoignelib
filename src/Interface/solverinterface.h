@@ -85,6 +85,7 @@ namespace Gascoigne
       virtual GlobalVector& GetGV(VectorInterface& u) const=0;
       virtual const GlobalVector& GetGV(const VectorInterface& u) const=0;
       virtual void ReInitVector(VectorInterface& dst)=0;
+      virtual void ReInitVector(VectorInterface& dst, int comp)=0;
 
       //
       /// vector - hanging nodes
@@ -96,10 +97,6 @@ namespace Gascoigne
       virtual void HNZero      (const VectorInterface& x) const=0;
       virtual void HNDistribute(VectorInterface& x) const=0;
 
-/*       virtual void HNAverage   (const GlobalVector& x) const=0; */
-/*       virtual void HNZero      (const GlobalVector& x) const=0; */
-/*       virtual bool HNZeroCheck(const GlobalVector& x) const=0; */
-/*       virtual void HNDistribute(GlobalVector& x) const=0; */
       virtual void HNAverageData() const=0;
       virtual void HNZeroData() const=0;
 
@@ -161,6 +158,7 @@ namespace Gascoigne
       virtual void smooth_pre(VectorInterface& y, const VectorInterface& x, VectorInterface& h) const=0;
       virtual void smooth_exact(VectorInterface& y, const VectorInterface& x, VectorInterface& h) const=0;
       virtual void smooth_post(VectorInterface& y, const VectorInterface& x, VectorInterface& h) const=0;
+      virtual void Zero(VectorInterface& dst) const=0;
 
       //
       /// vector - additional

@@ -143,12 +143,12 @@ void StdMultiLevelSolver::RegisterVectors()
 
 /*-------------------------------------------------------------*/
 
-void StdMultiLevelSolver::ReInitVectors()
+void StdMultiLevelSolver::ReInitVector(VectorInterface& v, int comp)
 {
-  ReInitVector(_cor);
-  ReInitVector(_res);
-  ReInitVector(_mg0);
-  ReInitVector(_mg1);
+  for (int level=0; level<nlevels(); ++level)  
+    {
+      GetSolver(level)->ReInitVector(v,comp);
+    }
 }
 
 /*-------------------------------------------------------------*/
@@ -271,7 +271,11 @@ void StdMultiLevelSolver::ReInit(const ProblemDescriptorInterface& PDX)
   RegisterMatrix();
   RegisterVectors();
   ReInitMatrix();
-  ReInitVectors();
+
+  ReInitVector(_cor);
+  ReInitVector(_res);
+  ReInitVector(_mg0);
+  ReInitVector(_mg1);
 }
 
 /*-------------------------------------------------------------*/

@@ -375,6 +375,13 @@ void StdSolver::RegisterVector(const VectorInterface& g)
 void StdSolver::ReInitVector(VectorInterface& dst)
 {
   int ncomp = GetProblemDescriptor()->GetEquation()->GetNcomp();
+  ReInitVector(dst,ncomp);
+}
+
+/*-------------------------------------------------------*/
+
+void StdSolver::ReInitVector(VectorInterface& dst, int comp)
+{
   int n     = GetDiscretization()->n();
   
   // VectorInterface already registered ?
@@ -392,7 +399,7 @@ void StdSolver::ReInitVector(VectorInterface& dst)
   if (p->second==NULL) 
     {
       p->second = new GlobalVector;
-      p->second->ncomp() = ncomp;
+      p->second->ncomp() = comp;
     }
   // resize GlobalVector
   //
@@ -1134,24 +1141,6 @@ void StdSolver::SubtractMeanAlgebraic(VectorInterface& gx) const
 }
 
 /*---------------------------------------------------*/
-
-void StdSolver::MemoryVector(VectorInterface& v)
-{
-  RegisterVector(v);
-  GhostVectorAgent::iterator p = _NGVA.find(v);
-  assert(p!=_NGVA.end());
-
-  int ncomp = GetProblemDescriptor()->GetEquation()->GetNcomp();
-  if(p->second==NULL) 
-    {
-      p->second = new CompVector<double>;
-      p->second->ncomp() = ncomp;
-    }
-  int n = GetDiscretization()->n();
-  p->second->reservesize(n);
-}
-
-/*-----------------------------------------*/
 
 void StdSolver::DeleteVector(VectorInterface* p) const
 {
