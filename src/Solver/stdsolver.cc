@@ -26,8 +26,6 @@
 #include  "q22d.h"
 #include  "q23d.h"
 
-#include  "edgeinfocontainer.h"
-
 #include  "glsequation.h"
 
 using namespace std;
@@ -947,62 +945,6 @@ void StdSolver::VisuGrid(const string& name, int i) const
       eps.SetMesh(*GetMesh());
       eps.WriteGrid(name,i);
     }
-}
-
-/*-----------------------------------------*/
-
-double StdSolver::EnergyEstimator(DoubleVector& eta, const BasicGhostVector& gu, BasicGhostVector& gf) const
-{
-  const GlobalVector& u = GetGV(gu);
-
-  const Equation*          EQ  = GetProblemDescriptor()->GetEquation();
-  const RightHandSideData* RHS = GetProblemDescriptor()->GetRightHandSideData();
-
-  HNAverage(gu);
-  HNAverageData();
-
-  eta.reservesize(u.n());
-  eta.zero();
-  
-  if (GetMesh()->dimension()==2)
-    {
-      EdgeInfoContainer<2> EIC;
-      EIC.BasicInit(GetHierarchicalMesh(),u.ncomp());
-
-      const Q12d* DP = dynamic_cast<const Q12d*>(GetMeshInterpretor());
-      assert(DP);
-      if(RHS)
-      {
-        const DomainRightHandSide *DRHS = dynamic_cast<const DomainRightHandSide *>(RHS);
-        assert(DRHS);
-        DP->EnergyEstimator(EIC,eta,u,*EQ,*DRHS);
-      }
-      else
-      {
-        DP->EnergyEstimatorZeroRhs(EIC,eta,u,*EQ);
-      }
-    }
-  else if (GetMesh()->dimension()==3)
-    {
-      EdgeInfoContainer<3> EIC;
-      EIC.BasicInit(GetHierarchicalMesh(),u.ncomp());
-      const Q13d* DP = dynamic_cast<const Q13d*>(GetMeshInterpretor());
-      assert(DP);
-      if(RHS)
-      {
-        const DomainRightHandSide *DRHS = dynamic_cast<const DomainRightHandSide *>(RHS);
-        assert(DRHS);
-        DP->EnergyEstimator(EIC,eta,u,*EQ,*DRHS);
-      }
-      else
-      {
-        DP->EnergyEstimatorZeroRhs(EIC,eta,u,*EQ);
-      }
-    }
-  HNZero(gu);
-  HNZeroData();
-
-  return eta.norm();
 }
 
 /*-------------------------------------------------------*/

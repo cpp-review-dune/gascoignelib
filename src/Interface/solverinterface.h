@@ -6,6 +6,7 @@
 #include  "iluinterface.h"
 
 #include  "multigridmeshinterface.h"
+#include  "meshinterpretorinterface.h"
 #include  "functional.h"
 
 #include  "problemdescriptorinterface.h"
@@ -54,6 +55,7 @@ class SolverInterface
   virtual bool DirectSolver() const=0;
   
   virtual void NewMesh(int l, const MeshInterface* MP)=0;
+  virtual const MeshInterface* GetMesh() const { assert(0);}
 
   virtual void RegisterMatrix()=0;
   virtual void ReInitVector()=0;
@@ -70,6 +72,9 @@ class SolverInterface
   virtual void DeleteNodeVector(const std::string&)  {assert(0);}
   virtual void DeleteCellVector(const std::string&) {assert(0);}
   virtual void DeleteParameterVector(const std::string&) {assert(0);}
+
+  virtual const MeshInterpretorInterface* GetMeshInterpretor() const { assert(0); return NULL;}
+  virtual       MeshInterpretorInterface* GetMeshInterpretor()       { assert(0); return NULL;}
 
   //
   /// vector - manamgement
@@ -92,6 +97,8 @@ class SolverInterface
   virtual void HNZero      (const GlobalVector& x) const=0;
   virtual bool HNZeroCheck(const GlobalVector& x) const=0;
   virtual void HNDistribute(GlobalVector& x) const=0;
+  virtual void HNAverageData() const { assert(0);}
+  virtual void HNZeroData() const { assert(0);}
 
   //
   /// vector - io
@@ -170,7 +177,6 @@ class SolverInterface
 
   virtual void ComputeError(const BasicGhostVector& u, GlobalVector& err) const=0;
   virtual double ComputeFunctional(BasicGhostVector& f, const BasicGhostVector& u, const Functional* FP) const=0;
-  virtual double EnergyEstimator(DoubleVector& eta, const BasicGhostVector& u, BasicGhostVector& f) const=0;
 
   //
   /// vector - initialize

@@ -297,7 +297,6 @@ class StdSolver : public virtual SolverInterface
 
   void ComputeError(const BasicGhostVector& u, GlobalVector& err) const;
   double ComputeFunctional(BasicGhostVector& f, const BasicGhostVector& u, const Functional* FP) const;
-  double EnergyEstimator(DoubleVector& eta, const BasicGhostVector& u, BasicGhostVector& f) const;
 
   //
   /// vector - initialize

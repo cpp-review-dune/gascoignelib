@@ -1,6 +1,7 @@
 #include  "stdtimeloop.h"
 #include  "filescanner.h"
 #include  "stdtimesolver.h"
+#include  "energyestimator.h"
 
 using namespace std;
 
@@ -94,9 +95,12 @@ void StdTimeLoop::adaptive_run(const ProblemDescriptorInterface* PD)
       SolveTimePrimal(u,f);
       Output(u,"Results/solve");
       
-      GetMultiLevelSolver()->GetSolver()->EnergyEstimator(eta, u, f);
+      StdSolver* S = dynamic_cast<StdSolver*>(GetMultiLevelSolver()->GetSolver());
+      assert(S);
+      EnergyEstimator E(*S);
+      double est = E.Estimator(eta,u,f);
 
-      cout << "eta " << eta.sum() << endl;
+      cout << "eta " << est << endl;
 
       if (_iter<_niter) 
         {

@@ -7,6 +7,7 @@
 #include  "stdmultilevelsolver.h"
 #include  "meshagent.h"
 #include  "stdsolver.h"
+#include  "energyestimator.h"
 
 using namespace std;
 
@@ -140,8 +141,14 @@ double StdLoop::Estimator(DoubleVector& eta, MultiLevelGhostVector& u, MultiLeve
   double est = 0.;
   if (_estimator=="energy")
     {
-      dynamic_cast<StdSolver*>(GetMultiLevelSolver()->GetSolver())->GetHierarchicalMeshPointer() = dynamic_cast<MeshAgent*>(GetMeshAgent())->GetHierarchicalMesh();
-      est = GetMultiLevelSolver()->GetSolver()->EnergyEstimator(eta, u, f);
+      StdSolver* S = dynamic_cast<StdSolver*>(GetMultiLevelSolver()->GetSolver());
+      assert(S);
+      
+      S->GetHierarchicalMeshPointer() = dynamic_cast<MeshAgent*>(GetMeshAgent())->GetHierarchicalMesh();
+
+      EnergyEstimator E(*S);
+      est = E.Estimator(eta,u,f);
+      //est = GetMultiLevelSolver()->GetSolver()->EnergyEstimator(eta, u, f);
       EtaVisu("Results/eta",_iter,eta);
     }
   else 
