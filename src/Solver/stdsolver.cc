@@ -108,8 +108,7 @@ void StdSolver::SetProblem(const ProblemDescriptorInterface& PDX)
   _check_consistency(EQ,GetMeshInterpretor());
   int ncomp = EQ->ncomp();
   
-  Dat.Init(_paramfile,ncomp);
-  PF.SetComponents(Dat.GetPfilter());
+//   Dat.ReInit(_paramfile,ncomp);
 }
 
 /*-------------------------------------------------------*/
@@ -150,6 +149,9 @@ void StdSolver::BasicInit(int level, const ParamFile* paramfile, const MeshInter
   assert(_ZP);
 
   GetMeshInterpretor()->BasicInit(_paramfile);
+
+  Dat.BasicInit(_paramfile);
+  PF.SetComponents(Dat.GetPfilter());
 }
 
 /*-------------------------------------------------------*/
@@ -817,6 +819,7 @@ void StdSolver::ComputeIlu(const BasicGhostVector& gu) const
 
 void StdSolver::modify_ilu(IluInterface& I,int ncomp) const 
 {
+  assert(Dat.GetIluModify().size()==ncomp);
   for(int c=0;c<ncomp;c++)
     {
       double s = Dat.GetIluModify(c);
@@ -839,6 +842,10 @@ void StdSolver::PermutateIlu(const GlobalVector& u) const
     }
   else if (Dat.GetIluSort()=="streamdirection")
     {
+      const Equation*  EQ = GetProblemDescriptor()->GetEquation();
+      assert(EQ);
+      int ncomp = EQ->ncomp();
+      assert(Dat.GetStreamDirection().size()<=ncomp);
       StreamDirection sd (GetMesh(),GetMatrix()->GetStencil(),u);
       sd.Permutate       (perm,Dat.GetStreamDirection());
     }

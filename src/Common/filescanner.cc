@@ -18,8 +18,7 @@ FileScanner::FileScanner(DataFormatHandler& D) : DH(D)
 
 /***************************************************/
 
-FileScanner::FileScanner(DataFormatHandler& D, const ParamFile* pf,
-			 const string& blockname) : DH(D)
+FileScanner::FileScanner(DataFormatHandler& D, const ParamFile* pf, const string& blockname) : DH(D)
 {
   complain = 1;
   blocksymbol = "//Block";

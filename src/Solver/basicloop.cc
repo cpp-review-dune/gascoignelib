@@ -50,7 +50,7 @@ void BasicLoop::BasicInit(const ParamFile* paramfile)
   DFH.insert("nmax",&_nmax,100000);
   DFH.insert("p",&_p,0.1);
   DFH.insert("nmax",&_nmax,100000);
-  DFH.insert("niter",&_niter,4);
+  DFH.insert("niter",&_niter,1);
   DFH.insert("initial",&_initial,"boundary");
   DFH.insert("reload",&_reload,"none");
   FileScanner FS(DFH);
