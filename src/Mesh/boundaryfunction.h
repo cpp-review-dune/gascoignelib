@@ -1,6 +1,7 @@
 #ifndef  __boundaryfunction_h
 #define  __boundaryfunction_h
 
+#include  <string>
 #include  "vertex.h"
 
 /*---------------------------------------------------*/
