@@ -452,4 +452,97 @@ void Q13d::EEResidualZeroRhs(DoubleVector& eta, const GlobalVector& u, const Equ
     }
   }
 }
+
+/* ----------------------------------------- */
+
+int Q13d::GetCellNumber(const Vertex3d& p0, Vertex3d& p) const
+{
+  int iq;
+  
+  for(iq=0; iq<GetMesh()->ncells(); ++iq)
+  {
+    bool found = true;
+
+    for(int d=0; d<3; ++d)
+    {
+      double min=GetMesh()->vertex3d(GetMesh()->vertex_of_cell(iq,0))[d];
+      double max=min;
+      for(int j=1; j<8; ++j)
+      {
+        double x = GetMesh()->vertex3d(GetMesh()->vertex_of_cell(iq,j))[d];
+        
+        min = Gascoigne::min(min,x);
+        max = Gascoigne::max(max,x);
+      }
+      if((p0[d]<min)||(p0[d]>max)) 
+      {
+        found = false;
+        break;
+      }
+    }
+    
+    if(!found)
+    {
+      continue;
+    }
+    
+    VertexTransformation(p0,p,iq);
+    
+    for(int d=0; d<3; ++d)
+    {
+      if((p[d]<0.-1.e-12)||(p[d]>1.+1.e-12))
+      {
+        found = false;
+      }
+    }
+    
+    if(found)
+    {
+      break;
+    }
+  }
+
+  if(iq<GetMesh()->ncells())
+  {
+    return iq;
+  }
+  else
+  {
+    return -1;
+  }
+}
+
+/* ----------------------------------------- */
+
+void Q13d::VertexTransformation(const Vertex3d& p0, Vertex3d& p, int iq) const
+{
+  nmatrix<double> T;
+  Transformation(T,iq);
+
+  Transformation3d<BaseQ13d> Tr;
+  Tr.init(T);
+
+  Vertex3d res;
+  
+  p = 0.5;
+  
+  for(int niter=1; ;niter++)
+  {
+    Tr.point(p);
+    
+    res = p0;
+    res.add(-1,Tr.x());
+
+    if(res.norm()<1.e-13)
+    {
+      break;
+    }
+    assert(niter<10);
+    
+    Tr.DTI().mult_ad(p,res);
+  } 
+}
+
+/* ----------------------------------------- */
+
 }

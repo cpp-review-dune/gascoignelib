@@ -98,7 +98,7 @@ public:
   virtual void ComputeError(const GlobalVector& u, LocalVector& err, const ExactSolution* ES) const { assert(0);};
   virtual double ComputeBoundaryFunctional(const GlobalVector& u, const BoundaryFunctional& BF) const {assert(0); return 0.;}
   virtual double ComputeDomainFunctional(const GlobalVector& u, const DomainFunctional& F) const {assert(0); return 0;}
-  virtual double ComputePointFunctional(const GlobalVector& u, const PointFunctional* FP) const {assert(0); return 0;}
+  virtual double ComputePointFunctional(const GlobalVector& u, const PointFunctional& FP) const {assert(0); return 0;}
   virtual void ConstructInterpolator(MgInterpolatorInterface* I, const MeshTransferInterface* MT) { assert(0);};
 };
 }

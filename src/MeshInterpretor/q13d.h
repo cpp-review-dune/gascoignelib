@@ -27,6 +27,8 @@ class Q13d : public Q1
   void EEJumpNorm(EdgeInfoContainer<3>& EIC, DoubleVector& eta, const EnergyEstimatorIntegrator<3>& EEI, const HierarchicalMesh3d* HM) const;
   void EEResidual(DoubleVector& eta, const GlobalVector& u, const Equation& EQ, const DomainRightHandSide& RHS, const EnergyEstimatorIntegrator<3>& EEI) const;
   void EEResidualZeroRhs(DoubleVector& eta, const GlobalVector& u, const Equation& EQ, const EnergyEstimatorIntegrator<3>& EEI) const;
+  int GetCellNumber(const Vertex3d& p0, Vertex3d& p) const;
+  void VertexTransformation(const Vertex3d& p0, Vertex3d& p, int iq) const;
 
 public:
 

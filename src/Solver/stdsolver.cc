@@ -168,7 +168,7 @@ MeshInterpretorInterface* StdSolver::NewMeshInterpretor(int dimension, const str
       else 
 	{         
 	  cerr << " StdSolver::NewMeshInterpretor()\tunknown discname="<<discname<<endl;
-	  assert(0);
+	  abort();
 	}
     }
   else if(dimension==3)
@@ -178,13 +178,13 @@ MeshInterpretorInterface* StdSolver::NewMeshInterpretor(int dimension, const str
       else 
 	{         
 	  cerr << " StdSolver::NewMeshInterpretor()\tunknown discname="<<discname<<endl;
-	  assert(0);
+	  abort();
 	}
     }
   else
     {
       cerr << "StdSolver::NewMeshInterpretor() dimension=\""<<dimension<<"\""<<endl;
-      assert(0);
+      abort();
     }
 }
 
@@ -664,7 +664,7 @@ double StdSolver::ComputePointFunctional(GlobalVector& f, const GlobalVector& u,
 {
   HNAverage(u);
   HNAverageData();
-  double J = GetMeshInterpretor()->ComputePointFunctional(u,FP);
+  double J = GetMeshInterpretor()->ComputePointFunctional(u,*FP);
   HNZero(u);
   HNZeroData();
   return J;
