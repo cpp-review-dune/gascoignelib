@@ -46,6 +46,7 @@ double EnergyEstimator::Estimator(nvector<double>& eta, VectorInterface& gu,
 
   EIC->BasicInit(SS->GetHierarchicalMesh(),u.ncomp());
   discretization->EnergyEstimator(*EIC,eta,u,*EQ,DRHS);
+  delete EIC;
 
   S.HNZero(gu);
   S.HNZeroData();
