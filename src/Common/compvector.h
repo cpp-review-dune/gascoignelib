@@ -389,9 +389,11 @@ class CompVector : public nvector<T>
   void BinWrite(std::ostream& out) const
     {
       out << ncomp() << " " << n() << std::endl << "[";
+      
+      int sizeT = sizeof(T);
       for(int i=0; i<size(); i++)
         {
-          out.write (reinterpret_cast<const char*>(&(operator[](i))),sizeof(operator[](i)));
+          out.write(reinterpret_cast<const char*>(&(operator[](i))),sizeT);
         }
       out << "]"; 
     }
@@ -403,9 +405,11 @@ class CompVector : public nvector<T>
       in >> c >> n >> cc;
       ncomp() = c;
       resize(n);
+      
+      int sizeT = sizeof(T);
       for(int i=0; i<size(); i++)
         {
-          in.read(reinterpret_cast<char*>(&(operator[](i))),sizeof(operator[](i)));
+          in.read(reinterpret_cast<char*>(&(operator[](i))),sizeT);
         }
       in >> cc;
     }
