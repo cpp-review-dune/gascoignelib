@@ -23,6 +23,7 @@ public:
 
   std::string GetName() const { return "StokesGls2d";}
 
+  void SetTime(double time, double dt) const {Application::SetTime(time,dt); ST.DeltaT() = dt;}
   //
   /// Computation of stabilization parameters
   //

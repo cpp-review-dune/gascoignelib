@@ -25,8 +25,8 @@ public:
   StokesLps3d(const ParamFile* filename);
 
   std::string GetName() const { return "StokesLps3d";}
-  void SetTime(double k)   { ST.DeltaT() = k;}
 
+  void SetTime(double time, double dt) const {Application::SetTime(time,dt); ST.DeltaT() = dt;}
   //
   /// Computation of lps stabilization parameters
   //

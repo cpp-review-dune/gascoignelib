@@ -26,6 +26,7 @@ public:
 
   std::string GetName() const { return "StokesGls3d";}
 
+  void SetTime(double time, double dt) const {Application::SetTime(time,dt); ST.DeltaT() = dt;}
   //
   /// Computation of gls stabilization parameters
   //
