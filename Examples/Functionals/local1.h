@@ -6,7 +6,7 @@
 #include  "dirichletdatabyexactsolution.h"
 #include  "righthandsidedatabyequation.h"
 #include  "dirichletdatabycolor.h"
-#include  "newpointfunctional.h"
+#include  "pointfunctional.h"
 #include  "residualfunctional.h"
 #include  "domainmeanfunctional.h"
 
@@ -41,10 +41,10 @@ class ProblemDescriptor : public Gascoigne::ProblemDescriptorBase
 
 /*---------------------------------------------------*/
 
-class LocalPointFunctional : public Gascoigne::NewPointFunctional
+class LocalPointFunctional : public Gascoigne::PointFunctional
 {
  public:
- LocalPointFunctional() : Gascoigne::NewPointFunctional() {beautifulname = "LeastSquaresFunctional";}
+ LocalPointFunctional() : Gascoigne::PointFunctional() {beautifulname = "LeastSquaresFunctional";}
 
   double J(const std::vector<double>& u) const
     {

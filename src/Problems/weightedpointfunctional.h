@@ -1,19 +1,19 @@
-#ifndef __NewWeightedPointFunctional_h
-#define __NewWeightedPointFunctional_h
+#ifndef __WeightedPointFunctional_h
+#define __WeightedPointFunctional_h
 
-#include "newpointfunctional.h"
+#include "pointfunctional.h"
 
 /**********************************************************/
 namespace Gascoigne
 {
-class NewWeightedPointFunctional : public NewPointFunctional
+class WeightedPointFunctional : public PointFunctional
 {
   protected:
   std::vector<double> _weights;
 
   public:
-    NewWeightedPointFunctional() : NewPointFunctional() {beautifulname = "NewWeightedPointFunctional"; }
-    ~NewWeightedPointFunctional() { }
+    WeightedPointFunctional() : PointFunctional() {beautifulname = "WeightedPointFunctional"; }
+    ~WeightedPointFunctional() { }
 
     void BasicInit(const std::vector<Vertex2d>& v2d, const std::vector<int>& comps, const std::vector<double>& weights);
     void BasicInit(const std::vector<Vertex3d>& v3d, const std::vector<int>& comps, const std::vector<double>& weights);

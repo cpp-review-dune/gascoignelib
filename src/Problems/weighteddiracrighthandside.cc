@@ -1,4 +1,4 @@
-#include "newweighteddiracrighthandside.h"
+#include "weighteddiracrighthandside.h"
 
 using namespace std;
 
@@ -6,7 +6,7 @@ using namespace std;
 namespace Gascoigne
 {
 
-void NewWeightedDiracRightHandSide::BasicInit(const NewWeightedPointFunctional* WPF)
+void WeightedDiracRightHandSide::BasicInit(const WeightedPointFunctional* WPF)
 {
   _v2d = WPF->GetPoints2d();
   _v3d = WPF->GetPoints3d();
@@ -18,14 +18,14 @@ void NewWeightedDiracRightHandSide::BasicInit(const NewWeightedPointFunctional* 
 
 /**********************************************************/
 
-double NewWeightedDiracRightHandSide::operator()(int i,const Vertex2d& v) const
+double WeightedDiracRightHandSide::operator()(int i,const Vertex2d& v) const
 {
   return _weights[i];
 }
 
 /**********************************************************/
 
-double NewWeightedDiracRightHandSide::operator()(int i,const Vertex3d& v) const
+double WeightedDiracRightHandSide::operator()(int i,const Vertex3d& v) const
 {
   return _weights[i];
 }

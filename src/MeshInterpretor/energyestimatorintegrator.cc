@@ -82,7 +82,7 @@ double EnergyEstimatorIntegrator<DIM>::JumpNorm(const FemInterface& FEM, fixarra
 /**********************************************************/
 
 template<int DIM>
-double EnergyEstimatorIntegrator<DIM>::Residual(const LocalVector& U, const FemInterface& FEM, const Equation& EQ, const RightHandSideData& RHS, const LocalNodeData& Q) const
+double EnergyEstimatorIntegrator<DIM>::Residual(const LocalVector& U, const FemInterface& FEM, const Equation& EQ, const DomainRightHandSide& RHS, const LocalNodeData& Q) const
 {
   double res = 0.;
   DoubleVector F(U.ncomp());

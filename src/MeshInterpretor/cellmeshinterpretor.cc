@@ -1,7 +1,6 @@
 #include  "cellmeshinterpretor.h"
 #include  "visudatacompvector.h"
 #include  "sparsestructure.h"
-#include  "pointfunctional.h"
 #include  "pressurefilter.h"
 
 using namespace std;
@@ -153,7 +152,7 @@ void CellMeshInterpretor::ComputeError(const GlobalVector& u, LocalVector& err, 
 
 /* ----------------------------------------- */
 
-void CellMeshInterpretor::Rhs(GlobalVector& f, const RightHandSideData& RHS, double s) const
+void CellMeshInterpretor::Rhs(GlobalVector& f, const DomainRightHandSide& RHS, double s) const
 {
   nmatrix<double> T;
   
@@ -236,7 +235,7 @@ void CellMeshInterpretor::InitFilter(DoubleVector& F) const
 
 /* ----------------------------------------- */
 
-void CellMeshInterpretor::DiracRhs(GlobalVector& f, const NewDiracRightHandSide& DRHS, double s) const
+void CellMeshInterpretor::DiracRhs(GlobalVector& f, const DiracRightHandSide& DRHS, double s) const
 {
   int dim = GetMesh()->dimension();
   vector<int> comps = DRHS.GetComps();
@@ -272,7 +271,7 @@ void CellMeshInterpretor::DiracRhs(GlobalVector& f, const NewDiracRightHandSide&
 
 /* ----------------------------------------- */
 
-void CellMeshInterpretor::DiracRhsPoint(GlobalVector& f,const NewDiracRightHandSide& DRHS,const Vertex2d& p0,int i,double s) const
+void CellMeshInterpretor::DiracRhsPoint(GlobalVector& f,const DiracRightHandSide& DRHS,const Vertex2d& p0,int i,double s) const
 {
   __F.ReInit(f.ncomp(),GetFem()->n());
 
@@ -302,42 +301,10 @@ void CellMeshInterpretor::DiracRhsPoint(GlobalVector& f,const NewDiracRightHandS
 
 /* ----------------------------------------- */
 
-void CellMeshInterpretor::DiracRhsPoint(GlobalVector& f,const NewDiracRightHandSide& DRHS,const Vertex3d& p0,int i,double s) const
+void CellMeshInterpretor::DiracRhsPoint(GlobalVector& f,const DiracRightHandSide& DRHS,const Vertex3d& p0,int i,double s) const
 {
   cerr << "CellMeshInterpretor::DiracRhsPoint not written in 3d\n";
   abort();
-}
-
-/* ----------------------------------------- */
-
-int CellMeshInterpretor::RhsPoint(GlobalVector& f, const Functional* F) const
-{
-  const PointFunctional* FP = dynamic_cast<const PointFunctional*>(F);
-  assert(FP);
-
-  int comp = FP->GetComp();
-  const DoubleVector& d = FP->weights();
-  int count = 0;
-
-  if (GetMesh()->dimension()==2)
-    {
-      const vector<Vertex2d>& p0 = FP->points2d();
-      
-      for (int i=0; i<p0.size(); i++)
-	{
-	  count += RhsPoint(f,p0[i],comp,d[i]);
-	}
-    }
-  else
-    {
-      const vector<Vertex3d>& p0 = FP->points3d();
-      
-      for (int i=0; i<p0.size(); i++)
-	{
-	  count += RhsPoint(f,p0[i],comp,d[i]);
-	}
-    }
-  return count;
 }
 
 /*-----------------------------------------*/
@@ -366,52 +333,6 @@ int CellMeshInterpretor::GetCellNumber(const Vertex2d& p0, nvector<Vertex2d>& p)
       if (s==nv) return iq;
     }
   return -1;
-}
-
-/*-----------------------------------------*/
-
-int CellMeshInterpretor::RhsPoint(GlobalVector& f, const Vertex2d& p0, int comp, double d) const
-{
-  __F.ReInit(f.ncomp(),GetFem()->n());
-
-  nvector<Vertex2d> p(8);
-  Vertex2d Tranfo_p0;
-   
-
-  int iq = GetCellNumber(p0,p);
-  if (iq==-1) return 0;
-
-  VertexTransformation(p,p0,Tranfo_p0);
-
-  nmatrix<double> T;
-  Transformation(T,iq);
-  GetFem()->ReInit(T);
-
-  GetIntegrator()->RhsPoint(__F,*GetFem(),Tranfo_p0,comp);
-  LocalToGlobal(f,__F,iq,d);
-
-  return 1;
-}
-
-/* ----------------------------------------- */
-
-int CellMeshInterpretor::RhsPoint(GlobalVector& f, const Vertex3d& p0, int comp, double d) const
-{
-  // p0 must be mesh point !!!!
-  int found = -1;
-  for (int i=0; i<GetMesh()->nnodes(); i++)
-    {
-      if (GetMesh()->vertex3d(i)==p0) found = i;
-    }
-  if (found<0)
-  {
-    cerr << "point is not a mesh point!!!\n";
-    return 0;
-  }
-
-  f(found,comp) = d;
-  
-  return 1;
 }
 
 /* ----------------------------------------- */
@@ -444,7 +365,7 @@ double CellMeshInterpretor::ComputeDomainFunctional(const GlobalVector& u, const
 
 /* ----------------------------------------- */
 
-double CellMeshInterpretor::ComputeNewPointFunctional(const GlobalVector& u, const NewPointFunctional* FP) const
+double CellMeshInterpretor::ComputePointFunctional(const GlobalVector& u, const PointFunctional* FP) const
 {
   int dim = GetMesh()->dimension();
   vector<int> comps = FP->GetComps();

@@ -27,8 +27,8 @@
 #include  "meshtransferinterface.h"
 #include  "globaldata.h"
 #include  "paramfile.h"
-#include  "newpointfunctional.h"
-#include  "newdiracrighthandside.h"
+#include  "pointfunctional.h"
+#include  "diracrighthandside.h"
 
 namespace Gascoigne
 {
@@ -70,11 +70,8 @@ public:
   virtual void Form(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const { assert(0);};
   virtual void Matrix(MatrixInterface& A, const GlobalVector& u, const Equation& EQ, double) const { assert(0);};
   virtual void MassMatrix(MatrixInterface& M) const {assert(0);}
-  virtual void Rhs(GlobalVector& f, const RightHandSideData& RHS, double s) const { assert(0);};
-  virtual void DiracRhs(GlobalVector& f, const NewDiracRightHandSide& DRHS, double s) const { assert(0);}
-  virtual void DiracRhsPoint(GlobalVector& f,const NewDiracRightHandSide& DRHS,const Vertex2d& p0,int i,double s) const{ assert(0);}
-  virtual void DiracRhsPoint(GlobalVector& f,const NewDiracRightHandSide& DRHS,const Vertex3d& p0,int i,double s) const{ assert(0);}
-  virtual int RhsPoint(GlobalVector& f, const Functional* F) const { assert(0); return -1;}
+  virtual void Rhs(GlobalVector& f, const DomainRightHandSide& RHS, double s) const { assert(0);};
+  virtual void DiracRhs(GlobalVector& f, const DiracRightHandSide& DRHS, double s) const { assert(0);}
   virtual void RhsNeumann(GlobalVector& f, const IntSet& Colors,  const NeumannData& NRHS, double s) const { assert(0);}
 
 
@@ -97,7 +94,7 @@ public:
   virtual void ComputeError(const GlobalVector& u, LocalVector& err, const ExactSolution* ES) const { assert(0);};
   virtual double ComputeBoundaryFunctional(const GlobalVector& u, const BoundaryFunctional& BF) const {assert(0); return 0.;}
   virtual double ComputeDomainFunctional(const GlobalVector& u, const DomainFunctional& F) const {assert(0); return 0;}
-  virtual double ComputeNewPointFunctional(const GlobalVector& u, const NewPointFunctional* FP) const {assert(0); return 0;}
+  virtual double ComputePointFunctional(const GlobalVector& u, const PointFunctional* FP) const {assert(0); return 0;}
   virtual void ConstructInterpolator(MgInterpolatorInterface* I, const MeshTransferInterface* MT) { assert(0);};
 };
 }

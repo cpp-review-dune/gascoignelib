@@ -1,5 +1,5 @@
-#ifndef __NewDiracRightHandSide_h
-#define __NewDiracRightHandSide_h
+#ifndef __DiracRightHandSide_h
+#define __DiracRightHandSide_h
 
 #include "righthandsidedata.h"
 #include  <vector>
@@ -8,7 +8,7 @@
 /**********************************************************/
 namespace Gascoigne
 {
-  class NewDiracRightHandSide : public virtual RightHandSideData
+  class DiracRightHandSide : public virtual RightHandSideData
   {
   protected:
     std::vector<Vertex2d>  _v2d;
@@ -17,8 +17,8 @@ namespace Gascoigne
     std::vector<int>  _comps;
     
   public:
-    NewDiracRightHandSide() : RightHandSideData() { }
-    virtual ~NewDiracRightHandSide() { }
+    DiracRightHandSide() : RightHandSideData() { }
+    virtual ~DiracRightHandSide() { }
 
     virtual void BasicInit(const std::vector<Vertex2d>& v2d, const std::vector<int>& comps) {_v2d=v2d;_comps=comps;}
     virtual void BasicInit(const std::vector<Vertex3d>& v3d, const std::vector<int>& comps) {_v3d=v3d;_comps=comps;}

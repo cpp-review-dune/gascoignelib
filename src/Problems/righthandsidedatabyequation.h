@@ -10,7 +10,7 @@
 
 namespace Gascoigne
 {
-class RightHandSideDataByEquation : public RightHandSideData
+class RightHandSideDataByEquation : public DomainRightHandSide
 {
 protected:
 
@@ -20,9 +20,9 @@ protected:
 public:
 
   RightHandSideDataByEquation(const Equation* eq, const ExactSolution* es)
-    : RightHandSideData(), _EQ(eq), _ES(es) { assert(es); assert(eq);}
+    : DomainRightHandSide(), _EQ(eq), _ES(es) { assert(es); assert(eq);}
   
-  std::string GetName() const { return "laplace";} 
+  std::string GetName() const { return "RightHandSideDataByEquation";} 
   int GetNcomp() const { return _EQ->ncomp();}
 
   double operator()(int c, const Vertex2d& v)const 

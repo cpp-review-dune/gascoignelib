@@ -1,7 +1,7 @@
 #include  "local1.h"
 #include  "stdloop.h"
 
-#include  "newweightedpointfunctional.h"
+#include  "weightedpointfunctional.h"
 
 using namespace Gascoigne;
 using namespace std;
@@ -31,7 +31,7 @@ int main(int argc, char** argv)
   // Functionals
   /////////////
     
-  NewWeightedPointFunctional j0;
+  WeightedPointFunctional j0;
   vector<Vertex2d> v2d(2);
   v2d[0].x() = 0.25;
   v2d[0].y() = 0.25;

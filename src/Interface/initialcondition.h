@@ -1,7 +1,7 @@
 #ifndef  __InitialCondition_h
 #define  __InitialCondition_h
 
-#include  "righthandsidedata.h"
+#include  "domainrighthandside.h"
 
 /////////////////////////////////////////////
 ///
@@ -14,7 +14,7 @@
 
 namespace Gascoigne
 {
-class InitialCondition : public RightHandSideData
+class InitialCondition : public DomainRightHandSide
 {
 public:
 };

@@ -24,7 +24,6 @@ protected:
 public:
 
   ResidualFunctional();
-  ResidualFunctional(const std::vector<std::string>& args);
   ~ResidualFunctional();
   ResidualFunctional(const ResidualFunctional& F) : Functional(F)
     {
@@ -33,8 +32,6 @@ public:
        _scale = F.GetScale();
         _DD = F.GetDirichletData();
     }
-
-  void Construct(const std::vector<std::string>& args);
 
   std::string GetName() const {return "ResidualFunctional";}
 

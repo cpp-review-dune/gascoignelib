@@ -303,7 +303,7 @@ void Q13d::ConstructInterpolator(MgInterpolatorInterface* I, const MeshTransferI
 
 /* ----------------------------------------- */
 
-void Q13d::EnergyEstimator(EdgeInfoContainer<3>& EIC, DoubleVector& eta, const GlobalVector& u, const Equation& EQ, const RightHandSideData& RHS) const
+void Q13d::EnergyEstimator(EdgeInfoContainer<3>& EIC, DoubleVector& eta, const GlobalVector& u, const Equation& EQ, const DomainRightHandSide& RHS) const
 {
   EnergyEstimatorIntegrator<3> EEI;
   const HierarchicalMesh3d*    HM = dynamic_cast<const HierarchicalMesh3d*>(EIC.GetMesh());
@@ -408,7 +408,7 @@ void Q13d::EEJumpNorm(EdgeInfoContainer<3>& EIC, DoubleVector& eta, const Energy
 
 /* ----------------------------------------- */
 
-void Q13d::EEResidual(DoubleVector& eta, const GlobalVector& u, const Equation& EQ, const RightHandSideData& RHS, const EnergyEstimatorIntegrator<3>& EEI) const
+void Q13d::EEResidual(DoubleVector& eta, const GlobalVector& u, const Equation& EQ, const DomainRightHandSide& RHS, const EnergyEstimatorIntegrator<3>& EEI) const
 {
   nmatrix<double> T;
 

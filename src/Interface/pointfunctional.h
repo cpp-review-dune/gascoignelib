@@ -1,5 +1,5 @@
-#ifndef __NewPointFunctional_h
-#define __NewPointFunctional_h
+#ifndef __PointFunctional_h
+#define __PointFunctional_h
 
 #include "functional.h"
 #include  <vector>
@@ -8,7 +8,7 @@
 /**********************************************************/
 namespace Gascoigne
 {
-class NewPointFunctional : public Functional
+class PointFunctional : public Functional
 {
  protected:
   std::vector<Vertex2d>  _v2d;
@@ -17,8 +17,8 @@ class NewPointFunctional : public Functional
   std::vector<int>  _comps;
 
  public:
-  NewPointFunctional() : Functional() {}
-  virtual ~NewPointFunctional() {}
+  PointFunctional() : Functional() {}
+  virtual ~PointFunctional() {}
   
   virtual void BasicInit(const std::vector<Vertex2d>& v2d, const std::vector<int>& comps) {_v2d=v2d;_comps=comps;}
   virtual void BasicInit(const std::vector<Vertex3d>& v3d, const std::vector<int>& comps) {_v3d=v3d;_comps=comps;}
@@ -28,7 +28,7 @@ class NewPointFunctional : public Functional
   
   virtual const std::vector<int>& GetComps()    const { return _comps;}
 
-  std::string GetName() const {return "NewPointFunctional";}
+  std::string GetName() const {return "PointFunctional";}
   
   virtual double J(const std::vector<double>& u) const {abort();}
 };

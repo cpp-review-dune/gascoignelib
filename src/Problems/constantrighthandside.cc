@@ -8,7 +8,7 @@ namespace Gascoigne
 {
 ConstantRightHandSideData::ConstantRightHandSideData
 (const vector<string>& args) 
-  : RightHandSideData()
+  : DomainRightHandSide()
 {
   if(args.size()!=3)
     {

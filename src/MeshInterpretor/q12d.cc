@@ -276,7 +276,7 @@ void Q12d::ConstructInterpolator(MgInterpolatorInterface* I, const MeshTransferI
 
 /* ----------------------------------------- */
 
-void Q12d::EnergyEstimator(EdgeInfoContainer<2>& EIC, DoubleVector& eta, const GlobalVector& u, const Equation& EQ, const RightHandSideData& RHS) const
+void Q12d::EnergyEstimator(EdgeInfoContainer<2>& EIC, DoubleVector& eta, const GlobalVector& u, const Equation& EQ, const DomainRightHandSide& RHS) const
 {
   EnergyEstimatorIntegrator<2> EEI;
   const HierarchicalMesh2d*    HM = dynamic_cast<const HierarchicalMesh2d*>(EIC.GetMesh());
@@ -381,7 +381,7 @@ void Q12d::EEJumpNorm(EdgeInfoContainer<2>& EIC, DoubleVector& eta, const Energy
 
 /* ----------------------------------------- */
 
-void Q12d::EEResidual(DoubleVector& eta, const GlobalVector& u, const Equation& EQ, const RightHandSideData& RHS, const EnergyEstimatorIntegrator<2>& EEI) const
+void Q12d::EEResidual(DoubleVector& eta, const GlobalVector& u, const Equation& EQ, const DomainRightHandSide& RHS, const EnergyEstimatorIntegrator<2>& EEI) const
 {
   nmatrix<double> T;
 

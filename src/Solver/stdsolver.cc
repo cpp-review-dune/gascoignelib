@@ -17,13 +17,9 @@
 #include  "stopwatch.h"
 #include  "gascoignevisualization.h"
 #include  "backup.h"
-#include  "pointfunctional.h"
 #include  "visu_eps.h"
 
-#include  "newpointfunctional.h"
-
 #include  "diracrighthandside.h"
-#include  "newdiracrighthandside.h"
 
 #include  "q1gls2d.h"
 #include  "q1gls3d.h"
@@ -607,22 +603,18 @@ double StdSolver::ComputeFunctional(GlobalVector& f, const GlobalVector& u, cons
     {
       return ComputeBoundaryFunctional(f,u,help,BFP);
     }
-  const PointFunctional* PFP = dynamic_cast<const PointFunctional*>(FP);
-  if(PFP)
-    {
-      return ComputePointFunctional(f,u,help,PFP);
-    }
   const ResidualFunctional* RFP = dynamic_cast<const ResidualFunctional*>(FP);
   if(RFP)
     {
       return ComputeResidualFunctional(f,u,help,RFP);
     }
-  const NewPointFunctional* NPFP = dynamic_cast<const NewPointFunctional*>(FP);
+  const PointFunctional* NPFP = dynamic_cast<const PointFunctional*>(FP);
   if(NPFP)
     {
-      return ComputeNewPointFunctional(f,u,help,NPFP);
+      return ComputePointFunctional(f,u,help,NPFP);
     }
-  assert(0);
+  cerr << "Functional must be either of type DomainFunctional, BoundaryFunctional or PointFunctional!!!" << endl;
+  abort();
 }
 
 /*-------------------------------------------------------*/
@@ -650,22 +642,8 @@ double StdSolver::ComputeDomainFunctional(GlobalVector& f, const GlobalVector& u
 
 double StdSolver::ComputePointFunctional(GlobalVector& f, const GlobalVector& u, GlobalVector& z, const PointFunctional* FP) const
 {
-  f.zero();
-
-  RhsPoint(f,FP);
-
-  HNAverage(u);      
-  double J = u*f;
-  HNZero(u);
-  return J;
-}
-
-/*-------------------------------------------------------*/
-
-double StdSolver::ComputeNewPointFunctional(GlobalVector& f, const GlobalVector& u, GlobalVector& z, const NewPointFunctional* FP) const
-{
   HNAverage(u);
-  double J = GetMeshInterpretor()->ComputeNewPointFunctional(u,FP);
+  double J = GetMeshInterpretor()->ComputePointFunctional(u,FP);
   HNZero(u);
   return J;
 }
@@ -712,34 +690,34 @@ void StdSolver::Rhs(GlobalVector& f, double d) const
   const RightHandSideData* RHS  = GetProblemDescriptor()->GetRightHandSideData();
   const NeumannData*       NRHS = GetProblemDescriptor()->GetNeumannData();
 
-  if(RHS)
-    {
-      const DiracRightHandSide *DRHS = dynamic_cast<const DiracRightHandSide *>(RHS);
-        if(DRHS)
-        {
-           cerr << "Use NewDiracRightHandSide\n";
-           abort();
-           //GetMeshInterpretor()->DiracRhs(f,*RHS,d);
-        }
-        else
-        {
-           const NewDiracRightHandSide * NDRHS = dynamic_cast<const NewDiracRightHandSide *>(RHS);
-           if(NDRHS)
-           {
-	     GetMeshInterpretor()->DiracRhs(f,*NDRHS,d);
-           }
-           else
-           {
-              GetMeshInterpretor()->Rhs(f,*RHS,d);
-           }
-        }
-    }
-
   if(NRHS)
     {
        const BoundaryManager*  BM   = GetProblemDescriptor()->GetBoundaryManager();
        GetMeshInterpretor()->RhsNeumann(f,BM->GetNeumannColors(),*NRHS,d);	  
     }
+  
+  if(RHS)
+    {
+       bool done=false;
+       const DomainRightHandSide *DRHS = dynamic_cast<const DomainRightHandSide *>(RHS);
+       if(DRHS)
+       {
+         GetMeshInterpretor()->Rhs(f,*DRHS,d);
+         done = true;
+       }
+       const DiracRightHandSide *NDRHS = dynamic_cast<const DiracRightHandSide *>(RHS);
+       if(NDRHS)
+       {
+         GetMeshInterpretor()->DiracRhs(f,*NDRHS,d);
+         done =true;
+       }
+       if(!done)
+       {
+         cerr << "RightHandSide should be either of type DomainRightHandSide or DiracRightHandSide!!!" << endl;
+         abort();
+       }
+    }
+
  HNDistribute(f);
 }
 
@@ -940,7 +918,9 @@ double StdSolver::EnergyEstimator(DoubleVector& eta, const BasicGhostVector& gu,
       assert(DP);
       if(RHS)
       {
-        DP->EnergyEstimator(EIC,eta,u,*EQ,*RHS);
+        const DomainRightHandSide *DRHS = dynamic_cast<const DomainRightHandSide *>(RHS);
+        assert(DRHS);
+        DP->EnergyEstimator(EIC,eta,u,*EQ,*DRHS);
       }
       else
       {
@@ -955,7 +935,9 @@ double StdSolver::EnergyEstimator(DoubleVector& eta, const BasicGhostVector& gu,
       assert(DP);
       if(RHS)
       {
-        DP->EnergyEstimator(EIC,eta,u,*EQ,*RHS);
+        const DomainRightHandSide *DRHS = dynamic_cast<const DomainRightHandSide *>(RHS);
+        assert(DRHS);
+        DP->EnergyEstimator(EIC,eta,u,*EQ,*DRHS);
       }
       else
       {
@@ -982,13 +964,6 @@ void StdSolver::Write(const BasicGhostVector& gu, const string& filename) const
 {
   const GlobalVector& u = GetGV(gu);
   WriteBackUp(u,filename);
-}
-
-/*-------------------------------------------------------*/
-
-int StdSolver::RhsPoint(GlobalVector& f, const PointFunctional* FP) const
-{
-  return GetMeshInterpretor()->RhsPoint(f,FP);
 }
 
 /*-------------------------------------------------------*/

@@ -29,7 +29,7 @@ GalerkinIntegrator<DIM>::GalerkinIntegrator<DIM>() : BasicIntegrator()
 /* ----------------------------------------- */
 
 template<int DIM>
-void GalerkinIntegrator<DIM>::Rhs(const RightHandSideData& f, LocalVector& F, const FemInterface& FEM, const LocalNodeData& Q) const
+void GalerkinIntegrator<DIM>::Rhs(const DomainRightHandSide& f, LocalVector& F, const FemInterface& FEM, const LocalNodeData& Q) const
 {
   F.ReInit(f.GetNcomp(),FEM.n());
 
@@ -213,7 +213,7 @@ void GalerkinIntegrator<DIM>::RhsPoint
 
 /* ----------------------------------------- */
 template<int DIM>
-void GalerkinIntegrator<DIM>::DiracRhsPoint(LocalVector& b, const FemInterface& E, const Vertex<DIM>& p, const NewDiracRightHandSide& DRHS, int j, const LocalNodeData& Q) const
+void GalerkinIntegrator<DIM>::DiracRhsPoint(LocalVector& b, const FemInterface& E, const Vertex<DIM>& p, const DiracRightHandSide& DRHS, int j, const LocalNodeData& Q) const
 {
   b.zero();
 

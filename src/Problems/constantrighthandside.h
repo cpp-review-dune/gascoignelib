@@ -1,13 +1,13 @@
 #ifndef  __ConstantRightHandSide_h
 #define  __ConstantRightHandSide_h
 
-#include  "righthandsidedata.h"
+#include  "domainrighthandside.h"
 
 /*-----------------------------------------*/
 
 namespace Gascoigne
 {
-class OneRightHandSideData : public RightHandSideData
+class OneRightHandSideData : public DomainRightHandSide
 {
   protected :
 
@@ -15,7 +15,7 @@ class OneRightHandSideData : public RightHandSideData
 
   public  : 
 
-    OneRightHandSideData(int n) : ncomp(n), RightHandSideData() {}
+    OneRightHandSideData(int n) : ncomp(n), DomainRightHandSide() {}
     std::string GetName() const { return "one" ;} 
     int GetNcomp() const {return ncomp;}
     double operator()(int c, const Vertex2d& v)const {return 1.;}
@@ -24,7 +24,7 @@ class OneRightHandSideData : public RightHandSideData
 
 /*-----------------------------------------*/
 
-class ConstantRightHandSideData : public RightHandSideData
+class ConstantRightHandSideData : public DomainRightHandSide
 {
 protected :
   int     comp,ncomp;
@@ -40,7 +40,7 @@ public  :
 
 /*-----------------------------------------*/
 
-class OneComponentRightHandSideData : public RightHandSideData
+class OneComponentRightHandSideData : public DomainRightHandSide
 {
  protected:
   
@@ -49,7 +49,7 @@ class OneComponentRightHandSideData : public RightHandSideData
  public:
   
   OneComponentRightHandSideData(int n, int c) : 
-    RightHandSideData(), ncomp(n), comp(c) {}
+    DomainRightHandSide(), ncomp(n), comp(c) {}
 
   std::string GetName() const {return "one_onecomp";} 
 
@@ -69,7 +69,7 @@ class OneComponentRightHandSideData : public RightHandSideData
 
 /*-----------------------------------------*/
 
-class RectangleRightHandSideData : public RightHandSideData
+class RectangleRightHandSideData : public DomainRightHandSide
 {
   int      ncomp, comp;  // ist die Komponente die Eins ist
   double   x0, x1, y0, y1, z0, z1;
@@ -78,7 +78,7 @@ public:
 
   RectangleRightHandSideData(int n, int c, 
 			     double xx0, double xx1, double yy0, double yy1) : 
-    RightHandSideData(), ncomp(n), comp(c) 
+    DomainRightHandSide(), ncomp(n), comp(c) 
     { 
       x0 = xx0; x1 = xx1; y0 = yy0; y1 = yy1;
       z0 = z1 = 0.;
@@ -86,7 +86,7 @@ public:
   RectangleRightHandSideData(int n, int c, 
 			     double xx0, double xx1, double yy0, double yy1,
 			     double zz0, double zz1) : 
-    RightHandSideData(), ncomp(n), comp(c) 
+    DomainRightHandSide(), ncomp(n), comp(c) 
     { 
       x0 = xx0; x1 = xx1; y0 = yy0; y1 = yy1;
       z0 = zz0; z1 = zz1;

@@ -38,7 +38,7 @@ protected:
 
   std::string GetName() const {return "Gls";}
 
-  void Rhs(const RightHandSideData& RHS, LocalVector& F, const FemInterface& FEM, const LocalNodeData& Q) const {};
+  void Rhs(const DomainRightHandSide& RHS, LocalVector& F, const FemInterface& FEM, const LocalNodeData& Q) const {};
   void Form(const Equation& EQ, LocalVector& F, const FemInterface& FEM, const LocalVector&U, const LocalNodeData& Q) const;
   void Matrix(const Equation& EQ, EntryMatrix& E, const FemInterface& FEM, const LocalVector& U, const LocalNodeData& Q) const;
 };

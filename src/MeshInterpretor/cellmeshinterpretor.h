@@ -30,9 +30,6 @@ protected:
 
   void Transformation(FemInterface::Matrix& T, int iq) const;
 
-  int RhsPoint(GlobalVector& f, const Vertex2d& p0, int comp, double d) const;
-  int RhsPoint(GlobalVector& f, const Vertex3d& p0, int comp, double d) const;
-
   double ComputePointValue(const GlobalVector& u, const Vertex2d& p0,int comp) const;
   double ComputePointValue(const GlobalVector& u, const Vertex3d& p0,int comp) const; 
 
@@ -68,12 +65,11 @@ public:
 
   void ComputeError(const GlobalVector& u, LocalVector& err, const ExactSolution* ES) const;
 
-  void Rhs(GlobalVector& f, const RightHandSideData& RHS, double s) const;
-  void DiracRhs(GlobalVector& f, const NewDiracRightHandSide& DRHS, double s) const;
-  void DiracRhsPoint(GlobalVector& f,const NewDiracRightHandSide& DRHS,const Vertex2d& p0,int i,double s) const;
-  void DiracRhsPoint(GlobalVector& f,const NewDiracRightHandSide& DRHS,const Vertex3d& p0,int i,double s) const;
+  void Rhs(GlobalVector& f, const DomainRightHandSide& RHS, double s) const;
+  void DiracRhs(GlobalVector& f, const DiracRightHandSide& DRHS, double s) const;
+  void DiracRhsPoint(GlobalVector& f,const DiracRightHandSide& DRHS,const Vertex2d& p0,int i,double s) const;
+  void DiracRhsPoint(GlobalVector& f,const DiracRightHandSide& DRHS,const Vertex3d& p0,int i,double s) const;
 
-  int RhsPoint(GlobalVector& f, const Functional* F) const;
   void RhsNeumann(GlobalVector& f, const IntSet& Colors,  const NeumannData& NRHS, double s) const;
 
   void InitFilter(DoubleVector&) const;
@@ -82,7 +78,7 @@ public:
   double ComputeBoundaryFunctional(const GlobalVector& u, const BoundaryFunctional& BF) const;
   double ComputeDomainFunctional(const GlobalVector& u, const DomainFunctional& F) const;
 
-  double ComputeNewPointFunctional(const GlobalVector& u, const NewPointFunctional* FP) const;
+  double ComputePointFunctional(const GlobalVector& u, const PointFunctional* FP) const;
 
 };
 }
