@@ -1318,6 +1318,9 @@ void HierarchicalMesh3d::read_gup(const string& name)
 
   assert(file.is_open());
 
+  Bquads.clear();
+  edges.clear();
+
   int n;
   int dim;
   file >> dim >> symbol >> n >> symbol;
