@@ -26,7 +26,6 @@ class NavierStokesGls3d : public NavierStokes3d, public virtual GlsEquation
   /// Computation of gls stabilization parameters
   //
   void glspoint(double h, const FemFunction& U, const Vertex3d& v) const;
-  void glspointmatrix(double _h, const FemFunction& U, FemData& Q, const Vertex3d& v) const;
 
   //
   /// for Galerkin-Least-Squares

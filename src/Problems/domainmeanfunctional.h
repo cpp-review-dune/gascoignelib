@@ -19,7 +19,7 @@ public:
   AllDomainFunctional(int nc, int c) { _ncomp = nc; _comp = c; }
   ~AllDomainFunctional() {}
 
-  std::string GetName() const {return "alldomain";}
+  std::string GetName() const {return "AllDomainFunctional";}
 
   int    GetNcomp() const {return _ncomp;}
   int    GetComp()  const {return _comp;}
@@ -41,7 +41,7 @@ public:
   SubDomainFunctional(int nc, int c) : AllDomainFunctional(nc,c) {};
   ~SubDomainFunctional() {}
 
-  std::string GetName() const {return "subdomain";}
+  std::string GetName() const {return "SubDomainFunctional";}
 
   void SetCoordinates(double x0, double x1, double y0, double y1);
 

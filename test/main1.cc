@@ -16,7 +16,7 @@ class LocalEquation : public Equation
 {
 public:
   string GetName() const {return "Local";}
-  int ncomp() const {return 1;}
+  int GetNcomp() const {return 1;}
   void OperatorStrong(DoubleVector& b, const FemFunction& U) const {
     b[0] += U[0].m() - U[0].D();
   }
@@ -88,9 +88,12 @@ class LocalDomainFunctional : public virtual AllDomainFunctional
   LocalDomainFunctional() : AllDomainFunctional(1,0)
     {
       ExactValue() = 11.25;
-      beautifulname = "LocalDomain";
     }
   ~LocalDomainFunctional() {}
+      
+  std::string GetName() const {
+    return "LocalDomain";
+  }
 };
 
 /*---------------------------------------------------*/

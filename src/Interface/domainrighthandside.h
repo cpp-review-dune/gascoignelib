@@ -1,25 +1,34 @@
 #ifndef __DomainRightHandSide_h
 #define __DomainRightHandSide_h
 
-#include "righthandsidedata.h"
+#include "application.h"
+#include "vertex.h"
 
 namespace Gascoigne
 {
 
 /**********************************************************/
 
-  class DomainRightHandSide : public virtual RightHandSideData
+  class DomainRightHandSide : public virtual Application
   {
     private:
 
     protected:
 
     public:
-      DomainRightHandSide() : RightHandSideData() { }
+      DomainRightHandSide() { }
       ~DomainRightHandSide() { }
 
-      virtual double operator()(int c, const Vertex2d& v) const {assert(0); return 0;}
-      virtual double operator()(int c, const Vertex3d& v) const {assert(0); return 0;}
+      virtual int GetNcomp() const=0;
+
+      virtual double operator()(int c, const Vertex2d& v) const {
+        std::cerr << "\"DomainRightHandSide::operator()\" not written" << std::endl;
+        abort();
+      }
+      virtual double operator()(int c, const Vertex3d& v) const {
+        std::cerr << "\"DomainRightHandSide::operator()\" not written" << std::endl;
+        abort();
+      }
 
       virtual void operator()(VectorIterator b, const TestFunction& N, const Vertex2d& v) const 
         {
@@ -36,6 +45,8 @@ namespace Gascoigne
             }
         }
   };
+  
+  typedef DomainRightHandSide DomainInitialCondition;
 
 /**********************************************************/
 

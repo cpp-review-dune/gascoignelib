@@ -40,17 +40,7 @@ string NavierStokesGls3d::GetName() const
 
 /*-----------------------------------------*/
 
-void NavierStokesGls3d::glspointmatrix
-(double h, const FemFunction& U, FemData& Q, const Vertex3d& v) const
-{
-  _h = h;
-  ST.ReInit(h,_visc,U[1].m(),U[2].m(),U[3].m());
-}
-
-/*-----------------------------------------*/
-
-void NavierStokesGls3d::glspoint
-(double h, const FemFunction& U, const Vertex3d& v) const
+void NavierStokesGls3d::glspoint(double h, const FemFunction& U, const Vertex3d& v) const
 {
   _h = h;
   ST.ReInit(h,_visc,U[1].m(),U[2].m(),U[3].m());

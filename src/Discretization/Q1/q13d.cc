@@ -93,7 +93,7 @@ void Q13d::StrongDirichletVector(GlobalVector& u, const DirichletData& BF, int c
 
 /* ----------------------------------------- */
 
-void Q13d::Interpolate(GlobalVector& u, const InitialCondition& U) const
+void Q13d::Interpolate(GlobalVector& u, const DomainInitialCondition& U) const
 {
   if (&U==NULL) return;
 

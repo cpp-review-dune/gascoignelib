@@ -15,24 +15,19 @@
 
 namespace Gascoigne
 {
-class StencilInterface
-{
-private:
+  class StencilInterface
+  {
+    private:
 
+    protected:
 
-protected:
-
-
-public:
-
-
-//
-////  Con(De)structor 
-//
-
-  StencilInterface() {}
-  virtual ~StencilInterface() {}
-};
+    public:
+      //
+      ////  Con(De)structor 
+      //
+      StencilInterface() {}
+      virtual ~StencilInterface() {}
+  };
 }
 
 #endif

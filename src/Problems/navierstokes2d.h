@@ -2,6 +2,7 @@
 #define  __NavierStokes2d_h
 
 #include  "equation.h"
+#include  "paramfile.h"
 
 /*-----------------------------------------*/
 
@@ -30,7 +31,7 @@ public:
   std::string GetName() const { return "NavierStokes2d";}
   double Getpenalty()const {return _penalty;}
 
-  int  ncomp() const { return 3; }
+  int  GetNcomp() const { return 3; }
 
   //
   // Time

@@ -18,8 +18,8 @@ LocalEquation::LocalEquation(const ParamFile* paramfile) : Equation()
 
 void LocalEquation::SetTimePattern(TimePattern& P) const
 {
-  P.reservesize(ncomp(),ncomp(),0.);
-  for(int c=0;c<ncomp();c++) P(c,c) = 1.;
+  P.reservesize(GetNcomp(),GetNcomp(),0.);
+  for(int c=0;c<GetNcomp();c++) P(c,c) = 1.;
 }
 
 /* ----------------------------------------- */

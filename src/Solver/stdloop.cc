@@ -67,7 +67,7 @@ DoubleVector StdLoop::ComputeFunctionals(MultiLevelGhostVector& f, MultiLevelGho
   for(int i=0; i<n; i++)
     {
       j[i] = GetMultiLevelSolver()->ComputeFunctional(f,u,J[i]);
-      cout << J[i]->BeautifulName() << " ";
+      cout << J[i]->GetName() << " ";
     }
   cout << endl;
   return j;

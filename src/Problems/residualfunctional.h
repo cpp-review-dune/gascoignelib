@@ -11,7 +11,7 @@
 
 namespace Gascoigne
 {
-class ResidualFunctional : public Functional
+class ResidualFunctional : public virtual Functional
 {
 protected:
 

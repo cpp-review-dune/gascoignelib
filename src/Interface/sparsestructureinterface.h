@@ -15,25 +15,19 @@
 
 namespace Gascoigne
 {
-class SparseStructureInterface
-{
-private:
+  class SparseStructureInterface
+  {
+    private:
 
+    protected:
 
-protected:
-
-
-public:
-
-
-//
-////  Con(De)structor 
-//
-
-  SparseStructureInterface() {}
-  virtual ~SparseStructureInterface() {}
-
-};
+    public:
+      //
+      ////  Con(De)structor 
+      //
+      SparseStructureInterface() {}
+      virtual ~SparseStructureInterface() {}
+  };
 }
 
 #endif

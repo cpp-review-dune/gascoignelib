@@ -1,8 +1,7 @@
 #ifndef  __Functional_h
 #define  __Functional_h
 
-#include  <string>
-#include  "equation.h"
+#include  "application.h"
 
 //////////////////////////////////////////////
 //
@@ -14,33 +13,33 @@
 
 namespace Gascoigne
 {
-class Functional : public Application
-{
-protected:
+  class Functional : public virtual Application
+  {
+    private:
+      
+    protected:
+      double  exact;
+      bool    exactisknown;
 
-  double  exact;
-  bool    exactisknown;
+    public:
+      Functional() : Application(), exactisknown(0), exact(0.) {}
+      ~Functional() {}
+      Functional(const Functional& F) : Application(F) {
+        exact = F.ExactValue();
+      } 
 
-  std::string beautifulname;
-
-public:
-
-  Functional() : Application(), exactisknown(0), exact(0.), beautifulname("NoBeautifulName")  {}
-  ~Functional() {}
-  Functional(const Functional& F) : Application(F)
-    {
-      exact = F.ExactValue();
-      beautifulname = F.BeautifulName();
-    } 
-
-  virtual std::string GetName() const=0;
-
-  double  ExactValue() const { return exact;}
-  double& ExactValue()       { exactisknown = 1; return exact;}
-  bool ExactValueIsKnown() const { return exactisknown; }
-
-  std::string BeautifulName() const { return beautifulname;}
-};
+      double  ExactValue() const { 
+        return exact;
+      }
+      double& ExactValue() {
+        exactisknown = 1; 
+        return exact;
+      }
+      bool ExactValueIsKnown() const 
+      { 
+        return exactisknown; 
+      }
+  };
 }
 
 #endif

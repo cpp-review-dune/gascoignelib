@@ -34,8 +34,7 @@ StokesLps3d::StokesLps3d(const ParamFile* filename) :
 
 /*-----------------------------------------*/
 
-void StokesLps3d::lpspoint
-(double h, const FemFunction& U, FemData& Q, const Vertex3d& v)const
+void StokesLps3d::lpspoint(double h, const FemFunction& U, const Vertex3d& v)const
 {
   ST.ReInit(h,_visc);
 }

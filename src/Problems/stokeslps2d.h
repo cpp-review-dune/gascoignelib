@@ -27,7 +27,7 @@ public:
   //
   /// Computation of stabilization parameters
   //
-  void lpspoint(double h, const FemFunction& U, FemData& Q, const Vertex2d& v) const;
+  void lpspoint(double h, const FemFunction& U, const Vertex2d& v) const;
 
   void StabForm(VectorIterator b, const FemFunction& U, const FemFunction& UP, const TestFunction& N) const;
     

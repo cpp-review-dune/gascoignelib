@@ -1,7 +1,7 @@
 #ifndef  __local_h
 #define  __local_h
 
-#include  "initialcondition.h"
+#include  "domainrighthandside.h"
 #include  "equation.h"
 #include  "filescanner.h"
 #include  "problemdescriptorbase.h"
@@ -35,9 +35,9 @@ class LocalEquation : public Equation
   double GetVs() const {return _vs;}
 
   std::string GetName() const { return "Local";}
-  int    ncomp      () const {return 2;}
+  int  GetNcomp      () const {return 2;}
   void SetTimePattern(TimePattern& P) const {
-    P.reservesize(ncomp(),ncomp(),0.);
+    P.reservesize(GetNcomp(),GetNcomp(),0.);
     P(0,0) = 1.;
     P(1,1) = 1.;
   }
@@ -74,7 +74,7 @@ class LocalEquation : public Equation
 
 /* ----------------------------------------- */
 
-class LocalInitialCondition : public InitialCondition
+class LocalInitialCondition : public DomainRightHandSide
 {
 private:
   mutable double _us, _vs;

@@ -15,16 +15,18 @@
 #include  <map>
 #include  <string>
 #include  "compvector.h"
+#include  "nmatrix.h"
 #include  "derivativevector.h"
 
 namespace Gascoigne
 {
-
   typedef CompVector<double>                                        GlobalVector;  
   typedef CompVector<double>                                        LocalVector;  
                                                                    
   typedef nvector<int>                                              IntVector;  
   typedef nvector<double>                                           DoubleVector;  
+  typedef nmatrix<double>                                           DoubleMatrix;  
+  typedef nmatrix<double>                                           TimePattern;
                                                                    
   typedef std::set<int>                                             IntSet;  
 
@@ -46,7 +48,7 @@ namespace Gascoigne
   typedef std::map<const std::string,LocalParameterVector>          LocalParameterData;
                                                                    
   typedef std::map<const std::string,FemFunction>                   FemData;
-};
+}
 
 
 #endif

@@ -3,7 +3,6 @@
 
 #include  "giota.h"
 #include  "stdsolver.h"
-#include  "timepattern.h"
 
 #include  "pointmatrix.h"
 #include  "pointilu.h"
@@ -119,7 +118,7 @@ void StdSolver::RegisterMatrix()
 {
   const Equation*  EQ = GetProblemDescriptor()->GetEquation();
   assert(EQ);
-  int ncomp = EQ->ncomp();
+  int ncomp = EQ->GetNcomp();
   
   if (_MAP==NULL)
     GetMatrixPointer() = NewMatrix(ncomp, _matrixtype);
@@ -257,7 +256,7 @@ void StdSolver::ReInitMatrix()
 
 void StdSolver::ReInitVector()
 {
-  int ncomp = GetProblemDescriptor()->GetEquation()->ncomp();
+  int ncomp = GetProblemDescriptor()->GetEquation()->GetNcomp();
   
   GhostVectorAgent::iterator p = _NGVA.begin();
   while(p!=_NGVA.end())
@@ -456,6 +455,13 @@ void StdSolver::SetBoundaryVector(GlobalVector& f) const
 
 /*-------------------------------------------------------*/
 
+void StdSolver::SetBoundaryVectorStrong(BasicGhostVector& f, const BoundaryManager& BM, const DirichletData& DD) const
+{
+  SetBoundaryVectorStrong(GetGV(f),BM,DD);
+}
+
+/*-------------------------------------------------------*/
+
 void StdSolver::SetBoundaryVectorStrong(GlobalVector& f, const BoundaryManager& BM, const DirichletData& DD) const
 {
   IntSet PrefCol = DD.preferred_colors();
@@ -578,7 +584,7 @@ void StdSolver::BoundaryInit(BasicGhostVector& Gu)  const
     }
   
   int color = 0;
-  int ncomp = GetProblemDescriptor()->GetEquation()->ncomp();
+  int ncomp = GetProblemDescriptor()->GetEquation()->GetNcomp();
   DoubleVector y(ncomp);
   
   int dim = GetMesh()->dimension();
@@ -599,10 +605,10 @@ void StdSolver::BoundaryInit(BasicGhostVector& Gu)  const
 void StdSolver::SolutionInit(BasicGhostVector& Gu)  const
 {
   GlobalVector& u = GetGV(Gu);
-  const InitialCondition* u0 = GetProblemDescriptor()->GetInitialCondition();
+  const DomainInitialCondition* u0 = dynamic_cast<const DomainRightHandSide *>(GetProblemDescriptor()->GetInitialCondition());
   assert(u0);
 
-  int ncomp = GetProblemDescriptor()->GetEquation()->ncomp();
+  int ncomp = GetProblemDescriptor()->GetEquation()->GetNcomp();
   assert(ncomp==u.ncomp());
   
   for (int ind=0; ind<GetMesh()->nnodes(); ind++)
@@ -748,15 +754,9 @@ void StdSolver::Rhs(GlobalVector& f, double d) const
 {
   HNAverageData();
 
-  const RightHandSideData* RHS  = GetProblemDescriptor()->GetRightHandSideData();
-  const NeumannData*       NRHS = GetProblemDescriptor()->GetNeumannData();
+  const Application* RHS  = GetProblemDescriptor()->GetRightHandSideData();
+  const NeumannData* NRHS = GetProblemDescriptor()->GetNeumannData();
 
-  if(NRHS)
-    {
-       const BoundaryManager*  BM   = GetProblemDescriptor()->GetBoundaryManager();
-       GetMeshInterpretor()->RhsNeumann(f,BM->GetNeumannColors(),*NRHS,d);	  
-    }
-  
   if(RHS)
     {
        bool done=false;
@@ -778,6 +778,13 @@ void StdSolver::Rhs(GlobalVector& f, double d) const
          abort();
        }
     }
+  
+  if(NRHS)
+    {
+       const BoundaryManager*  BM   = GetProblemDescriptor()->GetBoundaryManager();
+       GetMeshInterpretor()->RhsNeumann(f,BM->GetNeumannColors(),*NRHS,d);	  
+    }
+  
 
   HNZeroData();
   HNDistribute(f);
@@ -857,7 +864,7 @@ void StdSolver::ComputeIlu() const
   else
 #endif
     {
-      int ncomp = GetProblemDescriptor()->GetEquation()->ncomp();
+      int ncomp = GetProblemDescriptor()->GetEquation()->GetNcomp();
       _ci.start();
       GetIlu()->zero();
       GetIlu()->copy_entries(GetMatrix());
@@ -926,7 +933,7 @@ void StdSolver::PermutateIlu(const GlobalVector& u) const
     {
       const Equation*  EQ = GetProblemDescriptor()->GetEquation();
       assert(EQ);
-      int ncomp = EQ->ncomp();
+      int ncomp = EQ->GetNcomp();
       assert(_Dat.GetStreamDirection().size()<=ncomp);
       StreamDirection sd (GetMesh(),GetMatrix()->GetStencil(),u);
       sd.Permutate       (perm,_Dat.GetStreamDirection());
@@ -1070,7 +1077,7 @@ void StdSolver::MemoryVector(BasicGhostVector& v)
   if(p->second==NULL) 
     {
       p->second = new CompVector<double>;
-      p->second->ncomp() = GetProblemDescriptor()->GetEquation()->ncomp();
+      p->second->ncomp() = GetProblemDescriptor()->GetEquation()->GetNcomp();
     }
   ResizeVector(p->second,gv.GetType());
 }

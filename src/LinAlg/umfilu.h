@@ -38,6 +38,8 @@ public:
     UmfIlu(const MatrixInterface* A);
     ~UmfIlu();
     
+    std::string GetName() const { return "UmfIlu"; }
+    
     void ReInit(const SparseStructureInterface* SS);
     void copy_entries(const MatrixInterface&  A);
     void ConstructStructure(const IntVector& perm, const MatrixInterface& A);

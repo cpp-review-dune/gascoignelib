@@ -15,25 +15,20 @@
 
 namespace Gascoigne
 {
-class MeshTransferInterface
-{
-private:
+  class MeshTransferInterface
+  {
+    private:
 
+    protected:
 
-protected:
+    public:
+      //
+      ////  Con(De)structor 
+      //
 
-
-public:
-
-
-//
-////  Con(De)structor 
-//
-
-  MeshTransferInterface() {}
-  virtual ~MeshTransferInterface() {}
-
-};
+      MeshTransferInterface() {}
+      virtual ~MeshTransferInterface() {}
+  };
 }
 
 #endif

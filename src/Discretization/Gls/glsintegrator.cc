@@ -24,8 +24,7 @@ void GlsIntegrator<DIM>::Form(const Equation& EQ, LocalVector& F, const FemInter
 {
   assert(F.ncomp()==U.ncomp());
 
-  const GlsEquation* GEQ = dynamic_cast<const GlsEquation*>(&EQ);
-  assert(GEQ);
+  const GlsEquation &GEQ = dynamic_cast<const GlsEquation &>(EQ);
 
   Vertex<DIM> x, xi;
 
@@ -45,14 +44,15 @@ void GlsIntegrator<DIM>::Form(const Equation& EQ, LocalVector& F, const FemInter
       BasicIntegrator::universal_point(FEM,UH,U);
       BasicIntegrator::universal_point(FEM,QH,Q);
       FEM.x(x);
-      GEQ->glspoint(h,UH,QH,x);
+      GEQ.SetFemData(QH);
+      GEQ.glspoint(h,UH,x);
       Lu.zero();
-      GEQ->L(Lu,UH);
+      GEQ.L(Lu,UH);
       for (int i=0;i<FEM.n();i++)
         {
 	  FEM.init_test_functions(NN,weight,i);
           A.zero();
-	  GEQ->S(A,UH,NN);
+	  GEQ.S(A,UH,NN);
 	  
 	  for (int c=0; c<F.ncomp(); c++)
 	    {
@@ -75,8 +75,7 @@ void GlsIntegrator<DIM>::Matrix(const Equation& EQ, EntryMatrix& E, const FemInt
   assert(E.Mdof()==FEM.n());
   assert(E.Ncomp()==U.ncomp());
 
-  const GlsEquation* GEQ = dynamic_cast<const GlsEquation*>(&EQ);
-  assert(GEQ);
+  const GlsEquation& GEQ = dynamic_cast<const GlsEquation&>(EQ);
 
   Vertex<DIM>     x, xi;
   FemFunction    NNN(FEM.n());
@@ -98,18 +97,19 @@ void GlsIntegrator<DIM>::Matrix(const Equation& EQ, EntryMatrix& E, const FemInt
       BasicIntegrator::universal_point(FEM,UH,U);
       BasicIntegrator::universal_point(FEM,QH,Q);
       FEM.x(x);
-      GEQ->glspointmatrix(h,UH,QH,x);
+      GEQ.SetFemData(QH);
+      GEQ.glspointmatrix(h,UH,x);
        
       for (int i=0; i<FEM.n(); i++)
         {
           FEM.init_test_functions(NNN[i],1.,i);
           LMat[i].zero();
-          GEQ->LMatrix(LMat[i],UH,NNN[i]);
+          GEQ.LMatrix(LMat[i],UH,NNN[i]);
         }
       for (int i=0; i<FEM.n(); i++)
         {
           SMat.zero();
-          GEQ->S(SMat,UH,NNN[i]);
+          GEQ.S(SMat,UH,NNN[i]);
 	  SMat.equ(weight,SMat);
 
 	  for(int d=0; d<ncomp; d++)
@@ -132,7 +132,7 @@ void GlsIntegrator<DIM>::Matrix(const Equation& EQ, EntryMatrix& E, const FemInt
       // does not enhance convergence for bench.param
 
       DoubleVector Lu(ncomp,0.);
-      GEQ->L(Lu,UH);
+      GEQ.L(Lu,UH);
       Lu.equ(weight,Lu);
       
       vector<TestFunction>   NS(ncomp),MS(ncomp);
@@ -154,7 +154,7 @@ void GlsIntegrator<DIM>::Matrix(const Equation& EQ, EntryMatrix& E, const FemInt
 		    {
 		      NS[c] = NNN[i];
 		      
-		      GEQ->SMatrix(DS,UH,MS,NS);
+		      GEQ.SMatrix(DS,UH,MS,NS);
 		      E(c,d) += Lu*DS;
 		      
 		      NS[c].zero();

@@ -25,7 +25,7 @@ public:
   //
   /// Computation of lps stabilization parameters
   //
-  void lpspoint(double h, const FemFunction& U, FemData& Q, const Vertex2d& v) const;
+  void lpspoint(double h, const FemFunction& U, const Vertex2d& v) const;
   //
   /// for local-projection stabilization (lps)
   //

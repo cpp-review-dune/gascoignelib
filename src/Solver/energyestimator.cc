@@ -21,8 +21,8 @@ double EnergyEstimator::Estimator(nvector<double>& eta, BasicGhostVector& gu,
 {
   const GlobalVector& u = S.GetGV(gu);
 
-  const Equation*          EQ  = primalproblem->GetEquation();
-  const RightHandSideData* RHS = primalproblem->GetRightHandSideData();
+  const Equation*    EQ  = primalproblem->GetEquation();
+  const Application* RHS = primalproblem->GetRightHandSideData();
 
   S.HNAverage(gu);
   S.HNAverageData();

@@ -61,7 +61,7 @@ void StdTimeSolver::RegisterMatrix()
 {
   const Equation*  EQ = GetProblemDescriptor()->GetEquation();
   assert(EQ);
-  int ncomp = EQ->ncomp();
+  int ncomp = EQ->GetNcomp();
 
   if (GetMassMatrixPointer()==NULL)
     GetMassMatrixPointer() = NewMassMatrix(ncomp,_matrixtype);
@@ -102,6 +102,47 @@ MatrixInterface* StdTimeSolver::NewMassMatrix(int ncomp, const string& matrixtyp
 void StdTimeSolver::BasicInit(int level, const ParamFile* paramfile, const MeshInterface* MP)
 {
   StdSolver::BasicInit(level, paramfile, MP);
+}
+
+/*-------------------------------------------------------*/
+
+void Gascoigne::StdTimeSolver::IC(BasicGhostVector& f, double d) const
+{
+  StdTimeSolver::IC(GetGV(f),d);
+}
+
+/*-------------------------------------------------------*/
+
+void Gascoigne::StdTimeSolver::IC(GlobalVector& f, double d) const
+{
+  HNAverageData();
+
+  const Application* IC  = GetProblemDescriptor()->GetInitialCondition();
+
+  if(IC)
+    {
+       bool done=false;
+       const DomainInitialCondition *DRHS = dynamic_cast<const DomainRightHandSide *>(IC);
+       if(DRHS)
+       {
+         GetMeshInterpretor()->Rhs(f,*DRHS,d);
+         done = true;
+       }
+       const DiracInitialCondition *NDRHS = dynamic_cast<const DiracRightHandSide *>(IC);
+       if(NDRHS)
+       {
+         GetMeshInterpretor()->DiracRhs(f,*NDRHS,d);
+         done =true;
+       }
+       if(!done)
+       {
+         cerr << "InitialCondition should be either of type DomainRightHandSide or DiracRightHandSide!!!" << endl;
+         abort();
+       }
+    }
+
+  HNZeroData();
+  HNDistribute(f);
 }
 
 /*-------------------------------------------------------*/
@@ -164,13 +205,6 @@ void StdTimeSolver::AssembleMatrix(const BasicGhostVector& gu, double d)
 
 void StdTimeSolver::L2Projection(BasicGhostVector& Gu)
 {
-  const InitialCondition* IC = GetProblemDescriptor()->GetInitialCondition();
-  if(IC==NULL)
-  {
-    cerr << "No InitialCondition given!" << endl;
-    abort();
-  }
-
   GlobalVector& u = GetGV(Gu);
 
   BasicGhostVector Gg, Gr, Gd, Gf;
@@ -178,7 +212,7 @@ void StdTimeSolver::L2Projection(BasicGhostVector& Gu)
   Gg.SetName("g");
   Gr.SetName("r");
   Gd.SetName("d");
-  Gd.SetName("f");
+  Gf.SetName("f");
   RegisterVector(Gg);
   RegisterVector(Gr);
   RegisterVector(Gd);
@@ -198,12 +232,7 @@ void StdTimeSolver::L2Projection(BasicGhostVector& Gu)
   SM->PrepareJacobi();
 
   f.zero();
-  HNAverageData();
-
-  GetMeshInterpretor()->Rhs(f,*IC,1.);
-  
-  HNZeroData();
-  HNDistribute(f);
+  IC(f);
 
   int    MaxIter = 100;
   double Tol     = 1e-8;
@@ -217,7 +246,7 @@ void StdTimeSolver::L2Projection(BasicGhostVector& Gu)
   d.equ(1,f);
   double Res = r*r;
   double FirstRes = Res;
-  cout << "\t\tcg " << 0 << "\t" << sqrt(FirstRes) << endl;
+  cout << "\t\tpcg " << 0 << "\t" << sqrt(FirstRes) << endl;
 
   TimePattern TP(u.ncomp());
   TP.zero();
@@ -233,7 +262,7 @@ void StdTimeSolver::L2Projection(BasicGhostVector& Gu)
       r.add(-lambda,g);
 
       Res = r*r;
-      cout << "\t\tcg " << iter << "\t" << sqrt(Res) << "\n";
+      cout << "\t\tpcg " << iter << "\t" << sqrt(Res) << "\n";
       if (Res<Tol*Tol*FirstRes) 
 	{
           SM->JacobiVector(u);
@@ -244,5 +273,10 @@ void StdTimeSolver::L2Projection(BasicGhostVector& Gu)
     }
 
   SM->JacobiVector(u);
+
+  DeleteVector(&Gg);
+  DeleteVector(&Gr);
+  DeleteVector(&Gd);
+  DeleteVector(&Gf);
 }
 }

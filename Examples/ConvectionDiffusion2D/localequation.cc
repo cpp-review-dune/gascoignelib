@@ -18,11 +18,17 @@ LocalEquation::LocalEquation(const ParamFile* paramfile) : Equation()
 
 /* ----------------------------------------- */
 
-void LocalEquation::point(double h, const FemFunction& U, FemData& Q, const Vertex2d& v) const
+void LocalEquation::glspoint(double h, const FemFunction& U, const Vertex2d& v) const
+{
+  ST.ReInit(h,visc,betax(),betay());
+}
+
+/* ----------------------------------------- */
+
+void LocalEquation::SetFemData(FemData& Q) const
 {
   assert(Q.count("beta"));
   q = &Q["beta"];
-  ST.ReInit(h,visc,betax(),betay());
 }
 
 /* ----------------------------------------- */

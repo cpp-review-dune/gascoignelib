@@ -54,10 +54,13 @@ class LocalDragFunctional : public virtual Gascoigne::ResidualFunctional
       _col.insert(9);
       _scale = 1;
       ExactValue() = 1./8.;
-      beautifulname = "LocalDrag";
 
       _DD  = new Gascoigne::DirichletDataByColor(GetComp(),GetColors(),GetScale());
     }
+  
+  std::string GetName() const {
+    return "LocalDrag";
+  }
 };
 
 class LocalDomainFunctional : public virtual Gascoigne::AllDomainFunctional
@@ -66,8 +69,11 @@ class LocalDomainFunctional : public virtual Gascoigne::AllDomainFunctional
   LocalDomainFunctional() : AllDomainFunctional(1,0)
     {
       ExactValue() = 0.02776989201546093;
-      beautifulname = "LocalDomain";
     }
+
+  std::string GetName() const {
+    return "LocalDomain";
+  }
 };
 
 

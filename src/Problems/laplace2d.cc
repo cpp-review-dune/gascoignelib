@@ -33,7 +33,7 @@ void Laplace2d::OperatorStrong(DoubleVector& b, const FemFunction& U)const
 
 void Laplace2d::SetTimePattern(TimePattern& P) const
 {
-  P.reservesize(ncomp(),ncomp(),0.);
+  P.reservesize(GetNcomp(),GetNcomp(),0.);
   P(0,0) = 1.;
 }
 

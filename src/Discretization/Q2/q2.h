@@ -40,7 +40,7 @@ public:
   int n_withouthanging() const;
   void ReInit(const MeshInterface* MP);
 
-  void Interpolate(GlobalVector& u, const InitialCondition& RHS) const;
+  void Interpolate(GlobalVector& u, const DomainInitialCondition& U) const;
   void StrongDirichletMatrix(MatrixInterface& A, int col, const std::vector<int>& comp) const;
   void StrongDirichletMatrixOnlyRow(MatrixInterface& A, int col, const std::vector<int>& comp) const;
   void StrongDirichletVector(GlobalVector& u, const DirichletData& BF, int col, const std::vector<int>& comp) const;

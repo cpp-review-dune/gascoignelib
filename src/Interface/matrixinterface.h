@@ -5,59 +5,76 @@
 #include  "compvector.h"
 #include  "sparsestructureinterface.h"
 #include  "stencilinterface.h"
-#include  "timepattern.h"
 #include  <string>
 
 /*-------------------------------------------------------------*/
 
 namespace Gascoigne
 {
-class MatrixInterface
-{
- public:
+  class MatrixInterface
+  {
+    private:
 
-  MatrixInterface() { }
-  virtual ~MatrixInterface() { }
+    protected:
 
-  virtual std::string GetName() const=0;
+    public:
+      MatrixInterface() { }
+      virtual ~MatrixInterface() { }
+
+      virtual std::string GetName() const=0;
   
-  virtual const StencilInterface* GetStencil() const { assert(0); return NULL;}
+      virtual const StencilInterface* GetStencil() const=0;
+      virtual void ReInit(const SparseStructureInterface* S)=0;
+      virtual void AddMassWithDifferentStencil(const MatrixInterface* M, const TimePattern& TP, double s=1.) {
+        std::cerr << "\"MatrixInterface::AddMassWithDifferentStencil\" not written!" << std::endl;
+        abort();
+      }
+      virtual void zero()=0;
+      virtual void transpose()=0;
 
-  virtual void ReInit(const SparseStructureInterface* S)=0;
+      virtual std::ostream& Write(std::ostream& os) const=0;
 
-  virtual void AddMassWithDifferentStencil(const MatrixInterface* M, const TimePattern& TP, double s=1.) { assert(0);}
+      //
+      /// for matrix assembling
+      //
+      typedef IntVector::const_iterator niiterator;
 
-  virtual void zero()=0;
-  virtual void transpose() { assert(0); }
+      virtual void entry(niiterator start, niiterator stop, const EntryMatrix& M, double s=1.)=0;
+      virtual void entrydual(niiterator start, niiterator stop, const EntryMatrix& M, double s=1.) {
+        std::cerr << "\"MatrixInterface::entrydual\" not written!" << std::endl;
+        abort();
+      }
 
-  virtual std::ostream& Write(std::ostream& os) const=0;
+      //
+      /// for hanging nodes
+      //
+      virtual void entry_diag(int i, const nmatrix<double>& M)=0;
+      
+      //
+      /// for boundary conditions
+      //
+      virtual void dirichlet (int i, const std::vector<int>& cv) {
+        std::cerr << "\"MatrixInterface::dirichlet\" not written!" << std::endl;
+        abort();
+      }
+      virtual void dirichlet_only_row(int i, const std::vector<int>& indices) {
+        std::cerr << "\"MatrixInterface::dirichlet_only_row\" not written!" << std::endl;
+        abort();
+      }
 
-  //
-  /// for matrix assembling
-  //
-  typedef IntVector::const_iterator niiterator;
-
-  virtual void entry(niiterator start, niiterator stop, const EntryMatrix& M, double s=1.) { assert(0);}
-
-  virtual void entrydual(niiterator start, niiterator stop, const EntryMatrix& M, double s=1.) { assert(0);}
-
-  //
-  /// for hanging nodes
-  //
-  virtual void entry_diag(int i, const nmatrix<double>& M)    { assert(0);}
-  //
-  /// for boundary conditions
-  //
-  virtual void dirichlet (int i, const std::vector<int>& cv)  { assert(0);}
-  virtual void dirichlet_only_row(int i, const std::vector<int>& indices)   { assert(0);}
-
-  //
-  ///
-  //
-  virtual void vmult(GlobalVector& y, const GlobalVector& x, double s=1.) const  { assert(0);}
-  virtual void vmult_transpose(GlobalVector& y, const GlobalVector& x, double s=1.) const  { assert(0);}
-  virtual void vmult_time(GlobalVector& y, const GlobalVector& x, const TimePattern& TP, double s=1.) const { assert(0);}
-};
+      virtual void vmult(GlobalVector& y, const GlobalVector& x, double s=1.) const {
+        std::cerr << "\"MatrixInterface::vmult\" not written!" << std::endl;
+        abort();
+      }
+      virtual void vmult_transpose(GlobalVector& y, const GlobalVector& x, double s=1.) const {
+        std::cerr << "\"MatrixInterface::vmult_tranpose\" not written!" << std::endl;
+        abort();
+      }
+      virtual void vmult_time(GlobalVector& y, const GlobalVector& x, const TimePattern& TP, double s=1.) const {
+        std::cerr << "\"MatrixInterface::vmult_time\" not written!" << std::endl;
+        abort();
+      }
+  };
 }
 
 /*-------------------------------------------------------------*/

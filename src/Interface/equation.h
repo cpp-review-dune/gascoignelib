@@ -1,14 +1,9 @@
 #ifndef __Equation_h
 #define __Equation_h
 
-#include  <string>
-
-#include  "gascoigne.h"
-#include  "vertex.h"
 #include  "entrymatrix.h"
-#include  "timepattern.h"
-#include  "exactsolution.h"
-#include  "paramfile.h"
+#include  "vertex.h"
+#include  "application.h"
 
 //////////////////////////////////////////////
 ///
@@ -23,76 +18,42 @@
 
 namespace Gascoigne
 {
-class Equation
-{
- private:
-  
-  mutable double _time, _dt;
-  
- protected:
-  double GetTime() const {return _time;}
-  double GetTimeStep() const {return _dt;}
+  class Equation : public virtual Application
+  {
+    private:
 
- public:
-  
-  //
-  // Constructors
-  //
+    protected:
 
-  Equation() : _time(0.) {}
-  Equation(const Equation& E) {assert(0);}
-  virtual ~Equation() {}
+    public:
+      //
+      // Constructors
+      //
+      Equation() : Application() {}
+      virtual ~Equation() {}
 
-  virtual std::string GetName() const=0;
+      virtual void OperatorStrong(DoubleVector& b, const FemFunction& U) const {
+        std::cerr << "\"Equation::OperatorStrong\" not written!" << std::endl;
+        abort();
+      } 
+      virtual void SetTimePattern(TimePattern& P) const {
+        std::cerr << "\"Equation::SetTimePattern\" not written!" << std::endl;
+        abort();
+      } 
 
-  virtual int  ncomp() const=0;
-
-  virtual void OperatorStrong(DoubleVector& b, const FemFunction& U) const { assert(0);} 
-
-  virtual bool MatrixIsTransposed() const {return 0;}
-
-  virtual void SetDeltaT(double k){assert(0);}
-  virtual void SetTimePattern(TimePattern& P) const{assert(0);}
-  virtual void SetTime(double time, double dt) const {_time = time; _dt = dt;}
-
-  //
-  // --------------------------------------
-  //
-  
-  virtual void point(double h, const FemFunction& U, const Vertex2d& v) const {}
-  virtual void point(double h, const FemFunction& U, const Vertex3d& v) const {}
-  
-  virtual void pointmatrix(double h, const FemFunction& U, const Vertex2d& v) const {
-    point(h,U,v);
-  }
-  virtual void pointmatrix(double h, const FemFunction& U, const Vertex3d& v) const {
-    point(h,U,v);
-  }
-  
-  virtual void point(double h, const FemFunction& U, FemData& QH, const Vertex2d& v) const {
-    point(h,U,v);
-  }
-  virtual void point(double h, const FemFunction& U, FemData& QH, const Vertex3d& v) const {
-    point(h,U,v);
-  }
-  
-  virtual void pointmatrix(double h, const FemFunction& U, FemData& QH, const Vertex2d& v) const {
-    point(h,U,QH,v);
-  }
-  virtual void pointmatrix(double h, const FemFunction& U, FemData& QH, const Vertex3d& v) const {
-    point(h,U,QH,v);
-  }
-
-  virtual void SetParameterData(LocalParameterData& q) const { }
-
-  //
-  // ---------------------------------------------
-  //
-
-  virtual void Form(VectorIterator b, const FemFunction& U, const TestFunction& N) const=0;
-
-  virtual void Matrix(EntryMatrix& A, const FemFunction& U, const TestFunction& M, const TestFunction& N) const=0;
-};
+      virtual void point(double h, const FemFunction& U, const Vertex2d& v) const {}
+      virtual void point(double h, const FemFunction& U, const Vertex3d& v) const {}
+     
+      virtual void pointmatrix(double h, const FemFunction& U, const Vertex2d& v) const {
+        point(h,U,v);
+      }
+      virtual void pointmatrix(double h, const FemFunction& U, const Vertex3d& v) const {
+        point(h,U,v);
+      }
+     
+      virtual int GetNcomp() const=0;
+      virtual void Form(VectorIterator b, const FemFunction& U, const TestFunction& N) const=0;
+      virtual void Matrix(EntryMatrix& A, const FemFunction& U, const TestFunction& M, const TestFunction& N) const=0;
+  };
 }
 
 #endif

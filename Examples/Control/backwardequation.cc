@@ -18,8 +18,8 @@ BackwardEquation::BackwardEquation(const ParamFile* paramfile) : Equation()
 
 void BackwardEquation::SetTimePattern(TimePattern& P) const
 {
-  P.reservesize(ncomp(),ncomp(),0.);
-  for(int c=0;c<ncomp();c++)
+  P.reservesize(GetNcomp(),GetNcomp(),0.);
+  for(int c=0;c<GetNcomp();c++)
   { 
     P(c,c) = 1.;
   }
@@ -27,7 +27,7 @@ void BackwardEquation::SetTimePattern(TimePattern& P) const
 
 /* ----------------------------------------- */
 
-void BackwardEquation::point(double h, const FemFunction& U, FemData& Q, const Vertex2d& v) const
+void BackwardEquation::SetFemData(FemData& Q) const
 {
   assert(Q.count("U"));
   q = &Q["U"];

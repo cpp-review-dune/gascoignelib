@@ -35,8 +35,7 @@ StokesLps2d::StokesLps2d(const ParamFile* filename) :
 
 /*-----------------------------------------*/
 
-void StokesLps2d::lpspoint
-(double h, const FemFunction& U, FemData& Q, const Vertex2d& v)const
+void StokesLps2d::lpspoint(double h, const FemFunction& U, const Vertex2d& v)const
 {
 //   ST.alpha() = 0.1 * (h*h)/_visc;
   ST.ReInit(h,_visc);

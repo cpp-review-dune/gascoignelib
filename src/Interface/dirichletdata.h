@@ -23,23 +23,30 @@
 
 namespace Gascoigne
 {
-class DirichletData : public Application
-{
-protected:
+  class DirichletData : public virtual Application
+  {
+    private:
 
-public:
+    protected:
 
-  DirichletData() : Application() {}
-  virtual ~DirichletData() {}
+    public:
+      DirichletData() : Application() {}
+      virtual ~DirichletData() {}
 
-  virtual std::string GetName() const=0;
+      virtual void operator()(DoubleVector& b, const Vertex2d& v, int col) const {
+        std::cerr << "\"DirichletData::operator()\" not written!" << std::endl;
+        abort();
+      }
 
-  virtual void operator()(DoubleVector& b, const Vertex2d& v, int col) const {}
-  virtual void operator()(DoubleVector& b, const Vertex3d& v, int col) const {}
+      virtual void operator()(DoubleVector& b, const Vertex3d& v, int col) const {
+        std::cerr << "\"DirichletData::operator()\" not written!" << std::endl;
+        abort();
+      }
 
-  virtual std::set<int> preferred_colors()const {return std::set<int>();}
-
-};
+      virtual std::set<int> preferred_colors()const {
+        return std::set<int>();
+      }
+  };
 }
 
 #endif

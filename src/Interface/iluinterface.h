@@ -7,25 +7,49 @@
 
 namespace Gascoigne
 {
-class IluInterface
-{
-  public:
+  class IluInterface
+  {
+    private:
 
-  virtual ~IluInterface() {};
+    protected:
 
-  virtual std::string GetName() const  { assert(0);}
+    public:
+      IluInterface() {}
+      virtual ~IluInterface() {};
 
-  virtual void modify(int c, double s) { assert(0);}  
-  virtual void zero()                  { assert(0);}                      
-  virtual void compute_ilu ()          { assert(0);}           
-  virtual void ReInit   (const SparseStructureInterface* A) { assert(0);}       
-  virtual void ConstructStructure(const IntVector& perm, const MatrixInterface& A)
-    { assert(0); }
-  virtual void copy_entries(const MatrixInterface* A)      { assert(0); }  
-  virtual void solve       (GlobalVector& x) const   { assert(0); }        
-  virtual void solve_transpose(GlobalVector& x) const   { assert(0); }    
-  virtual std::ostream& Write(std::ostream &s) const       { assert(0); }
-};
+      virtual std::string GetName() const=0;
+      virtual void ReInit(const SparseStructureInterface* A)=0;
+      virtual void ConstructStructure(const IntVector& perm, const MatrixInterface& A)=0;
+
+      virtual void modify(int c, double s) {
+        std::cerr << "\"IluInterface::modify\" not written!" << std::endl;
+        abort();
+      }
+      virtual void zero() {
+        std::cerr << "\"IluInterface::zero\" not written!" << std::endl;
+        abort();
+      }
+      virtual void compute_ilu () {
+        std::cerr << "\"IluInterface::compute_ilu\" not written!" << std::endl;
+        abort();
+      }
+      virtual void copy_entries(const MatrixInterface* A) {
+        std::cerr << "\"IluInterface::copy_entries\" not written!" << std::endl;
+        abort();
+      }
+      virtual void solve(GlobalVector& x) const {
+        std::cerr << "\"IluInterface::solve\" not written!" << std::endl;
+        abort();
+      }
+      virtual void solve_transpose(GlobalVector& x) const {
+        std::cerr << "\"IluInterface::solve_transpose\" not written!" << std::endl;
+        abort();
+      }
+      virtual std::ostream& Write(std::ostream &s) const {
+        std::cerr << "\"IluInterface::Write\" not written!" << std::endl;
+        abort();
+      }
+  };
 }
 
 #endif

@@ -129,10 +129,8 @@ void StdTimeLoop::InitSolution(MultiLevelGhostVector& u)
 {
   if (_initial=="analytic") 
     {
-      StdTimeSolver* TS = dynamic_cast<StdTimeSolver*>(GetMultiLevelSolver()->GetSolver());
-      assert(TS);
-      TS->L2Projection(u);
-      TS->Write(u.finest(),"Results/initialu");
+      GetMultiLevelSolver()->GetSolver()->L2Projection(u);
+      GetMultiLevelSolver()->GetSolver()->Write(u.finest(),"Results/initialu");
     }
   else
     {

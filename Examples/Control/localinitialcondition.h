@@ -13,10 +13,10 @@
 /////////////////////////////////////////////
 
 
-#include  "initialcondition.h"
+#include  "domainrighthandside.h"
 #include  "localequation.h"
 
-class LocalInitialCondition : public Gascoigne::InitialCondition
+class LocalInitialCondition : public Gascoigne::DomainRightHandSide
 {
 protected:
 

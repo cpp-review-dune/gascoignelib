@@ -43,7 +43,7 @@ public:
   
   void BasicInit(const ParamFile* pf);
 
-  void Interpolate(GlobalVector& u, const InitialCondition& U) const;
+  void Interpolate(GlobalVector& u, const DomainInitialCondition& U) const;
   void InterpolateSolutionByPatches(GlobalVector& u, const GlobalVector& uold) const;
   void ConstructInterpolator(MgInterpolatorInterface* I, const MeshTransferInterface* MT);
   void StrongDirichletVector(GlobalVector& u, const DirichletData& BF, int col, const std::vector<int>& comp) const;

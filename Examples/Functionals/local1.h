@@ -44,8 +44,6 @@ class ProblemDescriptor : public Gascoigne::ProblemDescriptorBase
 class LocalPointFunctional : public Gascoigne::PointFunctional
 {
  public:
- LocalPointFunctional() : Gascoigne::PointFunctional() {beautifulname = "LeastSquaresFunctional";}
-
   double J(const std::vector<double>& u) const
     {
       assert(u.size()==2);
@@ -53,6 +51,10 @@ class LocalPointFunctional : public Gascoigne::PointFunctional
       double b = u[0] - 0.25*0.25*0.75*0.75;
       return 0.5*(a*a + b*b);
     }
+
+  std::string GetName() const {
+    return "LeastSquaresFunctional";
+  }
 };
 
 /*---------------------------------------------------*/
@@ -66,10 +68,13 @@ class LocalDragFunctional : public virtual Gascoigne::ResidualFunctional
       _col.insert(1);
       _scale = 1;
       ExactValue() = 1./6.;
-      beautifulname = "LocalDrag";
 
       _DD  = new Gascoigne::DirichletDataByColor(GetComp(),GetColors(),GetScale());
     }
+
+  std::string GetName() const {
+    return "LocalDrag";
+  }
 };
 
 /*---------------------------------------------------*/
@@ -80,8 +85,11 @@ class LocalDomainFunctional : public virtual Gascoigne::AllDomainFunctional
   LocalDomainFunctional() : AllDomainFunctional(1,0)
     {
       ExactValue() = 1./36.;
-      beautifulname = "LocalDomain";
     }
+  
+  std::string GetName() const {
+    return "LocalDomain";
+  }
 };
 
 /*---------------------------------------------------*/

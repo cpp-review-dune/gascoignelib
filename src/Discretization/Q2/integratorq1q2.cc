@@ -30,7 +30,8 @@ void IntegratorQ1Q2<DIM>::Form(const Equation& EQ, LocalVector& F, const FemInte
       BasicIntegrator::universal_point(FemL,UH,U);
       BasicIntegrator::universal_point(FemL,QH,Q);
       FemL.x(x);
-      EQ.point(h,UH,QH,x);
+      EQ.SetFemData(QH);
+      EQ.point(h,UH,x);
       for (int i=0;i<FemH.n();i++)
 	{
 	  FemH.init_test_functions(NN,weight,i);

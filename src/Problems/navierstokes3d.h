@@ -35,7 +35,7 @@ class NavierStokes3d : public NavierStokes2d
 
   std::string GetName() const;
 
-  int    ncomp  () const { return 4; }
+  int    GetNcomp  () const { return 4; }
 
   DoubleVector GetViscosities() const;
 

@@ -682,6 +682,7 @@ void StdMultiLevelSolver::SolutionTransfer(int high, int low, MultiLevelGhostVec
   for(int l=high;l>=low;l--)
     {
       SolutionTransfer(l,u.Vector(l-1),u.Vector(l));
+      GetSolver(l-1)->SetBoundaryVector(u);
     }
 }
 
@@ -699,7 +700,6 @@ void StdMultiLevelSolver::SolutionTransfer(int l, GlobalVector& ul, const Global
   GetSolver(l)->HNAverage(uf);
   Transfer(l,ul,uf);
   GetSolver(l)->HNZero(uf);
-  GetSolver(l-1)->SetBoundaryVector(ul);
 }
 
 /*-------------------------------------------------------------*/

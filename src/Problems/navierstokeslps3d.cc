@@ -29,8 +29,7 @@ std::string NavierStokesLps3d::GetName() const
 
 /*-----------------------------------------*/
 
-void NavierStokesLps3d::lpspoint
-(double _h, const FemFunction& U, FemData& Q, const Vertex3d& v)const
+void NavierStokesLps3d::lpspoint(double _h, const FemFunction& U, const Vertex3d& v)const
 {
   double h = _h;
   ST.ReInit(h,_visc,U[1].m(),U[2].m(),U[3].m());

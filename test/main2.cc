@@ -5,7 +5,6 @@
 #include  "stokesgls2d.h"
 #include  "navierstokesgls2d.h"
 #include  "zerodirichletdata.h"
-#include  "righthandsidedata.h"
 #include  "meshagent.h"
 #include  "stdmultilevelsolver.h"
 #include  "stdsolver.h"
@@ -125,9 +124,12 @@ class LocalDomainFunctional : public virtual AllDomainFunctional
   LocalDomainFunctional() : AllDomainFunctional(1,0)
   {
     ExactValue() = 11.25;
-    beautifulname = "LocalDomain";
   }
   ~LocalDomainFunctional() {}
+  
+  std::string GetName() const {
+    return "LocalDomain";
+  }
 };
 
 /*---------------------------------------------------*/

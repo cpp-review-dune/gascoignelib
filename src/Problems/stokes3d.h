@@ -22,9 +22,7 @@ public:
 
   std::string GetName() const { return "Stokes3d";}
 
-  int    ncomp  () const { return 4; }
-
-  void point(double h, const FemFunction& U, const Vertex3d& v) const {};
+  int  GetNcomp  () const { return 4; }
 
   //
   // Semilinear Form

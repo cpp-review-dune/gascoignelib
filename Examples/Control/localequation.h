@@ -14,6 +14,7 @@
 
 
 #include  "equation.h"
+#include  "paramfile.h"
 
 class LocalEquation : public Gascoigne::Equation
 {
@@ -36,7 +37,7 @@ public:
   LocalEquation(const Gascoigne::ParamFile* paramfile);
 
   std::string GetName() const { return "Local";}
-  int    ncomp      () const {return 1;}
+  int  GetNcomp      () const {return 1;}
   void SetTimePattern(Gascoigne::TimePattern& P) const;
 
   void Form(Gascoigne::VectorIterator b, const Gascoigne::FemFunction& U, const Gascoigne::TestFunction& N) const;

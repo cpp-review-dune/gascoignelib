@@ -8,7 +8,7 @@ using namespace std;
 LocalInitialCondition::LocalInitialCondition(const LocalEquation* EQ)
 {
   cerr << "equation is: " << EQ->GetName() << endl;
-  ncomp = EQ->ncomp();
+  ncomp = EQ->GetNcomp();
 }
 
 /* ----------------------------------------- */

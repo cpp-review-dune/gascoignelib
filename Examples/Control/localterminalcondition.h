@@ -13,10 +13,10 @@
 /////////////////////////////////////////////
 
 
-#include  "initialcondition.h"
+#include  "domainrighthandside.h"
 #include  "localequation.h"
 
-class LocalTerminalCondition : public Gascoigne::InitialCondition
+class LocalTerminalCondition : public Gascoigne::DomainRightHandSide
 {
 public:
 
@@ -33,7 +33,7 @@ public:
 //
 ///  Constructor 
 //
-  LocalTerminalCondition() : InitialCondition() {}
+  LocalTerminalCondition() {}
   
   std::string GetName() const { return "Local";}
   int GetNcomp() const {return 1;}  

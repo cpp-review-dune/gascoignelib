@@ -19,46 +19,47 @@
 
 namespace Gascoigne
 {
-class ExactSolution : public Application
-{
-protected:
+  class ExactSolution : public virtual Application
+  {
+    private:
 
-  double eps;
+    protected:
+      double eps;
 
-public:
+    public:
+      ExactSolution(): Application(), eps(1.e-6) {}
+      virtual ~ExactSolution() {}
 
-  ExactSolution(): Application(), eps(1.e-6) {}
+      ////////// 2d
+      virtual double operator()(int c, const Vertex2d& v)const {
+        std::cerr << "\"ExactSolution::operator()\" not written!" << std::endl;
+        abort();
+      } 
 
-  virtual ~ExactSolution() {}
+      virtual double x         (int c, const Vertex2d& v)const;
+      virtual double y         (int c, const Vertex2d& v)const;
+      virtual double z         (int c, const Vertex2d& v)const { abort(); }
+      virtual double xx        (int c, const Vertex2d& v)const;
+      virtual double yx        (int c, const Vertex2d& v)const;
+      virtual double xy        (int c, const Vertex2d& v)const;
+      virtual double yy        (int c, const Vertex2d& v)const;
 
-  virtual std::string GetName() const=0;
+      ////////// 3d
+      virtual double operator()(int c, const Vertex3d& v)const {
+        std::cerr << "\"ExactSolution::operator()\" not written!" << std::endl;
+        abort();
+      } 
 
-  ////////// 2d
-
-  virtual double operator()(int c, const Vertex2d& v)const {return 0.;}
-
-  virtual double x         (int c, const Vertex2d& v)const;
-  virtual double y         (int c, const Vertex2d& v)const;
-  virtual double z         (int c, const Vertex2d& v)const {assert(0); return 0;}
-  virtual double xx        (int c, const Vertex2d& v)const;
-  virtual double yx        (int c, const Vertex2d& v)const;
-  virtual double xy        (int c, const Vertex2d& v)const;
-  virtual double yy        (int c, const Vertex2d& v)const;
-
-  ////////// 3d
-
-  virtual double operator()(int c, const Vertex3d& v)const {return 0.;}
-
-  virtual double x         (int c, const Vertex3d& v)const;
-  virtual double y         (int c, const Vertex3d& v)const;
-  virtual double z         (int c, const Vertex3d& v)const;
-  virtual double xx        (int c, const Vertex3d& v)const;
-  virtual double yy        (int c, const Vertex3d& v)const;
-  virtual double zz        (int c, const Vertex3d& v)const;
-  virtual double xy        (int c, const Vertex3d& v)const;
-  virtual double yz        (int c, const Vertex3d& v)const;
-  virtual double xz        (int c, const Vertex3d& v)const;
-};
+      virtual double x         (int c, const Vertex3d& v)const;
+      virtual double y         (int c, const Vertex3d& v)const;
+      virtual double z         (int c, const Vertex3d& v)const;
+      virtual double xx        (int c, const Vertex3d& v)const;
+      virtual double yy        (int c, const Vertex3d& v)const;
+      virtual double zz        (int c, const Vertex3d& v)const;
+      virtual double xy        (int c, const Vertex3d& v)const;
+      virtual double yz        (int c, const Vertex3d& v)const;
+      virtual double xz        (int c, const Vertex3d& v)const;
+  };
 }
 
 #endif

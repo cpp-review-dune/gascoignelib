@@ -71,7 +71,7 @@ void Q2::LocalToGlobal(MatrixInterface& A, EntryMatrix& E, int iq, double s) con
 
 /* ----------------------------------------- */
 
-void Q2::Interpolate(GlobalVector& u, const InitialCondition& U) const
+void Q2::Interpolate(GlobalVector& u, const DomainInitialCondition& U) const
 {
   assert(0);
 

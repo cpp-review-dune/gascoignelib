@@ -103,6 +103,8 @@ class StdSolver : public virtual SolverInterface
   virtual MatrixInterface* NewMatrix(int ncomp, const std::string& matrixtype); 
   virtual IluInterface* NewIlu(int ncomp, const std::string& matrixtype); 
 
+  virtual const ParamFile* GetParamfile() const { return _paramfile;}
+  virtual MeshInterpretorInterface*& GetMeshInterpretorPointer() { return _ZP;}
   //
   /// new interface-function for indivisual size of vectors
   //
@@ -111,23 +113,32 @@ class StdSolver : public virtual SolverInterface
 
   void Rhs(GlobalVector& f, double d=1.) const;
 
-  double ComputeFunctional(GlobalVector& f, const GlobalVector& u, const Functional* FP) const;
-  double ComputeBoundaryFunctional(GlobalVector& f, const GlobalVector& u, GlobalVector& z, const BoundaryFunctional* FP) const;
-  double ComputeDomainFunctional(GlobalVector& f, const GlobalVector& u, GlobalVector& z, const DomainFunctional* FP) const;
-    double ComputePointFunctional(GlobalVector& f, const GlobalVector& u, GlobalVector& z, const PointFunctional* NFP) const;
+  virtual double ComputeFunctional(GlobalVector& f, const GlobalVector& u, const Functional* FP) const;
+  virtual double ComputeBoundaryFunctional(GlobalVector& f, const GlobalVector& u, GlobalVector& z, const BoundaryFunctional* FP) const;
+  virtual double ComputeDomainFunctional(GlobalVector& f, const GlobalVector& u, GlobalVector& z, const DomainFunctional* FP) const;
+  virtual double ComputePointFunctional(GlobalVector& f, const GlobalVector& u, GlobalVector& z, const PointFunctional* NFP) const;
+  virtual double ComputeResidualFunctional(GlobalVector& f, const GlobalVector& u, GlobalVector& z, const ResidualFunctional* FP) const;
     
   virtual void smooth(int niter, GlobalVector& x, const GlobalVector& y, GlobalVector& h) const;
   virtual void PermutateIlu(const GlobalVector& u) const;
-  void modify_ilu(IluInterface& I,int ncomp) const;
+  virtual void modify_ilu(IluInterface& I,int ncomp) const;
   void Form(GlobalVector& y, const GlobalVector& x, double d) const;
 
   void MatrixResidual(GlobalVector& y, const GlobalVector& x, const GlobalVector& b) const;
-  void vmult(GlobalVector& y, const GlobalVector& x, double d) const;
-  void vmulteq(GlobalVector& y, const GlobalVector& x, double d) const;
+  virtual void vmult(GlobalVector& y, const GlobalVector& x, double d) const;
+  virtual void vmulteq(GlobalVector& y, const GlobalVector& x, double d) const;
 
-  DoubleVector IntegrateSolutionVector(const GlobalVector& u) const;
+  virtual DoubleVector IntegrateSolutionVector(const GlobalVector& u) const;
   virtual void _check_consistency(const Equation* EQ, const MeshInterpretorInterface* MP) const;
-  void DirichletMatrixOnlyRow() const;
+  virtual void DirichletMatrixOnlyRow() const;
+  virtual void Visu(const std::string& name, const GlobalVector& u, int i) const;
+
+  virtual void SetBoundaryVector(GlobalVector& f) const;
+  virtual void SetBoundaryVectorZero(GlobalVector& f) const;
+  virtual void SetBoundaryVectorStrong(GlobalVector& f, const BoundaryManager& BM, const DirichletData& DD) const;
+
+  virtual void SubtractMean(GlobalVector& gx) const;
+  virtual void SubtractMeanAlgebraic(GlobalVector& gx) const;
 
  public:
 
@@ -139,33 +150,31 @@ class StdSolver : public virtual SolverInterface
   const ProblemDescriptorInterface* GetProblemDescriptor() const {assert(_PDX); return _PDX;}
 
   void NewMesh(int l, const MeshInterface* MP);
-  const ParamFile* GetParamfile() const { return _paramfile;}
 
   const MeshInterface* GetMesh() const {return _MP;}
 
   // 0.2 MeshInterpretor
 
-  MeshInterpretorInterface*& GetMeshInterpretorPointer() { return _ZP;}
   const MeshInterpretorInterface* GetMeshInterpretor() const {assert(_ZP); return _ZP;}
   MeshInterpretorInterface* GetMeshInterpretor() {assert(_ZP); return _ZP;}
 
   void ReInitVector();
   void ReInitMatrix();
 
-  double clock_vmult() const {return _vm.read();}
-  double clock_ilu  () const {return _il.read();}
-  double clock_solve() const {return _so.read();}
-  double clock_computematrix() const {return _ca.read();}
-  double clock_computeilu   () const {return _ci.read();}
-  double clock_computesolver() const {return _cs.read();}
-  double clock_residual     () const {return _re.read();}
+  virtual double clock_vmult() const {return _vm.read();}
+  virtual double clock_ilu  () const {return _il.read();}
+  virtual double clock_solve() const {return _so.read();}
+  virtual double clock_computematrix() const {return _ca.read();}
+  virtual double clock_computeilu   () const {return _ci.read();}
+  virtual double clock_computesolver() const {return _cs.read();}
+  virtual double clock_residual     () const {return _re.read();}
 
-  void SetState(const std::string& s) {
-    if     (s=="State")   _PrimalSolve = 1;
-    else if(s=="Adjoint") _PrimalSolve = 0;
-    else if(s=="Tangent") _PrimalSolve = 2;
-    else abort();
-  }
+//  void SetState(const std::string& s) {
+//    if     (s=="State")   _PrimalSolve = 1;
+//    else if(s=="Adjoint") _PrimalSolve = 0;
+//    else if(s=="Tangent") _PrimalSolve = 2;
+//    else abort();
+//  }
   
   bool DirectSolver() const {return _directsolver;}
 
@@ -226,7 +235,6 @@ class StdSolver : public virtual SolverInterface
   //
 
   void Visu(const std::string& name, const BasicGhostVector& u, int i) const;
-  void Visu(const std::string& name, const GlobalVector& u, int i) const;
   void Write(const BasicGhostVector& u, const std::string& filename) const;
   void Read(BasicGhostVector& u, const std::string& filename) const;
 
@@ -251,12 +259,9 @@ class StdSolver : public virtual SolverInterface
   //
   /// vector - boundary condition
   //
-
-  void SetBoundaryVector(GlobalVector& f) const;
   void SetBoundaryVector(BasicGhostVector& f) const;
   void SetBoundaryVectorZero(BasicGhostVector& Gf) const;
-  void SetBoundaryVectorZero(GlobalVector& f) const;
-  void SetBoundaryVectorStrong(GlobalVector& f, const BoundaryManager& BM, const DirichletData& DD) const;
+  void SetBoundaryVectorStrong(BasicGhostVector& f, const BoundaryManager& BM, const DirichletData& DD) const;
 
   //
   /// vector - linear algebra
@@ -276,8 +281,6 @@ class StdSolver : public virtual SolverInterface
   /// vector - additional
   //
 
-  void SubtractMean(GlobalVector& gx) const;
-  void SubtractMeanAlgebraic(GlobalVector& gx) const;
   void SubtractMean(BasicGhostVector& x) const;
   void SubtractMeanAlgebraic(BasicGhostVector& x) const;
 
@@ -290,6 +293,7 @@ class StdSolver : public virtual SolverInterface
   void MatrixZero() const;
   void ComputeIlu(const BasicGhostVector& u) const;
   void ComputeIlu() const;
+  void AssembleDualMatrix(const BasicGhostVector& gu, double d);
 
   //
   /// vector - "postprocessing"
@@ -309,21 +313,17 @@ class StdSolver : public virtual SolverInterface
   /// HierarchicalMesh
   //
 
-  const HierarchicalMesh*& GetHierarchicalMeshPointer() { return _HM; }
-  const HierarchicalMesh*  GetHierarchicalMesh() const  { return _HM; }
-
-
-  virtual double ComputeResidualFunctional(GlobalVector& f, const GlobalVector& u, GlobalVector& z, const ResidualFunctional* FP) const;
-  void AssembleDualMatrix(const BasicGhostVector& gu, double d);
+  virtual const HierarchicalMesh*& GetHierarchicalMeshPointer() { return _HM; }
+  virtual const HierarchicalMesh*  GetHierarchicalMesh() const  { return _HM; }
 
   //
   /// for gmres
   //
-  void MemoryVector(BasicGhostVector& p);
-  void DeleteVector(BasicGhostVector* p) const;
-  double ScalarProduct(const BasicGhostVector& y, const BasicGhostVector& x) const;
-  void Equ(BasicGhostVector& dst, double s, const BasicGhostVector& src) const;
-  void Add(BasicGhostVector& dst, double s, const BasicGhostVector& src) const;
+  virtual void MemoryVector(BasicGhostVector& p);
+  virtual void DeleteVector(BasicGhostVector* p) const;
+  virtual double ScalarProduct(const BasicGhostVector& y, const BasicGhostVector& x) const;
+  virtual void Equ(BasicGhostVector& dst, double s, const BasicGhostVector& src) const;
+  virtual void Add(BasicGhostVector& dst, double s, const BasicGhostVector& src) const;
 };
 }
 

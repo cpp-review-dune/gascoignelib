@@ -30,7 +30,7 @@ public:
   //
   /// Computation of lps stabilization parameters
   //
-  void lpspoint(double h, const FemFunction& U, FemData& Q, const Vertex3d& v) const;
+  void lpspoint(double h, const FemFunction& U, const Vertex3d& v) const;
 
   //
   /// Stablization terms

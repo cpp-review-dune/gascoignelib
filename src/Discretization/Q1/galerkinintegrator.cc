@@ -89,7 +89,7 @@ void GalerkinIntegrator<DIM>::RhsNeumann(const NeumannData& f, LocalVector& F, c
 template<int DIM>
 void GalerkinIntegrator<DIM>::Form(const Equation& EQ, LocalVector& F, const FemInterface& FEM, const LocalVector& U, const LocalNodeData& Q) const
 {
-  F.ReInit(EQ.ncomp(),FEM.n());
+  F.ReInit(EQ.GetNcomp(),FEM.n());
 
   const IntegrationFormulaInterface& IF = FormFormula();
 
@@ -106,7 +106,8 @@ void GalerkinIntegrator<DIM>::Form(const Equation& EQ, LocalVector& F, const Fem
       BasicIntegrator::universal_point(FEM,UH,U);
       BasicIntegrator::universal_point(FEM,QH,Q);
       FEM.x(x);
-      EQ.point(h,UH,QH,x);
+      EQ.SetFemData(QH);
+      EQ.point(h,UH,x);
       for (int i=0;i<FEM.n();i++)
 	{
 	  FEM.init_test_functions(NN,weight,i);
@@ -138,7 +139,8 @@ void GalerkinIntegrator<DIM>::BoundaryForm(const RobinData& RD, LocalVector& F, 
       FEM.normal(n);
       double  h = FEM.G();
       double  weight = IF.w(k)*h;
-      RD.pointboundary(h,UH,QH,x,n);
+      RD.SetFemData(QH);
+      RD.pointboundary(h,UH,x,n);
       for (int i=0;i<FEM.n();i++)
         {
           FEM.init_test_functions(NN,weight,i);
@@ -208,7 +210,8 @@ void GalerkinIntegrator<DIM>::Matrix(const Equation& EQ, EntryMatrix& E, const F
       BasicIntegrator::universal_point(FEM,UH,U);
       BasicIntegrator::universal_point(FEM,QH,Q);
       FEM.x(x);
-      EQ.pointmatrix(h,UH,QH,x);
+      EQ.SetFemData(QH);
+      EQ.pointmatrix(h,UH,x);
 
       for (int i=0;i<FEM.n();i++)
 	{
@@ -251,7 +254,8 @@ void GalerkinIntegrator<DIM>::BoundaryMatrix (const RobinData& RD, EntryMatrix& 
       FEM.normal(n);
       double  h = FEM.G();
       double  weight = IF.w(k)*h;
-      RD.pointboundary(h,UH,QH,x,n);
+      RD.SetFemData(QH);
+      RD.pointmatrixboundary(h,UH,x,n);
       for (int i=0;i<FEM.n();i++)
         {
           FEM.init_test_functions(NNN[i],weight,i);

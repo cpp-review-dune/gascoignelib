@@ -22,7 +22,7 @@ NavierStokesLps2d::NavierStokesLps2d(const ParamFile* filename)
 
 /*-----------------------------------------*/
 
-void NavierStokesLps2d::lpspoint(double h, const FemFunction& U, FemData& Q, const Vertex2d& v)const
+void NavierStokesLps2d::lpspoint(double h, const FemFunction& U, const Vertex2d& v)const
 {
   ST.ReInit(h,_visc,U[1].m(),U[2].m());
 }

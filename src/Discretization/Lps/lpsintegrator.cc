@@ -78,8 +78,7 @@ void LpsIntegrator<DIM>::Form(const Equation& EQ, LocalVector& F, const FemInter
   NLPS.resize(FEM.n());
   MLPS.resize(FEM.n());
 
-  const LpsEquation* LEQ = dynamic_cast<const LpsEquation*>(&EQ);
-  assert(LEQ);
+  const LpsEquation& LEQ = dynamic_cast<const LpsEquation&>(EQ);
 
   const IntegrationFormulaInterface& IF = FormFormula();
   Vertex<DIM> x, xi;
@@ -94,7 +93,8 @@ void LpsIntegrator<DIM>::Form(const Equation& EQ, LocalVector& F, const FemInter
       BasicIntegrator::universal_point(FEM,UH,U);
       BasicIntegrator::universal_point(FEM,QH,Q);
       double h  = Volume2MeshSize(vol);
-      LEQ->lpspoint(h,UH,QH,x);
+      LEQ.SetFemData(QH);
+      LEQ.lpspoint(h,UH,x);
 
       Projection(FEM);
       BasicIntegrator::universal_point(UHP,U,NLPS);
@@ -102,7 +102,7 @@ void LpsIntegrator<DIM>::Form(const Equation& EQ, LocalVector& F, const FemInter
             
       for (int i=0;i<FEM.n();i++)
 	{
-	  LEQ->StabForm(F.start(i),UH,UHP,MLPS[i]);
+	  LEQ.StabForm(F.start(i),UH,UHP,MLPS[i]);
 	}
     }
 }
@@ -119,8 +119,7 @@ void LpsIntegrator<DIM>::Matrix(const Equation& EQ, EntryMatrix& E, const FemInt
   NLPS.resize(FEM.n());
   MLPS.resize(FEM.n());
 
-  const LpsEquation* LEQ = dynamic_cast<const LpsEquation*>(&EQ);
-  assert(LEQ);
+  const LpsEquation& LEQ = dynamic_cast<const LpsEquation&>(EQ);
 
   const IntegrationFormulaInterface& IF = FormFormula();
   Vertex<DIM> x, xi;
@@ -135,7 +134,8 @@ void LpsIntegrator<DIM>::Matrix(const Equation& EQ, EntryMatrix& E, const FemInt
       BasicIntegrator::universal_point(FEM,UH,U);
       BasicIntegrator::universal_point(FEM,QH,Q);
       double h  = Volume2MeshSize(vol);
-      LEQ->lpspointmatrix(h,UH,QH,x);
+      LEQ.SetFemData(QH);
+      LEQ.lpspointmatrix(h,UH,x);
 
       Projection(FEM);
 
@@ -146,7 +146,7 @@ void LpsIntegrator<DIM>::Matrix(const Equation& EQ, EntryMatrix& E, const FemInt
 	  for (int i=0; i<FEM.n(); i++)
 	    {
 	      E.SetDofIndex(i,j);
-	      LEQ->StabMatrix(E, UH, NLPS[i], MLPS[j]);
+	      LEQ.StabMatrix(E, UH, NLPS[i], MLPS[j]);
 	    }
 	}
     }

@@ -343,4 +343,12 @@ double PatchMeshInterpretor::ComputeDomainFunctional(const GlobalVector& u, cons
     }
   return j;
 }
+
+/* ----------------------------------------- */
+
+double Gascoigne::PatchMeshInterpretor::ComputePointFunctional(const GlobalVector& u, const PointFunctional& FP) const
+{
+  cerr << "\"PatchMeshInterpretor::ComputePointFunctional\" not written!" << endl;
+  abort();
+}
 }

@@ -1,7 +1,7 @@
 #ifndef  __RightHandSideDataByEquation_h
 #define  __RightHandSideDataByEquation_h
 
-#include  "righthandsidedata.h"
+#include  "domainrighthandside.h"
 #include  "exactsolution.h"
 #include  "equation.h"
 
@@ -23,11 +23,11 @@ public:
     : DomainRightHandSide(), _EQ(eq), _ES(es) { assert(es); assert(eq);}
   
   std::string GetName() const { return "RightHandSideDataByEquation";} 
-  int GetNcomp() const { return _EQ->ncomp();}
+  int GetNcomp() const { return _EQ->GetNcomp();}
 
   double operator()(int c, const Vertex2d& v)const 
     {
-      int n = _EQ->ncomp();
+      int n = _EQ->GetNcomp();
       DoubleVector b(n,0.);
       FemFunction U(n);
       for (int i=0; i<n; i++)
@@ -44,24 +44,24 @@ public:
 	  double eps = 1.e-6;
 	  DoubleVector ut(n,0.);
 	  double time = GetTime();
-	 _ES->SetTime(time+0.5*eps);
+	 _ES->SetTime(time+0.5*eps,GetTimeStep());
 	  for (int i=0; i<n; i++)
 	    {	  
 	      ut[i] = (*_ES)(i,v);
 	    }
-	  _ES->SetTime(time-0.5*eps);
+	  _ES->SetTime(time-0.5*eps,GetTimeStep());
 	  for (int i=0; i<n; i++)
 	    {	  
 	      ut[i] -= (*_ES)(i,v);
 	    }
-	  _ES->SetTime(time);
+	  _ES->SetTime(time,GetTimeStep());
 	  b.add(1./eps,ut);
 	}
       return b[c];
     }
   double operator()(int c, const Vertex3d& v)const 
     {
-      int n = _EQ->ncomp();
+      int n = _EQ->GetNcomp();
       DoubleVector b(n,0.);
       FemFunction U(n);
       for (int i=0; i<n; i++)
@@ -79,17 +79,17 @@ public:
 	  double eps = 1.e-6;
 	  DoubleVector ut(n,0.);
 	  double time = GetTime();
-	 _ES->SetTime(time+0.5*eps);
+	 _ES->SetTime(time+0.5*eps,GetTimeStep());
 	  for (int i=0; i<n; i++)
 	    {	  
 	      ut[i] = (*_ES)(i,v);
 	    }
-	  _ES->SetTime(time-0.5*eps);
+	  _ES->SetTime(time-0.5*eps,GetTimeStep());
 	  for (int i=0; i<n; i++)
 	    {	  
 	      ut[i] -= (*_ES)(i,v);
 	    }
-	  _ES->SetTime(time);
+	  _ES->SetTime(time,GetTimeStep());
 	  b.add(1./eps,ut);
 	}
       return b[c];

@@ -101,7 +101,7 @@ void Q12d::StrongDirichletVector(GlobalVector& u, const DirichletData& BF, int c
 
 /* ----------------------------------------- */
 
-void Q12d::Interpolate(GlobalVector& u, const InitialCondition& U) const
+void Q12d::Interpolate(GlobalVector& u, const DomainInitialCondition& U) const
 {
   if (&U==NULL) return;
 

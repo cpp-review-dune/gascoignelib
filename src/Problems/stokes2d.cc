@@ -21,7 +21,7 @@ Stokes2d::Stokes2d() : Equation()
 
 void Stokes2d::SetTimePattern(TimePattern& P) const
 {
-  P.reservesize(ncomp(),ncomp(),0.);
+  P.reservesize(GetNcomp(),GetNcomp(),0.);
   P(0,0) = _penalty;
   P(1,1) = 1.;
   P(2,2) = 1.;

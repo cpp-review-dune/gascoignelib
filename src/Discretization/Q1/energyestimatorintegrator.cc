@@ -101,7 +101,8 @@ double EnergyEstimatorIntegrator<DIM>::Residual(const LocalVector& U, const FemI
     BasicIntegrator::universal_point(FEM,QH,Q);
     FEM.x(x);
     RHS.SetFemData(QH);
-    EQ.point(h,UH,QH,x);
+    EQ.SetFemData(QH);
+    EQ.point(h,UH,x);
     EQ.OperatorStrong(F,UH);
     double value = 0.;
     for (int c=0; c<U.ncomp(); c++)
@@ -134,7 +135,8 @@ double EnergyEstimatorIntegrator<DIM>::ResidualZeroRhs(const LocalVector& U, con
     BasicIntegrator::universal_point(FEM,UH,U);
     BasicIntegrator::universal_point(FEM,QH,Q);
     FEM.x(x);
-    EQ.point(h,UH,QH,x);
+    EQ.SetFemData(QH);
+    EQ.point(h,UH,x);
     EQ.OperatorStrong(F,UH);
     double value = 0.;
     for (int c=0; c<U.ncomp(); c++)

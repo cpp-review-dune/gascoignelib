@@ -55,6 +55,8 @@ class StdMultiLevelSolver : public MultiLevelSolverInterface
   virtual void NewMgInterpolator();
   virtual void SolverNewMesh();
 
+  virtual const ProblemDescriptorInterface* GetProblemDescriptor() const { return _PD;}
+  virtual SolverInterface*& GetSolverPointer(int l) {assert(l<_SP.size()); return _SP[l];}
   virtual void SetComputeLevel(int level) {ComputeLevel=level;}
 
   virtual double NewtonNorm(const MultiLevelGhostVector& u) const {
@@ -66,6 +68,11 @@ class StdMultiLevelSolver : public MultiLevelSolverInterface
   virtual void Gmres(MultiLevelGhostVector& x, const MultiLevelGhostVector& f, CGInfo& info);
 
   virtual void ViewProtocoll() const;
+
+  virtual void SolutionTransfer(MultiLevelGhostVector& u) const;
+  virtual void SolutionTransfer(int high, int low, MultiLevelGhostVector& u) const;
+  virtual void Transfer(int high, int low, MultiLevelGhostVector& u) const;
+  virtual void LinearMg(int minlevel, int maxlevel, MultiLevelGhostVector& u, const MultiLevelGhostVector& f, CGInfo&);
 
  public:
 
@@ -87,19 +94,15 @@ class StdMultiLevelSolver : public MultiLevelSolverInterface
 
   // Zugriff
 
-  virtual void SetState(const std::string& s) {
-    for(int l=0;l<_SP.size();l++) _SP[l]->SetState(s);
-  }
+//  virtual void SetState(const std::string& s) {
+//    for(int l=0;l<_SP.size();l++) _SP[l]->SetState(s);
+//  }
 
-//  const CGInfo& GetLinearInfo   () const { return DataP->GetLInfo();}
-//  const NLInfo& GetNonlinearInfo() const { return DataP->GetNLInfo();}
-  const ProblemDescriptorInterface* GetProblemDescriptor() const { return _PD;}
 
   int nlevels()                 const { assert(GetMeshAgent()); return GetMeshAgent()->nlevels();}
   virtual int FinestLevel  ()  const { return nlevels()-1;}
   virtual int CoarsestLevel()  const { return 0;}
 
-  SolverInterface*& GetSolverPointer(int l) {assert(l<_SP.size()); return _SP[l];}
   SolverInterface* GetSolver(int l) {assert(l<_SP.size()); return _SP[l];}
   const SolverInterface* GetSolver(int l) const {assert(l<_SP.size()); return _SP[l];}
   SolverInterface* GetSolver() {assert(_SP.size()==nlevels()); return _SP[FinestLevel()];}
@@ -121,24 +124,17 @@ class StdMultiLevelSolver : public MultiLevelSolverInterface
   virtual double NewtonUpdate(double& rr, MultiLevelGhostVector& x, MultiLevelGhostVector& dx, MultiLevelGhostVector& r, const MultiLevelGhostVector& f, NLInfo& nlinfo);
   virtual void NewtonLinearSolve(MultiLevelGhostVector& x, const MultiLevelGhostVector& b, CGInfo& info);
   virtual void NewtonMatrixControl(MultiLevelGhostVector& u, NLInfo& nlinfo);
+  virtual void NewtonOutput(NLInfo& nlinfo) const;
 
-  virtual void AssembleMatrix(MultiLevelGhostVector& u, NLInfo& nlinfo);
+  void AssembleMatrix(MultiLevelGhostVector& u, NLInfo& nlinfo);
   void AssembleMatrix(MultiLevelGhostVector& u);
   /// not used in the library -- might be used in local
-  virtual void ComputeIlu(MultiLevelGhostVector& u);
-  virtual void ComputeIlu();
+  void ComputeIlu(MultiLevelGhostVector& u);
+  void ComputeIlu();
   
-  virtual void BoundaryInit(MultiLevelGhostVector& u) const;
-
-  virtual void SolutionTransfer(int high, int low, MultiLevelGhostVector& u) const;
-  virtual void Transfer(int high, int low, MultiLevelGhostVector& u) const;
-  virtual void SolutionTransfer(MultiLevelGhostVector& u) const;
+  void BoundaryInit(MultiLevelGhostVector& u) const;
   
   void vmulteq(MultiLevelGhostVector& y, const MultiLevelGhostVector&  x) const;
-  
-  virtual void LinearMg(int minlevel, int maxlevel, MultiLevelGhostVector& u, const MultiLevelGhostVector& f, CGInfo&);
-
-  virtual void NewtonOutput(NLInfo& nlinfo) const;
 
   double ComputeFunctional(MultiLevelGhostVector& f, const MultiLevelGhostVector& u, const Functional* FP) const;
 
@@ -147,10 +143,10 @@ class StdMultiLevelSolver : public MultiLevelSolverInterface
   void AssembleDualMatrix(MultiLevelGhostVector& u);
 
   // fuer gmres
-  void precondition(MultiLevelGhostVector& x, MultiLevelGhostVector& y);
-  void MemoryVector(MultiLevelGhostVector& p);
-  void DeleteVector(MultiLevelGhostVector& p);
-  void Equ(MultiLevelGhostVector& dst, double s, const MultiLevelGhostVector& src)const;
+  virtual void precondition(MultiLevelGhostVector& x, MultiLevelGhostVector& y);
+  virtual void MemoryVector(MultiLevelGhostVector& p);
+  virtual void DeleteVector(MultiLevelGhostVector& p);
+  virtual void Equ(MultiLevelGhostVector& dst, double s, const MultiLevelGhostVector& src)const;
 };
 }
 

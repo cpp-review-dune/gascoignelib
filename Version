@@ -1,3 +1,14 @@
+Version 28.07.2004
+==================
+*meidner
+Interface-Klassen aufgeraeumt:
+1) Equation ist von Application abgeleitet -> GetNcomp() anstatt ncomp(), nur noch eine Variante von point: point(h,U,v).
+2) Kein BeautifulName in Functionalen mehr -> GetName() verwenden, da nicht mehr anderweitig verwendet.
+3) Kein RightHandSideData mehr sondern nur noch DomainRightHandSide und PointRightHandSide
+4) Kein InitialCondition mehr sondern nur noch DomainInitialCondition und PointInitialCondition definiert 
+   als typedefs auf die entsprechenden RightHandSides
+5) Die meisten (Time)Solver- und MultiLevelSolver-Funktionen ins entsprechende Inteface uebernommen.
+
 Version 22.06.2004
 ==================
 *meidner

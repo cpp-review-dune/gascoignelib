@@ -15,8 +15,8 @@ class ProblemDescriptorBase : public ProblemDescriptorInterface
   Equation           *EQ;
   BoundaryManager    *BM;
   ExactSolution      *ES;
-  InitialCondition   *IC;
-  RightHandSideData  *RHS;
+  Application        *RHS;
+  Application        *IC;
   DirichletData      *DD;
   NeumannData        *ND;
   RobinData          *RD;
@@ -30,8 +30,8 @@ class ProblemDescriptorBase : public ProblemDescriptorInterface
   Equation*& GetEquationPointer() { return EQ;}
   BoundaryManager*& GetBoundaryManagerPointer() { return BM;}
   ExactSolution*& GetExactSolutionPointer() { return ES;}
-  InitialCondition*& GetInitialConditionPointer() { return IC;}
-  RightHandSideData*& GetRightHandSideDataPointer() { return RHS;}
+  Application*& GetRightHandSideDataPointer() { return RHS;}
+  Application*& GetInitialConditionPointer() { return IC;}
   DirichletData*& GetDirichletDataPointer() { return DD;}
   NeumannData*& GetNeumannDataPointer() { return ND;}
   RobinData*& GetRobinDataPointer() { return RD; }
@@ -78,14 +78,14 @@ class ProblemDescriptorBase : public ProblemDescriptorInterface
   
   const ParamFile* GetParamFile() const {return _paramfile;}
 
-  const RightHandSideData*  GetRightHandSideData() const { return  RHS;}
-  const DirichletData*      GetDirichletData()     const { return  DD;}
-  const NeumannData*        GetNeumannData()       const { return  ND;}
-  const RobinData*          GetRobinData()         const { return  RD;}
-  const InitialCondition*   GetInitialCondition() const { return IC;}
-  const ExactSolution*   GetExactSolution   () const { return ES;}
-  const Equation*        GetEquation        () const { return EQ;}
-  const BoundaryManager* GetBoundaryManager () const { return BM;}
+  const Application*        GetRightHandSideData() const { return  RHS;}
+  const DirichletData*      GetDirichletData    () const { return  DD;}
+  const NeumannData*        GetNeumannData      () const { return  ND;}
+  const RobinData*          GetRobinData        () const { return  RD;}
+  const Application*        GetInitialCondition () const { return IC;}
+  const ExactSolution*      GetExactSolution    () const { return ES;}
+  const Equation*           GetEquation         () const { return EQ;}
+  const BoundaryManager*    GetBoundaryManager  () const { return BM;}
 
   void SetTime(double time, double dt) const {
     if (EQ)  EQ  -> SetTime(time,dt);
