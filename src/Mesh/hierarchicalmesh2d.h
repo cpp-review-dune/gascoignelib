@@ -170,8 +170,8 @@ class HierarchicalMesh2d : public HierarchicalMesh
   int  NodeOnEdge(int e) const;
   fixarray<2,int> ChildrenOfEdge(int e) const;
 
-  void  GetVertexesOfEdge(fixarray<3,int>&, int) const;
-  void  GetVertexesOfEdge(fixarray<2,int>&, int) const;
+/*   void  GetVertexesOfEdge(fixarray<3,int>&, int) const; */
+/*   void  GetVertexesOfEdge(fixarray<2,int>&, int) const; */
   void GetAwakePatchs(std::set<int>&) const;
   void GetAwakeCells(std::set<int>&) const;
   void ConstructQ2PatchMesh(Gascoigne::IntVector& pm) const;

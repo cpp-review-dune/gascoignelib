@@ -847,7 +847,7 @@ void HierarchicalMesh3d::init_edges3d()
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh3d::GetVertexesOfFace(fixarray<5,int>& v, int e) const
+/*void HierarchicalMesh3d::GetVertexesOfFace(fixarray<5,int>& v, int e) const
 {
   const Edge& E = edge(e);
   const Hex* Q = &hex(E.master());
@@ -866,11 +866,11 @@ void HierarchicalMesh3d::GetVertexesOfFace(fixarray<5,int>& v, int e) const
       le = E.LocalSlaveIndex();
     }
   v[4] = HexLaO.face_vertex(*Q,le);
-}
+  }*/
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh3d::GetVertexesOfFace(fixarray<4,int>& v, int e) const
+/*void HierarchicalMesh3d::GetVertexesOfFace(fixarray<4,int>& v, int e) const
 {
   const Edge& E = edge(e);
   const Hex*  Q = &hex(E.master());
@@ -880,7 +880,7 @@ void HierarchicalMesh3d::GetVertexesOfFace(fixarray<4,int>& v, int e) const
   v[1] = (*Q)[(le+1)%8]; 
   v[2] = (*Q)[(le+2)%8]; 
   v[3] = (*Q)[(le+3)%8]; 
-}
+  }*/
 
 /*------------------------------------------------------*/
 

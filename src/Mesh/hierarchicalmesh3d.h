@@ -180,8 +180,8 @@ class HierarchicalMesh3d : public HierarchicalMesh
   int  NodeOnFace(int e) const;
   fixarray<4,int> ChildrenOfFace(int e) const;
 
-  void  GetVertexesOfFace(fixarray<4,int>&, int) const;
-  void  GetVertexesOfFace(fixarray<5,int>&, int) const;
+/*   void  GetVertexesOfFace(fixarray<4,int>&, int) const; */
+/*   void  GetVertexesOfFace(fixarray<5,int>&, int) const; */
   void GetAwakePatchs(std::set<int>&) const;
   void GetAwakeCells(std::set<int>&) const;
   void ConstructQ2PatchMesh(Gascoigne::IntVector& pm) const;
