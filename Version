@@ -1,5 +1,16 @@
-Version 19.04.2003
-===============
+Version 23.04.2004
+==================
+
+* schmich:
+1) Version aufgeraeumt
+2) EnergyEstimator und EdgeInfos aufgeraeumt. Die Integrator-Funktion fuer den EnergyEstimator sind nun
+nicht mehr im Galerkin-Integrator, sondern in einem eigenen EnergyEstimatorIntegrator (um der Verwechslungsgefahr
+in der Namensgebung (z.B. "Residual" fuer den Residuenanteil) vorzubeugen. Ausserdem wurde die Notation
+an die Standardschreibweise (Gross-Kleinschreibung) angepasst.
+
+
+Version 19.04.2004
+==================
 
 * meidner
 1) RhsNeumann verwendet die uebergebene Equation-Refenrenz nicht. Deshalb EQ aus 
@@ -7,14 +18,14 @@ Funktionsprototyp in Interface entfernt.
 
 
 Version 27.02.2004
-===============
+==================
 
 * meidner:
 1) Die Verwaltung der Global- und LocalData läuft jetzt über Maps.
 
 
 Version 21.02.2004
-===============
+==================
 
 * roland:
 1) gekruemmte raender sind nicht mehr in der bibliothek,
@@ -30,25 +41,29 @@ kriegt ein Bier von mir!
 
 
 Version 17.02.2004
-===============
+==================
 
 * roland:
 1) Version in reverse order
 2) dir test mit test1 (=Laplace2D)
-3) test1 ist ein bsp. ohne paramfile (profilaktisch)
+3) test1 ist ein bsp. ohne paramfile (prophylaktisch)
    !?   GetMesh()->BasicInit() wird nicht mehr von BasicLoop aufgerifen, falls der pointer !=NULL.
 
+   
+Version 01.2004 (24.01.2004)
+============================
+* roland: class ParamFile introduced
+* some changes in MeshInterface
 
-Version 12.2003
-===============
 
-* roland: src
-Mesh* replaced by MeshInterface* 
-MgTransferInterface new introduced
-bug for hanging nodes reintroduced
+Version 01.2004 (23.01.2004)
+============================
 
-* roland: CMakeLists.txt
-redesigned
+* FunctionalManager deleted
+  Nun ruft man aus dem main auf "loop.SetFunctionals(J);"
+  hierbei ist J ein vector<const Functional*>
+* Loops aufgeraeumt, nun ruft man "run(const ProblemDescriptorInterface*)" auf.
+
 
 Version 01.2004 (07.01.2004)
 ============================
@@ -62,16 +77,14 @@ BinaryWrite BinaryRead rewritten and tested
 * meidner: Examples/Control
 updated
 
-Version 01.2004 (23.01.2004)
-============================
 
-* FunctionalManager deleted
-  Nun ruft man aus dem main auf "loop.SetFunctionals(J);"
-  hierbei ist J ein vector<const Functional*>
-* Loops aufgeraeumt, nun ruft man "run(const ProblemDescriptorInterface*)" auf.
+Version 12.2003
+===============
 
- 
-Version 01.2004 (24.01.2004)
-============================
-* roland: class ParamFile introduced
-* some changes in MeshInterface
+* roland: src
+Mesh* replaced by MeshInterface* 
+MgTransferInterface new introduced
+bug for hanging nodes reintroduced
+
+* roland: CMakeLists.txt
+redesigned
