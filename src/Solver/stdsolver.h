@@ -97,6 +97,8 @@ class StdSolver : public virtual SolverInterface
   IluInterface*& GetIluPointer() {assert(_MIP==NULL); return _MIP;}
 
   // 1. Initialisierung 
+	
+	void SetDefaultValues(std::string discname, std::string matrixtype, int ndirect);
 
   virtual DiscretizationInterface* NewDiscretization(int dimension, const std::string& discname);
 

@@ -54,7 +54,8 @@ namespace Gascoigne
 {
 StdSolver::StdSolver() : 
   _MP(NULL), _HM(NULL), _MAP(NULL), _MIP(NULL), _ZP(NULL), _PDX(NULL), 
-  _mylevel(-1), _directsolver(0), _PrimalSolve(1),  _paramfile(NULL) 
+  _mylevel(-1), _directsolver(0), _PrimalSolve(1),  _paramfile(NULL),
+  _matrixtype("point_node"),_ndirect(1000),_discname("Q1")
   // , omega_domain(0.) 
 {
 }
@@ -161,6 +162,16 @@ void StdSolver::NewMesh(int level, const MeshInterface* mp)
   GetDiscretization()->ReInit(_MP);
 }
 
+/*-----------------------------------------*/
+
+void StdSolver::SetDefaultValues(string discname, string matrixtype, int ndirect)
+{
+  _discname   = discname;
+  _matrixtype = matrixtype;
+  _ndirect    = ndirect;
+}
+
+
 /*-------------------------------------------------------*/
 
 void StdSolver::BasicInit(int level, const ParamFile* paramfile, const MeshInterface* MP)
@@ -171,9 +182,9 @@ void StdSolver::BasicInit(int level, const ParamFile* paramfile, const MeshInter
   _mylevel=level;
 
   DataFormatHandler DFH;
-  DFH.insert("matrixtype" , &_matrixtype, "point_node");
-  DFH.insert("ndirect"    , &_ndirect   , 100);
-  DFH.insert("disc", &_discname, "Q1");
+  DFH.insert("matrixtype" , &_matrixtype);
+  DFH.insert("ndirect"    , &_ndirect);
+  DFH.insert("disc", &_discname);
   FileScanner FS(DFH);
   FS.NoComplain();
   FS.readfile(_paramfile,"Solver");

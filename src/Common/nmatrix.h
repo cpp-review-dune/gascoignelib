@@ -35,9 +35,13 @@ public:
   //void reservesize(size_t n, size_t m, T s = static_cast<T>(0))
   void reservesize(size_t n, size_t m, T s)
     {
-      nn = n;
-      mm = m;
-      nvector<T>::reservesize(n*m,s);
+		nn = n;
+		mm = m;
+		nvector<T>::reservesize(n*m,s);
+    }
+  void reservesize(const nmatrix<T>& M)
+    {
+		nmatrix<T>::reservesize(M.n(),M.m(),0);
     }
   void memory(size_t n, size_t m)
     {
