@@ -27,6 +27,7 @@ namespace Gascoigne
       //
       StencilInterface() {}
       virtual ~StencilInterface() {}
+      virtual int n() const =0;
   };
 }
 
