@@ -213,8 +213,8 @@ inline double  Transformation3d<BASE>::G() const
       d12phi+=dt(i,fc[0])*dt(i,fc[1]);
     }
   double h = d1phi*d2phi-d12phi*d12phi;
-  assert(H>=0);
-  return sqrt(H);
+  assert(h>=0);
+  return sqrt(h);
 }
 
 #endif

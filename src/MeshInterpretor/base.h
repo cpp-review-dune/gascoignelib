@@ -26,6 +26,9 @@ class Base
   virtual const Vertex3d&  normal3d () const {}
   virtual const Vertex3d&  tangent3d() const {}
 
+  virtual const fixarray<2,int>& faces() const
+    { error("faces");}
+
   virtual double psi(int i, double x) const
     { error("psi");}
 
