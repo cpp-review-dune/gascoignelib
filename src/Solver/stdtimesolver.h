@@ -53,7 +53,7 @@ public:
   void SetProblem(const ProblemDescriptorInterface& PDX);
 
   void InitialCondition(VectorInterface& f, double d=1.) const;
-  void TimeRhsOperator(VectorInterface& f, const VectorInterface& u) const;
+  void TimeRhsOperator(VectorInterface& f, const VectorInterface& u) const; 
   void TimeRhs(int k, VectorInterface& f) const;
   void Form (VectorInterface& y, const VectorInterface& x, double d) const;
   void AssembleMatrix(const VectorInterface& u, double d);

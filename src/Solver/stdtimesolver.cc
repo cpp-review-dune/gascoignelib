@@ -154,7 +154,7 @@ void Gascoigne::StdTimeSolver::InitialCondition(GlobalVector& f, double d) const
 
 /*-------------------------------------------------------*/
 
-void StdTimeSolver::TimeRhsOperator(VectorInterface& gf, VectorInterface& gu) const
+void StdTimeSolver::TimeRhsOperator(VectorInterface& gf, const VectorInterface& gu) const
 {
   assert(_theta>0.);
   double d = -(1.-_theta)/_theta;
