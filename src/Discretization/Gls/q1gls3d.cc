@@ -19,6 +19,8 @@ void Q1Gls3d::BasicInit(const ParamFile* pf)
   assert(CellDiscretization::GetIntegratorPointer()==NULL);
   CellDiscretization::GetIntegratorPointer() =  new GalerkinGlsIntegrator<3>;
 
+  GetIntegratorPointer()->BasicInit();
+
   assert(CellDiscretization::GetFemPointer()==NULL);
   typedef Transformation3d<BaseQ13d>           TransQ1;
   typedef FiniteElement<3,2,TransQ1,BaseQ13d>  FiniteElement;

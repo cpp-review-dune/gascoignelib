@@ -6,6 +6,13 @@ namespace Gascoigne
 /*---------------------------------------------------*/
 
 template<int DIM>
+void IntegratorQ1Q2<DIM>::BasicInit()
+{
+}
+
+/*---------------------------------------------------*/
+
+template<int DIM>
 void IntegratorQ1Q2<DIM>::Form(const Equation& EQ, LocalVector& F, const FemInterface& FemH, const FemInterface& FemL, const LocalVector& U, const LocalNodeData& Q) const
 {
   assert(FemH.n()==FemL.n());

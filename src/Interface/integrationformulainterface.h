@@ -10,10 +10,6 @@ namespace Gascoigne
 {
   class IntegrationFormulaInterface
   {
-    private:
-
-    protected:
-
     public:
       IntegrationFormulaInterface() {}
       virtual ~IntegrationFormulaInterface() {}

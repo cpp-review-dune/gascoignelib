@@ -40,6 +40,8 @@ void Q13d::BasicInit(const ParamFile* pf)
     CellDiscretization::GetIntegratorPointer() =  new GalerkinIntegrator<3>;
   assert(GetIntegrator());
 
+  GetIntegratorPointer()->BasicInit();
+
   if(!CellDiscretization::GetFemPointer())
     {
       typedef Transformation3d<BaseQ13d>           TransQ1;

@@ -19,6 +19,8 @@ void Q1Gls2d::BasicInit(const ParamFile* pf)
   assert(CellDiscretization::GetIntegratorPointer()==NULL);
   CellDiscretization::GetIntegratorPointer() =  new GalerkinGlsIntegrator<2>;
 
+  GetIntegratorPointer()->BasicInit();
+
   assert(CellDiscretization::GetFemPointer()==NULL);
   typedef Transformation2d<BaseQ12d>           TransQ1;
   typedef FiniteElement<2,1,TransQ1,BaseQ12d>  FiniteElement;

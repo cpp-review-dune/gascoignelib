@@ -22,6 +22,7 @@ class IntegratorQ1Q2 : public BasicIntegrator
   ~IntegratorQ1Q2<DIM>() {}
 
   std::string GetName() const {return "IntegratorQ1Q2";}  
+  void BasicInit();
 
   void Rhs(const DomainRightHandSide& RHS, LocalVector& F, const FemInterface& FemH, 
 	   const FemInterface& FemL, const LocalNodeData& Q) const;

@@ -17,6 +17,8 @@ void DwrFem2d::BasicInit(const ParamFile*  paramfile)
   assert(PatchDiscretization::GetIntegrator()==NULL);
   PatchDiscretization::GetIntegratorPointer() =  new IntegratorQ1Q2<2>;
 
+  GetIntegratorPointer()->BasicInit();
+
   assert(PatchDiscretization::GetFem()==NULL);
   typedef Transformation2d<BaseQ22d>           TransQ2;
   typedef FiniteElement<2,1,TransQ2,BaseQ22d>  FiniteElement;

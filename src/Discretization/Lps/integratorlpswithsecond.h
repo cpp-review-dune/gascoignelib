@@ -14,6 +14,7 @@ class IntegratorLpsWithSecond : public IntegratorWithSecond<DIM>, public Gascoig
   public:
 
     std::string GetName() const {return "IntegratorLpsWithSecond";}
+    void BasicInit() { Gascoigne::GalerkinLpsIntegratorQ2<DIM>::BasicInit();}
 }; 
 
 /**********************************************************/

@@ -83,8 +83,8 @@ void StdTimeSolver::ReInitMatrix()
 
   GetMatrix()->ReInit(&SA);
   GetIlu()->ReInit(&SA);
-  GetMassMatrix()->ReInit(&SA);
 
+  GetMassMatrix()->ReInit(&SA);
   GetMassMatrix()->zero();
   GetDiscretization()->MassMatrix(*GetMassMatrix());  
 
@@ -187,6 +187,8 @@ void StdTimeSolver::Form(BasicGhostVector& gy, const BasicGhostVector& gx, doubl
 
   const GlobalVector& x = GetGV(gx);
   GlobalVector& y = GetGV(gy);
+
+  assert(y.n()==x.n());
   GetMassMatrix()->vmult_time(y,x,GetTimePattern(),scale);
 }
 

@@ -1,7 +1,5 @@
 #include  "galerkinlpsintegratorq2.h"
 
-using namespace std;
-
 namespace Gascoigne
 {
 /*-----------------------------------------*/

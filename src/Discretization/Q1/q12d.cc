@@ -40,6 +40,8 @@ void Q12d::BasicInit(const ParamFile* pf)
     GetIntegratorPointer() =  new GalerkinIntegrator<2>;
   assert(GetIntegrator());
 
+  GetIntegratorPointer()->BasicInit();
+
   if(!GetFemPointer())
     {
       typedef Transformation2d<BaseQ12d>           TransQ1;

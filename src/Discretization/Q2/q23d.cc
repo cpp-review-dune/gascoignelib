@@ -145,6 +145,8 @@ void Q23d::BasicInit(const ParamFile* paramfile)
     PatchDiscretization::GetIntegratorPointer() =  new GalerkinIntegratorQ2<3>;
   assert(GetIntegrator());
 
+  GetIntegratorPointer()->BasicInit();  
+
   if(!PatchDiscretization::GetFem())
     {
       typedef Transformation3d<BaseQ23d>           TransQ2;

@@ -37,6 +37,8 @@ namespace Gascoigne
   
       virtual std::string GetName() const=0;
 
+      virtual void BasicInit() { assert(0);};
+      
       virtual void Rhs(const DomainRightHandSide& RHS, LocalVector& F, const FemInterface& FEM, 
           const LocalNodeData& Q) const {
         std::cerr << "\"IntegratorInterface::Rhs\" not written!" << std::endl;

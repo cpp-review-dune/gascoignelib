@@ -7,23 +7,34 @@ using namespace std;
 namespace Gascoigne
 {
 template<int DIM>
-GalerkinIntegrator<DIM>::GalerkinIntegrator<DIM>() : BasicIntegrator() 
+GalerkinIntegrator<DIM>::GalerkinIntegrator<DIM>() : BasicIntegrator(),
+  IFF(0), IFE(0), IFB(0), IFM(0)
+{
+}
+
+/* ----------------------------------------- */
+
+template<int DIM>
+void GalerkinIntegrator<DIM>::BasicInit()
 {
   if (DIM==2)
     {
-      FormFormulaPointer() = new QuadGauss4;
-      ErrorFormulaPointer() = new QuadGauss9;
-      BoundaryFormulaPointer() = new LineGauss2;
+      if (!FormFormulaPointer())     FormFormulaPointer() = new QuadGauss4;
+      if (!ErrorFormulaPointer())    ErrorFormulaPointer() = new QuadGauss9;
+      if (!BoundaryFormulaPointer()) BoundaryFormulaPointer() = new LineGauss2;
+      if (!MassFormulaPointer())     MassFormulaPointer() = new QuadTrapez;
     }
   else if (DIM==3)
     {
-      FormFormulaPointer() = new HexGauss8;
-      ErrorFormulaPointer() = new HexGauss27;
-      BoundaryFormulaPointer() = new QuadGauss4;
+      if (!FormFormulaPointer())     FormFormulaPointer() = new HexGauss8;
+      if (!ErrorFormulaPointer())    ErrorFormulaPointer() = new HexGauss27;
+      if (!BoundaryFormulaPointer()) BoundaryFormulaPointer() = new QuadGauss4;
+      if (!MassFormulaPointer())     MassFormulaPointer() = new HexTrapez;
     }
   assert(FormFormulaPointer());
   assert(ErrorFormulaPointer());
   assert(BoundaryFormulaPointer());
+  assert(MassFormulaPointer());
 }
 
 /* ----------------------------------------- */
@@ -241,8 +252,7 @@ double GalerkinIntegrator<DIM>::MassMatrix(EntryMatrix& E, const FemInterface& F
   E.SetDimensionComp(ncomp,ncomp);
   E.resize();
   E.zero();
-
-  const IntegrationFormulaInterface& IF = FormFormula();
+  const IntegrationFormulaInterface& IF = MassFormula();
 
   Vertex<DIM> x, xi;
   double omega = 0.;

@@ -23,14 +23,17 @@ private:
   IntegrationFormulaInterface*  IFF;
   IntegrationFormulaInterface*  IFE;
   IntegrationFormulaInterface*  IFB;
+  IntegrationFormulaInterface*  IFM;
 
 protected:
 
   IntegrationFormulaInterface*& FormFormulaPointer() { return IFF;}
   IntegrationFormulaInterface*& ErrorFormulaPointer() { return IFE;}
+  IntegrationFormulaInterface*& MassFormulaPointer() { return IFM;}
   IntegrationFormulaInterface*& BoundaryFormulaPointer() { return IFB;}
 
   const IntegrationFormulaInterface& FormFormula() const { return *IFF;}
+  const IntegrationFormulaInterface& MassFormula() const { return *IFM;}
   const IntegrationFormulaInterface& ErrorFormula() const { return *IFE;}
   const IntegrationFormulaInterface& BoundaryFormula() const { return *IFB;}
 
@@ -46,6 +49,7 @@ public:
   ~GalerkinIntegrator<DIM>();
   
   std::string GetName() const {return "Galerkin";}
+  void BasicInit();
 
   void Rhs(const DomainRightHandSide& RHS, LocalVector& F, const FemInterface& FEM, const LocalNodeData& Q) const;
   void Form(const Equation& EQ, LocalVector& F, const FemInterface& FEM, const LocalVector& U, const LocalNodeData& Q) const;

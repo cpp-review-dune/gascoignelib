@@ -11,13 +11,13 @@
 ////
 /////////////////////////////////////////////
 
-#include  "galerkinintegrator.h"
+#include  "galerkinintegratorq2.h"
 #include  "lpsintegrator.h"
 
 namespace Gascoigne
 {
 template<int DIM>
-class GalerkinLpsIntegratorQ2 : virtual public GalerkinIntegrator<DIM>
+class GalerkinLpsIntegratorQ2 : virtual public GalerkinIntegratorQ2<DIM>
 {
 protected:
 
@@ -29,23 +29,7 @@ public:
 ////  Con(De)structor 
 //
 
-  GalerkinLpsIntegratorQ2<DIM>() {
-    if (DIM==2)
-      {
-	FormFormulaPointer() = new QuadGauss9;
-	ErrorFormulaPointer() = new QuadGauss16;
-	BoundaryFormulaPointer() = new LineGauss3;
-      }
-    else if (DIM==3)
-      {
-	FormFormulaPointer() = new HexGauss27;
-	ErrorFormulaPointer() = new HexGauss64;
-	BoundaryFormulaPointer() = new QuadGauss9;
-      }
-    assert(FormFormulaPointer());
-    assert(ErrorFormulaPointer());
-    assert(BoundaryFormulaPointer());
-  }
+  GalerkinLpsIntegratorQ2<DIM>() : GalerkinIntegratorQ2<DIM>() {}
   
   ~GalerkinLpsIntegratorQ2<DIM>() {}
 

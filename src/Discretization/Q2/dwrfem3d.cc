@@ -19,6 +19,8 @@ void DwrFem3d::BasicInit(const ParamFile*  paramfile)
   assert(PatchDiscretization::GetIntegrator()==NULL);
   PatchDiscretization::GetIntegratorPointer() =  new IntegratorQ1Q2<3>;
 
+  GetIntegratorPointer()->BasicInit();
+
   assert(PatchDiscretization::GetFem()==NULL);
   typedef Transformation3d<BaseQ23d>           TransQ2;
   typedef FiniteElement<3,2,TransQ2,BaseQ23d>  FiniteElement;
