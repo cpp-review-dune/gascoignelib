@@ -146,8 +146,6 @@ double DwrQ1Q2::Estimator(nvector<double>& eta, VectorInterface& gf,
 			  const VectorInterface& gu, const VectorInterface& gz,
 			  const ProblemDescriptorInterface& PDI)
 {
-  GlobalVector& f = S.GetGV(gf);
-
   double rho=0, rhostern=0;
 
   DualResidualsHigher(gf,gu,gz,PDI);
