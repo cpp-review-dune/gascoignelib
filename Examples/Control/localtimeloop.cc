@@ -136,13 +136,12 @@ void LocalTimeLoop::backward(string iname, string name, int first, int last, con
 
   double T = 2000.;
   info.ReInitBackward(last,T);
+  TimeInfoBroadcast();
   for (_iter=last; _iter>=first; _iter--)
     {
       info.iteration_backward(_iter);
 
       ualt.equ(1.,u);
-
-      TimeInfoBroadcast();
 
       string aname(name);
       compose_name(aname,_iter);
@@ -183,13 +182,12 @@ void LocalTimeLoop::forward(string iname, int first, int last, const ProblemDesc
   GetMultiLevelSolver()->GetSolver()->OutputSettings();
   //GetMultiLevelSolver()->GetSolver()->Visu("Results/solve",u,0);
 
+  TimeInfoBroadcast();
   for (_iter=first; _iter<=last; _iter++)
     {
       info.iteration(_iter);
 
       ualt.equ(1.,u);
-
-      TimeInfoBroadcast();
 
       SolveTimePrimal(u,f,"Results/forward");
       Functionals(u,f);
