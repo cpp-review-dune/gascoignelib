@@ -71,8 +71,7 @@ protected:
     GetDirichletDataPointer() = new DirichletDataByExactSolution(GetExactSolution());
   }
   void ConstructBoundaryManager() {
-    const ParamFile* paramfile(NULL);
-    GetBoundaryManagerPointer() = new BoundaryManager(paramfile);
+    GetBoundaryManagerPointer() = new BoundaryManager(GetParamFile());
     GetBoundaryManager()->AddDirichlet(1,0);
     GetBoundaryManager()->AddDirichlet(2,0);
     GetBoundaryManager()->AddDirichlet(3,0);
