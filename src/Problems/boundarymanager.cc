@@ -11,6 +11,14 @@ namespace Gascoigne
 {
 BoundaryManager::BoundaryManager(const ParamFile* pf)
 {
+  cerr << "------------------- BoundaryManager::BoundaryManager(const ParamFile* pf) depreciated!\n";
+  BasicInit(pf);
+}
+
+/*-------------------------------------------------------*/
+
+void BoundaryManager::BasicInit(const ParamFile* pf)
+{
   DataFormatHandler DF;
   DF.insert("dirichlet",&coldir);
   DF.insert("neumann"  ,&colneu);
