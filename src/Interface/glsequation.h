@@ -3,7 +3,6 @@
 
 #include "equation.h"
 
-
 namespace Gascoigne
 {
   
@@ -19,7 +18,7 @@ namespace Gascoigne
   class GlsEquation : public virtual Equation
   {
     public:
-      GlsEquation() {};
+    GlsEquation() {};
       ~GlsEquation() {};
 
       //

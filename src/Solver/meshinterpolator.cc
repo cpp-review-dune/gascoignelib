@@ -505,9 +505,8 @@ void MeshInterpolator::BasicInit(DiscretizationInterface* DI, MeshAgentInterface
 
   GetMeshAgent()->GetShapes2d() = GetOriginalMeshAgent()->GetShapes2d();
   GetMeshAgent()->GetShapes3d() = GetOriginalMeshAgent()->GetShapes3d();
-  GetMeshAgent()->SetDefaultValues(dim,name+".gup",0);
-  GetMeshAgent()->BasicInit(NULL);
-
+  GetMeshAgent()->BasicInit(name+".gup",dim,0,0);
+    
   // neue Discretization anlegen
   const Q2* Q2DP = dynamic_cast<const Q2*>(GetOriginalDiscretization());
   if (Q2DP)

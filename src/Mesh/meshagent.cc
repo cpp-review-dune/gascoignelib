@@ -11,7 +11,7 @@ using namespace std;
 
 namespace Gascoigne
 {
-MeshAgent::MeshAgent() : MeshAgentInterface(), _dimension(-1), HMP(NULL), GMG(NULL)
+MeshAgent::MeshAgent() : MeshAgentInterface(), HMP(NULL), GMG(NULL)
 {
 }
 
@@ -27,7 +27,7 @@ MeshAgent::~MeshAgent()
 
 void MeshAgent::ReInit()
 {
-  GMG->ReInit(_dimension,HMP->nlevels()-HMP->patchdepth());
+  GMG->ReInit(GetDimension(),HMP->nlevels()-HMP->patchdepth());
 
   GascoigneMeshConstructor MGM(HMP,GMG);
   MGM.BasicInit();
@@ -35,47 +35,18 @@ void MeshAgent::ReInit()
 
 /*-----------------------------------------*/
 
-void MeshAgent::ReadMesh(int dim, string meshname, int prerefine)
+void MeshAgent::BasicInit(const ParamFile* paramfile)
 {
-  vector<string> s = StringSplit(meshname.c_str(),'.');
-  string suff = s[s.size()-1];
+  assert(HMP==NULL);
+  int dim = 0;
 
-  if(suff=="inp")
-    {
-      HMP->read_inp(meshname);
-    }
-  else if(suff=="gup")
-    {
-      HMP->read_gup(meshname);
-    }
-  else
-    {
-      cerr << "MeshAgent::read():\tunknown suffix " << suff << endl;
-      assert(0);
-    }
-  HMP->global_refine(prerefine);
-}
-
-/*-----------------------------------------*/
-
-void MeshAgent::ReadParamFile(const ParamFile* paramfile)
-{
   DataFormatHandler DFH;
-  DFH.insert("dimension",&_dimension);
-  DFH.insert("gridname" ,&_gridname);      // inp oder gup Format 
-  DFH.insert("prerefine",&_prerefine);
+  DFH.insert("dimension",&dim);
   FileScanner FS(DFH);
   FS.NoComplain();
   FS.readfile(paramfile,"Mesh");
-}
 
-/*-----------------------------------------*/
-
-void MeshAgent::BasicInit(const ParamFile* paramfile)
-{
-  MeshAgent::ReadParamFile(paramfile);
-
-  if (_dimension==2)
+  if (dim==2)
     {
       HMP = new HierarchicalMesh2d;
       for(map<int,BoundaryFunction<2>* >::const_iterator p=_curved2d.begin();p!=_curved2d.end();p++)
@@ -83,7 +54,7 @@ void MeshAgent::BasicInit(const ParamFile* paramfile)
           HMP->AddShape(p->first,p->second);
         }
     }
-  else if (_dimension==3)
+  else if (dim==3)
     {
       HMP = new HierarchicalMesh3d;
       for(map<int,BoundaryFunction<3>* >::const_iterator p=_curved3d.begin();p!=_curved3d.end();p++)
@@ -93,12 +64,11 @@ void MeshAgent::BasicInit(const ParamFile* paramfile)
     }
   else
     {
-      cout << "dimension of Mesh ? " << _dimension << endl;
+      cout << "dimension of Mesh ? " << dim << endl;
     }
   assert(HMP);
- 
-  ReadMesh(_dimension, _gridname, _prerefine);
-
+  HMP->BasicInit(paramfile);
+  
   GMG = NewMultiGridMesh();
 
   ReInit();
@@ -106,11 +76,36 @@ void MeshAgent::BasicInit(const ParamFile* paramfile)
 
 /*-----------------------------------------*/
 
-void MeshAgent::SetDefaultValues(int dimension, string gridname, int prerefine)
+void MeshAgent::BasicInit(const string& gridname, int dim, int patchdepth, int epatcher)
 {
-  _dimension = dimension;
-  _gridname  = gridname;
-  _prerefine = prerefine;
+  assert(HMP==NULL);
+
+  if (dim==2)
+    {
+      HMP = new HierarchicalMesh2d;
+      for(map<int,BoundaryFunction<2>* >::const_iterator p=_curved2d.begin();p!=_curved2d.end();p++)
+        {
+          HMP->AddShape(p->first,p->second);
+        }
+    }
+  else if (dim==3)
+    {
+      HMP = new HierarchicalMesh3d;
+      for(map<int,BoundaryFunction<3>* >::const_iterator p=_curved3d.begin();p!=_curved3d.end();p++)
+        {
+          HMP->AddShape(p->first,p->second);
+        }
+    }
+  else
+    {
+      cout << "dimension of Mesh ? " << dim << endl;
+    }
+  assert(HMP);
+  HMP->SetParameters(gridname,patchdepth,epatcher);
+  
+  GMG = NewMultiGridMesh();
+
+  ReInit();
 }
 
 /*-----------------------------------------*/

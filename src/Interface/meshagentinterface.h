@@ -34,8 +34,7 @@ namespace Gascoigne
       virtual ~MeshAgentInterface() {}
 
       virtual void BasicInit(const ParamFile* pf)=0;
-
-      virtual void SetDefaultValues(int dim, std::string gridname, int prerefine)=0;
+      virtual void BasicInit(const std::string& gridname, int dim, int patchdepth, int epatcher)=0;
 
       virtual int nnodes() const=0;
       virtual int ncells() const=0;

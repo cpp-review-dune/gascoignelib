@@ -16,25 +16,19 @@ class MeshAgent : public virtual MeshAgentInterface
 {
 private:
 
-  int _dimension,_prerefine;
-  std::string    _gridname;
   map<int,BoundaryFunction<2>* > _curved2d;
   map<int,BoundaryFunction<3>* > _curved3d;
 
 protected:
 
-		int GetDimension() const {return _dimension;}	
-	int GetPrerefine() const {return _prerefine;}	
-	std::string GetGridname() const {return _gridname;}
-
-		
+  int GetDimension() const {return HMP->dimension();}	
+	
   HierarchicalMesh*         HMP;
   GascoigneMultiGridMesh*   GMG;
 
   virtual GascoigneMultiGridMesh* NewMultiGridMesh() {return new GascoigneMultiGridMesh;}
 
   virtual void ReInit();
-  virtual void ReadMesh(int dim, std::string meshname, int prerefine);
 
   GascoigneMesh*  GMesh(int l) { return GMG->GetGascoigneMesh(l);}
 
@@ -51,10 +45,8 @@ public:
   const map<int,BoundaryFunction<2>* >& GetShapes2d() const { return _curved2d; }
   const map<int,BoundaryFunction<3>* >& GetShapes3d() const { return _curved3d; }
 
-  void ReadParamFile(const ParamFile* paramfile);
   void BasicInit(const ParamFile* pf);
-
-  void SetDefaultValues(int dimension, std::string gridname, int prerefine);
+  void BasicInit(const std::string& gridname, int dim, int patchdepth, int epatcher);
 
   const GascoigneMultiGridMesh& GetMultiGrid() const {return *GMG;}
   GascoigneMultiGridMesh& GetMultiGrid() {return *GMG;}

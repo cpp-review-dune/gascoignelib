@@ -79,8 +79,6 @@ void BasicLoop::BasicInit(const ParamFile* paramfile)
       cerr << __FILE__ << ":" << __LINE__ << ": possible values: no, yes, yes-with-date"<< endl;
     }
   }
-
-
   assert((_reload=="none") || (_initial=="file"));
 
   if ((_reload!="none") && (_initial!="file"))
