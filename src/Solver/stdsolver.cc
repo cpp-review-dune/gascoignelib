@@ -849,7 +849,7 @@ double StdSolver::EnergyEstimator(nvector<double>& eta, const BasicGhostVector& 
 
       dynamic_cast<const Q12d*>(GetMeshInterpretor())->Jumps(EIC,u);
       dynamic_cast<const Q12d*>(GetMeshInterpretor())->JumpNorm(EIC,eta);
-      dynamic_cast<const Q12d*>(GetMeshInterpretor())->Residual(eta,u,*EQ,*RHS);
+      dynamic_cast<const Q12d*>(GetMeshInterpretor())->Residual(eta,u,*EQ,RHS);
     }
   else if (GetMesh()->dimension()==3)
     {
@@ -858,7 +858,7 @@ double StdSolver::EnergyEstimator(nvector<double>& eta, const BasicGhostVector& 
 
       dynamic_cast<const Q13d*>(GetMeshInterpretor())->Jumps(EIC,u);
       dynamic_cast<const Q13d*>(GetMeshInterpretor())->JumpNorm(EIC,eta);
-      dynamic_cast<const Q13d*>(GetMeshInterpretor())->Residual(eta,u,*EQ,*RHS);
+      dynamic_cast<const Q13d*>(GetMeshInterpretor())->Residual(eta,u,*EQ,RHS);
     }
   HNZero(gu);
 

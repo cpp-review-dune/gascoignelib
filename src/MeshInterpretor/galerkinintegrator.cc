@@ -394,7 +394,7 @@ void GalerkinIntegrator<DIM>::JumpNorm(double& norm, const FemInterface& FEM, fi
 /* ----------------------------------------- */
 
 template<int DIM>
-void GalerkinIntegrator<DIM>::Residual(double& res, const LocalVector& U, const FemInterface& FEM, const Equation& EQ, const RightHandSideData& RHS, const LocalData& Q) const
+void GalerkinIntegrator<DIM>::Residual(double& res, const LocalVector& U, const FemInterface& FEM, const Equation& EQ, const RightHandSideData* RHS, const LocalData& Q) const
 {
   DoubleVector F(U.ncomp());
   const IntegrationFormulaInterface& IF = FormFormula();
@@ -417,7 +417,14 @@ void GalerkinIntegrator<DIM>::Residual(double& res, const LocalVector& U, const 
       double value = 0.;
       for (int c=0; c<U.ncomp(); c++)
 	{
-	  value += (RHS(c,x)-F[c])*(RHS(c,x)-F[c]);
+          if(RHS!=NULL)
+          {
+	    value += ((*RHS)(c,x)-F[c])*((*RHS)(c,x)-F[c]);
+          }
+          else
+          {
+            value += F[c] * F[c];
+          }
 	}
       res += h*h*weight * value;
     }

@@ -40,7 +40,7 @@ public:
 
   void Jumps(EdgeInfoContainer<2>& EIC, const GlobalVector& u) const;
   void JumpNorm(EdgeInfoContainer<2>& EIC, nvector<double>& eta) const;
-  void Residual(nvector<double>& eta, const GlobalVector& u, const Equation& EQ, const RightHandSideData& RHS) const;
+  void Residual(nvector<double>& eta, const GlobalVector& u, const Equation& EQ, const RightHandSideData* RHS) const;
 };
 
 

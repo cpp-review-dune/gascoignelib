@@ -375,12 +375,15 @@ void Q13d::JumpNorm(EdgeInfoContainer<3>& EIC, nvector<double>& eta) const
 
 /* ----------------------------------------- */
 
-void Q13d::Residual(nvector<double>& eta, const GlobalVector& u, const Equation& EQ, const RightHandSideData& RHS) const
+void Q13d::Residual(nvector<double>& eta, const GlobalVector& u, const Equation& EQ, const RightHandSideData* RHS) const
 {
   nmatrix<double> T;
 
   GlobalToGlobalData();
-  RHS.SetParameterData(__q);
+  if (RHS!=NULL)
+  {
+    RHS->SetParameterData(__q);
+  }
   
   for(int iq=0;iq<GetMesh()->ncells();++iq)
     {
