@@ -74,6 +74,8 @@ class StdSolver : public virtual SolverInterface
   mutable int         _PrimalSolve;
   const ParamFile*    _paramfile;
 
+  bool _useUMFPACK;
+
   // 5. sonstiges
   
   PressureFilter       _PF;

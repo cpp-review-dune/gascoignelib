@@ -56,7 +56,7 @@ namespace Gascoigne
 StdSolver::StdSolver() : 
   _MP(NULL), _HM(NULL), _MAP(NULL), _MIP(NULL), _ZP(NULL), _PDX(NULL), 
   _distribute(true), _mylevel(-1), _ndirect(1000), _directsolver(0), _discname("Q1"),
-  _matrixtype("point_node"), _PrimalSolve(1), _paramfile(NULL)
+  _matrixtype("point_node"), _PrimalSolve(1), _paramfile(NULL), _useUMFPACK(true)
 // , omega_domain(0.) 
 {
 }
@@ -200,6 +200,7 @@ void StdSolver::BasicInit(int level, const ParamFile* paramfile, const MeshInter
   DataFormatHandler DFH;
   DFH.insert("matrixtype" , &_matrixtype);
   DFH.insert("ndirect"    , &_ndirect);
+  DFH.insert("useUMFPACK", &_useUMFPACK);
   DFH.insert("discname", &_discname);
   DFH.insert("disc", &xxx, "void");
   FileScanner FS(DFH);
@@ -317,7 +318,7 @@ MatrixInterface* StdSolver::NewMatrix(int ncomp, const string& matrixtype)
 IluInterface* StdSolver::NewIlu(int ncomp, const string& matrixtype) 
 {
 #ifdef __WITH_UMFPACK__
-  if(_directsolver)             return new UmfIlu(GetMatrix());
+  if(_directsolver && _useUMFPACK)             return new UmfIlu(GetMatrix());
 #endif
   // analog zu NewMatrix muss hier auch _directsolver eingehen, 
   // sonst gibts aerger nachher beim 
@@ -577,7 +578,7 @@ void StdSolver::smooth_pre(VectorInterface& x, const VectorInterface& y, VectorI
 void StdSolver::smooth_exact(VectorInterface& x, const VectorInterface& y, VectorInterface& help) const
 {
 #ifdef __WITH_UMFPACK__
-  if(_directsolver)
+  if(_directsolver&&_useUMFPACK)
     {
       _so.start();
       UmfIlu* UM = dynamic_cast<UmfIlu*>(GetIlu());
@@ -937,7 +938,7 @@ void StdSolver::DirichletMatrixOnlyRow() const
 void StdSolver::ComputeIlu() const
 {
 #ifdef __WITH_UMFPACK__
-  if(_directsolver)
+  if(_directsolver&&_useUMFPACK)
     {
       _cs.start();
       UmfIlu* UM = dynamic_cast<UmfIlu*>(GetIlu());
@@ -964,7 +965,7 @@ void StdSolver::ComputeIlu() const
 void StdSolver::ComputeIlu(const VectorInterface& gu) const
 {
 #ifdef __WITH_UMFPACK__
-  if(_directsolver)
+  if(_directsolver&&_useUMFPACK)
     {
       _cs.start();
       UmfIlu* UM = dynamic_cast<UmfIlu*>(GetIlu());
