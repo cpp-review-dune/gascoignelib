@@ -2,9 +2,10 @@ SET(IntegrationTest_SRC
   main.cc 
 )
 
-IF(BUILD_EXECUTABLES)
-  ADD_EXECUTABLE(IntegrationTest IntegrationTest_SRC)
-ENDIF(BUILD_EXECUTABLES)
+SET(_SRC ${GASCOIGNESTD_SOURCE_DIR}/Examples/IntegrationTest)
+ADD_CUSTOM_TARGET(COPY ALL cp ${_SRC}/*.param ${_SRC}/*.inp .)
+
+ADD_EXECUTABLE(IntegrationTest IntegrationTest_SRC)
 
 
 

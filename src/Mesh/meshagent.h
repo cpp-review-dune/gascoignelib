@@ -6,6 +6,8 @@
 #include  "gascoignemultigridmesh.h"
 #include  "boundaryfunction.h"
 
+using namespace std;
+
 /*-----------------------------------------*/
 
 class MeshAgent : public virtual MeshAgentInterface
@@ -13,6 +15,8 @@ class MeshAgent : public virtual MeshAgentInterface
 protected:
 
   int _dimension;
+  map<int,BoundaryFunction<2>* > _curved2d;
+  map<int,BoundaryFunction<3>* > _curved3d;
 
   HierarchicalMesh*         HMP;
   GascoigneMultiGridMesh*   GMG;
@@ -29,10 +33,11 @@ public:
   MeshAgent();
   ~MeshAgent();
 
+  void AddShape(int col, BoundaryFunction<2>* f) { _curved2d[col] = f;}
+  void AddShape(int col, BoundaryFunction<3>* f) { _curved3d[col] = f;}
+
   void BasicInit(const Gascoigne::ParamFile* pf);
   void BasicInit(int dim, std::string meshname, int prerefine);
-  void BasicInit(std::string meshname, int prerefine, std::map<int,BoundaryFunction<2>* >& curved);
-  void BasicInit(std::string meshname, int prerefine, std::map<int,BoundaryFunction<3>* >& curved);
 
   const GascoigneMultiGridMesh& GetMultiGrid() const {return *GMG;}
   GascoigneMultiGridMesh& GetMultiGrid() {return *GMG;}

@@ -1,21 +1,7 @@
-#include  "problemdescriptor1.h"
-#include  "stdloop.h"
-#include  "benchmeshagent.h"
+#include  "local.h"
 
 using namespace std;
 using namespace Gascoigne;
-
-/* ----------------------------------------- */
-
-class LocalLoop : public StdLoop
-{
-public:
-  void BasicInit(const ParamFile* paramfile) 
-    {
-      GetMeshAgentPointer() = new BenchMarkMeshAgent;
-      StdLoop::BasicInit(paramfile);
-    }
-};
 
 /*---------------------------------------------------*/
 

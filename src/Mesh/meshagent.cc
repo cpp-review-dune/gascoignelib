@@ -63,10 +63,18 @@ void MeshAgent::BasicInit(int dim, string meshname, int prerefine)
   if (_dimension==2)
     {
       HMP = new HierarchicalMesh2d;
+      for(map<int,BoundaryFunction<2>* >::const_iterator p=_curved2d.begin();p!=_curved2d.end();p++)
+	{
+	  HMP->AddShape(p->first,p->second);
+	}
     }
   else if (_dimension==3)
     {
       HMP = new HierarchicalMesh3d;
+      for(map<int,BoundaryFunction<3>* >::const_iterator p=_curved3d.begin();p!=_curved3d.end();p++)
+	{
+	  HMP->AddShape(p->first,p->second);
+	}
     }
   else
     {
@@ -75,48 +83,6 @@ void MeshAgent::BasicInit(int dim, string meshname, int prerefine)
   assert(HMP);
 
   ReadMesh(dim, meshname, prerefine);
-
-  GMG = NewMultiGridMesh();
-
-  ReInit();
-}
-
-/*-----------------------------------------*/
-
-void MeshAgent::BasicInit(string meshname, int prerefine, std::map<int,BoundaryFunction<2>* >& curved)
-{
-  cout << "MeshAgent::BasicInit with SHAPES" << endl;
-
-  _dimension = 2;
-  HMP = new HierarchicalMesh2d;
-
-  std::map<int,BoundaryFunction<2>* >::iterator p=curved.begin();
-  for(p=curved.begin();p!=curved.end();p++)
-    {
-      HMP->AddShape(p->first,p->second);
-    }
-
-  ReadMesh(_dimension, meshname, prerefine);
-
-  GMG = NewMultiGridMesh();
-
-  ReInit();
-}
-
-/*-----------------------------------------*/
-
-void MeshAgent::BasicInit(string meshname, int prerefine, std::map<int,BoundaryFunction<3>* >& curved)
-{
-  _dimension = 3;
-  HMP = new HierarchicalMesh3d;
-
-  std::map<int,BoundaryFunction<3>* >::iterator p=curved.begin();
-  for(p=curved.begin();p!=curved.end();p++)
-    {
-//       HMP->AddShape(p->first,p->second);
-    }
-
-  ReadMesh(_dimension, meshname, prerefine);
 
   GMG = NewMultiGridMesh();
 

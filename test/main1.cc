@@ -33,11 +33,18 @@ class LocalLoop : public StdLoop
 public:
   void BasicInit(const ParamFile* paramfile) {
   GetMeshAgentPointer() = new MeshAgent;
-
-  int dim=2;
-  int prerefine=3;
-  string inpname("square.inp");
-  dynamic_cast<MeshAgent*>(GetMeshAgent())->BasicInit(dim, inpname, prerefine);
+  
+  if(paramfile==NULL) 
+    {
+      int dim=2;
+      int prerefine=3;
+      string inpname("square.inp");
+      dynamic_cast<MeshAgent*>(GetMeshAgent())->BasicInit(dim, inpname, prerefine);
+    }
+  else
+    {
+      dynamic_cast<MeshAgent*>(GetMeshAgent())->BasicInit(paramfile);
+    }
 
   StdLoop::BasicInit(paramfile);
   }
@@ -50,7 +57,8 @@ public:
   LocalExactSolution() : ExactSolution() {}
 
   std::string GetName() const {return "LocalExactSolution";}
-  double operator()(int c, const Vertex2d& v)const{return v.x()*v.y()+11.;}
+  double operator()(int c, const Vertex2d& v)const{return v.x()*v.y();}
+//   double operator()(int c, const Vertex2d& v)const{return v.x()*v.y()+11.;}
   int GetNcomp() const { return 1; }
 };
 

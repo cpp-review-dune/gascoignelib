@@ -7,6 +7,8 @@
 MARK_AS_ADVANCED(CMAKE_BUILD_TYPE)
 MARK_AS_ADVANCED(CMAKE_INSTALL_PREFIX)
 MARK_AS_ADVANCED(CMAKE_BACKWARDS_COMPATIBILITY)
+MARK_AS_ADVANCED(EXECUTABLE_OUTPUT_PATH)
+MARK_AS_ADVANCED(LIBRARY_OUTPUT_PATH)
 
 #############################################
 
@@ -15,18 +17,26 @@ MARK_AS_ADVANCED(CMAKE_BACKWARDS_COMPATIBILITY)
 #
 
 SET(GASCOIGNE_STD                  ${GASCOIGNE_STD}                  CACHE PATH   "GascoigneStd input directory")
-SET(GASCOIGNE_OUTPUT_PREFIX        ${GASCOIGNE_OUTPUT_PREFIX}        CACHE PATH   "Output path prefix, prepended onto output directories.")
+SET(GASCOIGNE_EXECUTABLE_OUTPUT_PREFIX        ${GASCOIGNE_EXECUTABLE_OUTPUT_PREFIX}        CACHE PATH   "Output path prefix, prepended onto output directories.")
+SET(GASCOIGNE_LIBRARY_OUTPUT_PREFIX        ${GASCOIGNE_LIBRARY_OUTPUT_PREFIX}        CACHE PATH   "Output path prefix, prepended onto output directories.")
+
 SET(GASCOIGNE_CXX_FLAGS            ${GASCOIGNE_CXX_FLAGS}            CACHE STRING "Flags used by the compiler during all build types.")
 SET(GASCOIGNE_COMPILER_DEFINITIONS ${GASCOIGNE_COMPILER_DEFINITIONS} CACHE STRING "Add -D define flags to command line for environments.")
 
+#
 IF(USE_ARCH)
+#
   EXEC_PROGRAM(arch OUTPUT_VARIABLE ARCH)
-  SET(LIBRARY_OUTPUT_PATH    ${GASCOIGNE_OUTPUT_PREFIX}/${ARCH}/lib CACHE PATH "Single output directory for building all libraries.")
-  SET(EXECUTABLE_OUTPUT_PATH ${GASCOIGNE_OUTPUT_PREFIX}/${ARCH}/bin CACHE PATH "Single output directory for building all executables.")
+  SET(LIBRARY_OUTPUT_PATH    ${GASCOIGNE_LIBRARY_OUTPUT_PREFIX}/${ARCH} CACHE PATH "Single output directory for building all libraries.")
+  SET(EXECUTABLE_OUTPUT_PATH ${GASCOIGNE_EXECUTABLE_OUTPUT_PREFIX}/${ARCH} CACHE PATH "Single output directory for building all executables.")
+#
 ELSE(USE_ARCH)
-  SET(LIBRARY_OUTPUT_PATH    ${GASCOIGNE_OUTPUT_PREFIX}/lib CACHE PATH "Single output directory for building all libraries.")
-  SET(EXECUTABLE_OUTPUT_PATH ${GASCOIGNE_OUTPUT_PREFIX}/bin CACHE PATH "Single output directory for building all executables.")
+#
+  SET(LIBRARY_OUTPUT_PATH    ${GASCOIGNE_LIBRARY_OUTPUT_PREFIX} CACHE PATH "Single output directory for building all libraries.")
+  SET(EXECUTABLE_OUTPUT_PATH ${GASCOIGNE_EXECUTABLE_OUTPUT_PREFIX} CACHE PATH "Single output directory for building all executables.")
+#
 ENDIF(USE_ARCH)
+#
 
 SET(CMAKE_CXX_FLAGS ${GASCOIGNE_CXX_FLAGS})
 ADD_DEFINITIONS(${GASCOIGNE_COMPILER_DEFINITIONS})

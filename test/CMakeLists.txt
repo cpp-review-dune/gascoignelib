@@ -2,3 +2,11 @@ LINK_LIBRARIES(${GASCOIGNE_LIBS})
 
 ADD_EXECUTABLE(Test1 main1.cc)
 ADD_EXECUTABLE(Test2 main2.cc)
+
+SET(_SRC ${GASCOIGNESTD_SOURCE_DIR}/test)
+ADD_CUSTOM_TARGET(COPY ALL cp ${_SRC}/*.param ${_SRC}/*.inp .)
+
+ENABLE_TESTING()
+ADD_TEST(test1 Test1)
+ADD_TEST(test2 Test1 test1.param)
+ADD_TEST(test3 Test2)

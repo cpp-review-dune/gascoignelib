@@ -8,26 +8,26 @@ SET(GASCOIGNE_STD "$ENV{HOME}/GascoigneStd")
 #
 #  Set the prefix of the executable and library output
 #  directory (e. g. $ENV{HOME}/local, /usr/local, ...).
-#  The executables will be inserted in the subdirectory
-#  /bin, the libraries in the subdirectory /lib
 #  If the switch USE_ARCH is turn ON, the subdirerctories for
 #  executables and libraries depend on the system architecture.
 #
-SET(GASCOIGNE_OUTPUT_PREFIX "$ENV{HOME}/local")
+SET(GASCOIGNE_LIBRARY_OUTPUT_PREFIX "$ENV{HOME}/local/lib")
+SET(GASCOIGNE_EXECUTABLE_OUTPUT_PREFIX ".")
+
 OPTION(USE_ARCH "Use archictecture specifc paths" OFF)
 
 #############################################
 #
 #  Set the flags used by the C++ compiler.
 #
-#SET(GASCOIGNE_CXX_FLAGS "-O3 -DNDEBUG")
+SET(GASCOIGNE_CXX_FLAGS "-O3")
 
 #############################################
 #
 #  Set -D define flags (e. g. -D_DEBUG or 
 #  -D__OLDCOMPILER__ for egcs).
 #
-#SET(GASCOIGNE_COMPILER_DEFINITIONS "")
+SET(GASCOIGNE_COMPILER_DEFINITIONS "")
 
 #############################################
 #
@@ -39,10 +39,4 @@ OPTION(UMFPACK_WITH_AMD "libamd is needed for new libumfpack" OFF)
 #
 #  Build shared libraries instead of static ones
 #
-OPTION(BUILD_SHARED_LIBS "Build shared libraries" ON )
-
-#############################################
-#
-#  Build all executable programs
-#
-OPTION(BUILD_EXECUTABLES "Build the executable" ON )
+OPTION(BUILD_SHARED_LIBS "Build shared libraries" ON)

@@ -1,11 +1,10 @@
 SET(NAVIERSTOKES2D_SRC
-  benchmarkdirichletdata.cc
   main1.cc 
-  problemdescriptor1.cc 
 )
 
-IF(BUILD_EXECUTABLES)
-  ADD_EXECUTABLE(NavierStokes2D ${NAVIERSTOKES2D_SRC})
-ENDIF(BUILD_EXECUTABLES)
+SET(_SRC ${GASCOIGNESTD_SOURCE_DIR}/Examples/NavierStokes2D)
+ADD_CUSTOM_TARGET(COPY ALL cp ${_SRC}/*.param ${_SRC}/*.inp .)
+
+ADD_EXECUTABLE(NavierStokes2D ${NAVIERSTOKES2D_SRC})
 
 
