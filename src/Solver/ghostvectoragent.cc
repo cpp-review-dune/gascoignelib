@@ -25,17 +25,12 @@ GhostVectorAgent::~GhostVectorAgent()
   
 /*-------------------------------------------------*/
 
-void GhostVectorAgent::Register(const BasicGhostVector& mg, const SolverInterface* S) 
+void GhostVectorAgent::Register(const VectorInterface& mg) 
 {
   const std::string& name = mg.GetName();
-  GhostVector g(S,name,mg.GetType());
-  g.SetNcomp(mg.GetNcomp());
+  VectorInterface g(name);
   iterator p = find(mg);
-  if(p!=end())
-    {
-      assert(p->first.GetSolver()==S);
-    }
-  else
+  if(p==end())
     {
       insert(std::make_pair(g,static_cast<GlobalVector*>(NULL)));
     }
@@ -43,7 +38,7 @@ void GhostVectorAgent::Register(const BasicGhostVector& mg, const SolverInterfac
   
 /*-------------------------------------------------*/
 
-void GhostVectorAgent::Delete(BasicGhostVector& mg) 
+void GhostVectorAgent::Delete(VectorInterface& mg) 
 {
   iterator p=find(mg);
   if (p!=end())
@@ -55,7 +50,7 @@ void GhostVectorAgent::Delete(BasicGhostVector& mg)
     
 /*-------------------------------------------------*/
   
-GlobalVector& GhostVectorAgent::operator()(const GhostVector& g) 
+GlobalVector& GhostVectorAgent::operator()(const VectorInterface& g) 
 {
   iterator p = find(g);
   if (p==end())

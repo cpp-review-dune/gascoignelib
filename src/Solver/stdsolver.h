@@ -114,12 +114,9 @@ class StdSolver : public virtual SolverInterface
 
   virtual void Rhs(GlobalVector& f, double d=1.) const;
 
-  virtual double ComputeFunctional(GlobalVector& f, const GlobalVector& u, const Functional* FP) const;
-    
   virtual void smooth(int niter, GlobalVector& x, const GlobalVector& y, GlobalVector& h) const;
   virtual void PermutateIlu(const GlobalVector& u) const;
   virtual void modify_ilu(IluInterface& I,int ncomp) const;
-  void Form(GlobalVector& y, const GlobalVector& x, double d) const;
   void AdjointForm(GlobalVector& y, const GlobalVector& x, double d) const;
 
   void MatrixResidual(GlobalVector& y, const GlobalVector& x, const GlobalVector& b) const;
@@ -133,6 +130,9 @@ class StdSolver : public virtual SolverInterface
   virtual void SetBoundaryVector(GlobalVector& f) const;
   virtual void SetBoundaryVectorZero(GlobalVector& f) const;
   virtual void SetBoundaryVectorStrong(GlobalVector& f, const BoundaryManager& BM, const DirichletData& DD) const;
+
+  void HNAverage   (const GlobalVector& x) const;
+  void HNZero      (const GlobalVector& x) const;
 
  public:
 
@@ -203,10 +203,10 @@ class StdSolver : public virtual SolverInterface
     
   void RegisterMatrix();
   void ResizeVector(GlobalVector* x, std::string type) const;
-  void RegisterVector(const BasicGhostVector& g);
+  void RegisterVector(const VectorInterface& g);
 
-        GlobalVector& GetGV(      BasicGhostVector& u) const { return _NGVA(u);}
-  const GlobalVector& GetGV(const BasicGhostVector& u) const { return _NGVA(u);}
+        GlobalVector& GetGV(      VectorInterface& u) const { return _NGVA(u);}
+  const GlobalVector& GetGV(const VectorInterface& u) const { return _NGVA(u);}
 
   //
   /// vector - hanging nodes
@@ -215,13 +215,11 @@ class StdSolver : public virtual SolverInterface
   bool distribute() const { return _distribute; }
   void SetDistribute(bool dist) { _distribute = dist; }
 
-  void HNAverage   (const BasicGhostVector& x) const;
-  void HNZero      (const BasicGhostVector& x) const;
-  void HNDistribute(BasicGhostVector& x) const;
-  void HNAverage   (const GlobalVector& x) const;
-  void HNZero      (const GlobalVector& x) const;
-  bool HNZeroCheck(const GlobalVector& x) const;
-  void HNDistribute(GlobalVector& x) const;
+  void HNAverage   (const VectorInterface& x) const;
+  void HNZero      (const VectorInterface& x) const;
+  void HNDistribute(VectorInterface& x) const;
+/*   bool HNZeroCheck(const GlobalVector& x) const; */
+/*   void HNDistribute(GlobalVector& x) const; */
   void HNAverageData() const;
   void HNZeroData() const;
 
@@ -229,85 +227,85 @@ class StdSolver : public virtual SolverInterface
   /// vector - io
   //
 
-  void Visu(const std::string& name, const BasicGhostVector& u, int i) const;
-  void Write(const BasicGhostVector& u, const std::string& filename) const;
-  void Read(BasicGhostVector& u, const std::string& filename) const;
+  void Visu(const std::string& name, const VectorInterface& u, int i) const;
+  void Write(const VectorInterface& u, const std::string& filename) const;
+  void Read(VectorInterface& u, const std::string& filename) const;
 
   //
   /// vector - interpolation
   //
 
-  void InterpolateSolution(BasicGhostVector& u, const GlobalVector& uold) const;
+  void InterpolateSolution(VectorInterface& u, const GlobalVector& uold) const;
 
   //
   /// vector - rhs (integration)
   //
 
-  void Rhs(BasicGhostVector& f, double d=1.) const;
+  void Rhs(VectorInterface& f, double d=1.) const;
 
   //
   /// vector - residual (integration)
   //
 
-  void Form(BasicGhostVector& y, const BasicGhostVector& x, double d) const;
+  void Form(VectorInterface& y, const VectorInterface& x, double d) const;
 
   //
   /// vector - boundary condition
   //
-  void SetBoundaryVector(BasicGhostVector& f) const;
-  void SetBoundaryVectorZero(BasicGhostVector& Gf) const;
-  void SetBoundaryVectorStrong(BasicGhostVector& f, const BoundaryManager& BM, const DirichletData& DD) const;
+  void SetBoundaryVector(VectorInterface& f) const;
+  void SetBoundaryVectorZero(VectorInterface& Gf) const;
+  void SetBoundaryVectorStrong(VectorInterface& f, const BoundaryManager& BM, const DirichletData& DD) const;
 
   //
   /// vector - linear algebra
   //
 
-  double NewtonNorm(const BasicGhostVector& u) const;
-  void residualgmres(BasicGhostVector& y, const BasicGhostVector& x, const BasicGhostVector& b) const;
-  void MatrixResidual(BasicGhostVector& y, const BasicGhostVector& x, const BasicGhostVector& b) const;
-  void vmult  (BasicGhostVector& y, const BasicGhostVector& x, double d) const;
-  void vmulteq(BasicGhostVector& y, const BasicGhostVector& x) const;
-  void smooth_pre(BasicGhostVector& y, const BasicGhostVector& x, BasicGhostVector& h) const;
-  void smooth_exact(BasicGhostVector& y, const BasicGhostVector& x, BasicGhostVector& h) const;
-  void smooth_post(BasicGhostVector& y, const BasicGhostVector& x, BasicGhostVector& h) const;
-  void Zero(BasicGhostVector& dst) const;
+  double NewtonNorm(const VectorInterface& u) const;
+  void residualgmres(VectorInterface& y, const VectorInterface& x, const VectorInterface& b) const;
+  void MatrixResidual(VectorInterface& y, const VectorInterface& x, const VectorInterface& b) const;
+  void vmult  (VectorInterface& y, const VectorInterface& x, double d) const;
+  void vmulteq(VectorInterface& y, const VectorInterface& x) const;
+  void smooth_pre(VectorInterface& y, const VectorInterface& x, VectorInterface& h) const;
+  void smooth_exact(VectorInterface& y, const VectorInterface& x, VectorInterface& h) const;
+  void smooth_post(VectorInterface& y, const VectorInterface& x, VectorInterface& h) const;
+  void Zero(VectorInterface& dst) const;
 
   //
   /// vector - additional
   //
 
-  void SubtractMean(BasicGhostVector& x) const;
-  void SubtractMeanAlgebraic(BasicGhostVector& x) const;
+  void SubtractMean(VectorInterface& x) const;
+  void SubtractMeanAlgebraic(VectorInterface& x) const;
 
   //
   /// vector - matrix
   //
 
-  void AssembleMatrix(const BasicGhostVector& u, double d);
+  void AssembleMatrix(const VectorInterface& u, double d);
   void DirichletMatrix() const;
   void MatrixZero() const;
-  void ComputeIlu(const BasicGhostVector& u) const;
+  void ComputeIlu(const VectorInterface& u) const;
   void ComputeIlu() const;
-  void AssembleDualMatrix(const BasicGhostVector& gu, double d);
+  void AssembleDualMatrix(const VectorInterface& gu, double d);
 
   //
   /// vector - "postprocessing"
   //
 
-  void ComputeError(const BasicGhostVector& u, GlobalVector& err) const;
-  double ComputeFunctional(BasicGhostVector& f, const BasicGhostVector& u, const Functional* FP) const;
+  void ComputeError(const VectorInterface& u, GlobalVector& err) const;
+  double ComputeFunctional(VectorInterface& f, const VectorInterface& u, const Functional* FP) const;
 
   virtual double ComputeBoundaryFunctional(GlobalVector& f, const GlobalVector& u, GlobalVector& z, const BoundaryFunctional* FP) const;
   virtual double ComputeDomainFunctional(GlobalVector& f, const GlobalVector& u, GlobalVector& z, const DomainFunctional* FP) const;
   virtual double ComputePointFunctional(GlobalVector& f, const GlobalVector& u, GlobalVector& z, const PointFunctional* NFP) const;
-  virtual double ComputeResidualFunctional(GlobalVector& f, const GlobalVector& u, GlobalVector& z, const ResidualFunctional* FP) const;
+  virtual double ComputeResidualFunctional(VectorInterface& f, const VectorInterface& u, GlobalVector& z, const ResidualFunctional* FP) const;
 
   //
   /// vector - initialize
   //
 
-  void BoundaryInit(BasicGhostVector& u) const;
-  void SolutionInit(BasicGhostVector& u) const;
+  void BoundaryInit(VectorInterface& u) const;
+  void SolutionInit(VectorInterface& u) const;
 
   //
   /// HierarchicalMesh
@@ -319,11 +317,11 @@ class StdSolver : public virtual SolverInterface
   //
   /// for gmres
   //
-  virtual void MemoryVector(BasicGhostVector& p);
-  virtual void DeleteVector(BasicGhostVector* p) const;
-  virtual double ScalarProduct(const BasicGhostVector& y, const BasicGhostVector& x) const;
-  virtual void Equ(BasicGhostVector& dst, double s, const BasicGhostVector& src) const;
-  virtual void Add(BasicGhostVector& dst, double s, const BasicGhostVector& src) const;
+  virtual void MemoryVector(VectorInterface& p);
+  virtual void DeleteVector(VectorInterface* p) const;
+  virtual double ScalarProduct(const VectorInterface& y, const VectorInterface& x) const;
+  virtual void Equ(VectorInterface& dst, double s, const VectorInterface& src) const;
+  virtual void Add(VectorInterface& dst, double s, const VectorInterface& src) const;
 };
 }
 

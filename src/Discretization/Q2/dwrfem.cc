@@ -19,6 +19,7 @@ void DwrFem2d::BasicInit(const ParamFile*  paramfile)
 {
   assert(PatchDiscretization::GetIntegrator()==NULL);
   PatchDiscretization::GetIntegratorPointer() =  new IntegratorQ1Q2<2>;
+  assert(PatchDiscretization::GetIntegrator());
 
   GetIntegratorPointer()->BasicInit();
 

@@ -13,7 +13,7 @@
 #include  "meshinterface.h"
 #include  "mginterpolatorinterface.h"
 #include  "meshtransferinterface.h"
-#include  "basicghostvector.h"
+#include  "vectorinterface.h"
 #include  "paramfile.h"
 
 
@@ -83,9 +83,9 @@ namespace Gascoigne
       /// vector - manamgement
       //
       virtual void ResizeVector(GlobalVector* x, std::string type) const=0;
-      virtual void RegisterVector(const BasicGhostVector& g)=0;
-      virtual GlobalVector& GetGV(BasicGhostVector& u) const=0;
-      virtual const GlobalVector& GetGV(const BasicGhostVector& u) const=0;
+      virtual void RegisterVector(const VectorInterface& g)=0;
+      virtual GlobalVector& GetGV(VectorInterface& u) const=0;
+      virtual const GlobalVector& GetGV(const VectorInterface& u) const=0;
 
       //
       /// vector - hanging nodes
@@ -93,46 +93,46 @@ namespace Gascoigne
       virtual bool distribute() const=0;
       virtual void SetDistribute(bool dist)=0;
 
-      virtual void HNAverage   (const BasicGhostVector& x) const=0;
-      virtual void HNZero      (const BasicGhostVector& x) const=0;
-      virtual void HNDistribute(BasicGhostVector& x) const=0;
+      virtual void HNAverage   (const VectorInterface& x) const=0;
+      virtual void HNZero      (const VectorInterface& x) const=0;
+      virtual void HNDistribute(VectorInterface& x) const=0;
 
-      virtual void HNAverage   (const GlobalVector& x) const=0;
-      virtual void HNZero      (const GlobalVector& x) const=0;
-      virtual bool HNZeroCheck(const GlobalVector& x) const=0;
-      virtual void HNDistribute(GlobalVector& x) const=0;
+/*       virtual void HNAverage   (const GlobalVector& x) const=0; */
+/*       virtual void HNZero      (const GlobalVector& x) const=0; */
+/*       virtual bool HNZeroCheck(const GlobalVector& x) const=0; */
+/*       virtual void HNDistribute(GlobalVector& x) const=0; */
       virtual void HNAverageData() const=0;
       virtual void HNZeroData() const=0;
 
       //
       /// vector - io
       //
-      virtual void Visu(const std::string& name, const BasicGhostVector& u, int i) const=0;
-      virtual void Write(const BasicGhostVector& u, const std::string& filename) const=0;
-      virtual void Read(BasicGhostVector& u, const std::string& filename) const=0;
+      virtual void Visu(const std::string& name, const VectorInterface& u, int i) const=0;
+      virtual void Write(const VectorInterface& u, const std::string& filename) const=0;
+      virtual void Read(VectorInterface& u, const std::string& filename) const=0;
 
       //
       /// vector - interpolation
       //
-      virtual void InterpolateSolution(BasicGhostVector& u, const GlobalVector& uold) const=0;
+      virtual void InterpolateSolution(VectorInterface& u, const GlobalVector& uold) const=0;
 
       //
       /// vector - rhs (integration)
       //
-      virtual void Rhs(BasicGhostVector& f, double d=1.) const=0;
-      virtual void TimeRhsOperator(BasicGhostVector& f, const BasicGhostVector& u) const {
+      virtual void Rhs(VectorInterface& f, double d=1.) const=0;
+      virtual void TimeRhsOperator(VectorInterface& f, const VectorInterface& u) const {
         std::cerr << "\"SolverInterface::TimeRhsOperator\" not written!" << std::endl;
         abort();
       }
-      virtual void TimeRhs(int k, BasicGhostVector& f) const {
+      virtual void TimeRhs(int k, VectorInterface& f) const {
         std::cerr << "\"SolverInterface::TimeRhs\" not written!" << std::endl;
         abort();
       }
-      virtual void InitialCondition(BasicGhostVector& f, double d=1.) const {
+      virtual void InitialCondition(VectorInterface& f, double d=1.) const {
         std::cerr << "\"SolverInterface::IC\" not written!" << std::endl;
         abort();
       }
-      virtual void L2Projection(BasicGhostVector& u)  {
+      virtual void L2Projection(VectorInterface& u)  {
         std::cerr << "\"SolverInterface::L2Projection\" not written!" << std::endl;
         abort();
       }
@@ -140,56 +140,56 @@ namespace Gascoigne
       //
       /// vector - residual (integration)
       //
-      virtual void Form(BasicGhostVector& y, const BasicGhostVector& x, double d) const=0;
+      virtual void Form(VectorInterface& y, const VectorInterface& x, double d) const=0;
       virtual void AdjointForm(GlobalVector& y, const GlobalVector& x, double d) const { assert(0);}
 
       //
       /// vector - boundary condition
       //
-      virtual void SetBoundaryVector(BasicGhostVector& f) const=0;
-      virtual void SetBoundaryVectorZero(BasicGhostVector& f) const=0;
-      virtual void SetBoundaryVectorStrong(BasicGhostVector& f, const BoundaryManager& BM, const DirichletData& DD) const=0;
+      virtual void SetBoundaryVector(VectorInterface& f) const=0;
+      virtual void SetBoundaryVectorZero(VectorInterface& f) const=0;
+      virtual void SetBoundaryVectorStrong(VectorInterface& f, const BoundaryManager& BM, const DirichletData& DD) const=0;
   
       //
       /// vector - linear algebra
       //
-      virtual double NewtonNorm(const BasicGhostVector& u) const=0;
+      virtual double NewtonNorm(const VectorInterface& u) const=0;
 
-      virtual void residualgmres(BasicGhostVector& y, const BasicGhostVector& x, const BasicGhostVector& b) const=0;
-      virtual void MatrixResidual(BasicGhostVector& y, const BasicGhostVector& x, const BasicGhostVector& b) const=0;
-      virtual void vmult(BasicGhostVector& y, const BasicGhostVector& x, double d) const=0;
-      virtual void vmulteq(BasicGhostVector& y, const BasicGhostVector& x) const=0;
-      virtual void smooth_pre(BasicGhostVector& y, const BasicGhostVector& x, BasicGhostVector& h) const=0;
-      virtual void smooth_exact(BasicGhostVector& y, const BasicGhostVector& x, BasicGhostVector& h) const=0;
-      virtual void smooth_post(BasicGhostVector& y, const BasicGhostVector& x, BasicGhostVector& h) const=0;
+      virtual void residualgmres(VectorInterface& y, const VectorInterface& x, const VectorInterface& b) const=0;
+      virtual void MatrixResidual(VectorInterface& y, const VectorInterface& x, const VectorInterface& b) const=0;
+      virtual void vmult(VectorInterface& y, const VectorInterface& x, double d) const=0;
+      virtual void vmulteq(VectorInterface& y, const VectorInterface& x) const=0;
+      virtual void smooth_pre(VectorInterface& y, const VectorInterface& x, VectorInterface& h) const=0;
+      virtual void smooth_exact(VectorInterface& y, const VectorInterface& x, VectorInterface& h) const=0;
+      virtual void smooth_post(VectorInterface& y, const VectorInterface& x, VectorInterface& h) const=0;
 
       //
       /// vector - additional
       //
-      virtual void SubtractMean(BasicGhostVector& x) const=0;
-      virtual void SubtractMeanAlgebraic(BasicGhostVector& x) const=0;
+      virtual void SubtractMean(VectorInterface& x) const=0;
+      virtual void SubtractMeanAlgebraic(VectorInterface& x) const=0;
 
       //
       /// vector - matrix
       //
-      virtual void AssembleMatrix(const BasicGhostVector& u, double d=1.)=0;
+      virtual void AssembleMatrix(const VectorInterface& u, double d=1.)=0;
       virtual void DirichletMatrix() const=0;
       virtual void MatrixZero() const=0;
-      virtual void ComputeIlu(const BasicGhostVector& u) const=0;
+      virtual void ComputeIlu(const VectorInterface& u) const=0;
       virtual void ComputeIlu() const=0;
-      virtual void AssembleDualMatrix(const BasicGhostVector& gu, double d)=0;
+      virtual void AssembleDualMatrix(const VectorInterface& gu, double d)=0;
 
       //
       /// vector - "postprocessing"
       //
-      virtual void ComputeError(const BasicGhostVector& u, GlobalVector& err) const=0;
-      virtual double ComputeFunctional(BasicGhostVector& f, const BasicGhostVector& u, const Functional* FP) const=0;
+      virtual void ComputeError(const VectorInterface& u, GlobalVector& err) const=0;
+      virtual double ComputeFunctional(VectorInterface& f, const VectorInterface& u, const Functional* FP) const=0;
 
       //
       /// vector - initialize
       //
-      virtual void BoundaryInit(BasicGhostVector& u) const=0;
-      virtual void SolutionInit(BasicGhostVector& u) const=0;
+      virtual void BoundaryInit(VectorInterface& u) const=0;
+      virtual void SolutionInit(VectorInterface& u) const=0;
 };
 }
 #endif

@@ -34,7 +34,7 @@ void StdTimeLoop::BasicInit(const ParamFile* paramfile)
 
 /*-------------------------------------------------*/
 
-string StdTimeLoop::SolveTimePrimal(MultiLevelGhostVector& u, MultiLevelGhostVector& f)
+string StdTimeLoop::SolveTimePrimal(VectorInterface& u, VectorInterface& f)
 {
   assert( GetMultiLevelSolver()->GetSolver()->GetGV(u).n()==GetMultiLevelSolver()->GetSolver()->GetGV(f).n() );
 
@@ -50,11 +50,9 @@ string StdTimeLoop::SolveTimePrimal(MultiLevelGhostVector& u, MultiLevelGhostVec
 
 void StdTimeLoop::adaptive_run(const ProblemDescriptorInterface* PD)
 {
-  MultiLevelGhostVector u("u"), f("f");
+  VectorInterface u("u"), f("f");
   GlobalVector ualt;
   
-  u.SetMultiLevelSolver(GetMultiLevelSolver());
-  f.SetMultiLevelSolver(GetMultiLevelSolver());
   GetMultiLevelSolver()->RegisterVector(u);
   GetMultiLevelSolver()->RegisterVector(f);
   
@@ -84,7 +82,7 @@ void StdTimeLoop::adaptive_run(const ProblemDescriptorInterface* PD)
       //
       // rhs fuer alten Zeitschritt
       //
-      f.zero();
+      GetMultiLevelSolver()->GetSolver()->GetGV(f).zero();
       GetMultiLevelSolver()->GetSolver()->TimeRhsOperator(f,u);
       GetMultiLevelSolver()->GetSolver()->TimeRhs(1,f);
       
@@ -129,12 +127,12 @@ void StdTimeLoop::TimeInfoBroadcast()
 
 /*-------------------------------------------------*/
 
-void StdTimeLoop::InitSolution(MultiLevelGhostVector& u)
+void StdTimeLoop::InitSolution(VectorInterface& u)
 {
   if (_initial=="analytic") 
     {
       GetMultiLevelSolver()->GetSolver()->L2Projection(u);
-      GetMultiLevelSolver()->GetSolver()->Write(u.finest(),_s_resultsdir+"/initialu");
+      GetMultiLevelSolver()->GetSolver()->Write(u,_s_resultsdir+"/initialu");
     }
   else
     {
@@ -146,9 +144,7 @@ void StdTimeLoop::InitSolution(MultiLevelGhostVector& u)
 
 void StdTimeLoop::run(const ProblemDescriptorInterface* PD)
 {
-  MultiLevelGhostVector u("u"), f("f");
-  u.SetMultiLevelSolver(GetMultiLevelSolver());
-  f.SetMultiLevelSolver(GetMultiLevelSolver());
+  VectorInterface u("u"), f("f");
   GetMultiLevelSolver()->RegisterVector(u);
   GetMultiLevelSolver()->RegisterVector(f);
   
@@ -167,7 +163,7 @@ void StdTimeLoop::run(const ProblemDescriptorInterface* PD)
   InitSolution(u);
   
   GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(u);
-  GetMultiLevelSolver()->GetSolver()->Visu(_s_resultsdir+"/solve",u.finest(),0);
+  GetMultiLevelSolver()->GetSolver()->Visu(_s_resultsdir+"/solve",u,0);
 
   for (_iter=1; _iter<=_niter; _iter++)
     {
@@ -178,7 +174,7 @@ void StdTimeLoop::run(const ProblemDescriptorInterface* PD)
       //
       // rhs fuer alten Zeitschritt
       //
-      f.zero();
+      GetMultiLevelSolver()->GetSolver()->GetGV(f).zero();
       GetMultiLevelSolver()->GetSolver()->TimeRhsOperator(f,u);
       GetMultiLevelSolver()->GetSolver()->TimeRhs(1,f);
       

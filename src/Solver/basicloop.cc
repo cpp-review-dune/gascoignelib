@@ -132,13 +132,12 @@ void BasicLoop::PrintMeshInformation(int outputlevel) const
 
 /*-------------------------------------------------------*/
 
-void BasicLoop::Output(const MultiLevelGhostVector& u, string name) const
+void BasicLoop::Output(const VectorInterface& u, string name) const
 {
   if(_writeVtk)
   {
-    GetMultiLevelSolver()->GetSolver()->Visu(name,u.finest(),_iter);
+    GetMultiLevelSolver()->GetSolver()->Visu(name,u,_iter);
   }
-  // GetMultiLevelSolver()->GetSolver()->VisuGrid(name,_iter);
   if(_writeBupGup)
   {   
     WriteMeshAndSolution(name,u);
@@ -151,13 +150,13 @@ void BasicLoop::Output(const MultiLevelGhostVector& u, string name) const
 
 /*-------------------------------------------------*/
 
-void BasicLoop::WriteMeshAndSolution(const string& filename, const MultiLevelGhostVector& u) const
+void BasicLoop::WriteMeshAndSolution(const string& filename, const VectorInterface& u) const
 {
   string name;
   name = filename;
 //   name = filename + "_value";
   compose_name(name,_iter);
-  GetMultiLevelSolver()->GetSolver()->Write(u.finest(),name);
+  GetMultiLevelSolver()->GetSolver()->Write(u,name);
   cout << "[" << name << ".bup]";
 
 //   name = filename + "_mesh";
@@ -168,12 +167,12 @@ void BasicLoop::WriteMeshAndSolution(const string& filename, const MultiLevelGho
 
 /*-------------------------------------------------*/
 
-void BasicLoop::WriteSolution(const MultiLevelGhostVector& u) const
+void BasicLoop::WriteSolution(const VectorInterface& u) const
 {
   _clock_write.start();
   string filename = _s_resultsdir+"/solution";
   compose_name(filename,_iter);
-  GetMultiLevelSolver()->GetSolver()->Write(u.finest(),filename);
+  GetMultiLevelSolver()->GetSolver()->Write(u,filename);
   cout << "[" << filename << ".bup]" << endl;
   _clock_write.stop();
 }
@@ -204,9 +203,9 @@ void BasicLoop::WriteMeshInp(const string& name) const
 
 /*-------------------------------------------------*/
 
-void BasicLoop::InitSolution(MultiLevelGhostVector& u)
+void BasicLoop::InitSolution(VectorInterface& u)
 {
-  u.zero();
+  GetMultiLevelSolver()->GetSolver()->GetGV(u).zero();
 
   if      (_initial=="analytic") GetMultiLevelSolver()->GetSolver()->SolutionInit(u);
   else if (_initial=="file")     GetMultiLevelSolver()->GetSolver()->Read(u,_reload);
@@ -223,15 +222,15 @@ void BasicLoop::InitSolution(MultiLevelGhostVector& u)
 
 /*-------------------------------------------------*/
 
-string BasicLoop::Solve(MultiLevelGhostVector& u, MultiLevelGhostVector& f, string name)
+string BasicLoop::Solve(VectorInterface& u, VectorInterface& f, string name)
 {
   _clock_solve.start();
 
-  f.zero();
-  GetMultiLevelSolver()->GetSolver()->Rhs(f.finest());
+  GetMultiLevelSolver()->GetSolver()->GetGV(f).zero();
+  GetMultiLevelSolver()->GetSolver()->Rhs(f);
 
-  GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(f.finest());
-  GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(u.finest());
+  GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(f);
+  GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(u);
 
   string status = GetMultiLevelSolver()->Solve(u,f,GetSolverInfos()->GetNLInfo());
   _clock_solve.stop();
@@ -245,7 +244,7 @@ string BasicLoop::Solve(MultiLevelGhostVector& u, MultiLevelGhostVector& f, stri
 
 /*-------------------------------------------------*/
 
-void BasicLoop::ComputeGlobalErrors(const MultiLevelGhostVector& u)
+void BasicLoop::ComputeGlobalErrors(const VectorInterface& u)
 {
   GetMultiLevelSolver()->GetSolver()->ComputeError(u,_GlobalErr);
   if (_GlobalErr.size()>0)
@@ -257,7 +256,7 @@ void BasicLoop::ComputeGlobalErrors(const MultiLevelGhostVector& u)
 
 /*-------------------------------------------------------*/
 
-void BasicLoop::CopyVector(GlobalVector& dst, MultiLevelGhostVector& src)
+void BasicLoop::CopyVector(GlobalVector& dst, VectorInterface& src)
 {
   GetMultiLevelSolver()->GetSolver()->HNAverage(src);
   
@@ -274,7 +273,7 @@ void BasicLoop::CopyVector(GlobalVector& dst, MultiLevelGhostVector& src)
 
 /*-------------------------------------------------*/
 
-void BasicLoop::CopyVector(MultiLevelGhostVector& dst, GlobalVector& src)
+void BasicLoop::CopyVector(VectorInterface& dst, GlobalVector& src)
 {
   int nn = src.n();
   int cc = src.ncomp();
@@ -288,9 +287,7 @@ void BasicLoop::CopyVector(MultiLevelGhostVector& dst, GlobalVector& src)
 
 void BasicLoop::run(const ProblemDescriptorInterface* PD)
 {
-  MultiLevelGhostVector u("u"), f("f");
-  u.SetMultiLevelSolver(GetMultiLevelSolver());
-  f.SetMultiLevelSolver(GetMultiLevelSolver());
+  VectorInterface u("u"), f("f");
   GlobalVector  ualt;
 
   GetMultiLevelSolver()->RegisterVector(u);

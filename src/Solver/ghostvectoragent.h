@@ -3,8 +3,7 @@
 
 #include  <string>
 #include  "gascoigne.h"
-#include  "ghostvector.h"
-
+#include  "vectorinterface.h"
 
 namespace Gascoigne
 {
@@ -13,17 +12,16 @@ namespace Gascoigne
 ////
 ////@brief
 ////  ... comments GhostVectorAgent
-
 ////
 ////
 /////////////////////////////////////////////
 
-class GhostVectorAgent : public std::map<GhostVector,GlobalVector*>
+class GhostVectorAgent : public std::map<VectorInterface,GlobalVector*>
 {
 public:
 
-  typedef std::map<GhostVector,GlobalVector*>::const_iterator const_iterator;
-  typedef std::map<GhostVector,GlobalVector*>::iterator       iterator;
+  typedef std::map<VectorInterface,GlobalVector*>::const_iterator const_iterator;
+  typedef std::map<VectorInterface,GlobalVector*>::iterator       iterator;
 
 //
 ////  Con(De)structor 
@@ -32,10 +30,10 @@ public:
   GhostVectorAgent();
   ~GhostVectorAgent();
 
-  void Register(const BasicGhostVector& mg, const SolverInterface* S);
-  void Delete(BasicGhostVector& mg);
+  void Register(const VectorInterface& mg);
+  void Delete(VectorInterface& mg);
 
-  GlobalVector& operator()(const GhostVector& g);
+  GlobalVector& operator()(const VectorInterface& g);
 };
 }
 

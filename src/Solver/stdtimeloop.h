@@ -14,11 +14,11 @@ class StdTimeLoop : public virtual StdLoop
 protected:
 
   TimeInfo    _timeinfo;
-  virtual std::string SolveTimePrimal(MultiLevelGhostVector& u, MultiLevelGhostVector& f);
+  virtual std::string SolveTimePrimal(VectorInterface& u, VectorInterface& f);
 
   void TimeInfoBroadcast();
-  void InitSolution(MultiLevelGhostVector& u);
-  void InitSolution(MultiLevelGhostVector& u, MultiLevelGhostVector& f);
+  void InitSolution(VectorInterface& u);
+  void InitSolution(VectorInterface& u, VectorInterface& f);
 
 public:
 

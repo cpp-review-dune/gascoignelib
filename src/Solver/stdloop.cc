@@ -59,7 +59,7 @@ void StdLoop::BasicInit(const ParamFile* paramfile)
 
 /*-------------------------------------------------------*/
 
-DoubleVector StdLoop::ComputeFunctionals(MultiLevelGhostVector& f, MultiLevelGhostVector& u, const vector<const Functional*>& J) const
+DoubleVector StdLoop::ComputeFunctionals(VectorInterface& f, VectorInterface& u, const vector<const Functional*>& J) const
 {
   int n = J.size(); 
   DoubleVector j(n,0.);
@@ -107,7 +107,7 @@ DoubleVector StdLoop::GetExactValues() const
 
 /*-------------------------------------------------*/
 
-DoubleVector StdLoop::Functionals(MultiLevelGhostVector& u, MultiLevelGhostVector& f)
+DoubleVector StdLoop::Functionals(VectorInterface& u, VectorInterface& f)
 {
   DoubleVector J  = ComputeFunctionals(f,u,_FV);
   _JErr.resize(J.size());
@@ -138,7 +138,7 @@ DoubleVector StdLoop::Functionals(MultiLevelGhostVector& u, MultiLevelGhostVecto
 
 /*-------------------------------------------------*/
 
-double StdLoop::Estimator(DoubleVector& eta, MultiLevelGhostVector& u, MultiLevelGhostVector& f)
+double StdLoop::Estimator(DoubleVector& eta, VectorInterface& u, VectorInterface& f)
 {
   double est = 0.;
   if (_estimator=="energy")
@@ -310,7 +310,7 @@ void StdLoop::AdaptMesh(const DoubleVector& eta)
 
 void StdLoop::run(const ProblemDescriptorInterface* PD)
 {
-  MultiLevelGhostVector u("u"), f("f");
+  VectorInterface u("u"), f("f");
   GlobalVector  ualt;
 
   GetMultiLevelSolver()->RegisterVector(u);

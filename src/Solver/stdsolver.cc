@@ -194,14 +194,22 @@ void StdSolver::BasicInit(int level, const ParamFile* paramfile, const MeshInter
   _paramfile = paramfile;
   _mylevel=level;
 
+  string xxx;
+
   DataFormatHandler DFH;
   DFH.insert("matrixtype" , &_matrixtype);
   DFH.insert("ndirect"    , &_ndirect);
   DFH.insert("discname", &_discname);
+  DFH.insert("disc", &xxx, "void");
   FileScanner FS(DFH);
   FS.NoComplain();
   FS.readfile(_paramfile,"Solver");
 
+  if(xxx!="void")
+    {
+      cout << "Expression 'disc' in ParamFile not longer valid !" << endl;
+      abort();
+    }
   if(MP->nnodes()<_ndirect) 
     {
       _directsolver=1;
@@ -356,9 +364,9 @@ void StdSolver::ReInitMatrix()
 
 /*-------------------------------------------------------*/
 
-void StdSolver::RegisterVector(const BasicGhostVector& g) 
+void StdSolver::RegisterVector(const VectorInterface& g) 
 {
-  _NGVA.Register(g,this);
+  _NGVA.Register(g);
 }
 
 /*-------------------------------------------------------*/
@@ -366,32 +374,30 @@ void StdSolver::RegisterVector(const BasicGhostVector& g)
 void StdSolver::ReInitVector()
 {
   int ncomp = GetProblemDescriptor()->GetEquation()->GetNcomp();
+  int n     = GetDiscretization()->n();
   
   for (GhostVectorAgent::iterator p=_NGVA.begin(); p!=_NGVA.end(); p++)
     {
-      const GhostVector& gv = p->first;
-      assert(gv.GetSolver()==this);
+      const VectorInterface& gv = p->first;
       if (p->second==NULL) 
         {
           p->second = new GlobalVector;
-	  
-	  if (gv.GetNcomp()==-1) gv.SetNcomp(ncomp);
-          p->second->ncomp() = gv.GetNcomp();
+	  p->second->ncomp() = ncomp;
         }
-      ResizeVector(p->second,gv.GetType());
+      p->second->reservesize(n);
     }
 }
 
 /*-------------------------------------------------------*/
 
-void StdSolver::Zero(BasicGhostVector& dst) const
+void StdSolver::Zero(VectorInterface& dst) const
 {
   GetGV(dst).zero();
 }
 
 /*-----------------------------------------*/
 
-double StdSolver::NewtonNorm(const BasicGhostVector& u) const
+double StdSolver::NewtonNorm(const VectorInterface& u) const
 {
   return GetGV(u).norm_l8();
 }
@@ -415,14 +421,14 @@ void StdSolver::HNZero(const GlobalVector& x) const {
   GlobalVector& v = const_cast<GlobalVector&>(x);
   GetDiscretization()->HNZero(v);
 }
-bool StdSolver::HNZeroCheck(const GlobalVector& x) const {
-  assert(GetDiscretization()->n()==x.n());
-  GlobalVector& v = const_cast<GlobalVector&>(x);
-  return GetDiscretization()->HNZeroCheck(v);
-}
-void StdSolver::HNDistribute(GlobalVector& x) const {
-  GetDiscretization()->HNDistribute(x);
-}
+// bool StdSolver::HNZeroCheck(const GlobalVector& x) const {
+//   assert(GetDiscretization()->n()==x.n());
+//   GlobalVector& v = const_cast<GlobalVector&>(x);
+//   return GetDiscretization()->HNZeroCheck(v);
+// }
+// void StdSolver::HNDistribute(GlobalVector& x) const {
+//   GetDiscretization()->HNDistribute(x);
+// }
 void StdSolver::HNAverageData() const {
   GetDiscretization()->HNAverageData();
 }
@@ -430,19 +436,19 @@ void StdSolver::HNZeroData() const {
   GetDiscretization()->HNZeroData();
 }
 
-void StdSolver::HNAverage(const BasicGhostVector& x) const {
-  HNAverage(GetGV(x));
+void StdSolver::HNAverage(const VectorInterface& x) const {
+  GetDiscretization()->HNAverage(const_cast<GlobalVector&>(GetGV(x)));
 }
-void StdSolver::HNZero(const BasicGhostVector& x) const {
-  HNZero(GetGV(x));
+void StdSolver::HNZero(const VectorInterface& x) const {
+  GetDiscretization()->HNZero(const_cast<GlobalVector&>(GetGV(x)));;
 }
-void StdSolver::HNDistribute(BasicGhostVector& x) const {
-  HNDistribute(GetGV(x));
+void StdSolver::HNDistribute(VectorInterface& x) const {
+  GetDiscretization()->HNDistribute(GetGV(x));
 }
 
 /*-------------------------------------------------------*/
 
-void StdSolver::InterpolateSolution(BasicGhostVector& gu, const GlobalVector& uold) const
+void StdSolver::InterpolateSolution(VectorInterface& gu, const GlobalVector& uold) const
 {
   GlobalVector& u = GetGV(gu);
 
@@ -472,7 +478,7 @@ void StdSolver::vmulteq(GlobalVector& y, const GlobalVector& x, double d) const
 
 /*-----------------------------------------*/
 
-void StdSolver::residualgmres(BasicGhostVector& gy, const BasicGhostVector& gx, const BasicGhostVector& gb) const
+void StdSolver::residualgmres(VectorInterface& gy, const VectorInterface& gx, const VectorInterface& gb) const
 {
   GlobalVector& y = GetGV(gy);
   const GlobalVector& x = GetGV(gx);
@@ -485,21 +491,21 @@ void StdSolver::residualgmres(BasicGhostVector& gy, const BasicGhostVector& gx, 
 
 /*-----------------------------------------*/
 
-void StdSolver::vmult(BasicGhostVector& gy, const BasicGhostVector& gx, double d) const
+void StdSolver::vmult(VectorInterface& gy, const VectorInterface& gx, double d) const
 {
   vmult(GetGV(gy),GetGV(gx),d);
 }
 
 /*-----------------------------------------*/
 
-void StdSolver::vmulteq(BasicGhostVector& gy, const BasicGhostVector& gx) const
+void StdSolver::vmulteq(VectorInterface& gy, const VectorInterface& gx) const
 {
   vmulteq(GetGV(gy),GetGV(gx),1.);
 }
 
 /*-----------------------------------------*/
 
-void StdSolver::MatrixResidual(BasicGhostVector& gy, const BasicGhostVector& gx, const BasicGhostVector& gb) const
+void StdSolver::MatrixResidual(VectorInterface& gy, const VectorInterface& gx, const VectorInterface& gb) const
 {
   MatrixResidual(GetGV(gy),GetGV(gx),GetGV(gb));
 }
@@ -515,7 +521,7 @@ void StdSolver::MatrixResidual(GlobalVector& y, const GlobalVector& x, const Glo
 
 /*-------------------------------------------------------*/
 
-void StdSolver::SetBoundaryVectorZero(BasicGhostVector& gf) const
+void StdSolver::SetBoundaryVectorZero(VectorInterface& gf) const
 {
   SetBoundaryVectorZero(GetGV(gf));
 }
@@ -537,7 +543,7 @@ void StdSolver::SetBoundaryVectorZero(GlobalVector& f) const
 
 /*-------------------------------------------------------*/
 
-void StdSolver::SetBoundaryVector(BasicGhostVector& f) const
+void StdSolver::SetBoundaryVector(VectorInterface& f) const
 {
   SetBoundaryVector(GetGV(f));
 }
@@ -562,7 +568,7 @@ void StdSolver::SetBoundaryVector(GlobalVector& f) const
 
 /*-------------------------------------------------------*/
 
-void StdSolver::SetBoundaryVectorStrong(BasicGhostVector& f, const BoundaryManager& BM, const DirichletData& DD) const
+void StdSolver::SetBoundaryVectorStrong(VectorInterface& f, const BoundaryManager& BM, const DirichletData& DD) const
 {
   SetBoundaryVectorStrong(GetGV(f),BM,DD);
 }
@@ -607,7 +613,7 @@ void StdSolver::smooth(int niter, GlobalVector& x, const GlobalVector& y, Global
 
 /*-------------------------------------------------------*/
 
-void StdSolver::smooth_pre(BasicGhostVector& x, const BasicGhostVector& y, BasicGhostVector& help) const
+void StdSolver::smooth_pre(VectorInterface& x, const VectorInterface& y, VectorInterface& help) const
 {
   int niter = _Dat.GetIterPre();
   smooth(niter,GetGV(x),GetGV(y),GetGV(help));
@@ -615,7 +621,7 @@ void StdSolver::smooth_pre(BasicGhostVector& x, const BasicGhostVector& y, Basic
 
 /*-------------------------------------------------------*/
 
-void StdSolver::smooth_exact(BasicGhostVector& x, const BasicGhostVector& y, BasicGhostVector& help) const
+void StdSolver::smooth_exact(VectorInterface& x, const VectorInterface& y, VectorInterface& help) const
 {
 #ifdef __WITH_UMFPACK__
   if(_directsolver)
@@ -636,7 +642,7 @@ void StdSolver::smooth_exact(BasicGhostVector& x, const BasicGhostVector& y, Bas
 
 /*-------------------------------------------------------*/
 
-void StdSolver::smooth_post(BasicGhostVector& x, const BasicGhostVector& y, BasicGhostVector& help) const
+void StdSolver::smooth_post(VectorInterface& x, const VectorInterface& y, VectorInterface& help) const
 {
   int niter = _Dat.GetIterPost();
   smooth(niter,GetGV(x),GetGV(y),GetGV(help));
@@ -644,38 +650,31 @@ void StdSolver::smooth_post(BasicGhostVector& x, const BasicGhostVector& y, Basi
 
 /*-------------------------------------------------------*/
 
-void StdSolver::Form(BasicGhostVector& gy, const BasicGhostVector& gx, double d) const
-{
-  Form(GetGV(gy),GetGV(gx),d);
-}
-
-/*-------------------------------------------------------*/
-
-void StdSolver::Form(GlobalVector& y, const GlobalVector& x, double d) const
+void StdSolver::Form(VectorInterface& gy, const VectorInterface& gx, double d) const
 {
   _re.start();
 
-  HNAverage(x);
+  HNAverage(gx);
   HNAverageData();
 
   const Equation* EQ = GetProblemDescriptor()->GetEquation();
   assert(EQ);
-  GetDiscretization()->Form(y,x,*EQ,d);
+  GetDiscretization()->Form(GetGV(gy),GetGV(gx),*EQ,d);
 
   const BoundaryEquation* BE = GetProblemDescriptor()->GetBoundaryEquation();
   if(BE)
   {
     const BoundaryManager* BM = GetProblemDescriptor()->GetBoundaryManager();
-    GetDiscretization()->BoundaryForm(y,x,BM->GetBoundaryEquationColors(),*BE,d);
+    GetDiscretization()->BoundaryForm(GetGV(gy),GetGV(gx),BM->GetBoundaryEquationColors(),*BE,d);
   }
 
-  HNZero(x);
+  HNZero(gx);
   HNZeroData();
   if (distribute())
   {
-    HNDistribute(y);
+    HNDistribute(gy);
   }
-  SubtractMeanAlgebraic(y);
+  SubtractMeanAlgebraic(gy);
 
   _re.stop();
 }
@@ -702,14 +701,14 @@ void StdSolver::AdjointForm(GlobalVector& y, const GlobalVector& x, double d) co
   HNZeroData();
   if (distribute())
   {
-    HNDistribute(y);
+    GetDiscretization()->HNDistribute(y);
   }
   SubtractMeanAlgebraic(y);
 }
 
 /*-------------------------------------------------------*/
 
-void StdSolver::BoundaryInit(BasicGhostVector& Gu)  const
+void StdSolver::BoundaryInit(VectorInterface& Gu)  const
 {
   GlobalVector& u = GetGV(Gu);
   const DirichletData* DD = GetProblemDescriptor()->GetDirichletData();
@@ -739,7 +738,7 @@ void StdSolver::BoundaryInit(BasicGhostVector& Gu)  const
 
 /*-------------------------------------------------------*/
 
-void StdSolver::SolutionInit(BasicGhostVector& Gu)  const
+void StdSolver::SolutionInit(VectorInterface& Gu)  const
 {
   GlobalVector& u = GetGV(Gu);
   const DomainInitialCondition* u0 = dynamic_cast<const DomainRightHandSide *>(GetProblemDescriptor()->GetInitialCondition());
@@ -773,7 +772,7 @@ void StdSolver::SolutionInit(BasicGhostVector& Gu)  const
 
 /*-------------------------------------------------------*/
 
-void StdSolver::ComputeError(const BasicGhostVector& u, GlobalVector& err) const
+void StdSolver::ComputeError(const VectorInterface& u, GlobalVector& err) const
 {
   if(GetProblemDescriptor()->GetExactSolution()==NULL) return;
   HNAverage(u);
@@ -783,17 +782,12 @@ void StdSolver::ComputeError(const BasicGhostVector& u, GlobalVector& err) const
 
 /*-------------------------------------------------------*/
 
-double StdSolver::ComputeFunctional(BasicGhostVector& gf, const BasicGhostVector& gu, const Functional* FP) const
+double StdSolver::ComputeFunctional(VectorInterface& gf, const VectorInterface& gu, const Functional* FP) const
 {
-  return ComputeFunctional(GetGV(gf),GetGV(gu),FP);
-}
-
-/*-------------------------------------------------------*/
-
-double StdSolver::ComputeFunctional(GlobalVector& f, const GlobalVector& u, const Functional* FP) const
-{
-  BasicGhostVector gh("mg0");
+  VectorInterface gh("mg0");
   GlobalVector& help = GetGV(gh);
+  GlobalVector& f = GetGV(gf);
+  const GlobalVector& u = GetGV(gu);
 
   const DomainFunctional* DFP = dynamic_cast<const DomainFunctional*>(FP);
   if(DFP)
@@ -808,7 +802,7 @@ double StdSolver::ComputeFunctional(GlobalVector& f, const GlobalVector& u, cons
   const ResidualFunctional* RFP = dynamic_cast<const ResidualFunctional*>(FP);
   if(RFP)
     {
-      return ComputeResidualFunctional(f,u,help,RFP);
+      return ComputeResidualFunctional(gf,gu,help,RFP);
     }
   const PointFunctional* NPFP = dynamic_cast<const PointFunctional*>(FP);
   if(NPFP)
@@ -840,7 +834,6 @@ double StdSolver::ComputeDomainFunctional(GlobalVector& f, const GlobalVector& u
   double J = GetDiscretization()->ComputeDomainFunctional(u,*FP);
   HNZero(u);
   HNZeroData();
-  //cerr << "StdSolver::ComputeDomainFunctional()\t" << J << endl;
   return J;
 }
 
@@ -858,13 +851,13 @@ double StdSolver::ComputePointFunctional(GlobalVector& f, const GlobalVector& u,
 
 /*-------------------------------------------------------*/
 
-double StdSolver::ComputeResidualFunctional(GlobalVector& f, const GlobalVector& u, GlobalVector& z, const ResidualFunctional* FP) const
+double StdSolver::ComputeResidualFunctional(VectorInterface& f, const VectorInterface& u, GlobalVector& z, const ResidualFunctional* FP) const
 {
   const BoundaryManager* BM = GetProblemDescriptor()->GetBoundaryManager();
 
   HNAverage(u);
   HNAverageData();
-  f.zero();
+  GetGV(f).zero();
   Rhs(f);
   Form(f,u,-1.);
   
@@ -876,7 +869,7 @@ double StdSolver::ComputeResidualFunctional(GlobalVector& f, const GlobalVector&
   
   HNAverage(z);
 
-  double J = z*f;
+  double J = z*GetGV(f);
   HNZero(u);
   HNZeroData();
   return J;
@@ -884,7 +877,7 @@ double StdSolver::ComputeResidualFunctional(GlobalVector& f, const GlobalVector&
 
 /*-------------------------------------------------------*/
 
-void StdSolver::Rhs(BasicGhostVector& f, double d) const
+void StdSolver::Rhs(VectorInterface& f, double d) const
 {
   Rhs(GetGV(f),d);
 }
@@ -931,13 +924,13 @@ void StdSolver::Rhs(GlobalVector& f, double d) const
   HNZeroData();
   if (distribute())
   {
-    HNDistribute(f);
+    GetDiscretization()->HNDistribute(f);
   }
 }
 
 /*-------------------------------------------------------*/
 
-void StdSolver::AssembleMatrix(const BasicGhostVector& gu, double d)
+void StdSolver::AssembleMatrix(const VectorInterface& gu, double d)
 {
   _ca.start();
   assert(GetMatrix());
@@ -1021,7 +1014,7 @@ void StdSolver::ComputeIlu() const
 
 /* -------------------------------------------------------*/
 
-void StdSolver::ComputeIlu(const BasicGhostVector& gu) const
+void StdSolver::ComputeIlu(const VectorInterface& gu) const
 {
 #ifdef __WITH_UMFPACK__
   if(_directsolver)
@@ -1098,7 +1091,7 @@ void StdSolver::PermutateIlu(const GlobalVector& u) const
 
 /* -------------------------------------------------------*/
 
-void StdSolver::Visu(const string& name, const BasicGhostVector& gu, int i) const
+void StdSolver::Visu(const string& name, const VectorInterface& gu, int i) const
 {
   Visu(name,GetGV(gu),i);
 }
@@ -1142,7 +1135,7 @@ void StdSolver::VisuGrid(const string& name, int i) const
 
 /*-------------------------------------------------------*/
 
-void StdSolver::Read(BasicGhostVector& gu, const string& filename) const
+void StdSolver::Read(VectorInterface& gu, const string& filename) const
 {
   GlobalVector& u = GetGV(gu);
   u.zero();
@@ -1151,7 +1144,7 @@ void StdSolver::Read(BasicGhostVector& gu, const string& filename) const
 
 /*-------------------------------------------------------*/
 
-void StdSolver::Write(const BasicGhostVector& gu, const string& filename) const
+void StdSolver::Write(const VectorInterface& gu, const string& filename) const
 {
   const GlobalVector& u = GetGV(gu);
   WriteBackUp(u,filename);
@@ -1176,7 +1169,7 @@ DoubleVector StdSolver::IntegrateSolutionVector(const GlobalVector& u) const
 
 /* -------------------------------------------------------*/
 
-void StdSolver::SubtractMean(BasicGhostVector& x) const
+void StdSolver::SubtractMean(VectorInterface& x) const
 {
   SubtractMean(GetGV(x));
 }
@@ -1190,7 +1183,7 @@ void StdSolver::SubtractMean(GlobalVector& x) const
   //
   if (_PF.Active())
     {
-      HNZeroCheck(x);
+      GetDiscretization()->HNZeroCheck(x);
       _PF.SubtractMean(x);
       HNZero(x);
     }
@@ -1198,7 +1191,7 @@ void StdSolver::SubtractMean(GlobalVector& x) const
 
 /* -------------------------------------------------------*/
 
-void StdSolver::SubtractMeanAlgebraic(BasicGhostVector& x) const
+void StdSolver::SubtractMeanAlgebraic(VectorInterface& x) const
 {
   SubtractMeanAlgebraic(GetGV(x));
 }
@@ -1210,7 +1203,7 @@ void StdSolver::SubtractMeanAlgebraic(GlobalVector& x) const
   // applies to residuals
   if (_PF.Active())
     {
-      HNZeroCheck(x);
+      GetDiscretization()->HNZeroCheck(x);
       _PF.SubtractMeanAlgebraic(x);
       HNZero(x);
     }
@@ -1218,27 +1211,26 @@ void StdSolver::SubtractMeanAlgebraic(GlobalVector& x) const
 
 /*---------------------------------------------------*/
 
-void StdSolver::MemoryVector(BasicGhostVector& v)
+void StdSolver::MemoryVector(VectorInterface& v)
 {
   RegisterVector(v);
   GhostVectorAgent::iterator p = _NGVA.find(v);
   assert(p!=_NGVA.end());
 
-  const GhostVector& gv = p->first;
-  assert(gv.GetSolver()==this);
+  const VectorInterface& gv = p->first;
   int ncomp = GetProblemDescriptor()->GetEquation()->GetNcomp();
   if(p->second==NULL) 
     {
       p->second = new CompVector<double>;
-      if (p->first.GetNcomp()==-1) p->first.SetNcomp(ncomp);
-      p->second->ncomp() = p->first.GetNcomp();
+      p->second->ncomp() = ncomp;
     }
-  ResizeVector(p->second,gv.GetType());
+  int n = GetDiscretization()->n();
+  p->second->reservesize(n);
 }
 
 /*-----------------------------------------*/
 
-void StdSolver::DeleteVector(BasicGhostVector* p) const
+void StdSolver::DeleteVector(VectorInterface* p) const
 {
   if(p==NULL) return;
 
@@ -1249,28 +1241,28 @@ void StdSolver::DeleteVector(BasicGhostVector* p) const
 
 /*-----------------------------------------*/
 
-void StdSolver::Equ(BasicGhostVector& dst, double s, const BasicGhostVector& src) const
+void StdSolver::Equ(VectorInterface& dst, double s, const VectorInterface& src) const
 {
   GetGV(dst).equ(s,GetGV(src));
 }
 
 /*-----------------------------------------*/
 
-void StdSolver::Add(BasicGhostVector& dst, double s, const BasicGhostVector& src) const
+void StdSolver::Add(VectorInterface& dst, double s, const VectorInterface& src) const
 {
   GetGV(dst).add(s,GetGV(src));
 }
 
 /*-----------------------------------------*/
 
-double StdSolver::ScalarProduct(const BasicGhostVector& y, const BasicGhostVector& x) const
+double StdSolver::ScalarProduct(const VectorInterface& y, const VectorInterface& x) const
 {
   return GetGV(y)*GetGV(x);
 }
 
 /*---------------------------------------------------*/
 
-void StdSolver::AssembleDualMatrix(const BasicGhostVector& gu, double d)
+void StdSolver::AssembleDualMatrix(const VectorInterface& gu, double d)
 {
   _ca.start();
 

@@ -110,7 +110,7 @@ void StdTimeSolver::BasicInit(int level, const ParamFile* paramfile, const MeshI
 
 /*-------------------------------------------------------*/
 
-void Gascoigne::StdTimeSolver::InitialCondition(BasicGhostVector& f, double d) const
+void Gascoigne::StdTimeSolver::InitialCondition(VectorInterface& f, double d) const
 {
   StdTimeSolver::InitialCondition(GetGV(f),d);
 }
@@ -148,13 +148,13 @@ void Gascoigne::StdTimeSolver::InitialCondition(GlobalVector& f, double d) const
   HNZeroData();
   if (distribute())
   {
-    HNDistribute(f);
+    GetDiscretization()->HNDistribute(f);
   }
 }
 
 /*-------------------------------------------------------*/
 
-void StdTimeSolver::TimeRhsOperator(BasicGhostVector& gf, const BasicGhostVector& gu) const
+void StdTimeSolver::TimeRhsOperator(VectorInterface& gf, VectorInterface& gu) const
 {
   assert(_theta>0.);
   double d = -(1.-_theta)/_theta;
@@ -172,14 +172,14 @@ void StdTimeSolver::TimeRhsOperator(BasicGhostVector& gf, const BasicGhostVector
 
 /*-------------------------------------------------------*/
 
-void StdTimeSolver::TimeRhs(int k, BasicGhostVector& gf) const
+void StdTimeSolver::TimeRhs(int k, VectorInterface& gf) const
 {
   StdSolver::Rhs(gf,_rhs[k-1]);
 }
 
 /*-------------------------------------------------------*/
 
-void StdTimeSolver::Form(BasicGhostVector& gy, const BasicGhostVector& gx, double d) const
+void StdTimeSolver::Form(VectorInterface& gy, const VectorInterface& gx, double d) const
 {
   StdSolver::Form(gy,gx,d);
 
@@ -197,7 +197,7 @@ void StdTimeSolver::Form(BasicGhostVector& gy, const BasicGhostVector& gx, doubl
 
 /*-------------------------------------------------------*/
 
-void StdTimeSolver::AssembleMatrix(const BasicGhostVector& gu, double d)
+void StdTimeSolver::AssembleMatrix(const VectorInterface& gu, double d)
 {
   StdSolver::AssembleMatrix(gu,d);
 
@@ -212,7 +212,7 @@ void StdTimeSolver::AssembleMatrix(const BasicGhostVector& gu, double d)
 
 /*-------------------------------------------------------*/
 
-void StdTimeSolver::L2Projection(BasicGhostVector& Gu)
+void StdTimeSolver::L2Projection(VectorInterface& Gu)
 {
   GlobalVector& u = GetGV(Gu);
 

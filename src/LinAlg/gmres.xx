@@ -43,7 +43,7 @@ inline void GMRESSPV::new_memory()
   std::string s = "gmres";
   compose_name(s,i);
   mem.resize(i+1,s);
-  mem[i].SetMultiLevelSolver(&P);
+  //mem[i].SetMultiLevelSolver(&P);
   P.MemoryVector(mem[i]);
 }
 
@@ -147,7 +147,7 @@ inline int GMRESSPV::solve(VECTOR& x, const VECTOR& b, CGInfo& info)
   VECTOR& v = mem[0];
 
   VECTOR p("gmresp");
-  p.SetMultiLevelSolver(&P);
+  //p.SetMultiLevelSolver(&P);
   P.MemoryVector(p);
   P.Equ(p,1.,v);
   

@@ -29,8 +29,8 @@ double DwrQ1Q2::ScalarProduct(nvector<double>& eta, const GlobalVector& f,
 
 /*--------------------------------------------------------*/
 
-double DwrQ1Q2::ScalarProduct(nvector<double>& eta, const BasicGhostVector& gf, 
-			     const BasicGhostVector& gz) const
+double DwrQ1Q2::ScalarProduct(nvector<double>& eta, const VectorInterface& gf, 
+			     const VectorInterface& gz) const
 {
   const GlobalVector& f = S.GetGV(gf);
   const GlobalVector& z = S.GetGV(gz);
@@ -40,8 +40,8 @@ double DwrQ1Q2::ScalarProduct(nvector<double>& eta, const BasicGhostVector& gf,
 
 /*--------------------------------------------------------*/
 
-double DwrQ1Q2::ScalarProductWithFluctuations(nvector<double>& eta, const BasicGhostVector& gf, 
-					     const BasicGhostVector& gz) const
+double DwrQ1Q2::ScalarProductWithFluctuations(nvector<double>& eta, const VectorInterface& gf, 
+					     const VectorInterface& gz) const
 {
   const GlobalVector& f = S.GetGV(gf);
   const GlobalVector& z = S.GetGV(gz);
@@ -78,7 +78,7 @@ DiscretizationInterface* DwrQ1Q2::GetOtherDiscretization() const
 
 /*-------------------------------------------------------*/
 
-void DwrQ1Q2::PrimalResidualsHigher(BasicGhostVector& gf, const BasicGhostVector& gu)
+void DwrQ1Q2::PrimalResidualsHigher(VectorInterface& gf, const VectorInterface& gu)
 {
   GlobalVector& f = S.GetGV(gf);
 
@@ -103,9 +103,9 @@ void DwrQ1Q2::PrimalResidualsHigher(BasicGhostVector& gf, const BasicGhostVector
 
 /*--------------------------------------------------------*/
 
-void DwrQ1Q2::DualResidualsHigher(BasicGhostVector& gf, 
-				  const BasicGhostVector& gu, 
-				  const BasicGhostVector& gz, 
+void DwrQ1Q2::DualResidualsHigher(VectorInterface& gf, 
+				  const VectorInterface& gu, 
+				  const VectorInterface& gz, 
 				  const ProblemDescriptorInterface& PDI)
 {
   S.GetGV(gf).zero();
@@ -142,8 +142,8 @@ void DwrQ1Q2::DualResidualsHigher(BasicGhostVector& gf,
 
 /*--------------------------------------------------------*/
 
-double DwrQ1Q2::Estimator(nvector<double>& eta, BasicGhostVector& gf, 
-			  const BasicGhostVector& gu, const BasicGhostVector& gz,
+double DwrQ1Q2::Estimator(nvector<double>& eta, VectorInterface& gf, 
+			  const VectorInterface& gu, const VectorInterface& gz,
 			  const ProblemDescriptorInterface& PDI)
 {
   GlobalVector& f = S.GetGV(gf);
@@ -156,7 +156,6 @@ double DwrQ1Q2::Estimator(nvector<double>& eta, BasicGhostVector& gf,
   PrimalResidualsHigher(gf,gu);
   rho      =  ScalarProductWithFluctuations(eta,gf,gz);
       
-  S.HNZeroCheck(f);
   return rho + rhostern;
 }
 

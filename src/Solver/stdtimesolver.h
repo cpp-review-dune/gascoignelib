@@ -52,13 +52,13 @@ public:
   void SetTimeData(double dt, double theta, double time, double oldrhs = -1., double newrhs = 1.);
   void SetProblem(const ProblemDescriptorInterface& PDX);
 
-  void InitialCondition(BasicGhostVector& f, double d=1.) const;
-  void TimeRhsOperator(BasicGhostVector& f, const BasicGhostVector& u) const; 
-  void TimeRhs(int k, BasicGhostVector& f) const;
-  void Form (BasicGhostVector& y, const BasicGhostVector& x, double d) const; 
-  void AssembleMatrix(const BasicGhostVector& u, double d); 
+  void InitialCondition(VectorInterface& f, double d=1.) const;
+  void TimeRhsOperator(VectorInterface& f, VectorInterface& u) const;
+  void TimeRhs(int k, VectorInterface& f) const;
+  void Form (VectorInterface& y, const VectorInterface& x, double d) const;
+  void AssembleMatrix(const VectorInterface& u, double d);
   std::string GetName() const;
-  void L2Projection(BasicGhostVector& u);
+  void L2Projection(VectorInterface& u);
   
   void SetMassMatrix(MatrixInterface &MM, bool init=false);
   const MatrixInterface* GetMassMatrix() const {return _MMP;}

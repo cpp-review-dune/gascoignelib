@@ -14,7 +14,7 @@
 #include  "stdiomanager.h"
 #include  "stopwatch.h"
 #include  "paramfile.h"
-#include  "multilevelghostvector.h"
+#include  "vectorinterface.h"
 #include  "solverinfos.h"
 
 /*-----------------------------------------*/
@@ -39,8 +39,8 @@ private:
   MultiLevelSolverInterface* _ML;
   SolverInfos*               _SI;
   
-  void WriteMeshAndSolution(const std::string& filename, const MultiLevelGhostVector& u) const;
-  void WriteSolution(const MultiLevelGhostVector& u) const;
+  void WriteMeshAndSolution(const std::string& filename, const VectorInterface& u) const;
+  void WriteSolution(const VectorInterface& u) const;
   void WriteMesh() const;
   void WriteMeshInp(const std::string& name) const;
 
@@ -79,23 +79,23 @@ protected:
 
   // new vectors
 
-  virtual std::string Solve(MultiLevelGhostVector& u, MultiLevelGhostVector& f, std::string name);
-  virtual std::string Solve(MultiLevelGhostVector& u, MultiLevelGhostVector& f){
+  virtual std::string Solve(VectorInterface& u, VectorInterface& f, std::string name);
+  virtual std::string Solve(VectorInterface& u, VectorInterface& f){
      return Solve(u, f, _s_resultsdir+"/solve");
   }
 
   virtual void PrintMeshInformation(int outputlevel=0) const;
 
-  virtual void Output(const MultiLevelGhostVector& u, std::string name) const;
-  virtual void Output(const MultiLevelGhostVector& u){
+  virtual void Output(const VectorInterface& u, std::string name) const;
+  virtual void Output(const VectorInterface& u){
     Output(u, _s_resultsdir+"/solve");
   }
 
-  virtual void ComputeGlobalErrors(const MultiLevelGhostVector& u);
+  virtual void ComputeGlobalErrors(const VectorInterface& u);
 
-  virtual void InitSolution(MultiLevelGhostVector& u);
-  virtual void CopyVector(GlobalVector& dst, MultiLevelGhostVector& src);
-  virtual void CopyVector(MultiLevelGhostVector& dst, GlobalVector& src);
+  virtual void InitSolution(VectorInterface& u);
+  virtual void CopyVector(GlobalVector& dst, VectorInterface& src);
+  virtual void CopyVector(VectorInterface& dst, GlobalVector& src);
 
 public:
 

@@ -78,7 +78,6 @@ void CellDiscretization::Form(GlobalVector& f, const GlobalVector& u, const Equa
     }
 }
 
-
 /* ----------------------------------------- */
 
 void CellDiscretization::AdjointForm(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const

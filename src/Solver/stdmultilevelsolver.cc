@@ -80,7 +80,8 @@ void StdMultiLevelSolver::ViewProtocoll() const
 /*-------------------------------------------------------------*/
 
 StdMultiLevelSolver::StdMultiLevelSolver() : 
-  _MAP(NULL), oldnlevels(-1), _paramfile(NULL), MON(NULL), DataP(NULL)
+  _MAP(NULL), oldnlevels(-1), _paramfile(NULL), MON(NULL), DataP(NULL),
+  _cor("cor"), _res("res"), _mg0("mg0"), _mg1("mg1")
 {
 }
 
@@ -98,14 +99,6 @@ void StdMultiLevelSolver::BasicInit(const MeshAgentInterface* MAP, const ParamFi
   }
   DataP->BasicInit(_paramfile);
 
-  _cor.SetName("cor");
-  _res.SetName("res");
-  _mg0.SetName("mg0");
-  _mg1.SetName("mg1");
-  _cor.SetMultiLevelSolver(this);
-  _res.SetMultiLevelSolver(this);
-  _mg0.SetMultiLevelSolver(this);
-  _mg1.SetMultiLevelSolver(this);
   RegisterVector(_cor);
   RegisterVector(_res);
   RegisterVector(_mg0);
@@ -141,10 +134,9 @@ SolverInterface* StdMultiLevelSolver::NewSolver(int solverlevel)
 
 /*-------------------------------------------------------------*/
 
-void StdMultiLevelSolver::RegisterVector(MultiLevelGhostVector& g) 
+void StdMultiLevelSolver::RegisterVector(VectorInterface& g) 
 {
   _MlVectors.insert(g);
-  g.SetMultiLevelSolver(this);
 }
 
 /*-------------------------------------------------------------*/
@@ -152,7 +144,7 @@ void StdMultiLevelSolver::RegisterVector(MultiLevelGhostVector& g)
 void StdMultiLevelSolver::RegisterVectorsOnSolvers() 
 {
   assert(nlevels()==_SP.size());
-  set<MultiLevelGhostVector>::const_iterator p;
+  set<VectorInterface>::const_iterator p;
   for(p=_MlVectors.begin(); p!=_MlVectors.end(); p++) 
     {
       for (int level=0; level<nlevels(); ++level)  
@@ -285,28 +277,28 @@ void StdMultiLevelSolver::ReInit(const ProblemDescriptorInterface& PDX)
 
 /*-------------------------------------------------------------*/
 
-void StdMultiLevelSolver::InterpolateSolution(MultiLevelGhostVector& u, const GlobalVector& uold) const
+void StdMultiLevelSolver::InterpolateSolution(VectorInterface& u, const GlobalVector& uold) const
 {
   if(oldnlevels<=0) return;
 
-  GetSolver(FinestLevel())->InterpolateSolution(u(FinestLevel()),uold);
+  GetSolver(FinestLevel())->InterpolateSolution(u,uold);
 
   for(int l=0; l<FinestLevel(); l++)
     {
-      u.Vector(l).zero();
+      GetSolver(l)->GetGV(u).zero();
     }
 }
 
 /*-------------------------------------------------------------*/
 
-void StdMultiLevelSolver::vmulteq(MultiLevelGhostVector& y, const MultiLevelGhostVector& x) const
+void StdMultiLevelSolver::vmulteq(VectorInterface& y, const VectorInterface& x) const
 {
-  GetSolver(ComputeLevel)->vmulteq(y(ComputeLevel),x(ComputeLevel));
+  GetSolver(ComputeLevel)->vmulteq(y,x);
 }
 
 /*-------------------------------------------------------------*/
 
-void StdMultiLevelSolver::LinearMg(int finelevel, int coarselevel, MultiLevelGhostVector& u, const MultiLevelGhostVector& f, CGInfo& info)
+void StdMultiLevelSolver::LinearMg(int finelevel, int coarselevel, VectorInterface& u, const VectorInterface& f, CGInfo& info)
 {
   int clevel=coarselevel;
   for(int level=coarselevel;level<nlevels();level++)
@@ -321,7 +313,7 @@ void StdMultiLevelSolver::LinearMg(int finelevel, int coarselevel, MultiLevelGho
   int nl = nlevels();
   DoubleVector res(nl,0.), rw(nl,0.);
 
-  _mg0.Vector(finelevel).equ(1.,f.Vector(finelevel));
+  GetSolver(finelevel)->GetGV(_mg0).equ(1.,GetSolver(finelevel)->GetGV(f));
   
   bool reached = 0;
 
@@ -339,7 +331,7 @@ void StdMultiLevelSolver::LinearMg(int finelevel, int coarselevel, MultiLevelGho
  
 void StdMultiLevelSolver::mgstep(vector<double>& res, vector<double>& rw, 
  int l, int finelevel, int coarselevel, string& p0, string p,
- MultiLevelGhostVector& u, MultiLevelGhostVector& b, MultiLevelGhostVector& v)
+ VectorInterface& u, VectorInterface& b, VectorInterface& v)
 {
   if(l==coarselevel)
     {
@@ -347,7 +339,7 @@ void StdMultiLevelSolver::mgstep(vector<double>& res, vector<double>& rw,
       if(l==finelevel)
         {
           GetSolver(l)->MatrixResidual(v, u, b);
-          res[l] = v.Vector(l).norm();
+          res[l] = GetSolver(l)->GetGV(v).norm();
         }
       GetSolver(l)->smooth_exact(u,b,v);
     }
@@ -355,12 +347,12 @@ void StdMultiLevelSolver::mgstep(vector<double>& res, vector<double>& rw,
     {
       GetSolver(l)->smooth_pre(u,b,v);
       GetSolver(l)->MatrixResidual(v,u,b);
-      res[l] = v.Vector(l).norm();
+      res[l] = GetSolver(l)->GetGV(v).norm();
       
       _Interpolator[l-1]-> restrict_zero(GetSolver(l-1)->GetGV(b),GetSolver(l)->GetGV(v));
       GetSolver(l-1)->HNDistribute(b);
       GetSolver(l-1)->SetBoundaryVectorZero(b);
-      u.Vector(l-1).zero();
+      GetSolver(l-1)->GetGV(u).zero();
       
       int j = 0;
       if (p0=="V") j = 1;
@@ -371,9 +363,9 @@ void StdMultiLevelSolver::mgstep(vector<double>& res, vector<double>& rw,
           mgstep(res,rw,l-1,finelevel,coarselevel,p0,p,u,b,v);
         }
       if ((l==0)&&(p=="F")) { p0="W";}
-      rw[l] = u.Vector(l-1).norm();
+      rw[l] = GetSolver(l-1)->GetGV(u).norm();
 
-      v.Vector(l).zero();
+      GetSolver(l)->GetGV(v).zero();
       GetSolver(l-1)    -> HNAverage(u);
       _Interpolator[l-1]-> prolongate_add(GetSolver(l)->GetGV(v),GetSolver(l-1)->GetGV(u));
       GetSolver(l-1) -> HNZero(u);
@@ -381,7 +373,7 @@ void StdMultiLevelSolver::mgstep(vector<double>& res, vector<double>& rw,
      
       GetSolver(l)   -> SetBoundaryVectorZero(v);
 
-      u.Vector(l).add(DataP->MgOmega(),v.Vector(l));
+      GetSolver(l)->GetGV(u).add(DataP->MgOmega(),GetSolver(l)->GetGV(v));
     
       GetSolver(l)->smooth_post(u,b,v);
     }
@@ -389,7 +381,7 @@ void StdMultiLevelSolver::mgstep(vector<double>& res, vector<double>& rw,
 
 /*-------------------------------------------------------------*/
 
-void StdMultiLevelSolver::Cg(MultiLevelGhostVector& x, const MultiLevelGhostVector& f, CGInfo& info)
+void StdMultiLevelSolver::Cg(VectorInterface& x, const VectorInterface& f, CGInfo& info)
 {
   assert(0);
 //   CG<SolverInterface,StdMultiLevelSolver,GhostVector> cg(*(GetSolver(ComputeLevel)),*this);
@@ -400,7 +392,7 @@ void StdMultiLevelSolver::Cg(MultiLevelGhostVector& x, const MultiLevelGhostVect
 
 /*-------------------------------------------------------------*/
 
-void StdMultiLevelSolver::newton(MultiLevelGhostVector& u, const MultiLevelGhostVector& f, MultiLevelGhostVector& r, MultiLevelGhostVector& w, NLInfo& info)
+void StdMultiLevelSolver::newton(VectorInterface& u, const VectorInterface& f, VectorInterface& r, VectorInterface& w, NLInfo& info)
 {
   info.reset();
   double rr = NewtonResidual(r,u,f);
@@ -427,27 +419,27 @@ void StdMultiLevelSolver::NewtonOutput(NLInfo& nlinfo) const
 
 /*-------------------------------------------------------------*/
  
-void StdMultiLevelSolver::NewtonVectorZero(MultiLevelGhostVector& w) const
+void StdMultiLevelSolver::NewtonVectorZero(VectorInterface& w) const
 {
-  w.zero();
+  GetSolver(FinestLevel())->GetGV(w).zero();
 }
 
 /*-------------------------------------------------------------*/
  
-double StdMultiLevelSolver::NewtonResidual(MultiLevelGhostVector& y, const MultiLevelGhostVector& x,const MultiLevelGhostVector& b) const
+double StdMultiLevelSolver::NewtonResidual(VectorInterface& y, const VectorInterface& x,const VectorInterface& b) const
 {
   _clock_residual.start();
   DataP->CountResidual()++;
-  y.Vector(ComputeLevel).equ(1.,b.Vector(ComputeLevel));
-  GetSolver(ComputeLevel)->Form(y(ComputeLevel),x(ComputeLevel),-1.);
-  GetSolver(ComputeLevel)->SetBoundaryVectorZero(y(ComputeLevel));
+  GetSolver(ComputeLevel)->GetGV(y).equ(1.,GetSolver(ComputeLevel)->GetGV(b));
+  GetSolver(ComputeLevel)->Form(y,x,-1.);
+  GetSolver(ComputeLevel)->SetBoundaryVectorZero(y);
   _clock_residual.stop();
   return NewtonNorm(y);
 }
 
 /*-------------------------------------------------------------*/
 
-void StdMultiLevelSolver::NewtonMatrixControl(MultiLevelGhostVector& u, NLInfo& nlinfo)
+void StdMultiLevelSolver::NewtonMatrixControl(VectorInterface& u, NLInfo& nlinfo)
 {
   MON->new_matrix() = 0;
 
@@ -464,11 +456,11 @@ void StdMultiLevelSolver::NewtonMatrixControl(MultiLevelGhostVector& u, NLInfo& 
 
 /*-------------------------------------------------------------*/
 
-void StdMultiLevelSolver::NewtonLinearSolve(MultiLevelGhostVector& x, const MultiLevelGhostVector& b, CGInfo& info)
+void StdMultiLevelSolver::NewtonLinearSolve(VectorInterface& x, const VectorInterface& b, CGInfo& info)
 {
   _clock_solve.start();
   info.reset();
-  x.zero();
+  GetSolver(FinestLevel())->GetGV(x).zero();
 
   if (DataP->LinearSolve()=="mg")
     {
@@ -484,84 +476,85 @@ void StdMultiLevelSolver::NewtonLinearSolve(MultiLevelGhostVector& x, const Mult
     {
       assert(0);
     }
-  GetSolver(ComputeLevel)->SubtractMean(x(ComputeLevel));
+  GetSolver(ComputeLevel)->SubtractMean(x);
   _clock_solve.stop();
 }
 
 /*-------------------------------------------------------------*/
 
-void StdMultiLevelSolver::Gmres(MultiLevelGhostVector& x, const MultiLevelGhostVector& f, CGInfo& info)
+void StdMultiLevelSolver::Gmres(VectorInterface& x, const VectorInterface& f, CGInfo& info)
 {
   int n = DataP->GmresMemSize();
 
   StdSolver* S = dynamic_cast<StdSolver*>(GetSolver(ComputeLevel));
-  GMRES<StdSolver,StdMultiLevelSolver,MultiLevelGhostVector> gmres(*S,*this,n);
+  GMRES<StdSolver,StdMultiLevelSolver,VectorInterface> gmres(*S,*this,n);
 
   gmres.solve(x,f,info);
 }
 
 /*-------------------------------------------------------------*/
 
-void StdMultiLevelSolver::NewtonUpdateShowCompResiduals(MultiLevelGhostVector& x, MultiLevelGhostVector& r, const MultiLevelGhostVector& f){
+// void StdMultiLevelSolver::NewtonUpdateShowCompResiduals(VectorInterface& x, VectorInterface& r, const VectorInterface& f){
 
-  if( DataP->ShowCompResidualNames() ) {
-    // nur beim ersten durchgang? :  cginfo.statistics().totaliter()
-    const ComponentInformation*  CI = GetProblemDescriptor()->GetComponentInformation();
-    cout << "                                  ";
-    int     ncomps = r.Vector(ComputeLevel).ncomp();
-    string  str;  
-    for(int i=0;i<ncomps;i++){
-      CI->GetScalarName(i,str);
-      printf("%-9.9s", str.c_str());
-      if(i<ncomps-1) cout << " "; 
-    }
-    cout << "  " << endl;
-  }
+//   if( DataP->ShowCompResidualNames() ) {
+//     // nur beim ersten durchgang? :  cginfo.statistics().totaliter()
+//     const ComponentInformation*  CI = GetProblemDescriptor()->GetComponentInformation();
+//     cout << "                                  ";
+//     int     ncomps = GetSolver(FinestLevel())->GetGV(r).ncomp();
+//     string  str;  
+//     for(int i=0;i<ncomps;i++){
+//       CI->GetScalarName(i,str);
+//       printf("%-9.9s", str.c_str());
+//       if(i<ncomps-1) cout << " "; 
+//     }
+//     cout << "  " << endl;
+//   }
 
-  if( DataP->ShowNonLinearCompResiduals() )
-    {
-      int ncomps = r.Vector(ComputeLevel).ncomp();
-      cout << "      nonlin L8-comp-residuals: [";
-      for(int i=0;i<ncomps;i++){
-        double res_comp = r.Vector(ComputeLevel).CompNormL8(i)+1e-99;
-        printf(" %3.2e", res_comp);
-        if(i<ncomps-1) cout << ","; 
-      }
-      cout << " ]" << endl;
-    }
+//   if( DataP->ShowNonLinearCompResiduals() )
+//     {
+//       int ncomps = GetSolver(FinestLevel())->GetGV(r).ncomp();
+//       cout << "      nonlin L8-comp-residuals: [";
+//       for(int i=0;i<ncomps;i++){
+//         double res_comp = GetSolver(FinestLevel())->GetGV(r).CompNormL8(i)+1e-99;
+//         printf(" %3.2e", res_comp);
+//         if(i<ncomps-1) cout << ","; 
+//       }
+//       cout << " ]" << endl;
+//     }
 
-  if( DataP->ShowLinearCompResiduals() ) 
-    { 
-      // da das residuum *moeglicherweise* nachher auch benutzt wird, mache hier einen backup 
-      GlobalVector  r_backup; 
-      GlobalVector &r_vector = r.Vector(ComputeLevel);
-      int ncomps = r_vector.ncomp(); 
+//   if( DataP->ShowLinearCompResiduals() ) 
+//     { 
+//       // da das residuum *moeglicherweise* nachher auch benutzt wird, mache hier einen backup 
+//       GlobalVector  r_backup; 
+//       GlobalVector &r_vector = r.Vector(ComputeLevel);
+//       int ncomps = r_vector.ncomp(); 
 
-      r_backup.ncomp()  = ncomps;
-      r_backup.resize(r_vector.n());
-      r_backup.equ(1.,r_vector);
+//       r_backup.ncomp()  = ncomps;
+//       r_backup.resize(r_vector.n());
+//       r_backup.equ(1.,r_vector);
    
-      GetSolver(ComputeLevel)->MatrixResidual(r, x, f);  
+//       GetSolver(ComputeLevel)->MatrixResidual(r, x, f);  
 
-      cout << "         lin L8-comp-residuals: ["; 
-      for(int i=0;i<ncomps;i++){ 
-        double res_comp = r_vector.CompNormL8(i)+1e-99; 
-        printf(" %3.2e", res_comp); 
-        if(i<ncomps-1) cout << ",";
-      } 
-      cout << " ]" << endl; 
+//       cout << "         lin L8-comp-residuals: ["; 
+//       for(int i=0;i<ncomps;i++){ 
+//         double res_comp = r_vector.CompNormL8(i)+1e-99; 
+//         printf(" %3.2e", res_comp); 
+//         if(i<ncomps-1) cout << ",";
+//       } 
+//       cout << " ]" << endl; 
 
-      r_vector.equ(1.,r_backup);
-    } 
+//       r_vector.equ(1.,r_backup);
+//     } 
 
-}
-double StdMultiLevelSolver::NewtonUpdate(double& rr, MultiLevelGhostVector& x, MultiLevelGhostVector& dx, MultiLevelGhostVector& r, const MultiLevelGhostVector& f, NLInfo& nlinfo)
+// }
+
+double StdMultiLevelSolver::NewtonUpdate(double& rr, VectorInterface& x, VectorInterface& dx, VectorInterface& r, const VectorInterface& f, NLInfo& nlinfo)
 {
   const CGInfo& linfo = nlinfo.GetLinearInfo();
   bool lex  = linfo.control().status()=="exploded";
 
   double nn = NewtonNorm(dx);
-  double nr = r.Vector(ComputeLevel).norm();
+  double nr = GetSolver(ComputeLevel)->GetGV(r).norm();
 
   if (nn>1.e10)  lex =1;
   if (!(nn>=0.)) lex =1;
@@ -585,12 +578,12 @@ double StdMultiLevelSolver::NewtonUpdate(double& rr, MultiLevelGhostVector& x, M
     {
       if(iter>0)
         {
-          x.Vector(ComputeLevel).add(relax*(omega-1.),dx.Vector(ComputeLevel));
+          GetSolver(ComputeLevel)->GetGV(x).add(relax*(omega-1.),GetSolver(ComputeLevel)->GetGV(dx));
           relax *= omega;
         }
       else
         {
-          x.Vector(ComputeLevel).add(relax,dx.Vector(ComputeLevel));
+          GetSolver(ComputeLevel)->GetGV(x).add(relax,GetSolver(ComputeLevel)->GetGV(dx));
         }
 
       NewtonResidual(r,x,f);
@@ -601,7 +594,7 @@ double StdMultiLevelSolver::NewtonUpdate(double& rr, MultiLevelGhostVector& x, M
       if (message=="continue") continue;
       if (message=="exploded") 
         {
-          x.Vector(ComputeLevel).add(-relax,dx.Vector(ComputeLevel));
+          GetSolver(ComputeLevel)->GetGV(x).add(-relax,GetSolver(ComputeLevel)->GetGV(dx));
           relax = 0.;
           cout << "Damping exploded !!!!!" << endl;
           nlinfo.control().status() = "diverged";
@@ -609,26 +602,26 @@ double StdMultiLevelSolver::NewtonUpdate(double& rr, MultiLevelGhostVector& x, M
         }
     }
 
-  NewtonUpdateShowCompResiduals(x, r, f);
+  //NewtonUpdateShowCompResiduals(x, r, f);
 
   return NewtonNorm(dx);
 }
 
 /*-------------------------------------------------------------*/
 
-void StdMultiLevelSolver::AssembleMatrix(MultiLevelGhostVector& u)
+void StdMultiLevelSolver::AssembleMatrix(VectorInterface& u)
 {
   SolutionTransfer(u);
   for(int l=0;l<=ComputeLevel;l++)
     {
       GetSolver(l)->MatrixZero();
-      GetSolver(l)->AssembleMatrix(u(l),1.);
+      GetSolver(l)->AssembleMatrix(u,1.);
     }
 }
 
 /*-------------------------------------------------------------*/
 
-void StdMultiLevelSolver::AssembleMatrix(MultiLevelGhostVector& u, NLInfo& nlinfo)
+void StdMultiLevelSolver::AssembleMatrix(VectorInterface& u, NLInfo& nlinfo)
 {
   AssembleMatrix(u);
   nlinfo.control().matrixmustbebuild() = 0;
@@ -646,30 +639,30 @@ void StdMultiLevelSolver::ComputeIlu()
 
 /*-------------------------------------------------------------*/
 
-void StdMultiLevelSolver::ComputeIlu(MultiLevelGhostVector& u)
+void StdMultiLevelSolver::ComputeIlu(VectorInterface& u)
 {
   SolutionTransfer(u);
   for(int l=0;l<=ComputeLevel;l++)
     {
-      GetSolver(l)->ComputeIlu(u(l));
+      GetSolver(l)->ComputeIlu(u);
     }
 }
 
 /*-------------------------------------------------------------*/
 
-void StdMultiLevelSolver::BoundaryInit(MultiLevelGhostVector& u) const
+void StdMultiLevelSolver::BoundaryInit(VectorInterface& u) const
 {
   for(int l=0;l<_SP.size();l++)
-    GetSolver(l)->BoundaryInit(u(l));
+    GetSolver(l)->BoundaryInit(u);
 }
 
 /*-------------------------------------------------------------*/
 
-string StdMultiLevelSolver::LinearSolve(int level, MultiLevelGhostVector& u, const MultiLevelGhostVector& b, CGInfo& info)
+string StdMultiLevelSolver::LinearSolve(int level, VectorInterface& u, const VectorInterface& b, CGInfo& info)
 {
   ComputeLevel = level;
 
-  GetSolver(ComputeLevel)->HNAverage(u(ComputeLevel));
+  GetSolver(ComputeLevel)->HNAverage(u);
   
   info.reset();
   
@@ -678,9 +671,9 @@ string StdMultiLevelSolver::LinearSolve(int level, MultiLevelGhostVector& u, con
 
   LinearMg(ComputeLevel,clevel,u,b,info);
 
-  GetSolver(ComputeLevel)->SubtractMean(u(ComputeLevel));
+  GetSolver(ComputeLevel)->SubtractMean(u);
 
-  GetSolver(ComputeLevel)->HNZero(u(ComputeLevel));
+  GetSolver(ComputeLevel)->HNZero(u);
   string status = info.control().status();
 
   return status;
@@ -688,16 +681,16 @@ string StdMultiLevelSolver::LinearSolve(int level, MultiLevelGhostVector& u, con
 
 /*-------------------------------------------------------------*/
 
-string StdMultiLevelSolver::Solve(int level, MultiLevelGhostVector& u, const MultiLevelGhostVector& b, NLInfo& nlinfo)
+string StdMultiLevelSolver::Solve(int level, VectorInterface& u, const VectorInterface& b, NLInfo& nlinfo)
 {
   ComputeLevel = level;
 
   string status;
   if(DataP->NonLinearSolve() == "newton")
     {
-      GetSolver(ComputeLevel)->HNAverage(u(ComputeLevel));
+      GetSolver(ComputeLevel)->HNAverage(u);
       newton(u,b,_res,_cor,nlinfo);
-      GetSolver(ComputeLevel)->HNZero(u(ComputeLevel));
+      GetSolver(ComputeLevel)->HNZero(u);
       return nlinfo.CheckMatrix();
     }
   else
@@ -708,35 +701,35 @@ string StdMultiLevelSolver::Solve(int level, MultiLevelGhostVector& u, const Mul
 
 /*-------------------------------------------------------------*/
 
-double StdMultiLevelSolver::ComputeFunctional(MultiLevelGhostVector& f, const MultiLevelGhostVector& u, const Functional* FP) const
+double StdMultiLevelSolver::ComputeFunctional(VectorInterface& f, const VectorInterface& u, const Functional* FP) const
 {
-  return GetSolver(ComputeLevel)->ComputeFunctional(f(ComputeLevel),u(ComputeLevel),FP);
+  return GetSolver(ComputeLevel)->ComputeFunctional(f,u,FP);
 }
 
 /*-------------------------------------------------------------*/
 
-void StdMultiLevelSolver::Transfer(int high, int low, MultiLevelGhostVector& u) const
+void StdMultiLevelSolver::Transfer(int high, int low, VectorInterface& u) const
 {
   for(int l=high;l>=low;l--)
     {
-      Transfer(l,u.Vector(l-1),u.Vector(l));
+      Transfer(l,GetSolver(l-1)->GetGV(u),GetSolver(l)->GetGV(u));
     }
 }
 
 /*-------------------------------------------------------------*/
 
-void StdMultiLevelSolver::SolutionTransfer(int high, int low, MultiLevelGhostVector& u) const
+void StdMultiLevelSolver::SolutionTransfer(int high, int low, VectorInterface& u) const
 {
   for(int l=high;l>=low;l--)
     {
-      SolutionTransfer(l,u.Vector(l-1),u.Vector(l));
+      SolutionTransfer(l,GetSolver(l-1)->GetGV(u),GetSolver(l)->GetGV(u));
       GetSolver(l-1)->SetBoundaryVector(u);
     }
 }
 
 /*-------------------------------------------------------------*/
 
-void StdMultiLevelSolver::SolutionTransfer(MultiLevelGhostVector& u) const
+void StdMultiLevelSolver::SolutionTransfer(VectorInterface& u) const
 {
   SolutionTransfer(ComputeLevel,1,u);
 }
@@ -745,9 +738,11 @@ void StdMultiLevelSolver::SolutionTransfer(MultiLevelGhostVector& u) const
 
 void StdMultiLevelSolver::SolutionTransfer(int l, GlobalVector& ul, const GlobalVector& uf) const
 {
-  GetSolver(l)->HNAverage(uf);
+  GlobalVector& uuf = const_cast<GlobalVector&>(uf);
+
+  GetSolver(l)->GetDiscretization()->HNAverage(uuf);
   Transfer(l,ul,uf);
-  GetSolver(l)->HNZero(uf);
+  GetSolver(l)->GetDiscretization()->HNZero(uuf);
 }
 
 /*-------------------------------------------------------------*/
@@ -760,43 +755,43 @@ void StdMultiLevelSolver::Transfer(int l, GlobalVector& ul, const GlobalVector& 
 
 /*-------------------------------------------------------------*/
 
-void StdMultiLevelSolver::AssembleDualMatrix(MultiLevelGhostVector& u)
+void StdMultiLevelSolver::AssembleDualMatrix(VectorInterface& u)
 {
   for(int l=0; l<nlevels(); l++)
     {
-      GetSolver(l)->AssembleDualMatrix(u(l),1.);
+      GetSolver(l)->AssembleDualMatrix(u,1.);
     }
 }
 
 /*-------------------------------------------------------------*/
 
-void StdMultiLevelSolver::MemoryVector(MultiLevelGhostVector& v)
+void StdMultiLevelSolver::MemoryVector(VectorInterface& v)
 {
   RegisterVector(v);
   for(int l=0; l<nlevels(); ++l)  
     {
       StdSolver* S = dynamic_cast<StdSolver*>(GetSolver(l));
-      S->MemoryVector(v(l));
+      S->MemoryVector(v);
     }
 }
 
 /*-------------------------------------------------------------*/
 
-void StdMultiLevelSolver::DeleteVector(MultiLevelGhostVector& v)
+void StdMultiLevelSolver::DeleteVector(VectorInterface& v)
 {
   _MlVectors.erase(v);
     
   for(int l=0; l<nlevels(); ++l)  
     {
       const StdSolver* S = dynamic_cast<const StdSolver*>(GetSolver(l));
-      S->DeleteVector(&v(l));
+      S->DeleteVector(&v);
     }
 }
 
 
 /*-------------------------------------------------------------*/
 
-void StdMultiLevelSolver::precondition(MultiLevelGhostVector& x, MultiLevelGhostVector& y)
+void StdMultiLevelSolver::precondition(VectorInterface& x, VectorInterface& y)
 {
   CGInfo& precinfo = DataP->GetPrecInfo();
   precinfo.reset();
@@ -810,29 +805,29 @@ void StdMultiLevelSolver::precondition(MultiLevelGhostVector& x, MultiLevelGhost
 
 /*-------------------------------------------------------------*/
 
-void StdMultiLevelSolver::Equ(MultiLevelGhostVector& dst, double s, const MultiLevelGhostVector& src) const
+void StdMultiLevelSolver::Equ(VectorInterface& dst, double s, const VectorInterface& src) const
 {
   for(int l=0; l<FinestLevel(); l++)
     {
       const StdSolver* S = dynamic_cast<const StdSolver*>(GetSolver(l));
-      S->Equ(dst(l),s,src(l));
+      S->Equ(dst,s,src);
     }
 }
 
 /*-------------------------------------------------------------*/
 
-void StdMultiLevelSolver::Zero(MultiLevelGhostVector& dst) const
+void StdMultiLevelSolver::Zero(VectorInterface& dst) const
 {
   for(int l=0; l<FinestLevel(); l++)
     {
       const StdSolver* S = dynamic_cast<const StdSolver*>(GetSolver(l));
-      S->Zero(dst(l));
+      S->Zero(dst);
     }
 }
 
 /*-------------------------------------------------------------*/
 
-void StdMultiLevelSolver::AddNodeVector(const string& name, MultiLevelGhostVector& gq)
+void StdMultiLevelSolver::AddNodeVector(const string& name, VectorInterface& gq)
 {
   Transfer(ComputeLevel,1,gq);
   for(int l=0; l<nlevels(); l++)

@@ -59,11 +59,13 @@ MeshInterpolator::~MeshInterpolator()
 {
   if (_DI)
   {
-    delete GetDiscretization();
+    delete _DI;
+    _DI = NULL;
   }
   if (_MA)
   {
-    delete GetMeshAgent();
+    delete _MA;
+    _MA = NULL;
   }
 }
 

@@ -55,6 +55,12 @@ void BasicDiscretization::GlobalToLocalData(int iq) const
     {
       GlobalToLocalSingle(__Q[p->first],*p->second,iq);
     }
+  const GlobalCellData& gcd = GetGlobalData().GetCellData();
+  GlobalNodeData::const_iterator q=gcd.begin();
+  for(; q!=gcd.end(); q++)
+    {
+      GlobalToLocalSingle(__Q[q->first],*q->second,iq);
+    }
 }
 
 /* ----------------------------------------- */

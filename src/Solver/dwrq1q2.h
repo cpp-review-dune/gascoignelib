@@ -19,17 +19,17 @@ class DwrQ1Q2
   double ScalarProduct(nvector<double>& eta, const GlobalVector& f, 
 		       const GlobalVector& z) const;
 
-  double ScalarProduct(nvector<double>& eta, const BasicGhostVector& gf, 
-		       const BasicGhostVector& gz) const;
+  double ScalarProduct(nvector<double>& eta, const VectorInterface& gf, 
+		       const VectorInterface& gz) const;
   double ScalarProductWithFluctuations(nvector<double>& eta, 
-				       const BasicGhostVector& gf, 
-				       const BasicGhostVector& gz) const;
+				       const VectorInterface& gf, 
+				       const VectorInterface& gz) const;
 
-  void PrimalResidualsHigher(BasicGhostVector& gf, 
-			     const BasicGhostVector& gu);
+  void PrimalResidualsHigher(VectorInterface& gf, 
+			     const VectorInterface& gu);
 
-  void DualResidualsHigher(BasicGhostVector& gf, const BasicGhostVector& gu, 
-			   const BasicGhostVector& gz, 
+  void DualResidualsHigher(VectorInterface& gf, const VectorInterface& gu, 
+			   const VectorInterface& gz, 
 			   const ProblemDescriptorInterface& PDI);
 
  public:
@@ -37,8 +37,8 @@ class DwrQ1Q2
   DwrQ1Q2(SolverInterface& SR);
   virtual ~DwrQ1Q2() {};
 
-  double Estimator(nvector<double>& eta, BasicGhostVector& gf, 
-		   const BasicGhostVector& gu, const BasicGhostVector& gz,
+  double Estimator(nvector<double>& eta, VectorInterface& gf, 
+		   const VectorInterface& gu, const VectorInterface& gz,
 		   const ProblemDescriptorInterface& PDI);
 };
 }
