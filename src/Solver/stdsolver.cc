@@ -819,6 +819,7 @@ void StdSolver::ComputeIlu(const BasicGhostVector& gu) const
 
 void StdSolver::modify_ilu(IluInterface& I,int ncomp) const 
 {
+  if(Dat.GetIluModify().size()==0) return;
   assert(Dat.GetIluModify().size()==ncomp);
   for(int c=0;c<ncomp;c++)
     {
