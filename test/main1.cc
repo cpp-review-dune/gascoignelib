@@ -40,7 +40,7 @@ public:
       int dim=2;
       int prerefine=3;
       string inpname("square.inp");
-      GetMeshAgent()->SetDefaultValues(dim,inpname,prerefine);
+      GetMeshAgent()->BasicInit(inpname,dim,prerefine,0);
     }
 
   StdLoop::BasicInit(paramfile);

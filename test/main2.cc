@@ -86,7 +86,7 @@ class LocalLoop : public StdLoop
     int dim=2;
     int prerefine=0;
     string inpname("mesh3.gup");
-    GetMeshAgent()->SetDefaultValues(dim,inpname,prerefine);
+    GetMeshAgent()->BasicInit(inpname,dim,prerefine,0);
     
     GetMultiLevelSolverPointer() = new LocalMultiLevelSolver;
     StdLoop::BasicInit(paramfile);
