@@ -21,6 +21,9 @@ protected:
   int RhsPoint(GlobalVector& f, const Vertex2d& p0, int comp, double d) const;
   int RhsPoint(GlobalVector& f, const Vertex3d& p0, int comp, double d) const;
   virtual nmatrix<double> GetLocalInterpolationWeights() const { assert(0);}
+  int GetCellNumber(const Vertex2d& p0, nvector<Vertex2d>& p) const;
+  void VertexTransformation(const nvector<Vertex2d>& p, 
+			    const Vertex2d& p0, Vertex2d& tp) const;
 
 public:
 

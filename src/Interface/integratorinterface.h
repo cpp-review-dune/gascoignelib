@@ -40,6 +40,9 @@ public:
   virtual double ComputeDomainFunctional(const DomainFunctional& F, const FemInterface& FEM, const LocalVector& U, const LocalData& Q) const {assert(0);}
 
   virtual void ErrorsByExactSolution(LocalVector& dst, const FemInterface& FE, const ExactSolution& ES, const LocalVector& U, const LocalData& Q) const  {assert(0);}
+
+  virtual void RhsPoint(LocalVector& F, const FemInterface& FEM, const Vertex2d& v, int) const { assert(0);};
+  virtual void RhsPoint(LocalVector& F, const FemInterface& FEM, const Vertex3d& v, int) const { assert(0);};
 };
 
 

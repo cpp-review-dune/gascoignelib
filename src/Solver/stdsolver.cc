@@ -602,15 +602,8 @@ double StdSolver::ComputeDomainFunctional(GlobalVector& f, const GlobalVector& u
 
 double StdSolver::ComputePointFunctional(GlobalVector& f, const GlobalVector& u, GlobalVector& z, const PointFunctional* FP) const
 {
-  if (GetMesh()->dimension()!=2)
-    {
-      cerr << "Punktfunktional nur in 2d\n";
-      assert(0);
-    }
-  
   f.zero();
 
-  int comp = FP->GetComp();
   RhsPoint(f,FP->points(), FP->GetComp(),FP->weights());
   HNAverage(u);      
   double J = u*f;
