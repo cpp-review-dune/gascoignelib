@@ -2,6 +2,7 @@
 #define __StdMultiLevelSolverData_h
 
 #include "paramfile.h"
+#include "cginfo.h"
 #include <map>
 #include <iostream>
 
@@ -17,6 +18,9 @@ class StdMultiLevelSolverData
     int          _countresidual, _coarselevel;
     double       _mgomega;
     
+    int        _gmresmemsize;
+    CGInfo     precinfo;
+  
   public:
 
     StdMultiLevelSolverData() { }
@@ -31,6 +35,10 @@ class StdMultiLevelSolverData
     double&      MgOmega()       { return _mgomega; }
     std::string& LinearSolve()   { return _linearsolve; }
     std::string& NonLinearSolve(){ return _nonlinearsolve; }
+
+    int  GmresMemSize()    const { return _gmresmemsize; }
+          CGInfo& GetPrecInfo()       { return precinfo;}
+    const CGInfo& GetPrecInfo() const { return precinfo;}
 };
 
 /**********************************************************/

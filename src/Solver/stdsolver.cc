@@ -23,6 +23,8 @@
 
 #include  "q1gls2d.h"
 #include  "q1gls3d.h"
+#include  "q22d.h"
+#include  "q23d.h"
 
 #include  "edgeinfocontainer.h"
 
@@ -161,6 +163,7 @@ MeshInterpretorInterface* StdSolver::NewMeshInterpretor(int dimension, const str
   if(dimension==2)
     {
       if (discname=="Q1")         return new Q12d;
+      else if (discname=="Q2")    return new Q22d;
       else if (discname=="Q1Gls") return new Q1Gls2d;
       else 
 	{         
@@ -171,6 +174,7 @@ MeshInterpretorInterface* StdSolver::NewMeshInterpretor(int dimension, const str
   else if(dimension==3)
     {
       if (discname=="Q1")          return new Q13d;
+      else if (discname=="Q2")     return new Q23d;
       else if (discname=="Q1Gls")  return new Q1Gls3d;
       else 
 	{         

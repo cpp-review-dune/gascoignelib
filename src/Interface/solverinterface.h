@@ -162,7 +162,7 @@ class SolverInterface
   virtual void MatrixZero() const=0;
   virtual void ComputeIlu(const BasicGhostVector& u) const { assert(0);}
   virtual void ComputeIlu() const=0;
-  virtual void TransposeMatrix() const { assert(0);};
+  virtual void AssembleDualMatrix(const BasicGhostVector& gu, double d) { assert(0);};
 
   //
   /// vector - "postprocessing"

@@ -144,6 +144,13 @@ class StdMultiLevelSolver : public MultiLevelSolverInterface
 
   void SolutionTransfer(int l, GlobalVector& ul, const GlobalVector& uf) const;
   void Transfer(int l, GlobalVector& ul, const GlobalVector& uf) const;
+  void AssembleDualMatrix(MultiLevelGhostVector& u);
+
+  // fuer gmres
+  void precondition(MultiLevelGhostVector& x, MultiLevelGhostVector& y);
+  void MemoryVector(MultiLevelGhostVector& p);
+  void DeleteVector(MultiLevelGhostVector& p);
+  void Equ(MultiLevelGhostVector& dst, double s, const MultiLevelGhostVector& src)const;
 };
 }
 

@@ -7,6 +7,7 @@
 #include  <iomanip>
 #include  "mginterpolatormatrix.h"
 #include  "mginterpolatornested.h"
+#include  "gmres.h"
 
 using namespace std;
 
@@ -417,18 +418,6 @@ void StdMultiLevelSolver::Cg(MultiLevelGhostVector& x, const MultiLevelGhostVect
 
 /*-------------------------------------------------------------*/
 
-void StdMultiLevelSolver::Gmres(MultiLevelGhostVector& x, const MultiLevelGhostVector& f, CGInfo& info)
-{
-  assert(0);
-//   int n = DataP->gmresmemsize;
-
-//   GMRES<SolverInterface,StdMultiLevelSolver,GhostVector> gmres(*GetSolver(ComputeLevel),*this,n);
-  
-//   gmres.solve(x,f,info);
-}
-
-/*-------------------------------------------------------------*/
-
 void StdMultiLevelSolver::NewtonOutput(NLInfo& nlinfo) const
 {
   assert(MON!=0);
@@ -476,19 +465,38 @@ void StdMultiLevelSolver::NewtonMatrixControl(MultiLevelGhostVector& u, NLInfo& 
 
 void StdMultiLevelSolver::NewtonLinearSolve(MultiLevelGhostVector& x, const MultiLevelGhostVector& b, CGInfo& info)
 {
-  assert(DataP->LinearSolve() == "mg");
-
   _clock_solve.start();
   info.reset();
-  
   x.zero();
 
-  int clevel=Gascoigne::max_int(DataP->CoarseLevel() ,0);
-  if(DataP->CoarseLevel() == -1) clevel = FinestLevel(); 
-  LinearMg(ComputeLevel,clevel,x,b, info);
-
+  if (DataP->LinearSolve()=="mg")
+    {
+      int clevel=Gascoigne::max_int(DataP->CoarseLevel() ,0);
+      if(DataP->CoarseLevel() == -1) clevel = FinestLevel(); 
+      LinearMg(ComputeLevel,clevel,x,b, info);
+    }
+  else if (DataP->LinearSolve()=="gmres")
+    {
+      Gmres(x,b,info);
+    }
+  else
+    {
+      assert(0);
+    }
   GetSolver(ComputeLevel)->SubtractMean(x(ComputeLevel));
   _clock_solve.stop();
+}
+
+/*-------------------------------------------------------------*/
+
+void StdMultiLevelSolver::Gmres(MultiLevelGhostVector& x, const MultiLevelGhostVector& f, CGInfo& info)
+{
+  int n = DataP->GmresMemSize();
+
+  StdSolver* S = dynamic_cast<StdSolver*>(GetSolver(ComputeLevel));
+  GMRES<StdSolver,StdMultiLevelSolver,MultiLevelGhostVector> gmres(*S,*this,n);
+
+  gmres.solve(x,f,info);
 }
 
 /*-------------------------------------------------------------*/
@@ -701,4 +709,69 @@ void StdMultiLevelSolver::Transfer(int l, GlobalVector& ul, const GlobalVector& 
   assert(_Interpolator[l-1]);
   _Interpolator[l-1]->SolutionTransfer(ul,uf);
 }
+
+/*-------------------------------------------------------------*/
+
+void StdMultiLevelSolver::AssembleDualMatrix(MultiLevelGhostVector& u)
+{
+  for(int l=0; l<nlevels(); l++)
+    {
+      GetSolver(l)->AssembleDualMatrix(u(l),1.);
+    }
+}
+
+
+/*-------------------------------------------------------------*/
+
+void StdMultiLevelSolver::MemoryVector(MultiLevelGhostVector& v)
+{
+  RegisterVector(v);
+  for(int l=0; l<nlevels(); ++l)  
+    {
+      StdSolver* S = dynamic_cast<StdSolver*>(GetSolver(l));
+      S->MemoryVector(v(l));
+    }
+}
+
+/*-------------------------------------------------------------*/
+
+void StdMultiLevelSolver::DeleteVector(MultiLevelGhostVector& v)
+{
+  _MlVectors.erase(v);
+    
+  for(int l=0; l<nlevels(); ++l)  
+    {
+      const StdSolver* S = dynamic_cast<const StdSolver*>(GetSolver(l));
+      S->DeleteVector(&v(l));
+    }
+}
+
+
+/*-------------------------------------------------------------*/
+
+void StdMultiLevelSolver::precondition(MultiLevelGhostVector& x, MultiLevelGhostVector& y)
+{
+  CGInfo& precinfo = DataP->GetPrecInfo();
+  precinfo.reset();
+  precinfo.check(0.,0.);
+
+  int clevel=Gascoigne::max_int(DataP->CoarseLevel(),0);
+  if(DataP->CoarseLevel() == -1) clevel = FinestLevel(); 
+
+  LinearMg(ComputeLevel,clevel,x,y,precinfo);
+}
+
+/*-------------------------------------------------------------*/
+
+void StdMultiLevelSolver::Equ(MultiLevelGhostVector& dst, double s, const MultiLevelGhostVector& src) const
+{
+  for(int l=0; l<FinestLevel(); l++)
+    {
+      const StdSolver* S = dynamic_cast<const StdSolver*>(GetSolver(l));
+      S->Equ(dst(l),s,src(l));
+    }
+}
+
+/*-------------------------------------------------------------*/
+
 }
