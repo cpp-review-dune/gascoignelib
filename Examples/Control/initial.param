@@ -1,0 +1,14 @@
+//Block Mesh
+
+dimension   2
+gridname    Results/mesh.gup
+
+//Block Multilevelsolver
+
+solver             instat
+
+//Block Solver
+
+disc       Q1
+
+//Block Nix

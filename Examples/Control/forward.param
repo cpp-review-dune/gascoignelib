@@ -1,0 +1,41 @@
+//Block Mesh
+
+dimension   2
+gridname    Results/mesh.gup
+
+//Block Loop
+
+dt          100.
+niter       10
+neuler      2
+//scheme      FractionalTheta
+//scheme      CN
+scheme      Euler
+refiner     global
+
+//Block BoundaryManager
+
+//Block Functional
+
+names  1 domain
+//punkt  4  point     vertex_#no_comp_weight_x_y_comp_weight_x_y  ref_val yes 
+//punkt  4  point     vertex_1_0_1_450_150   0. no
+domain 4  domainmean 0_0._100._0._100. 0. no
+
+//Block Multilevelsolver
+
+solver             instat
+linear_maxiter          10
+nonlinear_tol		1.e-7
+linear_tol		1.e-4
+nonlinear_rho 	0.009
+
+//Block Solver
+
+disc       Q1
+iterpre                 2
+iterpost                2
+iterexact              10
+ndirect              100
+
+//Block Nix

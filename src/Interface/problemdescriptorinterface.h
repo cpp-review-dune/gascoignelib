@@ -82,13 +82,13 @@ public:
   virtual std::string GetName() const=0;
 
   std::ostream& OutputSettings(std::ostream& os) const {
-    if(EQ) os << "Equation:        " << EQ->GetName() << std::endl;
-    if(BM) os << "BoundaryManager: " << BM->GetName() << std::endl;
-    if(RHS) os << "Rhs:            " << RHS->GetName() << std::endl;
-    if(DD) os << "DirichletData:   " << DD->GetName() << std::endl;
-    if(ND) os << "NeumannData:   " << ND->GetName() << std::endl;
-    if(ES) os << "ExactSolution:   " << ES->GetName() << std::endl;
-    if(IC) os << "InitialCondition:" << IC->GetName() << std::endl;
+    if(EQ)  os << "Equation:        " << EQ->GetName() << std::endl;
+    if(BM)  os << "BoundaryManager: " << BM->GetName() << std::endl;
+    if(RHS) os << "Rhs:             " << RHS->GetName() << std::endl;
+    if(DD)  os << "DirichletData:   " << DD->GetName() << std::endl;
+    if(ND)  os << "NeumannData:     " << ND->GetName() << std::endl;
+    if(ES)  os << "ExactSolution:   " << ES->GetName() << std::endl;
+    if(IC)  os << "InitialCondition:" << IC->GetName() << std::endl;
     return os;
   }
   
