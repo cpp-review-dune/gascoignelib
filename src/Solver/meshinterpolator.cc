@@ -1,8 +1,9 @@
 #include "backup.h"
 #include "meshinterpolator.h"
-#include "q1.h"
-#include "q2.h"
+#include "q12d.h"
+#include "q22d.h"
 #include "stdtimesolver.h"
+#include "domainrighthandside.h"
 
 using namespace std;
 
@@ -10,7 +11,7 @@ namespace Gascoigne
 {
 /**********************************************************/
 
-MeshInterpolator::MeshInterpolator() : _MA(NULL), _SI(NULL)
+MeshInterpolator::MeshInterpolator() : _MA(NULL), _DI(NULL)
 {
 }
 
@@ -18,9 +19,9 @@ MeshInterpolator::MeshInterpolator() : _MA(NULL), _SI(NULL)
 
 MeshInterpolator::~MeshInterpolator()
 {
-  if (GetSolverPointer())
+  if (_DI)
   {
-    delete GetSolver();
+    delete GetDiscretization();
   }
   if (GetMeshAgentPointer())
   {
@@ -151,7 +152,7 @@ void MeshInterpolator::RefineAndInterpolate(HierarchicalMesh* Mesh, vector<Globa
       int ci = Mesh->child(*p,i);
       for (int j=0; j<npc; j++)
       {
-	int l = Mesh->vertex_of_cell(ci,j);
+	int l = Mesh->vertex_of_cell(ci,i);
         if (j!=i && !done[l])
         {
 	  int k = Mesh->vertex_of_cell(ci,j);
@@ -189,26 +190,23 @@ void MeshInterpolator::AddVectorIntermediate(GlobalVector u)
 
 void MeshInterpolator::AddVectorOld(GlobalVector u)
 {
-  assert(GetOriginalSolverPointer());
   _VecOld.push_back(u);
-  GetOriginalSolver()->HNAverage(u);
+  GetDiscretization()->HNAverage(u);
 }
 
 /**********************************************************/
 
 void MeshInterpolator::AddVectorNew(GlobalVector u)
 {
-  assert(GetSolverPointer());
   _VecNew.push_back(u);
-  GetSolver()->HNAverage(u);
+  GetDiscretization()->HNAverage(u);
 }
 
 /**********************************************************/
 
-void MeshInterpolator::BasicInit(SolverInterface* SI, MeshAgentInterface* MA, const string& name, const ProblemDescriptorInterface* PD)
+void MeshInterpolator::BasicInit(DiscretizationInterface* DI, MeshAgentInterface* MA, const string& name)
 {
   // Klassenvariablen initialisieren
-  _name = name;
   _BaseCells.clear();
   _ToBeRef.clear();
   _ToBeRefNew.clear();
@@ -219,33 +217,27 @@ void MeshInterpolator::BasicInit(SolverInterface* SI, MeshAgentInterface* MA, co
 
   // Original-Solver und -MeshAgent speichern
   GetOriginalMeshAgentPointer() = MA;
-  _dim = GetOriginalMeshAgent()->GetMesh(0)->dimension();
-  GetOriginalSolverPointer() = SI;
+
+  int dim = GetOriginalMeshAgent()->GetMesh(0)->dimension();
+  _ODI = DI;
 
   // neuen MeshAgent anlegen
   GetMeshAgentPointer() = new MeshAgent;
 
   GetMeshAgent()->GetShapes2d() = GetOriginalMeshAgent()->GetShapes2d();
   GetMeshAgent()->GetShapes3d() = GetOriginalMeshAgent()->GetShapes3d();
-  GetMeshAgent()->SetDefaultValues(_dim,_name+".gup",0);
+  GetMeshAgent()->SetDefaultValues(dim,name+".gup",0);
   GetMeshAgent()->BasicInit(NULL);
 
-  // ProblemDescriptor speichern
-  GetProblemPointer() = PD;
+  // neue Discretization anlegen
+  _DI = new Q12d;
+  GetDiscretization()->BasicInit(NULL);
+  GetDiscretization()->ReInit(GetMeshAgent()->GetMesh(0));
 
-  // neuen Solver anlegen
-  GetSolverPointer() = new StdSolver;
-  GetSolver()->BasicInit(GetMeshAgent()->nlevels()-1,GetOriginalSolver()->GetParamfile(),GetMeshAgent()->GetMesh(0));
-  GetSolver()->RegisterVector(_help);
-  GetSolver()->NewMesh(GetMeshAgent()->nlevels()-1,GetMeshAgent()->GetMesh(0));
-  GetSolver()->SetProblem(*GetProblem());
-  GetSolver()->ReInitVector();
-  GetSolver()->SetDistribute(false);
-
-  const Q1* Q1DP = dynamic_cast<const Q1*>(GetSolver()->GetDiscretization());
+  const Q1* Q1DP = dynamic_cast<const Q1*>(GetDiscretization());
   if (Q1DP)
   {
-    int size = static_cast<int>(pow(2.,static_cast<double>(_dim)));
+    int size = static_cast<int>(pow(2.,static_cast<double>(dim)));
     _weights.resize(size,size);
     _weights = Q1DP->GetLocalInterpolationWeights();
   }
@@ -259,7 +251,7 @@ void MeshInterpolator::BasicInit(SolverInterface* SI, MeshAgentInterface* MA, co
   for (int i=0; i<_weights.m(); i++)
   {
     swap(_weights(i,2),_weights(i,3));
-    if (_dim==3)
+    if (dim==3)
     {
       swap(_weights(i,6),_weights(i,7));
     }
@@ -267,7 +259,7 @@ void MeshInterpolator::BasicInit(SolverInterface* SI, MeshAgentInterface* MA, co
   for (int j=0; j<_weights.n(); j++)
   {
     swap(_weights(2,j),_weights(3,j));
-    if (_dim==3)
+    if (dim==3)
     {
       swap(_weights(6,j),_weights(7,j));
     }
@@ -278,15 +270,41 @@ void MeshInterpolator::BasicInit(SolverInterface* SI, MeshAgentInterface* MA, co
   _New = GetMeshAgent()->GetHierarchicalMesh();
   assert(_Old);
   assert(_New);
-
 }
 
 /**********************************************************/
 
-void MeshInterpolator::RhsForProjection(BasicGhostVector& gf)
+       class ProjectionRightHandSide : public Gascoigne::DomainRightHandSide
+         {
+           protected:
+	   mutable Gascoigne::FemFunction _U;
+	   
+	 public:
+	   
+	   ProjectionRightHandSide() : Gascoigne::DomainRightHandSide()  {}
+	   ~ProjectionRightHandSide() { }
+	   
+	   int GetNcomp() const { return 1;}//_U.size(); }
+	   std::string GetName() const { return "ProjectionRightHandSide"; }
+	   
+	   void SetFemData(Gascoigne::FemData& q) const
+	   {
+	     assert(q.count("U")==1);
+	     _U = q["U"];
+	   }
+	   
+	   void operator()(Gascoigne::VectorIterator b, const Gascoigne::TestFunction& N, 
+			   const Gascoigne::Vertex2d& v) const 
+	   {
+	     for (int i=0; i<_U.size(); i++)
+	       b[i] += _U[i].m() * N.m();
+	   }
+       };
+
+/**********************************************************/
+
+void MeshInterpolator::RhsForProjection(GlobalVector& f, const GlobalVector& u)
 {
-  GlobalVector u;
-  ReadBackUpResize(u,_name+".bup");
   AddVectorNew(u);
 
   vector<bool> doneOld(_Old->nnodes(),true),doneNew(_New->nnodes(),true);
@@ -328,20 +346,22 @@ void MeshInterpolator::RhsForProjection(BasicGhostVector& gf)
   while (!_ToBeRef.empty() || !_ToBeRefNew.empty());
 
   GetMeshAgent()->global_refine(0);
-  GetSolver()->NewMesh(GetMeshAgent()->nlevels()-1,GetMeshAgent()->GetMesh(0));
-  GetSolver()->ReInitVector();
+  GetDiscretization()->ReInit(GetMeshAgent()->GetMesh(0));
 
-  GetSolver()->AddNodeVector("U",&u);
-  GetSolver()->Rhs(_help);
-  GetSolver()->DeleteNodeVector("U");
+  ProjectionRightHandSide  PD;
+  
+  GlobalVector _help;
+  _help.ReInit(u.ncomp(),u.n());
+  GetDiscretization()->AddNodeVector("U",&u);
+  GetDiscretization()->Rhs(_help,PD,1.);
+  GetDiscretization()->DeleteNodeVector("U");
 
-  AddVectorIntermediate(GetSolver()->GetGV(_help));
+  AddVectorIntermediate(_help);
   for (set<int>::const_iterator pbc = _BaseCells.begin(); pbc!=_BaseCells.end(); pbc++)
   {
     Distribute(*pbc,*pbc);
   }
 
-  GlobalVector& f = GetOriginalSolver()->GetGV(gf);
   f.zero();
 
   assert(_VecInt.size()==1);
@@ -354,7 +374,7 @@ void MeshInterpolator::RhsForProjection(BasicGhostVector& gf)
       f(i,c) = help(_NewNodeNumber[i],c);
     }
   }
-  GetOriginalSolver()->HNDistribute(gf);
+  GetOriginalDiscretization()->HNDistribute(f);
 
   _Old = NULL;
   _New = NULL;
