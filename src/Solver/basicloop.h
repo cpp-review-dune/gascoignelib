@@ -76,7 +76,7 @@ protected:
 
   // new vectors
 
-  virtual std::string Solve(MultiLevelGhostVector& u, MultiLevelGhostVector& f, std::string name);  
+  virtual std::string Solve(MultiLevelGhostVector& u, MultiLevelGhostVector& f, std::string name);
   virtual std::string Solve(MultiLevelGhostVector& u, MultiLevelGhostVector& f){
      return Solve(u, f, _s_resultsdir+"/solve");
   }
