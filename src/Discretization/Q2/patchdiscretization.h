@@ -59,8 +59,12 @@ public:
 ///  Constructor 
 //
   PatchDiscretization() : BasicDiscretization(), __FEM(NULL), __INT(NULL) {}
-  std::string GetName() const {return "PatchDiscretization";}
+  ~PatchDiscretization(){
+    if(__FEM) {delete __FEM; __FEM=NULL;}
+    if(__INT) {delete __INT; __INT=NULL;}
+  }
 
+  std::string GetName() const {return "PatchDiscretization";}
   void Structure(SparseStructureInterface* S) const;
 
   void Form(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const;
