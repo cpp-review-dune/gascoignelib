@@ -46,13 +46,10 @@ void BasicLoop::BasicInit(const ParamFile* paramfile)
   _paramfile = paramfile;
 
   DataFormatHandler DFH;
-  DFH.insert("nmin",&_nmin,1000);
-  DFH.insert("nmax",&_nmax,100000);
-  DFH.insert("p",&_p,0.1);
-  DFH.insert("nmax",&_nmax,100000);
-  DFH.insert("niter",&_niter,1);
-  DFH.insert("initial",&_initial,"boundary");
-  DFH.insert("reload",&_reload,"none");
+  DFH.insert("niter",       &_niter,       1);
+  DFH.insert("initial",     &_initial,     "boundary");
+  DFH.insert("reload",      &_reload,      "none");
+  DFH.insert("writebupgup", &_writeBupGup, true);
   FileScanner FS(DFH);
   FS.NoComplain();
   FS.readfile(_paramfile,"Loop");
@@ -64,7 +61,7 @@ void BasicLoop::BasicInit(const ParamFile* paramfile)
 
   if ((_reload!="none") && (_initial!="file"))
     {
-      cerr << "Please, add 'initial file' to Block BasicLoop" << endl;
+      cerr << "Please, add 'initial file' to Block Loop" << endl;
       _initial = "file";
     }
   assert((_reload!="none") || (_initial!="file"));
@@ -115,7 +112,10 @@ void BasicLoop::Output(const MultiLevelGhostVector& u, string name) const
 {
   GetMultiLevelSolver()->GetSolver()->Visu(name,u.finest(),_iter);
 //   GetMultiLevelSolver()->GetSolver()->VisuGrid(name,_iter);
-  WriteMeshAndSolution(name,u);
+  if(_writeBupGup)
+  {   
+    WriteMeshAndSolution(name,u);
+  }
 }
 
 /*-------------------------------------------------*/

@@ -36,6 +36,7 @@ private:
 
   MeshAgentInterface*        _MA;
   MultiLevelSolverInterface* _ML;
+  SolverInfos*               _SI;
   
   void WriteMeshAndSolution(const std::string& filename, const MultiLevelGhostVector& u) const;
   void WriteSolution(const MultiLevelGhostVector& u) const;
@@ -43,7 +44,6 @@ private:
   
 protected:
 
-  SolverInfos*               _SI;
 
   MeshAgentInterface*& GetMeshAgentPointer() { return _MA;}
   MultiLevelSolverInterface*& GetMultiLevelSolverPointer() { return _ML;}
@@ -60,8 +60,8 @@ protected:
 
   mutable StopWatch   _clock_newmesh, _clock_solve, _clock_functionals, _clock_write, _clock_estimate;
 
-  int    _niter, _nmax, _nmin, _coarse, _iter;
-  double _p;
+  int    _niter, _iter;
+  bool _writeBupGup;
 
   std::string _reload, _initial;
   const ParamFile*  _paramfile;

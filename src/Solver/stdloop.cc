@@ -40,16 +40,15 @@ void StdLoop::ClockOutput() const
 void StdLoop::BasicInit(const ParamFile* paramfile)
 {
   BasicLoop::BasicInit(paramfile);
-  _paramfile = paramfile;
 
   DataFormatHandler DFH;
-  DFH.insert("nmin",&_nmin,1000);
-  DFH.insert("nmax",&_nmax,100000);
-  DFH.insert("p",&_p,0.1);
-  DFH.insert("coarse",&_coarse,0);
-  DFH.insert("refiner",&_refiner,"global");
-  DFH.insert("estimator",&_estimator,"none");
-  DFH.insert("extrapolate",&_extrapolate,"no");
+  DFH.insert("nmin",       &_nmin,        1000);
+  DFH.insert("nmax",       &_nmax,        100000);
+  DFH.insert("p",          &_p,           0.1);
+  DFH.insert("coarse",     &_coarse,      0);
+  DFH.insert("refiner",    &_refiner,     "global");
+  DFH.insert("estimator",  &_estimator,   "none");
+  DFH.insert("extrapolate",&_extrapolate, "no");
   FileScanner FS(DFH);
   FS.NoComplain();
   FS.readfile(_paramfile,"Loop");

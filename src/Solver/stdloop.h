@@ -30,6 +30,8 @@ protected:
 
   mutable StopWatch   _clock_newmesh, _clock_solve, _clock_write;
 
+  int _nmin, _nmax, _coarse;
+  double _p;
   std::string _estimator, _extrapolate, _refiner;
   DoubleVector _JErr;
   Extrapolator    Extra;
