@@ -55,6 +55,7 @@ public:
   void Matrix(MatrixInterface& A, const GlobalVector& u, const Equation& EQ, double d) const;
   void MassMatrix(MatrixInterface& A) const;
   void Structure(SparseStructureInterface* SI) const;
+  void InitFilter(DoubleVector& F) const;
 };
 }
 

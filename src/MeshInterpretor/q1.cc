@@ -1,5 +1,6 @@
 #include  "q1.h"
 #include  "gascoignemesh.h"
+#include  "pressurefilter.h"
 
 using namespace std;
 
@@ -199,6 +200,42 @@ void Q1::MassMatrix(MatrixInterface& A) const
 
   HN->MatrixDiag(1,A);  
 }
+
+/* ----------------------------------------- */
+
+void Q1::InitFilter(DoubleVector& F) const
+{
+  PressureFilter* PF = static_cast<PressureFilter*>(&F);
+  assert(PF);
+
+  if (!PF->Active()) return;
+
+  PF->ReInit(GetMesh()->nnodes(),GetMesh()->nhanging());
+  nmatrix<double> T;
+  for(int iq=0; iq<GetMesh()->ncells(); ++iq)
+    {
+      int nv = GetMesh()->nodes_per_cell(iq);
+      EntryMatrix  E(nv,1);
+
+      Transformation(T,iq);
+      GetFem()->ReInit(T);
+
+      double cellsize = GetIntegrator()->MassMatrix(E,*GetFem());
+      PF->AddDomainPiece(cellsize);
+
+      IntVector ind = GetMesh()->IndicesOfCell(iq);
+      HN->CondenseHanging(E,ind);
+
+      for(int i=0;i<ind.size();i++)
+ 	{
+	  for(int j=0;j<ind.size();j++)
+	    {
+	      F[ind[j]] += E(i,j,0,0);
+	    }
+      	}
+    }
 }
 
 /*----------------------------------------------*/
+
+}

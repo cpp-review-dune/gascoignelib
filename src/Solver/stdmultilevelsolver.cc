@@ -94,7 +94,7 @@ void StdMultiLevelSolver::BasicInit(const MeshAgentInterface* MAP, const ParamFi
   
   if(!DataP)
   {
-    DataP = new MultiLevelSolverData;
+    DataP = new StdMultiLevelSolverData;
   }
   DataP->BasicInit(_paramfile);
 
@@ -313,22 +313,6 @@ void StdMultiLevelSolver::InterpolateSolution(MultiLevelGhostVector& u, const Gl
 void StdMultiLevelSolver::vmulteqgmres(MultiLevelGhostVector& y, const MultiLevelGhostVector& x) const
 {
   GetSolver(ComputeLevel)->vmulteqgmres(y(ComputeLevel),x(ComputeLevel));
-}
-
-/*-------------------------------------------------------------*/
-
-void StdMultiLevelSolver::precondition(MultiLevelGhostVector& x, MultiLevelGhostVector& y)
-{
-  assert(0);
-  CGInfo cginfo;// = DataP->GetLInfo("Precond");
-
-  int clevel=Gascoigne::max_int(DataP->CoarseLevel(),0);
-  if(DataP->CoarseLevel() == -1) clevel = FinestLevel(); 
-
-  cginfo.reset();
-  cginfo.check(0.,0.);
-//   LinearMg(FinestLevel(),clevel,x,y,cginfo);
-  LinearMg(ComputeLevel,clevel,x,y,cginfo);
 }
 
 /*-------------------------------------------------------------*/

@@ -7,8 +7,11 @@
 
 #include  "pointmatrix.h"
 #include  "pointilu.h"
+/*--------------------------------*/
+#ifdef WITHUMFPACK
 #include  "umfilu.h"
-
+#endif
+/*--------------------------------*/
 #include  "ilupermutate.h"
 #include  "cuthillmckee.h"
 #include  "stopwatch.h"
@@ -201,7 +204,9 @@ MatrixInterface* StdSolver::NewMatrix(int ncomp, const string& matrixtype)
 
 IluInterface* StdSolver::NewIlu(int ncomp, const string& matrixtype) 
 {
+#ifdef WITHUMFPACK
   if(_directsolver)             return new UmfIlu(GetMatrix());
+#endif
   if(_matrixtype=="point_node") return new PointIlu(ncomp,"node");
   else                          return new PointIlu(ncomp,"component");
 }
@@ -357,7 +362,7 @@ void StdSolver::MatrixResidual(GlobalVector& y, const GlobalVector& x, const Glo
   y.equ(1.,b);
   vmult(y,x,-1.);
   SubtractMeanAlgebraic(y);
-  //  SubtractMean(y);
+  //SubtractMean(y);
 }
 
 /*-------------------------------------------------------*/
@@ -457,6 +462,7 @@ void StdSolver::smooth_pre(BasicGhostVector& x, const BasicGhostVector& y, Basic
 
 void StdSolver::smooth_exact(BasicGhostVector& x, const BasicGhostVector& y, BasicGhostVector& help) const
 {
+#ifdef WITHUMFPACK
   if(_directsolver)
     {
       _so.start();
@@ -466,6 +472,7 @@ void StdSolver::smooth_exact(BasicGhostVector& x, const BasicGhostVector& y, Bas
       _so.stop();
     }
   else
+#endif
     {
       int niter = Dat.GetIterExact();
       smooth(niter,GetGV(x),GetGV(y),GetGV(help));
@@ -501,7 +508,7 @@ void StdSolver::Form(GlobalVector& y, const GlobalVector& x, double d) const
 
   HNZero(x);
   HNDistribute(y);
-  //SubtractMeanAlgebraic(y);
+  SubtractMeanAlgebraic(y);
 
   _re.stop();
 }
@@ -773,6 +780,7 @@ void StdSolver::DirichletMatrix() const
 
 void StdSolver::ComputeIlu() const
 {
+#ifdef WITHUMFPACK
   if(_directsolver)
     {
       _cs.start();
@@ -783,6 +791,7 @@ void StdSolver::ComputeIlu() const
       _cs.stop();
     }
   else
+#endif
     {
       int ncomp = GetProblemDescriptor()->GetEquation()->ncomp();
       _ci.start();
@@ -798,6 +807,7 @@ void StdSolver::ComputeIlu() const
 
 void StdSolver::ComputeIlu(const BasicGhostVector& gu) const
 {
+#ifdef WITHUMFPACK
   if(_directsolver)
     {
       _cs.start();
@@ -808,6 +818,7 @@ void StdSolver::ComputeIlu(const BasicGhostVector& gu) const
       _cs.stop();
     }
   else
+#endif
     {
       _ci.start();
       const GlobalVector& u = GetGV(gu);
@@ -1011,22 +1022,27 @@ void StdSolver::SubtractMean(GlobalVector& x) const
   // In each nonlinear step: applied to Newton correction,
   // in each smoothing step
   //
-  if (!PF.Active()) return;
-
-  HNAverage(x);
-  PF.SubtractMean(x);
-  HNZero(x);
+  if (PF.Active())
+    {
+      HNZeroCheck(x);
+      PF.SubtractMean(x);
+      HNZero(x);
+    }
 }
 
 /*---------------------------------------------------*/
 
 void StdSolver::SubtractMeanAlgebraic(GlobalVector& x) const
 {
+  // applies to residuals
   if (PF.Active())
     {
-      HNAverage(x);
+      HNZeroCheck(x);
       PF.SubtractMeanAlgebraic(x);
       HNZero(x);
     }
 }
+
+/*---------------------------------------------------*/
+
 }

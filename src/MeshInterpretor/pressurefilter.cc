@@ -29,11 +29,11 @@ DoubleVector PressureFilter::IntegrateVector(const GlobalVector& u) const
   
   DoubleVector dst(u.ncomp(),0.);
   
-  for (int j=0; j<u.n(); j++)
+  for (int i=0; i<component.size(); i++)
     {
-      for (int i=0; i<component.size(); i++)
+      int c = component[i];
+      for (int j=0; j<u.n(); j++)
 	{
-	  int   c = component[i];
 	  dst[c] += u(j,c)* (*this)[j];
 	}      
     }
@@ -66,14 +66,14 @@ void PressureFilter::SubtractMeanAlgebraic(GlobalVector& u) const
       double d = 0.;
       for (int j=0; j<u.n(); j++)
 	{
-	  d += u(j,comp)* (*this)[j];
+	  d += u(j,comp);
 	}      
-      //d /= u.n();
       d /= u.n() - nhanging;
       u.CompAdd(comp,-d);
     }
 }
-}
 
 /*-----------------------------------------*/
+
+}
 

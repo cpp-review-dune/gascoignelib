@@ -1,5 +1,5 @@
-#ifndef __MultiLevelSolverData_h
-#define __MultiLevelSolverData_h
+#ifndef __StdMultiLevelSolverData_h
+#define __StdMultiLevelSolverData_h
 
 #include "paramfile.h"
 #include <map>
@@ -9,18 +9,18 @@
 
 namespace Gascoigne
 {
-class MultiLevelSolverData
+class StdMultiLevelSolverData
 {
   protected:
 
     std::string  _solver, _mgtype, _linearsolve, _nonlinearsolve;
-    int          _countresidual, _coarselevel, _gmresmemsize, _projectionflag;
+    int          _countresidual, _coarselevel;
     double       _mgomega;
     
   public:
 
-    MultiLevelSolverData() { }
-    virtual ~MultiLevelSolverData();
+    StdMultiLevelSolverData() { }
+    virtual ~StdMultiLevelSolverData();
 
     virtual void BasicInit(const ParamFile *param);
 
@@ -31,8 +31,6 @@ class MultiLevelSolverData
     double&      MgOmega()       { return _mgomega; }
     std::string& LinearSolve()   { return _linearsolve; }
     std::string& NonLinearSolve(){ return _nonlinearsolve; }
-    int&         GmresMemSize()  { return _gmresmemsize; }
-    int&         ProjectionFlag(){ return _projectionflag; }
 };
 
 /**********************************************************/

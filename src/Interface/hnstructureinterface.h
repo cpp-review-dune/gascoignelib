@@ -22,14 +22,7 @@ namespace Gascoigne
 {
 class HNStructureInterface
 {
-private:
-
-
-protected:
-
-
 public:
-
 
 //
 ////  Con(De)structor 
@@ -51,6 +44,7 @@ public:
   virtual void Zero(GlobalVector& u) const=0;
   virtual bool ZeroCheck(const GlobalVector& u) const=0;
 
+  virtual int nhnodes() const =0;
 };
 }
 

@@ -1,6 +1,5 @@
-#include "multilevelsolverdata.h"
+#include "stdmultilevelsolverdata.h"
 #include "filescanner.h"
-#include "stringutil.h"
 
 using namespace std;
 
@@ -8,13 +7,13 @@ using namespace std;
 
 namespace Gascoigne
 {
-MultiLevelSolverData::~MultiLevelSolverData()
+StdMultiLevelSolverData::~StdMultiLevelSolverData()
 {
 }
 
 /**********************************************************/
 
-void MultiLevelSolverData::BasicInit(const ParamFile *param)
+void StdMultiLevelSolverData::BasicInit(const ParamFile *param)
 {
   _countresidual = 0; 
   
@@ -25,7 +24,6 @@ void MultiLevelSolverData::BasicInit(const ParamFile *param)
   DFH.insert("mgomega",             &_mgomega,            1.);
   DFH.insert("coarselevel",         &_coarselevel,        0);
   DFH.insert("mgtype",              &_mgtype,             "V");
-  DFH.insert("projection",          &_projectionflag,     0);
 
   FileScanner FS(DFH);
   FS.NoComplain();
@@ -34,13 +32,6 @@ void MultiLevelSolverData::BasicInit(const ParamFile *param)
   if ((_mgtype!="V") && (_mgtype!="W") && (_mgtype!="F"))
   {
     _mgtype = "V";
-  }
-
-  vector<string> v = StringSplit(_linearsolve.c_str(),'_');
-  if( (v.size()==2) && (v[0]=="gmres") )
-  {
-    _gmresmemsize = atoi(v[1].c_str());
-    _linearsolve = "gmres";
   }
 }
 }

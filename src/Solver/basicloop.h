@@ -36,13 +36,14 @@ private:
 
   MeshAgentInterface*        _MA;
   MultiLevelSolverInterface* _ML;
-  SolverInfos*               _SI;
   
   void WriteMeshAndSolution(const std::string& filename, const MultiLevelGhostVector& u) const;
   void WriteSolution(const MultiLevelGhostVector& u) const;
   void WriteMesh() const;
   
 protected:
+
+  SolverInfos*               _SI;
 
   MeshAgentInterface*& GetMeshAgentPointer() { return _MA;}
   MultiLevelSolverInterface*& GetMultiLevelSolverPointer() { return _ML;}

@@ -14,12 +14,15 @@
 class PolynomialExactSolution : public Gascoigne::ExactSolution
 {
   double quadratic(double x) const { return x*(1.-x);}
+
  public:
-  std::string GetName() const {return "PolynomialExactSolution";}
-  int GetNcomp() const { return 1; }
-  double operator()(int c, const Gascoigne::Vertex3d& v) const{
-    return quadratic(v.x()) * quadratic(v.y()) * quadratic(v.z());
-  }
+  
+  std::string GetName()  const {return "PolynomialExactSolution";}
+  int         GetNcomp() const { return 1; }
+  double operator()(int c, const Gascoigne::Vertex3d& v) const
+    {
+      return quadratic(v.x()) * quadratic(v.y()) * quadratic(v.z());
+    }
 };
 
 class ProblemDescriptor : public Gascoigne::ProblemDescriptorBase

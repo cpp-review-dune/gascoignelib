@@ -37,8 +37,6 @@ public:
   void BasicInit(int level, const ParamFile* paramfile, const MeshInterface* MP)
     {
       StdSolver::BasicInit(level,paramfile,MP);
-//       Dat.Init(paramfile,1);
-//       PF.SetComponents(Dat.GetPfilter());
     }
 };
 

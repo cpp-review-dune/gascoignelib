@@ -1,29 +1,22 @@
 #ifndef  __UmfIlu_h
 #define  __UmfIlu_h
 
-
-
 /////////////////////////////////////////////
 ///
 ///@brief
 ///  ... comments UmfIlu
-
 ///
 ///
 /////////////////////////////////////////////
 
-
 #include  "iluinterface.h"
 #include  "simplematrix.h"
 
-
 namespace Gascoigne
 {
+
 class UmfIlu : virtual public IluInterface, public SimpleMatrix
 {
-public:
-
-
 private:
 
   const SimpleMatrix* AP;
@@ -36,7 +29,6 @@ protected:
   void *Symbolic, *Numeric ;
 
 public:
-
 
   //
   ///  Constructor 

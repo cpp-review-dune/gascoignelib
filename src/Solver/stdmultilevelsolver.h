@@ -12,7 +12,7 @@
 //////////////////////////////////////////////
 
 #include  "multilevelsolverinterface.h"
-#include  "multilevelsolverdata.h"
+#include  "stdmultilevelsolverdata.h"
 #include  "problemdescriptorinterface.h"
 #include  "monitor.h"
 #include  "stopwatch.h"
@@ -45,8 +45,8 @@ class StdMultiLevelSolver : public MultiLevelSolverInterface
 
   const ParamFile*  _paramfile;
 
-  Monitor*         MON;
-  MultiLevelSolverData*          DataP;
+  Monitor*                          MON;
+  StdMultiLevelSolverData*          DataP;
   const ProblemDescriptorInterface*      _PD;
 
   virtual void NewSolvers();
@@ -133,7 +133,6 @@ class StdMultiLevelSolver : public MultiLevelSolverInterface
   virtual void Transfer(int high, int low, MultiLevelGhostVector& u) const;
   virtual void SolutionTransfer(MultiLevelGhostVector& u) const;
   
-  void precondition(MultiLevelGhostVector& x, MultiLevelGhostVector& y);
   void vmulteqgmres(MultiLevelGhostVector& y, const MultiLevelGhostVector&  x) const;
   
   virtual void LinearMg(int minlevel, int maxlevel, MultiLevelGhostVector& u, const MultiLevelGhostVector& f, CGInfo&);

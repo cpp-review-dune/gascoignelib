@@ -17,13 +17,13 @@ protected:
 
   double weight(int i) const { return wei[i];}
   int hanging(int i) const;
-  int nhnodes() const {return edges->size();} 
   const EdgeVector& regular_nodes(int i) const;
   
 public:
 
   HNStructureQ12d();
   ~HNStructureQ12d() {}
+  int nhnodes() const {return edges->size();} 
   void SparseStructureDiag(SparseStructure* S) const;
   void ReInit(const MeshInterface* m);
   
