@@ -202,7 +202,6 @@ bool NLInfo::check(int iter, double resi, double cori)
     {
       newiteration = 1;
       CD.iteration()++;
-      SD.totaliter()++;
     }
 
   CD.status() = "running";
