@@ -27,13 +27,14 @@ class OneRightHandSideData : public DomainRightHandSide
 class ConstantRightHandSideData : public DomainRightHandSide
 {
 protected :
-  int     comp,ncomp;
-  double  d;
+  int     _comp,_ncomp;
+  double  _d;
 
 public  : 
   ConstantRightHandSideData(const std::vector<std::string>& args);
+  ConstantRightHandSideData(const int ncomp, const int comp, const double d);
   std::string GetName() const {return "constant";} 
-  int GetNcomp() const {return ncomp;}
+  int GetNcomp() const {return _ncomp;}
   double operator()(int c, const Vertex2d& v)const;
   double operator()(int c, const Vertex3d& v)const;
 };
