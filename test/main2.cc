@@ -31,7 +31,7 @@ class LocalEquation : public NavierStokesGls2d
 };
 
 /* ----------------------------------------- */
-class LocalNeumannData : public NeumannData
+class LocalBoundaryRightHandSide : public BoundaryRightHandSide
 {
  public:
   string GetName() const {return "Local";}
@@ -100,7 +100,7 @@ class ProblemDescriptor : public ProblemDescriptorBase
   void BasicInit(const ParamFile* pf) {
     GetEquationPointer() = new LocalEquation;
     GetDirichletDataPointer() = new ZeroDirichletData();
-    GetNeumannDataPointer() = new LocalNeumannData();
+    GetBoundaryRightHandSidePointer() = new LocalBoundaryRightHandSide();
     
     GetBoundaryManagerPointer() = new BoundaryManager(pf);
     GetBoundaryManager()->AddDirichlet(3,1);

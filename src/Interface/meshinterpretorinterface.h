@@ -8,8 +8,8 @@
 #include  "equation.h"
 #include  "matrixinterface.h"
 #include  "dirichletdata.h"
-#include  "neumanndata.h"
-#include  "robindata.h"
+#include  "boundaryrighthandside.h"
+#include  "boundaryequation.h"
 #include  "exactsolution.h"
 #include  "boundaryfunctional.h"
 #include  "domainfunctional.h"
@@ -80,12 +80,12 @@ namespace Gascoigne
       virtual void Structure(SparseStructureInterface* S) const=0;
       virtual void Form(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const=0;
       virtual void BoundaryForm(GlobalVector& f, const GlobalVector& u, const IntSet& Colors, 
-          const RobinData& RD, double d) const {
+          const BoundaryEquation& BE, double d) const {
         std::cerr << "\"MeshInterpretorInterface::BoundaryForm\" not written!" << std::endl;
         abort();
       }
       virtual void Matrix(MatrixInterface& A, const GlobalVector& u, const Equation& EQ, double) const=0;
-      virtual void BoundaryMatrix(MatrixInterface& A, const GlobalVector& u, const IntSet& Colors, const RobinData& RD, 
+      virtual void BoundaryMatrix(MatrixInterface& A, const GlobalVector& u, const IntSet& Colors, const BoundaryEquation& BE, 
           double d) const {
         std::cerr << "\"MeshInterpretorInterface::BoundaryMatrix\" not written!" << std::endl;
         abort();
@@ -93,7 +93,7 @@ namespace Gascoigne
       virtual void MassMatrix(MatrixInterface& M) const=0;
       virtual void Rhs(GlobalVector& f, const DomainRightHandSide& RHS, double s) const=0;
       virtual void DiracRhs(GlobalVector& f, const DiracRightHandSide& DRHS, double s) const=0;
-      virtual void RhsNeumann(GlobalVector& f, const IntSet& Colors,  const NeumannData& NRHS, double s) const=0;
+      virtual void BoundaryRhs(GlobalVector& f, const IntSet& Colors,  const BoundaryRightHandSide& NRHS, double s) const=0;
 
       virtual void HNAverage   (GlobalVector& x) const {}
       virtual void HNDistribute(GlobalVector& x) const {}

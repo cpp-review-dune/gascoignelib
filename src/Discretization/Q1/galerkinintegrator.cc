@@ -76,7 +76,7 @@ void GalerkinIntegrator<DIM>::Rhs(const DomainRightHandSide& f, LocalVector& F, 
 /* ----------------------------------------- */
 
 template<int DIM>
-void GalerkinIntegrator<DIM>::RhsNeumann(const NeumannData& f, LocalVector& F, const FemInterface& FEM, int ile, int col, const LocalNodeData& Q) const
+void GalerkinIntegrator<DIM>::BoundaryRhs(const BoundaryRightHandSide& f, LocalVector& F, const FemInterface& FEM, int ile, int col, const LocalNodeData& Q) const
 {
   F.ReInit(f.GetNcomp(),FEM.n());
 
@@ -138,9 +138,9 @@ void GalerkinIntegrator<DIM>::Form(const Equation& EQ, LocalVector& F, const Fem
 /* ----------------------------------------- */
 
 template<int DIM>
-void GalerkinIntegrator<DIM>::BoundaryForm(const RobinData& RD, LocalVector& F, const FemInterface& FEM, const LocalVector& U, int ile, int col, LocalNodeData& Q) const
+void GalerkinIntegrator<DIM>::BoundaryForm(const BoundaryEquation& BE, LocalVector& F, const FemInterface& FEM, const LocalVector& U, int ile, int col, LocalNodeData& Q) const
 {
-  F.ReInit(RD.GetNcomp(),FEM.n());
+  F.ReInit(BE.GetNcomp(),FEM.n());
 
   const IntegrationFormulaInterface& IF = BoundaryFormula();
 
@@ -158,12 +158,12 @@ void GalerkinIntegrator<DIM>::BoundaryForm(const RobinData& RD, LocalVector& F, 
       FEM.normal(n);
       double  h = FEM.G();
       double  weight = IF.w(k)*h;
-      RD.SetFemData(QH);
-      RD.pointboundary(h,UH,x,n);
+      BE.SetFemData(QH);
+      BE.pointboundary(h,UH,x,n);
       for (int i=0;i<FEM.n();i++)
         {
           FEM.init_test_functions(NN,weight,i);
-          RD.Form(F.start(i),UH,NN,col);
+          BE.Form(F.start(i),UH,NN,col);
         }
     }
 }
@@ -251,7 +251,7 @@ void GalerkinIntegrator<DIM>::Matrix(const Equation& EQ, EntryMatrix& E, const F
 /*-----------------------------------------------------------*/
 
 template<int DIM>
-void GalerkinIntegrator<DIM>::BoundaryMatrix (const RobinData& RD, EntryMatrix& E, const FemInterface& FEM, const LocalVector& U, int ile, int col, const LocalNodeData& Q) const
+void GalerkinIntegrator<DIM>::BoundaryMatrix (const BoundaryEquation& BE, EntryMatrix& E, const FemInterface& FEM, const LocalVector& U, int ile, int col, const LocalNodeData& Q) const
 {
   NNN.resize(FEM.n());
   E.SetDimensionDof(FEM.n(),FEM.n());
@@ -273,8 +273,8 @@ void GalerkinIntegrator<DIM>::BoundaryMatrix (const RobinData& RD, EntryMatrix& 
       FEM.normal(n);
       double  h = FEM.G();
       double  weight = IF.w(k)*h;
-      RD.SetFemData(QH);
-      RD.pointmatrixboundary(h,UH,x,n);
+      BE.SetFemData(QH);
+      BE.pointmatrixboundary(h,UH,x,n);
       for (int i=0;i<FEM.n();i++)
         {
           FEM.init_test_functions(NNN[i],weight,i);
@@ -285,7 +285,7 @@ void GalerkinIntegrator<DIM>::BoundaryMatrix (const RobinData& RD, EntryMatrix& 
           for (int i=0;i<FEM.n();i++)
             {
               E.SetDofIndex(i,j);
-              RD.Matrix(E,UH,MM,NNN[i],col);
+              BE.Matrix(E,UH,MM,NNN[i],col);
             }
         }
     }

@@ -8,7 +8,7 @@
 #include  "residualfunctional.h"
 #include  "dirichletdatabycolor.h"
 #include  "domainmeanfunctional.h"
-#include  "neumanndatabyexactsolution.h"
+#include  "boundaryrhsbyexactsolution.h"
 
 /*---------------------------------------------------*/
 
@@ -35,7 +35,7 @@ class ProblemDescriptor : public Gascoigne::ProblemDescriptorBase
     GetExactSolutionPointer() = new PolynomialExactSolution();
     GetRightHandSideDataPointer() = new Gascoigne::RightHandSideDataByEquation(GetEquation(), GetExactSolution());
     GetDirichletDataPointer() = new Gascoigne::DirichletDataByExactSolution(GetExactSolution());
-    GetNeumannDataPointer() = new NeumannDataByExactSolution(GetEquation(),GetExactSolution());
+    GetBoundaryRightHandSidePointer() = new BoundaryRightHandSideByExactSolution(GetEquation(),GetExactSolution());
     
     ProblemDescriptorBase::BasicInit(pf);
   }

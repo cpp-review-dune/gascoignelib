@@ -164,7 +164,7 @@ void PatchMeshInterpretor::Rhs(GlobalVector& f, const DomainRightHandSide& RHS, 
 
 /* ----------------------------------------- */
 
-void PatchMeshInterpretor::RhsNeumann(GlobalVector& f, const IntSet& Colors,  const NeumannData& NRHS, double s) const
+void PatchMeshInterpretor::BoundaryRhs(GlobalVector& f, const IntSet& Colors,  const BoundaryRightHandSide& NRHS, double s) const
 {
   nmatrix<double> T;
   for(IntSet::const_iterator p=Colors.begin();p!=Colors.end();p++)
@@ -181,7 +181,7 @@ void PatchMeshInterpretor::RhsNeumann(GlobalVector& f, const IntSet& Colors,  co
 	  GetFem()->ReInit(T);
 
 	  GlobalToLocalData(iq);
-	  GetIntegrator()->RhsNeumann(NRHS,__F,*GetFem(),ile,col,__Q);
+	  GetIntegrator()->BoundaryRhs(NRHS,__F,*GetFem(),ile,col,__Q);
 	  LocalToGlobal(f,__F,iq,s);
 	}
     }

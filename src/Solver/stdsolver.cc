@@ -647,11 +647,11 @@ void StdSolver::Form(GlobalVector& y, const GlobalVector& x, double d) const
   assert(EQ);
   GetMeshInterpretor()->Form(y,x,*EQ,d);
 
-  const RobinData* RD = GetProblemDescriptor()->GetRobinData();
-  if(RD)
+  const BoundaryEquation* BE = GetProblemDescriptor()->GetBoundaryEquation();
+  if(BE)
   {
     const BoundaryManager* BM = GetProblemDescriptor()->GetBoundaryManager();
-    GetMeshInterpretor()->BoundaryForm(y,x,BM->GetRobinColors(),*RD,d);
+    GetMeshInterpretor()->BoundaryForm(y,x,BM->GetRobinColors(),*BE,d);
   }
 
   HNZero(x);
@@ -847,7 +847,7 @@ void StdSolver::Rhs(GlobalVector& f, double d) const
   HNAverageData();
 
   const Application* RHS  = GetProblemDescriptor()->GetRightHandSideData();
-  const NeumannData* NRHS = GetProblemDescriptor()->GetNeumannData();
+  const BoundaryRightHandSide* NRHS = GetProblemDescriptor()->GetBoundaryRightHandSide();
 
   if(RHS)
     {
@@ -875,7 +875,7 @@ void StdSolver::Rhs(GlobalVector& f, double d) const
     {
       assert(NRHS->GetNcomp()==f.ncomp());
       const BoundaryManager*  BM   = GetProblemDescriptor()->GetBoundaryManager();
-      GetMeshInterpretor()->RhsNeumann(f,BM->GetNeumannColors(),*NRHS,d);	  
+      GetMeshInterpretor()->BoundaryRhs(f,BM->GetNeumannColors(),*NRHS,d);	  
     }
   
 
@@ -896,11 +896,11 @@ void StdSolver::AssembleMatrix(const BasicGhostVector& gu, double d)
 
   GetMeshInterpretor()->Matrix(*GetMatrix(),u,*GetProblemDescriptor()->GetEquation(),d);
   
-  const RobinData* RD = GetProblemDescriptor()->GetRobinData();
-  if(RD)
+  const BoundaryEquation* BE = GetProblemDescriptor()->GetBoundaryEquation();
+  if(BE)
   {
     const BoundaryManager* BM = GetProblemDescriptor()->GetBoundaryManager();
-    GetMeshInterpretor()->BoundaryMatrix(*GetMatrix(),u,BM->GetRobinColors(),*RD,d);
+    GetMeshInterpretor()->BoundaryMatrix(*GetMatrix(),u,BM->GetRobinColors(),*BE,d);
   }
 
   DirichletMatrix();

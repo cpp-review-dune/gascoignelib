@@ -1,5 +1,5 @@
-#ifndef __RobinData_h
-#define __RobinData_h
+#ifndef __BoundaryEquation_h
+#define __BoundaryEquation_h
 
 #include "application.h"
 #include "vertex.h"
@@ -10,15 +10,15 @@ namespace Gascoigne
 
 /**********************************************************/
 
-  class RobinData : public virtual Application
+  class BoundaryEquation : public virtual Application
   {
     private:
 
     protected:
 
     public:
-      RobinData() : Application() { }
-      ~RobinData() { }
+      BoundaryEquation() : Application() { }
+      ~BoundaryEquation() { }
 
       virtual int GetNcomp() const=0;
 

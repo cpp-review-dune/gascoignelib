@@ -1,5 +1,5 @@
-#ifndef  __neumanndata_h
-#define  __neumanndata_h
+#ifndef  __BoundaryRightHandSide_h
+#define  __BoundaryRightHandSide_h
 
 #include  "vertex.h"
 #include  <set>
@@ -16,7 +16,8 @@ namespace Gascoigne
   //////////////////////////////////////////////
   ///
   ///@brief
-  /// Interface class for Neumann Boundary Conditions
+  /// Interface class for Boundary Conditions of Neumann
+  /// or Robin type
 
   /// void operator()(Vector& b, const Vertex2d& v, int col)
   /// gets the coordinate v and color of boundarypart "col" and 
@@ -24,24 +25,24 @@ namespace Gascoigne
   ///
   //////////////////////////////////////////////
 
-  class NeumannData : public virtual Application
+  class BoundaryRightHandSide : public virtual Application
   {
     private:
       
     protected:
 
     public:
-      NeumannData() : Application() {}
-      ~NeumannData() {}
+      BoundaryRightHandSide() : Application() {}
+      ~BoundaryRightHandSide() {}
 
       virtual int GetNcomp() const=0;
       
       virtual void operator()(VectorIterator b, const TestFunction& N, const Vertex2d& v, const Vertex2d& n, int color) const {
-        std::cerr << "\"NeumannData::operator()\" not written!" << std::endl;
+        std::cerr << "\"BoundaryRightHandSide::operator()\" not written!" << std::endl;
         abort();
       }
       virtual void operator()(VectorIterator b, const TestFunction& N, const Vertex3d& v, const Vertex3d& n, int color) const {
-        std::cerr << "\"NeumannData::operator()\" not written!" << std::endl;
+        std::cerr << "\"BoundaryRightHandSide::operator()\" not written!" << std::endl;
         abort();
       }
   };

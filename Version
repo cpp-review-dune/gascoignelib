@@ -1,3 +1,9 @@
+Version 08.10.2004
+=================
+*meidner
+1) NeumannData und RobinData vereinheitlicht: Anstatt NeumannData ist nun BoundaryRightHandSide und anstatt RobinData BoundaryEquation zu verwenden. Diese Bezeichnungen gelten auch im ProblemDescriptor. Im BondaryManager gibt es wie zuvor noch "dirichlet", "neumann" und "robin". Die Bedeutung von "dirichlet" ist klar. "neumann" baut die BoundaryRightHandSide und "robin" die BoundaryEquation fuer die jeweils angegebene Farbe auf. Somit aendert sich hier nichts.
+
+
 Version 28.07.2004
 ==================
 *meidner

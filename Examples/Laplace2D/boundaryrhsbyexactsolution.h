@@ -1,21 +1,21 @@
-#ifndef  __NeumannDataByExactSolution_h
-#define  __NeumannDataByExactSolution_h
+#ifndef  __BoundaryRightHandSideByExactSolution_h
+#define  __BoundaryRightHandSideByExactSolution_h
 
 
 /////////////////////////////////////////////
 ////
 ////@brief
-////  ... comments NeumannDataByExactSolution
+////  ... comments BoundaryRightHandSideByExactSolution
 
 ////
 ////
 /////////////////////////////////////////////
 
-#include  "neumanndata.h"
+#include  "boundaryrighthandside.h"
 #include  "exactsolution.h"
 #include  "equation.h"
 
-class NeumannDataByExactSolution : public Gascoigne::NeumannData
+class BoundaryRightHandSideByExactSolution : public Gascoigne::BoundaryRightHandSide
 {
 private:
 
@@ -32,11 +32,11 @@ public:
 ////  Con(De)structor 
 //
   
-  NeumannDataByExactSolution(const Gascoigne::Equation* eq, const Gascoigne::ExactSolution* es)
-    : NeumannData(), _EQ(eq), _ES(es) { assert(es); assert(eq); }
-  ~NeumannDataByExactSolution() {}
+  BoundaryRightHandSideByExactSolution(const Gascoigne::Equation* eq, const Gascoigne::ExactSolution* es)
+    : BoundaryRightHandSide(), _EQ(eq), _ES(es) { assert(es); assert(eq); }
+  ~BoundaryRightHandSideByExactSolution() {}
 
-  std::string GetName() const {return "NeumannDataByExactSolution";}
+  std::string GetName() const {return "BoundaryRightHandSideByExactSolution";}
   int GetNcomp() const { return _EQ->GetNcomp();}
   
   void operator()(Gascoigne::VectorIterator b, const Gascoigne::TestFunction& N, const Gascoigne::Vertex2d& v, const Gascoigne::Vertex2d& n, int col) const{

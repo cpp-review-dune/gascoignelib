@@ -61,9 +61,9 @@ public:
   void Structure(SparseStructureInterface* S) const;
 
   void Form(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const;
-  void BoundaryForm(GlobalVector& f, const GlobalVector& u, const IntSet& Colors, const RobinData& RD, double d) const;
+  void BoundaryForm(GlobalVector& f, const GlobalVector& u, const IntSet& Colors, const BoundaryEquation& BE, double d) const;
   void Matrix(MatrixInterface& A, const GlobalVector& u, const Equation& EQ, double) const;
-  void BoundaryMatrix(MatrixInterface& A, const GlobalVector& u, const IntSet& Colors, const RobinData& RD, double d) const;
+  void BoundaryMatrix(MatrixInterface& A, const GlobalVector& u, const IntSet& Colors, const BoundaryEquation& BE, double d) const;
   void MassMatrix(MatrixInterface& M) const;
 
   void ComputeError(const GlobalVector& u, LocalVector& err, const ExactSolution* ES) const;
@@ -73,7 +73,7 @@ public:
   void DiracRhsPoint(GlobalVector& f,const DiracRightHandSide& DRHS,const Vertex2d& p0,int i,double s) const;
   void DiracRhsPoint(GlobalVector& f,const DiracRightHandSide& DRHS,const Vertex3d& p0,int i,double s) const;
 
-  void RhsNeumann(GlobalVector& f, const IntSet& Colors,  const NeumannData& NRHS, double s) const;
+  void BoundaryRhs(GlobalVector& f, const IntSet& Colors,  const BoundaryRightHandSide& NRHS, double s) const;
 
   void InitFilter(DoubleVector&) const;
 

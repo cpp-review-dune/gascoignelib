@@ -8,8 +8,8 @@
 #include  "boundarymanager.h"
 #include  "equation.h"
 #include  "dirichletdata.h"
-#include  "neumanndata.h"
-#include  "robindata.h"
+#include  "boundaryrighthandside.h"
+#include  "boundaryequation.h"
 #include  "exactsolution.h"
 #include  "boundarymanager.h"
 
@@ -44,14 +44,14 @@ namespace Gascoigne
 
       virtual const ParamFile* GetParamFile() const=0;
 
-      virtual const Application*     GetRightHandSideData() const=0;
-      virtual const DirichletData*   GetDirichletData    () const=0;
-      virtual const NeumannData*     GetNeumannData      () const=0;
-      virtual const RobinData*       GetRobinData        () const=0;
-      virtual const Application*     GetInitialCondition () const=0;
-      virtual const ExactSolution*   GetExactSolution    () const=0;
-      virtual const Equation*        GetEquation         () const=0;
-      virtual const BoundaryManager* GetBoundaryManager  () const=0;
+      virtual const Application*            GetRightHandSideData    () const=0;
+      virtual const BoundaryRightHandSide*  GetBoundaryRightHandSide() const=0;
+      virtual const Equation*               GetEquation             () const=0;
+      virtual const BoundaryEquation*       GetBoundaryEquation     () const=0;
+      virtual const DirichletData*          GetDirichletData        () const=0;
+      virtual const Application*            GetInitialCondition     () const=0;
+      virtual const ExactSolution*          GetExactSolution        () const=0;
+      virtual const BoundaryManager*        GetBoundaryManager      () const=0;
   };
 }
 

@@ -9,8 +9,8 @@
 #include  "entrymatrix.h"
 #include  "domainrighthandside.h"
 #include  "domainfunctional.h"
-#include  "neumanndata.h"
-#include  "robindata.h"
+#include  "boundaryrighthandside.h"
+#include  "boundaryequation.h"
 #include  "diracrighthandside.h"
 
 namespace Gascoigne
@@ -47,17 +47,17 @@ namespace Gascoigne
         std::cerr << "\"IntegratorInterface::Form\" not written!" << std::endl;
         abort();
       }
-      virtual void RhsNeumann(const NeumannData& RHS, LocalVector& F, const FemInterface& FEM, int ile, 
+      virtual void BoundaryRhs(const BoundaryRightHandSide& RHS, LocalVector& F, const FemInterface& FEM, int ile, 
           int col, const LocalNodeData& Q) const {
-        std::cerr << "\"IntegratorInterface::RhsNeumann\" not written!" << std::endl;
+        std::cerr << "\"IntegratorInterface::BoundaryRhs\" not written!" << std::endl;
         abort();
       }
-      virtual void BoundaryForm(const RobinData& RD, LocalVector& F, const FemInterface& FEM, const LocalVector& U, 
+      virtual void BoundaryForm(const BoundaryEquation& BE, LocalVector& F, const FemInterface& FEM, const LocalVector& U, 
           int ile, int col, LocalNodeData& Q) const {
         std::cerr << "\"IntegratorInterface::BoundaryForm\" not written!" << std::endl;
         abort();
       }
-      virtual void BoundaryMatrix (const RobinData& RD, EntryMatrix& E, const FemInterface& FEM, 
+      virtual void BoundaryMatrix (const BoundaryEquation& BE, EntryMatrix& E, const FemInterface& FEM, 
           const LocalVector& U, int ile, int col, const LocalNodeData& Q) const {
         std::cerr << "\"IntegratorInterface::BoundaryMatrix\" not written!" << std::endl;
         abort();
