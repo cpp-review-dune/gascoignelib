@@ -61,7 +61,7 @@ int main(int argc, char** argv)
       MI.BasicInit(MLS.GetSolver()->GetDiscretization(),&MA,finename);
       
       GlobalVector uold;
-      ReadBackUpResize(uold,"start2.bup");
+      ReadBackUpResize(uold,finename+".bup");
       MI.RhsForProjection(MLS.GetSolver()->GetGV(f),uold);
     }
   string coarsename = "Results/" + finename + ".projected";

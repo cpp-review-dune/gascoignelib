@@ -2,8 +2,6 @@
 #define  __ProjectionDescriptor_h
 
 #include  "problemdescriptorbase.h"
-#include  "dirichletdatabycolor.h"
-#include  "domainrighthandside.h"
 
 /*---------------------------------------------------*/
 
@@ -38,7 +36,7 @@ class ProjectionProblemDescriptor : public Gascoigne::ProblemDescriptorBase
   std::string GetName() const {return "Projection";}
   void BasicInit(const Gascoigne::ParamFile* pf) 
   {
-    GetEquationPointer()      = new ProjectionEquation();
+    GetEquationPointer() = new ProjectionEquation();
     
     ProblemDescriptorBase::BasicInit(pf);
   }
