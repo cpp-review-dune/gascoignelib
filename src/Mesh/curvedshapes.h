@@ -21,7 +21,9 @@ class CurvedShapes : public std::map<int,BoundaryFunction<DIM>* >
 
   ~CurvedShapes() {
   for (iterator p=begin();p!=end();++p)
-    if (p->second) {delete p->second; p->second=NULL;}
+    if (p->second) {
+      std::cerr<< "not deleting shape: "<< p->second->GetName() << std::endl;
+    }
   }
 
   const BoundaryFunction<DIM>& GetShape(int col) const { return *find(col)->second;}
