@@ -1103,7 +1103,10 @@ void StdSolver::Visu(const string& name, const GlobalVector& u, int i) const
 
   GascoigneVisualization Visu;
   Visu.SetMesh(GetMesh());  
-  Visu.AddVector(&u);
+
+  const ComponentInformation*  CI = GetProblemDescriptor()->GetComponentInformation();
+  //Visu.AddVector(&u);
+  Visu.AddVector(CI,&u);
 
   Visu.read_parameters(_paramfile);
   Visu.set_name(name);

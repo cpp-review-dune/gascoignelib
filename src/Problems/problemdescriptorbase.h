@@ -19,6 +19,8 @@ class ProblemDescriptorBase : public ProblemDescriptorInterface
   DirichletData         *DD;
   BoundaryRightHandSide *BRHS;
   BoundaryEquation      *BE;
+  ComponentInformation  *CI;
+
   
   const ParamFile *_paramfile;
   
@@ -36,6 +38,9 @@ class ProblemDescriptorBase : public ProblemDescriptorInterface
   BoundaryEquation*&      GetBoundaryEquationPointer()      { return BE; }
 
   BoundaryManager* GetBoundaryManager () { return BM;}
+
+  ComponentInformation*&  GetComponentInformation ()        { return CI;}
+
  public:
 
   ProblemDescriptorBase();
@@ -56,6 +61,7 @@ class ProblemDescriptorBase : public ProblemDescriptorInterface
   const ExactSolution*         GetExactSolution        () const { return ES;}
   const Equation*              GetEquation             () const { return EQ;}
   const BoundaryManager*       GetBoundaryManager      () const { return BM;}
+  const ComponentInformation*  GetComponentInformation () const { return CI;}
 
   void SetTime(double time, double dt) const;
 };

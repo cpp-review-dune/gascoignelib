@@ -1174,8 +1174,15 @@ void HierarchicalMesh2d::WriteAll(const string& name) const
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh2d::write_inp(const string& name) const
+void HierarchicalMesh2d::write_inp(const string& bname) const
 {
+  string name = bname;
+  int name_size=name.size();
+  if(name_size<4) name += ".inp";
+  if(name.substr(name_size-4,4)!=".inp"){
+    name += ".inp";
+  }
+
   ofstream file(name.c_str());
   if(!file.is_open())
     {
@@ -1215,7 +1222,7 @@ void HierarchicalMesh2d::write_vtk(const string& name) const
   int nn = nnodes();
 
   file << "# vtk DataFile Version 2.4 "<<endl;
-  file << "output from mmail" << endl;
+  file << "output from GascoigneStd" << endl;
   file << "ASCII" << endl;
   file << "DATASET UNSTRUCTURED_GRID" << endl;
   file << "POINTS " << nn << " FLOAT " << endl;

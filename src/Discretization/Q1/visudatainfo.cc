@@ -29,7 +29,7 @@ VisuDataInfo::VisuDataInfo(const VisuData& D, string def)
     {
       string name(def);
       compose_name_without_dot(name,c);
-      AddScalar(name,c);
+      AddScalar(c,name,c);
     }
 }
 
@@ -41,7 +41,7 @@ void VisuDataInfo::AddScalars(int ncomp, string def)
     {
       string name(def);
       compose_name_without_dot(name,c);
-      AddScalar(name,c);
+      AddScalar(c,name,c);
     }
 }
 }

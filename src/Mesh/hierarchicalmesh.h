@@ -98,6 +98,7 @@ class HierarchicalMesh : public MeshInterface
   void random_double_patch_refine  (double, int k=1);
   void clear_transfer_lists();
   virtual void   write_gup(const std::string&) const =0;
+  virtual void   write_inp(const std::string&) const =0;
 
   virtual int dimension()       const { return 0;}
   virtual int ncells ()         const =0;

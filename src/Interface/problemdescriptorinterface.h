@@ -12,6 +12,7 @@
 #include  "boundaryequation.h"
 #include  "exactsolution.h"
 #include  "boundarymanager.h"
+#include  "componentinformation.h"
 
 
 namespace Gascoigne
@@ -52,6 +53,7 @@ namespace Gascoigne
       virtual const Application*            GetInitialCondition     () const=0;
       virtual const ExactSolution*          GetExactSolution        () const=0;
       virtual const BoundaryManager*        GetBoundaryManager      () const=0;
+      virtual const ComponentInformation*   GetComponentInformation () const=0;
   };
 }
 

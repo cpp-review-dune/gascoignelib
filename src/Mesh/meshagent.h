@@ -57,6 +57,7 @@ public:
 
   void read_gup(const std::string& fname);
   void write_gup(const std::string& fname) const;
+  void write_inp(const std::string& fname) const;
   void global_refine(int n);
   void global_patch_coarsen(int n);
   void random_patch_coarsen(double p, int n);

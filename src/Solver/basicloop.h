@@ -42,7 +42,8 @@ private:
   void WriteMeshAndSolution(const std::string& filename, const MultiLevelGhostVector& u) const;
   void WriteSolution(const MultiLevelGhostVector& u) const;
   void WriteMesh() const;
-  
+  void WriteMeshInp(const std::string& name) const;
+
 protected:
 
 
@@ -63,6 +64,7 @@ protected:
 
   int    _niter, _iter;
   bool _writeBupGup;
+  bool _writeInp;
 
   std::string _reload, _initial;
   std::string _s_resultsdir;

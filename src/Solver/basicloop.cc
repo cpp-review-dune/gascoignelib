@@ -51,6 +51,7 @@ void BasicLoop::BasicInit(const ParamFile* paramfile)
   DFH.insert("initial",            &_initial,           "boundary");
   DFH.insert("reload",             &_reload,            "none");
   DFH.insert("writebupgup",        &_writeBupGup,       true);
+  DFH.insert("writeinp"   ,        &_writeInp   ,      false);  
   DFH.insert("resultsdir",         &_s_resultsdir,      "Results");
   DFH.insert("copy_param_file",    &s_copy_param_file,  "no");
   FileScanner FS(DFH);
@@ -138,6 +139,10 @@ void BasicLoop::Output(const MultiLevelGhostVector& u, string name) const
   {   
     WriteMeshAndSolution(name,u);
   }
+  if(_writeInp)
+  {   
+    WriteMeshInp(name);
+  }
 }
 
 /*-------------------------------------------------*/
@@ -178,6 +183,18 @@ void BasicLoop::WriteMesh() const
   compose_name(filename,_iter);
   GetMeshAgent()->write_gup(filename);
   cout << " [" << filename << ".gup]" << endl;
+  _clock_write.stop();
+}
+
+/*-------------------------------------------------*/
+
+void BasicLoop::WriteMeshInp(const string& name) const
+{
+  _clock_write.start();
+  string filename = name;
+  compose_name(filename,_iter);
+  GetMeshAgent()->write_inp(filename);
+  cout << " [" << filename << ".inp]" << endl;
   _clock_write.stop();
 }
 

@@ -24,6 +24,7 @@ void LpsStabilization::NavierStokes(double h, double visc)
 
   double val  = xeta0 * visc/(h*h);
   double valc = xeta0 * visc/(h*h) + _norm/h;
+  assert(dt>0);
   if(dt>0.)
     {
       val  += _dtfactor/dt;

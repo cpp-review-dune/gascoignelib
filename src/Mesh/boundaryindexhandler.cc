@@ -90,7 +90,7 @@ const IntVector& BoundaryIndexHandler::Verteces(int color) const
   VecMap::const_iterator p = verteces.find(color);
   if(p==verteces.end())
     {
-      cerr << "BoundaryIndexHandler::Verteces\tcolor not found: "
+      cerr << "BoundaryIndexHandler::Vertices\tcolor not found: "
 	   << color << endl;
       abort();
     }

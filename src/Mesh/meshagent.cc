@@ -125,6 +125,14 @@ void MeshAgent::write_gup(const string& fname) const
 
 /*-----------------------------------------*/
 
+void MeshAgent::write_inp(const string& fname) const
+{
+  assert(HMP);
+  HMP->write_inp(fname);
+}
+
+/*-----------------------------------------*/
+
 void MeshAgent::global_patch_coarsen(int n)
 {
   assert(HMP);

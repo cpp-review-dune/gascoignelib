@@ -17,6 +17,8 @@ class VisuDataInfo
 
   std::map<std::string,int>              scalars;
   std::map<std::string,fixarray<3,int> > vectors;
+  std::map<std::string,int>              scalar_order;
+  std::map<std::string,int>              vector_order;
 
  public:
 
@@ -32,13 +34,29 @@ class VisuDataInfo
   bool operator!=(const VisuDataInfo& V) const;
 
   void Clear() {
+    scalar_order.clear();
+    vector_order.clear();
     scalars.clear();
     vectors.clear();
   }
 
+  siterator GetSIterator(int i) { 
+    for(siterator p = sbegin() ; p!= send() ; p++){
+      std::string s = p->first;
+      if ( scalar_order[s]==i ) return p;
+    }
+    assert(0);
+  }
+  viterator GetVIterator(int i) {
+    for(viterator p = vbegin() ; p!= vend() ; p++){
+      std::string s = p->first;
+      if ( vector_order[s]==i ) return p;
+    }
+    assert(0);
+  }
 
-  void AddScalar(const std::string& name, int i)                    {scalars[name]=i;}
-  void AddVector(const std::string& name, const fixarray<3,int>& i) {vectors[name]=i;}
+  void AddScalar(int index,const std::string& name, int i)                    {scalar_order[name]=index;scalars[name]=i;}
+  void AddVector(int index,const std::string& name, const fixarray<3,int>& i) {vector_order[name]=index;vectors[name]=i;}
 
   void AddScalars(int ncomp, std::string def="U");
 
