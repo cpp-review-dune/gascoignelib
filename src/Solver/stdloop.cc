@@ -45,6 +45,7 @@ void StdLoop::BasicInit(const ParamFile* paramfile)
   BasicLoop::BasicInit(paramfile);
 
   DataFormatHandler DFH;
+
   DFH.insert("nmin",               &_nmin,              1000);
   DFH.insert("nmax",               &_nmax,              100000);
   DFH.insert("p",                  &_p,                 0.1);
@@ -53,10 +54,10 @@ void StdLoop::BasicInit(const ParamFile* paramfile)
   DFH.insert("refiner",            &_refiner,           "global");
   DFH.insert("estimator",          &_estimator,         "none");
   DFH.insert("extrapolate",        &_extrapolate,       "no");
-  DFH.insert("resultsdir",         &_s_resultsdir,      "Results");
   FileScanner FS(DFH);
   FS.NoComplain();
   FS.readfile(_paramfile,"Loop");
+
 }
 
 /*-------------------------------------------------------*/
