@@ -127,7 +127,7 @@ void MeshInterpolator::Distribute(int oldNumber, int newNumber)
 
 /**********************************************************/
 
-void MeshInterpolator::RefineAndInterpolate(HierarchicalMesh* Mesh, vector<GlobalVector*>& u, const IntVector& refine, vector<bool>& done)
+void MeshInterpolator::RefineAndInterpolate(HierarchicalMesh* Mesh, vector<GlobalVector>& u, const IntVector& refine, vector<bool>& done)
 {
   IntVector coarse(0);
   int oldcells = Mesh->ncells();
@@ -135,7 +135,7 @@ void MeshInterpolator::RefineAndInterpolate(HierarchicalMesh* Mesh, vector<Globa
   done.resize(Mesh->nnodes(),false);
   for (int s=0; s<u.size(); s++)
   {
-    u[s]->resize(Mesh->nnodes(),0.);
+    u[s].resize(Mesh->nnodes(),0.);
   }
   set<int> fathers;
   for (int cell=oldcells; cell<Mesh->ncells(); cell++)
@@ -152,7 +152,7 @@ void MeshInterpolator::RefineAndInterpolate(HierarchicalMesh* Mesh, vector<Globa
         {
           for (int s=0; s<u.size(); s++)
           {
-            GlobalVector &us = *u[s];
+            GlobalVector &us = u[s];
             for (int c=0; c<us.ncomp(); c++)
             {
               us(Mesh->vertex_of_cell(Mesh->child(*p,i),j),c) += _weights(i,j) * us(Mesh->vertex_of_cell(*p,i),c);
@@ -183,20 +183,20 @@ void MeshInterpolator::AddVectorIntermediate(GlobalVector u)
 
 /**********************************************************/
 
-void MeshInterpolator::AddVectorOld(GlobalVector* u)
+void MeshInterpolator::AddVectorOld(GlobalVector u)
 {
   assert(GetOriginalSolverPointer());
   _VecOld.push_back(u);
-  GetOriginalSolver()->HNAverage(*u);
+  GetOriginalSolver()->HNAverage(u);
 }
 
 /**********************************************************/
 
-void MeshInterpolator::AddVectorNew(GlobalVector* u)
+void MeshInterpolator::AddVectorNew(GlobalVector u)
 {
   assert(GetSolverPointer());
   _VecNew.push_back(u);
-  GetSolver()->HNAverage(*u);
+  GetSolver()->HNAverage(u);
 }
 
 /**********************************************************/
@@ -283,7 +283,7 @@ void MeshInterpolator::RhsForProjection(BasicGhostVector& gf)
 {
   GlobalVector u;
   ReadBackUpResize(u,_name+".bup");
-  AddVectorNew(&u);
+  AddVectorNew(u);
 
   vector<bool> doneOld(_Old->nnodes(),true),doneNew(_New->nnodes(),true);
   HierarchicalMesh* Mesh;

@@ -26,14 +26,13 @@ class MeshInterpolator
     nmatrix<double>                   _weights;
     std::set<int>                     _BaseCells;
     std::string                       _name;
-    std::vector<GlobalVector>         _VecInt;
-    std::vector<GlobalVector*>        _VecOld,_VecNew;
+    std::vector<GlobalVector>         _VecInt,_VecOld,_VecNew;
     std::vector<int>                  _NewNodeNumber;
 
     void CheckCell(int oldNumber, int newNumber);
     void Coarsen(int newNumber);
     void Distribute(int oldNumber, int newNumber);
-    void RefineAndInterpolate(HierarchicalMesh* Mesh, std::vector<GlobalVector*>& u, const IntVector& refine, std::vector<bool>& done);
+    void RefineAndInterpolate(HierarchicalMesh* Mesh, std::vector<GlobalVector>& u, const IntVector& refine, std::vector<bool>& done);
 
           MeshAgent*& GetMeshAgentPointer()       { return _MA; }
           MeshAgent*  GetMeshAgent()              { assert(_MA); return _MA; }
@@ -59,8 +58,8 @@ class MeshInterpolator
     virtual ~MeshInterpolator();
 
     virtual void AddVectorIntermediate(GlobalVector u);
-    virtual void AddVectorOld(GlobalVector* u);
-    virtual void AddVectorNew(GlobalVector* u);
+    virtual void AddVectorOld(GlobalVector u);
+    virtual void AddVectorNew(GlobalVector u);
     virtual void BasicInit(SolverInterface* SI, MeshAgentInterface* MA, const std::string& name, const ProblemDescriptorInterface* PD);
     virtual void RhsForProjection(BasicGhostVector& gf);
 };
