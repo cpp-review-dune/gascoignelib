@@ -59,6 +59,8 @@ namespace Gascoigne
       /// vector - manamgement
       //
 
+      virtual void MemoryVector(VectorInterface& g)=0;
+      virtual void DeleteVector(VectorInterface& g)=0;
       virtual void RegisterVector(VectorInterface& g)=0;
       virtual void RegisterVectorsOnSolvers()=0;
       virtual void RegisterMatrix()=0;
