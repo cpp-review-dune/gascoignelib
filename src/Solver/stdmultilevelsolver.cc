@@ -832,8 +832,7 @@ void StdMultiLevelSolver::AddNodeVector(const string& name, VectorInterface& gq)
   Transfer(ComputeLevel,1,gq);
   for(int l=0; l<nlevels(); l++)
     {
-      const GlobalVector& q = GetSolver(l)->GetGV(gq);
-      GetSolver(l)->AddNodeVector(name,&q);
+      GetSolver(l)->AddNodeVector(name,gq);
     }
 }
 

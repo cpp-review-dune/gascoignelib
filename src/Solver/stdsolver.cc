@@ -1177,6 +1177,13 @@ void StdSolver::Add(VectorInterface& dst, double s, const VectorInterface& src) 
 
 /*-----------------------------------------*/
 
+double StdSolver::Norm(const VectorInterface& dst) const
+{
+  return GetGV(dst).norm();
+}
+
+/*-----------------------------------------*/
+
 double StdSolver::ScalarProduct(const VectorInterface& y, const VectorInterface& x) const
 {
   return GetGV(y)*GetGV(x);

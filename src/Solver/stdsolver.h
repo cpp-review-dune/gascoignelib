@@ -156,8 +156,8 @@ class StdSolver : public virtual SolverInterface
 
   bool DirectSolver() const {return _directsolver;}
 
-  void AddNodeVector(const std::string& name, const GlobalVector* q) {
-    GetDiscretization()->AddNodeVector(name,q);
+  void AddNodeVector(const std::string& name, const VectorInterface& q) {
+    GetDiscretization()->AddNodeVector(name,&GetGV(q));
   }
   void AddCellVector(const std::string& name, const GlobalCellVector* q) {
     GetDiscretization()->AddCellVector(name,q);
@@ -306,6 +306,7 @@ class StdSolver : public virtual SolverInterface
   virtual double ScalarProduct(const VectorInterface& y, const VectorInterface& x) const;
   virtual void Equ(VectorInterface& dst, double s, const VectorInterface& src) const;
   virtual void Add(VectorInterface& dst, double s, const VectorInterface& src) const;
+  virtual double Norm(const VectorInterface& dst) const;  
 };
 }
 

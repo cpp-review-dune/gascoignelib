@@ -69,7 +69,7 @@ namespace Gascoigne
 
       virtual void VisuGrid(const std::string& name, int i) const=0;
 
-      virtual void AddNodeVector(const std::string&, const GlobalVector* q)=0;
+      virtual void AddNodeVector(const std::string&, const VectorInterface& q)=0;
       virtual void AddCellVector(const std::string&, const GlobalCellVector* q)=0;
       virtual void AddParameterVector(const std::string&, const GlobalParameterVector* q)=0;
       virtual void DeleteNodeVector(const std::string&)=0;
@@ -179,6 +179,14 @@ namespace Gascoigne
       virtual void ComputeIlu() const=0;
       virtual void AssembleDualMatrix(const VectorInterface& gu, double d)=0;
 
+		//
+		/// vector
+		//
+      virtual void Equ(VectorInterface& dst, double s, const VectorInterface& src) const=0;
+      virtual void Add(VectorInterface& dst, double s, const VectorInterface& src) const=0;
+      virtual double Norm(const VectorInterface& dst) const=0;  
+
+      
       //
       /// vector - "postprocessing"
       //

@@ -35,8 +35,9 @@ class StdMultiLevelSolver : public MultiLevelSolverInterface
   protected :
 
   const MeshAgentInterface* GetMeshAgent() const {return _MAP;}
-  std::vector<SolverInterface*>& GetSolverPointer() { return _SP; }
-  
+  std::vector<SolverInterface*>& GetSolverPointers() { return _SP; }
+  const std::vector<SolverInterface*>& GetSolverPointers() const { return _SP; }
+
 
   mutable VectorInterface _cor, _res, _mg0, _mg1;
   std::set<VectorInterface>  _MlVectors;

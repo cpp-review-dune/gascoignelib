@@ -111,7 +111,7 @@ void DwrQ1Q2::DualResidualsHigher(VectorInterface& gf,
   S.GetGV(gf).zero();
   // dual problem
   S.SetProblem(PDI);
-  S.AddNodeVector("u",&S.GetGV(gu));
+  S.AddNodeVector("u",gu);
 
   // standard residual
   //
