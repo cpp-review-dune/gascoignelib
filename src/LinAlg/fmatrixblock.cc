@@ -241,6 +241,17 @@ template FMatrixBlock<1>;
 template FMatrixBlock<2>;
 template FMatrixBlock<3>;
 template FMatrixBlock<4>;
+template FMatrixBlock<5>;
+template FMatrixBlock<6>;
+template FMatrixBlock<7>;
+template FMatrixBlock<8>;
+template FMatrixBlock<9>;
+template FMatrixBlock<10>;
+template FMatrixBlock<11>;
+template FMatrixBlock<18>;
+template FMatrixBlock<20>;
+template FMatrixBlock<12>;
+
 }
 
 /**********************************************************/
