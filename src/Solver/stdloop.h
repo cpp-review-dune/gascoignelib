@@ -38,7 +38,8 @@ protected:
   DoubleVector _JErr;
   Extrapolator    Extra;
 
-  GlobalVector _GlobalErr;
+  // ist wohl zuviel (schon in BasicLoop):
+/*   GlobalVector _GlobalErr; */
 
   // new vectors
 

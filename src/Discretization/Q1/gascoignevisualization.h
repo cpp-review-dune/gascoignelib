@@ -12,7 +12,7 @@ namespace Gascoigne
 
 class GascoigneVisualization : public Visualization
 {
-private:
+protected:
 
   const GlobalVector* _v;
 
