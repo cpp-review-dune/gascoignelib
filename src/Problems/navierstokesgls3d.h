@@ -22,6 +22,8 @@ class NavierStokesGls3d : public NavierStokes3d, public virtual GlsEquation
   NavierStokesGls3d(const ParamFile* pf);
 
   std::string GetName() const;
+
+  void SetTime(double time, double dt) const {Application::SetTime(time,dt); ST.DeltaT() = dt;}
   //
   /// Computation of gls stabilization parameters
   //

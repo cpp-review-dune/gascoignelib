@@ -21,7 +21,7 @@ public:
 
   std::string GetName() const { return "NavierStokesLps2d";}
 
-  void SetTime(double k)   { ST.DeltaT() = k;}
+  void SetTime(double time, double dt) const {Application::SetTime(time,dt); ST.DeltaT() = dt;}
   //
   /// Computation of lps stabilization parameters
   //

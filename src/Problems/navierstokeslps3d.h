@@ -20,6 +20,8 @@ class NavierStokesLps3d : public NavierStokes3d, public virtual LpsEquation
   NavierStokesLps3d(const Gascoigne::ParamFile* filename);
 
   std::string GetName() const;
+
+  void SetTime(double time, double dt) const {Application::SetTime(time,dt); ST.DeltaT() = dt;}
   //
   /// Computation of lps stabilization parameters
   //
