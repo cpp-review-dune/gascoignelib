@@ -37,6 +37,8 @@ public:
   const GascoigneMultiGridMesh& GetMultiGrid() const {return *GMG;}
   GascoigneMultiGridMesh& GetMultiGrid() {return *GMG;}
 
+  const HierarchicalMesh* GetHierarchicalMesh() const { return HMP;}
+
   int nnodes() const {return GMG->GetGascoigneMesh(0)->nnodes();}
   int ncells() const {return GMG->GetGascoigneMesh(0)->ncells();}
   int nlevels() const {return GMG->nlevels();}

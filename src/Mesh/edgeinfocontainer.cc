@@ -22,7 +22,7 @@ EdgeInfoContainer<DIM>::~EdgeInfoContainer<DIM>()
 /**********************************************************/
 
 template<int DIM>
-void EdgeInfoContainer<DIM>::basicInit(const HierarchicalMesh* HM, int ncomp)
+void EdgeInfoContainer<DIM>::BasicInit(const HierarchicalMesh* HM, int ncomp)
 {
   resize(0);
   _HMP   = HM;
@@ -37,30 +37,7 @@ void EdgeInfoContainer<DIM>::basicInit(const HierarchicalMesh* HM, int ncomp)
 
 /**********************************************************/
 
-template<int DIM>
-void EdgeInfoContainer<DIM>::showStatistics() const
-{
-  for (int i=0; i<size(); i++)
-    {
-      if ((*this)[i]!=NULL)
-	{
-	  cout << "Edge " << i << ": ";
-	  (*this)[i]->showStatistics();
-	}
-    }
-}
-
-/**********************************************************/
-
-template<int DIM>
-const HierarchicalMesh* EdgeInfoContainer<DIM>::getMesh() const
-{
-  return _HMP;
-}
-
-/**********************************************************/
-
-void EdgeInfoContainer<2>::modifyHanging()
+void EdgeInfoContainer<2>::ModifyHanging()
 {
   const QuadLawAndOrder& QLAO = dynamic_cast<const HierarchicalMesh2d*>(_HMP)->QuadLawOrder();
   fixarray<2,int>        vertexes;
@@ -75,35 +52,35 @@ void EdgeInfoContainer<2>::modifyHanging()
   
   for (int i=0; i<size(); i++)
     {
-      if ((*this)[i]!=NULL && (*this)[i]->getCount()==1 && (*this)[i]->getEdge().slave()!=-1)
+      if ((*this)[i]!=NULL && (*this)[i]->GetCount()==1 && (*this)[i]->GetEdge().slave()!=-1)
 	{
-	  const Edge& edge = (*this)[i]->getEdge();
-	  vertexes = (*this)[i]->vertex();
+	  const Edge& edge = (*this)[i]->GetEdge();
+	  vertexes = (*this)[i]->GetVertex();
 	  
 	  int left  = QLAO.GlobalChildEdge(vertexes,edge.slave(),0);
 	  int right = QLAO.GlobalChildEdge(vertexes,edge.slave(),1);
 	  
 	  for (int c=0; c<_ncomp; c++)
 	    {
-	      lu(0,c) = ((*this)[right]->getValue())(1,c);
-	      lu(1,c) = ((*this)[left]->getValue())(0,c);
+	      lu(0,c) = ((*this)[right]->GetValue())(1,c);
+	      lu(1,c) = ((*this)[left]->GetValue())(0,c);
 	      
-	      lul(0,c) = ((*this)[i]->getValue())(1,c);
-	      lul(1,c) = 0.5 * (((*this)[i]->getValue())(0,c) + ((*this)[i]->getValue())(1,c));
+	      lul(0,c) = ((*this)[i]->GetValue())(1,c);
+	      lul(1,c) = 0.5 * (((*this)[i]->GetValue())(0,c) + ((*this)[i]->GetValue())(1,c));
 	      
-	      lur(0,c) = 0.5 * (((*this)[i]->getValue())(0,c) + ((*this)[i]->getValue())(1,c));
-	      lur(1,c) = ((*this)[i]->getValue())(0,c);
+	      lur(0,c) = 0.5 * (((*this)[i]->GetValue())(0,c) + ((*this)[i]->GetValue())(1,c));
+	      lur(1,c) = ((*this)[i]->GetValue())(0,c);
 	    }
-	  (*this)[i]->addNodes(lu);
-	  (*this)[left]->addNodes(lul);
-	  (*this)[right]->addNodes(lur);
+	  (*this)[i]->AddNodes(lu);
+	  (*this)[left]->AddNodes(lul);
+	  (*this)[right]->AddNodes(lur);
 	}
     }
 }
 
 /**********************************************************/
 
-void EdgeInfoContainer<3>::modifyHanging()
+void EdgeInfoContainer<3>::ModifyHanging()
 {
   const HexLawAndOrder& HLAO = dynamic_cast<const HierarchicalMesh3d*>(_HMP)->HexLawOrder();
   fixarray<4,int>       vertexes;
@@ -122,24 +99,24 @@ void EdgeInfoContainer<3>::modifyHanging()
   
   for (int i=0; i<size(); i++)
     {
-      if ((*this)[i]!=NULL && (*this)[i]->getCount()==1 && (*this)[i]->getEdge().slave()!=-1)
+      if ((*this)[i]!=NULL && (*this)[i]->GetCount()==1 && (*this)[i]->GetEdge().slave()!=-1)
 	{
-	  const Edge& quad = (*this)[i]->getEdge();
-	  vertexes = (*this)[i]->vertex();
+	  const Edge& quad = (*this)[i]->GetEdge();
+	  vertexes = (*this)[i]->GetVertex();
 	  
 	  int lu = HLAO.GlobalChildFace(vertexes,quad.master(),0);
 	  int ru = HLAO.GlobalChildFace(vertexes,quad.master(),1);
 	  int lo = HLAO.GlobalChildFace(vertexes,quad.master(),3);
 	  int ro = HLAO.GlobalChildFace(vertexes,quad.master(),2);
 	  
-	  LocalVector help = (*this)[i]->getValue();
+	  LocalVector help = (*this)[i]->GetValue();
 	  
 	  for (int c=0; c<_ncomp; c++)
 	    {
-	      lugr(0,c) = ((*this)[lu]->getValue())(0,c);
-	      lugr(1,c) = ((*this)[ru]->getValue())(1,c);
-	      lugr(2,c) = ((*this)[ro]->getValue())(2,c);
-	      lugr(3,c) = ((*this)[lo]->getValue())(3,c);
+	      lugr(0,c) = ((*this)[lu]->GetValue())(0,c);
+	      lugr(1,c) = ((*this)[ru]->GetValue())(1,c);
+	      lugr(2,c) = ((*this)[ro]->GetValue())(2,c);
+	      lugr(3,c) = ((*this)[lo]->GetValue())(3,c);
 	      
 	      lulu(0,c) = help(0,c);
 	      lulu(1,c) = 0.5 * (help(0,c) + help(1,c));
@@ -161,11 +138,26 @@ void EdgeInfoContainer<3>::modifyHanging()
 	      luro(2,c) = help(2,c);
 	      luro(3,c) = 0.5 * (help(2,c) + help(3,c));
 	    }
-	  (*this)[i]->addNodes(lugr);
-	  (*this)[lu]->addNodes(lulu);
-	  (*this)[ru]->addNodes(luru);
-	  (*this)[lo]->addNodes(lulo);
-	  (*this)[ro]->addNodes(luro);
+	  (*this)[i]->AddNodes(lugr);
+	  (*this)[lu]->AddNodes(lulu);
+	  (*this)[ru]->AddNodes(luru);
+	  (*this)[lo]->AddNodes(lulo);
+	  (*this)[ro]->AddNodes(luro);
+	}
+    }
+}
+
+/**********************************************************/
+
+template<int DIM>
+void EdgeInfoContainer<DIM>::ShowStatistics() const
+{
+  for (int i=0; i<size(); i++)
+    {
+      if ((*this)[i]!=NULL)
+	{
+	  cout << "Edge " << i << ": ";
+	  (*this)[i]->ShowStatistics();
 	}
     }
 }

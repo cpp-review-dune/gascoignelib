@@ -21,16 +21,16 @@ class EdgeInfo
   EdgeInfo<DIM>() {}
   ~EdgeInfo<DIM>() {}
 
-  void basicInit(const Edge*, int, const fixarray<2*DIM-2,int>&);
-  void addNodes(const Gascoigne::LocalVector&);
-  void showStatistics() const;
+  void BasicInit(const Edge*, int, const fixarray<2*DIM-2,int>&);
+  void AddNodes(const Gascoigne::LocalVector&);
 
-  const fixarray<2*DIM-2,int>& vertex() const;
+  const fixarray<2*DIM-2,int>&  GetVertex() const { return _vertex; }
+  const Gascoigne::LocalVector& GetValue()  const { return _u; }
+  const Edge&                   GetEdge()   const { return *_edge; }
+  int                           GetCount()  const { return _count; }
+  fixarray<2*DIM-2,double>      GetNorm()   const;
 
-  int getCount() const;
-  const Gascoigne::LocalVector& getValue() const;
-  fixarray<2*DIM-2,double> getNorm() const;
-  const Edge& getEdge() const;
+  void ShowStatistics() const;
 };
 
 /**********************************************************/

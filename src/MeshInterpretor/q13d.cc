@@ -300,104 +300,154 @@ void Q13d::ConstructInterpolator(MgInterpolatorInterface* I, const MeshTransferI
   }
 }
 
+/* ----------------------------------------- */
 
+void Q13d::EnergyEstimator(EdgeInfoContainer<3>& EIC, nvector<double>& eta, const GlobalVector& u, const Equation& EQ, const RightHandSideData& RHS) const
+{
+  EnergyEstimatorIntegrator<3> EEI;
+  const HierarchicalMesh3d*    HM = dynamic_cast<const HierarchicalMesh3d*>(EIC.GetMesh());
+
+  EEI.BasicInit();
+
+  // Kanten initialisieren
+  EEJumps(EIC,u,EEI,HM);
+  
+  // Kantenintegrale auswerten
+  EEJumpNorm(EIC,eta,EEI,HM);
+
+  // Residuenterme auswerten
+  EEResidual(eta,u,EQ,RHS,EEI);
+}
 
 /* ----------------------------------------- */
 
-void Q13d::Jumps(EdgeInfoContainer<3>& EIC, const GlobalVector& u) const
+void Q13d::EnergyEstimatorZeroRhs(EdgeInfoContainer<3>& EIC, nvector<double>& eta, const GlobalVector& u, const Equation& EQ) const
 {
-  const HierarchicalMesh3d* HM = dynamic_cast<const HierarchicalMesh3d*>(EIC.getMesh());
-  fixarray<4,int>           vertexes;
-  nmatrix<double>           T;
+  EnergyEstimatorIntegrator<3> EEI;
+  const HierarchicalMesh3d*    HM = dynamic_cast<const HierarchicalMesh3d*>(EIC.GetMesh());
+
+  EEI.BasicInit();
+
+  // Kanten initialisieren
+  EEJumps(EIC,u,EEI,HM);
+  
+  // Kantenintegrale auswerten
+  EEJumpNorm(EIC,eta,EEI,HM);
+
+  // Residuenterme auswerten
+  EEResidualZeroRhs(eta,u,EQ,EEI);
+}
+
+/* ----------------------------------------- */
+
+void Q13d::EEJumps(EdgeInfoContainer<3>& EIC, const GlobalVector& u, const EnergyEstimatorIntegrator<3>& EEI, const HierarchicalMesh3d* HM) const
+{
+  fixarray<4,int> vertexes;
+  nmatrix<double> T;
 
   for(int iq=0;iq<HM->ncells();++iq)
+  {
+    if (!(HM->sleep(iq)))
     {
-      if (!(HM->sleep(iq)))
-	{
-	  Transformation_HM(T,HM,iq);
-	  GetFem()->ReInit(T);
+      Transformation_HM(T,HM,iq);
+      GetFem()->ReInit(T);
 
-	  GlobalToLocal_HM(__U,u,HM,iq);
-	  
-	  for (int ile=0; ile<6; ile++)
-	    {
-	      dynamic_cast<const GalerkinIntegrator<3>*>(GetIntegrator())->Jumps(__F,*GetFem(),__U,ile);
+      GlobalToLocal_HM(__U,u,HM,iq);
+      
+      for (int ile=0; ile<6; ile++)
+      {
+        EEI.Jumps(__F,*GetFem(),__U,ile);
 
-	      int facenumber = HM->face_of_hex(iq,ile);
+        int facenumber = HM->face_of_hex(iq,ile);
 
-	      if (EIC[facenumber]==NULL)
-		{
-		  const Edge& edge = HM->edge(facenumber);
-		  HM->HexLawOrder().globalvertices_of_face(HM->hex(edge.master()),vertexes,edge.LocalMasterIndex());
-		  EIC[facenumber] = new EdgeInfo<3>();
-		  EIC[facenumber]->basicInit(&edge,u.ncomp(),vertexes);
-		}
-	      EIC[facenumber]->addNodes(__F);
-	    }
-	}
+        if (EIC[facenumber]==NULL)
+        {
+          const Edge& edge = HM->edge(facenumber);
+          HM->HexLawOrder().globalvertices_of_face(HM->hex(edge.master()),vertexes,edge.LocalMasterIndex());
+          EIC[facenumber] = new EdgeInfo<3>();
+          EIC[facenumber]->BasicInit(&edge,u.ncomp(),vertexes);
+        }
+        EIC[facenumber]->AddNodes(__F);
+      }
     }
+  }
 
-  EIC.modifyHanging();
+  EIC.ModifyHanging();
 }
 
 /* ----------------------------------------- */
 
-void Q13d::JumpNorm(EdgeInfoContainer<3>& EIC, nvector<double>& eta) const
+void Q13d::EEJumpNorm(EdgeInfoContainer<3>& EIC, nvector<double>& eta, const EnergyEstimatorIntegrator<3>& EEI, const HierarchicalMesh3d* HM) const
 {
-  const HierarchicalMesh3d* HM = dynamic_cast<const HierarchicalMesh3d*>(EIC.getMesh());
-  nmatrix<double>           T;
-  int                       facenumber;
-  double                    jump;
+  nmatrix<double> T;
 
   for (int iq=0; iq<HM->ncells(); iq++)
+  {
+    if (!(HM->sleep(iq)))
     {
-      if (!(HM->sleep(iq)))
-	{
-	  Transformation_HM(T,HM,iq);
-	  GetFem()->ReInit(T);
+      Transformation_HM(T,HM,iq);
+      GetFem()->ReInit(T);
 
-	  jump = 0.;
-	  for (int ile=0; ile<6; ile++)
-	    {
-	      facenumber = HM->face_of_hex(iq,ile);
-	      if (EIC[facenumber]->getCount()==2)
-		{
-		  dynamic_cast<const GalerkinIntegrator<3>*>(GetIntegrator())->JumpNorm(jump,*GetFem(),EIC[facenumber]->getNorm(),ile);
-		}
-	    }
-	  for (int in=0; in<8; in++)
-	    {
-	      eta[HM->vertex_of_cell(iq,in)] += 0.125 * 0.5 * sqrt(jump);
-	    }
-	}
+      double jump = 0.;
+      for (int ile=0; ile<6; ile++)
+      {
+        int facenumber = HM->face_of_hex(iq,ile);
+        if (EIC[facenumber]->GetCount()==2)
+        {
+          jump += EEI.JumpNorm(*GetFem(),EIC[facenumber]->GetNorm(),ile);
+        }
+      }
+      for (int in=0; in<8; in++)
+      {
+        eta[HM->vertex_of_cell(iq,in)] += 0.125 * 0.5 * sqrt(jump);
+      }
     }
+  }
 }
 
 /* ----------------------------------------- */
 
-void Q13d::Residual(nvector<double>& eta, const GlobalVector& u, const Equation& EQ, const RightHandSideData* RHS) const
+void Q13d::EEResidual(nvector<double>& eta, const GlobalVector& u, const Equation& EQ, const RightHandSideData& RHS, const EnergyEstimatorIntegrator<3>& EEI) const
 {
   nmatrix<double> T;
 
   GlobalToGlobalData();
-  if (RHS!=NULL)
-  {
-    RHS->SetParameterData(__q);
-  }
+  RHS.SetParameterData(__q);
   
   for(int iq=0;iq<GetMesh()->ncells();++iq)
-    {
-      Transformation(T,iq);
-      GetFem()->ReInit(T);
+  {
+    Transformation(T,iq);
+    GetFem()->ReInit(T);
 
-      GlobalToLocalData(iq);
-      GlobalToLocal(__U,u,iq);
-      double res = 0.;
-      dynamic_cast<const GalerkinIntegrator<3>*>(GetIntegrator())->Residual(res,__U,*GetFem(),EQ,RHS,__Q);
-      for (int in=0; in<8; in++)
-	{
-	  eta[GetMesh()->vertex_of_cell(iq,in)] += 0.125 * sqrt(res);
-	}
+    GlobalToLocalData(iq);
+    GlobalToLocal(__U,u,iq);
+    double res = EEI.Residual(__U,*GetFem(),EQ,RHS,__Q);
+    for (int in=0; in<8; in++)
+    {
+      eta[GetMesh()->vertex_of_cell(iq,in)] += 0.125 * sqrt(res);
     }
+  }
 }
 
+/* ----------------------------------------- */
+
+void Q13d::EEResidualZeroRhs(nvector<double>& eta, const GlobalVector& u, const Equation& EQ, const EnergyEstimatorIntegrator<3>& EEI) const
+{
+  nmatrix<double> T;
+
+  GlobalToGlobalData();
+  
+  for(int iq=0;iq<GetMesh()->ncells();++iq)
+  {
+    Transformation(T,iq);
+    GetFem()->ReInit(T);
+
+    GlobalToLocalData(iq);
+    GlobalToLocal(__U,u,iq);
+    double res = EEI.ResidualZeroRhs(__U,*GetFem(),EQ,__Q);
+    for (int in=0; in<8; in++)
+    {
+      eta[GetMesh()->vertex_of_cell(iq,in)] += 0.125 * sqrt(res);
+    }
+  }
+}

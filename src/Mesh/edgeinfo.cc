@@ -6,7 +6,7 @@ using namespace Gascoigne;
 /**********************************************************/
 
 template<int DIM>
-void EdgeInfo<DIM>::basicInit(const Edge* edge, int ncomp, const fixarray<2*DIM-2,int>& vertex)
+void EdgeInfo<DIM>::BasicInit(const Edge* edge, int ncomp, const fixarray<2*DIM-2,int>& vertex)
 {
   _count  = 0;
   _edge   = edge;
@@ -18,7 +18,7 @@ void EdgeInfo<DIM>::basicInit(const Edge* edge, int ncomp, const fixarray<2*DIM-
 /**********************************************************/
 
 template<int DIM>
-void EdgeInfo<DIM>::addNodes(const LocalVector& u)
+void EdgeInfo<DIM>::AddNodes(const LocalVector& u)
 {
   for (int i=0; i<2*DIM-2; i++)
     {
@@ -33,23 +33,7 @@ void EdgeInfo<DIM>::addNodes(const LocalVector& u)
 /**********************************************************/
 
 template<int DIM>
-void EdgeInfo<DIM>::showStatistics() const
-{
-  cout << _count << ": " << _vertex << " = " << _u << endl;
-}
-
-/**********************************************************/
-
-template<int DIM>
-const LocalVector& EdgeInfo<DIM>::getValue() const
-{
-  return _u;
-}
-
-/**********************************************************/
-
-template<int DIM>
-fixarray<2*DIM-2,double> EdgeInfo<DIM>::getNorm() const
+fixarray<2*DIM-2,double> EdgeInfo<DIM>::GetNorm() const
 {
   fixarray<2*DIM-2,double> norm(0.);
 
@@ -66,25 +50,9 @@ fixarray<2*DIM-2,double> EdgeInfo<DIM>::getNorm() const
 /**********************************************************/
 
 template<int DIM>
-const Edge& EdgeInfo<DIM>::getEdge() const
+void EdgeInfo<DIM>::ShowStatistics() const
 {
-  return *_edge;
-}
-
-/**********************************************************/
-
-template<int DIM>
-const fixarray<2*DIM-2,int>& EdgeInfo<DIM>::vertex() const
-{
-  return _vertex;
-}
-
-/**********************************************************/
-
-template<int DIM>
-int EdgeInfo<DIM>::getCount() const
-{
-  return _count;
+  cout << _count << ": " << _vertex << " = " << _u << endl;
 }
 
 /**********************************************************/

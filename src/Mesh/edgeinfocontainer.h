@@ -22,12 +22,12 @@ class EdgeInfoContainer : public nvector<EdgeInfo<DIM>*>
   EdgeInfoContainer<DIM>() {}
   ~EdgeInfoContainer<DIM>();
 
-  void basicInit(const HierarchicalMesh*, int);
-  void modifyHanging();
+  void BasicInit(const HierarchicalMesh*, int);
+  void ModifyHanging();
 
-  const HierarchicalMesh* getMesh() const;
+  const HierarchicalMesh* GetMesh() const { return _HMP; }
 
-  void showStatistics() const;
+  void ShowStatistics() const;
 };
 
 #endif

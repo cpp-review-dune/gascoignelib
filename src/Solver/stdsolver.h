@@ -34,7 +34,7 @@ class StdSolver : public virtual SolverInterface
 
   // 1. Gitter
 
-  const MeshInterface*  _MP;
+  const MeshInterface*    _MP;
   const HierarchicalMesh* _HM;
 
   // 2. Matrizen
@@ -303,8 +303,8 @@ class StdSolver : public virtual SolverInterface
   /// HierarchicalMesh
   //
 
-  void setHierarchicalMeshPointer(const HierarchicalMesh*);
-
+  const HierarchicalMesh*& GetHierarchicalMeshPointer() { return _HM; }
+  const HierarchicalMesh*  GetHierarchicalMesh() const  { return _HM; }
 };
 
 #endif

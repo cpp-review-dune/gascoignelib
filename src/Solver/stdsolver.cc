@@ -845,20 +845,28 @@ double StdSolver::EnergyEstimator(nvector<double>& eta, const BasicGhostVector& 
   if (GetMesh()->dimension()==2)
     {
       EdgeInfoContainer<2> EIC;
-      EIC.basicInit(_HM,u.ncomp());
-
-      dynamic_cast<const Q12d*>(GetMeshInterpretor())->Jumps(EIC,u);
-      dynamic_cast<const Q12d*>(GetMeshInterpretor())->JumpNorm(EIC,eta);
-      dynamic_cast<const Q12d*>(GetMeshInterpretor())->Residual(eta,u,*EQ,RHS);
+      EIC.BasicInit(GetHierarchicalMesh(),u.ncomp());
+      if(RHS)
+      {
+        dynamic_cast<const Q12d*>(GetMeshInterpretor())->EnergyEstimator(EIC,eta,u,*EQ,*RHS);
+      }
+      else
+      {
+        dynamic_cast<const Q12d*>(GetMeshInterpretor())->EnergyEstimatorZeroRhs(EIC,eta,u,*EQ);
+      }
     }
   else if (GetMesh()->dimension()==3)
     {
       EdgeInfoContainer<3> EIC;
-      EIC.basicInit(_HM,u.ncomp());
-
-      dynamic_cast<const Q13d*>(GetMeshInterpretor())->Jumps(EIC,u);
-      dynamic_cast<const Q13d*>(GetMeshInterpretor())->JumpNorm(EIC,eta);
-      dynamic_cast<const Q13d*>(GetMeshInterpretor())->Residual(eta,u,*EQ,RHS);
+      EIC.BasicInit(GetHierarchicalMesh(),u.ncomp());
+      if(RHS)
+      {
+        dynamic_cast<const Q13d*>(GetMeshInterpretor())->EnergyEstimator(EIC,eta,u,*EQ,*RHS);
+      }
+      else
+      {
+        dynamic_cast<const Q13d*>(GetMeshInterpretor())->EnergyEstimatorZeroRhs(EIC,eta,u,*EQ);
+      }
     }
   HNZero(gu);
 
@@ -967,11 +975,4 @@ void StdSolver::PressureFilter(GlobalVector& x) const
       x.CompAdd(comp,-d);
     }
   HNZero(x);
-}
-
-/*---------------------------------------------------*/
-
-void StdSolver::setHierarchicalMeshPointer(const HierarchicalMesh* HM)
-{
-  _HM = HM;
 }

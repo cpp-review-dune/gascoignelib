@@ -3,6 +3,7 @@
 
 #include  "q1.h"
 #include  "edgeinfocontainer.h"
+#include  "energyestimatorintegrator.h"
 
 /////////////////////////////////////////////
 ////
@@ -19,6 +20,11 @@ class Q13d : public Q1
   nmatrix<double> GetLocalInterpolationWeights() const;
 
   HNStructureInterface* NewHNStructure();
+  
+  void EEJumps(EdgeInfoContainer<3>& EIC, const GlobalVector& u, const EnergyEstimatorIntegrator<3>& EEI, const HierarchicalMesh3d* HM) const;
+  void EEJumpNorm(EdgeInfoContainer<3>& EIC, nvector<double>& eta, const EnergyEstimatorIntegrator<3>& EEI, const HierarchicalMesh3d* HM) const;
+  void EEResidual(nvector<double>& eta, const GlobalVector& u, const Equation& EQ, const RightHandSideData& RHS, const EnergyEstimatorIntegrator<3>& EEI) const;
+  void EEResidualZeroRhs(nvector<double>& eta, const GlobalVector& u, const Equation& EQ, const EnergyEstimatorIntegrator<3>& EEI) const;
 
 public:
 
@@ -37,9 +43,8 @@ public:
   void ConstructInterpolator(MgInterpolatorInterface* I, const MeshTransferInterface* MT);
   void StrongDirichletVector(GlobalVector& u, const DirichletData& BF, int col, const std::vector<int>& comp) const;
 
-  void Jumps(EdgeInfoContainer<3>& EIC, const GlobalVector& u) const;
-  void JumpNorm(EdgeInfoContainer<3>& EIC, nvector<double>& eta) const;
-  void Residual(nvector<double>& eta, const GlobalVector& u, const Equation& EQ, const RightHandSideData* RHS) const;
+  void EnergyEstimator(EdgeInfoContainer<3>& EIC, nvector<double>& eta, const GlobalVector& u, const Equation& EQ, const RightHandSideData& RHS) const;
+  void EnergyEstimatorZeroRhs(EdgeInfoContainer<3>& EIC, nvector<double>& eta, const GlobalVector& u, const Equation& EQ) const;
 };
 
 
