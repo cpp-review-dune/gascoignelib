@@ -43,6 +43,8 @@ public:
 
   virtual void RhsPoint(LocalVector& F, const FemInterface& FEM, const Vertex2d& v, int) const { assert(0);};
   virtual void RhsPoint(LocalVector& F, const FemInterface& FEM, const Vertex3d& v, int) const { assert(0);};
+  virtual double ComputePointValue(const FemInterface& E, const Vertex2d& p, const LocalVector& U, int comp) const { assert(0);};
+  virtual double ComputePointValue(const FemInterface& E, const Vertex3d& p, const LocalVector& U, int comp) const { assert(0);};
 };
 }
 

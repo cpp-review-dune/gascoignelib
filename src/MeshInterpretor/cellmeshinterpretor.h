@@ -5,6 +5,7 @@
 
 #include  "hierarchicalmesh.h"
 
+
 /////////////////////////////////////////////
 ///
 ///@brief
@@ -31,6 +32,10 @@ protected:
 
   int RhsPoint(GlobalVector& f, const Vertex2d& p0, int comp, double d) const;
   int RhsPoint(GlobalVector& f, const Vertex3d& p0, int comp, double d) const;
+
+  double ComputePointValue(const GlobalVector& u, const Vertex2d& p0,int comp) const;
+  double ComputePointValue(const GlobalVector& u, const Vertex3d& p0,int comp) const; 
+
   virtual nmatrix<double> GetLocalInterpolationWeights() const { assert(0); return nmatrix<double>();}
   int GetCellNumber(const Vertex2d& p0, nvector<Vertex2d>& p) const;
   void VertexTransformation(const nvector<Vertex2d>& p, 
@@ -75,6 +80,9 @@ public:
   // Functionals
   double ComputeBoundaryFunctional(const GlobalVector& u, const BoundaryFunctional& BF) const;
   double ComputeDomainFunctional(const GlobalVector& u, const DomainFunctional& F) const;
+
+  double ComputeNewPointFunctional(const GlobalVector& u, const NewPointFunctional* FP) const;
+
 };
 }
 

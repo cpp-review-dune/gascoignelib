@@ -17,6 +17,8 @@
 #include  "pointfunctional.h"
 #include  "visu_eps.h"
 
+#include  "newpointfunctional.h"
+
 #include  "q1gls2d.h"
 #include  "q1gls3d.h"
 
@@ -603,6 +605,11 @@ double StdSolver::ComputeFunctional(GlobalVector& f, const GlobalVector& u, cons
     {
       return ComputeResidualFunctional(f,u,help,RFP);
     }
+  const NewPointFunctional* NPFP = dynamic_cast<const NewPointFunctional*>(FP);
+  if(NPFP)
+    {
+      return ComputeNewPointFunctional(f,u,help,NPFP);
+    }
   assert(0);
 }
 
@@ -637,6 +644,16 @@ double StdSolver::ComputePointFunctional(GlobalVector& f, const GlobalVector& u,
 
   HNAverage(u);      
   double J = u*f;
+  HNZero(u);
+  return J;
+}
+
+/*-------------------------------------------------------*/
+
+double StdSolver::ComputeNewPointFunctional(GlobalVector& f, const GlobalVector& u, GlobalVector& z, const NewPointFunctional* FP) const
+{
+  HNAverage(u);
+  double J = GetMeshInterpretor()->ComputeNewPointFunctional(u,FP);
   HNZero(u);
   return J;
 }

@@ -8,6 +8,7 @@
 #include  "ghostvectoragent.h"
 #include  "multigridmeshinterface.h"
 #include  "pointfunctional.h"
+#include  "newpointfunctional.h"
 #include  "residualfunctional.h"
 #include  "meshinterpretorinterface.h"
 #include  "stopwatch.h"
@@ -126,7 +127,8 @@ class StdSolver : public virtual SolverInterface
   double ComputeBoundaryFunctional(GlobalVector& f, const GlobalVector& u, GlobalVector& z, const BoundaryFunctional* FP) const;
   double ComputeDomainFunctional(GlobalVector& f, const GlobalVector& u, GlobalVector& z, const DomainFunctional* FP) const;
   double ComputePointFunctional(GlobalVector& f, const GlobalVector& u, GlobalVector& z, const PointFunctional* FP) const;
-  
+    double ComputeNewPointFunctional(GlobalVector& f, const GlobalVector& u, GlobalVector& z, const NewPointFunctional* NFP) const;
+    
   void SetBoundaryVectorStrong(GlobalVector& f, const BoundaryManager& BM, const DirichletData& DD) const;
   virtual void smooth(int niter, GlobalVector& x, const GlobalVector& y, GlobalVector& h) const;
   void SubtractMean(GlobalVector& gx) const;

@@ -212,6 +212,16 @@ void GalerkinIntegrator<DIM>::RhsPoint
 }
 
 /* ----------------------------------------- */
+template<int DIM>
+double GalerkinIntegrator<DIM>::ComputePointValue(const FemInterface& E, const Vertex<DIM>& p, const LocalVector& U, int comp) const
+{
+  E.point(p);
+  BasicIntegrator::universal_point(E,UH,U);
+
+  return UH[comp].m();
+}
+
+/* ----------------------------------------- */
 
 template<int DIM>
 double GalerkinIntegrator<DIM>::ComputeDomainFunctional(const DomainFunctional& F, const FemInterface& FEM, const LocalVector& U, const LocalNodeData& Q) const

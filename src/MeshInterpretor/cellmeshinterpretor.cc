@@ -432,6 +432,73 @@ double CellMeshInterpretor::ComputeDomainFunctional(const GlobalVector& u, const
 
 /* ----------------------------------------- */
 
+double CellMeshInterpretor::ComputeNewPointFunctional(const GlobalVector& u, const NewPointFunctional* FP) const
+{
+  int dim = GetMesh()->dimension();
+  vector<int> comps = FP->GetComps();
+  int nn = comps.size();
+
+  vector<double> up(nn,0);
+ 
+  if (dim == 2)
+    {
+      vector<Vertex2d> v2d = FP->GetPoints2d();
+      assert(nn==v2d.size());
+      
+      for(int i=0;i<nn;++i)
+	{
+	  up[i] = ComputePointValue(u,v2d[i],comps[i]);
+	}
+    }
+  else if (dim == 3)
+    {
+      vector<Vertex3d> v3d = FP->GetPoints3d();
+      assert(nn==v3d.size());
+      for(int i=0;i<nn;++i)
+	{
+	  up[i] = ComputePointValue(u,v3d[i],comps[i]);
+	}
+    }
+  else
+    abort();
+
+  return FP->J(up);
+}
+/* ----------------------------------------- */
+
+double CellMeshInterpretor::ComputePointValue(const GlobalVector& u, const Vertex2d& p0,int comp) const
+{
+  nvector<Vertex2d> p(8);
+  Vertex2d Tranfo_p0;
+
+  int iq = GetCellNumber(p0,p);
+  if (iq==-1)
+    {
+      cerr << "CellMeshInterpretor::ComputePointValue point not found\n";
+      abort();
+    }
+
+  VertexTransformation(p,p0,Tranfo_p0);
+
+  nmatrix<double> T;
+  Transformation(T,iq);
+  GetFem()->ReInit(T);
+
+  GlobalToLocal(__U,u,iq);
+
+  return GetIntegrator()->ComputePointValue(*GetFem(),Tranfo_p0,__U,comp);
+}
+
+/* ----------------------------------------- */
+
+double CellMeshInterpretor::ComputePointValue(const GlobalVector& u, const Vertex3d& p0,int comp) const
+{
+  cerr << "ComputePointValue for 3d not written\n";
+  assert(0);
+}
+
+/* ----------------------------------------- */
+
 /* ----------------------------------------- */
 
 void CellMeshInterpretor::Transformation_HM(FemInterface::Matrix& T, const HierarchicalMesh* HM, int iq) const
