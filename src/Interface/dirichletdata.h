@@ -5,6 +5,7 @@
 #include  <set>
 #include  "nvector.h"
 #include  <string>
+#include  "application.h"
 
 //////////////////////////////////////////////
 ///
@@ -20,15 +21,15 @@
 
 /*-----------------------------------------*/
 
-class DirichletData
+class DirichletData : public Application
 {
 protected:
 
   typedef  nvector<double>         Vector;
-
+  
 public:
 
-  DirichletData() {}
+  DirichletData() : Application() {}
   virtual ~DirichletData() {}
 
   virtual std::string GetName() const=0;
@@ -38,7 +39,6 @@ public:
 
   virtual std::set<int> preferred_colors()const {return std::set<int>();}
 
-  virtual void SetTime(double time, double dt) {}
 };
 
 

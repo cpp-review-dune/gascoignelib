@@ -42,7 +42,7 @@ public:
 
   virtual void SetFemData(const FemData& q) const {}
 
-  virtual int GetNcomp() const=0;
+  virtual int GetNcomp() const {assert(0);}
 
   int size()const{std::cerr<< "Application: never use \"size()\"\n"; assert(0);}
   int ncomp()const{std::cerr<< "Application: never use \"ncomp()\"\n"; assert(0);}

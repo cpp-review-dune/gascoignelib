@@ -26,11 +26,18 @@ using namespace Gascoigne;
 
 class Equation
 {
+ private:
+  
+  mutable double _time, _dt;
+  
  protected:
 
   typedef  nvector<double>                Vector;
   typedef  std::set<int>                  IntSet;
   typedef  DerivativeVector               TestFunction;
+
+  double GetTime() const {return _time;}
+  double GetTimeStep() const {return _dt;}
 
  public:
   
@@ -38,7 +45,7 @@ class Equation
   // Constructors
   //
 
-  Equation() {}
+  Equation() : _time(0.) {}
   Equation(const Equation& E) {assert(0);}
   virtual ~Equation() {}
 
@@ -52,7 +59,7 @@ class Equation
 
   virtual void SetDeltaT(double k){assert(0);}
   virtual void SetTimePattern(TimePattern& P) const{assert(0);}
-  virtual void SetTime(double time) {}
+  virtual void SetTime(double time, double dt) {_time = time; _dt = dt;}
 
   //
   // --------------------------------------
