@@ -1,4 +1,4 @@
 #include  "nvector.h"
 
-template nvector<int>;
-template nvector<double>;
+template class nvector<int>;
+template class nvector<double>;

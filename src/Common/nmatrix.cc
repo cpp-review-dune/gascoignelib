@@ -1,4 +1,4 @@
 #include  "nmatrix.h"
 
 
-template nmatrix<double>;
+template class nmatrix<double>;

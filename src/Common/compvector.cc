@@ -1,4 +1,4 @@
 #include  "compvector.h"
 
 
-template CompVector<double>;
+template class CompVector<double>;
