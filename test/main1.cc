@@ -53,7 +53,7 @@ class LocalExactSolution : public ExactSolution
 public:
   LocalExactSolution() : ExactSolution() {}
 
-  std::string GetName() const {return "LocalExactSolution";}
+  string GetName() const {return "LocalExactSolution";}
   double operator()(int c, const Vertex2d& v)const{return v.x()*v.y();}
 //   double operator()(int c, const Vertex2d& v)const{return v.x()*v.y()+11.;}
   int GetNcomp() const { return 1; }
@@ -76,7 +76,7 @@ class ProblemDescriptor : public ProblemDescriptorBase
     GetBoundaryManager()->AddDirichletData(3,0);
     GetBoundaryManager()->AddDirichletData(4,0);
   }
-  std::string GetName() const {return "Local";}
+  string GetName() const {return "Local";}
 };
 
 /*---------------------------------------------------*/
@@ -90,7 +90,7 @@ class LocalDomainFunctional : public virtual AllDomainFunctional
     }
   ~LocalDomainFunctional() {}
       
-  std::string GetName() const {
+  string GetName() const {
     return "LocalDomain";
   }
 };

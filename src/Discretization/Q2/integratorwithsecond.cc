@@ -5,7 +5,7 @@ using namespace Gascoigne;
 
 /**********************************************************/
 
-void IntegratorWithSecond<2>::point_hesse(const FemInterface& E, const Gascoigne::Vertex<2>& v) const
+void IntegratorWithSecond<2>::point_hesse(const FemInterface& E, const Vertex<2>& v) const
 {
   typedef FiniteElementWithSecond<2, 1, Transformation2d<BaseQ22dWithSecond>, BaseQ22dWithSecond>  FEWithSecond2d;
   
@@ -16,7 +16,7 @@ void IntegratorWithSecond<2>::point_hesse(const FemInterface& E, const Gascoigne
 
 /* ----------------------------------------- */
  
-void IntegratorWithSecond<3>::point_hesse(const FemInterface& E, const Gascoigne::Vertex<3>& v) const
+void IntegratorWithSecond<3>::point_hesse(const FemInterface& E, const Vertex<3>& v) const
 {
   typedef FiniteElementWithSecond<3, 2, Transformation3d<BaseQ23dWithSecond>, BaseQ23dWithSecond> FEWithSecond3d;
   

@@ -34,7 +34,7 @@ SolverInfos::~SolverInfos()
 
 /*---------------------------------------------------------------*/
 
-CGInfo& SolverInfos::GetLInfo(std::string s) const
+CGInfo& SolverInfos::GetLInfo(string s) const
 {
   map<string,CGInfo *>::const_iterator iter = __L.find(s);
   assert(iter!=__L.end());
@@ -43,7 +43,7 @@ CGInfo& SolverInfos::GetLInfo(std::string s) const
 
 /*---------------------------------------------------------------*/
 
-NLInfo& SolverInfos::GetNLInfo(std::string s) const
+NLInfo& SolverInfos::GetNLInfo(string s) const
 {
   map<string,NLInfo *>::const_iterator iter = _NL.find(s);
   assert(iter!=_NL.end());

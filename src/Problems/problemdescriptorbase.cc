@@ -1,5 +1,7 @@
 #include "problemdescriptorbase.h"
 
+using namespace std;
+
 namespace Gascoigne{
 
 /*------------------------------------------------------------------------------*/
@@ -25,16 +27,16 @@ ProblemDescriptorBase::~ProblemDescriptorBase()
 
 /*------------------------------------------------------------------------------*/
 
-std::ostream& ProblemDescriptorBase::OutputSettings(std::ostream& os) const 
+ostream& ProblemDescriptorBase::OutputSettings(ostream& os) const 
 {
-  if(EQ)   os << "Equation:         " << EQ->GetName()   << std::endl;
-  if(BE)   os << "BoundaryEquation: " << BE->GetName()   << std::endl;
-  if(RHS)  os << "Rhs:              " << RHS->GetName()  << std::endl;
-  if(BRHS) os << "BoundaryRhs:      " << BRHS->GetName() << std::endl;
-  if(DD)   os << "DirichletData:    " << DD->GetName()   << std::endl;
-  if(ES)   os << "ExactSolution:    " << ES->GetName()   << std::endl;
-  if(IC)   os << "InitialCondition: " << IC->GetName()   << std::endl;
-  if(BM)   os << "BoundaryManager:  " << BM->GetName()   << std::endl;
+  if(EQ)   os << "Equation:         " << EQ->GetName()   << endl;
+  if(BE)   os << "BoundaryEquation: " << BE->GetName()   << endl;
+  if(RHS)  os << "Rhs:              " << RHS->GetName()  << endl;
+  if(BRHS) os << "BoundaryRhs:      " << BRHS->GetName() << endl;
+  if(DD)   os << "DirichletData:    " << DD->GetName()   << endl;
+  if(ES)   os << "ExactSolution:    " << ES->GetName()   << endl;
+  if(IC)   os << "InitialCondition: " << IC->GetName()   << endl;
+  if(BM)   os << "BoundaryManager:  " << BM->GetName()   << endl;
   return os;
 }
   

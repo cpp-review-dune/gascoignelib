@@ -110,14 +110,14 @@ void StdTimeSolver::BasicInit(int level, const ParamFile* paramfile, const MeshI
 
 /*-------------------------------------------------------*/
 
-void Gascoigne::StdTimeSolver::IC(BasicGhostVector& f, double d) const
+void StdTimeSolver::IC(BasicGhostVector& f, double d) const
 {
   StdTimeSolver::IC(GetGV(f),d);
 }
 
 /*-------------------------------------------------------*/
 
-void Gascoigne::StdTimeSolver::IC(GlobalVector& f, double d) const
+void StdTimeSolver::IC(GlobalVector& f, double d) const
 {
   HNAverageData();
 

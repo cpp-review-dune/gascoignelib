@@ -30,7 +30,7 @@ void BoundaryManager::BasicInit(const ParamFile* pf)
     abort();
   }
 
-  std::map<int,IntVector>::const_iterator p = _compsDirichlet.begin();
+  map<int,IntVector>::const_iterator p = _compsDirichlet.begin();
   for(;p!=_compsDirichlet.end();p++)
     {
       if( _colsDirichlet.find(p->first) == _colsDirichlet.end() )

@@ -1,5 +1,7 @@
 #include  "hnstructureq23d.h"
 
+using namespace std;
+
 namespace Gascoigne
 {
 /*-----------------------------------------*/
@@ -135,7 +137,7 @@ void HNStructureQ23d::CondenseHanging2er
 
       if ( (indices[p[0]]==f[1]) && (indices[p[2]]==f[0]) ) 
 	{ 
-	  std::swap(p[0],p[2]);
+	  swap(p[0],p[2]);
 	} 
       assert(indices[p[0]]==f[0]);
       assert(indices[p[2]]==f[1]);

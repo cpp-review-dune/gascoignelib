@@ -169,7 +169,7 @@ double StdLoop::Estimator(DoubleVector& eta, MultiLevelGhostVector& u, MultiLeve
 
 /*-------------------------------------------------*/
 
-void StdLoop::AdaptMesh(const DoubleVector& eta,std::string refine_or_coarsen_step)
+void StdLoop::AdaptMesh(const DoubleVector& eta,string refine_or_coarsen_step)
 {
   //das gleichzeitige vergroebern und verfeinern FUNKTIONIERT nicht
   //wer das machen moechte, muss stattdessen in zwei getrennten laeufen 
@@ -177,7 +177,7 @@ void StdLoop::AdaptMesh(const DoubleVector& eta,std::string refine_or_coarsen_st
   if(refine_or_coarsen_step=="refine") ;
   else if(refine_or_coarsen_step=="coarsen") ;
   else {
-    std::cerr<<"the variable refine_or_coarsen_step has to be set, either to 'refine' or 'coarsen'"<<std::endl;
+    cerr<<"the variable refine_or_coarsen_step has to be set, either to 'refine' or 'coarsen'"<<endl;
     assert(0);
   }
 
@@ -265,9 +265,9 @@ void StdLoop::AdaptMesh(const DoubleVector& eta)
       if (GetMeshAgent()->nnodes()>_nmax) _p *= 0.5;
       if (GetMeshAgent()->nnodes()<_nmin) _p *= 1.1;
       if(_random_coarsening){
-        std::cerr<<"das gleichzeitige vergroebern und verfeinern FUNKTIONIERT nicht"<<std::endl;
-        std::cerr<<"fuehren Sie stattdessen zwei getrennte laeufe durch: random_refine, random_coarsen"<<std::endl;
-        std::cerr<<"rufen Sie dazu AdaptMesh(eta,refine_or_coarsen_step) auf"<<std::endl;
+        cerr<<"das gleichzeitige vergroebern und verfeinern FUNKTIONIERT nicht"<<endl;
+        cerr<<"fuehren Sie stattdessen zwei getrennte laeufe durch: random_refine, random_coarsen"<<endl;
+        cerr<<"rufen Sie dazu AdaptMesh(eta,refine_or_coarsen_step) auf"<<endl;
         assert(0);
       }
       GetMeshAgent()->random_patch_refine(_p,_random_coarsening);
@@ -292,9 +292,9 @@ void StdLoop::AdaptMesh(const DoubleVector& eta)
       A.refine(refnodes,coarsenodes);
 
       if(refnodes.size()>0 && coarsenodes.size()>0){
-        std::cerr<<"das gleichzeitige vergroebern und verfeinern FUNKTIONIERT nicht"<<std::endl;
-        std::cerr<<"fuehren Sie stattdessen zwei getrennte laeufe durch, einmal vergroebern, einmal verfeinern"<<std::endl;
-        std::cerr<<"rufen Sie dazu AdaptMesh(eta,refine_or_coarsen_step) auf"<<std::endl;
+        cerr<<"das gleichzeitige vergroebern und verfeinern FUNKTIONIERT nicht"<<endl;
+        cerr<<"fuehren Sie stattdessen zwei getrennte laeufe durch, einmal vergroebern, einmal verfeinern"<<endl;
+        cerr<<"rufen Sie dazu AdaptMesh(eta,refine_or_coarsen_step) auf"<<endl;
         assert(0);
       }
 

@@ -44,7 +44,7 @@ void BasicLoop::ClockOutput() const
 void BasicLoop::BasicInit(const ParamFile* paramfile)
 {
   _paramfile = paramfile;
-  std::string s_copy_param_file;
+  string s_copy_param_file;
 
   DataFormatHandler DFH;
   DFH.insert("niter",              &_niter,             1);
@@ -62,19 +62,19 @@ void BasicLoop::BasicInit(const ParamFile* paramfile)
 
   // copy paramfile to Results directory?
   if(s_copy_param_file!="no"){ 
-    std::string s_paramfile= paramfile->GetName();
+    string s_paramfile= paramfile->GetName();
 
     if(s_copy_param_file=="yes"){
-      std::string cp_cmd = "cp "+s_paramfile+" "+_s_resultsdir; 
-      //std::cout << "CP CMD:" << cp_cmd << "\n"; 
+      string cp_cmd = "cp "+s_paramfile+" "+_s_resultsdir; 
+      //cout << "CP CMD:" << cp_cmd << "\n"; 
       system(cp_cmd.c_str()); 
     }else if(s_copy_param_file=="yes-with-date"){
-      std::string cp_cmd = "cp "+s_paramfile+" "+_s_resultsdir + "/" + s_paramfile + "-`date +\"%Y.%m.%d-%H%M\"`" ; 
-      //std::cout << "CP CMD:" << cp_cmd << "\n"; 
+      string cp_cmd = "cp "+s_paramfile+" "+_s_resultsdir + "/" + s_paramfile + "-`date +\"%Y.%m.%d-%H%M\"`" ; 
+      //cout << "CP CMD:" << cp_cmd << "\n"; 
       system(cp_cmd.c_str()); 
     }else {
-      std::cerr << __FILE__ << ":" << __LINE__ << ": bad copy_param_file parameter value="<< s_copy_param_file << std::endl;
-      std::cerr << __FILE__ << ":" << __LINE__ << ": possible values: no, yes, yes-with-date"<< std::endl;
+      cerr << __FILE__ << ":" << __LINE__ << ": bad copy_param_file parameter value="<< s_copy_param_file << endl;
+      cerr << __FILE__ << ":" << __LINE__ << ": possible values: no, yes, yes-with-date"<< endl;
     }
   }
 

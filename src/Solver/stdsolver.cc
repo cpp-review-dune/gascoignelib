@@ -73,7 +73,7 @@ StdSolver::~StdSolver()
 void StdSolver::_check_consistency(const Equation* EQ,const DiscretizationInterface* MP) const
 {
   bool glseq = false, glsmi = false;
-  std::string eq = MP->GetName();
+  string eq = MP->GetName();
   
   if (dynamic_cast<const GlsEquation*>(EQ))
     {

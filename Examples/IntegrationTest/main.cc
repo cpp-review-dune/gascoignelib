@@ -5,6 +5,7 @@
 #include "paramfile.h"
 #include "q12d.h"
 
+using namespace std;
 using namespace Gascoigne;
 
 /*---------------------------------------------------*/
@@ -25,7 +26,7 @@ public:
       HNZero(u);
       return dst[0];
     }
-  DiscretizationInterface* NewDiscretization(int dimension, const std::string& discname)
+  DiscretizationInterface* NewDiscretization(int dimension, const string& discname)
     {
       return new Q12d;
     }
@@ -86,7 +87,7 @@ int main(int argc, char** argv)
 	}
       
       double val = S.Integral(u);
-      std::cout.precision(16);
-      std::cout << iter << "\t" << u.n() << "\t" << val << std::endl;
+      cout.precision(16);
+      cout << iter << "\t" << u.n() << "\t" << val << endl;
     }
 }

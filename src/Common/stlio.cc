@@ -2,72 +2,74 @@
 #include  "vertex.h"
 #include  "compvector.h"
 
+using namespace std;
+
 namespace Gascoigne
 {
 
 // /*-------------------------------------------------------------------*/
 
-// std::ostream& operator<<(std::ostream &s, const map<int,fixarray<4,int> >& A)
+// ostream& operator<<(ostream &s, const map<int,fixarray<4,int> >& A)
 // {
 //   for(map<int,fixarray<4,int> >::const_iterator p=A.begin();p!=A.end();p++)
 //     {
-//       s << "\t"<<p->first<<"\t"<<p->first<<"\t --> "<<p->second<<std::endl;
+//       s << "\t"<<p->first<<"\t"<<p->first<<"\t --> "<<p->second<<endl;
 //     }
 //   return s;
 // }
 
 // /*-------------------------------------------------------------------*/
 
-// std::ostream& operator<<(std::ostream &s, const map<pair<std::string,std::string>,int>& A)
+// ostream& operator<<(ostream &s, const map<pair<string,string>,int>& A)
 // {
-//   for(map<pair<std::string,std::string>,int>::const_iterator p=A.begin();p!=A.end();p++)
+//   for(map<pair<string,string>,int>::const_iterator p=A.begin();p!=A.end();p++)
 //     {
-//       s << "\t"<<p->first.first<<"\t"<<p->first.second<<"\t --> "<<p->second<<std::endl;
+//       s << "\t"<<p->first.first<<"\t"<<p->first.second<<"\t --> "<<p->second<<endl;
 //     }
 //   return s;
 // }
 
-// std::ostream& operator<<(std::ostream &s, const map<std::string,int>& A)
+// ostream& operator<<(ostream &s, const map<string,int>& A)
 // {
-//   for(map<std::string,int>::const_iterator p=A.begin();p!=A.end();p++)
+//   for(map<string,int>::const_iterator p=A.begin();p!=A.end();p++)
 //     {
-//       s << "\t"<<p->first<<"\t --> "<<p->second<<std::endl;
+//       s << "\t"<<p->first<<"\t --> "<<p->second<<endl;
 //     }
 //   return s;
 // }
 
-// std::ostream& operator<<(std::ostream &s, const map<std::string,double>& A)
+// ostream& operator<<(ostream &s, const map<string,double>& A)
 // {
-//   for(map<std::string,double>::const_iterator p=A.begin();p!=A.end();p++)
+//   for(map<string,double>::const_iterator p=A.begin();p!=A.end();p++)
 //     {
-//       s << "\t"<<p->first<<"\t --> "<<p->second<<std::endl;
+//       s << "\t"<<p->first<<"\t --> "<<p->second<<endl;
 //     }
 //   return s;
 // }
 
-// std::ostream& operator<<(std::ostream &s, const map<std::string,std::string>& A)
+// ostream& operator<<(ostream &s, const map<string,string>& A)
 // {
-//   for(map<std::string,std::string>::const_iterator p=A.begin();p!=A.end();p++)
+//   for(map<string,string>::const_iterator p=A.begin();p!=A.end();p++)
 //     {
-//       s << "\t"<<p->first<<"\t --> "<<p->second<<std::endl;
+//       s << "\t"<<p->first<<"\t --> "<<p->second<<endl;
 //     }
 //   return s;
 // }
 
 // /*-------------------------------------------------------------------*/
 
-// std::ostream& operator<<(std::ostream &s, const std::set<std::string>& A)
+// ostream& operator<<(ostream &s, const set<string>& A)
 // {
-//   for(std::set<std::string>::const_iterator p=A.begin();p!=A.end();p++)
+//   for(set<string>::const_iterator p=A.begin();p!=A.end();p++)
 //     {
 //       s << *p << " ";
 //     }
 //   return s;
 // }
 
-// std::ostream& operator<<(std::ostream &s, const std::set<int>& A)
+// ostream& operator<<(ostream &s, const set<int>& A)
 // {
-//   for(std::set<int>::const_iterator p=A.begin();p!=A.end();p++)
+//   for(set<int>::const_iterator p=A.begin();p!=A.end();p++)
 //     {
 //       s << *p << " ";
 //     }
@@ -76,9 +78,9 @@ namespace Gascoigne
 
 // /*-------------------------------------------------------------------*/
 
-// std::ostream& operator<<(std::ostream& s, const std::vector<pair<int,int> >& A)
+// ostream& operator<<(ostream& s, const vector<pair<int,int> >& A)
 // {
-//   typedef std::vector<pair<int,int> >::const_iterator it;
+//   typedef vector<pair<int,int> >::const_iterator it;
 //   for(it p=A.begin();p!=A.end();p++)
 //     {
 //       s << "( "<<p->first <<" "<<p->second<<" )   ";
@@ -86,14 +88,14 @@ namespace Gascoigne
 //   return s;
 // }
 
-void write_data(const GlobalVector& v,std::ostream& s)
+void write_data(const GlobalVector& v,ostream& s)
 {
-  s << v.n() << std::endl
-    << v.ncomp() << std::endl
-    << v << std::endl;
+  s << v.n() << endl
+    << v.ncomp() << endl
+    << v << endl;
 }
 
-void read_data(GlobalVector& v, std::istream& s)
+void read_data(GlobalVector& v, istream& s)
 {
   int n;
   int ncomp;
@@ -105,13 +107,13 @@ void read_data(GlobalVector& v, std::istream& s)
 }
 
 template<class T>
-void write_data(const std::set<T>& v,std::ostream& s)
+void write_data(const set<T>& v,ostream& s)
 {
-  s << v.size() << std::endl << v;
+  s << v.size() << endl << v;
 }
 
 template<class T>
-void read_data(std::set<T>& v, std::istream& s)
+void read_data(set<T>& v, istream& s)
 {
   size_t n;
   s >> n;
@@ -126,35 +128,35 @@ void read_data(std::set<T>& v, std::istream& s)
 
 
 
-void write_data(const int& v,std::ostream& s) { s << v; }
-void read_data(int& v, std::istream& s)        { s >> v; }
+void write_data(const int& v,ostream& s) { s << v; }
+void read_data(int& v, istream& s)        { s >> v; }
 
 template<int N,class T>
-void write_data(const fixarray<N,T>& v,std::ostream& s) { s << v; }
+void write_data(const fixarray<N,T>& v,ostream& s) { s << v; }
 template<int N,class T>
-void read_data(fixarray<N,T>& v, std::istream& s)        { s >> v; }
+void read_data(fixarray<N,T>& v, istream& s)        { s >> v; }
 
-void write_data(const double& v,std::ostream& s) { s << v; }
-void read_data(double& v, std::istream& s)        { s >> v; }
+void write_data(const double& v,ostream& s) { s << v; }
+void read_data(double& v, istream& s)        { s >> v; }
 
-void write_data(const std::string& v,std::ostream& s) { s << v; }
-void read_data(std::string& v, std::istream& s)        { s >> v; }
+void write_data(const string& v,ostream& s) { s << v; }
+void read_data(string& v, istream& s)        { s >> v; }
 
 template<class T>
-void write_data(const std::vector<T>& v,std::ostream& s)
+void write_data(const vector<T>& v,ostream& s)
 {
-  s << v.size() << std::endl;
+  s << v.size() << endl;
   for (int i=0;i<v.size();++i)
     {
       write_data(v[i],s);
-      s << std::endl;
+      s << endl;
     }
-  s << std::endl;
+  s << endl;
 }
 
 
 template<class T>
-void read_data(std::vector<T>& v, std::istream& s)
+void read_data(vector<T>& v, istream& s)
 {
   size_t n;
   s >> n;
@@ -163,33 +165,33 @@ void read_data(std::vector<T>& v, std::istream& s)
     read_data(v[i],s);
 }
 
-template void write_data(const fixarray<2,int>&,std::ostream& );
-template void write_data(const fixarray<3,int>&,std::ostream& );
-template void write_data(const fixarray<4,int>&,std::ostream& );
-template void write_data(const fixarray<8,int>&,std::ostream& );
-template void write_data(const fixarray<9,int>&,std::ostream& );
+template void write_data(const fixarray<2,int>&,ostream& );
+template void write_data(const fixarray<3,int>&,ostream& );
+template void write_data(const fixarray<4,int>&,ostream& );
+template void write_data(const fixarray<8,int>&,ostream& );
+template void write_data(const fixarray<9,int>&,ostream& );
 
-template void write_data(const std::vector<int>&,std::ostream& );
-template void write_data(const std::vector<Vertex<2> >&,std::ostream& );
-template void write_data(const std::vector<Vertex<3> >&,std::ostream& );
-template void write_data(const std::vector<IntVector >&,std::ostream& );
-template void write_data(const std::vector<fixarray<4,int> >&,std::ostream& );
-template void write_data(const std::vector<fixarray<8,int> >&,std::ostream& );
-template void write_data(const std::vector<std::set<int> >&,std::ostream& );
+template void write_data(const vector<int>&,ostream& );
+template void write_data(const vector<Vertex<2> >&,ostream& );
+template void write_data(const vector<Vertex<3> >&,ostream& );
+template void write_data(const vector<IntVector >&,ostream& );
+template void write_data(const vector<fixarray<4,int> >&,ostream& );
+template void write_data(const vector<fixarray<8,int> >&,ostream& );
+template void write_data(const vector<set<int> >&,ostream& );
 
-template void read_data(fixarray<2,int>&, std::istream& );
-template void read_data(fixarray<3,int>&, std::istream& );
-template void read_data(fixarray<4,int>&, std::istream& );
-template void read_data(fixarray<8,int>&, std::istream& );
-template void read_data(fixarray<9,int>&, std::istream& );
+template void read_data(fixarray<2,int>&, istream& );
+template void read_data(fixarray<3,int>&, istream& );
+template void read_data(fixarray<4,int>&, istream& );
+template void read_data(fixarray<8,int>&, istream& );
+template void read_data(fixarray<9,int>&, istream& );
 
-template void read_data(std::vector<int>&, std::istream& );
-template void read_data(std::vector<Vertex<2> > &, std::istream& );
-template void read_data(std::vector<Vertex<3> > &, std::istream& );
-template void read_data(std::vector<IntVector >&, std::istream& );
-template void read_data(std::vector<fixarray<4,int> >&, std::istream& );
-template void read_data(std::vector<fixarray<8,int> >&, std::istream& );
-template void read_data(std::vector<std::set<int> >&, std::istream& );
-template void read_data(std::set<int> &, std::istream& );
+template void read_data(vector<int>&, istream& );
+template void read_data(vector<Vertex<2> > &, istream& );
+template void read_data(vector<Vertex<3> > &, istream& );
+template void read_data(vector<IntVector >&, istream& );
+template void read_data(vector<fixarray<4,int> >&, istream& );
+template void read_data(vector<fixarray<8,int> >&, istream& );
+template void read_data(vector<set<int> >&, istream& );
+template void read_data(set<int> &, istream& );
 
 }

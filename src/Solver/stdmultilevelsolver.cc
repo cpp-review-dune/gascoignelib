@@ -791,7 +791,7 @@ void StdMultiLevelSolver::Zero(MultiLevelGhostVector& dst) const
 
 /*-------------------------------------------------------------*/
 
-void StdMultiLevelSolver::AddNodeVector(const std::string& name, MultiLevelGhostVector& gq)
+void StdMultiLevelSolver::AddNodeVector(const string& name, MultiLevelGhostVector& gq)
 {
   Transfer(ComputeLevel,1,gq);
   for(int l=0; l<nlevels(); l++)
@@ -803,7 +803,7 @@ void StdMultiLevelSolver::AddNodeVector(const std::string& name, MultiLevelGhost
 
 /*-------------------------------------------------------------*/
 
-void StdMultiLevelSolver::DeleteNodeVector(const std::string& name)
+void StdMultiLevelSolver::DeleteNodeVector(const string& name)
 {
   for(int l=0; l<nlevels(); l++)
     {

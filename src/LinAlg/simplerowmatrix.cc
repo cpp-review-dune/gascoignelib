@@ -8,7 +8,7 @@ using namespace std;
 
 namespace Gascoigne
 {
-std::ostream& SimpleRowMatrix::Write(std::ostream& os) const
+ostream& SimpleRowMatrix::Write(ostream& os) const
 {
   int n = ST.n();
   for(int i=0;i<n;i++)

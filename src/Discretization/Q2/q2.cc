@@ -184,7 +184,7 @@ void Q2::MassMatrix(MatrixInterface& A) const
 
 /* ----------------------------------------- */
 
-void Q2::StrongDirichletMatrix(MatrixInterface& A, int col, const std::vector<int>& comp) const
+void Q2::StrongDirichletMatrix(MatrixInterface& A, int col, const vector<int>& comp) const
 {
   const GascoigneMesh* GMP = dynamic_cast<const GascoigneMesh*>(GetMesh());
   const IntVector& bv = *GMP->VertexOnBoundary(col);
@@ -196,7 +196,7 @@ void Q2::StrongDirichletMatrix(MatrixInterface& A, int col, const std::vector<in
 
 /* ----------------------------------------- */
 
-void Q2::StrongDirichletMatrixOnlyRow(MatrixInterface& A, int col, const std::vector<int>& comp) const
+void Q2::StrongDirichletMatrixOnlyRow(MatrixInterface& A, int col, const vector<int>& comp) const
 {
   const GascoigneMesh* GMP = dynamic_cast<const GascoigneMesh*>(GetMesh());
   const IntVector& bv = *GMP->VertexOnBoundary(col);
@@ -208,7 +208,7 @@ void Q2::StrongDirichletMatrixOnlyRow(MatrixInterface& A, int col, const std::ve
 
 /* ----------------------------------------- */
 
-void Q2::StrongDirichletVector(GlobalVector& u, const DirichletData& BF, int col, const std::vector<int>& comp) const
+void Q2::StrongDirichletVector(GlobalVector& u, const DirichletData& BF, int col, const vector<int>& comp) const
 {
   const GascoigneMesh* GMP = dynamic_cast<const GascoigneMesh*>(GetMesh());
   nvector<double> ff(u.ncomp(),0.);
@@ -249,7 +249,7 @@ void Q2::StrongDirichletVector(GlobalVector& u, const DirichletData& BF, int col
 
 /* ----------------------------------------- */
 
-void Q2::StrongDirichletVectorZero(GlobalVector& u, int col, const std::vector<int>& comp) const
+void Q2::StrongDirichletVectorZero(GlobalVector& u, int col, const vector<int>& comp) const
 {
   const GascoigneMesh* GMP = dynamic_cast<const GascoigneMesh*>(GetMesh());
   const IntVector& bv = *GMP->VertexOnBoundary(col);

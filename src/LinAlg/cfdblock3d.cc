@@ -1,18 +1,20 @@
 #include  "cfdblock3d.h"
 
+using namespace std;
+
 namespace Gascoigne
 {
 static CFDBlock3d  H;
 
 /**********************************************************/
 
-std::ostream& CFDBlock3d::print(std::ostream& os) const
+ostream& CFDBlock3d::print(ostream& os) const
 {
   os << "CFD\n";
-  os << s <<  " " << dx   << " " << dy << " " << dz << std::endl;
-  os << gx << " " << laplx() << " " <<  0 <<  0 << std::endl;
-  os << gy << " " <<  0   << " " << laply()<<  0 << std::endl;
-  os << gz << " " <<  0   << 0 << " " << laplz()<<  std::endl;
+  os << s <<  " " << dx   << " " << dy << " " << dz << endl;
+  os << gx << " " << laplx() << " " <<  0 <<  0 << endl;
+  os << gy << " " <<  0   << " " << laply()<<  0 << endl;
+  os << gz << " " <<  0   << 0 << " " << laplz()<<  endl;
 
   return os;
 }
@@ -26,7 +28,7 @@ void CFDBlock3d::zero()
 
 /**********************************************************/
 
-void CFDBlock3d::DirichletRow (const std::vector<int>& cv)
+void CFDBlock3d::DirichletRow (const vector<int>& cv)
 {
   for (int i=0; i<cv.size(); i++) 
     {
@@ -42,7 +44,7 @@ void CFDBlock3d::DirichletRow (const std::vector<int>& cv)
 
 /**********************************************************/
 
-void CFDBlock3d::DirichletCol(const std::vector<int>& cv)
+void CFDBlock3d::DirichletCol(const vector<int>& cv)
 {
   for (int i=0; i<cv.size(); i++) 
     {
@@ -58,7 +60,7 @@ void CFDBlock3d::DirichletCol(const std::vector<int>& cv)
 
 /**********************************************************/
 
-void CFDBlock3d::DirichletDiag(const std::vector<int>& cv)
+void CFDBlock3d::DirichletDiag(const vector<int>& cv)
 {
   for (int i=0; i<cv.size(); i++) 
     {

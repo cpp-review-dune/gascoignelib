@@ -1,5 +1,7 @@
 #include  "hnstructureq22d.h"
 
+using namespace std;
+
 namespace Gascoigne
 {
 /*-----------------------------------------*/
@@ -57,7 +59,7 @@ void HNStructureQ22d::CondenseHanging(EntryMatrix& E, IntVector& indices) const
 
       if ( (indices[p[0]]==f[1]) && (indices[p[1]]==f[0]) ) 
 	{ 
-	  std::swap(p[0],p[1]);
+	  swap(p[0],p[1]);
 	} 
 
       indices[p[2]] = f[2];

@@ -112,7 +112,7 @@ class ProblemDescriptor : public ProblemDescriptorBase
     GetBoundaryManager()->AddBoundaryRightHandSide(1);
     GetBoundaryManager()->AddBoundaryRightHandSide(2);
   }
-  std::string GetName() const {return "Local";}
+  string GetName() const {return "Local";}
 };
 
 /*---------------------------------------------------*/
@@ -126,7 +126,7 @@ class LocalDomainFunctional : public virtual AllDomainFunctional
   }
   ~LocalDomainFunctional() {}
   
-  std::string GetName() const {
+  string GetName() const {
     return "LocalDomain";
   }
 };
