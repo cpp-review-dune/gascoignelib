@@ -281,6 +281,19 @@ class CompVector : public nvector<T>
           first += N;
         }
     }
+  void CompAdd(int c, double d,  const CompVector& y)
+    {
+      iterator       first  = begin()+c;
+      const_iterator first2 = y.begin()+c;
+      const_iterator last   = end();
+      
+      while( first < last)
+        {
+          *first += d * *first2;
+          first  += N;
+          first2 += N;
+        }
+    }
   void CompEq(int c, double d)
     {
       iterator       first  = begin()+c;
