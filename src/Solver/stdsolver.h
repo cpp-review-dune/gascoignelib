@@ -127,8 +127,8 @@ class StdSolver : public virtual SolverInterface
   
   void SetBoundaryVectorStrong(Gascoigne::GlobalVector& f, const BoundaryManager& BM, const Equation& EQ, const DirichletData& DD) const;
   virtual void smooth(int niter, Gascoigne::GlobalVector& x, const Gascoigne::GlobalVector& y, Gascoigne::GlobalVector& h) const;
-  void SubstractMean(Gascoigne::GlobalVector& gx) const;
-  void SubstractMeanAlgebraic(Gascoigne::GlobalVector& gx) const;
+  void SubtractMean(Gascoigne::GlobalVector& gx) const;
+  void SubtractMeanAlgebraic(Gascoigne::GlobalVector& gx) const;
   virtual void PermutateIlu(const Gascoigne::GlobalVector& u) const;
   void modify_ilu(IluInterface& I,int ncomp) const;
   void Residual(Gascoigne::GlobalVector& y, const Gascoigne::GlobalVector& x, double d) const;
@@ -273,7 +273,7 @@ class StdSolver : public virtual SolverInterface
   /// vector - additional
   //
 
-  void SubstractMean(BasicGhostVector& x) const;
+  void SubtractMean(BasicGhostVector& x) const;
 
   //
   /// vector - matrix

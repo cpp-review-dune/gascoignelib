@@ -284,7 +284,7 @@ void StdSolver::InterpolateSolution(BasicGhostVector& gu, const GlobalVector& uo
 
   u.zero();
   GetMeshInterpretor()->InterpolateSolution(u, uold);
-  SubstractMean(gu);
+  SubtractMean(gu);
 }
 
 /*-----------------------------------------*/
@@ -340,7 +340,7 @@ void StdSolver::MatrixResidual(GlobalVector& y, const GlobalVector& x, const Glo
 {
   y.equ(1.,b);
   vmult(y,x,-1.);
-  SubstractMeanAlgebraic(y);
+  SubtractMeanAlgebraic(y);
 }
 
 /*-------------------------------------------------------*/
@@ -416,7 +416,7 @@ void StdSolver::smooth(int niter, GlobalVector& x, const GlobalVector& y, Global
       MatrixResidual(h,x,y);
       GetIlu()->solve(h);
       x.add(omega,h);
-      SubstractMean(x);
+      SubtractMean(x);
     }
   _il.stop();
 }
@@ -477,7 +477,7 @@ void StdSolver::Residual(GlobalVector& y, const GlobalVector& x, double d) const
 
   HNZero(x);
   HNDistribute(y);
-  SubstractMeanAlgebraic(y);
+  SubtractMeanAlgebraic(y);
 
   _re.stop();
 }
@@ -916,14 +916,14 @@ nvector<double> StdSolver::IntegrateSolutionVector(const GlobalVector& u) const
 
 /* -------------------------------------------------------*/
 
-void StdSolver::SubstractMean(BasicGhostVector& x) const
+void StdSolver::SubtractMean(BasicGhostVector& x) const
 {
-  SubstractMean(GetGV(x));
+  SubtractMean(GetGV(x));
 }
 
 /* -------------------------------------------------------*/
 
-void StdSolver::SubstractMean(GlobalVector& x) const
+void StdSolver::SubtractMean(GlobalVector& x) const
 {
   // In each nonlinear step: applied to Newton correction,
   // in each smoothing step
@@ -931,17 +931,17 @@ void StdSolver::SubstractMean(GlobalVector& x) const
   if (!PF.Active()) return;
 
   HNAverage(x);
-  PF.SubstractMean(x);
+  PF.SubtractMean(x);
   HNZero(x);
 }
 
 /*---------------------------------------------------*/
 
-void StdSolver::SubstractMeanAlgebraic(GlobalVector& x) const
+void StdSolver::SubtractMeanAlgebraic(GlobalVector& x) const
 {
   if (!PF.Active()) return;
 
   HNAverage(x);
-  PF.SubstractMeanAlgebraic(x);
+  PF.SubtractMeanAlgebraic(x);
   HNZero(x);
 }

@@ -39,7 +39,7 @@ nvector<double> PressureFilter::IntegrateVector(const Gascoigne::GlobalVector& u
 
 /*-----------------------------------------*/
 
-void PressureFilter::SubstractMean(Gascoigne::GlobalVector& u) const
+void PressureFilter::SubtractMean(Gascoigne::GlobalVector& u) const
 {
   assert(size());
   assert(domainsize>0.);
@@ -55,7 +55,7 @@ void PressureFilter::SubstractMean(Gascoigne::GlobalVector& u) const
 
 /*-----------------------------------------*/
 
-void PressureFilter::SubstractMeanAlgebraic(Gascoigne::GlobalVector& u) const
+void PressureFilter::SubtractMeanAlgebraic(Gascoigne::GlobalVector& u) const
 {
   for (int i=0; i<component.size(); i++)
     {

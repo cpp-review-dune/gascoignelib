@@ -485,7 +485,7 @@ void StdMultiLevelSolver::NewtonLinearSolve(MultiLevelGhostVector& x, const Mult
   if(DataP->CoarseLevel() == -1) clevel = FinestLevel(); 
   LinearMg(ComputeLevel,clevel,x,b, info);
 
-  GetSolver(ComputeLevel)->SubstractMean(x(ComputeLevel));
+  GetSolver(ComputeLevel)->SubtractMean(x(ComputeLevel));
   _clock_solve.stop();
 }
 

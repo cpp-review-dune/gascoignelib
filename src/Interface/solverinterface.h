@@ -142,7 +142,7 @@ class SolverInterface
   /// vector - additional
   //
 
-  virtual void SubstractMean(BasicGhostVector& x) const=0;
+  virtual void SubtractMean(BasicGhostVector& x) const=0;
 
   //
   /// vector - matrix

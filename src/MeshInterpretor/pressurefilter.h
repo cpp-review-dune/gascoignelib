@@ -26,8 +26,8 @@ class PressureFilter : public nvector<double>
   void AddDomainPiece(double val) { domainsize += val;}
 
   nvector<double> IntegrateVector(const Gascoigne::GlobalVector& u) const;
-  void SubstractMean(Gascoigne::GlobalVector& u) const;
-  void SubstractMeanAlgebraic(Gascoigne::GlobalVector& u) const;
+  void SubtractMean(Gascoigne::GlobalVector& u) const;
+  void SubtractMeanAlgebraic(Gascoigne::GlobalVector& u) const;
 };
 
 /*-----------------------------------------*/
