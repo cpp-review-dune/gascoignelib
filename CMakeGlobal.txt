@@ -59,7 +59,8 @@ ENDIF(UMFPACK_WITH_AMD)
 
 ###############################################
 
-SET (CMAKE_CXX_FLAGS ${CXXFLAGS} "-O3 -DNDEBUG" CACHE STRING "compiler flag")
+SET (CXX_FLAGS "-O3 -DNDEBUG" CACHE STRING "compiler flag")
+SET (CMAKE_CXX_FLAGS ${CXX_FLAGS})
 
 SET (CMAKE_COMPILER_DEFINITIONS  CACHE STRING "Set additional compiler definitions (-D__OLDCOMPILER__ for egcs).")
 ADD_DEFINITIONS(${CMAKE_COMPILER_DEFINITIONS})
