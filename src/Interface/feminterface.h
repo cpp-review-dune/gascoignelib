@@ -65,7 +65,8 @@ namespace Gascoigne
       }
 
       virtual void ReInit(const Matrix& M) const=0;
-      virtual void  init_test_functions(TestFunction& Phi, double w, int i) const=0;
+      virtual void init_test_functions(TestFunction& Phi, double w, int i) const=0;
+      virtual void Anisotropy(DoubleMatrix& A) const { assert(0);};
   };
 }
 

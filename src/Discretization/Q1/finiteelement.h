@@ -52,6 +52,8 @@ class FiniteElement : public FemInterface
   void ReInit(const Matrix& M) const { T.ReInit(M); }
 
   void  init_test_functions(TestFunction& Phi, double w, int i) const;
+
+  void Anisotropy(DoubleMatrix& A) const;
 };
 }
 

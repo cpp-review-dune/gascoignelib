@@ -26,15 +26,6 @@ namespace Gascoigne
       LpsEquation() {}
       ~LpsEquation() {}
 
-      virtual void init(const nmatrix<double>& H, const FemFunction& U, const Vertex2d& v) const {
-        std::cerr << "\"LpsEquation::init\" not written!" << std::endl;
-        abort();
-      } 
-      virtual void init(const nmatrix<double>& H, const FemFunction& U, const Vertex3d& v) const {
-        std::cerr << "\"LpsEquation::init\" not written!" << std::endl;
-        abort();
-      } 
-   
       virtual void lpspoint(double h, const FemFunction& U, const Vertex2d& v) const {
         std::cerr << "\"LpsEquation::lpspoint\" not written!" << std::endl;
         abort();
@@ -53,18 +44,6 @@ namespace Gascoigne
 
       virtual void StabForm(VectorIterator b, const FemFunction& U, const FemFunction& UP, const TestFunction& N) const=0;
       virtual void StabMatrix(EntryMatrix& A, const FemFunction& U, const TestFunction& Np, const DerivativeVector& Mp) const=0;
-
-      virtual void StabilizationResidual(LocalVector& F, const FemFunction& U, const FemFunction& UP, 
-          const FemFunction& N, const FemFunction& NP) const {
-        std::cerr << "\"LpsEquation::StabilizationResidual\" not written!" << std::endl;
-        abort();
-      }
-
-      virtual void StabilizationMatrix(EntryMatrix& A, const FemFunction& U, const FemFunction& UP, 
-          const FemFunction& M, const FemFunction& MP, const FemFunction& N, const FemFunction& NP) const {
-        std::cerr << "\"LpsEquation::StabilizationMatrix\" not written!" << std::endl;
-        abort();
-      };
   };
 }
 
