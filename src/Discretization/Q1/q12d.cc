@@ -77,11 +77,11 @@ void Q12d::StrongDirichletVector(GlobalVector& u, const DirichletData& BF, int c
     {
       int c = comp[ii];
       if(c<0) {
-	cerr << "negative component: " << c << endl;
-	assert(0);
+        cerr << "negative component: " << c << endl;
+        assert(0);
       } else if(c>=u.ncomp()){
-	cerr << "unknown component: " << c << endl;
-	assert(0);
+        cerr << "unknown component: " << c << endl;
+        assert(0);
       }
     }
 
@@ -92,10 +92,10 @@ void Q12d::StrongDirichletVector(GlobalVector& u, const DirichletData& BF, int c
       
       BF(ff,v,col);
       for(int iii=0;iii<comp.size();iii++)
-	{
-	  int c = comp[iii];
-	  u(index,c) = ff[c];
-	}
+        {
+          int c = comp[iii];
+          u(index,c) = ff[c];
+        }
     }
 }
 
@@ -109,9 +109,9 @@ void Q12d::Interpolate(GlobalVector& u, const DomainInitialCondition& U) const
     {
       Vertex2d v = GetMesh()->vertex2d(in);
       for(int c=0;c<u.ncomp();c++)
-	{
-	  u(in,c) = U(c,v);
-	}
+        {
+          u(in,c) = U(c,v);
+        }
     }
 }
 
@@ -123,16 +123,18 @@ void Q12d::InterpolateSolutionByPatches(GlobalVector& u, const GlobalVector& uol
   nvector<bool> habschon(GetMesh()->nnodes(),0);  
 
   assert(vo2n.size()==uold.n());
+  assert(u.ncomp()==uold.ncomp());
+  assert(GetMesh()->nnodes()==u.n());
 
   for(int i=0;i<vo2n.size();i++)
     {
       int in = vo2n[i];
 
       if(in>=0) 
-	{
-	  u.equ_node(in,1.,i,uold);
-	  habschon[in] = 1;
-	}
+        {
+          u.equ_node(in,1.,i,uold);
+          habschon[in] = 1;
+        }
     }
   nvector<fixarray<3,int> > nodes(4);
   nodes[0][0] = 1; nodes[0][1] = 0;  nodes[0][2] = 2;
@@ -148,28 +150,28 @@ void Q12d::InterpolateSolutionByPatches(GlobalVector& u, const GlobalVector& uol
       IntVector vi =* PM->IndicesOfPatch(iq);
 
       for(int j=0; j<nodes.size(); j++)
-	{
-	  int v  = vi[nodes[j][0]];
-	  int v1 = vi[nodes[j][1]];
-	  int v2 = vi[nodes[j][2]];
-	  assert(habschon[v1]);
-	  assert(habschon[v2]);
-	  if (habschon[v]==0) 
-	    {
-	      u.equ_node(v,0.5,v1,uold);
-	      u.add_node(v,0.5,v2,uold);
-	      habschon[v] = 1;
-	    }
-	}
+        {
+          int v  = vi[nodes[j][0]];
+          int v1 = vi[nodes[j][1]];
+          int v2 = vi[nodes[j][2]];
+          assert(habschon[v1]);
+          assert(habschon[v2]);
+          if (habschon[v]==0) 
+            {
+              u.equ_node(v,0.5,v1,uold);
+              u.add_node(v,0.5,v2,uold);
+              habschon[v] = 1;
+            }
+        }
       int v = vi[4];
       if (habschon[v]==0)
-	{
-	  u.equ_node(v,0.25,vi[0],uold);
-	  u.add_node(v,0.25,vi[2],uold);	  
-	  u.add_node(v,0.25,vi[6],uold);	  
-	  u.add_node(v,0.25,vi[8],uold);	  
-	  habschon[v] = 1;
-	}
+        {
+          u.equ_node(v,0.25,vi[0],uold);
+          u.add_node(v,0.25,vi[2],uold);	  
+          u.add_node(v,0.25,vi[6],uold);	  
+          u.add_node(v,0.25,vi[8],uold);	  
+          habschon[v] = 1;
+        }
     }  
 }
 
@@ -181,8 +183,8 @@ void Q12d::ConstructInterpolator(MgInterpolatorInterface* I, const MeshTransferI
     MgInterpolatorNested* IP = dynamic_cast<MgInterpolatorNested*>(I);
     if(IP)
       {
-	IP->BasicInit(MT);
-	return;
+        IP->BasicInit(MT);
+        return;
       }
   }
 
