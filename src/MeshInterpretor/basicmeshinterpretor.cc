@@ -33,6 +33,23 @@ void BasicMeshInterpretor::GlobalToLocalData(int iq) const
 
 /* ----------------------------------------- */
 
+void BasicMeshInterpretor::GlobalToGlobalData() const
+{
+  const GlobalParameterData& gd = GetGlobalData().GetParameterData();
+  GlobalParameterData::const_iterator p=gd.begin();
+  __q.resize(gd.size());
+  int i=0;
+  assert(gd.size()==__q.size());
+  for(; p!=gd.end(); p++)
+    {
+      const GlobalVector& q=**p;
+      __q[i].ReInit(q.ncomp(),q.size());
+      __q[i++] = q;
+    }
+}
+
+/* ----------------------------------------- */
+
 void BasicMeshInterpretor::GlobalToLocalSingle(LocalVector& U, const GlobalVector& u, int iq) const
 {
   nvector<int> indices = GetLocalIndices(iq);

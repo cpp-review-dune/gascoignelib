@@ -70,6 +70,9 @@ void Q12d::StrongDirichletVector(GlobalVector& u, const DirichletData& BF, int c
   nvector<double> ff(u.ncomp(),0.);
   const IntVector& bv = GMP->VertexOnBoundary(col);
 
+  GlobalToGlobalData();
+  BF.SetParameterData(__q);
+
   for(int ii=0;ii<comp.size();ii++)
     {
       int c = comp[ii];

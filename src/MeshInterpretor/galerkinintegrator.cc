@@ -224,6 +224,7 @@ double GalerkinIntegrator<DIM>::ComputeDomainFunctional(const DomainFunctional& 
       BasicIntegrator::universal_point(FEM,UH,U);
       BasicIntegrator::universal_point(FEM,QH,Q);
       FEM.x(x);
+      F.SetFemData(QH);
       j += weight * F.J(UH,x);
     }
   return j;

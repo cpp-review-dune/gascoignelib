@@ -61,6 +61,10 @@ void CellMeshInterpretor::Transformation(FemInterface::Matrix& T, int iq) const
 void CellMeshInterpretor::Form(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const
 {
   nmatrix<double> T;
+  
+  GlobalToGlobalData();
+  EQ.SetParameterData(__q);
+  
   for(int iq=0;iq<GetMesh()->ncells();++iq)
     {
       Transformation(T,iq);
@@ -78,6 +82,10 @@ void CellMeshInterpretor::Form(GlobalVector& f, const GlobalVector& u, const Equ
 void CellMeshInterpretor::Matrix(MatrixInterface& A, const GlobalVector& u, const Equation& EQ, double d) const
 {
   nmatrix<double> T;
+  
+  GlobalToGlobalData();
+  EQ.SetParameterData(__q);
+  
   for(int iq=0;iq<GetMesh()->ncells();++iq)
     {
       Transformation(T,iq);
@@ -117,6 +125,10 @@ void CellMeshInterpretor::ComputeError(const GlobalVector& u, LocalVector& err, 
   CompVector<double> lerr(ncomp,3); 
 
   nmatrix<double> T;
+  
+  GlobalToGlobalData();
+  ES->SetParameterData(__q);
+  
   for(int iq=0; iq<GetMesh()->ncells(); iq++)
     {
       Transformation(T,iq);
@@ -142,6 +154,10 @@ void CellMeshInterpretor::ComputeError(const GlobalVector& u, LocalVector& err, 
 void CellMeshInterpretor::Rhs(GlobalVector& f, const RightHandSideData& RHS, double s) const
 {
   nmatrix<double> T;
+  
+  GlobalToGlobalData();
+  RHS.SetParameterData(__q);
+  
   for(int iq=0;iq<GetMesh()->ncells();++iq)
     {
       Transformation(T,iq);
@@ -158,6 +174,10 @@ void CellMeshInterpretor::Rhs(GlobalVector& f, const RightHandSideData& RHS, dou
 void CellMeshInterpretor::RhsNeumann(GlobalVector& f, const Equation& EQ, const IntSet& Colors,  const NeumannData& NRHS, double s) const
 {
   nmatrix<double> T;
+  
+  GlobalToGlobalData();
+  NRHS.SetParameterData(__q);
+  
   for(IntSet::const_iterator p=Colors.begin();p!=Colors.end();p++)
     {
       int col = *p;

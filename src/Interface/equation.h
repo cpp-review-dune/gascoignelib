@@ -78,7 +78,7 @@ class Equation
   }
   virtual void point(double h, const Gascoigne::FemFunction& U, Gascoigne::FemData& QH, const Vertex3d& v) const {
     point(h,U,v);
-}
+  }
   
   virtual void pointmatrix(double h, const Gascoigne::FemFunction& U, Gascoigne::FemData& QH, const Vertex2d& v) const {
     point(h,U,QH,v);
@@ -96,6 +96,8 @@ class Equation
      const Vertex3d& n) const {assert(0);}
 
   virtual IntSet GetBoundaryColors() const { return IntSet();}
+
+  virtual void SetParameterData(const Gascoigne::LocalData& q) const { }
 
   //
   // ---------------------------------------------
