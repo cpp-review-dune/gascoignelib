@@ -160,8 +160,6 @@ void StdTimeSolver::AssembleMatrix(const BasicGhostVector& gu, double d)
   StdSolver::DirichletMatrix();
 }
 
-
-
 /*-------------------------------------------------------*/
 
 void StdTimeSolver::L2Projection(BasicGhostVector& Gu)

@@ -791,6 +791,21 @@ void StdSolver::DirichletMatrix() const
 
 /* -------------------------------------------------------*/
 
+void StdSolver::DirichletMatrixOnlyRow() const
+{
+  const BoundaryManager* BM = GetProblemDescriptor()->GetBoundaryManager();
+  const IntSet& Colors = BM->GetDirichletColors();
+  
+  for(IntSet::const_iterator p=Colors.begin();p!=Colors.end();p++)
+    {
+      int col = *p;
+      const IntVector& comp = BM->GetDirichletComponents(col);
+      GetMeshInterpretor()->StrongDirichletMatrixOnlyRow(*GetMatrix(), col, comp);
+    }
+}
+
+/* -------------------------------------------------------*/
+
 void StdSolver::ComputeIlu() const
 {
 #ifdef __WITH_UMFPACK__
@@ -1063,5 +1078,74 @@ void StdSolver::SubtractMeanAlgebraic(GlobalVector& x) const
 }
 
 /*---------------------------------------------------*/
+
+void StdSolver::MemoryVector(BasicGhostVector& v)
+{
+  RegisterVector(v);
+  GhostVectorAgent::iterator p = _NGVA.find(v);
+  assert(p!=_NGVA.end());
+
+  const GhostVector& gv = p->first;
+  assert(gv.GetSolver()==this);
+  if(p->second==NULL) 
+    {
+      p->second = new CompVector<double>;
+      p->second->ncomp() = GetProblemDescriptor()->GetEquation()->ncomp();
+    }
+  ResizeVector(p->second,gv.GetType());
+}
+/*-----------------------------------------*/
+
+void StdSolver::DeleteVector(BasicGhostVector* p) const
+{
+  if(p==NULL) return;
+
+  GlobalVector* v = &GetGV(*p);
+  delete v;
+  _NGVA.erase(*p);
+}
+
+/*-----------------------------------------*/
+
+void StdSolver::Equ(BasicGhostVector& dst, double s, const BasicGhostVector& src) const
+{
+  GetGV(dst).equ(s,GetGV(src));
+}
+
+/*-----------------------------------------*/
+
+void StdSolver::Add(BasicGhostVector& dst, double s, const BasicGhostVector& src) const
+{
+  GetGV(dst).add(s,GetGV(src));
+}
+
+/*-----------------------------------------*/
+
+double StdSolver::ScalarProduct(const BasicGhostVector& y, const BasicGhostVector& x) const
+{
+  return GetGV(y)*GetGV(x);
+}
+
+/*---------------------------------------------------*/
+
+void StdSolver::AssembleDualMatrix(const BasicGhostVector& gu, double d)
+{
+  _ca.start();
+
+  MatrixInterface* M = GetMatrix();
+
+  assert(M);
+
+  HNAverage(gu);
+
+  const Equation& EQ = *GetProblemDescriptor()->GetEquation();
+  GetMeshInterpretor()->Matrix(*M,GetGV(gu),EQ,d);
+  M->transpose();
+
+  DirichletMatrixOnlyRow();
+  HNZero(gu);
+
+  _ca.stop();
+}
 
 }

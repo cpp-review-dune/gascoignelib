@@ -86,16 +86,6 @@ class StdSolver : public virtual SolverInterface
 
   // 0. Zugriff
 
-  // 0.1 Gitter
-
-  const MeshInterface* GetMesh() const {return _MP;}
-
-  // 0.2 MeshInterpretor
-
-  MeshInterpretorInterface*& GetMeshInterpretorPointer() {assert(_ZP==NULL); return _ZP;}
-  const MeshInterpretorInterface* GetMeshInterpretor() const {assert(_ZP); return _ZP;}
-  MeshInterpretorInterface* GetMeshInterpretor() {assert(_ZP); return _ZP;}
-
   // 0.3 Matrizen
 
 //   const MatrixInterface* GetMatrix() const {assert(_MAP); return _MAP;}
@@ -127,8 +117,6 @@ class StdSolver : public virtual SolverInterface
     double ComputePointFunctional(GlobalVector& f, const GlobalVector& u, GlobalVector& z, const PointFunctional* NFP) const;
     
   virtual void smooth(int niter, GlobalVector& x, const GlobalVector& y, GlobalVector& h) const;
-  void SubtractMean(GlobalVector& gx) const;
-  void SubtractMeanAlgebraic(GlobalVector& gx) const;
   virtual void PermutateIlu(const GlobalVector& u) const;
   void modify_ilu(IluInterface& I,int ncomp) const;
   void Form(GlobalVector& y, const GlobalVector& x, double d) const;
@@ -139,6 +127,7 @@ class StdSolver : public virtual SolverInterface
 
   DoubleVector IntegrateSolutionVector(const GlobalVector& u) const;
   virtual void _check_consistency(const Equation* EQ, const MeshInterpretorInterface* MP) const;
+  void DirichletMatrixOnlyRow() const;
 
  public:
 
@@ -150,6 +139,15 @@ class StdSolver : public virtual SolverInterface
   const ProblemDescriptorInterface* GetProblemDescriptor() const {assert(_PDX); return _PDX;}
 
   void NewMesh(int l, const MeshInterface* MP);
+  const ParamFile* GetParamfile() const { return _paramfile;}
+
+  const MeshInterface* GetMesh() const {return _MP;}
+
+  // 0.2 MeshInterpretor
+
+  MeshInterpretorInterface*& GetMeshInterpretorPointer() { return _ZP;}
+  const MeshInterpretorInterface* GetMeshInterpretor() const {assert(_ZP); return _ZP;}
+  MeshInterpretorInterface* GetMeshInterpretor() {assert(_ZP); return _ZP;}
 
   void ReInitVector();
   void ReInitMatrix();
@@ -278,6 +276,8 @@ class StdSolver : public virtual SolverInterface
   /// vector - additional
   //
 
+  void SubtractMean(GlobalVector& gx) const;
+  void SubtractMeanAlgebraic(GlobalVector& gx) const;
   void SubtractMean(BasicGhostVector& x) const;
   void SubtractMeanAlgebraic(BasicGhostVector& x) const;
 
@@ -315,6 +315,16 @@ class StdSolver : public virtual SolverInterface
 
 
   virtual double ComputeResidualFunctional(GlobalVector& f, const GlobalVector& u, GlobalVector& z, const ResidualFunctional* FP) const;
+  void AssembleDualMatrix(const BasicGhostVector& gu, double d);
+
+  //
+  /// for gmres
+  //
+  void MemoryVector(BasicGhostVector& p);
+  void DeleteVector(BasicGhostVector* p) const;
+  double ScalarProduct(const BasicGhostVector& y, const BasicGhostVector& x) const;
+  void Equ(BasicGhostVector& dst, double s, const BasicGhostVector& src) const;
+  void Add(BasicGhostVector& dst, double s, const BasicGhostVector& src) const;
 };
 }
 
