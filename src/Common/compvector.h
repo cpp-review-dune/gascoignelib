@@ -151,9 +151,9 @@ class CompVector : public nvector<T>
       const_iterator q0 = u0.start(i0);
       const_iterator q1 = u1.start(i1);
       for(int c=0;c<N;c++)
-	{
-	  *(p++) = d0* *(q0++) + d1* *(q1++) ;
-	}
+        {
+          *(p++) = d0* *(q0++) + d1* *(q1++) ;
+        }
     }
 
   void zero_comp(int c)
@@ -198,11 +198,11 @@ class CompVector : public nvector<T>
       const_iterator first2  = v.begin()+c;
       
       while( first < last)
-	{
-	  d += *first * *first2;
-	  first += N;
-	  first2 += N;
-	}
+        {
+          d += *first * *first2;
+          first += N;
+          first2 += N;
+        }
       return d;
     }
   double CompNormL8(int c) const
@@ -212,10 +212,10 @@ class CompVector : public nvector<T>
       const_iterator last   = end();
       
       while( first < last)
-	{
-	  d = Gascoigne::max( d, fabs(*first));
-	  first += N;
-	}
+        {
+          d = Gascoigne::max( d, fabs(*first));
+          first += N;
+        }
       return d;
     }
   double CompMin(int c) const
@@ -225,10 +225,10 @@ class CompVector : public nvector<T>
       const_iterator last   = end();
       
       while( first < last)
-	{
-	  d = Gascoigne::min( d, *first);
-	  first += N;
-	}
+        {
+          d = Gascoigne::min( d, *first);
+          first += N;
+        }
       return d;
     }
   double CompMax(int c) const
@@ -238,10 +238,10 @@ class CompVector : public nvector<T>
       const_iterator last   = end();
       
       while( first < last)
-	{
-	  d = Gascoigne::max( d, *first);
-	  first += N;
-	}
+        {
+          d = Gascoigne::max( d, *first);
+          first += N;
+        }
       return d;
     }
   //////////////////////////////////////
@@ -276,10 +276,10 @@ class CompVector : public nvector<T>
       const_iterator last   = end();
       
       while( first < last)
-	{
-	  *first += d;
-	  first += N;
-	}
+        {
+          *first += d;
+          first += N;
+        }
     }
   void CompEq(int c, double d)
     {
@@ -287,10 +287,10 @@ class CompVector : public nvector<T>
       const_iterator last   = end();
       
       while( first < last)
-	{
-	  *first = d;
-	  first += N;
-	}
+        {
+          *first = d;
+          first += N;
+        }
     }
   double CompSum(int c) const
     {
@@ -299,10 +299,10 @@ class CompVector : public nvector<T>
       const_iterator last   = end();
       
       while( first < last)
-	{
-	  d += *first;
-	  first += N;
-	}
+        {
+          d += *first;
+          first += N;
+        }
       return d;
     }
   double CompNorm(int c) const
@@ -312,25 +312,25 @@ class CompVector : public nvector<T>
       const_iterator last   = end();
       
       while( first < last)
-	{
-	  d += *first * *first;
-	  first += N;
-	}
+        {
+          d += *first * *first;
+          first += N;
+        }
       return sqrt(d);
     }
   void Add(const nvector<double>& scp, const CompVector<T>& y)
     {
       for(int c=0;c<N;c++)
-	{
-	  iterator       first   = begin()  +c;
-	  const_iterator first2  = y.begin()+c;
-	  const_iterator last    = end();
-	  while( first < last) 
-	    {
-	      *first += scp[c] * *first2;
-	      first += N;   first2 += N;
-	    }
-	}
+        {
+          iterator       first   = begin()  +c;
+          const_iterator first2  = y.begin()+c;
+          const_iterator last    = end();
+          while( first < last) 
+            {
+              *first += scp[c] * *first2;
+              first += N;   first2 += N;
+            }
+        }
     }
   void ScalarProductComp(nvector<double>& scp, const CompVector<T>& y) const
     {
@@ -338,16 +338,16 @@ class CompVector : public nvector<T>
       scp.zero();
 
       for(int c=0;c<N;c++)
-	{
-	  const_iterator first   = begin()  +c;
-	  const_iterator first2  = y.begin()+c;
-	  const_iterator last    = end();
-	  while( first < last) 
-	    {
-	      scp[c] += *first * *first2;
-	      first += N;   first2 += N;
-	    }
-	}
+        {
+          const_iterator first   = begin()  +c;
+          const_iterator first2  = y.begin()+c;
+          const_iterator last    = end();
+          while( first < last) 
+            {
+              scp[c] += *first * *first2;
+              first += N;   first2 += N;
+            }
+        }
     }
   void ScalarProductCompMatrix(nmatrix<double>& scp, const CompVector<T>& y) const
     {
@@ -355,37 +355,37 @@ class CompVector : public nvector<T>
       scp.zero();
 
       for(int c=0;c<N;c++)
-	{
-	  for(int d=0;d<N;d++)
-	    {
-	      if(d>c) continue;
-	      const_iterator first   = begin()  +c;
-	      const_iterator first2  = y.begin()+d;
-	      const_iterator last    = end();
-	      while( first < last) 
-		{
-		  scp(c,d) += *first * *first2;
-		  first += N;   first2 += N;
-		}
-	    }
-	}
+        {
+          for(int d=0;d<N;d++)
+            {
+              if(d>c) continue;
+              const_iterator first   = begin()  +c;
+              const_iterator first2  = y.begin()+d;
+              const_iterator last    = end();
+              while( first < last) 
+          {
+            scp(c,d) += *first * *first2;
+            first += N;   first2 += N;
+          }
+            }
+        }
       for(int c=0;c<N;c++)
-	{
-	  for(int d=0;d<N;d++)
-	    {
-	      if(d>c) scp(c,d) = scp(d,c);
-	    }
-	}
+        {
+          for(int d=0;d<N;d++)
+            {
+              if(d>c) scp(c,d) = scp(d,c);
+            }
+        }
     }
   void Read(std::istream& s, int c)
     {
       iterator first   = begin()+c;
       const_iterator last    = end();
       while( first < last) 
-	{
-	  s >> *first;
-	  first += N;
-	}
+        {
+          s >> *first;
+          first += N;
+        }
     }
   
   void BinWrite(std::ostream& out) const
