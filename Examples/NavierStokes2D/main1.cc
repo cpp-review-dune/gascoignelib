@@ -1,6 +1,5 @@
 #include  "problemdescriptor1.h"
 #include  "stdloop.h"
-#include  "starter.h"
 #include  "meshagent.h"
 #include  "boundaryfunction.h"
 
@@ -56,13 +55,16 @@ public:
 
 int main(int argc, char** argv)
 {
-  Starter S(argc, argv, "bench.param");
+  ParamFile paramfile("bench.param");
+  if(argc>=2) {
+    paramfile.SetName(argv[1]);
+  }
 
   ProblemDescriptor1 LPD;
-  LPD.BasicInit(S.GetParamFile());
+  LPD.BasicInit(&paramfile);
 
   LocalLoop loop;
-  loop.BasicInit(S.GetParamFile());
+  loop.BasicInit(&paramfile);
   loop.run(&LPD);
 
   return 0;

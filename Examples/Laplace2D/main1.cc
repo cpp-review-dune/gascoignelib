@@ -1,6 +1,5 @@
 #include  "problemdescriptor1.h"
 #include  "stdloop.h"
-#include  "starter.h"
 #include  "residualfunctional.h"
 #include  "dirichletdatabycolor.h"
 #include  "domainmeanfunctional.h"
@@ -42,19 +41,22 @@ class LocalDomainFunctional : public virtual AllDomainFunctional
 
 int main(int argc, char** argv)
 {
-  Starter S(argc, argv, "mesh1.param");
+  ParamFile paramfile("mesh1.param");
+  if(argc>=2) {
+    paramfile.SetName(argv[1]);
+  }
   
   /////////////
   // Equation
   /////////////
   ProblemDescriptor1 LPD;
-  LPD.BasicInit(S.GetParamFile());
+  LPD.BasicInit(&paramfile);
 
   /////////////
   // Loop
   /////////////
   StdLoop loop;
-  loop.BasicInit(S.GetParamFile());
+  loop.BasicInit(&paramfile);
 
   /////////////
   // Functionals

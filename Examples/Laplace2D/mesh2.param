@@ -6,3 +6,25 @@ dirichletcomp      2  1 0
 dirichletcomp      3  1 0
 
 neumann         1 4
+
+//Block Loop
+
+niter       6
+refiner     global
+
+//Block Mesh
+
+dimension   2
+prerefine   2
+gridname    square.inp
+
+//Block Multilevelsolver
+
+linear_tol		1.e-2
+
+//Block Solver
+
+disc       Q1
+ndirect              1000
+
+//Block Nix

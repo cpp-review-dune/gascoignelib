@@ -1,18 +1,20 @@
 #include  "problemdescriptor2.h"
 #include  "stdloop.h"
-#include  "starter.h"
 
 /*---------------------------------------------------*/
 
 int main(int argc, char** argv)
 {
-  Starter S(argc, argv, "mesh2.param");
+  ParamFile paramfile("mesh2.param");
+  if(argc>=2) {
+    paramfile.SetName(argv[1]);
+  }
 
   ProblemDescriptor2 LPD;
-  LPD.BasicInit(S.GetParamFile());
+  LPD.BasicInit(&paramfile);
 
   StdLoop loop;
-  loop.BasicInit(S.GetParamFile());
+  loop.BasicInit(&paramfile);
   loop.run(&LPD);
 
   return 0;

@@ -1,14 +1,16 @@
 #include  "localloop.h"
-#include  "starter.h"
 
 /*---------------------------------------------------*/
 
 int main(int argc, char** argv)
 {
-  Starter S(argc, argv, "mesh1.param");
+  ParamFile paramfile("mesh1.param");
+  if(argc>=2) {
+    paramfile.SetName(argv[1]);
+  }
 
   LocalLoop loop;
-  loop.BasicInit(S.GetParamFile());
+  loop.BasicInit(&paramfile);
   loop.run();
 
   return 0;
