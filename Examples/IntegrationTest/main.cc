@@ -23,7 +23,7 @@ public:
     }
   MeshInterpretorInterface* NewMeshInterpretor(int dimension, const std::string& discname)
     {
-      GetMeshInterpretorPointer() = new Q12d;
+      return new Q12d;
     }
   void NewMesh(int l, const MeshInterface* MP)
     {
