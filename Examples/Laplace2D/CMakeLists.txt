@@ -1,3 +1,11 @@
+#
+# path to GascoigneStd
+#
+
+INCLUDE($ENV{GASCOIGNE}/GascoigneStd/CMakeGlobal.txt)
+
+#
+
 SET(LAPLACE2D_SRC_1
 main1.cc 
 problemdescriptor1.cc 

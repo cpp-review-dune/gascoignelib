@@ -74,3 +74,4 @@ ${GASCOIGNE_STD}/src/Problems
 ${GASCOIGNE_STD}/src/LinAlg
 ${GASCOIGNE_STD}/src/Solver
 )
+SET(GASCOIGNE_LIBS Solver Problems MeshInterpretor LinAlg Mesh Common ${EXT_LIBS})

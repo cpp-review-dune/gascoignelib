@@ -16,7 +16,7 @@
 #include  "matrixinterface.h"
 #include  "simplematrix.h"
 #include  "sparsestructureadaptor.h"
-//#include  "mginterpolatormatrix.h"
+#include  "mginterpolatormatrix.h"
 
 
 class PointMatrix : public SimpleMatrix, virtual public MatrixInterface
@@ -62,7 +62,7 @@ public:
 
     void AddMassWithDifferentStencil(const MatrixInterface* M, const TimePattern& TP, double s=1.);
 
-    //    void RestrictMatrix(const MgInterpolatorMatrix& I, const PointMatrix& Ah);
+    void RestrictMatrix(const MgInterpolatorMatrix& I, const PointMatrix& Ah);
 };
 
 
