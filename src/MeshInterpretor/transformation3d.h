@@ -26,8 +26,6 @@ class Transformation3d
 
   Transformation3d();
 
-  void SetNx(int n) {}
-
   const Matrix& DT () const {return dt ;}
   const Matrix& DTI() const {return dti;}
 

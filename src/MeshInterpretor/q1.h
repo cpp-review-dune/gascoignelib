@@ -22,7 +22,9 @@ protected:
 
   HNStructureInterface*    HN;
 
-  nvector<int> GetLocalIndices(int iq) const;
+  nvector<int> GetLocalIndices(int iq) const {
+    return GetMesh()->IndicesOfCell(iq);
+  }
   void LocalToGlobal(MatrixInterface& A, EntryMatrix& E, int iq, double s) const;
   
   virtual HNStructureInterface* NewHNStructure()=0;

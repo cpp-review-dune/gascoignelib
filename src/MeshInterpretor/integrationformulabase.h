@@ -19,9 +19,6 @@ private:
 
 protected:
 
-  double& w(int k) { return _iw[k];}
-  VERTEX& c(int k) { return _ic[k];}
-
   void ReInit(int n) {
     _in = n;
     _iw.reserve(n);      
@@ -42,6 +39,9 @@ public:
   int    n()                 const { return _in;}
   double w(int k)            const { return _iw[k];}
   const nvector<double>& w() const { return _iw;}
+
+  double& w(int k) { return _iw[k];}
+  VERTEX& c(int k) { return _ic[k];}
 
   void xi(VERTEX& v, int k)  const { v = _ic[k];}
   const std::vector<VERTEX>& c()  const { return _ic;}

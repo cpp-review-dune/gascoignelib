@@ -14,7 +14,7 @@ Visualization::Visualization()
   : mesh(0), PointData(0), CellData(0),
     filename("none"), GP(0)
 {
-  init();
+  BasicInit();
 }
 
 /********************************************************************/
@@ -54,7 +54,7 @@ Visualization& Visualization::operator=(const Visualization& W)
 
 /********************************************************************/
 
-void Visualization::init()
+void Visualization::BasicInit()
 {
   pstep = 1;
   avsa = gmva = vua = vigiea = gnua = teca = 0;

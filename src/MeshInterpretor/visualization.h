@@ -40,7 +40,7 @@ class Visualization
 
   /* Functions */
 
-  void   init();
+  void   BasicInit();
 
   void   avs    (const std::string&)  const;
   void   vu     (const std::string&)  const;

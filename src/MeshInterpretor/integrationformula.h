@@ -1,39 +1,13 @@
 #ifndef __integrationformula_h
 #define __integrationformula_h
 
-#include  "integrationformulainterface.h"
+#include  "integrationformulabase.h"
 
 /*------------------------------------------------------------*/
 
-template<int DIM>
-class IntegrationFormula : public IntegrationFormulaInterface
-{
-protected:
-
-  typedef Vertex<DIM>   VERTEX;
-
-  std::vector<VERTEX> ic;
-
-public:
-
-  IntegrationFormula();
-  IntegrationFormula(int n);
-  ~IntegrationFormula()    {}
-
-  IntegrationFormula(const IntegrationFormula& IF) : 
-    IntegrationFormulaInterface(IF), ic(IF.c()) {}
-
-  void init(int n);
-
-  void xi(VERTEX& v, int k)  const { v = ic[k];}
-  const std::vector<VERTEX>& c()  const { return ic;}
-};
-
-/*------------------------------------------------------------*/
-
-typedef IntegrationFormula<1>  IntegrationFormula1d;
-typedef IntegrationFormula<2>  IntegrationFormula2d;
-typedef IntegrationFormula<3>  IntegrationFormula3d;
+typedef IntegrationFormulaBase<1>  IntegrationFormula1d;
+typedef IntegrationFormulaBase<2>  IntegrationFormula2d;
+typedef IntegrationFormulaBase<3>  IntegrationFormula3d;
 
 /*------------------------------------------------------------*/
 

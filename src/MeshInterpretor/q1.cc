@@ -39,14 +39,6 @@ void Q1::LocalToGlobal(MatrixInterface& A, EntryMatrix& E, int iq, double s) con
 
 /* ----------------------------------------- */
 
-nvector<int> Q1::GetLocalIndices(int iq) const 
-{
-  nvector<int> indices = GetMesh()->IndicesOfCell(iq);
-  return indices;
-}
-
-/* ----------------------------------------- */
-
 void Q1::StrongDirichletMatrix(MatrixInterface& A, int col, const vector<int>& comp) const
 {
   const GascoigneMesh* GMP = dynamic_cast<const GascoigneMesh*>(GetMesh());
