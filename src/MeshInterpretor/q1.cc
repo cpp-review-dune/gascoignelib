@@ -51,7 +51,7 @@ void Q1::StrongDirichletMatrix(MatrixInterface& A, int col, const vector<int>& c
 {
   const GascoigneMesh* GMP = dynamic_cast<const GascoigneMesh*>(GetMesh());
   assert(GMP);
-  const IntVector& bv = GMP->VertexOnBoundary(col);
+  const IntVector& bv = *GMP->VertexOnBoundary(col);
   for(int i=0;i<bv.size();i++)
     {
       A.dirichlet(bv[i], comp);
@@ -64,7 +64,7 @@ void Q1::StrongDirichletVectorZero(GlobalVector& u, int col, const vector<int>& 
 {
   const GascoigneMesh* GMP = dynamic_cast<const GascoigneMesh*>(GetMesh());
   assert(GMP);
-  const IntVector& bv = GMP->VertexOnBoundary(col);
+  const IntVector& bv = *GMP->VertexOnBoundary(col);
 
   for(int ii=0;ii<comp.size();ii++)
     {
@@ -95,7 +95,7 @@ void Q1::InterpolateSolution(GlobalVector& u, const GlobalVector& uold) const
   InterpolateSolutionByPatches(u,uold);
   return;
 
-  const IntVector& vo2n = GetMesh()->Vertexo2n();
+  const IntVector& vo2n = *GetMesh()->Vertexo2n();
   assert(vo2n.size()==uold.n());
 
   DoubleVector habschon(GetMesh()->nnodes(),0.);  

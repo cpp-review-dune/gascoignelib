@@ -17,9 +17,9 @@ class Base3d : public Base
  public:
   
   Base3d()  {}
-  const Vertex3d&  normal () const {return bn;}
-  const Vertex3d&  tangent() const {assert(0);}
-  const fixarray<2,int>& faces() const {return face;}
+  const Vertex3d*  normal3d() const {return &bn;}
+  const Vertex3d*  tangent3d() const {assert(0); return NULL;}
+  const fixarray<2,int>* faces() const {return &face;}
   
   void point_boundary(int ie, const Vertex2d& s1) const
     {

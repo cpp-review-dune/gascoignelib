@@ -16,8 +16,8 @@ class Base2d : public Base
 
  public:
   
-  const Vertex2d&  normal () const { return bn;}
-  const Vertex2d&  tangent() const { return bt;}
+  const Vertex2d*  normal2d() const { return &bn;}
+  const Vertex2d*  tangent2d() const { return &bt;}
 
   void point_boundary(int ie, const Vertex1d& s1) const
     {

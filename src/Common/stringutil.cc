@@ -23,9 +23,12 @@ using namespace std;
 string Int2String   (int a   )
 {
 #ifdef __OLDCOMPILER__
-  char c[1+(int) log(a)];
+  int n = 1+(int) log(a);
+  char* c;
+  c = new char[n];
   sprintf(c,"%d",a);
   string r = c;
+  delete c;
   return r;
 #else
   STRINGSTREAM ss;

@@ -181,8 +181,8 @@ void CellMeshInterpretor::RhsNeumann(GlobalVector& f, const Equation& EQ, const 
   for(IntSet::const_iterator p=Colors.begin();p!=Colors.end();p++)
     {
       int col = *p;
-      const IntVector& q = GetMesh()->CellOnBoundary(col);
-      const IntVector& l = GetMesh()->LocalOnBoundary(col);
+      const IntVector& q = *GetMesh()->CellOnBoundary(col);
+      const IntVector& l = *GetMesh()->LocalOnBoundary(col);
       for (int i=0; i<q.size(); i++)
 	{
 	  int iq  = q[i];
@@ -402,6 +402,7 @@ int CellMeshInterpretor::RhsPoint(GlobalVector& f, const Vertex3d& p0, int comp,
 double CellMeshInterpretor::ComputeBoundaryFunctional(const GlobalVector& u, const BoundaryFunctional& BF) const 
 {
   assert(0);
+  return 0.;
 }
 
 /* ----------------------------------------- */

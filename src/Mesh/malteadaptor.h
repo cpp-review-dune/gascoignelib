@@ -30,7 +30,7 @@ protected:
   double etasum, gamma, alpha, beta, yfactor;
 
   double Expectation(double theta, double x) const;
-  double Expectation(double theta, double theta, double x, double y) const;
+  double Expectation(double thetax, double thetay, double x, double y) const;
   double ExpectationCoarsening(double theta, double x) const;
   void   refine_and_coarse(ivector& ref, ivector& coarse) const;
 

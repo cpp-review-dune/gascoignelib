@@ -37,13 +37,13 @@ HierarchicalMesh& HierarchicalMesh::operator=(const HierarchicalMesh& H)
   // copy nearly all data
   mnlevels  = H.nlevels()-1;
 
-  vo2n.memory(H.Vertexo2n().size());
-  eo2n.memory(H.Edgeo2n().size());
-  co2n.memory(H.Cello2n().size());
+  vo2n.memory(H.Vertexo2n()->size());
+  eo2n.memory(H.Edgeo2n()->size());
+  co2n.memory(H.Cello2n()->size());
 
-  vo2n      = H.Vertexo2n();
-  eo2n      = H.Edgeo2n();
-  co2n      = H.Cello2n();
+  vo2n      = *H.Vertexo2n();
+  eo2n      = *H.Edgeo2n();
+  co2n      = *H.Cello2n();
 
   edges     = H.edge();
   pdepth    = H.patchdepth();

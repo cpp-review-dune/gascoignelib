@@ -1,4 +1,4 @@
 #include "hanglist.xx"
 
-template HangList<2>;
-template HangList<4>;
+template class HangList<2>;
+template class HangList<4>;

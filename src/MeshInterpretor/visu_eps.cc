@@ -128,7 +128,7 @@ void VisuEPS::WriteGrid(string fname,int iter)
       bu[0]=0;bu[1]=2;bu[2]=8;bu[3]=6;
       for (int i=0;i<M->npatches();++i)
 	{
-	  const IntVector& vop = M->IndicesOfPatch(i);
+	  const IntVector& vop = *M->IndicesOfPatch(i);
 	  
 	  for (int j=0;j<4;++j)
 	    {

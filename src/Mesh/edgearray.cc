@@ -16,8 +16,8 @@ EdgeArray<N>::EdgeArray<N>(const EdgeArray<N>& e) : fixarray<N,int>(e) {};
 
 /*--------------------------------------------------------------*/
 
-template EdgeArray<2>;
-template EdgeArray<4>;
+template class EdgeArray<2>;
+template class EdgeArray<4>;
 
 /*--------------------------------------------------------------*/
 

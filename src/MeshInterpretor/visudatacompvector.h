@@ -19,9 +19,9 @@ class VisuDataCompVector : public VisuData
 
   void SetGlobalVector(const Gascoigne::GlobalVector* v);
 
-  virtual int    visucomp()     const;
+  int    visucomp()     const;
   int    visun()        const;
-  virtual double visudata(int i,int c) const;
+  double visudata(int i,int c) const;
 };
 
 /***************************************************************/

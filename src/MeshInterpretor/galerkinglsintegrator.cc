@@ -22,5 +22,5 @@ void GalerkinGlsIntegrator<DIM>::Matrix(const Equation& EQ, EntryMatrix& E, cons
 
 /*-----------------------------------------*/
 
-template GalerkinGlsIntegrator<2>;
-template GalerkinGlsIntegrator<3>;
+template class GalerkinGlsIntegrator<2>;
+template class GalerkinGlsIntegrator<3>;

@@ -74,7 +74,7 @@ void Q13d::StrongDirichletVector(GlobalVector& u, const DirichletData& BF, int c
   const GascoigneMesh* GMP = dynamic_cast<const GascoigneMesh*>(GetMesh());
   assert(GMP);
   nvector<double> ff(u.ncomp(),0.);
-  const IntVector& bv = GMP->VertexOnBoundary(col);
+  const IntVector& bv = *GMP->VertexOnBoundary(col);
 
   for(int i=0;i<bv.size();i++)
     {
@@ -110,7 +110,7 @@ void Q13d::Interpolate(GlobalVector& u, const InitialCondition& U) const
 
 void Q13d::InterpolateSolutionByPatches(GlobalVector& u, const GlobalVector& uold) const
 {
-  const IntVector& vo2n = GetMesh()->Vertexo2n();
+  const IntVector& vo2n = *GetMesh()->Vertexo2n();
   nvector<bool> habschon(GetMesh()->nnodes(),0);  
 
   assert(vo2n.size()==uold.n());
@@ -153,7 +153,7 @@ void Q13d::InterpolateSolutionByPatches(GlobalVector& u, const GlobalVector& uol
 
   for(int iq=0;iq<PM->npatches();++iq)
     {
-      IntVector vi = PM->IndicesOfPatch(iq);
+      IntVector vi = *PM->IndicesOfPatch(iq);
 
       for(int j=0; j<nodes.size(); j++)
 	{

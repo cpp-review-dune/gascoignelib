@@ -62,9 +62,9 @@ class HierarchicalMesh : public MeshInterface
   int  nlevels()                const { return 1+mnlevels;}
   int  nedges ()                const { return edges.size();}
 
-  const Gascoigne::IntVector&  Vertexo2n()    const { return vo2n;}
-  const Gascoigne::IntVector&  Edgeo2n  ()    const { return eo2n;}
-  const Gascoigne::IntVector&  Cello2n  ()    const { return co2n;}
+  const Gascoigne::IntVector*  Vertexo2n()    const { return &vo2n;}
+  const Gascoigne::IntVector*  Edgeo2n  ()    const { return &eo2n;}
+  const Gascoigne::IntVector*  Cello2n  ()    const { return &co2n;}
 
   int Vertexo2n(int i)          const { assert(i<vo2n.size());return vo2n[i];}
   int Edgeo2n  (int i)          const { assert(i<eo2n.size());return eo2n[i];}
@@ -77,13 +77,13 @@ class HierarchicalMesh : public MeshInterface
   virtual bool sleep(int i)   const =0;
 
   virtual int    Vater(const int i) const
-    {assert(0);}
+    {assert(0); return 0;}
   virtual Gascoigne::IntVector Nachkommen(const int i) const
-    {assert(0);}
+    {assert(0); return Gascoigne::IntVector();}
   virtual Gascoigne::IntVector Geschwister(const int i) const
-    {assert (0);} ;
+    {assert (0); return Gascoigne::IntVector();}
   virtual Gascoigne::IntVector Kinder(const int i) const
-    {assert(0);}
+    {assert(0); return Gascoigne::IntVector();}
     
   void SetParameters(std::string gridname, int patchdepth, int epatcher);
   void ReadFile(const std::string& gridname);
@@ -115,7 +115,7 @@ class HierarchicalMesh : public MeshInterface
   virtual void GetAwakeCells(std::set<int>&) const =0;
   virtual void ConstructQ2PatchMesh(Gascoigne::IntVector& pm) const=0;
   virtual std::set<int> CellNeighbours(int i) const 
-    { std::cerr << "no CellNeighbours"; abort();}
+    { std::cerr << "no CellNeighbours"; abort(); return std::set<int>();}
 
   virtual int  GetBoundaryCellOfCurved(int iq) const { return -1;}
 

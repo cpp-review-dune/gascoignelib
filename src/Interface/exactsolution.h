@@ -37,7 +37,7 @@ public:
 
   virtual double x         (int c, const Vertex2d& v)const;
   virtual double y         (int c, const Vertex2d& v)const;
-  virtual double z         (int c, const Vertex2d& v)const {assert(0);}
+  virtual double z         (int c, const Vertex2d& v)const {assert(0); return 0;}
   virtual double xx        (int c, const Vertex2d& v)const;
   virtual double yx        (int c, const Vertex2d& v)const;
   virtual double xy        (int c, const Vertex2d& v)const;

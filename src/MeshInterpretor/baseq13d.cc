@@ -29,6 +29,11 @@ void BaseQ13d::point(const Vertex3d& s) const
       DN [i].x() = dx * py * pz;
       DN [i].y() = px * dy * pz;
       DN [i].z() = px * py * dz;
+
+      dxy[i]     = dx * dy * pz;
+      dxz[i]     = dx * py * dz;
+      dyz[i]     = px * dy * dz;
+      dxyz[i]    = dx * dy * dz;
     }
 }
 

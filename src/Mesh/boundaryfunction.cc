@@ -58,5 +58,5 @@ void BoundaryFunction<DIM>::newton(Vector& dst) const
 
 /*---------------------------------------------------*/
 
-template BoundaryFunction<2>;
-template BoundaryFunction<3>;
+template class BoundaryFunction<2>;
+template class BoundaryFunction<3>;

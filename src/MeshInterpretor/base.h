@@ -20,17 +20,16 @@ class Base
 
   virtual ~Base(){}
   
-  virtual const Vertex2d&  normal2d () const {}
-  virtual const Vertex2d&  tangent2d() const {}
+  virtual const Vertex2d*  normal2d() const {return NULL;}
+  virtual const Vertex2d*  tangent2d() const {return NULL;}
 
-  virtual const Vertex3d&  normal3d () const {}
-  virtual const Vertex3d&  tangent3d() const {}
-
-  virtual const fixarray<2,int>& faces() const
-    { error("faces");}
+  virtual const Vertex3d*  normal3d() const {return NULL;}
+  virtual const Vertex3d*  tangent3d() const {return NULL;}
+  virtual const fixarray<2,int>* faces() const
+    { error("faces");return NULL;}
 
   virtual double psi(int i, double x) const
-    { error("psi");}
+    { error("psi"); return 0;}
 
   virtual void point(const Vertex2d&) const
     { error("point");}
@@ -38,10 +37,10 @@ class Base
   virtual void point(const Vertex3d&) const
     { error("point");}
 
-  virtual void point_boundary(int, const Vertex1d&) const
+  virtual void point_boundary_2d(int, const Vertex1d&) const
     { error("point_boundary");}
 
-  virtual void point_boundary(int, const Vertex2d&) const
+  virtual void point_boundary_3d(int, const Vertex2d&) const
     { error("point_boundary");}  
 };
 

@@ -16,8 +16,12 @@
 #include  <string>
 #include  "gascoigne.h"
 
+
+
 class MeshInterface
 {
+Vertex2d _v2;
+Vertex3d _v3;
 public:
 
   MeshInterface() {}
@@ -29,18 +33,16 @@ public:
   virtual int  nnodes()    const=0;
   virtual int  ncells()    const=0;
 
-  virtual int  nodes_per_cell(int i)         const { assert(0);}
+  virtual int  nodes_per_cell(int i)         const { assert(0); return -1;}
   virtual int  vertex_of_cell(int i, int ii)    const=0;
-  virtual const Vertex2d& vertex2d(int i)  const { assert(0);}
-  virtual const Vertex3d& vertex3d(int i)  const { assert(0);} 
-  virtual std::set<int> GetColors()        const { assert(0);}
-  virtual Gascoigne::IntVector  IndicesOfCell(int iq) const { assert(0);}
-  virtual const Gascoigne::IntVector& Vertexo2n()     const { assert(0);}
+  virtual const Vertex2d& vertex2d(int i)  const { assert(0); return _v2;}
+  virtual const Vertex3d& vertex3d(int i)  const { assert(0); return _v3;} 
+  virtual std::set<int> GetColors()        const { assert(0); return std::set<int>();}
+  virtual Gascoigne::IntVector  IndicesOfCell(int iq) const { assert(0); return Gascoigne::IntVector();}
+  virtual const Gascoigne::IntVector* Vertexo2n()     const { assert(0); return NULL;}
+  virtual const Gascoigne::IntVector* CellOnBoundary(int color)   const { assert(0); return NULL;}  virtual const Gascoigne::IntVector* LocalOnBoundary(int color)  const { assert(0); return NULL;}
 
-  virtual const Gascoigne::IntVector& CellOnBoundary(int color)   const { assert(0);}
-  virtual const Gascoigne::IntVector& LocalOnBoundary(int color)  const { assert(0);}
-
-  virtual int VtkType(int i) const {assert(0);}
+  virtual int VtkType(int i) const {assert(0); return -1;}
 
   // aus vtkCellTypes.h
 

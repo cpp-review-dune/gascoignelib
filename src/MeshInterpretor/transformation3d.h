@@ -75,7 +75,7 @@ template<class BASE>
 inline Vertex3d  Transformation3d<BASE>::normal() const 
 {
   Vertex3d xn;
-  dti.mult(xn,B.normal());
+  dti.mult(xn,*B.normal3d());
   double xx = sqrt(xn*xn);
   xn /= xx;
   return xn;
@@ -205,7 +205,7 @@ template<class BASE>
 inline double  Transformation3d<BASE>::G() const  
 {
   double d1phi=0,d2phi=0,d12phi=0;
-  const fixarray<2,int>& fc = B.faces();
+  const fixarray<2,int>& fc = *B.faces();
   for (int i=0;i<3;++i)
     {
       d1phi+=dt(i,fc[0])*dt(i,fc[0]);

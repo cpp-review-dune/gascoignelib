@@ -164,5 +164,5 @@ void GlsIntegrator<DIM>::Matrix(const Equation& EQ, EntryMatrix& E, const FemInt
 
 /*-----------------------------------------------------------*/
 
-template GlsIntegrator<2>;
-template GlsIntegrator<3>;
+template class GlsIntegrator<2>;
+template class GlsIntegrator<3>;

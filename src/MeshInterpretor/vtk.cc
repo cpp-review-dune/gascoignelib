@@ -20,11 +20,11 @@ void Visualization::_vtk_pointdata(ofstream& out) const
 	   {
 	     if(mesh->dimension()==2)
 	       {
-		 out << PointData->visudata(ind,p->second,mesh->vertex2d(ind)) << endl;
+		 out << PointData->visudata2(ind,p->second,mesh->vertex2d(ind)) << endl;
 	       }
 	     else
 	       {
-		 out << PointData->visudata(ind,p->second,mesh->vertex3d(ind)) << endl;
+		 out << PointData->visudata2(ind,p->second,mesh->vertex3d(ind)) << endl;
 	       }
 	   }
 	 out << endl<< endl;
@@ -39,11 +39,11 @@ void Visualization::_vtk_pointdata(ofstream& out) const
 	       {
 		 if(mesh->dimension()==2)
 		   {
-		     out << PointData->visudata(ind,p->second[ii],mesh->vertex2d(ind)) << " ";
+		     out << PointData->visudata2(ind,p->second[ii],mesh->vertex2d(ind)) << " ";
 		   }
 		 else
 		   {
-		     out << PointData->visudata(ind,p->second[ii],mesh->vertex3d(ind)) << endl;
+		     out << PointData->visudata2(ind,p->second[ii],mesh->vertex3d(ind)) << endl;
 		   }
 	       }
 	     if(p->second[2]==-1)

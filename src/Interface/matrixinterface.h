@@ -19,7 +19,7 @@ class MatrixInterface
 
   virtual std::string GetName() const=0;
   
-  virtual const StencilInterface* GetStencil() const { assert(0);}
+  virtual const StencilInterface* GetStencil() const { assert(0); return NULL;}
 
   virtual void ReInit(const SparseStructureInterface* S)=0;
 

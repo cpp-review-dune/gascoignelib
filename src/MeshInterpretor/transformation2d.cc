@@ -3,7 +3,7 @@
 
 /*-----------------------------------------------------*/
 
-template Transformation2d<BaseQ12d>;
+template class Transformation2d<BaseQ12d>;
 
 /*-----------------------------------------------------*/
 

@@ -5,5 +5,5 @@
 
 /*-----------------------------------------------------*/
 
-template FiniteElement<3,2,Transformation3d<BaseQ13d>,BaseQ13d>;
+template class FiniteElement<3,2,Transformation3d<BaseQ13d>,BaseQ13d>;
 

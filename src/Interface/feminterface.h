@@ -38,11 +38,11 @@ public:
   virtual double J()         const=0;
   virtual double G()         const=0;
 
-  virtual void x     (Vertex2d&) const {};
-  virtual void x     (Vertex3d&) const {};
+  virtual void x     (Vertex2d&) const {assert(0);}
+  virtual void x     (Vertex3d&) const {assert(0);}
 
-  virtual void normal(Vertex2d&) const {};
-  virtual void normal(Vertex3d&) const {};
+  virtual void normal(Vertex2d&) const {assert(0);}
+  virtual void normal(Vertex3d&) const {assert(0);}
 
   virtual void  point(const Vertex2d&) const
     { error("point 2d"); }

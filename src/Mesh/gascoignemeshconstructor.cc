@@ -19,9 +19,9 @@ void GascoigneMeshConstructor::BasicInit()
   if (HM->dimension()==2) Loop2d();
   else                    Loop3d();
 
-  nvector<int>& v1 = GMG->GetGascoigneMesh(0)->Vertexo2n();
-  v1.reservesize(HM->Vertexo2n().size());
-  v1 = HM->Vertexo2n();
+  nvector<int>& v1 = *GMG->GetGascoigneMesh(0)->Vertexo2n();
+  v1.reservesize(HM->Vertexo2n()->size());
+  v1 = *HM->Vertexo2n();
 }
 
 /*---------------------------------------------------*/

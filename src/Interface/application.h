@@ -42,10 +42,10 @@ public:
   virtual void SetFemData(Gascoigne::FemData& q) const {}
   virtual void SetParameterData(Gascoigne::LocalData& q) const {}
 
-  virtual int GetNcomp() const {assert(0);}
+  virtual int GetNcomp() const {assert(0); return -1;}
 
-  int size()const{std::cerr<< "Application: never use \"size()\"\n"; assert(0);}
-  int ncomp()const{std::cerr<< "Application: never use \"ncomp()\"\n"; assert(0);}
+  int size()const{std::cerr<< "Application: never use \"size()\"\n"; assert(0); return -1;}
+  int ncomp()const{std::cerr<< "Application: never use \"ncomp()\"\n"; assert(0); return -1;}
 };
 
 

@@ -416,6 +416,8 @@ void GalerkinIntegrator<DIM>::Residual(double& res, const LocalVector& U, const 
     }
 }
 
+/* ----------------------------------------- */
+/* ----------------------------------------- */
 
-template GalerkinIntegrator<2>;
-template GalerkinIntegrator<3>;
+template class GalerkinIntegrator<2>;
+template class GalerkinIntegrator<3>;

@@ -74,10 +74,10 @@ public:
 	}
       if(error) 
 	{
-	  return -1;
 	  std::cerr << "UnstructuredStencil::Find()";
 	  std::cerr << "no such coupling: "<<i <<" "<<j<<std::endl;
 	  abort();
+	  return -1;
 	}
       return pos;
     }

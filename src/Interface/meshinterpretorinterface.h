@@ -68,7 +68,7 @@ public:
   virtual void MassMatrix(MatrixInterface& M) const {assert(0);}
   virtual void Rhs(Gascoigne::GlobalVector& f, const RightHandSideData& RHS, double s) const { assert(0);};
   virtual void DiracRhs(Gascoigne::GlobalVector& f, const RightHandSideData& RHS, double s) const { assert(0);}
-  virtual int RhsPoint(Gascoigne::GlobalVector& f, const Functional* F) const { assert(0);}
+  virtual int RhsPoint(Gascoigne::GlobalVector& f, const Functional* F) const { assert(0); return -1;}
   virtual void RhsNeumann(Gascoigne::GlobalVector& f, const Equation& EQ, const Gascoigne::IntSet& Colors,  const NeumannData& NRHS, double s) const { assert(0);}
 
 
@@ -83,14 +83,14 @@ public:
   virtual void StrongDirichletVectorZero(Gascoigne::GlobalVector& u, int col, const std::vector<int>& comp) const { assert(0);}
 
 
-  virtual double PressureFilter(nvector<double>&) const {assert(0);}
+  virtual double PressureFilter(nvector<double>&) const {assert(0); return 0.;}
 
   virtual void StabForm(Gascoigne::GlobalVector& f, const Gascoigne::GlobalVector& u, const Equation& EQ, double d) const {assert(0);}
 
   // Functionals
   virtual void ComputeError(const Gascoigne::GlobalVector& u, Gascoigne::LocalVector& err, const ExactSolution* ES) const { assert(0);};
-  virtual double ComputeBoundaryFunctional(const Gascoigne::GlobalVector& u, const BoundaryFunctional& BF) const {assert(0);}
-  virtual double ComputeDomainFunctional(const Gascoigne::GlobalVector& u, const DomainFunctional& F) const {assert(0);}
+  virtual double ComputeBoundaryFunctional(const Gascoigne::GlobalVector& u, const BoundaryFunctional& BF) const {assert(0); return 0.;}
+  virtual double ComputeDomainFunctional(const Gascoigne::GlobalVector& u, const DomainFunctional& F) const {assert(0); return 0;}
 
   virtual void ConstructInterpolator(MgInterpolatorInterface* I, const MeshTransferInterface* MT) { assert(0);};
 };

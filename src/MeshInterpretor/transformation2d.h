@@ -76,7 +76,7 @@ template<class BASE>
 inline Vertex2d  Transformation2d<BASE>::normal() const 
 {
   Vertex2d xn;
-  dti.mult(xn,B.normal());
+  dti.mult(xn,*B.normal2d());
   double xx = sqrt(xn*xn);
   xn /= xx;
   return xn;
@@ -185,7 +185,7 @@ template<class BASE>
 inline double  Transformation2d<BASE>::G() const  
 {
   Vertex2d xt;
-  dt.mult(xt,B.tangent());
+  dt.mult(xt,*B.tangent2d());
   return xt.norm_l2();
 }
 
