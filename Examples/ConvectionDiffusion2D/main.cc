@@ -1,5 +1,4 @@
-#include  "problemdescriptor1.h"
-#include  "stdtimeloop.h"
+#include  "local.h"
 
 using namespace Gascoigne;
 
@@ -12,11 +11,10 @@ int main(int argc, char** argv)
     paramfile.SetName(argv[1]);
   }
 
-  ProblemDescriptor1 LPD;
+  ProblemDescriptor LPD;
   LPD.BasicInit(&paramfile);
 
-  StdTimeLoop loop;
-
+  LocalLoop loop;
   loop.BasicInit(&paramfile);
   loop.run(&LPD);
 

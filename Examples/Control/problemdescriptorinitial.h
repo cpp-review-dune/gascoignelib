@@ -1,7 +1,9 @@
 #ifndef  __ProblemDescriptorInitial_h
 #define  __ProblemDescriptorInitial_h
 
-#include  "problemdescriptorinterface.h"
+#include  "problemdescriptorbase.h"
+#include  "localequation.h"
+#include  "localinitialcondition.h"
 
 
 /////////////////////////////////////////////
@@ -14,30 +16,17 @@
 /////////////////////////////////////////////
 
 
-
-
-class ProblemDescriptorInitial : public ProblemDescriptorInterface
+class ProblemDescriptorInitial : public ProblemDescriptorBase
 {
 public:
-
-
-private:
-
-
-protected:
-
-  void ConstructEquation();
-  void ConstructInitialCondition();
-  
-public:
-
-
-//
-///  Constructor 
-//
-    ProblemDescriptorInitial() {}
-    
     std::string GetName() const {return "Initial";}
+
+  void BasicInit(const Gascoigne::ParamFile* pf) {
+    GetEquationPointer() = new LocalEquation(GetParamFile());
+    const LocalEquation* LEQ = dynamic_cast<const LocalEquation*>(GetEquation());
+    GetInitialConditionPointer() = new LocalInitialCondition(LEQ);
+    ProblemDescriptorBase::BasicInit(pf);
+  }
 
 };
 

@@ -1,8 +1,8 @@
 #ifndef  __ProblemDescriptorBackward_h
 #define  __ProblemDescriptorBackward_h
 
-#include  "problemdescriptorinterface.h"
-
+#include  "problemdescriptorbase.h"
+#include  "backwardequation.h"
 
 /////////////////////////////////////////////
 ///
@@ -14,29 +14,16 @@
 /////////////////////////////////////////////
 
 
-
-
-class ProblemDescriptorBackward : public ProblemDescriptorInterface
+class ProblemDescriptorBackward : public ProblemDescriptorBase
 {
-public:
+ public:
 
+  std::string GetName() const {return "Backward";}
 
-private:
-
-
-protected:
-
-  void ConstructEquation();
-  
-public:
-
-
-//
-///  Constructor 
-//
-    ProblemDescriptorBackward() {}
-    
-    std::string GetName() const {return "Backward";}
+  void BasicInit(const Gascoigne::ParamFile* pf) {
+    GetEquationPointer() = new BackwardEquation(GetParamFile());
+    ProblemDescriptorBase::BasicInit(pf);
+  }
 
 };
 

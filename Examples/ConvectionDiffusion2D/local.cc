@@ -1,23 +1,13 @@
-#include  "localloop.h"
+#include  "local.h"
 #include  "backup.h"
 #include  "monitoring.h"
-#include  "localmeshagent.h"
 
 using namespace std;
 using namespace Gascoigne;
 
-/*-----------------------------------------*/
-
-void LocalLoop::BasicInit(const ParamFile* paramfile)
-{
-  LPD.BasicInit(paramfile);
-  GetMeshAgentPointer() = new LocalMeshAgent;
-  StdLoop::BasicInit(paramfile);
-}
-
 /*-------------------------------------------------*/
 
-void LocalLoop::run()
+void LocalLoop::run(const ProblemDescriptorInterface* PD)
 {
   _iter=1;
   
@@ -36,7 +26,7 @@ void LocalLoop::run()
   MultiLevelSolverInterface* MP = GetMultiLevelSolver();
 
   _clock_newmesh.start();
-  GetMultiLevelSolver()->ReInit(LPD);
+  GetMultiLevelSolver()->ReInit(*PD);
   _clock_newmesh.stop();
 
   int nlevels = MP->nlevels();
@@ -45,7 +35,7 @@ void LocalLoop::run()
     {
       if(l==nlevels-1)
 	{
-	  string filename("../NavierStokes2D/Results/solve.00003.bup");
+	  string filename("solve.00003.bup");
 	  GlobalVector& d = dat[l];
 	  ReadBackUpResize(d,filename);
 	}

@@ -1,7 +1,9 @@
 #ifndef  __ProblemDescriptorTerminal_h
 #define  __ProblemDescriptorTerminal_h
 
-#include  "problemdescriptorinterface.h"
+#include  "problemdescriptorbase.h"
+#include  "localequation.h"
+#include  "localterminalcondition.h"
 
 
 /////////////////////////////////////////////
@@ -16,28 +18,16 @@
 
 
 
-class ProblemDescriptorTerminal : public ProblemDescriptorInterface
+class ProblemDescriptorTerminal : public ProblemDescriptorBase
 {
 public:
-
-
-private:
-
-
-protected:
-
-  void ConstructEquation();
-  void ConstructInitialCondition();
-  
-public:
-
-
-//
-///  Constructor 
-//
-    ProblemDescriptorTerminal() {}
-    
     std::string GetName() const {return "Terminal";}
+
+  void BasicInit(const Gascoigne::ParamFile* pf) {
+    GetEquationPointer() = new LocalEquation(GetParamFile());
+    GetInitialConditionPointer() = new LocalTerminalCondition();
+    ProblemDescriptorBase::BasicInit(pf);
+  }
 
 };
 

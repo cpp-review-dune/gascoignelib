@@ -38,8 +38,11 @@ public:
 
   std::string GetName() const {return "NeumannDataByExactSolution";}
   int GetNcomp() const { return _EQ->ncomp();}
-
-  void operator()(Gascoigne::VectorIterator b, const Gascoigne::TestFunction& N, const Vertex2d& v, const Vertex2d& n, int col) const;
+  
+  void operator()(Gascoigne::VectorIterator b, const Gascoigne::TestFunction& N, const Vertex2d& v, const Vertex2d& n, int col) const{
+    b[0] += ( _ES->x(0,v)*n.x()+_ES->y(0,v)*n.y() ) * N.m();
+  }
+  
  };
 
 

@@ -7,8 +7,6 @@ SUBDIRS(
   ConvectionDiffusion2D 
   Control
   IntegrationTest
-  NoName
-  IntegrationTest
 )
 
 LINK_LIBRARIES(${GASCOIGNE_LIBS})

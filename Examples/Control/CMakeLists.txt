@@ -12,32 +12,28 @@ SET(CONTROL_INITIAL_SRC
   ${CONTROL_COMMON_SRC}
   localinitialcondition.cc
   main_initial.cc
-  problemdescriptorinitial.cc
 )
 
 SET(CONTROL_FORWARD_SRC
   ${CONTROL_COMMON_SRC}
   main_forward.cc
-  problemdescriptorforward.cc
 )
 
 SET(CONTROL_TERMINAL_SRC
   ${CONTROL_COMMON_SRC}
   localterminalcondition.cc
   main_terminal.cc
-  problemdescriptorterminal.cc
 )
 
 SET(CONTROL_BACKWARD_SRC
   ${CONTROL_COMMON_SRC}
   backwardequation.cc
   main_backward.cc
-  problemdescriptorbackward.cc
 )
 
 SET(_SRC ${GASCOIGNESTD_SOURCE_DIR}/Examples/Control)
 IF(COPY_PARAMFILES)
-  ADD_CUSTOM_TARGET(COPY ALL cp ${_SRC}/*.param ${_SRC}/*.inp .)
+  ADD_CUSTOM_TARGET(COPY ALL cp ${_SRC}/*.param ${_SRC}/*.inp ${_SRC}/*.gup .)
 ENDIF(COPY_PARAMFILES)
 
 ADD_EXECUTABLE(Control-Mesh     ${CONTROL_MESH_SRC})

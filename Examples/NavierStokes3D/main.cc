@@ -1,4 +1,5 @@
-#include  "localloop.h"
+#include  "local.h"
+#include  "stdloop.h"
 
 using namespace Gascoigne;
 
@@ -6,14 +7,18 @@ using namespace Gascoigne;
 
 int main(int argc, char** argv)
 {
-  ParamFile paramfile("mesh1.param");
+  ParamFile paramfile("benchcircle.param");
   if(argc>=2) {
     paramfile.SetName(argv[1]);
   }
 
-  LocalLoop loop;
+  ProblemDescriptor LPD;
+  LPD.BasicInit(&paramfile);
+
+  StdLoop loop;
+
   loop.BasicInit(&paramfile);
-  loop.run();
+  loop.run(&LPD);
 
   return 0;
 }

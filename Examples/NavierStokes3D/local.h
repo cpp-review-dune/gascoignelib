@@ -2,7 +2,7 @@
 #define  __local_h
 
 #include  "stdloop.h"
-#include  "navierstokesgls2d.h"
+#include  "navierstokesgls3d.h"
 #include  "dirichletdata.h"
 #include  "meshagent.h"
 #include  "boundaryfunction.h"
@@ -20,18 +20,18 @@ protected:
   double vmax;
 public:
   BenchMarkDirichletData() {
-    vmax = 0.3;
+    vmax = 0.45;
   }
   std::string GetName() const {return "Bench";}
-  void operator()(Vector& b, const Vertex2d& v, int color) const {
+  void operator()(Vector& b, const Vertex3d& v, int color) const {
 
-    double x = v.x();  double y = v.y();
+    double x = v.x();  double y = v.y(); double z = v.z();
     
     b.zero();
-    if (color!=80)
+    if (x==0.)
       {
 	double high = 4.1;
-	b[1] = vmax * ParabelFunction(y,0.,high);
+	b[1] = vmax * ParabelFunction(y,0.,high) * ParabelFunction(z,0.,high);
       }
   }
 };
@@ -44,7 +44,7 @@ public:
     
     std::string GetName() const {return "Local";}
     void BasicInit(const Gascoigne::ParamFile* pf) {
-      GetEquationPointer() = new NavierStokesGls2d(GetParamFile());
+      GetEquationPointer() = new NavierStokesGls3d(GetParamFile());
       GetDirichletDataPointer() = new BenchMarkDirichletData();
       ProblemDescriptorBase::BasicInit(pf);
     }

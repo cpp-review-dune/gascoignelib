@@ -1,7 +1,8 @@
 #ifndef  __ProblemDescriptorForward_h
 #define  __ProblemDescriptorForward_h
 
-#include  "problemdescriptorinterface.h"
+#include  "problemdescriptorbase.h"
+#include  "localequation.h"
 
 
 /////////////////////////////////////////////
@@ -14,30 +15,17 @@
 /////////////////////////////////////////////
 
 
-
-
-class ProblemDescriptorForward : public ProblemDescriptorInterface
+class ProblemDescriptorForward : public ProblemDescriptorBase
 {
 public:
-
-
-private:
-
-
-protected:
-
-  void ConstructEquation();
-  
-public:
-
-
-//
-///  Constructor 
-//
-    ProblemDescriptorForward() {}
     
-    std::string GetName() const {return "Forward";}
+  std::string GetName() const {return "Forward";}
 
+  void BasicInit(const Gascoigne::ParamFile* pf) {
+    GetEquationPointer() = new LocalEquation(GetParamFile());
+    ProblemDescriptorBase::BasicInit(pf);
+  }
+  
 };
 
 

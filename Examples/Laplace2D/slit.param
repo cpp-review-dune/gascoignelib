@@ -19,7 +19,7 @@ estimator  old
 patchdepth  2
 dimension   2
 prerefine   2
-gridname    ../../inp/slit.inp
+gridname    slit.inp
 etapatcher 0
 
 //Block BoundaryManager

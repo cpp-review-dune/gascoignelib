@@ -1,42 +1,32 @@
 #ifndef  __local_h
 #define  __local_h
 
-#include  "stdloop.h"
-#include  "navierstokesgls2d.h"
+#include  "problemdescriptorbase.h"
+#include  "localequation.h"
 #include  "dirichletdata.h"
 #include  "meshagent.h"
 #include  "boundaryfunction.h"
 #include  "usefullfunctionsbd.h"
-#include  "problemdescriptorbase.h"
+#include  "stdloop.h"
 
 using namespace std;
 using namespace Gascoigne;
 
 /* ----------------------------------------- */
 
-class BenchMarkDirichletData : public DirichletData
+class LocalDirichletData : public DirichletData
 {
-protected:
-  double vmax;
-public:
-  BenchMarkDirichletData() {
-    vmax = 0.3;
-  }
-  std::string GetName() const {return "Bench";}
-  void operator()(Vector& b, const Vertex2d& v, int color) const {
+ public:
+  std::string GetName() const {return "Local";}
+  void operator()(Vector& b, const Vertex2d& v, int col) const {
+    if(col!=80) {
+      b[0] = 0.;
+    } else {
+      b[0] = 1.;
+    }
+}
 
-    double x = v.x();  double y = v.y();
-    
-    b.zero();
-    if (color!=80)
-      {
-	double high = 4.1;
-	b[1] = vmax * ParabelFunction(y,0.,high);
-      }
-  }
 };
-
-/* ----------------------------------------- */
 
 class ProblemDescriptor : public ProblemDescriptorBase
 {
@@ -44,8 +34,8 @@ public:
     
     std::string GetName() const {return "Local";}
     void BasicInit(const Gascoigne::ParamFile* pf) {
-      GetEquationPointer() = new NavierStokesGls2d(GetParamFile());
-      GetDirichletDataPointer() = new BenchMarkDirichletData();
+      GetEquationPointer() = new LocalEquation(GetParamFile());
+      GetDirichletDataPointer() = new LocalDirichletData;
       ProblemDescriptorBase::BasicInit(pf);
     }
 };
@@ -113,6 +103,7 @@ public:
       GetMeshAgentPointer() = new BenchMarkMeshAgent;
       StdLoop::BasicInit(paramfile);
     }
+  void run(const ProblemDescriptorInterface* PD);
 };
 
 

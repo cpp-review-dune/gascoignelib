@@ -1,5 +1,5 @@
-#include  "problemdescriptor1.h"
-#include  "stdloop.h"
+#include  "local.h"
+#include  "stdtimeloop.h"
 
 using namespace Gascoigne;
 
@@ -7,15 +7,15 @@ using namespace Gascoigne;
 
 int main(int argc, char** argv)
 {
-  ParamFile paramfile("benchcircle.param");
+  ParamFile paramfile("mesh.param");
   if(argc>=2) {
     paramfile.SetName(argv[1]);
   }
 
-  ProblemDescriptor1 LPD;
+  ProblemDescriptor LPD;
   LPD.BasicInit(&paramfile);
 
-  StdLoop loop;
+  StdTimeLoop loop;
 
   loop.BasicInit(&paramfile);
   loop.run(&LPD);

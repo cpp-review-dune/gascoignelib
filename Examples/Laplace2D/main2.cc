@@ -1,4 +1,4 @@
-#include  "problemdescriptor2.h"
+#include  "local2.h"
 #include  "stdloop.h"
 
 using namespace Gascoigne;
@@ -12,11 +12,26 @@ int main(int argc, char** argv)
     paramfile.SetName(argv[1]);
   }
 
-  ProblemDescriptor2 LPD;
+  /////////////
+  // Equation
+  /////////////
+  ProblemDescriptor LPD;
   LPD.BasicInit(&paramfile);
 
+  /////////////
+  // Loop
+  /////////////
   StdLoop loop;
   loop.BasicInit(&paramfile);
+
+  /////////////
+  // Functionals
+  /////////////
+  LocalDragFunctional   j0; 
+  LocalDomainFunctional j1;
+  loop.AddFunctional(&j0);
+  loop.AddFunctional(&j1);
+
   loop.run(&LPD);
 
   return 0;
