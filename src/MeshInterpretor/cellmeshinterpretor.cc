@@ -38,6 +38,7 @@ void CellMeshInterpretor::Transformation(FemInterface::Matrix& T, int iq) const
       for(int ii=0;ii<ne;ii++)
 	{
 	  Vertex2d v = GetMesh()->vertex2d(indices[ii]);
+	  cerr << v << endl;
 	  T(0,ii) = v.x();               
 	  T(1,ii) = v.y();
 	}

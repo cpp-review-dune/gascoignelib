@@ -20,14 +20,14 @@ OPTION(USE_ARCH "Use archictecture specifc paths" OFF)
 #
 #  Set the flags used by the C++ compiler.
 #
-SET(GASCOIGNE_CXX_FLAGS "-O3 -DNDEBUG")
+#SET(GASCOIGNE_CXX_FLAGS "-O3 -DNDEBUG")
 
 #############################################
 #
 #  Set -D define flags (e. g. -D_DEBUG or 
 #  -D__OLDCOMPILER__ for egcs).
 #
-SET(GASCOIGNE_COMPILER_DEFINITIONS "")
+#SET(GASCOIGNE_COMPILER_DEFINITIONS "")
 
 #############################################
 #
