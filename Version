@@ -31,4 +31,7 @@ Version 01.2004 (23.01.2004)
 * Loops aufgeraeumt, nun ruft man "run(const ProblemDescriptorInterface*)" auf.
 
 
-
+Version 01.2004 (24.01.2004)
+============================
+* roland: class ParamFile introduced
+* some changes in MeshInterface
