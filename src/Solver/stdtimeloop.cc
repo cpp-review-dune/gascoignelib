@@ -34,8 +34,7 @@ void StdTimeLoop::BasicInit(const ParamFile* paramfile)
 
 string StdTimeLoop::SolveTimePrimal(MultiLevelGhostVector& u, MultiLevelGhostVector& f, string name)
 {
-  f.zero();
-  GetMultiLevelSolver()->GetSolver()->TimeRhs(f,u);  // hier noch u=ualt !!
+  GetMultiLevelSolver()->GetSolver()->Rhs(f);
 
   GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(f);
   GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(u);
@@ -151,6 +150,7 @@ void StdTimeLoop::run(const ProblemDescriptorInterface* PD)
   GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(u);
   //GetMultiLevelSolver()->GetSolver()->Visu("Results/solve",u.finest(),0);
 
+  f.zero();
   for (_iter=1; _iter<=_niter; _iter++)
     {
       info.iteration(_iter);
@@ -159,5 +159,11 @@ void StdTimeLoop::run(const ProblemDescriptorInterface* PD)
 
       SolveTimePrimal(u,f);
       Functionals(u,f);
+
+      if (_iter<_niter)
+	{
+	  f.zero();
+	  GetMultiLevelSolver()->GetSolver()->TimeRhs(f,u);
+	}
     }
 }

@@ -115,7 +115,7 @@ void StdTimeSolver::TimeRhs(BasicGhostVector& gf, const BasicGhostVector& gu) co
       
       GetMassMatrix()->vmult_time(f,u,GetTimePattern(),d);
     }
-  StdSolver::Rhs(gf,1./theta);
+  StdSolver::Rhs(gf,(1.-theta)/theta);
 }
 
 /*-------------------------------------------------------*/
