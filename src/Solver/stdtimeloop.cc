@@ -144,7 +144,7 @@ void StdTimeLoop::run()
   GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(u);
   GetMultiLevelSolver()->GetSolver()->Visu("Results/solve",u,0);
 
-  for (_iter=1; _iter<_niter; _iter++)
+  for (_iter=1; _iter<=_niter; _iter++)
     {
       info.iteration(_iter);
 
