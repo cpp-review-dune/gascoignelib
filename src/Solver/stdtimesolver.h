@@ -25,7 +25,8 @@ private:
 protected:
 
 
-  double _dt, _theta, _time, _rhs;
+  double _dt, _theta, _time;
+  fixarray<2,double> _rhs;
 
   const MatrixInterface* GetMassMatrix() const {return _MMP;}
   MatrixInterface* GetMassMatrix() {return _MMP;}
@@ -46,7 +47,7 @@ public:
   void RegisterMatrix();
   void ReInitMatrix();
 
-  void SetTimeData(double dt, double theta, double time, double rhs = -1);
+  void SetTimeData(double dt, double theta, double time, double oldrhs = -1., double newrhs = 1.);
   void SetProblem(const ProblemDescriptorInterface& PDX);
 
   void TimeRhsOperator(BasicGhostVector& f, const BasicGhostVector& u) const;

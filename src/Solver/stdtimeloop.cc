@@ -114,7 +114,7 @@ void StdTimeLoop::TimeInfoBroadcast()
     {
       StdTimeSolver* TS = dynamic_cast<StdTimeSolver*>(GetMultiLevelSolver()->GetSolver(l));
       assert(TS);
-      TS->SetTimeData(_timeinfo.dt(), _timeinfo.theta(), _timeinfo.time(), _timeinfo.oldrhs());
+      TS->SetTimeData(_timeinfo.dt(), _timeinfo.theta(), _timeinfo.time(), _timeinfo.oldrhs(), _timeinfo.rhs());
     }
 }
 

@@ -27,14 +27,18 @@ string StdTimeSolver::GetName() const
 
 /*-------------------------------------------------------------*/
   
-void StdTimeSolver::SetTimeData(double dt, double theta, double time, double rhs) 
+void StdTimeSolver::SetTimeData(double dt, double theta, double time, double oldrhs, double newrhs) 
 {
-  _dt    = dt;
-  _theta = theta;
-  _time  = time;
-//   _rhs   = (rh<0) ? (1.-theta)/theta : rh;
-  _rhs = rhs;
-  if(rhs<0)  _rhs = (1.-theta)/theta;
+  _dt     = dt;
+  _theta  = theta;
+  _time   = time;
+  _rhs[0] = oldrhs;
+  _rhs[1] = newrhs;
+  if(oldrhs<0)
+  {
+    _rhs[0] = (1.-theta)/theta;
+    _rhs[1] = 1.;
+  }
 
   GetProblemDescriptor()->SetTime(_time,_dt);
 }
@@ -121,7 +125,7 @@ void StdTimeSolver::TimeRhsOperator(BasicGhostVector& gf, const BasicGhostVector
 
 void StdTimeSolver::TimeRhs(int k, BasicGhostVector& gf) const
 {
-  StdSolver::Rhs(gf,_rhs);
+  StdSolver::Rhs(gf,_rhs[k-1]);
 }
 
 /*-------------------------------------------------------*/

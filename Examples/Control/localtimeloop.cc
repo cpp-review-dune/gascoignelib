@@ -217,7 +217,7 @@ void LocalTimeLoop::forward(string iname, int first, int last, const ProblemDesc
 
       ualt.equ(1.,u);
 
-      GetMultiLevelSolver()->GetSolver()->TimeRhs(1,f);
+      GetMultiLevelSolver()->GetSolver()->TimeRhs(2,f);
 
       SolveTimePrimal(u,f);
       Output(u,"Results/forward");
