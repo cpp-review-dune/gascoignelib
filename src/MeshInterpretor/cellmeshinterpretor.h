@@ -66,7 +66,7 @@ public:
   void Rhs(Gascoigne::GlobalVector& f, const RightHandSideData& RHS, double s) const;
   void DiracRhs(Gascoigne::GlobalVector& f, const RightHandSideData& RHS, double s) const;
   int RhsPoint(Gascoigne::GlobalVector& f, const Functional* F) const;
-  void RhsNeumann(Gascoigne::GlobalVector& f, const Equation& EQ, const Gascoigne::IntSet& Colors,  const NeumannData& NRHS, double s) const;
+  void RhsNeumann(Gascoigne::GlobalVector& f, const Gascoigne::IntSet& Colors,  const NeumannData& NRHS, double s) const;
 
   double PressureFilter(nvector<double>&) const;
 

@@ -171,7 +171,7 @@ void CellMeshInterpretor::Rhs(GlobalVector& f, const RightHandSideData& RHS, dou
 
 /* ----------------------------------------- */
 
-void CellMeshInterpretor::RhsNeumann(GlobalVector& f, const Equation& EQ, const IntSet& Colors,  const NeumannData& NRHS, double s) const
+void CellMeshInterpretor::RhsNeumann(GlobalVector& f, const IntSet& Colors,  const NeumannData& NRHS, double s) const
 {
   nmatrix<double> T;
   

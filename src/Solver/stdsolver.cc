@@ -681,9 +681,8 @@ void StdSolver::Rhs(GlobalVector& f, double d) const
     {
       if(NRHS->GetName()!="zero") 
 	{
-	  const Equation*         EQ   = GetProblemDescriptor()->GetEquation();
 	  const BoundaryManager*  BM   = GetProblemDescriptor()->GetBoundaryManager();
-	  GetMeshInterpretor()->RhsNeumann(f,*EQ,BM->GetNeumannColors(),*NRHS,d);	  
+	  GetMeshInterpretor()->RhsNeumann(f,BM->GetNeumannColors(),*NRHS,d);	  
 	}
     }
  HNDistribute(f);

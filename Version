@@ -1,3 +1,11 @@
+Version 19.04.2003
+===============
+
+* meidner
+1) RhsNeumann verwendet die uebergebene Equation-Refenrenz nicht. Deshalb EQ aus 
+Funktionsprototyp in Interface entfernt.
+
+
 Version 27.02.2004
 ===============
 

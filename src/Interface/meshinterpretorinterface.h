@@ -69,7 +69,7 @@ public:
   virtual void Rhs(Gascoigne::GlobalVector& f, const RightHandSideData& RHS, double s) const { assert(0);};
   virtual void DiracRhs(Gascoigne::GlobalVector& f, const RightHandSideData& RHS, double s) const { assert(0);}
   virtual int RhsPoint(Gascoigne::GlobalVector& f, const Functional* F) const { assert(0); return -1;}
-  virtual void RhsNeumann(Gascoigne::GlobalVector& f, const Equation& EQ, const Gascoigne::IntSet& Colors,  const NeumannData& NRHS, double s) const { assert(0);}
+  virtual void RhsNeumann(Gascoigne::GlobalVector& f, const Gascoigne::IntSet& Colors,  const NeumannData& NRHS, double s) const { assert(0);}
 
 
   virtual void HNAverage   (Gascoigne::GlobalVector& x) const {}
