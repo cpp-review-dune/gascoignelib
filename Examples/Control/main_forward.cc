@@ -22,7 +22,7 @@ int main(int argc, char** argv)
   LPD.BasicInit(paramfile);
 
   LocalTimeLoop loop;
-  loop.BasicInit(paramfile,LPD);
+  loop.BasicInit(paramfile,&LPD);
   loop.forward(name,first,last);
 
   return 0;
