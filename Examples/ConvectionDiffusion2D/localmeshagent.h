@@ -20,12 +20,12 @@ class LocalMeshAgent : public MeshAgent
       Vertex2d v(2.,2.);
       RK.BasicInit(v,r);
 
+      int dim=2;
       int prerefine=3;
       std::string inpname("../NavierStokes2D/nsbench4.inp");
-      std::map<int,BoundaryFunction<2>* > shapes;
-      shapes[80] = &RK;
 
-      BasicInit(inpname,prerefine,shapes);
+      AddShape(80,&RK);
+      BasicInit(dim,inpname,prerefine);
     }
   ~LocalMeshAgent() {}
 };
