@@ -5,6 +5,7 @@ using namespace Gascoigne;
 
 /**********************************************************/
 
+template<>
 void IntegratorWithSecond<2>::point_hesse(const FemInterface& E, const Vertex<2>& v) const
 {
   typedef FiniteElementWithSecond<2, 1, Transformation2d<BaseQ22dWithSecond>, BaseQ22dWithSecond>  FEWithSecond2d;
@@ -16,6 +17,7 @@ void IntegratorWithSecond<2>::point_hesse(const FemInterface& E, const Vertex<2>
 
 /* ----------------------------------------- */
  
+template<>
 void IntegratorWithSecond<3>::point_hesse(const FemInterface& E, const Vertex<3>& v) const
 {
   typedef FiniteElementWithSecond<3, 2, Transformation3d<BaseQ23dWithSecond>, BaseQ23dWithSecond> FEWithSecond3d;
@@ -27,6 +29,7 @@ void IntegratorWithSecond<3>::point_hesse(const FemInterface& E, const Vertex<3>
 
 /* ----------------------------------------- */
 
+template<>
 void IntegratorWithSecond<2>::init_test_hesse(const FemInterface& E, TestFunction& N, double w, int i) const
 {
   typedef FiniteElementWithSecond<2, 1, Transformation2d<BaseQ22dWithSecond>, BaseQ22dWithSecond>  FEWithSecond2d;
@@ -38,6 +41,7 @@ void IntegratorWithSecond<2>::init_test_hesse(const FemInterface& E, TestFunctio
 
 /* ----------------------------------------- */
 
+template<>
 void IntegratorWithSecond<3>::init_test_hesse(const FemInterface& E,TestFunction& N, double w, int i) const
 {
   typedef FiniteElementWithSecond<3, 2, Transformation3d<BaseQ23dWithSecond>, BaseQ23dWithSecond> FEWithSecond3d;
@@ -49,6 +53,7 @@ void IntegratorWithSecond<3>::init_test_hesse(const FemInterface& E,TestFunction
 
 /* ----------------------------------------- */
 
+template<>
 void IntegratorWithSecond<2>::hesse(const FemInterface& E, FemFunction& UH, const LocalVector& U) const
 {
   UH.resize(U.ncomp());
@@ -74,6 +79,7 @@ void IntegratorWithSecond<2>::hesse(const FemInterface& E, FemFunction& UH, cons
 }
 /* ----------------------------------------- */
 
+template<>
 void IntegratorWithSecond<3>::hesse(const FemInterface& E, FemFunction& UH, const LocalVector& U) const
 {
   UH.resize(U.ncomp());

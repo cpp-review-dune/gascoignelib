@@ -1559,7 +1559,7 @@ int HierarchicalMesh2d::regular_grid2d_one(IntSet& celllist,
   int n = 0;
   LineHangList::const_iterator  hp = LineHang.begin();
  
-  for (hp; hp!=LineHang.end(); ++hp)
+  for (; hp!=LineHang.end(); ++hp)
   {
     int cr = hp->second.rneighbour();
     int cn = hp->second.cneighbour();
@@ -1609,7 +1609,7 @@ int HierarchicalMesh2d::regular_grid2d_two(IntSet& celllist,
   int nto = 0;
   IntVector nh(quads.size());
   LineHangList::const_iterator p = LineHang.begin();
-  for (p; p!=LineHang.end(); p++)
+  for (; p!=LineHang.end(); p++)
     {
       int i = p->second.cneighbour();
       if (i<0)                                    continue;

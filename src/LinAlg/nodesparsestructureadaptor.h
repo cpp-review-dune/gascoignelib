@@ -31,7 +31,7 @@ protected:
 public:
 
 
-  NodeSparseStructureAdaptor(int ncomp) : _ncomp(ncomp), SparseStructureAdaptor() {}
+  NodeSparseStructureAdaptor(int ncomp) : SparseStructureAdaptor(), _ncomp(ncomp)  {}
 
   std::string GetName() const {return "Node";}
 

@@ -12,7 +12,7 @@ namespace Gascoigne
 
 TEMPLATE
 inline GMRESSPV::GMRES(SOLVER& A_, PRECONDITIONER& P_, int vm) :
-  H(vm), A(A_), P(P_), gamma(vm+1), ci(vm), si(vm), vmax(vm)
+  H(vm), gamma(vm+1), ci(vm), si(vm), vmax(vm), A(A_), P(P_)
 {   
   left_precondition = 1;
   for(int i=0; i<3; i++)

@@ -212,8 +212,8 @@ int QuadLawAndOrder::local_edge_index(int q, const EdgeVector& edge) const
 
 QuadLawAndOrder::QuadLawAndOrder(vector<Quad>& q) : 
   quads(q),
-  vice(EdgeVector(2)), 
   childs_edge(EdgeVector(2)), 
+  vice(EdgeVector(2)), 
   child_point_cell(4), 
   child_point_vertex(4)
 {

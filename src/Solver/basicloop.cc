@@ -15,7 +15,7 @@ using namespace std;
 
 namespace Gascoigne
 {
-  BasicLoop::BasicLoop() : _paramfile(NULL), _MA(NULL), _ML(NULL), _iter(0), IOM("Results"), _SI(NULL)
+  BasicLoop::BasicLoop() : _MA(NULL), _ML(NULL), _SI(NULL), _iter(0), _paramfile(NULL), IOM("Results") 
 {
   _reload  = "none";
 }

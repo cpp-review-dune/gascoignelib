@@ -12,12 +12,12 @@ NavierStokesGls3d::~NavierStokesGls3d() {}
 
 /*-----------------------------------------*/
 
-NavierStokesGls3d::NavierStokesGls3d() : NavierStokes3d(), GlsEquation() {}
+NavierStokesGls3d::NavierStokesGls3d() : GlsEquation(), NavierStokes3d() {}
 
 /*-----------------------------------------*/
 
 NavierStokesGls3d::NavierStokesGls3d(const ParamFile* pf) 
-  : NavierStokes3d(), GlsEquation()
+  : GlsEquation(), NavierStokes3d() 
 {
   DataFormatHandler DFH;
   DFH.insert("visc" , &_visc , 0.01);

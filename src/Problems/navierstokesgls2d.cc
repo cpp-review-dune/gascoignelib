@@ -14,7 +14,7 @@ NavierStokesGls2d::~NavierStokesGls2d()
 /*-----------------------------------------*/
 
 NavierStokesGls2d::NavierStokesGls2d() 
-  : NavierStokes2d(), GlsEquation()
+  : GlsEquation(), NavierStokes2d() 
 {
   _penalty = 0.; _visc = 0.01;
   
@@ -25,7 +25,7 @@ NavierStokesGls2d::NavierStokesGls2d()
 /*-----------------------------------------*/
 
 NavierStokesGls2d::NavierStokesGls2d(const ParamFile* pf) 
-  : NavierStokes2d(), GlsEquation()
+  : GlsEquation(), NavierStokes2d() 
 {
   DataFormatHandler DFH;
   DFH.insert("visc" , &_visc , 0.01);

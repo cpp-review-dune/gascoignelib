@@ -12,7 +12,7 @@ StokesGls2d::~StokesGls2d()
 
 /*-----------------------------------------*/
 
-StokesGls2d::StokesGls2d() : Stokes2d(), GlsEquation()
+StokesGls2d::StokesGls2d() : GlsEquation(), Stokes2d() 
 {
   _penalty = 0.; 
   _visc = 1.;
@@ -21,7 +21,7 @@ StokesGls2d::StokesGls2d() : Stokes2d(), GlsEquation()
  
 /*-----------------------------------------*/
 
-StokesGls2d::StokesGls2d(const ParamFile* pf) : Stokes2d(), GlsEquation()
+StokesGls2d::StokesGls2d(const ParamFile* pf) : GlsEquation(), Stokes2d() 
 {
   DataFormatHandler DFH;
   DFH.insert("visc" , &_visc , 1.);

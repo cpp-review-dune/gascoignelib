@@ -53,9 +53,9 @@ using namespace std;
 namespace Gascoigne
 {
 StdSolver::StdSolver() : 
-  _MP(NULL), _MAP(NULL), _MIP(NULL), _PDX(NULL), _PrimalSolve(1),
-  //  omega_domain(0.), 
-  _mylevel(-1), _directsolver(0), _ZP(NULL), _paramfile(NULL), _HM(NULL)
+  _MP(NULL), _HM(NULL), _MAP(NULL), _MIP(NULL), _ZP(NULL), _PDX(NULL), 
+  _mylevel(-1), _directsolver(0), _PrimalSolve(1),  _paramfile(NULL) 
+  // , omega_domain(0.) 
 {
 }
 

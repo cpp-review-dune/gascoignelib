@@ -24,7 +24,7 @@ namespace Gascoigne
       bool    exactisknown;
 
     public:
-      Functional() : Application(), exactisknown(0), exact(0.) {}
+      Functional() : Application(), exact(0.), exactisknown(0) {}
       ~Functional() {}
       Functional(const Functional& F) : Application(F) {
         exact = F.ExactValue();

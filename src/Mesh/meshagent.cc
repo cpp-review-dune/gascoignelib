@@ -11,7 +11,7 @@ using namespace std;
 
 namespace Gascoigne
 {
-MeshAgent::MeshAgent() : MeshAgentInterface(), HMP(NULL), GMG(NULL), _dimension(-1)
+MeshAgent::MeshAgent() : MeshAgentInterface(), _dimension(-1), HMP(NULL), GMG(NULL)
 {
 }
 

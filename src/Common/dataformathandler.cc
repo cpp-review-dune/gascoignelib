@@ -422,7 +422,7 @@ void DataFormatHandler::get(string& f, const string& name)
 void DataFormatHandler::print(ostream& s) const
 {
   TypeString::const_iterator p = TS.begin();
-  for (p; p!=TS.end(); p++)
+  for (; p!=TS.end(); p++)
     {
       s << p->first;
       s << "     ";
@@ -430,7 +430,7 @@ void DataFormatHandler::print(ostream& s) const
       s << "\n";
     }
   TypeInt::const_iterator p1 = TI.begin();
-  for (p1; p1!=TI.end(); p1++)
+  for (; p1!=TI.end(); p1++)
     {
       s << p1->first;
       s << "     ";
@@ -438,7 +438,7 @@ void DataFormatHandler::print(ostream& s) const
       s << "\n";
     }
   TypeFloat::const_iterator p2 = TF.begin();
-  for (p2; p2!=TF.end(); p2++)
+  for (; p2!=TF.end(); p2++)
     {
       s << p2->first;
       s << "     ";
@@ -446,7 +446,7 @@ void DataFormatHandler::print(ostream& s) const
       s << "\n";
     }
   TypeDouble::const_iterator p3 = TD.begin();
-  for (p3; p3!=TD.end(); p3++)
+  for (; p3!=TD.end(); p3++)
     {
       s << p3->first;
       s << "     ";
@@ -455,49 +455,49 @@ void DataFormatHandler::print(ostream& s) const
     }
   // no values
   TypeFix2Double::const_iterator p4 = TF2D.begin();
-  for (p4; p4!=TF2D.end(); p4++)
+  for (; p4!=TF2D.end(); p4++)
     {
       s << p4->first;
       s << "\n";
     }
   TypeFix3Double::const_iterator p4a = TF3D.begin();
-  for (p4a; p4a!=TF3D.end(); p4a++)
+  for (; p4a!=TF3D.end(); p4a++)
     {
       s << p4a->first;
       s << "\n";
     }
   TypeVectorDouble::const_iterator p5 = TND.begin();
-  for (p5; p5!=TND.end(); p5++)
+  for (; p5!=TND.end(); p5++)
     {
       s << p5->first;
       s << "\n";
     }
   TypeVectorInt::const_iterator p6 = TNI.begin();
-  for (p6; p6!=TNI.end(); p6++)
+  for (; p6!=TNI.end(); p6++)
     {
       s << p6->first;
       s << "\n";
     }
   TypeVectorString::const_iterator p7 = TVS.begin();
-  for (p7; p7!=TVS.end(); p7++)
+  for (; p7!=TVS.end(); p7++)
     {
       s << p7->first;
       s << "\n";
     }
   TypeMapIntVectorInt::const_iterator p8 = TMINI.begin();
-  for (p8; p8!=TMINI.end(); p8++)
+  for (; p8!=TMINI.end(); p8++)
     {
       s << p8->first;
       s << "\n";
     }
   TypeSetVectorString::const_iterator p9 = TSVS.begin();
-  for (p9; p9!=TSVS.end(); p9++)
+  for (; p9!=TSVS.end(); p9++)
     {
       s << p9->first;
       s << "\n";
     }
   TypeStringDouble::const_iterator p10 = TSD.begin();
-  for (p10; p10!=TSD.end(); p10++)
+  for (; p10!=TSD.end(); p10++)
     {
       s << p10->first;
       s << "\n";

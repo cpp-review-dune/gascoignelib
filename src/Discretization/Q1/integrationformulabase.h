@@ -37,7 +37,7 @@ public:
     ReInit(n);
   } 
   IntegrationFormulaBase<DIM>(const IntegrationFormulaBase<DIM>& IF) 
-    : _iw(IF.w()), _in(IF.n()), _ic(IF.c()) {}
+    : _in(IF.n()), _iw(IF.w()), _ic(IF.c()) {}
  
   int    n()                 const { return _in;}
   double w(int k)            const { return _iw[k];}

@@ -23,6 +23,7 @@ template class EdgeArray<4>;
 
 /*--------------------------------------------------------------*/
 
+template<>
 bool EdgeArray<2>::operator==(const EdgeArray<2>& A) const
 {
   if ( ((*this)[0]!=A[0]) && ((*this)[0]!=A[1]) ) return 0;
@@ -32,6 +33,7 @@ bool EdgeArray<2>::operator==(const EdgeArray<2>& A) const
 
 /*--------------------------------------------------------------*/
 
+template<>
 bool EdgeArray<2>::operator==(const fixarray<2,int>& A) const
 {
   if ( ((*this)[0]!=A[0]) && ((*this)[0]!=A[1]) ) return 0;
@@ -41,6 +43,7 @@ bool EdgeArray<2>::operator==(const fixarray<2,int>& A) const
 
 /*--------------------------------------------------------------*/
 
+template<>
 int EdgeArray<2>::sum() const 
 { 
   return (*this)[0]+(*this)[1];
@@ -48,6 +51,7 @@ int EdgeArray<2>::sum() const
 
 /*--------------------------------------------------------------*/
 
+template<>
 bool EdgeArray<4>::operator==(const EdgeArray<4>& A) const
 {
   if ( ((*this)[0]!=A[0]) && ((*this)[0]!=A[1]) && 
@@ -61,6 +65,7 @@ bool EdgeArray<4>::operator==(const EdgeArray<4>& A) const
 
 /*--------------------------------------------------------------*/
 
+template<>
 bool EdgeArray<4>::operator==(const fixarray<4,int>& A) const
 {
   if ( ((*this)[0]!=A[0]) && ((*this)[0]!=A[1]) && 
@@ -74,6 +79,7 @@ bool EdgeArray<4>::operator==(const fixarray<4,int>& A) const
 
 /*--------------------------------------------------------------*/
 
+template<>
 int EdgeArray<4>::sum() const 
 { 
   return (*this)[0]+(*this)[1]+(*this)[2]+(*this)[3];

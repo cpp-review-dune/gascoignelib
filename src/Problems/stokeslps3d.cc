@@ -10,7 +10,7 @@ StokesLps3d::~StokesLps3d() {}
 /*-----------------------------------------*/
 
 StokesLps3d::StokesLps3d() : 
-  Stokes3d(), LpsEquation()
+  LpsEquation(), Stokes3d() 
 { 
   _penalty = 0.; _visc = 1.;
   
@@ -21,7 +21,7 @@ StokesLps3d::StokesLps3d() :
 /*-----------------------------------------*/
 
 StokesLps3d::StokesLps3d(const ParamFile* filename) : 
-  Stokes3d(), LpsEquation()
+  LpsEquation(), Stokes3d() 
 {
   DataFormatHandler DFH;
   DFH.insert("visc" , &_visc , 0.01);

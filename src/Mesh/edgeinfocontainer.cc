@@ -38,6 +38,7 @@ void EdgeInfoContainer<DIM>::BasicInit(const HierarchicalMesh* HM, int ncomp)
 
 /**********************************************************/
 
+template<>
 void EdgeInfoContainer<2>::ModifyHanging()
 {
   const QuadLawAndOrder& QLAO = dynamic_cast<const HierarchicalMesh2d*>(_HMP)->QuadLawOrder();
@@ -81,6 +82,7 @@ void EdgeInfoContainer<2>::ModifyHanging()
 
 /**********************************************************/
 
+template<>
 void EdgeInfoContainer<3>::ModifyHanging()
 {
   const HexLawAndOrder& HLAO = dynamic_cast<const HierarchicalMesh3d*>(_HMP)->HexLawOrder();

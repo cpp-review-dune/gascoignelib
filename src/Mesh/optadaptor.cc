@@ -12,7 +12,7 @@ namespace Gascoigne
 {
 OptAdaptor::OptAdaptor
 (AdaptorData& inf, DoubleVector& e,const DoubleVector& v) 
-: info(inf), eta(e), vol(v)
+: info(inf), vol(v), eta(e)
 {
   p = info.dim();
   d = 2;

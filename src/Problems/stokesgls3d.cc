@@ -12,13 +12,13 @@ StokesGls3d::~StokesGls3d()
 
 /*-----------------------------------------*/
 
-StokesGls3d::StokesGls3d() : Stokes3d(), GlsEquation()
+StokesGls3d::StokesGls3d() : GlsEquation(), Stokes3d() 
 {
 }
  
 /*-----------------------------------------*/
 
-StokesGls3d::StokesGls3d(const ParamFile* pf) : Stokes3d(), GlsEquation()
+StokesGls3d::StokesGls3d(const ParamFile* pf) : GlsEquation(), Stokes3d() 
 {
   DataFormatHandler DFH;
   DFH.insert("visc" , &_visc , 0.01);

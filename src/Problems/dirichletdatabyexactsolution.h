@@ -18,7 +18,7 @@ protected:
 public:
 
   DirichletDataByExactSolution(const ExactSolution* es) 
-    : ES(es), DirichletData() {assert(es);}
+    : DirichletData(), ES(es)  {assert(es);}
 
   std::string GetName() const {return "ExactSolution";}
   

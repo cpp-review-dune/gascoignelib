@@ -12,7 +12,7 @@ using namespace std;
 
 namespace Gascoigne
 {
-PointIlu::PointIlu(int ncomp, string type) : SimpleIlu(), IluInterface(), _ncomp(ncomp)  
+PointIlu::PointIlu(int ncomp, string type) : IluInterface(), SimpleIlu(), _ncomp(ncomp)  
 {
   if(type=="node")
     {

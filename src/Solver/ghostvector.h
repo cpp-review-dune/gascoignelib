@@ -34,11 +34,11 @@ public:
 ////  Con(De)structor 
 //
 
-  GhostVector() : __S(NULL), BasicGhostVector() {}
-  GhostVector(const std::string& name) : __S(NULL), BasicGhostVector(name) {}
-  GhostVector(const std::string& name, const std::string& type) : __S(NULL), BasicGhostVector(name,type) {}
-  GhostVector(const SolverInterface* S, const std::string& name) : __S(S), BasicGhostVector(name) {}
-  GhostVector(const SolverInterface* S, const std::string& name, const std::string& type) : __S(S), BasicGhostVector(name,type) {}
+  GhostVector() : BasicGhostVector(), __S(NULL) {}
+  GhostVector(const std::string& name) : BasicGhostVector(name), __S(NULL) {}
+  GhostVector(const std::string& name, const std::string& type) : BasicGhostVector(name,type), __S(NULL) {}
+  GhostVector(const SolverInterface* S, const std::string& name) : BasicGhostVector(name), __S(S) {}
+  GhostVector(const SolverInterface* S, const std::string& name, const std::string& type) : BasicGhostVector(name,type), __S(S) {}
   GhostVector(const GhostVector& v) : BasicGhostVector(v) {
     SetSolver(v.GetSolver());
   }

@@ -15,7 +15,7 @@ class OneRightHandSideData : public DomainRightHandSide
 
   public  : 
 
-    OneRightHandSideData(int n) : ncomp(n), DomainRightHandSide() {}
+    OneRightHandSideData(int n) : DomainRightHandSide(), ncomp(n) {}
     std::string GetName() const { return "one" ;} 
     int GetNcomp() const {return ncomp;}
     double operator()(int c, const Vertex2d& v)const {return 1.;}

@@ -7,7 +7,7 @@ namespace Gascoigne
 /*-----------------------------------------*/
 
 NavierStokesLps2d::NavierStokesLps2d(const ParamFile* filename) 
-  : NavierStokes2d(), LpsEquation()
+  : LpsEquation(), NavierStokes2d() 
 {
   DataFormatHandler DFH;
   DFH.insert("visc" , &_visc , 0.01);

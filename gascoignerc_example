@@ -20,7 +20,7 @@ SET(GASCOIGNE_EXECUTABLE_OUTPUT_PATH ".")
 #  the variable CMAKE_BUILD_TYPE which is 
 #  accessible in ccmake
 #
-SET(GASCOIGNE_CXX_FLAGS "" CACHE STRING "Compiler flags for Gascoigne")
+SET(GASCOIGNE_CXX_FLAGS "-ansi -pedantic -Wall -Wno-sign-compare -Wold-style-cast" CACHE STRING "Compiler flags for Gascoigne")
 
 #############################################
 #

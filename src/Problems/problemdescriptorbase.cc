@@ -6,8 +6,8 @@ namespace Gascoigne{
 
 /*------------------------------------------------------------------------------*/
 
-ProblemDescriptorBase::  ProblemDescriptorBase() : EQ(NULL),BM(NULL),ES(NULL),IC(NULL),
-						   RHS(NULL),DD(NULL),BRHS(NULL),BE(NULL),
+ProblemDescriptorBase::  ProblemDescriptorBase() : EQ(NULL),BM(NULL),ES(NULL),RHS(NULL),
+                                                   IC(NULL),DD(NULL),BRHS(NULL),BE(NULL),
 						   _paramfile(NULL) 
 {}
 

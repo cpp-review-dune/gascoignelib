@@ -48,7 +48,7 @@ ostream& operator<<(ostream& os, const Timer& T)
       os.setf(ios::left);
       int l = s[C[i]].size();
       os << setw(TABWIDTH-l) << s[C[i]] <<"  ";
-      os << T.Get(s[C[i]]).GetTime() << "  " << static_cast<int>(100.*x[C[i]]/tt) <<" \%"<<endl;
+      os << T.Get(s[C[i]]).GetTime() << "  " << static_cast<int>(100.*x[C[i]]/tt) <<" %"<<endl;
     }
   os << " ------------------------------------\n";
   os << "   Total       : " << st.GetTime() << endl << endl;

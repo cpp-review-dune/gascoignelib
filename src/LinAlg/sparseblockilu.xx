@@ -11,7 +11,7 @@ namespace Gascoigne
 {
 template<class B>
 SparseBlockIlu<B>::SparseBlockIlu<B>() : 
-  SparseBlockMatrix<B>(),  IluInterface()
+  IluInterface(), SparseBlockMatrix<B>()
 {
   yp = new GlobalVector;
 }
@@ -20,7 +20,7 @@ SparseBlockIlu<B>::SparseBlockIlu<B>() :
 
 template<class B>
 SparseBlockIlu<B>::SparseBlockIlu<B>(const SparseBlockIlu<B>& I) : 
-  SparseBlockMatrix<B>(I),  IluInterface()
+  IluInterface(), SparseBlockMatrix<B>(I)
 {
   yp = new GlobalVector;
 } 

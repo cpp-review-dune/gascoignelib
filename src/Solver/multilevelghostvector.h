@@ -33,10 +33,10 @@ public:
 ////  Con(De)structor 
 //
 
-  MultiLevelGhostVector() : __S(NULL), BasicGhostVector() {}
-  MultiLevelGhostVector(const std::string& name) : __S(NULL), BasicGhostVector(name) {}
-  MultiLevelGhostVector(const std::string& name, const std::string& type) : __S(NULL), BasicGhostVector(name,type) {}
-  MultiLevelGhostVector(const std::string& name, const std::string& type, const MultiLevelSolverInterface* S) : __S(S), BasicGhostVector(name,type) {}
+  MultiLevelGhostVector() : BasicGhostVector(), __S(NULL) {}
+  MultiLevelGhostVector(const std::string& name) : BasicGhostVector(name), __S(NULL) {}
+  MultiLevelGhostVector(const std::string& name, const std::string& type) : BasicGhostVector(name,type), __S(NULL) {}
+  MultiLevelGhostVector(const std::string& name, const std::string& type, const MultiLevelSolverInterface* S) : BasicGhostVector(name,type), __S(S) {}
   MultiLevelGhostVector(const MultiLevelGhostVector& v) : BasicGhostVector(v) {
     SetMultiLevelSolver(v.GetMultiLevelSolver());
   }

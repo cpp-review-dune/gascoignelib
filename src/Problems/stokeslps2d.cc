@@ -11,7 +11,7 @@ StokesLps2d::~StokesLps2d()
 
 /*-----------------------------------------*/
 
-StokesLps2d::StokesLps2d() : Stokes2d(), LpsEquation()
+StokesLps2d::StokesLps2d() :  LpsEquation(), Stokes2d()
 {
   _penalty = 0.; _visc = 1.;
   
@@ -22,7 +22,7 @@ StokesLps2d::StokesLps2d() : Stokes2d(), LpsEquation()
 /*-----------------------------------------*/
 
 StokesLps2d::StokesLps2d(const ParamFile* filename) : 
-  Stokes2d(), LpsEquation()
+  LpsEquation(), Stokes2d()
 {
   DataFormatHandler DFH;
   DFH.insert("visc" , &_visc , 0.01);

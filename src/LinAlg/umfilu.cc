@@ -120,7 +120,7 @@ extern "C" void umfpack_di_defaults
 /* ----------------------------------------- */
 
 UmfIlu::UmfIlu(const MatrixInterface* A) 
-  : SimpleMatrix(), Symbolic(NULL), Numeric(NULL), Control(NULL), Info(NULL)
+  : SimpleMatrix(), Control(NULL), Info(NULL), Symbolic(NULL), Numeric(NULL)
 {
   AP = dynamic_cast<const SimpleMatrix*>(A);
   assert(AP);

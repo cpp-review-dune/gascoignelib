@@ -81,7 +81,7 @@ void StdMultiLevelSolver::ViewProtocoll() const
 /*-------------------------------------------------------------*/
 
 StdMultiLevelSolver::StdMultiLevelSolver() : 
-  _paramfile(NULL), _MAP(NULL), DataP(NULL), MON(NULL),  oldnlevels(-1)
+  _MAP(NULL), oldnlevels(-1), _paramfile(NULL), MON(NULL), DataP(NULL)
 {
 }
 
