@@ -29,6 +29,25 @@ GalerkinIntegrator<DIM>::GalerkinIntegrator<DIM>() : BasicIntegrator()
 /* ----------------------------------------- */
 
 template<int DIM>
+GalerkinIntegrator<DIM>::~GalerkinIntegrator<DIM>()
+{
+  if(FormFormulaPointer())
+  {
+    delete FormFormulaPointer();
+  }
+  if(ErrorFormulaPointer())
+  {
+    delete ErrorFormulaPointer();
+  }
+  if(BoundaryFormulaPointer())
+  {
+    delete BoundaryFormulaPointer();
+  }
+}
+
+/* ----------------------------------------- */
+
+template<int DIM>
 void GalerkinIntegrator<DIM>::Rhs(const DomainRightHandSide& f, LocalVector& F, const FemInterface& FEM, const LocalNodeData& Q) const
 {
   F.ReInit(f.GetNcomp(),FEM.n());

@@ -33,7 +33,7 @@ PointIlu::PointIlu(int ncomp, string type) : SimpleIlu(), IluInterface(), _ncomp
 
 PointIlu::~PointIlu() 
 {
-  if(SSAP==NULL) {delete SSAP; SSAP=NULL;}
+  if(SSAP) {delete SSAP; SSAP=NULL;}
 }
 
 /* ----------------------------------------- */

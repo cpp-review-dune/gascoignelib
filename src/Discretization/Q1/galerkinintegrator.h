@@ -43,7 +43,7 @@ public:
 //
 
   GalerkinIntegrator<DIM>();
-  ~GalerkinIntegrator<DIM>() {}
+  ~GalerkinIntegrator<DIM>();
   
   std::string GetName() const {return "Galerkin";}
 

@@ -34,7 +34,7 @@ PointMatrix::PointMatrix(int ncomp, string type) : MatrixInterface(), _ncomp(nco
 
 PointMatrix::~PointMatrix() 
 {
-  if(SSAP==NULL) {delete SSAP; SSAP=NULL;}
+  if(SSAP) {delete SSAP; SSAP=NULL;}
 }
 
 /* ----------------------------------------- */
