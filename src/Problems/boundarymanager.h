@@ -36,7 +36,7 @@ class BoundaryManager
   BoundaryManager() {}
   virtual ~BoundaryManager() {}
 
-  void BasicInit(const ParamFile* pf);
+  virtual void BasicInit(const ParamFile* pf);
 
   virtual std::string GetName() const {return "Std";}
 
