@@ -704,6 +704,12 @@ void StdSolver::Rhs(GlobalVector& f, double d) const
     {
       if(RHS->GetName()=="DiracRightHandSide")
 	{
+	  cerr << "Use NewDiracRightHandSide\n";
+	  abort();
+	  //GetMeshInterpretor()->DiracRhs(f,*RHS,d);
+	}
+      else  if(RHS->GetName()=="NewDiracRightHandSide")
+	{
 	  GetMeshInterpretor()->DiracRhs(f,*RHS,d);
 	}
       else if(RHS->GetName()!="zero")

@@ -238,7 +238,75 @@ void CellMeshInterpretor::InitFilter(DoubleVector& F) const
 
 void CellMeshInterpretor::DiracRhs(GlobalVector& f, const RightHandSideData& RHS, double s) const
 {
-  assert(0);
+  const NewDiracRightHandSide* DRHS = dynamic_cast<const NewDiracRightHandSide*>(&RHS);
+  assert(DRHS);
+
+  int dim = GetMesh()->dimension();
+  vector<int> comps = DRHS->GetComps();
+  int nn = comps.size();
+
+  vector<double> up(nn,0);
+ 
+  GlobalToGlobalData();
+
+  if (dim == 2)
+    {
+      vector<Vertex2d> v2d = DRHS->GetPoints2d();
+      assert(nn==v2d.size());
+      
+      for(int i=0;i<nn;++i)
+	{
+	  DiracRhsPoint(f,DRHS,v2d[i],i,s);
+	}
+    }
+  else if (dim == 3)
+    {
+      vector<Vertex3d> v3d = DRHS->GetPoints3d();
+      assert(nn==v3d.size());
+      for(int i=0;i<nn;++i)
+	{
+	  DiracRhsPoint(f,DRHS,v3d[i],i,s);
+	}
+    }
+  else
+    {
+      cerr << "wrong dim = " << dim << endl;
+      abort();
+    }
+}
+
+/* ----------------------------------------- */
+
+void CellMeshInterpretor::DiracRhsPoint(GlobalVector& f,const NewDiracRightHandSide* DRHS,const Vertex2d& p0,int i,double s) const
+{
+  __F.ReInit(f.ncomp(),GetFem()->n());
+
+  nvector<Vertex2d> p(8);
+  Vertex2d Tranfo_p0;
+   
+  int iq = GetCellNumber(p0,p);
+  if (iq==-1)
+    {
+      cerr << "DiracRhsPoint point not found\n";
+      abort();
+    }
+
+  VertexTransformation(p,p0,Tranfo_p0);
+
+  nmatrix<double> T;
+  Transformation(T,iq);
+  GetFem()->ReInit(T);
+
+  GetIntegrator()->DiracRhsPoint(__F,*GetFem(),Tranfo_p0,DRHS,i,__Q);
+  LocalToGlobal(f,__F,iq,s);
+}
+
+/* ----------------------------------------- */
+
+void CellMeshInterpretor::DiracRhsPoint(GlobalVector& f,const NewDiracRightHandSide* DRHS,const Vertex3d& p0,int i,double s) const
+{
+  cerr << "CellMeshInterpretor::DiracRhsPoint not written in 3d\n";
+  abort();
 }
 
 /* ----------------------------------------- */

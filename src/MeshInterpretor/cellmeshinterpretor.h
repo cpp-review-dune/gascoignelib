@@ -72,6 +72,9 @@ public:
 
   void Rhs(GlobalVector& f, const RightHandSideData& RHS, double s) const;
   void DiracRhs(GlobalVector& f, const RightHandSideData& RHS, double s) const;
+  void DiracRhsPoint(GlobalVector& f,const NewDiracRightHandSide* DRHS,const Vertex2d& p0,int i,double s) const;
+  void DiracRhsPoint(GlobalVector& f,const NewDiracRightHandSide* DRHS,const Vertex3d& p0,int i,double s) const;
+
   int RhsPoint(GlobalVector& f, const Functional* F) const;
   void RhsNeumann(GlobalVector& f, const IntSet& Colors,  const NeumannData& NRHS, double s) const;
 

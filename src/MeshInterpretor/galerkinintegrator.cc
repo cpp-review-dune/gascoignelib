@@ -213,6 +213,24 @@ void GalerkinIntegrator<DIM>::RhsPoint
 
 /* ----------------------------------------- */
 template<int DIM>
+void GalerkinIntegrator<DIM>::DiracRhsPoint(LocalVector& b, const FemInterface& E, const Vertex<DIM>& p, const NewDiracRightHandSide* DRHS, int j, const LocalNodeData& Q) const
+{
+  b.zero();
+
+  Vertex<DIM> x;
+  E.point(p);     
+  E.x(x);
+  BasicIntegrator::universal_point(E,QH,Q);
+
+  for (int i=0; i<E.n(); i++)
+    {
+      E.init_test_functions(NN,1.,i);
+      DRHS->operator()(j,b.start(i),NN,x);
+    }
+}
+
+/* ----------------------------------------- */
+template<int DIM>
 double GalerkinIntegrator<DIM>::ComputePointValue(const FemInterface& E, const Vertex<DIM>& p, const LocalVector& U, int comp) const
 {
   E.point(p);
