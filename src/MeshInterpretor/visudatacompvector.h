@@ -4,23 +4,20 @@
 #include  "visudata.h"
 #include  "gascoigne.h"
 
-using namespace std;
-using namespace Gascoigne;
-
 /*----------------------------------------------*/
 
 class VisuDataCompVector : public VisuData
 {
  protected:
 
-  const GlobalVector* _v;
+  const Gascoigne::GlobalVector* _v;
 
  public:
 
   VisuDataCompVector();
-  VisuDataCompVector(const GlobalVector& v);
+  VisuDataCompVector(const Gascoigne::GlobalVector& v);
 
-  void SetGlobalVector(const GlobalVector* v);
+  void SetGlobalVector(const Gascoigne::GlobalVector* v);
 
   virtual int    visucomp()     const;
   int    visun()        const;

@@ -1,6 +1,7 @@
 #include  "visudatacompvector.h"
 
 using namespace std;
+using namespace Gascoigne;
 
 /*---------------------------------------------------*/
 

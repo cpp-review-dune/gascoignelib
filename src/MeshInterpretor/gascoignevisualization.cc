@@ -1,5 +1,6 @@
 #include  "gascoignevisualization.h"
 
+using namespace Gascoigne;
 
 /*-----------------------------------------*/
 

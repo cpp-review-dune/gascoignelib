@@ -6,10 +6,6 @@
 #include  "visualization.h"
 #include  "visudatacompvector.h"
 
-
-using namespace std;
-using namespace Gascoigne;
-
 /*-----------------------------------------*/
 
 
@@ -17,7 +13,7 @@ class GascoigneVisualization : public Visualization
 {
 private:
 
-  const GlobalVector* _v;
+  const Gascoigne::GlobalVector* _v;
 
   VisuDataInfo        VDI;
   VisuDataCompVector  VD;
@@ -27,7 +23,7 @@ public:
 
   GascoigneVisualization() : Visualization(), _v(NULL) {}
 
-  void AddVector(const GlobalVector* v);
+  void AddVector(const Gascoigne::GlobalVector* v);
 
 
 };
