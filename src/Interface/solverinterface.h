@@ -61,6 +61,9 @@ class SolverInterface
   virtual void AddNodeVector(const Gascoigne::GlobalVector* q) {assert(0);}
   virtual void AddCellVector(const Gascoigne::GlobalVector* q) {assert(0);}
   virtual void AddParameterVector(const Gascoigne::GlobalVector* q) {assert(0);}
+  virtual void DeleteNodeVector(const Gascoigne::GlobalVector* q)  {assert(0);}
+  virtual void DeleteCellVector(const Gascoigne::GlobalVector* q) {assert(0);}
+  virtual void DeleteParameterVector(const Gascoigne::GlobalVector* q) {assert(0);}
 
   //
   /// vector - manamgement
