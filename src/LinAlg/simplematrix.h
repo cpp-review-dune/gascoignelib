@@ -55,6 +55,7 @@ public:
     void dirichlet(const nvector<int>& indices);
 
     void transpose();
+    void entry_diag(int i, const nmatrix<double>& M);
 };
 
 

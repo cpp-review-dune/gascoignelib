@@ -74,7 +74,7 @@ void StdTimeLoop::adaptive_run(const ProblemDescriptorInterface* PD)
       if (_iter==1) 
 	{
 	  GetMultiLevelSolver()->GetSolver()->OutputSettings();
-	  L2Projection(u,f);
+	  InitSolution(u,f);
 	}
       TimeInfoBroadcast();
 
@@ -107,13 +107,20 @@ void StdTimeLoop::TimeInfoBroadcast()
 
 /*-------------------------------------------------*/
 
-void StdTimeLoop::L2Projection(MultiLevelGhostVector& u, MultiLevelGhostVector& f)
+void StdTimeLoop::InitSolution(MultiLevelGhostVector& u, MultiLevelGhostVector& f)
 {
-  StdTimeSolver* TS = dynamic_cast<StdTimeSolver*>(GetMultiLevelSolver()->GetSolver());
-  assert(TS);
-  f.zero();
-  TS->RhsL2Projection(f,u);
-  TS->L2Projection(u,f);
+  if (_initial=="analytic") 
+    {
+      StdTimeSolver* TS = dynamic_cast<StdTimeSolver*>(GetMultiLevelSolver()->GetSolver());
+      assert(TS);
+      f.zero();
+      TS->RhsL2Projection(f);
+      TS->L2Projection(u,f);
+    }
+  else
+    {
+      BasicLoop::InitSolution(u);
+    }
 }
 
 /*-------------------------------------------------*/
@@ -138,8 +145,7 @@ void StdTimeLoop::run(const ProblemDescriptorInterface* PD)
   GetMultiLevelSolver()->GetSolver()->OutputSettings();
   
   // Anfangswerte
-  InitSolution(u);
-  //  L2Projection(u,f);
+  InitSolution(u,f);
   
   GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(u);
   GetMultiLevelSolver()->GetSolver()->Visu("Results/solve",u,0);

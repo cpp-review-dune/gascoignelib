@@ -88,7 +88,7 @@ void LocalTimeLoop::init(string name, int iter, const ProblemDescriptorInterface
   assert(TSS);
   
   // Anfangswerte
-  L2Projection(u,f);
+  InitSolution(u,f);
   
   GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(u);
   _iter=iter;

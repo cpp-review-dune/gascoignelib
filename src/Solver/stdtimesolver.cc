@@ -151,16 +151,14 @@ void StdTimeSolver::AssembleMatrix(BasicGhostVector& gu, double d)
 
 /*-------------------------------------------------------*/
 
-void StdTimeSolver::RhsL2Projection(BasicGhostVector& f, const BasicGhostVector& u) const
+void StdTimeSolver::RhsL2Projection(BasicGhostVector& f) const
 {
-  HNAverage(u); 
   const InitialCondition* IC  = GetProblemDescriptor()->GetInitialCondition();
   if(IC==NULL) return;
 
   GetMeshInterpretor()->Rhs(GetGV(f),*IC,1.);
 
   HNDistribute(f);
-  HNZero(u);
 }
 
 /*-------------------------------------------------------*/

@@ -14,7 +14,6 @@ protected:
   TimeInfo    info;
   std::string SolveTimePrimal(MultiLevelGhostVector& u, MultiLevelGhostVector& f, std::string name="Results/solve");
 
-  void L2Projection(MultiLevelGhostVector& u, MultiLevelGhostVector& f);
   void TimeInfoBroadcast();
 
 public:
@@ -22,6 +21,7 @@ public:
   StdTimeLoop() : StdLoop() {}
 
   void BasicInit(const Gascoigne::ParamFile* paramfile);
+  void InitSolution(MultiLevelGhostVector& u, MultiLevelGhostVector& f);
 
   void run(const ProblemDescriptorInterface* PD);
   void adaptive_run(const ProblemDescriptorInterface* PD);

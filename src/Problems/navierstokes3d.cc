@@ -94,12 +94,12 @@ void NavierStokes3d::Matrix
   A(2,2) += GascoigneMath::max(U[2].y()*MN, -tau);
   A(3,3) += GascoigneMath::max(U[3].z()*MN, -tau);
 
-//   A(1,2) += GascoigneMath::min(U[1].y()*MN, tau);
-//   A(1,3) += GascoigneMath::min(U[1].z()*MN, tau);
-//   A(2,1) += GascoigneMath::min(U[2].x()*MN, tau);
-//   A(2,3) += GascoigneMath::min(U[2].z()*MN, tau);
-//   A(3,1) += GascoigneMath::min(U[3].x()*MN, tau);
-//   A(3,2) += GascoigneMath::min(U[3].y()*MN, tau);
+  A(1,2) += GascoigneMath::min(U[1].y()*MN, tau);
+  A(1,3) += GascoigneMath::min(U[1].z()*MN, tau);
+  A(2,1) += GascoigneMath::min(U[2].x()*MN, tau);
+  A(2,3) += GascoigneMath::min(U[2].z()*MN, tau);
+  A(3,1) += GascoigneMath::min(U[3].x()*MN, tau);
+  A(3,2) += GascoigneMath::min(U[3].y()*MN, tau);
 }
 
 /*-----------------------------------------*/
