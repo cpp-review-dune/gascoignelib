@@ -12,33 +12,43 @@ class Monitoring
  protected:
 
   std::vector<DoubleVector > Juh, Je;
-  DoubleVector          eta, nnodes, ncells;
-  DoubleVector          Ju;
-  int                      niter;
+  DoubleVector               eta, nnodes, ncells;
+  DoubleVector               Ju;
+  int                        niter;
+  int                        _i_show_status_on_destruct;
 
  public:
 
-  Monitoring() {}
+  Monitoring() {
+    _i_show_status_on_destruct = 1;
+  }
   ~Monitoring() 
     {
-      std::cout << "Monitor" << std::endl;
-      std::cout << "----------------------------------" << std::endl;
-      std::cout << "-- nn   nc   j   eta   je   eff --" << std::endl;
-      std::cout << "----------------------------------" << std::endl;
-      for (int i=0; i<Juh.size(); i++)
+      if(_i_show_status_on_destruct)
         {
-          std::cout << nnodes[i] << " ";
-          std::cout << ncells[i] << " ";
-          std::cout << Juh[i] << " ";
-          std::cout << eta[i] << " ";
-          std::cout << Je[i] << " ";
-          std::cout << eff(i) << std::endl;
+          std::cout << "Monitor" << std::endl;
+          std::cout << "----------------------------------" << std::endl;
+          std::cout << "-- nn   nc   j   eta   je   eff --" << std::endl;
+          std::cout << "----------------------------------" << std::endl;
+          for (int i=0; i<Juh.size(); i++)
+            {
+              std::cout << nnodes[i] << " ";
+              std::cout << ncells[i] << " ";
+              std::cout << Juh[i] << " ";
+              std::cout << eta[i] << " ";
+              std::cout << Je[i] << " ";
+              std::cout << eff(i) << std::endl;
+            }
+          std::cout << "----------------------------------" << std::endl;
         }
-      std::cout << "----------------------------------" << std::endl;
     }
   void BasicInit(const DoubleVector& ju) 
     { 
       Ju = ju; 
+    }
+  void ShowStatusOnDestruct(int i_showvalue)
+    {
+      _i_show_status_on_destruct = i_showvalue;
     }
   void SetMeshInformation(int iter, int nodes, int cells)
     {
