@@ -126,7 +126,6 @@ class StdSolver : public virtual SolverInterface
   double ComputeDomainFunctional(GlobalVector& f, const GlobalVector& u, GlobalVector& z, const DomainFunctional* FP) const;
     double ComputePointFunctional(GlobalVector& f, const GlobalVector& u, GlobalVector& z, const PointFunctional* NFP) const;
     
-  void SetBoundaryVectorStrong(GlobalVector& f, const BoundaryManager& BM, const DirichletData& DD) const;
   virtual void smooth(int niter, GlobalVector& x, const GlobalVector& y, GlobalVector& h) const;
   void SubtractMean(GlobalVector& gx) const;
   void SubtractMeanAlgebraic(GlobalVector& gx) const;
@@ -259,6 +258,7 @@ class StdSolver : public virtual SolverInterface
   void SetBoundaryVector(BasicGhostVector& f) const;
   void SetBoundaryVectorZero(BasicGhostVector& Gf) const;
   void SetBoundaryVectorZero(GlobalVector& f) const;
+  void SetBoundaryVectorStrong(GlobalVector& f, const BoundaryManager& BM, const DirichletData& DD) const;
 
   //
   /// vector - linear algebra
