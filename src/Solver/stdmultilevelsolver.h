@@ -1,15 +1,5 @@
 #ifndef  __StdMultiLevelSolver_h
 #define  __StdMultiLevelSolver_h
-//////////////////////////////////////////////
-///
-///@brief
-/// Default nonlinear MultilevelSolver
-
-/// - stores MultiGridMeshInterace
-/// - stores array of MGInterpolator
-/// - stores array of SolverInterface
-///
-//////////////////////////////////////////////
 
 #include  "multilevelsolverinterface.h"
 #include  "stdmultilevelsolverdata.h"
@@ -23,6 +13,18 @@
 
 namespace Gascoigne
 {
+
+//////////////////////////////////////////////
+///
+///@brief
+/// Default nonlinear MultilevelSolver
+
+/// - stores MultiGridMeshInterace
+/// - stores array of MGInterpolator
+/// - stores array of SolverInterface
+///
+//////////////////////////////////////////////
+
 class StdMultiLevelSolver : public MultiLevelSolverInterface
 {
   private :

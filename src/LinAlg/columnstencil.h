@@ -1,6 +1,13 @@
 #ifndef  __ColumnStencil_h
 #define  __ColumnStencil_h
 
+#include  "stencilinterface.h"
+#include  "sparsestructureinterface.h"
+#include  "gascoigne.h"
+
+
+namespace Gascoigne
+{
 
 /////////////////////////////////////////////
 ////
@@ -11,12 +18,6 @@
 ////
 /////////////////////////////////////////////
 
-#include  "stencilinterface.h"
-#include  "sparsestructureinterface.h"
-#include  "gascoigne.h"
-
-namespace Gascoigne
-{
 class ColumnStencil : public virtual StencilInterface
 {
 private:

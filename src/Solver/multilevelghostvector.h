@@ -1,6 +1,12 @@
 #ifndef  __MultiLevelGhostVector_h
 #define  __MultiLevelGhostVector_h
 
+#include  "basicghostvector.h"
+#include  "multilevelsolverinterface.h"
+
+
+namespace Gascoigne
+{
 
 /////////////////////////////////////////////
 ////
@@ -11,11 +17,6 @@
 ////
 /////////////////////////////////////////////
 
-#include  "basicghostvector.h"
-#include  "multilevelsolverinterface.h"
-
-namespace Gascoigne
-{
 class MultiLevelGhostVector : public BasicGhostVector
 {
 private:

@@ -17,6 +17,11 @@
 #include  "multilevelghostvector.h"
 #include  "solverinfos.h"
 
+/*-----------------------------------------*/
+
+namespace Gascoigne
+{
+
 //////////////////////////////////////////////
 //
 ///@brief
@@ -26,10 +31,6 @@
 ///
 //////////////////////////////////////////////
 
-/*-----------------------------------------*/
-
-namespace Gascoigne
-{
 class BasicLoop
 {
 private:

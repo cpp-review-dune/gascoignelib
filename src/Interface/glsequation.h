@@ -3,19 +3,19 @@
 
 #include "equation.h"
 
-//////////////////////////////////////////////
-//
-///@brief
-/// Interface class for  Elements
-
-///
-///
-//////////////////////////////////////////////
-
-/*-----------------------------------------*/
 
 namespace Gascoigne
 {
+  
+  //////////////////////////////////////////////
+  //
+  ///@brief
+  /// Interface class for  Elements
+
+  ///
+  ///
+  //////////////////////////////////////////////
+  
   class GlsEquation : public virtual Equation
   {
     public:

@@ -43,7 +43,7 @@ bool LevelMesh2d::EdgeIsHangingGlobalIndex(int i) const
 
 /*---------------------------------------------------*/
 
-void LevelMesh2d::BasicInit(const set<int>& newq, const set<int>& oldq) 
+void LevelMesh2d::BasicInit(const IntSet& newq, const IntSet& oldq) 
 {
   // doch sortiert
 

@@ -2,15 +2,6 @@
 #define  __MeshInterpretorInterface_h
 
 
-/////////////////////////////////////////////
-///
-///@brief
-///  ... comments MeshInterpretorInterface
-
-///
-///
-/////////////////////////////////////////////
-
 #include  <string>
 #include  "meshinterface.h"
 #include  "gascoigne.h"
@@ -32,6 +23,16 @@
 
 namespace Gascoigne
 {
+  
+  /////////////////////////////////////////////
+  ///
+  ///@brief
+  ///  ... comments MeshInterpretorInterface
+
+  ///
+  ///
+  /////////////////////////////////////////////
+
   class MeshInterpretorInterface
   {
     private:

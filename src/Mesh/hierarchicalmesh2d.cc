@@ -871,14 +871,14 @@ void HierarchicalMesh2d::post_refine2d()
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh2d::new_edge_vertex2d(int nv, const fixarray<2,int>& v)
+void HierarchicalMesh2d::new_edge_vertex2d(int nv, const EdgeVector& v)
 {
   vertexs2d[nv].equ(0.5, vertexs2d[v[0]], 0.5, vertexs2d[v[1]]);
 }
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh2d::new_face_vertex2d(int nv, const fixarray<4,int>& v)
+void HierarchicalMesh2d::new_face_vertex2d(int nv, const FaceVector& v)
 {
   vertexs2d[nv].equ(0.25, vertexs2d[v[0]], 0.25, vertexs2d[v[1]],
 		    0.25, vertexs2d[v[2]], 0.25, vertexs2d[v[3]]);

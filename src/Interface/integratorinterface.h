@@ -2,15 +2,6 @@
 #define  __IntegratorInterface_h
 
 
-/////////////////////////////////////////////
-///
-///@brief
-///  ... comments IntegratorInterface
-
-///
-///
-/////////////////////////////////////////////
-
 #include  "gascoigne.h"
 #include  "equation.h"
 #include  "exactsolution.h"
@@ -24,6 +15,16 @@
 
 namespace Gascoigne
 {
+  
+  /////////////////////////////////////////////
+  ///
+  ///@brief
+  ///  ... comments IntegratorInterface
+
+  ///
+  ///
+  /////////////////////////////////////////////
+
   class IntegratorInterface
   {
     private:

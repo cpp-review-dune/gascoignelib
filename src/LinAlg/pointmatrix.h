@@ -1,6 +1,14 @@
 #ifndef  __PointMatrix_h
 #define  __PointMatrix_h
 
+#include  "matrixinterface.h"
+#include  "simplematrix.h"
+#include  "sparsestructureadaptor.h"
+#include  "mginterpolatormatrix.h"
+
+namespace Gascoigne
+{
+
 /////////////////////////////////////////////
 ///
 ///@brief
@@ -10,13 +18,6 @@
 ///
 /////////////////////////////////////////////
 
-#include  "matrixinterface.h"
-#include  "simplematrix.h"
-#include  "sparsestructureadaptor.h"
-#include  "mginterpolatormatrix.h"
-
-namespace Gascoigne
-{
 class PointMatrix : public SimpleMatrix, virtual public MatrixInterface
 {
 protected:

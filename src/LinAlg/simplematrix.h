@@ -1,6 +1,15 @@
 #ifndef  __SimpleMatrix_h
 #define  __SimpleMatrix_h
 
+#include  "matrixinterface.h"
+#include  "columndiagstencil.h"
+#include  "sparsestructureadaptor.h"
+#include  "compvector.h"
+
+
+namespace Gascoigne
+{
+
 /////////////////////////////////////////////
 ///
 ///@brief
@@ -10,13 +19,6 @@
 ///
 /////////////////////////////////////////////
 
-#include  "matrixinterface.h"
-#include  "columndiagstencil.h"
-#include  "sparsestructureadaptor.h"
-#include  "compvector.h"
-
-namespace Gascoigne
-{
 class SimpleMatrix : virtual public MatrixInterface
 {
 protected:

@@ -1,6 +1,11 @@
 #ifndef  __SimpleSparseStructureAdaptor_h
 #define  __SimpleSparseStructureAdaptor_h
 
+#include  "sparsestructureadaptor.h"
+
+
+namespace Gascoigne
+{
 
 /////////////////////////////////////////////
 ///
@@ -11,10 +16,6 @@
 ///
 /////////////////////////////////////////////
 
-#include  "sparsestructureadaptor.h"
-
-namespace Gascoigne
-{
 class SimpleSparseStructureAdaptor : public SparseStructureAdaptor
 {
 public:

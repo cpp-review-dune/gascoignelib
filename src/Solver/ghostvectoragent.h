@@ -1,6 +1,15 @@
 #ifndef  __GhostVectorAgent_h
 #define  __GhostVectorAgent_h
 
+#include  <string>
+#include  "gascoigne.h"
+#include  "ghostvector.h"
+#include  "stlio.h"
+
+
+namespace Gascoigne
+{
+
 /////////////////////////////////////////////
 ////
 ////@brief
@@ -10,13 +19,6 @@
 ////
 /////////////////////////////////////////////
 
-#include  <string>
-#include  "gascoigne.h"
-#include  "ghostvector.h"
-#include  "stlio.h"
-
-namespace Gascoigne
-{
 class GhostVectorAgent : public std::map<GhostVector,GlobalVector*>
 {
 public:

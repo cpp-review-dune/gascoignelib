@@ -2,15 +2,6 @@
 #define  __HNStructureInterface_h
 
 
-/////////////////////////////////////////////
-////
-////@brief
-////  ... comments HNStructureInterface
-
-////
-////
-/////////////////////////////////////////////
-
 #include  "gascoigne.h"
 #include  "meshinterface.h"
 #include  "matrixinterface.h"
@@ -20,6 +11,16 @@
 
 namespace Gascoigne
 {
+  
+  /////////////////////////////////////////////
+  ////
+  ////@brief
+  ////  ... comments HNStructureInterface
+
+  ////
+  ////
+  /////////////////////////////////////////////
+
   class HNStructureInterface
   {
     private:

@@ -2,21 +2,22 @@
 #define  __DomainFunctional_h
 
 
-/////////////////////////////////////////////
-///
-///@brief
-///  ... comments DomainFunctional
-
-///
-///
-/////////////////////////////////////////////
-
 #include  "functional.h"
 #include  "gascoigne.h"
 #include  "vertex.h"
 
 namespace Gascoigne
 {
+  
+  /////////////////////////////////////////////
+  ///
+  ///@brief
+  ///  ... comments DomainFunctional
+
+  ///
+  ///
+  /////////////////////////////////////////////
+
   class DomainFunctional : public virtual Functional
   {
     private:

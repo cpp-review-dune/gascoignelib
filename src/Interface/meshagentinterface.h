@@ -2,15 +2,6 @@
 #define  __MeshAgentInterface_h
 
 
-/////////////////////////////////////////////
-////
-////@brief
-////  ... comments MeshAgentInterface
-
-////
-////
-/////////////////////////////////////////////
-
 #include  "meshinterface.h"
 #include  "multigridmeshinterface.h"
 #include  "meshtransferinterface.h"
@@ -19,6 +10,16 @@
 
 namespace Gascoigne
 {
+  
+  /////////////////////////////////////////////
+  ////
+  ////@brief
+  ////  ... comments MeshAgentInterface
+
+  ////
+  ////
+  /////////////////////////////////////////////
+
   class MeshAgentInterface
   {
     private:

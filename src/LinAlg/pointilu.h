@@ -1,6 +1,14 @@
 #ifndef  __PointIlu_h
 #define  __PointIlu_h
 
+#include  "iluinterface.h"
+#include  "simpleilu.h"
+#include  "sparsestructureadaptor.h"
+
+
+namespace Gascoigne
+{
+
 /////////////////////////////////////////////
 ///
 ///@brief
@@ -10,12 +18,6 @@
 ///
 /////////////////////////////////////////////
 
-#include  "iluinterface.h"
-#include  "simpleilu.h"
-#include  "sparsestructureadaptor.h"
-
-namespace Gascoigne
-{
 class PointIlu : public SimpleIlu, virtual public IluInterface
 {
 protected:

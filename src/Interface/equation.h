@@ -5,19 +5,21 @@
 #include  "vertex.h"
 #include  "application.h"
 
-//////////////////////////////////////////////
-///
-///@brief
-/// Interface class for Equation
-
-///
-///
-//////////////////////////////////////////////
 
 /*-------------------------------------------------------------------------*/
 
 namespace Gascoigne
 {
+  
+  //////////////////////////////////////////////
+  ///
+  ///@brief
+  /// Interface class for Equation
+
+  ///
+  ///
+  //////////////////////////////////////////////
+  
   class Equation : public virtual Application
   {
     private:

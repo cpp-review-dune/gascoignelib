@@ -79,7 +79,7 @@ public:
   void insert(const std::string&, IntVector*);
   void insert(const std::string&, std::vector<std::string>*);
 
-  void insert(const std::string&, std::set<int>*);
+  void insert(const std::string&, IntSet*);
   void insert(const std::string&, std::set<std::vector<std::string> >*);
 
   void insert(const std::string&, std::map<int,IntVector >*);
@@ -113,7 +113,7 @@ public:
   void setvalue(const std::string&, IntVector&);
   void setvalue(const std::string&, std::vector<std::string>&);
 
-  void setvalue(const std::string&, std::set<int>&);
+  void setvalue(const std::string&, IntSet&);
 
   void setvalue(const std::string&, std::pair<int,IntVector >&);
 

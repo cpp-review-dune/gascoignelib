@@ -88,7 +88,7 @@ void PointMatrix::entry_diag(int i, const nmatrix<double>& M)
 
 /*-----------------------------------------*/
 
-void PointMatrix::entry(const IntVector::const_iterator start, const IntVector::const_iterator stop, const EntryMatrix& M, double s)
+void PointMatrix::entry(niiterator start, niiterator stop, const EntryMatrix& M, double s)
 {
   int n = stop-start;
 

@@ -7,22 +7,23 @@
 #include  <string>
 #include  "application.h"
 
-//////////////////////////////////////////////
-///
-///@brief
-/// Interface class for Dirichlet Boundary Conditions
-
-/// void operator()(Vector& b, const Vertex2d& v, int col)
-/// gets the coordinate v and color of boundarypart "col" and 
-/// sets the values of b. b is a vector of length ncomp
-///
-//////////////////////////////////////////////
-
 
 /*-----------------------------------------*/
 
 namespace Gascoigne
 {
+
+  //////////////////////////////////////////////
+  ///
+  ///@brief
+  /// Interface class for Dirichlet Boundary Conditions
+
+  /// void operator()(Vector& b, const Vertex2d& v, int col)
+  /// gets the coordinate v and color of boundarypart "col" and 
+  /// sets the values of b. b is a vector of length ncomp
+  ///
+  //////////////////////////////////////////////
+
   class DirichletData : public virtual Application
   {
     private:

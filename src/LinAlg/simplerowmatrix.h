@@ -1,6 +1,11 @@
 #ifndef  __SimpleRowMatrix_h
 #define  __SimpleRowMatrix_h
 
+#include  "matrixinterface.h"
+#include  "rowcolumnstencil.h"
+
+namespace Gascoigne
+{
 
 /////////////////////////////////////////////
 ////
@@ -11,11 +16,6 @@
 ////
 /////////////////////////////////////////////
 
-#include  "matrixinterface.h"
-#include  "rowcolumnstencil.h"
-
-namespace Gascoigne
-{
 class SimpleRowMatrix : virtual public MatrixInterface
 {
 private:

@@ -13,18 +13,19 @@
 #include  "exactsolution.h"
 #include  "boundarymanager.h"
 
-/////////////////////////////////////////////
-///
-///@brief
-///  ... comments ProblemDescriptorInterface
-
-///
-///
-/////////////////////////////////////////////
-
 
 namespace Gascoigne
 {
+  
+  /////////////////////////////////////////////
+  ///
+  ///@brief
+  ///  ... comments ProblemDescriptorInterface
+
+  ///
+  ///
+  /////////////////////////////////////////////
+
   class ProblemDescriptorInterface
   {
     private:

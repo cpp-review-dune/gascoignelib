@@ -1,6 +1,16 @@
 #ifndef  __boundarymanager_h
 #define  __boundarymanager_h
 
+#include  <map>
+#include  <string>
+#include  "stlio.h"
+#include  "gascoigne.h"
+#include  "paramfile.h"
+
+
+namespace Gascoigne
+{
+
 //////////////////////////////////////////////
 //
 ///@brief
@@ -14,16 +24,6 @@
 //
 //////////////////////////////////////////////
 
-#include  <map>
-#include  <string>
-#include  "stlio.h"
-#include  "gascoigne.h"
-#include  "paramfile.h"
-
-/*---------------------------------------------------------------*/
-
-namespace Gascoigne
-{
 class BoundaryManager
 {
  public:

@@ -1,7 +1,13 @@
 #ifndef  __SparseStructureAdaptor_h
 #define  __SparseStructureAdaptor_h
 
+#include  "columndiagstencil.h"
+#include  "sparsestructure.h"
+#include  <string>
 
+
+namespace Gascoigne
+{
 
 /////////////////////////////////////////////
 ///
@@ -12,13 +18,6 @@
 ///
 /////////////////////////////////////////////
 
-
-#include  "columndiagstencil.h"
-#include  "sparsestructure.h"
-#include  <string>
-
-namespace Gascoigne
-{
 class SparseStructureAdaptor
 {
 public:

@@ -5,6 +5,11 @@
 #include  "adaptordata.h"
 #include  "basicloop.h"
 
+/*-----------------------------------------*/
+
+namespace Gascoigne
+{
+
 //////////////////////////////////////////////
 //
 ///@brief
@@ -14,10 +19,6 @@
 ///
 //////////////////////////////////////////////
 
-/*-----------------------------------------*/
-
-namespace Gascoigne
-{
 class StdLoop : public BasicLoop
 {
 private:

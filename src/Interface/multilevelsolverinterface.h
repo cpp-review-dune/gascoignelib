@@ -2,15 +2,6 @@
 #define  __MultiLevelSolverInterface_h
 
 
-/////////////////////////////////////////////
-///
-///@brief
-///  ... comments MultiLevelSolverInterface
-
-///
-///
-/////////////////////////////////////////////
-
 #include  "meshagentinterface.h"
 #include  "solverinterface.h"
 #include  "monitor.h"
@@ -19,6 +10,16 @@
 
 namespace Gascoigne
 {
+  
+  /////////////////////////////////////////////
+  ///
+  ///@brief
+  ///  ... comments MultiLevelSolverInterface
+
+  ///
+  ///
+  /////////////////////////////////////////////
+
   class MultiLevelGhostVector;
 
   class MultiLevelSolverInterface

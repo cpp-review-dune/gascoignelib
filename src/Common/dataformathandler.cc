@@ -355,7 +355,7 @@ void DataFormatHandler::setvalue(const string& name, pair<int, IntVector >& valu
     }  
 }
 
-void DataFormatHandler::setvalue(const string& name, pair<string,double>& value)
+void DataFormatHandler::setvalue(const string& name, StringDouble& value)
 {
   TypeStringDouble::const_iterator p;
   p = TSD.find(name);

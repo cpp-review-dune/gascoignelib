@@ -3,18 +3,18 @@
 
 #include "equation.h"
 
-//////////////////////////////////////////////
-//
-///@brief
-/// Interface class for Lps Elements
-///
-///
-//////////////////////////////////////////////
-
-/*-----------------------------------------*/
 
 namespace Gascoigne
 {
+  
+  //////////////////////////////////////////////
+  //
+  ///@brief
+  /// Interface class for Lps Elements
+  ///
+  ///
+  //////////////////////////////////////////////
+
   class LpsEquation : public virtual Equation
   {
     private:

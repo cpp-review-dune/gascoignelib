@@ -1,6 +1,12 @@
 #ifndef  __GhostVector_h
 #define  __GhostVector_h
 
+#include  "basicghostvector.h"
+#include  "gascoigne.h"
+#include  "solverinterface.h"
+
+namespace Gascoigne
+{
 
 /////////////////////////////////////////////
 ////
@@ -12,12 +18,6 @@
 ////
 /////////////////////////////////////////////
 
-#include  "basicghostvector.h"
-#include  "gascoigne.h"
-#include  "solverinterface.h"
-
-namespace Gascoigne
-{
 class GhostVector : public BasicGhostVector
 {
 private:

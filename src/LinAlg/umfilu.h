@@ -3,6 +3,13 @@
 
 #ifdef __WITH_UMFPACK__
 
+#include  "iluinterface.h"
+#include  "simplematrix.h"
+
+
+namespace Gascoigne
+{
+
 /////////////////////////////////////////////
 ///
 ///@brief
@@ -10,12 +17,6 @@
 ///
 ///
 /////////////////////////////////////////////
-
-#include  "iluinterface.h"
-#include  "simplematrix.h"
-
-namespace Gascoigne
-{
 
 class UmfIlu : virtual public IluInterface, public SimpleMatrix
 {

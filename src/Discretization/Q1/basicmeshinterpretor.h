@@ -1,6 +1,14 @@
 #ifndef  __BasicMeshInterpretor_h
 #define  __BasicMeshInterpretor_h
 
+
+#include  "meshinterpretorinterface.h"
+#include  "feminterface.h"
+#include  "integratorinterface.h"
+
+namespace Gascoigne
+{
+
 /////////////////////////////////////////////
 ///
 ///@brief
@@ -10,13 +18,6 @@
 ///
 /////////////////////////////////////////////
 
-
-#include  "meshinterpretorinterface.h"
-#include  "feminterface.h"
-#include  "integratorinterface.h"
-
-namespace Gascoigne
-{
 class BasicMeshInterpretor : public MeshInterpretorInterface
 {
  private:

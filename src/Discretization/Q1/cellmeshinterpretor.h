@@ -2,9 +2,10 @@
 #define  __CellMeshInterpretor_h
 
 #include  "basicmeshinterpretor.h"
-
 #include  "hierarchicalmesh.h"
 
+namespace Gascoigne
+{
 
 /////////////////////////////////////////////
 ///
@@ -14,8 +15,6 @@
 ///
 /////////////////////////////////////////////
 
-namespace Gascoigne
-{
 class CellMeshInterpretor : public BasicMeshInterpretor
 {
 protected:

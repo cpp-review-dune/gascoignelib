@@ -1,6 +1,12 @@
 #ifndef  __BasicGhostVector_h
 #define  __BasicGhostVector_h
 
+#include  <string>
+#include  <iostream>
+
+
+namespace Gascoigne
+{
 
 /////////////////////////////////////////////
 ////
@@ -11,11 +17,6 @@
 ////
 /////////////////////////////////////////////
 
-#include  <string>
-#include  <iostream>
-
-namespace Gascoigne
-{
 class BasicGhostVector : public std::string
 {
 private:

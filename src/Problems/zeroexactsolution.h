@@ -1,7 +1,11 @@
 #ifndef  __ZeroExactSolution_h
 #define  __ZeroExactSolution_h
 
+#include  "exactsolution.h"
 
+
+namespace Gascoigne
+{
 
 /////////////////////////////////////////////
 ///
@@ -12,12 +16,6 @@
 ///
 /////////////////////////////////////////////
 
-
-#include  "exactsolution.h"
-
-
-namespace Gascoigne
-{
 class ZeroExactSolution : public ExactSolution
 {
 public:

@@ -1,15 +1,6 @@
 #ifndef  __ExactSolution_h
 #define  __ExactSolution_h
 
-//////////////////////////////////////////////
-///
-///@brief
-/// Interface class for ExactSolution
-
-///
-///
-//////////////////////////////////////////////
-
 
 #include  "vertex.h"
 #include  <string>
@@ -19,6 +10,16 @@
 
 namespace Gascoigne
 {
+  
+  //////////////////////////////////////////////
+  ///
+  ///@brief
+  /// Interface class for ExactSolution
+
+  ///
+  ///
+  //////////////////////////////////////////////
+
   class ExactSolution : public virtual Application
   {
     private:

@@ -3,6 +3,10 @@
 
 #include  "feminterface.h"
 
+/*-----------------------------------------------------*/
+
+namespace Gascoigne
+{
 
 /////////////////////////////////////////////
 ///
@@ -13,11 +17,6 @@
 ///
 /////////////////////////////////////////////
 
-
-/*-----------------------------------------------------*/
-
-namespace Gascoigne
-{
 template<int DIM, int BDIM, class TRAFO, class BASE>
 class FiniteElement : public FemInterface
 {

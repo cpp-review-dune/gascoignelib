@@ -8,22 +8,22 @@
 #include  "gascoigne.h"
 #include  "application.h"
 
-
-//////////////////////////////////////////////
-///
-///@brief
-/// Interface class for Neumann Boundary Conditions
-
-/// void operator()(Vector& b, const Vertex2d& v, int col)
-/// gets the coordinate v and color of boundarypart "col" and 
-/// sets the values of b. b is a vector of length ncomp
-///
-//////////////////////////////////////////////
-
 /*-----------------------------------------*/
 
 namespace Gascoigne
 {
+  
+  //////////////////////////////////////////////
+  ///
+  ///@brief
+  /// Interface class for Neumann Boundary Conditions
+
+  /// void operator()(Vector& b, const Vertex2d& v, int col)
+  /// gets the coordinate v and color of boundarypart "col" and 
+  /// sets the values of b. b is a vector of length ncomp
+  ///
+  //////////////////////////////////////////////
+
   class NeumannData : public virtual Application
   {
     private:

@@ -1,7 +1,12 @@
 #ifndef  __SimpleIlu_h
 #define  __SimpleIlu_h
 
+#include  "simplematrix.h"
+#include  "matrixinterface.h"
 
+
+namespace Gascoigne
+{
 
 /////////////////////////////////////////////
 ///
@@ -12,12 +17,6 @@
 ///
 /////////////////////////////////////////////
 
-
-#include  "simplematrix.h"
-#include  "matrixinterface.h"
-
-namespace Gascoigne
-{
 class SimpleIlu : public SimpleMatrix
 {
 protected:

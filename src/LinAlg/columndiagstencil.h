@@ -1,6 +1,11 @@
 #ifndef  __ColumnDiagStencil_h
 #define  __ColumnDiagStencil_h
 
+#include  "columnstencil.h"
+
+
+namespace Gascoigne
+{
 
 /////////////////////////////////////////////
 ////
@@ -11,10 +16,6 @@
 ////
 /////////////////////////////////////////////
 
-#include  "columnstencil.h"
-
-namespace Gascoigne
-{
 class ColumnDiagStencil : public ColumnStencil
 {
 protected:

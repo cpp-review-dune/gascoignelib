@@ -1,7 +1,11 @@
 #ifndef  __StdIoManager_h
 #define  __StdIoManager_h
 
+#include  "solverinterface.h"
 
+
+namespace Gascoigne
+{
 
 /////////////////////////////////////////////
 ///
@@ -12,12 +16,6 @@
 ///
 /////////////////////////////////////////////
 
-
-#include  "solverinterface.h"
-
-
-namespace Gascoigne
-{
 class StdIoManager
 {
 public:

@@ -1,6 +1,11 @@
 #ifndef  __RowColumnStencil_h
 #define  __RowColumnStencil_h
 
+#include  "columnstencil.h"
+
+
+namespace Gascoigne
+{
 
 /////////////////////////////////////////////
 ////
@@ -11,10 +16,6 @@
 ////
 /////////////////////////////////////////////
 
-#include  "columnstencil.h"
-
-namespace Gascoigne
-{
 class RowColumnStencil : virtual public StencilInterface, public ColumnStencil
 {
 private:

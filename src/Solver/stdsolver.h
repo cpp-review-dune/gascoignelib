@@ -14,6 +14,11 @@
 #include  "hierarchicalmesh.h"
 #include  "pressurefilter.h"
 
+/*-----------------------------------------*/
+
+namespace Gascoigne
+{
+
 //////////////////////////////////////////////
 ///
 ///@brief
@@ -23,10 +28,6 @@
 ///
 //////////////////////////////////////////////
 
-/*-----------------------------------------*/
-
-namespace Gascoigne
-{
 class StdSolver : public virtual SolverInterface
 {
  private:
@@ -109,8 +110,6 @@ class StdSolver : public virtual SolverInterface
   /// new interface-function for indivisual size of vectors
   //
 
-  std::string GetName() const {return "StdSolver";}
-
   void Rhs(GlobalVector& f, double d=1.) const;
 
   virtual double ComputeFunctional(GlobalVector& f, const GlobalVector& u, const Functional* FP) const;
@@ -144,6 +143,8 @@ class StdSolver : public virtual SolverInterface
 
   StdSolver();
   ~StdSolver();
+
+  std::string GetName() const {return "StdSolver";}
 
   void BasicInit(int level, const ParamFile* paramfile, const MeshInterface* MP);
   void SetProblem(const ProblemDescriptorInterface& PDX);

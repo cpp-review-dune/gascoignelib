@@ -1,7 +1,12 @@
 #ifndef  __PatchMeshInterpretor_h
 #define  __PatchMeshInterpretor_h
 
+#include  "basicmeshinterpretor.h"
+#include  "patchmesh.h"
 
+
+namespace Gascoigne
+{
 
 /////////////////////////////////////////////
 ///
@@ -12,13 +17,6 @@
 ///
 /////////////////////////////////////////////
 
-
-#include  "basicmeshinterpretor.h"
-#include  "patchmesh.h"
-
-
-namespace Gascoigne
-{
 class PatchMeshInterpretor : public BasicMeshInterpretor
 {
 protected:

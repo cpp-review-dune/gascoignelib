@@ -2,15 +2,6 @@
 #define  __MeshInterface_h
 
 
-/////////////////////////////////////////////
-///
-///@brief
-///  ... comments MeshInterface
-
-///
-///
-/////////////////////////////////////////////
-
 #include  "vertex.h"
 #include  <set>
 #include  <string>
@@ -18,6 +9,16 @@
 
 namespace Gascoigne
 {
+  
+  /////////////////////////////////////////////
+  ///
+  ///@brief
+  ///  ... comments MeshInterface
+
+  ///
+  ///
+  /////////////////////////////////////////////
+
   class MeshInterface
   {
     private:

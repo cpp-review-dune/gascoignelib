@@ -1,6 +1,11 @@
 #ifndef  __ComponentSparseStructureAdaptor_h
 #define  __ComponentSparseStructureAdaptor_h
 
+#include  "nodesparsestructureadaptor.h"
+
+
+namespace Gascoigne
+{
 
 /////////////////////////////////////////////
 ///
@@ -11,12 +16,6 @@
 ///
 /////////////////////////////////////////////
 
-
-#include  "nodesparsestructureadaptor.h"
-
-
-namespace Gascoigne
-{
 class ComponentSparseStructureAdaptor : public NodeSparseStructureAdaptor
 {
 public:

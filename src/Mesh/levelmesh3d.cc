@@ -24,7 +24,7 @@ LevelMesh3d::~LevelMesh3d()
 
 /*---------------------------------------------------*/
 
-void LevelMesh3d::BasicInit(const set<int>& newh, const set<int>& oldh)
+void LevelMesh3d::BasicInit(const IntSet& newh, const IntSet& oldh)
 {
   int n = newh.size()+oldh.size();
   Index::Hexl2g().memory(n);

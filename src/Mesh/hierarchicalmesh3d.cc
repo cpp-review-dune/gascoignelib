@@ -1928,14 +1928,14 @@ void HierarchicalMesh3d::post_refine3d()
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh3d::new_edge_vertex3d(int nv, const fixarray<2,int>& v)
+void HierarchicalMesh3d::new_edge_vertex3d(int nv, const EdgeVector& v)
 {
   vertexs3d[nv].equ(0.5, vertexs3d[v[0]], 0.5, vertexs3d[v[1]]);
 }
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh3d::new_face_vertex3d(int nv, const fixarray<4,int>& v)
+void HierarchicalMesh3d::new_face_vertex3d(int nv, const FaceVector& v)
 {
   vertexs3d[nv].equ(0.25, vertexs3d[v[0]], 0.25, vertexs3d[v[1]],
 		  0.25, vertexs3d[v[2]], 0.25, vertexs3d[v[3]]);

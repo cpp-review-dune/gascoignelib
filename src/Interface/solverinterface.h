@@ -16,24 +16,26 @@
 #include  "basicghostvector.h"
 #include  "paramfile.h"
 
-//////////////////////////////////////////////
-///
-///@brief
-/// Interface class for Solver
-
-///  Some porporties
-///  - lives on one level of the hierarchy
-///  - stores the matrices
-///  - holds memory for vectors
-///  - provides e.g. nonlinear and linear residuals of the equations
-///  - calls class MeshInterpretor
-///
-//////////////////////////////////////////////
 
 /*---------------------------------------------------------*/
 
 namespace Gascoigne
 {
+  
+  //////////////////////////////////////////////
+  ///
+  ///@brief
+  /// Interface class for Solver
+
+  ///  Some porporties
+  ///  - lives on one level of the hierarchy
+  ///  - stores the matrices
+  ///  - holds memory for vectors
+  ///  - provides e.g. nonlinear and linear residuals of the equations
+  ///  - calls class MeshInterpretor
+  ///
+  //////////////////////////////////////////////
+  
   class SolverInterface
   {
     private: 

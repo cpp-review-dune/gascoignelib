@@ -1,6 +1,11 @@
 #ifndef  __TwinStencil_h
 #define  __TwinStencil_h
 
+#include  "columnstencil.h"
+
+
+namespace Gascoigne
+{
 
 /////////////////////////////////////////////
 ////
@@ -11,10 +16,6 @@
 ////
 /////////////////////////////////////////////
 
-#include  "columnstencil.h"
-
-namespace Gascoigne
-{
 class TwinStencil : public ColumnStencil
 {
  protected:
