@@ -412,7 +412,7 @@ void Q13d::EEResidual(nvector<double>& eta, const GlobalVector& u, const Equatio
   nmatrix<double> T;
 
   GlobalToGlobalData();
-  RHS.SetParameterData(__q);
+  RHS.SetParameterData(__qq);
   
   for(int iq=0;iq<GetMesh()->ncells();++iq)
   {

@@ -70,7 +70,7 @@ void Q12d::StrongDirichletVector(GlobalVector& u, const DirichletData& BF, int c
   const IntVector& bv = *GMP->VertexOnBoundary(col);
 
   GlobalToGlobalData();
-  BF.SetParameterData(__q);
+  BF.SetParameterData(__qq);
 
   for(int ii=0;ii<comp.size();ii++)
     {
@@ -385,7 +385,7 @@ void Q12d::EEResidual(nvector<double>& eta, const GlobalVector& u, const Equatio
   nmatrix<double> T;
 
   GlobalToGlobalData();
-  RHS.SetParameterData(__q);
+  RHS.SetParameterData(__qq);
   
   for(int iq=0;iq<GetMesh()->ncells();++iq)
   {

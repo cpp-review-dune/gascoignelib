@@ -33,11 +33,11 @@ void BasicMeshInterpretor::GlobalToLocalData(int iq) const
 void BasicMeshInterpretor::GlobalToGlobalData() const
 {
   const GlobalParameterData& gd = GetGlobalData().GetParameterData();
-  __q.clear();
+  __qq.clear();
   GlobalParameterData::const_iterator p=gd.begin();
   for(; p!=gd.end(); p++)
     {
-      __q.insert(make_pair(p->first,*p->second));
+      __qq.insert(make_pair(p->first,*p->second));
     }
 }
 

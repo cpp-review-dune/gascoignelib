@@ -64,7 +64,7 @@ void CellMeshInterpretor::Form(GlobalVector& f, const GlobalVector& u, const Equ
   nmatrix<double> T;
   
   GlobalToGlobalData();
-  EQ.SetParameterData(__q);
+  EQ.SetParameterData(__qq);
   
   for(int iq=0;iq<GetMesh()->ncells();++iq)
     {
@@ -85,7 +85,7 @@ void CellMeshInterpretor::Matrix(MatrixInterface& A, const GlobalVector& u, cons
   nmatrix<double> T;
   
   GlobalToGlobalData();
-  EQ.SetParameterData(__q);
+  EQ.SetParameterData(__qq);
   
   for(int iq=0;iq<GetMesh()->ncells();++iq)
     {
@@ -128,7 +128,7 @@ void CellMeshInterpretor::ComputeError(const GlobalVector& u, LocalVector& err, 
   nmatrix<double> T;
   
   GlobalToGlobalData();
-  ES->SetParameterData(__q);
+  ES->SetParameterData(__qq);
   
   for(int iq=0; iq<GetMesh()->ncells(); iq++)
     {
@@ -157,7 +157,7 @@ void CellMeshInterpretor::Rhs(GlobalVector& f, const RightHandSideData& RHS, dou
   nmatrix<double> T;
   
   GlobalToGlobalData();
-  RHS.SetParameterData(__q);
+  RHS.SetParameterData(__qq);
   
   for(int iq=0;iq<GetMesh()->ncells();++iq)
     {
@@ -177,7 +177,7 @@ void CellMeshInterpretor::RhsNeumann(GlobalVector& f, const IntSet& Colors,  con
   nmatrix<double> T;
   
   GlobalToGlobalData();
-  NRHS.SetParameterData(__q);
+  NRHS.SetParameterData(__qq);
   
   for(IntSet::const_iterator p=Colors.begin();p!=Colors.end();p++)
     {
@@ -414,7 +414,7 @@ double CellMeshInterpretor::ComputeBoundaryFunctional(const GlobalVector& u, con
 double CellMeshInterpretor::ComputeDomainFunctional(const GlobalVector& u, const DomainFunctional& F) const 
 {
   GlobalToGlobalData();
-  F.SetParameterData(__q);
+  F.SetParameterData(__qq);
   
   nmatrix<double> T;
   double j=0.;
