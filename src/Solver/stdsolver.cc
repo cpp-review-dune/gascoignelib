@@ -54,9 +54,9 @@ namespace Gascoigne
 {
 StdSolver::StdSolver() : 
   _MP(NULL), _HM(NULL), _MAP(NULL), _MIP(NULL), _ZP(NULL), _PDX(NULL), 
-  _mylevel(-1), _directsolver(0), _PrimalSolve(1),  _paramfile(NULL),
-  _matrixtype("point_node"),_ndirect(1000),_discname("Q1")
-  // , omega_domain(0.) 
+  _mylevel(-1), _ndirect(1000), _directsolver(0), _discname("Q1"),
+  _matrixtype("point_node"), _PrimalSolve(1), _paramfile(NULL)
+// , omega_domain(0.) 
 {
 }
 
