@@ -292,6 +292,9 @@ void CellMeshInterpretor::DiracRhsPoint(GlobalVector& f,const NewDiracRightHandS
   nmatrix<double> T;
   Transformation(T,iq);
   GetFem()->ReInit(T);
+  
+  GlobalToGlobalData();
+  DRHS.SetParameterData(__qq);
 
   GetIntegrator()->DiracRhsPoint(__F,*GetFem(),Tranfo_p0,DRHS,i,__Q);
   LocalToGlobal(f,__F,iq,s);

@@ -8,7 +8,7 @@
 #include  "pointmatrix.h"
 #include  "pointilu.h"
 /*--------------------------------*/
-#ifdef __WITHUMFPACK__
+#ifdef __WITH_UMFPACK__
 #include  "umfilu.h"
 #endif
 /*--------------------------------*/
@@ -204,7 +204,7 @@ MatrixInterface* StdSolver::NewMatrix(int ncomp, const string& matrixtype)
 
 IluInterface* StdSolver::NewIlu(int ncomp, const string& matrixtype) 
 {
-#ifdef __WITHUMFPACK__
+#ifdef __WITH_UMFPACK__
   if(_directsolver)             return new UmfIlu(GetMatrix());
 #endif
   if(_matrixtype=="point_node") return new PointIlu(ncomp,"node");
@@ -462,7 +462,7 @@ void StdSolver::smooth_pre(BasicGhostVector& x, const BasicGhostVector& y, Basic
 
 void StdSolver::smooth_exact(BasicGhostVector& x, const BasicGhostVector& y, BasicGhostVector& help) const
 {
-#ifdef __WITHUMFPACK__
+#ifdef __WITH_UMFPACK__
   if(_directsolver)
     {
       _so.start();
@@ -780,7 +780,7 @@ void StdSolver::DirichletMatrix() const
 
 void StdSolver::ComputeIlu() const
 {
-#ifdef __WITHUMFPACK__
+#ifdef __WITH_UMFPACK__
   if(_directsolver)
     {
       _cs.start();
@@ -807,7 +807,7 @@ void StdSolver::ComputeIlu() const
 
 void StdSolver::ComputeIlu(const BasicGhostVector& gu) const
 {
-#ifdef __WITHUMFPACK__
+#ifdef __WITH_UMFPACK__
   if(_directsolver)
     {
       _cs.start();
