@@ -14,7 +14,7 @@ gridname    box.inp
 dirichlet       1 9
 dirichletcomp   9  1 0
 
-//Block Multilevelsolver
+//Block MultiLevelSolver
 
 linear_pstep       0
 nonlinear_pstep    0

@@ -81,7 +81,7 @@ void SolverInfos::BasicInit(const ParamFile *param)
 
   FileScanner FS(DFH);
   FS.NoComplain();
-  FS.readfile(param,"Multilevelsolver");
+  FS.readfile(param,"MultiLevelSolver");
 
   GetLInfo().user().tol()                = linear_tol;
   GetLInfo().user().globaltol()          = linear_globaltol;

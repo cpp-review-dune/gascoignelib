@@ -13,7 +13,7 @@ neuler      2
 scheme      Euler
 refiner     global
 
-//Block Multilevelsolver
+//Block MultiLevelSolver
 
 solver             instat
 linear_maxiter          10

@@ -18,7 +18,7 @@ gridname    rect.inp
 prerefine 0
 gridname    test.gup
 
-//Block Multilevelsolver
+//Block MultiLevelSolver
 
 solver             instat
 linear_maxiter          10

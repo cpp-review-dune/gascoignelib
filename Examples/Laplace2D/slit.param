@@ -35,18 +35,6 @@ exactsolution            Slit
 dirichletdata            ExactSolution
 rhs                      Zero
 
-
-//Block Multilevelsolver
-
-ndirect           10
-
-nonlinear_pstep    0
-nonlinear_tol		1.e-6
-
-linear_pstep       0
-linear_maxiter          10
-linear_tol		1.e-2
-
 //Block Solver
 
 discname         Q1

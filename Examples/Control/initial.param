@@ -5,7 +5,7 @@ initial     analytic
 dimension   2
 gridname    Results/mesh.gup
 
-//Block Multilevelsolver
+//Block MultiLevelSolver
 solver             instat
 
 //Block Solver

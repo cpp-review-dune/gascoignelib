@@ -41,7 +41,7 @@ void StdMultiLevelSolverData::BasicInit(const ParamFile *param)
 
   FileScanner FS(DFH);
   FS.NoComplain();
-  FS.readfile(param,"Multilevelsolver");
+  FS.readfile(param,"MultiLevelSolver");
 
   if ((_mgtype!="V") && (_mgtype!="W") && (_mgtype!="F"))
   {

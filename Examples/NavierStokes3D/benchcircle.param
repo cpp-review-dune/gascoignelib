@@ -32,7 +32,7 @@ visc            0.01
 delta           0.5
 alpha           0.5
 
-//Block Multilevelsolver
+//Block MultiLevelSolver
 
 linear_maxiter          20
 linear_pstep		1

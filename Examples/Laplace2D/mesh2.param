@@ -18,10 +18,6 @@ dimension   2
 prerefine   2
 gridname    square.inp
 
-//Block Multilevelsolver
-
-linear_tol		1.e-2
-
 //Block Solver
 
 discname       Q1
