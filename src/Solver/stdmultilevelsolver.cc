@@ -24,18 +24,18 @@ StdMultiLevelSolver::~StdMultiLevelSolver()
   for(int i=0;i<_SP.size();i++) 
     { 
       if (_SP[i]) 
-	{
-	  delete _SP[i]; 
-	  _SP[i]=NULL; 
-	}
+        {
+          delete _SP[i]; 
+          _SP[i]=NULL; 
+        }
     }
    for(int i=0; i<_Interpolator.size(); i++)  
     {
       if (_Interpolator[i]) 
-	{
-	  delete _Interpolator[i]; 
-	  _Interpolator[i]=NULL;
-	}
+        {
+          delete _Interpolator[i]; 
+          _Interpolator[i]=NULL;
+        }
     }
 }
 
@@ -174,9 +174,9 @@ void StdMultiLevelSolver::RegisterVectorAndMemory(const MultiLevelGhostVector& g
     {
       set<MultiLevelGhostVector>::const_iterator p = _MlVectors.begin();
       while(p!=_MlVectors.end()) 
-	{
-	  GetSolver(level)->RegisterVector(*p++);
-	}
+        {
+          GetSolver(level)->RegisterVector(*p++);
+        }
     }
   //ReInitVector();
 }
@@ -190,10 +190,10 @@ void StdMultiLevelSolver::NewSolvers()
   if (oldnlevels>nlevels())
     {
       for (int l=oldnlevels-1; l>=nlevels(); l--)
-	{
-	  delete _SP[l];
-	  _SP[l] = NULL;
-	}
+        {
+          delete _SP[l];
+          _SP[l] = NULL;
+        }
     }
   _SP.resize(nlevels(),NULL);
   ComputeLevel = _SP.size()-1;
@@ -207,10 +207,10 @@ void StdMultiLevelSolver::NewSolvers()
 
       // new Solvers
       if(GetSolver(solverlevel)==NULL) 
-	{
-	  GetSolverPointer(solverlevel) = NewSolver(solverlevel);
- 	  GetSolver(solverlevel)->BasicInit(solverlevel,_paramfile,MIP);
-	}
+        {
+          GetSolverPointer(solverlevel) = NewSolver(solverlevel);
+          GetSolver(solverlevel)->BasicInit(solverlevel,_paramfile,MIP);
+        }
     }
 }
 
@@ -364,10 +364,10 @@ void StdMultiLevelSolver::mgstep(vector<double>& res, vector<double>& rw,
     {
       if(p=="F") {p0="V";}
       if(l==finelevel)
-	{
-	  GetSolver(l)->MatrixResidual(v, u, b);
-	  res[l] = v.Vector(l).norm();
-	}
+        {
+          GetSolver(l)->MatrixResidual(v, u, b);
+          res[l] = v.Vector(l).norm();
+        }
       GetSolver(l)->smooth_exact(u,b,v);
     }
   else
@@ -386,9 +386,9 @@ void StdMultiLevelSolver::mgstep(vector<double>& res, vector<double>& rw,
       if (p0=="W") j = 2;
       if (p0=="F") j = 3;
       for (int i = 0; i<j; i++)
-	{
-	  mgstep(res,rw,l-1,finelevel,coarselevel,p0,p,u,b,v);
-  	}
+        {
+          mgstep(res,rw,l-1,finelevel,coarselevel,p0,p,u,b,v);
+        }
       if ((l==0)&&(p=="F")) { p0="W";}
       rw[l] = u.Vector(l-1).norm();
 
@@ -397,7 +397,7 @@ void StdMultiLevelSolver::mgstep(vector<double>& res, vector<double>& rw,
       _Interpolator[l-1]-> prolongate_add(GetSolver(l)->GetGV(v),GetSolver(l-1)->GetGV(u));
       GetSolver(l-1) -> HNZero(u);
       GetSolver(l)   -> HNZero(v);
-	     
+     
       GetSolver(l)   -> SetBoundaryVectorZero(v);
 
       u.Vector(l).add(DataP->MgOmega(),v.Vector(l));
@@ -530,14 +530,14 @@ double StdMultiLevelSolver::NewtonUpdate(double& rr, MultiLevelGhostVector& x, M
   for(int iter=0;iter<nlinfo.user().maxrelax();iter++)
     {
       if(iter>0)
-	{
-	  x.Vector(ComputeLevel).add(relax*(omega-1.),dx.Vector(ComputeLevel));
-	  relax *= omega;
-	}
+        {
+          x.Vector(ComputeLevel).add(relax*(omega-1.),dx.Vector(ComputeLevel));
+          relax *= omega;
+        }
       else
-	{
-	  x.Vector(ComputeLevel).add(relax,dx.Vector(ComputeLevel));
-	}
+        {
+          x.Vector(ComputeLevel).add(relax,dx.Vector(ComputeLevel));
+        }
 
       NewtonResidual(r,x,f);
       rr = NewtonNorm(r);
@@ -546,13 +546,13 @@ double StdMultiLevelSolver::NewtonUpdate(double& rr, MultiLevelGhostVector& x, M
       if (message=="ok")       break;
       if (message=="continue") continue;
       if (message=="exploded") 
-	{
-	  x.Vector(ComputeLevel).add(-relax,dx.Vector(ComputeLevel));
-	  relax = 0.;
-	  cout << "Damping exploded !!!!!" << endl;
-	  nlinfo.control().status() = "diverged";
-	  break;
-	}
+        {
+          x.Vector(ComputeLevel).add(-relax,dx.Vector(ComputeLevel));
+          relax = 0.;
+          cout << "Damping exploded !!!!!" << endl;
+          nlinfo.control().status() = "diverged";
+          break;
+        }
     }
   return NewtonNorm(dx);
 }
