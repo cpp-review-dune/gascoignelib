@@ -1007,9 +1007,9 @@ void StdSolver::modify_ilu(IluInterface& I,int ncomp) const
 void StdSolver::PermutateIlu(const VectorInterface& gu) const
 {
   const GlobalVector& u = GetGV(gu);
-  int n = GetMatrix()->GetStencil()->n();
+  int n = GetIlu()->n();
   IntVector perm(n);
-  
+
   iota(perm.begin(),perm.end(),0);
   
   // if (0 && _mylevel==0 && _directsolver)

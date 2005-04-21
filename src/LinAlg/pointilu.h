@@ -38,6 +38,7 @@ public:
     
     void ReInit(const SparseStructureInterface* S);
     
+    int   n()          const { return GetStencil()->n();};
     void zero() {
       SimpleIlu::zero();
     }

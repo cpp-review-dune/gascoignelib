@@ -83,14 +83,16 @@ StreamDirection::StreamDirection (const MeshInterface* m,
 void StreamDirection::Permutate    (IntVector &perm)
 {
   assert(dimension==M->dimension());
-  assert(perm.size()==M->nnodes());
-  assert(perm.size()==X.n());
+  //  assert(perm.size()==M->nnodes());
+  //assert(perm.size()==X.n());
   assert(X.ncomp()>dx);
   assert(X.ncomp()>dy);
   assert(X.ncomp()>dz);
   int n=X.n();
   Vertex2d h2;
   Vertex3d h3;
+
+  int ncomp = perm.size()/M->nnodes();
 				   // Zu allen Knoten den Nachfolger
 				   // und Vorgaenger finden.
   IntVector next(n,-1);
@@ -122,8 +124,9 @@ void StreamDirection::Permutate    (IntVector &perm)
 	  prev[best]=row;
 	}
     }
+  
+  // Kreise Finden und tot machen
 
-				   // Kreise Finden und tot machen
   for (int i=0;i<n;++i)
     {
       int k=i;
@@ -135,38 +138,36 @@ void StreamDirection::Permutate    (IntVector &perm)
 	}
     }
   
-  
-				   // erster Versuch:
-				   //
-				   // Sequenzen werden aneinandergehaengt
-				   // es wird nicht darauf geachtet, in
-				   // welcher Reihenfolge die Sequenzen kommen.
-  
-  
-  
+  // erster Versuch:
+  //
+  // Sequenzen werden aneinandergehaengt
+  // es wird nicht darauf geachtet, in
+  // welcher Reihenfolge die Sequenzen kommen.
+
   int index=0;
   set<int> start;
   for (int i=0;i<n;++i) if (prev[i]==-1)
     start.insert(i);
     
-  
   for (set<int>::const_iterator i=start.begin();i!=start.end();++i)
     {
       int k=*i;
       do
 	{
-	  perm[index]=k;
-	  ++index;
+	  for(int c=0; c<ncomp; c++)
+	    {
+	      perm[index]=k*ncomp+c;
+	      ++index;
+	    }
 	  k=next[k];
 	}
       while (k!=-1);
-      
     }
 }
 
 /* --------------------------------------------------------------- */
 
-void StreamDirection::Permutate    (IntVector &perm,const IntVector d)
+void StreamDirection::Permutate(IntVector &perm,const IntVector d)
 {
   dimension=d.size();
   assert(dimension>1);

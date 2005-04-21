@@ -39,6 +39,7 @@ public:
 
     SimpleIlu() : SimpleMatrix() {}
     
+      int   n()          const { return GetStencil()->n();};
     void zero() {SimpleMatrix::zero();}
     void ReInit(int n, int nentries);
     void copy_entries(const MatrixInterface*  A);

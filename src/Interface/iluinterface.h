@@ -17,6 +17,7 @@ namespace Gascoigne
       IluInterface() {}
       virtual ~IluInterface() {};
 
+      virtual int   n() const=0;
       virtual std::string GetName() const=0;
       virtual void ReInit(const SparseStructureInterface* A)=0;
       virtual void ConstructStructure(const IntVector& perm, const MatrixInterface& A)=0;
