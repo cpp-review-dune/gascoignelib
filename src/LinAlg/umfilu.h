@@ -42,6 +42,9 @@ public:
     std::string GetName() const { return "UmfIlu"; }
     
     void ReInit(const SparseStructureInterface* SS);
+
+    int   n()          const { return GetStencil()->n();};
+
     void copy_entries(const MatrixInterface&  A);
     void ConstructStructure(const IntVector& perm, const MatrixInterface& A);
     void Factorize();
