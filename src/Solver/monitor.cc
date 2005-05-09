@@ -84,30 +84,30 @@ void Monitor::set_directory(const string& dir)
   command += dir;
   system(command.c_str());
 
-  ofstream tfile( texfile.c_str() );
-  if(!tfile)
-    {
-      error_io(texfile);
-    }
-  else
-    {
-      PrintHeader(tfile);
-    }
-  tfile.close();
+//  ofstream tfile( texfile.c_str() );
+//  if(!tfile)
+//    {
+//      error_io(texfile);
+//    }
+//  else
+//    {
+//      PrintHeader(tfile);
+//    }
+//  tfile.close();
   
-  ofstream pfile( protokoll.c_str() );
-  if(!pfile)
-    {
-      error_io(protokoll);
-    }
-  pfile.close();
+//  ofstream pfile( protokoll.c_str() );
+//  if(!pfile)
+//    {
+//      error_io(protokoll);
+//    }
+//  pfile.close();
   
-  ofstream nfile( numfile.c_str() );
-  if(!nfile)
-    {
-      error_io(numfile);
-    }
-  nfile.close();
+//  ofstream nfile( numfile.c_str() );
+//  if(!nfile)
+//    {
+//      error_io(numfile);
+//    }
+//  nfile.close();
   sprintf (message,"");
 
   //cout << "set_directory:" << protokoll <<  "#" << endl;
@@ -169,18 +169,18 @@ void Monitor::post_monitor()
 
 void Monitor::print_message()
 {
-  ofstream pfile( protokoll.c_str(),ios::app);
+//  ofstream pfile( protokoll.c_str(),ios::app);
 
-  if(!pfile)
-  {
-    error_io(protokoll);
-  }
+//  if(!pfile)
+//  {
+//    error_io(protokoll);
+//  }
   if (control) cout << message << endl;
 
-  pfile << message << endl;
+//  pfile << message << endl;
 
   sprintf (message,"");
-  pfile.close();
+//  pfile.close();
 }
 
 /*******************************************************************/
@@ -297,65 +297,65 @@ void Monitor::nonlinear_step(const CGInfo& cginfo, const NLInfo& nlinfo)
 
 void Monitor::PrintResults(const string& s) const
 {
-  ofstream   file(texfile.c_str(),ios::app);
-  if(!file)  error_io(texfile);
-  if(format=="latex")   PrintAscii(file,s);
+//  ofstream   file(texfile.c_str(),ios::app);
+//  if(!file)  error_io(texfile);
+//  if(format=="latex")   PrintAscii(file,s);
   // ausser betrieb
 //   if(format=="html")    PrintHtml (file,iv,dv,"\n");
 //   if(format=="ascii")   PrintHtml (file,iv,dv,"\n");
-  file.close();
+//  file.close();
 }
 
 /*******************************************************************/
 
 void Monitor::PrintResults(int i) const
 {
-  ofstream   file(texfile.c_str(),ios::app);
-  if(!file)  error_io(texfile);
-  if(format=="latex")   PrintAscii(file,i);
-  file.close();
+//  ofstream   file(texfile.c_str(),ios::app);
+//  if(!file)  error_io(texfile);
+//  if(format=="latex")   PrintAscii(file,i);
+//  file.close();
 }
 
 /*******************************************************************/
 
 void Monitor::PrintResults(double d) const
 {
-  ofstream   file(texfile.c_str(),ios::app);
-  if(!file)  error_io(texfile);
-  if(format=="latex")   PrintAscii(file,d);
-  file.close();
+//  ofstream   file(texfile.c_str(),ios::app);
+//  if(!file)  error_io(texfile);
+//  if(format=="latex")   PrintAscii(file,d);
+//  file.close();
 }
 
 /*******************************************************************/
 
 void Monitor::PrintResults(const IntVector& iv) const
 {
-  ofstream   file(texfile.c_str(),ios::app);
-  if(!file)  error_io(texfile);
-  if(format=="latex")   PrintAscii(file,iv);
-  file.close();
+//  ofstream   file(texfile.c_str(),ios::app);
+//  if(!file)  error_io(texfile);
+//  if(format=="latex")   PrintAscii(file,iv);
+//  file.close();
 }
 
 /*******************************************************************/
 
 void Monitor::PrintResults(const DoubleVector& dv) const
 {
-  ofstream   file(texfile.c_str(),ios::app);
-  if(!file)  error_io(texfile);
-  if(format=="latex")   PrintAscii(file,dv);
-  file.close();
+//  ofstream   file(texfile.c_str(),ios::app);
+//  if(!file)  error_io(texfile);
+//  if(format=="latex")   PrintAscii(file,dv);
+//  file.close();
 }
 
 /*******************************************************************/
 
 void Monitor::Print(const string& s, string se) const
 {
-  ofstream   file(texfile.c_str(),ios::app);
-  if(!file)  error_io(texfile);
+//  ofstream   file(texfile.c_str(),ios::app);
+//  if(!file)  error_io(texfile);
 
-  file << s << se;
-  cout << s << se;
-  file.close();
+//  file << s << se;
+//  cout << s << se;
+//  file.close();
 }
 
 /*******************************************************************/
