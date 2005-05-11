@@ -85,6 +85,9 @@ namespace Gascoigne
 
       virtual void Equ(VectorInterface& dst, double s, const VectorInterface& src)const=0;
       virtual void Zero(VectorInterface& dst)const=0;
+
+      virtual void AddNodeVector(const std::string& name, VectorInterface& q)=0;
+      virtual void DeleteNodeVector(const std::string& q)=0;
   };
 }
 
