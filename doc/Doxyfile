@@ -1,8 +1,8 @@
 @INCLUDE = Doxyfile.generic
 
 PROJECT_NAME           = Gascoigne
-STRIP_FROM_PATH        = /home/kroisos2/meidner/Gascoigne/Std/src
-INPUT                  = /home/kroisos2/meidner/Gascoigne/Std/src
+STRIP_FROM_PATH        = ../src
+INPUT                  = ../src
 TAGFILES               = "libstdc++.tag = http://gcc.gnu.org/onlinedocs/libstdc++/latest-doxygen"
 GENERATE_TAGFILE       = gascoigne.tag
 HTML_HEADER            = headerFile

@@ -80,8 +80,8 @@ void StdMultiLevelSolver::ViewProtocoll() const
 /*-------------------------------------------------------------*/
 
 StdMultiLevelSolver::StdMultiLevelSolver() : 
-		_MAP(NULL), _cor("cor"), _res("res"), _mg0("mg0"), _mg1("mg1"),
-		oldnlevels(-1), _paramfile(NULL), MON(NULL), DataP(NULL)
+_MAP(NULL), _cor("cor"), _res("res"), _mg0("mg0"), _mg1("mg1"),
+oldnlevels(-1), _paramfile(NULL), MON(NULL), DataP(NULL)
 {
 }
 
@@ -436,6 +436,7 @@ double StdMultiLevelSolver::NewtonResidual(VectorInterface& y, const VectorInter
   GetSolver(ComputeLevel)->GetGV(y).equ(1.,GetSolver(ComputeLevel)->GetGV(b));
   GetSolver(ComputeLevel)->Form(y,x,-1.);
   GetSolver(ComputeLevel)->SetBoundaryVectorZero(y);
+  GetSolver(ComputeLevel)->SubtractMeanAlgebraic(y);
   _clock_residual.stop();
   return NewtonNorm(y);
 }
