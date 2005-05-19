@@ -65,11 +65,11 @@ DiscretizationInterface* DwrQ1Q2::GetOtherDiscretization() const
 
   if (S.GetMesh()->dimension()==2) 
     {
-      D = new DwrFem2d;    
+      D = new DwrFemQ1Q22d;    
     }
   else
     {
-      D = new DwrFem3d;
+      D = new DwrFemQ1Q23d;
     }
   
   D->BasicInit(S.GetParamfile());
@@ -95,7 +95,7 @@ void DwrQ1Q2::PrimalResidualsHigher(VectorInterface& gf, const VectorInterface& 
       
   S.Rhs(gf,0.5);
   S.Form(gf,gu,-0.5);
-  S.SetBoundaryVectorZero(gf);
+//  S.SetBoundaryVectorZero(gf);
   
   S.SetDiscretization(*discretization);
   delete D;
@@ -118,7 +118,7 @@ void DwrQ1Q2::DualResidualsHigher(VectorInterface& gf,
   {
     S.Rhs     (gf, -0.5);
     S.AdjointForm(gf,gz,0.5);
-    S.SetBoundaryVectorZero(gf);
+//    S.SetBoundaryVectorZero(gf);
     S.HNDistribute(gf);
   }
   // residual respect Q2 test functions
@@ -129,7 +129,7 @@ void DwrQ1Q2::DualResidualsHigher(VectorInterface& gf,
 
     S.Rhs     (gf,   0.5);
     S.AdjointForm(gf,gz,-0.5);
-    S.SetBoundaryVectorZero(gf);
+//    S.SetBoundaryVectorZero(gf);
     S.HNDistribute(gf);
 
     S.SetDiscretization(*discretization);
