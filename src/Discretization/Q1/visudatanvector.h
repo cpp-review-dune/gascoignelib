@@ -1,12 +1,10 @@
 #ifndef  __VisuDataNVector_h
 #define  __VisuDataNVector_h
 
-
 #include  "visudata.h"
 #include  "nvector.h"
 
 /*-----------------------------------------*/
-
 
 namespace Gascoigne
 {
