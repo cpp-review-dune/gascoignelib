@@ -12,7 +12,7 @@ class VtkVisu : public Visualization
 {
  public:
 
-  VtkVisu(const MeshInterface& M, std::string name, int iter);
+  VtkVisu(const MeshInterface& M, const std::string& name, int iter);
   ~VtkVisu();
 
   void WriteNodeData(const DoubleVector& eta);

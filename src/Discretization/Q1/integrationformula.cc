@@ -1,4 +1,5 @@
 #include  "integrationformula.h"
+#include  "integrationformulasummed.h"
 #include  "tensorformula2d.xx"
 #include  "tensorformula3d.xx"
 
@@ -31,6 +32,9 @@ template class TensorFormula3d<2,LineTrapez>;
 template class TensorFormula3d<2,LineGauss2>;
 template class TensorFormula3d<3,LineGauss3>;
 template class TensorFormula3d<4,LineGauss4>;
-}
 
 /*------------------------------------------------------------*/
+template class IntegrationFormulaSummed2d<QuadGauss1>;
+template class IntegrationFormulaSummed2d<QuadGauss4>;
+}
+

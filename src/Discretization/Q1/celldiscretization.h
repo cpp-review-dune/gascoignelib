@@ -83,6 +83,8 @@ public:
 
   double ComputePointFunctional(const GlobalVector& u, const PointFunctional& FP) const;
 
+  void EvaluateCellFunction(GlobalCellVector& f, const CellFunction& CF, double d) const;
+
   virtual nmatrix<double> GetLocalInterpolationWeights() const { assert(0); return nmatrix<double>();}
 
 };

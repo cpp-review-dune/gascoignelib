@@ -431,6 +431,32 @@ double GalerkinIntegrator<DIM>::ComputeDomainFunctional(const DomainFunctional& 
 /* ----------------------------------------- */
 
 template<int DIM>
+void GalerkinIntegrator<DIM>::EvaluateCellFunction(LocalCellVector& b, const CellFunction& CF,const FemInterface& FEM, const LocalNodeData& Q) const
+{
+  b.zero();
+
+  const IntegrationFormulaInterface& IF = *FormFormula();
+  Vertex<DIM> x, xi;
+
+  for (int k=0; k<IF.n(); k++)
+    {
+      IF.xi(xi,k);
+      FEM.point(xi);
+      double vol = FEM.J();
+      double weight  = IF.w(k) * vol;
+
+      BasicIntegrator::universal_point(FEM,QH,Q);
+      FEM.x(x);
+      CF.SetFemData(QH);
+      CF.point(x);
+
+      CF.F(b,weight);
+    }
+}
+
+/* ----------------------------------------- */
+
+template<int DIM>
 void GalerkinIntegrator<DIM>::ErrorsByExactSolution(LocalVector& dst, const FemInterface& FE, const ExactSolution& ES, const LocalVector& U, const LocalNodeData& Q) const
 {
   const IntegrationFormulaInterface& IF = *ErrorFormula();

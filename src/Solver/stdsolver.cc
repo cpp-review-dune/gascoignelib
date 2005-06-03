@@ -831,6 +831,17 @@ double StdSolver::ComputeResidualFunctional(VectorInterface& gf, const VectorInt
 
 /*-------------------------------------------------------*/
 
+void StdSolver::EvaluateCellFunction(GlobalCellVector& f, const CellFunction& CF, double d) const
+{
+  HNAverageData();
+  
+  GetDiscretization()->EvaluateCellFunction(f,CF,d);
+
+  HNZeroData();
+}
+
+/*-------------------------------------------------------*/
+
 void StdSolver::Rhs(VectorInterface& gf, double d) const
 {
   GlobalVector& f = GetGV(gf);

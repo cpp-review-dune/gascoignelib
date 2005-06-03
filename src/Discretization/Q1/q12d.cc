@@ -382,14 +382,18 @@ void Q12d::EEResidual(DoubleVector& eta, const GlobalVector& u, const Equation& 
 
   GlobalToGlobalData();
   if (RHS) RHS->SetParameterData(__qq);
-  
+  EQ.SetParameterData(__qq);
+
   for(int iq=0;iq<GetMesh()->ncells();++iq)
   {
     Transformation(T,iq);
     GetFem()->ReInit(T);
         
-    GlobalToLocalData(iq);
+    //    GlobalToLocalData(iq);
     GlobalToLocal(__U,u,iq);
+    EQ.SetCellData(__QC);
+    if (RHS) EQ.SetCellData(__QC);
+
     //EQ.cell(GetMesh(),iq,__U,__Q); 
     double res = EEI.Residual(__U,*GetFem(),EQ,RHS,__Q);
     double w = 0.25 * sqrt(res);

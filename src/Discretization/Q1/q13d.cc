@@ -409,8 +409,9 @@ void Q13d::EEResidual(DoubleVector& eta, const GlobalVector& u, const Equation& 
     Transformation(T,iq);
     GetFem()->ReInit(T);
 
-    GlobalToLocalData(iq);
+    //    GlobalToLocalData(iq);
     GlobalToLocal(__U,u,iq);
+    EQ.SetCellData(__QC);
     double res = EEI.Residual(__U,*GetFem(),EQ,RHS,__Q);
     for (int in=0; in<8; in++)
     {

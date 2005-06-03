@@ -3,6 +3,7 @@
 
 #include  "basicintegrator.h"
 #include  "integrationformula.h"
+#include  "integrationformulasummed.h"
 
 namespace Gascoigne
 {
@@ -63,6 +64,7 @@ public:
   void DiracRhsPoint(LocalVector& b, const FemInterface& E, const Vertex<DIM>& p, const DiracRightHandSide& DRHS, int j, const LocalNodeData& Q) const;
   double ComputePointValue(const FemInterface& E, const Vertex<DIM>& p, const LocalVector& U, int comp) const;
   double ComputeDomainFunctional(const DomainFunctional& F, const FemInterface& FEM, const LocalVector& U, const LocalNodeData& Q) const;
+  void EvaluateCellFunction(LocalCellVector& b, const CellFunction& CF,const FemInterface& FEM, const LocalNodeData& Q) const;
 
   void ErrorsByExactSolution(LocalVector& dst, const FemInterface& FE, const ExactSolution& ES, const LocalVector& U, const LocalNodeData& Q) const;
 

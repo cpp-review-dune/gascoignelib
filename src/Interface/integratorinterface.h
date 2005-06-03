@@ -12,6 +12,7 @@
 #include  "boundaryrighthandside.h"
 #include  "boundaryequation.h"
 #include  "diracrighthandside.h"
+#include  "cellfunction.h"
 
 namespace Gascoigne
 {
@@ -85,6 +86,10 @@ namespace Gascoigne
         std::cerr << "\"IntegratorInterface::ComputeDomainFunctional\" not written!" << std::endl;
 						assert(0);
       }
+        
+      virtual void EvaluateCellFunction(LocalCellVector& b, const CellFunction& CF,const FemInterface& FEM, const LocalNodeData& Q) const {std::cerr << "\"IntegratorInterface::EvaluateCellFunction\" not written!" << std::endl;
+						assert(0); }
+
       virtual void DiracRhsPoint(LocalVector& b, const FemInterface& E, const Vertex2d& p, const DiracRightHandSide& DRHS, 
           int i, const LocalNodeData& Q) const {
         std::cerr << "\"IntegratorInterface::DiracRhsPoint\" not written!" << std::endl;

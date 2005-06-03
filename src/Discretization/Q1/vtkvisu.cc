@@ -9,7 +9,7 @@ VtkVisu::~VtkVisu() {}
 
 /*-------------------------------------------------*/
 
-VtkVisu::VtkVisu(const MeshInterface& M, std::string name, int iter) : Visualization()
+VtkVisu::VtkVisu(const MeshInterface& M, const std::string& name, int iter) : Visualization()
 {
   format("vtk");
   set_name(name);

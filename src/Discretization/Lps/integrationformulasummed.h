@@ -58,7 +58,7 @@ class IntegrationFormulaSummed2d : public IntegrationFormula2d
 
  public:
 
-  IntegrationFormulaSummed2d(int n) : I(), IntegrationFormula2d()
+  IntegrationFormulaSummed2d(int n=4) : I(), IntegrationFormula2d()
     {
       int    N = static_cast<int>(pow(4.,n));
 

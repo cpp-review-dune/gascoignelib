@@ -20,6 +20,7 @@
 #include  "pointfunctional.h"
 #include  "domainrighthandside.h"
 #include  "diracrighthandside.h"
+#include "cellfunction.h"
 
 namespace Gascoigne
 {
@@ -169,6 +170,11 @@ namespace Gascoigne
 			
       virtual double ComputePointFunctional(const GlobalVector& u, const PointFunctional& FP) const{
         std::cerr << "\"DiscretizationInterface::ComputePointFunctional\" not written!" << std::endl;
+        abort();
+      }
+
+      virtual void EvaluateCellFunction(GlobalCellVector& f, const CellFunction& CF, double d = 1.) const{
+        std::cerr << "\"DiscretizationInterface::EvaluateCellFunction\" not written!" << std::endl;
         abort();
       }
 			

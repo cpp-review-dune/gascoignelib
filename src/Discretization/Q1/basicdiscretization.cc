@@ -55,11 +55,13 @@ void BasicDiscretization::GlobalToLocalData(int iq) const
     {
       GlobalToLocalSingle(__Q[p->first],*p->second,iq);
     }
+  
   const GlobalCellData& gcd = GetGlobalData().GetCellData();
-  GlobalNodeData::const_iterator q=gcd.begin();
+  __QC.clear();
+  GlobalCellData::const_iterator q=gcd.begin();
   for(; q!=gcd.end(); q++)
     {
-      GlobalToLocalSingle(__Q[q->first],*q->second,iq);
+      GlobalToLocalCell(__QC[q->first],*q->second,iq);
     }
 }
 
@@ -86,6 +88,17 @@ void BasicDiscretization::GlobalToLocalSingle(LocalVector& U, const GlobalVector
     {
       int i = indices[ii];
       U.equ_node(ii,i,u);
+    }
+}
+
+/* ----------------------------------------- */
+
+void BasicDiscretization::GlobalToLocalCell(LocalCellVector& U, const GlobalCellVector& u, int iq) const
+{
+  U.resize(u.ncomp());
+  for(int c=0;c<u.ncomp();++c)
+    {
+      U[c] = u(iq,c);
     }
 }
 
