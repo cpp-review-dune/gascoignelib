@@ -17,7 +17,7 @@ class IntegrationFormulaSummed1d : public IntegrationFormula1d
 
  public:
 
-  IntegrationFormulaSummed1d(int n) : I(), IntegrationFormula1d()
+  IntegrationFormulaSummed1d(int n) : IntegrationFormula1d(), I()
     {
       int    N = static_cast<int>(pow(2.,n));
 
@@ -58,7 +58,7 @@ class IntegrationFormulaSummed2d : public IntegrationFormula2d
 
  public:
 
-  IntegrationFormulaSummed2d(int n=4) : I(), IntegrationFormula2d()
+  IntegrationFormulaSummed2d(int n=4) : IntegrationFormula2d(), I()
     {
       int    N = static_cast<int>(pow(4.,n));
 
