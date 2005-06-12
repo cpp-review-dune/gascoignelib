@@ -10,7 +10,7 @@
 namespace Gascoigne
 {
 template<class B>
-SparseBlockIlu<B>::SparseBlockIlu<B>() : 
+SparseBlockIlu<B>::SparseBlockIlu() : 
   IluInterface(), SparseBlockMatrix<B>()
 {
   yp = new GlobalVector;
@@ -19,7 +19,7 @@ SparseBlockIlu<B>::SparseBlockIlu<B>() :
 /*-------------------------------------------------------------*/
 
 template<class B>
-SparseBlockIlu<B>::SparseBlockIlu<B>(const SparseBlockIlu<B>& I) : 
+SparseBlockIlu<B>::SparseBlockIlu(const SparseBlockIlu<B>& I) : 
   IluInterface(), SparseBlockMatrix<B>(I)
 {
   yp = new GlobalVector;
@@ -44,13 +44,13 @@ void SparseBlockIlu<B>::ReInit(const SparseStructureInterface* SI)
   int n = S->n();
   int ntot = S->ntotal();
 
-  US.memory(n,ntot);
+  SparseBlockMatrix<B>::US.memory(n,ntot);
 
-  smat.reserve(ntot);
-  smat.resize (ntot);
+  SparseBlockMatrix<B>::smat.reserve(ntot);
+  SparseBlockMatrix<B>::smat.resize (ntot);
 
   assert(ntot>0);
-  nc = smat[0].ncomp();
+  SparseBlockMatrix<B>::nc = SparseBlockMatrix<B>::smat[0].ncomp();
 
   p.reservesize(n,0);
   q.reservesize(n,0);
@@ -66,7 +66,7 @@ void SparseBlockIlu<B>::ConstructStructure(const nvector<int>& perm, const Matri
   int n = SP->n();
   int ntot = SP->nentries();
 
-  US.memory(n,ntot);
+  SparseBlockMatrix<B>::US.memory(n,ntot);
 
   assert(p.size()==perm.size());
 
@@ -85,12 +85,12 @@ void SparseBlockIlu<B>::ConstructStructure(const nvector<int>& perm, const Matri
     }
   nvector<int> ppi(zmax), picol(zmax);
 
-  US.start(0) = 0;
+  SparseBlockMatrix<B>::US.start(0) = 0;
   for(int i=0;i<n;i++)
     {
       int pi = p[i];
       int ni = SP->rowsize(pi);
-      US.start(i+1) = US.start(i) + ni;
+      SparseBlockMatrix<B>::US.start(i+1) = SparseBlockMatrix<B>::US.start(i) + ni;
 
       int count=0;
       for(int pos=SP->start(pi);pos<SP->stop(pi);pos++)
@@ -102,13 +102,13 @@ void SparseBlockIlu<B>::ConstructStructure(const nvector<int>& perm, const Matri
 
       for(int ii=0;ii<ni;ii++)
         {
-          US.col(US.start(i)+ ii) = picol[ppi[ii]];
+          SparseBlockMatrix<B>::US.col(SparseBlockMatrix<B>::US.start(i)+ ii) = picol[ppi[ii]];
         }
-      for(int pos=US.start(i);pos<US.stop(i);pos++)
+      for(int pos=SparseBlockMatrix<B>::US.start(i);pos<SparseBlockMatrix<B>::US.stop(i);pos++)
         {
-          if(US.col(pos)==i)
+          if(SparseBlockMatrix<B>::US.col(pos)==i)
             {
-              US.diag(i) = pos;
+              SparseBlockMatrix<B>::US.diag(i) = pos;
               continue;
             }
         }
@@ -125,7 +125,7 @@ void SparseBlockIlu<B>::copy_entries(const MatrixInterface* A)
   const ColumnDiagStencil* AS = dynamic_cast<const ColumnDiagStencil*>(MM->GetStencil());
   assert(AS);
 
-  for(int i=0;i<US.n();i++)
+  for(int i=0;i<SparseBlockMatrix<B>::US.n();i++)
     {
       int pi = p[i];
 
@@ -134,12 +134,12 @@ void SparseBlockIlu<B>::copy_entries(const MatrixInterface* A)
           int j   = AS->col(posA);
           int pj  = q[j];
           bool found=0;
-          for(int pos=US.start(i); pos<US.stop(i); pos++)
+          for(int pos=SparseBlockMatrix<B>::US.start(i); pos<SparseBlockMatrix<B>::US.stop(i); pos++)
             {
-              int k = US.col(pos);
+              int k = SparseBlockMatrix<B>::US.col(pos);
               if(k==pj)	
           {
-            *mat(pos) += *MM->mat(posA);
+            *SparseBlockMatrix<B>::mat(pos) += *MM->mat(posA);
             found=1;
             break;
           }
@@ -149,7 +149,7 @@ void SparseBlockIlu<B>::copy_entries(const MatrixInterface* A)
               std::cout << "not found " << std::endl;
               std::cout << *MM->mat(posA) << std::endl;
               
-      //	      *mat(US.diag(i)) += *MM.mat(posA);	
+      //	      *SparseBlockMatrix<B>::mat(SparseBlockMatrix<B>::US.diag(i)) += *MM.mat(posA);	
             }
         }
     }
@@ -163,7 +163,7 @@ void SparseBlockIlu<B>::hin(const GlobalVector& x) const
   yp->ncomp() = x.ncomp();
   yp->reservesize(x.n());
 
-  for(int i=0;i<US.n();i++)  yp->equ_node(i,1.,p[i],x);
+  for(int i=0;i<SparseBlockMatrix<B>::US.n();i++)  yp->equ_node(i,1.,p[i],x);
 }
 
 /*-------------------------------------------------------------*/
@@ -171,7 +171,7 @@ void SparseBlockIlu<B>::hin(const GlobalVector& x) const
 template<class B>
 void SparseBlockIlu<B>::her(GlobalVector& x) const
 {
-  for(int i=0;i<US.n();i++)  x.equ_node(i,1.,q[i],*yp);
+  for(int i=0;i<SparseBlockMatrix<B>::US.n();i++)  x.equ_node(i,1.,q[i],*yp);
 }
 
 /*-------------------------------------------------------------*/
@@ -179,12 +179,12 @@ void SparseBlockIlu<B>::her(GlobalVector& x) const
 template<class B>
 void SparseBlockIlu<B>::forward() const
 {
-  for(int i=1; i<US.n(); i++)
+  for(int i=1; i<SparseBlockMatrix<B>::US.n(); i++)
     {
-      int ende = US.diag(i); 
-      for(int pos=US.start(i); pos<ende; pos++)
+      int ende = SparseBlockMatrix<B>::US.diag(i); 
+      for(int pos=SparseBlockMatrix<B>::US.start(i); pos<ende; pos++)
         {
-          mat(pos)->subtract(yp->start(i),yp->start(US.col(pos)));
+          SparseBlockMatrix<B>::mat(pos)->subtract(yp->start(i),yp->start(SparseBlockMatrix<B>::US.col(pos)));
         }
     }
 }
@@ -194,14 +194,14 @@ void SparseBlockIlu<B>::forward() const
 template<class B>
 void SparseBlockIlu<B>::backward() const
 {
-  for(int i=US.n()-1; i>=0; i--)
+  for(int i=SparseBlockMatrix<B>::US.n()-1; i>=0; i--)
     {
-      int ende = US.diag(i); 
-      for(int pos=US.stop(i)-1; pos>ende; pos--)
+      int ende = SparseBlockMatrix<B>::US.diag(i); 
+      for(int pos=SparseBlockMatrix<B>::US.stop(i)-1; pos>ende; pos--)
         {
-          mat(pos)->subtract(yp->start(i),yp->start(US.col(pos)));
+          SparseBlockMatrix<B>::mat(pos)->subtract(yp->start(i),yp->start(SparseBlockMatrix<B>::US.col(pos)));
         }
-      mat(US.diag(i))->vmult(yp->start(i));
+      SparseBlockMatrix<B>::mat(SparseBlockMatrix<B>::US.diag(i))->vmult(yp->start(i));
     }
 }
 
@@ -221,29 +221,29 @@ void SparseBlockIlu<B>::solve(GlobalVector& x) const
 template<class B>
 void SparseBlockIlu<B>::compute_ilu()
 {
-  for(int i=0; i<US.n(); i++)
+  for(int i=0; i<SparseBlockMatrix<B>::US.n(); i++)
     {
-      for (int pk=US.start(i); pk<US.diag(i); pk++)
+      for (int pk=SparseBlockMatrix<B>::US.start(i); pk<SparseBlockMatrix<B>::US.diag(i); pk++)
         {
-          int k = US.col(pk);
+          int k = SparseBlockMatrix<B>::US.col(pk);
 
-          *mat(pk) *= *mat(US.diag(k));   /*  a(i,k) *= a(k,k) */
+          *SparseBlockMatrix<B>::mat(pk) *= *SparseBlockMatrix<B>::mat(SparseBlockMatrix<B>::US.diag(k));   /*  a(i,k) *= a(k,k) */
 
-          for (int pj=US.diag(k)+1; pj<US.stop(k); pj++)
+          for (int pj=SparseBlockMatrix<B>::US.diag(k)+1; pj<SparseBlockMatrix<B>::US.stop(k); pj++)
             {
-              int j  = US.col(pj);
+              int j  = SparseBlockMatrix<B>::US.col(pj);
               // suche ph
-              for (int ph=US.start(i); ph<US.stop(i); ph++)
+              for (int ph=SparseBlockMatrix<B>::US.start(i); ph<SparseBlockMatrix<B>::US.stop(i); ph++)
                 {
-                  if (US.col(ph)==j)
+                  if (SparseBlockMatrix<B>::US.col(ph)==j)
                     {
-                      mat(ph) -> submult(*mat(pk),*mat(pj));
+                      SparseBlockMatrix<B>::mat(ph) -> submult(*SparseBlockMatrix<B>::mat(pk),*SparseBlockMatrix<B>::mat(pj));
                       break;
                     }
                 }
             }
         }
-      mat(US.diag(i)) -> inverse();
+      SparseBlockMatrix<B>::mat(SparseBlockMatrix<B>::US.diag(i)) -> inverse();
     }
 }
 
@@ -257,10 +257,10 @@ void SparseBlockIlu<B>::modify(int c, double s)
       double sum=0.;
       for(int pos=start(i);pos<stop(i);pos++)
         {
-           sum += fabs(smat[pos](c,c));
+           sum += fabs(SparseBlockMatrix<B>::smat[pos](c,c));
         }
-      sum -= fabs(smat[diag(i)](c,c));
-      smat[diag(i)].diag(c) += s*sum;
+      sum -= fabs(SparseBlockMatrix<B>::smat[diag(i)](c,c));
+      SparseBlockMatrix<B>::smat[diag(i)].diag(c) += s*sum;
     }
 }
 

@@ -34,7 +34,7 @@ class CompVector : public nvector<T>
     {
       N = 1;
       nvector<T>::reservesize(u.size());
-      copy(u.begin(),u.end(),begin());
+      copy(u.begin(),u.end(),nvector<T>::begin());
     }
 
   CompVector(const CompVector& u)
@@ -48,12 +48,12 @@ class CompVector : public nvector<T>
        return *this;
      }
 
-  size_t  n() const { return size()/N; } 
+  size_t  n() const { return nvector<T>::size()/N; } 
 
-  const_iterator  start(int i) const { return begin() + i*N; }
-  iterator        start(int i)       { return begin() + i*N; }
-  const_iterator  stop (int i) const { return begin() + (i+1)*N; }
-  iterator        stop (int i)       { return begin() + (i+1)*N; }
+  const_iterator  start(int i) const { return std::vector<T>::begin() + i*N; }
+  iterator        start(int i)       { return std::vector<T>::begin() + i*N; }
+  const_iterator  stop (int i) const { return std::vector<T>::begin() + (i+1)*N; }
+  iterator        stop (int i)       { return std::vector<T>::begin() + (i+1)*N; }
 
   const T& operator()(int i, int c) const {return *(start(i)+c);}
   T&       operator()(int i, int c)       {return *(start(i)+c);}
@@ -63,7 +63,7 @@ class CompVector : public nvector<T>
   void ReInit(const CompVector& u) {
     N = u.ncomp();
     nvector<T>::reservesize(u.size());
-    copy(u.begin(),u.end(),begin());
+    copy(u.begin(),u.end(),nvector<T>::begin());
   }
   
   void reservesize(size_t n, const T& s=0) { nvector<T>::reservesize(n*N,s); }
@@ -162,8 +162,8 @@ class CompVector : public nvector<T>
 
   void zero_comp(int c)
     {
-      iterator       p = begin()+c;
-      while(p<end()) {*p = 0.; p+=N;}
+      iterator       p = std::vector<T>::begin()+c;
+      while(p<nvector<T>::end()) {*p = 0.; p+=N;}
     }
 
   void zero_node(int i)
@@ -197,8 +197,8 @@ class CompVector : public nvector<T>
   double CompScp(int c, const CompVector<T>& v) const
     {
       double d = 0.;
-      const_iterator first  = begin()+c;
-      const_iterator last   = end();
+      const_iterator first  = std::vector<T>::begin()+c;
+      const_iterator last   = std::vector<T>::end();
       const_iterator first2  = v.begin()+c;
       
       while( first < last)
@@ -212,8 +212,8 @@ class CompVector : public nvector<T>
   double CompNormL8(int c) const
     {
       double d = 0;
-      const_iterator first  = begin()+c;
-      const_iterator last   = end();
+      const_iterator first  = std::vector<T>::begin()+c;
+      const_iterator last   = std::vector<T>::end();
       
       while( first < last)
         {
@@ -225,8 +225,8 @@ class CompVector : public nvector<T>
   double CompMin(int c) const
     {
       double d = 1.e40;
-      const_iterator first  = begin()+c;
-      const_iterator last   = end();
+      const_iterator first  = std::vector<T>::begin()+c;
+      const_iterator last   = std::vector<T>::end();
       
       while( first < last)
         {
@@ -238,8 +238,8 @@ class CompVector : public nvector<T>
   double CompMax(int c) const
     {
       double d = -1e14;
-      const_iterator first  = begin()+c;
-      const_iterator last   = end();
+      const_iterator first  = std::vector<T>::begin()+c;
+      const_iterator last   = std::vector<T>::end();
       
       while( first < last)
         {
@@ -251,8 +251,8 @@ class CompVector : public nvector<T>
   //////////////////////////////////////
   void SetMax(int c, double val)
     {
-      iterator first  = begin()+c;
-      const_iterator last   = end();
+      iterator first  = std::vector<T>::begin()+c;
+      const_iterator last   = std::vector<T>::end();
       
       while( first < last)
 	{
@@ -276,8 +276,8 @@ class CompVector : public nvector<T>
     }
   void CompAdd(int c, double d)
     {
-      iterator       first  = begin()+c;
-      const_iterator last   = end();
+      iterator       first  = std::vector<T>::begin()+c;
+      const_iterator last   = std::vector<T>::end();
       
       while( first < last)
         {
@@ -287,9 +287,9 @@ class CompVector : public nvector<T>
     }
   void CompAdd(int c, double d,  const CompVector& y)
     {
-      iterator       first  = begin()+c;
+      iterator       first  = std::vector<T>::begin()+c;
       const_iterator first2 = y.begin()+c;
-      const_iterator last   = end();
+      const_iterator last   = std::vector<T>::end();
       
       while( first < last)
         {
@@ -300,8 +300,8 @@ class CompVector : public nvector<T>
     }
   void CompEq(int c, double d)
     {
-      iterator       first  = begin()+c;
-      const_iterator last   = end();
+      iterator       first  = std::vector<T>::begin()+c;
+      const_iterator last   = std::vector<T>::end();
       
       while( first < last)
         {
@@ -311,9 +311,9 @@ class CompVector : public nvector<T>
     }
   void CompEq(int c, double d,  const CompVector& y)
     {
-      iterator       first  = begin()+c;
+      iterator       first  = std::vector<T>::begin()+c;
       const_iterator first2 = y.begin()+c;
-      const_iterator last   = end();
+      const_iterator last   = std::vector<T>::end();
       
       while( first < last)
         {
@@ -325,8 +325,8 @@ class CompVector : public nvector<T>
   double CompSum(int c) const
     {
       double d = 0.;
-      const_iterator first  = begin()+c;
-      const_iterator last   = end();
+      const_iterator first  = std::vector<T>::begin()+c;
+      const_iterator last   = std::vector<T>::end();
       
       while( first < last)
         {
@@ -338,8 +338,8 @@ class CompVector : public nvector<T>
   double CompNorm(int c) const
     {
       double d = 0.;
-      const_iterator first  = begin()+c;
-      const_iterator last   = end();
+      const_iterator first  = std::vector<T>::begin()+c;
+      const_iterator last   = std::vector<T>::end();
       
       while( first < last)
         {
@@ -354,8 +354,8 @@ class CompVector : public nvector<T>
 
       for(int c=0;c<N;c++)
         {
-          const_iterator       first   = begin()  +c;
-	  const_iterator last   = end();
+          const_iterator       first   = std::vector<T>::begin()  +c;
+	  const_iterator last   = std::vector<T>::end();
       
 	  while( first < last)
 	    {
@@ -370,9 +370,9 @@ class CompVector : public nvector<T>
     {
       for(int c=0;c<N;c++)
         {
-          iterator       first   = begin()  +c;
+          iterator       first   = std::vector<T>::begin()  +c;
           const_iterator first2  = y.begin()+c;
-          const_iterator last    = end();
+          const_iterator last    = std::vector<T>::end();
           while( first < last) 
             {
               *first += scp[c] * *first2;
@@ -387,9 +387,9 @@ class CompVector : public nvector<T>
 
       for(int c=0;c<N;c++)
         {
-          const_iterator first   = begin()  +c;
+          const_iterator first   = std::vector<T>::begin()  +c;
           const_iterator first2  = y.begin()+c;
-          const_iterator last    = end();
+          const_iterator last    = std::vector<T>::end();
           while( first < last) 
             {
               scp[c] += *first * *first2;
@@ -407,9 +407,9 @@ class CompVector : public nvector<T>
           for(int d=0;d<N;d++)
             {
               if(d>c) continue;
-              const_iterator first   = begin()  +c;
+              const_iterator first   = std::vector<T>::begin()  +c;
               const_iterator first2  = y.begin()+d;
-              const_iterator last    = end();
+              const_iterator last    = std::vector<T>::end();
               while( first < last) 
           {
             scp(c,d) += *first * *first2;
@@ -427,8 +427,8 @@ class CompVector : public nvector<T>
     }
   void Read(std::istream& s, int c)
     {
-      iterator first   = begin()+c;
-      const_iterator last    = end();
+      iterator first   = std::vector<T>::begin()+c;
+      const_iterator last    = std::vector<T>::end();
       while( first < last) 
         {
           s >> *first;
@@ -441,9 +441,9 @@ class CompVector : public nvector<T>
       out << ncomp() << " " << n() << std::endl << "[";
       
       int sizeT = sizeof(T);
-      for(int i=0; i<size(); i++)
+      for(int i=0; i<nvector<T>::size(); i++)
         {
-          out.write(reinterpret_cast<const char*>(&(operator[](i))),sizeT);
+          out.write(reinterpret_cast<const char*>(&(nvector<T>::operator[](i))),sizeT);
         }
       out << "]"; 
     }
@@ -457,9 +457,9 @@ class CompVector : public nvector<T>
       resize(n);
       
       int sizeT = sizeof(T);
-      for(int i=0; i<size(); i++)
+      for(int i=0; i<nvector<T>::size(); i++)
         {
-          in.read(reinterpret_cast<char*>(&(operator[](i))),sizeT);
+          in.read(reinterpret_cast<char*>(&(nvector<T>::operator[](i))),sizeT);
         }
       in >> cc;
     }

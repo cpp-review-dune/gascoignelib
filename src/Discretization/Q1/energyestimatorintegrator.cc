@@ -8,7 +8,7 @@ namespace Gascoigne
 {
 
 template<int DIM>
-EnergyEstimatorIntegrator<DIM>::EnergyEstimatorIntegrator<DIM>() : BasicIntegrator(), IF(NULL)
+EnergyEstimatorIntegrator<DIM>::EnergyEstimatorIntegrator() : BasicIntegrator(), IF(NULL)
 { 
 }
 

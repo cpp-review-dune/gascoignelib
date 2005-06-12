@@ -5,5 +5,5 @@
 
 namespace Gascoigne
 {
-// template CG<SolverInterface,StdMultiLevelSolver,NewMultiLevelGhostVector>;
+// template class CG<SolverInterface,StdMultiLevelSolver,VectorInterface>;
 }

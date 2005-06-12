@@ -5,7 +5,7 @@
 namespace Gascoigne
 {
 template<int N, class LineFormula>
-TensorFormula2d<N,LineFormula>::TensorFormula2d<N,LineFormula>() 
+TensorFormula2d<N,LineFormula>::TensorFormula2d() 
   : IntegrationFormula2d(N*N)
 {
   LineFormula L;

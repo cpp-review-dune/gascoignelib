@@ -13,7 +13,7 @@ ConvectionDiffusionEquation2d::ConvectionDiffusionEquation2d(const ParamFile* pa
   DFH.insert("betay", &_by   , 1.);
   
   FileScanner FS(DFH,paramfile,"Equation");
-};
+}
 
 /*---------------------------------------------------*/
 

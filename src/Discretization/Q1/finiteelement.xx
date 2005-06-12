@@ -5,7 +5,7 @@
 namespace Gascoigne
 {
 template<int DIM, int BDIM, class TRAFO, class BASE>
- FiniteElement<DIM,BDIM,TRAFO,BASE>::FiniteElement<DIM,BDIM,TRAFO,BASE>() : 
+ FiniteElement<DIM,BDIM,TRAFO,BASE>::FiniteElement() : 
    T(), B() 
 {
   grad.reserve(n());

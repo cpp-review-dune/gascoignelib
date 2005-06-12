@@ -15,16 +15,16 @@ namespace Gascoigne
 typedef Transformation2d<BaseQ12d>  TQ1_2D;
 typedef Transformation2d<BaseQ22d>  TQ2_2D;
 
-template FiniteElement<2,1,TQ1_2D,BaseQ22d>;
-template FiniteElement<2,1,TQ2_2D,BaseQ22d>;
-template FiniteElement<2,1,TQ1_2D,BaseQ12dPatch>;
+template class FiniteElement<2,1,TQ1_2D,BaseQ22d>;
+template class FiniteElement<2,1,TQ2_2D,BaseQ22d>;
+template class FiniteElement<2,1,TQ1_2D,BaseQ12dPatch>;
 
 /*-----------------------------------------------------*/
 
 typedef Transformation3d<BaseQ13d>  TQ1_3D;
 typedef Transformation3d<BaseQ23d>  TQ2_3D;
 
-template FiniteElement<3,2,TQ2_3D,BaseQ23d>;
-template FiniteElement<3,2,TQ1_3D,BaseQ13dPatch>;
+template class FiniteElement<3,2,TQ2_3D,BaseQ23d>;
+template class FiniteElement<3,2,TQ1_3D,BaseQ13dPatch>;
 }
 /*-----------------------------------------------------*/

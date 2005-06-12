@@ -8,7 +8,7 @@ using namespace std;
 namespace Gascoigne
 {
 template<int DIM>
-GlsIntegrator<DIM>::GlsIntegrator<DIM>() : BasicIntegrator()
+GlsIntegrator<DIM>::GlsIntegrator() : BasicIntegrator()
 {
   if (DIM==2)
     IF = new QuadGauss4;

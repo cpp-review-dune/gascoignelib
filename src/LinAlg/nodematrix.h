@@ -37,7 +37,7 @@ public:
 
   void identity()
     {
-      zero();
+    numfixarray<N*N,T>::zero();
       for(int d=0;d<N;d++)
         {
           value(d,d) = 1.;

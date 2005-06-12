@@ -21,11 +21,11 @@ protected:
   virtual void hin(const GlobalVector& x) const;
   virtual void her(GlobalVector& x) const;
 
-        int   n()          const { return US.n();};
-  const int&  start(int i) const { return US.start(i); }; 
-  const int&  stop (int i) const { return US.stop (i); }; 
-  const int&  col(int pos) const { return US.col(pos); };
-  const int&  diag(int i)  const { return US.diag(i); }; 
+  int   n()          const { return SparseBlockMatrix<B>::US.n();};
+  const int&  start(int i) const { return SparseBlockMatrix<B>::US.start(i); }; 
+  const int&  stop (int i) const { return SparseBlockMatrix<B>::US.stop (i); }; 
+  const int&  col(int pos) const { return SparseBlockMatrix<B>::US.col(pos); };
+  const int&  diag(int i)  const { return SparseBlockMatrix<B>::US.diag(i); }; 
 
   public:
 

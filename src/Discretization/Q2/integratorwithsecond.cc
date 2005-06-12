@@ -127,7 +127,7 @@ void IntegratorWithSecond<DIM>::hesse(const FemInterface& E, FemData& QH, const 
 template<int DIM>
 double IntegratorWithSecond<DIM>::ComputeDomainFunctional(const DomainFunctional& F, const FemInterface& FEM, const LocalVector& U, const LocalNodeData& Q) const
 {
-  const IntegrationFormulaInterface& IF = *FormFormula();
+  const IntegrationFormulaInterface& IF = *GalerkinIntegratorQ2<DIM>::FormFormula();
 
   Vertex<DIM> x, xi;
   double j = 0.;
@@ -138,15 +138,15 @@ double IntegratorWithSecond<DIM>::ComputeDomainFunctional(const DomainFunctional
       point_hesse(FEM,xi);
       double vol = FEM.J();
       double weight  = IF.w(k) * vol;
-      BasicIntegrator::universal_point(FEM,UH,U);
-      BasicIntegrator::universal_point(FEM,QH,Q);
+      BasicIntegrator::universal_point(FEM,GalerkinIntegratorQ2<DIM>::UH,U);
+      BasicIntegrator::universal_point(FEM,GalerkinIntegratorQ2<DIM>::QH,Q);
 
-      hesse(FEM,UH,U);
-      hesse(FEM,QH,Q);
+      hesse(FEM,GalerkinIntegratorQ2<DIM>::UH,U);
+      hesse(FEM,GalerkinIntegratorQ2<DIM>::QH,Q);
 
       FEM.x(x);
-      F.SetFemData(QH);
-      j += weight * F.J(UH,x);
+      F.SetFemData(GalerkinIntegratorQ2<DIM>::QH);
+      j += weight * F.J(GalerkinIntegratorQ2<DIM>::UH,x);
     }
   return j;
 }
@@ -158,7 +158,7 @@ void IntegratorWithSecond<DIM>::Rhs(const DomainRightHandSide& f, LocalVector& F
 {
   F.ReInit(f.GetNcomp(),FEM.n());
 
-  const IntegrationFormulaInterface& IF = *FormFormula();
+  const IntegrationFormulaInterface& IF = *GalerkinIntegratorQ2<DIM>::FormFormula();
 
   F.zero();
   Vertex<DIM> x, xi;
@@ -169,16 +169,16 @@ void IntegratorWithSecond<DIM>::Rhs(const DomainRightHandSide& f, LocalVector& F
       point_hesse(FEM,xi);
       double vol = FEM.J();
       double weight  = IF.w(k) * vol;
-      BasicIntegrator::universal_point(FEM,QH,Q);
-      hesse(FEM,QH,Q);
+      GalerkinIntegratorQ2<DIM>::universal_point(FEM,GalerkinIntegratorQ2<DIM>::QH,Q);
+      hesse(FEM,GalerkinIntegratorQ2<DIM>::QH,Q);
 
-      f.SetFemData(QH);
+      f.SetFemData(GalerkinIntegratorQ2<DIM>::QH);
       FEM.x(x);
       for (int i=0;i<FEM.n();i++)
 	{
-	  FEM.init_test_functions(NN,weight,i);
-	  init_test_hesse(FEM, NN, weight, i);
-	  f(F.start(i),NN,x);
+        FEM.init_test_functions(GalerkinIntegratorQ2<DIM>::NN,weight,i);
+        init_test_hesse(FEM, GalerkinIntegratorQ2<DIM>::NN, weight, i);
+        f(F.start(i),GalerkinIntegratorQ2<DIM>::NN,x);
 	}
     }
 }

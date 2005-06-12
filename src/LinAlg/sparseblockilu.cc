@@ -6,11 +6,11 @@
 
 namespace Gascoigne
 {
-template SparseBlockIlu<FMatrixBlock<1> >;
-template SparseBlockIlu<FMatrixBlock<2> >;
-template SparseBlockIlu<FMatrixBlock<3> >;
-template SparseBlockIlu<FMatrixBlock<4> >;
+template class SparseBlockIlu<FMatrixBlock<1> >;
+template class SparseBlockIlu<FMatrixBlock<2> >;
+template class SparseBlockIlu<FMatrixBlock<3> >;
+template class SparseBlockIlu<FMatrixBlock<4> >;
 
 
-template SparseBlockIlu<CFDBlock3d>;
+template class SparseBlockIlu<CFDBlock3d>;
 }

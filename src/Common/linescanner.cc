@@ -18,7 +18,7 @@ LineScanner::LineScanner(const string& filename) :
       cout << "LineScanner::cannot open file " << filename << endl;
       abort();
     }
-};
+}
 
 /***************************************************/
 

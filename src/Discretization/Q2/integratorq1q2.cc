@@ -311,6 +311,6 @@ double IntegratorQ1Q2<DIM>::IntegratorQ1Q2::MassMatrix(EntryMatrix& E, const Fem
 
 /*---------------------------------------------------*/
 
-template IntegratorQ1Q2<2>;
-template IntegratorQ1Q2<3>;
+template class IntegratorQ1Q2<2>;
+template class IntegratorQ1Q2<3>;
 }

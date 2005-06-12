@@ -5,21 +5,16 @@
 namespace Gascoigne
 {
 template<int N>
-EdgeArray<N>::EdgeArray<N>() : fixarray<N,int>() {}
+EdgeArray<N>::EdgeArray() : fixarray<N,int>() {}
 
 template<int N>
-EdgeArray<N>::EdgeArray<N>(const int& d) : fixarray<N,int>(d) {}
+EdgeArray<N>::EdgeArray(const int& d) : fixarray<N,int>(d) {}
 
 template<int N>
-EdgeArray<N>::EdgeArray<N>(const fixarray<N,int>& e) : fixarray<N,int>(e) {};
+EdgeArray<N>::EdgeArray(const fixarray<N,int>& e) : fixarray<N,int>(e) {}
 
 template<int N>
-EdgeArray<N>::EdgeArray<N>(const EdgeArray<N>& e) : fixarray<N,int>(e) {};
-
-/*--------------------------------------------------------------*/
-
-template class EdgeArray<2>;
-template class EdgeArray<4>;
+EdgeArray<N>::EdgeArray(const EdgeArray<N>& e) : fixarray<N,int>(e) {}
 
 /*--------------------------------------------------------------*/
 
@@ -84,6 +79,11 @@ int EdgeArray<4>::sum() const
 { 
   return (*this)[0]+(*this)[1]+(*this)[2]+(*this)[3];
 }
+
+/*--------------------------------------------------------------*/
+
+template class EdgeArray<2>;
+template class EdgeArray<4>;
 }
 
 /*--------------------------------------------------------------*/

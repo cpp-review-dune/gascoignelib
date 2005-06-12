@@ -115,7 +115,8 @@ public:
   
   std::istream& get(std::istream &s)
     {
-      for(fixarray<N,T>::iterator p = begin();p!=end();p++) s >> *p;
+    typename fixarray<N,T>::iterator p;
+    for(p = begin();p!=end();p++) s >> *p;
       return s;
     }
   

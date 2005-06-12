@@ -47,7 +47,7 @@ class Transformation2d
 /*-----------------------------------------------------*/
 
 template<class BASE>
-inline Transformation2d<BASE>::Transformation2d<BASE>() : B()
+inline Transformation2d<BASE>::Transformation2d() : B()
 {
   int n = B.n();
   X.memory(2,n);

@@ -16,7 +16,7 @@ protected:
   TimeInfo    _timeinfo;
   virtual std::string SolveTimePrimal(VectorInterface& u, VectorInterface& f);
 
-  void TimeInfoBroadcast();
+  virtual void TimeInfoBroadcast();
   void InitSolution(VectorInterface& u);
   void InitSolution(VectorInterface& u, VectorInterface& f);
 

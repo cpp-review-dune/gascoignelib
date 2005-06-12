@@ -2,8 +2,8 @@
 
 namespace Gascoigne
 {
-  template FMatrixBlock<1>;
-  template FMatrixBlock<2>;
-  template FMatrixBlock<3>;
-  template FMatrixBlock<4>;
+  template class FMatrixBlock<1>;
+  template class FMatrixBlock<2>;
+  template class FMatrixBlock<3>;
+  template class FMatrixBlock<4>;
 }

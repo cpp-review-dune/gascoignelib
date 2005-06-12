@@ -764,7 +764,7 @@ void HierarchicalMesh2d::boundary_newton2d()
 	  GetCurvedShapes().newton(color, vertexs2d[bl.vertex(1)]);
 	}
     }
-};
+}
 
 /*---------------------------------------------------*/
 

@@ -5,11 +5,11 @@ namespace Gascoigne
 /*-----------------------------------------------------*/
 
 template<int DIM, int BDIM, class TRAFO, class BASE>
- FiniteElementWithSecond<DIM,BDIM,TRAFO,BASE>::FiniteElementWithSecond<DIM,BDIM,TRAFO,BASE>() 
+ FiniteElementWithSecond<DIM,BDIM,TRAFO,BASE>::FiniteElementWithSecond() 
    :  FiniteElement<DIM,BDIM,TRAFO,BASE>()
 {
-  hesse.reserve(n());
-  hesse.resize(n(),nmatrix<double> (DIM,DIM));
+  hesse.reserve(FiniteElement<DIM,BDIM,TRAFO,BASE>::n());
+  hesse.resize(FiniteElement<DIM,BDIM,TRAFO,BASE>::n(),nmatrix<double> (DIM,DIM));
 }
 
 /*-----------------------------------------------------*/

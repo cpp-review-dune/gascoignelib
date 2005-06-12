@@ -8,22 +8,22 @@ namespace Gascoigne
 /*----------------------------------------- */
 
 template<int DIM>
-LpsIntegratorQ2<DIM>::LpsIntegratorQ2<DIM>() : LpsIntegrator<DIM>()
+LpsIntegratorQ2<DIM>::LpsIntegratorQ2() : LpsIntegrator<DIM>()
 {
   int femn;
   if (DIM==2)
     {
-      _IF = new QuadGauss9;
+      LpsIntegrator<DIM>::_IF = new QuadGauss9;
       femn = 9;
     }
   else
     {
-      _IF = new HexGauss27;
+      LpsIntegrator<DIM>::_IF = new HexGauss27;
       femn = 27;
     }
-  assert(_IF);
+  assert(LpsIntegrator<DIM>::_IF);
 
-  MMM.resize(femn);
+  LpsIntegrator<DIM>::MMM.resize(femn);
 }
 
 /*----------------------------------------- */
@@ -31,23 +31,23 @@ LpsIntegratorQ2<DIM>::LpsIntegratorQ2<DIM>() : LpsIntegrator<DIM>()
 /*----------------------------------------- */
 
 template<int DIM>
-LpsIntegratorQ1<DIM>::LpsIntegratorQ1<DIM>() : LpsIntegrator<DIM>()
+LpsIntegratorQ1<DIM>::LpsIntegratorQ1() : LpsIntegrator<DIM>()
 {
   int femn;
   if (DIM==2)
     {
-      _IF = new PatchFormula2d<4,QuadGauss4>;
-      CellWeight = 0.25;
+      LpsIntegrator<DIM>::_IF = new PatchFormula2d<4,QuadGauss4>;
+      LpsIntegrator<DIM>::CellWeight = 0.25;
       femn = 9;
     }
   else
     {
-      _IF = new PatchFormula3d<8,HexGauss8>;
-      CellWeight = 0.125;
+      LpsIntegrator<DIM>::_IF = new PatchFormula3d<8,HexGauss8>;
+      LpsIntegrator<DIM>::CellWeight = 0.125;
       femn = 27;
     }
-  assert(_IF);
-  MMM.resize(femn);
+  assert(LpsIntegrator<DIM>::_IF);
+  LpsIntegrator<DIM>::MMM.resize(femn);
 }
 
 /*-----------------------------------------*/
@@ -90,8 +90,8 @@ void LpsIntegratorQ1<DIM>::ResetMatrix(EntryMatrix& E, int n, int ncomp) const
 
 /*-----------------------------------------------------------*/
 
-template LpsIntegratorQ1<2>;
-template LpsIntegratorQ1<3>;
-template LpsIntegratorQ2<2>;
-template LpsIntegratorQ2<3>;
+template class LpsIntegratorQ1<2>;
+template class LpsIntegratorQ1<3>;
+template class LpsIntegratorQ2<2>;
+template class LpsIntegratorQ2<3>;
 }

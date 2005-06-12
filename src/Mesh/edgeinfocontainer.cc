@@ -9,7 +9,7 @@ namespace Gascoigne
 template<int DIM>
 EdgeInfoContainer<DIM>::~EdgeInfoContainer<DIM>()
 {
-  for (int i=0; i<size(); i++)
+  for (int i=0; i<nvector<EdgeInfo<DIM>*>::size(); i++)
     {
       if ((*this)[i])
 	{
@@ -17,7 +17,7 @@ EdgeInfoContainer<DIM>::~EdgeInfoContainer<DIM>()
 	  (*this)[i] = NULL;
 	}
     }
-  resize(0);
+  nvector<EdgeInfo<DIM>*>::resize(0);
 }
 
 /**********************************************************/
@@ -25,12 +25,12 @@ EdgeInfoContainer<DIM>::~EdgeInfoContainer<DIM>()
 template<int DIM>
 void EdgeInfoContainer<DIM>::BasicInit(const HierarchicalMesh* HM, int ncomp)
 {
-  resize(0);
+  nvector<EdgeInfo<DIM>*>::resize(0);
   _HMP   = HM;
   _ncomp = ncomp;
 
   resize(_HMP->nedges());
-  for (int i=0; i<size(); i++)
+  for (int i=0; i<nvector<EdgeInfo<DIM>*>::size(); i++)
     {
       (*this)[i]=NULL;
     }
@@ -155,7 +155,7 @@ void EdgeInfoContainer<3>::ModifyHanging()
 template<int DIM>
 void EdgeInfoContainer<DIM>::ShowStatistics() const
 {
-  for (int i=0; i<size(); i++)
+  for (int i=0; i<nvector<EdgeInfo<DIM>*>::size(); i++)
     {
       if ((*this)[i]!=NULL)
 	{

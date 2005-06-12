@@ -4,5 +4,5 @@
 
 namespace Gascoigne
 {
-template GMRES<StdSolver,StdMultiLevelSolver,VectorInterface>;
+  template class GMRES<StdSolver,StdMultiLevelSolver,VectorInterface>;
 }

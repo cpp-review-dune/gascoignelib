@@ -7,7 +7,7 @@ using namespace std;
 namespace Gascoigne
 {
 template<int DIM>
-GalerkinIntegrator<DIM>::GalerkinIntegrator<DIM>() : BasicIntegrator(),
+GalerkinIntegrator<DIM>::GalerkinIntegrator() : BasicIntegrator(),
   IFF(NULL), IFE(NULL), IFB(NULL), IFM(NULL)
 {
 }

@@ -46,7 +46,7 @@ class Transformation3d
 /*-----------------------------------------------------*/
 
 template<class BASE>
-inline Transformation3d<BASE>::Transformation3d<BASE>() : B()
+inline Transformation3d<BASE>::Transformation3d() : B()
 {
   X  .memory(3,B.n());
   dt .memory(3,3);

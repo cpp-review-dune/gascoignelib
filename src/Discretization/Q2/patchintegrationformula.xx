@@ -6,7 +6,7 @@ namespace Gascoigne
 /*------------------------------------------------------------*/
 
 template<int N, class INT>
-PatchFormula1d<N,INT>::PatchFormula1d<N,INT>() : IntegrationFormula1d(2*N)
+PatchFormula1d<N,INT>::PatchFormula1d() : IntegrationFormula1d(2*N)
 {
   INT         I;
 
@@ -34,7 +34,7 @@ PatchFormula1d<N,INT>::PatchFormula1d<N,INT>() : IntegrationFormula1d(2*N)
 
 /*------------------------------------------------------------*/
 template<int N, class INT>
-PatchFormula2d<N,INT>::PatchFormula2d<N,INT>() : IntegrationFormula2d(4*N)
+PatchFormula2d<N,INT>::PatchFormula2d() : IntegrationFormula2d(4*N)
 {
   INT         I;
 
@@ -75,7 +75,7 @@ PatchFormula2d<N,INT>::PatchFormula2d<N,INT>() : IntegrationFormula2d(4*N)
 /*------------------------------------------------------------*/
 
 template<int N, class INT>
-PatchFormula3d<N,INT>::PatchFormula3d<N,INT>() : IntegrationFormula3d(8*N)
+PatchFormula3d<N,INT>::PatchFormula3d() : IntegrationFormula3d(8*N)
 {
   INT         I;
   if(I.n()!=N) {std::cerr << "PatchFormula3d: error\n";abort();}

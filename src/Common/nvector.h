@@ -47,7 +47,7 @@ public:
 
   void write_data(std::ostream& s) const
   {
-    s << size() << std::endl << *this;
+    s << std::vector<T>::size() << std::endl << *this;
   }
 
   void read_data(std::istream& s)
@@ -59,14 +59,14 @@ public:
   }
 
   const T& secure_access(int i) const {
-    assert(i<size());
+    assert(i<std::vector<T>::size());
     assert(i>=0);
-    return operator[](i);
+    return std::vector<T>::operator[](i);
   }
   T& secure_access(int i) {
-    assert(i<size());
+    assert(i<std::vector<T>::size());
     assert(i>=0);
-    return operator[](i);
+    return std::vector<T>::operator[](i);
   }
 
 
@@ -127,8 +127,8 @@ public:
 template<class T>
 inline double nvector<T>::norm() const
 {
-  const_iterator first  = begin();
-  const_iterator last   = end();
+  const_iterator first  = std::vector<T>::begin();
+  const_iterator last   = std::vector<T>::end();
 
   T n(0);
   while( first != last)
@@ -144,8 +144,8 @@ inline double nvector<T>::norm() const
 template<class T>
 inline T nvector<T>::sum() const
 {
-  const_iterator first  = begin();
-  const_iterator last   = end();
+  const_iterator first  = std::vector<T>::begin();
+  const_iterator last   = std::vector<T>::end();
 
   T n(0);
   while( first != last)
@@ -160,8 +160,8 @@ inline T nvector<T>::sum() const
 template<class T>
 inline double nvector<T>::norm_l1() const
 {
-  const_iterator first  = begin();
-  const_iterator last   = end();
+  const_iterator first  = std::vector<T>::begin();
+  const_iterator last   = std::vector<T>::end();
 
   double n(0);
   while( first != last)
@@ -176,8 +176,8 @@ inline double nvector<T>::norm_l1() const
 template<class T>
 inline double nvector<T>::norm_l8() const
 {
-  const_iterator first  = begin();
-  const_iterator last   = end();
+  const_iterator first  = std::vector<T>::begin();
+  const_iterator last   = std::vector<T>::end();
 
   double n(0);
   while( first != last)
@@ -193,8 +193,8 @@ inline double nvector<T>::norm_l8() const
 template<class T>
 inline nvector<T>& nvector<T>::operator=(const T& d)
 {
-  iterator  first  = begin();
-  const_iterator last   = end();
+  iterator  first  = std::vector<T>::begin();
+  const_iterator last   = std::vector<T>::end();
 
   while( first != last)
     {
@@ -208,10 +208,10 @@ inline nvector<T>& nvector<T>::operator=(const T& d)
 template<class T>
 inline nvector<T>& nvector<T>::operator=(const std::vector<T>& v)
 {
-  assert(size()==v.size());
-  iterator  first  = begin();
-  const_iterator last   = end();
-  const_iterator vfirst = v.begin();
+  assert(std::vector<T>::size()==v.std::vector<T>::size());
+  iterator  first  = std::vector<T>::begin();
+  const_iterator last   = std::vector<T>::end();
+  const_iterator vfirst = v.std::vector<T>::begin();
 
   while( first != last)
     {
@@ -225,8 +225,8 @@ inline nvector<T>& nvector<T>::operator=(const std::vector<T>& v)
 template<class T>
 inline nvector<T>& nvector<T>::operator*=(const T& d)
 {
-  iterator  first  = begin();
-  const_iterator last   = end();
+  iterator  first  = std::vector<T>::begin();
+  const_iterator last   = std::vector<T>::end();
 
   while(first != last)
     {
@@ -240,8 +240,8 @@ inline nvector<T>& nvector<T>::operator*=(const T& d)
 template<class T>
 inline void nvector<T>::zero()
 {
-  iterator  first  = begin();
-  const_iterator last   = end();
+  iterator  first  = std::vector<T>::begin();
+  const_iterator last   = std::vector<T>::end();
 
   while( first != last)
     {
@@ -256,8 +256,8 @@ inline double nvector<T>::max() const
 {
   double d = 0;//std::numeric_limits<double>::min();
 /*   double d = std::numeric_limits<double>::min(); */
-  const_iterator first  = begin();
-  const_iterator last   = end();
+  const_iterator first  = std::vector<T>::begin();
+  const_iterator last   = std::vector<T>::end();
 
   while( first != last)
     {
@@ -274,8 +274,8 @@ inline double nvector<T>::min() const
 {
   double d = 100000.;//std::numeric_limits<double>::max();
 /*   double d = std::numeric_limits<double>::max(); */
-  const_iterator first  = begin();
-  const_iterator last   = end();
+  const_iterator first  = std::vector<T>::begin();
+  const_iterator last   = std::vector<T>::end();
 
   while( first != last)
     {
@@ -290,8 +290,8 @@ inline double nvector<T>::min() const
 template<class T>
 inline T nvector<T>::operator* (const nvector<T>& v) const
 {
-  const_iterator first  = begin();
-  const_iterator last   = end();
+  const_iterator first  = std::vector<T>::begin();
+  const_iterator last   = std::vector<T>::end();
   const_iterator first2 = v.begin();
 
   T d(0);
@@ -309,8 +309,8 @@ inline T nvector<T>::operator* (const nvector<T>& v) const
 template<class T>
 inline void nvector<T>::equ (const T& d)
 {
-  iterator  first  = begin();
-  const_iterator last   = end();
+  iterator  first  = std::vector<T>::begin();
+  const_iterator last   = std::vector<T>::end();
 
   while(first != last)
     {
@@ -323,8 +323,8 @@ inline void nvector<T>::equ (const T& d)
 template<class T>
 inline void nvector<T>::equ (const T& d, const nvector<T>& v)
 {
-  iterator  first  = begin();
-  const_iterator last   = end();
+  iterator  first  = std::vector<T>::begin();
+  const_iterator last   = std::vector<T>::end();
   const_iterator first2 = v.begin();
 
   while(first != last)
@@ -339,8 +339,8 @@ template<class T>
 inline void nvector<T>::equ (const T& d, const nvector<T>& v, 
 			     const T& e, const nvector<T>& w)
 {
-  iterator  first  = begin();
-  const_iterator last   = end();
+  iterator  first  = std::vector<T>::begin();
+  const_iterator last   = std::vector<T>::end();
   const_iterator first2 = v.begin();
   const_iterator first3 = w.begin();
 
@@ -357,8 +357,8 @@ inline void nvector<T>::equ (const T& d, const nvector<T>& v,
 			     const T& e, const nvector<T>& w,
 			     const T& f, const nvector<T>& x)
 {
-  iterator  first  = begin();
-  const_iterator last   = end();
+  iterator  first  = std::vector<T>::begin();
+  const_iterator last   = std::vector<T>::end();
   const_iterator first2 = v.begin();
   const_iterator first3 = w.begin();
   const_iterator first4 = x.begin();
@@ -374,8 +374,8 @@ inline void nvector<T>::equ (const T& d, const nvector<T>& v,
 template<class T>
 inline void nvector<T>::sequ (const T& s, const T& d, const nvector<T>& v)
 {
-  iterator  first  = begin();
-  const_iterator last   = end();
+  iterator  first  = std::vector<T>::begin();
+  const_iterator last   = std::vector<T>::end();
   const_iterator first2 = v.begin();
 
   while(first != last)
@@ -390,8 +390,8 @@ inline void nvector<T>::sequ (const T& s, const T& d, const nvector<T>& v)
 template<class T>
 inline void nvector<T>::add (const T& d)
 {
-  iterator  first  = begin();
-  const_iterator last   = end();
+  iterator  first  = std::vector<T>::begin();
+  const_iterator last   = std::vector<T>::end();
 
   while(first != last)
     {
@@ -404,8 +404,8 @@ inline void nvector<T>::add (const T& d)
 template<class T>
 inline void nvector<T>::add (const T& d, const nvector<T>& v)
 {
-  iterator  first  = begin();
-  const_iterator last   = end();
+  iterator  first  = std::vector<T>::begin();
+  const_iterator last   = std::vector<T>::end();
   const_iterator first2 = v.begin();
 
   while(first != last)
@@ -420,8 +420,8 @@ template<class T>
 inline void nvector<T>::add (const T& d, const nvector<T>& v,
 			     const T& e, const nvector<T>& w)
 {
-  iterator  first  = begin();
-  const_iterator last   = end();
+  iterator  first  = std::vector<T>::begin();
+  const_iterator last   = std::vector<T>::end();
   const_iterator first2 = v.begin();
   const_iterator first3 = w.begin();
 
@@ -438,8 +438,8 @@ inline void nvector<T>::add (const T& d, const nvector<T>& v,
 			     const T& e, const nvector<T>& w,
 			     const T& f, const nvector<T>& x)
 {
-  iterator  first  = begin();
-  const_iterator last   = end();
+  iterator  first  = std::vector<T>::begin();
+  const_iterator last   = std::vector<T>::end();
   const_iterator first2 = v.begin();
   const_iterator first3 = w.begin();
   const_iterator first4 = x.begin();
@@ -455,8 +455,8 @@ inline void nvector<T>::add (const T& d, const nvector<T>& v,
 template<class T>
 inline void nvector<T>::sadd (const T& a, const T& d, const nvector<T>& v)
 {
-  iterator  first  = begin();
-  const_iterator last   = end();
+  iterator  first  = std::vector<T>::begin();
+  const_iterator last   = std::vector<T>::end();
   const_iterator first2 = v.begin();
 
   while(first != last)
@@ -471,12 +471,12 @@ inline void nvector<T>::sadd (const T& a, const T& d, const nvector<T>& v)
 template<class T>
 inline void nvector<T>::BinWrite(std::ostream& out) const
 {
-  out << size() << std::endl << "[";
+  out << std::vector<T>::size() << std::endl << "[";
   
   int sizeT = sizeof(T);
-  for(int i=0; i<size(); i++)
+  for(int i=0; i<std::vector<T>::size(); i++)
     {
-      out.write (reinterpret_cast<const char*>(&(operator[](i))),sizeT);
+      out.write (reinterpret_cast<const char*>(&(std::vector<T>::operator[](i))),sizeT);
     }
   out << "]"; 
 }
@@ -489,12 +489,12 @@ inline void nvector<T>::BinRead(std::istream& in)
   char c;
   int  n;
   in >> n >> c;
-  resize(n);
+  std::vector<T>::resize(n);
   
   int sizeT = sizeof(T);
-  for(int i=0; i<size(); i++)
+  for(int i=0; i<std::vector<T>::size(); i++)
     {
-      in.read(reinterpret_cast<char*>(&(operator[](i))),sizeT);
+      in.read(reinterpret_cast<char*>(&(nvector<T>::operator[](i))),sizeT);
     }
   in >> c;
 }
@@ -504,7 +504,7 @@ inline void nvector<T>::BinRead(std::istream& in)
 template<class T>
 inline int nvector<T>::find(const T& x) const
 {
-  for (int i=0; i<size(); i++)
+  for (int i=0; i<std::vector<T>::size(); i++)
     {
       if ((*this)[i]==x) return i;
     }

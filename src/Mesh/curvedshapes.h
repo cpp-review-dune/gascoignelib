@@ -22,13 +22,13 @@ class CurvedShapes : public std::map<int,BoundaryFunction<DIM>* >
   typedef typename std::map<int,BoundaryFunction<DIM>* >::iterator iterator;
 
   ~CurvedShapes() {
-  for (iterator p=begin();p!=end();++p)
+    for (iterator p=std::map<int,BoundaryFunction<DIM>* >::begin();p!=std::map<int,BoundaryFunction<DIM>* >::end();++p)
     if (p->second) {
       std::cerr<< "not deleting shape: "<< p->second->GetName() << std::endl;
     }
   }
 
-  const BoundaryFunction<DIM>& GetShape(int col) const { return *find(col)->second;}
+  const BoundaryFunction<DIM>& GetShape(int col) const { return *this->find(col)->second;}
 
   void AddShape(int col, BoundaryFunction<DIM>* f) {
     (*this)[col] = f;
@@ -36,9 +36,9 @@ class CurvedShapes : public std::map<int,BoundaryFunction<DIM>* >
   
   void newton(int col,Vertex<DIM>& V) { GetShape(col).newton(V); }
 
-  int Curved(int col) const { return (find(col)!=end());}
+    int Curved(int col) const { return (this->find(col)!=std::map<int,BoundaryFunction<DIM>* >::end());}
 
-  bool empty() const {return (size()==0);}
+    bool empty() const {return (std::map<int,BoundaryFunction<DIM>* >::size()==0);}
 };
 }
 

@@ -22,6 +22,6 @@ void GalerkinLpsIntegratorQ2<DIM>::Matrix(const Equation& EQ, EntryMatrix& E, co
 
 /*-----------------------------------------------------------*/
 
-template GalerkinLpsIntegratorQ2<2>;
-template GalerkinLpsIntegratorQ2<3>;
+template class GalerkinLpsIntegratorQ2<2>;
+template class GalerkinLpsIntegratorQ2<3>;
 }

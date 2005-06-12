@@ -85,11 +85,11 @@ public:
       return *this;
    }
 
-  const_iterator rowstart(int i) const {return begin()+mm*i;}
+  const_iterator rowstart(int i) const {return std::vector<T>::begin()+mm*i;}
   
   void identity()
     {
-      zero();
+    nvector<T>::zero();
       for(int i=0;i<n();i++)
 	{
 	  (*this)(i,i) = 1.;
@@ -123,7 +123,7 @@ public:
 
   void gram(const nmatrix<T>& B)
     {
-      zero();
+      nvector<T>::zero();
       for(int i=0;i<n();i++)
 	{
 	  for(int j=0;j<m();j++)
@@ -182,11 +182,11 @@ public:
   template<class VECTOR>
     void Mult(VECTOR& y, const VECTOR& x, double s=1.) const
     {
-      const_iterator                    p  = begin();
+      const_iterator                    p  = std::vector<T>::begin();
       typename VECTOR::iterator         py = y.begin();
       typename VECTOR::const_iterator   px;
       
-      while(p!=end())
+      while(p!=std::vector<T>::end())
 	{
 	  px = x.begin();
 	  for(int j=0;j<m();j++)
@@ -199,11 +199,11 @@ public:
   template<class VECTOR>
     void mult(VECTOR& y, const VECTOR& x) const
     {
-      const_iterator                    p  = begin();
+      const_iterator                    p  = std::vector<T>::begin();
       typename VECTOR::iterator         py = y.begin();
       typename VECTOR::const_iterator   px;
       
-      while(p!=end())
+      while(p!=std::vector<T>::end())
 	{
 	  px = x.begin();
 	  for(int j=0;j<m();j++)
@@ -216,11 +216,11 @@ public:
   template<class VECTOR>
     void multtrans(VECTOR& y, const VECTOR& x, double s=1.) const
     {
-      const_iterator                              p  = begin();
+      const_iterator                              p  = std::vector<T>::begin();
       typename VECTOR::iterator         py = y.begin();
       typename VECTOR::const_iterator   px = x.begin();
       
-      while(p!=end())
+      while(p!=std::vector<T>::end())
 	{
 	  py = y.begin();
 	  for(int j=0;j<m();j++)
@@ -235,11 +235,11 @@ public:
   template<class VECTOR>
     void multeq(VECTOR& y, const VECTOR& x, double s=1.) const
     {
-      const_iterator                              p  = begin();
+      const_iterator                              p  = std::vector<T>::begin();
       typename VECTOR::iterator         py = y.begin();
       typename VECTOR::const_iterator   px;
       
-      while(p!=end())
+      while(p!=std::vector<T>::end())
 	{
 	  px = x.begin();
 	  *py = 0.;
@@ -255,11 +255,11 @@ public:
     void mult_ad(VECTOR& y, const VECTOR& x) const
     {
       // vmult with the adjoint matrix
-      const_iterator                              p  = begin();
+      const_iterator                              p  = std::vector<T>::begin();
       typename VECTOR::iterator         py = y.begin();
       typename VECTOR::const_iterator   px = x.begin();
       
-      while(p!=end())
+      while(p!=std::vector<T>::end())
 	{
 	  py = y.begin();
 	  for(int j=0;j<m();j++)
@@ -275,9 +275,9 @@ public:
     void mult_ad(ITER1 py, ITER2 px, double s=1.) const
     {
       // vmult with the adjoint matrix
-      const_iterator    p  = begin();
+      const_iterator    p  = std::vector<T>::begin();
       
-      while(p!=end())
+      while(p!=std::vector<T>::end())
 	{
 	  for(int j=0;j<m();j++)
 	    {
@@ -292,10 +292,10 @@ public:
   template<class ITER1, class ITER2>
   void mult(ITER1 py, ITER2  px0, double s=1.) const
   {
-    const_iterator    p  = begin();
+    const_iterator    p  = std::vector<T>::begin();
     ITER2   px;
     
-    while(p!=end())
+    while(p!=std::vector<T>::end())
       {
 	px = px0;
 	for(int j=0;j<m();j++)
@@ -310,12 +310,12 @@ public:
     void multeq_ad(VECTOR& y, const VECTOR& x) const
     {
       // vmulteq with the adjoint matrix
-      const_iterator                              p  = begin();
+      const_iterator                              p  = std::vector<T>::begin();
       typename VECTOR::iterator         py = y.begin();
       typename VECTOR::const_iterator   px = x.begin();
       
       y.zero();
-      while(p!=end())
+      while(p!=std::vector<T>::end())
 	{
 	  for(int j=0;j<m();j++)
 	    {
@@ -331,14 +331,14 @@ public:
     void multeq_ad(ITER1 py, ITER2 px) const
     {
       // vmult with the adjoint matrix
-      const_iterator    p  = begin();
+      const_iterator    p  = std::vector<T>::begin();
       
       for(int i=0;i<m();i++)
 	{
 	  (*py++) = 0.;
 	}
       py -= m();
-      while(p!=end())
+      while(p!=std::vector<T>::end())
 	{
 	  for(int j=0;j<m();j++)
 	    {

@@ -4,11 +4,11 @@
 
 namespace Gascoigne
 {
-template SparseBlockMatrix<FMatrixBlock<1> >;
-template SparseBlockMatrix<FMatrixBlock<2> >;
-template SparseBlockMatrix<FMatrixBlock<3> >;
-template SparseBlockMatrix<FMatrixBlock<4> >;
+template class SparseBlockMatrix<FMatrixBlock<1> >;
+template class SparseBlockMatrix<FMatrixBlock<2> >;
+template class SparseBlockMatrix<FMatrixBlock<3> >;
+template class SparseBlockMatrix<FMatrixBlock<4> >;
 
 
-template SparseBlockMatrix<CFDBlock3d>;
+template class SparseBlockMatrix<CFDBlock3d>;
 }

@@ -48,7 +48,7 @@ public:
   void   submult(const FMatrixBlock<N>& B, const FMatrixBlock<N>& C)
   {
     // this -= B*C
-    nvector<float>::iterator p(begin());
+    nvector<float>::iterator p(numfixarray<N*N,float>::begin());
     for (char i=0; i<N; i++)
       {
 	for (char j=0; j<N; j++)
@@ -74,7 +74,7 @@ public:
 	{
 	  for (int j=0; j<N; j++)
 	    {
-	      value(i,j) += s*A(i,j);
+	      NodeMatrix<N,float>::value(i,j) += s*A(i,j);
 	    }
 	}
     }
@@ -82,14 +82,14 @@ public:
     {
       for (int i=0; i<N; i++)
 	{
-	  value(i,i) += s[i]*l;
+	  NodeMatrix<N,float>::value(i,i) += s[i]*l;
 	}
     }
   void add(double s, const TimePattern& TP);
 
   void cadd(double s, viterator p, const_viterator q0) const
     {
-      const_iterator pm = begin();
+      const_iterator pm = numfixarray<N*N,float>::begin();
       const_viterator pend = p+N;
       for ( ; p!=pend; p++)
 	{
@@ -104,7 +104,7 @@ public:
     }
   void caddtrans(double s, viterator p, const_viterator q0) const
     {
-      const_iterator pm = begin();
+      const_iterator pm = numfixarray<N*N,float>::begin();
 
       for (int k=0; k<N; k++)
 	{
@@ -119,7 +119,7 @@ public:
     }
   void subtract(viterator p0, const_viterator q0) const
     {
-      const_iterator pm = begin();
+      const_iterator pm = numfixarray<N*N,float>::begin();
 
       for (viterator p(p0); p!=p0+N; p++)
 	{
@@ -135,21 +135,21 @@ public:
   // Struktur geht.
   void vector_get(nvector<float>& v) const
     {
-      v.resize(size());
-      for (int i=0;i<size();++i)
-	v[i]=operator[](i);
+      v.resize(numfixarray<N*N,float>::size());
+      for (int i=0;i<numfixarray<N*N,float>::size();++i)
+        v[i]=NodeMatrix<N,float>::operator[](i);
     }
   void vector_set(nvector<float>& v)
     {
-      assert(v.size()==size());
-      for (int i=0;i<size();++i)
-	operator[](i)=v[i];
+      assert(v.size()==this->size());
+      for (int i=0;i<numfixarray<N*N,float>::size();++i)
+        NodeMatrix<N,float>::operator[](i)=v[i];
     }
   void vector_add(double d, nvector<float>& v)
     {
       assert(v.size()==N*N);
-      for (int i=0;i<size();++i)
-	operator[](i)+=d*v[i];
+      for (int i=0;i<NodeMatrix<N,float>::size();++i)
+        NodeMatrix<N,float>::operator[](i)+=d*v[i];
     }
 };
 }

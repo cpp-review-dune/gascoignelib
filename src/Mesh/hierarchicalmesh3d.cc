@@ -477,7 +477,7 @@ void HierarchicalMesh3d::boundary_newton3d(IntSet& adjustvertex)
 	    }
 	}
     }
-};
+}
 
 /*---------------------------------------------------*/
 

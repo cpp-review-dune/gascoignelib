@@ -35,7 +35,7 @@ template<int N>
 void HangList<N>::update(const std::vector<int>& vo2n, const std::vector<int>& co2n)
 {
   HangList<N> HangCopy(*this);
-  clear();
+  __gnu_cxx::hash_map<EdgeArray<N>,Hang,EdgeHash>::clear();
   
   const_iterator hp = HangCopy.begin();
   while(hp!=HangCopy.end())
@@ -65,7 +65,7 @@ template<int N>
 void HangList<N>::update(const std::vector<int>& vo2n)
 {
   HangList<N> HangCopy(*this);
-  clear();
+  __gnu_cxx::hash_map<EdgeArray<N>,Hang,EdgeHash>::clear();
   
   const_iterator hp=HangCopy.begin();
   while(hp!=HangCopy.end())
@@ -92,7 +92,7 @@ template<int N>
 void HangList<N>::make_consistent(HangList<N>& DH)
 {
   int n = 0;
-  for(iterator p = begin(); p!=end(); p++)
+  for(iterator p = __gnu_cxx::hash_map<EdgeArray<N>,Hang,EdgeHash>::begin(); p!=__gnu_cxx::hash_map<EdgeArray<N>,Hang,EdgeHash>::end(); p++)
     {
       iterator q = DH.find(p->first);
       if(q!=DH.end())

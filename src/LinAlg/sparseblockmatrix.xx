@@ -7,7 +7,7 @@
 namespace Gascoigne
 {
 template<class B>
-SparseBlockMatrix<B>::SparseBlockMatrix<B>() : 
+SparseBlockMatrix<B>::SparseBlockMatrix() : 
   MatrixInterface()
 {  
 }
@@ -15,7 +15,7 @@ SparseBlockMatrix<B>::SparseBlockMatrix<B>() :
 /*-------------------------------------------------------------*/
 
 template<class B>
-SparseBlockMatrix<B>::SparseBlockMatrix<B>(const SparseBlockMatrix<B>& A) : 
+SparseBlockMatrix<B>::SparseBlockMatrix(const SparseBlockMatrix<B>& A) : 
   MatrixInterface()
 {
 }

@@ -5,7 +5,7 @@
 namespace Gascoigne
 {
 template<int N, class Line>
-TensorFormula3d<N,Line>::TensorFormula3d<N,Line>() 
+TensorFormula3d<N,Line>::TensorFormula3d() 
   : IntegrationFormula3d(N*N*N)
 {
   Line L;

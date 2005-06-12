@@ -6,7 +6,7 @@ namespace Gascoigne
 /* ----------------------------------------- */
 
 template<int DIM>
-GalerkinIntegratorQ2<DIM>::GalerkinIntegratorQ2<DIM>() {}
+GalerkinIntegratorQ2<DIM>::GalerkinIntegratorQ2() {}
   
 /* ----------------------------------------- */
 
@@ -20,27 +20,27 @@ void GalerkinIntegratorQ2<DIM>::BasicInit()
 {
   if (DIM==2)
     {
-      if (!FormFormulaPointer())     FormFormulaPointer() = new QuadGauss9;
-      if (!MassFormulaPointer())     MassFormulaPointer() = new QuadGauss9; // ?????
-      if (!ErrorFormulaPointer())    ErrorFormulaPointer() = new QuadGauss16;
-      if (!BoundaryFormulaPointer()) BoundaryFormulaPointer() = new LineGauss3;
+      if (!GalerkinIntegrator<DIM>::FormFormulaPointer())     GalerkinIntegrator<DIM>::FormFormulaPointer() = new QuadGauss9;
+      if (!GalerkinIntegrator<DIM>::MassFormulaPointer())     GalerkinIntegrator<DIM>::MassFormulaPointer() = new QuadGauss9; // ?????
+      if (!GalerkinIntegrator<DIM>::ErrorFormulaPointer())    GalerkinIntegrator<DIM>::ErrorFormulaPointer() = new QuadGauss16;
+      if (!GalerkinIntegrator<DIM>::BoundaryFormulaPointer()) GalerkinIntegrator<DIM>::BoundaryFormulaPointer() = new LineGauss3;
     }
   else if (DIM==3)
     {
-      if (!FormFormulaPointer())     FormFormulaPointer() = new HexGauss27;
-      if (!MassFormulaPointer())     MassFormulaPointer() = new HexGauss27; // ?????
-      if (!ErrorFormulaPointer())    ErrorFormulaPointer() = new HexGauss64;
-      if (!BoundaryFormulaPointer()) BoundaryFormulaPointer() = new QuadGauss9;
+      if (!GalerkinIntegrator<DIM>::FormFormulaPointer())     GalerkinIntegrator<DIM>::FormFormulaPointer() = new HexGauss27;
+      if (!GalerkinIntegrator<DIM>::MassFormulaPointer())     GalerkinIntegrator<DIM>::MassFormulaPointer() = new HexGauss27; // ?????
+      if (!GalerkinIntegrator<DIM>::ErrorFormulaPointer())    GalerkinIntegrator<DIM>::ErrorFormulaPointer() = new HexGauss64;
+      if (!GalerkinIntegrator<DIM>::BoundaryFormulaPointer()) GalerkinIntegrator<DIM>::BoundaryFormulaPointer() = new QuadGauss9;
     }
-  assert(FormFormulaPointer());
-  assert(ErrorFormulaPointer());
-  assert(BoundaryFormulaPointer());
-  assert(MassFormulaPointer());
+  assert(GalerkinIntegrator<DIM>::FormFormulaPointer());
+  assert(GalerkinIntegrator<DIM>::ErrorFormulaPointer());
+  assert(GalerkinIntegrator<DIM>::BoundaryFormulaPointer());
+  assert(GalerkinIntegrator<DIM>::MassFormulaPointer());
 }
 
 /* ----------------------------------------- */
 
-template GalerkinIntegratorQ2<2>;
-template GalerkinIntegratorQ2<3>;
+template class GalerkinIntegratorQ2<2>;
+template class GalerkinIntegratorQ2<3>;
 
 }
