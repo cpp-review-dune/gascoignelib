@@ -43,7 +43,6 @@ void BasicLoop::ClockOutput() const
 
 void BasicLoop::BasicInit(const ParamFile* paramfile)
 {
-  cerr << "99\n";
   _paramfile = paramfile;
   string s_copy_param_file;
 
