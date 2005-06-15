@@ -36,6 +36,7 @@ public:
   
   GascoigneMeshConstructor(const HierarchicalMesh* mm,
 			   GascoigneMultiGridMesh* gmg);
+  virtual ~GascoigneMeshConstructor() { }
 
   virtual void BasicInit();
 };

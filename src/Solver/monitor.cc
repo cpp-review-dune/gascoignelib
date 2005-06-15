@@ -108,7 +108,7 @@ void Monitor::set_directory(const string& dir)
 //      error_io(numfile);
 //    }
 //  nfile.close();
-  sprintf (message,"");
+  strcpy(message,"");
 
   //cout << "set_directory:" << protokoll <<  "#" << endl;
 }
@@ -179,7 +179,7 @@ void Monitor::print_message()
 
 //  pfile << message << endl;
 
-  sprintf (message,"");
+  strcpy(message,"");
 //  pfile.close();
 }
 
