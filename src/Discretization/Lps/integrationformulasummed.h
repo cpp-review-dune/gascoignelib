@@ -97,6 +97,65 @@ class IntegrationFormulaSummed2d : public IntegrationFormula2d
     }
 };
 
+/*------------------------------------------------------------*/
+
+template<class INT>
+class IntegrationFormulaSummed3d : public IntegrationFormula3d
+{
+ protected:
+
+  INT I;
+
+ public:
+
+  IntegrationFormulaSummed3d(int n=2) : IntegrationFormula3d(), I()
+    {
+      int    N = static_cast<int>(pow(8.,n));
+
+      IntegrationFormula3d::ReInit(N*I.n());
+
+      int nn = static_cast<int>(pow(2.,n));
+      double d2 = pow(0.5,n);
+      double d4 = pow(0.25,n);
+      double d8 = pow(0.125,n);
+
+      for(int i=0;i<N;i++)
+	{
+	  int ix = i%nn;
+	  int j = (i-ix)/nn;
+
+	  int iy = j%nn;
+	  int iz = j/nn;
+
+	  double dx = 1.*ix;
+	  double dy = 1.*iy;
+	  double dz = 1.*iz;
+
+	  for(int ii=0;ii<I.n();ii++)
+	    {
+	      int index = i*I.n()+ii;
+	      w(index) = d8 * I.w(ii);
+
+	      double x = I.c(ii).x();
+	      double y = I.c(ii).y();
+	      double z = I.c(ii).z();
+
+	      x += dx;
+	      y += dy;
+	      z += dz;
+
+	      x *= d2;
+	      y *= d2;
+	      z *= d2;
+
+	      c(index).x() = x;
+	      c(index).y() = y;
+	      c(index).z() = z;
+	    }
+	}
+    }
+};
+
 }
 
 #endif
