@@ -116,7 +116,6 @@ class IntegrationFormulaSummed3d : public IntegrationFormula3d
 
       int nn = static_cast<int>(pow(2.,n));
       double d2 = pow(0.5,n);
-      double d4 = pow(0.25,n);
       double d8 = pow(0.125,n);
 
       for(int i=0;i<N;i++)
