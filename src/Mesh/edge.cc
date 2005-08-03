@@ -53,6 +53,28 @@ void Edge::setmaster(int newindex, int newlocal)
 
 /*---------------------------------------------------*/
 
+void Edge::BinWrite(ostream &s) const
+{
+  int sizeInt = sizeof(int);
+  s.write(reinterpret_cast<const char*>(&c1),sizeInt);
+  s.write(reinterpret_cast<const char*>(&l1),sizeInt);
+  s.write(reinterpret_cast<const char*>(&c2),sizeInt);
+  s.write(reinterpret_cast<const char*>(&l2),sizeInt);
+}
+
+/*---------------------------------------------------*/
+
+void Edge::BinRead(istream &s)
+{
+  int sizeInt = sizeof(int);
+  s.read(reinterpret_cast<char*>(&c1),sizeInt);
+  s.read(reinterpret_cast<char*>(&l1),sizeInt);
+  s.read(reinterpret_cast<char*>(&c2),sizeInt);
+  s.read(reinterpret_cast<char*>(&l2),sizeInt);
+}
+
+/*---------------------------------------------------*/
+
 ostream& operator<<(ostream &s, const Edge& A)
 {
   s << A.master()  << " ";

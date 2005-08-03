@@ -36,6 +36,40 @@ class BoundaryCell : public Cell<N,NEDGES>
       oq  = c.of_quad();
       return *this;
     }
+
+  void BinWrite(std::ostream &s) const
+  {
+    Cell<N,NEDGES>::BinWrite(s);
+    int sizeInt = sizeof(int);
+    s.write(reinterpret_cast<const char*>(&(this->qlevel)),sizeInt);
+    s.write(reinterpret_cast<const char*>(&(this->qfather)),sizeInt);
+    s.write(reinterpret_cast<const char*>(&oq),sizeInt);
+    s.write(reinterpret_cast<const char*>(&eiq),sizeInt);
+    int nc = this->nchilds();
+    s.write(reinterpret_cast<const char*>(&nc),sizeInt);
+    for (int i=0; i<nc; i++)
+    {
+      s.write(reinterpret_cast<const char*>(&(this->qchilds[i])),sizeInt);
+    }
+  }
+
+  void BinRead(std::istream &s)
+  {
+    Cell<N,NEDGES>::BinRead(s);
+    int sizeInt = sizeof(int);
+    s.read(reinterpret_cast<char*>(&(this->qlevel)),sizeInt);
+    s.read(reinterpret_cast<char*>(&(this->qfather)),sizeInt);
+    s.read(reinterpret_cast<char*>(&oq),sizeInt);
+    s.read(reinterpret_cast<char*>(&eiq),sizeInt);
+    int nc;
+    s.read(reinterpret_cast<char*>(&nc),sizeInt);
+    this->childs().resize(nc);
+    for (int i=0; i<nc; i++)
+    {
+      s.read(reinterpret_cast<char*>(&(this->qchilds[i])),sizeInt);
+    }
+  }
+
   friend std::ostream& operator<<(std::ostream &s, const BoundaryCell& A)
     {
       s << " : ";

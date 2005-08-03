@@ -1310,6 +1310,56 @@ void HierarchicalMesh3d::write_gup(const string& bname) const
 
 /*---------------------------------------------------*/
 
+void HierarchicalMesh3d::write_gip(const string& bname) const
+{
+  string name = bname;
+  int name_size=name.size();
+  if(name_size<4) name += ".gip";
+  if(name.substr(name_size-4,4)!=".gip"){
+    name += ".gip";
+  }
+
+  ofstream out(name.c_str(), ios_base::out|ios_base::binary);
+
+  out.precision(16);
+  int dim=dimension(), n=nnodes(), sizeInt=sizeof(int);
+  out.write(reinterpret_cast<const char*>(&dim),sizeInt);
+  out.write(reinterpret_cast<const char*>(&n),sizeInt);
+
+  for (int i=0; i<nnodes(); i++)
+    {
+      vertex3d(i).BinWrite(out);
+    }
+
+  int nhexs = hexs.size();
+  out.write(reinterpret_cast<const char*>(&nhexs),sizeInt);
+ 
+  for (int i=0; i<hexs.size(); i++)
+    {
+      hex(i).BinWrite(out);
+    }
+
+  QuadHang.BinWrite(out);
+  LineHang.BinWrite(out);
+  int nbquads=Bquads.size();
+  out.write(reinterpret_cast<const char*>(&nbquads),sizeInt);
+  for (int i=0; i<Bquads.size(); i++)
+    {
+      int mat = Bquads[i].material();
+      out.write(reinterpret_cast<const char*>(&mat),sizeInt);
+      Bquads[i].BinWrite(out);
+    }
+  int nedges=edges.size();
+  out.write(reinterpret_cast<const char*>(&nedges),sizeInt);
+  for (int i=0; i<edges.size(); i++)
+    {
+      edges[i].BinWrite(out);
+    }
+  out.close();
+}
+
+/*---------------------------------------------------*/
+
 void HierarchicalMesh3d::read_gup(const string& name)
 {
   string symbol;
@@ -1380,6 +1430,83 @@ void HierarchicalMesh3d::read_gup(const string& name)
 	  file >> e;
 	  edges.push_back(e);
 	}
+    }
+  if (edges.size()==0) init_edges3d();
+  post_refine3d();
+  file.close();
+}
+
+/*---------------------------------------------------*/
+
+void HierarchicalMesh3d::read_gip (const string& bname)
+{
+  string name = bname;
+  int name_size=name.size();
+  if(name_size<4) name += ".gip";
+  if(name.substr(name_size-4,4)!=".gip"){
+    name += ".gip";
+  }
+
+  string symbol;
+
+  ifstream file(name.c_str(), ios_base::in|ios_base::binary);
+
+  if(!file.is_open())
+    {
+      cerr << "HierarchicalMesh3d::read_gip(): error in file "<< name <<endl;
+      assert(0);
+    }
+
+  Bquads.clear();
+  edges.clear();
+  QuadHang.clear();
+  LineHang.clear();
+
+  int n, dim, sizeInt=sizeof(int);
+  file.read(reinterpret_cast<char*>(&dim),sizeInt);
+  file.read(reinterpret_cast<char*>(&n),sizeInt);
+
+  assert(dim==3);
+
+//  cout << "Mesh 3d  : ";
+  vertexs3d.reserve(n);
+  vertexs3d.resize(n);
+
+  for (int i=0; i<n; i++)
+    {
+      vertexs3d[i].BinRead(file);
+    }
+//  cout << n << " nodes, ";
+  file.read(reinterpret_cast<char*>(&n),sizeInt);
+  hexs.reserve(n);
+  hexs.resize(n);
+  for (int i=0; i<hexs.size(); i++)
+    {
+      hexs[i].BinRead(file);
+    }
+//  cout <<  n << " hexs, ";
+  QuadHang.BinRead(file);
+//  cout << QuadHang.size() << " quadhangs, ";
+  LineHang.BinRead(file);
+//  cout << LineHang.size() << " linehangs, ";
+  file.read(reinterpret_cast<char*>(&n),sizeInt);
+  int number = 0;
+  BoundaryQuad bol;
+  for (int i=0; i<n; i++)
+    {
+      file.read(reinterpret_cast<char*>(&bol.material()),sizeInt);
+      bol.BinRead(file);
+      Bquads.push_back(bol);
+    }
+  number = n;
+//  cout << number << " boundaryquads, ";
+  file.read(reinterpret_cast<char*>(&n),sizeInt);
+//  cout << n << " edges" << endl;
+  Edge e;
+  for (int i=0; i<n; i++)
+    {
+      e.BinRead(file);
+      edges.push_back(e);
     }
   if (edges.size()==0) init_edges3d();
   post_refine3d();

@@ -119,10 +119,27 @@ void MeshAgent::read_gup(const string& fname)
 
 /*-----------------------------------------*/
 
+void MeshAgent::read_gip(const string& fname)
+{
+  assert(HMP);
+  HMP->read_gip(fname);
+  ReInit();
+}
+
+/*-----------------------------------------*/
+
 void MeshAgent::write_gup(const string& fname) const
 {
   assert(HMP);
   HMP->write_gup(fname);
+}
+
+/*-----------------------------------------*/
+
+void MeshAgent::write_gip(const string& fname) const
+{
+  assert(HMP);
+  HMP->write_gip(fname);
 }
 
 /*-----------------------------------------*/

@@ -104,4 +104,38 @@ void HangList<N>::make_consistent(HangList<N>& DH)
     }
   if(n!=0)  std::cerr << "make_consistent: " << n << std::endl;
 }
+
+/*********************************************************************/
+
+template<int N>
+void HangList<N>::BinWrite(std::ostream &s) const
+{
+  int n=this->size(), sizeInt = sizeof(int);
+  s.write(reinterpret_cast<const char*>(&n),sizeInt);
+ 
+  for (const_iterator p=this->begin(); p!=this->end(); p++)
+  {
+    p->first.BinWrite(s);
+    p->second.BinWrite(s);
+  }
+}
+
+/*********************************************************************/
+
+template<int N>
+void HangList<N>::BinRead(std::istream &s)
+{
+  int n, sizeInt=sizeof(int);
+  s.read(reinterpret_cast<char*>(&n),sizeInt);
+ 
+  fixarray<N,int>  ev;
+  Hang             info;
+
+  for (int i=0; i<n; i++)
+  {
+    ev.BinRead(s);
+    info.BinRead(s);
+    this->insert(std::make_pair(ev,info));
+  }
+}
 }

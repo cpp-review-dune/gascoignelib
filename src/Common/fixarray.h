@@ -137,6 +137,24 @@ public:
       s << size() << std::endl;
       s << *this;
     }
+
+  void BinWrite(std::ostream &s) const
+  {
+    int sizeT = sizeof(T);
+    for (int i=0; i<N; i++)
+    {
+      s.write(reinterpret_cast<const char*>(&(operator[](i))),sizeT);
+    }
+  }
+
+  void BinRead(std::istream &s)
+  {
+    int sizeT = sizeof(T);
+    for (int i=0; i<N; i++)
+    {
+      s.read(reinterpret_cast<char*>(&(operator[](i))),sizeT);
+    }
+  }
 };
 
 /*-------------------------------------------------*/
@@ -155,7 +173,6 @@ class fixarrayHash
   template<int N, class T>
     int operator()(const fixarray<N,T>& h) const { return static_cast<int>(h[0]);}
 };
-
 
 template<int N,class T>
 std::ostream& operator<<(std::ostream &s, const fixarray<N,T>& A);

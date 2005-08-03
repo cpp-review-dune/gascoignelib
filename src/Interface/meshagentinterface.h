@@ -41,6 +41,7 @@ namespace Gascoigne
       virtual int nlevels() const=0;
 
       virtual void write_gup(const std::string& fname) const=0;
+      virtual void write_gip(const std::string& fname) const=0;
       virtual void write_inp(const std::string& fname) const=0;
       virtual const MeshInterface* GetMesh(int l) const=0;
 

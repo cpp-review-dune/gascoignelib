@@ -36,6 +36,9 @@ class Edge
   void setmaster(int,int);
   std::pair<int,int> EdgeNeighbour(int i) const;
 
+  void BinWrite(std::ostream &s) const;
+  void BinRead(std::istream &s);
+
   friend std::ostream& operator<<(std::ostream &s, const Edge& A);
   friend std::istream& operator>>(std::istream &s, Edge& A);
 };

@@ -59,6 +59,8 @@ class HangList : public HANGMAP
   void make_consistent(HangList<N>&);
   void move(HangList<N>& src, iterator& p);
   HangList<N>& operator=(const HangList<N>& A);
+  void BinWrite(std::ostream &s) const;
+  void BinRead(std::istream &s);
 };
 
 /*------------------------------------------------------*/

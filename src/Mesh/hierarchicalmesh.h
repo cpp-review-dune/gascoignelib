@@ -100,6 +100,7 @@ class HierarchicalMesh : public MeshInterface
   void random_patch_coarsen (double, int k=0);
   void random_double_patch_refine  (double, int k=1);
   void clear_transfer_lists();
+  virtual void   write_gip(const std::string&) const =0;
   virtual void   write_gup(const std::string&) const =0;
   virtual void   write_inp(const std::string&) const =0;
 
@@ -115,6 +116,7 @@ class HierarchicalMesh : public MeshInterface
 
   virtual void read_inp (const std::string&)=0;
   virtual void read_gup (const std::string&)=0;
+  virtual void read_gip (const std::string&)=0;
   virtual void refine(const IntVector&, const IntVector&)=0;
   virtual void patch_refine(IntVector&, IntVector&)=0;
   virtual void vertex_patch_refine(IntVector& ref, IntVector& coarse);

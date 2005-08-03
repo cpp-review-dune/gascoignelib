@@ -172,12 +172,14 @@ class HierarchicalMesh3d : public HierarchicalMesh
 
   void   write    (const std::string&) const;
   void   write_gup(const std::string&) const;
+  void   write_gip(const std::string&) const;
 
   void   WriteAll(const std::string&) const;
 
   void   write_inp(const std::string&) const;
   void   read_inp (const std::string&);
   void   read_gup (const std::string&);
+  void   read_gip (const std::string&);
 
   void   global_coarse3d();
 

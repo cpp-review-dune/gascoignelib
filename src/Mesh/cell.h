@@ -103,6 +103,37 @@ class Cell :  public fixarray<N,int>   /* das sind die vertex-no. */
 
   int global2local(int gi) const;
   
+  void BinWrite(std::ostream &s) const
+  {
+    vertex().BinWrite(s);
+    int sizeInt = sizeof(int);
+    s.write(reinterpret_cast<const char*>(&qlevel),sizeInt);
+    s.write(reinterpret_cast<const char*>(&qfather),sizeInt);
+    int nc = nchilds();
+    s.write(reinterpret_cast<const char*>(&nc),sizeInt);
+    for (int i=0; i<nchilds(); i++)
+    {
+      s.write(reinterpret_cast<const char*>(&qchilds[i]),sizeInt);
+    }
+    edges().BinWrite(s);
+  }
+
+  void BinRead(std::istream &s)
+  {
+    vertex().BinRead(s);
+    int sizeInt = sizeof(int);
+    s.read(reinterpret_cast<char*>(&qlevel),sizeInt);
+    s.read(reinterpret_cast<char*>(&qfather),sizeInt);
+    int nc;
+    s.read(reinterpret_cast<char*>(&nc),sizeInt);
+    childs().resize(nc);
+    for (int i=0; i<nchilds(); i++)
+    {
+      s.read(reinterpret_cast<char*>(&qchilds[i]),sizeInt);
+    }
+    edges().BinRead(s);
+  }
+
   friend std::ostream& operator<<(std::ostream &s, const Cell& A)
     {
       s << A.vertex()  << " ";

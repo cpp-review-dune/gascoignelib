@@ -1441,6 +1441,55 @@ void HierarchicalMesh2d::write_gup(const string& bname) const
 
 /*---------------------------------------------------*/
 
+void HierarchicalMesh2d::write_gip(const string& bname) const
+{
+  string name = bname;
+  int name_size=name.size();
+  if(name_size<4) name += ".gip";
+  if(name.substr(name_size-4,4)!=".gip"){
+    name += ".gip";
+  }
+
+  ofstream out(name.c_str(), ios_base::out|ios_base::binary);
+
+  out.precision(16);
+  int dim=dimension(), n=nnodes(), sizeInt=sizeof(int);
+  out.write(reinterpret_cast<const char*>(&dim),sizeInt);
+  out.write(reinterpret_cast<const char*>(&n),sizeInt);
+
+  for (int i=0; i<nnodes(); i++)
+    {
+      vertex2d(i).BinWrite(out);
+    }
+
+  int nquads = quads.size();
+  out.write(reinterpret_cast<const char*>(&nquads),sizeInt);
+ 
+  for (int i=0; i<quads.size(); i++)
+    {
+      quad(i).BinWrite(out);
+    }
+
+  LineHang.BinWrite(out);
+  int nblines=Blines.size();
+  out.write(reinterpret_cast<const char*>(&nblines),sizeInt);
+  for (int i=0; i<Blines.size(); i++)
+    {
+      int mat = Blines[i].material();
+      out.write(reinterpret_cast<const char*>(&mat),sizeInt);
+      Blines[i].BinWrite(out);
+    }
+  int nedges=edges.size();
+  out.write(reinterpret_cast<const char*>(&nedges),sizeInt);
+  for (int i=0; i<edges.size(); i++)
+    {
+      edges[i].BinWrite(out);
+    }
+  out.close();
+}
+
+/*---------------------------------------------------*/
+
 void HierarchicalMesh2d::read_gup(const string& bname)
 {
   string name = bname;
@@ -1552,6 +1601,80 @@ void HierarchicalMesh2d::read_gup(const string& bname)
 	  file >> e;
 	  edges.push_back(e);
 	}
+    }
+  if (edges.size()==0) init_edges2d();
+  post_refine2d();
+  file.close();
+}
+
+/*---------------------------------------------------*/
+
+void HierarchicalMesh2d::read_gip (const string& bname)
+{
+  string name = bname;
+  int name_size=name.size();
+  if(name_size<4) name += ".gip";
+  if(name.substr(name_size-4,4)!=".gip"){
+    name += ".gip";
+  }
+
+  string symbol;
+
+  ifstream file(name.c_str(), ios_base::in|ios_base::binary);
+
+  if(!file.is_open())
+    {
+      cerr << "HierarchicalMesh2d::read_gip(): error in file "<< name <<endl;
+      assert(0);
+    }
+
+  Blines.clear();
+  edges.clear();
+  LineHang.clear();
+
+  int n, dim, sizeInt=sizeof(int);
+  file.read(reinterpret_cast<char*>(&dim),sizeInt);
+  file.read(reinterpret_cast<char*>(&n),sizeInt);
+
+  assert(dim==2);
+
+  cout << "Mesh 2d  : ";
+  vertexs2d.reserve(n);
+  vertexs2d.resize(n);
+
+  for (int i=0; i<n; i++)
+    {
+      vertexs2d[i].BinRead(file);
+    }
+  cout << n << " nodes, ";
+  file.read(reinterpret_cast<char*>(&n),sizeInt);
+  quads.reserve(n);
+  quads.resize(n);
+  for (int i=0; i<quads.size(); i++)
+    {
+      quads[i].BinRead(file);
+    }
+  cout <<  n << " quads, ";
+  LineHang.BinRead(file);
+  cout << LineHang.size() << " hangs, ";
+  file.read(reinterpret_cast<char*>(&n),sizeInt);
+  int number = 0;
+  BoundaryLine bol;
+  for (int i=0; i<n; i++)
+    {
+      file.read(reinterpret_cast<char*>(&bol.material()),sizeInt);
+      bol.BinRead(file);
+      Blines.push_back(bol);
+    }
+  number = n;
+  cout << number << " lines, ";
+  file.read(reinterpret_cast<char*>(&n),sizeInt);
+  cout << n << " edges" << endl;
+  Edge e;
+  for (int i=0; i<n; i++)
+    {
+      e.BinRead(file);
+      edges.push_back(e);
     }
   if (edges.size()==0) init_edges2d();
   post_refine2d();

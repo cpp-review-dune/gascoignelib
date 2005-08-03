@@ -159,6 +159,7 @@ class HierarchicalMesh2d : public HierarchicalMesh
   
   void   write    (const std::string&) const;
   void   write_gup(const std::string&) const;
+  void   write_gip(const std::string&) const;
 
   void   WriteAll(const std::string&) const;
 
@@ -167,6 +168,7 @@ class HierarchicalMesh2d : public HierarchicalMesh
   void   write_vtk(const std::string&) const;
 
   void   read_gup (const std::string&);
+  void   read_gip (const std::string&);
 
   void   global_coarse();
 
