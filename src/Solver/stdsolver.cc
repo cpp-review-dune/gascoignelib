@@ -173,6 +173,11 @@ void StdSolver::NewMesh(int level, const MeshInterface* mp)
   _MP = mp;
   assert(_MP);
 
+  if(_MP->nnodes()<_ndirect) 
+    {
+      _directsolver=1;
+    }
+
   GetDiscretization()->ReInit(_MP);
 }
 
@@ -188,10 +193,8 @@ void StdSolver::SetDefaultValues(string discname, string matrixtype, int ndirect
 
 /*-------------------------------------------------------*/
 
-void StdSolver::BasicInit(int level, const ParamFile* paramfile, const MeshInterface* MP)
+void StdSolver::BasicInit(int level, const ParamFile* paramfile,const int dimension)
 {
-  assert(MP);
-  _MP = MP;
   _paramfile = paramfile;
   _mylevel=level;
 
@@ -212,12 +215,6 @@ void StdSolver::BasicInit(int level, const ParamFile* paramfile, const MeshInter
       cout << "Expression 'disc' in ParamFile not longer valid !" << endl;
       abort();
     }
-  if(MP->nnodes()<_ndirect) 
-    {
-      _directsolver=1;
-    }
-
-  int dimension = MP->dimension();
 
   GetDiscretizationPointer() = NewDiscretization(dimension, _discname);
   assert(_ZP);
@@ -311,6 +308,8 @@ MatrixInterface* StdSolver::NewMatrix(int ncomp, const string& matrixtype)
     cerr << "No such matrix type \"" << matrixtype<< "\"." << endl;
     abort();
   }
+
+  
 }
 
 /*-------------------------------------------------------------*/

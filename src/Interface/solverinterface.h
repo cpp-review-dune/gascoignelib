@@ -48,7 +48,7 @@ namespace Gascoigne
 
       virtual std::string GetName() const=0;
 
-      virtual void BasicInit(int level, const ParamFile* paramfile, const MeshInterface* MP)=0;
+      virtual void BasicInit(int level, const ParamFile* paramfile, const int dimension)=0;
   
       virtual void SetProblem(const ProblemDescriptorInterface& PD)=0;
       virtual void SetDiscretization(DiscretizationInterface& DI, bool init=false)=0;

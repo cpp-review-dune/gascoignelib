@@ -103,9 +103,9 @@ MatrixInterface* StdTimeSolver::NewMassMatrix(int ncomp, const string& matrixtyp
 
 /*-------------------------------------------------------------*/
   
-void StdTimeSolver::BasicInit(int level, const ParamFile* paramfile, const MeshInterface* MP)
+void StdTimeSolver::BasicInit(int level, const ParamFile* paramfile, const int dimension)
 {
-  StdSolver::BasicInit(level, paramfile, MP);
+  StdSolver::BasicInit(level, paramfile, dimension);
 }
 
 /*-------------------------------------------------------*/

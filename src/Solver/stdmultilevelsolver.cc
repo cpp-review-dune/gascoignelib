@@ -189,7 +189,7 @@ void StdMultiLevelSolver::NewSolvers()
       if(GetSolver(solverlevel)==NULL) 
         {
           GetSolverPointer(solverlevel) = NewSolver(solverlevel);
-          GetSolver(solverlevel)->BasicInit(solverlevel,_paramfile,MIP);
+          GetSolver(solverlevel)->BasicInit(solverlevel,_paramfile,GetMeshAgent()->GetDimension());
         }
     }
 }
@@ -263,7 +263,7 @@ void StdMultiLevelSolver::ReInit(const ProblemDescriptorInterface& PDX)
 {
   DataP->CountResidual() = 0;
   //  DataP->GetNLInfo().control().matrixmustbebuild() = 1;
-
+  
   NewSolvers();
   SolverNewMesh();
   NewMgInterpolator();

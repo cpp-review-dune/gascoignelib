@@ -130,7 +130,7 @@ class StdSolver : public virtual SolverInterface
 
   std::string GetName() const {return "StdSolver";}
 
-  void BasicInit(int level, const ParamFile* paramfile, const MeshInterface* MP);
+  void BasicInit(int level, const ParamFile* paramfile, const int dimension);
   void SetProblem(const ProblemDescriptorInterface& PDX);
   void SetDiscretization(DiscretizationInterface& DI, bool init=false);
   const ProblemDescriptorInterface* GetProblemDescriptor() const {assert(_PDX); return _PDX;}
