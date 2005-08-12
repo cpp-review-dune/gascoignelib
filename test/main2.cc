@@ -59,13 +59,13 @@ class LocalBoundaryRightHandSide : public BoundaryRightHandSide
 /* ----------------------------------------- */
 class LocalSolver : public StdSolver
 {
-  DiscretizationInterface* NewDiscretization(int dimension, const string& discname) {
+    DiscretizationInterface* NewDiscretization(int dimension, const string& discname) {
     return new Q1Gls2d;
   }
-  void BasicInit(int level, const ParamFile* paramfile, const MeshInterface* MP) {
+    void BasicInit(int level, const ParamFile* paramfile, const MeshInterface* MP) {
     DoubleVector d(3); d[0]=0.01; d[1]=0.1; d[2]=0.1; 
     _Dat.SetIluModify(d);
-    StdSolver::BasicInit(level, paramfile, MP);
+    StdSolver::BasicInit(level, paramfile, MP->dimension());
   }  
 };
 
