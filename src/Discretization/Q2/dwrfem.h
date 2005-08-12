@@ -48,7 +48,7 @@ class DwrFem3d : public Q23d
 /*---------------------------------------------------*/
 /*---------------------------------------------------*/
 
-class DwrFemQ1Q22d : public DwrFem2d
+class DwrFemQ1Q22d : virtual public DwrFem2d
 {
  protected:
   void DiracRhsPoint(GlobalVector& f, const DiracRightHandSide& DRHS, const Vertex2d& p0, int i, double s) const;
@@ -68,7 +68,7 @@ class DwrFemQ1Q22d : public DwrFem2d
 
 /*---------------------------------------------------*/
 
-class DwrFemQ1Q23d : public DwrFem3d
+class DwrFemQ1Q23d : virtual public DwrFem3d
 {
  protected:
   void DiracRhsPoint(GlobalVector& f, const DiracRightHandSide& DRHS, const Vertex3d& p0, int i, double s) const;
@@ -89,7 +89,7 @@ class DwrFemQ1Q23d : public DwrFem3d
 /*---------------------------------------------------*/
 /*---------------------------------------------------*/
 
-class DwrFemQ2Q12d : public DwrFem2d
+class DwrFemQ2Q12d : virtual public DwrFem2d
 {
  protected:
   void DiracRhsPoint(GlobalVector& f, const DiracRightHandSide& DRHS, const Vertex2d& p0, int i, double s) const;
@@ -109,7 +109,7 @@ class DwrFemQ2Q12d : public DwrFem2d
 
 /*---------------------------------------------------*/
 
-class DwrFemQ2Q13d : public DwrFem3d
+class DwrFemQ2Q13d : virtual public DwrFem3d
 {
  protected:
   void DiracRhsPoint(GlobalVector& f, const DiracRightHandSide& DRHS, const Vertex3d& p0, int i, double s) const;
