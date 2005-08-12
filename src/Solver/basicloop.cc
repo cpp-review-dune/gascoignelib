@@ -26,6 +26,7 @@ BasicLoop::~BasicLoop()
 {
   if(_MA  != NULL) {delete _MA; _MA=NULL;}
   if(_ML  != NULL) {delete _ML; _ML=NULL;}
+  if(_SI  != NULL) {delete _SI; _SI=NULL;}
 }
 
 /*-----------------------------------------*/
