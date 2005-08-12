@@ -36,9 +36,9 @@ public:
       StdSolver::NewMesh(l,MP);
       GetDiscretization()->InitFilter(_PF);
     }
-  void BasicInit(int level, const ParamFile* paramfile, const MeshInterface* MP)
+  void BasicInit(int level, const ParamFile* paramfile, const int dimension)
     {
-      StdSolver::BasicInit(level,paramfile,MP);
+      StdSolver::BasicInit(level,paramfile,dimension);
     }
 };
 
@@ -80,7 +80,7 @@ int main(int argc, char** argv)
 
 
       const MeshInterface* MI = M.GetMesh(0);
-      S.BasicInit(iter,&paramfile,MI);
+      S.BasicInit(iter,&paramfile,MI->dimension());
       S.NewMesh(iter,MI);
       
       u.resize(MI->nnodes());
