@@ -15,7 +15,6 @@ class GascoigneMesh : public PatchMesh
 {
 protected:
 
-  int                    mylevel;
   IntVector              nc, vo2n;
   PatchIndexHandler      PatchHandler;
   BoundaryIndexHandler   BoundaryHandler;
