@@ -22,7 +22,8 @@ public:
 
   std::string GetName() const {return "GascoigneMesh3d";}
 
-  std::vector<Vertex3d>& GetVertexVector() {return nx;}
+        std::vector<Vertex3d>& GetVertexVector()       {return nx;}
+  const std::vector<Vertex3d>& GetVertexVector() const {return nx;}
 
   int  dimension() const {return 3;}
   int  nnodes()    const {return nx.size();}
