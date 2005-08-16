@@ -11,7 +11,7 @@ class PatchIndexHandler
 {
 protected:
 
-  bool                               haspatch;
+  bool                    haspatch;
   nvector<IntVector>      indexofpatch;
   nvector<IntVector>      patch2cell;
   
@@ -19,9 +19,10 @@ protected:
 
 public:
 
-  int&                           GetDim()      { return dim;}
-  bool&                          GetHasPatch() { return haspatch;}
-  nvector<IntVector>& GetIndex()    { return indexofpatch;}
+  int&                       GetDim()        { return dim;}
+  bool&                      GetHasPatch()   { return haspatch;}
+  nvector<IntVector>&        GetIndex()      { return indexofpatch;}
+  const nvector<IntVector>&  GetIndex()const { return indexofpatch;}
 
   IntVector&          GetPatch2Cell(int i)
     { assert(i<patch2cell.size()); return patch2cell[i];}
