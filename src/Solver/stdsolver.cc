@@ -136,7 +136,19 @@ void StdSolver::RegisterMatrix()
   
   if (_MAP==NULL)
     GetMatrixPointer() = NewMatrix(ncomp, _matrixtype);
-  
+
+#ifdef __WITH_UMFPACK__
+  if (_useUMFPACK && _MIP!=NULL)
+  {
+    UmfIlu* UM = dynamic_cast<UmfIlu*>(GetIlu());
+    if ((UM && !_directsolver) || (!UM && _directsolver))
+    {
+      delete _MIP;
+      _MIP = NULL;
+    }
+  }
+#endif
+
   if (_MIP==NULL)
     GetIluPointer   () = NewIlu   (ncomp, _matrixtype);
 }
@@ -176,6 +188,10 @@ void StdSolver::NewMesh(int level, const MeshInterface* mp)
   if(_MP->nnodes()<_ndirect) 
     {
       _directsolver=1;
+    }
+  else
+    {
+      _directsolver=0;
     }
 
   GetDiscretization()->ReInit(_MP);
