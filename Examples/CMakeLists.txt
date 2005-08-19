@@ -8,6 +8,8 @@ SUBDIRS(
   IntegrationTest
   Functionals
   MeshInterpolator
+#  LLPS
+#  Dung
 )
 
 LINK_LIBRARIES(${GASCOIGNE_LIBS})

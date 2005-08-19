@@ -90,6 +90,8 @@ class StdSolver : public virtual SolverInterface
 
   // 0. Zugriff
 
+  const MeshInterface*& GetMeshPointer() {return _MP;}
+  
   // 0.3 Matrizen
 
 //   const MatrixInterface* GetMatrix() const {assert(_MAP); return _MAP;}

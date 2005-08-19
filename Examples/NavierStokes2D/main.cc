@@ -8,10 +8,10 @@ using namespace Gascoigne;
 class LocalLoop : public StdLoop
 {
 public:
-  void BasicInit(const ParamFile* paramfile) 
+  void BasicInit(const ParamFile* paramfile, const ProblemContainer* PC) 
     {
       GetMeshAgentPointer() = new BenchMarkMeshAgent;
-      StdLoop::BasicInit(paramfile);
+      StdLoop::BasicInit(paramfile, PC);
     }
 };
 
@@ -27,9 +27,12 @@ int main(int argc, char** argv)
   ProblemDescriptor LPD;
   LPD.BasicInit(&paramfile);
 
+  ProblemContainer PC;
+  PC.AddProblem("navier stokes", &LPD);
+  
   LocalLoop loop;
-  loop.BasicInit(&paramfile);
-  loop.run(&LPD);
+  loop.BasicInit(&paramfile, &PC);
+  loop.run("navier stokes");
 
   return 0;
 }

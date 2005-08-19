@@ -227,10 +227,6 @@ void GascoigneMeshConstructor::Construct3d
 void GascoigneMeshConstructor::PatchToCell2d
 (PatchIndexHandler& PIH, const LevelMesh2d* LM) const
 {
-  //  BAUSTELLE
-  // nur im Parallelen gebraucht
-  // Liste von Patchen auf die Zellen
-
   IntVector ci;
   LM->ConstructCellIndOfPatch(ci);
 
@@ -260,10 +256,6 @@ void GascoigneMeshConstructor::PatchToCell2d
 void GascoigneMeshConstructor::PatchToCell3d
 (PatchIndexHandler& PIH, const LevelMesh3d* LM) const
 {
-  //  BAUSTELLE
-  // nur im Parallelen gebraucht
-  // Liste von Patchen auf die Zellen
-
   IntVector ci;
   LM->ConstructCellIndOfPatch(ci);
 

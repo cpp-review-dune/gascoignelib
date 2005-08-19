@@ -8,7 +8,7 @@ using namespace Gascoigne;
 
 /*-------------------------------------------------*/
 
-void LocalLoop::run(const ProblemDescriptorInterface* PD)
+void LocalLoop::run(const std::string& problemlabel)
 {
   _iter=1;
   
@@ -20,7 +20,7 @@ void LocalLoop::run(const ProblemDescriptorInterface* PD)
   MultiLevelSolverInterface* MP = GetMultiLevelSolver();
 
   _clock_newmesh.start();
-  GetMultiLevelSolver()->ReInit(*PD);
+  GetMultiLevelSolver()->ReInit(problemlabel);
   GetMultiLevelSolver()->ReInitVector(u);
   GetMultiLevelSolver()->ReInitVector(f);
   GetMultiLevelSolver()->ReInitVector(dat);

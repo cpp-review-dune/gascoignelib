@@ -24,10 +24,10 @@ public:
 
   StdTimeLoop() : StdLoop() {}
 
-  void BasicInit(const ParamFile* paramfile);
+  void BasicInit(const ParamFile* paramfile, const ProblemContainer* PC);
 
-  void run(const ProblemDescriptorInterface* PD);
-  void adaptive_run(const ProblemDescriptorInterface* PD);
+  void run(const std::string& problemlabel);
+  void adaptive_run(const std::string& problemlabel);
 };
 }
 

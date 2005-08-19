@@ -21,11 +21,14 @@ int main(int argc, char** argv)
   ProblemDescriptor LPD;
   LPD.BasicInit(&paramfile);
 
+  ProblemContainer PC;
+  PC.AddProblem("func", &LPD);
+  
   /////////////
   // Loop
   /////////////
   StdLoop loop;
-  loop.BasicInit(&paramfile);
+  loop.BasicInit(&paramfile, &PC);
 
   /////////////
   // Functionals
@@ -56,7 +59,7 @@ int main(int argc, char** argv)
   loop.AddFunctional(&j2);
   loop.AddFunctional(&j3);
   
-  loop.run(&LPD);
+  loop.run("func");
 
   return 0;
 }

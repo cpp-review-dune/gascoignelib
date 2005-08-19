@@ -18,11 +18,14 @@ int main(int argc, char** argv)
   ProblemDescriptor LPD;
   LPD.BasicInit(&paramfile);
 
+  ProblemContainer PC;
+  PC.AddProblem("laplace", &LPD);
+  
   /////////////
   // Loop
   /////////////
   StdLoop loop;
-  loop.BasicInit(&paramfile);
+  loop.BasicInit(&paramfile, &PC);
 
   /////////////
   // Functionals
@@ -32,7 +35,7 @@ int main(int argc, char** argv)
   loop.AddFunctional(&j0);
   loop.AddFunctional(&j1);
   
-  loop.run(&LPD);
+  loop.run("laplace");
 
   return 0;
 }

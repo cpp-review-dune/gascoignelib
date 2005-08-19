@@ -102,9 +102,9 @@ public:
   BasicLoop();
   virtual ~BasicLoop();
 
-  virtual void BasicInit(const ParamFile* paramfile);
+  virtual void BasicInit(const ParamFile* paramfile, const ProblemContainer* PC);
 
-  void run(const ProblemDescriptorInterface* PD);
+  void run(const std::string& problemlabel);
   void ClockOutput() const;
 };
 }

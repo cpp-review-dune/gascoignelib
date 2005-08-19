@@ -7,6 +7,7 @@
 #include  "righthandsidebyequation.h"
 #include  "meshagent.h"
 #include  "problemdescriptorbase.h"
+#include  "problemcontainer.h"
 
 using namespace std;
 using namespace Gascoigne;
@@ -32,19 +33,20 @@ public:
 class LocalLoop : public StdLoop
 {
 public:
-  void BasicInit(const ParamFile* paramfile) {
-  GetMeshAgentPointer() = new MeshAgent;
-  
-  if(paramfile==NULL) 
-    {
-      int dim=2;
-      int prerefine=3;
-      string inpname("square.inp");
-      GetMeshAgent()->BasicInit(inpname,dim,prerefine,0);
-    }
-
-  StdLoop::BasicInit(paramfile);
-  }
+  void BasicInit(const ParamFile* paramfile, const ProblemContainer* PC)
+      {
+	GetMeshAgentPointer() = new MeshAgent;
+	
+	if(paramfile==NULL) 
+	  {
+	    int dim=2;
+	    int prerefine=3;
+	    string inpname("square.inp");
+	    GetMeshAgent()->BasicInit(inpname,dim,prerefine,0);
+	  }
+	
+	StdLoop::BasicInit(paramfile, PC);
+      }
 };
 
 /*---------------------------------------------------*/
@@ -112,11 +114,15 @@ int main(int argc, char** argv)
   ProblemDescriptor LPD;
   LPD.BasicInit(paramfile);
 
+  ProblemContainer  PC;
+  PC.AddProblem("testproblem",&LPD);
+  
+  
   /////////////
   // Loop
   /////////////
   LocalLoop loop;
-  loop.BasicInit(paramfile);
+  loop.BasicInit(paramfile,&PC);
 
   /////////////
   // Functionals
@@ -124,7 +130,7 @@ int main(int argc, char** argv)
   LocalDomainFunctional j1;
   loop.AddFunctional(&j1);
   
-  loop.run(&LPD);
+  loop.run("testproblem");
 
   if(paramfile!=NULL)
     {

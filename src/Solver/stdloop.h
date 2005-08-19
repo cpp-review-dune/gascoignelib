@@ -55,11 +55,11 @@ public:
   StdLoop();
   ~StdLoop();
 
-  void BasicInit(const ParamFile* paramfile);
+  void BasicInit(const ParamFile* paramfile, const ProblemContainer* PC);
 
   void AddFunctional(const Functional* fv) { _FV.push_back(fv);}
 
-  void run(const ProblemDescriptorInterface* PD);
+  void run(const std::string& problemlabel);
   void ClockOutput() const;
 };
 }

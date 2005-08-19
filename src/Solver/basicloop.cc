@@ -42,7 +42,7 @@ void BasicLoop::ClockOutput() const
 
 /*-----------------------------------------*/
 
-void BasicLoop::BasicInit(const ParamFile* paramfile)
+void BasicLoop::BasicInit(const ParamFile* paramfile, const ProblemContainer* PC)
 {
   _paramfile = paramfile;
   string s_copy_param_file;
@@ -101,7 +101,7 @@ void BasicLoop::BasicInit(const ParamFile* paramfile)
     }
   assert(GetMultiLevelSolver());
 
-  GetMultiLevelSolver()->BasicInit(GetMeshAgent(),_paramfile);
+  GetMultiLevelSolver()->BasicInit(GetMeshAgent(),_paramfile,PC);
   GetMultiLevelSolver()->SetMonitorPtr(&Mon);
 
   if (GetSolverInfosPointer()==NULL)
@@ -284,7 +284,7 @@ void BasicLoop::CopyVector(VectorInterface& dst, GlobalVector& src)
 
 /*-------------------------------------------------*/
 
-void BasicLoop::run(const ProblemDescriptorInterface* PD)
+void BasicLoop::run(const std::string& problemlabel)
 {
   VectorInterface u("u"), f("f");
   GlobalVector  ualt;
@@ -300,7 +300,7 @@ void BasicLoop::run(const ProblemDescriptorInterface* PD)
       _clock_newmesh.start();
 
       GetSolverInfos()->GetNLInfo().control().matrixmustbebuild() = 1;
-      GetMultiLevelSolver()->ReInit(*PD);
+      GetMultiLevelSolver()->ReInit(problemlabel);
       GetMultiLevelSolver()->ReInitVector(u);
       GetMultiLevelSolver()->ReInitVector(f);
       GetMultiLevelSolver()->InterpolateSolution(u,ualt);

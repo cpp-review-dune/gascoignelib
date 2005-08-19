@@ -38,9 +38,9 @@ void StdLoop::ClockOutput() const
 
 /*-----------------------------------------*/
 
-void StdLoop::BasicInit(const ParamFile* paramfile)
+void StdLoop::BasicInit(const ParamFile* paramfile, const ProblemContainer* PC)
 {
-  BasicLoop::BasicInit(paramfile);
+  BasicLoop::BasicInit(paramfile, PC);
 
   DataFormatHandler DFH;
 
@@ -308,7 +308,7 @@ void StdLoop::AdaptMesh(const DoubleVector& eta)
 
 /*-------------------------------------------------*/
 
-void StdLoop::run(const ProblemDescriptorInterface* PD)
+void StdLoop::run(const std::string& problemlabel)
 {
   VectorInterface u("u"), f("f");
   GlobalVector  ualt;
@@ -325,7 +325,7 @@ void StdLoop::run(const ProblemDescriptorInterface* PD)
       _clock_newmesh.start();
 
       GetSolverInfos()->GetNLInfo().control().matrixmustbebuild() = 1;
-      GetMultiLevelSolver()->ReInit(*PD);
+      GetMultiLevelSolver()->ReInit(problemlabel);
       GetMultiLevelSolver()->ReInitVector(u);
       GetMultiLevelSolver()->ReInitVector(f);
       GetMultiLevelSolver()->InterpolateSolution(u,ualt);

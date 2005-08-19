@@ -81,17 +81,19 @@ void StdMultiLevelSolver::ViewProtocoll() const
 
 StdMultiLevelSolver::StdMultiLevelSolver() : 
 _MAP(NULL), _cor("cor"), _res("res"), _mg0("mg0"), _mg1("mg1"),
-oldnlevels(-1), _paramfile(NULL), MON(NULL), DataP(NULL)
+oldnlevels(-1), _paramfile(NULL), MON(NULL), DataP(NULL), _PD(0), _PC(0)
 {
 }
 
 /*-------------------------------------------------------------*/
 
-void StdMultiLevelSolver::BasicInit(const MeshAgentInterface* MAP, const ParamFile* paramfile)
+void StdMultiLevelSolver::BasicInit(const MeshAgentInterface* MAP, const ParamFile* paramfile, const ProblemContainer* PC)
 {
   _MAP = MAP;
 
   _paramfile = paramfile;
+
+  SetProblemContainer(PC);
   
   if(!DataP)
   {
@@ -102,14 +104,15 @@ void StdMultiLevelSolver::BasicInit(const MeshAgentInterface* MAP, const ParamFi
 
 /*-------------------------------------------------------------*/
 
-void StdMultiLevelSolver::SetProblem(const ProblemDescriptorInterface& PDX)
+void StdMultiLevelSolver::SetProblem(const std::string& label)
 {
-  _PD = &PDX;
+  assert(_PC);
+  _PD = _PC->GetProblem(label);
   for(int level=0; level<nlevels(); ++level)  
     {
       int solverlevel = nlevels()-1-level;
       assert(GetSolver(solverlevel)) ;
-      GetSolver(solverlevel)->SetProblem(PDX);
+      GetSolver(solverlevel)->SetProblem(*_PD);
     }
 }
 
@@ -259,7 +262,7 @@ void StdMultiLevelSolver::NewMgInterpolator()
 
 /*-------------------------------------------------------------*/
 
-void StdMultiLevelSolver::ReInit(const ProblemDescriptorInterface& PDX)
+void StdMultiLevelSolver::ReInit(const std::string& problemlabel)
 {
   DataP->CountResidual() = 0;
   //  DataP->GetNLInfo().control().matrixmustbebuild() = 1;
@@ -267,7 +270,7 @@ void StdMultiLevelSolver::ReInit(const ProblemDescriptorInterface& PDX)
   NewSolvers();
   SolverNewMesh();
   NewMgInterpolator();
-  SetProblem(PDX);
+  SetProblem(problemlabel);
   RegisterMatrix();
   RegisterVectors();
   ReInitMatrix();

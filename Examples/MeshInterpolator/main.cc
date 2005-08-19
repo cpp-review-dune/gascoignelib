@@ -20,6 +20,9 @@ int main(int argc, char** argv)
   
   ProjectionProblemDescriptor PD;
   PD.BasicInit(&paramfile);
+
+  ProblemContainer PC;
+  PC.AddProblem("mesh", &PD);
   
   ///////////////////////
   // MESH 
@@ -33,8 +36,8 @@ int main(int argc, char** argv)
   ///////////////////////
 
   StdMultiLevelSolver MLS;
-  MLS.BasicInit(&MA,&paramfile);
-  MLS.ReInit(PD);
+  MLS.BasicInit(&MA,&paramfile, &PC);
+  MLS.ReInit("mesh");
   MLS.GetSolver()->OutputSettings();
     
   SolverInfos SI;

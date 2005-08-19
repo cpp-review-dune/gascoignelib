@@ -4,6 +4,7 @@
 #include  "multilevelsolverinterface.h"
 #include  "stdmultilevelsolverdata.h"
 #include  "problemdescriptorinterface.h"
+#include  "problemcontainer.h"
 #include  "monitor.h"
 #include  "stopwatch.h"
 #include  "mginterpolatorinterface.h"
@@ -51,7 +52,8 @@ class StdMultiLevelSolver : public MultiLevelSolverInterface
   Monitor*                          MON;
   StdMultiLevelSolverData*          DataP;
   const ProblemDescriptorInterface*      _PD;
-
+  const ProblemContainer*                _PC;
+  
   virtual void NewSolvers();
 
   virtual SolverInterface* NewSolver(int solverlevel);
@@ -59,6 +61,10 @@ class StdMultiLevelSolver : public MultiLevelSolverInterface
   virtual void SolverNewMesh();
 
   virtual const ProblemDescriptorInterface* GetProblemDescriptor() const { return _PD;}
+  
+  virtual const ProblemContainer* GetProblemContainer()        const { return _PC; }
+  virtual void SetProblemContainer(const ProblemContainer* PC)       { _PC=PC;     }
+  
   virtual SolverInterface*& GetSolverPointer(int l) {assert(l<_SP.size()); return _SP[l];}
   virtual void SetComputeLevel(int level) {ComputeLevel=level;}
 
@@ -91,7 +97,7 @@ class StdMultiLevelSolver : public MultiLevelSolverInterface
   void ReInitVector(VectorInterface& v, int comp);
   void ReInitVector(VectorInterface& v);
 
-  void BasicInit(const MeshAgentInterface* GMGM, const ParamFile* paramfile);
+  void BasicInit(const MeshAgentInterface* GMGM, const ParamFile* paramfile, const ProblemContainer* PC);
 
   // Zugriff
 
@@ -113,8 +119,8 @@ class StdMultiLevelSolver : public MultiLevelSolverInterface
 
   void SetMonitorPtr(Monitor* mon) { MON = mon;}
 
-  void ReInit(const ProblemDescriptorInterface& PDX);
-  void SetProblem(const ProblemDescriptorInterface& PDX);
+  void ReInit(const std::string& problemlabel);
+  void SetProblem(const std::string& label);
 
   // neue vektoren
 

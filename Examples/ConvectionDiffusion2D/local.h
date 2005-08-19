@@ -95,12 +95,12 @@ class BenchMarkMeshAgent : public MeshAgent
 class LocalLoop : public StdLoop
 {
 public:
-  void BasicInit(const ParamFile* paramfile) 
+  void BasicInit(const ParamFile* paramfile, const ProblemContainer* PC) 
     {
       GetMeshAgentPointer() = new BenchMarkMeshAgent;
-      StdLoop::BasicInit(paramfile);
+      StdLoop::BasicInit(paramfile, PC);
     }
-  void run(const ProblemDescriptorInterface* PD);
+  void run(const std::string& problemlabel);
 };
 
 

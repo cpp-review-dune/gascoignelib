@@ -8,6 +8,7 @@
 #include  "paramfile.h"
 #include  "nlinfo.h"
 #include  "vectorinterface.h"
+#include  "problemcontainer.h"
 
 namespace Gascoigne
 {
@@ -32,9 +33,9 @@ namespace Gascoigne
       virtual ~MultiLevelSolverInterface() {}
 
       virtual std::string GetName() const=0;
-      virtual void BasicInit(const MeshAgentInterface* GMGM, const ParamFile* paramfile)=0;
-      virtual void SetProblem(const ProblemDescriptorInterface& PDX)=0;
-      virtual void ReInit(const ProblemDescriptorInterface& PDX)=0;
+      virtual void BasicInit(const MeshAgentInterface* GMGM, const ParamFile* paramfile, const ProblemContainer* PC)=0;
+      virtual void SetProblem(const std::string& problemlabel)=0;
+      virtual void ReInit(const std::string& problemlabel)=0;
       virtual void SetMonitorPtr(Monitor* mon)=0;
 
       virtual void ReInitMatrix()=0;

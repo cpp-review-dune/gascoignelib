@@ -9,9 +9,9 @@ using namespace std;
 
 namespace Gascoigne
 {
-void StdTimeLoop::BasicInit(const ParamFile* paramfile)
+void StdTimeLoop::BasicInit(const ParamFile* paramfile, const ProblemContainer* PC)
 {
-  StdLoop::BasicInit(paramfile);
+  StdLoop::BasicInit(paramfile, PC);
 
   double tbegin, tend, deltat, theta;
   int    neuler;
@@ -48,7 +48,7 @@ string StdTimeLoop::SolveTimePrimal(VectorInterface& u, VectorInterface& f)
 
 /*-------------------------------------------------*/
 
-void StdTimeLoop::adaptive_run(const ProblemDescriptorInterface* PD)
+void StdTimeLoop::adaptive_run(const std::string& problemlabel)
 {
   VectorInterface u("u"), f("f");
   GlobalVector ualt;
@@ -57,7 +57,7 @@ void StdTimeLoop::adaptive_run(const ProblemDescriptorInterface* PD)
 
   for (_iter=1; _iter<=_niter; _iter++)
     {
-      GetMultiLevelSolver()->ReInit(*PD);
+      GetMultiLevelSolver()->ReInit(problemlabel);
       GetMultiLevelSolver()->ReInitVector(u);
       GetMultiLevelSolver()->ReInitVector(f);
       TimeInfoBroadcast();
@@ -141,14 +141,14 @@ void StdTimeLoop::InitSolution(VectorInterface& u)
 
 /*-------------------------------------------------*/
 
-void StdTimeLoop::run(const ProblemDescriptorInterface* PD)
+void StdTimeLoop::run(const std::string& problemlabel)
 {
   VectorInterface u("u"), f("f");
   
   DoubleVector eta;
   
   GetSolverInfos()->GetNLInfo().control().matrixmustbebuild() = 1;
-  GetMultiLevelSolver()->ReInit(*PD);
+  GetMultiLevelSolver()->ReInit(problemlabel);
   GetMultiLevelSolver()->ReInitVector(u);
   GetMultiLevelSolver()->ReInitVector(f);
   

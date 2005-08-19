@@ -35,7 +35,7 @@ alpha           0.5
 //Block MultiLevelSolver
 
 linear_maxiter          20
-linear_pstep		1
+linear_pstep		0
 
 //linearsolve		gmres_12
 linearsolve		mg
@@ -46,6 +46,7 @@ nonlinear_damp          10
 
 //Block Solver
 
+matrixtype	block
 discname 	                Q1Gls
 iterpre                 4
 iterpost                4
