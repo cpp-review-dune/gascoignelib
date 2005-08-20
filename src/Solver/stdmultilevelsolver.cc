@@ -106,8 +106,7 @@ void StdMultiLevelSolver::BasicInit(const MeshAgentInterface* MAP, const ParamFi
 
 void StdMultiLevelSolver::SetProblem(const std::string& label)
 {
-  assert(_PC);
-  _PD = _PC->GetProblem(label);
+  _PD = GetProblemContainer()->GetProblem(label);
   for(int level=0; level<nlevels(); ++level)  
     {
       int solverlevel = nlevels()-1-level;

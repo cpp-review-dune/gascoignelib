@@ -62,7 +62,7 @@ class StdMultiLevelSolver : public MultiLevelSolverInterface
 
   virtual const ProblemDescriptorInterface* GetProblemDescriptor() const { return _PD;}
   
-  virtual const ProblemContainer* GetProblemContainer()        const { return _PC; }
+  virtual const ProblemContainer* GetProblemContainer()        const { assert(_PC); return _PC; }
   virtual void SetProblemContainer(const ProblemContainer* PC)       { _PC=PC;     }
   
   virtual SolverInterface*& GetSolverPointer(int l) {assert(l<_SP.size()); return _SP[l];}

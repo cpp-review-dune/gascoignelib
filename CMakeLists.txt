@@ -20,4 +20,3 @@ INCLUDE(CMakeGlobal.txt)
 
 
 SUBDIRS(src test Examples)
-#SUBDIRS(src Examples)
