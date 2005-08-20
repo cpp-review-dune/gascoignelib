@@ -978,6 +978,10 @@ void StdSolver::ComputeIlu() const
     {
       int ncomp = GetProblemDescriptor()->GetEquation()->GetNcomp();
       _ci.start();
+      int n = GetIlu()->n();
+      IntVector perm(n);
+      iota(perm.begin(),perm.end(),0);
+      GetIlu()->ConstructStructure(perm,*GetMatrix());
       GetIlu()->zero();
       GetIlu()->copy_entries(GetMatrix());
       modify_ilu(*GetIlu(),ncomp);
@@ -1003,9 +1007,8 @@ void StdSolver::ComputeIlu(const VectorInterface& gu) const
   else
 #endif
     {
+      int ncomp = GetProblemDescriptor()->GetEquation()->GetNcomp();
       _ci.start();
-      const GlobalVector& u = GetGV(gu);
-      int ncomp = u.ncomp();
       PermutateIlu(gu);
       GetIlu()->zero();
       GetIlu()->copy_entries(GetMatrix());
@@ -1061,7 +1064,7 @@ void StdSolver::PermutateIlu(const VectorInterface& gu) const
       VecDirection vd (GetMesh());
       vd.Permutate    (perm,_Dat.GetVectorDirection());
     }
-  if (GetIlu()) GetIlu()->ConstructStructure(perm,*GetMatrix());
+  GetIlu()->ConstructStructure(perm,*GetMatrix());
 }
 
 /* -------------------------------------------------------*/
