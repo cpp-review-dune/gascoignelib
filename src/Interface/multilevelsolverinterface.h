@@ -27,7 +27,7 @@ namespace Gascoigne
     private:
 
     protected:
-
+      
     public:
       MultiLevelSolverInterface() {}
       virtual ~MultiLevelSolverInterface() {}
@@ -79,8 +79,7 @@ namespace Gascoigne
       }
       virtual void InterpolateSolution(VectorInterface& u, const GlobalVector& uold) const=0;
       virtual double ComputeFunctional(VectorInterface& f, const VectorInterface& u, const Functional* FP) const=0;
-      virtual void Transfer(int l, GlobalVector& ul, const GlobalVector& uf) const=0;
-      virtual void SolutionTransfer(int l, GlobalVector& ul, const GlobalVector& uf) const=0;
+      
       virtual void AssembleDualMatrix(VectorInterface& u)=0;
       virtual void vmulteq(VectorInterface& y, const VectorInterface&  x) const=0;
 
@@ -89,6 +88,10 @@ namespace Gascoigne
 
       virtual void AddNodeVector(const std::string& name, VectorInterface& q)=0;
       virtual void DeleteNodeVector(const std::string& q)=0;
+
+      virtual void SolutionTransfer(VectorInterface& u) const=0;
+      virtual void Transfer(VectorInterface& u) const=0;
+
   };
 }
 
