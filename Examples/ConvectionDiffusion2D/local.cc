@@ -28,23 +28,22 @@ void LocalLoop::run(const std::string& problemlabel)
   GetSolverInfos()->GetNLInfo().control().matrixmustbebuild() = 1;
   _clock_newmesh.stop();
 
+
+
+	    // hab was geaendert !!!!!!! nicht geprueft
+  GlobalVector& d = MP->GetSolver()->GetGV(dat);
+  string filename("solve.00003.bup");
+  ReadBackUpResize(d,filename);
+
+  
   int nlevels = MP->nlevels();
-  for(int l=nlevels-1;l>=0;l--)
+  for(int l=nlevels-2;l>=0;l--)
     {
-      GlobalVector& d = MP->GetSolver(l)->GetGV(dat);
-      if(l==nlevels-1)
-	{
-	  string filename("solve.00003.bup");
-	  ReadBackUpResize(d,filename);
-	}
-      else
-	{
-	  d.ncomp() = MP->GetSolver(l+1)->GetGV(dat).ncomp();
-	  MP->GetSolver(l)->ReInitVector(dat);
- 	  MP->Transfer(l+1,d,MP->GetSolver(l+1)->GetGV(dat));
-	}
-      MP->GetSolver(l)->AddNodeVector("beta",dat);
+      d.ncomp() = MP->GetSolver(l+1)->GetGV(dat).ncomp();
+      MP->GetSolver(l)->ReInitVector(dat);
     }
+  MP->AddNodeVector("beta",dat);
+	    // 
 
   MP->GetSolver()->OutputSettings();
   InitSolution(u);
