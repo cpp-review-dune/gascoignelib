@@ -78,7 +78,6 @@ class StdMultiLevelSolver : public MultiLevelSolverInterface
 
   virtual void ViewProtocoll() const;
 
-  virtual void SolutionTransfer(VectorInterface& u) const;
   virtual void SolutionTransfer(int high, int low, VectorInterface& u) const;
   virtual void Transfer(int high, int low, VectorInterface& u) const;
 
@@ -143,15 +142,17 @@ class StdMultiLevelSolver : public MultiLevelSolverInterface
   void ComputeIlu();
   
   void BoundaryInit(VectorInterface& u) const;
+
+  virtual void SolutionTransfer(VectorInterface& u) const;
+  virtual void Transfer(VectorInterface& u) const;
+
   
   void vmulteq(VectorInterface& y, const VectorInterface&  x) const;
   
   virtual void LinearMg(int minlevel, int maxlevel, VectorInterface& u, const VectorInterface& f, CGInfo&);
 
   double ComputeFunctional(VectorInterface& f, const VectorInterface& u, const Functional* FP) const;
-
-  void SolutionTransfer(int l, GlobalVector& ul, const GlobalVector& uf) const;
-  void Transfer(int l, GlobalVector& ul, const GlobalVector& uf) const;
+  
   void AssembleDualMatrix(VectorInterface& u);
 
   // fuer gmres

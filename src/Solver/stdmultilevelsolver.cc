@@ -290,7 +290,7 @@ void StdMultiLevelSolver::InterpolateSolution(VectorInterface& u, const GlobalVe
 
   for(int l=0; l<FinestLevel(); l++)
     {
-      GetSolver(l)->GetGV(u).zero();
+      GetSolver(l)->Zero(u);
     }
 }
 
@@ -318,7 +318,7 @@ void StdMultiLevelSolver::LinearMg(int finelevel, int coarselevel, VectorInterfa
   int nl = nlevels();
   DoubleVector res(nl,0.), rw(nl,0.);
 
-  GetSolver(finelevel)->GetGV(_mg0).equ(1.,GetSolver(finelevel)->GetGV(f));
+  GetSolver(finelevel)->Equ(_mg0,1.,f);
   
   bool reached = 0;
 
@@ -344,7 +344,7 @@ void StdMultiLevelSolver::mgstep(vector<double>& res, vector<double>& rw,
       if(l==finelevel)
         {
           GetSolver(l)->MatrixResidual(v, u, b);
-          res[l] = GetSolver(l)->GetGV(v).norm();
+          res[l] = GetSolver(l)->Norm(v);
         }
       GetSolver(l)->smooth_exact(u,b,v);
     }
@@ -352,12 +352,12 @@ void StdMultiLevelSolver::mgstep(vector<double>& res, vector<double>& rw,
     {
       GetSolver(l)->smooth_pre(u,b,v);
       GetSolver(l)->MatrixResidual(v,u,b);
-      res[l] = GetSolver(l)->GetGV(v).norm();
+      res[l] = GetSolver(l)->Norm(v);
       
       _Interpolator[l-1]-> restrict_zero(GetSolver(l-1)->GetGV(b),GetSolver(l)->GetGV(v));
       GetSolver(l-1)->HNDistribute(b);
       GetSolver(l-1)->SetBoundaryVectorZero(b);
-      GetSolver(l-1)->GetGV(u).zero();
+      GetSolver(l-1)->Zero(u);
       
       int j = 0;
       if (p0=="V") j = 1;
@@ -368,9 +368,9 @@ void StdMultiLevelSolver::mgstep(vector<double>& res, vector<double>& rw,
           mgstep(res,rw,l-1,finelevel,coarselevel,p0,p,u,b,v);
         }
       if ((l==0)&&(p=="F")) { p0="W";}
-      rw[l] = GetSolver(l-1)->GetGV(u).norm();
+      rw[l] = GetSolver(l-1)->Norm(u);
 
-      GetSolver(l)->GetGV(v).zero();
+      GetSolver(l)->Zero(v);
       GetSolver(l-1)    -> HNAverage(u);
       _Interpolator[l-1]-> prolongate_add(GetSolver(l)->GetGV(v),GetSolver(l-1)->GetGV(u));
       GetSolver(l-1) -> HNZero(u);
@@ -378,7 +378,7 @@ void StdMultiLevelSolver::mgstep(vector<double>& res, vector<double>& rw,
      
       GetSolver(l)   -> SetBoundaryVectorZero(v);
 
-      GetSolver(l)->GetGV(u).add(DataP->MgOmega(),GetSolver(l)->GetGV(v));
+      GetSolver(l)->Add(u,DataP->MgOmega(),v);
     
       GetSolver(l)->smooth_post(u,b,v);
     }
@@ -426,7 +426,7 @@ void StdMultiLevelSolver::NewtonOutput(NLInfo& nlinfo) const
  
 void StdMultiLevelSolver::NewtonVectorZero(VectorInterface& w) const
 {
-  GetSolver(FinestLevel())->GetGV(w).zero();
+  GetSolver(FinestLevel())->Zero(w);
 }
 
 /*-------------------------------------------------------------*/
@@ -435,7 +435,7 @@ double StdMultiLevelSolver::NewtonResidual(VectorInterface& y, const VectorInter
 {
   _clock_residual.start();
   DataP->CountResidual()++;
-  GetSolver(ComputeLevel)->GetGV(y).equ(1.,GetSolver(ComputeLevel)->GetGV(b));
+  GetSolver(ComputeLevel)->Equ(y,1.,b);
   GetSolver(ComputeLevel)->Form(y,x,-1.);
   GetSolver(ComputeLevel)->SetBoundaryVectorZero(y);
   GetSolver(ComputeLevel)->SubtractMeanAlgebraic(y);
@@ -466,7 +466,7 @@ void StdMultiLevelSolver::NewtonLinearSolve(VectorInterface& x, const VectorInte
 {
   _clock_solve.start();
   info.reset();
-  GetSolver(FinestLevel())->GetGV(x).zero();
+  GetSolver(FinestLevel())->Zero(x);
 
   if (DataP->LinearSolve()=="mg")
     {
@@ -560,7 +560,7 @@ double StdMultiLevelSolver::NewtonUpdate(double& rr, VectorInterface& x, VectorI
   bool lex  = linfo.control().status()=="exploded";
 
   double nn = NewtonNorm(dx);
-  double nr = GetSolver(ComputeLevel)->GetGV(r).norm();
+  double nr = GetSolver(ComputeLevel)->Norm(r);
 
   if (nn>1.e10)  lex =1;
   if (!(nn>=0.)) lex =1;
@@ -584,12 +584,15 @@ double StdMultiLevelSolver::NewtonUpdate(double& rr, VectorInterface& x, VectorI
     {
       if(iter>0)
         {
-          GetSolver(ComputeLevel)->GetGV(x).add(relax*(omega-1.),GetSolver(ComputeLevel)->GetGV(dx));
+//          GetSolver(ComputeLevel)->GetGV(x).add(relax*(omega-1.),GetSolver(ComputeLevel)->GetGV(dx));
+	  GetSolver(ComputeLevel)->Add(x,relax*(omega-1.),dx);
+	  
           relax *= omega;
         }
       else
         {
-          GetSolver(ComputeLevel)->GetGV(x).add(relax,GetSolver(ComputeLevel)->GetGV(dx));
+//          GetSolver(ComputeLevel)->GetGV(x).add(relax,GetSolver(ComputeLevel)->GetGV(dx));
+	  GetSolver(ComputeLevel)->Add(x,relax,dx);
         }
 
       NewtonResidual(r,x,f);
@@ -600,7 +603,8 @@ double StdMultiLevelSolver::NewtonUpdate(double& rr, VectorInterface& x, VectorI
       if (message=="continue") continue;
       if (message=="exploded") 
         {
-          GetSolver(ComputeLevel)->GetGV(x).add(-relax,GetSolver(ComputeLevel)->GetGV(dx));
+//          GetSolver(ComputeLevel)->GetGV(x).add(-relax,GetSolver(ComputeLevel)->GetGV(dx));
+	  GetSolver(ComputeLevel)->Add(x,-relax,dx);
           relax = 0.;
           cout << "Damping exploded !!!!!" << endl;
           nlinfo.control().status() = "diverged";
@@ -718,19 +722,31 @@ void StdMultiLevelSolver::Transfer(int high, int low, VectorInterface& u) const
 {
   for(int l=high;l>=low;l--)
     {
-      Transfer(l,GetSolver(l-1)->GetGV(u),GetSolver(l)->GetGV(u));
+      GetSolver(l)->HNAverage(u);
+
+      assert(_Interpolator[l-1]);
+      _Interpolator[l-1]->SolutionTransfer(GetSolver(l-1)->GetGV(u),
+					   GetSolver(l)  ->GetGV(u));
+      
+      GetSolver(l)->HNZero(u);
     }
+}
+
+/*-------------------------------------------------------------*/
+
+void StdMultiLevelSolver::Transfer(VectorInterface& u) const
+{
+  Transfer(ComputeLevel,1,u);
 }
 
 /*-------------------------------------------------------------*/
 
 void StdMultiLevelSolver::SolutionTransfer(int high, int low, VectorInterface& u) const
 {
+  Transfer(high,low,u);
+
   for(int l=high;l>=low;l--)
-    {
-      SolutionTransfer(l,GetSolver(l-1)->GetGV(u),GetSolver(l)->GetGV(u));
-      GetSolver(l-1)->SetBoundaryVector(u);
-    }
+    GetSolver(l-1)->SetBoundaryVector(u);
 }
 
 /*-------------------------------------------------------------*/
@@ -738,25 +754,6 @@ void StdMultiLevelSolver::SolutionTransfer(int high, int low, VectorInterface& u
 void StdMultiLevelSolver::SolutionTransfer(VectorInterface& u) const
 {
   SolutionTransfer(ComputeLevel,1,u);
-}
-
-/*-------------------------------------------------------------*/
-
-void StdMultiLevelSolver::SolutionTransfer(int l, GlobalVector& ul, const GlobalVector& uf) const
-{
-  GlobalVector& uuf = const_cast<GlobalVector&>(uf);
-
-  GetSolver(l)->GetDiscretization()->HNAverage(uuf);
-  Transfer(l,ul,uf);
-  GetSolver(l)->GetDiscretization()->HNZero(uuf);
-}
-
-/*-------------------------------------------------------------*/
-
-void StdMultiLevelSolver::Transfer(int l, GlobalVector& ul, const GlobalVector& uf) const
-{
-  assert(_Interpolator[l-1]);
-  _Interpolator[l-1]->SolutionTransfer(ul,uf);
 }
 
 /*-------------------------------------------------------------*/
