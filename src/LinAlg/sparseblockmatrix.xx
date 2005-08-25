@@ -34,84 +34,71 @@ void SparseBlockMatrix<B>::Jacobi(GlobalVector& x) const
 
 /*-------------------------------------------------------------*/
 
-// template<class B>
-// void SparseBlockMatrix<B>::FillInterfaceList(const nvector<int>& elements,
-// 					     nvector<int>& start,
-// 					     nvector<float>& values) const
-// {
-//   assert (elements.size()%2==0);
-//   int ne = elements.size()/2;
-//   start.resize(ne+1);
-//   int index=0;
-//   start[index]=0;
-//   nvector<float> tmp;
-//   int cur_row=-1;
-//   int row;
-//   int pos=-1;
-//   int col;
-//   for (int index=0;index<ne;++index)
-//     {
-//       row = elements[2*index];
-//       col = elements[2*index+1];
-//       assert (row>=cur_row);
-//       cur_row = row;
-//       // spaeter mal nachdenken
-// //        if (row>cur_row) 
-// //  	{ 
-// //  	  cur_row = row;
-// //  	  pos = US.start(row);
-// //  	}
-//       pos = US.start(row);
-//       while ((US.col(pos)!=col)) 
-// 	{ 
-// 	  ++pos;
-// 	  assert (pos!=US.stop(row));
-// 	}
-//       mat(pos)->vector_get(tmp);
-//       for (int i=0;i<tmp.size();++i) values.push_back(tmp[i]);	
-//       start[index+1]=start[index]+tmp.size();
-//     }
-// }
+template<class B>
+void SparseBlockMatrix<B>::FillInterfaceList(const nvector<int>& elements,
+					     nvector<int>& start,
+					     nvector<float>& values) const
+{
+  assert (elements.size()%2==0);
+  int ne = elements.size()/2;
+  start.resize(ne+1);
+  int index=0;
+  start[index]=0;
+  nvector<float> tmp;
+  int cur_row=-1;
+  int row;
+  int pos=-1;
+  int col;
+  for (int index=0;index<ne;++index)
+    {
+      row = elements[2*index];
+      col = elements[2*index+1];
+      assert (row>=cur_row);
+      cur_row = row;
+      pos = US.start(row);
+      while ((US.col(pos)!=col)) 
+	{ 
+	  ++pos;
+	  assert (pos!=US.stop(row));
+	}
+      mat(pos)->vector_get(tmp);
+      for (int i=0;i<tmp.size();++i) values.push_back(tmp[i]);	
+      start[index+1]=start[index]+tmp.size();
+    }
+}
 
 // /*-------------------------------------------------------------*/
 
-// template<class B>
-// void SparseBlockMatrix<B>::FurbishInterface (double d,
-// 					     const nvector<int>&   elements,
-// 					     const nvector<int>&   start,
-// 					     const nvector<float>& values)
-// {
-//   int ne = elements.size()/2;
+template<class B>
+void SparseBlockMatrix<B>::FurbishInterface (double d,
+					     const nvector<int>&   elements,
+					     const nvector<int>&   start,
+					     const nvector<float>& values)
+{
+  int ne = elements.size()/2;
   
-//   nvector<float> tmp;
-//   int cur_row=-1;
-//   int row;
-//   int pos=-1;
-//   int col;
-//   for (int index=0;index<ne;++index)
-//     {
-//       row = elements[2*index];
-//       col = elements[2*index+1];
-//       cur_row = row;
-//       // hier ist es noch anders, da ein eintrag der einen
-//       // seite nicht unbedingt hier auch auftreten muss.
-//       // ausserdem stimmt wegen der Nummerierung die Reihenfolge nicht.
-// //        if (row>cur_row) 
-// //  	{ 
-// //  	  cur_row = row;
-// //  	  pos = US.start(row);
-// //  	}
-//       pos = US.start(row);
-//       while ((US.col(pos)!=col)&&(pos != US.stop(row)))
-// 	++pos;
-//       if (pos == US.stop(row) ) continue;
+  nvector<float> tmp;
+  int row;
+  int pos=-1;
+  int col;
+  for (int index=0;index<ne;++index)
+    {
+      row = elements[2*index];
+      col = elements[2*index+1];
+      pos = US.start(row);
+      while (US.col(pos)!=col)
+	{
+	  ++pos;
+	  if (pos==US.stop(row)) break;
+	}
+      if (pos == US.stop(row) ) continue;
       
-//       tmp.resize(start[index+1]-start[index]);
-//       for (int i=0;i<tmp.size();++i)
-// 	tmp[i] = values[i+start[index]];
-//       mat(pos)->vector_add(d,tmp);
-//     }
-// }
+      tmp.resize(start[index+1]-start[index]);
+      for (int i=0;i<tmp.size();++i)
+	tmp[i] = values[i+start[index]];
+      mat(pos)->vector_add(d,tmp);
+    }
+}
 
 /*-------------------------------------------------------------*/
 	

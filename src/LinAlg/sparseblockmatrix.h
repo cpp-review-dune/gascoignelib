@@ -41,8 +41,8 @@ class SparseBlockMatrix : public MatrixInterface
 
   /////// Zugriff //////////////////////
 
-  const_iterator  mat(int pos)            const { return smat.begin()+pos; }
-        iterator  mat(int pos)                  { return smat.begin()+pos; }
+  const_iterator  mat(int pos)            const { assert(pos<smat.size()); return smat.begin()+pos; }
+        iterator  mat(int pos)                  { assert(pos<smat.size()); return smat.begin()+pos; }
 
   const StencilInterface* GetStencil() const { return &US;}
 
@@ -76,7 +76,12 @@ class SparseBlockMatrix : public MatrixInterface
   void vmult(GlobalVector& y, const GlobalVector& x, const TimePattern& TP, double s=1.)const;
   void entry_diag(int i, const nmatrix<double>& M);
  
-/*-----------------------------------------------*/
+	    /*-----------------------------------------------*/
+
+  void FillInterfaceList(const nvector<int>& elements,nvector<int>& start, nvector<float>& values) const;
+  void FurbishInterface (double d, const nvector<int>&   elements, const nvector<int>&   start, const nvector<float>& values);
+
+	    /*-----------------------------------------------*/
 
   ostream& Write(ostream &s) const;
   friend   ostream& operator<<(ostream &s, const SparseBlockMatrix<B>& A) {assert(0); return s;}
