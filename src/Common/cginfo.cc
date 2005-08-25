@@ -184,9 +184,11 @@ bool CGInfo::check(double resi, double cori)
     }
   if (UD.printstep() && !(CD.iteration()%UD.printstep()) )
     {
+      int prec = cout.precision();
       cout.precision(5);
       cout << UD.text() << " " << CD.iteration() << " Res: " << CD.residual();
       cout << " Cor: " << CD.correction()<< endl;
+      cout.precision(prec);
     }
   CD.iteration()++;
   if (CD.status()=="running")  return 0;
