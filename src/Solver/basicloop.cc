@@ -204,7 +204,7 @@ void BasicLoop::WriteMeshInp(const string& name) const
 
 void BasicLoop::InitSolution(VectorInterface& u)
 {
-  GetMultiLevelSolver()->GetSolver()->GetGV(u).zero();
+  GetMultiLevelSolver()->GetSolver()->Zero(u);
 
   if      (_initial=="analytic") GetMultiLevelSolver()->GetSolver()->SolutionInit(u);
   else if (_initial=="file")     GetMultiLevelSolver()->GetSolver()->Read(u,_reload);
@@ -225,7 +225,7 @@ string BasicLoop::Solve(VectorInterface& u, VectorInterface& f, string name)
 {
   _clock_solve.start();
 
-  GetMultiLevelSolver()->GetSolver()->GetGV(f).zero();
+  GetMultiLevelSolver()->GetSolver()->Zero(f);
   GetMultiLevelSolver()->GetSolver()->Rhs(f);
 
   GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(f);

@@ -584,6 +584,13 @@ void StdSolver::smooth(int niter, VectorInterface& x, const VectorInterface& y, 
 	  GetMatrix()->Jacobi(GetGV(h));
 	  Add(x,omega,h);
 	}
+      else if (_Dat.GetLinearSmooth()=="richardson")
+	{
+	  MatrixResidual(h,x,y);
+	  Add(x,omega,h);
+	}
+      else if (_Dat.GetLinearSmooth()=="none")
+	{}
       else
 	{
 	  cerr << "Smoother: " << _Dat.GetLinearSmooth() << " not valid!\n";
@@ -658,6 +665,7 @@ void StdSolver::Form(VectorInterface& gy, const VectorInterface& gx, double d) c
     HNDistribute(gy);
   }
   SubtractMeanAlgebraic(gy);
+
 
   _re.stop();
 }
@@ -912,7 +920,7 @@ void StdSolver::Rhs(VectorInterface& gf, double d) const
   HNZeroData();
   if (distribute())
     {
-      GetDiscretization()->HNDistribute(f);
+      HNDistribute(gf);
     }
 }
 
