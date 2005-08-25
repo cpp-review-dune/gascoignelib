@@ -572,9 +572,23 @@ void StdSolver::smooth(int niter, VectorInterface& x, const VectorInterface& y, 
   double omega = _Dat.GetOmega();
   for(int iter=0; iter<niter; iter++)
     {
-      MatrixResidual(h,x,y);
-      GetIlu()->solve(GetGV(h));
-      Add(x,omega,h);
+      if (_Dat.GetLinearSmooth()=="ilu")
+	{
+	  MatrixResidual(h,x,y);
+	  GetIlu()->solve(GetGV(h));
+	  Add(x,omega,h);
+	}
+      else if (_Dat.GetLinearSmooth()=="jacobi")
+	{
+	  MatrixResidual(h,x,y);
+	  GetMatrix()->Jacobi(GetGV(h));
+	  Add(x,omega,h);
+	}
+      else
+	{
+	  cerr << "Smoother: " << _Dat.GetLinearSmooth() << " not valid!\n";
+	  abort();
+	}
       SubtractMean(x);
     }
   _il.stop();
