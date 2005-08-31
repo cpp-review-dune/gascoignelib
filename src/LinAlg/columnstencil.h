@@ -18,7 +18,7 @@ namespace Gascoigne
 ////
 /////////////////////////////////////////////
 
-  class ColumnStencil //: public StencilInterface
+class ColumnStencil : public virtual StencilInterface
 {
 protected:
 
@@ -30,8 +30,7 @@ public:
 ////  Con(De)structor 
 //
 
-  ColumnStencil() //: StencilInterface()
-    {}
+  ColumnStencil() : StencilInterface() {}
   ~ColumnStencil() {}
 
   const IntVector&  col()    const { return scol; }
