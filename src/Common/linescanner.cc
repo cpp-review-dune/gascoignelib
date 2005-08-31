@@ -61,10 +61,11 @@ void LineScanner::split(vector<string>& words, const vector<char>& c) const
 
 int LineScanner::NextLine(vector<double>& words)
 {
-  if (fp.eof()) return -1;
-
   string toto;
   getline(fp,toto);
+  
+  if (fp.eof()) return -1;
+
   vector<string> s1 = StringSplit(toto.c_str(),' ','\t');
   
   words.resize(s1.size());
@@ -77,10 +78,10 @@ int LineScanner::NextLine(vector<double>& words)
 
 int LineScanner::NextLine(vector<string>& words)
 {
-  if (fp.eof()) return -1;
-
   string toto;
   getline(fp,toto);
+
+  if (fp.eof()) return -1;
 
   words.resize(0);
 
@@ -113,10 +114,10 @@ int LineScanner::NextLine(vector<string>& words, const vector<int>& w)
   // fills in "words" the strings of the next line
   // word[i] has fixed lenght w[i]
 
-  if (fp.eof()) return -1;
-
   string toto;
   getline(fp,toto);
+
+  if (fp.eof()) return -1;
 
   int j = 0;
   for (int i=0; i<w.size(); i++)
