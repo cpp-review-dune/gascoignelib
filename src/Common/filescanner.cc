@@ -58,7 +58,7 @@ void FileScanner::readfile(const ParamFile* pf, const string& blockname)
   // als massnahme gegen schleifen der inklusion gibt es den defaultvalues-zaehler
   // bei jedem weiteren auslesen der defaultwerte der 'naechst-tiefen' datei wird der zaehler
   // um eins hoch gezaehlt
-  //syntax:
+  //syntax: 
   //   //Block DefaultValues
   //   files   3   file_a  file_b  file_c
   //   file_a  settingsa.param
