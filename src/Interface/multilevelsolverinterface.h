@@ -92,6 +92,7 @@ namespace Gascoigne
       virtual void SolutionTransfer(VectorInterface& u) const=0;
       virtual void Transfer(VectorInterface& u) const=0;
 
+      virtual void newton(VectorInterface& u, const VectorInterface& f, VectorInterface& r, VectorInterface& w, NLInfo& info)=0;
   };
 }
 
