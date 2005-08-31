@@ -3,7 +3,9 @@
 
 #include  <ctime>
 #include  "gostream.h"
-
+#include  <unistd.h>
+#include <sys/resource.h>
+#include <time.h>
 
 /***********************************************************
  *****   ueberarbeitete und fehlerbereinigte Version   ***** 
@@ -59,6 +61,69 @@ class StopWatch
   double stop() ;
   double read() const;
 };
+
+/*----------------------------------------------------*/
+
+	  // measures the walltime
+class RTStopWatch 
+{
+ protected:
+  bool     running;
+  timespec t1,t2;
+  timespec my_time;
+  
+ public:
+  RTStopWatch() 
+    {
+    }
+  
+
+  void  reset()
+    {
+      running         = 0;
+      my_time.tv_sec  = 0;
+      my_time.tv_nsec = 0;
+    }
+  
+  void  start()
+    {
+      if (!running) clock_gettime(CLOCK_REALTIME,&t1);
+      running = 1;
+    }
+  
+  double stop()
+    {
+      if (running)
+	{
+	  clock_gettime(CLOCK_REALTIME,&t2);
+	  my_time.tv_sec  += t2.tv_sec-t1.tv_sec;
+	  my_time.tv_nsec += t2.tv_nsec-t1.tv_nsec;
+
+	  while (long(my_time.tv_nsec)>long(1000000000))
+	    {
+	      my_time.tv_nsec -= long(1000000000);
+	      my_time.tv_sec  += 1;
+	    }
+	  while (long(my_time.tv_nsec)<long(0))
+	    {
+	      my_time.tv_nsec += long(1000000000);
+	      my_time.tv_sec  -= 1;
+	    }
+	}
+      running = 0;
+      return double( my_time.tv_sec)+1.e-9 * double (my_time.tv_nsec);
+    }
+  
+  double read() const
+    {
+      if (running) return -1;
+      return double (my_time.tv_sec)+1.e-9 * double (my_time.tv_nsec);
+    }
+  
+};
+
+
+
 }
 
 #endif
