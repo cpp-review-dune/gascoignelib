@@ -34,7 +34,8 @@ public:
   
   int npatches()    const { return indexofpatch.size();}
   bool HasPatch()   const { return haspatch;}
-
+  int  Dim()        const { return dim; }
+  
   const IntVector& IndicesOfPatch(int i) const { return indexofpatch[i];}
   IntVector CoarseIndices(int iq) const;
 
