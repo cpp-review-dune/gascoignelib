@@ -9,15 +9,15 @@ namespace Gascoigne
 
 /**********************************************************/
 
-class CellFunction : public Gascoigne::Application
+class CellFunction : public Application
 {
   protected:
 
   public:
-    CellFunction() : Gascoigne::Application() { }
+    CellFunction() : Application() { }
     ~CellFunction() { }
 
-    virtual void F(Gascoigne::LocalCellVector& b, double d) const
+    virtual void F(LocalCellVector& b, double d) const
       {
 	std::cout << "CellFunction::F not written\n";
 	abort();

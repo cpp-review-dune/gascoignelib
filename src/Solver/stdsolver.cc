@@ -879,6 +879,28 @@ void StdSolver::EvaluateCellFunction(GlobalCellVector& f, const CellFunction& CF
 
 /*-------------------------------------------------------*/
 
+void StdSolver::InterpolateDomainFunction(VectorInterface&  f, const DomainFunction& DF) const
+{
+  HNAverageData();
+  
+  GetDiscretization()->InterpolateDomainFunction(GetGV(f),DF);
+
+  HNZeroData();
+}
+
+/*-------------------------------------------------------*/
+
+void StdSolver::InterpolateDomainFunction(GlobalCellVector& f, const DomainFunction& DF) const
+{
+  HNAverageData();
+  
+  GetDiscretization()->InterpolateCellDomainFunction(f,DF);
+
+  HNZeroData();
+}
+
+/*-------------------------------------------------------*/
+
 void StdSolver::Rhs(VectorInterface& gf, double d) const
 {
   GlobalVector& f = GetGV(gf);

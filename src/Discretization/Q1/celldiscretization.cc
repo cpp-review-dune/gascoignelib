@@ -551,6 +551,76 @@ void CellDiscretization::EvaluateCellFunction(GlobalCellVector& f, const CellFun
     }
 }
 
+/* ----------------------------------------- */ 
+  
+void CellDiscretization::InterpolateDomainFunction(GlobalVector& f, const DomainFunction& DF) const
+{
+  int dim = GetMesh()->dimension();
+  f.zero();
+
+  DoubleVector gf;
+  if(dim==2)
+  {
+    for(int r=0; r<GetMesh()->nnodes(); ++r)
+    {
+      Vertex2d v = GetMesh()->vertex2d(r);
+      DF.F(gf,v);
+      f.add_node(r,1.,gf);
+    }
+  }
+  else
+  {
+    for(int r=0; r<GetMesh()->nnodes(); ++r)
+    {
+      Vertex3d v = GetMesh()->vertex3d(r);
+      DF.F(gf,v);
+      f.add_node(r,1.,gf);
+    }
+  }
+}
+
+/* ----------------------------------------- */  
+
+void CellDiscretization::InterpolateCellDomainFunction(GlobalCellVector& f, const DomainFunction& DF) const
+{
+  int dim = GetMesh()->dimension();
+  DoubleVector gf;
+  f.zero();
+
+  if(dim==2)
+  {
+    Vertex2d v;
+    for(int iq=0;iq<GetMesh()->ncells();++iq)
+    {
+      v.zero();
+      for (int in=0; in<4; in++)
+      {
+	int r = GetMesh()->vertex_of_cell(iq,in);
+	v += GetMesh()->vertex2d(r);
+      }
+      v *= 0.25;
+      DF.F(gf,v);
+      f.add_node(iq,1.,gf);
+    }
+  }
+  else
+  {
+    Vertex3d v;
+    for(int iq=0;iq<GetMesh()->ncells();++iq)
+    {
+      v.zero();
+      for (int in=0; in<8; in++)
+      {
+	int r = GetMesh()->vertex_of_cell(iq,in);
+	v += GetMesh()->vertex3d(r);
+      }
+      v *= 0.125;
+      DF.F(gf,v);
+      f.add_node(iq,1.,gf);
+    }
+  }
+}
+
 /* ----------------------------------------- */
 
 void CellDiscretization::Transformation_HM(FemInterface::Matrix& T, const HierarchicalMesh* HM, int iq) const

@@ -12,7 +12,8 @@
 #include  "stopwatch.h"
 #include  "hierarchicalmesh.h"
 #include  "pressurefilter.h"
-#include "cellfunction.h"
+#include  "cellfunction.h"
+#include  "domainfunction.h"
 
 /*-----------------------------------------*/
 
@@ -288,6 +289,9 @@ class StdSolver : public virtual SolverInterface
   virtual double ComputePointFunctional(VectorInterface& f, const VectorInterface& u, VectorInterface& z, const PointFunctional* NFP) const;
   virtual double ComputeResidualFunctional(VectorInterface& f, const VectorInterface& u, VectorInterface& z, const ResidualFunctional* FP) const;
   virtual void EvaluateCellFunction(GlobalCellVector& f, const CellFunction& CF, double d = 1.) const;
+  virtual void InterpolateDomainFunction(VectorInterface&  f, const DomainFunction& DF) const;
+  virtual void InterpolateDomainFunction(GlobalCellVector& f, const DomainFunction& DF) const;
+
   //
   /// vector - initialize
   //

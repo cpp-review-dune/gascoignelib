@@ -85,6 +85,9 @@ public:
 
   void EvaluateCellFunction(GlobalCellVector& f, const CellFunction& CF, double d) const;
 
+  void InterpolateDomainFunction(GlobalVector& f, const DomainFunction& DF) const;
+  void InterpolateCellDomainFunction(GlobalCellVector& f, const DomainFunction& DF) const;
+
   virtual nmatrix<double> GetLocalInterpolationWeights() const { assert(0); return nmatrix<double>();}
 
 };
