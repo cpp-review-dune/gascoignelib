@@ -20,12 +20,14 @@ double AllDomainFunctional::J(const FemFunction& U, const Vertex3d& V) const
 }
 /*-----------------------------------------*/
 
-void SubDomainFunctional::SetCoordinates(double x0, double x1, double y0, double y1)
+void SubDomainFunctional::SetCoordinates(double x0, double x1, double y0, double y1, double z0, double z1)
 {
   _x0 = x0;
   _x1 = x1;
   _y0 = y0;
   _y1 = y1;
+  _z0 = z0;
+  _z1 = z1;
 }
 
 /*-----------------------------------------*/

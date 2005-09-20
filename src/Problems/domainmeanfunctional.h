@@ -43,7 +43,7 @@ public:
 
   std::string GetName() const {return "SubDomainFunctional";}
 
-  void SetCoordinates(double x0, double x1, double y0, double y1);
+  void SetCoordinates(double x0, double x1, double y0, double y1, double z0=0, double z1=0);
 
   double J(const FemFunction& U, const Vertex2d& v) const;
   double J(const FemFunction& U, const Vertex3d& v) const;
