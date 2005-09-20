@@ -75,6 +75,7 @@ class RTStopWatch
  public:
   RTStopWatch() 
     {
+      reset();
     }
   
 
