@@ -70,5 +70,11 @@ void Visualization::vu(const string& bname) const
 	}
     }
   file.close();
+
+ if(compress)
+ {
+   string command = "gzip " + name;
+   system(command.c_str());
+ }
 }
 }

@@ -60,7 +60,8 @@ void Visualization::BasicInit()
   pstep = 1;
   avsa = gmva = vua = vigiea = gnua = teca = 0;
   time = 0.; tstep = 0.; nexttime = 0.;
-  vtka = showoutput = 1;
+  vtka = 1;
+  showoutput = 1;
   stepname = "solve";
 }
 
@@ -86,6 +87,7 @@ void Visualization::read_parameters(const ParamFile* pf)
   DH.insert("gnu"      ,& gnua,0);
   DH.insert("tecplot"  ,& teca,0);
   DH.insert("avs"      ,& avsa,0);
+  DH.insert("compress" ,& compress, 0);
 
   FileScanner FS(DH,pf,"Visualization");
 

@@ -41,5 +41,11 @@ void Visualization::gmv(const string& bname) const
   file << "endgmv" << endl;
   file.close();
  if (showoutput) cout << "[" << name << "]\n";
+
+ if(compress)
+ {
+   string command = "gzip " + name;
+   system(command.c_str());
+ }
 }
 }

@@ -207,5 +207,11 @@ void Visualization::vtk(const string& bname) const
   _vtk_celldata(out);
  
  out.close();
+
+ if(compress)
+ {
+   string command = "gzip " + name;
+   system(command.c_str());
+ }
 }
 }

@@ -93,5 +93,11 @@ void Visualization::avs(const string& bname) const
     }
   out.close();
  if (showoutput) cout << "[" << name << "]\n";
+
+ if(compress)
+ {
+   string command = "gzip " + name;
+   system(command.c_str());
+ }
 }
 }

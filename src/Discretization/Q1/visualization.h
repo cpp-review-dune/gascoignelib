@@ -32,7 +32,7 @@ class Visualization
 
   std::vector<GnuplotData> GP;
 
-  int     avsa, gmva, vigiea, vua, gnua, teca, vtka;
+  bool    avsa, gmva, vigiea, vua, gnua, teca, vtka, compress;
   int     pstep, showoutput;
   double  time, tstep, nexttime;
 
