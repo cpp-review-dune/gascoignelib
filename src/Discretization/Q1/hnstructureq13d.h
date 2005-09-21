@@ -19,6 +19,9 @@ protected:
 
   const std::map<int,FaceVector>*        faces;
 
+  fixarray<12,fixarray<3,int> >  lnoe;
+  fixarray< 6,fixarray<5,int> >  lnop;
+
   void CondenseHanging2er(IntVector& indices) const;
   void CondenseHanging4er(IntVector& indices) const;
 
@@ -50,7 +53,7 @@ public:
   
   void CondenseHanging(IntVector& indices) const;
   void CondenseHanging(EntryMatrix&, IntVector&) const;
-  void CondenseHangingPatch(EntryMatrix& E, IntVector& indices) const {}
+  void CondenseHangingPatch(EntryMatrix& E, IntVector& indices) const;
 };
 }
 
