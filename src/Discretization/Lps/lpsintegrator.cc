@@ -37,10 +37,10 @@ void LpsIntegrator<DIM>::Projection(const FemInterface& FEM) const
       NLPS[24].equ(-0.125, NLPS[13]);
       NLPS[26].equ(-0.125, NLPS[13]);
 
-      NLPS[0] .add(-0.5, NLPS[1] , -0.5, NLPS[3], -0.5, NLPS[9]);
-      NLPS[2] .add(-0.5, NLPS[1] , -0.5, NLPS[5], -0.5, NLPS[11]);
-      NLPS[6] .add(-0.5, NLPS[3] , -0.5, NLPS[7], -0.5, NLPS[15]);
-      NLPS[8] .add(-0.5, NLPS[5] , -0.5, NLPS[7], -0.5, NLPS[17]);
+      NLPS[0] .add(-0.5, NLPS[1] , -0.5, NLPS[3],  -0.5, NLPS[9]);
+      NLPS[2] .add(-0.5, NLPS[1] , -0.5, NLPS[5],  -0.5, NLPS[11]);
+      NLPS[6] .add(-0.5, NLPS[3] , -0.5, NLPS[7],  -0.5, NLPS[15]);
+      NLPS[8] .add(-0.5, NLPS[5] , -0.5, NLPS[7],  -0.5, NLPS[17]);
       NLPS[18].add(-0.5, NLPS[19], -0.5, NLPS[21], -0.5, NLPS[9]);
       NLPS[20].add(-0.5, NLPS[19], -0.5, NLPS[23], -0.5, NLPS[11]);
       NLPS[24].add(-0.5, NLPS[21], -0.5, NLPS[25], -0.5, NLPS[15]);
@@ -64,7 +64,8 @@ void LpsIntegrator<DIM>::Form(const Equation& EQ, LocalVector& F, const FemInter
 {
   NLPS.resize(FEM.n());
   MLPS.resize(FEM.n());
-
+  F.zero();
+  
   const LpsEquation& LEQ = dynamic_cast<const LpsEquation&>(EQ);
 
   const IntegrationFormulaInterface& IF = FormFormula();
@@ -77,10 +78,12 @@ void LpsIntegrator<DIM>::Form(const Equation& EQ, LocalVector& F, const FemInter
       
       double vol = FEM.J();
       double weight  =  CellWeight * IF.w(k) * vol;
+      double h  = Volume2MeshSize(vol);
+      
       FEM.x(x);
       BasicIntegrator::universal_point(FEM,UH,U);
       BasicIntegrator::universal_point(FEM,QH,Q);
-      double h  = Volume2MeshSize(vol);
+
       LEQ.SetFemData(QH);
       LEQ.lpspoint(h,UH,x);
 
@@ -103,7 +106,9 @@ void LpsIntegrator<DIM>::Matrix(const Equation& EQ, EntryMatrix& E, const FemInt
   assert(E.Ndof()==FEM.n());
   assert(E.Mdof()==FEM.n());
   assert(E.Ncomp()==U.ncomp());
-
+  E.zero();
+  
+  
   NLPS.resize(FEM.n());
   MLPS.resize(FEM.n());
 
