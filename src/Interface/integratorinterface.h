@@ -9,6 +9,7 @@
 #include  "entrymatrix.h"
 #include  "domainrighthandside.h"
 #include  "domainfunctional.h"
+#include  "boundaryfunctional.h"
 #include  "boundaryrighthandside.h"
 #include  "boundaryequation.h"
 #include  "diracrighthandside.h"
@@ -86,6 +87,12 @@ namespace Gascoigne
         std::cerr << "\"IntegratorInterface::ComputeDomainFunctional\" not written!" << std::endl;
 						assert(0);
       }
+      virtual double ComputeBoundaryFunctional(const BoundaryFunctional& F, const FemInterface& FEM, int ile,
+          const LocalVector& U) const {
+        std::cerr << "\"IntegratorInterface::ComputeBoundaryFunctional\" not written!" << std::endl;
+						assert(0);
+      }
+
         
       virtual void EvaluateCellFunction(LocalCellVector& b, const CellFunction& CF,const FemInterface& FEM, const LocalNodeData& Q) const {std::cerr << "\"IntegratorInterface::EvaluateCellFunction\" not written!" << std::endl;
 						assert(0); }

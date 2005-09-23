@@ -40,7 +40,7 @@ public:
   const std::string& GetName() const {return *this;}
 
   friend std::ostream& operator<<(std::ostream& os, const VectorInterface& g) {
-    os << "Name:\t" << g.GetName() << std::endl;
+    os << "VectorInterface.GetName(): '" << g.GetName() << "'";//std::endl;
     return os;
   }
 
