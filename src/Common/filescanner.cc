@@ -44,8 +44,16 @@ void FileScanner::readfile(const ParamFile* pf, const string& blockname)
       return;
     }
 
+
   string inputname = pf->GetName();
   LineScanner LS(inputname);
+
+  if(blockname=="Multilevelsolver"){
+    std::cerr << "Error: Trying to search file '<< inputname <<' for Blockname 'Multilevelsolver'."<<std::endl;
+    std::cerr << "The blockname 'Multilevelsolver' is not used any longer! It has changed to MultiLevelSolver."<<std::endl;
+    std::cerr << "Update code and file."<<std::endl;
+    assert(0);
+  }
 
   vector<string> words;
   int nwords = 0;
@@ -216,7 +224,8 @@ void FileScanner::FormatToValue(const vector<string>& words)
     {
       int n = atoi(words[1].c_str());
       _assert(words.size()>n+1,words);
-      if (n>0)
+      // wenn n==0, dann ist auch n=0 gemeint: rufe setvalue auch dafuer auf
+      if (n>=0)
         {
           vector<double> value(n);
           for (int i=0; i<n; i++)
@@ -230,8 +239,9 @@ void FileScanner::FormatToValue(const vector<string>& words)
     {
       int n = atoi(words[1].c_str());
       _assert(words.size()>n+1,words);
-//       cerr << "-----" << n << " " << words.size() << endl;
-      if (n>0)
+      // cerr << "-----" << n << " " << words.size() << endl;
+      // wenn n==0, dann ist auch n=0 gemeint: rufe setvalue auch dafuer auf
+      if (n>=0)
         {
           IntVector value(n);
           for (int i=0; i<n; i++)
@@ -245,7 +255,8 @@ void FileScanner::FormatToValue(const vector<string>& words)
     {
       int n = atoi(words[1].c_str());
       _assert(words.size()>n+1,words);
-      if (n>0)
+      // wenn n==0, dann ist auch n=0 gemeint: rufe setvalue auch dafuer auf
+      if (n>=0)
         {
           vector<string> value(n);
           for (int i=0; i<n; i++)
@@ -304,7 +315,7 @@ void FileScanner::FormatToValue(const vector<string>& words)
     }
   else if (keyword_type=="" && complain)
     {
-      cerr << " ********  FileScanner::not found " << keyword << endl;
+      cerr << " ********  FileScanner:: keyword '"<< keyword <<"' found in param-file but not registered in the DataFormatHandler-code."<< endl;
     }
 }
 

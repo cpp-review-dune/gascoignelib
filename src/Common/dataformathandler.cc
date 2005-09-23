@@ -273,6 +273,7 @@ void DataFormatHandler::setvalue(const string& name, double value)
       return;
     }  
 }
+
 void DataFormatHandler::setvalue(const string& name, fixarray<2,double>& value)
 {
   TypeFix2Double::const_iterator p;
@@ -349,7 +350,14 @@ void DataFormatHandler::setvalue(const string& name, pair<int, IntVector >& valu
   p = TMINI.find(name);
   if (p!=TMINI.end())
     {
-      p->second->insert(value);
+      // das klappt nur einmal! naemlich das erste mal
+      // wenn der map schon value.first enthaellt dann wurde value.second nicht eingefuegt und der alte wert bleibt drin
+      // pair<TypeMapIntVectorInt::iterator,bool> pair_result = p->second->insert(value); 
+      // pair_result.second == false : d.h. der alte wert wurde NICHT ueberschrieben
+      p->second->insert(value); 
+
+      //hiermit wird erzwungen dass der neue wert eingetragen wird, falls der schluessel schon drin war
+      p->second->operator[](value.first) = value.second;
       return;
     }  
 }
