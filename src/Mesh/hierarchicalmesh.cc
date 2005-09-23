@@ -108,6 +108,7 @@ void HierarchicalMesh::BasicInit(const ParamFile* pf)
   DFH.insert("prerefine",&prerefine,0);
   DFH.insert("patchdepth",&patchdepth,1);
   DFH.insert("etapatcher",&epatcher,1);
+  DFH.insert("showoutput",&_i_showoutput,1);
 
   FileScanner FS(DFH);
   FS.NoComplain();

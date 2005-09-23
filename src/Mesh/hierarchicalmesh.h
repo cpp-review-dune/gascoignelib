@@ -37,6 +37,8 @@ class HierarchicalMesh : public MeshInterface
   int       mnlevels, pdepth, etapatcher;
   IntVector    vo2n, eo2n, co2n;
   EdgeVec   edges;
+
+  mutable int _i_showoutput;
   
   void  update_edges(IntVector&);
   virtual int   FindPatchDepth() const=0;
@@ -131,6 +133,9 @@ class HierarchicalMesh : public MeshInterface
 
   virtual void AddShape(int col, BoundaryFunction<2>* f) {assert(0);}
   virtual void AddShape(int col, BoundaryFunction<3>* f) {assert(0);}
+
+  void ShowOutput(int i) const { _i_showoutput=i; } 
+
 };
 }
 

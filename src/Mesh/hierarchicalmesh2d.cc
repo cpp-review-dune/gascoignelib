@@ -1340,9 +1340,11 @@ void HierarchicalMesh2d::read_inp(const string& name)
 
   file >> nv >> nt >> n_unkonwn >> n_unkonwn >> n_unkonwn;
 
-  cout << "2D Mesh: " << nv << " nodes, ";
-  cout << nl << " lines, " ;
-  cout << nq << " quads"<< endl;
+  if( _i_showoutput ) {
+    cout << "2D Mesh: " << nv << " nodes, ";
+    cout << nl << " lines, " ;
+    cout << nq << " quads"<< endl;
+  }
 
   vertexs2d.reserve(nv);
   vertexs2d.resize(nv,Vertex2d());
@@ -1518,7 +1520,9 @@ void HierarchicalMesh2d::read_gup(const string& bname)
 
   assert(dim==2);
 
-  cout << "Mesh 2d  : ";
+  if( _i_showoutput ){
+    cout << "Mesh 2d  : ";
+  }
   vertexs2d.reserve(n);
   vertexs2d.resize(n);
 
@@ -1531,7 +1535,9 @@ void HierarchicalMesh2d::read_gup(const string& bname)
     {
       file >> vertexs2d[i];
     }
-  cout << n << " nodes, ";
+  if( _i_showoutput ){
+    cout << n << " nodes, ";
+  }
 
   file >> n >> symbol;
 
@@ -1546,9 +1552,13 @@ void HierarchicalMesh2d::read_gup(const string& bname)
     {
       file >> quads[i];
     }
-  cout <<  n << " quads, ";
+  if( _i_showoutput ){
+    cout <<  n << " quads, ";
+  }
   file >> LineHang;
-  cout << LineHang.size() << " hangs, ";
+  if( _i_showoutput ){
+    cout << LineHang.size() << " hangs, ";
+  }
   
   file >> n >> symbol;
   int number = 0;
@@ -1590,9 +1600,13 @@ void HierarchicalMesh2d::read_gup(const string& bname)
       cout << "HierarchicalMesh2d::read error 3" << endl;
       exit(1);
     }
-  cout << number << " lines, ";
+  if( _i_showoutput ){
+    cout << number << " lines, ";
+  }
   file >> n >> symbol;
-  cout << n << " edges" << endl;
+  if( _i_showoutput ){
+    cout << n << " edges" << endl;
+  }
   if (symbol=="edges")
     {
       Edge e;
