@@ -104,9 +104,9 @@ class BenchMarkMeshAgent : public MeshAgent
       HMP = new HierarchicalMesh2d;
       map<int,BoundaryFunction<2>* >::const_iterator p;
       for(p=GetShapes2d().begin();p!=GetShapes2d().end();p++)
-	{
-	  HMP->AddShape(p->first,p->second);
-	}
+        {
+          HMP->AddShape(p->first,p->second);
+        }
       int patchdepth = 1;
       int etapatcher = 1;
       HMP->SetParameters(inpname,patchdepth,etapatcher);
@@ -117,6 +117,35 @@ class BenchMarkMeshAgent : public MeshAgent
       
       ReInit();
     }
+};
+
+/* ----------------------------------------- */
+
+#include  "domainfunctional.h"
+#include  "residualfunctional.h" 
+#include  "dirichletdatabycolor.h"
+
+class LocalDomainFunctionals_FlagForce : public virtual Gascoigne::ResidualFunctional
+{
+  public:
+  std::string _s_force_type;
+  LocalDomainFunctionals_FlagForce(std::string s_force_type) : ResidualFunctional() {
+    _s_force_type = s_force_type;
+    _comp=-1;
+    if(s_force_type == "drag") _comp = 1;
+    if(s_force_type == "lift") _comp = 2;
+    assert(0<=_comp);
+
+    _col.insert(80);
+    _scale = 1;
+    ExactValue() = 0.;
+
+    _DD  = new Gascoigne::DirichletDataByColor(GetComp(),GetColors(),GetScale());
+  }
+
+  std::string GetName() const {
+    return "LocalDomainFunctionals_FlagForce:"+_s_force_type;
+  }
 };
 
 /* ----------------------------------------- */
