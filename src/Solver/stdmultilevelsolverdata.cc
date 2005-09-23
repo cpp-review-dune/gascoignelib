@@ -35,6 +35,8 @@ void StdMultiLevelSolverData::BasicInit(const ParamFile *param)
   DFH.insert("prec_pstep",    &prec_pstep,    0);
   DFH.insert("gmressize",     &_gmresmemsize, 10);
 
+  DFH.insert("save_nonlinear_comp_residuals",  &_i_save_nonlinear_comp_residuals, 0);
+  DFH.insert("save_linear_comp_residuals",     &_i_save_linear_comp_residuals,    0);
   DFH.insert("show_nonlinear_comp_residuals",  &_i_show_nonlinear_comp_residuals, 0);
   DFH.insert("show_linear_comp_residuals",     &_i_show_linear_comp_residuals,    0);
   DFH.insert("show_comp_residual_names",       &_i_show_comp_residual_names,      0);

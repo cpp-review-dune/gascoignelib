@@ -34,6 +34,17 @@ public:
   void Delete(VectorInterface& mg);
 
   GlobalVector& operator()(const VectorInterface& g);
+
+  friend std::ostream& operator<<(std::ostream& os, const GhostVectorAgent& gva) {
+    int i=0,n=gva.size();
+    os << "GhostVectorAgent: size=" << n << ", ";
+    for (const_iterator p=gva.begin(); p!=gva.end(); p++,i++){
+      os << "VectorInterface("<<i<<")=('"<< p->first.GetName() << "',"<< p->second <<")";
+      if( i <n-1 ) os << ", "; else os << ". ";
+    }
+    return os;
+  }
+
 };
 }
 

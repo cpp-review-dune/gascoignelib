@@ -56,9 +56,10 @@ GlobalVector& GhostVectorAgent::operator()(const VectorInterface& g)
   if (p==end())
     {
       std::cerr << __FILE__ << ":" << __LINE__;
-      std::cerr << ": GhostVectorAgent::operator(): ERROR:\n";
-      std::cerr << __FILE__ << ":" << __LINE__ << ": Ghostvector '"<< g;
-      std::cerr <<"' not found in list of: '"<< *this <<"'\n";
+      std::cerr << ": GhostVectorAgent::operator(): ERROR"<<std::endl;
+      std::cerr << __FILE__ << ":" << __LINE__;
+      std::cerr << ": Ghostvector '"<< g <<"' not found in list of: "<<std::endl;
+      std::cerr << " "<< *this << std::endl;
       abort();
     }
   GlobalVector* vp = p->second;

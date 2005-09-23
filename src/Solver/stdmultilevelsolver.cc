@@ -403,6 +403,7 @@ void StdMultiLevelSolver::newton(VectorInterface& u, const VectorInterface& f, V
   double rr = NewtonResidual(r,u,f);
   bool reached = info.check(0,rr,0.);
   NewtonOutput(info);
+  NewtonPreProcess(u,f,info);
   for(int it=1; !reached; it++)
     {
       NewtonMatrixControl(u,info);
@@ -412,6 +413,7 @@ void StdMultiLevelSolver::newton(VectorInterface& u, const VectorInterface& f, V
       reached = info.check(it,rr,rw);
       NewtonOutput(info);
     }
+  NewtonPostProcess(u,f,info);
 }
 
 /*-------------------------------------------------------------*/
@@ -420,6 +422,18 @@ void StdMultiLevelSolver::NewtonOutput(NLInfo& nlinfo) const
 {
   assert(MON!=0);
   MON->nonlinear_step(nlinfo.GetLinearInfo(),nlinfo);
+}
+/*-------------------------------------------------------------*/
+ 
+void StdMultiLevelSolver::NewtonPreProcess(VectorInterface& u, const VectorInterface& f,NLInfo& info) const  
+{ ;
+}
+
+/*-------------------------------------------------------------*/
+ 
+void StdMultiLevelSolver::NewtonPostProcess(VectorInterface& u, const VectorInterface& f,NLInfo& info) const  
+{ ;
+
 }
 
 /*-------------------------------------------------------------*/
@@ -430,6 +444,73 @@ void StdMultiLevelSolver::NewtonVectorZero(VectorInterface& w) const
 }
 
 /*-------------------------------------------------------------*/
+
+void StdMultiLevelSolver::NewtonUpdateShowCompResiduals(int iter,VectorInterface& vi_x, VectorInterface& vi_r, const VectorInterface& vi_f, VectorInterface& vi_dx){
+
+  StdSolver*     S = dynamic_cast<StdSolver*>(GetSolver(ComputeLevel));
+  GlobalVector & r = GetSolver(ComputeLevel)->GetGV(vi_r);
+  GlobalVector &dx = GetSolver(ComputeLevel)->GetGV(vi_dx);
+  if( DataP->ShowCompResidualNames() ) {
+    // nur beim ersten durchgang? :  cginfo.statistics().totaliter()
+    const ComponentInformation*  CI = GetProblemDescriptor()->GetComponentInformation();
+    cout << "                                  ";
+    int     ncomps = r.ncomp();
+    string  str;  
+    for(int i=0;i<ncomps;i++){
+      CI->GetScalarName(i,str);
+      printf("%-9.9s", str.c_str());
+      if(i<ncomps-1) cout << " "; 
+    }
+    cout << "  " << endl;
+  }
+
+  if( DataP->ShowNonLinearCompResiduals() )
+    {
+      GlobalVector &r_vector = r;
+      GlobalVector &dx_vector = dx;
+      int ncomps = r_vector.ncomp();
+      cout << "      nonlin L8-comp-residuals: [";
+      for(int i=0;i<ncomps;i++){
+        double res_comp = r_vector.CompNormL8(i)+1e-99;
+        printf(" %3.2e", res_comp);
+        if(i<ncomps-1) cout << ","; 
+      }
+      cout << " ]" << endl;
+      if( DataP->SaveNonLinearCompResiduals() ) {
+        S->Visu("Residuals/nonlinear",r_vector,iter);
+        S->Visu("Residuals/dx",dx_vector,iter);
+      }
+    }
+
+  if( DataP->ShowLinearCompResiduals() ) 
+    { 
+      // da das residuum *moeglicherweise* nachher auch benutzt wird, mache hier einen backup 
+      GlobalVector  r_backup; 
+      GlobalVector &r_vector = r;
+      int ncomps = r_vector.ncomp(); 
+
+      r_backup.ncomp()  = ncomps;
+      r_backup.resize(r_vector.n());
+      r_backup.equ(1.,r_vector);
+   
+      GetSolver(ComputeLevel)->MatrixResidual(vi_r, vi_x, vi_f);  
+
+      cout << "         lin L8-comp-residuals: ["; 
+      for(int i=0;i<ncomps;i++){ 
+        double res_comp = r_vector.CompNormL8(i)+1e-99; 
+        printf(" %3.2e", res_comp); 
+        if(i<ncomps-1) cout << ",";
+      } 
+      cout << " ]" << endl; 
+      if( DataP->SaveLinearCompResiduals() ){
+        S->Visu("Residuals/linear",r_vector,iter);
+      }
+
+      r_vector.equ(1.,r_backup);
+    } 
+
+}
+
  
 double StdMultiLevelSolver::NewtonResidual(VectorInterface& y, const VectorInterface& x,const VectorInterface& b) const
 {
@@ -612,7 +693,7 @@ double StdMultiLevelSolver::NewtonUpdate(double& rr, VectorInterface& x, VectorI
         }
     }
 
-  //NewtonUpdateShowCompResiduals(x, r, f);
+  NewtonUpdateShowCompResiduals(nlinfo.control().iteration(), x, r, f,dx);
 
   return NewtonNorm(dx);
 }

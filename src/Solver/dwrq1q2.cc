@@ -59,7 +59,7 @@ double DwrQ1Q2::ScalarProductWithFluctuations(nvector<double>& eta, const Vector
 
 /*--------------------------------------------------------*/
 
-DiscretizationInterface* DwrQ1Q2::GetOtherDiscretization() const
+DiscretizationInterface* DwrQ1Q2::CreateOtherDiscretization() const
 {
   DiscretizationInterface* D;
 
@@ -89,7 +89,7 @@ void DwrQ1Q2::PrimalResidualsHigher(VectorInterface& gf, const VectorInterface& 
   S.Rhs(gf,-0.5);
   S.Form(gf,gu,0.5);
 
-  DiscretizationInterface* D = GetOtherDiscretization();
+  DiscretizationInterface* D = CreateOtherDiscretization();
 
   S.SetDiscretization(*D,true);
       
@@ -124,7 +124,7 @@ void DwrQ1Q2::DualResidualsHigher(VectorInterface& gf,
   // residual respect Q2 test functions
   //
   {  
-    DiscretizationInterface* D = GetOtherDiscretization();
+    DiscretizationInterface* D = CreateOtherDiscretization();
     S.SetDiscretization(*D,true);
 
     S.Rhs     (gf,   0.5);
@@ -147,6 +147,7 @@ double DwrQ1Q2::Estimator(nvector<double>& eta, VectorInterface& gf,
 			  const ProblemDescriptorInterface& PDI)
 {
   double rho=0, rhostern=0;
+  eta.resize(S.GetGV(gz).n());
 
   DualResidualsHigher(gf,gu,gz,PDI);
   rhostern =  ScalarProductWithFluctuations(eta,gf,gu);

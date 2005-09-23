@@ -1067,7 +1067,13 @@ void StdSolver::ComputeIlu(const VectorInterface& gu) const
 void StdSolver::modify_ilu(IluInterface& I,int ncomp) const 
 {
   if(_Dat.GetIluModify().size()==0) return;
-  assert(_Dat.GetIluModify().size()==ncomp);
+  if( _Dat.GetIluModify().size()!=ncomp ) {
+    cerr << "ERROR: _Dat.GetIluModify().size()="<< _Dat.GetIluModify().size() << " and ";
+    cerr << "ncomp="<< ncomp << endl; 
+    assert(0);
+    // assert(_Dat.GetIluModify().size()==ncomp);
+  }
+
   for(int c=0;c<ncomp;c++)
     {
       double s = _Dat.GetIluModify(c);
@@ -1115,8 +1121,14 @@ void StdSolver::PermutateIlu(const VectorInterface& gu) const
 
 void StdSolver::Visu(const string& name, const VectorInterface& gu, int i) const
 {
-  const GlobalVector& u = GetGV(gu);
-  HNAverage(gu);
+  Visu(name,GetGV(gu),i);
+}
+
+/* -------------------------------------------------------*/
+
+void StdSolver::Visu(const string& name, const GlobalVector& u, int i) const
+{
+  GetDiscretization()->HNAverage(const_cast<GlobalVector&>(u)); 
   
   GascoigneVisualization Visu;
   Visu.SetMesh(GetMesh());  
@@ -1130,7 +1142,7 @@ void StdSolver::Visu(const string& name, const VectorInterface& gu, int i) const
   Visu.step(i);
   Visu.write();
 
-  HNZero(gu);
+  GetDiscretization()->HNZero(const_cast<GlobalVector&>(u)); 
 }
 
 /* -------------------------------------------------------*/

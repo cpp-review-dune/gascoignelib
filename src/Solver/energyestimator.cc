@@ -10,6 +10,20 @@ namespace Gascoigne{
 
 EnergyEstimator::EnergyEstimator(SolverInterface& SR) : S(SR) 
 { 
+  {
+    DataFormatHandler DFH; 
+    DFH.insert("estimator", &_s_energytype ,"energy_laplace"); 
+    FileScanner FS(DFH); 
+    FS.NoComplain(); 
+    FS.readfile(SR.GetParamfile(),"Loop"); 
+  }
+  {
+    DataFormatHandler DFH; 
+    DFH.insert("visc", &_d_visc ,1); 
+    FileScanner FS(DFH); 
+    FS.NoComplain(); 
+    FS.readfile(SR.GetParamfile(),"Equation"); 
+  }
   primalproblem  = S.GetProblemDescriptor();
   discretization = dynamic_cast<Q1*>(S.GetDiscretization());
   assert(discretization);
@@ -45,7 +59,7 @@ double EnergyEstimator::Estimator(nvector<double>& eta, VectorInterface& gu,
   else if (S.GetMesh()->dimension()==3)  EIC = new EdgeInfoContainer<3>;
 
   EIC->BasicInit(SS->GetHierarchicalMesh(),u.ncomp());
-  discretization->EnergyEstimator(*EIC,eta,u,*EQ,DRHS);
+  discretization->EnergyEstimator(*EIC,eta,u,*EQ,DRHS,_s_energytype,_d_visc);
   delete EIC;
 
   S.HNZero(gu);

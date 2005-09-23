@@ -180,6 +180,7 @@ class StdSolver : public virtual SolverInterface
   }
 
   void OutputSettings() const;
+  virtual void Visu(const std::string& name, const GlobalVector& u, int i) const;
 
   void ConstructInterpolator(MgInterpolatorInterface* I, const MeshTransferInterface* MT);
   void VisuGrid(const std::string& name, int i) const;

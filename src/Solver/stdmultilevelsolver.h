@@ -130,10 +130,13 @@ class StdMultiLevelSolver : public MultiLevelSolverInterface
   virtual void NewtonVectorZero(VectorInterface& w) const;
   virtual double NewtonResidual(VectorInterface& y, const VectorInterface& x, const VectorInterface& b) const;
   virtual double NewtonUpdate(double& rr, VectorInterface& x, VectorInterface& dx, VectorInterface& r, const VectorInterface& f, NLInfo& nlinfo);
-/*   virtual void NewtonUpdateShowCompResiduals(VectorInterface& x, VectorInterface& r, const VectorInterface& f); */
+  virtual void NewtonUpdateShowCompResiduals(int i_iter,VectorInterface& x, VectorInterface& r, const VectorInterface& f, VectorInterface& dx);
   virtual void NewtonLinearSolve(VectorInterface& x, const VectorInterface& b, CGInfo& info);
   virtual void NewtonMatrixControl(VectorInterface& u, NLInfo& nlinfo);
   virtual void NewtonOutput(NLInfo& nlinfo) const;
+  virtual void NewtonPreProcess(VectorInterface& u, const VectorInterface& f,NLInfo& info) const;
+  virtual void NewtonPostProcess(VectorInterface& u, const VectorInterface& f,NLInfo& info) const;
+
 
   void AssembleMatrix(VectorInterface& u, NLInfo& nlinfo);
   void AssembleMatrix(VectorInterface& u);

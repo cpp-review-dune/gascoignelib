@@ -141,7 +141,7 @@ DoubleVector StdLoop::Functionals(VectorInterface& u, VectorInterface& f)
 double StdLoop::Estimator(DoubleVector& eta, VectorInterface& u, VectorInterface& f)
 {
   double est = 0.;
-  if (_estimator=="energy")
+  if (_estimator=="energy" || _estimator=="energy_laplace" || _estimator=="energy_stokes" )
     {
       StdSolver* S = dynamic_cast<StdSolver*>(GetMultiLevelSolver()->GetSolver());
       assert(S);
@@ -156,7 +156,7 @@ double StdLoop::Estimator(DoubleVector& eta, VectorInterface& u, VectorInterface
     }
   else 
     {
-      cout << "Estimator " << _estimator << " unknown\n"; 
+      cout << "Estimator type '" << _estimator << "' unknown. Use either energy_laplace or energy_stokes\n"; 
       assert(0);
     }
   return est;
@@ -166,7 +166,7 @@ double StdLoop::Estimator(DoubleVector& eta, VectorInterface& u, VectorInterface
 
 void StdLoop::AdaptMesh(const DoubleVector& eta,string refine_or_coarsen_step)
 {
-  //das gleichzeitige vergroebern und verfeinern FUNKTIONIERT nicht
+  //das gleichzeitige vergroebern und verfeinern FUNKTIONIERT NICHT
   //wer das machen moechte, muss stattdessen in zwei getrennten laeufen 
   //das gitter verfeinern, reinit+interpolate und dann das gitter vergroebern
   if(refine_or_coarsen_step=="refine") ;
@@ -179,11 +179,13 @@ void StdLoop::AdaptMesh(const DoubleVector& eta,string refine_or_coarsen_step)
   if (_refiner=="global") {
     if(refine_or_coarsen_step=="refine"){
       GetMeshAgent()->global_refine(1);
+    }else{
+      GetMeshAgent()->random_patch_refine(-0.1,0); 
     }
   }  
   else if(_refiner=="none")
     {
-      GetMeshAgent()->global_refine(0);
+      GetMeshAgent()->global_refine(0); 
     }
   else if(_refiner=="random") 
     {
@@ -196,6 +198,8 @@ void StdLoop::AdaptMesh(const DoubleVector& eta,string refine_or_coarsen_step)
       if(refine_or_coarsen_step=="coarsen"){
         if(_random_coarsening){
           GetMeshAgent()->random_patch_coarsen(_p,0);
+        }else{
+          GetMeshAgent()->random_patch_refine(-0.1,0); 
         }
       }
     }
@@ -233,7 +237,12 @@ void StdLoop::AdaptMesh(const DoubleVector& eta,string refine_or_coarsen_step)
       info.rfactor() = 1.; 
       DiplomandenAdaptor A(info,eta);
       A.refine(refnodes);
-      if(refine_or_coarsen_step=="refine")  GetMeshAgent()->refine_nodes(refnodes,coarsenodes);
+      if(refine_or_coarsen_step=="refine")  {
+        GetMeshAgent()->refine_nodes(refnodes,coarsenodes);
+      }else{
+        GetMeshAgent()->random_patch_refine(-0.1,0); 
+      }
+
     }
   else assert(0);
 }
@@ -242,25 +251,23 @@ void StdLoop::AdaptMesh(const DoubleVector& eta,string refine_or_coarsen_step)
 
 void StdLoop::AdaptMesh(const DoubleVector& eta)
 {
-  //das gleichzeitige vergroebern und verfeinern FUNKTIONIERT nicht
+  //das gleichzeitige vergroebern und verfeinern FUNKTIONIERT NICHT
   //wer das machen moechte, sollte stattdessen zwei getrennte laeufe durchfuehren:
   //das gitter vergroebern, reinit+interpolate und dann das gitter verfeinern
   //das entsprechend die methode AdaptMesh(eta,refine_or_coarsen_step) aufrufen
   if     (_refiner=="global") GetMeshAgent()->global_refine(1);
   else if(_refiner=="none") 
     {
-      // global_refine klappt doch nicht... ??
-      // GetMeshAgent()->global_refine(0);
-      GetMeshAgent()->random_patch_refine(-0.1,0);
+      GetMeshAgent()->global_refine(0);
     }  
   else if(_refiner=="random") 
     {
       if (GetMeshAgent()->nnodes()>_nmax) _p *= 0.5;
       if (GetMeshAgent()->nnodes()<_nmin) _p *= 1.1;
       if(_random_coarsening){
-        cerr<<"das gleichzeitige vergroebern und verfeinern FUNKTIONIERT nicht"<<endl;
-        cerr<<"fuehren Sie stattdessen zwei getrennte laeufe durch: random_refine, random_coarsen"<<endl;
-        cerr<<"rufen Sie dazu AdaptMesh(eta,refine_or_coarsen_step) auf"<<endl;
+        cerr<<"Das gleichzeitige Vergroebern und Verfeinern FUNKTIONIERT NICHT!"<<endl;
+        cerr<<"Fuehre stattdessen zwei getrennte Laeufe durch: random_refine, random_coarsen"<<endl;
+        cerr<<"und rufe dazu jewweils AdaptMesh(eta,refine_or_coarsen_step) auf."<<endl;
         assert(0);
       }
       GetMeshAgent()->random_patch_refine(_p,_random_coarsening);
@@ -285,9 +292,9 @@ void StdLoop::AdaptMesh(const DoubleVector& eta)
       A.refine(refnodes,coarsenodes);
 
       if(refnodes.size()>0 && coarsenodes.size()>0){
-        cerr<<"das gleichzeitige vergroebern und verfeinern FUNKTIONIERT nicht"<<endl;
-        cerr<<"fuehren Sie stattdessen zwei getrennte laeufe durch, einmal vergroebern, einmal verfeinern"<<endl;
-        cerr<<"rufen Sie dazu AdaptMesh(eta,refine_or_coarsen_step) auf"<<endl;
+        cerr<<"Das gleichzeitige Vergroebern und Verfeinern FUNKTIONIERT NICHT!"<<endl;
+        cerr<<"Fuehre stattdessen zwei getrennte Laeufe durch, einmal vergroebern, einmal verfeinern"<<endl;
+        cerr<<"und rufe dazu jewweils AdaptMesh(eta,refine_or_coarsen_step) auf."<<endl;
         assert(0);
       }
 
@@ -359,13 +366,13 @@ void StdLoop::run(const std::string& problemlabel)
           CopyVector(ualt,u);
 
           AdaptMesh(eta);
-          //  wenn gleichzeitig verfeinert und vergroebert werden soll, dann rufen Sie
-          //  AdaptMesh zweimal folgendermassen auf:
+          //  wenn gleichzeitig verfeinert und vergroebert werden soll, dann sollte
+          //  AdaptMesh zweimal folgendermassen aufgerufen werden :
           //     
           //    CopyVector(ualt,u);
           //    AdaptMesh(eta,"refine");
           //    GetSolverInfos()->GetNLInfo().control().matrixmustbebuild() = 1;
-          //    GetMultiLevelSolver()->ReInit(*PD);
+          //    GetMultiLevelSolver()->ReInit(problemlabel);
           //    GetMultiLevelSolver()->InterpolateSolution(u,ualt);
           //    CopyVector(ualt,u);
           //    AdaptMesh(eta,"coarsen");
