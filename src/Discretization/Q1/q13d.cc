@@ -309,9 +309,9 @@ void Q13d::ConstructInterpolator(MgInterpolatorInterface* I, const MeshTransferI
 
 /* ----------------------------------------- */
 
-void Q13d::EnergyEstimator(EdgeInfoContainerInterface& EIC, DoubleVector& eta, const GlobalVector& u, const Equation& EQ, const DomainRightHandSide* RHS) const
+void Q13d::EnergyEstimator(EdgeInfoContainerInterface& EIC, DoubleVector& eta, const GlobalVector& u, const Equation& EQ, const DomainRightHandSide* RHS, const std::string & s_energytype, double d_visc) const
 {
-  EnergyEstimatorIntegrator<3> EEI;
+  EnergyEstimatorIntegrator<3> EEI(s_energytype,d_visc);
   const HierarchicalMesh3d*    HM = dynamic_cast<const HierarchicalMesh3d*>(EIC.GetMesh());
 
   EdgeInfoContainer<3>& EICC = dynamic_cast<EdgeInfoContainer<3>&>(EIC);

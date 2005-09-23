@@ -14,6 +14,9 @@ class EnergyEstimatorIntegrator : public BasicIntegrator
   protected:
     const IntegrationFormulaInterface* IF;
     fixarray<2*DIM-2,Vertex<DIM-1> >   _xi;
+    std::string _s_energytype;
+    double      _d_visc;
+
 
     double Volume2MeshSize(double vol) const { return pow(vol,1./float(DIM));}
     const IntegrationFormulaInterface& GetFormula() const {return *IF;}
@@ -21,6 +24,7 @@ class EnergyEstimatorIntegrator : public BasicIntegrator
   public:
 
     EnergyEstimatorIntegrator<DIM>();
+    EnergyEstimatorIntegrator<DIM>(const std::string & s_energytype,double d_visc);
     ~EnergyEstimatorIntegrator<DIM>();
 
     void BasicInit();

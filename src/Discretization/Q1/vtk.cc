@@ -78,12 +78,14 @@ void Visualization::_vtk_celldata(ofstream& out) const
 
      //cout << "PointDataInfo->nscalars()" << PointDataInfo->nscalars() << endl;
 
-     //for(int i=0; i< PointDataInfo->nscalars() ; i++)
-     for(VisuDataInfo::siterator p=CellDataInfo->sbegin();p!=CellDataInfo->send();++p)
+     // die reihenfolge der elemente per index ist wesentlich, es reicht nicht nur sie
+     // per iterator aus CellDataInfo raus zu holen
+     for(int i=0; i< PointDataInfo->nscalars() ; i++)
+     //for(VisuDataInfo::siterator p=CellDataInfo->sbegin();p!=CellDataInfo->send();++p)
        {
-         //VisuDataInfo::siterator p = (const_cast<VisuDataInfo*>(PointDataInfo))->GetSIterator(i);
-         //if(i==0) out << "CELL_DATA " << mesh->ncells() << endl;
-         if(p==CellDataInfo->sbegin()) out << "CELL_DATA " << mesh->ncells() << endl;
+         VisuDataInfo::siterator p = (const_cast<VisuDataInfo*>(PointDataInfo))->GetSIterator(i);
+         if(i==0) out << "CELL_DATA " << mesh->ncells() << endl;
+         //if(p==CellDataInfo->sbegin()) out << "CELL_DATA " << mesh->ncells() << endl;
 	 out << "SCALARS "<< p->first <<" DOUBLE "<< endl;
 	 out << "LOOKUP_TABLE default"<< endl;
 
@@ -94,10 +96,10 @@ void Visualization::_vtk_celldata(ofstream& out) const
 	 out << endl<< endl;
        }
      //cout << "PointDataInfo->nvectors()" << PointDataInfo->nvectors() << endl;
-     //for(int i=0; i< PointDataInfo->nvectors() ; i++)
-     for(VisuDataInfo::viterator p=CellDataInfo->vbegin();p!=CellDataInfo->vend();++p)
+     for(int i=0; i< PointDataInfo->nvectors() ; i++)
+     //for(VisuDataInfo::viterator p=CellDataInfo->vbegin();p!=CellDataInfo->vend();++p)
        {
-         //VisuDataInfo::viterator p = (const_cast<VisuDataInfo*>(PointDataInfo))->GetVIterator(i);
+         VisuDataInfo::viterator p = (const_cast<VisuDataInfo*>(PointDataInfo))->GetVIterator(i);
 	 out << "VECTORS "<< p->first <<" DOUBLE "<< endl;
 	 for (int ind=0; ind<CellData->visun(); ind++)
 	   {
@@ -192,7 +194,7 @@ void Visualization::vtk(const string& bname) const
  //  Header
 
   out << "# vtk DataFile Version 4.2 "<<endl;
-  out << "output from GascoigneStd" << endl;
+  out << "output from GascoigneStd, "<< title << endl;
   out << "ASCII" << endl;
   out << "DATASET UNSTRUCTURED_GRID" << endl;
 

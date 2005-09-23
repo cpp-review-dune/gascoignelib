@@ -11,7 +11,7 @@ namespace Gascoigne
 /////////////////////////////////////////////
 ///
 ///@brief
-///  FE based on Transformation (TRAFO) and Rerefernzelement (BASE)
+///  FE based on Transformation (TRAFO) and Referenzelement (BASE)
 
 ///
 ///

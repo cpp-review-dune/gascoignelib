@@ -285,11 +285,11 @@ void Q12d::ConstructInterpolator(MgInterpolatorInterface* I, const MeshTransferI
 
 /* ----------------------------------------- */
 
-void Q12d::EnergyEstimator(EdgeInfoContainerInterface& EIC, DoubleVector& eta, const GlobalVector& u, const Equation& EQ, const DomainRightHandSide* RHS) const
+void Q12d::EnergyEstimator(EdgeInfoContainerInterface& EIC, DoubleVector& eta, const GlobalVector& u, const Equation& EQ, const DomainRightHandSide* RHS, const std::string & s_energytype,double d_visc) const
 {
   // RHS may be NULL
   //
-  EnergyEstimatorIntegrator<2> EEI;
+  EnergyEstimatorIntegrator<2> EEI(s_energytype,d_visc);
   const HierarchicalMesh2d*    HM = dynamic_cast<const HierarchicalMesh2d*>(EIC.GetMesh());
 
   EdgeInfoContainer<2>& EICC = dynamic_cast<EdgeInfoContainer<2>&>(EIC);
@@ -361,13 +361,13 @@ void Q12d::EEJumpNorm(EdgeInfoContainer<2>& EIC, DoubleVector& eta, const Energy
         int edgenumber = HM->edge_of_quad(iq,ile);
         if (EIC[edgenumber]->GetCount()==2)
         {
-	  jump += EEI.JumpNorm(*GetFem(),EIC[edgenumber]->GetNorm(),ile);
+          jump += EEI.JumpNorm(*GetFem(),EIC[edgenumber]->GetNorm(),ile);
         }
       }
       double w =  0.25 * 0.5 * sqrt(jump);
       for (int in=0; in<4; in++)
       {
-	int iv = HM->vertex_of_cell(iq,in);
+        int iv = HM->vertex_of_cell(iq,in);
         eta[iv] += w;
       }
     }
@@ -394,7 +394,8 @@ void Q12d::EEResidual(DoubleVector& eta, const GlobalVector& u, const Equation& 
     EQ.SetCellData(__QC);
     if (RHS) EQ.SetCellData(__QC);
 
-    //EQ.cell(GetMesh(),iq,__U,__Q); 
+    // .cell is analogous to .point 
+    // EQ.cell(GetMesh(),iq,__U,__Q); 
     double res = EEI.Residual(__U,*GetFem(),EQ,RHS,__Q);
     double w = 0.25 * sqrt(res);
     for (int in=0; in<4; in++)

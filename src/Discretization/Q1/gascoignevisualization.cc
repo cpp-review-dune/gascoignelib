@@ -1,5 +1,6 @@
 #include  "gascoignevisualization.h"
 #include  "componentinformation.h"
+#include  "compose_name.h"
 
 
 /*-----------------------------------------*/
@@ -26,11 +27,19 @@ void GascoigneVisualization::AddVector(const ComponentInformation* CI, const Glo
   //VDI.AddScalars(ncomp);
   {
     int         ncomp2 = CI->GetNScalars();
-    assert(ncomp==ncomp2);
-    std::string s_name;
-    for(int i=0;i<ncomp;i++){
-      CI->GetScalarName(i,s_name);
-      VDI.AddScalar(i,s_name,i);
+    if(ncomp==ncomp2){
+      std::string s_name;
+      for(int i=0;i<ncomp;i++){
+        CI->GetScalarName(i,s_name);
+        VDI.AddScalar(i,s_name,i);
+      }
+    }else{
+      std::string s_name;
+      for(int i=0;i<ncomp;i++){
+        s_name="u";
+        compose_name_without_dot(s_name,i); 
+        VDI.AddScalar(i,s_name,i);
+      }
     }
   }  
 

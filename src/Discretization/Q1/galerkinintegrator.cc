@@ -407,6 +407,33 @@ double GalerkinIntegrator<DIM>::ComputePointValue(const FemInterface& E, const V
 /* ----------------------------------------- */
 
 template<int DIM>
+double GalerkinIntegrator<DIM>::ComputeBoundaryFunctional(const BoundaryFunctional& F, const FemInterface& FEM, int ile, const LocalVector& U) const
+{
+  const IntegrationFormulaInterface& IF = *BoundaryFormula();
+
+  Vertex<DIM>   x;
+  Vertex<DIM-1> xi;
+
+
+  double j = 0.;
+  for (int k=0; k<IF.n(); k++)
+    {
+      IF.xi(xi,k);
+      FEM.point_boundary(ile,xi);
+      double h = FEM.G();
+      double weight  = IF.w(k) * h;
+      BasicIntegrator::universal_point(FEM,UH,U);
+
+      FEM.x(x);
+      // FEM.normal(n);
+      j += weight * F.J(UH,x);
+    }
+  return j;
+}
+
+/* ----------------------------------------- */
+
+template<int DIM>
 double GalerkinIntegrator<DIM>::ComputeDomainFunctional(const DomainFunctional& F, const FemInterface& FEM, const LocalVector& U, const LocalNodeData& Q) const
 {
   const IntegrationFormulaInterface& IF = *FormFormula();

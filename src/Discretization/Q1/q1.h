@@ -59,7 +59,7 @@ public:
   void MassMatrix(MatrixInterface& A) const;
   void Structure(SparseStructureInterface* SI) const;
   void InitFilter(DoubleVector& F) const;
-  virtual void EnergyEstimator(EdgeInfoContainerInterface& EIC, DoubleVector& eta, const GlobalVector& u, const Equation& EQ, const DomainRightHandSide* RHS) const=0;
+  virtual void EnergyEstimator(EdgeInfoContainerInterface& EIC, DoubleVector& eta, const GlobalVector& u, const Equation& EQ, const DomainRightHandSide* RHS, const std::string & s_energytype, double d_visc) const=0;
 };
 }
 

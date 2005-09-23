@@ -10,6 +10,15 @@ namespace Gascoigne
 template<int DIM>
 EnergyEstimatorIntegrator<DIM>::EnergyEstimatorIntegrator() : BasicIntegrator(), IF(NULL)
 { 
+  _s_energytype = "energy_laplace";
+  _d_visc       = 1;
+}
+
+template<int DIM>
+EnergyEstimatorIntegrator<DIM>::EnergyEstimatorIntegrator(const std::string & s_energytype,double d_visc) : BasicIntegrator(), IF(NULL)
+{ 
+  _s_energytype = s_energytype;
+  _d_visc       = d_visc;
 }
 
 /**********************************************************/
@@ -63,13 +72,26 @@ void EnergyEstimatorIntegrator<DIM>::Jumps(LocalVector& F, const FemInterface& F
 
     BasicIntegrator::universal_point(FEM,UH,U);
 
-    for (int c=0; c<U.ncomp(); c++)
-    {
-      F(i,c) += n.x() * UH[c].x() + n.y() * UH[c].y();
-      if (DIM==3)
-      {
-        F(i,c) += n.z() * UH[c].z();
+    if( _s_energytype == "energy" || _s_energytype == "energy_laplace" ) {
+      for (int c=0; c<U.ncomp(); c++) {
+        F(i,c) += _d_visc * ( n.x() * UH[c].x() + n.y() * UH[c].y() );
+        if (DIM==3) F(i,c) += _d_visc * ( n.z() * UH[c].z() );
       }
+    }else
+    if( _s_energytype == "energy_stokes" ) {
+      // jump of the pressure:
+      F(i,0) += - n.x() * UH[0].m() - n.y() * UH[0].m();
+      if (DIM==3) F(i,0) += - n.z() * UH[0].m();
+      
+      // jump of the value visc * \del_n v :
+      for (int c=1; c<U.ncomp(); c++) {
+        F(i,c) += _d_visc * ( n.x() * UH[c].x() + n.y() * UH[c].y() );
+        if (DIM==3) F(i,c) += _d_visc * ( n.z() * UH[c].z() );
+      }
+    }else{
+      std::cerr << " Bad EnergyEstimatorIntegrator type supplied: '" << _s_energytype  << "'.\n"; 
+      std::cerr << " Please specify a known EnergyEstimatorIntegrator type: enery_laplace or enery_stokes.\n";
+      assert(0);
     }
   }
 }
