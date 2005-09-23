@@ -39,7 +39,7 @@ class ProblemDescriptorBase : public ProblemDescriptorInterface
 
   BoundaryManager* GetBoundaryManager () { return BM;}
 
-  ComponentInformation*&  GetComponentInformation ()        { return CI;}
+  ComponentInformation*&  GetComponentInformationPointer ()        { return CI;}
 
  public:
 

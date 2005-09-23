@@ -59,9 +59,9 @@ void ProblemDescriptorBase::BasicInit(const ParamFile* pf)
 
   if(GetComponentInformation()==NULL)
     {
-      GetComponentInformation() = new ComponentInformationBase();
+      GetComponentInformationPointer() = new ComponentInformationBase();
     }
-  GetComponentInformation()->GetProblemDescriptorInterface() = this;
+  GetComponentInformationPointer()->GetProblemDescriptorInterface() = this;
 }
 
 /*------------------------------------------------------------------------------*/
