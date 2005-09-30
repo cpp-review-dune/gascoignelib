@@ -16,6 +16,7 @@ NavierStokesLps2d::NavierStokesLps2d(const ParamFile* filename)
   DFH.insert("delta", &ST.delta0, 0.25);
   DFH.insert("xeta" , &ST.xeta0, 6.);
   DFH.insert("penalty",&_penalty, 0.);
+  DFH.insert("dtfactor",&ST.dtfactor(), 1.); // denke das klappt nur mit dtfactor=0 ... aber 1 ist bei ST default.. :/
 
   FileScanner FS(DFH,filename,"Equation");
 }
