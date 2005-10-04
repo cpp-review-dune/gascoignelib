@@ -9,116 +9,91 @@ namespace Gascoigne
 {
 void Visualization::_vtk_pointdata(ofstream& out) const
 {
- if (PointData)
-   {
-     int nn = mesh->nnodes();
-
-     CheckPointData();
-     //for(VisuDataInfo::siterator p=PointDataInfo->sbegin();p!=PointDataInfo->send();++p)
-     for(int i=0; i< PointDataInfo->nscalars() ; i++)
-       {
-         VisuDataInfo::siterator p = (const_cast<VisuDataInfo*>(PointDataInfo))->GetSIterator(i);
-         if(i==0) out << "POINT_DATA " << nn << endl;
-	 out << "SCALARS "<< p->first <<" DOUBLE "<< endl;
-	 out << "LOOKUP_TABLE default"<< endl;
-	 for (int ind=0; ind<PointData->visun(); ind++)
-	   {
-	     if(mesh->dimension()==2)
-	       {
-		 out << PointData->visudata2(ind,p->second,mesh->vertex2d(ind)) << endl;
-	       }
-	     else
-	       {
-		 out << PointData->visudata2(ind,p->second,mesh->vertex3d(ind)) << endl;
-	       }
-	   }
-	 out << endl<< endl;
-
-       }
-     for(int i=0; i< PointDataInfo->nvectors() ; i++)
-     //for(VisuDataInfo::viterator p=PointDataInfo->vbegin();p!=PointDataInfo->vend();++p)
-       {
-         VisuDataInfo::viterator p = (const_cast<VisuDataInfo*>(PointDataInfo))->GetVIterator(i);
-	 out << "VECTORS "<< p->first <<" DOUBLE "<< endl;
-	 for (int ind=0; ind<PointData->visun(); ind++)
-	   {
-	     for(int ii=0;ii<2;ii++)
-	       {
-		 if(mesh->dimension()==2)
-		   {
-		     out << PointData->visudata2(ind,p->second[ii],mesh->vertex2d(ind)) << " ";
-		   }
-		 else
-		   {
-		     out << PointData->visudata2(ind,p->second[ii],mesh->vertex3d(ind)) << endl;
-		   }
-	       }
-	     if(p->second[2]==-1)
-	       {
-		 out << 0. << " ";
-	       }
-	     else
-	       {
-		 out << PointData->visudata(ind,p->second[2]) << " ";
-	       }
-	     out << endl;
-	   }
-	 out << endl<< endl;
-       }
-   }
+  if (PointData) {
+    int nn = mesh->nnodes();
+ 
+    CheckPointData();
+    //for(VisuDataInfo::siterator p=PointDataInfo->sbegin();p!=PointDataInfo->send();++p)
+    for(int i=0; i< PointDataInfo->nscalars() ; i++) {
+      VisuDataInfo::siterator p = (const_cast<VisuDataInfo*>(PointDataInfo))->GetSIterator(i);
+      if(i==0) out << "POINT_DATA " << nn << endl;
+      out << "SCALARS "<< p->first <<" DOUBLE "<< endl;
+      out << "LOOKUP_TABLE default"<< endl;
+      for (int ind=0; ind<PointData->visun(); ind++) {
+        if(mesh->dimension()==2) {
+          out << PointData->visudata2(ind,p->second,mesh->vertex2d(ind)) << endl;
+        } else {
+          out << PointData->visudata2(ind,p->second,mesh->vertex3d(ind)) << endl;
+        }
+      }
+      out << endl<< endl;
+    }
+    //for(VisuDataInfo::viterator p=PointDataInfo->vbegin();p!=PointDataInfo->vend();++p) {
+    for(int i=0; i< PointDataInfo->nvectors() ; i++) {
+      VisuDataInfo::viterator p = (const_cast<VisuDataInfo*>(PointDataInfo))->GetVIterator(i);
+      out << "VECTORS "<< p->first <<" DOUBLE "<< endl;
+      for (int ind=0; ind<PointData->visun(); ind++) {
+        for(int ii=0;ii<2;ii++) {
+          if(mesh->dimension()==2) {
+            out << PointData->visudata2(ind,p->second[ii],mesh->vertex2d(ind)) << " ";
+          } else {
+            out << PointData->visudata2(ind,p->second[ii],mesh->vertex3d(ind)) << endl;
+          }
+        }
+        if(p->second[2]==-1) {
+          out << 0. << " ";
+        } else {
+          out << PointData->visudata(ind,p->second[2]) << " ";
+        }
+        out << endl;
+      }
+      out << endl<< endl;
+    }
+  }
 }
 
 /* ----------------------------------------- */
 
 void Visualization::_vtk_celldata(ofstream& out) const
 {
- if (CellData)
-   {
+   if (CellData) {
      CheckCellData();
 
-     //cout << "PointDataInfo->nscalars()" << PointDataInfo->nscalars() << endl;
-
+     // cout << "CellDataInfo->nscalars()" << CellDataInfo->nscalars() << endl;
+     //
      // die reihenfolge der elemente per index ist wesentlich, es reicht nicht nur sie
      // per iterator aus CellDataInfo raus zu holen
-     for(int i=0; i< PointDataInfo->nscalars() ; i++)
-     //for(VisuDataInfo::siterator p=CellDataInfo->sbegin();p!=CellDataInfo->send();++p)
-       {
-         VisuDataInfo::siterator p = (const_cast<VisuDataInfo*>(PointDataInfo))->GetSIterator(i);
-         if(i==0) out << "CELL_DATA " << mesh->ncells() << endl;
-         //if(p==CellDataInfo->sbegin()) out << "CELL_DATA " << mesh->ncells() << endl;
-	 out << "SCALARS "<< p->first <<" DOUBLE "<< endl;
-	 out << "LOOKUP_TABLE default"<< endl;
+     //for(VisuDataInfo::siterator p=CellDataInfo->sbegin();p!=CellDataInfo->send();++p){
+     for(int i=0; i< CellDataInfo->nscalars() ; i++){
+       VisuDataInfo::siterator p = (const_cast<VisuDataInfo*>(CellDataInfo))->GetSIterator(i);
+       if(i==0) out << "CELL_DATA " << mesh->ncells() << endl;
+       //if(p==CellDataInfo->sbegin()) out << "CELL_DATA " << mesh->ncells() << endl;
+       out << "SCALARS "<< p->first <<" DOUBLE "<< endl;
+       out << "LOOKUP_TABLE default"<< endl;
 
-	 for (int ind=0; ind<CellData->visun(); ind++)
-	   {
-	     out << CellData->visudata(ind,p->second) << endl;
-	   }
-	 out << endl<< endl;
+       for (int ind=0; ind<CellData->visun(); ind++) {
+         out << CellData->visudata(ind,p->second) << endl;
        }
-     //cout << "PointDataInfo->nvectors()" << PointDataInfo->nvectors() << endl;
-     for(int i=0; i< PointDataInfo->nvectors() ; i++)
-     //for(VisuDataInfo::viterator p=CellDataInfo->vbegin();p!=CellDataInfo->vend();++p)
-       {
-         VisuDataInfo::viterator p = (const_cast<VisuDataInfo*>(PointDataInfo))->GetVIterator(i);
-	 out << "VECTORS "<< p->first <<" DOUBLE "<< endl;
-	 for (int ind=0; ind<CellData->visun(); ind++)
-	   {
-	     for(int ii=0;ii<2;ii++)
-	       {
-		 out << CellData->visudata(ind,p->second[ii]) << " ";
-	       }
-	     if(p->second[2]==-1)
-	       {
-		 out << 0. << " ";
-	       }
-	     else
-	       {
-		 out << CellData->visudata(ind,p->second[2]) << " ";
-	       }
-	     out << endl;
-	   }
-	 out << endl<< endl;
+       out << endl<< endl;
+     }
+     //cout << "CellDataInfo->nvectors()" << CellDataInfo->nvectors() << endl;
+     //for(VisuDataInfo::viterator p=CellDataInfo->vbegin();p!=CellDataInfo->vend();++p){
+     for(int i=0; i< CellDataInfo->nvectors() ; i++){
+       VisuDataInfo::viterator p = (const_cast<VisuDataInfo*>(CellDataInfo))->GetVIterator(i);
+       out << "VECTORS "<< p->first <<" DOUBLE "<< endl;
+       for (int ind=0; ind<CellData->visun(); ind++) {
+         for(int ii=0;ii<2;ii++) {
+           out << CellData->visudata(ind,p->second[ii]) << " ";
+         }
+         if(p->second[2]==-1) {
+           out << 0. << " ";
+         } else {
+           out << CellData->visudata(ind,p->second[2]) << " ";
+         }
+         out << endl;
        }
+       out << endl<< endl;
+     }
    }
 }
 
@@ -131,16 +106,16 @@ void Visualization::_vtk_points(ofstream& out) const
   if(mesh->dimension()==2)
     { 
       for (int i=0; i<nn; i++)
-	{
-	  out<<  mesh->vertex2d(i) << " " << 0 << endl;
-	}
+        {
+          out<<  mesh->vertex2d(i) << " " << 0 << endl;
+        }
     }
   else if(mesh->dimension()==3)
     { 
       for (int i=0; i<nn; i++)
-	{
-	  out<<  mesh->vertex3d(i) << endl;
-	}
+        {
+          out<<  mesh->vertex3d(i) << endl;
+        }
     }
   else
     {
@@ -168,9 +143,9 @@ void Visualization::_vtk_cells(ofstream& out) const
       int nle = mesh->nodes_per_cell(c);
       out << nle << " ";
       for(int ii=0;ii<nle;ii++)
-	{
-	  out << mesh->vertex_of_cell(c,ii) << " "; 
-	}
+        {
+          out << mesh->vertex_of_cell(c,ii) << " "; 
+        }
       out << endl; 
     }     
   out << endl << "CELL_TYPES " << ne << endl;
