@@ -18,7 +18,7 @@ namespace Gascoigne
 
 /*----------------------------------------------*/
 
-class Q1Lps2d : public Q12d
+class Q1Lps2d : public virtual Q12d
 {
  protected:
 
