@@ -155,11 +155,11 @@ void VisuEPS::WriteGrid(string fname,int iter)
       << "%%Creator: Gascoigne" << endl
       << "%%BoundingBox: "
 	      // lower left corner
-      << "0 0 "
+      << "-10 -10 "
 	      // upper right corner
-      << static_cast<unsigned int>( (x_max-x_min) * scale )+1
+      << static_cast<unsigned int>( (x_max-x_min) * scale )+10
       << ' '
-      << static_cast<unsigned int>( (y_max-y_min) * scale )+1
+      << static_cast<unsigned int>( (y_max-y_min) * scale )+10
       << endl;
   
   // define some abbreviations to keep
