@@ -96,7 +96,7 @@ void Visualization::avs(const string& bname) const
 
  if(compress)
  {
-   string command = "gzip " + name;
+   string command = "gzip -f " + name;
    system(command.c_str());
  }
 }

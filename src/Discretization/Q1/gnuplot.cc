@@ -182,7 +182,7 @@ void Visualization::gnuplot(const string& name) const
 
       if(compress)
       {
-        string command = "gzip " + gnuname;
+        string command = "gzip -f " + gnuname;
         system(command.c_str());
       }
     }
