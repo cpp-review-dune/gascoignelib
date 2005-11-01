@@ -27,19 +27,26 @@ public:
   ~ResidualFunctional();
   ResidualFunctional(const ResidualFunctional& F) : Functional(F)
     {
-       _comp = F.GetComp();
-       _col  = F.GetColors();
+       _comp  = F.GetComp();
+       _col   = F.GetColors();
        _scale = F.GetScale();
-        _DD = F.GetDirichletData();
+       _DD    = F.GetDirichletData();
     }
 
   std::string GetName() const {return "ResidualFunctional";}
 
   int           GetComp()   const {return _comp;}
+  int&          GetComp()         {return _comp;}
+  
   std::set<int> GetColors() const {return _col;}
+  std::set<int>&GetColors()       {return _col;}
+  
   double        GetScale()  const { return _scale;}
+  double&       GetScale()        { return _scale;}
 
-  const DirichletData* GetDirichletData() const {return _DD;}
+  const DirichletData* GetDirichletData()   const {return _DD;}
+  const DirichletData*& GetDirichletDataPointer() { return _DD;}
+  
 };
 }
 
