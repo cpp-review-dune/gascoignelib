@@ -492,8 +492,8 @@ void StdSolver::vmulteq(VectorInterface& gy, const VectorInterface& gx, double d
 {
   _vm.start();
   Zero(gy);
-  GetMatrix()->vmult(GetGV(gy),GetGV(gx),d);
   _vm.stop();
+  vmult(gy,gx,d);
 }
 
 /*-----------------------------------------*/
@@ -1228,13 +1228,9 @@ void StdSolver::SubtractMeanAlgebraic(VectorInterface& gx) const
 
 /*---------------------------------------------------*/
 
-void StdSolver::DeleteVector(VectorInterface* p) const
+void StdSolver::DeleteVector(VectorInterface& p) const
 {
-  if(p==NULL) return;
-
-  GlobalVector* v = &GetGV(*p);
-  delete v;
-  _NGVA.erase(*p);
+  _NGVA.Delete(p);
 }
 
 /*-----------------------------------------*/

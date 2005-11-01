@@ -34,7 +34,7 @@ class StdSolver : public virtual SolverInterface
  private:
 
   //
-  //   Daten
+  //   Daten 
   //
 
   // 1. Gitter
@@ -310,7 +310,7 @@ class StdSolver : public virtual SolverInterface
   //
   /// for gmres
   //
-  virtual void DeleteVector(VectorInterface* p) const;
+  virtual void DeleteVector(VectorInterface& p) const;
 
   double ScalarProduct(const VectorInterface& y, const VectorInterface& x) const;
   void Equ(VectorInterface& dst, double s, const VectorInterface& src) const;
