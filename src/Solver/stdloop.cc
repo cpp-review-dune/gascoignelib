@@ -20,7 +20,6 @@ namespace Gascoigne
 StdLoop::StdLoop() : BasicLoop()//, _paramfile(NULL)
 {
   _estimator = _extrapolate = "none";
-  _FV.resize(0);
 }
 
 /*-----------------------------------------*/
@@ -38,9 +37,9 @@ void StdLoop::ClockOutput() const
 
 /*-----------------------------------------*/
 
-void StdLoop::BasicInit(const ParamFile* paramfile, const ProblemContainer* PC)
+void StdLoop::BasicInit(const ParamFile* paramfile, const ProblemContainer* PC, const FunctionalContainer* FC)
 {
-  BasicLoop::BasicInit(paramfile, PC);
+  BasicLoop::BasicInit(paramfile, PC, FC);
 
   DataFormatHandler DFH;
 
@@ -59,19 +58,9 @@ void StdLoop::BasicInit(const ParamFile* paramfile, const ProblemContainer* PC)
 
 /*-------------------------------------------------------*/
 
-DoubleVector StdLoop::ComputeFunctionals(VectorInterface& f, VectorInterface& u, const vector<const Functional*>& J) const
+DoubleVector StdLoop::ComputeFunctionals(VectorInterface& f, VectorInterface& u) const
 {
-  int n = J.size(); 
-  DoubleVector j(n,0.);
-  if (n==0) return j;
-
-  cout << "\nFunctionals: ";
-  for(int i=0; i<n; i++)
-    {
-      j[i] = GetMultiLevelSolver()->ComputeFunctional(f,u,J[i]);
-      cout << J[i]->GetName() << " ";
-    }
-  cout << endl;
+  DoubleVector j = GetMultiLevelSolver()->ComputeFunctionals(f,u);
   return j;
 } 
 
@@ -96,20 +85,15 @@ void StdLoop::EtaVisu(string name, int i, const DoubleVector& eta) const
 
 DoubleVector StdLoop::GetExactValues() const
 {
-  int n = _FV.size(); 
-  DoubleVector j(n,0.);
-  for(int i=0; i<n; i++)
-    {
-      j[i] = _FV[i]->ExactValue();
-    }
-  return j; 
+  return GetMultiLevelSolver()->GetExactValues();
 }
 
 /*-------------------------------------------------*/
 
 DoubleVector StdLoop::Functionals(VectorInterface& u, VectorInterface& f)
 {
-  DoubleVector J  = ComputeFunctionals(f,u,_FV);
+  DoubleVector J      = ComputeFunctionals(f,u);
+  DoubleVector Jexact = GetExactValues();
   _JErr.resize(J.size());
   if (J.size())
     {
@@ -122,7 +106,7 @@ DoubleVector StdLoop::Functionals(VectorInterface& u, VectorInterface& f)
       cout << "\nerror";
       for(int i=0; i<J.size(); i++) 
         {
-          _JErr[i] = GetExactValues()[i] - J[i];
+          _JErr[i] = Jexact[i] - J[i];
           cout << "\t" << _JErr[i] ;
         }
       cout << endl;
@@ -133,7 +117,7 @@ DoubleVector StdLoop::Functionals(VectorInterface& u, VectorInterface& f)
         }
       cout << endl;
     }
-  return J;
+   return J;
 }
 
 /*-------------------------------------------------*/
@@ -347,6 +331,7 @@ void StdLoop::run(const std::string& problemlabel)
         }
 
       Solve(u,f);
+
       ComputeGlobalErrors(u);
       
       _clock_functionals.start();
@@ -379,6 +364,8 @@ void StdLoop::run(const std::string& problemlabel)
           //   
         }
       _clock_estimate.stop();
+
+      ClockOutput();
      }
 }
 }

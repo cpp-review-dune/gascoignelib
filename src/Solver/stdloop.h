@@ -21,16 +21,13 @@ namespace Gascoigne
 
 class StdLoop : public virtual BasicLoop
 {
-private:
-
-  std::vector<const Functional*>   _FV;
 
 protected:
 
-  const std::vector<const Functional*>& GetFunctionals() const { return _FV;}
-
   mutable StopWatch   _clock_newmesh, _clock_solve, _clock_write;
 
+
+  
   int _nmin, _nmax, _coarse;
   double _p;
   int    _random_coarsening;
@@ -40,7 +37,7 @@ protected:
 
   // new vectors
 
-  DoubleVector ComputeFunctionals(VectorInterface& f, VectorInterface& u, const std::vector<const Functional*>& J) const;
+  DoubleVector ComputeFunctionals(VectorInterface& f, VectorInterface& u) const;
 
   DoubleVector GetExactValues() const;
 
@@ -55,9 +52,9 @@ public:
   StdLoop();
   ~StdLoop();
 
-  void BasicInit(const ParamFile* paramfile, const ProblemContainer* PC);
-
-  void AddFunctional(const Functional* fv) { _FV.push_back(fv);}
+  void BasicInit(const ParamFile* paramfile,
+		 const ProblemContainer* PC,
+		 const FunctionalContainer* FC=NULL);
 
   void run(const std::string& problemlabel);
   void ClockOutput() const;

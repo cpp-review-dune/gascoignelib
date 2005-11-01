@@ -87,13 +87,16 @@ oldnlevels(-1), _paramfile(NULL), MON(NULL), DataP(NULL), _PD(0), _PC(0)
 
 /*-------------------------------------------------------------*/
 
-void StdMultiLevelSolver::BasicInit(const MeshAgentInterface* MAP, const ParamFile* paramfile, const ProblemContainer* PC)
+void StdMultiLevelSolver::BasicInit(const MeshAgentInterface* MAP, const ParamFile* paramfile,
+				    const ProblemContainer* PC,
+				    const FunctionalContainer* FC)
 {
   _MAP = MAP;
 
   _paramfile = paramfile;
 
   SetProblemContainer(PC);
+  SetFunctionalContainer(FC);
   
   if(!DataP)
   {
@@ -264,7 +267,7 @@ void StdMultiLevelSolver::NewMgInterpolator()
 void StdMultiLevelSolver::ReInit(const std::string& problemlabel)
 {
   DataP->CountResidual() = 0;
-  //  DataP->GetNLInfo().control().matrixmustbebuild() = 1;
+	    // DataP->GetNLInfo().control().matrixmustbebuild() = 1;
   
   NewSolvers();
   SolverNewMesh();
@@ -278,6 +281,39 @@ void StdMultiLevelSolver::ReInit(const std::string& problemlabel)
   ReInitVector(_res);
   ReInitVector(_mg0);
   ReInitVector(_mg1);
+}
+
+/*-------------------------------------------------------------*/
+
+const DoubleVector StdMultiLevelSolver::GetExactValues() const
+{
+  if (!GetFunctionalContainer()) return DoubleVector(0);
+  
+  int n = GetFunctionalContainer()->size();
+  DoubleVector j(n,0.);
+  int i = 0;
+  for (FunctionalContainer::const_iterator it = GetFunctionalContainer()->begin();
+       it!=GetFunctionalContainer()->end();++it,++i)
+    j[i] = it->second->ExactValue();
+  return j;
+}
+
+/*-------------------------------------------------------------*/
+
+const DoubleVector StdMultiLevelSolver::ComputeFunctionals(VectorInterface& f, const VectorInterface& u) const
+{
+  if (!GetFunctionalContainer()) return DoubleVector(0);
+  int n = GetFunctionalContainer()->size();
+  DoubleVector j(n,0.);
+  int i = 0;
+  for (FunctionalContainer::const_iterator it = GetFunctionalContainer()->begin();
+       it!=GetFunctionalContainer()->end();++it,++i)
+    {
+      cout << it->first << " ";
+      j[i] = ComputeFunctional(f,u,it->first);
+    }
+  cout << endl;
+  return j;
 }
 
 /*-------------------------------------------------------------*/
@@ -536,7 +572,7 @@ void StdMultiLevelSolver::NewtonMatrixControl(VectorInterface& u, NLInfo& nlinfo
   if (nm1+nm2==0) return;
   
   MON->new_matrix() = 1;
-
+  
   AssembleMatrix(u,nlinfo);
   ComputeIlu(u);
 }
@@ -738,8 +774,9 @@ string StdMultiLevelSolver::Solve(int level, VectorInterface& u, const VectorInt
 
 /*-------------------------------------------------------------*/
 
-double StdMultiLevelSolver::ComputeFunctional(VectorInterface& f, const VectorInterface& u, const Functional* FP) const
+double StdMultiLevelSolver::ComputeFunctional(VectorInterface& f, const VectorInterface& u, const std::string& label) const
 {
+  const Functional* FP = GetFunctionalContainer()->GetFunctional(label);
   return GetSolver(ComputeLevel)->ComputeFunctional(f,u,FP);
 }
 
@@ -799,8 +836,7 @@ void StdMultiLevelSolver::DeleteVector(VectorInterface& v)
 {
   for(int l=0; l<nlevels(); ++l)  
     {
-      const StdSolver* S = dynamic_cast<const StdSolver*>(GetSolver(l));
-      S->DeleteVector(&v);
+      GetSolver(l)->DeleteVector(v);
     }
 }
 
@@ -824,8 +860,7 @@ void StdMultiLevelSolver::Equ(VectorInterface& dst, double s, const VectorInterf
 {
   for(int l=0; l<nlevels(); l++)
     {
-      const StdSolver* S = dynamic_cast<const StdSolver*>(GetSolver(l));
-      S->Equ(dst,s,src);
+      GetSolver(l)->Equ(dst,s,src);
     }
 }
 
@@ -835,8 +870,7 @@ void StdMultiLevelSolver::Zero(VectorInterface& dst) const
 {
   for(int l=0; l<nlevels(); l++)
     {
-      const StdSolver* S = dynamic_cast<const StdSolver*>(GetSolver(l));
-      S->Zero(dst);
+      GetSolver(l)->Zero(dst);
     }
 }
 

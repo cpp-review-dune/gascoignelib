@@ -11,6 +11,7 @@
 #include  "visudatanvector.h"
 
 #include  "problemdescriptorinterface.h"
+#include  "functionalcontainer.h"
 #include  "stdiomanager.h"
 #include  "stopwatch.h"
 #include  "paramfile.h"
@@ -102,7 +103,9 @@ public:
   BasicLoop();
   virtual ~BasicLoop();
 
-  virtual void BasicInit(const ParamFile* paramfile, const ProblemContainer* PC);
+  virtual void BasicInit(const ParamFile* paramfile,
+			 const ProblemContainer* PC,
+			 const FunctionalContainer* FC=NULL);
 
   void run(const std::string& problemlabel);
   void ClockOutput() const;

@@ -5,6 +5,7 @@
 #include  "stdmultilevelsolverdata.h"
 #include  "problemdescriptorinterface.h"
 #include  "problemcontainer.h"
+#include  "functionalcontainer.h"
 #include  "monitor.h"
 #include  "stopwatch.h"
 #include  "mginterpolatorinterface.h"
@@ -53,6 +54,7 @@ class StdMultiLevelSolver : public MultiLevelSolverInterface
   StdMultiLevelSolverData*          DataP;
   const ProblemDescriptorInterface*      _PD;
   const ProblemContainer*                _PC;
+  const FunctionalContainer*             _FC;
   
   virtual void NewSolvers();
 
@@ -61,9 +63,13 @@ class StdMultiLevelSolver : public MultiLevelSolverInterface
   virtual void SolverNewMesh();
 
   virtual const ProblemDescriptorInterface* GetProblemDescriptor() const { return _PD;}
-  
   virtual const ProblemContainer* GetProblemContainer()        const { assert(_PC); return _PC; }
   virtual void SetProblemContainer(const ProblemContainer* PC)       { _PC=PC;     }
+  virtual const FunctionalContainer* GetFunctionalContainer()  const { return _FC; }
+  virtual void SetFunctionalContainer(const FunctionalContainer* FC) { _FC=FC;     }
+
+  const DoubleVector GetExactValues() const;
+  const DoubleVector ComputeFunctionals(VectorInterface& f, const VectorInterface& u) const;
   
   virtual SolverInterface*& GetSolverPointer(int l) {assert(l<_SP.size()); return _SP[l];}
   virtual void SetComputeLevel(int level) {ComputeLevel=level;}
@@ -96,7 +102,9 @@ class StdMultiLevelSolver : public MultiLevelSolverInterface
   void ReInitVector(VectorInterface& v, int comp);
   void ReInitVector(VectorInterface& v);
 
-  void BasicInit(const MeshAgentInterface* GMGM, const ParamFile* paramfile, const ProblemContainer* PC);
+  void BasicInit(const MeshAgentInterface* GMGM, const ParamFile* paramfile,
+		 const ProblemContainer* PC,
+		 const FunctionalContainer* FC=NULL);
 
   // Zugriff
 
@@ -154,7 +162,7 @@ class StdMultiLevelSolver : public MultiLevelSolverInterface
   
   virtual void LinearMg(int minlevel, int maxlevel, VectorInterface& u, const VectorInterface& f, CGInfo&);
 
-  double ComputeFunctional(VectorInterface& f, const VectorInterface& u, const Functional* FP) const;
+  double ComputeFunctional(VectorInterface& f, const VectorInterface& u, const std::string& label) const;
   
   void AssembleDualMatrix(VectorInterface& u);
 

@@ -42,7 +42,9 @@ void BasicLoop::ClockOutput() const
 
 /*-----------------------------------------*/
 
-void BasicLoop::BasicInit(const ParamFile* paramfile, const ProblemContainer* PC)
+void BasicLoop::BasicInit(const ParamFile* paramfile,
+			  const ProblemContainer* PC,
+			  const FunctionalContainer* FC)
 {
   _paramfile = paramfile;
   string s_copy_param_file;
@@ -101,7 +103,7 @@ void BasicLoop::BasicInit(const ParamFile* paramfile, const ProblemContainer* PC
     }
   assert(GetMultiLevelSolver());
 
-  GetMultiLevelSolver()->BasicInit(GetMeshAgent(),_paramfile,PC);
+  GetMultiLevelSolver()->BasicInit(GetMeshAgent(),_paramfile,PC,FC);
   GetMultiLevelSolver()->SetMonitorPtr(&Mon);
 
   if (GetSolverInfosPointer()==NULL)
