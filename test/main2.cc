@@ -80,7 +80,8 @@ class LocalMultiLevelSolver : public StdMultiLevelSolver
 class LocalLoop : public StdLoop
 {
  public:
-  void BasicInit(const ParamFile* paramfile, const ProblemContainer* PC)
+  void BasicInit(const ParamFile* paramfile, const ProblemContainer* PC,
+		 const FunctionalContainer* FC=0)
       {
 	GetMeshAgentPointer() = new MeshAgent;
 	
@@ -90,7 +91,7 @@ class LocalLoop : public StdLoop
 	GetMeshAgent()->BasicInit(inpname,dim,prerefine,0);
 	
 	GetMultiLevelSolverPointer() = new LocalMultiLevelSolver;
-	StdLoop::BasicInit(paramfile, PC);
+	StdLoop::BasicInit(paramfile, PC, FC);
       }
 };
 
@@ -151,19 +152,22 @@ int main(int argc, char** argv)
 
   ProblemContainer PC;
   PC.AddProblem("testproblem",&LPD);
+
+  FunctionalContainer FC;
+  LocalDomainFunctional j1;
+  FC.AddFunctional("domain",&j1);
   
   /////////////
   // Loop
   /////////////
   LocalLoop loop;
-  loop.BasicInit(paramfile,&PC);
+  loop.BasicInit(paramfile,&PC,&FC);
   
   /////////////
   // Functionals
   /////////////
-  LocalDomainFunctional j1;
-  loop.AddFunctional(&j1);
-  
+
+    
   loop.run("testproblem");
   
   if(paramfile!=NULL)
