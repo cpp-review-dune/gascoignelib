@@ -17,18 +17,18 @@ int main(int argc, char** argv)
 
   ProblemContainer PC;
   PC.AddProblem("laplace3d", &LPD);
+
+  FunctionalContainer FC;
+  LocalDragFunctional   j0; 
+  LocalDomainFunctional j1;
+  FC.AddFunctional("drag", &j0);
+  FC.AddFunctional("domain", &j1);
+  
   
   StdLoop loop;
 
-  loop.BasicInit(&paramfile, &PC);
+  loop.BasicInit(&paramfile, &PC, &FC);
 
-  /////////////
-  // Functionals
-  /////////////
-  LocalDragFunctional   j0; 
-  LocalDomainFunctional j1;
-  loop.AddFunctional(&j0);
-  loop.AddFunctional(&j1);
   loop.run("laplace3d");
 
   return 0;

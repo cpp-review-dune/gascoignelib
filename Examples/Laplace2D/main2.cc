@@ -20,21 +20,20 @@ int main(int argc, char** argv)
 
   ProblemContainer PC;
   PC.AddProblem("laplace", &LPD);
+
+  FunctionalContainer FC;
+  LocalDragFunctional   j0; 
+  LocalDomainFunctional j1;
+  FC.AddFunctional("drag", &j0);
+  FC.AddFunctional("domain", &j1);
+  
   
   /////////////
   // Loop
   /////////////
   StdLoop loop;
-  loop.BasicInit(&paramfile, &PC);
-
-  /////////////
-  // Functionals
-  /////////////
-  LocalDragFunctional   j0; 
-  LocalDomainFunctional j1;
-  loop.AddFunctional(&j0);
-  loop.AddFunctional(&j1);
-
+  loop.BasicInit(&paramfile, &PC, &FC);
+  
   loop.run("laplace");
 
   return 0;

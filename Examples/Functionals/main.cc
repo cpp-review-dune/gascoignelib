@@ -25,12 +25,6 @@ int main(int argc, char** argv)
   PC.AddProblem("func", &LPD);
   
   /////////////
-  // Loop
-  /////////////
-  StdLoop loop;
-  loop.BasicInit(&paramfile, &PC);
-
-  /////////////
   // Functionals
   /////////////
     
@@ -53,11 +47,20 @@ int main(int argc, char** argv)
 
   LocalDragFunctional   j2; 
   LocalDomainFunctional j3;
+
+  FunctionalContainer FC;
+  FC.AddFunctional("0",&j0);
+  FC.AddFunctional("1",&j1);
+  FC.AddFunctional("2",&j2);
+  FC.AddFunctional("3",&j3);
   
-  loop.AddFunctional(&j0);
-  loop.AddFunctional(&j1);
-  loop.AddFunctional(&j2);
-  loop.AddFunctional(&j3);
+  
+  /////////////
+  // Loop
+  /////////////
+  StdLoop loop;
+  loop.BasicInit(&paramfile, &PC, &FC);
+
   
   loop.run("func");
 

@@ -2,7 +2,8 @@
 #define  __local_h
 
 #include  "stdloop.h"
-#include  "navierstokesgls3d.h"
+#include  "navierstokeslps3d.h"
+#include  "stokeslps3d.h"
 #include  "dirichletdata.h"
 #include  "meshagent.h"
 #include  "boundaryfunction.h"
@@ -45,7 +46,7 @@ public:
     std::string GetName() const {return "Local";}
     void BasicInit(const ParamFile* pf) {
       GetParamFilePointer() = pf;
-      GetEquationPointer() = new NavierStokesGls3d(GetParamFile());
+      GetEquationPointer() = new StokesLps3d(GetParamFile());
       GetDirichletDataPointer() = new BenchMarkDirichletData();
       ProblemDescriptorBase::BasicInit(pf);
     }
