@@ -24,7 +24,8 @@ public:
 
   StdTimeLoop() : StdLoop() {}
 
-  void BasicInit(const ParamFile* paramfile, const ProblemContainer* PC);
+  void BasicInit(const ParamFile* paramfile, const ProblemContainer* PC,
+		 const FunctionalContainer* FC);
 
   void run(const std::string& problemlabel);
   void adaptive_run(const std::string& problemlabel);

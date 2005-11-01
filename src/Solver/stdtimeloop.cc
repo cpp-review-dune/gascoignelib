@@ -9,9 +9,10 @@ using namespace std;
 
 namespace Gascoigne
 {
-void StdTimeLoop::BasicInit(const ParamFile* paramfile, const ProblemContainer* PC)
+void StdTimeLoop::BasicInit(const ParamFile* paramfile, const ProblemContainer* PC,
+			    const FunctionalContainer* FC)
 {
-  StdLoop::BasicInit(paramfile, PC);
+  StdLoop::BasicInit(paramfile, PC, FC);
 
   double tbegin, tend, deltat, theta;
   int    neuler;
