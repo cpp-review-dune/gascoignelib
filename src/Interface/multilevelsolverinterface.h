@@ -9,6 +9,7 @@
 #include  "nlinfo.h"
 #include  "vectorinterface.h"
 #include  "problemcontainer.h"
+#include  "functionalcontainer.h"
 
 namespace Gascoigne
 {
@@ -33,11 +34,15 @@ namespace Gascoigne
       virtual ~MultiLevelSolverInterface() {}
 
       virtual std::string GetName() const=0;
-      virtual void BasicInit(const MeshAgentInterface* GMGM, const ParamFile* paramfile, const ProblemContainer* PC)=0;
+      virtual void BasicInit(const MeshAgentInterface* GMGM, const ParamFile* paramfile,
+			     const ProblemContainer* PC, const FunctionalContainer* FC=NULL)=0;
       virtual void SetProblem(const std::string& problemlabel)=0;
       virtual void ReInit(const std::string& problemlabel)=0;
       virtual void SetMonitorPtr(Monitor* mon)=0;
 
+      virtual const DoubleVector GetExactValues() const=0;
+      virtual const DoubleVector ComputeFunctionals(VectorInterface& f, const VectorInterface& u) const=0;
+      
       virtual void ReInitMatrix()=0;
 
       virtual int nlevels() const=0;
@@ -78,7 +83,7 @@ namespace Gascoigne
         return Solve(nlevels()-1,x,b,nlinfo);
       }
       virtual void InterpolateSolution(VectorInterface& u, const GlobalVector& uold) const=0;
-      virtual double ComputeFunctional(VectorInterface& f, const VectorInterface& u, const Functional* FP) const=0;
+      virtual double ComputeFunctional(VectorInterface& f, const VectorInterface& u, const std::string& label) const=0;
       
       virtual void AssembleDualMatrix(VectorInterface& u)=0;
       virtual void vmulteq(VectorInterface& y, const VectorInterface&  x) const=0;

@@ -68,12 +68,14 @@ namespace Gascoigne
 
       virtual void VisuGrid(const std::string& name, int i) const=0;
 
+
       virtual void AddNodeVector(const std::string&, const VectorInterface& q)=0;
       virtual void AddCellVector(const std::string&, const GlobalCellVector* q)=0;
       virtual void AddParameterVector(const std::string&, const GlobalParameterVector* q)=0;
       virtual void DeleteNodeVector(const std::string&)=0;
       virtual void DeleteCellVector(const std::string&)=0;
       virtual void DeleteParameterVector(const std::string&)=0;
+      virtual void DeleteVector(Gascoigne::VectorInterface& p) const=0;
 
       virtual const DiscretizationInterface* GetDiscretization() const=0;
       virtual       DiscretizationInterface* GetDiscretization()      =0;
