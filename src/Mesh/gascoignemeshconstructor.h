@@ -7,13 +7,20 @@
 #include  "gascoignemesh2d.h"
 #include  "gascoignemesh3d.h"
 #include  "gascoigne.h"
+#include  <map>
 
 /*-----------------------------------------*/
 
 namespace Gascoigne
 {
+    typedef std::map<int,int> IntMap;
+
 class GascoigneMeshConstructor
 {
+ private:
+    IntVector _cl2g;
+    IntMap    _cg2l;
+    
 protected:
   
   const HierarchicalMesh* HM;
@@ -39,6 +46,9 @@ public:
   virtual ~GascoigneMeshConstructor() { }
 
   virtual void BasicInit();
+  const IntVector& Celll2g() const
+      {return _cl2g;}
+  const IntMap& Cellg2l() const {return _cg2l;}
 };
 }
 

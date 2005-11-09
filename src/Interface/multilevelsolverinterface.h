@@ -84,7 +84,9 @@ namespace Gascoigne
       }
       virtual void InterpolateSolution(VectorInterface& u, const GlobalVector& uold) const=0;
       virtual double ComputeFunctional(VectorInterface& f, const VectorInterface& u, const std::string& label) const=0;
-      
+      //Um die Kontrolle auf naechste Gitter zu uebertragen
+      virtual void InterpolateCellSolution(GlobalCellVector& u, const GlobalCellVector& uold) const=0;
+
       virtual void AssembleDualMatrix(VectorInterface& u)=0;
       virtual void vmulteq(VectorInterface& y, const VectorInterface&  x) const=0;
 

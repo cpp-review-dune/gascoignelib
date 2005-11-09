@@ -897,4 +897,37 @@ void StdMultiLevelSolver::DeleteNodeVector(const string& name)
 
 /*-------------------------------------------------------------*/
 
+void StdMultiLevelSolver::InterpolateCellSolution(GlobalCellVector& q, const GlobalCellVector& qold) const
+{
+    if(!GetMeshAgent()->Goc2nc())
+    {
+	cerr << "No cell interpolation activated"<< endl;
+	abort();
+    }
+    int cells = GetMeshAgent()->ncells();
+    q.resize(cells);
+    q.zero();
+    //Jetzt Interpolieren wir die Loesung auf das neue Gitter
+    for(int i = 0; i < qold.size(); i++)
+    {
+	set<int> kinder = GetMeshAgent()->Cello2n(i);
+	if(!kinder.empty())
+	{
+	    //es wurde nicht vergroebert
+	    for(set<int>::iterator p = kinder.begin(); p != kinder.end(); p++)
+	    {
+		q[*p] = qold[i];
+	    }
+	}
+	else
+	{
+	    //Es wurde vergroebert
+	    int patchsize = 1<<GetMeshAgent()->GetMesh(FinestLevel())->dimension();
+	    q[GetMeshAgent()->Cello2nFather(i)] += qold[i]/static_cast<double>(patchsize);
+	}
+	
+    }
+}
+
+/*-------------------------------------------------------------*/
 }

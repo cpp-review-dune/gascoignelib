@@ -12,12 +12,21 @@ using namespace std;
 
 namespace Gascoigne
 {
+    typedef std::map<int,int> IntMap;
+
 class MeshAgent : public virtual MeshAgentInterface
 {
 private:
 
   map<int,BoundaryFunction<2>* > _curved2d;
   map<int,BoundaryFunction<3>* > _curved3d;
+  
+  //Fuer die Zuordnung GM Nr auf altem Gitter zu GM Nr. auf neuem Gitter
+  IntVector _cl2g;
+  IntVector _fathers;//GM Nr zu HM nr.
+  IntMap _cg2l;
+  map<int,set<int> > _co2n;
+  bool _goc2nc;
 
 protected:
 
@@ -46,7 +55,7 @@ public:
   const map<int,BoundaryFunction<3>* >& GetShapes3d() const { return _curved3d; }
 
   void BasicInit(const ParamFile* pf);
-  void BasicInit(const std::string& gridname, int dim, int patchdepth, int epatcher);
+  void BasicInit(const std::string& gridname, int dim, int patchdepth, int epatcher, bool goc2nc = false);
 
   const GascoigneMultiGridMesh& GetMultiGrid() const {return *GMG;}
   GascoigneMultiGridMesh& GetMultiGrid() {return *GMG;}
@@ -75,6 +84,10 @@ public:
   void refine_cells(IntVector& ref);
 
   const GascoigneMeshTransfer* GetTransfer(int l) const {return GMG->GetTransfer(l);}
+
+  const std::set<int> Cello2n(int i)const;
+  const int Cello2nFather(int i)const;
+  const bool Goc2nc() const{ return _goc2nc;}
 };
 }
 

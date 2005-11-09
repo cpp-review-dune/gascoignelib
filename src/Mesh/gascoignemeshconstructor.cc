@@ -40,7 +40,9 @@ void GascoigneMeshConstructor::Loop2d()
   LevelMesh2d* CM=NULL;
 
   FM = LevelUpdate2d(GM0,newquads,oldquads);
-  
+  //Wir brauchen local2global und global2local Vector aus FM
+  _cl2g = FM->Quadl2g();
+  _cg2l = FM->Quadg2l();
   const HierarchicalMesh2d* HMP = dynamic_cast<const HierarchicalMesh2d*>(HM);
   assert(HMP);
 
@@ -79,7 +81,9 @@ void GascoigneMeshConstructor::Loop3d()
   LevelMesh3d* CM=NULL;
 
   FM = LevelUpdate3d(GM0,newquads,oldquads);
-  
+  //Wir brauchen local2global und global2local Vector aus FM
+  _cl2g =FM->Hexl2g();
+  _cg2l = FM->Hexg2l();
   const HierarchicalMesh3d* HMP = dynamic_cast<const HierarchicalMesh3d*>(HM);
   assert(HMP);
 

@@ -31,6 +31,52 @@ void MeshAgent::ReInit()
 
   GascoigneMeshConstructor MGM(HMP,GMG);
   MGM.BasicInit();
+  if(_goc2nc)
+  {
+      IntVector new_cl2g = MGM.Celll2g();
+      IntMap new_cg2l = MGM.Cellg2l();
+      _co2n.clear();
+      for(int i =0 ; i < _cl2g.size(); i++)
+      {
+	  int cn_i = _cl2g[i];//HM Num nach alter nummerierung
+	  cn_i = HMP->Cello2n(cn_i);//HM Num nach neuer nummerierung
+	  if(cn_i <0)
+	  {
+	      //Hier wurde vergroebert
+	  }
+	  else
+	  {
+	      set<int> kinder;
+	      // Zuordnung alte GM Nummern zu neuen
+	      if(HMP->sleep(cn_i))
+	      {
+		  //Zelle verfeinert
+		  for(int j = 0; j <HMP->nchilds(cn_i); j++)
+		  {
+		      kinder.insert(new_cg2l[HMP->child(cn_i,j)]);
+		  }
+	      }
+	      else
+	      {
+		  kinder.insert(new_cg2l[cn_i]);
+	      }
+	      _co2n[i] = kinder;
+	  }
+      }
+      
+
+      // Die Var fuer die alten Werteumschreiben
+      _cl2g = new_cl2g;
+      _cg2l = new_cg2l;
+      
+      //den fathers Vektor neu fuellen
+      _fathers.clear();
+      _fathers.resize(_cl2g.size());
+      for(int i = 0; i < _fathers.size(); i++)
+      {
+	  _fathers[i] = HMP->Vater(_cl2g[i]);
+      }
+  }
 }
 
 /*-----------------------------------------*/
@@ -42,6 +88,8 @@ void MeshAgent::BasicInit(const ParamFile* paramfile)
 
   DataFormatHandler DFH;
   DFH.insert("dimension",&dim);
+  //um die zuordnung alte GMNr. -> GMNr. an/abzuschalten
+  DFH.insert("cellnumtrans",&_goc2nc,false);
   FileScanner FS(DFH);
   FS.NoComplain();
   FS.readfile(paramfile,"Mesh");
@@ -76,10 +124,10 @@ void MeshAgent::BasicInit(const ParamFile* paramfile)
 
 /*-----------------------------------------*/
 
-void MeshAgent::BasicInit(const string& gridname, int dim, int patchdepth, int epatcher)
+void MeshAgent::BasicInit(const string& gridname, int dim, int patchdepth, int epatcher, bool goc2nc)
 {
   assert(HMP==NULL);
-
+  _goc2nc = goc2nc;
   if (dim==2)
     {
       HMP = new HierarchicalMesh2d;
@@ -219,4 +267,31 @@ void MeshAgent::refine_cells(IntVector& ref)
     }
   refine_nodes(refnodes);
 }
+
+/*----------------------------------------*/
+
+inline const set<int> MeshAgent::Cello2n(int i)const
+{
+    map<int,set<int> >::const_iterator p = _co2n.find(i);
+    if(p == _co2n.end())
+    {
+	return set<int>();
+    }
+    else
+    {
+	return p->second;
+    }
 }
+
+/*----------------------------------------*/
+
+inline const int MeshAgent::Cello2nFather(int i)const
+{
+    assert(_co2n.find(i)==_co2n.end());
+    //Umrechnung alte HM nummer in neue GM nummer
+    return _cg2l.find(HMP->Cello2n(_fathers[i]))->second;
+}
+
+
+}
+
