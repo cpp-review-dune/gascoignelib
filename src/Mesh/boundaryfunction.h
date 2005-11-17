@@ -24,7 +24,7 @@ public :
   virtual double operator()(const Vector& c) const=0;
   
   virtual void grad(Vector& dst, const Vector& src) const;
-  void newton(Vector&) const;
+  virtual void newton(Vector&) const;
 };
 }
 
