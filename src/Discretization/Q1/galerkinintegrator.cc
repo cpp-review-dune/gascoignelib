@@ -458,7 +458,7 @@ double GalerkinIntegrator<DIM>::ComputeDomainFunctional(const DomainFunctional& 
 /* ----------------------------------------- */
 
 template<int DIM>
-void GalerkinIntegrator<DIM>::EvaluateCellFunction(LocalCellVector& b, const CellFunction& CF,const FemInterface& FEM, const LocalNodeData& Q) const
+void GalerkinIntegrator<DIM>::EvaluateCellRightHandSide(LocalCellVector& b, const CellRightHandSide& CF,const FemInterface& FEM, const LocalNodeData& Q) const
 {
   b.zero();
 

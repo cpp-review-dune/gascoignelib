@@ -553,7 +553,7 @@ double CellDiscretization::ComputePointValue(const GlobalVector& u, const Vertex
 
 /* ----------------------------------------- */
 
-void CellDiscretization::EvaluateCellFunction(GlobalCellVector& f, const CellFunction& CF, double d) const
+void CellDiscretization::EvaluateCellRightHandSide(GlobalCellVector& f, const CellRightHandSide& CF, double d) const
 {
   nmatrix<double> T;
   
@@ -571,7 +571,7 @@ void CellDiscretization::EvaluateCellFunction(GlobalCellVector& f, const CellFun
       GlobalToLocalData(iq);
       CF.SetCellData(__QC);
 
-      GetIntegrator()->EvaluateCellFunction(b,CF,*GetFem(),__Q);
+      GetIntegrator()->EvaluateCellRightHandSide(b,CF,*GetFem(),__Q);
 
       f.add_node(iq,d,b);
     }

@@ -1,5 +1,5 @@
-#ifndef __CellFunction_h
-#define __CellFunction_h
+#ifndef __CellRightHandSide_h
+#define __CellRightHandSide_h
 
 #include "application.h"
 #include  "vertex.h"
@@ -9,17 +9,17 @@ namespace Gascoigne
 
 /**********************************************************/
 
-class CellFunction : public Application
+class CellRightHandSide : public Application
 {
   protected:
 
   public:
-    CellFunction() : Application() { }
-    ~CellFunction() { }
+    CellRightHandSide() : Application() { }
+    ~CellRightHandSide() { }
 
     virtual void F(LocalCellVector& b, double d) const
       {
-	std::cout << "CellFunction::F not written\n";
+	std::cout << "CellRightHandSide::F not written\n";
 	abort();
       }
 

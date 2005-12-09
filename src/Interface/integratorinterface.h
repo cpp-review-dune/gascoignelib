@@ -13,7 +13,7 @@
 #include  "boundaryrighthandside.h"
 #include  "boundaryequation.h"
 #include  "diracrighthandside.h"
-#include  "cellfunction.h"
+#include  "cellrighthandside.h"
 
 namespace Gascoigne
 {
@@ -94,7 +94,9 @@ namespace Gascoigne
       }
 
         
-      virtual void EvaluateCellFunction(LocalCellVector& b, const CellFunction& CF,const FemInterface& FEM, const LocalNodeData& Q) const {std::cerr << "\"IntegratorInterface::EvaluateCellFunction\" not written!" << std::endl;
+      virtual void EvaluateCellRightHandSide(LocalCellVector& b, const CellRightHandSide& CF,const FemInterface& FEM, 
+          const LocalNodeData& Q) const {
+        std::cerr << "\"IntegratorInterface::EvaluateCellRightHandSide\" not written!" << std::endl;
 						assert(0); }
 
       virtual void DiracRhsPoint(LocalVector& b, const FemInterface& E, const Vertex2d& p, const DiracRightHandSide& DRHS, 

@@ -868,11 +868,11 @@ double StdSolver::ComputeResidualFunctional(VectorInterface& gf, const VectorInt
 
 /*-------------------------------------------------------*/
 
-void StdSolver::EvaluateCellFunction(GlobalCellVector& f, const CellFunction& CF, double d) const
+void StdSolver::EvaluateCellRightHandSide(GlobalCellVector& f, const CellRightHandSide& CF, double d) const
 {
   HNAverageData();
   
-  GetDiscretization()->EvaluateCellFunction(f,CF,d);
+  GetDiscretization()->EvaluateCellRightHandSide(f,CF,d);
 
   HNZeroData();
 }
