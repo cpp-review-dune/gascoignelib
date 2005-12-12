@@ -20,34 +20,35 @@
 
 namespace Gascoigne
 {
-  typedef CompVector<double>                                        GlobalVector;  
-  typedef CompVector<double>                                        LocalVector;  
-                                                                   
-  typedef nvector<int>                                              IntVector;  
-  typedef nvector<double>                                           DoubleVector;  
-  typedef nmatrix<double>                                           DoubleMatrix;  
-  typedef nmatrix<double>                                           TimePattern;
-                                                                   
-  typedef std::set<int>                                             IntSet;  
+  typedef CompVector<double>                                        GlobalVector;
+  typedef CompVector<double>                                        LocalVector;
+  typedef std::map<const std::string,const GlobalVector*>           GlobalNodeData;
+  typedef std::map<const std::string,LocalVector>                   LocalNodeData;
 
+  typedef CompVector<double>                                        GlobalCellVector;
+  typedef CompVector<double>                                        LocalCellVector;
+  typedef std::map<const std::string,const GlobalCellVector*>       GlobalCellData;
+  typedef std::map<const std::string,LocalCellVector>               LocalCellData;
+
+  typedef nvector<double>                                           GlobalParameterVector;
+  typedef nvector<double>                                           LocalParameterVector;
+  typedef std::map<const std::string,const GlobalParameterVector*>  GlobalParameterData;
+  typedef std::map<const std::string,LocalParameterVector>          LocalParameterData;
+
+  typedef nvector<int>                                              IntVector;
+  typedef nvector<double>                                           DoubleVector;
+  typedef nmatrix<double>                                           DoubleMatrix;
+  typedef std::set<int>                                             IntSet;
   typedef CompVector<double>::iterator                              VectorIterator;
 
-  typedef  DerivativeVector                                         TestFunction;
+  typedef nmatrix<double>                                           TimePattern;
+
+  typedef DerivativeVector                                          TestFunction;
   typedef std::vector<TestFunction>                                 FemFunction;
-  
-  typedef CompVector<double>                                        GlobalCellVector;
-  typedef nvector<double>                                           GlobalParameterVector;
-  typedef std::map<const std::string,const GlobalVector*>           GlobalNodeData;
-  typedef std::map<const std::string,const GlobalCellVector*>       GlobalCellData;
-  typedef std::map<const std::string,const GlobalParameterVector*>  GlobalParameterData;
-  
-  typedef nvector<double>                                           LocalCellVector;
-  typedef nvector<double>                                           LocalParameterVector;
-  typedef std::map<const std::string,LocalVector>                   LocalNodeData;
-  typedef std::map<const std::string,LocalCellVector>               LocalCellData;
-  typedef std::map<const std::string,LocalParameterVector>          LocalParameterData;
-                                                                   
   typedef std::map<const std::string,FemFunction>                   FemData;
+
+  typedef nvector<double>                                           CellFunction;
+  typedef std::map<const std::string,CellFunction>                  CellData;
 }
 
 

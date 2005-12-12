@@ -215,7 +215,7 @@ void Q2::StrongDirichletVector(GlobalVector& u, const DirichletData& BF, int col
   const IntVector& bv = *GMP->VertexOnBoundary(col);
 
   GlobalToGlobalData();
-  BF.SetParameterData(__qq);
+  BF.SetParameterData(__QP);
 
   for(int i=0;i<bv.size();i++)
     {

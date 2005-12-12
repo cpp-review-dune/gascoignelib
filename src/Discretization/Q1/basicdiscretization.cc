@@ -48,14 +48,14 @@ void BasicDiscretization::HNZeroData() const
 
 void BasicDiscretization::GlobalToLocalData(int iq) const
 {
-  const GlobalNodeData& gd = GetGlobalData().GetNodeData();
-  __Q.clear();
-  GlobalNodeData::const_iterator p=gd.begin();
-  for(; p!=gd.end(); p++)
+  const GlobalNodeData& gnd = GetGlobalData().GetNodeData();
+  __QN.clear();
+  GlobalNodeData::const_iterator p=gnd.begin();
+  for(; p!=gnd.end(); p++)
     {
-      GlobalToLocalSingle(__Q[p->first],*p->second,iq);
+      GlobalToLocalSingle(__QN[p->first],*p->second,iq);
     }
-  
+
   const GlobalCellData& gcd = GetGlobalData().GetCellData();
   __QC.clear();
   GlobalCellData::const_iterator q=gcd.begin();
@@ -69,12 +69,12 @@ void BasicDiscretization::GlobalToLocalData(int iq) const
 
 void BasicDiscretization::GlobalToGlobalData() const
 {
-  const GlobalParameterData& gd = GetGlobalData().GetParameterData();
-  __qq.clear();
-  GlobalParameterData::const_iterator p=gd.begin();
-  for(; p!=gd.end(); p++)
+  const GlobalParameterData& gpd = GetGlobalData().GetParameterData();
+  __QP.clear();
+  GlobalParameterData::const_iterator p=gpd.begin();
+  for(; p!=gpd.end(); p++)
     {
-      __qq.insert(make_pair(p->first,*p->second));
+      __QP.insert(make_pair(p->first,*p->second));
     }
 }
 
@@ -95,10 +95,10 @@ void BasicDiscretization::GlobalToLocalSingle(LocalVector& U, const GlobalVector
 
 void BasicDiscretization::GlobalToLocalCell(LocalCellVector& U, const GlobalCellVector& u, int iq) const
 {
-  U.resize(u.ncomp());
+  U.ReInit(u.ncomp(),1);
   for(int c=0;c<u.ncomp();++c)
     {
-      U[c] = u(iq,c);
+      U(0,c) = u(iq,c);
     }
 }
 

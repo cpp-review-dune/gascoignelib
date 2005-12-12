@@ -31,7 +31,7 @@ EnergyEstimator::EnergyEstimator(SolverInterface& SR) : S(SR)
 
 /*--------------------------------------------------------*/
 
-double EnergyEstimator::Estimator(nvector<double>& eta, VectorInterface& gu, 
+double EnergyEstimator::Estimator(DoubleVector& eta, VectorInterface& gu, 
 				  const VectorInterface& gf)
 {
   const GlobalVector& u = S.GetGV(gu);

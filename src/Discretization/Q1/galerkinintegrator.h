@@ -52,24 +52,35 @@ public:
   std::string GetName() const {return "Galerkin";}
   void BasicInit();
 
-  void Rhs(const DomainRightHandSide& RHS, LocalVector& F, const FemInterface& FEM, const LocalNodeData& Q) const;
-  void Form(const Equation& EQ, LocalVector& F, const FemInterface& FEM, const LocalVector& U, const LocalNodeData& Q) const;
-  void AdjointForm(const Equation& EQ, LocalVector& F, const FemInterface& FEM, const LocalVector& U, const LocalNodeData& Q) const;
-  void BoundaryForm(const BoundaryEquation& BE, LocalVector& F, const FemInterface& FEM, const LocalVector& U, int ile, int col, LocalNodeData& Q) const;
-  void Matrix(const Equation& EQ, EntryMatrix& E, const FemInterface& FEM, const LocalVector& U, const LocalNodeData& Q) const;
-  void BoundaryMatrix (const BoundaryEquation& BE, EntryMatrix& E, const FemInterface& FEM, const LocalVector& U, int ile, int col, const LocalNodeData& Q) const;
+  void Rhs(const DomainRightHandSide& RHS, LocalVector& F, const FemInterface& FEM, 
+      const LocalNodeData& Q, const LocalCellData& QC) const;
+  void Form(const Equation& EQ, LocalVector& F, const FemInterface& FEM, const LocalVector& U, 
+      const LocalNodeData& Q, const LocalCellData& QC) const;
+  void AdjointForm(const Equation& EQ, LocalVector& F, const FemInterface& FEM, const LocalVector& U, 
+      const LocalNodeData& Q, const LocalCellData& QC) const;
+  void BoundaryForm(const BoundaryEquation& BE, LocalVector& F, const FemInterface& FEM, const LocalVector& U, int ile, int col, 
+      const LocalNodeData& Q, const LocalCellData& QC) const;
+  void Matrix(const Equation& EQ, EntryMatrix& E, const FemInterface& FEM, const LocalVector& U, 
+      const LocalNodeData& Q, const LocalCellData& QC) const;
+  void BoundaryMatrix (const BoundaryEquation& BE, EntryMatrix& E, const FemInterface& FEM, const LocalVector& U, int ile, int col, 
+      const LocalNodeData& Q, const LocalCellData& QC) const;
   double MassMatrix(EntryMatrix& E, const FemInterface& FEM) const;
 
   void RhsPoint(LocalVector& b, const FemInterface& E, const Vertex<DIM>& p, int comp) const;
-  void DiracRhsPoint(LocalVector& b, const FemInterface& E, const Vertex<DIM>& p, const DiracRightHandSide& DRHS, int j, const LocalNodeData& Q) const;
+  void DiracRhsPoint(LocalVector& b, const FemInterface& E, const Vertex<DIM>& p, const DiracRightHandSide& DRHS, int j,
+      const LocalNodeData& Q, const LocalCellData& QC) const;
   double ComputePointValue(const FemInterface& E, const Vertex<DIM>& p, const LocalVector& U, int comp) const;
-  double ComputeDomainFunctional(const DomainFunctional& F, const FemInterface& FEM, const LocalVector& U, const LocalNodeData& Q) const;
+  double ComputeDomainFunctional(const DomainFunctional& F, const FemInterface& FEM, const LocalVector& U,
+      const LocalNodeData& Q, const LocalCellData& QC) const;
   double ComputeBoundaryFunctional(const BoundaryFunctional& F, const FemInterface& FEM, int ile, const LocalVector& U) const;
-  void EvaluateCellRightHandSide(LocalCellVector& b, const CellRightHandSide& CF,const FemInterface& FEM, const LocalNodeData& Q) const;
+  void EvaluateCellRightHandSide(DoubleVector& b, const CellRightHandSide& CF,const FemInterface& FEM, 
+      const LocalNodeData& Q, const LocalCellData& QC) const;
 
-  void ErrorsByExactSolution(LocalVector& dst, const FemInterface& FE, const ExactSolution& ES, const LocalVector& U, const LocalNodeData& Q) const;
+  void ErrorsByExactSolution(LocalVector& dst, const FemInterface& FE, const ExactSolution& ES, const LocalVector& U, 
+      const LocalNodeData& Q, const LocalCellData& QC) const;
 
-  void BoundaryRhs(const BoundaryRightHandSide& RHS, LocalVector& F, const FemInterface& FEM, int ile, int col, const LocalNodeData& Q) const;
+  void BoundaryRhs(const BoundaryRightHandSide& RHS, LocalVector& F, const FemInterface& FEM, int ile, int col,
+      const LocalNodeData& Q, const LocalCellData& QC) const;
 };
 }
 

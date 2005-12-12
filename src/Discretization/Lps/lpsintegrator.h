@@ -46,8 +46,10 @@ public:
 
   std::string GetName() const {return "Lps";}
 
-  virtual void Form(const Equation& EQ, LocalVector& F, const FemInterface& FEM, const LocalVector&U, const LocalNodeData& Q) const;
-  virtual void Matrix(const Equation& EQ, EntryMatrix& E, const FemInterface& FEM, const LocalVector& U, const LocalNodeData& Q) const;
+  virtual void Form(const Equation& EQ, LocalVector& F, const FemInterface& FEM, const LocalVector&U, 
+      const LocalNodeData& Q, const LocalCellData& QC) const;
+  virtual void Matrix(const Equation& EQ, EntryMatrix& E, const FemInterface& FEM, const LocalVector& U, 
+      const LocalNodeData& Q, const LocalCellData& QC) const;
 };
 
 /*-----------------------------------------*/
@@ -66,8 +68,10 @@ public:
   LpsIntegratorQ1<DIM>();
   ~LpsIntegratorQ1<DIM>() {}
 
-  void Form(const Equation& EQ, LocalVector& F, const FemInterface& FEM, const LocalVector&U, const LocalNodeData& Q) const;
-  void Matrix(const Equation& EQ, EntryMatrix& E, const FemInterface& FEM, const LocalVector& U, const LocalNodeData& Q) const;
+  void Form(const Equation& EQ, LocalVector& F, const FemInterface& FEM, const LocalVector&U,
+      const LocalNodeData& Q, const LocalCellData& QC) const;
+  void Matrix(const Equation& EQ, EntryMatrix& E, const FemInterface& FEM, const LocalVector& U, 
+      const LocalNodeData& Q, const LocalCellData& QC) const;
 };
 
 /*-----------------------------------------*/

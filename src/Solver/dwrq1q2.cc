@@ -14,7 +14,7 @@ DwrQ1Q2::DwrQ1Q2(SolverInterface& SR) : S(SR)
 
 /*--------------------------------------------------------*/
 
-double DwrQ1Q2::ScalarProduct(nvector<double>& eta, const GlobalVector& f, 
+double DwrQ1Q2::ScalarProduct(DoubleVector& eta, const GlobalVector& f, 
 			     const GlobalVector& z) const
 {
   for(int i=0; i<z.n(); i++)
@@ -29,7 +29,7 @@ double DwrQ1Q2::ScalarProduct(nvector<double>& eta, const GlobalVector& f,
 
 /*--------------------------------------------------------*/
 
-double DwrQ1Q2::ScalarProduct(nvector<double>& eta, const VectorInterface& gf, 
+double DwrQ1Q2::ScalarProduct(DoubleVector& eta, const VectorInterface& gf, 
 			     const VectorInterface& gz) const
 {
   const GlobalVector& f = S.GetGV(gf);
@@ -40,7 +40,7 @@ double DwrQ1Q2::ScalarProduct(nvector<double>& eta, const VectorInterface& gf,
 
 /*--------------------------------------------------------*/
 
-double DwrQ1Q2::ScalarProductWithFluctuations(nvector<double>& eta, const VectorInterface& gf, 
+double DwrQ1Q2::ScalarProductWithFluctuations(DoubleVector& eta, const VectorInterface& gf, 
 					     const VectorInterface& gz) const
 {
   const GlobalVector& f = S.GetGV(gf);
@@ -142,7 +142,7 @@ void DwrQ1Q2::DualResidualsHigher(VectorInterface& gf,
 
 /*--------------------------------------------------------*/
 
-double DwrQ1Q2::Estimator(nvector<double>& eta, VectorInterface& gf, 
+double DwrQ1Q2::Estimator(DoubleVector& eta, VectorInterface& gf, 
 			  const VectorInterface& gu, const VectorInterface& gz,
 			  const ProblemDescriptorInterface& PDI)
 {

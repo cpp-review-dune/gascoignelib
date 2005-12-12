@@ -53,6 +53,8 @@ protected:
   virtual void DiracRhsPoint(GlobalVector& f,const DiracRightHandSide& DRHS,const Vertex2d& p0,int i,double s) const;
   virtual void DiracRhsPoint(GlobalVector& f,const DiracRightHandSide& DRHS,const Vertex3d& p0,int i,double s) const;
 
+  void GlobalToLocalCell(LocalCellVector& U, const GlobalCellVector& u, int iq) const;
+
 public:
 
 //

@@ -23,7 +23,7 @@ class EnergyEstimator
   EnergyEstimator(SolverInterface& SR);
   ~EnergyEstimator() {};
 
-  double Estimator(nvector<double>& eta, VectorInterface& gu, 
+  double Estimator(DoubleVector& eta, VectorInterface& gu, 
 		   const VectorInterface& gf);
 };
 

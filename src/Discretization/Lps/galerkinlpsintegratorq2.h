@@ -35,8 +35,10 @@ public:
 
   std::string GetName() const {return "GalerkinLpsIntegratorQ2";}
 
-  void Form(const Equation& EQ, LocalVector& F, const FemInterface& FEM, const LocalVector&U, const LocalNodeData& Q) const;
-  void Matrix(const Equation& EQ, EntryMatrix& E, const FemInterface& FEM, const LocalVector& U, const LocalNodeData& Q) const;
+  void Form(const Equation& EQ, LocalVector& F, const FemInterface& FEM, const LocalVector&U, 
+      const LocalNodeData& Q, const LocalCellData& QC) const;
+  void Matrix(const Equation& EQ, EntryMatrix& E, const FemInterface& FEM, const LocalVector& U, 
+      const LocalNodeData& Q, const LocalCellData& QC) const;
 };
 }
 

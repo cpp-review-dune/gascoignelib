@@ -81,9 +81,9 @@ void DwrFemQ1Q22d::DiracRhsPoint(GlobalVector& f, const DiracRightHandSide& DRHS
   
   GlobalToLocalData(iq);
   GlobalToGlobalData();
-  DRHS.SetParameterData(__qq);
+  DRHS.SetParameterData(__QP);
 
-  I->DiracRhsPoint(__F,HighOrderFem,LowOrderFem,Tranfo_p0,DRHS,i,__Q);
+  I->DiracRhsPoint(__F,HighOrderFem,LowOrderFem,Tranfo_p0,DRHS,i,__QN,__QC);
   PatchDiscretization::LocalToGlobal(f,__F,iq,s);
 }
 
@@ -94,7 +94,7 @@ void DwrFemQ1Q22d::Form(GlobalVector& f, const GlobalVector& u, const Equation& 
   nmatrix<double> TH,TL;
 
   GlobalToGlobalData();
-  EQ.SetParameterData(__qq);
+  EQ.SetParameterData(__QP);
 
   const IntegratorQ1Q2<2>* I = dynamic_cast<const IntegratorQ1Q2<2>*>(GetIntegrator());
   assert(I);
@@ -110,7 +110,7 @@ void DwrFemQ1Q22d::Form(GlobalVector& f, const GlobalVector& u, const Equation& 
       LowOrderFem .ReInit(TL);
 
       GlobalToLocal(__U,u,iq);
-      I->Form(EQ,__F,HighOrderFem,LowOrderFem,__U,__Q);
+      I->Form(EQ,__F,HighOrderFem,LowOrderFem,__U,__QN,__QC);
       PatchDiscretization::LocalToGlobal(f,__F,iq,d);
     }
 }
@@ -122,7 +122,7 @@ void DwrFemQ1Q22d::AdjointForm(GlobalVector& f, const GlobalVector& u, const Equ
   nmatrix<double> TH,TL;
 
   GlobalToGlobalData();
-  EQ.SetParameterData(__qq);
+  EQ.SetParameterData(__QP);
 
   const IntegratorQ1Q2<2>* I = dynamic_cast<const IntegratorQ1Q2<2>*>(GetIntegrator());
   assert(I);
@@ -138,7 +138,7 @@ void DwrFemQ1Q22d::AdjointForm(GlobalVector& f, const GlobalVector& u, const Equ
       LowOrderFem .ReInit(TL);
 
       GlobalToLocal(__U,u,iq);
-      I->AdjointForm(EQ,__F,HighOrderFem,LowOrderFem,__U,__Q);
+      I->AdjointForm(EQ,__F,HighOrderFem,LowOrderFem,__U,__QN,__QC);
       PatchDiscretization::LocalToGlobal(f,__F,iq,d);
     }
 }
@@ -151,7 +151,7 @@ void DwrFemQ1Q22d::BoundaryForm(GlobalVector& f, const GlobalVector& u, const In
   nmatrix<double> TH,TL;
 
   GlobalToGlobalData();
-  BE.SetParameterData(__qq);
+  BE.SetParameterData(__QP);
   
   const IntegratorQ1Q2<2>* I = dynamic_cast<const IntegratorQ1Q2<2>*>(GetIntegrator());
   assert(I);
@@ -192,7 +192,7 @@ void DwrFemQ1Q22d::BoundaryForm(GlobalVector& f, const GlobalVector& u, const In
       LowOrderFem .ReInit(TL);
 
       GlobalToLocal(__U,u,ip);
-      I->BoundaryForm(BE,__F,HighOrderFem,LowOrderFem,__U,ile,col,__Q);
+      I->BoundaryForm(BE,__F,HighOrderFem,LowOrderFem,__U,ile,col,__QN,__QC);
       PatchDiscretization::LocalToGlobal(f,__F,ip,d);
     }
   }
@@ -205,7 +205,7 @@ void DwrFemQ1Q22d::Rhs(GlobalVector& f, const DomainRightHandSide& RHS, double s
   nmatrix<double> TH,TL;
 
   GlobalToGlobalData();
-  RHS.SetParameterData(__qq);
+  RHS.SetParameterData(__QP);
 
   const IntegratorQ1Q2<2>* I = dynamic_cast<const IntegratorQ1Q2<2>*>(GetIntegrator());
   assert(I);
@@ -221,7 +221,7 @@ void DwrFemQ1Q22d::Rhs(GlobalVector& f, const DomainRightHandSide& RHS, double s
       LowOrderFem .ReInit(TL);
 
       GlobalToLocalData(iq);
-      I->Rhs(RHS,__F,HighOrderFem,LowOrderFem,__Q);
+      I->Rhs(RHS,__F,HighOrderFem,LowOrderFem,__QN,__QC);
       PatchDiscretization::LocalToGlobal(f,__F,iq,s);
     }
 }
@@ -233,7 +233,7 @@ void DwrFemQ1Q22d::BoundaryRhs(GlobalVector& f, const IntSet& Colors, const Boun
   nmatrix<double> TH,TL;
 
   GlobalToGlobalData();
-  NRHS.SetParameterData(__qq);
+  NRHS.SetParameterData(__QP);
   
   const IntegratorQ1Q2<2>* I = dynamic_cast<const IntegratorQ1Q2<2>*>(GetIntegrator());
   assert(I);
@@ -273,7 +273,7 @@ void DwrFemQ1Q22d::BoundaryRhs(GlobalVector& f, const IntSet& Colors, const Boun
       LowOrderFem .ReInit(TL);
 
       GlobalToLocalData(ip);
-      I->BoundaryRhs(NRHS,__F,HighOrderFem,LowOrderFem,ile,col,__Q);
+      I->BoundaryRhs(NRHS,__F,HighOrderFem,LowOrderFem,ile,col,__QN,__QC);
       PatchDiscretization::LocalToGlobal(f,__F,ip,s);
     }
   }
@@ -334,9 +334,9 @@ void DwrFemQ2Q12d::DiracRhsPoint(GlobalVector& f, const DiracRightHandSide& DRHS
   
   GlobalToLocalData(iq);
   GlobalToGlobalData();
-  DRHS.SetParameterData(__qq);
+  DRHS.SetParameterData(__QP);
 
-  I->DiracRhsPoint(__F,LowOrderFem,HighOrderFem,Tranfo_p0,DRHS,i,__Q);
+  I->DiracRhsPoint(__F,LowOrderFem,HighOrderFem,Tranfo_p0,DRHS,i,__QN,__QC);
   PatchDiscretization::LocalToGlobal(f,__F,iq,s);
 }
 
@@ -347,7 +347,7 @@ void DwrFemQ2Q12d::Form(GlobalVector& f, const GlobalVector& u, const Equation& 
   nmatrix<double> TH,TL;
 
   GlobalToGlobalData();
-  EQ.SetParameterData(__qq);
+  EQ.SetParameterData(__QP);
 
   const IntegratorQ1Q2<2>* I = dynamic_cast<const IntegratorQ1Q2<2>*>(GetIntegrator());
   assert(I);
@@ -363,7 +363,7 @@ void DwrFemQ2Q12d::Form(GlobalVector& f, const GlobalVector& u, const Equation& 
       LowOrderFem .ReInit(TL);
 
       GlobalToLocal(__U,u,iq);
-      I->Form(EQ,__F,LowOrderFem,HighOrderFem,__U,__Q);
+      I->Form(EQ,__F,LowOrderFem,HighOrderFem,__U,__QN,__QC);
       PatchDiscretization::LocalToGlobal(f,__F,iq,d);
     }
 }
@@ -375,7 +375,7 @@ void DwrFemQ2Q12d::AdjointForm(GlobalVector& f, const GlobalVector& u, const Equ
   nmatrix<double> TH,TL;
 
   GlobalToGlobalData();
-  EQ.SetParameterData(__qq);
+  EQ.SetParameterData(__QP);
 
   const IntegratorQ1Q2<2>* I = dynamic_cast<const IntegratorQ1Q2<2>*>(GetIntegrator());
   assert(I);
@@ -391,7 +391,7 @@ void DwrFemQ2Q12d::AdjointForm(GlobalVector& f, const GlobalVector& u, const Equ
       LowOrderFem .ReInit(TL);
 
       GlobalToLocal(__U,u,iq);
-      I->AdjointForm(EQ,__F,LowOrderFem,HighOrderFem,__U,__Q);
+      I->AdjointForm(EQ,__F,LowOrderFem,HighOrderFem,__U,__QN,__QC);
       PatchDiscretization::LocalToGlobal(f,__F,iq,d);
     }
 }
@@ -404,7 +404,7 @@ void DwrFemQ2Q12d::BoundaryForm(GlobalVector& f, const GlobalVector& u, const In
   nmatrix<double> TH,TL;
 
   GlobalToGlobalData();
-  BE.SetParameterData(__qq);
+  BE.SetParameterData(__QP);
   
   const IntegratorQ1Q2<2>* I = dynamic_cast<const IntegratorQ1Q2<2>*>(GetIntegrator());
   assert(I);
@@ -445,7 +445,7 @@ void DwrFemQ2Q12d::BoundaryForm(GlobalVector& f, const GlobalVector& u, const In
       LowOrderFem .ReInit(TL);
 
       GlobalToLocal(__U,u,ip);
-      I->BoundaryForm(BE,__F,LowOrderFem,HighOrderFem,__U,ile,col,__Q);
+      I->BoundaryForm(BE,__F,LowOrderFem,HighOrderFem,__U,ile,col,__QN,__QC);
       PatchDiscretization::LocalToGlobal(f,__F,ip,d);
     }
   }
@@ -458,7 +458,7 @@ void DwrFemQ2Q12d::Rhs(GlobalVector& f, const DomainRightHandSide& RHS, double s
   nmatrix<double> TH,TL;
 
   GlobalToGlobalData();
-  RHS.SetParameterData(__qq);
+  RHS.SetParameterData(__QP);
 
   const IntegratorQ1Q2<2>* I = dynamic_cast<const IntegratorQ1Q2<2>*>(GetIntegrator());
   assert(I);
@@ -474,7 +474,7 @@ void DwrFemQ2Q12d::Rhs(GlobalVector& f, const DomainRightHandSide& RHS, double s
       LowOrderFem .ReInit(TL);
 
       GlobalToLocalData(iq);
-      I->Rhs(RHS,__F,LowOrderFem,HighOrderFem,__Q);
+      I->Rhs(RHS,__F,LowOrderFem,HighOrderFem,__QN,__QC);
       PatchDiscretization::LocalToGlobal(f,__F,iq,s);
     }
 }
@@ -486,7 +486,7 @@ void DwrFemQ2Q12d::BoundaryRhs(GlobalVector& f, const IntSet& Colors, const Boun
   nmatrix<double> TH,TL;
 
   GlobalToGlobalData();
-  NRHS.SetParameterData(__qq);
+  NRHS.SetParameterData(__QP);
   
   const IntegratorQ1Q2<2>* I = dynamic_cast<const IntegratorQ1Q2<2>*>(GetIntegrator());
   assert(I);
@@ -526,7 +526,7 @@ void DwrFemQ2Q12d::BoundaryRhs(GlobalVector& f, const IntSet& Colors, const Boun
       LowOrderFem .ReInit(TL);
 
       GlobalToLocalData(ip);
-      I->BoundaryRhs(NRHS,__F,LowOrderFem,HighOrderFem,ile,col,__Q);
+      I->BoundaryRhs(NRHS,__F,LowOrderFem,HighOrderFem,ile,col,__QN,__QC);
       PatchDiscretization::LocalToGlobal(f,__F,ip,s);
     }
   }

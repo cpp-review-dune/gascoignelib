@@ -402,7 +402,7 @@ void Q13d::EEResidual(DoubleVector& eta, const GlobalVector& u, const Equation& 
   nmatrix<double> T;
 
   GlobalToGlobalData();
-  if (RHS) RHS->SetParameterData(__qq);
+  if (RHS) RHS->SetParameterData(__QP);
   
   for(int iq=0;iq<GetMesh()->ncells();++iq)
   {
@@ -411,8 +411,8 @@ void Q13d::EEResidual(DoubleVector& eta, const GlobalVector& u, const Equation& 
 
     //    GlobalToLocalData(iq);
     GlobalToLocal(__U,u,iq);
-    EQ.SetCellData(__QC);
-    double res = EEI.Residual(__U,*GetFem(),EQ,RHS,__Q);
+//    EQ.SetCellData(__QC);
+    double res = EEI.Residual(__U,*GetFem(),EQ,RHS,__QN);
     for (int in=0; in<8; in++)
     {
       eta[GetMesh()->vertex_of_cell(iq,in)] += 0.125 * sqrt(res);

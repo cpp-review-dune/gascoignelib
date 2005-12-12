@@ -78,7 +78,7 @@ void Q12d::StrongDirichletVector(GlobalVector& u, const DirichletData& BF, int c
   const IntVector& bv = *GMP->VertexOnBoundary(col);
 
   GlobalToGlobalData();
-  BF.SetParameterData(__qq);
+  BF.SetParameterData(__QP);
 
   for(int ii=0;ii<comp.size();ii++)
     {
@@ -381,8 +381,8 @@ void Q12d::EEResidual(DoubleVector& eta, const GlobalVector& u, const Equation& 
   nmatrix<double> T;
 
   GlobalToGlobalData();
-  if (RHS) RHS->SetParameterData(__qq);
-  EQ.SetParameterData(__qq);
+  if (RHS) RHS->SetParameterData(__QP);
+  EQ.SetParameterData(__QP);
 
   for(int iq=0;iq<GetMesh()->ncells();++iq)
   {
@@ -391,12 +391,12 @@ void Q12d::EEResidual(DoubleVector& eta, const GlobalVector& u, const Equation& 
         
     //    GlobalToLocalData(iq);
     GlobalToLocal(__U,u,iq);
-    EQ.SetCellData(__QC);
-    if (RHS) EQ.SetCellData(__QC);
+//    EQ.SetCellData(__QC);
+//    if (RHS) EQ.SetCellData(__QC);
 
     // .cell is analogous to .point 
-    // EQ.cell(GetMesh(),iq,__U,__Q); 
-    double res = EEI.Residual(__U,*GetFem(),EQ,RHS,__Q);
+    // EQ.cell(GetMesh(),iq,__U,__QN); 
+    double res = EEI.Residual(__U,*GetFem(),EQ,RHS,__QN);
     double w = 0.25 * sqrt(res);
     for (int in=0; in<4; in++)
     {

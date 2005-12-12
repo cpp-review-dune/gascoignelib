@@ -13,7 +13,8 @@ void IntegratorQ1Q2<DIM>::BasicInit()
 /*---------------------------------------------------*/
 
 template<int DIM>
-void IntegratorQ1Q2<DIM>::Form(const Equation& EQ, LocalVector& F, const FemInterface& FemH, const FemInterface& FemL, const LocalVector& U, const LocalNodeData& Q) const
+void IntegratorQ1Q2<DIM>::Form(const Equation& EQ, LocalVector& F, const FemInterface& FemH, const FemInterface& FemL, 
+    const LocalVector& U, const LocalNodeData& Q, const LocalCellData& QC) const
 {
   assert(FemH.n()==FemL.n());
 
@@ -51,7 +52,8 @@ void IntegratorQ1Q2<DIM>::Form(const Equation& EQ, LocalVector& F, const FemInte
 /*---------------------------------------------------*/
 
 template<int DIM>
-void IntegratorQ1Q2<DIM>::AdjointForm(const Equation& EQ, LocalVector& F, const FemInterface& FemH, const FemInterface& FemL, const LocalVector& Z, const LocalNodeData& Q) const
+void IntegratorQ1Q2<DIM>::AdjointForm(const Equation& EQ, LocalVector& F, const FemInterface& FemH, const FemInterface& FemL, 
+    const LocalVector& Z, const LocalNodeData& Q, const LocalCellData& QC) const
 {
   assert(FemH.n()==FemL.n());
 
@@ -119,7 +121,8 @@ void IntegratorQ1Q2<DIM>::AdjointForm(const Equation& EQ, LocalVector& F, const 
 /*---------------------------------------------------*/
 
 template<int DIM>
-void IntegratorQ1Q2<DIM>::Rhs(const DomainRightHandSide& RHS, LocalVector& F, const FemInterface& FemH, const FemInterface& FemL, const LocalNodeData& Q) const
+void IntegratorQ1Q2<DIM>::Rhs(const DomainRightHandSide& RHS, LocalVector& F, const FemInterface& FemH, 
+    const FemInterface& FemL, const LocalNodeData& Q, const LocalCellData& QC) const
 {
   assert(FemH.n()==FemL.n());
 
@@ -155,7 +158,7 @@ void IntegratorQ1Q2<DIM>::Rhs(const DomainRightHandSide& RHS, LocalVector& F, co
 
 template<int DIM>
 void IntegratorQ1Q2<DIM>::BoundaryRhs(const BoundaryRightHandSide& RHS, LocalVector& F, const FemInterface& FemH, 
-    const FemInterface& FemL, int ile, int col, const LocalNodeData& Q) const
+    const FemInterface& FemL, int ile, int col, const LocalNodeData& Q, const LocalCellData& QC) const
 {
   assert(FemH.n()==FemL.n());
 
@@ -193,7 +196,7 @@ void IntegratorQ1Q2<DIM>::BoundaryRhs(const BoundaryRightHandSide& RHS, LocalVec
 
 template<int DIM>
 void IntegratorQ1Q2<DIM>::BoundaryForm(const BoundaryEquation& BE, LocalVector& F, const FemInterface& FemH, 
-    const FemInterface& FemL, const LocalVector& U, int ile, int col, LocalNodeData& Q) const
+    const FemInterface& FemL, const LocalVector& U, int ile, int col, LocalNodeData& Q, const LocalCellData& QC) const
 {
   assert(FemH.n()==FemL.n());
 
@@ -233,7 +236,7 @@ void IntegratorQ1Q2<DIM>::BoundaryForm(const BoundaryEquation& BE, LocalVector& 
 
 template<int DIM>
 void IntegratorQ1Q2<DIM>::DiracRhsPoint(LocalVector& b, const FemInterface& FemH, const FemInterface& FemL, 
-    const Vertex<DIM>& p, const DiracRightHandSide& DRHS, int j, const LocalNodeData& Q) const
+    const Vertex<DIM>& p, const DiracRightHandSide& DRHS, int j, const LocalNodeData& Q, const LocalCellData& QC) const
 {
   assert(FemH.n()==FemL.n());
   b.zero();
