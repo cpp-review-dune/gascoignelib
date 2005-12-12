@@ -33,9 +33,11 @@ class IntegratorWithSecond : public GalerkinIntegratorQ2<DIM>
     
   std::string GetName() const {return "IntegratorWithSecond";}
 
-  double ComputeDomainFunctional(const DomainFunctional& F, const FemInterface& FEM, const LocalVector& U, const LocalNodeData& Q) const; 
+  double ComputeDomainFunctional(const DomainFunctional& F, const FemInterface& FEM, const LocalVector& U, 
+      const LocalNodeData& Q, const LocalCellData& QC) const; 
 
-  void Rhs(const DomainRightHandSide& RHS, LocalVector& F, const FemInterface& FEM, const LocalNodeData& Q) const;
+  void Rhs(const DomainRightHandSide& RHS, LocalVector& F, const FemInterface& FEM, 
+      const LocalNodeData& Q, const LocalCellData& QC) const;
 
 };
 }
