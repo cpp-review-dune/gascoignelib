@@ -184,6 +184,7 @@ namespace Gascoigne
       virtual double ScalarProduct(const VectorInterface& y, const VectorInterface& x) const=0;
       virtual void Equ(VectorInterface& dst, double s, const VectorInterface& src) const=0;
       virtual void Add(VectorInterface& dst, double s, const VectorInterface& src) const=0;
+      virtual void SAdd(double s1,VectorInterface& dst, double s2, const VectorInterface& src) const=0;
       virtual double Norm(const VectorInterface& dst) const=0;  
 
       

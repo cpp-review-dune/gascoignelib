@@ -31,7 +31,7 @@ namespace Gascoigne
 
 class StdSolver : public virtual SolverInterface
 {
- private:
+  private:
 
   //
   //   Daten 
@@ -97,11 +97,11 @@ class StdSolver : public virtual SolverInterface
 
 //   const MatrixInterface* GetMatrix() const {assert(_MAP); return _MAP;}
   MatrixInterface* GetMatrix() const { return _MAP;}
-  MatrixInterface*& GetMatrixPointer() {assert(_MAP==NULL); return _MAP;}
+  MatrixInterface*& GetMatrixPointer() {return _MAP;}
 
 //   const IluInterface* GetIlu() const {assert(_MIP); return _MIP;}
   IluInterface* GetIlu() const {assert(_MIP); return _MIP;}
-  IluInterface*& GetIluPointer() {assert(_MIP==NULL); return _MIP;}
+  IluInterface*& GetIluPointer() { return _MIP;}
   
   virtual DiscretizationInterface*& GetDiscretizationPointer() {return _ZP;}
 
@@ -313,8 +313,9 @@ class StdSolver : public virtual SolverInterface
   virtual void DeleteVector(VectorInterface& p) const;
 
   double ScalarProduct(const VectorInterface& y, const VectorInterface& x) const;
-  void Equ(VectorInterface& dst, double s, const VectorInterface& src) const;
-  void Add(VectorInterface& dst, double s, const VectorInterface& src) const;
+  void   Equ(VectorInterface& dst, double s, const VectorInterface& src) const;
+  void   Add(VectorInterface& dst, double s, const VectorInterface& src) const;
+  void   SAdd(double s1, VectorInterface& dst, double s2, const VectorInterface& src) const;
   double Norm(const VectorInterface& dst) const;  
 };
 }

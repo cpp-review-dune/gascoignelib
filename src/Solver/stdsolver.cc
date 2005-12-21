@@ -419,6 +419,7 @@ void StdSolver::ReInitVector(VectorInterface& dst, int comp)
     }
   // resize GlobalVector
   //
+  p->second->ncomp()=comp;
   p->second->reservesize(n);
 }
 
@@ -1245,6 +1246,13 @@ void StdSolver::Equ(VectorInterface& dst, double s, const VectorInterface& src) 
 void StdSolver::Add(VectorInterface& dst, double s, const VectorInterface& src) const
 {
   GetGV(dst).add(s,GetGV(src));
+}
+
+/*-----------------------------------------*/
+
+void StdSolver::SAdd(double s1,VectorInterface& dst, double s2, const VectorInterface& src) const
+{
+  GetGV(dst).sadd(s1,s2,GetGV(src));
 }
 
 /*-----------------------------------------*/
