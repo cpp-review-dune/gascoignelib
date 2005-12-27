@@ -70,23 +70,23 @@ void EnergyEstimatorIntegrator<DIM>::Jumps(LocalVector& F, const FemInterface& F
     FEM.point_boundary(ile,_xi[i]);
     FEM.normal(n);
 
-    BasicIntegrator::universal_point(FEM,UH,U);
+    BasicIntegrator::universal_point(FEM,_UH,U);
 
     if( _s_energytype == "energy" || _s_energytype == "energy_laplace" ) {
       for (int c=0; c<U.ncomp(); c++) {
-        F(i,c) += _d_visc * ( n.x() * UH[c].x() + n.y() * UH[c].y() );
-        if (DIM==3) F(i,c) += _d_visc * ( n.z() * UH[c].z() );
+        F(i,c) += _d_visc * ( n.x() * _UH[c].x() + n.y() * _UH[c].y() );
+        if (DIM==3) F(i,c) += _d_visc * ( n.z() * _UH[c].z() );
       }
     }else
     if( _s_energytype == "energy_stokes" ) {
       // jump of the pressure:
-      F(i,0) += - n.x() * UH[0].m() - n.y() * UH[0].m();
-      if (DIM==3) F(i,0) += - n.z() * UH[0].m();
+      F(i,0) += - n.x() * _UH[0].m() - n.y() * _UH[0].m();
+      if (DIM==3) F(i,0) += - n.z() * _UH[0].m();
       
       // jump of the value visc * \del_n v :
       for (int c=1; c<U.ncomp(); c++) {
-        F(i,c) += _d_visc * ( n.x() * UH[c].x() + n.y() * UH[c].y() );
-        if (DIM==3) F(i,c) += _d_visc * ( n.z() * UH[c].z() );
+        F(i,c) += _d_visc * ( n.x() * _UH[c].x() + n.y() * _UH[c].y() );
+        if (DIM==3) F(i,c) += _d_visc * ( n.z() * _UH[c].z() );
       }
     }else{
       std::cerr << " Bad EnergyEstimatorIntegrator type supplied: '" << _s_energytype  << "'.\n"; 
@@ -130,13 +130,13 @@ double EnergyEstimatorIntegrator<DIM>::Residual(const LocalVector& U, const FemI
     double vol = FEM.J();
     double h  = Volume2MeshSize(vol);
     double weight  = GetFormula().w(k) * vol;
-    BasicIntegrator::universal_point(FEM,UH,U);
-    BasicIntegrator::universal_point(FEM,QH,Q);
+    BasicIntegrator::universal_point(FEM,_UH,U);
+    BasicIntegrator::universal_point(FEM,_QH,Q);
     FEM.x(x);
-    if (RHS) RHS->SetFemData(QH);
-    EQ.SetFemData(QH);
-    EQ.point(h,UH,x);
-    EQ.OperatorStrong(F,UH);
+    if (RHS) RHS->SetFemData(_QH);
+    EQ.SetFemData(_QH);
+    EQ.point(h,_UH,x);
+    EQ.OperatorStrong(F,_UH);
     double value = 0.;
     if (RHS)
       {

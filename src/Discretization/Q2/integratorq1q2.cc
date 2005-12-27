@@ -35,15 +35,15 @@ void IntegratorQ1Q2<DIM>::Form(const Equation& EQ, LocalVector& F, const FemInte
       double vol = FemL.J();
       double h  = Volume2MeshSize(vol);
       double weight  = IF->w(k) * vol;
-      BasicIntegrator::universal_point(FemL,UH,U);
-      BasicIntegrator::universal_point(FemL,QH,Q);
+      BasicIntegrator::universal_point(FemL,_UH,U);
+      BasicIntegrator::universal_point(FemL,_QH,Q);
       FemL.x(x);
-      EQ.SetFemData(QH);
-      EQ.point(h,UH,x);
+      EQ.SetFemData(_QH);
+      EQ.point(h,_UH,x);
       for (int i=0;i<FemH.n();i++)
 	{
-	  FemH.init_test_functions(NN,weight,i);
-	  EQ.Form(F.start(i),UH,NN);
+	  FemH.init_test_functions(_NN,weight,i);
+	  EQ.Form(F.start(i),_UH,_NN);
 	}
     }
   delete IF;
@@ -60,7 +60,7 @@ void IntegratorQ1Q2<DIM>::AdjointForm(const Equation& EQ, LocalVector& F, const 
   F.ReInit(Z.ncomp(),FemH.n());
   F.zero();
 
-  NNN.resize(FemH.n());
+  _NNN.resize(FemH.n());
   EntryMatrix E;
   E.SetDimensionDof(FemH.n(),FemL.n());
   E.SetDimensionComp(Z.ncomp(),Z.ncomp());
@@ -81,14 +81,14 @@ void IntegratorQ1Q2<DIM>::AdjointForm(const Equation& EQ, LocalVector& F, const 
       double vol = FemL.J();
       double h  = Volume2MeshSize(vol);
       double weight  = IF->w(k) * vol;
-      BasicIntegrator::universal_point(FemL,UH,Z);
-      BasicIntegrator::universal_point(FemL,QH,Q);
+      BasicIntegrator::universal_point(FemL,_UH,Z);
+      BasicIntegrator::universal_point(FemL,_QH,Q);
       FemL.x(x);
-      //EQ.pointmatrix(h,QH["u"],QH,x);
-      EQ.pointmatrix(h,QH["u"],x);
+      //EQ.pointmatrix(h,_QH["u"],_QH,x);
+      EQ.pointmatrix(h,_QH["u"],x);
       for (int i=0;i<FemH.n();i++)
 	{
-	  FemH.init_test_functions(NNN[i],weight,i);
+	  FemH.init_test_functions(_NNN[i],weight,i);
 	}
       for (int j=0;j<FemL.n();j++)
 	{
@@ -96,7 +96,7 @@ void IntegratorQ1Q2<DIM>::AdjointForm(const Equation& EQ, LocalVector& F, const 
 	  for (int i=0;i<FemH.n();i++)
 	    {
 	      E.SetDofIndex(j,i);
-	      EQ.Matrix(E,QH["u"],NNN[i],MM);
+	      EQ.Matrix(E,_QH["u"],_NNN[i],MM);
 	    }
 	}
     }
@@ -141,14 +141,14 @@ void IntegratorQ1Q2<DIM>::Rhs(const DomainRightHandSide& RHS, LocalVector& F, co
       FemL.point(xi);
       double vol = FemL.J();
       double weight  = IF->w(k) * vol;
-      BasicIntegrator::universal_point(FemL,QH,Q);
-      RHS.SetFemData(QH);
+      BasicIntegrator::universal_point(FemL,_QH,Q);
+      RHS.SetFemData(_QH);
       FemL.x(x);
 
       for (int i=0;i<FemH.n();i++)
 	{
-	  FemH.init_test_functions(NN,weight,i);
-	  RHS(F.start(i),NN,x);
+	  FemH.init_test_functions(_NN,weight,i);
+	  RHS(F.start(i),_NN,x);
 	}
     } 
   delete IF;
@@ -177,16 +177,16 @@ void IntegratorQ1Q2<DIM>::BoundaryRhs(const BoundaryRightHandSide& RHS, LocalVec
       IF->xi(xi,k);
       FemH.point_boundary(ile,xi);
       FemL.point_boundary(ile,xi);
-      BasicIntegrator::universal_point(FemL,QH,Q);
-      RHS.SetFemData(QH);
+      BasicIntegrator::universal_point(FemL,_QH,Q);
+      RHS.SetFemData(_QH);
       FemL.x(x);
       FemL.normal(n);
       double  h = FemL.G();
       double  weight = IF->w(k)*h;
       for (int i=0;i<FemH.n();i++)
       {
-        FemH.init_test_functions(NN,weight,i);
-        RHS(F.start(i),NN,x,n,col);
+        FemH.init_test_functions(_NN,weight,i);
+        RHS(F.start(i),_NN,x,n,col);
       }
     }
   delete IF;
@@ -215,18 +215,18 @@ void IntegratorQ1Q2<DIM>::BoundaryForm(const BoundaryEquation& BE, LocalVector& 
       IF->xi(xi,k);
       FemH.point_boundary(ile,xi);
       FemL.point_boundary(ile,xi);
-      BasicIntegrator::universal_point(FemL,UH,U);
-      BasicIntegrator::universal_point(FemL,QH,Q);
+      BasicIntegrator::universal_point(FemL,_UH,U);
+      BasicIntegrator::universal_point(FemL,_QH,Q);
       FemL.x(x);
       FemL.normal(n);
       double  h = FemL.G();
       double  weight = IF->w(k)*h;
-      BE.SetFemData(QH);
-      BE.pointboundary(h,UH,x,n);
+      BE.SetFemData(_QH);
+      BE.pointboundary(h,_UH,x,n);
       for (int i=0;i<FemH.n();i++)
       {
-        FemH.init_test_functions(NN,weight,i);
-        BE.Form(F.start(i),UH,NN,col);
+        FemH.init_test_functions(_NN,weight,i);
+        BE.Form(F.start(i),_UH,_NN,col);
       }
     }
   delete IF;
@@ -249,13 +249,13 @@ void IntegratorQ1Q2<DIM>::DiracRhsPoint(LocalVector& b, const FemInterface& FemH
   FemH.point(p);
   FemL.point(p);
   FemL.x(x);
-  BasicIntegrator::universal_point(FemL,QH,Q);
-  DRHS.SetFemData(QH);
+  BasicIntegrator::universal_point(FemL,_QH,Q);
+  DRHS.SetFemData(_QH);
 
   for (int i=0; i<FemH.n(); i++)
     {
-      FemH.init_test_functions(NN,1.,i);
-      DRHS.operator()(j,b.start(i),NN,x);
+      FemH.init_test_functions(_NN,1.,i);
+      DRHS.operator()(j,b.start(i),_NN,x);
     }
   delete IF;
 }

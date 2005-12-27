@@ -32,10 +32,10 @@ void BasicIntegrator::universal_point(const FemInterface& FEM, FemFunction& UH, 
 
   for (int i=0; i<FEM.n(); i++)
     {
-      FEM.init_test_functions(NN,1.,i);
+      FEM.init_test_functions(_NN,1.,i);
       for (int c=0; c<UH.size(); c++)
 	{
-	  UH[c].add(U(i,c),NN);
+	  UH[c].add(U(i,c),_NN);
 	}
     }
 }

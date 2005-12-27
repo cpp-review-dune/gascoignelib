@@ -24,11 +24,11 @@ class BasicIntegrator : public IntegratorInterface
   
  protected:
   
-  mutable FemFunction   NNN;
-  mutable TestFunction  NN;
-  mutable FemFunction   UH;
-  mutable FemData       QH;
-  mutable CellData      QCH;
+  mutable FemFunction   _NNN;
+  mutable TestFunction  _NN;
+  mutable FemFunction   _UH;
+  mutable FemData       _QH;
+  mutable CellData      _QCH;
   
   void  universal_point(const FemInterface& FEM, FemFunction& UH, const LocalVector& U) const;
   void  universal_point(CellFunction& UCH, const LocalCellVector& UC) const;

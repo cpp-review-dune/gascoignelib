@@ -58,8 +58,8 @@ void GalerkinIntegrator<DIM>::Rhs(const DomainRightHandSide& f, LocalVector& F, 
 {
   F.ReInit(f.GetNcomp(),FEM.n());
 
-  BasicIntegrator::universal_point(QCH,QC);
-  f.SetCellData(QCH);
+  BasicIntegrator::universal_point(_QCH,QC);
+  f.SetCellData(_QCH);
 
   const IntegrationFormulaInterface& IF = *FormFormula();
 
@@ -72,13 +72,13 @@ void GalerkinIntegrator<DIM>::Rhs(const DomainRightHandSide& f, LocalVector& F, 
 		FEM.point(xi);
 		double vol = FEM.J();
 		double weight  = IF.w(k) * vol;
-		BasicIntegrator::universal_point(FEM,QH,Q);
-		f.SetFemData(QH);
+		BasicIntegrator::universal_point(FEM,_QH,Q);
+		f.SetFemData(_QH);
 		FEM.x(x);
 		for (int i=0;i<FEM.n();i++)
 			{
-			FEM.init_test_functions(NN,weight,i);
-			f(F.start(i),NN,x);
+			FEM.init_test_functions(_NN,weight,i);
+			f(F.start(i),_NN,x);
 			}
     }
 }
@@ -91,8 +91,8 @@ void GalerkinIntegrator<DIM>::BoundaryRhs(const BoundaryRightHandSide& f, LocalV
 {
   F.ReInit(f.GetNcomp(),FEM.n());
 
-  BasicIntegrator::universal_point(QCH,QC);
-  f.SetCellData(QCH);
+  BasicIntegrator::universal_point(_QCH,QC);
+  f.SetCellData(_QCH);
 
   const IntegrationFormulaInterface& IF = *BoundaryFormula();
 
@@ -104,16 +104,16 @@ void GalerkinIntegrator<DIM>::BoundaryRhs(const BoundaryRightHandSide& f, LocalV
     {
       IF.xi(xi,k);
       FEM.point_boundary(ile,xi);
-      BasicIntegrator::universal_point(FEM,QH,Q);
-      f.SetFemData(QH);
+      BasicIntegrator::universal_point(FEM,_QH,Q);
+      f.SetFemData(_QH);
       FEM.x(x);
       FEM.normal(n);
       double  h = FEM.G();
       double  weight = IF.w(k)*h;
       for (int i=0;i<FEM.n();i++)
 	{
-	  FEM.init_test_functions(NN,weight,i);
-	  f(F.start(i),NN,x,n,col);
+	  FEM.init_test_functions(_NN,weight,i);
+	  f(F.start(i),_NN,x,n,col);
 	}
     }
 }
@@ -126,8 +126,8 @@ void GalerkinIntegrator<DIM>::Form(const Equation& EQ, LocalVector& F, const Fem
 {
   F.ReInit(EQ.GetNcomp(),FEM.n());
 
-  BasicIntegrator::universal_point(QCH,QC);
-  EQ.SetCellData(QCH);
+  BasicIntegrator::universal_point(_QCH,QC);
+  EQ.SetCellData(_QCH);
 
   const IntegrationFormulaInterface& IF = *FormFormula();
 
@@ -141,15 +141,15 @@ void GalerkinIntegrator<DIM>::Form(const Equation& EQ, LocalVector& F, const Fem
       double vol = FEM.J();
       double h  = Volume2MeshSize(vol);
       double weight  = IF.w(k) * vol;
-      BasicIntegrator::universal_point(FEM,UH,U);
-      BasicIntegrator::universal_point(FEM,QH,Q);
+      BasicIntegrator::universal_point(FEM,_UH,U);
+      BasicIntegrator::universal_point(FEM,_QH,Q);
       FEM.x(x);
-      EQ.SetFemData(QH);
-      EQ.point(h,UH,x);
+      EQ.SetFemData(_QH);
+      EQ.point(h,_UH,x);
       for (int i=0;i<FEM.n();i++)
 	{
-	  FEM.init_test_functions(NN,weight,i);
-	  EQ.Form(F.start(i),UH,NN);
+	  FEM.init_test_functions(_NN,weight,i);
+	  EQ.Form(F.start(i),_UH,_NN);
 	}
     }
 }
@@ -162,15 +162,15 @@ void GalerkinIntegrator<DIM>::AdjointForm(const Equation& EQ, LocalVector& F, co
 {
   F.ReInit(EQ.GetNcomp(),FEM.n());
 
-  BasicIntegrator::universal_point(QCH,QC);
-  EQ.SetCellData(QCH);
+  BasicIntegrator::universal_point(_QCH,QC);
+  EQ.SetCellData(_QCH);
 
   const IntegrationFormulaInterface& IF = *FormFormula();
 
   F.zero();
   Vertex<DIM> x, xi;
 
-  NNN.resize(FEM.n());
+  _NNN.resize(FEM.n());
   EntryMatrix E;
   E.SetDimensionDof(FEM.n(),FEM.n());
   E.SetDimensionComp(Z.ncomp(),Z.ncomp());
@@ -184,22 +184,22 @@ void GalerkinIntegrator<DIM>::AdjointForm(const Equation& EQ, LocalVector& F, co
       double vol = FEM.J();
       double h  = Volume2MeshSize(vol);
       double weight  = IF.w(k) * vol;
-      BasicIntegrator::universal_point(FEM,UH,Z);
-      BasicIntegrator::universal_point(FEM,QH,Q);
+      BasicIntegrator::universal_point(FEM,_UH,Z);
+      BasicIntegrator::universal_point(FEM,_QH,Q);
       FEM.x(x);
-      // EQ.pointmatrix(h,QH["u"],QH,x);
-      EQ.pointmatrix(h,QH["u"],x);
+      // EQ.pointmatrix(h,_QH["u"],_QH,x);
+      EQ.pointmatrix(h,_QH["u"],x);
       double sw = sqrt(weight);
       for (int i=0; i<FEM.n(); i++)
 	{
-	  FEM.init_test_functions(NNN[i],sw,i);
+	  FEM.init_test_functions(_NNN[i],sw,i);
 	}
       for (int j=0; j<FEM.n(); j++)
 	{
 	  for (int i=0; i<FEM.n(); i++)
 	    {
 	      E.SetDofIndex(j,i);
-	      EQ.Matrix(E,QH["u"],NNN[i],NNN[j]);
+	      EQ.Matrix(E,_QH["u"],_NNN[i],_NNN[j]);
 	    }
 	}
     }
@@ -228,8 +228,8 @@ void GalerkinIntegrator<DIM>::BoundaryForm(const BoundaryEquation& BE, LocalVect
 {
   F.ReInit(BE.GetNcomp(),FEM.n());
 
-  BasicIntegrator::universal_point(QCH,QC);
-  BE.SetCellData(QCH);
+  BasicIntegrator::universal_point(_QCH,QC);
+  BE.SetCellData(_QCH);
 
   const IntegrationFormulaInterface& IF = *BoundaryFormula();
 
@@ -241,18 +241,18 @@ void GalerkinIntegrator<DIM>::BoundaryForm(const BoundaryEquation& BE, LocalVect
     {
       IF.xi(xi,k);
       FEM.point_boundary(ile,xi);
-      BasicIntegrator::universal_point(FEM,UH,U);
-      BasicIntegrator::universal_point(FEM,QH,Q);
+      BasicIntegrator::universal_point(FEM,_UH,U);
+      BasicIntegrator::universal_point(FEM,_QH,Q);
       FEM.x(x);
       FEM.normal(n);
       double  h = FEM.G();
       double  weight = IF.w(k)*h;
-      BE.SetFemData(QH);
-      BE.pointboundary(h,UH,x,n);
+      BE.SetFemData(_QH);
+      BE.pointboundary(h,_UH,x,n);
       for (int i=0;i<FEM.n();i++)
         {
-          FEM.init_test_functions(NN,weight,i);
-          BE.Form(F.start(i),UH,NN,col);
+          FEM.init_test_functions(_NN,weight,i);
+          BE.Form(F.start(i),_UH,_NN,col);
         }
     }
 }
@@ -262,7 +262,7 @@ void GalerkinIntegrator<DIM>::BoundaryForm(const BoundaryEquation& BE, LocalVect
 template<int DIM>
 double GalerkinIntegrator<DIM>::MassMatrix(EntryMatrix& E, const FemInterface& FEM) const
 {
-  NNN.resize(FEM.n());
+  _NNN.resize(FEM.n());
   E.SetDimensionDof(FEM.n(),FEM.n());
   int ncomp=1;
   E.SetDimensionComp(ncomp,ncomp);
@@ -281,14 +281,14 @@ double GalerkinIntegrator<DIM>::MassMatrix(EntryMatrix& E, const FemInterface& F
 		omega += weight;
 		for (int i=0;i<FEM.n();i++)
 			{
-			FEM.init_test_functions(NNN[i],1.,i);
+			FEM.init_test_functions(_NNN[i],1.,i);
 			}
 		for (int i=0;i<FEM.n();i++)
 			{
 			for (int j=0;j<FEM.n();j++)
 				{
 				E.SetDofIndex(i,j);
-				E(0,0) += weight * NNN[j].m()*NNN[i].m();
+				E(0,0) += weight * _NNN[j].m()*_NNN[i].m();
 				}
 			}
     }
@@ -301,14 +301,14 @@ template<int DIM>
 void GalerkinIntegrator<DIM>::Matrix(const Equation& EQ, EntryMatrix& E, const FemInterface& FEM, const LocalVector& U, 
     const LocalNodeData& Q, const LocalCellData& QC) const
 {
-  NNN.resize(FEM.n());
+  _NNN.resize(FEM.n());
   E.SetDimensionDof(FEM.n(),FEM.n());
   E.SetDimensionComp(U.ncomp(),U.ncomp());
   E.resize();
   E.zero();
 
-  BasicIntegrator::universal_point(QCH,QC);
-  EQ.SetCellData(QCH);
+  BasicIntegrator::universal_point(_QCH,QC);
+  EQ.SetCellData(_QCH);
 
   const IntegrationFormulaInterface& IF = *FormFormula();
 
@@ -320,23 +320,23 @@ void GalerkinIntegrator<DIM>::Matrix(const Equation& EQ, EntryMatrix& E, const F
       double vol = FEM.J();
       double h  = Volume2MeshSize(vol);
       double weight  = IF.w(k) * vol;
-      BasicIntegrator::universal_point(FEM,UH,U);
-      BasicIntegrator::universal_point(FEM,QH,Q);
+      BasicIntegrator::universal_point(FEM,_UH,U);
+      BasicIntegrator::universal_point(FEM,_QH,Q);
       FEM.x(x);
-      EQ.SetFemData(QH);
-      EQ.pointmatrix(h,UH,x);
+      EQ.SetFemData(_QH);
+      EQ.pointmatrix(h,_UH,x);
 
       double sw = sqrt(weight);
       for (int i=0;i<FEM.n();i++)
 				{
-				FEM.init_test_functions(NNN[i],sw,i);
+				FEM.init_test_functions(_NNN[i],sw,i);
 				}
       for (int j=0; j<FEM.n(); j++)
 				{
 				for (int i=0; i<FEM.n(); i++)
 					{
 					E.SetDofIndex(i,j);
-					EQ.Matrix(E,UH,NNN[j],NNN[i]);
+					EQ.Matrix(E,_UH,_NNN[j],_NNN[i]);
 					}
 				}
     }
@@ -348,14 +348,14 @@ template<int DIM>
 void GalerkinIntegrator<DIM>::BoundaryMatrix (const BoundaryEquation& BE, EntryMatrix& E, const FemInterface& FEM, const LocalVector& U, 
     int ile, int col, const LocalNodeData& Q, const LocalCellData& QC) const
 {
-  NNN.resize(FEM.n());
+  _NNN.resize(FEM.n());
   E.SetDimensionDof(FEM.n(),FEM.n());
   E.SetDimensionComp(U.ncomp(),U.ncomp());
   E.resize();
   E.zero();
 
-  BasicIntegrator::universal_point(QCH,QC);
-  BE.SetCellData(QCH);
+  BasicIntegrator::universal_point(_QCH,QC);
+  BE.SetCellData(_QCH);
 
   const IntegrationFormulaInterface& IF = *BoundaryFormula();
 
@@ -365,25 +365,25 @@ void GalerkinIntegrator<DIM>::BoundaryMatrix (const BoundaryEquation& BE, EntryM
     {
       IF.xi(xi,k);
       FEM.point_boundary(ile,xi);
-      BasicIntegrator::universal_point(FEM,UH,U);
-      BasicIntegrator::universal_point(FEM,QH,Q);
+      BasicIntegrator::universal_point(FEM,_UH,U);
+      BasicIntegrator::universal_point(FEM,_QH,Q);
       FEM.x(x);
       FEM.normal(n);
       double  h = FEM.G();
       double  weight = IF.w(k)*h;
-      BE.SetFemData(QH);
-      BE.pointmatrixboundary(h,UH,x,n);
+      BE.SetFemData(_QH);
+      BE.pointmatrixboundary(h,_UH,x,n);
       double sw = sqrt(weight);
       for (int i=0;i<FEM.n();i++)
         {
-          FEM.init_test_functions(NNN[i],sw,i);
+          FEM.init_test_functions(_NNN[i],sw,i);
         }
       for (int j=0;j<FEM.n();j++)
         {
           for (int i=0;i<FEM.n();i++)
             {
               E.SetDofIndex(i,j);
-              BE.Matrix(E,UH,NNN[j],NNN[i],col);
+              BE.Matrix(E,_UH,_NNN[j],_NNN[i],col);
             }
         }
     }
@@ -400,8 +400,8 @@ void GalerkinIntegrator<DIM>::RhsPoint
   E.point(p);
   for (int i=0; i<E.n(); i++)
     {
-      E.init_test_functions(NN,1.,i);
-      F(i,comp) += NN.m();
+      E.init_test_functions(_NN,1.,i);
+      F(i,comp) += _NN.m();
     }
 }
 
@@ -412,19 +412,19 @@ void GalerkinIntegrator<DIM>::DiracRhsPoint(LocalVector& b, const FemInterface& 
 {
   b.zero();
 
-  BasicIntegrator::universal_point(QCH,QC);
-  DRHS.SetCellData(QCH);
+  BasicIntegrator::universal_point(_QCH,QC);
+  DRHS.SetCellData(_QCH);
 
   Vertex<DIM> x;
   E.point(p);     
   E.x(x);
-  BasicIntegrator::universal_point(E,QH,Q);
-  DRHS.SetFemData(QH);
+  BasicIntegrator::universal_point(E,_QH,Q);
+  DRHS.SetFemData(_QH);
 
   for (int i=0; i<E.n(); i++)
     {
-      E.init_test_functions(NN,1.,i);
-      DRHS.operator()(j,b.start(i),NN,x);
+      E.init_test_functions(_NN,1.,i);
+      DRHS.operator()(j,b.start(i),_NN,x);
     }
 }
 
@@ -433,9 +433,9 @@ template<int DIM>
 double GalerkinIntegrator<DIM>::ComputePointValue(const FemInterface& E, const Vertex<DIM>& p, const LocalVector& U, int comp) const
 {
   E.point(p);
-  BasicIntegrator::universal_point(E,UH,U);
+  BasicIntegrator::universal_point(E,_UH,U);
 
-  return UH[comp].m();
+  return _UH[comp].m();
 }
 
 /* ----------------------------------------- */
@@ -456,11 +456,11 @@ double GalerkinIntegrator<DIM>::ComputeBoundaryFunctional(const BoundaryFunction
       FEM.point_boundary(ile,xi);
       double h = FEM.G();
       double weight  = IF.w(k) * h;
-      BasicIntegrator::universal_point(FEM,UH,U);
+      BasicIntegrator::universal_point(FEM,_UH,U);
 
       FEM.x(x);
       // FEM.normal(n);
-      j += weight * F.J(UH,x);
+      j += weight * F.J(_UH,x);
     }
   return j;
 }
@@ -471,8 +471,8 @@ template<int DIM>
 double GalerkinIntegrator<DIM>::ComputeDomainFunctional(const DomainFunctional& F, const FemInterface& FEM, const LocalVector& U, 
     const LocalNodeData& Q, const LocalCellData& QC) const
 {
-  BasicIntegrator::universal_point(QCH,QC);
-  F.SetCellData(QCH);
+  BasicIntegrator::universal_point(_QCH,QC);
+  F.SetCellData(_QCH);
 
   const IntegrationFormulaInterface& IF = *FormFormula();
 
@@ -484,11 +484,11 @@ double GalerkinIntegrator<DIM>::ComputeDomainFunctional(const DomainFunctional& 
       FEM.point(xi);
       double vol = FEM.J();
       double weight  = IF.w(k) * vol;
-      BasicIntegrator::universal_point(FEM,UH,U);
-      BasicIntegrator::universal_point(FEM,QH,Q);
+      BasicIntegrator::universal_point(FEM,_UH,U);
+      BasicIntegrator::universal_point(FEM,_QH,Q);
       FEM.x(x);
-      F.SetFemData(QH);
-      j += weight * F.J(UH,x);
+      F.SetFemData(_QH);
+      j += weight * F.J(_UH,x);
     }
   return j;
 }
@@ -501,8 +501,8 @@ void GalerkinIntegrator<DIM>::EvaluateCellRightHandSide(DoubleVector& b, const C
 {
   b.zero();
 
-  BasicIntegrator::universal_point(QCH,QC);
-  CF.SetCellData(QCH);
+  BasicIntegrator::universal_point(_QCH,QC);
+  CF.SetCellData(_QCH);
 
   const IntegrationFormulaInterface& IF = *FormFormula();
   Vertex<DIM> x, xi;
@@ -514,9 +514,9 @@ void GalerkinIntegrator<DIM>::EvaluateCellRightHandSide(DoubleVector& b, const C
       double vol = FEM.J();
       double weight  = IF.w(k) * vol;
 
-      BasicIntegrator::universal_point(FEM,QH,Q);
+      BasicIntegrator::universal_point(FEM,_QH,Q);
       FEM.x(x);
-      CF.SetFemData(QH);
+      CF.SetFemData(_QH);
       CF.point(x);
 
       CF.F(b,weight);
@@ -529,8 +529,8 @@ template<int DIM>
 void GalerkinIntegrator<DIM>::ErrorsByExactSolution(LocalVector& dst, const FemInterface& FE, const ExactSolution& ES, const LocalVector& U, 
     const LocalNodeData& Q, const LocalCellData& QC) const
 {
-  BasicIntegrator::universal_point(QCH,QC);
-  ES.SetCellData(QCH);
+  BasicIntegrator::universal_point(_QCH,QC);
+  ES.SetCellData(_QCH);
 
   const IntegrationFormulaInterface& IF = *ErrorFormula();
 
@@ -540,28 +540,28 @@ void GalerkinIntegrator<DIM>::ErrorsByExactSolution(LocalVector& dst, const FemI
     {
       IF.xi(xi,k);
       FE.point(xi);
-      BasicIntegrator::universal_point(FE,UH,U);
+      BasicIntegrator::universal_point(FE,_UH,U);
       double vol = FE.J();
       double weight = IF.w(k) * vol;
 
       FE.x(x);
       for(int c=0; c<U.ncomp(); c++)
 	{
-	  UH[c].m() -= ES(c,x);
-	  UH[c].x() -= ES.x(c,x);
-	  UH[c].y() -= ES.y(c,x);
-	  if (DIM==3) UH[c].z() -= ES.z(c,x);
+	  _UH[c].m() -= ES(c,x);
+	  _UH[c].x() -= ES.x(c,x);
+	  _UH[c].y() -= ES.y(c,x);
+	  if (DIM==3) _UH[c].z() -= ES.z(c,x);
 	}
       for(int c=0; c<U.ncomp(); c++) 
 	{
 	  // L2 Norm
-	  dst(0,c) += weight * UH[c].m() * UH[c].m();
+	  dst(0,c) += weight * _UH[c].m() * _UH[c].m();
 	  // H1 Seminorm
-	  double a = UH[c].x()*UH[c].x() + UH[c].y()*UH[c].y();
-	  if (DIM==3) a += UH[c].z() * UH[c].z();
+	  double a = _UH[c].x()*_UH[c].x() + _UH[c].y()*_UH[c].y();
+	  if (DIM==3) a += _UH[c].z() * _UH[c].z();
 	  dst(1,c) += weight * a;
 	  // L8 Norm
-	  dst(2,c) = Gascoigne::max(dst(2,c),fabs(UH[c].m()));
+	  dst(2,c) = Gascoigne::max(dst(2,c),fabs(_UH[c].m()));
 	}
     }
 }

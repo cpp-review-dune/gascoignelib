@@ -68,13 +68,13 @@ void IntegratorWithSecond<2>::hesse(const FemInterface& E, FemFunction& UH, cons
 
   for (int i=0; i<E.n(); i++)
     {
-      init_test_hesse(E, NN, 1., i);
+      init_test_hesse(E, _NN, 1., i);
 
       for (int c=0; c<UH.size(); c++)
 	{
-	  UH[c].aux("xx") += U(i,c) * NN.aux("xx");
-	  UH[c].aux("xy") += U(i,c) * NN.aux("xy");
-	  UH[c].aux("yy") += U(i,c) * NN.aux("yy");
+	  UH[c].aux("xx") += U(i,c) * _NN.aux("xx");
+	  UH[c].aux("xy") += U(i,c) * _NN.aux("xy");
+	  UH[c].aux("yy") += U(i,c) * _NN.aux("yy");
 	}
     }
 }
@@ -97,16 +97,16 @@ void IntegratorWithSecond<3>::hesse(const FemInterface& E, FemFunction& UH, cons
 
   for (int i=0; i<E.n(); i++)
     {
-      init_test_hesse(E, NN, 1., i);
+      init_test_hesse(E, _NN, 1., i);
 
       for (int c=0; c<UH.size(); c++)
 	{
-	  UH[c].aux("xx") += U(i,c) * NN.aux("xx");
-	  UH[c].aux("xy") += U(i,c) * NN.aux("xy");
-	  UH[c].aux("yy") += U(i,c) * NN.aux("yy");
-	  UH[c].aux("xz") += U(i,c) * NN.aux("xz");
-	  UH[c].aux("yz") += U(i,c) * NN.aux("yz");
-	  UH[c].aux("zz") += U(i,c) * NN.aux("zz");	}
+	  UH[c].aux("xx") += U(i,c) * _NN.aux("xx");
+	  UH[c].aux("xy") += U(i,c) * _NN.aux("xy");
+	  UH[c].aux("yy") += U(i,c) * _NN.aux("yy");
+	  UH[c].aux("xz") += U(i,c) * _NN.aux("xz");
+	  UH[c].aux("yz") += U(i,c) * _NN.aux("yz");
+	  UH[c].aux("zz") += U(i,c) * _NN.aux("zz");	}
     }
 }
 
@@ -139,15 +139,15 @@ double IntegratorWithSecond<DIM>::ComputeDomainFunctional(const DomainFunctional
       point_hesse(FEM,xi);
       double vol = FEM.J();
       double weight  = IF.w(k) * vol;
-      BasicIntegrator::universal_point(FEM,GalerkinIntegratorQ2<DIM>::UH,U);
-      BasicIntegrator::universal_point(FEM,GalerkinIntegratorQ2<DIM>::QH,Q);
+      BasicIntegrator::universal_point(FEM,GalerkinIntegratorQ2<DIM>::_UH,U);
+      BasicIntegrator::universal_point(FEM,GalerkinIntegratorQ2<DIM>::_QH,Q);
 
-      hesse(FEM,GalerkinIntegratorQ2<DIM>::UH,U);
-      hesse(FEM,GalerkinIntegratorQ2<DIM>::QH,Q);
+      hesse(FEM,GalerkinIntegratorQ2<DIM>::_UH,U);
+      hesse(FEM,GalerkinIntegratorQ2<DIM>::_QH,Q);
 
       FEM.x(x);
-      F.SetFemData(GalerkinIntegratorQ2<DIM>::QH);
-      j += weight * F.J(GalerkinIntegratorQ2<DIM>::UH,x);
+      F.SetFemData(GalerkinIntegratorQ2<DIM>::_QH);
+      j += weight * F.J(GalerkinIntegratorQ2<DIM>::_UH,x);
     }
   return j;
 }
@@ -171,16 +171,16 @@ void IntegratorWithSecond<DIM>::Rhs(const DomainRightHandSide& f, LocalVector& F
       point_hesse(FEM,xi);
       double vol = FEM.J();
       double weight  = IF.w(k) * vol;
-      GalerkinIntegratorQ2<DIM>::universal_point(FEM,GalerkinIntegratorQ2<DIM>::QH,Q);
-      hesse(FEM,GalerkinIntegratorQ2<DIM>::QH,Q);
+      GalerkinIntegratorQ2<DIM>::universal_point(FEM,GalerkinIntegratorQ2<DIM>::_QH,Q);
+      hesse(FEM,GalerkinIntegratorQ2<DIM>::_QH,Q);
 
-      f.SetFemData(GalerkinIntegratorQ2<DIM>::QH);
+      f.SetFemData(GalerkinIntegratorQ2<DIM>::_QH);
       FEM.x(x);
       for (int i=0;i<FEM.n();i++)
 	{
-        FEM.init_test_functions(GalerkinIntegratorQ2<DIM>::NN,weight,i);
-        init_test_hesse(FEM, GalerkinIntegratorQ2<DIM>::NN, weight, i);
-        f(F.start(i),GalerkinIntegratorQ2<DIM>::NN,x);
+        FEM.init_test_functions(GalerkinIntegratorQ2<DIM>::_NN,weight,i);
+        init_test_hesse(FEM, GalerkinIntegratorQ2<DIM>::_NN, weight, i);
+        f(F.start(i),GalerkinIntegratorQ2<DIM>::_NN,x);
 	}
     }
 }

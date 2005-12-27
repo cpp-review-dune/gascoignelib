@@ -82,11 +82,11 @@ void LpsIntegrator<DIM>::Form(const Equation& EQ, LocalVector& F, const FemInter
       double h  = Volume2MeshSize(vol);
       
       FEM.x(x);
-      BasicIntegrator::universal_point(FEM,UH,U);
-      BasicIntegrator::universal_point(FEM,QH,Q);
+      BasicIntegrator::universal_point(FEM,_UH,U);
+      BasicIntegrator::universal_point(FEM,_QH,Q);
 
-      LEQ.SetFemData(QH);
-      LEQ.lpspoint(h,UH,x);
+      LEQ.SetFemData(_QH);
+      LEQ.lpspoint(h,_UH,x);
 
       Projection(FEM);  // fuellt NLPS
       BasicIntegrator::universal_point(UHP,U,NLPS);
@@ -94,7 +94,7 @@ void LpsIntegrator<DIM>::Form(const Equation& EQ, LocalVector& F, const FemInter
             
       for (int i=0;i<FEM.n();i++)
 	{
-	  LEQ.StabForm(F.start(i),UH,UHP,MLPS[i]);
+	  LEQ.StabForm(F.start(i),_UH,UHP,MLPS[i]);
 	}
     }
 }
@@ -126,11 +126,11 @@ void LpsIntegrator<DIM>::Matrix(const Equation& EQ, EntryMatrix& E, const FemInt
       double vol = FEM.J();
       double weight  =  CellWeight * IF.w(k) * vol;
       FEM.x(x);
-      BasicIntegrator::universal_point(FEM,UH,U);
-      BasicIntegrator::universal_point(FEM,QH,Q);
+      BasicIntegrator::universal_point(FEM,_UH,U);
+      BasicIntegrator::universal_point(FEM,_QH,Q);
       double h  = Volume2MeshSize(vol);
-      LEQ.SetFemData(QH);
-      LEQ.lpspointmatrix(h,UH,x);
+      LEQ.SetFemData(_QH);
+      LEQ.lpspointmatrix(h,_UH,x);
 
       Projection(FEM);
 
@@ -141,7 +141,7 @@ void LpsIntegrator<DIM>::Matrix(const Equation& EQ, EntryMatrix& E, const FemInt
 	  for (int i=0; i<FEM.n(); i++)
 	    {
 	      E.SetDofIndex(i,j);
-	      LEQ.StabMatrix(E, UH, NLPS[i], MLPS[j]);
+	      LEQ.StabMatrix(E, _UH, NLPS[i], MLPS[j]);
 	    }
 	}
     }
