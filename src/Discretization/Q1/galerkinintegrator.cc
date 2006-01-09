@@ -441,11 +441,12 @@ double GalerkinIntegrator<DIM>::ComputePointValue(const FemInterface& E, const V
 /* ----------------------------------------- */
 
 template<int DIM>
-double GalerkinIntegrator<DIM>::ComputeBoundaryFunctional(const BoundaryFunctional& F, const FemInterface& FEM, int ile, const LocalVector& U) const
+double GalerkinIntegrator<DIM>::ComputeBoundaryFunctional(const BoundaryFunctional& F, const FemInterface& FEM, int ile, 
+    int col, const LocalVector& U) const
 {
   const IntegrationFormulaInterface& IF = *BoundaryFormula();
 
-  Vertex<DIM>   x;
+  Vertex<DIM>   x, n;
   Vertex<DIM-1> xi;
 
 
@@ -459,8 +460,9 @@ double GalerkinIntegrator<DIM>::ComputeBoundaryFunctional(const BoundaryFunction
       BasicIntegrator::universal_point(FEM,_UH,U);
 
       FEM.x(x);
+      FEM.normal(n);
       // FEM.normal(n);
-      j += weight * F.J(_UH,x);
+      j += weight * F.J(_UH,x,n,col);
     }
   return j;
 }

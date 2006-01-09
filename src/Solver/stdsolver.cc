@@ -119,11 +119,11 @@ void StdSolver::MatrixZero() const
 
 void StdSolver::OutputSettings() const
 {
-  cout << "==============================================" << endl;
-  cout << "Solver:               " << GetName() << endl;
-  cout << "Discretization:       " << GetDiscretization()->GetName()  << endl;
+  cout << "==================================================" << endl;
+  cout << "Solver:                   " << GetName() << endl;
+  cout << "Discretization:           " << GetDiscretization()->GetName()  << endl;
   GetProblemDescriptor()->OutputSettings(cout);
-  cout << "==============================================" << endl;
+  cout << "==================================================" << endl;
 }
 
 /*-------------------------------------------------------*/
@@ -811,7 +811,8 @@ double StdSolver::ComputeBoundaryFunctional(VectorInterface& gf, const VectorInt
 {
   HNAverage(gu);
   HNAverageData();
-  double J = GetDiscretization()->ComputeBoundaryFunctional(GetGV(gu),*FP);
+  const BoundaryManager* BM = GetProblemDescriptor()->GetBoundaryManager();
+  double J = GetDiscretization()->ComputeBoundaryFunctional(GetGV(gu),BM->GetBoundaryFunctionalColors(),*FP);
   HNZero(gu);
   HNZeroData();
   return J;

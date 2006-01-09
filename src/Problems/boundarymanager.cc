@@ -19,6 +19,7 @@ void BoundaryManager::BasicInit(const ParamFile* pf)
 
   DF.insert("equation"     ,&_colsEquation);
   DF.insert("righthandside",&_colsRightHandSide);
+  DF.insert("functional"   ,&_colsFunctional);
   DF.insert("dirichlet"    ,&_colsDirichlet);
   DF.insert("dirichletcomp",&_compsDirichlet);
   FileScanner FS(DF,pf,"BoundaryManager");

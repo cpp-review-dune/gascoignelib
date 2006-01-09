@@ -417,14 +417,13 @@ void CellDiscretization::DiracRhsPoint(GlobalVector& f,const DiracRightHandSide&
 
 /*-----------------------------------------*/
 
-double CellDiscretization::ComputeBoundaryFunctional(const GlobalVector& u, const BoundaryFunctional& BF) const 
+double CellDiscretization::ComputeBoundaryFunctional(const GlobalVector& u, const IntSet& Colors, const BoundaryFunctional& BF) const 
 {
   GlobalToGlobalData();
   BF.SetParameterData(__QP);
   
   nmatrix<double> T;
   double j=0.;
-  const IntSet & Colors = BF.GetColors();
   for(IntSet::const_iterator p=Colors.begin();p!=Colors.end();p++)
     {
       int col = *p;
@@ -439,14 +438,11 @@ double CellDiscretization::ComputeBoundaryFunctional(const GlobalVector& u, cons
           GetFem()->ReInit(T);
 
           GlobalToLocal(__U,u,iq);
-          j += GetIntegrator()->ComputeBoundaryFunctional(BF,*GetFem(),ile,__U);
+          j += GetIntegrator()->ComputeBoundaryFunctional(BF,*GetFem(),ile,col,__U);
         }
-    }    
+    }
 
   return j;
-
-  assert(0);
-  return 0.;
 }
 
 /* ----------------------------------------- */

@@ -160,7 +160,7 @@ namespace Gascoigne
         std::cerr << "\"DiscretizationInterface::ComputeError\" not written!" << std::endl;
         abort();
       }
-      virtual double ComputeBoundaryFunctional(const GlobalVector& u, const BoundaryFunctional& BF) const{
+      virtual double ComputeBoundaryFunctional(const GlobalVector& u, const IntSet& Colors, const BoundaryFunctional& BF) const{
         std::cerr << "\"DiscretizationInterface::ComputeBoundaryFunctional\" not written!" << std::endl;
         abort();
       }

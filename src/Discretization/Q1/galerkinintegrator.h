@@ -72,7 +72,7 @@ public:
   double ComputePointValue(const FemInterface& E, const Vertex<DIM>& p, const LocalVector& U, int comp) const;
   double ComputeDomainFunctional(const DomainFunctional& F, const FemInterface& FEM, const LocalVector& U,
       const LocalNodeData& Q, const LocalCellData& QC) const;
-  double ComputeBoundaryFunctional(const BoundaryFunctional& F, const FemInterface& FEM, int ile, const LocalVector& U) const;
+  double ComputeBoundaryFunctional(const BoundaryFunctional& F, const FemInterface& FEM, int ile, int col, const LocalVector& U) const;
   void EvaluateCellRightHandSide(DoubleVector& b, const CellRightHandSide& CF,const FemInterface& FEM, 
       const LocalNodeData& Q, const LocalCellData& QC) const;
 

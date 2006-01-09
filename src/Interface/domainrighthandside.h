@@ -48,7 +48,7 @@ namespace Gascoigne
   
   typedef DomainRightHandSide DomainInitialCondition;
 
-/**********************************************************/
+/*-------------------------------------------------------*/
 
 }
 

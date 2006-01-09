@@ -8,7 +8,7 @@
 #include  "gascoigne.h"
 #include  "application.h"
 
-/*-----------------------------------------*/
+/*-------------------------------------------------------*/
 
 namespace Gascoigne
 {
@@ -28,7 +28,7 @@ namespace Gascoigne
   class BoundaryRightHandSide : public virtual Application
   {
     private:
-      
+
     protected:
 
     public:
@@ -36,7 +36,7 @@ namespace Gascoigne
       ~BoundaryRightHandSide() {}
 
       virtual int GetNcomp() const=0;
-      
+
       virtual void operator()(VectorIterator b, const TestFunction& N, const Vertex2d& v, const Vertex2d& n, int color) const {
         std::cerr << "\"BoundaryRightHandSide::operator()\" not written!" << std::endl;
         abort();
@@ -46,6 +46,11 @@ namespace Gascoigne
         abort();
       }
   };
+
+  typedef BoundaryRightHandSide BoundaryInitialCondition;
+
+/*-------------------------------------------------------*/
+
 }
 
 #endif

@@ -11,15 +11,16 @@ class ProblemDescriptorBase : public ProblemDescriptorInterface
 {
  private:
   
-  Equation              *EQ;
-  BoundaryManager       *BM;
-  ExactSolution         *ES;
-  Application           *RHS;
-  Application           *IC;
-  DirichletData         *DD;
-  BoundaryRightHandSide *BRHS;
-  BoundaryEquation      *BE;
-  ComponentInformation  *CI;
+  Equation                 *EQ;
+  BoundaryManager          *BM;
+  ExactSolution            *ES;
+  Application              *RHS;
+  Application              *IC;
+  DirichletData            *DD;
+  BoundaryRightHandSide    *BRHS;
+  BoundaryInitialCondition *BIC;
+  BoundaryEquation         *BE;
+  ComponentInformation     *CI;
 
   
   const ParamFile *_paramfile;
@@ -28,14 +29,15 @@ class ProblemDescriptorBase : public ProblemDescriptorInterface
   
   const ParamFile*& GetParamFilePointer()           { return _paramfile;}
   
-  Equation*&          GetEquationPointer()          { return EQ;}
-  BoundaryManager*&   GetBoundaryManagerPointer()   { return BM;}
-  ExactSolution*&     GetExactSolutionPointer()     { return ES;}
-  Application*&       GetInitialConditionPointer()  { return IC;}
-  Application*&       GetRightHandSidePointer()     { return RHS;}
-  DirichletData*&     GetDirichletDataPointer()     { return DD;}
-  BoundaryRightHandSide*& GetBoundaryRightHandSidePointer() { return BRHS;}
-  BoundaryEquation*&      GetBoundaryEquationPointer()      { return BE; }
+  Equation*&                 GetEquationPointer()                 { return EQ;}
+  BoundaryManager*&          GetBoundaryManagerPointer()          { return BM;}
+  ExactSolution*&            GetExactSolutionPointer()            { return ES;}
+  Application*&              GetInitialConditionPointer()         { return IC;}
+  Application*&              GetRightHandSidePointer()            { return RHS;}
+  DirichletData*&            GetDirichletDataPointer()            { return DD;}
+  BoundaryRightHandSide*&    GetBoundaryRightHandSidePointer()    { return BRHS;}
+  BoundaryInitialCondition*& GetBoundaryInitialConditionPointer() { return BIC;}
+  BoundaryEquation*&         GetBoundaryEquationPointer()         { return BE; }
 
   BoundaryManager* GetBoundaryManager () { return BM;}
 
@@ -53,15 +55,16 @@ class ProblemDescriptorBase : public ProblemDescriptorInterface
   
   const ParamFile* GetParamFile() const {return _paramfile;}
 
-  const Application*           GetRightHandSide        () const { return  RHS;}
-  const DirichletData*         GetDirichletData        () const { return  DD;}
-  const BoundaryRightHandSide* GetBoundaryRightHandSide() const { return  BRHS;}
-  const BoundaryEquation*      GetBoundaryEquation     () const { return  BE;}
-  const Application*           GetInitialCondition     () const { return IC;}
-  const ExactSolution*         GetExactSolution        () const { return ES;}
-  const Equation*              GetEquation             () const { return EQ;}
-  const BoundaryManager*       GetBoundaryManager      () const { return BM;}
-  const ComponentInformation*  GetComponentInformation () const { return CI;}
+  const Application*              GetRightHandSide           () const { return RHS;}
+  const DirichletData*            GetDirichletData           () const { return DD;}
+  const BoundaryRightHandSide*    GetBoundaryRightHandSide   () const { return BRHS;}
+  const BoundaryInitialCondition* GetBoundaryInitialCondition() const { return BIC;}
+  const BoundaryEquation*         GetBoundaryEquation        () const { return BE;}
+  const Application*              GetInitialCondition        () const { return IC;}
+  const ExactSolution*            GetExactSolution           () const { return ES;}
+  const Equation*                 GetEquation                () const { return EQ;}
+  const BoundaryManager*          GetBoundaryManager         () const { return BM;}
+  const ComponentInformation*     GetComponentInformation    () const { return CI;}
 
   void SetTime(double time, double dt) const;
 };

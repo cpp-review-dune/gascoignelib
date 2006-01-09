@@ -122,17 +122,18 @@ void Gascoigne::StdTimeSolver::InitialCondition(GlobalVector& f, double d) const
   HNAverageData();
 
   const Application* IC  = GetProblemDescriptor()->GetInitialCondition();
+  const BoundaryInitialCondition* NIC = GetProblemDescriptor()->GetBoundaryInitialCondition();
 
   if(IC)
     {
        bool done=false;
-       const DomainInitialCondition *DRHS = dynamic_cast<const DomainRightHandSide *>(IC);
+       const DomainInitialCondition *DRHS = dynamic_cast<const DomainInitialCondition *>(IC);
        if(DRHS)
        {
          GetDiscretization()->Rhs(f,*DRHS,d);
          done = true;
        }
-       const DiracInitialCondition *NDRHS = dynamic_cast<const DiracRightHandSide *>(IC);
+       const DiracInitialCondition *NDRHS = dynamic_cast<const DiracInitialCondition *>(IC);
        if(NDRHS)
        {
          GetDiscretization()->DiracRhs(f,*NDRHS,d);
@@ -143,6 +144,13 @@ void Gascoigne::StdTimeSolver::InitialCondition(GlobalVector& f, double d) const
          cerr << "InitialCondition should be either of type DomainRightHandSide or DiracRightHandSide!!!" << endl;
          abort();
        }
+    }
+
+  if(NIC)
+    {
+      assert(NIC->GetNcomp()==f.ncomp());
+      const BoundaryManager*  BM   = GetProblemDescriptor()->GetBoundaryManager();
+      GetDiscretization()->BoundaryRhs(f,BM->GetBoundaryRightHandSideColors(),*NIC,d);	  
     }
 
   HNZeroData();

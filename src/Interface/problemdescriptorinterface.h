@@ -45,15 +45,16 @@ namespace Gascoigne
 
       virtual const ParamFile* GetParamFile() const=0;
 
-      virtual const Application*            GetRightHandSide        () const=0;
-      virtual const BoundaryRightHandSide*  GetBoundaryRightHandSide() const=0;
-      virtual const Equation*               GetEquation             () const=0;
-      virtual const BoundaryEquation*       GetBoundaryEquation     () const=0;
-      virtual const DirichletData*          GetDirichletData        () const=0;
-      virtual const Application*            GetInitialCondition     () const=0;
-      virtual const ExactSolution*          GetExactSolution        () const=0;
-      virtual const BoundaryManager*        GetBoundaryManager      () const=0;
-      virtual const ComponentInformation*   GetComponentInformation () const=0;
+      virtual const Application*               GetRightHandSide           () const=0;
+      virtual const BoundaryRightHandSide*     GetBoundaryRightHandSide   () const=0;
+      virtual const Equation*                  GetEquation                () const=0;
+      virtual const BoundaryEquation*          GetBoundaryEquation        () const=0;
+      virtual const DirichletData*             GetDirichletData           () const=0;
+      virtual const Application*               GetInitialCondition        () const=0;
+      virtual const BoundaryInitialCondition*  GetBoundaryInitialCondition() const=0;
+      virtual const ExactSolution*             GetExactSolution           () const=0;
+      virtual const BoundaryManager*           GetBoundaryManager         () const=0;
+      virtual const ComponentInformation*      GetComponentInformation    () const=0;
   };
 }
 

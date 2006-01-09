@@ -28,7 +28,7 @@ class BoundaryManager
 {
  protected:
 
-  IntSet                   _colsDirichlet, _colsRightHandSide, _colsEquation;
+  IntSet                   _colsDirichlet, _colsRightHandSide, _colsEquation, _colsFunctional;
   std::map<int,IntVector>  _compsDirichlet;
 
  public:
@@ -53,11 +53,16 @@ class BoundaryManager
     {
       _colsEquation.insert(col);
     }
+  void AddBoundaryFunctional(int col)    
+    {
+      _colsFunctional.insert(col);
+    }
 
   std::ostream& print(std::ostream& s) const;
 
   virtual const IntSet& GetBoundaryRightHandSideColors() const { return _colsRightHandSide; }
   virtual const IntSet& GetBoundaryEquationColors     () const { return _colsEquation; }
+  virtual const IntSet& GetBoundaryFunctionalColors   () const { return _colsFunctional; }
   virtual const IntSet& GetDirichletDataColors        () const { return _colsDirichlet; }
 
   virtual const IntVector& GetDirichletDataComponents(int c) const 
