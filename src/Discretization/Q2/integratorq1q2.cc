@@ -10,6 +10,31 @@ void IntegratorQ1Q2<DIM>::BasicInit()
 {
 }
 
+
+/*---------------------------------------------------*/
+
+/**
+ * Wandelt die lokale Nummerierung der Zellen eines Patches von der Gascoigne-nummerierung in die 
+ * vom Integrator verwendete um! Funktioniert aus Symmetrie-Gruenden auch andersherum.
+ * Erwartet eine Zahl zwischen 0 und 3 (2-D) bzw 0 bis 7 (3-D)
+*/
+
+template<int DIM>
+int IntegratorQ1Q2<DIM>::PatchMeshNr2IntegratorNr(int in) const
+{
+    if(DIM==2)
+    {
+	return (1-(in>>1))*in+(in>>1)*(3-(in%2));
+    }
+    if(DIM==3)
+    {
+	int tmp= in-((in>>2)<<2);
+	return ((in>>2)<<2)+(1-(tmp>>1))*tmp+(tmp>>1)*(3-(tmp%2));
+    }
+    std::cerr<<"Integrator Q1/Q2: Dimension "<<DIM<<" nicht implementiert!"<<std::endl;
+    abort();
+}
+
 /*---------------------------------------------------*/
 
 template<int DIM>
@@ -27,6 +52,19 @@ void IntegratorQ1Q2<DIM>::Form(const Equation& EQ, LocalVector& F, const FemInte
 
   Vertex<DIM> x, xi;
 
+  int numcells;
+  if(DIM==2) numcells = 4;
+  else numcells = 8;
+  
+  //Soviele Integr. Pkte je Zelle
+  numcells = IF->n()/numcells;
+  //Test, ist das sinnvollgewesen
+  if(IF->n()%numcells != 0)
+  {
+      std::cerr<<"Integrator Q1/Q2: Falsche Anzahl Zellen je Patch oder unzulaessige Integrationsformel!"<<std::endl;
+      abort();
+  }
+
   for (int k=0; k<IF->n(); k++)
     {
       IF->xi(xi,k);
@@ -38,8 +76,22 @@ void IntegratorQ1Q2<DIM>::Form(const Equation& EQ, LocalVector& F, const FemInte
       BasicIntegrator::universal_point(FemL,_UH,U);
       BasicIntegrator::universal_point(FemL,_QH,Q);
       FemL.x(x);
+
       EQ.SetFemData(_QH);
+      //Die Zelldatensetzen
+      if(k%numcells == 0)
+      {
+	  //Wir sind am anfang einer neuen Zelle
+	  //Die CellData aus den LocalCellData hohlen.
+	  int IntegrCellNum = k/numcells;
+	  int PatchCellNum=PatchMeshNr2IntegratorNr(IntegrCellNum);
+	  
+	  universal_point(_QCH,QC,PatchCellNum);
+	  EQ.SetCellData(_QCH);
+      }
+      
       EQ.point(h,_UH,x);
+
       for (int i=0;i<FemH.n();i++)
 	{
 	  FemH.init_test_functions(_NN,weight,i);
@@ -312,7 +364,7 @@ double IntegratorQ1Q2<DIM>::IntegratorQ1Q2::MassMatrix(EntryMatrix& E, const Fem
   return omega;
 }
 
-/*---------------------------------------------------*/
+/*---------------------------------------------------------*/
 
 template class IntegratorQ1Q2<2>;
 template class IntegratorQ1Q2<3>;

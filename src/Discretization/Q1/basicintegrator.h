@@ -31,11 +31,11 @@ class BasicIntegrator : public IntegratorInterface
   mutable CellData      _QCH;
   
   void  universal_point(const FemInterface& FEM, FemFunction& UH, const LocalVector& U) const;
-  void  universal_point(CellFunction& UCH, const LocalCellVector& UC) const;
+  void  universal_point(CellFunction& UCH, const LocalCellVector& UC,int i=0) const;
   void  universal_point(FemFunction& UH, const LocalVector& U, const FemFunction& NN) const;
   
   void  universal_point(const FemInterface& FEM, FemData& QH, const LocalNodeData& Q) const;
-  void  universal_point(CellData& QCH, const LocalCellData& QC) const;
+  void  universal_point(CellData& QCH, const LocalCellData& QC,int i=0) const;
 
  public:
   

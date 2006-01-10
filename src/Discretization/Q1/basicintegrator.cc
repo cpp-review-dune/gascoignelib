@@ -13,12 +13,12 @@ BasicIntegrator::BasicIntegrator() : IntegratorInterface()
 
 /*---------------------------------------------------------*/
 
-void  Gascoigne::BasicIntegrator::universal_point(CellFunction& UCH, const LocalCellVector& UC) const
+void  Gascoigne::BasicIntegrator::universal_point(CellFunction& UCH, const LocalCellVector& UC, int i) const
 {
   UCH.resize(UC.ncomp());
   for (int c=0; c<UC.ncomp(); c++)
     {
-      UCH[c] = UC(0,c);
+      UCH[c] = UC(i,c);
     }
 }
 
@@ -60,23 +60,23 @@ void BasicIntegrator::universal_point(FemFunction& UH, const LocalVector& U, con
 
 void BasicIntegrator::universal_point(const FemInterface& FEM, FemData& QH, const LocalNodeData& Q) const
 {
-  QH.clear();
+    QH.clear();
   LocalNodeData::const_iterator p=Q.begin();
   for(; p!=Q.end(); p++)
     {
-      universal_point(FEM, QH[p->first], p->second);
+	universal_point(FEM, QH[p->first], p->second);
     }
 }
 
 /*---------------------------------------------------------*/
 
-void  Gascoigne::BasicIntegrator::universal_point(CellData& QCH, const LocalCellData& QC) const
+void  Gascoigne::BasicIntegrator::universal_point(CellData& QCH, const LocalCellData& QC, int i) const
 {
   QCH.clear();
   LocalCellData::const_iterator p=QC.begin();
   for(; p!=QC.end(); p++)
     {
-      universal_point(QCH[p->first], p->second);
+      universal_point(QCH[p->first], p->second, i);
     }
 }
 }

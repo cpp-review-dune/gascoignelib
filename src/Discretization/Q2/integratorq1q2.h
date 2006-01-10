@@ -13,9 +13,8 @@ template<int DIM>
 class IntegratorQ1Q2 : public BasicIntegrator
 {
  protected:
-
-  double Volume2MeshSize(double vol) const { return pow(vol,1./float(DIM));}
-
+    double Volume2MeshSize(double vol) const { return pow(vol,1./float(DIM));}
+    int PatchMeshNr2IntegratorNr(int in) const;
  public:
 
   IntegratorQ1Q2<DIM>() : BasicIntegrator() {}
