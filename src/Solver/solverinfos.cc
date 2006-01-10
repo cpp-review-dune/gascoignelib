@@ -59,21 +59,23 @@ void SolverInfos::BasicInit(const ParamFile *param)
   
   DataFormatHandler DFH;
 
-  double linear_tol, linear_globaltol;
-  int    linear_maxiter, linear_pstep;
+  double linear_tol, linear_globaltol, linear_rho;
+  int    linear_miniter, linear_maxiter, linear_pstep;
 
   double nonlinear_tol, nonlinear_globaltol, nonlinear_rho, nonlinear_increase;
-  int    nonlinear_maxiter, nonlinear_pstep, nonlinear_damp;
+  int    nonlinear_miniter, nonlinear_maxiter, nonlinear_pstep, nonlinear_damp;
 
   DFH.insert("linearsolve",         &_linearsolve,        "mg");
   DFH.insert("linear_tol",          &linear_tol,          1.e-2);
   DFH.insert("linear_globaltol",    &linear_globaltol,    1.e-12);
+  DFH.insert("linear_miniter",      &linear_miniter,      10);
   DFH.insert("linear_maxiter",      &linear_maxiter,      10);
   DFH.insert("linear_pstep",        &linear_pstep,        0);
 
   DFH.insert("nonlinear_tol",       &nonlinear_tol,       1.e-4);
   DFH.insert("nonlinear_globaltol", &nonlinear_globaltol, 1.e-12);
   DFH.insert("nonlinear_rho",       &nonlinear_rho,       0.001);
+  DFH.insert("nonlinear_miniter",   &nonlinear_miniter,    0);
   DFH.insert("nonlinear_maxiter",   &nonlinear_maxiter,   10);
   DFH.insert("nonlinear_pstep",     &nonlinear_pstep,     0);
   DFH.insert("nonlinear_damp",      &nonlinear_damp,      4);
@@ -85,6 +87,7 @@ void SolverInfos::BasicInit(const ParamFile *param)
 
   GetLInfo().user().tol()                = linear_tol;
   GetLInfo().user().globaltol()          = linear_globaltol;
+  GetLInfo().user().miniter  ()          = linear_miniter;
   GetLInfo().user().maxiter  ()          = linear_maxiter;
   GetLInfo().user().printstep()          = linear_pstep;
   if (_linearsolve=="mg")
@@ -99,6 +102,7 @@ void SolverInfos::BasicInit(const ParamFile *param)
   GetNLInfo().user().tol()               = nonlinear_tol;
   GetNLInfo().user().globaltol()         = nonlinear_globaltol;
   GetNLInfo().user().rho()               = nonlinear_rho;
+  GetNLInfo().user().miniter()           = nonlinear_miniter;
   GetNLInfo().user().maxiter()           = nonlinear_maxiter;
   GetNLInfo().user().printstep()         = nonlinear_pstep;
   GetNLInfo().user().maxrelax()          = nonlinear_damp;
