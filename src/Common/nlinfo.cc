@@ -106,6 +106,7 @@ Linfo(info)
 {
   UD.text() = txt;
   
+  UD.miniter  () = 0;
   UD.maxiter  () = m;
   UD.globaltol() = t;
   UD.printstep() = p;
@@ -285,7 +286,8 @@ bool NLInfo::check(int iter, double resi, double cori)
   CD.laststepbad() = thisstepbad;
   matrix_control();
 
-  if (CD.status()=="running") return 0;
+  if ( CD.status()    == "running"    )  return 0;
+  if ( CD.iteration() <  UD.miniter() )  return 0;
 
   SD.totaliter() += CD.iteration();
 

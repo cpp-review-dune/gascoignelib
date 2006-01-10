@@ -69,7 +69,7 @@ class UserData
 {
   std::string  _text;
   double _tol, _globaltol, _breaktol;
-  int    _maxiter, _printstep;
+  int    _miniter,_maxiter, _printstep;
 
  public:
 
@@ -79,6 +79,8 @@ class UserData
   double& globaltol()       { return _globaltol;}
   double  breaktol()  const { return _breaktol;}
   double& breaktol()        { return _breaktol;}
+  int     miniter()   const { return _miniter;}
+  int&    miniter()         { return _miniter;}
   int     maxiter()   const { return _maxiter;}
   int&    maxiter()         { return _maxiter;}
   int     printstep() const { return _printstep;}

@@ -42,6 +42,7 @@ ostream& operator<<(ostream &s, const UserData& A)
   s << "tol" <<"\t"<< A.tol() << endl;
   s << "globaltol" <<"\t"<< A.globaltol() << endl;
   s << "breaktol" <<"\t"<< A.breaktol() << endl;
+  s << "miniter" <<"\t"<< A.miniter() << endl;
   s << "maxiter" <<"\t"<< A.maxiter() << endl;
   s << "printstep" <<"\t"<< A.printstep() << endl;
   return s;
@@ -101,6 +102,7 @@ CGInfo::CGInfo(double f, double t, int p, int m, const string& txt)
 {
   UD.text() = txt;
   
+  UD.miniter  () = 0;
   UD.maxiter  () = m;
   UD.globaltol() = t;
   UD.printstep() = p;
@@ -119,9 +121,11 @@ CGInfo::CGInfo(const string& txt)
   double f = 1.e-6;
   double t=1.e-14;
   int p = 10; 
-  int m = 100;
+  int min =   0;
+  int max = 100;
   
-  UD.maxiter  () = m;
+  UD.miniter  () = min;
+  UD.maxiter  () = max;
   UD.globaltol() = t;
   UD.printstep() = p;
   UD.tol()       = f;
@@ -191,7 +195,8 @@ bool CGInfo::check(double resi, double cori)
       cout.precision(prec);
     }
   CD.iteration()++;
-  if (CD.status()=="running")  return 0;
+  if ( CD.status()    == "running"    )  return 0;
+  if ( CD.iteration() <  UD.miniter() )  return 0;
 
   return 1;
 }
