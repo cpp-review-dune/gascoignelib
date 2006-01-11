@@ -83,8 +83,8 @@ class CompVector : public nvector<T>
    }
   void scale_comp(int c,double d0)                                                                                                                                    
     { 
-      iterator       p = begin()+c; 
-      while(p<end()) {*p *= d0; p+=N;} 
+      iterator       p = nvector<T>::begin()+c; 
+      while(p<nvector<T>::end()) {*p *= d0; p+=N;} 
     } 
   void scale_node(int i, double d0)
     {
