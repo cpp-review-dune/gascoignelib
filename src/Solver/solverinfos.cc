@@ -59,7 +59,7 @@ void SolverInfos::BasicInit(const ParamFile *param)
   
   DataFormatHandler DFH;
 
-  double linear_tol, linear_globaltol, linear_rho;
+  double linear_tol, linear_globaltol;
   int    linear_miniter, linear_maxiter, linear_pstep;
 
   double nonlinear_tol, nonlinear_globaltol, nonlinear_rho, nonlinear_increase;
@@ -68,7 +68,7 @@ void SolverInfos::BasicInit(const ParamFile *param)
   DFH.insert("linearsolve",         &_linearsolve,        "mg");
   DFH.insert("linear_tol",          &linear_tol,          1.e-2);
   DFH.insert("linear_globaltol",    &linear_globaltol,    1.e-12);
-  DFH.insert("linear_miniter",      &linear_miniter,      10);
+  DFH.insert("linear_miniter",      &linear_miniter,       0);
   DFH.insert("linear_maxiter",      &linear_maxiter,      10);
   DFH.insert("linear_pstep",        &linear_pstep,        0);
 
