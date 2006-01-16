@@ -1379,7 +1379,9 @@ void HierarchicalMesh3d::read_gup(const string& name)
 
   assert(dim==3);
 
-  cout << "Mesh 3d  : ";
+  if( _i_showoutput ){
+    cout << "Mesh 3d  : ";
+  }
   vertexs3d.reserve(n);
   vertexs3d.resize(n);
 
@@ -1389,7 +1391,9 @@ void HierarchicalMesh3d::read_gup(const string& name)
     {
       file >> vertexs3d[i];
     }
-  cout << n << " nodes, ";
+  if( _i_showoutput ){
+    cout << n << " nodes, ";
+  }
 
   file >> n >> symbol;
 
@@ -1401,11 +1405,17 @@ void HierarchicalMesh3d::read_gup(const string& name)
     {
       file >> hexs[i];
     }
-  cout <<  n << " hexs, ";
+  if( _i_showoutput ){
+    cout <<  n << " hexs, ";
+  }
   file >> QuadHang;
-  cout << QuadHang.size() << " quadhangs, ";
+  if( _i_showoutput ){
+    cout << QuadHang.size() << " quadhangs, ";
+  }
   file >> LineHang;
-  cout << LineHang.size() << " linehangs, ";
+  if( _i_showoutput ){
+    cout << LineHang.size() << " linehangs, ";
+  }
   
   file >> n >> symbol;
   int number = 0;
@@ -1419,9 +1429,13 @@ void HierarchicalMesh3d::read_gup(const string& name)
     }
   number = n;
 
-  cout << number << " boundaryquads, ";
+  if( _i_showoutput ){
+    cout << number << " boundaryquads, ";
+  }
   file >> n >> symbol;
-  cout << n << " edges" << endl;
+  if( _i_showoutput ){
+    cout << n << " edges" << endl;
+  }
   if (symbol=="edges")
     {
       Edge e;
@@ -1468,7 +1482,9 @@ void HierarchicalMesh3d::read_gip (const string& bname)
 
   assert(dim==3);
 
-  cout << "Mesh 3d  : ";
+  if( _i_showoutput ){
+    cout << "Mesh 3d  : ";
+  }
   vertexs3d.reserve(n);
   vertexs3d.resize(n);
 
@@ -1476,7 +1492,9 @@ void HierarchicalMesh3d::read_gip (const string& bname)
     {
       vertexs3d[i].BinRead(file);
     }
-  cout << n << " nodes, ";
+  if( _i_showoutput ){
+    cout << n << " nodes, ";
+  }
   file.read(reinterpret_cast<char*>(&n),sizeInt);
   hexs.reserve(n);
   hexs.resize(n);
@@ -1484,11 +1502,17 @@ void HierarchicalMesh3d::read_gip (const string& bname)
     {
       hexs[i].BinRead(file);
     }
-  cout <<  n << " hexs, ";
+  if( _i_showoutput ){
+    cout <<  n << " hexs, ";
+  }
   QuadHang.BinRead(file);
-  cout << QuadHang.size() << " quadhangs, ";
+  if( _i_showoutput ){
+    cout << QuadHang.size() << " quadhangs, ";
+  }
   LineHang.BinRead(file);
-  cout << LineHang.size() << " linehangs, ";
+  if( _i_showoutput ){
+    cout << LineHang.size() << " linehangs, ";
+  }
   file.read(reinterpret_cast<char*>(&n),sizeInt);
   int number = 0;
   BoundaryQuad bol;
@@ -1499,9 +1523,13 @@ void HierarchicalMesh3d::read_gip (const string& bname)
       Bquads.push_back(bol);
     }
   number = n;
-  cout << number << " boundaryquads, ";
+  if( _i_showoutput ){
+    cout << number << " boundaryquads, ";
+  }
   file.read(reinterpret_cast<char*>(&n),sizeInt);
-  cout << n << " edges" << endl;
+  if( _i_showoutput ){
+    cout << n << " edges" << endl;
+  }
   Edge e;
   for (int i=0; i<n; i++)
     {

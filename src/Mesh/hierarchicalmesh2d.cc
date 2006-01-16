@@ -1652,7 +1652,9 @@ void HierarchicalMesh2d::read_gip (const string& bname)
 
   assert(dim==2);
 
-  cout << "Mesh 2d  : ";
+  if( _i_showoutput ){
+    cout << "Mesh 2d  : ";
+  }
   vertexs2d.reserve(n);
   vertexs2d.resize(n);
 
@@ -1660,7 +1662,9 @@ void HierarchicalMesh2d::read_gip (const string& bname)
     {
       vertexs2d[i].BinRead(file);
     }
-  cout << n << " nodes, ";
+  if( _i_showoutput ){
+    cout << n << " nodes, ";
+  }
   file.read(reinterpret_cast<char*>(&n),sizeInt);
   quads.reserve(n);
   quads.resize(n);
@@ -1668,9 +1672,13 @@ void HierarchicalMesh2d::read_gip (const string& bname)
     {
       quads[i].BinRead(file);
     }
-  cout <<  n << " quads, ";
+  if( _i_showoutput){
+    cout <<  n << " quads, ";
+  }
   LineHang.BinRead(file);
-  cout << LineHang.size() << " hangs, ";
+  if( _i_showoutput){
+    cout << LineHang.size() << " hangs, ";
+  }
   file.read(reinterpret_cast<char*>(&n),sizeInt);
   int number = 0;
   BoundaryLine bol;
@@ -1681,9 +1689,13 @@ void HierarchicalMesh2d::read_gip (const string& bname)
       Blines.push_back(bol);
     }
   number = n;
-  cout << number << " lines, ";
+  if( _i_showoutput){
+    cout << number << " lines, ";
+  }
   file.read(reinterpret_cast<char*>(&n),sizeInt);
-  cout << n << " edges" << endl;
+  if( _i_showoutput){
+    cout << n << " edges" << endl;
+  }
   Edge e;
   for (int i=0; i<n; i++)
     {
