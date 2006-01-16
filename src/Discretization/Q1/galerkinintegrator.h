@@ -73,7 +73,7 @@ public:
   double ComputeDomainFunctional(const DomainFunctional& F, const FemInterface& FEM, const LocalVector& U,
       const LocalNodeData& Q, const LocalCellData& QC) const;
   double ComputeBoundaryFunctional(const BoundaryFunctional& F, const FemInterface& FEM, int ile, int col, const LocalVector& U) const;
-  void EvaluateCellRightHandSide(DoubleVector& b, const CellRightHandSide& CF,const FemInterface& FEM, 
+  void EvaluateCellRightHandSide(LocalVector& F, const CellRightHandSide& CF,const FemInterface& FEM, 
       const LocalNodeData& Q, const LocalCellData& QC) const;
 
   void ErrorsByExactSolution(LocalVector& dst, const FemInterface& FE, const ExactSolution& ES, const LocalVector& U, 

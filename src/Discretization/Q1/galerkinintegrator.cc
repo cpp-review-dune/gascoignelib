@@ -498,10 +498,10 @@ double GalerkinIntegrator<DIM>::ComputeDomainFunctional(const DomainFunctional& 
 /* ----------------------------------------- */
 
 template<int DIM>
-void GalerkinIntegrator<DIM>::EvaluateCellRightHandSide(DoubleVector& b, const CellRightHandSide& CF,const FemInterface& FEM, 
+void GalerkinIntegrator<DIM>::EvaluateCellRightHandSide(LocalVector& F, const CellRightHandSide& CF,const FemInterface& FEM, 
     const LocalNodeData& Q, const LocalCellData& QC) const
 {
-  b.zero();
+  F.ReInit(CF.GetNcomp(),1);
 
   BasicIntegrator::universal_point(_QCH,QC);
   CF.SetCellData(_QCH);
@@ -509,6 +509,7 @@ void GalerkinIntegrator<DIM>::EvaluateCellRightHandSide(DoubleVector& b, const C
   const IntegrationFormulaInterface& IF = *FormFormula();
   Vertex<DIM> x, xi;
 
+  F.zero();
   for (int k=0; k<IF.n(); k++)
     {
       IF.xi(xi,k);
@@ -521,7 +522,10 @@ void GalerkinIntegrator<DIM>::EvaluateCellRightHandSide(DoubleVector& b, const C
       CF.SetFemData(_QH);
       CF.point(x);
 
-      CF.F(b,weight);
+      _NN.zero();
+      _NN.m() = weight;
+
+      CF.F(F.start(0),_NN);
     }
 }
 

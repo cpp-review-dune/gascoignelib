@@ -94,7 +94,7 @@ namespace Gascoigne
       }
 
         
-      virtual void EvaluateCellRightHandSide(DoubleVector& b, const CellRightHandSide& CF,const FemInterface& FEM, 
+      virtual void EvaluateCellRightHandSide(LocalVector &F, const CellRightHandSide& CF,const FemInterface& FEM, 
           const LocalNodeData& Q, const LocalCellData& QC) const {
         std::cerr << "\"IntegratorInterface::EvaluateCellRightHandSide\" not written!" << std::endl;
 						assert(0); }

@@ -17,7 +17,7 @@ class CellRightHandSide : public Application
     CellRightHandSide() : Application() { }
     ~CellRightHandSide() { }
 
-    virtual void F(DoubleVector& b, double d) const
+    virtual void F(VectorIterator b, const TestFunction& N) const
       {
 	std::cout << "CellRightHandSide::F not written\n";
 	abort();
