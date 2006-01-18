@@ -428,7 +428,7 @@ double CellDiscretization::ComputeBoundaryFunctional(const GlobalVector& u, cons
           GetFem()->ReInit(T);
 
           GlobalToLocal(__U,u,iq);
-          j += GetIntegrator()->ComputeBoundaryFunctional(BF,*GetFem(),ile,col,__U);
+          j += GetIntegrator()->ComputeBoundaryFunctional(BF,*GetFem(),ile,col,__U,__QN,__QC);
         }
     }
 

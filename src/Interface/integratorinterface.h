@@ -88,7 +88,7 @@ namespace Gascoigne
 						assert(0);
       }
       virtual double ComputeBoundaryFunctional(const BoundaryFunctional& F, const FemInterface& FEM, int ile,
-          int col, const LocalVector& U) const {
+          int col, const LocalVector& U, const LocalNodeData& Q, const LocalCellData& QC) const {
         std::cerr << "\"IntegratorInterface::ComputeBoundaryFunctional\" not written!" << std::endl;
 						assert(0);
       }
