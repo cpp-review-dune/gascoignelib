@@ -83,10 +83,25 @@ void Q13d::StrongDirichletVector(GlobalVector& u, const DirichletData& BF, int c
   DoubleVector ff(u.ncomp(),0.);
   const IntVector& bv = *GMP->VertexOnBoundary(col);
 
+  FemData QH;
+
   for(int i=0;i<bv.size();i++)
     {
       int index = bv[i];
       const Vertex3d& v = GMP->vertex3d(index);
+
+      QH.clear();
+      GlobalNodeData::const_iterator p=GetGlobalData().GetNodeData().begin();
+      for(; p!=GetGlobalData().GetNodeData().end(); p++)
+      {
+        QH[p->first].resize(p->second->ncomp());
+        for(int c=0; c<p->second->ncomp(); c++)
+        {
+          QH[p->first][c].m() = p->second->operator()(index,c);
+        }
+      }
+
+      BF.SetFemData(QH);
       
       BF(ff,v,col);
       for(int iii=0;iii<comp.size();iii++)

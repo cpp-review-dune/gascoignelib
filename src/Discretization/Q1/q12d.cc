@@ -77,6 +77,8 @@ void Q12d::StrongDirichletVector(GlobalVector& u, const DirichletData& BF, int c
   DoubleVector ff(u.ncomp(),0.);
   const IntVector& bv = *GMP->VertexOnBoundary(col);
 
+  FemData QH;
+
   GlobalToGlobalData();
   BF.SetParameterData(__QP);
 
@@ -95,6 +97,20 @@ void Q12d::StrongDirichletVector(GlobalVector& u, const DirichletData& BF, int c
   for(int i=0;i<bv.size();i++)
     {
       int index = bv[i];
+
+      QH.clear();
+      GlobalNodeData::const_iterator p=GetGlobalData().GetNodeData().begin();
+      for(; p!=GetGlobalData().GetNodeData().end(); p++)
+      {
+        QH[p->first].resize(p->second->ncomp());
+        for(int c=0; c<p->second->ncomp(); c++)
+        {
+          QH[p->first][c].m() = p->second->operator()(index,c);
+        }
+      }
+
+      BF.SetFemData(QH);
+
       const Vertex2d& v = GMP->vertex2d(index);
       
       BF(ff,v,col);

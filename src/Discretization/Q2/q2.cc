@@ -214,12 +214,26 @@ void Q2::StrongDirichletVector(GlobalVector& u, const DirichletData& BF, int col
   nvector<double> ff(u.ncomp(),0.);
   const IntVector& bv = *GMP->VertexOnBoundary(col);
 
+  FemData QH;
+
   GlobalToGlobalData();
   BF.SetParameterData(__QP);
 
   for(int i=0;i<bv.size();i++)
     {
       int index = bv[i];
+
+      QH.clear();
+      GlobalNodeData::const_iterator p=GetGlobalData().GetNodeData().begin();
+      for(; p!=GetGlobalData().GetNodeData().end(); p++)
+      {
+        QH[p->first].resize(p->second->ncomp());
+        for(int c=0; c<p->second->ncomp(); c++)
+        {
+          QH[p->first][c].m() = p->second->operator()(index,c);
+        }
+      }
+
       if (GetMesh()->dimension()==2)
 	{
 	  const Vertex2d& v = GMP->vertex2d(index);
