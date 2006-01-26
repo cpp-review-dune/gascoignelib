@@ -136,7 +136,7 @@ namespace Gascoigne
         std::cerr << "\"DiscretizationInterface::StrongDirichletMatrixOnlyRow\" not written!" << std::endl;
         abort();
       }
-      virtual void StrongDirichletVector(GlobalVector& u, const DirichletData& BF, int col, const std::vector<int>& comp) const {
+      virtual void StrongDirichletVector(GlobalVector& u, const DirichletData& BF, int col, const std::vector<int>& comp, double d=1.) const {
         std::cerr << "\"DiscretizationInterface::StronDirichletVector\" not written!" << std::endl;
         abort();
       }

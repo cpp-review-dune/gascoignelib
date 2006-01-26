@@ -244,7 +244,7 @@ class StdSolver : public virtual SolverInterface
   //
   void SetBoundaryVector(VectorInterface& f) const;
   void SetBoundaryVectorZero(VectorInterface& Gf) const;
-  void SetBoundaryVectorStrong(VectorInterface& f, const BoundaryManager& BM, const DirichletData& DD) const;
+  void SetBoundaryVectorStrong(VectorInterface& f, const BoundaryManager& BM, const DirichletData& DD, double d=1.) const;
 
   //
   /// vector - linear algebra

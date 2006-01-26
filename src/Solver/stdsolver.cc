@@ -543,7 +543,7 @@ void StdSolver::SetBoundaryVector(VectorInterface& gf) const
 
 /*-------------------------------------------------------*/
 
-void StdSolver::SetBoundaryVectorStrong(VectorInterface& gf, const BoundaryManager& BM, const DirichletData& DD) const
+void StdSolver::SetBoundaryVectorStrong(VectorInterface& gf, const BoundaryManager& BM, const DirichletData& DD, double d) const
 {
   GlobalVector& f = GetGV(gf);
 
@@ -561,7 +561,7 @@ void StdSolver::SetBoundaryVectorStrong(VectorInterface& gf, const BoundaryManag
     {
       int col = *p;
       const IntVector& comp = BM.GetDirichletDataComponents(col);
-      GetDiscretization()->StrongDirichletVector(f, DD, col, comp);
+      GetDiscretization()->StrongDirichletVector(f, DD, col, comp, d);
     }
 }
 

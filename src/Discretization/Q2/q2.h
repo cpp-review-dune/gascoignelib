@@ -42,7 +42,7 @@ public:
   void Interpolate(GlobalVector& u, const DomainInitialCondition& U) const;
   void StrongDirichletMatrix(MatrixInterface& A, int col, const std::vector<int>& comp) const;
   void StrongDirichletMatrixOnlyRow(MatrixInterface& A, int col, const std::vector<int>& comp) const;
-  void StrongDirichletVector(GlobalVector& u, const DirichletData& BF, int col, const std::vector<int>& comp) const;
+  void StrongDirichletVector(GlobalVector& u, const DirichletData& BF, int col, const std::vector<int>& comp, double d) const;
   void StrongDirichletVectorZero(GlobalVector& u, int col, const std::vector<int>& comp) const;
   void InterpolateSolution(GlobalVector& u, const GlobalVector& uold)const;
   void HNAverage   (GlobalVector& x) const;

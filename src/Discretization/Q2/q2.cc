@@ -208,7 +208,7 @@ void Q2::StrongDirichletMatrixOnlyRow(MatrixInterface& A, int col, const vector<
 
 /* ----------------------------------------- */
 
-void Q2::StrongDirichletVector(GlobalVector& u, const DirichletData& BF, int col, const vector<int>& comp) const
+void Q2::StrongDirichletVector(GlobalVector& u, const DirichletData& BF, int col, const vector<int>& comp, double d) const
 {
   const GascoigneMesh* GMP = dynamic_cast<const GascoigneMesh*>(GetMesh());
   nvector<double> ff(u.ncomp(),0.);
@@ -242,7 +242,7 @@ void Q2::StrongDirichletVector(GlobalVector& u, const DirichletData& BF, int col
 	  for(int iii=0;iii<comp.size();iii++)
 	    {
 	      int c = comp[iii];
-	      u(index,c) = ff[c];
+	      u(index,c) = d * ff[c];
 	    }
 	}
       else if (GetMesh()->dimension()==3)
@@ -253,7 +253,7 @@ void Q2::StrongDirichletVector(GlobalVector& u, const DirichletData& BF, int col
 	  for(int iii=0;iii<comp.size();iii++)
 	    {
 	      int c = comp[iii];
-	      u(index,c) = ff[c];
+	      u(index,c) = d * ff[c];
 	    }
 	}
       else assert(0);

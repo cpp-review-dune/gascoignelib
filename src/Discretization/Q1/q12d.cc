@@ -70,7 +70,7 @@ nmatrix<double> Q12d::GetLocalInterpolationWeights() const
 
 /* ----------------------------------------- */
 
-void Q12d::StrongDirichletVector(GlobalVector& u, const DirichletData& BF, int col, const vector<int>& comp) const
+void Q12d::StrongDirichletVector(GlobalVector& u, const DirichletData& BF, int col, const vector<int>& comp, double d) const
 {
   const GascoigneMesh* GMP = dynamic_cast<const GascoigneMesh*>(GetMesh());
   assert(GMP);
@@ -117,7 +117,7 @@ void Q12d::StrongDirichletVector(GlobalVector& u, const DirichletData& BF, int c
       for(int iii=0;iii<comp.size();iii++)
         {
           int c = comp[iii];
-          u(index,c) = ff[c];
+          u(index,c) = d * ff[c];
         }
     }
 }
