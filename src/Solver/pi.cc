@@ -144,6 +144,20 @@ void Pi::Init3d(const GascoigneMesh3d* MP)
 	f[2] = ind[24];
 	f[3] = ind[26];
 	face.insert(make_pair(ind[22],f));
+
+	f[0] = ind[2];
+	f[1] = ind[20];
+	f[2] = ind[8];
+	f[3] = ind[26];
+	face.insert(make_pair(ind[14],f));
+	f[0] = ind[0];
+	f[1] = ind[18];
+	f[2] = ind[6];
+	f[3] = ind[24];
+	face.insert(make_pair(ind[12],f));
+	
+	
+
       }
       {
 	fixarray<2,int> f;
