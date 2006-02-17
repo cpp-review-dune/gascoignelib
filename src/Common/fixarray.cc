@@ -35,6 +35,7 @@ template ostream& operator<<(ostream &s, const fixarray<8,double>& A);
 template ostream& operator<<(ostream &s, const fixarray<9,float>& A);
 template ostream& operator<<(ostream &s, const fixarray<16,float>& A);
 template ostream& operator<<(ostream &s, const fixarray<25,float>& A);
+template ostream& operator<<(ostream &s, const fixarray<27,float>& A);
 template ostream& operator<<(ostream &s, const fixarray<400,float>& A);
 
 template istream& operator>>(istream &s,  fixarray<1,float>& A);
@@ -56,6 +57,7 @@ template ostream& operator<<(ostream &, const fixarray<4,int>&);
 template ostream& operator<<(ostream &, const fixarray<6,int>&);
 template ostream& operator<<(ostream &, const fixarray<8,int>&);
 template ostream& operator<<(ostream &, const fixarray<9,int>& );
+template ostream& operator<<(ostream &, const fixarray<27,int>& );
 
 template istream& operator>>(istream &, fixarray<1,int>& );
 template istream& operator>>(istream &, fixarray<2,int>& );
