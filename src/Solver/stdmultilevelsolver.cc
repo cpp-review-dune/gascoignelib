@@ -905,10 +905,11 @@ void StdMultiLevelSolver::InterpolateCellSolution(GlobalCellVector& q, const Glo
 	abort();
     }
     int cells = GetMeshAgent()->ncells();
-    q.resize(cells);
+    q.ReInit(qold.ncomp(),cells);
+
     q.zero();
     //Jetzt Interpolieren wir die Loesung auf das neue Gitter
-    for(int i = 0; i < qold.size(); i++)
+    for(int i = 0; i < qold.n(); i++)
     {
 	set<int> kinder = GetMeshAgent()->Cello2n(i);
 	if(!kinder.empty())
@@ -916,7 +917,10 @@ void StdMultiLevelSolver::InterpolateCellSolution(GlobalCellVector& q, const Glo
 	    //es wurde nicht vergroebert
 	    for(set<int>::iterator p = kinder.begin(); p != kinder.end(); p++)
 	    {
-		q[*p] = qold[i];
+	      for(int c=0; c<qold.ncomp();++c)
+	      {
+		q(*p,c) = qold(i,c);
+	      }
 	    }
 	}
 	else
