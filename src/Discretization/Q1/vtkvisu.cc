@@ -1,5 +1,6 @@
 #include "vtkvisu.h"
 #include "visudatanvector.h"
+#include "visudatacompvector.h"
 
 namespace Gascoigne
 {
@@ -33,11 +34,17 @@ void VtkVisu::WriteNodeData(const DoubleVector& eta)
 
 /*-------------------------------------------------*/
 
-void VtkVisu::WriteCellData(const DoubleVector& eta)
+void VtkVisu::WriteCellData(const GlobalCellVector& eta)
 {
+  int ncomp = eta.ncomp();
+
   VisuDataInfo     VDI(1);
-  VisuDataNVector  VD(eta);
-  
+  VDI.Clear();
+  //  VisuDataNVector  VD(eta);
+  VisuDataCompVector VD(eta);
+
+  VDI.AddScalars(ncomp);
+
   SetCellData(&VD);
   SetCellDataInfo(&VDI);
 
