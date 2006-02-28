@@ -38,6 +38,7 @@ namespace Gascoigne
         if(!_node.insert(std::make_pair(name,d)).second)
         {
           std::cerr << "NodeVector \"" << name << "\" already added" << std::endl;
+          abort();
         }
       }
       void AddCellVector(const std::string& name, const GlobalCellVector* d) {
@@ -45,6 +46,7 @@ namespace Gascoigne
         if(!_cell.insert(std::make_pair(name,d)).second)
         {
           std::cerr << "CellVector \"" << name << "\" already added" << std::endl;
+          abort();
         }
       }
       void AddParameterVector(const std::string& name, const GlobalParameterVector* d) {
@@ -52,6 +54,7 @@ namespace Gascoigne
         if(!_parameter.insert(std::make_pair(name,d)).second)
         {
           std::cerr << "ParameterVector \"" << name << "\" already added" << std::endl;
+          abort();
         }
       }
       

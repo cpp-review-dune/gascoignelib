@@ -38,7 +38,6 @@ namespace Gascoigne
   class DiscretizationInterface
   {
     private:
-      mutable GlobalData __q;
 
     protected:
 
@@ -46,31 +45,22 @@ namespace Gascoigne
       DiscretizationInterface() {}
       virtual ~DiscretizationInterface() {}
 
-      const GlobalData& GetGlobalData() const {return __q;}
-      void SetGlobalData(const GlobalData& q) const {__q = q;}
+      virtual const GlobalData& GetGlobalData() const=0;
+      virtual void SetGlobalData(const GlobalData& q) const=0;
+
       //
       //// Functions called from the Solver
       //
       virtual std::string GetName() const=0;
 
-      virtual void AddNodeVector(const std::string& name, const GlobalVector* q) const {
-        __q.AddNodeVector(name,q);
-      }
-      virtual void DeleteNodeVector(const std::string& name) const {
-        __q.DeleteNodeVector(name);
-      }
-      virtual void AddCellVector(const std::string& name, const GlobalCellVector* q) const {
-        __q.AddCellVector(name,q);
-      }
-      virtual void DeleteCellVector(const std::string& name) const {
-        __q.DeleteCellVector(name);
-      }
-      virtual void AddParameterVector(const std::string& name, const GlobalParameterVector* q) const {
-        __q.AddParameterVector(name,q);
-      }
-      virtual void DeleteParameterVector(const std::string& name) const {
-        __q.DeleteParameterVector(name);
-      }
+      virtual void AddNodeVector(const std::string& name, const GlobalVector* q) const=0;
+      virtual void DeleteNodeVector(const std::string& name) const=0;
+
+      virtual void AddCellVector(const std::string& name, const GlobalCellVector* q) const=0;
+      virtual void DeleteCellVector(const std::string& name) const=0;
+
+      virtual void AddParameterVector(const std::string& name, const GlobalParameterVector* q) const=0;
+      virtual void DeleteParameterVector(const std::string& name) const=0;
 
       virtual void BasicInit(const ParamFile* pf)=0;
       virtual void ReInit   (const MeshInterface* M)=0;
