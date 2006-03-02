@@ -18,7 +18,7 @@ class MeshInterpolator
 
     HierarchicalMesh                          *_Old,*_New;
     IntSet                                     _BaseCells,_ToBeRef,_ToBeRefNew;
-    IntVector                                  _NewNodeNumber;
+    IntVector                                  _NewNodeNumber,_NewCellNumber;
     MeshAgent                                 *_MA;
     MeshAgentInterface                        *_OMA;
     DiscretizationInterface                   *_ODI,*_DI;
@@ -53,11 +53,15 @@ class MeshInterpolator
 
     virtual void BasicInit(DiscretizationInterface* DI, MeshAgentInterface* MA, 
 			   const std::string& name);
+    virtual void InterpolateCellVector(GlobalCellVector& uNew, const GlobalCellVector& uOld);
     virtual void RhsForProjection(GlobalVector& gf, const GlobalVector& u);
 
     virtual void AddVectorIntermediate(const GlobalVector& u, int order);
     virtual void AddVectorOld         (const GlobalVector& u, int order);
     virtual void AddVectorNew         (const GlobalVector& u, int order);
+
+    virtual void AddCellVectorOld(const GlobalCellVector& u);
+    virtual void AddCellVectorNew(const GlobalCellVector& u);
 };
 }
 

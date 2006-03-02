@@ -4,6 +4,7 @@
 #include  "solverinfos.h"
 #include  "meshagent.h"
 #include  "backup.h"
+#include  "vtkvisu.h"
 
 using namespace Gascoigne;
 using namespace std;
@@ -76,6 +77,25 @@ int main(int argc, char** argv)
 
   MLS.Solve(MLS.nlevels()-1,u,f,SI.GetNLInfo());
   MLS.GetSolver()->Visu(coarsename,u,0);
+
+  finename = "start2cell";
+
+  ///////////////////////
+  // Mesh Interpolator (CellVector)
+  ///////////////////////
+    {
+      MeshInterpolator MI;
+      MI.BasicInit(MLS.GetSolver()->GetDiscretization(),&MA,finename);
+      
+      GlobalVector uold;
+      ReadBackUpResize(uold,finename+".bup");
+      MI.InterpolateCellVector(MLS.GetSolver()->GetGV(f),uold);
+    }
+
+  coarsename = "Results/" + finename + ".projected";
+
+  VtkVisu V(*MA.GetMesh(0),coarsename,0);
+  V.WriteCellData(MLS.GetSolver()->GetGV(f));
 
   return 0;
 }

@@ -82,6 +82,7 @@ void MeshInterpolator::CheckCell(int oldNumber, int newNumber)
     {
       int oi = _Old->child(oldNumber,i);
       int ni = _New->child(newNumber,i);
+      _NewCellNumber[oi] = ni;
       CheckCell(oi,ni);
     }
   }
@@ -91,6 +92,7 @@ void MeshInterpolator::CheckCell(int oldNumber, int newNumber)
     {
       int ocj = _Old->child(oldNumber,j);
       int ncj = _New->child(newNumber,j);
+      _NewCellNumber[ocj] = ncj;
       for (int i=0; i<_Old->nodes_per_cell(ocj); i++)
       {
         int oi = _Old->vertex_of_cell(ocj,i);
@@ -129,47 +131,60 @@ void MeshInterpolator::Coarsen(int newNumber)
     for (int s=0; s<_VecInt.size(); s++)
     {
       int order = _VecInt[s].second;
-      if (order==1)
+      if (order==0)
       {
+        _VecInt[s].first.zero_node(cell);
+        double w = 1./static_cast<double>(npc);
         for (int i=0; i<npc; i++)
         {
           int ci = _New->child(cell,i);
-          int k = _New->vertex_of_cell(cell,i);
+          _VecInt[s].first.add_node(cell,w,ci);
+        }
+      }
+      else
+      {
+        if (order==1)
+        {
+          for (int i=0; i<npc; i++)
+          {
+            int ci = _New->child(cell,i);
+            int k = _New->vertex_of_cell(cell,i);
+            for (int j=0; j<npc; j++)
+            {
+              int l = _New->vertex_of_cell(ci,j);
+              double w = _wq1(i,j);
+              _VecInt[s].first.add_node(k,w,l);
+            }
+          }
+        }
+        else if (order==2)
+        {
+          int nind = (dim==2) ? 9 : 27;
+          for (int i=0; i<nind; i++)
+          {
+            pair<int,int> indexI = _iq2[i];
+            int ci = _New->child(newNumber,indexI.first);
+            int k = _New->vertex_of_cell(ci,indexI.second);
+            for (int j=0; j<nind; j++)
+            {
+              pair<int,int> indexJ = _iq2[j];
+              int cj = _New->child(cell,indexJ.first);
+              int l = _New->vertex_of_cell(cj,indexJ.second);
+              double w = _wq2[c](i,j);
+              _VecInt[s].first.add_node(k,w,l);
+            }
+          }
+        }
+        for (int i=0; i<npc; i++)
+        {
+          int ci = _New->child(cell,i);
           for (int j=0; j<npc; j++)
           {
-            int l = _New->vertex_of_cell(ci,j);
-            double w = _wq1(i,j);
-            _VecInt[s].first.add_node(k,w,l);
-          }
-        }
-      }
-      else if (order==2)
-      {
-        int nind = (dim==2) ? 9 : 27;
-        for (int i=0; i<nind; i++)
-        {
-          pair<int,int> indexI = _iq2[i];
-          int ci = _New->child(newNumber,indexI.first);
-          int k = _New->vertex_of_cell(ci,indexI.second);
-          for (int j=0; j<nind; j++)
-          {
-            pair<int,int> indexJ = _iq2[j];
-            int cj = _New->child(cell,indexJ.first);
-            int l = _New->vertex_of_cell(cj,indexJ.second);
-            double w = _wq2[c](i,j);
-            _VecInt[s].first.add_node(k,w,l);
-          }
-        }
-      }
-      for (int i=0; i<npc; i++)
-      {
-        int ci = _New->child(cell,i);
-        for (int j=0; j<npc; j++)
-        {
-          if (j!=i)
-          {
-            int l = _New->vertex_of_cell(ci,j);
-            _VecInt[s].first.zero_node(l);
+            if (j!=i)
+            {
+              int l = _New->vertex_of_cell(ci,j);
+              _VecInt[s].first.zero_node(l);
+            }
           }
         }
       }
@@ -371,11 +386,19 @@ void MeshInterpolator::RefineAndInterpolate(HierarchicalMesh* Mesh, vector<pair<
   }
   Mesh->refine(childs,coarse);
 
-  int nn = Mesh->nnodes();
+  int nn = Mesh->nnodes(), nc = Mesh->ncells();
   for (int s=0; s<u.size(); s++)
   {
-    done[s].resize(nn,false);
-    u[s].first.resize(nn,0.);
+    if(u[s].second>0)
+    {
+      done[s].resize(nn,false);
+      u[s].first.resize(nn,0.);
+    }
+    else
+    {
+      done[s].resize(nc,false);
+      u[s].first.resize(nc,0.);
+    }
   }
   IntSet fathers;
   for (int cell=oldcells; cell<Mesh->ncells(); cell++)
@@ -403,53 +426,65 @@ void MeshInterpolator::RefineAndInterpolate(HierarchicalMesh* Mesh, vector<pair<
       {
         int cell = Mesh->child(*p,c);
         int npc = Mesh->nodes_per_cell(cell);
-        if (order==1)
+        if (order==0)
         {
           for (int i=0; i<npc; i++)
           {
             int ci = Mesh->child(cell,i);
-            int l = Mesh->vertex_of_cell(ci,i);
+            u[s].first.add_node(ci,1.,cell);
+            done[s][ci] = true;
+          }
+        }
+        else
+        {
+          if (order==1)
+          {
+            for (int i=0; i<npc; i++)
+            {
+              int ci = Mesh->child(cell,i);
+              int l = Mesh->vertex_of_cell(ci,i);
+              for (int j=0; j<npc; j++)
+              {
+                int k = Mesh->vertex_of_cell(ci,j);
+                if (!done[s][k])
+                {
+                  double w = _wq1(i,j);
+                  u[s].first.add_node(k,w,l);
+                }
+              }
+            }
+          }
+          else if (order==2)
+          {
+            int nind = (dim==2) ? 9 : 27;
+            for (int i=0; i<nind; i++)
+            {
+              pair<int,int> indexI = _iq2[i];
+              int ci = Mesh->child(*p,indexI.first);
+              int l = Mesh->vertex_of_cell(ci,indexI.second);
+              for (int j=0; j<nind; j++)
+              {
+                pair<int,int> indexJ = _iq2[j];
+                int cj = Mesh->child(cell,indexJ.first);
+                int k = Mesh->vertex_of_cell(cj,indexJ.second);
+                if (!done[s][k])
+                {
+                  double w = _wq2[c](i,j);
+                  u[s].first.add_node(k,w,l);
+                }
+              }
+            }
+          }
+          for (int i=0; i<npc; i++)
+          {
+            int ci = Mesh->child(cell,i);
             for (int j=0; j<npc; j++)
             {
-              int k = Mesh->vertex_of_cell(ci,j);
-              if (!done[s][k])
+              if (j!=i)
               {
-                double w = _wq1(i,j);
-                u[s].first.add_node(k,w,l);
+                int k = Mesh->vertex_of_cell(ci,j);
+                done[s][k] = true;
               }
-            }
-          }
-        }
-        else if (order==2)
-        {
-          int nind = (dim==2) ? 9 : 27;
-          for (int i=0; i<nind; i++)
-          {
-            pair<int,int> indexI = _iq2[i];
-            int ci = Mesh->child(*p,indexI.first);
-            int l = Mesh->vertex_of_cell(ci,indexI.second);
-            for (int j=0; j<nind; j++)
-            {
-              pair<int,int> indexJ = _iq2[j];
-              int cj = Mesh->child(cell,indexJ.first);
-              int k = Mesh->vertex_of_cell(cj,indexJ.second);
-              if (!done[s][k])
-              {
-                double w = _wq2[c](i,j);
-                u[s].first.add_node(k,w,l);
-              }
-            }
-          }
-        }
-        for (int i=0; i<npc; i++)
-        {
-          int ci = Mesh->child(cell,i);
-          for (int j=0; j<npc; j++)
-          {
-            if (j!=i)
-            {
-              int k = Mesh->vertex_of_cell(ci,j);
-              done[s][k] = true;
             }
           }
         }
@@ -483,6 +518,38 @@ void MeshInterpolator::AddVectorNew(const GlobalVector& u, int order)
 
 /**********************************************************/
 
+void MeshInterpolator::AddCellVectorOld(const GlobalCellVector& u)
+{
+  GlobalCellVector cu(u.ncomp(),_Old->ncells());
+  const IntVector& celll2g = GetOriginalMeshAgent()->Celll2g();
+  for(int i=0; i<u.n(); i++)
+  {
+    for(int c=0; c<u.ncomp(); c++)
+    {
+      cu(celll2g[i],c) = u(i,c);
+    }
+  }
+  _VecOld.push_back(make_pair(cu,0));
+}
+
+/**********************************************************/
+
+void MeshInterpolator::AddCellVectorNew(const GlobalCellVector& u)
+{
+  GlobalCellVector cu(u.ncomp(),_New->ncells());
+  const IntVector& celll2g = GetMeshAgent()->Celll2g();
+  for(int i=0; i<u.n(); i++)
+  {
+    for(int c=0; c<u.ncomp(); c++)
+    {
+      cu(celll2g[i],c) = u(i,c);
+    }
+  }
+  _VecNew.push_back(make_pair(cu,0));
+}
+
+/**********************************************************/
+
 void MeshInterpolator::BasicInit(DiscretizationInterface* DI, MeshAgentInterface* MA, const string& name)
 {
   // Klassenvariablen initialisieren
@@ -490,6 +557,7 @@ void MeshInterpolator::BasicInit(DiscretizationInterface* DI, MeshAgentInterface
   _ToBeRef.clear();
   _ToBeRefNew.clear();
   _NewNodeNumber.clear();
+  _NewCellNumber.clear();
   _VecInt.clear();
   _VecOld.clear();
   _VecNew.clear();
@@ -545,6 +613,78 @@ void MeshInterpolator::BasicInit(DiscretizationInterface* DI, MeshAgentInterface
 
 /**********************************************************/
 
+void MeshInterpolator::InterpolateCellVector(GlobalCellVector& out, const GlobalCellVector& in)
+{
+  AddCellVectorNew(in);
+
+  vector<vector<bool> > doneOld(_VecOld.size(),vector<bool>(_Old->ncells(),true)),doneNew(_VecNew.size(),vector<bool>(_New->ncells(),true));
+  HierarchicalMesh* Mesh;
+  if (_Old->ncells()<_New->ncells())
+  {
+    Mesh = _Old;
+  }
+  else
+  {
+    Mesh = _New;
+  }
+  _NewCellNumber.resize(_Old->ncells(),-1);
+  for (int c=0; c<Mesh->ncells(); c++)
+  {
+    if (Mesh->level(c)==0)
+    {
+      _BaseCells.insert(c);
+      _NewCellNumber[c] = c;
+    }
+  }
+
+  do
+  {
+    _NewNodeNumber.resize(_Old->nnodes(),-1);
+    _NewCellNumber.resize(_Old->ncells(),-1);
+    _ToBeRef.clear();
+    _ToBeRefNew.clear();
+    for (IntSet::const_iterator pbc = _BaseCells.begin(); pbc!=_BaseCells.end(); pbc++)
+    {
+      CheckCell(*pbc,*pbc);
+    }
+    if (!_ToBeRef.empty())
+    {
+      RefineAndInterpolate(_Old,_VecOld,_ToBeRef,doneOld);
+    }
+    if (!_ToBeRefNew.empty())
+    {
+      RefineAndInterpolate(_New,_VecNew,_ToBeRefNew,doneNew);
+    }
+  }
+  while (!_ToBeRef.empty() || !_ToBeRefNew.empty());
+
+  GetMeshAgent()->global_refine(0);
+
+  assert(_VecNew.size()==1);
+  _VecInt.push_back(_VecNew[0]);
+
+  for (IntSet::const_iterator pbc = _BaseCells.begin(); pbc!=_BaseCells.end(); pbc++)
+  {
+    Distribute(*pbc,*pbc);
+  }
+
+  assert(_VecInt.size()==1);
+  out.ReInit(in.ncomp(),GetOriginalMeshAgent()->GetMesh(0)->ncells());
+  out.zero();
+
+  const IntVector& cl2g = GetOriginalMeshAgent()->Celll2g();
+  for (int i=0; i<out.n(); i++)
+  {
+    int n = cl2g[i];
+    out.equ_node(i,_NewCellNumber[n],_VecInt[0].first);
+  }
+
+  _Old = NULL;
+  _New = NULL;
+}
+
+/**********************************************************/
+
 void MeshInterpolator::RhsForProjection(GlobalVector& f, const GlobalVector& u)
 {
   const Q2* DI = dynamic_cast<const Q2*>(GetOriginalDiscretization());
@@ -578,6 +718,7 @@ void MeshInterpolator::RhsForProjection(GlobalVector& f, const GlobalVector& u)
   do
   {
     _NewNodeNumber.resize(_Old->nnodes(),-1);
+    _NewCellNumber.resize(_Old->ncells(),-1);
     _ToBeRef.clear();
     _ToBeRefNew.clear();
     for (IntSet::const_iterator pbc = _BaseCells.begin(); pbc!=_BaseCells.end(); pbc++)

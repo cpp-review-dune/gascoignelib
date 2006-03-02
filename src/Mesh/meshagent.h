@@ -22,9 +22,9 @@ private:
   map<int,BoundaryFunction<3>* > _curved3d;
   
   //Fuer die Zuordnung GM Nr auf altem Gitter zu GM Nr. auf neuem Gitter
-  IntVector _cl2g;
+  IntVector _cl2g, _celll2g;
   IntVector _fathers;//GM Nr zu HM nr.
-  IntMap _cg2l;
+  IntMap _cg2l, _cellg2l;
   map<int,set<int> > _co2n;
   bool _goc2nc;
 
@@ -88,6 +88,9 @@ public:
   const std::set<int> Cello2n(int i)const;
   const int Cello2nFather(int i)const;
   const bool Goc2nc() const{ return _goc2nc;}
+
+  const IntVector& Celll2g() const { return _celll2g; }
+  const IntMap& Cellg2l()    const { return _cellg2l; }
 };
 }
 

@@ -31,10 +31,10 @@ void MeshAgent::ReInit()
 
   GascoigneMeshConstructor MGM(HMP,GMG);
   MGM.BasicInit();
+  _celll2g = MGM.Celll2g();
+  _cellg2l = MGM.Cellg2l();
   if(_goc2nc)
   {
-      IntVector new_cl2g = MGM.Celll2g();
-      IntMap new_cg2l = MGM.Cellg2l();
       _co2n.clear();
       for(int i =0 ; i < _cl2g.size(); i++)
       {
@@ -53,12 +53,12 @@ void MeshAgent::ReInit()
 		  //Zelle verfeinert
 		  for(int j = 0; j <HMP->nchilds(cn_i); j++)
 		  {
-		      kinder.insert(new_cg2l[HMP->child(cn_i,j)]);
+		      kinder.insert(_cellg2l[HMP->child(cn_i,j)]);
 		  }
 	      }
 	      else
 	      {
-		  kinder.insert(new_cg2l[cn_i]);
+		  kinder.insert(_cellg2l[cn_i]);
 	      }
 	      _co2n[i] = kinder;
 	  }
@@ -66,8 +66,8 @@ void MeshAgent::ReInit()
       
 
       // Die Var fuer die alten Werteumschreiben
-      _cl2g = new_cl2g;
-      _cg2l = new_cg2l;
+      _cl2g = _celll2g;
+      _cg2l = _cellg2l;
       
       //den fathers Vektor neu fuellen
       _fathers.clear();
