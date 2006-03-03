@@ -691,4 +691,20 @@ void CellDiscretization::swapIndices(IntVector& indices) const
       indices[7] = help;
     }
 }
+
+/* ----------------------------------------- */
+
+void CellDiscretization::GetVolumes(DoubleVector& a) const
+{
+  a.resize(GetMesh()->ncells());
+  nmatrix<double> T;
+  
+  for(int iq=0;iq<GetMesh()->ncells();++iq)
+    {
+      Transformation(T,iq);
+      GetFem()->ReInit(T);
+      a[iq] = GetFem()->J();
+    }
+}
+
 }

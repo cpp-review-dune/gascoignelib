@@ -183,6 +183,11 @@ namespace Gascoigne
         std::cerr << "\"DiscretizationInterface::ConstructInterpolator\" not written!" << std::endl;
         abort();
       }
+
+      virtual void GetVolumes(DoubleVector& a) const {
+	std::cerr << "\"DiscretizationInterface::GetVolumes\" not written!" << std::endl;
+        abort();
+      }
   };
 }
 

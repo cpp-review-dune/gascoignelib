@@ -90,6 +90,7 @@ public:
 
   virtual nmatrix<double> GetLocalInterpolationWeights() const { assert(0); return nmatrix<double>();}
 
+  void GetVolumes(DoubleVector& a) const;
 };
 }
 
