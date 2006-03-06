@@ -20,7 +20,6 @@
 #include  "pointfunctional.h"
 #include  "domainrighthandside.h"
 #include  "diracrighthandside.h"
-#include  "cellrighthandside.h"
 #include  "domainfunction.h"
 
 namespace Gascoigne
@@ -164,7 +163,7 @@ namespace Gascoigne
         abort();
       }
 
-      virtual void EvaluateCellRightHandSide(GlobalCellVector& f, const CellRightHandSide& CF, double d = 1.) const{
+      virtual void EvaluateCellRightHandSide(GlobalCellVector& f, const DomainRightHandSide& CF, double d = 1.) const{
         std::cerr << "\"DiscretizationInterface::EvaluateCellRighthandside\" not written!" << std::endl;
         abort();
       }

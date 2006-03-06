@@ -538,7 +538,7 @@ double CellDiscretization::ComputePointValue(const GlobalVector& u, const Vertex
 
 /* ----------------------------------------- */
 
-void CellDiscretization::EvaluateCellRightHandSide(GlobalCellVector& f, const CellRightHandSide& CF, double d) const
+void CellDiscretization::EvaluateCellRightHandSide(GlobalCellVector& f, const DomainRightHandSide& CF, double d) const
 {
   nmatrix<double> T;
 

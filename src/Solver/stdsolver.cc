@@ -870,7 +870,7 @@ double StdSolver::ComputeResidualFunctional(VectorInterface& gf, const VectorInt
 
 /*-------------------------------------------------------*/
 
-void StdSolver::EvaluateCellRightHandSide(GlobalCellVector& f, const CellRightHandSide& CF, double d) const
+void StdSolver::EvaluateCellRightHandSide(GlobalCellVector& f, const DomainRightHandSide& CF, double d) const
 {
   HNAverageData();
   
