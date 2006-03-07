@@ -565,6 +565,8 @@ void CellDiscretization::InterpolateDomainFunction(GlobalVector& f, const Domain
   f.zero();
 
   DoubleVector gf;
+  gf.resize(DF.GetNcomp());
+
   if(dim==2)
   {
     for(int r=0; r<GetMesh()->nnodes(); ++r)
@@ -590,8 +592,10 @@ void CellDiscretization::InterpolateDomainFunction(GlobalVector& f, const Domain
 void CellDiscretization::InterpolateCellDomainFunction(GlobalCellVector& f, const DomainFunction& DF) const
 {
   int dim = GetMesh()->dimension();
-  DoubleVector gf;
   f.zero();
+
+  DoubleVector gf;
+  gf.resize(DF.GetNcomp());
 
   if(dim==2)
   {
