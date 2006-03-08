@@ -702,11 +702,27 @@ void CellDiscretization::GetVolumes(DoubleVector& a) const
 {
   a.resize(GetMesh()->ncells());
   nmatrix<double> T;
+  int dim = GetMesh()->dimension();
   
   for(int iq=0;iq<GetMesh()->ncells();++iq)
     {
       Transformation(T,iq);
       GetFem()->ReInit(T);
+      if(dim==2)
+	{
+	  Vertex2d xi;
+	  xi.x() = 0.5;
+	  xi.y() = 0.5;
+	  GetFem()->point(xi);
+	}
+      else
+	{
+	  Vertex3d xi;
+	  xi.x() = 0.5;
+	  xi.y() = 0.5;
+	  xi.z() = 0.5;
+	  GetFem()->point(xi);
+	}
       a[iq] = GetFem()->J();
     }
 }
