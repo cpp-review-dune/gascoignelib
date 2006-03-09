@@ -82,6 +82,10 @@ public:
 
   void BoundaryRhs(const BoundaryRightHandSide& RHS, LocalVector& F, const FemInterface& FEM, int ile, int col,
       const LocalNodeData& Q, const LocalCellData& QC) const;
+
+  void IntegrateMassDiag(DoubleVector& F, const FemInterface& FEM) const ;
+
+  void IntegrateBoundaryMassDiag(DoubleVector& F, const FemInterface& FEM, int ile, int col) const ;
 };
 }
 

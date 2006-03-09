@@ -187,6 +187,16 @@ namespace Gascoigne
 	std::cerr << "\"DiscretizationInterface::GetVolumes\" not written!" << std::endl;
         abort();
       }
+
+      virtual void GetMassDiag(DoubleVector& a) const{
+	std::cerr << "\"DiscretizationInterface::GetMassDiag\" not written!" << std::endl;
+        abort();
+      }
+
+      virtual void GetBoundaryMassDiag(DoubleVector& a) const{
+	std::cerr << "\"DiscretizationInterface::GetBoundaryMassDiag\" not written!" << std::endl;
+        abort();
+      }
   };
 }
 

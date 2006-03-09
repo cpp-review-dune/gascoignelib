@@ -575,6 +575,61 @@ void GalerkinIntegrator<DIM>::ErrorsByExactSolution(LocalVector& dst, const FemI
 
 /* ----------------------------------------- */
 
+template<int DIM>
+void GalerkinIntegrator<DIM>::IntegrateMassDiag(DoubleVector& F, const FemInterface& FEM) const 
+{
+  F.resize(FEM.n());
+
+  const IntegrationFormulaInterface& IF = *FormFormula();
+
+  F.zero();
+  Vertex<DIM> x, xi;
+
+  for (int k=0; k<IF.n(); k++)
+    {
+      IF.xi(xi,k);
+      FEM.point(xi);
+      double vol = FEM.J();
+      double weight  = IF.w(k) * vol;
+      for (int i=0;i<FEM.n();i++)
+      {
+	  FEM.init_test_functions(_NN,1.,i);
+	  F[i] += weight*_NN.m()*_NN.m();
+      }
+    }
+}
+
+/* ----------------------------------------- */
+
+template<int DIM>
+void GalerkinIntegrator<DIM>::IntegrateBoundaryMassDiag(DoubleVector& F, const FemInterface& FEM, int ile, int col) const 
+{
+    F.resize(FEM.n());
+
+    const IntegrationFormulaInterface& IF = *BoundaryFormula();
+
+    F.zero();
+    Vertex<DIM> x,n;
+    Vertex<DIM-1> xi;
+
+    for (int k=0; k<IF.n(); k++)
+    {
+	IF.xi(xi,k);
+	FEM.point_boundary(ile,xi);
+	
+      	double  h = FEM.G();
+	double  weight = IF.w(k)*h;
+      
+	for (int i=0;i<FEM.n();i++)
+        {
+	    FEM.init_test_functions(_NN,1.,i);
+	    F[i] += _NN.m()*_NN.m()*weight;
+        }
+    }
+}
+
+/* ----------------------------------------- */
+
 template class GalerkinIntegrator<2>;
 template class GalerkinIntegrator<3>;
 }

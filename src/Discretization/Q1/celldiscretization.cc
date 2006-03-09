@@ -2,6 +2,7 @@
 #include  "visudatacompvector.h"
 #include  "sparsestructure.h"
 #include  "pressurefilter.h"
+#include  "gascoignemesh.h"
 
 using namespace std;
 
@@ -724,6 +725,78 @@ void CellDiscretization::GetVolumes(DoubleVector& a) const
 	  GetFem()->point(xi);
 	}
       a[iq] = GetFem()->J();
+    }
+}
+
+/* ----------------------------------------- */
+
+void CellDiscretization::GetMassDiag(DoubleVector& a) const
+{
+    a.resize(GetMesh()->nnodes());
+    nmatrix<double> T;
+    DoubleVector F;
+    for(int iq=0;iq<GetMesh()->ncells();++iq)
+    {
+	Transformation(T,iq);
+	GetFem()->ReInit(T);
+
+	GetIntegrator()->IntegrateMassDiag(F,*GetFem());
+	
+	//Auf Globalen Vektor verteielen
+	IntVector indices = GetLocalIndices(iq);
+	for(int ii=0; ii<indices.size(); ii++) 
+	{
+	    int i = indices[ii];
+	    a[i] += F[ii];
+	}
+    }
+}
+
+/* ----------------------------------------- */
+
+void CellDiscretization::GetBoundaryMassDiag(DoubleVector& a) const
+{
+    a.resize(GetMesh()->nnodes());
+    a.equ(1.);
+    
+    const GascoigneMesh* GMP = dynamic_cast<const GascoigneMesh*>(GetMesh());
+    assert(GMP);
+    std::set<int> Colors =  GMP->GetColors();
+    for(IntSet::const_iterator p=Colors.begin();p!=Colors.end();p++)
+    {
+	int col = *p;
+	const IntVector& bv = *GMP->VertexOnBoundary(col);
+	for(int i=0;i<bv.size();i++)
+	{
+	    a[i] = 0;
+	}  
+    }
+    
+    DoubleVector F;
+    nmatrix<double> T;
+    for(IntSet::const_iterator p=Colors.begin();p!=Colors.end();p++)
+    {
+      int col = *p;
+      const IntVector& q = *GetMesh()->CellOnBoundary(col);
+      const IntVector& l = *GetMesh()->LocalOnBoundary(col);
+      for (int i=0; i<q.size(); i++)
+        {
+          int iq  = q[i];
+          int ile = l[i];
+
+          Transformation(T,iq);
+          GetFem()->ReInit(T);
+
+	  GetIntegrator()->IntegrateBoundaryMassDiag(F,*GetFem(),ile,col);
+
+          //Auf Globalen Vektor verteielen
+	  IntVector indices = GetLocalIndices(iq);
+	  for(int ii=0; ii<indices.size(); ii++) 
+	  {
+	      int i = indices[ii];
+	      a[i] += F[ii];
+	  }
+        }
     }
 }
 

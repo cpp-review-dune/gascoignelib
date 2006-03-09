@@ -121,6 +121,15 @@ namespace Gascoigne
         std::cerr << "\"IntegratorInterface::ErrorsByExactSolution\" not written!" << std::endl;
         assert(0);
       }
+      virtual void IntegrateMassDiag(DoubleVector& F, const FemInterface& FEM) const {
+        std::cerr << "\"IntegratorInterface::IntegrateMassDiag\" not written!" << std::endl;
+        assert(0);
+      }
+
+      virtual void IntegrateBoundaryMassDiag(DoubleVector& F, const FemInterface& FEM, int ile, int col) const {
+        std::cerr << "\"IntegratorInterface::IntegrateBoundaryMassDiag\" not written!" << std::endl;
+        assert(0);
+      }
   };
 }
 
