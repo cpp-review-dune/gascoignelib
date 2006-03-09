@@ -1,5 +1,4 @@
 #include  "celldiscretization.h"
-#include  "visudatacompvector.h"
 #include  "sparsestructure.h"
 #include  "pressurefilter.h"
 #include  "gascoignemesh.h"
@@ -190,8 +189,8 @@ void CellDiscretization::MassMatrix(MatrixInterface& A) const
       Transformation(T,iq);
       GetFem()->ReInit(T);
       GetIntegrator()->MassMatrix(__E,*GetFem());
-			LocalToGlobal(A,__E,iq,1.);
-			//      CellDiscretization::LocalToGlobal(A,__E,iq,1.);
+      LocalToGlobal(A,__E,iq,1.);
+      //      CellDiscretization::LocalToGlobal(A,__E,iq,1.);
     }
 }
 
@@ -225,6 +224,54 @@ void CellDiscretization::ComputeError(const GlobalVector& u, LocalVector& err, c
 	  err(1,c) += lerr(1,c);
 	  err(2,c) = Gascoigne::max(err(2,c),lerr(2,c));
 	}
+    }
+  for(int c=0;c<ncomp;c++)  
+    {
+      err(0,c) = sqrt(err(0,c));
+      err(1,c) = sqrt(err(1,c));
+    }
+}
+
+/* ----------------------------------------- */
+
+void CellDiscretization::AssembleError(GlobalVector& eta, const GlobalVector& u, LocalVector& err, const ExactSolution* ES) const
+{
+  int ncomp = u.ncomp();
+  err.ncomp() = ncomp;
+  err.reservesize(3);
+  err = 0.;
+
+  eta.ncomp() = 3;
+  eta.reservesize(GetMesh()->ncells());
+
+  GlobalVector lerr(ncomp,3); 
+  lerr.zero();
+
+  nmatrix<double> T;
+  
+  GlobalToGlobalData();
+  ES->SetParameterData(__QP);
+  
+  for(int iq=0; iq<GetMesh()->ncells(); iq++)
+    {
+      Transformation(T,iq);
+      GetFem()->ReInit(T);
+      GlobalToLocal(__U,u,iq);
+      GetIntegrator()->ErrorsByExactSolution(lerr,*GetFem(),*ES,__U,__QN,__QC);
+
+      for(int c=0;c<ncomp;c++)  
+	{
+	  err(0,c) += lerr(0,c);
+	  err(1,c) += lerr(1,c);
+	  err(2,c) = Gascoigne::max(err(2,c),lerr(2,c));
+
+	  eta(iq,0) += lerr(0,c);
+	  eta(iq,1) += lerr(1,c);
+	  eta(iq,2) += lerr(2,c);
+	}
+      eta(iq,0) = sqrt(eta(iq,0));
+      eta(iq,1) = sqrt(eta(iq,1));
+      eta(iq,2) = sqrt(eta(iq,2));
     }
   for(int c=0;c<ncomp;c++)  
     {

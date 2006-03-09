@@ -69,6 +69,7 @@ public:
   void MassMatrix(MatrixInterface& M) const;
 
   void ComputeError(const GlobalVector& u, LocalVector& err, const ExactSolution* ES) const;
+  void AssembleError(GlobalVector& eta, const GlobalVector& u, LocalVector& err, const ExactSolution* ES) const;
 
   void Rhs(GlobalVector& f, const DomainRightHandSide& RHS, double s) const;
   void DiracRhs(GlobalVector& f, const DiracRightHandSide& DRHS, double s) const;

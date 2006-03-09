@@ -26,7 +26,7 @@ namespace Gascoigne
 ///
 //////////////////////////////////////////////
 
-class StdMultiLevelSolver : public MultiLevelSolverInterface
+class StdMultiLevelSolver : public virtual MultiLevelSolverInterface
 {
   private :
 
@@ -112,12 +112,9 @@ class StdMultiLevelSolver : public MultiLevelSolverInterface
 //    for(int l=0;l<_SP.size();l++) _SP[l]->SetState(s);
 //  }
 
-
   int nlevels()                 const { assert(GetMeshAgent()); return GetMeshAgent()->nlevels();}
   virtual int FinestLevel  ()  const { return nlevels()-1;}
   virtual int CoarsestLevel()  const { return 0;}
-
-  
   
   SolverInterface* GetSolver(int l) {assert(l<_SP.size()); return _SP[l];}
   const SolverInterface* GetSolver(int l) const {assert(l<_SP.size()); return _SP[l];}
@@ -140,7 +137,6 @@ class StdMultiLevelSolver : public MultiLevelSolverInterface
   virtual void NewtonVectorZero(VectorInterface& w) const;
   virtual double NewtonResidual(VectorInterface& y, const VectorInterface& x, const VectorInterface& b) const;
   virtual double NewtonUpdate(double& rr, VectorInterface& x, VectorInterface& dx, VectorInterface& r, const VectorInterface& f, NLInfo& nlinfo);
-  //virtual void NewtonUpdateShowCompResiduals(int i_iter,VectorInterface& x, VectorInterface& r, const VectorInterface& f, VectorInterface& dx);
   virtual void NewtonLinearSolve(VectorInterface& x, const VectorInterface& b, CGInfo& info);
   virtual void NewtonMatrixControl(VectorInterface& u, NLInfo& nlinfo);
   virtual void NewtonOutput(NLInfo& nlinfo) const;

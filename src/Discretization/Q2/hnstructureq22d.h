@@ -17,8 +17,10 @@ public:
   void Average   (GlobalVector& u) const;
   void Distribute(GlobalVector& u) const;
   void CondenseHanging(EntryMatrix& E, IntVector& indices) const;
+  void CondenseHangingMixed(EntryMatrix& E, IntVector& indices, int k) const;
   void CondenseHanging(IntVector& indices) const;
   void CondenseHangingPatch(EntryMatrix& E, IntVector& indices) const { assert(0);}
+  //void NewCondenseHanging(EntryMatrix& E, IntVector& indices1, IntVector& indices2) const;
 };
 }
 #endif

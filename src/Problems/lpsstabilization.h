@@ -11,7 +11,7 @@ class LpsStabilization : public Stabilization
 {
  protected:
 
-  double _delta;
+  double _delta, _tau;
   nvector<double> _sdelta;
 
   void NavierStokes(double h, double visc);
@@ -20,8 +20,10 @@ class LpsStabilization : public Stabilization
 
   LpsStabilization();
 
-  double delta0, sdelta0;
+  double delta0, sdelta0, tau0;
 
+  double&  tau()      { return _tau;}
+  double   tau()      const { return _tau;}
   double&  delta()      { return _delta;}
   double  delta()      const { return _delta;}
   double  delta(int i) const { return _sdelta[i];}

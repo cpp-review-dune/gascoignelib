@@ -41,6 +41,7 @@ public:
     
     std::string GetName() const { return "UmfIlu"; }
     
+    int   n()          const { return GetStencil()->n();};
     void ReInit(const SparseStructureInterface* SS);
 
     int   n()         const { return GetStencil()->n();};

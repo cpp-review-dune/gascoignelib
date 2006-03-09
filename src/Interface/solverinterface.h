@@ -192,6 +192,7 @@ namespace Gascoigne
       /// vector - "postprocessing"
       //
       virtual void ComputeError(const VectorInterface& u, GlobalVector& err) const=0;
+      virtual void AssembleError(GlobalVector& eta, const VectorInterface& u, GlobalVector& err) const=0;
       virtual double ComputeFunctional(VectorInterface& f, const VectorInterface& u, const Functional* FP) const=0;
 
       //

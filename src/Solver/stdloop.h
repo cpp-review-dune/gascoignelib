@@ -42,6 +42,7 @@ protected:
   DoubleVector GetExactValues() const;
 
   virtual void EtaVisu(std::string name, int i, const DoubleVector& eta) const;
+  virtual void EtaCellVisu(std::string name, int i, const GlobalVector& eta) const;
   virtual void AdaptMesh(const DoubleVector& eta);
   virtual void AdaptMesh(const DoubleVector& eta,std::string refine_or_coarsen_step);
   virtual DoubleVector Functionals(VectorInterface& u, VectorInterface& f);

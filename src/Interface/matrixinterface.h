@@ -39,6 +39,9 @@ namespace Gascoigne
       //
       typedef IntVector::const_iterator niiterator;
 
+      virtual void entry(nvector<int>::const_iterator start1, nvector<int>::const_iterator stop1,
+		 nvector<int>::const_iterator start2, nvector<int>::const_iterator stop2,
+		 const EntryMatrix& M, double s=1.) { assert(0);}
       virtual void entry(niiterator start, niiterator stop, const EntryMatrix& M, double s=1.)=0;
       virtual void entrydual(niiterator start, niiterator stop, const EntryMatrix& M, double s=1.) {
         std::cerr << "\"MatrixInterface::entrydual\" not written!" << std::endl;

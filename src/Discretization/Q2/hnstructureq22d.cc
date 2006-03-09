@@ -76,6 +76,93 @@ void HNStructureQ22d::CondenseHanging(EntryMatrix& E, IntVector& indices) const
 
 /*-----------------------------------------*/
 
+void HNStructureQ22d::CondenseHangingMixed(EntryMatrix& E, IntVector& indices, int k) const
+{
+  assert(indices.size()==14);
+
+  IntVector xx(9,-1);
+  xx[1] = 9; xx[3] = 10; xx[5] = 12; xx[7] = 13;
+
+  if      (k==0) { xx[0] = 0; xx[2] = 1; xx[6] = 3; xx[8] = 4;}
+  else if (k==1) { xx[0] = 1; xx[2] = 2; xx[6] = 4; xx[8] = 5;}
+  else if (k==2) { xx[0] = 3; xx[2] = 4; xx[6] = 6; xx[8] = 7;}
+  else if (k==3) { xx[0] = 4; xx[2] = 5; xx[6] = 7; xx[8] = 8;}
+  for(int ii=0; ii<4; ii++) // nur 4 kandiaten koennen haengen !!
+    {
+      int i = indices[xx[2*ii+1]];;
+
+      if(!hanging(i)) continue;
+
+      const fixarray<3,int>& f = regular_nodes(i);
+
+      fixarray<3,int> p = lnoe[ii];
+
+      if ( (indices[xx[p[0]]]==f[1]) && (indices[xx[p[1]]]==f[0]) ) 
+	{ 
+	  swap(p[0],p[1]);
+	} 
+
+      indices[xx[p[2]]] = f[2];
+
+      E.add_column     (xx[p[0]],xx[p[2]],weight(0));
+      E.add_column     (xx[p[1]],xx[p[2]],weight(1));
+      E.multiply_column(xx[p[2]],         weight(2));
+      
+      E.add_row        (xx[p[0]],xx[p[2]],weight(0));
+      E.add_row        (xx[p[1]],xx[p[2]],weight(1));
+      E.multiply_row   (xx[p[2]],         weight(2));
+    }
+}
+
+/*-----------------------------------------*/
+
+/*void HNStructureQ22d::NewCondenseHanging(EntryMatrix& E, IntVector& indices1, IntVector& indices2) const
+{
+  for(int ii=0; ii<4; ii++) // nur 4 kandiaten koennen haengen !!
+    {
+      int i = indices1[2*ii+1];
+
+      if(!hanging(i)) continue;
+
+      const fixarray<3,int>& f = regular_nodes(i);
+
+      fixarray<3,int> p = lnoe[ii];
+
+      if ( (indices1[p[0]]==f[1]) && (indices1[p[1]]==f[0]) ) 
+	{ 
+	  swap(p[0],p[1]);
+	} 
+
+      indices1[p[2]] = f[2];
+
+      E.add_row        (p[0],p[2],weight(0));
+      E.add_row        (p[1],p[2],weight(1));
+      E.multiply_row   (p[2],     weight(2));
+    }
+  for(int ii=0; ii<4; ii++) // nur 4 kandiaten koennen haengen !!
+    {
+      int i = indices2[2*ii+1];
+      if(!hanging(i)) continue;
+
+      const fixarray<3,int>& f = regular_nodes(i);
+
+      fixarray<3,int> p = lnoe[ii];
+
+      if ( (indices2[p[0]]==f[1]) && (indices2[p[1]]==f[0]) ) 
+	{ 
+	  swap(p[0],p[1]);
+	} 
+
+      indices2[p[2]] = f[2];
+
+      E.add_column       (p[0],p[2],weight(0));
+      E.add_column       (p[1],p[2],weight(1));
+      E.multiply_column  (p[2],     weight(2));
+    }
+    }*/
+
+/*-----------------------------------------*/
+
 void HNStructureQ22d::CondenseHanging(IntVector& indices) const
 {
   for(int ii=0; ii<4; ii++)

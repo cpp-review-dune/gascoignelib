@@ -66,7 +66,7 @@ void Q2::LocalToGlobal(MatrixInterface& A, EntryMatrix& E, int iq, double s) con
   HN->CondenseHanging(E,indices);
   nvector<int>::const_iterator  start = indices.begin();
   nvector<int>::const_iterator  stop  = indices.end();
-  A.entry(start,stop,__E,s);
+  A.entry(start,stop,E,s);
 }
 
 /* ----------------------------------------- */

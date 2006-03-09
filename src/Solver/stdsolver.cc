@@ -777,6 +777,16 @@ void StdSolver::ComputeError(const VectorInterface& u, GlobalVector& err) const
 
 /*-------------------------------------------------------*/
 
+void StdSolver::AssembleError(GlobalVector& eta, const VectorInterface& u, GlobalVector& err) const
+{
+  if(GetProblemDescriptor()->GetExactSolution()==NULL) return;
+  HNAverage(u);
+  GetDiscretization()->AssembleError(eta,GetGV(u),err,GetProblemDescriptor()->GetExactSolution());
+  HNZero(u);
+}
+
+/*-------------------------------------------------------*/
+
 double StdSolver::ComputeFunctional(VectorInterface& gf, const VectorInterface& gu, const Functional* FP) const
 {
   VectorInterface gh("mg0");
@@ -1022,14 +1032,13 @@ void StdSolver::ComputeIlu() const
   else
 #endif
     {
-      int ncomp = GetProblemDescriptor()->GetEquation()->GetNcomp();
       _ci.start();
-      int n = GetIlu()->n();
-      IntVector perm(n);
+      IntVector perm(GetIlu()->n());
       iota(perm.begin(),perm.end(),0);
       GetIlu()->ConstructStructure(perm,*GetMatrix());
       GetIlu()->zero();
       GetIlu()->copy_entries(GetMatrix());
+      int ncomp = GetProblemDescriptor()->GetEquation()->GetNcomp();
       modify_ilu(*GetIlu(),ncomp);
       GetIlu()->compute_ilu();
       _ci.stop();

@@ -6,7 +6,7 @@ namespace Gascoigne
 {
 LpsStabilization::LpsStabilization() : Stabilization(), _sdelta(0)
 {
-  _delta = delta0 = sdelta0 = 0.;
+  _delta = delta0 = sdelta0 = tau0 =  0.;
 }
 
 /*--------------------------------------------------------------*/
@@ -32,6 +32,7 @@ void LpsStabilization::NavierStokes(double h, double visc)
     }
   _alpha = alpha0 / val;
   _delta = delta0 / valc;
+  _tau   = tau0 / valc;
 }
 
 /*--------------------------------------------------------------*/

@@ -149,6 +149,10 @@ namespace Gascoigne
         std::cerr << "\"DiscretizationInterface::ComputeError\" not written!" << std::endl;
         abort();
       }
+      virtual void AssembleError(GlobalVector& eta, const GlobalVector& u, LocalVector& err, const ExactSolution* ES) const{
+        std::cerr << "\"DiscretizationInterface::AssembleError\" not written!" << std::endl;
+        abort();
+      }
       virtual double ComputeBoundaryFunctional(const GlobalVector& u, const IntSet& Colors, const BoundaryFunctional& BF) const{
         std::cerr << "\"DiscretizationInterface::ComputeBoundaryFunctional\" not written!" << std::endl;
         abort();

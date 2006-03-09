@@ -17,6 +17,7 @@ namespace Gascoigne
 {
 Q22d::Q22d() : Q2()
 {
+  assert(HN==NULL);
   HN = new HNStructureQ22d;
 }
 

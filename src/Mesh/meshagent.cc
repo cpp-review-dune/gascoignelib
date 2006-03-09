@@ -4,7 +4,6 @@
 #include  "gascoignemeshconstructor.h"
 #include  "stringutil.h"
 
-
 using namespace std;
 
 /*-----------------------------------------*/

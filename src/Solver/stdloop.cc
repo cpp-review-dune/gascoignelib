@@ -17,7 +17,7 @@ using namespace std;
 
 namespace Gascoigne
 {
-StdLoop::StdLoop() : BasicLoop()//, _paramfile(NULL)
+StdLoop::StdLoop() : BasicLoop()
 {
   _estimator = _extrapolate = "none";
 }
@@ -78,6 +78,23 @@ void StdLoop::EtaVisu(string name, int i, const DoubleVector& eta) const
   Visu.SetPointData(&VD);
   Visu.SetMesh(GetMeshAgent()->GetMesh(0));
   Visu.SetPointDataInfo(&VDI);
+  Visu.write();
+}
+
+/*-----------------------------------------*/
+
+void StdLoop::EtaCellVisu(string name, int i, const GlobalVector& eta) const
+{
+  Visualization Visu;
+  Visu.format("vtk");
+  Visu.set_name(name);
+  Visu.step(i);
+  VisuDataInfo     VDI(eta.ncomp());
+  VisuDataCompVector  VD(eta);
+  
+  Visu.SetCellData(&VD);
+  Visu.SetMesh(GetMeshAgent()->GetMesh(0));
+  Visu.SetCellDataInfo(&VDI);
   Visu.write();
 }
 
@@ -211,7 +228,7 @@ void StdLoop::AdaptMesh(const DoubleVector& eta,string refine_or_coarsen_step)
       A.refine(refnodes,coarsenodes);
 
       if(refine_or_coarsen_step=="coarsen") GetMeshAgent()->refine_nodes(dummynodes,coarsenodes);
-      if(refine_or_coarsen_step=="refine")  GetMeshAgent()->refine_nodes(refnodes,dummynodes);
+      if(refine_or_coarsen_step=="refine")  GetMeshAgent()->refine_nodes(refnodes);
     }
   else if(_refiner=="dip") 
     {
@@ -306,13 +323,12 @@ void StdLoop::run(const std::string& problemlabel)
 
   Monitoring Moning;
   
-  std :: cout << "++++++++++++++++++++== niter = " << _niter << "\n";
   for (_iter=1; _iter<=_niter; _iter++)
     {
       cout << "\n================== " << _iter << " ================";
       PrintMeshInformation();
       Moning.SetMeshInformation(_iter,GetMeshAgent()->nnodes(),GetMeshAgent()->ncells());
-      
+
       _clock_newmesh.start();
 
       GetSolverInfos()->GetNLInfo().control().matrixmustbebuild() = 1;

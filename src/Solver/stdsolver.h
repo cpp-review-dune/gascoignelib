@@ -94,11 +94,9 @@ class StdSolver : public virtual SolverInterface
   
   // 0.3 Matrizen
 
-//   const MatrixInterface* GetMatrix() const {assert(_MAP); return _MAP;}
   MatrixInterface* GetMatrix() const { return _MAP;}
   MatrixInterface*& GetMatrixPointer() {return _MAP;}
 
-//   const IluInterface* GetIlu() const {assert(_MIP); return _MIP;}
   IluInterface* GetIlu() const {assert(_MIP); return _MIP;}
   IluInterface*& GetIluPointer() { return _MIP;}
   
@@ -282,6 +280,7 @@ class StdSolver : public virtual SolverInterface
   //
 
   void ComputeError(const VectorInterface& u, GlobalVector& err) const;
+  void AssembleError(GlobalVector& eta, const VectorInterface& u, GlobalVector& err) const;
   double ComputeFunctional(VectorInterface& f, const VectorInterface& u, const Functional* FP) const;
 
   virtual double ComputeBoundaryFunctional(VectorInterface& f, const VectorInterface& u, VectorInterface& z, const BoundaryFunctional* FP) const;

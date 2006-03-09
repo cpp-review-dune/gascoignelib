@@ -327,6 +327,38 @@ void SparseBlockMatrix<B>::entry(nvector<int>::const_iterator start, nvector<int
 /*-------------------------------------------------------------*/
 
 template<class B>
+void SparseBlockMatrix<B>::entry(nvector<int>::const_iterator start1,
+                 nvector<int>::const_iterator stop1,
+                 nvector<int>::const_iterator start2,
+                 nvector<int>::const_iterator stop2,
+                 const EntryMatrix& M, double s)
+{
+  nvector<int>::const_iterator p, q;
+  int ii = 0;
+  for (p=start1; p!=stop1; p++)
+    {
+      int i = *p;
+      int jj = 0;
+      for(q=start2; q!=stop2; q++)
+    	{			
+      	  int j = *q;
+      	  for(int pos=US.start(i);pos<US.stop(i);pos++)
+            {
+              if(US.col(pos)==j)
+            	{
+                  mat(pos) -> entry(ii,jj,M,s);
+                  break;	
+        	}
+        	}
+    	jj++;
+    	}
+      ii++;
+    }
+} 
+
+/*-------------------------------------------------------------*/
+
+template<class B>
 void SparseBlockMatrix<B>::entrydual(nvector<int>::const_iterator start, nvector<int>::const_iterator stop, const EntryMatrix& M, double s)
 {
   nvector<int>::const_iterator p, q;

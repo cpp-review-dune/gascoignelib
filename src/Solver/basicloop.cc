@@ -218,7 +218,7 @@ void BasicLoop::InitSolution(VectorInterface& u)
     }
   GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(u);
   GetMultiLevelSolver()->GetSolver()->SubtractMean(u);
-  GetMultiLevelSolver()->GetSolver()->Visu(_s_resultsdir+"/solve",u,0);
+  //  GetMultiLevelSolver()->GetSolver()->Visu(_s_resultsdir+"/solve",u,0);
 }
 
 /*-------------------------------------------------*/
@@ -251,7 +251,13 @@ void BasicLoop::ComputeGlobalErrors(const VectorInterface& u)
   if (_GlobalErr.size()>0)
     {
       cout.precision(6);
-      cout << "\nGlobalErrors l2,h1,l8 " << _GlobalErr << endl;
+      for (int c=0; c<_GlobalErr.ncomp(); c++)
+	{
+	  cout << "\nGlobalErrors [" << c << "]  l2,h1,l8 ";
+	  for (int i=0; i <_GlobalErr.n(); i++)
+	    cout << " " << _GlobalErr(i,c);
+	}
+      cout << endl;
     }
 }
 
