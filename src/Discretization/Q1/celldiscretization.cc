@@ -815,7 +815,7 @@ void CellDiscretization::GetBoundaryMassDiag(DoubleVector& a) const
 	const IntVector& bv = *GMP->VertexOnBoundary(col);
 	for(int i=0;i<bv.size();i++)
 	{
-	    a[i] = 0;
+	    a[bv[i]] = 0;
 	}  
     }
     
