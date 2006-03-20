@@ -452,7 +452,10 @@ void StdSolver::HNZero(const VectorInterface& x) const {
   GetDiscretization()->HNZero(const_cast<GlobalVector&>(GetGV(x)));;
 }
 void StdSolver::HNDistribute(VectorInterface& x) const {
-  GetDiscretization()->HNDistribute(GetGV(x));
+  if(distribute())
+  {
+    GetDiscretization()->HNDistribute(GetGV(x));
+  }
 }
 
 /*-------------------------------------------------------*/
@@ -661,10 +664,7 @@ void StdSolver::Form(VectorInterface& gy, const VectorInterface& gx, double d) c
 
   HNZero(gx);
   HNZeroData();
-  if (distribute())
-  {
-    HNDistribute(gy);
-  }
+  HNDistribute(gy);
   SubtractMeanAlgebraic(gy);
 
 
@@ -694,10 +694,7 @@ void StdSolver::AdjointForm(VectorInterface& gy, const VectorInterface& gx, doub
 
   HNZero(gx);
   HNZeroData();
-  if (distribute())
-  {
-    HNDistribute(gy);
-  }
+  HNDistribute(gy);
   SubtractMeanAlgebraic(gy);
 }
 
@@ -952,10 +949,7 @@ void StdSolver::Rhs(VectorInterface& gf, double d) const
   
   
   HNZeroData();
-  if (distribute())
-    {
-      HNDistribute(gf);
-    }
+  HNDistribute(gf);
 }
 
 /*-------------------------------------------------------*/
