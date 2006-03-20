@@ -42,6 +42,8 @@ namespace Gascoigne
       virtual int ncells() const=0;
       virtual int nlevels() const=0;
 
+      virtual void read_gup(const std::string& fname)=0;
+      virtual void read_gip(const std::string& fname)=0;
       virtual void write_gup(const std::string& fname) const=0;
       virtual void write_gip(const std::string& fname) const=0;
       virtual void write_inp(const std::string& fname) const=0;
