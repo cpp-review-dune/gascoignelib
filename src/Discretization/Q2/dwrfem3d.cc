@@ -304,6 +304,32 @@ void DwrFemQ1Q23d::MassMatrix(MatrixInterface& A) const
       LocalToGlobal(A,__E,iq,1.);
     }
 }
+
+/* ----------------------------------------- */
+
+void Gascoigne::DwrFemQ1Q23d::MassForm(GlobalVector& f, const GlobalVector& u, const TimePattern& TP, double s) const
+{
+  nmatrix<double> TH,TL;
+
+  const IntegratorQ1Q2<3>* I = dynamic_cast<const IntegratorQ1Q2<3>*>(GetIntegrator());
+  assert(I);
+
+  const FemInterface& HighOrderFem(*GetFem());
+
+  for(int iq=0;iq<GetPatchMesh()->npatches();++iq)
+    {
+      Transformation  (TH,iq);
+      TransformationQ1(TL,iq);
+
+      HighOrderFem.ReInit(TH);
+      LowOrderFem .ReInit(TL);
+
+      GlobalToLocal(__U,u,iq);
+      I->MassForm(TP,__F,HighOrderFem,LowOrderFem,__U);
+      PatchDiscretization::LocalToGlobal(f,__F,iq,s);
+    }
+}
+
 /*---------------------------------------------------*/
 /*---------------------------------------------------*/
 
@@ -556,4 +582,30 @@ void DwrFemQ2Q13d::MassMatrix(MatrixInterface& A) const
       LocalToGlobal(A,__E,iq,1.);
     }
 }
+
+/* ----------------------------------------- */
+
+void Gascoigne::DwrFemQ2Q13d::MassForm(GlobalVector& f, const GlobalVector& u, const TimePattern& TP, double s) const
+{
+  nmatrix<double> TH,TL;
+
+  const IntegratorQ1Q2<3>* I = dynamic_cast<const IntegratorQ1Q2<3>*>(GetIntegrator());
+  assert(I);
+
+  const FemInterface& HighOrderFem(*GetFem());
+
+  for(int iq=0;iq<GetPatchMesh()->npatches();++iq)
+    {
+      Transformation  (TH,iq);
+      TransformationQ1(TL,iq);
+
+      HighOrderFem.ReInit(TH);
+      LowOrderFem .ReInit(TL);
+
+      GlobalToLocal(__U,u,iq);
+      I->MassForm(TP,__F,LowOrderFem,HighOrderFem,__U);
+      PatchDiscretization::LocalToGlobal(f,__F,iq,s);
+    }
+}
+
 }

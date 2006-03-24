@@ -196,6 +196,23 @@ void CellDiscretization::MassMatrix(MatrixInterface& A) const
 
 /* ----------------------------------------- */
 
+void Gascoigne::CellDiscretization::MassForm(GlobalVector& f, const GlobalVector& u, const TimePattern& TP, double s) const
+{
+  nmatrix<double> T;
+ 
+  for(int iq=0;iq<GetMesh()->ncells();++iq)
+  {
+    Transformation(T,iq);
+    GetFem()->ReInit(T);
+
+    GlobalToLocal(__U,u,iq);
+    GetIntegrator()->MassForm(TP,__F,*GetFem(),__U);
+    LocalToGlobal(f,__F,iq,s);
+  }
+}
+
+/* ----------------------------------------- */
+
 void CellDiscretization::ComputeError(const GlobalVector& u, LocalVector& err, const ExactSolution* ES) const
 {
   int ncomp = u.ncomp();

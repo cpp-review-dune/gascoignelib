@@ -65,6 +65,7 @@ public:
   void BoundaryMatrix (const BoundaryEquation& BE, EntryMatrix& E, const FemInterface& FEM, const LocalVector& U, int ile, int col, 
       const LocalNodeData& Q, const LocalCellData& QC) const;
   double MassMatrix(EntryMatrix& E, const FemInterface& FEM) const;
+  void MassForm(const TimePattern& TP, LocalVector& F, const FemInterface& FEM, const LocalVector& U) const;
 
   void RhsPoint(LocalVector& b, const FemInterface& E, const Vertex<DIM>& p, int comp) const;
   void DiracRhsPoint(LocalVector& b, const FemInterface& E, const Vertex<DIM>& p, const DiracRightHandSide& DRHS, int j,

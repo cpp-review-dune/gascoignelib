@@ -236,6 +236,23 @@ void PatchDiscretization::MassMatrix(MatrixInterface& A) const
 
 /* ----------------------------------------- */
 
+void Gascoigne::PatchDiscretization::MassForm(GlobalVector& f, const GlobalVector& u, const TimePattern& TP, double s) const
+{
+  nmatrix<double> T;
+
+  for(int iq=0;iq<GetPatchMesh()->npatches();++iq)
+  {
+    Transformation(T,iq);
+    GetFem()->ReInit(T);
+
+    GlobalToLocal(__U,u,iq);
+    GetIntegrator()->MassForm(TP,__F,*GetFem(),__U);
+    LocalToGlobal(f,__F,iq,s);
+  }
+}
+
+/* ----------------------------------------- */
+
 void PatchDiscretization::ComputeError(const GlobalVector& u, LocalVector& err, const ExactSolution* ES) const
 {
 //   const IntegrationFormulaInterface& IF = ErrorFormula();

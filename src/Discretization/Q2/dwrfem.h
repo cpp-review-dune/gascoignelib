@@ -64,6 +64,7 @@ class DwrFemQ1Q22d : virtual public DwrFem2d
   void BoundaryRhs(GlobalVector& f, const IntSet& Colors, const BoundaryRightHandSide& NRHS, double s) const;
   
   void MassMatrix(MatrixInterface& M) const;
+  void MassForm(GlobalVector& f, const GlobalVector& u, const TimePattern& TP, double s) const;
 };
 
 /*---------------------------------------------------*/
@@ -84,6 +85,7 @@ class DwrFemQ1Q23d : virtual public DwrFem3d
   void BoundaryRhs(GlobalVector& f, const IntSet& Colors, const BoundaryRightHandSide& NRHS, double s) const;
   
   void MassMatrix(MatrixInterface& M) const;
+  void MassForm(GlobalVector& f, const GlobalVector& u, const TimePattern& TP, double s) const;
 };
 
 /*---------------------------------------------------*/
@@ -105,6 +107,7 @@ class DwrFemQ2Q12d : virtual public DwrFem2d
   void BoundaryRhs(GlobalVector& f, const IntSet& Colors, const BoundaryRightHandSide& NRHS, double s) const;
  
   void MassMatrix(MatrixInterface& M) const;
+  void MassForm(GlobalVector& f, const GlobalVector& u, const TimePattern& TP, double s) const;
 };
 
 /*---------------------------------------------------*/
@@ -125,6 +128,7 @@ class DwrFemQ2Q13d : virtual public DwrFem3d
   void BoundaryRhs(GlobalVector& f, const IntSet& Colors, const BoundaryRightHandSide& NRHS, double s) const;
   
   void MassMatrix(MatrixInterface& M) const;
+  void MassForm(GlobalVector& f, const GlobalVector& u, const TimePattern& TP, double s) const;
 };
 }
 

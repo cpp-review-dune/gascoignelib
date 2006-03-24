@@ -37,6 +37,7 @@ class IntegratorQ1Q2 : public BasicIntegrator
       const DiracRightHandSide& DRHS, int j, const LocalNodeData& Q, const LocalCellData& QC) const;
 
   double MassMatrix(EntryMatrix& E, const FemInterface& FemH, const FemInterface& FemL) const;
+  void MassForm(const TimePattern& TP, LocalVector& F, const FemInterface& FemH, const FemInterface& FemL, const LocalVector& U) const;
 };
 
 }

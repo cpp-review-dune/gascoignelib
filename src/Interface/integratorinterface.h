@@ -81,6 +81,11 @@ namespace Gascoigne
         assert(0);
       }
 
+      virtual void MassForm(const TimePattern& TP, LocalVector& F, const FemInterface& FEM, const LocalVector& U) const {
+        std::cerr << "\"IntegratorInterface::MassForm\" not written!" << std::endl;
+        abort();
+      }
+
       virtual double ComputeDomainFunctional(const DomainFunctional& F, const FemInterface& FEM, 
           const LocalVector& U, const LocalNodeData& Q, const LocalCellData& QC) const {
         std::cerr << "\"IntegratorInterface::ComputeDomainFunctional\" not written!" << std::endl;

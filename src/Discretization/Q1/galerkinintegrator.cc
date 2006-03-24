@@ -392,6 +392,39 @@ void GalerkinIntegrator<DIM>::BoundaryMatrix (const BoundaryEquation& BE, EntryM
 /*-----------------------------------------------------------*/
 
 template<int DIM>
+void Gascoigne::GalerkinIntegrator<DIM>::MassForm(const TimePattern& TP, LocalVector& F, const FemInterface& FEM, const LocalVector& U) const
+{
+  F.ReInit(U.ncomp(),FEM.n());
+
+  const IntegrationFormulaInterface& IF = *MassFormula();
+
+  F.zero();
+  Vertex<DIM> xi;
+
+  for(int k=0; k<IF.n(); k++)
+  {
+    IF.xi(xi,k);
+    FEM.point(xi);
+    double vol = FEM.J();
+    double weight = IF.w(k) * vol;
+    BasicIntegrator::universal_point(FEM,_UH,U);
+    for(int i=0;i<FEM.n();i++)
+    {
+      FEM.init_test_functions(_NN,weight,i);
+      for(int m=0; m<TP.n(); m++)
+      {
+        for(int n=0; n<TP.n(); n++)
+        {
+          F(i,m) += TP(m,n) * _UH[n].m() * _NN.m();
+        }
+      }
+    }
+  }
+}
+
+/*-----------------------------------------------------------*/
+
+template<int DIM>
 void GalerkinIntegrator<DIM>::RhsPoint
 (LocalVector& F, const FemInterface& E, const Vertex<DIM>& p, int comp) const
 {

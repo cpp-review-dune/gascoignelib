@@ -75,6 +75,7 @@ public:
   void Matrix(MatrixInterface& A, const GlobalVector& u, const Equation& EQ, double) const;
   void BoundaryMatrix(MatrixInterface& A, const GlobalVector& u, const IntSet& Colors, const BoundaryEquation& BE, double d) const;
   void MassMatrix(MatrixInterface& M) const;
+  void MassForm(GlobalVector& f, const GlobalVector& u, const TimePattern& TP, double s) const;
 
   void ComputeError(const GlobalVector& u, LocalVector& err, const ExactSolution* ES) const;
 

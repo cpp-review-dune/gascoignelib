@@ -366,6 +366,45 @@ double IntegratorQ1Q2<DIM>::IntegratorQ1Q2::MassMatrix(EntryMatrix& E, const Fem
 
 /*---------------------------------------------------------*/
 
+template<int DIM>
+void Gascoigne::IntegratorQ1Q2<DIM>::MassForm(const TimePattern& TP, LocalVector& F, const FemInterface& FemH, const FemInterface& FemL, const LocalVector& U) const
+{
+  assert(FemH.n()==FemL.n());
+
+  F.ReInit(U.ncomp(),FemH.n());
+  F.zero();
+
+  IntegrationFormulaInterface* IF;
+  if(DIM==2) IF = new PatchFormula2d<9,QuadGauss9>;
+  else       IF = new PatchFormula3d<27,HexGauss27>;
+
+  Vertex<DIM> xi;
+
+  for(int k=0; k<IF->n(); k++)
+  {
+    IF->xi(xi,k);
+    FemH.point(xi);
+    FemL.point(xi);
+    double vol = FemL.J();
+    double weight = IF->w(k) * vol;
+    BasicIntegrator::universal_point(FemL,_UH,U);
+    for(int i=0;i<FemH.n();i++)
+    {
+      FemH.init_test_functions(_NN,weight,i);
+      for(int m=0; m<TP.n(); m++)
+      {
+        for(int n=0; n<TP.n(); n++)
+        {
+          F(i,m) += TP(m,n) * _UH[n].m() * _NN.m();
+        }
+      }
+    }
+  }
+  delete IF;
+}
+
+/*---------------------------------------------------------*/
+
 template class IntegratorQ1Q2<2>;
 template class IntegratorQ1Q2<3>;
 }

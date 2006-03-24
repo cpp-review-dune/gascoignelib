@@ -77,7 +77,7 @@ namespace Gascoigne
       virtual void AdjointForm(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const {
         std::cerr << "\"DiscretizationInterface::AdjointForm\" not written!" << std::endl;
         abort();
-			}
+      }
       virtual void BoundaryForm(GlobalVector& f, const GlobalVector& u, const IntSet& Colors, 
           const BoundaryEquation& BE, double d) const {
         std::cerr << "\"DiscretizationInterface::BoundaryForm\" not written!" << std::endl;
@@ -90,6 +90,10 @@ namespace Gascoigne
       }
       virtual void MassMatrix(MatrixInterface& M) const {
         std::cerr << "\"DiscretizationInterface::MassMatrix\" not written!" << std::endl;
+        abort();
+      }
+      virtual void MassForm(GlobalVector& f, const GlobalVector& u, const TimePattern& TP, double s) const {
+        std::cerr << "\"DiscretizationInterface::MassForm\" not written!" << std::endl;
         abort();
       }
       virtual void DiracRhs(GlobalVector& f, const DiracRightHandSide& DRHS, double s) const {
