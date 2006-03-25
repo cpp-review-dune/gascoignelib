@@ -307,7 +307,6 @@ void DwrFemQ1Q22d::MassMatrix(MatrixInterface& A) const
 
 void Gascoigne::DwrFemQ1Q22d::MassForm(GlobalVector& f, const GlobalVector& u, const TimePattern& TP, double s) const
 {
-  cout << "DwrFemQ1Q22d::MassForm" << endl;
   nmatrix<double> TH,TL;
 
   const IntegratorQ1Q2<2>* I = dynamic_cast<const IntegratorQ1Q2<2>*>(GetIntegrator());
