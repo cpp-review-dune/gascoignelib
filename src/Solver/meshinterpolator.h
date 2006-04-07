@@ -19,8 +19,7 @@ class MeshInterpolator
     HierarchicalMesh                          *_Old,*_New;
     IntSet                                     _BaseCells,_ToBeRef,_ToBeRefNew;
     IntVector                                  _NewNodeNumber,_NewCellNumber;
-    MeshAgent                                 *_MA;
-    MeshAgentInterface                        *_OMA;
+    MeshAgent                                 *_MA, *_OMA;
     DiscretizationInterface                   *_ODI,*_DI;
     nmatrix<double>                            _wq1;
     std::vector<nmatrix<double> >              _wq2;
@@ -37,8 +36,8 @@ class MeshInterpolator
           MeshAgent* GetMeshAgent()       { assert(_MA); return _MA; }
     const MeshAgent* GetMeshAgent() const { assert(_MA); return _MA; }
 
-          MeshAgent* GetOriginalMeshAgent()       { return dynamic_cast<MeshAgent*>(_OMA); }
-    const MeshAgent* GetOriginalMeshAgent() const { return dynamic_cast<const MeshAgent*>(_OMA); }
+          MeshAgent* GetOriginalMeshAgent()       { assert(_OMA); return _OMA; }
+    const MeshAgent* GetOriginalMeshAgent() const { assert(_OMA); return _OMA; }
 
           DiscretizationInterface* GetOriginalDiscretization()       { assert(_ODI); return _ODI; }
     const DiscretizationInterface* GetOriginalDiscretization() const { assert(_ODI); return _ODI; }
