@@ -65,7 +65,6 @@ void LpsIntegrator<DIM>::Form(const Equation& EQ, LocalVector& F, const FemInter
 {
   NLPS.resize(FEM.n());
   MLPS.resize(FEM.n());
-  F.zero();
   
   const LpsEquation& LEQ = dynamic_cast<const LpsEquation&>(EQ);
 
@@ -108,8 +107,6 @@ void LpsIntegrator<DIM>::Matrix(const Equation& EQ, EntryMatrix& E, const FemInt
   assert(E.Ndof()==FEM.n());
   assert(E.Mdof()==FEM.n());
   assert(E.Ncomp()==U.ncomp());
-  E.zero();
-  
   
   NLPS.resize(FEM.n());
   MLPS.resize(FEM.n());
