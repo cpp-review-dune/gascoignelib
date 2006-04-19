@@ -15,7 +15,7 @@ namespace Gascoigne
 ////
 /////////////////////////////////////////////
 
-class Q2Lps2d : public Q22d
+class Q2Lps2d : public virtual Q22d
 {
 
 public:

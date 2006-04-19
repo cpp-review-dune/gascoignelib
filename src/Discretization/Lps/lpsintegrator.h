@@ -59,7 +59,7 @@ class LpsIntegratorQ1 : public LpsIntegrator<DIM>
 {
 protected:
 
-  std::string GetName() const {return "LpsQ1";}
+  std::string GetName() const {return "LpsIntegratorQ1";}
   void ResetMatrix(EntryMatrix& E, int n, int ncomp) const;
   void VectorReinit(LocalVector& F, int n, int ncomp) const;
 
@@ -81,7 +81,7 @@ class LpsIntegratorQ2 : public LpsIntegrator<DIM>
 {
 protected:
 
-  std::string GetName() const {return "LpsQ2";}
+  std::string GetName() const {return "LpsIntegratorQ2";}
 
 public:
 
