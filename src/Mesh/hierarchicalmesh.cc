@@ -14,7 +14,7 @@ using namespace std;
 namespace Gascoigne
 {
 HierarchicalMesh::HierarchicalMesh() 
-  : mnlevels(1), pdepth(1), etapatcher(1), withfaces(1), _i_showoutput(0)
+  : mnlevels(1), pdepth(1), etapatcher(1), _i_showoutput(0), withfaces(1)
  {}
 
 /*------------------------------------------------------*/
