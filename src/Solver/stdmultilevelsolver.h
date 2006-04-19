@@ -63,7 +63,7 @@ class StdMultiLevelSolver : public virtual MultiLevelSolverInterface
   virtual void SolverNewMesh();
 
   virtual const ProblemDescriptorInterface* GetProblemDescriptor() const { return _PD;}
-  virtual const ProblemContainer* GetProblemContainer()        const { assert(_PC); return _PC; }
+
   virtual void SetProblemContainer(const ProblemContainer* PC)       { _PC=PC;     }
   virtual const FunctionalContainer* GetFunctionalContainer()  const { return _FC; }
   virtual void SetFunctionalContainer(const FunctionalContainer* FC) { _FC=FC;     }
@@ -111,6 +111,9 @@ class StdMultiLevelSolver : public virtual MultiLevelSolverInterface
 //  virtual void SetState(const std::string& s) {
 //    for(int l=0;l<_SP.size();l++) _SP[l]->SetState(s);
 //  }
+
+  virtual const ProblemContainer* GetProblemContainer()        const { assert(_PC); return _PC; }
+
 
   int nlevels()                 const { assert(GetMeshAgent()); return GetMeshAgent()->nlevels();}
   virtual int FinestLevel  ()  const { return nlevels()-1;}
