@@ -9,7 +9,7 @@ namespace Gascoigne
 
 /**********************************************************/
 
-class Q23dWithSecond : public Q23d
+class Q23dWithSecond : public virtual Q23d
 {
   protected:
 
