@@ -10,7 +10,7 @@ using namespace std;
 
 namespace Gascoigne
 {
-  MeshAgent::MeshAgent() : MeshAgentInterface(), HMP(NULL), GMG(NULL), _goc2nc(false)
+  MeshAgent::MeshAgent() : MeshAgentInterface(), _goc2nc(false), HMP(NULL), GMG(NULL)
 {
 }
 
