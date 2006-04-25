@@ -70,7 +70,7 @@ namespace Gascoigne
 
 
       virtual void AddNodeVector(const std::string&, const VectorInterface& q)=0;
-      virtual void AddCellVector(const std::string&, const GlobalCellVector* q)=0;
+      virtual void AddCellVector(const std::string&, const VectorInterface& q)=0;
       virtual void AddParameterVector(const std::string&, const GlobalParameterVector* q)=0;
       virtual void DeleteNodeVector(const std::string&)=0;
       virtual void DeleteCellVector(const std::string&)=0;

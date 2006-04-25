@@ -158,10 +158,12 @@ class StdSolver : public virtual SolverInterface
   bool DirectSolver() const {return _directsolver;}
 
   void AddNodeVector(const std::string& name, const VectorInterface& q) {
+    assert(q.GetType()=="node");
     GetDiscretization()->AddNodeVector(name,&GetGV(q));
   }
-  void AddCellVector(const std::string& name, const GlobalCellVector* q) {
-    GetDiscretization()->AddCellVector(name,q);
+  void AddCellVector(const std::string& name, const VectorInterface& q) {
+    assert(q.GetType()=="cell");
+    GetDiscretization()->AddCellVector(name,&GetGV(q));
   }
   void AddParameterVector(const std::string& name, const GlobalParameterVector* q) {
     GetDiscretization()->AddParameterVector(name,q);
@@ -287,9 +289,8 @@ class StdSolver : public virtual SolverInterface
   virtual double ComputeDomainFunctional(VectorInterface& f, const VectorInterface& u, VectorInterface& z, const DomainFunctional* FP) const;
   virtual double ComputePointFunctional(VectorInterface& f, const VectorInterface& u, VectorInterface& z, const PointFunctional* NFP) const;
   virtual double ComputeResidualFunctional(VectorInterface& f, const VectorInterface& u, VectorInterface& z, const ResidualFunctional* FP) const;
-  virtual void EvaluateCellRightHandSide(GlobalCellVector& f, const DomainRightHandSide& CF, double d = 1.) const;
-  virtual void InterpolateDomainFunction(VectorInterface&  f, const DomainFunction& DF) const;
-  virtual void InterpolateDomainFunction(GlobalCellVector& f, const DomainFunction& DF) const;
+  virtual void EvaluateCellRightHandSide(VectorInterface& f, const DomainRightHandSide& CF, double d = 1.) const;
+  virtual void InterpolateDomainFunction(VectorInterface& f, const DomainFunction& DF) const;
 
   //
   /// vector - initialize

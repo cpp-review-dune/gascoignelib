@@ -491,7 +491,7 @@ void PatchDiscretization::DiracRhsPoint(GlobalVector& f,const DiracRightHandSide
 
 /* ----------------------------------------- */
 
-void Gascoigne::PatchDiscretization::GlobalToLocalCell(LocalCellVector& U, const GlobalCellVector& u, int iq) const
+void Gascoigne::PatchDiscretization::GlobalToLocalCell(LocalVector& U, const GlobalVector& u, int iq) const
 {
   IntVector cells = GetGascoigneMesh()->GetPatchIndexHandler().GetPatch2Cell(iq);
   U.ReInit(u.ncomp(),cells.size());

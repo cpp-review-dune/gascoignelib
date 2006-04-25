@@ -16,22 +16,22 @@ namespace Gascoigne
   ////
   /////////////////////////////////////////////
 
-  class GlobalData
+  class DataContainer
   {
     private:
 
     protected:
 
     public:
-      GlobalNodeData      _node;
-      GlobalCellData      _cell;
+      GlobalData          _node;
+      GlobalData          _cell;
       GlobalParameterData _parameter;
 
       //
       ////  Con(De)structor 
       //
-      GlobalData() {}
-      ~GlobalData() {}
+      DataContainer() {}
+      ~DataContainer() {}
 
       void AddNodeVector(const std::string& name, const GlobalVector* d) {
         assert(d!=NULL);
@@ -41,7 +41,7 @@ namespace Gascoigne
           abort();
         }
       }
-      void AddCellVector(const std::string& name, const GlobalCellVector* d) {
+      void AddCellVector(const std::string& name, const GlobalVector* d) {
         assert(d!=NULL);
         if(!_cell.insert(std::make_pair(name,d)).second)
         {
@@ -68,10 +68,10 @@ namespace Gascoigne
         _parameter.erase(name);
       }
 
-      const GlobalNodeData& GetNodeData() const {
+      const GlobalData& GetNodeData() const {
         return _node;
       }
-      const GlobalCellData& GetCellData() const {
+      const GlobalData& GetCellData() const {
         return _cell;
       }
       const GlobalParameterData& GetParameterData() const {

@@ -27,17 +27,17 @@ class IntegratorWithSecond : public GalerkinIntegratorQ2<DIM>
 
   void hesse(const FemInterface& E, FemFunction& UH, const LocalVector& u) const;
 
-  void hesse(const FemInterface& E, FemData& QH, const LocalNodeData& Q) const;
+  void hesse(const FemInterface& E, FemData& QH, const LocalData& Q) const;
 
   public:
     
   std::string GetName() const {return "IntegratorWithSecond";}
 
   double ComputeDomainFunctional(const DomainFunctional& F, const FemInterface& FEM, const LocalVector& U, 
-      const LocalNodeData& Q, const LocalCellData& QC) const; 
+      const LocalData& Q, const LocalData& QC) const; 
 
   void Rhs(const DomainRightHandSide& RHS, LocalVector& F, const FemInterface& FEM, 
-      const LocalNodeData& Q, const LocalCellData& QC) const;
+      const LocalData& Q, const LocalData& QC) const;
 
 };
 }

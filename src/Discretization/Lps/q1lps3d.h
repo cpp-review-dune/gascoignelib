@@ -51,7 +51,7 @@ public:
       Q13d::DeleteNodeVector(name);
       S->   DeleteNodeVector(name);
     }
-  void AddCellVector(const std::string& name, const GlobalCellVector* q) const 
+  void AddCellVector(const std::string& name, const GlobalVector* q) const 
     {
       Q13d::AddCellVector(name,q);
       S->   AddCellVector(name,q);

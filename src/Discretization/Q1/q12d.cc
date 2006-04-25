@@ -99,8 +99,8 @@ void Q12d::StrongDirichletVector(GlobalVector& u, const DirichletData& BF, int c
       int index = bv[i];
 
       QH.clear();
-      GlobalNodeData::const_iterator p=GetGlobalData().GetNodeData().begin();
-      for(; p!=GetGlobalData().GetNodeData().end(); p++)
+      GlobalData::const_iterator p=GetDataContainer().GetNodeData().begin();
+      for(; p!=GetDataContainer().GetNodeData().end(); p++)
       {
         QH[p->first].resize(p->second->ncomp());
         for(int c=0; c<p->second->ncomp(); c++)

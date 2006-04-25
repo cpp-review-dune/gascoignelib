@@ -35,6 +35,13 @@ int Q2::n() const
 
 /* ----------------------------------------- */
 
+int Q2::nc() const
+{
+  return GetMesh()->ncells();
+}
+
+/* ----------------------------------------- */
+
 int Q2::n_withouthanging() const
 {
   return GetMesh()->nnodes()-HN->nhnodes();
@@ -224,8 +231,8 @@ void Q2::StrongDirichletVector(GlobalVector& u, const DirichletData& BF, int col
       int index = bv[i];
 
       QH.clear();
-      GlobalNodeData::const_iterator p=GetGlobalData().GetNodeData().begin();
-      for(; p!=GetGlobalData().GetNodeData().end(); p++)
+      GlobalData::const_iterator p=GetDataContainer().GetNodeData().begin();
+      for(; p!=GetDataContainer().GetNodeData().end(); p++)
       {
         QH[p->first].resize(p->second->ncomp());
         for(int c=0; c<p->second->ncomp(); c++)

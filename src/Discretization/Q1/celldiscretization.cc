@@ -603,7 +603,7 @@ double CellDiscretization::ComputePointValue(const GlobalVector& u, const Vertex
 
 /* ----------------------------------------- */
 
-void CellDiscretization::EvaluateCellRightHandSide(GlobalCellVector& f, const DomainRightHandSide& CF, double d) const
+void CellDiscretization::EvaluateCellRightHandSide(GlobalVector& f, const DomainRightHandSide& CF, double d) const
 {
   nmatrix<double> T;
 
@@ -654,7 +654,7 @@ void CellDiscretization::InterpolateDomainFunction(GlobalVector& f, const Domain
 
 /* ----------------------------------------- */  
 
-void CellDiscretization::InterpolateCellDomainFunction(GlobalCellVector& f, const DomainFunction& DF) const
+void CellDiscretization::InterpolateCellDomainFunction(GlobalVector& f, const DomainFunction& DF) const
 {
   int dim = GetMesh()->dimension();
   f.zero();

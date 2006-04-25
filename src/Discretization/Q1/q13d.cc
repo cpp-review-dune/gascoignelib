@@ -91,8 +91,8 @@ void Q13d::StrongDirichletVector(GlobalVector& u, const DirichletData& BF, int c
       const Vertex3d& v = GMP->vertex3d(index);
 
       QH.clear();
-      GlobalNodeData::const_iterator p=GetGlobalData().GetNodeData().begin();
-      for(; p!=GetGlobalData().GetNodeData().end(); p++)
+      GlobalData::const_iterator p=GetDataContainer().GetNodeData().begin();
+      for(; p!=GetDataContainer().GetNodeData().end(); p++)
       {
         QH[p->first].resize(p->second->ncomp());
         for(int c=0; c<p->second->ncomp(); c++)

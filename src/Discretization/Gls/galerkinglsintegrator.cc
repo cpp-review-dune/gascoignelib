@@ -7,7 +7,7 @@ namespace Gascoigne
 {
 template<int DIM>
 void GalerkinGlsIntegrator<DIM>::Form(const Equation& EQ, LocalVector& F, const FemInterface& FEM, const LocalVector& U, 
-    const LocalNodeData& Q, const LocalNodeData& QC) const
+    const LocalData& Q, const LocalData& QC) const
 {
   GalerkinIntegrator<DIM>::Form(EQ,F,FEM,U,Q,QC);
   Gls.                     Form(EQ,F,FEM,U,Q,QC);
@@ -17,7 +17,7 @@ void GalerkinGlsIntegrator<DIM>::Form(const Equation& EQ, LocalVector& F, const 
 
 template<int DIM>
 void GalerkinGlsIntegrator<DIM>::Matrix(const Equation& EQ, EntryMatrix& E, const FemInterface& FEM, const LocalVector& U, 
-    const LocalNodeData& Q, const LocalNodeData& QC) const
+    const LocalData& Q, const LocalData& QC) const
 {
   GalerkinIntegrator<DIM>::Matrix(EQ,E,FEM,U,Q,QC);
   Gls.                     Matrix(EQ,E,FEM,U,Q,QC);

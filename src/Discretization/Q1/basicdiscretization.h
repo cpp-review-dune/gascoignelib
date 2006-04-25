@@ -22,19 +22,19 @@ class BasicDiscretization : public DiscretizationInterface
 {
  private:
    const MeshInterface*  __MP;
-   mutable GlobalData    __q;
+   mutable DataContainer __q;
   
  protected:
    mutable EntryMatrix __E;
    mutable LocalVector __F;
    mutable LocalVector __U;
 
-   mutable LocalNodeData        __QN;
-   mutable LocalParameterData   __QP;
-   mutable LocalCellData        __QC;
+   mutable LocalData           __QN;
+   mutable LocalData           __QC;
+   mutable LocalParameterData  __QP;
    
-   virtual const GlobalData& GetGlobalData() const {return __q;}
-   virtual void SetGlobalData(const GlobalData& q) const {__q = q;}
+   virtual const DataContainer& GetDataContainer() const {return __q;}
+   virtual void SetDataContainer(const DataContainer& q) const {__q = q;}
 
    virtual const MeshInterface* GetMesh() const { assert(__MP); return __MP;}
 
@@ -45,7 +45,7 @@ class BasicDiscretization : public DiscretizationInterface
    }
    virtual void GlobalToLocalData(int iq) const;
    virtual void GlobalToLocalSingle(LocalVector& U, const GlobalVector& u, int iq) const;
-   virtual void GlobalToLocalCell(LocalCellVector& U, const GlobalCellVector& u, int iq) const;
+   virtual void GlobalToLocalCell(LocalVector& U, const GlobalVector& u, int iq) const;
 
    virtual void LocalToGlobal(GlobalVector& f, const LocalVector& F, int iq, double s) const;
    virtual void LocalToGlobal(MatrixInterface& A, EntryMatrix& E, int iq, double s) const;
@@ -68,7 +68,7 @@ class BasicDiscretization : public DiscretizationInterface
    virtual void DeleteNodeVector(const std::string& name) const {
      __q.DeleteNodeVector(name);
    }
-   virtual void AddCellVector(const std::string& name, const GlobalCellVector* q) const {
+   virtual void AddCellVector(const std::string& name, const GlobalVector* q) const {
      __q.AddCellVector(name,q);
    }
    virtual void DeleteCellVector(const std::string& name) const {

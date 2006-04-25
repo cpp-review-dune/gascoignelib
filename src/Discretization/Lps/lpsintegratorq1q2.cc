@@ -63,7 +63,7 @@ void LpsIntegratorQ1<DIM>::VectorReinit(LocalVector& F, int n, int ncomp) const
 
 template<int DIM>
 void LpsIntegratorQ1<DIM>::Form(const Equation& EQ, LocalVector& F, const FemInterface& FEM, const LocalVector& U, 
-    const LocalNodeData& Q, const LocalCellData& QC) const
+    const LocalData& Q, const LocalData& QC) const
 {
   VectorReinit(F,FEM.n(),EQ.GetNcomp());
   LpsIntegrator<DIM>::Form(EQ,F,FEM,U,Q,QC);
@@ -73,7 +73,7 @@ void LpsIntegratorQ1<DIM>::Form(const Equation& EQ, LocalVector& F, const FemInt
 
 template<int DIM>
 void LpsIntegratorQ1<DIM>::Matrix(const Equation& EQ, EntryMatrix& E, const FemInterface& FEM, const LocalVector& U, 
-    const LocalNodeData& Q, const LocalCellData& QC) const
+    const LocalData& Q, const LocalData& QC) const
 {
   ResetMatrix(E,FEM.n(),U.ncomp());
   LpsIntegrator<DIM>::Matrix(EQ,E,FEM,U,Q,QC);

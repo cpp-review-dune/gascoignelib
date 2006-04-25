@@ -67,8 +67,8 @@ namespace Gascoigne
       virtual void DeleteVector(VectorInterface& g)=0;
       virtual void RegisterVectors()=0;
       virtual void RegisterMatrix()=0;
-      virtual void ReInitVector(VectorInterface& v, int comp)=0;
       virtual void ReInitVector(VectorInterface& v)=0;
+      virtual void ReInitVector(VectorInterface& v, int comp)=0;
 
       //
       /// vector 
@@ -83,9 +83,8 @@ namespace Gascoigne
         return Solve(nlevels()-1,x,b,nlinfo);
       }
       virtual void InterpolateSolution(VectorInterface& u, const GlobalVector& uold) const=0;
+      virtual void InterpolateCellSolution(VectorInterface& u, const GlobalVector& uold) const=0;
       virtual double ComputeFunctional(VectorInterface& f, const VectorInterface& u, const std::string& label) const=0;
-      //Um die Kontrolle auf naechste Gitter zu uebertragen
-      virtual void InterpolateCellSolution(GlobalCellVector& u, const GlobalCellVector& uold) const=0;
 
       virtual void AssembleDualMatrix(VectorInterface& u)=0;
       virtual void vmulteq(VectorInterface& y, const VectorInterface&  x) const=0;

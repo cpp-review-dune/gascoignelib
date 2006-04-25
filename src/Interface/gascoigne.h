@@ -22,13 +22,8 @@ namespace Gascoigne
 {
   typedef CompVector<double>                                        GlobalVector;
   typedef CompVector<double>                                        LocalVector;
-  typedef std::map<const std::string,const GlobalVector*>           GlobalNodeData;
-  typedef std::map<const std::string,LocalVector>                   LocalNodeData;
-
-  typedef CompVector<double>                                        GlobalCellVector;
-  typedef CompVector<double>                                        LocalCellVector;
-  typedef std::map<const std::string,const GlobalCellVector*>       GlobalCellData;
-  typedef std::map<const std::string,LocalCellVector>               LocalCellData;
+  typedef std::map<const std::string,const GlobalVector*>           GlobalData;
+  typedef std::map<const std::string,LocalVector>                   LocalData;
 
   typedef nvector<double>                                           GlobalParameterVector;
   typedef nvector<double>                                           LocalParameterVector;
@@ -50,6 +45,5 @@ namespace Gascoigne
   typedef nvector<double>                                           CellFunction;
   typedef std::map<const std::string,CellFunction>                  CellData;
 }
-
 
 #endif

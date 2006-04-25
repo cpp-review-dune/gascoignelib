@@ -34,7 +34,7 @@ void VtkVisu::WriteNodeData(const DoubleVector& eta)
 
 /*-------------------------------------------------*/
 
-void VtkVisu::WriteCellData(const GlobalCellVector& eta)
+void VtkVisu::WriteCellData(const GlobalVector& eta)
 {
   int ncomp = eta.ncomp();
 

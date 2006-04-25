@@ -33,10 +33,10 @@ class GalerkinGlsIntegrator : public GalerkinIntegrator<DIM>
 
   std::string GetName() const {return "GalerkinGlsIntegrator";}
 
-  void Form(const Equation& EQ, LocalVector& F, const FemInterface& FEM, const LocalVector&U, const LocalNodeData& Q, 
-      const LocalCellData& QC) const;
-  void Matrix(const Equation& EQ, EntryMatrix& E, const FemInterface& FEM, const LocalVector& U, const LocalNodeData& Q, 
-      const LocalCellData& QC) const;
+  void Form(const Equation& EQ, LocalVector& F, const FemInterface& FEM, const LocalVector&U, const LocalData& Q, 
+      const LocalData& QC) const;
+  void Matrix(const Equation& EQ, EntryMatrix& E, const FemInterface& FEM, const LocalVector& U, const LocalData& Q, 
+      const LocalData& QC) const;
 };
 }
 

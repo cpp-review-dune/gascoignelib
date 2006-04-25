@@ -85,10 +85,10 @@ public:
 
   double ComputePointFunctional(const GlobalVector& u, const PointFunctional& FP) const;
 
-  void EvaluateCellRightHandSide(GlobalCellVector& f, const DomainRightHandSide& CF, double d) const;
+  void EvaluateCellRightHandSide(GlobalVector& f, const DomainRightHandSide& CF, double d) const;
 
   void InterpolateDomainFunction(GlobalVector& f, const DomainFunction& DF) const;
-  void InterpolateCellDomainFunction(GlobalCellVector& f, const DomainFunction& DF) const;
+  void InterpolateCellDomainFunction(GlobalVector& f, const DomainFunction& DF) const;
 
   virtual nmatrix<double> GetLocalInterpolationWeights() const { assert(0); return nmatrix<double>();}
 

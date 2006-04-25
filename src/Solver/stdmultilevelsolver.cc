@@ -148,21 +148,22 @@ void StdMultiLevelSolver::RegisterVectors()
 
 /*-------------------------------------------------------------*/
 
-void StdMultiLevelSolver::ReInitVector(VectorInterface& v, int comp)
-{
-  for (int level=0; level<nlevels(); ++level)  
-    {
-      GetSolver(level)->ReInitVector(v,comp);
-    }
-}
-
-/*-------------------------------------------------------------*/
 
 void StdMultiLevelSolver::ReInitVector(VectorInterface& v)
 {
   for (int level=0; level<nlevels(); ++level)  
     {
       GetSolver(level)->ReInitVector(v);
+    }
+}
+
+/*-------------------------------------------------------------*/
+
+void StdMultiLevelSolver::ReInitVector(VectorInterface& v, int comp)
+{
+  for (int level=0; level<nlevels(); ++level)  
+    {
+      GetSolver(level)->ReInitVector(v,comp);
     }
 }
 
@@ -897,40 +898,43 @@ void StdMultiLevelSolver::DeleteNodeVector(const string& name)
 
 /*-------------------------------------------------------------*/
 
-void StdMultiLevelSolver::InterpolateCellSolution(GlobalCellVector& q, const GlobalCellVector& qold) const
+void StdMultiLevelSolver::InterpolateCellSolution(VectorInterface& u, const GlobalVector& uold) const
 {
-    if(!GetMeshAgent()->Goc2nc())
-    {
-	cerr << "No cell interpolation activated"<< endl;
-	abort();
-    }
-    int cells = GetMeshAgent()->ncells();
-    q.ReInit(qold.ncomp(),cells);
+  assert(u.GetType()=="cell");
+  GlobalVector uu = GetSolver()->GetGV(u);
 
-    q.zero();
-    //Jetzt Interpolieren wir die Loesung auf das neue Gitter
-    for(int i = 0; i < qold.n(); i++)
+  if(!GetMeshAgent()->Goc2nc())
+  {
+    cerr << "No cell interpolation activated"<< endl;
+    abort();
+  }
+  int cells = GetMeshAgent()->ncells();
+  uu.ReInit(uold.ncomp(),cells);
+
+  uu.zero();
+  //Jetzt Interpolieren wir die Loesung auf das neue Gitter
+  for(int i = 0; i < uold.n(); i++)
+  {
+    set<int> kinder = GetMeshAgent()->Cello2n(i);
+    if(!kinder.empty())
     {
-	set<int> kinder = GetMeshAgent()->Cello2n(i);
-	if(!kinder.empty())
-	{
-	    //es wurde nicht vergroebert
-	    for(set<int>::iterator p = kinder.begin(); p != kinder.end(); p++)
-	    {
-	      for(int c=0; c<qold.ncomp();++c)
-	      {
-		q(*p,c) = qold(i,c);
-	      }
-	    }
-	}
-	else
-	{
-	    //Es wurde vergroebert
-	    int patchsize = 1<<GetMeshAgent()->GetMesh(FinestLevel())->dimension();
-	    q[GetMeshAgent()->Cello2nFather(i)] += qold[i]/static_cast<double>(patchsize);
-	}
-	
+      //es wurde nicht vergroebert
+      for(set<int>::iterator p = kinder.begin(); p != kinder.end(); p++)
+      {
+        for(int c=0; c<uold.ncomp();++c)
+        {
+          uu(*p,c) = uold(i,c);
+        }
+      }
     }
+    else
+    {
+      //Es wurde vergroebert
+      int patchsize = 1<<GetMeshAgent()->GetMesh(FinestLevel())->dimension();
+      uu[GetMeshAgent()->Cello2nFather(i)] += uold[i]/static_cast<double>(patchsize);
+    }
+
+  }
 }
 
 /*-------------------------------------------------------------*/

@@ -52,15 +52,15 @@ class MeshInterpolator
 
     virtual void BasicInit(DiscretizationInterface* DI, MeshAgentInterface* MA, 
 			   const std::string& name);
-    virtual void InterpolateCellVector(GlobalCellVector& uNew, const GlobalCellVector& uOld);
+    virtual void InterpolateCellVector(GlobalVector& uNew, const GlobalVector& uOld);
     virtual void RhsForProjection(GlobalVector& gf, const GlobalVector& u);
 
     virtual void AddVectorIntermediate(const GlobalVector& u, int order);
     virtual void AddVectorOld         (const GlobalVector& u, int order);
     virtual void AddVectorNew         (const GlobalVector& u, int order);
 
-    virtual void AddCellVectorOld(const GlobalCellVector& u);
-    virtual void AddCellVectorNew(const GlobalCellVector& u);
+    virtual void AddCellVectorOld(const GlobalVector& u);
+    virtual void AddCellVectorNew(const GlobalVector& u);
 };
 }
 

@@ -16,7 +16,7 @@ class VtkVisu : public Visualization
   ~VtkVisu();
 
   void WriteNodeData(const DoubleVector& eta);
-  void WriteCellData(const GlobalCellVector& eta);
+  void WriteCellData(const GlobalVector& eta);
 };
 
 /*--------------------------------------------------*/

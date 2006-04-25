@@ -518,9 +518,9 @@ void MeshInterpolator::AddVectorNew(const GlobalVector& u, int order)
 
 /**********************************************************/
 
-void MeshInterpolator::AddCellVectorOld(const GlobalCellVector& u)
+void MeshInterpolator::AddCellVectorOld(const GlobalVector& u)
 {
-  GlobalCellVector cu(u.ncomp(),_Old->ncells());
+  GlobalVector cu(u.ncomp(),_Old->ncells());
   const IntVector& celll2g = GetOriginalMeshAgent()->Celll2g();
   for(int i=0; i<u.n(); i++)
   {
@@ -534,9 +534,9 @@ void MeshInterpolator::AddCellVectorOld(const GlobalCellVector& u)
 
 /**********************************************************/
 
-void MeshInterpolator::AddCellVectorNew(const GlobalCellVector& u)
+void MeshInterpolator::AddCellVectorNew(const GlobalVector& u)
 {
-  GlobalCellVector cu(u.ncomp(),_New->ncells());
+  GlobalVector cu(u.ncomp(),_New->ncells());
   const IntVector& celll2g = GetMeshAgent()->Celll2g();
   for(int i=0; i<u.n(); i++)
   {
@@ -615,7 +615,7 @@ void MeshInterpolator::BasicInit(DiscretizationInterface* DI, MeshAgentInterface
 
 /**********************************************************/
 
-void MeshInterpolator::InterpolateCellVector(GlobalCellVector& out, const GlobalCellVector& in)
+void MeshInterpolator::InterpolateCellVector(GlobalVector& out, const GlobalVector& in)
 {
   AddCellVectorNew(in);
 

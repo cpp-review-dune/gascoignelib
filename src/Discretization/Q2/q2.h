@@ -36,6 +36,7 @@ public:
   ~Q2();
 
   int n() const;
+  int nc() const;
   int n_withouthanging() const;
   void ReInit(const MeshInterface* MP);
 

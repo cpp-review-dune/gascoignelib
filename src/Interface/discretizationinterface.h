@@ -15,7 +15,7 @@
 #include  "domainfunctional.h"
 #include  "mginterpolatorinterface.h"
 #include  "meshtransferinterface.h"
-#include  "globaldata.h"
+#include  "datacontainer.h"
 #include  "paramfile.h"
 #include  "pointfunctional.h"
 #include  "domainrighthandside.h"
@@ -44,8 +44,8 @@ namespace Gascoigne
       DiscretizationInterface() {}
       virtual ~DiscretizationInterface() {}
 
-      virtual const GlobalData& GetGlobalData() const=0;
-      virtual void SetGlobalData(const GlobalData& q) const=0;
+      virtual const DataContainer& GetDataContainer() const=0;
+      virtual void SetDataContainer(const DataContainer& q) const=0;
 
       //
       //// Functions called from the Solver
@@ -55,7 +55,7 @@ namespace Gascoigne
       virtual void AddNodeVector(const std::string& name, const GlobalVector* q) const=0;
       virtual void DeleteNodeVector(const std::string& name) const=0;
 
-      virtual void AddCellVector(const std::string& name, const GlobalCellVector* q) const=0;
+      virtual void AddCellVector(const std::string& name, const GlobalVector* q) const=0;
       virtual void DeleteCellVector(const std::string& name) const=0;
 
       virtual void AddParameterVector(const std::string& name, const GlobalParameterVector* q) const=0;
@@ -65,6 +65,7 @@ namespace Gascoigne
       virtual void ReInit   (const MeshInterface* M)=0;
 
       virtual int n() const=0;
+      virtual int nc() const=0;
       virtual int n_withouthanging()const {
         return n();
       }
@@ -171,7 +172,7 @@ namespace Gascoigne
         abort();
       }
 
-      virtual void EvaluateCellRightHandSide(GlobalCellVector& f, const DomainRightHandSide& CF, double d = 1.) const{
+      virtual void EvaluateCellRightHandSide(GlobalVector& f, const DomainRightHandSide& CF, double d = 1.) const{
         std::cerr << "\"DiscretizationInterface::EvaluateCellRighthandside\" not written!" << std::endl;
         abort();
       }
@@ -181,7 +182,7 @@ namespace Gascoigne
         abort();
       }
 
-      virtual void InterpolateCellDomainFunction(GlobalCellVector& f, const DomainFunction& DF) const{
+      virtual void InterpolateCellDomainFunction(GlobalVector& f, const DomainFunction& DF) const{
         std::cerr << "\"DiscretizationInterface::InterpolateCellDomainFunction\" not written!" << std::endl;
         abort();
       }

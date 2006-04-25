@@ -33,7 +33,7 @@ protected:
   const IntegrationFormulaInterface& FormFormula() const { return *_IF;}
   double Volume2MeshSize(double vol) const { return pow(vol,1./float(DIM));}
   void Init(const LpsEquation& LEQ, const FemInterface& FEM, const LocalVector& U, 
-	    const LocalNodeData& Q) const;
+	    const LocalData& Q) const;
 
 public:
 
@@ -47,9 +47,9 @@ public:
   std::string GetName() const {return "Lps";}
 
   virtual void Form(const Equation& EQ, LocalVector& F, const FemInterface& FEM, const LocalVector&U, 
-      const LocalNodeData& Q, const LocalCellData& QC) const;
+      const LocalData& Q, const LocalData& QC) const;
   virtual void Matrix(const Equation& EQ, EntryMatrix& E, const FemInterface& FEM, const LocalVector& U, 
-      const LocalNodeData& Q, const LocalCellData& QC) const;
+      const LocalData& Q, const LocalData& QC) const;
 };
 
 /*-----------------------------------------*/
@@ -69,9 +69,9 @@ public:
   ~LpsIntegratorQ1<DIM>() {}
 
   void Form(const Equation& EQ, LocalVector& F, const FemInterface& FEM, const LocalVector&U,
-      const LocalNodeData& Q, const LocalCellData& QC) const;
+      const LocalData& Q, const LocalData& QC) const;
   void Matrix(const Equation& EQ, EntryMatrix& E, const FemInterface& FEM, const LocalVector& U, 
-      const LocalNodeData& Q, const LocalCellData& QC) const;
+      const LocalData& Q, const LocalData& QC) const;
 };
 
 /*-----------------------------------------*/

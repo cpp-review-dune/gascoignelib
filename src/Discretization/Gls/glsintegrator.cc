@@ -21,7 +21,7 @@ GlsIntegrator<DIM>::GlsIntegrator() : BasicIntegrator()
 
 template<int DIM>
 void GlsIntegrator<DIM>::Form(const Equation& EQ, LocalVector& F, const FemInterface& FEM, const LocalVector& U, 
-    const LocalNodeData& Q, const LocalCellData& QC) const
+    const LocalData& Q, const LocalData& QC) const
 {
   assert(F.ncomp()==U.ncomp());
 
@@ -71,7 +71,7 @@ void GlsIntegrator<DIM>::Form(const Equation& EQ, LocalVector& F, const FemInter
 
 template<int DIM>
 void GlsIntegrator<DIM>::Matrix(const Equation& EQ, EntryMatrix& E, const FemInterface& FEM, const LocalVector& U, 
-    const LocalNodeData& Q, const LocalCellData& QC) const
+    const LocalData& Q, const LocalData& QC) const
 {
   assert(E.Ndof()==FEM.n());
   assert(E.Mdof()==FEM.n());

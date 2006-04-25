@@ -43,6 +43,9 @@ public:
   int n() const {
     return GetMesh()->nnodes();
   }
+  int nc() const {
+    return GetMesh()->ncells();
+  }
   //  const HNStructureQ1* GetHNStructure() const { return HN;}
 
   void ReInit   (const MeshInterface* MP);

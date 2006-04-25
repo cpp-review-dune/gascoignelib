@@ -99,8 +99,8 @@ class StdMultiLevelSolver : public virtual MultiLevelSolverInterface
   void RegisterVectors();
   void RegisterMatrix();
   void ReInitMatrix();
-  void ReInitVector(VectorInterface& v, int comp);
   void ReInitVector(VectorInterface& v);
+  void ReInitVector(VectorInterface& v, int comp);
 
   void BasicInit(const MeshAgentInterface* GMGM, const ParamFile* paramfile,
 		 const ProblemContainer* PC,
@@ -134,8 +134,7 @@ class StdMultiLevelSolver : public virtual MultiLevelSolverInterface
   std::string LinearSolve(int level, VectorInterface& u, const VectorInterface& b, CGInfo& info);
   std::string Solve(int level, VectorInterface& x, const VectorInterface& b, NLInfo& nlinfo);
   void InterpolateSolution(VectorInterface& u, const GlobalVector& uold) const;
-  //Um die Kontrolle auf naechste Gitter zu uebertragen
-  void InterpolateCellSolution(GlobalCellVector& q, const GlobalCellVector& qold) const;
+  void InterpolateCellSolution(VectorInterface& u, const GlobalVector& uold) const;
 
   virtual void NewtonVectorZero(VectorInterface& w) const;
   virtual double NewtonResidual(VectorInterface& y, const VectorInterface& x, const VectorInterface& b) const;

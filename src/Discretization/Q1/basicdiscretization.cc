@@ -20,8 +20,8 @@ BasicDiscretization::~BasicDiscretization()
 
 void BasicDiscretization::HNAverageData() const
 {
-  const GlobalNodeData& gd = GetGlobalData().GetNodeData();
-  GlobalNodeData::const_iterator p=gd.begin();
+  const GlobalData& gd = GetDataContainer().GetNodeData();
+  GlobalData::const_iterator p=gd.begin();
   for(; p!=gd.end(); p++)
     {
       GlobalVector* v = const_cast<GlobalVector*>(p->second);
@@ -34,8 +34,8 @@ void BasicDiscretization::HNAverageData() const
 
 void BasicDiscretization::HNZeroData() const
 {
-  const GlobalNodeData& gd = GetGlobalData().GetNodeData();
-  GlobalNodeData::const_iterator p=gd.begin();
+  const GlobalData& gd = GetDataContainer().GetNodeData();
+  GlobalData::const_iterator p=gd.begin();
   for(; p!=gd.end(); p++)
     {
       GlobalVector* v = const_cast<GlobalVector*>(p->second);
@@ -48,17 +48,17 @@ void BasicDiscretization::HNZeroData() const
 
 void BasicDiscretization::GlobalToLocalData(int iq) const
 {
-  const GlobalNodeData& gnd = GetGlobalData().GetNodeData();
+  const GlobalData& gnd = GetDataContainer().GetNodeData();
   __QN.clear();
-  GlobalNodeData::const_iterator p=gnd.begin();
+  GlobalData::const_iterator p=gnd.begin();
   for(; p!=gnd.end(); p++)
     {
       GlobalToLocalSingle(__QN[p->first],*p->second,iq);
     }
 
-  const GlobalCellData& gcd = GetGlobalData().GetCellData();
+  const GlobalData& gcd = GetDataContainer().GetCellData();
   __QC.clear();
-  GlobalCellData::const_iterator q=gcd.begin();
+  GlobalData::const_iterator q=gcd.begin();
   for(; q!=gcd.end(); q++)
     {
       GlobalToLocalCell(__QC[q->first],*q->second,iq);
@@ -69,7 +69,7 @@ void BasicDiscretization::GlobalToLocalData(int iq) const
 
 void BasicDiscretization::GlobalToGlobalData() const
 {
-  const GlobalParameterData& gpd = GetGlobalData().GetParameterData();
+  const GlobalParameterData& gpd = GetDataContainer().GetParameterData();
   __QP.clear();
   GlobalParameterData::const_iterator p=gpd.begin();
   for(; p!=gpd.end(); p++)
@@ -93,7 +93,7 @@ void BasicDiscretization::GlobalToLocalSingle(LocalVector& U, const GlobalVector
 
 /* ----------------------------------------- */
 
-void BasicDiscretization::GlobalToLocalCell(LocalCellVector& U, const GlobalCellVector& u, int iq) const
+void BasicDiscretization::GlobalToLocalCell(LocalVector& U, const GlobalVector& u, int iq) const
 {
   U.ReInit(u.ncomp(),1);
   for(int c=0;c<u.ncomp();++c)

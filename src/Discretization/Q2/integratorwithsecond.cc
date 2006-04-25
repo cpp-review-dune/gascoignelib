@@ -113,9 +113,9 @@ void IntegratorWithSecond<3>::hesse(const FemInterface& E, FemFunction& UH, cons
 /* ----------------------------------------- */
 
 template<int DIM>
-void IntegratorWithSecond<DIM>::hesse(const FemInterface& E, FemData& QH, const LocalNodeData& Q) const
+void IntegratorWithSecond<DIM>::hesse(const FemInterface& E, FemData& QH, const LocalData& Q) const
 {
-  LocalNodeData::const_iterator p=Q.begin();
+  LocalData::const_iterator p=Q.begin();
   for(; p!=Q.end(); p++)
     {
       hesse(E, QH[p->first], p->second);
@@ -126,7 +126,7 @@ void IntegratorWithSecond<DIM>::hesse(const FemInterface& E, FemData& QH, const 
 
 template<int DIM>
 double IntegratorWithSecond<DIM>::ComputeDomainFunctional(const DomainFunctional& F, const FemInterface& FEM, const LocalVector& U, 
-    const LocalNodeData& Q, const LocalCellData& QC) const
+    const LocalData& Q, const LocalData& QC) const
 {
   const IntegrationFormulaInterface& IF = *GalerkinIntegratorQ2<DIM>::FormFormula();
 
@@ -156,7 +156,7 @@ double IntegratorWithSecond<DIM>::ComputeDomainFunctional(const DomainFunctional
 
 template<int DIM>
 void IntegratorWithSecond<DIM>::Rhs(const DomainRightHandSide& f, LocalVector& F, const FemInterface& FEM, 
-    const LocalNodeData& Q, const LocalCellData& QC) const
+    const LocalData& Q, const LocalData& QC) const
 {
   F.ReInit(f.GetNcomp(),FEM.n());
 

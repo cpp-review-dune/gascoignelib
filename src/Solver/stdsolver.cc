@@ -172,7 +172,7 @@ void StdSolver::SetDiscretization(DiscretizationInterface& DI, bool init)
   if(init)
   {
     DI.ReInit(GetMesh());
-    DI.SetGlobalData(GetDiscretization()->GetGlobalData());
+    DI.SetDataContainer(GetDiscretization()->GetDataContainer());
   }
   
   GetDiscretizationPointer() = &DI;
@@ -398,7 +398,8 @@ void StdSolver::ReInitVector(VectorInterface& dst)
 
 void StdSolver::ReInitVector(VectorInterface& dst, int comp)
 {
-  int n     = GetDiscretization()->n();
+  int n = GetDiscretization()->n();
+  int nc = GetDiscretization()->nc();
   
   // VectorInterface already registered ?
   //
@@ -420,7 +421,19 @@ void StdSolver::ReInitVector(VectorInterface& dst, int comp)
   // resize GlobalVector
   //
   p->second->ncomp()=comp;
-  p->second->reservesize(n);
+  if(p->first.GetType()=="node")
+  {
+    p->second->reservesize(n);
+  }
+  else if(p->first.GetType()=="cell")
+  {
+    p->second->reservesize(nc);
+  }
+  else
+  {
+    cerr << "No such vector type: " << p->first.GetType() << endl;
+    abort();
+  }
 }
 
 /*-------------------------------------------------------*/
@@ -877,11 +890,12 @@ double StdSolver::ComputeResidualFunctional(VectorInterface& gf, const VectorInt
 
 /*-------------------------------------------------------*/
 
-void StdSolver::EvaluateCellRightHandSide(GlobalCellVector& f, const DomainRightHandSide& CF, double d) const
+void StdSolver::EvaluateCellRightHandSide(VectorInterface& f, const DomainRightHandSide& CF, double d) const
 {
+  assert(f.GetType()=="cell");
   HNAverageData();
   
-  GetDiscretization()->EvaluateCellRightHandSide(f,CF,d);
+  GetDiscretization()->EvaluateCellRightHandSide(GetGV(f),CF,d);
 
   HNZeroData();
 }
@@ -892,18 +906,19 @@ void StdSolver::InterpolateDomainFunction(VectorInterface&  f, const DomainFunct
 {
   HNAverageData();
   
-  GetDiscretization()->InterpolateDomainFunction(GetGV(f),DF);
-
-  HNZeroData();
-}
-
-/*-------------------------------------------------------*/
-
-void StdSolver::InterpolateDomainFunction(GlobalCellVector& f, const DomainFunction& DF) const
-{
-  HNAverageData();
-  
-  GetDiscretization()->InterpolateCellDomainFunction(f,DF);
+  if(f.GetType()=="node")
+  {
+    GetDiscretization()->InterpolateDomainFunction(GetGV(f),DF);
+  }
+  else if(f.GetType()=="cell")
+  {
+    GetDiscretization()->InterpolateCellDomainFunction(GetGV(f),DF);
+  }
+  else
+  {
+    cerr << "No such vector type: " << f.GetType() << endl;
+    abort();
+  }
 
   HNZeroData();
 }
