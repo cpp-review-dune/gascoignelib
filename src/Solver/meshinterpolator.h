@@ -25,6 +25,7 @@ class MeshInterpolator
     std::vector<nmatrix<double> >              _wq2;
     std::vector<std::pair<int,int> >           _iq2;
     std::vector<std::pair<GlobalVector,int> >  _VecInt,_VecOld,_VecNew;
+    bool                                       _average;
 
     void CheckCell (int oldNumber, int newNumber);
     void Coarsen   (int newNumber);

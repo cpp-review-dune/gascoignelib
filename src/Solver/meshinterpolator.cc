@@ -134,7 +134,11 @@ void MeshInterpolator::Coarsen(int newNumber)
       if (order==0)
       {
         _VecInt[s].first.zero_node(cell);
-        double w = 1./static_cast<double>(npc);
+        double w = 1.;
+        if (_average)
+        {
+          w /= static_cast<double>(npc);
+        }
         for (int i=0; i<npc; i++)
         {
           int ci = _New->child(cell,i);
@@ -561,6 +565,7 @@ void MeshInterpolator::BasicInit(DiscretizationInterface* DI, MeshAgentInterface
   _VecInt.clear();
   _VecOld.clear();
   _VecNew.clear();
+  _average = false;
 
   // Original-Solver und -MeshAgent speichern
   MeshAgent *OMA = dynamic_cast<MeshAgent *>(MA);
@@ -665,10 +670,12 @@ void MeshInterpolator::InterpolateCellVector(GlobalVector& out, const GlobalVect
   assert(_VecNew.size()==1);
   _VecInt.push_back(_VecNew[0]);
 
+  _average = true;
   for (IntSet::const_iterator pbc = _BaseCells.begin(); pbc!=_BaseCells.end(); pbc++)
   {
     Distribute(*pbc,*pbc);
   }
+  _average = false;
 
   assert(_VecInt.size()==1);
   out.ReInit(in.ncomp(),GetOriginalMeshAgent()->GetMesh(0)->ncells());
