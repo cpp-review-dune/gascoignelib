@@ -400,7 +400,7 @@ void StdSolver::ReInitVector(VectorInterface& dst, int comp)
 {
   int n = GetDiscretization()->n();
   int nc = GetDiscretization()->nc();
-  
+
   // VectorInterface already registered ?
   //
   GhostVectorAgent::iterator p = _NGVA.find(dst);
@@ -416,19 +416,20 @@ void StdSolver::ReInitVector(VectorInterface& dst, int comp)
   if (p->second==NULL) 
     {
       p->second = new GlobalVector;
-      p->second->ncomp() = comp;
     }
+
   // resize GlobalVector
   //
   p->second->ncomp()=comp;
+
   if(p->first.GetType()=="node")
-  {
-    p->second->reservesize(n);
-  }
+    {
+      p->second->reservesize(n);
+    }
   else if(p->first.GetType()=="cell")
-  {
-    p->second->reservesize(nc);
-  }
+    {
+      p->second->reservesize(nc);
+    }
   else
   {
     cerr << "No such vector type: " << p->first.GetType() << endl;

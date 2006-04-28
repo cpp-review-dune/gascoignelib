@@ -27,12 +27,10 @@ GhostVectorAgent::~GhostVectorAgent()
 
 void GhostVectorAgent::Register(const VectorInterface& mg) 
 {
-  const std::string& name = mg.GetName();
-  VectorInterface g(name);
   iterator p = find(mg);
   if(p==end())
     {
-      insert(std::make_pair(g,static_cast<GlobalVector*>(NULL)));
+      insert(std::make_pair(mg,static_cast<GlobalVector*>(NULL)));
     }
 }
   
