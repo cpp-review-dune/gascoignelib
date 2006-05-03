@@ -665,6 +665,7 @@ void MeshInterpolator::InterpolateCellVector(GlobalVector& out, const GlobalVect
   }
   while (!_ToBeRef.empty() || !_ToBeRefNew.empty());
 
+  GetMeshAgent()->ClearCl2g();
   GetMeshAgent()->global_refine(0);
 
   assert(_VecNew.size()==1);
@@ -745,6 +746,7 @@ void MeshInterpolator::RhsForProjection(GlobalVector& f, const GlobalVector& u)
   }
   while (!_ToBeRef.empty() || !_ToBeRefNew.empty());
 
+  GetMeshAgent()->ClearCl2g();
   GetMeshAgent()->global_refine(0);
   GetDiscretization()->ReInit(GetMeshAgent()->GetMesh(0));
 
