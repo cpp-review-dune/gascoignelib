@@ -161,6 +161,7 @@ void MeshAgent::read_gup(const string& fname)
 {
   assert(HMP);
   HMP->read_gup(fname);
+  ClearCl2g();
   ReInit();
 }
 
@@ -170,6 +171,7 @@ void MeshAgent::read_gip(const string& fname)
 {
   assert(HMP);
   HMP->read_gip(fname);
+  ClearCl2g();
   ReInit();
 }
 

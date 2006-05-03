@@ -87,6 +87,7 @@ public:
 
   const std::set<int> Cello2n(int i)const;
   const int Cello2nFather(int i)const;
+  void ClearCl2g() { _cl2g.clear(); }
   const bool Goc2nc() const{ return _goc2nc;}
 
   const IntVector& Celll2g() const { return _celll2g; }
