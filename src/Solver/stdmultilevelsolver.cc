@@ -901,7 +901,7 @@ void StdMultiLevelSolver::DeleteNodeVector(const string& name)
 void StdMultiLevelSolver::InterpolateCellSolution(VectorInterface& u, const GlobalVector& uold) const
 {
   assert(u.GetType()=="cell");
-  GlobalVector uu = GetSolver()->GetGV(u);
+  GlobalVector &uu = GetSolver()->GetGV(u);
 
   if(!GetMeshAgent()->Goc2nc())
   {
