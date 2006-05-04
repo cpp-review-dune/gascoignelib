@@ -1142,12 +1142,24 @@ void StdSolver::PermutateIlu(const VectorInterface& gu) const
 
 void StdSolver::Visu(const string& name, const VectorInterface& gu, int i) const
 {
-  Visu(name,GetGV(gu),i);
+  if(gu.GetType()=="node")
+  {
+    PointVisu(name,GetGV(gu),i);
+  }
+  else if(gu.GetType()=="cell")
+  {
+    CellVisu(name,GetGV(gu),i);
+  }
+  else
+  {
+    cerr << "No such vector type: " << gu.GetType() << endl;
+    abort();
+  }
 }
 
 /* -------------------------------------------------------*/
 
-void StdSolver::Visu(const string& name, const GlobalVector& u, int i) const
+void StdSolver::PointVisu(const string& name, const GlobalVector& u, int i) const
 {
   GetDiscretization()->HNAverage(const_cast<GlobalVector&>(u)); 
   
@@ -1155,8 +1167,7 @@ void StdSolver::Visu(const string& name, const GlobalVector& u, int i) const
   Visu.SetMesh(GetMesh());  
 
   const ComponentInformation*  CI = GetProblemDescriptor()->GetComponentInformation();
-  //Visu.AddVector(&u);
-  Visu.AddVector(CI,&u);
+  Visu.AddPointVector(CI,&u);
 
   Visu.read_parameters(_paramfile);
   Visu.set_name(name);
@@ -1164,6 +1175,22 @@ void StdSolver::Visu(const string& name, const GlobalVector& u, int i) const
   Visu.write();
 
   GetDiscretization()->HNZero(const_cast<GlobalVector&>(u)); 
+}
+
+/* -------------------------------------------------------*/
+
+void StdSolver::CellVisu(const string& name, const GlobalVector& u, int i) const
+{
+  GascoigneVisualization Visu;
+  Visu.SetMesh(GetMesh());  
+
+  const ComponentInformation*  CI = GetProblemDescriptor()->GetComponentInformation();
+  Visu.AddCellVector(CI,&u);
+
+  Visu.read_parameters(_paramfile);
+  Visu.set_name(name);
+  Visu.step(i);
+  Visu.write();
 }
 
 /* -------------------------------------------------------*/

@@ -54,10 +54,9 @@ void GascoigneVisualization::AddVector(const ComponentInformation* CI, const Glo
       VDI.AddVector(i,s_name,fa_vectorindices);
     }
   }
-
-  SetPointData(&VD);
-  SetPointDataInfo(&VDI);
 }
+
+/*-----------------------------------------*/
 
 void GascoigneVisualization::AddVector(const GlobalVector* v) 
 {
@@ -89,8 +88,45 @@ void GascoigneVisualization::AddVector(const GlobalVector* v)
       VDI.AddVector(vector_index,"v",ff);
       vector_index++;
     }
+}
+
+/*-----------------------------------------*/
+
+void GascoigneVisualization::AddPointVector(const ComponentInformation* CI, const GlobalVector* v) 
+{
+  AddVector(CI,v);
 
   SetPointData(&VD);
   SetPointDataInfo(&VDI);
+}
+
+/* -------------------------------------------------------*/
+
+void GascoigneVisualization::AddPointVector(const GlobalVector* v) 
+{
+  AddVector(v);
+
+  SetPointData(&VD);
+  SetPointDataInfo(&VDI);
+}
+
+/* -------------------------------------------------------*/
+
+void GascoigneVisualization::AddCellVector(const ComponentInformation* CI, const GlobalVector* v) 
+{
+  AddVector(CI,v);
+
+  SetCellData(&VD);
+  SetCellDataInfo(&VDI);
+}
+
+/* -------------------------------------------------------*/
+
+void GascoigneVisualization::AddCellVector(const GlobalVector* v) 
+{
+  AddVector(v);
+
+  SetCellData(&VD);
+  SetCellDataInfo(&VDI);
 }
 }
