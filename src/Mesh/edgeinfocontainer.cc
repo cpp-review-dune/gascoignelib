@@ -29,7 +29,7 @@ void EdgeInfoContainer<DIM>::BasicInit(const HierarchicalMesh* HM, int ncomp)
   _HMP   = HM;
   _ncomp = ncomp;
 
-  resize(_HMP->nedges());
+  nvector<EdgeInfo<DIM>*>::resize(_HMP->nedges());
   for (int i=0; i<nvector<EdgeInfo<DIM>*>::size(); i++)
     {
       (*this)[i]=NULL;
