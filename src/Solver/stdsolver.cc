@@ -1167,7 +1167,14 @@ void StdSolver::PointVisu(const string& name, const GlobalVector& u, int i) cons
   Visu.SetMesh(GetMesh());  
 
   const ComponentInformation*  CI = GetProblemDescriptor()->GetComponentInformation();
-  Visu.AddPointVector(CI,&u);
+  if(CI)
+  {
+    Visu.AddPointVector(CI,&u);
+  }
+  else
+  {
+    Visu.AddPointVector(&u);
+  }
 
   Visu.read_parameters(_paramfile);
   Visu.set_name(name);
@@ -1185,7 +1192,14 @@ void StdSolver::CellVisu(const string& name, const GlobalVector& u, int i) const
   Visu.SetMesh(GetMesh());  
 
   const ComponentInformation*  CI = GetProblemDescriptor()->GetComponentInformation();
-  Visu.AddCellVector(CI,&u);
+  if(CI)
+  {
+    Visu.AddCellVector(CI,&u);
+  }
+  else
+  {
+    Visu.AddCellVector(&u);
+  }
 
   Visu.read_parameters(_paramfile);
   Visu.set_name(name);
