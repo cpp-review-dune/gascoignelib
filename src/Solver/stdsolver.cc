@@ -135,10 +135,10 @@ void StdSolver::RegisterMatrix()
   int ncomp = EQ->GetNcomp();
 
 #ifdef __WITH_UMFPACK__
-  if (_useUMFPACK && _MIP!=NULL)
+  if (_useUMFPACK && _MAP!=NULL)
   {
     SimpleMatrix* SM = dynamic_cast<SimpleMatrix*>(GetMatrix());
-    if ((SM && !_directsolver) || (!SM && _directsolver))
+    if ((!SM && _directsolver))
     {
       delete _MAP;
       _MAP = NULL;
