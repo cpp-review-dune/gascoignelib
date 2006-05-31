@@ -133,11 +133,18 @@ void StdSolver::RegisterMatrix()
   const Equation*  EQ = GetProblemDescriptor()->GetEquation();
   assert(EQ);
   int ncomp = EQ->GetNcomp();
-  
-  if (_MAP==NULL)
-    GetMatrixPointer() = NewMatrix(ncomp, _matrixtype);
 
 #ifdef __WITH_UMFPACK__
+  if (_useUMFPACK && _MIP!=NULL)
+  {
+    SimpleMatrix* SM = dynamic_cast<SimpleMatrix*>(GetMatrix());
+    if ((SM && !_directsolver) || (!SM && _directsolver))
+    {
+      delete _MAP;
+      _MAP = NULL;
+    }
+  }
+
   if (_useUMFPACK && _MIP!=NULL)
   {
     UmfIlu* UM = dynamic_cast<UmfIlu*>(GetIlu());
@@ -148,6 +155,9 @@ void StdSolver::RegisterMatrix()
     }
   }
 #endif
+
+  if (_MAP==NULL)
+    GetMatrixPointer() = NewMatrix(ncomp, _matrixtype);
 
   if (_MIP==NULL)
     GetIluPointer   () = NewIlu   (ncomp, _matrixtype);
