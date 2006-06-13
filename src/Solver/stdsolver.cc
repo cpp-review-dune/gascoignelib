@@ -138,7 +138,7 @@ void StdSolver::RegisterMatrix()
   if (_useUMFPACK && _MAP!=NULL)
   {
     SimpleMatrix* SM = dynamic_cast<SimpleMatrix*>(GetMatrix());
-    if ((!SM && _directsolver))
+    if ((SM && !_directsolver && _matrixtype!="point_node") || (!SM && _directsolver))
     {
       delete _MAP;
       _MAP = NULL;
