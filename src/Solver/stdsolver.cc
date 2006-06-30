@@ -72,40 +72,52 @@ StdSolver::~StdSolver()
 
 /*-------------------------------------------------------*/
 
-void StdSolver::_check_consistency(const Equation* EQ,const DiscretizationInterface* MP) const
+void StdSolver::_check_consistency(const Equation* EQ,const DiscretizationInterface* DI) const
 {
-  bool glseq = false, glsmi = false;
-  string eq = MP->GetName();
-  
+  string eq = DI->GetName();
+
+  bool glseq = false, glsdi = false;
+
   if (dynamic_cast<const GlsEquation*>(EQ))
-    {
-      glseq = true;
-    }
-  if (eq=="Q1Gls2d" || eq=="Q2Gls2d" || eq=="Q1Gls3d" || eq=="Q2Gls3d")
-    {
-    glsmi = true;
-  }
-  if(!(glseq && glsmi) && !(!glseq && !glsmi))
   {
-    cerr << "Discretization \"" << MP->GetName() << "\" doesn't go with type of given Equation!" << endl;
+    glseq = true;
+  }
+  if (eq=="Q1Gls2d" || eq=="Q2Gls2d" || eq=="Q1Gls3d" || eq=="Q2Gls3d")
+  {
+    glsdi = true;
+  }
+
+  if(glseq && !glsdi)
+  {
+    cerr << "Warning: Discretization \"" << eq << "\" doesn't go with type of given Equation!" << endl;
+  }
+  else if(!glseq && glsdi)
+  {
+    cerr << "Error: Discretization \"" << eq << "\" doesn't go with type of given Equation!" << endl;
     abort();
   }
-  
-//   bool lpseq = false, lpsmi = false;
-  
-//   if(dynamic_cast<const LpsEquation*>(EQ))
-//   {
-//     lpseq = true;
-//   }
-//   if(MP->GetName()=="Q1Lps2d" || MP->GetName()=="Q2Lps2d" || MP->GetName()=="Q1Lps3d" || MP->GetName()=="Q2Lps3d")
-//   {
-//     lpsmi = true;
-//   }
-//   if(!(lpseq && lpsmi) && !(!lpseq && !lpsmi))
-//   {
-//     cerr << "Discretization \"" << MP->GetName() << "\" doesn't go with type of given Equation!" << endl;
-//     abort();
-//   }
+
+
+  bool lpseq = false, lpsdi = false;
+
+  if(dynamic_cast<const LpsEquation*>(EQ))
+  {
+    lpseq = true;
+  }
+  if(eq=="Q1Lps2d" || eq=="Q2Lps2d" || eq=="Q1Lps3d" || eq=="Q2Lps3d")
+  {
+    lpsdi = true;
+  }
+
+  if(lpseq && !lpsdi)
+  {
+    cerr << "Warning: Discretization \"" << eq << "\" doesn't go with type of given Equation!" << endl;
+  }
+  else if(!lpseq && lpsdi)
+  {
+    cerr << "Error: Discretization \"" << eq << "\" doesn't go with type of given Equation!" << endl;
+    abort();
+  }
 }
 
 /*-------------------------------------------------------*/

@@ -120,7 +120,7 @@ class StdSolver : public virtual SolverInterface
   virtual void modify_ilu(IluInterface& I,int ncomp) const;
 
   virtual DoubleVector IntegrateSolutionVector(const VectorInterface& u) const;
-  virtual void _check_consistency(const Equation* EQ, const DiscretizationInterface* MP) const;
+  virtual void _check_consistency(const Equation* EQ, const DiscretizationInterface* DI) const;
   virtual void DirichletMatrixOnlyRow() const;
 
  public:
