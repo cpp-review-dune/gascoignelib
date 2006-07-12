@@ -20,7 +20,7 @@ int main(int argc, char** argv)
   
   LocalLoop loop;
   loop.BasicInit(&paramfile, &PC);
-  loop.run("heat");
+  loop.run("conv");
 
   return 0;
 }
