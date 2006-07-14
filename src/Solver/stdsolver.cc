@@ -488,7 +488,7 @@ void StdSolver::HNZero(const VectorInterface& x) const {
   GetDiscretization()->HNZero(const_cast<GlobalVector&>(GetGV(x)));;
 }
 void StdSolver::HNDistribute(VectorInterface& x) const {
-  if(distribute())
+  if(GetDistribute())
   {
     GetDiscretization()->HNDistribute(GetGV(x));
   }

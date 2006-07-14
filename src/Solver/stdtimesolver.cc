@@ -154,7 +154,7 @@ void Gascoigne::StdTimeSolver::InitialCondition(GlobalVector& f, double d) const
     }
 
   HNZeroData();
-  if (distribute())
+  if (GetDistribute())
   {
     GetDiscretization()->HNDistribute(f);
   }

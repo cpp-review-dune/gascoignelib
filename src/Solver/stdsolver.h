@@ -201,14 +201,12 @@ class StdSolver : public virtual SolverInterface
   /// vector - hanging nodes
   //
 
-  bool distribute() const { return _distribute; }
+  bool GetDistribute() const { return _distribute; }
   void SetDistribute(bool dist) { _distribute = dist; }
 
   void HNAverage   (const VectorInterface& x) const;
   void HNZero      (const VectorInterface& x) const;
   void HNDistribute(VectorInterface& x) const;
-/*   bool HNZeroCheck(const GlobalVector& x) const; */
-/*   void HNDistribute(GlobalVector& x) const; */
   void HNAverageData() const;
   void HNZeroData() const;
 
