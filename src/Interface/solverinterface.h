@@ -92,8 +92,8 @@ namespace Gascoigne
       //
       /// vector - hanging nodes
       //
-      virtual bool GetDistribute() const=0;
-      virtual void SetDistribute(bool dist)=0;
+      virtual bool GetDistribute() const{abort();}
+      virtual void SetDistribute(bool dist){abort();}
 
       virtual void HNAverage   (const VectorInterface& x) const=0;
       virtual void HNZero      (const VectorInterface& x) const=0;
