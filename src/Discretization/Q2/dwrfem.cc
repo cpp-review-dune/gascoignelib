@@ -2,6 +2,7 @@
 #include "galerkinintegratorq2.h"
 #include "baseq22d.h"
 #include "integratorq1q2.h"
+#include "hnstructureq22d.h"
 #include <ext/hash_set>
 
 using namespace std;
@@ -11,7 +12,21 @@ namespace Gascoigne
 
 /*---------------------------------------------------*/
 
-DwrFem2d::DwrFem2d() : Q22d() {}
+DwrFem2d::DwrFem2d() : Q22d()
+{
+  HNLow = new HNStructureQ12d;
+}
+
+/*---------------------------------------------------*/
+
+DwrFem2d::~DwrFem2d()
+{
+  if(HNLow)
+  {
+    delete HNLow;
+    HNLow = NULL;
+  }
+}
 
 /*---------------------------------------------------*/
 
@@ -29,6 +44,15 @@ void DwrFem2d::BasicInit(const ParamFile* paramfile)
 
   PatchDiscretization::GetFemPointer() = new FiniteElement;
   PatchDiscretization::BasicInit(paramfile);
+}
+
+/*---------------------------------------------------*/
+
+void DwrFem2d::ReInit(const MeshInterface* MP)
+{
+  Q22d::ReInit(MP);
+
+  HNLow->ReInit(MP);
 }
 
 /*---------------------------------------------------*/
@@ -328,6 +352,17 @@ void Gascoigne::DwrFemQ1Q22d::MassForm(GlobalVector& f, const GlobalVector& u, c
     }
 }
 
+/* ----------------------------------------- */
+
+void DwrFemQ1Q22d::LocalToGlobal(MatrixInterface& A, EntryMatrix& E, int iq, double s) const
+{
+  nvector<int> indices = GetLocalIndices(iq);
+  dynamic_cast<HNStructureQ22d*>(HN)->CondenseHangingLowerHigher(E,indices);
+  nvector<int>::const_iterator  start = indices.begin();
+  nvector<int>::const_iterator  stop  = indices.end();
+  A.entry(start,stop,E,s);
+}
+
 /*---------------------------------------------------*/
 /*---------------------------------------------------*/
 
@@ -605,4 +640,16 @@ void Gascoigne::DwrFemQ2Q12d::MassForm(GlobalVector& f, const GlobalVector& u, c
       PatchDiscretization::LocalToGlobal(f,__F,iq,s);
     }
 }
+
+/* ----------------------------------------- */
+
+void DwrFemQ2Q12d::LocalToGlobal(MatrixInterface& A, EntryMatrix& E, int iq, double s) const
+{
+  nvector<int> indices = GetLocalIndices(iq);
+  dynamic_cast<HNStructureQ22d*>(HN)->CondenseHangingHigherLower(E,indices);
+  nvector<int>::const_iterator  start = indices.begin();
+  nvector<int>::const_iterator  stop  = indices.end();
+  A.entry(start,stop,E,s);
+}
+
 }

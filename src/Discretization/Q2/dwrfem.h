@@ -18,14 +18,16 @@ class DwrFem2d : public Q22d
  protected:
   typedef Transformation2d<BaseQ12d>         TransQ1;
   FiniteElement<2,1,TransQ1,BaseQ12dPatch>   LowOrderFem;
+  HNStructureQ1*                             HNLow;
   
   void TransformationQ1(FemInterface::Matrix& T, int iq) const;
 
  public:
   DwrFem2d();
-  ~DwrFem2d() {}
+  ~DwrFem2d();
 
   void BasicInit(const ParamFile* paramfile);
+  void ReInit(const MeshInterface* MP);
 };
 
 /*---------------------------------------------------*/
@@ -35,14 +37,16 @@ class DwrFem3d : public Q23d
  protected:
   typedef Transformation3d<BaseQ13d>         TransQ1;
   FiniteElement<3,2,TransQ1,BaseQ13dPatch>   LowOrderFem;
+  HNStructureQ1*                             HNLow;
   
   void TransformationQ1(FemInterface::Matrix& T, int iq) const;
 
  public:
   DwrFem3d();
-  ~DwrFem3d() {}
+  ~DwrFem3d();
 
   void BasicInit(const ParamFile* paramfile);
+  void ReInit(const MeshInterface* MP);
 };
 
 /*---------------------------------------------------*/
@@ -65,6 +69,13 @@ class DwrFemQ1Q22d : virtual public DwrFem2d
   
   void MassMatrix(MatrixInterface& M) const;
   void MassForm(GlobalVector& f, const GlobalVector& u, const TimePattern& TP, double s) const;
+
+  void LocalToGlobal(MatrixInterface& A, EntryMatrix& E, int iq, double s) const;
+
+  void HNAverage   (GlobalVector& x)       const { HNLow->Average(x); }
+  void HNDistribute(GlobalVector& x)       const { HN->Distribute(x); }
+  void HNZero      (GlobalVector& x)       const { HNLow->Zero(x); }
+  bool HNZeroCheck (const GlobalVector& x) const { return HNLow->ZeroCheck(x); }
 };
 
 /*---------------------------------------------------*/
@@ -86,6 +97,13 @@ class DwrFemQ1Q23d : virtual public DwrFem3d
   
   void MassMatrix(MatrixInterface& M) const;
   void MassForm(GlobalVector& f, const GlobalVector& u, const TimePattern& TP, double s) const;
+
+  void LocalToGlobal(MatrixInterface& A, EntryMatrix& E, int iq, double s) const;
+
+  void HNAverage   (GlobalVector& x)       const { HNLow->Average(x); }
+  void HNDistribute(GlobalVector& x)       const { HN->Distribute(x); }
+  void HNZero      (GlobalVector& x)       const { HNLow->Zero(x); }
+  bool HNZeroCheck (const GlobalVector& x) const { return HNLow->ZeroCheck(x); }
 };
 
 /*---------------------------------------------------*/
@@ -108,6 +126,13 @@ class DwrFemQ2Q12d : virtual public DwrFem2d
  
   void MassMatrix(MatrixInterface& M) const;
   void MassForm(GlobalVector& f, const GlobalVector& u, const TimePattern& TP, double s) const;
+
+  void LocalToGlobal(MatrixInterface& A, EntryMatrix& E, int iq, double s) const;
+
+  void HNAverage   (GlobalVector& x)       const { HN->Average(x); }
+  void HNDistribute(GlobalVector& x)       const { HNLow->Distribute(x); }
+  void HNZero      (GlobalVector& x)       const { HN->Zero(x); }
+  bool HNZeroCheck (const GlobalVector& x) const { return HN->ZeroCheck(x); }
 };
 
 /*---------------------------------------------------*/
@@ -129,6 +154,13 @@ class DwrFemQ2Q13d : virtual public DwrFem3d
   
   void MassMatrix(MatrixInterface& M) const;
   void MassForm(GlobalVector& f, const GlobalVector& u, const TimePattern& TP, double s) const;
+
+  void LocalToGlobal(MatrixInterface& A, EntryMatrix& E, int iq, double s) const;
+
+  void HNAverage   (GlobalVector& x)       const { HN->Average(x); }
+  void HNDistribute(GlobalVector& x)       const { HNLow->Distribute(x); }
+  void HNZero      (GlobalVector& x)       const { HN->Zero(x); }
+  bool HNZeroCheck (const GlobalVector& x) const { return HN->ZeroCheck(x); }
 };
 }
 

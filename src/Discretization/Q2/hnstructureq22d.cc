@@ -6,11 +6,11 @@ namespace Gascoigne
 {
 /*-----------------------------------------*/
 
-HNStructureQ22d::HNStructureQ22d() : HNStructureQ12d()
+HNStructureQ22d::HNStructureQ22d() : HNStructureQ12d(), q1wei(3)
 {
-  wei[0] =  0.375; 
-  wei[1] =  0.75; 
-  wei[2] = -0.125;
+  wei[0] =  0.375; q1wei[0] = 0.5;
+  wei[1] =  0.75;  q1wei[1] = 0.5;
+  wei[2] = -0.125; q1wei[2] = 0.;
 
   lnoe[0][0]=0; lnoe[0][1]=2; lnoe[0][2]=1;
   lnoe[1][0]=0; lnoe[1][1]=6; lnoe[1][2]=3;
@@ -71,6 +71,66 @@ void HNStructureQ22d::CondenseHanging(EntryMatrix& E, IntVector& indices) const
       E.add_row        (p[0],p[2],weight(0));
       E.add_row        (p[1],p[2],weight(1));
       E.multiply_row   (p[2],     weight(2));
+    }
+}
+
+/*-----------------------------------------*/
+
+void HNStructureQ22d::CondenseHangingLowerHigher(EntryMatrix& E, IntVector& indices) const
+{
+  for(int ii=0; ii<4; ii++) // nur 4 kandiaten koennen haengen !!
+    {
+      int i = indices[2*ii+1];
+      if(!hanging(i)) continue;
+
+      const fixarray<3,int>& f = regular_nodes(i);
+
+      fixarray<3,int> p = lnoe[ii];
+
+      if ( (indices[p[0]]==f[1]) && (indices[p[1]]==f[0]) ) 
+	{ 
+	  swap(p[0],p[1]);
+	} 
+
+      indices[p[2]] = f[2];
+
+      E.add_column     (p[0],p[2],q1wei[0]);
+      E.add_column     (p[1],p[2],q1wei[1]);
+      E.multiply_column(p[2],     q1wei[2]);
+      
+      E.add_row        (p[0],p[2],weight(0));
+      E.add_row        (p[1],p[2],weight(1));
+      E.multiply_row   (p[2],     weight(2));
+    }
+}
+
+/*-----------------------------------------*/
+
+void HNStructureQ22d::CondenseHangingHigherLower(EntryMatrix& E, IntVector& indices) const
+{
+  for(int ii=0; ii<4; ii++) // nur 4 kandiaten koennen haengen !!
+    {
+      int i = indices[2*ii+1];
+      if(!hanging(i)) continue;
+
+      const fixarray<3,int>& f = regular_nodes(i);
+
+      fixarray<3,int> p = lnoe[ii];
+
+      if ( (indices[p[0]]==f[1]) && (indices[p[1]]==f[0]) ) 
+	{ 
+	  swap(p[0],p[1]);
+	} 
+
+      indices[p[2]] = f[2];
+
+      E.add_column     (p[0],p[2],weight(0));
+      E.add_column     (p[1],p[2],weight(1));
+      E.multiply_column(p[2],     weight(2));
+      
+      E.add_row        (p[0],p[2],q1wei[0]);
+      E.add_row        (p[1],p[2],q1wei[1]);
+      E.multiply_row   (p[2],     q1wei[2]);
     }
 }
 

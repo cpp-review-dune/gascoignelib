@@ -2,6 +2,7 @@
 #include "galerkinintegratorq2.h"
 #include "baseq23d.h"
 #include "integratorq1q2.h"
+#include "hnstructureq23d.h"
 #include <ext/hash_set>
 
 using namespace std;
@@ -13,6 +14,18 @@ namespace Gascoigne
 
 DwrFem3d::DwrFem3d() : Q23d()
 {
+  HNLow = new HNStructureQ13d;
+}
+
+/*---------------------------------------------------*/
+
+DwrFem3d::~DwrFem3d()
+{
+  if(HNLow)
+  {
+    delete HNLow;
+    HNLow = NULL;
+  }
 }
 
 /*---------------------------------------------------*/
@@ -30,6 +43,15 @@ void DwrFem3d::BasicInit(const ParamFile* paramfile)
 
   PatchDiscretization::GetFemPointer() = new FiniteElement;
   PatchDiscretization::BasicInit(paramfile);
+}
+
+/*---------------------------------------------------*/
+
+void DwrFem3d::ReInit(const MeshInterface* MP)
+{
+  Q23d::ReInit(MP);
+
+  HNLow->ReInit(MP);
 }
 
 /*---------------------------------------------------*/
@@ -330,6 +352,17 @@ void Gascoigne::DwrFemQ1Q23d::MassForm(GlobalVector& f, const GlobalVector& u, c
     }
 }
 
+/* ----------------------------------------- */
+
+void DwrFemQ1Q23d::LocalToGlobal(MatrixInterface& A, EntryMatrix& E, int iq, double s) const
+{
+  nvector<int> indices = GetLocalIndices(iq);
+  dynamic_cast<HNStructureQ23d*>(HN)->CondenseHangingLowerHigher(E,indices);
+  nvector<int>::const_iterator  start = indices.begin();
+  nvector<int>::const_iterator  stop  = indices.end();
+  A.entry(start,stop,E,s);
+}
+
 /*---------------------------------------------------*/
 /*---------------------------------------------------*/
 
@@ -606,6 +639,17 @@ void Gascoigne::DwrFemQ2Q13d::MassForm(GlobalVector& f, const GlobalVector& u, c
       I->MassForm(TP,__F,LowOrderFem,HighOrderFem,__U);
       PatchDiscretization::LocalToGlobal(f,__F,iq,s);
     }
+}
+
+/* ----------------------------------------- */
+
+void DwrFemQ2Q13d::LocalToGlobal(MatrixInterface& A, EntryMatrix& E, int iq, double s) const
+{
+  nvector<int> indices = GetLocalIndices(iq);
+  dynamic_cast<HNStructureQ23d*>(HN)->CondenseHangingHigherLower(E,indices);
+  nvector<int>::const_iterator  start = indices.begin();
+  nvector<int>::const_iterator  stop  = indices.end();
+  A.entry(start,stop,E,s);
 }
 
 }
