@@ -18,7 +18,6 @@ protected:
 
   virtual void TimeInfoBroadcast();
   void InitSolution(VectorInterface& u);
-  void InitSolution(VectorInterface& u, VectorInterface& f);
 
 public:
 

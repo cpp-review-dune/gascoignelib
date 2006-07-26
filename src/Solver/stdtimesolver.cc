@@ -110,15 +110,9 @@ void StdTimeSolver::BasicInit(int level, const ParamFile* paramfile, const int d
 
 /*-------------------------------------------------------*/
 
-void Gascoigne::StdTimeSolver::InitialCondition(VectorInterface& f, double d) const
+void Gascoigne::StdTimeSolver::InitialCondition(VectorInterface& gf, double d) const
 {
-  StdTimeSolver::InitialCondition(GetGV(f),d);
-}
-
-/*-------------------------------------------------------*/
-
-void Gascoigne::StdTimeSolver::InitialCondition(GlobalVector& f, double d) const
-{
+  GlobalVector& f = GetGV(gf);
   HNAverageData();
 
   const Application* IC  = GetProblemDescriptor()->GetInitialCondition();
@@ -154,10 +148,7 @@ void Gascoigne::StdTimeSolver::InitialCondition(GlobalVector& f, double d) const
     }
 
   HNZeroData();
-  if (GetDistribute())
-  {
-    GetDiscretization()->HNDistribute(f);
-  }
+  HNDistribute(gf);
 }
 
 /*-------------------------------------------------------*/
@@ -220,11 +211,10 @@ void StdTimeSolver::AssembleMatrix(const VectorInterface& gu, double d)
 
 /*-------------------------------------------------------*/
 
-void StdTimeSolver::L2Projection(VectorInterface& Gu)
+void StdTimeSolver::L2Projection(VectorInterface& Gu, VectorInterface& Gf)
 {
   GlobalVector& u = GetGV(Gu);
-
-  GlobalVector f(u.ncomp(),u.n());
+  GlobalVector& f = GetGV(Gf);
 
   TimePattern TP(u.ncomp());
   TP.zero();
@@ -233,7 +223,7 @@ void StdTimeSolver::L2Projection(VectorInterface& Gu)
   u.zero();
   f.zero();
 
-  InitialCondition(f);
+  InitialCondition(Gf);
 
   PrecondCGMass(u,f,TP);
 }

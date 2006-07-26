@@ -131,7 +131,10 @@ void StdTimeLoop::InitSolution(VectorInterface& u)
 {
   if (_initial=="analytic") 
     {
-      GetMultiLevelSolver()->GetSolver()->L2Projection(u);
+      VectorInterface f("ff");
+      GetMultiLevelSolver()->ReInitVector(f);
+      GetMultiLevelSolver()->GetSolver()->L2Projection(u,f);
+      GetMultiLevelSolver()->DeleteVector(f);
       GetMultiLevelSolver()->GetSolver()->Write(u,_s_resultsdir+"/initialu");
     }
   else

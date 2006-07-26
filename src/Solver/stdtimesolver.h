@@ -36,7 +36,6 @@ protected:
   TimePattern& GetTimePattern() {return _TP;}
 
   virtual MatrixInterface* NewMassMatrix(int ncomp, const std::string& matrixtype);
-  virtual void InitialCondition(GlobalVector& f, double d=1.) const;
   virtual std::string PrecondCGMass(GlobalVector& u, GlobalVector& f, const TimePattern& TP, double s=1.);
 
 public:
@@ -58,7 +57,7 @@ public:
   void Form (VectorInterface& y, const VectorInterface& x, double d) const;
   void AssembleMatrix(const VectorInterface& u, double d);
   std::string GetName() const;
-  void L2Projection(VectorInterface& u);
+  void L2Projection(VectorInterface& u, VectorInterface& f);
   
   void SetMassMatrix(MatrixInterface &MM, bool init=false);
   const MatrixInterface* GetMassMatrix() const {return _MMP;}
