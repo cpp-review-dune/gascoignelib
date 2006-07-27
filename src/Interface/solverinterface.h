@@ -130,7 +130,7 @@ namespace Gascoigne
         std::cerr << "\"SolverInterface::IC\" not written!" << std::endl;
         abort();
       }
-      virtual void L2Projection(VectorInterface& u)  {
+      virtual void L2Projection(VectorInterface& u, VectorInterface& f)  {
         std::cerr << "\"SolverInterface::L2Projection\" not written!" << std::endl;
         abort();
       }
