@@ -59,6 +59,7 @@ INCLUDE_DIRECTORIES(
   ${GASCOIGNE_STD}/src/Mesh
   ${GASCOIGNE_STD}/src/Discretization/Q1
   ${GASCOIGNE_STD}/src/Discretization/Q2
+  ${GASCOIGNE_STD}/src/Discretization/Q4
   ${GASCOIGNE_STD}/src/Discretization/Gls
   ${GASCOIGNE_STD}/src/Discretization/Lps
   ${GASCOIGNE_STD}/src/Problems
