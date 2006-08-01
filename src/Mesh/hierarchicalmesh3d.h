@@ -198,6 +198,7 @@ class HierarchicalMesh3d : public HierarchicalMesh
   void GetAwakePatchs(std::set<int>&) const;
   void GetAwakeCells(std::set<int>&) const;
   void ConstructQ2PatchMesh(IntVector& pm) const;
+  IntVector ConstructQ4Patch(int c) const;
   std::set<int> GetColors() const;
 
   
@@ -212,6 +213,7 @@ class HierarchicalMesh3d : public HierarchicalMesh
     }
   void Testing();
   int neighbour(int c, int le) const;
+  int neighbour_neighbour(int c, int le) const;
 
   void AddShape(int col, BoundaryFunction<3>* f) {
     GetCurvedShapes().AddShape(col,f);

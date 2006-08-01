@@ -270,6 +270,107 @@ void LevelMesh2d::ConstructHangingStructureQuadratic(QuadraticHNStructure3& hnq2
 
 /*---------------------------------------------------*/
 
+void LevelMesh2d::ConstructHangingStructureQuartic(QuarticHNStructure5& hnq4) const
+{
+  hnq4.clear();
+  assert(HMP->patchdepth()>=2);
+  int count = 0;
+  std::set<int> habschon;
+  for (int i=0;i<ncells();++i)
+    {
+      const Quad& q_c = HMP->quad(Quadl2g(i));
+      int father_c    = q_c.father();
+      assert(father_c>=0);
+      const Quad& f_c = HMP->quad(father_c);
+      int opa_c       = f_c.father();
+      assert(opa_c>=0);
+      
+
+		// wurde der opa schon behandelt?
+      if (habschon.find(opa_c)!=habschon.end()) continue;
+      habschon.insert(opa_c);
+      
+		// alle Nachbarn
+      for (int in=0;in<4;++in)
+	{
+	  int opa_r   = HMP->neighbour(opa_c,in);
+		    // Nachbar existiert nicht
+	  if (opa_r<0) continue;
+	  const Quad& o_r = HMP->quad(opa_r);
+		    // muss einmal verfeinert sein
+	  assert(o_r.nchilds()!=0);
+
+		    // nachbar-nachbar finden
+	  int ne = in;
+	  {
+	    int start =0;
+	    int neighbourneighbour = HMP->neighbour(opa_r,ne);
+	    while ((neighbourneighbour!=opa_c) && (start<4))
+	      {
+		start++;
+		ne = (ne+1)%4;
+		neighbourneighbour = HMP->neighbour(opa_r,ne);
+	      }
+	    assert(neighbourneighbour==opa_c);
+	  }
+		    // beide Vaeter entlang der gemeinsamen Kante
+	  fixarray<2,int> fathers_r;
+	  HMP->QuadLawOrder().childs_of_edge(fathers_r,o_r,ne);
+
+		    // wenn gleiches Level, dann haengt nix.
+	  const Quad& f0_r = HMP->quad(fathers_r[0]);
+	  const Quad& f1_r = HMP->quad(fathers_r[1]);
+		    // groeber?
+	  if (f0_r.nchilds()==0) continue;
+		    // gleiches level?
+	  const Quad& q0_r = HMP->quad(f0_r.child(0));
+	  if (q0_r.nchilds()==0) continue;
+
+		    // der Enkel muss aktiv sein.
+	  assert(Quadg2lCheck(q0_r.child(0))>=0);
+
+		    // Jetzt haengt ne Menge
+
+		    // die vier enkel verfeinert
+	  vector<fixarray<2,int> > enkels_r(2);
+	  HMP->QuadLawOrder().childs_of_edge(enkels_r[0],f0_r,ne);
+	  HMP->QuadLawOrder().childs_of_edge(enkels_r[1],f1_r,ne);
+	  assert(enkels_r[0][0]>=0);assert(enkels_r[0][1]>=0);assert(enkels_r[1][0]>=0);assert(enkels_r[1][1]>=0);
+	  
+ 
+		    // die 5 Knoten
+	  fixarray<6,int> tmp;
+	  tmp[0]=HMP->quad(enkels_r[0][0])[ne];
+	  tmp[1]=HMP->quad(enkels_r[0][1])[ne];
+	  tmp[2]=HMP->quad(enkels_r[1][0])[ne];
+	  tmp[3]=HMP->quad(enkels_r[1][1])[ne];
+	  tmp[4]=HMP->quad(enkels_r[1][1])[(ne+1)%4];
+	  
+
+		    // die haengen
+	  fixarray<4,int> hn;
+	  hn[0] = HMP->QuadLawOrder().edge_vertex(HMP->quad(enkels_r[0][0]),ne);
+	  hn[1] = HMP->QuadLawOrder().edge_vertex(HMP->quad(enkels_r[0][1]),ne);
+	  hn[2] = HMP->QuadLawOrder().edge_vertex(HMP->quad(enkels_r[1][0]),ne);
+	  hn[3] = HMP->QuadLawOrder().edge_vertex(HMP->quad(enkels_r[1][1]),ne);
+
+	  tmp[5]=0;   hnq4.insert(std::make_pair(hn[0],tmp));
+	  tmp[5]=1;   hnq4.insert(std::make_pair(hn[1],tmp));
+	  std::swap(tmp[0],tmp[4]);
+	  std::swap(tmp[1],tmp[3]);
+	  tmp[5]=1;   hnq4.insert(std::make_pair(hn[2],tmp));
+	  tmp[5]=0;   hnq4.insert(std::make_pair(hn[3],tmp));
+	  
+
+	  ++count;
+	  
+	}
+      
+    }
+}
+
+/*---------------------------------------------------*/
+
 void LevelMesh2d::check_leveljump() const
 {
   LevelJumper  Phi;

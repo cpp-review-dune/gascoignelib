@@ -17,6 +17,9 @@ class LevelMesh3d : public Index
   typedef std::map<int,fixarray<3,int> >  QuadraticHNStructure3;
   typedef std::map<int,fixarray<9,int> >  QuadraticHNStructure9;
 
+  typedef std::map<int,fixarray<6,int> >   QuarticHNStructure5;
+  typedef std::map<int,fixarray<26,int> >  QuarticHNStructure25;
+
   const HierarchicalMesh3d* HMP;
 
   void check_leveljump() const;
@@ -29,6 +32,16 @@ class LevelMesh3d : public Index
   void InitCells(int n);
   void InitNodes(int n);
   void InitEdges(int n);
+
+  int refine_level(int n) const;
+  void ConstructNodesOnFaceQ4(fixarray<81,int>& nodesonface,int vater,int ni) const;
+  void InsertHangingFacesQ4(QuarticHNStructure25& hnq4face,const fixarray<81,int>& nodesonface) const;
+  void InsertHangingEdgesQ4(QuarticHNStructure5&  hnq4, const fixarray<81,int>& nodesonface) const;
+  void ConstructNodesOnFace(fixarray<25,int>& nodesonface,int vater,int ni) const;
+  void InsertHangingFaceQ4 (QuarticHNStructure25& hnq4face,const fixarray<81,int>& nodesonface,
+			    int n1,int n2,int n3,int n4,const fixarray<25,int>& I) const;
+  void InsertHangingEdgeQ4 (QuarticHNStructure5&   hnq4,const fixarray<81,int>& nof,
+			    int n1,int n2,int n3,int n4,int i1,int i2,int i3,int i4,int i5) const;
 
  public:
    
@@ -56,6 +69,8 @@ class LevelMesh3d : public Index
 
   void ConstructHangingStructureQuadratic(QuadraticHNStructure3& hnq2,
 					  QuadraticHNStructure9& hnq2face) const;
+  void ConstructHangingStructureQuartic(QuarticHNStructure5& hnq4,
+					QuarticHNStructure25& hnq4face) const;
 
   void InitBoundaryHandler(BoundaryIndexHandler& BI) const;
   bool ConstructCellIndOfPatch(IntVector& dstc) const;

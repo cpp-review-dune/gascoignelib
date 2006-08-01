@@ -188,6 +188,7 @@ class HierarchicalMesh2d : public HierarchicalMesh
   void GetAwakePatchs(std::set<int>&) const;
   void GetAwakeCells(std::set<int>&) const;
   void ConstructQ2PatchMesh(IntVector& pm) const;
+  IntVector ConstructQ4Patch(int c) const;
   std::set<int> GetColors() const;
   int GetBoundaryCellOfCurved(int iq) const
     {

@@ -1042,6 +1042,41 @@ void HierarchicalMesh2d::ConstructQ2PatchMesh(IntVector& q2patchmesh) const
 
 /*---------------------------------------------------*/
 
+IntVector HierarchicalMesh2d::ConstructQ4Patch(int c) const
+{
+  IntVector patch(25,-1);
+
+  for(int i=0; i<25; i++)
+  {
+    // Vertex i steht an Position (x,y)
+    int x = i%5;
+    int y = i/5;
+
+    // Position von erstem Kind
+    int fcx = x/3;
+    int fcy = y/3;
+    // Index davon
+    int fci = fcy*2+abs(fcx-fcy);
+
+    // Position vom Kind im Kind
+    int scx = (x-2*fcx)/2;
+    int scy = (y-2*fcy)/2;
+    // Index davon
+    int sci = scy*2+abs(scx-scy);
+
+    // Position des Vertex
+    int vx = x-2*fcx-scx;
+    int vy = y-2*fcy-scy;
+    // Index davon
+    int vi = vy*2+abs(vx-vy);
+
+    patch[i] = quads[quads[quads[c].child(fci)].child(sci)].vertex(vi);
+  }
+  return patch;
+}
+
+/*---------------------------------------------------*/
+
 
 set<int> HierarchicalMesh2d::CellNeighbours(int iq) const
 {

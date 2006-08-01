@@ -18,7 +18,7 @@ namespace Gascoigne
 class GascoigneMeshConstructor
 {
  private:
-    IntVector _cl2g;
+    IntVector _cl2g,_pl2g;
     IntMap    _cg2l;
     
 protected:
@@ -46,6 +46,8 @@ public:
   virtual ~GascoigneMeshConstructor() { }
 
   virtual void BasicInit();
+  const IntVector& Patchl2g() const
+      {return _pl2g;}
   const IntVector& Celll2g() const
       {return _cl2g;}
   const IntMap& Cellg2l() const {return _cg2l;}

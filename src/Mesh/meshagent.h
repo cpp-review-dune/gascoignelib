@@ -27,6 +27,7 @@ private:
   IntMap _cg2l, _cellg2l;
   map<int,set<int> > _co2n;
   bool _goc2nc;
+  nvector<IntVector> _q4patch,_q4toq2;
 
 protected:
 
@@ -38,6 +39,7 @@ protected:
   virtual GascoigneMultiGridMesh* NewMultiGridMesh() {return new GascoigneMultiGridMesh;}
 
   virtual void ReInit();
+  virtual void BuildQ4PatchList(const IntVector &patchl2g);
 
   GascoigneMesh*  GMesh(int l) { return GMG->GetGascoigneMesh(l);}
 

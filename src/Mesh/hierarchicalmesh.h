@@ -126,6 +126,7 @@ class HierarchicalMesh : public MeshInterface
   virtual void GetAwakePatchs(std::set<int>&) const =0;
   virtual void GetAwakeCells(std::set<int>&) const =0;
   virtual void ConstructQ2PatchMesh(IntVector& pm) const=0;
+  virtual IntVector ConstructQ4Patch(int c) const =0;
   virtual std::set<int> CellNeighbours(int i) const 
     { std::cerr << "no CellNeighbours"; abort(); return std::set<int>();}
 

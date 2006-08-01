@@ -3,6 +3,7 @@
 #include  "filescanner.h"
 #include  "gascoignemeshconstructor.h"
 #include  "stringutil.h"
+#include  <ext/hash_map>
 
 using namespace std;
 
@@ -32,6 +33,29 @@ void MeshAgent::ReInit()
   MGM.BasicInit();
   _celll2g = MGM.Celll2g();
   _cellg2l = MGM.Cellg2l();
+  if(HMP->patchdepth()>=2)
+  {
+    BuildQ4PatchList(MGM.Patchl2g());
+    assert(_q4patch.size()==_q4toq2.size());
+    PatchIndexHandler &PIH = GMesh(0)->GetPatchIndexHandler();
+    nvector<IntVector> &q4patch2cell = PIH.GetAllQ4Patch2Cell();
+    q4patch2cell.clear();
+    for(int i=0; i<_q4patch.size(); i++)
+    {
+      IntVector q2p = _q4toq2[i];
+      IntVector q4p2c(0);
+      for(int j=0; j<q2p.size(); j++)
+      {
+        int p = q2p[j];
+        IntVector cells = PIH.GetPatch2Cell(p);
+        q4p2c.insert(q4p2c.end(),cells.begin(),cells.end());
+      }
+      q4patch2cell.push_back(q4p2c);
+    }
+    PIH.GetIndexQ4() = _q4patch;
+    PIH.GetHasQ4Patch() = true;
+  }
+
   if(_goc2nc)
   {
       _co2n.clear();
@@ -75,6 +99,62 @@ void MeshAgent::ReInit()
       {
 	  _fathers[i] = HMP->Vater(_cl2g[i]);
       }
+  }
+}
+
+/*-----------------------------------------*/
+
+void MeshAgent::BuildQ4PatchList(const IntVector &patchl2g)
+{
+  _q4patch.resize(0);
+  _q4toq2.resize(0);
+  IntSet q2patch,q4patchset;
+  HMP->GetAwakePatchs(q2patch);
+  for(IntSet::const_iterator p=q2patch.begin(); p!=q2patch.end(); p++)
+  {
+    assert(*p!=-1);
+    int vater = HMP->Vater(*p);
+    assert(vater!=-1);
+    q4patchset.insert(vater);
+  }
+  for(IntSet::const_iterator p=q4patchset.begin(); p!=q4patchset.end(); p++)
+  {
+    _q4patch.push_back(HMP->ConstructQ4Patch(*p));
+  }
+  if(patchl2g.size()!=q2patch.size())
+  {
+    cerr << "MeshAgent::BuildQ4PatchList: patchl2g must be same size as q2patch!!!" << endl;
+    abort();
+  }
+  __gnu_cxx::hash_map<int,int> patchg2l;
+  for(int i=0; i<patchl2g.size(); i++)
+  {
+    patchg2l[patchl2g[i]] = i;
+  }
+  IntVector perm(4);
+  perm[0]=0;
+  perm[1]=1;
+  perm[2]=3;
+  perm[3]=2;
+  if(HMP->dimension()==3)
+  {
+    perm.resize(8);
+    perm[4]=4;
+    perm[5]=5;
+    perm[6]=7;
+    perm[7]=6;
+  }
+  _q4toq2.resize(q4patchset.size());
+  int q4_l = 0;
+  for(IntSet::const_iterator p=q4patchset.begin(); p!=q4patchset.end(); p++,q4_l++)
+  {
+    const IntVector &K = HMP->Kinder(*p);
+    assert(K.size()==perm.size());
+    for(int i=0; i<K.size(); i++)
+    {
+      assert(patchg2l.find(K[perm[i]])!=patchg2l.end());
+      _q4toq2[q4_l].push_back(patchg2l[K[perm[i]]]);
+    }
   }
 }
 

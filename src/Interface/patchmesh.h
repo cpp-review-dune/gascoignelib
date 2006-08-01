@@ -19,10 +19,16 @@ namespace Gascoigne
       virtual ~PatchMesh() {}
  
       virtual bool       HasPatch()                        const=0;
+      virtual bool       HasQ4Patch()                      const=0;
       virtual int        npatches()                        const=0;
+      virtual int        nq4patches()                      const=0;
       virtual int        nodes_per_patch()                 const=0;
+      virtual int        nodes_per_q4patch()               const=0;
+      virtual IntVector  Q2IndicesOfQ4Patch(int iq)        const=0;
       virtual IntVector  CoarseIndices(int iq)             const=0;
+      virtual IntVector  CoarseIndicesQ4(int iq)           const=0;
       virtual const IntVector* IndicesOfPatch(int i)       const=0;
+      virtual const IntVector* IndicesOfQ4Patch(int i)     const=0;
       virtual const IntVector* VertexOnBoundary(int color) const=0;
       virtual const IntVector* CellOnBoundary(int color)   const=0;
       virtual const IntVector* LocalOnBoundary(int color)  const=0;

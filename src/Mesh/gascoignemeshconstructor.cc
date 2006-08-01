@@ -40,6 +40,17 @@ void GascoigneMeshConstructor::Loop2d()
   LevelMesh2d* CM=NULL;
 
   FM = LevelUpdate2d(GM0,newquads,oldquads);
+
+  // Q4-PatchStruktur
+  if(HM->patchdepth()>=2)
+  {
+    PatchIndexHandler &PIH = GM0->GetPatchIndexHandler();
+    FM->ConstructCellIndOfPatch(_pl2g);
+    PIH.GetHasQ4Patch() = 1;
+    HangingIndexHandler &H = GM0->GetHangingIndexHandler();
+    FM->ConstructHangingStructureQuartic(*(H.GetQ4Structure()));
+  }
+
   //Wir brauchen local2global und global2local Vector aus FM
   _cl2g = FM->Quadl2g();
   _cg2l = FM->Quadg2l();
@@ -81,6 +92,17 @@ void GascoigneMeshConstructor::Loop3d()
   LevelMesh3d* CM=NULL;
 
   FM = LevelUpdate3d(GM0,newquads,oldquads);
+
+  // Q4-PatchStruktur
+  if(HM->patchdepth()>=2)
+  {
+    PatchIndexHandler &PIH = GM0->GetPatchIndexHandler();
+    FM->ConstructCellIndOfPatch(_pl2g);
+    PIH.GetHasQ4Patch() = 1;
+    HangingIndexHandler &H = GM0->GetHangingIndexHandler();
+    FM->ConstructHangingStructureQuartic(*(H.GetQ4Structure()),*(H.GetQ4StructureFace()));
+  }
+
   //Wir brauchen local2global und global2local Vector aus FM
   _cl2g =FM->Hexl2g();
   _cg2l = FM->Hexg2l();

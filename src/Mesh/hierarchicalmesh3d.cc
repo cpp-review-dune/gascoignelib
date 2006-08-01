@@ -1028,6 +1028,43 @@ void HierarchicalMesh3d::ConstructQ2PatchMesh(IntVector& q2patchmesh) const
     }
 }
 
+/*---------------------------------------------------*/
+
+IntVector HierarchicalMesh3d::ConstructQ4Patch(int c) const
+{
+  IntVector patch(125,-1);
+  for(int i=0; i<125; i++)
+  {
+    // Vertex i steht an Position (x,y,z)
+    int x = i%5;
+    int y = (i%25)/5;
+    int z = i/25;
+
+    // Position von erstem Kind
+    int fcx = x/3;
+    int fcy = y/3;
+    int fcz = z/3;
+    // Index davon
+    int fci = fcz*4+fcy*2+abs(fcx-fcy);
+
+    // Position von Kind im Kind
+    int scx = (x-2*fcx)/2;
+    int scy = (y-2*fcy)/2;
+    int scz = (z-2*fcz)/2;
+    // Index davon
+    int sci = scz*4+scy*2+abs(scx-scy);
+
+    // Position des Vertex
+    int vx = x-2*fcx-scx;
+    int vy = y-2*fcy-scy;
+    int vz = z-2*fcz-scz;
+    // Index davon
+    int vi = vz*4+vy*2+abs(vx-vy);
+
+    patch[i] = hexs[hexs[hexs[c].child(fci)].child(sci)].vertex(vi);
+  }
+  return patch;
+}
 
 /*---------------------------------------------------*/
 
@@ -1058,6 +1095,20 @@ int HierarchicalMesh3d::neighbour(int c, int le) const
   int nq = m;
   if (m==c) nq = E.slave();
   return nq;
+}
+
+/*---------------------------------------------------*/
+
+int HierarchicalMesh3d::neighbour_neighbour(int c, int le) const
+{
+  assert(le<6);
+  int n = neighbour(c,le);
+  assert(n>=0);
+
+  int nn=0;
+  for (nn=0;nn<6;++nn) if (c==neighbour(n,nn)) break;
+  assert(nn<6);
+  return nn;
 }
 
 /*---------------------------------------------------*/

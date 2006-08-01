@@ -112,6 +112,7 @@ typedef TensorFormula3d<2,LineTrapez> HexTrapez;
 typedef TensorFormula3d<2,LineGauss2> HexGauss8; 
 typedef TensorFormula3d<3,LineGauss3> HexGauss27; 
 typedef TensorFormula3d<4,LineGauss4> HexGauss64; 
+typedef TensorFormula3d<5,LineGauss5> HexGauss125; 
 }
 
 /*------------------------------------------------------------*/

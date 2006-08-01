@@ -1,6 +1,7 @@
 AUX_SOURCE_DIRECTORY(Common Common_SOURCES)
 AUX_SOURCE_DIRECTORY(Discretization/Q1 DiscretizationQ1_SOURCES)
 AUX_SOURCE_DIRECTORY(Discretization/Q2 DiscretizationQ2_SOURCES)
+AUX_SOURCE_DIRECTORY(Discretization/Q4 DiscretizationQ4_SOURCES)
 AUX_SOURCE_DIRECTORY(Discretization/Gls DiscretizationGls_SOURCES)
 AUX_SOURCE_DIRECTORY(Discretization/Lps DiscretizationLps_SOURCES)
 AUX_SOURCE_DIRECTORY(Solver Solver_SOURCES)
@@ -12,6 +13,7 @@ SET(GASCOIGNE_SOURCES
 ${Common_SOURCES} 
 ${DiscretizationQ1_SOURCES} 
 ${DiscretizationQ2_SOURCES} 
+${DiscretizationQ4_SOURCES} 
 ${DiscretizationGls_SOURCES} 
 ${DiscretizationLps_SOURCES} 
 ${Solver_SOURCES} 

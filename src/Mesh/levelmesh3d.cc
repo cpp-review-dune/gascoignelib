@@ -331,6 +331,215 @@ void LevelMesh3d::ConstructHangingStructureQuadratic(QuadraticHNStructure3& hnq2
 
 /*---------------------------------------------------*/
 
+void LevelMesh3d::ConstructHangingStructureQuartic(QuarticHNStructure5& hnq4, QuarticHNStructure25& hnq4face) const
+{
+  hnq4.clear();
+  hnq4face.clear();
+  assert(HMP->patchdepth()>=2);
+  
+  std::set<int>    habschon;
+  fixarray<81,int> nodesonface;
+
+  for (int hexl=0;hexl<ncells();++hexl)
+    {
+      int hex = Hexl2g(hexl);
+		// Opa holen
+      int vater = HMP->hex(hex).father(); assert(vater>=0);
+      int opa = HMP->hex(vater).father(); assert(opa>=0);
+    		// Jeden Opa nur einmal betrachten
+      if (habschon.find(opa)!=habschon.end()) continue;
+      habschon.insert(opa);
+		// alle nachbarn durchlaufen
+      for (int ni=0;ni<6;++ni)
+	{
+	  int neighbour = HMP->neighbour(opa,ni);
+	  if (neighbour<0) continue;
+		    // Face haengt, wenn Nachbar einmal mehr, also 3-mal verfeinert ist.
+		    // Wenn Nachbar groeber ist, dann haengt die Face eben von der anderen Seite
+	  if (refine_level(neighbour)!=3) continue;
+		    // Liste von allen 81 Knoten auf dieser Face aufbauen
+	  ConstructNodesOnFaceQ4(nodesonface,opa,ni);
+		    // und die haengende face einfuegen
+	  InsertHangingFacesQ4 (hnq4face,nodesonface);
+		    // und gegebenenfalls die edges
+	  InsertHangingEdgesQ4(hnq4,nodesonface);
+	}
+    }
+}
+
+/*---------------------------------------------------*/
+
+	  // tiefe, bis Kinder aktiv sind
+int LevelMesh3d::refine_level(int n) const
+{
+  int l = 0;
+  while (Hexg2lCheck(n)<0)
+    {
+      ++l;
+      const Hex& h = HMP->hex(n);
+      assert(h.nchilds()>0);
+      n = h.child(0);
+    }
+  return l;
+}
+
+/*---------------------------------------------------*/
+
+	  // Sucht alle 81 Knoten, die an einer haengenden
+	  // Flaeche einer groben Q4-Zelle liegen
+	  // Dazu wird die entsprechende Funktion der Q2-Face verwendet
+void LevelMesh3d::ConstructNodesOnFaceQ4(fixarray<81,int>& nodesonface,int opa,int ni) const
+{
+  const HexLawAndOrder& HLaO = HMP->HexLawOrder();
+  assert(opa>=0);
+  int neighbour = HMP->neighbour(opa,ni);
+  assert(neighbour>=0);
+  	    // nachbar-nachbar index suchen
+  int nni = HMP->neighbour_neighbour(opa,ni);
+
+	    // Die vier Kinder der groben Zelle an dieser Face
+  fixarray<4,int> childs;
+  HLaO.childs_of_face(childs,HMP->hex(opa),ni);
+  
+	    // die 25 Patchknoten auf einer Kindesface
+  std::vector<fixarray<25,int> > F(4);
+  for (int i=0;i<4;++i) ConstructNodesOnFace(F[i],childs[i],ni);
+	    // der Mittelknoten der Vaters
+  int middle_node = HLaO.face_vertex(HMP->hex(neighbour),nni);
+	    // Die zellen selbst koennen  rotiert sein. Alle 4
+	    // haben aber die gleiche Orientierung
+	    // die zellen so sortieren, dass sie von links unten
+	    // nach recht oben lexikogr. liegen
+	    // Dazu wird jeweils die Zelle gesucht, so dass der Mittelknoten richtig liegt
+  int edges[4]  = {24,20,4,0};
+  fixarray<4,int> s;
+  for (int c=0;c<4;++c)
+    {           // zelle finden, die an Position c liegt, also
+		// zelle, von der edges[c] die mittelzelle ist.
+      for (s[c]=0;s[c]<4;++s[c]) if (F[s[c]][edges[c]]==middle_node) break;
+    }
+  
+	    // Index zusammenbasteln
+   for (int y=0;y<5;++y) for (int x=0;x<5;++x)  nodesonface[y*9+x] = F[s[0]][y*5+x];
+   for (int y=0;y<5;++y) for (int x=5;x<9;++x)  nodesonface[y*9+x] = F[s[1]][y*5+x-4];
+   for (int y=5;y<9;++y) for (int x=0;x<5;++x)  nodesonface[y*9+x] = F[s[2]][(y-4)*5+x];
+   for (int y=5;y<9;++y) for (int x=5;x<9;++x)  nodesonface[y*9+x] = F[s[3]][(y-4)*5+x-4];
+}
+
+/*---------------------------------------------------*/
+
+void LevelMesh3d::InsertHangingFacesQ4(QuarticHNStructure25& hnq4face,const fixarray<81,int>& nof) const
+{
+  fixarray<25,int> I;
+
+  for (int y=0;y<5;++y) for (int x=0;x<5;++x) I[y*5+x]=nof[y*18+x*2];         // links unten
+  InsertHangingFaceQ4(hnq4face,nof,10,12,28,30,I);
+  for (int y=0;y<5;++y) for (int x=0;x<5;++x) I[y*5+x]=nof[x*18+(4-y)*2];     // rechts unten
+  InsertHangingFaceQ4(hnq4face,nof,16,34,14,32,I);
+  for (int y=0;y<5;++y) for (int x=0;x<5;++x) I[y*5+x]=nof[(4-y)*18+(4-x)*2]; // rechts oben
+  InsertHangingFaceQ4(hnq4face,nof,70,68,52,50,I);
+  for (int y=0;y<5;++y) for (int x=0;x<5;++x) I[y*5+x]=nof[(4-x)*18+y*2];     // links oben
+  InsertHangingFaceQ4(hnq4face,nof,64,46,66,48,I);
+}
+
+/*---------------------------------------------------*/
+
+void LevelMesh3d::InsertHangingEdgesQ4(QuarticHNStructure5&  hnq4,    const fixarray<81,int>& nof) const
+{
+  	    // horizontal
+  for (int y=0;y<5;++y)
+    InsertHangingEdgeQ4(hnq4,nof,18*y+1,18*y+3,18*y+5,18*y+7,18*y+0,18*y+2,18*y+4,18*y+6,18*y+8);
+	    // vertikal
+  for (int x=0;x<5;++x)
+    InsertHangingEdgeQ4(hnq4,nof,2*x+9,2*x+27,2*x+45,2*x+63,2*x+0,2*x+18,2*x+36,2*x+54,2*x+72);
+}
+
+/*---------------------------------------------------*/
+
+	  // Sucht alle 25 Knoten, die an einer haengenden
+	  // Flaeche einer groben Q2-Zelle liegen
+void LevelMesh3d::ConstructNodesOnFace(fixarray<25,int>& nodesonface,int vater,int ni) const
+{
+  const HexLawAndOrder& HLaO = HMP->HexLawOrder();
+  assert(vater>=0);
+  int neighbour = HMP->neighbour(vater,ni);
+  assert(neighbour>=0);
+  	    // nachbar-nachbar index suchen
+  int nni = HMP->neighbour_neighbour(vater,ni);
+
+	    // Die vier Kinder an dieser Face
+	    // Diese vier Kinder sind gegen den Uhrzeigersinn angeordnet.
+  fixarray<4,int> childs;
+  HLaO.childs_of_face(childs,HMP->hex(neighbour),nni);
+  
+	    // die 9 Patchknoten auf einer Kindesface
+  std::vector<fixarray<9,int> > F(4);
+  for (int i=0;i<4;++i) F[i] = HLaO.PatchVerticesOfFace(childs[i],nni);
+	    // der Mittelknoten der Vaters
+  int middle_node = HLaO.face_vertex(HMP->hex(neighbour),nni);
+	    // Die zellen selbst koennen  rotiert sein. Alle 4
+	    // haben aber die gleiche Orientierung
+	    // die zellen so sortieren, dass sie von links unten
+	    // nach recht oben lexikogr. liegen
+	    // Dazu wird jeweils die Zelle gesucht, so dass der Mittelknoten richtig liegt
+  int edges[4]  = {8,6,2,0};
+  fixarray<4,int> s;
+  for (int c=0;c<4;++c)
+    {           // zelle finden, die an Position c liegt, also
+		// zelle, von der edges[c] die mittelzelle ist.
+      for (s[c]=0;s[c]<4;++s[c]) if (F[s[c]][edges[c]]==middle_node) break;
+    }
+	    // Index zusammenbasteln
+  for (int y=0;y<3;++y) for (int x=0;x<3;++x)  nodesonface[y*5+x] = F[s[0]][y*3+x];
+  for (int y=0;y<3;++y) for (int x=3;x<5;++x)  nodesonface[y*5+x] = F[s[1]][y*3+x-2];
+  for (int y=3;y<5;++y) for (int x=0;x<3;++x)  nodesonface[y*5+x] = F[s[2]][(y-2)*3+x];
+  for (int y=3;y<5;++y) for (int x=3;x<5;++x)  nodesonface[y*5+x] = F[s[3]][(y-2)*3+x-2];
+}
+
+/*---------------------------------------------------*/
+
+void LevelMesh3d::InsertHangingFaceQ4(QuarticHNStructure25& hnq4face, const fixarray<81,int>& nof,
+				      int n1,int n2,int n3,int n4,
+				      const fixarray<25,int>& I) const
+{
+  	    // eine haengende face hat 4 haengende. Die vier typen dieser Knoten
+	    // sind so wie die 9 Stuetzknoten lexikografisch vergeben.
+  assert(hnq4face.find(Vertexg2l(nof[n1]))==hnq4face.end());
+  fixarray<26,int> G;
+  for (int i=0;i<25;++i) G[i]=Vertexg2l(I[i]);
+  G[25]=0; hnq4face.insert(std::make_pair(Vertexg2l(nof[n1]),G));
+  G[25]=1; hnq4face.insert(std::make_pair(Vertexg2l(nof[n2]),G));
+  G[25]=2; hnq4face.insert(std::make_pair(Vertexg2l(nof[n3]),G));
+  G[25]=3; hnq4face.insert(std::make_pair(Vertexg2l(nof[n4]),G));
+}
+
+/*---------------------------------------------------*/
+
+void LevelMesh3d::InsertHangingEdgeQ4(QuarticHNStructure5&   hnq4,    const fixarray<81,int>& nof,
+				      int n1,int n2,int n3,int n4,
+				      int i1,int i2,int i3,int i4,int i5) const
+{
+  	    // die ganze Kante muss neu haengen. Es gibt 2 mal 2 haengende Knoten.
+	    // Knoten am Rand haben jeweils den Typ 0, die in der Mitte Typ 1
+  if (hnq4.find(Vertexg2l(nof[n1]))!=hnq4.end())
+    {
+      assert(hnq4.find(Vertexg2l(nof[n2]))!=hnq4.end());
+      assert(hnq4.find(Vertexg2l(nof[n3]))!=hnq4.end());
+      assert(hnq4.find(Vertexg2l(nof[n4]))!=hnq4.end());
+      return; 
+    }
+  fixarray<6,int> G;
+  G[0]=Vertexg2l(nof[i1]); G[1]=Vertexg2l(nof[i2]);  G[2]=Vertexg2l(nof[i3]);
+  G[3]=Vertexg2l(nof[i4]); G[4]=Vertexg2l(nof[i5]);  
+  G[5]=0; hnq4.insert(std::make_pair(Vertexg2l(nof[n1]),G));
+  G[5]=1; hnq4.insert(std::make_pair(Vertexg2l(nof[n2]),G));
+  std::swap(G[0],G[4]);std::swap(G[1],G[3]);
+  G[5]=1; hnq4.insert(std::make_pair(Vertexg2l(nof[n3]),G));
+  G[5]=0; hnq4.insert(std::make_pair(Vertexg2l(nof[n4]),G));
+}
+
+/*---------------------------------------------------*/
+
 bool LevelMesh3d::EnkelUniform(const Hex& Q) const
 {
   for (int ii=0; ii<Q.nchilds(); ii++)

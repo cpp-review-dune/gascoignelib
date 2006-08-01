@@ -19,6 +19,9 @@ class HangingIndexHandler
   std::map<int,fixarray<3,int> >  hnq2;
   std::map<int,fixarray<9,int> >  hnq2face;
 
+  std::map<int,fixarray<6,int> >   hnq4;
+  std::map<int,fixarray<26,int> >  hnq4face;
+
  public:
 
   HangingIndexHandler();
@@ -39,6 +42,11 @@ class HangingIndexHandler
   const std::map<int,fixarray<9,int> >* GetStructureFace() const { return &hnq2face;}
   std::map<int,fixarray<3,int> >* GetStructure()      { return &hnq2;}
   std::map<int,fixarray<9,int> >* GetStructureFace()  { return &hnq2face;}
+
+  const std::map<int,fixarray<6,int> >*  GetQ4Structure()     const { return &hnq4;}
+  const std::map<int,fixarray<26,int> >* GetQ4StructureFace() const { return &hnq4face;}
+  std::map<int,fixarray<6,int> >*  GetQ4Structure()      { return &hnq4;}
+  std::map<int,fixarray<26,int> >* GetQ4StructureFace()  { return &hnq4face;}
 };
 }
 
