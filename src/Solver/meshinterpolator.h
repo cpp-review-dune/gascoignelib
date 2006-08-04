@@ -27,12 +27,12 @@ class MeshInterpolator
     std::vector<std::pair<GlobalVector,int> >  _VecInt,_VecOld,_VecNew;
     bool                                       _average;
 
-    void CheckCell (int oldNumber, int newNumber);
-    void Coarsen   (int newNumber);
-    void Distribute(int oldNumber, int newNumber);
-    void InitIndizes(int dim);
-    void InitInterpolationWeights(int dim);
-    void RefineAndInterpolate(HierarchicalMesh* Mesh, std::vector<std::pair<GlobalVector,int> >& u, const IntSet& refine, std::vector<std::vector<bool> >& done);
+    virtual void CheckCell (int oldNumber, int newNumber);
+    virtual void Coarsen   (int newNumber);
+    virtual void Distribute(int oldNumber, int newNumber);
+    virtual void InitIndizes(int dim);
+    virtual void InitInterpolationWeights(int dim);
+    virtual void RefineAndInterpolate(HierarchicalMesh* Mesh, std::vector<std::pair<GlobalVector,int> >& u, const IntSet& refine, std::vector<std::vector<bool> >& done);
 
           MeshAgent* GetMeshAgent()       { assert(_MA); return _MA; }
     const MeshAgent* GetMeshAgent() const { assert(_MA); return _MA; }
