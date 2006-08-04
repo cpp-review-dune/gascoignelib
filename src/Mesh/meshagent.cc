@@ -53,7 +53,6 @@ void MeshAgent::ReInit()
       q4patch2cell.push_back(q4p2c);
     }
     PIH.GetIndexQ4() = _q4patch;
-    PIH.GetHasQ4Patch() = true;
   }
 
   if(_goc2nc)

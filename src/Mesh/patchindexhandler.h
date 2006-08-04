@@ -18,6 +18,8 @@ protected:
   int dim;
 
 public:
+  PatchIndexHandler() : haspatch(false), hasq4patch(false) { }
+  ~PatchIndexHandler() { }
 
   int&                       GetDim()          { return dim;}
   bool&                      GetHasPatch()     { return haspatch;}
