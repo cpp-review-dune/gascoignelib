@@ -1239,7 +1239,10 @@ void StdSolver::VisuGrid(const string& name, int i) const
     {
       VisuEPS eps;
       //  eps.SetOption(VisuEPS::LINEWIDTH,0.1);
-      //  eps.SetOption(VisuEPS::WRITE_PATCH,1);
+      if(_discname[1]=='2')
+      {
+        eps.SetOption(VisuEPS::WRITE_PATCH,1);
+      }
       eps.SetMesh(*GetMesh());
       eps.WriteGrid(name,i);
     }

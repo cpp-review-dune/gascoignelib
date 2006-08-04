@@ -65,7 +65,7 @@ double DwrQ2Q4::ScalarProductWithFluctuations(DoubleVector& eta, const VectorInt
 
   GlobalVector dz(f.ncomp(),f.n());
   PiQ2 pi;
-  pi.Init(&_S);
+  pi.Init(_S.GetMesh());
   pi.vmult(dz,_S.GetGV(gz));
 
   return ScalarProduct(eta,f,dz);

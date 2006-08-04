@@ -6,7 +6,7 @@ namespace Gascoigne
 {
 /**********************************************************/
 
-PiQ2::PiQ2() : _DI(NULL), _MP(NULL)
+PiQ2::PiQ2() : _MP(NULL)
 {
   _q2weight.resize(3,DoubleVector(5));
   _q2weight[0][0]=1.;
@@ -30,11 +30,9 @@ PiQ2::PiQ2() : _DI(NULL), _MP(NULL)
 
 /**********************************************************/
 
-void PiQ2::Init(const SolverInterface *SI)
+void PiQ2::Init(const MeshInterface *MI)
 {
-  _DI = SI->GetDiscretization();
-  assert(_DI);
-  _MP = dynamic_cast<const GascoigneMesh *>(SI->GetMesh());
+  _MP = dynamic_cast<const GascoigneMesh *>(MI);
   assert(_MP);
   assert(_MP->HasQ4Patch());
 }
