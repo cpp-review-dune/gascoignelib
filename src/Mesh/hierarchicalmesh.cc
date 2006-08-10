@@ -124,12 +124,19 @@ void HierarchicalMesh::global_refine(int k)
 {
   IntVector cell_coarse(0);
 
-  for (int i=0; i<k; i++)
+  if(k==0)
+  {
+    refine(cell_coarse,cell_coarse);
+  }
+  else
+  {
+    for (int i=0; i<k; i++)
     {
       IntVector v(ncells());
       iota(v.begin(),v.end(),0);
       refine(v,cell_coarse);
     }
+  }
 }
 
 /*---------------------------------------------------*/
