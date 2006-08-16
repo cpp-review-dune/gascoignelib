@@ -356,7 +356,7 @@ void LevelMesh3d::ConstructHangingStructureQuartic(QuarticHNStructure5& hnq4, Qu
 	  if (neighbour<0) continue;
 		    // Face haengt, wenn Nachbar einmal mehr, also 3-mal verfeinert ist.
 		    // Wenn Nachbar groeber ist, dann haengt die Face eben von der anderen Seite
-	  if (refine_level(neighbour)!=3) continue;
+	  if (refine_level(neighbour)<3) continue;
 		    // Liste von allen 81 Knoten auf dieser Face aufbauen
 	  ConstructNodesOnFaceQ4(nodesonface,opa,ni);
 		    // und die haengende face einfuegen

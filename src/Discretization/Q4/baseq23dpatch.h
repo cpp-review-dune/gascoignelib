@@ -117,7 +117,7 @@ namespace Gascoigne
           DN[i].zero();
         }
 
-        for (int i=0; i<8; i++)
+        for (int i=0; i<27; i++)
         {
           int j = pB + perm[i];
           N [j] = B2.phi(i);
