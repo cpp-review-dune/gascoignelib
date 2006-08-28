@@ -6,6 +6,7 @@
 #include  "multigridmeshinterface.h"
 #include  "meshtransferinterface.h"
 #include  "paramfile.h"
+#include  "boundaryfunction.h"
 #include  <string>
 
 namespace Gascoigne
@@ -60,6 +61,9 @@ namespace Gascoigne
       virtual const std::set<int> Cello2n(int i)const=0;
       virtual const int Cello2nFather(int i)const=0;
       virtual const bool Goc2nc()const=0;
+
+      virtual void AddShape(int col, BoundaryFunction<2>* f) {std::cerr << "MeshAgentInterface::AddShape not written" << std::endl; abort();}
+      virtual void AddShape(int col, BoundaryFunction<3>* f) {std::cerr << "MeshAgentInterface::AddShape not written" << std::endl; abort();}
   };
 }
 
