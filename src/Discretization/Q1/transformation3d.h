@@ -193,7 +193,7 @@ inline double  Transformation3d<BASE>::J() const
   double h = dt.det();
   if (h<0)
     {
-      std::cout << "h = " << h << std::endl;
+      std::cout << "Transformation3d<BASE>::J()  h = " << h << std::endl;
     }
   return h;
 }
