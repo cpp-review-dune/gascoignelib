@@ -20,13 +20,14 @@ protected:
   VisuDataInfo        VDI;
   VisuDataCompVector  VD;
 
+  void AddVector(const GlobalVector* v);
+  void AddVector(const ComponentInformation* CI, const GlobalVector* v);
+
 public:
 
   GascoigneVisualization() : Visualization(), _v(NULL) {}
   ~GascoigneVisualization() {}
 
-  void AddVector(const GlobalVector* v);
-  void AddVector(const ComponentInformation* CI, const GlobalVector* v);
   void AddPointVector(const ComponentInformation* CI, const GlobalVector* v);
   void AddPointVector(const GlobalVector* v);
   void AddCellVector(const ComponentInformation* CI, const GlobalVector* v);
