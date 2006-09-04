@@ -59,7 +59,7 @@ class Visualization
 
   void _vtk_pointdata(std::ofstream& out) const;
   void _vtk_celldata(std::ofstream& out) const;
-  void _vtk_points(std::ofstream& out) const;
+  virtual void _vtk_points(std::ofstream& out) const;
   void _vtk_cells(std::ofstream& out) const;
 
 
@@ -85,7 +85,7 @@ class Visualization
   void NoOutput() {showoutput=0;}
 
   Visualization();
-  ~Visualization();
+  virtual ~Visualization();
   Visualization(const Visualization&);
   Visualization& operator=(const Visualization&);
 
