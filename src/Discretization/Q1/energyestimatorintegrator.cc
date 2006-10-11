@@ -140,6 +140,7 @@ double EnergyEstimatorIntegrator<DIM>::Residual(const LocalVector& U, const FemI
     double value = 0.;
     if (RHS)
       {
+        RHS->SetCellSize(h);
 	for (int c=0; c<U.ncomp(); c++)
 	  {
 	    double rhs = (*RHS)(c,x);

@@ -58,6 +58,8 @@ namespace Gascoigne
           b[c] += N.m()* (*this)(c,v,n,color);
         }
       }
+
+      virtual void SetCellSize(double h) const { }
   };
 
   typedef BoundaryRightHandSide BoundaryInitialCondition;

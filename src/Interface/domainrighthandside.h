@@ -44,6 +44,8 @@ namespace Gascoigne
               b[c] += N.m()* (*this)(c,v);
             }
         }
+
+      virtual void SetCellSize(double h) const { }
   };
   
   typedef DomainRightHandSide DomainInitialCondition;

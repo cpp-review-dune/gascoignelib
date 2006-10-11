@@ -220,9 +220,11 @@ void IntegratorQ2Q4<DIM>::Rhs(const DomainRightHandSide& RHS, LocalVector& F, co
       FemH.point(xi);
       FemL.point(xi);
       double vol = FemL.J();
+      double h  = Volume2MeshSize(vol);
       double weight  = IF->w(k) * vol;
       BasicIntegrator::universal_point(FemL,_QH,Q);
       RHS.SetFemData(_QH);
+      RHS.SetCellSize(h);
       FemL.x(x);
 
       for (int i=0;i<FemH.n();i++)
@@ -262,6 +264,7 @@ void IntegratorQ2Q4<DIM>::BoundaryRhs(const BoundaryRightHandSide& RHS, LocalVec
     FemL.normal(n);
     double  h = FemL.G();
     double  weight = IF->w(k)*h;
+    RHS.SetCellSize(h);
     for(int i=0; i<FemH.n(); i++)
     {
       FemH.init_test_functions(_NN,weight,i);

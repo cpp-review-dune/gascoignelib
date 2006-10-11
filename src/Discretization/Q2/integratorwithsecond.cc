@@ -170,11 +170,13 @@ void IntegratorWithSecond<DIM>::Rhs(const DomainRightHandSide& f, LocalVector& F
       FEM.point(xi);
       point_hesse(FEM,xi);
       double vol = FEM.J();
+      double h  = Volume2MeshSize(vol);
       double weight  = IF.w(k) * vol;
       GalerkinIntegratorQ2<DIM>::universal_point(FEM,GalerkinIntegratorQ2<DIM>::_QH,Q);
       hesse(FEM,GalerkinIntegratorQ2<DIM>::_QH,Q);
 
       f.SetFemData(GalerkinIntegratorQ2<DIM>::_QH);
+      f.SetCellSize(h);
       FEM.x(x);
       for (int i=0;i<FEM.n();i++)
 	{

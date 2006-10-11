@@ -71,8 +71,10 @@ void GalerkinIntegrator<DIM>::Rhs(const DomainRightHandSide& f, LocalVector& F, 
 		IF.xi(xi,k);
 		FEM.point(xi);
 		double vol = FEM.J();
+                double h  = Volume2MeshSize(vol);
 		double weight  = IF.w(k) * vol;
 		BasicIntegrator::universal_point(FEM,_QH,Q);
+                f.SetCellSize(h);
 		f.SetFemData(_QH);
 		FEM.x(x);
 		for (int i=0;i<FEM.n();i++)
@@ -110,6 +112,7 @@ void GalerkinIntegrator<DIM>::BoundaryRhs(const BoundaryRightHandSide& f, LocalV
       FEM.normal(n);
       double  h = FEM.G();
       double  weight = IF.w(k)*h;
+      f.SetCellSize(h);
       for (int i=0;i<FEM.n();i++)
 	{
 	  FEM.init_test_functions(_NN,weight,i);
@@ -550,11 +553,13 @@ void GalerkinIntegrator<DIM>::EvaluateCellRightHandSide(LocalVector& F, const Do
       IF.xi(xi,k);
       FEM.point(xi);
       double vol = FEM.J();
+      double h  = Volume2MeshSize(vol);
       double weight  = IF.w(k) * vol;
 
       BasicIntegrator::universal_point(FEM,_QH,Q);
       FEM.x(x);
       CF.SetFemData(_QH);
+      CF.SetCellSize(h);
 
       _NN.zero();
       _NN.m() = weight;
