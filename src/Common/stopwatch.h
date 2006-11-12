@@ -64,6 +64,7 @@ class StopWatch
 
 /*----------------------------------------------------*/
 
+#ifdef __WITH_RSTStopWatch__
 	  // measures the walltime
 class RTStopWatch 
 {
@@ -123,6 +124,7 @@ class RTStopWatch
   
 };
 
+#endif /*__WITH_RSTStopWatch__*/
 
 
 }

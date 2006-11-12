@@ -36,6 +36,7 @@ SET(GASCOIGNE_COMPILER_DEFINITIONS "" CACHE STRING "Compiler Definitions for Gas
 OPTION(BUILD_SHARED_LIBS "Build shared libraries" OFF)
 
 OPTION(WITH_UMFPACK "Use UMFPACK Version 4.1 or higher" ON)
+OPTION(WITH_RSTStopWatch "Use RSTStopWatch" OFF)
 
 OPTION(COPY_PARAMFILES "Copy the Param and the Inp files for examples" ON)
 
