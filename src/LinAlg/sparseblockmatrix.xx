@@ -106,7 +106,7 @@ template<class B>
 SparseBlockMatrix<B>& SparseBlockMatrix<B>::operator=(const SparseBlockMatrix<B>& S)
 {
   const ColumnDiagStencil* AS = dynamic_cast<const ColumnDiagStencil*>(S.GetStencil());
-  assert(AS);
+  if(!AS) assert(0);
 
   smat.reserve(S.size());
   smat.resize (S.size());
@@ -225,9 +225,9 @@ void SparseBlockMatrix<B>::AddMassWithDifferentStencil(const MatrixInterface* M,
 //     dynamic_cast<const SparseBlockMatrix<FMatrixBlock<1> >*>(M);
 //   assert(MP);
   const SimpleMatrix* MP = dynamic_cast<const SimpleMatrix*>(M);
-  assert(MP);
+  if(!MP) assert(0);
   const ColumnDiagStencil* USM = dynamic_cast<const ColumnDiagStencil*>(MP->GetStencil());
-  assert(USM);
+  if(!USM) assert(0);
 
   for(int i=0; i<USM->n(); i++)
     {
@@ -272,7 +272,7 @@ void SparseBlockMatrix<B>::copy_entries(const MatrixInterface& AI)
   const SparseBlockMatrix<B>& A =  *AP;
 
   const ColumnDiagStencil* AS = dynamic_cast<const ColumnDiagStencil*>(AP->GetStencil());
-  assert(AS);
+  if(!AS) assert(0);
 
   if(US.nentries()==AS->nentries()) 
     {

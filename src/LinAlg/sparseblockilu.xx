@@ -5,6 +5,7 @@
 #include  "giota.h"
 #include  "sparsestructure.h"
 
+
 /*-------------------------------------------------------------*/
 
 namespace Gascoigne
@@ -38,8 +39,8 @@ SparseBlockIlu<B>::~SparseBlockIlu()
 template<class B>
 void SparseBlockIlu<B>::ReInit(const SparseStructureInterface* SI)
 {
-  const SparseStructure* S = dynamic_cast<const SparseStructure*>(SI);
-  assert(S);
+  const Gascoigne::SparseStructure* S = dynamic_cast<const SparseStructure*>(SI);
+ // assert(S);
 
   int n = S->n();
   int ntot = S->ntotal();
@@ -123,7 +124,7 @@ void SparseBlockIlu<B>::copy_entries(const MatrixInterface* A)
   const SparseBlockMatrix<B>* MM = dynamic_cast<const SparseBlockMatrix<B>*>(A);
   assert(MM);
   const ColumnDiagStencil* AS = dynamic_cast<const ColumnDiagStencil*>(MM->GetStencil());
-  assert(AS);
+  if(!AS) assert(0);
 
   for(int i=0;i<SparseBlockMatrix<B>::US.n();i++)
     {

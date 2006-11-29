@@ -33,10 +33,10 @@ protected:
   IntegrationFormulaInterface*& MassFormulaPointer() { return IFM;}
   IntegrationFormulaInterface*& BoundaryFormulaPointer() { return IFB;}
 
-  const IntegrationFormulaInterface* FormFormula() const { assert(IFF); return IFF;}
-  const IntegrationFormulaInterface* MassFormula() const { assert(IFM); return IFM;}
-  const IntegrationFormulaInterface* ErrorFormula() const { assert(IFE); return IFE;}
-  const IntegrationFormulaInterface* BoundaryFormula() const { assert(IFB); return IFB;}
+  const IntegrationFormulaInterface* FormFormula() const { assert(GalerkinIntegrator<DIM>::IFF); return GalerkinIntegrator<DIM>::IFF;}
+  const IntegrationFormulaInterface* MassFormula() const { assert(GalerkinIntegrator<DIM>::IFM); return GalerkinIntegrator<DIM>::IFM;}
+  const IntegrationFormulaInterface* ErrorFormula() const { assert(GalerkinIntegrator<DIM>::IFE); return GalerkinIntegrator<DIM>::IFE;}
+  const IntegrationFormulaInterface* BoundaryFormula() const { assert(GalerkinIntegrator<DIM>::IFB); return GalerkinIntegrator<DIM>::IFB;}
 
   double Volume2MeshSize(double vol) const { return pow(vol,1./float(DIM));}
 

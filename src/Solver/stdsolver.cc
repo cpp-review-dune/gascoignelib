@@ -231,7 +231,7 @@ void StdSolver::SetDefaultValues(string discname, string matrixtype, int ndirect
 
 /*-------------------------------------------------------*/
 
-void StdSolver::BasicInit(int level, const ParamFile* paramfile,const int dimension)
+void StdSolver::BasicInit(int level, const ParamFile* paramfile, const int dimension)
 {
   _paramfile = paramfile;
   _mylevel=level;
