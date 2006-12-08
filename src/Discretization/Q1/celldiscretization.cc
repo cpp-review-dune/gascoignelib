@@ -222,7 +222,20 @@ void CellDiscretization::BoundaryMassMatrix(MatrixInterface& A, const IntSet& Co
         }
     }
   //Diagonaleintraege auf 1 setzen, wenn Eintrag noch null, damit A invertierbar ist.
-  DiagonalEntriesForBoundaryMassMatrix<1>(A);
+  const ColumnDiagStencil* ST = dynamic_cast<const ColumnDiagStencil*>(A.GetStencil());
+  assert(ST);
+  SimpleMatrix* SM = dynamic_cast<SimpleMatrix*>(&A);
+  assert(SM);
+  int n = ST->n();
+  int pos;
+  for(int i = 0; i < n; i++)
+  {
+    pos = ST->diag(i);
+    if(SM->GetValue(pos) == 0)
+    {
+      SM->GetValue(pos) = 1;
+    }
+  }
 }
 
 /* ----------------------------------------- */
@@ -893,45 +906,6 @@ void CellDiscretization::GetBoundaryMassDiag(DoubleVector& a) const
 	  }
         }
     }
-}
-
-template<int COMP>
-void CellDiscretization::DiagonalEntriesForBoundaryMassMatrix(MatrixInterface& A) const
-{
-  SparseBlockMatrix<FMatrixBlock<COMP> >* SBM = dynamic_cast<SparseBlockMatrix<FMatrixBlock<COMP> >*>(&A);
-  const ColumnDiagStencil* ST = dynamic_cast<const ColumnDiagStencil*>(A.GetStencil());
-  assert(ST);
-  if(SBM)
-  {
-    int n = ST->n();
-    int pos;
-    for(int i = 0; i < n; i++)
-    {
-      pos = ST->diag(i);
-      for(int c = 0; c < COMP; c++)
-      {
-	if(SBM->mat(pos)->diag(c) == 0)
-	{
-	  SBM->mat(pos)->diag(c) = 1;
-	}
-      }
-    }
-  }
-  else
-  {
-    SimpleMatrix* SM = dynamic_cast<SimpleMatrix*>(&A);
-    assert(SM);
-    int n = ST->n();
-    int pos;
-    for(int i = 0; i < n; i++)
-    {
-      pos = ST->diag(i);
-      if(SM->GetValue(pos) == 0)
-      {
-	SM->GetValue(pos) = 1;
-      }
-    }
-  }
 }
 
 }

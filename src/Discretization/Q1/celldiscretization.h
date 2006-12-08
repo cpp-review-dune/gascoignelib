@@ -18,9 +18,7 @@ namespace Gascoigne
 class CellDiscretization : public BasicDiscretization
 {
 private:
-  template<int COMP>
-    void DiagonalEntriesForBoundaryMassMatrix(MatrixInterface& A)const ;
-
+  
 protected:
 
   FemInterface*         __FEM;
