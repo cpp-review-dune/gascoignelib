@@ -297,6 +297,44 @@ double GalerkinIntegrator<DIM>::MassMatrix(EntryMatrix& E, const FemInterface& F
     }
   return omega;
 }
+/*-----------------------------------------------------------*/
+
+template<int DIM>
+void GalerkinIntegrator<DIM>::BoundaryMassMatrix (EntryMatrix& E, const FemInterface& FEM, int ile) const
+{
+  _NNN.resize(FEM.n());
+  E.SetDimensionDof(FEM.n(),FEM.n());
+  E.SetDimensionComp(1,1);
+  E.resize();
+  E.zero();
+
+  const IntegrationFormulaInterface& IF = *BoundaryFormula();
+
+  Vertex<DIM> x,n;
+  Vertex<DIM-1> xi;
+  for (int k=0; k<IF.n(); k++)
+    {
+      IF.xi(xi,k);
+      FEM.point_boundary(ile,xi);
+      FEM.x(x);
+      FEM.normal(n);
+      double  h = FEM.G();
+      double  weight = IF.w(k)*h;
+      double sw = sqrt(weight);
+      for (int i=0;i<FEM.n();i++)
+        {
+          FEM.init_test_functions(_NNN[i],sw,i);
+        }
+      for (int j=0;j<FEM.n();j++)
+        {
+          for (int i=0;i<FEM.n();i++)
+            {
+              E.SetDofIndex(i,j);
+	      E(0,0) += _NNN[i].m() * _NNN[j].m();
+	    }
+        }
+    }
+}
 
 /* ----------------------------------------- */
 

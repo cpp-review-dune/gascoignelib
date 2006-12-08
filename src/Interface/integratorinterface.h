@@ -79,6 +79,11 @@ namespace Gascoigne
       virtual double MassMatrix(EntryMatrix& E, const FemInterface& FEM) const {
         std::cerr << "\"IntegratorInterface::MassMatrix\" not written!" << std::endl;
         assert(0);
+      } 
+      virtual void BoundaryMassMatrix (EntryMatrix& E, const FemInterface& FEM, int ile) const
+      {
+        std::cerr << "\"IntegratorInterface::BoundaryMassMatrix\" not written!" << std::endl;
+        assert(0);
       }
 
       virtual void MassForm(const TimePattern& TP, LocalVector& F, const FemInterface& FEM, const LocalVector& U) const {

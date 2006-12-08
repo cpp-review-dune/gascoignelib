@@ -92,6 +92,11 @@ namespace Gascoigne
       virtual void MassMatrix(MatrixInterface& M) const {
         std::cerr << "\"DiscretizationInterface::MassMatrix\" not written!" << std::endl;
         abort();
+      } 
+      
+      virtual void BoundaryMassMatrix(MatrixInterface& A, const IntSet& Colors) const {
+        std::cerr << "\"DiscretizationInterface::BoundaryMassMatrix\" not written!" << std::endl;
+        abort();
       }
       virtual void MassForm(GlobalVector& f, const GlobalVector& u, const TimePattern& TP, double s) const {
         std::cerr << "\"DiscretizationInterface::MassForm\" not written!" << std::endl;

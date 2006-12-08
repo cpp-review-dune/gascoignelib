@@ -65,6 +65,7 @@ public:
   void BoundaryMatrix (const BoundaryEquation& BE, EntryMatrix& E, const FemInterface& FEM, const LocalVector& U, int ile, int col, 
       const LocalData& Q, const LocalData& QC) const;
   double MassMatrix(EntryMatrix& E, const FemInterface& FEM) const;
+  void BoundaryMassMatrix (EntryMatrix& E, const FemInterface& FEM, int ile) const;
   void MassForm(const TimePattern& TP, LocalVector& F, const FemInterface& FEM, const LocalVector& U) const;
 
   void RhsPoint(LocalVector& b, const FemInterface& E, const Vertex<DIM>& p, int comp) const;
