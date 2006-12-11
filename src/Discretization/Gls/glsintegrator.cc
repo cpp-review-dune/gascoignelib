@@ -10,11 +10,11 @@ namespace Gascoigne
 template<int DIM>
 GlsIntegrator<DIM>::GlsIntegrator() : BasicIntegrator()
 {
-    assert(GlsIntegrator<DIM>::IF);
   if (DIM==2)
     IF = new QuadGauss4;
   else
     IF = new HexGauss8;
+  assert(GlsIntegrator<DIM>::IF);
 }
 
 /*-----------------------------------------*/
