@@ -35,20 +35,23 @@ Visualization::~Visualization()
 
 Visualization& Visualization::operator=(const Visualization& W)
 {
-  stepname  = W.stepname;
-  title     = W.title;
-  avsa      = W.avsa;
-  gmva      = W.gmva;
-  vua       = W.vua;
-  vigiea    = W.vigiea;
-  teca      = W.teca;
-  vtka      = W.vtka;
-  //gnua      = W.gnua;
-  pstep     = W.pstep;
-  time      = W.time;
-  tstep     = W.tstep;
-  nexttime  = W.nexttime;
-  showoutput = W.showoutput;
+  stepname       = W.stepname;
+  title          = W.title;
+  avsa           = W.avsa;
+  gmva           = W.gmva;
+  vua            = W.vua;
+  vigiea         = W.vigiea;
+  teca           = W.teca;
+  vtka           = W.vtka;
+  b_rotatedvtk         = W.b_rotatedvtk;
+  i_rotatedvtk_slides  = W.i_rotatedvtk_slides;
+  d_rotatedvtk_angle   = W.d_rotatedvtk_angle;
+  //gnua         = W.gnua;
+  pstep          = W.pstep;
+  time           = W.time;
+  tstep          = W.tstep;
+  nexttime       = W.nexttime;
+  showoutput     = W.showoutput;
 
   return *this;
 }
@@ -61,6 +64,9 @@ void Visualization::BasicInit()
   avsa = gmva = vua = vigiea = gnua = teca = 0;
   time = 0.; tstep = 0.; nexttime = 0.;
   vtka = 1;
+  b_rotatedvtk        = 0;
+  i_rotatedvtk_slides = 10;
+  d_rotatedvtk_angle  = 36;
   showoutput = 1;
   stepname = "solve";
 }
@@ -75,19 +81,22 @@ void Visualization::read_parameters(const ParamFile* pf)
   DoubleVector gnupos(0);
 
   DataFormatHandler DH;
-  DH.insert("step"     ,& pstep     ,1);
-  DH.insert("tstep"    ,& time       ,0.);
-  DH.insert("showoutput",& showoutput,1);
-  DH.insert("gnuplot"  ,& planes);
+  DH.insert("step"       ,& pstep     ,1);
+  DH.insert("tstep"      ,& time       ,0.);
+  DH.insert("showoutput" ,& showoutput,1);
+  DH.insert("gnuplot"    ,& planes);
   DH.insert("gnuposition",& gnupos);
-  DH.insert("vtk"      ,& vtka, 1);
-  DH.insert("gmv"      ,& gmva,0);
-  DH.insert("vu"       ,& vua,0);
-  DH.insert("vigie"    ,& vigiea,0);
-  DH.insert("gnu"      ,& gnua,0);
-  DH.insert("tecplot"  ,& teca,0);
-  DH.insert("avs"      ,& avsa,0);
-  DH.insert("compress" ,& compress, 0);
+  DH.insert("vtk"        ,& vtka, 1);
+  DH.insert("rotatedvtk" ,& b_rotatedvtk, 1);
+  DH.insert("rotatedvtk_slides" ,& i_rotatedvtk_slides, 10);
+  DH.insert("rotatedvtk_angle" ,& d_rotatedvtk_angle, 36);
+  DH.insert("gmv"        ,& gmva,0);
+  DH.insert("vu"         ,& vua,0);
+  DH.insert("vigie"      ,& vigiea,0);
+  DH.insert("gnu"        ,& gnua,0);
+  DH.insert("tecplot"    ,& teca,0);
+  DH.insert("avs"        ,& avsa,0);
+  DH.insert("compress"   ,& compress, 0);
 
   FileScanner FS(DH,pf,"Visualization");
 
@@ -122,13 +131,14 @@ void Visualization::set_name(const string& s)
 
 void Visualization::format(const string& s)
 {
-  if      (s=="vtk")     vtka   = 1;
-  else if (s=="gmv")     gmva   = 1;
-  else if (s=="vu")      vua    = 1;
-  else if (s=="vigie")   vigiea = 1;
-  else if (s=="gnu")     gnua   = 1;
-  else if (s=="tecplot") teca   = 1;
-  else if (s=="avs")     avsa   = 1;
+  if      (s=="vtk")            vtka         = 1;
+  else if (s=="rotatedvtk")     b_rotatedvtk = 1;
+  else if (s=="gmv")            gmva         = 1;
+  else if (s=="vu")             vua          = 1;
+  else if (s=="vigie")          vigiea       = 1;
+  else if (s=="gnu")            gnua         = 1;
+  else if (s=="tecplot")        teca         = 1;
+  else if (s=="avs")            avsa         = 1;
   else assert(0);
 }
 
@@ -177,11 +187,12 @@ void Visualization::write()
       cerr << "no filename set [use \"step(i)\"]\n";
       abort();
     }
-  if (avsa)       avs(filename);
-  if (gmva)       gmv(filename);
-  if (vua)        vu(filename);
-  if (gnua)       gnuplot(filename);
-  if (vtka)       vtk(filename);
+  if (avsa)         avs(filename);
+  if (gmva)         gmv(filename);
+  if (vua)          vu(filename);
+  if (gnua)         gnuplot(filename);
+  if (vtka)         vtk(filename);
+  if (b_rotatedvtk) rotatedvtk(filename);
   if (showoutput) cout << "[" << filename << ".vtk]\n";
 }
 

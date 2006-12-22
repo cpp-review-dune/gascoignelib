@@ -33,6 +33,9 @@ class Visualization
   std::vector<GnuplotData> GP;
 
   bool    avsa, gmva, vigiea, vua, gnua, teca, vtka, compress;
+  bool    b_rotatedvtk;
+  int     i_rotatedvtk_slides;
+  double  d_rotatedvtk_angle;
   int     pstep, showoutput;
   double  time, tstep, nexttime;
 
@@ -40,11 +43,12 @@ class Visualization
 
   void   BasicInit();
 
-  void   avs    (const std::string&)  const;
-  void   vu     (const std::string&)  const;
-  void   gnuplot(const std::string&)  const;
-  void   gmv    (const std::string&)  const;
-  void   vtk    (const std::string&)  const;
+  void   avs        (const std::string&)  const;
+  void   vu         (const std::string&)  const;
+  void   gnuplot    (const std::string&)  const;
+  void   gmv        (const std::string&)  const;
+  void   vtk        (const std::string&)  const;
+  void   rotatedvtk (const std::string&)  const;
 
   void   output_vertexs             (std::ofstream&) const;
   void   output_quads               (std::ofstream&, const std::string& s="") const;
@@ -57,10 +61,16 @@ class Visualization
   void output_solution(std::ofstream&, int) const;
 
 
-  void _vtk_pointdata(std::ofstream& out) const;
-  void _vtk_celldata(std::ofstream& out) const;
+  virtual void _vtk_pointdata(std::ofstream& out) const;
+  virtual void _vtk_celldata(std::ofstream& out) const;
   virtual void _vtk_points(std::ofstream& out) const;
-  void _vtk_cells(std::ofstream& out) const;
+  virtual void _vtk_cells(std::ofstream& out) const;
+
+
+  virtual void _rotatedvtk_pointdata(std::ofstream& out) const;
+  virtual void _rotatedvtk_celldata(std::ofstream& out) const;
+  virtual void _rotatedvtk_points(std::ofstream& out) const;
+  virtual void _rotatedvtk_cells(std::ofstream& out) const;
 
 
  public:
