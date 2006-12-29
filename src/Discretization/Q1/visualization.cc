@@ -87,7 +87,7 @@ void Visualization::read_parameters(const ParamFile* pf)
   DH.insert("gnuplot"    ,& planes);
   DH.insert("gnuposition",& gnupos);
   DH.insert("vtk"        ,& vtka, 1);
-  DH.insert("rotatedvtk" ,& b_rotatedvtk, 1);
+  DH.insert("rotatedvtk" ,& b_rotatedvtk, 0);
   DH.insert("rotatedvtk_slides" ,& i_rotatedvtk_slides, 10);
   DH.insert("rotatedvtk_angle" ,& d_rotatedvtk_angle, 36);
   DH.insert("gmv"        ,& gmva,0);
