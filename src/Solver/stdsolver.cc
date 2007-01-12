@@ -1237,7 +1237,7 @@ void StdSolver::VisuGrid(const string& name, int i) const
   
   if (GetMesh()->dimension()==2)
     {
-      VisuEPS eps;
+      VisuEPS eps(_paramfile);
       //  eps.SetOption(VisuEPS::LINEWIDTH,0.1);
       if(_discname[1]=='2')
       {

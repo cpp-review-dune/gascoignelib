@@ -18,6 +18,7 @@ class VisuEPS
   typedef nvector<IntSet> Lines;
 
   const PatchMesh* M;
+  int _i_compress;
 
   Lines lines;
   int   n_lines;
@@ -37,7 +38,7 @@ class VisuEPS
     
   public:
 
-  VisuEPS();
+  VisuEPS(const ParamFile* paramfile);
 
   /**
    * Options for output:

@@ -1,6 +1,7 @@
 #include "visu_eps.h"
 #include "compose_name.h"
 #include <fstream>
+#include  "filescanner.h"
 
 using namespace std;
 
@@ -8,8 +9,16 @@ using namespace std;
 
 namespace Gascoigne
 {
-VisuEPS::VisuEPS() : M(0)
+VisuEPS::VisuEPS(const ParamFile* paramfile) : M(0)
 {
+  {
+    DataFormatHandler DFH;
+    DFH.insert("compress_eps" , &_i_compress, 0);
+    FileScanner FS(DFH);
+    FS.NoComplain();
+    FS.readfile(paramfile,"Visualization");
+  }
+
   INTOPT[WRITE_PATCH]  = 0;
   INTOPT[COMBINE_LINES]  = 1;
   
@@ -203,6 +212,12 @@ void VisuEPS::WriteGrid(string fname,int iter)
     }
   out << "stroke" << endl;
   out.close();
+
+  if(_i_compress) {
+    string command = "gzip -f " + fname; 
+    system(command.c_str()); 
+  }
+
 }
 
 /* ----------------------------------------------------- */
