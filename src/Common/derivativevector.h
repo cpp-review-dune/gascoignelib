@@ -18,14 +18,14 @@ class DerivativeVector : public numfixarray<6,double>
   double x() const { return (*this)[1]; }
   double y() const { return (*this)[2]; }
   double z() const { return (*this)[3]; }
-  double n() const { return (*this)[4]; }
+  double n() const { std::cerr << "Normal derivative not written!" << std::endl;  abort(); }
   double D() const { return (*this)[5]; }  // fuer Laplace
 
   double& m() { return (*this)[0]; }
   double& x() { return (*this)[1]; }
   double& y() { return (*this)[2]; }
   double& z() { return (*this)[3]; }
-  double& n() { return (*this)[4]; }
+  double& n() { std::cerr << "Normal derivative not written!" << std::endl;  abort(); }
   double& D() { return (*this)[5]; }
 
   double aux(const std::string &name) const
