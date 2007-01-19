@@ -32,7 +32,6 @@ public:
       FemFunction U(n);
       for (int i=0; i<n; i++)
 	{
-	  U[i].n() = 0.;
 	  U[i].m() = (*_ES)(i,v);
 	  U[i].x() = _ES->x(i,v);
 	  U[i].y() = _ES->y(i,v);
@@ -66,7 +65,6 @@ public:
       FemFunction U(n);
       for (int i=0; i<n; i++)
 	{
-	  U[i].n() = 0.;
 	  U[i].m() = (*_ES)(i,v);
 	  U[i].x() = _ES->x(i,v);
 	  U[i].y() = _ES->y(i,v);
