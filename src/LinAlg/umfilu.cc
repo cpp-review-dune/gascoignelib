@@ -18,16 +18,6 @@ using namespace std;
 
 namespace Gascoigne
 {
-//extern "C" int umfpack_di_symbolic
-//(
-//    int n,
-//    int m,
-//    const int Ap [ ],
-//    const int Ai [ ],
-//    void **Symbolic,
-//    const double Control [UMFPACK_CONTROL],
-//    double Info [UMFPACK_INFO]
-//) ;
 extern "C" int umfpack_di_symbolic
 (
     int n,
@@ -146,19 +136,14 @@ void UmfIlu::ReInit(const SparseStructureInterface* SS)
   assert(SA);
   SimpleMatrix::ReInit(SA->n(),SA->nentries());
 
-//   const UmfStructure& SA = *GetStructure();
-  
   umfpack_di_free_symbolic (&Symbolic) ;
 
   int n = SA->n();
   const int* sb = &(*SA->start().begin());
   const int* cb = &(*SA->col().begin());
-  
-//  int status = umfpack_di_symbolic(n, n, sb, cb, &Symbolic, Control, Info);
-//  status = umfpack_di_symbolic(n, n, sb, cb, &Symbolic, Control, Info);
+
   int status = umfpack_di_symbolic(n, n, sb, cb, NULL, &Symbolic, Control, Info);
-  status = umfpack_di_symbolic(n, n, sb, cb, NULL, &Symbolic, Control, Info);
-  
+
   if(status != UMFPACK_OK)
     {
       umfpack_di_report_info(Control,Info);
