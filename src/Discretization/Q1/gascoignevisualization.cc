@@ -29,8 +29,14 @@ void GascoigneVisualization::AddVector(const ComponentInformation* CI, const Glo
     int         ncomp2 = CI->GetNScalars();
     if(ncomp==ncomp2){
       std::string s_name;
+      int i_notset=0;
       for(int i=0;i<ncomp;i++){
+        s_name="notnamed";
         CI->GetScalarName(i,s_name);
+        if ( s_name=="notnamed"){
+          compose_name_without_dot(s_name,i_notset); 
+          i_notset++;
+        }
         VDI.AddScalar(i,s_name,i);
       }
     }else{
@@ -48,8 +54,14 @@ void GascoigneVisualization::AddVector(const ComponentInformation* CI, const Glo
     int             nvectors    = CI->GetNVectors();
     fixarray<3,int> fa_vectorindices;
     std::string     s_name;
+    int i_notset=0;
     for(int i=0;i<nvectors;i++){
+      s_name="notnamed";
       CI->GetVectorName(i,s_name);
+      if ( s_name=="notnamed"){
+        compose_name_without_dot(s_name,i_notset); 
+        i_notset++;
+      }
       CI->GetVectorIndices(i,fa_vectorindices);
       VDI.AddVector(i,s_name,fa_vectorindices);
     }
