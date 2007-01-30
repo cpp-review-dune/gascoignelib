@@ -26,7 +26,6 @@ EnergyEstimatorIntegrator<DIM>::EnergyEstimatorIntegrator(const std::string & s_
 template<int DIM>
 void EnergyEstimatorIntegrator<DIM>::BasicInit()
 {
-    assert(EnergyEstimatorIntegrator<DIM>::IF);
   if (DIM==2)
   {
     if (IF==NULL) IF = new QuadGauss4;
@@ -41,6 +40,7 @@ void EnergyEstimatorIntegrator<DIM>::BasicInit()
     _xi[2].x() = 1.; _xi[2].y() = 1.;
     _xi[3].x() = 0.; _xi[3].y() = 1.;
   }
+  assert(EnergyEstimatorIntegrator<DIM>::IF);
 }
 
 /**********************************************************/
