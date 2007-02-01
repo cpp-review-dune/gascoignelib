@@ -97,11 +97,9 @@ class HierarchicalMesh2d : public HierarchicalMesh
 			       const IntVector& vertexlevel) const;
   void recursive_childs(int q, IntVector& ref, int d) const;
 
-  const CurvedShapes<2>& GetCurvedShapes() const { return _curvedshapes;}
-  CurvedShapes<2>& GetCurvedShapes() { return _curvedshapes;}
 
   public:
-
+  
   HierarchicalMesh2d();
   HierarchicalMesh2d(const HierarchicalMesh2d& H);
   HierarchicalMesh2d& operator=(const HierarchicalMesh2d& H);
@@ -119,6 +117,12 @@ class HierarchicalMesh2d : public HierarchicalMesh
   int  nodes_per_cell(int i)   const { return 4;}
   int VtkType(int i) const { return 9;}
 
+  const CurvedShapes<2>& GetCurvedShapes() const { return _curvedshapes;}
+  CurvedShapes<2>& GetCurvedShapes() { return _curvedshapes;}
+
+  const VertexVec2d& GetVertexVector() const {return vertexs2d; }
+  VertexVec2d& GetVertexVector() {return vertexs2d; }
+  
   const Vertex2d& vertex2d(int i)         const { return vertexs2d[i];}
 
   const Quad&  quad(int i)                const { return quads[i];}
