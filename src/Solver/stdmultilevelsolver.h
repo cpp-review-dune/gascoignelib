@@ -37,10 +37,14 @@ class StdMultiLevelSolver : public virtual MultiLevelSolverInterface
   protected :
 
   const MeshAgentInterface* GetMeshAgent() const {return _MAP;}
+
   std::vector<SolverInterface*>& GetSolverPointers() { return _SP; }
   const std::vector<SolverInterface*>& GetSolverPointers() const { return _SP; }
+  
+  std::vector<MgInterpolatorInterface*>& GetInterpolatorPointers() { return _Interpolator; }
+  const std::vector<MgInterpolatorInterface*>& GetInterpolatorPointers() const { return _Interpolator; }
 
-
+  
   mutable VectorInterface _cor, _res, _mg0, _mg1;
 
   mutable StopWatch   _clock_residual, _clock_solve;
