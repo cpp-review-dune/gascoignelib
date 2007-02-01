@@ -25,6 +25,14 @@ private:
 public:
 
 
+  std::map<int,fixarray<2,int> >&  GetZweier(){return zweier; }
+  std::map<int,fixarray<4,int> >&  GetVierer(){return vierer; }
+  std::map<int,fixarray<8,int> >&  GetAchter(){return achter; }
+  IntVector&                       GetC2F()   {return c2f;  }
+  
+  
+  
+
   MgInterpolatorNested() : MgInterpolatorInterface() {}
 
   void BasicInit(const MeshTransferInterface* MT);
