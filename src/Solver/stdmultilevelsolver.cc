@@ -378,18 +378,17 @@ void StdMultiLevelSolver::mgstep(vector<double>& res, vector<double>& rw,
   if(l==coarselevel)
     {
       if(p=="F") {p0="V";}
+      GetSolver(l)->smooth_exact(u,b,v);
       if(l==finelevel)
         {
           GetSolver(l)->MatrixResidual(v, u, b);
           res[l] = GetSolver(l)->Norm(v);
         }
-      GetSolver(l)->smooth_exact(u,b,v);
     }
   else
     {
       GetSolver(l)->smooth_pre(u,b,v);
       GetSolver(l)->MatrixResidual(v,u,b);
-      res[l] = GetSolver(l)->Norm(v);
       
       _Interpolator[l-1]-> restrict_zero(GetSolver(l-1)->GetGV(b),GetSolver(l)->GetGV(v));
       GetSolver(l-1)->HNDistribute(b);
@@ -418,6 +417,8 @@ void StdMultiLevelSolver::mgstep(vector<double>& res, vector<double>& rw,
       GetSolver(l)->Add(u,DataP->MgOmega(),v);
     
       GetSolver(l)->smooth_post(u,b,v);
+      GetSolver(l)->MatrixResidual(v,u,b);
+      res[l] = GetSolver(l)->Norm(v);
     }
 }
 
