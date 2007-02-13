@@ -119,30 +119,93 @@ void SimpleIlu::backward_transpose() const
   
 void SimpleIlu::compute_ilu()
 {
-  for(int i=0; i<ST.n(); i++)
+  // // original
+  // for(int i=0; i<ST.n(); i++)
+  //   {
+  //     for (int pk=ST.start(i); pk<ST.diag(i); pk++)
+  //       {
+  //         int k = ST.col(pk);
+  // 
+  //         value[pk] *= value[ST.diag(k)];
+  // 
+  //         for (int pj=ST.diag(k)+1; pj<ST.stop(k); pj++)
+  //           {
+  //             int j  = ST.col(pj);
+  //             // suche ph
+  //             for (int ph=ST.start(i); ph<ST.stop(i); ph++)
+  //               {
+  //                 if (ST.col(ph)==j)
+  //                   {
+  //                     value[ph] -= value[pk]*value[pj];
+  //                     break;
+  //                   }
+  //               }
+  //           }
+  //       }
+  //     double d = value[ST.diag(i)];
+  //     value[ST.diag(i)] = 1./d;
+  //   }
+  // ca. 10% Verbesserung der insg. Geschwindigkeit durch das Anlegen von 
+  // lokalen Referenzen und Werten 
+  // und die Vermeidung von redundanten Aufrufen, tom.
+  // (ein "inline"-ing der Methoden von ST (Class ColumnStencil) bringt nichts)
+  int ST_n     = ST.n();
+  IntVector & ST_start = ST.start();
+  IntVector & ST_diag = ST.diag();
+  IntVector & ST_col  = ST.col();
+  int ST_start_size = ST_start.size();
+  int ST_diag_size = ST_diag.size();
+  int ST_col_size  = ST_col.size();
+  int ST_start_i;
+  int ST_stop_i;
+  int ST_diag_i;
+  int ST_diag_k;
+  int ST_stop_k;
+  double value_pk;
+  for(int i=0; i<ST_n; i++)
     {
-      for (int pk=ST.start(i); pk<ST.diag(i); pk++)
+      assert(i<ST_start_size);
+      ST_start_i = ST_start[i];
+
+      assert(i+1<ST_start_size);
+      ST_stop_i = ST_start[i+1]; // stop(i) == start(i+1)
+
+      assert(i<ST_diag_size);
+      ST_diag_i = ST_diag[i];
+
+      for (int pk=ST_start_i; pk<ST_diag_i; pk++)
         {
-          int k = ST.col(pk);
+          assert(pk<ST_col_size);
+          int k = ST_col[pk];
 
-          value[pk] *= value[ST.diag(k)];
+          assert(k<ST_diag_size);
+          ST_diag_k = ST_diag[k];
 
-          for (int pj=ST.diag(k)+1; pj<ST.stop(k); pj++)
+          value_pk   = value[pk];
+          value_pk  *= value[ST_diag_k];
+
+          assert(k+1<ST_diag_size);
+          ST_stop_k = ST_start[k+1]; // stop(i) == start(i+1) 
+
+          for (int pj=ST_diag_k+1; pj<ST_stop_k; pj++)
             {
-              int j  = ST.col(pj);
+              assert(pj<ST_col_size);
+              int j  = ST_col[pj];
+
               // suche ph
-              for (int ph=ST.start(i); ph<ST.stop(i); ph++)
+              for (int ph=ST_start_i; ph<ST_stop_i; ph++)
                 {
-                  if (ST.col(ph)==j)
+                  if (ST_col[ph]==j)
                     {
-                      value[ph] -= value[pk]*value[pj];
+                      value[ph] -= value_pk *value[pj];
                       break;
                     }
                 }
             }
+          value[pk]  = value_pk;
         }
-      double d = value[ST.diag(i)];
-      value[ST.diag(i)] = 1./d;
+      double d = value[ST_diag_i];
+      value[ST_diag_i] = 1./d;
     }
 }
 
