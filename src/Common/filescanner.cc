@@ -3,6 +3,10 @@
 #include  "linescanner.h"
 #include  "stlio.h"
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <time.h>
+
 using namespace std;
 
 namespace Gascoigne
@@ -13,17 +17,21 @@ namespace Gascoigne
 FileScanner::FileScanner(DataFormatHandler& D) : DH(D)
 {
   complain = 1;
-  blocksymbol = "//Block";
-  _i_defaultvalues_level = 0;
+  blocksymbol                        = "//Block";
+  _i_defaultvalues_level             = 0;
+  _i_defaultvalues_save_all_to_file  = 0;
+  _s_defaultvalues_save_filename     = "allparamfilevalues.pl";
 }
 
 /***************************************************/
 
 FileScanner::FileScanner(DataFormatHandler& D, const ParamFile* pf, const string& blockname) : DH(D)
 {
-  complain = 1;
+  complain    = 1;
   blocksymbol = "//Block";
-  _i_defaultvalues_level = 0;
+  _i_defaultvalues_level             = 0;
+  _i_defaultvalues_save_all_to_file  = 0;
+  _s_defaultvalues_save_filename     = "allparamfilevalues.pl";
   readfile(pf,blockname);
 }
 
@@ -84,7 +92,9 @@ void FileScanner::readfile(const ParamFile* pf, const string& blockname)
      vector<string>    vs_files;
      string            s_paramfile = pf->GetName();
 
-     DFH.insert("files",&vs_files);  
+     DFH.insert("files"            , &vs_files                                                              );
+     DFH.insert("save_all_to_file" , &_i_defaultvalues_save_all_to_file , _i_defaultvalues_save_all_to_file );
+     DFH.insert("save_filename"    , &_s_defaultvalues_save_filename    , _s_defaultvalues_save_filename    );
      FileScanner FS(DFH);
      FS._i_defaultvalues_level = _i_defaultvalues_level;
      FS.NoComplain();
@@ -109,8 +119,8 @@ void FileScanner::readfile(const ParamFile* pf, const string& blockname)
          FS2.readfile(&paramfile,blockname);
        }
      }
-  }    
-  
+  }
+
   while (nwords>=0)
     {
       nwords = LS.NextLine(words);
@@ -135,16 +145,17 @@ void FileScanner::readfile(const ParamFile* pf, const string& blockname)
     }
   if (helpfound) print(blockname);
 
-  if (!blockfound)
-    {
-      //cout << "FileScanner::missing Block " << blockname << endl;
-      return;
-    }
+  // this has to go if the save functionality at the bottom is to work
+  // if (!blockfound)
+  //   {
+  //     //cout << "FileScanner::missing Block " << blockname << endl;
+  //     return;
+  //   }
   //
   // scanning parameters in block
   //
-  while (nwords>=0)
-    {
+  if (blockfound) {
+    while (nwords>=0) {
       nwords = LS.NextLine(words);
 
       if (nwords==0) continue;
@@ -158,13 +169,100 @@ void FileScanner::readfile(const ParamFile* pf, const string& blockname)
       if (words[0]=="/*") continue;
       if (words[0]=="//") continue;
 
-      if (nwords==1)
-        {
-          cout << "where is the parameter \"" << words[0] << "\" ?" << endl;
-          continue;
-        }
+      if (nwords==1) {
+        cout << "where is the parameter \"" << words[0] << "\" ?" << endl;
+        continue;
+      }
       FormatToValue(words);
     }
+  }
+
+  if( _i_defaultvalues_level==1  && _i_defaultvalues_save_all_to_file){
+    // By setting the the paramfile values
+    //
+    //   //Block DefaultValues
+    //   save_all_to_file 1
+    //   save_filename    file.pl  // (default is allparamfilevalues.pl)
+    //
+    // one can save *all* paramfile values that are used by Gascoigne. This includes
+    // also the default values of options that the user did not explicitly set in the paramfile.
+    // (It also includes values that may have been loaded in other include files. The
+    // DefaultValues Block is not saved, since the include commands don't belong in a 'flattened file')
+    // This is a good and easy way of determining and listing all availible
+    // Gascoigne options.
+    //
+    // The generated file is a perl script that has to be executed to
+    // create the paramfile.
+
+    fstream fcheckforfile(_s_defaultvalues_save_filename.c_str(),ios::in);
+    if( !fcheckforfile.is_open() ) {
+      // if the file does not yet exist -> create perl header of the file
+      // the perl script reads "itself" and generates the complete paramfile automatically (it writes to stdout);
+      // the values and blocks may occur multiply in the file, only the last entries are used
+      ofstream createheader(_s_defaultvalues_save_filename.c_str() , ios_base::out);
+      createheader << "#!/usr/bin/env perl"                                           <<endl;
+      createheader << "# to generate param-file, simply execute this perl-script"     <<endl;
+      createheader << "$colwidth=35;"                                                 <<endl;
+      createheader << ""                                                              <<endl;
+      createheader << "open(FH, $0);"                                                 <<endl;
+      createheader << "$blockname='nix';"                                             <<endl;
+      createheader << "while(<FH>){"                                                  <<endl;
+      createheader << "  if(m|^<Block\\s+name='([^']+)'\\s+|){  # '"                  <<endl;
+      createheader << "    $blockname=$1; last;"                                      <<endl;
+      createheader << "  }"                                                           <<endl;
+      createheader << "}"                                                             <<endl;
+      createheader << "%data=(); "                                                    <<endl;
+      createheader << "while(<FH>){"                                                  <<endl;
+      createheader << "  if(m|^<Block\\s+name='([^']+)'\\s+|){ # '"                   <<endl;
+      createheader << "    $blockname=$1;"                                            <<endl;
+      createheader << "  }elsif(m|^</Block>|){"                                       <<endl;
+      createheader << "    $blockname='nix';"                                         <<endl;
+      createheader << "  }elsif(m|^\\s*([^\\s]+)\\s+([^\\s].*)\\s*$|){"               <<endl;
+      createheader << "    $data{\"$blockname:PERLSPLIT:$1\"}=$2;"                    <<endl;
+      createheader << "  }"                                                           <<endl;
+      createheader << "}"                                                             <<endl;
+      createheader << "$blockname='nix';"                                             <<endl;
+      createheader << "foreach $key (sort(keys %data )){"                             <<endl;
+      createheader << "  (@names) = split(':PERLSPLIT:',$key);"                       <<endl;
+      createheader << "  if($names[0] ne $blockname){"                                <<endl;
+      createheader << "    $blockname= $names[0];"                                    <<endl;
+      createheader << "    print \"\\n//Block $blockname\\n\";"                       <<endl;
+      createheader << "  }"                                                           <<endl;
+      createheader << "  if($names[1]=~m|^(.+)\\[(.+)\\]$|){"                         <<endl;
+      createheader << "    $names[1]=$1;"                                             <<endl;
+      createheader << "    $data{$key}=\"$2     $data{$key}\";"                       <<endl;
+      createheader << "  }"                                                           <<endl;
+      createheader << "  printf(\"\\%-${colwidth}s \\%s\\n\",$names[1],$data{$key});" <<endl;
+      createheader << "}"                                                             <<endl;
+      createheader << "print \"\\n//Block nix\\n\";"                                  <<endl;
+      createheader << "close(F);"                                                     <<endl;
+      createheader << "__END__"                                                       <<endl;
+      createheader.close();
+
+      chmod(_s_defaultvalues_save_filename.c_str(), 00755); 
+    }else{
+      fcheckforfile.close();
+    }
+
+    // with this the date is added as a tag for each saved block;
+    // this way the file can be used to achive the history of changes in a paramfile;
+    // the perl script only uses the last changes in the file; the date tag is
+    // ignored by the script
+    char ca_date[100];
+    {
+      time_t  t_date;
+      struct tm *tmzgr;
+      t_date = time(NULL);
+      tmzgr = localtime(&t_date);
+      strftime(ca_date,100,"%Y.%m.%d-%H:%M",tmzgr); 
+    }
+
+    ofstream savefile(_s_defaultvalues_save_filename.c_str() , ios_base::app);
+    savefile << "<Block name='"<< blockname << "' file='"<< pf->GetName() <<"' date='"<< ca_date <<"'>\n";
+    DH.print(savefile);
+    savefile << "</Block>\n\n";
+    savefile.close();
+  }
 }
 
 /***************************************************/

@@ -21,7 +21,9 @@ class FileScanner
   
 public:
   
-  int  _i_defaultvalues_level;
+  int          _i_defaultvalues_level;
+  int          _i_defaultvalues_save_all_to_file;
+  std::string  _s_defaultvalues_save_filename;
 
   FileScanner(DataFormatHandler& D, const ParamFile* pf, const std::string& b="");
   FileScanner(DataFormatHandler& D);
