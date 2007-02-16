@@ -290,10 +290,10 @@ class CompVector : public nvector<T>
           first += N;
         }
     }
-  void CompAdd(int c, double d,  const CompVector& y)
+  void CompAdd(int c1, double d, int c2, const CompVector& y)
     {
-      iterator       first  = std::vector<T>::begin()+c;
-      const_iterator first2 = y.begin()+c;
+      iterator       first  = std::vector<T>::begin()+c1;
+      const_iterator first2 = y.begin()+c2;
       const_iterator last   = std::vector<T>::end();
       
       while( first < last)
@@ -302,6 +302,10 @@ class CompVector : public nvector<T>
           first  += N;
           first2 += N;
         }
+    }
+  void CompAdd(int c, double d, const CompVector& y)
+    {
+      CompAdd(c,d,c,y);
     }
   void CompEq(int c, double d)
     {
@@ -314,10 +318,10 @@ class CompVector : public nvector<T>
           first += N;
         }
     }
-  void CompEq(int c, double d,  const CompVector& y)
+  void CompEq(int c1, double d,  int c2, const CompVector& y)
     {
-      iterator       first  = std::vector<T>::begin()+c;
-      const_iterator first2 = y.begin()+c;
+      iterator       first  = std::vector<T>::begin()+c1;
+      const_iterator first2 = y.begin()+c2;
       const_iterator last   = std::vector<T>::end();
       
       while( first < last)
@@ -326,6 +330,10 @@ class CompVector : public nvector<T>
           first  += N;
           first2 += N;
         }
+    }
+  void CompEq(int c, double d,  const CompVector& y)
+    {
+      CompEq(c,d,c,y);
     }
   double CompSum(int c) const
     {
