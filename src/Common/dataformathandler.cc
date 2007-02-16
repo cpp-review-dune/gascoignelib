@@ -1,6 +1,7 @@
 #include  "dataformathandler.h"
 #include  "stdio.h"
 #include  "stringutil.h"
+#include  "stlio.h"
 
 using namespace std;
 
@@ -465,48 +466,95 @@ void DataFormatHandler::print(ostream& s) const
   for (; p4!=TF2D.end(); p4++)
     {
       s << p4->first;
+      s << "     ";
+      s << *(p4->second);
       s << "\n";
     }
   TypeFix3Double::const_iterator p4a = TF3D.begin();
   for (; p4a!=TF3D.end(); p4a++)
     {
       s << p4a->first;
+      s << "     ";
+      s << *(p4a->second);
       s << "\n";
     }
   TypeVectorDouble::const_iterator p5 = TND.begin();
   for (; p5!=TND.end(); p5++)
     {
       s << p5->first;
+      s << "     ";
+      s << p5->second->size();
+      s << "     ";
+      s << *(p5->second);
       s << "\n";
     }
   TypeVectorInt::const_iterator p6 = TNI.begin();
   for (; p6!=TNI.end(); p6++)
     {
       s << p6->first;
+      s << "     ";
+      s << p6->second->size();
+      s << "     ";
+      s << *(p6->second);
       s << "\n";
     }
   TypeVectorString::const_iterator p7 = TVS.begin();
   for (; p7!=TVS.end(); p7++)
     {
       s << p7->first;
+      s << "     ";
+      s << p7->second->size();
+      s << "     ";
+      s << *(p7->second);
       s << "\n";
     }
   TypeMapIntVectorInt::const_iterator p8 = TMINI.begin();
   for (; p8!=TMINI.end(); p8++)
     {
-      s << p8->first;
-      s << "\n";
+      map<int,IntVector>::const_iterator p   = p8->second->begin();
+      map<int,IntVector>::const_iterator end = p8->second->end();
+      for(;p!=end;p++) {
+        s << p8->first;
+        s << "[";
+        s << p->first;
+        s << "]";
+        s << "     ";
+        s << p->second.size();
+        s << "     ";
+        s << p->second;
+        s << "\n";
+      }
     }
   TypeSetVectorString::const_iterator p9 = TSVS.begin();
   for (; p9!=TSVS.end(); p9++)
     {
       s << p9->first;
+      s << " !!! ERROR cout of TypeSetVectorString NOT IMPLEMENTED IN "<< __FILE__<<"!!! ";
       s << "\n";
     }
   TypeStringDouble::const_iterator p10 = TSD.begin();
   for (; p10!=TSD.end(); p10++)
     {
       s << p10->first;
+      s << " !!! ERROR cout of TypeStringDouble NOT IMPLEMENTED IN "<< __FILE__<<"!!! ";
+      s << "\n";
+    }
+  TypeBool::const_iterator p11 = TB.begin();
+  for (; p11!=TB.end(); p11++)
+    {
+      s << p11->first;
+      s << "     ";
+      s << *(p11->second);
+      s << "\n";
+    }
+  TypeSetInt::const_iterator p12 = TSI.begin();
+  for (; p12!=TSI.end(); p12++)
+    {
+      s << p12->first;
+      s << "     ";
+      s << p12->second->size();
+      s << "     ";
+      s << *(p12->second);
       s << "\n";
     }
 }
