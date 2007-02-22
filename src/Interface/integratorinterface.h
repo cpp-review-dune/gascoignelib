@@ -108,11 +108,6 @@ namespace Gascoigne
         std::cerr << "\"IntegratorInterface::EvaluateCellRightHandSide\" not written!" << std::endl;
 						assert(0); }
 
-      virtual void EvaluateBoundaryCellRightHandSide(LocalVector& F, const BoundaryRightHandSide& CF,const FemInterface& FEM, int ile, int col, 
-	   const LocalData& Q, const LocalData& QC) const{
-        std::cerr << "\"IntegratorInterface::EvaluateBoundaryCellRightHandSide\" not written!" << std::endl;
-						assert(0); }
-
       virtual void DiracRhsPoint(LocalVector& b, const FemInterface& E, const Vertex2d& p, const DiracRightHandSide& DRHS, 
           int i, const LocalData& Q, const LocalData& QC) const {
         std::cerr << "\"IntegratorInterface::DiracRhsPoint\" not written!" << std::endl;

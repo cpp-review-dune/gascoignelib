@@ -89,7 +89,6 @@ public:
   double ComputePointFunctional(const GlobalVector& u, const PointFunctional& FP) const;
 
   void EvaluateCellRightHandSide(GlobalVector& f, const DomainRightHandSide& CF, double d) const;
-  void EvaluateBoundaryCellRightHandSide(GlobalVector& f,const IntSet& Colors, const BoundaryRightHandSide& CF, double d) const;
 
   void InterpolateDomainFunction(GlobalVector& f, const DomainFunction& DF) const;
   void InterpolateCellDomainFunction(GlobalVector& f, const DomainFunction& DF) const;
@@ -97,7 +96,6 @@ public:
   virtual nmatrix<double> GetLocalInterpolationWeights() const { assert(0); return nmatrix<double>();}
 
   void GetVolumes(DoubleVector& a) const;
-  void GetAreas(DoubleVector& a, const IntSet& Colors) const;
   void GetMassDiag(DoubleVector& a) const;
   void GetBoundaryMassDiag(DoubleVector& a) const;      
 };

@@ -925,18 +925,6 @@ void StdSolver::EvaluateCellRightHandSide(VectorInterface& f, const DomainRightH
 
 /*-------------------------------------------------------*/
 
-void StdSolver::EvaluateBoundaryCellRightHandSide(VectorInterface& f, const BoundaryRightHandSide& CF,const BoundaryManager& BM, double d) const
-{
-  assert(f.GetType()=="cell");
-  HNAverageData();
-  
-  GetDiscretization()->EvaluateBoundaryCellRightHandSide(GetGV(f),BM.GetBoundaryRightHandSideColors(),CF,d);
-
-  HNZeroData();
-}
-
-/*-------------------------------------------------------*/
-
 void StdSolver::InterpolateDomainFunction(VectorInterface&  f, const DomainFunction& DF) const
 {
   HNAverageData();
