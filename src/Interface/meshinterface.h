@@ -64,6 +64,14 @@ namespace Gascoigne
         std::cerr << "\"MeshInterface::LocalOnBoundary\" not written!" << std::endl;
         abort();
       }
+      virtual const IntVector* PatchOnBoundary(int color)  const {
+        std::cerr << "\"MeshInterface::PatchOnBoundary\" not written!" << std::endl;
+        abort();
+      }
+      virtual const IntVector* LocalPatchOnBoundary(int color) const {
+        std::cerr << "\"MeshInterface::LocalPatchOnBoundary\" not written!" << std::endl;
+        abort();
+      }
       virtual const IntVector* VertexOnBoundary(int col) const {
         std::cerr << "\"MeshInterface::VertexOnBoundary\" not written!" << std::endl;
         abort();

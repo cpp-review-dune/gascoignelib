@@ -181,32 +181,16 @@ void DwrFemQ1Q23d::BoundaryForm(GlobalVector& f, const GlobalVector& u, const In
   assert(I);
 
   const FemInterface& HighOrderFem(*GetFem());
-
-  const nvector<nvector<int> >& patch2cell  =
-      GetGascoigneMesh()->GetPatchIndexHandler().GetAllPatch2Cell();
-
-  nvector<int> cell2patch(GetMesh()->ncells());
-  for (int p=0;p<patch2cell.size();++p)
-    for (int i=0;i<patch2cell[p].size();++i)
-       cell2patch[patch2cell[p][i]]=p;
   
   for(IntSet::const_iterator p=Colors.begin();p!=Colors.end();p++)
   {
     int col = *p;
-
-    __gnu_cxx::hash_set<int> habschon;
     
-    const IntVector& q = *GetMesh()->CellOnBoundary(col);
-    const IntVector& l = *GetMesh()->LocalOnBoundary(col);
+    const IntVector& q = *GetMesh()->PatchOnBoundary(col);
+    const IntVector& l = *GetMesh()->LocalPatchOnBoundary(col);
     for (int i=0; i<q.size(); i++)
     {
-      int iq  = q[i];
-      int ip  = cell2patch[iq];
-      
-      // gabs den patch schon?
-      if (habschon.find(ip)!=habschon.end()) continue;
-      habschon.insert(ip);
-
+      int ip  = q[i];
       int ile = l[i];
 
       Transformation  (TH,ip);
@@ -264,30 +248,15 @@ void DwrFemQ1Q23d::BoundaryRhs(GlobalVector& f, const IntSet& Colors, const Boun
 
   const FemInterface& HighOrderFem(*GetFem());
 
-  const nvector<nvector<int> >& patch2cell  =
-      GetGascoigneMesh()->GetPatchIndexHandler().GetAllPatch2Cell();
-
-  nvector<int> cell2patch(GetMesh()->ncells());
-  for (int p=0;p<patch2cell.size();++p)
-    for (int i=0;i<patch2cell[p].size();++i)
-       cell2patch[patch2cell[p][i]]=p;
-  
   for(IntSet::const_iterator p=Colors.begin();p!=Colors.end();p++)
   {
     int col = *p;
-    __gnu_cxx::hash_set<int> habschon;
 
-    const IntVector& q = *GetMesh()->CellOnBoundary(col);
-    const IntVector& l = *GetMesh()->LocalOnBoundary(col);
+    const IntVector& q = *GetMesh()->PatchOnBoundary(col);
+    const IntVector& l = *GetMesh()->LocalPatchOnBoundary(col);
     for (int i=0; i<q.size(); i++)
     {
-      int iq  = q[i];
-      int ip  = cell2patch[iq];
-      
-      // gabs den patch schon?
-      if (habschon.find(ip)!=habschon.end()) continue;
-      habschon.insert(ip);
-      
+      int ip = q[i];
       int ile = l[i];
 
       Transformation  (TH,ip);

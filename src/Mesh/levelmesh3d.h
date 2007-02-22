@@ -4,6 +4,7 @@
 #include  "hierarchicalmesh3d.h"
 #include  "index.h"
 #include  "boundaryindexhandler.h"
+#include  "patchindexhandler.h"
 #include  "gascoigne.h"
 
 /*--------------------------------------------------------------*/
@@ -72,7 +73,7 @@ class LevelMesh3d : public Index
   void ConstructHangingStructureQuartic(QuarticHNStructure5& hnq4,
 					QuarticHNStructure25& hnq4face) const;
 
-  void InitBoundaryHandler(BoundaryIndexHandler& BI) const;
+  void InitBoundaryHandler(BoundaryIndexHandler& BI,const PatchIndexHandler& PIH) const;
   bool ConstructCellIndOfPatch(IntVector& dstc) const;
   void ConstructIndOfPatch(nvector<IntVector>& dstv) const;
 };

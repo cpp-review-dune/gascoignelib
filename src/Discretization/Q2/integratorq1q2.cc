@@ -35,6 +35,22 @@ int IntegratorQ1Q2<DIM>::PatchMeshNr2IntegratorNr(int in) const
     abort();
 }
 
+template<int DIM>
+int IntegratorQ1Q2<DIM>::PatchMeshNr2IntegratorNrBoundary(int in, int ile) const
+{ 
+    if(DIM==2)
+    {
+	return (1-(in>>1))*in+(in>>1)*(3-(in%2));
+    }
+    if(DIM==3)
+    {
+      std::cerr<<"Integrator Q1/Q2: Dimension "<<DIM<<" nicht implementiert!"<<std::endl;
+      abort();	
+    }
+    std::cerr<<"Integrator Q1/Q2: Dimension "<<DIM<<" nicht implementiert!"<<std::endl;
+    abort();
+}
+
 /*---------------------------------------------------*/
 
 template<int DIM>
@@ -186,6 +202,20 @@ void IntegratorQ1Q2<DIM>::Rhs(const DomainRightHandSide& RHS, LocalVector& F, co
   else        IF = new PatchFormula3d<27,HexGauss27>;
 
   Vertex<DIM> x, xi;
+
+  int numcells;
+  if(DIM==2) numcells = 4;
+  else numcells = 8;
+  
+  //Soviele Integr. Pkte je Zelle
+  numcells = IF->n()/numcells;
+  //Test, ist das sinnvollgewesen
+  if(IF->n()%numcells != 0)
+  {
+      std::cerr<<"Integrator Q1/Q2: Falsche Anzahl Zellen je Patch oder unzulaessige Integrationsformel!"<<std::endl;
+      abort();
+  }
+
   for (int k=0; k<IF->n(); k++)
     {
       IF->xi(xi,k);
@@ -196,6 +226,18 @@ void IntegratorQ1Q2<DIM>::Rhs(const DomainRightHandSide& RHS, LocalVector& F, co
       double weight  = IF->w(k) * vol;
       BasicIntegrator::universal_point(FemL,_QH,Q);
       RHS.SetFemData(_QH);
+      //Die Zelldatensetzen
+      if(k%numcells == 0)
+      {
+	  //Wir sind am anfang einer neuen Zelle
+	  //Die CellData aus den LocalData hohlen.
+	  int IntegrCellNum = k/numcells;
+	  int PatchCellNum=PatchMeshNr2IntegratorNr(IntegrCellNum);
+	  
+	  universal_point(_QCH,QC,PatchCellNum);
+	  RHS.SetCellData(_QCH);
+      }
+      
       RHS.SetCellSize(h);
       FemL.x(x);
 
@@ -226,6 +268,19 @@ void IntegratorQ1Q2<DIM>::BoundaryRhs(const BoundaryRightHandSide& RHS, LocalVec
   Vertex<DIM> x, n;
   Vertex<DIM-1> xi;
 
+  int numcells;
+  if(DIM==2) numcells = 2;
+  else numcells = 4;
+  
+  //Soviele Integr. Pkte je Zelle
+  numcells = IF->n()/numcells;
+  //Test, ist das sinnvollgewesen
+  if(IF->n()%numcells != 0)
+  {
+      std::cerr<<"Integrator Q1/Q2: Falsche Anzahl Zellen je Patch oder unzulaessige Integrationsformel!"<<std::endl;
+      abort();
+  }
+
   for (int k=0; k<IF->n(); k++)
     {
       IF->xi(xi,k);
@@ -237,6 +292,17 @@ void IntegratorQ1Q2<DIM>::BoundaryRhs(const BoundaryRightHandSide& RHS, LocalVec
       FemL.normal(n);
       double  h = FemL.G();
       double  weight = IF->w(k)*h;
+      //Die Zelldatensetzen
+      if(k%numcells == 0)
+      {
+	  //Wir sind am anfang einer neuen Zelle
+	  //Die CellData aus den LocalData hohlen.
+	  int IntegrCellNum = k/numcells;
+	  int PatchCellNum=PatchMeshNr2IntegratorNrBoundary(IntegrCellNum,ile);
+	  
+	  universal_point(_QCH,QC,PatchCellNum);
+	  RHS.SetCellData(_QCH);
+      }      
       RHS.SetCellSize(h);
       for (int i=0;i<FemH.n();i++)
       {
@@ -264,6 +330,19 @@ void IntegratorQ1Q2<DIM>::BoundaryForm(const BoundaryEquation& BE, LocalVector& 
   
   Vertex<DIM> x,n;
   Vertex<DIM-1> xi;
+  
+  int numcells;
+  if(DIM==2) numcells = 2;
+  else numcells = 4;
+  
+  //Soviele Integr. Pkte je Zelle
+  numcells = IF->n()/numcells;
+  //Test, ist das sinnvollgewesen
+  if(IF->n()%numcells != 0)
+  {
+      std::cerr<<"Integrator Q1/Q2: Falsche Anzahl Zellen je Patch oder unzulaessige Integrationsformel!"<<std::endl;
+      abort();
+  }
 
   for (int k=0; k<IF->n(); k++)
     {
@@ -277,6 +356,20 @@ void IntegratorQ1Q2<DIM>::BoundaryForm(const BoundaryEquation& BE, LocalVector& 
       double  h = FemL.G();
       double  weight = IF->w(k)*h;
       BE.SetFemData(_QH);
+      //Die Zelldatensetzen
+      int IntegrCellNum = -1;
+      if(k%numcells == 0)
+      {
+	  //Wir sind am anfang einer neuen Zelle
+	  //Die CellData aus den LocalData hohlen.
+	  ///int IntegrCellNum = k/numcells;
+	  IntegrCellNum = k/numcells;
+	  int PatchCellNum=PatchMeshNr2IntegratorNrBoundary(IntegrCellNum,ile);
+	  std::cout<<"XX "<<x<<" "<<IntegrCellNum<<" "<<ile<<std::endl;
+	  BasicIntegrator::universal_point(_QCH,QC,PatchCellNum);
+	  BE.SetCellData(_QCH);
+      }
+      std::cout<<"XXYY "<<x<<" "<<IntegrCellNum<<" "<<ile<<std::endl;
       BE.pointboundary(h,_UH,x,n);
       for (int i=0;i<FemH.n();i++)
       {

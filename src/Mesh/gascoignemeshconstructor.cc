@@ -190,7 +190,7 @@ void GascoigneMeshConstructor::Construct2d
 
   // BoundaryIndices
 
-  LM->InitBoundaryHandler(NNM->GetBoundaryIndexHandler());
+  LM->InitBoundaryHandler(NNM->GetBoundaryIndexHandler(),PIH);
 
   // Hanging nodes
 
@@ -240,7 +240,7 @@ void GascoigneMeshConstructor::Construct3d
 
   // BoundaryIndices
 
-  LM->InitBoundaryHandler(NNM->GetBoundaryIndexHandler());
+  LM->InitBoundaryHandler(NNM->GetBoundaryIndexHandler(),PIH);
 
   // Hanging nodes
 

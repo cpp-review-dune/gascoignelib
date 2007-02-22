@@ -16,7 +16,7 @@ class BoundaryIndexHandler
   typedef std::map<int,IntVector> VecMap;
 
   IntSet  AllColors;
-  VecMap  verteces, cells, localci;
+  VecMap  verteces, cells, localci, patches, localpi;
 
  public:
 
@@ -29,15 +29,21 @@ class BoundaryIndexHandler
   const VecMap& GetVertex() const {return verteces;}
   const VecMap& GetCell()   const {return cells;}
   const VecMap& GetLocal() const  {return localci;}
+  const VecMap& GetPatch()   const {return patches;}
+  const VecMap& GetLocalPatch() const  {return localpi;}
 
   IntSet& GetColors()  {return AllColors;}
   VecMap& GetVertex()  {return verteces;}
   VecMap& GetCell()    {return cells;}
   VecMap& GetLocal()   {return localci;}
+  VecMap& GetPatch()   {return patches;}
+  VecMap& GetLocalPatch() {return localpi;}
 
   const IntVector& Verteces(int col) const;
   const IntVector& Cells   (int col) const;
   const IntVector& Localind(int col) const;
+  const IntVector& Patches   (int col) const;
+  const IntVector& LocalPatchind(int col) const;
 
   void Equal(const IntSet& col, const VecMap& v, const VecMap& c, const VecMap& l);
   void check() const;

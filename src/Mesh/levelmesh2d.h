@@ -4,6 +4,7 @@
 #include  "hierarchicalmesh2d.h"
 #include  "index.h"
 #include  "boundaryindexhandler.h"
+#include  "patchindexhandler.h"
 
 /*--------------------------------------------------------------*/
 
@@ -55,7 +56,7 @@ class LevelMesh2d : public Index
   void construct_lists(IntSet& newquads, IntSet& oldquads) const;
   void ConstructHangingStructureQuadratic(QuadraticHNStructure3& hnq2) const;
   void ConstructHangingStructureQuartic(QuarticHNStructure5& hnq4) const;
-  void InitBoundaryHandler(BoundaryIndexHandler& BI) const;
+  void InitBoundaryHandler(BoundaryIndexHandler& BI,const PatchIndexHandler& PIH) const;
   void ConstructIndOfPatch(nvector<IntVector>& dstv) const;
   bool ConstructCellIndOfPatch(IntVector& dstc) const;
 };

@@ -182,6 +182,11 @@ namespace Gascoigne
         abort();
       }
 
+      virtual void EvaluateBoundaryCellRightHandSide(GlobalVector& f,const IntSet& Colors, const BoundaryRightHandSide& CF, double d = 1.) const{
+        std::cerr << "\"DiscretizationInterface::EvaluateBoundaryCellRighthandside\" not written!" << std::endl;
+        abort();
+      }
+      
       virtual void InterpolateDomainFunction(GlobalVector& f, const DomainFunction& DF) const{
         std::cerr << "\"DiscretizationInterface::InterpolateDomainFunction\" not written!" << std::endl;
         abort();
@@ -200,7 +205,12 @@ namespace Gascoigne
       virtual void GetVolumes(DoubleVector& a) const {
 	std::cerr << "\"DiscretizationInterface::GetVolumes\" not written!" << std::endl;
         abort();
-      }
+      } 
+
+      virtual void GetAreas(DoubleVector& a, const IntSet& Colors) const{
+	std::cerr << "\"DiscretizationInterface::GetAreas\" not written!" << std::endl;
+        abort();
+      } 
 
       virtual void GetMassDiag(DoubleVector& a) const{
 	std::cerr << "\"DiscretizationInterface::GetMassDiag\" not written!" << std::endl;

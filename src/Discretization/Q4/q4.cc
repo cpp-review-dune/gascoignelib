@@ -138,6 +138,7 @@ void Q4::AdjointForm(GlobalVector& f, const GlobalVector& u, const Equation& EQ,
 
 void Q4::BoundaryForm(GlobalVector& f, const GlobalVector& u, const IntSet& Colors, const BoundaryEquation& BE, double d) const
 {
+  int dim = GetPatchMesh()->dimension();
   nmatrix<double> T;
 
   GlobalToGlobalData();
@@ -162,21 +163,20 @@ void Q4::BoundaryForm(GlobalVector& f, const GlobalVector& u, const IntSet& Colo
 
     __gnu_cxx::hash_set<int> habschon;
 
-    const IntVector& q = *GetMesh()->CellOnBoundary(col);
-    const IntVector& l = *GetMesh()->LocalOnBoundary(col);
+    const IntVector& q = *GetMesh()->PatchOnBoundary(col);
+    const IntVector& l = *GetMesh()->LocalPatchOnBoundary(col);
     for(int i=0; i<q.size(); i++)
     {
       int iq  = q[i];
       int ip  = cell2q4patch[iq];
+      int ile = l[i];
 
       // gabs den patch schon?
-      if(habschon.find(ip)!=habschon.end())
+      if(habschon.find((ip<<dim)+ile)!=habschon.end())
       {
         continue;
       }
-      habschon.insert(ip);
-
-      int ile = l[i];
+      habschon.insert((ip<<dim)+ile);
 
       Transformation(T,ip);
       GetFem()->ReInit(T);
@@ -218,6 +218,7 @@ void Q4::Matrix(MatrixInterface& A, const GlobalVector& u, const Equation& EQ, d
 
 void Q4::BoundaryMatrix(MatrixInterface& A, const GlobalVector& u, const IntSet& Colors, const BoundaryEquation& BE, double d) const
 {
+  int dim = GetPatchMesh()->dimension();
   nmatrix<double> T;
 
   GlobalToGlobalData();
@@ -242,21 +243,20 @@ void Q4::BoundaryMatrix(MatrixInterface& A, const GlobalVector& u, const IntSet&
     int col = *p;
     __gnu_cxx::hash_set<int> habschon;
 
-    const IntVector& q = *GetMesh()->CellOnBoundary(col);
-    const IntVector& l = *GetMesh()->LocalOnBoundary(col);
+    const IntVector& q = *GetMesh()->PatchOnBoundary(col);
+    const IntVector& l = *GetMesh()->LocalPatchOnBoundary(col);
     for(int i=0; i<q.size(); i++)
     {
       int iq  = q[i];
       int ip  = cell2q4patch[iq];
-
+      int ile = l[i];
+	    
       // gabs den patch schon?
-      if(habschon.find(ip)!=habschon.end())
+      if(habschon.find((ip<<dim)+ile)!=habschon.end())
       {
         continue;
       }
-      habschon.insert(ip);
-
-      int ile = l[i];
+      habschon.insert((ip<<dim)+ile);
 
       Transformation(T,ip);
       GetFem()->ReInit(T);
@@ -360,7 +360,8 @@ void Q4::Rhs(GlobalVector& f, const DomainRightHandSide& RHS, double s) const
 /**********************************************************/
 
 void Q4::BoundaryRhs(GlobalVector& f, const IntSet& Colors,  const BoundaryRightHandSide& NRHS, double s) const
-{
+{  
+  int dim = GetPatchMesh()->dimension();
   nmatrix<double> T;
 
   GlobalToGlobalData();
@@ -383,21 +384,20 @@ void Q4::BoundaryRhs(GlobalVector& f, const IntSet& Colors,  const BoundaryRight
     int col = *p;
     __gnu_cxx::hash_set<int> habschon;
 
-    const IntVector& q = *GetMesh()->CellOnBoundary(col);
-    const IntVector& l = *GetMesh()->LocalOnBoundary(col);
+    const IntVector& q = *GetMesh()->PatchOnBoundary(col);
+    const IntVector& l = *GetMesh()->LocalPatchOnBoundary(col);
     for(int i=0; i<q.size(); i++)
     {
       int iq  = q[i];
       int ip  = cell2q4patch[iq];
+      int ile = l[i];
 
       // gabs den patch schon?
-      if(habschon.find(ip)!=habschon.end())
+      if(habschon.find((ip<<dim)+ile)!=habschon.end())
       {
         continue;
       }
-      habschon.insert(ip);
-
-      int ile = l[i];
+      habschon.insert((ip<<dim)+ile);
 
       Transformation(T,ip);
       GetFem()->ReInit(T);
@@ -450,6 +450,7 @@ void Q4::InitFilter(nvector<double>& F) const
 
 double Q4::ComputeBoundaryFunctional(const GlobalVector& u, const IntSet& Colors, const BoundaryFunctional& BF) const
 {
+  int dim = GetPatchMesh()->dimension();
   nmatrix<double> T;
 
   GlobalToGlobalData();
@@ -473,21 +474,20 @@ double Q4::ComputeBoundaryFunctional(const GlobalVector& u, const IntSet& Colors
     int col = *p;
     __gnu_cxx::hash_set<int> habschon;
 
-    const IntVector& q = *GetMesh()->CellOnBoundary(col);
-    const IntVector& l = *GetMesh()->LocalOnBoundary(col);
+    const IntVector& q = *GetMesh()->PatchOnBoundary(col);
+    const IntVector& l = *GetMesh()->LocalPatchOnBoundary(col);
     for(int i=0; i<q.size(); i++)
     {
       int iq  = q[i];
       int ip  = cell2q4patch[iq];
+      int ile = l[i];
 
       // gabs den patch schon?
-      if(habschon.find(ip)!=habschon.end())
+      if(habschon.find((ip<<dim)+ile)!=habschon.end())
       {
         continue;
       }
-      habschon.insert(ip);
-
-      int ile = l[i];
+      habschon.insert((ip<<dim)+ile);
 
       Transformation(T,ip);
       GetFem()->ReInit(T);

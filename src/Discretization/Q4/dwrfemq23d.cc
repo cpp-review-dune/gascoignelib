@@ -205,15 +205,14 @@ void DwrFemQ2Q43d::BoundaryForm(GlobalVector& f, const GlobalVector& u, const In
     {
       int iq  = q[i];
       int ip  = cell2q4patch[iq];
+      int ile = l[i];
 
       // gabs den patch schon?
-      if(habschon.find(ip)!=habschon.end())
+      if(habschon.find((ip<<3)+ile)!=habschon.end())
       {
         continue;
       }
-      habschon.insert(ip);
-
-      int ile = l[i];
+      habschon.insert((ip<<3)+ile);
 
       Transformation  (TH,ip);
       TransformationQ2(TL,ip);
@@ -292,15 +291,14 @@ void DwrFemQ2Q43d::BoundaryRhs(GlobalVector& f, const IntSet& Colors, const Boun
     {
       int iq  = q[i];
       int ip  = cell2q4patch[iq];
+      int ile = l[i];
 
       // gabs den patch schon?
-      if(habschon.find(ip)!=habschon.end())
+      if(habschon.find((ip<<3)+ile)!=habschon.end())
       {
         continue;
       }
-      habschon.insert(ip);
-
-      int ile = l[i];
+      habschon.insert((ip<<3)+ile);
 
       Transformation  (TH,ip);
       TransformationQ2(TL,ip);

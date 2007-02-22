@@ -51,6 +51,8 @@ public:
   const IntVector* VertexOnBoundary(int color) const { return &(BoundaryHandler.Verteces(color)); }
   const IntVector* CellOnBoundary  (int color) const { return &(BoundaryHandler.Cells(color));    }
   const IntVector* LocalOnBoundary (int color) const { return &(BoundaryHandler.Localind(color)); }
+  const IntVector* PatchOnBoundary  (int color) const { return &(BoundaryHandler.Patches(color));    }
+  const IntVector* LocalPatchOnBoundary (int color) const { return &(BoundaryHandler.LocalPatchind(color)); }
   
   std::set<int> GetColors()             const { return BoundaryHandler.GetColors();}
   IntVector  Q2IndicesOfQ4Patch(int i)  const { return PatchHandler.Q2IndicesOfQ4Patch(i);}

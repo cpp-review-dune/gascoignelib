@@ -3,7 +3,7 @@
 #include  "levelsorter3d.h"
 #include  "leveljumper.h"
 #include  "set2vec.h"
-
+#include <ext/hash_set>
 
 using namespace std;
 
@@ -685,7 +685,7 @@ void LevelMesh3d::construct_lists(IntSet& newhexs, IntSet& oldhexs) const
 
 /*---------------------------------------------------*/
 
-void LevelMesh3d::InitBoundaryHandler(BoundaryIndexHandler& BI) const
+void LevelMesh3d::InitBoundaryHandler(BoundaryIndexHandler& BI, const PatchIndexHandler& PIH) const
 {
     // bquads
   // probably slowly (could be in multigridmesh !)
@@ -768,5 +768,38 @@ void LevelMesh3d::InitBoundaryHandler(BoundaryIndexHandler& BI) const
       BI.GetCell ().insert(make_pair(color,v1));
       BI.GetLocal().insert(make_pair(color,v2));
     }
+
+  const nvector<IntVector>& patch2cell = PIH.GetAllPatch2Cell();
+  
+  nvector<int> cell2patch(PIH.npatches()<<3);
+  for (int p=0;p<patch2cell.size();++p)
+    for (int i=0;i<patch2cell[p].size();++i)
+      cell2patch[patch2cell[p][i]]=p;
+ 
+  for(IntSet::const_iterator c=BI.GetColors().begin(); c != BI.GetColors().end(); c++)
+  {
+    int col = *c;
+    const IntVector& cells = BI.Cells(col);
+    const IntVector& locals= BI.Localind(col);
+    __gnu_cxx::hash_set<int> habschon;
+
+    IntVector p1;
+    IntVector p2;
+      
+    for(int i=0; i < cells.size(); i++)
+    {
+      int iq = cells[i];
+      int ip = cell2patch[iq];
+      int ile = locals[i];
+
+      //gabs den patch schon
+      if(habschon.find((ip<<3)+ile) != habschon.end()) continue;
+      habschon.insert((ip<<3)+ile);
+      p1.push_back(ip);
+      p2.push_back(ile);
+    }
+    BI.GetPatch().insert(make_pair(col,p1));
+    BI.GetLocalPatch().insert(make_pair(col,p2));
+  }
 }
 }

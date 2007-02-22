@@ -107,34 +107,15 @@ void PatchDiscretization::BoundaryForm(GlobalVector& f, const GlobalVector& u, c
   GlobalToGlobalData();
   BE.SetParameterData(__QP);
 
- /// die cell2patch - liste
-
-  const nvector<nvector<int> >& patch2cell  =
-      GetGascoigneMesh()->GetPatchIndexHandler().GetAllPatch2Cell();
-   
-
-  nvector<int> cell2patch(GetMesh()->ncells());
-  for (int p=0;p<patch2cell.size();++p)
-    for (int i=0;i<patch2cell[p].size();++i)
-       cell2patch[patch2cell[p][i]]=p;
-  
   for(IntSet::const_iterator p=Colors.begin();p!=Colors.end();p++)
     {
       int col = *p;
 
-      __gnu_cxx::hash_set<int> habschon;
-      
-      const IntVector& q = *GetMesh()->CellOnBoundary(col);
-      const IntVector& l = *GetMesh()->LocalOnBoundary(col);
+      const IntVector& q = *GetMesh()->PatchOnBoundary(col);
+      const IntVector& l = *GetMesh()->LocalPatchOnBoundary(col);
       for (int i=0; i<q.size(); i++)
         {
-          int iq  = q[i];
-          int ip  = cell2patch[iq];
-	  
-	  // gabs den patch schon?
-          if (habschon.find(ip)!=habschon.end()) continue;
-	  habschon.insert(ip);
-
+          int ip  = q[i];
           int ile = l[i];
 
           Transformation(T,ip);
@@ -181,34 +162,16 @@ void PatchDiscretization::BoundaryMatrix(MatrixInterface& A, const GlobalVector&
   GlobalToGlobalData();
   BE.SetParameterData(__QP);
 
- /// die cell2patch - liste
-
-  const nvector<nvector<int> >& patch2cell  =
-      GetGascoigneMesh()->GetPatchIndexHandler().GetAllPatch2Cell();
-
-  nvector<int> cell2patch(GetMesh()->ncells());
-
-  for (int p=0;p<patch2cell.size();++p)
-    for (int i=0;i<patch2cell[p].size();++i)
-       cell2patch[patch2cell[p][i]]=p;  
-
   for(IntSet::const_iterator p=Colors.begin();p!=Colors.end();p++)
     {
       int col = *p;
-     __gnu_cxx::hash_set<int> habschon;
 
-      const IntVector& q = *GetMesh()->CellOnBoundary(col);
-      const IntVector& l = *GetMesh()->LocalOnBoundary(col);
+      const IntVector& q = *GetMesh()->PatchOnBoundary(col);
+      const IntVector& l = *GetMesh()->LocalPatchOnBoundary(col);
       for (int i=0; i<q.size(); i++)
         {
-          int iq  = q[i];
-          int ip  = cell2patch[iq];
-	  
-	  // gabs den patch schon?
-          if (habschon.find(ip)!=habschon.end()) continue;
-	  habschon.insert(ip);
-
-          int ile = l[i];
+          int ip  = q[i];
+	  int ile = l[i];
           
           Transformation(T,ip);
           GetFem()->ReInit(T);
@@ -317,33 +280,16 @@ void PatchDiscretization::BoundaryRhs(GlobalVector& f, const IntSet& Colors,  co
 
   GlobalToGlobalData();
   NRHS.SetParameterData(__QP);
- /// die cell2patch - liste
-
-  const nvector<nvector<int> >& patch2cell  =
-      GetGascoigneMesh()->GetPatchIndexHandler().GetAllPatch2Cell();
-   
-
-  nvector<int> cell2patch(GetMesh()->ncells());
-  for (int p=0;p<patch2cell.size();++p)
-    for (int i=0;i<patch2cell[p].size();++i)
-       cell2patch[patch2cell[p][i]]=p;
   
   for(IntSet::const_iterator p=Colors.begin();p!=Colors.end();p++)
     {
       int col = *p;
-      __gnu_cxx::hash_set<int> habschon;
 
-      const IntVector& q = *GetMesh()->CellOnBoundary(col);
-      const IntVector& l = *GetMesh()->LocalOnBoundary(col);
+      const IntVector& q = *GetMesh()->PatchOnBoundary(col);
+      const IntVector& l = *GetMesh()->LocalPatchOnBoundary(col);
       for (int i=0; i<q.size(); i++)
 	{
-	  int iq  = q[i];
-	  int ip  = cell2patch[iq];
-	  
-	  // gabs den patch schon?
-          if (habschon.find(ip)!=habschon.end()) continue;
-	  habschon.insert(ip);
-	  
+	  int ip  = q[i];
 	  int ile = l[i];
 
 	  Transformation(T,ip);
@@ -513,34 +459,17 @@ double PatchDiscretization::ComputeBoundaryFunctional(const GlobalVector& u, con
 
   GlobalToGlobalData();
   BF.SetParameterData(__QP);
-  /// die cell2patch - liste
-
-  const nvector<nvector<int> >& patch2cell  =
-    GetGascoigneMesh()->GetPatchIndexHandler().GetAllPatch2Cell();
-
-
-  nvector<int> cell2patch(GetMesh()->ncells());
-  for (int p=0;p<patch2cell.size();++p)
-    for (int i=0;i<patch2cell[p].size();++i)
-      cell2patch[patch2cell[p][i]]=p;
 
   double j=0.;
   for(IntSet::const_iterator p=Colors.begin();p!=Colors.end();p++)
   {
     int col = *p;
-    __gnu_cxx::hash_set<int> habschon;
 
-    const IntVector& q = *GetMesh()->CellOnBoundary(col);
-    const IntVector& l = *GetMesh()->LocalOnBoundary(col);
+    const IntVector& q = *GetMesh()->PatchOnBoundary(col);
+    const IntVector& l = *GetMesh()->LocalPatchOnBoundary(col);
     for (int i=0; i<q.size(); i++)
     {
-      int iq  = q[i];
-      int ip  = cell2patch[iq];
-
-      // gabs den patch schon?
-      if (habschon.find(ip)!=habschon.end()) continue;
-      habschon.insert(ip);
-
+      int ip  = q[i];
       int ile = l[i];
 
       Transformation(T,ip);

@@ -122,4 +122,31 @@ const IntVector& BoundaryIndexHandler::Localind(int color) const
     }
   return p->second;
 }
+
+/*--------------------------------------------------------------*/
+
+const IntVector& BoundaryIndexHandler::Patches(int color) const
+{
+  VecMap::const_iterator p = patches.find(color);
+  if(p==patches.end())
+    {
+      cerr << "BoundaryIndexHandler::Patches\tcolor not found: "<<color << endl;
+      abort();
+    }
+  return p->second;
+}
+
+/*--------------------------------------------------------------*/
+  
+const IntVector& BoundaryIndexHandler::LocalPatchind(int color) const
+{
+  VecMap::const_iterator p = localpi.find(color);
+  if(p==localpi.end())
+    {
+      cerr << "BoundaryIndexHandler::LocalPatchind\tcolor not found: "<<color << endl;
+      abort();
+    }
+  return p->second;
+}
+
 }
