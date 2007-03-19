@@ -6,6 +6,7 @@ namespace Gascoigne
 
 /*------------------------------------------------------------*/
 
+template class PatchFormula1d<2,LineGauss2>;
 template class PatchFormula1d<3,LineGauss3>;
 template class PatchFormula1d<4,LineGauss4>;
 
