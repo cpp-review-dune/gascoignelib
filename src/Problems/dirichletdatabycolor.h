@@ -8,26 +8,26 @@
 
 namespace Gascoigne
 {
-class DirichletDataByColor : public DirichletData
-{
-protected:
+  class DirichletDataByColor : public DirichletData
+    {
+    protected:
 
-  int comp;
-  std::set<int> col;
-  double scale;
+      std::set<int>   __cols;
+      nvector<int>    __comps;
+      nvector<double> __scales;
 
-public:
+    public:
+      
+      DirichletDataByColor(nvector<int> comps,const std::set<int>& cl, nvector<double> s);
+      DirichletDataByColor(const std::vector<std::string>& args);
+      ~DirichletDataByColor() {}
+      
+      std::string GetName() const {return "DirichletDataByColor";}
 
-  DirichletDataByColor(int c, const std::set<int>& cl, double s);
-  DirichletDataByColor(const std::vector<std::string>& args);
-  ~DirichletDataByColor() {}
-
-  std::string GetName() const {return "DirichletDataByColor";}
-
-  std::set<int> preferred_colors()const;
-  void operator()(DoubleVector& b, const Vertex2d& V,int color) const;
-  void operator()(DoubleVector& b, const Vertex3d& V,int color) const;
-};
+      std::set<int> preferred_colors()const;
+      void operator()(DoubleVector& b, const Vertex2d& V,int color) const;
+      void operator()(DoubleVector& b, const Vertex3d& V,int color) const;
+    };
 }
 
 #endif

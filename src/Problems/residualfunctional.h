@@ -11,43 +11,44 @@
 
 namespace Gascoigne
 {
-class ResidualFunctional : public virtual Functional
-{
-protected:
-
-  int            _comp;
-  std::set<int>  _col;
-  double         _scale;
-
-  const DirichletData*   _DD;
-
-public:
-
-  ResidualFunctional();
-  ~ResidualFunctional();
-  ResidualFunctional(const ResidualFunctional& F) : Functional(F)
+  class ResidualFunctional : public virtual Functional
     {
-       _comp  = F.GetComp();
-       _col   = F.GetColors();
-       _scale = F.GetScale();
-       _DD    = F.GetDirichletData();
-    }
+    protected:
 
-  std::string GetName() const {return "ResidualFunctional";}
+      nvector<int>    __comps;
+      nvector<double> __scales;
+      std::set<int>   __cols;
 
-  int           GetComp()   const {return _comp;}
-  int&          GetComp()         {return _comp;}
+      const DirichletData*   __DD;
   
-  std::set<int> GetColors() const {return _col;}
-  std::set<int>&GetColors()       {return _col;}
+    public:
   
-  double        GetScale()  const { return _scale;}
-  double&       GetScale()        { return _scale;}
+      ResidualFunctional();
+      ~ResidualFunctional();
+      ResidualFunctional(const ResidualFunctional& F) : Functional(F)
+	{
+	  __comps  = F.GetComps();
+	  __scales = F.GetScales();
+	  __cols   = F.GetColors();
+	  __DD     = F.GetDirichletData();
+	}
 
-  const DirichletData* GetDirichletData()   const {return _DD;}
-  const DirichletData*& GetDirichletDataPointer() { return _DD;}
+      std::string GetName() const {return "ResidualFunctional";}
+
+      nvector<int>     GetComps()  const {return __comps;}
+      nvector<int>&    GetComps()        {return __comps;}
+
+      nvector<double>  GetScales() const { return __scales;}
+      nvector<double>& GetScales()       { return __scales;}
   
-};
+      std::set<int>    GetColors() const {return __cols;}
+      std::set<int>&   GetColors()       {return __cols;}
+  
+
+      const DirichletData* GetDirichletData()   const { return __DD;}
+      const DirichletData*& GetDirichletDataPointer() { return __DD;}
+  
+    };
 }
 
 #endif

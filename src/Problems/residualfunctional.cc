@@ -8,18 +8,19 @@ using namespace std;
 
 namespace Gascoigne
 {
-ResidualFunctional::ResidualFunctional() : _DD(NULL) 
-{ 
-  _comp = 0;
-  _scale = 1.;
-}
-
-/*-----------------------------------------*/
-
-ResidualFunctional::~ResidualFunctional()
-{
-  if(_DD!=NULL) {delete _DD; _DD=NULL;}
-}
-
-/*-----------------------------------------*/
+  ResidualFunctional::ResidualFunctional() : __DD(NULL) 
+  { 
+    __comps.clear();
+    __scales.clear();
+    __cols.clear();
+  }
+  
+  /*-----------------------------------------*/
+  
+  ResidualFunctional::~ResidualFunctional()
+  {
+    if(__DD!=NULL) {delete __DD; __DD=NULL;}
+  }
+  
+  /*-----------------------------------------*/
 }

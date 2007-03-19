@@ -50,12 +50,12 @@ class LocalDragFunctional : public virtual Gascoigne::ResidualFunctional
  public:
   LocalDragFunctional() : ResidualFunctional()
     {
-      _comp = 0;
-      _col.insert(9);
-      _scale = 1;
+      __comps.push_back(0);
+      __cols.insert(9);
+      __scales.push_back(1.);
       ExactValue() = 1./8.;
 
-      _DD  = new Gascoigne::DirichletDataByColor(GetComp(),GetColors(),GetScale());
+      __DD  = new Gascoigne::DirichletDataByColor(GetComps(),GetColors(),GetScales());
     }
   
   std::string GetName() const {

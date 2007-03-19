@@ -131,16 +131,16 @@ class LocalDomainFunctionals_FlagForce : public virtual Gascoigne::ResidualFunct
   std::string _s_force_type;
   LocalDomainFunctionals_FlagForce(std::string s_force_type) : ResidualFunctional() {
     _s_force_type = s_force_type;
-    _comp=-1;
-    if(s_force_type == "drag") _comp = 1;
-    if(s_force_type == "lift") _comp = 2;
-    assert(0<=_comp);
 
-    _col.insert(80);
-    _scale = 1;
+    if(s_force_type == "drag") __comps.push_back(1);
+    if(s_force_type == "lift") __comps.push_back(2);
+    assert(__comps.size()==1);
+
+    __cols.insert(80);
+    __scales.push_back(1);
     ExactValue() = 0.;
 
-    _DD  = new Gascoigne::DirichletDataByColor(GetComp(),GetColors(),GetScale());
+    __DD  = new Gascoigne::DirichletDataByColor(GetComps(),GetColors(),GetScales());
   }
 
   std::string GetName() const {

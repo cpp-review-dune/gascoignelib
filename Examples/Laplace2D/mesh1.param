@@ -19,7 +19,8 @@ gridname    square.inp
 
 //Block Solver
 
-discname       Q1
+discname       Q2
+
 ndirect              1000
 
 //Block Nix

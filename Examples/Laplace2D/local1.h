@@ -62,7 +62,7 @@ class ProblemDescriptor : public Gascoigne::ProblemDescriptorBase
   
   std::string GetName() const {return "Local";}
   void BasicInit(const Gascoigne::ParamFile* pf) {
-    GetEquationPointer() = new Gascoigne::Laplace2d;
+    GetEquationPointer()      = new Gascoigne::Laplace2d;
     GetExactSolutionPointer() = new PolynomialExactSolution();
     GetRightHandSidePointer() = new Gascoigne::RightHandSideByEquation(GetEquation(), GetExactSolution());
     GetDirichletDataPointer() = new Gascoigne::DirichletDataByExactSolution(GetExactSolution());
@@ -78,12 +78,12 @@ class LocalDragFunctional : public virtual Gascoigne::ResidualFunctional
  public:
   LocalDragFunctional() : ResidualFunctional()
     {
-      _comp = 0;
-      _col.insert(1);
-      _scale = 1;
+      __comps.push_back(0);
+      __cols.insert(1);
+      __scales.push_back(1);
       ExactValue() = 1./8.;
 
-      _DD  = new Gascoigne::DirichletDataByColor(GetComp(),GetColors(),GetScale());
+      __DD  = new Gascoigne::DirichletDataByColor(GetComps(),GetColors(),GetScales());
     }
 
   std::string GetName() const {
