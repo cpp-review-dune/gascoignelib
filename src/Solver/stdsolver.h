@@ -13,6 +13,7 @@
 #include  "hierarchicalmesh.h"
 #include  "pressurefilter.h"
 #include  "domainfunction.h"
+#include  "facediscretization.h"
 
 /*-----------------------------------------*/
 
@@ -52,6 +53,7 @@ class StdSolver : public virtual SolverInterface
   // 3. Discretization
 
   DiscretizationInterface*    _ZP;
+  FaceDiscretization*         _FZP;
 
   // 4. Vektoren
 
@@ -69,6 +71,7 @@ class StdSolver : public virtual SolverInterface
   mutable int         _ndirect;
   mutable bool        _directsolver;
   mutable std::string _discname;
+  mutable std::string _facediscname;
   mutable std::string _matrixtype;
 
   SolverData          _Dat;
@@ -100,13 +103,15 @@ class StdSolver : public virtual SolverInterface
   IluInterface* GetIlu() const {assert(_MIP); return _MIP;}
   IluInterface*& GetIluPointer() { return _MIP;}
   
-  virtual DiscretizationInterface*& GetDiscretizationPointer() {return _ZP;}
+  virtual DiscretizationInterface*& GetDiscretizationPointer()     {return _ZP;}
+  virtual FaceDiscretization*&      GetFaceDiscretizationPointer() {return _FZP;}
 
   // 1. Initialisierung 
 	
 	void SetDefaultValues(std::string discname, std::string matrixtype, int ndirect);
 
-  virtual DiscretizationInterface* NewDiscretization(int dimension, const std::string& discname);
+  virtual DiscretizationInterface* NewDiscretization    (int dimension, const std::string& discname);
+  virtual FaceDiscretization*      NewFaceDiscretization(int dimension, const std::string& facediscname);
 
   virtual MatrixInterface* NewMatrix(int ncomp, const std::string& matrixtype); 
   virtual IluInterface* NewIlu(int ncomp, const std::string& matrixtype); 
@@ -144,6 +149,9 @@ class StdSolver : public virtual SolverInterface
 
   const DiscretizationInterface* GetDiscretization() const {assert(_ZP); return _ZP;}
   DiscretizationInterface* GetDiscretization() {assert(_ZP); return _ZP;}
+
+  const FaceDiscretization* GetFaceDiscretization() const { return _FZP; }
+  FaceDiscretization*       GetFaceDiscretization()       { return _FZP; }
 
   void ReInitMatrix();
 

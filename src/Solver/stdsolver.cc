@@ -38,6 +38,9 @@
 #include  "q1lps3d.h"
 #include  "q2lps3d.h"
 
+#include  "faceq1.h"
+#include  "faceq2.h"
+
 #include "q2lps2dwithsecond.h"
 #include "q22dwithsecond.h"
 #include "q2lps3dwithsecond.h"
@@ -54,8 +57,8 @@ namespace Gascoigne
 {
 
 StdSolver::StdSolver() : 
-  _MP(NULL), _HM(NULL), _MAP(NULL), _MIP(NULL), _ZP(NULL), _PDX(NULL), 
-  _distribute(true), _mylevel(-1), _ndirect(1000), _directsolver(0), _discname("Q1"),
+  _MP(NULL), _HM(NULL), _MAP(NULL), _MIP(NULL), _ZP(NULL), _FZP(NULL), _PDX(NULL), 
+  _distribute(true), _mylevel(-1), _ndirect(1000), _directsolver(0), _discname("Q1"), _facediscname("none"),
   _matrixtype("point_node"), _PrimalSolve(1), _paramfile(NULL), _useUMFPACK(true)
 // , omega_domain(0.) 
 {
@@ -68,6 +71,7 @@ StdSolver::~StdSolver()
   if(_MAP) delete _MAP; _MAP=NULL;
   if(_MIP) delete _MIP; _MIP=NULL;
   if(_ZP)  delete _ZP;  _ZP=NULL;
+  if(_FZP) delete _FZP; _FZP=NULL;
 }
 
 /*-------------------------------------------------------*/
@@ -134,6 +138,8 @@ void StdSolver::OutputSettings() const
   cout << "==================================================" << endl;
   cout << "Solver:                   " << GetName() << endl;
   cout << "Discretization:           " << GetDiscretization()->GetName()  << endl;
+  if (GetFaceDiscretization())  
+    cout << "FaceDiscretization:       " << GetFaceDiscretization()->GetName()  << endl;
   GetProblemDescriptor()->OutputSettings(cout);
   cout << "==================================================" << endl;
 }
@@ -217,6 +223,8 @@ void StdSolver::NewMesh(int level, const MeshInterface* mp)
     }
 
   GetDiscretization()->ReInit(_MP);
+  if (GetFaceDiscretization())
+    GetFaceDiscretization()->ReInit(_MP);
 }
 
 /*-----------------------------------------*/
@@ -242,7 +250,8 @@ void StdSolver::BasicInit(int level, const ParamFile* paramfile, const int dimen
   DFH.insert("matrixtype" , &_matrixtype);
   DFH.insert("ndirect"    , &_ndirect);
   DFH.insert("useUMFPACK", &_useUMFPACK);
-  DFH.insert("discname", &_discname);
+  DFH.insert("discname",    &_discname);
+  DFH.insert("facediscname",    &_facediscname,"none");
   DFH.insert("disc", &xxx, "void");
   FileScanner FS(DFH);
   FS.NoComplain();
@@ -254,10 +263,14 @@ void StdSolver::BasicInit(int level, const ParamFile* paramfile, const int dimen
       abort();
     }
 
-  GetDiscretizationPointer() = NewDiscretization(dimension, _discname);
+  GetDiscretizationPointer()     = NewDiscretization    (dimension, _discname);
+  GetFaceDiscretizationPointer() = NewFaceDiscretization(dimension, _facediscname);
   assert(_ZP);
 
   GetDiscretization()->BasicInit(_paramfile);
+  if (GetFaceDiscretization())
+    GetFaceDiscretization()->BasicInit(_paramfile);
+  
 
   _Dat.BasicInit(_paramfile);
   _PF.SetComponents(_Dat.GetPfilter());
@@ -277,7 +290,7 @@ DiscretizationInterface* StdSolver::NewDiscretization(int dimension, const strin
       else if (discname=="Q2Lps")            return new Q2Lps2d;
       else if (discname=="Q2WithSecond")     return new Q22dWithSecond;
       else if (discname=="Q2LpsWithSecond")  return new Q2Lps2dWithSecond;
-    else 
+      else 
         {         
           cerr << " Solver::NewDiscretization()\tunknown discname=" << discname << endl;
           abort();
@@ -307,6 +320,39 @@ DiscretizationInterface* StdSolver::NewDiscretization(int dimension, const strin
 
 /*-------------------------------------------------------------*/
 
+FaceDiscretization* StdSolver::NewFaceDiscretization(int dimension, const string& facediscname)
+{
+  if (facediscname=="none") return NULL;
+
+  if (dimension==2)
+    {
+      if      (facediscname=="FaceQ1") return new FaceQ1<2>;
+      else if (facediscname=="FaceQ2") return new FaceQ2<2>;
+      else 
+	{
+	  cerr << " Solver::NewDiscretization()\tunknown facediscname=" << facediscname << endl;
+	      abort();
+	}
+    }
+  else if (dimension==3)
+    {
+      if      (facediscname=="FaceQ1") return new FaceQ1<3>;
+      else if (facediscname=="FaceQ2") return new FaceQ2<3>;
+      else 
+	{
+	  cerr << "Solver::NewFaceDiscretization()\tunknown facediscname=" << facediscname << endl;
+	  abort();
+	}
+    }
+  else
+    {
+      cerr << "Solver::NewFaceDiscretization()\tdimension must either 2 or 3" << endl;
+      abort();
+    }
+}
+
+/*-------------------------------------------------------------*/
+
 MatrixInterface* StdSolver::NewMatrix(int ncomp, const string& matrixtype) 
 {
   if( _directsolver || matrixtype=="point_node")
@@ -319,6 +365,7 @@ MatrixInterface* StdSolver::NewMatrix(int ncomp, const string& matrixtype)
     else if (ncomp==2)  return new SparseBlockMatrix<FMatrixBlock<2> >;
     else if (ncomp==3)  return new SparseBlockMatrix<FMatrixBlock<3> >;
     else if (ncomp==4)  return new SparseBlockMatrix<FMatrixBlock<4> >;
+    else if (ncomp==5)  return new SparseBlockMatrix<FMatrixBlock<5> >;
     else
     {
       cerr << "No SparseBlockMatrix for " << ncomp << "components." << endl;
@@ -368,6 +415,7 @@ IluInterface* StdSolver::NewIlu(int ncomp, const string& matrixtype)
     else if (ncomp==2)  return new SparseBlockIlu<FMatrixBlock<2> >;
     else if (ncomp==3)  return new SparseBlockIlu<FMatrixBlock<3> >;
     else if (ncomp==4)  return new SparseBlockIlu<FMatrixBlock<4> >;
+    else if (ncomp==5)  return new SparseBlockIlu<FMatrixBlock<5> >;
     else
       {
         cerr << "No SparseBlockIlu for " << ncomp << "components." << endl;
@@ -396,6 +444,9 @@ void StdSolver::ReInitMatrix()
   GetDiscretization()->InitFilter(_PF);
   SparseStructure SA;
   GetDiscretization()->Structure(&SA);
+  
+  if (GetFaceDiscretization())
+    GetFaceDiscretization()->Structure(&SA);
 
   GetMatrix()->ReInit(&SA);
   GetIlu()->ReInit(&SA);
@@ -691,6 +742,15 @@ void StdSolver::Form(VectorInterface& gy, const VectorInterface& gx, double d) c
   assert(EQ);
   GetDiscretization()->Form(GetGV(gy),GetGV(gx),*EQ,d);
 
+  // Face
+  if (GetFaceDiscretization())
+    {
+      const FaceEquation* FEQ = GetProblemDescriptor()->GetFaceEquation();
+      assert(FEQ);
+      GetFaceDiscretization()->FaceForm(GetGV(gy),GetGV(gx),*FEQ,d);
+    }
+  
+  
   const BoundaryEquation* BE = GetProblemDescriptor()->GetBoundaryEquation();
   if(BE)
   {
@@ -895,8 +955,10 @@ double StdSolver::ComputeResidualFunctional(VectorInterface& gf, const VectorInt
   HNAverageData();
   Zero(gf);
   Rhs(gf);
+
+
   Form(gf,gu,-1.);
-  
+
   const DirichletData* ABD = FP->GetDirichletData();
   assert(ABD);
 
@@ -1002,6 +1064,15 @@ void StdSolver::AssembleMatrix(const VectorInterface& gu, double d)
   HNAverageData();
 
   GetDiscretization()->Matrix(*GetMatrix(),u,*GetProblemDescriptor()->GetEquation(),d);
+
+  // Face
+  if (GetFaceDiscretization())
+    {
+      const FaceEquation* FEQ = GetProblemDescriptor()->GetFaceEquation();
+      assert(FEQ);
+      GetFaceDiscretization()->FaceMatrix(*GetMatrix(),u,*FEQ,d);
+    }
+  
   
   const BoundaryEquation* BE = GetProblemDescriptor()->GetBoundaryEquation();
   if(BE)
