@@ -365,7 +365,6 @@ MatrixInterface* StdSolver::NewMatrix(int ncomp, const string& matrixtype)
     else if (ncomp==2)  return new SparseBlockMatrix<FMatrixBlock<2> >;
     else if (ncomp==3)  return new SparseBlockMatrix<FMatrixBlock<3> >;
     else if (ncomp==4)  return new SparseBlockMatrix<FMatrixBlock<4> >;
-    else if (ncomp==5)  return new SparseBlockMatrix<FMatrixBlock<5> >;
     else
     {
       cerr << "No SparseBlockMatrix for " << ncomp << "components." << endl;
@@ -415,7 +414,6 @@ IluInterface* StdSolver::NewIlu(int ncomp, const string& matrixtype)
     else if (ncomp==2)  return new SparseBlockIlu<FMatrixBlock<2> >;
     else if (ncomp==3)  return new SparseBlockIlu<FMatrixBlock<3> >;
     else if (ncomp==4)  return new SparseBlockIlu<FMatrixBlock<4> >;
-    else if (ncomp==5)  return new SparseBlockIlu<FMatrixBlock<5> >;
     else
       {
         cerr << "No SparseBlockIlu for " << ncomp << "components." << endl;
