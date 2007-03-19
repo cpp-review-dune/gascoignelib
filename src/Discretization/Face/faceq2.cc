@@ -1,5 +1,5 @@
 #include "faceq2.h"
-#include "tgascoignemesh.h"
+#include "gascoignemesh2d.h"
 #include "baseq22d.h"
 #include "baseq23d.h"
 #include "finiteelement.h"
@@ -53,7 +53,7 @@ namespace Gascoigne
   void FaceQ2<2>::build_faces() 
   {
     this->__faces.clear();
-    const TGascoigneMesh<2>* GM = dynamic_cast<const TGascoigneMesh<2>*> (__MP);
+    const GascoigneMesh2d* GM = dynamic_cast<const GascoigneMesh2d*> (__MP);
     assert(GM->HasPatch());
     
     // list of neighbors (middle-node-of-line-of-patch)
