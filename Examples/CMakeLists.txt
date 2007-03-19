@@ -3,6 +3,7 @@ SUBDIRS(
   Laplace3D 
   NavierStokes2D 
   NavierStokes3D 
+  NavierStokesFace
   Heat2D 
   ConvectionDiffusion2D 
   IntegrationTest

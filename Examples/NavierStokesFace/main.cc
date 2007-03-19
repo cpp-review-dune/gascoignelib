@@ -33,10 +33,10 @@ int main(int argc, char** argv)
 
   // Functionals
   FunctionalContainer FC;
-  LocalDomainFunctionals_FlagForce df_flagforce_lift("lift");
-  LocalDomainFunctionals_FlagForce df_flagforce_drag("drag");
-  FC.AddFunctional("lift",&df_flagforce_lift);
-  FC.AddFunctional("drag",&df_flagforce_drag);
+//   LocalDomainFunctionals_FlagForce df_flagforce_lift("lift");
+//   LocalDomainFunctionals_FlagForce df_flagforce_drag("drag");
+//   FC.AddFunctional("lift",&df_flagforce_lift);
+//   FC.AddFunctional("drag",&df_flagforce_drag);
   
   LocalLoop loop;
   loop.BasicInit(&paramfile, &PC, &FC);

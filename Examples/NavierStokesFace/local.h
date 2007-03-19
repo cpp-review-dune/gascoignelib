@@ -127,28 +127,28 @@ class BenchMarkMeshAgent : public MeshAgent
 #include  "residualfunctional.h" 
 #include  "dirichletdatabycolor.h"
 
-class LocalDomainFunctionals_FlagForce : public virtual Gascoigne::ResidualFunctional
-{
- public:
-  std::string _s_force_type;
-  LocalDomainFunctionals_FlagForce(std::string s_force_type) : ResidualFunctional() {
-    _s_force_type = s_force_type;
+/* class LocalDomainFunctionals_FlagForce : public virtual Gascoigne::ResidualFunctional */
+/* { */
+/*  public: */
+/*   std::string _s_force_type; */
+/*   LocalDomainFunctionals_FlagForce(std::string s_force_type) : ResidualFunctional() { */
+/*     _s_force_type = s_force_type; */
 
-    if(s_force_type == "drag") __comps.push_back(1);
-    if(s_force_type == "lift") __comps.push_back(2);
-    assert(__comps.size()==1);
+/*     if(s_force_type == "drag") __comps.push_back(1); */
+/*     if(s_force_type == "lift") __comps.push_back(2); */
+/*     assert(__comps.size()==1); */
 
-    __cols.insert(80);
-    __scales.push_back(1);
-    ExactValue() = 0.;
+/*     __cols.insert(80); */
+/*     __scales.push_back(1); */
+/*     ExactValue() = 0.; */
 
-    __DD  = new Gascoigne::DirichletDataByColor(GetComps(),GetColors(),GetScales());
-  }
+/*     __DD  = new Gascoigne::DirichletDataByColor(GetComps(),GetColors(),GetScales()); */
+/*   } */
 
-  std::string GetName() const {
-    return "LocalDomainFunctionals_FlagForce:"+_s_force_type;
-  }
-};
+/*   std::string GetName() const { */
+/*     return "LocalDomainFunctionals_FlagForce:"+_s_force_type; */
+/*   } */
+/* }; */
 
 /* ----------------------------------------- */
 
