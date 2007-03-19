@@ -33,6 +33,7 @@ ProblemDescriptorBase::~ProblemDescriptorBase()
 ostream& ProblemDescriptorBase::OutputSettings(ostream& os) const 
 {
   if(EQ)   os << "Equation:                 " << EQ->GetName()   << endl;
+  if(FEQ)  os << "Face Equation:            " << FEQ->GetName()   << endl;
   if(BE)   os << "BoundaryEquation:         " << BE->GetName()   << endl;
   if(RHS)  os << "Rhs:                      " << RHS->GetName()  << endl;
   if(BRHS) os << "BoundaryRhs:              " << BRHS->GetName() << endl;

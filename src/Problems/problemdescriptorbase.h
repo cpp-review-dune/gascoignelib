@@ -12,6 +12,7 @@ class ProblemDescriptorBase : public ProblemDescriptorInterface
  private:
   
   Equation                 *EQ;
+  FaceEquation             *FEQ;
   BoundaryManager          *BM;
   ExactSolution            *ES;
   Application              *RHS;
@@ -30,6 +31,7 @@ class ProblemDescriptorBase : public ProblemDescriptorInterface
   const ParamFile*& GetParamFilePointer()           { return _paramfile;}
   
   Equation*&                 GetEquationPointer()                 { return EQ;}
+  FaceEquation*&             GetFaceEquationPointer()             { return FEQ;}
   BoundaryManager*&          GetBoundaryManagerPointer()          { return BM;}
   ExactSolution*&            GetExactSolutionPointer()            { return ES;}
   Application*&              GetInitialConditionPointer()         { return IC;}
@@ -63,6 +65,7 @@ class ProblemDescriptorBase : public ProblemDescriptorInterface
   const Application*              GetInitialCondition        () const { return IC;}
   const ExactSolution*            GetExactSolution           () const { return ES;}
   const Equation*                 GetEquation                () const { return EQ;}
+  const FaceEquation*             GetFaceEquation            () const { return FEQ;}
   const BoundaryManager*          GetBoundaryManager         () const { return BM;}
   const ComponentInformation*     GetComponentInformation    () const { return CI;}
 

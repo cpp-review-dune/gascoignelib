@@ -7,6 +7,7 @@
 
 #include  "boundarymanager.h"
 #include  "equation.h"
+#include  "faceequation.h"
 #include  "dirichletdata.h"
 #include  "boundaryrighthandside.h"
 #include  "boundaryequation.h"
@@ -48,6 +49,7 @@ namespace Gascoigne
       virtual const Application*               GetRightHandSide           () const=0;
       virtual const BoundaryRightHandSide*     GetBoundaryRightHandSide   () const=0;
       virtual const Equation*                  GetEquation                () const=0;
+      virtual const FaceEquation*              GetFaceEquation            () const=0;
       virtual const BoundaryEquation*          GetBoundaryEquation        () const=0;
       virtual const DirichletData*             GetDirichletData           () const=0;
       virtual const Application*               GetInitialCondition        () const=0;
