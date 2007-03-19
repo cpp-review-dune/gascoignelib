@@ -7,7 +7,7 @@ namespace Gascoigne{
 
 /*------------------------------------------------------------------------------*/
 
-ProblemDescriptorBase::  ProblemDescriptorBase() : EQ(NULL),BM(NULL),ES(NULL),RHS(NULL),
+ProblemDescriptorBase::  ProblemDescriptorBase() : EQ(NULL),FEQ(NULL),BM(NULL),ES(NULL),RHS(NULL),
                                                    IC(NULL),DD(NULL),BRHS(NULL),BIC(NULL),BE(NULL),CI(),
                                                    _paramfile(NULL) 
 {}
