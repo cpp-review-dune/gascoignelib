@@ -7,7 +7,7 @@ using namespace std;
 namespace Gascoigne
 {
   DirichletDataByColor::DirichletDataByColor(nvector<int> comps, const set<int>& cl, nvector<double> s)
-    : DirichletData(), __comps(comps), __cols(cl), __scales(s)
+    : DirichletData(), __cols(cl), __comps(comps), __scales(s)
   {
     assert(__comps.size()==__scales.size());
     assert(__comps.size()>0);
