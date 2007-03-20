@@ -3,6 +3,7 @@
 
 #include  "giota.h"
 #include  "stdsolver.h"
+#include  "stdtimesolver.h"  // noetig fuer die Zeit-Angabe bei der Visu-Ausgabe
 
 #include  "pointmatrix.h"
 #include  "pointilu.h"
@@ -1268,6 +1269,12 @@ void StdSolver::PointVisu(const string& name, const GlobalVector& u, int i) cons
   }
 
   Visu.read_parameters(_paramfile);
+
+  if( dynamic_cast<const StdTimeSolver*>( this ) ) {
+    double time = dynamic_cast<const StdTimeSolver*>( this )->GetTime();
+    Visu.set_time( time ); 
+  }
+
   Visu.set_name(name);
   Visu.step(i);
   Visu.write();
@@ -1293,6 +1300,12 @@ void StdSolver::CellVisu(const string& name, const GlobalVector& u, int i) const
   }
 
   Visu.read_parameters(_paramfile);
+
+  if( dynamic_cast<const StdTimeSolver*>( this ) ) {
+    double time = dynamic_cast<const StdTimeSolver*>( this )->GetTime();
+    Visu.set_time( time ); 
+  }
+
   Visu.set_name(name);
   Visu.step(i);
   Visu.write();

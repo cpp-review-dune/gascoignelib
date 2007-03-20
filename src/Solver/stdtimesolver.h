@@ -49,6 +49,7 @@ public:
   void ReInitMatrix();
 
   void SetTimeData(double dt, double theta, double time, double oldrhs = -1., double newrhs = 1.);
+  double GetTime() const { return _time; }
   void SetProblem(const ProblemDescriptorInterface& PDX);
 
   void InitialCondition(VectorInterface& f, double d=1.) const;
