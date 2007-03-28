@@ -3,7 +3,6 @@
 
 #include  "giota.h"
 #include  "stdsolver.h"
-#include  "stdtimesolver.h"  // noetig fuer die Zeit-Angabe bei der Visu-Ausgabe
 
 #include  "pointmatrix.h"
 #include  "pointilu.h"
@@ -1251,11 +1250,23 @@ void StdSolver::Visu(const string& name, const VectorInterface& gu, int i) const
 
 /* -------------------------------------------------------*/
 
+GascoigneVisualization* StdSolver::NewGascoigneVisualization() const {
+  // by virtualizing the instantiation of the GascoigneVisualization object two things can be achieved
+  // * setting the time in the overloaded instantiation in StdTimeSolver
+  // * instantiating a derived class of GascoigneVisualization = good for transforming the output grid
+  GascoigneVisualization* p_gv = new GascoigneVisualization;
+  return p_gv;
+}
+
+/* -------------------------------------------------------*/
+
 void StdSolver::PointVisu(const string& name, const GlobalVector& u, int i) const
 {
   GetDiscretization()->HNAverage(const_cast<GlobalVector&>(u)); 
-  
-  GascoigneVisualization Visu;
+
+  GascoigneVisualization* p_gv   = NewGascoigneVisualization();
+  GascoigneVisualization& Visu   = *p_gv;
+
   Visu.SetMesh(GetMesh());  
 
   const ComponentInformation*  CI = GetProblemDescriptor()->GetComponentInformation();
@@ -1269,16 +1280,11 @@ void StdSolver::PointVisu(const string& name, const GlobalVector& u, int i) cons
   }
 
   Visu.read_parameters(_paramfile);
-
-  if( dynamic_cast<const StdTimeSolver*>( this ) ) {
-    double time = dynamic_cast<const StdTimeSolver*>( this )->GetTime();
-    Visu.set_time( time ); 
-  }
-
   Visu.set_name(name);
   Visu.step(i);
   Visu.write();
 
+  delete p_gv;
   GetDiscretization()->HNZero(const_cast<GlobalVector&>(u)); 
 }
 
@@ -1286,8 +1292,10 @@ void StdSolver::PointVisu(const string& name, const GlobalVector& u, int i) cons
 
 void StdSolver::CellVisu(const string& name, const GlobalVector& u, int i) const
 {
-  GascoigneVisualization Visu;
-  Visu.SetMesh(GetMesh());  
+  GascoigneVisualization* p_gv   = NewGascoigneVisualization();
+  GascoigneVisualization& Visu   = *p_gv;
+
+  Visu.SetMesh(GetMesh());
 
   const ComponentInformation*  CI = GetProblemDescriptor()->GetComponentInformation();
   if(CI)
@@ -1300,15 +1308,11 @@ void StdSolver::CellVisu(const string& name, const GlobalVector& u, int i) const
   }
 
   Visu.read_parameters(_paramfile);
-
-  if( dynamic_cast<const StdTimeSolver*>( this ) ) {
-    double time = dynamic_cast<const StdTimeSolver*>( this )->GetTime();
-    Visu.set_time( time ); 
-  }
-
   Visu.set_name(name);
   Visu.step(i);
   Visu.write();
+
+  delete p_gv;
 }
 
 /* -------------------------------------------------------*/

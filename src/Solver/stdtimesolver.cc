@@ -46,6 +46,14 @@ void StdTimeSolver::SetTimeData(double dt, double theta, double time, double old
 
 /*-------------------------------------------------------------*/
 
+GascoigneVisualization* StdTimeSolver::NewGascoigneVisualization() const {
+  GascoigneVisualization* p_gv = new GascoigneVisualization;
+  p_gv->set_time(_time);
+  return p_gv;
+}
+
+/*-------------------------------------------------------------*/
+
 void StdTimeSolver::SetProblem(const ProblemDescriptorInterface& PDX)
 {
   const Equation* EQ = PDX.GetEquation();

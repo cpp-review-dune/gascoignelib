@@ -14,6 +14,7 @@
 #include  "pressurefilter.h"
 #include  "domainfunction.h"
 #include  "facediscretization.h"
+#include  "gascoignevisualization.h"
 
 /*-----------------------------------------*/
 
@@ -187,6 +188,7 @@ class StdSolver : public virtual SolverInterface
   }
 
   void OutputSettings() const;
+  virtual GascoigneVisualization* NewGascoigneVisualization() const;
   virtual void PointVisu(const std::string& name, const GlobalVector& u, int i) const;
   virtual void CellVisu(const std::string& name, const GlobalVector& u, int i) const;
 
