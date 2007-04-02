@@ -78,6 +78,8 @@ public:
       const LocalData& Q, const LocalData& QC) const;
   void EvaluateCellRightHandSide(LocalVector& F, const DomainRightHandSide& CF,const FemInterface& FEM, 
       const LocalData& Q, const LocalData& QC) const;
+  void EvaluateBoundaryCellRightHandSide(LocalVector& F, const BoundaryRightHandSide& CF,const FemInterface& FEM, int ile, int col, 
+      const LocalData& Q, const LocalData& QC) const;
 
   void ErrorsByExactSolution(LocalVector& dst, const FemInterface& FE, const ExactSolution& ES, const LocalVector& U, 
       const LocalData& Q, const LocalData& QC) const;

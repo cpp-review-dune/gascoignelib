@@ -666,6 +666,36 @@ void CellDiscretization::EvaluateCellRightHandSide(GlobalVector& f, const Domain
     }
 }
 
+/* ----------------------------------------- */
+
+void CellDiscretization::EvaluateBoundaryCellRightHandSide(GlobalVector& f,const IntSet& Colors, const BoundaryRightHandSide& CF, double d) const
+{
+  nmatrix<double> T;
+  
+  GlobalToGlobalData();
+  CF.SetParameterData(__QP);
+  
+  for(IntSet::const_iterator p=Colors.begin();p!=Colors.end();p++)
+    {
+      int col = *p;
+      const IntVector& q = *GetMesh()->CellOnBoundary(col);
+      const IntVector& l = *GetMesh()->LocalOnBoundary(col);
+      for (int i=0; i<q.size(); i++)
+	{
+	  int iq  = q[i];
+	  int ile = l[i];
+
+	  Transformation(T,iq);
+	  GetFem()->ReInit(T);
+
+	  GlobalToLocalData(iq);
+	  GetIntegrator()->EvaluateBoundaryCellRightHandSide(__F,CF,*GetFem(),ile,col,__QN,__QC);
+	  
+	  f.add_node(iq,d,0,__F);
+	}
+    }
+}
+
 /* ----------------------------------------- */ 
   
 void CellDiscretization::InterpolateDomainFunction(GlobalVector& f, const DomainFunction& DF) const
@@ -835,7 +865,46 @@ void CellDiscretization::GetVolumes(DoubleVector& a) const
       a[iq] = GetFem()->J();
     }
 }
+/* ----------------------------------------- */
 
+void CellDiscretization::GetAreas(DoubleVector& a, const IntSet& Colors) const
+{
+  a.resize(GetMesh()->ncells(),1.);
+  nmatrix<double> T;
+  int dim = GetMesh()->dimension();
+   
+  for(IntSet::const_iterator p=Colors.begin();p!=Colors.end();p++)
+  {
+    int col = *p;
+    const IntVector& q = *GetMesh()->CellOnBoundary(col);
+    const IntVector& l = *GetMesh()->LocalOnBoundary(col);
+    for (int i=0; i<q.size(); i++)
+    {
+      int iq  = q[i];
+      int ile = l[i];
+      
+      Transformation(T,iq);
+      GetFem()->ReInit(T);
+      if(dim==2)
+      {
+	Vertex1d xi;
+	xi.x() = 0.5;
+	GetFem()->point_boundary(ile,xi);
+      }
+      else
+      {
+	Vertex2d xi;
+	xi.x() = 0.5;
+	xi.y() = 0.5;
+	GetFem()->point_boundary(ile,xi);
+      }
+      if(a[iq] == 1.)
+	a[iq] = GetFem()->G();
+      else
+	a[iq] += GetFem()->G();
+    }
+  }
+}
 /* ----------------------------------------- */
 
 void CellDiscretization::GetMassDiag(DoubleVector& a) const

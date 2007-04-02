@@ -298,7 +298,8 @@ class StdSolver : public virtual SolverInterface
   virtual double ComputeDomainFunctional(VectorInterface& f, const VectorInterface& u, VectorInterface& z, const DomainFunctional* FP) const;
   virtual double ComputePointFunctional(VectorInterface& f, const VectorInterface& u, VectorInterface& z, const PointFunctional* NFP) const;
   virtual double ComputeResidualFunctional(VectorInterface& f, const VectorInterface& u, VectorInterface& z, const ResidualFunctional* FP) const;
-  virtual void EvaluateCellRightHandSide(VectorInterface& f, const DomainRightHandSide& CF, double d = 1.) const;
+  virtual void EvaluateCellRightHandSide(VectorInterface& f, const DomainRightHandSide& CF, double d = 1.) const; 
+  virtual void EvaluateBoundaryCellRightHandSide(VectorInterface& f, const BoundaryRightHandSide& CF,const BoundaryManager& BM, double d = 1.) const;
   virtual void InterpolateDomainFunction(VectorInterface& f, const DomainFunction& DF) const;
 
   //

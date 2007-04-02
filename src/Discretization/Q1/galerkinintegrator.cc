@@ -518,6 +518,10 @@ template<int DIM>
 double GalerkinIntegrator<DIM>::ComputeBoundaryFunctional(const BoundaryFunctional& F, const FemInterface& FEM, int ile, 
     int col, const LocalVector& U, const LocalData& Q, const LocalData& QC) const
 {
+
+  BasicIntegrator::universal_point(_QCH,QC);
+  F.SetCellData(_QCH);
+  
   const IntegrationFormulaInterface& IF = *BoundaryFormula();
 
   Vertex<DIM>   x, n;
@@ -604,6 +608,41 @@ void GalerkinIntegrator<DIM>::EvaluateCellRightHandSide(LocalVector& F, const Do
 
       CF(F.start(0),_NN,x);
     }
+}
+
+/* ----------------------------------------- */
+
+template<int DIM>
+void GalerkinIntegrator<DIM>::EvaluateBoundaryCellRightHandSide(LocalVector& F, const BoundaryRightHandSide& CF,const FemInterface& FEM, int ile, int col, 
+      const LocalData& Q, const LocalData& QC) const
+{
+  F.ReInit(CF.GetNcomp(),1);
+
+  BasicIntegrator::universal_point(_QCH,QC);
+  CF.SetCellData(_QCH);
+
+  const IntegrationFormulaInterface& IF = *BoundaryFormula();
+
+  F.zero();
+  Vertex<DIM> x, n;
+  Vertex<DIM-1> xi;
+
+  for (int k=0; k<IF.n(); k++)
+  {
+    IF.xi(xi,k);
+    FEM.point_boundary(ile,xi);
+    BasicIntegrator::universal_point(FEM,_QH,Q);
+    CF.SetFemData(_QH);
+    FEM.x(x);
+    FEM.normal(n);
+    double  h = FEM.G();
+    double  weight = IF.w(k)*h;
+    CF.SetCellSize(h);
+    
+    _NN.zero();
+    _NN.m() = weight;
+    CF(F.start(0),_NN,x,n,col);
+  }
 }
 
 /* ----------------------------------------- */
