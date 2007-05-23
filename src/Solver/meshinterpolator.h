@@ -26,6 +26,7 @@ class MeshInterpolator
     std::vector<std::pair<int,int> >           _iq2;
     std::vector<std::pair<GlobalVector,int> >  _VecInt,_VecOld,_VecNew;
     bool                                       _average;
+    std::string                                _name;
 
     virtual void CheckCell (int oldNumber, int newNumber);
     virtual void Coarsen   (int newNumber);
@@ -53,6 +54,8 @@ class MeshInterpolator
 
     virtual void BasicInit(DiscretizationInterface* DI, MeshAgentInterface* MA, 
 			   const std::string& name);
+    virtual void ReInit();
+    virtual void RefineNodeVector(GlobalVector& uNew, const GlobalVector& uOld);
     virtual void InterpolateCellVector(GlobalVector& uNew, const GlobalVector& uOld);
     virtual void RhsForProjection(GlobalVector& gf, const GlobalVector& u);
 

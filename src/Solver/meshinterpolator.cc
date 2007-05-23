@@ -377,7 +377,9 @@ void MeshInterpolator::InitInterpolationWeights(int dim)
 
 /**********************************************************/
 
-void MeshInterpolator::RefineAndInterpolate(HierarchicalMesh* Mesh, vector<pair<GlobalVector,int> >& u, const IntSet& refine, vector<vector<bool> >& done)
+void MeshInterpolator::RefineAndInterpolate(HierarchicalMesh* Mesh,
+    vector<pair<GlobalVector,int> >& u, const IntSet& refine,
+    vector<vector<bool> >& done)
 {
   IntVector coarse(0), childs(0);
   int oldcells = Mesh->ncells();
@@ -556,16 +558,7 @@ void MeshInterpolator::AddCellVectorNew(const GlobalVector& u)
 
 void MeshInterpolator::BasicInit(DiscretizationInterface* DI, MeshAgentInterface* MA, const string& name)
 {
-  // Klassenvariablen initialisieren
-  _BaseCells.clear();
-  _ToBeRef.clear();
-  _ToBeRefNew.clear();
-  _NewNodeNumber.clear();
-  _NewCellNumber.clear();
-  _VecInt.clear();
-  _VecOld.clear();
-  _VecNew.clear();
-  _average = false;
+  _name = name;
 
   // Original-Solver und -MeshAgent speichern
   MeshAgent *OMA = dynamic_cast<MeshAgent *>(MA);
@@ -580,7 +573,7 @@ void MeshInterpolator::BasicInit(DiscretizationInterface* DI, MeshAgentInterface
 
   GetMeshAgent()->GetShapes2d() = GetOriginalMeshAgent()->GetShapes2d();
   GetMeshAgent()->GetShapes3d() = GetOriginalMeshAgent()->GetShapes3d();
-  GetMeshAgent()->BasicInit(name+".gup",dim,0,0);
+  GetMeshAgent()->BasicInit(_name+".gup",dim,0,0);
     
   // neue Discretization anlegen
   const Q2* Q2DP = dynamic_cast<const Q2*>(GetOriginalDiscretization());
@@ -607,15 +600,101 @@ void MeshInterpolator::BasicInit(DiscretizationInterface* DI, MeshAgentInterface
     }
   }
   GetDiscretization()->BasicInit(NULL);
-  GetDiscretization()->ReInit(GetMeshAgent()->GetMesh(0));
   InitIndizes(dim);
   InitInterpolationWeights(dim);
+  ReInit();
+}
+
+/**********************************************************/
+
+void Gascoigne::MeshInterpolator::ReInit()
+{
+  // Klassenvariablen initialisieren
+  _BaseCells.clear();
+  _ToBeRef.clear();
+  _ToBeRefNew.clear();
+  _NewNodeNumber.clear();
+  _NewCellNumber.clear();
+  _VecInt.clear();
+  _VecOld.clear();
+  _VecNew.clear();
+  _average = false;
+
+  GetMeshAgent()->read_gup(_name);
+
+  GetDiscretization()->ReInit(GetMeshAgent()->GetMesh(0));
 
   // Pointer auf die HierarchicalMeshs holen
   _Old = GetOriginalMeshAgent()->GetHierarchicalMesh();
   _New = GetMeshAgent()->GetHierarchicalMesh();
   assert(_Old);
   assert(_New);
+}
+
+/**********************************************************/
+
+void Gascoigne::MeshInterpolator::RefineNodeVector(GlobalVector& uNew, const GlobalVector& uOld)
+{
+  const Q2* DI = dynamic_cast<const Q2*>(GetOriginalDiscretization());
+  if (DI)
+  {
+    AddVectorNew(uOld,2);
+  }
+  else
+  {
+    AddVectorNew(uOld,1);
+  }
+
+  vector<vector<bool> > doneOld(_VecOld.size(),vector<bool>(_Old->nnodes(),true)),doneNew(_VecNew.size(),vector<bool>(_New->nnodes(),true));
+  HierarchicalMesh* Mesh;
+  if (_Old->ncells()<_New->ncells())
+  {
+    cerr << "Only possible if new mesh is finer than old mesh" << endl;
+  }
+  Mesh = _Old;
+
+  for (int c=0; c<Mesh->ncells(); c++)
+  {
+    if (Mesh->level(c)==0)
+    {
+      _BaseCells.insert(c);
+    }
+  }
+
+  do
+  {
+    _NewNodeNumber.resize(_Old->nnodes(),-1);
+    _NewCellNumber.resize(_Old->ncells(),-1);
+    _ToBeRef.clear();
+    _ToBeRefNew.clear();
+    for (IntSet::const_iterator pbc = _BaseCells.begin(); pbc!=_BaseCells.end(); pbc++)
+    {
+      CheckCell(*pbc,*pbc);
+    }
+    if (!_ToBeRef.empty())
+    {
+      RefineAndInterpolate(_Old,_VecOld,_ToBeRef,doneOld);
+    }
+    if (!_ToBeRefNew.empty())
+    {
+      RefineAndInterpolate(_New,_VecNew,_ToBeRefNew,doneNew);
+    }
+  }
+  while (!_ToBeRef.empty() || !_ToBeRefNew.empty());
+
+  GetMeshAgent()->ClearCl2g();
+  GetMeshAgent()->global_refine(0);
+  GetDiscretization()->ReInit(GetMeshAgent()->GetMesh(0));
+
+  uNew.zero();
+  assert(_VecNew.size()==1);
+  for (int i=0; i<uNew.n(); i++)
+  {
+    uNew.equ_node(i,_NewNodeNumber[i],_VecNew[0].first);
+  }
+
+  _Old = NULL;
+  _New = NULL;
 }
 
 /**********************************************************/
