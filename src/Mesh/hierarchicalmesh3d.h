@@ -117,8 +117,6 @@ class HierarchicalMesh3d : public HierarchicalMesh
 			       const IntVector& vertexlevel) const;
   void recursive_childs(int q, IntVector& ref, int d) const;
 
-  const CurvedShapes<3>& GetCurvedShapes() const { return _curvedshapes;}
-  CurvedShapes<3>& GetCurvedShapes() { return _curvedshapes;}
 
   public:
 
@@ -140,6 +138,9 @@ class HierarchicalMesh3d : public HierarchicalMesh
 
   int  nodes_per_cell(int i)  const { return 8;}
   int  VtkType(int i) const { return 12;}
+
+  const CurvedShapes<3>& GetCurvedShapes() const { return _curvedshapes;}
+  CurvedShapes<3>& GetCurvedShapes() { return _curvedshapes;}
 
   const Vertex3d& vertex3d(int i)         const { return vertexs3d[i];}
 
