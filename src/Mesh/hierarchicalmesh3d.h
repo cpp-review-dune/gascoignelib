@@ -142,6 +142,9 @@ class HierarchicalMesh3d : public HierarchicalMesh
   const CurvedShapes<3>& GetCurvedShapes() const { return _curvedshapes;}
   CurvedShapes<3>& GetCurvedShapes() { return _curvedshapes;}
 
+  const VertexVec3d& GetVertexVector() const {return vertexs3d; }
+  VertexVec3d& GetVertexVector() {return vertexs3d; }
+
   const Vertex3d& vertex3d(int i)         const { return vertexs3d[i];}
 
   const Hex&   hex (int i)                const { return hexs[i];}
