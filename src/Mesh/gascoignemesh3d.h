@@ -28,6 +28,8 @@ public:
   int  dimension() const {return 3;}
   int  nnodes()    const {return nx.size();}
   int  ncells()    const {return nc.size()/8;}
+  int  nhanging()  const { return HangingHandler.GetStructure()->size()
+			     + HangingHandler.GetStructureFace()->size(); }
 
   int  nodes_per_cell(int i)  const { return 8;}
   int  VtkType(int i) const { return 12;}
