@@ -439,7 +439,7 @@ IluInterface* StdSolver::NewIlu(int ncomp, const string& matrixtype)
 
 void StdSolver::ReInitMatrix() 
 {
-  GetDiscretization()->InitFilter(_PF);
+  GetDiscretization()->InitFilter(GetPfilter());
   SparseStructure SA;
   GetDiscretization()->Structure(&SA);
   
@@ -658,31 +658,31 @@ void StdSolver::SetBoundaryVectorStrong(VectorInterface& gf, const BoundaryManag
 void StdSolver::smooth(int niter, VectorInterface& x, const VectorInterface& y, VectorInterface& h) const
 {
   _il.start();
-  double omega = _Dat.GetOmega();
+  double omega = GetSolverData().GetOmega();
   for(int iter=0; iter<niter; iter++)
     {
-      if (_Dat.GetLinearSmooth()=="ilu")
+      if (GetSolverData().GetLinearSmooth()=="ilu")
 	{
 	  MatrixResidual(h,x,y);
 	  GetIlu()->solve(GetGV(h));
 	  Add(x,omega,h);
 	}
-      else if (_Dat.GetLinearSmooth()=="jacobi")
+      else if (GetSolverData().GetLinearSmooth()=="jacobi")
 	{
 	  MatrixResidual(h,x,y);
 	  GetMatrix()->Jacobi(GetGV(h));
 	  Add(x,omega,h);
 	}
-      else if (_Dat.GetLinearSmooth()=="richardson")
+      else if (GetSolverData().GetLinearSmooth()=="richardson")
 	{
 	  MatrixResidual(h,x,y);
 	  Add(x,omega,h);
 	}
-      else if (_Dat.GetLinearSmooth()=="none")
+      else if (GetSolverData().GetLinearSmooth()=="none")
 	{}
       else
 	{
-	  cerr << "Smoother: " << _Dat.GetLinearSmooth() << " not valid!\n";
+	  cerr << "Smoother: " << GetSolverData().GetLinearSmooth() << " not valid!\n";
 	  abort();
 	}
       SubtractMean(x);
@@ -694,7 +694,7 @@ void StdSolver::smooth(int niter, VectorInterface& x, const VectorInterface& y, 
 
 void StdSolver::smooth_pre(VectorInterface& x, const VectorInterface& y, VectorInterface& help) const
 {
-  int niter = _Dat.GetIterPre();
+  int niter = GetSolverData().GetIterPre();
   smooth(niter,x,y,help);
 }
 
@@ -714,7 +714,7 @@ void StdSolver::smooth_exact(VectorInterface& x, const VectorInterface& y, Vecto
   else
 #endif
     {
-      int niter = _Dat.GetIterExact();
+      int niter = GetSolverData().GetIterExact();
       smooth(niter,x,y,help);
     }
 }
@@ -723,7 +723,7 @@ void StdSolver::smooth_exact(VectorInterface& x, const VectorInterface& y, Vecto
 
 void StdSolver::smooth_post(VectorInterface& x, const VectorInterface& y, VectorInterface& help) const
 {
-  int niter = _Dat.GetIterPost();
+  int niter = GetSolverData().GetIterPost();
   smooth(niter,x,y,help);
 }
 
@@ -1190,17 +1190,17 @@ void StdSolver::ComputeIlu(const VectorInterface& gu) const
 
 void StdSolver::modify_ilu(IluInterface& I,int ncomp) const 
 {
-  if(_Dat.GetIluModify().size()==0) return;
-  if( _Dat.GetIluModify().size()!=ncomp ) {
-    cerr << "ERROR: _Dat.GetIluModify().size()="<< _Dat.GetIluModify().size() << " and ";
+  if(GetSolverData().GetIluModify().size()==0) return;
+  if( GetSolverData().GetIluModify().size()!=ncomp ) {
+    cerr << "ERROR: GetSolverData().GetIluModify().size()="<< GetSolverData().GetIluModify().size() << " and ";
     cerr << "ncomp="<< ncomp << endl; 
     assert(0);
-    // assert(_Dat.GetIluModify().size()==ncomp);
+    // assert(GetSolverData().GetIluModify().size()==ncomp);
   }
 
   for(int c=0;c<ncomp;c++)
     {
-      double s = _Dat.GetIluModify(c);
+      double s = GetSolverData().GetIluModify(c);
       I.modify(c,s);
     }
 }
@@ -1219,24 +1219,24 @@ void StdSolver::PermutateIlu(const VectorInterface& gu) const
   //   {
   //     // don't do anything if we're on the lowest level and solving directly
   //   } else
-  if (_Dat.GetIluSort()=="cuthillmckee")
+  if (GetSolverData().GetIluSort()=="cuthillmckee")
     {
       CuthillMcKee    cmc(GetMatrix()->GetStencil());
       cmc.Permutate      (perm);
     }
-  else if (_Dat.GetIluSort()=="streamdirection")
+  else if (GetSolverData().GetIluSort()=="streamdirection")
     {
       const Equation*  EQ = GetProblemDescriptor()->GetEquation();
       assert(EQ);
       int ncomp = EQ->GetNcomp();
-      assert(_Dat.GetStreamDirection().size()<=ncomp);
+      assert(GetSolverData().GetStreamDirection().size()<=ncomp);
       StreamDirection sd (GetMesh(),GetMatrix()->GetStencil(),u);
-      sd.Permutate       (perm,_Dat.GetStreamDirection());
+      sd.Permutate       (perm,GetSolverData().GetStreamDirection());
     }
-  else if (_Dat.GetIluSort()=="vectordirection")
+  else if (GetSolverData().GetIluSort()=="vectordirection")
     {
       VecDirection vd (GetMesh());
-      vd.Permutate    (perm,_Dat.GetVectorDirection());
+      vd.Permutate    (perm,GetSolverData().GetVectorDirection());
     }
   GetIlu()->ConstructStructure(perm,*GetMatrix());
 }
@@ -1375,7 +1375,7 @@ void StdSolver::ConstructInterpolator(MgInterpolatorInterface* I, const MeshTran
 DoubleVector StdSolver::IntegrateSolutionVector(const VectorInterface& gu) const
 {
   HNAverage(gu);
-  DoubleVector dst = _PF.IntegrateVector(GetGV(gu));
+  DoubleVector dst = GetPfilter().IntegrateVector(GetGV(gu));
   HNZero(gu);
   return dst;
 }
@@ -1388,10 +1388,10 @@ void StdSolver::SubtractMean(VectorInterface& gx) const
   // In each nonlinear step: applied to Newton correction,
   // in each smoothing step
   //
-  if (_PF.Active())
+  if (GetPfilter().Active())
     {
       GetDiscretization()->HNZeroCheck(x);
-      _PF.SubtractMean(x);
+      GetPfilter().SubtractMean(x);
       HNZero(gx);
     }
 }
@@ -1403,10 +1403,10 @@ void StdSolver::SubtractMeanAlgebraic(VectorInterface& gx) const
   GlobalVector& x = GetGV(gx);
   
   // applies to residuals
-  if (_PF.Active())
+  if (GetPfilter().Active())
     {
       GetDiscretization()->HNZeroCheck(x);
-      _PF.SubtractMeanAlgebraic(x);
+      GetPfilter().SubtractMeanAlgebraic(x);
       HNZero(gx);
     }
 }

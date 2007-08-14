@@ -265,7 +265,7 @@ string StdTimeSolver::PrecondCGMass(GlobalVector& u, GlobalVector& f, const Time
   double FirstRes = Res;
   cout << "\t\tpcg " << iter << "\t" << sqrt(Res) << endl;
   
-  if (sqrt(Res)<_Dat.GetCgMassGlobalTol()) 
+  if (sqrt(Res)<GetSolverData().GetCgMassGlobalTol()) 
   {
     reached = true;
   }
@@ -274,7 +274,7 @@ string StdTimeSolver::PrecondCGMass(GlobalVector& u, GlobalVector& f, const Time
     reached = false;
   }
 
-  while(!reached && iter<_Dat.GetCgMassMaxIter())
+  while(!reached && iter<GetSolverData().GetCgMassMaxIter())
     {
       iter++;
       g.zero();
@@ -286,7 +286,7 @@ string StdTimeSolver::PrecondCGMass(GlobalVector& u, GlobalVector& f, const Time
 
       Res = r*r;
       cout << "\t\tpcg " << iter << "\t" << sqrt(Res) << endl;
-      if (Res < _Dat.GetCgMassTol() * _Dat.GetCgMassTol() * FirstRes || sqrt(Res)<_Dat.GetCgMassGlobalTol()) 
+      if (Res < GetSolverData().GetCgMassTol() * GetSolverData().GetCgMassTol() * FirstRes || sqrt(Res)<GetSolverData().GetCgMassGlobalTol()) 
       {
         reached = true;
       }
@@ -296,7 +296,7 @@ string StdTimeSolver::PrecondCGMass(GlobalVector& u, GlobalVector& f, const Time
 
   SM->JacobiVectorInv(u);
 
-  if(iter==_Dat.GetCgMassMaxIter())
+  if(iter==GetSolverData().GetCgMassMaxIter())
   {
     return "too many iterations";
   }

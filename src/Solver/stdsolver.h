@@ -95,6 +95,11 @@ class StdSolver : public virtual SolverInterface
   // 0. Zugriff
 
   const MeshInterface*& GetMeshPointer() {return _MP;}
+
+  SolverData& GetSolverData() { return _Dat; }
+  const SolverData& GetSolverData() const { return _Dat; }
+  PressureFilter& GetPfilter() { return _PF; }
+  const PressureFilter& GetPfilter() const { return _PF; }
   
   // 0.3 Matrizen
 
