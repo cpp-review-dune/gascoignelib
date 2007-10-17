@@ -747,4 +747,28 @@ void GalerkinIntegrator<DIM>::IntegrateBoundaryMassDiag(DoubleVector& F, const F
 
 template class GalerkinIntegrator<2>;
 template class GalerkinIntegrator<3>;
+
+/* ----------------------------------------- */
+
+template<int DIM>
+void GalerkinIntegrator<DIM>::RhsCurve(LocalVector& F, const FemInterface& FEM, Vertex2d& xr0, Vertex2d& xr1, double H, double ND0,double ND1, int ncomp, int comp) const
+{
+
+  F.ReInit(ncomp,FEM.n());
+  F.zero();
+  FEM.point(xr0);
+  for (int i=0; i<FEM.n(); i++)
+  {
+    FEM.init_test_functions(_NN,1.,i);
+    F(i,comp) += H*ND0*0.5*_NN.m();
+  }
+
+  FEM.point(xr1);
+  for (int i=0; i<FEM.n(); i++)
+  {
+    FEM.init_test_functions(_NN,1.,i);
+    F(i,comp) += H*ND1*0.5*_NN.m();
+  }
+}
+
 }

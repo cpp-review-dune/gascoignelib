@@ -21,6 +21,8 @@
 #include  "domainrighthandside.h"
 #include  "diracrighthandside.h"
 #include  "domainfunction.h"
+#include  "curve.h"
+
 
 namespace Gascoigne
 {
@@ -127,6 +129,10 @@ namespace Gascoigne
         std::cerr << "\"DiscretizationInterface::InterpolateSolution\" not written!" << std::endl;
         abort();
       }
+      virtual void InterpolateDirac(GlobalVector& u, const GlobalVector& uold)const {
+        std::cerr << "\"DiscretizationInterface::InterpolateDirac\" not written!" << std::endl;
+        abort();
+      }
       virtual void StrongDirichletMatrix(MatrixInterface& A, int col, const std::vector<int>& comp) const {
         std::cerr << "\"DiscretizationInterface::StrongDirichletmatrix\" not written!" << std::endl;
         abort();
@@ -221,6 +227,13 @@ namespace Gascoigne
 	std::cerr << "\"DiscretizationInterface::GetBoundaryMassDiag\" not written!" << std::endl;
         abort();
       }
+
+      virtual void RhsCurve(GlobalVector &F, const Curve &C,int comp,int N) const{
+        std::cerr << "\"DiscretizationInterface::RhsCurve\" not written!" << std::endl;
+        abort();
+      }
+
+
   };
 }
 

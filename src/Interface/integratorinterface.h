@@ -145,6 +145,13 @@ namespace Gascoigne
         std::cerr << "\"IntegratorInterface::IntegrateBoundaryMassDiag\" not written!" << std::endl;
         assert(0);
       }
+
+      virtual void RhsCurve(LocalVector& F, const FemInterface& FEM, Vertex2d& xr0, Vertex2d& xr1, double H, double ND0,double ND1, int ncomp, int comp)const {
+        std::cerr << "\"IntegratorInterface::RhsCurve\" not written!" << std::endl;
+        assert(0);
+      }
+
+
   };
 }
 

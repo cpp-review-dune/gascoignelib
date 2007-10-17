@@ -15,6 +15,7 @@
 #include  "meshtransferinterface.h"
 #include  "vectorinterface.h"
 #include  "paramfile.h"
+#include  "curve.h"
 
 
 /*---------------------------------------------------------*/
@@ -134,6 +135,13 @@ namespace Gascoigne
         std::cerr << "\"SolverInterface::L2Projection\" not written!" << std::endl;
         abort();
       }
+
+      virtual void RhsCurve(VectorInterface &f, const Curve &C,int comp,int N) const
+      {
+        std::cerr << "\"SolverInterface::RhsCurve\" not written!" << std::endl;
+        abort();
+      }
+
 
       //
       /// vector - residual (integration)

@@ -137,7 +137,26 @@ void Q12d::Interpolate(GlobalVector& u, const DomainInitialCondition& U) const
         }
     }
 }
+/* ----------------------------------------- */
 
+void Q12d::InterpolateDirac(GlobalVector& u, const GlobalVector& uold) const
+{
+  const IntVector& vo2n = *GetMesh()->Vertexo2n();
+
+  assert(vo2n.size()==uold.n());
+  assert(GetMesh()->nnodes()==u.n());
+  assert(u.ncomp()==uold.ncomp());
+
+  for(int i=0;i<vo2n.size();i++)
+    {
+      int in = vo2n[i];
+
+      if(in>=0) 
+        {
+          u.equ_node(in,1.,i,uold);
+        }
+    }
+}
 /* ----------------------------------------- */
 
 void Q12d::InterpolateSolutionByPatches(GlobalVector& u, const GlobalVector& uold) const
@@ -423,48 +442,58 @@ void Q12d::EEResidual(DoubleVector& eta, const GlobalVector& u, const Equation& 
 
 /* ----------------------------------------- */
 
-int Q12d::GetCellNumber(const Vertex2d& p0, Vertex2d& p) const
+int Q12d::GetCellNumber(const Vertex2d& p0, Vertex2d& p,int c0) const
 {
-  int iq;
-  
-  for(iq=0; iq<GetMesh()->ncells(); ++iq)
+  VertexTransformation(p0,p,c0);
+
+  if((p[0]>0.-1.e-12)&&(p[0]<1.+1.e-12)&&(p[1]>0.-1.e-12)&&(p[1]<1.+1.e-12))
   {
-    bool found = true;
-
-    for(int d=0; d<2; ++d)
-    {
-      double min=GetMesh()->vertex2d(GetMesh()->vertex_of_cell(iq,0))[d];
-      double max=min;
-      for(int j=1; j<4; ++j)
-      {
-        double x = GetMesh()->vertex2d(GetMesh()->vertex_of_cell(iq,j))[d];
-        
-        min = Gascoigne::min(min,x);
-        max = Gascoigne::max(max,x);
-      }
-      if((p0[d]<min)||(p0[d]>max)) 
-      {
-        found = false;
-        break;
-      }
-    }
-    if(!found) continue;
-    
-    VertexTransformation(p0,p,iq);
-    
-    for(int d=0; d<2; ++d)
-    {
-      if((p[d]<0.-1.e-12)||(p[d]>1.+1.e-12))
-      {
-        found = false;
-      }
-    }
-    if(found) break;
+    return c0;
   }
+  else
+  {
+    int iq;
+  
+    for(iq=0; iq<GetMesh()->ncells(); ++iq)
+    {
+      bool found = true;
+      
+      for(int d=0; d<2; ++d)
+      {
+	double min=GetMesh()->vertex2d(GetMesh()->vertex_of_cell(iq,0))[d];
+	double max=min;
+	for(int j=1; j<4; ++j)
+	{
+	  double x = GetMesh()->vertex2d(GetMesh()->vertex_of_cell(iq,j))[d];
+	  
+	  min = Gascoigne::min(min,x);
+	  max = Gascoigne::max(max,x);
+	}
+	if((p0[d]<min)||(p0[d]>max)) 
+        {
+	  found = false;
+	  break;
+	}
+      }
+      if(!found) continue;
+    
+      VertexTransformation(p0,p,iq);
+    
+      for(int d=0; d<2; ++d)
+      {
+	if((p[d]<0.-1.e-12)||(p[d]>1.+1.e-12))
+	{
+	  found = false;
+	}
+      }
+      if(found) break;
+    }
 
-  if(iq<GetMesh()->ncells()) return iq;
-  else                       return -1;
+    if(iq<GetMesh()->ncells()) return iq;
+    else                       return -1;
+  }
 }
+
 
 /* ----------------------------------------- */
 
@@ -496,6 +525,97 @@ void Q12d::VertexTransformation(const Vertex2d& p0, Vertex2d& p, int iq) const
     Tr.DTI().mult_ad(p,res);
   } 
 }
+
+/* ----------------------------------------- */
+
+void Q12d::RhsCurve(GlobalVector &F, const Curve &C,int comp,int N) const
+{
+  double h = 1./N;        //Schrittweite (im Parameterbereich der Kurve)
+  double t0=0.,t1;        //Zeitpunkte   (             "               )
+  Vertex2d x0= C(t0),x1;  // zu t0, t1 korrespondierende Punkte auf der Kurve
+//  cout << " x0 = " << x0 << endl;
+  Vertex2d xr0,xr1;       //Zu x0, x1 gehoerende Punkte in der Referenzzelle
+  int c0 = GetCellNumber(x0,xr0), c1;  //Nummern derjenigen Zellen, in denen x0, x1 liegen
+//GetCellNumber -> bestimmt die Zelle, in der Punkt x0 liegt, und den korrespondierenden Punkt in der Referenzzelle xr0.
+
+//  cout << " c0 = " << c0 << endl;
+
+  for (int i=0;i<N;++i)
+  {
+    t1 = h*(i+1);
+    x1 = C(t1);
+    c1 = GetCellNumber(x1,xr1,c0);
+    VertexTransformation(x1,xr1,c0);
+
+    if (c1!=c0)
+    {
+      x1 = randpunkt(C,t0,t1,c1);
+      --i;
+      VertexTransformation(x1,xr1,c0);
+    }
+    cout.precision(16);
+
+    nmatrix<double> T;
+    Transformation(T,c0);
+    GetFem()->ReInit(T);
+
+    GetIntegrator()->RhsCurve(__F,*GetFem(),xr0,xr1,fabs(t1-t0),C.NormD(t0),C.NormD(t1),C.GetNcomp(),comp);
+    BasicDiscretization::LocalToGlobal(F,__F,c0,1.);
+
+    c0=c1;
+    x0=x1;
+    VertexTransformation(x0,xr0,c0);
+    t0=t1;
+  }
+}
+
+/* ----------------------------------------- */
+
+Vertex2d Q12d::randpunkt(const Curve& C, double t0,double& t1,int& cc) const
+{
+  Vertex2d xr0,xr1,x_rand,abstand;
+  int c0,c1,c_rand;
+
+  Vertex2d x0 = C(t0);
+  Vertex2d x1 = C(t1);
+
+  c0 = GetCellNumber(x0,xr0);
+
+  c1 = GetCellNumber(x1,xr1,c0);
+  VertexTransformation(x1,xr1,c0);
+
+  double norm;
+
+  int niter = 0;
+  do
+    {
+      double t = 0.5*(t0+t1);
+      x1 = C(t);
+      c_rand = GetCellNumber(x1,x_rand,c1);
+      VertexTransformation(x1,x_rand,c0);
+      if (c0==c_rand)
+        {
+          xr0 = x_rand;
+          t0  = t;
+        }
+      else
+        {
+          xr1 = x_rand;
+          t1 = t;
+        }
+
+
+      abstand = xr0;
+      abstand -= xr1;
+      norm = abstand.norm_l8();
+      niter++;
+      if(niter>56) abort();
+    } while (fabs(norm)>1.e-12);
+
+  cc = c_rand; 
+  return C(t1);
+}
+
 
 /* ----------------------------------------- */
 

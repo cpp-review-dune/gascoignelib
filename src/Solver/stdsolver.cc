@@ -1476,4 +1476,15 @@ void StdSolver::AssembleDualMatrix(const VectorInterface& gu, double d)
   _ca.stop();
 }
 
+/*---------------------------------------------------*/
+
+void StdSolver::RhsCurve(VectorInterface &f, const Curve &C,int comp,int N) const
+{
+  HNAverageData();
+
+  GetDiscretization()->RhsCurve(GetGV(f),C,comp,N);
+
+  HNZeroData();
+  HNDistribute(f);
+}
 }

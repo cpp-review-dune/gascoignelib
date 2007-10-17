@@ -16,6 +16,7 @@
 #include  "facediscretization.h"
 #include  "gascoignevisualization.h"
 
+
 /*-----------------------------------------*/
 
 namespace Gascoigne
@@ -331,6 +332,8 @@ class StdSolver : public virtual SolverInterface
   void   Add(VectorInterface& dst, double s, const VectorInterface& src) const;
   void   SAdd(double s1, VectorInterface& dst, double s2, const VectorInterface& src) const;
   double Norm(const VectorInterface& dst) const;  
+
+  void RhsCurve(VectorInterface &f, const Curve &C,int comp,int N) const;
 };
 }
 
