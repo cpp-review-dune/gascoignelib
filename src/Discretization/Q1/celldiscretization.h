@@ -34,8 +34,8 @@ protected:
   double ComputePointValue(const GlobalVector& u, const Vertex2d& p0,int comp) const;
   double ComputePointValue(const GlobalVector& u, const Vertex3d& p0,int comp) const; 
 
-  virtual int GetCellNumber(const Vertex2d& p0, Vertex2d& p) const { assert(0); }
-  virtual int GetCellNumber(const Vertex3d& p0, Vertex3d& p) const { assert(0); }
+  virtual int GetCellNumber(const Vertex2d& p0, Vertex2d& p, int c0=0) const { assert(0); }
+  virtual int GetCellNumber(const Vertex3d& p0, Vertex3d& p, int c0=0) const { assert(0); }
 
   /////
 
