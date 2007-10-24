@@ -753,6 +753,7 @@ void GalerkinIntegrator<DIM>::RhsCurve(LocalVector& F, const FemInterface& FEM,
   if(DIM==3)
   {
     cerr << "GalerkinIntegrator<3>::RhsCurve not implemented yet!" << endl;
+    abort();
   }
 
   F.ReInit(ncomp,FEM.n());
