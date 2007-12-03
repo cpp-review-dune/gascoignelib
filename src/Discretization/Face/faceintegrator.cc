@@ -171,7 +171,7 @@ namespace Gascoigne
 	assert(fabs(x1[1]-x2[1])<1.e-8);
 	FEM1.normal(n);
 
-	EQ.point_face(h1,_U1,_U2,x1,n);
+	EQ.pointmatrix_face(h1,_U1,_U2,x1,n);
 
 	double sw = sqrt(weight);
 
