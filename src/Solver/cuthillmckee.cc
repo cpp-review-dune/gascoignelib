@@ -15,10 +15,13 @@ extern "C" void METIS_NodeND
 
 CuthillMcKee::CuthillMcKee (const StencilInterface *s)
 {
-  S=dynamic_cast<const ColumnStencil*>(s);
-  assert(S);
-//   M=m;
-//   dimension=0;
+    S =0;
+    DS=0;CS=0;
+    CS=dynamic_cast<const ColumnStencil*>(s);
+    DS=dynamic_cast<const DynamicStencil*>(s);
+    S = s;
+    assert(CS||DS);
+    assert(S);
 }
 
 /* --------------------------------------------------------------- */
@@ -26,7 +29,7 @@ CuthillMcKee::CuthillMcKee (const StencilInterface *s)
 CuthillMcKee::CuthillMcKee ()
 {
 //   M=0; 
-  S=0;
+    DS=0; CS=0;
 //   dimension=0;
 }
 
@@ -69,17 +72,33 @@ void CuthillMcKee::Permutate (IntVector &perm)
   int count=0;
   int c;
   adj[0]=0;
-  for (int r=0;r<n;++r)
-    {
-      for (int p=S->start(r); p<S->stop(r);++p)
-        {
-          c = S->col(p);
-          if (r==c) continue;
-          ++count;
-          adjncy.push_back(c);
-        }
-      adj[r+1]=count;
-    }
+  if (CS)
+      for (int r=0;r<n;++r)
+      {
+	  for (int p=CS->start(r); p<CS->stop(r);++p)
+	  {
+	      c = CS->col(p);
+	      if (r==c) continue;
+	      ++count;
+	      adjncy.push_back(c);
+	  }
+	  adj[r+1]=count;
+      }
+  else if (DS)
+      for (int r=0;r<n;++r)
+      {
+	  for (list<int>::const_iterator it = DS->cstart(r);it!=DS->cstop(r);++it)
+	  {
+	      c = *it;
+	      if (r==c) continue;
+	      ++count;
+	      adjncy.push_back(c);
+	  }
+	  adj[r+1]=count;
+      }
+  else assert(0);
+
+  
   int numflag = 0;
   int options[8];
   options[0]=1;
@@ -168,3 +187,5 @@ void CuthillMcKee::Permutate (IntVector &perm)
 //   return 0;
 // }
 }
+
+

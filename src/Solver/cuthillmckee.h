@@ -2,6 +2,7 @@
 #define __cuthillmckee_h
 
 #include "columnstencil.h"
+#include "dynamicstencil.h"
 
 
 /* CuthillMcKee
@@ -26,7 +27,9 @@ namespace Gascoigne
 {
 class CuthillMcKee 
 {
-    const ColumnStencil* S;
+    const StencilInterface* S;
+    const ColumnStencil*    CS;
+    const DynamicStencil*   DS;
     
 //     Vertex2d dir2d;
 //     Vertex3d dir3d;

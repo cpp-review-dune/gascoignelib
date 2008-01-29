@@ -7,6 +7,9 @@
 #include  "pointmatrix.h"
 #include  "pointilu.h"
 
+#include  "dynamicblockmatrix.h"
+#include  "dynamicblockilu.h"
+
 #include  "sparseblockilu.h"
 #include  "fmatrixblock.h"
 #include  "cfdblock3d.h"
@@ -371,6 +374,19 @@ MatrixInterface* StdSolver::NewMatrix(int ncomp, const string& matrixtype)
       abort();
     }
   }
+  else if (matrixtype=="dynamic")
+  {
+    if      (ncomp==1)  return new DynamicBlockMatrix<FMatrixBlock<1> >;
+    else if (ncomp==2)  return new DynamicBlockMatrix<FMatrixBlock<2> >;
+    else if (ncomp==3)  return new DynamicBlockMatrix<FMatrixBlock<3> >;
+    else if (ncomp==4)  return new DynamicBlockMatrix<FMatrixBlock<4> >;
+    else
+
+    {
+      cerr << "No SparseBlockMatrix for " << ncomp << "components." << endl;
+      abort();
+    }
+  }
   else if (matrixtype=="component")
   {
     return new PointMatrix(ncomp,"component");
@@ -420,7 +436,19 @@ IluInterface* StdSolver::NewIlu(int ncomp, const string& matrixtype)
         abort();
       }
   }
-  else if (matrixtype=="component") 
+  else if (matrixtype=="dynamic")
+   {
+    if      (ncomp==1)  return new DynamicBlockIlu<FMatrixBlock<1> >;
+    else if (ncomp==2)  return new DynamicBlockIlu<FMatrixBlock<2> >;
+    else if (ncomp==3)  return new DynamicBlockIlu<FMatrixBlock<3> >;
+    else if (ncomp==4)  return new DynamicBlockIlu<FMatrixBlock<4> >;
+    else
+      {
+        cerr << "No DynamicBlockIlu for " << ncomp << "components." << endl;
+        abort();
+      }
+  }
+ else if (matrixtype=="component") 
   {
     return new PointIlu(ncomp,"component");
   }
