@@ -2,7 +2,7 @@
 #define  __GalerkinGlsIntegratorQ2_h
 
 
-#include  "galerkinintegrator.h"
+#include  "galerkinintegratorq2.h"
 #include  "glsintegratorq2.h"
 
 namespace Gascoigne
@@ -18,7 +18,7 @@ namespace Gascoigne
 /////////////////////////////////////////////
 
 template<int DIM>
-class GalerkinGlsIntegratorQ2 : public GalerkinIntegrator<DIM>
+class GalerkinGlsIntegratorQ2 : public GalerkinIntegratorQ2<DIM>
 {
 protected:
 
@@ -31,7 +31,7 @@ public:
 ////  Con(De)structor 
 //
 
-  GalerkinGlsIntegratorQ2<DIM>() : GalerkinIntegrator<DIM>() {}
+  GalerkinGlsIntegratorQ2<DIM>() : GalerkinIntegratorQ2<DIM>() {}
   ~GalerkinGlsIntegratorQ2<DIM>() {}
 
   std::string GetName() const {return "GalerkinGlsIntegratorQ2";}
