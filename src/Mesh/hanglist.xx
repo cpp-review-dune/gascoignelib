@@ -26,7 +26,9 @@ template<int N>
 void HangList<N>::move(HangList<N>& src, iterator& p)
 {
   insert(std::make_pair(p->first,p->second));
-  src.erase(p->first);
+
+  typename HangList<N>::iterator it = src.find(p->first);
+  src.erase (it);
 }
 
 /*********************************************************************/
