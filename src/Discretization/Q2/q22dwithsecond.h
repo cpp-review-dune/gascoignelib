@@ -18,6 +18,8 @@ class Q22dWithSecond : public virtual Q22d
     std::string GetName() const {return "Q22dWithSecond";}
     
     void BasicInit(const ParamFile* paramfile);
+
+    double EstimateSecond(DoubleVector& eta, const GlobalVector& u, double d=1.) const;
 };
 
 /**********************************************************/

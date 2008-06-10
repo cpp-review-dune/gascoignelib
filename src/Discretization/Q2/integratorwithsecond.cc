@@ -187,6 +187,58 @@ void IntegratorWithSecond<DIM>::Rhs(const DomainRightHandSide& f, LocalVector& F
     }
 }
 
+template<int DIM>
+void Gascoigne::IntegratorWithSecond<DIM>::
+EstimateSecond(LocalVector& F, const FemInterface& FEM, const LocalVector& U) const
+{
+  F.ReInit(U.ncomp(),1);
+
+  const IntegrationFormulaInterface& IF = *GalerkinIntegratorQ2<DIM>::FormFormula();
+
+  F.zero();
+  Vertex<DIM> xi;
+
+  for (int k=0; k<IF.n(); k++)
+  {
+    IF.xi(xi,k);
+    FEM.point(xi);
+    point_hesse(FEM,xi);
+    double vol = FEM.J();
+    double weight  = IF.w(k) * vol;
+
+    this->_UH.resize(U.ncomp());
+
+    for (int c=0; c<this->_UH.size(); c++)  
+    {
+      this->_UH[c].zero();
+      this->_UH[c].aux("xx")=0.;
+      this->_UH[c].aux("xy")=0.;
+      this->_UH[c].aux("yy")=0.;
+    }
+
+
+    for (int i=0;i<FEM.n();i++)
+    {
+      FEM.init_test_functions(GalerkinIntegratorQ2<DIM>::_NN,1.,i);
+      init_test_hesse(FEM, GalerkinIntegratorQ2<DIM>::_NN,1., i);
+      for (int c=0; c<this->_UH.size(); c++)
+      {
+        this->_UH[c].add(U(i,c),this->_NN);
+        this->_UH[c].aux("xx") += U(i,c) * this->_NN.aux("xx");
+        this->_UH[c].aux("xy") += U(i,c) * this->_NN.aux("xy");
+        this->_UH[c].aux("yy") += U(i,c) * this->_NN.aux("yy");
+      }
+    }
+
+    for (int c=0; c<this->_UH.size(); c++)
+    {
+      F(0,c) += vol*weight*(this->_UH[c].aux("xx")*this->_UH[c].aux("xx")
+          +2*this->_UH[c].aux("xy")*this->_UH[c].aux("xy")
+          +this->_UH[c].aux("yy")*this->_UH[c].aux("yy"));
+    }
+  }
+}
+
 /* ----------------------------------------- */
 
 template class IntegratorWithSecond<2>;

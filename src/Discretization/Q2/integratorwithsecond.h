@@ -39,6 +39,8 @@ class IntegratorWithSecond : public GalerkinIntegratorQ2<DIM>
   void Rhs(const DomainRightHandSide& RHS, LocalVector& F, const FemInterface& FEM, 
       const LocalData& Q, const LocalData& QC) const;
 
+  void EstimateSecond(LocalVector& F, const FemInterface& FEM, const LocalVector& U) const;
+
 };
 }
 

@@ -8,6 +8,7 @@
 #include  "meshagent.h"
 #include  "stdsolver.h"
 #include  "energyestimator.h"
+#include  "q22dwithsecond.h"
 
 
 using namespace std;
@@ -155,7 +156,35 @@ double StdLoop::Estimator(DoubleVector& eta, VectorInterface& u, VectorInterface
       est = E.Estimator(eta,u,f);
       EtaVisu(_s_resultsdir+"/eta",_iter,eta);
     }
-  else 
+  else if(_estimator=="second")
+    {
+      int dim = GetMeshAgent()->GetMesh(0)->dimension();
+
+      if(dim==2)
+        {
+        DiscretizationInterface *DIL;
+        DIL = GetMultiLevelSolver()->GetSolver()->GetDiscretization();
+
+        Q22dWithSecond DIH;
+        DIH.BasicInit(_paramfile);
+
+        GetMultiLevelSolver()->GetSolver()->SetDiscretization(DIH,true);
+        GetMultiLevelSolver()->GetSolver()->HNAverage(u);
+
+        eta.resize(GetMeshAgent()->nnodes());
+        eta.zero();
+        DIH.EstimateSecond(eta,GetMultiLevelSolver()->GetSolver()->GetGV(u));
+        GetMultiLevelSolver()->GetSolver()->HNZero(u);
+
+        GetMultiLevelSolver()->GetSolver()->SetDiscretization(*DIL);
+        }
+      else
+        {
+          cout << "Estimator \"second\" not written for 3D!" << endl;
+          assert(0);
+        }
+    }
+  else
     {
       cout << "Estimator type '" << _estimator << "' unknown. Use either energy_laplace or energy_stokes\n"; 
       assert(0);
