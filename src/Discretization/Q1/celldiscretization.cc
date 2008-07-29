@@ -681,18 +681,70 @@ void CellDiscretization::EvaluateBoundaryCellRightHandSide(GlobalVector& f,const
       const IntVector& q = *GetMesh()->CellOnBoundary(col);
       const IntVector& l = *GetMesh()->LocalOnBoundary(col);
       for (int i=0; i<q.size(); i++)
-	{
-	  int iq  = q[i];
-	  int ile = l[i];
+        {
+          int iq  = q[i];
+          int ile = l[i];
 
-	  Transformation(T,iq);
-	  GetFem()->ReInit(T);
+          Transformation(T,iq);
+          GetFem()->ReInit(T);
 
-	  GlobalToLocalData(iq);
-	  GetIntegrator()->EvaluateBoundaryCellRightHandSide(__F,CF,*GetFem(),ile,col,__QN,__QC);
-	  
-	  f.add_node(iq,d,0,__F);
-	}
+          GlobalToLocalData(iq);
+          GetIntegrator()->EvaluateBoundaryCellRightHandSide(__F,CF,*GetFem(),ile,col,__QN,__QC);
+
+          f.add_node(iq,d,0,__F);
+        }
+    }
+}
+
+/* ----------------------------------------- */
+
+void CellDiscretization::EvaluateParameterRightHandSide(GlobalVector& f, const DomainRightHandSide& CF, double d) const
+{
+  nmatrix<double> T;
+
+  GlobalToGlobalData();
+  CF.SetParameterData(__QP);
+
+  for(int iq=0;iq<GetMesh()->ncells();++iq)
+    {
+      Transformation(T,iq);
+      GetFem()->ReInit(T);
+
+      GlobalToLocalData(iq);
+      GetIntegrator()->EvaluateCellRightHandSide(__F,CF,*GetFem(),__QN,__QC);
+
+      f.add(d,__F);
+    }
+}
+
+/* ----------------------------------------- */ 
+  
+void Gascoigne::CellDiscretization::EvaluateBoundaryParameterRightHandSide(GlobalVector& f,const IntSet& Colors,
+    const BoundaryRightHandSide& CF, double d) const
+{
+  nmatrix<double> T;
+  
+  GlobalToGlobalData();
+  CF.SetParameterData(__QP);
+  
+  for(IntSet::const_iterator p=Colors.begin();p!=Colors.end();p++)
+    {
+      int col = *p;
+      const IntVector& q = *GetMesh()->CellOnBoundary(col);
+      const IntVector& l = *GetMesh()->LocalOnBoundary(col);
+      for (int i=0; i<q.size(); i++)
+        {
+          int iq  = q[i];
+          int ile = l[i];
+
+          Transformation(T,iq);
+          GetFem()->ReInit(T);
+
+          GlobalToLocalData(iq);
+          GetIntegrator()->EvaluateBoundaryCellRightHandSide(__F,CF,*GetFem(),ile,col,__QN,__QC);
+
+          f.add(d,__F);
+        }
     }
 }
 

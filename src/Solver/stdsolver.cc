@@ -529,6 +529,10 @@ void StdSolver::ReInitVector(VectorInterface& dst, int comp)
     {
       p->second->reservesize(nc);
     }
+  else if(p->first.GetType()=="parameter")
+    {
+      p->second->reservesize(1);
+    }
   else
   {
     cerr << "No such vector type: " << p->first.GetType() << endl;
@@ -1013,12 +1017,38 @@ void StdSolver::EvaluateCellRightHandSide(VectorInterface& f, const DomainRightH
 
 /*-------------------------------------------------------*/
 
-void StdSolver::EvaluateBoundaryCellRightHandSide(VectorInterface& f, const BoundaryRightHandSide& CF,const BoundaryManager& BM, double d) const
+void StdSolver::EvaluateBoundaryCellRightHandSide(VectorInterface& f, const BoundaryRightHandSide& CF,
+    const BoundaryManager& BM, double d) const
 {
   assert(f.GetType()=="cell");
   HNAverageData();
   
   GetDiscretization()->EvaluateBoundaryCellRightHandSide(GetGV(f),BM.GetBoundaryRightHandSideColors(),CF,d);
+
+  HNZeroData();
+}
+
+/*-------------------------------------------------------*/
+
+void StdSolver::EvaluateParameterRightHandSide(VectorInterface& f, const DomainRightHandSide& CF, double d) const
+{
+  assert(f.GetType()=="parameter");
+  HNAverageData();
+  
+  GetDiscretization()->EvaluateParameterRightHandSide(GetGV(f),CF,d);
+
+  HNZeroData();
+}
+
+/*-------------------------------------------------------*/
+
+void StdSolver::EvaluateBoundaryParameterRightHandSide(VectorInterface& f, const BoundaryRightHandSide& CF,
+    const BoundaryManager& BM, double d) const
+{
+  assert(f.GetType()=="parameter");
+  HNAverageData();
+  
+  GetDiscretization()->EvaluateBoundaryParameterRightHandSide(GetGV(f),BM.GetBoundaryRightHandSideColors(),CF,d);
 
   HNZeroData();
 }

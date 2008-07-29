@@ -193,6 +193,16 @@ namespace Gascoigne
         abort();
       }
       
+      virtual void EvaluateParameterRightHandSide(GlobalVector& f, const DomainRightHandSide& CF, double d = 1.) const{
+        std::cerr << "\"DiscretizationInterface::EvaluateParameterRighthandside\" not written!" << std::endl;
+        abort();
+      }
+
+      virtual void EvaluateBoundaryParameterRightHandSide(GlobalVector& f,const IntSet& Colors, const BoundaryRightHandSide& CF, double d = 1.) const{
+        std::cerr << "\"DiscretizationInterface::EvaluateBoundaryParameterRighthandside\" not written!" << std::endl;
+        abort();
+      }
+      
       virtual void InterpolateDomainFunction(GlobalVector& f, const DomainFunction& DF) const{
         std::cerr << "\"DiscretizationInterface::InterpolateDomainFunction\" not written!" << std::endl;
         abort();

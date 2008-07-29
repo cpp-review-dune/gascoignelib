@@ -584,4 +584,55 @@ double PatchDiscretization::ComputePointValue(const GlobalVector& u, const Verte
   return GetIntegrator()->ComputePointValue(*GetFem(),Tranfo_p0,__U,comp);
 }
 
+/* ----------------------------------------- */
+
+void Gascoigne::PatchDiscretization::EvaluateParameterRightHandSide(GlobalVector& f, const DomainRightHandSide& CF, double d) const
+{
+  nmatrix<double> T;
+
+  GlobalToGlobalData();
+  CF.SetParameterData(__QP);
+
+  for(int iq=0;iq<GetPatchMesh()->npatches();++iq)
+    {
+      Transformation(T,iq);
+      GetFem()->ReInit(T);
+
+      GlobalToLocalData(iq);
+      GetIntegrator()->EvaluateCellRightHandSide(__F,CF,*GetFem(),__QN,__QC);
+
+      f.add(d,__F);
+    }
+}
+
+/* ----------------------------------------- */
+
+void Gascoigne::PatchDiscretization::EvaluateBoundaryParameterRightHandSide(GlobalVector& f,const IntSet& Colors, const BoundaryRightHandSide& CF, double d) const
+{
+  nmatrix<double> T;
+  
+  GlobalToGlobalData();
+  CF.SetParameterData(__QP);
+  
+  for(IntSet::const_iterator p=Colors.begin();p!=Colors.end();p++)
+    {
+      int col = *p;
+      const IntVector& q = *GetMesh()->PatchOnBoundary(col);
+      const IntVector& l = *GetMesh()->LocalPatchOnBoundary(col);
+      for (int i=0; i<q.size(); i++)
+        {
+          int iq  = q[i];
+          int ile = l[i];
+
+          Transformation(T,iq);
+          GetFem()->ReInit(T);
+
+          GlobalToLocalData(iq);
+          GetIntegrator()->EvaluateBoundaryCellRightHandSide(__F,CF,*GetFem(),ile,col,__QN,__QC);
+
+          f.add(d,__F);
+        }
+    }
+}
+
 }

@@ -27,7 +27,7 @@ namespace Gascoigne
     public:
       VectorInterface(const std::string& name) : std::string(name), _type("node")  { }
       VectorInterface(const std::string& name, const std::string& type) : std::string(name) {
-        assert(type=="node" || type=="cell");
+        assert(type=="node" || type=="cell" || type=="parameter");
         GetType()=type;
       }
       VectorInterface(const VectorInterface& v) {
@@ -40,7 +40,10 @@ namespace Gascoigne
       std::string& GetName() { return *this; }
       const std::string& GetName() const { return *this; }
 
-      void SetType(const std::string& type) { GetType()=type; }
+      void SetType(const std::string& type) {
+        assert(type=="node" || type=="cell" || type=="parameter");
+        GetType()=type;
+      }
       std::string& GetType() { return _type; }
       const std::string& GetType() const { return _type; }
 

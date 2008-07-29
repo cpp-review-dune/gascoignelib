@@ -91,6 +91,9 @@ public:
   double ComputeDomainFunctional(const GlobalVector& u, const DomainFunctional& F) const;
   double ComputePointFunctional(const GlobalVector& u, const PointFunctional& FP) const;
 
+  void EvaluateParameterRightHandSide(GlobalVector& f, const DomainRightHandSide& CF, double d) const;
+  void EvaluateBoundaryParameterRightHandSide(GlobalVector& f,const IntSet& Colors, const BoundaryRightHandSide& CF, double d) const;
+
   virtual nmatrix<double> GetLocalInterpolationWeights(int iq) const { assert(0);}
 
 };

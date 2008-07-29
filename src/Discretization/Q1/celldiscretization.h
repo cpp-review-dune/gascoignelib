@@ -90,6 +90,8 @@ public:
 
   void EvaluateCellRightHandSide(GlobalVector& f, const DomainRightHandSide& CF, double d) const;
   void EvaluateBoundaryCellRightHandSide(GlobalVector& f,const IntSet& Colors, const BoundaryRightHandSide& CF, double d) const;
+  void EvaluateParameterRightHandSide(GlobalVector& f, const DomainRightHandSide& CF, double d) const;
+  void EvaluateBoundaryParameterRightHandSide(GlobalVector& f,const IntSet& Colors, const BoundaryRightHandSide& CF, double d) const;
 
   void InterpolateDomainFunction(GlobalVector& f, const DomainFunction& DF) const;
   void InterpolateCellDomainFunction(GlobalVector& f, const DomainFunction& DF) const;
