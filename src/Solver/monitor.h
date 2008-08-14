@@ -9,6 +9,7 @@
 #include  "paramfile.h"
 #include  "gascoigne.h"
 #include  <string>
+#include  <sstream>
 
 
 /*******************************************************************/
@@ -45,7 +46,9 @@ class Monitor
  public:
 
   int     control;
-  char    message[400];
+  //  char    message[400];
+  std::stringstream new_message;
+  
 
   Monitor();
 
