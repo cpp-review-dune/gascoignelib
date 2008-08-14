@@ -111,7 +111,6 @@ void Monitor::set_directory(const string& dir)
 //  nfile.close();
   
   
-  //strcpy(message,"");
   new_message.str("");
   
 
@@ -181,13 +180,11 @@ void Monitor::print_message()
 //    error_io(protokoll);
 //  }
 
-  //if (control) cout << message << endl;
   if (control) cout << new_message.str() << endl;
 
   //  pfile << message << endl;
 
-//  strcpy(message,"");
-  new_message.str("");
+  new_message.str(""); 
 
 //  pfile.close();
 }
@@ -200,7 +197,6 @@ void Monitor::failed_step()
 
 
   new_message << " repeat";
-  //  sprintf(message,"%s repeat",message);
   print_message();
 }
   
@@ -209,7 +205,6 @@ void Monitor::failed_step()
 void Monitor::mesh(int nc, int nl)
 {
   new_message << " (N=" << nc << "[" << nl << "])";
-  //  sprintf(message,"%s (N=%5d[%2d])", message, nc, nl);
   print_message();
 }
 
@@ -218,7 +213,7 @@ void Monitor::mesh(int nc, int nl)
 void Monitor::post_nonlinear(const DoubleVector& Ju, double eta, int ncells,
 			     int cg, int dcg)
 {
-  new_message.str("");
+  new_message.str(""); 
   new_message << "cg dnl: " << cg << " " << dcg 
 	      << " [J(u)=" << Ju[0] << " eta=" << eta << "]";  
 //   sprintf (message,"cg dnl: %d %d",cg,dcg);
@@ -235,7 +230,8 @@ void Monitor::pre_nonlinear(int i)
   new_message.str("----------------------------------------");
   print_message();
   new_message.str("");
-  new_message << aos.c_str() << "-" << bos.c_str() << ": " << i;
+  new_message << aos.c_str() << "-" << bos.c_str() << ": ";
+  new_message.width(4); new_message << i;
 
   //  sprintf(message,"%s-%s: %4d",aos.c_str(),bos.c_str(),i);
 }
@@ -249,15 +245,14 @@ void Monitor::matrix_info(int i)
   if(!i)
     {
       for(int j=0; j<ps; j++) 
-	//sprintf(message,"%s ",message);
 	new_message << " ";
     }
   else
     {
       if (_newmatrix) 
-	new_message << "M";//sprintf(message,"%sM",message);
+	new_message << "M";
       else            
-	new_message << " ";//sprintf(message,"%s ",message);
+	new_message << " ";
     }
 }
 
@@ -274,13 +269,16 @@ void Monitor::nonlinear_step(const CGInfo& cginfo, const NLInfo& nlinfo)
   int  iter = cginfo.control().iteration(); 
 
   double r = nlinfo.control().residual();
-  //  sprintf(message,"%s%3d: %8.2e",message,i,r);
-  new_message << i << ": " << r;
+  new_message.width(3);
+  new_message << i << ": ";
+  new_message.unsetf(ios::fixed);
+  new_message.setf(ios::scientific); new_message.precision(2); 
+  new_message << r;
+
   if (i && (control>1))
     {
       double c = nlinfo.control().correction();
       new_message << " " << c ;
-      //      sprintf(message,"%s %8.2e",message,c);
     }
   if (i)
     {
@@ -289,15 +287,17 @@ void Monitor::nonlinear_step(const CGInfo& cginfo, const NLInfo& nlinfo)
       int    p  = nlinfo.control().relax();
       
       //sprintf(message,"%s [%4.2f %4.2f]",message,lr,rr);
-      new_message << " [" << lr << " " << rr << "]";
+      new_message << " [";
+      new_message.unsetf(ios::scientific);
+      new_message.setf(ios::fixed);
+      new_message.width(3);
+      new_message << lr << " " << rr << "]";
       if (p)
 	{
-	  //	  sprintf(message,"%s %1d",message,p);
 	  new_message << " " << p;
 	}
       else
 	{
-	  //	  sprintf(message,"%s  ",message);
 	  new_message << "  ";
 	}
       
@@ -305,24 +305,26 @@ void Monitor::nonlinear_step(const CGInfo& cginfo, const NLInfo& nlinfo)
       lr = cginfo.control().residual();
       double lc = cginfo.control().correction();
       
-      //sprintf(message,"%s - %8.2e",message,lr);
-      new_message << " - " << lr;
+      new_message << " - ";
+      new_message.setf(ios::scientific);
+      new_message.unsetf(ios::fixed);
+      new_message.width(4);
+      new_message << lr;
+
+      new_message.unsetf(ios::scientific);
+      new_message.setf(ios::fixed);
+      new_message.precision(3);	  
       if (control>1)
 	{
-	  //	  sprintf(message,"%s %8.2e",message,lc);
 	  new_message << " " << lc; 
 	}
-      //sprintf(message,"%s [%5.3f] {%2d",message,rr,iter);
       new_message << " [" << rr << "] {" << iter;
       if (cginfo.control().status()=="running") 
-	//sprintf(message,"%s*",message);
 	new_message << "*";
-      //sprintf(message,"%s}",message);
       new_message << "}";
     }
   if (cginfo.control().status()=="diverged")
     {
-      //sprintf(message,"%s @",message);
       new_message," @";
     }
   print_message();
