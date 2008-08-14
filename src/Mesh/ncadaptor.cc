@@ -2,7 +2,7 @@
 #include  "compareclass.h"
 #include  "giota.h"
 #include  "filescanner.h"
-#include  <climits>
+#include  <limits>
 
 
 using namespace std;

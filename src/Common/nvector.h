@@ -8,6 +8,7 @@
 #include  <climits>
 #include  <numeric>
 #include  <cassert>
+#include  <cstdlib>
 
 #include  "gascoignemath.h"
 

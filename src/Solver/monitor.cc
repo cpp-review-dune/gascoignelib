@@ -1,7 +1,8 @@
 #include  "monitor.h"
 #include  <string>
 #include  <fstream>
-#include  <stdio.h>
+#include  <cstdio>
+#include  <cstring>
 #include  "filescanner.h"
 #include  "stlio.h"
 
@@ -108,7 +109,11 @@ void Monitor::set_directory(const string& dir)
 //      error_io(numfile);
 //    }
 //  nfile.close();
-  strcpy(message,"");
+  
+  
+  //strcpy(message,"");
+  new_message.str("");
+  
 
   //cout << "set_directory:" << protokoll <<  "#" << endl;
 }
@@ -175,11 +180,15 @@ void Monitor::print_message()
 //  {
 //    error_io(protokoll);
 //  }
-  if (control) cout << message << endl;
 
-//  pfile << message << endl;
+  //if (control) cout << message << endl;
+  if (control) cout << new_message.str() << endl;
 
-  strcpy(message,"");
+  //  pfile << message << endl;
+
+//  strcpy(message,"");
+  new_message.str("");
+
 //  pfile.close();
 }
 
@@ -188,7 +197,10 @@ void Monitor::print_message()
 void Monitor::failed_step()
 {
   print_message();
-  sprintf(message,"%s repeat",message);
+
+
+  new_message << " repeat";
+  //  sprintf(message,"%s repeat",message);
   print_message();
 }
   
@@ -196,7 +208,8 @@ void Monitor::failed_step()
 
 void Monitor::mesh(int nc, int nl)
 {
-  sprintf(message,"%s (N=%5d[%2d])", message, nc, nl);
+  new_message << " (N=" << nc << "[" << nl << "])";
+  //  sprintf(message,"%s (N=%5d[%2d])", message, nc, nl);
   print_message();
 }
 
@@ -205,8 +218,11 @@ void Monitor::mesh(int nc, int nl)
 void Monitor::post_nonlinear(const DoubleVector& Ju, double eta, int ncells,
 			     int cg, int dcg)
 {
-  sprintf (message,"cg dnl: %d %d",cg,dcg);
-  sprintf (message,"%s [J(u)=%10.7e eta=%7.3e]",message,Ju[0],eta);
+  new_message.str("");
+  new_message << "cg dnl: " << cg << " " << dcg 
+	      << " [J(u)=" << Ju[0] << " eta=" << eta << "]";  
+//   sprintf (message,"cg dnl: %d %d",cg,dcg);
+//   sprintf (message,"%s [J(u)=%10.7e eta=%7.3e]",message,Ju[0],eta);
   
   print_message();
 }
@@ -216,9 +232,12 @@ void Monitor::post_nonlinear(const DoubleVector& Ju, double eta, int ncells,
 void Monitor::pre_nonlinear(int i)
 {
   print_message();
-  sprintf(message,"----------------------------------------");
+  new_message.str("----------------------------------------");
   print_message();
-  sprintf(message,"%s-%s: %4d",aos.c_str(),bos.c_str(),i);
+  new_message.str("");
+  new_message << aos.c_str() << "-" << bos.c_str() << ": " << i;
+
+  //  sprintf(message,"%s-%s: %4d",aos.c_str(),bos.c_str(),i);
 }
 
 /*******************************************************************/
@@ -229,12 +248,16 @@ void Monitor::matrix_info(int i)
 {
   if(!i)
     {
-      for(int j=0; j<ps; j++) sprintf(message,"%s ",message);
+      for(int j=0; j<ps; j++) 
+	//sprintf(message,"%s ",message);
+	new_message << " ";
     }
   else
     {
-      if (_newmatrix) sprintf(message,"%sM",message);
-      else            sprintf(message,"%s ",message);
+      if (_newmatrix) 
+	new_message << "M";//sprintf(message,"%sM",message);
+      else            
+	new_message << " ";//sprintf(message,"%s ",message);
     }
 }
 
@@ -251,11 +274,13 @@ void Monitor::nonlinear_step(const CGInfo& cginfo, const NLInfo& nlinfo)
   int  iter = cginfo.control().iteration(); 
 
   double r = nlinfo.control().residual();
-  sprintf(message,"%s%3d: %8.2e",message,i,r);
+  //  sprintf(message,"%s%3d: %8.2e",message,i,r);
+  new_message << i << ": " << r;
   if (i && (control>1))
     {
       double c = nlinfo.control().correction();
-      sprintf(message,"%s %8.2e",message,c);
+      new_message << " " << c ;
+      //      sprintf(message,"%s %8.2e",message,c);
     }
   if (i)
     {
@@ -263,32 +288,42 @@ void Monitor::nonlinear_step(const CGInfo& cginfo, const NLInfo& nlinfo)
       double lr = nlinfo.statistics().lastrate();
       int    p  = nlinfo.control().relax();
       
-      sprintf(message,"%s [%4.2f %4.2f]",message,lr,rr);
+      //sprintf(message,"%s [%4.2f %4.2f]",message,lr,rr);
+      new_message << " [" << lr << " " << rr << "]";
       if (p)
 	{
-	  sprintf(message,"%s %1d",message,p);
+	  //	  sprintf(message,"%s %1d",message,p);
+	  new_message << " " << p;
 	}
       else
 	{
-	  sprintf(message,"%s  ",message);
+	  //	  sprintf(message,"%s  ",message);
+	  new_message << "  ";
 	}
       
       rr = cginfo.statistics().rate();
       lr = cginfo.control().residual();
       double lc = cginfo.control().correction();
       
-      sprintf(message,"%s - %8.2e",message,lr);
+      //sprintf(message,"%s - %8.2e",message,lr);
+      new_message << " - " << lr;
       if (control>1)
 	{
-	  sprintf(message,"%s %8.2e",message,lc);
+	  //	  sprintf(message,"%s %8.2e",message,lc);
+	  new_message << " " << lc; 
 	}
-      sprintf(message,"%s [%5.3f] {%2d",message,rr,iter);
-      if (cginfo.control().status()=="running") sprintf(message,"%s*",message);
-      sprintf(message,"%s}",message);
+      //sprintf(message,"%s [%5.3f] {%2d",message,rr,iter);
+      new_message << " [" << rr << "] {" << iter;
+      if (cginfo.control().status()=="running") 
+	//sprintf(message,"%s*",message);
+	new_message << "*";
+      //sprintf(message,"%s}",message);
+      new_message << "}";
     }
   if (cginfo.control().status()=="diverged")
     {
-      sprintf(message,"%s @",message);
+      //sprintf(message,"%s @",message);
+      new_message," @";
     }
   print_message();
 }
