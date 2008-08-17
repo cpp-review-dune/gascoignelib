@@ -325,7 +325,7 @@ void Monitor::nonlinear_step(const CGInfo& cginfo, const NLInfo& nlinfo)
     }
   if (cginfo.control().status()=="diverged")
     {
-      new_message," @";
+      new_message << " @";
     }
   print_message();
 }
