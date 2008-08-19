@@ -53,6 +53,11 @@ IF(WITH_RSTStopWatch)
     ADD_DEFINITIONS(-D__WITH_RSTStopWatch__)
 ENDIF(WITH_RSTStopWatch)
 
+IF(NEWER_THAN_GCC_4_2)
+	ADD_DEFINITIONS(-D__NEWER_THAN_GCC_4_2__)
+ENDIF(NEWER_THAN_GCC_4_2)
+
+
 LINK_DIRECTORIES(${LIBRARY_OUTPUT_PATH})
 
 ###############################################

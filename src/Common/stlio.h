@@ -14,10 +14,14 @@
 #include  <hash_map>
 #define HASHMAP  hash_map
 #else
+#ifdef __NEWER_THAN_GCC_4_2__
+#include <tr1/unordered_map>
+#define HASHMAP   std::tr1::unordered_map
+#else
 #include  <ext/hash_map>
 #define HASHMAP  __gnu_cxx::hash_map
 #endif
-
+#endif
 /*---------------------------------------------*/
 
 namespace Gascoigne

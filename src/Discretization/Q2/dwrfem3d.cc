@@ -3,7 +3,14 @@
 #include "baseq23d.h"
 #include "integratorq1q2.h"
 #include "hnstructureq23d.h"
-#include <ext/hash_set>
+
+#ifdef __NEWER_THAN_GCC_4_2__
+#include <tr1/unordered_set>
+#define HASHSET std::tr1::unordered_set
+#else
+#include  <ext/hash_set>
+#define HASHSET __gnu_cxx::hash_set
+#endif
 
 using namespace std;
 
@@ -452,7 +459,7 @@ void DwrFemQ2Q13d::BoundaryForm(GlobalVector& f, const GlobalVector& u, const In
   {
     int col = *p;
 
-    __gnu_cxx::hash_set<int> habschon;
+    HASHSET<int> habschon;
     
     const IntVector& q = *GetMesh()->CellOnBoundary(col);
     const IntVector& l = *GetMesh()->LocalOnBoundary(col);
@@ -533,7 +540,7 @@ void DwrFemQ2Q13d::BoundaryRhs(GlobalVector& f, const IntSet& Colors, const Boun
   for(IntSet::const_iterator p=Colors.begin();p!=Colors.end();p++)
   {
     int col = *p;
-    __gnu_cxx::hash_set<int> habschon;
+    HASHSET<int> habschon;
 
     const IntVector& q = *GetMesh()->CellOnBoundary(col);
     const IntVector& l = *GetMesh()->LocalOnBoundary(col);

@@ -3,7 +3,14 @@
 #include  "levelsorter3d.h"
 #include  "leveljumper.h"
 #include  "set2vec.h"
-#include <ext/hash_set>
+
+#ifdef __NEWER_THAN_GCC_4_2__
+#include <tr1/unordered_set>
+#define HASHSET std::tr1::unordered_set
+#else
+#include  <ext/hash_set>
+#define HASHSET __gnu_cxx::hash_set
+#endif
 
 using namespace std;
 
@@ -781,7 +788,7 @@ void LevelMesh3d::InitBoundaryHandler(BoundaryIndexHandler& BI, const PatchIndex
     int col = *c;
     const IntVector& cells = BI.Cells(col);
     const IntVector& locals= BI.Localind(col);
-    __gnu_cxx::hash_set<int> habschon;
+    HASHSET<int> habschon;
 
     IntVector p1;
     IntVector p2;

@@ -10,10 +10,14 @@
 #include  <hash_map>
 #define HANGMAP  hash_map<EdgeArray<N>,Hang,EdgeHash>
 #else
+#ifdef __NEWER_THAN_GCC_4_2__
+#include <tr1/unordered_map>
+#define HANGMAP   std::tr1::unordered_map<EdgeArray<N>,Hang,EdgeHash> 
+#else
 #include  <ext/hash_map>
 #define HANGMAP  __gnu_cxx::hash_map<EdgeArray<N>,Hang,EdgeHash> 
 #endif
-
+#endif
 
 /*------------------------------------------------------*/
 
