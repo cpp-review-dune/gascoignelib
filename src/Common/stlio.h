@@ -179,7 +179,8 @@ void read_data(std::map<T,S>& v,std::istream& s)
       S se;
       read_data(fi,s);
       read_data(se,s);
-      v[fi]=se;
+      //Edit v[fi]=se;
+      v.insert(std::make_pair<T,S>(fi,se));
     }
 }
 
@@ -207,7 +208,8 @@ void read_data(HASHMAP<T,S>& v,std::istream& s)
       S se;
       read_data(fi,s);
       read_data(se,s);
-      v[fi]=se;
+      //Edit v[fi]=se;
+      v.insert(std::make_pair<T,S>(fi,se));
     }
 }
 }

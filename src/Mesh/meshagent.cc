@@ -3,7 +3,13 @@
 #include  "filescanner.h"
 #include  "gascoignemeshconstructor.h"
 #include  "stringutil.h"
+#ifdef __NEWER_THAN_GCC_4_2__
+#include <tr1/unordered_map>
+#define HASHMAP std::tr1::unordered_map
+#else
 #include  <ext/hash_map>
+#define HASHMAP __gnu_cxx::hash_map
+#endif
 
 using namespace std;
 
@@ -125,10 +131,11 @@ void MeshAgent::BuildQ4PatchList(const IntVector &patchl2g)
     cerr << "MeshAgent::BuildQ4PatchList: patchl2g must be same size as q2patch!!!" << endl;
     abort();
   }
-  __gnu_cxx::hash_map<int,int> patchg2l;
+  HASHMAP<int,int> patchg2l;
   for(int i=0; i<patchl2g.size(); i++)
   {
-    patchg2l[patchl2g[i]] = i;
+    //Edit patchg2l[patchl2g[i]] = i;
+    patchg2l.insert(make_pair<int,int>(patchl2g[i],i));
   }
   IntVector perm(4);
   perm[0]=0;
@@ -375,3 +382,4 @@ inline const int MeshAgent::Cello2nFather(int i)const
 
 }
 
+#undef HASHMAP

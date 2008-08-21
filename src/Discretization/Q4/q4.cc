@@ -1,7 +1,15 @@
 #include "q4.h"
 #include "pressurefilter.h"
 #include "sparsestructure.h"
-#include <ext/hash_set>
+
+#ifdef __NEWER_THAN_GCC_4_2__
+#include <tr1/unordered_set>
+#define HASHSET std::tr1::unordered_set
+#else
+#include  <ext/hash_set>
+#define HASHSET __gnu_cxx::hash_set
+#endif
+
 
 using namespace std;
 
@@ -161,7 +169,7 @@ void Q4::BoundaryForm(GlobalVector& f, const GlobalVector& u, const IntSet& Colo
   {
     int col = *p;
 
-    __gnu_cxx::hash_set<int> habschon;
+    HASHSET<int> habschon;
 
     const IntVector& q = *GetMesh()->PatchOnBoundary(col);
     const IntVector& l = *GetMesh()->LocalPatchOnBoundary(col);
@@ -241,7 +249,7 @@ void Q4::BoundaryMatrix(MatrixInterface& A, const GlobalVector& u, const IntSet&
   for(IntSet::const_iterator p=Colors.begin();p!=Colors.end();p++)
   {
     int col = *p;
-    __gnu_cxx::hash_set<int> habschon;
+    HASHSET<int> habschon;
 
     const IntVector& q = *GetMesh()->PatchOnBoundary(col);
     const IntVector& l = *GetMesh()->LocalPatchOnBoundary(col);
@@ -382,7 +390,7 @@ void Q4::BoundaryRhs(GlobalVector& f, const IntSet& Colors,  const BoundaryRight
   for(IntSet::const_iterator p=Colors.begin();p!=Colors.end();p++)
   {
     int col = *p;
-    __gnu_cxx::hash_set<int> habschon;
+    HASHSET<int> habschon;
 
     const IntVector& q = *GetMesh()->PatchOnBoundary(col);
     const IntVector& l = *GetMesh()->LocalPatchOnBoundary(col);
@@ -472,7 +480,7 @@ double Q4::ComputeBoundaryFunctional(const GlobalVector& u, const IntSet& Colors
   for(IntSet::const_iterator p=Colors.begin();p!=Colors.end();p++)
   {
     int col = *p;
-    __gnu_cxx::hash_set<int> habschon;
+    HASHSET<int> habschon;
 
     const IntVector& q = *GetMesh()->PatchOnBoundary(col);
     const IntVector& l = *GetMesh()->LocalPatchOnBoundary(col);
@@ -521,4 +529,6 @@ double Q4::ComputeDomainFunctional(const GlobalVector& u, const DomainFunctional
 
 /**********************************************************/
 }
+
+#undef HASHSET
 

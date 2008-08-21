@@ -682,4 +682,5 @@ void DwrFemQ4Q23d::LocalToGlobal(MatrixInterface& A, EntryMatrix& E, int iq, dou
 
 /**********************************************************/
 }
+#undef HASHSET
 

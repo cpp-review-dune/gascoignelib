@@ -810,3 +810,4 @@ void LevelMesh3d::InitBoundaryHandler(BoundaryIndexHandler& BI, const PatchIndex
   }
 }
 }
+#undef HASHSET

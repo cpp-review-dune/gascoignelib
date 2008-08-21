@@ -2,7 +2,6 @@
 #include  <fstream>
 #include  "sparsestructure.h"
 #include  "pressurefilter.h"
-#include <ext/hash_set>
 
 using namespace std;
 

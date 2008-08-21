@@ -566,3 +566,5 @@ void FaceManager::SwappedFaces()
     }
 }
 }
+
+#undef HANGMAP
