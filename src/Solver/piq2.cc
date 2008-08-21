@@ -63,7 +63,7 @@ void PiQ2::vmult(GlobalVector &pu, const GlobalVector &u) const
         {
           int n = 25*jz+jy*5+jx;
           int node = q4patch[n];
-          if((jx%2==0)&&(jy&2==0)&&(jz%2==0))
+          if((jx%2==0)&&(jy%2==0)&&(jz%2==0))
           {
             pu.zero_node(node);
           }
