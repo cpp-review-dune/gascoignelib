@@ -61,7 +61,7 @@ namespace Gascoigne
 
 StdSolver::StdSolver() : 
   _MP(NULL), _HM(NULL), _MAP(NULL), _MIP(NULL), _ZP(NULL), _FZP(NULL), _PDX(NULL), 
-  _distribute(true), _mylevel(-1), _ndirect(1000), _directsolver(0), _discname("Q1"), _facediscname("none"),
+  _distribute(true), _ndirect(1000), _directsolver(0), _discname("Q1"), _facediscname("none"),
   _matrixtype("point_node"), _PrimalSolve(1), _paramfile(NULL), _useUMFPACK(true)
 // , omega_domain(0.) 
 {
@@ -93,7 +93,6 @@ void StdSolver::_check_consistency(const Equation* EQ,const DiscretizationInterf
   {
     glsdi = true;
   }
-
   if(glseq && !glsdi)
   {
     cerr << "Warning: Discretization \"" << eq << "\" doesn't go with type of given Equation!" << endl;
@@ -211,7 +210,7 @@ void StdSolver::SetDiscretization(DiscretizationInterface& DI, bool init)
 
 /*-------------------------------------------------------*/
 
-void StdSolver::NewMesh(int level, const MeshInterface* mp)
+void StdSolver::NewMesh(const MeshInterface* mp)
 {
   _MP = mp;
   assert(_MP);
@@ -224,7 +223,6 @@ void StdSolver::NewMesh(int level, const MeshInterface* mp)
     {
       _directsolver=0;
     }
-
   GetDiscretization()->ReInit(_MP);
   if (GetFaceDiscretization())
     GetFaceDiscretization()->ReInit(_MP);
@@ -239,13 +237,11 @@ void StdSolver::SetDefaultValues(string discname, string matrixtype, int ndirect
   _ndirect    = ndirect;
 }
 
-
 /*-------------------------------------------------------*/
 
-void StdSolver::BasicInit(int level, const ParamFile* paramfile, const int dimension)
+void StdSolver::BasicInit(const ParamFile* paramfile, const int dimension)
 {
   _paramfile = paramfile;
-  _mylevel=level;
 
   string xxx;
 
@@ -266,7 +262,8 @@ void StdSolver::BasicInit(int level, const ParamFile* paramfile, const int dimen
       abort();
     }
 
-  GetDiscretizationPointer()     = NewDiscretization    (dimension, _discname);
+  if (GetDiscretizationPointer()==NULL)
+    GetDiscretizationPointer()     = NewDiscretization    (dimension, _discname);
   GetFaceDiscretizationPointer() = NewFaceDiscretization(dimension, _facediscname);
   assert(_ZP);
 
@@ -408,8 +405,6 @@ MatrixInterface* StdSolver::NewMatrix(int ncomp, const string& matrixtype)
     cerr << "No such matrix type \"" << matrixtype<< "\"." << endl;
     abort();
   }
-
-  
 }
 
 /*-------------------------------------------------------------*/
@@ -793,7 +788,6 @@ void StdSolver::Form(VectorInterface& gy, const VectorInterface& gx, double d) c
   HNDistribute(gy);
   SubtractMeanAlgebraic(gy);
 
-
   _re.stop();
 }
 
@@ -1114,8 +1108,7 @@ void StdSolver::Rhs(VectorInterface& gf, double d) const
       const BoundaryManager*  BM   = GetProblemDescriptor()->GetBoundaryManager();
       GetDiscretization()->BoundaryRhs(f,BM->GetBoundaryRightHandSideColors(),*NRHS,d);	  
     }
-  
-  
+    
   HNZeroData();
   HNDistribute(gf);
 }
@@ -1273,10 +1266,6 @@ void StdSolver::PermutateIlu(const VectorInterface& gu) const
 
   iota(perm.begin(),perm.end(),0);
   
-  // if (0 && _mylevel==0 && _directsolver)
-  //   {
-  //     // don't do anything if we're on the lowest level and solving directly
-  //   } else
   if (GetSolverData().GetIluSort()=="cuthillmckee")
     {
       CuthillMcKee    cmc(GetMatrix()->GetStencil());

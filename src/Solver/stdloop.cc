@@ -360,11 +360,11 @@ void StdLoop::run(const std::string& problemlabel)
 
       _clock_newmesh.start();
 
-      GetSolverInfos()->GetNLInfo().control().matrixmustbebuild() = 1;
       GetMultiLevelSolver()->ReInit(problemlabel);
       GetMultiLevelSolver()->ReInitVector(u);
       GetMultiLevelSolver()->ReInitVector(f);
       GetMultiLevelSolver()->InterpolateSolution(u,ualt);
+      GetSolverInfos()->GetNLInfo().control().matrixmustbebuild() = 1;
 
       _clock_newmesh.stop();
 
@@ -409,9 +409,9 @@ void StdLoop::run(const std::string& problemlabel)
           //   
         }
       _clock_estimate.stop();
-
-      ClockOutput();
      }
+
+  ClockOutput();
 }
 }
 

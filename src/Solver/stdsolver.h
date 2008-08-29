@@ -68,7 +68,6 @@ class StdSolver : public virtual SolverInterface
   // 6. Steuerparameter
 
   bool                _distribute;
-  int                 _mylevel;
 
   mutable int         _ndirect;
   mutable bool        _directsolver;
@@ -107,12 +106,11 @@ class StdSolver : public virtual SolverInterface
   MatrixInterface* GetMatrix() const { return _MAP;}
   MatrixInterface*& GetMatrixPointer() {return _MAP;}
 
-  IluInterface* GetIlu() const {assert(_MIP); return _MIP;}
-  IluInterface*& GetIluPointer() { return _MIP;}
-  
   virtual DiscretizationInterface*& GetDiscretizationPointer()     {return _ZP;}
   virtual FaceDiscretization*&      GetFaceDiscretizationPointer() {return _FZP;}
 
+  IluInterface*& GetIluPointer() { return _MIP;}
+  
   // 1. Initialisierung 
 	
 	void SetDefaultValues(std::string discname, std::string matrixtype, int ndirect);
@@ -142,13 +140,13 @@ class StdSolver : public virtual SolverInterface
 
   std::string GetName() const {return "StdSolver";}
 
-  void BasicInit(int level, const ParamFile* paramfile, const int dimension);
+  void BasicInit(const ParamFile* paramfile, const int dimension);
   void SetProblem(const ProblemDescriptorInterface& PDX);
   void SetDiscretization(DiscretizationInterface& DI, bool init=false);
   const ProblemDescriptorInterface* GetProblemDescriptor() const {assert(_PDX); return _PDX;}
   const ParamFile* GetParamfile() const { return _paramfile;}
 
-  void NewMesh(int l, const MeshInterface* MP);
+  void NewMesh(const MeshInterface* MP);
 
   const MeshInterface* GetMesh() const {return _MP;}
 
@@ -162,6 +160,7 @@ class StdSolver : public virtual SolverInterface
 
   void ReInitMatrix();
 
+  IluInterface* GetIlu() const {assert(_MIP); return _MIP;}
   virtual double clock_vmult() const {return _vm.read();}
   virtual double clock_ilu  () const {return _il.read();}
   virtual double clock_solve() const {return _so.read();}
@@ -291,7 +290,6 @@ class StdSolver : public virtual SolverInterface
   void ComputeIlu(const VectorInterface& u) const;
   void ComputeIlu() const;
   void AssembleDualMatrix(const VectorInterface& gu, double d);
-
   //
   /// vector - "postprocessing"
   //

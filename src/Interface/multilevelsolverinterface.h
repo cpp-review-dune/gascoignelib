@@ -29,6 +29,7 @@ namespace Gascoigne
 
     protected:
       
+
     public:
       MultiLevelSolverInterface() {}
       virtual ~MultiLevelSolverInterface() {}
@@ -42,6 +43,8 @@ namespace Gascoigne
 
       virtual const DoubleVector GetExactValues() const=0;
       virtual const DoubleVector ComputeFunctionals(VectorInterface& f, const VectorInterface& u) const=0;
+      virtual const DoubleVector ComputeFunctionals(VectorInterface& f, const VectorInterface& u,
+						    FunctionalContainer* FC) const=0;
       
       virtual void ReInitMatrix()=0;
 
@@ -51,6 +54,7 @@ namespace Gascoigne
       virtual const SolverInterface* GetSolver(int l) const=0;
       virtual SolverInterface* GetSolver()=0;
       virtual const SolverInterface* GetSolver() const=0;
+      virtual const ProblemContainer* GetProblemContainer() const=0;
 
 //      virtual void SetState(const std::string& s)=0;
       virtual void AssembleMatrix(VectorInterface& u, NLInfo& nlinfo)=0;
@@ -78,6 +82,7 @@ namespace Gascoigne
       virtual std::string LinearSolve(VectorInterface& u, const VectorInterface& b, CGInfo& info) {
         return LinearSolve(nlevels()-1,u,b,info);
       }
+
       virtual std::string Solve(int level, VectorInterface& x, const VectorInterface& b, NLInfo& nlinfo)=0;
       virtual std::string Solve(VectorInterface& x, const VectorInterface& b, NLInfo& nlinfo) {
         return Solve(nlevels()-1,x,b,nlinfo);
@@ -98,6 +103,9 @@ namespace Gascoigne
       virtual void Transfer(VectorInterface& u) const=0;
 
       virtual void newton(VectorInterface& u, const VectorInterface& f, VectorInterface& r, VectorInterface& w, NLInfo& info)=0;
+
+  virtual std::vector<MgInterpolatorInterface*>& GetInterpolatorPointers()=0;
+  virtual const std::vector<MgInterpolatorInterface*>& GetInterpolatorPointers() const=0;
   };
 }
 

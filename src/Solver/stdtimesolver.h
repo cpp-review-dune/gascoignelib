@@ -43,8 +43,6 @@ public:
   StdTimeSolver();
   ~StdTimeSolver();
 
-  void BasicInit(int level, const ParamFile* pfparamfile, const int dimension);
-
   void RegisterMatrix();
   void ReInitMatrix();
 

@@ -186,16 +186,13 @@ void StdMultiLevelSolver::NewSolvers()
 
   for(int level=0; level<nlevels(); ++level)  
     {
-      const MeshInterface* MIP = GetMeshAgent()->GetMesh(level);
-      assert(MIP);
-
       int solverlevel = nlevels()-1-level;
 
       // new Solvers
       if(GetSolver(solverlevel)==NULL) 
         {
           GetSolverPointer(solverlevel) = NewSolver(solverlevel);
-          GetSolver(solverlevel)->BasicInit(solverlevel,_paramfile,GetMeshAgent()->GetDimension());
+          GetSolver(solverlevel)->BasicInit(_paramfile,GetMeshAgent()->GetDimension());
         }
     }
 }
@@ -228,7 +225,7 @@ void StdMultiLevelSolver::SolverNewMesh()
       assert(MIP);
 
       int solverlevel = nlevels()-1-level;
-      GetSolver(solverlevel)->NewMesh(solverlevel,MIP);
+      GetSolver(solverlevel)->NewMesh(MIP);
     }
 }
 
@@ -301,6 +298,22 @@ const DoubleVector StdMultiLevelSolver::GetExactValues() const
 
 /*-------------------------------------------------------------*/
 
+const DoubleVector StdMultiLevelSolver::ComputeFunctionals(VectorInterface& f, const VectorInterface& u,
+							   FunctionalContainer* FC) const
+{
+  if (!FC) return DoubleVector(0);
+  int n = FC->size();
+  DoubleVector j(n,0.);
+  int i = 0;
+  for (FunctionalContainer::const_iterator it = FC->begin(); it!=FC->end();++it,++i)
+    {
+      j[i] = GetSolver(ComputeLevel)->ComputeFunctional(f,u,it->second);
+    }
+  return j;
+}
+
+/*-------------------------------------------------------------*/
+
 const DoubleVector StdMultiLevelSolver::ComputeFunctionals(VectorInterface& f, const VectorInterface& u) const
 {
   if (!GetFunctionalContainer()) return DoubleVector(0);
@@ -311,7 +324,7 @@ const DoubleVector StdMultiLevelSolver::ComputeFunctionals(VectorInterface& f, c
        it!=GetFunctionalContainer()->end();++it,++i)
     {
       cout << it->first << " ";
-      j[i] = ComputeFunctional(f,u,it->first);
+      j[i] = GetSolver(ComputeLevel)->ComputeFunctional(f,u,it->second);
     }
   cout << endl;
   return j;
@@ -482,73 +495,6 @@ void StdMultiLevelSolver::NewtonVectorZero(VectorInterface& w) const
 }
 
 /*-------------------------------------------------------------*/
-
-// void StdMultiLevelSolver::NewtonUpdateShowCompResiduals(int iter,VectorInterface& vi_x, VectorInterface& vi_r, const VectorInterface& vi_f, VectorInterface& vi_dx){
-// 
-//   StdSolver*     S = dynamic_cast<StdSolver*>(GetSolver(ComputeLevel));
-//   GlobalVector & r = GetSolver(ComputeLevel)->GetGV(vi_r);
-//   GlobalVector &dx = GetSolver(ComputeLevel)->GetGV(vi_dx);
-//   if( DataP->ShowCompResidualNames() ) {
-//     // nur beim ersten durchgang? :  cginfo.statistics().totaliter()
-//     const ComponentInformation*  CI = GetProblemDescriptor()->GetComponentInformation();
-//     cout << "                                  ";
-//     int     ncomps = r.ncomp();
-//     string  str;  
-//     for(int i=0;i<ncomps;i++){
-//       CI->GetScalarName(i,str);
-//       printf("%-9.9s", str.c_str());
-//       if(i<ncomps-1) cout << " "; 
-//     }
-//     cout << "  " << endl;
-//   }
-// 
-//   if( DataP->ShowNonLinearCompResiduals() )
-//     {
-//       GlobalVector &r_vector = r;
-//       GlobalVector &dx_vector = dx;
-//       int ncomps = r_vector.ncomp();
-//       cout << "      nonlin L8-comp-residuals: [";
-//       for(int i=0;i<ncomps;i++){
-//         double res_comp = r_vector.CompNormL8(i)+1e-99;
-//         printf(" %3.2e", res_comp);
-//         if(i<ncomps-1) cout << ","; 
-//       }
-//       cout << " ]" << endl;
-//       if( DataP->SaveNonLinearCompResiduals() ) {
-//         S->Visu("Residuals/nonlinear",r_vector,iter);
-//         S->Visu("Residuals/dx",dx_vector,iter);
-//       }
-//     }
-// 
-//   if( DataP->ShowLinearCompResiduals() ) 
-//     { 
-//       // da das residuum *moeglicherweise* nachher auch benutzt wird, mache hier einen backup 
-//       GlobalVector  r_backup; 
-//       GlobalVector &r_vector = r;
-//       int ncomps = r_vector.ncomp(); 
-// 
-//       r_backup.ncomp()  = ncomps;
-//       r_backup.resize(r_vector.n());
-//       r_backup.equ(1.,r_vector);
-//    
-//       GetSolver(ComputeLevel)->MatrixResidual(vi_r, vi_x, vi_f);  
-// 
-//       cout << "         lin L8-comp-residuals: ["; 
-//       for(int i=0;i<ncomps;i++){ 
-//         double res_comp = r_vector.CompNormL8(i)+1e-99; 
-//         printf(" %3.2e", res_comp); 
-//         if(i<ncomps-1) cout << ",";
-//       } 
-//       cout << " ]" << endl; 
-//       if( DataP->SaveLinearCompResiduals() ){
-//         S->Visu("Residuals/linear",r_vector,iter);
-//       }
-// 
-//       r_vector.equ(1.,r_backup);
-//     } 
-// 
-// }
-
  
 double StdMultiLevelSolver::NewtonResidual(VectorInterface& y, const VectorInterface& x,const VectorInterface& b) const
 {

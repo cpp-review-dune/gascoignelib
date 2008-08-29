@@ -77,7 +77,7 @@ void SolverInfos::BasicInit(const ParamFile *param)
   DFH.insert("nonlinear_rho",       &nonlinear_rho,       0.001);
   DFH.insert("nonlinear_miniter",   &nonlinear_miniter,    0);
   DFH.insert("nonlinear_maxiter",   &nonlinear_maxiter,   10);
-  DFH.insert("nonlinear_pstep",     &nonlinear_pstep,     0);
+  DFH.insert("nonlinear_pstep",     &nonlinear_pstep,     1);
   DFH.insert("nonlinear_damp",      &nonlinear_damp,      4);
   DFH.insert("nonlinear_increase",  &nonlinear_increase,  1.e3);
 
@@ -90,14 +90,8 @@ void SolverInfos::BasicInit(const ParamFile *param)
   GetLInfo().user().miniter  ()          = linear_miniter;
   GetLInfo().user().maxiter  ()          = linear_maxiter;
   GetLInfo().user().printstep()          = linear_pstep;
-  if (_linearsolve=="mg")
-    {
-      GetLInfo().user().text() = "MGInfo";
-    }
-  else
-    {
-      GetLInfo().user().text() = "CGInfo";
-    }
+
+  GetLInfo().user().text() = "Lin:";
                                          
   GetNLInfo().user().tol()               = nonlinear_tol;
   GetNLInfo().user().globaltol()         = nonlinear_globaltol;

@@ -41,10 +41,6 @@ class StdMultiLevelSolver : public virtual MultiLevelSolverInterface
   std::vector<SolverInterface*>& GetSolverPointers() { return _SP; }
   const std::vector<SolverInterface*>& GetSolverPointers() const { return _SP; }
   
-  std::vector<MgInterpolatorInterface*>& GetInterpolatorPointers() { return _Interpolator; }
-  const std::vector<MgInterpolatorInterface*>& GetInterpolatorPointers() const { return _Interpolator; }
-
-  
   mutable VectorInterface _cor, _res, _mg0, _mg1;
 
   mutable StopWatch   _clock_residual, _clock_solve;
@@ -68,12 +64,13 @@ class StdMultiLevelSolver : public virtual MultiLevelSolverInterface
 
   virtual const ProblemDescriptorInterface* GetProblemDescriptor() const { return _PD;}
 
-  virtual void SetProblemContainer(const ProblemContainer* PC)       { _PC=PC;     }
   virtual const FunctionalContainer* GetFunctionalContainer()  const { return _FC; }
   virtual void SetFunctionalContainer(const FunctionalContainer* FC) { _FC=FC;     }
 
   const DoubleVector GetExactValues() const;
   const DoubleVector ComputeFunctionals(VectorInterface& f, const VectorInterface& u) const;
+  const DoubleVector ComputeFunctionals(VectorInterface& f, const VectorInterface& u,
+					FunctionalContainer* FC) const;
   
   virtual SolverInterface*& GetSolverPointer(int l) {assert(l<_SP.size()); return _SP[l];}
   virtual void SetComputeLevel(int level) {ComputeLevel=level;}
@@ -100,6 +97,9 @@ class StdMultiLevelSolver : public virtual MultiLevelSolverInterface
 
   std::string GetName() const {return "StdMultiLevelSolver";}
 
+  std::vector<MgInterpolatorInterface*>& GetInterpolatorPointers() { return _Interpolator; }
+  const std::vector<MgInterpolatorInterface*>& GetInterpolatorPointers() const { return _Interpolator; }
+
   void RegisterVectors();
   void RegisterMatrix();
   void ReInitMatrix();
@@ -116,13 +116,13 @@ class StdMultiLevelSolver : public virtual MultiLevelSolverInterface
 //    for(int l=0;l<_SP.size();l++) _SP[l]->SetState(s);
 //  }
 
-  virtual const ProblemContainer* GetProblemContainer()        const { assert(_PC); return _PC; }
-
-
   int nlevels()                 const { assert(GetMeshAgent()); return GetMeshAgent()->nlevels();}
   virtual int FinestLevel  ()  const { return nlevels()-1;}
   virtual int CoarsestLevel()  const { return 0;}
   
+  virtual const ProblemContainer* GetProblemContainer()        const { assert(_PC); return _PC; }
+  virtual void SetProblemContainer(const ProblemContainer* PC)       { _PC=PC;     }
+
   SolverInterface* GetSolver(int l) {assert(l<_SP.size()); return _SP[l];}
   const SolverInterface* GetSolver(int l) const {assert(l<_SP.size()); return _SP[l];}
   SolverInterface* GetSolver() {assert(_SP.size()==nlevels()); return _SP[FinestLevel()];}

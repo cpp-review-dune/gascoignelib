@@ -94,15 +94,10 @@ void StdTimeSolver::ReInitMatrix()
 
   GetMassMatrix()->ReInit(&SA);
   GetMassMatrix()->zero();
-  GetDiscretization()->MassMatrix(*GetMassMatrix());  
-
-//   string name("masse");
-//   compose_name(name,mylevel);
-//   ofstream file(name.c_str());
-//   GetMassMatrix()->Write(file);
+  GetDiscretization()->MassMatrix(*GetMassMatrix()); 
 }
 
-/*-------------------------------------------------------------*/
+/*-------------------------------------------------------*/
 
 MatrixInterface* StdTimeSolver::NewMassMatrix(int ncomp, const string& matrixtype)
 {
@@ -111,13 +106,6 @@ MatrixInterface* StdTimeSolver::NewMassMatrix(int ncomp, const string& matrixtyp
 
 /*-------------------------------------------------------------*/
   
-void StdTimeSolver::BasicInit(int level, const ParamFile* paramfile, const int dimension)
-{
-  StdSolver::BasicInit(level, paramfile, dimension);
-}
-
-/*-------------------------------------------------------*/
-
 void Gascoigne::StdTimeSolver::InitialCondition(VectorInterface& gf, double d) const
 {
   GlobalVector& f = GetGV(gf);
@@ -147,14 +135,12 @@ void Gascoigne::StdTimeSolver::InitialCondition(VectorInterface& gf, double d) c
          abort();
        }
     }
-
   if(NIC)
     {
       assert(NIC->GetNcomp()==f.ncomp());
       const BoundaryManager*  BM   = GetProblemDescriptor()->GetBoundaryManager();
       GetDiscretization()->BoundaryRhs(f,BM->GetBoundaryRightHandSideColors(),*NIC,d);	  
     }
-
   HNZeroData();
   HNDistribute(gf);
 }

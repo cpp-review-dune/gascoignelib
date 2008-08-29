@@ -77,8 +77,8 @@ void NLControlData::reset()
   ControlData::reset();
   _relax     = 0;
   _laststepbad = 0;
-//   _matrixmustbebuild=1;
-  //_newmatrix = 1;
+  _matrixmustbebuild=1;
+  _newmatrix = 1;
 }
 
 /*******************************************************************/
@@ -122,7 +122,7 @@ void NLInfo::reset()
 {
   SD.newmatrix() = 0;
   CD.reset();
-  //SD.reset();
+  SD.reset();
   Linfo.reset();
   SD.rate() = 0.;
 }
@@ -273,14 +273,39 @@ bool NLInfo::check(int iter, double resi, double cori)
     }
   if (UD.printstep() && !(CD.iteration()%UD.printstep()) )
     {
-      cout.setf(ios::scientific,ios::floatfield);
-      cout.precision(5);
-      cout << UD.text() << " " << CD.iteration() << "\t" << CD.residual();
-      cout << " [" << CD.correction()<< "] ";
-      cout << Linfo.control().residual();
-      cout << " [" << Linfo.control().correction() << "] ";
-      cout << "\t" << Linfo.control().iteration() << "\t";
-      cout << Linfo.statistics().rate() << endl;
+      int i = control().iteration();
+      int  iter = Linfo.control().iteration(); 
+      double r = control().residual();
+      double rr = statistics().rate();
+      double lr = statistics().lastrate();
+      int    p  = control().relax();
+      cout.width(3);
+      cout << i << ": ";
+      cout.unsetf(ios::fixed);
+      cout.setf(ios::scientific); 
+      cout.precision(2); 
+      cout << r << " [";
+      cout.unsetf(ios::scientific);
+      cout.setf(ios::fixed);
+      cout.width(3);
+      cout << lr << " " << rr << "]";
+      if (p) {  cout << " " << p;}
+      else   {  cout << "  ";}
+
+      rr = Linfo.statistics().rate();
+      lr = Linfo.control().residual();
+      double lc = Linfo.control().correction();
+      cout << " - ";
+      cout.setf(ios::scientific);
+      cout.unsetf(ios::fixed);
+      cout.width(4);
+      cout << lr;
+      cout.unsetf(ios::scientific);
+      cout.setf(ios::fixed);
+      cout.precision(3);	  
+      cout << " " << lc << " [" << rr << "] {" << iter;
+      if (Linfo.control().status()=="running") cout << "*";
+      cout << "}" << endl;
     }
 
   CD.laststepbad() = thisstepbad;
