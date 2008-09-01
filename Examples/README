@@ -1,0 +1,19 @@
+
+Example1 : Poisson-Gleichung mit linearem
+           (a) iterativem Ein-Gitterlöser (ILU)
+           (b) iterativem Mehrgitterlöser (MG)
+           
+Example2 : Poisson-Gleichung mit zusätzlicher Nichtlinerität und
+           Newtonlöser basierend auf
+           (a) iterativem Ein-Gitterlöser (ILU)
+           (b) iterativem Mehrgitterlöser (MG)
+
+Example3:  Navier-Stokes-Gleichung (eckiges Hindernis) mit 
+           globaler Verfeinerung
+
+Example4:  Navier-Stokes-Gleichung (rundes Hindernis) mit 
+           lokaler Verfeinerung, Energiefehlerschätzer,
+           mit Interpolation auf neue Gitter.
+
+
+           
