@@ -248,6 +248,7 @@ void MultiLevelAlgorithm::GlobalRefineLoop(const std::string& problemlabel)
       cout << "\n======================== " << iter << " === GlobalRefineLoop ==" << endl;
 
       GetMultiLevelSolver()->ReInit(problemlabel);
+      GetSolverInfos()->GetNLInfo().control().matrixmustbebuild() = 1;
 
       ReInitVector(u); 
       ReInitVector(f); 
@@ -287,7 +288,8 @@ void MultiLevelAlgorithm::LocalRefineLoop(const std::string& problemlabel, Funct
       cout << "\n======================== " << iter << " === LocalRefineLoop ===" << endl;
 
       GetMultiLevelSolver()->ReInit(problemlabel);
-      
+      GetSolverInfos()->GetNLInfo().control().matrixmustbebuild() = 1;
+
       ReInitVector(u); 
       ReInitVector(f); 
 

@@ -77,8 +77,8 @@ void NLControlData::reset()
   ControlData::reset();
   _relax     = 0;
   _laststepbad = 0;
-  _matrixmustbebuild=1;
-  _newmatrix = 1;
+//  _matrixmustbebuild=1;
+//  _newmatrix = 1;
 }
 
 /*******************************************************************/
@@ -120,11 +120,11 @@ Linfo(info)
 
 void NLInfo::reset()
 {
+//  SD.reset();
   SD.newmatrix() = 0;
-  CD.reset();
-  SD.reset();
-  Linfo.reset();
   SD.rate() = 0.;
+  CD.reset();
+  Linfo.reset();
 }
 
 /*******************************************************************/
