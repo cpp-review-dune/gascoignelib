@@ -3,6 +3,7 @@ SUBDIRS(
    Example2
    Example3
    Example4
+   Example5
 #  Laplace2D 
 #  Laplace3D 
 #  NavierStokes2D 
