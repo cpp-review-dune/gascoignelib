@@ -4,6 +4,7 @@ SUBDIRS(
    Example3
    Example4
    Example5
+   MeshTest
 #  Laplace2D 
 #  Laplace3D 
 #  NavierStokes2D 
