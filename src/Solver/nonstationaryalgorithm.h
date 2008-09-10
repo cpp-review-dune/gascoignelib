@@ -35,9 +35,10 @@ public:
 			 const Gascoigne::NumericInterface* NI,
 			 const Gascoigne::ProblemContainer* PC);
 
-  void ImplicitEuler(const std::string& problemlabel);
-  void CrankNicholson(const std::string& problemlabel);
-  void ThetaScheme(const std::string& problemlabel);
+  void ImplicitEuler            (const std::string&);
+  void CrankNicholson           (const std::string&);
+  void ThetaScheme              (const std::string&);
+  void FractionalStepThetaScheme(const std::string&);
 };
 }
 
