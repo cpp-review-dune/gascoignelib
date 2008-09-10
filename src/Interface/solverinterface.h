@@ -68,7 +68,7 @@ namespace Gascoigne
       virtual void ConstructInterpolator(MgInterpolatorInterface* I, const MeshTransferInterface* MT)=0;
 
       virtual void VisuGrid(const std::string& name, int i) const=0;
-
+      virtual void SetTimeData(double dt, double theta, double time) {};
 
       virtual void AddNodeVector(const std::string&, const VectorInterface& q)=0;
       virtual void AddCellVector(const std::string&, const VectorInterface& q)=0;
@@ -185,6 +185,7 @@ namespace Gascoigne
       virtual void ComputeIlu(const VectorInterface& u) const=0;
       virtual void ComputeIlu() const=0;
       virtual void AssembleDualMatrix(const VectorInterface& gu, double d)=0;
+      virtual void MassMatrixVector(VectorInterface& f, const VectorInterface& gu, double d) const=0;
 
 		//
 		/// vector
