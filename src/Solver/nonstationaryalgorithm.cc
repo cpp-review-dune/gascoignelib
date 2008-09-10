@@ -42,7 +42,7 @@ void NonstationaryAlgorithm::InitSolution(const string& initial, VectorInterface
 {
   GetMultiLevelSolver()->GetSolver()->Zero(u);
 
-  std::string reload = "Results/stationary.00003.bup";
+  std::string reload = "stationary.00003.bup";
 
   if      (initial=="analytic") GetSolver()->SolutionInit(u);
   else if (initial=="file")     GetSolver()->Read(u,reload);
