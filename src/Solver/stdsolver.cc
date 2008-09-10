@@ -1133,15 +1133,12 @@ void StdSolver::AssembleMatrix(const VectorInterface& gu, double d)
       assert(FEQ);
       GetFaceDiscretization()->FaceMatrix(*GetMatrix(),u,*FEQ,d);
     }
-  
-  
   const BoundaryEquation* BE = GetProblemDescriptor()->GetBoundaryEquation();
   if(BE)
   {
     const BoundaryManager* BM = GetProblemDescriptor()->GetBoundaryManager();
     GetDiscretization()->BoundaryMatrix(*GetMatrix(),u,BM->GetBoundaryEquationColors(),*BE,d);
   }
-
   DirichletMatrix();
   HNZero(gu);
   HNZeroData();

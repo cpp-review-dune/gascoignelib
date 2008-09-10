@@ -290,6 +290,8 @@ class StdSolver : public virtual SolverInterface
   void ComputeIlu(const VectorInterface& u) const;
   void ComputeIlu() const;
   void AssembleDualMatrix(const VectorInterface& gu, double d);
+  void MassMatrixVector(VectorInterface& f, const VectorInterface& gu, double d) const { abort();}
+
   //
   /// vector - "postprocessing"
   //

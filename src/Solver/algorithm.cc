@@ -83,7 +83,8 @@ void Algorithm::Newton(VectorInterface& u, const VectorInterface& f, NLInfo& nli
       
       if (nm1+nm2!=0)
 	{
-	  cout << "M";
+	  if (nm1) cout << "N";
+	  if (nm2) cout << "M";
 	  AssembleMatrixAndIlu(u);
 	  nlinfo.control().matrixmustbebuild() = 0;
 	}

@@ -185,8 +185,6 @@ void MultiLevelAlgorithm::LinearSolve(VectorInterface& du, const VectorInterface
 void MultiLevelAlgorithm::NonLinear(VectorInterface& u, VectorInterface& f,
 				    const std::string& problemlabel, int iter)
 {
-  PrintMeshInformation();
-  
   GetSolver()->SubtractMean(u);
   GetSolver()->SetBoundaryVector(u);
   
@@ -259,6 +257,7 @@ void MultiLevelAlgorithm::GlobalRefineLoop(const std::string& problemlabel)
       if (iter<niter) 
 	{
 	  GetMeshAgent()->global_refine(1);
+	  GetSolverInfos()->GetNLInfo().control().matrixmustbebuild() = 1;
 	}
     }
   DeleteVector(u);
@@ -288,7 +287,6 @@ void MultiLevelAlgorithm::LocalRefineLoop(const std::string& problemlabel, Funct
       cout << "\n======================== " << iter << " === LocalRefineLoop ===" << endl;
 
       GetMultiLevelSolver()->ReInit(problemlabel);
-      GetSolverInfos()->GetNLInfo().control().matrixmustbebuild() = 1;
 
       ReInitVector(u); 
       ReInitVector(f); 
@@ -325,6 +323,7 @@ void MultiLevelAlgorithm::LocalRefineLoop(const std::string& problemlabel, Funct
       CopyVector(uold,u);
 
       GetMeshAgent()->refine_nodes(refnodes);
+      GetSolverInfos()->GetNLInfo().control().matrixmustbebuild() = 1;
     }
   DeleteVector(u);
   DeleteVector(f);
