@@ -15,5 +15,10 @@ Example4:  Navier-Stokes-Gleichung (rundes Hindernis) mit
            lokaler Verfeinerung, Energiefehlerschätzer,
            mit Interpolation auf neue Gitter.
 
+Example5: Navier-Stokes-Gleichung 3d (Richter)
+
+Example6: Navier-Stokes-Gleichung instationär.
+
+
 
            
