@@ -12,13 +12,13 @@ niter       400
 refiner     global
 dt          1.
 theta       0.5
-initial     file
+initial     stationary.00003.bup
 
 //Block Equation
 
-visc            0.0001
-delta           0.2
-alpha           0.2
+visc            0.001
+delta           0.1
+alpha           0.1
 
 //Block Mesh
 
@@ -43,7 +43,7 @@ solver            instat
 
 discname                Q1Lps
 ndirect                 100
-//ilum                    3  0.2  0.1  0.1
+ilum                    3  0.01  0.  0.
 iterpre                 2
 iterpost                2
 iterexact               100

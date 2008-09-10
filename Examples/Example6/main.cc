@@ -58,7 +58,8 @@ int main(int argc, char** argv)
   NonstationaryAlgorithm B;
   B.BasicInit(&paramfile,&N,&PC);
   //B.ImplicitEuler("NavierStokesBenchmark");
-  B.ThetaScheme("NavierStokesBenchmark");
+  //B.ThetaScheme("NavierStokesBenchmark");
+  B.FractionalStepThetaScheme("NavierStokesBenchmark");
 
   return 0;
 }
