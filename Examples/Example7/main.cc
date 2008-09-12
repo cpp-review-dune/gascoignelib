@@ -37,8 +37,8 @@ class DualDragProblemDescriptor : public ProblemDescriptorBase
 
     FP = fp;
 
-    int    comp  = FP->GetComps()[0];
-    double scale = FP->GetScales()[0];
+    nvector<int>    comp  = FP->GetComps();
+    nvector<double> scale = FP->GetScales();
     std::set<int> col = FP->GetColors();
     
     GetDirichletDataPointer()  = new DirichletDataByColor(comp,col,scale);
