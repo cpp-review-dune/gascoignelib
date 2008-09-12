@@ -165,7 +165,7 @@ void NonstationaryAlgorithm::FractionalStepThetaScheme(const std::string& proble
 
   for (int iter=1; iter<=niter; iter++)
     {
-      cout << "\n============== " << iter << " ==== theta-scheme === ";
+      cout << "\n============== " << iter << " ==== fractional-theta === ";
       cout << " [t,dt] "<< time << " " << dt << "\n";
 
       int step = iter%3;

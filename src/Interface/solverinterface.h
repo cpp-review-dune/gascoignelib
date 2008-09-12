@@ -209,6 +209,9 @@ namespace Gascoigne
       //
       virtual void BoundaryInit(VectorInterface& u) const=0;
       virtual void SolutionInit(VectorInterface& u) const=0;
+
+      virtual double ScalarProductWithFluctuations(DoubleVector& eta, const VectorInterface& gf, 
+						   const VectorInterface& gz) const=0;
 };
 }
 #endif

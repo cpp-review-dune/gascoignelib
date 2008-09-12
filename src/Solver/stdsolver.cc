@@ -26,6 +26,7 @@
 #include  "gascoignevisualization.h"
 #include  "backup.h"
 #include  "visu_eps.h"
+#include  "pi.h"
 
 #include  "diracrighthandside.h"
 
@@ -1531,4 +1532,29 @@ void StdSolver::RhsCurve(VectorInterface &f, const Curve &C,int comp,int N) cons
   HNZeroData();
   HNDistribute(f);
 }
+/*--------------------------------------------------------*/
+
+double StdSolver::ScalarProductWithFluctuations(DoubleVector& eta, const VectorInterface& gf, 
+						const VectorInterface& gz) const
+{
+  const GlobalVector& f = GetGV(gf);
+  const GlobalVector& z = GetGV(gz);
+
+  GlobalVector dz(f.ncomp(),f.n());
+
+  dz.zero();
+  Pi pi;
+  pi.Init(GetMesh());
+  pi.vmult(dz,z);
+
+  for(int i=0; i<z.n(); i++)
+    {
+      for (int c=0; c<z.ncomp(); c++)
+	{
+	  eta[i] += fabs(f(i,c)*dz(i,c));
+	}
+    } 
+  return dz * f;
+}
+
 }

@@ -336,6 +336,8 @@ class StdSolver : public virtual SolverInterface
   double Norm(const VectorInterface& dst) const;  
 
   void RhsCurve(VectorInterface &f, const Curve &C,int comp,int N) const;
+  double ScalarProductWithFluctuations(DoubleVector& eta, const VectorInterface& gf, 
+				       const VectorInterface& gz) const;
 };
 }
 

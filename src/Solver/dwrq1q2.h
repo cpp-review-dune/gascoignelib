@@ -21,6 +21,12 @@ class DwrQ1Q2
 
   double ScalarProduct(nvector<double>& eta, const VectorInterface& gf, 
 		       const VectorInterface& gz) const;
+
+ public:
+
+  DwrQ1Q2(SolverInterface& SR);
+  virtual ~DwrQ1Q2() {};
+
   double ScalarProductWithFluctuations(nvector<double>& eta, 
 				       const VectorInterface& gf, 
 				       const VectorInterface& gz) const;
@@ -31,11 +37,6 @@ class DwrQ1Q2
   void DualResidualsHigher(VectorInterface& gf, const VectorInterface& gu, 
 			   const VectorInterface& gz, 
 			   const ProblemDescriptorInterface& PDI);
-
- public:
-
-  DwrQ1Q2(SolverInterface& SR);
-  virtual ~DwrQ1Q2() {};
 
   double Estimator(nvector<double>& eta, VectorInterface& gf, 
 		   const VectorInterface& gu, const VectorInterface& gz,
