@@ -774,16 +774,13 @@ void StdSolver::Form(VectorInterface& gy, const VectorInterface& gx, double d) c
       const FaceEquation* FEQ = GetProblemDescriptor()->GetFaceEquation();
       assert(FEQ);
       GetFaceDiscretization()->FaceForm(GetGV(gy),GetGV(gx),*FEQ,d);
-    }
-  
-  
+    }  
   const BoundaryEquation* BE = GetProblemDescriptor()->GetBoundaryEquation();
   if(BE)
   {
     const BoundaryManager* BM = GetProblemDescriptor()->GetBoundaryManager();
     GetDiscretization()->BoundaryForm(GetGV(gy),GetGV(gx),BM->GetBoundaryEquationColors(),*BE,d);
   }
-
   HNZero(gx);
   HNZeroData();
   HNDistribute(gy);
@@ -905,32 +902,28 @@ void StdSolver::AssembleError(GlobalVector& eta, const VectorInterface& u, Globa
 
 /*-------------------------------------------------------*/
 
-double StdSolver::ComputeFunctional(VectorInterface& gf, const VectorInterface& gu, const Functional* FP) const
+double StdSolver::ComputeFunctional(VectorInterface& gf, const VectorInterface& gu, const Functional* FP)
 {
-  VectorInterface gh("mg0");
+  VectorInterface gh("XXX");
+  ReInitVector(gh);
+  double val = 0.;
 
-  const DomainFunctional* DFP = dynamic_cast<const DomainFunctional*>(FP);
-  if(DFP)
-    {
-      return ComputeDomainFunctional(gf,gu,gh,DFP);
-    }
+  const DomainFunctional*   DFP = dynamic_cast<const DomainFunctional*>(FP);
   const BoundaryFunctional* BFP = dynamic_cast<const BoundaryFunctional*>(FP);
-  if(BFP)
-    {
-      return ComputeBoundaryFunctional(gf,gu,gh,BFP);
-    }
   const ResidualFunctional* RFP = dynamic_cast<const ResidualFunctional*>(FP);
-  if(RFP)
+  const PointFunctional*   NPFP = dynamic_cast<const PointFunctional*>(FP);
+
+  if      (DFP) val = ComputeDomainFunctional(gf,gu,gh,DFP);
+  else if (BFP) val = ComputeBoundaryFunctional(gf,gu,gh,BFP);
+  else if(RFP)  val = ComputeResidualFunctional(gf,gu,gh,RFP);
+  else if(NPFP) val = ComputePointFunctional(gf,gu,gh,NPFP);
+  else
     {
-      return ComputeResidualFunctional(gf,gu,gh,RFP);
+      cerr << "Functional must be either of type DomainFunctional, BoundaryFunctional or PointFunctional!!!" << endl;
+      abort();
     }
-  const PointFunctional* NPFP = dynamic_cast<const PointFunctional*>(FP);
-  if(NPFP)
-    {
-      return ComputePointFunctional(gf,gu,gh,NPFP);
-    }
-  cerr << "Functional must be either of type DomainFunctional, BoundaryFunctional or PointFunctional!!!" << endl;
-  abort();
+  DeleteVector(gh);
+  return val;
 }
 
 /*-------------------------------------------------------*/

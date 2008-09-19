@@ -37,7 +37,7 @@ protected:
 
   // new vectors
 
-  DoubleVector ComputeFunctionals(VectorInterface& f, VectorInterface& u) const;
+  DoubleVector ComputeFunctionals(VectorInterface& f, VectorInterface& u);
 
   DoubleVector GetExactValues() const;
 

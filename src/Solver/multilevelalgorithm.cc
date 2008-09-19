@@ -14,14 +14,14 @@ namespace Gascoigne
 
 /*-----------------------------------------*/
 
-void MultiLevelAlgorithm::BasicInit(const ParamFile* paramfile, const NumericInterface* NI,
-				  const ProblemContainer* PC)
+void MultiLevelAlgorithm::BasicInit(const ParamFile* paramfile, MultiLevelSolver* MLS, const NumericInterface* NI,
+				    const ProblemContainer* PC)
 {
   Algorithm::BasicInit(paramfile,NI);
 
-  _S = GetNumeric()->NewMultiLevelSolver();
+  _S = MLS;
 
-  GetMultiLevelSolver()->BasicInit(GetMeshAgent(),paramfile,PC,NULL);
+  GetMultiLevelSolver()->BasicInit(NI,GetMeshAgent(),paramfile,PC);
 
   DataFormatHandler DFH;
   DFH.insert("coarselevel", &_coarselevel, 0);
@@ -119,7 +119,7 @@ void MultiLevelAlgorithm::VWCycle(vector<double>& res, vector<double>& rw,
 
       rw[l] = GetSolver(l-1)->Norm(u);
 
-      GetSolver(l)  ->Zero(v);
+      GetSolver(l)  -> Zero(v);
       GetSolver(l-1)-> HNAverage(u);
       I[l-1]-> prolongate_add(GetSolver(l)->GetGV(v),GetSolver(l-1)->GetGV(u));
       GetSolver(l-1)-> HNZero(u);
@@ -187,7 +187,7 @@ void MultiLevelAlgorithm::NonLinear(VectorInterface& u, VectorInterface& f,
 {
   GetSolver()->SubtractMean(u);
   GetSolver()->SetBoundaryVector(u);
-  
+
   // Compute RHS
   
   GetSolver()->Zero(f); 
@@ -296,10 +296,18 @@ void MultiLevelAlgorithm::LocalRefineLoop(const std::string& problemlabel, Funct
       
       NonLinear(u,f,problemlabel,iter);
 
-      DoubleVector j = GetMultiLevelSolver()->ComputeFunctionals(f,u,FC);
-      cout << "Functionals: ";
-      for (int i=0; i<j.size(); i++) cout << j[i] << " "; cout << endl;
-
+      if (FC!=NULL)
+	{
+	  int n = FC->size();
+	  DoubleVector j(n,0.);
+	  int i = 0;
+	  for (FunctionalContainer::const_iterator it = FC->begin(); it!=FC->end();++it,++i)
+	    {
+	      j[i] = GetSolver()->ComputeFunctional(f,u,it->second);
+	    }
+	  cout << "Functionals: ";
+	  for (int i=0; i<j.size(); i++) cout << j[i] << " "; cout << endl;
+	}
       StdSolver* S = dynamic_cast<StdSolver*>(GetSolver()); assert(S);
       
       MeshAgent* MA = dynamic_cast<MeshAgent*>(GetMeshAgent()); assert(MA);
@@ -325,8 +333,6 @@ void MultiLevelAlgorithm::LocalRefineLoop(const std::string& problemlabel, Funct
       GetMeshAgent()->refine_nodes(refnodes);
       GetSolverInfos()->GetNLInfo().control().matrixmustbebuild() = 1;
     }
-  DeleteVector(u);
-  DeleteVector(f);
 }
 
 /*-----------------------------------------*/

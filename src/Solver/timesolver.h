@@ -3,6 +3,7 @@
 
 #include  "stdsolver.h"
 #include  "simplematrix.h"
+#include  "cginfo.h"
 
 /*-------------------------------------------------------------*/
 
@@ -33,90 +34,32 @@ protected:
 
 public:
 
-  TimeSolver() : StdSolver(), _MMP(NULL), theta(0.), dt(0.), time(0.) {}
+  TimeSolver() : StdSolver(), _MMP(NULL), theta(1.), dt(0.), time(0.) {}
   ~TimeSolver() { if (_MMP) { delete _MMP; _MMP=NULL;} };
 
-  string GetName() const {  return "TimeSolver";}
+  std::string GetName() const {  return "TimeSolver";}
 
-  void SetTimeData(double _dt, double _theta, double _time) 
-  {
-    dt    = _dt; 
-    theta = _theta;
-    time  = _time;
-    assert(dt>0.);
-    assert(theta>0.);
-    GetProblemDescriptor()->SetTime(time,dt);
-  };
+  void SetTimeData(double _dt, double _theta, double _time);
 
   const MatrixInterface* GetMassMatrix() const {return _MMP;}
         MatrixInterface* GetMassMatrix()       {return _MMP;}
 
-  void RegisterMatrix()
-  {
-    const Equation*  EQ = GetProblemDescriptor()->GetEquation();
-    assert(EQ);
-    int ncomp = EQ->GetNcomp();
-    
-    if (GetMassMatrixPointer()==NULL)
-      GetMassMatrixPointer() = NewMassMatrix(ncomp,_matrixtype);
-    
-    StdSolver::RegisterMatrix();
-  }
+  void RegisterMatrix();
+  void SetProblem(const ProblemDescriptorInterface& PDX);
 
-  void SetProblem(const ProblemDescriptorInterface& PDX)
-  {
-    const Equation* EQ = PDX.GetEquation();
-    if (EQ) 
-      {
-	_TP.reservesize(EQ->GetNcomp(),EQ->GetNcomp(),0.);
-	EQ->SetTimePattern(_TP);
-      }   
-    StdSolver::SetProblem(PDX);
-  }
+  void ReInitMatrix();
 
-  void ReInitMatrix() 
-  {
-    GetDiscretization()->InitFilter(_PF);
-    SparseStructure SA;
-    GetDiscretization()->Structure(&SA);
-    
-    GetMatrix()->ReInit(&SA);
-    GetIlu()   ->ReInit(&SA);
-    
-    GetMassMatrix()->ReInit(&SA);
-    GetMassMatrix()->zero();
-    GetDiscretization()->MassMatrix(*GetMassMatrix()); 
-  }
-
-  MatrixInterface* NewMassMatrix(int ncomp, const string& matrixtype)
+  MatrixInterface* NewMassMatrix(int ncomp, const std::string& matrixtype)
     {
       return new SimpleMatrix;
     }
 
-  void AssembleMatrix(const VectorInterface& gu, double d)
-  {
-    StdSolver::AssembleMatrix(gu,d);
-
-    double scale = d/(dt*theta);
-    GetMatrix()->AddMassWithDifferentStencil(GetMassMatrix(),_TP,scale);
-    
-    StdSolver::DirichletMatrix();
-  }
-  
-  void Form(VectorInterface& gy, const VectorInterface& gx, double d) const
-  {
-    StdSolver::Form(gy,gx,d);
-   
-    double scale = d/(dt*theta);
-    MassMatrixVector(gy,gx,scale);
-  }
-
-  void MassMatrixVector(VectorInterface& gf, const VectorInterface& gu, double d) const
-  {
-          GlobalVector& f = GetGV(gf);
-    const GlobalVector& u = GetGV(gu);
-    GetMassMatrix()->vmult_time(f,u,_TP,d);
-  }
+  void AssembleMatrix(const VectorInterface& gu, double d);
+  void Form(VectorInterface& gy, const VectorInterface& gx, double d) const;
+  void MassMatrixVector(VectorInterface& gf, const VectorInterface& gu, double d) const;
+  void InverseMassMatrix(VectorInterface& u, const VectorInterface& f, CGInfo& info);
+  void precondition(VectorInterface& u, const VectorInterface& f);
+  void cgvmult(VectorInterface& y, const VectorInterface& x, double d) const;
 };
 
 /*-------------------------------------------------------------*/

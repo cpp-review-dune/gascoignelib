@@ -59,7 +59,7 @@ void StdLoop::BasicInit(const ParamFile* paramfile, const ProblemContainer* PC, 
 
 /*-------------------------------------------------------*/
 
-DoubleVector StdLoop::ComputeFunctionals(VectorInterface& f, VectorInterface& u) const
+DoubleVector StdLoop::ComputeFunctionals(VectorInterface& f, VectorInterface& u)
 {
   DoubleVector j = GetMultiLevelSolver()->ComputeFunctionals(f,u);
   return j;

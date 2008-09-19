@@ -2,7 +2,7 @@
 #define  __MultiLevelAlgorithm_h
 
 #include  "algorithm.h"
-#include  "multilevelsolverinterface.h"
+#include  "multilevelsolver.h"
 
 /*-----------------------------------------*/
 
@@ -20,8 +20,10 @@ class MultiLevelAlgorithm : public Algorithm
 {
  private:
 
-  MultiLevelSolverInterface*  _S;
+  MultiLevelSolver*           _S;
+
   int                         _coarselevel;
+
   std::string                 _mgtype;
   double                      _mgomega;
   
@@ -33,8 +35,8 @@ class MultiLevelAlgorithm : public Algorithm
   virtual const SolverInterface* GetSolver(int i) const { return _S->GetSolver(i);}
   virtual       SolverInterface* GetSolver(int i)       { return _S->GetSolver(i);}
 
-  virtual const MultiLevelSolverInterface* GetMultiLevelSolver() const { return _S;}
-  virtual       MultiLevelSolverInterface* GetMultiLevelSolver()       { return _S;}
+  virtual const MultiLevelSolver* GetMultiLevelSolver() const { return _S;}
+  virtual       MultiLevelSolver* GetMultiLevelSolver()       { return _S;}
 
   void  ReInitVector(VectorInterface& u) const { _S->ReInitVector(u);} 
   void  DeleteVector(VectorInterface& u) const { _S->DeleteVector(u);}
@@ -49,10 +51,10 @@ class MultiLevelAlgorithm : public Algorithm
 public:
 
   MultiLevelAlgorithm() :  _S(NULL) {}
-  virtual ~MultiLevelAlgorithm() { if (_S) delete _S;}
+  virtual ~MultiLevelAlgorithm() {}
 
-  virtual void BasicInit(const ParamFile* paramfile, const NumericInterface* NI,
-			 const ProblemContainer* PC);
+  void BasicInit(const ParamFile* paramfile, MultiLevelSolver* MLS, const NumericInterface* NI,
+		 const ProblemContainer* PC);
 
   void RunLinear(const std::string& problemlabel);
   void RunNonLinear(const std::string& problemlabel,int iter=0);

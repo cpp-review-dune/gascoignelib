@@ -165,6 +165,15 @@ void StdTimeSolver::TimeRhsOperator(VectorInterface& gf, const VectorInterface& 
 
 /*-------------------------------------------------------*/
 
+void StdTimeSolver::MassMatrixVector(VectorInterface& gf, const VectorInterface& gu, double d) const
+{
+  GlobalVector& f = GetGV(gf);
+  const GlobalVector& u = GetGV(gu);
+  GetMassMatrix()->vmult_time(f,u,GetTimePattern(),d);
+}
+
+/*-------------------------------------------------------*/
+
 void StdTimeSolver::TimeRhs(int k, VectorInterface& gf) const
 {
   StdSolver::Rhs(gf,_rhs[k-1]);
@@ -177,6 +186,7 @@ void StdTimeSolver::Form(VectorInterface& gy, const VectorInterface& gx, double 
   StdSolver::Form(gy,gx,d);
 
   if (_dt==0.) return;
+
   assert(_theta>0.);
 
   double scale = d/(_dt*_theta);
@@ -243,7 +253,7 @@ string StdTimeSolver::PrecondCGMass(GlobalVector& u, GlobalVector& f, const Time
   SM->vmult_time(f,u,TP,-s);
 
   SM->JacobiVector(u);
-  SM->JacobiVectorInv(f);
+  SM->Jacobi(f);
 
   r.equ(1,f);
   d.equ(1,f);
@@ -280,7 +290,7 @@ string StdTimeSolver::PrecondCGMass(GlobalVector& u, GlobalVector& f, const Time
       d.sequ(betacg,1.,r);
     }
 
-  SM->JacobiVectorInv(u);
+  SM->Jacobi(u);
 
   if(iter==GetSolverData().GetCgMassMaxIter())
   {

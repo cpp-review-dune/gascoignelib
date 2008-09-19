@@ -68,9 +68,9 @@ class StdMultiLevelSolver : public virtual MultiLevelSolverInterface
   virtual void SetFunctionalContainer(const FunctionalContainer* FC) { _FC=FC;     }
 
   const DoubleVector GetExactValues() const;
-  const DoubleVector ComputeFunctionals(VectorInterface& f, const VectorInterface& u) const;
+  const DoubleVector ComputeFunctionals(VectorInterface& f, const VectorInterface& u);
   const DoubleVector ComputeFunctionals(VectorInterface& f, const VectorInterface& u,
-					FunctionalContainer* FC) const;
+					FunctionalContainer* FC);
   
   virtual SolverInterface*& GetSolverPointer(int l) {assert(l<_SP.size()); return _SP[l];}
   virtual void SetComputeLevel(int level) {ComputeLevel=level;}
@@ -166,7 +166,7 @@ class StdMultiLevelSolver : public virtual MultiLevelSolverInterface
   
   virtual void LinearMg(int minlevel, int maxlevel, VectorInterface& u, const VectorInterface& f, CGInfo&);
 
-  double ComputeFunctional(VectorInterface& f, const VectorInterface& u, const std::string& label) const;
+  double ComputeFunctional(VectorInterface& f, const VectorInterface& u, const std::string& label);
   
   void AssembleDualMatrix(VectorInterface& u);
 

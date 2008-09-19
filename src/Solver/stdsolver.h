@@ -103,7 +103,7 @@ class StdSolver : public virtual SolverInterface
   
   // 0.3 Matrizen
 
-  MatrixInterface* GetMatrix() const { return _MAP;}
+  virtual MatrixInterface* GetMatrix() const { return _MAP;}
   MatrixInterface*& GetMatrixPointer() {return _MAP;}
 
   virtual DiscretizationInterface*& GetDiscretizationPointer()     {return _ZP;}
@@ -160,7 +160,7 @@ class StdSolver : public virtual SolverInterface
 
   void ReInitMatrix();
 
-  IluInterface* GetIlu() const {assert(_MIP); return _MIP;}
+  virtual IluInterface* GetIlu() const {assert(_MIP); return _MIP;}
   virtual double clock_vmult() const {return _vm.read();}
   virtual double clock_ilu  () const {return _il.read();}
   virtual double clock_solve() const {return _so.read();}
@@ -298,7 +298,7 @@ class StdSolver : public virtual SolverInterface
 
   void ComputeError(const VectorInterface& u, GlobalVector& err) const;
   void AssembleError(GlobalVector& eta, const VectorInterface& u, GlobalVector& err) const;
-  double ComputeFunctional(VectorInterface& f, const VectorInterface& u, const Functional* FP) const;
+  double ComputeFunctional(VectorInterface& f, const VectorInterface& u, const Functional* FP);
 
   virtual double ComputeBoundaryFunctional(VectorInterface& f, const VectorInterface& u, VectorInterface& z, const BoundaryFunctional* FP) const;
   virtual double ComputeDomainFunctional(VectorInterface& f, const VectorInterface& u, VectorInterface& z, const DomainFunctional* FP) const;

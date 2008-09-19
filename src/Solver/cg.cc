@@ -1,9 +1,9 @@
 #include  "../LinAlg/cg.xx"
-#include  "stdmultilevelsolver.h"
+#include  "timesolver.h"
 
 /********************************************************************/
 
 namespace Gascoigne
 {
-// template class CG<SolverInterface,StdMultiLevelSolver,VectorInterface>;
+template class CG<TimeSolver,VectorInterface>;
 }

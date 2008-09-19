@@ -63,6 +63,7 @@ public:
   void SetMassMatrix(MatrixInterface &MM, bool init=false);
   const MatrixInterface* GetMassMatrix() const {return _MMP;}
   MatrixInterface* GetMassMatrix() {return _MMP;}
+  void MassMatrixVector(VectorInterface& gf, const VectorInterface& gu, double d) const;
 };
 }
 

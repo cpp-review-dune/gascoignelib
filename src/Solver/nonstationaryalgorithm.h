@@ -17,11 +17,9 @@ namespace Gascoigne
 
 class NonstationaryAlgorithm : public MultiLevelAlgorithm
 {
- private:
+ protected:
 
   double  dt, time, theta;
-
- protected:
 
   void InitSolution(const std::string& initial, Gascoigne::VectorInterface& u) const;
   void TimeInfoBroadcast();
@@ -31,7 +29,7 @@ public:
   NonstationaryAlgorithm() :  MultiLevelAlgorithm() {}
   virtual ~NonstationaryAlgorithm() {}
 
-  virtual void BasicInit(const Gascoigne::ParamFile* paramfile, 
+  virtual void BasicInit(const Gascoigne::ParamFile* paramfile, MultiLevelSolver* MLS,
 			 const Gascoigne::NumericInterface* NI,
 			 const Gascoigne::ProblemContainer* PC);
 

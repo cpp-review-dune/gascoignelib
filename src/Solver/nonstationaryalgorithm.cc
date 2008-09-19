@@ -10,11 +10,11 @@ namespace Gascoigne
 {
 /*-----------------------------------------*/
 
-void NonstationaryAlgorithm::BasicInit(const ParamFile* paramfile, 
+void NonstationaryAlgorithm::BasicInit(const ParamFile* paramfile, MultiLevelSolver* MLS,
 				       const NumericInterface* NI,
 				       const ProblemContainer* PC)
 {
-  MultiLevelAlgorithm::BasicInit(paramfile,NI,PC);
+  MultiLevelAlgorithm::BasicInit(paramfile,MLS,NI,PC);
 
   DataFormatHandler DFH;
   DFH.insert("dt"    ,&dt    ,1.);
@@ -44,6 +44,7 @@ void NonstationaryAlgorithm::InitSolution(const string& initial, VectorInterface
 
   if      (initial=="analytic") GetSolver()->SolutionInit(u);
   else if (initial=="boundary") GetSolver()->BoundaryInit(u);
+  else if (initial=="zero")     GetSolver()->Zero(u);
   else                          GetSolver()->Read(u,initial);
 
   GetSolver()->SetBoundaryVector(u);
