@@ -14,6 +14,12 @@ namespace Gascoigne
     assert(__cols.size()>0);
   }
 
+  DirichletDataByColor::DirichletDataByColor(int comps, std::set<int>& cl, double s) : __cols(cl)
+  {
+    __comps .push_back(comps);
+    __scales.push_back(s);
+  }
+
   /*-----------------------------------------*/
 
   DirichletDataByColor::DirichletDataByColor(const vector<string>& args)

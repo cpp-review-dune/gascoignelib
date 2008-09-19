@@ -19,6 +19,7 @@ namespace Gascoigne
     public:
       
       DirichletDataByColor(nvector<int> comps,const std::set<int>& cl, nvector<double> s);
+      DirichletDataByColor(int comps, std::set<int>& cl, double s);
       DirichletDataByColor(const std::vector<std::string>& args);
       ~DirichletDataByColor() {}
       

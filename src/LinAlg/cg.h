@@ -6,20 +6,18 @@
 /********************************************************************/
 
 // S = Solver
-// P = Preconditioner
 // V = Vector
 
 namespace Gascoigne
 {
-template <class S, class P, class V>
+template <class S, class V>
 class CG
 {
   S   &solver;
-  P   &precon;
 
 public:
 
-  CG(S& s, P& p) : solver(s), precon(p) {}
+  CG(S& s) : solver(s) {}
 
   void solve(V& x, const V& b, CGInfo& info);
 };

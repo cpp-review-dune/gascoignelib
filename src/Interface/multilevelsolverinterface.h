@@ -42,9 +42,9 @@ namespace Gascoigne
       virtual void SetMonitorPtr(Monitor* mon)=0;
 
       virtual const DoubleVector GetExactValues() const=0;
-      virtual const DoubleVector ComputeFunctionals(VectorInterface& f, const VectorInterface& u) const=0;
+      virtual const DoubleVector ComputeFunctionals(VectorInterface& f, const VectorInterface& u)=0;
       virtual const DoubleVector ComputeFunctionals(VectorInterface& f, const VectorInterface& u,
-						    FunctionalContainer* FC) const=0;
+						    FunctionalContainer* FC)=0;
       
       virtual void ReInitMatrix()=0;
 
@@ -89,7 +89,7 @@ namespace Gascoigne
       }
       virtual void InterpolateSolution(VectorInterface& u, const GlobalVector& uold) const=0;
       virtual void InterpolateCellSolution(VectorInterface& u, const GlobalVector& uold) const=0;
-      virtual double ComputeFunctional(VectorInterface& f, const VectorInterface& u, const std::string& label) const=0;
+      virtual double ComputeFunctional(VectorInterface& f, const VectorInterface& u, const std::string& label)=0;
 
       virtual void AssembleDualMatrix(VectorInterface& u)=0;
       virtual void vmulteq(VectorInterface& y, const VectorInterface&  x) const=0;

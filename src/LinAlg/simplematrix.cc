@@ -278,11 +278,11 @@ void SimpleMatrix::JacobiVector(GlobalVector &y) const
 
 /*-----------------------------------------*/
 
-void SimpleMatrix::JacobiVectorInv(GlobalVector &y) const
+void SimpleMatrix::Jacobi(GlobalVector &y) const
 {
   int n = ST.n();
   assert(n==y.n());
-  
+
   for(int i=0; i<n; i++)
   {
     for(int c=0; c<y.ncomp(); c++)

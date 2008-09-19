@@ -186,7 +186,7 @@ namespace Gascoigne
       virtual void ComputeIlu() const=0;
       virtual void AssembleDualMatrix(const VectorInterface& gu, double d)=0;
       virtual void MassMatrixVector(VectorInterface& f, const VectorInterface& gu, double d) const=0;
-
+      virtual void InverseMassMatrix(VectorInterface& u, const VectorInterface& f) const {};
 		//
 		/// vector
 		//
@@ -202,7 +202,7 @@ namespace Gascoigne
       //
       virtual void ComputeError(const VectorInterface& u, GlobalVector& err) const=0;
       virtual void AssembleError(GlobalVector& eta, const VectorInterface& u, GlobalVector& err) const=0;
-      virtual double ComputeFunctional(VectorInterface& f, const VectorInterface& u, const Functional* FP) const=0;
+      virtual double ComputeFunctional(VectorInterface& f, const VectorInterface& u, const Functional* FP)=0;
 
       //
       /// vector - initialize

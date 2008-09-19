@@ -85,6 +85,8 @@ namespace Gascoigne
       virtual void FurbishInterface (double d, const nvector<int>&   elements, const nvector<int>&   start, const nvector<float>& values)
 	{ std::cerr << "\"MatrixInterface::FurbishInterface\" not written!" << std::endl; assert(0); }
       
+      virtual void PrepareJacobi(double s)
+	{ std::cerr << "\"MatrixInterface::PrepareJacobi\" not written!" << std::endl; assert(0); }
       virtual void Jacobi           (GlobalVector& x) const
 	{ std::cerr << "\"MatrixInterface::Jacobi\" not written!" << std::endl; assert(0); }
       

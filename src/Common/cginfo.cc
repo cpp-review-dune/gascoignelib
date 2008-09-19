@@ -188,11 +188,20 @@ bool CGInfo::check(double resi, double cori)
     }
   if (UD.printstep() && !(CD.iteration()%UD.printstep()) )
     {
-      int prec = cout.precision();
-      cout.precision(5);
-      cout << UD.text() << " " << CD.iteration() << " Res: " << CD.residual();
-      cout << " Cor: " << CD.correction()<< endl;
-      cout.precision(prec);
+      double rr = statistics().rate();
+      double lr = statistics().lastrate();
+
+      cout << UD.text() << " ";
+      cout.width(3);
+      cout << CD.iteration() << ": ";
+      cout.unsetf(ios::fixed);
+      cout.setf(ios::scientific); 
+      cout.precision(2); 
+      cout << CD.residual() << " [";
+      cout.unsetf(ios::scientific);
+      cout.setf(ios::fixed);
+      cout.width(3);
+      cout << lr << " " << rr << "]" << endl;
     }
   CD.iteration()++;
   if ( CD.status()    == "running"    )  return 0;

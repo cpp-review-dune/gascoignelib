@@ -61,7 +61,7 @@ public:
     
     void PrepareJacobi(double s=1.);
     void JacobiVector(GlobalVector &y) const;
-    void JacobiVectorInv(GlobalVector &y) const;
+    void Jacobi(GlobalVector &y) const;
     void vmult_time_Jacobi(GlobalVector& y, const GlobalVector& x, const TimePattern& TP, double s=1.) const;
 
 };

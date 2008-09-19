@@ -4,7 +4,6 @@
 #include  "meshagentinterface.h"
 #include  "discretizationinterface.h"
 #include  "solverinterface.h"
-#include  "multilevelsolverinterface.h"
 
 namespace Gascoigne
 {
@@ -23,12 +22,8 @@ public:
   virtual SolverInterface*         NewSolver(int level=0)     const 
   { std::cerr << "NumericInterface incomplete (2)" << std::endl; abort(); }
 
-  virtual MultiLevelSolverInterface* NewMultiLevelSolver()     const 
-  { std::cerr << "NumericInterface incomplete (3)" << std::endl; abort(); }
-
   virtual MeshAgentInterface* NewMeshAgent() const
   { std::cerr << "NumericInterface incomplete (4)" << std::endl; abort(); }
-
 };
 
 }
