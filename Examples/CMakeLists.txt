@@ -6,6 +6,7 @@ SUBDIRS(
    Example5
    Example6
    Example7
+   Example8
 #   MeshTest
 #  Laplace2D 
 #  Laplace3D 
