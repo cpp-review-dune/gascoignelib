@@ -38,7 +38,6 @@ public:
 
   DiscretizationInterface*    NewDiscretization(int level) const { return new Q12d; }
   SolverInterface*            NewSolver(int level)         const { return new StdSolver;}
-  MultiLevelSolverInterface*  NewMultiLevelSolver()        const { return new StdMultiLevelSolver;}
   MeshAgentInterface*         NewMeshAgent()               const { return new MeshAgent;}
 };
 
@@ -78,8 +77,9 @@ int main(int argc, char** argv)
   cout << "Algorithm with Multilevel solver:" << endl;
   cout << "=================================" << endl;
 
+  MultiLevelSolver    S;
   MultiLevelAlgorithm B;
-  B.BasicInit(&paramfile,&N,&PC);
+  B.BasicInit(&paramfile,&S,&N,&PC);
   B.RunLinear("laplace");
 
   return 0;

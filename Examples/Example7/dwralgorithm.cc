@@ -125,7 +125,7 @@ void DwrAlgorithm::AdaptiveLoop(const std::string& primallabel,
       ///////////////////////////////
 
       NonLinear(u,f,primallabel,iter);
-
+      
       ///////////////////////////////
       // Compute functionals
       ///////////////////////////////

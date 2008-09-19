@@ -1,10 +1,10 @@
 #include  "../Example6/benchmarkproblem.h"
 #include  "../Example6/benchmarkmeshagent.h"
 #include  "q1lps2d.h"
-#include  "stdmultilevelsolver.h"
+#include  "multilevelsolver.h"
 #include  "dwralgorithm.h"
 #include  "numericinterface.h"
-#include  "timesolver.h"
+#include  "stdsolver.h"
 #include  "benchmarkfunctionals.h"
 #include  "functionalcontainer.h"
 #include  "dirichletdatabycolor.h"
@@ -52,8 +52,7 @@ class Numeric : public NumericInterface
 public:
 
   DiscretizationInterface*    NewDiscretization(int level) const { return new Q1Lps2d; }
-  SolverInterface*            NewSolver(int level)         const { return new TimeSolver;}
-  MultiLevelSolverInterface*  NewMultiLevelSolver()        const { return new StdMultiLevelSolver;}
+  SolverInterface*            NewSolver(int level)         const { return new StdSolver;}
   MeshAgentInterface*         NewMeshAgent()               const { return new CurvedMeshAgent;}
 };
 
@@ -93,10 +92,11 @@ int main(int argc, char** argv)
   // Discretization etc
   //////////////
 
-  Numeric N;
+  Numeric          N;
+  MultiLevelSolver S;
+  DwrAlgorithm     B;
 
-  DwrAlgorithm B;
-  B.BasicInit(&paramfile,&N,&PC);
+  B.BasicInit(&paramfile,&S,&N,&PC);
   B.AdaptiveLoop("NavierStokesBenchmark","DualDrag",j);
 
   return 0;

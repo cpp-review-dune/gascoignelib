@@ -2,7 +2,7 @@
 #include  "benchmarkproblem.h"
 #include  "benchmarkmeshagent.h"
 #include  "q1lps2d.h"
-#include  "stdmultilevelsolver.h"
+#include  "multilevelsolver.h"
 #include  "nonstationaryalgorithm.h"
 #include  "numericinterface.h"
 #include  "timesolver.h"
@@ -11,7 +11,7 @@ using namespace Gascoigne;
 
 /*----------------------------------------------------------------------------*/
 
-class TimeMultiLevelSolver : public StdMultiLevelSolver
+class TimeMultiLevelSolver : public MultiLevelSolver
 {
 public:
   
@@ -28,7 +28,6 @@ public:
   //DiscretizationInterface*    NewDiscretization(int level) const { return new Q12d; }
   DiscretizationInterface*    NewDiscretization(int level) const { return new Q1Lps2d; }
   SolverInterface*            NewSolver(int level)         const { return new TimeSolver;}
-  MultiLevelSolverInterface*  NewMultiLevelSolver()        const { return new TimeMultiLevelSolver;}
   MeshAgentInterface*         NewMeshAgent()               const { return new CurvedMeshAgent;}
 };
 
@@ -53,13 +52,14 @@ int main(int argc, char** argv)
   // Discretization etc
   //////////////
 
-  Numeric N;
-
+  Numeric                N;
+  MultiLevelSolver       S;
   NonstationaryAlgorithm B;
-  B.BasicInit(&paramfile,&N,&PC);
+
+  B.BasicInit(&paramfile,&S,&N,&PC);
   //B.ImplicitEuler("NavierStokesBenchmark");
-  //B.ThetaScheme("NavierStokesBenchmark");
-  B.FractionalStepThetaScheme("NavierStokesBenchmark");
+  B.ThetaScheme("NavierStokesBenchmark");
+  //B.FractionalStepThetaScheme("NavierStokesBenchmark");
 
   return 0;
 }

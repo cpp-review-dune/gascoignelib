@@ -10,13 +10,13 @@ dirichletcomp   80      2       0 1
 
 niter       2000
 refiner     global
-dt          5.e-3
+dt          1.e-3
 theta       1.
 initial     boundary       Results/velocity.bup
 
 //Block Equation
 
-visc            1.e-3
+visc            1.e-2
 delta           0.
 tau             0.
 

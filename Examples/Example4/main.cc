@@ -1,7 +1,7 @@
 #include  "meshagent.h"
 #include  "q1lps2d.h"
 #include  "stdsolver.h"
-#include  "stdmultilevelsolver.h"
+#include  "multilevelsolver.h"
 #include  "onelevelalgorithm.h"
 #include  "multilevelalgorithm.h"
 #include  "numericinterface.h"
@@ -106,7 +106,6 @@ public:
 
   DiscretizationInterface*    NewDiscretization(int level) const { return new Q1Lps2d; }
   SolverInterface*            NewSolver(int level)         const { return new StdSolver;}
-  MultiLevelSolverInterface*  NewMultiLevelSolver()        const { return new StdMultiLevelSolver;}
   MeshAgentInterface*         NewMeshAgent()               const { return new CurvedMeshAgent;}
 };
 
@@ -133,8 +132,9 @@ int main(int argc, char** argv)
 
   Numeric N;
 
+  MultiLevelSolver    S;
   MultiLevelAlgorithm B;
-  B.BasicInit(&paramfile,&N,&PC);
+  B.BasicInit(&paramfile,&S,&N,&PC);
   B.LocalRefineLoop ("NavierStokesBenchmark");
 
   return 0;
