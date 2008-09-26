@@ -11,7 +11,7 @@ namespace Gascoigne
 
 /*-------------------------------------------------------------*/
 
-MultiLevelSolver::MultiLevelSolver() : _MAP(NULL), _paramfile(NULL), _SP(0), _Interpolator(0),
+MultiLevelSolver::MultiLevelSolver() : _SP(0), _Interpolator(0), _MAP(NULL), _paramfile(NULL),
 				       _PC(NULL), _PD(NULL), _NI(NULL)
 {
 }

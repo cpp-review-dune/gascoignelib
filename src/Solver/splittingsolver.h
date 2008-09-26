@@ -30,7 +30,7 @@ class SplittingSolver : public TimeSolver
 
  public:
 
-  SplittingSolver() : TimeSolver(), PD1(NULL), PD2(NULL), _MAP2(NULL),  _MIP2(NULL), _ZP2(NULL) {}
+  SplittingSolver() : TimeSolver(), _MAP2(NULL), _MIP2(NULL), _ZP2(NULL), PD1(NULL), PD2(NULL) {}
  ~SplittingSolver() 
    {
      if(_MAP2) delete _MAP2; _MAP2=NULL;

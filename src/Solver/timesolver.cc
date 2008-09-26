@@ -16,7 +16,7 @@ void TimeSolver::SetTimeData(double _dt, double _theta, double _time)
   assert(dt>0.);
   assert(theta>0.);
   GetProblemDescriptor()->SetTime(time,dt);
-};
+}
 
 /*-----------------------------------------*/
 
