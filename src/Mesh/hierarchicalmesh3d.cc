@@ -755,18 +755,63 @@ void HierarchicalMesh3d::inner_vertex_newton3d(const IntVector& vnew,
 
       if (Hexset.find(hi)==Hexset.end()) continue;
 
-      for (int face=0; face<6; face++)
+
+      // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> NEU
+      // edges
+      for (int e=0;e<12;++e)
 	{
-	  HexLaO.LoadEdgeVerticesOfFace(h,face,v);
-	  int mv = HexLaO.face_vertex(h,face);
-	  if (adjustvertex.find(mv)!=adjustvertex.end()) continue;
-	  new_face_vertex3d(mv,v);
+	  int ev = HexLaO.edge_vertex(h,e);
+	  if (adjustvertex.find(ev)!=adjustvertex.end()) continue;
+
+	  fixarray<2,int> fe;
+	  HexLaO.globalvertices_of_edge(h,fe,e);
+	  vertexs3d[ev]  = vertexs3d[fe[0]];
+	  vertexs3d[ev] += vertexs3d[fe[1]];
+	  vertexs3d[ev]*=0.5;
 	}
-//       fixarray<6,int> w;
-//       int mv = HexLaO.middle_vertex(h);
-//       HexLaO.LoadFaceVertices(h,w);
-//       new_vertex3d(mv,w);
-    }
+      // faces
+      for (int f=0;f<6;++f)
+	{
+	  int fv = HexLaO.face_vertex(h,f);
+	  if (adjustvertex.find(fv)!=adjustvertex.end()) continue;
+
+	  fixarray<4,int> fe;
+	  HexLaO.LoadEdgeVerticesOfFace(h,f,fe);
+	  vertexs3d[fv].equ(0.25, vertexs3d[fe[0]],
+			    0.25, vertexs3d[fe[1]],
+			    0.25, vertexs3d[fe[2]],
+			    0.25, vertexs3d[fe[3]]);
+	}
+      // middle
+      int fv = HexLaO.middle_vertex(h);
+      assert (adjustvertex.find(fv)==adjustvertex.end());
+      fixarray<6,int> fe;
+      HexLaO.LoadFaceVertices(h,fe);
+      vertexs3d[fv]=0;
+      for (int i=0;i<6;++i) vertexs3d[fv]+=vertexs3d[fe[i]];
+      vertexs3d[fv]*=1./6.;
+      // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< NEU
+
+
+
+
+
+
+
+      // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ALT
+//       for (int face=0; face<6; face++)
+// 	{
+// 	  HexLaO.LoadEdgeVerticesOfFace(h,face,v);
+// 	  int mv = HexLaO.face_vertex(h,face);
+// 	  if (adjustvertex.find(mv)!=adjustvertex.end()) continue;
+// 	  new_face_vertex3d(mv,v);
+// 	}
+// //       fixarray<6,int> w;
+// //       int mv = HexLaO.middle_vertex(h);
+// //       HexLaO.LoadFaceVertices(h,w);
+// //       new_vertex3d(mv,w);
+      // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< ALT
+}
 }
 
 /*---------------------------------------------------*/
