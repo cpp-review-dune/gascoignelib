@@ -50,7 +50,8 @@ class VelocityRhs : public Gascoigne::DomainRightHandSide
     double operator()(int c, const Gascoigne::Vertex2d& v)const 
     {
       if (c==0) return -pressure->x();
-      if (c==1) return -pressure->y();
+      else if (c==1) return -pressure->y();
+      else abort();
     }
 };
 

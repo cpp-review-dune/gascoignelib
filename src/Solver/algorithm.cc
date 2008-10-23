@@ -60,7 +60,7 @@ void Algorithm::Newton(VectorInterface& u, const VectorInterface& f, NLInfo& nli
   ReInitVector(du); 
   ReInitVector(y); 
 
-  cout << endl << " ";
+  cout << endl << "  ";
   nlinfo.reset();
   CGInfo& cginfo = nlinfo.GetLinearInfo();
 
@@ -83,12 +83,13 @@ void Algorithm::Newton(VectorInterface& u, const VectorInterface& f, NLInfo& nli
       
       if (nm1+nm2!=0)
 	{
-	  if (nm1) cout << "N";
-	  if (nm2) cout << "M";
+	  if (nm1 && !nm2) cout << " N";
+	  if (!nm1 && nm2) cout << "M ";
+          if (nm1 && nm2)  cout << "MN";
 	  AssembleMatrixAndIlu(u);
 	  nlinfo.control().matrixmustbebuild() = 0;
 	}
-      else cout << " ";
+      else cout << "  ";
       GetSolver()->Zero(du);
 
       LinearSolve(du,y,cginfo);

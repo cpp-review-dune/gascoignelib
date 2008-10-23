@@ -15,18 +15,11 @@ using namespace Gascoigne;
 
 class DualDragProblemDescriptor : public ProblemDescriptorBase
 {
- protected:
-
-  const ResidualFunctional* FP;
-
  public:
   
-  DualDragProblemDescriptor() : ProblemDescriptorBase(), FP(NULL) {}
-  ~DualDragProblemDescriptor()
-  {
-    GetEquationPointer() = NULL;
-    FP = NULL;
-  }
+  DualDragProblemDescriptor() : ProblemDescriptorBase() {}
+  ~DualDragProblemDescriptor() {}
+
   std::string GetName() const { return "DualDragProblemDescriptor";}
 
   void BasicInit(const ParamFile* filename, const Equation* equation, const ResidualFunctional* fp)
@@ -35,11 +28,9 @@ class DualDragProblemDescriptor : public ProblemDescriptorBase
     
     GetEquationPointer() = const_cast<Equation*>(equation);
 
-    FP = fp;
-
-    nvector<int>    comp  = FP->GetComps();
-    nvector<double> scale = FP->GetScales();
-    std::set<int> col = FP->GetColors();
+    nvector<int>    comp  = fp->GetComps();
+    nvector<double> scale = fp->GetScales();
+    std::set<int>   col   = fp->GetColors();
     
     GetDirichletDataPointer()  = new DirichletDataByColor(comp,col,scale);
   }
