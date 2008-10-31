@@ -95,7 +95,7 @@ void MultiLevelSolver::NewSolvers()
       if (GetSolver(solverlevel)==NULL) 
         {
           _SP[solverlevel] = _NI->NewSolver(solverlevel);
-          GetSolver(solverlevel)->BasicInit(_paramfile,dim);
+          GetSolver(solverlevel)->BasicInit(_paramfile,dim,_NI);
         }
     }
 }

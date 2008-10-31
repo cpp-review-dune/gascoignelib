@@ -61,7 +61,7 @@ namespace Gascoigne
 {
 
 StdSolver::StdSolver() : 
-  _MP(NULL), _HM(NULL), _MAP(NULL), _MIP(NULL), _ZP(NULL), _FZP(NULL), _PDX(NULL), 
+  _MP(NULL), _HM(NULL), _MAP(NULL), _MIP(NULL), _ZP(NULL), _FZP(NULL), _PDX(NULL), _NI(NULL),
   _distribute(true), _ndirect(1000), _directsolver(0), _discname("Q1"), _facediscname("none"),
   _matrixtype("point_node"), _PrimalSolve(1), _paramfile(NULL), _useUMFPACK(true)
 // , omega_domain(0.) 
@@ -240,9 +240,10 @@ void StdSolver::SetDefaultValues(string discname, string matrixtype, int ndirect
 
 /*-------------------------------------------------------*/
 
-void StdSolver::BasicInit(const ParamFile* paramfile, const int dimension)
+void StdSolver::BasicInit(const ParamFile* paramfile, const int dimension,const NumericInterface* NI)
 {
   _paramfile = paramfile;
+  _NI = NI;
 
   string xxx;
 
@@ -281,42 +282,50 @@ void StdSolver::BasicInit(const ParamFile* paramfile, const int dimension)
 
 DiscretizationInterface* StdSolver::NewDiscretization(int dimension, const string& discname)
 {
-  if (dimension==2)
-    {
-      if      (discname=="Q1")               return new Q12d;
-      else if (discname=="Q2")               return new Q22d;
-      else if (discname=="Q1Gls")            return new Q1Gls2d;
-      else if (discname=="Q2Gls")            return new Q2Gls2d;
-      else if (discname=="Q1Lps")            return new Q1Lps2d;
-      else if (discname=="Q2Lps")            return new Q2Lps2d;
-      else if (discname=="Q2WithSecond")     return new Q22dWithSecond;
-      else if (discname=="Q2LpsWithSecond")  return new Q2Lps2dWithSecond;
-      else 
-        {         
-          cerr << " Solver::NewDiscretization()\tunknown discname=" << discname << endl;
-          abort();
-        }
-    }
-  else if (dimension==3)
-    {
-      if      (discname=="Q1")               return new Q13d;
-      else if (discname=="Q2")               return new Q23d;
-      else if (discname=="Q1Gls")            return new Q1Gls3d;
-      else if (discname=="Q1Lps")            return new Q1Lps3d;
-      else if (discname=="Q2Lps")            return new Q2Lps3d;
-      else if (discname=="Q2WithSecond")     return new Q23dWithSecond;
-      else if (discname=="Q2LpsWithSecond")  return new Q2Lps3dWithSecond;
-      else 
-        {         
-          cerr << " Solver::NewDiscretization()\tunknown discname=" << discname << endl;
-          abort();
-        }
-    }
+  if(_NI)
+  {
+    return _NI->NewDiscretization();
+  }
   else
-    {
-      cerr << " Solver::NewDiscretization()\tdimension must either 2 or 3" << endl;
+  {
+  }
+  if (dimension==2)
+  {
+    if      (discname=="Q1")               return new Q12d;
+    else if (discname=="Q2")               return new Q22d;
+    else if (discname=="Q1Gls")            return new Q1Gls2d;
+    else if (discname=="Q2Gls")            return new Q2Gls2d;
+    else if (discname=="Q1Lps")            return new Q1Lps2d;
+    else if (discname=="Q2Lps")            return new Q2Lps2d;
+    else if (discname=="Q2WithSecond")     return new Q22dWithSecond;
+    else if (discname=="Q2LpsWithSecond")  return new Q2Lps2dWithSecond;
+    else 
+    {         
+      cerr << " Solver::NewDiscretization()\tunknown discname=" << discname << endl;
       abort();
     }
+  }
+  else if (dimension==3)
+  {
+    if      (discname=="Q1")               return new Q13d;
+    else if (discname=="Q2")               return new Q23d;
+    else if (discname=="Q1Gls")            return new Q1Gls3d;
+    else if (discname=="Q1Lps")            return new Q1Lps3d;
+    else if (discname=="Q2Lps")            return new Q2Lps3d;
+    else if (discname=="Q2WithSecond")     return new Q23dWithSecond;
+    else if (discname=="Q2LpsWithSecond")  return new Q2Lps3dWithSecond;
+    else 
+    {         
+      cerr << " Solver::NewDiscretization()\tunknown discname=" << discname << endl;
+      abort();
+    }
+  }
+  else
+  {
+    cerr << " Solver::NewDiscretization()\tdimension must either 2 or 3" << endl;
+    abort();
+
+  }
 }
 
 /*-------------------------------------------------------------*/

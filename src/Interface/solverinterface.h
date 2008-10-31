@@ -16,6 +16,7 @@
 #include  "vectorinterface.h"
 #include  "paramfile.h"
 #include  "curve.h"
+#include  "numericinterface.h"
 
 
 /*---------------------------------------------------------*/
@@ -49,7 +50,7 @@ namespace Gascoigne
 
       virtual std::string GetName() const=0;
 
-      virtual void BasicInit(const ParamFile* paramfile, const int dimension)=0;
+      virtual void BasicInit(const ParamFile* paramfile, const int dimension, const NumericInterface* NI=NULL)=0;
   
       virtual void SetProblem(const ProblemDescriptorInterface& PD)=0;
       virtual void SetDiscretization(DiscretizationInterface& DI, bool init=false)=0;

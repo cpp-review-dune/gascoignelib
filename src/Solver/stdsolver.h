@@ -16,7 +16,6 @@
 #include  "facediscretization.h"
 #include  "gascoignevisualization.h"
 
-
 /*-----------------------------------------*/
 
 namespace Gascoigne
@@ -64,6 +63,7 @@ class StdSolver : public virtual SolverInterface
   // 5. Anwendungsklassen
 
   const ProblemDescriptorInterface*      _PDX;
+  const NumericInterface*                _NI;
 
   // 6. Steuerparameter
 
@@ -140,7 +140,7 @@ class StdSolver : public virtual SolverInterface
 
   std::string GetName() const {return "StdSolver";}
 
-  void BasicInit(const ParamFile* paramfile, const int dimension);
+  void BasicInit(const ParamFile* paramfile, const int dimension,const NumericInterface* NI);
   void SetProblem(const ProblemDescriptorInterface& PDX);
   void SetDiscretization(DiscretizationInterface& DI, bool init=false);
   const ProblemDescriptorInterface* GetProblemDescriptor() const {assert(_PDX); return _PDX;}

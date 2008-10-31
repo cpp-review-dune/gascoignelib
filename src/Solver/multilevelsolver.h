@@ -7,6 +7,8 @@
 #include  "problemdescriptorinterface.h"
 #include  "paramfile.h"
 #include  "functionalcontainer.h"
+#include  "solverinterface.h"
+#include  "meshagentinterface.h"
 
 /*-------------------------------------------------------------*/
 
