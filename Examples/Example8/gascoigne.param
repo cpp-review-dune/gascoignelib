@@ -17,8 +17,6 @@ initial     boundary       Results/velocity.bup
 //Block Equation
 
 visc            1.e-2
-delta           0.
-tau             0.
 
 //Block Mesh
 
