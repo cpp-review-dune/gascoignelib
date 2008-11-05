@@ -2,6 +2,7 @@
 #define  __NumericInterface_h
 
 #include <iostream>
+#include  <cstdlib>
 
 namespace Gascoigne
 {
