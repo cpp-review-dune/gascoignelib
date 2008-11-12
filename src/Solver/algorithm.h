@@ -77,8 +77,6 @@ public:
   void PrintMeshInformation() const;
 
   virtual void BasicInit(const ParamFile* paramfile, const NumericInterface* NI);
-
-  void run(const std::string& problemlabel);
 };
 }
 
