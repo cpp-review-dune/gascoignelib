@@ -60,6 +60,7 @@ class StopWatch
   void  start();
   double stop() ;
   double read() const;
+  double read100() const;
 };
 
 /*----------------------------------------------------*/
@@ -121,12 +122,18 @@ class RTStopWatch
       if (running) return -1;
       return double (my_time.tv_sec)+1.e-9 * double (my_time.tv_nsec);
     }
+
+  double read100() const
+  {
+    if (running) return -1;
+    return static_cast<double> (0.01 * static_cast<int> (100 * read()));
+  }
   
 };
-
+ 
 #endif /*__WITH_RSTStopWatch__*/
-
-
+ 
+ 
 }
 
 #endif
