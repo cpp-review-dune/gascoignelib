@@ -25,6 +25,13 @@ class SparseStructure : public SparseStructureInterface
   
   SparseStructure() : sntot(0),sindices(0) {}
 
+  void clear()
+  {
+    sntot=0;
+    sindices.clear();
+  }
+  
+
     int                n()              const { return sindices.size(); }
     int                ntotal()         const { return sntot; }
 
