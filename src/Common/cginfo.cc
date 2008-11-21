@@ -61,6 +61,13 @@ ostream& operator<<(ostream &s, const CGInfo& A)
 
 /*******************************************************************/
 
+StatisticData::StatisticData()
+{
+  reset();
+}
+
+/*******************************************************************/
+
 void StatisticData::reset()
 {
   _totaliter = 0;

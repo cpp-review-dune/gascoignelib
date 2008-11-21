@@ -13,6 +13,7 @@ class StatisticData
   int     _totaliter;
 
  public:
+  StatisticData();
 
   double  rate     () const { return _rate; }
   double& rate     ()       { return _rate; }
