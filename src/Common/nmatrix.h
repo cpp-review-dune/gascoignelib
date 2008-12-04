@@ -150,6 +150,9 @@ public:
 
   void mmult(nmatrix<T>& A, const nmatrix<T>& B) const
     {
+      assert(this->m()==B.n());
+      assert(A.n() == this->n());
+      assert(A.m() == B.m());
       A.zero();
       for(int i=0;i<A.n();i++)
 	{
@@ -165,13 +168,16 @@ public:
 
   void mmult_ad(nmatrix<T>& A, const nmatrix<T>& B) const
     {
+      assert(this->n()==B.n());
+      assert(A.n() == this->m());
+      assert(A.m() == B.m());
       /* A = (*this)^T * B */
       A.zero();
       for(int i=0;i<A.n();i++)
 	{
 	  for(int j=0;j<A.m();j++)
 	    {
-	      for(int k=0;k<m();k++)
+	      for(int k=0;k<n();k++)
 		{
 		  A(i,j) += (*this)(k,i) * B(k,j);
 		} 
@@ -216,6 +222,7 @@ public:
   template<class VECTOR>
     void multtrans(VECTOR& y, const VECTOR& x, double s=1.) const
     {
+      assert(y.size()==this->n());
       const_iterator                              p  = std::vector<T>::begin();
       typename VECTOR::iterator         py = y.begin();
       typename VECTOR::const_iterator   px = x.begin();
@@ -223,7 +230,7 @@ public:
       while(p!=std::vector<T>::end())
 	{
 	  py = y.begin();
-	  for(int j=0;j<m();j++)
+	  for(int j=0;j<n();j++)
 	    {
 	      (*py) += s* (*p++) * (*px);
 	      py++;
@@ -262,7 +269,7 @@ public:
       while(p!=std::vector<T>::end())
 	{
 	  py = y.begin();
-	  for(int j=0;j<m();j++)
+	  for(int j=0;j<n();j++)
 	    {
 	      (*py) += (*p++) * (*px);
 	      py++;
@@ -279,7 +286,7 @@ public:
       
       while(p!=std::vector<T>::end())
 	{
-	  for(int j=0;j<m();j++)
+	  for(int j=0;j<n();j++)
 	    {
 	      (*py) += s*(*p++) * (*px);
 	      py++;
@@ -317,7 +324,7 @@ public:
       y.zero();
       while(p!=std::vector<T>::end())
 	{
-	  for(int j=0;j<m();j++)
+	  for(int j=0;j<n();j++)
 	    {
 	      (*py) += (*p++) * (*px);
 	      py++;
@@ -340,7 +347,7 @@ public:
       py -= m();
       while(p!=std::vector<T>::end())
 	{
-	  for(int j=0;j<m();j++)
+	  for(int j=0;j<n();j++)
 	    {
 	      (*py) += (*p++) * (*px);
 	      py++;
