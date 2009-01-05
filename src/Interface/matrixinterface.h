@@ -56,12 +56,24 @@ namespace Gascoigne
       //
       /// for boundary conditions
       //
+      virtual void scale_diag(int i, const std::vector<int>& cv, double s) {
+        std::cerr << "\"MatrixInterface::scale_diag\" not written!" << std::endl;
+        abort();
+      }
       virtual void dirichlet (int i, const std::vector<int>& cv) {
         std::cerr << "\"MatrixInterface::dirichlet\" not written!" << std::endl;
         abort();
       }
       virtual void dirichlet_only_row(int i, const std::vector<int>& indices) {
         std::cerr << "\"MatrixInterface::dirichlet_only_row\" not written!" << std::endl;
+        abort();
+      }
+      virtual void dirichlet_only_column(int i, const std::vector<int>& indices) {
+        std::cerr << "\"MatrixInterface::dirichlet_only_column\" not written!" << std::endl;
+        abort();
+      }
+      virtual void dirichlet_only_row_no_diag(int i, const std::vector<int>& indices) {
+        std::cerr << "\"MatrixInterface::dirichlet_only_row_no_diag\" not written!" << std::endl;
         abort();
       }
 

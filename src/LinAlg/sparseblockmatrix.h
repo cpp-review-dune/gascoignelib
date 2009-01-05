@@ -26,10 +26,9 @@ class SparseBlockMatrix : public MatrixInterface
   int            nc;
   
   void matrix_vector_trans(int p, double* yp, const double* xp, double s=1.) const;
-  
-  int size() const { return smat.size();}
-
  public:
+
+  int size() const { return smat.size();}
 
   SparseBlockMatrix<B>();
   SparseBlockMatrix<B>(const SparseBlockMatrix<B>& A);
@@ -62,8 +61,11 @@ class SparseBlockMatrix : public MatrixInterface
   SparseBlockMatrix& operator=(const SparseBlockMatrix<B>& S); 
 
   void ReInit   (const SparseStructureInterface*);
+  //  void scale_diag(int i, const vector<int>& cv,double s);
   void dirichlet(int i, const vector<int>& cv);
   void dirichlet_only_row(int i, const vector<int>& cv);
+  void dirichlet_only_column(int i, const vector<int>& cv);
+  void dirichlet_only_row_no_diag(int i, const vector<int>& cv);
 
   void zero();
   void entry(nvector<int>::const_iterator start1, nvector<int>::const_iterator stop1,
