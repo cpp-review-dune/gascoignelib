@@ -11,7 +11,7 @@ namespace Gascoigne
   
   /*-----------------------------------------*/
   
-  void SolverData::BasicInit(const ParamFile* pf, const std::string label)
+  void SolverData::BasicInit(const ParamFile* pf)
   {
     DataFormatHandler DFH;
     
@@ -42,7 +42,7 @@ namespace Gascoigne
     
     FileScanner FS(DFH);
     FS.NoComplain();
-    FS.readfile(pf,label);
+    FS.readfile(pf,"Solver");
     
     if ((ilusort=="streamdirection")&&(stream_direction.size()==0))
       {
