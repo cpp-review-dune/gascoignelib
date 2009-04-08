@@ -156,6 +156,20 @@ void SparseBlockMatrix<B>::zero()
 /*-------------------------------------------------------------*/
 
 template<class B>
+void SparseBlockMatrix<B>::scale_diag(int i, const std::vector<int>& cv,double s)
+{
+  int diag = US.diag(i);
+  for (int c=0;c<cv.size();++c)
+    {
+      int comp = cv[c];
+      assert(comp<nc);
+      smat[diag].diag(comp)*=s;
+    }  
+}
+
+/*-------------------------------------------------------------*/
+
+template<class B>
 void SparseBlockMatrix<B>::dirichlet(int i, const std::vector<int>& cv)
 {
   for(int pos=US.start(i);pos<US.stop(i);pos++)

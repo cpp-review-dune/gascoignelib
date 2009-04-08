@@ -61,7 +61,7 @@ class SparseBlockMatrix : public MatrixInterface
   SparseBlockMatrix& operator=(const SparseBlockMatrix<B>& S); 
 
   void ReInit   (const SparseStructureInterface*);
-  //  void scale_diag(int i, const vector<int>& cv,double s);
+  void scale_diag(int i, const vector<int>& cv,double s);
   void dirichlet(int i, const vector<int>& cv);
   void dirichlet_only_row(int i, const vector<int>& cv);
   void dirichlet_only_column(int i, const vector<int>& cv);
