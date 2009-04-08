@@ -37,8 +37,6 @@ void StdTimeLoop::BasicInit(const ParamFile* paramfile, const ProblemContainer* 
 
 string StdTimeLoop::SolveTimePrimal(VectorInterface& u, VectorInterface& f)
 {
-  assert( GetMultiLevelSolver()->GetSolver()->GetGV(u).n()==GetMultiLevelSolver()->GetSolver()->GetGV(f).n() );
-
   GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(f);
   GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(u);
 

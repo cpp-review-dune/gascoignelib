@@ -70,7 +70,7 @@ class StdMultiLevelSolver : public virtual MultiLevelSolverInterface
   const DoubleVector GetExactValues() const;
   const DoubleVector ComputeFunctionals(VectorInterface& f, const VectorInterface& u);
   const DoubleVector ComputeFunctionals(VectorInterface& f, const VectorInterface& u,
-					FunctionalContainer* FC);
+					const FunctionalContainer* FC);
   
   virtual SolverInterface*& GetSolverPointer(int l) {assert(l<_SP.size()); return _SP[l];}
   virtual void SetComputeLevel(int level) {ComputeLevel=level;}

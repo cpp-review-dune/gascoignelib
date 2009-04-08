@@ -299,7 +299,7 @@ const DoubleVector StdMultiLevelSolver::GetExactValues() const
 /*-------------------------------------------------------------*/
 
 const DoubleVector StdMultiLevelSolver::ComputeFunctionals(VectorInterface& f, const VectorInterface& u,
-							   FunctionalContainer* FC)
+							   const FunctionalContainer* FC)
 {
   if (!FC) return DoubleVector(0);
   int n = FC->size();
@@ -316,18 +316,20 @@ const DoubleVector StdMultiLevelSolver::ComputeFunctionals(VectorInterface& f, c
 
 const DoubleVector StdMultiLevelSolver::ComputeFunctionals(VectorInterface& f, const VectorInterface& u)
 {
-  if (!GetFunctionalContainer()) return DoubleVector(0);
-  int n = GetFunctionalContainer()->size();
-  DoubleVector j(n,0.);
-  int i = 0;
-  for (FunctionalContainer::const_iterator it = GetFunctionalContainer()->begin();
-       it!=GetFunctionalContainer()->end();++it,++i)
-    {
-      cout << it->first << " ";
-      j[i] = GetSolver(ComputeLevel)->ComputeFunctional(f,u,it->second);
-    }
-  cout << endl;
-  return j;
+  return ComputeFunctionals(f,u,GetFunctionalContainer());
+  
+//   if (!GetFunctionalContainer()) return DoubleVector(0);
+//   int n = GetFunctionalContainer()->size();
+//   DoubleVector j(n,0.);
+//   int i = 0;
+//   for (FunctionalContainer::const_iterator it = GetFunctionalContainer()->begin();
+//        it!=GetFunctionalContainer()->end();++it,++i)
+//     {
+//       cout << it->first << " ";
+//       j[i] = GetSolver(ComputeLevel)->ComputeFunctional(f,u,it->second);
+//     }
+//   cout << endl;
+//   return j;
 }
 
 /*-------------------------------------------------------------*/
@@ -724,6 +726,8 @@ string StdMultiLevelSolver::Solve(int level, VectorInterface& u, const VectorInt
 
 double StdMultiLevelSolver::ComputeFunctional(VectorInterface& f, const VectorInterface& u, const std::string& label)
 {
+  abort();
+  
   const Functional* FP = GetFunctionalContainer()->GetFunctional(label);
   return GetSolver(ComputeLevel)->ComputeFunctional(f,u,FP);
 }

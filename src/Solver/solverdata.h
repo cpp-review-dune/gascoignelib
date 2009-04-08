@@ -31,7 +31,7 @@ class SolverData
 
   public:
 
-    void BasicInit(const ParamFile* pf);
+    void BasicInit(const ParamFile* pf, const std::string label="Solver");
 
     const IntVector& GetPfilter()const { return _pfilter;}
     void SetPfilter(const IntVector& pfilter) {_pfilter=pfilter;}
