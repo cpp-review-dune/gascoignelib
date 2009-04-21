@@ -21,7 +21,7 @@ public:
 
   int ncomp() const { return N;}
 
-  void   operator *= (const FMatrixBlock<N>&);
+  inline  void   operator *= (const FMatrixBlock<N>&);
   void   operator *= (double s);
 
   void   transpose();
@@ -42,7 +42,7 @@ public:
   void   entry     (int i, int j, const EntryMatrix&, double s=1.);
   void   dual_entry(int i, int j, const EntryMatrix&, double s=1.);
   void   inverse ();
-  void   vmult   (viterator) const;
+  inline void   vmult   (viterator) const;
   void   mult    (FMatrixBlock<N>&, const FMatrixBlock<N>&) const; 
 
   void   submult(const FMatrixBlock<N>& B, const FMatrixBlock<N>& C)
@@ -152,6 +152,62 @@ public:
         NodeMatrix<N,float>::operator[](i)+=d*v[i];
     }
 };
+
+/**********************************************************/
+
+template<int N>
+inline void FMatrixBlock<N>::operator *= (const FMatrixBlock<N>& B)
+{
+  numfixarray<N,double> vhelp;
+  for (int i=0; i<N; i++)
+    {
+      for (int j=0; j<N; j++)
+        {
+          vhelp[j] = NodeMatrix<N,float>::value(i,j);
+        }
+      for (int j=0; j<N; j++)
+        {
+          NodeMatrix<N,float>::value(i,j) = 0.;
+          for (int k=0; k<N; k++)
+            {
+              NodeMatrix<N,float>::value(i,j) += vhelp[k] * B(k,j);
+            }
+        }      
+    }
+}
+
+/**********************************************************/
+
+template<int N>
+inline void FMatrixBlock<N>::vmult(viterator p) const
+{
+  numfixarray<N,double> vhelp;
+  // copy old entries of vector in vhelp
+  //
+  typename numfixarray<N,double>::iterator       a = vhelp.begin();
+  typename numfixarray<N,double>::const_iterator b = vhelp.end();
+  
+  for ( ; a!=b; a++)
+    {
+      *a = *p++;
+    }
+  p -= N;
+  a -= N;
+
+  nvector<float>::const_iterator q(NodeMatrix<N,float>::begin());
+  for (viterator c=p; c!=p+N; c++)
+    {
+      *c = 0.;
+      for (; a!=b; a++)
+	{
+	  *c += *q++ * *a;
+	} 
+      a -= N;
+    }
+  
+}
+
+
 }
 
 #endif

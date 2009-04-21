@@ -2,8 +2,6 @@
 
 namespace Gascoigne
 {
-static nvector<double>  vhelp(100);  // maximale Blockgroesse !!!
-
 /**********************************************************/
 
 template<int N>
@@ -163,28 +161,6 @@ void FMatrixBlock<N>::copy_transpose(const FMatrixBlock<N>& A)
 /**********************************************************/
 
 template<int N>
-void FMatrixBlock<N>::operator *= (const FMatrixBlock<N>& B)
-{
-  for (int i=0; i<N; i++)
-    {
-      for (int j=0; j<N; j++)
-        {
-          vhelp[j] = NodeMatrix<N,float>::value(i,j);
-        }
-      for (int j=0; j<N; j++)
-        {
-          NodeMatrix<N,float>::value(i,j) = 0.;
-          for (int k=0; k<N; k++)
-            {
-              NodeMatrix<N,float>::value(i,j) += vhelp[k] * B(k,j);
-            }
-        }      
-    }
-}
-
-/**********************************************************/
-
-template<int N>
 void FMatrixBlock<N>::operator *= (double s)
 {
   nvector<float>::iterator       p(NodeMatrix<N,float>::begin());
@@ -202,37 +178,6 @@ template<int N>
 void FMatrixBlock<N>::inverse()
 { 
   NodeMatrix<N,float>::gauss_jordan();
-}
-
-/**********************************************************/
-
-template<int N>
-void FMatrixBlock<N>::vmult(viterator p) const
-{
-  
-  // copy old entries of vector in vhelp
-  //
-  nvector<double>::iterator       a = vhelp.begin();
-  nvector<double>::const_iterator b = a+N;
-  
-  for ( ; a!=b; a++)
-    {
-      *a = *p++;
-    }
-  p -= N;
-  a -= N;
-
-  nvector<float>::const_iterator q(NodeMatrix<N,float>::begin());
-  for (viterator c=p; c!=p+N; c++)
-    {
-      *c = 0.;
-      for (; a!=b; a++)
-	{
-	  *c += *q++ * *a;
-	} 
-      a -= N;
-    }
-  
 }
 
 }
