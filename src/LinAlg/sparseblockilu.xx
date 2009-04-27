@@ -39,22 +39,6 @@ SparseBlockIlu<B>::~SparseBlockIlu()
 template<class B>
 void SparseBlockIlu<B>::ReInit(const SparseStructureInterface* SI)
 {
-  const Gascoigne::SparseStructure* S = dynamic_cast<const SparseStructure*>(SI);
- // assert(S);
-
-  int n = S->n();
-  int ntot = S->ntotal();
-
-  SparseBlockMatrix<B>::US.memory(n,ntot);
-
-  SparseBlockMatrix<B>::smat.reserve(ntot);
-  SparseBlockMatrix<B>::smat.resize (ntot);
-
-  assert(ntot>0);
-  SparseBlockMatrix<B>::nc = SparseBlockMatrix<B>::smat[0].ncomp();
-
-  p.reservesize(n,0);
-  q.reservesize(n,0);
 }
 
 /*-------------------------------------------------------------*/
@@ -64,10 +48,17 @@ void SparseBlockIlu<B>::ConstructStructure(const nvector<int>& perm, const Matri
 {
   const ColumnDiagStencil* SP = dynamic_cast<const ColumnDiagStencil*>(MAP.GetStencil());
 
-  int n = SP->n();
+  int n =    SP->n();
   int ntot = SP->nentries();
+  assert(ntot>0);
 
   SparseBlockMatrix<B>::US.memory(n,ntot);
+  SparseBlockMatrix<B>::smat.reserve(ntot);
+  SparseBlockMatrix<B>::smat.resize (ntot);
+  SparseBlockMatrix<B>::nc = SparseBlockMatrix<B>::smat[0].ncomp();
+
+  p.reservesize(n,0);
+  q.reservesize(n,0);
 
   assert(p.size()==perm.size());
 

@@ -186,6 +186,99 @@ void CuthillMcKee::Permutate (IntVector &perm)
 //   if (dimension==3) return (((M->vertex3d(j)-M->vertex3d(i))*dir3d)>0);
 //   return 0;
 // }
+
+
+#ifdef __WITH_THREADS__
+void  CuthillMcKee::Permutate    (IntVector &perm, const IntVector &nodes_in_domain, const std::vector<std::vector<std::pair<int,int> > >& node2domain, int  domain)
+{
+  // mit metis graph aufbauen
+  //
+  //diese methode wird in StdSolver::PermutateIlu aufgerufen
+  //unmittelbar davor *wird* perm schon richtig gesized und mit iota gefuellt
+  //dieser code:
+  //  int n = S->n();
+  //  perm.resize(n);
+  //sollte hier nicht aufgerufen werden, sondern ueberpruefen ob perm von der groesse her stimmt
+  int n = nodes_in_domain.size();
+  assert(n==perm.size());
+
+  vector<int> adj(n+1,0);
+  vector<int> adjncy;
+  
+  int count=0;
+  int c;
+  int globalnodeid;
+
+  int ignoredcouplings=0;
+  
+  adj[0]=0;
+  if (CS)
+      for (int r=0;r<n;++r)
+      {
+	globalnodeid = nodes_in_domain[r];
+	  for (int p=CS->start(globalnodeid); p<CS->stop(globalnodeid);++p)
+	  {
+	      c = CS->col(p);
+	      if (globalnodeid==c) continue;
+	      //Falls  c nicht in der Subdomain liegt auch ignorieren
+	      int localposition = -1;
+	      for(int l=0; l<node2domain[c].size(); l++)
+	      {
+		if(node2domain[c][l].first==domain)
+		{
+		  localposition = node2domain[c][l].second;
+		   break;
+		}
+	      }
+	      if(localposition == -1) 
+	      {
+		ignoredcouplings++;
+		continue; 
+	      }
+	      //Ende der Pruefung ob c in der Subdomain liegt
+	      
+	      ++count;
+//	      adjncy.push_back(c);
+	      //use local indices to avoid metis errors, when nodes have larger indices then n 
+	      c=localposition;
+	      adjncy.push_back(c);
+	  }
+	  adj[r+1]=count;
+      }
+//  else if (DS)
+//      for (int r=0;r<n;++r)
+//      {
+//	  for (list<int>::const_iterator it = DS->cstart(r);it!=DS->cstop(r);++it)
+//	  {
+//	      c = *it;
+//	      if (r==c) continue;
+//	      ++count;
+//	      adjncy.push_back(c);
+//	  }
+//	  adj[r+1]=count;
+//      }
+  else abort();
+  
+//  std::cout<<"Ignored Couplings: "<<ignoredcouplings<<" Used  Couplings:  "<<adjncy.size()<<std::endl;
+		 
+
+  int numflag = 0;
+  int options[8];
+  options[0]=1;
+  options[1]=3;
+  options[2]=1;
+  options[3]=1;
+  options[4]=0;
+  options[5]=1;
+  //options[5]=2;
+  options[6]=0;
+  options[7]=1;
+  vector<int> iperm(n);
+
+  METIS_NodeND(&n,&adj[0],&adjncy[0],&numflag,&options[0],&perm[0],&iperm[0]);
+  //perm ist nun der Vector bei dem perm[i] sagt, das der Knoten  
+  //nodes_of_domain[i] auf nodes_of_domain_[perm[i]] abgebilded  wird.
 }
-
-
+//End of Thread-Version
+#endif
+}

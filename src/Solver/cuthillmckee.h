@@ -45,6 +45,9 @@ class CuthillMcKee
 //     void Permutate    (IntVector &perm, const Vertex3d v);
     
 //     bool operator()(int i,int j) const;
+    #ifdef __WITH_THREADS__
+    void Permutate    (IntVector &perm, const IntVector &nodes_in_domain, const std::vector<std::vector<std::pair<int,int> > >& node2domain, int d);
+    #endif
 };
 }
 

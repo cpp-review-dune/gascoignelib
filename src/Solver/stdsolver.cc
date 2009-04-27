@@ -10,6 +10,13 @@
 #include  "dynamicblockmatrix.h"
 #include  "dynamicblockilu.h"
 
+/*--------------------------------*/
+#ifdef __WITH_THREADS__
+#include <omp.h>
+#include  "threadilu.h"
+#endif
+/*--------------------------------*/
+
 #include  "sparseblockilu.h"
 #include  "fmatrixblock.h"
 #include  "cfdblock3d.h"
@@ -56,6 +63,14 @@
 using namespace std;
 
 /*-----------------------------------------*/
+#ifdef __WITH_THREADS__
+extern "C" void METIS_PartGraphRecursive(int *,int *,int *,int *,int *,int *,
+					 int *,int *,int *,int *,int *);
+extern "C" void METIS_PartGraphKway(int *,int *,int *,int *,int *,int *,
+				    int *,int *,int *,int *,int *);
+#endif
+/*-----------------------------------------*/
+
 
 namespace Gascoigne
 {
@@ -179,7 +194,7 @@ void StdSolver::RegisterMatrix()
 
   if (_MAP==NULL)
     GetMatrixPointer() = NewMatrix(ncomp, _matrixtype);
-
+  
   if (_MIP==NULL)
     GetIluPointer   () = NewIlu   (ncomp, _matrixtype);
 }
@@ -211,6 +226,105 @@ void StdSolver::SetDiscretization(DiscretizationInterface& DI, bool init)
 
 /*-------------------------------------------------------*/
 
+#ifdef __WITH_THREADS__
+void StdSolver::ThreadPartitionMesh()
+{
+  if(!__with_thread_ilu)
+  {
+    __n_threads = 1;
+    return;
+  }
+  assert(GetMesh());
+  const GascoigneMesh* M = dynamic_cast<const GascoigneMesh*> (GetMesh());
+  assert(M);
+  assert(M->HasPatch());
+
+  int n_max_threads = omp_get_max_threads();
+  int n_per_thread = __min_patches_per_thread;
+  int __n          = M->npatches();
+  __n_threads = std::max(1,std::min(n_max_threads, M->npatches()/n_per_thread));
+  
+  //nur wenns sinn macht
+  if (__n_threads>1)
+  {
+    vector<int> adj1;
+    vector<int> adj;
+    adj.push_back(0);
+    
+    vector<vector<int> > node2patch(M->nnodes());
+    for (int p=0;p<M->npatches();++p)
+    {
+      const vector<int>& ciop = M->CoarseIndices(p);
+      for (int i=0;i<ciop.size();++i)
+	node2patch[ciop[i]].push_back(p);
+    }
+// adjazenzliste erstellen
+    for (int p=0;p<M->npatches();++p)
+    {
+      set<int> neighbors;
+      const vector<int>& ciop = M->CoarseIndices(p);
+      for (int i=0;i<ciop.size();++i)
+	for (int n=0;n<node2patch[ciop[i]].size();++n)
+	{
+	  int neighbor = node2patch[ciop[i]][n];
+	  neighbors.insert(neighbor);
+      }
+      for (set<int>::const_iterator it = neighbors.begin();it!=neighbors.end();++it)
+      if (*it!=p)
+	adj1.push_back(*it);
+      adj.push_back(adj1.size());
+    }
+    assert(adj.size()==M->npatches()+1);
+    assert(adj1.size()==adj[adj.size()-1]);
+    
+    int wgtflag    = 0;
+    int numflag    = 0;
+    int options[5] = {0,0,0,0,0};
+    int edgecut    = -1;
+    
+    vector<int> patch_partition(M->npatches());
+    
+    if (__n_threads<8)
+      METIS_PartGraphRecursive(&__n,&adj[0],&adj1[0],NULL,NULL,
+			       &wgtflag,&numflag,&__n_threads,
+			       &options[0],&edgecut,&patch_partition[0]);
+    else
+      METIS_PartGraphKway(&__n,&adj[0],&adj1[0], NULL, NULL,
+			  &wgtflag,&numflag,&__n_threads,
+			  &options[0],&edgecut,&patch_partition[0]);
+  
+    __thread_domain2node.clear();
+    __thread_domain2node.resize(__n_threads);
+    
+    vector<set<int>    > __thread_domain2node_set(__n_threads);
+    for (int p=0;p<M->npatches();++p)
+    {
+      const vector<int>& iop = *(M->IndicesOfPatch(p));
+      __thread_domain2node_set[patch_partition[p]].insert(iop.begin(),iop.end());
+    }
+    for (int p=0;p<__n_threads;++p)
+      for (set<int>::const_iterator it = __thread_domain2node_set[p].begin();
+	   it!=__thread_domain2node_set[p].end();++it)
+	__thread_domain2node[p].push_back(*it);
+    
+//The invers  mapping
+    __thread_node2domain.clear();
+    __thread_node2domain.resize(M->nnodes());
+    for(int d=0; d<__n_threads; d++)
+    {
+      for(int n=0; n <  __thread_domain2node[d].size(); n++)
+      {
+	__thread_node2domain[__thread_domain2node[d][n]].push_back(make_pair(d,n));
+      }
+    }
+  }//end of the case __n_threads > 1 sonst tun wir nix 
+}
+//Endof threads
+#endif
+
+/*-------------------------------------------------------*/
+
+
 void StdSolver::NewMesh(const MeshInterface* mp)
 {
   _MP = mp;
@@ -227,6 +341,11 @@ void StdSolver::NewMesh(const MeshInterface* mp)
   GetDiscretization()->ReInit(_MP);
   if (GetFaceDiscretization())
     GetFaceDiscretization()->ReInit(_MP);
+
+  // 
+  #ifdef __WITH_THREADS__
+  ThreadPartitionMesh();
+  #endif
 }
 
 /*-----------------------------------------*/
@@ -254,10 +373,19 @@ void StdSolver::BasicInit(const ParamFile* paramfile, const int dimension,const 
   DFH.insert("discname",    &_discname);
   DFH.insert("facediscname",    &_facediscname,"none");
   DFH.insert("disc", &xxx, "void");
+#ifdef __WITH_THREADS__ 
+  int default_min_per_thread = 450;
+  if(dimension==3)
+    default_min_per_thread = 150;
+  //Default is approximately 4000 nodes per Thread, the value is the 
+  //minumum number of Patches for each thread, e.g in 2d 450*9 \approx 4000   
+  DFH.insert("min_patches_per_thread",  &__min_patches_per_thread,default_min_per_thread); 
+  DFH.insert("with_thread_ilu", &__with_thread_ilu, false);
+#endif
   FileScanner FS(DFH);
   FS.NoComplain();
   FS.readfile(_paramfile,"Solver");
-
+ 
   if(xxx!="void")
     {
       cout << "Expression 'disc' in ParamFile not longer valid !" << endl;
@@ -420,7 +548,7 @@ MatrixInterface* StdSolver::NewMatrix(int ncomp, const string& matrixtype)
 /*-------------------------------------------------------------*/
 
 IluInterface* StdSolver::NewIlu(int ncomp, const string& matrixtype) 
-{
+{ 
 #ifdef __WITH_UMFPACK__
   if(_directsolver && _useUMFPACK)             return new UmfIlu(GetMatrix());
 #endif
@@ -431,6 +559,11 @@ IluInterface* StdSolver::NewIlu(int ncomp, const string& matrixtype)
   
   else if (matrixtype=="block")
   {
+#ifdef __WITH_THREADS__
+    if(__n_threads > 1)
+      return new ThreadIlu(ncomp);
+#endif 
+    //ohne threads oder mit threads aber nur einer zur Verwendung
     if      (ncomp==1)  return new SparseBlockIlu<FMatrixBlock<1> >;
     else if (ncomp==2)  return new SparseBlockIlu<FMatrixBlock<2> >;
     else if (ncomp==3)  return new SparseBlockIlu<FMatrixBlock<3> >;
@@ -1261,11 +1394,44 @@ void StdSolver::modify_ilu(IluInterface& I,int ncomp) const
 void StdSolver::PermutateIlu(const VectorInterface& gu) const
 {
   const GlobalVector& u = GetGV(gu);
-  int n = GetIlu()->n();
+  
+  #ifdef __WITH_THREADS__
+  if(__n_threads >1)
+  {
+    assert(__n_threads == __thread_domain2node.size());
+    
+    if (GetSolverData().GetIluSort()=="cuthillmckee")
+    {
+      std::vector<IntVector> perm(__n_threads);
+      for(int d=0; d< __n_threads ; d++)
+      {
+	int n = __thread_domain2node[d].size();
+	perm[d].resize(n); 
+	iota(perm[d].begin(),perm[d].end(),0);
+	
+	CuthillMcKee    cmc(GetMatrix()->GetStencil());
+	cmc.Permutate      (perm[d],__thread_domain2node[d],__thread_node2domain,d);   
+	
+      } 
+      //Wie das?
+      ThreadIlu* TIlu = dynamic_cast<ThreadIlu*>(GetIlu());
+      assert(TIlu);
+      TIlu->ConstructStructure(perm,*GetMatrix(),__thread_domain2node);
+    }
+    else
+    {
+      std::cerr<<"In StdSolver::PermutateIlu: IluSort "<<GetSolverData().GetIluSort()<<" is not available with threads."<<std::endl;
+      abort();
+    }
+    //end of the thread section return to allow for special case if only one thread is used
+    return;
+  }
+#endif
+  //keine Threads oder nur einer zur Verfuegung
+  int n = GetMatrix()->GetStencil()->n();
   IntVector perm(n);
 
   iota(perm.begin(),perm.end(),0);
-  
   if (GetSolverData().GetIluSort()=="cuthillmckee")
     {
       CuthillMcKee    cmc(GetMatrix()->GetStencil());

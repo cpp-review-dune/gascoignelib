@@ -38,6 +38,18 @@ class StdSolver : public virtual SolverInterface
   //   Daten 
   //
 
+  // 0.
+
+  #ifdef __WITH_THREADS__
+  int __n_threads, __min_patches_per_thread;
+  bool __with_thread_ilu;
+  std::vector<std::vector<int> > __thread_domain2node;
+  //First component of pair is domain in wich the node lies, second is
+  //local index of this node in __thread_domain2node
+  std::vector<std::vector<std::pair<int,int> > > __thread_node2domain;
+  #endif
+
+
   // 1. Gitter
 
   const MeshInterface*    _MP;
@@ -49,7 +61,9 @@ class StdSolver : public virtual SolverInterface
   IluInterface*     _MIP;
   
  protected:
-
+#ifdef __WITH_THREADS__
+  int NThreads() const {return __n_threads;}
+#endif
 
   // 3. Discretization
 
@@ -338,6 +352,13 @@ class StdSolver : public virtual SolverInterface
   void RhsCurve(VectorInterface &f, const Curve &C,int comp,int N) const;
   double ScalarProductWithFluctuations(DoubleVector& eta, const VectorInterface& gf, 
 				       const VectorInterface& gz) const;
+
+#ifdef __WITH_THREADS__
+  //
+  ///For Threads
+  //
+  void ThreadPartitionMesh();
+#endif
 };
 }
 
