@@ -18,7 +18,7 @@ class DualDragProblemDescriptor : public ProblemDescriptorBase
  public:
   
   DualDragProblemDescriptor() : ProblemDescriptorBase() {}
-  ~DualDragProblemDescriptor() {}
+  ~DualDragProblemDescriptor() { GetEquationPointer() = NULL; }
 
   std::string GetName() const { return "DualDragProblemDescriptor";}
 
