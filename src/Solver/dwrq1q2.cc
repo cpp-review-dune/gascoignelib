@@ -158,5 +158,17 @@ double DwrQ1Q2::Estimator(DoubleVector& eta, VectorInterface& gf,
   return rho + rhostern;
 }
 
+
+/*--------------------------------------------------------*/
+
+  double DwrQ1Q2::EstimatorEnergy(DoubleVector& eta, VectorInterface& gf, 
+				  const VectorInterface& gu)
+  {
+    eta.resize(S.GetGV(gu).n());
+    
+    PrimalResidualsHigher(gf,gu);
+    return ScalarProductWithFluctuations(eta,gf,gu);
+  }
+  
 /*--------------------------------------------------------*/
 }

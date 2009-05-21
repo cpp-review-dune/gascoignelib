@@ -41,6 +41,8 @@ class DwrQ1Q2
   double Estimator(nvector<double>& eta, VectorInterface& gf, 
 		   const VectorInterface& gu, const VectorInterface& gz,
 		   const ProblemDescriptorInterface& PDI);
+  double EstimatorEnergy(nvector<double>& eta, VectorInterface& gf, 
+			 const VectorInterface& gu);
 };
 }
 /*-------------------------------------------------------*/
