@@ -2,9 +2,9 @@
 #include "sparsestructure.h"
 #include "threadsparseblockilu.h"
 #include "fmatrixblock.h"
+#ifdef __WITH_THREADS__
 #include <omp.h>
 
-#ifdef __WITH_THREADS__
 using namespace std;
 
 namespace Gascoigne
