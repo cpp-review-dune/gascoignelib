@@ -22,7 +22,7 @@ class ChorinAlgorithm : public NonstationaryAlgorithm
  protected:
 
   int         niter;
-  std::string initial;
+  std::string initial, scheme, pproblem, vproblem;
 
   const SplittingSolver* GetSplittingSolver() const 
     { 
@@ -36,12 +36,18 @@ class ChorinAlgorithm : public NonstationaryAlgorithm
       assert(S);
       return S;
     }
-  void ChorinUzawa(const std::string& problem1, const std::string& problem2);
-  void VanKan(const std::string& problem1, const std::string& problem2);
+  void Chorin();
+  void ChorinUzawa();
+  void VanKan();
+  void VelocityPredictor(VectorInterface& v, VectorInterface& fv, NLInfo& nlinfo, int iter);
+  void PressurePoissonProblem(VectorInterface& q, VectorInterface& fp, CGInfo& cginfo);
+  void VelocityProjection(VectorInterface& v, VectorInterface& q, 
+			  VectorInterface& fv, CGInfo& cginfo, int iter);
+  void PressureUpdate(VectorInterface& p, VectorInterface& q, int iter);
 
 public:
 
-           ChorinAlgorithm() : NonstationaryAlgorithm(), niter(0),initial("")  {}
+  ChorinAlgorithm() : NonstationaryAlgorithm(), niter(0),initial(""),pproblem(""),vproblem("")  {}
   virtual ~ChorinAlgorithm() {}
 
   void Run(const std::string& problem1, const std::string& problem2);

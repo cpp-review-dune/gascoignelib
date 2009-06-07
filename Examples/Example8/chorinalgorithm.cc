@@ -14,30 +14,149 @@ namespace Gascoigne
 void ChorinAlgorithm::Run(const std::string& problem1, const std::string& problem2)
 {
   DataFormatHandler DFH;
+  DFH.insert("scheme",  &scheme,"Chorin");
   DFH.insert("initial", &initial,"boundary");
   DFH.insert("dt"     , &dt    ,1.);
-  DFH.insert("theta"  , &theta ,0.5);
   DFH.insert("niter"  , &niter ,1);
   FileScanner FS(DFH);
   FS.NoComplain();
   FS.readfile(_paramfile,"Loop");
 
-  GetMultiLevelSolver()->ReInit(problem1);
-  GetMultiLevelSolver()->ReInit(problem2);
+  vproblem = problem1;
+  pproblem = problem2;
+
+  GetMultiLevelSolver()->ReInit(vproblem);
+  GetMultiLevelSolver()->ReInit(pproblem);
 
   GetSolver()->OutputSettings();
 
   TimeInfoBroadcast();
 
-  if      (theta==1. ) ChorinUzawa(problem1,problem2);
-  else if (theta==0.5) VanKan(problem1,problem2);
+  if      ( scheme == "Chorin" )        { theta=1. ; Chorin()     ; }
+  else if ( scheme == "ChorinUzawa" )   { theta=1. ; ChorinUzawa(); }
+  else if ( scheme == "VanKan")         { theta=0.5; VanKan()     ; }
+  else assert(0);
 }
 
 /*-------------------------------------------------*/
 
-void ChorinAlgorithm::ChorinUzawa(const std::string& problem1, const std::string& problem2)
+void ChorinAlgorithm::VelocityPredictor(VectorInterface& v, VectorInterface& fv, NLInfo& nlinfo, int iter)
 {
-  GetMultiLevelSolver()->SetProblem(problem1);
+  GetMultiLevelSolver()->SetProblem(vproblem);
+  GetSolver()->SetBoundaryVector(v);
+  GetSolver()->SetBoundaryVector(fv);
+  nlinfo.reset();
+  Newton(v,fv,nlinfo);
+  GetSolver()->Visu("Results/predictor",v,iter);
+}
+
+/*-------------------------------------------------*/
+
+void ChorinAlgorithm::PressurePoissonProblem(VectorInterface& q, VectorInterface& fp, CGInfo& cginfo)
+{
+  GetMultiLevelSolver()->SetProblem(pproblem);
+  GetSolver()->Zero(fp);
+  GetSolver()->Zero(q);
+  GetSolver()->Rhs(fp,1./theta);
+  LinearSolve(q,fp,cginfo);
+}
+
+/*-------------------------------------------------*/
+
+void ChorinAlgorithm::VelocityProjection(VectorInterface& v, VectorInterface& q, 
+					 VectorInterface& fv, CGInfo& cginfo, int iter)
+{ 
+  GetMultiLevelSolver()->SetProblem(vproblem);
+  GetSolver()->Zero(fv);
+  GetSolver()->AddNodeVector("pressure",q);
+  GetSolver()->Rhs(fv,theta*dt);
+  GetSolver()->DeleteNodeVector("pressure");
+  GetSolver()->MassMatrixVector(fv,v,1.);
+  GetSolver()->Zero(v);
+  cginfo.reset();
+  GetSplittingSolver()->InverseMassMatrix(v,fv,cginfo); //löst das Gleichungssystem Mv=fv
+  GetSolver()->Visu("Results/velocity",v,iter);
+}
+
+/*-------------------------------------------------*/
+
+void ChorinAlgorithm::PressureUpdate(VectorInterface& p, VectorInterface& q, int iter)
+{
+  GetMultiLevelSolver()->SetProblem(pproblem);
+  GetSolver()->Equ(p,1.,q);
+  GetSolver()->Visu("Results/pressure",p,iter);
+}
+
+/*-------------------------------------------------*/
+
+void ChorinAlgorithm::Chorin()
+{
+  GetMultiLevelSolver()->SetProblem(vproblem);
+  VectorInterface v("v"), fv("fv");
+  ReInitVector(v);
+  ReInitVector(fv);
+  InitSolution(initial,v);
+  GetMultiLevelSolver()->AssembleMatrix(v);
+
+  GetMultiLevelSolver()->SetProblem(pproblem);
+  VectorInterface p("p"), fp("fp"), q("q");
+  ReInitVector(p);
+  ReInitVector(q);
+  ReInitVector(fp);
+  GetSolver()->AddNodeVector("velocity",v);
+  GetSolver()->Zero(p);
+  AssembleMatrixAndIlu(p);
+
+  NLInfo& nlinfo = GetSolverInfos()->GetNLInfo();
+  CGInfo& cginfo = GetSolverInfos()->GetLInfo();
+
+  theta = 1.;
+  for (int iter=1; iter<=niter; iter++)
+  {
+    GetMultiLevelSolver()->SetProblem(vproblem);
+    GetSolver()->Zero(fv);
+    GetSolver()->MassMatrixVector(fv,v,1./dt);
+
+    // neuer Zeitschritt
+    //
+    time += dt;
+    TimeInfoBroadcast();
+    
+    cout << "\n============== " << iter << " ==== Chorin === ";
+    cout << " [t,dt] "<< time << " " << dt << "\n";
+
+    // velocity predictor
+    //
+    VelocityPredictor(v,fv,nlinfo,iter);
+
+    // pressure Poisson problem
+    //
+    PressurePoissonProblem(q,fp,cginfo);
+    
+    // velocity projection
+    //
+    VelocityProjection(v,q,fv,cginfo,iter);
+
+    // pressure update
+    //
+    PressureUpdate(p,q,iter);
+  }
+
+  GetSolver()->DeleteNodeVector("velocity");
+
+  DeleteVector(v);
+  DeleteVector(fv);
+
+  DeleteVector(p);
+  DeleteVector(q);
+  DeleteVector(fp);
+}
+
+/*-------------------------------------------------*/
+
+void ChorinAlgorithm::ChorinUzawa()
+{
+  GetMultiLevelSolver()->SetProblem(vproblem);
   VectorInterface v("v"), fv("fv"), u("u");
   ReInitVector(v);
   ReInitVector(u);
@@ -45,7 +164,7 @@ void ChorinAlgorithm::ChorinUzawa(const std::string& problem1, const std::string
   InitSolution(initial,v);
   GetMultiLevelSolver()->AssembleMatrix(v);
 
-  GetMultiLevelSolver()->SetProblem(problem2);
+  GetMultiLevelSolver()->SetProblem(pproblem);
   VectorInterface p("p"), fp("fp"), pold("pold"), q("q");
   ReInitVector(p);
   ReInitVector(q);
@@ -64,7 +183,7 @@ void ChorinAlgorithm::ChorinUzawa(const std::string& problem1, const std::string
 
   for (int iter=1; iter<=niter; iter++)
     {
-      GetMultiLevelSolver()->SetProblem(problem1);
+      GetMultiLevelSolver()->SetProblem(vproblem);
       GetSolver()->Zero(fv);
       GetSolver()->AddNodeVector("pressure",p);
       GetSolver()->Rhs(fv,1.);
@@ -84,42 +203,27 @@ void ChorinAlgorithm::ChorinUzawa(const std::string& problem1, const std::string
 
       // velocity predictor
       //
-      GetSolver()->SetBoundaryVector(v);
-      GetSolver()->SetBoundaryVector(fv);
-      nlinfo.reset();
-      Newton(v,fv,nlinfo);
-      //GetSolver()->Visu("Results/predictor",v,iter);
+      VelocityPredictor(v,fv,nlinfo,iter);
 
       // pressure Poisson problem
       //
-      GetMultiLevelSolver()->SetProblem(problem2);
-      GetSolver()->Zero(fp);
-      GetSolver()->Zero(q);
-      GetSolver()->Rhs(fp);
-      LinearSolve(q,fp,cginfo);
+      PressurePoissonProblem(q,fp,cginfo);
 
       // velocity projection
       //
-      GetMultiLevelSolver()->SetProblem(problem1);
-      GetSolver()->Zero(fv);
-      GetSolver()->MassMatrixVector(fv,v,1.);
-      GetSolver()->AddNodeVector("pressure",q);
-      GetSolver()->Rhs(fv,dt);
-      GetSolver()->DeleteNodeVector("pressure");
-      cginfo.reset();
-      GetSplittingSolver()->InverseMassMatrix(v,fv,cginfo); 
-      if (iter%20==0) GetSolver()->Visu("Results/velocity",v,iter);
+      VelocityProjection(v,q,fv,cginfo,iter);
 
       // pressure update
       //
-      GetMultiLevelSolver()->SetProblem(problem2);
+      GetMultiLevelSolver()->SetProblem(pproblem);
       GetSolver()->Equ(pold,1.,p);
       GetSolver()->Zero(fp);
       GetSolver()->Rhs(fp,alpha*mu*dt);
       GetSolver()->MassMatrixVector(fp,p,1.);
       cginfo.reset();
       GetSplittingSolver()->InverseMassMatrix(p,fp,cginfo); 
-      if (iter%20==0) GetSolver()->Visu("Results/pressure",p,iter);
+
+      GetSolver()->Visu("Results/pressure",p,iter);
     }
   GetSolver()->DeleteNodeVector("velocity");
   DeleteVector(v);
@@ -133,16 +237,16 @@ void ChorinAlgorithm::ChorinUzawa(const std::string& problem1, const std::string
 
 /*-------------------------------------------------*/
 
-void ChorinAlgorithm::VanKan(const std::string& problem1, const std::string& problem2)
+void ChorinAlgorithm::VanKan()
 {
-  GetMultiLevelSolver()->SetProblem(problem1);
+  GetMultiLevelSolver()->SetProblem(vproblem);
   VectorInterface v("v"), fv("fv");
   ReInitVector(v);
   ReInitVector(fv);
   InitSolution(initial,v);
   GetMultiLevelSolver()->AssembleMatrix(v);
 
-  GetMultiLevelSolver()->SetProblem(problem2);
+  GetMultiLevelSolver()->SetProblem(pproblem);
   VectorInterface p("p"), fp("fp"), q("q");
   ReInitVector(p);
   ReInitVector(fp);
@@ -154,16 +258,20 @@ void ChorinAlgorithm::VanKan(const std::string& problem1, const std::string& pro
   NLInfo& nlinfo = GetSolverInfos()->GetNLInfo();
   CGInfo& cginfo = GetSolverInfos()->GetLInfo();
 
+  theta = 1.;  // only during first time step
+
   for (int iter=1; iter<=niter; iter++)
     {
-      GetMultiLevelSolver()->SetProblem(problem1);
-      GetSolver()->AddNodeVector("pressure",p);
+      GetMultiLevelSolver()->SetProblem(vproblem);
       GetSolver()->Zero(fv);
-      GetSolver()->Rhs(fv,1./theta);
-      GetSolver()->DeleteNodeVector("pressure");
-
-      const StdSolver* S = dynamic_cast<const StdSolver*>(GetSolver());
-      S->StdSolver::Form(fv,v,-(1.-theta)/theta);
+      if (iter>1)
+	{
+	  GetSolver()->AddNodeVector("pressure",p);
+	  GetSolver()->Rhs(fv,1./theta);
+	  GetSolver()->DeleteNodeVector("pressure");
+	  const StdSolver* S = dynamic_cast<const StdSolver*>(GetSolver());
+	  S->StdSolver::Form(fv,v,-(1.-theta)/theta);
+	}
       GetSolver()->MassMatrixVector(fv,v,1./(theta*dt));
 
       // neuer Zeitschritt
@@ -176,41 +284,27 @@ void ChorinAlgorithm::VanKan(const std::string& problem1, const std::string& pro
       
       // velocity predictor
       //
-      GetSolver()->SetBoundaryVector(v);
-      GetSolver()->SetBoundaryVector(fv);
-      nlinfo.reset();
-      Newton(v,fv,nlinfo);
-      GetSolver()->Visu("Results/predictor",v,iter);
+      VelocityPredictor(v,fv,nlinfo,iter);
 
       // pressure Poisson problem
       //
-      GetMultiLevelSolver()->SetProblem(problem2);
-      GetSolver()->Zero(fp);
-      GetSolver()->Rhs(fp,1./theta);
-      GetSolver()->Zero(q);
-      LinearSolve(q,fp,cginfo);
-      GetSolver()->Add(p,(1.-theta)/theta,q);
-      GetSolver()->Visu("Results/pressure",p,iter);
-//       string name = "Results/pressure";
-//       compose_name(name,iter);
-//       GetSolver()->Write(v,name);
+      PressurePoissonProblem(q,fp,cginfo);
+
+      if (iter>1)
+	{
+	  GetSolver()->Add(p,(1.-theta)/theta,q);
+	  GetSolver()->Visu("Results/pressure",p,iter);
+	}
 
       // velocity projection
       //
-      GetMultiLevelSolver()->SetProblem(problem1);
-      GetSolver()->Zero(fv);
-      GetSolver()->AddNodeVector("pressure",q);
-      GetSolver()->Rhs(fv,theta*dt);
-      GetSolver()->DeleteNodeVector("pressure");
-      GetSolver()->MassMatrixVector(fv,v,1.);
-      GetSolver()->Zero(v);
-      cginfo.reset();
-      GetSplittingSolver()->InverseMassMatrix(v,fv,cginfo);      
-      GetSolver()->Visu("Results/velocity",v,iter);
-      
-//       name = "Results/velocity";
-//       compose_name(name,iter);
-//       GetSolver()->Write(v,name);
+      VelocityProjection(v,q,fv,cginfo,iter);
+
+      if (iter==1)
+	{
+	  PressureUpdate(p,q,iter);
+	  theta = 0.5;
+	}
     }
   GetSolver()->DeleteNodeVector("velocity");
   DeleteVector(v);
