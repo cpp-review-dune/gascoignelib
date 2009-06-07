@@ -22,12 +22,12 @@ public:
     double y = v.y();
 
     b.zero();
-    if (color!=80)
-      {
-        double high = 4.1;
-	double vmax = 0.3;
-	b[0] = vmax * Gascoigne::ParabelFunction(y,0.,high);
-      }
+/*     if (color!=80) */
+/*       { */
+/*         double high = 4.1; */
+/* 	double vmax = 0.3; */
+/* 	b[0] = vmax * Gascoigne::ParabelFunction(y,0.,high); */
+/*       } */
   }
 };
 
@@ -116,7 +116,7 @@ class PressureProblemDescriptor : public Gascoigne::ProblemDescriptorBase
   void BasicInit(const Gascoigne::ParamFile* pf) 
   {
     GetParamFilePointer()     = pf;
-    GetEquationPointer()      = new Gascoigne::Laplace2d(GetParamFile());
+    GetEquationPointer()      = new Gascoigne::Laplace2d;
     GetRightHandSidePointer() = new PressureRhs;
     GetBoundaryManagerPointer() = new NoDirichletBoundaries;
     
