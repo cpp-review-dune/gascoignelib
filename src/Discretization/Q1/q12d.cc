@@ -520,7 +520,12 @@ void Q12d::VertexTransformation(const Vertex2d& p0, Vertex2d& p, int iq) const
     {
       break;
     }
-    assert(niter<10);
+    if (niter>=10)
+      {
+	cerr << "void Q12d::VertexTransformation(const Vertex2d& p0, Vertex2d& p, int iq) const" << endl
+	     << "\t did not converge " << res << "\t" << p << "\t" << p0 << endl;
+	abort();
+      }
     
     Tr.DTI().mult_ad(p,res);
   } 
