@@ -96,13 +96,8 @@ void NonstationaryAlgorithm::ThetaScheme(const std::string& problemlabel)
 
   NLInfo& nlinfo = GetSolverInfos()->GetNLInfo();
 
-  time += dt;
-
   for (int iter=1; iter<=niter; iter++)
     {
-      cout << "\n============== " << iter << " ==== theta-scheme === ";
-      cout << " [t,dt] "<< time << " " << dt << "\n";
-
       //
       // rhs fuer alten Zeitschritt
       //
@@ -115,16 +110,23 @@ void NonstationaryAlgorithm::ThetaScheme(const std::string& problemlabel)
       // neuer Zeitschritt
       //
       time += dt;
+      cout << "\n============== " << iter << " ==== theta-scheme === ";
+      cout << " [t,dt] "<< time << " " << dt << "\n";
+
       TimeInfoBroadcast();
 
       if (theta!=1.) GetSolver()->Rhs(f,1./theta-1.);
       GetSolver()->SetBoundaryVector(f);
+      GetSolver()->SetBoundaryVector(u);
 
       nlinfo.reset();
   
       Newton(u,f,nlinfo);
 
       GetSolver()->Visu("Results/solve",u,iter);
+      string name = "Results/solve";
+      compose_name(name,iter);
+      GetSolver()->Write(u,name);
     }
   DeleteVector(u);
   DeleteVector(f);
@@ -158,18 +160,13 @@ void NonstationaryAlgorithm::FractionalStepThetaScheme(const std::string& proble
 
   NLInfo& nlinfo = GetSolverInfos()->GetNLInfo();
 
-  time += dt;
-
   double gamma = 1.-sqrt(0.5);
   double alpha = 2.-sqrt(2);  // arbitrary in (0.5,1)
   double c     = 0.;
 
   for (int iter=1; iter<=niter; iter++)
     {
-      cout << "\n============== " << iter << " ==== fractional-theta === ";
-      cout << " [t,dt] "<< time << " " << dt << "\n";
-
-      int step = iter%3;
+      int step = (iter-1)%3;
 
       if      (step==0) { theta = gamma*alpha;              c = (1.-alpha)/alpha;}
       else if (step==1) { theta = (1.-2.*gamma)*(1.-alpha); c = alpha/(1.-alpha);}
@@ -186,10 +183,15 @@ void NonstationaryAlgorithm::FractionalStepThetaScheme(const std::string& proble
       
       // neuer Zeitschritt
       //
-      if (step==1) time += dt*(1.-2.*theta);
-      else         time += dt*theta;
+      double k = 0.;
+      if (step==1) k = dt*(1.-2.*gamma);
+      else         k = dt*gamma;
+      time += k;
 
       TimeInfoBroadcast();
+
+      cout << "\n============== " << iter << " ==== fractional-theta === ";
+      cout << " [t,dt] "<< time << " " << k << "\n";
 
       if (step==1) GetSolver()->Rhs(f,1./(1.-alpha));
       GetSolver()->SetBoundaryVector(f);
