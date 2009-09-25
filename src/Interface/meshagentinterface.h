@@ -7,6 +7,7 @@
 #include  "meshtransferinterface.h"
 #include  "paramfile.h"
 #include  "boundaryfunction.h"
+#include  "stdperiodicmapping.h"
 #include  <string>
 
 namespace Gascoigne
@@ -64,6 +65,10 @@ namespace Gascoigne
 
       virtual void AddShape(int col, BoundaryFunction<2>* f) {std::cerr << "MeshAgentInterface::AddShape not written" << std::endl; abort();}
       virtual void AddShape(int col, BoundaryFunction<3>* f) {std::cerr << "MeshAgentInterface::AddShape not written" << std::endl; abort();}
+
+      virtual void AddPeriodicMapping(int col, int col2, PeriodicMapping* map)
+      {std::cerr << "MeshAgentInterface::AddPeriodicMapping not written" << std::endl; abort();}
+
   };
 }
 

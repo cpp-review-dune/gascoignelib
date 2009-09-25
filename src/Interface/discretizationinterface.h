@@ -23,7 +23,6 @@
 #include  "domainfunction.h"
 #include  "curve.h"
 
-
 namespace Gascoigne
 {
   
@@ -147,6 +146,10 @@ namespace Gascoigne
       }
       virtual void StrongDirichletVectorZero(GlobalVector& u, int col, const std::vector<int>& comp) const {
         std::cerr << "\"DiscretizationInterface::StrongDirichletVectorZero\" not written!" << std::endl;
+        abort();
+      }
+      virtual void StrongPeriodicVector(GlobalVector& u, const PeriodicData& BF, int col, const std::vector<int>& comp, double d=1.) const {
+        std::cerr << "\"DiscretizationInterface::StrongPeriodicVector\" not written!" << std::endl;
         abort();
       }
 

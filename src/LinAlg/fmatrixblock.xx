@@ -77,6 +77,40 @@ float& FMatrixBlock<N>::diag(int i)
 /**********************************************************/
 
 template<int N>
+void FMatrixBlock<N>::getrow(std::vector<double>& v, int i)
+{
+  v.clear();
+  for (int j=0; j<N; j++) v.push_back((*this)(i,j));
+}
+
+/**********************************************************/
+
+template<int N>
+void FMatrixBlock<N>::getcolumn(std::vector<double>& v, int i)
+{
+  v.clear();
+  for (int j=0; j<N; j++) v.push_back((*this)(j,i));
+}
+
+/**********************************************************/
+
+template<int N>
+void FMatrixBlock<N>::setrow(std::vector<double>& v, int i)
+{
+  for (int j=0; j<N; j++) (*this)(i,j) = v[j];
+}
+
+/**********************************************************/
+
+template<int N>
+void FMatrixBlock<N>::setcolumn(std::vector<double>& v, int i)
+{
+  for (int j=0; j<N; j++) (*this)(j,i) = v[j];
+}
+
+/**********************************************************/
+
+template<int N>
 void FMatrixBlock<N>::entry(const nmatrix<double>& E)
 {
   for (int c=0; c<N; c++)

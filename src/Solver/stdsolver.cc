@@ -612,8 +612,59 @@ void StdSolver::ReInitMatrix()
   if (GetFaceDiscretization())
     GetFaceDiscretization()->Structure(&SA);
 
+  AddPeriodicNodes(&SA);
+
   GetMatrix()->ReInit(&SA);
   GetIlu()->ReInit(&SA);
+}
+
+/*-------------------------------------------------------*/
+
+void StdSolver::AddPeriodicNodes(SparseStructure* SA)
+{
+  /*-------------------------------------------------------
+  | Vereinigt die Nachbarschaften von zusammengehoerenden
+  | Knoten auf den periodischen Raendern, so dass es
+  | moeglich wird, die Kopplungen des einen Knoten zum
+  | anderen zu schieben.
+  -------------------------------------------------------*/
+  
+  const BoundaryManager* BM = GetProblemDescriptor()->GetBoundaryManager();
+  const IntVector& iv_PeriodicColors = BM->GetPeriodicDataColors();
+
+  const MeshInterface* p_mesh        = GetMesh();
+  const GascoigneMesh* GMP           = dynamic_cast<const GascoigneMesh*>(p_mesh);
+  assert(GMP);
+
+  map<int,map<int,int> > mm_PeriodicPairs = GMP->GetBoundaryIndexHandler().GetPeriodicPairs();
+
+  for(IntVector::const_iterator p_col   = iv_PeriodicColors.begin(); p_col!=iv_PeriodicColors.end(); p_col += 2)
+  {
+    int col = *p_col;
+
+    IntSet is_neighbours1;
+    IntSet is_neighbours2;
+
+    for (map<int,int>::const_iterator p_pair = mm_PeriodicPairs[col].begin(); p_pair != mm_PeriodicPairs[col].end(); p_pair++)
+    {
+      // beide raender abgrasen und die kopplungen in columns1 und columns2 eintragen
+      is_neighbours1 = SA->row(p_pair->first);
+      is_neighbours2 = SA->row(p_pair->second);
+
+      for (IntSet::const_iterator p_neighbour1 = is_neighbours1.begin(); p_neighbour1 != is_neighbours1.end(); p_neighbour1++)
+      {
+        SA->build_add(p_pair->second, *p_neighbour1  );
+        SA->build_add(*p_neighbour1 , p_pair->second );
+      }
+
+      for (IntSet::const_iterator p_neighbour2 = is_neighbours2.begin(); p_neighbour2 != is_neighbours2.end(); p_neighbour2++)
+      {
+        SA->build_add(p_pair->first, *p_neighbour2 );
+        SA->build_add(*p_neighbour2, p_pair->first );
+      }
+    }
+  }
+  SA->build_end();
 }
 
 /*-------------------------------------------------------*/
@@ -801,6 +852,26 @@ void StdSolver::SetBoundaryVector(VectorInterface& gf) const
 
 /*-------------------------------------------------------*/
 
+void StdSolver::SetPeriodicVector(VectorInterface& gf) const
+{
+  const BoundaryManager* BM = GetProblemDescriptor()->GetBoundaryManager();
+  const PeriodicData*    PD = GetProblemDescriptor()->GetPeriodicData();
+
+  if(PD==NULL)
+  {
+    if(BM->GetPeriodicDataColors().size()!=0)
+    {
+      cerr << "No PeriodicData given but PeriodicColors in ParamFile!" << endl;
+      abort();
+    }
+    return;
+  }
+
+  SetPeriodicVectorStrong(gf,*BM,*PD);
+}
+
+/*-------------------------------------------------------*/
+
 void StdSolver::SetBoundaryVectorStrong(VectorInterface& gf, const BoundaryManager& BM, const DirichletData& DD, double d) const
 {
   GlobalVector& f = GetGV(gf);
@@ -821,6 +892,54 @@ void StdSolver::SetBoundaryVectorStrong(VectorInterface& gf, const BoundaryManag
       const IntVector& comp = BM.GetDirichletDataComponents(col);
       GetDiscretization()->StrongDirichletVector(f, DD, col, comp, d);
     }
+}
+
+/*-------------------------------------------------------*/
+
+void StdSolver::SetPeriodicVectorStrong(VectorInterface& gf, const BoundaryManager& BM, const PeriodicData& PD, double d) const
+{
+  GlobalVector& f = GetGV(gf);
+
+  list<int> periodic_cols(BM.GetPeriodicDataColors().begin(),
+                            BM.GetPeriodicDataColors().end());
+  for(list<int>::const_iterator p=periodic_cols.begin();p!=periodic_cols.end();p++)
+    {
+      int col = *p;
+      const IntVector& comp = BM.GetPeriodicDataComponents(col);
+      GetDiscretization()->StrongPeriodicVector(f, PD, col, comp, d);
+    }
+}
+
+/*-------------------------------------------------------*/
+
+void StdSolver::SetPeriodicVectorZero(VectorInterface& gf) const
+{
+  const BoundaryManager* BM = GetProblemDescriptor()->GetBoundaryManager();
+  const IntVector& iv_PeriodicColors = BM->GetPeriodicDataColors();
+
+  GlobalVector& f = GetGV(gf);
+  const MeshInterface* p_mesh        = GetMesh();
+  const GascoigneMesh* GMP           = dynamic_cast<const GascoigneMesh*>(p_mesh);
+  assert(GMP);
+
+  map<int,map<int,int> > mm_PeriodicPairs = GMP->GetBoundaryIndexHandler().GetPeriodicPairs();
+
+  for(IntVector::const_iterator p_col=iv_PeriodicColors.begin(); p_col!=iv_PeriodicColors.end(); )
+  {
+    int col  = *p_col++;
+    *p_col++;
+
+    const IntVector& iv_PeriodicComponents = BM->GetPeriodicDataComponents(col);
+
+    for (map<int,int>::const_iterator p_pair = mm_PeriodicPairs[col].begin(); p_pair != mm_PeriodicPairs[col].end(); p_pair++)
+    {
+      for (IntVector::const_iterator p_comp=iv_PeriodicComponents.begin();p_comp!=iv_PeriodicComponents.end();p_comp++)
+      {
+        f(p_pair->second,*p_comp) = .5*(f(p_pair->second,*p_comp) + f(p_pair->first,*p_comp));
+        f(p_pair->first ,*p_comp) = f(p_pair->second,*p_comp);
+      }
+    }
+  }
 }
 
 /*-------------------------------------------------------*/
@@ -1275,6 +1394,7 @@ void StdSolver::AssembleMatrix(const VectorInterface& gu, double d)
     const BoundaryManager* BM = GetProblemDescriptor()->GetBoundaryManager();
     GetDiscretization()->BoundaryMatrix(*GetMatrix(),u,BM->GetBoundaryEquationColors(),*BE,d);
   }
+  PeriodicMatrix();
   DirichletMatrix();
   HNZero(gu);
   HNZeroData();
@@ -1309,6 +1429,37 @@ void StdSolver::DirichletMatrixOnlyRow() const
       int col = *p;
       const IntVector& comp = BM->GetDirichletDataComponents(col);
       GetDiscretization()->StrongDirichletMatrixOnlyRow(*GetMatrix(), col, comp);
+    }
+}
+
+/* -------------------------------------------------------*/
+
+void StdSolver::PeriodicMatrix() const
+{
+  /*-------------------------------------------------------
+  | Modifiziert die Systemmatrix, um den periodischen
+  | Raendern Rechnung zu tragen.
+  | Vgl. DirichletMatrix bzw. DirichletMatrixOnlyRow.
+  | Ruft dazu Matrix->periodic() auf.
+  -------------------------------------------------------*/
+
+  const BoundaryManager* BM = GetProblemDescriptor()->GetBoundaryManager();
+  const IntVector& iv_PeriodicColors = BM->GetPeriodicDataColors();
+
+  const MeshInterface* p_mesh        = GetMesh();
+  const GascoigneMesh* GMP           = dynamic_cast<const GascoigneMesh*>(p_mesh);
+  assert(GMP);
+
+  map<int,map<int,int> > mm_PeriodicPairs = GMP->GetBoundaryIndexHandler().GetPeriodicPairs();
+
+  for (IntVector::const_iterator p_col=iv_PeriodicColors.begin(); p_col!=iv_PeriodicColors.end();)
+    {
+      int col = *p_col++;
+      *p_col++;
+      
+      const IntVector iv_PeriodicComponents = BM->GetPeriodicDataComponents(col);
+
+      GetMatrix()->periodic(mm_PeriodicPairs[col],iv_PeriodicComponents);
     }
 }
 
@@ -1683,6 +1834,8 @@ void StdSolver::AssembleDualMatrix(const VectorInterface& gu, double d)
   GetDiscretization()->Matrix(*M,GetGV(gu),EQ,d);
   M->transpose();
 
+  // PeriodicMatrix() hier nicht getestet!
+  PeriodicMatrix();
   DirichletMatrixOnlyRow();
   HNZero(gu);
 

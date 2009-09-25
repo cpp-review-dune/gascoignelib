@@ -149,4 +149,18 @@ const IntVector& BoundaryIndexHandler::LocalPatchind(int color) const
   return p->second;
 }
 
+/*--------------------------------------------------------------*/
+
+void BoundaryIndexHandler::SetPeriodicPairs(std::map<int,std::map<int,int> > mm_PeriodicPairs)
+{
+  _PeriodicPairs = mm_PeriodicPairs;
+}
+
+/*--------------------------------------------------------------*/
+
+const std::map<int,std::map<int,int> > BoundaryIndexHandler::GetPeriodicPairs() const
+{
+  return _PeriodicPairs;
+}
+
 }

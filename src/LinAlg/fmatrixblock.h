@@ -31,6 +31,10 @@ public:
   void   zero_row(int);
   void   uno_diag(int);
   float& diag(int i);
+  void   getrow   (std::vector<double>& v, int i);
+  void   getcolumn(std::vector<double>& v, int i);
+  void   setrow   (std::vector<double>& v, int i);
+  void   setcolumn(std::vector<double>& v, int i);
 
   void   DirichletRow (const std::vector<int>& cv);
   void   DirichletCol (const std::vector<int>& cv);

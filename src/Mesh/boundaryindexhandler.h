@@ -17,6 +17,8 @@ class BoundaryIndexHandler
 
   IntSet  AllColors;
   VecMap  verteces, cells, localci, patches, localpi;
+  
+  std::map<int,std::map<int,int> > _PeriodicPairs;
 
  public:
 
@@ -44,6 +46,9 @@ class BoundaryIndexHandler
   const IntVector& Localind(int col) const;
   const IntVector& Patches   (int col) const;
   const IntVector& LocalPatchind(int col) const;
+
+  void SetPeriodicPairs(std::map<int,std::map<int,int> > mm_PeriodicPairs);
+  const std::map<int,std::map<int,int> > GetPeriodicPairs() const;
 
   void Equal(const IntSet& col, const VecMap& v, const VecMap& c, const VecMap& l);
   void check() const;

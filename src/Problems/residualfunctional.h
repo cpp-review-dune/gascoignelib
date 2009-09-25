@@ -5,6 +5,7 @@
 #include  <string>
 #include  <set>
 #include  "dirichletdata.h"
+#include  "periodicdata.h"
 
 /*-----------------------------------------*/
 
@@ -20,6 +21,7 @@ namespace Gascoigne
       std::set<int>   __cols;
 
       const DirichletData*   __DD;
+      const PeriodicData*    __PD;
   
     public:
   
@@ -31,6 +33,7 @@ namespace Gascoigne
 	  __scales = F.GetScales();
 	  __cols   = F.GetColors();
 	  __DD     = F.GetDirichletData();
+          __PD     = F.GetPeriodicData();
 	}
 
       std::string GetName() const {return "ResidualFunctional";}
@@ -47,6 +50,8 @@ namespace Gascoigne
 
       const DirichletData* GetDirichletData()   const { return __DD;}
       const DirichletData*& GetDirichletDataPointer() { return __DD;}
+      const PeriodicData* GetPeriodicData()     const { return __PD;}
+      const PeriodicData*& GetPeriodicDataPointer()   { return __PD;}
   
     };
 }

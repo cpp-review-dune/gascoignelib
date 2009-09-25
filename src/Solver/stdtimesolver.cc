@@ -89,6 +89,8 @@ void StdTimeSolver::ReInitMatrix()
   SparseStructure SA;
   GetDiscretization()->Structure(&SA);
 
+  StdSolver::AddPeriodicNodes(&SA);
+
   GetMatrix()->ReInit(&SA);
   GetIlu()->ReInit(&SA);
 
@@ -210,6 +212,7 @@ void StdTimeSolver::AssembleMatrix(const VectorInterface& gu, double d)
   double scale = d/(_dt*_theta);
   GetMatrix()->AddMassWithDifferentStencil(GetMassMatrix(),GetTimePattern(),scale);
 
+  StdSolver::PeriodicMatrix();
   StdSolver::DirichletMatrix();
 }
 

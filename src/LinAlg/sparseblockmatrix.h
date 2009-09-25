@@ -66,6 +66,7 @@ class SparseBlockMatrix : public MatrixInterface
   void dirichlet_only_row(int i, const vector<int>& cv);
   void dirichlet_only_column(int i, const vector<int>& cv);
   void dirichlet_only_row_no_diag(int i, const vector<int>& cv);
+  void periodic(const std::map<int,int> &m_PeriodicPairs, const IntVector &iv_Components);
 
   void zero();
   void entry(nvector<int>::const_iterator start1, nvector<int>::const_iterator stop1,

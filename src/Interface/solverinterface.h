@@ -154,8 +154,11 @@ namespace Gascoigne
       /// vector - boundary condition
       //
       virtual void SetBoundaryVector(VectorInterface& f) const=0;
+      virtual void SetPeriodicVector(VectorInterface& f) const=0;
       virtual void SetBoundaryVectorZero(VectorInterface& f) const=0;
       virtual void SetBoundaryVectorStrong(VectorInterface& f, const BoundaryManager& BM, const DirichletData& DD, double d=1.) const=0;
+      virtual void SetPeriodicVectorStrong(VectorInterface& f, const BoundaryManager& BM, const PeriodicData& PD, double d=1.) const=0;
+      virtual void SetPeriodicVectorZero(VectorInterface& f) const=0;
   
       //
       /// vector - linear algebra

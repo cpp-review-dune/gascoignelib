@@ -18,6 +18,7 @@ class ProblemDescriptorBase : public ProblemDescriptorInterface
   Application              *RHS;
   Application              *IC;
   DirichletData            *DD;
+  PeriodicData             *PD;
   BoundaryRightHandSide    *BRHS;
   BoundaryInitialCondition *BIC;
   BoundaryEquation         *BE;
@@ -37,6 +38,7 @@ class ProblemDescriptorBase : public ProblemDescriptorInterface
   Application*&              GetInitialConditionPointer()         { return IC;}
   Application*&              GetRightHandSidePointer()            { return RHS;}
   DirichletData*&            GetDirichletDataPointer()            { return DD;}
+  PeriodicData*&             GetPeriodicDataPointer()             { return PD;}
   BoundaryRightHandSide*&    GetBoundaryRightHandSidePointer()    { return BRHS;}
   BoundaryInitialCondition*& GetBoundaryInitialConditionPointer() { return BIC;}
   BoundaryEquation*&         GetBoundaryEquationPointer()         { return BE; }
@@ -59,6 +61,7 @@ class ProblemDescriptorBase : public ProblemDescriptorInterface
 
   const Application*              GetRightHandSide           () const { return RHS;}
   const DirichletData*            GetDirichletData           () const { return DD;}
+  const PeriodicData*             GetPeriodicData            () const { return PD;}
   const BoundaryRightHandSide*    GetBoundaryRightHandSide   () const { return BRHS;}
   const BoundaryInitialCondition* GetBoundaryInitialCondition() const { return BIC;}
   const BoundaryEquation*         GetBoundaryEquation        () const { return BE;}

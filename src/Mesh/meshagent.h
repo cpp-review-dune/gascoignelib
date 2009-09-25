@@ -5,6 +5,7 @@
 #include  "hierarchicalmesh.h"
 #include  "gascoignemultigridmesh.h"
 #include  "boundaryfunction.h"
+#include  "stdperiodicmapping.h"
 
 using namespace std;
 
@@ -20,7 +21,10 @@ private:
 
   map<int,BoundaryFunction<2>* > _curved2d;
   map<int,BoundaryFunction<3>* > _curved3d;
-  
+
+  map<int,map<int,PeriodicMapping*> > _periodicMaps;
+  IntVector _periodicCols;
+
   //Fuer die Zuordnung GM Nr auf altem Gitter zu GM Nr. auf neuem Gitter
   IntVector _cl2g, _celll2g;
   IntVector _fathers;//GM Nr zu HM nr.
@@ -40,6 +44,7 @@ protected:
 
   virtual void ReInit();
   virtual void BuildQ4PatchList(const IntVector &patchl2g);
+  virtual void AssemblePeriodicBoundaries();
 
   GascoigneMesh*  GMesh(int l) { return GMG->GetGascoigneMesh(l);}
 
@@ -55,6 +60,8 @@ public:
         map<int,BoundaryFunction<3>* >& GetShapes3d()       { return _curved3d; }
   const map<int,BoundaryFunction<2>* >& GetShapes2d() const { return _curved2d; }
   const map<int,BoundaryFunction<3>* >& GetShapes3d() const { return _curved3d; }
+
+  void AddPeriodicMapping(int col, int col2, PeriodicMapping* map) { _periodicMaps[col][col2] = map; }
 
   void BasicInit(const ParamFile* pf);
   void BasicInit(const std::string& gridname, int dim, int patchdepth, int epatcher, bool goc2nc = false);

@@ -9,6 +9,7 @@
 #include  "equation.h"
 #include  "faceequation.h"
 #include  "dirichletdata.h"
+#include  "periodicdata.h"
 #include  "boundaryrighthandside.h"
 #include  "boundaryequation.h"
 #include  "exactsolution.h"
@@ -52,6 +53,7 @@ namespace Gascoigne
       virtual const FaceEquation*              GetFaceEquation            () const=0;
       virtual const BoundaryEquation*          GetBoundaryEquation        () const=0;
       virtual const DirichletData*             GetDirichletData           () const=0;
+      virtual const PeriodicData*              GetPeriodicData            () const=0;
       virtual const Application*               GetInitialCondition        () const=0;
       virtual const BoundaryInitialCondition*  GetBoundaryInitialCondition() const=0;
       virtual const ExactSolution*             GetExactSolution           () const=0;

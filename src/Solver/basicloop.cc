@@ -214,6 +214,8 @@ string BasicLoop::Solve(VectorInterface& u, VectorInterface& f, string name)
   GetMultiLevelSolver()->GetSolver()->Rhs(f);
 
   GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(f);
+  // set offset first, so nodes that are both periodic and dirichlet will become dirichlet
+  GetMultiLevelSolver()->GetSolver()->SetPeriodicVector(u);
   GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(u);
 
   string status = GetMultiLevelSolver()->Solve(u,f,GetSolverInfos()->GetNLInfo());

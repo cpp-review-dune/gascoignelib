@@ -484,7 +484,6 @@ void StdMultiLevelSolver::NewtonPreProcess(VectorInterface& u, const VectorInter
  
 void StdMultiLevelSolver::NewtonPostProcess(VectorInterface& u, const VectorInterface& f,NLInfo& info) const  
 { ;
-
 }
 
 /*-------------------------------------------------------------*/
@@ -502,6 +501,7 @@ double StdMultiLevelSolver::NewtonResidual(VectorInterface& y, const VectorInter
   DataP->CountResidual()++;
   GetSolver(ComputeLevel)->Equ(y,1.,b);
   GetSolver(ComputeLevel)->Form(y,x,-1.);
+  GetSolver(ComputeLevel)->SetPeriodicVectorZero(y);
   GetSolver(ComputeLevel)->SetBoundaryVectorZero(y);
   GetSolver(ComputeLevel)->SubtractMeanAlgebraic(y);
   _clock_residual.stop();
@@ -590,6 +590,7 @@ double StdMultiLevelSolver::NewtonUpdate(double& rr, VectorInterface& x, VectorI
   double relax = 1.;
     
   string message = "";
+  GetSolver(ComputeLevel)->SetPeriodicVectorZero(dx);
 
   for(int iter=0;iter<nlinfo.user().maxrelax();iter++)
     {

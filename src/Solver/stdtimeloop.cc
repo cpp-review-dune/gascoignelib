@@ -38,8 +38,8 @@ void StdTimeLoop::BasicInit(const ParamFile* paramfile, const ProblemContainer* 
 string StdTimeLoop::SolveTimePrimal(VectorInterface& u, VectorInterface& f)
 {
   GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(f);
+  GetMultiLevelSolver()->GetSolver()->SetPeriodicVector(u);
   GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(u);
-
   string status = GetMultiLevelSolver()->Solve(u,f,GetSolverInfos()->GetNLInfo());
 
   return status;
@@ -163,6 +163,7 @@ void StdTimeLoop::run(const std::string& problemlabel)
   // Anfangswerte
   InitSolution(u);
   
+  GetMultiLevelSolver()->GetSolver()->SetPeriodicVector(u);
   GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(u);
   GetMultiLevelSolver()->GetSolver()->Visu(_s_resultsdir+"/solve",u,0);
 

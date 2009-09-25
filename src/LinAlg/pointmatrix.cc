@@ -80,6 +80,94 @@ void PointMatrix::dirichlet_only_row(int inode, const vector<int>& cv)
 
 /*-----------------------------------------*/
 
+void PointMatrix::periodic(const map<int,int> &m_PeriodicPairs, const IntVector &iv_Components)
+{
+  const ColumnStencil S = *(dynamic_cast<const ColumnStencil*>(GetStencil()));
+  int n = SSAP->nnodes();
+
+  for (int i = 0; i < iv_Components.size(); i++)
+  {
+    int comp = iv_Components[i];
+    int first, second;
+
+    for (map<int,int>::const_iterator p_pair = m_PeriodicPairs.begin(); p_pair!=m_PeriodicPairs.end(); p_pair++)
+    {
+      if (p_pair->first < n && p_pair->second < n)
+      {
+        // convert node and component to entry of matrix
+        first  = p_pair->first  * _ncomp + comp;
+        second = p_pair->second * _ncomp + comp;
+
+        // normalize row "first" and row "second"
+        for (int pos = S.start(first);pos<S.stop(first);pos++)
+        {
+          int j = S.col(pos);
+          for (int pos2 = S.start(second);pos2<S.stop(second);pos2++)
+          {
+            if (S.col(pos2)==j)
+            {
+              value[pos2] = .5*value[pos2] + .5*value[pos];
+              value[pos]  = value[pos2];
+              break;
+            }
+          }
+
+          // modify columns
+          if (j != first && j != second)
+          {
+            for (int pos3 = S.start(j);pos3<S.stop(j);pos3++)
+            {
+              if (S.col(pos3) == first)
+              {
+                for (int pos4 = S.start(j);pos4<S.stop(j);pos4++)
+                  if (S.col(pos4) == second)
+                  {
+                    value[pos4] = .5*value[pos4] + .5*value[pos3];
+                    value[pos3] = value[pos4];
+                    break;
+                  }
+                break;
+              }
+            }
+          }
+        }
+
+        // finish modification of columns
+        for (int pos = S.start(first);pos<S.stop(first);pos++)
+        {
+          if (S.col(pos) == first)
+          {
+            for (int pos2 = S.start(first);pos2<S.stop(first);pos2++)
+              if (S.col(pos2) == second)
+              {
+                value[pos] += value[pos2];
+                value[pos2] = 0.;
+                break;
+              }
+            break;
+          }
+        }
+        for (int pos = S.start(second);pos<S.stop(second);pos++)
+        {
+          if (S.col(pos) == first)
+          {
+            for (int pos2 = S.start(second);pos2<S.stop(second);pos2++)
+              if (S.col(pos2) == second)
+              {
+                value[pos2] += value[pos];
+                value[pos]   = 0.;
+                break;
+              }
+            break;
+          }
+        }
+      }
+    }
+  }
+}
+
+/*-----------------------------------------*/
+
 void PointMatrix::entry_diag(int i, const nmatrix<double>& M)
 {
   IntVector cv(_ncomp); iota(cv.begin(),cv.end(),0);

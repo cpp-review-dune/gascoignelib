@@ -5,6 +5,7 @@
 #include  "compvector.h"
 #include  "sparsestructureinterface.h"
 #include  "stencilinterface.h"
+#include  "periodicdata.h"
 #include  <string>
 
 /*-------------------------------------------------------------*/
@@ -76,7 +77,10 @@ namespace Gascoigne
         std::cerr << "\"MatrixInterface::dirichlet_only_row_no_diag\" not written!" << std::endl;
         abort();
       }
-
+      virtual void periodic (const std::map<int,int> &m_PeriodicPairs, const IntVector &iv_Components) {
+        std::cerr << "\"MatrixInterface::periodic\" not written!" << std::endl;
+        abort();
+      }
       virtual void vmult(GlobalVector& y, const GlobalVector& x, double s=1.) const {
         std::cerr << "\"MatrixInterface::vmult\" not written!" << std::endl;
         abort();

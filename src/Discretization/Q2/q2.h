@@ -46,6 +46,7 @@ public:
   void StrongDirichletVector(GlobalVector& u, const DirichletData& BF, int col, const std::vector<int>& comp, double d) const;
   void StrongDirichletVectorZero(GlobalVector& u, int col, const std::vector<int>& comp) const;
   void InterpolateSolution(GlobalVector& u, const GlobalVector& uold)const;
+  void StrongPeriodicVector(GlobalVector& u, const PeriodicData& BF, int col, const std::vector<int>& comp, double d) const;
   void HNAverage   (GlobalVector& x) const;
   void HNDistribute(GlobalVector& x) const;
   void HNZero      (GlobalVector& x) const;

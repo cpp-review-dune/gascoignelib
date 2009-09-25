@@ -3,6 +3,7 @@
 
 #include  "gascoigne.h"
 #include  "solverinterface.h"
+#include  "sparsestructure.h"
 #include  "gascoignemesh.h"
 #include  "solverdata.h"
 #include  "ghostvectoragent.h"
@@ -54,6 +55,7 @@ class StdSolver : public virtual SolverInterface
 
   const MeshInterface*    _MP;
   const HierarchicalMesh* _HM;
+  std::map<int,int> _PeriodicPairs;
 
   // 2. Matrizen
 
@@ -173,6 +175,7 @@ class StdSolver : public virtual SolverInterface
   FaceDiscretization*       GetFaceDiscretization()       { return _FZP; }
 
   void ReInitMatrix();
+  void AddPeriodicNodes(SparseStructure* SA);
 
   virtual IluInterface* GetIlu() const {assert(_MIP); return _MIP;}
   virtual double clock_vmult() const {return _vm.read();}
@@ -270,8 +273,11 @@ class StdSolver : public virtual SolverInterface
   /// vector - boundary condition
   //
   void SetBoundaryVector(VectorInterface& f) const;
+  void SetPeriodicVector(VectorInterface& f) const;
   void SetBoundaryVectorZero(VectorInterface& Gf) const;
   void SetBoundaryVectorStrong(VectorInterface& f, const BoundaryManager& BM, const DirichletData& DD, double d=1.) const;
+  void SetPeriodicVectorStrong(VectorInterface& f, const BoundaryManager& BM, const PeriodicData& PD, double d=1.) const;
+  void SetPeriodicVectorZero(VectorInterface& gf) const;
 
   //
   /// vector - linear algebra
@@ -300,6 +306,7 @@ class StdSolver : public virtual SolverInterface
 
   void AssembleMatrix(const VectorInterface& u, double d);
   void DirichletMatrix() const;
+  void PeriodicMatrix() const;
   void MatrixZero() const;
   void ComputeIlu(const VectorInterface& u) const;
   void ComputeIlu() const;

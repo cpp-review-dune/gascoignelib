@@ -105,6 +105,8 @@ void MeshAgent::ReInit()
 	  _fathers[i] = HMP->Vater(_cl2g[i]);
       }
   }
+
+  AssemblePeriodicBoundaries();
 }
 
 /*-----------------------------------------*/
@@ -166,18 +168,170 @@ void MeshAgent::BuildQ4PatchList(const IntVector &patchl2g)
 
 /*-----------------------------------------*/
 
+void MeshAgent::AssemblePeriodicBoundaries()
+{
+  /*-------------------------------------------------------
+  | Erstellt eine Zuordnung der Knoten der periodischen
+  | Raender zueinander.
+  | Wird fuer die Modifikation der Systemmatrix und der
+  | rechten Seite benoetigt; legt fest, welche Zeilen und
+  | Spalten bzw. Eintraege miteinander kombiniert werden
+  | muessen.
+  -------------------------------------------------------*/
+  int i_dim = GetDimension();
+
+  if (_periodicCols.size() != 0)
+  {
+    int n = GMG->nlevels();
+
+    for (int i = 0; i < n; i++)
+    {
+      MeshInterface* p_mesh = GMG->GetGascoigneMesh(i);
+      GascoigneMesh* GMP    = dynamic_cast<GascoigneMesh*>(p_mesh);
+      assert(GMP);
+ 
+      //TODO: das soll eigentlich zu Solver gehoeren, damit die anderen Member darauf zugreifen koennen
+      map<int,map<int,int> > mm_PeriodicPairs;
+ 
+      assert(_periodicCols.size()%2 == 0);
+ 
+      for(IntVector::const_iterator p_col   = _periodicCols.begin(); p_col!=_periodicCols.end(); p_col++)
+      {
+        map<int,int> m_PeriodicPairsCol1, m_PeriodicPairsCol2;
+        int col_v = *p_col;
+        int col_w = *(++p_col);
+        
+        if (_periodicMaps.find(col_v) == _periodicMaps.end())
+        {
+          cerr << "Periodic mapping not found: " << col_v << " --> " << col_w << endl;
+          abort();
+        }
+        if (_periodicMaps[col_v].find(col_w) == _periodicMaps[col_v].end())
+        {
+          cerr << "Periodic mapping not found: " << col_v << " --> " << col_w << endl;
+          abort();
+        }
+  
+        IntVector iv_FirstBoundary  =  *(GMP->VertexOnBoundary(col_v));
+        IntVector iv_SecondBoundary =  *(GMP->VertexOnBoundary(col_w));
+  
+        double max_diff_bestfit = 0.;
+   
+        // process each node on the first boundary
+        for (IntVector::const_iterator p_first = iv_FirstBoundary.begin(); p_first != iv_FirstBoundary.end();p_first++)
+        {
+          if (i_dim == 2)
+          {
+            Vertex2d first = GMP->vertex2d(*p_first);
+            Vertex2d otherside;
+            _periodicMaps[col_v][col_w]->transformCoords(otherside, first);
+            int bestfit;
+            double diff, diff_bestfit;
+            Vertex2d second;
+            IntVector::const_iterator p_second = iv_SecondBoundary.begin();
+            second = GMP->vertex2d(*p_second);
+            bestfit = *p_second;
+            diff_bestfit = (second.x()-otherside.x())*(second.x()-otherside.x())
+              + (second.y()-otherside.y())*(second.y()-otherside.y());
+   
+            // find the best fit on the other boundary
+            for (; p_second != iv_SecondBoundary.end(); p_second++)
+            {
+              second = GMP->vertex2d(*p_second);
+              diff = (second.x()-otherside.x())*(second.x()-otherside.x())
+                   + (second.y()-otherside.y())*(second.y()-otherside.y());
+              if (diff < diff_bestfit)
+              {
+                bestfit = *p_second;
+                diff_bestfit = diff;
+              }
+            }
+            if (diff_bestfit > max_diff_bestfit) { max_diff_bestfit = diff_bestfit;}
+   
+            // create a map for fast access
+            m_PeriodicPairsCol1[*p_first] = bestfit;
+            m_PeriodicPairsCol2[bestfit]  = *p_first;
+          }
+          else if (i_dim == 3)
+          {
+            Vertex3d first = GMP->vertex3d(*p_first);
+            Vertex3d otherside;
+            _periodicMaps[col_v][col_w]->transformCoords(otherside, first);
+            int bestfit;
+            double diff, diff_bestfit;
+            Vertex3d second;
+            IntVector::const_iterator p_second = iv_SecondBoundary.begin();
+            second = GMP->vertex3d(*p_second);
+            bestfit = *p_second;
+            diff_bestfit = (second.x()-otherside.x())*(second.x()-otherside.x())
+                         + (second.y()-otherside.y())*(second.y()-otherside.y())
+                         + (second.z()-otherside.z())*(second.z()-otherside.z());
+ 
+            // find the best fit on the other boundary
+            for (; p_second != iv_SecondBoundary.end(); p_second++)
+            {
+              second = GMP->vertex3d(*p_second);
+              diff = (second.x()-otherside.x())*(second.x()-otherside.x())
+                   + (second.y()-otherside.y())*(second.y()-otherside.y())
+                   + (second.z()-otherside.z())*(second.z()-otherside.z());
+              if (diff < diff_bestfit)
+              {
+                bestfit = *p_second;
+                diff_bestfit = diff;
+              }
+            }
+            if (diff_bestfit > max_diff_bestfit) { max_diff_bestfit = diff_bestfit;}
+   
+            // create a map for fast access
+            m_PeriodicPairsCol1[*p_first] = bestfit;
+            m_PeriodicPairsCol2[bestfit]  = *p_first;
+          }
+          else
+          {
+            std::cerr << "AssemblePeriodicBoundaries funktioniert nur fuer Dimension 2 und 3.\n";
+            abort();
+          }
+         
+          if (max_diff_bestfit > 1e-10 && _periodicMaps[col_v][col_w]->GetName() != "StdPeriodicMapping")
+          {
+            std::cerr << "Distance between boundaries " << col_v << " and " << col_w << " too large. Check your PeriodicMapping." << std::endl;
+            abort();
+          }
+          
+          mm_PeriodicPairs[col_v] = m_PeriodicPairsCol1;
+          mm_PeriodicPairs[col_w] = m_PeriodicPairsCol2;
+    
+        }
+      }
+
+      GMP->GetBoundaryIndexHandler().SetPeriodicPairs(mm_PeriodicPairs);
+    }
+  }
+}
+
+/*-----------------------------------------*/
+
 void MeshAgent::BasicInit(const ParamFile* paramfile)
 {
   assert(HMP==NULL);
   int dim = 0;
 
-  DataFormatHandler DFH;
-  DFH.insert("dimension",&dim);
-  //um die zuordnung alte GMNr. -> GMNr. an/abzuschalten
-  DFH.insert("cellnumtrans",&_goc2nc,false);
-  FileScanner FS(DFH);
-  FS.NoComplain();
-  FS.readfile(paramfile,"Mesh");
+  {
+    DataFormatHandler DFH;
+    DFH.insert("dimension",&dim);
+    //um die zuordnung alte GMNr. -> GMNr. an/abzuschalten
+    DFH.insert("cellnumtrans",&_goc2nc,false);
+    FileScanner FS(DFH);
+    FS.NoComplain();
+    FS.readfile(paramfile,"Mesh");
+  }
+  {
+    DataFormatHandler DFH;
+    DFH.insert("periodic",&_periodicCols);
+    FileScanner FS(DFH);
+    FS.NoComplain();
+    FS.readfile(paramfile,"BoundaryManager");
+  }
 
   if (dim==2)
     {

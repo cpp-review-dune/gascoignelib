@@ -61,6 +61,11 @@ public:
   void copy_transpose(const CFDBlock3d& A) 
     { std::cerr << "CFDBlock3d::copy_transpose noch schreiben" << std::endl; }
 
+  void   getrow   (std::vector<double>& v, int i) {abort();}
+  void   getcolumn(std::vector<double>& v, int i) {abort();}
+  void   setrow   (std::vector<double>& v, int i) {abort();}
+  void   setcolumn(std::vector<double>& v, int i) {abort();}
+  
   void   DirichletRow (const std::vector<int>& cv);
   void   DirichletCol (const std::vector<int>& cv);
   void   DirichletDiag(const std::vector<int>& cv);

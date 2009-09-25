@@ -124,6 +124,59 @@ void Q12d::StrongDirichletVector(GlobalVector& u, const DirichletData& BF, int c
 
 /* ----------------------------------------- */
 
+void Q12d::StrongPeriodicVector(GlobalVector& u, const PeriodicData& BF, int col, const vector<int>& comp, double d) const
+{
+  const GascoigneMesh* GMP = dynamic_cast<const GascoigneMesh*>(GetMesh());
+  assert(GMP);
+  DoubleVector ff(u.ncomp(),0.);
+  const IntVector& bv = *GMP->VertexOnBoundary(col);
+
+  FemData QH;
+  GlobalToGlobalData();
+  BF.SetParameterData(__QP);
+
+  //for(int ii=0;ii<comp.size();ii++)
+  //{
+  //  int c = comp[ii];
+  //  if(c<0) {
+  //    cerr << "negative component: " << c << endl;
+  //    assert(0);
+  //  } else if(c>=u.ncomp()){
+  //    cerr << "unknown component: " << c << endl;
+  //    assert(0);
+  //  }
+  //}
+
+  for(int i=0;i<bv.size();i++)
+  {
+    int index = bv[i];
+
+    QH.clear();
+    GlobalData::const_iterator p=GetDataContainer().GetNodeData().begin();
+    for(; p!=GetDataContainer().GetNodeData().end(); p++)
+    {
+      QH[p->first].resize(p->second->ncomp());
+      for(int c=0; c<p->second->ncomp(); c++)
+      {
+        QH[p->first][c].m() = p->second->operator()(index,c);
+      }
+    }
+
+    BF.SetFemData(QH);
+
+    const Vertex2d& v = GMP->vertex2d(index);
+
+    BF(ff,v,col);
+    for(int iii=0;iii<comp.size();iii++)
+    {
+      int c = comp[iii];
+      u(index,c) += d * ff[c];
+    }
+  }
+}
+
+/* ----------------------------------------- */
+
 void Q12d::Interpolate(GlobalVector& u, const DomainInitialCondition& U) const
 {
   if (&U==NULL) return;

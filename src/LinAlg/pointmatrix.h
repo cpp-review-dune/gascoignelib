@@ -48,6 +48,7 @@ public:
     void entry_diag(int i, const nmatrix<double>& M);
     void dirichlet (int i, const std::vector<int>& cv);
     void dirichlet_only_row (int i, const std::vector<int>& cv);
+    void periodic (const std::map<int,int> &m_PeriodicPairs, const IntVector &iv_Components);
 
     void transpose() {
       SimpleMatrix::transpose();

@@ -114,6 +114,44 @@ void Q13d::StrongDirichletVector(GlobalVector& u, const DirichletData& BF, int c
 
 /* ----------------------------------------- */
 
+void Q13d::StrongPeriodicVector(GlobalVector& u, const PeriodicData& BF, int col, const vector<int>& comp, double d) const
+{
+  const GascoigneMesh* GMP = dynamic_cast<const GascoigneMesh*>(GetMesh());
+  assert(GMP);
+  DoubleVector ff(u.ncomp(),0.);
+  const IntVector& bv = *GMP->VertexOnBoundary(col);
+
+  FemData QH;
+
+  for(int i=0;i<bv.size();i++)
+  {
+    int index = bv[i];
+    const Vertex3d& v = GMP->vertex3d(index);
+
+    QH.clear();
+    GlobalData::const_iterator p=GetDataContainer().GetNodeData().begin();
+    for(; p!=GetDataContainer().GetNodeData().end(); p++)
+    {
+      QH[p->first].resize(p->second->ncomp());
+      for(int c=0; c<p->second->ncomp(); c++)
+      {
+        QH[p->first][c].m() = p->second->operator()(index,c);
+      }
+    }
+
+    BF.SetFemData(QH);
+
+    BF(ff,v,col);
+    for(int iii=0;iii<comp.size();iii++)
+    {
+      int c = comp[iii];
+      u(index,c) += d * ff[c];
+    }
+  }
+}
+
+/* ----------------------------------------- */
+
 void Q13d::Interpolate(GlobalVector& u, const DomainInitialCondition& U) const
 {
   if (&U==NULL) return;
