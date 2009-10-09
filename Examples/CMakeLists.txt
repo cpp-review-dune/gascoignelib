@@ -18,6 +18,7 @@ SUBDIRS(
 #  IntegrationTest
 #  Functionals
 #  MeshInterpolator
+   PeriodicStokes2D
 )
 
 LINK_LIBRARIES(${GASCOIGNE_LIBS})

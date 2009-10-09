@@ -83,7 +83,6 @@ void PointMatrix::dirichlet_only_row(int inode, const vector<int>& cv)
 void PointMatrix::periodic(const map<int,int> &m_PeriodicPairs, const IntVector &iv_Components)
 {
   const ColumnStencil S = *(dynamic_cast<const ColumnStencil*>(GetStencil()));
-  int n = SSAP->nnodes();
 
   for (int i = 0; i < iv_Components.size(); i++)
   {
@@ -92,7 +91,6 @@ void PointMatrix::periodic(const map<int,int> &m_PeriodicPairs, const IntVector 
 
     for (map<int,int>::const_iterator p_pair = m_PeriodicPairs.begin(); p_pair!=m_PeriodicPairs.end(); p_pair++)
     {
-      if (p_pair->first < n && p_pair->second < n)
       {
         // convert node and component to entry of matrix
         first  = p_pair->first  * _ncomp + comp;

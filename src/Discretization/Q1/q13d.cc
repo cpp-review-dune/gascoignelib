@@ -145,7 +145,7 @@ void Q13d::StrongPeriodicVector(GlobalVector& u, const PeriodicData& BF, int col
     for(int iii=0;iii<comp.size();iii++)
     {
       int c = comp[iii];
-      u(index,c) += d * ff[c];
+      u(index,c) = d * ff[c];
     }
   }
 }

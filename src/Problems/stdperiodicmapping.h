@@ -56,8 +56,8 @@ namespace Gascoigne
      | Sonst lokal wie gewuenscht ueberschreiben.
      -------------------------------------------------------*/
         w.x() = v.x();
-        w.y() = w.y();
-        w.z() = w.z();
+        w.y() = v.y();
+        w.z() = v.z();
       }
       
       virtual std::set<int> preferred_colors()const {
