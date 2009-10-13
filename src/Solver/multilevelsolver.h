@@ -57,7 +57,7 @@ class MultiLevelSolver
   // Constructor
 
   MultiLevelSolver();
-  ~MultiLevelSolver();
+  virtual ~MultiLevelSolver();
 
   std::string GetName() const {return "MultiLevelSolver";}
   int nlevels() const { assert(GetMeshAgent()); return GetMeshAgent()->nlevels();}

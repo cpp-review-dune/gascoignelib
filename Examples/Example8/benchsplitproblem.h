@@ -19,8 +19,6 @@ public:
   std::string GetName() const {return "BenchMarkSplit";}
   void operator()(Gascoigne::DoubleVector& b, const Gascoigne::Vertex2d& v, int color) const 
   {
-    double y = v.y();
-
     b.zero();
 /*     if (color!=80) */
 /*       { */
