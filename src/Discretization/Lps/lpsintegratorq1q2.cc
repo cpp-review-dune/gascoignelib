@@ -8,6 +8,16 @@ namespace Gascoigne
 /*----------------------------------------- */
 
 template<int DIM>
+LpsIntegratorQ2<DIM>::~LpsIntegratorQ2()
+{
+  if (LpsIntegrator<DIM>::_IF)
+    delete LpsIntegrator<DIM>::_IF;
+  LpsIntegrator<DIM>::_IF=0;
+}
+  
+
+
+template<int DIM>
 LpsIntegratorQ2<DIM>::LpsIntegratorQ2() : LpsIntegrator<DIM>()
 {
   int femn;
@@ -29,6 +39,15 @@ LpsIntegratorQ2<DIM>::LpsIntegratorQ2() : LpsIntegrator<DIM>()
 /*----------------------------------------- */
 /*   Q1 */
 /*----------------------------------------- */
+
+template<int DIM>
+LpsIntegratorQ1<DIM>::~LpsIntegratorQ1()
+{
+  if (LpsIntegrator<DIM>::_IF)
+    delete LpsIntegrator<DIM>::_IF;
+  LpsIntegrator<DIM>::_IF=0;
+}
+  
 
 template<int DIM>
 LpsIntegratorQ1<DIM>::LpsIntegratorQ1() : LpsIntegrator<DIM>()

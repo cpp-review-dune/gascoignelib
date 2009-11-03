@@ -41,7 +41,7 @@ public:
 ////  Con(De)structor 
 //
 
-  LpsIntegrator<DIM>() : CellWeight(1.) {};
+  LpsIntegrator<DIM>() : CellWeight(1.), _IF(0) {};
   ~LpsIntegrator<DIM>() {}
 
   std::string GetName() const {return "Lps";}
@@ -66,7 +66,7 @@ protected:
 public:
 
   LpsIntegratorQ1<DIM>();
-  ~LpsIntegratorQ1<DIM>() {}
+  ~LpsIntegratorQ1<DIM>();
 
   void Form(const Equation& EQ, LocalVector& F, const FemInterface& FEM, const LocalVector&U,
       const LocalData& Q, const LocalData& QC) const;
@@ -86,7 +86,7 @@ protected:
 public:
 
   LpsIntegratorQ2<DIM>();
-  ~LpsIntegratorQ2<DIM>() {}
+  ~LpsIntegratorQ2<DIM>();
 };
 
 /*-----------------------------------------*/

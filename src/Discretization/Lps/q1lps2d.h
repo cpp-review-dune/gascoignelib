@@ -31,7 +31,7 @@ public:
 //
 
   Q1Lps2d() : Q12d() {}
-  ~Q1Lps2d() {}
+  ~Q1Lps2d();
 
   std::string GetName() const {return "Q1Lps2d";}
   

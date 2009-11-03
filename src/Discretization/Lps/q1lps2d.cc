@@ -4,6 +4,15 @@ namespace Gascoigne
 {
 /* ----------------------------------------- */
 
+Q1Lps2d:: ~Q1Lps2d()
+{
+  if (S) delete S;
+  S=0;
+}
+
+/* ----------------------------------------- */  
+
+
 void Q1Lps2d::BasicInit(const ParamFile* paramfile)
 {
   Q12d::BasicInit(paramfile);
