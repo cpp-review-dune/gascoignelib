@@ -31,7 +31,7 @@ public:
 //
 
   Q1Lps3d() : Q13d() {}
-  ~Q1Lps3d() {}
+  ~Q1Lps3d();
 
   std::string GetName() const {return "Q1Lps3d";}
   

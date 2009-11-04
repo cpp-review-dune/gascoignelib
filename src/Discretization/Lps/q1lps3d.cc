@@ -3,6 +3,14 @@
 namespace Gascoigne
 {
 /* ----------------------------------------- */
+  
+Q1Lps3d::~Q1Lps3d() 
+{
+  if (S) delete S;
+  S=0;
+}
+  
+/* ----------------------------------------- */
 
 void Q1Lps3d::BasicInit(const ParamFile* paramfile)
 {
