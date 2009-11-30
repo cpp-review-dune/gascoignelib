@@ -102,9 +102,12 @@ void NonstationaryAlgorithm::ThetaScheme(const std::string& problemlabel)
       // rhs fuer alten Zeitschritt
       //
       GetSolver()->Zero(f);
-      GetSolver()->Rhs(f);
-      const StdSolver* S = dynamic_cast<const StdSolver*>(GetSolver());
-      if (theta!=1.) S->StdSolver::Form(f,u,1.-1./theta);
+      if (theta!=1.) 
+	{
+	  GetSolver()->Rhs(f,1./theta-1.);
+	  const StdSolver* S = dynamic_cast<const StdSolver*>(GetSolver());
+	  S->StdSolver::Form(f,u,1.-1./theta);
+	}
       GetSolver()->MassMatrixVector(f,u,1./(theta*dt));
       
       // neuer Zeitschritt
@@ -115,7 +118,7 @@ void NonstationaryAlgorithm::ThetaScheme(const std::string& problemlabel)
 
       TimeInfoBroadcast();
 
-      if (theta!=1.) GetSolver()->Rhs(f,1./theta-1.);
+      GetSolver()->Rhs(f,1.);
       GetSolver()->SetBoundaryVector(f);
       GetSolver()->SetBoundaryVector(u);
 
@@ -195,6 +198,7 @@ void NonstationaryAlgorithm::FractionalStepThetaScheme(const std::string& proble
 
       if (step==1) GetSolver()->Rhs(f,1./(1.-alpha));
       GetSolver()->SetBoundaryVector(f);
+      GetSolver()->SetBoundaryVector(u);
 
       nlinfo.reset();
   
