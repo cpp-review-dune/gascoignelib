@@ -852,28 +852,32 @@ void HierarchicalMesh3d::basic_fill_neighbours3d()
 void HierarchicalMesh3d::init_quad(BoundaryQuad& newquad)
 {
   FaceVector v;
+  IntSet newquad_set;
+  newquad_set.insert(newquad[0]);
+  newquad_set.insert(newquad[1]);
+  newquad_set.insert(newquad[2]);
+  newquad_set.insert(newquad[3]);
   for (int i=0; i<hexs.size(); i++)
     {
       for (int face=0; face<6; face++)
 	{
 	  HexLaO.global_face_unsorted(v,hex(i),face);
-	  for (int j=0; j<4; j++)
+          IntSet v_set;
+          v_set.insert(v[0]);
+          v_set.insert(v[1]);
+          v_set.insert(v[2]);
+          v_set.insert(v[3]);
+          if(newquad_set==v_set)
 	    {
-	      if (newquad==v)
-		{
-		  HexLaO.global_face_unsorted(v,hex(i),face);
-		  newquad.vertex()=v;
-		  newquad.of_quad()      = i;
-		  newquad.edge_in_quad() = face;
-		  return;
-		}
-	      int d = v[0];
-	      v[0] = v[1] ; v[1] = v[2]; v[2] = v[3]; 
-	      v[3] = d;
+              HexLaO.global_face_unsorted(v,hex(i),face);
+              newquad.vertex()=v;
+              newquad.of_quad()      = i;
+              newquad.edge_in_quad() = face;
+              return;
 	    }
 	}
     }
-  cerr << "BoundaryQuad has wrong vertex order !" << endl;
+  cerr << "BoundaryQuad not found !" << endl;
   cerr << newquad;
   assert(0);
 }
