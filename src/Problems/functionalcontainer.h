@@ -1,5 +1,5 @@
 /*----------------------------   functionalcontainer.h     ---------------------------*/
-/*      $Id$                 */
+/*      $Id: functionalcontainer.h,v 1.2 2010/01/27 10:19:19 rebecca Exp $                 */
 #ifndef __functionalcontainer_H
 #define __functionalcontainer_H
 /*----------------------------   functionalcontainer.h     ---------------------------*/
@@ -45,6 +45,18 @@ namespace Gascoigne
 	   }
 	 return find(label)->second;
        }
+
+     int GetIndex(const std::string& label) const
+     {
+       int i = 0;
+       for (FunctionalContainer::const_iterator it = this->begin(); it!=this->end();++it,++i)
+	 {
+	   if(it->first == label)
+	     return i;
+	 }
+       std::cerr<<"Label not found"<<std::endl;
+       abort();
+     }
      
    };
  
