@@ -172,6 +172,9 @@ void Visualization::vtk(const string& bname) const
   out << "output from GascoigneStd, "<< title << endl;
   out << "ASCII" << endl;
   out << "DATASET UNSTRUCTURED_GRID" << endl;
+  out << "FIELD FieldData 1" << endl;
+    out << "TIME 1 1 double" << endl;
+    out << time << endl;
 
  //  Mesh
 
