@@ -24,12 +24,12 @@ class TimeSolver : public StdSolver
 {
 private:
   
-  TimePattern       _TP;
   MatrixInterface*  _MMP;
-  double            theta, dt, time;
 
 protected:
 
+  double            theta, dt, time;
+  TimePattern       _TP;
   MatrixInterface*& GetMassMatrixPointer() {return _MMP;}
 
 public:
@@ -47,6 +47,7 @@ public:
   void RegisterMatrix();
   void SetProblem(const ProblemDescriptorInterface& PDX);
 
+  void ReInitTimePattern(const ProblemDescriptorInterface& PDX);
   void ReInitMatrix();
 
   MatrixInterface* NewMassMatrix(int ncomp, const std::string& matrixtype)
@@ -60,6 +61,7 @@ public:
   void InverseMassMatrix(VectorInterface& u, const VectorInterface& f, CGInfo& info);
   void precondition(VectorInterface& u, const VectorInterface& f);
   void cgvmult(VectorInterface& y, const VectorInterface& x, double d) const;
+  void L2Projection(VectorInterface& Gu, VectorInterface& Gf);
 };
 
 /*-------------------------------------------------------------*/

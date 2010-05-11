@@ -34,19 +34,6 @@ void TimeSolver::RegisterMatrix()
 
 /*-----------------------------------------*/
 
-void TimeSolver::SetProblem(const ProblemDescriptorInterface& PDX)
-{
-  const Equation* EQ = PDX.GetEquation();
-  if (EQ) 
-    {
-      _TP.reservesize(EQ->GetNcomp(),EQ->GetNcomp(),0.);
-      EQ->SetTimePattern(_TP);
-    }   
-  StdSolver::SetProblem(PDX);
-}
-
-/*-----------------------------------------*/
-
 void TimeSolver::ReInitMatrix() 
 {
   GetDiscretization()->InitFilter(_PF);
@@ -85,6 +72,26 @@ void TimeSolver::Form(VectorInterface& gy, const VectorInterface& gx, double d) 
 
 /*-----------------------------------------*/
 
+void TimeSolver::SetProblem(const ProblemDescriptorInterface& PDX)
+{
+  ReInitTimePattern(PDX);
+  StdSolver::SetProblem(PDX);
+}
+
+/*-----------------------------------------*/
+
+void TimeSolver::ReInitTimePattern(const ProblemDescriptorInterface& PDX)
+{
+  const Equation* EQ = PDX.GetEquation();
+  if (EQ) 
+    {
+      _TP.reservesize(EQ->GetNcomp(),EQ->GetNcomp(),0.);
+      EQ->SetTimePattern(_TP);
+    }   
+}
+
+/*-----------------------------------------*/
+
 void TimeSolver::MassMatrixVector(VectorInterface& gf, const VectorInterface& gu, double d) const
 {
         GlobalVector& f = GetGV(gf);
@@ -117,5 +124,86 @@ void TimeSolver::cgvmult(VectorInterface& y, const VectorInterface& x, double d)
 }
 
 /*-----------------------------------------*/
+
+void TimeSolver::L2Projection(VectorInterface& Gu, VectorInterface& Gf)
+{
+  GlobalVector& u = GetGV(Gu);
+  GlobalVector& f = GetGV(Gf);
+
+  TimePattern TP(u.ncomp());
+  TP.zero();
+  for (int i=0; i<u.ncomp(); i++) TP(i,i) = 1.;
+
+  u.zero();
+
+  bool reached;
+  double s = 1.;
+  int iter = 0;
+  
+  GlobalVector g(u.ncomp(),u.n());
+  GlobalVector r(u.ncomp(),u.n());
+  GlobalVector d(u.ncomp(),u.n());
+
+  assert(u.ncomp()==g.ncomp());
+  assert(u.n()==g.n());
+
+  SimpleMatrix *SM = dynamic_cast<SimpleMatrix *>(GetMassMatrix());
+  assert(SM);
+  SM->PrepareJacobi(s);
+
+  SM->vmult_time(f,u,TP,-s);
+
+  SM->JacobiVector(u);
+  SM->Jacobi(f);
+
+  r.equ(1.,f);
+  d.equ(1.,f);
+  double Res      = r*r;
+  double FirstRes = Res;
+  //cout << "\t\tpcg " << iter << "\t" << sqrt(Res) << endl;
+  
+  if (sqrt(Res)<GetSolverData().GetCgMassGlobalTol()) 
+  {
+    reached = true;
+  }
+  else
+  {
+    reached = false;
+  }
+
+  while(!reached && iter<GetSolverData().GetCgMassMaxIter())
+    {
+      iter++;
+      g.zero();
+      SM->vmult_time_Jacobi(g,d,TP,s);
+      double lambda = Res/(g*d);
+
+      u.add(lambda,d);
+      r.add(-lambda,g);
+
+      Res = r*r;
+      //cout << "\t\tpcg " << iter << "\t" << sqrt(Res) << endl;
+      if (Res < GetSolverData().GetCgMassTol() * GetSolverData().GetCgMassTol() * FirstRes || sqrt(Res)<GetSolverData().GetCgMassGlobalTol()) 
+      {
+        reached = true;
+      }
+      double betacg = -(r*g)/(d*g);
+      d.sequ(betacg,1.,r);
+    }
+
+  SM->Jacobi(u);
+
+//   if(iter==GetSolverData().GetCgMassMaxIter())
+//   {
+//     cout << "too many iterations" << endl;
+//   }
+//   else
+//   {
+//     cout << "converged" << endl;
+//   }
+}
+
+/*-------------------------------------------------------*/
+
 
 }
