@@ -27,7 +27,7 @@ class Q12d : public Q1
   void EEJumpNorm(EdgeInfoContainer<2>& EIC, DoubleVector& eta, const EnergyEstimatorIntegrator<2>& EEI, const HierarchicalMesh2d* HM) const;
   void EEResidual(DoubleVector& eta, const GlobalVector& u, const Equation& EQ, const DomainRightHandSide* RHS, const EnergyEstimatorIntegrator<2>& EEI) const;
   int GetCellNumber(const Vertex2d& p0, Vertex2d& p,int c0=0) const;
-  void VertexTransformation(const Vertex2d& p0, Vertex2d& p, int iq) const;
+  void VertexTransformation(const Vertex2d& p0, Vertex2d& p, int iq, bool abortiffail=true) const;
 
 public:
 

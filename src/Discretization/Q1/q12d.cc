@@ -497,13 +497,16 @@ void Q12d::EEResidual(DoubleVector& eta, const GlobalVector& u, const Equation& 
 
 int Q12d::GetCellNumber(const Vertex2d& p0, Vertex2d& p,int c0) const
 {
-  VertexTransformation(p0,p,c0);
-
-  if((p[0]>0.-1.e-12)&&(p[0]<1.+1.e-12)&&(p[1]>0.-1.e-12)&&(p[1]<1.+1.e-12))
+  if(c0 != 0)
   {
-    return c0;
+    VertexTransformation(p0,p,c0,false);
+    
+    if((p[0]>0.-1.e-12)&&(p[0]<1.+1.e-12)&&(p[1]>0.-1.e-12)&&(p[1]<1.+1.e-12))
+    {
+      return c0;
+    }
   }
-  else
+
   {
     int iq;
   
@@ -550,7 +553,7 @@ int Q12d::GetCellNumber(const Vertex2d& p0, Vertex2d& p,int c0) const
 
 /* ----------------------------------------- */
 
-void Q12d::VertexTransformation(const Vertex2d& p0, Vertex2d& p, int iq) const
+  void Q12d::VertexTransformation(const Vertex2d& p0, Vertex2d& p, int iq, bool abortiffail) const
 {
   nmatrix<double> T;
   Transformation(T,iq);
@@ -577,7 +580,10 @@ void Q12d::VertexTransformation(const Vertex2d& p0, Vertex2d& p, int iq) const
       {
 	cerr << "void Q12d::VertexTransformation(const Vertex2d& p0, Vertex2d& p, int iq) const" << endl
 	     << "\t did not converge " << res << "\t" << p << "\t" << p0 << endl;
-	abort();
+	if(abortiffail)
+	  abort();
+	else 
+	  return;
       }
     
     Tr.DTI().mult_ad(p,res);
