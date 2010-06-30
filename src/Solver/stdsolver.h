@@ -137,6 +137,8 @@ class StdSolver : public virtual SolverInterface
   virtual MatrixInterface* NewMatrix(int ncomp, const std::string& matrixtype); 
   virtual IluInterface* NewIlu(int ncomp, const std::string& matrixtype); 
 
+  void RegisterMatrix(int ncomp);
+
   //
   /// new interface-function for individual size of vectors
   //

@@ -168,7 +168,14 @@ void StdSolver::RegisterMatrix()
 {
   const Equation*  EQ = GetProblemDescriptor()->GetEquation();
   assert(EQ);
-  int ncomp = EQ->GetNcomp();
+
+  RegisterMatrix(EQ->GetNcomp());
+}
+
+/*-------------------------------------------------------*/
+
+void StdSolver::RegisterMatrix(int ncomp)
+{
 
 #ifdef __WITH_UMFPACK__
   if (_useUMFPACK && _MAP!=NULL)
