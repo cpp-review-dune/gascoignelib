@@ -24,12 +24,7 @@ SET(GASCOIGNE_CXX_FLAGS "-ansi -pedantic -Wall -Wno-sign-compare -Wold-style-cas
 
 #############################################
 #
-#  Set -D define flags (e. g. -D_DEBUG or 
-#  -D__OLDCOMPILER__ for egcs).
-#
-#  -D__NEWER_THAN_GCC_4_2__ if your compiler is newer than gcc 4.2 and you don't want to get warnings
-#  			    because <ext/hash_set> and <ext/hash_map> are deprecated
-#
+#  Set -D define flags (e. g. -D_DEBUG)
 #
 SET(GASCOIGNE_COMPILER_DEFINITIONS "" CACHE STRING "Compiler Definitions for Gascoigne")
 
@@ -40,14 +35,15 @@ SET(GASCOIGNE_COMPILER_DEFINITIONS "" CACHE STRING "Compiler Definitions for Gas
 OPTION(BUILD_SHARED_LIBS "Build shared libraries" OFF)
 
 OPTION(WITH_UMFPACK "Use UMFPACK Version 4.1 or higher" ON)
+
 OPTION(WITH_RSTStopWatch "Use RSTStopWatch" OFF)
-
-OPTION(COPY_PARAMFILES "Copy the Param and the Inp files for examples" ON)
-
-OPTION(MARK_WITH_BUILD_TYPE "Mark executables and libraries with the string given in CMAKE_BUILD_TYPE" OFF)
 
 OPTION(APPLE "Mark if you try to work on Mac Computers. This disables some platform dependent code" OFF)
 
 OPTION(NEWER_THAN_GCC_4_2 "If your compiler is gcc 4.3 or higher, this is required for some deprecated headerfiles" OFF)
+
+OPTION(COPY_PARAMFILES "Copy the Param and the Inp files for examples" ON)
+
+OPTION(MARK_WITH_BUILD_TYPE "Mark executables and libraries with the string given in CMAKE_BUILD_TYPE" OFF)
 
 OPTION(WITH_THREADS  "Use Threads?" OFF)

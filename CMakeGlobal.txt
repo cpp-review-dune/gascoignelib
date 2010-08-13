@@ -1,5 +1,4 @@
 #############################################
-
 #
 # skip the following variables
 #
@@ -8,7 +7,6 @@ MARK_AS_ADVANCED(CMAKE_INSTALL_PREFIX)
 MARK_AS_ADVANCED(CMAKE_BACKWARDS_COMPATIBILITY)
 
 #############################################
-
 #
 #  set up user-specific paths
 #
@@ -18,7 +16,6 @@ SET(EXECUTABLE_OUTPUT_PATH ${GASCOIGNE_EXECUTABLE_OUTPUT_PATH} CACHE PATH "Singl
 
 
 #############################################
-
 #
 #  user-specific compile options
 #
@@ -27,7 +24,6 @@ SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GASCOIGNE_CXX_FLAGS}")
 ADD_DEFINITIONS(${GASCOIGNE_COMPILER_DEFINITIONS})
 
 #############################################
-
 #
 #  determining the neccesary additional libraries
 #
@@ -38,35 +34,35 @@ ELSE(MARK_WITH_BUILD_TYPE)
   SET(BUILD_ENDING "")
 ENDIF(MARK_WITH_BUILD_TYPE)
 
+SET(GASCOIGNE_LIBS "GascoigneStd${BUILD_ENDING}" metis)
+
+IF(WITH_UMFPACK)
+  SET(GASCOIGNE_LIBS ${GASCOIGNE_LIBS} umfpack amd)
+  ADD_DEFINITIONS(-D__WITH_UMFPACK__)
+ENDIF(WITH_UMFPACK)
+
 IF(APPLE)
-	SET(GASCOIGNE_LIBS "GascoigneStd${BUILD_ENDING}" metis umfpack "-framework veclib")
+  SET(GASCOIGNE_LIBS ${GASCOIGNE_LIBS} "-framework veclib")
 ELSE(APPLE)
-	SET(GASCOIGNE_LIBS "GascoigneStd${BUILD_ENDING}" metis rt)
-	IF(WITH_UMFPACK)
-	    SET(GASCOIGNE_LIBS ${GASCOIGNE_LIBS} umfpack amd)
-	    ADD_DEFINITIONS(-D__WITH_UMFPACK__)
-	ENDIF(WITH_UMFPACK)
+  SET(GASCOIGNE_LIBS ${GASCOIGNE_LIBS} rt)
 ENDIF(APPLE)
 
-#
 IF(WITH_RSTStopWatch)
-    ADD_DEFINITIONS(-D__WITH_RSTStopWatch__)
+  ADD_DEFINITIONS(-D__WITH_RSTStopWatch__)
 ENDIF(WITH_RSTStopWatch)
 
 IF(WITH_THREADS)
-    ADD_DEFINITIONS(-D__WITH_THREADS__)
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp")
+  ADD_DEFINITIONS(-D__WITH_THREADS__)
+  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp")
 ENDIF(WITH_THREADS)
 
 IF(NEWER_THAN_GCC_4_2)
-	ADD_DEFINITIONS(-D__NEWER_THAN_GCC_4_2__)
+  ADD_DEFINITIONS(-D__NEWER_THAN_GCC_4_2__)
 ENDIF(NEWER_THAN_GCC_4_2)
-
 
 LINK_DIRECTORIES(${LIBRARY_OUTPUT_PATH})
 
 ###############################################
-
 #
 #  setting the standard include directories
 #
