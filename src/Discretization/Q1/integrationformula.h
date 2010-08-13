@@ -78,6 +78,26 @@ public:  LineGauss10();};
 
 /*------------------------------------------------------------*/
 
+class LineGauss11 : public IntegrationFormula1d{
+public:  LineGauss11();};
+
+/*------------------------------------------------------------*/
+
+class LineGauss12 : public IntegrationFormula1d{
+public:  LineGauss12();};
+
+/*------------------------------------------------------------*/
+
+class LineGauss13 : public IntegrationFormula1d{
+public:  LineGauss13();};
+
+/*------------------------------------------------------------*/
+
+class LineGauss14 : public IntegrationFormula1d{
+public:  LineGauss14();};
+
+/*------------------------------------------------------------*/
+
 template<int N, class LineFormula>
 class TensorFormula2d : public IntegrationFormula2d
 {
