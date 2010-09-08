@@ -4,6 +4,8 @@
 #include  "stdsolver.h"
 #include  "meshagent.h"
 #include  "malteadaptor.h"
+#include  "compose_name.h"
+#include  "givensrotation.h"
 
 using namespace std;
 
@@ -34,7 +36,7 @@ void MultiLevelAlgorithm::BasicInit(const ParamFile* paramfile, MultiLevelSolver
   if((_mgtype!="V") && (_mgtype!="W")) abort();
 }
 
-/*-----------------------------------------*/
+/*-------------------------------------------------*/
 
 void MultiLevelAlgorithm::RunLinear(const std::string& problemlabel)
 {
@@ -147,7 +149,142 @@ void MultiLevelAlgorithm::LinearSolve(VectorInterface& du, const VectorInterface
   cginfo.reset();
 
   GetSolver()->HNAverage(du);
-  
+
+  //LinearMGSolve(du,y,cginfo);
+  LinearGmresSolve(du,y,cginfo);
+
+  GetSolver()->HNZero(du);
+  GetSolver()->SubtractMean(du);
+}
+
+/*-----------------------------------------*/
+ 
+void MultiLevelAlgorithm::LinearGmresSolve(VectorInterface& x, const VectorInterface& b, 
+					  CGInfo& info)
+{
+  int  maxiter = info.user().maxiter();
+  int minsize = Gascoigne::max(1,Gascoigne::min(5,maxiter));
+  vector<VectorInterface> mem;
+
+  int left_precondition = 1;
+
+  for(int i=0; i<minsize; i++)
+    {
+      int i = mem.size();
+      std::string s = "gmres";
+      compose_name(s,i);
+      mem.resize(i+1,s);
+      ReInitVector(mem[i]);
+    }
+  int reached = 0;
+
+  VectorInterface& v = mem[0];
+  VectorInterface  p("gmresp");
+  ReInitVector(p);
+  ReInitVector(v);
+
+  if (left_precondition)
+    {
+      GetSolver()->residualgmres(p,x,b);
+      precondition(v,p);
+    }
+  else
+    {
+      GetSolver()->residualgmres(v,x,b);
+    }
+  double norm = GetSolver()->Norm(v);
+
+  GetSolver()->Equ(v,1./norm,v);
+  GivensRotation   GR(maxiter,norm);
+
+  for (int n = 1; (n<maxiter) && !reached; n++)
+    {
+      int m = n-1;
+      if (n>=mem.size())
+        {
+	  int i = mem.size();
+	  std::string s = "gmres";
+	  compose_name(s,i);
+	  mem.resize(i+1,s); 
+	  ReInitVector(mem[i]);
+	}
+      VectorInterface& um = mem[m];
+      VectorInterface& un = mem[n];
+      if (left_precondition)
+	{
+	  GetSolver()->vmulteq(p,um,1.);
+	  precondition(un,p);
+	}
+      else
+	{
+	  GetSolver()->Zero(p);
+	  precondition(p,mem[m]);
+	  GetSolver()->vmulteq(un,p,1.);
+	}
+
+      for (int i=0 ; i<n ; i++)
+	{
+	  VectorInterface& ui = mem[i];
+ 	  double d = GetSolver()->ScalarProduct(un,ui);
+	  GR.matrix(i,m) = d;
+	  GetSolver()->Add(un,-d,ui);
+	}
+      double s = GetSolver()->Norm(un);
+      GR.matrix(n,m)  = s;  
+      GetSolver()->Equ(un,1./s,un);
+      double rho = GR.orthogonalization(m);
+
+      reached = info.check(rho,m);
+    }
+  //
+  // Calculate solution
+  //
+  nvector<double> h = GR.getcoefficients();
+
+  if (left_precondition)
+    {
+      for (int i=0 ; i<h.size() ; i++)
+	GetSolver()->Add(x,h[i],mem[i]);
+    }
+  else
+    {
+      GetSolver()->Zero(p);
+      for (int i=0 ; i<h.size()  ; i++)
+	GetSolver()->Add(p,h[i], mem[i]);
+       GetSolver()->Equ(mem[0],0.,mem[0]);
+       precondition(mem[0],p);
+       GetSolver()->Add(x,1.,mem[0]);
+    }
+  //
+  // Delete memory
+  //
+  DeleteVector(p);
+  for (int i=0; i<mem.size(); i++)
+    {
+      DeleteVector(mem[i]);
+    }
+}
+
+/*-----------------------------------------*/
+ 
+void MultiLevelAlgorithm::precondition(VectorInterface& x, VectorInterface& y)
+{
+  CGInfo pinfo;
+  pinfo.user().tol()       = 1.e-12;
+  pinfo.user().globaltol() = 1.e-12;
+  pinfo.user().maxiter()   = 1;
+  pinfo.user().printstep() = 0;
+  pinfo.user().text()      = "PrecInfo";
+
+  //GetSolver()->Equ(x,1.,y);
+  LinearMGSolve(x,y,pinfo);
+}
+
+/*-----------------------------------------*/
+ 
+void MultiLevelAlgorithm::LinearMGSolve(VectorInterface& du, const VectorInterface& y, 
+					CGInfo& cginfo)
+{
   int nl        = GetMultiLevelSolver()->nlevels();
   int finelevel = nl-1;
   int clevel    = min_int(_coarselevel,finelevel);
@@ -175,9 +312,6 @@ void MultiLevelAlgorithm::LinearSolve(VectorInterface& du, const VectorInterface
     }
   DeleteVector(_mg0); 
   DeleteVector(_mg1); 
-
-  GetSolver()->HNZero(du);
-  GetSolver()->SubtractMean(du);
 }
 
 /*-----------------------------------------*/
@@ -199,7 +333,10 @@ void MultiLevelAlgorithm::NonLinear(VectorInterface& u, VectorInterface& f,
   
   Newton(u,f,nlinfo);
 
-  GetSolver()->Visu("Results/solve",u,iter);
+//   GetSolver()->Visu("Results/solve",u,iter);
+//   string name = "Results/solve";
+//   compose_name(name,iter);
+//   GetSolver()->Write(u,name);
 }
 
 /*-----------------------------------------*/
@@ -240,22 +377,32 @@ void MultiLevelAlgorithm::GlobalRefineLoop(const std::string& problemlabel)
   GetSolver()->OutputSettings();
 
   VectorInterface u("u"), f("f");
+  GlobalVector    uold;
 
   for (int iter=1; iter<=niter; iter++)
     {
-      cout << "\n======================== " << iter << " === GlobalRefineLoop ==" << endl;
+      cout << "\n======================== " << iter << " === GlobalRefineLoop == ";
+      cout << GetMeshAgent()->ncells() << " cells" << endl;
 
       GetMultiLevelSolver()->ReInit(problemlabel);
       GetSolverInfos()->GetNLInfo().control().matrixmustbebuild() = 1;
 
       ReInitVector(u); 
       ReInitVector(f); 
-      GetSolver()->SolutionInit(u);
+
+      if (iter==1) GetSolver()->SolutionInit(u);
+      else           GetSolver()->InterpolateSolution(u,uold);
 
       NonLinear(u,f,problemlabel,iter);
 
+      GetSolver()->Visu("Results/solve",u,iter);
+      string name = "Results/solve";
+      compose_name(name,iter);
+      GetSolver()->Write(u,name);
+
       if (iter<niter) 
 	{
+	  CopyVector(uold,u);
 	  GetMeshAgent()->global_refine(1);
 	  GetSolverInfos()->GetNLInfo().control().matrixmustbebuild() = 1;
 	}

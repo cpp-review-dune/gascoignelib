@@ -38,7 +38,6 @@ class MultiLevelAlgorithm : public Algorithm
   virtual const MultiLevelSolver* GetMultiLevelSolver() const { return _S;}
   virtual       MultiLevelSolver* GetMultiLevelSolver()       { return _S;}
 
-  void  ReInitVector(VectorInterface& u) const { _S->ReInitVector(u);} 
   void  DeleteVector(VectorInterface& u) const { _S->DeleteVector(u);}
   void  AssembleMatrixAndIlu(VectorInterface& u);
   void  LinearSolve(VectorInterface& du, const VectorInterface& y, CGInfo& cginfo);
@@ -47,6 +46,8 @@ class MultiLevelAlgorithm : public Algorithm
   void VWCycle(std::vector<double>& res, std::vector<double>& rw, 
 	       int l, int finelevel, int coarselevel, const std::string& p,
 	       VectorInterface& u, VectorInterface& b, VectorInterface& v);
+  void LinearGmresSolve(VectorInterface& du, const VectorInterface& y,  CGInfo& cginfo);
+  void LinearMGSolve     (VectorInterface& du, const VectorInterface& y, CGInfo& cginfo);
 
 public:
 
@@ -56,10 +57,12 @@ public:
   void BasicInit(const ParamFile* paramfile, MultiLevelSolver* MLS, const NumericInterface* NI,
 		 const ProblemContainer* PC);
 
+  void ReInitVector(VectorInterface& u) const { _S->ReInitVector(u);} 
   void RunLinear(const std::string& problemlabel);
   void RunNonLinear(const std::string& problemlabel,int iter=0);
   void GlobalRefineLoop(const std::string& problemlabel);
   void LocalRefineLoop(const std::string& problemlabel, FunctionalContainer* FC=NULL);
+  void precondition(VectorInterface& x, VectorInterface& y);
 };
 }
 
