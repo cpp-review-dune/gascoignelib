@@ -48,6 +48,30 @@ void OneLevelAlgorithm::IluSolver(VectorInterface& du, const VectorInterface& f,
 
 /*-----------------------------------------*/
 
+void OneLevelAlgorithm::JacobiSolver(VectorInterface& du, const VectorInterface& f, CGInfo& info)
+{
+  VectorInterface help("help");
+  ReInitVector(help); 
+  
+  bool ok = info.check(GetSolver()->Norm(f),0.);
+  for(int iter=0; !ok; iter++)
+    {
+      GetSolver()->MatrixResidual(help,du,f);
+      double rnorm = GetSolver()->Norm(help);
+
+      StdSolver* SS = dynamic_cast<StdSolver*>(GetSolver());
+      SS->GetMatrix()->Jacobi(GetSolver()->GetGV(help));
+
+      double cnorm = GetSolver()->Norm(help);
+
+      GetSolver()->Add(du,1.,help);
+      ok = info.check(rnorm,cnorm);
+    }
+  DeleteVector(help);
+}
+
+/*-----------------------------------------*/
+
 void OneLevelAlgorithm::RunLinear(const std::string& problemlabel)
 {
   GetSolver()->NewMesh(GetMeshAgent()->GetMesh(0));
@@ -139,7 +163,7 @@ void OneLevelAlgorithm::RunNonLinear(const std::string& problemlabel)
   ReInitVector(f); 
 
   GetSolver()->Zero(u); 
-  GetSolver()->SolutionInit(u);;
+  GetSolver()->SolutionInit(u);
   GetSolver()->SubtractMean(u);
   GetSolver()->SetBoundaryVector(u);
   

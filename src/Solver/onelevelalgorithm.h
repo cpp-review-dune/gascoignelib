@@ -28,6 +28,7 @@ class OneLevelAlgorithm : public Algorithm
   virtual const SolverInterface* GetSolver() const { return _S;}
   virtual       SolverInterface* GetSolver()       { return _S;}
 
+  void JacobiSolver(VectorInterface& du, const VectorInterface& f, CGInfo& info);
   void IluSolver(VectorInterface& du, const VectorInterface& f, CGInfo& info);
 
   void  ReInitVector(VectorInterface& u) const { _S->ReInitVector(u);} 
