@@ -119,7 +119,6 @@ class StdSolver : public virtual SolverInterface
   
   // 0.3 Matrizen
 
-  virtual MatrixInterface* GetMatrix() const { return _MAP;}
   MatrixInterface*& GetMatrixPointer() {return _MAP;}
 
   virtual DiscretizationInterface*& GetDiscretizationPointer()     {return _ZP;}
@@ -314,6 +313,8 @@ class StdSolver : public virtual SolverInterface
   void ComputeIlu() const;
   void AssembleDualMatrix(const VectorInterface& gu, double d);
   void MassMatrixVector(VectorInterface& f, const VectorInterface& gu, double d) const { abort();}
+
+  virtual MatrixInterface* GetMatrix() const { return _MAP;}
 
   //
   /// vector - "postprocessing"

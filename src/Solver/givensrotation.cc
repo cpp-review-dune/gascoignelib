@@ -5,7 +5,7 @@ using namespace Gascoigne;
 /*--------------------------------------------------------------------------*/
  
 GivensRotation::GivensRotation(int nn, double norm) : 
-  H(nn,nn,0.), ci(nn-1,0.), si(nn-1,0.), gamma(nn,0.), n(0)
+  n(0), H(nn,nn,0.), ci(nn-1,0.), si(nn-1,0.), gamma(nn,0.)
 { gamma[0] = norm;}
 
 /*--------------------------------------------------------------------------*/
