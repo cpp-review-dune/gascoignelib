@@ -5,7 +5,6 @@
 #include  "meshagent.h"
 #include  "malteadaptor.h"
 #include  "compose_name.h"
-#include  "givensrotation.h"
 
 using namespace std;
 
@@ -151,7 +150,7 @@ void MultiLevelAlgorithm::LinearSolve(VectorInterface& du, const VectorInterface
   GetSolver()->HNAverage(du);
 
   //LinearMGSolve(du,y,cginfo);
-  LinearGmresSolve(du,y,cginfo);
+  GmresSolve(du,y,cginfo);
 
   GetSolver()->HNZero(du);
   GetSolver()->SubtractMean(du);
@@ -159,115 +158,7 @@ void MultiLevelAlgorithm::LinearSolve(VectorInterface& du, const VectorInterface
 
 /*-----------------------------------------*/
  
-void MultiLevelAlgorithm::LinearGmresSolve(VectorInterface& x, const VectorInterface& b, 
-					  CGInfo& info)
-{
-  int  maxiter = info.user().maxiter();
-  int minsize = Gascoigne::max(1,Gascoigne::min(5,maxiter));
-  vector<VectorInterface> mem;
-
-  int left_precondition = 1;
-
-  for(int i=0; i<minsize; i++)
-    {
-      int i = mem.size();
-      std::string s = "gmres";
-      compose_name(s,i);
-      mem.resize(i+1,s);
-      ReInitVector(mem[i]);
-    }
-  int reached = 0;
-
-  VectorInterface& v = mem[0];
-  VectorInterface  p("gmresp");
-  ReInitVector(p);
-  ReInitVector(v);
-
-  if (left_precondition)
-    {
-      GetSolver()->residualgmres(p,x,b);
-      precondition(v,p);
-    }
-  else
-    {
-      GetSolver()->residualgmres(v,x,b);
-    }
-  double norm = GetSolver()->Norm(v);
-
-  GetSolver()->Equ(v,1./norm,v);
-  GivensRotation   GR(maxiter,norm);
-
-  for (int n = 1; (n<maxiter) && !reached; n++)
-    {
-      int m = n-1;
-      if (n>=mem.size())
-        {
-	  int i = mem.size();
-	  std::string s = "gmres";
-	  compose_name(s,i);
-	  mem.resize(i+1,s); 
-	  ReInitVector(mem[i]);
-	}
-      VectorInterface& um = mem[m];
-      VectorInterface& un = mem[n];
-      if (left_precondition)
-	{
-	  GetSolver()->vmulteq(p,um,1.);
-	  precondition(un,p);
-	}
-      else
-	{
-	  GetSolver()->Zero(p);
-	  precondition(p,mem[m]);
-	  GetSolver()->vmulteq(un,p,1.);
-	}
-
-      for (int i=0 ; i<n ; i++)
-	{
-	  VectorInterface& ui = mem[i];
- 	  double d = GetSolver()->ScalarProduct(un,ui);
-	  GR.matrix(i,m) = d;
-	  GetSolver()->Add(un,-d,ui);
-	}
-      double s = GetSolver()->Norm(un);
-      GR.matrix(n,m)  = s;  
-      GetSolver()->Equ(un,1./s,un);
-      double rho = GR.orthogonalization(m);
-
-      reached = info.check(rho,m);
-    }
-  //
-  // Calculate solution
-  //
-  nvector<double> h = GR.getcoefficients();
-
-  if (left_precondition)
-    {
-      for (int i=0 ; i<h.size() ; i++)
-	GetSolver()->Add(x,h[i],mem[i]);
-    }
-  else
-    {
-      GetSolver()->Zero(p);
-      for (int i=0 ; i<h.size()  ; i++)
-	GetSolver()->Add(p,h[i], mem[i]);
-       GetSolver()->Equ(mem[0],0.,mem[0]);
-       precondition(mem[0],p);
-       GetSolver()->Add(x,1.,mem[0]);
-    }
-  //
-  // Delete memory
-  //
-  DeleteVector(p);
-  for (int i=0; i<mem.size(); i++)
-    {
-      DeleteVector(mem[i]);
-    }
-}
-
-/*-----------------------------------------*/
- 
-void MultiLevelAlgorithm::precondition(VectorInterface& x, VectorInterface& y)
+void MultiLevelAlgorithm::Precondition(VectorInterface& x, VectorInterface& y)
 {
   CGInfo pinfo;
   pinfo.user().tol()       = 1.e-12;
@@ -276,7 +167,6 @@ void MultiLevelAlgorithm::precondition(VectorInterface& x, VectorInterface& y)
   pinfo.user().printstep() = 0;
   pinfo.user().text()      = "PrecInfo";
 
-  //GetSolver()->Equ(x,1.,y);
   LinearMGSolve(x,y,pinfo);
 }
 

@@ -1,12 +1,13 @@
 #include  "algorithm.h"
 #include  "meshagent.h"
-#include  "compose_name.h"
 #include  "backup.h"
 #include  "adaptordata.h"
 #include  "filescanner.h"
 #include  "monitoring.h"
 #include  <iomanip>
 #include  "gostream.h"
+#include  "compose_name.h"
+#include  "givensrotation.h"
 
 using namespace std;
 
@@ -100,7 +101,7 @@ void Algorithm::Newton(VectorInterface& u, const VectorInterface& f, NLInfo& nli
       double ndu = GetSolver()->Norm(du);
 
       if ( (cginfo.control().status()=="exploded") || 
-	   (ndu>1.e10) || (!(ndu>=0.)) || (ny>1.e10) || (!(ny>=0.)) )
+	   (ndu>1.e45) || (!(ndu>=0.)) || (ny>1.e45) || (!(ny>=0.)) )
 	{
 	  nlinfo.control().status()="diverged";
 	  cerr << "linear : " << cginfo.control().status() << endl;
@@ -166,6 +167,121 @@ void Algorithm::CopyVector(GlobalVector& dst, VectorInterface& src) const
   dst.equ(1.,GetSolver()->GetGV(src));
   
   GetSolver()->HNZero(src);
+}
+
+/*-----------------------------------------*/
+
+void Algorithm::GmresSolve(VectorInterface& x, const VectorInterface& b, 
+			   CGInfo& info)
+{
+  int  maxiter = info.user().maxiter();
+  int minsize = Gascoigne::max(1,Gascoigne::min(5,maxiter));
+  vector<VectorInterface> mem;
+
+  int left_precondition = 1;
+
+  for(int i=0; i<minsize; i++)
+    {
+      int i = mem.size();
+      std::string s = "gmres";
+      compose_name(s,i);
+      mem.resize(i+1,s);
+      ReInitVector(mem[i]);
+    }
+  int reached = 0;
+
+  VectorInterface& v = mem[0];
+  VectorInterface  p("gmresp");
+  ReInitVector(p);
+  ReInitVector(v);
+
+  if (left_precondition)
+    {
+      GetSolver()->residualgmres(p,x,b);
+      Precondition(v,p);
+    }
+  else
+    {
+      GetSolver()->residualgmres(v,x,b);
+    }
+  double norm = GetSolver()->Norm(v);
+
+  GetSolver()->Equ(v,1./norm,v);
+  GivensRotation   GR(maxiter,norm);
+
+  for (int n = 1; (n<maxiter) && !reached; n++)
+    {
+      int m = n-1;
+      if (n>=mem.size())
+        {
+	  int i = mem.size();
+	  std::string s = "gmres";
+	  compose_name(s,i);
+	  mem.resize(i+1,s); 
+	  ReInitVector(mem[i]);
+	}
+      VectorInterface& um = mem[m];
+      VectorInterface& un = mem[n];
+      if (left_precondition)
+	{
+	  GetSolver()->vmulteq(p,um,1.);
+	  Precondition(un,p);
+	}
+      else
+	{
+	  GetSolver()->Zero(p);
+	  Precondition(p,mem[m]);
+	  GetSolver()->vmulteq(un,p,1.);
+	}
+
+      for (int i=0 ; i<n ; i++)
+	{
+	  VectorInterface& ui = mem[i];
+ 	  double d = GetSolver()->ScalarProduct(un,ui);
+	  GR.matrix(i,m) = d;
+	  GetSolver()->Add(un,-d,ui);
+	}
+      double s = GetSolver()->Norm(un);
+      GR.matrix(n,m)  = s;  
+      GetSolver()->Equ(un,1./s,un);
+      double rho = GR.orthogonalization(m);
+
+      reached = info.check(rho,m);
+    }
+  //
+  // Calculate solution
+  //
+  nvector<double> h = GR.getcoefficients();
+
+  if (left_precondition)
+    {
+      for (int i=0 ; i<h.size() ; i++)
+	GetSolver()->Add(x,h[i],mem[i]);
+    }
+  else
+    {
+      GetSolver()->Zero(p);
+      for (int i=0 ; i<h.size()  ; i++)
+	GetSolver()->Add(p,h[i], mem[i]);
+       GetSolver()->Equ(mem[0],0.,mem[0]);
+       Precondition(mem[0],p);
+       GetSolver()->Add(x,1.,mem[0]);
+    }
+  //
+  // Delete memory
+  //
+  DeleteVector(p);
+  for (int i=0; i<mem.size(); i++)
+    {
+      DeleteVector(mem[i]);
+    }
+}
+
+/*-----------------------------------------*/
+ 
+void Algorithm::Precondition(VectorInterface& x, VectorInterface& y)
+{
+  GetSolver()->Equ(x,1.,y);
 }
 
 /*-------------------------------------------------------*/

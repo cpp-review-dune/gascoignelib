@@ -1,6 +1,5 @@
 #include  "onelevelalgorithm.h"
 
-
 using namespace std;
 
 /*-----------------------------------------*/
@@ -21,6 +20,20 @@ void OneLevelAlgorithm::BasicInit(const ParamFile* paramfile, const NumericInter
   GetSolver()->BasicInit(paramfile,GetMeshAgent()->GetDimension());
 
   _PC = PC;
+}
+
+/*-----------------------------------------*/
+ 
+void OneLevelAlgorithm::Precondition(VectorInterface& x, VectorInterface& y)
+{
+  CGInfo pinfo;
+  pinfo.user().tol()       = 1.e-12;
+  pinfo.user().globaltol() = 1.e-12;
+  pinfo.user().maxiter()   = 1;
+  pinfo.user().printstep() = 0;
+  pinfo.user().text()      = "PrecInfo";
+
+  JacobiSolver(x,y,pinfo);
 }
 
 /*-----------------------------------------*/

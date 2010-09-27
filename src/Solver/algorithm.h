@@ -65,6 +65,8 @@ private:
 
   void  Newton(VectorInterface& u, const VectorInterface& f, NLInfo& nlinfo);
   void  CopyVector(GlobalVector& dst, VectorInterface& src) const;
+  void GmresSolve(VectorInterface& x, const VectorInterface& b, CGInfo& info);
+  virtual void  Precondition(VectorInterface& x, VectorInterface& y);
 
 public:
 

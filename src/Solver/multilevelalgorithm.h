@@ -46,8 +46,8 @@ class MultiLevelAlgorithm : public Algorithm
   void VWCycle(std::vector<double>& res, std::vector<double>& rw, 
 	       int l, int finelevel, int coarselevel, const std::string& p,
 	       VectorInterface& u, VectorInterface& b, VectorInterface& v);
-  void LinearGmresSolve(VectorInterface& du, const VectorInterface& y,  CGInfo& cginfo);
   void LinearMGSolve     (VectorInterface& du, const VectorInterface& y, CGInfo& cginfo);
+  virtual void Precondition(VectorInterface& x, VectorInterface& y);
 
 public:
 
@@ -62,7 +62,6 @@ public:
   void RunNonLinear(const std::string& problemlabel,int iter=0);
   void GlobalRefineLoop(const std::string& problemlabel);
   void LocalRefineLoop(const std::string& problemlabel, FunctionalContainer* FC=NULL);
-  void precondition(VectorInterface& x, VectorInterface& y);
 };
 }
 
