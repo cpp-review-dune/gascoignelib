@@ -7,14 +7,14 @@ namespace Gascoigne
 {
 void compose_name(string& s, int i)
 {
-  char cname[100];
+  char cname[200];
   sprintf(cname,"%s.%05d",s.c_str(),i);
   s = cname;  
 }
 
 void compose_name(string& s, double d, string f)
 {
-  char cname[30];
+  char cname[200];
   string format("%s");
   format += f;
   sprintf(cname,format.c_str(),s.c_str(),d);
@@ -23,11 +23,8 @@ void compose_name(string& s, double d, string f)
 
 void compose_name(string& s, int i, string t)
 {
-  char cname[30];
-  string format("%s");
-  format += t;
-  //  format += "%05d";
-  sprintf(cname,format.c_str(),s.c_str(),i);
+  char cname[200];
+  sprintf(cname,"%s.%05d.%s",s.c_str(),i,t.c_str());
   s = cname;  
 }
 
@@ -45,7 +42,7 @@ void compose_name(string& s, int i, int l)
 
 void compose_name_without_dot(string& s, int i)
 {
-  char cname[30];
+  char cname[200];
   sprintf(cname,"%s%03d",s.c_str(),i);
   s = cname;  
 }
