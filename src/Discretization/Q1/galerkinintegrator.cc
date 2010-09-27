@@ -23,7 +23,7 @@ void GalerkinIntegrator<DIM>::BasicInit()
       if (!ErrorFormulaPointer())    ErrorFormulaPointer() = new QuadGauss9;
       if (!BoundaryFormulaPointer()) BoundaryFormulaPointer() = new LineGauss2;
       if (!MassFormulaPointer())     MassFormulaPointer() = new QuadGauss4;;
-//      if (!MassFormulaPointer())     MassFormulaPointer() = new QuadTrapez;
+      //if (!MassFormulaPointer())     MassFormulaPointer() = new QuadTrapez;
     }
   else if (DIM==3)
     {
@@ -277,23 +277,23 @@ double GalerkinIntegrator<DIM>::MassMatrix(EntryMatrix& E, const FemInterface& F
   double omega = 0.;
   for (int k=0; k<IF.n(); k++)
     {
-		IF.xi(xi,k);
-		FEM.point(xi);
-		double vol = FEM.J();
-		double weight  = IF.w(k) * vol;
-		omega += weight;
-		for (int i=0;i<FEM.n();i++)
-			{
-			FEM.init_test_functions(_NNN[i],1.,i);
-			}
-		for (int i=0;i<FEM.n();i++)
-			{
-			for (int j=0;j<FEM.n();j++)
-				{
-				E.SetDofIndex(i,j);
-				E(0,0) += weight * _NNN[j].m()*_NNN[i].m();
-				}
-			}
+      IF.xi(xi,k);
+      FEM.point(xi);
+      double vol = FEM.J();
+      double weight  = IF.w(k) * vol;
+      omega += weight;
+      for (int i=0;i<FEM.n();i++)
+	{
+	  FEM.init_test_functions(_NNN[i],1.,i);
+	}
+      for (int i=0;i<FEM.n();i++)
+	{
+	  for (int j=0;j<FEM.n();j++)
+	    {
+	      E.SetDofIndex(i,j);
+	      E(0,0) += weight * _NNN[j].m()*_NNN[i].m();
+	    }
+	}
     }
   return omega;
 }
