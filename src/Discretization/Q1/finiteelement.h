@@ -54,6 +54,8 @@ class FiniteElement : public FemInterface
   void  init_test_functions(TestFunction& Phi, double w, int i) const;
 
   void Anisotropy(DoubleMatrix& A) const;
+
+  void GetCoordinates(DoubleMatrix& A) const { T.GetCoordinates(A);}
 };
 }
 
