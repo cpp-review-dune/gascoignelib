@@ -151,6 +151,11 @@ namespace Gascoigne
         assert(0);
       }
 
+      virtual void MassMatrixVector(const Equation& EQ, LocalVector& F, const FemInterface& FEM, const LocalVector& U, 
+          const LocalData& Q, const LocalData& QC) const {
+        std::cerr << "\"IntegratorInterface::MassMatrixVector\" not written!" << std::endl;
+						assert(0);
+      }
 
   };
 }
