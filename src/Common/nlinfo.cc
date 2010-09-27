@@ -60,14 +60,14 @@ void NLStatisticData::reset()
 {
   StatisticData::reset();
   _totalmatrix = 0;
-  _newmatrix = 0;
+  //_newmatrix = 0;
 }
 
 /*******************************************************************/
 
 NLControlData::NLControlData()
 {
-  _matrixmustbebuild = 1;
+  //_matrixmustbebuild = 1;
 }
 
 /*******************************************************************/
@@ -77,8 +77,6 @@ void NLControlData::reset()
   ControlData::reset();
   _relax     = 0;
   _laststepbad = 0;
-//  _matrixmustbebuild=1;
-//  _newmatrix = 1;
 }
 
 /*******************************************************************/
@@ -114,6 +112,7 @@ Linfo(info)
  
   CD.reset();
   SD.reset();
+  control().matrixmustbebuild() = 1;
 }
 
 /*******************************************************************/
@@ -150,7 +149,7 @@ void NLInfo::matrix_control()
 //   cerr << "NLInfo::matrix_control()\t";
 //   cerr << GetLinearInfo().statistics().lastrate()<<"\t"<<UD.linrho()<<endl;
 
-  bool nonlinbad = (SD.lastrate()>UD.rho());
+  bool nonlinbad = (CD.iteration()>0) && (SD.lastrate()>UD.rho());
   bool linbad    = (GetLinearInfo().statistics().lastrate()>UD.linrho());
 
   CD.newmatrix() = 0;
