@@ -76,6 +76,10 @@ namespace Gascoigne
         std::cerr << "\"MeshInterface::VertexOnBoundary\" not written!" << std::endl;
         abort();
       }
+      virtual const std::map<int,int>* GetPeriodicIndices() const {
+        std::cerr << "\"MeshInterface::GetPeriodicIndices\" not written!" << std::endl;
+        abort();
+      }
       virtual int VtkType(int i) const=0;
   };
 }
