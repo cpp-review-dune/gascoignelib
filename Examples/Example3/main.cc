@@ -1,7 +1,6 @@
 #include  "meshagent.h"
 #include  "q1lps2d.h"
 #include  "stdsolver.h"
-#include  "stdmultilevelsolver.h"
 #include  "onelevelalgorithm.h"
 #include  "multilevelalgorithm.h"
 #include  "numericinterface.h"

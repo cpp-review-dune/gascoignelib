@@ -1,7 +1,6 @@
 #include  "meshagent.h"
 #include  "q12d.h"
 #include  "stdsolver.h"
-#include  "stdmultilevelsolver.h"
 #include  "onelevelalgorithm.h"
 #include  "multilevelalgorithm.h"
 #include  "numericinterface.h"
@@ -49,7 +48,11 @@ int main(int argc, char** argv)
   if(argc>=2) {
     paramfile.SetName(argv[1]);
   }
-  
+  string solver = "jacobi";
+  if(argc>=3)
+    {
+       solver = argv[2];
+    }  
   /////////////
   // Equation
   /////////////
@@ -64,24 +67,28 @@ int main(int argc, char** argv)
 
   Numeric N;
 
-  cout << "=================================" << endl;
-  cout << "Algorithm with one level ilu solver:" << endl;
-  cout << "=================================" << endl;
-
-  OneLevelAlgorithm A;
-
-  A.BasicInit(&paramfile,&N,&PC);
-  A.RunLinear("laplace");
-
-  cout << "=================================" << endl;
-  cout << "Algorithm with Multilevel solver:" << endl;
-  cout << "=================================" << endl;
-
-  MultiLevelSolver    S;
-  MultiLevelAlgorithm B;
-  B.BasicInit(&paramfile,&S,&N,&PC);
-  B.RunLinear("laplace");
-
+  if (solver=="jacobi")
+    {
+      cout << "=================================" << endl;
+      cout << "Algorithm with one level ilu solver:" << endl;
+      cout << "=================================" << endl;
+      
+      OneLevelAlgorithm A;
+      
+      A.BasicInit(&paramfile,&N,&PC);
+      A.RunLinear("laplace");
+    }
+  else if (solver=="mg")
+    {
+      cout << "=================================" << endl;
+      cout << "Algorithm with Multilevel solver:" << endl;
+      cout << "=================================" << endl;
+      
+      MultiLevelSolver    S;
+      MultiLevelAlgorithm B;
+      B.BasicInit(&paramfile,&S,&N,&PC);
+      B.RunLinear("laplace");
+    }
   return 0;
 }
 
