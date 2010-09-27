@@ -42,6 +42,7 @@ class Transformation2d
   inline void  ReInit          (const Matrix& M) const {X=M;}
   inline void  point         (const Vertex2d& xi) const;
   inline void  point_boundary(int ie, const Vertex1d& s) const;
+  inline void  GetCoordinates(Matrix& A) const { A.equ(1.,X);}
 };
 
 /*-----------------------------------------------------*/
