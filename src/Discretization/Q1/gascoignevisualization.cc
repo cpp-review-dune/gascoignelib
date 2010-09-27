@@ -85,7 +85,7 @@ void GascoigneVisualization::AddVector(const GlobalVector* v)
   VDI.AddScalars(ncomp);
 
   int vector_index=0;
-  if (ncomp>2) 
+  if (ncomp>=2) 
     {
       fixarray<3,int> ff;
       int dim = mesh->dimension();
@@ -93,9 +93,13 @@ void GascoigneVisualization::AddVector(const GlobalVector* v)
 	{
 	  ff[0] = 1; ff[1] = 2; ff[2] = 3;
 	}
-      else if (dim==2)
+      else if ((dim==2) && (ncomp>2))
 	{
 	  ff[0] = 1; ff[1] = 2; ff[2] = -1;
+	}
+      else if ((dim==2) && (ncomp==2))
+	{
+	  ff[0] = 0; ff[1] = 1; ff[2] = -1;
 	}
       VDI.AddVector(vector_index,"v",ff);
       vector_index++;
