@@ -44,6 +44,7 @@ public:
   virtual void BasicInit(const ParamFile* paramfile, const NumericInterface* NI,
 			 const ProblemContainer* PC);
 
+  void Precondition(VectorInterface& x, VectorInterface& y);
   void RunLinear   (const std::string& problemlabel);
   void RunNonLinear(const std::string& problemlabel);
 };
