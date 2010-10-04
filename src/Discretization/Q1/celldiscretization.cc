@@ -758,10 +758,28 @@ void CellDiscretization::InterpolateDomainFunction(GlobalVector& f, const Domain
   DoubleVector gf;
   gf.resize(DF.GetNcomp());
 
+  const GlobalData& gnd = GetDataContainer().GetNodeData();
+  FemData QH;
+
   if(dim==2)
   {
     for(int r=0; r<GetMesh()->nnodes(); ++r)
     {
+      QH.clear();
+      GlobalData::const_iterator p=gnd.begin();
+      for(; p!=gnd.end(); p++)
+      {
+        FemFunction& UH = QH[p->first];
+        const GlobalVector& U = *p->second;
+        UH.resize(U.ncomp());
+        for (int c=0; c<UH.size(); c++)
+        {
+          UH[c].zero();
+          UH[c].m() = U(r,c);
+        }
+      }
+
+      DF.SetFemData(QH);
       Vertex2d v = GetMesh()->vertex2d(r);
       DF.F(gf,v);
       f.add_node(r,1.,gf);
@@ -771,6 +789,20 @@ void CellDiscretization::InterpolateDomainFunction(GlobalVector& f, const Domain
   {
     for(int r=0; r<GetMesh()->nnodes(); ++r)
     {
+      QH.clear();
+      GlobalData::const_iterator p=gnd.begin();
+      for(; p!=gnd.end(); p++)
+      {
+        FemFunction& UH = QH[p->first];
+        const GlobalVector& U = *p->second;
+        for (int c=0; c<UH.size(); c++)
+        {
+          UH[c].zero();
+          UH[c].m() = U(r,c);
+        }
+      }
+
+      DF.SetFemData(QH);
       Vertex3d v = GetMesh()->vertex3d(r);
       DF.F(gf,v);
       f.add_node(r,1.,gf);
