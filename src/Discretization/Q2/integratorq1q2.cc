@@ -10,6 +10,21 @@ void IntegratorQ1Q2<DIM>::BasicInit()
 {
 }
 
+/* ----------------------------------------- */
+
+template<>
+double IntegratorQ1Q2<2>::Volume2MeshSize(double vol) const
+{
+  return sqrt(vol);
+}
+
+/* ----------------------------------------- */
+
+template<>
+double IntegratorQ1Q2<3>::Volume2MeshSize(double vol) const
+{
+  return cbrt(vol);
+}
 
 /*---------------------------------------------------*/
 

@@ -5,6 +5,23 @@ using namespace std;
 
 namespace Gascoigne
 {
+
+/* ----------------------------------------- */
+
+template<>
+double LpsIntegrator<2>::Volume2MeshSize(double vol) const
+{
+  return sqrt(vol);
+}
+
+/* ----------------------------------------- */
+
+template<>
+double LpsIntegrator<3>::Volume2MeshSize(double vol) const
+{
+  return cbrt(vol);
+}
+
 /*-----------------------------------------*/
 
 template<int DIM>

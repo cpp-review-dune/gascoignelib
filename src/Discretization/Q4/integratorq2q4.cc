@@ -8,6 +8,22 @@ namespace Gascoigne
 
 /**********************************************************/
 
+template<>
+double IntegratorQ2Q4<2>::Volume2MeshSize(double vol) const
+{
+  return sqrt(vol);
+}
+
+/**********************************************************/
+
+template<>
+double IntegratorQ2Q4<3>::Volume2MeshSize(double vol) const
+{
+  return cbrt(vol);
+}
+
+/**********************************************************/
+
 template<int DIM>
 int IntegratorQ2Q4<DIM>::PatchMeshNr2IntegratorNr(int in) const
 {

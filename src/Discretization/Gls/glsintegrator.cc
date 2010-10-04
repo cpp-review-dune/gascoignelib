@@ -17,6 +17,22 @@ GlsIntegrator<DIM>::GlsIntegrator() : BasicIntegrator()
   assert(GlsIntegrator<DIM>::IF);
 }
 
+/* ----------------------------------------- */
+
+template<>
+double GlsIntegrator<2>::Volume2MeshSize(double vol) const
+{
+  return sqrt(vol);
+}
+
+/* ----------------------------------------- */
+
+template<>
+double GlsIntegrator<3>::Volume2MeshSize(double vol) const
+{
+  return cbrt(vol);
+}
+
 /*-----------------------------------------*/
 
 template<int DIM>

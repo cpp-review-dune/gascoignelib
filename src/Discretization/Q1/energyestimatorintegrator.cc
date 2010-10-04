@@ -57,6 +57,22 @@ EnergyEstimatorIntegrator<DIM>::~EnergyEstimatorIntegrator()
 
 /**********************************************************/
 
+template<>
+double EnergyEstimatorIntegrator<2>::Volume2MeshSize(double vol) const
+{
+  return sqrt(vol);
+}
+
+/**********************************************************/
+
+template<>
+double EnergyEstimatorIntegrator<3>::Volume2MeshSize(double vol) const
+{
+  return cbrt(vol);
+}
+
+/**********************************************************/
+
 template<int DIM>
 void EnergyEstimatorIntegrator<DIM>::Jumps(LocalVector& F, const FemInterface& FEM, const LocalVector& U, int ile) const
 {

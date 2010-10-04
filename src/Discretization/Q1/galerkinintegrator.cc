@@ -52,6 +52,22 @@ GalerkinIntegrator<DIM>::~GalerkinIntegrator<DIM>()
 
 /* ----------------------------------------- */
 
+template<>
+double GalerkinIntegrator<2>::Volume2MeshSize(double vol) const
+{
+  return sqrt(vol);
+}
+
+/* ----------------------------------------- */
+
+template<>
+double GalerkinIntegrator<3>::Volume2MeshSize(double vol) const
+{
+  return cbrt(vol);
+}
+
+/* ----------------------------------------- */
+
 template<int DIM>
 void GalerkinIntegrator<DIM>::Rhs(const DomainRightHandSide& f, LocalVector& F, const FemInterface& FEM, 
     const LocalData& Q, const LocalData& QC) const
