@@ -235,7 +235,7 @@ bool NLInfo::check(int iter, double resi, double cori)
       CD.residual () = res;
       CD.correction() = cor;
       compute_reduction_rate();
-      if (CD.residual()>=2.*CD.previousresidual())
+      if (CD.residual() > 2.*CD.previousresidual())
         {
           thisstepbad = 1;
         }
