@@ -198,6 +198,9 @@ namespace Gascoigne
       virtual void AssembleDualMatrix(const VectorInterface& gu, double d)=0;
       virtual void MassMatrixVector(VectorInterface& f, const VectorInterface& gu, double d) const=0;
       virtual void InverseMassMatrix(VectorInterface& u, const VectorInterface& f) const {};
+      virtual void PeriodicMatrix() const=0;
+
+      
 		//
 		/// vector
 		//
