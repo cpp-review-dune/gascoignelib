@@ -4,6 +4,7 @@
 #include  "gascoigne.h"
 #include  "matrixinterface.h"
 #include  "iluinterface.h"
+#include  "sparsestructure.h"
 
 #include  "multigridmeshinterface.h"
 #include  "discretizationinterface.h"
@@ -159,6 +160,11 @@ namespace Gascoigne
       virtual void SetBoundaryVectorStrong(VectorInterface& f, const BoundaryManager& BM, const DirichletData& DD, double d=1.) const=0;
       virtual void SetPeriodicVectorStrong(VectorInterface& f, const BoundaryManager& BM, const PeriodicData& PD, double d=1.) const=0;
       virtual void SetPeriodicVectorZero(VectorInterface& f) const=0;
+      virtual void AddPeriodicNodes(SparseStructure* SA)
+      {
+        std::cerr << "\"SolverInterface::AddPeriodicNodes\" not written!" << std::endl;
+        abort();
+      }
   
       //
       /// vector - linear algebra
@@ -169,6 +175,7 @@ namespace Gascoigne
       virtual void MatrixResidual(VectorInterface& y, const VectorInterface& x, const VectorInterface& b) const=0;
       virtual void vmult(VectorInterface& y, const VectorInterface& x, double d) const=0;
       virtual void vmulteq(VectorInterface& y, const VectorInterface& x, double d) const=0;
+      virtual void smooth(int niter, VectorInterface& y, const VectorInterface& x, VectorInterface& h) const=0;
       virtual void smooth_pre(VectorInterface& y, const VectorInterface& x, VectorInterface& h) const=0;
       virtual void smooth_exact(VectorInterface& y, const VectorInterface& x, VectorInterface& h) const=0;
       virtual void smooth_post(VectorInterface& y, const VectorInterface& x, VectorInterface& h) const=0;
