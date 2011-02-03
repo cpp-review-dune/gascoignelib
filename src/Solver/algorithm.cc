@@ -182,7 +182,6 @@ void Algorithm::GmresSolve(VectorInterface& x, const VectorInterface& b,
 
   for(int i=0; i<minsize; i++)
     {
-      int i = mem.size();
       std::string s = "gmres";
       compose_name(s,i);
       mem.resize(i+1,s);
