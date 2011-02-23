@@ -211,7 +211,7 @@ void PointMatrix::AddMassWithDifferentStencil(const MatrixInterface* MP, const T
   const NodeSparseStructureAdaptor* NSMS = dynamic_cast<const NodeSparseStructureAdaptor*>(SSAP);
   assert(NSMS);
 
-  assert(n=SMS->n());
+  assert(n==SMS->n());
 
   for(int i=0;i<n;i++)
     {
@@ -264,7 +264,8 @@ void PointMatrix::AddMassWithDifferentStencil(const MatrixInterface* MP, const T
 
 void PointMatrix::RestrictMatrix(const MgInterpolatorMatrix& I, const PointMatrix& Ah)
 {
-  assert(0);
+  std::cerr << "\"PointMatrix::RestrictMatrix\" not written!" << std::endl;
+  abort();
 
 //   const UnstructuredStencil& USH = GetStencil();
 //   const UnstructuredStencil& USh = Ah.GetStencil();

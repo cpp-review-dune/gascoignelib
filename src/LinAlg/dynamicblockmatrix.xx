@@ -29,10 +29,11 @@ namespace Gascoigne
     template<class B>
     DynamicBlockMatrix<B>& DynamicBlockMatrix<B>::operator=(const DynamicBlockMatrix<B>& S)
     {
-	assert(0);
+        std::cerr << "\"DynamicBlockMatrix::operator=\" not written!" << std::endl;
+        abort();
 
 // 	const ColumnDiagStencil* AS = dynamic_cast<const ColumnDiagStencil*>(S.GetStencil());
-// 	if(!AS) assert(0);
+// 	assert(AS);
 
 // 	smat.reserve(S.size());
 // 	smat.resize (S.size());
@@ -219,7 +220,7 @@ namespace Gascoigne
 // 	const DynamicBlockMatrix<B>& A =  *AP;
 
 // 	const ColumnDiagStencil* AS = dynamic_cast<const ColumnDiagStencil*>(AP->GetStencil());
-// 	if(!AS) assert(0);
+// 	assert(AS);
 
 // 	if(US.nentries()==AS->nentries()) 
 // 	{

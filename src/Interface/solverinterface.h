@@ -149,7 +149,10 @@ namespace Gascoigne
       /// vector - residual (integration)
       //
       virtual void Form(VectorInterface& y, const VectorInterface& x, double d) const=0;
-      virtual void AdjointForm(VectorInterface& y, const VectorInterface& x, double d) const { assert(0);}
+      virtual void AdjointForm(VectorInterface& y, const VectorInterface& x, double d) const {
+        std::cerr << "\"SolverInterface::AdjointForm\" not written!" << std::endl;
+        abort();
+      }
 
       //
       /// vector - boundary condition

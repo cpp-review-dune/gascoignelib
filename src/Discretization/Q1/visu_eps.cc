@@ -41,7 +41,7 @@ void VisuEPS::SetOption(EPSOptions o, int v)
 	  return;
 	}
       cerr << "void VisuEPS::SetOption(" << o << "," << v << ")!";
-      assert(0);
+      abort();
     }
   INTOPT[o]=v;
 }

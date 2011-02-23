@@ -102,20 +102,36 @@ public:
     }
 
   void caddtrans(double s, iterator p, const_iterator q0) const
-    { std::cerr << "CFDBlock3d::caddtrans noch schreiben" << std::endl; }
+    { 
+      std::cerr << "CFDBlock3d::caddtrans noch schreiben" << std::endl;
+      abort();
+    }
   void subtract(iterator p, const_iterator q0) const;
 
   std::ostream& print(std::ostream& s) const;
 
   // Zugriff auf Inhalt ueber ganzen Vektor, damits auch ohne
   // Struktur geht.
-  void vector_get(nvector<float>& v) const { assert(0);}
-  void vector_set(nvector<float>& v) { assert(0);}
-  void vector_add(double d, nvector<float>& v) { assert(0);}
+  void vector_get(nvector<float>& v) const
+    {
+      std::cerr << "\"CFDBlock3d::vector_get\" not written!" << std::endl;
+      abort();
+    }
+  void vector_set(nvector<float>& v)
+    {
+      std::cerr << "\"CFDBlock3d::vector_set\" not written!" << std::endl;
+      abort();
+    }
+  void vector_add(double d, nvector<float>& v)
+    {
+      std::cerr << "\"CFDBlock3d::vector_add\" not written!" << std::endl;
+      abort();
+    }
 
   friend std::ostream& operator<<(std::ostream &s, const CFDBlock3d& A)
     {
-      assert(0);
+      std::cerr << "\"std::ostream& operator<<(std::ostream &s, const CFDBlock3d& A)\" not written!" << std::endl;
+      abort();
     }
 };
 }

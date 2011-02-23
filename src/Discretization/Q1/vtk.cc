@@ -103,6 +103,9 @@ void Visualization::_vtk_points(ofstream& out) const
 {
   int nn = mesh->nnodes();
   out << "POINTS " << nn << " DOUBLE " << endl;
+
+  assert(mesh->dimension()==2 || mesh->dimension()==3);
+
   if(mesh->dimension()==2)
     { 
       for (int i=0; i<nn; i++)
@@ -116,10 +119,6 @@ void Visualization::_vtk_points(ofstream& out) const
         {
           out<<  mesh->vertex3d(i) << endl;
         }
-    }
-  else
-    {
-      assert(0);
     }
   out << endl;
 }

@@ -78,10 +78,10 @@ void Q1::StrongDirichletVectorZero(GlobalVector& u, int col, const vector<int>& 
       int c = comp[ii];
       if(c<0) {
 	cerr << "negative component: " << c << endl;
-	assert(0);
+        abort();
       } else if(c>=u.ncomp()){
 	cerr << "unknown component: " << c << endl;
-	assert(0);
+        abort();
       }
     }
 

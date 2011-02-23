@@ -90,7 +90,10 @@ class SparseBlockMatrix : public MatrixInterface
 	    /*-----------------------------------------------*/
 
   ostream& Write(ostream &s) const;
-  friend   ostream& operator<<(ostream &s, const SparseBlockMatrix<B>& A) {assert(0); return s;}
+  friend   ostream& operator<<(ostream &s, const SparseBlockMatrix<B>& A) {
+    std::cerr << "\"ostream& operator<<(ostream &s, const SparseBlockMatrix<B>& A)\" not written!" << std::endl;
+    abort();
+  }
 };
 }
 

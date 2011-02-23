@@ -33,7 +33,10 @@ public:
   void CondenseHangingLowerHigher(EntryMatrix& E, IntVector& indices) const;
   void CondenseHangingHigherLower(EntryMatrix& E, IntVector& indices) const;
   void CondenseHanging(IntVector& indices) const;
-  void CondenseHangingPatch(EntryMatrix& E, IntVector& indices) const { assert(0);}
+  void CondenseHangingPatch(EntryMatrix& E, IntVector& indices) const {
+    std::cerr << "\"HNStructureQ23d::CondenseHangingPatch\" not written!" << std::endl;
+    abort();
+  }
 };
 
 }

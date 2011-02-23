@@ -87,10 +87,10 @@ void Q12d::StrongDirichletVector(GlobalVector& u, const DirichletData& BF, int c
       int c = comp[ii];
       if(c<0) {
         cerr << "negative component: " << c << endl;
-        assert(0);
+        abort();
       } else if(c>=u.ncomp()){
         cerr << "unknown component: " << c << endl;
-        assert(0);
+        abort();
       }
     }
 
@@ -140,10 +140,10 @@ void Q12d::StrongPeriodicVector(GlobalVector& u, const PeriodicData& BF, int col
   //  int c = comp[ii];
   //  if(c<0) {
   //    cerr << "negative component: " << c << endl;
-  //    assert(0);
+  //    abort();
   //  } else if(c>=u.ncomp()){
   //    cerr << "unknown component: " << c << endl;
-  //    assert(0);
+  //    abort();
   //  }
   //}
 

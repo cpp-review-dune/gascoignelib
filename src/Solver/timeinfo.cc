@@ -93,11 +93,12 @@ void TimeInfo::ReInit(double tb, double te, double det, const string& sch, int n
 
 void TimeInfo::ReInitTheta()
 {
+  assert(_actualscheme=="CN" || _actualscheme=="Euler" || _actualscheme=="FractionalTheta" || _actualscheme=="Theta");
+
   if      (_actualscheme=="CN"   )           _theta = 0.5;
   else if (_actualscheme=="Euler")           _theta = 1.;
   else if (_actualscheme=="FractionalTheta") _theta = 0.;
   else if (_actualscheme=="Theta")           _theta = _Theta;
-  else assert(0);
 }
 
 /*-----------------------------------------*/

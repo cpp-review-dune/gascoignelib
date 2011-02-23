@@ -72,6 +72,7 @@ void CuthillMcKee::Permutate (IntVector &perm)
   int count=0;
   int c;
   adj[0]=0;
+  assert(CS || DS);
   if (CS)
       for (int r=0;r<n;++r)
       {
@@ -96,8 +97,6 @@ void CuthillMcKee::Permutate (IntVector &perm)
 	  }
 	  adj[r+1]=count;
       }
-  else assert(0);
-
   
   int numflag = 0;
   int options[8];

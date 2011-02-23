@@ -42,7 +42,10 @@ namespace Gascoigne
 
       virtual void entry(nvector<int>::const_iterator start1, nvector<int>::const_iterator stop1,
 		 nvector<int>::const_iterator start2, nvector<int>::const_iterator stop2,
-		 const EntryMatrix& M, double s=1.) { assert(0);}
+		 const EntryMatrix& M, double s=1.) { 
+        std::cerr << "\"MatrixInterface::entry\" not written!" << std::endl;
+        abort();
+      }
       virtual void entry(niiterator start, niiterator stop, const EntryMatrix& M, double s=1.)=0;
       virtual void entrydual(niiterator start, niiterator stop, const EntryMatrix& M, double s=1.) {
         std::cerr << "\"MatrixInterface::entrydual\" not written!" << std::endl;
@@ -97,14 +100,14 @@ namespace Gascoigne
 		/*-----------------------------------------------*/
       
       virtual void FillInterfaceList(const nvector<int>& elements,nvector<int>& start, nvector<float>& values) const
-	{ std::cerr << "\"MatrixInterface::FillInterfaceList\" not written!" << std::endl; assert(0); }
+	{ std::cerr << "\"MatrixInterface::FillInterfaceList\" not written!" << std::endl; abort(); }
       virtual void FurbishInterface (double d, const nvector<int>&   elements, const nvector<int>&   start, const nvector<float>& values)
-	{ std::cerr << "\"MatrixInterface::FurbishInterface\" not written!" << std::endl; assert(0); }
+	{ std::cerr << "\"MatrixInterface::FurbishInterface\" not written!" << std::endl; abort(); }
       
       virtual void PrepareJacobi(double s)
-	{ std::cerr << "\"MatrixInterface::PrepareJacobi\" not written!" << std::endl; assert(0); }
+	{ std::cerr << "\"MatrixInterface::PrepareJacobi\" not written!" << std::endl; abort(); }
       virtual void Jacobi           (GlobalVector& x) const
-	{ std::cerr << "\"MatrixInterface::Jacobi\" not written!" << std::endl; assert(0); }
+	{ std::cerr << "\"MatrixInterface::Jacobi\" not written!" << std::endl; abort(); }
       
 		/*-----------------------------------------------*/
  };

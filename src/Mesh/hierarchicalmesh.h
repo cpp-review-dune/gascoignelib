@@ -84,13 +84,25 @@ class HierarchicalMesh : public MeshInterface
   virtual bool sleep(int i)   const =0;
 
   virtual int    Vater(const int i) const
-    {assert(0); return 0;}
+    {
+      std::cerr << "\"HierarchicalMesh::Vater\" not written!" << std::endl;
+      abort();
+    }
   virtual IntVector Nachkommen(const int i) const
-    {assert(0); return IntVector();}
+    {
+      std::cerr << "\"HierarchicalMesh::Nachkommen\" not written!" << std::endl;
+      abort();
+    }
   virtual IntVector Geschwister(const int i) const
-    {assert (0); return IntVector();}
+    {
+      std::cerr << "\"HierarchicalMesh::Geschwister\" not written!" << std::endl;
+      abort();
+    }
   virtual IntVector Kinder(const int i) const
-    {assert(0); return IntVector();}
+    {
+      std::cerr << "\"HierarchicalMesh::Kinder\" not written!" << std::endl;
+      abort();
+    }
     
   void SetParameters(std::string gridname, int patchdepth, int epatcher);
   void ReadFile(const std::string& gridname);
@@ -132,8 +144,16 @@ class HierarchicalMesh : public MeshInterface
 
   virtual int  GetBoundaryCellOfCurved(int iq) const { return -1;}
 
-  virtual void AddShape(int col, BoundaryFunction<2>* f) {assert(0);}
-  virtual void AddShape(int col, BoundaryFunction<3>* f) {assert(0);}
+  virtual void AddShape(int col, BoundaryFunction<2>* f)
+  {
+    std::cerr << "\"HierarchicalMesh::AddShape\" not written!" << std::endl;
+    abort();
+  }
+  virtual void AddShape(int col, BoundaryFunction<3>* f)
+  {
+    std::cerr << "\"HierarchicalMesh::AddShape\" not written!" << std::endl;
+    abort();
+  }
 
   void ShowOutput(int i) const { _i_showoutput=i; } 
 

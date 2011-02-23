@@ -40,7 +40,10 @@ namespace Gascoigne
 	void matrix_vector_trans(int p, double* yp, const double* xp, double s=1.) const;
   
 	// number of entries
-	int size() const { assert(0); return -1; }
+	int size() const {
+          std::cerr << "\"DynamicBlockMatrix::size\" not written!" << std::endl;
+          abort();
+        }
 
     public:
 
@@ -53,8 +56,14 @@ namespace Gascoigne
 	/////// Zugriff //////////////////////
 
 	int   n()          const { assert(smat.size()==DS.n()); return DS.n(); }
-	int   nentries()   const { assert(0); return -1; }
-	int   ntotal()     const { assert(0); return -1; }
+	int   nentries()   const {
+          std::cerr << "\"DynamicBlockMatrix::nentries\" not written!" << std::endl;
+          abort();
+        }
+	int   ntotal()     const {
+          std::cerr << "\"DynamicBlockMatrix::ntotal\" not written!" << std::endl;
+          abort();
+        }
 
 	int  rowsize(int i)     const 
 	{
@@ -146,9 +155,15 @@ namespace Gascoigne
 	void entry_diag(int i, const nmatrix<double>& M);
 	void entry(nvector<int>::const_iterator start1, nvector<int>::const_iterator stop1,
 		   nvector<int>::const_iterator start2, nvector<int>::const_iterator stop2,
-		   const EntryMatrix& M, double s=1.){assert(0);}
+		   const EntryMatrix& M, double s=1.){
+          std::cerr << "\"DynamicBlockMatrix::entry\" not written!" << std::endl;
+          abort();
+        }
 	void entry(nvector<int>::const_iterator start, nvector<int>::const_iterator stop, const EntryMatrix& M, double s=1.);
-	void entrydual(nvector<int>::const_iterator start, nvector<int>::const_iterator stop, const EntryMatrix& M, double s=1.){assert(0);}
+	void entrydual(nvector<int>::const_iterator start, nvector<int>::const_iterator stop, const EntryMatrix& M, double s=1.){
+          std::cerr << "\"DynamicBlockMatrix::entrydual\" not written!" << std::endl;
+          abort();
+        }
 
 	void vmult(GlobalVector& y, const GlobalVector& x, double s=1.) const;
 	void vmult(GlobalVector& y, const GlobalVector& x, const TimePattern& TP, double s=1.)const;
@@ -160,16 +175,28 @@ namespace Gascoigne
 	/*-----------------------------------------------*/
 
 	void FillInterfaceList(const nvector<int>& elements,nvector<int>& start, nvector<float>& values) const
-	{ assert(0); }
+	{ 
+          std::cerr << "\"DynamicBlockMatrix::FillInterfaceList\" not written!" << std::endl;
+          abort();
+        }
 	void FurbishInterface (double d, const nvector<int>&   elements, const nvector<int>&   start, const nvector<float>& values)
-	{ assert(0); }
+	{ 
+          std::cerr << "\"DynamicBlockMatrix::FurbishInterface\" not written!" << std::endl;
+          abort();
+        }
 
 	/*-----------------------------------------------*/
 
 	ostream& Write(ostream &s) const
-	{ assert(0); return s;}
+	{ 
+          std::cerr << "\"DynamicBlockMatrix::Write\" not written!" << std::endl;
+          abort();
+        }
 	friend   ostream& operator<<(ostream &s, const DynamicBlockMatrix<B>& A) 
-	{ assert(0); return s;}
+	{ 
+          std::cerr << "\"ostream& operator<<(ostream &s, const DynamicBlockMatrix<B>& A)\" not written!" << std::endl;
+          abort();
+        }
     };
 }
 

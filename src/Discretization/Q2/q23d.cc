@@ -163,14 +163,10 @@ void Q23d::BasicInit(const ParamFile* paramfile)
 
 void Q23d::ConstructInterpolator(MgInterpolatorInterface* I, const MeshTransferInterface* MT)
 {
-  {
-    MgInterpolatorNested* IP = dynamic_cast<MgInterpolatorNested*>(I);
-    if(IP)
-      {
-	IP->BasicInit(MT);
-	return;
-      }
-  }
-  assert(0);
+  MgInterpolatorNested* IP = dynamic_cast<MgInterpolatorNested*>(I);
+
+  assert(IP);
+  IP->BasicInit(MT);
+  return;
 }
 }

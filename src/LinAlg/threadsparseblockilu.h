@@ -80,7 +80,10 @@ protected:
 
   void copy_entries(const MatrixInterface* A);
   void solve       (GlobalVector& x) const;
-  void solvetrans  (GlobalVector& x) const { assert(0);};
+  void solvetrans  (GlobalVector& x) const {
+    std::cerr << "\"ThreadSparseIlu::solvetrans\" not written!" << std::endl;
+    abort();
+  }
   ostream& Write(ostream &s) const;
 };
 }

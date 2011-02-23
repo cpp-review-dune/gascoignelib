@@ -31,7 +31,11 @@ namespace Gascoigne
     ThreadIlu(int ncomp);
     virtual ~ThreadIlu();
 
-    virtual int   n() const             { assert(0);return __n; }
+    virtual int   n() const             {
+      std::cerr << "\"ThreadILU::n\" not written!" << std::endl;
+      abort();
+//       return __n;
+    }
     virtual std::string GetName() const {return "Thread-Ilu";}
     
     virtual void ReInit(const SparseStructureInterface* A);

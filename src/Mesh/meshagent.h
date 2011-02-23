@@ -22,9 +22,6 @@ private:
   map<int,BoundaryFunction<2>* > _curved2d;
   map<int,BoundaryFunction<3>* > _curved3d;
 
-  map<int,map<int,PeriodicMapping*> > _periodicMaps;
-  IntVector _periodicCols;
-
   //Fuer die Zuordnung GM Nr auf altem Gitter zu GM Nr. auf neuem Gitter
   IntVector _cl2g, _celll2g;
   IntVector _fathers;//GM Nr zu HM nr.
@@ -44,6 +41,9 @@ protected:
 
   virtual void ReInit();
   virtual void BuildQ4PatchList(const IntVector &patchl2g);
+
+  IntVector _periodicCols;
+  map<int,map<int,PeriodicMapping*> > _periodicMaps;
   virtual void AssemblePeriodicBoundaries();
 
   GascoigneMesh*  GMesh(int l) { return GMG->GetGascoigneMesh(l);}

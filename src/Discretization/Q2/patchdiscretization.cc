@@ -305,7 +305,8 @@ void PatchDiscretization::BoundaryRhs(GlobalVector& f, const IntSet& Colors,  co
 
 double PatchDiscretization::compute_element_mean_matrix(int iq, EntryMatrix& E) const
 {
-  assert(0);
+  std::cerr << "\"PatchDiscretization::compute_element_mean_matrix\" not written!" << std::endl;
+  abort();
 }
 
 /* ----------------------------------------- */

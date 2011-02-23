@@ -21,7 +21,10 @@ class Base3d : public Base
   
   Base3d()  {}
   const Vertex3d*  normal3d() const {return &bn;}
-  const Vertex3d*  tangent3d() const {assert(0); return NULL;}
+  const Vertex3d*  tangent3d() const {
+    std::cerr << "\"Base3d::tangent3d\" not written!" << std::endl;
+    abort();
+  }
   const fixarray<2,int>* faces() const {return &face;}
   
   void point_boundary(int ie, const Vertex2d& s1) const

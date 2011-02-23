@@ -13,6 +13,8 @@ CoarseHierarchicalMesh3d::CoarseHierarchicalMesh3d
 
 void CoarseHierarchicalMesh3d::BasicInit(int depth)
 {
+  assert(1<=depth && depth<=2);
+
   if (depth==1)
     {
       loop(cn2o);
@@ -55,7 +57,6 @@ void CoarseHierarchicalMesh3d::BasicInit(int depth)
 	    }
 	}
     }
-  else assert(0);
 }
 
 /*---------------------------------------------------*/

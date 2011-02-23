@@ -30,21 +30,22 @@ GascoigneMultiGridMesh::~GascoigneMultiGridMesh()
 
 GascoigneMesh* GascoigneMultiGridMesh::NewMesh(int dim)
 {
+  assert(2<=dim && dim<=3);
+
   if(dim==2)
-    {
-      return new GascoigneMesh2d;
-    }
+    return new GascoigneMesh2d;
   else if(dim==3)
-    {
-      return new GascoigneMesh3d;
-    }
-  assert(0);
+    return new GascoigneMesh3d;
+
+  abort();
 }
 
 /*-----------------------------------------*/
 
 GascoigneMeshTransfer* GascoigneMultiGridMesh::NewTransfer(int dim)
 {
+  assert(2<=dim && dim<=3);
+
   if(dim==2)
     {
       return new GascoigneMeshTransfer2d;
@@ -53,7 +54,8 @@ GascoigneMeshTransfer* GascoigneMultiGridMesh::NewTransfer(int dim)
     {
       return new GascoigneMeshTransfer3d;
     }
-  assert(0);
+
+  abort();
 }
 
 /*-----------------------------------------*/

@@ -147,7 +147,7 @@ WriteBackUp::WriteBackUp(const GlobalVector& u, const string& bname)
 WriteBackUpBinary::WriteBackUpBinary(const GlobalVector& u, const string& bname)
 {
   string name(bname);
-  name += ".bup";
+  name += ".bip";
   
   ofstream file;
   file.open(name.c_str());
@@ -169,7 +169,7 @@ WriteBackUpBinary::WriteBackUpBinary(const GlobalVector& u, const string& bname)
 ReadBackUpBinary::ReadBackUpBinary(GlobalVector& u, const string& bname)
 {
   string name(bname);
-  name += ".bup";
+  name += ".bip";
 
   ifstream file;
   file.open(name.c_str());

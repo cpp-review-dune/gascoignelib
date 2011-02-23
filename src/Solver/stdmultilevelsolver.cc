@@ -439,7 +439,8 @@ void StdMultiLevelSolver::mgstep(vector<double>& res, vector<double>& rw,
 
 void StdMultiLevelSolver::Cg(VectorInterface& x, const VectorInterface& f, CGInfo& info)
 {
-  assert(0);
+  std::cerr << "\"StdMultiLevelSolver::Cg\" not written!" << std::endl;
+  abort();
 //   CG<SolverInterface,StdMultiLevelSolver,GhostVector> cg(*(GetSolver(ComputeLevel)),*this);
   
 //   cg.solve(x,f,info);
@@ -533,6 +534,8 @@ void StdMultiLevelSolver::NewtonLinearSolve(VectorInterface& x, const VectorInte
   info.reset();
   GetSolver(FinestLevel())->Zero(x);
 
+  assert(DataP->LinearSolve()=="mg"  || DataP->LinearSolve()=="gmres");
+
   if (DataP->LinearSolve()=="mg")
     {
       int clevel=Gascoigne::max_int(DataP->CoarseLevel() ,0);
@@ -543,10 +546,7 @@ void StdMultiLevelSolver::NewtonLinearSolve(VectorInterface& x, const VectorInte
     {
       Gmres(x,b,info);
     }
-  else
-    {
-      assert(0);
-    }
+
   GetSolver(ComputeLevel)->SubtractMean(x);
   _clock_solve.stop();
 }
@@ -708,17 +708,15 @@ string StdMultiLevelSolver::Solve(int level, VectorInterface& u, const VectorInt
   ComputeLevel = level;
 
   string status;
-  if(DataP->NonLinearSolve() == "newton")
-    {
+
+  assert(DataP->NonLinearSolve() == "newton");
+//   if(DataP->NonLinearSolve() == "newton")
+//     {
       GetSolver(ComputeLevel)->HNAverage(u);
       newton(u,b,_res,_cor,nlinfo);
       GetSolver(ComputeLevel)->HNZero(u);
       return nlinfo.CheckMatrix();
-    }
-  else
-    {
-      assert(0);
-    }
+//     }
 }
 
 /*-------------------------------------------------------------*/

@@ -21,7 +21,7 @@ namespace Gascoigne
 	 if (find(label)!=end())
 	   {
 	     std::cerr << "Problemdescriptor " << label << " already present!\n";
-	     assert(0);
+             abort();
 	   }
 	 (*this)[label]=P;
        }
@@ -31,7 +31,7 @@ namespace Gascoigne
 	 if (find(label)==end())
 	   {
 	     std::cerr << "Problemdescriptor " << label << " not present!\n";
-	     assert(0);
+             abort();
 	   }
 	 this->erase(label);
        }
@@ -41,7 +41,7 @@ namespace Gascoigne
 	 if (find(label)==end())
 	   {
 	     std::cerr << "Problemdescriptor " << label << " not present!\n";
-	     assert(0);
+             abort();
 	   }
 	 return find(label)->second;
        }

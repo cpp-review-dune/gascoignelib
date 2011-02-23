@@ -34,8 +34,14 @@ protected:
   double ComputePointValue(const GlobalVector& u, const Vertex2d& p0,int comp) const;
   double ComputePointValue(const GlobalVector& u, const Vertex3d& p0,int comp) const; 
 
-  virtual int GetCellNumber(const Vertex2d& p0, Vertex2d& p, int c0=0) const { assert(0); }
-  virtual int GetCellNumber(const Vertex3d& p0, Vertex3d& p, int c0=0) const { assert(0); }
+  virtual int GetCellNumber(const Vertex2d& p0, Vertex2d& p, int c0=0) const {
+    std::cerr << "\"CellDiscretization::GetCellNumber\" not written!" << std::endl;
+    abort();
+  }
+  virtual int GetCellNumber(const Vertex3d& p0, Vertex3d& p, int c0=0) const {
+    std::cerr << "\"CellDiscretization::GetCellNumber\" not written!" << std::endl;
+    abort();
+  }
 
   /////
 
@@ -96,7 +102,10 @@ public:
   void InterpolateDomainFunction(GlobalVector& f, const DomainFunction& DF) const;
   void InterpolateCellDomainFunction(GlobalVector& f, const DomainFunction& DF) const;
 
-  virtual nmatrix<double> GetLocalInterpolationWeights() const { assert(0); return nmatrix<double>();}
+  virtual nmatrix<double> GetLocalInterpolationWeights() const {
+    std::cerr << "\"CellDiscretization::GetLocalInterpolationWeights\" not written!" << std::endl;
+    abort();
+  }
 
   void GetVolumes(DoubleVector& a) const;
   void GetAreas(DoubleVector& a, const IntSet& Colors) const;

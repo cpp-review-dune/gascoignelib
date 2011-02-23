@@ -25,7 +25,10 @@ public:
   GascoigneMesh();
   virtual ~GascoigneMesh();
 
-	void BasicInit(const ParamFile* pf) {assert(0);}
+  void BasicInit(const ParamFile* pf) {
+    std::cerr << "\"GascoigneMesh:BasicInit\" not written!" << std::endl;
+    abort();
+  }
 
   const IntVector&               GetCellVector()          const  { return nc;}
   const PatchIndexHandler&    GetPatchIndexHandler()   const  { return PatchHandler;}
@@ -60,7 +63,10 @@ public:
   IntVector  CoarseIndicesQ4(int iq) const { return PatchHandler.CoarseIndicesQ4(iq);}
 
   // wird von GascoigneMesh2d/3d ueberschrieben
-  virtual IntVector  IndicesOfCell(int iq) const{ assert(0); return IntVector(); }
+  virtual IntVector  IndicesOfCell(int iq) const{ 
+    std::cerr << "\"GascoigneMesh:IndicesOfCell\" not written!" << std::endl;
+    abort();
+  }
   
   virtual bool CellIsCurved(int iq) const { return 0;}
   virtual int  nedges()    const { return 0; }

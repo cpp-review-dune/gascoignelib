@@ -197,7 +197,7 @@ void BasicLoop::InitSolution(VectorInterface& u)
   else if (_initial!="zero")
     {
       cerr << "BasicLoop::InitSolution():\npossible values for init: \"analytic\", \"file\", \"boundary\", \"zero\"\n";
-      assert(0);
+      abort();
     }
   GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(u);
   GetMultiLevelSolver()->GetSolver()->SubtractMean(u);

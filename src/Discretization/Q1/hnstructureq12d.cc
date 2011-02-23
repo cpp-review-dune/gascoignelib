@@ -51,11 +51,12 @@ void HNStructureQ12d::ReInit(const MeshInterface* M)
 const fixarray<3,int>& HNStructureQ12d::regular_nodes(int i) const 
 {
   map<int,EdgeVector>::const_iterator p = edges->find(i);
-  if (p!=edges->end())
-    {
+
+  assert(p!=edges->end());
+//   if (p!=edges->end())
+//     {
       return p->second; 
-    }
-  assert(0);
+//     }
 }
 
 /*----------------------------------------------*/

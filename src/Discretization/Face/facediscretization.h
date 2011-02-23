@@ -58,11 +58,11 @@ namespace Gascoigne
       virtual std::string GetName() const { return "FaceDiscretizationInterface"; }
       
       virtual void BasicInit(const ParamFile* pf)
-	{ std::cerr << "\"FaceDiscretization::BasicInit not written\"" << std::endl;  assert(0); } 
+	{ std::cerr << "\"FaceDiscretization::BasicInit not written\"" << std::endl;  abort(); } 
       virtual void ReInit   (const MeshInterface* M)
-	{ std::cerr << "\"FaceDiscretization::ReInit not written\"" << std::endl;  assert(0); } 
+	{ std::cerr << "\"FaceDiscretization::ReInit not written\"" << std::endl;  abort(); } 
       virtual void build_faces()
-	{ std::cerr << "\"FaceDiscretization::build_faces not written\"" << std::endl;  assert(0); } 
+	{ std::cerr << "\"FaceDiscretization::build_faces not written\"" << std::endl;  abort(); } 
       virtual void Structure(SparseStructureInterface* SI) const;
 	
 

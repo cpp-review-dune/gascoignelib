@@ -10,6 +10,9 @@ namespace Gascoigne
   {
     if (!FaceFormulaPointer())
       {
+        assert(2<=DIM && DIM<=3);
+        assert(1<=Q && Q<=2);
+
 	if ((DIM==2)&&(Q==1))
 	  FaceFormulaPointer() = new LineGauss2;
 	else if ((DIM==2)&&(Q==2))
@@ -18,9 +21,7 @@ namespace Gascoigne
 	  FaceFormulaPointer() = new QuadGauss4;
 	else if ((DIM==3)&&(Q==2))
 	  FaceFormulaPointer() = new QuadGauss9;
-	else assert(0);
       }
-    
   }
 
   //////////////////////////////////////////////////
@@ -34,6 +35,7 @@ namespace Gascoigne
     for (int c=0; c<U1.size(); c++)  U1[c].zero();
     for (int c=0; c<U2.size(); c++)  U2[c].zero();
     
+    assert(2<=DIM && DIM<=3);
 
     if (DIM==2)
       {
@@ -64,7 +66,6 @@ namespace Gascoigne
 		U2[c].add(U((Q+1)*(2*Q+1)*iz+(2*Q+1)*iy+ix+Q,c),__NN);
 	      }
       }
-    else assert(0);
   }
   
   //////////////////////////////////////////////////
@@ -103,6 +104,8 @@ namespace Gascoigne
 	FEM1.normal(n);
 	EQ.point_face(h1,_U1,_U2,x1,n);
 
+        assert(2<=DIM && DIM<=3);
+
 	if (DIM==2)
 	  {
 	    assert((Q+1)*(2*Q+1)==n_dof);
@@ -130,7 +133,6 @@ namespace Gascoigne
 		  EQ.FaceForm(F.start((Q+1)*(2*Q+1)*iz+(2*Q+1)*iy+ix),_U1,_U2,_N1,_N2);
 		}
 	  }
-	else assert(0);
       }
   }
 
@@ -175,6 +177,8 @@ namespace Gascoigne
 
 	double sw = sqrt(weight);
 
+        assert(2<=DIM && DIM<=3);
+
 	if (DIM==2)
 	  {
 	    assert(n_dof == (Q+1)*(2*Q+1));
@@ -202,7 +206,6 @@ namespace Gascoigne
 		    if (ix>Q-1) FEM2.init_test_functions(NNN2[i],sw,iz*(Q+1)*(Q+1)+iy*(Q+1)+ix-Q);
 		  }
 	  }
-	else assert(0);
 
 	for (int j=0; j<n_dof; j++)
 	  {

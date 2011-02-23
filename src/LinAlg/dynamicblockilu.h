@@ -67,7 +67,10 @@ namespace Gascoigne
 	void ConstructStructure(const nvector<int>& perm, const MatrixInterface& A);
 	void copy_entries(const MatrixInterface* A);
 	void solve       (GlobalVector& x) const;
-	void solvetrans  (GlobalVector& x) const { assert(0);};
+	void solvetrans  (GlobalVector& x) const { 
+          std::cerr << "\"DynamicBlockIlu::solvetrans\" not written!" << std::endl;
+          abort();
+        };
     };
 }
 

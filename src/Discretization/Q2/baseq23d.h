@@ -46,12 +46,30 @@ class BaseQ23d : public Base3d
   double phi_x (int i) const {return DN [i].x();}
   double phi_y (int i) const {return DN [i].y();}
   double phi_z (int i) const {return DN [i].z();}
-  double phi_xx(int i) const { assert(0);}
-  double phi_yy(int i) const { assert(0);}
-  double phi_zz(int i) const { assert(0);}
-  double phi_xy(int i) const { assert(0);}
-  double phi_xz(int i) const { assert(0);}
-  double phi_yz(int i) const { assert(0);}
+  double phi_xx(int i) const {
+    std::cerr << "\"BaseQ23d::phi_xx\" not written!" << std::endl;
+    abort();
+  }
+  double phi_yy(int i) const {
+    std::cerr << "\"BaseQ23d::phi_yy\" not written!" << std::endl;
+    abort();
+  }
+  double phi_zz(int i) const {
+    std::cerr << "\"BaseQ23d::phi_zz\" not written!" << std::endl;
+    abort();
+  }
+  double phi_xy(int i) const {
+    std::cerr << "\"BaseQ23d::phi_xy\" not written!" << std::endl;
+    abort();
+  }
+  double phi_xz(int i) const {
+    std::cerr << "\"BaseQ23d::phi_xz\" not written!" << std::endl;
+    abort();
+  }
+  double phi_yz(int i) const {
+    std::cerr << "\"BaseQ23d::phi_yz\" not written!" << std::endl;
+    abort();
+  }
 
   const Vertex3d&  phi_grad (int i) const {return DN [i];}
 };

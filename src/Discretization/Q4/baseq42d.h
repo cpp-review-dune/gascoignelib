@@ -45,9 +45,18 @@ class BaseQ42d : public Base2d
   double phi   (int i) const { return N  [i];}
   double phi_x (int i) const { return DN [i].x();}
   double phi_y (int i) const { return DN [i].y();}
-  double phi_xx(int i) const { assert(0);}
-  double phi_yy(int i) const { assert(0);}
-  double phi_xy(int i) const { assert(0);}
+  double phi_xx(int i) const {
+    std::cerr << "\"BaseQ42d::phi_xx\" not written!" << std::endl;
+    abort();
+  }
+  double phi_yy(int i) const {
+    std::cerr << "\"BaseQ42d::phi_yy\" not written!" << std::endl;
+    abort();
+  }
+  double phi_xy(int i) const {
+    std::cerr << "\"BaseQ42d::phi_xy\" not written!" << std::endl;
+    abort();
+  }
 
   const Vertex2d&  phi_grad (int i) const {return DN[i];}
 };

@@ -180,14 +180,14 @@ double StdLoop::Estimator(DoubleVector& eta, VectorInterface& u, VectorInterface
         }
       else
         {
-          cout << "Estimator \"second\" not written for 3D!" << endl;
-          assert(0);
+          cerr << "Estimator \"second\" not written for 3D!" << endl;
+          abort();
         }
     }
   else
     {
-      cout << "Estimator type '" << _estimator << "' unknown. Use either energy_laplace or energy_stokes\n"; 
-      assert(0);
+      cerr << "Estimator type '" << _estimator << "' unknown. Use either energy_laplace or energy_stokes\n"; 
+      abort();
     }
   return est;
 }
@@ -203,7 +203,7 @@ void StdLoop::AdaptMesh(const DoubleVector& eta,string refine_or_coarsen_step)
   else if(refine_or_coarsen_step=="coarsen") ;
   else {
     cerr<<"the variable refine_or_coarsen_step has to be set, either to 'refine' or 'coarsen'"<<endl;
-    assert(0);
+    abort();
   }
 
   if (_refiner=="global") {
@@ -274,7 +274,12 @@ void StdLoop::AdaptMesh(const DoubleVector& eta,string refine_or_coarsen_step)
       }
 
     }
-  else assert(0);
+  else
+    {
+      cerr << "Unknown value \"" << _refiner << "\" for \"refiner\" in paramfile. " << endl;
+      cerr << "Please use \"global\", \"none\", \"random\", \"random_refine\", \"random_coarsen\", \"eta\" or \"dip\" instead." << endl;
+      abort();
+    }
 }
 
 /*-------------------------------------------------*/
@@ -298,7 +303,7 @@ void StdLoop::AdaptMesh(const DoubleVector& eta)
         cerr<<"Das gleichzeitige Vergroebern und Verfeinern FUNKTIONIERT NICHT!"<<endl;
         cerr<<"Fuehre stattdessen zwei getrennte Laeufe durch: random_refine, random_coarsen"<<endl;
         cerr<<"und rufe dazu jewweils AdaptMesh(eta,refine_or_coarsen_step) auf."<<endl;
-        assert(0);
+        abort();
       }
       GetMeshAgent()->random_patch_refine(_p,_random_coarsening);
     }
@@ -325,7 +330,7 @@ void StdLoop::AdaptMesh(const DoubleVector& eta)
         cerr<<"Das gleichzeitige Vergroebern und Verfeinern FUNKTIONIERT NICHT!"<<endl;
         cerr<<"Fuehre stattdessen zwei getrennte Laeufe durch, einmal vergroebern, einmal verfeinern"<<endl;
         cerr<<"und rufe dazu jewweils AdaptMesh(eta,refine_or_coarsen_step) auf."<<endl;
-        assert(0);
+        abort();
       }
 
       GetMeshAgent()->refine_nodes(refnodes,coarsenodes);
@@ -340,7 +345,12 @@ void StdLoop::AdaptMesh(const DoubleVector& eta)
       A.refine(refnodes);
       GetMeshAgent()->refine_nodes(refnodes,coarsenodes);
     }
-  else assert(0);
+  else
+    {
+      cerr << "Unknown value \"" << _refiner << "\" for \"refiner\" in paramfile. " << endl;
+      cerr << "Please use \"global\", \"none\", \"random\", \"random_refine\", \"random_coarsen\", \"eta\" or \"dip\" instead." << endl;
+      abort();
+    }
 }
 
 /*-------------------------------------------------*/

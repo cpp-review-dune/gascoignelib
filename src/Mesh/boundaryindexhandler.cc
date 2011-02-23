@@ -39,7 +39,7 @@ void BoundaryIndexHandler::check() const
 	  if(v[i]<0)
 	    {
 	      cerr << "....BoundaryIndexHandler::check() ERROR\n";
-	      assert(0);
+              abort();
 	    }
 	}
     }

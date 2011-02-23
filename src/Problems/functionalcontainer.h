@@ -1,5 +1,5 @@
 /*----------------------------   functionalcontainer.h     ---------------------------*/
-/*      $Id: functionalcontainer.h,v 1.2 2010/01/27 10:19:19 rebecca Exp $                 */
+/*      $Id$                 */
 #ifndef __functionalcontainer_H
 #define __functionalcontainer_H
 /*----------------------------   functionalcontainer.h     ---------------------------*/
@@ -21,7 +21,7 @@ namespace Gascoigne
 	 if (find(label)!=end())
 	   {
 	     std::cerr << "Functional " << label << " already present!\n";
-	     assert(0);
+             abort();
 	   }
 	 (*this)[label]=P;
        }
@@ -31,7 +31,7 @@ namespace Gascoigne
 	 if (find(label)==end())
 	   {
 	     std::cerr << "Problemdescriptor " << label << " not present!\n";
-	     assert(0);
+             abort();
 	   }
 	 this->erase(label);
        }
@@ -41,7 +41,7 @@ namespace Gascoigne
 	 if (find(label)==end())
 	   {
 	     std::cerr << "Functional " << label << " not present!\n";
-	     assert(0);
+             abort();
 	   }
 	 return find(label)->second;
        }

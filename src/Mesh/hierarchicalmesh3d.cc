@@ -879,7 +879,7 @@ void HierarchicalMesh3d::init_quad(BoundaryQuad& newquad)
     }
   cerr << "BoundaryQuad not found !" << endl;
   cerr << newquad;
-  assert(0);
+  abort();
 }
 
 /*---------------------------------------------------*/
@@ -1568,7 +1568,7 @@ void HierarchicalMesh3d::read_gip (const string& bname)
   if(!file.is_open())
     {
       cerr << "HierarchicalMesh3d::read_gip(): error in file "<< name <<endl;
-      assert(0);
+      abort();
     }
 
   Bquads.clear();

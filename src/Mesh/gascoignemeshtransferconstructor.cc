@@ -106,7 +106,7 @@ GascoigneMeshTransferConstructor3d::GascoigneMeshTransferConstructor3d
 {
 //   cerr << "GascoigneMeshTransferConstructor::Construct3d()\n";
 //   cerr << "noch keine konstanten!\n";
-//   assert(0);
+//   abort();
 
   IntVector& c2f = GMT->GetC2f();
   map<int,fixarray<2,int> >& zweier = GMT->GetZweier();

@@ -83,7 +83,7 @@ class Index
       if(ip==qg2l.end()) {
 	std::cerr << "Index:: Quadg2l" << std::endl;
 	std::cerr << "there is no " << " "<< i << std::endl;
-	assert(0);}
+	abort();}
       return ip->second; 
     }
   int Hexg2l   (int i) const
@@ -92,7 +92,7 @@ class Index
       if(ip==hg2l.end()) {
 	std::cerr << "Index:: Hexg2l" << std::endl;
 	std::cerr << "there is no " << " "<< i << std::endl;
-	assert(0);}
+	abort();}
       return ip->second; 
     }
   int Vertexg2l(int i) const
@@ -101,7 +101,7 @@ class Index
       if(ip==vg2l.end()) {
 	std::cerr << "Index:: Vertexg2l" << std::endl;
 	std::cerr << "there is no " << " "<< i << std::endl;
-	assert(0);}
+	abort();}
       return ip->second; 
     }
   int Edgeg2l  (int i) const
@@ -110,7 +110,7 @@ class Index
       if(ip==eg2l.end()) {
 	std::cerr << "Index:: Edgeg2l" << std::endl;
 	std::cerr << "there is no " << " "<< i << std::endl;
-	assert(0);}
+	abort();}
       return ip->second; 
     }
 

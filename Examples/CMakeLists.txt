@@ -8,17 +8,17 @@ SUBDIRS(
    Example7
    Example8
    Example9
-#   MeshTest
-#  Laplace2D 
-#  Laplace3D 
-#  NavierStokes2D 
-#  NavierStokes3D 
-#  NavierStokesFace
-#  Heat2D 
-#  ConvectionDiffusion2D 
+   MeshTest
+  Laplace2D 
+  Laplace3D 
+  NavierStokes2D 
+  NavierStokes3D 
+  NavierStokesFace
+  Heat2D 
+  ConvectionDiffusion2D 
 #  IntegrationTest
-#  Functionals
-#  MeshInterpolator
+  Functionals
+  MeshInterpolator
    PeriodicStokes2D
 )
 

@@ -1543,7 +1543,7 @@ void HierarchicalMesh2d::read_gup(const string& bname)
   if(!file.is_open())
     {
       cerr << "HierarchicalMesh2d::read_gup(): error in file "<< name<<endl;
-      assert(0);
+      abort();
     }
 
   Blines.clear();
@@ -1674,7 +1674,7 @@ void HierarchicalMesh2d::read_gip (const string& bname)
   if(!file.is_open())
     {
       cerr << "HierarchicalMesh2d::read_gip(): error in file "<< name <<endl;
-      assert(0);
+      abort();
     }
 
   Blines.clear();

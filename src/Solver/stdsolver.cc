@@ -1536,7 +1536,7 @@ void StdSolver::modify_ilu(IluInterface& I,int ncomp) const
   if( GetSolverData().GetIluModify().size()!=ncomp ) {
     cerr << "ERROR: GetSolverData().GetIluModify().size()="<< GetSolverData().GetIluModify().size() << " and ";
     cerr << "ncomp="<< ncomp << endl; 
-    assert(0);
+    abort();
     // assert(GetSolverData().GetIluModify().size()==ncomp);
   }
 

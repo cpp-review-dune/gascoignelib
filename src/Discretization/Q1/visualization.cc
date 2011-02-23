@@ -139,7 +139,10 @@ void Visualization::format(const string& s)
   else if (s=="gnu")            gnua         = 1;
   else if (s=="tecplot")        teca         = 1;
   else if (s=="avs")            avsa         = 1;
-  else assert(0);
+  else {
+    std::cerr << "Wrong format \"" <<s<<"\" in Visualization::format()" << std::endl;
+    abort();
+  }
 }
 
 /********************************************************************/

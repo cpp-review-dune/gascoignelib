@@ -107,7 +107,7 @@ void EnergyEstimatorIntegrator<DIM>::Jumps(LocalVector& F, const FemInterface& F
     }else{
       std::cerr << " Bad EnergyEstimatorIntegrator type supplied: '" << _s_energytype  << "'.\n"; 
       std::cerr << " Please specify a known EnergyEstimatorIntegrator type: enery_laplace or enery_stokes.\n";
-      assert(0);
+      abort();
     }
   }
 }

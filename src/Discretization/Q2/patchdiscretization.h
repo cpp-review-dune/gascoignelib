@@ -32,8 +32,14 @@ protected:
 
   virtual void Transformation(FemInterface::Matrix& T, int iq) const;
   virtual double compute_element_mean_matrix(int iq, EntryMatrix& E) const;
-  virtual int GetPatchNumber(const Vertex2d& p0, Vertex2d& p) const { assert(0); }
-  virtual int GetPatchNumber(const Vertex3d& p0, Vertex3d& p) const { assert(0); }
+  virtual int GetPatchNumber(const Vertex2d& p0, Vertex2d& p) const {
+    std::cerr << "\"PatchDiscretization::GetPatchNumber\" not written!" << std::endl;
+    abort();
+  }
+  virtual int GetPatchNumber(const Vertex3d& p0, Vertex3d& p) const {
+    std::cerr << "\"PatchDiscretization::GetPatchNumber\" not written!" << std::endl;
+    abort();
+  }
   
   const PatchMesh* GetPatchMesh() const {
     const PatchMesh* MP = dynamic_cast<const PatchMesh*>(GetMesh());
@@ -94,7 +100,10 @@ public:
   void EvaluateParameterRightHandSide(GlobalVector& f, const DomainRightHandSide& CF, double d) const;
   void EvaluateBoundaryParameterRightHandSide(GlobalVector& f,const IntSet& Colors, const BoundaryRightHandSide& CF, double d) const;
 
-  virtual nmatrix<double> GetLocalInterpolationWeights(int iq) const { assert(0);}
+  virtual nmatrix<double> GetLocalInterpolationWeights(int iq) const {
+    std::cerr << "\"PatchDiscretization::GetLocalInterpolationWeights\" not written!" << std::endl;
+    abort();
+  }
 
 };
 }

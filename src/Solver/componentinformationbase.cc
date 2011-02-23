@@ -75,7 +75,7 @@ void      ComponentInformationBase::GetVectorIndices(int i, fixarray<3,int>& fa_
     fa_vectorindices[2] = 3;
   } else {
     std::cerr << __FILE__ << " :bad dimension="<<GetDimension()<<"."<<std::endl;
-    assert(0);
+    abort();
   }
 }
 

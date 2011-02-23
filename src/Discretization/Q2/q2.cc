@@ -80,7 +80,8 @@ void Q2::LocalToGlobal(MatrixInterface& A, EntryMatrix& E, int iq, double s) con
 
 void Q2::Interpolate(GlobalVector& u, const DomainInitialCondition& U) const
 {
-  assert(0);
+  std::cerr << "\"Q2::Interpolate\" not written!" << std::endl;
+  abort();
 
 //   if (&U==NULL) return;
 
@@ -241,6 +242,8 @@ void Q2::StrongDirichletVector(GlobalVector& u, const DirichletData& BF, int col
         }
       }
 
+      assert(GetMesh()->dimension()==2 || GetMesh()->dimension()==3);
+
       if (GetMesh()->dimension()==2)
 	{
 	  const Vertex2d& v = GMP->vertex2d(index);
@@ -263,8 +266,6 @@ void Q2::StrongDirichletVector(GlobalVector& u, const DirichletData& BF, int col
 	      u(index,c) = d * ff[c];
 	    }
 	}
-      else assert(0);
-      
     }
 }
 

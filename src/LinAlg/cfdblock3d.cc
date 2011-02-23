@@ -77,11 +77,11 @@ float CFDBlock3d::operator()(int i,int j) const
 {
   if (i==0)
     {
+      assert(0<=j && j<=3);
       if (j==0) return s;
       if (j==1) return dx;
       if (j==2) return dy;
       if (j==3) return dz;
-      assert(0);
     }
   if (i==j) 
     {
@@ -102,11 +102,12 @@ float CFDBlock3d::operator()(int i,int j) const
 
 float& CFDBlock3d::diag(int i)
 {
+  assert(0<=i && i<=3);
   if (i==0) return s;
   if (i==1) return laplx();
   if (i==2) return laply();
   if (i==3) return laplz();
-  else abort();
+  abort();
 }
 
 /**********************************************************/
@@ -183,18 +184,19 @@ void CFDBlock3d::entry(int i, int j, const EntryMatrix& E, double d)
 
 void CFDBlock3d::dual_entry(int i, int j, const EntryMatrix& E, double d)
 { 
-  assert(0);
-  s    += d*E(j,i,0,0);
-  dx   += d*E(j,i,1,0);
-  dy   += d*E(j,i,2,0);
-  dz   += d*E(j,i,3,0);
-  laplx() += d*E(i,j,1,1);
-  laply() += d*E(i,j,2,2);
-  laplz() += d*E(i,j,3,3);
+  std::cerr << "\"CFDBlock3d::dual_entry\" not written!" << std::endl;
+  abort();
+//   s    += d*E(j,i,0,0);
+//   dx   += d*E(j,i,1,0);
+//   dy   += d*E(j,i,2,0);
+//   dz   += d*E(j,i,3,0);
+//   laplx() += d*E(i,j,1,1);
+//   laply() += d*E(i,j,2,2);
+//   laplz() += d*E(i,j,3,3);
 
-  gx   += d*E(j,i,0,1);
-  gy   += d*E(j,i,0,2);
-  gz   += d*E(j,i,0,3);
+//   gx   += d*E(j,i,0,1);
+//   gy   += d*E(j,i,0,2);
+//   gz   += d*E(j,i,0,3);
 }
 
 /**********************************************************/

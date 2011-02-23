@@ -99,7 +99,7 @@ void ThreadSparseBlockIlu<B>::copy_entries(const MatrixInterface* A)
   const SparseBlockMatrix<B>* MM = dynamic_cast<const SparseBlockMatrix<B>*>(A);
   assert(MM);
   const ColumnDiagStencil* AS = dynamic_cast<const ColumnDiagStencil*>(MM->GetStencil());
-  if(!AS) assert(0);
+  assert(AS);
 
   for(int row_in_ILU=0;row_in_ILU<SparseBlockMatrix<B>::US.n();row_in_ILU++)
     {

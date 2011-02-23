@@ -39,8 +39,10 @@ FileScanner::FileScanner(DataFormatHandler& D, const ParamFile* pf, const string
 
 void FileScanner::_assert(bool b, const vector<string>& words) const
 {
-  if(!b) cerr << "*** FileScanner:\tWrong number of arguments in row\t" << words << endl;
-  assert(b);
+  if(!b) {
+    cerr << "*** FileScanner:\tWrong number of arguments in row\t" << words << endl;
+    abort();
+  }
 }
 
 /***************************************************/
@@ -60,7 +62,7 @@ void FileScanner::readfile(const ParamFile* pf, const string& blockname)
     std::cerr << "Error: Trying to search file '<< inputname <<' for Blockname 'Multilevelsolver'."<<std::endl;
     std::cerr << "The blockname 'Multilevelsolver' is not used any longer! It has changed to MultiLevelSolver."<<std::endl;
     std::cerr << "Update code and file."<<std::endl;
-    assert(0);
+    abort();
   }
 
   vector<string> words;

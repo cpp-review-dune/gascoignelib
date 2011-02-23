@@ -9,7 +9,7 @@
           std::string s = "##message ";\
 	  cerr << "Index::" << s << " g2l()\n";\
 	  cerr << "there is no " << s << " "<< i << std::endl;\
-	  assert(0);}\
+	  abort();}\
       return ip->second; }
 
 #define CheckMacro(where) \
