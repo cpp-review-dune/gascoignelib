@@ -169,7 +169,9 @@ WriteBackUpBinary::WriteBackUpBinary(const GlobalVector& u, const string& bname)
 ReadBackUpBinary::ReadBackUpBinary(GlobalVector& u, const string& bname)
 {
   string name(bname);
-  name += ".bip";
+
+  if(name.substr(name.size()-4,4) != ".bip")
+    name += ".bip";
 
   ifstream file;
   file.open(name.c_str());
