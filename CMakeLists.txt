@@ -2,6 +2,8 @@
 PROJECT(GASCOIGNESTD)
 #-----------------------------#
 
+CMAKE_MINIMUM_REQUIRED(VERSION 2.4)
+
 #
 # .gascoignerc contains the user dependent settings
 #
@@ -17,6 +19,5 @@ INCLUDE(CMakeGlobal.txt)
 #
 # the following is local
 #
-
 
 SUBDIRS(src test Examples)

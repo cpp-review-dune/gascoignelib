@@ -55,11 +55,12 @@ void VecDirection::Permutate (IntVector &perm,DoubleVector v)
 
 bool VecDirection::operator()(int i,int j) const
 {
-  assert(2<=dimension && dimension<=3);
   if (dimension==2)
     return (((M->vertex2d(j)-M->vertex2d(i))*dir2d)>0);
   if (dimension==3)
     return (((M->vertex3d(j)-M->vertex3d(i))*dir3d)>0);
+  else
+    abort();
 }
 
 /* =============================================================== */
