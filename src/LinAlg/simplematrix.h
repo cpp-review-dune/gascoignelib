@@ -43,6 +43,7 @@ public:
     double& GetValue(int pos) {return value[pos];}
     const double& GetValue(int pos) const {return value[pos];}
     const double& GetValue(int i, int j) const {return value[ST.Find(i,j)];}
+    const DoubleVector& GetValues() const { return value; }
 
     void zero() {value.zero();}
     void ReInit(const SparseStructureInterface* S);
@@ -63,6 +64,7 @@ public:
     void JacobiVector(GlobalVector &y) const;
     void Jacobi(GlobalVector &y) const;
     void vmult_time_Jacobi(GlobalVector& y, const GlobalVector& x, const TimePattern& TP, double s=1.) const;
+    void copy_entries(const MatrixInterface&  A);
 
 };
 }

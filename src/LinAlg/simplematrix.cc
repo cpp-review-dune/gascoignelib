@@ -317,4 +317,25 @@ void SimpleMatrix::vmult_time_Jacobi(GlobalVector& y, const GlobalVector& x, con
     }
 }
 
+/*-------------------------------------------------*/
+
+void SimpleMatrix::copy_entries(const MatrixInterface&  A)
+{
+  const SimpleMatrix* AP = dynamic_cast<const SimpleMatrix*>(&A);
+  assert(AP);
+
+  const ColumnDiagStencil* AS = dynamic_cast<const ColumnDiagStencil*>(AP->GetStencil());
+  assert(AS);
+  assert(AS->n()==ST.n());
+  if(ST.nentries()==AS->nentries()) 
+    {
+      value = AP->GetValues();
+    }
+  else 
+    {
+      cerr << "copy_entries for simple matrix with different number of entries not implemented" << endl;
+      abort();
+    }
+}
+
 }

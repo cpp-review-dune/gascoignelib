@@ -30,6 +30,10 @@ namespace Gascoigne
         std::cerr << "\"MatrixInterface::AddMassWithDifferentStencil\" not written!" << std::endl;
         abort();
       }
+      virtual void copy_entries(const MatrixInterface& S) {
+        std::cerr << "\"MatrixInterface::copy_entries\" not written!" << std::endl;
+        abort();
+      }
       virtual void zero()=0;
       virtual void transpose()=0;
 
