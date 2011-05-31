@@ -101,7 +101,7 @@ public:
     {
       return _vs - eps2*(x-450)-eps3*(y-150);
     }
-  assert(0);
+  abort();
   }
 };
 

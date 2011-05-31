@@ -57,9 +57,7 @@ void PointIlu::ConstructStructure(const IntVector& perm, const MatrixInterface& 
   ///////////////////////////////////////////////////////
   for(int i=0;i<AS->n();i++)
     {
-      int ni = AS->rowsize(i);
-      assert(ni>=0);
-      //cout << i << "~" << ni << endl;
+      assert(AS->rowsize(i)>=0);
     }
   ///////////////////////////////////////////////////////
   int n    = AS->n();

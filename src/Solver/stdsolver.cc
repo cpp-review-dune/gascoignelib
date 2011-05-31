@@ -1126,8 +1126,7 @@ void StdSolver::SolutionInit(VectorInterface& Gu)  const
       return;
     }
 
-  int ncomp = GetProblemDescriptor()->GetEquation()->GetNcomp();
-  assert(ncomp==u.ncomp());
+  assert(u.ncomp()==GetProblemDescriptor()->GetEquation()->GetNcomp());
   
   for (int ind=0; ind<GetMesh()->nnodes(); ind++)
     {
@@ -1597,10 +1596,8 @@ void StdSolver::PermutateIlu(const VectorInterface& gu) const
     }
   else if (GetSolverData().GetIluSort()=="streamdirection")
     {
-      const Equation*  EQ = GetProblemDescriptor()->GetEquation();
-      assert(EQ);
-      int ncomp = EQ->GetNcomp();
-      assert(GetSolverData().GetStreamDirection().size()<=ncomp);
+      assert(GetProblemDescriptor()->GetEquation());
+      assert(GetSolverData().GetStreamDirection().size()<=GetProblemDescriptor()->GetEquation()->GetNcomp());
       StreamDirection sd (GetMesh(),GetMatrix()->GetStencil(),u);
       sd.Permutate       (perm,GetSolverData().GetStreamDirection());
     }

@@ -45,14 +45,14 @@ class VisuDataInfo
       std::string s = p->first;
       if ( scalar_order[s]==i ) return p;
     }
-    assert(0);
+    abort();
   }
   viterator GetVIterator(int i) {
     for(viterator p = vbegin() ; p!= vend() ; p++){
       std::string s = p->first;
       if ( vector_order[s]==i ) return p;
     }
-    assert(0);
+    abort();
   }
 
   void AddScalar(int index,const std::string& name, int i)                    {scalar_order[name]=index;scalars[name]=i;}

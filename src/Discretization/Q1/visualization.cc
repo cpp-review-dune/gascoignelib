@@ -207,15 +207,13 @@ int Visualization::CheckPointData() const
 
   set<int> comps;
 
-  int pn = PointData->visucomp();
-
   // scalars
   for(VisuDataInfo::siterator p=PointDataInfo->sbegin();p!=PointDataInfo->send();++p)
     {
       int q = p->second;
 
       assert(q>=0);
-      assert(q<pn);
+      assert(q<PointData->visucomp());
 
       comps.insert(q);
     }
@@ -228,7 +226,7 @@ int Visualization::CheckPointData() const
 	  int q = p->second[i];
 
 	  assert(q>=-1);
-	  assert(q<pn);
+	  assert(q<PointData->visucomp());
 
 	  comps.insert(q);
 	}

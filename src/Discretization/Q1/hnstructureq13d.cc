@@ -234,10 +234,7 @@ namespace Gascoigne
 	      }
 	  }
       }
-    int n1 = y.size();
-    int n2 = x.size();
-
-    assert(n1==3*n2);
+    assert(y.size()==3*x.size());
 
     int counter = 0;
     for(int i=0;i<x.size();i++)

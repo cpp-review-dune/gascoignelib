@@ -94,8 +94,7 @@ namespace Gascoigne
 	FEM2.point_boundary(3,xi);
 	universal_point_face(FEM1,FEM2,_U1,_U2,U);
 	double h1  = FEM1.G();
-	double h2  = FEM2.G();
-	assert(fabs(h1-h2)<1.e-8);
+	assert(fabs(h1-FEM2.G())<1.e-8);
 	double weight  = IF.w(k) * h1;
 	FEM1.x(x1);
 	FEM2.x(x2);
@@ -163,8 +162,7 @@ namespace Gascoigne
 	universal_point_face(FEM1,FEM2,_U1,_U2,U);
 	
 	double h1  = FEM1.G();
-	double h2  = FEM2.G();
-	assert(fabs(h1-h2)<1.e-8);
+	assert(fabs(h1-FEM2.G())<1.e-8);
 	double weight  = IF.w(k) * h1;
 
 	FEM1.x(x1);

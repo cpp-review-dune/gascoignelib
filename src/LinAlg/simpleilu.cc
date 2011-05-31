@@ -153,9 +153,6 @@ void SimpleIlu::compute_ilu()
   IntVector & ST_start = ST.start();
   IntVector & ST_diag = ST.diag();
   IntVector & ST_col  = ST.col();
-  int ST_start_size = ST_start.size();
-  int ST_diag_size = ST_diag.size();
-  int ST_col_size  = ST_col.size();
   int ST_start_i;
   int ST_stop_i;
   int ST_diag_i;
@@ -164,32 +161,32 @@ void SimpleIlu::compute_ilu()
   double value_pk;
   for(int i=0; i<ST_n; i++)
     {
-      assert(i<ST_start_size);
+      assert(i<ST_start.size());
       ST_start_i = ST_start[i];
 
-      assert(i+1<ST_start_size);
+      assert(i+1<ST_start.size());
       ST_stop_i = ST_start[i+1]; // stop(i) == start(i+1)
 
-      assert(i<ST_diag_size);
+      assert(i<ST_diag.size());
       ST_diag_i = ST_diag[i];
 
       for (int pk=ST_start_i; pk<ST_diag_i; pk++)
         {
-          assert(pk<ST_col_size);
+          assert(pk<ST_col.size());
           int k = ST_col[pk];
 
-          assert(k<ST_diag_size);
+          assert(k<ST_diag.size());
           ST_diag_k = ST_diag[k];
 
           value_pk   = value[pk];
           value_pk  *= value[ST_diag_k];
 
-          assert(k+1<ST_diag_size);
+          assert(k+1<ST_diag.size());
           ST_stop_k = ST_start[k+1]; // stop(i) == start(i+1) 
 
           for (int pj=ST_diag_k+1; pj<ST_stop_k; pj++)
             {
-              assert(pj<ST_col_size);
+              assert(pj<ST_col.size());
               int j  = ST_col[pj];
 
               // suche ph

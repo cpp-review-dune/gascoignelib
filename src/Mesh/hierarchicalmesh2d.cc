@@ -930,8 +930,7 @@ void HierarchicalMesh2d::check_mesh2d() const
 
   for (hp = LineHang.begin(); hp!=LineHang.end(); ++hp)
   {
-    int cr = hp->second.rneighbour();
-    assert(cr>=0);
+    assert(hp->second.rneighbour()>=0);
   }
 }
 
@@ -1119,8 +1118,7 @@ int HierarchicalMesh2d::neighbour(int c, int le) const
 {
   assert(le<4);
   const Quad& Q = quad(c);
-  int lei = Q.edge(le);
-  assert(lei>=0);
+  assert(Q.edge(le)>=0);
   const Edge& E = edge(Q.edge(le));
   int m = E.master();
   int nq = m;

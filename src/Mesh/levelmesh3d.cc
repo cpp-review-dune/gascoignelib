@@ -324,7 +324,7 @@ void LevelMesh3d::ConstructHangingStructureQuadratic(QuadraticHNStructure3& hnq2
 		      else if ( (e0==F[7]) && (e1==F[4])) last = F[1];
 		      else if ( (e0==F[2]) && (e1==F[5])) last = F[8];
 		      else if ( (e0==F[8]) && (e1==F[5])) last = F[2];
-		      else  assert(0);
+		      else  abort();
 
 		      line[2] = Vertexg2l(last);
 		      hnq2.insert(make_pair(hne,line));

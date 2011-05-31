@@ -295,7 +295,7 @@ int HexLawAndOrder::GetVertexOfEdge(int iq, const fixarray<2,int>& edge) const
 	  return ge;
 	}
     }
-  assert(0);
+  abort();
 }
 
 /*---------------------------------------------------*/
@@ -484,7 +484,7 @@ int HexLawAndOrder::local_face(const Hex& f,
     {
       if (li==lvf[i]) return i;
     }
-  assert(0);
+  abort();
 }
 
 /*---------------------------------------------------------------------*/
