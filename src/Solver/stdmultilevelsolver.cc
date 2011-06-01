@@ -393,8 +393,13 @@ void StdMultiLevelSolver::LinearMg(int finelevel, int coarselevel, VectorInterfa
   DoubleVector res(nl,0.), rw(nl,0.);
 
   GetSolver(finelevel)->Equ(_mg0,1.,f);
-  
-  bool reached = 0;
+
+  GetSolver(finelevel)->MatrixResidual(_mg1,u,_mg0);
+  res[finelevel] = GetSolver(finelevel)->Norm(_mg1);
+  rw[finelevel] = 0.;
+  info.check(res[finelevel],rw[finelevel]);
+
+  bool reached = false; // mindestens einen schritt machen
 
   for(int it=0; !reached; it++)
     {
