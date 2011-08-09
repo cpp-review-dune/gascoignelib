@@ -400,6 +400,38 @@ void SparseBlockMatrix<B>::AddMassWithDifferentStencil(const MatrixInterface* M,
     }
 }
 
+
+/*-------------------------------------------------------------*/
+
+template<class B>
+void SparseBlockMatrix<B>::AddMassWithDifferentStencilJacobi(const MatrixInterface* M, const TimePattern& TP, double s)
+{
+  const SimpleMatrix* MP = dynamic_cast<const SimpleMatrix*>(M);
+  assert(MP);
+  const ColumnDiagStencil* USM = dynamic_cast<const ColumnDiagStencil*>(MP->GetStencil());
+  assert(USM);
+
+  int n = USM->n();
+  vector<double> diag(n);
+  for(int i=0; i<n; i++)
+  {
+    diag[i] = MP->GetValue(i,i);
+  }
+
+  for(int i=0; i<USM->n(); i++)
+    {
+      for(int pos = USM->start(i); pos<USM->stop(i); pos++)
+	{
+	  int j = USM->col(pos);
+	  double sm = s * MP->GetValue(pos);
+
+	  int mpos = US.Find(i,j);
+	  smat[mpos].add(sm,TP);
+          smat[mpos] *= 1 / sqrt(diag[i] * diag[j]);
+	}
+    }
+}
+
 /*-------------------------------------------------------------*/
 
 template<class B>

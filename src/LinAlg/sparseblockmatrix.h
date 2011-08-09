@@ -56,6 +56,9 @@ class SparseBlockMatrix : public MatrixInterface
 
   void AddMassWithDifferentStencil(const MatrixInterface* M, 
 				   const TimePattern& TP, double s=1.);
+  void AddMassWithDifferentStencilJacobi(const MatrixInterface* M,
+				   const TimePattern& TP, double s=1.);
+
   void copy_entries(const MatrixInterface& S);
 
   SparseBlockMatrix& operator=(const SparseBlockMatrix<B>& S); 

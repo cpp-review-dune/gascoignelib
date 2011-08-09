@@ -55,6 +55,7 @@ public:
     }
 
     void AddMassWithDifferentStencil(const MatrixInterface* M, const TimePattern& TP, double s=1.);
+    void AddMassWithDifferentStencilJacobi(const MatrixInterface* M, const TimePattern& TP, double s=1.);
 
     void RestrictMatrix(const MgInterpolatorMatrix& I, const PointMatrix& Ah);
 };

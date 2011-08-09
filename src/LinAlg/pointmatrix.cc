@@ -260,6 +260,59 @@ void PointMatrix::AddMassWithDifferentStencil(const MatrixInterface* MP, const T
 //     }
 }
 
+
+/*-----------------------------------------*/
+
+void PointMatrix::AddMassWithDifferentStencilJacobi(const MatrixInterface* MP, const TimePattern& TP, double s)
+{
+  const SimpleMatrix* SM = dynamic_cast<const SimpleMatrix*>(MP);
+  assert(SM);
+
+  int n = SSAP->nnodes();
+
+  const ColumnStencil*  SMS = dynamic_cast<const ColumnStencil*>(SM->GetStencil());
+  const NodeSparseStructureAdaptor* NSMS = dynamic_cast<const NodeSparseStructureAdaptor*>(SSAP);
+  assert(NSMS);
+
+  assert(n==SMS->n());
+
+  vector<double> diag(n);
+  for(int i=0; i<n; i++)
+  {
+    diag[i] = SM->GetValue(i,i);
+  }
+
+  for(int i=0;i<n;i++)
+    {
+      for(int pos=SMS->start(i);pos<SMS->stop(i);pos++)
+        {
+          int j = SMS->col(pos);
+          double m = s * SM->GetValue(pos);
+
+          m /= sqrt(diag[i] * diag[j]);
+
+          for(int c=0;c<_ncomp;c++)
+            {
+              int isystem = NSMS->index(i, c);
+              for(int d=0;d<_ncomp;d++)
+                {
+                  int jsystem = NSMS->index(j, d);
+                  bool found=0;
+                  for(int pos2=ST.start(isystem);pos2<ST.stop(isystem);pos2++)
+                    {
+                      if(ST.col(pos2)==jsystem)
+                        {
+                          found = 1;
+                          value[pos2] += m * TP(c,d);
+                        }
+                    }
+                  if(!found) cerr << "not found ";
+                }
+            }
+        }
+    }
+}
+
 /*-----------------------------------------*/
 
 void PointMatrix::RestrictMatrix(const MgInterpolatorMatrix& I, const PointMatrix& Ah)
