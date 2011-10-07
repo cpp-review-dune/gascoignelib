@@ -91,7 +91,7 @@ void MultiLevelAlgorithm::RunLinear(const std::string& problemlabel)
   // Assemble Matrix and ILU
   
   GetMultiLevelSolver()->AssembleMatrix(u);
-  GetMultiLevelSolver()->ComputeIlu();
+  GetMultiLevelSolver()->ComputeIlu(u);
   
   // Solve Linear System
 
