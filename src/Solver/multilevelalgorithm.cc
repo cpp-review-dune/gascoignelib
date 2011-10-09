@@ -52,6 +52,7 @@ void MultiLevelAlgorithm::BasicInit(const ParamFile* paramfile, MultiLevelSolver
   DFH.insert("coarselevel", &_coarselevel, 0);
   DFH.insert("mgomega",     &_mgomega,     1.);
   DFH.insert("mgtype",      &_mgtype,      "V");
+  DFH.insert("linearsolve", &_linearsolve, "mg");
   FileScanner FS(DFH);
   FS.NoComplain();
   FS.readfile(paramfile,"MultiLevelSolver");
@@ -173,8 +174,19 @@ void MultiLevelAlgorithm::LinearSolve(VectorInterface& du, const VectorInterface
 
   GetSolver()->HNAverage(du);
 
-  //LinearMGSolve(du,y,cginfo);
-  GmresSolve(du,y,cginfo);
+  if(_linearsolve == "mg")
+  {
+    LinearMGSolve(du,y,cginfo);
+  }
+  else if(_linearsolve == "gmres")
+  {
+    GmresSolve(du,y,cginfo);
+  }
+  else
+  {
+    cerr << "No linear solver for linearsolve \"" << _linearsolve << "\". Use \"mg\" or \"gmres\"." << endl;
+    abort();
+  }
 
   GetSolver()->HNZero(du);
   GetSolver()->SubtractMean(du);
