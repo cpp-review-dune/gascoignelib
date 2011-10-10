@@ -23,8 +23,8 @@ alpha           0.2
 //Block Mesh
 
 dimension   2
-prerefine   3
-gridname    nsbench4.inp
+prerefine   0
+gridname    stationary.00003.gup
 
 //Block MultiLevelSolver
 
