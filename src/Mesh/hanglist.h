@@ -5,32 +5,23 @@
 #include  "edgearray.h"
 #include  "hang.h"
 
-#include  <map>
 #ifdef __OLDCOMPILER__
 #include  <hash_map>
 #define HANGMAP  hash_map<EdgeArray<N>,Hang,EdgeHash>
 #else
-//#ifdef __NEWER_THAN_GCC_4_2__
-//#include <tr1/unordered_map>
-//#define HANGMAP   std::tr1::unordered_map<EdgeArray<N>,Hang,EdgeHash> 
-//#else
+#ifdef __NEWER_THAN_GCC_4_2__
+#include <tr1/unordered_map>
+#define HANGMAP   std::tr1::unordered_map<EdgeArray<N>,Hang,EdgeHash> 
+#else
 #include  <ext/hash_map>
 #define HANGMAP  __gnu_cxx::hash_map<EdgeArray<N>,Hang,EdgeHash> 
 #endif
-//#endif
+#endif
 
 /*------------------------------------------------------*/
 
 namespace Gascoigne
 {
-class FixArrayHash
-{
- public:
-  template<int N>
-    int operator()(const fixarray<N,int>& h) const { return h[0];}
-};
-
-/*------------------------------------------------------*/
 
 //
 /// This hash function has to be consistent with the operator "=="
@@ -48,7 +39,6 @@ class EdgeHash
 /*------------------------------------------------------*/
 
 template<int N>
-/* class HangList : public std::map<EdgeArray<N>,Hang,EdgeArrayCompare<N> > */
 class HangList : public HANGMAP
 {
  protected:

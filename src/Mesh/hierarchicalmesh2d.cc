@@ -2143,8 +2143,6 @@ void HierarchicalMesh2d::RefineCoarseNodes
 	  int k = Q[j];
 	  if (h.find(k)==h.end()) continue;
 
-	  assert (LineHang.find(k)==LineHang.end());
-	  
 	  int minlevel = vertexlevel[QF[0]];
 	  for (int v=1; v<4; v++)
 	    {
@@ -2156,8 +2154,7 @@ void HierarchicalMesh2d::RefineCoarseNodes
 	      assert(w<vertexlevel.size());
 	      if (vertexlevel[w]==minlevel)
 		{
-		  if (LineHang.find(w)==LineHang.end())
-		    dst.insert(w);
+                  dst.insert(w);
 		}
 	    }
 	}

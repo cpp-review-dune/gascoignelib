@@ -2007,8 +2007,6 @@ void HierarchicalMesh3d::RefineCoarseNodes
 	{
 	  int k = Q[j];
 	  if (h.find(k)==h.end()) continue;
-
-	  assert (QuadHang.find(k)==QuadHang.end());
 	  
 	  int minlevel = vertexlevel[QF[0]];
 	  for (int v=1; v<8; v++)
@@ -2021,8 +2019,7 @@ void HierarchicalMesh3d::RefineCoarseNodes
 	      assert(w<vertexlevel.size());
 	      if (vertexlevel[w]==minlevel)
 		{
-		  if (QuadHang.find(w)==QuadHang.end())
-		    dst.insert(w);
+                  dst.insert(w);
 		}
 	    }
 	}

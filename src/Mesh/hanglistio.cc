@@ -6,12 +6,12 @@ using namespace std;
 #ifdef __OLDCOMPILER__
 #define HANGMAP  hash_map<EdgeArray<N>,Hang,EdgeHash>
 #else
-//#ifdef __NEWER_THAN_GCC_4_2__
-//#define HANGMAP  std::tr1::unordered_map<EdgeArray<N>,Hang,EdgeHash> 
-//#else
+#ifdef __NEWER_THAN_GCC_4_2__
+#define HANGMAP  std::tr1::unordered_map<EdgeArray<N>,Hang,EdgeHash> 
+#else
 #define HANGMAP  __gnu_cxx::hash_map<EdgeArray<N>,Hang,EdgeHash> 
 #endif
-//#endif
+#endif
 
 /*********************************************************************/
 
