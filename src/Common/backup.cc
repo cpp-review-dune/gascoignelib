@@ -1,5 +1,4 @@
 #include "backup.h"
-#include <cassert>
 #include <fstream>
 
 using namespace std;
@@ -13,7 +12,10 @@ ReadBackUp::ReadBackUp(const string& name, int& size, int& comp)
   ifstream file;
   file.open(name.c_str());
   
-  assert(file);
+  if(!file){
+    cerr << "backup file '"<< name << "' not found" << endl;
+    abort();
+  }
 
   file >> size >> comp;
 }
@@ -27,8 +29,7 @@ ReadBackUp::ReadBackUp(GlobalVector& u, const string& name)
   
   if(!file){
     cerr << "backup file '"<< name << "' not found" << endl;
-    assert(file);
-    //abort();
+    abort();
   }
 
   int size, comp;
@@ -68,7 +69,6 @@ ReadBackUp::ReadBackUp(GlobalVector& u, const string& name)
         {
           cout << "probably, because: expected comp nr="<< u.ncomp() <<" NOT EQUAL the bup-file supplied comp nr="<<comp<<endl;
         }
-      //assert(test=="BackUpEnd");
       abort();
     }
 }
@@ -80,7 +80,10 @@ ReadBackUpResize::ReadBackUpResize(GlobalVector& u, const string& name)
   ifstream file;
   file.open(name.c_str());
   
-  assert(file);
+  if(!file){
+    cerr << "backup file '"<< name << "' not found" << endl;
+    abort();
+  }
 
   int size, comp;
 
@@ -96,8 +99,8 @@ ReadBackUpResize::ReadBackUpResize(GlobalVector& u, const string& name)
   if (u.n()!=size)
     {
       cout << "Incompatibility u.n() size " << u.n() << " " << size << endl;
+      abort();
     }
-  assert(u.n()==size);
 
   int v = max_int(u.ncomp(),comp);
   
@@ -113,7 +116,15 @@ ReadBackUpResize::ReadBackUpResize(GlobalVector& u, const string& name)
   string test;
   file >> test;
 
-  assert(test=="BackUpEnd");
+  if(test!="BackUpEnd")
+    {
+      cout << "error in " <<__FILE__ << ":" << __LINE__ << " : error, test=='"<<test<<"' should be =='BackUpEnd'"<<endl;
+      if( u.ncomp()!=comp)
+        {
+          cout << "probably, because: expected comp nr="<< u.ncomp() <<" NOT EQUAL the bup-file supplied comp nr="<<comp<<endl;
+        }
+      abort();
+    }
 }
 
 /********************************************************************/
@@ -126,7 +137,11 @@ WriteBackUp::WriteBackUp(const GlobalVector& u, const string& bname)
   file.open(name.c_str());
   file.setf(ios::scientific,ios::floatfield);
   
-  assert(file);
+  if(!file)
+  {
+    cerr << "BackUp: writing error" << endl;
+    exit(10);
+  }
   file << u.n() << " " << u.ncomp() << endl;
 
   file.precision(16);
@@ -176,8 +191,11 @@ ReadBackUpBinary::ReadBackUpBinary(GlobalVector& u, const string& bname)
   ifstream file;
   file.open(name.c_str());
   
-  assert(file);
-
+  if(!file);
+  {
+    cerr << "backup file '"<< name << "' not found" << endl;
+    abort();
+  }
   u.BinRead(file);
 
   cout << "BackUp   : reading " << name << ", ";
@@ -185,7 +203,11 @@ ReadBackUpBinary::ReadBackUpBinary(GlobalVector& u, const string& bname)
 
   string test;
   file >> test;
-  assert(test=="BackUpEnd");
+  if(test!="BackUpEnd")
+    {
+      cout << "error in " <<__FILE__ << ":" << __LINE__ << " : error, test=='"<<test<<"' should be =='BackUpEnd'"<<endl;
+      abort();
+    }
 }
 
 /********************************************************************/

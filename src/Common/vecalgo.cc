@@ -12,46 +12,46 @@ namespace Gascoigne
 
 void transfer(int n, vector<int>& tr, const set<int>& del)
 {
-  tr.resize(n,-1);
+  tr.resize(n, -1);
 
   int count = 0;
-  for(int i=0;i<n;++i)
+  for(int i = 0; i < n; ++i)
+  {
+    if(del.find(i) == del.end())
     {
-      if(del.find(i)==del.end()) tr[i] = count++;
+      tr[i] = count++;
     }
+  }
 }
 
 /*************************************************************/
 
 void transfer(int n, vector<int>& tr, vector<int>& del)
 {
-  tr.resize(n,-1);
-  if (del.size()==0)
-    {
-      iota(tr.begin(),tr.end(),0);
-      return;
-    }
+  tr.resize(n, -1);
+
+  if (del.size() == 0)
+  {
+    iota(tr.begin(), tr.end(), 0);
+    return;
+  }
 
   sort(del.begin(),del.end());
-  //unique(del.begin(),del.end());
 
   int count = 0;
   int pos   = 0;
 
-  for(int i=0;i<n;++i)
+  for(int i = 0; i < n; ++i)
+  {
+    while ((pos < del.size()) && (del[pos] < i))
     {
-      while ((del[pos]<i) && (pos<del.size()-1))
-        {
-          pos++;
-        }
-      if (pos==del.size())
-        {
-          tr[i] = count++;
-        }
-      else if (del[pos]!=i)
-        {
-          tr[i] = count++;
-        }
+      pos++;
     }
+
+    if ((pos == del.size()) || (del[pos] > i))
+    {
+      tr[i] = count++;
+    }
+  }
 }
 }

@@ -31,20 +31,16 @@ FaceManager::FaceManager(vector<Edge>& e, vector<Hex>& q,
 
 void FaceManager::InitFaces()
 {
-//   typedef EdgeArray<4> FaceVector;
-//   hash_map<FaceVector,int,EdgeHash>  H;
-
   HANGMAP H;
 
-  //  FaceVector e;
-  fixarray<4,int> e;
+  FaceVector e;
+
   for (int i=0; i<hexs.size(); i++)
     {
       for (int j=0; j<6; j++)
 	{
 	  HexLaO.global_face_unsorted(e,hex(i),j);
 
-// 	  hash_map<FaceVector,int,EdgeHash>::iterator yes = H.find(e);
 	  HANGMAP::iterator yes =  H.find(e);
 
 	  if (yes!=H.end())
@@ -365,12 +361,9 @@ void FaceManager::NeighbourTester() const
 	  const Edge& E = edges[edge];
 	  int m = E.master();
 	  int s = E.slave();
-	  int ml = E.LocalMasterIndex();
-	  int sl = E.LocalSlaveIndex();
 	  int nachbar = -10;
-	  int f;
-	  if      (m==i) { nachbar = s; f = sl;}
-	  else if (s==i) { nachbar = m; f = ml;}
+	  if      (m==i) { nachbar = s; }
+	  else if (s==i) { nachbar = m; }
 
 	  if (nachbar==-10) 
 	    {

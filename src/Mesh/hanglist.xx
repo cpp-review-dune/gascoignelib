@@ -102,15 +102,20 @@ template<int N>
 void HangList<N>::make_consistent(HangList<N>& DH)
 {
   int n = 0;
-  for(iterator p = HANGMAP::begin(); p!=HANGMAP::end(); p++)
+  for(iterator p = HANGMAP::begin(); p!=HANGMAP::end(); )
     {
       iterator q = DH.find(p->first);
       if(q!=DH.end())
 	{
 	  n++;
 	  DH.erase(q);
-	  erase(p);
+          // postincrement: increment but pass the _old_ iterator value to erase 
+	  erase(p++);
 	}
+      else
+        {
+          p++;
+        }
     }
   if(n!=0)  std::cerr << "make_consistent: " << n << std::endl;
 }

@@ -69,6 +69,7 @@ void Visualization::BasicInit()
   d_rotatedvtk_angle  = 36;
   showoutput = 1;
   stepname = "solve";
+  compress = false;
 }
 
 /********************************************************************/

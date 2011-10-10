@@ -1,7 +1,6 @@
 #ifndef __facemanager_h
 #define __facemanager_h
 
-#include  <set>
 #include  "edge.h"
 #include  "hexlawandorder.h" 
 #include  "hangcontainer3d.h" 

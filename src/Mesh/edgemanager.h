@@ -1,7 +1,6 @@
 #ifndef __edgemanager_h
 #define __edgemanager_h
 
-#include  <set>
 #include  "edge.h"
 #include  "quadlawandorder.h" 
 #include  "hangcontainer2d.h" 

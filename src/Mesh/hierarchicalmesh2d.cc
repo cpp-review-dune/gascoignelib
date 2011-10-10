@@ -375,7 +375,6 @@ void HierarchicalMesh2d::prepare2d(const IntVector& cell_ref,
 
 void HierarchicalMesh2d::ghost_fill_neighbours2d()
 {
-  int n=0;
   EdgeVector lineglob;
   for(int ic=0;ic<quads.size();ic++)
     {
@@ -393,7 +392,6 @@ void HierarchicalMesh2d::ghost_fill_neighbours2d()
 
 	      if( (cn==-1) && (rn!=ic) )
 		{
-		  n++;
 		  p->second.cneighbour() = ic;
 		}
 	      
@@ -401,7 +399,6 @@ void HierarchicalMesh2d::ghost_fill_neighbours2d()
 
 	      if( (rn==-1) && (cn!=ic) )
 		{
-		  n++;
 		  p->second.rneighbour() = ic;
 		}
 	    }
@@ -413,7 +410,6 @@ void HierarchicalMesh2d::ghost_fill_neighbours2d()
 
 void HierarchicalMesh2d::basic_fill_neighbours2d()
 {
-  int n=0;
   EdgeVector lineglob;
   for(int ic=0;ic<quads.size();ic++)
     {
@@ -429,12 +425,10 @@ void HierarchicalMesh2d::basic_fill_neighbours2d()
 
 	      if( (cn==-1) && (!quads[ic].sleep()) )
 		{
-		  n++;
 		  p->second.cneighbour() = ic;
 		}
 	      else if(rn==-1)
 		{
-		  n++;
 		  p->second.rneighbour() = ic;
 		}
 	    }

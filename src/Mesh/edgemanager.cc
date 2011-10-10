@@ -507,9 +507,6 @@ void EdgeManager::SortHangings()
 
 void EdgeManager::InitEdges()
 {
-//   typedef fixarray<2,int> EdgeVector;
-//   map<EdgeVector,int>  H;
-
   HANGMAP H;
 
   EdgeVector e;
