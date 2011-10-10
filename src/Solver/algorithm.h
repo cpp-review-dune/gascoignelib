@@ -69,6 +69,8 @@ private:
 
   const ParamFile*           _paramfile;
 
+  int                        _gmresmemsize;
+
         MeshAgentInterface*& GetMeshAgentPointer() { return _MA;}
   const NumericInterface*   GetNumeric()           { assert(_NI); return _NI;}
         SolverInfos*& GetSolverInfosPointer()      { return _SI;}

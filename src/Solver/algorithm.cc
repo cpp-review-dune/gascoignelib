@@ -39,7 +39,7 @@ using namespace std;
 
 namespace Gascoigne
 {
-  Algorithm::Algorithm() : _MA(NULL), _SI(NULL), _paramfile(NULL)
+  Algorithm::Algorithm() : _MA(NULL), _SI(NULL), _paramfile(NULL), _gmresmemsize(100)
 {
 }
 
@@ -198,7 +198,10 @@ void Algorithm::CopyVector(GlobalVector& dst, VectorInterface& src) const
 void Algorithm::GmresSolve(VectorInterface& x, const VectorInterface& b, 
 			   CGInfo& info)
 {
-  int  maxiter = info.user().maxiter();
+  // we could implement restarted gmres for maxiter > gmresmemsize
+  // for now maxiter = min(gmresmemsize, linear_maxiter)
+  int maxiter = Gascoigne::min(_gmresmemsize,info.user().maxiter());
+
   int minsize = Gascoigne::max(1,Gascoigne::min(5,maxiter));
   vector<VectorInterface> mem;
 

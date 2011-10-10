@@ -52,7 +52,8 @@ void MultiLevelAlgorithm::BasicInit(const ParamFile* paramfile, MultiLevelSolver
   DFH.insert("coarselevel", &_coarselevel, 0);
   DFH.insert("mgomega",     &_mgomega,     1.);
   DFH.insert("mgtype",      &_mgtype,      "V");
-  DFH.insert("linearsolve", &_linearsolve, "mg");
+  DFH.insert("linearsolve", &_linearsolve, "gmres");
+  DFH.insert("gmresmemsize",&_gmresmemsize,100);
   FileScanner FS(DFH);
   FS.NoComplain();
   FS.readfile(paramfile,"MultiLevelSolver");
