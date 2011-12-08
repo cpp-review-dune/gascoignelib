@@ -197,9 +197,11 @@ void MultiLevelAlgorithm::LinearSolve(VectorInterface& du, const VectorInterface
  
 void MultiLevelAlgorithm::Precondition(VectorInterface& x, VectorInterface& y)
 {
+  GetSolver()->Equ(x,1.,y);
+
   CGInfo pinfo;
-  pinfo.user().tol()       = 1.e-12;
-  pinfo.user().globaltol() = 1.e-12;
+  pinfo.user().tol()       = 0.;
+  pinfo.user().globaltol() = 0.;
   pinfo.user().maxiter()   = 1;
   pinfo.user().printstep() = 0;
   pinfo.user().text()      = "PrecInfo";
