@@ -1015,6 +1015,7 @@ void StdSolver::smooth(int niter, VectorInterface& x, const VectorInterface& y, 
 {
   _il.start();
   double omega = GetSolverData().GetOmega();
+  
   for(int iter=0; iter<niter; iter++)
     {
       if (GetSolverData().GetLinearSmooth()=="ilu")
@@ -1545,6 +1546,7 @@ void StdSolver::ComputeIlu() const
     }
   else
 #endif
+    if (GetSolverData().GetLinearSmooth()=="ilu")
     {
       _ci.start();
       IntVector perm(GetIlu()->n());
@@ -1575,6 +1577,7 @@ void StdSolver::ComputeIlu(const VectorInterface& gu) const
     }
   else
 #endif
+    if (GetSolverData().GetLinearSmooth()=="ilu")
     {
       int ncomp = GetProblemDescriptor()->GetEquation()->GetNcomp();
       _ci.start();
