@@ -4,16 +4,16 @@ Gascoigne 3D is published under the Gnu General Public License (GPL)
 in Version 3. Copyright of the Gascoigne 3D library is with the
 Gascoigne 3D authors:
 	
-	  Roland Becker, University of Pau
+	  Roland Becker, Université de Pau et des Pays de l'Adour
 	  roland.becker@univ-pau.fr
 
-	  Malte Braack, University of Kiel
+	  Malte Braack, Universität Kiel
 	  braack@math.uni-kiel.de 
 
 	  Dominik Meidner, Technische Universität München
   	  meidner@ma.tum.de
 
-	  Thomas Richter, University of Heidelberg
+	  Thomas Richter, Universität Heidelberg
   	  thomas.richter@iwr.uni-heidelberg.de
 
 	  Boris Vexler, Technische Universität München
