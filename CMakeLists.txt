@@ -8,7 +8,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.4)
 # .gascoignerc contains the user dependent settings
 #
 
-INCLUDE($ENV{HOME}/.gascoignerc)
+INCLUDE($ENV{HOME}/data/Software/Repository/gascoignerc)
 
 #
 # CMakeGlobal.txt is intended for use in derived projects
