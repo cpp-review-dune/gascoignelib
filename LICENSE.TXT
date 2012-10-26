@@ -10,13 +10,13 @@ Gascoigne 3D authors:
 	  Malte Braack, University of Kiel
 	  braack@math.uni-kiel.de 
 
-	  Dominik Meidner, TU Munich
+	  Dominik Meidner, Technische Universität München
   	  meidner@ma.tum.de
 
 	  Thomas Richter, University of Heidelberg
   	  thomas.richter@iwr.uni-heidelberg.de
 
-	  Boris Vexler, TU Munich
+	  Boris Vexler, Technische Universität München
   	  vexler@ma.tum.de
 
 All authors and contributions to Gascoigne 3D are listed on the
