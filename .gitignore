@@ -1,0 +1,19 @@
+*.[oa]
+*~
+CMakeCCompiler.cmake
+CMakeCXXCompiler.cmake
+CMakeFiles
+CMakeCache.txt
+CMakeSystem.cmake
+CMakeTmp
+Makefile
+cmake*
+*.kdev4
+
+# ignore all Results in Examples directory
+/Examples*/Results*
+
+# ./doc directory
+/doc/gascoigne.tag
+/doc/html/
+/doc/latex/
