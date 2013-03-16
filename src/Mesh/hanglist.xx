@@ -47,7 +47,7 @@ HangList<N>& HangList<N>::operator=(const HangList<N>& A)
       
       Hang nh = hp->second;
       
-      insert(std::make_pair(fa,nh));
+      HANGMAP::insert(std::make_pair(fa,nh));
       hp++;
     }
   return *this;
@@ -58,7 +58,7 @@ HangList<N>& HangList<N>::operator=(const HangList<N>& A)
 template<int N>
 void HangList<N>::move(HangList<N>& src, iterator& p)
 {
-  insert(std::make_pair(p->first,p->second));
+  HANGMAP::insert(std::make_pair(p->first,p->second));
 
   typename HangList<N>::iterator it = src.find(p->first);
   src.erase (it);
@@ -88,7 +88,7 @@ void HangList<N>::update(const std::vector<int>& vo2n, const std::vector<int>& c
       if(nr>=0) nr = co2n[nr];
       
       Hang h(nh,nr,nc);
-      insert(std::make_pair(fa,h));
+      HANGMAP::insert(std::make_pair(fa,h));
       hp++;
     }
 }
@@ -115,7 +115,7 @@ void HangList<N>::update(const std::vector<int>& vo2n)
       
       Hang hi(nh,rn,cn);
 
-      insert(std::make_pair(fa,hi));
+      HANGMAP::insert(std::make_pair(fa,hi));
       hp++;
     }
 }
@@ -134,7 +134,7 @@ void HangList<N>::make_consistent(HangList<N>& DH)
 	  n++;
 	  DH.erase(q);
           // postincrement: increment but pass the _old_ iterator value to erase 
-	  erase(p++);
+	  HANGMAP::erase(p++);
 	}
       else
         {
@@ -174,7 +174,7 @@ void HangList<N>::BinRead(std::istream &s)
   {
     ev.BinRead(s);
     info.BinRead(s);
-    this->insert(std::make_pair(ev,info));
+    HANGMAP::insert(std::make_pair(ev,info));
   }
 }
 }
