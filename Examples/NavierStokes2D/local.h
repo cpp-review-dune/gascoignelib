@@ -121,26 +121,6 @@ class BenchMarkMeshAgent : public MeshAgent
 
       AddShape(80,&RK);
     }
-    void BasicInit(const ParamFile* paramfile)
-    {
-      std::string inpname("nsbench4.inp");
-      
-      HMP = new HierarchicalMesh2d;
-      map<int,BoundaryFunction<2>* >::const_iterator p;
-      for(p=GetShapes2d().begin();p!=GetShapes2d().end();p++)
-        {
-          HMP->AddShape(p->first,p->second);
-        }
-      int patchdepth = 1;
-      int etapatcher = 1;
-      HMP->SetParameters(inpname,patchdepth,etapatcher);
-      int prerefine  = 1;
-      HMP->global_refine(prerefine);
-      
-      GMG = NewMultiGridMesh();
-      
-      ReInit();
-    }
 };
 
 /* ----------------------------------------- */
