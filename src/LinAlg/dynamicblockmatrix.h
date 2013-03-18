@@ -198,12 +198,12 @@ namespace Gascoigne
       
 	/*-----------------------------------------------*/
 
-	void FillInterfaceList(const nvector<int>& elements,nvector<int>& start, nvector<float>& values) const
+	void FillInterfaceList(const nvector<int>& elements,nvector<int>& start, nvector<MatrixEntryType>& values) const
 	{ 
           std::cerr << "\"DynamicBlockMatrix::FillInterfaceList\" not written!" << std::endl;
           abort();
         }
-	void FurbishInterface (double d, const nvector<int>&   elements, const nvector<int>&   start, const nvector<float>& values)
+	void FurbishInterface (double d, const nvector<int>&   elements, const nvector<int>&   start, const nvector<MatrixEntryType>& values)
 	{ 
           std::cerr << "\"DynamicBlockMatrix::FurbishInterface\" not written!" << std::endl;
           abort();

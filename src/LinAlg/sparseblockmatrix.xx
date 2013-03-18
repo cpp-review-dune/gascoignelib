@@ -61,14 +61,14 @@ void SparseBlockMatrix<B>::Jacobi(GlobalVector& x) const
 template<class B>
 void SparseBlockMatrix<B>::FillInterfaceList(const nvector<int>& elements,
 					     nvector<int>& start,
-					     nvector<float>& values) const
+					     nvector<MatrixEntryType>& values) const
 {
   assert (elements.size()%2==0);
   int ne = elements.size()/2;
   start.resize(ne+1);
   int index=0;
   start[index]=0;
-  nvector<float> tmp;
+  nvector<MatrixEntryType> tmp;
   int cur_row=-1;
   int row;
   int pos=-1;
@@ -97,11 +97,11 @@ template<class B>
 void SparseBlockMatrix<B>::FurbishInterface (double d,
 					     const nvector<int>&   elements,
 					     const nvector<int>&   start,
-					     const nvector<float>& values)
+					     const nvector<MatrixEntryType>& values)
 {
   int ne = elements.size()/2;
   
-  nvector<float> tmp;
+  nvector<MatrixEntryType> tmp;
   int row;
   int pos=-1;
   int col;

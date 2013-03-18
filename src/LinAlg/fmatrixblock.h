@@ -27,16 +27,18 @@
 
 #include  "entrymatrix.h"
 #include  "nodematrix.h"
+#include  "matrixentrytype.h"
+
 
 /*****************************************************/
 
 namespace Gascoigne
 {
 template<int N>
-class FMatrixBlock : public NodeMatrix<N,float>
+class FMatrixBlock : public NodeMatrix<N,MatrixEntryType>
 {
-  typedef typename NodeMatrix<N,float>::iterator        iterator;
-  typedef typename NodeMatrix<N,float>::const_iterator  const_iterator;
+  typedef typename NodeMatrix<N,MatrixEntryType>::iterator        iterator;
+  typedef typename NodeMatrix<N,MatrixEntryType>::const_iterator  const_iterator;
 
   typedef nvector<double>::iterator        viterator;
   typedef nvector<double>::const_iterator  const_viterator;
@@ -54,7 +56,7 @@ public:
 
   void   zero_row(int);
   void   uno_diag(int);
-  float& diag(int i);
+  MatrixEntryType& diag(int i);
   void   getrow   (std::vector<double>& v, int i);
   void   getcolumn(std::vector<double>& v, int i);
   void   setrow   (std::vector<double>& v, int i);
@@ -76,14 +78,14 @@ public:
   void   submult(const FMatrixBlock<N>& B, const FMatrixBlock<N>& C)
   {
     // this -= B*C
-    nvector<float>::iterator p(numfixarray<N*N,float>::begin());
+    nvector<MatrixEntryType>::iterator p(numfixarray<N*N,MatrixEntryType>::begin());
     for (char i=0; i<N; i++)
       {
 	for (char j=0; j<N; j++)
 	  {
-	    nvector<float>::const_iterator pC(C.begin()+j);
-	    nvector<float>::const_iterator pB(B.begin()+i*N);
-	    nvector<float>::const_iterator qB(pB+N);
+	    nvector<MatrixEntryType>::const_iterator pC(C.begin()+j);
+	    nvector<MatrixEntryType>::const_iterator pB(B.begin()+i*N);
+	    nvector<MatrixEntryType>::const_iterator qB(pB+N);
 	    //for (int k=0; k<N; k++)
 	    for (; pB!=qB; pB++)
 	      {
@@ -102,7 +104,7 @@ public:
 	{
 	  for (int j=0; j<N; j++)
 	    {
-	      NodeMatrix<N,float>::value(i,j) += s*A(i,j);
+	      NodeMatrix<N,MatrixEntryType>::value(i,j) += s*A(i,j);
 	    }
 	}
     }
@@ -110,14 +112,14 @@ public:
     {
       for (int i=0; i<N; i++)
 	{
-	  NodeMatrix<N,float>::value(i,i) += s[i]*l;
+	  NodeMatrix<N,MatrixEntryType>::value(i,i) += s[i]*l;
 	}
     }
   void add(double s, const TimePattern& TP);
 
   void cadd(double s, viterator p, const_viterator q0) const
     {
-      const_iterator pm = numfixarray<N*N,float>::begin();
+      const_iterator pm = numfixarray<N*N,MatrixEntryType>::begin();
       const_viterator pend = p+N;
       for ( ; p!=pend; p++)
 	{
@@ -132,7 +134,7 @@ public:
     }
   void caddtrans(double s, viterator p, const_viterator q0) const
     {
-      const_iterator pm = numfixarray<N*N,float>::begin();
+      const_iterator pm = numfixarray<N*N,MatrixEntryType>::begin();
 
       for (int k=0; k<N; k++)
 	{
@@ -147,7 +149,7 @@ public:
     }
   void subtract(viterator p0, const_viterator q0) const
     {
-      const_iterator pm = numfixarray<N*N,float>::begin();
+      const_iterator pm = numfixarray<N*N,MatrixEntryType>::begin();
 
       for (viterator p(p0); p!=p0+N; p++)
 	{
@@ -161,23 +163,23 @@ public:
 
   // Zugriff auf Inhalt ueber ganzen Vektor, damits auch ohne
   // Struktur geht.
-  void vector_get(nvector<float>& v) const
+  void vector_get(nvector<MatrixEntryType>& v) const
     {
-      v.resize(numfixarray<N*N,float>::size());
-      for (int i=0;i<numfixarray<N*N,float>::size();++i)
-        v[i]=NodeMatrix<N,float>::operator[](i);
+      v.resize(numfixarray<N*N,MatrixEntryType>::size());
+      for (int i=0;i<numfixarray<N*N,MatrixEntryType>::size();++i)
+        v[i]=NodeMatrix<N,MatrixEntryType>::operator[](i);
     }
-  void vector_set(nvector<float>& v)
+  void vector_set(nvector<MatrixEntryType>& v)
     {
       assert(v.size()==this->size());
-      for (int i=0;i<numfixarray<N*N,float>::size();++i)
-        NodeMatrix<N,float>::operator[](i)=v[i];
+      for (int i=0;i<numfixarray<N*N,MatrixEntryType>::size();++i)
+        NodeMatrix<N,MatrixEntryType>::operator[](i)=v[i];
     }
-  void vector_add(double d, nvector<float>& v)
+  void vector_add(double d, nvector<MatrixEntryType>& v)
     {
       assert(v.size()==N*N);
-      for (int i=0;i<NodeMatrix<N,float>::size();++i)
-        NodeMatrix<N,float>::operator[](i)+=d*v[i];
+      for (int i=0;i<NodeMatrix<N,MatrixEntryType>::size();++i)
+        NodeMatrix<N,MatrixEntryType>::operator[](i)+=d*v[i];
     }
 };
 
@@ -191,14 +193,14 @@ inline void FMatrixBlock<N>::operator *= (const FMatrixBlock<N>& B)
     {
       for (int j=0; j<N; j++)
         {
-          vhelp[j] = NodeMatrix<N,float>::value(i,j);
+          vhelp[j] = NodeMatrix<N,MatrixEntryType>::value(i,j);
         }
       for (int j=0; j<N; j++)
         {
-          NodeMatrix<N,float>::value(i,j) = 0.;
+          NodeMatrix<N,MatrixEntryType>::value(i,j) = 0.;
           for (int k=0; k<N; k++)
             {
-              NodeMatrix<N,float>::value(i,j) += vhelp[k] * B(k,j);
+              NodeMatrix<N,MatrixEntryType>::value(i,j) += vhelp[k] * B(k,j);
             }
         }      
     }
@@ -222,7 +224,7 @@ inline void FMatrixBlock<N>::vmult(viterator p) const
   p -= N;
   a -= N;
 
-  nvector<float>::const_iterator q(NodeMatrix<N,float>::begin());
+  nvector<MatrixEntryType>::const_iterator q(NodeMatrix<N,MatrixEntryType>::begin());
   for (viterator c=p; c!=p+N; c++)
     {
       *c = 0.;

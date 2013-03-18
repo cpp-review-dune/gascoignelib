@@ -49,7 +49,7 @@ ostream& operator<<(ostream &s, const SparseStructure& A)
 
 void SparseStructure::statistics(ostream &s) const
 {
-  s << n() << " " << ntotal() << "  " <<  ntotal()/static_cast<float>(n());
+  s << n() << " " << ntotal() << "  " <<  ntotal()/static_cast<double>(n());
 }
 
 /*----------------------------------------------*/

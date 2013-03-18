@@ -97,7 +97,7 @@ void CFDBlock3d::DirichletDiag(const vector<int>& cv)
 
 /**********************************************************/
 
-float CFDBlock3d::operator()(int i,int j) const
+MatrixEntryType CFDBlock3d::operator()(int i,int j) const
 {
   if (i==0)
     {
@@ -124,7 +124,7 @@ float CFDBlock3d::operator()(int i,int j) const
 
 /**********************************************************/
 
-float& CFDBlock3d::diag(int i)
+MatrixEntryType& CFDBlock3d::diag(int i)
 {
   assert(0<=i && i<=3);
   if (i==0) return s;

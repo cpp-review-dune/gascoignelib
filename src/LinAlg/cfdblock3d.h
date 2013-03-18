@@ -26,6 +26,7 @@
 #define __cfdblock3d_h
 
 #include "entrymatrix.h"
+#include "matrixentrytype.h"
 
 /*****************************************************/
 
@@ -38,36 +39,36 @@ class CFDBlock3d
 
  protected:
 
-  float lapx,dx,dy,dz,gx,gy,gz,s;
-  float lapy,lapz;
+  MatrixEntryType lapx,dx,dy,dz,gx,gy,gz,s;
+  MatrixEntryType lapy,lapz;
   
-  void swap(float a, float b) const { float c = a; a=b; b=c;}
+  void swap(MatrixEntryType a, MatrixEntryType b) const { MatrixEntryType c = a; a=b; b=c;}
 
 public:
 
   int ncomp() const { return 4;}
 
-  float laplx  () const { return lapx;}
-  float laply  () const { return lapy;}
-  float laplz  () const { return lapz;}
-  float divx   () const { return dx;}
-  float divy   () const { return dy;}
-  float divz   () const { return dz;}
-  float stab   () const { return s;}
-  float gradx  () const { return gx;}
-  float grady  () const { return gy;}
-  float gradz  () const { return gz;}
+  MatrixEntryType laplx  () const { return lapx;}
+  MatrixEntryType laply  () const { return lapy;}
+  MatrixEntryType laplz  () const { return lapz;}
+  MatrixEntryType divx   () const { return dx;}
+  MatrixEntryType divy   () const { return dy;}
+  MatrixEntryType divz   () const { return dz;}
+  MatrixEntryType stab   () const { return s;}
+  MatrixEntryType gradx  () const { return gx;}
+  MatrixEntryType grady  () const { return gy;}
+  MatrixEntryType gradz  () const { return gz;}
 
-  float& laplx  ()  { return lapx;}
-  float& laply  ()  { return lapy;}
-  float& laplz  ()  { return lapz;}
-  float& divx   ()  { return dx;}
-  float& divy   ()  { return dy;}
-  float& divz   ()  { return dz;}
-  float& stab   ()  { return s;}
-  float& gradx  ()  { return gx;}
-  float& grady  ()  { return gy;}
-  float& gradz  ()  { return gz;}
+  MatrixEntryType& laplx  ()  { return lapx;}
+  MatrixEntryType& laply  ()  { return lapy;}
+  MatrixEntryType& laplz  ()  { return lapz;}
+  MatrixEntryType& divx   ()  { return dx;}
+  MatrixEntryType& divy   ()  { return dy;}
+  MatrixEntryType& divz   ()  { return dz;}
+  MatrixEntryType& stab   ()  { return s;}
+  MatrixEntryType& gradx  ()  { return gx;}
+  MatrixEntryType& grady  ()  { return gy;}
+  MatrixEntryType& gradz  ()  { return gz;}
 
   void operator  = (const CFDBlock3d&);
   void operator *= (double);
@@ -75,8 +76,8 @@ public:
   void operator += (const CFDBlock3d&);
   void operator -= (const CFDBlock3d&);
 
-  float  operator()(int i,int j) const;
-  float& diag(int i);
+  MatrixEntryType  operator()(int i,int j) const;
+  MatrixEntryType& diag(int i);
 
   void zero();
   void transpose();
@@ -136,17 +137,17 @@ public:
 
   // Zugriff auf Inhalt ueber ganzen Vektor, damits auch ohne
   // Struktur geht.
-  void vector_get(nvector<float>& v) const
+  void vector_get(nvector<MatrixEntryType>& v) const
     {
       std::cerr << "\"CFDBlock3d::vector_get\" not written!" << std::endl;
       abort();
     }
-  void vector_set(nvector<float>& v)
+  void vector_set(nvector<MatrixEntryType>& v)
     {
       std::cerr << "\"CFDBlock3d::vector_set\" not written!" << std::endl;
       abort();
     }
-  void vector_add(double d, nvector<float>& v)
+  void vector_add(double d, nvector<MatrixEntryType>& v)
     {
       std::cerr << "\"CFDBlock3d::vector_add\" not written!" << std::endl;
       abort();

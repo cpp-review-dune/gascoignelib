@@ -31,6 +31,7 @@
 #include  "stencilinterface.h"
 #include  "periodicdata.h"
 #include  <string>
+#include  "matrixentrytype.h"
 
 /*-------------------------------------------------------------*/
 
@@ -131,9 +132,9 @@ namespace Gascoigne
 
 		/*-----------------------------------------------*/
       
-      virtual void FillInterfaceList(const nvector<int>& elements,nvector<int>& start, nvector<float>& values) const
+      virtual void FillInterfaceList(const nvector<int>& elements,nvector<int>& start, nvector<MatrixEntryType>& values) const
 	{ std::cerr << "\"MatrixInterface::FillInterfaceList\" not written!" << std::endl; abort(); }
-      virtual void FurbishInterface (double d, const nvector<int>&   elements, const nvector<int>&   start, const nvector<float>& values)
+      virtual void FurbishInterface (double d, const nvector<int>&   elements, const nvector<int>&   start, const nvector<MatrixEntryType>& values)
 	{ std::cerr << "\"MatrixInterface::FurbishInterface\" not written!" << std::endl; abort(); }
       
       virtual void PrepareJacobi(double s)

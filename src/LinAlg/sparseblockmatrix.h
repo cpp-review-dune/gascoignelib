@@ -111,8 +111,8 @@ class SparseBlockMatrix : public MatrixInterface
  
 	    /*-----------------------------------------------*/
 
-  void FillInterfaceList(const nvector<int>& elements,nvector<int>& start, nvector<float>& values) const;
-  void FurbishInterface (double d, const nvector<int>&   elements, const nvector<int>&   start, const nvector<float>& values);
+  void FillInterfaceList(const nvector<int>& elements,nvector<int>& start, nvector<MatrixEntryType>& values) const;
+  void FurbishInterface (double d, const nvector<int>&   elements, const nvector<int>&   start, const nvector<MatrixEntryType>& values);
 
 	    /*-----------------------------------------------*/
 

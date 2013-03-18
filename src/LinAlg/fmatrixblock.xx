@@ -44,7 +44,7 @@ void  FMatrixBlock<N>::add(double s, const TimePattern& TP)
     {
       for (int j=0; j<N; j++)
         {
-          NodeMatrix<N,float>::value(i,j) += s*TP(i,j);
+          NodeMatrix<N,MatrixEntryType>::value(i,j) += s*TP(i,j);
         }
     }
 }
@@ -56,7 +56,7 @@ template<int N>
 {
   for (int i=0; i<cv.size(); i++) {
     int c = cv[i];
-    for (int d=0; d<N; d++) NodeMatrix<N,float>::value(c,d) = 0.;
+    for (int d=0; d<N; d++) NodeMatrix<N,MatrixEntryType>::value(c,d) = 0.;
   }
 }
 
@@ -65,7 +65,7 @@ template<int N>
 {
   for (int i=0; i<cv.size(); i++) {
     int c = cv[i];
-    for (int d=0; d<N; d++) NodeMatrix<N,float>::value(d,c) = 0.;
+    for (int d=0; d<N; d++) NodeMatrix<N,MatrixEntryType>::value(d,c) = 0.;
   }
 }
 
@@ -74,26 +74,26 @@ template<int N>
 {
   for (int i=0; i<cv.size(); i++) {
     int c = cv[i];
-    NodeMatrix<N,float>::value(c,c) = 1.;
+    NodeMatrix<N,MatrixEntryType>::value(c,c) = 1.;
   }
 }
 
 template<int N>
 void FMatrixBlock<N>::zero_row(int c)
 {
-  for (int i=0; i<N; i++) NodeMatrix<N,float>::value(c,i) =0.;
+  for (int i=0; i<N; i++) NodeMatrix<N,MatrixEntryType>::value(c,i) =0.;
 }
  
 template<int N>
 void FMatrixBlock<N>::uno_diag(int c)
 {
-  NodeMatrix<N,float>::value(c,c) =1.;
+  NodeMatrix<N,MatrixEntryType>::value(c,c) =1.;
 }
 
 /**********************************************************/
 
 template<int N>
-float& FMatrixBlock<N>::diag(int i)
+MatrixEntryType& FMatrixBlock<N>::diag(int i)
 {
   return (*this)(i,i);
 }
@@ -141,7 +141,7 @@ void FMatrixBlock<N>::entry(const nmatrix<double>& E)
     {
       for (int d=0; d<N; d++)
         {
-            NodeMatrix<N,float>::value(c,d) += E(c,d); 
+            NodeMatrix<N,MatrixEntryType>::value(c,d) += E(c,d); 
         }
     }
 }
@@ -155,7 +155,7 @@ void FMatrixBlock<N>::entry(int i, int j, const EntryMatrix& E, double s)
     {
       for (int d=0; d<N; d++)
         {
-            NodeMatrix<N,float>::value(c,d) += s * E(i,j,c,d); 
+            NodeMatrix<N,MatrixEntryType>::value(c,d) += s * E(i,j,c,d); 
         }
     }
 }
@@ -169,7 +169,7 @@ void FMatrixBlock<N>::dual_entry(int i, int j, const EntryMatrix& E, double s)
     {
       for (int d=0; d<N; d++)
         {
-            NodeMatrix<N,float>::value(c,d) += s * E(j,i,d,c); 
+            NodeMatrix<N,MatrixEntryType>::value(c,d) += s * E(j,i,d,c); 
         }
     }
 }
@@ -183,7 +183,7 @@ void FMatrixBlock<N>::transpose()
     {
       for(int j=0;j<i;j++)
         {
-          std::swap(NodeMatrix<N,float>::value(i,j),NodeMatrix<N,float>::value(j,i));
+          std::swap(NodeMatrix<N,MatrixEntryType>::value(i,j),NodeMatrix<N,MatrixEntryType>::value(j,i));
         }
     }
 }
@@ -197,7 +197,7 @@ void FMatrixBlock<N>::transpose(FMatrixBlock<N>& A)
     {
       for(int j=0;j<N;j++)
         {
-          std::swap(NodeMatrix<N,float>::value(i,j),A(j,i));
+          std::swap(NodeMatrix<N,MatrixEntryType>::value(i,j),A(j,i));
         }
     }
 }
@@ -211,7 +211,7 @@ void FMatrixBlock<N>::copy_transpose(const FMatrixBlock<N>& A)
     {
       for(int j=0;j<N;j++)
         {
-          NodeMatrix<N,float>::value(i,j)=A(j,i);
+          NodeMatrix<N,MatrixEntryType>::value(i,j)=A(j,i);
         }
     }
 }
@@ -221,8 +221,8 @@ void FMatrixBlock<N>::copy_transpose(const FMatrixBlock<N>& A)
 template<int N>
 void FMatrixBlock<N>::operator *= (double s)
 {
-  nvector<float>::iterator       p(NodeMatrix<N,float>::begin());
-  nvector<float>::const_iterator q(p+N*N);
+  nvector<MatrixEntryType>::iterator       p(NodeMatrix<N,MatrixEntryType>::begin());
+  nvector<MatrixEntryType>::const_iterator q(p+N*N);
  
   for ( ; p!=q; p++)
     {
@@ -235,7 +235,7 @@ void FMatrixBlock<N>::operator *= (double s)
 template<int N>
 void FMatrixBlock<N>::inverse()
 { 
-  NodeMatrix<N,float>::gauss_jordan();
+  NodeMatrix<N,MatrixEntryType>::gauss_jordan();
 }
 
 }
