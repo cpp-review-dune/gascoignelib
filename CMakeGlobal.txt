@@ -96,4 +96,5 @@ INCLUDE_DIRECTORIES(
   ${GASCOIGNE_STD}/src/Problems
   ${GASCOIGNE_STD}/src/LinAlg
   ${GASCOIGNE_STD}/src/Solver
+  ${GASCOIGNE_STD}/src/Tsuchimikado
 )
