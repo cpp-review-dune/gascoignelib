@@ -9,9 +9,6 @@
 #include <tr1/unordered_set>
 #include <tr1/unordered_map>
 
-//#include <ext/hash_map>
-//#include <ext/hash_set>
-
 #include <map>
 #include <set>
 #include <list>
@@ -133,11 +130,6 @@ namespace Tsuchimikado
        **/
       int resolve_flags();
 
-      /**
-       * increase 'smoothness' of refinement
-       **/
-      int first_smooth_flags();
-      int smooth_flags();
 
       /**
        * refines a given element by recursively refining the boundary first
@@ -145,10 +137,10 @@ namespace Tsuchimikado
        * 
        * Standard argument for refinement type is isotropic.
        **/
-      int  refine_line(const int i,int type = 1);
-      int  refine_quad(const int i,int type = 3);
-      int  refine_hex (const int i,int type = 7);
-      int  refine_cell(const int i,int type = (DIM*(DIM-1)+1));
+      bool  refine_line(const int i,int type = 1);
+      bool  refine_quad(const int i,int type = 3);
+      bool  refine_hex (const int i,int type = 7);
+      bool  refine_cell(const int i,int type = (DIM*(DIM-1)+1));
 
       int refine_boundary_quad(int hn, int qn, int type = 3);
       
@@ -200,8 +192,6 @@ namespace Tsuchimikado
       
       // middle lines of isotropically refined quads
       const LINE& middle_line_of_quad_at_node(int quad_number,int node) const;
-      // middle line of anisotropically refined quad
-      const LINE& middle_line_of_quad(int quad_number) const;
 
       /**
        *
@@ -255,9 +245,7 @@ namespace Tsuchimikado
       void SetAnisotropic()
       {
 	__mesh_flags &= (!MESH_IS_ISOTROPIC);
-
 	assert(!isotropic());
-	
       }
       
 
@@ -386,25 +374,11 @@ namespace Tsuchimikado
        * ...
        **/
       int node_0_of_boundary_quad(const int hex_number,const int boundary_quad_number) const;
-
-      /**
-       * returns 0, if the rotation of the boundary quad 
-       * for anisotropic refinement is as seen from the hex.
-       * otherwise 1.
-       * i.e. refine hex H with REF_X requires refinement
-       * of quad 2 with REF_Y
-       * if anisotropic_orientation_of_boundary_quad returns 0,
-       * refine H.quad(2) with REF_Y. Otherwise with REF_X.
-       *
-       * the value depends on the location of node 0 and the
-       * direction of the numbering
-       **/
-      int anisotropic_orientation_of_boundary_quad(const int hex_number,const int boundary_quad_number) const;
   
       // refine, new vertices
-      MeshVertex<DIM> new_vertex_on_line(const LINE& L) const;
-      MeshVertex<DIM> new_vertex_on_quad(const QUAD& Q) const;
-      MeshVertex<DIM> new_vertex_on_hex (const HEX& H)  const;
+      MeshVertex<DIM> new_middle_vertex(const LINE& L) const;
+      MeshVertex<DIM> new_middle_vertex(const QUAD& Q) const;
+      MeshVertex<DIM> new_middle_vertex (const HEX& H)  const;
   
       //////////////////////////////////////// PUBLIC FUNCTIONS FOR REFINEMENT
       /**

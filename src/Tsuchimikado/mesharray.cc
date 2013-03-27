@@ -62,6 +62,7 @@ namespace Tsuchimikado
     return s;
   }
 
+  template std::ostream& operator<<(std::ostream &s,  const mesharray<1,double>& A);
   template std::ostream& operator<<(std::ostream &s,  const mesharray<2,double>& A);
   template std::ostream& operator<<(std::ostream &s,  const mesharray<3,double>& A);
   template std::ostream& operator<<(std::ostream &s,  const mesharray<4,double>& A);

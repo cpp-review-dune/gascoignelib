@@ -17,8 +17,7 @@ namespace Tsuchimikado
     assert(DIM==__TC->dimension());
   
     clear();
-    __changed.clear();
-    
+    __changed.clear();    
 
     for (int c=0;c<__TC->ncells();++c)
       if (__TC->cell(c).nchilds()==0) this->push_back(c);
@@ -83,12 +82,18 @@ namespace Tsuchimikado
     __Cg2l.clear();
     for (int c=0;c<this->size();++c) __Cg2l[(*this)[c]]=c;
 
+
+
     init_hanging();
-    while (!mesh_ok())
+    bool ok;
+    do
       {
-	repair_mesh();
+	ok = repair_mesh();
 	init_hanging();
       }
+    while (!ok);
+    
+    
   }
 
   // ==================================================
@@ -99,53 +104,30 @@ namespace Tsuchimikado
     __hanging_lines.clear();
     __hanging_quads.clear();
 
-    // count appearance of all lines, not at the boundary.
-    map<int,int> lc;
-    for (IT it=begin();it!=end();++it)
-      for (int l=0;l<4;++l)
-	{
-	  int line = __TC->cell(*it).line(l);
-	  if (__TC->line_at_boundary(line)) continue;
-	  if(lc.find(line)==lc.end())
-	    lc[line] = 1;
-	  else lc[line]++;
-	}
-    
-    // line is a regular hanging line if
-    // - it appears only once
-    // - and one child is in mesh
-    //
-    // line is a double hanging line if
-    // - it appears only once
-    // - children are not in mesh
-    // - some grandchildren are
-    
-    for (map<int,int>::const_iterator it = lc.begin();it!=lc.end();++it)
+
+    // a line is a hanging line, if 
+    //   it belongs to a quad in the mesh
+    //   it is not at the boundary
+    //   a child of the neighboring quad is in the same mesh
+    for (int c=0;c<this->size();++c)
       {
-	if (it->second==2) continue;
-	assert(it->second==1);
-	int line = it->first;
-	if (__TC->line(line).type()==0) continue;
-	int c[2] = {__TC->line(line).child(0),__TC->line(line).child(1)};	
-	
-	for (int j=0;j<2;++j)
+	int cell = Celll2g(c);
+	for (int l=0;l<4;++l)
 	  {
-	    // regular hanging
-	    if (lc.find(c[j])!=lc.end()) __hanging_lines.insert(line);
-	    // check for double hanging
-	    if (__TC->line(c[j]).type()!=0)
-	      {
-		int gc[2] = {__TC->line(c[j]).child(0),__TC->line(c[j]).child(1)};
-		for (int k=0;k<2;++k)
-		  if (lc.find(gc[k])!=lc.end()) 
-		    {
-		      __hanging_lines.insert(line);
-		      __hanging_lines.insert(c[j]);
-		    }
-	      }
+	    int line = __TC->cell(cell).line(l);
+	    if (__TC->line_at_boundary(line)) continue; // at boundary?
+	    int othercell = __TC->line(line).master();
+	    if (othercell==cell) othercell=__TC->line(line).slave();
+	    if (othercell==-1) continue;                // line is fine
+	    
+	    if (__TC->cell(othercell).type()==0) continue; // othercell not refined
+	    assert(__TC->cell(othercell).nchilds()==4);
+	    for (int oc=0;oc<4;++oc)
+	      if (CellInMesh(__TC->cell(othercell).child(oc)))
+		__hanging_lines.insert(line);
 	  }
       }
-        
+
     __hanging_nodes_on_lines.clear();
     __hanging_nodes_on_quads.clear();
     for (HASH_SET::const_iterator it=__hanging_lines.begin();
@@ -210,45 +192,29 @@ namespace Tsuchimikado
   template<>
   bool MeshLevel<2>::mesh_ok()
   {
-    // mesh has a problem, if hanging line hangs on hanging line.
-    __double_hanging_nodes.clear();
-    HASH_SET::const_iterator it;
-    for (it=__hanging_lines.begin();it!=__hanging_lines.end();++it)
+    // every line must:
+    //   - appear twice
+    //   - once and on the boundary
+    //   - once and in hanging
+    //   - once and father in hanging
+    HASH_MAP lc;
+    for (int c=0;c<size();++c)
+      for (int l=0;l<4;++l)
+	lc[__TC->cell(Celll2g(c)).line(l)]++;
+
+    for (HASH_MAP::const_iterator it = lc.begin();it!=lc.end();++it)
       {
-	for (int n=0;n<2;++n)
-	  {
-	    int node = __TC->line(*it).node(n);
-	    if (__hanging_nodes_on_lines.find(node)!=__hanging_nodes_on_lines.end())
-	      {
-		int middle_node = __TC->middle_node(__TC->line(*it));
-		if (__double_hanging_nodes.find(node)!=__double_hanging_nodes.end())
-		  {
-		    // ???
-
-
-
-// 		    print_gnuplot2("Z");
-// 		    cout << __TC->vertex(node) << endl;
-// 		    cerr << " double_hanging_node " << node << " 2mal!" << endl;
-// 		    abort();
-		  }
-		__double_hanging_nodes[node]=middle_node;
-	      }
-	  }
+	if (it->second==2) continue;
+	int line = it->first;
+	if (__TC->line_at_boundary(line)) continue;
+	if (line_is_hanging(line)) continue;
+	
+	int father = __TC->line(line).father();
+	assert(father!=-1);
+	if (line_is_hanging(father)) continue;
+	return false;
       }
-
-//     if (__double_hanging_nodes.size() > 0)
-//       cout<< "soviel hab ich jetzt: " << __double_hanging_nodes.size() 
-// 	  << " und das ist der  Knoten: "<< __double_hanging_nodes.begin()->first << endl 
-// 	  << " und das ist der 2te  Knoten: "<< __double_hanging_nodes.begin()->second << endl 
-// 	  << " der erste hat den vertex: " << __TC->vertex(__double_hanging_nodes.begin()->first) << endl
-// 	  << " der zweite hat den vertex: " << __TC->vertex(__double_hanging_nodes.begin()->second) << endl;
-
-    //Ausgabe des Zwischengitters
-    print_gnuplot2("Y");
- 
-
-    return (__double_hanging_nodes.size()==0);
+    return true;
   }
 
   // ----------------------------------------
@@ -288,66 +254,158 @@ namespace Tsuchimikado
   // --------------------------------------------------
 
   template<>
-  void MeshLevel<2>::repair_mesh()
+  bool MeshLevel<2>::repair_mesh()
   {
-    // resolve double hanging nodes by taking back coarsening.
-    assert(__double_hanging_nodes.size()>0);
-
-    HASH_SET problem_lines;
-    
-    
-    for (HASH_MAP::const_iterator it=__double_hanging_nodes.begin();it!=__double_hanging_nodes.end();++it)
-      {
-	//cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXX " << it->first << endl;
-	assert(__hanging_nodes_on_lines.find(it->first)!=__hanging_nodes_on_lines.end());
-	problem_lines.insert(__hanging_nodes_on_lines[it->first]);
-	problem_lines.insert(__hanging_nodes_on_lines[it->second]);
-      }    // we need to find the elements which have the problem_lines as boundary lines.
-    // these elements must be replaced by finer ones.
-    // they are changed elements
- 
-    // um zu ueberpruefenn, wie viel elemente gerade in problem_lines enthalten sind
-    //cout << "wir haben jetzt " << problem_lines.size() << " doppel haengende knoten, naemlich " 
-    //	 <<  *problem_lines.begin() << endl;   
-
-//     if (problem_lines.size() >= 1)
-//       {
-// 	cout << "Vertex bei "<< *problem_lines.begin() << " mit " 
-// 	     << problem_lines.size() << endl;
-// 	//for (it=problem_lines.begin(); it!=problem_lines.end(); it++)
-// 	//  cout << __TC->vertex(*it) << endl;
-//       }
-//     cout << endl;
-
-    set<int> add;
-    //in changed are all elements, which shall be coarsened for coarser grid
-    for (HASH_SET::const_iterator it = __changed.begin();it!=__changed.end();++it)
+    // there may be no double-hanging lines, e.g.
+    //    lines in the mesh with father-father also in the mesh
+    HASH_MAP lc;
+    for (int c=0;c<size();++c)
       for (int l=0;l<4;++l)
-	{
-	  if (problem_lines.find(__TC->quad(*it).line(l))!=problem_lines.end())
-	    {
-	      add.insert(*it);
-	    }
-	}
-    assert(add.size()>0);
-    for (set<int>::const_iterator i1 = add.begin();i1!=add.end();++i1)
+	lc[__TC->cell(Celll2g(c)).line(l)]++;
+
+    set<int> takebackcoarsening;
+
+    for (HASH_MAP::const_iterator it = lc.begin();it!=lc.end();++it)
       {
-	//	assert(__TC->quad(*i1).type()==3);
-	__changed.erase(*i1);
-	assert(__Cg2l.find(*i1)!=__Cg2l.end());
-	int li = __Cg2l[*i1];
-	this->operator[](li) = __TC->quad(*i1).child(0);
-	for (int c=1;c<__TC->quad(*i1).nchilds();++c)
-	  push_back(__TC->quad(*i1).child(c));
+	int line = it->first;
+
+	if (it->second==2) continue;                // line twice     => ok
+	if (__TC->line_at_boundary(line)) continue; // at boundary    => ok
+	if (line_is_hanging(line)) continue;        // hanging        => ok
+	int father = __TC->line(line).father();
+	if (line_is_hanging(father)) continue;      // father hanging => ok
+
+	
+	// PROBLEM! 2 possibilities:
+	//    * father-father of line is in the mesh => do nothing wait for other case
+	//    * child-child of line is in the mesh   => fix master/slave of line
+	
+	
+	// check if father-father is in the mesh
+	int fatherfather = -1;
+	if (father!=-1) fatherfather = __TC->line(father).father();
+	if (lc.find(fatherfather)!=lc.end()) continue; // ok, wait for the other case
+
+	// Check, that at least one child-child is in the mesh
+	bool ok = false;
+	assert(__TC->line(line).type()==1);
+	for (int c=0;c<2;++c)
+	  {
+	    int child = __TC->line(line).child(c);
+	    assert(child!=-1);
+	    if (__TC->line(child).type()!=0)
+	      for (int cc=0;cc<2;++cc)
+		if (lc.find(__TC->line(child).child(cc))!=lc.end()) ok=true;
+	  }
+	if (!ok) 
+	  {
+	    cerr << "Mesh is broken!";
+	    print_gnuplot2("meshes");
+	    abort();
+	  }
+	
+	int dontcoarse = __TC->line(line).master();
+	assert(dontcoarse!=-1);
+	if (!CellInMesh(dontcoarse)) dontcoarse = __TC->line(line).slave();
+	assert(dontcoarse!=-1);
+	assert(CellInMesh(dontcoarse));
+	
+	takebackcoarsening.insert(dontcoarse);
       }
+     
+    if (takebackcoarsening.size()==0) return true;
+    for (set<int>::const_iterator it = takebackcoarsening.begin(); 
+	 it!=takebackcoarsening.end();++it)
+      {
+	int cell = *it;
+	assert(CellInMesh(cell));
+	assert(__TC->cell(cell).type()==3);
+	
+	int oldnr = Cellg2l(cell);  // replace old cell by the four childs
+	(*this)[oldnr]=__TC->cell(cell).child(0);
+	for (int c=1;c<4;++c)
+	  push_back(__TC->cell(cell).child(c));
+      }
+
     __Cg2l.clear();
     for (int c=0;c<this->size();++c) __Cg2l[(*this)[c]]=c;
+    
+    return false;
+
+
+    
+//     // double hanging lines are not ok.
+//     for (HASH_SET::const_iterator it=__hanging_lines.begin();
+// 	 it!=__hanging_lines.end();++it)
+//       {
+// 	int line = *it;
+// 	if (__TC->line(line).type()==0) continue; // line is fine
+// 	for (int l=0;l<2;++l)
+// 	  if (line_is_hanging(__TC->line(line).child(0)))
+// 	    {
+// 	      abort();
+	      
+// 	    }
+//       }
+	   
+//     // resolve double hanging nodes by taking back coarsening.
+//     assert(__double_hanging_nodes.size()>0);
+
+//     HASH_SET problem_lines;
+    
+    
+//     for (HASH_MAP::const_iterator it=__double_hanging_nodes.begin();it!=__double_hanging_nodes.end();++it)
+//       {
+// 	//cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXX " << it->first << endl;
+// 	assert(__hanging_nodes_on_lines.find(it->first)!=__hanging_nodes_on_lines.end());
+// 	problem_lines.insert(__hanging_nodes_on_lines[it->first]);
+// 	problem_lines.insert(__hanging_nodes_on_lines[it->second]);
+//       }    // we need to find the elements which have the problem_lines as boundary lines.
+//     // these elements must be replaced by finer ones.
+//     // they are changed elements
+ 
+//     // um zu ueberpruefenn, wie viel elemente gerade in problem_lines enthalten sind
+//     //cout << "wir haben jetzt " << problem_lines.size() << " doppel haengende knoten, naemlich " 
+//     //	 <<  *problem_lines.begin() << endl;   
+
+// //     if (problem_lines.size() >= 1)
+// //       {
+// // 	cout << "Vertex bei "<< *problem_lines.begin() << " mit " 
+// // 	     << problem_lines.size() << endl;
+// // 	//for (it=problem_lines.begin(); it!=problem_lines.end(); it++)
+// // 	//  cout << __TC->vertex(*it) << endl;
+// //       }
+// //     cout << endl;
+
+//     set<int> add;
+//     //in changed are all elements, which shall be coarsened for coarser grid
+//     for (HASH_SET::const_iterator it = __changed.begin();it!=__changed.end();++it)
+//       for (int l=0;l<4;++l)
+// 	{
+// 	  if (problem_lines.find(__TC->quad(*it).line(l))!=problem_lines.end())
+// 	    {
+// 	      add.insert(*it);
+// 	    }
+// 	}
+//     assert(add.size()>0);
+//     for (set<int>::const_iterator i1 = add.begin();i1!=add.end();++i1)
+//       {
+// 	//	assert(__TC->quad(*i1).type()==3);
+// 	__changed.erase(*i1);
+// 	assert(__Cg2l.find(*i1)!=__Cg2l.end());
+// 	int li = __Cg2l[*i1];
+// 	this->operator[](li) = __TC->quad(*i1).child(0);
+// 	for (int c=1;c<__TC->quad(*i1).nchilds();++c)
+// 	  push_back(__TC->quad(*i1).child(c));
+//       }
+//     __Cg2l.clear();
+//     for (int c=0;c<this->size();++c) __Cg2l[(*this)[c]]=c;
   }
 
   // --------------------------------------------------
 
   template<>
-  void MeshLevel<3>::repair_mesh()
+  bool MeshLevel<3>::repair_mesh()
   {
     abort();
 //     assert(__double_hanging_nodes.size()>0);

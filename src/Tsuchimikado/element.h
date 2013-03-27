@@ -8,20 +8,6 @@
 #include <cassert>
 #include "mesharray.h"
 
-/**
- * a lot of work has to be done:
- *
- * - the data structure for a quad in 2 and 3d should be different. We store too much
- *   stuff here!!!
- *
- * - the access to the information is a big piece of shit! some functions, getting
- *   a line of a quad in 2d are functions of the element, get a line of a hex is a function
- *   in the triacontainer
- *
- * - 
- **/
-
-
 
 /**
  *
@@ -34,16 +20,12 @@
 #define REF_X 1
 #define REF_Y 2
 #define REF_Z 4
+#define REF_ISO (REF_X|REF_Y|REF_Z)
 
 
 namespace Tsuchimikado
 {
-/*   template<int EDIM> class Element; */
-  
-/*   template<int EDIM> std::ostream& operator<<(std::ostream& s, const Element<EDIM>& E); */
-/*   template<int EDIM> std::istream& operator>>(std::istream& s,       Element<EDIM>& E); */
-
-  
+  // EDIM: Type of Element. 2: quad, 3: hex  
   template <int EDIM>
     class Element
     {
@@ -51,9 +33,9 @@ namespace Tsuchimikado
 #define N_SUBDATA    (2*EDIM)
     protected:
 
-      // refinement type of element
+      // refinement type of element: 0 not refined, REF_X/Y/Z or combination
       int __type;
-      // flags for refinement
+      // flags for refinement: as __type
       int __flag;
  
 
@@ -61,17 +43,16 @@ namespace Tsuchimikado
       int               __id;
       // every element has one father
       int               __father;
-      // depending on the dimension, 
+      // reference to children, (depending on the dimension max 4 or 8)
       mesharray<N_MAX_CHILDS,int> __childs;
       // the nodes of the element. This should'nt be stored
       // in all elements in further versions.
       // see ...
       mesharray<N_MAX_CHILDS,int> __nodes;
 
-      // perhaps this is not the correct place,
-      // but all elements acting as boundary have a master and slave
-      // we should have another class, where we know the overall dimension.
-      // this could save a lot (or some) memory... later
+      // in 2d: lines have one or two adjacent quads
+      // in 3d: quad have one or two adjacent hexes 
+      // !!!! lines in 2d do not need master/slave
       int __master;
       int __slave;
       // hexes have 6 quads, quads have 4 lines, lines have 2 ???
@@ -109,63 +90,40 @@ namespace Tsuchimikado
   
 
       const int n_max_childs() const{ return N_MAX_CHILDS; }
-  
       const int nnodes() const      { return N_MAX_CHILDS; }
       const int nchilds() const
 	{
-	  if (EDIM==1)
-	    {
-	      if (__type==REF_X) return 2;
-	      return 0;
-	    }
-	  else if (EDIM==2)
-	    {
-	      if ((__type==REF_X)||(__type==REF_Y)) return 2;
-	      else if (__type==(REF_X|REF_Y)) return 4;
-	      return 0;
-	    }
-	  else if (EDIM==3)
-	    {
-	      if ((__type==REF_X)||(__type==REF_Y)||(__type==REF_Z)) return 2;
-	      else if ((__type==(REF_X|REF_Y))||(__type==(REF_X|REF_Z))||(__type==(REF_Y|REF_Z))) return 4;
-	      else if (__type==(REF_X|REF_Y|REF_Z)) return 8;
-	      return 0;
-	    }
-	  assert(0);
+	  if (__type==0) return 0;
+	  if (EDIM==1) assert(__type==1);
+	  if (EDIM==2) assert(__type==3);
+	  
+	  return n_max_childs();
 	}
       const int father() const      { return __father; }
       const int child(int i) const  { assert(i<nchilds()); return __childs[i]; }
-      const int node(int i) const   { assert(i<nnodes()); return __nodes[i]; }
-
-
+      const int node(int i) const   { assert(i<nnodes());  return __nodes[i]; }
+      
       int& father()       { return __father; }
       int& child(int i)   { assert(i<nchilds()); return __childs[i]; }
-      int& node(int i)    { assert(i<nnodes()); return __nodes[i]; }
+      int& node(int i)    { assert(i<nnodes());  return __nodes[i]; }
 
-  
-      // Construction
+
+
+      // Functions for the construction on an element. Will be removed from this class
+      
       void init(const int father,
 		const mesharray<N_MAX_CHILDS,int>& childs,
 		const mesharray<N_MAX_CHILDS,int>& nodes);
 
-      void new_by_lines(const Element<1>& l1,
-			const Element<1>& l2,
-			const Element<1>& l3,
-			const Element<1>& l4);
+      void new_by_lines(const Element<1>& l1,const Element<1>& l2,const Element<1>& l3,const Element<1>& l4);
       
       
 
-      // Dimension specific
+      // Dimension specific access
       const int quad(int i) const 
 	{ assert(EDIM==3); assert(i<6); return __subdata[i]; }
       const int line(int i) const 
-	{
-	  if (EDIM==2)
-	    {
-	      assert(i<4); return __subdata[i];
-	    }
-	  else assert(0);
-	}
+	{ assert(EDIM==2); assert(i<4); return __subdata[i]; }
       int& quad(int i)
 	{ assert(EDIM==3); assert(i<6); return __subdata[i]; }
       int& line(int i)
@@ -177,11 +135,11 @@ namespace Tsuchimikado
        **/
       void print() const;
 
-  template<int X>
-    friend std::ostream& operator<<(std::ostream& s, const Element<X>& E) ;
-  template<int X>
-    friend std::istream& operator>>(std::istream& s, Element<X>& E);
-
+      template<int X>
+	friend std::ostream& operator<<(std::ostream& s, const Element<X>& E) ;
+      template<int X>
+	friend std::istream& operator>>(std::istream& s, Element<X>& E);
+      
             
       // comparison
       // rotation, orientation does not matter

@@ -56,7 +56,7 @@ namespace Tsuchimikado
       
       HASH_SET     __changed;
 
-      void repair_mesh();
+      bool repair_mesh();
       bool mesh_ok();
       void init_hanging();
 

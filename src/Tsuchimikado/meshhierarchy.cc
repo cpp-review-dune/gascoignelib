@@ -17,16 +17,13 @@ namespace Tsuchimikado
     this->push_back(MeshLevel<DIM>(__TC));
     GetMeshLevel(0).init_active();
 
-    int fc,cc;
     do
       {
-	this->push_back(MeshLevel<DIM>(__TC));
-	GetMeshLevel(this->size()-1).init_from_meshlevel (GetMeshLevel(this->size()-2));
-	
-	fc = GetMeshLevel(this->size()-2).size();
-	cc = GetMeshLevel(this->size()-1).size();
+	MeshLevel<DIM> ML(__TC);
+	ML.init_from_meshlevel(GetMeshLevel(this->size()-1));
+	push_back(ML);
       } 
-    while(cc<fc);
+    while(GetMeshLevel(this->size()-1).size()<GetMeshLevel(this->size()-2).size());
     this->pop_back();    
   }
 
@@ -39,12 +36,10 @@ namespace Tsuchimikado
       {
 	char s[20];
 	sprintf(s,"%s_%i",fname.c_str(),i);
-	GetMeshLevel(i).print_gnuplot(s);
+	GetMeshLevel(i).print_gnuplot2(s);
       }
   }
-  
-    
-  
+ 
   template class MeshHierarchy<2>;
   template class MeshHierarchy<3>;
 

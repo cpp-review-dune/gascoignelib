@@ -53,8 +53,10 @@ namespace Tsuchimikado
   bool Element<EDIM>::is_isotropic() const
   {
     if (nchilds()==0)              return true;
-    if (nchilds()==n_max_childs()) return true;
-    return false;
+    if (EDIM==1) return (__type==1);
+    if (EDIM==2) return (__type==3);
+    if (EDIM==3) return (__type==7);
+    abort();
   }
   
   // **************************************************
