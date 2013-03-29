@@ -233,10 +233,10 @@ inline nvector<T>& nvector<T>::operator=(const T& d)
 template<class T>
 inline nvector<T>& nvector<T>::operator=(const std::vector<T>& v)
 {
-  assert(std::vector<T>::size()==v.std::vector<T>::size());
+  assert(std::vector<T>::size()==v.std::template vector<T>::size());
   iterator  first  = std::vector<T>::begin();
   const_iterator last   = std::vector<T>::end();
-  const_iterator vfirst = v.std::vector<T>::begin();
+  const_iterator vfirst = v.std::template vector<T>::begin();
 
   while( first != last)
     {
