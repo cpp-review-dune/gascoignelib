@@ -40,12 +40,18 @@ int main(int argc, char** argv)
     mn = argv[1];
 
   TC.read_inp(mn);
-
+  TC.global_refine();
+  
   StopWatch S;
   
   int oldcells=0;
   int newcells=TC.ncells();
+  cout << "############################## Testing TriaContainer" 
+       << endl << endl;
   
+  cout << "step\t" << "cells\t" << "ref\t" <<  "MB\t" << "B/cell\t"
+       << "sec\t" << "sec/Mcell" << endl;
+
   for (int i=0;i<15;++i)
     {
       // refine
@@ -53,35 +59,40 @@ int main(int argc, char** argv)
       S.reset();
       S.start();
       TC.clear_refine_flags();
-      for (int c=0;c<TC.ncells();++c)
-	if (rand()%2<1)
-	  TC.set_refine_flag(c,3);
-      TC.refine_cells();
+      if (i>0)
+	{
+	  for (int c=0;c<TC.ncells();++c)
+	    if (rand()%2<1)
+	      TC.set_refine_flag(c,3);
+	  TC.refine_cells();
+	}
+      else
+	TC.global_refine(1);
+      
       newcells = TC.ncells();
       S.stop();
       long int mem = get_mem_usage();
-      cout << "Step " << i << " mesh with " << newcells << " total cells" << endl;
-      cout << "Refine from \t" << oldcells << "\t -> \t" << newcells
-	   << "\t (" << newcells-oldcells << ")" << endl;
-      cout << "\t " << S.read() << "s\t "
-	   << 1.e6*S.read()/(newcells-oldcells)  << " s/Mcell" << endl
-	   << "\t" << mem << " MB \t"
-	   << 1024*1024*mem/newcells << " Byte/cell" << endl;
       
+      cout << i << "\t" << newcells << "\t" 
+	   << newcells*1.0/oldcells << "\t"
+	   << mem << "\t" << (1024*1024 * mem) / (newcells) << "\t"
+	   << S.read() << "\t"
+	   << S.read() / (newcells*1.e-6) << endl;
+
       
-      
-      S.reset();
-      S.start();
-      MeshHierarchy<__DIM__> MH(TC);
-      MH.ReInit();
-      S.stop();
-      long int hmem = get_mem_usage();
-      cout << "Hierarchy:\t" << MH.nlevels() << " levels" << endl
-	   << "\t " << S.read() << "s\t"
-	   << 1.e6*S.read()/newcells  << " s/Mcell " << endl
-	   << "\t " << hmem-mem << " MB \t"
-	   << 1024*1024*(hmem-mem)/newcells << " Byte/cell" << endl;
-      cout << endl;
+      // S.reset();
+      // S.start();
+
+      // MeshHierarchy<__DIM__> MH(TC);
+      // MH.ReInit();
+      // S.stop();
+      // long int hmem = get_mem_usage();
+      // cout << "Hierarchy:\t" << MH.nlevels() << " levels" << endl
+      // 	   << "\t " << S.read() << "s\t"
+      // 	   << 1.e6*S.read()/newcells  << " s/Mcell " << endl
+      // 	   << "\t " << hmem-mem << " MB \t"
+      // 	   << 1024*1024*(hmem-mem)/newcells << " Byte/cell" << endl;
+      // cout << endl;
     }
   
   
