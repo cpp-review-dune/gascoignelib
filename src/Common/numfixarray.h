@@ -74,6 +74,10 @@ class numfixarray  : public fixarray<N,T>
     void    equ  (double, const numfixarray&, double, const numfixarray&, 
 		  double, const numfixarray&, double, const numfixarray&,
 		  double, const numfixarray&, double, const numfixarray&);
+    void    equ  (double, const numfixarray&, double, const numfixarray&, 
+		  double, const numfixarray&, double, const numfixarray&,
+		  double, const numfixarray&, double, const numfixarray&,
+		  double, const numfixarray&, double, const numfixarray&);
     void    sequ (double, double, const numfixarray&);
     void    add  (double);
     void    add  (T, const numfixarray&);
@@ -405,6 +409,34 @@ inline void numfixarray<N,T>::equ (double d, const numfixarray<N,T>& v,
     {
       (*first++) = d*(*first2++) + e*(*first3++) + f*(*first4++) + g*(*first5++) 
 		   + h*(*first6++) + i*(*first7++);
+    }
+}
+
+ template<int N,class T>
+inline void numfixarray<N,T>::equ (double s1, const numfixarray<N,T>& v1, 
+				   double s2, const numfixarray<N,T>& v2,
+				   double s3, const numfixarray<N,T>& v3,
+				   double s4, const numfixarray<N,T>& v4,
+				   double s5, const numfixarray<N,T>& v5,
+				   double s6, const numfixarray<N,T>& v6,
+				   double s7, const numfixarray<N,T>& v7,
+				   double s8, const numfixarray<N,T>& v8)
+{
+  nvp  first  = fixarray<N,T>::begin();
+  cnvp last   = fixarray<N,T>::end();
+  cnvp f1 = v1.fixarray<N,T>::begin();
+  cnvp f2 = v2.fixarray<N,T>::begin();
+  cnvp f3 = v3.fixarray<N,T>::begin();
+  cnvp f4 = v4.fixarray<N,T>::begin();
+  cnvp f5 = v5.fixarray<N,T>::begin();
+  cnvp f6 = v6.fixarray<N,T>::begin();
+  cnvp f7 = v7.fixarray<N,T>::begin();
+  cnvp f8 = v8.fixarray<N,T>::begin();
+
+  while(first != last)
+    {
+      (*first++) = +s1*(*f1++)+s2*(*f2++)+s3*(*f3++)+s4*(*f4++)
+	+s5*(*f5++)+s6*(*f6++)+s7*(*f7++)+s8*(*f8++);
     }
 }
 

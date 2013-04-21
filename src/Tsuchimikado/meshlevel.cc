@@ -459,8 +459,8 @@ namespace Tsuchimikado
       {
 	for (int l=0;l<4;++l)
 	  {
-	    MeshVertex<DIM> v1 = __TC->vertex(__TC->line(__TC->quad(*it).line(l)).node(0));
-	    MeshVertex<DIM> v2 = __TC->vertex(__TC->line(__TC->quad(*it).line(l)).node(1));
+	    Gascoigne::Vertex<DIM> v1 = __TC->vertex(__TC->line(__TC->quad(*it).line(l)).node(0));
+	    Gascoigne::Vertex<DIM> v2 = __TC->vertex(__TC->line(__TC->quad(*it).line(l)).node(1));
 	    OUT << v1 << endl << v2 << endl << endl;
 	  }
       }
@@ -481,8 +481,8 @@ namespace Tsuchimikado
       {
 	for (int l=0;l<4;++l)
 	  {
-	    MeshVertex<DIM> v1 = __TC->vertex(__TC->line(__TC->quad(*it).line(l)).node(0));
-	    MeshVertex<DIM> v2 = __TC->vertex(__TC->line(__TC->quad(*it).line(l)).node(1));
+	    Gascoigne::Vertex<DIM> v1 = __TC->vertex(__TC->line(__TC->quad(*it).line(l)).node(0));
+	    Gascoigne::Vertex<DIM> v2 = __TC->vertex(__TC->line(__TC->quad(*it).line(l)).node(1));
 	    OUT << v1 << endl << v2 << endl << endl;
 	  }
       }

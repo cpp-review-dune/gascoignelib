@@ -5,7 +5,7 @@
 /*----------------------------   boundaryfunction.h     ---------------------------*/
 
 #include  <string>
-#include  "meshvertex.h"
+#include  "vertex.h"
 
 /*---------------------------------------------------*/
 
@@ -22,10 +22,10 @@ namespace Tsuchimikado
       virtual ~BoundaryFunction() {}
 
       virtual std::string GetName() const=0;
-      virtual double operator()(const MeshVertex<DIM>& c) const=0;
+      virtual double operator()(const Gascoigne::Vertex<DIM>& c) const=0;
   
-      virtual void grad(MeshVertex<DIM>& dst, const MeshVertex<DIM>& src) const;
-      virtual void newton(MeshVertex<DIM>&) const;
+      virtual void grad(Gascoigne::Vertex<DIM>& dst, const Gascoigne::Vertex<DIM>& src) const;
+      virtual void newton(Gascoigne::Vertex<DIM>&) const;
     };
 }
 

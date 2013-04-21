@@ -482,7 +482,7 @@ namespace Tsuchimikado
   // ------------------------------
 
   template<int DIM> 
-  int TriaContainer<DIM>::add(const VERTEX& v)
+  int TriaContainer<DIM>::add(const Gascoigne::Vertex<DIM>& v)
   { __vertices.push_back(v); return __vertices.size()-1; }
 
 
@@ -539,9 +539,9 @@ namespace Tsuchimikado
   
   // **************************************************
 
-  template<int DIM> MeshVertex<DIM> TriaContainer<DIM>::new_middle_vertex(const LINE& L) const
+  template<int DIM> Gascoigne::Vertex<DIM> TriaContainer<DIM>::new_middle_vertex(const LINE& L) const
   {
-    MeshVertex<DIM> v;
+    Gascoigne::Vertex<DIM> v;
     for (int n=0;n<2;++n) v += vertex(L.node(n));
     v *= 0.5;
     return v;
@@ -549,9 +549,9 @@ namespace Tsuchimikado
 
   // **************************************************
 
-  template<int DIM> MeshVertex<DIM> TriaContainer<DIM>::new_middle_vertex(const QUAD& Q) const
+  template<int DIM> Gascoigne::Vertex<DIM> TriaContainer<DIM>::new_middle_vertex(const QUAD& Q) const
   {
-    MeshVertex<DIM> v;
+    Gascoigne::Vertex<DIM> v;
     for (int n=0;n<4;++n) v += vertex(Q.node(n));
     v *=0.25;
     return v;
@@ -559,9 +559,9 @@ namespace Tsuchimikado
 
   // **************************************************
 
-  template<int DIM> MeshVertex<DIM> TriaContainer<DIM>::new_middle_vertex(const HEX& H) const
+  template<int DIM> Gascoigne::Vertex<DIM> TriaContainer<DIM>::new_middle_vertex(const HEX& H) const
   {
-    MeshVertex<DIM> v;
+    Gascoigne::Vertex<DIM> v;
     for (int n=0;n<8;++n) v += vertex(H.node(n));
     v *= 0.125;
     return v;
@@ -725,7 +725,7 @@ namespace Tsuchimikado
     
     if (L.type()==1) return false;
 
-    MeshVertex<DIM> v = new_middle_vertex(L);
+    Gascoigne::Vertex<DIM> v = new_middle_vertex(L);
     int nvi  = add(v);    
     
     // create two new lines
@@ -774,7 +774,7 @@ namespace Tsuchimikado
       }
     
     
-    VERTEX v = new_middle_vertex(Q);
+    Gascoigne::Vertex<DIM> v = new_middle_vertex(Q);
     int nvi  = add(v);
       
     // create 3 lines
@@ -979,7 +979,7 @@ namespace Tsuchimikado
     // ISOTROPIC REFINEMENT: create new middle node
     if (type==(REF_X|REF_Y|REF_Z))
       {
-	VERTEX v;
+	Gascoigne::Vertex<DIM> v;
 	for (int i=0;i<8;++i) v+=vertex(H.node(i));
 	v*=0.125;
 	cn[13] = add(v);
@@ -1174,7 +1174,7 @@ namespace Tsuchimikado
 	for (int c=0;c<ncells();++c)
 	  //	  if (cell(c).type()==0)
 	    {
-	      MeshVertex<DIM> v;
+	      Gascoigne::Vertex<DIM> v;
 	      for (int k=0;k<4;++k) 
 		v += vertex(cell(c).node(k));
 	      v *= 0.25;
@@ -1189,7 +1189,7 @@ namespace Tsuchimikado
 	for (int c=0;c<nlines();++c)
 	  //	  if (line(c).type()==0)
 	    {
-	      MeshVertex<DIM> v;
+	      Gascoigne::Vertex<DIM> v;
 	      for (int k=0;k<2;++k) 
 		v += vertex(line(c).node(k));
 	      v *= 0.5;
@@ -1230,7 +1230,7 @@ namespace Tsuchimikado
     assert((d1==0)&&(d2==0)&&(d3==0));
 
     // read nodes
-    MeshVertex<2> v;
+    Gascoigne::Vertex<2> v;
     for (int i=0;i<nnodes;++i)
       {
 	IN >> index >> v >> dv;
@@ -1322,7 +1322,7 @@ namespace Tsuchimikado
     assert((d1==0)&&(d2==0)&&(d3==0));
 
     // read nodes
-    MeshVertex<3> v;
+    Gascoigne::Vertex<3> v;
     for (int i=0;i<nnodes;++i)
       {
 	IN >> index >> v ;
@@ -1504,7 +1504,7 @@ namespace Tsuchimikado
 
 
     int tmp;
-    VERTEX tmpv;
+    Gascoigne::Vertex<DIM> tmpv;
     // vertices
     IN >> tmp; if (tmp>0) __vertices.resize(tmp);
     for (int i=0;i<__vertices.size();++i) IN >> __vertices[i];
@@ -1598,7 +1598,7 @@ namespace Tsuchimikado
     int tmp;
     char c;
 
-    VERTEX tmpv;
+    Gascoigne::Vertex<DIM> tmpv;
     // vertices
     IN >> tmp; if (tmp>0) __vertices.resize(tmp);
 

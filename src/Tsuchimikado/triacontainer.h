@@ -5,7 +5,7 @@
 
 #include "tsuchimikado.h"
 #include "element.h"
-#include "meshvertex.h"
+#include "vertex.h"
 #include <tr1/unordered_set>
 #include <tr1/unordered_map>
 
@@ -34,7 +34,6 @@ namespace Tsuchimikado
       typedef Element<3>       HEX;
       typedef Element<2>       QUAD;
       typedef Element<1>       LINE;
-      typedef MeshVertex<DIM>  VERTEX;
       typedef Element<DIM>     CELL;
 
       //      typedef __gnu_cxx::hash_map<int,int> HASH_MAP;
@@ -49,7 +48,7 @@ namespace Tsuchimikado
       /**
        * Data of the Mesh
        **/
-      std::vector<VERTEX> __vertices;
+      std::vector<Gascoigne::Vertex<DIM> > __vertices;
       std::vector<HEX>    __hexes;
       std::vector<QUAD>   __quads;
       std::vector<LINE>   __lines;
@@ -93,7 +92,7 @@ namespace Tsuchimikado
       /**
        * adds new element to the mesh and return id
        **/
-      int add(const VERTEX& v);
+      int add(const Gascoigne::Vertex<DIM>& v);
       int add(const HEX&  h);
       int add(const QUAD& q);
       int add(const LINE& l);
@@ -273,13 +272,13 @@ namespace Tsuchimikado
       const int nlines()    const { return __lines.size(); }
       const int ncells()    const;
       
-      const VERTEX& vertex(int i) const { assert(i>=0); assert(i<nvertices()); return __vertices[i]; }
+      const Gascoigne::Vertex<DIM>& vertex(int i) const { assert(i>=0); assert(i<nvertices()); return __vertices[i]; }
       const HEX&      hex (int i) const { assert(i>=0); assert(i<nhexes());    return __hexes[i]; }
       const QUAD&     quad(int i) const { assert(i>=0); assert(i<nquads());    return __quads[i]; }
       const LINE&     line(int i) const { assert(i>=0); assert(i<nlines());    return __lines[i]; }
       const CELL&     cell(int i) const;
 
-      VERTEX& vertex(int i) { assert(i>=0); assert(i<nvertices()); return __vertices[i]; }
+      Gascoigne::Vertex<DIM>& vertex(int i) { assert(i>=0); assert(i<nvertices()); return __vertices[i]; }
       HEX&      hex (int i) { assert(i>=0); assert(i<nhexes());    return __hexes[i]; }
       QUAD&     quad(int i) { assert(i>=0); assert(i<nquads());    return __quads[i]; }
       LINE&     line(int i) { assert(i>=0); assert(i<nlines());    return __lines[i]; }
@@ -376,9 +375,9 @@ namespace Tsuchimikado
       int node_0_of_boundary_quad(const int hex_number,const int boundary_quad_number) const;
   
       // refine, new vertices
-      MeshVertex<DIM> new_middle_vertex(const LINE& L) const;
-      MeshVertex<DIM> new_middle_vertex(const QUAD& Q) const;
-      MeshVertex<DIM> new_middle_vertex (const HEX& H)  const;
+      Gascoigne::Vertex<DIM> new_middle_vertex(const LINE& L) const;
+      Gascoigne::Vertex<DIM> new_middle_vertex(const QUAD& Q) const;
+      Gascoigne::Vertex<DIM> new_middle_vertex (const HEX& H)  const;
   
       //////////////////////////////////////// PUBLIC FUNCTIONS FOR REFINEMENT
       /**
