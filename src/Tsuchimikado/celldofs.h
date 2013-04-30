@@ -24,8 +24,7 @@ namespace Tsuchimikado
       std::vector<Gascoigne::Vertex<DIM> > __vertices;
 
     public:
-
-      
+    
       int nvertices() const { return __vertices.size(); }
       
       const Gascoigne::Vertex<DIM>& vertex(int i) const { assert(i<nvertices()); return __vertices[i]; }

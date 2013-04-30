@@ -8,6 +8,8 @@
 #include "triacontainer.h"
 #include "meshlevel.h"
 #include "vertex.h"
+#include "fixarray.h"
+#include <vector>
 
 namespace Tsuchimikado
 {
@@ -22,10 +24,17 @@ namespace Tsuchimikado
    * PD=2: Q4
    **/
 
+
+  // dofs per line and dofs per element
+#define DPL(p) ( (1<<p)+1 )
+#define DPE(d,p) ( (d==2)?(DPL(p)*DPL(p)):(DPL(p)*DPL(p)*DPL(p)))
+  
   template<int DIM, int PD>
     class ContinuousCellDofs : public CellDofs<DIM>
   {
     const TriaContainer<DIM>* __TC;
+
+    std::vector<Gascoigne::fixarray<DPE(DIM,PD), int> > __dofs;
     
   public:
     ContinuousCellDofs()
@@ -42,16 +51,8 @@ namespace Tsuchimikado
 
 
     /// simple access
-    int dofs_per_line() const
-    { return (1<<PD)+1; }
-
-    int dofs_per_element() const
-    {
-      if (DIM==2)      return dofs_per_line()*dofs_per_line();
-      else if (DIM==3) return dofs_per_line()*dofs_per_line()*dofs_per_line();
-      abort();
-    }
-
+    int dofs_per_line()    const { return DPL(PD); }
+    int dofs_per_element() const { return DPE(DIM,PD); }
     
 
   protected:
@@ -68,6 +69,8 @@ namespace Tsuchimikado
 
 }
 
+#undef DPL
+#undef DPE
 
 
 /*----------------------------   continuouscelldofs.h     ---------------------------*/

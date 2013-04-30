@@ -13,33 +13,55 @@ namespace Tsuchimikado
   {
     assert((DIM==2)||(DIM==3));
     this->__vertices.clear();
+    this->__dofs.clear();
+
+    /////////// create dofs on nodes
+    // list of active nodes
+    // active node <-> dof
+
+    /////////// create dofs on lines
+    // list of active lines 
+    // inner dof's on lines
     
-    // number of vertices in a line
-    int nvl = (1<<PD)+1;
-    // number of vertices in a cell
-    int nvc = nvl*nvl; if (DIM==3) nvc*=nvl;
+    /////////// create dofs on quads
+    // list of active quads
+    // inner dof's on quads
+
+    /////////// create dofs on hexes
+    // list of active hexes
+    // inner dof's on hexes
     
+
+    // create vertices
     
     // create dofs & vertices
     for (int c=0;c<ML.size();++c)
       {
-	if (DIM==2)      create_dofs_in_element2d(ML[c]);
-	else if (DIM==3) create_dofs_in_element3d(ML[c]);
+	if (DIM==2)      create_dofs_in_element_2d(ML[c]);
+	else if (DIM==3) create_dofs_in_element_3d(ML[c]);
 	else abort();
       }
   }
 
 
   template<int DIM, int PD>
-  Vertex<DIM> ContinuousCellDofs<DIM,PD>::create_dofs_in_element2d(int cell)
+  void ContinuousCellDofs<DIM,PD>::create_dofs_in_element_2d(int cell)
   {
-
+    // create dofs_per_line() * dofs_per_line() dofs
+    // in lexicographic order
+    for (int iy=0;iy<dofs_per_line();++iy)
+      for (int ix=0;ix<dofs_per_line();++ix)
+	{
+	  std::cout << dofs_per_line() << " " << dofs_per_element() << std::endl;
+	  
+	}
   }
   
 
   template<int DIM, int PD>
-  Vertex<DIM> ContinuousCellDofs<DIM,PD>::create_dofs_in_element3d(int cell)
+  void ContinuousCellDofs<DIM,PD>::create_dofs_in_element_3d(int cell)
   {
+    abort();
   }
   
 
@@ -100,6 +122,8 @@ namespace Tsuchimikado
   template class ContinuousCellDofs<2,0>;
   template class ContinuousCellDofs<2,1>;
   template class ContinuousCellDofs<2,2>;
+  template class ContinuousCellDofs<2,3>;
+  template class ContinuousCellDofs<2,4>;
   
 
 
