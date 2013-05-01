@@ -34,7 +34,7 @@ int main(int argc, char** argv)
   TriaContainer<__DIM__> TC;//(0);
   
   stringstream meshname;
-  meshname << "o" << __DIM__ << "d.inp";
+  meshname << "m" << __DIM__ << "d.inp";
   
   string mn = meshname.str();
   if (argc>=2)
@@ -78,7 +78,9 @@ int main(int argc, char** argv)
       S.stop();
 
 
-      ContinuousCellDofs<__DIM__,2> CCD;
+      cout << MH.GetMeshLevel(0).size() << "\t";
+      
+      ContinuousCellDofs<__DIM__,1> CCD;
       CCD.BasicInit(&TC);
       CCD.ReInit(MH.GetMeshLevel(0));
       

@@ -25,23 +25,32 @@ namespace Tsuchimikado
    **/
   
   template<int DIM> 
-    class MeshLevel : public std::vector<int>
+    class MeshLevel
     {
-    protected:
-      //      typedef HASH_SET     HASH_SET;
+    public:
       typedef std::tr1::unordered_map<int,int> HASH_MAP;
       typedef std::tr1::unordered_set<int>     HASH_SET;
-      //      typedef __gnu_cxx::hash_set<int>     HASH_SET;
-      //      typedef __gnu_cxx::hash_map<int,int> HASH_MAP;
       
-      typedef std::vector<int>::const_iterator IT;
+      typedef std::vector<int>::const_iterator CIT;
+      typedef std::vector<int>::iterator       IT;
+      
       typedef Element<DIM>             CELL;
       typedef Element<1>               LINE;
       typedef Element<2>               QUAD;
-      
+
+    protected:
       ////////////////////////////////////////////////// DATA
       const TriaContainer<DIM>* __TC;
 
+      
+
+
+      std::vector<int> __nodes;
+      std::vector<int> __lines;
+      std::vector<int> __quads;
+      std::vector<int> __hexes;
+      
+      
       HASH_MAP __Cg2l;
       
       HASH_SET     __hanging_lines;
@@ -63,29 +72,60 @@ namespace Tsuchimikado
       
     public:
       ~MeshLevel() {}
-      MeshLevel(const TriaContainer<DIM>& TC) : __TC(&TC) {}
-      MeshLevel() : __TC(0) { abort(); }
+      MeshLevel(const TriaContainer<DIM>& TC);
+      MeshLevel();
+
+      void clear();
+
+      ////// Access
+      int nnodes() const { return __nodes.size(); }
+      int nlines() const { return __lines.size(); }
+      int nquads() const { return __quads.size(); }
+      int nhexes() const { return __hexes.size(); }
+
+      CIT nodes_begin() const { return __nodes.begin(); }
+      CIT nodes_end()   const { return __nodes.end(); }
+      CIT lines_begin() const { return __lines.begin(); }
+      CIT lines_end()   const { return __lines.end(); }
+      CIT quads_begin() const { return __quads.begin(); }
+      CIT quads_end()   const { return __quads.end(); }
+      CIT hexes_begin() const { return __hexes.begin(); }
+      CIT hexes_end()   const { return __hexes.end(); }
+	
       
+
+      // access to elements (depends on DIM)
+      int size() const;
+      CIT begin() const;
+      CIT end() const;
+      IT  begin();
+      IT  end();
+      const int& operator[](size_t n) const;
+      int& operator[](size_t n);
+      
+      void push_back(const int& e);
+      
+            
       int Cellg2l(int g) const
-	{
-	  assert(__Cg2l.find(g)!=__Cg2l.end());
-	  return __Cg2l.find(g)->second;
-	}
+      {
+	assert(__Cg2l.find(g)!=__Cg2l.end());
+	return __Cg2l.find(g)->second;
+      }
       int Celll2g(int g) const
-	{
-	  assert(g<this->size());
-	  return (*this)[g];
-	}
+      {
+	assert(g<this->size());
+	return (*this)[g];
+      }
       bool CellInMesh(int g) const
-	{
-	  return(__Cg2l.find(g)!=__Cg2l.end());
-	}
+      {
+	return(__Cg2l.find(g)!=__Cg2l.end());
+      }
 
       ////////////////////////////////////////////////// Hanging
       bool line_is_hanging(int l) const
-	{ return __hanging_lines.find(l)!=__hanging_lines.end(); }
+      { return __hanging_lines.find(l)!=__hanging_lines.end(); }
       bool quad_is_hanging(int q) const
-	{ return __hanging_quads.find(q)!=__hanging_quads.end(); }
+      { return __hanging_quads.find(q)!=__hanging_quads.end(); }
 
       const HASH_SET& GetHangingLines() const { return __hanging_lines; }      
       const HASH_SET& GetHangingQuads() const { return __hanging_quads; }      
@@ -100,6 +140,8 @@ namespace Tsuchimikado
 	HASH_SET nix;
 	init_from_meshlevel(ML,nix);
       }
+      void post_init();
+      
 
       void print_gnuplot(const std::string& fname) const;
       
@@ -108,6 +150,11 @@ namespace Tsuchimikado
 
 
     };
+
+
+  //////////////////////////////////////////////////
+
+  
 }
 
 

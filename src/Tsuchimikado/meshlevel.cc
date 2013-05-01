@@ -7,7 +7,51 @@ using namespace std;
 
 namespace Tsuchimikado
 {
+
   
+  //////////////////////////////////////////////////
+  
+  template<>
+  int MeshLevel<2>::size() const { return nquads(); }
+  template<>
+  int MeshLevel<3>::size() const { return nhexes(); }
+
+  template<>
+    MeshLevel<2>::CIT MeshLevel<2>::begin() const { return __quads.begin(); }
+  template<>
+    MeshLevel<3>::CIT MeshLevel<3>::begin() const { return __hexes.begin(); }
+  template<>
+    MeshLevel<2>::IT MeshLevel<2>::begin() { return __quads.begin(); }
+  template<>
+    MeshLevel<3>::IT MeshLevel<3>::begin() { return __hexes.begin(); }
+
+  template<>
+    MeshLevel<2>::CIT MeshLevel<2>::end() const { return __quads.end(); }
+  template<>
+    MeshLevel<3>::CIT MeshLevel<3>::end() const { return __hexes.end(); }
+  template<>
+    MeshLevel<2>::IT MeshLevel<2>::end() { return __quads.end(); }
+  template<>
+    MeshLevel<3>::IT MeshLevel<3>::end() { return __hexes.end(); }
+      
+
+  template<>
+    const int& MeshLevel<2>::operator[](size_t n) const { return __quads[n]; }
+  template<>
+    const int& MeshLevel<3>::operator[](size_t n) const { return __hexes[n]; }
+  template<>
+    int& MeshLevel<2>::operator[](size_t n) { return __quads[n]; }
+  template<>
+    int& MeshLevel<3>::operator[](size_t n) { return __hexes[n]; }
+
+  template<>
+    void MeshLevel<2>::push_back(const int& e) {__quads.push_back(e);  }
+  template<>
+    void MeshLevel<3>::push_back(const int& e) {__hexes.push_back(e);  }
+  
+  
+
+
 
   // ==================================================
 
@@ -17,14 +61,13 @@ namespace Tsuchimikado
     assert(DIM==__TC->dimension());
   
     clear();
-    __changed.clear();    
-
+    
     for (int c=0;c<__TC->ncells();++c)
       if (__TC->cell(c).nchilds()==0) this->push_back(c);
     
-    __Cg2l.clear();
     for (int c=0;c<this->size();++c) __Cg2l[(*this)[c]]=c;
 
+    post_init();
     init_hanging();
     if (!mesh_ok())
       abort();
@@ -44,11 +87,11 @@ namespace Tsuchimikado
 
     // hash set of cells in fine mesh for fast access
     HASH_SET oldcells;
-    for (IT it = ML.begin();it!=ML.end();++it)
+    for (CIT it = ML.begin();it!=ML.end();++it)
       oldcells.insert(*it);
 
     // add new cells
-    for (IT it = ML.begin();it!=ML.end();++it)
+    for (CIT it = ML.begin();it!=ML.end();++it)
       {
 	// if all siblings are in fine mesh, add father, 
 	// otherwise add cell itself
@@ -85,6 +128,7 @@ namespace Tsuchimikado
 
 
     init_hanging();
+    
     bool ok;
     do
       {
@@ -92,9 +136,56 @@ namespace Tsuchimikado
 	init_hanging();
       }
     while (!ok);
-    
-    
+
+    post_init();
   }
+
+  template<int DIM>
+  void MeshLevel<DIM>::post_init()
+  {
+    ////////////// for 3d, init quads
+    set<int> tmp;
+
+    if (DIM==3)
+      {
+	__quads.clear(); tmp.clear();
+	for (CIT it=begin();it!=end();++it)
+	  {
+	    int cell = this->operator[](*it);
+	    for (int nn=0;nn<6;++nn)
+	      tmp.insert(__TC->cell(cell).quad(nn));
+	  }
+	std::copy(tmp.begin(), tmp.end(), std::back_inserter(__quads));
+      }
+    
+    ///////////// init lines (2d and 3d)
+    __lines.clear(); tmp.clear();
+    for (int i=0;i<__quads.size();++i)
+      {
+	int quad = __quads[i];
+	for (int nn=0;nn<4;++nn)
+	  tmp.insert(__TC->quad(quad).line(nn));
+      }
+    std::copy(tmp.begin(), tmp.end(), std::back_inserter(__lines));    
+    
+
+    ///////////////// init nodes (2d and 3d)
+    __nodes.clear(); tmp.clear();
+    for (CIT it=begin();it!=end();++it)
+      {
+	int cell = *it;
+	for (int nn=0;nn<__TC->cell(cell).nnodes();++nn)
+	  tmp.insert(__TC->cell(cell).node(nn));
+      }
+    std::copy(tmp.begin(), tmp.end(), std::back_inserter(__nodes));
+
+    // std::cerr << "mesh: nodes/lines/quads/hexes:  "
+    // 	      << __nodes.size() << " " 
+    // 	      << __lines.size() << " " 
+    // 	      << __quads.size() << " " 
+    // 	      << __hexes.size() << std::endl;
+  }
+  
 
   // ==================================================
 
@@ -147,7 +238,7 @@ namespace Tsuchimikado
     __hanging_quads.clear();
     // create set of all lines and quads in this mesh
     HASH_SET lines,quads;
-    for (IT it=begin();it!=end();++it)
+    for (CIT it=begin();it!=end();++it)
       {
 	for (int q=0;q<6;++q)
 	  quads.insert(__TC->cell(*it).quad(q));
@@ -455,7 +546,7 @@ namespace Tsuchimikado
   {
     assert(DIM==2);
     ofstream OUT(fname.c_str());
-    for (IT it=begin();it!=end();++it)
+    for (CIT it=begin();it!=end();++it)
       {
 	for (int l=0;l<4;++l)
 	  {
@@ -477,7 +568,7 @@ namespace Tsuchimikado
     data << fname << "_data";
 
     ofstream OUT(data.str().c_str());
-    for (IT it=begin();it!=end();++it)
+    for (CIT it=begin();it!=end();++it)
       {
 	for (int l=0;l<4;++l)
 	  {
@@ -516,7 +607,34 @@ namespace Tsuchimikado
 
 
 
+
   // ==================================================
+  template<int DIM>
+    MeshLevel<DIM>::MeshLevel() : __TC(0)
+    {
+      abort();
+    }
+
+  template<int DIM>
+    MeshLevel<DIM>::MeshLevel(const TriaContainer<DIM>& TC) : __TC(&TC)
+    {}
+  
+
+  template<int DIM>
+    void MeshLevel<DIM>::clear() 
+    {
+      __nodes.clear();
+      __lines.clear();
+      __quads.clear();
+      __hexes.clear();
+      __Cg2l.clear();
+      __hanging_lines.clear();
+      __hanging_quads.clear();
+      __hanging_nodes_on_lines.clear();
+      __hanging_nodes_on_quads.clear();
+      __double_hanging_nodes.clear();
+      __changed.clear();
+    }
 
   template class MeshLevel<2>;
   template class MeshLevel<3>;
