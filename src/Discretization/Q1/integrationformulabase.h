@@ -65,6 +65,7 @@ public:
  
   int    n()                 const { return _in;}
   double w(int k)            const { return _iw[k];}
+  const VERTEX& c(int k) const { return _ic[k];}
   const DoubleVector& w() const { return _iw;}
 
   double& w(int k) { return _iw[k];}
