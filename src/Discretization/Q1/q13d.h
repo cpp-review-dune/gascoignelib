@@ -1,27 +1,3 @@
-/**
-*
-* Copyright (C) 2004, 2005, 2006, 2009 by the Gascoigne 3D authors
-*
-* This file is part of Gascoigne 3D
-*
-* Gascoigne 3D is free software: you can redistribute it
-* and/or modify it under the terms of the GNU General Public
-* License as published by the Free Software Foundation, either
-* version 3 of the License, or (at your option) any later
-* version.
-*
-* Gascoigne 3D is distributed in the hope that it will be
-* useful, but WITHOUT ANY WARRANTY; without even the implied
-* warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-* PURPOSE.  See the GNU General Public License for more
-* details.
-*
-* Please refer to the file LICENSE.TXT for further information
-* on this license.
-*
-**/
-
-
 #ifndef  __Q1Simple3d_h
 #define  __Q1Simple3d_h
 
@@ -49,7 +25,7 @@ class Q13d : public Q1
   void EEJumps(EdgeInfoContainer<3>& EIC, const GlobalVector& u, const EnergyEstimatorIntegrator<3>& EEI, const HierarchicalMesh3d* HM) const;
   void EEJumpNorm(EdgeInfoContainer<3>& EIC, DoubleVector& eta, const EnergyEstimatorIntegrator<3>& EEI, const HierarchicalMesh3d* HM) const;
   void EEResidual(DoubleVector& eta, const GlobalVector& u, const Equation& EQ, const DomainRightHandSide* RHS, const EnergyEstimatorIntegrator<3>& EEI) const;
-  int GetCellNumber(const Vertex3d& p0, Vertex3d& p) const;
+  int GetCellNumber(const Vertex3d& p0, Vertex3d& p, int c0=0) const;
   void VertexTransformation(const Vertex3d& p0, Vertex3d& p, int iq) const;
 
 public:
