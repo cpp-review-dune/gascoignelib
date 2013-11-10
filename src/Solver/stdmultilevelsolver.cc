@@ -602,9 +602,9 @@ double StdMultiLevelSolver::NewtonUpdate(double& rr, VectorInterface& x, VectorI
   double nn = NewtonNorm(dx);
   double nr = GetSolver(ComputeLevel)->Norm(r);
 
-  if (nn>1.e10)  lex =1;
+  if (nn>1.e30)  lex =1;
   if (!(nn>=0.)) lex =1;
-  if (nr>1.e10)  lex =1;
+  if (nr>1.e30)  lex =1;
   if (!(nr>=0.)) lex =1;
 
   if(lex)
@@ -617,40 +617,36 @@ double StdMultiLevelSolver::NewtonUpdate(double& rr, VectorInterface& x, VectorI
 
   double omega = 0.7;
   double relax = 1.;
-    
-  string message = "";
+
   GetSolver(ComputeLevel)->SetPeriodicVectorZero(dx);
 
+  GetSolver(ComputeLevel)->Add(x,relax,dx);
+  NewtonResidual(r,x,f);
+  rr = NewtonNorm(r);
+
+  string message = "";
   for(int iter=0;iter<nlinfo.user().maxrelax();iter++)
     {
-      if(iter>0)
-        {
-//          GetSolver(ComputeLevel)->GetGV(x).add(relax*(omega-1.),GetSolver(ComputeLevel)->GetGV(dx));
-	  GetSolver(ComputeLevel)->Add(x,relax*(omega-1.),dx);
-	  
-          relax *= omega;
-        }
-      else
-        {
-//          GetSolver(ComputeLevel)->GetGV(x).add(relax,GetSolver(ComputeLevel)->GetGV(dx));
-	  GetSolver(ComputeLevel)->Add(x,relax,dx);
-        }
-
-      NewtonResidual(r,x,f);
-      rr = NewtonNorm(r);
       message = nlinfo.check_damping(iter,rr);
 
       if (message=="ok")       break;
-      if (message=="continue") continue;
-      if (message=="exploded") 
-        {
-//          GetSolver(ComputeLevel)->GetGV(x).add(-relax,GetSolver(ComputeLevel)->GetGV(dx));
-	  GetSolver(ComputeLevel)->Add(x,-relax,dx);
-          relax = 0.;
-          cout << "Damping exploded !!!!!" << endl;
-          nlinfo.control().status() = "diverged";
-          break;
-        }
+      if (message=="continue") 
+      {
+        GetSolver(ComputeLevel)->Add(x,relax*(omega-1.),dx);  
+
+        NewtonResidual(r,x,f);
+        rr = NewtonNorm(r);
+        relax *= omega;
+        continue;
+      }
+      if (message=="exploded")
+      {
+        GetSolver(ComputeLevel)->Add(x,-relax,dx);
+        relax = 0.;
+        cout << "Damping exploded !!!!!" << endl;
+        nlinfo.control().status() = "diverged";
+        break;
+      }
     }
 
   // NewtonUpdateShowCompResiduals(nlinfo.control().iteration(), x, r, f,dx);
