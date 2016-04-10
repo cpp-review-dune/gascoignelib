@@ -67,8 +67,6 @@ namespace Gascoigne
 
       virtual const DoubleVector GetExactValues() const=0;
       virtual const DoubleVector ComputeFunctionals(VectorInterface& f, const VectorInterface& u)=0;
-      virtual const DoubleVector ComputeFunctionals(VectorInterface& f, const VectorInterface& u,
-						    FunctionalContainer* FC)=0;
       
       virtual void ReInitMatrix()=0;
 
@@ -84,7 +82,6 @@ namespace Gascoigne
       virtual void AssembleMatrix(VectorInterface& u, NLInfo& nlinfo)=0;
       virtual void AssembleMatrix(VectorInterface& u)=0;
       virtual void ComputeIlu(VectorInterface& u)=0;
-      virtual void ComputeIlu()=0;
       
       virtual void BoundaryInit(VectorInterface& u) const=0;
 

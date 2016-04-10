@@ -83,6 +83,9 @@
 
 #include  "glsequation.h"
 #include  "lpsequation.h"
+#include "stopwatch.h"
+
+extern Gascoigne::Stoppers GlobalStopWatch;
 
 using namespace std;
 
@@ -858,9 +861,11 @@ void StdSolver::residualgmres(VectorInterface& gy, const VectorInterface& gx, co
 
 void StdSolver::vmult(VectorInterface& gy, const VectorInterface& gx, double d) const
 {
+  GlobalStopWatch.start("StdSolver::vmult");
   _vm.start();
   GetMatrix()->vmult(GetGV(gy),GetGV(gx),d);
   _vm.stop();
+  GlobalStopWatch.stop("StdSolver::vmult");
 }
 
 /*-----------------------------------------*/
@@ -1021,7 +1026,9 @@ void StdSolver::smooth(int niter, VectorInterface& x, const VectorInterface& y, 
       if (GetSolverData().GetLinearSmooth()=="ilu")
 	{
 	  MatrixResidual(h,x,y);
+	  GlobalStopWatch.start("StdSolver::smooth");
 	  GetIlu()->solve(GetGV(h));
+	  GlobalStopWatch.stop("StdSolver::smooth");
 	  Add(x,omega,h);
 	}
       else if (GetSolverData().GetLinearSmooth()=="jacobi")
@@ -1062,11 +1069,13 @@ void StdSolver::smooth_exact(VectorInterface& x, const VectorInterface& y, Vecto
 #ifdef __WITH_UMFPACK__
   if(_directsolver&&_useUMFPACK)
     {
+      GlobalStopWatch.start("StdSolver::smooth_exact");
       _so.start();
       UmfIlu* UM = dynamic_cast<UmfIlu*>(GetIlu());
       assert(UM);
       UM->Solve(GetGV(x),GetGV(y));
       _so.stop();
+      GlobalStopWatch.stop("StdSolver::smooth_exact");
     }
   else
 #endif
@@ -1088,6 +1097,7 @@ void StdSolver::smooth_post(VectorInterface& x, const VectorInterface& y, Vector
 
 void StdSolver::Form(VectorInterface& gy, const VectorInterface& gx, double d) const
 {
+  GlobalStopWatch.start("StdSolver::Form\t");
   _re.start();
 
   HNAverage(gx);
@@ -1116,6 +1126,7 @@ void StdSolver::Form(VectorInterface& gy, const VectorInterface& gx, double d) c
   SubtractMeanAlgebraic(gy);
 
   _re.stop();
+  GlobalStopWatch.stop("StdSolver::Form\t");
 }
 
 /*-------------------------------------------------------*/
@@ -1396,6 +1407,7 @@ void StdSolver::InterpolateDomainFunction(VectorInterface&  f, const DomainFunct
 
 void StdSolver::Rhs(VectorInterface& gf, double d) const
 {
+  GlobalStopWatch.start("StdSolver::Rhs\t");
   GlobalVector& f = GetGV(gf);
   HNAverageData();
 
@@ -1433,12 +1445,14 @@ void StdSolver::Rhs(VectorInterface& gf, double d) const
     
   HNZeroData();
   HNDistribute(gf);
+  GlobalStopWatch.stop("StdSolver::Rhs\t");
 }
 
 /*-------------------------------------------------------*/
 
 void StdSolver::AssembleMatrix(const VectorInterface& gu, double d)
 {
+  GlobalStopWatch.start("StdSolver::AssembleMatrix");
   _ca.start();
   assert(GetMatrix());
 
@@ -1467,12 +1481,15 @@ void StdSolver::AssembleMatrix(const VectorInterface& gu, double d)
   HNZeroData();
 
   _ca.stop();
+  GlobalStopWatch.stop("StdSolver::AssembleMatrix");
 }
 
 /*-------------------------------------------------------*/
 
 void StdSolver::DirichletMatrix() const
 {
+  //  GlobalStopWatch.start("StdSolver::DirichletMatrix");
+  
   const BoundaryManager* BM = GetProblemDescriptor()->GetBoundaryManager();
   const IntSet& Colors = BM->GetDirichletDataColors();
   
@@ -1482,12 +1499,14 @@ void StdSolver::DirichletMatrix() const
       const IntVector& comp = BM->GetDirichletDataComponents(col);
       GetDiscretization()->StrongDirichletMatrix(*GetMatrix(), col, comp);
     }
+  //  GlobalStopWatch.stop("StdSolver::DirichletMatrix");
 }
 
 /* -------------------------------------------------------*/
 
 void StdSolver::DirichletMatrixOnlyRow() const
 {
+  //  GlobalStopWatch.start("StdSolver::DirichletMatrix");
   const BoundaryManager* BM = GetProblemDescriptor()->GetBoundaryManager();
   const IntSet& Colors = BM->GetDirichletDataColors();
   
@@ -1497,6 +1516,7 @@ void StdSolver::DirichletMatrixOnlyRow() const
       const IntVector& comp = BM->GetDirichletDataComponents(col);
       GetDiscretization()->StrongDirichletMatrixOnlyRow(*GetMatrix(), col, comp);
     }
+  //  GlobalStopWatch.stop("StdSolver::DirichletMatrix");
 }
 
 /* -------------------------------------------------------*/
@@ -1532,39 +1552,10 @@ void StdSolver::PeriodicMatrix() const
 
 /* -------------------------------------------------------*/
 
-void StdSolver::ComputeIlu() const
-{
-#ifdef __WITH_UMFPACK__
-  if(_directsolver&&_useUMFPACK)
-    {
-      _cs.start();
-      UmfIlu* UM = dynamic_cast<UmfIlu*>(GetIlu());
-      assert(UM);
-//       if(PrimalSolve==0) return;
-      UM->Factorize();
-      _cs.stop();
-    }
-  else
-#endif
-    if (GetSolverData().GetLinearSmooth()=="ilu")
-    {
-      _ci.start();
-      IntVector perm(GetIlu()->n());
-      iota(perm.begin(),perm.end(),0);
-      GetIlu()->ConstructStructure(perm,*GetMatrix());
-      GetIlu()->zero();
-      GetIlu()->copy_entries(GetMatrix());
-      int ncomp = GetProblemDescriptor()->GetEquation()->GetNcomp();
-      modify_ilu(*GetIlu(),ncomp);
-      GetIlu()->compute_ilu();
-      _ci.stop();
-    }
-}
-
-/* -------------------------------------------------------*/
 
 void StdSolver::ComputeIlu(const VectorInterface& gu) const
 {
+  GlobalStopWatch.start("StdSolver::ComputeIlu");
 #ifdef __WITH_UMFPACK__
   if(_directsolver&&_useUMFPACK)
     {
@@ -1588,6 +1579,7 @@ void StdSolver::ComputeIlu(const VectorInterface& gu) const
       GetIlu()->compute_ilu();
       _ci.stop();
     }
+  GlobalStopWatch.stop("StdSolver::ComputeIlu");
 }
 
 /*-------------------------------------------------------*/
@@ -1705,6 +1697,8 @@ GascoigneVisualization* StdSolver::NewGascoigneVisualization() const {
 
 void StdSolver::PointVisu(const string& name, const GlobalVector& u, int i) const
 {
+  GlobalStopWatch.start("IO\t\t");
+    
   GetDiscretization()->HNAverage(const_cast<GlobalVector&>(u)); 
 
   GascoigneVisualization* p_gv   = NewGascoigneVisualization();
@@ -1728,13 +1722,17 @@ void StdSolver::PointVisu(const string& name, const GlobalVector& u, int i) cons
   Visu.write();
 
   delete p_gv;
-  GetDiscretization()->HNZero(const_cast<GlobalVector&>(u)); 
+  GetDiscretization()->HNZero(const_cast<GlobalVector&>(u));
+
+  GlobalStopWatch.stop("IO\t\t");
 }
 
 /* -------------------------------------------------------*/
 
 void StdSolver::CellVisu(const string& name, const GlobalVector& u, int i) const
 {
+  GlobalStopWatch.start("IO\t\t");
+  
   GascoigneVisualization* p_gv   = NewGascoigneVisualization();
   GascoigneVisualization& Visu   = *p_gv;
 
@@ -1756,6 +1754,7 @@ void StdSolver::CellVisu(const string& name, const GlobalVector& u, int i) const
   Visu.write();
 
   delete p_gv;
+  GlobalStopWatch.stop("IO\t\t");
 }
 
 /* -------------------------------------------------------*/
@@ -1781,17 +1780,21 @@ void StdSolver::VisuGrid(const string& name, int i) const
 
 void StdSolver::Read(VectorInterface& gu, const string& filename) const
 {
+  GlobalStopWatch.start("IO\t\t");
   GlobalVector& u = GetGV(gu);
   u.zero();
   ReadBackUp(u,filename);
+  GlobalStopWatch.stop("IO\t\t");
 }
 
 /*-------------------------------------------------------*/
 
 void StdSolver::Write(const VectorInterface& gu, const string& filename) const
 {
+  GlobalStopWatch.start("IO\t\t");
   const GlobalVector& u = GetGV(gu);
   WriteBackUp(u,filename);
+  GlobalStopWatch.stop("IO\t\t");
 }
 
 /*-------------------------------------------------------*/
@@ -1867,7 +1870,7 @@ void StdSolver::Add(VectorInterface& dst, double s, const VectorInterface& src) 
 
 void StdSolver::SAdd(double s1,VectorInterface& dst, double s2, const VectorInterface& src) const
 {
-  GetGV(dst).sadd(s1,s2,GetGV(src));
+   GetGV(dst).sadd(s1,s2,GetGV(src));
 }
 
 /*-----------------------------------------*/

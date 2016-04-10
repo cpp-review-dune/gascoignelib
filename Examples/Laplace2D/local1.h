@@ -40,41 +40,9 @@ class PolynomialExactSolution : public Gascoigne::ExactSolution
  public:
   std::string GetName() const {return "PolynomialExactSolution";}
   int GetNcomp() const { return 1; }
-  double operator()(int c, const Gascoigne::Vertex2d& v) const{
-    //   return v.x()*(1.-v.x())*v.y()*(1.-v.y());
-    return v.x()*(1.-v.x())*v.y()*(1.-v.y());// *  (exp(v.x()+v.y()));
-  }
-};
-
-// for use with slit.param !!
-class SlitExactSolution : public Gascoigne::ExactSolution
-{
-public:
-  double operator()(int c, const Gascoigne::Vertex2d& v)const 
+  double operator()(int c, const Gascoigne::Vertex2d& v) const
   {
-    double x = v.x();
-    double y = v.y();
-    double r = sqrt(x*x+y*y);
-    
-    double pi = Gascoigne::pi();
-    double theta;
-
-    double fx = fabs(x);
-    double fy = fabs(y);
-    if(fx)
-      {
-        theta = atan(fy/fx);
-
-        if     ( (x<0)&&(y>=0)) theta = pi-theta;
-        else if( (x<0)&&(y<0))  theta += pi;
-        else if( (x>0)&&(y<0))  theta = 2.*pi-theta;
-      }
-    else
-      {
-        if(y>=0) theta = 0.5*pi;
-        else     theta = 1.5*pi;
-      }
-    return pow(r,0.5)*sin(0.5*theta);
+    return sin(M_PI*v.x())*sin(M_PI*v.y());
   }
 };
 

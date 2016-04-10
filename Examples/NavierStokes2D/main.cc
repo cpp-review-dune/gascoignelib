@@ -23,7 +23,9 @@
 
 
 #include  "local.h"
+#include "stopwatch.h"
 
+extern Gascoigne::Stoppers GlobalStopWatch;
 
 using namespace std;
 using namespace Gascoigne;
@@ -44,6 +46,8 @@ public:
 
 int main(int argc, char** argv)
 {
+  GlobalStopWatch.start("0 Alles\t");
+  
   ParamFile paramfile("bench.param");
   if(argc>=2) {
     paramfile.SetName(argv[1]);
@@ -64,7 +68,14 @@ int main(int argc, char** argv)
   
   LocalLoop loop;
   loop.BasicInit(&paramfile, &PC, &FC);
+
   loop.run("navier stokes");
 
+  GlobalStopWatch.stop("0 Alles\t");
+
+  GlobalStopWatch.print();
+
+  
+  
   return 0;
 }

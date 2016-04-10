@@ -8,19 +8,27 @@ dirichletcomp      4  1 0
 
 //Block Loop
 
-niter       6
+niter       1
 refiner     global
+writevtk 0
+writebupgup 0
 
 //Block Mesh
 
 dimension   2
-prerefine   2
+prerefine   10
 gridname    square.inp
+
+//Block MultiLevelSolver
+
+nonlinear_tol 1.e-8
+nonlinear_rho 0.01
+linear_tol    1.e-6
 
 //Block Solver
 
+matrixtype block
 discname       Q2
-
-ndirect              1000
+ndirect              1
 
 //Block Nix

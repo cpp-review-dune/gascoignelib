@@ -24,6 +24,9 @@
 
 #include  "local1.h"
 #include  "stdloop.h"
+#include "stopwatch.h"
+
+extern Gascoigne::Stoppers GlobalStopWatch;
 
 using namespace Gascoigne;
 
@@ -31,6 +34,8 @@ using namespace Gascoigne;
 
 int main(int argc, char** argv)
 {
+  GlobalStopWatch.start("0 Alles\t");
+  
   ParamFile paramfile("mesh1.param");
   if(argc>=2) {
     paramfile.SetName(argv[1]);
@@ -56,9 +61,14 @@ int main(int argc, char** argv)
   // Loop
   /////////////
   StdLoop loop;
+  
   loop.BasicInit(&paramfile, &PC, &FC);
   
+
   loop.run("laplace");
+  GlobalStopWatch.stop("0 Alles\t");
+
+  GlobalStopWatch.print();
 
   return 0;
 }

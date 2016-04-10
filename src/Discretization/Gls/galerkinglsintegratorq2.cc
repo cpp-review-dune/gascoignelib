@@ -54,7 +54,7 @@ void GalerkinGlsIntegratorQ2<DIM>::Matrix(const Equation& EQ, EntryMatrix& E, co
 template GalerkinGlsIntegratorQ2<2>;
 template GalerkinGlsIntegratorQ2<3>;
 #endif
-#if __GNUC__ == 4
+#if (__GNUC__ == 4) || (__GNUC__ == 5)
 template class GalerkinGlsIntegratorQ2<2>;
 template class GalerkinGlsIntegratorQ2<3>;
 #endif

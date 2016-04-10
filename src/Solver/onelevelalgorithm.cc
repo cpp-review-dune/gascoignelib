@@ -145,7 +145,7 @@ void OneLevelAlgorithm::RunLinear(const std::string& problemlabel)
   GetSolver()->ReInitMatrix();
   GetSolver()->MatrixZero();
   GetSolver()->AssembleMatrix(u,1.);
-  GetSolver()->ComputeIlu();
+  GetSolver()->ComputeIlu(u);
   
   // Solve Linear System
   

@@ -40,7 +40,7 @@ linear_pstep		0
 //linearsolve		gmres_12
 linearsolve		mg
 nonlinear_maxiter       20
-nonlinear_rho           0.
+nonlinear_rho           0.05
 nonlinear_tol		1e-8
 nonlinear_damp          10
 

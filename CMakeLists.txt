@@ -9,7 +9,7 @@ LIST(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/)
 #
 OPTION(BUILD_SHARED_LIBS "Build shared libraries" ON)
 
-OPTION(MATRIX_DOUBLE_PRECISION "Matrix in double precision" OFF)
+OPTION(MATRIX_DOUBLE_PRECISION "Matrix in double precision" ON)
 
 OPTION(WITH_UMFPACK "Build with support for UMFPACK" OFF)
 
@@ -44,7 +44,7 @@ SET(GASCOIGNE_INCLUDE_DIRS
 # Setup compiler flags and compile definitions:
 #
 SET(GASCOIGNE_CXX_FLAGS
-  "-ansi -pedantic -Wall -Wno-sign-compare -Wold-style-cast"
+  "-ansi -pedantic -Wall -Wno-sign-compare -Wold-style-cast -std=c++11"
   )
 
 IF(MATRIX_DOUBLE_PRECISION)
@@ -111,4 +111,4 @@ IF(HAVE_TR1_UNORDERED_MAP)
   LIST(APPEND GASCOIGNE_DEFINITIONS __NEWER_THAN_GCC_4_2__)
 ENDIF()
 
-ADD_SUBDIRECTORY(src)
+SUBDIRS(src Examples)

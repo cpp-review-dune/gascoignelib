@@ -263,15 +263,6 @@ void MultiLevelSolver::SolutionTransfer(VectorInterface& u) const
 
 /*-------------------------------------------------------------*/
 
-void MultiLevelSolver::ComputeIlu()
-{
-  for(int l=0;l<=ComputeLevel;l++)
-    {
-      GetSolver(l)->ComputeIlu();
-    }
-}
-
-/*-------------------------------------------------------------*/
 
 void MultiLevelSolver::ComputeIlu(VectorInterface& u)
 {

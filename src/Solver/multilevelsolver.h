@@ -109,7 +109,6 @@ class MultiLevelSolver
   void ReInit(const std::string& problemlabel);
   void AssembleMatrix    (VectorInterface& u);
   void AssembleDualMatrix(VectorInterface& u);
-  void ComputeIlu();
   void ComputeIlu(VectorInterface& u);
   const DoubleVector ComputeFunctionals(VectorInterface& f, const VectorInterface& u,
 					FunctionalContainer* FC) const;

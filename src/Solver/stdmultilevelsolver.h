@@ -93,8 +93,6 @@ class StdMultiLevelSolver : public virtual MultiLevelSolverInterface
 
   const DoubleVector GetExactValues() const;
   const DoubleVector ComputeFunctionals(VectorInterface& f, const VectorInterface& u);
-  const DoubleVector ComputeFunctionals(VectorInterface& f, const VectorInterface& u,
-					FunctionalContainer* FC);
   
   virtual SolverInterface*& GetSolverPointer(int l) {assert(l<_SP.size()); return _SP[l];}
   virtual void SetComputeLevel(int level) {ComputeLevel=level;}
@@ -178,7 +176,6 @@ class StdMultiLevelSolver : public virtual MultiLevelSolverInterface
   void AssembleMatrix(VectorInterface& u);
   /// not used in the library -- might be used in local
   void ComputeIlu(VectorInterface& u);
-  void ComputeIlu();
   
   void BoundaryInit(VectorInterface& u) const;
 

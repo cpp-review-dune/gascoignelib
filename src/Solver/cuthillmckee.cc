@@ -24,7 +24,7 @@
 
 #include "cuthillmckee.h"
 #include "ilupermutate.h"
-
+#include <metis.h>
 
 using namespace std;
 
@@ -32,9 +32,14 @@ using namespace std;
 
 namespace Gascoigne
 {
-extern "C" void METIS_NodeND
-(int*, int*, int*, int*, int*, int*, int*);
 
+/*
+ * extern "C" void METIS_NodeND
+(int*, int*, int*, int*, int*, int*, int*);	
+
+extern "C" int METIS_SetDefaultOptions
+(int*);
+*/
 /* --------------------------------------------------------------- */
 
 CuthillMcKee::CuthillMcKee (const StencilInterface *s)
@@ -87,14 +92,14 @@ void CuthillMcKee::Permutate (IntVector &perm)
   //  int n = S->n();
   //  perm.resize(n);
   //sollte hier nicht aufgerufen werden, sondern ueberpruefen ob perm von der groesse her stimmt
-  int n = S->n();
+  idx_t n = S->n();
   assert(n==perm.size());
 
-  vector<int> adj(n+1,0);
-  vector<int> adjncy;
+  vector<idx_t> adj(n+1,0);
+  vector<idx_t> adjncy;
   
-  int count=0;
-  int c;
+  idx_t count=0;
+  idx_t c;
   adj[0]=0;
   assert(CS || DS);
   if (CS)
@@ -122,7 +127,11 @@ void CuthillMcKee::Permutate (IntVector &perm)
 	  adj[r+1]=count;
       }
   
-  int numflag = 0;
+  
+    
+  //  idx_t numflag = 0;
+  
+  /*** ALT
   int options[8];
   options[0]=1;
   options[1]=3;
@@ -132,9 +141,29 @@ void CuthillMcKee::Permutate (IntVector &perm)
   options[5]=1;
   options[6]=0;
   options[7]=1;
+  
   vector<int> iperm(n);
-
   METIS_NodeND(&n,&adj[0],&adjncy[0],&numflag,&options[0],&perm[0],&iperm[0]);
+  ***/
+  vector<idx_t> iperm(n);
+  idx_t options[METIS_NOPTIONS];
+  METIS_SetDefaultOptions(options);
+
+  options[METIS_OPTION_NUMBERING]=0; // index von 0
+    //options[METIS_OPTION_DBGLVL]=8;
+  options[METIS_OPTION_CTYPE]=METIS_CTYPE_SHEM; // 
+  options[METIS_OPTION_RTYPE]=METIS_RTYPE_SEP2SIDED;  
+  options[METIS_OPTION_COMPRESS]=1;
+
+
+  vector<idx_t> idx_perm(n);
+  for (int i=0;i<n;++i) idx_perm[i]=perm[i];
+  
+  
+  METIS_NodeND(&n,&adj[0],&adjncy[0],NULL,&options[0],&idx_perm[0],&iperm[0]);
+  for (int i=0;i<n;++i) perm[i]=idx_perm[i];
+  
+  
   
 //    assert((dimension==0)||(M->dimension()==dimension));
 //      				   // Liste mit Nachbarn aufbauen
@@ -222,14 +251,23 @@ void  CuthillMcKee::Permutate    (IntVector &perm, const IntVector &nodes_in_dom
   //  int n = S->n();
   //  perm.resize(n);
   //sollte hier nicht aufgerufen werden, sondern ueberpruefen ob perm von der groesse her stimmt
-  int n = nodes_in_domain.size();
+  idx_t n = nodes_in_domain.size();
   assert(n==perm.size());
-
-  vector<int> adj(n+1,0);
-  vector<int> adjncy;
   
-  int count=0;
-  int c;
+// OLD
+//    int n = nodes_in_domain.size();
+//   assert(n==perm.size());
+//   vector<int> adj(n+1,0);
+//   vector<int> adjncy;
+//  
+//    int count=0;
+//  int c;
+  vector<idx_t> adj(n+1,0);
+  vector<idx_t> adjncy;
+  
+  idx_t count = 0;
+  idx_t c;
+
   int globalnodeid;
 
   int ignoredcouplings=0;
@@ -284,7 +322,7 @@ void  CuthillMcKee::Permutate    (IntVector &perm, const IntVector &nodes_in_dom
   
 //  std::cout<<"Ignored Couplings: "<<ignoredcouplings<<" Used  Couplings:  "<<adjncy.size()<<std::endl;
 		 
-
+/* OLD:
   int numflag = 0;
   int options[8];
   options[0]=1;
@@ -297,8 +335,27 @@ void  CuthillMcKee::Permutate    (IntVector &perm, const IntVector &nodes_in_dom
   options[6]=0;
   options[7]=1;
   vector<int> iperm(n);
+  METIS_NodeND(&n,&adj[0],&adjncy[0],NULL,&options[0],&perm[0],&iperm[0]);
 
-  METIS_NodeND(&n,&adj[0],&adjncy[0],&numflag,&options[0],&perm[0],&iperm[0]);
+  */
+
+  idx_t options[METIS_NOPTIONS];
+  METIS_SetDefaultOptions(options);
+
+  options[METIS_OPTION_NUMBERING]=0; // index von 0
+    //options[METIS_OPTION_DBGLVL]=8;
+  options[METIS_OPTION_CTYPE]=METIS_CTYPE_SHEM; // 
+  options[METIS_OPTION_RTYPE]=METIS_RTYPE_SEP1SIDED;  
+  options[METIS_OPTION_COMPRESS]=1;
+
+  vector<idx_t> iperm(n);
+  
+  vector<idx_t> idx_perm(n);
+  for (int i=0;i<n;++i) idx_perm[i]=perm[i];
+
+  METIS_NodeND(&n,&adj[0],&adjncy[0],NULL,&options[0],&idx_perm[0],&iperm[0]);
+  for (int i=0;i<n;++i) perm[i]=idx_perm[i];
+
   //perm ist nun der Vector bei dem perm[i] sagt, das der Knoten  
   //nodes_of_domain[i] auf nodes_of_domain_[perm[i]] abgebilded  wird.
 }

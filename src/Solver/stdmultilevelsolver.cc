@@ -34,6 +34,8 @@
 
 using namespace std;
 
+extern Gascoigne::Stoppers GlobalStopWatch;
+
 /*-------------------------------------------------------------*/
 
 namespace Gascoigne
@@ -322,25 +324,11 @@ const DoubleVector StdMultiLevelSolver::GetExactValues() const
 
 /*-------------------------------------------------------------*/
 
-const DoubleVector StdMultiLevelSolver::ComputeFunctionals(VectorInterface& f, const VectorInterface& u,
-							   FunctionalContainer* FC)
-{
-  if (!FC) return DoubleVector(0);
-  int n = FC->size();
-  DoubleVector j(n,0.);
-  int i = 0;
-  for (FunctionalContainer::const_iterator it = FC->begin(); it!=FC->end();++it,++i)
-    {
-      j[i] = GetSolver(ComputeLevel)->ComputeFunctional(f,u,it->second);
-    }
-  return j;
-}
-
-/*-------------------------------------------------------------*/
-
 const DoubleVector StdMultiLevelSolver::ComputeFunctionals(VectorInterface& f, const VectorInterface& u)
 {
   if (!GetFunctionalContainer()) return DoubleVector(0);
+  GlobalStopWatch.start("StdMLS::ComputeFunctionals");
+
   int n = GetFunctionalContainer()->size();
   DoubleVector j(n,0.);
   int i = 0;
@@ -351,6 +339,7 @@ const DoubleVector StdMultiLevelSolver::ComputeFunctionals(VectorInterface& f, c
       j[i] = GetSolver(ComputeLevel)->ComputeFunctional(f,u,it->second);
     }
   cout << endl;
+  GlobalStopWatch.stop("StdMLS::ComputeFunctionals");
   return j;
 }
 
@@ -676,16 +665,6 @@ void StdMultiLevelSolver::AssembleMatrix(VectorInterface& u, NLInfo& nlinfo)
 
 /*-------------------------------------------------------------*/
 
-void StdMultiLevelSolver::ComputeIlu()
-{
-  for(int l=0;l<=ComputeLevel;l++)
-    {
-      GetSolver(l)->ComputeIlu();
-    }
-}
-
-/*-------------------------------------------------------------*/
-
 void StdMultiLevelSolver::ComputeIlu(VectorInterface& u)
 {
   SolutionTransfer(u);
@@ -772,6 +751,7 @@ void StdMultiLevelSolver::Transfer(int high, int low, VectorInterface& u) const
 
 void StdMultiLevelSolver::Transfer(VectorInterface& u) const
 {
+  
   Transfer(ComputeLevel,1,u);
 }
 
@@ -779,6 +759,7 @@ void StdMultiLevelSolver::Transfer(VectorInterface& u) const
 
 void StdMultiLevelSolver::SolutionTransfer(int high, int low, VectorInterface& u) const
 {
+  
   Transfer(high,low,u);
 
   for(int l=high;l>=low;l--)

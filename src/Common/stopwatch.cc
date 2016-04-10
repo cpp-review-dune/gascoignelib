@@ -135,3 +135,5 @@ double StopWatch::read100() const
 }
 
 }
+
+Gascoigne::Stoppers GlobalStopWatch;

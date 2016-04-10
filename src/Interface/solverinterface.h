@@ -221,7 +221,6 @@ namespace Gascoigne
       virtual void DirichletMatrix() const=0;
       virtual void MatrixZero() const=0;
       virtual void ComputeIlu(const VectorInterface& u) const=0;
-      virtual void ComputeIlu() const=0;
       virtual void AssembleDualMatrix(const VectorInterface& gu, double d)=0;
       virtual void MassMatrixVector(VectorInterface& f, const VectorInterface& gu, double d) const=0;
       virtual void InverseMassMatrix(VectorInterface& u, const VectorInterface& f) const {};

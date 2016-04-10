@@ -35,7 +35,11 @@
 #define HASHMAP __gnu_cxx::hash_map
 #endif
 
+#include "stopwatch.h"
+
 using namespace std;
+
+extern Gascoigne::Stoppers GlobalStopWatch;
 
 /*-----------------------------------------*/
 
@@ -57,6 +61,8 @@ MeshAgent::~MeshAgent()
 
 void MeshAgent::ReInit()
 {
+  GlobalStopWatch.start("MeshAgent\t");
+  
   GMG->ReInit(GetDimension(),HMP->nlevels()-HMP->patchdepth());
 
   GascoigneMeshConstructor MGM(HMP,GMG);
@@ -131,6 +137,8 @@ void MeshAgent::ReInit()
   }
 
   AssemblePeriodicBoundaries();
+
+  GlobalStopWatch.stop("MeshAgent\t");
 }
 
 /*-----------------------------------------*/
@@ -161,7 +169,7 @@ void MeshAgent::BuildQ4PatchList(const IntVector &patchl2g)
   for(int i=0; i<patchl2g.size(); i++)
   {
     //Edit patchg2l[patchl2g[i]] = i;
-    patchg2l.insert(make_pair<int,int>(patchl2g[i],i));
+    patchg2l.insert(make_pair(patchl2g[i],i));
   }
   IntVector perm(4);
   perm[0]=0;
@@ -337,6 +345,8 @@ void MeshAgent::AssemblePeriodicBoundaries()
 
 void MeshAgent::BasicInit(const ParamFile* paramfile)
 {
+  GlobalStopWatch.start("MeshAgent\t");
+  
   assert(HMP==NULL);
   int dim = 0;
 
@@ -382,6 +392,8 @@ void MeshAgent::BasicInit(const ParamFile* paramfile)
   
   GMG = NewMultiGridMesh();
 
+  GlobalStopWatch.stop("MeshAgent\t");
+
   ReInit();
 }
 
@@ -389,6 +401,8 @@ void MeshAgent::BasicInit(const ParamFile* paramfile)
 
 void MeshAgent::BasicInit(const string& gridname, int dim, int patchdepth, int epatcher, bool goc2nc)
 {
+  GlobalStopWatch.start("MeshAgent\t");
+  
   assert(HMP==NULL);
   _goc2nc = goc2nc;
   if (dim==2)
@@ -416,6 +430,8 @@ void MeshAgent::BasicInit(const string& gridname, int dim, int patchdepth, int e
   
   GMG = NewMultiGridMesh();
 
+  GlobalStopWatch.stop("MeshAgent\t");
+  
   ReInit();
 }
 
@@ -423,9 +439,14 @@ void MeshAgent::BasicInit(const string& gridname, int dim, int patchdepth, int e
 
 void MeshAgent::read_gup(const string& fname)
 {
+  GlobalStopWatch.start("IO\t\t");
+  
   assert(HMP);
   HMP->read_gup(fname);
   ClearCl2g();
+
+  GlobalStopWatch.stop("IO\t\t");
+    
   ReInit();
 }
 
@@ -433,9 +454,14 @@ void MeshAgent::read_gup(const string& fname)
 
 void MeshAgent::read_gip(const string& fname)
 {
+  GlobalStopWatch.start("IO\t\t");
+  
   assert(HMP);
   HMP->read_gip(fname);
   ClearCl2g();
+
+  GlobalStopWatch.stop("IO\t\t");
+    
   ReInit();
 }
 
@@ -443,32 +469,46 @@ void MeshAgent::read_gip(const string& fname)
 
 void MeshAgent::write_gup(const string& fname) const
 {
+  GlobalStopWatch.start("IO\t\t");
+  
   assert(HMP);
   HMP->write_gup(fname);
+
+  GlobalStopWatch.stop("IO\t\t");
 }
 
 /*-----------------------------------------*/
 
 void MeshAgent::write_gip(const string& fname) const
 {
+  GlobalStopWatch.start("IO\t\t");
+  
   assert(HMP);
   HMP->write_gip(fname);
+  
+  GlobalStopWatch.stop("IO\t\t");
 }
-
+  
 /*-----------------------------------------*/
 
 void MeshAgent::write_inp(const string& fname) const
 {
+  GlobalStopWatch.start("IO\t\t");
+  
   assert(HMP);
   HMP->write_inp(fname);
+
+  GlobalStopWatch.stop("IO\t\t");
 }
 
 /*-----------------------------------------*/
 
 void MeshAgent::global_patch_coarsen(int n)
 {
+  GlobalStopWatch.start("MeshAgent\t");
   assert(HMP);
   HMP->global_patch_coarsen(n);
+  GlobalStopWatch.stop("MeshAgent\t");
   ReInit();
 }
 
@@ -476,8 +516,10 @@ void MeshAgent::global_patch_coarsen(int n)
 
 void MeshAgent::global_refine(int n)
 {
+  GlobalStopWatch.start("MeshAgent\t");
   assert(HMP);
   HMP->global_refine(n);
+  GlobalStopWatch.stop("MeshAgent\t");
   ReInit();
 }
 
@@ -485,8 +527,10 @@ void MeshAgent::global_refine(int n)
 
 void MeshAgent::random_patch_coarsen(double p, int n)
 {
+  GlobalStopWatch.start("MeshAgent\t");
   assert(HMP);
   HMP->random_patch_coarsen(p,n);
+  GlobalStopWatch.stop("MeshAgent\t");
   ReInit();
 }
 
@@ -494,8 +538,10 @@ void MeshAgent::random_patch_coarsen(double p, int n)
 
 void MeshAgent::random_patch_refine(double p, int n)
 {
+  GlobalStopWatch.start("MeshAgent\t");
   assert(HMP);
   HMP->random_patch_refine(p,n);
+  GlobalStopWatch.stop("MeshAgent\t");
   ReInit();
 }
 
@@ -511,8 +557,10 @@ void MeshAgent::refine_nodes(IntVector& refnodes)
 
 void MeshAgent::refine_nodes(IntVector& refnodes, IntVector& coarsenodes)
 {
+  GlobalStopWatch.start("MeshAgent\t");
   assert(HMP);
   HMP->vertex_patch_refine(refnodes,coarsenodes);
+  GlobalStopWatch.stop("MeshAgent\t");
   ReInit();
 }
 
@@ -520,6 +568,7 @@ void MeshAgent::refine_nodes(IntVector& refnodes, IntVector& coarsenodes)
 
 void MeshAgent::refine_cells(IntVector& ref)
 {
+  GlobalStopWatch.start("MeshAgent\t");
   IntVector refnodes;
   
   for (int i=0; i<ref.size(); i++)
@@ -530,6 +579,7 @@ void MeshAgent::refine_cells(IntVector& ref)
           refnodes.push_back(HMP->vertex_of_cell(cell,j));
         }
     }
+  GlobalStopWatch.stop("MeshAgent\t");
   refine_nodes(refnodes);
 }
 

@@ -25,12 +25,18 @@
 #include  "local.h"
 #include  "stdloop.h"
 
+#include "stopwatch.h"
+
+extern Gascoigne::Stoppers GlobalStopWatch;
+
 using namespace Gascoigne;
 
 /*---------------------------------------------------*/
 
 int main(int argc, char** argv)
 {
+  GlobalStopWatch.start("0 Alles\t");
+  
   ParamFile paramfile("benchcircle.param");
   if(argc>=2) {
     paramfile.SetName(argv[1]);
@@ -46,6 +52,10 @@ int main(int argc, char** argv)
 
   loop.BasicInit(&paramfile,&PC);
   loop.run("navierstokes");
+
+  GlobalStopWatch.stop("0 Alles\t");
+
+  GlobalStopWatch.print();
 
   return 0;
 }
