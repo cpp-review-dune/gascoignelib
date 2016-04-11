@@ -1,0 +1,52 @@
+//Block Loop
+
+niter        4
+estimator    none
+estimator    energy
+initial      boundary
+refiner      global
+//refiner      eta
+
+time 	       0.0
+dt	       0.05
+stoptime       5.0
+
+writebupgup 0
+
+//Block BoundaryManager
+
+dirichlet        3      4 8 80
+
+dirichletcomp    4      2       1 2
+dirichletcomp    8      2       1 2
+dirichletcomp   80      2       1 2
+
+
+//Block Mesh
+dimension 2
+prerefine 3
+gridname nsbench4.inp
+
+
+//Block Equation
+
+visc            0.01
+lps           0.01
+
+//Block MultiLevelSolver
+
+linearsolve		gmres
+nonlinear_tol		1e-8
+nonlinear_rho		0.1
+
+
+//Block Solver
+
+
+matrixtype	block
+
+discname 	                Q1Lps
+ilum                    3  0.01  0.1  0.1
+ndirect			1
+
+//Block nix

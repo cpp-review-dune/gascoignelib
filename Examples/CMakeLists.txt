@@ -5,6 +5,7 @@ SUBDIRS(
   Laplace2D 
   NavierStokes2D 
   NavierStokes3D 
+  NavierStokesInstat
 )
 
 LINK_LIBRARIES(${GASCOIGNE_LIBRARY})

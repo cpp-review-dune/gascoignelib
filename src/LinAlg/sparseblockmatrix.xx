@@ -367,17 +367,53 @@ void SparseBlockMatrix<B>::periodic(const map<int,int> &m_PeriodicPairs, const I
 
 /*-------------------------------------------------------------*/
 
-
+  // template<class B>
+  // void SparseBlockMatrix<B>::vmult_some(int r0,int r1, GlobalVector& y, const GlobalVector& x, double s) const
+  // {
+  //   for(int row=r0; row<r1; row++)
+  //     {
+  // 	GlobalVector::iterator  off = y.start(row);
+  // 	const int*    cp = &(US.col(US.start(row)));
+  // 	for(int pos = US.start(row); pos<US.stop(row); pos++)
+  // 	  {
+  // 	    mat(pos) -> cadd(s,off,x.start(*cp++));
+  // 	  }
+  //     }
+  // }
   
+  
+  // template<class B>
+  // void SparseBlockMatrix<B>::vmult(GlobalVector& y, const GlobalVector& x, double s) const
+  // {
+  //   int NT = 2;
+  //   std::vector<std::thread> workers;
+    
+  //   for (int t=0;t<NT;++t)
+  //     workers.push_back (std::thread(&this->vmult_some,*this, 
+  // 				     t*US.n()/NT ,
+  // 				     (t+1)*US.n()/NT,
+  // 				     &y,&x,s ));
+    
+  // }
+  
+
+
+
+
+
+
+
 template<class B>
 void SparseBlockMatrix<B>::vmult(GlobalVector& y, const GlobalVector& x, double s) const
 {
   std::vector<std::thread> workers;
-  int NT = 3;
-  for (int T=0;T<NT;++T)
+  //  int NT = std::max(1,  std::min(US.n()/1000,4));
+  int NT = 1;
+    
+  for (int T=1;T<NT;++T)
     workers.push_back(std::thread( [this,&y,&x,s,T,NT] ()
 				   {
-				     int start = T*US.n()/NT;
+				     int start = T    *US.n()/NT;
 				     int stop  = (T+1)*US.n()/NT;
 				     for(int i=start; i<stop; i++)
 				       {
@@ -388,6 +424,18 @@ void SparseBlockMatrix<B>::vmult(GlobalVector& y, const GlobalVector& x, double 
 					     mat(pos) -> cadd(s,off,x.start(*cp++));
 					   }
 				       }}));
+  // Nr. 0
+  int start = 0*US.n()/NT;
+  int stop  = 1*US.n()/NT;
+  for(int i=start; i<stop; i++)
+    {
+      GlobalVector::iterator  off = y.start(i);
+      const int*    cp = &(US.col(US.start(i)));
+      for(int pos = US.start(i); pos<US.stop(i); pos++)
+	{
+	  mat(pos) -> cadd(s,off,x.start(*cp++));
+	}
+    }
   std::for_each(workers.begin(),workers.end(),[](std::thread &t) { t.join(); } );
 }
 
