@@ -67,7 +67,12 @@ public:
     double& GetValue(int pos) {return value[pos];}
     const double& GetValue(int pos) const {return value[pos];}
     const double& GetValue(int i, int j) const {return value[ST.Find(i,j)];}
+
     const DoubleVector& GetValues() const { return value; }
+    DoubleVector& GetValues() { return value; }
+
+    const DoubleVector& GetDiags() const { return _diag; }
+    DoubleVector& GetDiags() { return _diag; }
 
     void zero() {value.zero();}
     void ReInit(const SparseStructureInterface* S);

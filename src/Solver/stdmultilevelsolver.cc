@@ -31,9 +31,11 @@
 #include  "mginterpolatormatrix.h"
 #include  "mginterpolatornested.h"
 #include  "gmres.h"
-
+#include "sparseblockmatrix.h"
+#include  "fmatrixblock.h"
 using namespace std;
 
+double DDD;
 /*-------------------------------------------------------------*/
 
 namespace Gascoigne
@@ -480,24 +482,44 @@ void StdMultiLevelSolver::Cg(VectorInterface& x, const VectorInterface& f, CGInf
 
 void StdMultiLevelSolver::newton(VectorInterface& u, const VectorInterface& f, VectorInterface& r, VectorInterface& w, NLInfo& info)
 {
+  DDD=1;
+  double lastrate=0.0;
+  double rho=0.0;
+  double ET=0.0;
   info.reset();
   double rr = NewtonResidual(r,u,f);
   bool reached = info.check(0,rr,0.);
   NewtonOutput(info);
   NewtonPreProcess(u,f,info);
-  for(int it=1; !reached; it++)
+  nvector<int> nlin;
+
+  int it=1;
+  for(it=1; !reached; it++)
     {
       NewtonMatrixControl(u,info);
       NewtonVectorZero(w);
       NewtonLinearSolve(w,r,info.GetLinearInfo());
+      nlin.push_back(info.GetLinearInfo().control().iteration());
+      
       double rw = NewtonUpdate(rr,u,w,r,f,info);
       reached = info.check(it,rr,rw);
       NewtonOutput(info);
+      ET=DDD;
+
+      lastrate = rho;
+      rho = info.statistics().lastrate();
+      DDD=min(ET*(0.2+4/(0.7+exp(1.5*rho))),1);
+      
+      cout  <<  "Steuerung Newton rho/DDD: " << rho << "\t" << DDD <<endl;
     }
+
+  cerr << "Newton: " << it << "\t" << nlin.sum() << "\t" << nlin << endl;
+
+  
   NewtonPostProcess(u,f,info);
 }
-
-/*-------------------------------------------------------------*/
+  
+  /*-------------------------------------------------------------*/
 
 void StdMultiLevelSolver::NewtonOutput(NLInfo& nlinfo) const
 {
@@ -661,9 +683,12 @@ void StdMultiLevelSolver::AssembleMatrix(VectorInterface& u)
   SolutionTransfer(u);
   for(int l=0;l<=ComputeLevel;l++)
     {
+   
       GetSolver(l)->MatrixZero();
       GetSolver(l)->AssembleMatrix(u,1.);
     }
+  
+  
 }
 
 /*-------------------------------------------------------------*/

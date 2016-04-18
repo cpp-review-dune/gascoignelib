@@ -75,6 +75,7 @@ class SparseBlockMatrix : public MatrixInterface
 
   int  rowsize(int i)     const { return US.start(i+1)-US.start(i);}
   const vector<B>& mat()  const { return smat; }
+  vector<B>& mat()   { return smat; }
 
   ///// Methods //////////////////////
 

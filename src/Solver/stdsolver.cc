@@ -1448,6 +1448,9 @@ void StdSolver::AssembleMatrix(const VectorInterface& gu, double d)
 
   GetDiscretization()->Matrix(*GetMatrix(),u,*GetProblemDescriptor()->GetEquation(),d);
 
+  
+ 
+
   // Face
   if (GetFaceDiscretization())
     {
@@ -1465,8 +1468,9 @@ void StdSolver::AssembleMatrix(const VectorInterface& gu, double d)
   DirichletMatrix();
   HNZero(gu);
   HNZeroData();
-
   _ca.stop();
+
+
 }
 
 /*-------------------------------------------------------*/
