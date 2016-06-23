@@ -115,6 +115,7 @@ public:
   // Functionals
   double ComputeBoundaryFunctional(const GlobalVector& u, const IntSet& Colors, const BoundaryFunctional& BF) const;
   double ComputeDomainFunctional(const GlobalVector& u, const DomainFunctional& F) const;
+  double ComputeErrorDomainFunctional(const GlobalVector& u, const DomainFunctional& F) const;
 
   double ComputePointFunctional(const GlobalVector& u, const PointFunctional& FP) const;
 

@@ -204,6 +204,10 @@ namespace Gascoigne
         std::cerr << "\"DiscretizationInterface::ComputeDomainFunctional\" not written!" << std::endl;
         abort();
       }
+      virtual double ComputeErrorDomainFunctional(const GlobalVector& u, const DomainFunctional& F) const{
+        std::cerr << "\"DiscretizationInterface::ComputeDomainFunctional\" not written!" << std::endl;
+        abort();
+      }
 			
       virtual double ComputePointFunctional(const GlobalVector& u, const PointFunctional& FP) const{
         std::cerr << "\"DiscretizationInterface::ComputePointFunctional\" not written!" << std::endl;

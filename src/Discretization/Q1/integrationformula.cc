@@ -62,5 +62,9 @@ template class TensorFormula3d<5,LineGauss5>;
 template class IntegrationFormulaSummed2d<QuadGauss1>;
 template class IntegrationFormulaSummed2d<QuadGauss4>;
 template class IntegrationFormulaSummed3d<QuadGauss1>;
+template class IntegrationFormulaSummed2d<QuadTrapez>;
+
+template class IntegrationFormulaSummed3d<HexGauss8>;
+template class IntegrationFormulaSummed3d<HexTrapez>;
 }
 

@@ -123,6 +123,10 @@ namespace Gascoigne
         std::cerr << "\"IntegratorInterface::ComputeDomainFunctional\" not written!" << std::endl;
         abort();
       }
+      virtual double ComputeErrorDomainFunctional(const DomainFunctional& F, const FemInterface& FEM, 
+          const LocalVector& U, const LocalData& Q, const LocalData& QC) const {
+        return ComputeDomainFunctional(F, FEM, U, Q, QC);
+      }
       virtual double ComputeBoundaryFunctional(const BoundaryFunctional& F, const FemInterface& FEM, int ile,
           int col, const LocalVector& U, const LocalData& Q, const LocalData& QC) const {
         std::cerr << "\"IntegratorInterface::ComputeBoundaryFunctional\" not written!" << std::endl;

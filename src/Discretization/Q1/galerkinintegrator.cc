@@ -618,6 +618,34 @@ double GalerkinIntegrator<DIM>::ComputeDomainFunctional(const DomainFunctional& 
 /* ----------------------------------------- */
 
 template<int DIM>
+double GalerkinIntegrator<DIM>::ComputeErrorDomainFunctional(const DomainFunctional& F, const FemInterface& FEM, const LocalVector& U, 
+    const LocalData& Q, const LocalData& QC) const
+{
+  BasicIntegrator::universal_point(_QCH,QC);
+  F.SetCellData(_QCH);
+
+  const IntegrationFormulaInterface& IF = *ErrorFormula();
+
+  Vertex<DIM> x, xi;
+  double j = 0.;
+  for (int k=0; k<IF.n(); k++)
+    {
+      IF.xi(xi,k);
+      FEM.point(xi);
+      double vol = FEM.J();
+      double weight  = IF.w(k) * vol;
+      BasicIntegrator::universal_point(FEM,_UH,U);
+      BasicIntegrator::universal_point(FEM,_QH,Q);
+      FEM.x(x);
+      F.SetFemData(_QH);
+      j += weight * F.J(_UH,x);
+    }
+  return j;
+}
+
+/* ----------------------------------------- */
+
+template<int DIM>
 void GalerkinIntegrator<DIM>::EvaluateCellRightHandSide(LocalVector& F, const DomainRightHandSide& CF,const FemInterface& FEM, 
     const LocalData& Q, const LocalData& QC) const
 {

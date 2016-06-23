@@ -570,7 +570,7 @@ double CellDiscretization::ComputeBoundaryFunctional(const GlobalVector& u, cons
 
 /* ----------------------------------------- */
 
-double CellDiscretization::ComputeDomainFunctional(const GlobalVector& u, const DomainFunctional& F) const 
+double CellDiscretization::ComputeDomainFunctional(const GlobalVector& u, const DomainFunctional& F) const
 {
   GlobalToGlobalData();
   F.SetParameterData(__QP);
@@ -584,6 +584,26 @@ double CellDiscretization::ComputeDomainFunctional(const GlobalVector& u, const 
 
       GlobalToLocal(__U,u,iq);
       j += GetIntegrator()->ComputeDomainFunctional(F,*GetFem(),__U,__QN,__QC);
+    }
+  return j;
+}
+
+/* ----------------------------------------- */
+
+double CellDiscretization::ComputeErrorDomainFunctional(const GlobalVector& u, const DomainFunctional& F) const
+{
+  GlobalToGlobalData();
+  F.SetParameterData(__QP);
+
+  nmatrix<double> T;
+  double j=0.;
+  for(int iq=0;iq<GetMesh()->ncells();++iq)
+    {
+      Transformation(T,iq);
+      GetFem()->ReInit(T);
+
+      GlobalToLocal(__U,u,iq);
+      j += GetIntegrator()->ComputeErrorDomainFunctional(F,*GetFem(),__U,__QN,__QC);
     }
   return j;
 }

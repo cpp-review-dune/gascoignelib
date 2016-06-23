@@ -223,6 +223,21 @@ void StdSolver::RegisterMatrix(int ncomp)
   }
 #endif
 
+#ifdef __WITH_THREADS__
+  if (__with_thread_ilu && _MIP!=NULL)
+  {
+    ThreadIlu* TIlu = dynamic_cast<ThreadIlu*>(GetIlu());
+    if (!TIlu && __n_threads > 1)
+    {
+      delete _MIP; _MIP = NULL;
+    }
+    if (TIlu && __n_threads == 1)
+    {
+      delete _MIP; _MIP = NULL;
+    }
+  }
+#endif
+
   if (_MAP==NULL)
     GetMatrixPointer() = NewMatrix(ncomp, _matrixtype);
   
@@ -404,6 +419,7 @@ void StdSolver::BasicInit(const ParamFile* paramfile, const int dimension,const 
   DFH.insert("discname",    &_discname);
   DFH.insert("facediscname",    &_facediscname,"none");
   DFH.insert("disc", &xxx, "void");
+
 #ifdef __WITH_THREADS__ 
   int default_min_per_thread = 450;
   if(dimension==3)
@@ -413,6 +429,7 @@ void StdSolver::BasicInit(const ParamFile* paramfile, const int dimension,const 
   DFH.insert("min_patches_per_thread",  &__min_patches_per_thread,default_min_per_thread); 
   DFH.insert("with_thread_ilu", &__with_thread_ilu, false);
 #endif
+
   FileScanner FS(DFH);
   FS.NoComplain();
   FS.readfile(_paramfile,"Solver");
@@ -422,6 +439,15 @@ void StdSolver::BasicInit(const ParamFile* paramfile, const int dimension,const 
       cout << "Expression 'disc' in ParamFile not longer valid !" << endl;
       abort();
     }
+
+#ifdef __WITH_THREADS__
+  if(__with_thread_ilu && _matrixtype!="block")
+  {
+    cerr << "Thread Ilu (with_thread_ilu) not available for matrixtype " << _matrixtype << "!" << endl;
+    cerr << "Select matrixtype block if you want to use it." << endl;
+    abort();
+  }
+#endif
 
   if (GetDiscretizationPointer()==NULL)
     GetDiscretizationPointer()     = NewDiscretization    (dimension, _discname);
@@ -547,7 +573,6 @@ MatrixInterface* StdSolver::NewMatrix(int ncomp, const string& matrixtype)
     else if (ncomp==3)  return new DynamicBlockMatrix<FMatrixBlock<3> >;
     else if (ncomp==4)  return new DynamicBlockMatrix<FMatrixBlock<4> >;
     else
-
     {
       cerr << "No SparseBlockMatrix for " << ncomp << "components." << endl;
       abort();
@@ -580,21 +605,32 @@ MatrixInterface* StdSolver::NewMatrix(int ncomp, const string& matrixtype)
 
 IluInterface* StdSolver::NewIlu(int ncomp, const string& matrixtype) 
 { 
+
 #ifdef __WITH_UMFPACK__
-  if(_directsolver && _useUMFPACK)             return new UmfIlu(GetMatrix());
+  if(_directsolver && _useUMFPACK)
+  {
+    return new UmfIlu(GetMatrix());
+  }
 #endif
+
   // analog zu NewMatrix muss hier auch _directsolver eingehen, 
   // sonst gibts aerger nachher beim 
   // GetIlu()->copy_entries(GetMatrix());
-  if(_directsolver || matrixtype=="point_node")  return new PointIlu(ncomp,"node");
+  if(_directsolver || matrixtype=="point_node")
+  {
+    return new PointIlu(ncomp,"node");
+  }
   
   else if (matrixtype=="block")
   {
+
 #ifdef __WITH_THREADS__
     if(__n_threads > 1)
+    {
       return new ThreadIlu(ncomp);
+    }
 #endif 
-    //ohne threads oder mit threads aber nur einer zur Verwendung
+
     if      (ncomp==1)  return new SparseBlockIlu<FMatrixBlock<1> >;
     else if (ncomp==2)  return new SparseBlockIlu<FMatrixBlock<2> >;
     else if (ncomp==3)  return new SparseBlockIlu<FMatrixBlock<3> >;
@@ -979,6 +1015,7 @@ void StdSolver::smooth(int niter, VectorInterface& x, const VectorInterface& y, 
 {
   _il.start();
   double omega = GetSolverData().GetOmega();
+  
   for(int iter=0; iter<niter; iter++)
     {
       if (GetSolverData().GetLinearSmooth()=="ilu")
@@ -1509,6 +1546,7 @@ void StdSolver::ComputeIlu() const
     }
   else
 #endif
+    if (GetSolverData().GetLinearSmooth()=="ilu")
     {
       _ci.start();
       IntVector perm(GetIlu()->n());
@@ -1539,6 +1577,7 @@ void StdSolver::ComputeIlu(const VectorInterface& gu) const
     }
   else
 #endif
+    if (GetSolverData().GetLinearSmooth()=="ilu")
     {
       int ncomp = GetProblemDescriptor()->GetEquation()->GetNcomp();
       _ci.start();

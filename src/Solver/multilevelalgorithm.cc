@@ -52,6 +52,8 @@ void MultiLevelAlgorithm::BasicInit(const ParamFile* paramfile, MultiLevelSolver
   DFH.insert("coarselevel", &_coarselevel, 0);
   DFH.insert("mgomega",     &_mgomega,     1.);
   DFH.insert("mgtype",      &_mgtype,      "V");
+  DFH.insert("linearsolve", &_linearsolve, "gmres");
+  DFH.insert("gmresmemsize",&_gmresmemsize,100);
   FileScanner FS(DFH);
   FS.NoComplain();
   FS.readfile(paramfile,"MultiLevelSolver");
@@ -91,7 +93,7 @@ void MultiLevelAlgorithm::RunLinear(const std::string& problemlabel)
   // Assemble Matrix and ILU
   
   GetMultiLevelSolver()->AssembleMatrix(u);
-  GetMultiLevelSolver()->ComputeIlu();
+  GetMultiLevelSolver()->ComputeIlu(u);
   
   // Solve Linear System
 
@@ -173,8 +175,19 @@ void MultiLevelAlgorithm::LinearSolve(VectorInterface& du, const VectorInterface
 
   GetSolver()->HNAverage(du);
 
-  //LinearMGSolve(du,y,cginfo);
-  GmresSolve(du,y,cginfo);
+  if(_linearsolve == "mg")
+  {
+    LinearMGSolve(du,y,cginfo);
+  }
+  else if(_linearsolve == "gmres")
+  {
+    GmresSolve(du,y,cginfo);
+  }
+  else
+  {
+    cerr << "No linear solver for linearsolve \"" << _linearsolve << "\". Use \"mg\" or \"gmres\"." << endl;
+    abort();
+  }
 
   GetSolver()->HNZero(du);
   GetSolver()->SubtractMean(du);
@@ -184,9 +197,11 @@ void MultiLevelAlgorithm::LinearSolve(VectorInterface& du, const VectorInterface
  
 void MultiLevelAlgorithm::Precondition(VectorInterface& x, VectorInterface& y)
 {
+  GetSolver()->Equ(x,1.,y);
+
   CGInfo pinfo;
-  pinfo.user().tol()       = 1.e-12;
-  pinfo.user().globaltol() = 1.e-12;
+  pinfo.user().tol()       = 0.;
+  pinfo.user().globaltol() = 0.;
   pinfo.user().maxiter()   = 1;
   pinfo.user().printstep() = 0;
   pinfo.user().text()      = "PrecInfo";
