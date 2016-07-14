@@ -81,8 +81,9 @@ protected:
 public:
 
   // Threads
-  void InitColoring() ;
-  
+  void InitColoring();
+  int                            _col_graph_ncol;
+  std::vector<std::vector<int> > _col_graph;
 
   //
   ////  Constructor 

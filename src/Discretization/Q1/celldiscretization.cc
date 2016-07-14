@@ -80,32 +80,43 @@ namespace Gascoigne
 
     
     // partition graph
-    assert(GetMesh()->ncells()+1<start.size());
+    assert(GetMesh()->ncells()+1==start.size());
     vector<int> cell2color(GetMesh()->ncells(),-1);
-    // ganz primitiv, mehrfacher durchgang
+    // ganz primitiv, immer kleinste freie Nummer suchen.
     for (int c=0;c<GetMesh()->ncells();++c)
       {
-	if (cell2color[c]==0) // noch nicht gefaerbt
-	  cell2color[c]=1;
-	
-	int mycolor = cell2color[c]; 
-	
+	set<int> nc; // farben der nachbarn
 	for (int ni=start[c];ni<start[c+1];++ni)
-	  {
-	    int n = neighbors[ni];
-	    if (cell2color[n]
-		}
-	    
-	  }
+	  nc.insert(cell2color[neighbors[ni]]);
+	int col = 0;
+	while (nc.find(col)!=nc.end()) ++col;
+	cell2color[c]=col;
       }
+
+    _col_graph_ncol=0;
+    for (int c=0;c<cell2color.size();++c)
+      _col_graph_ncol = std::max(_col_graph_ncol,cell2color[c]);
+    _col_graph_ncol++;
+    _col_graph.resize(_col_graph_ncol);
+    for (int c=0;c<cell2color.size();++c)
+      _col_graph[cell2color[c]].push_back(c);
     
-
-
-
+    // Statistics
+    /*
+    vector<int> histo(20);
+    for (int c=0;c<GetMesh()->ncells();++c)
+      {
+	assert(cell2color[c]<20);
+	histo[cell2color[c]]++;
+      }
+    for (int i=0;i<20;++i)
+      cout << i << " " << histo[i] << endl;
+    */
     rt.stop();
+    /*
     std::cout << "Coloring Graph " << neighbors.size() << " " << start.size() << std::endl;
     std::cout << "Coloring time " << rt.read() << std::endl;
-    
+    */
   }
   
 
@@ -168,16 +179,26 @@ void CellDiscretization::Form(GlobalVector& f, const GlobalVector& u, const Equa
   
   GlobalToGlobalData();
   EQ.SetParameterData(__QP);
-  
-  for(int iq=0;iq<GetMesh()->ncells();++iq)
-    {
-      Transformation(T,iq);
-      GetFem()->ReInit(T);
 
-      GlobalToLocal(__U,u,iq);
-      //EQ.cell(GetMesh(),iq,__U,__QN);
-      GetIntegrator()->Form(EQ,__F,*GetFem(),__U,__QN,__QC);
-      LocalToGlobal(f,__F,iq,d);
+  assert(_col_graph_ncol>0);
+
+  LocalVector _U=__U,_F=__F;
+	
+  for (int col=0;col<_col_graph_ncol;++col)
+    {
+      
+#pragma omp parallel for private(T,_U,_F)
+      for(int ii=0;ii<_col_graph[col].size();++ii)
+	{
+	  int iq = _col_graph[col][ii];
+	  Transformation(T,iq);
+	  GetFem()->ReInit(T);
+	  
+	  GlobalToLocal(_U,u,iq);
+
+	  GetIntegrator()->Form(EQ,_F,*GetFem(),_U,__QN,__QC);
+	  LocalToGlobal(f,_F,iq,d);
+	}
     }
 }
 
