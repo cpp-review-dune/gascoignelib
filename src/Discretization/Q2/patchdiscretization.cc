@@ -154,8 +154,10 @@ void PatchDiscretization::BoundaryForm(GlobalVector& f, const GlobalVector& u, c
 
 /* ----------------------------------------- */
 
-void PatchDiscretization::Matrix(MatrixInterface& A, const GlobalVector& u, const Equation& EQ, double d) const
+void PatchDiscretization::Matrix(MatrixInterface& A, const GlobalVector& u, const ProblemDescriptorInterface* PD, double d) const
 {
+  const Equation& EQ = *(PD->GetEquation());
+
   nmatrix<double> T;
 
   GlobalToGlobalData();

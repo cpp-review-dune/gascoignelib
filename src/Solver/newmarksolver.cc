@@ -72,7 +72,7 @@ void NewmarkSolver::AssembleMatrix(const VectorInterface& gu, double d)
   HNAverage(gu);
   HNAverageData();
   
-  GetDiscretization()->Matrix(*GetMatrix(),u,*GetProblemDescriptor()->GetEquation(),d*alpha);
+  GetDiscretization()->Matrix(*GetMatrix(),u,GetProblemDescriptor(),d*alpha);
   const BoundaryEquation* BE = GetProblemDescriptor()->GetBoundaryEquation();
   if(BE)
     {

@@ -47,7 +47,7 @@ nonlinear_damp          10
 //Block Solver
 
 matrixtype	block
-discname 	                Q1Lps
+discname 	                Q1
 iterpre                 4
 iterpost                4
 iterexact               8

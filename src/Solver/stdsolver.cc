@@ -392,9 +392,15 @@ void StdSolver::NewMesh(const MeshInterface* mp)
     GetFaceDiscretization()->ReInit(_MP);
 
   // 
-  #ifdef __WITH_THREADS__
+#ifdef __WITH_THREADS__
   ThreadPartitionMesh();
-  #endif
+  abort();
+#endif
+  
+  /// coloring
+  GetDiscretization()->InitColoring();
+  
+  
 }
 
 /*-----------------------------------------*/
@@ -1460,7 +1466,7 @@ void StdSolver::AssembleMatrix(const VectorInterface& gu, double d)
   HNAverage(gu);
   HNAverageData();
 
-  GetDiscretization()->Matrix(*GetMatrix(),u,*GetProblemDescriptor()->GetEquation(),d);
+  GetDiscretization()->Matrix(*GetMatrix(),u,GetProblemDescriptor(),d);
 
   // Face
   if (GetFaceDiscretization())
@@ -1899,9 +1905,8 @@ void StdSolver::AssembleDualMatrix(const VectorInterface& gu, double d)
 
   HNAverage(gu);
 
-  const Equation& EQ = *GetProblemDescriptor()->GetEquation();
   M->zero();
-  GetDiscretization()->Matrix(*M,GetGV(gu),EQ,d);
+  GetDiscretization()->Matrix(*M,GetGV(gu),GetProblemDescriptor(),d);
   M->transpose();
 
   // PeriodicMatrix() hier nicht getestet!

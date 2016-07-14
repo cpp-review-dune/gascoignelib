@@ -39,6 +39,57 @@ using namespace Gascoigne;
 
 /* ----------------------------------------- */
 
+class MyEQ : virtual public Equation
+{
+public:
+  std::string GetName() const { return "NS 3d";}
+  int  GetNcomp  () const { return 4; }
+
+  void Form(VectorIterator b, const FemFunction& U, const TestFunction& N) const
+  {
+    for (int i=0;i<3;++i)
+      {
+	b[0]   += 0.1*U[0][i+1]*N[i+1];
+
+	b[0]   += U[i+1][i+1]*N.m();
+
+	b[i+1] += -U[0].m() * N[i+1];
+	for (int j=0;j<3;++j)
+	  {
+	    b[i+1] += U[j+1].m()*U[i+1][j+1]*N.m();
+	    b[i+1] += U[i+1][j+1]*N[j+1];
+	  }
+      }
+    
+  }
+  
+  
+  void Matrix(EntryMatrix& A, const FemFunction& U, const TestFunction& M, const TestFunction& N) const
+  {
+    for (int i=0;i<3;++i)
+      {
+	A(0,0)  += 0.1*M[i+1]*N[i+1];
+
+	A(0,i+1)+= M[i+1]*N.m();
+
+	A(i+1,0)+= -M.m() * N[i+1];
+	for (int j=0;j<3;++j)
+	  {
+	    A(i+1,j+1) += M.m()*U[i+1][j+1]*N.m();
+	    A(i+1,i+1) += U[j+1].m()*M[j+1]*N.m();
+	    A(i+1,i+1) += M[j+1]*N[j+1];
+	  }
+      }
+  }
+  
+
+  
+};
+
+  
+
+
+
 class BenchMarkDirichletData : public DirichletData
 {
 protected:
@@ -70,7 +121,7 @@ public:
     std::string GetName() const {return "Local";}
     void BasicInit(const ParamFile* pf) {
       GetParamFilePointer() = pf;
-      GetEquationPointer() = new StokesLps3d(GetParamFile());
+      GetEquationPointer()      = new MyEQ();
       GetDirichletDataPointer() = new BenchMarkDirichletData();
       ProblemDescriptorBase::BasicInit(pf);
     }

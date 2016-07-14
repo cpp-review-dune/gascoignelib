@@ -26,6 +26,7 @@
 #include  "stdloop.h"
 
 #include "stopwatch.h"
+#include <omp.h>
 
 extern Gascoigne::Stoppers GlobalStopWatch;
 

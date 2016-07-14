@@ -406,28 +406,8 @@ void SparseBlockMatrix<B>::periodic(const map<int,int> &m_PeriodicPairs, const I
 template<class B>
 void SparseBlockMatrix<B>::vmult(GlobalVector& y, const GlobalVector& x, double s) const
 {
-  std::vector<std::thread> workers;
-  //  int NT = std::max(1,  std::min(US.n()/1000,4));
-  int NT = 1;
-    
-  for (int T=1;T<NT;++T)
-    workers.push_back(std::thread( [this,&y,&x,s,T,NT] ()
-				   {
-				     int start = T    *US.n()/NT;
-				     int stop  = (T+1)*US.n()/NT;
-				     for(int i=start; i<stop; i++)
-				       {
-					 GlobalVector::iterator  off = y.start(i);
-					 const int*    cp = &(US.col(US.start(i)));
-					 for(int pos = US.start(i); pos<US.stop(i); pos++)
-					   {
-					     mat(pos) -> cadd(s,off,x.start(*cp++));
-					   }
-				       }}));
-  // Nr. 0
-  int start = 0*US.n()/NT;
-  int stop  = 1*US.n()/NT;
-  for(int i=start; i<stop; i++)
+#pragma omp parallel for num_threads(1)
+  for(int i=0; i<US.n(); i++)
     {
       GlobalVector::iterator  off = y.start(i);
       const int*    cp = &(US.col(US.start(i)));
@@ -436,7 +416,6 @@ void SparseBlockMatrix<B>::vmult(GlobalVector& y, const GlobalVector& x, double 
 	  mat(pos) -> cadd(s,off,x.start(*cp++));
 	}
     }
-  std::for_each(workers.begin(),workers.end(),[](std::thread &t) { t.join(); } );
 }
 
 
@@ -449,7 +428,7 @@ template<class B>
 void SparseBlockMatrix<B>::vmult(GlobalVector& y, const GlobalVector& x, const TimePattern& TP, double s) const
 {
   assert(US.n()>0);
-
+#pragma omp parallel for
   for(int i=0; i<US.n(); i++)
     {
       GlobalVector::iterator  off = y.start(i);

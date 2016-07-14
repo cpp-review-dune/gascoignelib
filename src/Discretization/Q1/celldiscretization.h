@@ -28,6 +28,7 @@
 #include  "basicdiscretization.h"
 #include  "hierarchicalmesh.h"
 
+
 namespace Gascoigne
 {
 
@@ -79,6 +80,10 @@ protected:
 
 public:
 
+  // Threads
+  void InitColoring() ;
+  
+
   //
   ////  Constructor 
   //
@@ -96,7 +101,7 @@ public:
   void Form(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const;
   void AdjointForm(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const;
   void BoundaryForm(GlobalVector& f, const GlobalVector& u, const IntSet& Colors, const BoundaryEquation& BE, double d) const;
-  void Matrix(MatrixInterface& A, const GlobalVector& u, const Equation& EQ, double) const;
+  void Matrix(MatrixInterface& A, const GlobalVector& u, const ProblemDescriptorInterface* PD, double) const;
   void BoundaryMatrix(MatrixInterface& A, const GlobalVector& u, const IntSet& Colors, const BoundaryEquation& BE, double d) const;
   void MassMatrix(MatrixInterface& M) const;
   void BoundaryMassMatrix(MatrixInterface& A, const IntSet& Colors) const;

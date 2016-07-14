@@ -30,6 +30,7 @@
 #include  "sparseblockmatrix.h"
 #include  "fmatrixblock.h"
 #include  "simplematrix.h"
+#include  "stopwatch.h"
 
 using namespace std;
 
@@ -37,6 +38,80 @@ using namespace std;
 
 namespace Gascoigne
 {
+
+
+  void CellDiscretization::InitColoring() 
+  {
+    RealTimeStopWatch rt;
+    rt.start();
+    
+    //// make graph for coloring
+    // first node to cell
+    vector<set<int> > node2cell(GetMesh()->nnodes());
+    for (int c=0;c<GetMesh()->ncells();++c)
+      {
+	IntVector indices = GetLocalIndices(c);
+	for (int j=0;j<indices.size();++j) 
+	  node2cell[indices[j]].insert(c);
+      }
+    
+    vector<int> neighbors;
+    vector<int> start;
+    int index =0;
+    for (int c=0;c<GetMesh()->ncells();++c)
+      {
+	start.push_back(index);
+	IntVector indices = GetLocalIndices(c);
+	set<int> n; // neighbors of cell c
+	for (int j=0;j<indices.size();++j) 
+	  for (set<int>::const_iterator it =   node2cell[indices[j]].begin();
+	       it!=node2cell[indices[j]].end();++it)
+	    n.insert(*it);
+	for (set<int>::const_iterator it = n.begin();it!=n.end();++it)
+	  {
+	    if (*it!=c) 
+	      {
+		neighbors.push_back(*it);
+		++index;
+	      }
+	  }
+      }
+    start.push_back(index);
+
+    
+    // partition graph
+    assert(GetMesh()->ncells()+1<start.size());
+    vector<int> cell2color(GetMesh()->ncells(),-1);
+    // ganz primitiv, mehrfacher durchgang
+    for (int c=0;c<GetMesh()->ncells();++c)
+      {
+	if (cell2color[c]==0) // noch nicht gefaerbt
+	  cell2color[c]=1;
+	
+	int mycolor = cell2color[c]; 
+	
+	for (int ni=start[c];ni<start[c+1];++ni)
+	  {
+	    int n = neighbors[ni];
+	    if (cell2color[n]
+		}
+	    
+	  }
+      }
+    
+
+
+
+    rt.stop();
+    std::cout << "Coloring Graph " << neighbors.size() << " " << start.size() << std::endl;
+    std::cout << "Coloring time " << rt.read() << std::endl;
+    
+  }
+  
+
+
+
+
 void CellDiscretization::Structure(SparseStructureInterface* SI) const
 {
   SparseStructure* S = dynamic_cast<SparseStructure*>(SI);
@@ -159,8 +234,10 @@ void CellDiscretization::BoundaryForm(GlobalVector& f, const GlobalVector& u, co
 
 /* ----------------------------------------- */
 
-void CellDiscretization::Matrix(MatrixInterface& A, const GlobalVector& u, const Equation& EQ, double d) const
+void CellDiscretization::Matrix(MatrixInterface& A, const GlobalVector& u, const ProblemDescriptorInterface* PD, double d) const
 {
+  const Equation& EQ = *(PD->GetEquation());
+  
   nmatrix<double> T;
   
   GlobalToGlobalData();

@@ -82,7 +82,7 @@ public:
   void HNDistribute(GlobalVector& x) const;
   void HNZero      (GlobalVector& x) const;
   bool HNZeroCheck (const GlobalVector& x) const;
-  void Matrix(MatrixInterface& A, const GlobalVector& u, const Equation& EQ, double d) const;
+  void Matrix(MatrixInterface& A, const GlobalVector& u, const ProblemDescriptorInterface* PD, double d) const;
   void MassMatrix(MatrixInterface& A) const;
   void Structure(SparseStructureInterface* SI) const;
   void InitFilter(DoubleVector& F) const;

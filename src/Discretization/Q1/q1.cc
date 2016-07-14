@@ -222,12 +222,12 @@ void Q1::Structure(SparseStructureInterface* SI) const
 
 /* ----------------------------------------- */
 
-void Q1::Matrix(MatrixInterface& A, const GlobalVector& u, const Equation& EQ, double d) const
-{
-  CellDiscretization::Matrix(A,u,EQ,d);
-
-  HN->MatrixDiag(u.ncomp(),A);
-}
+  void Q1::Matrix(MatrixInterface& A, const GlobalVector& u, const ProblemDescriptorInterface* PD, double d) const
+  {
+    CellDiscretization::Matrix(A,u,PD,d);
+    
+    HN->MatrixDiag(u.ncomp(),A);
+  }
 
 /* ----------------------------------------- */
 

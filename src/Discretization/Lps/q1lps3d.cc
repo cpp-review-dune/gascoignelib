@@ -75,9 +75,9 @@ void Q1Lps3d::Form(GlobalVector& f, const GlobalVector& u, const Equation& EQ, d
 
 /* ----------------------------------------- */
 
-void Q1Lps3d::Matrix(MatrixInterface& A, const GlobalVector& u, const Equation& EQ, double d) const
+void Q1Lps3d::Matrix(MatrixInterface& A, const GlobalVector& u, const ProblemDescriptorInterface* PD, double d) const
 {
-  Q13d::Matrix(A,u,EQ,d);
-  S   ->Matrix(A,u,EQ,d);
+  Q13d::Matrix(A,u,PD,d);
+  S   ->Matrix(A,u,PD,d);
 }
 }
