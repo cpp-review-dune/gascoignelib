@@ -406,7 +406,7 @@ void SparseBlockMatrix<B>::periodic(const map<int,int> &m_PeriodicPairs, const I
 template<class B>
 void SparseBlockMatrix<B>::vmult(GlobalVector& y, const GlobalVector& x, double s) const
 {
-#pragma omp parallel for num_threads(1)
+#pragma omp parallel for num_threads(4)
   for(int i=0; i<US.n(); i++)
     {
       GlobalVector::iterator  off = y.start(i);
@@ -428,7 +428,7 @@ template<class B>
 void SparseBlockMatrix<B>::vmult(GlobalVector& y, const GlobalVector& x, const TimePattern& TP, double s) const
 {
   assert(US.n()>0);
-#pragma omp parallel for
+#pragma omp parallel for num_threads(4)
   for(int i=0; i<US.n(); i++)
     {
       GlobalVector::iterator  off = y.start(i);

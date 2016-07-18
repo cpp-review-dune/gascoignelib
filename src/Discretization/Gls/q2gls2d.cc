@@ -26,7 +26,7 @@
 #include  "galerkinglsintegratorq2.h"
 #include  "transformation2d.h"
 #include  "finiteelement.h"
-#include  "baseq12d.h"
+#include  "baseq1.h"
 #include  "baseq22d.h"
 #include "integratorwithsecond.h"
 
@@ -42,7 +42,7 @@ void Q2Gls2d::BasicInit(const ParamFile* paramfile)
   GetIntegratorPointer()->BasicInit();
 
   assert(GetFem()==NULL);
-  typedef Transformation2d<BaseQ12d>           TransQ1;
+  typedef Transformation2d<BaseQ1<2> >           TransQ1;
   typedef Transformation2d<BaseQ22d>           TransQ2;
   typedef FiniteElementWithSecond<2, 1, Transformation2d<BaseQ22dWithSecond>, BaseQ22dWithSecond> FiniteElement;
   //typedef FiniteElement<2,1,TransQ2,BaseQ22d>  FiniteElement;

@@ -23,13 +23,13 @@
 
 
 #include  "transformation2d.h"
-#include  "baseq12d.h"
+#include  "baseq1.h"
 
 /*-----------------------------------------------------*/
 
 namespace Gascoigne
 {
-template class Transformation2d<BaseQ12d>;
+  template class Transformation2d<BaseQ1<2> >;
 }
 
 /*-----------------------------------------------------*/

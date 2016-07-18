@@ -49,8 +49,10 @@ EnergyEstimator::EnergyEstimator(SolverInterface& SR) : S(SR)
     FS.readfile(SR.GetParamfile(),"Equation"); 
   }
   primalproblem  = S.GetProblemDescriptor();
-  discretization = dynamic_cast<Q1*>(S.GetDiscretization());
-  assert(discretization);
+  std::cerr << "EnergyEstimator geht nicht!!!!!! Neue DISC" << std::endl;
+  //  assert(0); // muss auf neue Disk angepasst werden
+  //  discretization = dynamic_cast<Q1*>(S.GetDiscretization());
+  //assert(discretization);
 }
 
 /*--------------------------------------------------------*/
@@ -58,6 +60,8 @@ EnergyEstimator::EnergyEstimator(SolverInterface& SR) : S(SR)
 double EnergyEstimator::Estimator(DoubleVector& eta, VectorInterface& gu, 
 				  const VectorInterface& gf)
 {
+  return 0.0;
+  
   const GlobalVector& u = S.GetGV(gu);
 
   const Equation*    EQ  = primalproblem->GetEquation();
@@ -83,7 +87,9 @@ double EnergyEstimator::Estimator(DoubleVector& eta, VectorInterface& gu,
   else if (S.GetMesh()->dimension()==3)  EIC = new EdgeInfoContainer<3>;
 
   EIC->BasicInit(SS->GetHierarchicalMesh(),u.ncomp());
-  discretization->EnergyEstimator(*EIC,eta,u,*EQ,DRHS,_s_energytype,_d_visc);
+  // muss angepasst werden
+  assert(0);
+  //  discretization->EnergyEstimator(*EIC,eta,u,*EQ,DRHS,_s_energytype,_d_visc);
   delete EIC;
 
   S.HNZero(gu);

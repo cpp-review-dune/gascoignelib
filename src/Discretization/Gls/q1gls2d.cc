@@ -26,7 +26,7 @@
 #include  "galerkinglsintegrator.h"
 #include  "transformation2d.h"
 #include  "finiteelement.h"
-#include  "baseq12d.h"
+#include  "baseq1.h"
 
 using namespace std;
 
@@ -40,17 +40,17 @@ void Q1Gls2d::BasicInit(const ParamFile* pf)
   HN = NewHNStructure();
   assert(HN);
 
-  assert(CellDiscretization::GetIntegratorPointer()==NULL);
-  CellDiscretization::GetIntegratorPointer() =  new GalerkinGlsIntegrator<2>;
+  assert(Q1<2>::GetIntegratorPointer()==NULL);
+  Q1<2>::GetIntegratorPointer() =  new GalerkinGlsIntegrator<2>;
 
   GetIntegratorPointer()->BasicInit();
 
-  assert(CellDiscretization::GetFemPointer()==NULL);
-  typedef Transformation2d<BaseQ12d>           TransQ1;
-  typedef FiniteElement<2,1,TransQ1,BaseQ12d>  FiniteElement;
-  CellDiscretization::GetFemPointer() =  new FiniteElement;
+  assert(Q1<2>::GetFemPointer()==NULL);
+  typedef Transformation2d<BaseQ1<2> >           TransQ1;
+  typedef FiniteElement<2,1,TransQ1,BaseQ1<2> >  FiniteElement;
+  Q1<2>::GetFemPointer() =  new FiniteElement;
 
-  CellDiscretization::BasicInit(pf);
+  Q1<2>::BasicInit(pf);
 }
 }
 

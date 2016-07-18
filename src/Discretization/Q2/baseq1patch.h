@@ -25,7 +25,7 @@
 #ifndef __baseq12dPatch_h
 #define __baseq12dPatch_h
 
-#include  "baseq12d.h"
+#include  "baseq1.h"
 
 #define NDOF   9
 #define NDOF1d 3
@@ -34,12 +34,12 @@ namespace Gascoigne
 {
 /**************************************************/
 
-class BaseQ12dPatch : public Base2d
+  class BaseQ12dPatch : public Base<2>
 {
  protected:
 
   mutable int        pB;
-  BaseQ12d           B1;
+  BaseQ1<2>          B1;
 
   mutable Vertex2d   bn, bt;
   nvector<int>       perm;

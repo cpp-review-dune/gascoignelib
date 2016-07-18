@@ -91,6 +91,7 @@ void SimpleMatrix::vmult_time(GlobalVector& y, const GlobalVector& x, const Time
   assert(n==x.n());
   assert(x.ncomp()==y.ncomp());
 
+#pragma omp parallel for num_threads(4)
   for(int i=0;i<n;i++)
     {
       for(int pos=ST.start(i);pos<ST.stop(i);pos++)
@@ -115,6 +116,8 @@ void SimpleMatrix::vmult(DoubleVector& y, const DoubleVector& x, double d) const
   assert(n==y.size());
   assert(n==x.size());
 
+  abort();
+  
   DoubleVector::iterator py=y.begin();
   for(int i=0;i<n;i++)
     {
@@ -325,6 +328,7 @@ void SimpleMatrix::vmult_time_Jacobi(GlobalVector& y, const GlobalVector& x, con
   assert(n==x.n());
   assert(x.ncomp()==y.ncomp());
 
+#pragma omp parallel for num_threads(4)
   for(int i=0;i<n;i++)
     {
       for(int pos=ST.start(i);pos<ST.stop(i);pos++)

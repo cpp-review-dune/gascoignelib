@@ -99,7 +99,7 @@ template<class BASE>
 inline Vertex3d  Transformation3d<BASE>::normal() const 
 {
   Vertex3d xn;
-  dti.mult(xn,*B.normal3d());
+  dti.mult(xn,*B.normal());
   double xx = sqrt(xn*xn);
   xn /= xx;
   return xn;

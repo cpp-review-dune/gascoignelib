@@ -34,7 +34,7 @@ namespace Gascoigne
 {
 /**************************************************/
 
-  class BaseQ23dPatch : public Base3d
+  class BaseQ23dPatch : public Base<3>
   {
     protected:
       bool         second;
@@ -57,7 +57,7 @@ namespace Gascoigne
       }
 
     public:
-      BaseQ23dPatch() : Base3d(), second(false), perm(27)
+    BaseQ23dPatch() : Base<3>(), second(false), perm(27)
       {
         BasicInit();
 

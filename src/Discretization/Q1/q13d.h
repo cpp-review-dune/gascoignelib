@@ -25,7 +25,7 @@
 #ifndef  __Q1Simple3d_h
 #define  __Q1Simple3d_h
 
-#include  "q1.h"
+#include  "celldiscretization.h"
 #include  "edgeinfocontainer.h"
 #include  "energyestimatorintegrator.h"
 
@@ -40,12 +40,13 @@ namespace Gascoigne
 ////
 /////////////////////////////////////////////
 
-class Q13d : public Q1
+  class Q13d : public Q1<3>
 {
  protected:
 
-  HNStructureInterface* NewHNStructure();
-  
+
+
+    
   void EEJumps(EdgeInfoContainer<3>& EIC, const GlobalVector& u, const EnergyEstimatorIntegrator<3>& EEI, const HierarchicalMesh3d* HM) const;
   void EEJumpNorm(EdgeInfoContainer<3>& EIC, DoubleVector& eta, const EnergyEstimatorIntegrator<3>& EEI, const HierarchicalMesh3d* HM) const;
   void EEResidual(DoubleVector& eta, const GlobalVector& u, const Equation& EQ, const DomainRightHandSide* RHS, const EnergyEstimatorIntegrator<3>& EEI) const;
@@ -65,9 +66,6 @@ public:
   void BasicInit(const ParamFile* pf);
 
   void Interpolate(GlobalVector& u, const DomainInitialCondition& U) const;
-  void InterpolateSolutionByPatches(GlobalVector& u, const GlobalVector& uold) const;
-  void ConstructInterpolator(MgInterpolatorInterface* I, const MeshTransferInterface* MT);
-  void StrongDirichletVector(GlobalVector& u, const DirichletData& BF, int col, const std::vector<int>& comp, double d) const;
   void StrongPeriodicVector(GlobalVector& u, const PeriodicData& BF, int col, const std::vector<int>& comp, double d) const;
 
   void EnergyEstimator(EdgeInfoContainerInterface& EIC, DoubleVector& eta, const GlobalVector& u, const Equation& EQ, const DomainRightHandSide* RHS, const std::string & s_energytype, double d_visc) const;

@@ -253,7 +253,7 @@ abort();
       }
 			
       virtual void ConstructInterpolator(MgInterpolatorInterface* I, const MeshTransferInterface* MT) {
-        std::cerr << "\"DiscretizationInterface::ConstructInterpolator\" not written!" << std::endl;
+        std::cerr << "\"DiscretizationInterface::ConstructInterpolatorx \" not written!" << std::endl;
         abort();
       }
 

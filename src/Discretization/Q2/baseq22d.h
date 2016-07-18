@@ -30,7 +30,7 @@
 #include  <utility>
 #include  "vertex.h"
 #include  "numfixarray.h"
-#include  "base2d.h"
+#include  "base.h"
 
 #define NDOF   9
 #define NDOF1d 3
@@ -49,7 +49,7 @@ namespace Gascoigne
 
 /**************************************************/
 
-class BaseQ22d : public Base2d
+  class BaseQ22d : public Base<2>
 {
  protected:
 

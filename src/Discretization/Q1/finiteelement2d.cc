@@ -25,15 +25,15 @@
 #include  "finiteelement.h"
 #include  "finiteelement.xx"
 #include  "transformation2d.h"
-#include  "baseq12d.h"
+#include  "baseq1.h"
 
 /*-----------------------------------------------------*/
 
 namespace Gascoigne
 {
-typedef Transformation2d<BaseQ12d>  TQ1_2D;
+  typedef Transformation2d<BaseQ1<2> >  TQ1_2D;
 
-template class FiniteElement<2,1,TQ1_2D,BaseQ12d>;
+  template class FiniteElement<2,1,TQ1_2D,BaseQ1<2> >;
 }
 
 /*-----------------------------------------------------*/

@@ -31,7 +31,7 @@
 #include  <cassert>
 #include  "vertex.h"
 #include  "numfixarray.h"
-#include  "base3d.h"
+#include  "base.h"
 
 #define NDOF   125
 #define NDOF1d 5
@@ -48,7 +48,7 @@ namespace Gascoigne
 ///
 /////////////////////////////////////////////
 
-class BaseQ43d : public Base3d
+  class BaseQ43d : public Base<3>
 {
 
  protected:

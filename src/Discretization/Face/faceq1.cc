@@ -24,8 +24,8 @@
 
 #include "faceq1.h"
 #include "gascoignemesh2d.h"
-#include "baseq12d.h"
-#include "baseq13d.h"
+#include "baseq1.h"
+
 #include "finiteelement.h"
 #include "transformation2d.h"
 #include "transformation3d.h"
@@ -48,16 +48,16 @@ namespace Gascoigne
     if (!GetFem1Pointer())
       {
 	if (DIM==2)
-	  GetFem1Pointer() = new FiniteElement<2,1,Transformation2d<BaseQ12d>,BaseQ12d >;
+	  GetFem1Pointer() = new FiniteElement<2,1,Transformation2d<BaseQ1<2> >,BaseQ1<2> >;
 	if (DIM==3)
-	  GetFem1Pointer() = new FiniteElement<3,2,Transformation3d<BaseQ13d>,BaseQ13d >;
+	  GetFem1Pointer() = new FiniteElement<3,2,Transformation3d<BaseQ1<3> >,BaseQ1<3> >;
       }
     if (!GetFem2Pointer())
       {
 	if (DIM==2)
-	  GetFem2Pointer() = new FiniteElement<2,1,Transformation2d<BaseQ12d>,BaseQ12d >;
+	  GetFem2Pointer() = new FiniteElement<2,1,Transformation2d<BaseQ1<2> >,BaseQ1<2> >;
 	if (DIM==3)
-	  GetFem2Pointer() = new FiniteElement<3,2,Transformation3d<BaseQ13d>,BaseQ13d >;
+	  GetFem2Pointer() = new FiniteElement<3,2,Transformation3d<BaseQ1<3> >,BaseQ1<3>  >;
       }    
 
     if (!GetFaceIntegratorPointer())

@@ -26,7 +26,7 @@
 #include  "galerkinintegrator.h"
 #include  "transformation2d.h"
 #include  "finiteelement.h"
-#include  "baseq12d.h"
+#include  "baseq1.h"
 #include  "sparsestructure.h"
 #include  "gascoignemesh.h"
 #include  "hnstructureq12d.h"
@@ -45,12 +45,6 @@ Q12d::Q12d() : Q1()
 {
 }
 
-/* ----------------------------------------- */
-
-HNStructureInterface* Q12d::NewHNStructure()
-{
-  return new HNStructureQ12d;
-}
 
 /* ----------------------------------------- */
 
@@ -68,13 +62,13 @@ void Q12d::BasicInit(const ParamFile* pf)
 
   if(!GetFemPointer())
     {
-      typedef Transformation2d<BaseQ12d>           TransQ1;
-      typedef FiniteElement<2,1,TransQ1,BaseQ12d>  FiniteElement;
-      CellDiscretization::GetFemPointer() =  new FiniteElement;
+      typedef Transformation2d<BaseQ1<2> >           TransQ1;
+      typedef FiniteElement<2,1,TransQ1,BaseQ1<2> >  FiniteElement;
+      Q1<2>::GetFemPointer()   =  new FiniteElement;
     }
   assert(GetFem());
 
-  CellDiscretization::BasicInit(pf);
+  Q1<2>::BasicInit(pf);
 }
 
 /* ----------------------------------------- */
@@ -92,59 +86,6 @@ nmatrix<double> Q12d::GetLocalInterpolationWeights() const
   return w;
 }
 
-/* ----------------------------------------- */
-
-void Q12d::StrongDirichletVector(GlobalVector& u, const DirichletData& BF, int col, const vector<int>& comp, double d) const
-{
-  const GascoigneMesh* GMP = dynamic_cast<const GascoigneMesh*>(GetMesh());
-  assert(GMP);
-  DoubleVector ff(u.ncomp(),0.);
-  const IntVector& bv = *GMP->VertexOnBoundary(col);
-
-  FemData QH;
-
-  GlobalToGlobalData();
-  BF.SetParameterData(__QP);
-
-  for(int ii=0;ii<comp.size();ii++)
-    {
-      int c = comp[ii];
-      if(c<0) {
-        cerr << "negative component: " << c << endl;
-        abort();
-      } else if(c>=u.ncomp()){
-        cerr << "unknown component: " << c << endl;
-        abort();
-      }
-    }
-
-  for(int i=0;i<bv.size();i++)
-    {
-      int index = bv[i];
-
-      QH.clear();
-      GlobalData::const_iterator p=GetDataContainer().GetNodeData().begin();
-      for(; p!=GetDataContainer().GetNodeData().end(); p++)
-      {
-        QH[p->first].resize(p->second->ncomp());
-        for(int c=0; c<p->second->ncomp(); c++)
-        {
-          QH[p->first][c].m() = p->second->operator()(index,c);
-        }
-      }
-
-      BF.SetFemData(QH);
-
-      const Vertex2d& v = GMP->vertex2d(index);
-      
-      BF(ff,v,col);
-      for(int iii=0;iii<comp.size();iii++)
-        {
-          int c = comp[iii];
-          u(index,c) = d * ff[c];
-        }
-    }
-}
 
 /* ----------------------------------------- */
 
@@ -236,166 +177,8 @@ void Q12d::InterpolateDirac(GlobalVector& u, const GlobalVector& uold) const
 }
 /* ----------------------------------------- */
 
-void Q12d::InterpolateSolutionByPatches(GlobalVector& u, const GlobalVector& uold) const
-{
-  const IntVector& vo2n = *GetMesh()->Vertexo2n();
-  nvector<bool> habschon(GetMesh()->nnodes(),0);  
 
-  assert(vo2n.size()==uold.n());
-  assert(GetMesh()->nnodes()==u.n());
-  assert(u.ncomp()==uold.ncomp());
 
-  for(int i=0;i<vo2n.size();i++)
-    {
-      int in = vo2n[i];
-
-      if(in>=0) 
-        {
-          u.equ_node(in,1.,i,uold);
-          habschon[in] = 1;
-        }
-    }
-  nvector<fixarray<3,int> > nodes(4);
-  nodes[0][0] = 1; nodes[0][1] = 0;  nodes[0][2] = 2;
-  nodes[1][0] = 3; nodes[1][1] = 0;  nodes[1][2] = 6;
-  nodes[2][0] = 5; nodes[2][1] = 2;  nodes[2][2] = 8;
-  nodes[3][0] = 7; nodes[3][1] = 6;  nodes[3][2] = 8;
- 
-  const PatchMesh* PM = dynamic_cast<const PatchMesh*>(GetMesh());
-  assert(PM);
-
-  for(int iq=0;iq<PM->npatches();++iq)
-    {
-      IntVector vi =* PM->IndicesOfPatch(iq);
-
-      for(int j=0; j<nodes.size(); j++)
-        {
-          int v  = vi[nodes[j][0]];
-          int v1 = vi[nodes[j][1]];
-          int v2 = vi[nodes[j][2]];
-          assert(habschon[v1]);
-          assert(habschon[v2]);
-          if (habschon[v]==0) 
-            {
-              u.equ_node(v,0.5,v1,uold);
-              u.add_node(v,0.5,v2,uold);
-              habschon[v] = 1;
-            }
-        }
-      int v = vi[4];
-      if (habschon[v]==0)
-        {
-          u.equ_node(v,0.25,vi[0],uold);
-          u.add_node(v,0.25,vi[2],uold);	  
-          u.add_node(v,0.25,vi[6],uold);	  
-          u.add_node(v,0.25,vi[8],uold);	  
-          habschon[v] = 1;
-        }
-    }  
-}
-
-/* ----------------------------------------- */
-
-void Q12d::ConstructInterpolator(MgInterpolatorInterface* I, const MeshTransferInterface* MT)
-{
-  {
-    MgInterpolatorNested* IP = dynamic_cast<MgInterpolatorNested*>(I);
-    if(IP)
-      {
-        IP->BasicInit(MT);
-        return;
-      }
-  }
-
-  MgInterpolatorMatrix* IP = dynamic_cast<MgInterpolatorMatrix*>(I);
-  assert(IP);
-  const GascoigneMeshTransfer* GT = dynamic_cast<const GascoigneMeshTransfer*>(MT);
-  assert(GT);
-
-  const map<int,fixarray<2,int> >& zweier = GT->GetZweier();
-  const map<int,fixarray<4,int> >& vierer = GT->GetVierer();
-  const map<int,fixarray<8,int> >& achter = GT->GetAchter();
-  const IntVector& c2f    = GT->GetC2f();
-
-  int n  = c2f.size() +   zweier.size() +   vierer.size() +   achter.size();
-  int nt = c2f.size() + 2*zweier.size() + 4*vierer.size() + 8*achter.size();
-
-  ColumnStencil& ST = IP->GetStencil();
-  DoubleVector& val = IP->GetAlpha();
-
-  SparseStructure SS;
-
-  SS.build_begin(n);
-  for(int i=0;i<c2f.size();i++)
-    {
-      assert(c2f[i]>=0);
-
-      SS.build_add(c2f[i],i);
-    }
-  for(map<int,fixarray<2,int> >::const_iterator p=zweier.begin();
-      p!=zweier.end();p++) 
-    {
-      int il = p->first;
-      fixarray<2,int> n2 = p->second;
-      for(int ii=0;ii<2;ii++) SS.build_add(il,n2[ii]);
-    }
-  for(map<int,fixarray<4,int> >::const_iterator p=vierer.begin();
-      p!=vierer.end();p++) {
-    int il = p->first;
-    fixarray<4,int> n4 = p->second;
-    for(int ii=0;ii<4;ii++) SS.build_add(il,n4[ii]);
-  }
-  for(map<int,fixarray<8,int> >::const_iterator p=achter.begin();
-      p!=achter.end();p++) {
-    int il = p->first;
-    fixarray<8,int> n8 = p->second;
-    for(int ii=0;ii<8;ii++) SS.build_add(il,n8[ii]);
-  }
-  SS.build_end();
-
-  assert(nt==SS.ntotal());
-
-  ST.memory(&SS);
-
-  val.reservesize(nt);
-
-  for(int i=0;i<c2f.size();i++)
-    {
-      // ich weiss nicht, ob das richtig ist !!!!!
-      int pos = ST.Find(c2f[i],i);
-      assert(pos>=0);
-      
-      val[pos] = 1.;
-    }
-  for(map<int,fixarray<2,int> >::const_iterator p=zweier.begin();
-      p!=zweier.end();p++) 
-    {
-      int il = p->first;
-      fixarray<2,int> n2 = p->second;
-      val[ST.Find(il,n2[0])] = 0.5;
-      val[ST.Find(il,n2[1])] = 0.5;
-    }
-  for(map<int,fixarray<4,int> >::const_iterator p=vierer.begin();
-      p!=vierer.end();p++) {
-    int il = p->first;
-    fixarray<4,int> n4 = p->second;
-    val[ST.Find(il,n4[0])] = 0.25;
-    val[ST.Find(il,n4[1])] = 0.25;
-    val[ST.Find(il,n4[2])] = 0.25;
-    val[ST.Find(il,n4[3])] = 0.25;
-  }
-  for(map<int,fixarray<8,int> >::const_iterator p=achter.begin();
-      p!=achter.end();p++) {
-    int il = p->first;
-    fixarray<8,int> n8 = p->second;
-    for (int i=0; i<8; i++)
-      {
-	val[ST.Find(il,n8[i])] = 0.125;
-      }
-  }
-}
-
-/* ----------------------------------------- */
 
 void Q12d::EnergyEstimator(EdgeInfoContainerInterface& EIC, DoubleVector& eta, const GlobalVector& u, const Equation& EQ, const DomainRightHandSide* RHS, const std::string & s_energytype,double d_visc) const
 {
@@ -522,15 +305,15 @@ void Q12d::EEResidual(DoubleVector& eta, const GlobalVector& u, const Equation& 
 int Q12d::GetCellNumber(const Vertex2d& p0, Vertex2d& p,int c0) const
 {
   if(c0 != 0)
-  {
-    VertexTransformation(p0,p,c0,false);
-    
-    if((p[0]>0.-1.e-12)&&(p[0]<1.+1.e-12)&&(p[1]>0.-1.e-12)&&(p[1]<1.+1.e-12))
     {
-      return c0;
+      VertexTransformation(p0,p,c0,false);
+      
+      if((p[0]>0.-1.e-12)&&(p[0]<1.+1.e-12)&&(p[1]>0.-1.e-12)&&(p[1]<1.+1.e-12))
+	{
+	  return c0;
+	}
     }
-  }
-
+  
   {
     int iq;
   
@@ -582,7 +365,7 @@ int Q12d::GetCellNumber(const Vertex2d& p0, Vertex2d& p,int c0) const
   nmatrix<double> T;
   Transformation(T,iq);
 
-  Transformation2d<BaseQ12d> Tr;
+  Transformation2d<BaseQ1<2> > Tr;
   Tr.init(T);
 
   Vertex2d res;

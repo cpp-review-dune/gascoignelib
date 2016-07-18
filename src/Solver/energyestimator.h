@@ -32,13 +32,14 @@
 namespace Gascoigne
 {
 
+  
 class EnergyEstimator
 {
  protected:
 
   SolverInterface& S;
   const ProblemDescriptorInterface* primalproblem;
-  Q1*                               discretization;
+  //  Q1*                               discretization;
   double                            _d_visc;
   std::string                       _s_energytype;
 

@@ -25,7 +25,7 @@
 #ifndef  __Q1Gls2d_h
 #define  __Q1Gls2d_h
 
-#include  "q12d.h"
+#include  "celldiscretization.h"
 
 namespace Gascoigne
 {
@@ -39,7 +39,7 @@ namespace Gascoigne
 ////
 /////////////////////////////////////////////
 
-class Q1Gls2d : public Q12d
+  class Q1Gls2d : public Q1<2>
 {
 protected:
 
@@ -49,7 +49,7 @@ public:
   ////  Con(De)structor 
   //
   
-  Q1Gls2d() : Q12d() {}
+  Q1Gls2d() : Q1<2>() {}
   ~Q1Gls2d() {}
   
   std::string GetName() const {return "Q1Gls2d";}

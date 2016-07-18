@@ -77,6 +77,8 @@ class BasicDiscretization : public DiscretizationInterface
    virtual IntVector GetLocalIndices(int iq) const=0;
 
  public:
+
+  
    //
    ////  Constructor 
    //

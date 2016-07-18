@@ -34,7 +34,7 @@ namespace Gascoigne
 {
 /**************************************************/
 
-  class BaseQ22dPatch : public Base2d
+  class BaseQ22dPatch : public Base<2>
   {
     protected:
       bool                 second;
@@ -51,7 +51,7 @@ namespace Gascoigne
       }
 
     public:
-      BaseQ22dPatch() : Base2d(), second(false), perm(9)
+    BaseQ22dPatch() : Base<2>(), second(false), perm(9)
       {
         BasicInit();
 

@@ -25,7 +25,7 @@
 #ifndef  __Q1Simple_h
 #define  __Q1Simple_h
 
-#include  "q1.h"
+#include  "celldiscretization.h"
 #include  "edgeinfocontainer.h"
 #include  "energyestimatorintegrator.h"
 #include  "curve.h"
@@ -41,11 +41,10 @@ namespace Gascoigne
 ////
 /////////////////////////////////////////////
 
-class Q12d : public Q1
+  class Q12d : virtual public Q1<2>
 {
  protected:
 
-  HNStructureInterface* NewHNStructure();
 
   void EEJumps(EdgeInfoContainer<2>& EIC, const GlobalVector& u, const EnergyEstimatorIntegrator<2>& EEI, const HierarchicalMesh2d* HM) const;
   void EEJumpNorm(EdgeInfoContainer<2>& EIC, DoubleVector& eta, const EnergyEstimatorIntegrator<2>& EEI, const HierarchicalMesh2d* HM) const;
@@ -66,11 +65,8 @@ public:
   void BasicInit(const ParamFile* pf);
 
   void Interpolate(GlobalVector& u, const DomainInitialCondition& U) const;
-  void InterpolateSolutionByPatches(GlobalVector& u, const GlobalVector& uold) const;     
   void InterpolateDirac(GlobalVector& u, const GlobalVector& uold)const;
 
-  void ConstructInterpolator(MgInterpolatorInterface* I, const MeshTransferInterface* MT);
-  void StrongDirichletVector(GlobalVector& u, const DirichletData& BF, int col, const std::vector<int>& comp, double d) const;
   void StrongPeriodicVector(GlobalVector& u, const PeriodicData& BF, int col, const std::vector<int>& comp, double d) const;
 
   void EnergyEstimator(EdgeInfoContainerInterface& EIC, DoubleVector& eta, const GlobalVector& u, const Equation& EQ, const DomainRightHandSide* RHS, const std::string & s_energytype, double d_visc) const;
