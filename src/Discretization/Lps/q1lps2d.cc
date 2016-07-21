@@ -39,7 +39,7 @@ Q1Lps2d:: ~Q1Lps2d()
 
 void Q1Lps2d::BasicInit(const ParamFile* paramfile)
 {
-  Q12d::BasicInit(paramfile);
+  Q1<2>::BasicInit(paramfile);
   S = new Q1LpsStab2d;
   S ->BasicInit(paramfile,HN);
 }
@@ -48,7 +48,7 @@ void Q1Lps2d::BasicInit(const ParamFile* paramfile)
 
 void Q1Lps2d::ReInit(const MeshInterface* M)
 {
-  Q12d::ReInit(M);
+  Q1<2>::ReInit(M);
   S   ->ReInit(M);
 }
 
@@ -71,7 +71,7 @@ void Q1Lps2d::StabForm(GlobalVector& f, const GlobalVector& u, const Equation& E
 
 void Q1Lps2d::Form(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const
 {
-  Q12d::Form(f,u,EQ,d);
+  Q1<2>::Form(f,u,EQ,d);
   S   ->Form(f,u,EQ,d);
 }
 
@@ -79,7 +79,7 @@ void Q1Lps2d::Form(GlobalVector& f, const GlobalVector& u, const Equation& EQ, d
 
 void Q1Lps2d::Matrix(MatrixInterface& A, const GlobalVector& u, const ProblemDescriptorInterface* PD, double d) const
 {
-  Q12d::Matrix(A,u,PD,d);
+  Q1<2>::Matrix(A,u,PD,d);
   S   ->Matrix(A,u,PD,d);
 }
 }

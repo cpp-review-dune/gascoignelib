@@ -522,7 +522,7 @@ void StdMultiLevelSolver::Cg(VectorInterface& x, const VectorInterface& f, CGInf
 	DDD=min(ET1*(0.2+4/(0.7+exp(1.51*rho1))),1);
 	
 	lastrate = rho1;
-	cout  <<  "Steuerung Newton rho/DDD/ET: " << rho1 << "\t" << DDD << "\t"<< ET1 << endl;
+	if (DDD<1) cout  <<  "Steuerung Newton rho/DDD/ET: " << rho1 << "\t" << DDD << "\t"<< ET1 << endl;
       }
     
     cerr << "New: " << it <<"\t"<< nlin.sum() << "\t" << nlin << endl;

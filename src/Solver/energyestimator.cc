@@ -24,8 +24,7 @@
 
 #include  "energyestimator.h"
 #include  "edgeinfocontainer.h"
-#include  "q12d.h"
-#include  "q13d.h"
+#include  "celldiscretization.h"
 #include  "stdsolver.h"
 
 namespace Gascoigne{

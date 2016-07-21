@@ -141,7 +141,7 @@ void Q4::Form(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double
     GlobalToLocal(__U,u,iq);
     //EQ.cell(GetPatchMesh(),iq,__U,__QN);
     GetIntegrator()->Form(EQ,__F,*GetFem(),__U,__QN,__QC);
-    PatchDiscretization::LocalToGlobal(f,__F,iq,d);
+    BasicDiscretization::LocalToGlobal(f,__F,iq,d);
   }
 }
 
@@ -162,7 +162,7 @@ void Q4::AdjointForm(GlobalVector& f, const GlobalVector& u, const Equation& EQ,
     GlobalToLocal(__U,u,iq);
     //EQ.cell(GetPatchMesh(),iq,__U,__QN);
     GetIntegrator()->AdjointForm(EQ,__F,*GetFem(),__U,__QN,__QC);
-    PatchDiscretization::LocalToGlobal(f,__F,iq,d);
+    BasicDiscretization::LocalToGlobal(f,__F,iq,d);
   }
 }
 
@@ -216,7 +216,7 @@ void Q4::BoundaryForm(GlobalVector& f, const GlobalVector& u, const IntSet& Colo
       GlobalToLocal(__U,u,ip);
 
       GetIntegrator()->BoundaryForm(BE,__F,*GetFem(),__U,ile,col,__QN,__QC);
-      PatchDiscretization::LocalToGlobal(f,__F,ip,d);
+      BasicDiscretization::LocalToGlobal(f,__F,ip,d);
     }
   }
 }
@@ -329,7 +329,7 @@ void Q4::MassForm(GlobalVector& f, const GlobalVector& u, const TimePattern& TP,
 
     GlobalToLocal(__U,u,iq);
     GetIntegrator()->MassForm(TP,__F,*GetFem(),__U);
-    PatchDiscretization::LocalToGlobal(f,__F,iq,s);
+    BasicDiscretization::LocalToGlobal(f,__F,iq,s);
   }
 }
 
@@ -385,7 +385,7 @@ void Q4::Rhs(GlobalVector& f, const DomainRightHandSide& RHS, double s) const
 
     GlobalToLocalData(iq);
     GetIntegrator()->Rhs(RHS,__F,*GetFem(),__QN,__QC);
-    PatchDiscretization::LocalToGlobal(f,__F,iq,s);
+    BasicDiscretization::LocalToGlobal(f,__F,iq,s);
   }
 }
 
@@ -436,7 +436,7 @@ void Q4::BoundaryRhs(GlobalVector& f, const IntSet& Colors,  const BoundaryRight
 
       GlobalToLocalData(ip);
       GetIntegrator()->BoundaryRhs(NRHS,__F,*GetFem(),ile,col,__QN,__QC);
-      PatchDiscretization::LocalToGlobal(f,__F,ip,s);
+      BasicDiscretization::LocalToGlobal(f,__F,ip,s);
     }
   }
 }

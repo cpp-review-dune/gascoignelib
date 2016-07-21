@@ -8,12 +8,12 @@ coarsening    0
 niter        4
 estimator    none
 initial      boundary
-refiner      global
+refiner      random
 
 //Block Mesh
 
 dimension    3
-patchdepth   0
+patchdepth   1
 gridname     nsbenchZ3d.inp
 prerefine    1
 curvedboundary  6       80   FlacherKreis 5. 2. 0. 0.25

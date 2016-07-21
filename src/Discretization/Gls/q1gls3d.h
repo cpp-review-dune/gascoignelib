@@ -25,7 +25,7 @@
 #ifndef  __Q1Gls3d_h
 #define  __Q1Gls3d_h
 
-#include  "q13d.h"
+#include  "celldiscretization.h"
 #include  "glsintegrator.h"
 
 namespace Gascoigne

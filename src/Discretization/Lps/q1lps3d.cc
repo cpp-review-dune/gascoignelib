@@ -38,7 +38,7 @@ Q1Lps3d::~Q1Lps3d()
 
 void Q1Lps3d::BasicInit(const ParamFile* paramfile)
 {
-  Q13d::BasicInit(paramfile);
+  Q1<3>::BasicInit(paramfile);
   S = new Q1LpsStab3d;
   S  ->BasicInit(paramfile,HN);
 }
@@ -47,7 +47,7 @@ void Q1Lps3d::BasicInit(const ParamFile* paramfile)
 
 void Q1Lps3d::ReInit(const MeshInterface* M)
 {
-  Q13d::ReInit(M);
+  Q1<3>::ReInit(M);
   S   ->ReInit(M);
 }
 
@@ -69,7 +69,7 @@ void Q1Lps3d::StabForm(GlobalVector& f, const GlobalVector& u, const Equation& E
 
 void Q1Lps3d::Form(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const
 {
-  Q13d::Form(f,u,EQ,d);
+  Q1<3>::Form(f,u,EQ,d);
   S   ->Form(f,u,EQ,d);
 }
 
@@ -77,7 +77,7 @@ void Q1Lps3d::Form(GlobalVector& f, const GlobalVector& u, const Equation& EQ, d
 
 void Q1Lps3d::Matrix(MatrixInterface& A, const GlobalVector& u, const ProblemDescriptorInterface* PD, double d) const
 {
-  Q13d::Matrix(A,u,PD,d);
+  Q1<3>::Matrix(A,u,PD,d);
   S   ->Matrix(A,u,PD,d);
 }
 }

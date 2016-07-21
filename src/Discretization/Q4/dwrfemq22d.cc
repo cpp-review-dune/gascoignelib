@@ -138,7 +138,7 @@ void DwrFemQ2Q42d::DiracRhsPoint(GlobalVector& f, const DiracRightHandSide& DRHS
   DRHS.SetParameterData(__QP);
 
   I->DiracRhsPoint(__F,HighOrderFem,LowOrderFem,Tranfo_p0,DRHS,i,__QN,__QC);
-  PatchDiscretization::LocalToGlobal(f,__F,iq,s);
+  BasicDiscretization::LocalToGlobal(f,__F,iq,s);
 }
 
 /**********************************************************/
@@ -165,7 +165,7 @@ void DwrFemQ2Q42d::Form(GlobalVector& f, const GlobalVector& u, const Equation& 
 
     GlobalToLocal(__U,u,iq);
     I->Form(EQ,__F,HighOrderFem,LowOrderFem,__U,__QN,__QC);
-    PatchDiscretization::LocalToGlobal(f,__F,iq,d);
+    BasicDiscretization::LocalToGlobal(f,__F,iq,d);
   }
 }
 
@@ -193,7 +193,7 @@ void DwrFemQ2Q42d::AdjointForm(GlobalVector& f, const GlobalVector& u, const Equ
 
     GlobalToLocal(__U,u,iq);
     I->AdjointForm(EQ,__F,HighOrderFem,LowOrderFem,__U,__QN,__QC);
-    PatchDiscretization::LocalToGlobal(f,__F,iq,d);
+    BasicDiscretization::LocalToGlobal(f,__F,iq,d);
   }
 }
 
@@ -251,7 +251,7 @@ void DwrFemQ2Q42d::BoundaryForm(GlobalVector& f, const GlobalVector& u, const In
 
       GlobalToLocal(__U,u,ip);
       I->BoundaryForm(BE,__F,HighOrderFem,LowOrderFem,__U,ile,col,__QN,__QC);
-      PatchDiscretization::LocalToGlobal(f,__F,ip,d);
+      BasicDiscretization::LocalToGlobal(f,__F,ip,d);
     }
   }
 }
@@ -280,7 +280,7 @@ void DwrFemQ2Q42d::Rhs(GlobalVector& f, const DomainRightHandSide& RHS, double s
 
     GlobalToLocalData(iq);
     I->Rhs(RHS,__F,HighOrderFem,LowOrderFem,__QN,__QC);
-    PatchDiscretization::LocalToGlobal(f,__F,iq,s);
+    BasicDiscretization::LocalToGlobal(f,__F,iq,s);
   }
 }
 
@@ -337,7 +337,7 @@ void DwrFemQ2Q42d::BoundaryRhs(GlobalVector& f, const IntSet& Colors, const Boun
 
       GlobalToLocalData(ip);
       I->BoundaryRhs(NRHS,__F,HighOrderFem,LowOrderFem,ile,col,__QN,__QC);
-      PatchDiscretization::LocalToGlobal(f,__F,ip,s);
+      BasicDiscretization::LocalToGlobal(f,__F,ip,s);
     }
   }
 }
@@ -387,7 +387,7 @@ void DwrFemQ2Q42d::MassForm(GlobalVector& f, const GlobalVector& u, const TimePa
 
     GlobalToLocal(__U,u,iq);
     I->MassForm(TP,__F,HighOrderFem,LowOrderFem,__U);
-    PatchDiscretization::LocalToGlobal(f,__F,iq,s);
+    BasicDiscretization::LocalToGlobal(f,__F,iq,s);
   }
 }
 
@@ -436,7 +436,7 @@ void DwrFemQ4Q22d::DiracRhsPoint(GlobalVector& f, const DiracRightHandSide& DRHS
   DRHS.SetParameterData(__QP);
 
   I->DiracRhsPoint(__F,LowOrderFem,HighOrderFem,Tranfo_p0,DRHS,i,__QN,__QC);
-  PatchDiscretization::LocalToGlobal(f,__F,iq,s);
+  BasicDiscretization::LocalToGlobal(f,__F,iq,s);
 }
 
 /**********************************************************/
@@ -463,7 +463,7 @@ void DwrFemQ4Q22d::Form(GlobalVector& f, const GlobalVector& u, const Equation& 
 
     GlobalToLocal(__U,u,iq);
     I->Form(EQ,__F,LowOrderFem,HighOrderFem,__U,__QN,__QC);
-    PatchDiscretization::LocalToGlobal(f,__F,iq,d);
+    BasicDiscretization::LocalToGlobal(f,__F,iq,d);
   }
 }
 
@@ -491,7 +491,7 @@ void DwrFemQ4Q22d::AdjointForm(GlobalVector& f, const GlobalVector& u, const Equ
 
     GlobalToLocal(__U,u,iq);
     I->AdjointForm(EQ,__F,LowOrderFem,HighOrderFem,__U,__QN,__QC);
-    PatchDiscretization::LocalToGlobal(f,__F,iq,d);
+    BasicDiscretization::LocalToGlobal(f,__F,iq,d);
   }
 }
 
@@ -550,7 +550,7 @@ void DwrFemQ4Q22d::BoundaryForm(GlobalVector& f, const GlobalVector& u, const In
 
       GlobalToLocal(__U,u,ip);
       I->BoundaryForm(BE,__F,LowOrderFem,HighOrderFem,__U,ile,col,__QN,__QC);
-      PatchDiscretization::LocalToGlobal(f,__F,ip,d);
+      BasicDiscretization::LocalToGlobal(f,__F,ip,d);
     }
   }
 }
@@ -579,7 +579,7 @@ void DwrFemQ4Q22d::Rhs(GlobalVector& f, const DomainRightHandSide& RHS, double s
 
     GlobalToLocalData(iq);
     I->Rhs(RHS,__F,LowOrderFem,HighOrderFem,__QN,__QC);
-    PatchDiscretization::LocalToGlobal(f,__F,iq,s);
+    BasicDiscretization::LocalToGlobal(f,__F,iq,s);
   }
 }
 
@@ -637,7 +637,7 @@ void DwrFemQ4Q22d::BoundaryRhs(GlobalVector& f, const IntSet& Colors, const Boun
 
       GlobalToLocalData(ip);
       I->BoundaryRhs(NRHS,__F,LowOrderFem,HighOrderFem,ile,col,__QN,__QC);
-      PatchDiscretization::LocalToGlobal(f,__F,ip,s);
+      BasicDiscretization::LocalToGlobal(f,__F,ip,s);
     }
   }
 }
@@ -687,7 +687,7 @@ void DwrFemQ4Q22d::MassForm(GlobalVector& f, const GlobalVector& u, const TimePa
 
     GlobalToLocal(__U,u,iq);
     I->MassForm(TP,__F,LowOrderFem,HighOrderFem,__U);
-    PatchDiscretization::LocalToGlobal(f,__F,iq,s);
+    BasicDiscretization::LocalToGlobal(f,__F,iq,s);
   }
 }
 

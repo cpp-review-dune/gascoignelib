@@ -24,8 +24,7 @@
 
 #include "backup.h"
 #include "meshinterpolator.h"
-#include "q12d.h"
-#include "q13d.h"
+#include "celldiscretization.h"
 #include "q22d.h"
 #include "q23d.h"
 #include "domainrighthandside.h"
@@ -600,7 +599,7 @@ void MeshInterpolator::BasicInit(DiscretizationInterface* DI, MeshAgentInterface
   GetMeshAgent()->BasicInit(_name+".gup",dim,0,0);
     
   // neue Discretization anlegen
-  const Q2* Q2DP = dynamic_cast<const Q2*>(GetOriginalDiscretization());
+  const PatchDiscretization* Q2DP = dynamic_cast<const PatchDiscretization*>(GetOriginalDiscretization());
   if (Q2DP)
   {
     if (dim==2)
@@ -616,11 +615,11 @@ void MeshInterpolator::BasicInit(DiscretizationInterface* DI, MeshAgentInterface
   {
     if (dim==2)
     {
-      _DI = new Q12d;
+      _DI = new Q1<2>;
     }
     else
     {
-      _DI = new Q13d;
+      _DI = new Q1<3>;
     }
   }
   GetDiscretization()->BasicInit(NULL);
@@ -659,7 +658,7 @@ void Gascoigne::MeshInterpolator::ReInit()
 
 void Gascoigne::MeshInterpolator::RefineNodeVector(GlobalVector& uNew, const GlobalVector& uOld)
 {
-  const Q2* DI = dynamic_cast<const Q2*>(GetOriginalDiscretization());
+  const PatchDiscretization* DI = dynamic_cast<const PatchDiscretization*>(GetOriginalDiscretization());
   if (DI)
   {
     AddVectorNew(uOld,2);
@@ -800,7 +799,7 @@ void MeshInterpolator::InterpolateCellVector(GlobalVector& out, const GlobalVect
 
 void MeshInterpolator::RhsForProjection(GlobalVector& f, const GlobalVector& u)
 {
-  const Q2* DI = dynamic_cast<const Q2*>(GetOriginalDiscretization());
+  const PatchDiscretization* DI = dynamic_cast<const PatchDiscretization*>(GetOriginalDiscretization());
   if (DI)
   {
     AddVectorNew(u,2);

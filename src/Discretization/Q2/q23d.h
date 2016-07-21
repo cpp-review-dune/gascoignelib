@@ -25,7 +25,7 @@
 #ifndef  __Q23d_h
 #define  __Q23d_h
 
-#include  "q2.h"
+#include  "patchdiscretization.h"
 
 namespace Gascoigne
 {
@@ -39,7 +39,7 @@ namespace Gascoigne
 ////
 /////////////////////////////////////////////
 
-class Q23d : public Q2
+class Q23d : public PatchDiscretization
 {
 protected:
 

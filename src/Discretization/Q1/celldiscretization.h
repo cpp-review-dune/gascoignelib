@@ -75,60 +75,79 @@ namespace Gascoigne
     
   protected:
 
-
+    // Data
+    
     FemInterface*         __FEM;
     IntegratorInterface*  __INT;
+    HNStructureInterface*    HN;
 
+    // Access to data
+    
     const FemInterface* GetFem() const               { assert(__FEM); return __FEM; }
     const IntegratorInterface* GetIntegrator() const { assert(__INT); return __INT; }
     IntegratorInterface*& GetIntegratorPointer()     { return __INT; }
     FemInterface*& GetFemPointer()                   { return __FEM; }
 
+
+    // Initialization of FE
+    
     virtual void Transformation(FemInterface::Matrix& T, int iq) const;
+    
+
+    // Point Values
     
     double ComputePointValue(const GlobalVector& u, const Vertex<DIM>& p0,int comp) const;
 
-    virtual int GetCellNumber(const Vertex<DIM>& p0, Vertex<DIM>& p, int c0=0) const {
+    virtual int GetCellNumber(const Vertex<DIM>& p0, Vertex<DIM>& p, int c0=0) const 
+    {
       std::cerr << "\"CellDiscretization::GetCellNumber\" not written!" << std::endl;
       abort();
     }
+    virtual void DiracRhsPoint(GlobalVector& f,const DiracRightHandSide& DRHS,const Vertex<DIM>& p0,int i,double s) const;
 
-    // Haengende Knoten aus Q1 alt
-    HNStructureInterface*    HN;
+    // Hanging Node Handling
     
-    IntVector GetLocalIndices(int iq) const {
+    IntVector GetLocalIndices(int iq) const 
+    {
       return GetMesh()->IndicesOfCell(iq);
     }
+    virtual HNStructureInterface* NewHNStructure();
+
+    
+    // Degree of Freedom handling
+
     void LocalToGlobal(MatrixInterface& A, EntryMatrix& E, int iq, double s) const;
     
     
-    virtual HNStructureInterface* NewHNStructure();
+
     
 
     /////
     void Transformation_HM(FemInterface::Matrix& T, const HierarchicalMesh* HM, int iq) const;
     void GlobalToLocal_HM(LocalVector& U, const GlobalVector& u, const HierarchicalMesh* HM, int iq) const;
     void swapIndices(IntVector& indices) const;
-  
-    virtual void DiracRhsPoint(GlobalVector& f,const DiracRightHandSide& DRHS,const Vertex<DIM>& p0,int i,double s) const;
+    
+
+
+    /////////// Energy Estimator
+    // ??
+
     
 
   public:
-
-    //    void BasicInit(const ParamFile* pf);
     
 
     
-
-
-
+    // Interpolation for Multigrid
     void ConstructInterpolator(MgInterpolatorInterface* I, const MeshTransferInterface* MT);    
 
-    // Threads
+    // Multi-Threading
     void InitColoring();
     int                            _col_graph_ncol;
     std::vector<std::vector<int> > _col_graph;
 
+
+    
     //
     ////  Constructor 
     //
@@ -138,13 +157,34 @@ namespace Gascoigne
       if(__FEM) {delete __FEM; __FEM=NULL;}
       if(__INT) {delete __INT; __INT=NULL;}
       if (HN) delete HN; HN  = NULL;
-      
     }
-
     std::string GetName() const {return "Q1";}
 
+    void BasicInit(const ParamFile* pf);
+      
+
+    int n() const {
+      return GetMesh()->nnodes();
+    }
+    int nc() const {
+      return GetMesh()->ncells();
+    }
+    //  const HNStructureQ1* GetHNStructure() const { return HN;}
+    
+    void ReInit   (const MeshInterface* MP)
+    {
+      BasicDiscretization::ReInit(MP);
+      assert(HN);
+      HN->ReInit(MP);
+    }
+    
+
+    
+    // Matrix Structure
     void Structure(SparseStructureInterface* S) const;
 
+
+    // Integration
     void Form(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const;
     void AdjointForm(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const;
     void BoundaryForm(GlobalVector& f, const GlobalVector& u, const IntSet& Colors, const BoundaryEquation& BE, double d) const;
@@ -171,6 +211,8 @@ namespace Gascoigne
 
     double ComputePointFunctional(const GlobalVector& u, const PointFunctional& FP) const;
 
+
+    
     void EvaluateCellRightHandSide(GlobalVector& f, const DomainRightHandSide& CF, double d) const;
     void EvaluateBoundaryCellRightHandSide(GlobalVector& f,const IntSet& Colors, const BoundaryRightHandSide& CF, double d) const;
     void EvaluateParameterRightHandSide(GlobalVector& f, const DomainRightHandSide& CF, double d) const;
@@ -178,7 +220,8 @@ namespace Gascoigne
 
     void InterpolateDomainFunction(GlobalVector& f, const DomainFunction& DF) const;
     void InterpolateCellDomainFunction(GlobalVector& f, const DomainFunction& DF) const;
-
+    
+    
     virtual nmatrix<double> GetLocalInterpolationWeights() const {
       std::cerr << "\"CellDiscretization::GetLocalInterpolationWeights\" not written!" << std::endl;
       abort();
@@ -194,20 +237,6 @@ namespace Gascoigne
     //// Aus Q1
 
     
-    int n() const {
-      return GetMesh()->nnodes();
-    }
-    int nc() const {
-      return GetMesh()->ncells();
-    }
-    //  const HNStructureQ1* GetHNStructure() const { return HN;}
-    
-    void ReInit   (const MeshInterface* MP)
-    {
-      BasicDiscretization::ReInit(MP);
-      assert(HN);
-      HN->ReInit(MP);
-    }
     
     void StrongDirichletVector(GlobalVector& u, const DirichletData& BF, int col, const std::vector<int>& comp, double d) const ;
     

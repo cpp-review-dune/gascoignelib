@@ -39,7 +39,7 @@ using namespace std;
 
 namespace Gascoigne
 {
-Q23d::Q23d() : Q2()
+Q23d::Q23d() : PatchDiscretization()
 {
   HN = new HNStructureQ23d;
 }

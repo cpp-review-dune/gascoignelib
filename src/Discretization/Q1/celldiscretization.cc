@@ -46,6 +46,32 @@ using namespace std;
 namespace Gascoigne
 {
 
+  ///////////// Initialization
+  
+  template<int DIM>
+  void Q1<DIM>::BasicInit(const ParamFile* pf)
+  {
+    assert(HN==NULL);
+    HN = NewHNStructure();
+    assert(HN);
+    
+    if(!GetIntegratorPointer())
+      GetIntegratorPointer() =  new GalerkinIntegrator<DIM>;
+    assert(GetIntegrator());
+    
+    GetIntegratorPointer()->BasicInit();
+    
+    if(!GetFemPointer())
+      {
+	//      typedef Transformation2d<BaseQ1<2> >           TransQ1;
+	typedef Gascoigne::Transformation<DIM, BaseQ1<DIM> >   TransQ1;
+	typedef FiniteElement<DIM,DIM-1,TransQ1,BaseQ1<DIM> >  FiniteElement;
+	Q1<DIM>::GetFemPointer()   =  new FiniteElement;
+      }
+    assert(GetFem());
+  }
+  
+
 
   template<int DIM>
   void Q1<DIM>::InitColoring() 
@@ -1298,162 +1324,162 @@ namespace Gascoigne
   template<>
   void Q1<2>::InterpolateSolution(GlobalVector& u, const GlobalVector& uold) const
   {
-      const IntVector& vo2n = *GetMesh()->Vertexo2n();
-  nvector<bool> habschon(GetMesh()->nnodes(),0);  
-
-  assert(vo2n.size()==uold.n());
-  assert(GetMesh()->nnodes()==u.n());
-  assert(u.ncomp()==uold.ncomp());
-
-  for(int i=0;i<vo2n.size();i++)
-    {
-      int in = vo2n[i];
-
-      if(in>=0) 
-        {
-          u.equ_node(in,1.,i,uold);
-          habschon[in] = 1;
-        }
-    }
-  nvector<fixarray<3,int> > nodes(4);
-  nodes[0][0] = 1; nodes[0][1] = 0;  nodes[0][2] = 2;
-  nodes[1][0] = 3; nodes[1][1] = 0;  nodes[1][2] = 6;
-  nodes[2][0] = 5; nodes[2][1] = 2;  nodes[2][2] = 8;
-  nodes[3][0] = 7; nodes[3][1] = 6;  nodes[3][2] = 8;
- 
-  const PatchMesh* PM = dynamic_cast<const PatchMesh*>(GetMesh());
-  assert(PM);
-
-  for(int iq=0;iq<PM->npatches();++iq)
-    {
-      IntVector vi =* PM->IndicesOfPatch(iq);
-
-      for(int j=0; j<nodes.size(); j++)
-        {
-          int v  = vi[nodes[j][0]];
-          int v1 = vi[nodes[j][1]];
-          int v2 = vi[nodes[j][2]];
-          assert(habschon[v1]);
-          assert(habschon[v2]);
+    const IntVector& vo2n = *GetMesh()->Vertexo2n();
+    nvector<bool> habschon(GetMesh()->nnodes(),0);  
+    
+    assert(vo2n.size()==uold.n());
+    assert(GetMesh()->nnodes()==u.n());
+    assert(u.ncomp()==uold.ncomp());
+    
+    for(int i=0;i<vo2n.size();i++)
+      {
+	int in = vo2n[i];
+	
+	if(in>=0) 
+	  {
+	    u.equ_node(in,1.,i,uold);
+	    habschon[in] = 1;
+	  }
+      }
+    nvector<fixarray<3,int> > nodes(4);
+    nodes[0][0] = 1; nodes[0][1] = 0;  nodes[0][2] = 2;
+    nodes[1][0] = 3; nodes[1][1] = 0;  nodes[1][2] = 6;
+    nodes[2][0] = 5; nodes[2][1] = 2;  nodes[2][2] = 8;
+    nodes[3][0] = 7; nodes[3][1] = 6;  nodes[3][2] = 8;
+    
+    const PatchMesh* PM = dynamic_cast<const PatchMesh*>(GetMesh());
+    assert(PM);
+    
+    for(int iq=0;iq<PM->npatches();++iq)
+      {
+	IntVector vi =* PM->IndicesOfPatch(iq);
+	
+	for(int j=0; j<nodes.size(); j++)
+	  {
+	    int v  = vi[nodes[j][0]];
+	    int v1 = vi[nodes[j][1]];
+	    int v2 = vi[nodes[j][2]];
+	    assert(habschon[v1]);
+	    assert(habschon[v2]);
           if (habschon[v]==0) 
             {
               u.equ_node(v,0.5,v1,uold);
               u.add_node(v,0.5,v2,uold);
               habschon[v] = 1;
             }
-        }
-      int v = vi[4];
-      if (habschon[v]==0)
-        {
-          u.equ_node(v,0.25,vi[0],uold);
-          u.add_node(v,0.25,vi[2],uold);	  
-          u.add_node(v,0.25,vi[6],uold);	  
-          u.add_node(v,0.25,vi[8],uold);	  
-          habschon[v] = 1;
-        }
-    }
+	  }
+	int v = vi[4];
+	if (habschon[v]==0)
+	  {
+	    u.equ_node(v,0.25,vi[0],uold);
+	    u.add_node(v,0.25,vi[2],uold);	  
+	    u.add_node(v,0.25,vi[6],uold);	  
+	    u.add_node(v,0.25,vi[8],uold);	  
+	    habschon[v] = 1;
+	  }
+      }
   }
-
+  
   template<>
   void Q1<3>::InterpolateSolution(GlobalVector& u, const GlobalVector& uold) const
   {
-      const IntVector& vo2n = *GetMesh()->Vertexo2n();
-  nvector<bool> habschon(GetMesh()->nnodes(),0);  
-
-  assert(vo2n.size()==uold.n());
-
-  for(int i=0;i<vo2n.size();i++)
-    {
-      int in = vo2n[i];
-
-      if(in>=0) 
-	{
-	  u.equ_node(in,1.,i,uold);
-	  habschon[in] = 1;
-	}
-    }
-  nvector<fixarray<3,int> > nodes(12);
-  nodes[0][0] = 1;    nodes[0][1] = 0;     nodes[0][2] = 2;
-  nodes[1][0] = 3;    nodes[1][1] = 0;     nodes[1][2] = 6;
-  nodes[2][0] = 5;    nodes[2][1] = 2;     nodes[2][2] = 8;
-  nodes[3][0] = 7;    nodes[3][1] = 6;     nodes[3][2] = 8;
-  nodes[4][0] = 1+18; nodes[4][1] = 0+18;  nodes[4][2] = 2+18;
-  nodes[5][0] = 3+18; nodes[5][1] = 0+18;  nodes[5][2] = 6+18;
-  nodes[6][0] = 5+18; nodes[6][1] = 2+18;  nodes[6][2] = 8+18;
-  nodes[7][0] = 7+18; nodes[7][1] = 6+18;  nodes[7][2] = 8+18;
-  nodes[8][0] = 9;    nodes[8][1] = 0;     nodes[8][2] = 18;
-  nodes[9][0] = 11;   nodes[9][1] = 2;     nodes[9][2] = 20;
-  nodes[10][0] = 15;  nodes[10][1] = 6;    nodes[10][2] = 24;
-  nodes[11][0] = 17;  nodes[11][1] = 8;    nodes[11][2] = 26;
- 
-
-  nvector<fixarray<5,int> > w(6);
-  w[0][0] = 4;  w[0][1] = 0;  w[0][2] = 2;  w[0][3] = 6;  w[0][4] = 8;
-  w[1][0] = 12; w[1][1] = 0;  w[1][2] = 18; w[1][3] = 6;  w[1][4] = 24;
-  w[2][0] = 14; w[2][1] = 2;  w[2][2] = 8;  w[2][3] = 20; w[2][4] = 26;
-  w[3][0] = 16; w[3][1] = 6;  w[3][2] = 8;  w[3][3] = 24; w[3][4] = 26;
-  w[4][0] = 10; w[4][1] = 0;  w[4][2] = 2;  w[4][3] = 18; w[4][4] = 20;
-  w[5][0] = 22; w[5][1] = 18; w[5][2] = 20; w[5][3] = 24; w[5][4] = 26;
-  
-  const PatchMesh* PM = dynamic_cast<const PatchMesh*>(GetMesh());
-  assert(PM);
-
-  for(int iq=0;iq<PM->npatches();++iq)
-    {
-      IntVector vi = *PM->IndicesOfPatch(iq);
-
-      for(int j=0; j<nodes.size(); j++)
-	{
-	  int v  = vi[nodes[j][0]];
-	  int v1 = vi[nodes[j][1]];
-	  int v2 = vi[nodes[j][2]];
-	  assert(habschon[v1]);
-	  assert(habschon[v2]);
-	  if (habschon[v]==0) 
-	    {
-	      u.equ_node(v,0.5,v1,uold);
-	      u.add_node(v,0.5,v2,uold);
-	      habschon[v] = 1;
-	    }
-	}
-      for(int j=0; j<w.size(); j++)
-	{
-	  int v  = vi[w[j][0]];
-	  int v1 = vi[w[j][1]];
-	  int v2 = vi[w[j][2]];
-	  int v3 = vi[w[j][3]];
-	  int v4 = vi[w[j][4]];
-	  assert(habschon[v1]);
-	  assert(habschon[v2]);
-	  assert(habschon[v3]);
-	  assert(habschon[v4]);
-	  if (habschon[v]==0) 
-	    {
-	      u.equ_node(v,0.25,v1,uold);
-	      u.add_node(v,0.25,v2,uold);
-	      u.add_node(v,0.25,v3,uold);
-	      u.add_node(v,0.25,v4,uold);
-	      habschon[v] = 1;
-	    }
-	}
-      int v = vi[13];
-      if (habschon[v]==0)
-	{
-	  u.equ_node(v,0.125,vi[0],uold);
-	  u.add_node(v,0.125,vi[2],uold);	  
-	  u.add_node(v,0.125,vi[6],uold);	  
-	  u.add_node(v,0.125,vi[8],uold);	  
-	  u.add_node(v,0.125,vi[18],uold);
-	  u.add_node(v,0.125,vi[20],uold);	  
-	  u.add_node(v,0.125,vi[24],uold);	  
-	  u.add_node(v,0.125,vi[26],uold);	  
-	  habschon[v] = 1;
-	}
-    }
+    const IntVector& vo2n = *GetMesh()->Vertexo2n();
+    nvector<bool> habschon(GetMesh()->nnodes(),0);  
+    
+    assert(vo2n.size()==uold.n());
+    
+    for(int i=0;i<vo2n.size();i++)
+      {
+	int in = vo2n[i];
+	
+	if(in>=0) 
+	  {
+	    u.equ_node(in,1.,i,uold);
+	    habschon[in] = 1;
+	  }
+      }
+    nvector<fixarray<3,int> > nodes(12);
+    nodes[0][0] = 1;    nodes[0][1] = 0;     nodes[0][2] = 2;
+    nodes[1][0] = 3;    nodes[1][1] = 0;     nodes[1][2] = 6;
+    nodes[2][0] = 5;    nodes[2][1] = 2;     nodes[2][2] = 8;
+    nodes[3][0] = 7;    nodes[3][1] = 6;     nodes[3][2] = 8;
+    nodes[4][0] = 1+18; nodes[4][1] = 0+18;  nodes[4][2] = 2+18;
+    nodes[5][0] = 3+18; nodes[5][1] = 0+18;  nodes[5][2] = 6+18;
+    nodes[6][0] = 5+18; nodes[6][1] = 2+18;  nodes[6][2] = 8+18;
+    nodes[7][0] = 7+18; nodes[7][1] = 6+18;  nodes[7][2] = 8+18;
+    nodes[8][0] = 9;    nodes[8][1] = 0;     nodes[8][2] = 18;
+    nodes[9][0] = 11;   nodes[9][1] = 2;     nodes[9][2] = 20;
+    nodes[10][0] = 15;  nodes[10][1] = 6;    nodes[10][2] = 24;
+    nodes[11][0] = 17;  nodes[11][1] = 8;    nodes[11][2] = 26;
+    
+    
+    nvector<fixarray<5,int> > w(6);
+    w[0][0] = 4;  w[0][1] = 0;  w[0][2] = 2;  w[0][3] = 6;  w[0][4] = 8;
+    w[1][0] = 12; w[1][1] = 0;  w[1][2] = 18; w[1][3] = 6;  w[1][4] = 24;
+    w[2][0] = 14; w[2][1] = 2;  w[2][2] = 8;  w[2][3] = 20; w[2][4] = 26;
+    w[3][0] = 16; w[3][1] = 6;  w[3][2] = 8;  w[3][3] = 24; w[3][4] = 26;
+    w[4][0] = 10; w[4][1] = 0;  w[4][2] = 2;  w[4][3] = 18; w[4][4] = 20;
+    w[5][0] = 22; w[5][1] = 18; w[5][2] = 20; w[5][3] = 24; w[5][4] = 26;
+    
+    const PatchMesh* PM = dynamic_cast<const PatchMesh*>(GetMesh());
+    assert(PM);
+    
+    for(int iq=0;iq<PM->npatches();++iq)
+      {
+	IntVector vi = *PM->IndicesOfPatch(iq);
+	
+	for(int j=0; j<nodes.size(); j++)
+	  {
+	    int v  = vi[nodes[j][0]];
+	    int v1 = vi[nodes[j][1]];
+	    int v2 = vi[nodes[j][2]];
+	    assert(habschon[v1]);
+	    assert(habschon[v2]);
+	    if (habschon[v]==0) 
+	      {
+		u.equ_node(v,0.5,v1,uold);
+		u.add_node(v,0.5,v2,uold);
+		habschon[v] = 1;
+	      }
+	  }
+	for(int j=0; j<w.size(); j++)
+	  {
+	    int v  = vi[w[j][0]];
+	    int v1 = vi[w[j][1]];
+	    int v2 = vi[w[j][2]];
+	    int v3 = vi[w[j][3]];
+	    int v4 = vi[w[j][4]];
+	    assert(habschon[v1]);
+	    assert(habschon[v2]);
+	    assert(habschon[v3]);
+	    assert(habschon[v4]);
+	    if (habschon[v]==0) 
+	      {
+		u.equ_node(v,0.25,v1,uold);
+		u.add_node(v,0.25,v2,uold);
+		u.add_node(v,0.25,v3,uold);
+		u.add_node(v,0.25,v4,uold);
+		habschon[v] = 1;
+	      }
+	  }
+	int v = vi[13];
+	if (habschon[v]==0)
+	  {
+	    u.equ_node(v,0.125,vi[0],uold);
+	    u.add_node(v,0.125,vi[2],uold);	  
+	    u.add_node(v,0.125,vi[6],uold);	  
+	    u.add_node(v,0.125,vi[8],uold);	  
+	    u.add_node(v,0.125,vi[18],uold);
+	    u.add_node(v,0.125,vi[20],uold);	  
+	    u.add_node(v,0.125,vi[24],uold);	  
+	    u.add_node(v,0.125,vi[26],uold);	  
+	    habschon[v] = 1;
+	  }
+      }
   }
-
+  
   /*-----------------------------------------*/
-
+  
   template<int DIM>
   void Q1<DIM>::HNAverage(GlobalVector& x) const
   {

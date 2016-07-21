@@ -61,13 +61,12 @@
 
 #include  "diracrighthandside.h"
 
-#include  "q12d.h"
-#include  "q22d.h"
+#include  "celldiscretization.h"
+
 #include  "q1gls2d.h"
 #include  "q2gls2d.h"
 #include  "q1lps2d.h"
 #include  "q2lps2d.h"
-#include  "q13d.h"
 #include  "q23d.h"
 #include  "q1gls3d.h"
 #include  "q1lps3d.h"
@@ -485,7 +484,7 @@ DiscretizationInterface* StdSolver::NewDiscretization(int dimension, const strin
   }
   if (dimension==2)
   {
-    if      (discname=="Q1")               return new Q12d;
+    if      (discname=="Q1")               return new Q1<2>;
     else if (discname=="Q2")               return new Q22d;
     else if (discname=="Q1Gls")            return new Q1Gls2d;
     else if (discname=="Q2Gls")            return new Q2Gls2d;
@@ -501,7 +500,8 @@ DiscretizationInterface* StdSolver::NewDiscretization(int dimension, const strin
   }
   else if (dimension==3)
   {
-    if      (discname=="Q1")               return new Q13d;
+    if      (discname=="Q1")               return new Q1<3>;
+    
     else if (discname=="Q2")               return new Q23d;
     else if (discname=="Q1Gls")            return new Q1Gls3d;
     else if (discname=="Q1Lps")            return new Q1Lps3d;

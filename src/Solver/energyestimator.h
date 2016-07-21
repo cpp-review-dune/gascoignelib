@@ -25,7 +25,6 @@
 #ifndef __EnergyEstimator_h
 
 #include "solverinterface.h"
-#include "q1.h"
 
 /*-------------------------------------------------------*/
 

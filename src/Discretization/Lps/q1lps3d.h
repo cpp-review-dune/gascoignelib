@@ -25,7 +25,7 @@
 #ifndef  __Q1Lps3d_h
 #define  __Q1Lps3d_h
 
-#include  "q13d.h"
+#include  "celldiscretization.h"
 #include  "q1lpsstab.h"
 
 namespace Gascoigne
@@ -42,7 +42,7 @@ namespace Gascoigne
 
 /*----------------------------------------------*/
 
-class Q1Lps3d : public virtual Q13d
+class Q1Lps3d : public virtual Q1<3>
 {
  protected:
 
@@ -54,7 +54,7 @@ public:
 ////  Con(De)structor 
 //
 
-  Q1Lps3d() : Q13d() {}
+  Q1Lps3d() : Q1<3>() {}
   ~Q1Lps3d();
 
   std::string GetName() const {return "Q1Lps3d";}
@@ -67,32 +67,32 @@ public:
   void StabForm(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const;
   void AddNodeVector(const std::string& name, const GlobalVector* q) const 
     {
-      Q13d::AddNodeVector(name,q);
+      Q1<3>::AddNodeVector(name,q);
       S->   AddNodeVector(name,q);
     }
   void DeleteNodeVector(const std::string& name) const 
     {
-      Q13d::DeleteNodeVector(name);
+      Q1<3>::DeleteNodeVector(name);
       S->   DeleteNodeVector(name);
     }
   void AddCellVector(const std::string& name, const GlobalVector* q) const 
     {
-      Q13d::AddCellVector(name,q);
+      Q1<3>::AddCellVector(name,q);
       S->   AddCellVector(name,q);
     }
   void DeleteCellVector(const std::string& name) const
     { 
-      Q13d::DeleteCellVector(name);
+      Q1<3>::DeleteCellVector(name);
       S->   DeleteCellVector(name);
     }
   void AddParameterVector(const std::string& name, const GlobalParameterVector* q) const 
     {
-      Q13d::AddParameterVector(name,q);
+      Q1<3>::AddParameterVector(name,q);
       S->   AddParameterVector(name,q);
    }
   void DeleteParameterVector(const std::string& name) const
     {
-      Q13d::DeleteParameterVector(name);
+      Q1<3>::DeleteParameterVector(name);
       S->   DeleteParameterVector(name);
     }
 };
