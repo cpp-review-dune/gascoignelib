@@ -24,7 +24,7 @@
 
 #include  "q13d.h"
 #include  "galerkinintegrator.h"
-#include  "transformation3d.h"
+#include  "transformation.h"
 #include  "finiteelement.h"
 #include  "baseq1.h"
 #include  "sparsestructure.h"
@@ -63,7 +63,7 @@ void Q13d::BasicInit(const ParamFile* pf)
 
   if(!Q1<3>::GetFemPointer())
     {
-      typedef Transformation3d<BaseQ1<3> >           TransQ1;
+      typedef Gascoigne::Transformation<3, BaseQ1<3> >           TransQ1;
       typedef FiniteElement<3,2,TransQ1,BaseQ1<3> >  FiniteElement;
       Q1<3>::GetFemPointer() =  new FiniteElement;
     }
@@ -327,7 +327,7 @@ void Q13d::VertexTransformation(const Vertex3d& p0, Vertex3d& p, int iq) const
   nmatrix<double> T;
   Transformation(T,iq);
 
-  Transformation3d<BaseQ1<3> > Tr;
+  Gascoigne::Transformation<3, BaseQ1<3> > Tr;
   Tr.init(T);
 
   Vertex3d res;

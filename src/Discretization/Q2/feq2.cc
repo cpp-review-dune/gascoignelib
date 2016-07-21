@@ -24,11 +24,9 @@
 
 #include  "finiteelement.h"
 #include  "../Q1/finiteelement.xx"
-#include  "transformation2d.h"
-#include  "transformation3d.h"
+#include  "transformation.h"
 #include  "baseq1.h"
-#include  "baseq22d.h"
-#include  "baseq23d.h"
+#include  "baseq2.h"
 #include  "baseq1patch.h"
 #include  "baseq13dpatch.h"
 
@@ -36,19 +34,19 @@ namespace Gascoigne
 {
 /*-----------------------------------------------------*/
 
-  typedef Transformation2d<BaseQ1<2> >  TQ1_2D;
-typedef Transformation2d<BaseQ22d>  TQ2_2D;
+  typedef Gascoigne::Transformation<2, BaseQ1<2> >  TQ1_2D;
+  typedef Gascoigne::Transformation<2, BaseQ2<2> >  TQ2_2D;
 
-template class FiniteElement<2,1,TQ1_2D,BaseQ22d>;
-template class FiniteElement<2,1,TQ2_2D,BaseQ22d>;
-template class FiniteElement<2,1,TQ1_2D,BaseQ12dPatch>;
+  template class FiniteElement<2,1,TQ1_2D,BaseQ2<2> >;
+  template class FiniteElement<2,1,TQ2_2D,BaseQ2<2> >;
+  template class FiniteElement<2,1,TQ1_2D,BaseQ12dPatch>;
 
 /*-----------------------------------------------------*/
 
-  typedef Transformation3d<BaseQ1<3> >  TQ1_3D;
-typedef Transformation3d<BaseQ23d>  TQ2_3D;
-
-template class FiniteElement<3,2,TQ2_3D,BaseQ23d>;
-template class FiniteElement<3,2,TQ1_3D,BaseQ13dPatch>;
+  typedef Gascoigne::Transformation<3, BaseQ1<3> >  TQ1_3D;
+  typedef Gascoigne::Transformation<3, BaseQ2<3> >  TQ2_3D;
+  
+  template class FiniteElement<3,2,TQ2_3D,BaseQ2<3> >;
+  template class FiniteElement<3,2,TQ1_3D,BaseQ13dPatch>;
 }
 /*-----------------------------------------------------*/

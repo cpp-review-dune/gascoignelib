@@ -23,7 +23,7 @@
 
 
 #include  "finiteelement.h"
-#include  "transformation3d.h"
+#include  "transformation.h"
 #include  "baseq1.h"
 #include  "finiteelement.xx"
 
@@ -31,5 +31,5 @@
 
 namespace Gascoigne
 {
-  template class FiniteElement<3,2,Transformation3d<BaseQ1<3> >,BaseQ1<3> >;
+  template class FiniteElement<3,2,Transformation<3, BaseQ1<3> >,BaseQ1<3> >;
 }

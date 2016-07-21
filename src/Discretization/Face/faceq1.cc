@@ -27,8 +27,8 @@
 #include "baseq1.h"
 
 #include "finiteelement.h"
-#include "transformation2d.h"
-#include "transformation3d.h"
+#include "transformation.h"
+
 
 using namespace std;
 
@@ -48,16 +48,16 @@ namespace Gascoigne
     if (!GetFem1Pointer())
       {
 	if (DIM==2)
-	  GetFem1Pointer() = new FiniteElement<2,1,Transformation2d<BaseQ1<2> >,BaseQ1<2> >;
+	  GetFem1Pointer() = new FiniteElement<2,1,Transformation<2, BaseQ1<2> >,BaseQ1<2> >;
 	if (DIM==3)
-	  GetFem1Pointer() = new FiniteElement<3,2,Transformation3d<BaseQ1<3> >,BaseQ1<3> >;
+	  GetFem1Pointer() = new FiniteElement<3,2,Transformation<3, BaseQ1<3> >,BaseQ1<3> >;
       }
     if (!GetFem2Pointer())
       {
 	if (DIM==2)
-	  GetFem2Pointer() = new FiniteElement<2,1,Transformation2d<BaseQ1<2> >,BaseQ1<2> >;
+	  GetFem2Pointer() = new FiniteElement<2,1,Transformation<2, BaseQ1<2> >,BaseQ1<2> >;
 	if (DIM==3)
-	  GetFem2Pointer() = new FiniteElement<3,2,Transformation3d<BaseQ1<3> >,BaseQ1<3>  >;
+	  GetFem2Pointer() = new FiniteElement<3,2,Transformation<3, BaseQ1<3> >,BaseQ1<3>  >;
       }    
 
     if (!GetFaceIntegratorPointer())

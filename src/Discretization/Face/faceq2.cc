@@ -24,11 +24,9 @@
 
 #include "faceq2.h"
 #include "gascoignemesh2d.h"
-#include "baseq22d.h"
-#include "baseq23d.h"
+#include "baseq2.h"
 #include "finiteelement.h"
-#include "transformation2d.h"
-#include "transformation3d.h"
+#include "transformation.h"
 
 using namespace std;
 
@@ -44,16 +42,16 @@ namespace Gascoigne
     if (!GetFem1Pointer())
       {
 	if (DIM==2)
-	  GetFem1Pointer() = new FiniteElement<2,1,Transformation2d<BaseQ22d>,BaseQ22d >;
+	  GetFem1Pointer() = new Gascoigne::FiniteElement<2,1,Transformation<2, BaseQ2<2> >,BaseQ2<2>  >;
 	if (DIM==3)
-	  GetFem1Pointer() = new FiniteElement<3,2,Transformation3d<BaseQ23d>,BaseQ23d >;
+	  GetFem1Pointer() = new Gascoigne::FiniteElement<3,2,Transformation<3, BaseQ2<3> >,BaseQ2<3> >;
       }
     if (!GetFem2Pointer())
       {
 	if (DIM==2)
-	  GetFem2Pointer() = new FiniteElement<2,1,Transformation2d<BaseQ22d>,BaseQ22d >;
+	  GetFem2Pointer() = new Gascoigne::FiniteElement<2,1,Transformation<2, BaseQ2<2> >,BaseQ2<2>  >;
 	if (DIM==3)
-	  GetFem2Pointer() = new FiniteElement<3,2,Transformation3d<BaseQ23d>,BaseQ23d >;
+	  GetFem2Pointer() = new Gascoigne::FiniteElement<3,2,Transformation<3, BaseQ2<3> >,BaseQ2<3> >;
       }
 
     if (!GetFaceIntegratorPointer())
@@ -203,8 +201,10 @@ namespace Gascoigne
   
   //////////////////////////////////////////////////
 
-  template class FaceQ2<2>;
-  template class FaceQ2<3>;
   
+
+  
+template class FaceQ2<2>;
+template class FaceQ2<3>;
 
 }

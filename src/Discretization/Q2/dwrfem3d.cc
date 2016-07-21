@@ -24,7 +24,7 @@
 
 #include "dwrfem.h" 
 #include "galerkinintegratorq2.h"
-#include "baseq23d.h"
+#include "baseq2.h"
 #include "integratorq1q2.h"
 #include "hnstructureq23d.h"
 
@@ -69,8 +69,8 @@ void DwrFem3d::BasicInit(const ParamFile* paramfile)
   GetIntegratorPointer()->BasicInit();
 
   assert(PatchDiscretization::GetFem()==NULL);
-  typedef Transformation3d<BaseQ23d>          TransQ2;
-  typedef FiniteElement<3,2,TransQ2,BaseQ23d> FiniteElement;
+  typedef Gascoigne::Transformation<3,BaseQ2<3> >          TransQ2;
+  typedef FiniteElement<3,2,TransQ2,BaseQ2<3> > FiniteElement;
 
   PatchDiscretization::GetFemPointer() = new FiniteElement;
   PatchDiscretization::BasicInit(paramfile);

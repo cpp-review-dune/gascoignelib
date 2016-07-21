@@ -24,9 +24,9 @@
 
 #include  "q22d.h"
 #include  "galerkinintegratorq2.h"
-#include  "transformation2d.h"
+#include  "transformation.h"
 #include  "finiteelement.h"
-#include  "baseq22d.h"
+#include  "baseq2.h"
 #include  "sparsestructure.h"
 #include  "gascoignemeshtransfer.h"
 #include  "mginterpolatormatrix.h"
@@ -134,7 +134,7 @@ void Q22d::VertexTransformation(const Vertex2d& p0, Vertex2d& p, int iq) const
   nmatrix<double> T;
   Transformation(T,iq);
 
-  Transformation2d<BaseQ22d> Tr;
+  Gascoigne::Transformation<2, BaseQ2<2> > Tr;
   Tr.init(T);
 
   Vertex2d res;
@@ -168,8 +168,8 @@ void Q22d::BasicInit(const ParamFile* paramfile)
 
   GetIntegratorPointer()->BasicInit();
 
-  typedef Transformation2d<BaseQ22d>           TransQ2;
-  typedef FiniteElement<2,1,TransQ2,BaseQ22d>  FiniteElement;
+  typedef Gascoigne::Transformation<2, BaseQ2<2> >           TransQ2;
+  typedef FiniteElement<2,1,TransQ2,BaseQ2<2> >  FiniteElement;
 
   if (GetFem()==NULL)
     PatchDiscretization::GetFemPointer() =  new FiniteElement;

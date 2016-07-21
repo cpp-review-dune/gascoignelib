@@ -24,9 +24,8 @@
 
 #include  "q2lps3d.h"
 #include  "galerkinlpsintegratorq2.h"
-#include  "transformation3d.h"
+#include  "transformation.h"
 #include  "finiteelement.h"
-#include  "baseq23d.h"
 
 namespace Gascoigne
 {

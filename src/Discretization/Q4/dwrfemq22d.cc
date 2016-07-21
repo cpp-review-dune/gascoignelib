@@ -88,7 +88,7 @@ void DwrFemQ22d::BasicInit(const ParamFile* paramfile)
   GetIntegratorPointer()->BasicInit();
 
   assert(PatchDiscretization::GetFem()==NULL);
-  typedef Transformation2d<BaseQ42d>          TransQ4;
+  typedef Gascoigne::Transformation<2, BaseQ42d>          TransQ4;
   typedef FiniteElement<2,1,TransQ4,BaseQ42d> FiniteElement;
 
   PatchDiscretization::GetFemPointer() = new FiniteElement;

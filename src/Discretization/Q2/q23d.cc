@@ -24,9 +24,9 @@
 
 #include  "q23d.h"
 #include  "galerkinintegratorq2.h"
-#include  "transformation3d.h"
+#include  "transformation.h"
 #include  "finiteelement.h"
-#include  "baseq23d.h"
+#include  "baseq2.h"
 #include  "sparsestructure.h"
 #include  "gascoignemeshtransfer.h"
 #include  "mginterpolatormatrix.h"
@@ -137,7 +137,7 @@ void Q23d::VertexTransformation(const Vertex3d& p0, Vertex3d& p, int iq) const
   nmatrix<double> T;
   Transformation(T,iq);
 
-  Transformation3d<BaseQ23d> Tr;
+  Gascoigne::Transformation<3, BaseQ2<3> > Tr;
   Tr.init(T);
 
   Vertex3d res;
@@ -173,8 +173,8 @@ void Q23d::BasicInit(const ParamFile* paramfile)
 
   if(!PatchDiscretization::GetFem())
     {
-      typedef Transformation3d<BaseQ23d>           TransQ2;
-      typedef FiniteElement<3,2,TransQ2,BaseQ23d>  FiniteElement;
+      typedef Gascoigne::Transformation<3, BaseQ2<3> >           TransQ2;
+      typedef FiniteElement<3,2,TransQ2,BaseQ2<3> >  FiniteElement;
       
       PatchDiscretization::GetFemPointer() =  new FiniteElement;
     }

@@ -25,7 +25,7 @@
 #ifndef __baseq22dPatch_h
 #define __baseq22dPatch_h
 
-#include  "baseq22d.h"
+#include  "baseq2.h"
 
 #define NDOF   25
 #define NDOF1d 5
@@ -39,7 +39,7 @@ namespace Gascoigne
     protected:
       bool                 second;
       mutable int          pB;
-      BaseQ22d             B2;
+      BaseQ2<2>            B2;
       nvector<int>         perm;
       mutable DoubleVector dxx,dxy,dyy;
 

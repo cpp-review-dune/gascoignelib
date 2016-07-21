@@ -67,6 +67,10 @@ namespace Gascoigne
   void point(const Vertex3d& s) const;
 
   double phi   (int i) const {return N  [i];}
+
+  double Dphi(int i, int d) const { std::cerr << "baseq43d.h" << std::endl; abort();}
+  double DDphi(int i, int d1, int d2) const { std::cerr << "baseq43d.h" << std::endl; abort();}
+  
   double phi_x (int i) const {return DN [i].x();}
   double phi_y (int i) const {return DN [i].y();}
   double phi_z (int i) const {return DN [i].z();}

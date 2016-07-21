@@ -27,9 +27,7 @@
 
 #include  "galerkinintegratorq2.h"
 #include  "finiteelementwithsecond.h"
-#include  "transformation2d.h"
 #include  "baseq22dwithsecond.h"
-#include  "transformation3d.h"
 #include  "baseq23dwithsecond.h"
 #include  "../Q1/finiteelement.xx"
 #include  "finiteelementwithsecond.xx"

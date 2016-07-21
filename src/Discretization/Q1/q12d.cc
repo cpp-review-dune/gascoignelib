@@ -367,7 +367,7 @@ int Q12d::GetCellNumber(const Vertex2d& p0, Vertex2d& p,int c0) const
   nmatrix<double> T;
   Transformation(T,iq);
 
-  Transformation2d<BaseQ1<2> > Tr;
+  Gascoigne::Transformation<2, BaseQ1<2> > Tr;
   Tr.init(T);
 
   Vertex2d res;

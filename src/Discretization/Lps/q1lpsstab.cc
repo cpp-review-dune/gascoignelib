@@ -23,8 +23,7 @@
 
 
 #include  "q1lpsstab.h"
-#include  "transformation2d.h"
-#include  "transformation3d.h"
+#include  "transformation.h"
 #include  "finiteelement.h"
 #include  "baseq1patch.h"
 #include  "baseq13dpatch.h"
@@ -60,7 +59,7 @@ void Q1LpsStab2d::BasicInit(const ParamFile* paramfile, const HNStructureInterfa
   PatchDiscretization::GetIntegratorPointer() =  new LpsIntegratorQ1<2>;
   
   assert(PatchDiscretization::GetFem()==NULL);
-  typedef Transformation2d<BaseQ1<2> >           TransQ1;
+  typedef Gascoigne::Transformation<2, BaseQ1<2> >           TransQ1;
   typedef FiniteElement<2,1,TransQ1,BaseQ12dPatch>  FiniteElement;
   PatchDiscretization::GetFemPointer() =  new FiniteElement;
   
@@ -75,7 +74,7 @@ void Q1LpsStab3d::BasicInit(const ParamFile* paramfile, const HNStructureInterfa
   PatchDiscretization::GetIntegratorPointer() =  new LpsIntegratorQ1<3>;
   
   assert(PatchDiscretization::GetFem()==NULL);
-  typedef Transformation3d<BaseQ1<3> >           TransQ1;
+  typedef Gascoigne::Transformation<3, BaseQ1<3> >           TransQ1;
   typedef FiniteElement<3,2,TransQ1,BaseQ13dPatch>  FiniteElement;
   PatchDiscretization::GetFemPointer() =  new FiniteElement;
   

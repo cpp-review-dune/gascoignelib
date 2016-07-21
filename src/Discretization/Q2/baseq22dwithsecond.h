@@ -25,7 +25,7 @@
 #ifndef  __BaseQ22dWithSecond_h
 #define  __BaseQ22dWithSecond_h
 
-#include  "baseq22d.h"
+#include  "baseq2.h"
 
 
 namespace Gascoigne
@@ -41,7 +41,7 @@ namespace Gascoigne
 /////////////////////////////////////////////
 
 
-class BaseQ22dWithSecond : public BaseQ22d
+class BaseQ22dWithSecond : public BaseQ2<2>
 {
 private:
   

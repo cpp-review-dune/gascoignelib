@@ -24,6 +24,7 @@
 
 #include "q2lps2dwithsecond.h"
 #include "integratorlpswithsecond.h"
+#include "transformation.h"
 
 using namespace std;
 
@@ -37,7 +38,7 @@ void Q2Lps2dWithSecond::BasicInit(const ParamFile* paramfile)
     GetIntegratorPointer() =  new IntegratorLpsWithSecond<2>;
   assert(GetIntegrator());
 
-  typedef FiniteElementWithSecond<2, 1, Transformation2d<BaseQ22dWithSecond>, BaseQ22dWithSecond> FEWithSecond;
+  typedef FiniteElementWithSecond<2, 1, Gascoigne::Transformation<2, BaseQ22dWithSecond>, BaseQ22dWithSecond> FEWithSecond;
 
   if (GetFem()==NULL)
     GetFemPointer() =  new FEWithSecond;

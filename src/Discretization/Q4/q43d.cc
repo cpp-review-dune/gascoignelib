@@ -27,7 +27,7 @@
 #include "finiteelement.h"
 #include "galerkinintegratorq4.h"
 #include "hnstructureq43d.h"
-#include "transformation3d.h"
+#include "transformation.h"
 
 using namespace std;
 
@@ -119,7 +119,7 @@ void Q43d::VertexTransformation(const Vertex3d& p0, Vertex3d& p, int iq) const
   nmatrix<double> T;
   Transformation(T,iq);
 
-  Transformation3d<BaseQ43d> Tr;
+  Gascoigne::Transformation<3, BaseQ43d> Tr;
   Tr.init(T);
 
   Vertex3d res;
@@ -155,7 +155,7 @@ void Q43d::BasicInit(const ParamFile* paramfile)
 
   GetIntegratorPointer()->BasicInit();
 
-  typedef Transformation3d<BaseQ43d>           TransQ4;
+  typedef Gascoigne::Transformation<3, BaseQ43d>           TransQ4;
   typedef FiniteElement<3,2,TransQ4,BaseQ43d>  FiniteElement;
 
   if(GetFem()==NULL)

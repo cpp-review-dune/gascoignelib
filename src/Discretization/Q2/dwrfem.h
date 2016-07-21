@@ -29,8 +29,8 @@
 #include "q23d.h"
 #include "baseq1patch.h"
 #include "baseq13dpatch.h"
-#include "transformation2d.h"
-#include "transformation3d.h"
+#include "transformation.h"
+
 #include "finiteelement.h"
 
 /*---------------------------------------------------*/
@@ -40,7 +40,7 @@ namespace Gascoigne
 class DwrFem2d : public Q22d
 {
  protected:
-  typedef Transformation2d<BaseQ1<2> >         TransQ1;
+  typedef Gascoigne::Transformation<2, BaseQ1<2> >         TransQ1;
   FiniteElement<2,1,TransQ1,BaseQ12dPatch>   LowOrderFem;
   HNStructureQ1*                             HNLow;
   
@@ -59,7 +59,7 @@ class DwrFem2d : public Q22d
 class DwrFem3d : public Q23d
 {
  protected:
-  typedef Transformation3d<BaseQ1<3> >         TransQ1;
+  typedef Gascoigne::Transformation<3, BaseQ1<3> >         TransQ1;
   FiniteElement<3,2,TransQ1,BaseQ13dPatch>   LowOrderFem;
   HNStructureQ1*                             HNLow;
   

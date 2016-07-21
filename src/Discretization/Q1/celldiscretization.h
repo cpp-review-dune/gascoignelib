@@ -30,8 +30,8 @@
 #include  "hnstructureinterface.h"
 #include  "edgeinfocontainer.h"
 
-#include  "transformation2d.h"
-#include  "transformation3d.h"
+#include  "transformation.h"
+
 #include  "baseq1.h"
 #include  "finiteelement.h"
 
@@ -53,14 +53,14 @@ namespace Gascoigne
   class FemType<2> 
   {
   public:
-    typedef Transformation2d<BaseQ1<2> >           TransQ1;
+    typedef Gascoigne::Transformation<2, BaseQ1<2> >           TransQ1;
     typedef FiniteElement<2,1,TransQ1,BaseQ1<2> >  FFF;
   };
   template<>
   class FemType<3> 
   {
   public:
-    typedef Transformation3d<BaseQ1<3>  >           TransQ1;
+    typedef Gascoigne::Transformation<3, BaseQ1<3>  >           TransQ1;
     typedef FiniteElement<3,2,TransQ1,BaseQ1<3> >  FFF;
   };
 

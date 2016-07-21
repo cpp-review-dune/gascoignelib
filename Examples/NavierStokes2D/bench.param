@@ -41,7 +41,7 @@ nonlinear_rho		0.1
 
 matrixtype	block
 
-discname 	                Q1Gls
+discname 	                Q2Gls
 ilum                    3  0.01  0.1  0.1
 ndirect			1
 

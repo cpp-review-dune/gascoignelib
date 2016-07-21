@@ -24,7 +24,7 @@
 
 #include "q22dwithsecond.h"
 #include "integratorwithsecond.h"
-
+#include "transformation.h"
 using namespace std;
 
 namespace Gascoigne
@@ -38,7 +38,7 @@ void Q22dWithSecond::BasicInit(const ParamFile* paramfile)
     GetIntegratorPointer() =  new IntegratorWithSecond<2>;
   assert(GetIntegrator());
 
-  typedef FiniteElementWithSecond<2, 1, Transformation2d<BaseQ22dWithSecond>, BaseQ22dWithSecond> FEWithSecond;
+  typedef FiniteElementWithSecond<2, 1, Gascoigne::Transformation<2, BaseQ22dWithSecond>, BaseQ22dWithSecond> FEWithSecond;
 
   if (GetFem()==NULL)
     GetFemPointer() =  new FEWithSecond;

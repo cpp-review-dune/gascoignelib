@@ -228,7 +228,8 @@ namespace Gascoigne
 	    assert(__QC.size()==0);
 
 	    assert(omp_get_thread_num()<INT.size());
-	    INT[omp_get_thread_num()].Form(EQ,_F,FEM,_U,_QN,__QC);
+	    //INT[omp_get_thread_num()].
+	    GetIntegrator()->Form(EQ,_F,FEM,_U,_QN,__QC);
 	    
 	    BasicDiscretization::LocalToGlobal(f,_F,iq,d);
 	  }

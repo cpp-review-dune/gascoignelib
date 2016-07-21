@@ -66,6 +66,9 @@ namespace Gascoigne
   int  n()             const { return NDOF;}
   void point(const Vertex2d& s) const;
 
+    double Dphi(int i, int d) const { std::cerr << "baseq42d.h" << std::endl; abort();}
+  double DDphi(int i, int d1, int d2) const { std::cerr << "baseq42d.h" << std::endl; abort();}
+
   double phi   (int i) const { return N  [i];}
   double phi_x (int i) const { return DN [i].x();}
   double phi_y (int i) const { return DN [i].y();}

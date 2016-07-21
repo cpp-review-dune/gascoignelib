@@ -25,7 +25,7 @@
 #ifndef __baseq23dPatch_h
 #define __baseq23dPatch_h
 
-#include  "baseq23d.h"
+#include  "baseq2.h"
 
 #define NDOF   125
 #define NDOF1d 5
@@ -39,7 +39,7 @@ namespace Gascoigne
     protected:
       bool         second;
       mutable int  pB;
-      BaseQ23d     B2;
+      BaseQ2<3>     B2;
       nvector<int> perm;
 
       mutable nvector<double> dxx, dyy, dzz, dxy, dxz, dyz;

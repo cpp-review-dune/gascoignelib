@@ -27,7 +27,7 @@
 #include "finiteelement.h"
 #include "galerkinintegratorq4.h"
 #include "hnstructureq42d.h"
-#include "transformation2d.h"
+#include "transformation.h"
 
 using namespace std;
 
@@ -119,7 +119,7 @@ void Q42d::VertexTransformation(const Vertex2d& p0, Vertex2d& p, int iq) const
   nmatrix<double> T;
   Transformation(T,iq);
 
-  Transformation2d<BaseQ42d> Tr;
+  Gascoigne::Transformation<2, BaseQ42d> Tr;
   Tr.init(T);
 
   Vertex2d res;
@@ -155,7 +155,7 @@ void Q42d::BasicInit(const ParamFile* paramfile)
 
   GetIntegratorPointer()->BasicInit();
 
-  typedef Transformation2d<BaseQ42d>           TransQ4;
+  typedef Gascoigne::Transformation<2, BaseQ42d>           TransQ4;
   typedef FiniteElement<2,1,TransQ4,BaseQ42d>  FiniteElement;
 
   if(GetFem()==NULL)

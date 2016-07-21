@@ -24,7 +24,7 @@
 
 #include  "q1gls3d.h"
 #include  "galerkinglsintegrator.h"
-#include  "transformation3d.h"
+#include  "transformation.h"
 #include  "finiteelement.h"
 #include  "baseq1.h"
 
@@ -46,7 +46,7 @@ void Q1Gls3d::BasicInit(const ParamFile* pf)
   GetIntegratorPointer()->BasicInit();
 
   assert(Q1<3>::GetFemPointer()==NULL);
-  typedef Transformation3d<BaseQ1<3> >           TransQ1;
+  typedef Gascoigne::Transformation<3, BaseQ1<3> >           TransQ1;
   typedef FiniteElement<3,2,TransQ1,BaseQ1<3> >  FiniteElement;
   Q1<3>::GetFemPointer() =  new FiniteElement;
 
