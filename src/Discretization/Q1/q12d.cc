@@ -24,7 +24,8 @@
 
 #include  "q12d.h"
 #include  "galerkinintegrator.h"
-#include  "transformation2d.h"
+//#include  "transformation2d.h"
+#include  "transformation.h"
 #include  "finiteelement.h"
 #include  "baseq1.h"
 #include  "sparsestructure.h"
@@ -62,7 +63,8 @@ void Q12d::BasicInit(const ParamFile* pf)
 
   if(!GetFemPointer())
     {
-      typedef Transformation2d<BaseQ1<2> >           TransQ1;
+      //      typedef Transformation2d<BaseQ1<2> >           TransQ1;
+typedef Gascoigne::Transformation<2, BaseQ1<2> >           TransQ1;
       typedef FiniteElement<2,1,TransQ1,BaseQ1<2> >  FiniteElement;
       Q1<2>::GetFemPointer()   =  new FiniteElement;
     }

@@ -108,24 +108,14 @@ inline Vertex2d  Transformation2d<BASE>::normal() const
 
 /*-----------------------------------------------------*/
 
-template<class BASE>
-inline void  Transformation2d<BASE>::ComputeDT() const
-{
-  dt.zero();
-  for(int i=0;i<B.n();i++)
-    {
-      dt(0,0) += X(0,i) * B.phi_x(i);
-      dt(0,1) += X(0,i) * B.phi_y(i);
-      dt(1,0) += X(1,i) * B.phi_x(i);
-      dt(1,1) += X(1,i) * B.phi_y(i);
-    }
-  dti(0,0) = dt(0,0);      
-  dti(0,1) = dt(1,0);      
-  dti(1,0) = dt(0,1);      
-  dti(1,1) = dt(1,1);      
-  dti.gauss_jordan();
-}
 
+  template<class BASE>
+  inline void  Transformation2d<BASE>::ComputeDT() const
+  {
+    abort();
+    
+  }
+   
 /*-----------------------------------------------------*/
 
 template<class BASE>

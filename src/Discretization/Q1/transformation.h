@@ -22,8 +22,8 @@
 **/
 
 
-#ifndef __Transformation_h
-#define __Transformation_h
+#ifndef __TransformationXX_h
+#define __TransformationXX_h
 
 #include  "nmatrix.h"
 #include  "vertex.h"
@@ -64,8 +64,8 @@ namespace Gascoigne
     inline Vertex<DIM>      normal() const;
     inline void  init          (const Matrix& M) {X=M;}
     inline void  ReInit          (const Matrix& M) const {X=M;}
-    inline void  point         (const Vertex2d& xi) const;
-    inline void  point_boundary(int ie, const Vertex1d& s) const;
+    inline void  point         (const Vertex<DIM>& xi) const;
+    inline void  point_boundary(int ie, const Vertex<DIM-1>& s) const;
     inline void  GetCoordinates(Matrix& A) const { A.equ(1.,X);}
   };
   
@@ -111,107 +111,152 @@ namespace Gascoigne
   {
     dt.zero();
     for(int i=0;i<B.n();i++)
-      {
-	dt(0,0) += X(0,i) * B.phi_x(i);
-	dt(0,1) += X(0,i) * B.phi_y(i);
-	dt(1,0) += X(1,i) * B.phi_x(i);
-	dt(1,1) += X(1,i) * B.phi_y(i);
-      }
-    dti(0,0) = dt(0,0);      
-    dti(0,1) = dt(1,0);      
-    dti(1,0) = dt(0,1);      
-    dti(1,1) = dt(1,1);      
+      for (int d1=0;d1<DIM;++d1)
+	for (int d2=0;d2<DIM;++d2)
+	  dt(d1,d2) += X(d1,i) * B.Dphi(i,d2);
+    
+
+    for (int d1=0;d1<DIM;++d1)
+      for (int d2=0;d2<DIM;++d2)
+	dti(d1,d2) = dt(d2,d1);
     dti.gauss_jordan();
   }
+   
   
   
+  /*-----------------------------------------------------*/
   
-/*-----------------------------------------------------*/
+  template<int DIM,class BASE>
+  inline const nvector<nmatrix<double> > Transformation<DIM,BASE>::ComputeDDT(const Vertex<DIM>& xi) const
+  {
+    const_cast<BASE*> (&B)->point(xi);
+    
+    nvector<nmatrix<double> > ddt(DIM,nmatrix<double> (DIM,DIM));
+    for (int i=0;i<DIM;++i) ddt[i].zero();
+    
+    // Warum so, wofuer wird das benötigt?
+    std::cerr << "Ich verstehe die Aufgabe von ComputeDDT nicht. Das ist direkt aus der alten Version uebernommen." << std::endl;
+    
+    for (int i=0;i<B.n();++i)
+      for (int d1=0;d1<DIM;++d1)
+	for (int d2=0;d2<DIM;++d2)
+	  ddt[i](d1,d2) += X(d1,i) * B.DDphi(d1, i , d2);
+    return ddt;  
 
-template<class BASE>
-inline const nvector<nmatrix<double> > Transformation2d<BASE>::ComputeDDT(const Vertex2d& xi) const
-{
   const_cast<BASE*> (&B)->point(xi);
-  
-  nvector<nmatrix<double> > ddt(2,nmatrix<double> (2,2));
-  for (int i=0;i<2;++i) ddt[i].zero();
 
-  for (int i=0;i<B.n();++i)
+
+  // Alt 3D, 2D war entsprechend.
+
+  // nvector<nmatrix<double> > ddt(3,nmatrix<double> (3,3));
+  // for (int i=0;i<3;++i) ddt[i].zero();
+
+  // for (int i=0;i<B.n();++i)
+  //   {
+  //     for (int j=0;j<3;++j)
+  // 	{
+  // 	  ddt[0](j,0) += X(j,i) * B.phi_xx(i);
+  // 	  ddt[0](j,1) += X(j,i) * B.phi_xy(i);
+  // 	  ddt[0](j,2) += X(j,i) * B.phi_xz(i);
+
+  // 	  ddt[1](j,0) += X(j,i) * B.phi_xy(i);
+  // 	  ddt[1](j,1) += X(j,i) * B.phi_yy(i);
+  // 	  ddt[1](j,2) += X(j,i) * B.phi_yz(i);
+	  
+  // 	  ddt[2](j,0) += X(j,i) * B.phi_xz(i);
+  // 	  ddt[2](j,1) += X(j,i) * B.phi_yz(i);
+  // 	  ddt[2](j,2) += X(j,i) * B.phi_zz(i);
+  // 	}
+  //   }
+  // return ddt;  
+
+    
+  }
+  
+  /*-----------------------------------------------------*/
+  
+  template<int DIM,class BASE>
+  inline const nvector<nmatrix<double> > Transformation<DIM,BASE>::DDTI(const Vertex<DIM>& xi) const 
+  {
+    const nvector<nmatrix<double> >& ddt = ComputeDDT(xi);
+    
+    nvector<nmatrix<double> > ddti(DIM,nmatrix<double> (DIM,DIM));
+    Matrix dti_ = dti;
+    
+    
+    dti_.transpose();
+    for (int i=0;i<DIM;++i)
+      {
+	nmatrix<double> tmp(DIM,DIM);
+	
+	ddti[i].zero();
+	for (int d=0;d<DIM;++d)
+	  ddti[i].add(-dti_(d,i),ddt[d]);
+	
+	ddti[i].mmult(tmp,dti_);
+	dti_.mmult(ddti[i],tmp);
+      }
+    return ddti;  
+  }
+  
+  /*-----------------------------------------------------*/
+  
+  template<int DIM,class BASE>
+  inline void  Transformation<DIM,BASE>::point(const Vertex<DIM>& xi) const
+  {
+    B.point(xi);
+    ComputeDT();
+  }
+  
+/*-----------------------------------------------------*/
+  
+  template<int DIM,class BASE>
+  inline void  Transformation<DIM,BASE>::point_boundary(int ie, const Vertex<DIM-1>& s) const 
+  {
+    B.point_boundary(ie,s);
+    ComputeDT();
+  }
+  
+  /*-----------------------------------------------------*/
+  
+  template<int DIM,class BASE>
+  inline double  Transformation<DIM,BASE>::J() const  
+  {
+    double h = dt.det();
+    if (h<0)
     {
-      ddt[0](0,0) += X(0,i) * B.phi_xx(i);
-      ddt[0](0,1) += X(0,i) * B.phi_xy(i);
-      ddt[0](1,0) += X(1,i) * B.phi_xx(i);
-      ddt[0](1,1) += X(1,i) * B.phi_xy(i);
-
-      ddt[1](0,0) += X(0,i) * B.phi_xy(i);
-      ddt[1](0,1) += X(0,i) * B.phi_yy(i);
-      ddt[1](1,0) += X(1,i) * B.phi_xy(i);
-      ddt[1](1,1) += X(1,i) * B.phi_yy(i);
+      std::cout << "Transformation<DIM,BASE>::J()  h = " << h << std::endl;
     }
-  return ddt;  
-}
-
-/*-----------------------------------------------------*/
-
-template<class BASE>
-inline const nvector<nmatrix<double> > Transformation2d<BASE>::DDTI(const Vertex2d& xi) const
-{
-  const nvector<nmatrix<double> >& ddt = ComputeDDT(xi);
+    return h;
+  }
   
-  nvector<nmatrix<double> > ddti(2,nmatrix<double> (2,2));
-  Matrix dti_ = dti;
+/*-----------------------------------------------------*/
   
-
-  dti_.transpose();
-  for (int i=0;i<2;++i)
-    {
-      nmatrix<double> tmp(2,2);
-
-      ddti[i].zero();
-      for (int d=0;d<2;++d)
-	ddti[i].add(-dti_(d,i),ddt[d]);
-      
-      ddti[i].mmult(tmp,dti_);
-      dti_.mmult(ddti[i],tmp);
-    }
-  return ddti;  
-}
-
-/*-----------------------------------------------------*/
-
-template<class BASE>
-inline void  Transformation2d<BASE>::point(const Vertex2d& xi) const
-{
-  B.point(xi);
-  ComputeDT();
-}
-
-/*-----------------------------------------------------*/
-
-template<class BASE>
-inline void  Transformation2d<BASE>::point_boundary(int ie, const Vertex1d& s) const
-{
-  B.point_boundary(ie,s);
-  ComputeDT();
-}
-
-/*-----------------------------------------------------*/
-
-template<class BASE>
-inline double  Transformation2d<BASE>::J() const  
-{
-  return dt(0,0)*dt(1,1)-dt(1,0)*dt(0,1);
-}
-
-/*-----------------------------------------------------*/
-
-template<class BASE>
-inline double  Transformation2d<BASE>::G() const  
-{
-  Vertex2d xt;
-  dt.mult(xt,*B.tangent());
-  return xt.norm_l2();
-}
+  template<int DIM,class BASE>
+  inline double  Transformation<DIM,BASE>::G() const  
+  {
+    if (DIM==2)
+      {
+	Vertex<DIM> xt;
+	dt.mult(xt,*B.tangent());
+	return xt.norm_l2();
+      }
+    else
+      {
+	double d1phi=0,d2phi=0,d12phi=0;
+	const fixarray<2,int>& fc = *B.faces();
+	for (int i=0;i<3;++i)
+	  {
+	    d1phi+=dt(i,fc[0])*dt(i,fc[0]);
+	    d2phi+=dt(i,fc[1])*dt(i,fc[1]);
+	    d12phi+=dt(i,fc[0])*dt(i,fc[1]);
+	  }
+	double h = d1phi*d2phi-d12phi*d12phi;
+	assert(h>=0);
+	return sqrt(h);
+      }
+    abort();
+  }
 }
 
 #endif

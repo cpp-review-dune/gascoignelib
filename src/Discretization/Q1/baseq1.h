@@ -57,8 +57,8 @@ namespace Gascoigne
      
     void BasicInit()
     {
-Base<DIM>::N.resize( DIM==2?4:8 );
-Base<DIM>::DN.resize( DIM==2?4:8 );
+      Base<DIM>::N.resize( DIM==2?4:8 );
+      Base<DIM>::DN.resize( DIM==2?4:8 );
       a[0] = 1.;  b[0] = -1.;
       a[1] = 0.;  b[1] =  1.;
     }
@@ -68,9 +68,9 @@ Base<DIM>::DN.resize( DIM==2?4:8 );
     
   public:
     
-BaseQ1() : Base<DIM>()
-{
-BasicInit();
+    BaseQ1() : Base<DIM>()
+    {
+      BasicInit();
     }
     
 
@@ -80,6 +80,14 @@ BasicInit();
     void   point(const Vertex<DIM>& s) const;
     
     double phi   (int i) const {return Base<DIM>::N  [i];}
+
+    double Dphi  (int i,int d) const  { return Base<DIM>::DN[i][d];  }
+    double DDphi  (int i,int d1, int d2) const  
+    { 
+      std::cerr << "BaseQ1::DDphi not written!" << std::endl;
+      abort();
+    }
+
     double phi_x (int i) const {return Base<DIM>::DN [i].x();}
     double phi_y (int i) const {return Base<DIM>::DN [i].y();}
     double phi_z (int i) const {return Base<DIM>::DN [i].z();}
@@ -94,7 +102,7 @@ BasicInit();
     double phi_yz(int i) const
     { std::cerr << "\"BaseQ1::phi_xy\" not written!" << std::endl;abort(); }
 
-const Vertex<DIM>&  phi_grad (int i) const {return Base<DIM>::DN [i];}
+    const Vertex<DIM>&  phi_grad (int i) const {return Base<DIM>::DN [i];}
   };
 
   template<>
@@ -105,9 +113,9 @@ const Vertex<DIM>&  phi_grad (int i) const {return Base<DIM>::DN [i];}
 	int ix = i%2;
 	int iy = i/2;
 	
-Base<2>::N  [i]     = psi   (ix,s.x()) * psi   (iy,s.y());
-Base<2>::DN [i].x() = psi_x (ix,s.x()) * psi   (iy,s.y());
-Base<2>::DN [i].y() = psi   (ix,s.x()) * psi_x (iy,s.y());
+	Base<2>::N  [i]     = psi   (ix,s.x()) * psi   (iy,s.y());
+	Base<2>::DN [i].x() = psi_x (ix,s.x()) * psi   (iy,s.y());
+	Base<2>::DN [i].y() = psi   (ix,s.x()) * psi_x (iy,s.y());
       }
   }
   template<>
@@ -127,10 +135,10 @@ Base<2>::DN [i].y() = psi   (ix,s.x()) * psi_x (iy,s.y());
 	double dy = psi_x(iy,s.y());
 	double dz = psi_x(iz,s.z());
 	
-Base<3>::N  [i]     = px * py * pz;
-Base<3>::DN [i].x() = dx * py * pz;
-Base<3>::DN [i].y() = px * dy * pz;
-Base<3>::DN [i].z() = px * py * dz;
+	Base<3>::N  [i]     = px * py * pz;
+	Base<3>::DN [i].x() = dx * py * pz;
+	Base<3>::DN [i].y() = px * dy * pz;
+	Base<3>::DN [i].z() = px * py * dz;
       }
   }
 
