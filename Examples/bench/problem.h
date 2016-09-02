@@ -7,11 +7,9 @@
 
 #include  "problemdescriptorbase.h"
 #include  "myequation.h"
-#include  "water.h"
 #include  "dirichletdata.h"
 #include  "domainrighthandside.h"
 #include  "periodicdata.h"
-#include  "stress.h"
 #include<fstream>
 #include  "zerodirichletdata.h"
 #include "componentinformationbase.h"
