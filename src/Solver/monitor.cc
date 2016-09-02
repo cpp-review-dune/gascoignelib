@@ -293,6 +293,7 @@ void Monitor::nonlinear_step(const CGInfo& cginfo, const NLInfo& nlinfo)
   int  iter = cginfo.control().iteration(); 
 
   double r = nlinfo.control().residual();
+  new_message << "Newton: ";
   new_message.width(3);
   new_message << i << ": ";
   new_message.unsetf(ios::fixed);

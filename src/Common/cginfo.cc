@@ -222,6 +222,8 @@ bool CGInfo::check(double resi, double cori)
       double rr = statistics().rate();
       double lr = statistics().lastrate();
 
+      if (CD.iteration()==0)
+	cout << UD.text() << endl << UD.text() << endl;
       cout << UD.text() << " ";
       cout.width(3);
       cout << CD.iteration() << ": ";

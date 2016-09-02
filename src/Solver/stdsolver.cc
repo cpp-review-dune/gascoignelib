@@ -85,7 +85,7 @@
 #include  "lpsequation.h"
 
 using namespace std;
-
+extern double STEUERUNG_MU;
 /*-----------------------------------------*/
 #ifdef __WITH_THREADS__
 extern "C" void METIS_PartGraphRecursive(int *,int *,int *,int *,int *,int *,
@@ -1448,7 +1448,21 @@ void StdSolver::AssembleMatrix(const VectorInterface& gu, double d)
 
   GetDiscretization()->Matrix(*GetMatrix(),u,*GetProblemDescriptor()->GetEquation(),d);
 
-  
+  // auf diagonale die mu-steuerung addieren
+  SparseBlockMatrix<FMatrixBlock<2> > *M = dynamic_cast<SparseBlockMatrix<FMatrixBlock<2> > * > (GetMatrix());
+  if (M)
+    {
+      //  cout << "STEURUNG_MU " << STEUERUNG_MU << endl;
+      const ColumnDiagStencil* CS = dynamic_cast<const ColumnDiagStencil* > (M->GetStencil());
+      assert(CS);
+      for (int r=0;r<CS->n();++r)
+	{
+	  int p = CS->diag(r);
+	  FMatrixBlock<2>& X = *(M->mat(p));
+	  X(0,0) += STEUERUNG_MU;
+	  X(1,1) += STEUERUNG_MU;
+	}
+    }
  
 
   // Face

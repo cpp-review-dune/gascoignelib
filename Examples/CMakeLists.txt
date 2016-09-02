@@ -1,5 +1,5 @@
 SUBDIRS(
-  Dimi NavierStokes2D
+  stinker NavierStokes2D bench
 )
 
 LINK_LIBRARIES(${GASCOIGNE_LIBRARIES} )

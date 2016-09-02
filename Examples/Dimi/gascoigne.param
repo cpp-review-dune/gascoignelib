@@ -21,7 +21,7 @@ compress    0
 //Block Mesh
 
 dimension   2
-prerefine   5
+prerefine   3
 //gridname Gitterstationaer.inp
 gridname    square.inp
 //gridname	alt.inp
@@ -66,7 +66,7 @@ matrixtype block
 
 discname       Q1
 
-ndirect        1000 // fuer see eis
+ndirect        1 // fuer see ei
 ilum 2 0.1 0.1 // fuer see eis
 
 

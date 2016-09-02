@@ -129,7 +129,13 @@ void Loop::AssembleMassMatrix()
 
 }
 
-void Loop::SolveTransport(double dt, VectorInterface& h, VectorInterface& uh, VectorInterface& ul, VectorInterface& oldh, VectorInterface& oldu, VectorInterface& f) 
+void Loop::SolveTransport(double dt, 
+			  VectorInterface& h,
+			  VectorInterface& oldh, 
+			  VectorInterface& ul, 
+			  VectorInterface& uh, 
+			  VectorInterface& vel,
+			  VectorInterface& f) 
   
 
 {
@@ -137,15 +143,16 @@ void Loop::SolveTransport(double dt, VectorInterface& h, VectorInterface& uh, Ve
   GetMultiLevelSolver()->SetProblem("test");
   
   
-  // Loesen von UL
-  GlobalVector& UL = GetMultiLevelSolver()->GetSolver()->GetGV(ul);
-  GlobalVector& UH = GetMultiLevelSolver()->GetSolver()->GetGV(uh);
-  GlobalVector& B  = GetMultiLevelSolver()->GetSolver()->GetGV(f);
+ 
   GlobalVector& H  = GetMultiLevelSolver()->GetSolver()->GetGV(h);
   GlobalVector& OLDH  = GetMultiLevelSolver()->GetSolver()->GetGV(oldh);
-  GlobalVector& OLDU = GetMultiLevelSolver()->GetSolver()->GetGV(oldu);
+  GlobalVector& UL = GetMultiLevelSolver()->GetSolver()->GetGV(ul);
+  GlobalVector& UH = GetMultiLevelSolver()->GetSolver()->GetGV(uh);
+  GlobalVector& VEL = GetMultiLevelSolver()->GetSolver()->GetGV(vel);
+  GlobalVector& B  = GetMultiLevelSolver()->GetSolver()->GetGV(f);
   B.zero();
-  //Loesung UL
+  //
+  UL=OLDH;
     
   // C-Matrix
   const StdSolver* S = dynamic_cast<const StdSolver*> (GetMultiLevelSolver()->GetSolver());
@@ -161,6 +168,7 @@ void Loop::SolveTransport(double dt, VectorInterface& h, VectorInterface& uh, Ve
   // B = operator K
   const ColumnDiagStencil* ST = dynamic_cast<const ColumnDiagStencil*> (C->GetStencil());
   assert(ST);
+ 
   Dii.resize(ST->n());
   Dii.zero();
   for (int row=0;row<ST->n();++row)
@@ -170,7 +178,7 @@ void Loop::SolveTransport(double dt, VectorInterface& h, VectorInterface& uh, Ve
 	  int col = ST->col(p);
 	  
 	  const FMatrixBlock<2>& Cij = *(C->mat(p));
-	  double CijVj = Cij(0,0)*OLDU(col,0) + Cij(1,1)*OLDU(col,1);
+	  double CijVj = Cij(0,0)*VEL(col,0) + Cij(1,1)*VEL(col,1);
 	  
 	  	  // suche index (j,i)
 	  int pt=ST->start(col);
@@ -180,30 +188,23 @@ void Loop::SolveTransport(double dt, VectorInterface& h, VectorInterface& uh, Ve
 	 	 
  
 	  const FMatrixBlock<2>& Cji = *(C->mat(pt));
-	  double CjiVi = Cji(0,0)*OLDU(row,0) + Cji(1,1)*OLDU(row,1);
+	  double CjiVi = Cji(0,0)*VEL(row,0) + Cji(1,1)*VEL(row,1);
 	  double Cji0=Cji(0,0);
 	  double Cji1=Cji(1,1);
-	  double eps= 1.e-8;
+        
 	  
+	  cout<<"!!!!!!!!!!!!!!!"<<endl;
+	  cout<<CjiVi<<endl;
+	  abort();
 	  if(row!=col)
-	  {
-	    
-	    
+	    {
 	      D.GetValue(p) = max(fabs(CijVj),fabs(CjiVi));
-	       Dii[row]+=D.GetValue(p);
-	       
-	       /*  if( D.GetValue(p)<= eps)
-		{
-		  D.GetValue(p)=(D.GetValue(p)*D.GetValue(p)+eps*eps)/(2.0*eps);
+	      Dii[row]+=D.GetValue(p);
+	    }
 	  
-		Dii[row]+=D.GetValue(p);
-	         }
-	       */
-               }
-
-    }
+	}
     } 
-    
+  
   
   // D Diagonale
   
@@ -213,79 +214,66 @@ void Loop::SolveTransport(double dt, VectorInterface& h, VectorInterface& uh, Ve
       D.GetValue(p) = -Dii[row];
     }
   
+ 
+	
+	
+  TimePattern TP(2); TP(0,0)=1.0; TP(1,1) = 1.0;
+// B=(k+D)u^n
   
-  
-   
-  
-	
-	GlobalVector dd(UL.ncomp(),UL.n());
-	assert(UL.ncomp()==dd.ncomp());
-	dd.zero();
-
-	
-	GlobalVector kk(UL.ncomp(),UL.n());
-	assert(UL.ncomp()==kk.ncomp());
-	kk.zero();
-
-
-	
-	
-	
-	TimePattern TP(2); TP(0,0)=1.0; TP(1,1) = 1.0;
-	
   // (Ku)i= (-cij vj) ui
-	
-	for (int row=0;row<ST->n();++row)
-	  {
-	    for (int p=ST->start(row);p<ST->stop(row);++p)
-	      {
-		int col = ST->col(p);
-		const FMatrixBlock<2>& Cij = *(C->mat(p));
-		//  rr(row,0) +=(Cij(0,0)+Cij(1,1));
-		// rr(row,1) += OLDU(col,0)+OLDU(col,1);
-		 kk(row,0) += (-Cij(0,0)*OLDU(col,0)-Cij(1,1)*OLDU(col,1)) *  OLDH(col,0);
-		 kk(row,1) += (-Cij(0,0)*OLDU(col,0)-Cij(1,1)*OLDU(col,1)) *  OLDH(col,1);
+  
+  for (int row=0;row<ST->n();++row)
+    {
+      for (int p=ST->start(row);p<ST->stop(row);++p)
+	{
+	  int col = ST->col(p);
+	  const FMatrixBlock<2>& Cij = *(C->mat(p));
+	 
+	  B(row,0) += (-Cij(0,0)*VEL(col,0)-Cij(1,1)*VEL(col,1)) *  OLDH(col,0);
+	  B(row,1) += (-Cij(0,0)*VEL(col,0)-Cij(1,1)*VEL(col,1)) *  OLDH(col,1);
 		
-		 //	B(row,0) += (-Cij(0,0)*OLDU(col,0)-Cij(1,1)*OLDU(col,1)) *  OLDH(col,0);
-		 //	B(row,1) += (-Cij(0,0)*OLDU(col,0)-Cij(1,1)*OLDU(col,1)) *  OLDH(col,1);
-	      }
-	  }
-	
-	
-	// + Du
-	// D.vmult_time(B,OLDH,TP,1.0);
-	
-	
-	//  das waere Matrix-Vector Komponentenweise
-	for (int row=0;row<ST->n();++row)
-	  {
-	    for (int p=ST->start(row);p<ST->stop(row);++p)
-	      {
-		int col = ST->col(p);
-		kk(row,0) += D.GetValue(p) * OLDH(col,0);
-		kk(row,1) += D.GetValue(p) * OLDH(col,1);
-		
-		B(row,0) += D.GetValue(p) * OLDH(col,0);
-		B(row,1) += D.GetValue(p) * OLDH(col,1);
+       
+	}
+    }
+ 
+  // + Du
+  // D.vmult_time(B,OLDH,TP,1.0);
+  
+  
+  //  das waere Matrix-Vector Komponentenweise
+  for (int row=0;row<ST->n();++row)
+    {
+      for (int p=ST->start(row);p<ST->stop(row);++p)
+	{
+	  int col = ST->col(p);
+	 
+	  B(row,0) += D.GetValue(p) * OLDH(col,0);
+	  B(row,1) += D.GetValue(p) * OLDH(col,1);
+	}
+    }
 
-		
-		//	dd(row,0) += D.GetValue(p) * OLDH(col,0);
-		//	dd(row,1) += D.GetValue(p) * OLDH(col,1);
-		
-	      }
-	  }
-	
+
+  
+  // dt u= M_L^(-1)Bu^n
+  
+	for (int i=0;i<UL.n();++i)
+	  for (int c=0;c<UL.ncomp();++c)
+	    UH(i,c)=B(i,c)/LMM[i];
 	
 	// UL mit exp Euler, zwischenloesung fuer Heun
 	assert(UL.n() == LMM.size());
 	for (int i=0;i<UL.n();++i)
 	  {
 	    for (int c=0;c<UL.ncomp();++c)
-	      UL(i,c)+=(kk(i,c)*dt)/LMM[i];
+	      {
+		UL(i,c)+=(B(i,c)*dt)/LMM[i];
+	      }
 	  }
 	
-
+	
+	/*
 	//heun verfahren
+ // zweiter SChritt B = Bu^n + B \bar UL
 	for (int row=0;row<ST->n();++row)
 	  {
 	    for (int p=ST->start(row);p<ST->stop(row);++p)
@@ -295,15 +283,15 @@ void Loop::SolveTransport(double dt, VectorInterface& h, VectorInterface& uh, Ve
 		//  rr(row,0) +=(Cij(0,0)+Cij(1,1));
 		// rr(row,1) += OLDU(col,0)+OLDU(col,1);
 		
-		kk(row,0) += ((-Cij(0,0)*OLDU(col,0)-Cij(1,1)*OLDU(col,1))+D.GetValue(p)) *  UL(col,0);
-		kk(row,1) += ((-Cij(0,0)*OLDU(col,0)-Cij(1,1)*OLDU(col,1))+D.GetValue(p)) *  UL(col,1);
+		B(row,0) += ((-Cij(0,0)*VEL(col,0)-Cij(1,1)*VEL(col,1))+D.GetValue(p)) *  UL(col,0);
+		B(row,1) += ((-Cij(0,0)*VEL(col,0)-Cij(1,1)*VEL(col,1))+D.GetValue(p)) *  UL(col,1);
 	      }
 	  }
 	//	GetMultiLevelSolver()->GetSolver()->Visu("Results/b",f,_iter);
-
-       
 	
-	/*
+	
+	
+       
        /// rechte seite von Heun verfahren
        // B = B + (K+D)UL
        // Gascoigne braucht nun statt oldh UL
@@ -313,20 +301,15 @@ void Loop::SolveTransport(double dt, VectorInterface& h, VectorInterface& uh, Ve
        GetMultiLevelSolver()->GetSolver()->Rhs(f);
        GetMultiLevelSolver()->GetSolver()->DeleteNodeVector("oldh");
        GetMultiLevelSolver()->GetSolver()->DeleteNodeVector("oldu");
-       // zweiter SChritt B = B + D UL
+      
        D.vmult_time(B,UL,TP,1.0);
        // B = k/2 B
-       */
-	kk *= 1.0/2.0;
-	//	rr*=1.0/2.0;
-	// M UL = B
-	for (int i=0;i<UL.n();++i)
-	  for (int c=0;c<UL.ncomp();++c)
-	    UL(i,c)=(kk(i,c)*dt)/LMM[i];
-	// UL = UL + B, jetzt ist UL die Heun-Loesung
-	UL+=OLDH;
+      
+	B *= 1.0/2.0;
+
+
 	
-	
+	*/
 	
 	
 	
@@ -354,17 +337,15 @@ void Loop::SolveTransport(double dt, VectorInterface& h, VectorInterface& uh, Ve
 		  }
 	      }
 	  }
-	for (int i=0;i<UL.n();++i)
-	  for (int c=0;c<UL.ncomp();++c)
-	    UL(i,c)=UL(i,c)+dt*FLUX(i,c)/LMM[i];
-	
+
 	
    //U^n+1
    for (int i=0;i<UL.n();++i)
      for (int c=0;c<UL.ncomp();++c)
-       H(i,c)=UL(i,c);
+       H(i,c)=UL(i,c)+dt*FLUX(i,c)/LMM[i];
+  
+  
  
-
    // GetMultiLevelSolver()->GetSolver()->Visu("Results/ul",ul,_iter);
 }
 
@@ -469,7 +450,7 @@ void Loop::run(const std::string& problemlabel)
 
   // set up system matrix
 
-  double writeeveryhour=24.0; // 1.0;
+  double writeeveryhour=0.0*24.0; // 1.0;
 
   double writenext= writeeveryhour;
   int writeiter = 0;
@@ -525,33 +506,31 @@ void Loop::run(const std::string& problemlabel)
       // Extrapolation
       GetMultiLevelSolver()->GetSolver()->Equ(extu,1.0+DT/DT, u);
       GetMultiLevelSolver()->GetSolver()->Add(extu,-DT/DT, oldu);
-      GetMultiLevelSolver()->Equ(oldu,1.0,u);
+
       GetMultiLevelSolver()->Equ(oldoldu,1.0,oldu);
+      GetMultiLevelSolver()->Equ(oldu,1.0,u);
       GetMultiLevelSolver()->Equ(u,1.0,extu); // besserer Startwert fuer newton
 
-      
        /// Masslumping
-      GetMultiLevelSolver()->Equ(oldh,1.0,h);
-      
+     
       GetMultiLevelSolver()->SetProblem("test");
 
-
-      int NSUB = 800;
-
-     
-
+  
+      int NSUB = 10;
       for (int sub=0;sub<NSUB;++sub)
 	{
-	 double dt=DT/NSUB;
+ GetMultiLevelSolver()->Equ(oldh,1.0,h);
+      
+	  double dt=DT/NSUB;
 	  GetMultiLevelSolver()->GetSolver()->Equ(u,( (double) (NSUB-sub))/ ( (double) NSUB),oldu); // besserer Startwert fuer newton
 	  GetMultiLevelSolver()->GetSolver()->Add(u,( (double) (sub))/ ( (double) NSUB),extu);      // besserer Startwert fuer newton
-      
-	  SolveTransport(dt, h,uh,ul,oldh,oldu,f);
-	 
-	
+	  
+	  SolveTransport(dt, h,oldh,ul,uh,u ,f);
+
+	  
 	}
       
-      GlobalVector& H = GetMultiLevelSolver()->GetSolver()->GetGV(h);
+       GlobalVector& H = GetMultiLevelSolver()->GetSolver()->GetGV(h);
       for (int i=0;i<H.n();++i)
 	{
 	  H(i,1) = std::min(1.0, H(i,1));

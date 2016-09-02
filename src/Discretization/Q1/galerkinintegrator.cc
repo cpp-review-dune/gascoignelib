@@ -32,7 +32,7 @@ namespace Gascoigne
 {
 template<int DIM>
 GalerkinIntegrator<DIM>::GalerkinIntegrator() : BasicIntegrator(),
-  IFF(NULL), IFE(NULL), IFB(NULL), IFM(NULL)
+						IFF(NULL), IFE(NULL), IFB(NULL), IFM(NULL), MFF(NULL)
 {
 }
 
@@ -43,6 +43,7 @@ void GalerkinIntegrator<DIM>::BasicInit()
 {
   if (DIM==2)
     {
+      if (!MidPointFormulaPointer())     MidPointFormulaPointer() = new QuadGauss1;
       if (!FormFormulaPointer())     FormFormulaPointer() = new QuadGauss4;
       if (!ErrorFormulaPointer())    ErrorFormulaPointer() = new QuadGauss9;
       if (!BoundaryFormulaPointer()) BoundaryFormulaPointer() = new LineGauss2;
@@ -51,6 +52,7 @@ void GalerkinIntegrator<DIM>::BasicInit()
     }
   else if (DIM==3)
     {
+      //      if (!MidPointFormulaPointer())     MidPointFormulaPointer() = new HexGauss1;
       if (!FormFormulaPointer())     FormFormulaPointer() = new HexGauss8;
       if (!ErrorFormulaPointer())    ErrorFormulaPointer() = new HexGauss27;
       if (!BoundaryFormulaPointer()) BoundaryFormulaPointer() = new QuadGauss4;
@@ -596,7 +598,11 @@ double GalerkinIntegrator<DIM>::ComputeDomainFunctional(const DomainFunctional& 
   BasicIntegrator::universal_point(_QCH,QC);
   F.SetCellData(_QCH);
 
-  const IntegrationFormulaInterface& IF = *FormFormula();
+#warning "ComputeDomainFunctional wird mit der Mittelpunktsregel ausgewertet!"
+  //  const IntegrationFormulaInterface& IF = *FormFormula();
+  const IntegrationFormulaInterface& IF = *MidPointFormula();
+  
+
 
   Vertex<DIM> x, xi;
   double j = 0.;

@@ -49,14 +49,17 @@ private:
   IntegrationFormulaInterface*  IFE;
   IntegrationFormulaInterface*  IFB;
   IntegrationFormulaInterface*  IFM;
+  IntegrationFormulaInterface*  MFF;
 
 protected:
 
+  IntegrationFormulaInterface*& MidPointFormulaPointer() { return MFF;}
   IntegrationFormulaInterface*& FormFormulaPointer() { return IFF;}
   IntegrationFormulaInterface*& ErrorFormulaPointer() { return IFE;}
   IntegrationFormulaInterface*& MassFormulaPointer() { return IFM;}
   IntegrationFormulaInterface*& BoundaryFormulaPointer() { return IFB;}
 
+  const IntegrationFormulaInterface* MidPointFormula() const { assert(GalerkinIntegrator<DIM>::MFF); return GalerkinIntegrator<DIM>::MFF;}
   const IntegrationFormulaInterface* FormFormula() const { assert(GalerkinIntegrator<DIM>::IFF); return GalerkinIntegrator<DIM>::IFF;}
   const IntegrationFormulaInterface* MassFormula() const { assert(GalerkinIntegrator<DIM>::IFM); return GalerkinIntegrator<DIM>::IFM;}
   const IntegrationFormulaInterface* ErrorFormula() const { assert(GalerkinIntegrator<DIM>::IFE); return GalerkinIntegrator<DIM>::IFE;}

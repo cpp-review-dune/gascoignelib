@@ -36,6 +36,8 @@
 using namespace std;
 
 double DDD;
+double STEUERUNG_MU;
+int writeiter;
 /*-------------------------------------------------------------*/
 
 namespace Gascoigne
@@ -482,39 +484,126 @@ void StdMultiLevelSolver::Cg(VectorInterface& x, const VectorInterface& f, CGInf
 
 void StdMultiLevelSolver::newton(VectorInterface& u, const VectorInterface& f, VectorInterface& r, VectorInterface& w, NLInfo& info)
 {
-  DDD=1;
+  DDD=1.0;
+  STEUERUNG_MU =0.00;
   double lastrate=0.0;
-  double rho=0.0;
-  double ET=0.0;
+  double rho1=0.0;
+  double rho2=0.0;
+  double ET1=1.0;
+  double ET2=1.0;
   info.reset();
   double rr = NewtonResidual(r,u,f);
   bool reached = info.check(0,rr,0.);
   NewtonOutput(info);
   NewtonPreProcess(u,f,info);
-  nvector<int> nlin;
+  nvector<int> nlin,nresi;
+ double res_old,res_new,res_mat;
 
-  int it=1;
+  int it=0.0;
+
+ // GlobalVector SAVE,SAVER;
+
+  
+  vector<double> ressi(200);
+  ressi[0]=1.0;
+  ++writeiter;
+  GetSolver()->Visu("Results/r",r,writeiter);
+  
   for(it=1; !reached; it++)
     {
+      //SAVE = GetSolver()->GetGV(u);
+      // SAVER = GetSolver()->GetGV(r);
+
+    
       NewtonMatrixControl(u,info);
       NewtonVectorZero(w);
+      // Altes Residuum merken
+  //    res_old = pow(GetSolver()->GetGV(r).norm(),2.0);
+      
       NewtonLinearSolve(w,r,info.GetLinearInfo());
       nlin.push_back(info.GetLinearInfo().control().iteration());
       
       double rw = NewtonUpdate(rr,u,w,r,f,info);
-      reached = info.check(it,rr,rw);
-      NewtonOutput(info);
-      ET=DDD;
-
-      lastrate = rho;
-      rho = info.statistics().lastrate();
-      DDD=min(ET*(0.2+4/(0.7+exp(1.5*rho))),1);
+   //   res_new = pow(GetSolver()->GetGV(r).norm(),2.0);
       
-      cout  <<  "Steuerung Newton rho/DDD: " << rho << "\t" << DDD <<endl;
+   //   res_mat = pow(STEUERUNG_MU*GetSolver()->GetGV(w).norm(),2.0);
+      
+      
+      reached = info.check(it,rr,rw);
+     
+    //  double epsilon = (res_old-res_new)/(res_old-res_mat);
+     // cout << "EPSILON " << epsilon << endl;
+      rho1 = info.statistics().lastrate();
+
+      /*
+
+      
+      if(epsilon<0.3 ) 
+	{
+	  STEUERUNG_MU=2.0*STEUERUNG_MU;
+	  it=it-1;
+	    info.control().matrixmustbebuild() = 1; // dann macht der auf jeden fall ne matrix.
+	    cout<<"STEUERUNG"<<STEUERUNG_MU<<1<<endl;
+	  continue;
+	 
+	}
+   
+      
+      if(epsilon>0.9)
+	{
+	  STEUERUNG_MU=0.5*STEUERUNG_MU;
+	  cout<<"STEUERUNG"<<STEUERUNG_MU<<3<<endl;
+	  
+	 
+	}
+     
+      
+      cout<<"STEUERUNG"<<STEUERUNG_MU<<endl;
+      ressi[it]=rr; 
+*/     
+      NewtonOutput(info);
+      
+      
+      nresi.push_back(rr);
+
+      
+       
+      /*     rho2 = ressi[it]/ressi[it-1];
+	     
+	     if ((rho2>1.0)&&(it>1)) // schritt wiederholen
+	     {
+	     DDD= ET2;
+	     //  GetSolver()->GetGV(u) = SAVE; 
+	     // GetSolver()->GetGV(r) = SAVER; 
+	     ressi[it]=ressi[it-1];
+	     cout  <<  "$$$$$$$$$$ Newton Kaputt  rho/DDD: " << lastrate << "\t" << DDD << "\t"<< ressi[it]<<endl;
+	     continue;
+	     }
+      */
+      
+      //      if (it==6)
+      //	 { DDD=1.0;}
+      //if(it>6)
+      // {
+
+
+      ET1=DDD;
+       
+	 
+	DDD=min(ET1*(0.2+4/(0.7+exp(1.51*rho1))),1);
+	 
+	 
+	 
+	
+	 lastrate = rho1;
+	 cout  <<  "Steuerung Newton rho/DDD/ET: " << rho1 << "\t" << DDD << "\t"<< ET1 << endl;
+
+
+	      
     }
-
-  cerr << "Newton: " << it << "\t" << nlin.sum() << "\t" << nlin << endl;
-
+  
+  cerr << "New: " << it <<"\t"<< nlin.sum() << "\t" << nlin << endl;
+  
   
   NewtonPostProcess(u,f,info);
 }
@@ -557,6 +646,7 @@ double StdMultiLevelSolver::NewtonResidual(VectorInterface& y, const VectorInter
   GetSolver(ComputeLevel)->SetBoundaryVectorZero(y);
   GetSolver(ComputeLevel)->SubtractMeanAlgebraic(y);
   _clock_residual.stop();
+
   return NewtonNorm(y);
 }
 
@@ -647,9 +737,10 @@ double StdMultiLevelSolver::NewtonUpdate(double& rr, VectorInterface& x, VectorI
   rr = NewtonNorm(r);
 
   string message = "";
-  for(int iter=0;iter<nlinfo.user().maxrelax();iter++)
+  int diter=0;
+  for(diter=0;diter<nlinfo.user().maxrelax();diter++)
     {
-      message = nlinfo.check_damping(iter,rr);
+      message = nlinfo.check_damping(diter,rr);
 
       if (message=="ok")       break;
       if (message=="continue") 
@@ -670,6 +761,7 @@ double StdMultiLevelSolver::NewtonUpdate(double& rr, VectorInterface& x, VectorI
         break;
       }
     }
+  nlinfo.check_damping(diter,rr);
 
   // NewtonUpdateShowCompResiduals(nlinfo.control().iteration(), x, r, f,dx);
 
@@ -840,7 +932,12 @@ void StdMultiLevelSolver::DeleteVector(VectorInterface& v)
 /*-------------------------------------------------------------*/
 
 void StdMultiLevelSolver::precondition(VectorInterface& x, VectorInterface& y)
+
 {
+
+  //GetSolver()->smooth(8,x,y,_mg0);
+  //return;
+
   CGInfo& precinfo = DataP->GetPrecInfo();
   precinfo.reset();
   precinfo.check(0.,0.);

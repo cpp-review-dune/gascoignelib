@@ -88,7 +88,8 @@ namespace Gascoigne
    void run(const std::string& problemlabel);
    void runwater(const std::string& problemlabel);
    void AssembleMassMatrix();
-   void SolveTransport(double dt, VectorInterface& h, VectorInterface& uh, VectorInterface& ul, VectorInterface& oldh,VectorInterface& oldu,VectorInterface& f); 
+   void SolveTransport(double dt, VectorInterface& h, VectorInterface& oldh, 
+		       VectorInterface& ul, VectorInterface& uh, VectorInterface& vel,VectorInterface& f);
   
   };
   

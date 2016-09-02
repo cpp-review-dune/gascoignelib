@@ -1,6 +1,6 @@
 /**
 *
-* Copyright (C) 2004 by the Gascoigne 3D authors
+*xx Copyright (C) 2004 by the Gascoigne 3D authors
 *
 * This file is part of Gascoigne 3D
 *
