@@ -536,8 +536,6 @@ void StdMultiLevelSolver::newton(VectorInterface& u, const VectorInterface& f, V
       rho1 = info.statistics().lastrate();
 
       /*
-
-      
       if(epsilon<0.3 ) 
 	{
 	  STEUERUNG_MU=2.0*STEUERUNG_MU;
@@ -547,17 +545,11 @@ void StdMultiLevelSolver::newton(VectorInterface& u, const VectorInterface& f, V
 	  continue;
 	 
 	}
-   
-      
       if(epsilon>0.9)
 	{
 	  STEUERUNG_MU=0.5*STEUERUNG_MU;
 	  cout<<"STEUERUNG"<<STEUERUNG_MU<<3<<endl;
-	  
-	 
 	}
-     
-      
       cout<<"STEUERUNG"<<STEUERUNG_MU<<endl;
       ressi[it]=rr; 
 */     
@@ -565,8 +557,6 @@ void StdMultiLevelSolver::newton(VectorInterface& u, const VectorInterface& f, V
       
       
       nresi.push_back(rr);
-
-      
        
       /*     rho2 = ressi[it]/ressi[it-1];
 	     
@@ -935,8 +925,8 @@ void StdMultiLevelSolver::precondition(VectorInterface& x, VectorInterface& y)
 
 {
 
-  //GetSolver()->smooth(8,x,y,_mg0);
-  //return;
+ // GetSolver()->smooth(8,x,y,_mg0);
+ // return;
 
   CGInfo& precinfo = DataP->GetPrecInfo();
   precinfo.reset();
