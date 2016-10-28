@@ -9,6 +9,7 @@
 
 using namespace Gascoigne;
 using namespace std;
+ 
 
 
 extern ofstream ELLIPSE_OUT;
@@ -323,6 +324,7 @@ void Loop::run(const std::string& problemlabel)
 
 
 
+
   cout << "------------------------------" << endl;
   cout << "See-Eis" << endl;
   cout << "------------------------------" << endl << endl;
@@ -342,7 +344,8 @@ void Loop::run(const std::string& problemlabel)
   // Transport
   GetMultiLevelSolver()->SetProblem("tg");
   if (_initial=="reload")
-    GetMultiLevelSolver()->GetSolver()->Read(h,_reloadh);
+    { GetMultiLevelSolver()->GetSolver()->Read(h,_reloadh);
+      }
   else 
     InitSolution(h);
 
@@ -486,7 +489,7 @@ void Loop::run(const std::string& problemlabel)
 
       if (res!="converged")
 	{
-
+	  abort();
 	  a=1.0;
 
 	  /*
@@ -527,7 +530,7 @@ void Loop::run(const std::string& problemlabel)
       GetMultiLevelSolver()->DeleteNodeVector("oldu");
       GetMultiLevelSolver()->DeleteNodeVector("extu");
       GetMultiLevelSolver()->DeleteNodeVector("H");
- 
+      
       // Other-Problem
       GetMultiLevelSolver()->SetProblem("other");
       GetSolverInfos()->GetNLInfo().control().matrixmustbebuild() = 1;
@@ -536,7 +539,7 @@ void Loop::run(const std::string& problemlabel)
       Solve(other,f,"Results/o");
       GetMultiLevelSolver()->DeleteNodeVector("U");
       GetMultiLevelSolver()->DeleteNodeVector("H");
-     
+      
       OUTF << TIME << " " << functionals  <<a<<endl;
       //  jetzt ist gerechnet und es gibt umittel, hmittel
 

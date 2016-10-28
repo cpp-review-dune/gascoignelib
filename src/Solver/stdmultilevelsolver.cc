@@ -486,7 +486,6 @@ void StdMultiLevelSolver::newton(VectorInterface& u, const VectorInterface& f, V
 {
   DDD=1.0;
   STEUERUNG_MU =0.00;
-  double lastrate=0.0;
   double rho1=0.0;
   double rho2=0.0;
   double ET1=1.0;
@@ -519,11 +518,49 @@ void StdMultiLevelSolver::newton(VectorInterface& u, const VectorInterface& f, V
       NewtonVectorZero(w);
       // Altes Residuum merken
   //    res_old = pow(GetSolver()->GetGV(r).norm(),2.0);
+  /*               
+      info.GetLinearInfo().user().tol()=0.99;
+      
+         if(it==1|| it==100)
+	ressi[0]=0.75*rr;
+      
+
+      if (it>1)
+	{
+	
+	  rho2=pow(rho1,1.5);
+	  rho2 =max(0.1, rho2);
+	
+	  info.GetLinearInfo().user().tol()=rho2;
+	 
+	   if( ressi[it-1]>ressi[0])
+	{ info.GetLinearInfo().user().tol()=0.99;
+
+	}
+      
+   
+   
+		}
+      
+      
+      */
       
       NewtonLinearSolve(w,r,info.GetLinearInfo());
       nlin.push_back(info.GetLinearInfo().control().iteration());
+   
+      
+      
+
+
+      
+
+  
       
       double rw = NewtonUpdate(rr,u,w,r,f,info);
+
+        ressi[it]=rr;
+	
+	
    //   res_new = pow(GetSolver()->GetGV(r).norm(),2.0);
       
    //   res_mat = pow(STEUERUNG_MU*GetSolver()->GetGV(w).norm(),2.0);
@@ -587,19 +624,17 @@ void StdMultiLevelSolver::newton(VectorInterface& u, const VectorInterface& f, V
       // {
 
 
-      ET1=DDD;
+       ET1=DDD;
        
 	 
-	DDD=min(ET1*(0.2+4/(0.7+exp(1.51*rho1))),1);
-	 
-	 
-	 
+      	DDD=min(ET1*(0.2+4/(0.7+exp(1.51*rho1))),1);
+	if(DDD<0.2) 
+	DDD=1.0;
+
 	
-	 lastrate = rho1;
 	 cout  <<  "Steuerung Newton rho/DDD/ET: " << rho1 << "\t" << DDD << "\t"<< ET1 << endl;
 
-
-	      
+	
     }
   
   cerr << "New: " << it <<"\t"<< nlin.sum() << "\t" << nlin << endl;
@@ -727,7 +762,7 @@ double StdMultiLevelSolver::NewtonUpdate(double& rr, VectorInterface& x, VectorI
       return NewtonNorm(dx);
     }
 
-  double omega = 0.7;
+  double omega = 0.25;
   double relax = 1.;
 
   GetSolver(ComputeLevel)->SetPeriodicVectorZero(dx);
@@ -735,12 +770,15 @@ double StdMultiLevelSolver::NewtonUpdate(double& rr, VectorInterface& x, VectorI
   GetSolver(ComputeLevel)->Add(x,relax,dx);
   NewtonResidual(r,x,f);
   rr = NewtonNorm(r);
-
+  
+  
   string message = "";
   int diter=0;
   for(diter=0;diter<nlinfo.user().maxrelax();diter++)
     {
       message = nlinfo.check_damping(diter,rr);
+
+   
 
       if (message=="ok")       break;
       if (message=="continue") 
@@ -750,6 +788,7 @@ double StdMultiLevelSolver::NewtonUpdate(double& rr, VectorInterface& x, VectorI
         NewtonResidual(r,x,f);
         rr = NewtonNorm(r);
         relax *= omega;
+	
         continue;
       }
       if (message=="exploded")
@@ -832,7 +871,6 @@ string StdMultiLevelSolver::LinearSolve(int level, VectorInterface& u, const Vec
   
   int clevel=Gascoigne::max_int(DataP->CoarseLevel() ,0);
   if(DataP->CoarseLevel() == -1) clevel = FinestLevel(); 
-
   LinearMg(ComputeLevel,clevel,u,b,info);
 
   GetSolver(ComputeLevel)->SubtractMean(u);
@@ -935,7 +973,7 @@ void StdMultiLevelSolver::precondition(VectorInterface& x, VectorInterface& y)
 
 {
 
-  //GetSolver()->smooth(8,x,y,_mg0);
+  //   GetSolver()->smooth(8,x,y,_mg0);
   //return;
 
   CGInfo& precinfo = DataP->GetPrecInfo();

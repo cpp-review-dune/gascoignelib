@@ -163,8 +163,8 @@ namespace Gascoigne
     A(0,0) +=  (*H)[0].m()* M.m() / DT * N.m();
     A(1,1) +=  (*H)[0].m()* M.m() / DT * N.m();
 
-    // double dmin = DELTAMIN*Tref;
-    double dmin = DELTAMIN*DDD*Tref+(1.0-DDD)*Tref*0.05e-9;
+     double dmin = DELTAMIN*Tref;
+    // double dmin = DELTAMIN*DDD*Tref+(1.0-DDD)*Tref*0.05e-9;
    
     // implizit
     double DELTAsquare =
@@ -280,9 +280,10 @@ namespace Gascoigne
     
     double DELTA = sqrt(DELTAsquare);
     double a=((*UU)[0].x()-(*UU)[1].y())*((*UU)[0].x()-(*UU)[1].y())+((*UU)[0].y()+(*UU)[1].x())*((*UU)[0].y()+(*UU)[1].x());
-    double bb=((*UU)[0].x()+(*UU)[1].x())*((*UU)[0].x()+(*UU)[1].x());
-    b[0] -= sqrt(a) * N.m();
-    b[1] -= DELTA*N.m();
+   
+    double eta= Pstern*(*HH)[0].m()*ef/2.0*DELTA;
+    b[0] -= log(sqrt(a))/log(10)* N.m();
+    b[1] -= log(eta)/log(10)*N.m();
     
   }
   /*-----------------------------------------*/

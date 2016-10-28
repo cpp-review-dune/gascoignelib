@@ -28,18 +28,18 @@ namespace Gascoigne
     double mx,my;
     double alpha = M_PI/2.0; // 90 grad ist ohne Konvergenz oder Divergenz
     // windstarke
-    // double ws = tanh(tP*(8.0-tP)/2.0);  
-    double ws = 1.0;
+    double ws = tanh(tP*(8.0-tP)/2.0);  
+    //   double ws = 1.0;
     if ((p%2) == 0)
       {
-	mx = -150+800/8.0*tP;
-	my = -150+800/8.0*tP;
+	mx = 50+800/16.0*tP;
+	my = 50+800/16.0*tP;
 	alpha -=  M_PI/2.0/5; // 18 Grad Konvergenz
       }
     else
       { ws=-ws;
-	mx = 650-800/8.0*tP;
-	my = 650-800/8.0*tP;
+	mx = 450-800/16.0*tP;
+	my = 450-800/16.0*tP;
 	alpha -=  M_PI/2.0/10; // 9 Grad Divergenz 10
       }
 
@@ -58,19 +58,19 @@ namespace Gascoigne
     double mx,my;
     double alpha = M_PI/2.0;  // 90 grad ist ohne Konvergenz oder Divergenz
     // windstarke
-    double ws = 1.0;
-    //tanh(tP*(8.0-tP)/2.0);
+    //  double ws = 1.0;
+    double ws=tanh(tP*(8.0-tP)/2.0);
 
     if ((p%2) == 0)
       {
-	mx = -150+800/8.0*tP;
-	my = -150+800/8.0*tP;
+	mx = 50+800/16.0*tP;
+	my = 50+800/16.0*tP;
 	alpha -=  M_PI/2.0/5; // 18 Grad Konvergenz
       }
     else
       {ws=-ws;
-	mx = 650-800/8.0*tP;
-	my = 650-800/8.0*tP;
+	mx = 450-800/16.0*tP;
+	my = 450-800/16.0*tP;
 	alpha -=  M_PI/2.0/10; // 9 Grad Divergenz
       }
 
