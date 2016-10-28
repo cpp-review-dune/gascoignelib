@@ -11,6 +11,68 @@ using namespace Gascoigne;
 using namespace std;
  
 
+double WWindX(double x, double y, double t)
+  {
+    double tP=t; while (tP>8) { tP-=8.0; }
+    int p = ((static_cast<int>(t/8)))%2;
+    double vmax = 15.0; // maximale windgeschwindigkeit in m/s
+    double mx,my;
+    double alpha = M_PI/2.0; // 90 grad ist ohne Konvergenz oder Divergenz
+    // windstarke
+    // double ws = tanh(tP*(8.0-tP)/2.0);  
+    double ws = 1.0;
+    if ((p%2) == 0)
+      {
+	mx = -150+800/8.0*tP;
+	my = -150+800/8.0*tP;
+	alpha -=  M_PI/2.0/5; // 18 Grad Konvergenz
+      }
+    else
+      { ws=-ws;
+	mx = 650-800/8.0*tP;
+	my = 650-800/8.0*tP;
+	alpha -=  M_PI/2.0/10; // 9 Grad Divergenz 10
+      }
+
+    double wx = cos(alpha)*(x-mx) + sin(alpha)*(y-my);
+    double wy = -sin(alpha)*(x-mx) + cos(alpha)*(y-my);
+    double r = sqrt((mx-x)*(mx-x)+(my-y)*(my-y));
+    double s = 1.0/50.0*exp(-0.01*r);
+
+    return -wx*s*ws*vmax;
+  }
+  double WWindY(double x, double y, double t)
+  {
+    double tP=t; while (tP>8) { tP-=8.0; }
+    int p = ((static_cast<int>(t/8)))%2;
+    double vmax = 15.0; // maximale windgeschwindigkeit
+    double mx,my;
+    double alpha = M_PI/2.0;  // 90 grad ist ohne Konvergenz oder Divergenz
+    // windstarke
+    double ws = 1.0;
+    //tanh(tP*(8.0-tP)/2.0);
+
+    if ((p%2) == 0)
+      {
+	mx = -150+800/8.0*tP;
+	my = -150+800/8.0*tP;
+	alpha -=  M_PI/2.0/5; // 18 Grad Konvergenz
+      }
+    else
+      {ws=-ws;
+	mx = 650-800/8.0*tP;
+	my = 650-800/8.0*tP;
+	alpha -=  M_PI/2.0/10; // 9 Grad Divergenz
+      }
+
+    double wx = cos(alpha)*(x-mx) + sin(alpha)*(y-my);
+    double wy = -sin(alpha)*(x-mx) + cos(alpha)*(y-my);
+    double r = sqrt((mx-x)*(mx-x)+(my-y)*(my-y));
+    double s = 1.0/50.0*exp(-0.01*r);
+
+    return -wy * s * ws*vmax;
+  }
+
 
 extern ofstream ELLIPSE_OUT;
 
@@ -251,11 +313,14 @@ void Loop::SolveTransport(VectorInterface& h,
 	    H(row,1) += 1.0/LMM[row] * min(Rminus(row,1), Rplus(col,1)) * fij1;
 	}
     }
+
 }
 
 
 void Loop::run(const std::string& problemlabel)
 {
+
+
   TIME=0.0;
   double tref;
   double dtmax, endtime;
@@ -321,8 +386,6 @@ void Loop::run(const std::string& problemlabel)
     
   GetSolverInfos()->GetNLInfo().control().matrixmustbebuild() = 1;
   GetMultiLevelSolver()->GetSolver()->OutputSettings();
-
-
 
 
   cout << "------------------------------" << endl;
@@ -442,7 +505,7 @@ void Loop::run(const std::string& problemlabel)
       /////////////////////// 
       /////////////////////// 
       /////////////////////// 
-      GetMultiLevelSolver()->GetSolver()->Equ(oldh,1.0, h);
+      GetMultiLevelSolver()->GetSolver()->Equ(oldh,1.0, hl); // oldh wird im Programm nicht gebraucht.
       int NSUB = 20;
       for (int sub=0;sub<NSUB;++sub)
 	{
@@ -476,7 +539,7 @@ void Loop::run(const std::string& problemlabel)
       GetSolverInfos()->GetNLInfo().control().matrixmustbebuild() = 1;
       GetMultiLevelSolver()->AddNodeVector("oldu", oldu);
       GetMultiLevelSolver()->AddNodeVector("extu", extu);
-      GetMultiLevelSolver()->AddNodeVector("H", hl);     ////// Die Low-Order-Loesung geht in die Momentengleichung ein.
+      GetMultiLevelSolver()->AddNodeVector("H", h);     ////// Die Low-Order-Loesung geht in die Momentengleichung ein.
 
       GetMultiLevelSolver()->GetSolver()->Equ(oldu,1.0, u);
       GetMultiLevelSolver()->GetSolver()->Equ(oldoldu,1.0, oldu);
@@ -530,7 +593,8 @@ void Loop::run(const std::string& problemlabel)
       GetMultiLevelSolver()->DeleteNodeVector("oldu");
       GetMultiLevelSolver()->DeleteNodeVector("extu");
       GetMultiLevelSolver()->DeleteNodeVector("H");
-      
+
+      /*
       // Other-Problem
       GetMultiLevelSolver()->SetProblem("other");
       GetSolverInfos()->GetNLInfo().control().matrixmustbebuild() = 1;
@@ -539,6 +603,7 @@ void Loop::run(const std::string& problemlabel)
       Solve(other,f,"Results/o");
       GetMultiLevelSolver()->DeleteNodeVector("U");
       GetMultiLevelSolver()->DeleteNodeVector("H");
+      */
       
       OUTF << TIME << " " << functionals  <<a<<endl;
       //  jetzt ist gerechnet und es gibt umittel, hmittel
@@ -584,3 +649,4 @@ void Loop::run(const std::string& problemlabel)
 
 
 
+ 

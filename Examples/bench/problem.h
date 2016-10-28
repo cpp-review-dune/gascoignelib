@@ -28,8 +28,13 @@ namespace Gascoigne
     double mx,my;
     double alpha = M_PI/2.0; // 90 grad ist ohne Konvergenz oder Divergenz
     // windstarke
+<<<<<<< HEAD
     double ws = tanh(tP*(8.0-tP)/2.0);  
     //   double ws = 1.0;
+=======
+    // double ws = tanh(tP*(8.0-tP)/2.0);  
+    double ws = tanh(tP*(8.0-tP)/2.0);  
+>>>>>>> e2c4f56a24b1f974e2e1ac00bd2e291453648897
     if ((p%2) == 0)
       {
 	mx = 50+800/16.0*tP;
@@ -58,6 +63,7 @@ namespace Gascoigne
     double mx,my;
     double alpha = M_PI/2.0;  // 90 grad ist ohne Konvergenz oder Divergenz
     // windstarke
+
     //  double ws = 1.0;
     double ws=tanh(tP*(8.0-tP)/2.0);
 

@@ -204,11 +204,11 @@ public:
 
 
     DIV=U[0].x()+U[1].y();
-    //cout<<S1<<S2<<DIV<<endl;
+   
 
     
-    //  if (ELLIPSE_OUT.is_open())
-    //  ELLIPSE_OUT << v.x() << "\t" << v.y() << "\t" << DELTA << "\t" << S1 << "\t" << S2 << "\t" << DELTA<< "\t" << endl;
+     if (ELLIPSE_OUT.is_open())
+      ELLIPSE_OUT << v.x() << "\t" << v.y() << "\t" << DELTA << "\t" << S1 << "\t" << S2 << "\t" << DELTA<< "\t" << endl;
     
     return sqrS2;
   }
