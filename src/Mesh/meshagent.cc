@@ -27,13 +27,8 @@
 #include  "filescanner.h"
 #include  "gascoignemeshconstructor.h"
 #include  "stringutil.h"
-#ifdef __NEWER_THAN_GCC_4_2__
-#include <tr1/unordered_map>
-#define HASHMAP std::tr1::unordered_map
-#else
-#include  <ext/hash_map>
-#define HASHMAP __gnu_cxx::hash_map
-#endif
+
+
 
 #include "stopwatch.h"
 
@@ -45,6 +40,8 @@ extern Gascoigne::Stoppers GlobalStopWatch;
 
 namespace Gascoigne
 {
+  #include "gascoignehashes.h"
+  
   MeshAgent::MeshAgent() : MeshAgentInterface(), _goc2nc(false), HMP(NULL), GMG(NULL)
 {
 }
@@ -219,7 +216,7 @@ void MeshAgent::AssemblePeriodicBoundaries()
     for (int i = 0; i < n; i++)
     {
       MeshInterface* p_mesh = GMG->GetGascoigneMesh(i);
-      GascoigneMesh* GMP    = dynamic_cast<GascoigneMesh*>(p_mesh);
+      GascoigneMeshBase* GMP    = dynamic_cast<GascoigneMeshBase*>(p_mesh);
       assert(GMP);
  
       //TODO: das soll eigentlich zu Solver gehoeren, damit die anderen Member darauf zugreifen koennen

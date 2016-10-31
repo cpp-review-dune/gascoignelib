@@ -58,7 +58,7 @@ void GascoigneMeshConstructor::Loop2d()
   set<int>  newquads, oldquads;
   HM->GetAwakeCells(newquads);
  
-  GascoigneMesh*  GM0 = GMG->GetGascoigneMesh(0);
+  GascoigneMeshBase*  GM0 = GMG->GetGascoigneMesh(0);
 
   LevelMesh2d* FM=NULL;
   LevelMesh2d* CM=NULL;
@@ -85,7 +85,7 @@ void GascoigneMeshConstructor::Loop2d()
     {
       finestlevel = 0;
 
-      GascoigneMesh*         GM = GMG->GetGascoigneMesh(level);
+      GascoigneMeshBase*         GM = GMG->GetGascoigneMesh(level);
       GascoigneMeshTransfer* T  = GMG->GetTransfer(level-1);
       
       FM->construct_lists(newquads,oldquads);
@@ -110,7 +110,7 @@ void GascoigneMeshConstructor::Loop3d()
   set<int>  newquads, oldquads;
   HM->GetAwakeCells(newquads);
  
-  GascoigneMesh*  GM0 = GMG->GetGascoigneMesh(0);
+  GascoigneMeshBase*  GM0 = GMG->GetGascoigneMesh(0);
 
   LevelMesh3d* FM=NULL;
   LevelMesh3d* CM=NULL;
@@ -137,7 +137,7 @@ void GascoigneMeshConstructor::Loop3d()
     {
       finestlevel = 0;
 
-      GascoigneMesh*         GM = GMG->GetGascoigneMesh(level);
+      GascoigneMeshBase*         GM = GMG->GetGascoigneMesh(level);
       GascoigneMeshTransfer* T  = GMG->GetTransfer(level-1);
       
       FM->construct_lists(newquads,oldquads);
@@ -157,7 +157,7 @@ void GascoigneMeshConstructor::Loop3d()
 
 /*---------------------------------------------------*/
 
-LevelMesh2d* GascoigneMeshConstructor::LevelUpdate2d(GascoigneMesh* GM, const IntSet& newquads, const IntSet& oldquads) const
+LevelMesh2d* GascoigneMeshConstructor::LevelUpdate2d(GascoigneMeshBase* GM, const IntSet& newquads, const IntSet& oldquads) const
 {
   LevelMesh2d* CM = new LevelMesh2d(HM);
   CM->BasicInit(newquads,oldquads);
@@ -167,7 +167,7 @@ LevelMesh2d* GascoigneMeshConstructor::LevelUpdate2d(GascoigneMesh* GM, const In
 
 /*---------------------------------------------------*/
 
-LevelMesh3d* GascoigneMeshConstructor::LevelUpdate3d(GascoigneMesh* GM, const IntSet& newquads, const IntSet& oldquads) const
+LevelMesh3d* GascoigneMeshConstructor::LevelUpdate3d(GascoigneMeshBase* GM, const IntSet& newquads, const IntSet& oldquads) const
 {
   LevelMesh3d* CM = new LevelMesh3d(HM);
   CM->BasicInit(newquads,oldquads);
@@ -178,7 +178,7 @@ LevelMesh3d* GascoigneMeshConstructor::LevelUpdate3d(GascoigneMesh* GM, const In
 /*---------------------------------------------------*/
 
 void GascoigneMeshConstructor::Construct2d
-(GascoigneMesh* NNM, const LevelMesh2d* LM) const
+(GascoigneMeshBase* NNM, const LevelMesh2d* LM) const
 {
   GascoigneMesh2d* NM = dynamic_cast<GascoigneMesh2d*>(NNM);
 
@@ -225,7 +225,7 @@ void GascoigneMeshConstructor::Construct2d
 /*-----------------------------------------*/
 
 void GascoigneMeshConstructor::Construct3d
-(GascoigneMesh* NNM, const LevelMesh3d* LM) const
+(GascoigneMeshBase* NNM, const LevelMesh3d* LM) const
 {
   GascoigneMesh3d* NM = dynamic_cast<GascoigneMesh3d*>(NNM);
 

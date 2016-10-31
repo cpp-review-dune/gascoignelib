@@ -283,7 +283,7 @@ void StdSolver::ThreadPartitionMesh()
     return;
   }
   assert(GetMesh());
-  const GascoigneMesh* M = dynamic_cast<const GascoigneMesh*> (GetMesh());
+  const GascoigneMeshBase* M = dynamic_cast<const GascoigneMeshBase*> (GetMesh());
   assert(M);
   assert(M->HasPatch());
 
@@ -709,7 +709,7 @@ void StdSolver::AddPeriodicNodes(SparseStructure* SA)
   const IntVector& iv_PeriodicColors = BM->GetPeriodicDataColors();
 
   const MeshInterface* p_mesh        = GetMesh();
-  const GascoigneMesh* GMP           = dynamic_cast<const GascoigneMesh*>(p_mesh);
+  const GascoigneMeshBase* GMP           = dynamic_cast<const GascoigneMeshBase*>(p_mesh);
   assert(GMP);
 
   map<int,map<int,int> > mm_PeriodicPairs = GMP->GetBoundaryIndexHandler().GetPeriodicPairs();
@@ -997,7 +997,7 @@ void StdSolver::SetPeriodicVectorZero(VectorInterface& gf) const
 
   GlobalVector& f = GetGV(gf);
   const MeshInterface* p_mesh        = GetMesh();
-  const GascoigneMesh* GMP           = dynamic_cast<const GascoigneMesh*>(p_mesh);
+  const GascoigneMeshBase* GMP           = dynamic_cast<const GascoigneMeshBase*>(p_mesh);
   assert(GMP);
 
   map<int,map<int,int> > mm_PeriodicPairs = GMP->GetBoundaryIndexHandler().GetPeriodicPairs();
@@ -1540,7 +1540,7 @@ void StdSolver::PeriodicMatrix() const
   const IntVector& iv_PeriodicColors = BM->GetPeriodicDataColors();
 
   const MeshInterface* p_mesh        = GetMesh();
-  const GascoigneMesh* GMP           = dynamic_cast<const GascoigneMesh*>(p_mesh);
+  const GascoigneMeshBase* GMP           = dynamic_cast<const GascoigneMeshBase*>(p_mesh);
   assert(GMP);
 
   map<int,map<int,int> > mm_PeriodicPairs = GMP->GetBoundaryIndexHandler().GetPeriodicPairs();

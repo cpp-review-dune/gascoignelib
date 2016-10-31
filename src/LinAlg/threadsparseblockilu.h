@@ -112,6 +112,4 @@ protected:
 };
 }
 
-#undef HASHMAP
-
 #endif

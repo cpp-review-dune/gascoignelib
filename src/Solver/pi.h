@@ -28,8 +28,7 @@
 #include  <map>
 #include  "fixarray.h"
 #include  "compvector.h"
-#include  "gascoignemesh2d.h"
-#include  "gascoignemesh3d.h"
+#include  "gascoignemesh.h"
 
 namespace Gascoigne
 {

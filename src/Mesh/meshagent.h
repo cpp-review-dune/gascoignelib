@@ -70,7 +70,7 @@ protected:
   map<int,map<int,PeriodicMapping*> > _periodicMaps;
   virtual void AssemblePeriodicBoundaries();
 
-  GascoigneMesh*  GMesh(int l) { return GMG->GetGascoigneMesh(l);}
+  GascoigneMeshBase*  GMesh(int l) { return GMG->GetGascoigneMesh(l);}
 
 public:
     

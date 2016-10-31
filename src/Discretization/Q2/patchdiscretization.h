@@ -63,7 +63,7 @@ namespace Gascoigne
 
 
     // Init
-
+    void InitColoring() ;
     virtual void Transformation(FemInterface::Matrix& T, int iq) const;
     virtual double compute_element_mean_matrix(int iq, EntryMatrix& E) const;
     virtual int GetPatchNumber(const Vertex2d& p0, Vertex2d& p) const {
@@ -81,8 +81,8 @@ namespace Gascoigne
       return MP;
     }
 
-    const GascoigneMesh*  GetGascoigneMesh() const {
-      const GascoigneMesh* MP = dynamic_cast<const GascoigneMesh*>(GetMesh());
+    const GascoigneMeshBase*  GetGascoigneMesh() const {
+      const GascoigneMeshBase* MP = dynamic_cast<const GascoigneMeshBase*>(GetMesh());
       assert(MP);
       return MP;
     }

@@ -23,7 +23,7 @@
 
 
 #include "faceq1.h"
-#include "gascoignemesh2d.h"
+#include "gascoignemesh.h"
 #include "baseq1.h"
 
 #include "finiteelement.h"

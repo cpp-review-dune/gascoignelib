@@ -1212,7 +1212,7 @@ namespace Gascoigne
     a.resize(GetMesh()->nnodes());
     a.equ(1.);
     
-    const GascoigneMesh* GMP = dynamic_cast<const GascoigneMesh*>(GetMesh());
+    const GascoigneMeshBase* GMP = dynamic_cast<const GascoigneMeshBase*>(GetMesh());
     assert(GMP);
     std::set<int> Colors =  GMP->GetColors();
     for(IntSet::const_iterator p=Colors.begin();p!=Colors.end();p++)
@@ -1266,7 +1266,7 @@ namespace Gascoigne
   template<int DIM>
   void Q1<DIM>::StrongDirichletMatrix(MatrixInterface& A, int col, const vector<int>& comp) const
   {
-    const GascoigneMesh* GMP = dynamic_cast<const GascoigneMesh*>(GetMesh());
+    const GascoigneMeshBase* GMP = dynamic_cast<const GascoigneMeshBase*>(GetMesh());
     assert(GMP);
     const IntVector& bv = *GMP->VertexOnBoundary(col);
     for(int i=0;i<bv.size();i++)
@@ -1280,7 +1280,7 @@ namespace Gascoigne
   template<int DIM>
   void Q1<DIM>::StrongDirichletMatrixOnlyRow(MatrixInterface& A, int col, const vector<int>& comp) const
   {
-    const GascoigneMesh* GMP = dynamic_cast<const GascoigneMesh*>(GetMesh());
+    const GascoigneMeshBase* GMP = dynamic_cast<const GascoigneMeshBase*>(GetMesh());
     assert(GMP);
     const IntVector& bv = *GMP->VertexOnBoundary(col);
     for(int i=0;i<bv.size();i++)
@@ -1294,7 +1294,7 @@ namespace Gascoigne
   template<int DIM>
   void Q1<DIM>::StrongDirichletVectorZero(GlobalVector& u, int col, const vector<int>& comp) const
   {
-    const GascoigneMesh* GMP = dynamic_cast<const GascoigneMesh*>(GetMesh());
+    const GascoigneMeshBase* GMP = dynamic_cast<const GascoigneMeshBase*>(GetMesh());
     assert(GMP);
     const IntVector& bv = *GMP->VertexOnBoundary(col);
 
@@ -1631,7 +1631,7 @@ namespace Gascoigne
   template<>
   void Q1<2>::StrongDirichletVector(GlobalVector& u, const DirichletData& BF, int col, const vector<int>& comp, double d) const 
   {
-    const GascoigneMesh* GMP = dynamic_cast<const GascoigneMesh*>(GetMesh());
+    const GascoigneMeshBase* GMP = dynamic_cast<const GascoigneMeshBase*>(GetMesh());
     assert(GMP);
     DoubleVector ff(u.ncomp(),0.);
     const IntVector& bv = *GMP->VertexOnBoundary(col);
@@ -1684,7 +1684,7 @@ namespace Gascoigne
   template<>
   void Q1<3>::StrongDirichletVector(GlobalVector& u, const DirichletData& BF, int col, const vector<int>& comp, double d) const 
   {
-    const GascoigneMesh* GMP = dynamic_cast<const GascoigneMesh*>(GetMesh());
+    const GascoigneMeshBase* GMP = dynamic_cast<const GascoigneMeshBase*>(GetMesh());
     assert(GMP);
     DoubleVector ff(u.ncomp(),0.);
     const IntVector& bv = *GMP->VertexOnBoundary(col);

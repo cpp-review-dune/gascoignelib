@@ -240,4 +240,3 @@ std::ostream& ThreadSparseBlockIlu<B>::Write(std::ostream &s) const
 }
 
 
-#undef HASHMAP

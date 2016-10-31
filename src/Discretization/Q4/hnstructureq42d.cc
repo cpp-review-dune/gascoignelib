@@ -257,7 +257,7 @@ const fixarray<6,int>& HNStructureQ42d::regular_nodes(int i) const
 void HNStructureQ42d::ReInit(const MeshInterface* m)
 {
   HNStructureQ22d::ReInit(m);
-  const GascoigneMesh* GM = dynamic_cast<const GascoigneMesh*>(m);
+  const GascoigneMeshBase* GM = dynamic_cast<const GascoigneMeshBase*>(m);
   assert(GM);
   q4edges = GM->GetHangingIndexHandler().GetQ4Structure();
 }

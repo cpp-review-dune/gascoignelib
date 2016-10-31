@@ -23,8 +23,7 @@
 
 
 #include  "gascoignemultigridmesh.h"
-#include  "gascoignemesh2d.h"
-#include  "gascoignemesh3d.h"
+#include  "gascoignemesh.h"
 #include  "gascoignemeshtransfer2d.h"
 #include  "gascoignemeshtransfer3d.h"
 
@@ -52,7 +51,7 @@ GascoigneMultiGridMesh::~GascoigneMultiGridMesh()
 
 /*-----------------------------------------*/
 
-GascoigneMesh* GascoigneMultiGridMesh::NewMesh(int dim)
+GascoigneMeshBase* GascoigneMultiGridMesh::NewMesh(int dim)
 {
   assert(2<=dim && dim<=3);
 

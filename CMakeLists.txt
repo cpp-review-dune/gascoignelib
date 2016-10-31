@@ -30,6 +30,7 @@ SET(GASCOIGNE_INCLUDE_DIRS
   ${CMAKE_CURRENT_SOURCE_DIR}/src/Discretization/Face
   ${CMAKE_CURRENT_SOURCE_DIR}/src/Discretization/Gls
   ${CMAKE_CURRENT_SOURCE_DIR}/src/Discretization/Lps
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/Discretization/DG
   ${CMAKE_CURRENT_SOURCE_DIR}/src/Discretization/Q1
   ${CMAKE_CURRENT_SOURCE_DIR}/src/Discretization/Q2
   ${CMAKE_CURRENT_SOURCE_DIR}/src/Discretization/Q4

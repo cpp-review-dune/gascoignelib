@@ -37,10 +37,10 @@ class GascoigneMultiGridMesh
 {
 protected:
 
-  std::vector<GascoigneMesh*>          M;
+  std::vector<GascoigneMeshBase*>          M;
   std::vector<GascoigneMeshTransfer*>  T;
 
-  virtual GascoigneMesh* NewMesh(int dim);
+  virtual GascoigneMeshBase* NewMesh(int dim);
   virtual GascoigneMeshTransfer* NewTransfer(int dim);
 
 public:
@@ -56,10 +56,10 @@ public:
     assert((l>=0)&&(l<M.size()));
     return *M[l];}
 
-  const GascoigneMesh* GetGascoigneMesh(int l) const {
+  const GascoigneMeshBase* GetGascoigneMesh(int l) const {
     assert((l>=0)&&(l<M.size()));
     return M[l];}
-  GascoigneMesh*       GetGascoigneMesh(int l) {
+  GascoigneMeshBase*       GetGascoigneMesh(int l) {
     assert((l>=0)&&(l<M.size()));
     return M[l];}
 

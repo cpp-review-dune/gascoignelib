@@ -36,81 +36,83 @@ namespace Gascoigne
   
   void PatchDiscretization::InitColoring() 
   {
-    RealTimeStopWatch rt;
-    rt.start();
+    return;
+    assert(0);
+    // RealTimeStopWatch rt;
+    // rt.start();
     
-    //// make graph for coloring
-    // first coarse node to cell
-    vector<set<int> > node2cell(GetMesh()->nnodes());
-    for (int c=0;c<GetMesh()->npatches();++c)
-      {
-	IntVector indices = GetLocalIndices(c);
-	for (int j=0;j<indices.size();++j) 
-	  node2cell[indices[j]].insert(c);
-      }
+    // //// make graph for coloring
+    // // first coarse node to cell
+    // vector<set<int> > node2cell(GetMesh()->nnodes());
+    // for (int c=0;c<GetMesh()->npatches();++c)
+    //   {
+    // 	IntVector indices = GetLocalIndices(c);
+    // 	for (int j=0;j<indices.size();++j) 
+    // 	  node2cell[indices[j]].insert(c);
+    //   }
     
-    vector<int> neighbors;
-    vector<int> start;
-    int index =0;
-    for (int c=0;c<GetMesh()->ncells();++c)
-      {
-	start.push_back(index);
-	IntVector indices = GetLocalIndices(c);
-	set<int> n; // neighbors of cell c
-	for (int j=0;j<indices.size();++j) 
-	  for (set<int>::const_iterator it =   node2cell[indices[j]].begin();
-	       it!=node2cell[indices[j]].end();++it)
-	    n.insert(*it);
-	for (set<int>::const_iterator it = n.begin();it!=n.end();++it)
-	  {
-	    if (*it!=c) 
-	      {
-		neighbors.push_back(*it);
-		++index;
-	      }
-	  }
-      }
-    start.push_back(index);
+    // vector<int> neighbors;
+    // vector<int> start;
+    // int index =0;
+    // for (int c=0;c<GetMesh()->ncells();++c)
+    //   {
+    // 	start.push_back(index);
+    // 	IntVector indices = GetLocalIndices(c);
+    // 	set<int> n; // neighbors of cell c
+    // 	for (int j=0;j<indices.size();++j) 
+    // 	  for (set<int>::const_iterator it =   node2cell[indices[j]].begin();
+    // 	       it!=node2cell[indices[j]].end();++it)
+    // 	    n.insert(*it);
+    // 	for (set<int>::const_iterator it = n.begin();it!=n.end();++it)
+    // 	  {
+    // 	    if (*it!=c) 
+    // 	      {
+    // 		neighbors.push_back(*it);
+    // 		++index;
+    // 	      }
+    // 	  }
+    //   }
+    // start.push_back(index);
 
     
-    // partition graph
-    assert(GetMesh()->ncells()+1==start.size());
-    vector<int> cell2color(GetMesh()->ncells(),-1);
-    // ganz primitiv, immer kleinste freie Nummer suchen.
-    for (int c=0;c<GetMesh()->ncells();++c)
-      {
-	set<int> nc; // farben der nachbarn
-	for (int ni=start[c];ni<start[c+1];++ni)
-	  nc.insert(cell2color[neighbors[ni]]);
-	int col = 0;
-	while (nc.find(col)!=nc.end()) ++col;
-	cell2color[c]=col;
-      }
+    // // partition graph
+    // assert(GetMesh()->ncells()+1==start.size());
+    // vector<int> cell2color(GetMesh()->ncells(),-1);
+    // // ganz primitiv, immer kleinste freie Nummer suchen.
+    // for (int c=0;c<GetMesh()->ncells();++c)
+    //   {
+    // 	set<int> nc; // farben der nachbarn
+    // 	for (int ni=start[c];ni<start[c+1];++ni)
+    // 	  nc.insert(cell2color[neighbors[ni]]);
+    // 	int col = 0;
+    // 	while (nc.find(col)!=nc.end()) ++col;
+    // 	cell2color[c]=col;
+    //   }
 
-    _col_graph_ncol=0;
-    for (int c=0;c<cell2color.size();++c)
-      _col_graph_ncol = std::max(_col_graph_ncol,cell2color[c]);
-    _col_graph_ncol++;
-    _col_graph.resize(_col_graph_ncol);
-    for (int c=0;c<cell2color.size();++c)
-      _col_graph[cell2color[c]].push_back(c);
+    // _col_graph_ncol=0;
+    // for (int c=0;c<cell2color.size();++c)
+    //   _col_graph_ncol = std::max(_col_graph_ncol,cell2color[c]);
+    // _col_graph_ncol++;
+    // _col_graph.resize(_col_graph_ncol);
+    // for (int c=0;c<cell2color.size();++c)
+    //   _col_graph[cell2color[c]].push_back(c);
     
-    // Statistics
-    /*
-      vector<int> histo(20);
-      for (int c=0;c<GetMesh()->ncells();++c)
-      {
-      assert(cell2color[c]<20);
-      histo[cell2color[c]]++;
-      }
-      for (int i=0;i<20;++i)
-      cout << i << " " << histo[i] << endl;
-    */
-    rt.stop();
-    /*
-      std::cout << "Coloring Graph " << neighbors.size() << " " << start.size() << std::endl;
-      std::cout << "Coloring time " << rt.read() << std::endl;
-    */
+    // // Statistics
+    // /*
+    //   vector<int> histo(20);
+    //   for (int c=0;c<GetMesh()->ncells();++c)
+    //   {
+    //   assert(cell2color[c]<20);
+    //   histo[cell2color[c]]++;
+    //   }
+    //   for (int i=0;i<20;++i)
+    //   cout << i << " " << histo[i] << endl;
+    // */
+    // rt.stop();
+    // /*
+    //   std::cout << "Coloring Graph " << neighbors.size() << " " << start.size() << std::endl;
+    //   std::cout << "Coloring time " << rt.read() << std::endl;
+    //    */
   }
   
 
@@ -808,7 +810,7 @@ namespace Gascoigne
 
   void Gascoigne::PatchDiscretization::StrongDirichletMatrix(MatrixInterface& A, int col, const vector<int>& comp) const
   {
-    const GascoigneMesh* GMP = dynamic_cast<const GascoigneMesh*>(GetMesh());
+    const GascoigneMeshBase* GMP = dynamic_cast<const GascoigneMeshBase*>(GetMesh());
     const IntVector& bv = *GMP->VertexOnBoundary(col);
     for(int i=0;i<bv.size();i++)
       {
@@ -820,7 +822,7 @@ namespace Gascoigne
 
   void Gascoigne::PatchDiscretization::StrongDirichletMatrixOnlyRow(MatrixInterface& A, int col, const vector<int>& comp) const
   {
-    const GascoigneMesh* GMP = dynamic_cast<const GascoigneMesh*>(GetMesh());
+    const GascoigneMeshBase* GMP = dynamic_cast<const GascoigneMeshBase*>(GetMesh());
     const IntVector& bv = *GMP->VertexOnBoundary(col);
     for(int i=0;i<bv.size();i++)
       {
@@ -831,7 +833,7 @@ namespace Gascoigne
   
   void Gascoigne::PatchDiscretization::StrongDirichletVector(GlobalVector& u, const DirichletData& BF, int col, const vector<int>& comp, double d) const
   {
-    const GascoigneMesh* GMP = dynamic_cast<const GascoigneMesh*>(GetMesh());
+    const GascoigneMeshBase* GMP = dynamic_cast<const GascoigneMeshBase*>(GetMesh());
   nvector<double> ff(u.ncomp(),0.);
   const IntVector& bv = *GMP->VertexOnBoundary(col);
 
@@ -886,7 +888,7 @@ namespace Gascoigne
   
   void Gascoigne::PatchDiscretization::StrongDirichletVectorZero(GlobalVector& u, int col, const vector<int>& comp) const
   {
-    const GascoigneMesh* GMP = dynamic_cast<const GascoigneMesh*>(GetMesh());
+    const GascoigneMeshBase* GMP = dynamic_cast<const GascoigneMeshBase*>(GetMesh());
     const IntVector& bv = *GMP->VertexOnBoundary(col);
   for(int i=0;i<bv.size();i++)
     {
@@ -902,7 +904,7 @@ namespace Gascoigne
 
   void Gascoigne::PatchDiscretization::StrongPeriodicVector(GlobalVector& u, const PeriodicData& BF, int col, const vector<int>& comp, double d) const
 {
-  const GascoigneMesh* GMP = dynamic_cast<const GascoigneMesh*>(GetMesh());
+  const GascoigneMeshBase* GMP = dynamic_cast<const GascoigneMeshBase*>(GetMesh());
   nvector<double> ff(u.ncomp(),0.);
   const IntVector& bv = *GMP->VertexOnBoundary(col);
 

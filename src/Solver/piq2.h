@@ -35,7 +35,7 @@ namespace Gascoigne
   class PiQ2
   {
     protected:
-      const GascoigneMesh   *_MP;
+      const GascoigneMeshBase   *_MP;
       nvector<DoubleVector>  _q2weight;
 
     public:

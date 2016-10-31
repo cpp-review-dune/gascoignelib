@@ -65,7 +65,7 @@ void HNStructureQ12d::SparseStructureDiag(SparseStructure* S) const
 
 void HNStructureQ12d::ReInit(const MeshInterface* M)
 {
-  const GascoigneMesh* GM = dynamic_cast<const GascoigneMesh*>(M);
+  const GascoigneMeshBase* GM = dynamic_cast<const GascoigneMeshBase*>(M);
   assert(GM);
   edges = GM->GetHangingIndexHandler().GetStructure();
 }

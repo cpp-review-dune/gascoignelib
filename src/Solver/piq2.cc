@@ -56,7 +56,7 @@ PiQ2::PiQ2() : _MP(NULL)
 
 void PiQ2::Init(const MeshInterface *MI)
 {
-  _MP = dynamic_cast<const GascoigneMesh *>(MI);
+  _MP = dynamic_cast<const GascoigneMeshBase *>(MI);
   assert(_MP);
   assert(_MP->HasQ4Patch());
 }

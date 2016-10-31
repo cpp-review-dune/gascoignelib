@@ -515,7 +515,7 @@ const fixarray<26,int>& HNStructureQ43d::regular_nodes_on_face(int i) const
 void HNStructureQ43d::ReInit(const MeshInterface* m)
 {
   HNStructureQ23d::ReInit(m);
-  const GascoigneMesh* GM = dynamic_cast<const GascoigneMesh*>(m);
+  const GascoigneMeshBase* GM = dynamic_cast<const GascoigneMeshBase*>(m);
   assert(GM);
   q4edges = GM->GetHangingIndexHandler().GetQ4Structure();
   q4faces = GM->GetHangingIndexHandler().GetQ4StructureFace();

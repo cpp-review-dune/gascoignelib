@@ -6,6 +6,7 @@ SUBDIRS(
   NavierStokes2D 
   NavierStokes3D 
   NavierStokesInstat
+  seaice
 )
 
 LINK_LIBRARIES(${GASCOIGNE_LIBRARY})
