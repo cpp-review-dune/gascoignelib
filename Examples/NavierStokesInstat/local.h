@@ -57,7 +57,8 @@ public:
 
     double y = v.y();
     
-    double tf = sin(M_PI*__TIME/5.0);
+    double tf = 0.5+0.5*tanh(5.0*(__TIME-0.5));
+
     
     b.zero();
     if (color!=80)

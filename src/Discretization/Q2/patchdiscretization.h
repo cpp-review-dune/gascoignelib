@@ -134,12 +134,10 @@ namespace Gascoigne
 
 
     // Access
-  
-
     std::string GetName() const {return "PatchDiscretization";}
-    int n() const  { return GetMesh()->nnodes(); }
-    int nc() const { return GetMesh()->ncells(); }
-    int n_withouthanging() const { return GetMesh()->nnodes()-HN->nhnodes(); }
+    int ndofs() const  { return GetMesh()->nnodes(); }
+    int nelements() const { return GetMesh()->ncells(); }
+    int ndofs_withouthanging() const { return GetMesh()->nnodes()-HN->nhnodes(); }
   
 
 

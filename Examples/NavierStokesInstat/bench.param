@@ -7,11 +7,16 @@ initial      boundary
 refiner      global
 //refiner      eta
 
-time 	       0.0
+time 	       20.0
 dt	       0.05
-stoptime       5.0
+stoptime       30.0
+writevtk 0
+writebupgup 0
 
 writebupgup 0
+
+initial file
+reload 005.bup
 
 //Block BoundaryManager
 
@@ -24,13 +29,13 @@ dirichletcomp   80      2       1 2
 
 //Block Mesh
 dimension 2
-prerefine 3
+prerefine 4
 gridname nsbench4.inp
 
 
 //Block Equation
 
-visc            0.01
+visc            0.0025
 lps           0.01
 
 //Block MultiLevelSolver
@@ -45,8 +50,9 @@ nonlinear_rho		0.1
 
 matrixtype	block
 
-discname 	                Q1Lps
-ilum                    3  0.01  0.1  0.1
-ndirect			1
+discname 	                Q2Lps
+ilum                    3  0.01  0.  0.
+ndirect			10000
+
 
 //Block nix

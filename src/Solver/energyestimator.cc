@@ -63,7 +63,7 @@ double EnergyEstimator::Estimator(DoubleVector& eta, VectorInterface& gu,
   
   const GlobalVector& u = S.GetGV(gu);
 
-  const Equation*    EQ  = primalproblem->GetEquation();
+  //  const Equation*    EQ  = primalproblem->GetEquation();
   const Application* RHS = primalproblem->GetRightHandSide();
 
   S.HNAverage(gu);

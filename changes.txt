@@ -1,0 +1,17 @@
+* CellDiscretization 
+ist nun ein Template in 2d und 3d. Ersetzt q1 q12d q13d und alle
+entsprechenden Dateien
+
+* Base, BaseQ1, BaseQ2 sind Templates. 
+baseq12d/3d baseq22d/3d sind weg.
+
+* Transformation2d/3d sind zusammengefasst zu Template
+
+
+* GascoigneMesh heisst nun GascoigneMeshBase. Die anderen sind
+  templates, GascoigneMesh<DIM>
+
+* In Diskretisierung n() heisst nun ndofs(), nc() nelements()
+
+* Die Diskjretisierung hat FUnktionen InitGlobalVector und
+  InitGlobalCellVector um die korrekte Groesse von Vektoren zu setzen

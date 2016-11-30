@@ -125,7 +125,10 @@ namespace Gascoigne
       
       int  nodes_per_cell(int i)  const { return (DIM==2)?4:8;  }
       int  VtkType(int i)         const { return (DIM==2)?9:12; }
-      
+
+      const Vertex2d& vertex2d(int i) const;
+      const Vertex3d& vertex3d(int i) const;
+
       const Vertex<DIM>& vertex(int i) const { return nx[i];}
       int  vertex_of_cell(int i, int ii) const { return nc[( (DIM==2)?4:8 )*i+ii]; }
       

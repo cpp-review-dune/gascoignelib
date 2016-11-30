@@ -163,10 +163,10 @@ namespace Gascoigne
     void BasicInit(const ParamFile* pf);
       
 
-    int n() const {
+    int ndofs() const {
       return GetMesh()->nnodes();
     }
-    int nc() const {
+    int nelements() const {
       return GetMesh()->ncells();
     }
     //  const HNStructureQ1* GetHNStructure() const { return HN;}

@@ -70,43 +70,70 @@ namespace Gascoigne
       DiscretizationInterface() {}
       virtual ~DiscretizationInterface() {}
 
-      virtual const DataContainer& GetDataContainer() const=0;
-      virtual void SetDataContainer(const DataContainer& q) const=0;
+      virtual const DataContainer& GetDataContainer() const
+      { std::cerr << "DI::GetDataContainer()" << std::endl; abort(); }
+      virtual void SetDataContainer(const DataContainer& q) const
+      { std::cerr << "DI::SetDataContainer()" << std::endl; abort(); }
+      
+      virtual void InitColoring() 
+      {
+	std::cerr << "InitColering Discretization not written!" << std::endl;
+	abort();
+      }
 
-virtual void InitColoring() 
-{
-std::cerr << "InitColering Discretization not written!" << std::endl;
-abort();
-}
 
+      ////////////////////////////////////////////////// DOF-Handling
+      virtual void Structure(SparseStructureInterface* S) const
+      { std::cerr << "DI::Strucutre()" << std::endl; abort(); }
+
+      // set the correct size for a vector of dof's
+      virtual void InitGlobalVector(GlobalVector& u, int comp) const
+      { u.ncomp()=comp; u.resize(ndofs()); }
+      // set the correct size for an element-vector
+      virtual void InitGlobalElementVector(GlobalVector& u, int comp) const
+      { u.ncomp()=comp; u.resize(nelements()); }
+      
+      
 
       //
       //// Functions called from the Solver
       //
-      virtual std::string GetName() const=0;
+      virtual std::string GetName() const { return "DiscretizationInterface"; }
 
-      virtual void AddNodeVector(const std::string& name, const GlobalVector* q) const=0;
-      virtual void DeleteNodeVector(const std::string& name) const=0;
+      virtual void AddNodeVector(const std::string& name, const GlobalVector* q) const
+      { std::cerr << "DI::AddNodeVector()" << std::endl; abort(); }
+      virtual void DeleteNodeVector(const std::string& name) const
+      { std::cerr << "DI::DeleteNodeVector()" << std::endl; abort(); }
 
-      virtual void AddCellVector(const std::string& name, const GlobalVector* q) const=0;
-      virtual void DeleteCellVector(const std::string& name) const=0;
+      virtual void AddCellVector(const std::string& name, const GlobalVector* q) const
+      { std::cerr << "DI::AddCellVector()" << std::endl; abort(); }
+      virtual void DeleteCellVector(const std::string& name) const
+      { std::cerr << "DI::DeleteCellVector()" << std::endl; abort(); }
 
-      virtual void AddParameterVector(const std::string& name, const GlobalParameterVector* q) const=0;
-      virtual void DeleteParameterVector(const std::string& name) const=0;
+      virtual void AddParameterVector(const std::string& name, const GlobalParameterVector* q) const
+      { std::cerr << "DI::AddParamVector()" << std::endl; abort(); }
+      virtual void DeleteParameterVector(const std::string& name) const
+      { std::cerr << "DI::DeleteParamVector()" << std::endl; abort(); }
 
-      virtual void BasicInit(const ParamFile* pf)=0;
-      virtual void ReInit   (const MeshInterface* M)=0;
+      virtual void BasicInit(const ParamFile* pf)
+      { std::cerr << "DI::BasicInit()" << std::endl; abort(); }
+      virtual void ReInit   (const MeshInterface* M)
+      { std::cerr << "DI::ReInit()" << std::endl; abort(); }
 
-      virtual int n() const=0;
-      virtual int nc() const=0;
-      virtual int n_withouthanging()const {
-        return n();
+      virtual int ndofs() const
+      { std::cerr << "DI::ndofs()" << std::endl; abort(); }
+      virtual int nelements() const
+      { std::cerr << "DI::nelements()" << std::endl; abort(); }
+      virtual int ndofs_withouthanging()const {
+        return ndofs();
       }
 
-      virtual void Structure(SparseStructureInterface* S) const=0;
-      virtual void Form(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const=0;
-      virtual void Rhs(GlobalVector& f, const DomainRightHandSide& RHS, double s) const=0;
-      virtual void Matrix(MatrixInterface& A, const GlobalVector& u, const ProblemDescriptorInterface* PD, double) const=0;
+      virtual void Form(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const
+      { std::cerr << "DI::FOrm()" << std::endl; abort(); }
+      virtual void Rhs(GlobalVector& f, const DomainRightHandSide& RHS, double s) const
+      { std::cerr << "DI::Rhs()" << std::endl; abort(); }
+      virtual void Matrix(MatrixInterface& A, const GlobalVector& u, const ProblemDescriptorInterface* PD, double) const
+      { std::cerr << "DI::Matrix()" << std::endl; abort(); }
 
       virtual void AdjointForm(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const {
         std::cerr << "\"DiscretizationInterface::AdjointForm\" not written!" << std::endl;
@@ -253,7 +280,7 @@ abort();
       }
 			
       virtual void ConstructInterpolator(MgInterpolatorInterface* I, const MeshTransferInterface* MT) {
-        std::cerr << "\"DiscretizationInterface::ConstructInterpolatorx \" not written!" << std::endl;
+        std::cerr << "\"DiscretizationInterface::ConstructInterpolator \" not written!" << std::endl;
         abort();
       }
 

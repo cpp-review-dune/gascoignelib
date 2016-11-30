@@ -68,7 +68,8 @@ public:
     FileScanner FS(DFH, _paramfile, "Loop");
     assert(__DT>0);
     
-    
+
+    ofstream OUT("func.txt");
     for (_iter=1; __TIME+1.e-10 < stoptime; _iter++)
       {
 	cout << "\n  ============== " 
@@ -82,7 +83,12 @@ public:
 	DoubleVector juh = Functionals(u,f);
 	GetMultiLevelSolver()->DeleteNodeVector("old");
 
-
+	if (_iter%100==0)
+	  {
+	    GetMultiLevelSolver()->GetSolver()->Visu("Results/u",u,_iter);
+	    WriteMeshAndSolution("Results/u",u);
+	  }
+	OUT << __TIME << "\t" << juh << endl;
 	
 	_clock_functionals.stop();
       }

@@ -31,6 +31,11 @@ namespace Gascoigne
 
   // 2d und 3d
   template<>
+  const Vertex2d& GascoigneMesh<2>::vertex2d(int i) const {return vertex(i); }
+  template<>
+  const Vertex3d& GascoigneMesh<2>::vertex3d(int i) const { std::cerr << "no vertex3d in GascoigneMesh<2>!" << std::endl; abort(); }
+  
+  template<>
   IntVector GascoigneMesh<2>::IndicesOfCell(int iq) const
   {
     IntVector indices(4);
@@ -44,6 +49,12 @@ namespace Gascoigne
     
     return indices;
   }
+
+
+  template<>
+  const Vertex3d& GascoigneMesh<3>::vertex3d(int i) const {return vertex(i); }
+  template<>
+  const Vertex2d& GascoigneMesh<3>::vertex2d(int i) const { std::cerr << "no vertex2d in GascoigneMesh<3>!" << std::endl; abort(); }
 
   template<>
   IntVector GascoigneMesh<3>::IndicesOfCell(int iq) const

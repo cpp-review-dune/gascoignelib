@@ -33,6 +33,7 @@
 
 #include  "dynamicblockmatrix.h"
 #include  "dynamicblockilu.h"
+#include  "compose_name.h"
 
 /*--------------------------------*/
 #ifdef __WITH_THREADS__
@@ -71,6 +72,7 @@
 #include  "q1gls3d.h"
 #include  "q1lps3d.h"
 #include  "q2lps3d.h"
+#include  "dg_disc.h"
 
 #include  "faceq1.h"
 #include  "faceq2.h"
@@ -485,6 +487,8 @@ DiscretizationInterface* StdSolver::NewDiscretization(int dimension, const strin
   if (dimension==2)
   {
     if      (discname=="Q1")               return new Q1<2>;
+    else if (discname=="DG")               return new DGDisc<2>;
+    else if (discname=="CG")               return new CGDisc<2>;
     else if (discname=="Q2")               return new Q22d;
     else if (discname=="Q1Gls")            return new Q1Gls2d;
     else if (discname=="Q2Gls")            return new Q2Gls2d;
@@ -501,7 +505,7 @@ DiscretizationInterface* StdSolver::NewDiscretization(int dimension, const strin
   else if (dimension==3)
   {
     if      (discname=="Q1")               return new Q1<3>;
-    
+    else if (discname=="DG")               return new DGDisc<3>;
     else if (discname=="Q2")               return new Q23d;
     else if (discname=="Q1Gls")            return new Q1Gls3d;
     else if (discname=="Q1Lps")            return new Q1Lps3d;
@@ -762,8 +766,8 @@ void StdSolver::ReInitVector(VectorInterface& dst)
 
 void StdSolver::ReInitVector(VectorInterface& dst, int comp)
 {
-  int n = GetDiscretization()->n();
-  int nc = GetDiscretization()->nc();
+  // int ndofs     = GetDiscretization()->ndofs();
+  // int nelements = GetDiscretization()->nelements();
 
   // VectorInterface already registered ?
   //
@@ -788,11 +792,13 @@ void StdSolver::ReInitVector(VectorInterface& dst, int comp)
 
   if(p->first.GetType()=="node")
     {
-      p->second->reservesize(n);
+      GetDiscretization()->InitGlobalVector(*p->second,comp);
+      //      p->second->reservesize(ndofs);
     }
   else if(p->first.GetType()=="cell")
     {
-      p->second->reservesize(nc);
+      //      p->second->reservesize(nelements);
+      GetDiscretization()->InitGlobalElementVector(*p->second,comp);
     }
   else if(p->first.GetType()=="parameter")
     {
@@ -1131,6 +1137,7 @@ void StdSolver::Form(VectorInterface& gy, const VectorInterface& gx, double d) c
   HNDistribute(gy);
   SubtractMeanAlgebraic(gy);
 
+
   _re.stop();
   GlobalStopWatch.stop("StdSolver::Form\t");
 }
@@ -1160,6 +1167,7 @@ void StdSolver::AdjointForm(VectorInterface& gy, const VectorInterface& gx, doub
   HNZeroData();
   HNDistribute(gy);
   SubtractMeanAlgebraic(gy);
+  
 }
 
 /*-------------------------------------------------------*/
@@ -1701,8 +1709,21 @@ GascoigneVisualization* StdSolver::NewGascoigneVisualization() const {
 
 /* -------------------------------------------------------*/
 
+#include "dg_disc.h"
 void StdSolver::PointVisu(const string& name, const GlobalVector& u, int i) const
 {
+  
+  const DGDisc<2>* DG = dynamic_cast<const DGDisc<2> *> (GetDiscretization());
+  if (DG)
+    {
+      string fname = name;
+      compose_name(fname,i);
+      fname = fname + ".vtk";
+      DG->WriteVtk(fname,u);
+      return;
+    }
+  
+  
   GlobalStopWatch.start("IO\t\t");
     
   GetDiscretization()->HNAverage(const_cast<GlobalVector&>(u)); 
