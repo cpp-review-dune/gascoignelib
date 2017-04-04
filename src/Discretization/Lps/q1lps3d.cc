@@ -72,7 +72,13 @@ void Q1Lps3d::Form(GlobalVector& f, const GlobalVector& u, const Equation& EQ, d
   Q13d::Form(f,u,EQ,d);
   S   ->Form(f,u,EQ,d);
 }
+/* ----------------------------------------- */
 
+void Q1Lps3d::EstimatorForm(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const
+{
+  Q13d::EstimatorForm(f,u,EQ,d);
+  S   ->Form(f,u,EQ,d);
+}
 /* ----------------------------------------- */
 
 void Q1Lps3d::Matrix(MatrixInterface& A, const GlobalVector& u, const Equation& EQ, double d) const

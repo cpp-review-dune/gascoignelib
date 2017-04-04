@@ -97,7 +97,20 @@ namespace Gascoigne
 
       virtual void Structure(SparseStructureInterface* S) const=0;
       virtual void Form(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const=0;
+      virtual void EstimatorForm(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const{
+        std::cerr << "\"DiscretizationInterface::EstimatorForm\" not written!" << std::endl;
+        abort();
+      }
+      virtual void EstimatorFormTime(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const{
+        std::cerr << "\"DiscretizationInterface::EstimatorFormTime\" not written!" << std::endl;
+        abort();
+      }
       virtual void Rhs(GlobalVector& f, const DomainRightHandSide& RHS, double s) const=0;
+      
+      virtual void EstimatorRhs(GlobalVector& f, const DomainRightHandSide& RHS, double s) const{
+        std::cerr << "\"DiscretizationInterface::EstimatorRhs\" not written!" << std::endl;
+        abort();
+      }
       virtual void Matrix(MatrixInterface& A, const GlobalVector& u, const Equation& EQ, double) const=0;
 
       virtual void AdjointForm(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const {
@@ -107,6 +120,16 @@ namespace Gascoigne
       virtual void BoundaryForm(GlobalVector& f, const GlobalVector& u, const IntSet& Colors, 
           const BoundaryEquation& BE, double d) const {
         std::cerr << "\"DiscretizationInterface::BoundaryForm\" not written!" << std::endl;
+        abort();
+      }
+      virtual void EstimatorBoundaryForm(GlobalVector& f, const GlobalVector& u, const IntSet& Colors, 
+          const BoundaryEquation& BE, double d) const {
+        std::cerr << "\"DiscretizationInterface::BoundaryForm\" not written!" << std::endl;
+        abort();
+      }
+      virtual void EstimatorBoundaryFormTime(GlobalVector& f, const GlobalVector& u, const IntSet& Colors, 
+          const BoundaryEquation& BE, double d) const {
+        std::cerr << "\"DiscretizationInterface::BoundaryFormTime\" not written!" << std::endl;
         abort();
       }
       virtual void BoundaryMatrix(MatrixInterface& A, const GlobalVector& u, const IntSet& Colors, 
@@ -131,9 +154,19 @@ namespace Gascoigne
         std::cerr << "\"DiscretizationInterface::DiracRhs\" not written!" << std::endl;
         abort();
       }		
+      virtual void EstimatorDiracRhs(GlobalVector& f, const DiracRightHandSide& DRHS, double s) const {
+        std::cerr << "\"DiscretizationInterface::EstimatorDiracRhs\" not written!" << std::endl;
+        abort();
+      }	
       virtual void BoundaryRhs(GlobalVector& f, const IntSet& Colors,  const BoundaryRightHandSide& NRHS, 
           double s) const{
         std::cerr << "\"DiscretizationInterface::BoundaryRhs\" not written!" << std::endl;
+        abort();
+      }
+      
+      virtual void EstimatorBoundaryRhs(GlobalVector& f, const IntSet& Colors,  const BoundaryRightHandSide& NRHS, 
+          double s) const{
+        std::cerr << "\"DiscretizationInterface::EstimatorBoundaryRhs\" not written!" << std::endl;
         abort();
       }
       virtual void HNAverage   (GlobalVector& x) const {}
@@ -192,6 +225,12 @@ namespace Gascoigne
         std::cerr << "\"DiscretizationInterface::ComputeError\" not written!" << std::endl;
         abort();
       }
+      
+      virtual void ComputeErrorSubdomain(const GlobalVector& u, LocalVector& err, const ExactSolution* ES,int subdomain) const{
+        std::cerr << "\"DiscretizationInterface::ComputeErrorPart\" not written!" << std::endl;
+        abort();
+      }
+      
       virtual void AssembleError(GlobalVector& eta, const GlobalVector& u, LocalVector& err, const ExactSolution* ES) const{
         std::cerr << "\"DiscretizationInterface::AssembleError\" not written!" << std::endl;
         abort();

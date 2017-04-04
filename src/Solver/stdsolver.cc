@@ -580,6 +580,7 @@ MatrixInterface* StdSolver::NewMatrix(int ncomp, const string& matrixtype)
 
 IluInterface* StdSolver::NewIlu(int ncomp, const string& matrixtype) 
 { 
+  cout << "NEW ILU" << endl;
 #ifdef __WITH_UMFPACK__
   if(_directsolver && _useUMFPACK)             return new UmfIlu(GetMatrix());
 #endif
@@ -1080,7 +1081,72 @@ void StdSolver::Form(VectorInterface& gy, const VectorInterface& gx, double d) c
 
   _re.stop();
 }
+/*-------------------------------------------------------*/
 
+void StdSolver::EstimatorForm(VectorInterface& gy, const VectorInterface& gx, double d) const
+{
+  _re.start();
+
+  HNAverage(gx);
+  HNAverageData();
+
+  const Equation* EQ = GetProblemDescriptor()->GetEquation();
+  assert(EQ);
+  GetDiscretization()->EstimatorForm(GetGV(gy),GetGV(gx),*EQ,d);
+
+  // Face
+  if (GetFaceDiscretization())
+    {
+      const FaceEquation* FEQ = GetProblemDescriptor()->GetFaceEquation();
+      assert(FEQ);
+      GetFaceDiscretization()->FaceForm(GetGV(gy),GetGV(gx),*FEQ,d);
+    }  
+  const BoundaryEquation* BE = GetProblemDescriptor()->GetBoundaryEquation();
+  if(BE)
+  {
+    const BoundaryManager* BM = GetProblemDescriptor()->GetBoundaryManager();
+    GetDiscretization()->EstimatorBoundaryForm(GetGV(gy),GetGV(gx),BM->GetBoundaryEquationColors(),*BE,d);
+  }
+  HNZero(gx);
+  HNZeroData();
+  HNDistribute(gy);
+  SubtractMeanAlgebraic(gy);
+
+  _re.stop();
+}
+/*-------------------------------------------------------*/
+
+void StdSolver::EstimatorFormTime(VectorInterface& gy, const VectorInterface& gx, double d) const
+{
+  _re.start();
+
+  HNAverage(gx);
+  HNAverageData();
+
+  const Equation* EQ = GetProblemDescriptor()->GetEquation();
+  assert(EQ);
+  GetDiscretization()->EstimatorFormTime(GetGV(gy),GetGV(gx),*EQ,d);
+
+  // Face
+  if (GetFaceDiscretization())
+    {
+      const FaceEquation* FEQ = GetProblemDescriptor()->GetFaceEquation();
+      assert(FEQ);
+      GetFaceDiscretization()->FaceForm(GetGV(gy),GetGV(gx),*FEQ,d);
+    }  
+  const BoundaryEquation* BE = GetProblemDescriptor()->GetBoundaryEquation();
+  if(BE)
+  {
+    const BoundaryManager* BM = GetProblemDescriptor()->GetBoundaryManager();
+    GetDiscretization()->EstimatorBoundaryFormTime(GetGV(gy),GetGV(gx),BM->GetBoundaryEquationColors(),*BE,d);
+  }
+  HNZero(gx);
+  HNZeroData();
+  HNDistribute(gy);
+  SubtractMeanAlgebraic(gy);
+
+  _re.stop();
+}
 /*-------------------------------------------------------*/
 
 void StdSolver::AdjointForm(VectorInterface& gy, const VectorInterface& gx, double d) const
@@ -1400,6 +1466,48 @@ void StdSolver::Rhs(VectorInterface& gf, double d) const
 
 /*-------------------------------------------------------*/
 
+void StdSolver::EstimatorRhs(VectorInterface& gf, double d) const
+{
+  GlobalVector& f = GetGV(gf);
+  HNAverageData();
+
+  const Application* RHS  = GetProblemDescriptor()->GetRightHandSide();
+  const BoundaryRightHandSide* NRHS = GetProblemDescriptor()->GetBoundaryRightHandSide();
+
+  if(RHS)
+    {
+       bool done=false;
+       const DomainRightHandSide *DRHS = dynamic_cast<const DomainRightHandSide *>(RHS);
+       if(DRHS)
+       {
+         GetDiscretization()->EstimatorRhs(f,*DRHS,d);
+         done = true;
+       }
+       const DiracRightHandSide *NDRHS = dynamic_cast<const DiracRightHandSide *>(RHS);
+       if(NDRHS)
+       { 
+         GetDiscretization()->EstimatorDiracRhs(f,*NDRHS,d);
+         done =true;
+       }
+       if(!done)
+       {
+         cerr << "RightHandSide should be either of type DomainRightHandSide or DiracRightHandSide!!!" << endl;
+         abort();
+       }
+    }
+  
+  if(NRHS)
+    {
+      assert(NRHS->GetNcomp()==f.ncomp());
+      const BoundaryManager*  BM   = GetProblemDescriptor()->GetBoundaryManager();
+      GetDiscretization()->EstimatorBoundaryRhs(f,BM->GetBoundaryRightHandSideColors(),*NRHS,d);	  
+    }
+    
+  HNZeroData();
+  HNDistribute(gf);
+}
+/*-------------------------------------------------------*/
+
 void StdSolver::AssembleMatrix(const VectorInterface& gu, double d)
 {
   _ca.start();
@@ -1418,6 +1526,8 @@ void StdSolver::AssembleMatrix(const VectorInterface& gu, double d)
       assert(FEQ);
       GetFaceDiscretization()->FaceMatrix(*GetMatrix(),u,*FEQ,d);
     }
+
+  
   const BoundaryEquation* BE = GetProblemDescriptor()->GetBoundaryEquation();
   if(BE)
   {
@@ -1428,7 +1538,13 @@ void StdSolver::AssembleMatrix(const VectorInterface& gu, double d)
   DirichletMatrix();
   HNZero(gu);
   HNZeroData();
-
+  
+//   char filename[200];
+//   sprintf(filename,"Results/matrixxxx.txt");
+//   ofstream matrixstream;
+//   matrixstream.open (filename, std::ofstream::out | std::ofstream::trunc);
+//   GetMatrix()->Write(matrixstream);
+//   matrixstream.close();
   _ca.stop();
 }
 
@@ -1526,7 +1642,7 @@ void StdSolver::ComputeIlu() const
 /* -------------------------------------------------------*/
 
 void StdSolver::ComputeIlu(const VectorInterface& gu) const
-{
+{        
 #ifdef __WITH_UMFPACK__
   if(_directsolver&&_useUMFPACK)
     {

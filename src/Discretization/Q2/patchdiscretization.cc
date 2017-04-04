@@ -78,7 +78,46 @@ void PatchDiscretization::Transformation(FemInterface::Matrix& T, int iq) const
 	}
     }
 }
+/* ----------------------------------------- */
 
+void PatchDiscretization::EstimatorForm(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const
+{
+  nmatrix<double> T;
+
+  GlobalToGlobalData();
+  EQ.SetParameterData(__QP);
+
+  for(int iq=0;iq<GetPatchMesh()->npatches();++iq)
+    {
+      Transformation(T,iq);
+      GetFem()->ReInit(T);
+
+      GlobalToLocal(__U,u,iq);
+      //EQ.cell(GetPatchMesh(),iq,__U,__QN);
+      GetIntegrator()->EstimatorForm(EQ,__F,*GetFem(),__U,__QN,__QC);
+      LocalToGlobal(f,__F,iq,d);
+    }
+}
+/* ----------------------------------------- */
+
+void PatchDiscretization::EstimatorFormTime(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const
+{
+  nmatrix<double> T;
+
+  GlobalToGlobalData();
+  EQ.SetParameterData(__QP);
+
+  for(int iq=0;iq<GetPatchMesh()->npatches();++iq)
+    {
+      Transformation(T,iq);
+      GetFem()->ReInit(T);
+
+      GlobalToLocal(__U,u,iq);
+      //EQ.cell(GetPatchMesh(),iq,__U,__QN);
+      GetIntegrator()->EstimatorFormTime(EQ,__F,*GetFem(),__U,__QN,__QC);
+      LocalToGlobal(f,__F,iq,d);
+    }
+}
 /* ----------------------------------------- */
 
 void PatchDiscretization::Form(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const
@@ -121,6 +160,66 @@ void PatchDiscretization::AdjointForm(GlobalVector& f, const GlobalVector& u, co
     }
 }
 
+/* ----------------------------------------- */
+
+void PatchDiscretization::EstimatorBoundaryForm(GlobalVector& f, const GlobalVector& u, const IntSet& Colors, const BoundaryEquation& BE, double d) const
+{
+  nmatrix<double> T;
+  
+  GlobalToGlobalData();
+  BE.SetParameterData(__QP);
+
+  for(IntSet::const_iterator p=Colors.begin();p!=Colors.end();p++)
+    {
+      int col = *p;
+
+      const IntVector& q = *GetMesh()->PatchOnBoundary(col);
+      const IntVector& l = *GetMesh()->LocalPatchOnBoundary(col);
+      for (int i=0; i<q.size(); i++)
+        {
+          int ip  = q[i];
+          int ile = l[i];
+
+          Transformation(T,ip);
+          GetFem()->ReInit(T);
+
+          GlobalToLocal(__U,u,ip);
+
+          GetIntegrator()->EstimatorBoundaryForm(BE,__F,*GetFem(),__U,ile,col,__QN,__QC);
+          LocalToGlobal(f,__F,ip,d);
+        }
+    }
+}
+/* ----------------------------------------- */
+
+void PatchDiscretization::EstimatorBoundaryFormTime(GlobalVector& f, const GlobalVector& u, const IntSet& Colors, const BoundaryEquation& BE, double d) const
+{
+  nmatrix<double> T;
+  
+  GlobalToGlobalData();
+  BE.SetParameterData(__QP);
+
+  for(IntSet::const_iterator p=Colors.begin();p!=Colors.end();p++)
+    {
+      int col = *p;
+
+      const IntVector& q = *GetMesh()->PatchOnBoundary(col);
+      const IntVector& l = *GetMesh()->LocalPatchOnBoundary(col);
+      for (int i=0; i<q.size(); i++)
+        {
+          int ip  = q[i];
+          int ile = l[i];
+
+          Transformation(T,ip);
+          GetFem()->ReInit(T);
+
+          GlobalToLocal(__U,u,ip);
+
+          GetIntegrator()->EstimatorBoundaryFormTime(BE,__F,*GetFem(),__U,ile,col,__QN,__QC);
+          LocalToGlobal(f,__F,ip,d);
+        }
+    }
+}
 /* ----------------------------------------- */
 
 void PatchDiscretization::BoundaryForm(GlobalVector& f, const GlobalVector& u, const IntSet& Colors, const BoundaryEquation& BE, double d) const
@@ -216,7 +315,8 @@ void PatchDiscretization::MassMatrix(MatrixInterface& A) const
       Transformation(T,iq);
       GetFem()->ReInit(T);
       GetIntegrator()->MassMatrix(__E,*GetFem());
-      LocalToGlobal(A,__E,iq,1.);
+      //PatchDiscretization::LocalToGlobal(A,__E,iq,1.);
+	LocalToGlobal(A,__E,iq,1.);
     }
 }
 
@@ -276,7 +376,25 @@ void PatchDiscretization::ComputeError(const GlobalVector& u, LocalVector& err, 
 }
 
 /* ----------------------------------------- */
+void PatchDiscretization::EstimatorRhs(GlobalVector& f, const DomainRightHandSide& RHS, double s) const
+{
+  nmatrix<double> T;
 
+  GlobalToGlobalData();
+  RHS.SetParameterData(__QP);
+
+  for(int iq=0;iq<GetPatchMesh()->npatches();++iq)
+    {
+      Transformation(T,iq);
+      GetFem()->ReInit(T);
+
+      GlobalToLocalData(iq);
+      GetIntegrator()->EstimatorRhs(RHS,__F,*GetFem(),__QN,__QC);
+      LocalToGlobal(f,__F,iq,s);
+    }
+}
+
+/* ----------------------------------------- */
 void PatchDiscretization::Rhs(GlobalVector& f, const DomainRightHandSide& RHS, double s) const
 {
   nmatrix<double> T;
@@ -296,7 +414,35 @@ void PatchDiscretization::Rhs(GlobalVector& f, const DomainRightHandSide& RHS, d
 }
 
 /* ----------------------------------------- */
+void PatchDiscretization::EstimatorBoundaryRhs(GlobalVector& f, const IntSet& Colors,  const BoundaryRightHandSide& NRHS, double s) const
+{
+  nmatrix<double> T;
 
+  GlobalToGlobalData();
+  NRHS.SetParameterData(__QP);
+  
+  for(IntSet::const_iterator p=Colors.begin();p!=Colors.end();p++)
+    {
+      int col = *p;
+
+      const IntVector& q = *GetMesh()->PatchOnBoundary(col);
+      const IntVector& l = *GetMesh()->LocalPatchOnBoundary(col);
+      for (int i=0; i<q.size(); i++)
+	{
+	  int ip  = q[i];
+	  int ile = l[i];
+
+	  Transformation(T,ip);
+	  GetFem()->ReInit(T);
+
+	  GlobalToLocalData(ip);
+	  GetIntegrator()->EstimatorBoundaryRhs(NRHS,__F,*GetFem(),ile,col,__QN,__QC);
+	  LocalToGlobal(f,__F,ip,s);
+	}
+    }
+}
+
+/* ----------------------------------------- */
 void PatchDiscretization::BoundaryRhs(GlobalVector& f, const IntSet& Colors,  const BoundaryRightHandSide& NRHS, double s) const
 {
   nmatrix<double> T;
@@ -460,6 +606,101 @@ void PatchDiscretization::DiracRhsPoint(GlobalVector& f,const DiracRightHandSide
 }
 
 /* ----------------------------------------- */
+
+
+/* ----------------------------------------- */
+
+void PatchDiscretization::EstimatorDiracRhs(GlobalVector& f, const DiracRightHandSide& DRHS, double s) const
+{
+  int dim = GetMesh()->dimension();
+  vector<int> comps = DRHS.GetComps();
+  int nn = comps.size();
+
+  vector<double> up(nn,0);
+ 
+  if (dim == 2)
+    {
+      vector<Vertex2d> v2d = DRHS.GetPoints2d();
+      assert(nn==v2d.size());
+      
+      for(int i=0;i<nn;++i)
+	{
+	  EstimatorDiracRhsPoint(f,DRHS,v2d[i],i,s);
+	}
+    }
+  else if (dim == 3)
+    {
+      vector<Vertex3d> v3d = DRHS.GetPoints3d();
+      assert(nn==v3d.size());
+      for(int i=0;i<nn;++i)
+	{
+	  EstimatorDiracRhsPoint(f,DRHS,v3d[i],i,s);
+	}
+    }
+  else
+    {
+      cerr << "wrong dim = " << dim << endl;
+      abort();
+    }
+}
+
+/* ----------------------------------------- */
+
+void PatchDiscretization::EstimatorDiracRhsPoint(GlobalVector& f,const DiracRightHandSide& DRHS,const Vertex2d& p0,int i,double s) const
+{
+  __F.ReInit(f.ncomp(),GetFem()->n());
+
+  Vertex2d Tranfo_p0;
+   
+  int iq = GetPatchNumber(p0,Tranfo_p0);
+  if (iq==-1)
+    {
+      cerr << "PatchDiscretization::DiracRhsPoint point not found\n";
+      abort();
+    }
+
+  nmatrix<double> T;
+  Transformation(T,iq);
+  GetFem()->ReInit(T);
+  
+  GlobalToLocalData(iq);
+  GlobalToGlobalData();
+  DRHS.SetParameterData(__QP);
+
+  GetIntegrator()->EstimatorDiracRhsPoint(__F,*GetFem(),Tranfo_p0,DRHS,i,__QN,__QC);
+  LocalToGlobal(f,__F,iq,s);
+}
+
+/* ----------------------------------------- */
+
+void PatchDiscretization::EstimatorDiracRhsPoint(GlobalVector& f,const DiracRightHandSide& DRHS,const Vertex3d& p0,int i,double s) const
+{
+  __F.ReInit(f.ncomp(),GetFem()->n());
+
+  Vertex3d Tranfo_p0;
+   
+  int iq = GetPatchNumber(p0,Tranfo_p0);
+  if (iq==-1)
+    {
+      cerr << "PatchDiscretization::DiracRhsPoint point not found\n";
+      abort();
+    }
+
+  nmatrix<double> T;
+  Transformation(T,iq);
+  GetFem()->ReInit(T);
+  
+  GlobalToLocalData(iq);
+  GlobalToGlobalData();
+  DRHS.SetParameterData(__QP);
+
+  GetIntegrator()->EstimatorDiracRhsPoint(__F,*GetFem(),Tranfo_p0,DRHS,i,__QN,__QC);
+  LocalToGlobal(f,__F,iq,s);
+}
+
+/* ----------------------------------------- */
+
+
 
 void Gascoigne::PatchDiscretization::GlobalToLocalCell(LocalVector& U, const GlobalVector& u, int iq) const
 {

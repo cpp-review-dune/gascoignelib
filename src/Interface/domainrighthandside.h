@@ -44,6 +44,24 @@ namespace Gascoigne
       ~DomainRightHandSide() { }
 
       virtual int GetNcomp() const=0;
+      
+
+
+      virtual void EstimatorRhs(VectorIterator b, const TestFunction& N, const Vertex2d& v) const 
+        {
+	  std::cerr << "\"DomainRightHandSide::EstimatorRHS\" not written" << std::endl;
+	  abort();
+        }
+      virtual void EstimatorRhs(VectorIterator b, const TestFunction& N, const Vertex3d& v) const 
+        {
+        std::cerr << "\"DomainRightHandSide::EstimatorRHS\" not written" << std::endl;
+        abort();
+        }
+      
+      
+      
+      
+      
 
       virtual double operator()(int c, const Vertex2d& v) const {
         std::cerr << "\"DomainRightHandSide::operator()\" not written" << std::endl;

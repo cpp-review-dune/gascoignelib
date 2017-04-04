@@ -405,6 +405,22 @@ class CompVector : public nvector<T>
 	}
       return d;
     }
+    
+   void Mult(const nvector<double>& scp, const CompVector<T>& y)
+    {
+      for(int c=0;c<N;c++)
+        {
+          iterator       first   = std::vector<T>::begin()  +c;
+          const_iterator first2  = y.begin()+c;
+          const_iterator last    = std::vector<T>::end();
+          while( first < last) 
+            {
+              *first = *first * scp[c] * *first2;
+              first += N;   first2 += N;
+            }
+        }
+    }  
+    
   void Add(const nvector<double>& scp, const CompVector<T>& y)
     {
       for(int c=0;c<N;c++)

@@ -74,7 +74,13 @@ void Q1Lps2d::Form(GlobalVector& f, const GlobalVector& u, const Equation& EQ, d
   Q12d::Form(f,u,EQ,d);
   S   ->Form(f,u,EQ,d);
 }
+/* ----------------------------------------- */
 
+void Q1Lps2d::EstimatorForm(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const
+{
+  Q12d::EstimatorForm(f,u,EQ,d);
+  S   ->Form(f,u,EQ,d);
+}
 /* ----------------------------------------- */
 
 void Q1Lps2d::Matrix(MatrixInterface& A, const GlobalVector& u, const Equation& EQ, double d) const

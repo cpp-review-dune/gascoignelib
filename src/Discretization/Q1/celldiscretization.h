@@ -75,7 +75,8 @@ protected:
   
   virtual void DiracRhsPoint(GlobalVector& f,const DiracRightHandSide& DRHS,const Vertex2d& p0,int i,double s) const;
   virtual void DiracRhsPoint(GlobalVector& f,const DiracRightHandSide& DRHS,const Vertex3d& p0,int i,double s) const;
-
+  virtual void EstimatorDiracRhsPoint(GlobalVector& f,const DiracRightHandSide& DRHS,const Vertex2d& p0,int i,double s) const;
+  virtual void EstimatorDiracRhsPoint(GlobalVector& f,const DiracRightHandSide& DRHS,const Vertex3d& p0,int i,double s) const;
 
 public:
 
@@ -93,8 +94,14 @@ public:
 
   void Structure(SparseStructureInterface* S) const;
 
+  void EstimatorForm(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const;
+  void EstimatorFormTime(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const;
+
   void Form(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const;
   void AdjointForm(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const;
+  void EstimatorBoundaryForm(GlobalVector& f, const GlobalVector& u, const IntSet& Colors, const BoundaryEquation& BE, double d) const;
+  void EstimatorBoundaryFormTime(GlobalVector& f, const GlobalVector& u, const IntSet& Colors, const BoundaryEquation& BE, double d) const;
+
   void BoundaryForm(GlobalVector& f, const GlobalVector& u, const IntSet& Colors, const BoundaryEquation& BE, double d) const;
   void Matrix(MatrixInterface& A, const GlobalVector& u, const Equation& EQ, double) const;
   void BoundaryMatrix(MatrixInterface& A, const GlobalVector& u, const IntSet& Colors, const BoundaryEquation& BE, double d) const;
@@ -103,13 +110,20 @@ public:
   void MassForm(GlobalVector& f, const GlobalVector& u, const TimePattern& TP, double s) const;
 
   void ComputeError(const GlobalVector& u, LocalVector& err, const ExactSolution* ES) const;
+  
+  void ComputeErrorSubdomain(const GlobalVector& u, LocalVector& err, const ExactSolution* ES,int subdomain) const;
+
+  
   void AssembleError(GlobalVector& eta, const GlobalVector& u, LocalVector& err, const ExactSolution* ES) const;
 
   void Rhs(GlobalVector& f, const DomainRightHandSide& RHS, double s) const;
+  void EstimatorRhs(GlobalVector& f, const DomainRightHandSide& RHS, double s) const;
+
   void DiracRhs(GlobalVector& f, const DiracRightHandSide& DRHS, double s) const;
+  void EstimatorDiracRhs(GlobalVector& f, const DiracRightHandSide& DRHS, double s) const;
 
   void BoundaryRhs(GlobalVector& f, const IntSet& Colors,  const BoundaryRightHandSide& NRHS, double s) const;
-
+  void EstimatorBoundaryRhs(GlobalVector& f, const IntSet& Colors,  const BoundaryRightHandSide& NRHS, double s) const;
   void InitFilter(DoubleVector&) const;
 
   // Functionals

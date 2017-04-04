@@ -80,6 +80,14 @@ namespace Gascoigne
      
       virtual int GetNcomp() const=0;
       virtual void Form(VectorIterator b, const FemFunction& U, const TestFunction& N) const=0;
+      virtual void EstimatorForm(VectorIterator b, const FemFunction& U, const TestFunction& N) const {
+        std::cerr << "\"Equation::EstimatorForm\" not written!" << std::endl;
+        abort();
+      } 
+      virtual void EstimatorFormTime(VectorIterator b, const FemFunction& U, const TestFunction& N) const {
+        std::cerr << "\"Equation::EstimatorFormTime\" not written!" << std::endl;
+        abort();
+      }       
       virtual void Matrix(EntryMatrix& A, const FemFunction& U, const TestFunction& M, const TestFunction& N) const=0;
       // .cell is analogous to .point
       //virtual void cell(const MeshInterface* p_mesh, int cell_id, const LocalVector& U, const LocalNodeData& Q) const { }

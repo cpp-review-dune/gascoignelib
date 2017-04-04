@@ -304,6 +304,166 @@ void DwrFemQ1Q22d::BoundaryRhs(GlobalVector& f, const IntSet& Colors, const Boun
   }
 }
 
+
+
+
+/*--------------------------------------------*/
+
+/*---------------------------------------------------*/
+
+void DwrFemQ1Q22d::EstimatorForm(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const
+{
+  nmatrix<double> TH,TL;
+
+  GlobalToGlobalData();
+  EQ.SetParameterData(__QP);
+
+  const IntegratorQ1Q2<2>* I = dynamic_cast<const IntegratorQ1Q2<2>*>(GetIntegrator());
+  assert(I);
+
+  const FemInterface& HighOrderFem(*GetFem());
+
+  for(int iq=0;iq<GetPatchMesh()->npatches();++iq)
+    {
+      Transformation  (TH,iq);
+      TransformationQ1(TL,iq);
+
+      HighOrderFem.ReInit(TH);
+      LowOrderFem .ReInit(TL);
+
+      GlobalToLocal(__U,u,iq);
+      I->EstimatorForm(EQ,__F,HighOrderFem,LowOrderFem,__U,__QN,__QC);
+      PatchDiscretization::LocalToGlobal(f,__F,iq,d);
+    }
+}
+
+/*---------------------------------------------------*/
+
+
+void DwrFemQ1Q22d::EstimatorBoundaryForm(GlobalVector& f, const GlobalVector& u, const IntSet& Colors, 
+    const BoundaryEquation& BE, double d) const
+{
+  nmatrix<double> TH,TL;
+
+  GlobalToGlobalData();
+  BE.SetParameterData(__QP);
+  
+  const IntegratorQ1Q2<2>* I = dynamic_cast<const IntegratorQ1Q2<2>*>(GetIntegrator());
+  assert(I);
+
+  const FemInterface& HighOrderFem(*GetFem());
+
+  for(IntSet::const_iterator p=Colors.begin();p!=Colors.end();p++)
+  {
+    int col = *p;
+
+    HASHSET<int> habschon;
+    
+    const IntVector& q = *GetMesh()->PatchOnBoundary(col);
+    const IntVector& l = *GetMesh()->LocalPatchOnBoundary(col);
+    for (int i=0; i<q.size(); i++)
+    {
+      int ip = q[i];
+      int ile = l[i];
+
+      Transformation  (TH,ip);
+      TransformationQ1(TL,ip);
+
+      HighOrderFem.ReInit(TH);
+      LowOrderFem .ReInit(TL);
+
+      GlobalToLocal(__U,u,ip);
+      I->EstimatorBoundaryForm(BE,__F,HighOrderFem,LowOrderFem,__U,ile,col,__QN,__QC);
+      PatchDiscretization::LocalToGlobal(f,__F,ip,d);
+    }
+  }
+}
+
+/* ----------------------------------------- */
+
+void DwrFemQ1Q22d::EstimatorRhs(GlobalVector& f, const DomainRightHandSide& RHS, double s) const
+{
+  nmatrix<double> TH,TL;
+
+  GlobalToGlobalData();
+  RHS.SetParameterData(__QP);
+
+  const IntegratorQ1Q2<2>* I = dynamic_cast<const IntegratorQ1Q2<2>*>(GetIntegrator());
+  assert(I);
+
+  const FemInterface& HighOrderFem(*GetFem());
+
+  for(int iq=0;iq<GetPatchMesh()->npatches();++iq)
+    {
+      Transformation  (TH,iq);
+      TransformationQ1(TL,iq);
+
+      HighOrderFem.ReInit(TH);
+      LowOrderFem .ReInit(TL);
+
+      GlobalToLocalData(iq);
+      I->EstimatorRhs(RHS,__F,HighOrderFem,LowOrderFem,__QN,__QC);
+      PatchDiscretization::LocalToGlobal(f,__F,iq,s);
+    }
+}
+
+/* ----------------------------------------- */
+
+void DwrFemQ1Q22d::EstimatorBoundaryRhs(GlobalVector& f, const IntSet& Colors, const BoundaryRightHandSide& NRHS, double s) const
+{
+  nmatrix<double> TH,TL;
+
+  GlobalToGlobalData();
+  NRHS.SetParameterData(__QP);
+  
+  const IntegratorQ1Q2<2>* I = dynamic_cast<const IntegratorQ1Q2<2>*>(GetIntegrator());
+  assert(I);
+
+  const FemInterface& HighOrderFem(*GetFem());
+
+  for(IntSet::const_iterator p=Colors.begin();p!=Colors.end();p++)
+  {
+    int col = *p;
+  
+    const IntVector& q = *GetMesh()->PatchOnBoundary(col);
+    const IntVector& l = *GetMesh()->LocalPatchOnBoundary(col);
+    for (int i=0; i<q.size(); i++)
+    {
+      int ip  = q[i];
+      int ile = l[i];
+
+      Transformation  (TH,ip);
+      TransformationQ1(TL,ip);
+
+      HighOrderFem.ReInit(TH);
+      LowOrderFem .ReInit(TL);
+
+      GlobalToLocalData(ip);
+      I->EstimatorBoundaryRhs(NRHS,__F,HighOrderFem,LowOrderFem,ile,col,__QN,__QC);
+      PatchDiscretization::LocalToGlobal(f,__F,ip,s);
+    }
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* ----------------------------------------- */
 
 void DwrFemQ1Q22d::MassMatrix(MatrixInterface& A) const

@@ -68,6 +68,7 @@ namespace Gascoigne
       virtual std::string GetName() const=0;
       virtual std::ostream& OutputSettings(std::ostream& os) const=0;
       virtual void SetTime(double time, double dt) const=0;
+      virtual void SetTimeInfo(double time, double dt, double dt_plus, double theta_info,double theta_info_plus)  const=0;
 
       virtual const ParamFile* GetParamFile() const=0;
 

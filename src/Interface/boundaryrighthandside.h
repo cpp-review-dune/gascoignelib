@@ -60,7 +60,23 @@ namespace Gascoigne
       ~BoundaryRightHandSide() {}
 
       virtual int GetNcomp() const=0;
+      
+      virtual void EstimatorBoundaryRhs(VectorIterator b, const TestFunction& N, const Vertex2d& v, const Vertex2d& n, int color) const {
+        std::cerr << "\"BoundaryRightHandSide::EstimatorBoundaryRHS\" not written!" << std::endl;
+        abort();
+      }
+      
 
+      virtual void EstimatorBoundaryRhs(VectorIterator b, const TestFunction& N, const Vertex3d& v, const Vertex3d& n, int color) const {
+        std::cerr << "\"BoundaryRightHandSide::EstimatorBoundaryRHS\" not written!" << std::endl;
+        abort();
+      }
+      
+      
+      
+      
+      
+      
       virtual double operator()(int c, const Vertex2d& v, const Vertex2d& n, int color) const {
         std::cerr << "\"BoundaryRightHandSide::operator()\" not written!" << std::endl;
         abort();

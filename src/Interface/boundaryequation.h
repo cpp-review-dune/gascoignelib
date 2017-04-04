@@ -45,7 +45,15 @@ namespace Gascoigne
       ~BoundaryEquation() { }
 
       virtual int GetNcomp() const=0;
-
+      
+      virtual void EstimatorForm(VectorIterator b, const FemFunction& U, const TestFunction& N, int col)  const {
+        std::cerr << "\"BoundaryEquation::EstimatorForm\" not written!" << std::endl;
+        abort();
+      } 
+      virtual void EstimatorFormTime(VectorIterator b, const FemFunction& U, const TestFunction& N, int col)  const {
+        std::cerr << "\"BoundaryEquation::EstimatorFormTime\" not written!" << std::endl;
+        abort();
+      }
       virtual void Form(VectorIterator b, const FemFunction& U, const TestFunction& N, int col) const=0;
       virtual void Matrix(EntryMatrix& E, const FemFunction& U, const TestFunction& M, const TestFunction& N, int col) const=0;
 

@@ -483,6 +483,307 @@ void IntegratorQ1Q2<DIM>::BoundaryForm(const BoundaryEquation& BE, LocalVector& 
   delete IF;
 }
 
+/*-----------------------------------------------*/
+////////////////////////////////////////////
+/*---------------------------------------------------*/
+
+template<int DIM>
+void IntegratorQ1Q2<DIM>::EstimatorForm(const Equation& EQ, LocalVector& F, const FemInterface& FemH, const FemInterface& FemL, 
+    const LocalVector& U, const LocalData& Q, const LocalData& QC) const
+{
+  assert(FemH.n()==FemL.n());
+
+  F.ReInit(U.ncomp(),FemH.n());
+  F.zero();
+
+  IntegrationFormulaInterface* IF;
+  if (DIM==2) IF = new PatchFormula2d<9,QuadGauss9>;
+  else        IF = new PatchFormula3d<27,HexGauss27>;
+
+  Vertex<DIM> x, xi;
+
+  int numcells;
+  if(DIM==2) numcells = 4;
+  else numcells = 8;
+  
+  //Soviele Integr. Pkte je Zelle
+  numcells = IF->n()/numcells;
+  //Test, ist das sinnvollgewesen
+  if(IF->n()%numcells != 0)
+  {
+      std::cerr<<"Integrator Q1/Q2: Falsche Anzahl Zellen je Patch oder unzulaessige Integrationsformel!"<<std::endl;
+      abort();
+  }
+
+  for (int k=0; k<IF->n(); k++)
+    {
+      IF->xi(xi,k);
+      FemH.point(xi);
+      FemL.point(xi);
+      double vol = FemL.J();
+      double h  = Volume2MeshSize(vol);
+      double weight  = IF->w(k) * vol;
+      BasicIntegrator::universal_point(FemL,_UH,U);
+      BasicIntegrator::universal_point(FemL,_QH,Q);
+      FemL.x(x);
+
+      EQ.SetFemData(_QH);
+      //Die Zelldatensetzen
+      if(k%numcells == 0)
+      {
+	  //Wir sind am anfang einer neuen Zelle
+	  //Die CellData aus den LocalData hohlen.
+	  int IntegrCellNum = k/numcells;
+	  int PatchCellNum=PatchMeshNr2IntegratorNr(IntegrCellNum);
+	  
+	  universal_point(_QCH,QC,PatchCellNum);
+	  EQ.SetCellData(_QCH);
+      }
+      
+      EQ.point(h,_UH,x);
+
+      for (int i=0;i<FemH.n();i++)
+	{
+	  FemH.init_test_functions(_NN,weight,i);
+	  EQ.EstimatorForm(F.start(i),_UH,_NN);
+	}
+    }
+  delete IF;
+}
+
+
+/*---------------------------------------------------*/
+
+template<int DIM>
+void IntegratorQ1Q2<DIM>::EstimatorRhs(const DomainRightHandSide& RHS, LocalVector& F, const FemInterface& FemH, 
+    const FemInterface& FemL, const LocalData& Q, const LocalData& QC) const
+{
+  assert(FemH.n()==FemL.n());
+
+  F.ReInit(RHS.GetNcomp(),FemH.n());
+  F.zero();
+
+  IntegrationFormulaInterface* IF;
+  if (DIM==2) IF = new PatchFormula2d<9,QuadGauss9>;
+  else        IF = new PatchFormula3d<27,HexGauss27>;
+
+  Vertex<DIM> x, xi;
+
+  int numcells;
+  if(DIM==2) numcells = 4;
+  else numcells = 8;
+  
+  //Soviele Integr. Pkte je Zelle
+  numcells = IF->n()/numcells;
+  //Test, ist das sinnvollgewesen
+  if(IF->n()%numcells != 0)
+  {
+      std::cerr<<"Integrator Q1/Q2: Falsche Anzahl Zellen je Patch oder unzulaessige Integrationsformel!"<<std::endl;
+      abort();
+  }
+
+  for (int k=0; k<IF->n(); k++)
+    {
+      IF->xi(xi,k);
+      FemH.point(xi);
+      FemL.point(xi);
+      double vol = FemL.J();
+      double h  = Volume2MeshSize(vol);
+      double weight  = IF->w(k) * vol;
+      BasicIntegrator::universal_point(FemL,_QH,Q);
+      RHS.SetFemData(_QH);
+      //Die Zelldatensetzen
+      if(k%numcells == 0)
+      {
+	  //Wir sind am anfang einer neuen Zelle
+	  //Die CellData aus den LocalData hohlen.
+	  int IntegrCellNum = k/numcells;
+	  int PatchCellNum=PatchMeshNr2IntegratorNr(IntegrCellNum);
+	  
+	  universal_point(_QCH,QC,PatchCellNum);
+	  RHS.SetCellData(_QCH);
+      }
+      
+      RHS.SetCellSize(h);
+      FemL.x(x);
+
+      for (int i=0;i<FemH.n();i++)
+	{
+	  FemH.init_test_functions(_NN,weight,i);
+	  RHS.EstimatorRhs(F.start(i),_NN,x);
+	}
+    } 
+  delete IF;
+}
+
+/*---------------------------------------------------*/
+
+template<int DIM>
+void IntegratorQ1Q2<DIM>::EstimatorBoundaryRhs(const BoundaryRightHandSide& RHS, LocalVector& F, const FemInterface& FemH, 
+    const FemInterface& FemL, int ile, int col, const LocalData& Q, const LocalData& QC) const
+{
+  assert(FemH.n()==FemL.n());
+
+  F.ReInit(RHS.GetNcomp(),FemH.n());
+  F.zero();
+
+  IntegrationFormulaInterface* IF;
+  if (DIM==2) IF = new PatchFormula1d<3,LineGauss3>;
+  else        IF = new PatchFormula2d<9,QuadGauss9>;
+
+  Vertex<DIM> x, n;
+  Vertex<DIM-1> xi;
+
+  int numcells;
+  if(DIM==2) numcells = 2;
+  else numcells = 4;
+  
+  //Soviele Integr. Pkte je Zelle
+  numcells = IF->n()/numcells;
+  //Test, ist das sinnvollgewesen
+  if(IF->n()%numcells != 0)
+  {
+      std::cerr<<"Integrator Q1/Q2: Falsche Anzahl Zellen je Patch oder unzulaessige Integrationsformel!"<<std::endl;
+      abort();
+  }
+
+  for (int k=0; k<IF->n(); k++)
+    {
+      IF->xi(xi,k);
+      FemH.point_boundary(ile,xi);
+      FemL.point_boundary(ile,xi);
+      BasicIntegrator::universal_point(FemL,_QH,Q);
+      RHS.SetFemData(_QH);
+      FemL.x(x);
+      FemL.normal(n);
+      double  h = FemL.G();
+      double  weight = IF->w(k)*h;
+      //Die Zelldatensetzen
+      if(k%numcells == 0)
+      {
+	  //Wir sind am anfang einer neuen Zelle
+	  //Die CellData aus den LocalData hohlen.
+	  int IntegrCellNum = k/numcells;
+	  int PatchCellNum=PatchMeshNr2IntegratorNrBoundary(IntegrCellNum,ile);
+	  
+	  universal_point(_QCH,QC,PatchCellNum);
+	  RHS.SetCellData(_QCH);
+      }      
+      RHS.SetCellSize(h);
+      for (int i=0;i<FemH.n();i++)
+      {
+        FemH.init_test_functions(_NN,weight,i);
+        RHS.EstimatorBoundaryRhs(F.start(i),_NN,x,n,col);
+      }
+    }
+  delete IF;
+}
+
+/*---------------------------------------------------*/
+
+template<int DIM>
+void IntegratorQ1Q2<DIM>::EstimatorBoundaryForm(const BoundaryEquation& BE, LocalVector& F, const FemInterface& FemH, 
+    const FemInterface& FemL, const LocalVector& U, int ile, int col, LocalData& Q, const LocalData& QC) const
+{
+  assert(FemH.n()==FemL.n());
+
+  F.ReInit(BE.GetNcomp(),FemH.n());
+  F.zero();
+
+  IntegrationFormulaInterface* IF;
+  if (DIM==2) IF = new PatchFormula1d<3,LineGauss3>;
+  else        IF = new PatchFormula2d<9,QuadGauss9>;
+  
+  Vertex<DIM> x,n;
+  Vertex<DIM-1> xi;
+  
+  int numcells;
+  if(DIM==2) numcells = 2;
+  else numcells = 4;
+  
+  //Soviele Integr. Pkte je Zelle
+  numcells = IF->n()/numcells;
+  //Test, ist das sinnvollgewesen
+  if(IF->n()%numcells != 0)
+  {
+      std::cerr<<"Integrator Q1/Q2: Falsche Anzahl Zellen je Patch oder unzulaessige Integrationsformel!"<<std::endl;
+      abort();
+  }
+
+  for (int k=0; k<IF->n(); k++)
+    {
+      IF->xi(xi,k);
+      FemH.point_boundary(ile,xi);
+      FemL.point_boundary(ile,xi);
+      BasicIntegrator::universal_point(FemL,_UH,U);
+      BasicIntegrator::universal_point(FemL,_QH,Q);
+      FemL.x(x);
+      FemL.normal(n);
+      double  h = FemL.G();
+      double  weight = IF->w(k)*h;
+      BE.SetFemData(_QH);
+      //Die Zelldatensetzen
+      int IntegrCellNum = -1;
+      if(k%numcells == 0)
+      {
+	  //Wir sind am anfang einer neuen Zelle
+	  //Die CellData aus den LocalData hohlen.
+	  ///int IntegrCellNum = k/numcells;
+	  IntegrCellNum = k/numcells;
+	  int PatchCellNum=PatchMeshNr2IntegratorNrBoundary(IntegrCellNum,ile);
+	 
+	  BasicIntegrator::universal_point(_QCH,QC,PatchCellNum);
+	  BE.SetCellData(_QCH);
+      }
+      BE.pointboundary(h,_UH,x,n);
+      for (int i=0;i<FemH.n();i++)
+      {
+        FemH.init_test_functions(_NN,weight,i);
+        BE.EstimatorForm(F.start(i),_UH,_NN,col);
+      }
+    }
+  delete IF;
+}
+
+/*---------------------------------------------------*/
+//////////////////////////////////////////////////////
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /*---------------------------------------------------*/
 
 template<int DIM>
@@ -511,6 +812,33 @@ void IntegratorQ1Q2<DIM>::DiracRhsPoint(LocalVector& b, const FemInterface& FemH
   delete IF;
 }
 
+/*---------------------------------------------------*/
+
+template<int DIM>
+void IntegratorQ1Q2<DIM>::EstimatorDiracRhsPoint(LocalVector& b, const FemInterface& FemH, const FemInterface& FemL, 
+    const Vertex<DIM>& p, const DiracRightHandSide& DRHS, int j, const LocalData& Q, const LocalData& QC) const
+{
+  assert(FemH.n()==FemL.n());
+  b.zero();
+
+  IntegrationFormulaInterface* IF;
+  if (DIM==2) IF = new PatchFormula2d<9,QuadGauss9>;
+  else        IF = new PatchFormula3d<27,HexGauss27>;
+
+  Vertex<DIM> x;
+  FemH.point(p);
+  FemL.point(p);
+  FemL.x(x);
+  BasicIntegrator::universal_point(FemL,_QH,Q);
+  DRHS.SetFemData(_QH);
+
+  for (int i=0; i<FemH.n(); i++)
+    {
+      FemH.init_test_functions(_NN,1.,i);
+      DRHS.EstimatorDiracRhs(j,b.start(i),_NN,x);
+    }
+  delete IF;
+}
 /*---------------------------------------------------*/
 
 template<int DIM>

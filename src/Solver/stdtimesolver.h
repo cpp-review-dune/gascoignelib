@@ -56,8 +56,7 @@ protected:
 
   MatrixInterface*& GetMassMatrixPointer() {return _MMP;}
 
-  const TimePattern& GetTimePattern() const {return _TP;}
-  TimePattern& GetTimePattern() {return _TP;}
+
 
   virtual MatrixInterface* NewMassMatrix(int ncomp, const std::string& matrixtype);
   virtual std::string PrecondCGMass(GlobalVector& u, GlobalVector& f, const TimePattern& TP, double s=1.);
@@ -67,6 +66,9 @@ public:
   StdTimeSolver();
   ~StdTimeSolver();
 
+  const TimePattern& GetTimePattern() const {return _TP;}
+  TimePattern& GetTimePattern() {return _TP;}
+  
   void RegisterMatrix();
   void ReInitMatrix();
 

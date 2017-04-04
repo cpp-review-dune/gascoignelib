@@ -108,4 +108,20 @@ void ProblemDescriptorBase::SetTime(double time, double dt) const
   if (BIC)  BIC -> SetTime(time,dt);
   if (CI)   CI  -> SetTime(time,dt);
 }
+void ProblemDescriptorBase::SetTimeInfo(double t, double dt, double dt_plus, double theta_info,double theta_info_plus) const 
+{
+  if (EQ)   EQ  -> SetTimeInfo(t, dt, dt_plus, theta_info, theta_info_plus);
+  //if (ES)   ES  -> SetTimeInfo(t, dt, dt_plus, theta_info, theta_info_plus);
+  if (RHS)  RHS -> SetTimeInfo(t, dt, dt_plus, theta_info, theta_info_plus);
+  if (DD)   DD  -> SetTimeInfo(t, dt, dt_plus, theta_info, theta_info_plus);
+  //if (PD)   PD  -> SetTimeInfo(t, dt, dt_plus, theta_info, theta_info_plus);
+  if (BRHS) BRHS-> SetTimeInfo(t, dt, dt_plus, theta_info, theta_info_plus);
+  if (BE)   BE  -> SetTimeInfo(t, dt, dt_plus, theta_info, theta_info_plus);
+  //if (IC)   IC  -> SetTimeInfo(t, dt, dt_plus, theta_info, theta_info_plus);
+  //if (BIC)  BIC -> SetTimeInfo(t, dt, dt_plus, theta_info, theta_info_plus);
+  //if (CI)   CI  -> SetTimeInfo(t, dt, dt_plus, theta_info, theta_info_plus);
+}  
+
+
+
 }

@@ -97,6 +97,8 @@ class ProblemDescriptorBase : public ProblemDescriptorInterface
   const ComponentInformation*     GetComponentInformation    () const { return CI;}
 
   void SetTime(double time, double dt) const;
+  void SetTimeInfo(double t, double dt, double dt_plus, double theta_info,double theta_info_plus) const; 
+
 };
 
 

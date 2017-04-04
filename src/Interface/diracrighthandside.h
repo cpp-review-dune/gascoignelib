@@ -75,7 +75,17 @@ namespace Gascoigne
         std::cerr << "\"DiracRightHandSide::operator()\" not written!" << std::endl;
         abort();
       }
-
+      virtual void EstimatorDiracRhs(int i, VectorIterator b, const TestFunction& N, const Vertex2d& v) const
+      {
+        std::cerr << "\"DiracRightHandSide::EstimatorDiracRhs\" not written" << std::endl;
+        abort();
+      }
+      virtual void EstimatorDiracRhs(int i, VectorIterator b, const TestFunction& N, const Vertex3d& v) const     
+      {
+        std::cerr << "\"DiracRightHandSide::EstimatorDiracRhs\" not written" << std::endl;
+        abort();
+      }
+      
       virtual void operator()(int i, VectorIterator b, const TestFunction& N, const Vertex2d& v) const {
         b[_comps[i]] += N.m()* (*this)(i,v);
       }

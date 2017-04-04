@@ -63,6 +63,7 @@ public:
   void ReInit   (const MeshInterface* M);
   void Structure(SparseStructureInterface* SI) const;
   void Form(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const;
+  void EstimatorForm(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const;
   void Matrix(MatrixInterface& A, const GlobalVector& u, const Equation& EQ, double d) const;
   void StabForm(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const;
   void AddNodeVector(const std::string& name, const GlobalVector* q) const 

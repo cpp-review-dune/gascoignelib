@@ -78,10 +78,20 @@ public:
 
   void Rhs(const DomainRightHandSide& RHS, LocalVector& F, const FemInterface& FEM, 
       const LocalData& Q, const LocalData& QC) const;
+  void EstimatorRhs(const DomainRightHandSide& RHS, LocalVector& F, const FemInterface& FEM, 
+      const LocalData& Q, const LocalData& QC) const;    
+  void EstimatorForm(const Equation& EQ, LocalVector& F, const FemInterface& FEM, const LocalVector& U, 
+      const LocalData& Q, const LocalData& QC) const;
+  void EstimatorFormTime(const Equation& EQ, LocalVector& F, const FemInterface& FEM, const LocalVector& U, 
+      const LocalData& Q, const LocalData& QC) const;      
   void Form(const Equation& EQ, LocalVector& F, const FemInterface& FEM, const LocalVector& U, 
       const LocalData& Q, const LocalData& QC) const;
   void AdjointForm(const Equation& EQ, LocalVector& F, const FemInterface& FEM, const LocalVector& U, 
       const LocalData& Q, const LocalData& QC) const;
+  void EstimatorBoundaryForm(const BoundaryEquation& BE, LocalVector& F, const FemInterface& FEM, const LocalVector& U, int ile, int col, 
+      const LocalData& Q, const LocalData& QC) const;
+  void EstimatorBoundaryFormTime(const BoundaryEquation& BE, LocalVector& F, const FemInterface& FEM, const LocalVector& U, int ile, int col, 
+      const LocalData& Q, const LocalData& QC) const;      
   void BoundaryForm(const BoundaryEquation& BE, LocalVector& F, const FemInterface& FEM, const LocalVector& U, int ile, int col, 
       const LocalData& Q, const LocalData& QC) const;
   void Matrix(const Equation& EQ, EntryMatrix& E, const FemInterface& FEM, const LocalVector& U, 
@@ -95,6 +105,8 @@ public:
   void RhsPoint(LocalVector& b, const FemInterface& E, const Vertex<DIM>& p, int comp) const;
   void DiracRhsPoint(LocalVector& b, const FemInterface& E, const Vertex<DIM>& p, const DiracRightHandSide& DRHS, int j,
       const LocalData& Q, const LocalData& QC) const;
+  void EstimatorDiracRhsPoint(LocalVector& b, const FemInterface& E, const Vertex<DIM>& p, const DiracRightHandSide& DRHS, int j,
+      const LocalData& Q, const LocalData& QC) const;    
   double ComputePointValue(const FemInterface& E, const Vertex<DIM>& p, const LocalVector& U, int comp) const;
   double ComputeDomainFunctional(const DomainFunctional& F, const FemInterface& FEM, const LocalVector& U,
       const LocalData& Q, const LocalData& QC) const;
@@ -110,7 +122,10 @@ public:
 
   void BoundaryRhs(const BoundaryRightHandSide& RHS, LocalVector& F, const FemInterface& FEM, int ile, int col,
       const LocalData& Q, const LocalData& QC) const;
-
+      
+  void EstimatorBoundaryRhs(const BoundaryRightHandSide& RHS, LocalVector& F, const FemInterface& FEM, int ile, int col,
+      const LocalData& Q, const LocalData& QC) const;
+      
   void IntegrateMassDiag(DoubleVector& F, const FemInterface& FEM) const ;
 
   void IntegrateBoundaryMassDiag(DoubleVector& F, const FemInterface& FEM, int ile, int col) const ;

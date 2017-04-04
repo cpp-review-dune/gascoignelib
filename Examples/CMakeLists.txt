@@ -1,4 +1,6 @@
 SUBDIRS(
+   Theta-GAS
+   ThetaNS
    Example1
    Example2
    Example3

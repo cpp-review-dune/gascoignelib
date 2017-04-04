@@ -145,6 +145,12 @@ namespace Gascoigne
       /// vector - rhs (integration)
       //
       virtual void Rhs(VectorInterface& f, double d=1.) const=0;
+      virtual void EstimatorRhs(VectorInterface& f, double d=1.) const
+      {
+        std::cerr << "\"SolverInterface::EstimatorRhs\" not written!" << std::endl;
+        abort();
+      }
+
       virtual void TimeRhsOperator(VectorInterface& f, const VectorInterface& u) const {
         std::cerr << "\"SolverInterface::TimeRhsOperator\" not written!" << std::endl;
         abort();
@@ -173,6 +179,17 @@ namespace Gascoigne
       /// vector - residual (integration)
       //
       virtual void Form(VectorInterface& y, const VectorInterface& x, double d) const=0;
+      virtual void EstimatorForm(VectorInterface& y, const VectorInterface& x, double d) const
+      {
+        std::cerr << "\"SolverInterface::EstimatorForm\" not written!" << std::endl;
+        abort();
+      }
+      virtual void EstimatorFormTime(VectorInterface& y, const VectorInterface& x, double d) const
+      {
+        std::cerr << "\"SolverInterface::EstimatorFormTime\" not written!" << std::endl;
+        abort();
+      }
+      
       virtual void AdjointForm(VectorInterface& y, const VectorInterface& x, double d) const {
         std::cerr << "\"SolverInterface::AdjointForm\" not written!" << std::endl;
         abort();

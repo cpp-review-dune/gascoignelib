@@ -160,7 +160,146 @@ void GalerkinIntegrator<DIM>::BoundaryRhs(const BoundaryRightHandSide& f, LocalV
 	}
     }
 }
+/* ----------------------------------------- */
 
+template<int DIM>
+void GalerkinIntegrator<DIM>::EstimatorRhs(const DomainRightHandSide& f, LocalVector& F, const FemInterface& FEM, 
+    const LocalData& Q, const LocalData& QC) const
+{
+  F.ReInit(f.GetNcomp(),FEM.n());
+
+  BasicIntegrator::universal_point(_QCH,QC);
+  f.SetCellData(_QCH);
+
+  const IntegrationFormulaInterface& IF = *FormFormula();
+
+  F.zero();
+  Vertex<DIM> x, xi;
+
+  for (int k=0; k<IF.n(); k++)
+    {
+		IF.xi(xi,k);
+		FEM.point(xi);
+		double vol = FEM.J();
+                double h  = Volume2MeshSize(vol);
+		double weight  = IF.w(k) * vol;
+		BasicIntegrator::universal_point(FEM,_QH,Q);
+                f.SetCellSize(h);
+		f.SetFemData(_QH);
+		FEM.x(x);
+		for (int i=0;i<FEM.n();i++)
+			{
+			FEM.init_test_functions(_NN,weight,i);
+			f.EstimatorRhs(F.start(i),_NN,x);
+			}
+    }
+}
+
+/* ----------------------------------------- */
+
+template<int DIM>
+void GalerkinIntegrator<DIM>::EstimatorBoundaryRhs(const BoundaryRightHandSide& f, LocalVector& F, const FemInterface& FEM, 
+    int ile, int col, const LocalData& Q, const LocalData& QC) const
+{
+  F.ReInit(f.GetNcomp(),FEM.n());
+
+  BasicIntegrator::universal_point(_QCH,QC);
+  f.SetCellData(_QCH);
+
+  const IntegrationFormulaInterface& IF = *BoundaryFormula();
+
+  F.zero();
+  Vertex<DIM> x, n;
+  Vertex<DIM-1> xi;
+
+  for (int k=0; k<IF.n(); k++)
+    {
+      IF.xi(xi,k);
+      FEM.point_boundary(ile,xi);
+      BasicIntegrator::universal_point(FEM,_QH,Q);
+      f.SetFemData(_QH);
+      FEM.x(x);
+      FEM.normal(n);
+      double  h = FEM.G();
+      double  weight = IF.w(k)*h;
+      f.SetCellSize(h);
+      for (int i=0;i<FEM.n();i++)
+	{
+	  FEM.init_test_functions(_NN,weight,i);
+	  f.EstimatorBoundaryRhs(F.start(i),_NN,x,n,col);
+	}
+    }
+}
+/* ----------------------------------------- */
+
+template<int DIM>
+void GalerkinIntegrator<DIM>::EstimatorForm(const Equation& EQ, LocalVector& F, const FemInterface& FEM, const LocalVector& U, 
+    const LocalData& Q, const LocalData& QC) const
+{
+  F.ReInit(EQ.GetNcomp(),FEM.n());
+
+  BasicIntegrator::universal_point(_QCH,QC);
+  EQ.SetCellData(_QCH);
+
+  const IntegrationFormulaInterface& IF = *FormFormula();
+
+  F.zero();
+  Vertex<DIM> x, xi;
+
+  for (int k=0; k<IF.n(); k++)
+    {
+      IF.xi(xi,k);
+      FEM.point(xi);
+      double vol = FEM.J();
+      double h  = Volume2MeshSize(vol);
+      double weight  = IF.w(k) * vol;
+      BasicIntegrator::universal_point(FEM,_UH,U);
+      BasicIntegrator::universal_point(FEM,_QH,Q);
+      FEM.x(x);
+      EQ.SetFemData(_QH);
+      EQ.point(h,_UH,x);
+      for (int i=0;i<FEM.n();i++)
+	{
+	  FEM.init_test_functions(_NN,weight,i);
+	  EQ.EstimatorForm(F.start(i),_UH,_NN);
+	}
+    }
+}
+/* ----------------------------------------- */
+
+template<int DIM>
+void GalerkinIntegrator<DIM>::EstimatorFormTime(const Equation& EQ, LocalVector& F, const FemInterface& FEM, const LocalVector& U, 
+    const LocalData& Q, const LocalData& QC) const
+{
+  F.ReInit(EQ.GetNcomp(),FEM.n());
+
+  BasicIntegrator::universal_point(_QCH,QC);
+  EQ.SetCellData(_QCH);
+
+  const IntegrationFormulaInterface& IF = *FormFormula();
+
+  F.zero();
+  Vertex<DIM> x, xi;
+
+  for (int k=0; k<IF.n(); k++)
+    {
+      IF.xi(xi,k);
+      FEM.point(xi);
+      double vol = FEM.J();
+      double h  = Volume2MeshSize(vol);
+      double weight  = IF.w(k) * vol;
+      BasicIntegrator::universal_point(FEM,_UH,U);
+      BasicIntegrator::universal_point(FEM,_QH,Q);
+      FEM.x(x);
+      EQ.SetFemData(_QH);
+      EQ.point(h,_UH,x);
+      for (int i=0;i<FEM.n();i++)
+	{
+	  FEM.init_test_functions(_NN,weight,i);
+	  EQ.EstimatorFormTime(F.start(i),_UH,_NN);
+	}
+    }
+}
 /* ----------------------------------------- */
 
 template<int DIM>
@@ -262,7 +401,78 @@ void GalerkinIntegrator<DIM>::AdjointForm(const Equation& EQ, LocalVector& F, co
 	}
     }
 }
+/* ----------------------------------------- */
 
+template<int DIM>
+void GalerkinIntegrator<DIM>::EstimatorBoundaryForm(const BoundaryEquation& BE, LocalVector& F, const FemInterface& FEM, const LocalVector& U, 
+    int ile, int col, const LocalData& Q, const LocalData& QC) const
+{
+  F.ReInit(BE.GetNcomp(),FEM.n());
+
+  BasicIntegrator::universal_point(_QCH,QC);
+  BE.SetCellData(_QCH);
+
+  const IntegrationFormulaInterface& IF = *BoundaryFormula();
+
+  F.zero();
+  Vertex<DIM> x,n;
+  Vertex<DIM-1> xi;
+
+  for (int k=0; k<IF.n(); k++)
+    {
+      IF.xi(xi,k);
+      FEM.point_boundary(ile,xi);
+      BasicIntegrator::universal_point(FEM,_UH,U);
+      BasicIntegrator::universal_point(FEM,_QH,Q);
+      FEM.x(x);
+      FEM.normal(n);
+      double  h = FEM.G();
+      double  weight = IF.w(k)*h;
+      BE.SetFemData(_QH);
+      BE.pointboundary(h,_UH,x,n);
+      for (int i=0;i<FEM.n();i++)
+        {
+          FEM.init_test_functions(_NN,weight,i);
+          BE.EstimatorForm(F.start(i),_UH,_NN,col);
+        }
+    }
+}
+/* ----------------------------------------- */
+
+template<int DIM>
+void GalerkinIntegrator<DIM>::EstimatorBoundaryFormTime(const BoundaryEquation& BE, LocalVector& F, const FemInterface& FEM, const LocalVector& U, 
+    int ile, int col, const LocalData& Q, const LocalData& QC) const
+{
+  F.ReInit(BE.GetNcomp(),FEM.n());
+
+  BasicIntegrator::universal_point(_QCH,QC);
+  BE.SetCellData(_QCH);
+
+  const IntegrationFormulaInterface& IF = *BoundaryFormula();
+
+  F.zero();
+  Vertex<DIM> x,n;
+  Vertex<DIM-1> xi;
+
+  for (int k=0; k<IF.n(); k++)
+    {
+      IF.xi(xi,k);
+      FEM.point_boundary(ile,xi);
+      BasicIntegrator::universal_point(FEM,_UH,U);
+      BasicIntegrator::universal_point(FEM,_QH,Q);
+      FEM.x(x);
+      FEM.normal(n);
+      double  h = FEM.G();
+      double  weight = IF.w(k)*h;
+      BE.SetFemData(_QH);
+      BE.pointboundary(h,_UH,x,n);
+      for (int i=0;i<FEM.n();i++)
+        {
+          FEM.init_test_functions(_NN,weight,i);
+          BE.EstimatorFormTime(F.start(i),_UH,_NN,col);
+        }
+    }
+}
 /* ----------------------------------------- */
 
 template<int DIM>
@@ -541,7 +751,28 @@ void GalerkinIntegrator<DIM>::DiracRhsPoint(LocalVector& b, const FemInterface& 
       DRHS.operator()(j,b.start(i),_NN,x);
     }
 }
+/* ----------------------------------------- */
+template<int DIM>
+void GalerkinIntegrator<DIM>::EstimatorDiracRhsPoint(LocalVector& b, const FemInterface& E, const Vertex<DIM>& p, const DiracRightHandSide& DRHS, int j, 
+    const LocalData& Q, const LocalData& QC) const
+{
+  b.zero();
 
+  BasicIntegrator::universal_point(_QCH,QC);
+  DRHS.SetCellData(_QCH);
+
+  Vertex<DIM> x;
+  E.point(p);     
+  E.x(x);
+  BasicIntegrator::universal_point(E,_QH,Q);
+  DRHS.SetFemData(_QH);
+
+  for (int i=0; i<E.n(); i++)
+    {
+      E.init_test_functions(_NN,1.,i);
+      DRHS.EstimatorDiracRhs(j,b.start(i),_NN,x);
+    }
+}
 /* ----------------------------------------- */
 template<int DIM>
 double GalerkinIntegrator<DIM>::ComputePointValue(const FemInterface& E, const Vertex<DIM>& p, const LocalVector& U, int comp) const

@@ -23,7 +23,8 @@
 
 
 #include  "simplematrix.h"
-
+#include <ios>    
+#include <iomanip>
 
 using namespace std;
 
@@ -36,12 +37,17 @@ ostream& SimpleMatrix::Write(ostream& os) const
   int n = ST.n();
   for(int i=0;i<n;i++)
     {
-      os << i << endl;
+//       os << i << endl;
+//       for(int pos=ST.start(i);pos<ST.stop(i);pos++)
+//         {
+//           os << ST.col(pos) << ": " << value[pos] << ", ";
+//         }
+//       os << endl;
       for(int pos=ST.start(i);pos<ST.stop(i);pos++)
         {
-          os << ST.col(pos) << ": " << value[pos] << ", ";
+          os << i<<" "<< ST.col(pos) << " " <<scientific<<setprecision(20)<<value[pos] << endl;
         }
-      os << endl;
+
     }
 
   return os;

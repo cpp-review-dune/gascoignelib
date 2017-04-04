@@ -74,6 +74,8 @@ namespace Gascoigne
       virtual void SetFemData(FemData& q) const {}
       virtual void SetCellData(CellData& q) const {}
       virtual void SetParameterData(LocalParameterData& q) const {}
+      virtual void SetTimeInfo(double t, double dt, double dt_plus, double theta_info,double theta_info_plus) const {}
+
  };
 }
 

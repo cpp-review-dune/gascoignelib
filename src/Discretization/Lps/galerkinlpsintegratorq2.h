@@ -61,6 +61,8 @@ public:
 
   void Form(const Equation& EQ, LocalVector& F, const FemInterface& FEM, const LocalVector&U, 
       const LocalData& Q, const LocalData& QC) const;
+  void EstimatorForm(const Equation& EQ, LocalVector& F, const FemInterface& FEM, const LocalVector&U, 
+      const LocalData& Q, const LocalData& QC) const;
   void Matrix(const Equation& EQ, EntryMatrix& E, const FemInterface& FEM, const LocalVector& U, 
       const LocalData& Q, const LocalData& QC) const;
 };

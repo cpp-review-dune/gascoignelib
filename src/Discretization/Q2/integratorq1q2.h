@@ -58,9 +58,21 @@ class IntegratorQ1Q2 : public BasicIntegrator
       int ile, int col, const LocalData& Q, const LocalData& QC) const;
   void BoundaryForm(const BoundaryEquation& BE, LocalVector& F, const FemInterface& FemH, const FemInterface& FemL, 
       const LocalVector& U, int ile, int col, LocalData& Q, const LocalData& QC) const;
+      
+   void EstimatorRhs(const DomainRightHandSide& RHS, LocalVector& F, const FemInterface& FemH, 
+      const FemInterface& FemL, const LocalData& Q, const LocalData& QC) const;
+  void EstimatorForm(const Equation& EQ, LocalVector& F, const FemInterface& FemH, 
+      const FemInterface& FemL, const LocalVector& U, const LocalData& Q, const LocalData& QC) const;
+  void EstimatorBoundaryRhs(const BoundaryRightHandSide& RHS, LocalVector& F, const FemInterface& FemH, const FemInterface& FemL, 
+      int ile, int col, const LocalData& Q, const LocalData& QC) const;
+  void EstimatorBoundaryForm(const BoundaryEquation& BE, LocalVector& F, const FemInterface& FemH, const FemInterface& FemL, 
+      const LocalVector& U, int ile, int col, LocalData& Q, const LocalData& QC) const;     
+      
+      
   void DiracRhsPoint(LocalVector& b, const FemInterface& FemH, const FemInterface& FemL, const Vertex<DIM>& p, 
       const DiracRightHandSide& DRHS, int j, const LocalData& Q, const LocalData& QC) const;
-
+  void EstimatorDiracRhsPoint(LocalVector& b, const FemInterface& FemH, const FemInterface& FemL, const Vertex<DIM>& p, 
+      const DiracRightHandSide& DRHS, int j, const LocalData& Q, const LocalData& QC) const;
   double MassMatrix(EntryMatrix& E, const FemInterface& FemH, const FemInterface& FemL) const;
   void MassForm(const TimePattern& TP, LocalVector& F, const FemInterface& FemH, const FemInterface& FemL, const LocalVector& U) const;
 };

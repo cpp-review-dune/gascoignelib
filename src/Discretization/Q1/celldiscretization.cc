@@ -86,6 +86,44 @@ void CellDiscretization::Transformation(FemInterface::Matrix& T, int iq) const
 /* ----------------------------------------- */
 /* ----------------------------------------- */
 /* ----------------------------------------- */
+void CellDiscretization::EstimatorForm(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const
+{
+  nmatrix<double> T;
+  
+  GlobalToGlobalData();
+  EQ.SetParameterData(__QP);
+  
+  for(int iq=0;iq<GetMesh()->ncells();++iq)
+    {
+      Transformation(T,iq);
+      GetFem()->ReInit(T);
+
+      GlobalToLocal(__U,u,iq);
+      //EQ.cell(GetMesh(),iq,__U,__QN);
+      GetIntegrator()->EstimatorForm(EQ,__F,*GetFem(),__U,__QN,__QC);
+      LocalToGlobal(f,__F,iq,d);
+    }
+}
+/* ----------------------------------------- */
+void CellDiscretization::EstimatorFormTime(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const
+{
+  nmatrix<double> T;
+  
+  GlobalToGlobalData();
+  EQ.SetParameterData(__QP);
+  
+  for(int iq=0;iq<GetMesh()->ncells();++iq)
+    {
+      Transformation(T,iq);
+      GetFem()->ReInit(T);
+
+      GlobalToLocal(__U,u,iq);
+      //EQ.cell(GetMesh(),iq,__U,__QN);
+      GetIntegrator()->EstimatorFormTime(EQ,__F,*GetFem(),__U,__QN,__QC);
+      LocalToGlobal(f,__F,iq,d);
+    }
+}
+/* ----------------------------------------- */
 
 void CellDiscretization::Form(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const
 {
@@ -126,7 +164,64 @@ void CellDiscretization::AdjointForm(GlobalVector& f, const GlobalVector& u, con
       LocalToGlobal(f,__F,iq,d);
     }
 }
+/* ----------------------------------------- */
 
+void CellDiscretization::EstimatorBoundaryForm(GlobalVector& f, const GlobalVector& u, const IntSet& Colors, const BoundaryEquation& BE, double d) const
+{
+  nmatrix<double> T;
+  
+  GlobalToGlobalData();
+  BE.SetParameterData(__QP);
+  
+  for(IntSet::const_iterator p=Colors.begin();p!=Colors.end();p++)
+    {
+      int col = *p;
+      const IntVector& q = *GetMesh()->CellOnBoundary(col);
+      const IntVector& l = *GetMesh()->LocalOnBoundary(col);
+      for (int i=0; i<q.size(); i++)
+        {
+          int iq  = q[i];
+          int ile = l[i];
+
+          Transformation(T,iq);
+          GetFem()->ReInit(T);
+
+          GlobalToLocal(__U,u,iq);
+
+          GetIntegrator()->EstimatorBoundaryForm(BE,__F,*GetFem(),__U,ile,col,__QN,__QC);
+          LocalToGlobal(f,__F,iq,d);
+        }
+    }
+}
+/* ----------------------------------------- */
+
+void CellDiscretization::EstimatorBoundaryFormTime(GlobalVector& f, const GlobalVector& u, const IntSet& Colors, const BoundaryEquation& BE, double d) const
+{
+  nmatrix<double> T;
+  
+  GlobalToGlobalData();
+  BE.SetParameterData(__QP);
+  
+  for(IntSet::const_iterator p=Colors.begin();p!=Colors.end();p++)
+    {
+      int col = *p;
+      const IntVector& q = *GetMesh()->CellOnBoundary(col);
+      const IntVector& l = *GetMesh()->LocalOnBoundary(col);
+      for (int i=0; i<q.size(); i++)
+        {
+          int iq  = q[i];
+          int ile = l[i];
+
+          Transformation(T,iq);
+          GetFem()->ReInit(T);
+
+          GlobalToLocal(__U,u,iq);
+
+          GetIntegrator()->EstimatorBoundaryFormTime(BE,__F,*GetFem(),__U,ile,col,__QN,__QC);
+          LocalToGlobal(f,__F,iq,d);
+        }
+    }
+}
 /* ----------------------------------------- */
 
 void CellDiscretization::BoundaryForm(GlobalVector& f, const GlobalVector& u, const IntSet& Colors, const BoundaryEquation& BE, double d) const
@@ -319,6 +414,88 @@ void CellDiscretization::ComputeError(const GlobalVector& u, LocalVector& err, c
 
 /* ----------------------------------------- */
 
+void CellDiscretization::ComputeErrorSubdomain(const GlobalVector& u, LocalVector& err, const ExactSolution* ES,int subdomain) const
+{
+  int ncomp = u.ncomp();
+  err.ncomp() = ncomp;
+  err.reservesize(3);
+  err = 0.;
+
+  GlobalVector lerr(ncomp,3); 
+  lerr.zero();
+
+  nmatrix<double> T;
+  
+  GlobalToGlobalData();
+  ES->SetParameterData(__QP);
+  //Die folgende Schleife lauft uber alle Zellen 
+  bool cellinsubdomain;
+  for(int iq=0; iq<GetMesh()->ncells(); iq++)
+    {
+      //Jetzt muss getestet werden ob die Zelle iq im passenden Teilgebiet liegt
+      cellinsubdomain=true;
+      int dim = GetMesh()->dimension();
+      int ne  = GetMesh()->nodes_per_cell(iq);
+      // Die folgende Funktion ermittelt die Knotennummern der Zelle
+      IntVector indices = GetMesh()->IndicesOfCell(iq);
+      
+      assert(ne==indices.size());
+	    
+      if(dim==2)
+	{
+	  for(int ii=0;ii<ne;ii++)
+	    {
+	      //GetMesh()->vertex2d(indices[ii]) bestimmt die Koordinate des Knotens mit Nummer indices[ii]
+	      Vertex2d v = GetMesh()->vertex2d(indices[ii]);
+	      //chi(v)
+	      //if(chi(v)!=subdomain ) cellinsubdomain=false;
+	      if(subdomain==1)
+	      {
+		if(v.y() < 0.5 && v.y() > -0.5)
+		  {
+		    cellinsubdomain=false;
+		  }
+	      }
+	      else if(subdomain==-1)
+		{
+		  if(v.y() < -0.5 || v.y() > 0.5 )
+		  {
+		    cellinsubdomain=false;
+		  }
+		}  
+	      else std::cout<<"subdomain benoetigt einen Wert mit 1 oder -1" ;
+	    }
+	}
+      if(dim==3)
+      {
+	  std::cout<<"Function ComputeErrorPart for dimension 3 is not written";
+      }
+      if(cellinsubdomain==true)
+      {
+	Transformation(T,iq);
+	GetFem()->ReInit(T);
+	GlobalToLocal(__U,u,iq);
+	GetIntegrator()->ErrorsByExactSolution(lerr,*GetFem(),*ES,__U,__QN,__QC);
+
+	for(int c=0;c<ncomp;c++)  
+	  {
+	    //Berechnet den L^2 Fehler
+	    err(0,c) += lerr(0,c);
+	    //Berechnet den H^1 Fehler
+	    err(1,c) += lerr(1,c);
+	    //Berechnet den L^inf Fehler
+	    err(2,c) = Gascoigne::max(err(2,c),lerr(2,c));
+	  }
+	}      
+    }
+  for(int c=0;c<ncomp;c++)  
+    {
+      err(0,c) = sqrt(err(0,c));
+      err(1,c) = sqrt(err(1,c));
+    }
+}
+/* ----------------------------------------- */
+
 void CellDiscretization::AssembleError(GlobalVector& eta, const GlobalVector& u, LocalVector& err, const ExactSolution* ES) const
 {
   int ncomp = u.ncomp();
@@ -364,7 +541,56 @@ void CellDiscretization::AssembleError(GlobalVector& eta, const GlobalVector& u,
       err(1,c) = sqrt(err(1,c));
     }
 }
+/* ----------------------------------------- */
 
+void CellDiscretization::EstimatorRhs(GlobalVector& f, const DomainRightHandSide& RHS, double s) const
+{
+  nmatrix<double> T;
+  
+  GlobalToGlobalData();
+  RHS.SetParameterData(__QP);
+  
+  for(int iq=0;iq<GetMesh()->ncells();++iq)
+    {
+      Transformation(T,iq);
+      GetFem()->ReInit(T);
+
+      GlobalToLocalData(iq);
+      GetIntegrator()->EstimatorRhs(RHS,__F,*GetFem(),__QN,__QC);
+      LocalToGlobal(f,__F,iq,s);
+    }
+}
+
+/* ----------------------------------------- */
+
+void CellDiscretization::EstimatorBoundaryRhs(GlobalVector& f, const IntSet& Colors, const BoundaryRightHandSide& NRHS, double s) const
+{
+  nmatrix<double> T;
+  
+  GlobalToGlobalData();
+  NRHS.SetParameterData(__QP);
+  
+  for(IntSet::const_iterator p=Colors.begin();p!=Colors.end();p++)
+    {
+      int col = *p;
+      const IntVector& q = *GetMesh()->CellOnBoundary(col);
+      const IntVector& l = *GetMesh()->LocalOnBoundary(col);
+      for (int i=0; i<q.size(); i++)
+	{
+	  int iq  = q[i];
+	  int ile = l[i];
+
+	  Transformation(T,iq);
+	  GetFem()->ReInit(T);
+
+	  GlobalToLocalData(iq);
+	  GetIntegrator()->EstimatorBoundaryRhs(NRHS,__F,*GetFem(),ile,col,__QN,__QC);
+	  LocalToGlobal(f,__F,iq,s);
+	}
+    }
+}
+
+/* ----------------------------------------- */
 /* ----------------------------------------- */
 
 void CellDiscretization::Rhs(GlobalVector& f, const DomainRightHandSide& RHS, double s) const
@@ -539,6 +765,103 @@ void CellDiscretization::DiracRhsPoint(GlobalVector& f,const DiracRightHandSide&
 }
 
 /*-----------------------------------------*/
+
+
+
+
+/* ----------------------------------------- */
+
+void CellDiscretization::EstimatorDiracRhs(GlobalVector& f, const DiracRightHandSide& DRHS, double s) const
+{
+  int dim = GetMesh()->dimension();
+  vector<int> comps = DRHS.GetComps();
+  int nn = comps.size();
+
+  vector<double> up(nn,0);
+ 
+  if (dim == 2)
+    {
+      vector<Vertex2d> v2d = DRHS.GetPoints2d();
+      assert(nn==v2d.size());
+      
+      for(int i=0;i<nn;++i)
+	{
+	  EstimatorDiracRhsPoint(f,DRHS,v2d[i],i,s);
+	}
+    }
+  else if (dim == 3)
+    {
+      vector<Vertex3d> v3d = DRHS.GetPoints3d();
+      assert(nn==v3d.size());
+      for(int i=0;i<nn;++i)
+	{
+	  EstimatorDiracRhsPoint(f,DRHS,v3d[i],i,s);
+	}
+    }
+  else
+    {
+      cerr << "wrong dim = " << dim << endl;
+      abort();
+    }
+}
+
+/* ----------------------------------------- */
+
+void CellDiscretization::EstimatorDiracRhsPoint(GlobalVector& f,const DiracRightHandSide& DRHS,const Vertex2d& p0,int i,double s) const
+{
+  __F.ReInit(f.ncomp(),GetFem()->n());
+
+  Vertex2d Tranfo_p0;
+   
+  int iq = GetCellNumber(p0,Tranfo_p0);
+  if (iq==-1)
+    {
+      cerr << "CellDiscretization::EstimatorDiracRhsPoint point not found\n";
+      abort();
+    }
+  
+  nmatrix<double> T;
+  Transformation(T,iq);
+  GetFem()->ReInit(T);
+  
+  GlobalToLocalData(iq);
+  GlobalToGlobalData();
+  DRHS.SetParameterData(__QP);
+
+  GetIntegrator()->EstimatorDiracRhsPoint(__F,*GetFem(),Tranfo_p0,DRHS,i,__QN,__QC);
+  LocalToGlobal(f,__F,iq,s);
+}
+
+/* ----------------------------------------- */
+
+void CellDiscretization::EstimatorDiracRhsPoint(GlobalVector& f,const DiracRightHandSide& DRHS,const Vertex3d& p0,int i,double s) const
+{
+  __F.ReInit(f.ncomp(),GetFem()->n());
+
+  Vertex3d Tranfo_p0;
+   
+  int iq = GetCellNumber(p0,Tranfo_p0);
+  if (iq==-1)
+    {
+      cerr << "CellDiscretization::DiracRhsPoint point not found\n";
+      abort();
+    }
+  
+  nmatrix<double> T;
+  Transformation(T,iq);
+  GetFem()->ReInit(T);
+  
+  GlobalToLocalData(iq);
+  GlobalToGlobalData();
+  DRHS.SetParameterData(__QP);
+
+  GetIntegrator()->EstimatorDiracRhsPoint(__F,*GetFem(),Tranfo_p0,DRHS,i,__QN,__QC);
+  LocalToGlobal(f,__F,iq,s);
+}
+
+/*-----------------------------------------*/
+
+
 
 double CellDiscretization::ComputeBoundaryFunctional(const GlobalVector& u, const IntSet& Colors, const BoundaryFunctional& BF) const 
 {

@@ -72,6 +72,22 @@ namespace Gascoigne
         std::cerr << "\"IntegratorInterface::Rhs\" not written!" << std::endl;
         abort();
       }
+      
+      virtual void EstimatorRhs(const DomainRightHandSide& RHS, LocalVector& F, const FemInterface& FEM, 
+          const LocalData& Q, const LocalData& QC) const {
+        std::cerr << "\"IntegratorInterface::EstimatorRhs\" not written!" << std::endl;
+        abort();
+      }      
+      virtual void EstimatorForm(const Equation& EQ, LocalVector& F, const FemInterface& FEM, const LocalVector& U, 
+          const LocalData& Q, const LocalData& QC) const {
+        std::cerr << "\"IntegratorInterface::EstimatorForm\" not written!" << std::endl;
+        abort();
+      }
+      virtual void EstimatorFormTime(const Equation& EQ, LocalVector& F, const FemInterface& FEM, const LocalVector& U, 
+          const LocalData& Q, const LocalData& QC) const {
+        std::cerr << "\"IntegratorInterface::EstimatorFormTime\" not written!" << std::endl;
+        abort();
+      }      
       virtual void Form(const Equation& EQ, LocalVector& F, const FemInterface& FEM, const LocalVector& U, 
           const LocalData& Q, const LocalData& QC) const {
         std::cerr << "\"IntegratorInterface::Form\" not written!" << std::endl;
@@ -82,12 +98,27 @@ namespace Gascoigne
         std::cerr << "\"IntegratorInterface::AdjointForm\" not written!" << std::endl;
         abort();
       }
-
+      
+      virtual void EstimatorBoundaryRhs(const BoundaryRightHandSide& RHS, LocalVector& F, const FemInterface& FEM, int ile, 
+          int col, const LocalData& Q, const LocalData& QC) const {
+        std::cerr << "\"IntegratorInterface::EstimatorBoundaryRhs\" not written!" << std::endl;
+        abort();
+      }
       virtual void BoundaryRhs(const BoundaryRightHandSide& RHS, LocalVector& F, const FemInterface& FEM, int ile, 
           int col, const LocalData& Q, const LocalData& QC) const {
         std::cerr << "\"IntegratorInterface::BoundaryRhs\" not written!" << std::endl;
         abort();
       }
+      virtual void EstimatorBoundaryForm(const BoundaryEquation& BE, LocalVector& F, const FemInterface& FEM, const LocalVector& U, 
+          int ile, int col, const LocalData& Q, const LocalData& QC) const {
+        std::cerr << "\"IntegratorInterface::EstimatorBoundaryForm\" not written!" << std::endl;
+        abort();
+      }
+      virtual void EstimatorBoundaryFormTime(const BoundaryEquation& BE, LocalVector& F, const FemInterface& FEM, const LocalVector& U, 
+          int ile, int col, const LocalData& Q, const LocalData& QC) const {
+        std::cerr << "\"IntegratorInterface::EstimatorBoundaryFormTime\" not written!" << std::endl;
+        abort();
+      }      
       virtual void BoundaryForm(const BoundaryEquation& BE, LocalVector& F, const FemInterface& FEM, const LocalVector& U, 
           int ile, int col, const LocalData& Q, const LocalData& QC) const {
         std::cerr << "\"IntegratorInterface::BoundaryForm\" not written!" << std::endl;
@@ -150,6 +181,20 @@ namespace Gascoigne
         std::cerr << "\"IntegratorInterface::DiracRhsPoint\" not written!" << std::endl;
         abort();
       }
+      
+      virtual void EstimatorDiracRhsPoint(LocalVector& b, const FemInterface& E, const Vertex2d& p, const DiracRightHandSide& DRHS, 
+          int i, const LocalData& Q, const LocalData& QC) const {
+        std::cerr << "\"IntegratorInterface::EstimatorDiracRhsPoint\" not written!" << std::endl;
+        abort();
+      }
+      virtual void EstimatorDiracRhsPoint(LocalVector& b, const FemInterface& E, const Vertex3d& p, const DiracRightHandSide& DRHS, 
+          int i, const LocalData& Q, const LocalData& QC) const {
+        std::cerr << "\"IntegratorInterface::EstimatorDiracRhsPoint\" not written!" << std::endl;
+        abort();
+      }
+      
+      
+      
       virtual double ComputePointValue(const FemInterface& E, const Vertex2d& p, const LocalVector& U, int comp) const {
         std::cerr << "\"IntegratorInterface::ComputePointValue\" not written!" << std::endl;
         abort();

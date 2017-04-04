@@ -412,6 +412,7 @@ void StdMultiLevelSolver::mgstep(vector<double>& res, vector<double>& rw,
  int l, int finelevel, int coarselevel, string& p0, string p,
  VectorInterface& u, VectorInterface& b, VectorInterface& v)
 {
+
   if(l==coarselevel)
     {
       if(p=="F") {p0="V";}
@@ -688,7 +689,17 @@ void StdMultiLevelSolver::ComputeIlu()
 void StdMultiLevelSolver::ComputeIlu(VectorInterface& u)
 {
   SolutionTransfer(u);
-  for(int l=0;l<=ComputeLevel;l++)
+
+  int coarselevel=Gascoigne::max_int(DataP->CoarseLevel() ,0);
+  int clevel=coarselevel;
+
+  for(int level=coarselevel;level<nlevels();level++)
+    {
+      if(GetSolver(level)->DirectSolver()) clevel=level;
+    }
+  // wir haben auf einem hoeheren level einen direkten loeser...
+    
+  for(int l=clevel;l<=ComputeLevel;l++)
     {
       GetSolver(l)->ComputeIlu(u);
     }

@@ -286,12 +286,16 @@ class StdSolver : public virtual SolverInterface
   //
 
   void Rhs(VectorInterface& f, double d=1.) const;
+  void EstimatorRhs(VectorInterface& f, double d=1.) const;
 
   //
   /// vector - residual (integration)
   //
 
   void Form(VectorInterface& y, const VectorInterface& x, double d) const;
+  void EstimatorForm(VectorInterface& y, const VectorInterface& x, double d) const;
+  void EstimatorFormTime(VectorInterface& y, const VectorInterface& x, double d) const;
+
   void AdjointForm(VectorInterface& y, const VectorInterface& x, double d) const;
 
   //

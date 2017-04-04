@@ -90,6 +90,12 @@ class DwrFemQ1Q22d : virtual public DwrFem2d
   void BoundaryForm(GlobalVector& f, const GlobalVector& u, const IntSet& Colors, const BoundaryEquation& BE, double d) const;
   void Rhs(GlobalVector& f, const DomainRightHandSide& RHS, double s) const;
   void BoundaryRhs(GlobalVector& f, const IntSet& Colors, const BoundaryRightHandSide& NRHS, double s) const;
+
+  void EstimatorForm(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const;
+  void EstimatorBoundaryForm(GlobalVector& f, const GlobalVector& u, const IntSet& Colors, const BoundaryEquation& BE, double d) const;
+  void EstimatorRhs(GlobalVector& f, const DomainRightHandSide& RHS, double s) const;
+  void EstimatorBoundaryRhs(GlobalVector& f, const IntSet& Colors, const BoundaryRightHandSide& NRHS, double s) const;
+
   
   void MassMatrix(MatrixInterface& M) const;
   void MassForm(GlobalVector& f, const GlobalVector& u, const TimePattern& TP, double s) const;
