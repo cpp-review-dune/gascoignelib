@@ -1,0 +1,327 @@
+#include  "pi-fsi.h"
+
+using namespace std;
+namespace Gascoigne
+{
+
+  /*-----------------------------------------*/
+
+  /*-----------------------------------------*/
+
+  void PiFSI::vmultfluid(CompVector<double>& y, const CompVector<double>& x, 
+			 double s) const
+  {
+    int ncomp = x.ncomp();
+    assert(ncomp==y.ncomp());
+    {
+      map<int,fixarray<2,int> >::const_iterator p;
+      for(p=edge.begin();p!=edge.end();p++)
+	{
+	  int i = p->first;
+	  if (__ALE->FluidNode(i))
+	    {
+	      const fixarray<2,int>& f = p->second;
+	      
+	      for(int c=0;c<ncomp;c++) 
+		y(i,c) = x(i,c) - 0.5*(x(f[0],c)+x(f[1],c));
+	    }
+	}
+    }
+    {
+      map<int,fixarray<4,int> >::const_iterator p;
+      for(p=face.begin();p!=face.end();p++)
+	{
+	  int i = p->first;
+	  if (__ALE->FluidNode(i)) 
+	    {
+	      const fixarray<4,int>& f = p->second;
+	      for(int c=0;c<ncomp;c++) y(i,c) = x(i,c) - 0.25*(x(f[0],c)+x(f[1],c)+x(f[2],c)+x(f[3],c));
+	    }
+	}
+    }
+    {
+      map<int,fixarray<8,int> >::const_iterator p;
+      for(p=cell.begin();p!=cell.end();p++)
+	{
+	  int i = p->first;
+	  if (__ALE->FluidNode(i)) 
+	    {
+	      const fixarray<8,int>& f = p->second;
+	      for(int c=0;c<ncomp;c++) y(i,c) = x(i,c) - 0.125*(x(f[0],c)+x(f[1],c)+x(f[2],c)+x(f[3],c)+x(f[4],c)+x(f[5],c)+x(f[6],c)+x(f[7],c));
+	    }
+	}
+    }
+  }
+
+  void PiFSI::vmultsolid(CompVector<double>& y, const CompVector<double>& x, 
+			 double s) const
+  {
+    assert(__ALE);
+    int ncomp = x.ncomp();
+    assert(ncomp==y.ncomp());
+    {
+      map<int,fixarray<2,int> >::const_iterator p;
+      for(p=edge.begin();p!=edge.end();p++)
+	{
+	  int i = p->first;
+	  if ((__ALE->SolidNode(i))||(__ALE->InterfaceNode(i))) 
+	    {
+	      const fixarray<2,int>& f = p->second;
+	      for(int c=0;c<ncomp;c++) 
+		y(i,c) = x(i,c) - 0.5*(x(f[0],c)+x(f[1],c));
+	    }
+	}
+    }
+    {
+      map<int,fixarray<4,int> >::const_iterator p;
+      for(p=face.begin();p!=face.end();p++)
+	{
+	  int i = p->first;
+	  if ((__ALE->SolidNode(i))||(__ALE->InterfaceNode(i))) 
+	    {
+	      const fixarray<4,int>& f = p->second;
+	      for(int c=0;c<ncomp;c++) y(i,c) = x(i,c) - 0.25*(x(f[0],c)+x(f[1],c)+x(f[2],c)+x(f[3],c));
+	    }
+	}
+    }
+    {
+      map<int,fixarray<8,int> >::const_iterator p;
+      for(p=cell.begin();p!=cell.end();p++)
+	{
+	  int i = p->first;
+	  if ((__ALE->SolidNode(i))||(__ALE->InterfaceNode(i))) 
+	    {
+	      const fixarray<8,int>& f = p->second;
+	      for(int c=0;c<ncomp;c++) y(i,c) = x(i,c) - 0.125*(x(f[0],c)+x(f[1],c)+x(f[2],c)+x(f[3],c)+x(f[4],c)+x(f[5],c)+x(f[6],c)+x(f[7],c));
+	    }
+	}
+    }
+  }
+
+  void PiFSI::vmultprimal(CompVector<double>& y, const CompVector<double>& x, 
+			  double s) const
+  {
+    // here, x is in the test-space where some values are deleted..
+    GlobalVector X=x;
+    
+    y.zero();
+    
+    // in the solid domain, delete the pressure at the interface
+    const HASHSET<int>& intnodes = __ALE->GetInterfaceNodes();
+    for (HASHSET<int>::const_iterator it = intnodes.begin();
+	 it!=intnodes.end();++it)
+      X(*it,0) = 0;
+    
+    vmultsolid(y,X,s);
+
+    
+
+    // in the fluid domain, delete the deformation at the interface
+    int DIM = (X.ncomp()-1)/2;
+    assert((DIM==2)||(DIM==3));
+
+    X = x;
+    for (HASHSET<int>::const_iterator it = intnodes.begin();
+	 it!=intnodes.end();++it)
+      for (int c=0;c<DIM;++c)
+	X(*it,1+DIM+c) = 0.0;
+    vmultfluid(y,X,s);
+	
+    return;
+  }
+  
+
+  void PiFSI::vmult(CompVector<double>& y, const CompVector<double>& x, 
+		 double s) const
+  {
+    
+    y.zero();
+    int ncomp = x.ncomp();
+    assert(ncomp==y.ncomp());
+    {
+      map<int,fixarray<2,int> >::const_iterator p;
+      for(p=edge.begin();p!=edge.end();p++)
+	{
+	  int i = p->first;
+	  const fixarray<2,int>& f = p->second;
+
+	  for(int c=0;c<ncomp;c++) 
+	    y(i,c) = x(i,c) - 0.5*(x(f[0],c)+x(f[1],c));
+	}
+    }
+    {
+      map<int,fixarray<4,int> >::const_iterator p;
+      for(p=face.begin();p!=face.end();p++)
+	{
+	  int i = p->first;
+	  const fixarray<4,int>& f = p->second;
+	  for(int c=0;c<ncomp;c++) y(i,c) = x(i,c) - 0.25*(x(f[0],c)+x(f[1],c)+x(f[2],c)+x(f[3],c));
+	}
+    }
+    {
+      map<int,fixarray<8,int> >::const_iterator p;
+      for(p=cell.begin();p!=cell.end();p++)
+	{
+	  int i = p->first;
+	  const fixarray<8,int>& f = p->second;
+	  for(int c=0;c<ncomp;c++) y(i,c) = x(i,c) - 0.125*(x(f[0],c)+x(f[1],c)+x(f[2],c)+x(f[3],c)+x(f[4],c)+x(f[5],c)+x(f[6],c)+x(f[7],c));
+	}
+    }
+  }
+
+  /*-----------------------------------------*/
+
+  void PiFSI::Init(const MeshInterface* MP)
+  {
+    edge.clear();
+    face.clear();
+    cell.clear();
+    const GascoigneMesh3d* NMP = dynamic_cast<const GascoigneMesh3d*>(MP);
+    if(NMP) 
+      {
+	Init3d(NMP);
+      }
+    else 
+      {
+	const GascoigneMesh2d* NMP2 = dynamic_cast<const GascoigneMesh2d*>(MP);
+	assert(NMP2);
+	Init2d(NMP2);
+      }
+  }
+
+  /*-----------------------------------------*/
+
+  void PiFSI::Init2d(const GascoigneMesh2d* MP)
+  {
+    assert(MP->HasPatch());
+ 
+    for(int i=0;i<MP->npatches();i++)
+      {
+	const nvector<int>& ind = *MP->IndicesOfPatch(i);
+	{
+	  fixarray<4,int> f;
+	  f[0] = ind[0];
+	  f[1] = ind[2];
+	  f[2] = ind[6];
+	  f[3] = ind[8];
+	  face.insert(make_pair(ind[4],f));
+	}
+	{
+	  fixarray<2,int> f;
+	  f[0] = ind[0];
+	  f[1] = ind[2];
+	  edge.insert(make_pair(ind[1],f));
+	  f[0] = ind[0];
+	  f[1] = ind[6];
+	  edge.insert(make_pair(ind[3],f));
+	  f[0] = ind[2];
+	  f[1] = ind[8];
+	  edge.insert(make_pair(ind[5],f));
+	  f[0] = ind[6];
+	  f[1] = ind[8];
+	  edge.insert(make_pair(ind[7],f));
+	}
+      }
+  }
+
+  /*-----------------------------------------*/
+
+  void PiFSI::Init3d(const GascoigneMesh3d* MP)
+  {
+    assert(MP->HasPatch());
+ 
+    for(int i=0;i<MP->npatches();i++)
+      {
+	const nvector<int>& ind = *MP->IndicesOfPatch(i);
+
+	{
+	  fixarray<8,int> f;
+	  f[0] = ind[0];
+	  f[1] = ind[2];
+	  f[2] = ind[6];
+	  f[3] = ind[8];
+	  f[4] = ind[18];
+	  f[5] = ind[20];
+	  f[6] = ind[24];
+	  f[7] = ind[26];
+	  cell.insert(make_pair(ind[13],f));
+	}
+	{
+	  fixarray<4,int> f;
+	  f[0] = ind[0];
+	  f[1] = ind[2];
+	  f[2] = ind[6];
+	  f[3] = ind[8];
+	  face.insert(make_pair(ind[4],f));
+	  f[0] = ind[0];
+	  f[1] = ind[2];
+	  f[2] = ind[18];
+	  f[3] = ind[20];
+	  face.insert(make_pair(ind[10],f));
+	  f[0] = ind[6];
+	  f[1] = ind[8];
+	  f[2] = ind[24];
+	  f[3] = ind[26];
+	  face.insert(make_pair(ind[16],f));
+	  f[0] = ind[18];
+	  f[1] = ind[20];
+	  f[2] = ind[24];
+	  f[3] = ind[26];
+	  face.insert(make_pair(ind[22],f));
+
+	  f[0] = ind[2];
+	  f[1] = ind[20];
+	  f[2] = ind[8];
+	  f[3] = ind[26];
+	  face.insert(make_pair(ind[14],f));
+	  f[0] = ind[0];
+	  f[1] = ind[18];
+	  f[2] = ind[6];
+	  f[3] = ind[24];
+	  face.insert(make_pair(ind[12],f));
+	
+	
+
+	}
+	{
+	  fixarray<2,int> f;
+	  f[0] = ind[0];
+	  f[1] = ind[2];
+	  edge.insert(make_pair(ind[1],f));
+	  f[0] = ind[0];
+	  f[1] = ind[6];
+	  edge.insert(make_pair(ind[3],f));
+	  f[0] = ind[8];
+	  f[1] = ind[2];
+	  edge.insert(make_pair(ind[5],f));
+	  f[0] = ind[6];
+	  f[1] = ind[8];
+	  edge.insert(make_pair(ind[7],f));
+	  f[0] = ind[0];
+	  f[1] = ind[18];
+	  edge.insert(make_pair(ind[9],f));
+	  f[0] = ind[2];
+	  f[1] = ind[20];
+	  edge.insert(make_pair(ind[11],f));
+	  f[0] = ind[6];
+	  f[1] = ind[24];
+	  edge.insert(make_pair(ind[15],f));
+	  f[0] = ind[26];
+	  f[1] = ind[8];
+	  edge.insert(make_pair(ind[17],f));
+	  f[0] = ind[18];
+	  f[1] = ind[20];
+	  edge.insert(make_pair(ind[19],f));
+	  f[0] = ind[24];
+	  f[1] = ind[18];
+	  edge.insert(make_pair(ind[21],f));
+	  f[0] = ind[20];
+	  f[1] = ind[26];
+	  edge.insert(make_pair(ind[23],f));
+	  f[0] = ind[24];
+	  f[1] = ind[26];
+	  edge.insert(make_pair(ind[25],f));
+	}
+      }
+  }
+}

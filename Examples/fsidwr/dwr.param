@@ -1,0 +1,40 @@
+
+
+//Block BoundaryManager
+
+dirichlet        1 4
+
+dirichletcomp      4  2  1 2
+
+
+//Block Loop
+
+niter       8
+extrapolate yes
+
+
+//Block Mesh
+
+dimension   2
+prerefine   2
+gridname    square.inp
+
+
+//Block MultiLevelSolver
+
+linearsolve	gmres
+nonlinear_tol	1.e-10
+
+
+
+//Block Solver
+matrixtype	block
+discname       Q1Lps
+ilusort	       cuthillmckee
+
+pfilter 1 0
+
+ndirect             0
+ilum 3     0.01 0.1 0.1
+
+//Block Nix

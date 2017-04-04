@@ -1,0 +1,83 @@
+//Block BoundaryManager
+
+
+dirichlet       4 0 2 4 80
+dirichletcomp      0    3          4 5 6
+dirichletcomp      80   6    1 2 3 4 5 6
+dirichletcomp      2    6    1 2 3 4 5 6 
+dirichletcomp      4    6    1 2 3 4 5 6
+
+
+// for do-nothing outflow
+equation	1    0
+
+
+//Block Equation
+
+solid_type	bench3d
+
+nu_f      0.001
+mu_s     1000.0
+lambda_s 4000.0
+
+rho_f  1000.
+rho_s  1000.
+
+alpha_v	1.0e+2
+alpha_u	1.0
+alpha_p	1.e-4
+
+
+delta_lap_p	0.0
+delta_lps_p	0.1
+delta_lps_v	0.0
+
+
+
+//Block Loop
+
+niter       5
+
+etapatcher  0
+extrapolate yes
+
+estimator energy
+
+refiner global
+refiner etainterface
+//refiner interface
+
+
+//Block Mesh
+
+etapatcher 0
+dimension   3
+prerefine   1
+gridname    bench3d.inp
+etapatcher 0
+
+
+//Block MultiLevelSolver
+
+linearsolve	gmres
+nonlinear_rho	0.05
+nonlinear_tol	1.e-8
+
+//Block Solver
+
+matrixtype	split
+//matrixtype	block
+
+// Q1: delta_lps_p = 0.5, Q2: delta_lps_p = 0.1
+discname       AleQ1Lps
+ndirect	       1
+ilum 7 0.01 0.1 0.1 0.1 0.1 0.1 0.1
+
+
+iterpre                 2
+iterpost                2
+iterexact               8
+
+
+
+//Block Nix

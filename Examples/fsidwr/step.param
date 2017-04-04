@@ -1,0 +1,91 @@
+//Block BoundaryManager
+
+
+dirichlet     2   4 6 0 8
+
+dirichletcomp	4  4   1 2 3 4
+dirichletcomp	6  4   1 2 3 4
+//dirichletcomp	0  2    3 4
+//dirichletcomp	8  2    3 4
+
+
+equation 2 0  8
+functional 1 0
+righthandside 1 0
+
+
+//0 // inflow
+//1 // outflow
+//2 // rest
+//3 // pumpe
+
+//Block Equation
+
+extension	harmonic
+solid_type	venturi
+vmax		0.05
+
+alpha_p		0.
+alpha_lps	0.1
+
+nu_f		0.001
+mu_s		500
+lambda_s	2000
+
+rho_f		1000.0
+rho_s		1000.0
+
+p_right		0.0
+p_left		0.2
+
+//Block Loop
+niter       15
+
+etapatcher  0
+extrapolate yes
+
+estimator of
+refiner   global
+
+
+//Block Mesh
+
+
+etapatcher  0
+dimension   2
+prerefine   2
+gridname    step.inp
+
+
+
+
+//Block MultiLevelSolver
+
+
+linear_pstep 0
+
+linearsolve	gmres
+nonlinear_rho	0.1
+nonlinear_maxiter	20
+nonlinear_tol	1.e-8
+linear_tol	1.e-6
+
+//Block Solver
+
+omega	1.0
+
+matrixtype	block
+
+// Q1: delta_lps_p = 0.5, Q2: delta_lps_p = 0.1
+
+iterpre                 4
+iterpost                4
+iterexact               4
+
+discname       AleQ1Lps
+
+ndirect	      100000
+
+ilum 5 0.01 0.1 0.1 0.1 0.1
+
+//Block Nix

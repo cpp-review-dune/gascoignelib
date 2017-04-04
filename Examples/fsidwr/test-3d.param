@@ -1,0 +1,34 @@
+//Block BoundaryManager
+
+
+dirichlet       1  9
+dirichletcomp      9    1 0
+
+//Block Equation
+visc 0.1
+
+
+
+//Block Loop
+
+niter       8
+refiner     global
+
+//Block Mesh
+
+dimension   3
+prerefine   3
+gridname    box.inp
+
+
+
+
+//Block MultiLevelSolver
+
+linearsolve	mg
+
+//Block Solver
+
+discname       Q1
+
+//Block Nix

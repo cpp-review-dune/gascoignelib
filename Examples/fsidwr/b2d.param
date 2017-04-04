@@ -1,0 +1,92 @@
+//Block BoundaryManager
+
+dirichlet   3    2 80 81
+
+//dirichletcomp      0    2        3 4
+//dirichletcomp      1    2       3 4
+dirichletcomp      2    4   1 2 3 4
+dirichletcomp      80   4   1 2 3 4
+dirichletcomp      81   4   1 2 3 4
+
+equation 2 1 0
+
+
+//Block Equation
+solid_type	benchmark
+
+alpha_p		0.0
+alpha_lps	0.25
+
+nu_f		0.001
+
+mu_s		500000.0
+lambda_s	2000000.0
+
+rho_f		1000.0
+rho_s		1000.0
+
+
+p_left		40
+p_right		0.0
+
+
+//Block Loop
+niter       5
+
+etapatcher  0
+extrapolate yes
+
+estimator drag
+
+refiner global
+//refiner etainterface
+//	refiner interface
+//refiner eta
+
+
+
+
+//Block Mesh
+
+
+etapatcher 0
+dimension   2
+prerefine   1
+gridname    bench_fs_t0100_tw.inp
+
+
+
+
+//Block MultiLevelSolver
+
+
+
+linear_pstep 0
+
+linearsolve	mumps
+nonlinear_rho	0.1
+nonlinear_maxiter	20
+nonlinear_tol	1.e-8
+linear_tol	1.e-6
+
+//Block Solver
+
+omega	1.0
+
+
+
+matrixtype	mumps
+
+// Q1: delta_lps_p = 0.5, Q2: delta_lps_p = 0.1
+
+iterpre                 4
+iterpost                4
+iterexact               4
+
+discname       AleQ1Lps
+
+ndirect	      1
+
+ilum 5 0.01 0.1 0.1 0.1 0.1
+
+//Block Nix

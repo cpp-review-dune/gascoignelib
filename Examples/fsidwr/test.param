@@ -1,0 +1,59 @@
+//Block BoundaryManager
+
+
+dirichlet       3    2 3 4
+
+dirichletcomp      2    2      3 4
+dirichletcomp      3    4  1 2 3 4
+dirichletcomp      4    4  1 2 3 4
+
+equation 1   2
+
+//Block Equation
+
+nu_f   0.01
+mu_s     5.0
+lambda_s 20.0
+rho_f  1.0
+rho_s  1.0
+
+alpha_v	1.0
+alpha_u	0.001
+alpha_p	0.01
+
+delta_lap_p	0.0
+delta_lps_p	0.5
+
+//Block Loop
+
+niter       8
+refiner     eta
+etapatcher  0
+extrapolate yes
+
+//Block Mesh
+
+dimension   2
+prerefine   2
+gridname    square.inp
+
+
+
+
+//Block MultiLevelSolver
+
+linearsolve	gmres
+
+nonlinear_rho	0.05
+
+
+
+//Block Solver
+
+
+matrixtype	block
+
+discname       Q1Lps
+ndirect	       100000
+
+//Block Nix

@@ -1,0 +1,91 @@
+//Block BoundaryManager
+
+dirichlet   4    0 1 2 3
+
+dirichletcomp      0    4   1 2 3 4
+dirichletcomp      1    2       3 4
+dirichletcomp      2    4   1 2 3 4
+dirichletcomp      3    4   1 2 3 4
+
+equation 1   1
+
+
+//Block Equation
+solid_type	squares
+
+alpha_p		0.0
+alpha_lps	0.0005
+
+nu_f		0.001
+
+mu_s		500000.0
+lambda_s	2000000.0
+
+rho_f		1000.0
+rho_s		1000.0
+
+
+p_left		1.0
+p_right		-1.0
+
+
+//Block Loop
+niter       10
+
+etapatcher  0
+extrapolate yes
+
+estimator dwr-transpose
+
+refiner global
+//refiner etainterface
+//refiner interface
+
+
+
+
+
+//Block Mesh
+
+
+etapatcher 0
+dimension   2
+prerefine   1
+gridname    squares.inp
+
+
+
+
+//Block MultiLevelSolver
+
+
+
+linear_pstep 0
+
+linearsolve	gmres
+nonlinear_rho	0.1
+nonlinear_maxiter	20
+nonlinear_tol	1.e-8
+linear_tol	1.e-6
+
+//Block Solver
+
+omega	1.0
+
+
+
+matrixtype	block
+
+// Q1: delta_lps_p = 0.5, Q2: delta_lps_p = 0.1
+
+iterpre                 4
+iterpost                4
+iterexact               4
+
+discname       AleQ1Lps
+
+ndirect	      1000000
+
+ilum 5 0.01 0.1 0.1 0.1 0.1
+
+//Block Nix

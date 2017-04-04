@@ -1,0 +1,95 @@
+//Block BoundaryManager
+
+
+// fluid benchmark
+//dirichlet       4   0 4 8 80 
+
+//dirichletcomp      8    4    1 2 3 4
+//dirichletcomp      80   4    1 2 3 4
+//dirichletcomp      81   4    1 2 3 4
+//dirichletcomp      4    4    1 2 3 4
+//dirichletcomp      0    2        3 4
+
+// fsi benchmark
+dirichlet       5   0 1 2 80 81 
+ dirichletcomp      0    4    1 2 3 4
+ dirichletcomp      80   4    1 2 3 4
+ dirichletcomp      81   4    1 2 3 4
+ dirichletcomp      2    4    1 2 3 4
+ dirichletcomp      1    2        3 4
+
+// for do-nothing outflow
+equation	1    1
+
+functional	2 80 81
+
+//Block Equation
+
+solid_type	bench
+
+nu_f      0.001
+mu_s      50000.0
+lambda_s 200000.0
+
+rho_f  1000.
+rho_s  1000.
+
+alpha_v	1.0e+2
+alpha_u	1.0
+alpha_p	1.e-4
+
+
+delta_lap_p	0.0
+delta_lps_p	0.1
+delta_lps_v	0.0
+
+
+
+//Block Loop
+
+niter       5
+
+etapatcher  0
+extrapolate yes
+
+estimator dwr
+
+refiner global
+//refiner etainterface
+//refiner interface
+
+
+//Block Mesh
+
+etapatcher 0
+dimension   2
+prerefine   1
+gridname    bench_fs_t0100_tw.inp
+//gridname    nsbench4_s.inp
+etapatcher 0
+
+
+//Block MultiLevelSolver
+
+linearsolve	gmres
+nonlinear_rho	0.05
+nonlinear_tol	1.e-8
+linear_tol	1.e-8
+linear_maxiter	30
+gmressize	30
+
+
+//Block Solver
+
+omega	1.0
+matrixtype	split
+
+
+
+// Q1: delta_lps_p = 0.5, Q2: delta_lps_p = 0.1
+discname       AleQ1Lps
+ndirect	       300
+
+ilum 5 0.01 0.5  0.5 0.5 0.5
+
+//Block Nix

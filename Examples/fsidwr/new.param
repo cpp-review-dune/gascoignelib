@@ -1,0 +1,84 @@
+//Block BoundaryManager
+
+
+dirichlet       5    8  4 5 84 85
+
+
+dirichletcomp      4    6    1 2 3 4 5 6
+dirichletcomp      84   6    1 2 3 4 5 6
+dirichletcomp      8    6    1 2 3 4 5 6
+dirichletcomp      5    2        3     6
+dirichletcomp      85   2        3     6
+
+
+
+// for do-nothing outflow
+equation	1    0
+
+
+//Block Equation
+
+solid_type	new
+
+nu_f      0.001
+mu_s		500000.0
+lambda_s	2000000.0
+
+
+rho_f  1000.
+rho_s  1000.
+
+alpha_p	0.0
+alpha_lps	0.2
+
+
+
+//Block Loop
+
+niter       9
+
+etapatcher  0
+extrapolate yes
+
+estimator drag-3d
+
+refiner mean
+
+
+//Block Mesh
+
+etapatcher 0
+dimension   3
+prerefine   1
+gridname    mesh.inp
+etapatcher 0
+
+
+//Block MultiLevelSolver
+
+linearsolve	mumps
+nonlinear_rho	0.1
+nonlinear_tol	1.e-8
+nonlinear_globaltol 1.e-11
+nonlinear_maxiter	20
+linear_tol	1.e-5
+
+//Block Solver
+
+omega	        1.0
+matrixtype	mumps
+
+
+// Q1: delta_lps_p = 0.5, Q2: delta_lps_p = 0.1
+
+discname       AleQ1Lps
+ndirect	       1
+
+
+iterpre                 2
+iterpost                2
+iterexact               4
+
+
+
+//Block Nix

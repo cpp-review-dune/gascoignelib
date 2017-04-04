@@ -1,0 +1,51 @@
+//Block BoundaryManager
+
+dirichlet       1 4
+dirichletcomp      4  1 0
+
+
+//Block Equation
+
+eps	0.01
+
+
+//Block Loop
+
+computeerrors	yes
+Tstart	0
+Tstop	6.283185308
+theta	0.5
+niter       3
+estimator   none
+refiner     none
+
+initial	    analytic
+
+writebupgup 0
+writevtk    1
+
+//Block Mesh
+
+dimension   2
+prerefine   5
+gridname    square.inp
+
+
+//Block MultiLevelSolver
+solver	instat
+linear_pstep	0
+linearsolve	gmres
+
+nonlinear_maxiter	20
+nonlinear_tol	1.e-12
+nonlinear_globaltol	1.e-14
+nonlinear_rho		0.1
+linear_tol		1.e-12
+
+//Block Solver
+matrixtype	block
+discname       Q1
+
+ndirect              100000
+
+//Block Nix
