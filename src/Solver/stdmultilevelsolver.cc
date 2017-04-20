@@ -42,7 +42,11 @@ StdMultiLevelSolver::~StdMultiLevelSolver()
 {
   //ViewProtocoll();
 
-  if(DataP) delete DataP; DataP=NULL;
+  if(DataP)
+  {
+    delete DataP;
+    DataP = NULL;
+  }
 
   for(int i=0;i<_SP.size();i++) 
     { 

@@ -382,7 +382,7 @@ void MultiLevelAlgorithm::LocalRefineLoop(const std::string& problemlabel, Funct
 	      j[i] = GetSolver()->ComputeFunctional(f,u,it->second);
 	    }
 	  cout << "Functionals: ";
-	  for (int i=0; i<j.size(); i++) cout << j[i] << " "; cout << endl;
+	  for (int i=0; i<j.size(); i++) cout << j[i] << " " << endl;
 	}
       StdSolver* S = dynamic_cast<StdSolver*>(GetSolver()); assert(S);
       

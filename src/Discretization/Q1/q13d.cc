@@ -178,8 +178,6 @@ void Q13d::StrongPeriodicVector(GlobalVector& u, const PeriodicData& BF, int col
 
 void Q13d::Interpolate(GlobalVector& u, const DomainInitialCondition& U) const
 {
-  if (&U==NULL) return;
-
   for(int in=0; in<GetMesh()->nnodes(); ++in)
     {
       Vertex3d v = GetMesh()->vertex3d(in);

@@ -203,8 +203,6 @@ void Q12d::StrongPeriodicVector(GlobalVector& u, const PeriodicData& BF, int col
 
 void Q12d::Interpolate(GlobalVector& u, const DomainInitialCondition& U) const
 {
-  if (&U==NULL) return;
-
   for(int in=0; in<GetMesh()->nnodes(); ++in)
     {
       Vertex2d v = GetMesh()->vertex2d(in);

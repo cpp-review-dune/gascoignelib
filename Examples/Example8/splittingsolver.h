@@ -57,9 +57,21 @@ class SplittingSolver : public TimeSolver
   SplittingSolver() : TimeSolver(), _MAP2(NULL), _MIP2(NULL), _ZP2(NULL), PD1(NULL), PD2(NULL) {}
  ~SplittingSolver() 
    {
-     if(_MAP2) delete _MAP2; _MAP2=NULL;
-     if(_MIP2) delete _MIP2; _MIP2=NULL;
-     if(_ZP2)  delete _ZP2;  _ZP2=NULL;
+     if(_MAP2)
+     {
+       delete _MAP2;
+       _MAP2=NULL;
+     }
+     if(_MIP2)
+     {
+       delete _MIP2;
+       _MIP2=NULL;
+     }
+     if(_ZP2)
+     {
+       delete _ZP2;
+       _ZP2=NULL;
+     }
    }
  void SetProblem(const ProblemDescriptorInterface& PDX)
  {
