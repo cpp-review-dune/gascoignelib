@@ -111,10 +111,18 @@ StdSolver::StdSolver() :
 
 StdSolver::~StdSolver()
 {
-  if(_MAP) delete _MAP; _MAP=NULL;
-  if(_MIP) delete _MIP; _MIP=NULL;
-  if(_ZP)  delete _ZP;  _ZP=NULL;
-  if(_FZP) delete _FZP; _FZP=NULL;
+  if(_MAP)
+    delete _MAP;
+  _MAP=NULL;
+  if(_MIP)
+    delete _MIP;
+  _MIP=NULL;
+  if(_ZP)
+    delete _ZP;
+  _ZP=NULL;
+  if(_FZP)
+    delete _FZP;
+  _FZP=NULL;
 }
 
 /*-------------------------------------------------------*/

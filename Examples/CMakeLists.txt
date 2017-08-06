@@ -1,3 +1,7 @@
+
+INCLUDE_DIRECTORIES(${GASCOIGNE_INCLUDE_DIRS})
+
+
 SUBDIRS(
    Example1
    Example2
@@ -19,7 +23,7 @@ SUBDIRS(
 #  IntegrationTest
   Functionals
   MeshInterpolator
-   PeriodicStokes2D
+#   PeriodicStokes2D
 )
 
 LINK_LIBRARIES(${GASCOIGNE_LIBS})

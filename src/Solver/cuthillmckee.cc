@@ -24,7 +24,7 @@
 
 #include "cuthillmckee.h"
 #include "ilupermutate.h"
-
+#include "metis.h"
 
 using namespace std;
 
@@ -32,8 +32,10 @@ using namespace std;
 
 namespace Gascoigne
 {
-extern "C" void METIS_NodeND
-(int*, int*, int*, int*, int*, int*, int*);
+// extern "C" void METIS_NodeND
+// (int*, int*, int*, int*, int*, int*, int*);
+
+
 
 /* --------------------------------------------------------------- */
 
@@ -87,11 +89,11 @@ void CuthillMcKee::Permutate (IntVector &perm)
   //  int n = S->n();
   //  perm.resize(n);
   //sollte hier nicht aufgerufen werden, sondern ueberpruefen ob perm von der groesse her stimmt
-  int n = S->n();
+  idx_t  n = S->n();
   assert(n==perm.size());
 
-  vector<int> adj(n+1,0);
-  vector<int> adjncy;
+  vector<idx_t> adj(n+1,0);
+  vector<idx_t> adjncy;
   
   int count=0;
   int c;
@@ -110,32 +112,35 @@ void CuthillMcKee::Permutate (IntVector &perm)
 	  adj[r+1]=count;
       }
   else if (DS)
-      for (int r=0;r<n;++r)
+    for (int r=0;r<n;++r)
       {
-	  for (list<int>::const_iterator it = DS->cstart(r);it!=DS->cstop(r);++it)
+	for (list<int>::const_iterator it = DS->cstart(r);it!=DS->cstop(r);++it)
 	  {
-	      c = *it;
-	      if (r==c) continue;
-	      ++count;
-	      adjncy.push_back(c);
+	    c = *it;
+	    if (r==c) continue;
+	    ++count;
+	    adjncy.push_back(c);
 	  }
-	  adj[r+1]=count;
+	adj[r+1]=count;
       }
   
-  int numflag = 0;
-  int options[8];
-  options[0]=1;
-  options[1]=3;
-  options[2]=1;
-  options[3]=1;
-  options[4]=0;
-  options[5]=1;
-  options[6]=0;
-  options[7]=1;
-  vector<int> iperm(n);
-
-  METIS_NodeND(&n,&adj[0],&adjncy[0],&numflag,&options[0],&perm[0],&iperm[0]);
   
+  idx_t options[METIS_NOPTIONS];
+  METIS_SetDefaultOptions(options);
+  options[METIS_OPTION_NUMBERING] = 0;
+  
+
+  vector<idx_t> iperm(n);
+  vector<idx_t> Mperm(n);
+
+  
+  for (int i=0;i<n;++i) Mperm[i]=perm[i];
+  METIS_NodeND(&n,&adj[0],&adjncy[0],NULL,
+	       &options[0], &Mperm[0], &iperm[0]);
+  for (int i=0;i<n;++i) perm[i]=Mperm[i];
+
+
+
 //    assert((dimension==0)||(M->dimension()==dimension));
 //      				   // Liste mit Nachbarn aufbauen
 //    typedef SparseStructure::const_iterator SetIterator;
