@@ -48,6 +48,8 @@ void BoundaryManager::BasicInit(const ParamFile* pf)
   DF.insert("dirichletcomp",&_compsDirichlet);
   DF.insert("periodic"          ,&_colsPeriodic);
   DF.insert("periodiccomp"      ,&_compsPeriodic);
+  DF.insert("DeleteTestFunct"    ,&_colsDeleteTestFunct);
+  DF.insert("DeleteTestFunctcomp"	,&_compsDeleteTestFunct);
   FileScanner FS(DF,pf,"BoundaryManager");
 
   if(colsNeumann.size() || colsRobin.size())
@@ -76,6 +78,18 @@ void BoundaryManager::BasicInit(const ParamFile* pf)
 	cerr << "even number of colors needed\n";
 	abort();
     }
+    
+  map<int,IntVector>::const_iterator pp = _compsDeleteTestFunct.begin();
+    for(;pp!=_compsDeleteTestFunct.end();pp++)
+    {
+      if( _colsDeleteTestFunct.find(pp->first) == _colsDeleteTestFunct.end() )
+      {
+	cerr << "BoundaryManager::BoundaryManager()\n";
+	cerr << "problem in DeleteTestFunct component data\n";
+	cerr << "color not found: " << pp->first << endl;
+	abort();
+      }
+    }   
 }
 
 /*-------------------------------------------------------*/

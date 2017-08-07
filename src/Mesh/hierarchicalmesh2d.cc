@@ -536,7 +536,7 @@ void HierarchicalMesh2d::basic_refine2d(HangContainer2d& hangset,
   basic_fill_neighbours2d();
 
   new_boundary2d(LineRefList, LineCoarseList, ccdel);
-  
+
   boundary_newton2d();
   InitQuadOfCurved();
   inner_vertex_newton2d(vnew,CellRefList);
@@ -734,7 +734,8 @@ void HierarchicalMesh2d::init_line(BoundaryLine& newline)
 	      newline.edge_in_quad() = edge;
 	      return;
 	    }
-	  w[0] = v[1];
+	    // only accept boundary lines if ordering is correct!!! #warning Boundary-line-Order 
+	/*  w[0] = v[1];
 	  w[1] = v[0];
 	  if (newline==w)
 	    {
@@ -744,9 +745,10 @@ void HierarchicalMesh2d::init_line(BoundaryLine& newline)
 	      newline[1] = v[1];
 	      return;
 	    }
+	    */
 	}
     }
-  cerr << "Sophie im Brunnen !" << endl;
+  cerr << "Sophie im Brunnen !" <<"warning Boundary-line-Order!!!!!!HierarchicalMesh2d::init_line!"<< endl;
   cerr << newline;
   abort();
 }

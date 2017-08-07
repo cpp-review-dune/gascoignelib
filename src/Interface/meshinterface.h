@@ -105,6 +105,11 @@ namespace Gascoigne
         abort();
       }
       virtual int VtkType(int i) const=0;
+      virtual  const IntVector&  GetPatch2Cell(int i) const  
+      { 
+	std::cerr << "\"MeshInterface::GetPatch2Cell\" not written!" << std::endl;
+        abort();
+      }
   };
 }
 

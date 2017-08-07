@@ -308,8 +308,11 @@ namespace Gascoigne
         std::cerr << "\"DiscretizationInterface::RhsCurve\" not written!" << std::endl;
         abort();
       }
-
-
+      virtual void ColorsDeleteTestFunction(const Gascoigne::IntSet& colsDeleteTestFunct,const  std::map<int,Gascoigne::IntVector> & compsDeleteTestFunct){
+        std::cerr << "\"DiscretizationInterface::ColorsDeleteTestFunction\" not written!" << std::endl;
+        abort();
+      }
+     
   };
 }
 

@@ -85,7 +85,10 @@ public:
   IntVector  Q2IndicesOfQ4Patch(int i)  const { return PatchHandler.Q2IndicesOfQ4Patch(i);}
   IntVector  CoarseIndices(int iq)   const { return PatchHandler.CoarseIndices(iq);}
   IntVector  CoarseIndicesQ4(int iq) const { return PatchHandler.CoarseIndicesQ4(iq);}
-
+  
+  const IntVector&  GetPatch2Cell(int i) const{return PatchHandler.GetPatch2Cell(i);}  
+  
+  
   // wird von GascoigneMesh2d/3d ueberschrieben
   virtual IntVector  IndicesOfCell(int iq) const{ 
     std::cerr << "\"GascoigneMesh:IndicesOfCell\" not written!" << std::endl;

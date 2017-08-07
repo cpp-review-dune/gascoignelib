@@ -20,8 +20,7 @@ using namespace std;
 
 bool __ADJOINT;  
 bool __ADJOINT1;  
-double __EXACT//  = 0.00943419204958;
-= 2.27e-5;
+double __EXACT= 2.27e-5;//  = 0.00943419204958;
 
 
 

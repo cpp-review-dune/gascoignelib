@@ -56,7 +56,8 @@ class BoundaryManager
   IntVector                _colsPeriodic;
   std::map<int,IntVector>  _compsDirichlet;
   std::map<int,IntVector>  _compsPeriodic;
-
+  IntSet                   _colsDeleteTestFunct;
+  std::map<int,IntVector>  _compsDeleteTestFunct;
 
  public:
 
@@ -122,7 +123,22 @@ class BoundaryManager
 	}
       return p->second;
     }
-
+    virtual const Gascoigne::IntSet& GetDeleteTestFunctColors        () const { return _colsDeleteTestFunct; }
+    virtual const  std::map<int,Gascoigne::IntVector> & GetDeleteTestFunctComponents        () const { return _compsDeleteTestFunct; }
+    virtual const Gascoigne::IntVector& GetDeleteTestFunctComponents(int col) const 
+      {
+	//Funktion gibt die Komponenten auf der RandFarbe col zurueck deren Testfunktion geloescht werden soll
+	// Wichtig um Fortseztungsoperator zu bauen 
+	std::map<int,Gascoigne::IntVector>::const_iterator p = _compsDeleteTestFunct.find(col);
+	if(p==_compsDeleteTestFunct.end())
+	  {
+	    std::cerr << "BoundaryManager::GetDirichletComponents()" << std::endl;
+	    std::cerr << "No such color " << col <<std::endl;
+	    std::cerr << "components = " << _compsDeleteTestFunct << std::endl;
+	    abort();
+	  }
+	return p->second;
+      }
 };
 }
 
