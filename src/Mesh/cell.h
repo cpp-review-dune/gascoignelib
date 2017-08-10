@@ -45,7 +45,7 @@ class Cell :  public fixarray<N,int>   /* das sind die vertex-no. */
 
   /* Data */
 
-  int              qlevel, qfather;
+  int              qlevel, qfather, mat;
   IntVector         qchilds;
   fixarray<E,int>  qedges;            /* edge numbers */
 
@@ -56,22 +56,24 @@ class Cell :  public fixarray<N,int>   /* das sind die vertex-no. */
   Cell() : 
     fixarray<N,int>(), 
     qlevel(0), 
-    qfather(-1) 
-    { 
-      qedges=-1; 
-    }
-
+    qfather(-1),
+    mat(0)
+      { 
+	qedges=-1; 
+      }
+  
   Cell(const Cell& c) : 
     fixarray<N,int>(c) , 
     qlevel(c.level()), 
     qfather(c.father()), 
+    mat(c.material()),
     qchilds(c.childs()), 
     qedges(c.edges()) {}
 
   Cell(int l, int f) : 
     fixarray<N,int>(-17), 
     qlevel(l), 
-    qfather(f) {}
+    qfather(f), mat(0) {}
 
   /* Operators */
 
@@ -96,7 +98,9 @@ class Cell :  public fixarray<N,int>   /* das sind die vertex-no. */
   int   level  ()     const { return qlevel;}          
   int&  level  ()           { return qlevel;}          
   int   father ()     const { return qfather;}          
-  int&  father ()           { return qfather;}          
+  int&  father ()           { return qfather;}  
+  int  material()     const { return mat; }
+  int& material()           { return mat; }        
   bool  sleep  ()     const { return qchilds.size()!=0;}          
   int   nchilds()     const { return qchilds.size();}          
   int   nvertexs()    const { return N;}          
@@ -162,7 +166,8 @@ class Cell :  public fixarray<N,int>   /* das sind die vertex-no. */
     {
       s << A.vertex()  << " ";
       s << A.level()   << " ";
-      s << A.father()  << " @ ";
+      s << A.father()  << " ";
+      s << A.material()  << " @ ";
       s << A.nchilds() << " " << A.childs();
       s << " : " << A.edges();
       s << std::endl;
@@ -177,6 +182,7 @@ class Cell :  public fixarray<N,int>   /* das sind die vertex-no. */
       s >> A.vertex();
       s >> A.level() ;
       s >> A.father();
+      s >> A.material();
       s >> symbol;
       if (symbol!="@")
 	{

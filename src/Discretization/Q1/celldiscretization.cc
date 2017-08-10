@@ -99,6 +99,7 @@ void CellDiscretization::EstimatorForm(GlobalVector& f, const GlobalVector& u, c
       GetFem()->ReInit(T);
 
       GlobalToLocal(__U,u,iq);
+      EQ.point_cell(GetMesh()->material(iq));
       //EQ.cell(GetMesh(),iq,__U,__QN);
       GetIntegrator()->EstimatorForm(EQ,__F,*GetFem(),__U,__QN,__QC);
       LocalToGlobal(f,__F,iq,d);
@@ -118,6 +119,7 @@ void CellDiscretization::EstimatorFormTime(GlobalVector& f, const GlobalVector& 
       GetFem()->ReInit(T);
 
       GlobalToLocal(__U,u,iq);
+      EQ.point_cell(GetMesh()->material(iq));
       //EQ.cell(GetMesh(),iq,__U,__QN);
       GetIntegrator()->EstimatorFormTime(EQ,__F,*GetFem(),__U,__QN,__QC);
       LocalToGlobal(f,__F,iq,d);
@@ -138,6 +140,7 @@ void CellDiscretization::Form(GlobalVector& f, const GlobalVector& u, const Equa
       GetFem()->ReInit(T);
 
       GlobalToLocal(__U,u,iq);
+      EQ.point_cell(GetMesh()->material(iq));
       //EQ.cell(GetMesh(),iq,__U,__QN);
       GetIntegrator()->Form(EQ,__F,*GetFem(),__U,__QN,__QC);
       LocalToGlobal(f,__F,iq,d);
@@ -159,6 +162,7 @@ void CellDiscretization::AdjointForm(GlobalVector& f, const GlobalVector& u, con
       GetFem()->ReInit(T);
 
       GlobalToLocal(__U,u,iq);
+      EQ.point_cell(GetMesh()->material(iq));
       //EQ.cell(GetMesh(),iq,__U,__QN);
       GetIntegrator()->AdjointForm(EQ,__F,*GetFem(),__U,__QN,__QC);
       LocalToGlobal(f,__F,iq,d);
@@ -187,7 +191,7 @@ void CellDiscretization::EstimatorBoundaryForm(GlobalVector& f, const GlobalVect
           GetFem()->ReInit(T);
 
           GlobalToLocal(__U,u,iq);
-
+	  BE.point_cell(GetMesh()->material(iq));
           GetIntegrator()->EstimatorBoundaryForm(BE,__F,*GetFem(),__U,ile,col,__QN,__QC);
           LocalToGlobal(f,__F,iq,d);
         }
@@ -216,7 +220,7 @@ void CellDiscretization::EstimatorBoundaryFormTime(GlobalVector& f, const Global
           GetFem()->ReInit(T);
 
           GlobalToLocal(__U,u,iq);
-
+	  BE.point_cell(GetMesh()->material(iq));
           GetIntegrator()->EstimatorBoundaryFormTime(BE,__F,*GetFem(),__U,ile,col,__QN,__QC);
           LocalToGlobal(f,__F,iq,d);
         }
@@ -245,7 +249,7 @@ void CellDiscretization::BoundaryForm(GlobalVector& f, const GlobalVector& u, co
           GetFem()->ReInit(T);
 
           GlobalToLocal(__U,u,iq);
-
+	  BE.point_cell(GetMesh()->material(iq));
           GetIntegrator()->BoundaryForm(BE,__F,*GetFem(),__U,ile,col,__QN,__QC);
           LocalToGlobal(f,__F,iq,d);
         }
@@ -267,6 +271,7 @@ void CellDiscretization::Matrix(MatrixInterface& A, const GlobalVector& u, const
       GetFem()->ReInit(T);
 
       GlobalToLocal(__U,u,iq);
+      EQ.point_cell(GetMesh()->material(iq));
       //EQ.cell(GetMesh(),iq,__U,__QN);
       GetIntegrator()->Matrix(EQ,__E,*GetFem(),__U,__QN,__QC);
       LocalToGlobal(A,__E,iq,d);
@@ -296,6 +301,7 @@ void CellDiscretization::BoundaryMatrix(MatrixInterface& A, const GlobalVector& 
           GetFem()->ReInit(T);
 
           GlobalToLocal(__U,u,iq);
+	  BE.point_cell(GetMesh()->material(iq));
           GetIntegrator()->BoundaryMatrix(BE,__E,*GetFem(),__U,ile,col,__QN,__QC);
           LocalToGlobal(A,__E,iq,d);
         }
@@ -556,7 +562,9 @@ void CellDiscretization::EstimatorRhs(GlobalVector& f, const DomainRightHandSide
       GetFem()->ReInit(T);
 
       GlobalToLocalData(iq);
+      RHS.point_cell(GetMesh()->material(iq));
       GetIntegrator()->EstimatorRhs(RHS,__F,*GetFem(),__QN,__QC);
+
       LocalToGlobal(f,__F,iq,s);
     }
 }
@@ -584,6 +592,7 @@ void CellDiscretization::EstimatorBoundaryRhs(GlobalVector& f, const IntSet& Col
 	  GetFem()->ReInit(T);
 
 	  GlobalToLocalData(iq);
+	  NRHS.point_cell(GetMesh()->material(iq));
 	  GetIntegrator()->EstimatorBoundaryRhs(NRHS,__F,*GetFem(),ile,col,__QN,__QC);
 	  LocalToGlobal(f,__F,iq,s);
 	}
@@ -606,6 +615,7 @@ void CellDiscretization::Rhs(GlobalVector& f, const DomainRightHandSide& RHS, do
       GetFem()->ReInit(T);
 
       GlobalToLocalData(iq);
+      RHS.point_cell(GetMesh()->material(iq));
       GetIntegrator()->Rhs(RHS,__F,*GetFem(),__QN,__QC);
       LocalToGlobal(f,__F,iq,s);
     }
@@ -634,6 +644,7 @@ void CellDiscretization::BoundaryRhs(GlobalVector& f, const IntSet& Colors, cons
 	  GetFem()->ReInit(T);
 
 	  GlobalToLocalData(iq);
+	  NRHS.point_cell(GetMesh()->material(iq));	
 	  GetIntegrator()->BoundaryRhs(NRHS,__F,*GetFem(),ile,col,__QN,__QC);
 	  LocalToGlobal(f,__F,iq,s);
 	}
@@ -884,6 +895,7 @@ double CellDiscretization::ComputeBoundaryFunctional(const GlobalVector& u, cons
           GetFem()->ReInit(T);
 
           GlobalToLocal(__U,u,iq);
+	  BF.point_cell(GetMesh()->material(iq));
           j += GetIntegrator()->ComputeBoundaryFunctional(BF,*GetFem(),ile,col,__U,__QN,__QC);
         }
     }
@@ -906,6 +918,7 @@ double CellDiscretization::ComputeDomainFunctional(const GlobalVector& u, const 
       GetFem()->ReInit(T);
 
       GlobalToLocal(__U,u,iq);
+      F.point_cell(GetMesh()->material(iq));
       j += GetIntegrator()->ComputeDomainFunctional(F,*GetFem(),__U,__QN,__QC);
     }
   return j;
@@ -1009,6 +1022,7 @@ void CellDiscretization::EvaluateCellRightHandSide(GlobalVector& f, const Domain
       GetFem()->ReInit(T);
 
       GlobalToLocalData(iq);
+      CF.point_cell(GetMesh()->material(iq));
       GetIntegrator()->EvaluateCellRightHandSide(__F,CF,*GetFem(),__QN,__QC);
 
       f.add_node(iq,d,0,__F);
@@ -1038,6 +1052,7 @@ void CellDiscretization::EvaluateBoundaryCellRightHandSide(GlobalVector& f,const
           GetFem()->ReInit(T);
 
           GlobalToLocalData(iq);
+          CF.point_cell(GetMesh()->material(iq));
           GetIntegrator()->EvaluateBoundaryCellRightHandSide(__F,CF,*GetFem(),ile,col,__QN,__QC);
 
           f.add_node(iq,d,0,__F);
@@ -1060,6 +1075,7 @@ void CellDiscretization::EvaluateParameterRightHandSide(GlobalVector& f, const D
       GetFem()->ReInit(T);
 
       GlobalToLocalData(iq);
+      CF.point_cell(GetMesh()->material(iq));
       GetIntegrator()->EvaluateCellRightHandSide(__F,CF,*GetFem(),__QN,__QC);
 
       f.add(d,__F);
@@ -1090,6 +1106,7 @@ void Gascoigne::CellDiscretization::EvaluateBoundaryParameterRightHandSide(Globa
           GetFem()->ReInit(T);
 
           GlobalToLocalData(iq);
+          CF.point_cell(GetMesh()->material(iq));
           GetIntegrator()->EvaluateBoundaryCellRightHandSide(__F,CF,*GetFem(),ile,col,__QN,__QC);
 
           f.add(d,__F);

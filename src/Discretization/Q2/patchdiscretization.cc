@@ -93,6 +93,7 @@ void PatchDiscretization::EstimatorForm(GlobalVector& f, const GlobalVector& u, 
       GetFem()->ReInit(T);
 
       GlobalToLocal(__U,u,iq);
+      EQ.point_cell(GetMesh()->material_patch(iq));
       //EQ.cell(GetPatchMesh(),iq,__U,__QN);
       GetIntegrator()->EstimatorForm(EQ,__F,*GetFem(),__U,__QN,__QC);
       LocalToGlobal(f,__F,iq,d);
@@ -113,6 +114,7 @@ void PatchDiscretization::EstimatorFormTime(GlobalVector& f, const GlobalVector&
       GetFem()->ReInit(T);
 
       GlobalToLocal(__U,u,iq);
+      EQ.point_cell(GetMesh()->material_patch(iq));
       //EQ.cell(GetPatchMesh(),iq,__U,__QN);
       GetIntegrator()->EstimatorFormTime(EQ,__F,*GetFem(),__U,__QN,__QC);
       LocalToGlobal(f,__F,iq,d);
@@ -133,6 +135,7 @@ void PatchDiscretization::Form(GlobalVector& f, const GlobalVector& u, const Equ
       GetFem()->ReInit(T);
 
       GlobalToLocal(__U,u,iq);
+      EQ.point_cell(GetMesh()->material_patch(iq));
       //EQ.cell(GetPatchMesh(),iq,__U,__QN);
       GetIntegrator()->Form(EQ,__F,*GetFem(),__U,__QN,__QC);
       LocalToGlobal(f,__F,iq,d);
@@ -154,6 +157,7 @@ void PatchDiscretization::AdjointForm(GlobalVector& f, const GlobalVector& u, co
       GetFem()->ReInit(T);
 
       GlobalToLocal(__U,u,iq);
+      EQ.point_cell(GetMesh()->material_patch(iq));
       //EQ.cell(GetPatchMesh(),iq,__U,__QN);
       GetIntegrator()->AdjointForm(EQ,__F,*GetFem(),__U,__QN,__QC);
       LocalToGlobal(f,__F,iq,d);
@@ -184,7 +188,7 @@ void PatchDiscretization::EstimatorBoundaryForm(GlobalVector& f, const GlobalVec
           GetFem()->ReInit(T);
 
           GlobalToLocal(__U,u,ip);
-
+          BE.point_cell(GetMesh()->material_patch(ip));
           GetIntegrator()->EstimatorBoundaryForm(BE,__F,*GetFem(),__U,ile,col,__QN,__QC);
           LocalToGlobal(f,__F,ip,d);
         }
@@ -214,7 +218,7 @@ void PatchDiscretization::EstimatorBoundaryFormTime(GlobalVector& f, const Globa
           GetFem()->ReInit(T);
 
           GlobalToLocal(__U,u,ip);
-
+	  BE.point_cell(GetMesh()->material_patch(ip));
           GetIntegrator()->EstimatorBoundaryFormTime(BE,__F,*GetFem(),__U,ile,col,__QN,__QC);
           LocalToGlobal(f,__F,ip,d);
         }
@@ -244,7 +248,7 @@ void PatchDiscretization::BoundaryForm(GlobalVector& f, const GlobalVector& u, c
           GetFem()->ReInit(T);
 
           GlobalToLocal(__U,u,ip);
-
+   	  BE.point_cell(GetMesh()->material_patch(ip));
           GetIntegrator()->BoundaryForm(BE,__F,*GetFem(),__U,ile,col,__QN,__QC);
           LocalToGlobal(f,__F,ip,d);
         }
@@ -266,6 +270,7 @@ void PatchDiscretization::Matrix(MatrixInterface& A, const GlobalVector& u, cons
       GetFem()->ReInit(T);
 
       GlobalToLocal(__U,u,iq);
+      EQ.point_cell(GetMesh()->material_patch(iq));
       //EQ.cell(GetPatchMesh(),iq,__U,__QN);
       GetIntegrator()->Matrix(EQ,__E,*GetFem(),__U,__QN,__QC);
       LocalToGlobal(A,__E,iq,d);
@@ -299,6 +304,7 @@ void PatchDiscretization::BoundaryMatrix(MatrixInterface& A, const GlobalVector&
           GetFem()->ReInit(T);
 
           GlobalToLocal(__U,u,ip);
+	  BE.point_cell(GetMesh()->material_patch(ip));
           GetIntegrator()->BoundaryMatrix(BE,__E,*GetFem(),__U,ile,col,__QN,__QC);
           LocalToGlobal(A,__E,ip,d);
         }
@@ -389,6 +395,7 @@ void PatchDiscretization::EstimatorRhs(GlobalVector& f, const DomainRightHandSid
       GetFem()->ReInit(T);
 
       GlobalToLocalData(iq);
+      RHS.point_cell(GetMesh()->material_patch(iq));
       GetIntegrator()->EstimatorRhs(RHS,__F,*GetFem(),__QN,__QC);
       LocalToGlobal(f,__F,iq,s);
     }
@@ -408,6 +415,7 @@ void PatchDiscretization::Rhs(GlobalVector& f, const DomainRightHandSide& RHS, d
       GetFem()->ReInit(T);
 
       GlobalToLocalData(iq);
+      RHS.point_cell(GetMesh()->material_patch(iq));
       GetIntegrator()->Rhs(RHS,__F,*GetFem(),__QN,__QC);
       LocalToGlobal(f,__F,iq,s);
     }
@@ -436,6 +444,7 @@ void PatchDiscretization::EstimatorBoundaryRhs(GlobalVector& f, const IntSet& Co
 	  GetFem()->ReInit(T);
 
 	  GlobalToLocalData(ip);
+	  NRHS.point_cell(GetMesh()->material_patch(ip));
 	  GetIntegrator()->EstimatorBoundaryRhs(NRHS,__F,*GetFem(),ile,col,__QN,__QC);
 	  LocalToGlobal(f,__F,ip,s);
 	}
@@ -465,6 +474,7 @@ void PatchDiscretization::BoundaryRhs(GlobalVector& f, const IntSet& Colors,  co
 	  GetFem()->ReInit(T);
 
 	  GlobalToLocalData(ip);
+	  NRHS.point_cell(GetMesh()->material_patch(ip));
 	  GetIntegrator()->BoundaryRhs(NRHS,__F,*GetFem(),ile,col,__QN,__QC);
 	  LocalToGlobal(f,__F,ip,s);
 	}
@@ -741,6 +751,7 @@ double PatchDiscretization::ComputeBoundaryFunctional(const GlobalVector& u, con
       GetFem()->ReInit(T);
 
       GlobalToLocal(__U,u,ip);
+      BF.point_cell(GetMesh()->material_patch(ip));
       j += GetIntegrator()->ComputeBoundaryFunctional(BF,*GetFem(),ile,col,__U,__QN,__QC);
     }
   }
@@ -762,6 +773,7 @@ double PatchDiscretization::ComputeDomainFunctional(const GlobalVector& u, const
       GetFem()->ReInit(T);
 
       GlobalToLocal(__U,u,iq);
+      F.point_cell(GetMesh()->material_patch(iq));
       j += GetIntegrator()->ComputeDomainFunctional(F,*GetFem(),__U,__QN,__QC);
     }
   return j;
@@ -864,6 +876,7 @@ void Gascoigne::PatchDiscretization::EvaluateParameterRightHandSide(GlobalVector
       GetFem()->ReInit(T);
 
       GlobalToLocalData(iq);
+      CF.point_cell(GetMesh()->material_patch(iq));
       GetIntegrator()->EvaluateCellRightHandSide(__F,CF,*GetFem(),__QN,__QC);
 
       f.add(d,__F);
@@ -893,6 +906,7 @@ void Gascoigne::PatchDiscretization::EvaluateBoundaryParameterRightHandSide(Glob
           GetFem()->ReInit(T);
 
           GlobalToLocalData(iq);
+          CF.point_cell(GetMesh()->material_patch(iq));
           GetIntegrator()->EvaluateBoundaryCellRightHandSide(__F,CF,*GetFem(),ile,col,__QN,__QC);
 
           f.add(d,__F);

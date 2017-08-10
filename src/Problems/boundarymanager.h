@@ -57,6 +57,7 @@ class BoundaryManager
   std::map<int,IntVector>  _compsDirichlet;
   std::map<int,IntVector>  _compsPeriodic;
   IntSet                   _colsDeleteTestFunct;
+  std::map<int,IntVector>  _colsdomainDeleteTestFunct;
   std::map<int,IntVector>  _compsDeleteTestFunct;
 
  public:
@@ -125,6 +126,7 @@ class BoundaryManager
     }
     virtual const Gascoigne::IntSet& GetDeleteTestFunctColors        () const { return _colsDeleteTestFunct; }
     virtual const  std::map<int,Gascoigne::IntVector> & GetDeleteTestFunctComponents        () const { return _compsDeleteTestFunct; }
+    virtual const  std::map<int,Gascoigne::IntVector> & GetDeleteTestFunctDomainColors        () const { return _colsdomainDeleteTestFunct; }
     virtual const Gascoigne::IntVector& GetDeleteTestFunctComponents(int col) const 
       {
 	//Funktion gibt die Komponenten auf der RandFarbe col zurueck deren Testfunktion geloescht werden soll

@@ -48,7 +48,7 @@ class MultiLevelAlgorithm : public Algorithm
 
   int                         _coarselevel;
 
-  std::string                 _mgtype;
+  std::string                 _mgtype, _linearsolve;
   double                      _mgomega;
   
  protected:

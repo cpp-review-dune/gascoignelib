@@ -109,6 +109,7 @@ double MalteAdaptor::Expectation(double thetax, double thetay, double x, double 
 void MalteAdaptor::refine(IntVector& ref) const
 {
   if (etasum==0) return;
+
   int n = eta.size();
 
   IntVector C(n); 

@@ -506,7 +506,7 @@ void HierarchicalMesh2d::basic_refine2d(HangContainer2d& hangset,
  
   IntSet  LineRefList, LineCoarseList, ccdel;
 
-  boundary_prepare2d(LineRefList, LineCoarseList, ccdel, hangset);
+  boundary_prepare2d(LineRefList, LineCoarseList, ccdel, hangset,CellRefList,CellCoarseList);
  
   transfer(oc,co2n,cdel);
   transfer(ov,vo2n,vdel);
@@ -550,7 +550,9 @@ void HierarchicalMesh2d::basic_refine2d(HangContainer2d& hangset,
 void HierarchicalMesh2d::boundary_prepare2d(IntSet& LineRefList, 
 					  IntSet& LineCoarseList,
 					  IntSet& ccdel,
-					  const HangContainer2d& hangset)
+					  const HangContainer2d& hangset,
+				      const IntSet& CellRefList,
+				      const IntSet& CellCoarseList)
 {
   EdgeVector   lineglob;
   for(int i=0; i<Blines.size(); i++)
@@ -565,15 +567,20 @@ void HierarchicalMesh2d::boundary_prepare2d(IntSet& LineRefList,
 	{
 	  if (hangset.ToBeDeleted(lineglob))
 	    {
-	      LineCoarseList.insert(i);
-	      for (int j=0; j<2; j++) ccdel.insert(bl.child(j));
+		  //uberpruefen ob die zur bl gehoerige Zelle vergroebert wird
+		  if(CellCoarseList.find(bl.of_quad())!=CellCoarseList.end())
+			{
+			  LineCoarseList.insert(i);
+	      	  for (int j=0; j<2; j++) ccdel.insert(bl.child(j));
+			}
 	    }
 	}
       else
 	{
 	  if (hangset.ToBeCreated(lineglob))
 	    {
-	      LineRefList.insert(i);
+		  //uberpruefen ob die zur bl gehoerige Zelle verfeinert wird
+		  if(CellRefList.find(bl.of_quad())!=CellRefList.end()) LineRefList.insert(i);
 	    }
 	}
     }
@@ -628,7 +635,7 @@ void HierarchicalMesh2d::new_quads(const HangContainer2d& hangset,
 
       vector<int>&  qc = quads[father].childs();
       qc.resize(4);
-
+      int material = quads[father].material();
       int childlevel = quads[father].level()+1;
       for(int ic=0;ic<4;ic++)
 	{
@@ -636,6 +643,7 @@ void HierarchicalMesh2d::new_quads(const HangContainer2d& hangset,
 	  qc[ic] = inold;
 	  quads[inold].level()  = childlevel;
 	  quads[inold].father() = father;
+	  quads[inold].material() = material;
 	  quads[inold].childs().resize(0);
 	  quads[inold].edges() = -1;
 	}
@@ -735,7 +743,7 @@ void HierarchicalMesh2d::init_line(BoundaryLine& newline)
 	      return;
 	    }
 	    // only accept boundary lines if ordering is correct!!! #warning Boundary-line-Order 
-	/*  w[0] = v[1];
+	  /*w[0] = v[1];
 	  w[1] = v[0];
 	  if (newline==w)
 	    {
@@ -745,7 +753,7 @@ void HierarchicalMesh2d::init_line(BoundaryLine& newline)
 	      newline[1] = v[1];
 	      return;
 	    }
-	    */
+*/
 	}
     }
   cerr << "Sophie im Brunnen !" <<"warning Boundary-line-Order!!!!!!HierarchicalMesh2d::init_line!"<< endl;
@@ -1425,7 +1433,9 @@ void HierarchicalMesh2d::read_inp(const string& name)
 	{
 	  file >> iqv;
 	  if(first_one) for(int iii=0;iii<4;iii++) iqv[iii]--;
-	  quads[iq++].vertex() = iqv;
+	  quads[iq].vertex()   = iqv;
+	  quads[iq].material() = atoi(matstring.c_str());
+	  iq++;
 	}
       else if(name=="line")
 	{

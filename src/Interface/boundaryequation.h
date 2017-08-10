@@ -57,6 +57,8 @@ namespace Gascoigne
       virtual void Form(VectorIterator b, const FemFunction& U, const TestFunction& N, int col) const=0;
       virtual void Matrix(EntryMatrix& E, const FemFunction& U, const TestFunction& M, const TestFunction& N, int col) const=0;
 
+      virtual void point_cell(int material) const {}
+
       virtual void pointboundary(double h, const FemFunction& U, const Vertex2d& v, const Vertex2d& n) const {}
       virtual void pointboundary(double h, const FemFunction& U, const Vertex3d& v, const Vertex3d& n) const {}
       virtual void pointmatrixboundary(double h, const FemFunction& U, const Vertex2d& v, 

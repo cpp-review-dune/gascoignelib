@@ -701,6 +701,7 @@ void HierarchicalMesh3d::new_hexs(const HangContainer3d& hangset,
 
       vector<int>&  qc = hexs[father].childs();
       qc.resize(8);
+      int material = hexs[father].material();
 
       int childlevel = hexs[father].level()+1;
       for(int ic=0; ic<8; ic++)
@@ -709,6 +710,7 @@ void HierarchicalMesh3d::new_hexs(const HangContainer3d& hangset,
 	  qc[ic] = inold;
 	  hexs[inold].level()  = childlevel;
 	  hexs[inold].father() = father;
+	  hexs[inold].material() = material;	 
 	  hexs[inold].childs().resize(0);
 	  hexs[inold].edges() = -1;
 	}
@@ -1372,7 +1374,9 @@ void HierarchicalMesh3d::read_inp(const string& name)
 	{
 	  file >> ihv;
 	  if(first_one) for(int iii=0;iii<8;iii++) ihv[iii]--;
-	  hexs[ih++].vertex() = ihv;
+	  hexs[ih].vertex() = ihv;
+	  hexs[ih].material() = atoi(matstring.c_str());
+	  ih++;
 	}
       else if(name=="quad")
 	{

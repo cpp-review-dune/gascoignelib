@@ -50,6 +50,7 @@ void BoundaryManager::BasicInit(const ParamFile* pf)
   DF.insert("periodiccomp"      ,&_compsPeriodic);
   DF.insert("DeleteTestFunct"    ,&_colsDeleteTestFunct);
   DF.insert("DeleteTestFunctcomp"	,&_compsDeleteTestFunct);
+  DF.insert("DeleteTestFunctDomain"	,&_colsdomainDeleteTestFunct);
   FileScanner FS(DF,pf,"BoundaryManager");
 
   if(colsNeumann.size() || colsRobin.size())
@@ -90,6 +91,24 @@ void BoundaryManager::BasicInit(const ParamFile* pf)
 	abort();
       }
     }   
+    map<int,IntVector>::const_iterator ppp = _colsdomainDeleteTestFunct.begin();
+      for(;ppp!=_colsdomainDeleteTestFunct.end();ppp++)
+      {
+        if( _colsDeleteTestFunct.find(ppp->first) == _colsDeleteTestFunct.end() )
+        {
+			cerr << "BoundaryManager::BoundaryManager()\n";
+			cerr << "problem in DeleteTestFunct  domain color data\n";
+			cerr << "color not found: " << ppp->first << endl;
+			abort();
+        }
+        if(ppp->second.size()!=1)
+        {
+        	cerr << "BoundaryManager::BoundaryManager()\n";
+        	cerr << "Several domain colors given \n";
+        	cerr << "Boundary color" << ppp->first << endl;
+        				abort();
+        }
+      }
 }
 
 /*-------------------------------------------------------*/

@@ -52,6 +52,7 @@ namespace Gascoigne
         std::cerr << "\"BoundaryFunctional::J\" for 3d not written!" << std::endl;
         abort();
       }
+      virtual void point_cell(int material) const {}
   };
 }
 

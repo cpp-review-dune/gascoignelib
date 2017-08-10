@@ -105,6 +105,16 @@ namespace Gascoigne
         abort();
       }
       virtual int VtkType(int i) const=0;
+      virtual const int material    (int i)     const
+      {
+	std::cerr << "\"MeshInterface::material\" written!" << std::endl;
+        abort();
+      }
+      virtual const int material_patch    (int i)     const
+      {
+	std::cerr << "\"MeshInterface::material_patch\" not written!" << std::endl;
+        abort();
+      }
       virtual  const IntVector&  GetPatch2Cell(int i) const  
       { 
 	std::cerr << "\"MeshInterface::GetPatch2Cell\" not written!" << std::endl;

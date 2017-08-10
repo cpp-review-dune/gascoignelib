@@ -165,6 +165,7 @@ void DwrFemQ1Q23d::Form(GlobalVector& f, const GlobalVector& u, const Equation& 
       LowOrderFem .ReInit(TL);
 
       GlobalToLocal(__U,u,iq);
+      EQ.point_cell(GetMesh()->material_patch(iq));
       I->Form(EQ,__F,HighOrderFem,LowOrderFem,__U,__QN,__QC);
       PatchDiscretization::LocalToGlobal(f,__F,iq,d);
     }
@@ -193,6 +194,7 @@ void DwrFemQ1Q23d::AdjointForm(GlobalVector& f, const GlobalVector& u, const Equ
       LowOrderFem .ReInit(TL);
 
       GlobalToLocal(__U,u,iq);
+      EQ.point_cell(GetMesh()->material_patch(iq));
       I->AdjointForm(EQ,__F,HighOrderFem,LowOrderFem,__U,__QN,__QC);
       PatchDiscretization::LocalToGlobal(f,__F,iq,d);
     }
@@ -231,6 +233,7 @@ void DwrFemQ1Q23d::BoundaryForm(GlobalVector& f, const GlobalVector& u, const In
       LowOrderFem .ReInit(TL);
 
       GlobalToLocal(__U,u,ip);
+      BE.point_cell(GetMesh()->material_patch(ip));
       I->BoundaryForm(BE,__F,HighOrderFem,LowOrderFem,__U,ile,col,__QN,__QC);
       PatchDiscretization::LocalToGlobal(f,__F,ip,d);
     }
@@ -260,6 +263,7 @@ void DwrFemQ1Q23d::Rhs(GlobalVector& f, const DomainRightHandSide& RHS, double s
       LowOrderFem .ReInit(TL);
 
       GlobalToLocalData(iq);
+      RHS.point_cell(GetMesh()->material_patch(iq));
       I->Rhs(RHS,__F,HighOrderFem,LowOrderFem,__QN,__QC);
       PatchDiscretization::LocalToGlobal(f,__F,iq,s);
     }
@@ -297,6 +301,7 @@ void DwrFemQ1Q23d::BoundaryRhs(GlobalVector& f, const IntSet& Colors, const Boun
       LowOrderFem .ReInit(TL);
 
       GlobalToLocalData(ip);
+      NRHS.point_cell(GetMesh()->material_patch(ip));
       I->BoundaryRhs(NRHS,__F,HighOrderFem,LowOrderFem,ile,col,__QN,__QC);
       PatchDiscretization::LocalToGlobal(f,__F,ip,s);
     }
@@ -423,6 +428,7 @@ void DwrFemQ2Q13d::Form(GlobalVector& f, const GlobalVector& u, const Equation& 
       LowOrderFem .ReInit(TL);
 
       GlobalToLocal(__U,u,iq);
+      EQ.point_cell(GetMesh()->material_patch(iq));
       I->Form(EQ,__F,LowOrderFem,HighOrderFem,__U,__QN,__QC);
       PatchDiscretization::LocalToGlobal(f,__F,iq,d);
     }
@@ -451,6 +457,7 @@ void DwrFemQ2Q13d::AdjointForm(GlobalVector& f, const GlobalVector& u, const Equ
       LowOrderFem .ReInit(TL);
 
       GlobalToLocal(__U,u,iq);
+      EQ.point_cell(GetMesh()->material_patch(iq));
       I->AdjointForm(EQ,__F,LowOrderFem,HighOrderFem,__U,__QN,__QC);
       PatchDiscretization::LocalToGlobal(f,__F,iq,d);
     }
@@ -505,6 +512,7 @@ void DwrFemQ2Q13d::BoundaryForm(GlobalVector& f, const GlobalVector& u, const In
       LowOrderFem .ReInit(TL);
 
       GlobalToLocal(__U,u,ip);
+      BE.point_cell(GetMesh()->material_patch(ip));
       I->BoundaryForm(BE,__F,LowOrderFem,HighOrderFem,__U,ile,col,__QN,__QC);
       PatchDiscretization::LocalToGlobal(f,__F,ip,d);
     }
@@ -534,6 +542,7 @@ void DwrFemQ2Q13d::Rhs(GlobalVector& f, const DomainRightHandSide& RHS, double s
       LowOrderFem .ReInit(TL);
 
       GlobalToLocalData(iq);
+      RHS.point_cell(GetMesh()->material_patch(iq));
       I->Rhs(RHS,__F,LowOrderFem,HighOrderFem,__QN,__QC);
       PatchDiscretization::LocalToGlobal(f,__F,iq,s);
     }
@@ -586,6 +595,7 @@ void DwrFemQ2Q13d::BoundaryRhs(GlobalVector& f, const IntSet& Colors, const Boun
       LowOrderFem .ReInit(TL);
 
       GlobalToLocalData(ip);
+      NRHS.point_cell(GetMesh()->material_patch(ip));
       I->BoundaryRhs(NRHS,__F,LowOrderFem,HighOrderFem,ile,col,__QN,__QC);
       PatchDiscretization::LocalToGlobal(f,__F,ip,s);
     }

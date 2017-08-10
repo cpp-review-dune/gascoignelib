@@ -86,7 +86,7 @@ class HierarchicalMesh2d : public HierarchicalMesh
   void  change_hangs2d  (const IntVector&, const IntVector&);
   void  change_vertexs2d(const IntVector&);
   void  change_quads2d  (const IntVector&, const IntVector&);
-  void  boundary_prepare2d(IntSet&, IntSet&, IntSet&, const HangContainer2d&);
+  void  boundary_prepare2d(IntSet&, IntSet&, IntSet&, const HangContainer2d&, const IntSet& ,const IntSet& );
   void  new_boundary2d    (IntSet&, IntSet&, IntSet&);
 
   void  basic_refine2d(HangContainer2d&, const IntSet&, const IntSet&);
