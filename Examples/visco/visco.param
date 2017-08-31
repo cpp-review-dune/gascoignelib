@@ -1,0 +1,85 @@
+//Block BoundaryManager
+
+dirichlet   2  4 8
+
+dirichletcomp      4  2 1 2
+dirichletcomp      8  2 1 2
+
+
+equation 2 1 0
+
+//functional 2 80 81
+
+//Block Equation
+
+dt		0.001
+start_time	0.0
+stop_time	2.0
+
+lps		0.1
+lpsstress	1.0
+
+mu_v		1.0
+mu_e		1.0
+lambda		0.5
+
+
+
+//Block Loop
+
+initial boundary
+
+
+writebupgup 0
+writevtk    0
+
+niter       1
+
+etapatcher  0
+extrapolate yes
+
+
+//Block Mesh
+
+
+etapatcher 0
+dimension   2
+prerefine   5
+gridname    sq.inp
+
+
+//Block MultiLevelSolver
+
+
+
+linear_pstep 0
+linearsolve	gmres
+nonlinear_rho	0.05
+nonlinear_maxiter	50
+nonlinear_tol		1.e-8
+nonlinear_globaltol	1.e-10
+linear_tol	1.e-4
+linear_maxiter	10
+gmressize	10
+
+//Block Solver
+
+omega	1.0
+
+matrixtype block
+
+iterpre                 4
+iterpost                4
+iterexact               8
+
+
+discname       Q2Lps
+
+ndirect	       0
+pfilter 1 0
+
+
+//Block Visualization
+showoutput 0
+
+//Block Nix
