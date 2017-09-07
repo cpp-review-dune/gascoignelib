@@ -54,6 +54,7 @@ class MyStress : public DirichletData
   void operator()(DoubleVector& b, const Vertex2d& v, int color) const
   {
     b[0]=1.0;
+    b[1]=0.0;
     b[2]=1.0;
   }
 };
