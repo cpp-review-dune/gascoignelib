@@ -1,0 +1,64 @@
+//Block BoundaryManager
+
+dirichlet   3   0 4 8
+
+dirichletcomp 4   4  1 2 3 4
+dirichletcomp 8   4  1 2 3 4
+dirichletcomp 0   2      3 4
+
+
+
+//Block Equation
+
+lps		 0.5
+extend    0.01
+
+nu_f		0.01
+mu_s	2.e4
+lambda_s	 8.e4
+
+rho_f		1000
+rho_s		1000
+
+
+
+//Block Loop
+
+initial boundary
+niter       10
+
+//Block Mesh
+
+dimension   2
+prerefine   1
+gridname    fsi.inp
+
+
+//Block MultiLevelSolver
+
+
+
+linearsolve mg
+nonlinear_maxiter	5
+nonlinear_tol	1.e-8
+
+linear_tol	1.e-4
+gmressize 100
+linear_maxiter 100
+
+//Block Solver
+
+omega	1.0
+matrixtype block
+
+iterpre                 4
+iterpost                4
+iterexact               8
+
+discname       Q1
+
+
+ndirect	      100000
+
+
+//Block Nix

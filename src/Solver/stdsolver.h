@@ -136,8 +136,8 @@ class StdSolver : public virtual SolverInterface
 
   const MeshInterface*& GetMeshPointer() {return _MP;}
 
-  virtual SolverData& GetSolverData() { return _Dat; }
-  virtual const SolverData& GetSolverData() const { return _Dat; }
+ // virtual SolverData& GetSolverData() { return _Dat; }
+ // virtual const SolverData& GetSolverData() const { return _Dat; }
   virtual PressureFilter& GetPfilter() { return _PF; }
   virtual const PressureFilter& GetPfilter() const { return _PF; }
   
@@ -180,6 +180,9 @@ class StdSolver : public virtual SolverInterface
   ~StdSolver();
 
   std::string GetName() const {return "StdSolver";}
+
+  virtual SolverData& GetSolverData() { return _Dat; }
+  virtual const SolverData& GetSolverData() const { return _Dat; }
 
   void BasicInit(const ParamFile* paramfile, const int dimension,const NumericInterface* NI);
   void SetProblem(const ProblemDescriptorInterface& PDX);

@@ -1,4 +1,6 @@
 SUBDIRS(
+NavierStokes3D_Verzweigung
+Stent
    Theta-GAS
    ThetaNS
    Example1

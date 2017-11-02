@@ -7,12 +7,19 @@ refiner     global
 
 dimension   3
 prerefine   2
-gridname    box.inp
+gridname    Verzweigung_0.inp
 
 //Block BoundaryManager
 
-dirichlet       1 9
-dirichletcomp   9  1 0
+dirichlet     7   0 1 2 3 5 6 7
+
+dirichletcomp   0 1 0
+dirichletcomp   1  1 0
+dirichletcomp   2  1 0
+dirichletcomp   3  1 0
+dirichletcomp   5  1 0
+dirichletcomp   6  1 0
+dirichletcomp   7  1 0
 
 //Block MultiLevelSolver
 
