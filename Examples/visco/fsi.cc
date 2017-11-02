@@ -4,14 +4,189 @@
 extern double __DT;
 extern double __THETA;
 
-
-
 using namespace std;
-
-/*-----------------------------------------*/
 
 namespace Gascoigne
 {
+
+  VPSEQ::VPSEQ(const ParamFile* pf)
+  {
+    DataFormatHandler DFH;
+    DFH.insert("mu_v" ,    &mu_v , 0.0);
+    DFH.insert("mu_e" ,    &mu_e , 0.0);
+    DFH.insert("lambda" ,    &lambda , 0.0);
+    DFH.insert("lps" ,    &lps0 , 0.0);
+    //DFH.insert("lpsstress" ,    &lpsstress0 , 0.0);
+    FileScanner FS(DFH, pf, "Equation");
+  }
+
+  void VPSEQ::point(double h, const FemFunction& U, const Vertex<2>& v) const
+  {
+    __h = h;
+    __v = v;
+  }
+
+  void VPSEQ::Form(VectorIterator b, const FemFunction& U, const TestFunction& N) const
+  {
+    for (int i=0;i<2;++i){
+      //Pressure
+      b[0]   += U[i+1][i+1] * N.m();
+
+      //stokes is stationary
+      //b[i+1] += (U[i+1].m()-(*OLD)[i+1].m())/__DT * N.m();
+
+      //Velocity
+      for (int j=0;j<2;++j){
+        //?
+        b[i+1] += mu_v * 1.0 * (U[i+1][j+1] + U[j+1][i+1]) * N[j+1];
+        //      b[i+1] += mu_v * 0.5 * ((*OLD)[i+1][j+1] + (*OLD)[j+1][i+1]) * N[j+1];
+      }
+      //pI
+      b[i+1] -= U[0].m() * N[i+1];
+    }
+
+    b[1] += mu_e/lambda * U[3].m() * N.x();
+    b[1] += mu_e/lambda * U[4].m() * N.y();
+    b[2] += mu_e/lambda * U[4].m() * N.x();
+    b[2] += mu_e/lambda * U[5].m() * N.y();
+    b[1] += mu_e/lambda * (-1.0) * N.x();
+    b[2] += mu_e/lambda * (-1.0) * N.y();
+
+    //Stress
+    for (int i=3;i<6;++i)
+    {
+      //lambda (B - Bp) / dt Bt
+      b[i] += lambda * (U[i].m()-(*OLD)[i].m())/__DT * N.m();
+
+      for (int j=0;j<2;++j) {
+        //lambda v grad(B)
+        b[i] += lambda * U[j+1].m()*(*OLD)[i][j+1] * N.m();
+      }
+      //B
+      b[i] += U[i].m() * N.m();
+    }
+    // - I
+    b[3] += -1.0 * N.m();
+    b[5] += -1.0 * N.m();
+
+    // - lambda (grad(v)B+Bgrad(v)^T) componentwise
+    b[3] -= lambda * (2.0 * ((U)[0].m()*U[1].x() + 2.0 * (U)[1].m()*U[1].y())) * N.m();
+    b[4] -= lambda * ((U)[0].m()*U[2].x() + (U)[1].m()*U[1].x()
+            + (U)[1].m()*U[2].y() + (U)[2].m()*U[1].y()) * N.m();
+    b[5] -= lambda * (2.0 * ((U)[1].m()*U[2].x() + 2.0 * (U)[2].m()*U[2].y())) * N.m();
+
+    // ADD TG STABILIZATION
+    double test = U[1].m()*N.x() + U[2].m() * N.y();
+    for (int i=3;i<6;++i)
+      for (int j=0;j<2;++j)
+      {
+        b[i] += lambda * __DT / 3.0 * U[j+1].m()*(*OLD)[i][j+1] * test;
+        b[i] += lambda * __DT / 6.0 * U[j+1].m()*U[i][j+1] * test;
+      }
+  }
+
+  void VPSEQ::Matrix(EntryMatrix& A, const FemFunction& U, const TestFunction& M, const TestFunction& N) const
+  {
+    //velocity
+    for (int i=0;i<2;++i)
+    {
+      A(0,i+1)  += M[i+1] * N.m();
+
+      //A(i+1,i+1) += M.m()/__DT * N.m();
+
+      for (int j=0;j<2;++j)
+        {
+          A(i+1,i+1) += mu_v * 1.0 * M[j+1] * N[j+1];
+          A(i+1,j+1) += mu_v * 1.0 * M[i+1] * N[j+1];
+        }
+
+      A(i+1,0) -= M.m() * N[i+1];
+    }
+
+    //stress
+    for (int i=3;i<6;++i)
+    {
+      A(i,i) += lambda * M.m()/__DT * N.m();
+
+      // for (int j=0;j<2;++j)
+      //   //    b[i] += lambda * (*V)[j+1].m()*(*SIGMAOLD)[i][j+1] * N.m();
+      //   A(i,i) += lambda * (*V)[j+1].m()*M[j+1] * N.m();
+      A(i,i) += M.m() * N.m();
+    }
+
+    A(3,3) -= lambda * (2.0 * M.m()*U[1].x() ) * N.m();
+    A(3,4) -= lambda * (2.0 * M.m()*U[1].y() ) * N.m();
+    A(4,3) -= lambda * (M.m()*U[2].x()) * N.m();
+    A(4,4) -= lambda * (M.m()*U[1].x()  + M.m()*U[2].y()) * N.m();
+    A(4,5) -= lambda * (M.m()*U[1].y()) * N.m();
+    A(5,4) -= lambda * (2.0 * (M.m()*U[2].x())) * N.m();
+    A(5,5) -= lambda * (2.0 * M.m()*U[2].y()) * N.m();
+
+    // ADD STABILIZATION
+    double test = U[1].m()*N.x() + U[2].m() * N.y();
+    for (int i=3;i<6;++i)
+      for (int j=0;j<2;++j)
+      {
+        A(i,i) += lambda * __DT / 6.0 * U[j+1].m()*M[j+1] * test;
+      }
+
+
+  }
+
+  void VPSEQ::point_M(int j, const FemFunction& U, const TestFunction& M) const
+  {
+  }
+
+  void VPSEQ::MatrixBlock(EntryMatrix& A, const FemFunction& U, const FemFunction& N) const
+  {
+    for (int j=0; j<N.size();++j)  // trial
+      {
+#define M N[j]
+  point_M(j,U,M);
+
+  for (int i=0; i<N.size();++i) // test
+  {
+      A.SetDofIndex(i,j);
+      Matrix(A,U,M , N[i]);
+  }
+#undef M
+      }
+  }
+
+
+    void VPSEQ::lpspoint(double h, const FemFunction& U, const Vertex<2>& v) const
+    {
+      double vel = 1.0;
+      lps = lps0 / ( mu_v/h/h + vel/h);
+    }
+
+    void VPSEQ::StabForm(VectorIterator b, const FemFunction& U, const FemFunction& UP, const TestFunction& N) const
+    {
+      for (int i=0;i<2;++i)
+        b[0] += lps * UP[0][i+1] * N[i+1];
+
+      //for (int i=3;i<6;++i)
+      //  b[i] += lps * UP[i].m() * N.m();
+    }
+
+
+    void VPSEQ::StabMatrix(EntryMatrix& A, const FemFunction& U, const TestFunction& Np, const TestFunction& Mp) const
+    {
+      for (int i=0;i<2;++i)
+        A(0,0) += lps *Mp[i+1] * Np[i+1];
+
+      //for (int i=3;i<6;++i)
+      //  A(i,i) += lps *Mp.m() * Np.m();
+    }
+
+
+
+/*
+
+OLD CODE BELOW
+
+
+
 
   VelEQ::VelEQ(const ParamFile* pf)
   {
@@ -28,8 +203,6 @@ namespace Gascoigne
     __h = h;
     __v = v;
   }
-
-
 
   void VelEQ::Form(VectorIterator b, const FemFunction& U, const TestFunction& N) const
   {
@@ -75,14 +248,9 @@ namespace Gascoigne
       }
   }
 
-
-
-
   void VelEQ::point_M(int j, const FemFunction& U, const TestFunction& M) const
   {
-
   }
-
 
   void VelEQ::MatrixBlock(EntryMatrix& A, const FemFunction& U, const FemFunction& N) const
   {
@@ -90,7 +258,6 @@ namespace Gascoigne
       {
 #define M N[j]
   point_M(j,U,M);
-
 
   for (int i=0; i<N.size();++i) // test
     {
@@ -100,7 +267,6 @@ namespace Gascoigne
 #undef M
       }
   }
-
 
 
   void VelEQ::lpspoint(double h, const FemFunction& U, const Vertex<2>& v) const
@@ -122,12 +288,6 @@ namespace Gascoigne
       A(0,0) += lps *Mp[i+1] * Np[i+1];
   }
 
-  ////////////////////////////////////////////////////////////
-  ////////////////////////////////////////////////////////////
-  ////////////////////////////////////////////////////////////
-  ////////////////////////////////////////////////////////////
-
-
   StressEQ::StressEQ(const ParamFile* pf)
   {
     DataFormatHandler DFH;
@@ -141,8 +301,6 @@ namespace Gascoigne
     __h = h;
     __v = v;
   }
-
-
 
   void StressEQ::Form(VectorIterator b, const FemFunction& U, const TestFunction& N) const
   {
@@ -164,15 +322,10 @@ namespace Gascoigne
     b[0] += -1.0 * N.m();
     b[2] += -1.0 * N.m();
 
-    // b[0] -= lambda * (2.0 * ((*SIGMAOLD)[0].m()*(*V)[1].x() + 2.0 * (*SIGMAOLD)[1].m()*(*V)[1].y())) * N.m();
-    // b[1] -= lambda * ((*SIGMAOLD)[0].m()*(*V)[2].x() + (*SIGMAOLD)[1].m()*(*V)[1].x()
-    //            + (*SIGMAOLD)[1].m()*(*V)[2].y() + (*SIGMAOLD)[2].m()*(*V)[1].y()) * N.m();
-    // b[2] -= lambda * (2.0 * ((*SIGMAOLD)[1].m()*(*V)[2].x() + 2.0 * (*SIGMAOLD)[2].m()*(*V)[2].y())) * N.m();
-
     // - lambda (grad(v)B+Bgrad(v)^T) componentwise
     b[0] -= lambda * (2.0 * ((U)[0].m()*(*V)[1].x() + 2.0 * (U)[1].m()*(*V)[1].y())) * N.m();
     b[1] -= lambda * ((U)[0].m()*(*V)[2].x() + (U)[1].m()*(*V)[1].x()
-                + (U)[1].m()*(*V)[2].y() + (U)[2].m()*(*V)[1].y()) * N.m();
+            + (U)[1].m()*(*V)[2].y() + (U)[2].m()*(*V)[1].y()) * N.m();
     b[2] -= lambda * (2.0 * ((U)[1].m()*(*V)[2].x() + 2.0 * (U)[2].m()*(*V)[2].y())) * N.m();
 
 
@@ -230,10 +383,6 @@ namespace Gascoigne
   }
 
 
-
-
-
-
   void StressEQ::MatrixBlock(EntryMatrix& A, const FemFunction& U, const FemFunction& N) const
   {
     for (int j=0; j<N.size();++j)  // trial
@@ -275,9 +424,6 @@ namespace Gascoigne
       //      for (int j=0;j<2;++j)
       A(i,i) += lpsstress *Mp.m() * Np.m();
   }
+*/
+}// Gascoigne namespace
 
-
-
-}
-
-/*-----------------------------------------*/
