@@ -40,18 +40,18 @@ class MgInterpolatorNested : public virtual MgInterpolatorInterface
 private:
 
 
-  std::map<int,fixarray<2,int> >  zweier;
-  std::map<int,fixarray<4,int> >  vierer;
-  std::map<int,fixarray<8,int> >  achter;
+  std::map<int,std::array<int,2> >  zweier;
+  std::map<int,std::array<int,4> >  vierer;
+  std::map<int,std::array<int,8> >  achter;
 
   IntVector                c2f;
 
 public:
 
 
-  std::map<int,fixarray<2,int> >&  GetZweier(){return zweier; }
-  std::map<int,fixarray<4,int> >&  GetVierer(){return vierer; }
-  std::map<int,fixarray<8,int> >&  GetAchter(){return achter; }
+  std::map<int,std::array<int,2> >&  GetZweier(){return zweier; }
+  std::map<int,std::array<int,4> >&  GetVierer(){return vierer; }
+  std::map<int,std::array<int,8> >&  GetAchter(){return achter; }
   IntVector&                       GetC2F()   {return c2f;  }
   
   

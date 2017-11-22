@@ -70,7 +70,7 @@ namespace Gascoigne
       virtual void      GetScalarName   (int i, std::string& s_name) const=0;
       virtual const int GetNVectors     () const=0;
       virtual void      GetVectorName   (int i, std::string& s_name) const=0;
-      virtual void      GetVectorIndices(int i, fixarray<3,int>& fa_vectorindices) const=0;
+    virtual void      GetVectorIndices(int i, std::array<int,3>& fa_vectorindices) const=0;
   };
 }
 

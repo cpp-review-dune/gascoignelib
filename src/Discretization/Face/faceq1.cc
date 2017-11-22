@@ -85,7 +85,7 @@ namespace Gascoigne
     const GascoigneMesh2d* GM = dynamic_cast<const GascoigneMesh2d*> (__MP);
 
     // list of neighbors
-    std::map<pair<int,int> ,fixarray<2,int> > fm;
+    std::map<pair<int,int> ,std::array<int,2> > fm;
     for (int c=0;c<GM->ncells();++c)
       {
 	for (int i=0;i<4;++i)
@@ -103,7 +103,7 @@ namespace Gascoigne
       }
 
     // create list of internal faces
-    for (std::map<pair<int,int> ,fixarray<2,int> >::const_iterator it = fm.begin();it!=fm.end();++it)
+    for (std::map<pair<int,int> ,std::array<int,2> >::const_iterator it = fm.begin();it!=fm.end();++it)
       {
 	if (it->second[1]==-1) continue;
 	assert(it->second[0]!=-1);

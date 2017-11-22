@@ -50,8 +50,8 @@ class HierarchicalMesh : public MeshInterface
 
   typedef  std::pair<int,int>      pint;
   typedef  triple<int,int,int>     tint;
-  typedef  fixarray<2,int>         EdgeVector;
-  typedef  fixarray<4,int>         FaceVector;
+  typedef  std::array<int,2>         EdgeVector;
+  typedef  std::array<int,4>         FaceVector;
   typedef  std::vector<Edge>       EdgeVec;
   typedef  IntSet::iterator        IntSetIt;   
   typedef  IntSet::const_iterator  IntSetCIt;

@@ -53,7 +53,7 @@ class BaseQ23d : public Base3d
 
  protected:
 
-  fixarray<NDOF1d,double>        a,b,c;
+  std::array<double,NDOF1d>        a,b,c;
   
   double psi   (int i, double x) const { return a[i] + b[i]*x + c[i]*x*x;}
   double psi_x (int i, double x) const { return b[i] + 2.*c[i]*x;       }

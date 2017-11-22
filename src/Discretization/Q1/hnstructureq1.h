@@ -36,7 +36,7 @@ class HNStructureQ1 : public virtual HNStructureInterface
 {
 protected:
 
-  typedef   fixarray<3,int>        EdgeVector;
+  typedef   std::array<int,3>        EdgeVector;
   typedef   std::map<int,EdgeVector>::iterator        iterator;
   typedef   std::map<int,EdgeVector>::const_iterator  const_iterator;
 

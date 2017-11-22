@@ -50,7 +50,7 @@ class BaseQ13d : public Base3d
 
   typedef  std::pair<int,int> pint;
 
-  fixarray<2,double>          a,b;
+  std::array<double,2>          a,b;
 
   mutable DoubleVector dxy, dxz, dyz, dxyz;
 

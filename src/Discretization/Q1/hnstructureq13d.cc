@@ -116,7 +116,7 @@ namespace Gascoigne
     for(const_fiterator p=faces->begin(); p!=faces->end(); p++)
       {
 	int i = p->first;
-	const fixarray<9,int>& f = p->second;
+	const std::array<int,9>& f = p->second;
 	u.equ_node(i, 0.25,f[0], 0.25,f[1], 0.25,f[3], 0.25,f[4]);
       }
   }
@@ -130,7 +130,7 @@ namespace Gascoigne
     for(const_fiterator p=faces->begin(); p!=faces->end(); p++)
       {
 	int i = p->first;
-	const fixarray<9,int>& f = p->second;
+	const std::array<int,9>& f = p->second;
 
 	u.add_node(f[0],0.25,i);
 	u.add_node(f[1],0.25,i);
@@ -180,12 +180,12 @@ namespace Gascoigne
 
 /*----------------------------------------------*/
 
-  fixarray<4,int> HNStructureQ13d::GetHangingFace(int i) const
+  std::array<int,4> HNStructureQ13d::GetHangingFace(int i) const
   {
     const_fiterator p = faces->find(i);
     assert(p!=faces->end());
 	  
-    fixarray<4,int> Face;
+    std::array<int,4> Face;
     Face[0] = p->second[0];
     Face[1] = p->second[1];
     Face[2] = p->second[3];
@@ -196,12 +196,12 @@ namespace Gascoigne
 
 /*----------------------------------------------*/
 
-  fixarray<2,int> HNStructureQ13d::GetHangingEdge(int i) const
+  std::array<int,2> HNStructureQ13d::GetHangingEdge(int i) const
   {
     map<int,EdgeVector>::const_iterator p = edges->find(i);
     assert(p!=edges->end());
 	  
-    fixarray<2,int> Edge;
+    std::array<int,2> Edge;
     Edge[0] = p->second[0];
     Edge[1] = p->second[1];
   
@@ -236,7 +236,7 @@ namespace Gascoigne
 
 	if (hanging(j)==4) // 4er haengender Knoten
 	  {
-	    fixarray<4,int> Face = GetHangingFace(j);
+	    std::array<int,4> Face = GetHangingFace(j);
 
 	    x.push_back(ii);
 	    for(int i=0; i<4; i++)
@@ -301,7 +301,7 @@ namespace Gascoigne
 	linecount++;
 
 		  //const IntVector2& line = hang(ind);
-	fixarray<2,int> line = GetHangingEdge(ind);
+	std::array<int,2> line = GetHangingEdge(ind);
       
 	for(int k=0; k<2; k++) 
 	  {
@@ -326,7 +326,7 @@ namespace Gascoigne
 
 	quadcount++;
 
-	fixarray<4,int> face = GetHangingFace(ind);
+	std::array<int,4> face = GetHangingFace(ind);
 
 	for(int k=0; k<4; k++) 
 	  {
@@ -356,7 +356,7 @@ namespace Gascoigne
 
 	if (hanging(i)==2) // 2er haengender Knoten
 	  {
-	    fixarray<2,int> Edge = GetHangingEdge(i);
+	    std::array<int,2> Edge = GetHangingEdge(i);
 
 	    x.push_back(ii);
 
@@ -399,7 +399,7 @@ namespace Gascoigne
 
 	if (hanging(i)==2) // 2er haengender Knoten
 	  {
-	    fixarray<2,int> Edge = GetHangingEdge(i);
+	    std::array<int,2> Edge = GetHangingEdge(i);
 
 	    for(int iii=0; iii<2; iii++)
 	      {
@@ -428,7 +428,7 @@ namespace Gascoigne
 
 	if (hanging(j)==4) // 4er haengender Knoten
 	  {
-	    fixarray<4,int> Face = GetHangingFace(j);
+	    std::array<int,4> Face = GetHangingFace(j);
 
 	    for(int i=0; i<4; i++)
 	      {
@@ -462,7 +462,7 @@ namespace Gascoigne
       
 	if(hanging(i)!=4) continue;
       
-	const fixarray<5,int>& p = lnop[ii];
+	const std::array<int,5>& p = lnop[ii];
       
 	int elim = p[4];
       
@@ -484,7 +484,7 @@ namespace Gascoigne
       
 	if(hanging(i)!=2) continue;
       
-	const fixarray<3,int>& p = lnoe[ii];
+	const std::array<int,3>& p = lnoe[ii];
       
 	int elim = p[1];
       

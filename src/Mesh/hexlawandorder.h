@@ -56,20 +56,20 @@ class HexLawAndOrder
  protected:
 
   /* typedef's */
-  typedef fixarray<2,int>  EdgeVector;
-  typedef fixarray<4,int>  FaceVector;
+  typedef std::array<int,2>  EdgeVector;
+  typedef std::array<int,4>  FaceVector;
 
   /* reference */
   std::vector<Hex>&           hexs;
 
   /* data */
-  fixarray<12,EdgeVector>   lve, vice, childs_edge;
-  fixarray< 6,FaceVector>   lvf, vicf, childs_face;
-  fixarray<8,int>           cell_midpoint;
-  fixarray<8,fixarray<3,int> > ieoc;
-  fixarray<12,fixarray<2,int> > coif, lcfif;
-  fixarray<6 ,fixarray<4,int> >  edgeofface;
-  fixarray<4 ,fixarray<9,int> >  hnpf;
+  std::array<EdgeVector,12>   lve, vice, childs_edge;
+  std::array<FaceVector,6>   lvf, vicf, childs_face;
+  std::array<int,8>           cell_midpoint;
+  std::array<std::array<int,3>,8 > ieoc;
+  std::array<std::array<int,2>,12 > coif, lcfif;
+  std::array<std::array<int,4>,6 >  edgeofface;
+  std::array<std::array<int,9>,4 >  hnpf;
 
   void local_edge_index(EdgeVector& index, int) const;
   void local_face_index(FaceVector& index, int) const;
@@ -87,10 +87,10 @@ class HexLawAndOrder
   int face_vertex  (const Hex&, int) const;
   int edge_vertex  (const Hex&, int) const;
   int middle_vertex(const Hex&)      const;
-  void globalvertices_of_edge(const Hex& q, fixarray<2,int>& f, int ie) const;
-  void globalvertices_of_face(const Hex& q, fixarray<4,int>& f, int ie) const;
+  void globalvertices_of_edge(const Hex& q, std::array<int,2>& f, int ie) const;
+  void globalvertices_of_face(const Hex& q, std::array<int,4>& f, int ie) const;
   void LoadEdgeVerticesOfFace(const Hex& f, int face, FaceVector& dst) const;
-  void LoadFaceVertices(const Hex& f, fixarray<6,int>& dst) const;
+  void LoadFaceVertices(const Hex& f, std::array<int,6>& dst) const;
 
   // faces
 
@@ -124,10 +124,10 @@ class HexLawAndOrder
   int LoadEdgeOfFace(const Hex& q, const FaceVector& F, int e, EdgeVector& E) const;
   int LocalEdgeOfLocalFace(int face, int e) const { return edgeofface[face][e];}
   int TestFaceOfOneChild(const Hex& f, const FaceVector& F) const;
-  int GetVertexOfEdge(int iq, const fixarray<2,int>& edge) const;
+  int GetVertexOfEdge(int iq, const std::array<int,2>& edge) const;
   int EdgeVertexOfFace(const Hex& q, const FaceVector& F, int e) const;
-  fixarray<9,int> PatchVerticesOfFace(int hex, int face) const;
-  fixarray<9,int> GiveOrdering(const fixarray<9,int>& F, const Hex& qfn) const;
+  std::array<int,9> PatchVerticesOfFace(int hex, int face) const;
+  std::array<int,9> GiveOrdering(const std::array<int,9>& F, const Hex& qfn) const;
 };
 }
 

@@ -22,27 +22,25 @@
 **/
 
 
-#ifndef  __EdgeArray_h
-#define  __EdgeArray_h
+#ifndef __EdgeArray_h
+#define __EdgeArray_h
 
-#include  "fixarray.h"
+#include <array>
 
 /*-----------------------------------------*/
 
 namespace Gascoigne
 {
-template<int N>
-class EdgeArray : public fixarray<N,int>
-{
- public:
+  template <size_t N>
+  class EdgeArray : public std::array<int, N>
+  {
+  public:
+    EdgeArray<N>(const std::array<int,N > &e);
 
-  EdgeArray<N>(const fixarray<N,int> &e);
-  
-  bool operator==(const fixarray<N,int> &e) const;
+    bool operator==(const std::array<int,N > &e) const;
 
-  int sum() const;
-};
-
+    int sum() const;
+  };
 }
 
 /*------------------------------------------------------*/

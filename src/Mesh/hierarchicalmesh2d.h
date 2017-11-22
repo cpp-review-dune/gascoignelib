@@ -49,7 +49,7 @@ class HierarchicalMesh2d : public HierarchicalMesh
   typedef  HangList<2>              LineHangList;
 
   typedef triple<int,int,int>          tint;
-  typedef std::map<fixarray<2,int>,HierarchicalMesh2d::BoundaryLine> HangBLList;
+  typedef std::map<std::array<int,2>,HierarchicalMesh2d::BoundaryLine> HangBLList;
 
   /*  Data  */
 
@@ -209,10 +209,10 @@ class HierarchicalMesh2d : public HierarchicalMesh
   void  VertexNeighbours2d(std::set<int>&, int i) const;
 
   int  NodeOnEdge(int e) const;
-  fixarray<2,int> ChildrenOfEdge(int e) const;
+  std::array<int,2> ChildrenOfEdge(int e) const;
 
-  void  GetVertexesOfEdge(fixarray<3,int>&, int) const;
-  void  GetVertexesOfEdge(fixarray<2,int>&, int) const;
+  void  GetVertexesOfEdge(std::array<int,3>&, int) const;
+  void  GetVertexesOfEdge(std::array<int,2>&, int) const;
   void GetAwakePatchs(std::set<int>&) const;
   void GetAwakeCells(std::set<int>&) const;
   void ConstructQ2PatchMesh(IntVector& pm) const;

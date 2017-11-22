@@ -339,12 +339,12 @@ void HNStructureQ42d::MatrixDiag(int ncomp, MatrixInterface& A) const
 
 /**********************************************************/
 
-void HNStructureQ42d::SparseStructureDiag(SparseStructure& S) const
+void HNStructureQ42d::SparseStructureDiag(SparseStructure* S) const
 {
   for(const_iteratorq4 p=q4edges->begin();p!=q4edges->end();p++)
   {
     int i = p->first;
-    S.build_add(i,i);
+    S->build_add(i,i);
   }
 }
 

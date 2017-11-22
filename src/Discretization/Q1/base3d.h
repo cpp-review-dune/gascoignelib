@@ -38,7 +38,7 @@ class Base3d : public Base
 
   mutable DoubleVector             N;
   mutable std::vector<Vertex3d>       DN;
-  mutable fixarray<2,int>             face;
+  mutable std::array<int,2>             face;
   mutable Vertex3d  bn, bt;
 
  public:
@@ -49,7 +49,7 @@ class Base3d : public Base
     std::cerr << "\"Base3d::tangent3d\" not written!" << std::endl;
     abort();
   }
-  const fixarray<2,int>* faces() const {return &face;}
+  const std::array<int,2>* faces() const {return &face;}
   
   void point_boundary(int ie, const Vertex2d& s1) const
     {

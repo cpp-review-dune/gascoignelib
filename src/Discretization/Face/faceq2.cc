@@ -81,7 +81,7 @@ namespace Gascoigne
     assert(GM->HasPatch());
     
     // list of neighbors (middle-node-of-line-of-patch)
-    std::map<int ,fixarray<2,int> > fm;
+    std::map<int ,std::array<int,2> > fm;
     int ind[4] = {1,5,7,3};
     for (int c=0;c<GM->npatches();++c)
       {
@@ -100,7 +100,7 @@ namespace Gascoigne
       }
 
     // create list of internal faces
-    for (std::map<int ,fixarray<2,int> >::const_iterator it = fm.begin();it!=fm.end();++it)
+    for (std::map<int ,std::array<int,2> >::const_iterator it = fm.begin();it!=fm.end();++it)
       {
 	if (it->second[1]==-1) continue;
 	assert(it->second[0]!=-1);

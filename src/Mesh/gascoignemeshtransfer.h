@@ -26,7 +26,7 @@
 #define  __GascoigneMeshTransfer_h
 
 #include  "meshtransferinterface.h"
-#include  "fixarray.h"
+#include  <array>
 #include  "gascoigne.h"
 #include  <map>
 
@@ -38,34 +38,34 @@ class GascoigneMeshTransfer : public MeshTransferInterface
 {
 protected:
   
-  std::map<int,fixarray<2,int> >  zweier;
-  std::map<int,fixarray<4,int> >  vierer;
-  std::map<int,fixarray<8,int> >  achter;
+  std::map<int,std::array<int,2> >  zweier;
+  std::map<int,std::array<int,4> >  vierer;
+  std::map<int,std::array<int,8> >  achter;
   
   IntVector                c2f;
   std::map<int,int>             CellEiner;
-  std::map<int,fixarray<4,int> >  CellVierer;
-  std::map<int,fixarray<8,int> >  CellAchter;
+  std::map<int,std::array<int,4> >  CellVierer;
+  std::map<int,std::array<int,8> >  CellAchter;
   
 public:
   
-  const std::map<int,fixarray<2,int> >& GetZweier() const {return zweier;}
-  const std::map<int,fixarray<4,int> >& GetVierer() const {return vierer;}
-  const std::map<int,fixarray<8,int> >& GetAchter() const {return achter;}
+  const std::map<int,std::array<int,2> >& GetZweier() const {return zweier;}
+  const std::map<int,std::array<int,4> >& GetVierer() const {return vierer;}
+  const std::map<int,std::array<int,8> >& GetAchter() const {return achter;}
   const IntVector&                   GetC2f()    const {return c2f;}
   
-  std::map<int,fixarray<2,int> >& GetZweier() {return zweier;}
-  std::map<int,fixarray<4,int> >& GetVierer() {return vierer;}
-  std::map<int,fixarray<8,int> >& GetAchter() {return achter;}
+  std::map<int,std::array<int,2> >& GetZweier() {return zweier;}
+  std::map<int,std::array<int,4> >& GetVierer() {return vierer;}
+  std::map<int,std::array<int,8> >& GetAchter() {return achter;}
   IntVector&                   GetC2f() {return c2f;}
 
   const std::map<int,int>             & GetCellEiner ()const  {return CellEiner;}
-  const std::map<int,fixarray<4,int> >& GetCellVierer()const  {return CellVierer;}
-  const std::map<int,fixarray<8,int> >& GetCellAchter()const  {return CellAchter;}
+  const std::map<int,std::array<int,4> >& GetCellVierer()const  {return CellVierer;}
+  const std::map<int,std::array<int,8> >& GetCellAchter()const  {return CellAchter;}
 
   std::map<int,int>             & GetCellEiner () {return CellEiner;}
-  std::map<int,fixarray<4,int> >& GetCellVierer() {return CellVierer;}
-  std::map<int,fixarray<8,int> >& GetCellAchter() {return CellAchter;}
+  std::map<int,std::array<int,4> >& GetCellVierer() {return CellVierer;}
+  std::map<int,std::array<int,8> >& GetCellAchter() {return CellAchter;}
   
   GascoigneMeshTransfer();
 };

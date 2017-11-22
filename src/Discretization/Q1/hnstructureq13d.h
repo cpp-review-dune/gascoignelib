@@ -22,63 +22,64 @@
 **/
 
 
-#ifndef  __HNStructureQ13d_h
-#define  __HNStructureQ13d_h
+#ifndef __HNStructureQ13d_h
+#define __HNStructureQ13d_h
 
-#include  "hnstructureq12d.h"
-#include  "entrymatrix.h"
+#include "entrymatrix.h"
+#include "hnstructureq12d.h"
 
 /*-----------------------------------------*/
 
 namespace Gascoigne
 {
-class HNStructureQ13d : public HNStructureQ12d
-{
-protected:
+  class HNStructureQ13d : public HNStructureQ12d
+  {
+  protected:
+    typedef std::array<int, 9> FaceVector;
 
-  typedef   fixarray<9,int>    FaceVector;
+    typedef std::map<int, FaceVector>::iterator fiterator;
+    typedef std::map<int, FaceVector>::const_iterator const_fiterator;
 
-  typedef   std::map<int,FaceVector>::iterator        fiterator;
-  typedef   std::map<int,FaceVector>::const_iterator  const_fiterator;
+    const std::map<int, FaceVector> *faces;
 
-  const std::map<int,FaceVector>*        faces;
+    std::array<std::array<int, 3>, 12> lnoe;
+    std::array<std::array<int, 5>, 6> lnop;
 
-  fixarray<12,fixarray<3,int> >  lnoe;
-  fixarray< 6,fixarray<5,int> >  lnop;
+    void CondenseHanging2er(IntVector &indices) const;
+    void CondenseHanging4er(IntVector &indices) const;
 
-  void CondenseHanging2er(IntVector& indices) const;
-  void CondenseHanging4er(IntVector& indices) const;
+    void CondenseHanging2er(EntryMatrix &E, IntVector &indices) const;
+    void CondenseHanging4er(EntryMatrix &E, IntVector &indices) const;
 
-  void CondenseHanging2er(EntryMatrix& E, IntVector& indices) const;
-  void CondenseHanging4er(EntryMatrix& E, IntVector& indices) const;
+    std::array<int, 4> GetHangingFace(int i) const;
+    std::array<int, 2> GetHangingEdge(int i) const;
 
-  fixarray<4,int> GetHangingFace(int i) const;
-  fixarray<2,int> GetHangingEdge(int i) const;
+  public:
+    ~HNStructureQ13d();
+    HNStructureQ13d();
 
-public:
+    int nhnodes() const
+    {
+      return edges->size() + faces->size();
+    }
 
-  ~HNStructureQ13d();
-  HNStructureQ13d();
+    void ReInit(const MeshInterface *m);
+    int hanging(int i) const;
 
-  int nhnodes() const { return edges->size() + faces->size();} 
+    void MatrixDiag(int ncomp, MatrixInterface &A) const;
+    void SparseStructureDiag(SparseStructure *A) const;
 
-  void ReInit(const MeshInterface* m);
-  int   hanging(int i) const;
+    void Average(GlobalVector &u) const;
+    void Distribute(GlobalVector &u) const;
+    void Zero(GlobalVector &u) const;
+    bool ZeroCheck(const GlobalVector &u) const;
 
-  void MatrixDiag(int ncomp, MatrixInterface& A) const;
-  void SparseStructureDiag(SparseStructure* A) const;
-  
-  void Average(GlobalVector& u) const;
-  void Distribute(GlobalVector& u) const;
-  void Zero(GlobalVector& u) const;
-  bool ZeroCheck(const GlobalVector& u) const;
-  
-  void Couplings(IntVector& indices) const;
-  
-  void CondenseHanging(IntVector& indices) const;
-  void CondenseHanging(EntryMatrix&, IntVector&) const;
-  void CondenseHangingPatch(EntryMatrix& E, IntVector& indices) const;
-};
+    void Couplings(IntVector &indices) const;
+
+    void CondenseHanging(IntVector &indices) const;
+    void CondenseHanging(EntryMatrix &, IntVector &) const;
+    void CondenseHangingPatch(EntryMatrix &E, IntVector &indices) const;
+  };
 }
 
 #endif

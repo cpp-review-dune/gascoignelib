@@ -73,14 +73,20 @@ public:
     void ReInit(const SparseStructureInterface* S);
     void ReInit(int n, int nentries);
     void entry(niiterator start, niiterator stop, const EntryMatrix& M, double s=1.);
-    void vmult(DoubleVector& y, const DoubleVector& x, double d=1.) const;
-    void vmult_transpose(DoubleVector& y, const DoubleVector& x, double d=1.) const;
+    void vmult(GlobalVector& y, const GlobalVector& x, double d=1.) const;
+    void vmult_transpose(GlobalVector& y, const GlobalVector& x, double d=1.) const;
     void vmult_comp(int c, int d, GlobalVector& y, const GlobalVector& x, double s=1.) const;
     void vmult_comp_trans(int c, int d, GlobalVector& y, const GlobalVector& x, double s=1.) const;
     void vmult_time(GlobalVector& y, const GlobalVector& x, const TimePattern& TP, double s=1.) const;
+
+  // these functions have a different definition in the interface class (2 arguments)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Woverloaded-virtual"
     void dirichlet(const IntVector& indices);
     void dirichlet_only_row(const IntVector& indices);
+#pragma clang diagnostic pop
 
+  
     void transpose();
     void entry_diag(int i, const nmatrix<double>& M);
     

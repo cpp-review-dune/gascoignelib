@@ -25,7 +25,7 @@
 #ifndef  __HangingIndexHandler_h
 #define  __HangingIndexHandler_h
 
-#include  "fixarray.h"
+#include  <array>
 #include  <map>
 #include  "gascoigne.h"
 
@@ -37,21 +37,21 @@ class HangingIndexHandler
 {
  protected:
   
-  typedef  fixarray<2,int>  IntVector2;
-  typedef  fixarray<4,int>  IntVector4;
+  typedef  std::array<int,2>  IntVector2;
+  typedef  std::array<int,4>  IntVector4;
   
-  std::map<int,fixarray<3,int> >  hnq2;
-  std::map<int,fixarray<9,int> >  hnq2face;
+  std::map<int,std::array<int,3> >  hnq2;
+  std::map<int,std::array<int,9> >  hnq2face;
 
-  std::map<int,fixarray<6,int> >   hnq4;
-  std::map<int,fixarray<26,int> >  hnq4face;
+  std::map<int,std::array<int,6> >   hnq4;
+  std::map<int,std::array<int,26> >  hnq4face;
 
  public:
 
   HangingIndexHandler();
   
-  void Equal(const std::map<int,fixarray<3,int> >& h2,
-	     const std::map<int,fixarray<9,int> >& h2f) 
+  void Equal(const std::map<int,std::array<int,3> >& h2,
+	     const std::map<int,std::array<int,9> >& h2f) 
     {
       hnq2=h2; 
       hnq2face=h2f;
@@ -62,15 +62,15 @@ class HangingIndexHandler
 
   // zugriff
 
-  const std::map<int,fixarray<3,int> >* GetStructure()     const { return &hnq2;}
-  const std::map<int,fixarray<9,int> >* GetStructureFace() const { return &hnq2face;}
-  std::map<int,fixarray<3,int> >* GetStructure()      { return &hnq2;}
-  std::map<int,fixarray<9,int> >* GetStructureFace()  { return &hnq2face;}
+  const std::map<int,std::array<int,3> >* GetStructure()     const { return &hnq2;}
+  const std::map<int,std::array<int,9> >* GetStructureFace() const { return &hnq2face;}
+  std::map<int,std::array<int,3> >* GetStructure()      { return &hnq2;}
+  std::map<int,std::array<int,9> >* GetStructureFace()  { return &hnq2face;}
 
-  const std::map<int,fixarray<6,int> >*  GetQ4Structure()     const { return &hnq4;}
-  const std::map<int,fixarray<26,int> >* GetQ4StructureFace() const { return &hnq4face;}
-  std::map<int,fixarray<6,int> >*  GetQ4Structure()      { return &hnq4;}
-  std::map<int,fixarray<26,int> >* GetQ4StructureFace()  { return &hnq4face;}
+  const std::map<int,std::array<int,6> >*  GetQ4Structure()     const { return &hnq4;}
+  const std::map<int,std::array<int,26> >* GetQ4StructureFace() const { return &hnq4face;}
+  std::map<int,std::array<int,6> >*  GetQ4Structure()      { return &hnq4;}
+  std::map<int,std::array<int,26> >* GetQ4StructureFace()  { return &hnq4face;}
 };
 }
 

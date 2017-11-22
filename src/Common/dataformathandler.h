@@ -32,7 +32,7 @@
 #include  "nvector.h"
 
 #include  <string>
-#include  "fixarray.h"
+#include  <array>
 #include  "gascoigne.h"
 
 /***************************************************/
@@ -53,8 +53,8 @@ private:
   typedef std::map<std::string,double*>  TypeDouble;
   typedef std::map<std::string,StringDouble*>  TypeStringDouble;
 
-  typedef std::map<std::string,fixarray<2,double>*>     TypeFix2Double;
-  typedef std::map<std::string,fixarray<3,double>*>     TypeFix3Double;
+  typedef std::map<std::string,std::array<double,2>*>     TypeFix2Double;
+  typedef std::map<std::string,std::array<double,3>*>     TypeFix3Double;
 
   typedef std::map<std::string,std::vector<double>*>        TypeVectorDouble;
   typedef std::map<std::string,IntVector*>           TypeVectorInt;
@@ -96,8 +96,8 @@ public:
   void insert(const std::string&, float*);
   void insert(const std::string&, double*);
 
-  void insert(const std::string&, fixarray<2,double>*);
-  void insert(const std::string&, fixarray<3,double>*);
+  void insert(const std::string&, std::array<double,2>*);
+  void insert(const std::string&, std::array<double,3>*);
 
   void insert(const std::string&, std::vector<double>*);
   void insert(const std::string&, IntVector*);
@@ -117,8 +117,8 @@ public:
   void insert(const std::string&, bool*   , bool);//neu
   void insert(const std::string&, float*, float);
   void insert(const std::string&, double*, double);
-  void insert(const std::string&, fixarray<2,double>*, fixarray<2,double>&);
-  void insert(const std::string&, fixarray<3,double>*, fixarray<3,double>&);
+  void insert(const std::string&, std::array<double,2>*, std::array<double,2>&);
+  void insert(const std::string&, std::array<double,3>*, std::array<double,3>&);
   void insert(const std::string&, std::vector<double>*, std::vector<double>&);
   void insert(const std::string&, IntVector*, IntVector&);
 
@@ -130,8 +130,8 @@ public:
   void setvalue(const std::string&, float);
   void setvalue(const std::string&, double);
 
-  void setvalue(const std::string&, fixarray<2,double>&);
-  void setvalue(const std::string&, fixarray<3,double>&);
+  void setvalue(const std::string&, std::array<double,2>&);
+  void setvalue(const std::string&, std::array<double,3>&);
 
   void setvalue(const std::string&, std::vector<double>&);
   void setvalue(const std::string&, IntVector&);

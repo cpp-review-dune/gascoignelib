@@ -25,7 +25,8 @@
 #ifndef __numfixarray_h
 #define __numfixarray_h
 
-#include  "fixarray.h"
+//#include  "fixarray.h"
+#include <array>
 #include  "gascoignemath.h"
 #include  "nvector.h"
 
@@ -33,18 +34,19 @@
 
 namespace Gascoigne
 {
-template<int N, class T>
-class numfixarray  : public fixarray<N,T>
+template<size_t N, typename T>
+class numfixarray  : public std::array<T,N>
 {
-    typedef typename fixarray<N,T>::iterator         nvp;
-    typedef typename fixarray<N,T>::const_iterator   cnvp;
+  typedef typename std::array<T,N>::iterator         nvp;
+  typedef typename std::array<T,N>::const_iterator   cnvp;
 
   public:
-    ~numfixarray()    {}
-    numfixarray()                    : fixarray<N,T>(0.)    {}
-/*   numfixarray(size_t n)               : fixarray<N,T>(n)   {} */
-    numfixarray(const T& d)   : fixarray<N,T>(d) {}
-    numfixarray(const numfixarray<N,T>& v) : fixarray<N,T>(v)   {}
+  ~numfixarray()    {}
+  numfixarray()
+  { std::array<T,N>::fill(0.0); }
+/*   numfixarray(size_t n)               : std::array<T,N>(n)   {} */
+  numfixarray(const T& d) { std::array<T,N>::fill(d);}
+    numfixarray(const numfixarray<N,T>& v) : std::array<T,N>(v)   {}
 
     double operator*(const numfixarray& v) const;
     double operator*(const nvector<T>& v) const;
@@ -62,7 +64,7 @@ class numfixarray  : public fixarray<N,T>
 	return v1;
       }
     
-    int     n    () const { return fixarray<N,T>::size(); }
+    int     n    () const { return std::array<T,N>::size(); }
     void    zero ();
     void    equ  (const T&);
     void    equ  (double, const numfixarray&);
@@ -106,11 +108,11 @@ class numfixarray  : public fixarray<N,T>
 
 /**************************************************/
 
-template<int N,class T>
+template<size_t N,typename T>
 inline double numfixarray<N,T>::norm_l8() const
 {
-  cnvp first  = fixarray<N,T>::begin();
-  cnvp last   = fixarray<N,T>::end();
+  cnvp first  = std::array<T,N>::begin();
+  cnvp last   = std::array<T,N>::end();
 
   double d=0.;
   while( first != last)
@@ -123,11 +125,11 @@ inline double numfixarray<N,T>::norm_l8() const
 
 /**************************************************/
 
-template<int N,class T>
+template<size_t N,typename T>
 inline double numfixarray<N,T>::norm() const
 {
-  cnvp first  = fixarray<N,T>::begin();
-  cnvp last   = fixarray<N,T>::end();
+  cnvp first  = std::array<T,N>::begin();
+  cnvp last   = std::array<T,N>::end();
 
   double n=0.;
   while( first != last)
@@ -140,11 +142,11 @@ inline double numfixarray<N,T>::norm() const
 
 /**************************************************/
 
-template<int N,class T>
+template<size_t N,typename T>
 inline double numfixarray<N,T>::norm_l1() const
 {
-  cnvp first  = fixarray<N,T>::begin();
-  cnvp last   = fixarray<N,T>::end();
+  cnvp first  = std::array<T,N>::begin();
+  cnvp last   = std::array<T,N>::end();
 
   double n=0.;
   while( first != last)
@@ -156,11 +158,11 @@ inline double numfixarray<N,T>::norm_l1() const
 
 /**************************************************/
 
-template<int N,class T>
+template<size_t N,typename T>
 inline numfixarray<N,T>& numfixarray<N,T>::operator=(const T& d)
 {
-  nvp  first  = fixarray<N,T>::begin();
-  cnvp last   = fixarray<N,T>::end();
+  nvp  first  = std::array<T,N>::begin();
+  cnvp last   = std::array<T,N>::end();
 
   while( first != last)
     {
@@ -171,12 +173,12 @@ inline numfixarray<N,T>& numfixarray<N,T>::operator=(const T& d)
 
 /**************************************************/
 
-template<int N,class T>
+template<size_t N,typename T>
 inline numfixarray<N,T>& numfixarray<N,T>::operator=(const numfixarray<N,T>& v)
 {
-  nvp  first  = fixarray<N,T>::begin();
-  cnvp last   = fixarray<N,T>::end();
-  cnvp vfirst = v.fixarray<N,T>::begin();
+  nvp  first  = std::array<T,N>::begin();
+  cnvp last   = std::array<T,N>::end();
+  cnvp vfirst = v.std::array<T,N>::begin();
 
   while( first != last)
     {
@@ -187,12 +189,12 @@ inline numfixarray<N,T>& numfixarray<N,T>::operator=(const numfixarray<N,T>& v)
 
 /**************************************************/
 
-template<int N,class T>
+template<size_t N,typename T>
 inline numfixarray<N,T>& numfixarray<N,T>::operator*=(const numfixarray<N,T>& d)
 {
-  nvp  first  = fixarray<N,T>::begin();
-  cnvp last   = fixarray<N,T>::end();
-  cnvp fd     = d.fixarray<N,T>::begin();
+  nvp  first  = std::array<T,N>::begin();
+  cnvp last   = std::array<T,N>::end();
+  cnvp fd     = d.std::array<T,N>::begin();
 
   while(first != last)
     {
@@ -203,11 +205,11 @@ inline numfixarray<N,T>& numfixarray<N,T>::operator*=(const numfixarray<N,T>& d)
 
 /**************************************************/
 
-template<int N,class T>
+template<size_t N,typename T>
 inline numfixarray<N,T>& numfixarray<N,T>::operator*=(double d)
 {
-  nvp  first  = fixarray<N,T>::begin();
-  cnvp last   = fixarray<N,T>::end();
+  nvp  first  = std::array<T,N>::begin();
+  cnvp last   = std::array<T,N>::end();
 
   while(first != last)
     {
@@ -218,11 +220,11 @@ inline numfixarray<N,T>& numfixarray<N,T>::operator*=(double d)
 
 /**************************************************/
 
-template<int N,class T>
+template<size_t N,typename T>
 inline numfixarray<N,T>& numfixarray<N,T>::operator/=(double d)
 {
-  nvp  first  = fixarray<N,T>::begin();
-  cnvp last   = fixarray<N,T>::end();
+  nvp  first  = std::array<T,N>::begin();
+  cnvp last   = std::array<T,N>::end();
 
   while(first != last)
     {
@@ -233,11 +235,11 @@ inline numfixarray<N,T>& numfixarray<N,T>::operator/=(double d)
 
 /**************************************************/
 
-template<int N,class T>
+template<size_t N,typename T>
 inline void numfixarray<N,T>::zero()
 {
-  nvp  first  = fixarray<N,T>::begin();
-  cnvp last   = fixarray<N,T>::end();
+  nvp  first  = std::array<T,N>::begin();
+  cnvp last   = std::array<T,N>::end();
 
   while( first != last)
     {
@@ -247,12 +249,12 @@ inline void numfixarray<N,T>::zero()
 
 /**************************************************/
 
-template<int N,class T>
+template<size_t N,typename T>
 inline double numfixarray<N,T>::max() const
 {
   double d = -1.;
-  cnvp first  = fixarray<N,T>::begin();
-  cnvp last   = fixarray<N,T>::end();
+  cnvp first  = std::array<T,N>::begin();
+  cnvp last   = std::array<T,N>::end();
 
   while( first != last)
     {
@@ -264,12 +266,12 @@ inline double numfixarray<N,T>::max() const
 
 /**************************************************/
 
-template<int N,class T>
+template<size_t N,typename T>
 inline double numfixarray<N,T>::operator* (const numfixarray<N,T>& v) const
 {
-  cnvp first  = fixarray<N,T>::begin();
-  cnvp last   = fixarray<N,T>::end();
-  cnvp first2 = v.fixarray<N,T>::begin();
+  cnvp first  = std::array<T,N>::begin();
+  cnvp last   = std::array<T,N>::end();
+  cnvp first2 = v.std::array<T,N>::begin();
 
   double d = 0.;
   while(first != last)
@@ -281,12 +283,12 @@ inline double numfixarray<N,T>::operator* (const numfixarray<N,T>& v) const
 
 /**************************************************/
 
-template<int N,class T>
+template<size_t N,typename T>
 inline double numfixarray<N,T>::operator* (const nvector<T>& v) const
 {
-  cnvp first  = fixarray<N,T>::begin();
-  cnvp last   = fixarray<N,T>::end();
-  cnvp first2 = v.fixarray<N,T>::begin();
+  cnvp first  = std::array<T,N>::begin();
+  cnvp last   = std::array<T,N>::end();
+  cnvp first2 = v.begin();
 
   double d = 0.;
   while(first != last)
@@ -298,11 +300,11 @@ inline double numfixarray<N,T>::operator* (const nvector<T>& v) const
 
 /**************************************************/
 
-template<int N,class T>
+template<size_t N,typename T>
 inline void numfixarray<N,T>::equ (const T& d)
 {
-  nvp  first  = fixarray<N,T>::begin();
-  cnvp last   = fixarray<N,T>::end();
+  nvp  first  = std::array<T,N>::begin();
+  cnvp last   = std::array<T,N>::end();
 
   while(first != last)
     {
@@ -312,12 +314,12 @@ inline void numfixarray<N,T>::equ (const T& d)
 
 /**************************************************/
 
-template<int N,class T>
+template<size_t N,typename T>
 inline void numfixarray<N,T>::equ (double d, const numfixarray<N,T>& v)
 {
-  nvp  first  = fixarray<N,T>::begin();
-  cnvp last   = fixarray<N,T>::end();
-  cnvp first2 = v.fixarray<N,T>::begin();
+  nvp  first  = std::array<T,N>::begin();
+  cnvp last   = std::array<T,N>::end();
+  cnvp first2 = v.std::array<T,N>::begin();
 
   while(first != last)
     {
@@ -327,14 +329,14 @@ inline void numfixarray<N,T>::equ (double d, const numfixarray<N,T>& v)
 
 /**************************************************/
 
-template<int N,class T>
+template<size_t N,typename T>
 inline void numfixarray<N,T>::equ (double d, const numfixarray<N,T>& v, 
 				   double e, const numfixarray<N,T>& w)
 {
-  nvp  first  = fixarray<N,T>::begin();
-  cnvp last   = fixarray<N,T>::end();
-  cnvp first2 = v.fixarray<N,T>::begin();
-  cnvp first3 = w.fixarray<N,T>::begin();
+  nvp  first  = std::array<T,N>::begin();
+  cnvp last   = std::array<T,N>::end();
+  cnvp first2 = v.std::array<T,N>::begin();
+  cnvp first3 = w.std::array<T,N>::begin();
 
   while(first != last)
     {
@@ -344,16 +346,16 @@ inline void numfixarray<N,T>::equ (double d, const numfixarray<N,T>& v,
 
 /**************************************************/
 
-template<int N,class T>
+template<size_t N,typename T>
 inline void numfixarray<N,T>::equ (double d, const numfixarray<N,T>& v, 
 				   double e, const numfixarray<N,T>& w,
 				   double f, const numfixarray<N,T>& x)
 {
-  nvp  first  = fixarray<N,T>::begin();
-  cnvp last   = fixarray<N,T>::end();
-  cnvp first2 = v.fixarray<N,T>::begin();
-  cnvp first3 = w.fixarray<N,T>::begin();
-  cnvp first4 = x.fixarray<N,T>::begin();
+  nvp  first  = std::array<T,N>::begin();
+  cnvp last   = std::array<T,N>::end();
+  cnvp first2 = v.std::array<T,N>::begin();
+  cnvp first3 = w.std::array<T,N>::begin();
+  cnvp first4 = x.std::array<T,N>::begin();
 
   while(first != last)
     {
@@ -363,18 +365,18 @@ inline void numfixarray<N,T>::equ (double d, const numfixarray<N,T>& v,
 
 /**************************************************/
 
-template<int N,class T>
+template<size_t N,typename T>
 inline void numfixarray<N,T>::equ (double d, const numfixarray<N,T>& v, 
 				   double e, const numfixarray<N,T>& w,
 				   double f, const numfixarray<N,T>& x,
 				   double g, const numfixarray<N,T>& y	   )
 {
-  nvp  first  = fixarray<N,T>::begin();
-  cnvp last   = fixarray<N,T>::end();
-  cnvp first2 = v.fixarray<N,T>::begin();
-  cnvp first3 = w.fixarray<N,T>::begin();
-  cnvp first4 = x.fixarray<N,T>::begin();
-  cnvp first5 = y.fixarray<N,T>::begin();
+  nvp  first  = std::array<T,N>::begin();
+  cnvp last   = std::array<T,N>::end();
+  cnvp first2 = v.std::array<T,N>::begin();
+  cnvp first3 = w.std::array<T,N>::begin();
+  cnvp first4 = x.std::array<T,N>::begin();
+  cnvp first5 = y.std::array<T,N>::begin();
 
   while(first != last)
     {
@@ -384,7 +386,7 @@ inline void numfixarray<N,T>::equ (double d, const numfixarray<N,T>& v,
 
 /**************************************************/
 
-template<int N,class T>
+template<size_t N,typename T>
 inline void numfixarray<N,T>::equ (double d, const numfixarray<N,T>& v, 
 				   double e, const numfixarray<N,T>& w,
 				   double f, const numfixarray<N,T>& x,
@@ -392,14 +394,14 @@ inline void numfixarray<N,T>::equ (double d, const numfixarray<N,T>& v,
 				   double h, const numfixarray<N,T>& z,
 				   double i, const numfixarray<N,T>& zz)
 {
-  nvp  first  = fixarray<N,T>::begin();
-  cnvp last   = fixarray<N,T>::end();
-  cnvp first2 = v.fixarray<N,T>::begin();
-  cnvp first3 = w.fixarray<N,T>::begin();
-  cnvp first4 = x.fixarray<N,T>::begin();
-  cnvp first5 = y.fixarray<N,T>::begin();
-  cnvp first6 = z.fixarray<N,T>::begin();
-  cnvp first7 = zz.fixarray<N,T>::begin();
+  nvp  first  = std::array<T,N>::begin();
+  cnvp last   = std::array<T,N>::end();
+  cnvp first2 = v.std::array<T,N>::begin();
+  cnvp first3 = w.std::array<T,N>::begin();
+  cnvp first4 = x.std::array<T,N>::begin();
+  cnvp first5 = y.std::array<T,N>::begin();
+  cnvp first6 = z.std::array<T,N>::begin();
+  cnvp first7 = zz.std::array<T,N>::begin();
 
   while(first != last)
     {
@@ -410,16 +412,16 @@ inline void numfixarray<N,T>::equ (double d, const numfixarray<N,T>& v,
 
 /**************************************************/
 
-template<int N,class T>
+template<size_t N,typename T>
 inline void numfixarray<N,T>::sequ (double s, double d, const numfixarray<N,T>& v)
 {
   equ(s,*this);
   add(d,v);
   return;
 
-  nvp  first  = fixarray<N,T>::begin();
-  cnvp last   = fixarray<N,T>::end();
-  cnvp first2 = v.fixarray<N,T>::begin();
+  nvp  first  = std::array<T,N>::begin();
+  cnvp last   = std::array<T,N>::end();
+  cnvp first2 = v.std::array<T,N>::begin();
 
   while(first != last)
     {
@@ -430,11 +432,11 @@ inline void numfixarray<N,T>::sequ (double s, double d, const numfixarray<N,T>& 
 
 /**************************************************/
 
-template<int N,class T>
+template<size_t N,typename T>
 inline void numfixarray<N,T>::add (double d)
 {
-  nvp  first  = fixarray<N,T>::begin();
-  cnvp last   = fixarray<N,T>::end();
+  nvp  first  = std::array<T,N>::begin();
+  cnvp last   = std::array<T,N>::end();
 
   while(first != last)
     {
@@ -444,12 +446,12 @@ inline void numfixarray<N,T>::add (double d)
 
 /**************************************************/
 
-template<int N,class T>
+template<size_t N,typename T>
 inline void numfixarray<N,T>::add (T d, const numfixarray<N,T>& v)
 {
-  nvp  first  = fixarray<N,T>::begin();
-  cnvp last   = fixarray<N,T>::end();
-  cnvp first2 = v.fixarray<N,T>::begin();
+  nvp  first  = std::array<T,N>::begin();
+  cnvp last   = std::array<T,N>::end();
+  cnvp first2 = v.std::array<T,N>::begin();
 
   while(first != last)
     {
@@ -459,14 +461,14 @@ inline void numfixarray<N,T>::add (T d, const numfixarray<N,T>& v)
 
 /**************************************************/
 
-template<int N,class T>
+template<size_t N,typename T>
 inline void numfixarray<N,T>::add (double d, const numfixarray<N,T>& v,
 				   double e, const numfixarray<N,T>& w)
 {
-  nvp  first  = fixarray<N,T>::begin();
-  cnvp last   = fixarray<N,T>::end();
-  cnvp first2 = v.fixarray<N,T>::begin();
-  cnvp first3 = w.fixarray<N,T>::begin();
+  nvp  first  = std::array<T,N>::begin();
+  cnvp last   = std::array<T,N>::end();
+  cnvp first2 = v.std::array<T,N>::begin();
+  cnvp first3 = w.std::array<T,N>::begin();
 
   while(first != last)
     {
@@ -476,16 +478,16 @@ inline void numfixarray<N,T>::add (double d, const numfixarray<N,T>& v,
 
 /**************************************************/
 
-template<int N,class T>
+template<size_t N,typename T>
 inline void numfixarray<N,T>::add (double d, const numfixarray<N,T>& v,
 				   double e, const numfixarray<N,T>& w,
 				   double f, const numfixarray<N,T>& x)
 {
-  nvp  first  = fixarray<N,T>::begin();
-  cnvp last   = fixarray<N,T>::end();
-  cnvp first2 = v.fixarray<N,T>::begin();
-  cnvp first3 = w.fixarray<N,T>::begin();
-  cnvp first4 = x.fixarray<N,T>::begin();
+  nvp  first  = std::array<T,N>::begin();
+  cnvp last   = std::array<T,N>::end();
+  cnvp first2 = v.std::array<T,N>::begin();
+  cnvp first3 = w.std::array<T,N>::begin();
+  cnvp first4 = x.std::array<T,N>::begin();
 
   while(first != last)
     {
@@ -495,12 +497,12 @@ inline void numfixarray<N,T>::add (double d, const numfixarray<N,T>& v,
 
 /**************************************************/
 
-template<int N,class T>
+template<size_t N,typename T>
 inline void numfixarray<N,T>::sadd (double a, double d, const numfixarray<N,T>& v)
 {
-  nvp  first  = fixarray<N,T>::begin();
-  cnvp last   = fixarray<N,T>::end();
-  cnvp first2 = v.fixarray<N,T>::begin();
+  nvp  first  = std::array<T,N>::begin();
+  cnvp last   = std::array<T,N>::end();
+  cnvp first2 = v.std::array<T,N>::begin();
 
   while(first != last)
     {

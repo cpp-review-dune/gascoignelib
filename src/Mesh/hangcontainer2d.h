@@ -36,7 +36,7 @@ class HangContainer2d
 {
  protected:
 
-  typedef  fixarray<2,int>               EdgeVector;
+  typedef  std::array<int,2>               EdgeVector;
   
   HangList<2>   VertexToBeDeleted;  // ehemals haengende Knoten
   HangList<2>   VertexToBeCreated;  // neue haengende Knoten

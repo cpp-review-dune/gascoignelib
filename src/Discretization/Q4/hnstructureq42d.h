@@ -63,7 +63,7 @@ namespace Gascoigne
       void CondenseHangingLowerHigher(EntryMatrix& E, IntVector& indices) const;
       void CondenseHangingHigherLower(EntryMatrix& E, IntVector& indices) const;
       void MatrixDiag(int ncomp, MatrixInterface& A) const;
-      void SparseStructureDiag(SparseStructure& S) const;
+      void SparseStructureDiag(SparseStructure* S) const;
 
       void Zero(GlobalVector& u) const;
       void Average(GlobalVector& u) const;

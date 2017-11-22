@@ -35,7 +35,7 @@ class HangContainer3d : public HangContainer2d
 {
  public:
   
-  typedef fixarray<4,int>    FaceVector;
+  typedef std::array<int,4>    FaceVector;
 
   HangList<4>   FaceToBeDeleted, FaceToBeCreated;
   HangList<4>   FaceNotAnyMore;

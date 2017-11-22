@@ -139,7 +139,7 @@ void EnergyEstimatorIntegrator<DIM>::Jumps(LocalVector& F, const FemInterface& F
 /**********************************************************/
 
 template<int DIM>
-double EnergyEstimatorIntegrator<DIM>::JumpNorm(const FemInterface& FEM, fixarray<2*DIM-2,double> jumps, int ile) const
+double EnergyEstimatorIntegrator<DIM>::JumpNorm(const FemInterface& FEM, std::array<double,2*DIM-2> jumps, int ile) const
 {
   double norm = 0.;
   for (int k=0; k<2*DIM-2; k++)

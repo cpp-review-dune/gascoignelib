@@ -25,7 +25,8 @@
 #ifndef __visudatainfo_h
 #define __visudatainfo_h
 
-#include  "fixarray.h"
+#include  <array>
+
 #include  "visudata.h"
 
 #include  <map>
@@ -40,14 +41,14 @@ class VisuDataInfo
  protected:
 
   std::map<std::string,int>              scalars;
-  std::map<std::string,fixarray<3,int> > vectors;
+  std::map<std::string,std::array<int,3> > vectors;
   std::map<std::string,int>              scalar_order;
   std::map<std::string,int>              vector_order;
 
  public:
 
   typedef std::map<std::string,int>::const_iterator                siterator;
-  typedef std::map<std::string,fixarray<3,int> >::const_iterator   viterator;
+  typedef std::map<std::string,std::array<int,3> >::const_iterator   viterator;
 
   VisuDataInfo() {}
   VisuDataInfo(int ncomp) { AddScalars(ncomp);}
@@ -80,7 +81,7 @@ class VisuDataInfo
   }
 
   void AddScalar(int index,const std::string& name, int i)                    {scalar_order[name]=index;scalars[name]=i;}
-  void AddVector(int index,const std::string& name, const fixarray<3,int>& i) {vector_order[name]=index;vectors[name]=i;}
+  void AddVector(int index,const std::string& name, const std::array<int,3>& i) {vector_order[name]=index;vectors[name]=i;}
 
   void AddScalars(int ncomp, std::string def="U");
 
@@ -88,7 +89,7 @@ class VisuDataInfo
   int nvectors() const {return vectors.size();}
 
   const std::map<std::string,int>&              Scalars() const {return scalars;}
-  const std::map<std::string,fixarray<3,int> >& Vectors() const {return vectors;}
+  const std::map<std::string,std::array<int,3> >& Vectors() const {return vectors;}
 
   siterator sbegin() const {return scalars.begin();}
   siterator send  () const {return scalars.end();}

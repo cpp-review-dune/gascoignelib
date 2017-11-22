@@ -117,8 +117,13 @@ public:
 
   void IntegrateBoundaryMassDiag(DoubleVector& F, const FemInterface& FEM, int ile, int col) const ;
 
+
+  // no warning for overloaded virtual function (2d/3d)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Woverloaded-virtual"
   void RhsCurve(LocalVector& F, const FemInterface& FEM, Vertex<DIM>& xr0,
-      Vertex<DIM>& xr1, double H, double ND0,double ND1, int ncomp, int comp) const;
+		Vertex<DIM>& xr1, double H, double ND0,double ND1, int ncomp, int comp) const;
+#pragma clang diagnostic pop
 
 
 };

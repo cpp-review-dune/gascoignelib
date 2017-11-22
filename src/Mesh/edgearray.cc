@@ -32,12 +32,12 @@ namespace Gascoigne
 /*--------------------------------------------------------------*/
 
 template<int N>
-EdgeArray<N>::EdgeArray(const fixarray<N,int>& e) : fixarray<N,int>(e) { }
+EdgeArray<N>::EdgeArray(const std::array<int,N >& e) : std::array<int,N >(e) { }
 
 /*--------------------------------------------------------------*/
 
 template<>
-bool EdgeArray<2>::operator==(const fixarray<2,int> &A) const
+bool EdgeArray<2>::operator==(const std::array<int,2> &A) const
 {
   // the correctness of this method relies on all vertices (in *this) being different
 
@@ -57,7 +57,7 @@ int EdgeArray<2>::sum() const
 /*--------------------------------------------------------------*/
 
 template<>
-bool EdgeArray<4>::operator==(const fixarray<4,int> &A) const
+bool EdgeArray<4>::operator==(const std::array<int,4> &A) const
 {
   // the correctness of this method relies on all vertices (in *this) being different
   // and that we can identify a face by looking at only three vertices

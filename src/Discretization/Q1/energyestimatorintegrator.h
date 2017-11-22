@@ -36,8 +36,8 @@ template<int DIM>
 class EnergyEstimatorIntegrator : public BasicIntegrator
 {
   protected:
-    const IntegrationFormulaInterface* IF;
-    fixarray<2*DIM-2,Vertex<DIM-1> >   _xi;
+  const IntegrationFormulaInterface* IF;
+  std::array<Vertex<DIM-1>,2*DIM-2 >   _xi;
     std::string _s_energytype;
     double      _d_visc;
 
@@ -55,7 +55,7 @@ class EnergyEstimatorIntegrator : public BasicIntegrator
     std::string GetName() const {return "EnergyEstimator";}
 
     void   Jumps(LocalVector& F, const FemInterface& FEM, const LocalVector& U, int ile) const;
-    double JumpNorm(const FemInterface& FEM, fixarray<2*DIM-2,double> jumps, int ile) const;
+  double JumpNorm(const FemInterface& FEM, std::array<double,2*DIM-2> jumps, int ile) const;
     double Residual(const LocalVector& U, const FemInterface& FEM, const Equation& EQ, const DomainRightHandSide* RHS, const LocalData& Q) const;
 };
 }

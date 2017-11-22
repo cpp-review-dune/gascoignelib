@@ -46,13 +46,13 @@ namespace Gascoigne
 {
   typedef CompVector<double>                                        GlobalVector;
   typedef CompVector<double>                                        LocalVector;
-  typedef std::map<const std::string,const GlobalVector*>           GlobalData;
-  typedef std::map<const std::string,LocalVector>                   LocalData;
+  typedef std::map<std::string,const GlobalVector*>           GlobalData;
+  typedef std::map<std::string,LocalVector>                   LocalData;
 
   typedef nvector<double>                                           GlobalParameterVector;
   typedef nvector<double>                                           LocalParameterVector;
-  typedef std::map<const std::string,const GlobalParameterVector*>  GlobalParameterData;
-  typedef std::map<const std::string,LocalParameterVector>          LocalParameterData;
+  typedef std::map<std::string,const GlobalParameterVector*>  GlobalParameterData;
+  typedef std::map<std::string,LocalParameterVector>          LocalParameterData;
 
   typedef nvector<int>                                              IntVector;
   typedef nvector<double>                                           DoubleVector;
@@ -64,10 +64,10 @@ namespace Gascoigne
 
   typedef DerivativeVector                                          TestFunction;
   typedef std::vector<TestFunction>                                 FemFunction;
-  typedef std::map<const std::string,FemFunction>                   FemData;
+  typedef std::map<std::string,FemFunction>                   FemData;
 
   typedef nvector<double>                                           CellFunction;
-  typedef std::map<const std::string,CellFunction>                  CellData;
+  typedef std::map<std::string,CellFunction>                  CellData;
 }
 
 #endif

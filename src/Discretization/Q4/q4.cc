@@ -26,13 +26,7 @@
 #include "pressurefilter.h"
 #include "sparsestructure.h"
 
-#ifdef __NEWER_THAN_GCC_4_2__
-#include <tr1/unordered_set>
-#define HASHSET std::tr1::unordered_set
-#else
-#include  <ext/hash_set>
-#define HASHSET __gnu_cxx::hash_set
-#endif
+#include "gascoignehash.h"
 
 
 using namespace std;

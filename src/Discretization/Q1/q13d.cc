@@ -178,8 +178,9 @@ void Q13d::StrongPeriodicVector(GlobalVector& u, const PeriodicData& BF, int col
 
 void Q13d::Interpolate(GlobalVector& u, const DomainInitialCondition& U) const
 {
-  if (&U==NULL) return;
-
+  // Diese Abfrage macht keinen Sinn. U ist Referenz, wie soll das auf NULL zeigen?
+  //  if (&U==NULL) return;
+  
   for(int in=0; in<GetMesh()->nnodes(); ++in)
     {
       Vertex3d v = GetMesh()->vertex3d(in);
@@ -209,7 +210,7 @@ void Q13d::InterpolateSolutionByPatches(GlobalVector& u, const GlobalVector& uol
 	  habschon[in] = 1;
 	}
     }
-  nvector<fixarray<3,int> > nodes(12);
+  nvector<std::array<int,3> > nodes(12);
   nodes[0][0] = 1;    nodes[0][1] = 0;     nodes[0][2] = 2;
   nodes[1][0] = 3;    nodes[1][1] = 0;     nodes[1][2] = 6;
   nodes[2][0] = 5;    nodes[2][1] = 2;     nodes[2][2] = 8;
@@ -224,7 +225,7 @@ void Q13d::InterpolateSolutionByPatches(GlobalVector& u, const GlobalVector& uol
   nodes[11][0] = 17;  nodes[11][1] = 8;    nodes[11][2] = 26;
  
 
-  nvector<fixarray<5,int> > w(6);
+  nvector<std::array<int,5> > w(6);
   w[0][0] = 4;  w[0][1] = 0;  w[0][2] = 2;  w[0][3] = 6;  w[0][4] = 8;
   w[1][0] = 12; w[1][1] = 0;  w[1][2] = 18; w[1][3] = 6;  w[1][4] = 24;
   w[2][0] = 14; w[2][1] = 2;  w[2][2] = 8;  w[2][3] = 20; w[2][4] = 26;
@@ -307,9 +308,9 @@ void Q13d::ConstructInterpolator(MgInterpolatorInterface* I, const MeshTransferI
   const GascoigneMeshTransfer* GT = dynamic_cast<const GascoigneMeshTransfer*>(MT);
   assert(GT);
 
-  const map<int,fixarray<2,int> >& zweier = GT->GetZweier();
-  const map<int,fixarray<4,int> >& vierer = GT->GetVierer();
-  const map<int,fixarray<8,int> >& achter = GT->GetAchter();
+  const map<int,std::array<int,2> >& zweier = GT->GetZweier();
+  const map<int,std::array<int,4> >& vierer = GT->GetVierer();
+  const map<int,std::array<int,8> >& achter = GT->GetAchter();
   const IntVector& c2f    = GT->GetC2f();
 
   int n  = c2f.size() +   zweier.size() +   vierer.size() +   achter.size();
@@ -325,23 +326,23 @@ void Q13d::ConstructInterpolator(MgInterpolatorInterface* I, const MeshTransferI
     {
       SS.build_add(i,c2f[i]);
     }
-  for(map<int,fixarray<2,int> >::const_iterator p=zweier.begin();
+  for(map<int,std::array<int,2> >::const_iterator p=zweier.begin();
       p!=zweier.end();p++) 
     {
       int il = p->first;
-      fixarray<2,int> n2 = p->second;
+      std::array<int,2> n2 = p->second;
       for(int ii=0;ii<2;ii++) SS.build_add(il,n2[ii]);
     }
-  for(map<int,fixarray<4,int> >::const_iterator p=vierer.begin();
+  for(map<int,std::array<int,4> >::const_iterator p=vierer.begin();
       p!=vierer.end();p++) {
     int il = p->first;
-    fixarray<4,int> n4 = p->second;
+    std::array<int,4> n4 = p->second;
     for(int ii=0;ii<4;ii++) SS.build_add(il,n4[ii]);
   }
-  for(map<int,fixarray<8,int> >::const_iterator p=achter.begin();
+  for(map<int,std::array<int,8> >::const_iterator p=achter.begin();
       p!=achter.end();p++) {
     int il = p->first;
-    fixarray<8,int> n8 = p->second;
+    std::array<int,8> n8 = p->second;
     for(int ii=0;ii<8;ii++) SS.build_add(il,n8[ii]);
   }
   SS.build_end();
@@ -356,27 +357,27 @@ void Q13d::ConstructInterpolator(MgInterpolatorInterface* I, const MeshTransferI
     {
       val[ST.Find(c2f[i],i)] = 1.;
     }
-  for(map<int,fixarray<2,int> >::const_iterator p=zweier.begin();
+  for(map<int,std::array<int,2> >::const_iterator p=zweier.begin();
       p!=zweier.end();p++) 
     {
       int il = p->first;
-      fixarray<2,int> n2 = p->second;
+      std::array<int,2> n2 = p->second;
       val[ST.Find(il,n2[0])] = 0.5;
       val[ST.Find(il,n2[1])] = 0.5;
     }
-  for(map<int,fixarray<4,int> >::const_iterator p=vierer.begin();
+  for(map<int,std::array<int,4> >::const_iterator p=vierer.begin();
       p!=vierer.end();p++) {
     int il = p->first;
-    fixarray<4,int> n4 = p->second;
+    std::array<int,4> n4 = p->second;
     val[ST.Find(il,n4[0])] = 0.25;
     val[ST.Find(il,n4[1])] = 0.25;
     val[ST.Find(il,n4[2])] = 0.25;
     val[ST.Find(il,n4[3])] = 0.25;
   }
-  for(map<int,fixarray<8,int> >::const_iterator p=achter.begin();
+  for(map<int,std::array<int,8> >::const_iterator p=achter.begin();
       p!=achter.end();p++) {
     int il = p->first;
-    fixarray<8,int> n8 = p->second;
+    std::array<int,8> n8 = p->second;
     for (int i=0; i<8; i++)
       {
 	val[ST.Find(il,n8[i])] = 0.125;
@@ -409,7 +410,7 @@ void Q13d::EnergyEstimator(EdgeInfoContainerInterface& EIC, DoubleVector& eta, c
 
 void Q13d::EEJumps(EdgeInfoContainer<3>& EIC, const GlobalVector& u, const EnergyEstimatorIntegrator<3>& EEI, const HierarchicalMesh3d* HM) const
 {
-  fixarray<4,int> vertexes;
+  std::array<int,4> vertexes;
   nmatrix<double> T;
 
   for(int iq=0;iq<HM->ncells();++iq)

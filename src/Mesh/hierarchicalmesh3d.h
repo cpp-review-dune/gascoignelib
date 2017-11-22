@@ -50,7 +50,7 @@ class HierarchicalMesh3d : public HierarchicalMesh
   typedef  HangList<2>              LineHangList;
   typedef  HangList<4>              QuadHangList;
   typedef  BoundaryFunction<3>      BoundaryFunction3d;
-  typedef  std::map<int,fixarray<8,int> >  HexChilds;
+  typedef  std::map<int,std::array<int,8> >  HexChilds;
 
   /*  Data  */
 
@@ -79,7 +79,7 @@ class HierarchicalMesh3d : public HierarchicalMesh
 
   void new_edge_vertex3d(int, const EdgeVector&);
   void new_face_vertex3d(int, const FaceVector&);
-  void new_vertex3d     (int, const fixarray<6,int>&);
+  void new_vertex3d     (int, const std::array<int,6>&);
 
   void check_mesh3d() const;
 
@@ -219,10 +219,10 @@ class HierarchicalMesh3d : public HierarchicalMesh
   pint  EdgeNeighbour(int i, int e) const;
 
   int  NodeOnFace(int e) const;
-  fixarray<4,int> ChildrenOfFace(int e) const;
+  std::array<int,4> ChildrenOfFace(int e) const;
 
-  void  GetVertexesOfFace(fixarray<4,int>&, int) const;
-  void  GetVertexesOfFace(fixarray<5,int>&, int) const;
+  void  GetVertexesOfFace(std::array<int,4>&, int) const;
+  void  GetVertexesOfFace(std::array<int,5>&, int) const;
   void GetAwakePatchs(std::set<int>&) const;
   void GetAwakeCells(std::set<int>&) const;
   void ConstructQ2PatchMesh(IntVector& pm) const;

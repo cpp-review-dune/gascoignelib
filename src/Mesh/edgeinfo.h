@@ -38,7 +38,7 @@ class EdgeInfo
  protected:
 
   int                    _count;
-  fixarray<2*DIM-2,int>  _vertex;
+  std::array<int,2*DIM-2>  _vertex;
   LocalVector _u;
   const Edge*            _edge;
 
@@ -47,14 +47,14 @@ class EdgeInfo
   EdgeInfo<DIM>() {}
   ~EdgeInfo<DIM>() {}
 
-  void BasicInit(const Edge*, int, const fixarray<2*DIM-2,int>&);
+  void BasicInit(const Edge*, int, const std::array<int,2*DIM-2>&);
   void AddNodes(const LocalVector&);
 
-  const fixarray<2*DIM-2,int>&  GetVertex() const { return _vertex; }
+  const std::array<int,2*DIM-2>&  GetVertex() const { return _vertex; }
   const LocalVector& GetValue()  const { return _u; }
   const Edge&                   GetEdge()   const { return *_edge; }
   int                           GetCount()  const { return _count; }
-  fixarray<2*DIM-2,double>      GetNorm()   const;
+  std::array<double,2*DIM-2>      GetNorm()   const;
 
   void ShowStatistics() const;
 };

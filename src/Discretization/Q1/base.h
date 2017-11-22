@@ -51,7 +51,7 @@ class Base
 
   virtual const Vertex3d*  normal3d() const {return NULL;}
   virtual const Vertex3d*  tangent3d() const {return NULL;}
-  virtual const fixarray<2,int>* faces() const
+  virtual const std::array<int,2>* faces() const
     { error("faces");return NULL;}
 
   virtual double psi(int i, double x) const

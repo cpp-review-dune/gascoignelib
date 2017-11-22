@@ -44,7 +44,7 @@ SET(GASCOIGNE_INCLUDE_DIRS
 # Setup compiler flags and compile definitions:
 #
 SET(GASCOIGNE_CXX_FLAGS
-  "-ansi -pedantic -Wall -Wno-sign-compare -Wold-style-cast"
+  "-std=c++11 -pedantic -Wall -Wno-sign-compare -Wold-style-cast"
   )
 
 IF(MATRIX_DOUBLE_PRECISION)

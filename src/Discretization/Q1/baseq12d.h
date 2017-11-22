@@ -53,7 +53,7 @@ class BaseQ12d : public Base2d
 {
  protected:
 
-  fixarray<2,double>          a,b;
+  std::array<double,2>          a,b;
   mutable DoubleVector dxy;
 
   void BasicInit();

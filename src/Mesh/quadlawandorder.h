@@ -57,8 +57,8 @@ class QuadLawAndOrder
 
   typedef  std::map<int,int>               LocVertexLocEdge;
   typedef  std::vector<LocVertexLocEdge>   LocVertexLocVertexLocEdge;
-  typedef fixarray<2,int>             EdgeVector;
-  typedef fixarray<2,int>             QuadVector;
+  typedef std::array<int,2>             EdgeVector;
+  typedef std::array<int,2>             QuadVector;
 
   // Daten fuer Suchen von kindern an hang
 
@@ -68,11 +68,11 @@ class QuadLawAndOrder
 
   std::vector<Quad>&          quads;
 
-  fixarray<4,EdgeVector>   childs_edge, vice;
-  fixarray<4,int>          child_point_cell, child_point_vertex;
-  fixarray<9,int>          gc,gv;
+  std::array<EdgeVector,4>   childs_edge, vice;
+  std::array<int,4>          child_point_cell, child_point_vertex;
+  std::array<int,9>          gc,gv;
 
-  fixarray<4,fixarray<2,int> > ieoc, oeoc;
+  std::array<std::array<int,2>,4 > ieoc, oeoc;
 
   int local_edge(const Quad& f, const EdgeVector& globaledge) const;
 
@@ -116,7 +116,7 @@ class QuadLawAndOrder
 				    const Quad& f) const;
   
   /* for hierarchicalmesh / find in liehanglist */
-  void global_edge_unsorted(fixarray<2,int>& lineglob, const Quad& q, int edge) const;
+  void global_edge_unsorted(std::array<int,2>& lineglob, const Quad& q, int edge) const;
 
   /* fuer mginterpolator */
   void globalvertices_of_edge(const Quad&, EdgeVector&, int) const;

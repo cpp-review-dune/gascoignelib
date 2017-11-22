@@ -23,7 +23,7 @@
 
 
 #include  "filescanner.h"
-#include  "fixarray.h"
+#include  <array>
 #include  "linescanner.h"
 #include  "stlio.h"
 
@@ -40,7 +40,7 @@ namespace Gascoigne
 
 FileScanner::FileScanner(DataFormatHandler& D) : DH(D)
 {
-  complain = 1;
+  complain = 0;
   blocksymbol                        = "//Block";
   _i_defaultvalues_level             = 0;
   _i_defaultvalues_save_all_to_file  = 0;
@@ -51,7 +51,7 @@ FileScanner::FileScanner(DataFormatHandler& D) : DH(D)
 
 FileScanner::FileScanner(DataFormatHandler& D, const ParamFile* pf, const string& blockname) : DH(D)
 {
-  complain    = 1;
+  complain    = 0;
   blocksymbol = "//Block";
   _i_defaultvalues_level             = 0;
   _i_defaultvalues_save_all_to_file  = 0;
@@ -334,9 +334,9 @@ void FileScanner::FormatToValue(const vector<string>& words)
 
   /*----------------------------------------------*/
 
-  else if (keyword_type=="fixarray<2,double>")
+  else if (keyword_type=="array<2,double>")
     {
-      fixarray<2,double> value;
+      std::array<double,2> value;
       value[0] = atof(words[1].c_str());
       value[1] = atof(words[2].c_str());
       DH.setvalue(keyword,value);
