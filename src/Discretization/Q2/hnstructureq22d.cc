@@ -48,7 +48,7 @@ void HNStructureQ22d::Average(GlobalVector& u) const
 {
   for(const_iterator p=edges->begin();p!=edges->end();p++)
     {
-      const fixarray<3,int>& f = p->second;
+      const std::array<int,3>& f = p->second;
       u.equ_node(p->first, wei[0], f[0], wei[1], f[1], wei[2], f[2]);
     }
 }
@@ -77,9 +77,9 @@ void HNStructureQ22d::CondenseHanging(EntryMatrix& E, IntVector& indices) const
       int i = indices[2*ii+1];
       if(!hanging(i)) continue;
 
-      const fixarray<3,int>& f = regular_nodes(i);
+      const std::array<int,3>& f = regular_nodes(i);
 
-      fixarray<3,int> p = lnoe[ii];
+      std::array<int,3> p = lnoe[ii];
 
       if ( (indices[p[0]]==f[1]) && (indices[p[1]]==f[0]) ) 
 	{ 
@@ -107,9 +107,9 @@ void HNStructureQ22d::CondenseHangingLowerHigher(EntryMatrix& E, IntVector& indi
       int i = indices[2*ii+1];
       if(!hanging(i)) continue;
 
-      const fixarray<3,int>& f = regular_nodes(i);
+      const std::array<int,3>& f = regular_nodes(i);
 
-      fixarray<3,int> p = lnoe[ii];
+      std::array<int,3> p = lnoe[ii];
 
       if ( (indices[p[0]]==f[1]) && (indices[p[1]]==f[0]) ) 
 	{ 
@@ -137,9 +137,9 @@ void HNStructureQ22d::CondenseHangingHigherLower(EntryMatrix& E, IntVector& indi
       int i = indices[2*ii+1];
       if(!hanging(i)) continue;
 
-      const fixarray<3,int>& f = regular_nodes(i);
+      const std::array<int,3>& f = regular_nodes(i);
 
-      fixarray<3,int> p = lnoe[ii];
+      std::array<int,3> p = lnoe[ii];
 
       if ( (indices[p[0]]==f[1]) && (indices[p[1]]==f[0]) ) 
 	{ 
@@ -177,9 +177,9 @@ void HNStructureQ22d::CondenseHangingMixed(EntryMatrix& E, IntVector& indices, i
 
       if(!hanging(i)) continue;
 
-      const fixarray<3,int>& f = regular_nodes(i);
+      const std::array<int,3>& f = regular_nodes(i);
 
-      fixarray<3,int> p = lnoe[ii];
+      std::array<int,3> p = lnoe[ii];
 
       if ( (indices[xx[p[0]]]==f[1]) && (indices[xx[p[1]]]==f[0]) ) 
 	{ 
@@ -208,9 +208,9 @@ void HNStructureQ22d::CondenseHangingMixed(EntryMatrix& E, IntVector& indices, i
 
       if(!hanging(i)) continue;
 
-      const fixarray<3,int>& f = regular_nodes(i);
+      const std::array<int,3>& f = regular_nodes(i);
 
-      fixarray<3,int> p = lnoe[ii];
+      std::array<int,3> p = lnoe[ii];
 
       if ( (indices1[p[0]]==f[1]) && (indices1[p[1]]==f[0]) ) 
 	{ 
@@ -228,9 +228,9 @@ void HNStructureQ22d::CondenseHangingMixed(EntryMatrix& E, IntVector& indices, i
       int i = indices2[2*ii+1];
       if(!hanging(i)) continue;
 
-      const fixarray<3,int>& f = regular_nodes(i);
+      const std::array<int,3>& f = regular_nodes(i);
 
-      fixarray<3,int> p = lnoe[ii];
+      std::array<int,3> p = lnoe[ii];
 
       if ( (indices2[p[0]]==f[1]) && (indices2[p[1]]==f[0]) ) 
 	{ 

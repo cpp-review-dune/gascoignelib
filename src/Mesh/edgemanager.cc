@@ -424,7 +424,7 @@ fixarray<2,int> EdgeManager::ChildrenOfEdge(int e) const
       cerr << "no slave\n";
       abort();
     }
-  fixarray<2,int> f;
+  std::array<int,2> f;
   for(int ii=0;ii<2;ii++)
     {
       int ic = quad(s).child(QuadLaO.ChildsOfEdge(is,ii));
@@ -570,7 +570,7 @@ void EdgeManager::InitEdges()
 void EdgeManager::NeighbourTester() const
 {
   int n = quads.size();
-  vector<fixarray<4,int> >  vecino(n);
+  vector<std::array<int,4> >  vecino(n);
 
   for (int q=0; q<quads.size(); q++)
     {

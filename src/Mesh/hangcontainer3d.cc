@@ -69,8 +69,8 @@ void HangContainer3d::build_hanging_lines(const HangList<2>& oldhangs)
   for (HangList<4>::const_iterator  p = FaceHanging.begin(); 
        p!=FaceHanging.end(); p++)
     {
-      const fixarray<4,int>& F = p->first;
-      fixarray<2,int> edge;
+      const std::array<int,4>& F = p->first;
+      std::array<int,2> edge;
       for (int i=0; i<4; i++)
 	{
 	  edge[0] = F[i];

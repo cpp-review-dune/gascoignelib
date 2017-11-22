@@ -202,14 +202,14 @@ int HNStructureQ43d::hanging(int i) const
 fixarray<5,int> HNStructureQ43d::local_nodes_on_edge(int e, const IntVector& indices) const
 {
   int node = indices[e];
-  fixarray<5,int> R;
+  std::array<int,5> R;
   int x = e%5;
   int y = (e/5)%5;
   int z = e/25;
 
   assert(x%2+y%2+z%2==1);
 
-  const fixarray<6,int>& rege=regular_nodes_on_edge(node);
+  const std::array<int,6>& rege=regular_nodes_on_edge(node);
   int type = rege[5];
             // die Reihenfolge der local_nodes muss mit den regular
             // nodes uebereinstimmen.
@@ -255,14 +255,14 @@ fixarray<5,int> HNStructureQ43d::local_nodes_on_edge(int e, const IntVector& ind
 fixarray<25,int> HNStructureQ43d::local_nodes_on_face(int e, const IntVector& indices) const
 {
   int node = indices[e];
-  fixarray<25,int> R;
+  std::array<int,25> R;
   int x = e%5;
   int y = (e/5)%5;
   int z = e/25;
 
   assert(x%2+y%2+z%2==2);
 
-  const fixarray<26,int>& regf = regular_nodes_on_face(node);
+  const std::array<int,26>& regf = regular_nodes_on_face(node);
 
             // die Reihenfolge der local_nodes muss mit den regular
             // nodes uebereinstimmen.
@@ -291,7 +291,7 @@ fixarray<25,int> HNStructureQ43d::local_nodes_on_face(int e, const IntVector& in
 
   while(regf[0]!=indices[R[0]])
   {
-    fixarray<25,int> R1=R;
+    std::array<int,25> R1=R;
     for(int y=0; y<5; y++)
     {
       for(int x=0; x<5; x++)
@@ -330,11 +330,11 @@ void HNStructureQ43d::modify_column_higher(EntryMatrix& E, const vector<int>& ha
               // der lokale index des haengenden knoten
     int h    = hang_e[i];
     int node = indices[h];
-    const fixarray<6,int>& rege = regular_nodes_on_edge(node);
+    const std::array<int,6>& rege = regular_nodes_on_edge(node);
     int type = rege[5];
     assert((type>=0)&&(type<2));
               // die 5 lokalen indices der regulars
-    fixarray<5,int> lnoe = local_nodes_on_edge(h,indices);
+    std::array<int,5> lnoe = local_nodes_on_edge(h,indices);
 
     for(int j=0; j<5; j++)
     {
@@ -347,11 +347,11 @@ void HNStructureQ43d::modify_column_higher(EntryMatrix& E, const vector<int>& ha
               // der lokale index des haengenden knoten
     int h    = hang_f[i];
     int node = indices[h];
-    const fixarray<26,int>& regf = regular_nodes_on_face(node);
+    const std::array<int,26>& regf = regular_nodes_on_face(node);
     int type = regf[25];
     assert((type>=0)&&(type<4));
               // die 25 lokalen indices der regulars
-    fixarray<25,int> lnof = local_nodes_on_face(h,indices);
+    std::array<int,25> lnof = local_nodes_on_face(h,indices);
 
     for(int j=0; j<25; j++)
     {
@@ -372,11 +372,11 @@ void HNStructureQ43d::modify_column_lower(EntryMatrix& E, const vector<int>& han
               // der lokale index des haengenden knoten
     int h    = hang_e[i];
     int node = indices[h];
-    const fixarray<6,int>& rege = regular_nodes_on_edge(node);
+    const std::array<int,6>& rege = regular_nodes_on_edge(node);
     int type = rege[5];
     assert((type>=0)&&(type<2));
               // die 5 lokalen indices der regulars
-    fixarray<5,int> lnoe = local_nodes_on_edge(h,indices);
+    std::array<int,5> lnoe = local_nodes_on_edge(h,indices);
 
     for(int j=0; j<5; j++)
     {
@@ -389,11 +389,11 @@ void HNStructureQ43d::modify_column_lower(EntryMatrix& E, const vector<int>& han
               // der lokale index des haengenden knoten
     int h    = hang_f[i];
     int node = indices[h];
-    const fixarray<26,int>& regf = regular_nodes_on_face(node);
+    const std::array<int,26>& regf = regular_nodes_on_face(node);
     int type = regf[25];
     assert((type>=0)&&(type<4));
               // die 25 lokalen indices der regulars
-    fixarray<25,int> lnof = local_nodes_on_face(h,indices);
+    std::array<int,25> lnof = local_nodes_on_face(h,indices);
 
     for(int j=0; j<25; j++)
     {
@@ -414,11 +414,11 @@ void HNStructureQ43d::modify_row_higher(EntryMatrix& E, const vector<int>& hang_
               // der lokale index des haengenden knoten
     int h    = hang_e[i];
     int node = indices[h];
-    const fixarray<6,int>& rege = regular_nodes_on_edge(node);
+    const std::array<int,6>& rege = regular_nodes_on_edge(node);
     int type = rege[5];
     assert((type>=0)&&(type<2));
               // die 5 lokalen indices der regulars
-    fixarray<5,int> lnoe = local_nodes_on_edge(h,indices);
+    std::array<int,5> lnoe = local_nodes_on_edge(h,indices);
 
     for(int j=0; j<5; j++)
     {
@@ -431,11 +431,11 @@ void HNStructureQ43d::modify_row_higher(EntryMatrix& E, const vector<int>& hang_
               // der lokale index des haengenden knoten
     int h    = hang_f[i];
     int node = indices[h];
-    const fixarray<26,int>& regf = regular_nodes_on_face(node);
+    const std::array<int,26>& regf = regular_nodes_on_face(node);
     int type = regf[25];
     assert((type>=0)&&(type<4));
               // die 25 lokalen indices der regulars
-    fixarray<25,int> lnof = local_nodes_on_face(h,indices);
+    std::array<int,25> lnof = local_nodes_on_face(h,indices);
 
     for(int j=0; j<25; j++)
     {
@@ -456,11 +456,11 @@ void HNStructureQ43d::modify_row_lower(EntryMatrix& E, const vector<int>& hang_e
               // der lokale index des haengenden knoten
     int h    = hang_e[i];
     int node = indices[h];
-    const fixarray<6,int>& rege = regular_nodes_on_edge(node);
+    const std::array<int,6>& rege = regular_nodes_on_edge(node);
     int type = rege[5];
     assert((type>=0)&&(type<2));
               // die 5 lokalen indices der regulars
-    fixarray<5,int> lnoe = local_nodes_on_edge(h,indices);
+    std::array<int,5> lnoe = local_nodes_on_edge(h,indices);
 
     for(int j=0; j<5; j++)
     {
@@ -473,11 +473,11 @@ void HNStructureQ43d::modify_row_lower(EntryMatrix& E, const vector<int>& hang_e
               // der lokale index des haengenden knoten
     int h    = hang_f[i];
     int node = indices[h];
-    const fixarray<26,int>& regf = regular_nodes_on_face(node);
+    const std::array<int,26>& regf = regular_nodes_on_face(node);
     int type = regf[25];
     assert((type>=0)&&(type<4));
               // die 25 lokalen indices der regulars
-    fixarray<25,int> lnof = local_nodes_on_face(h,indices);
+    std::array<int,25> lnof = local_nodes_on_face(h,indices);
 
     for(int j=0; j<25; j++)
     {
@@ -488,7 +488,7 @@ void HNStructureQ43d::modify_row_lower(EntryMatrix& E, const vector<int>& hang_e
 
 /**********************************************************/
 
-const fixarray<6,int>& HNStructureQ43d::regular_nodes_on_edge(int i) const
+const std::array<int,6>& HNStructureQ43d::regular_nodes_on_edge(int i) const
 {
   map<int,EdgeVector>::const_iterator p = q4edges->find(i);
   if(p!=q4edges->end())
@@ -500,7 +500,7 @@ const fixarray<6,int>& HNStructureQ43d::regular_nodes_on_edge(int i) const
 
 /**********************************************************/
 
-const fixarray<26,int>& HNStructureQ43d::regular_nodes_on_face(int i) const
+const std::array<int,26>& HNStructureQ43d::regular_nodes_on_face(int i) const
 {
   map<int,FaceVector>::const_iterator p = q4faces->find(i);
   if(p!=q4faces->end())
@@ -532,7 +532,7 @@ void HNStructureQ43d::CondenseHanging(IntVector& indices) const
   {
     int h = hang_e[i];
     int n = indices[h];
-    const fixarray<6,int>& regn = regular_nodes_on_edge(n);
+    const std::array<int,6>& regn = regular_nodes_on_edge(n);
     int type = regn[5];
     indices[h]=regn[3+type];
   }
@@ -541,7 +541,7 @@ void HNStructureQ43d::CondenseHanging(IntVector& indices) const
   {
     int h = hang_f[i];
     int n = indices[h];
-    const fixarray<26,int>& regn = regular_nodes_on_face(n);
+    const std::array<int,26>& regn = regular_nodes_on_face(n);
     int type = regn[25];
     if(type==0)
     {
@@ -659,7 +659,7 @@ void HNStructureQ43d::Average(GlobalVector& u) const
 {
   for(const_iteratorq4 p=q4edges->begin();p!=q4edges->end();p++)
   {
-    const fixarray<6,int>& f = p->second;
+    const std::array<int,6>& f = p->second;
     int t = f[5];
     assert((t==0)||(t==1));
     u.equ_node(p->first, w[t][0],f[0], w[t][1],f[1], w[t][2],f[2]);
@@ -668,7 +668,7 @@ void HNStructureQ43d::Average(GlobalVector& u) const
 
   for(face_const_iteratorq4 p=q4faces->begin();p!=q4faces->end();p++)
   {
-    const fixarray<26,int>& f = p->second;
+    const std::array<int,26>& f = p->second;
     int t = f[25];
     assert((t>=0)&&(t<4));
     int tx = t%2;
@@ -697,7 +697,7 @@ void HNStructureQ43d::Distribute(GlobalVector& u) const
   }
   for(face_const_iteratorq4 p=q4faces->begin();p!=q4faces->end();p++)
   {
-    const fixarray<26,int>& f = p->second;
+    const std::array<int,26>& f = p->second;
     int t = f[25];
     assert((t>=0)&&(t<4));
     int tx = t%2;

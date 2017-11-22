@@ -235,7 +235,7 @@ fixarray<2,int> HierarchicalMesh2d::ChildrenOfEdge(int e) const
 
   assert(s>=0) ;  
 
-  fixarray<2,int> f;
+  std::array<int,2> f;
   for(int ii=0;ii<2;ii++)
     {
       int ic = quad(s).child(QuadLaO.ChildsOfEdge(is,ii));
@@ -666,8 +666,8 @@ void HierarchicalMesh2d::inner_vertex_newton2d(const IntVector& vnew,
 {
   if (GetCurvedShapes().empty()) return;
 
-  fixarray<4,int> v;
-  fixarray<2,int> w; 
+  std::array<int,4> v;
+  std::array<int,2> w; 
   IntSetIt  cp=CellRefList.begin();
 
   for (int i=0; i<CellRefList.size(); i++)
@@ -721,7 +721,7 @@ void HierarchicalMesh2d::new_vertexs2d(HangContainer2d& hangset,
 
 void HierarchicalMesh2d::init_line(BoundaryLine& newline)
 {
-  fixarray<2,int> v,w;
+  std::array<int,2> v,w;
   for (int i=0; i<quads.size(); i++)
     {
       for (int edge=0; edge<4; edge++)
@@ -806,7 +806,7 @@ void HierarchicalMesh2d::new_lines(const IntVector& lo2n,
       int edge = blf.edge_in_quad();
       int iq   = blf.of_quad();
       int vm   = QuadLaO.edge_vertex(quad(iq),edge);
-      fixarray<2,int> chvec;
+      std::array<int,2> chvec;
       QuadLaO.childs_of_edge(chvec,quad(iq),edge);
 
       for(int ic=0;ic<2;ic++)
@@ -904,7 +904,7 @@ void HierarchicalMesh2d::new_face_vertex2d(int nv, const FaceVector& v)
 
 /*---------------------------------------------------*/
 
-ostream& operator<<(ostream& os, const pair<fixarray<2,int>, Hang>& H)
+ostream& operator<<(ostream& os, const pair<std::array<int,2>, Hang>& H)
 {
   cerr << H.first << " -> " << H.second << endl;
   return os;
@@ -973,7 +973,7 @@ void HierarchicalMesh2d::init_edges2d()
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh2d::GetVertexesOfEdge(fixarray<3,int>& v, int e) const
+void HierarchicalMesh2d::GetVertexesOfEdge(std::array<int,3>& v, int e) const
 {
   const Edge& E = edge(e);
   const Quad* Q = &quad(E.master());
@@ -992,7 +992,7 @@ void HierarchicalMesh2d::GetVertexesOfEdge(fixarray<3,int>& v, int e) const
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh2d::GetVertexesOfEdge(fixarray<2,int>& v, int e) const
+void HierarchicalMesh2d::GetVertexesOfEdge(std::array<int,2>& v, int e) const
 {
   const Edge& E = edge(e);
   const Quad* Q = &quad(E.master());
@@ -1325,9 +1325,9 @@ pair<bool,triple<int,int,int> > HierarchicalMesh2d::check_inp(const string& name
     }
 
   nq = 0; nl = 0;
-  fixarray<8,int> ih;
-  fixarray<4,int> iq;
-  fixarray<2,int> il;
+  std::array<int,8> ih;
+  std::array<int,4> iq;
+  std::array<int,2> il;
   for(int i=0;i<nt;i++)
     {
       string name;
@@ -1411,8 +1411,8 @@ void HierarchicalMesh2d::read_inp(const string& name)
       vertexs2d[i] = c;
     }
 
-  fixarray<4,int> iqv;
-  fixarray<2,int> ilv;
+  std::array<int,4> iqv;
+  std::array<int,2> ilv;
   int iq = 0;
   int il = 0;
   for(int i=0;i<nt;i++)
@@ -1781,7 +1781,7 @@ int HierarchicalMesh2d::regular_grid2d_one(IntSet& celllist,
       {
 	if(quad(cr).childs().size()==0) continue;
 
-	fixarray<2,int>  f;
+	std::array<int,2>  f;
 	QuadLaO.childs_of_global_edge(f,quad(cr),hp->first);
 
 	for(unsigned i=0;i<f.size();++i)

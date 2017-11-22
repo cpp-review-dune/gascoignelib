@@ -188,10 +188,10 @@ void QuadLawAndOrder::childs_of_global_edge(QuadVector& child, const Quad& f,
 
 /*----------------------------------------------------------------------*/
 
-void QuadLawAndOrder::global_edge_unsorted(fixarray<2,int>& lineglob, const Quad& q,
+void QuadLawAndOrder::global_edge_unsorted(std::array<int,2>& lineglob, const Quad& q,
 				  int edge) const
 {
-  fixarray<2,int> lineloc;
+  std::array<int,2> lineloc;
   local_edge_index(lineloc,edge);
   q.vertex_loc2glob(lineglob,lineloc);
 }

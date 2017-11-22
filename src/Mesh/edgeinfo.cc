@@ -31,7 +31,7 @@ using namespace std;
 namespace Gascoigne
 {
 template<int DIM>
-void EdgeInfo<DIM>::BasicInit(const Edge* edge, int ncomp, const fixarray<2*DIM-2,int>& vertex)
+void EdgeInfo<DIM>::BasicInit(const Edge* edge, int ncomp, const std::array<int,2*DIM-2>& vertex)
 {
   _count  = 0;
   _edge   = edge;
@@ -60,7 +60,7 @@ void EdgeInfo<DIM>::AddNodes(const LocalVector& u)
 template<int DIM>
 fixarray<2*DIM-2,double> EdgeInfo<DIM>::GetNorm() const
 {
-  fixarray<2*DIM-2,double> norm(0.);
+  std::array<double,2*DIM-2> norm(0.);
 
   for (int i=0; i<2*DIM-2; i++)
     {

@@ -36,7 +36,7 @@ namespace Gascoigne
 {
 class EdgeManager
 {
-  typedef fixarray<2,int>  EdgeVector;
+  typedef std::array<int,2>  EdgeVector;
 
  protected:
 
@@ -64,7 +64,7 @@ class EdgeManager
   const Quad&  quad(int i)           const { return quads[i];}
         Quad&  quad(int i)                 { return quads[i];}
 
-  fixarray<2,int> ChildrenOfEdge(int e) const;
+  std::array<int,2> ChildrenOfEdge(int e) const;
 
   bool EdgeIsHanging(int e) const;
   bool EdgeIsHanging(const Edge& e) const;

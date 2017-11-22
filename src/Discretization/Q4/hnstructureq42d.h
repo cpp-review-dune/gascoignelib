@@ -36,21 +36,21 @@ namespace Gascoigne
   {
     protected:
       nmatrix<double>                       M,Mq2;
-      nvector<fixarray<5,double> >          w,wq2;
-      const std::map<int,fixarray<6,int> > *q4edges;
+      nvector<std::array<double,5> >          w,wq2;
+      const std::map<int,std::array<int,6> > *q4edges;
 
-      typedef std::map<int,fixarray<6,int> >::iterator       iteratorq4;
-      typedef std::map<int,fixarray<6,int> >::const_iterator const_iteratorq4;
+      typedef std::map<int,std::array<int,6> >::iterator       iteratorq4;
+      typedef std::map<int,std::array<int,6> >::const_iterator const_iteratorq4;
 
       void add_column(EntryMatrix& A, const EntryMatrix&B, int j1, int j2, double s=1.) const;
       void add_row(EntryMatrix& A, const EntryMatrix&B, int i1, int i2, double s=1.) const;
       void GetHangingIndices(std::vector<int>& hang, const IntVector& indices) const;
-      fixarray<5,int> local_nodes(int e,int n) const;
+      std::array<int,5> local_nodes(int e,int n) const;
       void modify_column_higher(EntryMatrix& E, const std::vector<int>& hang, const IntVector& indices) const;
       void modify_column_lower(EntryMatrix& E, const std::vector<int>& hang, const IntVector& indices) const;
       void modify_row_higher(EntryMatrix& E, const std::vector<int>& hang, const IntVector& indices) const;
       void modify_row_lower(EntryMatrix& E, const std::vector<int>& hang, const IntVector& indices) const;
-      const fixarray<6,int>& regular_nodes(int i) const;
+      const std::array<int,6>& regular_nodes(int i) const;
 
     public:
       HNStructureQ42d();

@@ -142,7 +142,7 @@ HexLawAndOrder::HexLawAndOrder(vector<Hex>& h) :
   coif[10][0] = 2; coif[10][1] = 6;
   coif[11][0] = 3; coif[11][1] = 7;
 
-  fixarray<6,int> oppositeface;
+  std::array<int,6> oppositeface;
   
   oppositeface[0] = 5;
   oppositeface[1] = 3;
@@ -289,7 +289,7 @@ void HexLawAndOrder::GetFace(FaceVector& face, int h, int e) const
 /*---------------------------------------------------*/
 
 // laedt vertex indices in edgevector
-void HexLawAndOrder::globalvertices_of_edge(const Hex& q, fixarray<2,int>& f, int edge) const
+void HexLawAndOrder::globalvertices_of_edge(const Hex& q, std::array<int,2>& f, int edge) const
 {
   local_edge_index(f, edge);
 
@@ -299,13 +299,13 @@ void HexLawAndOrder::globalvertices_of_edge(const Hex& q, fixarray<2,int>& f, in
 
 /*---------------------------------------------------*/
 
-int HexLawAndOrder::GetVertexOfEdge(int iq, const fixarray<2,int>& edge) const
+int HexLawAndOrder::GetVertexOfEdge(int iq, const std::array<int,2>& edge) const
 {
   assert(iq>=0);
 
   const Hex& H = hexs[iq];
   
-  fixarray<2,int> v;
+  std::array<int,2> v;
   EdgeArray<2> Edge(edge);
 
   for (int e=0; e<12; e++)
@@ -324,7 +324,7 @@ int HexLawAndOrder::GetVertexOfEdge(int iq, const fixarray<2,int>& edge) const
 
 /*---------------------------------------------------*/
 
-void HexLawAndOrder::globalvertices_of_face(const Hex& q, fixarray<4,int>& f, int face) const
+void HexLawAndOrder::globalvertices_of_face(const Hex& q, std::array<int,4>& f, int face) const
 {
   local_face_index(f, face);
 
@@ -550,7 +550,7 @@ void HexLawAndOrder::LoadEdgeVerticesOfFace(const Hex& f, int face, FaceVector& 
 /*----------------------------------------------------------------------*/
 
 // fuer boundary newton
-void HexLawAndOrder::LoadFaceVertices(const Hex& f, fixarray<6,int>& dst) const
+void HexLawAndOrder::LoadFaceVertices(const Hex& f, std::array<int,6>& dst) const
 {
   for (int i=0; i<6; i++) 
     {
@@ -618,11 +618,11 @@ void HexLawAndOrder::globalfacechildren_of_father(vector<FaceVector>& faces,
 
 fixarray<9,int> HexLawAndOrder::PatchVerticesOfFace(int h, int face) const
 {
-  fixarray<4,int> f;
+  std::array<int,4> f;
   GetFace(f,h,face);
   //  globalvertices_of_face(q,f,face);
 
-  fixarray<9,int> F;
+  std::array<int,9> F;
   F[0] = f[3];
   F[2] = f[2];
   F[6] = f[0];
@@ -641,10 +641,10 @@ fixarray<9,int> HexLawAndOrder::PatchVerticesOfFace(int h, int face) const
 
 /*---------------------------------------------------*/
 
-fixarray<9,int> HexLawAndOrder::GiveOrdering(const fixarray<9,int>& F, const Hex& h) const
+fixarray<9,int> HexLawAndOrder::GiveOrdering(const std::array<int,9>& F, const Hex& h) const
 {
   int found = -1;
-  fixarray<4,int> kk; kk[0] = 0; kk[1] = 2; kk[2] = 6; kk[3] = 8;
+  std::array<int,4> kk; kk[0] = 0; kk[1] = 2; kk[2] = 6; kk[3] = 8;
   for (int j=0; (j<4) && (found<0); j++)
     {
       int fk = F[kk[j]];

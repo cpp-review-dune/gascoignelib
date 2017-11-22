@@ -88,7 +88,7 @@ const int ComponentInformationBase::GetNVectors     () const{
 void      ComponentInformationBase::GetVectorName   (int i, std::string& s_name) const{
   s_name="v";
 }
-void      ComponentInformationBase::GetVectorIndices(int i, fixarray<3,int>& fa_vectorindices) const{
+void      ComponentInformationBase::GetVectorIndices(int i, std::array<int,3>& fa_vectorindices) const{
   if ( GetDimension() ==2) {
     fa_vectorindices[0] = 1;
     fa_vectorindices[1] = 2;

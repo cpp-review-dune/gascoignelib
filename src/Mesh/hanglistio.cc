@@ -66,7 +66,7 @@ istream& operator>>(istream &s, HangList<N>& A)
 
   assert(symbol=="hangs");
 
-  fixarray<N,int>  ev;
+  std::array<int,N>  ev;
   Hang         info;
   for (int i=0; i<n; i++)
     {

@@ -35,8 +35,8 @@ namespace Gascoigne
   class HNStructureQ43d : public HNStructureQ23d
   {
     protected:
-      typedef fixarray<6,int>  EdgeVector;
-      typedef fixarray<26,int> FaceVector;
+      typedef std::array<int,6>  EdgeVector;
+      typedef std::array<int,26> FaceVector;
 
       typedef std::map<int,EdgeVector>::iterator       iteratorq4;
       typedef std::map<int,EdgeVector>::const_iterator const_iteratorq4;
@@ -44,7 +44,7 @@ namespace Gascoigne
       typedef std::map<int,FaceVector>::const_iterator face_const_iteratorq4;
 
       nmatrix<double>                 Medge,Mface,Mq2edge,Mq2face;
-      nvector<fixarray<5,double> >    w,wq2;
+      nvector<std::array<double,5> >    w,wq2;
       const std::map<int,EdgeVector> *q4edges;
       const std::map<int,FaceVector> *q4faces;
 
@@ -52,8 +52,8 @@ namespace Gascoigne
       void add_row(EntryMatrix& A, const EntryMatrix&B, int i1, int i2, double s=1.) const;
       void GetHangingIndices(std::vector<int>& hang_e, std::vector<int>& hang_f, const IntVector& indices) const;
       int hanging(int i) const;
-      fixarray<5,int> local_nodes_on_edge(int e, const IntVector& indices) const;
-      fixarray<25,int> local_nodes_on_face(int e, const IntVector& indices) const;
+      std::array<int,5> local_nodes_on_edge(int e, const IntVector& indices) const;
+      std::array<int,25> local_nodes_on_face(int e, const IntVector& indices) const;
       void modify_column_higher(EntryMatrix& E, const std::vector<int>& hang_e, const std::vector<int>& hang_f, const IntVector& indices) const;
       void modify_column_lower(EntryMatrix& E, const std::vector<int>& hang_e, const std::vector<int>& hang_f, const IntVector& indices) const;
       void modify_row_higher(EntryMatrix& E, const std::vector<int>& hang_e, const std::vector<int>& hang_f, const IntVector& indices) const;

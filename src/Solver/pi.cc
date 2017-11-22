@@ -41,29 +41,29 @@ void Pi::vmult(CompVector<double>& y, const CompVector<double>& x,
   int ncomp = x.ncomp();
   assert(ncomp==y.ncomp());
   {
-    map<int,fixarray<2,int> >::const_iterator p;
+    map<int,std::array<int,2> >::const_iterator p;
     for(p=edge.begin();p!=edge.end();p++)
       {
 	int i = p->first;
-	const fixarray<2,int>& f = p->second;
+	const std::array<int,2>& f = p->second;
 	for(int c=0;c<ncomp;c++) y(i,c) = x(i,c) - 0.5*(x(f[0],c)+x(f[1],c));
       }
   }
   {
-    map<int,fixarray<4,int> >::const_iterator p;
+    map<int,std::array<int,4> >::const_iterator p;
     for(p=face.begin();p!=face.end();p++)
       {
 	int i = p->first;
-	const fixarray<4,int>& f = p->second;
+	const std::array<int,4>& f = p->second;
 	for(int c=0;c<ncomp;c++) y(i,c) = x(i,c) - 0.25*(x(f[0],c)+x(f[1],c)+x(f[2],c)+x(f[3],c));
       }
   }
   {
-    map<int,fixarray<8,int> >::const_iterator p;
+    map<int,std::array<int,8> >::const_iterator p;
     for(p=cell.begin();p!=cell.end();p++)
       {
 	int i = p->first;
-	const fixarray<8,int>& f = p->second;
+	const std::array<int,8>& f = p->second;
 	for(int c=0;c<ncomp;c++) y(i,c) = x(i,c) - 0.125*(x(f[0],c)+x(f[1],c)+x(f[2],c)+x(f[3],c)+x(f[4],c)+x(f[5],c)+x(f[6],c)+x(f[7],c));
       }
   }
@@ -99,7 +99,7 @@ void Pi::Init2d(const GascoigneMesh2d* MP)
     {
       const nvector<int>& ind = *MP->IndicesOfPatch(i);
       {
-	fixarray<4,int> f;
+	std::array<int,4> f;
 	f[0] = ind[0];
 	f[1] = ind[2];
 	f[2] = ind[6];
@@ -107,7 +107,7 @@ void Pi::Init2d(const GascoigneMesh2d* MP)
 	face.insert(make_pair(ind[4],f));
       }
       {
-	fixarray<2,int> f;
+	std::array<int,2> f;
 	f[0] = ind[0];
 	f[1] = ind[2];
 	edge.insert(make_pair(ind[1],f));
@@ -135,7 +135,7 @@ void Pi::Init3d(const GascoigneMesh3d* MP)
       const nvector<int>& ind = *MP->IndicesOfPatch(i);
 
       {
-	fixarray<8,int> f;
+	std::array<int,8> f;
 	f[0] = ind[0];
 	f[1] = ind[2];
 	f[2] = ind[6];
@@ -147,7 +147,7 @@ void Pi::Init3d(const GascoigneMesh3d* MP)
 	cell.insert(make_pair(ind[13],f));
       }
       {
-	fixarray<4,int> f;
+	std::array<int,4> f;
 	f[0] = ind[0];
 	f[1] = ind[2];
 	f[2] = ind[6];
@@ -184,7 +184,7 @@ void Pi::Init3d(const GascoigneMesh3d* MP)
 
       }
       {
-	fixarray<2,int> f;
+	std::array<int,2> f;
 	f[0] = ind[0];
 	f[1] = ind[2];
 	edge.insert(make_pair(ind[1],f));

@@ -35,10 +35,10 @@ GascoigneMeshTransferConstructor2d::GascoigneMeshTransferConstructor2d
  const LevelMesh2d* LMfine, const LevelMesh2d* LMcoarse)
 {
   IntVector& c2f = GMT->GetC2f();
-  map<int,fixarray<2,int> >& zweier = GMT->GetZweier();
-  map<int,fixarray<4,int> >& vierer = GMT->GetVierer();
+  map<int,std::array<int,2> >& zweier = GMT->GetZweier();
+  map<int,std::array<int,4> >& vierer = GMT->GetVierer();
   map<int,int>&              CellEiner = GMT->GetCellEiner();
-  map<int,fixarray<4,int> >& CellVierer = GMT->GetCellVierer();
+  map<int,std::array<int,4> >& CellVierer = GMT->GetCellVierer();
 
   const QuadLawAndOrder& LaO = HM->QuadLawOrder();
 
@@ -55,7 +55,7 @@ GascoigneMeshTransferConstructor2d::GascoigneMeshTransferConstructor2d
       else
 	{
 	  // kinder suchen
-	  fixarray<4,int>  n4;
+	  std::array<int,4>  n4;
 	  for(int ii=0;ii<4;ii++)
 	    {
 	      int ic = HM->quad(igq).child(ii);
@@ -86,7 +86,7 @@ GascoigneMeshTransferConstructor2d::GascoigneMeshTransferConstructor2d
 
       // verfeinertes quad --> vierer
 
-      fixarray<4,int>  n4;
+      std::array<int,4>  n4;
       int igm = LaO.middle_vertex(q);
       int ilm = LMfine->Vertexg2l(igm);
       for(int ii=0;ii<4;ii++)
@@ -105,11 +105,11 @@ GascoigneMeshTransferConstructor2d::GascoigneMeshTransferConstructor2d
 	  int ile = LMfine->Vertexg2l(ige);
 	  if(LMcoarse->Vertexg2lCheck(ige)!=-2) continue;
 
-	  fixarray<2,int> f;
+	  std::array<int,2> f;
 	  LaO.globalvertices_of_edge(q,f,ie);
 
 
-	  fixarray<2,int>  n2;
+	  std::array<int,2>  n2;
 	  for(int ii=0;ii<2;ii++)
 	    {
 	      int iL = LMcoarse->Vertexg2l(f[ii]);
@@ -133,9 +133,9 @@ GascoigneMeshTransferConstructor3d::GascoigneMeshTransferConstructor3d
 //   abort();
 
   IntVector& c2f = GMT->GetC2f();
-  map<int,fixarray<2,int> >& zweier = GMT->GetZweier();
-  map<int,fixarray<4,int> >& vierer = GMT->GetVierer();
-  map<int,fixarray<8,int> >& achter = GMT->GetAchter();
+  map<int,std::array<int,2> >& zweier = GMT->GetZweier();
+  map<int,std::array<int,4> >& vierer = GMT->GetVierer();
+  map<int,std::array<int,8> >& achter = GMT->GetAchter();
 
   const HexLawAndOrder& LaO = HM->HexLawOrder();
 
@@ -156,7 +156,7 @@ GascoigneMeshTransferConstructor3d::GascoigneMeshTransferConstructor3d
 
       // verfeinertes hex
 
-      fixarray<8,int>  n8;
+      std::array<int,8>  n8;
       int igm = LaO.middle_vertex(q);
       int ilm = LMfine->Vertexg2l(igm);
       for(int ii=0;ii<8;ii++)
@@ -172,7 +172,7 @@ GascoigneMeshTransferConstructor3d::GascoigneMeshTransferConstructor3d
 	  int ige = LaO.face_vertex(q,ie);
 	  int ile = LMfine->Vertexg2l(ige);
 	  if(LMcoarse->Vertexg2lCheck(ige)!=-2) continue;
-	  fixarray<4,int> f,n4;
+	  std::array<int,4> f,n4;
 	  LaO.globalvertices_of_face(q,f,ie);
 	  for(int ii=0;ii<4;ii++)
 	    {
@@ -187,7 +187,7 @@ GascoigneMeshTransferConstructor3d::GascoigneMeshTransferConstructor3d
 	  int ige = LaO.edge_vertex(q,ie);
 	  int ile = LMfine->Vertexg2l(ige);
 	  if(LMcoarse->Vertexg2lCheck(ige)!=-2) continue;
-	  fixarray<2,int> f,n2;
+	  std::array<int,2> f,n2;
 	  LaO.globalvertices_of_edge(q,f,ie);
 
 	  n2[0] = LMcoarse->Vertexg2l(f[0]);

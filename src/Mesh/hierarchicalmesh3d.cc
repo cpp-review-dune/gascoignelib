@@ -231,7 +231,7 @@ void HierarchicalMesh3d::prepare3d(const IntVector& cell_ref,
 void HierarchicalMesh3d::FaceCoarse(HangContainer3d& hangset,
 				    const IntSet& cellcoarse) const
 {
-  fixarray<4,int> quadglob;
+  std::array<int,4> quadglob;
   for (IntSetIt cp=cellcoarse.begin(); cp!=cellcoarse.end(); ++cp)
     {
       int f = *cp;
@@ -250,7 +250,7 @@ void HierarchicalMesh3d::FaceCoarse(HangContainer3d& hangset,
 void HierarchicalMesh3d::FaceRefine(HangContainer3d& hangset,
 				    const IntSet& cellref) const
 {
-  fixarray<4,int> quadglob;
+  std::array<int,4> quadglob;
   for (IntSetIt cp=cellref.begin(); cp!=cellref.end(); ++cp)
     {
       int f = *cp;
@@ -270,7 +270,7 @@ void HierarchicalMesh3d::UpdateHangingEdges(HangContainer3d& hangset,
 {
   HangList<2> oldhangs(LineHang);
   hangset.build_hanging_lines(oldhangs);
-  fixarray<2,int> lineglob;
+  std::array<int,2> lineglob;
   
   for (IntSetIt cp=cellcoarse.begin(); cp!=cellcoarse.end(); ++cp)
     {
@@ -731,7 +731,7 @@ void HierarchicalMesh3d::new_hexs(const HangContainer3d& hangset,
 
 	  HexLaO.fill_face_vertex_in_childs(hexs[father],i,ive);
 	}
-      fixarray<2,int> lineglob;
+      std::array<int,2> lineglob;
       for (int i=0; i<12; i++)
 	{
 	  HexLaO.global_edge_unsorted(lineglob,hex(father),i);
@@ -768,7 +768,7 @@ void HierarchicalMesh3d::inner_vertex_newton3d(const IntVector& vnew,
       Hexset.insert(hi);
     }
 
-  fixarray<4,int> v;
+  std::array<int,4> v;
 
   IntSetIt  cp=CellRefList.begin();
 
@@ -787,7 +787,7 @@ void HierarchicalMesh3d::inner_vertex_newton3d(const IntVector& vnew,
 	  int ev = HexLaO.edge_vertex(h,e);
 	  if (adjustvertex.find(ev)!=adjustvertex.end()) continue;
 
-	  fixarray<2,int> fe;
+	  std::array<int,2> fe;
 	  HexLaO.globalvertices_of_edge(h,fe,e);
 	  vertexs3d[ev]  = vertexs3d[fe[0]];
 	  vertexs3d[ev] += vertexs3d[fe[1]];
@@ -799,7 +799,7 @@ void HierarchicalMesh3d::inner_vertex_newton3d(const IntVector& vnew,
 	  int fv = HexLaO.face_vertex(h,f);
 	  if (adjustvertex.find(fv)!=adjustvertex.end()) continue;
 
-	  fixarray<4,int> fe;
+	  std::array<int,4> fe;
 	  HexLaO.LoadEdgeVerticesOfFace(h,f,fe);
 	  vertexs3d[fv].equ(0.25, vertexs3d[fe[0]],
 			    0.25, vertexs3d[fe[1]],
@@ -809,7 +809,7 @@ void HierarchicalMesh3d::inner_vertex_newton3d(const IntVector& vnew,
       // middle
       int fv = HexLaO.middle_vertex(h);
       assert (adjustvertex.find(fv)==adjustvertex.end());
-      fixarray<6,int> fe;
+      std::array<int,6> fe;
       HexLaO.LoadFaceVertices(h,fe);
       vertexs3d[fv]=0;
       for (int i=0;i<6;++i) vertexs3d[fv]+=vertexs3d[fe[i]];
@@ -830,7 +830,7 @@ void HierarchicalMesh3d::inner_vertex_newton3d(const IntVector& vnew,
 // 	  if (adjustvertex.find(mv)!=adjustvertex.end()) continue;
 // 	  new_face_vertex3d(mv,v);
 // 	}
-// //       fixarray<6,int> w;
+// //       std::array<int,6> w;
 // //       int mv = HexLaO.middle_vertex(h);
 // //       HexLaO.LoadFaceVertices(h,w);
 // //       new_vertex3d(mv,w);
@@ -920,7 +920,7 @@ void HierarchicalMesh3d::init_edges3d()
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh3d::GetVertexesOfFace(fixarray<5,int>& v, int e) const
+void HierarchicalMesh3d::GetVertexesOfFace(std::array<int,5>& v, int e) const
 {
   const Edge& E = edge(e);
   const Hex* Q = &hex(E.master());
@@ -943,7 +943,7 @@ void HierarchicalMesh3d::GetVertexesOfFace(fixarray<5,int>& v, int e) const
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh3d::GetVertexesOfFace(fixarray<4,int>& v, int e) const
+void HierarchicalMesh3d::GetVertexesOfFace(std::array<int,4>& v, int e) const
 {
   const Edge& E = edge(e);
   const Hex*  Q = &hex(E.master());
@@ -1034,7 +1034,7 @@ fixarray<4,int> HierarchicalMesh3d::ChildrenOfFace(int e) const
 
   assert(s>=0);
 
-  fixarray<4,int> f;
+  std::array<int,4> f;
   for(int ii=0;ii<4;ii++)
     {
       int ic = hex(s).child(HexLaO.ChildsOfFace(is,ii));
@@ -1263,9 +1263,9 @@ pair<bool,tint> HierarchicalMesh3d::check_inp(const string& name)
     }
 
   nh = 0; nq = 0; nl = 0;
-  fixarray<8,int> ih;
-  fixarray<4,int> iq;
-  fixarray<2,int> il;
+  std::array<int,8> ih;
+  std::array<int,4> iq;
+  std::array<int,2> il;
   for(int i=0;i<nt;i++)
     {
       string name;
@@ -1359,9 +1359,9 @@ void HierarchicalMesh3d::read_inp(const string& name)
       file >> ind >> c;
       vertexs3d[i] = c;
     }
-  fixarray<8,int> ihv;
-  fixarray<4,int> iqv;
-  fixarray<2,int> ilv;
+  std::array<int,8> ihv;
+  std::array<int,4> iqv;
+  std::array<int,2> ilv;
   int ih = 0;
   int iq = 0;
   for(int i=0;i<nt;i++)
@@ -2224,7 +2224,7 @@ void HierarchicalMesh3d::new_face_vertex3d(int nv, const FaceVector& v)
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh3d::new_vertex3d(int nv, const fixarray<6,int>& v)
+void HierarchicalMesh3d::new_vertex3d(int nv, const std::array<int,6>& v)
 {
   cout << "@ " << vertexs3d[nv] << "\t";
   double d = 1./6.;

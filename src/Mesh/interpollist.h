@@ -33,18 +33,18 @@
 namespace Gascoigne
 {
 template <int N>
-class InterpolElement : public fixarray<N,int>
+class InterpolElement : public std::array<int,N>
 {
  public:
 
   int nv;
 
-  InterpolElement() : fixarray<N,int>(), nv(-1) {}
-  InterpolElement(const InterpolElement& i) : fixarray<N,int>(i), 
+  InterpolElement() : std::array<int,N>(), nv(-1) {}
+  InterpolElement(const InterpolElement& i) : std::array<int,N>(i), 
     nv(i.nv) {}
 
-  InterpolElement(const fixarray<N,int>& f, int n) : 
-    fixarray<N,int>(f), nv(n) {}
+  InterpolElement(const std::array<int,N>& f, int n) : 
+    std::array<int,N>(f), nv(n) {}
 };
 
 /*---------------------------------------------------*/
@@ -57,7 +57,7 @@ class InterpolationList : public std::vector<InterpolElement<N> >
   int  newvertex(int i)        const { return (*this)[i].nv; }
   int  oldvertex(int i, int j) const { return (*this)[i][j]; }
 
-  void newentry(int nv, const fixarray<N,int>& w)
+  void newentry(int nv, const std::array<int,N>& w)
     {
       InterpolElement<N> I(w,nv);
       push_back(I);

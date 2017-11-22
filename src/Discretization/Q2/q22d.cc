@@ -198,9 +198,9 @@ void Q22d::ConstructInterpolator(MgInterpolatorInterface* I, const MeshTransferI
   // dast ist einfach von Q12d kopiert !!!!!
   //
 
-  const map<int,fixarray<2,int> >& zweier = GMT->GetZweier();
-  const map<int,fixarray<4,int> >& vierer = GMT->GetVierer();
-  const map<int,fixarray<8,int> >& achter = GMT->GetAchter();
+  const map<int,std::array<int,2> >& zweier = GMT->GetZweier();
+  const map<int,std::array<int,4> >& vierer = GMT->GetVierer();
+  const map<int,std::array<int,8> >& achter = GMT->GetAchter();
   const nvector<int>& c2f    = GMT->GetC2f();
 
   int n  = c2f.size() +   zweier.size() +   vierer.size() +   achter.size();
@@ -216,23 +216,23 @@ void Q22d::ConstructInterpolator(MgInterpolatorInterface* I, const MeshTransferI
     {
       SS.build_add(i,c2f[i]);
     }
-  for(map<int,fixarray<2,int> >::const_iterator p=zweier.begin();
+  for(map<int,std::array<int,2> >::const_iterator p=zweier.begin();
       p!=zweier.end();p++) 
     {
       int il = p->first;
-      fixarray<2,int> n2 = p->second;
+      std::array<int,2> n2 = p->second;
       for(int ii=0;ii<2;ii++) SS.build_add(il,n2[ii]);
     }
-  for(map<int,fixarray<4,int> >::const_iterator p=vierer.begin();
+  for(map<int,std::array<int,4> >::const_iterator p=vierer.begin();
       p!=vierer.end();p++) {
     int il = p->first;
-    fixarray<4,int> n4 = p->second;
+    std::array<int,4> n4 = p->second;
     for(int ii=0;ii<4;ii++) SS.build_add(il,n4[ii]);
   }
-  for(map<int,fixarray<8,int> >::const_iterator p=achter.begin();
+  for(map<int,std::array<int,8> >::const_iterator p=achter.begin();
       p!=achter.end();p++) {
     int il = p->first;
-    fixarray<8,int> n8 = p->second;
+    std::array<int,8> n8 = p->second;
     for(int ii=0;ii<8;ii++) SS.build_add(il,n8[ii]);
   }
   SS.build_end();
@@ -247,27 +247,27 @@ void Q22d::ConstructInterpolator(MgInterpolatorInterface* I, const MeshTransferI
     {
       val[ST.Find(c2f[i],i)] = 1.;
     }
-  for(map<int,fixarray<2,int> >::const_iterator p=zweier.begin();
+  for(map<int,std::array<int,2> >::const_iterator p=zweier.begin();
       p!=zweier.end();p++) 
     {
       int il = p->first;
-      fixarray<2,int> n2 = p->second;
+      std::array<int,2> n2 = p->second;
       val[ST.Find(il,n2[0])] = 0.5;
       val[ST.Find(il,n2[1])] = 0.5;
     }
-  for(map<int,fixarray<4,int> >::const_iterator p=vierer.begin();
+  for(map<int,std::array<int,4> >::const_iterator p=vierer.begin();
       p!=vierer.end();p++) {
     int il = p->first;
-    fixarray<4,int> n4 = p->second;
+    std::array<int,4> n4 = p->second;
     val[ST.Find(il,n4[0])] = 0.25;
     val[ST.Find(il,n4[1])] = 0.25;
     val[ST.Find(il,n4[2])] = 0.25;
     val[ST.Find(il,n4[3])] = 0.25;
   }
-  for(map<int,fixarray<8,int> >::const_iterator p=achter.begin();
+  for(map<int,std::array<int,8> >::const_iterator p=achter.begin();
       p!=achter.end();p++) {
     int il = p->first;
-    fixarray<8,int> n8 = p->second;
+    std::array<int,8> n8 = p->second;
     for (int i=0; i<8; i++)
       {
 	val[ST.Find(il,n8[i])] = 0.125;

@@ -33,9 +33,9 @@ namespace Gascoigne
 
   // /*-------------------------------------------------------------------*/
 
-  // ostream& operator<<(ostream &s, const map<int,fixarray<4,int> >& A)
+  // ostream& operator<<(ostream &s, const map<int,std::array<int,4> >& A)
   // {
-  //   for(map<int,fixarray<4,int> >::const_iterator p=A.begin();p!=A.end();p++)
+  //   for(map<int,std::array<int,4> >::const_iterator p=A.begin();p!=A.end();p++)
   //     {
   //       s << "\t"<<p->first<<"\t"<<p->first<<"\t --> "<<p->second<<endl;
   //     }

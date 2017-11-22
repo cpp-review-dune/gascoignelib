@@ -119,7 +119,7 @@ void HNStructureQ42d::GetHangingIndices(vector<int>& hang, const IntVector& indi
 
 fixarray<5,int> HNStructureQ42d::local_nodes(int e,int n) const
 {
-  fixarray<5,int> R;
+  std::array<int,5> R;
 
   int x = e%5;
   int y = e/5;
@@ -168,7 +168,7 @@ void HNStructureQ42d::modify_column_higher(EntryMatrix& E, const vector<int>& ha
     int t = regular_nodes(n)[5];
     assert((t==0)||(t==1));
 
-    fixarray<5,int> lnoe = local_nodes(h,n);
+    std::array<int,5> lnoe = local_nodes(h,n);
 
     for(int j=0; j<5; j++)
     {
@@ -189,7 +189,7 @@ void HNStructureQ42d::modify_column_lower(EntryMatrix& E, const vector<int>& han
     int t = regular_nodes(n)[5];
     assert((t==0)||(t==1));
 
-    fixarray<5,int> lnoe = local_nodes(h,n);
+    std::array<int,5> lnoe = local_nodes(h,n);
 
     for(int j=0; j<5; j++)
     {
@@ -210,7 +210,7 @@ void HNStructureQ42d::modify_row_higher(EntryMatrix& E, const vector<int>& hang,
     int t = regular_nodes(n)[5];
     assert((t==0)||(t==1));
 
-    fixarray<5,int> lnoe = local_nodes(h,n);
+    std::array<int,5> lnoe = local_nodes(h,n);
 
     for(int j=0; j<5; j++)
     {
@@ -231,7 +231,7 @@ void HNStructureQ42d::modify_row_lower(EntryMatrix& E, const vector<int>& hang, 
     int t = regular_nodes(n)[5];
     assert((t==0)||(t==1));
 
-    fixarray<5,int> lnoe = local_nodes(h,n);
+    std::array<int,5> lnoe = local_nodes(h,n);
 
     for(int j=0; j<5; j++)
     {
@@ -242,9 +242,9 @@ void HNStructureQ42d::modify_row_lower(EntryMatrix& E, const vector<int>& hang, 
 
 /**********************************************************/
 
-const fixarray<6,int>& HNStructureQ42d::regular_nodes(int i) const
+const std::array<int,6>& HNStructureQ42d::regular_nodes(int i) const
 {
-  map<int,fixarray<6,int> >::const_iterator p = q4edges->find(i);
+  map<int,std::array<int,6> >::const_iterator p = q4edges->find(i);
   if(p!=q4edges->end())
   {
     return p->second;
@@ -273,7 +273,7 @@ void HNStructureQ42d::CondenseHanging(IntVector& indices) const
   {
     int h = hang[i];
     int n = indices[h];
-    const fixarray<6,int>& regn = regular_nodes(n);
+    const std::array<int,6>& regn = regular_nodes(n);
 
     int type = regn[5];
     indices[h] = regn[3+type];
@@ -364,7 +364,7 @@ void HNStructureQ42d::Average(GlobalVector& u) const
 {
   for(const_iteratorq4 p=q4edges->begin();p!=q4edges->end();p++)
   {
-    const fixarray<6,int>& f = p->second;
+    const std::array<int,6>& f = p->second;
     int t = f[5];
     assert((t==0)||(t==1));
     u.equ_node(p->first, w[t][0], f[0], w[t][1], f[1], w[t][2], f[2]);

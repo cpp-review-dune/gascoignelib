@@ -210,7 +210,7 @@ void LevelMesh2d::ConstructIndOfPatch(nvector<IntVector>& dst) const
       int findex = *pf;
       const Quad& qf = HMP->quad(findex);
 
-      fixarray<4,int> FineQuads;
+      std::array<int,4> FineQuads;
       for(int ii=0;ii<qf.nchilds();ii++) 
 	{
 	  FineQuads[ii] = qf.child(ii);
@@ -250,7 +250,7 @@ void LevelMesh2d::ConstructHangingStructureQuadratic(QuadraticHNStructure3& hnq2
 	  const Quad& qfn = HMP->quad(neighbour);
 	  if (qfn.nchilds()==0) continue;
 
-	  fixarray<2,int> childs;
+	  std::array<int,2> childs;
 	  int ne = in;
 	  
 	  {
@@ -277,7 +277,7 @@ void LevelMesh2d::ConstructHangingStructureQuadratic(QuadraticHNStructure3& hnq2
 	  
 	  // jetzt haengt er
 	  int hn = Vertexg2l( HMP->QuadLawOrder().edge_vertex(qfc,ne) );
-	  fixarray<3,int> F;
+	  std::array<int,3> F;
 	  F[0] = qfn[ne];
 	  F[1] = HMP->QuadLawOrder().edge_vertex(qfn,ne);
 	  F[2] = qfn[(ne+1)%4];
@@ -345,7 +345,7 @@ void LevelMesh2d::ConstructHangingStructureQuartic(QuarticHNStructure5& hnq4) co
 	    assert(neighbourneighbour==opa_c);
 	  }
 		    // beide Vaeter entlang der gemeinsamen Kante
-	  fixarray<2,int> fathers_r;
+	  std::array<int,2> fathers_r;
 	  HMP->QuadLawOrder().childs_of_edge(fathers_r,o_r,ne);
 
 		    // wenn gleiches Level, dann haengt nix.
@@ -363,14 +363,14 @@ void LevelMesh2d::ConstructHangingStructureQuartic(QuarticHNStructure5& hnq4) co
 		    // Jetzt haengt ne Menge
 
 		    // die vier enkel verfeinert
-	  vector<fixarray<2,int> > enkels_r(2);
+	  vector<std::array<int,2> > enkels_r(2);
 	  HMP->QuadLawOrder().childs_of_edge(enkels_r[0],f0_r,ne);
 	  HMP->QuadLawOrder().childs_of_edge(enkels_r[1],f1_r,ne);
 	  assert(enkels_r[0][0]>=0);assert(enkels_r[0][1]>=0);assert(enkels_r[1][0]>=0);assert(enkels_r[1][1]>=0);
 	  
  
 		    // die 5 Knoten
-	  fixarray<6,int> tmp;
+	  std::array<int,6> tmp;
 	  tmp[0]=HMP->quad(enkels_r[0][0])[ne];
 	  tmp[1]=HMP->quad(enkels_r[0][1])[ne];
 	  tmp[2]=HMP->quad(enkels_r[1][0])[ne];
@@ -379,7 +379,7 @@ void LevelMesh2d::ConstructHangingStructureQuartic(QuarticHNStructure5& hnq4) co
 	  
 
 		    // die haengen
-	  fixarray<4,int> hn;
+	  std::array<int,4> hn;
 	  hn[0] = HMP->QuadLawOrder().edge_vertex(HMP->quad(enkels_r[0][0]),ne);
 	  hn[1] = HMP->QuadLawOrder().edge_vertex(HMP->quad(enkels_r[0][1]),ne);
 	  hn[2] = HMP->QuadLawOrder().edge_vertex(HMP->quad(enkels_r[1][0]),ne);
@@ -587,7 +587,7 @@ void LevelMesh2d::InitBoundaryHandler(BoundaryIndexHandler& BI,const PatchIndexH
   int nc = colorvec.size(); 
   vector<set<int>  > H1(nc);  // for verteces
   // for cells and local indices
-  vector<set<fixarray<2,int> > >  H2(nc); 
+  vector<set<std::array<int,2> > >  H2(nc); 
 
   for(IntSet::const_iterator q=blines.begin();
       q!=blines.end(); q++)
@@ -608,7 +608,7 @@ void LevelMesh2d::InitBoundaryHandler(BoundaryIndexHandler& BI,const PatchIndexH
 	  int vindex = Vertexg2l(bl.vertex(ii));
 	  H1[pos].insert(vindex);
 	}
-      fixarray<2,int> ind;
+      std::array<int,2> ind;
       ind[0] = Quadg2l(bl.of_quad());
       ind[1] = bl.edge_in_quad();
       H2[pos].insert(ind);
@@ -621,7 +621,7 @@ void LevelMesh2d::InitBoundaryHandler(BoundaryIndexHandler& BI,const PatchIndexH
       IntVector v2(H2[i].size());
       int j = 0;
       
-      set<fixarray<2,int> >::const_iterator p;
+      set<std::array<int,2> >::const_iterator p;
       for (p=H2[i].begin(); p!=H2[i].end(); p++)
 	{
 	  v1[j] = (*p)[0];

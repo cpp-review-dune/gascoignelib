@@ -34,11 +34,11 @@ namespace Gascoigne
 
 class HNStructureQ23d : public  HNStructureQ13d
 {
-  fixarray<9,double>  fwei, fq1wei;
+  std::array<double,9>  fwei, fq1wei;
   DoubleVector        q1wei;
 
-  fixarray<12,fixarray<3,int> >  lnoe;
-  fixarray< 6,fixarray<5,int> >  lnop;
+  std::array<int,12,fixarray<3> >  lnoe;
+  std::array<int, 6,fixarray<5> >  lnop;
 
   void CondenseHanging2er(EntryMatrix& E, nvector<int>& indices) const;
   void CondenseHanging2erLowerHigher(EntryMatrix& E, nvector<int>& indices) const;

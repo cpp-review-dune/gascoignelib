@@ -30,13 +30,13 @@ using namespace std;
 
 namespace Gascoigne
 {
-Hang::Hang() : fixarray<3,int>(-1)
+Hang::Hang() : std::array<int,3>(-1)
 {}
 
 /*********************************************************************/
 
 Hang::Hang(const Hang& h) 
-  : fixarray<3,int>(h) {}
+  : std::array<int,3>(h) {}
 
 /*********************************************************************/
 

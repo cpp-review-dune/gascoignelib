@@ -42,7 +42,7 @@ namespace Gascoigne
 {
 
   // std::ostream& operator<<(std::ostream &s, const
-  // std::map<int,fixarray<4,int> >& A);
+  // std::map<int,std::array<int,4> >& A);
   // std::ostream& operator<<(std::ostream &s, const
   // std::map<std::string,std::string>& A);
   // std::ostream& operator<<(std::ostream &s, const std::map<std::string,int>&

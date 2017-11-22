@@ -36,7 +36,7 @@ namespace Gascoigne
 {
 class FaceManager
 {
-  typedef fixarray<4,int>  FaceVector;
+  typedef std::array<int,4>  FaceVector;
 
  protected:
 
@@ -63,7 +63,7 @@ class FaceManager
   const Hex&  hex(int i)           const { return hexs[i];}
         Hex&  hex(int i)                 { return hexs[i];}
 
-  fixarray<2,int> ChildrenOfFace(int e) const;
+  std::array<int,2> ChildrenOfFace(int e) const;
 
   bool EdgeIsHanging(int e) const;
   bool EdgeIsHanging(const Edge& e) const;

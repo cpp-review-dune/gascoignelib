@@ -72,14 +72,14 @@ void HNStructureQ23d::Average(GlobalVector& u) const
 {
   for(const_fiterator p=faces->begin(); p!=faces->end(); p++)
     {
-      const fixarray<9,int>& f = p->second;
+      const std::array<int,9>& f = p->second;
       u.equ_node(p->first, fwei[0], f[0], fwei[1], f[1], fwei[2], f[2]);
       u.add_node(p->first, fwei[3], f[3], fwei[4], f[4], fwei[5], f[5]);
       u.add_node(p->first, fwei[6], f[6], fwei[7], f[7], fwei[8], f[8]);
     }
   for(const_iterator p=edges->begin();p!=edges->end();p++)
     {
-      const fixarray<3,int>& f = p->second;
+      const std::array<int,3>& f = p->second;
       u.equ_node(p->first, wei[0], f[0], wei[1], f[1], wei[2], f[2]);
     }
 }
@@ -91,7 +91,7 @@ void HNStructureQ23d::Distribute(GlobalVector& u) const
   for(const_fiterator p=faces->begin(); p!=faces->end(); p++)
     {
       int i = p->first;
-      const fixarray<9,int>& f = p->second;
+      const std::array<int,9>& f = p->second;
       for (int j=0; j<9; j++)
 	{
 	  u.add_node(f[j],fwei[j],i);
@@ -101,7 +101,7 @@ void HNStructureQ23d::Distribute(GlobalVector& u) const
   for(const_iterator p=edges->begin();p!=edges->end();p++)
     {
       int i = p->first;
-      const fixarray<3,int>& f = p->second;
+      const std::array<int,3>& f = p->second;
       for (int j=0; j<3; j++)
 	{
 	  u.add_node(f[j],wei[j],i);
@@ -171,7 +171,7 @@ void HNStructureQ23d::CondenseHanging2er
 {
   for(int i=0; i<12; i++)
     {
-      fixarray<3,int>  p = lnoe[i];
+      std::array<int,3>  p = lnoe[i];
 
       int elim = p[1];
       int h    = indices[elim];
@@ -180,7 +180,7 @@ void HNStructureQ23d::CondenseHanging2er
       
       if (q==edges->end()) continue;
 
-      const fixarray<3,int>& f = q->second;
+      const std::array<int,3>& f = q->second;
 
       indices[elim] = f[2];
 
@@ -208,7 +208,7 @@ void HNStructureQ23d::CondenseHanging2erLowerHigher
 {
   for(int i=0; i<12; i++)
     {
-      fixarray<3,int>  p = lnoe[i];
+      std::array<int,3>  p = lnoe[i];
 
       int elim = p[1];
       int h    = indices[elim];
@@ -217,7 +217,7 @@ void HNStructureQ23d::CondenseHanging2erLowerHigher
       
       if (q==edges->end()) continue;
 
-      const fixarray<3,int>& f = q->second;
+      const std::array<int,3>& f = q->second;
 
       indices[elim] = f[2];
 
@@ -245,7 +245,7 @@ void HNStructureQ23d::CondenseHanging2erHigherLower
 {
   for(int i=0; i<12; i++)
     {
-      fixarray<3,int>  p = lnoe[i];
+      std::array<int,3>  p = lnoe[i];
 
       int elim = p[1];
       int h    = indices[elim];
@@ -254,7 +254,7 @@ void HNStructureQ23d::CondenseHanging2erHigherLower
       
       if (q==edges->end()) continue;
 
-      const fixarray<3,int>& f = q->second;
+      const std::array<int,3>& f = q->second;
 
       indices[elim] = f[2];
 
@@ -282,7 +282,7 @@ void HNStructureQ23d::CondenseHanging4er
 {
   for(int i=0; i<6; i++)
     {
-      fixarray<5,int> lf = lnop[i];
+      std::array<int,5> lf = lnop[i];
 
       int elim = lf[4];
       int h    = indices[elim];
@@ -291,11 +291,11 @@ void HNStructureQ23d::CondenseHanging4er
       
       if (q==faces->end()) continue;
 
-      const fixarray<9,int>& gf = q->second;
+      const std::array<int,9>& gf = q->second;
 
       indices[elim] = gf[8];
 
-      fixarray<8,int>  x = -1;
+      std::array<int,8>  x = -1;
 
       for (int j=0; j<indices.size(); j++)
 	{
@@ -332,7 +332,7 @@ void HNStructureQ23d::CondenseHanging4erLowerHigher
 {
   for(int i=0; i<6; i++)
     {
-      fixarray<5,int> lf = lnop[i];
+      std::array<int,5> lf = lnop[i];
 
       int elim = lf[4];
       int h    = indices[elim];
@@ -341,11 +341,11 @@ void HNStructureQ23d::CondenseHanging4erLowerHigher
       
       if (q==faces->end()) continue;
 
-      const fixarray<9,int>& gf = q->second;
+      const std::array<int,9>& gf = q->second;
 
       indices[elim] = gf[8];
 
-      fixarray<8,int>  x = -1;
+      std::array<int,8>  x = -1;
 
       for (int j=0; j<indices.size(); j++)
 	{
@@ -382,7 +382,7 @@ void HNStructureQ23d::CondenseHanging4erHigherLower
 {
   for(int i=0; i<6; i++)
     {
-      fixarray<5,int> lf = lnop[i];
+      std::array<int,5> lf = lnop[i];
 
       int elim = lf[4];
       int h    = indices[elim];
@@ -391,11 +391,11 @@ void HNStructureQ23d::CondenseHanging4erHigherLower
       
       if (q==faces->end()) continue;
 
-      const fixarray<9,int>& gf = q->second;
+      const std::array<int,9>& gf = q->second;
 
       indices[elim] = gf[8];
 
-      fixarray<8,int>  x = -1;
+      std::array<int,8>  x = -1;
 
       for (int j=0; j<indices.size(); j++)
 	{

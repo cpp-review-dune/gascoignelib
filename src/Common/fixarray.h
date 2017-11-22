@@ -50,16 +50,16 @@ namespace Gascoigne
     }
 
   public:
-    fixarray<N, T>()
+    std::array< T,N>()
         : std::array<T, N>()
     {
       BasicInit(T());
     }
-    fixarray<N, T>(const T &d)
+    std::array< T,N>(const T &d)
     {
       BasicInit(d);
     }
-    fixarray<N, T>(const fixarray<N, T> &v)
+    std::array< T,N>(const std::array< T,N> &v)
     {
       BasicInit(T());
       array_copy(v.begin());
@@ -114,7 +114,7 @@ namespace Gascoigne
       return val[i];
     }
 
-    fixarray<N, T> &operator=(const T &d)
+    std::array< T,N> &operator=(const T &d)
     {
       iterator p(end());
       while (p > begin())
@@ -122,7 +122,7 @@ namespace Gascoigne
       return *this;
     }
 
-    fixarray<N, T> &operator=(const fixarray<N, T> &v)
+    std::array< T,N> &operator=(const std::array< T,N> &v)
     {
       iterator p(begin());
       const_iterator q(v.begin());
@@ -131,7 +131,7 @@ namespace Gascoigne
       return *this;
     }
 
-    bool operator<(const fixarray<N, T> &v) const
+    bool operator<(const std::array< T,N> &v) const
     {
       const_iterator p(begin());
       const_iterator q(v.begin());
@@ -146,7 +146,7 @@ namespace Gascoigne
       }
       return 0;
     }
-    bool operator!=(const fixarray<N, T> &v) const
+    bool operator!=(const std::array< T,N> &v) const
     {
       const_iterator p(begin());
       const_iterator q(v.begin());
@@ -169,7 +169,7 @@ namespace Gascoigne
 
     std::istream &get(std::istream &s)
     {
-      typename fixarray<N, T>::iterator p;
+      typename std::array< T,N>::iterator p;
       for (p = begin(); p != end(); p++)
         s >> *p;
       return s;
@@ -216,7 +216,7 @@ namespace Gascoigne
   /*-------------------------------------------------*/
 
   template <int N, class T>
-  bool operator==(const fixarray<N, T> &x, const fixarray<N, T> &y)
+  bool operator==(const std::array< T,N> &x, const std::array< T,N> &y)
   {
     return std::equal(x.begin(), x.end(), y.begin());
   }
@@ -227,16 +227,16 @@ namespace Gascoigne
   {
   public:
     template <int N, class T>
-    int operator()(const fixarray<N, T> &h) const
+    int operator()(const std::array< T,N> &h) const
     {
       return static_cast<int>(h[0]);
     }
   };
 
   template <int N, class T>
-  std::ostream &operator<<(std::ostream &s, const fixarray<N, T> &A);
+  std::ostream &operator<<(std::ostream &s, const std::array< T,N> &A);
   template <int N, class T>
-  std::istream &operator>>(std::istream &s, fixarray<N, T> &A);
+  std::istream &operator>>(std::istream &s, std::array< T,N> &A);
 }
 
 

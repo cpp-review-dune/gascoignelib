@@ -66,7 +66,7 @@ template<>
 void EdgeInfoContainer<2>::ModifyHanging()
 {
   const QuadLawAndOrder& QLAO = dynamic_cast<const HierarchicalMesh2d*>(_HMP)->QuadLawOrder();
-  fixarray<2,int>        vertexes;
+  std::array<int,2>        vertexes;
   LocalVector            lu,lul,lur;
   
   lu.ReInit(_ncomp,2);
@@ -110,7 +110,7 @@ template<>
 void EdgeInfoContainer<3>::ModifyHanging()
 {
   const HexLawAndOrder& HLAO = dynamic_cast<const HierarchicalMesh3d*>(_HMP)->HexLawOrder();
-  fixarray<4,int>       vertexes;
+  std::array<int,4>       vertexes;
   LocalVector           lugr,lulu,luru,lulo,luro;
   
   lugr.ReInit(_ncomp,4);
