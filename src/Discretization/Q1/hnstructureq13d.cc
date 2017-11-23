@@ -24,6 +24,7 @@
 
 #include  "hnstructureq13d.h"
 #include  "gascoignemesh.h"
+#include <algorithm>
 
 
 using namespace std;
@@ -289,8 +290,8 @@ namespace Gascoigne
     int linecount = 0;
     int quadcount = 0;
 
-    IntVector::const_iterator p0 = indices.begin();
-    IntVector::const_iterator p1 = indices.end();
+    //    auto p0 = indices.begin();
+    //    auto p1 = indices.end();
 
     for(int i=0; i<8; i++)
       {
@@ -308,8 +309,8 @@ namespace Gascoigne
 		      // entweder gibt es newindex schon oder muss hinzugefuegt werden
 		      //
 	    int newindex = line[k];
-	    IntVector::const_iterator p = find(p0,p1,newindex);
-	    if (p==p1)
+	    auto p = find(indices.begin(),indices.end(),newindex);
+	    if (p==indices.end())
 	      {
 		ind = newindex;
 		break;
@@ -331,8 +332,8 @@ namespace Gascoigne
 	for(int k=0; k<4; k++) 
 	  {
 	    int newindex = face[k];
-	    IntVector::const_iterator p = find(p0,p1,newindex);
-	    if (p==p1)
+	    auto p = find(indices.begin(),indices.end(),newindex);
+	    if (p==indices.end())
 	      {
 		ind = newindex;
 		break;

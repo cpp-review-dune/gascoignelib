@@ -23,6 +23,7 @@
 
 
 #include  "quadlawandorder.h"
+#include <algorithm>
 
 using namespace std;
 

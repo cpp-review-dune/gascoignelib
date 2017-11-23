@@ -30,7 +30,7 @@
 #include  "giota.h"
 #include  "stringutil.h"
 
-#include <experimental/algorithm>
+#include <algorithm>
 
 
 using namespace std;

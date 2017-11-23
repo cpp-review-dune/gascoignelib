@@ -54,6 +54,9 @@ void compose_name(string& s, int i, string t)
 
 void compose_name(string& s, int i, int l)
 {
+  std::cerr << "compose_name: das ist bloedsinn" << std::endl;
+  abort();
+  
   char ll[1];
   sprintf(ll,"%01d",l);
   string format("%s.%0");

@@ -28,6 +28,7 @@
 #include  "leveljumper.h"
 #include  "set2vec.h"
 #include  "gascoignehash.h"
+#include <algorithm>
 
 using namespace std;
 

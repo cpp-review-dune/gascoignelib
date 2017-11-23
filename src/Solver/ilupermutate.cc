@@ -23,6 +23,7 @@
 
 
 #include "ilupermutate.h"
+#include <algorithm>
 
 using namespace std;
 

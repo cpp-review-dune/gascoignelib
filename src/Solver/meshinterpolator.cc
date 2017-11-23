@@ -30,7 +30,7 @@
 #include "q23d.h"
 #include "domainrighthandside.h"
 #include <iterator>
-
+#include <algorithm>
 using namespace std;
 
 namespace Gascoigne

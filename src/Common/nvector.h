@@ -29,8 +29,8 @@
 #include <climits>
 #include <cstdlib>
 #include <iostream>
-#include <iterator>
 #include <numeric>
+#include <iterator>
 #include <vector>
 
 #include "gascoignemath.h"
@@ -44,8 +44,6 @@ namespace Gascoigne
   {
   private:
   public:
-    typedef typename std::vector<T>::iterator iterator;
-    typedef typename std::vector<T>::const_iterator const_iterator;
 
     ~nvector()
     {
@@ -75,7 +73,7 @@ namespace Gascoigne
     }
     friend std::istream &operator>>(std::istream &s, nvector<T> &A)
     {
-      iterator p = A.begin();
+      auto p = A.begin();
       while (p != A.end())
         s >> *p++;
       return s;
@@ -190,8 +188,8 @@ namespace Gascoigne
   template <class T>
   inline double nvector<T>::norm() const
   {
-    const_iterator first = std::vector<T>::begin();
-    const_iterator last = std::vector<T>::end();
+    auto first = std::vector<T>::begin();
+    auto last = std::vector<T>::end();
 
     T n(0);
     while (first != last)
@@ -207,8 +205,8 @@ namespace Gascoigne
   template <class T>
   inline T nvector<T>::sum() const
   {
-    const_iterator first = std::vector<T>::begin();
-    const_iterator last = std::vector<T>::end();
+    auto first = std::vector<T>::begin();
+    auto last = std::vector<T>::end();
 
     T n(0);
     while (first != last)
@@ -223,8 +221,8 @@ namespace Gascoigne
   template <class T>
   inline double nvector<T>::norm_l1() const
   {
-    const_iterator first = std::vector<T>::begin();
-    const_iterator last = std::vector<T>::end();
+    auto first = std::vector<T>::begin();
+    auto last = std::vector<T>::end();
 
     double n(0);
     while (first != last)
@@ -239,8 +237,8 @@ namespace Gascoigne
   template <class T>
   inline double nvector<T>::norm_l8() const
   {
-    const_iterator first = std::vector<T>::begin();
-    const_iterator last = std::vector<T>::end();
+    auto first = std::vector<T>::begin();
+    auto last = std::vector<T>::end();
 
     double n(0);
     while (first != last)
@@ -256,8 +254,8 @@ namespace Gascoigne
   template <class T>
   inline nvector<T> &nvector<T>::operator=(const T &d)
   {
-    iterator first = std::vector<T>::begin();
-    const_iterator last = std::vector<T>::end();
+    auto first = std::vector<T>::begin();
+    auto last = std::vector<T>::end();
 
     while (first != last)
     {
@@ -272,9 +270,9 @@ namespace Gascoigne
   inline nvector<T> &nvector<T>::operator=(const std::vector<T> &v)
   {
     assert(std::vector<T>::size() == v.std::template vector<T>::size());
-    iterator first = std::vector<T>::begin();
-    const_iterator last = std::vector<T>::end();
-    const_iterator vfirst = v.std::template vector<T>::begin();
+    auto first = std::vector<T>::begin();
+    auto last = std::vector<T>::end();
+    auto vfirst = v.std::template vector<T>::begin();
 
     while (first != last)
     {
@@ -288,8 +286,8 @@ namespace Gascoigne
   template <class T>
   inline nvector<T> &nvector<T>::operator*=(const T &d)
   {
-    iterator first = std::vector<T>::begin();
-    const_iterator last = std::vector<T>::end();
+    auto first = std::vector<T>::begin();
+    auto last = std::vector<T>::end();
 
     while (first != last)
     {
@@ -303,8 +301,8 @@ namespace Gascoigne
   template <class T>
   inline void nvector<T>::zero()
   {
-    iterator first = std::vector<T>::begin();
-    const_iterator last = std::vector<T>::end();
+    auto first = std::vector<T>::begin();
+    auto last = std::vector<T>::end();
 
     while (first != last)
     {
@@ -319,8 +317,8 @@ namespace Gascoigne
   {
     double d = 0; // std::numeric_limits<double>::min();
     /*   double d = std::numeric_limits<double>::min(); */
-    const_iterator first = std::vector<T>::begin();
-    const_iterator last = std::vector<T>::end();
+    auto first = std::vector<T>::begin();
+    auto last = std::vector<T>::end();
 
     while (first != last)
     {
@@ -337,8 +335,8 @@ namespace Gascoigne
   {
     double d = 100000.; // std::numeric_limits<double>::max();
     /*   double d = std::numeric_limits<double>::max(); */
-    const_iterator first = std::vector<T>::begin();
-    const_iterator last = std::vector<T>::end();
+    auto first = std::vector<T>::begin();
+    auto last = std::vector<T>::end();
 
     while (first != last)
     {
@@ -353,9 +351,9 @@ namespace Gascoigne
   template <class T>
   inline T nvector<T>::operator*(const nvector<T> &v) const
   {
-    const_iterator first = std::vector<T>::begin();
-    const_iterator last = std::vector<T>::end();
-    const_iterator first2 = v.begin();
+    auto first = std::vector<T>::begin();
+    auto last = std::vector<T>::end();
+    auto first2 = v.begin();
 
     T d(0);
     while (first != last)
@@ -372,8 +370,8 @@ namespace Gascoigne
   template <class T>
   inline void nvector<T>::equ(const T &d)
   {
-    iterator first = std::vector<T>::begin();
-    const_iterator last = std::vector<T>::end();
+    auto first = std::vector<T>::begin();
+    auto last = std::vector<T>::end();
 
     while (first != last)
     {
@@ -386,9 +384,9 @@ namespace Gascoigne
   template <class T>
   inline void nvector<T>::equ(const T &d, const nvector<T> &v)
   {
-    iterator first = std::vector<T>::begin();
-    const_iterator last = std::vector<T>::end();
-    const_iterator first2 = v.begin();
+    auto first = std::vector<T>::begin();
+    auto last = std::vector<T>::end();
+    auto first2 = v.begin();
 
     while (first != last)
     {
@@ -404,10 +402,10 @@ namespace Gascoigne
                               const T &e,
                               const nvector<T> &w)
   {
-    iterator first = std::vector<T>::begin();
-    const_iterator last = std::vector<T>::end();
-    const_iterator first2 = v.begin();
-    const_iterator first3 = w.begin();
+    auto first = std::vector<T>::begin();
+    auto last = std::vector<T>::end();
+    auto first2 = v.begin();
+    auto first3 = w.begin();
 
     while (first != last)
     {
@@ -425,11 +423,11 @@ namespace Gascoigne
                               const T &f,
                               const nvector<T> &x)
   {
-    iterator first = std::vector<T>::begin();
-    const_iterator last = std::vector<T>::end();
-    const_iterator first2 = v.begin();
-    const_iterator first3 = w.begin();
-    const_iterator first4 = x.begin();
+    auto first = std::vector<T>::begin();
+    auto last = std::vector<T>::end();
+    auto first2 = v.begin();
+    auto first3 = w.begin();
+    auto first4 = x.begin();
 
     while (first != last)
     {
@@ -442,9 +440,9 @@ namespace Gascoigne
   template <class T>
   inline void nvector<T>::sequ(const T &s, const T &d, const nvector<T> &v)
   {
-    iterator first = std::vector<T>::begin();
-    const_iterator last = std::vector<T>::end();
-    const_iterator first2 = v.begin();
+    auto first = std::vector<T>::begin();
+    auto last = std::vector<T>::end();
+    auto first2 = v.begin();
 
     while (first != last)
     {
@@ -458,8 +456,8 @@ namespace Gascoigne
   template <class T>
   inline void nvector<T>::add(const T &d)
   {
-    iterator first = std::vector<T>::begin();
-    const_iterator last = std::vector<T>::end();
+    auto first = std::vector<T>::begin();
+    auto last = std::vector<T>::end();
 
     while (first != last)
     {
@@ -472,9 +470,9 @@ namespace Gascoigne
   template <class T>
   inline void nvector<T>::add(const T &d, const nvector<T> &v)
   {
-    iterator first = std::vector<T>::begin();
-    const_iterator last = std::vector<T>::end();
-    const_iterator first2 = v.begin();
+    auto first = std::vector<T>::begin();
+    auto last = std::vector<T>::end();
+    auto first2 = v.begin();
 
     while (first != last)
     {
@@ -490,10 +488,10 @@ namespace Gascoigne
                               const T &e,
                               const nvector<T> &w)
   {
-    iterator first = std::vector<T>::begin();
-    const_iterator last = std::vector<T>::end();
-    const_iterator first2 = v.begin();
-    const_iterator first3 = w.begin();
+    auto first = std::vector<T>::begin();
+    auto last = std::vector<T>::end();
+    auto first2 = v.begin();
+    auto first3 = w.begin();
 
     while (first != last)
     {
@@ -511,11 +509,11 @@ namespace Gascoigne
                               const T &f,
                               const nvector<T> &x)
   {
-    iterator first = std::vector<T>::begin();
-    const_iterator last = std::vector<T>::end();
-    const_iterator first2 = v.begin();
-    const_iterator first3 = w.begin();
-    const_iterator first4 = x.begin();
+    auto first = std::vector<T>::begin();
+    auto last = std::vector<T>::end();
+    auto first2 = v.begin();
+    auto first3 = w.begin();
+    auto first4 = x.begin();
 
     while (first != last)
     {
@@ -528,9 +526,9 @@ namespace Gascoigne
   template <class T>
   inline void nvector<T>::sadd(const T &a, const T &d, const nvector<T> &v)
   {
-    iterator first = std::vector<T>::begin();
-    const_iterator last = std::vector<T>::end();
-    const_iterator first2 = v.begin();
+    auto first = std::vector<T>::begin();
+    auto last = std::vector<T>::end();
+    auto first2 = v.begin();
 
     while (first != last)
     {

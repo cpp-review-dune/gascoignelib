@@ -27,6 +27,7 @@
 #include "hangfacesort.h"
 #include "stlio.h"
 #include "vecalgo.h"
+#include <algorithm>
 
 #include <unordered_map>
 #define HANGMAP unordered_map<EdgeArray<4>, int, EdgeHash<4>>
