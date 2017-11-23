@@ -43,10 +43,10 @@ class CoarseHierarchicalMesh3d : public HierarchicalMesh3d
   public:
   
   CoarseHierarchicalMesh3d(const HierarchicalMesh3d&);
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Woverloaded-virtual"
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Woverloaded-virtual"
   void BasicInit(int pdepth);
-#pragma clang diagnostic pop
+#pragma GCC diagnostic pop
   void GetRefinedList(IntVector&);
   void GetCoarsedList(IntVector&);
   void refine(const IntVector& cell_ref, const IntVector& cell_coarse);

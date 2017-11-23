@@ -80,11 +80,11 @@ public:
     void vmult_time(GlobalVector& y, const GlobalVector& x, const TimePattern& TP, double s=1.) const;
 
   // these functions have a different definition in the interface class (2 arguments)
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Woverloaded-virtual"
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Woverloaded-virtual"
     void dirichlet(const IntVector& indices);
     void dirichlet_only_row(const IntVector& indices);
-#pragma clang diagnostic pop
+#pragma GCC diagnostic pop
 
   
     void transpose();

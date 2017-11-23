@@ -108,12 +108,12 @@ namespace Gascoigne
                           const VectorInterface &gu,
                           double d) const;
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Woverloaded-virtual"
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Woverloaded-virtual"
     void InverseMassMatrix(VectorInterface &u,
                            const VectorInterface &f,
                            CGInfo &info);
-#pragma clang diagnostic pop
+#pragma GCC diagnostic pop
 
     void precondition(VectorInterface &u, const VectorInterface &f);
     void cgvmult(VectorInterface &y, const VectorInterface &x, double d) const;

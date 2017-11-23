@@ -44,15 +44,15 @@ namespace Gascoigne
     {
     }
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Woverloaded-virtual"
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Woverloaded-virtual"
     void BasicInit(const std::vector<Vertex2d> &v2d,
                    const std::vector<int> &comps,
                    const std::vector<double> &weights);
     void BasicInit(const std::vector<Vertex3d> &v3d,
                    const std::vector<int> &comps,
                    const std::vector<double> &weights);
-#pragma clang diagnostic pop
+#pragma GCC diagnostic pop
 
     const std::vector<double> &GetWeights() const
     {

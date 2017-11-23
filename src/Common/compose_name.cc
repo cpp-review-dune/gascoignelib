@@ -24,6 +24,7 @@
 
 #include "compose_name.h"
 #include "stdio.h"
+#include <iostream>
 
 using namespace std;
 

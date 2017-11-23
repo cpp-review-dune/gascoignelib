@@ -112,13 +112,13 @@ namespace Gascoigne
     {
     }
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Woverloaded-virtual"
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Woverloaded-virtual"
     void BasicInit(const ParamFile *paramfile,
                    MultiLevelSolver *MLS,
                    const NumericInterface *NI,
                    const ProblemContainer *PC);
-#pragma clang diagnostic pop
+#pragma GCC diagnostic pop
 
     void ReInitVector(VectorInterface &u) const
     {

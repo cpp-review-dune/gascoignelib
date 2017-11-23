@@ -45,10 +45,10 @@ namespace Gascoigne
     {
     }
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Woverloaded-virtual"
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Woverloaded-virtual"
     void BasicInit(const WeightedPointFunctional *WPF);
-#pragma clang diagnostic pop
+#pragma GCC diagnostic pop
 
     double operator()(int i, const Vertex2d &v) const;
     double operator()(int i, const Vertex3d &v) const;

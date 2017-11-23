@@ -57,8 +57,8 @@ namespace Gascoigne
 
 // the following functions have different args than defined in the virtual
 // interface class
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Woverloaded-virtual"
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Woverloaded-virtual"
     void Form(const Equation &EQ,
               LocalVector &F,
               const FemInterface &FemH,
@@ -113,7 +113,7 @@ namespace Gascoigne
                   const FemInterface &FemH,
                   const FemInterface &FemL,
                   const LocalVector &U) const;
-#pragma clang diagnostic pop
+#pragma GCC diagnostic pop
 
     std::string GetName() const
     {

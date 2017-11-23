@@ -71,10 +71,10 @@ protected:
   void ReInit      (const SparseStructureInterface* SI);
   void ConstructStructure(const nvector<int>& perm, const MatrixInterface& A);
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Woverloaded-virtual"
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Woverloaded-virtual"
   void copy_entries(const MatrixInterface* A);
-#pragma clang diagnostic pop
+#pragma GCC diagnostic pop
 
   void solve       (GlobalVector& x) const;
   void solvetrans  (GlobalVector& x) const {

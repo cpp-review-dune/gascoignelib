@@ -119,11 +119,11 @@ public:
 
 
   // no warning for overloaded virtual function (2d/3d)
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Woverloaded-virtual"
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Woverloaded-virtual"
   void RhsCurve(LocalVector& F, const FemInterface& FEM, Vertex<DIM>& xr0,
 		Vertex<DIM>& xr1, double H, double ND0,double ND1, int ncomp, int comp) const;
-#pragma clang diagnostic pop
+#pragma GCC diagnostic pop
 
 
 };

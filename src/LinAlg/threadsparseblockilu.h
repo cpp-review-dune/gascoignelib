@@ -39,8 +39,8 @@ namespace Gascoigne
   {
   public:
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Woverloaded-virtual"
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Woverloaded-virtual"
     virtual void ConstructStructure(const nvector<int> &perm,
                                     const MatrixInterface &A,
                                     const nvector<int> &nodes_of_domain)
@@ -48,7 +48,7 @@ namespace Gascoigne
       std::cerr << "ThreadSparseBlockIluInterface::ConstructStructure" << endl;
       abort();
     }
-#pragma clang diagnostic pop
+#pragma GCC diagnostic pop
 
     virtual const nvector<int> &GetP() const = 0;
     virtual const HASHMAP<int, int> &GetQ() const = 0;
@@ -125,10 +125,10 @@ namespace Gascoigne
                             const MatrixInterface &A,
                             const nvector<int> &nodes_of_domain);
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Woverloaded-virtual"
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Woverloaded-virtual"
     void copy_entries(const MatrixInterface *A);
-#pragma clang diagnostic pop
+#pragma GCC diagnostic pop
     
     void solve(GlobalVector &x) const;
     void solvetrans(GlobalVector &x) const

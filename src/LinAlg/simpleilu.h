@@ -73,11 +73,11 @@ namespace Gascoigne
       SimpleMatrix::zero();
     }
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Woverloaded-virtual"
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Woverloaded-virtual"
     void ReInit(int n, int nentries);
     void copy_entries(const MatrixInterface *A);
-#pragma clang diagnostic pop
+#pragma GCC diagnostic pop
 
 
     void compute_ilu();
