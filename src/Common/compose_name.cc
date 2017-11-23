@@ -26,6 +26,8 @@
 #include "stdio.h"
 #include <iostream>
 
+#include <iostream>
+
 using namespace std;
 
 namespace Gascoigne
