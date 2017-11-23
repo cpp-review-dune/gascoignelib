@@ -22,55 +22,68 @@
 **/
 
 
-#ifndef  __SimpleIlu_h
-#define  __SimpleIlu_h
+#ifndef __SimpleIlu_h
+#define __SimpleIlu_h
 
-#include  "simplematrix.h"
-#include  "matrixinterface.h"
+#include "matrixinterface.h"
+#include "simplematrix.h"
 
 
 namespace Gascoigne
 {
 
-/////////////////////////////////////////////
-///
-///@brief
-///  ... comments SimpleIlu
+  /////////////////////////////////////////////
+  ///
+  ///@brief
+  ///  ... comments SimpleIlu
 
-///
-///
-/////////////////////////////////////////////
+  ///
+  ///
+  /////////////////////////////////////////////
 
-class SimpleIlu : public SimpleMatrix
-{
-protected:
+  class SimpleIlu : public SimpleMatrix
+  {
+  protected:
+    IntVector p, q;
+    mutable DoubleVector yp;
 
-  IntVector              p,q;
-  mutable DoubleVector   yp;
+    void hin(const DoubleVector &y) const;
+    void her(DoubleVector &y) const;
+    void backward() const;
+    void forward() const;
+    void backward_transpose() const;
+    void forward_transpose() const;
 
-  void hin(const DoubleVector& y) const;
-  void her(DoubleVector& y) const;
-  void backward() const;
-  void forward () const;
-  void backward_transpose() const;
-  void forward_transpose () const;
+  public:
+    //
+    ///  Constructor
+    //
 
-public:
+    SimpleIlu()
+        : SimpleMatrix()
+    {
+    }
 
-//
-///  Constructor 
-//
+    int n() const
+    {
+      return GetStencil()->n();
+    };
+    void zero()
+    {
+      SimpleMatrix::zero();
+    }
 
-    SimpleIlu() : SimpleMatrix() {}
-    
-      int   n()          const { return GetStencil()->n();};
-    void zero() {SimpleMatrix::zero();}
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Woverloaded-virtual"
     void ReInit(int n, int nentries);
-    void copy_entries(const MatrixInterface*  A);
+    void copy_entries(const MatrixInterface *A);
+#pragma clang diagnostic pop
+
+
     void compute_ilu();
-    void solve(DoubleVector& x) const;
-    void solve_transpose(DoubleVector& x) const;
-};
+    void solve(DoubleVector &x) const;
+    void solve_transpose(DoubleVector &x) const;
+  };
 }
 
 #endif

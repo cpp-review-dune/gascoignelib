@@ -27,6 +27,7 @@
 #include  "errormacros.h"
 #include  "compose_name.h"
 #include  "filescanner.h"
+#include "stlio.h"
 
 
 using namespace std;

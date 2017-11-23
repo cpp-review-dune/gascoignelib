@@ -37,8 +37,8 @@ class HNStructureQ23d : public  HNStructureQ13d
   std::array<double,9>  fwei, fq1wei;
   DoubleVector        q1wei;
 
-  std::array<int,12,fixarray<3> >  lnoe;
-  std::array<int, 6,fixarray<5> >  lnop;
+  std::array<std::array<int,3>,12 >  lnoe;
+  std::array<std::array<int,5>,6 >  lnop;
 
   void CondenseHanging2er(EntryMatrix& E, nvector<int>& indices) const;
   void CondenseHanging2erLowerHigher(EntryMatrix& E, nvector<int>& indices) const;

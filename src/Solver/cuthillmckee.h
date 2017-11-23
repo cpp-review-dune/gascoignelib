@@ -57,7 +57,7 @@ class CuthillMcKee
     
 //     Vertex2d dir2d;
 //     Vertex3d dir3d;
-    int      dimension;
+
     std::vector<int> neighbors;
 
   public:

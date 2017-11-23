@@ -22,18 +22,18 @@
 **/
 
 
-#ifndef  __ComponentInformationBase_h
-#define  __ComponentInformationBase_h
+#ifndef __ComponentInformationBase_h
+#define __ComponentInformationBase_h
 
-#include  "gostream.h"
-#include  "stringutil.h"
-#include  "filescanner.h"
+#include "filescanner.h"
+#include "gostream.h"
+#include "stringutil.h"
 
-#include  "componentinformation.h"
+#include "componentinformation.h"
 
 namespace Gascoigne
 {
-  
+
   /////////////////////////////////////////////
   ///
   ///@brief
@@ -45,24 +45,30 @@ namespace Gascoigne
 
   class ComponentInformationBase : public ComponentInformation
   {
-    private:
-      
-    protected:
+  private:
+  protected:
+  public:
+    ComponentInformationBase()
+        : ComponentInformation()
+    {
+    }
+    virtual ~ComponentInformationBase()
+    {
+    }
 
-    public:
-      ComponentInformationBase():ComponentInformation() {}
-      virtual ~ComponentInformationBase() {}
-  
-      virtual void BasicInit(const ParamFile* pf) {}
+    virtual void BasicInit(const ParamFile *pf)
+    {
+    }
 
-      virtual std::string GetName() const;
+    virtual std::string GetName() const;
 
 
-      virtual const int GetNScalars     () const;
-      virtual void      GetScalarName   (int i, std::string& s_name) const;
-      virtual const int GetNVectors     () const;
-      virtual void      GetVectorName   (int i, std::string& s_name) const;
-      virtual void      GetVectorIndices(int i, fixarray<3,int>& fa_vectorindices) const;
+    virtual const int GetNScalars() const;
+    virtual void GetScalarName(int i, std::string &s_name) const;
+    virtual const int GetNVectors() const;
+    virtual void GetVectorName(int i, std::string &s_name) const;
+    virtual void GetVectorIndices(int i,
+                                  std::array<int, 3> &fa_vectorindices) const;
   };
 }
 

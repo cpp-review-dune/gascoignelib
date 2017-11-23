@@ -31,21 +31,32 @@
 /**********************************************************/
 namespace Gascoigne
 {
-class WeightedDiracRightHandSide : public DiracRightHandSide
-{
+  class WeightedDiracRightHandSide : public DiracRightHandSide
+  {
   protected:
-  std::vector<double> _weights;
+    std::vector<double> _weights;
 
   public:
-    WeightedDiracRightHandSide() : DiracRightHandSide() { }
-    ~WeightedDiracRightHandSide() { }
+    WeightedDiracRightHandSide()
+        : DiracRightHandSide()
+    {
+    }
+    ~WeightedDiracRightHandSide()
+    {
+    }
 
-    void BasicInit(const WeightedPointFunctional* WPF);
-     
-    double operator()(int i, const Vertex2d& v) const;
-    double operator()(int i, const Vertex3d& v) const; 
-    std::string GetName() const { return "WeightedDiracRightHandSide"; }
-};
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Woverloaded-virtual"
+    void BasicInit(const WeightedPointFunctional *WPF);
+#pragma clang diagnostic pop
+
+    double operator()(int i, const Vertex2d &v) const;
+    double operator()(int i, const Vertex3d &v) const;
+    std::string GetName() const
+    {
+      return "WeightedDiracRightHandSide";
+    }
+  };
 }
 /**********************************************************/
 

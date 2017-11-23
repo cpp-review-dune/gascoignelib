@@ -33,8 +33,11 @@ using namespace std;
 namespace Gascoigne
 {
 StdTimeSolver::StdTimeSolver()
-  : StdSolver(), _MMP(NULL), _dt(0.), _theta(0.), _time(0.), _rhs(0.)
-{}
+  : StdSolver(), _MMP(NULL), _dt(0.), _theta(0.), _time(0.)
+{
+  _rhs.fill(0.0);
+  
+}
 
 /*-------------------------------------------------------------*/
   

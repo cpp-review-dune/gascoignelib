@@ -26,6 +26,7 @@
 #define __cell_h
 
 #include "gascoigne.h"
+#include "stlio.h"
 #include <array>
 #include <string>
 
@@ -46,21 +47,21 @@ namespace Gascoigne
 
     int qlevel, qfather;
     IntVector qchilds;
-    std::array<int,E > qedges; /* edge numbers */
+    std::array<int, E> qedges; /* edge numbers */
 
   public:
     /* Constructors */
 
     Cell()
-      : std::array<int,N >()
+        : std::array<int, N>()
         , qlevel(0)
         , qfather(-1)
     {
-      qedges = -1;
+      qedges.fill(-1);
     }
 
     Cell(const Cell &c)
-      : std::array<int,N >(c)
+        : std::array<int, N>(c)
         , qlevel(c.level())
         , qfather(c.father())
         , qchilds(c.childs())
@@ -69,10 +70,11 @@ namespace Gascoigne
     }
 
     Cell(int l, int f)
-      : std::array<int,N >(-17)
+        : std::array<int, N>()
         , qlevel(l)
         , qfather(f)
     {
+      this->fill(-17);
     }
 
     /* Operators */
@@ -190,7 +192,7 @@ namespace Gascoigne
 
     void BinWrite(std::ostream &s) const
     {
-      vertex().BinWrite(s);
+      ArrayBinWrite(s,vertex());
       int sizeInt = sizeof(int);
       s.write(reinterpret_cast<const char *>(&qlevel), sizeInt);
       s.write(reinterpret_cast<const char *>(&qfather), sizeInt);
@@ -200,12 +202,12 @@ namespace Gascoigne
       {
         s.write(reinterpret_cast<const char *>(&qchilds[i]), sizeInt);
       }
-      edges().BinWrite(s);
+      ArrayBinWrite(s,edges());
     }
 
     void BinRead(std::istream &s)
     {
-      vertex().BinRead(s);
+      ArrayBinRead(s,vertex());
       int sizeInt = sizeof(int);
       s.read(reinterpret_cast<char *>(&qlevel), sizeInt);
       s.read(reinterpret_cast<char *>(&qfather), sizeInt);
@@ -216,7 +218,7 @@ namespace Gascoigne
       {
         s.read(reinterpret_cast<char *>(&qchilds[i]), sizeInt);
       }
-      edges().BinRead(s);
+      ArrayBinRead(s,edges());
     }
 
     friend std::ostream &operator<<(std::ostream &s, const Cell &A)

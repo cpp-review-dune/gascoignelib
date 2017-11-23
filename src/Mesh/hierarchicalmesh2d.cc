@@ -228,7 +228,7 @@ IntVector HierarchicalMesh2d::Geschwister(const int i) const
 
 /*------------------------------------------------------*/
 
-fixarray<2,int> HierarchicalMesh2d::ChildrenOfEdge(int e) const
+std::array<int,2> HierarchicalMesh2d::ChildrenOfEdge(int e) const
 {
   int s  = edge(e).slave();
   int is = edge(e).LocalSlaveIndex();
@@ -637,7 +637,7 @@ void HierarchicalMesh2d::new_quads(const HangContainer2d& hangset,
 	  quads[inold].level()  = childlevel;
 	  quads[inold].father() = father;
 	  quads[inold].childs().resize(0);
-	  quads[inold].edges() = -1;
+	  quads[inold].edges().fill(-1);
 	}
       QuadLaO.fill_corner_vertex_in_childs(quads[father]);
       QuadLaO.fill_middle_vertex_in_childs(quads[father],vnew[ivm]);
@@ -666,7 +666,7 @@ void HierarchicalMesh2d::inner_vertex_newton2d(const IntVector& vnew,
 {
   if (GetCurvedShapes().empty()) return;
 
-  std::array<int,4> v;
+
   std::array<int,2> w; 
   IntSetIt  cp=CellRefList.begin();
 
@@ -1325,7 +1325,7 @@ pair<bool,triple<int,int,int> > HierarchicalMesh2d::check_inp(const string& name
     }
 
   nq = 0; nl = 0;
-  std::array<int,8> ih;
+ 
   std::array<int,4> iq;
   std::array<int,2> il;
   for(int i=0;i<nt;i++)
@@ -1512,7 +1512,7 @@ void HierarchicalMesh2d::write_gip(const string& bname) const
 
   for (int i=0; i<nnodes(); i++)
     {
-      vertex2d(i).BinWrite(out);
+      ArrayBinWrite(out,vertex2d(i));
     }
 
   int nquads = quads.size();
@@ -1520,7 +1520,7 @@ void HierarchicalMesh2d::write_gip(const string& bname) const
  
   for (int i=0; i<quads.size(); i++)
     {
-      quad(i).BinWrite(out);
+      ArrayBinWrite(out,quad(i));
     }
 
   LineHang.BinWrite(out);
@@ -1530,7 +1530,7 @@ void HierarchicalMesh2d::write_gip(const string& bname) const
     {
       int mat = Blines[i].material();
       out.write(reinterpret_cast<const char*>(&mat),sizeInt);
-      Blines[i].BinWrite(out);
+      ArrayBinWrite(out,Blines[i]);
     }
   int nedges=edges.size();
   out.write(reinterpret_cast<const char*>(&nedges),sizeInt);
@@ -1711,7 +1711,7 @@ void HierarchicalMesh2d::read_gip (const string& bname)
 
   for (int i=0; i<n; i++)
     {
-      vertexs2d[i].BinRead(file);
+      ArrayBinRead(file,vertexs2d[i]);
     }
   if( _i_showoutput ){
     cout << n << " nodes, ";
@@ -1721,7 +1721,7 @@ void HierarchicalMesh2d::read_gip (const string& bname)
   quads.resize(n);
   for (int i=0; i<quads.size(); i++)
     {
-      quads[i].BinRead(file);
+      ArrayBinRead(file,quads[i]);
     }
   if( _i_showoutput){
     cout <<  n << " quads, ";
@@ -1736,7 +1736,7 @@ void HierarchicalMesh2d::read_gip (const string& bname)
   for (int i=0; i<n; i++)
     {
       file.read(reinterpret_cast<char*>(&bol.material()),sizeInt);
-      bol.BinRead(file);
+      ArrayBinRead(file,bol);
       Blines.push_back(bol);
     }
   number = n;

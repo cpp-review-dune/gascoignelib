@@ -52,7 +52,7 @@ protected:
 
 
   double _dt, _theta, _time;
-  fixarray<2,double> _rhs;
+  std::array<double,2> _rhs;
 
   MatrixInterface*& GetMassMatrixPointer() {return _MMP;}
 

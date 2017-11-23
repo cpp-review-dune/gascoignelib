@@ -94,7 +94,7 @@ public:
     void JacobiVector(GlobalVector &y) const;
     void Jacobi(GlobalVector &y) const;
     void vmult_time_Jacobi(GlobalVector& y, const GlobalVector& x, const TimePattern& TP, double s=1.) const;
-    void copy_entries(const MatrixInterface&  A);
+    void copy_entries(const MatrixInterface& A);
 
 };
 }

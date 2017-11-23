@@ -75,6 +75,24 @@ namespace Gascoigne
       s >> *p++;
     return s;
   }
+
+  template <typename T, size_t N>  
+  void ArrayBinWrite(std::ostream &s, const std::array<T,N>& A) 
+  {
+    int sizeT = sizeof(T);
+    s.write(reinterpret_cast<const char*> (A.data()),sizeT*N);
+  }
+
+  template <typename T, size_t N>
+  void ArrayBinRead(std::istream &s,std::array<T,N>& A)
+  {
+    int sizeT = sizeof(T);
+    s.read(reinterpret_cast<char *>(A.data()),sizeT*N);
+  }
+    
+
+  
+  
   
   /*----------------------------------------------*/
 
@@ -260,6 +278,5 @@ namespace Gascoigne
   }
 }
 
-#undef HASHMAP
 
 #endif

@@ -28,6 +28,7 @@
 #include <array>
 #include <string>
 #include <vector>
+#include <iostream>
 
 /*------------------------------------------------------*/
 
@@ -72,6 +73,27 @@ namespace Gascoigne
 
     friend std::ostream &operator<<(std::ostream &s, const Hang &A);
     friend std::istream &operator>>(std::istream &s, Hang &A);
+
+    void BinWrite(std::ostream &s) const
+    {
+      int sizeT = sizeof(int);
+      s.write(reinterpret_cast<const char*> (std::array<int,3>::data()),sizeT*3);
+      
+      // for (int i = 0; i < 3; i++)
+      // 	{
+      // 	  s.write(reinterpret_cast<const char *>(std::array<int,3>::data()), sizeT);
+      // 	}
+    }
+    
+    void BinRead(std::istream &s)
+    {
+      int sizeT = sizeof(int);
+      for (int i = 0; i < 3; i++)
+	{
+	  s.read(reinterpret_cast<char *>(&(operator[](i))), sizeT);
+	}
+    }
+    
   };
 }
 

@@ -710,7 +710,7 @@ void HierarchicalMesh3d::new_hexs(const HangContainer3d& hangset,
 	  hexs[inold].level()  = childlevel;
 	  hexs[inold].father() = father;
 	  hexs[inold].childs().resize(0);
-	  hexs[inold].edges() = -1;
+	  hexs[inold].edges().fill(-1);
 	}
       HexLaO.fill_corner_vertex_in_childs(hexs[father]);
 
@@ -768,7 +768,7 @@ void HierarchicalMesh3d::inner_vertex_newton3d(const IntVector& vnew,
       Hexset.insert(hi);
     }
 
-  std::array<int,4> v;
+
 
   IntSetIt  cp=CellRefList.begin();
 
@@ -1027,7 +1027,7 @@ IntVector HierarchicalMesh3d::Geschwister(const int i) const
 /*------------------------------------------------------*/
 
 
-fixarray<4,int> HierarchicalMesh3d::ChildrenOfFace(int e) const
+std::array<int,4> HierarchicalMesh3d::ChildrenOfFace(int e) const
 {
   int s  = edge(e).slave();
   int is = edge(e).LocalSlaveIndex();
@@ -1361,7 +1361,7 @@ void HierarchicalMesh3d::read_inp(const string& name)
     }
   std::array<int,8> ihv;
   std::array<int,4> iqv;
-  std::array<int,2> ilv;
+
   int ih = 0;
   int iq = 0;
   for(int i=0;i<nt;i++)
@@ -1452,7 +1452,7 @@ void HierarchicalMesh3d::write_gip(const string& bname) const
 
   for (int i=0; i<nnodes(); i++)
     {
-      vertex3d(i).BinWrite(out);
+      ArrayBinWrite(out,vertex3d(i));
     }
 
   int nhexs = hexs.size();
@@ -1460,7 +1460,7 @@ void HierarchicalMesh3d::write_gip(const string& bname) const
  
   for (int i=0; i<hexs.size(); i++)
     {
-      hex(i).BinWrite(out);
+      ArrayBinWrite(out,hex(i));
     }
 
   QuadHang.BinWrite(out);
@@ -1614,7 +1614,7 @@ void HierarchicalMesh3d::read_gip (const string& bname)
 
   for (int i=0; i<n; i++)
     {
-      vertexs3d[i].BinRead(file);
+      ArrayBinRead(file,vertexs3d[i]);
     }
   if( _i_showoutput ){
     cout << n << " nodes, ";

@@ -25,6 +25,7 @@
 #ifndef __EdgeArray_h
 #define __EdgeArray_h
 
+#include <iostream>
 #include <array>
 
 /*-----------------------------------------*/
@@ -40,6 +41,19 @@ namespace Gascoigne
     bool operator==(const std::array<int,N > &e) const;
 
     int sum() const;
+
+    void BinWrite(std::ostream &s) const
+    {
+      int sizeT = sizeof(int);
+      s.write(reinterpret_cast<const char*> (this->data()),sizeT*N);
+    }
+    
+    void BinRead(std::istream &s)
+    {
+      int sizeT = sizeof(int);
+      s.read(reinterpret_cast<char *>(this->data()),sizeT*N);
+    }
+    
   };
 }
 

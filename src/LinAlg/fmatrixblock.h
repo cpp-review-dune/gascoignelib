@@ -78,14 +78,15 @@ public:
   void   submult(const FMatrixBlock<N>& B, const FMatrixBlock<N>& C)
   {
     // this -= B*C
-    nvector<MatrixEntryType>::iterator p(numfixarray<N*N,MatrixEntryType>::begin());
+    auto p = numfixarray<N*N,MatrixEntryType>::begin();
     for (char i=0; i<N; i++)
       {
 	for (char j=0; j<N; j++)
 	  {
-	    nvector<MatrixEntryType>::const_iterator pC(C.begin()+j);
-	    nvector<MatrixEntryType>::const_iterator pB(B.begin()+i*N);
-	    nvector<MatrixEntryType>::const_iterator qB(pB+N);
+	    auto pC=C.begin()+j;
+	    auto pB=B.begin()+i*N;
+	    auto qB=pB+N;
+    
 	    //for (int k=0; k<N; k++)
 	    for (; pB!=qB; pB++)
 	      {
@@ -224,7 +225,8 @@ inline void FMatrixBlock<N>::vmult(viterator p) const
   p -= N;
   a -= N;
 
-  nvector<MatrixEntryType>::const_iterator q(NodeMatrix<N,MatrixEntryType>::begin());
+  //  nvector<MatrixEntryType>::const_iterator q(NodeMatrix<N,MatrixEntryType>::begin());
+  auto q = NodeMatrix<N,MatrixEntryType>::begin();
   for (viterator c=p; c!=p+N; c++)
     {
       *c = 0.;

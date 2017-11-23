@@ -295,7 +295,7 @@ void HNStructureQ23d::CondenseHanging4er
 
       indices[elim] = gf[8];
 
-      std::array<int,8>  x = -1;
+      std::array<int,8>  x; x.fill(-1);
 
       for (int j=0; j<indices.size(); j++)
 	{
@@ -345,7 +345,7 @@ void HNStructureQ23d::CondenseHanging4erLowerHigher
 
       indices[elim] = gf[8];
 
-      std::array<int,8>  x = -1;
+      std::array<int,8>  x; x.fill(-1);
 
       for (int j=0; j<indices.size(); j++)
 	{
@@ -395,7 +395,7 @@ void HNStructureQ23d::CondenseHanging4erHigherLower
 
       indices[elim] = gf[8];
 
-      std::array<int,8>  x = -1;
+      std::array<int,8>  x; x.fill(-1);
 
       for (int j=0; j<indices.size(); j++)
 	{

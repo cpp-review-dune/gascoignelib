@@ -31,7 +31,7 @@
 
 #include "gascoignehash.h"
 
-#define HANGMAP  HASHMAP<EdgeArray<N>,Hang,EdgeHash>
+
 
 
 /*------------------------------------------------------*/
@@ -44,14 +44,15 @@ namespace Gascoigne
 /// for EdgeArrays, i.e. permutated fixarrays
 //
 
-class EdgeHash
-{
- public:
   template<int N>
+  class EdgeHash
+  {
+  public:
     int operator()(const EdgeArray<N>& h) const { return h.sum();}
-};
-
-
+  };
+  
+#define HANGMAP  HASHMAP<EdgeArray<N>,Hang,EdgeHash<N> >
+  
 /*------------------------------------------------------*/
 
 template<int N>

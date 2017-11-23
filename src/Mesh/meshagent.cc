@@ -27,13 +27,7 @@
 #include  "filescanner.h"
 #include  "gascoignemeshconstructor.h"
 #include  "stringutil.h"
-#ifdef __NEWER_THAN_GCC_4_2__
-#include <tr1/unordered_map>
-#define HASHMAP std::tr1::unordered_map
-#else
-#include  <ext/hash_map>
-#define HASHMAP __gnu_cxx::hash_map
-#endif
+#include  "gascoignehash.h"
 
 using namespace std;
 
@@ -161,7 +155,7 @@ void MeshAgent::BuildQ4PatchList(const IntVector &patchl2g)
   for(int i=0; i<patchl2g.size(); i++)
   {
     //Edit patchg2l[patchl2g[i]] = i;
-    patchg2l.insert(make_pair<int,int>(patchl2g[i],i));
+    patchg2l.insert(make_pair(patchl2g[i],i));
   }
   IntVector perm(4);
   perm[0]=0;
@@ -535,7 +529,7 @@ void MeshAgent::refine_cells(IntVector& ref)
 
 /*----------------------------------------*/
 
-inline const set<int> MeshAgent::Cello2n(int i)const
+ const set<int> MeshAgent::Cello2n(int i)const
 {
     map<int,set<int> >::const_iterator p = _co2n.find(i);
     if(p == _co2n.end())
@@ -550,7 +544,7 @@ inline const set<int> MeshAgent::Cello2n(int i)const
 
 /*----------------------------------------*/
 
-inline const int MeshAgent::Cello2nFather(int i)const
+const int MeshAgent::Cello2nFather(int i)const
 {
     assert(_co2n.find(i)==_co2n.end());
     //Umrechnung alte HM nummer in neue GM nummer

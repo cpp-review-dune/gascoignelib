@@ -28,8 +28,10 @@
 
 #include  "filescanner.h"
 #include  "giota.h"
-#include  "grandom.h"
 #include  "stringutil.h"
+
+#include <experimental/algorithm>
+
 
 using namespace std;
 
@@ -192,7 +194,9 @@ void HierarchicalMesh::random_refine(double p, int c)
 
   iota(v.begin(),v.end(),0);
 
-  random_sample(v.begin(),v.end(),cell_ref.begin(),cell_ref.end());
+  std::cerr << " Random_sample noch nicht implementiert!!!" << std::endl;
+  abort();
+  //random_sample(v.begin(),v.end(),cell_ref.begin(),cell_ref.end());
 
   if (c)
     {
@@ -216,7 +220,10 @@ void HierarchicalMesh::random_patch_coarsen(double p, int r)
   IntVector cell_coarsen(nc), cell_refine;
   IntVector v(ncells());
   iota(v.begin(),v.end(),0);
-  random_sample(v.begin(),v.end(),cell_coarsen.begin(),cell_coarsen.end());
+
+  std::cerr << " Random_sample noch nicht implementiert!!!" << std::endl;
+  abort();
+  //  random_sample(v.begin(),v.end(),cell_coarsen.begin(),cell_coarsen.end());
 
   if (r)
     {
@@ -240,7 +247,10 @@ void HierarchicalMesh::random_patch_refine(double p, int c)
   IntVector cell_ref(nc), cell_coarse;
   IntVector v(ncells());
   iota(v.begin(),v.end(),0);
-  random_sample(v.begin(),v.end(),cell_ref.begin(),cell_ref.end());
+
+  std::cerr << " Random_sample noch nicht implementiert!!!" << std::endl;
+  abort();
+  //  random_sample(v.begin(),v.end(),cell_ref.begin(),cell_ref.end());
 
   if (c)
     {

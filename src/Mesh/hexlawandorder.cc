@@ -397,9 +397,9 @@ void HexLawAndOrder::local_face_index(FaceVector& v, int face) const
 void HexLawAndOrder::global_face_unsorted(FaceVector& faceglob, const Hex& h,
 					  int face) const
 {
-  FaceVector faceloc;
+  FaceVector faceloc; 
   local_face_index(faceloc,face);
-  h.vertex_loc2glob(faceglob,faceloc);
+  h.vertex_loc2glob<4>(faceglob,faceloc);
 }
 
 /*----------------------------------------------------------------------*/
@@ -409,7 +409,7 @@ void HexLawAndOrder::global_edge_unsorted(EdgeVector& edgeglob, const Hex& h,
 {
   EdgeVector edgeloc;
   local_edge_index(edgeloc,edge);
-  h.vertex_loc2glob(edgeglob,edgeloc);
+  h.vertex_loc2glob<2>(edgeglob,edgeloc);
 }
 
 /*----------------------------------------------------------------------*/
@@ -616,7 +616,7 @@ void HexLawAndOrder::globalfacechildren_of_father(vector<FaceVector>& faces,
 
 /*---------------------------------------------------*/
 
-fixarray<9,int> HexLawAndOrder::PatchVerticesOfFace(int h, int face) const
+  std::array<int,9> HexLawAndOrder::PatchVerticesOfFace(int h, int face) const
 {
   std::array<int,4> f;
   GetFace(f,h,face);
@@ -641,7 +641,7 @@ fixarray<9,int> HexLawAndOrder::PatchVerticesOfFace(int h, int face) const
 
 /*---------------------------------------------------*/
 
-fixarray<9,int> HexLawAndOrder::GiveOrdering(const std::array<int,9>& F, const Hex& h) const
+  std::array<int,9> HexLawAndOrder::GiveOrdering(const std::array<int,9>& F, const Hex& h) const
 {
   int found = -1;
   std::array<int,4> kk; kk[0] = 0; kk[1] = 2; kk[2] = 6; kk[3] = 8;

@@ -221,8 +221,8 @@ void FMatrixBlock<N>::copy_transpose(const FMatrixBlock<N>& A)
 template<int N>
 void FMatrixBlock<N>::operator *= (double s)
 {
-  nvector<MatrixEntryType>::iterator       p(NodeMatrix<N,MatrixEntryType>::begin());
-  nvector<MatrixEntryType>::const_iterator q(p+N*N);
+  auto p=NodeMatrix<N,MatrixEntryType>::begin();
+  auto q=p+N*N;
  
   for ( ; p!=q; p++)
     {

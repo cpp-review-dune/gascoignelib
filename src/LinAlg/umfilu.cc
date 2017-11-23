@@ -183,7 +183,7 @@ void UmfIlu::ReInit(const SparseStructureInterface* SS)
 
 /*-------------------------------------------------*/
 
-void UmfIlu::copy_entries(const MatrixInterface&  A)
+void UmfIlu::copy_entries(const MatrixInterface& A)
 {
 }
 

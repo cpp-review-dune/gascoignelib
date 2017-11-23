@@ -66,7 +66,7 @@ class VelocityRhs : public Gascoigne::DomainRightHandSide
     int GetNcomp()        const { return 2;}
     void SetFemData(Gascoigne::FemData& d) const 
     { 
-      std::map<const std::string,Gascoigne::FemFunction>::const_iterator it = d.find("pressure");
+      auto it = d.find("pressure");
       pressure = &(it->second)[0];
     }
     double operator()(int c, const Gascoigne::Vertex2d& v)const 
@@ -108,7 +108,7 @@ class PressureRhs : public Gascoigne::DomainRightHandSide
     int GetNcomp()        const { return 1;}
     void SetFemData(Gascoigne::FemData& d) const 
     { 
-      std::map<const std::string,Gascoigne::FemFunction>::const_iterator it = d.find("velocity");
+      auto it = d.find("velocity");
       v = &(it->second)[0];
       u = &(it->second)[1];
     }

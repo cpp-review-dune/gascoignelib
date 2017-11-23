@@ -43,7 +43,10 @@ class CoarseHierarchicalMesh2d : public HierarchicalMesh2d
   public:
   
   CoarseHierarchicalMesh2d(const HierarchicalMesh2d&);
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Woverloaded-virtual"
   void BasicInit(int pdepth);
+#pragma clang diagnostic pop
   void GetRefinedList(IntVector&);
   void GetCoarsedList(IntVector&);
   void refine(const IntVector& cell_ref, const IntVector& cell_coarse);

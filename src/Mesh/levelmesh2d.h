@@ -38,8 +38,8 @@ class LevelMesh2d : public Index
 {
  protected:
 
-  typedef std::map<int,fixarray<3,int> >    QuadraticHNStructure3;
-  typedef std::map<int,fixarray<6,int> >    QuarticHNStructure5;
+  typedef std::map<int,std::array<int,3> >    QuadraticHNStructure3;
+  typedef std::map<int,std::array<int,6> >    QuarticHNStructure5;
 
   const HierarchicalMesh2d*  HMP;
 

@@ -23,6 +23,7 @@
 
 
 #include "hang.h"
+#include "stlio.h"
 
 using namespace std;
 
@@ -30,40 +31,44 @@ using namespace std;
 
 namespace Gascoigne
 {
-Hang::Hang() : std::array<int,3>(-1)
-{}
+  Hang::Hang()
+  {
+    std::array<int,3>::fill(-1);
+  }
 
-/*********************************************************************/
+  /*********************************************************************/
 
-Hang::Hang(const Hang& h) 
-  : std::array<int,3>(h) {}
+  Hang::Hang(const Hang &h)
+      : std::array<int, 3>(h)
+  {
+  }
 
-/*********************************************************************/
+  /*********************************************************************/
 
-Hang::Hang(int nh, int nr, int nc)
-{
-  hanging() = nh;
-  rneighbour() = nr;
-  cneighbour() = nc;
-}
-  
-/*********************************************************************/
+  Hang::Hang(int nh, int nr, int nc)
+  {
+    hanging() = nh;
+    rneighbour() = nr;
+    cneighbour() = nc;
+  }
 
-ostream& operator<<(ostream &s, const Hang& A)
-{
-  s << A.hanging()    << " : ";
-  s << A.rneighbour() << " ";
-  s << A.cneighbour() << " ";
-  return s;
-}
+  /*********************************************************************/
 
-/*********************************************************************/
+  ostream &operator<<(ostream &s, const Hang &A)
+  {
+    s << A.hanging() << " : ";
+    s << A.rneighbour() << " ";
+    s << A.cneighbour() << " ";
+    return s;
+  }
 
-istream& operator>>(istream &s, Hang& A)
-{
-  char symbol;
-  s >> A.hanging() >> symbol;
-  s >> A.rneighbour() >> A.cneighbour();
-  return s;
-}
+  /*********************************************************************/
+
+  istream &operator>>(istream &s, Hang &A)
+  {
+    char symbol;
+    s >> A.hanging() >> symbol;
+    s >> A.rneighbour() >> A.cneighbour();
+    return s;
+  }
 }

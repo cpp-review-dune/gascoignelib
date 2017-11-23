@@ -17,6 +17,14 @@ OPTION(WITH_THREADS "Build with support for openmp" OFF)
 
 OPTION(WITH_RSTStopWatch "Use RSTStopWatch" OFF)
 
+SET(EXAMPLE_OUTPUT_PATH "${CMAKE_BINARY_DIR}/bin"
+  CACHE PATH "output path of examples")
+
+
+
+
+
+
 #
 # The name of the library:
 #

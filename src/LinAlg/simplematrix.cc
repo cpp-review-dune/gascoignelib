@@ -109,7 +109,7 @@ void SimpleMatrix::vmult_time(GlobalVector& y, const GlobalVector& x, const Time
 
 /* ----------------------------------------- */
 
-void SimpleMatrix::vmult(GlovalVector& y, const GlobalVector& x, double d) const
+void SimpleMatrix::vmult(GlobalVector& y, const GlobalVector& x, double d) const
 {
   int n = ST.n();
   assert(n==y.size());

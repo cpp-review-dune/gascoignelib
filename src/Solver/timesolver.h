@@ -22,73 +22,105 @@
 **/
 
 
-#ifndef  __TimeSolver_h
-#define  __TimeSolver_h
+#ifndef __TimeSolver_h
+#define __TimeSolver_h
 
-#include  "stdsolver.h"
-#include  "simplematrix.h"
-#include  "cginfo.h"
+#include "cginfo.h"
+#include "simplematrix.h"
+#include "stdsolver.h"
 
 /*-------------------------------------------------------------*/
 
 namespace Gascoigne
 {
 
-//////////////////////////////////////////////
-///
-///@brief
-/// Default nonlinear Solver for time-dependent Equations
+  //////////////////////////////////////////////
+  ///
+  ///@brief
+  /// Default nonlinear Solver for time-dependent Equations
 
-///
-///
-//////////////////////////////////////////////
+  ///
+  ///
+  //////////////////////////////////////////////
 
 
-class TimeSolver : public StdSolver
-{
-private:
-  
-  MatrixInterface*  _MMP;
+  class TimeSolver : public StdSolver
+  {
+  private:
+    MatrixInterface *_MMP;
 
-protected:
+  protected:
+    double theta, dt, time;
+    TimePattern _TP;
+    MatrixInterface *&GetMassMatrixPointer()
+    {
+      return _MMP;
+    }
 
-  double            theta, dt, time;
-  TimePattern       _TP;
-  MatrixInterface*& GetMassMatrixPointer() {return _MMP;}
+  public:
+    TimeSolver()
+        : StdSolver()
+        , _MMP(NULL)
+        , theta(1.)
+        , dt(0.)
+        , time(0.)
+    {
+    }
+    ~TimeSolver()
+    {
+      if (_MMP)
+      {
+        delete _MMP;
+        _MMP = NULL;
+      }
+    };
 
-public:
+    std::string GetName() const
+    {
+      return "TimeSolver";
+    }
 
-  TimeSolver() : StdSolver(), _MMP(NULL), theta(1.), dt(0.), time(0.) {}
-  ~TimeSolver() { if (_MMP) { delete _MMP; _MMP=NULL;} };
+    void SetTimeData(double _dt, double _theta, double _time);
 
-  std::string GetName() const {  return "TimeSolver";}
+    const MatrixInterface *GetMassMatrix() const
+    {
+      return _MMP;
+    }
+    MatrixInterface *GetMassMatrix()
+    {
+      return _MMP;
+    }
 
-  void SetTimeData(double _dt, double _theta, double _time);
+    void RegisterMatrix();
+    void SetProblem(const ProblemDescriptorInterface &PDX);
 
-  const MatrixInterface* GetMassMatrix() const {return _MMP;}
-        MatrixInterface* GetMassMatrix()       {return _MMP;}
+    void ReInitTimePattern(const ProblemDescriptorInterface &PDX);
+    void ReInitMatrix();
 
-  void RegisterMatrix();
-  void SetProblem(const ProblemDescriptorInterface& PDX);
-
-  void ReInitTimePattern(const ProblemDescriptorInterface& PDX);
-  void ReInitMatrix();
-
-  MatrixInterface* NewMassMatrix(int ncomp, const std::string& matrixtype)
+    MatrixInterface *NewMassMatrix(int ncomp, const std::string &matrixtype)
     {
       return new SimpleMatrix;
     }
 
-  void AssembleMatrix(const VectorInterface& gu, double d);
-  void Form(VectorInterface& gy, const VectorInterface& gx, double d) const;
-  void MassMatrixVector(VectorInterface& gf, const VectorInterface& gu, double d) const;
-  void InverseMassMatrix(VectorInterface& u, const VectorInterface& f, CGInfo& info);
-  void precondition(VectorInterface& u, const VectorInterface& f);
-  void cgvmult(VectorInterface& y, const VectorInterface& x, double d) const;
-  void L2Projection(VectorInterface& Gu, VectorInterface& Gf);
-};
+    void AssembleMatrix(const VectorInterface &gu, double d);
+    void Form(VectorInterface &gy, const VectorInterface &gx, double d) const;
+    void MassMatrixVector(VectorInterface &gf,
+                          const VectorInterface &gu,
+                          double d) const;
 
-/*-------------------------------------------------------------*/
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Woverloaded-virtual"
+    void InverseMassMatrix(VectorInterface &u,
+                           const VectorInterface &f,
+                           CGInfo &info);
+#pragma clang diagnostic pop
+
+    void precondition(VectorInterface &u, const VectorInterface &f);
+    void cgvmult(VectorInterface &y, const VectorInterface &x, double d) const;
+    void L2Projection(VectorInterface &Gu, VectorInterface &Gf);
+  };
+
+  /*-------------------------------------------------------------*/
 }
 
 #endif

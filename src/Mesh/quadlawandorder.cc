@@ -193,7 +193,7 @@ void QuadLawAndOrder::global_edge_unsorted(std::array<int,2>& lineglob, const Qu
 {
   std::array<int,2> lineloc;
   local_edge_index(lineloc,edge);
-  q.vertex_loc2glob(lineglob,lineloc);
+  q.vertex_loc2glob<2>(lineglob,lineloc);
 }
 
 /*----------------------------------------------------------------------*/
@@ -235,11 +235,11 @@ int QuadLawAndOrder::local_edge_index(int q, const EdgeVector& edge) const
 /*----------------------------------------------------------------------*/
 
 QuadLawAndOrder::QuadLawAndOrder(vector<Quad>& q) : 
-  quads(q),
-  childs_edge(EdgeVector(2)), 
-  vice(EdgeVector(2)), 
-  child_point_cell(4), 
-  child_point_vertex(4)
+  quads(q)
+  //  childs_edge(EdgeVector(2)), 
+  //  vice(EdgeVector(2)), 
+  //  child_point_cell(4), 
+  //  child_point_vertex(4)
 {
   vice[0][0] = 1; vice[0][1] = 0;
   vice[1][0] = 2; vice[1][1] = 1;

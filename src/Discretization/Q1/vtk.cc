@@ -24,6 +24,7 @@
 
 #include  "visualization.h"
 #include  "errormacros.h"
+#include  "stlio.h"
 
 using namespace std;
 

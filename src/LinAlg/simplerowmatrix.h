@@ -73,7 +73,10 @@ public:
   void ReInit(int n, int nentries);
   void ReInit(const SparseStructureInterface* S);
   void entry(niiterator start, niiterator stop, const EntryMatrix& M, double s=1.);
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Woverloaded-virtual"
   void vmult(nvector<double>& y, const nvector<double>& x, double d=1.) const;
+#pragma clang diagnostic pop
   
 };
 }
