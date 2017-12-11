@@ -15,18 +15,7 @@
 #include "q2lps3d.h"
 
 #include  "gascoignemesh2d.h"
-
-#ifdef __NEWER_THAN_GCC_4_2__
-#include <tr1/unordered_map>
-#include <tr1/unordered_set>
-#define HASHMAP   std::tr1::unordered_map
-#define HASHSET   std::tr1::unordered_set
-#else
-#include  <ext/hash_map>
-#include  <ext/hash_set>
-#define HASHMAP  __gnu_cxx::hash_map
-#define HASHSET  __gnu_cxx::hash_set
-#endif
+#include "gascoignehash.h"
 
 extern bool __ADJOINT;
 

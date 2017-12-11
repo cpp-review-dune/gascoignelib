@@ -7,3 +7,13 @@ ADD_EXECUTABLE("fast3d_neu"
 main3d.cc  solvers.cc finehierarchicalmesh3d.cc boundaryfsi.cc
 )
 
+SET_TARGET_PROPERTIES(
+  fast3d_neu
+  PROPERTIES
+  COMPILE_DEFINITIONS "${GASCOIGNE_DEFINITIONS}"
+  )
+SET_TARGET_PROPERTIES(
+  fast2d_neu
+  PROPERTIES
+  COMPILE_DEFINITIONS "${GASCOIGNE_DEFINITIONS}"
+  )

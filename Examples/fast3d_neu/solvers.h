@@ -4,16 +4,16 @@
 #define __solvers_H
 /*----------------------------   solvers.h     ---------------------------*/
 
-
+#include "sparse_umf.h"
 #include "stdmultilevelsolver.h"
 #include "stdsolver.h"
 #include "stdsolver.h"
 #include "alebasediscretization.h"
-#include "umfilu.h"
-#include "mumpsilu.h"
-#include "sparseblockmatrix.h"
+//#include "umfilu.h"
+//#include "mumpsilu.h"
 #include "fmatrixblock.h"
 #include "lpsequation.h"
+
 
 using namespace std;
 
@@ -28,9 +28,12 @@ namespace Gascoigne
       DiscretizationInterface* NewDiscretization(int dimension, const std::string& discname);
 
       IluInterface *__IF,*__IS;
-    
+
+      SparseUmf<FMatrixBlock<DIM+1> >         _LAP_M;    
       SparseBlockMatrix<FMatrixBlock<DIM+1> > _LAP_A;
-      MumpsIlu<DIM+1>                         _LAP_M;
+
+      
+      //MumpsIlu<DIM+1>                         _LAP_M;
 
     public:
 

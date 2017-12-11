@@ -22,70 +22,95 @@
 **/
 
 
-#ifndef __UmfIlu_h
-#define __UmfIlu_h
+#ifndef  __UmfIlu_h
+#define  __UmfIlu_h
 
 #ifdef __WITH_UMFPACK__
 
-#include "iluinterface.h"
-#include "simplematrix.h"
+#include  "iluinterface.h"
+#include  "simplematrix.h"
 
 
 namespace Gascoigne
 {
 
-  /////////////////////////////////////////////
-  ///
-  ///@brief
-  ///  ... comments UmfIlu
-  ///
-  ///
-  /////////////////////////////////////////////
+/////////////////////////////////////////////
+///
+///@brief
+///  ... comments UmfIlu
+///
+///
+/////////////////////////////////////////////
 
-  class UmfIlu : virtual public IluInterface, public SimpleMatrix
-  {
-  private:
-    const SimpleMatrix *AP;
+class UmfIlu : virtual public IluInterface, public SimpleMatrix
+{
+private:
 
-  protected:
-    // fuer umfpack
-    double *Control;
-    double *Info;
-    void *Symbolic, *Numeric;
+  const SimpleMatrix* AP;
 
-  public:
+protected:
+
+  // fuer umfpack
+  double *Control;
+  double *Info;
+  void *Symbolic, *Numeric ;
+
+public:
+
+  //
+  ///  Constructor 
     //
-    ///  Constructor
-    //
-    UmfIlu(const MatrixInterface *A);
+    UmfIlu(const MatrixInterface* A);
     ~UmfIlu();
-
-    std::string GetName() const
-    {
-      return "UmfIlu";
-    }
-
-    int n() const
-    {
-      return GetStencil()->n();
-    };
-    void ReInit(const SparseStructureInterface *SS);
-
-    void copy_entries(const MatrixInterface &A);
-    void copy_entries(const MatrixInterface *A) 
-    {
-      std::cerr << "double definition of copy_entries, pointer and reference!" << std::endl;
-      abort();
-    }
     
-      
+    std::string GetName() const { return "UmfIlu"; }
     
+    int   n()          const { return GetStencil()->n();};
+    void ReInit(const SparseStructureInterface* SS);
 
-    void ConstructStructure(const IntVector &perm, const MatrixInterface &A);
+    void copy_entries(const MatrixInterface&  A);
+    void ConstructStructure(const IntVector& perm, const MatrixInterface& A);
     void Factorize();
-    void Solve(DoubleVector &x, const DoubleVector &b);
-    void SolveTranspose(DoubleVector &x, const DoubleVector &b);
-  };
+    void Solve(DoubleVector& x, const DoubleVector& b);
+    void SolveTranspose(DoubleVector& x, const DoubleVector& b);
+
+    
+};
+
+
+
+class UmfIluLong : virtual public IluInterface, public SimpleMatrix
+{
+private:
+
+  const SimpleMatrix* AP;
+
+protected:
+
+  // fuer umfpack
+  double *Control;
+  double *Info;
+  void *Symbolic, *Numeric ;
+
+public:
+
+  //
+  ///  Constructor 
+    //
+    UmfIluLong(const MatrixInterface* A);
+    ~UmfIluLong();
+    
+    std::string GetName() const { return "UmfIlu"; }
+    
+    int   n()          const { return GetStencil()->n();};
+    void ReInit(const SparseStructureInterface* SS);
+
+    void copy_entries(const MatrixInterface&  A);
+    void ConstructStructure(const IntVector& perm, const MatrixInterface& A);
+    void Factorize();
+    void Solve(DoubleVector& x, const DoubleVector& b);
+    void SolveTranspose(DoubleVector& x, const DoubleVector& b);
+};
 }
 
 #endif

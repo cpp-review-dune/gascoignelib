@@ -10,8 +10,9 @@
 #include  "boundaryequation.h"
 #include  "paramfile.h"
 #include  "lpsequation.h"
-#include  "../eigen3/Eigen/Dense"
+#include  "eigen3/Eigen/Dense"
 #include  "chi.h"
+#include <array>
 
 /*-----------------------------------------*/
 
@@ -41,9 +42,9 @@ namespace Gascoigne
       mutable double divergence;
       mutable MATRIX CONV_dV1, PRESSURE_P;
       //      mutable VECTOR DOMAIN_U2;
-      mutable fixarray<DIM, double> DOMAIN_V;
-      mutable fixarray<DIM, double> Jj, DIVERGENCE_V;
-      mutable fixarray<DIM, double> CONV_dV2;
+      mutable std::array<double,DIM> DOMAIN_V;
+      mutable std::array<double,DIM> Jj, DIVERGENCE_V;
+      mutable std::array<double,DIM> CONV_dV2;
       mutable MATRIX Fij[DIM];
       //      mutable MATRIX TENSOR_dU[DIM];
       mutable MATRIX TENSOR_dV[DIM];
