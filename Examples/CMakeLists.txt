@@ -7,6 +7,7 @@ ENDIF()
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GASCOIGNE_CXX_FLAGS}")
 
 SUBDIRS(
+	 fast3d_neu
    Example1
    Example2
    Example3
