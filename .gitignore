@@ -12,6 +12,7 @@ cmake*
 
 # ignore all Results in Examples directory
 /Examples*/Results*
+/Seaice*/Results*
 
 # ./doc directory
 /doc/gascoigne.tag
