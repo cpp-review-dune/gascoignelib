@@ -68,6 +68,7 @@ namespace Gascoigne
         abort();
       } 
 
+      virtual void point_cell(int material) const {}
       virtual void point(double h, const FemFunction& U, const Vertex2d& v) const {}
       virtual void point(double h, const FemFunction& U, const Vertex3d& v) const {}
      

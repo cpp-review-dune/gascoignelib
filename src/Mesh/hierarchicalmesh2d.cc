@@ -628,7 +628,8 @@ void HierarchicalMesh2d::new_quads(const HangContainer2d& hangset,
 
       vector<int>&  qc = quads[father].childs();
       qc.resize(4);
-
+      int material = quads[father].material();
+      
       int childlevel = quads[father].level()+1;
       for(int ic=0;ic<4;ic++)
 	{
@@ -636,6 +637,7 @@ void HierarchicalMesh2d::new_quads(const HangContainer2d& hangset,
 	  qc[ic] = inold;
 	  quads[inold].level()  = childlevel;
 	  quads[inold].father() = father;
+	  quads[inold].material() = material;
 	  quads[inold].childs().resize(0);
 	  quads[inold].edges().fill(-1);
 	}
@@ -1423,7 +1425,9 @@ void HierarchicalMesh2d::read_inp(const string& name)
 	{
 	  file >> iqv;
 	  if(first_one) for(int iii=0;iii<4;iii++) iqv[iii]--;
-	  quads[iq++].vertex() = iqv;
+	  quads[iq].vertex()   = iqv;
+	  quads[iq].material() = atoi(matstring.c_str());
+	  iq++;
 	}
       else if(name=="line")
 	{

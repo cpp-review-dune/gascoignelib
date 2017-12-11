@@ -160,6 +160,7 @@ void DwrFemQ1Q23d::Form(GlobalVector& f, const GlobalVector& u, const Equation& 
       LowOrderFem .ReInit(TL);
 
       GlobalToLocal(__U,u,iq);
+      EQ.point_cell(GetMesh()->material_patch(iq));
       I->Form(EQ,__F,HighOrderFem,LowOrderFem,__U,__QN,__QC);
       PatchDiscretization::LocalToGlobal(f,__F,iq,d);
     }
@@ -188,6 +189,7 @@ void DwrFemQ1Q23d::AdjointForm(GlobalVector& f, const GlobalVector& u, const Equ
       LowOrderFem .ReInit(TL);
 
       GlobalToLocal(__U,u,iq);
+      EQ.point_cell(GetMesh()->material_patch(iq));
       I->AdjointForm(EQ,__F,HighOrderFem,LowOrderFem,__U,__QN,__QC);
       PatchDiscretization::LocalToGlobal(f,__F,iq,d);
     }
@@ -255,6 +257,7 @@ void DwrFemQ1Q23d::Rhs(GlobalVector& f, const DomainRightHandSide& RHS, double s
       LowOrderFem .ReInit(TL);
 
       GlobalToLocalData(iq);
+      RHS.point_cell(GetMesh()->material_patch(iq));
       I->Rhs(RHS,__F,HighOrderFem,LowOrderFem,__QN,__QC);
       PatchDiscretization::LocalToGlobal(f,__F,iq,s);
     }
@@ -418,6 +421,7 @@ void DwrFemQ2Q13d::Form(GlobalVector& f, const GlobalVector& u, const Equation& 
       LowOrderFem .ReInit(TL);
 
       GlobalToLocal(__U,u,iq);
+      EQ.point_cell(GetMesh()->material_patch(iq));
       I->Form(EQ,__F,LowOrderFem,HighOrderFem,__U,__QN,__QC);
       PatchDiscretization::LocalToGlobal(f,__F,iq,d);
     }
@@ -446,6 +450,7 @@ void DwrFemQ2Q13d::AdjointForm(GlobalVector& f, const GlobalVector& u, const Equ
       LowOrderFem .ReInit(TL);
 
       GlobalToLocal(__U,u,iq);
+      EQ.point_cell(GetMesh()->material_patch(iq));
       I->AdjointForm(EQ,__F,LowOrderFem,HighOrderFem,__U,__QN,__QC);
       PatchDiscretization::LocalToGlobal(f,__F,iq,d);
     }
@@ -529,6 +534,7 @@ void DwrFemQ2Q13d::Rhs(GlobalVector& f, const DomainRightHandSide& RHS, double s
       LowOrderFem .ReInit(TL);
 
       GlobalToLocalData(iq);
+      RHS.point_cell(GetMesh()->material_patch(iq));
       I->Rhs(RHS,__F,LowOrderFem,HighOrderFem,__QN,__QC);
       PatchDiscretization::LocalToGlobal(f,__F,iq,s);
     }

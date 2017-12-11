@@ -186,7 +186,9 @@ void GascoigneMeshConstructor::Construct2d
 
   IntVector& nc = NM->GetCellVector();
   vector<Vertex2d>& nx = NM->GetVertexVector();
-
+  IntVector&  mat = NM->GetMaterialVector();
+  IntVector&  matpatch = NM->GetMaterialPatchVector();
+  
   // zellen
 
   nc.reservesize(4*LM->ncells());
@@ -199,9 +201,11 @@ void GascoigneMeshConstructor::Construct2d
   
   nx.reserve(LM->nnodes());
   nx.resize(LM->nnodes());
+  mat.reservesize(LM->ncells());
   for(int i=0;i<LM->nnodes();i++)
     {
       nx[i] = LM->vertex2d(i);
+      mat[i] = LM->quad(i).material();
     }
 
   // PatchStructur
@@ -211,7 +215,17 @@ void GascoigneMeshConstructor::Construct2d
   PIH.GetDim() = 2;
   PIH.GetHasPatch() = 1;
   PatchToCell2d(PIH,LM);
-
+  
+  // Material Patch 
+  const nvector<IntVector>& p2c = PIH.GetAllPatch2Cell();
+  assert(p2c.size()==NM->npatches());
+  matpatch.resize(p2c.size());
+  for (int ip=0;ip<NM->npatches();++ip)
+    {
+      assert(p2c[ip].size()>0);
+      assert(p2c[ip][0]<mat.size());
+      matpatch[ip] = mat[p2c[ip][0]];
+    }
   // BoundaryIndices
 
   LM->InitBoundaryHandler(NNM->GetBoundaryIndexHandler(),PIH);
@@ -233,13 +247,17 @@ void GascoigneMeshConstructor::Construct3d
 
   IntVector& nc = NM->GetCellVector();
   vector<Vertex3d>& nx = NM->GetVertexVector();
-
+  IntVector&  mat = NM->GetMaterialVector();
+  IntVector&  matpatch = NM->GetMaterialPatchVector();
+  
   // zellen
 
   nc.reservesize(8*LM->ncells());
+  mat.reservesize(LM->ncells());
   for(int i=0;i<LM->ncells();i++)
     {
       for(int ii=0;ii<8;ii++) nc[8*i+ii] = LM->vertex_of_cell(i,ii);
+      mat[i] = LM->hex(i).material();
     }
 
   // Koordinaten
@@ -261,7 +279,18 @@ void GascoigneMeshConstructor::Construct3d
   PIH.GetHasPatch() = 1;
 
   PatchToCell3d(PIH,LM);
-
+  
+  // Material Patch 
+  const nvector<IntVector>& p2c = PIH.GetAllPatch2Cell();
+  assert(p2c.size()==NM->npatches());
+  matpatch.resize(p2c.size());
+  cout << matpatch.size() << endl;
+  for (int ip=0;ip<NM->npatches();++ip)
+    {
+      assert(p2c[ip].size()>0);
+      assert(p2c[ip][0]<mat.size());
+      matpatch[ip] = mat[p2c[ip][0]];
+    }
   // BoundaryIndices
 
   LM->InitBoundaryHandler(NNM->GetBoundaryIndexHandler(),PIH);

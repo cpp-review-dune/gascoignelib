@@ -36,17 +36,15 @@ class BoundaryCell : public Cell<N,NEDGES>
 {
  protected:
 
-  int mat, eiq, oq;
+  int  eiq, oq;
 
  public:
 
-  BoundaryCell(int l = 0, int f = -1) : Cell<N,NEDGES>(l,f), mat(0), eiq(0), oq(0) {}
-  BoundaryCell(const BoundaryCell& c) : Cell<N,NEDGES>(c)  , mat(c.material()), 
+  BoundaryCell(int l = 0, int f = -1) : Cell<N,NEDGES>(l,f), eiq(0), oq(0) {}
+  BoundaryCell(const BoundaryCell& c) : Cell<N,NEDGES>(c)  , 
     eiq(c.edge_in_quad()), oq(c.of_quad()) {}
 
   int  nnchild ()     const { return N; }
-  int  material()     const { return mat; }
-  int& material()           { return mat; }
   int  edge_in_quad() const { return eiq; }
   int& edge_in_quad()       { return eiq; }
   int  of_quad()      const { return oq; }
@@ -55,7 +53,7 @@ class BoundaryCell : public Cell<N,NEDGES>
   BoundaryCell<N>& operator=(const BoundaryCell<N>& c)
     {
       Cell<N,NEDGES>::operator=(c);
-      mat = c.material();
+      Cell<N,NEDGES>::mat = c.material();
       eiq = c.edge_in_quad();
       oq  = c.of_quad();
       return *this;

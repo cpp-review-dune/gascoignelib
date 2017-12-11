@@ -39,7 +39,7 @@ class GascoigneMesh : public PatchMesh
 {
 protected:
 
-  IntVector              nc, vo2n;
+  IntVector              nc, vo2n, mat, matpatch;
   PatchIndexHandler      PatchHandler;
   BoundaryIndexHandler   BoundaryHandler;
   HangingIndexHandler    HangingHandler;
@@ -55,12 +55,16 @@ public:
   }
 
   const IntVector&               GetCellVector()          const  { return nc;}
+  const IntVector&               GetMaterialVector()          const  { return mat;}
+  const IntVector&               GetMaterialPatchVector()          const  { return matpatch;}
   const PatchIndexHandler&    GetPatchIndexHandler()   const  { return PatchHandler;}
   const BoundaryIndexHandler&    GetBoundaryIndexHandler()const  { return BoundaryHandler;}
   const HangingIndexHandler&  GetHangingIndexHandler() const  { return HangingHandler;}
   const IntVector*               Vertexo2n()              const  { return &vo2n;}
 
   IntVector&               GetCellVector()           { return nc;}
+  IntVector&               GetMaterialVector()           { return mat;}
+  IntVector&               GetMaterialPatchVector()           {return matpatch;}
   PatchIndexHandler&    GetPatchIndexHandler()    { return PatchHandler;}
   BoundaryIndexHandler&    GetBoundaryIndexHandler() { return BoundaryHandler;}
   HangingIndexHandler&  GetHangingIndexHandler()  { return HangingHandler;}
@@ -73,6 +77,8 @@ public:
   int  npatches()          const { return PatchHandler.npatches(); }
   int  nq4patches()        const { return PatchHandler.nq4patches(); }
 
+  const int material    (int i)     const { assert(i<mat.size()); return mat[i]; }
+  const int material_patch (int i)     const { assert(i<matpatch.size()); return matpatch[i]; }
   const IntVector* IndicesOfPatch    (int i)     const { return &(PatchHandler.IndicesOfPatch(i));}
   const IntVector* IndicesOfQ4Patch  (int i)     const { return &(PatchHandler.IndicesOfQ4Patch(i));}
   const IntVector* VertexOnBoundary(int color) const { return &(BoundaryHandler.Verteces(color)); }
@@ -82,6 +88,8 @@ public:
   const IntVector* LocalPatchOnBoundary (int color) const { return &(BoundaryHandler.LocalPatchind(color)); }
   
   std::set<int> GetColors()             const { return BoundaryHandler.GetColors();}
+  int& material    (int i)      { return mat[i]; }
+  int& material_patch    (int i)      { return matpatch[i]; }
   IntVector  Q2IndicesOfQ4Patch(int i)  const { return PatchHandler.Q2IndicesOfQ4Patch(i);}
   IntVector  CoarseIndices(int iq)   const { return PatchHandler.CoarseIndices(iq);}
   IntVector  CoarseIndicesQ4(int iq) const { return PatchHandler.CoarseIndicesQ4(iq);}

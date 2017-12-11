@@ -94,6 +94,7 @@ void PatchDiscretization::Form(GlobalVector& f, const GlobalVector& u, const Equ
       GetFem()->ReInit(T);
 
       GlobalToLocal(__U,u,iq);
+      EQ.point_cell(GetMesh()->material_patch(iq));
       //EQ.cell(GetPatchMesh(),iq,__U,__QN);
       GetIntegrator()->Form(EQ,__F,*GetFem(),__U,__QN,__QC);
       LocalToGlobal(f,__F,iq,d);
@@ -115,6 +116,7 @@ void PatchDiscretization::AdjointForm(GlobalVector& f, const GlobalVector& u, co
       GetFem()->ReInit(T);
 
       GlobalToLocal(__U,u,iq);
+      EQ.point_cell(GetMesh()->material_patch(iq));
       //EQ.cell(GetPatchMesh(),iq,__U,__QN);
       GetIntegrator()->AdjointForm(EQ,__F,*GetFem(),__U,__QN,__QC);
       LocalToGlobal(f,__F,iq,d);
@@ -167,6 +169,7 @@ void PatchDiscretization::Matrix(MatrixInterface& A, const GlobalVector& u, cons
       GetFem()->ReInit(T);
 
       GlobalToLocal(__U,u,iq);
+      EQ.point_cell(GetMesh()->material_patch(iq));
       //EQ.cell(GetPatchMesh(),iq,__U,__QN);
       GetIntegrator()->Matrix(EQ,__E,*GetFem(),__U,__QN,__QC);
       LocalToGlobal(A,__E,iq,d);
@@ -290,6 +293,7 @@ void PatchDiscretization::Rhs(GlobalVector& f, const DomainRightHandSide& RHS, d
       GetFem()->ReInit(T);
 
       GlobalToLocalData(iq);
+      RHS.point_cell(GetMesh()->material_patch(iq));
       GetIntegrator()->Rhs(RHS,__F,*GetFem(),__QN,__QC);
       LocalToGlobal(f,__F,iq,s);
     }
@@ -521,6 +525,7 @@ double PatchDiscretization::ComputeDomainFunctional(const GlobalVector& u, const
       GetFem()->ReInit(T);
 
       GlobalToLocal(__U,u,iq);
+      F.point_cell(GetMesh()->material_patch(iq));
       j += GetIntegrator()->ComputeDomainFunctional(F,*GetFem(),__U,__QN,__QC);
     }
   return j;
@@ -623,6 +628,7 @@ void Gascoigne::PatchDiscretization::EvaluateParameterRightHandSide(GlobalVector
       GetFem()->ReInit(T);
 
       GlobalToLocalData(iq);
+      CF.point_cell(GetMesh()->material_patch(iq));
       GetIntegrator()->EvaluateCellRightHandSide(__F,CF,*GetFem(),__QN,__QC);
 
       f.add(d,__F);

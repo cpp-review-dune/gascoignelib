@@ -61,6 +61,7 @@ namespace Gascoigne
         std::cerr << "\"DomainFunctional::J\" not written" << std::endl; 
         abort();
       }
+      virtual void point_cell(int material) const {}
   };
 }
 

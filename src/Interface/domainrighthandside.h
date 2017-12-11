@@ -70,6 +70,7 @@ namespace Gascoigne
         }
 
       virtual void SetCellSize(double h) const { }
+      virtual void point_cell(int material) const {}
   };
   
   typedef DomainRightHandSide DomainInitialCondition;

@@ -45,7 +45,7 @@ namespace Gascoigne
   protected:
     /* Data */
 
-    int qlevel, qfather;
+    int qlevel, qfather,mat;
     IntVector qchilds;
     std::array<int, E> qedges; /* edge numbers */
 
@@ -56,6 +56,7 @@ namespace Gascoigne
         : std::array<int, N>()
         , qlevel(0)
         , qfather(-1)
+        ,    mat(0)
     {
       qedges.fill(-1);
     }
@@ -64,6 +65,7 @@ namespace Gascoigne
         : std::array<int, N>(c)
         , qlevel(c.level())
         , qfather(c.father())
+        , mat(c.material())
         , qchilds(c.childs())
         , qedges(c.edges())
     {
@@ -73,6 +75,7 @@ namespace Gascoigne
         : std::array<int, N>()
         , qlevel(l)
         , qfather(f)
+        , mat(0) 
     {
       this->fill(-17);
     }
@@ -175,7 +178,9 @@ namespace Gascoigne
     {
       return qedges;
     }
-
+    
+		int  material()     const { return mat; }
+		int& material()           { return mat; }   
     /* Functions */
 
     template <int M>
@@ -225,7 +230,8 @@ namespace Gascoigne
     {
       s << A.vertex() << " ";
       s << A.level() << " ";
-      s << A.father() << " @ ";
+      s << A.father() << " ";
+      s << A.material()  << " @ ";
       s << A.nchilds() << " " << A.childs();
       s << " : " << A.edges();
       s << std::endl;
@@ -240,6 +246,7 @@ namespace Gascoigne
       s >> A.vertex();
       s >> A.level();
       s >> A.father();
+      s >> A.material();
       s >> symbol;
       if (symbol != "@")
       {
