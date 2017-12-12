@@ -9,6 +9,7 @@
 #include  "mginterpolatornested.h"
 #include "chi.h"
 #include "umfilu.h"
+#include "sparse_umf.h"
 
 using namespace std;
 
