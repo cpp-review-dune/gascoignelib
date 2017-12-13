@@ -190,22 +190,21 @@ void GascoigneMeshConstructor::Construct2d
   IntVector&  matpatch = NM->GetMaterialPatchVector();
   
   // zellen
-
   nc.reservesize(4*LM->ncells());
+  mat.reservesize(LM->ncells());
   for(int i=0;i<LM->ncells();i++)
     {
       for(int ii=0;ii<4;ii++) nc[4*i+ii] = LM->vertex_of_cell(i,ii);
+      mat[i] = LM->quad(i).material();
     }
 
   // Koordinaten
   
   nx.reserve(LM->nnodes());
   nx.resize(LM->nnodes());
-  mat.reservesize(LM->ncells());
   for(int i=0;i<LM->nnodes();i++)
     {
       nx[i] = LM->vertex2d(i);
-      mat[i] = LM->quad(i).material();
     }
 
   // PatchStructur

@@ -14,6 +14,7 @@ MESSAGE(STATUS "Jetzt aber: " ${CMAKE_CXX_FLAGS})
 MESSAGE(STATUS "Jetzt aber: " ${COMPILE_DEFINITIONS})
 
 SUBDIRS(
+winni
    fast3d_neu
    Example1
    Example2

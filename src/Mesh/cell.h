@@ -179,8 +179,8 @@ namespace Gascoigne
       return qedges;
     }
     
-		int  material()     const { return mat; }
-		int& material()           { return mat; }   
+    int  material()     const { return mat; }
+    int& material()           { return mat; }   
     /* Functions */
 
     template <int M>

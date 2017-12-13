@@ -74,8 +74,8 @@ class Index
         IntVector&  Hexl2g()          { return hl2g;}
   const IntVector&  Hexl2g()    const { return hl2g;}
   const IntVector&  Quadl2g()   const { return ql2g;}
-  int Quadl2g  (int i)  const { return ql2g[i];}
-  int Hexl2g   (int i)  const { return hl2g[i];}
+  int Quadl2g  (int i)  const { assert(i<ql2g.size()); return ql2g[i];}
+  int Hexl2g   (int i)  const { assert(i<hl2g.size()); return hl2g[i];}
   const IntMap&  Quadg2l()   const { return qg2l;}
   const IntMap&  Hexg2l()    const { return hg2l;}
   
