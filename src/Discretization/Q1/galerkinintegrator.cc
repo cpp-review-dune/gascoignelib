@@ -412,14 +412,15 @@ void GalerkinIntegrator<DIM>::Matrix(const Equation& EQ, EntryMatrix& E, const F
 				{
 				FEM.init_test_functions(_NNN[i],sw,i);
 				}
-      for (int j=0; j<FEM.n(); j++)
+			EQ. MatrixBlock(E,_UH,_NNN);
+      /*for (int j=0; j<FEM.n(); j++)
 				{
 				for (int i=0; i<FEM.n(); i++)
 					{
 					E.SetDofIndex(i,j);
 					EQ.Matrix(E,_UH,_NNN[j],_NNN[i]);
 					}
-				}
+				}*/
     }
 }
 

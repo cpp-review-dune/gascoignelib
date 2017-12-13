@@ -10,7 +10,7 @@
 #include  "boundaryequation.h"
 #include  "paramfile.h"
 #include  "lpsequation.h"
-#include  "../eigen3/Eigen/Dense"
+#include  "eigen3/Eigen/Dense"
 #include  "chi.h"
 
 /*-----------------------------------------*/

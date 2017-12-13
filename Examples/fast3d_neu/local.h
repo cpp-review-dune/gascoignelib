@@ -11,11 +11,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include  "meshagent.h"
+#include  "localmeshagent.h"
 #include  "finehierarchicalmesh3d.h"
 #include  "stdloop.h"
 #include  "hierarchicalmesh.h"
+#include  "hierarchicalmesh2d.h"
 #include  "hierarchicalmesh3d.h"
+#include  "localhierarchicalmesh3d.h"
 #include  <array>
 
 
@@ -796,7 +798,7 @@ public :
 };
 /* ----------------------------------------- */
 
-class ProjectionOnFineMeshAgent : public MeshAgent
+class ProjectionOnFineMeshAgent : public LocalMeshAgent
 {
 protected:
   
@@ -804,9 +806,10 @@ protected:
   FineHierarchicalMesh3d*  FHM; 
 public:
   
-  ProjectionOnFineMeshAgent() : MeshAgent(),FHM(NULL)
+  ProjectionOnFineMeshAgent():FHM(NULL)
   {
-    return;
+  	LocalMeshAgent();
+    
     
     assert(FHM==NULL);
     cout<<"DistanceToFineMesh --- Reading Mesh"<<endl; 
@@ -836,6 +839,90 @@ public:
 
   ~ProjectionOnFineMeshAgent(){  if (FHM!=NULL) { delete FHM; FHM=NULL;}};
   
+	void BasicInit(const ParamFile* paramfile)
+	{
+
+		assert(HMP==NULL);
+		int dim = 0;
+
+		{
+		  DataFormatHandler DFH;
+		  DFH.insert("dimension",&dim);
+		  //um die zuordnung alte GMNr. -> GMNr. an/abzuschalten
+		  DFH.insert("cellnumtrans",&_goc2nc,false);
+		  FileScanner FS(DFH);
+		  FS.NoComplain();
+		  FS.readfile(paramfile,"Mesh");
+		}
+		{
+		  DataFormatHandler DFH;
+		  DFH.insert("periodic",&_periodicCols);
+		  FileScanner FS(DFH);
+		  FS.NoComplain();
+		  FS.readfile(paramfile,"BoundaryManager");
+		}
+
+		if (dim==2)
+		  {
+		    HMP = new HierarchicalMesh2d;
+		    for(map<int,BoundaryFunction<2>* >::const_iterator p=_curved2d.begin();p!=_curved2d.end();p++)
+		      {
+		        HMP->AddShape(p->first,p->second);
+		      }
+		  }
+		else if (dim==3)
+		  {
+		    HMP = new LocalHierarchicalMesh3d;
+		    for(map<int,BoundaryFunction<3>* >::const_iterator p=_curved3d.begin();p!=_curved3d.end();p++)
+		      {
+		        HMP->AddShape(p->first,p->second);
+		      }
+		  }
+		else
+		  {
+		    cout << "dimension of Mesh ? " << dim << endl;
+		  }
+		assert(HMP);
+		HMP->BasicInit(paramfile);
+		
+		GMG = NewMultiGridMesh();
+
+		ReInit();
+	}
+
+	/*-----------------------------------------*/
+
+	void BasicInit(const string& gridname, int dim, int patchdepth, int epatcher, bool goc2nc)
+	{
+		assert(HMP==NULL);
+		_goc2nc = goc2nc;
+		if (dim==2)
+		  {
+		    HMP = new HierarchicalMesh2d;
+		    for(map<int,BoundaryFunction<2>* >::const_iterator p=_curved2d.begin();p!=_curved2d.end();p++)
+		      {
+		        HMP->AddShape(p->first,p->second);
+		      }
+		  }
+		else if (dim==3)
+		  {
+		    HMP = new LocalHierarchicalMesh3d;
+		    for(map<int,BoundaryFunction<3>* >::const_iterator p=_curved3d.begin();p!=_curved3d.end();p++)
+		      {
+		        HMP->AddShape(p->first,p->second);
+		      }
+		  }
+		else
+		  {
+		    cout << "dimension of Mesh ? " << dim << endl;
+		  }
+		assert(HMP);
+		HMP->SetParameters(gridname,patchdepth,epatcher);
+		
+		GMG = NewMultiGridMesh();
+
+		ReInit();
+	}
   // void inner_vertex_newton3d(const IntVector& vnew,
   // 			     const IntSet& CellRefList, 
   // 			     const IntSet& adjustvertex)
