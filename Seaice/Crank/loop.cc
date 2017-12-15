@@ -89,14 +89,78 @@ void Loop::TrapezInt(GlobalVector& avg, const vector<GlobalVector>& U, int start
   avg*=1/DTM;
 }
 
+
+void Loop::MittelInt(GlobalVector& avg_old,GlobalVector& avg, const vector<GlobalVector>& U, int start, int stopp)
+{
+  assert(start<U.size());  assert(stopp<U.size());
+  avg.zero();
+  avg.add(1*DT,U[start]);
+ 
+  for (int l=start+1 ; l<=stopp-1;++l)
+    avg.add(2*DT,U[l]);
+  avg.add(1*DT,U[stopp]);
+  avg*=1/DTM;
+  avg.add(-1,avg_old);
+
+}
+
+
+  // MittelInt(Pu_kM[m-1],Pu_kM[m], Utotal, (m-1)*I_m, m*I_m );
+void Loop::Gauss_Q2(GlobalVector& avg_old,GlobalVector& avg, const vector<GlobalVector>& U, int start, int stopp)
+{
+  assert(start<U.size());  assert(stopp<U.size());
+  avg.zero();
+  
+  double x1=0.5 -sqrt(1/3);
+  double x2=0.5+ sqrt(1/3);
+  double weight=0.5;
+  double K=(_niter/_M)/2.0;
+  
+  cout<<K<<"K"<<endl;
+  
+  for ( int j=1 ;j<=K; ++j)
+  {
+  // erste stuetzstelle 
+ avg.add(2*(x1-0.5)*(x1-1),U[start+2*(j-1)]);
+ avg.add(-4*x1*(x1-1),U[start+2*(j-1)+1]);
+ avg.add(2*x1*(x1-0.5),U[start+2*j]);
+ //Zweite stuetzstelle
+ cout<<start+2*(j-1)<<"u1"<<"/ /"<<start+2*(j-1)+1<<"u2"<<"/ /"<<start+2*j<<"u3"<<endl;
+  avg.add(2*(x2-0.5)*(x2-1),U[start+2*(j-1)]);
+ avg.add(-4*x2*(x2-1),U[start+2*(j-1)+1]);
+ avg.add(2*x2*(x2-0.5),U[start+2*j]);
+ avg*=weight*DT*2;
+  }
+  avg*=2/DTM;
+  avg.add(-1,avg_old);
+}
+
+
+
+
+
 void Loop::SolveDualProblem(VectorInterface& z, VectorInterface& f,double DTM)
 {
   GetMultiLevelSolver()->SetProblem("dp");
  
-
-  DoubleVector test1;
+  // Rechte Seite mit Gauss-Regel
+  double wgt = 0.5;
+  double x1 = TIME-0.5*DTM - 0.5*sqrt(1.0/3.0) * DTM;
+  double x2 = TIME-0.5*DTM + 0.5*sqrt(1.0/3.0) * DTM;
+  double SAVETIME = TIME;
+  TIME = x1;
+  //GetMultiLevelSolver()->GetSolver()->Rhs(f,wgt * DT);
+   GetMultiLevelSolver()->GetSolver()->Rhs(f,wgt );
+  TIME = x2;
+ // GetMultiLevelSolver()->GetSolver()->Rhs(f,wgt * DT);
+  GetMultiLevelSolver()->GetSolver()->Rhs(f,wgt);
+  TIME = SAVETIME;
+  
+  GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(f);
+ GetMultiLevelSolver()->GetSolver()->SetPeriodicVector(z);
+  GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(z);
   string res_dual = Solve(z,f,"Results/z");
-};
+}
 
 
 class DWRInitialRhs : public virtual DomainRightHandSide
@@ -115,10 +179,10 @@ class DWRInitialRhs : public virtual DomainRightHandSide
   
   void operator()(VectorIterator b, const TestFunction& N, const Vertex2d& v) const 
   {
-    double x = v.x();
-    double y = v.y();
-    double t = 0.0;
-    double u0 =  0.1e1 / (0.1e1 + 0.50e2 * pow(x - 0.1e1 / 0.2e1 - cos(0.2e1 * M_PI* t) / 0.4e1, 0.2e1) + 0.50e2 * pow(y - 0.1e1 / 0.2e1 - sin(0.2e1 * M_PI * t) / 0.4e1, 0.2e1));
+   // double x = v.x();
+   // double y = v.y();
+    //double t = 0.0;
+   // double u0 =  0.1e1 / (0.1e1 + 0.50e2 * pow(x - 0.1e1 / 0.2e1 - cos(0.2e1 * M_PI* t) / 0.4e1, 0.2e1) + 0.50e2 * pow(y - 0.1e1 / 0.2e1 - sin(0.2e1 * M_PI * t) / 0.4e1, 0.2e1));
     
     b[0] += (- (*U)[0].m()) * N.m();
   }
@@ -364,10 +428,17 @@ void Loop::EstimateDWRdual(DoubleVector& eta, int m, const GlobalVector& Pu_kM, 
   assert(MyS);
 
   
-  ////////////////////////// Rechte Seite mit Gauss-Regel; TT ist mitte der Intervalle
-  // Std-Diskretisierung
-  MyS->Zero(f);
-  MyS->Rhs(f,-1);
+  // Rechte Seite dual mit Gauss-Regel
+  double wgt = 0.5;
+  double x1 = TIME-0.5*DTM - 0.5*sqrt(1.0/3.0) * DTM;
+  double x2 = TIME-0.5*DTM + 0.5*sqrt(1.0/3.0) * DTM;
+  double SAVETIME = TIME;
+  TIME = x1;
+   GetMultiLevelSolver()->GetSolver()->Rhs(f,-wgt );
+  TIME = x2;
+  GetMultiLevelSolver()->GetSolver()->Rhs(f,-wgt);
+  TIME = SAVETIME;
+  
   MyS->HNDistribute(f);
  
    
@@ -376,8 +447,16 @@ void Loop::EstimateDWRdual(DoubleVector& eta, int m, const GlobalVector& Pu_kM, 
   DWRFEM.BasicInit(this->_paramfile);
   DiscretizationInterface* saveD = MyS->GetDiscretization();
   MyS->SetDiscretization(DWRFEM,true);
-  MyS->Rhs(f,1);
+    // Rechte Seite dual mit Gauss-Regel
+  TIME = x1;
+   GetMultiLevelSolver()->GetSolver()->Rhs(f,wgt );
+  TIME = x2;
+  GetMultiLevelSolver()->GetSolver()->Rhs(f,wgt);
+  TIME = SAVETIME;
   MyS->HNDistribute(f);
+  
+  
+  
   MyS->SetDiscretization(*saveD);
  
   
@@ -453,18 +532,25 @@ void Loop::EstimateNonU(DoubleVector& eta, int m,
   MyS->HNAverage(u);
 
   int I_m = _niter / _M;
-  //mit Box
+ 
 
-
-  for (int l=1;l<=I_m; ++l)
+  //Mit Gauss
+  for (int l=0;l<I_m; ++l)
     {
-    
-      MyS->GetGV(u) = U[(m-1)*I_m + l];
-      MyS->AddNodeVector("U",u);
-      MyS->GetDiscretization()->Rhs(MyS->GetGV(f), NoLin, -DT);
-      MyS->DeleteNodeVector("U");
-     
+        MyS->GetGV(u) = U[(m-1)*I_m + l];
+        MyS->AddNodeVector("U",u); 
+        TIME = DT * ((m-1)*I_m + l) + 0.5 * DT -  0.5*sqrt(1.0/3.0) * DT;
+        MyS->GetDiscretization()->Rhs(MyS->GetGV(f), NoLin, -DT*0.5);
+        MyS->DeleteNodeVector("U");
+        MyS->AddNodeVector("U",u);
+        TIME = DT * ((m-1)*I_m + l) + 0.5 * DT +  0.5*sqrt(1.0/3.0) * DT;
+        MyS->GetDiscretization()->Rhs(MyS->GetGV(f), NoLin, -DT*0.5);
+        MyS->DeleteNodeVector("U");
+ 
     }
+  
+  
+
 
   
   // DWR Disc
@@ -473,18 +559,23 @@ void Loop::EstimateNonU(DoubleVector& eta, int m,
   DiscretizationInterface* saveD = MyS->GetDiscretization();
   MyS->SetDiscretization(DWRFEM,true);
 
-  // Mit bOXregel 
+  // Mit Gauss
  
   
-  for (int l=1;l<=I_m; ++l)
+for (int l=0;l<I_m; ++l)
     {
-
-      MyS->GetGV(u) = U[(m-1)*I_m + l];
-      MyS->AddNodeVector("U",u);
-      MyS->GetDiscretization()->Rhs(MyS->GetGV(f), NoLin, DT);
-      MyS->DeleteNodeVector("U");
-     
+        MyS->GetGV(u) = U[(m-1)*I_m + l];
+        MyS->AddNodeVector("U",u); 
+        TIME = DT * ((m-1)*I_m + l) + 0.5 * DT -  0.5*sqrt(1.0/3.0) * DT;
+        MyS->GetDiscretization()->Rhs(MyS->GetGV(f), NoLin, DT*0.5);
+        MyS->DeleteNodeVector("U");
+        MyS->AddNodeVector("U",u);
+        TIME = DT * ((m-1)*I_m + l) + 0.5 * DT +  0.5*sqrt(1.0/3.0) * DT;
+        MyS->GetDiscretization()->Rhs(MyS->GetGV(f), NoLin, DT*0.5);
+        MyS->DeleteNodeVector("U");
+ 
     }
+  
 
   
  
@@ -529,23 +620,49 @@ void Loop::EstimateNonPu(DoubleVector& eta,
   // Std Disc
   MyS->HNAverage(u);
   
+    // Rechte Seite dual mit Gauss-Regel
+  double wgt = 0.5;
+  double x1 = TIME-0.5*DTM - 0.5*sqrt(1.0/3.0) * DTM;
+  double x2 = TIME-0.5*DTM + 0.5*sqrt(1.0/3.0) * DTM;
+  double SAVETIME = TIME;
+  TIME = x1;
+  
   MyS->AddNodeVector("U",u);
-  MyS->GetDiscretization()->Rhs(MyS->GetGV(f), NoLin, -DTM);
+  MyS->GetDiscretization()->Rhs(MyS->GetGV(f), NoLin, -wgt*DTM);
   MyS->DeleteNodeVector("U");
+  TIME = x2;
+  
+  MyS->AddNodeVector("U",u);
+  MyS->GetDiscretization()->Rhs(MyS->GetGV(f), NoLin, -wgt*DTM);
+  MyS->DeleteNodeVector("U");
+
+  TIME = SAVETIME;
   MyS->HNDistribute(f);
+  
+  
 
   // DWR Disc
    DwrFemQ1Q22d   DWRFEM;
   DWRFEM.BasicInit(this->_paramfile);
   DiscretizationInterface* saveD = MyS->GetDiscretization();
   MyS->SetDiscretization(DWRFEM,true);
-
+  
+  
+   TIME = x1;
+  
   MyS->AddNodeVector("U",u);
-  MyS->GetDiscretization()->Rhs(MyS->GetGV(f), NoLin, DTM);
+  MyS->GetDiscretization()->Rhs(MyS->GetGV(f), NoLin, wgt*DTM);
   MyS->DeleteNodeVector("U");
+  TIME = x2;
+  
+  MyS->AddNodeVector("U",u);
+  MyS->GetDiscretization()->Rhs(MyS->GetGV(f), NoLin, wgt*DTM);
+  MyS->DeleteNodeVector("U");
+
+  TIME = SAVETIME;
   MyS->HNDistribute(f);
-
-
+  
+  
   // Std Disc
   MyS->SetDiscretization(*saveD);
 
@@ -657,7 +774,7 @@ void Loop::EstimateRest(DoubleVector& eta, int m,
   cout << "Fehlerschaetzer: Restfehler"<< endl;
   StdSolver* MyS = dynamic_cast<StdSolver*> (GetMultiLevelSolver()->GetSolver());
   assert(MyS);
-  int I_m = _niter / _M;
+  //int I_m = _niter / _M;
   
   MyS->Zero(f);
   MyS->GetGV(z) = Z;
@@ -673,7 +790,7 @@ void Loop::EstimateRest(DoubleVector& eta, int m,
 
     
   MyS->AddNodeVector("U",z);
-  MyS->GetDiscretization()->Rhs(MyS->GetGV(f), DWRMass, -DTM);
+  MyS->GetDiscretization()->Rhs(MyS->GetGV(f), DWRMass, -1);
   MyS->DeleteNodeVector("U");
       
    
@@ -704,7 +821,7 @@ void Loop::EstimateRest(DoubleVector& eta, int m,
   MyS->Zero(f);
 
   MyS->AddNodeVector("U",z);
-  MyS->GetDiscretization()->Rhs(MyS->GetGV(f), DWRMass, DTM);
+  MyS->GetDiscretization()->Rhs(MyS->GetGV(f), DWRMass, 1);
   MyS->DeleteNodeVector("U");
       
    
@@ -805,37 +922,34 @@ void Loop::EstimateNonMeanPu(DoubleVector& eta, int m,
 
     
   int I_m = _niter / _M;
-  //Intregartion mit Trapezregel von K'(u)  mit Q1
 
-  MyS->GetGV(oldu) = Pu;
-  MyS->GetGV(oldu).add(-1.0,U[(m-1)*I_m]);
-  MyS->AddNodeVector("Pu",u);
-  MyS->AddNodeVector("W",oldu);
-  MyS->GetDiscretization()->Rhs(MyS->GetGV(f), NoLinM, -DT*0.5);
-  MyS->DeleteNodeVector("Pu");
-  MyS->DeleteNodeVector("W");
-
-
-	 
-  MyS->GetGV(oldu) = Pu;
-  MyS->GetGV(oldu).add(-1.0,U[(m)*I_m]);
-  MyS->AddNodeVector("Pu",u);
-  MyS->AddNodeVector("W",oldu);
-  MyS->GetDiscretization()->Rhs(MyS->GetGV(f), NoLinM, -DT*0.5);
-  MyS->DeleteNodeVector("Pu");
-  MyS->DeleteNodeVector("W");
-	 
-
- 
-  for (int l=1;l<I_m; ++l)
+  
+    
+    // Mit Gauss und Q1
+    
+     
+for (int l=0;l<I_m; ++l)
     {
-      MyS->GetGV(oldu) = Pu;
-      MyS->GetGV(oldu).add(-1.0,U[(m-1)*I_m + l]);
-      MyS->AddNodeVector("Pu",u);       MyS->AddNodeVector("W",oldu);
-      MyS->GetDiscretization()->Rhs(MyS->GetGV(f), NoLinM, -1*DT);
+         MyS->GetGV(oldu) = Pu;
+        MyS->GetGV(oldu).add(-1.0,U[(m-1)*I_m + l]);
+        MyS->AddNodeVector("Pu",u);       
+        MyS->AddNodeVector("W",oldu);
+      
+        TIME = DT * ((m-1)*I_m + l) + 0.5 * DT -  0.5*sqrt(1.0/3.0) * DT;
+        MyS->GetDiscretization()->Rhs(MyS->GetGV(f), NoLinM, -DT*0.5);
+        MyS->DeleteNodeVector("Pu");
+        MyS->DeleteNodeVector("W");
+        
+         MyS->AddNodeVector("Pu",u);       
+         MyS->AddNodeVector("W",oldu);
+        TIME = DT * ((m-1)*I_m + l) + 0.5 * DT +  0.5*sqrt(1.0/3.0) * DT;
+        MyS->GetDiscretization()->Rhs(MyS->GetGV(f), NoLinM, -DT*0.5);
       MyS->DeleteNodeVector("Pu");
       MyS->DeleteNodeVector("W");
+ 
     }
+  
+    
  
 
 
@@ -863,39 +977,28 @@ void Loop::EstimateNonMeanPu(DoubleVector& eta, int m,
   DiscretizationInterface* saveD = MyS->GetDiscretization();
   MyS->SetDiscretization(DWRFEM,true);
 
-  //Integration mi Trapez und Q2
+  //Integration mit Gauss und Q2
  
-  MyS->GetGV(oldu) = Pu;
-  MyS->GetGV(oldu).add(-1.0,U[(m-1)*I_m]);
-  MyS->AddNodeVector("Pu",u);
-  MyS->AddNodeVector("W",oldu);
-  MyS->GetDiscretization()->Rhs(MyS->GetGV(f), NoLinM,0.5*DT);
-  MyS->DeleteNodeVector("Pu");
-  MyS->DeleteNodeVector("W");
-
-
-	 
-  MyS->GetGV(oldu) = Pu;
-  MyS->GetGV(oldu).add(-1.0,U[(m)*I_m]);
-  MyS->AddNodeVector("Pu",u);
-  MyS->AddNodeVector("W",oldu);
-  MyS->GetDiscretization()->Rhs(MyS->GetGV(f), NoLinM, 0.5*DT);
-  MyS->DeleteNodeVector("Pu");
-  MyS->DeleteNodeVector("W");
-	 
-
- 
-  for (int l=1;l<I_m; ++l)
+ for (int l=0;l<I_m; ++l)
     {
-      MyS->GetGV(oldu) = Pu;
-      MyS->GetGV(oldu).add(-1.0,U[(m-1)*I_m + l]);
-      MyS->AddNodeVector("Pu",u);       MyS->AddNodeVector("W",oldu);
-      MyS->GetDiscretization()->Rhs(MyS->GetGV(f), NoLinM, 1*DT);
+         MyS->GetGV(oldu) = Pu;
+        MyS->GetGV(oldu).add(-1.0,U[(m-1)*I_m + l]);
+        MyS->AddNodeVector("Pu",u);       
+        MyS->AddNodeVector("W",oldu);
+      
+        TIME = DT * ((m-1)*I_m + l) + 0.5 * DT -  0.5*sqrt(1.0/3.0) * DT;
+        MyS->GetDiscretization()->Rhs(MyS->GetGV(f), NoLinM, DT*0.5);
+        MyS->DeleteNodeVector("Pu");
+        MyS->DeleteNodeVector("W");
+        
+         MyS->AddNodeVector("Pu",u);       
+         MyS->AddNodeVector("W",oldu);
+        TIME = DT * ((m-1)*I_m + l) + 0.5 * DT +  0.5*sqrt(1.0/3.0) * DT;
+        MyS->GetDiscretization()->Rhs(MyS->GetGV(f), NoLinM, DT*0.5);
       MyS->DeleteNodeVector("Pu");
       MyS->DeleteNodeVector("W");
-
+ 
     }
-
 
   
 
@@ -931,46 +1034,38 @@ void Loop::EstimateNonMeanU(DoubleVector& eta, int m,
 
   DWRNonLinMatrix NoLinM;
 
-
-  cout<<"Ohoh"<<endl;
   MyS->Zero(f);
-  int I_m = _niter / _M;
-
-  MyS->GetGV(u) = U[(m-1)*I_m];
-  MyS->GetGV(oldu) = Pu;
-  MyS->GetGV(oldu).add(-1.0,U[(m-1)*I_m]);
-  MyS->AddNodeVector("Pu",u);
-  MyS->AddNodeVector("W",oldu);
-  MyS->GetDiscretization()->Rhs(MyS->GetGV(f), NoLinM, -0.5*DT);
-  MyS->DeleteNodeVector("Pu");
-  MyS->DeleteNodeVector("W");
-
-  MyS->GetGV(u) = U[(m)*I_m];
-  MyS->GetGV(oldu) = Pu;
-  MyS->GetGV(oldu).add(-1.0,U[(m)*I_m]);
-  MyS->AddNodeVector("Pu",u);
-  MyS->AddNodeVector("W",oldu);
-  MyS->GetDiscretization()->Rhs(MyS->GetGV(f), NoLinM, -0.5*DT);
-  MyS->DeleteNodeVector("Pu");
-  MyS->DeleteNodeVector("W");
-
+ 
   
-    
-
-  //Intregartion mit Trapezregel von K'(u)  mit Q1
-  for (int l=1;l<I_m; ++l)
+ int I_m = _niter / _M;
+  
+// Mit gauss Q1
+  
+  for (int l=0;l<I_m; ++l)
     {
-
-      MyS->GetGV(u) = U[(m-1)*I_m + l];
-      MyS->GetGV(oldu) = Pu;
-      MyS->GetGV(oldu).add(-1.0,U[(m-1)*I_m + l]);
-      MyS->AddNodeVector("Pu",u);
-      MyS->AddNodeVector("W",oldu);
-      MyS->GetDiscretization()->Rhs(MyS->GetGV(f), NoLinM, -1*DT);
+        MyS->GetGV(u) = U[(m-1)*I_m + l];
+         MyS->GetGV(oldu) = Pu;
+        MyS->GetGV(oldu).add(-1.0,U[(m-1)*I_m + l]);
+        MyS->AddNodeVector("Pu",u);       
+        MyS->AddNodeVector("W",oldu);
+      
+        TIME = DT * ((m-1)*I_m + l) + 0.5 * DT -  0.5*sqrt(1.0/3.0) * DT;
+        MyS->GetDiscretization()->Rhs(MyS->GetGV(f), NoLinM, -DT*0.5);
+        MyS->DeleteNodeVector("Pu");
+        MyS->DeleteNodeVector("W");
+        
+         MyS->AddNodeVector("Pu",u);       
+         MyS->AddNodeVector("W",oldu);
+        TIME = DT * ((m-1)*I_m + l) + 0.5 * DT +  0.5*sqrt(1.0/3.0) * DT;
+        MyS->GetDiscretization()->Rhs(MyS->GetGV(f), NoLinM, -DT*0.5);
       MyS->DeleteNodeVector("Pu");
       MyS->DeleteNodeVector("W");
-    }
  
+    }
+  
+  
+  
+
   MyS->HNDistribute(f);
   
   MyS->SetBoundaryVectorZero(f);
@@ -995,38 +1090,29 @@ void Loop::EstimateNonMeanU(DoubleVector& eta, int m,
   DWRFEM.BasicInit(this->_paramfile);
   DiscretizationInterface* saveD = MyS->GetDiscretization();
   MyS->SetDiscretization(DWRFEM,true);
+  
+  //Gauss Q22
 
-  //Integration mi Trapez und Q2
-  MyS->GetGV(u) = U[(m-1)*I_m];
-  MyS->GetGV(oldu) = Pu;
-  MyS->GetGV(oldu).add(-1.0,U[(m-1)*I_m]);
-  MyS->AddNodeVector("Pu",u);
-  MyS->AddNodeVector("W",oldu);
-  MyS->GetDiscretization()->Rhs(MyS->GetGV(f), NoLinM, 0.5*DT);
-  MyS->DeleteNodeVector("Pu");
-  MyS->DeleteNodeVector("W");
-
-  MyS->GetGV(u) = U[(m)*I_m];
-  MyS->GetGV(oldu) = Pu;
-  MyS->GetGV(oldu).add(-1.0,U[(m)*I_m]);
-  MyS->AddNodeVector("Pu",u);
-  MyS->AddNodeVector("W",oldu);
-  MyS->GetDiscretization()->Rhs(MyS->GetGV(f), NoLinM, DT*0.5);
-  MyS->DeleteNodeVector("Pu");
-  MyS->DeleteNodeVector("W");
-
-  //Intregartion mit Trapezregel von K'(u)  mit Q1
-  for (int l=1;l<I_m; ++l)
+  for (int l=0;l<I_m; ++l)
     {
-
-      MyS->GetGV(u) = U[(m-1)*I_m + l];
-      MyS->GetGV(oldu) = Pu;
-      MyS->GetGV(oldu).add(-1.0,U[(m-1)*I_m + l]);
-      MyS->AddNodeVector("Pu",u);
-      MyS->AddNodeVector("W",oldu);
-      MyS->GetDiscretization()->Rhs(MyS->GetGV(f), NoLinM, DT);
+        MyS->GetGV(u) = U[(m-1)*I_m + l];
+         MyS->GetGV(oldu) = Pu;
+        MyS->GetGV(oldu).add(-1.0,U[(m-1)*I_m + l]);
+        MyS->AddNodeVector("Pu",u);       
+        MyS->AddNodeVector("W",oldu);
+      
+        TIME = DT * ((m-1)*I_m + l) + 0.5 * DT -  0.5*sqrt(1.0/3.0) * DT;
+        MyS->GetDiscretization()->Rhs(MyS->GetGV(f), NoLinM, DT*0.5);
+        MyS->DeleteNodeVector("Pu");
+        MyS->DeleteNodeVector("W");
+        
+         MyS->AddNodeVector("Pu",u);       
+         MyS->AddNodeVector("W",oldu);
+        TIME = DT * ((m-1)*I_m + l) + 0.5 * DT +  0.5*sqrt(1.0/3.0) * DT;
+        MyS->GetDiscretization()->Rhs(MyS->GetGV(f), NoLinM, DT*0.5);
       MyS->DeleteNodeVector("Pu");
       MyS->DeleteNodeVector("W");
+ 
     }
 
   MyS->HNDistribute(f);
@@ -1173,13 +1259,14 @@ void Loop::run(const std::string& problemlabel)
       TIME=0.0;
  
       // vectors for solution and right hand side
-      VectorInterface u("u"), f("f"), oldu("oldu"),z("z"),oldz("oldz");
+      VectorInterface u("u"),Pu("Pu"),  f("f"), oldu("oldu"),z("z"),oldz("oldz");
 
       
       PrintMeshInformation();
       //initialize problem, solver and vectors 
       GetMultiLevelSolver()->ReInit("LaplaceT");
       GetMultiLevelSolver()->ReInitVector(u);
+      GetMultiLevelSolver()->ReInitVector(Pu);
       GetMultiLevelSolver()->ReInitVector(oldu);
       GetMultiLevelSolver()->ReInitVector(f);
       GetMultiLevelSolver()->ReInitVector(z);
@@ -1194,10 +1281,17 @@ void Loop::run(const std::string& problemlabel)
       // Speichern der primalen Loesung u in ALLEN schritten! und alle Funktionale
       vector<GlobalVector> Utotal;
       nvector<double>      Jtotal;
+     
+       nvector<double>      JP;
+     
       InitSolution(u); 
-      GetMultiLevelSolver()->Equ(oldu,1.0,u);
       Utotal.push_back(MyS->GetGV(u));
+      GetMultiLevelSolver()->Equ(oldu,1.0,u);
+      
+      
       GetMultiLevelSolver()->GetSolver()->Visu("Results/u",u,0);
+      
+      
       
       GetSolverInfos()->GetNLInfo().control().matrixmustbebuild() = 1;
 
@@ -1205,7 +1299,11 @@ void Loop::run(const std::string& problemlabel)
   
       // Funktional
       nvector<double> functionals = Functionals(u,f);
+   
+      
       Jtotal.push_back(functionals[0]);
+      JP.push_back(functionals[0]);
+      
       
       // primale Probleme loesen
       SolvePrimalProblem(Utotal,Jtotal,u,oldu,f);
@@ -1220,27 +1318,47 @@ void Loop::run(const std::string& problemlabel)
       
       vector<GlobalVector> Pu_kM(_M+1,GlobalVector(MyS->GetGV(u).ncomp(), MyS->GetGV(u).n()));
       vector<GlobalVector> Pu_M (_M+1,GlobalVector(MyS->GetGV(u).ncomp(), MyS->GetGV(u).n()));
-      Pu_kM[0]=Utotal[0];
       Pu_M[0]=Utotal[0];
-
+      Pu_kM[0]=Utotal[0];
+      
+    
+      
+      
+  
+         
+      
+     
 
       // Intregartion und Mittelung
       for (int m=1;m<=_M;++m)
-	{
-	   TrapezInt(Pu_kM[m], Utotal, (m-1)*I_m, m*I_m );
+	{   
+	  //TrapezInt(Pu_kM[m], Utotal, (m-1)*I_m, m*I_m );
+       MittelInt(Pu_kM[m-1],Pu_kM[m], Utotal, (m-1)*I_m, m*I_m );
 	   // BoxInt(Pu_kM[m],  Utotal,   (m-1)*I_m+1, m*I_m );
 	  // BoxInt(Pu_M[m],  Utotal,   (m-1)*I_m+1, m*I_m );
-	  GetMultiLevelSolver()->GetSolver()->GetGV(oldu)=Pu_kM[m];
+	
+//	  TrapezInt(Pu_M[m], Utotal, (m-1)*I_m, m*I_m );
+       Gauss_Q2(Pu_M[m-1],Pu_M[m], Utotal, (m-1)*I_m, m*I_m );
+      GetMultiLevelSolver()->GetSolver()->GetGV(oldu)=Pu_kM[m];
+      nvector<double> functionals_P = Functionals(oldu,f);
 	  GetMultiLevelSolver()->GetSolver()->Visu("Results/PU_KM",oldu,m);
-	  TrapezInt(Pu_M[m], Utotal, (m-1)*I_m, m*I_m );
-	  GetMultiLevelSolver()->GetSolver()->GetGV(f)=Pu_M[m];
+      JP.push_back(functionals_P[0]);
+    
+    
+    
+	 // GetMultiLevelSolver()->GetSolver()->GetGV(f)=Pu_M[m];
 	  // GetMultiLevelSolver()->GetSolver()->Visu("Results/PU_M",f,m);
 	}
-      
+	
+	
       // Integral ueber funktional berechnen mit Boxregel (deswegen ohne ersten eintrag)
       // double J = DT * Jtotal.sum() - DT * Jtotal[0];
       // Integral mit Trapezregel
-       double J = DT * Jtotal.sum() - DT/2 * Jtotal[0]-DT/2 * Jtotal[_M+1];
+      assert(Jtotal.size() == _niter+1);
+      double J = DT * Jtotal.sum() - DT/2. * Jtotal[0]-DT/2. * Jtotal[_niter];
+      
+      
+      
       cout << "Integral ueber J = "<< J << endl;
 
       int nnodes = MyS->GetMesh()->nnodes();
@@ -1273,32 +1391,26 @@ void Loop::run(const std::string& problemlabel)
       EstimateDualError(eta,eta0,eta1,eta11,eta2,eta22,eta23,eta3,eta4,eta5, Utotal, Ztotal, Pu_kM, Pu_M,u,oldu,z,f);
 
       
-            
-      //GetMultiLevelSolver()->GetSolver()->Visu("Results/dz",z,ADAITER);
-     
-      // Fehlerschaetzer auswerten
-      //cout <<"ETTA"<< eta.sum() << endl;
-      // 0.034519  neue Beispiel//100 // 0.0345224 ein spaeter angefangen.
-      // a=0.0429182 ///1000
-      // I=fabs(eta4.sum())/fabs(( 0.0429135-J));       //160
-      // I=fabs(eta4.sum())/fabs((0.0429079-J)); // 80
-      // I=fabs(eta4.sum())/fabs((0.0428962-J)); //40
+        //Referenzvalue a=0.0134875
      
    
       this->EtaVisu("Results/eta",ADAITER,eta);
 
       stringstream str;
-      str << "CHECK.txt";
+      str << "Crank_JP_5.txt";
       ofstream OUTF(str.str().c_str(),ios::app);
       OUTF.precision(10);
-
+     for (int i=0;i<JP.size();++i)
+         OUTF << i * DTM<< " " << JP[i] << endl;
+ 
+     abort();
       //  OUTF << GetMultiLevelSolver()->GetSolver()->GetMesh()->nnodes() << " " << DT << " " << DTM  << " " << J << " " << eta.sum() << " " << eta1.sum() << " " << eta2.sum() << " " << eta3.sum() <<" " << eta4.sum() << endl;
 
 
- 
+ //   OUTF << GetMultiLevelSolver()->GetSolver()->GetMesh()->nnodes() << " " << DTM  << " " << J<<endl;
 
 
-      OUTF << GetMultiLevelSolver()->GetSolver()->GetMesh()->nnodes() << " " << DTM  << " " << J <<  " " << eta.sum()  <<" " << eta0.sum()<<" " << eta1.sum()<<" " << eta11.sum()<<" " << eta2.sum() <<" " << eta22.sum()<<" "<< eta3.sum()<< " "<< eta4.sum()<< " "<< eta5.sum()<<endl;
+    OUTF << GetMultiLevelSolver()->GetSolver()->GetMesh()->nnodes() << " " << DTM  << " " << J<<  " " << eta.sum()  <<" " << eta0.sum()<<" " << eta1.sum()<<" " << eta11.sum()<<" " << eta2.sum() <<" " << eta22.sum()<<" "<< eta3.sum()<< " "<< eta4.sum()<< " "<< eta5.sum()<<endl;
       
       
       // Gitter verfeinern
@@ -1316,8 +1428,7 @@ void Loop::run(const std::string& problemlabel)
      
       // GetMultiLevelSolver()->GetSolver()->Visu("Results/neuu",u,ADAITER);
       //GetMultiLevelSolver()->GetSolver()->Visu("Results/PU",oldu,ADAITER);
-    
-      
+
     }
   
  

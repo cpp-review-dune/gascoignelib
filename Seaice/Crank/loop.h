@@ -55,6 +55,10 @@ namespace Gascoigne
     void SolvePrimalProblem(vector<GlobalVector> &Utotal, nvector<double>& Jtotal, VectorInterface& u, VectorInterface& oldu, VectorInterface& f);
     void BoxInt(GlobalVector& avg, const vector<GlobalVector>& U, int start, int stopp);
     void TrapezInt(GlobalVector& avg, const vector<GlobalVector>& U, int start, int stopp);
+    void MittelInt(GlobalVector& avg_old,GlobalVector& avg, const vector<GlobalVector>& U, int start, int stopp);
+    void Gauss_Q2(GlobalVector& avg_old,GlobalVector& avg, const vector<GlobalVector>& U, int start, int stopp);
+    
+    
     
     // Fehlerschaetzer
     void SolveDualProblem(VectorInterface& z, VectorInterface& f,double DTM);
