@@ -265,8 +265,10 @@ extern "C" void umfpack_dl_defaults
     umfpack_dl_free_symbolic (&Symbolic) ;
     umfpack_dl_free_numeric (&Numeric) ;
     
-    if(Control) delete[] Control; Control=NULL;
-    if(Info) delete[] Info; Info=NULL;
+    if(Control) delete[] Control;
+    Control=NULL;
+    if(Info) delete[] Info;
+    Info=NULL;
   }
   
   //  ==================================================

@@ -175,9 +175,11 @@ namespace Gascoigne
     
     void point_cell(int material) const 
     {
-    	if(material==1) domain=1;
-			if(material==2) domain=-1;
-		}
+      if(material==1)
+	domain=1;
+      if(material==2)
+	domain=-1;
+    }
 		
     void Form(VectorIterator b, const FemFunction& U, const TestFunction& N) const
     { 

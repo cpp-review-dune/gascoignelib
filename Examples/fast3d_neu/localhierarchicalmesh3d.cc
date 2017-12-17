@@ -60,7 +60,6 @@ void LocalHierarchicalMesh3d::inner_vertex_newton3d(const IntVector& vnew,
   //  }
 
 
-  std::array<int,4> v;
   IntSetIt  cp=CellRefList.begin();
   
   //Schleife uber alle Zellen, zaehlen der Nachbarzellen eines Kantenmittelpunktes

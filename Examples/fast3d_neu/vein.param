@@ -61,7 +61,7 @@ writebubgup 	0
 //Block Mesh
 
 dimension   3
-prerefine   1
+prerefine   2
 gridname    Verzweigung_FSI_neu.inp
 etapatcher 0
 

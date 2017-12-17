@@ -119,10 +119,10 @@ namespace Gascoigne
       
       void BasicInit(const ParamFile* paramfile, const ProblemContainer* PC,const FunctionalContainer* FC)
       {
-				if(DIM==2)
-					GetMeshAgentPointer() = new MA2d;
-					if(DIM==3)
-	      GetMeshAgentPointer() = new ProjectionOnFineMeshAgent;
+	if(DIM==2)
+	  GetMeshAgentPointer() = new MA2d;
+	if(DIM==3)
+	  GetMeshAgentPointer() = new ProjectionOnFineMeshAgent;
 	GetMultiLevelSolverPointer() = new FSIMultiLevelSolver<DIM>;
 	
 	StdLoop::BasicInit(paramfile,PC,FC);
