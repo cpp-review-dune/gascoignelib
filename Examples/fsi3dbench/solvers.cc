@@ -20,8 +20,6 @@ namespace Gascoigne
   template <int DIM>
   FSISolver<DIM>::FSISolver()
       : StdSolver()
-      , __IF(0)
-      , __IS(0)
   {
   }
 
@@ -45,8 +43,17 @@ namespace Gascoigne
     _LAP_A.ReInit(&SA);
     _LAP_M.SetMatrix(&_LAP_A);
     _LAP_M.ReInit(&SA);
-
-
+    
+    // ILU for partitioning
+    if (!_directsolver)
+      {
+	//	_ILU_F.SetMatrix(GetMatrix());
+	_ILU_S.SetMatrix(GetMatrix());
+	
+	_ILU_F.ReInit(&SA);
+	_ILU_S.ReInit(&SA);
+      }
+    
     _LAP_A.zero();
     GlobalVector dummy(DIM + 1, GetMesh()->nnodes());
 
@@ -90,41 +97,6 @@ namespace Gascoigne
 	Q->StrongDirichletMatrix(_LAP_A, color, comps);
       }
     
-    
-    // // Dirichlet values, on colors, where DIM+1 .. 2 DIM are set
-    // const BoundaryManager *BM = GetProblemDescriptor()->GetBoundaryManager();
-    // const IntSet &Colors = BM->GetDirichletDataColors();
-    // for (IntSet::const_iterator p = Colors.begin(); p != Colors.end(); p++)
-    // {
-    //   int col = *p;
-    //   // hier nochmal dran arbeitn...
-    //   /////////////////////////////////////////////////////////////
-    //   ////////////////////////////////////////////////////////////
-    //   // Hier Randfarben der Extension andern
-    //   vector<int> cc;
-    //   cc.push_back(DIM);
-    //   // fsi3 bench
-    //   // if ((col==0)||(col==1)||(col==80)||(col==81)) cc.push_back(0);
-    //   // if ((col==2)||(col==80)||(col==81))           cc.push_back(1);
-    //   // box
-    //   // if ((col==0)||(col==1)||(col==4)||(col==84)) 		cc.push_back(0);
-    //   // if ((col==0)||(col==1)||(col==4)||(col==84))           cc.push_back(1);
-    //   // if ((col==0)||(col==1)||(col==4)||(col==5)||(col==84)||(col==85))
-    //   // cc.push_back(2);
-    //   // vein
-    //   if ((col == 7) || (col == 2) || (col == 4) || (col == 12) ||
-    //       (col == 11) || (col == 13))
-    //     cc.push_back(0);
-    //   if ((col == 7) || (col == 2) || (col == 4) || (col == 12) ||
-    //       (col == 11) || (col == 13))
-    //     cc.push_back(1);
-    //   if ((col == 7) || (col == 2) || (col == 4) || (col == 12) ||
-    //       (col == 11) || (col == 13))
-    //     cc.push_back(2);
-
-    //   if (cc.size() > 0)
-    //     GetDiscretization()->StrongDirichletMatrix(_LAP_A, col, cc);
-    // }
 
     // modify in solid
     const vector<int> &s_nodes = GetAleDiscretization()->GetSolidL2G();
@@ -141,7 +113,6 @@ namespace Gascoigne
     cv.push_back(DIM);
     for (int i = 0; i < GetMesh()->nnodes(); ++i)
       _LAP_A.dirichlet(i, cv);
-
 
     // copy to mumps
     _LAP_M.ConstructStructure(vector<int>(0), _LAP_A);
@@ -174,20 +145,7 @@ namespace Gascoigne
   template <int DIM>
   void FSISolver<DIM>::ComputeIlu(const VectorInterface &gu) const
   {
-    if ((_matrixtype == "umfsplit") && (!_directsolver))
-    {
-      abort();
-    }
-    else if (((_matrixtype == "splitumf") || (_matrixtype == "fsisplitumf")) &&
-             (!_directsolver))
-    {
-      abort();
-    }
-    else if ((_matrixtype == "fsisplit") && (!_directsolver))
-    {
-      abort();
-    }
-    else if (!_directsolver)
+    if (!_directsolver)
     {
       int ncomp = GetProblemDescriptor()->GetEquation()->GetNcomp();
       PermutateIlu(gu);
@@ -197,6 +155,25 @@ namespace Gascoigne
 
       modify_ilu(*GetIlu(), ncomp);
       GetIlu()->compute_ilu();
+
+
+      // FOR FSI ILU
+      IntVector perm(GetMatrix()->GetStencil()->n());
+      iota(perm.begin(),perm.end(),0);
+      CuthillMcKee    cmc(GetMatrix()->GetStencil());
+      cmc.Permutate      (perm);
+
+
+      _ILU_F.ConstructStructure(perm,
+				*GetMatrix());
+      _ILU_S.ConstructStructure(vector<int>(0), 
+				*GetMatrix());
+      HASHSET<int> nullset;
+      _ILU_F.copy_entries(GetAleDiscretization()->GetFluidG2L(), GetAleDiscretization()->GetInterfaceNodes(), GetMatrix());
+      //      _ILU_F.copy_entries(GetAleDiscretization()->GetFluidG2L(), nullset, GetMatrix());
+      _ILU_S.copy_entries(GetAleDiscretization()->GetSolidG2L(), nullset, GetMatrix());
+      _ILU_F.compute_ilu();
+      _ILU_S.compute_ilu();
     }
     else
       StdSolver::ComputeIlu(gu);
@@ -213,14 +190,11 @@ namespace Gascoigne
            << GetSolverData().GetIluModify().size() << " and ";
       cerr << "ncomp=" << ncomp << endl;
       abort();
-      // assert(GetSolverData().GetIluModify().size()==ncomp);
     }
 
     for (int c = 0; c < ncomp; c++)
     {
       double s = GetSolverData().GetIluModify(c);
-
-
       I.modify(c, s);
     }
   }
@@ -232,18 +206,43 @@ namespace Gascoigne
                               const VectorInterface &y,
                               VectorInterface &h) const
   {
+    const std::vector<int>& fl2g = GetAleDiscretization()->GetFluidL2G();
+    const std::vector<int>& sl2g = GetAleDiscretization()->GetSolidL2G();
+    const HASHSET<int>& interface = GetAleDiscretization()->GetInterfaceNodes();
     if ((_matrixtype == "splitumf") && (!_directsolver))
     {
       abort();
     }
     else if (GetSolverData().GetLinearSmooth() == "ilu")
     {
+      assert(!_directsolver);
       double omega = GetSolverData().GetOmega();
       for (int iter = 0; iter < niter; iter++)
       {
+	// FLUID PROBLEM
         MatrixResidual(h, x, y);
-        GetIlu()->solve(GetGV(h));
-        Add(x, omega, h);
+	// Set Dirichlet-Zero within the Solid domain for velocity & Pressure
+	// on the interface: only velocity to zero
+	for (auto it : sl2g)
+	  if (interface.find(it)==interface.end())
+	    GetGV(h).zero_node(it);
+	for (auto it : interface)
+	  for (int c=0;c<DIM;++c)
+	    GetGV(h)(it,c+1)=0.0;
+	_ILU_F.solve(GetGV(h));
+	Add(x, omega, h);
+
+	// SOLID PROBLEM
+        MatrixResidual(h, x, y);
+	for (auto it : fl2g)
+	  if (interface.find(it)==interface.end())
+	    GetGV(h).zero_node(it);
+	_ILU_S.solve(GetGV(h));
+	for (auto it : fl2g)
+	  if (interface.find(it)==interface.end())
+	    GetGV(h).zero_node(it);
+
+	Add(x, omega, h);
       }
     }
     else
@@ -258,27 +257,6 @@ namespace Gascoigne
     StdSolver::smooth_exact(x, y, help);
   }
 
-
-  template <int DIM>
-  void FSISolver<DIM>::do_precondition(VectorInterface gx) const
-  {
-    GlobalVector &H = GetGV(gx);
-    assert(H.n() == _precond.size());
-    assert(H.ncomp() == _precond[0].size());
-    for (int i = 0; i < H.n(); ++i)
-      for (int c = 0; c < H.ncomp(); ++c)
-        H(i, c) *= _precond[i][c];
-  }
-  template <int DIM>
-  void FSISolver<DIM>::undo_precondition(VectorInterface gx) const
-  {
-    GlobalVector &H = GetGV(gx);
-    assert(H.n() == _precond.size());
-    assert(H.ncomp() == _precond[0].size());
-    for (int i = 0; i < H.n(); ++i)
-      for (int c = 0; c < H.ncomp(); ++c)
-        H(i, c) /= _precond[i][c];
-  }
 
 
   /// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -421,13 +399,6 @@ namespace Gascoigne
       for (int i = 0; i < s_nodes.size(); ++i)
         if (i_nodes.find(s_nodes[i]) == i_nodes.end())
           GetMatrix()->dirichlet(s_nodes[i], cv);
-
-      // cv.clear();
-      // for (int i=0;i<DIM;++i) cv.push_back(i+1+DIM);
-      // for (int node=0;node<GetMesh()->nnodes();++node)
-      //   {
-      //       GetMatrix()->dirichlet_only_row(node,cv);
-      //   }
     }
   }
 
@@ -454,7 +425,6 @@ namespace Gascoigne
       {
         DiscretizationInterface *X = new AleQ2Lps2d;
         vector<int> delf, dels;
-        //	    for (int i=0;i<DIM;++i) delf.push_back(i+1+DIM);
         dels.push_back(0);
         dynamic_cast<AleQ2Lps2d *>(X)->InitInterfaceComponents(delf, dels);
         return X;

@@ -133,12 +133,15 @@ public:
   {
     b.zero();
 
+    double t = __TIME;
+    
     double sc = 1.0;
-    if (__TIME<0.1)
-      sc = 1.0-cos(0.5*M_PI*__TIME/0.1)*cos(0.5*M_PI*__TIME/0.1);
+    if (t<1.0) sc = 0.5-0.5*cos(M_PI*t);
+
+    double veff = vmean * sc;
     
     if (color==0)
-      b[1] += v.y()*(0.41-v.y())/0.205/0.205 * 1.5 * vmean * sc;
+      b[1] += v.y()*(0.41-v.y())/0.205/0.205 * veff * 1.5;
   }
 };
 
