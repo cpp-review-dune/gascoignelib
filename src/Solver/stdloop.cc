@@ -408,7 +408,6 @@ void StdLoop::run(const std::string& problemlabel)
           InitSolution(u);
           Moning.BasicInit(GetExactValues());
         }
-
       Solve(u,f);
 
       ComputeGlobalErrors(u);

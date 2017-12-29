@@ -95,10 +95,10 @@ void BasicDiscretization::GlobalToGlobalData() const
 {
   const GlobalParameterData& gpd = GetDataContainer().GetParameterData();
   __QP.clear();
-  GlobalParameterData::const_iterator p=gpd.begin();
-  for(; p!=gpd.end(); p++)
+
+  for(auto p : gpd)
     {
-      __QP.insert(make_pair(p->first,*p->second));
+      __QP.insert(make_pair(p.first,*p.second));
     }
 }
 

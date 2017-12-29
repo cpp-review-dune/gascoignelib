@@ -69,6 +69,9 @@ public:
     void ReInit(const SparseStructureInterface* S);
 
     void entry(niiterator start, niiterator stop, const EntryMatrix& M, double s=1.);
+  void entry(niiterator start1, niiterator stop1,
+	     niiterator start2, niiterator stop2,
+	     const EntryMatrix& M, double s=1.);
     void entry_diag(int i, const nmatrix<double>& M);
     void dirichlet (int i, const std::vector<int>& cv);
     void dirichlet_only_row (int i, const std::vector<int>& cv);

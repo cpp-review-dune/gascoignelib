@@ -41,6 +41,7 @@ SET(GASCOIGNE_INCLUDE_DIRS
   ${CMAKE_CURRENT_SOURCE_DIR}/src/Discretization/Q1
   ${CMAKE_CURRENT_SOURCE_DIR}/src/Discretization/Q2
   ${CMAKE_CURRENT_SOURCE_DIR}/src/Discretization/Q4
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/Discretization/DG
   ${CMAKE_CURRENT_SOURCE_DIR}/src/Interface
   ${CMAKE_CURRENT_SOURCE_DIR}/src/LinAlg
   ${CMAKE_CURRENT_SOURCE_DIR}/src/Mesh
