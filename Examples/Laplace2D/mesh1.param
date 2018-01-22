@@ -19,8 +19,9 @@ gridname    square.inp
 
 //Block Solver
 
+matrixtype block
 discname       Q2
 
-ndirect              1000
+ndirect              1
 
 //Block Nix

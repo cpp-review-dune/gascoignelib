@@ -14,6 +14,7 @@ MESSAGE(STATUS "Jetzt aber: " ${CMAKE_CXX_FLAGS})
 MESSAGE(STATUS "Jetzt aber: " ${COMPILE_DEFINITIONS})
 
 SUBDIRS(
+	Slip
    DG
    fast3d_neu
    fsi3dbench
