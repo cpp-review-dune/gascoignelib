@@ -5,7 +5,7 @@ estimator    none
 estimator    energy
 initial      boundary
 refiner      global
-refiner      eta
+//refiner      eta
 
 
 //Block BoundaryManager
@@ -19,7 +19,7 @@ dirichletcomp   80      2       1 2
 
 //Block Mesh
 dimension 2
-prerefine 1
+prerefine 2
 gridname nsbench4.inp
 
 

@@ -50,7 +50,7 @@ template<int DIM>
 void BoundaryFunction<DIM>::newton(Vector& dst) const
 {
   int    maxi = 10;
-  double tol  = 1.e-14;
+  double tol  = 1.e-12;
 
   Vector z;
 

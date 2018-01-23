@@ -26,10 +26,6 @@
 #include  "fmatrixblock.h"
 #include  "simplematrix.h"
 
-#include <fstream>
-#include <sstream>
-
-
 /*-------------------------------------------------------------*/
 
 namespace Gascoigne
@@ -632,85 +628,4 @@ std::ostream& SparseBlockMatrix<B>::Write(std::ostream &os) const
     }
   return os;
 }
-
-
-  
-  template<class B>
-  double SparseBlockMatrix<B>::exec(std::string cmd) const
-  {
-    FILE* pipe = popen(cmd.c_str(), "r");
-    if (!pipe) return 0;
-    char buffer[128];
-    std::string result = "";
-    while(!feof(pipe)) {
-      if(fgets(buffer, 128, pipe) != NULL)
-	result += buffer;
-    }
-    pclose(pipe);
-    return atof(result.c_str());
-  }
-  
-
-  template<class B>
-  double SparseBlockMatrix<B>::condition_number()  const
-  {
-    int N = this->n();
-    
-    assert(N>0);
-
-    ostringstream ss;
-    ss << "mat" << N;
-    string datnamebase = ss.str();
-    ss << ".dat";
-    string datname = ss.str();
-    ofstream OUT(datname.c_str());
-    
-    const ColumnDiagStencil* CS = dynamic_cast<const ColumnDiagStencil*>(GetStencil());
-
-    for (int r=0;r<CS->n();++r)
-      {
-	for (int p=CS->start(r);p<CS->stop(r);++p)
-	  {
-	    int c = CS->col(p);
-	    const B& V = *mat(p);
-	    for (int c1=0;c1<V.ncomp();++c1)
-	      for (int c2=0;c2<V.ncomp();++c2)
-		{
-		  if ((V(c1,c2)==0)&& ( (c1!=c2) || (r!=c) ) ) continue;
-		  OUT <<  r*V.ncomp()+c1+1  <<  "\t" 
-		      <<  c*V.ncomp()+c2+1 <<  "\t" 
-		      << V(c1,c2) << std::endl;
-		}
-	  }
-	
-      }
-    OUT.close();
-    
-    ss.clear();
-    ss.str("");
-    ss << datnamebase << ".m";
-    string mname = ss.str();
-    OUT.open(mname.c_str());
-
-    OUT << "load " << datnamebase << ".dat" << endl;
-    OUT << "A = spconvert(" << datnamebase << ")" << endl;
-    OUT << "condest(A)" << endl;
-    OUT << "exit" << endl;
-    OUT.close();
-    
-    ss.clear();
-    ss.str("");
-    ss << "/usr/local/bin/matlab  -nojvm -nodesktop -nodisplay -nosplash < " << mname
-       << " test.m | tail -3 | head -1 " ;
-    double cond =  exec(ss.str().c_str());
-
-    ss.clear();
-    ss.str("");
-    ss << "rm " << mname << " " << datname << endl;
-    assert(system(ss.str().c_str())==0);
-
-    return cond;
-  }
-
-
 }

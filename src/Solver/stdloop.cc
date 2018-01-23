@@ -34,9 +34,6 @@
 #include  "energyestimator.h"
 #include  "q22dwithsecond.h"
 
-#include "sparseblockmatrix.h"
-#include "fmatrixblock.h"
-
 
 using namespace std;
 
@@ -412,11 +409,6 @@ void StdLoop::run(const std::string& problemlabel)
           Moning.BasicInit(GetExactValues());
         }
       Solve(u,f);
-
-
-
-
-
 
       ComputeGlobalErrors(u);
       

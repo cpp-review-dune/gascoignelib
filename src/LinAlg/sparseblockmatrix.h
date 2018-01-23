@@ -78,10 +78,6 @@ class SparseBlockMatrix : public MatrixInterface
 
   ///// Methods //////////////////////
 
-  double exec(std::string cmd) const;
-    
-  double condition_number()  const;
-  
   void AddMassWithDifferentStencil(const MatrixInterface* M, 
 				   const TimePattern& TP, double s=1.);
   void AddMassWithDifferentStencilJacobi(const MatrixInterface* M,
