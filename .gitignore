@@ -7,7 +7,6 @@ CMakeCache.txt
 CMakeSystem.cmake
 CMakeTmp
 Makefile
-cmake*
 *.kdev4
 
 # ignore all Results in Examples directory
