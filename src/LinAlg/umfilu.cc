@@ -24,8 +24,11 @@
 
 #include  "umfilu.h"
 #include  <fstream>
+#include <sstream>
 
 #ifdef __WITH_UMFPACK__
+
+extern double DDD;
 
 using namespace std;
  
@@ -151,11 +154,99 @@ UmfIlu::~UmfIlu()
   umfpack_di_free_symbolic (&Symbolic) ;
   umfpack_di_free_numeric (&Numeric) ;
 
-  if(Control) delete[] Control; Control=NULL;
-  if(Info) delete[] Info; Info=NULL;
+  if(Control) delete[] Control;
+  Control=NULL;
+  if(Info) delete[] Info;
+  Info=NULL;
 }
 
 /*-------------------------------------------------------------*/
+
+  double UmfIlu::exec(std::string cmd) const
+  {
+    FILE* pipe = popen(cmd.c_str(), "r");
+    if (!pipe) return 0;
+    char buffer[128];
+    std::string result = "";
+    while(!feof(pipe)) {
+      if(fgets(buffer, 128, pipe) != NULL)
+	result += buffer;
+    }
+    pclose(pipe);
+    return atof(result.c_str());
+  }
+  
+  double UmfIlu::condition_number()  const
+  {
+    
+    const ColumnStencil* SA = dynamic_cast<const ColumnStencil*>(AP->GetStencil());
+    assert(SA);
+    
+    const int* sb = &(*SA->start().begin());
+    const int* cb = &(*SA->col().begin());
+    const double* mb = &AP->GetValue(0);
+    
+    
+    int N = SA->n();
+    assert(N>0);
+
+    //    if (N<100000) return 0.0;
+    
+    ostringstream ss;
+    ss << "mat" << N;
+    string datnamebase = ss.str();
+    ss << ".dat";
+    string datname = ss.str();
+    ofstream OUT(datname.c_str());
+
+    
+    for (int r=0;r<SA->n();++r)
+      {
+	for (int p=SA->start(r);p<SA->stop(r);++p)
+	  {
+	    int c = SA->col(p);
+
+	    double v = AP->GetValue(p);
+	    if ((v==0)&&(r!=c)) continue;
+	    OUT <<  r+1 <<  "\t" << c+1 << "\t" << v << std::endl;
+	  }
+      }
+    OUT.close();
+    ss.clear();
+    ss.str("");
+    ss << datnamebase << ".m";
+    string mname = ss.str();
+    OUT.open(mname.c_str());
+    
+    OUT << "load " << datnamebase << ".dat" << endl;
+    OUT << "A = spconvert(" << datnamebase << ")" << endl;
+    //    OUT << "condest(A)" << endl;
+    //        OUT << "eigs(A,1)" << endl;
+    OUT << "eigs(A,1)" << endl;
+    OUT << "exit" << endl;
+    OUT.close();
+
+    cout << "DDD="<< DDD << endl;
+    ss.clear();
+    ss.str("");
+    ss << "/Applications/MATLAB_R2017a.app/bin/matlab  -nojvm -nodesktop -nodisplay -nosplash < " << mname
+       << " test.m | tail -3 | head -1 " ;
+    double cond =  exec(ss.str().c_str());
+
+    ss.clear();
+    ss.str("");
+    ss << "rm " << mname << " " << datname << endl;
+    //    assert(system(ss.str().c_str())==0);
+
+    return cond;
+
+
+  }
+
+
+
+
+  
 
 void UmfIlu::ReInit(const SparseStructureInterface* SS)
 {
@@ -197,6 +288,9 @@ void UmfIlu::ConstructStructure(const IntVector& perm, const MatrixInterface& A)
 
 void UmfIlu::Factorize()
 {
+  //      cout << "Konditionszahl   " << condition_number() << endl;
+				
+
   //
   // baue LU auf
   //

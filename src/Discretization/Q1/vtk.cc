@@ -191,7 +191,7 @@ void Visualization::vtk(const string& bname) const
 
  //  Header
 
-  out << "# vtk DataFile Version 4.2 "<<endl;
+  out << "# vtk DataFile Version 2.0 "<<endl;
   out << "output from GascoigneStd, "<< title << endl;
   out << "ASCII" << endl;
   out << "DATASET UNSTRUCTURED_GRID" << endl;

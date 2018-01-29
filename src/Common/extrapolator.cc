@@ -39,7 +39,7 @@ Extrapolator::~Extrapolator() {}
 void Extrapolator::Print()
 {
   int n = order.size();
-  cout << "extra\t";
+  cout << "********** extra\t";
 
   cout.precision(12);
   for (int i=0; i<n; i++)
@@ -47,6 +47,7 @@ void Extrapolator::Print()
       cout << valextra[i];
       cout.precision(4);
       cout << " [" << order[i] << "]  ";
+      cout << " (h^q; q = " << log(order[i])/log(2.0) << ")  ";
       cout.precision(12);
     }
   cout << endl;

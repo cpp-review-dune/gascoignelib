@@ -599,8 +599,8 @@ double GalerkinIntegrator<DIM>::ComputeDomainFunctional(const DomainFunctional& 
   F.SetCellData(_QCH);
 
 #warning "ComputeDomainFunctional wird mit der Mittelpunktsregel ausgewertet!"
-  //  const IntegrationFormulaInterface& IF = *FormFormula();
-  const IntegrationFormulaInterface& IF = *MidPointFormula();
+  const IntegrationFormulaInterface& IF = *FormFormula();
+  //  const IntegrationFormulaInterface& IF = *MidPointFormula();
   
 
 

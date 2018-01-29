@@ -1,6 +1,5 @@
 SUBDIRS(
-  stinker NavierStokes2D project part bench
-
+  NavierStokes2D  bench Burger Nichtlinear Laplace_t Problems Crank
 )
 
 LINK_LIBRARIES(${GASCOIGNE_LIBRARIES} )

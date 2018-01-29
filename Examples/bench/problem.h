@@ -28,24 +28,23 @@ namespace Gascoigne
     double mx,my;
     double alpha = M_PI/2.0; // 90 grad ist ohne Konvergenz oder Divergenz
     // windstarke
-<<<<<<< HEAD
-    double ws = tanh(tP*(8.0-tP)/2.0);  
-    //   double ws = 1.0;
-=======
     // double ws = tanh(tP*(8.0-tP)/2.0);  
     double ws = tanh(tP*(8.0-tP)/2.0);  
->>>>>>> e2c4f56a24b1f974e2e1ac00bd2e291453648897
+
     if ((p%2) == 0)
       {
 	mx = 50+800/16.0*tP;
 	my = 50+800/16.0*tP;
 	alpha -=  M_PI/2.0/5; // 18 Grad Konvergenz
+
       }
     else
       { ws=-ws;
 	mx = 450-800/16.0*tP;
 	my = 450-800/16.0*tP;
 	alpha -=  M_PI/2.0/10; // 9 Grad Divergenz 10
+	
+
       }
 
     double wx = cos(alpha)*(x-mx) + sin(alpha)*(y-my);
@@ -72,12 +71,16 @@ namespace Gascoigne
 	mx = 50+800/16.0*tP;
 	my = 50+800/16.0*tP;
 	alpha -=  M_PI/2.0/5; // 18 Grad Konvergenz
+		
+
       }
     else
       {ws=-ws;
 	mx = 450-800/16.0*tP;
 	my = 450-800/16.0*tP;
 	alpha -=  M_PI/2.0/10; // 9 Grad Divergenz
+		
+
       }
 
     double wx = cos(alpha)*(x-mx) + sin(alpha)*(y-my);
@@ -286,7 +289,7 @@ namespace Gascoigne
       
   
       // anfang im September
-      // double zeit = (0.5+0.5*cos(2.0*M_PI* (TIME*Tref + 3.0*30.0*24.*60*60 )/(365*24*60*60)));
+      //      double zeit = (0.5+0.5*cos(2.0*M_PI* (TIME*Tref + 3.0*30.0*24.*60*60 )/(365*24*60*60)));
       // double ux=0.0008*zeit;
 
       //   double uy=(1-zeit)*(-0.0014);

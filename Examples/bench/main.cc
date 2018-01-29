@@ -42,7 +42,10 @@ public:
   std::string GetName() const {return "Kinetic Energy";}
   double J(const FemFunction& U, const Vertex2d& v) const
   {
-    return rho * 0.5 * (*H)[0].m() * ( U[0].m()*Tref/Lref*U[0].m()*Tref/Lref + U[1].m()*Tref/Lref*U[1].m()*Tref/Lref);
+    if(v.x()>0.25 && v.y()>0.25)
+      return rho * 0.5 * (*H)[0].m() * ( U[0].m()*Tref/Lref*U[0].m()*Tref/Lref + U[1].m()*Tref/Lref*U[1].m()*Tref/Lref);
+    return 0.0;
+    
   }
 };
 class Mass  : public virtual DomainFunctional
@@ -71,7 +74,10 @@ public:
   std::string GetName() const {return "Mass";}
   double J(const FemFunction& U, const Vertex2d& v) const
   {
-    return rho * (*H)[0].m();
+    if ((*H)[1].m() > 0.15)
+    return  (*H)[1].m();
+    else return 0;
+    
   }
 };
 

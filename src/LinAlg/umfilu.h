@@ -62,7 +62,10 @@ public:
     //
     UmfIlu(const MatrixInterface* A);
     ~UmfIlu();
-    
+
+    double condition_number()  const;
+    double exec(std::string cmd) const;
+	
     std::string GetName() const { return "UmfIlu"; }
     
     int   n()          const { return GetStencil()->n();};

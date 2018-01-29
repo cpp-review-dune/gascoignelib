@@ -77,6 +77,7 @@ double WWindX(double x, double y, double t)
 extern ofstream ELLIPSE_OUT;
 
 double TIME, DT, DTSUB, DELTAMIN,DTUL;
+extern int zahl;
 extern double STEUERUNG_MU;
 
 string Loop::PrecondCGMass(GlobalVector& u, GlobalVector& f, const TimePattern& TP, double s)
@@ -319,8 +320,7 @@ void Loop::SolveTransport(VectorInterface& h,
 
 void Loop::run(const std::string& problemlabel)
 {
-
-
+  zahl=1;
   TIME=0.0;
   double tref;
   double dtmax, endtime;
@@ -539,7 +539,7 @@ void Loop::run(const std::string& problemlabel)
       GetSolverInfos()->GetNLInfo().control().matrixmustbebuild() = 1;
       GetMultiLevelSolver()->AddNodeVector("oldu", oldu);
       GetMultiLevelSolver()->AddNodeVector("extu", extu);
-      GetMultiLevelSolver()->AddNodeVector("H", h);     ////// Die Low-Order-Loesung geht in die Momentengleichung ein.
+      GetMultiLevelSolver()->AddNodeVector("H", hl);     ////// Die Low-Order-Loesung geht in die Momentengleichung ein.
 
       GetMultiLevelSolver()->GetSolver()->Equ(oldu,1.0, u);
       GetMultiLevelSolver()->GetSolver()->Equ(oldoldu,1.0, oldu);
@@ -548,7 +548,7 @@ void Loop::run(const std::string& problemlabel)
       GetMultiLevelSolver()->ComputeIlu(u);  
       res = Solve(u,f,"Results/u");
 
-
+      
 
       if (res!="converged")
 	{
@@ -584,17 +584,17 @@ void Loop::run(const std::string& problemlabel)
   
 
       
-      string ell_name="ellipse";
-      compose_name(ell_name,_iter);
-      ELLIPSE_OUT.open(ell_name.c_str());
+       string ell_name="ellipse";
+         compose_name(ell_name,_iter);
+        ELLIPSE_OUT.open(ell_name.c_str());
       functionals = Functionals(u,f);
-      ELLIPSE_OUT.close();
+       ELLIPSE_OUT.close();
      
       GetMultiLevelSolver()->DeleteNodeVector("oldu");
       GetMultiLevelSolver()->DeleteNodeVector("extu");
       GetMultiLevelSolver()->DeleteNodeVector("H");
 
-      /*
+      
       // Other-Problem
       GetMultiLevelSolver()->SetProblem("other");
       GetSolverInfos()->GetNLInfo().control().matrixmustbebuild() = 1;
@@ -603,9 +603,10 @@ void Loop::run(const std::string& problemlabel)
       Solve(other,f,"Results/o");
       GetMultiLevelSolver()->DeleteNodeVector("U");
       GetMultiLevelSolver()->DeleteNodeVector("H");
-      */
       
-      OUTF << TIME << " " << functionals  <<a<<endl;
+      
+        OUTF << TIME << " " << functionals  <<a<<endl;
+	zahl++;
       //  jetzt ist gerechnet und es gibt umittel, hmittel
 
 

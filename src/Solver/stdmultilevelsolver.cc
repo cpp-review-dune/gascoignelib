@@ -34,9 +34,8 @@
 #include "sparseblockmatrix.h"
 #include  "fmatrixblock.h"
 using namespace std;
-
-double DDD;
-double STEUERUNG_MU;
+int zahl, it;
+double DDD=1.0;
 int writeiter;
 /*-------------------------------------------------------------*/
 
@@ -485,7 +484,7 @@ void StdMultiLevelSolver::Cg(VectorInterface& x, const VectorInterface& f, CGInf
 void StdMultiLevelSolver::newton(VectorInterface& u, const VectorInterface& f, VectorInterface& r, VectorInterface& w, NLInfo& info)
 {
   DDD=1.0;
-  STEUERUNG_MU =0.00;
+
   double rho1=0.0;
   double rho2=0.0;
   double ET1=1.0;
@@ -496,138 +495,71 @@ void StdMultiLevelSolver::newton(VectorInterface& u, const VectorInterface& f, V
   NewtonOutput(info);
   NewtonPreProcess(u,f,info);
   nvector<int> nlin,nresi;
- double res_old,res_new,res_mat;
-
-  int it=0.0;
-
- // GlobalVector SAVE,SAVER;
-
+  double res_old,res_new,res_mat;
+  
+  it=0.0;
   
   vector<double> ressi(200);
   ressi[0]=1.0;
-  ++writeiter;
-  GetSolver()->Visu("Results/r",r,writeiter);
-  
+
+ 
+
   for(it=1; !reached; it++)
     {
-      //SAVE = GetSolver()->GetGV(u);
-      // SAVER = GetSolver()->GetGV(r);
-
-    
+      //cout <<DDD<<"DDDstdmul"<<endl;
       NewtonMatrixControl(u,info);
       NewtonVectorZero(w);
-      // Altes Residuum merken
-  //    res_old = pow(GetSolver()->GetGV(r).norm(),2.0);
-  /*               
-      info.GetLinearInfo().user().tol()=0.99;
-      
-         if(it==1|| it==100)
-	ressi[0]=0.75*rr;
-      
-
-      if (it>1)
-	{
-	
-	  rho2=pow(rho1,1.5);
-	  rho2 =max(0.1, rho2);
-	
-	  info.GetLinearInfo().user().tol()=rho2;
-	 
-	   if( ressi[it-1]>ressi[0])
-	{ info.GetLinearInfo().user().tol()=0.99;
-
-	}
-      
-   
-   
-		}
-      
-      
-      */
       
       NewtonLinearSolve(w,r,info.GetLinearInfo());
       nlin.push_back(info.GetLinearInfo().control().iteration());
    
-      
-      
-
-
-      
-
-  
-      
       double rw = NewtonUpdate(rr,u,w,r,f,info);
-
-        ressi[it]=rr;
-	
-	
-   //   res_new = pow(GetSolver()->GetGV(r).norm(),2.0);
       
-   //   res_mat = pow(STEUERUNG_MU*GetSolver()->GetGV(w).norm(),2.0);
-      
-      
+      ressi[it]=rr;
       reached = info.check(it,rr,rw);
      
-    //  double epsilon = (res_old-res_new)/(res_old-res_mat);
-     // cout << "EPSILON " << epsilon << endl;
       rho1 = info.statistics().lastrate();
 
-      /*
-      if(epsilon<0.3 ) 
-	{
-	  STEUERUNG_MU=2.0*STEUERUNG_MU;
-	  it=it-1;
-	    info.control().matrixmustbebuild() = 1; // dann macht der auf jeden fall ne matrix.
-	    cout<<"STEUERUNG"<<STEUERUNG_MU<<1<<endl;
-	  continue;
-	 
-	}
-      if(epsilon>0.9)
-	{
-	  STEUERUNG_MU=0.5*STEUERUNG_MU;
-	  cout<<"STEUERUNG"<<STEUERUNG_MU<<3<<endl;
-	}
-      cout<<"STEUERUNG"<<STEUERUNG_MU<<endl;
-      ressi[it]=rr; 
-*/     
       NewtonOutput(info);
       
       
       nresi.push_back(rr);
-       
-      /*     rho2 = ressi[it]/ressi[it-1];
-	     
-	     if ((rho2>1.0)&&(it>1)) // schritt wiederholen
-	     {
-	     DDD= ET2;
-	     //  GetSolver()->GetGV(u) = SAVE; 
-	     // GetSolver()->GetGV(r) = SAVER; 
-	     ressi[it]=ressi[it-1];
-	     cout  <<  "$$$$$$$$$$ Newton Kaputt  rho/DDD: " << lastrate << "\t" << DDD << "\t"<< ressi[it]<<endl;
-	     continue;
-	     }
-      */
+
+      ET1=DDD;
       
-      //      if (it==6)
-      //	 { DDD=1.0;}
-      //if(it>6)
-      // {
+      // DDD=1.0;
+      //if(it==12)
+      DDD=min(ET1*(0.2+4/(0.7+exp(1.51*rho1))),1);
+      //cout<<it<<endl;
+	//	cout<<"DDD"<<DDD<<"it"<<it<<endl;
+	/*	//	cout<<"DDD"<<DDD<<"it"<<it<<endl;
+		if (rho1>=1)
+	{DDD=0.5;
+	  cout<<DDD<<endl;
+	}
+	if(fabs(rho1-1)<0.005)
+	  {	  DDD=1.0;
+	    cout<<DDD<<"DDD"<<endl;
+	  }
+	//if (zahl==1 && it==2)
+	//{DDD=0.5;
+	//cout<<DDD<<"DDD"<<endl;
+	// }
+       //   DDD=max(DDD,0.1);
+	
+	*/
+		//	 if(DDD<0.3)
 
-
-       ET1=DDD;
+	 if(DDD<0.01) 
+	 DDD=1;
+	 //	 cout  <<  "Steuerung Newton rho/DDD/ET: " << rho1 << "\t" << DDD << "\t"<< rr << endl; //	DDD=min(ET1*(0.2+4/(0.7+exp(1.51*rho1))),1);
        
-	 
-      	DDD=min(ET1*(0.2+4/(0.7+exp(1.51*rho1))),1);
-	if(DDD<0.2) 
-	DDD=1.0;
-
-	
-	 cout  <<  "Steuerung Newton rho/DDD/ET: " << rho1 << "\t" << DDD << "\t"<< ET1 << endl;
-
-	
+       
     }
   
-  cerr << "New: " << it <<"\t"<< nlin.sum() << "\t" << nlin << endl;
+
+  // das gibt eine statistik ueber die Newton und ~GMRES konvergenz aus.
+  //   cerr << "New: " << it <<"\t"<< nlin.sum() << "\t" << nlin << "\t"<< DDD<< "\t"<< rho1<< "\t"<<rr<< endl;
   
   
   NewtonPostProcess(u,f,info);
@@ -737,8 +669,24 @@ double StdMultiLevelSolver::NewtonUpdate(double& rr, VectorInterface& x, VectorI
   bool lex  = linfo.control().status()=="exploded";
 
   double nn = NewtonNorm(dx);
+
+  double nnl2=GetSolver()->GetGV(dx).norm();
+
   double nr = GetSolver(ComputeLevel)->Norm(r);
 
+  ostringstream ss;
+  ss << "mat_nn_it_DD_neu1" << it << ".dat";
+  string datname = ss.str();
+  /*
+  ofstream OUT(datname.c_str());
+  if(it==12){
+   OUT << "Update Norm Lunendlich "<< nn
+    << "\t update norm l2 " << nnl2 
+    << "\t norm residuum " << nr << endl;
+   OUT.close();
+   
+  }
+  */
   if (nn>1.e30)  lex =1;
   if (!(nn>=0.)) lex =1;
   if (nr>1.e30)  lex =1;
@@ -752,24 +700,47 @@ double StdMultiLevelSolver::NewtonUpdate(double& rr, VectorInterface& x, VectorI
       return NewtonNorm(dx);
     }
 
-  double omega = 0.25;
-  double relax = 1.;
+  double omega = 0.75;
+  double relax = 1.0;
 
+  
   GetSolver(ComputeLevel)->SetPeriodicVectorZero(dx);
+  /*
+  // if(zahl==1000 && it==3)
+  //{
+  // nur test
+  GlobalVector  X = GetSolver(ComputeLevel)->GetGV(x);
+  NewtonResidual(r,x,f);
+  double rold = NewtonNorm(r);
 
+  for (double om = 0.0010406;om>0.0001;om*=0.99)
+    {
+      GetSolver(ComputeLevel)->GetGV(x)=X;
+      GetSolver(ComputeLevel)->Add(x,om,dx);
+      NewtonResidual(r,x,f);
+      rr = NewtonNorm(r);
+      cerr << om << "\t" << rr/rold << endl;
+    }
+  
+  GetSolver(ComputeLevel)->GetGV(x)=X;
+  //}
+  */
+  // So gehoerts:
   GetSolver(ComputeLevel)->Add(x,relax,dx);
   NewtonResidual(r,x,f);
   rr = NewtonNorm(r);
-  
-  
+
   string message = "";
   int diter=0;
-  for(diter=0;diter<nlinfo.user().maxrelax();diter++)
+  
+
+  
+  // for(diter=0;diter<nlinfo.user().maxrelax();diter++)
+  for (diter=0;diter<15;diter++)
     {
       message = nlinfo.check_damping(diter,rr);
-
-   
-
+       
+	
       if (message=="ok")       break;
       if (message=="continue") 
       {
@@ -778,7 +749,8 @@ double StdMultiLevelSolver::NewtonUpdate(double& rr, VectorInterface& x, VectorI
         NewtonResidual(r,x,f);
         rr = NewtonNorm(r);
         relax *= omega;
-	
+	if(it>10){
+	  cout<<relax<<"relax_netwon"<<endl;}
         continue;
       }
       if (message=="exploded")
@@ -790,9 +762,12 @@ double StdMultiLevelSolver::NewtonUpdate(double& rr, VectorInterface& x, VectorI
         break;
       }
     }
+  
   nlinfo.check_damping(diter,rr);
+ 
+  
 
-  // NewtonUpdateShowCompResiduals(nlinfo.control().iteration(), x, r, f,dx);
+  //  NewtonUpdateShowCompResiduals(nlinfo.control().iteration(), x, r, f,dx);
 
   return NewtonNorm(dx);
 }
@@ -801,15 +776,134 @@ double StdMultiLevelSolver::NewtonUpdate(double& rr, VectorInterface& x, VectorI
 
 void StdMultiLevelSolver::AssembleMatrix(VectorInterface& u)
 {
+  
+  double saveDDD=DDD;
+
+  const StdSolver *S = dynamic_cast<const StdSolver*> (GetSolver());
+  assert(S);
+  /*
+ cout<<it<<endl;
+  if(it>=11) {
+  if (1)
+    {
+      DDD=0.0;
+      GetSolver()->MatrixZero();
+      GetSolver()->AssembleMatrix(u,1.);
+      
+      const SparseBlockMatrix<FMatrixBlock<2> >* A =
+	dynamic_cast<  const SparseBlockMatrix<FMatrixBlock<2> >* > (S->GetMatrix());
+      assert(A);
+
+      ostringstream ss;
+      ss << "mat_0_DD1_it" << it << ".dat";
+      string datname = ss.str();
+      ofstream OUT(datname.c_str());
+
+      OUT.precision(14);
+      const ColumnStencil* SA = dynamic_cast<const ColumnStencil*>(A->GetStencil());
+      assert(SA);
+      
+      for (int r=0;r<SA->n();++r)
+	{
+	  for (int p=SA->start(r);p<SA->stop(r);++p)
+	    {
+	      int c = SA->col(p);
+	      const FMatrixBlock<2>& M = *(A->mat(p));
+	      for (int i1=0;i1<2;++i1)
+		for (int i2=0;i2<2;++i2)
+		  if (M(i1,i2)!=0)
+		    OUT << 1+2*r+i1 << "\t"
+			<< 1+2*c+i2 << "\t"
+			<< M(i1,i2) << endl;
+	    }
+	}
+      OUT.close();
+    }
+   
+  if (1)
+    {
+      DDD=1.0;
+      GetSolver()->MatrixZero();
+      GetSolver()->AssembleMatrix(u,1.);
+      
+      const SparseBlockMatrix<FMatrixBlock<2> >* A =
+	dynamic_cast<  const SparseBlockMatrix<FMatrixBlock<2> >* > (S->GetMatrix());
+      assert(A);
+      ostringstream ss;
+      ss << "mat_1_DD1_it" << it << ".dat";
+      string datname = ss.str();
+      ofstream OUT(datname.c_str());
+
+            OUT.precision(14);
+      const ColumnStencil* SA = dynamic_cast<const ColumnStencil*>(A->GetStencil());
+      assert(SA);
+      
+      for (int r=0;r<SA->n();++r)
+	{
+	  for (int p=SA->start(r);p<SA->stop(r);++p)
+	    {
+	      int c = SA->col(p);
+	      const FMatrixBlock<2>& M = *(A->mat(p));
+	      for (int i1=0;i1<2;++i1)
+		for (int i2=0;i2<2;++i2)
+		  if (M(i1,i2)!=0)
+		    OUT << 1+2*r+i1 << "\t"
+			<< 1+2*c+i2 << "\t"
+			<< M(i1,i2) << endl;
+	    }
+	}
+      OUT.close();
+    }
+  }
+  */ 
+  DDD = saveDDD;
+  
+
   SolutionTransfer(u);
   for(int l=0;l<=ComputeLevel;l++)
     {
-   
+      
       GetSolver(l)->MatrixZero();
       GetSolver(l)->AssembleMatrix(u,1.);
     }
-  
-  
+  /* 
+  if(it>=11)
+  {
+    if (1)
+    {
+      cout<< it<<"indelta"<<endl;
+      DDD=saveDDD;
+      
+      const SparseBlockMatrix<FMatrixBlock<2> >* A=
+	dynamic_cast<  const SparseBlockMatrix<FMatrixBlock<2> >* > (S->GetMatrix());
+      assert(A);
+      ostringstream ss;
+      ss << "mat_delta_it" << it << ".dat";
+      string datname = ss.str();
+      ofstream OUT(datname.c_str());
+
+            OUT.precision(14);
+      const ColumnStencil* SA = dynamic_cast<const ColumnStencil*>(A->GetStencil());
+      assert(SA);
+      
+      for (int r=0;r<SA->n();++r)
+	{
+	  for (int p=SA->start(r);p<SA->stop(r);++p)
+	    {
+	      int c = SA->col(p);
+	      const FMatrixBlock<2>& M = *(A->mat(p));
+	      for (int i1=0;i1<2;++i1)
+		for (int i2=0;i2<2;++i2)
+		  if (M(i1,i2)!=0)
+		    OUT << 1+2*r+i1 << "\t"
+			<< 1+2*c+i2 << "\t"
+			<< M(i1,i2) << endl;
+	    }
+	}
+      OUT.close();
+    } 
+}
+ */ 
 }
 
 /*-------------------------------------------------------------*/
@@ -880,13 +974,10 @@ string StdMultiLevelSolver::Solve(int level, VectorInterface& u, const VectorInt
   string status;
 
   assert(DataP->NonLinearSolve() == "newton");
-//   if(DataP->NonLinearSolve() == "newton")
-//     {
-      GetSolver(ComputeLevel)->HNAverage(u);
-      newton(u,b,_res,_cor,nlinfo);
-      GetSolver(ComputeLevel)->HNZero(u);
-      return nlinfo.CheckMatrix();
-//     }
+  GetSolver(ComputeLevel)->HNAverage(u);
+  newton(u,b,_res,_cor,nlinfo);
+  GetSolver(ComputeLevel)->HNZero(u);
+  return nlinfo.CheckMatrix();
 }
 
 /*-------------------------------------------------------------*/

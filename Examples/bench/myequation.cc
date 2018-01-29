@@ -5,7 +5,7 @@
 extern double TIME;
 extern double DT,DDD;
 extern double DELTAMIN;
-extern double STEUERUNG_MU;
+extern double STEUERUNG_MU,zahl;
 
 
 /*-----------------------------------------*/
@@ -261,7 +261,7 @@ namespace Gascoigne
   // u[2] h    u[3] a
   void OtherEquation::Form(VectorIterator b, const FemFunction& U, const TestFunction& N) const
   {
-    b[0] += U[0].m()*N.m();
+   b[0] += U[0].m()*N.m();
     b[1] += U[1].m()*N.m();
     
 
@@ -281,9 +281,14 @@ namespace Gascoigne
     double DELTA = sqrt(DELTAsquare);
     double a=((*UU)[0].x()-(*UU)[1].y())*((*UU)[0].x()-(*UU)[1].y())+((*UU)[0].y()+(*UU)[1].x())*((*UU)[0].y()+(*UU)[1].x());
    
-    double eta= Pstern*(*HH)[0].m()*ef/2.0*DELTA;
+    double eta= Pstern*(*HH)[0].m()*ef/(2.0*DELTA)/4.0;
+    //    cout << Pstern << " "<< (*HH)[0].m() << " "
+    //    	 << ef << " "<< DELTA << endl;
+    //    cout << eta << endl;
     b[0] -= log(sqrt(a))/log(10)* N.m();
-    b[1] -= log(eta)/log(10)*N.m();
+    //  b[0]-=sqrt(a)*N.m();
+    b[1] -= log(eta*Tref)/log(10)*N.m();
+    //b[1] -= eta*N.m();
     
   }
   /*-----------------------------------------*/

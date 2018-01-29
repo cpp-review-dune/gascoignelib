@@ -1,3 +1,4 @@
+
 /**
 *
 * Copyright (C) 2004, 2011 by the Gascoigne 3D authors
@@ -215,7 +216,7 @@ ReadBackUpBinary::ReadBackUpBinary(GlobalVector& u, const string& bname)
   ifstream file;
   file.open(name.c_str());
   
-  if(!file);
+  if(!file)
   {
     cerr << "backup file '"<< name << "' not found" << endl;
     abort();
