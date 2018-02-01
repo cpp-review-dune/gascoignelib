@@ -1174,7 +1174,7 @@ void Loop::EstimateDualError(DoubleVector& eta,
       //Zeitterme
      
       int I_m = _niter / _M;
-       EstimateAvg(eta2, Pu_M[m], Pu_M[m-1],  Utotal[m*I_m], Utotal[(m-1)*I_m], Ztotal[m], u,oldu,z,f);
+          EstimateAvg(eta2, Pu_M[m], Pu_M[m-1],  Utotal[m*I_m], Utotal[(m-1)*I_m], Ztotal[m], u,oldu,z,f);
       cout<<eta2.sum()<<"ETA2 "<<endl;
       
        EstimateRest(eta3, m,Pu_M[m], Pu_M[m-1], Pu_kM[m], Pu_kM[m-1], Utotal[m*I_m], Utotal[(m-1)*I_m], Ztotal[m], u, oldu, z,f);
@@ -1182,10 +1182,10 @@ void Loop::EstimateDualError(DoubleVector& eta,
 
       // Nichtlinearitaet
  
-       EstimateNonU(eta22,m, Utotal, Ztotal[m], u,oldu,z,f);
+        EstimateNonU(eta22,m, Utotal, Ztotal[m], u,oldu,z,f);
       cout<<eta22.sum()<<"ETA22 "<<endl;
 
-      EstimateNonPu(eta23, Pu_kM, Ztotal[m], u,oldu,z,f,m);
+       EstimateNonPu(eta23, Pu_kM, Ztotal[m], u,oldu,z,f,m);
       cout<<eta23.sum()<<"ETA23 "<<endl;
 
        EstimateNonMeanU(eta5, m, Pu_M[m],Pu_kM[m],Utotal,U_2, Ztotal[m], u,oldu,z,f);
