@@ -2,7 +2,8 @@
 #include "filescanner.h"
 
 extern double DT;
-extern double DTM;
+extern double DTM1;
+extern double DTM2;
 extern double CHIGAUSS;
 extern bool FIRSTDUAL;
 extern bool LASTDUAL;
@@ -116,7 +117,7 @@ void MyDualEquation::point(double h, const FemFunction &U, const Vertex2d &v) co
 
 /*----------------------------------------------------------------------------*/
 
-  void MyDualEquation::Nonlinear(VectorIterator b, double s, const FemFunction &U1, const FemFunction& U2, const FemFunction& Z, const TestFunction& N,double w) const
+  void MyDualEquation::Nonlinear(VectorIterator b, double s, const FemFunction &U1, const FemFunction& U2, const FemFunction& Z, const TestFunction& N,double w,int DTM) const
   {
     b[0] += w*DTM * 0.5 * ( (s*U1[0].m()+(1-s)*U2[0].m()) * N.x() + (s*U1[1].m()+(1-s)*U2[1].m()) * N.y()) * Z[0].m();
     b[1] += w*DTM * 0.5 * ( (s*U1[0].m()+(1-s)*U2[0].m()) * N.x() + (s*U1[1].m()+(1-s)*U2[1].m()) * N.y()) * Z[1].m();
@@ -136,31 +137,31 @@ void MyDualEquation::Form(VectorIterator b,
   // Laplace.
   if (!LASTDUAL)
     {
-      b[0] +=epsilon * DTM/2*( Z[0].x() * N.x() + Z[0].y() * N.y());
-      b[1] +=epsilon * DTM/2*( Z[1].x() * N.x() + Z[1].y() * N.y());
+      b[0] +=epsilon * DTM1/2*( Z[0].x() * N.x() + Z[0].y() * N.y());
+      b[1] +=epsilon * DTM1/2*( Z[1].x() * N.x() + Z[1].y() * N.y());
     }
   if (!FIRSTDUAL)
     {
-      b[0] +=epsilon * DTM/2*( (*oldz)[0].x() * N.x() + (*oldz)[0].y() * N.y());
-      b[1] +=epsilon * DTM/2*( (*oldz)[1].x() * N.x() + (*oldz)[1].y() * N.y());
+     b[0] +=epsilon * DTM2/2*( (*oldz)[0].x() * N.x() + (*oldz)[0].y() * N.y());
+     b[1] +=epsilon * DTM2/2*( (*oldz)[1].x() * N.x() + (*oldz)[1].y() * N.y());
     }
 
   // Nichtlinearitaet. u1 zu t_m-1, u2 zu t_m und u3 zu t_m+1
   if (!LASTDUAL)
     {
-      Nonlinear(b, 0.5+0.5/sqrt(3.0), (*u1), (*u2), Z, N,        0.5-0.5/sqrt(3.0));
-      Nonlinear(b, 0.5-0.5/sqrt(3.0), (*u1), (*u2), Z, N,        0.5+0.5/sqrt(3.0));
+     Nonlinear(b, 0.5+0.5/sqrt(3.0), (*u1), (*u2), Z, N,        0.5-0.5/sqrt(3.0),DTM1);
+     Nonlinear(b, 0.5-0.5/sqrt(3.0), (*u1), (*u2), Z, N,        0.5+0.5/sqrt(3.0),DTM1);
     }
   if (!FIRSTDUAL)
     {
-      Nonlinear(b, 0.5+0.5/sqrt(3.0), (*u2), (*u3), (*oldz), N,  0.5+0.5/sqrt(3.0));
-      Nonlinear(b, 0.5-0.5/sqrt(3.0), (*u2), (*u3), (*oldz), N,  0.5-0.5/sqrt(3.0));
+      Nonlinear(b, 0.5+0.5/sqrt(3.0), (*u2), (*u3), (*oldz), N,  0.5+0.5/sqrt(3.0),DTM2);
+     Nonlinear(b, 0.5-0.5/sqrt(3.0), (*u2), (*u3), (*oldz), N,  0.5-0.5/sqrt(3.0),DTM2);
     }
 }
 
 /*----------------------------------------------------------------------------*/
 
-void MyDualEquation::Nonlinear_Matrix(EntryMatrix&A, double s, const FemFunction &U1, const FemFunction& U2, const FemFunction& Z,const TestFunction &M, const TestFunction& N,double w) const
+void MyDualEquation::Nonlinear_Matrix(EntryMatrix&A, double s, const FemFunction &U1, const FemFunction& U2, const FemFunction& Z,const TestFunction &M, const TestFunction& N,double w,int DTM) const
   {
     //  b[0] += w*DTM * 0.5 * ( (s*U1[0].m()+(1-s)*U2[0].m()) * N.x() + (s*U1[1].m()+(1-s)*U2[1].m()) * N.y()) * Z[0].m();
 
@@ -197,8 +198,8 @@ void MyDualEquation::Matrix(EntryMatrix &A,
   // Laplace.
   if (!LASTDUAL)
     {
-      A(0,0) +=epsilon * DTM/2*( M.x() * N.x() + M.y() * N.y());
-      A(1,1) +=epsilon * DTM/2*( M.x() * N.x() + M.y() * N.y());
+      A(0,0) +=epsilon * DTM1/2*( M.x() * N.x() + M.y() * N.y());
+      A(1,1) +=epsilon * DTM1/2*( M.x() * N.x() + M.y() * N.y());
     }
  
  // Nichtlinearitaet. u1 zu t_m-1, u2 zu t_m und u3 zu t_m+1
@@ -206,8 +207,8 @@ void MyDualEquation::Matrix(EntryMatrix &A,
  
   if (!LASTDUAL)
     {
-      Nonlinear_Matrix(A, 0.5+0.5/sqrt(3.0), (*u1), (*u2), Z, M,N,        0.5-0.5/sqrt(3.0));
-      Nonlinear_Matrix(A, 0.5-0.5/sqrt(3.0), (*u1), (*u2), Z, M,N,        0.5+0.5/sqrt(3.0));
+     Nonlinear_Matrix(A, 0.5+0.5/sqrt(3.0), (*u1), (*u2), Z, M,N, 0.5-0.5/sqrt(3.0),DTM1);
+     Nonlinear_Matrix(A, 0.5-0.5/sqrt(3.0), (*u1), (*u2), Z, M,N, 0.5+0.5/sqrt(3.0),DTM1);
     }
  
    

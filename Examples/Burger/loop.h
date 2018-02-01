@@ -38,14 +38,14 @@ namespace Gascoigne
 
     void Reconstruction(GlobalVector& U2, const vector<GlobalVector>& U,int start);
 
-    void TrapezInt(GlobalVector& avg, const vector<GlobalVector>& U, int start, int stopp );
-    void MittelInt(GlobalVector& avg_old,GlobalVector& avg, const vector<GlobalVector>& U, int start, int stopp);
-    void Gauss_Q2(GlobalVector& avg_old,GlobalVector& avg, const vector<GlobalVector>& U, int start, int stopp);
+    void TrapezInt(GlobalVector& avg, const vector<GlobalVector>& U, int start, int stopp,int DTM );
+    void MittelInt(GlobalVector& avg_old,GlobalVector& avg, const vector<GlobalVector>& U, double start, double stopp,double DTM);
+    void Gauss_Q2(GlobalVector& avg_old,GlobalVector& avg, const vector<GlobalVector>& U, int start, int stopp,int DTM) ;
  
   
    
     
-    void SolveDualProblem(vector<GlobalVector>& Ztotal, VectorInterface& f, VectorInterface& u,  VectorInterface& oldu, VectorInterface& newu, VectorInterface& z,  VectorInterface& oldz,const vector<GlobalVector>& Pu_k,int ADAITER);
+    void SolveDualProblem(vector<GlobalVector>& Ztotal, VectorInterface& f, VectorInterface& u,  VectorInterface& oldu, VectorInterface& newu, VectorInterface& z,  VectorInterface& oldz,const vector<GlobalVector>& Pu_k,int ADAITER, vector<double>& DT_M);
 
 
  void EstimateDualError(DoubleVector& eta,
@@ -68,13 +68,13 @@ namespace Gascoigne
 			VectorInterface& newu,
 			   VectorInterface& z,
 			  VectorInterface& oldz,
-			   VectorInterface& f);
+			   VectorInterface& f, vector<double>& DT_M,vector<double>& T);
 
     void EstimateDWRprim(DoubleVector& eta, int m, const GlobalVector& Pu_kM,   vector<GlobalVector>& U,
 		     GlobalVector& Z,VectorInterface& u, VectorInterface& oldu,VectorInterface& z,VectorInterface& f);
 
      void EstimateDWRdual(DoubleVector& eta, int m, vector<GlobalVector>& Pu_kM, GlobalVector& Pu_M,
-			const GlobalVector& OLDZ, GlobalVector& Z,VectorInterface& u, VectorInterface& oldu,VectorInterface& newu,VectorInterface& z,VectorInterface& oldz,VectorInterface& f);
+			const GlobalVector& OLDZ, GlobalVector& Z,VectorInterface& u, VectorInterface& oldu,VectorInterface& newu,VectorInterface& z,VectorInterface& oldz,VectorInterface& f, vector<double>& DT_M);
 
    void EstimateAvg(DoubleVector& eta,  GlobalVector& Pu, const GlobalVector &Puold,
 		     const GlobalVector& U, const GlobalVector &Uold, GlobalVector& Z,
@@ -87,20 +87,20 @@ namespace Gascoigne
 		     const GlobalVector& U, const GlobalVector &Uold, GlobalVector& Z,
 		     VectorInterface& u, VectorInterface& oldu,VectorInterface& z,VectorInterface& f);
 
-    void EstimateNonU(DoubleVector& eta,int m,
+    void EstimateNonU(DoubleVector& eta,
 		       vector<GlobalVector>& Utotal, GlobalVector& Z,
-		 VectorInterface& u, VectorInterface& oldu,VectorInterface& z,VectorInterface& f);
+		 VectorInterface& u, VectorInterface& oldu,VectorInterface& z,VectorInterface& f, int start, int stopp);
     void EstimateNonPu(DoubleVector& eta, 
 		      vector<GlobalVector>& Pu_k, GlobalVector& Z,
-		       VectorInterface& u, VectorInterface& oldu,VectorInterface& z,VectorInterface& f, int m);
+		       VectorInterface& u, VectorInterface& oldu,VectorInterface& z,VectorInterface& f,int m, double DTM_PU);
 
     void EstimateNonMeanU(DoubleVector& eta, int m,
 		    GlobalVector& Pu, GlobalVector& Pu_k,vector<GlobalVector>& U,vector<GlobalVector>& U_2, GlobalVector& Z,
-		 VectorInterface& u, VectorInterface& oldu,VectorInterface& z,VectorInterface& f);
+		 VectorInterface& u, VectorInterface& oldu,VectorInterface& z,VectorInterface& f,int start, int stopp);
     
     void EstimateNonMeanPu(DoubleVector& eta,int m,
 		 GlobalVector& Pu,vector<GlobalVector>& Pu_k, vector<GlobalVector>& U, GlobalVector& Z,
-		 VectorInterface& u, VectorInterface& oldu,VectorInterface& z,VectorInterface& f);
+		 VectorInterface& u, VectorInterface& oldu,VectorInterface& z,VectorInterface& f,double DTM_U);
 
 
  MySolver* GetMySolver()

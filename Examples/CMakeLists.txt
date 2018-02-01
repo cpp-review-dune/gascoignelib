@@ -1,5 +1,5 @@
 SUBDIRS(
-  NavierStokes2D  bench Burger Nichtlinear Laplace_t Problems Crank
+  NavierStokes2D  bench Burger   
 )
 
 LINK_LIBRARIES(${GASCOIGNE_LIBRARIES} )
