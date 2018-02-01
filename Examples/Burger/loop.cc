@@ -1385,8 +1385,8 @@ void Loop::run(const std::string& problemlabel)
         vector<double> T(_M+1);
         
       T[0]=0;
-      T[1]=2;
-      T[2]=2.5;
+      T[1]=1;
+      T[2]=2;
       T[3]=3;
       T[4]=4;
       
@@ -1485,8 +1485,9 @@ void Loop::run(const std::string& problemlabel)
      
       //  GetMultiLevelSolver()->GetSolver()->Visu("Results/neuu",u,ADAITER);
       //GetMultiLevelSolver()->GetSolver()->Visu("Results/PU",oldu,ADAITER);
- 
-    }
+ abort();
+    } 
+      
   
  
 }
