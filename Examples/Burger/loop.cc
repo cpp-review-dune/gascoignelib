@@ -13,7 +13,7 @@ using namespace std;
  
 
 
-double TIME, DT,DTM, CHIGAUSS;
+double TIME, DT, CHIGAUSS,DTM1,DTM2;
 bool   PRIMALPROBLEM,FIRSTDUAL, LASTDUAL;
 
 
@@ -69,7 +69,7 @@ void Loop::SolvePrimalProblem(vector<GlobalVector> &Utotal, nvector<double>& Jto
     }
 }
 
-void Loop::TrapezInt(GlobalVector& avg, const vector<GlobalVector>& U, int start, int stopp)
+void Loop::TrapezInt(GlobalVector& avg, const vector<GlobalVector>& U, int start, int stopp,int DTM)
 {
   assert(start<U.size());  assert(stopp<U.size());
   avg.zero();
@@ -81,7 +81,7 @@ void Loop::TrapezInt(GlobalVector& avg, const vector<GlobalVector>& U, int start
 }
 
 
-void Loop::MittelInt(GlobalVector& avg_old,GlobalVector& avg, const vector<GlobalVector>& U, int start, int stopp)
+void Loop::MittelInt(GlobalVector& avg_old,GlobalVector& avg, const vector<GlobalVector>& U, double start, double stopp, double DTM)
 {
   assert(start<U.size());  assert(stopp<U.size());
   avg.zero();
@@ -121,7 +121,7 @@ void Loop::Reconstruction(GlobalVector& U2, const vector<GlobalVector>& U,int st
 
 
 
-void Loop::Gauss_Q2(GlobalVector& avg_old,GlobalVector& avg, const vector<GlobalVector>& U, int start, int stopp)
+void Loop::Gauss_Q2(GlobalVector& avg_old,GlobalVector& avg, const vector<GlobalVector>& U, int start, int stopp,int DTM)
 {
   assert(start<U.size());  assert(stopp<U.size());
   
@@ -160,14 +160,19 @@ void Loop::Gauss_Q2(GlobalVector& avg_old,GlobalVector& avg, const vector<Global
 }
 
 
-void Loop::SolveDualProblem(vector<GlobalVector>& Ztotal, VectorInterface& f, VectorInterface& u,  VectorInterface& oldu, VectorInterface& newu, VectorInterface& z,  VectorInterface& oldz,const vector<GlobalVector>& Pu_k,int ADAITER)
+void Loop::SolveDualProblem(vector<GlobalVector>& Ztotal, VectorInterface& f, VectorInterface& u,  VectorInterface& oldu, VectorInterface& newu, VectorInterface& z,  VectorInterface& oldz,const vector<GlobalVector>& Pu_k,int ADAITER, vector<double>& DT_M)
 
 {
   GetMultiLevelSolver()->SetProblem("dp");
   PRIMALPROBLEM = false;
 
   for (int m=_M;m>=0;--m)
-    {
+    {  
+        DTM1=0.0;
+        DTM2=0.0;
+        
+      DTM1=DT_M[m];
+      
       FIRSTDUAL = (m==_M); 
       LASTDUAL  = (m==0);
       
@@ -175,6 +180,7 @@ void Loop::SolveDualProblem(vector<GlobalVector>& Ztotal, VectorInterface& f, Ve
 	{
 	  GetMultiLevelSolver()->GetSolver()->GetGV(newu)=Pu_k[m+1];
 	  GetMultiLevelSolver()->AddNodeVector("u3",newu);
+      DTM2=DT_M[m+1];
 	}
       GetMultiLevelSolver()->GetSolver()->GetGV(u)=Pu_k[m];
       GetMultiLevelSolver()->AddNodeVector("u2",u);
@@ -189,15 +195,21 @@ void Loop::SolveDualProblem(vector<GlobalVector>& Ztotal, VectorInterface& f, Ve
       
       GetMultiLevelSolver()->GetSolver()->Zero(f);
       if (FIRSTDUAL || LASTDUAL)
-	GetMultiLevelSolver()->GetSolver()->Rhs(f,DTM/2);
-      else
-	GetMultiLevelSolver()->GetSolver()->Rhs(f,DTM);
-      
+      { if(m==_M)
+        GetMultiLevelSolver()->GetSolver()->Rhs(f,DTM1/2);
+        else
+        GetMultiLevelSolver()->GetSolver()->Rhs(f,DTM2/2); 
+      }
+      else{
+         DTM2=DT_M[m+1];  
+	GetMultiLevelSolver()->GetSolver()->Rhs(f,(DTM1+DTM2)/2);
+      }
       GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(f);
 
       GetMultiLevelSolver()->Zero(z);
       GetMultiLevelSolver()->GetSolver()->SetPeriodicVector(z);
       GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(z);
+      cout<<"DTM1"<<DTM1<<"DTM2"<<DTM2<<"m"<<m<<endl;
       string status = GetMultiLevelSolver()->Solve(z,f,GetSolverInfos()->GetNLInfo());
       GetMultiLevelSolver()->GetSolver()->Visu("Results/z",z,1000*ADAITER+m);
       
@@ -209,6 +221,8 @@ void Loop::SolveDualProblem(vector<GlobalVector>& Ztotal, VectorInterface& f, Ve
 	GetMultiLevelSolver()->DeleteNodeVector("u3");
       
       Ztotal[m] = GetMultiLevelSolver()->GetSolver()->GetGV(z);
+      DTM1=0.0;
+      DTM2=0.0;
     }
   
   PRIMALPROBLEM = true;
@@ -394,11 +408,16 @@ void Loop::EstimateDWRprim(DoubleVector& eta, int m, const GlobalVector& Pu_kM, 
 }
  
 void Loop::EstimateDWRdual(DoubleVector& eta, int m, vector<GlobalVector>&Pu_kM,  GlobalVector& Pu_M,
-			   const GlobalVector& OLDZ, GlobalVector& Z,VectorInterface& u, VectorInterface& oldu,VectorInterface& newu,VectorInterface& z,VectorInterface& oldz,VectorInterface& f)
+			   const GlobalVector& OLDZ, GlobalVector& Z,VectorInterface& u, VectorInterface& oldu,VectorInterface& newu,VectorInterface& z,VectorInterface& oldz,VectorInterface& f, vector<double>& DT_M)
   
 {
   PRIMALPROBLEM = false;
+  
+   DTM1=0.0;
+   DTM2=0.0;
    
+    DTM1=DT_M[m];
+    
   FIRSTDUAL = (m==_M); 
   LASTDUAL  = (m==0);
 
@@ -409,10 +428,21 @@ void Loop::EstimateDWRdual(DoubleVector& eta, int m, vector<GlobalVector>&Pu_kM,
 
   GetMultiLevelSolver()->GetSolver()->Zero(f);
   if (FIRSTDUAL || LASTDUAL)
-    GetMultiLevelSolver()->GetSolver()->Rhs(f,-DTM/2);
-  else
-    GetMultiLevelSolver()->GetSolver()->Rhs(f,-DTM);
-  ////////////////////////// Rechte Seite mit Gauss-Regel; TT ist mitte der Intervalle
+  { if(m==_M)
+    GetMultiLevelSolver()->GetSolver()->Rhs(f,-DTM1/2);
+       else {
+            DTM2=DT_M[m+1];  
+    GetMultiLevelSolver()->GetSolver()->Rhs(f,-DTM2/2); 
+       }
+  }
+    
+  else{
+
+       DTM2=DT_M[m+1];
+      GetMultiLevelSolver()->GetSolver()->Rhs(f,-(DTM1+DTM2)/2);
+  
+    
+  }////////////////////////// Rechte Seite mit Gauss-Regel; TT ist mitte der Intervalle
   // Std-Diskretisierung
  
   MyS->HNDistribute(f);
@@ -423,14 +453,21 @@ void Loop::EstimateDWRdual(DoubleVector& eta, int m, vector<GlobalVector>&Pu_kM,
   DiscretizationInterface* saveD = MyS->GetDiscretization();
   MyS->SetDiscretization(DWRFEM,true);
   if (FIRSTDUAL || LASTDUAL)
-    GetMultiLevelSolver()->GetSolver()->Rhs(f,DTM/2);
-  else
-    GetMultiLevelSolver()->GetSolver()->Rhs(f,DTM);
-
+  {
+    if(m==_M)
+    GetMultiLevelSolver()->GetSolver()->Rhs(f,DTM1/2);
+    else{
+          DTM2=DT_M[m+1];  
+   GetMultiLevelSolver()->GetSolver()->Rhs(f,DTM2/2); 
+        }
+      
+}
+  else{
+    DTM2=DT_M[m+1];   
+    GetMultiLevelSolver()->GetSolver()->Rhs(f,(DTM1+DTM2)/2);
+  }
   MyS->HNDistribute(f);
   MyS->SetDiscretization(*saveD);
- 
-  
   //Standart
   MyS->GetGV(z)    =Z;
   MyS->GetGV(u)    = Pu_kM[m];
@@ -441,6 +478,8 @@ void Loop::EstimateDWRdual(DoubleVector& eta, int m, vector<GlobalVector>&Pu_kM,
       GetMultiLevelSolver()->GetSolver()->GetGV(newu)=Pu_kM[m+1];
       GetMultiLevelSolver()->AddNodeVector("u3",newu);
       MyS->HNAverage(newu);
+      DTM2=DT_M[m+1];
+      
     }
   if (!LASTDUAL)
     {
@@ -458,18 +497,23 @@ void Loop::EstimateDWRdual(DoubleVector& eta, int m, vector<GlobalVector>&Pu_kM,
   MyS->DeleteNodeVector("u2");
   MyS->DeleteNodeVector("oldz");
   if(!FIRSTDUAL)
-    {
+    {    
       GetMultiLevelSolver()->DeleteNodeVector("u3");
     }
   if(!LASTDUAL)
     {
       GetMultiLevelSolver()->DeleteNodeVector("u1");
     }
-  cout<<"Standart"<<endl;
+
   MyS->HNDistribute(f);
  
   
   // dwr disc
+  
+  
+ // DTM2=DTM1;
+  
+  
 
   MyS->SetDiscretization(DWRFEM,true);
   MyS->GetGV(z)    =Z;
@@ -482,6 +526,10 @@ void Loop::EstimateDWRdual(DoubleVector& eta, int m, vector<GlobalVector>&Pu_kM,
       GetMultiLevelSolver()->AddNodeVector("u3",newu);
       cout<<"Dual"<<endl;
       MyS->HNAverage(newu);
+      
+      DTM2=DT_M[m+1];
+      
+      
     }
   if (!LASTDUAL)
     {
@@ -527,14 +575,16 @@ void Loop::EstimateDWRdual(DoubleVector& eta, int m, vector<GlobalVector>&Pu_kM,
 	  eta[i] += F(i,c)*(Pu_M(i,c));
 	}
     }
- 
+    
+        DTM1=0.0;
+        DTM2=0.0;
   cout<<eta.sum()<<"ETA11 "<<endl;
   PRIMALPROBLEM = true;
 }
 
-void Loop::EstimateNonU(DoubleVector& eta, int m,
+void Loop::EstimateNonU(DoubleVector& eta,
 		        vector<GlobalVector>& U, GlobalVector& Z,
-			VectorInterface& u, VectorInterface& oldu,VectorInterface& z,VectorInterface& f)
+			VectorInterface& u, VectorInterface& oldu,VectorInterface& z,VectorInterface& f,int start, int stopp)
 {
   
   StdSolver* MyS = dynamic_cast<StdSolver*> (GetMultiLevelSolver()->GetSolver());
@@ -548,23 +598,25 @@ void Loop::EstimateNonU(DoubleVector& eta, int m,
   // Std Disc
 
 
-  int I_m = _niter / _M;
-
+  
+   int I_m=stopp-start;
    
+   cout<<I_m<<"I_M"<<endl;
+
 
   //Mit Gauss
   double gx = 0.5-0.5*sqrt(1.0/3.0);
   for (int l=0;l<I_m; ++l)
     {
       // u im linken gauss-punkt
-      MyS->GetGV(u).equ((1.0-gx), U[(m-1)*I_m + l],gx,  U[(m-1)*I_m + l+1]);
+      MyS->GetGV(u).equ((1.0-gx), U[start+ l],gx,  U[start + l+1]);
       MyS->HNAverage(u);
       MyS->AddNodeVector("U",u); 
       MyS->GetDiscretization()->Rhs(MyS->GetGV(f), NoLin, -DT*0.5);
       MyS->DeleteNodeVector("U");
 
       // u im rechten gauss-punkt
-      MyS->GetGV(u).equ(gx, U[(m-1)*I_m + l],(1.0-gx),  U[(m-1)*I_m + l+1]);
+      MyS->GetGV(u).equ(gx, U[start + l],(1.0-gx),  U[start + l+1]);
       MyS->AddNodeVector("U",u);
       MyS->GetDiscretization()->Rhs(MyS->GetGV(f), NoLin, -DT*0.5);
       MyS->DeleteNodeVector("U");
@@ -586,13 +638,13 @@ void Loop::EstimateNonU(DoubleVector& eta, int m,
   
   for (int l=0;l<I_m; ++l)
     {
-      MyS->GetGV(u).equ((1.0-gx), U[(m-1)*I_m + l],gx,  U[(m-1)*I_m + l+1]);
+      MyS->GetGV(u).equ((1.0-gx), U[start+ l],gx,  U[start + l+1]);
       MyS->HNAverage(u);
       MyS->AddNodeVector("U",u); 
       MyS->GetDiscretization()->Rhs(MyS->GetGV(f), NoLin, DT*0.5);
       MyS->DeleteNodeVector("U");
 
-      MyS->GetGV(u).equ(gx, U[(m-1)*I_m + l],(1.0-gx),  U[(m-1)*I_m + l+1]);
+      MyS->GetGV(u).equ(gx, U[start + l],(1.0-gx),  U[start + l+1]);
       MyS->AddNodeVector("U",u);
       MyS->GetDiscretization()->Rhs(MyS->GetGV(f), NoLin, DT*0.5);
       MyS->DeleteNodeVector("U");
@@ -621,12 +673,13 @@ void Loop::EstimateNonU(DoubleVector& eta, int m,
 	{
 	  eta[i] += F(i,c)*Z(i,c);
 	}  
-    }   
+    }
+    cout<<eta.sum()<<"ETA5"<<endl;
 }
 
 void Loop::EstimateNonPu(DoubleVector& eta, 
 			   vector<GlobalVector>& U, GlobalVector& Z,
-			 VectorInterface& u, VectorInterface& oldu,VectorInterface& z,VectorInterface& f, int m)
+			 VectorInterface& u, VectorInterface& oldu,VectorInterface& z,VectorInterface& f, int m,double DTM_PU)
 {
   
   StdSolver* MyS = dynamic_cast<StdSolver*> (GetMultiLevelSolver()->GetSolver());
@@ -643,11 +696,11 @@ void Loop::EstimateNonPu(DoubleVector& eta,
   MyS->HNAverage(u);
 
   MyS->AddNodeVector("U",u); 
-  MyS->GetDiscretization()->Rhs(MyS->GetGV(f), NoLin, -DTM/2);
+  MyS->GetDiscretization()->Rhs(MyS->GetGV(f), NoLin, -DTM_PU/2);
   MyS->DeleteNodeVector("U");
  
    MyS->AddNodeVector("U",oldu); 
-  MyS->GetDiscretization()->Rhs(MyS->GetGV(f), NoLin, -DTM/2);
+  MyS->GetDiscretization()->Rhs(MyS->GetGV(f), NoLin, -DTM_PU/2);
   MyS->DeleteNodeVector("U");
   
   MyS->HNDistribute(f);
@@ -660,12 +713,12 @@ void Loop::EstimateNonPu(DoubleVector& eta,
   
   MyS->HNAverage(u);
   MyS->AddNodeVector("U",u); 
-  MyS->GetDiscretization()->Rhs(MyS->GetGV(f), NoLin, DTM/2);
+  MyS->GetDiscretization()->Rhs(MyS->GetGV(f), NoLin, DTM_PU/2);
   MyS->HNDistribute(f);
   MyS->DeleteNodeVector("U");
    MyS->HNAverage(u);
   MyS->AddNodeVector("U",oldu); 
-  MyS->GetDiscretization()->Rhs(MyS->GetGV(f), NoLin, DTM/2);
+  MyS->GetDiscretization()->Rhs(MyS->GetGV(f), NoLin, DTM_PU/2);
   MyS->HNDistribute(f);
   MyS->DeleteNodeVector("U");
   // Std Disc
@@ -838,8 +891,13 @@ void Loop::EstimateRest(DoubleVector& eta, int m,
 
 void Loop::EstimateNonMeanU(DoubleVector& eta, int m,
 			    GlobalVector& Pu, GlobalVector& Pu_k,  vector<GlobalVector>& U, vector<GlobalVector>& U_2, GlobalVector& Z,
-			    VectorInterface& u, VectorInterface& oldu,VectorInterface& z,VectorInterface& f)
+			    VectorInterface& u, VectorInterface& oldu,VectorInterface& z,VectorInterface& f, int start, int stopp)
+
 {
+    
+ 
+    
+    //-----------------------------------------------------------------
   
   StdSolver* MyS = dynamic_cast<StdSolver*> (GetMultiLevelSolver()->GetSolver());
   assert(MyS);
@@ -849,7 +907,8 @@ void Loop::EstimateNonMeanU(DoubleVector& eta, int m,
   MyS->Zero(f);
  
   
-  int I_m = _niter / _M;
+  int I_m = stopp-start;
+  cout<<"start"<<start<<"stop"<<stopp<< "m"<<m<<endl;
 
   double gx = 0.5-0.5*sqrt(1.0/3.0);
   // Mit gauss Q1
@@ -857,17 +916,18 @@ void Loop::EstimateNonMeanU(DoubleVector& eta, int m,
   for (int l=0;l<I_m; ++l)
     {
       // MyS->GetGV(u) = U[(m-1)*I_m + l];
-      MyS->GetGV(u).equ((1.0-gx), U[(m-1)*I_m + l],gx,  U[(m-1)*I_m + l+1]);
+      MyS->GetGV(u).equ((1.0-gx), U[start+ l],gx,  U[start + l+1]);
       // MyS->GetGV(oldu).equ(1,Pu_k,-1*(1.0-gx), U[(m-1)*I_m + l],-gx,  U[(m-1)*I_m + l+1]);
       MyS->AddNodeVector("U",u);       
       //  MyS->AddNodeVector("W",oldu);
-      
       //  TIME = DT * ((m-1)*I_m + l) + 0.5 * DT -  0.5*sqrt(1.0/3.0) * DT;
       MyS->GetDiscretization()->Rhs(MyS->GetGV(f), NoLinM, -DT*0.5);
       // MyS->DeleteNodeVector("Pu");
+  
+      
       MyS->DeleteNodeVector("U");
       
-      MyS->GetGV(u).equ(gx, U[(m-1)*I_m + l],(1.0-gx),  U[(m-1)*I_m + l+1]);
+      MyS->GetGV(u).equ(gx, U[start + l],(1.0-gx),  U[start + l+1]);
       // MyS->GetGV(oldu).equ(1,Pu_k,-gx, U[(m-1)*I_m + l],-1*(1.0-gx),  U[(m-1)*I_m + l+1]);
       MyS->AddNodeVector("U",u);       
       //   MyS->AddNodeVector("W",oldu);
@@ -886,6 +946,9 @@ void Loop::EstimateNonMeanU(DoubleVector& eta, int m,
   MyS->SetBoundaryVectorZero(f);
 
   const GlobalVector& F = MyS->GetGV(f);
+  
+
+  
   MyS->GetDiscretization()->HNAverage(Z);
      
   // Auswerten, kein Filtern
@@ -911,7 +974,7 @@ void Loop::EstimateNonMeanU(DoubleVector& eta, int m,
   
   for (int l=0;l<I_m; ++l)
     {
-      MyS->GetGV(u).equ((1.0-gx), U[(m-1)*I_m + l],gx,  U[(m-1)*I_m + l+1]);
+      MyS->GetGV(u).equ((1.0-gx), U[start + l],gx,  U[start + l+1]);
       // MyS->GetGV(oldu).equ(1,Pu_k,-1*(1.0-gx), U[(m-1)*I_m + l],-gx,  U[(m-1)*I_m + l+1]);
       MyS->AddNodeVector("U",u);       
       //MyS->AddNodeVector("W",oldu);
@@ -921,7 +984,7 @@ void Loop::EstimateNonMeanU(DoubleVector& eta, int m,
       MyS->DeleteNodeVector("U");
       //MyS->DeleteNodeVector("W");
 
-      MyS->GetGV(u).equ(gx, U[(m-1)*I_m + l],(1.0-gx),  U[(m-1)*I_m + l+1]);
+      MyS->GetGV(u).equ(gx, U[start + l],(1.0-gx),  U[start + l+1]);
       //MyS->GetGV(oldu).equ(1,Pu_k,-gx, U[(m-1)*I_m + l],-1*(1.0-gx),  U[(m-1)*I_m + l+1]);
       MyS->AddNodeVector("U",u);       
       // MyS->AddNodeVector("W",oldu);
@@ -951,12 +1014,13 @@ void Loop::EstimateNonMeanU(DoubleVector& eta, int m,
 	}  
     }
   MyS->SetDiscretization(*saveD);
+
 }
 
 
 void Loop::EstimateNonMeanPu(DoubleVector& eta, int m,
 			     GlobalVector& Pu,  vector<GlobalVector>& Pu_k,vector<GlobalVector>& U, GlobalVector& Z,
-			     VectorInterface& u, VectorInterface& oldu,VectorInterface& z,VectorInterface& f)
+			     VectorInterface& u, VectorInterface& oldu,VectorInterface& z,VectorInterface& f, double DTM_U)
 {
   
   StdSolver* MyS = dynamic_cast<StdSolver*> (GetMultiLevelSolver()->GetSolver());
@@ -978,11 +1042,11 @@ void Loop::EstimateNonMeanPu(DoubleVector& eta, int m,
   MyS->HNAverage(u);
 
   MyS->AddNodeVector("U",u); 
-  MyS->GetDiscretization()->Rhs(MyS->GetGV(f), NoLinM, -DTM/2);
+  MyS->GetDiscretization()->Rhs(MyS->GetGV(f), NoLinM, -DTM_U/2);
   MyS->DeleteNodeVector("U");
 
   MyS->AddNodeVector("U",oldu); 
-  MyS->GetDiscretization()->Rhs(MyS->GetGV(f), NoLinM, -DTM/2);
+  MyS->GetDiscretization()->Rhs(MyS->GetGV(f), NoLinM, -DTM_U/2);
   MyS->DeleteNodeVector("U");
 
   
@@ -1054,13 +1118,13 @@ void Loop::EstimateNonMeanPu(DoubleVector& eta, int m,
   
   MyS->HNAverage(u);
   MyS->AddNodeVector("U",u); 
-  MyS->GetDiscretization()->Rhs(MyS->GetGV(f), NoLinM, DTM/2);
+  MyS->GetDiscretization()->Rhs(MyS->GetGV(f), NoLinM, DTM_U/2);
   MyS->HNDistribute(f);
   MyS->DeleteNodeVector("U");
 
   MyS->HNAverage(u);
   MyS->AddNodeVector("U",oldu); 
-  MyS->GetDiscretization()->Rhs(MyS->GetGV(f), NoLinM, DTM/2);
+  MyS->GetDiscretization()->Rhs(MyS->GetGV(f), NoLinM, DTM_U/2);
   MyS->HNDistribute(f);
   MyS->DeleteNodeVector("U");
 
@@ -1139,7 +1203,9 @@ void Loop::EstimateDualError(DoubleVector& eta,
 			     VectorInterface& newu,
 			     VectorInterface& z,
 			     VectorInterface& oldz,
-			     VectorInterface& f
+			     VectorInterface& f,
+                 vector<double>& DT_M,
+                 vector<double>& T
 			     )
 {
   assert(Pu_kM.size()==_M+1);
@@ -1156,20 +1222,20 @@ void Loop::EstimateDualError(DoubleVector& eta,
 
 
   // Teil 0 - Anfangsdaten
-  //EstimateInitial(eta0,Utotal[0], Ztotal[0], u,oldu,z,f);
+ // EstimateInitial(eta0,Utotal[0], Ztotal[0], u,oldu,z,f);
   
   for (int m=1;m<=_M;++m)
     {
       cout << "m="<< m << "\\Fehlerschaetzer DWR" << endl;
 
       ///////////// Teil 1 - DWR-Anteil     
-      EstimateDWRprim(eta1, m, Pu_kM[m],Utotal,Ztotal[m], u,oldu,z,f);
+     EstimateDWRprim(eta1, m, Pu_kM[m],Utotal,Ztotal[m], u,oldu,z,f);
       cout<<eta1.sum()<<"ETA1 "<<endl;
 
       /// Teil 1.1 duales residuum
 
     
-      EstimateDWRdual(eta11,m,Pu_kM, Pu_kM[m], Ztotal[m+1], Ztotal[m],u, oldu,newu,z, oldz,f);
+    EstimateDWRdual(eta11,m,Pu_kM, Pu_kM[m], Ztotal[m+1], Ztotal[m],u, oldu,newu,z, oldz,f,DT_M);
 
       //Zeitterme
      
@@ -1177,22 +1243,22 @@ void Loop::EstimateDualError(DoubleVector& eta,
        EstimateAvg(eta2, Pu_M[m], Pu_M[m-1],  Utotal[m*I_m], Utotal[(m-1)*I_m], Ztotal[m], u,oldu,z,f);
       cout<<eta2.sum()<<"ETA2 "<<endl;
       
-       EstimateRest(eta3, m,Pu_M[m], Pu_M[m-1], Pu_kM[m], Pu_kM[m-1], Utotal[m*I_m], Utotal[(m-1)*I_m], Ztotal[m], u, oldu, z,f);
+      EstimateRest(eta3, m,Pu_M[m], Pu_M[m-1], Pu_kM[m], Pu_kM[m-1], Utotal[m*I_m], Utotal[(m-1)*I_m], Ztotal[m], u, oldu, z,f);
       cout<<eta3.sum()<<"ETA3 "<<endl;	
 
       // Nichtlinearitaet
  
-       EstimateNonU(eta22,m, Utotal, Ztotal[m], u,oldu,z,f);
+     EstimateNonU(eta22,Utotal, Ztotal[m], u,oldu,z,f,T[m-1]/DT,T[m]/DT);
       cout<<eta22.sum()<<"ETA22 "<<endl;
 
-      EstimateNonPu(eta23, Pu_kM, Ztotal[m], u,oldu,z,f,m);
+    EstimateNonPu(eta23, Pu_kM, Ztotal[m], u,oldu,z,f,m,DT_M[m]);
       cout<<eta23.sum()<<"ETA23 "<<endl;
 
-       EstimateNonMeanU(eta5, m, Pu_M[m],Pu_kM[m],Utotal,U_2, Ztotal[m], u,oldu,z,f);
+      EstimateNonMeanU(eta5, m, Pu_M[m],Pu_kM[m],Utotal,U_2, Ztotal[m], u,oldu,z,f,T[m-1]/DT,T[m]/DT);
       cout<<eta5.sum()<<"ETA5"<<endl;
 
       //Teil 4 Fehler vom geittelten Problem zu Pu
-       EstimateNonMeanPu(eta4, m, Pu_M[m],Pu_kM,Utotal, Ztotal[m], u,oldu,z,f);
+     EstimateNonMeanPu(eta4, m, Pu_M[m],Pu_kM,Utotal, Ztotal[m], u,oldu,z,f,DT_M[m]);
       cout<<eta4.sum()<<"ETA4"<<endl;
 
 	 
@@ -1239,7 +1305,7 @@ void Loop::run(const std::string& problemlabel)
   // Anzahl der n-Schritte
   _niter = endtime / DT;
   // Intervallgroesse makro
-  DTM = endtime / _M;
+  double DTM = endtime / _M;
   cout << "N="<< _niter << "\t M=" << _M << "\t dt=" << DT << "\t dtm=" << DTM << endl;
 
   assert( fabs(endtime - _M*DTM)<1.e-8);
@@ -1250,6 +1316,8 @@ void Loop::run(const std::string& problemlabel)
   for (int ADAITER=0;ADAITER<8;++ADAITER)
     {
       TIME=0.0;
+      DTM1=0.0;
+      DTM2=0.0;
  
       // vectors for solution and right hand side
       VectorInterface u("u"), newu("newu"), f("f"), oldu("oldu"),z("z"),oldz("oldz");
@@ -1294,27 +1362,46 @@ void Loop::run(const std::string& problemlabel)
       SolvePrimalProblem(Utotal,Jtotal,u,oldu,f,ADAITER);
       assert(Jtotal.size() == _niter+1);
       assert(Utotal.size() == _niter+1);
-
+      
+     
 
       // Mitteln
     
-      int I_m= _niter/_M;
+     int I_m= _niter/_M;
       
       assert(_niter%2==0);
       int K=_niter/2;
       
-      assert(_M*I_m == _niter);
+   //   assert(_M*I_m == _niter);
       vector<GlobalVector> U_2(K+1,GlobalVector(MyS->GetGV(u).ncomp(), MyS->GetGV(u).n()));
       vector<GlobalVector> Pu_kM(_M+1,GlobalVector(MyS->GetGV(u).ncomp(), MyS->GetGV(u).n()));
       vector<GlobalVector> Pu_M (_M+1,GlobalVector(MyS->GetGV(u).ncomp(), MyS->GetGV(u).n()));
       Pu_M[0]=Utotal[0];
       Pu_kM[0]=Utotal[0];
       U_2[0]=Utotal[0];
-
-
+      
+      
+        vector<double> DT_M(_M+1);
+        vector<double> T(_M+1);
+        
+      T[0]=0;
+      T[1]=2;
+      T[2]=2.5;
+      T[3]=3;
+      T[4]=4;
+      
+     
+      
+    for( int k=1;k<=_M;k++)
+      {
+        DT_M[k]=T[k]-T[k-1]; 
+    //  assert(DT_M[k]%DT==0);
+      }
+        //assert( DT_M.sum()== endtime);
+       
        
  
-      /* 
+      /*
 	 for (int k=1;k<=K;++k)
 	 {
 	 int start=(k-1)*2;
@@ -1326,14 +1413,14 @@ void Loop::run(const std::string& problemlabel)
     
       // Intregartion und Mittelung
       for (int m=1;m<=_M;++m)
-	{   
+	  {  
 	  //void TrapezInt(GlobalVector& avg, const vector<GlobalVector>& U, int start, int stopp);
-	  MittelInt(Pu_kM[m-1],Pu_kM[m], Utotal, (m-1)*I_m, m*I_m);
-	  MittelInt(Pu_M[m-1],Pu_M[m], Utotal, (m-1)*I_m, m*I_m );
+	  MittelInt(Pu_kM[m-1],Pu_kM[m], Utotal, T[m-1]/DT, T[m]/DT,DT_M[m]);
+	  MittelInt(Pu_M[m-1],Pu_M[m], Utotal, T[m-1]/DT, T[m]/DT,DT_M[m]);
 
 	  GetMultiLevelSolver()->GetSolver()->GetGV(oldu)=Pu_M[m];
 	  nvector<double> functionals_P = Functionals(oldu,f);
-	  // GetMultiLevelSolver()->GetSolver()->Visu("Results/PU_kM",oldu,m);
+	   GetMultiLevelSolver()->GetSolver()->Visu("Results/PU_kM",oldu,m);
 	  JP.push_back(functionals_P[0]);
 	}
 	
@@ -1346,15 +1433,15 @@ void Loop::run(const std::string& problemlabel)
       Extra.Print();
       
       
-      //stringstream str;
-      //str << "Test_J.txt";
-      //ofstream OUTF(str.str().c_str(),ios::app);
+     // stringstream str;
+     // str << "Test_J.txt";
+     // ofstream OUTF(str.str().c_str(),ios::app);
       
       //for (int i=0;i<Jtotal.size();++i)
-      //OUTF << i * DT<< " " << Jtotal[i] << endl;
-      // for (int i=0;i<JP.size();++i)
-      //	 OUTF << i * DTM<< " " << JP[i] << endl;
-      //  OUTF.close();
+     // OUTF << i * DT<< " " << Jtotal[i] << endl;
+    //for (int i=0;i<JP.size();++i)
+     //	 OUTF << i * DTM<< " " << JP[i] << endl;
+      // OUTF.close();
       //abort();
 
 
@@ -1364,21 +1451,19 @@ void Loop::run(const std::string& problemlabel)
       Ztotal[_M+1].zero();
       GetSolverInfos()->GetNLInfo().control().matrixmustbebuild() = 1;
 
-      SolveDualProblem(Ztotal,f,u, oldu,newu,z, oldz,Pu_kM,ADAITER);
-
-     
+      SolveDualProblem(Ztotal,f,u, oldu,newu,z, oldz,Pu_kM,ADAITER,DT_M);
 
       // Fehlerschatzer
       int nnodes = MyS->GetMesh()->nnodes();
       DoubleVector eta(nnodes,0.0), eta1(nnodes,0.0),eta11(nnodes,0.0),eta2(nnodes,0.0),eta22(nnodes,0.0),eta23(nnodes,0.0),eta3(nnodes,0.0),eta4(nnodes,0.0),eta5(nnodes,0.0),eta0(nnodes,0.0),zeta(nnodes,0.0);
 
-      EstimateDualError(eta,eta0,eta1,eta11,eta2,eta22,eta23,eta3,eta4,eta5, Utotal,U_2, Ztotal, Pu_kM, Pu_M,u,oldu,newu,z,oldz,f);
+    EstimateDualError(eta,eta0,eta1,eta11,eta2,eta22,eta23,eta3,eta4,eta5, Utotal,U_2, Ztotal, Pu_kM, Pu_M,u,oldu,newu,z,oldz,f,DT_M,T);
      
    
       this->EtaVisu("Results/eta",ADAITER,eta);
 
       stringstream str;
-      str << "Terme_1_02.txt";
+      str << "ada_5_0.5.txt";
       ofstream OUTF(str.str().c_str(),ios::app);
       OUTF.precision(10);
 
@@ -1400,8 +1485,7 @@ void Loop::run(const std::string& problemlabel)
      
       //  GetMultiLevelSolver()->GetSolver()->Visu("Results/neuu",u,ADAITER);
       //GetMultiLevelSolver()->GetSolver()->Visu("Results/PU",oldu,ADAITER);
-     
-       
+ 
     }
   
  

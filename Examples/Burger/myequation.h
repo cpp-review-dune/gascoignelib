@@ -95,9 +95,9 @@ namespace Gascoigne
     }
 
     void point(double h, const FemFunction &U, const Vertex2d &v) const;
-    void Nonlinear(VectorIterator b, double s, const FemFunction &U1, const FemFunction& U2, const FemFunction& Z, const TestFunction& N,double w) const;
+    void Nonlinear(VectorIterator b, double s, const FemFunction &U1, const FemFunction& U2, const FemFunction& Z, const TestFunction& N,double w,int DTM) const;
     void Form(VectorIterator b, const FemFunction& U, const TestFunction& N) const;
-    void Nonlinear_Matrix(EntryMatrix&A, double s, const FemFunction &U1, const FemFunction& U2, const FemFunction& Z, const TestFunction &M,const TestFunction& N,double w) const;
+    void Nonlinear_Matrix(EntryMatrix&A, double s, const FemFunction &U1, const FemFunction& U2, const FemFunction& Z, const TestFunction &M,const TestFunction& N,double w,int DTM) const;
     void Matrix(EntryMatrix& A, const FemFunction& Z, const TestFunction& M, const TestFunction& N) const;
 
   };

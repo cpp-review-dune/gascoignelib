@@ -88,11 +88,13 @@ namespace Gascoigne
 
     void operator()(VectorIterator b, const TestFunction& N, const Vertex2d& v) const 
     {
-	   if(v.x()>0.0 && v.x()<0.5 &&v.y()>0.0 && v.y()<0.5) 
-	     {
-	       b[0]+= N.x();
-	       b[1]+=-N.y();
-	     }
+	   //if(v.x()>0.0 && v.x()<0.5 &&v.y()>0.0 && v.y()<0.5) 
+	     //{
+             int x=v.x()-0.5;
+             int y =v.y()-0.5;
+	       b[0]+= N.x()*exp(-x*x-y*y);
+	       b[1]+=-N.y()*exp(-x*x-y*y);
+	  //   }
 	}
   };
   
