@@ -60,7 +60,13 @@ namespace Gascoigne
      mutable FemFunction* u1;
      mutable FemFunction* u2;
      mutable FemFunction* u3;
+     
+    mutable FemFunction* H;
+    mutable FemFunction* W;
    
+    mutable FemFunction* newH;
+    mutable FemFunction* oldW;
+    
      double epsilon;
   public:
     
@@ -81,10 +87,21 @@ namespace Gascoigne
 	{
 	  assert(q.find("u1") != q.end() ); 
 	  u1 = &q["u1"];
-	}
-      else
-	u1 = NULL;
       
+      assert(q.find("W") != q.end() ); 
+	  W = &q["W"];
+      
+      assert(q.find("H") != q.end() ); 
+	  H = &q["H"];
+      
+	}
+      else{
+	u1 = NULL;
+    H=NULL;
+    W=NULL;
+          
+    
+    }
       assert(q.find("u2") != q.end() ); 
       u2 = &q["u2"];
 
@@ -92,9 +109,18 @@ namespace Gascoigne
 	{
 	  assert(q.find("u3") != q.end() ); 
 	  u3 = &q["u3"];
+      
+      assert(q.find("oldW") != q.end() ); 
+	  oldW = &q["oldW"];
+      assert(q.find("newH") != q.end() ); 
+	  newH = &q["newH"];
+      
 	}
-      else
+      else{
 	u3 = NULL;
+    oldW=NULL;
+    newH=NULL;
+      }
     }
 
     void point(double h, const FemFunction &U, const Vertex2d &v) const;
@@ -129,7 +155,7 @@ namespace Gascoigne
     {
       assert(q.find("oldh") != q.end() );
       oldh = &q["oldh"];
-       assert(q.find("V") != q.end() );
+      assert(q.find("V") != q.end() );
       V = &q["V"];
     }
 

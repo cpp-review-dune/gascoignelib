@@ -134,11 +134,6 @@ namespace Gascoigne
     
     void operator()(VectorIterator b, const TestFunction& N, const Vertex2d& v) const 
     {
-      
-      b[0]+=0.0*N.m();
-      b[1]+=0.0*N.m();
-      
-	
     }
   };
 
@@ -151,11 +146,11 @@ namespace Gascoigne
   
     void operator()(DoubleVector& b, const Vertex2d& v, int col) const 
     {
-             double x= v.x()+0.125;
-             double y =v.y()+0.125;
-
-              b[0]=1.0+0.1*exp(-x*x-y*y);
-	      b[1]=1.0+0.1*exp(-x*x-y*y);
+      double x= v.x()+0.125;
+      double y =v.y()+0.125;
+      
+      b[0]=0.01*exp(-x*x-y*y);
+      b[1]=0.01*exp(-x*x-y*y);
     }
     
   };

@@ -54,7 +54,7 @@ int main(int argc, char** argv)
   LaplaceTProblem LPD;
   LPD.BasicInit(&paramfile);
 
-   DualProblem DP;
+  DualProblem DP;
   DP.BasicInit(&paramfile);
   
   TransportProblem TP;
