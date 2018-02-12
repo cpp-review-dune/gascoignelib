@@ -1,5 +1,5 @@
 SUBDIRS(
-  NavierStokes2D  bench Burger  ChickenBurger
+  NavierStokes2D  bench Burger Burger_gekoppelt
 
 )
 

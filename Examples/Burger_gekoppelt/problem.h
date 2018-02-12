@@ -113,10 +113,48 @@ namespace Gascoigne
     }
     
   };
+
+
+    class MyInitial : public virtual DomainRightHandSide
+  {
+  public:
+    std::string GetName() const {return "RHS";}    
+    int GetNcomp() const {return 1; }
+
+    double operator()(int c, const Vertex2d& v) const 
+    {
+      
+      double mx = v.x()+0.2;
+      double my = v.y()+0.5;
+      double dist = sqrt(mx*mx+my*my);
+      if (dist<0.3) return 1.0-dist/0.3;
+      
+      if ((fabs(v.x()+0.4)<0.2)&&(fabs(v.y()-0.7)<0.2))
+	return 0.5;
+
+      mx = v.x()-0.6;
+      my = v.y()-0.3;
+      dist = sqrt(mx*mx+my*my);
+      if (dist<0.3)
+	return 0.5+0.5*cos(M_PI*dist/0.3);
+
+      return 0;
+    }
  
 
+  };
 
+      class MyTransportDD : virtual public DirichletData
+  {
+  public:
+    std::string GetName() const {return "DD";}  
   
+    void operator()(DoubleVector& b, const Vertex2d& v, int col) const 
+    {
+      b.zero();
+    }
+    
+  };
   
    
 
@@ -154,6 +192,22 @@ namespace Gascoigne
       GetEquationPointer()      = new MyDualEquation(pf); 
       GetRightHandSidePointer() = new MyDualRhsDom(pf);
       GetDirichletDataPointer() = new MyDualDD();
+      // 
+      ProblemDescriptorBase::BasicInit(pf);
+    }
+  };
+
+   class TransportProblem : public ProblemDescriptorBase
+  {
+  public:
+  
+    std::string GetName() const {return "Transport  Problem";}
+    void BasicInit(const ParamFile* pf)
+    {
+      // equation to solve
+      GetEquationPointer()      = new MyTransportEquation(pf); 
+      GetInitialConditionPointer() = new MyInitial;
+      GetDirichletDataPointer() = new MyTransportDD();
       // 
       ProblemDescriptorBase::BasicInit(pf);
     }

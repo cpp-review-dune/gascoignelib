@@ -54,8 +54,11 @@ int main(int argc, char** argv)
   LaplaceTProblem LPD;
   LPD.BasicInit(&paramfile);
 
-    DualProblem DP;
+   DualProblem DP;
   DP.BasicInit(&paramfile);
+  
+  TransportProblem TP;
+  TP.BasicInit(&paramfile);
 
  
 
@@ -63,6 +66,8 @@ int main(int argc, char** argv)
   ProblemContainer PC;
   PC.AddProblem("LaplaceT", &LPD);
   PC.AddProblem("dp",    &DP);
+  PC.AddProblem("Transport",    &TP);
+  
  
  
   
