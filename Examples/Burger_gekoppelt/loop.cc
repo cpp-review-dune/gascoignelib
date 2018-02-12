@@ -17,33 +17,25 @@ double TIME, DT, CHIGAUSS,DTM1,DTM2;
 bool   PRIMALPROBLEM,FIRSTDUAL, LASTDUAL;
 
 
-string Loop::SolvePrimalTransport(VectorInterface& u, VectorInterface& f, string name)
+string Loop::SolveTransportSingle(VectorInterface& h, VectorInterface& f, string name)
 {
+  GetMultiLevelSolver()->SetProblem("Transport");
+   PRIMALPROBLEM = false;
   
   GetMultiLevelSolver()->GetSolver()->Zero(f);
+  GetMultiLevelSolver()->GetSolver()->Rhs(f, DT);
+   GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(f);
+   GetMultiLevelSolver()->GetSolver()->SetPeriodicVector(h);
+  GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(h);
+  string status = GetMultiLevelSolver()->Solve(h,f,GetSolverInfos()->GetNLInfo());
+  
 
-  // Rechte Seite mit Gauss-Regel
-  double wgt = 0.5;
-  double x1 = TIME-0.5*DT - 0.5*sqrt(1.0/3.0) * DT;
-  double x2 = TIME-0.5*DT + 0.5*sqrt(1.0/3.0) * DT;
-  double SAVETIME = TIME;
-  TIME = x1;
-  GetMultiLevelSolver()->GetSolver()->Rhs(f,wgt * DT);
-  // GetMultiLevelSolver()->GetSolver()->Rhs(f,wgt );
-  TIME = x2;
-  GetMultiLevelSolver()->GetSolver()->Rhs(f,wgt * DT);
-  //GetMultiLevelSolver()->GetSolver()->Rhs(f,wgt);
-  TIME = SAVETIME;
 
-  GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(f);
-  GetMultiLevelSolver()->GetSolver()->SetPeriodicVector(u);
-  GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(u);
-
-  string status = GetMultiLevelSolver()->Solve(u,f,GetSolverInfos()->GetNLInfo());
-
-  Output(u,name);
-
+  
+  Output(h,name);
+  
   return status;
+  PRIMALPROBLEM = true;
 }
 
 
@@ -85,25 +77,27 @@ void Loop::SolvePrimalProblem(vector<GlobalVector> &Utotal, VectorInterface& u, 
     {
       TIME += DT;
       
-  cout << "\n Zeitschritt " << _iter << " " << TIME-DT << " -> " 
+      cout << "\n Zeitschritt " << _iter << " " << TIME-DT << " -> " 
 	   << TIME<< "  [" << DT << "]" << endl;
 
-      GetMultiLevelSolver()->SetProblem("Transport");
-
-       GetMultiLevelSolver()->GetSolver()->Equ(oldh,1.0, u);
-       GetMultiLevelSolver()->AddNodeVector("oldh", oldh);
-       GetMultiLevelSolver()->AddNodeVector("V", oldu);
-       
-       string resi = SolveTransportSingle(h,f,"Results/h");
-        Htotal.push_back(GetMultiLevelSolver()->GetSolver()->GetGV(h));
-       GetMultiLevelSolver()->GetSolver()->Visu("Results/h",h,_iter+ADAITER*1000);
-       
-       GetMultiLevelSolver()->DeleteNodeVector("oldh");
-       GetMultiLevelSolver()->DeleteNodeVector("V");
-       
-       // Momentengleichung
-      
       GetMultiLevelSolver()->GetSolver()->Equ(oldu,1.0, u);
+      GetMultiLevelSolver()->GetSolver()->Equ(oldh,1.0, h);
+        GetMultiLevelSolver()->GetSolver()->Visu("Results/oldh",oldh,_iter+ADAITER*1000);
+      GetMultiLevelSolver()->GetSolver()->Visu("Results/oldu",oldu,_iter+ADAITER*1000);
+      
+      GetMultiLevelSolver()->SetProblem("Transport");
+      GetMultiLevelSolver()->AddNodeVector("oldh", oldh);
+      GetMultiLevelSolver()->AddNodeVector("V", oldu);
+    
+      string resi = SolveTransportSingle(h,f,"Results/h");
+      Htotal.push_back(GetMultiLevelSolver()->GetSolver()->GetGV(h));
+      GetMultiLevelSolver()->GetSolver()->Visu("Results/h",h,_iter+ADAITER*1000);
+      GetMultiLevelSolver()->DeleteNodeVector("oldh");
+      GetMultiLevelSolver()->DeleteNodeVector("V");
+      
+      
+      // Momentengleichung
+      GetMultiLevelSolver()->SetProblem("LaplaceT");
       
       GetMultiLevelSolver()->AddNodeVector("oldu", oldu);
       GetMultiLevelSolver()->AddNodeVector("H", h);
@@ -114,6 +108,8 @@ void Loop::SolvePrimalProblem(vector<GlobalVector> &Utotal, VectorInterface& u, 
       
       GetMultiLevelSolver()->DeleteNodeVector("oldu");
       GetMultiLevelSolver()->DeleteNodeVector("H");
+    
+       
     }
 }
 
@@ -1295,30 +1291,33 @@ void Loop::run(const std::string& problemlabel)
       GetMultiLevelSolver()->ReInitVector(f);
       GetMultiLevelSolver()->ReInitVector(z);
       GetMultiLevelSolver()->ReInitVector(oldz);
-        GetMultiLevelSolver()->ReInitVector(h);
+      
+      GetMultiLevelSolver()->ReInitVector(h);
       GetMultiLevelSolver()->ReInitVector(oldh);
 
       StdSolver* MyS = dynamic_cast<StdSolver*> (GetMultiLevelSolver()->GetSolver());
     
       GetMultiLevelSolver()->GetSolver()->OutputSettings();
+      
+        // Speichern der primalen Loesung u in ALLEN schritten!
+      vector<GlobalVector> Utotal, Htotal;
 
 
-       GetMultiLevelSolver()->SetProblem("Transport");
-
-       InitSolution(h);
-       GetMultiLevelSolver()->Equ(oldh,1.0,h);
+      GetMultiLevelSolver()->SetProblem("Transport");
+      InitSolution(h);
+      GetMultiLevelSolver()->Equ(oldh,1.0,h);
+      Htotal.push_back(MyS->GetGV(h));
+      GetMultiLevelSolver()->GetSolver()->Visu("Results/h",h,0);
+      
 
       GetMultiLevelSolver()->SetProblem("LaplaceT");
-
-      // Speichern der primalen Loesung u in ALLEN schritten! und alle Funktionale
-      vector<GlobalVector> Utotal, Htotal;
 
 
       InitSolution(u);
       
       GetMultiLevelSolver()->Equ(oldu,1.0,u);
       Utotal.push_back(MyS->GetGV(u));
-      //  GetMultiLevelSolver()->GetSolver()->Visu("Results/u",u,0);
+      GetMultiLevelSolver()->GetSolver()->Visu("Results/u",u,0);
       
       GetSolverInfos()->GetNLInfo().control().matrixmustbebuild() = 1;
      
@@ -1387,21 +1386,6 @@ void Loop::run(const std::string& problemlabel)
 	   GetMultiLevelSolver()->GetSolver()->Visu("Results/PU_kM",oldu,m);
 	}
 	
-     
-      
-      
-     // stringstream str;
-     // str << "Test_J.txt";
-     // ofstream OUTF(str.str().c_str(),ios::app);
-      
-      //for (int i=0;i<Jtotal.size();++i)
-     // OUTF << i * DT<< " " << Jtotal[i] << endl;
-    //for (int i=0;i<JP.size();++i)
-     //	 OUTF << i * DTM<< " " << JP[i] << endl;
-      // OUTF.close();
-      //abort();
-
-
       
       // Duales Problem loesen. Alle dualen Schritte speichern. 
       vector<GlobalVector> Ztotal(_M+2, GlobalVector(MyS->GetGV(u).ncomp(), MyS->GetGV(u).n()));

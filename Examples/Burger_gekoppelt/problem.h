@@ -90,7 +90,7 @@ namespace Gascoigne
     {
 	   //if(v.x()>0.0 && v.x()<0.5 &&v.y()>0.0 && v.y()<0.5) 
 	     //{
-             double x=v.x()-0.5;
+                   double x=v.x()-0.5;
              double y =v.y()-0.5;
 
 	     if(TIME>3.0 && TIME<3.5)
@@ -110,39 +110,39 @@ namespace Gascoigne
     void operator()(DoubleVector& b, const Vertex2d& v, int col) const 
     {
       b.zero();
+      return;
     }
     
   };
 
 
-    class MyInitial : public virtual DomainRightHandSide
-  {
-  public:
-    std::string GetName() const {return "RHS";}    
-    int GetNcomp() const {return 1; }
-
-    double operator()(int c, const Vertex2d& v) const 
-    {
-      
-      double mx = v.x()+0.2;
-      double my = v.y()+0.5;
-      double dist = sqrt(mx*mx+my*my);
-      if (dist<0.3) return 1.0-dist/0.3;
-      
-      if ((fabs(v.x()+0.4)<0.2)&&(fabs(v.y()-0.7)<0.2))
-	return 0.5;
-
-      mx = v.x()-0.6;
-      my = v.y()-0.3;
-      dist = sqrt(mx*mx+my*my);
-      if (dist<0.3)
-	return 0.5+0.5*cos(M_PI*dist/0.3);
-
-      return 0;
-    }
+  
  
 
+
+ class MyTransportRhs : public virtual DomainRightHandSide
+  {
+    
+  public:
+    
+  MyTransportRhs(const ParamFile* pf) : DomainRightHandSide()
+      {
+      }
+    
+    std::string GetName() const {return "MyRhs";}    
+    int GetNcomp() const {return 2; }
+    
+    void operator()(VectorIterator b, const TestFunction& N, const Vertex2d& v) const 
+    {
+      
+      b[0]+=0.0*N.m();
+      b[1]+=0.0*N.m();
+      
+	
+    }
   };
+
+   
 
       class MyTransportDD : virtual public DirichletData
   {
@@ -151,7 +151,11 @@ namespace Gascoigne
   
     void operator()(DoubleVector& b, const Vertex2d& v, int col) const 
     {
-      b.zero();
+             double x= v.x()+0.125;
+             double y =v.y()+0.125;
+
+              b[0]=1.0+0.1*exp(-x*x-y*y);
+	      b[1]=1.0+0.1*exp(-x*x-y*y);
     }
     
   };
@@ -206,7 +210,7 @@ namespace Gascoigne
     {
       // equation to solve
       GetEquationPointer()      = new MyTransportEquation(pf); 
-      GetInitialConditionPointer() = new MyInitial;
+      GetRightHandSidePointer() = new MyTransportRhs(pf);
       GetDirichletDataPointer() = new MyTransportDD();
       // 
       ProblemDescriptorBase::BasicInit(pf);

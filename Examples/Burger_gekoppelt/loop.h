@@ -35,15 +35,13 @@ namespace Gascoigne
 
     double CompFunctional(vector<GlobalVector> &Utota,VectorInterface& u,VectorInterface& f);
 
+    string SolveTransportSingle(VectorInterface& h, VectorInterface& f, string name);
     string SolvePrimalSingle(VectorInterface& u, VectorInterface& f, string name);
-    void SolvePrimalProblem(vector<GlobalVector> &Utotal, VectorInterface& u, VectorInterface& oldu, VectorInterface& f, int ADAITER);
+    void SolvePrimalProblem(vector<GlobalVector> &Utotal, VectorInterface& u, VectorInterface& oldu, VectorInterface& f,vector<GlobalVector> &Htotal, VectorInterface& h, VectorInterface& oldh, int ADAITER);
 
-    void Reconstruction(GlobalVector& U2, const vector<GlobalVector>& U,int start);
-
-    void TrapezInt(GlobalVector& avg, const vector<GlobalVector>& U, int start, int stopp,int DTM );
+    
     void MittelInt(GlobalVector& avg_old,GlobalVector& avg, const vector<GlobalVector>& U, int  start, int stopp,double DTM);
-    void Gauss_Q2(GlobalVector& avg_old,GlobalVector& avg, const vector<GlobalVector>& U, int start, int stopp,int DTM) ;
- 
+    
   
    
     

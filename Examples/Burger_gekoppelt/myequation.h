@@ -113,6 +113,7 @@ namespace Gascoigne
 
     mutable FemFunction* oldh;
     mutable FemFunction* V;
+    // mutable FemFunction V;
     double epsilon;
   public:
     
@@ -120,7 +121,7 @@ namespace Gascoigne
     MyTransportEquation(const ParamFile* pf);
 
     std::string GetName()  const { return "MyTransortEquation";}
-    int         GetNcomp() const {return 1;}
+    int         GetNcomp() const {return 2;}
 
 
     
@@ -128,7 +129,7 @@ namespace Gascoigne
     {
       assert(q.find("oldh") != q.end() );
       oldh = &q["oldh"];
-      assert(q.find("V") != q.end() );
+       assert(q.find("V") != q.end() );
       V = &q["V"];
     }
 
