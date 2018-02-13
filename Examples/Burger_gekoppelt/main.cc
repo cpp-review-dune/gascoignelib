@@ -59,6 +59,9 @@ int main(int argc, char** argv)
   
   TransportProblem TP;
   TP.BasicInit(&paramfile);
+  
+  TransportProblem TPD;
+  TPD.BasicInit(&paramfile);
 
  
 
@@ -67,7 +70,7 @@ int main(int argc, char** argv)
   PC.AddProblem("LaplaceT", &LPD);
   PC.AddProblem("dp",    &DP);
   PC.AddProblem("Transport",    &TP);
-  
+  PC.AddProblem("Transport_dual",    &TPD);
  
  
   

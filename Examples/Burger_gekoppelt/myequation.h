@@ -61,8 +61,8 @@ namespace Gascoigne
      mutable FemFunction* u2;
      mutable FemFunction* u3;
      
-    mutable FemFunction* H;
-    mutable FemFunction* W;
+    mutable FemFunction* h;
+    mutable FemFunction* w;
    
     mutable FemFunction* newH;
     mutable FemFunction* oldW;
@@ -88,22 +88,23 @@ namespace Gascoigne
 	  assert(q.find("u1") != q.end() ); 
 	  u1 = &q["u1"];
       
-      assert(q.find("W") != q.end() ); 
-	  W = &q["W"];
-      
-      assert(q.find("H") != q.end() ); 
-	  H = &q["H"];
+      assert(q.find("w") != q.end() ); 
+	  w = &q["w"];
       
 	}
       else{
 	u1 = NULL;
-    H=NULL;
-    W=NULL;
+    w=NULL;
           
     
     }
+    
       assert(q.find("u2") != q.end() ); 
       u2 = &q["u2"];
+        assert(q.find("h") != q.end() ); 
+	  h = &q["h"];
+      assert(q.find("newH") != q.end() ); 
+	  newH = &q["newH"];
 
       if (!FIRSTDUAL)
 	{
@@ -112,8 +113,7 @@ namespace Gascoigne
       
       assert(q.find("oldW") != q.end() ); 
 	  oldW = &q["oldW"];
-      assert(q.find("newH") != q.end() ); 
-	  newH = &q["newH"];
+      
       
 	}
       else{
