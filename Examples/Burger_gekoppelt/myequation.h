@@ -166,6 +166,54 @@ namespace Gascoigne
     void Matrix(EntryMatrix& A, const FemFunction& U, const TestFunction& M, const TestFunction& N) const;
 
   };
+
+     class MyDualTransportEquation : public virtual Equation
+  {
+  protected:
+
+    mutable FemFunction* oldw;
+    mutable FemFunction* V;
+    mutable FemFunction* newV;
+    mutable FemFunction* newnewV;
+    mutable FemFunction* z;
+    mutable FemFunction* oldz;
+    
+    double epsilon;
+  public:
+    
+    MyDualTransportEquation() { abort(); }
+    MyDualTransportEquation(const ParamFile* pf);
+
+    std::string GetName()  const { return "MyDualTransortEquation";}
+    int         GetNcomp() const {return 2;}
+
+
+    
+    void SetFemData(FemData& q) const 
+    {
+      assert(q.find("oldw") != q.end() );
+      oldw = &q["oldw"];
+      if (!LASTDUAL){
+      assert(q.find("V") != q.end() );
+      V = &q["V"];}
+      else
+	V=NULL;
+      if(!FIRSTDUAL){
+       assert(q.find("newV") != q.end() );
+       newV = &q["newV"];
+      }
+      else
+	newV=NULL;
+      
+    }
+
+    void point(double h, const FemFunction &U, const Vertex2d &v) const;
+    
+
+    void Form(VectorIterator b, const FemFunction& U, const TestFunction& N) const;
+    void Matrix(EntryMatrix& A, const FemFunction& U, const TestFunction& M, const TestFunction& N) const;
+
+  };
  
 }
 

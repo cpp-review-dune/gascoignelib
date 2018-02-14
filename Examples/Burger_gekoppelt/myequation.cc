@@ -157,7 +157,7 @@ void MyDualEquation::Form(VectorIterator b,
       Nonlinear(b, 0.5+0.5/sqrt(3.0), (*u2), (*u3), (*oldz), N,  0.5+0.5/sqrt(3.0),DTM2);
      Nonlinear(b, 0.5-0.5/sqrt(3.0), (*u2), (*u3), (*oldz), N,  0.5-0.5/sqrt(3.0),DTM2);
     }
-  /*  //div(phi) hw
+   //div(phi) hw
    if (!LASTDUAL)
    {
     b[0]+=DTM1/2.*((*h)[0].m()*(*w)[0].m())*(N.x());   
@@ -169,7 +169,7 @@ void MyDualEquation::Form(VectorIterator b,
     b[0]+=DTM1/2.*((*h)[0].x()*(*w)[0].m())*(N.m());   
     b[1]+=DTM1/2.*((*h)[0].y()*(*w)[0].m())*(N.m());  
    }
-   //div(phi) hw
+    //div(phi) hw
    if(!FIRSTDUAL)
    {
     b[0]+=DTM2/2.*((*newH)[0].m()*(*oldW)[0].m())*(N.x());   
@@ -177,12 +177,12 @@ void MyDualEquation::Form(VectorIterator b,
    }
    
     //v grad hw
-   if (!LASTDUAL)
+   if (!FIRSTDUAL)
    {
     b[0]+=DTM2/2.*((*newH)[0].x()*(*oldW)[0].m())*(N.m());   
     b[1]+=DTM2/2.*((*newH)[0].y()*(*oldW)[0].m())*(N.m());  
    }
-   */
+   
 }
 
 /*----------------------------------------------------------------------------*/
@@ -275,7 +275,7 @@ void MyTransportEquation::Form(VectorIterator b,
   b[0] += 0.1*DT * (U[0].x()*N.x() + U[0].y()*N.y());
   b[1] += 0.1*DT * (U[1].x()*N.x() + U[1].y()*N.y());
 
-
+  /*
   // //// div v*h
   b[0]+=DT/2.* ((*V)[0].x()+(*V)[1].y())*U[0].m()*N.m();
   b[0]+=DT/2.* ((*V)[0].x()+(*V)[1].y())*(*oldh)[0].m()*N.m();
@@ -294,6 +294,7 @@ void MyTransportEquation::Form(VectorIterator b,
   // v nabla h
   b[1]+=DT/2.*((*V)[0].m()*U[1].x()+(*V)[1].m()*U[1].y())*N.m();
   b[1]+=DT/2.*((*V)[0].m()*(*oldh)[1].x()+(*V)[1].m()*(*oldh)[1].y())*N.m(); 
+  */
 }
 
 /*----------------------------------------------------------------------------*/
@@ -311,6 +312,7 @@ void MyTransportEquation::Matrix(EntryMatrix &A,
   A(0,0) += 0.01*DT * (M.x()*N.x() + M.y()*N.y());
   A(1,1) += 0.01*DT * (M.x()*N.x() + M.y()*N.y());
 
+  /*
 
   A(0,0)+=DT/2.*((*V)[0].x()+(*V)[1].y())*M.m()*N.m();
   A(1,1)+=DT/2.*((*V)[0].x()+(*V)[1].y())*M.m()*N.m();
@@ -318,6 +320,106 @@ void MyTransportEquation::Matrix(EntryMatrix &A,
 
   A(0,0)+=DT/2.*((*V)[0].m()*M.x()+(*V)[1].m()*M.y())*N.m();
   A(1,1)+=DT/2.*((*V)[0].m()*M.x()+(*V)[1].m()*M.y())*N.m();
+  */
+  
+}
+
+
+  
+// Transport_DUaL
+
+  MyDualTransportEquation::MyDualTransportEquation(const ParamFile* pf) : Equation()
+{
+  DataFormatHandler DFH;
+  DFH.insert("epsilon",   &epsilon, 0.0);
+  FileScanner FS(DFH);
+  FS.NoComplain();
+  FS.readfile(pf, "Equation");
+  assert(epsilon>0.0);
+}
+
+/*----------------------------------------------------------------------------*/
+
+void MyDualTransportEquation::point(double h, const FemFunction &U, const Vertex2d &v) const
+{
+ 
+}
+
+/*----------------------------------------------------------------------------*/
+
+void MyDualTransportEquation::Form(VectorIterator b,
+                      const FemFunction &U,
+                      const TestFunction &N) const
+{
+  //Zeit
+  b[0] += (U[0].m() -(*oldw)[0].m()) * N.m();
+  b[1] += (U[1].m() -(*oldw)[1].m()) * N.m();
+
+
+   // ganz einfache stabilisierung...
+  b[0] += 0.1*DT * (U[0].x()*N.x() + U[0].y()*N.y());
+  b[1] += 0.1*DT * (U[1].x()*N.x() + U[1].y()*N.y());
+
+  // //// div v*h
+  if (!LASTDUAL){
+  b[0]+=DTM1/2.* ((*V)[0].x()+(*V)[1].y())*U[0].m()*N.m();
+  b[1]+=DTM1/2.* ((*V)[0].x()+(*V)[1].y())*U[1].m()*N.m();
+  }
+  
+  // v nabla h
+  if (!LASTDUAL){
+  b[0]+=DTM1/2.*((*V)[0].m()*N.x()      + (*V)[1].m()*N.y()      )*U[0].m();
+  b[1]+=DTM1/2.*((*V)[0].m()*N.x()+(*V)[1].m()*N.y())*U[1].m();
+  }
+
+ if (!LASTDUAL){
+   // koppolungsterm
+   // b[0]=+DTM1/2*(((*V)[0].m()-(*newV)[0].m())/DTM1*(*z)[0].m()+((*V)[1].m()-(*newV)[1].m())/DTM1*(*z)[1].m())*N.m();
+   // b[1]=+DTM1/2*(((*V)[0].m()-(*newV)[0].m())/DTM1*(*z)[0].m()+((*V)[1].m()-(*newV)[1].m())/DTM1*(*z)[1].m())*N.m();
+ }
+
+  if (!FIRSTDUAL){
+  //   //// div v*h
+  b[0]+=DTM2/2.* ((*newV)[0].x()+(*newV)[1].y())*(*oldw)[0].m()*N.m();
+  b[1]+=DTM2/2.* ((*newV)[0].x()+(*newV)[1].y())*(*oldw)[1].m()*N.m();
+  
+  // v nabla h
+  
+  b[0]+=DTM2/2.*((*newV)[0].m()*N.x()+ (*newV)[1].m()*N.y())*(*oldw)[0].m();
+  b[1]+=DTM2/2.*((*newV)[0].m()*N.x()+(*newV)[1].m()*N.y())*(*oldw)[1].m();
+
+
+  //koppolung
+  // b[0]=+DTM2/2*(((*newV)[0].m()-(*newnewV)[0].m())/DTM2*(*oldz)[0].m()+((*newV)[1].m()-(*newnewV)[1].m())/DTM2*(*oldz)[1].m())*N.m();
+  //b[1]=+DTM2/2*(((*newV)[0].m()-(*newnewV)[0].m())/DTM2*(*oldz)[0].m()+((*newV)[1].m()-(*newnewV)[1].m())/DTM2*(*oldz)[1].m())*N.m();
+  }
+}
+
+/*----------------------------------------------------------------------------*/
+
+void MyDualTransportEquation::Matrix(EntryMatrix &A,
+                        const FemFunction &U,
+                        const TestFunction &M,
+                        const TestFunction &N) const
+{
+  //Zeit
+  A(0,0) += M.m() * N.m() ;
+  A(1,1) += M.m() * N.m() ;
+
+  A(0,0) += 0.01*DT * (M.x()*N.x() + M.y()*N.y());
+  A(1,1) += 0.01*DT * (M.x()*N.x() + M.y()*N.y());
+  
+ if (!LASTDUAL){
+  //b[0]+=DTM1/2.* ((*V)[0].x()+(*V)[1].y())*U[0].m()*N.m();
+  
+  A(0,0)+=DTM1/2.*((*V)[0].x()+(*V)[1].y())*M.m()*N.m();
+  A(1,1)+=DTM1/2.*((*V)[0].x()+(*V)[1].y())*M.m()*N.m();
+
+  //b[0]+=DTM1/2.*((*V)[0].m()*N.x()      + (*V)[1].m()*N.y()      )*U[0].m();
+  A(0,0)+=DT/2.*((*V)[0].m()*N.x()+(*V)[1].m()*N.y())*M.m();
+  A(1,1)+=DT/2.*((*V)[0].m()*N.x()+(*V)[1].m()*N.y())*M.m();
+
+ }
   
 }
 

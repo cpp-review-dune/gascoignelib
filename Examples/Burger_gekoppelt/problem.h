@@ -212,6 +212,22 @@ namespace Gascoigne
     }
   };
 
+   class TransportDualProblem : public ProblemDescriptorBase
+  {
+  public:
+  
+    std::string GetName() const {return "Transport  Problem";}
+    void BasicInit(const ParamFile* pf)
+    {
+      // equation to solve
+      GetEquationPointer()      = new MyDualTransportEquation(pf); 
+      GetRightHandSidePointer() = new MyTransportRhs(pf);
+      GetDirichletDataPointer() = new MyTransportDD();
+      // 
+      ProblemDescriptorBase::BasicInit(pf);
+    }
+  };
+
 
   
   
