@@ -131,9 +131,19 @@ void MyDualEquation::Form(VectorIterator b,
 			  const TestFunction &N) const
 {  
   //Zeit
-  b[0] += (Z[0].m()-(*oldz)[0].m()) *(1.0+(*h)[0].m())*N.m();
-  b[1] += (Z[1].m()-(*oldz)[1].m()) *(1.0+(*h)[0].m())* N.m();
-   
+  b[0] += (Z[0].m()-(*oldz)[0].m()) *(1.0)*N.m();
+  b[1] += (Z[1].m()-(*oldz)[1].m()) *(1.0)* N.m();
+  
+if(!LASTDUAL){
+ b[0] += (Z[0].m()-(*oldz)[0].m())*(*h)[0].m() *N.m();
+ b[1] += (Z[1].m()-(*oldz)[1].m())*(*h)[1].m() *N.m();
+}
+
+if(LASTDUAL){
+ b[0] += ((*oldz)[0].m())*(*h)[0].m() *N.m();
+ b[1] += ((*oldz)[1].m())*(*h)[1].m() *N.m();
+}
+
   // Laplace.
   if (!LASTDUAL)
     {
@@ -218,10 +228,15 @@ void MyDualEquation::Matrix(EntryMatrix &A,
 {
 
   //Zeit
-  A(0,0) += M.m()*(1.0+(*h)[0].m())*N.m();
-  A(1,1) += M.m()*(1.0+(*h)[0].m())*N.m();
+  A(0,0) += M.m()*(1.0)*N.m();
+  A(1,1) += M.m()*(1.0)*N.m();
   
-  // Laplace.
+  
+  if(!LASTDUAL){
+ A(0,0)+= (M.m())*(*h)[0].m() *N.m();
+ A(1,1)+= (M.m())*(*h)[1].m() *N.m();
+}
+// Laplace.
   if (!LASTDUAL)
     {
       A(0,0) +=epsilon * DTM1/2*( M.x() * N.x() + M.y() * N.y());
@@ -275,7 +290,7 @@ void MyTransportEquation::Form(VectorIterator b,
   b[0] += 0.1*DT * (U[0].x()*N.x() + U[0].y()*N.y());
   b[1] += 0.1*DT * (U[1].x()*N.x() + U[1].y()*N.y());
 
-  /*
+
   // //// div v*h
   b[0]+=DT/2.* ((*V)[0].x()+(*V)[1].y())*U[0].m()*N.m();
   b[0]+=DT/2.* ((*V)[0].x()+(*V)[1].y())*(*oldh)[0].m()*N.m();
@@ -294,7 +309,7 @@ void MyTransportEquation::Form(VectorIterator b,
   // v nabla h
   b[1]+=DT/2.*((*V)[0].m()*U[1].x()+(*V)[1].m()*U[1].y())*N.m();
   b[1]+=DT/2.*((*V)[0].m()*(*oldh)[1].x()+(*V)[1].m()*(*oldh)[1].y())*N.m(); 
-  */
+
 }
 
 /*----------------------------------------------------------------------------*/
@@ -309,10 +324,10 @@ void MyTransportEquation::Matrix(EntryMatrix &A,
   A(1,1) += M.m() * N.m() ;
 
 
-  A(0,0) += 0.01*DT * (M.x()*N.x() + M.y()*N.y());
-  A(1,1) += 0.01*DT * (M.x()*N.x() + M.y()*N.y());
+  A(0,0) += 0.1*DT * (M.x()*N.x() + M.y()*N.y());
+  A(1,1) += 0.1*DT * (M.x()*N.x() + M.y()*N.y());
 
-  /*
+  
 
   A(0,0)+=DT/2.*((*V)[0].x()+(*V)[1].y())*M.m()*N.m();
   A(1,1)+=DT/2.*((*V)[0].x()+(*V)[1].y())*M.m()*N.m();
@@ -320,7 +335,7 @@ void MyTransportEquation::Matrix(EntryMatrix &A,
 
   A(0,0)+=DT/2.*((*V)[0].m()*M.x()+(*V)[1].m()*M.y())*N.m();
   A(1,1)+=DT/2.*((*V)[0].m()*M.x()+(*V)[1].m()*M.y())*N.m();
-  */
+  
   
 }
 
@@ -357,8 +372,8 @@ void MyDualTransportEquation::Form(VectorIterator b,
 
 
    // ganz einfache stabilisierung...
-  b[0] += 0.1*DT * (U[0].x()*N.x() + U[0].y()*N.y());
-  b[1] += 0.1*DT * (U[1].x()*N.x() + U[1].y()*N.y());
+  b[0] += 0.01*DT * (U[0].x()*N.x() + U[0].y()*N.y());
+  b[1] += 0.01*DT * (U[1].x()*N.x() + U[1].y()*N.y());
 
   // //// div v*h
   if (!LASTDUAL){
@@ -374,8 +389,8 @@ void MyDualTransportEquation::Form(VectorIterator b,
 
  if (!LASTDUAL){
    // koppolungsterm
-   // b[0]=+DTM1/2*(((*V)[0].m()-(*newV)[0].m())/DTM1*(*z)[0].m()+((*V)[1].m()-(*newV)[1].m())/DTM1*(*z)[1].m())*N.m();
-   // b[1]=+DTM1/2*(((*V)[0].m()-(*newV)[0].m())/DTM1*(*z)[0].m()+((*V)[1].m()-(*newV)[1].m())/DTM1*(*z)[1].m())*N.m();
+  b[0]+=DTM1/2*(((*V)[0].m()-(*newV)[0].m())/DTM1*(*z)[0].m()+((*V)[1].m()-(*newV)[1].m())/DTM1*(*z)[1].m())*N.m();
+  b[1]+=DTM1/2*(((*V)[0].m()-(*newV)[0].m())/DTM1*(*z)[0].m()+((*V)[1].m()-(*newV)[1].m())/DTM1*(*z)[1].m())*N.m();
  }
 
   if (!FIRSTDUAL){
@@ -390,8 +405,8 @@ void MyDualTransportEquation::Form(VectorIterator b,
 
 
   //koppolung
-  // b[0]=+DTM2/2*(((*newV)[0].m()-(*newnewV)[0].m())/DTM2*(*oldz)[0].m()+((*newV)[1].m()-(*newnewV)[1].m())/DTM2*(*oldz)[1].m())*N.m();
-  //b[1]=+DTM2/2*(((*newV)[0].m()-(*newnewV)[0].m())/DTM2*(*oldz)[0].m()+((*newV)[1].m()-(*newnewV)[1].m())/DTM2*(*oldz)[1].m())*N.m();
+ b[0]+=DTM2/2*(((*newV)[0].m()-(*newnewV)[0].m())/DTM2*(*oldz)[0].m()+((*newV)[1].m()-(*newnewV)[1].m())/DTM2*(*oldz)[1].m())*N.m();
+ b[1]+=DTM2/2*(((*newV)[0].m()-(*newnewV)[0].m())/DTM2*(*oldz)[0].m()+((*newV)[1].m()-(*newnewV)[1].m())/DTM2*(*oldz)[1].m())*N.m();
   }
 }
 
@@ -416,8 +431,8 @@ void MyDualTransportEquation::Matrix(EntryMatrix &A,
   A(1,1)+=DTM1/2.*((*V)[0].x()+(*V)[1].y())*M.m()*N.m();
 
   //b[0]+=DTM1/2.*((*V)[0].m()*N.x()      + (*V)[1].m()*N.y()      )*U[0].m();
-  A(0,0)+=DT/2.*((*V)[0].m()*N.x()+(*V)[1].m()*N.y())*M.m();
-  A(1,1)+=DT/2.*((*V)[0].m()*N.x()+(*V)[1].m()*N.y())*M.m();
+  A(0,0)+=DTM1/2.*((*V)[0].m()*N.x()+(*V)[1].m()*N.y())*M.m();
+  A(1,1)+=DTM1/2.*((*V)[0].m()*N.x()+(*V)[1].m()*N.y())*M.m();
 
  }
   

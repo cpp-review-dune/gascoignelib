@@ -95,8 +95,8 @@ namespace Gascoigne
 
 	     if(TIME>3.0 && TIME<3.5)
 	       {
-	       b[0]+= N.x()*exp(-x*x-y*y);
-	       b[1]+=-N.y()*exp(-x*x-y*y);
+	 //      b[0]+= N.x()*exp(-x*x-y*y);
+	 //      b[1]+=-N.y()*exp(-x*x-y*y);
 	       }
 	  //   }
 	}
@@ -127,6 +127,7 @@ namespace Gascoigne
     
   MyTransportRhs(const ParamFile* pf) : DomainRightHandSide()
       {
+          
       }
     
     std::string GetName() const {return "MyRhs";}    
@@ -134,6 +135,7 @@ namespace Gascoigne
     
     void operator()(VectorIterator b, const TestFunction& N, const Vertex2d& v) const 
     {
+        
     }
   };
 
@@ -155,7 +157,49 @@ namespace Gascoigne
     
   };
   
-   
+       class MyDualTransportDD : virtual public DirichletData
+  {
+  public:
+    std::string GetName() const {return "DD";}  
+  
+    void operator()(DoubleVector& b, const Vertex2d& v, int col) const 
+    {
+    
+      b[0]=0.0;
+      b[1]=0.0;
+    }
+    
+  };
+  
+  
+  
+ class MyDualTransportRhs : public virtual DomainRightHandSide
+  {
+    
+  public:
+    
+  MyDualTransportRhs(const ParamFile* pf) : DomainRightHandSide()
+      {
+      }
+    
+    std::string GetName() const {return "MyRhs";}    
+    int GetNcomp() const {return 2; }
+    
+    void operator()(VectorIterator b, const TestFunction& N, const Vertex2d& v) const 
+    {
+        if(v.x()>0.5&&v.y()>0.5)
+        {
+       
+            double x=v.x()-0.5;
+            double y =v.y()-0.5;
+
+	     if(TIME>3.0 && TIME<3.5)
+        
+        b[0]+= N.m()*exp(-x*x-y*y);
+	    b[1]+= 0.0*N.m();
+        }
+    }
+  };
 
 
 
@@ -221,8 +265,8 @@ namespace Gascoigne
     {
       // equation to solve
       GetEquationPointer()      = new MyDualTransportEquation(pf); 
-      GetRightHandSidePointer() = new MyTransportRhs(pf);
-      GetDirichletDataPointer() = new MyTransportDD();
+      GetRightHandSidePointer() = new MyDualTransportRhs(pf);
+      GetDirichletDataPointer() = new MyDualTransportDD();
       // 
       ProblemDescriptorBase::BasicInit(pf);
     }

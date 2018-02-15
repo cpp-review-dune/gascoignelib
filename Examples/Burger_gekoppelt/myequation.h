@@ -103,8 +103,7 @@ namespace Gascoigne
       u2 = &q["u2"];
         assert(q.find("h") != q.end() ); 
 	  h = &q["h"];
-      assert(q.find("newH") != q.end() ); 
-	  newH = &q["newH"];
+     
 
       if (!FIRSTDUAL)
 	{
@@ -114,6 +113,8 @@ namespace Gascoigne
       assert(q.find("oldW") != q.end() ); 
 	  oldW = &q["oldW"];
       
+       assert(q.find("newH") != q.end() ); 
+	  newH = &q["newH"];
       
 	}
       else{
@@ -193,17 +194,34 @@ namespace Gascoigne
     {
       assert(q.find("oldw") != q.end() );
       oldw = &q["oldw"];
+      assert(q.find("newV") != q.end() );
+       newV = &q["newV"];
+      
       if (!LASTDUAL){
       assert(q.find("V") != q.end() );
-      V = &q["V"];}
+      V = &q["V"];
+       assert(q.find("z") != q.end() );
+      z= &q["z"];    
+      
+    }
       else
+      {
 	V=NULL;
+    z=NULL;
+      }      
       if(!FIRSTDUAL){
-       assert(q.find("newV") != q.end() );
-       newV = &q["newV"];
+          
+        assert(q.find("newnewV") != q.end() );
+      newnewV = &q["newnewV"];
+       assert(q.find("oldz") != q.end() );
+      oldz= &q["oldz"];   
       }
-      else
-	newV=NULL;
+      else{
+          
+    newnewV=NULL;
+    oldz=NULL;   
+    }
+     
       
     }
 

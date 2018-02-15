@@ -31,7 +31,7 @@ public:
   { 
     if(TIME>3.0 && TIME<3.5)
     { double x=v.x()-0.5; double y=v.y()-0.5;
-      return  (U[0].x()-U[1].y())*exp(-x*x-y*y);}
+      return  (U[0].m()*exp(-x*x-y*y));}
     
     return 0;
   }

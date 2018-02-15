@@ -61,33 +61,42 @@ string SolveDualSingle(vector<GlobalVector>& Ztotal,vector<GlobalVector>& Wtotal
 			   DoubleVector& eta4,
 			      DoubleVector& eta5,
 			   vector<GlobalVector>& Utotal,
+               vector<GlobalVector>& Htotal,
+               vector<GlobalVector>& Wtotal,
 			vector<GlobalVector>& U_2,
 			   vector<GlobalVector>& Ztotal,
 			   vector<GlobalVector>& Pu_kM,
 			   vector<GlobalVector>& Pu_M,
+               vector<GlobalVector>& Ph_M,
 			VectorInterface& u,
 		   	   VectorInterface& oldu,
 			VectorInterface& newu,
 			   VectorInterface& z,
 			  VectorInterface& oldz,
+             VectorInterface& h ,
+              VectorInterface& oldh ,
+               VectorInterface& w ,
+                VectorInterface& oldw ,
 			VectorInterface& f, vector<double>& DT_M,vector<double>& T,vector<double>& eta_time);
+ 
+ 
 
-    void EstimateDWRprim(DoubleVector& eta, int m, const GlobalVector& Pu_kM,   vector<GlobalVector>& U,
-			 GlobalVector& Z,VectorInterface& u, VectorInterface& oldu,VectorInterface& z,VectorInterface& f,vector<double>& T);
+    void EstimateDWRprim(DoubleVector& eta, int m, const GlobalVector& Pu_kM,  vector<GlobalVector>& U,vector<GlobalVector>& H,
+			 GlobalVector& Z,VectorInterface& u, VectorInterface& oldu,VectorInterface& h,VectorInterface& oldh,VectorInterface& z,VectorInterface& f,vector<double>& T);
 
-     void EstimateDWRdual(DoubleVector& eta, int m, vector<GlobalVector>& Pu_kM, GlobalVector& Pu_M,
-			  const GlobalVector& OLDZ, GlobalVector& Z,VectorInterface& u, VectorInterface& oldu,VectorInterface& newu,VectorInterface& z,VectorInterface& oldz,VectorInterface& f, vector<double>& DT_M,vector<double>& T);
+     void EstimateDWRdual(DoubleVector& eta, int m, vector<GlobalVector>& Pu_kM,vector<GlobalVector>&Htotal,vector<GlobalVector>&Wtotal, GlobalVector& Pu_M,
+			  const GlobalVector& OLDZ, GlobalVector& Z,VectorInterface& u, VectorInterface& oldu,VectorInterface& newu,VectorInterface& z,VectorInterface& oldz,VectorInterface& h,VectorInterface& oldh,VectorInterface& w,VectorInterface& oldw,VectorInterface& f, vector<double>& DT_M,vector<double>& T);
 
    void EstimateAvg(DoubleVector& eta,  GlobalVector& Pu, const GlobalVector &Puold,
-		     const GlobalVector& U, const GlobalVector &Uold, GlobalVector& Z,
-		     VectorInterface& u, VectorInterface& oldu,VectorInterface& z,VectorInterface& f);
+		     const GlobalVector& U, const GlobalVector &Uold, GlobalVector& Z,const GlobalVector& H,
+		     VectorInterface& u, VectorInterface& oldu,VectorInterface& z,VectorInterface& h,VectorInterface& f);
 
 
    void EstimateRest(DoubleVector& eta,int m,
 		     const GlobalVector& Pu, const GlobalVector &Puold,
 		     const GlobalVector& Puk, const GlobalVector &Pukold,
-		     const GlobalVector& U, const GlobalVector &Uold, GlobalVector& Z,
-		     VectorInterface& u, VectorInterface& oldu,VectorInterface& z,VectorInterface& f);
+		     const GlobalVector& U, const GlobalVector &Uold, GlobalVector& Z,const GlobalVector& H,
+		     VectorInterface& u, VectorInterface& oldu,VectorInterface& z,VectorInterface& h,VectorInterface& f);
 
     void EstimateNonU(DoubleVector& eta,
 		       vector<GlobalVector>& Utotal, GlobalVector& Z,
