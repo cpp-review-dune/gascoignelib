@@ -74,7 +74,8 @@ class BoundaryIndexHandler
   void SetPeriodicPairs(std::map<int,std::map<int,int> > mm_PeriodicPairs);
   const std::map<int,std::map<int,int> > GetPeriodicPairs() const;
 
-  void Equal(const IntSet& col, const VecMap& v, const VecMap& c, const VecMap& l);
+  void Equal(const IntSet& col, const VecMap& v, const VecMap& c, const VecMap& l,
+	     const VecMap& patch, const VecMap& patchlocal);
   void check() const;
   friend std::ostream& operator<<(std::ostream &s, const BoundaryIndexHandler& A);
 };

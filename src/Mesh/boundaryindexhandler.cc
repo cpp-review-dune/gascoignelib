@@ -73,12 +73,15 @@ void BoundaryIndexHandler::check() const
 /*--------------------------------------------------------------*/
 
 void BoundaryIndexHandler::Equal
-(const IntSet& col, const VecMap& v, const VecMap& c, const VecMap& l)
+(const IntSet& col, const VecMap& v, const VecMap& c, const VecMap& l,
+ const VecMap& patch, const VecMap& patchlocal)
 {
   AllColors = col;
   verteces  = v;
   cells     = c;
   localci   = l;
+  patches   = patch;
+  localpi   = patchlocal;
 }
 
 

@@ -15,6 +15,9 @@
 #include "lpsequation.h"
 #include "fsisparse_umf.h"
 #include "fsisparseblockilu.h"
+#include <eigen3/Eigen/Sparse>
+#include <eigen3/Eigen/Dense>
+#include "stopwatch.h"
 
 using namespace std;
 
@@ -27,6 +30,8 @@ namespace Gascoigne
   private:
       
     DiscretizationInterface* NewDiscretization(int dimension, const std::string& discname);
+
+    mutable SparseBlockMatrix<FMatrixBlock<DIM+1> > _P;
 
     SparseUmf<FMatrixBlock<DIM+1> >         _LAP_M;    
     SparseBlockMatrix<FMatrixBlock<DIM+1> > _LAP_A;
@@ -45,7 +50,7 @@ namespace Gascoigne
     void SolveExtension(VectorInterface& x);
       
 
-
+    void ComputeSAI() const;
     void ComputeIlu(const VectorInterface& gu) const;
     void modify_ilu(IluInterface& I,int ncomp) const;
 

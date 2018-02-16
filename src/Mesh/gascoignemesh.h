@@ -55,19 +55,19 @@ public:
   }
 
   const IntVector&               GetCellVector()          const  { return nc;}
-  const IntVector&               GetMaterialVector()          const  { return mat;}
-  const IntVector&               GetMaterialPatchVector()          const  { return matpatch;}
-  const PatchIndexHandler&    GetPatchIndexHandler()   const  { return PatchHandler;}
+  const IntVector&               GetMaterialVector()      const  { return mat;}
+  const IntVector&               GetMaterialPatchVector() const  { return matpatch;}
+  const PatchIndexHandler&       GetPatchIndexHandler()   const  { return PatchHandler;}
   const BoundaryIndexHandler&    GetBoundaryIndexHandler()const  { return BoundaryHandler;}
-  const HangingIndexHandler&  GetHangingIndexHandler() const  { return HangingHandler;}
+  const HangingIndexHandler&     GetHangingIndexHandler() const  { return HangingHandler;}
   const IntVector*               Vertexo2n()              const  { return &vo2n;}
 
   IntVector&               GetCellVector()           { return nc;}
-  IntVector&               GetMaterialVector()           { return mat;}
-  IntVector&               GetMaterialPatchVector()           {return matpatch;}
-  PatchIndexHandler&    GetPatchIndexHandler()    { return PatchHandler;}
+  IntVector&               GetMaterialVector()       { return mat;}
+  IntVector&               GetMaterialPatchVector()  { return matpatch;}
+  PatchIndexHandler&       GetPatchIndexHandler()    { return PatchHandler;}
   BoundaryIndexHandler&    GetBoundaryIndexHandler() { return BoundaryHandler;}
-  HangingIndexHandler&  GetHangingIndexHandler()  { return HangingHandler;}
+  HangingIndexHandler&     GetHangingIndexHandler()  { return HangingHandler;}
   IntVector*               Vertexo2n()               { return &vo2n;}
 
   int  nodes_per_patch()   const { return PatchHandler.nodes_per_patch();}

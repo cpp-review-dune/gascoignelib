@@ -17,9 +17,13 @@ OPTION(WITH_THREADS "Build with support for openmp" OFF)
 
 OPTION(WITH_RSTStopWatch "Use RSTStopWatch" OFF)
 
-SET(EXAMPLE_OUTPUT_PATH "${CMAKE_BINARY_DIR}/bin"
-  CACHE PATH "output path of examples")
 
+#### Never use -DNDEBUG for Release
+OPTION(CMAKE_CXX_FLAGS_RELEASE "" "-O3")
+
+### Directory Settings
+
+SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"  CACHE PATH "output path for libraries")
 
 
 
@@ -121,8 +125,6 @@ IF(HAVE_TR1_UNORDERED_MAP)
 ENDIF()
 
 SET(GASCOIGNE_LIBS "GascoigneStd${BUILD_ENDING}")
-#/opt/local/lib/libmetis.dylib)
-
 
 ADD_SUBDIRECTORY(src)
 ADD_SUBDIRECTORY(Examples)

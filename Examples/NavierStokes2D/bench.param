@@ -39,7 +39,7 @@ nonlinear_rho		0.1
 //Block Solver
 
 
-matrixtype	block
+matrixtype	sparseumf
 
 discname 	                Q1Gls
 ilum                    3  0.01  0.1  0.1

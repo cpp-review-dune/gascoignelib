@@ -45,6 +45,7 @@
 #include "cfdblock3d.h"
 #include "fmatrixblock.h"
 #include "sparseblockilu.h"
+#include "sparse_umf.h"
 
 /*--------------------------------*/
 #ifdef __WITH_UMFPACK__
@@ -167,6 +168,8 @@ namespace Gascoigne
   void StdSolver::_check_consistency(const Equation *EQ,
                                      const DiscretizationInterface *DI) const
   {
+    return;
+    
     string eq = DI->GetName();
 
     bool glseq = false, glsdi = false;
@@ -671,7 +674,7 @@ namespace Gascoigne
     {
       return new PointMatrix(ncomp, "node");
     }
-    else if (matrixtype == "block")
+    else if ((matrixtype == "block") || (matrixtype == "sparseumf"))
     {
       if (ncomp == 1)
         return new SparseBlockMatrix<FMatrixBlock<1>>;
@@ -681,6 +684,8 @@ namespace Gascoigne
         return new SparseBlockMatrix<FMatrixBlock<3>>;
       else if (ncomp == 4)
         return new SparseBlockMatrix<FMatrixBlock<4>>;
+      else if (ncomp == 5)
+        return new SparseBlockMatrix<FMatrixBlock<5>>;
       else
       {
         cerr << "No SparseBlockMatrix for " << ncomp << "components." << endl;
@@ -711,7 +716,8 @@ namespace Gascoigne
     {
       if (ncomp == 4)
       {
-        return new SparseBlockMatrix<CFDBlock3d>;
+	abort();
+	//        return new SparseBlockMatrix<CFDBlock3d>;
       }
       else
       {
@@ -764,6 +770,34 @@ namespace Gascoigne
         return new SparseBlockIlu<FMatrixBlock<3>>;
       else if (ncomp == 4)
         return new SparseBlockIlu<FMatrixBlock<4>>;
+      else if (ncomp == 5)
+        return new SparseBlockIlu<FMatrixBlock<5>>;
+      else
+      {
+        cerr << "No SparseBlockIlu for " << ncomp << "components." << endl;
+        abort();
+      }
+    }
+    else if (matrixtype == "sparseumf")
+    {
+
+#ifdef __WITH_THREADS__
+      if (__n_threads > 1)
+      {
+        return new ThreadIlu(ncomp);
+      }
+#endif
+
+      if (ncomp == 1)
+        return new SparseUmf<FMatrixBlock<1>>(GetMatrix());
+      else if (ncomp == 2)
+        return new SparseUmf<FMatrixBlock<2>>(GetMatrix());
+      else if (ncomp == 3)
+        return new SparseUmf<FMatrixBlock<3>>(GetMatrix());
+      else if (ncomp == 4)
+        return new SparseUmf<FMatrixBlock<4>>(GetMatrix());
+      else if (ncomp == 5)
+        return new SparseUmf<FMatrixBlock<5>>(GetMatrix());
       else
       {
         cerr << "No SparseBlockIlu for " << ncomp << "components." << endl;
@@ -794,7 +828,8 @@ namespace Gascoigne
     {
       if (ncomp == 4)
       {
-        return new SparseBlockIlu<CFDBlock3d>;
+	abort();
+	//        return new SparseBlockIlu<CFDBlock3d>;
       }
     }
     cerr << "No such matrix type \"" << matrixtype << "and ncomp \"." << ncomp

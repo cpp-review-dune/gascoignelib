@@ -1017,6 +1017,8 @@ void HierarchicalMesh2d::GetAwakeCells(set<int>& v) const
 
 void HierarchicalMesh2d::GetAwakePatchs(set<int>& v) const
 {
+  v.clear();
+  
   for (int i=0; i<ncells(); i++)
     {
       if (!quads[i].sleep()) 

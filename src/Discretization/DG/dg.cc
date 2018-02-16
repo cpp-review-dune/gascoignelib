@@ -12,10 +12,10 @@ namespace Gascoigne
   DG<BASE>::DG()
   {
     _integrator.BasicInit();
-  };
+  }
 
   template <class BASE>
-  void DG<BASE>::BasicInit(const ParamFile *pf){};
+  void DG<BASE>::BasicInit(const ParamFile *pf){}
 
   template <class BASE>
   void DG<BASE>::ReInit(const MeshInterface *M)
@@ -23,7 +23,7 @@ namespace Gascoigne
     _dofhandler.InitFromGascoigneMesh(M);
     _mesh = dynamic_cast<const GascoigneMesh *>(M);
     assert(_mesh);
-  };
+  }
 
 
   ////////// STUFF Data, NodeVEctor, Cellvector ...
@@ -104,8 +104,8 @@ namespace Gascoigne
     }
 
     EdgeForm(f, u, dynamic_cast<const DGEquation &>(EQ), d);
-    
-  };
+  }
+
   template <class BASE>
   void DG<BASE>::EdgeForm(GlobalVector &f,
                           const GlobalVector &u,
@@ -165,7 +165,7 @@ namespace Gascoigne
       if (internaledge)
         _dofhandler.LocalToGlobal(f, F2, slave, d);
     }
-  };
+  }
 
 
   template <class BASE>
@@ -192,7 +192,7 @@ namespace Gascoigne
       _integrator.Rhs(RHS, F, _fe, QN, QC);
       _dofhandler.LocalToGlobal(f, F, iq, s);
     }
-  };
+  }
 
   template <class BASE>
   void DG<BASE>::Matrix(MatrixInterface &A,
@@ -226,7 +226,7 @@ namespace Gascoigne
       _dofhandler.LocalToGlobalMatrix(A, E, iq, d);
     }
     EdgeMatrix(A, u, dynamic_cast<const DGEquation &>(EQ), d);
-  };
+  }
 
   template <class BASE>
   void DG<BASE>::EdgeMatrix(MatrixInterface &A,
@@ -292,7 +292,7 @@ namespace Gascoigne
         _dofhandler.LocalToGlobalMatrix(A, E22, slave, slave,d);
       }
     }
-  };
+  }
 
 
   template class DG<BASEQ12D>;

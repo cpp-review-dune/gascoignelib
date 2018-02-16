@@ -11,6 +11,7 @@
 #include "umfilu.h"
 
 using namespace std;
+using namespace Eigen;
 
 extern double __DT, __THETA;
 
@@ -126,56 +127,184 @@ namespace Gascoigne
   {
     ReInitExtensionMatrix();
 
-
-    if (((_matrixtype == "split") || (_matrixtype == "splitumf")) &&
-        (!_directsolver))
-    {
-      abort();
-    }
-    else if (((_matrixtype == "fsisplit") || (_matrixtype == "fsisplitumf")) &&
-             (!_directsolver))
-    {
-      abort();
-    }
-
-    else
-      StdSolver::ReInitMatrix();
+    GetDiscretization()->InitFilter(GetPfilter());
+    SparseStructure SA;
+    GetDiscretization()->Structure(&SA);
+    _P.ReInit(&SA);
+    _P.zero();
+    
+    StdSolver::ReInitMatrix();
   }
+
+  template <int DIM>
+  void FSISolver<DIM>::ComputeSAI() const
+  {
+    if (_directsolver) return;
+    
+    _P.zero();
+    StopWatch SW;
+    SW.start();
+    
+    const SparseBlockMatrix<FMatrixBlock<DIM+1> > &  A  = 
+      dynamic_cast<const SparseBlockMatrix<FMatrixBlock<DIM+1> > &> (*GetMatrix());
+    const ColumnDiagStencil& ST = dynamic_cast<const ColumnDiagStencil&> (*A.GetStencil());
+    //const vector<FMatrixBlock<y> >& value = A.mat();
+    
+    int N = ST.n();
+    
+    //#pragma omp parallel for
+
+    for (int k=0;k<ST.n();++k)
+      {
+	// Spalte k von P
+	// nicht-nullen in Spalte k genau bei nicht-Nullen in Zeile k
+	vector<int> indexcol;
+	for (int i=ST.start(k);i<ST.stop(k);++i)
+	  indexcol.push_back(ST.col(i));
+	set<int> indexrowset;
+	for (int j=0;j<indexcol.size();++j)
+	  {
+	    int ri = indexcol[j];
+	    for (int i=ST.start(ri);i<ST.stop(ri);++i)
+	      indexrowset.insert(ST.col(i));
+          }
+	vector<int> indexrow;
+	for (set<int>::const_iterator it = indexrowset.begin();
+	     it!=indexrowset.end();++it)
+	  {
+	    indexrow.push_back(*it);
+          }
+	
+	// gleiche daten zum Suchen
+	map<int,int> indexcolset;
+	for (int i=0;i<indexcol.size();++i)
+	  indexcolset[indexcol[i]]=i;
+	
+	const vector<FMatrixBlock<DIM+1> >& value = A.mat();
+	
+	// Initialisierung Matrix
+	Matrix<double,Dynamic,Dynamic> Aklein(indexrow.size()*(DIM+1),indexcol.size()*(DIM+1));
+	Aklein.setZero();
+	
+	// zeilen durchlaufen
+	for (int rAklein = 0; rAklein < indexrow.size(); ++rAklein) //Initialisierung Aklein
+	  {   
+	    int rA = indexrow[rAklein];
+	    for (int pA = ST.start(rA); pA<ST.stop(rA) ; ++pA)
+	      {
+		int cA = ST.col(pA);
+		if (indexcolset.find(cA)!=indexcolset.end())
+		  {
+		    for(int iF=rAklein*(DIM+1);iF<(rAklein+1)*(DIM+1);++iF)
+		      {
+			int cP = indexcolset[cA];
+			for(int jF=cP*(DIM+1);jF<(cP+1)*(DIM+1);++jF)
+			  Aklein(iF,jF) = value[pA](iF-rAklein*(DIM+1),jF-cP*(DIM+1));
+		      }
+		  }
+	      }
+	  }
+	//QR-Zerlegung berechnen
+
+	ColPivHouseholderQR< Matrix<double,Dynamic,Dynamic> > qr(Aklein.rows(),Aklein.cols());
+	qr.compute(Aklein);
+
+	//mk berechnen
+	for(int mS=0;mS<(DIM+1);++mS)   //ueber die Spalten von mk iterieren
+	  {
+	    Matrix<double,Dynamic,1> ek(indexrow.size()*(DIM+1));
+	    for (int rAklein = 0; rAklein < indexrow.size(); ++rAklein) //Initialisierung Aklein
+	      { 
+		int rA = indexrow[rAklein];
+		if (rA == k) //Initialisierung rechte Seite ebenfalls spaltenweise
+		  {
+		    for(int iE=(rAklein*(DIM+1));iE<(rAklein+1)*(DIM+1);++iE)
+		      {
+			if(iE - (rAklein*(DIM+1)) == mS) // ?????
+			  ek(iE) = 1;
+			else 
+			  ek(iE) = 0;
+		      }
+		  }
+		else
+		  {
+		    for(int iE=rAklein*(DIM+1);iE<(rAklein+1)*(DIM+1);++iE)
+		      {
+			ek(iE) = 0;
+		      }
+		  }
+	      }
+	    Matrix<double,Dynamic,1> mk = qr.solve(ek); 
+	    //cout << Aklein << "\n" << endl;
+	    //cout << mk << "\n" << endl;
+	    for(int cPP = 0; cPP < indexcol.size(); ++cPP)
+	      {
+		int rP = indexcol[cPP];
+		//P[rP,k] = mk(cPP,0);
+		for(int iP=0;iP<(DIM+1);++iP)
+		  {
+		    if (fabs(mk((cPP*(DIM+1))+iP)<1.e-14)) 
+		      {
+			_P.mat(ST.Find(rP,k))->value(iP,mS) = 0;
+		      }
+		    else	  
+		      _P.mat(ST.Find(rP,k))->value(iP,mS) = mk((cPP*(DIM+1))+iP);
+		  }
+	      }
+	  }
+      }
+
+    SW.stop();
+    cout << "Precond: " << N << "\t" << SW.read() << endl;
+    
+  }
+  
 
   template <int DIM>
   void FSISolver<DIM>::ComputeIlu(const VectorInterface &gu) const
   {
-    if (!_directsolver)
-    {
-      int ncomp = GetProblemDescriptor()->GetEquation()->GetNcomp();
-      PermutateIlu(gu);
+    ComputeSAI();
+    
+    if ((_matrixtype=="sparseumf")&&(!_directsolver))
+      {
+	IntVector perm;
+	GetIlu()->ConstructStructure(perm,*GetMatrix());
+	GetIlu()->copy_entries(GetMatrix());
+	GetIlu()->compute_ilu();
+      }
+    else 
+    
+    // if (!_directsolver)
+    // {
+    //   int ncomp = GetProblemDescriptor()->GetEquation()->GetNcomp();
+    //   PermutateIlu(gu);
 
-      GetIlu()->zero();
-      GetIlu()->copy_entries(GetMatrix());
+    //   GetIlu()->zero();
+    //   GetIlu()->copy_entries(GetMatrix());
 
-      modify_ilu(*GetIlu(), ncomp);
-      GetIlu()->compute_ilu();
-
-
-      // FOR FSI ILU
-      IntVector perm(GetMatrix()->GetStencil()->n());
-      iota(perm.begin(),perm.end(),0);
-      CuthillMcKee    cmc(GetMatrix()->GetStencil());
-      cmc.Permutate      (perm);
+    //   modify_ilu(*GetIlu(), ncomp);
+    //   GetIlu()->compute_ilu();
 
 
-      _ILU_F.ConstructStructure(perm,
-				*GetMatrix());
-      _ILU_S.ConstructStructure(vector<int>(0), 
-				*GetMatrix());
-      HASHSET<int> nullset;
-      _ILU_F.copy_entries(GetAleDiscretization()->GetFluidG2L(), GetAleDiscretization()->GetInterfaceNodes(), GetMatrix());
-      //      _ILU_F.copy_entries(GetAleDiscretization()->GetFluidG2L(), nullset, GetMatrix());
-      _ILU_S.copy_entries(GetAleDiscretization()->GetSolidG2L(), nullset, GetMatrix());
-      _ILU_F.compute_ilu();
-      _ILU_S.compute_ilu();
-    }
-    else
+    //   // FOR FSI ILU
+    //   IntVector perm(GetMatrix()->GetStencil()->n());
+    //   iota(perm.begin(),perm.end(),0);
+    //   CuthillMcKee    cmc(GetMatrix()->GetStencil());
+    //   cmc.Permutate      (perm);
+
+
+    //   _ILU_F.ConstructStructure(perm,
+    // 				*GetMatrix());
+    //   _ILU_S.ConstructStructure(vector<int>(0), 
+    // 				*GetMatrix());
+    //   HASHSET<int> nullset;
+    //   _ILU_F.copy_entries(GetAleDiscretization()->GetFluidG2L(), GetAleDiscretization()->GetInterfaceNodes(), GetMatrix());
+    //   //      _ILU_F.copy_entries(GetAleDiscretization()->GetFluidG2L(), nullset, GetMatrix());
+    //   _ILU_S.copy_entries(GetAleDiscretization()->GetSolidG2L(), nullset, GetMatrix());
+    //   _ILU_F.compute_ilu();
+    //   _ILU_S.compute_ilu();
+    // }
+    // else
       StdSolver::ComputeIlu(gu);
   }
 
@@ -206,45 +335,60 @@ namespace Gascoigne
                               const VectorInterface &y,
                               VectorInterface &h) const
   {
-    const std::vector<int>& fl2g = GetAleDiscretization()->GetFluidL2G();
-    const std::vector<int>& sl2g = GetAleDiscretization()->GetSolidL2G();
-    const HASHSET<int>& interface = GetAleDiscretization()->GetInterfaceNodes();
-    if ((_matrixtype == "splitumf") && (!_directsolver))
-    {
-      abort();
-    }
-    else if (GetSolverData().GetLinearSmooth() == "ilu")
-    {
-      assert(!_directsolver);
-      double omega = GetSolverData().GetOmega();
-      for (int iter = 0; iter < niter; iter++)
+    // const std::vector<int>& fl2g = GetAleDiscretization()->GetFluidL2G();
+    // const std::vector<int>& sl2g = GetAleDiscretization()->GetSolidL2G();
+    // const HASHSET<int>& interface = GetAleDiscretization()->GetInterfaceNodes();
+    // if ((_matrixtype == "splitumf") && (!_directsolver))
+    // {
+    //   abort();
+    // }
+    // else if (GetSolverData().GetLinearSmooth() == "ilu")
+    // {
+    //   assert(!_directsolver);
+    //   double omega = GetSolverData().GetOmega();
+    //   for (int iter = 0; iter < niter; iter++)
+    //   {
+    // 	// FLUID PROBLEM
+    //     MatrixResidual(h, x, y);
+    // 	// Set Dirichlet-Zero within the Solid domain for velocity & Pressure
+    // 	// on the interface: only velocity to zero
+    // 	for (auto it : sl2g)
+    // 	  if (interface.find(it)==interface.end())
+    // 	    GetGV(h).zero_node(it);
+    // 	for (auto it : interface)
+    // 	  for (int c=0;c<DIM;++c)
+    // 	    GetGV(h)(it,c+1)=0.0;
+    // 	_ILU_F.solve(GetGV(h));
+    // 	Add(x, omega, h);
+
+    // 	// SOLID PROBLEM
+    //     MatrixResidual(h, x, y);
+    // 	for (auto it : fl2g)
+    // 	  if (interface.find(it)==interface.end())
+    // 	    GetGV(h).zero_node(it);
+    // 	_ILU_S.solve(GetGV(h));
+    // 	for (auto it : fl2g)
+    // 	  if (interface.find(it)==interface.end())
+    // 	    GetGV(h).zero_node(it);
+
+    // 	Add(x, omega, h);
+    //   }
+    // }
+    // else
+
+    if (GetSolverData().GetLinearSmooth()=="sai")
       {
-	// FLUID PROBLEM
-        MatrixResidual(h, x, y);
-	// Set Dirichlet-Zero within the Solid domain for velocity & Pressure
-	// on the interface: only velocity to zero
-	for (auto it : sl2g)
-	  if (interface.find(it)==interface.end())
-	    GetGV(h).zero_node(it);
-	for (auto it : interface)
-	  for (int c=0;c<DIM;++c)
-	    GetGV(h)(it,c+1)=0.0;
-	_ILU_F.solve(GetGV(h));
-	Add(x, omega, h);
-
-	// SOLID PROBLEM
-        MatrixResidual(h, x, y);
-	for (auto it : fl2g)
-	  if (interface.find(it)==interface.end())
-	    GetGV(h).zero_node(it);
-	_ILU_S.solve(GetGV(h));
-	for (auto it : fl2g)
-	  if (interface.find(it)==interface.end())
-	    GetGV(h).zero_node(it);
-
-	Add(x, omega, h);
+	double omega = GetSolverData().GetOmega();
+	
+	for(int iter=0; iter<niter; iter++)
+	  {
+  	    MatrixResidual(h,x,y);     // h = y - A x
+	    //  	    GetIlu()->solve(GetGV(h)); // h = (LR)^{-1} h
+	    //  	    Add(x,omega,h);            // x = x + omega * h
+	    _P.vmult(GetGV(x),GetGV(h),omega);
+	    SubtractMean(x);
+  	  }
       }
-    }
     else
       StdSolver::smooth(niter, x, y, h);
   }
@@ -272,26 +416,10 @@ namespace Gascoigne
       return StdSolver::NewMatrix(ncomp, matrixtype);
 #endif
 
-
-    std::string mt = matrixtype;
-    cout << mt << endl;
-
-    if (matrixtype == "vanka")
-      mt = "block";
-    if (matrixtype == "umfsplit")
-      mt = "block";
-
-
-    if ((mt == "split") || (mt == "splitumf"))
-    {
-      abort();
-    }
-    else if ((mt == "fsisplit") || (mt == "fsisplitumf"))
-    {
-      abort();
-    }
+    if (matrixtype == "sparseumf")
+      return StdSolver::NewMatrix(ncomp, "block");
     else
-      return StdSolver::NewMatrix(ncomp, mt);
+      return StdSolver::NewMatrix(ncomp, matrixtype);
   }
 
   template <int DIM>
@@ -305,23 +433,18 @@ namespace Gascoigne
 //  if(_directsolver && _useUMFPACK) {cout<<"keine ahnung was hier
 //  passiert"<<endl; abort();}
 #endif
-    cout << matrixtype << endl;
-
-    if (matrixtype == "split")
-    {
-      abort();
-    }
-    else if (matrixtype == "splitumf")
-    {
-      abort();
-    }
-    else if (matrixtype == "fsisplitumf")
-    {
-      abort();
-    }
-    else if (matrixtype == "fsisplit")
-    {
-      abort();
+    if (matrixtype == "block")
+      {
+        if (ncomp == 1)
+	  return new SparseUmf<FMatrixBlock<1>>(GetMatrix());
+	else if (ncomp == 2)
+	  return new SparseUmf<FMatrixBlock<2>>(GetMatrix());
+	else if (ncomp == 3)
+	  return new SparseUmf<FMatrixBlock<3>>(GetMatrix());
+	else if (ncomp == 4)
+	  return new SparseUmf<FMatrixBlock<4>>(GetMatrix());
+      else
+	abort();
     }
     else
       return StdSolver::NewIlu(ncomp, matrixtype);
@@ -388,7 +511,7 @@ namespace Gascoigne
     StdSolver::AssembleMatrix(gu, d);
 
 
-    if ((_directsolver) || (_matrixtype == "block"))
+    if ((_directsolver) || (_matrixtype == "block") || (_matrixtype == "sparseumf"))
     {
 
       // Modify for pressure zero in Solid-Part

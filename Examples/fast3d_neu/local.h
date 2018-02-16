@@ -106,6 +106,17 @@ public:
   void operator()(DoubleVector& b, const Vertex2d& v, int color) const
   {
     b.zero();
+
+    double t= __TIME;
+    double sc = 1.0;
+    if (t<1.0) sc = 0.5-0.5*cos(M_PI*t);
+
+    double veff = vmean * sc;
+    
+    if (color==0)
+      b[1] += v.y()*(0.41-v.y())/0.205/0.205 * veff * 1.5;
+
+    //    b.zero();
     /*
       double t= __TIME;
     

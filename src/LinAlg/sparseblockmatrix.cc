@@ -38,5 +38,5 @@ template class SparseBlockMatrix<FMatrixBlock<7> >;
 template class SparseBlockMatrix<FMatrixBlock<8> >;
 
 
-template class SparseBlockMatrix<CFDBlock3d>;
+
 }
