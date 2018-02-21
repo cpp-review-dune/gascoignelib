@@ -278,6 +278,8 @@ void MyTransportEquation::point(double h, const FemFunction &U, const Vertex2d &
 
 /*----------------------------------------------------------------------------*/
 
+
+
 void MyTransportEquation::Form(VectorIterator b,
                       const FemFunction &U,
                       const TestFunction &N) const
@@ -285,7 +287,6 @@ void MyTransportEquation::Form(VectorIterator b,
   //Zeit
   b[0] += (U[0].m() -(*oldh)[0].m()) * N.m();
   b[1] += (U[1].m() -(*oldh)[1].m()) * N.m();  
-
   // ganz einfache stabilisierung...
   b[0] += 0.1*DT * (U[0].x()*N.x() + U[0].y()*N.y());
   b[1] += 0.1*DT * (U[1].x()*N.x() + U[1].y()*N.y());
@@ -362,6 +363,27 @@ void MyDualTransportEquation::point(double h, const FemFunction &U, const Vertex
 
 /*----------------------------------------------------------------------------*/
 
+ void MyDualTransportEquation::Nonlinear(VectorIterator b, double s, const FemFunction &U1, const FemFunction& U2, const FemFunction& Z, const TestFunction& N,double w,int DTM) const
+  {
+    //div v h 
+    b[0] += w*DTM * 0.5 * ( (s*(U1[0].x()+U1[1].y())+(1-s)*(U2[0].x()+U2[1].y())) * N.m()*Z[0].m();
+    b[1] += w*DTM * 0.5 * ( (s*(U1[0].x()+U1[1].y())+(1-s)*(U2[0].x()+U2[1].y())) * N.m()*Z[1].m();
+			    //v nabla h
+    b[0] += w*DTM * 0.5*((s*U1[0].m()+(1-s)*U2[0].m())*N.x()+ (s*U1[1].m()+(1-s)*U2[1].m())*N.y())*Z[0].m());
+    b[1] += w*DTM * 0.5*((s*U1[0].m()+(1-s)*U2[0].m())*N.x()+ (s*U1[1].m()+(1-s)*U2[1].m())*N.y())*Z[1].m());
+  }
+
+void MyDualTransportEquation::Kopplung(VectorIterator b, double s, const FemFunction &U1, const FemFunction& U2, const FemFunction& Z, const TestFunction& N,double w,int DTM) const
+  {
+    //div v h 
+    b[0] += w* 0.5 * ( (s*(U1[0].m()-U2[0].m())+(1-s)*(U1[0].m()-U0[0].y())) * N.m()*OLDZ[0].m();
+    b[1] += w*DTM * 0.5 * ( (s*(U1[0].x()+U1[1].y())+(1-s)*(U2[0].x()+U2[1].y())) * N.m()*Z[1].m();
+			    //v nabla h
+    b[0] += w*DTM * 0.5*((s*U1[0].m()+(1-s)*U2[0].m())*N.x()+ (s*U1[1].m()+(1-s)*U2[1].m())*N.y())*Z[0].m());
+    b[1] += w*DTM * 0.5*((s*U1[0].m()+(1-s)*U2[0].m())*N.x()+ (s*U1[1].m()+(1-s)*U2[1].m())*N.y())*Z[1].m());
+  }
+  
+
 void MyDualTransportEquation::Form(VectorIterator b,
                       const FemFunction &U,
                       const TestFunction &N) const
@@ -375,17 +397,16 @@ void MyDualTransportEquation::Form(VectorIterator b,
   b[0] += 0.01*DT * (U[0].x()*N.x() + U[0].y()*N.y());
   b[1] += 0.01*DT * (U[1].x()*N.x() + U[1].y()*N.y());
 
-  // //// div v*h
+  // //// div v*h  +v nabla h
+  
+  // Nichtlinearitaet. u1 zu t_m-1, u2 zu t_m und u3 zu t_m+1
   if (!LASTDUAL){
-  b[0]+=DTM1/2.* ((*V)[0].x()+(*V)[1].y())*U[0].m()*N.m();
-  b[1]+=DTM1/2.* ((*V)[0].x()+(*V)[1].y())*U[1].m()*N.m();
+
+   Nonlinear(b, 0.5+0.5/sqrt(3.0), (*u1), (*u2), Z, N,        0.5-0.5/sqrt(3.0),DTM1);
+   Nonlinear(b, 0.5-0.5/sqrt(3.0), (*u1), (*u2), Z, N,        0.5+0.5/sqrt(3.0),DTM1);
+
   }
   
-  // v nabla h
-  if (!LASTDUAL){
-  b[0]+=DTM1/2.*((*V)[0].m()*N.x()      + (*V)[1].m()*N.y()      )*U[0].m();
-  b[1]+=DTM1/2.*((*V)[0].m()*N.x()+(*V)[1].m()*N.y())*U[1].m();
-  }
 
  if (!LASTDUAL){
    // koppolungsterm
