@@ -62,8 +62,12 @@ int main(int argc, char** argv)
   
   TransportDualProblem TPD;
   TPD.BasicInit(&paramfile);
+  
+  KoppelProblem KP;
+  KP.BasicInit(&paramfile);
 
- 
+ // KoppelDualProblem KPD;
+  //TPD.BasicInit(&paramfile);
 
 
   ProblemContainer PC;
@@ -71,6 +75,8 @@ int main(int argc, char** argv)
   PC.AddProblem("dp",    &DP);
   PC.AddProblem("Transport",    &TP);
   PC.AddProblem("Transport_Dual",    &TPD);
+ 
+   PC.AddProblem("Koppel",    &KP);
  
  
   

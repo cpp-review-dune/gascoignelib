@@ -13,7 +13,7 @@ using namespace std;
 
 
 
-double TIME, DT, CHIGAUSS,DTM1,DTM2;
+double TIME, DT, CHIGAUSS,DTM1,DTM2,DTM3;
 bool   PRIMALPROBLEM,FIRSTDUAL, LASTDUAL;
 
 
@@ -67,7 +67,7 @@ return status;
 }
 
 
-void Loop::SolvePrimalProblem(vector<GlobalVector> &Utotal, VectorInterface& u, VectorInterface& oldu, VectorInterface& f,vector<GlobalVector> &Htotal, VectorInterface& h, VectorInterface& oldh, int ADAITER)
+void Loop::SolvePrimalProblem(vector<GlobalVector> &Utotal, VectorInterface& u, VectorInterface& oldu,VectorInterface& newu, VectorInterface& f,vector<GlobalVector> &Htotal, VectorInterface& h, VectorInterface& oldh, int ADAITER)
 {
 PRIMALPROBLEM = true;
 for (_iter=1; _iter<=_niter; _iter++)
@@ -76,7 +76,7 @@ for (_iter=1; _iter<=_niter; _iter++)
     
     cout << "\n Zeitschritt " << _iter << " " << TIME-DT << " -> " 
     << TIME<< "  [" << DT << "]" << endl;
-    
+    GetMultiLevelSolver()->GetSolver()->Equ(newu,1.0, oldu);
     GetMultiLevelSolver()->GetSolver()->Equ(oldu,1.0, u);
     GetMultiLevelSolver()->GetSolver()->Equ(oldh,1.0, h);
     
@@ -95,16 +95,19 @@ for (_iter=1; _iter<=_niter; _iter++)
     // Momentengleichung
     GetMultiLevelSolver()->SetProblem("LaplaceT");
     
+    GetMultiLevelSolver()->AddNodeVector("u0", newu);
     GetMultiLevelSolver()->AddNodeVector("oldu", oldu);
-    GetMultiLevelSolver()->AddNodeVector("H", h);
+    GetMultiLevelSolver()->AddNodeVector("h", h);
+    GetMultiLevelSolver()->AddNodeVector("oldh", oldh);
     
     string res = SolvePrimalSingle(u,f,"Results/u");
     Utotal.push_back(GetMultiLevelSolver()->GetSolver()->GetGV(u));
     GetMultiLevelSolver()->GetSolver()->Visu("Results/u",u,_iter+ADAITER*1000);
     
+    GetMultiLevelSolver()->DeleteNodeVector("u0");
     GetMultiLevelSolver()->DeleteNodeVector("oldu");
-    GetMultiLevelSolver()->DeleteNodeVector("H");
-    
+    GetMultiLevelSolver()->DeleteNodeVector("oldh");
+    GetMultiLevelSolver()->DeleteNodeVector("h");
     
     }
 }
@@ -148,10 +151,13 @@ avg.add(-1,avg_old);
 }
 
 
-string Loop::SolveDualTransportSingle(vector<GlobalVector>& Ztotal,vector<GlobalVector>& Wtotal,vector<GlobalVector>& Htotal,VectorInterface& f, VectorInterface& u,  VectorInterface& oldu, VectorInterface& newu, VectorInterface& z,  VectorInterface& oldz,VectorInterface& w,VectorInterface& oldw,VectorInterface& h,VectorInterface& oldh,const vector<GlobalVector>& Pu_k,int m, vector<double>& DT_M,vector<double>& T,string name)
+string Loop::SolveDualTransportSingle(vector<GlobalVector>& Ztotal,vector<GlobalVector>& Wtotal,vector<GlobalVector>& Htotal,VectorInterface& f, VectorInterface& u,  VectorInterface& oldu, VectorInterface& newu,VectorInterface& dtu3, VectorInterface& z,  VectorInterface& oldz,VectorInterface& w,VectorInterface& oldw,VectorInterface& h,VectorInterface& oldh,const vector<GlobalVector>& Pu_k,int m, vector<double>& DT_M,vector<double>& T,string name)
 
 {
 GetMultiLevelSolver()->SetProblem("Transport_Dual");
+StdSolver* MyS = dynamic_cast<StdSolver*> (GetMultiLevelSolver()->GetSolver());
+assert(MyS);
+
 PRIMALPROBLEM = false;
 
     DTM1=0.0;
@@ -170,46 +176,70 @@ PRIMALPROBLEM = false;
     else
     {TIME=T[m]-DTM1/2;}
     
-    if(FIRSTDUAL)
-    {
-        
-    GetMultiLevelSolver()->GetSolver()->GetGV(oldu)=Pu_k[m-1];
-    GetMultiLevelSolver()->AddNodeVector("newV",oldu);  
-        
-    }
-    
-    
-    
-    if(!FIRSTDUAL)
-    {
-    DTM2=DT_M[m+1];
-    GetMultiLevelSolver()->GetSolver()->GetGV(oldu)=Pu_k[m+1];
-    GetMultiLevelSolver()->AddNodeVector("newV",oldu);
-     GetMultiLevelSolver()->GetSolver()->GetGV(oldz)=Ztotal[m+1];
-    GetMultiLevelSolver()->AddNodeVector("oldz",oldz);
-    
-    if(m==_M-1)
-    {
-    GetMultiLevelSolver()->GetSolver()->GetGV(oldu)=Pu_k[m];
-    GetMultiLevelSolver()->AddNodeVector("newnewV",oldh);  
-    }
-    else{
-      GetMultiLevelSolver()->GetSolver()->GetGV(oldu)=Pu_k[m+2];
-    GetMultiLevelSolver()->AddNodeVector("newnewV",oldh);   
-        }
-    }
-    
-    if (!LASTDUAL)
-    {
     GetMultiLevelSolver()->GetSolver()->GetGV(u)=Pu_k[m];
-    GetMultiLevelSolver()->AddNodeVector("V",u);
-    GetMultiLevelSolver()->GetSolver()->GetGV(z)=Ztotal[m];
-    GetMultiLevelSolver()->AddNodeVector("z",z);
-    }
+    GetMultiLevelSolver()->AddNodeVector("u2",u);
     
     GetMultiLevelSolver()->GetSolver()->GetGV(oldw)=Wtotal[m+1];
     GetMultiLevelSolver()->AddNodeVector("oldw",oldw);
     
+    
+  
+    if(!FIRSTDUAL)
+    {
+    DTM2=DT_M[m+1];
+    GetMultiLevelSolver()->GetSolver()->GetGV(newu)=Pu_k[m+1];
+    GetMultiLevelSolver()->AddNodeVector("u3",newu);
+     GetMultiLevelSolver()->GetSolver()->GetGV(z)=Ztotal[m+2];
+    GetMultiLevelSolver()->AddNodeVector("z",z);
+    GetMultiLevelSolver()->GetSolver()->GetGV(dtu3)=Pu_k[m+1];
+    MyS->GetGV(dtu3).add(-1.0,Pu_k[m]);
+    
+    GetMultiLevelSolver()->AddNodeVector("dtu3",dtu3);
+    }
+    
+    if (LASTDUAL){
+        
+    GetMultiLevelSolver()->GetSolver()->GetGV(oldh)=Pu_k[m+1];
+    MyS->GetGV(oldh).add(-1.0,Pu_k[m]);
+    
+    
+ 
+    GetMultiLevelSolver()->AddNodeVector("dtu2",oldh);
+    }
+    
+    
+    if (!LASTDUAL)
+    {
+        
+     if(m==1)
+     {
+         
+    GetMultiLevelSolver()->GetSolver()->GetGV(h)=Pu_k[m];
+     MyS->GetGV(h).add(-1.0,Pu_k[m-1]);
+    GetMultiLevelSolver()->AddNodeVector("dtu1",h);
+     }
+     else
+     {
+     GetMultiLevelSolver()->GetSolver()->GetGV(h)=Pu_k[m-1];
+             MyS->GetGV(h).add(-1.0,Pu_k[m-2]); 
+    GetMultiLevelSolver()->AddNodeVector("dtu1",h);
+    
+    }
+    
+    GetMultiLevelSolver()->GetSolver()->GetGV(oldh)=Pu_k[m];
+    MyS->GetGV(oldh).add(-1.0,Pu_k[m-1]);
+    
+    
+    GetMultiLevelSolver()->AddNodeVector("dtu2",oldh);
+   
+    GetMultiLevelSolver()->GetSolver()->GetGV(oldz)=Ztotal[m+1];
+    GetMultiLevelSolver()->AddNodeVector("oldz",oldz);
+    GetMultiLevelSolver()->GetSolver()->GetGV(oldu)=Pu_k[m-1];
+    GetMultiLevelSolver()->AddNodeVector("u1",oldu); 
+    
+    }
+    
+   
     GetMultiLevelSolver()->GetSolver()->Zero(f);
 
     if (FIRSTDUAL)
@@ -239,19 +269,22 @@ PRIMALPROBLEM = false;
 
     string status = GetMultiLevelSolver()->Solve(w,f,GetSolverInfos()->GetNLInfo());
 
-    
+  
     GetMultiLevelSolver()->DeleteNodeVector("oldw");
-    GetMultiLevelSolver()->DeleteNodeVector("newV");
+    GetMultiLevelSolver()->DeleteNodeVector("u2");
+    GetMultiLevelSolver()->DeleteNodeVector("dtu2");
   
     
     if (!LASTDUAL)
     {
-    GetMultiLevelSolver()->DeleteNodeVector("V");
-     GetMultiLevelSolver()->DeleteNodeVector("z");   
+    GetMultiLevelSolver()->DeleteNodeVector("dtu1");
+    GetMultiLevelSolver()->DeleteNodeVector("oldz"); 
+    GetMultiLevelSolver()->DeleteNodeVector("u1"); 
     }
     if (!FIRSTDUAL){
-     GetMultiLevelSolver()->DeleteNodeVector("oldz");  
-    GetMultiLevelSolver()->DeleteNodeVector("newnewV"); 
+     GetMultiLevelSolver()->DeleteNodeVector("z");  
+    GetMultiLevelSolver()->DeleteNodeVector("u3"); 
+    GetMultiLevelSolver()->DeleteNodeVector("dtu3");
    
     }
     
@@ -265,7 +298,7 @@ PRIMALPROBLEM = false;
 
 
 
-string Loop::SolveDualSingle(vector<GlobalVector>& Ztotal,vector<GlobalVector>& Wtotal,vector<GlobalVector>& Htotal,VectorInterface& f, VectorInterface& u,  VectorInterface& oldu, VectorInterface& newu, VectorInterface& z,  VectorInterface& oldz,VectorInterface& w,VectorInterface& oldw,VectorInterface& h,VectorInterface& oldh,const vector<GlobalVector>& Pu_k,int m, vector<double>& DT_M,vector<double>& T,string name)
+string Loop::SolveDualSingle(vector<GlobalVector>& Ztotal,vector<GlobalVector>& Wtotal,vector<GlobalVector>& Htotal,VectorInterface& f, VectorInterface& u,  VectorInterface& oldu, VectorInterface& newu,VectorInterface& dtu3, VectorInterface& z,  VectorInterface& oldz,VectorInterface& oldoldz,VectorInterface& w,VectorInterface& oldw,VectorInterface& h,VectorInterface& oldh,VectorInterface& newh,const vector<GlobalVector>& Pu_k,int m, vector<double>& DT_M,vector<double>& T,string name)
 
 {
 GetMultiLevelSolver()->SetProblem("dp");
@@ -289,33 +322,47 @@ PRIMALPROBLEM = false;
     
     if(!FIRSTDUAL)
     {
+        
     GetMultiLevelSolver()->GetSolver()->GetGV(newu)=Pu_k[m+1];
     GetMultiLevelSolver()->AddNodeVector("u3",newu);
     DTM2=DT_M[m+1];
-    Wtotal[m+1]=1.0;
+
     GetMultiLevelSolver()->GetSolver()->GetGV(oldw)=Wtotal[m+1];
     GetMultiLevelSolver()->AddNodeVector("oldW",oldw);
     
-     GetMultiLevelSolver()->GetSolver()->GetGV(oldh)=Htotal[m+1];
-    GetMultiLevelSolver()->AddNodeVector("newH",oldh);
+     GetMultiLevelSolver()->GetSolver()->GetGV(newh)=Htotal[m+1];
+    GetMultiLevelSolver()->AddNodeVector("newH",newh);
+       
     }
     
-    GetMultiLevelSolver()->GetSolver()->GetGV(u)=Pu_k[m];
-    GetMultiLevelSolver()->AddNodeVector("u2",u);
+   
     if (!LASTDUAL)
     {
     GetMultiLevelSolver()->GetSolver()->GetGV(oldu)=Pu_k[m-1];
     GetMultiLevelSolver()->AddNodeVector("u1",oldu);
     GetMultiLevelSolver()->GetSolver()->GetGV(w)=Wtotal[m];
     GetMultiLevelSolver()->AddNodeVector("w",w);
+    GetMultiLevelSolver()->GetSolver()->GetGV(oldh)=Htotal[m-1];
+    GetMultiLevelSolver()->AddNodeVector("oldh",oldh);
+    
+   
+    }
+    
+    if(LASTDUAL){
+    GetMultiLevelSolver()->GetSolver()->GetGV(oldh)=0.0;
+    GetMultiLevelSolver()->AddNodeVector("oldh",oldh);
+        
+        
     }
     
     GetMultiLevelSolver()->GetSolver()->GetGV(oldz)=Ztotal[m+1];
     GetMultiLevelSolver()->AddNodeVector("oldz",oldz);
     
+     
     GetMultiLevelSolver()->GetSolver()->GetGV(h)=Htotal[m];
     GetMultiLevelSolver()->AddNodeVector("h",h);
-    
+     GetMultiLevelSolver()->GetSolver()->GetGV(u)=Pu_k[m];
+    GetMultiLevelSolver()->AddNodeVector("u2",u);
    
     
     GetMultiLevelSolver()->GetSolver()->Zero(f);
@@ -351,26 +398,29 @@ PRIMALPROBLEM = false;
     GetMultiLevelSolver()->DeleteNodeVector("oldz");
     GetMultiLevelSolver()->DeleteNodeVector("u2");
     GetMultiLevelSolver()->DeleteNodeVector("h");
+    GetMultiLevelSolver()->DeleteNodeVector("oldh");
    
     if (!LASTDUAL)
     {
     GetMultiLevelSolver()->DeleteNodeVector("u1");
-    GetMultiLevelSolver()->DeleteNodeVector("w");   
+    GetMultiLevelSolver()->DeleteNodeVector("w");
+ 
     }
     if (!FIRSTDUAL){
     GetMultiLevelSolver()->DeleteNodeVector("u3");
     GetMultiLevelSolver()->DeleteNodeVector("oldW");   
-    GetMultiLevelSolver()->DeleteNodeVector("newH");    
+    GetMultiLevelSolver()->DeleteNodeVector("newH");
     }
     
     DTM1=0.0;
     DTM2=0.0;
+    DTM3=0.0;
     
     return status;
     
 }
 
-void Loop::SolveDualProblem(vector<GlobalVector>& Ztotal, vector<GlobalVector>& Wtotal,vector<GlobalVector>& Htotal,VectorInterface& f, VectorInterface& u,  VectorInterface& oldu, VectorInterface& newu, VectorInterface& z,  VectorInterface& oldz,VectorInterface& w,VectorInterface& oldw,VectorInterface& h,VectorInterface& oldh,const vector<GlobalVector>& Pu_k,int ADAITER, vector<double>& DT_M,vector<double>& T)
+void Loop::SolveDualProblem(vector<GlobalVector>& Ztotal, vector<GlobalVector>& Wtotal,vector<GlobalVector>& Htotal,VectorInterface& f, VectorInterface& u,  VectorInterface& oldu, VectorInterface& newu, VectorInterface& dtu3,VectorInterface& z,  VectorInterface& oldz,VectorInterface& oldoldz,VectorInterface& w,VectorInterface& oldw,VectorInterface& h,VectorInterface& oldh,VectorInterface& newh,const vector<GlobalVector>& Pu_k,int ADAITER, vector<double>& DT_M,vector<double>& T)
 {
 
 
@@ -381,14 +431,13 @@ for (int m=_M;m>=0;--m)
 
       GetMultiLevelSolver()->SetProblem("Transport_Dual");
       
-      string resi = SolveDualTransportSingle(Ztotal,Wtotal,Htotal,f, u,oldu,newu,z,oldz,w,oldw,h,oldh,Pu_k,m, DT_M,T,"Results/w");
+      string resi = SolveDualTransportSingle(Ztotal,Wtotal,Htotal,f, u,oldu,newu,dtu3,z,oldz,w,oldw,h,oldh,Pu_k,m, DT_M,T,"Results/w");
      GetMultiLevelSolver()->GetSolver()->Visu("Results/w",w,1000*ADAITER+m);
       Wtotal[m] = GetMultiLevelSolver()->GetSolver()->GetGV(w);  
     
     GetMultiLevelSolver()->SetProblem("dp");
 
-            
-    string res = SolveDualSingle(Ztotal,Wtotal,Htotal,f, u,oldu,newu,z,oldz,w,oldw,h,oldh,Pu_k,m, DT_M,T,"Results/z");
+    string res = SolveDualSingle(Ztotal,Wtotal,Htotal,f, u,oldu,newu,dtu3,z,oldz,oldoldz,w,oldw,h,oldh,newh,Pu_k,m, DT_M,T,"Results/z");
     GetMultiLevelSolver()->GetSolver()->Visu("Results/z",z,1000*ADAITER+m);
     Ztotal[m] = GetMultiLevelSolver()->GetSolver()->GetGV(z);   
 
@@ -486,7 +535,7 @@ void Loop::EstimateDWRprim(DoubleVector& eta, int m, const GlobalVector& Pu_kM, 
             GlobalVector& Z,VectorInterface& u, VectorInterface& oldu,VectorInterface& z,VectorInterface& h,VectorInterface& oldh,VectorInterface& f,vector<double>&T)
 {
 
-GetMultiLevelSolver()->SetProblem("Transport");
+GetMultiLevelSolver()->SetProblem("Koppel");
 
 PRIMALPROBLEM = false;
 
@@ -540,18 +589,22 @@ MyS->SetDiscretization(*saveD);
 for (int l=1;l<=I_m; l++)
     {
     // std disc
-    MyS->GetGV(u)    = U[start+l];    
+    MyS->GetGV(u)    = U[start+l]; 
+    MyS->GetGV(oldu) = U[start+l-1];  
     MyS->GetGV(h)    = H[start+l];
     MyS->GetGV(oldh) = H[start-1+l];
     MyS->HNAverage(u);
     MyS->HNAverage(oldu);
+    MyS->HNAverage(oldu);
     MyS->HNAverage(h);
     MyS->AddNodeVector("oldh", oldh);
-    MyS->AddNodeVector("V", u);
-
+     MyS->AddNodeVector("u2", u);
+    MyS->AddNodeVector("u1", oldu);
+    
     MyS->Form(f,h,1.0);
+    MyS->DeleteNodeVector("u1");
     MyS->DeleteNodeVector("oldh");
-    MyS->DeleteNodeVector("V");
+    MyS->DeleteNodeVector("u2");
     MyS->HNDistribute(f);
 
     }
@@ -561,16 +614,20 @@ for (int l=1;l<=I_m; l++)
     {
     // dwr disc
     MyS->GetGV(u)    = U[start+l];
-      MyS->GetGV(h)    = H[start+l];
+    MyS->GetGV(oldu) = U[start -1+l];
+    MyS->GetGV(h)    = H[start+l];
     MyS->GetGV(oldh) = H[start -1+l];
     MyS->HNAverage(u);
     MyS->HNAverage(oldu);
     MyS->HNAverage(h);
     MyS->AddNodeVector("oldh", oldh);
-    MyS->AddNodeVector("V", u);
+    MyS->AddNodeVector("u2", u);
+    MyS->AddNodeVector("u1", oldu);
+    
     MyS->Form(f,h,-1.0);
     MyS->DeleteNodeVector("oldh");
-    MyS->DeleteNodeVector("V");
+    MyS->DeleteNodeVector("u2");
+    MyS->DeleteNodeVector("u1");
     MyS->HNDistribute(f);
 
     }
@@ -593,8 +650,9 @@ for(int i=0; i<Z.n(); i++)
     }
     
 cout<<eta.sum()<<"ETA1_T "<<endl;    
+
     
-    
+
   GetMultiLevelSolver()->SetProblem("LaplaceT");
 PRIMALPROBLEM = true;
 MyS->SetDiscretization(*saveD);
@@ -648,14 +706,25 @@ MyS->SetDiscretization(*saveD);
 for (int l=1;l<=I_m; l++)
     {
     // std disc
+        
     MyS->GetGV(h)    = H[start+l];    
     MyS->GetGV(u)    = U[start+l];
     MyS->GetGV(oldu) = U[start-1+l];
+   if(start<1){
+    MyS->GetGV(z) = U[start-1+l];}
+    else{
+        MyS->GetGV(z) = U[start-2+l];}
+        
+    MyS->GetGV(oldh)  = H[start-1+l];  
     MyS->HNAverage(u);
     MyS->HNAverage(oldu);
     MyS->HNAverage(h);
+    MyS->HNAverage(oldh);
+    MyS->HNAverage(z);
+    MyS->AddNodeVector("oldh", oldh);
     MyS->AddNodeVector("oldu", oldu);
-    MyS->AddNodeVector("H", h);
+    MyS->AddNodeVector("h", h);
+    MyS->AddNodeVector("u0", z);
 
     MyS->Form(f,u,1.0);
     MyS->DeleteNodeVector("oldu");
@@ -705,10 +774,11 @@ for(int i=0; i<Z.n(); i++)
     
     
     
-    
+
     
     
 cout<<eta.sum()<<"ETA1_L "<<endl;
+
 }
 
 void Loop::EstimateDWRdual(DoubleVector& eta, int m, vector<GlobalVector>&Pu_kM, vector<GlobalVector>&Htotal,vector<GlobalVector>&Wtotal, GlobalVector& Pu_M,
@@ -1765,37 +1835,37 @@ for (int m=1;m<=_M;++m)
     cout<<eta1.sum()<<"ETA1 "<<endl;
     
     
-
+     abort();
     /// Teil 1.1 duales residuum
 
     
-    EstimateDWRdual(eta11,m,Pu_kM,Ph_M,Wtotal, Pu_kM[m], Ztotal[m+1], Ztotal[m],u, oldu,newu,z, oldz,h, oldh, w,oldw,f,DT_M,T);
+  //  EstimateDWRdual(eta11,m,Pu_kM,Ph_M,Wtotal, Pu_kM[m], Ztotal[m+1], Ztotal[m],u, oldu,newu,z, oldz,h, oldh, w,oldw,f,DT_M,T);
   
     //Zeitterme
 
     int start=T[m-1]/DT+1.e-10;
     int stoppi=T[m]/DT+1.e-10;	
     
-        EstimateAvg(eta2, Pu_M[m], Pu_M[m-1],  Utotal[stoppi], Utotal[start], Ztotal[m], Htotal[m],u,oldu,z,h,f);
+     //   EstimateAvg(eta2, Pu_M[m], Pu_M[m-1],  Utotal[stoppi], Utotal[start], Ztotal[m], Htotal[m],u,oldu,z,h,f);
     cout<<eta2.sum()<<"ETA2 "<<endl;
 
     
-        EstimateRest(eta3, m,Pu_M[m], Pu_M[m-1], Pu_kM[m], Pu_kM[m-1], Utotal[stoppi], Utotal[start], Ztotal[m], Htotal[m],u, oldu, z,h,f);
+      //  EstimateRest(eta3, m,Pu_M[m], Pu_M[m-1], Pu_kM[m], Pu_kM[m-1], Utotal[stoppi], Utotal[start], Ztotal[m], Htotal[m],u, oldu, z,h,f);
     cout<<eta3.sum()<<"ETA3 "<<endl;	
 
     // Nichtlinearitaet
 
-    EstimateNonU(eta22,Utotal, Ztotal[m], u,oldu,z,f,T[m-1]/DT+1.e-10,T[m]/DT+1.e-10);
+  //  EstimateNonU(eta22,Utotal, Ztotal[m], u,oldu,z,f,T[m-1]/DT+1.e-10,T[m]/DT+1.e-10);
     cout<<eta22.sum()<<"ETA22 "<<endl;
 
-    EstimateNonPu(eta23, Pu_kM, Ztotal[m], u,oldu,z,f,m,DT_M[m]);
+  //  EstimateNonPu(eta23, Pu_kM, Ztotal[m], u,oldu,z,f,m,DT_M[m]);
     cout<<eta23.sum()<<"ETA23 "<<endl;
 
-    EstimateNonMeanU(eta5, m, Pu_M[m],Pu_kM[m],Utotal,U_2, Ztotal[m], u,oldu,z,f,T[m-1]/DT+1.e-10,T[m]/DT+1.e-10);
+   // EstimateNonMeanU(eta5, m, Pu_M[m],Pu_kM[m],Utotal,U_2, Ztotal[m], u,oldu,z,f,T[m-1]/DT+1.e-10,T[m]/DT+1.e-10);
     cout<<eta5.sum()<<"ETA5"<<endl;
 
     //Teil 4 Fehler vom geittelten Problem zu Pu
-        EstimateNonMeanPu(eta4, m, Pu_M[m],Pu_kM,Utotal, Ztotal[m], u,oldu,z,f,DT_M[m]);
+    //    EstimateNonMeanPu(eta4, m, Pu_M[m],Pu_kM,Utotal, Ztotal[m], u,oldu,z,f,DT_M[m]);
     cout<<eta4.sum()<<"ETA4"<<endl;
 
     //eta_time[m-1]=0.5*eta1.sum()+0.5*eta11.sum()+eta2.sum()+eta22.sum()-eta23.sum()+eta3.sum()+eta4.sum()+eta5.sum();
@@ -1858,11 +1928,9 @@ for (int ADAITER=0;ADAITER<8;++ADAITER)
     TIME=0.0;
     DTM1=0.0;
     DTM2=0.0;
-
+    DTM3=0.0;
     // vectors for solution and right hand side
-    VectorInterface u("u"), 
-    newu("newu"), f("f"), 
-    oldu("oldu"),z("z"),oldz("oldz"),h("h"),oldh("oldh"),w("w"), oldw("oldw");
+    VectorInterface u("u"),newu("newu"),dtu3("dtu3"),f("f"), oldu("oldu"),z("z"),oldz("oldz"),oldoldz("oldoldz"),h("h"),oldh("oldh"),newh("newh"),w("w"), oldw("oldw");
 
     
     PrintMeshInformation();
@@ -1872,13 +1940,18 @@ for (int ADAITER=0;ADAITER<8;++ADAITER)
     GetMultiLevelSolver()->ReInitVector(oldu);
     GetMultiLevelSolver()->ReInitVector(newu);
     GetMultiLevelSolver()->ReInitVector(f);
+    
     GetMultiLevelSolver()->ReInitVector(z);
     GetMultiLevelSolver()->ReInitVector(oldz);
+    GetMultiLevelSolver()->ReInitVector(oldoldz);
+    
     
     GetMultiLevelSolver()->ReInitVector(h);
     GetMultiLevelSolver()->ReInitVector(oldh);
+     GetMultiLevelSolver()->ReInitVector(newh);
     
     GetMultiLevelSolver()->ReInitVector(w);
+    GetMultiLevelSolver()->ReInitVector(dtu3);
     GetMultiLevelSolver()->ReInitVector(oldw);
 
     StdSolver* MyS = dynamic_cast<StdSolver*> (GetMultiLevelSolver()->GetSolver());
@@ -1902,6 +1975,7 @@ for (int ADAITER=0;ADAITER<8;++ADAITER)
 
     InitSolution(u);
     
+    GetMultiLevelSolver()->Equ(newu,1.0,u);
     GetMultiLevelSolver()->Equ(oldu,1.0,u);
     Utotal.push_back(MyS->GetGV(u));
     GetMultiLevelSolver()->GetSolver()->Visu("Results/u",u,0);
@@ -1910,8 +1984,10 @@ for (int ADAITER=0;ADAITER<8;++ADAITER)
   
     
     // primale Probleme loesen
-    SolvePrimalProblem(Utotal,u,oldu,f,Htotal, h, oldh, ADAITER);
     
+    
+    SolvePrimalProblem(Utotal,u,oldu,newu,f,Htotal, h, oldh,ADAITER);
+ 
     
     assert(Utotal.size() == _niter+1);
 
@@ -1951,8 +2027,8 @@ for (int ADAITER=0;ADAITER<8;++ADAITER)
         vector<double> DT_M(_M+1);
         vector<double> T(_M+1);
         
-    T[0]=0;
-    T[1]=1.0;
+     T[0]=0;
+     T[1]=1.0;
      T[2]=3.0;
      T[3]=3.5;
      T[4]=4.0;
@@ -1991,7 +2067,7 @@ for (int ADAITER=0;ADAITER<8;++ADAITER)
     GetSolverInfos()->GetNLInfo().control().matrixmustbebuild() = 1;
     
 
-    SolveDualProblem(Ztotal,Wtotal,Ph_M,f,u, oldu,newu,z, oldz,w,oldw,h,oldh,Pu_kM,ADAITER,DT_M,T);
+    SolveDualProblem(Ztotal,Wtotal,Ph_M,f,u, oldu,newu,dtu3,z, oldz,oldoldz,w,oldw,h,oldh,newh,Pu_kM,ADAITER,DT_M,T);
 
     // Fehlerschatzer
     int nnodes = MyS->GetMesh()->nnodes();
@@ -2000,7 +2076,7 @@ for (int ADAITER=0;ADAITER<8;++ADAITER)
     vector<double> eta_time(_M,0.0);
 
     EstimateDualError(eta,eta0,eta1,eta11,eta2,eta22,eta23,eta3,eta4,eta5, Utotal,Htotal,Wtotal,U_2, Ztotal, Pu_kM, Pu_M,Ph_M,u,oldu,newu,z,oldz,h,oldh, w,oldw,f,DT_M,T,eta_time);
-    
+    abort();
 
     this->EtaVisu("Results/eta",ADAITER,eta);
 
@@ -2029,7 +2105,6 @@ for (int ADAITER=0;ADAITER<8;++ADAITER)
     //GetMultiLevelSolver()->GetSolver()->Visu("Results/PU",oldu,ADAITER);
     } 
     
-
 
 }
 

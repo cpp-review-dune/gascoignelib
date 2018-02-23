@@ -22,8 +22,11 @@ namespace Gascoigne
   {
   protected:
 
+      
+    mutable FemFunction* u0;  
     mutable FemFunction* oldu;
-    mutable FemFunction* H;
+    mutable FemFunction* h;
+     mutable FemFunction* oldh;
     double epsilon;
   public:
     
@@ -39,8 +42,14 @@ namespace Gascoigne
     {
       assert(q.find("oldu") != q.end() );
       oldu = &q["oldu"];
-       assert(q.find("H") != q.end() );
-      H = &q["H"];
+      
+      assert(q.find("u0") != q.end() );
+      u0 = &q["u0"];
+       assert(q.find("h") != q.end() );
+      h = &q["h"];
+      assert(q.find("oldh") != q.end() );
+      oldh = &q["oldh"];
+      
     }
 
     void point(double h, const FemFunction &U, const Vertex2d &v) const;
@@ -48,6 +57,8 @@ namespace Gascoigne
 
     void Form(VectorIterator b, const FemFunction& U, const TestFunction& N) const;
     void Matrix(EntryMatrix& A, const FemFunction& U, const TestFunction& M, const TestFunction& N) const;
+    void Zeit(VectorIterator b, double s, const FemFunction &U1, const FemFunction& U2, const FemFunction& Z, const TestFunction& N,double w,int DTM) const;
+   void Zeit_Matrix(EntryMatrix&A, double s, const FemFunction &U1, const FemFunction& U2, const FemFunction& Z,const TestFunction &M, const TestFunction& N,double w,int DTM) const;
 
   };
 
@@ -67,6 +78,11 @@ namespace Gascoigne
     mutable FemFunction* newH;
     mutable FemFunction* oldW;
     
+    mutable FemFunction* oldh;
+    mutable FemFunction* oldoldz;
+    mutable FemFunction* Hnewnew;
+    
+    
      double epsilon;
   public:
     
@@ -82,6 +98,13 @@ namespace Gascoigne
     {
       assert(q.find("oldz") != q.end() ); 
       oldz = &q["oldz"];
+     assert(q.find("u2") != q.end() ); 
+      u2 = &q["u2"];
+        assert(q.find("h") != q.end() ); 
+	  h = &q["h"]; 
+       assert(q.find("oldh") != q.end() ); 
+	  oldh = &q["oldh"];
+      
       
       if (!LASTDUAL)
 	{
@@ -91,18 +114,19 @@ namespace Gascoigne
       assert(q.find("w") != q.end() ); 
 	  w = &q["w"];
       
+     
+      
+      
 	}
       else{
 	u1 = NULL;
     w=NULL;
+
           
     
     }
     
-      assert(q.find("u2") != q.end() ); 
-      u2 = &q["u2"];
-        assert(q.find("h") != q.end() ); 
-	  h = &q["h"];
+      
      
 
       if (!FIRSTDUAL)
@@ -113,21 +137,31 @@ namespace Gascoigne
       assert(q.find("oldW") != q.end() ); 
 	  oldW = &q["oldW"];
       
+      
        assert(q.find("newH") != q.end() ); 
 	  newH = &q["newH"];
+      
       
 	}
       else{
 	u3 = NULL;
     oldW=NULL;
     newH=NULL;
+    oldoldz=NULL;
+    Hnewnew=NULL;
       }
     }
 
     void point(double h, const FemFunction &U, const Vertex2d &v) const;
     void Nonlinear(VectorIterator b, double s, const FemFunction &U1, const FemFunction& U2, const FemFunction& Z, const TestFunction& N,double w,int DTM) const;
+    
+    void Kopplung(VectorIterator b, double s, const FemFunction &U1, const FemFunction& U2, const FemFunction& Z, const TestFunction& N,double w,int DTM) const;
+    
+  
+    
     void Form(VectorIterator b, const FemFunction& U, const TestFunction& N) const;
     void Nonlinear_Matrix(EntryMatrix&A, double s, const FemFunction &U1, const FemFunction& U2, const FemFunction& Z, const TestFunction &M,const TestFunction& N,double w,int DTM) const;
+    
     void Matrix(EntryMatrix& A, const FemFunction& Z, const TestFunction& M, const TestFunction& N) const;
 
   };
@@ -173,11 +207,14 @@ namespace Gascoigne
   protected:
 
     mutable FemFunction* oldw;
-    mutable FemFunction* V;
-    mutable FemFunction* newV;
-    mutable FemFunction* newnewV;
-    mutable FemFunction* z;
+    mutable FemFunction* dtu1;
+    mutable FemFunction* dtu2;
+    mutable FemFunction* dtu3;
+    mutable FemFunction* u1;
+    mutable FemFunction* u2;
+    mutable FemFunction* u3;
     mutable FemFunction* oldz;
+    mutable FemFunction* z;
     
     double epsilon;
   public:
@@ -194,44 +231,96 @@ namespace Gascoigne
     {
       assert(q.find("oldw") != q.end() );
       oldw = &q["oldw"];
-      assert(q.find("newV") != q.end() );
-       newV = &q["newV"];
-      
+      assert(q.find("u2") != q.end() );
+       u2 = &q["u2"];
+        assert(q.find("dtu2") != q.end() );
+       dtu2 = &q["dtu2"];
+       
+       
       if (!LASTDUAL){
-      assert(q.find("V") != q.end() );
-      V = &q["V"];
-       assert(q.find("z") != q.end() );
-      z= &q["z"];    
+        assert(q.find("u1") != q.end() );
+       u1 = &q["u1"];  
+      assert(q.find("dtu1") != q.end() );
+      dtu1 = &q["dtu1"];
+       assert(q.find("oldz") != q.end() );
+      oldz= &q["oldz"];    
       
     }
       else
       {
-	V=NULL;
-    z=NULL;
-      }      
+      u1=NULL;    
+	dtu1=NULL;
+    oldz=NULL;
+      } 
+      
       if(!FIRSTDUAL){
           
-        assert(q.find("newnewV") != q.end() );
-      newnewV = &q["newnewV"];
-       assert(q.find("oldz") != q.end() );
-      oldz= &q["oldz"];   
+    assert(q.find("u3") != q.end() );
+      u3 = &q["u3"];
+       assert(q.find("dtu3") != q.end() );
+      dtu3 = &q["dtu3"];
+       assert(q.find("z") != q.end() );
+      z= &q["z"];   
       }
       else{
           
-    newnewV=NULL;
-    oldz=NULL;   
+    u3=NULL;
+    dtu3=NULL;
+    z=NULL;   
     }
      
       
     }
 
     void point(double h, const FemFunction &U, const Vertex2d &v) const;
+    void Kopplung(VectorIterator b, double s, const FemFunction &U1, const FemFunction& U2, const FemFunction& OLDZ, const TestFunction& N,double w) const;
+    void Nonlinear(VectorIterator b, double s, const FemFunction &U1, const FemFunction& U2, const FemFunction& Z, const TestFunction& N,double w,int DTM) const;
+    void Nonlinear_Matrix(EntryMatrix&A, double s, const FemFunction &U1, const FemFunction& U2,const TestFunction &M, const TestFunction& N,double w,int DTM) const;
     
-
     void Form(VectorIterator b, const FemFunction& U, const TestFunction& N) const;
     void Matrix(EntryMatrix& A, const FemFunction& U, const TestFunction& M, const TestFunction& N) const;
 
   };
+  
+  class MyKoppelEquation : public virtual Equation
+  {
+  protected:
+
+    mutable FemFunction* u1;
+     mutable FemFunction* u2;
+    
+    double epsilon;
+    mutable FemFunction* oldh;
+  public:
+    
+    MyKoppelEquation() { abort(); }
+    MyKoppelEquation(const ParamFile* pf);
+
+    std::string GetName()  const { return "MyEquation";}
+    int         GetNcomp() const {return 2;}
+
+
+    
+    void SetFemData(FemData& q) const 
+    {
+      assert(q.find("oldh") != q.end() );
+      oldh = &q["oldh"];
+       assert(q.find("u1") != q.end() );
+      u1= &q["u1"];
+       assert(q.find("u2") != q.end() );
+      u2= &q["u2"];
+    }
+
+    void point(double h, const FemFunction &U, const Vertex2d &v) const;
+    
+    void Nonlinear(VectorIterator b, double s, const FemFunction &U1, const FemFunction& U2, const FemFunction& Z, const TestFunction& N,double w,int DTM) const;
+    void Nonlinear_Matrix(EntryMatrix&A, double s, const FemFunction &U1, const FemFunction& U2, const TestFunction &M, const TestFunction& N,double w,int DTM) const;
+  
+    void Form(VectorIterator b, const FemFunction& U, const TestFunction& N) const;
+    void Matrix(EntryMatrix& A, const FemFunction& U, const TestFunction& M, const TestFunction& N) const;
+
+  };
+  
  
 }
 

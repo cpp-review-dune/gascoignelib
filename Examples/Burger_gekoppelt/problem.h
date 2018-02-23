@@ -203,6 +203,34 @@ namespace Gascoigne
 
 
 
+  class MyKoppelRhs : public virtual DomainRightHandSide
+  {
+    
+  public:
+    
+  MyKoppelRhs(const ParamFile* pf) : DomainRightHandSide()
+      {
+      }
+    
+    std::string GetName() const {return "MyRhs";}    
+    int GetNcomp() const {return 2; }
+    
+    void operator()(VectorIterator b, const TestFunction& N, const Vertex2d& v) const 
+    {
+      double x=( v.x()+0.5)*( v.x()+0.5)+(v.y()-0.2)*(v.y()-0.2);
+      double y= ( v.x()-0.5)*( v.x()-0.5)+(v.y()+0.2)*(v.y()+0.2);
+    
+      double w=0.0;
+      w=sin(TIME);
+      
+      
+      b[0] +=w*(exp(-2*x)-exp(-2*y)) * N.m(); 
+      b[1] +=w*(exp(-2*y)-exp(-2*x)) * N.m();
+      
+      
+	
+    }
+  };
 
 
   // main class for defining the problem to solve
@@ -260,7 +288,7 @@ namespace Gascoigne
   {
   public:
   
-    std::string GetName() const {return "Transport  Problem";}
+    std::string GetName() const {return "Koppel Problem";}
     void BasicInit(const ParamFile* pf)
     {
       // equation to solve
@@ -271,9 +299,44 @@ namespace Gascoigne
       ProblemDescriptorBase::BasicInit(pf);
     }
   };
-
-
   
+  class KoppelProblem : public ProblemDescriptorBase
+  {
+  public:
+  
+    std::string GetName() const {return "Koppel Problem";}
+    void BasicInit(const ParamFile* pf)
+    {
+      // equation to solve
+      GetEquationPointer()      = new MyKoppelEquation(pf); 
+      GetRightHandSidePointer() = new MyKoppelRhs(pf);
+      GetDirichletDataPointer() = new MyDD();
+      // 
+      ProblemDescriptorBase::BasicInit(pf);
+    }
+  }; 
+  
+  
+  
+  
+/*
+ class KoppelDualProblem : public ProblemDescriptorBase
+  {
+  public:
+  
+    std::string GetName() const {return "Koppel  Problem";}
+    void BasicInit(const ParamFile* pf)
+    {
+      // equation to solve
+      GetEquationPointer()      = new MyKoppelDualEquation(pf); 
+      GetRightHandSidePointer() = new MyDualRhs(pf);
+      GetDirichletDataPointer() = new MyDualDD();
+      // 
+      ProblemDescriptorBase::BasicInit(pf);
+    }
+  };
+
+  */
   
 }
 
