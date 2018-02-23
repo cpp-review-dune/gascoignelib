@@ -728,7 +728,9 @@ for (int l=1;l<=I_m; l++)
 
     MyS->Form(f,u,1.0);
     MyS->DeleteNodeVector("oldu");
-    MyS->DeleteNodeVector("H");
+      MyS->DeleteNodeVector("oldh");
+    MyS->DeleteNodeVector("h");
+    MyS->DeleteNodeVector("u0");
     MyS->HNDistribute(f);
 
     }
@@ -742,14 +744,31 @@ for (int l=1;l<=I_m; l++)
     MyS->GetGV(u)    = U[start+l];
       MyS->GetGV(h)    = H[start+l];
     MyS->GetGV(oldu) = U[start -1+l];
+     MyS->GetGV(oldh)    = H[start-1+l];
+   if(start<1){
+    MyS->GetGV(z) = U[start-1+l];}
+    else{
+        MyS->GetGV(z) = U[start-2+l];}
+
+
     MyS->HNAverage(u);
     MyS->HNAverage(oldu);
     MyS->HNAverage(h);
+    MyS->HNAverage(oldh);
+    MyS->HNAverage(z);
+    
+    
     MyS->AddNodeVector("oldu", oldu);
-    MyS->AddNodeVector("H", h);
+    MyS->AddNodeVector("h", h);
+    MyS->AddNodeVector("oldh", oldh);
+    MyS->AddNodeVector("u0", z);
+    
+  
     MyS->Form(f,u,-1.0);
     MyS->DeleteNodeVector("oldu");
-    MyS->DeleteNodeVector("H");
+    MyS->DeleteNodeVector("h");
+    MyS->DeleteNodeVector("oldh");
+    MyS->DeleteNodeVector("u0");
     MyS->HNDistribute(f);
 
     }
@@ -775,8 +794,6 @@ for(int i=0; i<Z.n(); i++)
     
     
 
-    
-    
 cout<<eta.sum()<<"ETA1_L "<<endl;
 
 }
@@ -1835,7 +1852,6 @@ for (int m=1;m<=_M;++m)
     cout<<eta1.sum()<<"ETA1 "<<endl;
     
     
-     abort();
     /// Teil 1.1 duales residuum
 
     
@@ -1874,6 +1890,8 @@ for (int m=1;m<=_M;++m)
     
     }
 
+    
+    abort();
 // eta.add(1.0,eta0);
 eta.add(0.5,eta11);
 
