@@ -51,17 +51,20 @@ namespace Gascoigne
  *
  * # The implementation
  * The algorithm depends on Gascoigne and the
- * correct definition of the problem, there is no checking.The implementation only executes the
+ * correct definition of the problem, there is no checking. The implementation only executes the
  * bare algorithm. Checking for convergence is not available at the moment. This can be done via
  * comparing serial with parallel execution. Some properties
  * - Parallelization with OpenMP
- * - Inherits from MultiLevelAlgorithm
+ * - Inherits from Loop
  * - Memory consumption is higher than sequential
+ * - Timestepping with theta-scheme - with different theta for fine and coarse solutions.
  *
  * Every Instance of parareal correponds to one solver on an subinterval. Thus every solver also
- * has its own map of vectors, which sometimes make data-sharing a bit complicated. The user
- * does not have to interact directly with them. He only needs to call runPara, everything else
- * is handled automatically by the class.
+ * has its own map of vectors. The user
+ * does not have to interact directly with them. He only needs to call runPara or compareParaSerial,
+ * everything else is handled automatically by the class. For better debugging one can specify the
+ * `PDBG` flag (i.e. `-PDBG=n`), where`n` can be 1 or something arbitrary larger. In the case where
+ * `n=1` only some more timings are taken. Otherwise additional visualization will be written.
  */
 template <int DIM>
 class parareal : public Loop<DIM>
@@ -742,7 +745,7 @@ void parareal<DIM>::compareParaSerial(const unsigned int maxIterations,
     {
         dtc = to_string(dtcoarse_vec[i]);
         dtc = dtc.substr(dtc.find(".") + 1);
-        func_log.open("para_functionalC" + dtc + ".txt");
+        func_log.open("para_functionalC" + dtc + "t" + to_string(i) + ".txt");
 
         // run Parareal
         auto ratio           = static_cast<int>(dtcoarse_vec[i] / dtfine);
@@ -850,10 +853,10 @@ void parareal<DIM>::step_fine_final(double time, VectorInterface& u, VectorInter
         GetMultiLevelSolver()->Equ(old, 1.0, u);
         GetMultiLevelSolver()->AddNodeVector("old", old);
         assert(StdLoop::Solve(u, f) == "converged");
-        if (last)
+        if constexpr (last)
         {
             log_buffer[iter][0] = time;
-            juh                             = StdLoop::Functionals(u, f);
+            juh                 = StdLoop::Functionals(u, f);
             for (short i = 0; i < 4; i++)
             {
                 log_buffer[iter][i + 1] = juh[i];

@@ -131,8 +131,7 @@ void FSI<DIM>::Form(VectorIterator b, const FemFunction& U, const TestFunction& 
 
         // DOMAIN Convection
         X = -rho_f
-            * (theta * J_old * NV * F_old.inverse()
-               + (1.0 - theta) * J_old * NV_old * F_old.inverse())
+            * (theta * J * NV * F.inverse() + (1.0 - theta) * J_old * NV_old * F_old.inverse())
             * dtU / GetTimeStep() * N.m();
         for (int i = 0; i < DIM; ++i)
             b[i + 1] += X(i, 0);
@@ -175,7 +174,7 @@ void FSI<DIM>::Form(VectorIterator b, const FemFunction& U, const TestFunction& 
         // FULL tensor F Sigma
 
         for (int i = 0; i < DIM; ++i)
-            b[i + 1] += theta * (F_old * SIGMAs_old * phi)(i, 0);
+            b[i + 1] += theta * (F * SIGMAs * phi)(i, 0);
         for (int i = 0; i < DIM; ++i)
             b[i + 1] += (1.0 - theta) * (F_old * SIGMAs_old * phi)(i, 0);
 
@@ -212,7 +211,7 @@ void FSI<DIM>::Matrix(EntryMatrix& A, const FemFunction& U, const TestFunction& 
             A(0, j + 1) += DIVERGENCE_V[j] * N.m();
 
             // wrt u
-            // A(0, j + 1 + DIM) += rho_f * Jj[j] * divergence * N.m();
+            A(0, j + 1 + DIM) += rho_f * Jj[j] * divergence * N.m();
 
             A(0, j + 1 + DIM) += DIVERGENCE_U[j] * N.m();
         }
@@ -222,10 +221,10 @@ void FSI<DIM>::Matrix(EntryMatrix& A, const FemFunction& U, const TestFunction& 
         for (int i = 0; i < DIM; ++i)
             A(i + 1, i + 1) += rho_f * J * M.m() * N.m() / GetTimeStep();
         // wrt u
-        // for (int j = 0; j < DIM; ++j)
-        //     for (int i = 0; i < DIM; ++i)
-        //         A(i + 1, j + 1 + DIM) +=
-        //           Jj[j] * rho_f * (U[i + 1].m() - (*OLD)[i + 1].m()) / GetTimeStep() * N.m();
+        for (int j = 0; j < DIM; ++j)
+            for (int i = 0; i < DIM; ++i)
+                A(i + 1, j + 1 + DIM) +=
+                  Jj[j] * rho_f * (U[i + 1].m() - (*OLD)[i + 1].m()) / GetTimeStep() * N.m();
 
         ///////// tensor
         // wrt V
@@ -236,12 +235,12 @@ void FSI<DIM>::Matrix(EntryMatrix& A, const FemFunction& U, const TestFunction& 
                 A(i + 1, j + 1) += theta * X(i, 0);
         }
         // wrt U
-        // for (int j = 0; j < DIM; ++j)
-        // {
-        //     VECTOR X = TENSOR_dU[j] * phi;
-        //     for (int i = 0; i < DIM; ++i)
-        //         A(i + 1, j + 1 + DIM) += theta * X(i, 0);
-        // }
+        for (int j = 0; j < DIM; ++j)
+        {
+            VECTOR X = TENSOR_dU[j] * phi;
+            for (int i = 0; i < DIM; ++i)
+                A(i + 1, j + 1 + DIM) += theta * X(i, 0);
+        }
 
         // //////////////// // convection
         // X = theta * rho_f * NV * F.inverse()*V*N.m();
@@ -256,34 +255,34 @@ void FSI<DIM>::Matrix(EntryMatrix& A, const FemFunction& U, const TestFunction& 
             A(j + 1, j + 1) += theta * CONV_dV2[j] * N.m();
 
         // wrt u
-        // for (int j = 0; j < DIM; ++j)
-        // {
-        //     for (int i = 0; i < DIM; ++i)
-        //         A(i + 1, j + 1 + DIM) += theta * CONV_dU[j](i, 0) * N.m();
-        // }
+        for (int j = 0; j < DIM; ++j)
+        {
+            for (int i = 0; i < DIM; ++i)
+                A(i + 1, j + 1 + DIM) += theta * CONV_dU[j](i, 0) * N.m();
+        }
 
         // DOMAIN Convection
         //	X = -rho_f * 0.5 * (J*NV*F.inverse() + J_old * NV_old * F_old.inverse())
         //	  * dtU/__DT * N.m();
 
         // wrt dtU
-        // for (int i = 0; i < DIM; ++i)
-        //     for (int j = 0; j < DIM; ++j)
-        //         A(i + 1, j + 1 + DIM) += DOMAIN_U1(i, j) * M.m() * N.m();
+        for (int i = 0; i < DIM; ++i)
+            for (int j = 0; j < DIM; ++j)
+                A(i + 1, j + 1 + DIM) += DOMAIN_U1(i, j) * M.m() * N.m();
 
         // wrt V
         for (int j = 0; j < DIM; ++j)
             A(j + 1, j + 1) += DOMAIN_V[j] * N.m();
         // wrt U
-        // for (int j = 0; j < DIM; ++j)
-        // {
-        //     for (int i = 0; i < DIM; ++i)
-        //         A(i + 1, j + 1 + DIM) += Jj[j] * DOMAIN_U2(i, 0) * N.m();
-        //
-        //     VECTOR Y = -theta * rho_f * J * NV * Fij[j] * dtU / GetTimeStep() * N.m();
-        //     for (int i = 0; i < DIM; ++i)
-        //         A(i + 1, j + 1 + DIM) += Y(i, 0);
-        // }
+        for (int j = 0; j < DIM; ++j)
+        {
+            for (int i = 0; i < DIM; ++i)
+                A(i + 1, j + 1 + DIM) += Jj[j] * DOMAIN_U2(i, 0) * N.m();
+
+            VECTOR Y = -theta * rho_f * J * NV * Fij[j] * dtU / GetTimeStep() * N.m();
+            for (int i = 0; i < DIM; ++i)
+                A(i + 1, j + 1 + DIM) += Y(i, 0);
+        }
 
         /////////////// pressure
         // X = -U[0].m() * J * F.inverse().transpose()*phi;
@@ -371,282 +370,6 @@ void FSI<DIM>::Matrix(EntryMatrix& A, const FemFunction& U, const TestFunction& 
     }
 }
 
-// template <int DIM>
-// void FSI<DIM>::Form(VectorIterator b, const FemFunction& U, const TestFunction& N) const
-// {
-//     VECTOR phi;
-//     multiplex_init_test<DIM>(phi, N);
-//
-//     if (domain < 0)  // fluid
-//     {
-//         // divergence
-//         b[0] += rho_f * J * (F.inverse().transpose().array() * NV.array()).sum() * N.m();
-//
-//         // time-derivative
-//         for (int i = 0; i < DIM; ++i)
-//             b[i + 1] += J * rho_f * (U[i + 1].m() - (*OLD)[i + 1].m()) / GetTimeStep() * N.m();
-//
-//         // tensor
-//         VECTOR X = J * SIGMAf * F.inverse().transpose() * phi;
-//         for (int i = 0; i < DIM; ++i)
-//             b[i + 1] += theta * X(i, 0);
-//
-//         X = J_old * SIGMAf_old * F_old.inverse().transpose() * phi;
-//         for (int i = 0; i < DIM; ++i)
-//             b[i + 1] += (1.0 - theta) * X(i, 0);
-//
-//         // convection
-//         X = theta * J * rho_f * NV * F.inverse() * V * N.m();
-//         for (int i = 0; i < DIM; ++i)
-//             b[i + 1] += X(i, 0);
-//
-//         X = (1.0 - theta) * J_old * rho_f * NV_old * F_old.inverse() * V_old * N.m();
-//         for (int i = 0; i < DIM; ++i)
-//             b[i + 1] += X(i, 0);
-//
-//         // DOMAIN Convection
-//         X = -rho_f
-//             * (theta * J_old * NV * F_old.inverse()
-//                + (1.0 - theta) * J_old * NV_old * F_old.inverse())
-//             * dtU / GetTimeStep() * N.m();
-//         for (int i = 0; i < DIM; ++i)
-//             b[i + 1] += X(i, 0);
-//
-//         // pressure
-//         X = -U[0].m() * J * F.inverse().transpose() * phi;
-//         for (int i = 0; i < DIM; ++i)
-//             b[i + 1] += X(i, 0);
-//
-//         // // extension of deformation u with pseudo-elasticity
-//         // for (int i=0;i<DIM;++i)
-//         //   {
-//         //     double mu_e     = extend / (2.0 * (1.0+nu_e));
-//         //     double lambda_e = nu_e * extend / ( (1.0+nu_e)*(1.0-2*nu_e) );
-//         //     for (int j=0;j<DIM;++j)
-//         //       b[i+1+DIM] += mu_e * (U[i+1+DIM][j+1]+U[j+1+DIM][i+1])*N[j+1];
-//         //     for (int j=0;j<DIM;++j)
-//         //       b[i+1+DIM] += lambda_e * U[j+1+DIM][j+1]*N[j+1];
-//         //   }
-//         // laplace
-//         for (int i = 0; i < DIM; ++i)
-//             b[i + 1 + DIM] += extend * (NU * phi)(i, 0);
-//
-//         // ////////// p-laplace
-//         // double dp=0;
-//         // for (int i=0;i<DIM;++i)
-//         //   for (int j=0;j<DIM;++j)
-//         //     dp += pow(U[i+1+DIM][j+1],2.0);
-//
-//         // for (int i=0;i<DIM;++i)
-//         //   for (int j=0;j<DIM;++j)
-//         //     b[i+1+DIM] += pow(1.e-1 + dp,pp_e) * U[i+1+DIM][j+1]*N[j+1];
-//     }
-//     else
-//     {
-//         // time-derivative
-//         for (int i = 0; i < DIM; ++i)
-//             b[i + 1] += rho_s * (U[i + 1].m() - (*OLD)[i + 1].m()) / GetTimeStep() * N.m();
-//
-//         // FULL tensor F Sigma
-//
-//         for (int i = 0; i < DIM; ++i)
-//             b[i + 1] += theta * (F_old * SIGMAs_old * phi)(i, 0);
-//         for (int i = 0; i < DIM; ++i)
-//             b[i + 1] += (1.0 - theta) * (F_old * SIGMAs_old * phi)(i, 0);
-//
-//         // dt u-v=0
-//         double scaling = rho_s / GetTimeStep() / theta;
-//         scaling        = 1.0;
-//         for (int i = 0; i < DIM; ++i)
-//         {
-//             b[i + 1 + DIM] +=
-//               scaling * (U[i + 1 + DIM].m() - (*OLD)[i + 1 + DIM].m()) / GetTimeStep() * N.m();
-//             b[i + 1 + DIM] -= scaling * theta * U[i + 1].m() * N.m();
-//             b[i + 1 + DIM] -= scaling * (1.0 - theta) * (*OLD)[i + 1].m() * N.m();
-//         }
-//     }
-// }
-//
-// template <int DIM>
-// void FSI<DIM>::Matrix(EntryMatrix& A, const FemFunction& U, const TestFunction& M,
-//                       const TestFunction& N) const
-// {
-//     VECTOR phi;
-//     multiplex_init_test<DIM>(phi, N);
-//     VECTOR psi;
-//     multiplex_init_test<DIM>(psi, M);
-//
-//     if (domain < 0)  // fluid
-//     {
-//         //////////////// divergence
-//         //	b[0] += rho_f * J * (F.inverse().transpose().array() * NV.array()).sum() * N.m();
-//         //  wrt v
-//         for (int j = 0; j < DIM; ++j)
-//         {
-//             // wrt v
-//             A(0, j + 1) += DIVERGENCE_V[j] * N.m();
-//
-//             // wrt u
-//             //A(0, j + 1 + DIM) += rho_f * Jj[j] * divergence * N.m();
-//
-//             A(0, j + 1 + DIM) += DIVERGENCE_U[j] * N.m();
-//         }
-//
-//         ///////////// time-derivative
-//         // wrt v
-//         for (int i = 0; i < DIM; ++i)
-//             A(i + 1, i + 1) += rho_f * J * M.m() * N.m() / GetTimeStep();
-//         // wrt u
-//         // for (int j = 0; j < DIM; ++j)
-//         //     for (int i = 0; i < DIM; ++i)
-//         //         A(i + 1, j + 1 + DIM) +=
-//         //           Jj[j] * rho_f * (U[i + 1].m() - (*OLD)[i + 1].m()) / GetTimeStep() * N.m();
-//
-//         ///////// tensor
-//         // wrt V
-//         for (int j = 0; j < DIM; ++j)
-//         {
-//             VECTOR X = TENSOR_dV[j] * phi;
-//             for (int i = 0; i < DIM; ++i)
-//                 A(i + 1, j + 1) += theta * X(i, 0);
-//         }
-//         // wrt U
-//         // for (int j = 0; j < DIM; ++j)
-//         // {
-//         //     VECTOR X = TENSOR_dU[j] * phi;
-//         //     for (int i = 0; i < DIM; ++i)
-//         //         A(i + 1, j + 1 + DIM) += theta * X(i, 0);
-//         // }
-//
-//         // //////////////// // convection
-//         // X = theta * rho_f * NV * F.inverse()*V*N.m();
-//         // for (int i=0;i<DIM;++i)
-//         //   b[i+1] += X(i,0);
-//
-//         // wrt v
-//         for (int i = 0; i < DIM; ++i)
-//             for (int j = 0; j < DIM; ++j)
-//                 A(i + 1, j + 1) += theta * CONV_dV1(i, j) * M.m() * N.m();
-//         for (int j = 0; j < DIM; ++j)
-//             A(j + 1, j + 1) += theta * CONV_dV2[j] * N.m();
-//
-//         // wrt u
-//         // for (int j = 0; j < DIM; ++j)
-//         // {
-//         //     for (int i = 0; i < DIM; ++i)
-//         //         A(i + 1, j + 1 + DIM) += theta * CONV_dU[j](i, 0) * N.m();
-//         // }
-//
-//         // DOMAIN Convection
-//         //	X = -rho_f * 0.5 * (J*NV*F.inverse() + J_old * NV_old * F_old.inverse())
-//         //	  * dtU/__DT * N.m();
-//
-//         // wrt dtU
-//         // for (int i = 0; i < DIM; ++i)
-//         //     for (int j = 0; j < DIM; ++j)
-//         //         A(i + 1, j + 1 + DIM) += DOMAIN_U1(i, j) * M.m() * N.m();
-//
-//         // wrt V
-//         for (int j = 0; j < DIM; ++j)
-//             A(j + 1, j + 1) += DOMAIN_V[j] * N.m();
-//         // wrt U
-//         // for (int j = 0; j < DIM; ++j)
-//         // {
-//         //     for (int i = 0; i < DIM; ++i)
-//         //         A(i + 1, j + 1 + DIM) += Jj[j] * DOMAIN_U2(i, 0) * N.m();
-//         //
-//         //     VECTOR Y = -theta * rho_f * J * NV * Fij[j] * dtU / GetTimeStep() * N.m();
-//         //     for (int i = 0; i < DIM; ++i)
-//         //         A(i + 1, j + 1 + DIM) += Y(i, 0);
-//         // }
-//
-//         /////////////// pressure
-//         // X = -U[0].m() * J * F.inverse().transpose()*phi;
-//         // for (int i=0;i<DIM;++i)
-//         //   b[i+1] += X(j,0);
-//         // wrt P
-//         VECTOR X = PRESSURE_P * phi;
-//         for (int i = 0; i < DIM; ++i)
-//             A(i + 1, 0) += X(i, 0);
-//         // wrt U
-//         for (int j = 0; j < DIM; ++j)
-//         {
-//             X = PRESSURE_U[j] * phi;
-//             for (int i = 0; i < DIM; ++i)
-//                 A(i + 1, j + 1 + DIM) += X(i, 0);
-//         }
-//
-//         ////// EXTEND
-//
-//         // // extension of deformation u with pseudo-elasticity
-//         // for (int i=0;i<DIM;++i)
-//         //   {
-//         //     double mu_e     = extend / (2.0 * (1.0+nu_e));
-//         //     double lambda_e = nu_e * extend / ( (1.0+nu_e)*(1.0-2*nu_e) );
-//         //     for (int j=0;j<DIM;++j)
-//         //       {
-//         // 	A(i+1+DIM,i+1+DIM) += mu_e * (M[j+1]+U[j+1+DIM][i+1])*N[j+1];
-//         // 	A(i+1+DIM,j+1+DIM) += mu_e * (M[i+1])*N[j+1];
-//         //       }
-//
-//         //     for (int j=0;j<DIM;++j)
-//         //       A(i+1+DIM,j+1+DIM) += lambda_e * M[j+1]*N[j+1];
-//         //   }
-//         // // extension of deformation u laplace
-//         for (int i = 0; i < DIM; ++i)
-//             A(i + 1 + DIM, i + 1 + DIM) += extend * phi.dot(psi);
-//
-//         // // p-laplace
-//         // double dp=0;
-//         // for (int i=0;i<DIM;++i)
-//         //   for (int j=0;j<DIM;++j)
-//         //     dp += pow(U[i+1+DIM][j+1],2.0);
-//         // fixarray<DIM,double> dpD;
-//         // for (int i=0;i<DIM;++i)
-//         //   {
-//         //     dpD[i]=0;
-//         //     for (int j=0;j<DIM;++j)
-//         //       dpD[i] += 2.0 * U[i+1+DIM][j+1]*M[j+1];
-//         //   }
-//         // for (int i=0;i<DIM;++i)
-//         //   for (int j=0;j<DIM;++j)
-//         //     {
-//         //       for (int k=0;k<DIM;++k)
-//         // 	A(i+1+DIM,k+1+DIM) += pp_e * pow(1.e-1 + dp,pp_e-1.0) * dpD[k] *
-//         U[i+1+DIM][j+1]*N[j+1];
-//         //       A(i+1+DIM,i+1+DIM)  += pow(1.e-1 + dp,pp_e) * M[j+1]*N[j+1];
-//         //     }
-//     }
-//     else
-//     {
-//         // time-derivative
-//         for (int i = 0; i < DIM; ++i)
-//             A(i + 1, i + 1) += rho_s * M.m() / GetTimeStep() * N.m();
-//
-//         // F Sigma
-//         // wrt F,
-//         for (int j = 0; j < DIM; ++j)  // Fj Sigma \nabla phi
-//             A(j + 1, j + 1 + DIM) += theta * (SIGMA_dF[j].transpose() * phi)(0, 0);
-//
-//         for (int j = 0; j < DIM; ++j)  // F Sigma_j \nabla phi
-//         {
-//             VECTOR X = SIGMA_dU[j] * phi;
-//             for (int i = 0; i < DIM; ++i)
-//                 A(i + 1, j + 1 + DIM) += theta * X(i, 0);
-//         }
-//
-//         // dt u-v=0
-//         double scaling = rho_s / GetTimeStep() / theta;
-//         scaling        = 1.0;
-//
-//         for (int i = 0; i < DIM; ++i)
-//         {
-//             A(i + 1 + DIM, i + 1 + DIM) += scaling * M.m() * N.m() / GetTimeStep();
-//             A(i + 1 + DIM, i + 1) -= scaling * theta * M.m() * N.m();
-//         }
-//     }
-// }
-//
 template <int DIM>
 void FSI<DIM>::point_M(int j, const FemFunction& U, const TestFunction& M) const
 {
