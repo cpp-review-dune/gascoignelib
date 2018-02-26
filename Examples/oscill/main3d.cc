@@ -68,7 +68,7 @@ int main(int argc, char** argv)
   vector<int> cz; cz.push_back(6);
 
   vector<double> weigh; weigh.push_back(1.0);
-  /*Ux.BasicInit(v1,cx,weigh); 
+  Ux.BasicInit(v1,cx,weigh); 
   Uy.BasicInit(v1,cy,weigh); 
   Uz.BasicInit(v1,cz,weigh); 
 
@@ -80,7 +80,6 @@ int main(int argc, char** argv)
   FC3d.AddFunctional("uz",&Uz);
   FC3d.AddFunctional("drag",&drag);
   FC3d.AddFunctional("lift",&lift);
-  */
   
   Loop<3> loop;
 

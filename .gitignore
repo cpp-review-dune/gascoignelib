@@ -10,8 +10,17 @@ Makefile
 cmake*
 *.kdev4
 
+# ignore precompiled header 
+*.gch
+
 # ignore all Results in Examples directory
-/Examples*/Results*
+/Examples**/Results*
+/Examples/oscill/Test*
+#ignore pdf
+*.pdf
+
+# ignore binaries
+/bin*
 
 # ./doc directory
 /doc/gascoigne.tag

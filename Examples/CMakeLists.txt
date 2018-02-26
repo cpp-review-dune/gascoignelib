@@ -4,15 +4,16 @@ IF(NOT "${EXAMPLE_OUTPUT_PATH}" STREQUAL "")
   SET(EXECUTABLE_OUTPUT_PATH "${EXAMPLE_OUTPUT_PATH}")
 ENDIF()
 
+SET(EXAMPLE_CXX_FLAGS "-fopenmp -O3 -Wextra -Wno-ignored-qualifiers -Wno-unused-parameter")
+SET(GASCOIGNE_CXX_FLAGS "${GASCOIGNE_CXX_FLAGS} ${EXAMPLE_CXX_FLAGS}")
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GASCOIGNE_CXX_FLAGS}")
 SET(COMPILE_DEFINITIONS "${GASCOIGNE_DEFINITIONS}")
 
 SUBDIRS(
 oscill
-Vanka
+#Vanka
    DG
    fast3d_neu
-   fsi3dbench
    Example1
    Example2
    Example3
@@ -23,13 +24,13 @@ Vanka
    Example8
    Example9
    MeshTest
-  Laplace2D 
-  Laplace3D 
-  NavierStokes2D 
-  NavierStokes3D 
+  Laplace2D
+  Laplace3D
+  NavierStokes2D
+  NavierStokes3D
   NavierStokesFace
-  Heat2D 
-  ConvectionDiffusion2D 
+  Heat2D
+  ConvectionDiffusion2D
 #  IntegrationTest
   Functionals
   MeshInterpolator

@@ -10,11 +10,11 @@
 #include "q1lps2d.h"
 #include "q13d.h"
 #include "q1lps3d.h"
+#include "chi.h"
 #include "q2lps2d.h"
 #include "q2lps3d.h"
 
 #include  "gascoignemesh2d.h"
-#include "gascoignehash.h"
 
 extern bool __ADJOINT;
 
@@ -35,12 +35,6 @@ namespace Gascoigne
     
   public:
 
-    void InitInterfaceComponents(const std::vector<int> delf,const std::vector<int> dels)
-    {
-      __DEL_F = delf;
-      __DEL_S = dels;
-    }
-    
     HASHMAP<int, std::vector<int> >& GetSolidInterfaceCells() { return  __solid_interface_cells; }
     HASHMAP<int, std::vector<int> >& GetFluidInterfaceCells() { return  __fluid_interface_cells; }
     HASHSET<int>& GetFluidCells()     { return  __fluid_cells; }

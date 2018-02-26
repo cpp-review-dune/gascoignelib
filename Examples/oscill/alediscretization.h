@@ -27,6 +27,11 @@ namespace Gascoigne
     std::string GetName()  const { return "Q1 Ale 2d Lps"; }
   AleQ1Lps2d() : Q1Lps2d()
       {
+	__DEL_F.clear();
+	__DEL_F.push_back(1); 
+	__DEL_F.push_back(2); 
+	__DEL_S.clear();
+	__DEL_S.push_back(0);
       }
     
   };
@@ -37,6 +42,11 @@ namespace Gascoigne
     std::string GetName()  const { return "Q2 Ale 2d Lps"; }
       AleQ2Lps2d() : Q2Lps2d()
       {
+	__DEL_F.clear();
+	__DEL_F.push_back(3); 
+	__DEL_F.push_back(4); 
+	__DEL_S.clear();
+	__DEL_S.push_back(0);
       }
 
   };
@@ -46,6 +56,12 @@ namespace Gascoigne
     std::string GetName()  const { return "Q2 Ale 3d Lps"; }
   AleQ2Lps3d() : Q2Lps3d()
       {
+	__DEL_F.clear();
+	__DEL_F.push_back(4);
+	__DEL_F.push_back(5);
+	__DEL_F.push_back(6); 
+	__DEL_S.clear();
+	__DEL_S.push_back(0);
       }
 
   };
@@ -57,6 +73,12 @@ namespace Gascoigne
 
     AleQ1Lps3d() : Q1Lps3d()
       {
+	__DEL_F.clear();
+	__DEL_F.push_back(1);
+	__DEL_F.push_back(2);
+	__DEL_F.push_back(3);
+	__DEL_S.clear();
+	__DEL_S.push_back(0);
       }
   
   };

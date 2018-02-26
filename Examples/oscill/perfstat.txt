@@ -1,0 +1,42 @@
+Running oscill in parallel with parareal yields:
+
+Performance counter stats for 'system wide':
+
+    5412668,195764      cpu-clock (msec)          #    4,000 CPUs utilized
+         1.780.525      context-switches          #    0,329 K/sec
+           102.406      cpu-migrations            #    0,019 K/sec
+        56.347.704      page-faults               #    0,010 M/sec
+11.309.516.703.162      cycles                    #    2,089 GHz
+21.049.229.447.164      instructions              #    1,86  insn per cycle
+ 3.211.754.757.014      branches                  #  593,377 M/sec
+    49.780.215.743      branch-misses             #    1,55% of all branches
+ 5.709.201.996.013      L1-dcache-loads           # 1054,785 M/sec
+   348.557.467.742      L1-dcache-load-misses     #    6,11% of all L1-dcache hits
+    34.905.954.133      LLC-loads                 #    6,449 M/sec
+    13.080.575.000      LLC-load-misses           #   37,47% of all LL-cache hits
+
+    1353,177785079 seconds time elapsed
+
+perf stat -B -a -d ../../bin/paraoscill 2 0.52 0.01 0.51 0.001  3563,54s user 100,49s system 270% cpu 22:33,19 total
+
+
+Running oscill sequentially yields:
+
+Performance counter stats for 'system wide':
+
+   5217605,027760      cpu-clock (msec)          #    4,000 CPUs utilized
+        1.278.693      context-switches          #    0,245 K/sec
+           82.028      cpu-migrations            #    0,016 K/sec
+       16.320.134      page-faults               #    0,003 M/sec
+4.574.961.461.440      cycles                    #    0,877 GHz
+8.455.291.131.242      instructions              #    1,85  insn per cycle
+1.278.509.422.396      branches                  #  245,038 M/sec
+   20.246.249.204      branch-misses             #    1,58% of all branches
+2.261.868.250.859      L1-dcache-loads           #  433,507 M/sec
+  156.470.560.528      L1-dcache-load-misses     #    6,92% of all L1-dcache hits
+   16.044.668.874      LLC-loads                 #    3,075 M/sec
+    6.550.434.470      LLC-load-misses           #   40,83% of all LL-cache hits
+
+   1304,413237228 seconds time elapsed
+
+perf stat -B -a -d ../../bin/oscill  1271,78s user 27,58s system 99% cpu 21:44,43 total
