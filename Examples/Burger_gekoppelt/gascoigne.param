@@ -10,7 +10,7 @@ initial file
 initial boundary
 
 time	    0.0
-dt	    0.05
+dt	        0.125
 dtmax	    0.125
 endtime	    4.0
 M           4
@@ -61,6 +61,6 @@ iterexact 4
 
 //Block Equation
 
-epsilon 0.01
+epsilon 0.005
 
 //Block Nix

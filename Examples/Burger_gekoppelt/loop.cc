@@ -2286,6 +2286,7 @@ class DWRTransport : public virtual DomainRightHandSide
     double endtime;
 
     DataFormatHandler DFH;
+
     DFH.insert("dt",   &DT, 0.);
     DFH.insert("time", &TIME, 0.);
     DFH.insert("endtime", &endtime, 0.);
@@ -2295,12 +2296,13 @@ class DWRTransport : public virtual DomainRightHandSide
     FS.readfile(_paramfile, "Loop");
     assert(DT>0.0);
     assert(_M>0);
-
+       
+   
     // Anzahl der n-Schritte
     _niter = endtime / DT;
     // Intervallgroesse makro
     double DTM = endtime / _M;
-    cout << "N="<< _niter << "\t M=" << _M << "\t dt=" << DT << "\t dtm=" << DTM << endl;
+    cout << "N="<< _niter << "\t M=" << _M << "\t dt=" << DT << "\t dtm=" << DTM <<endl;
 
     assert( fabs(endtime - _M*DTM)<1.e-8);
     assert( fabs(endtime - _niter * DT)<1.e-8);
@@ -2465,7 +2467,7 @@ class DWRTransport : public virtual DomainRightHandSide
 	this->EtaVisu("Results/eta",ADAITER,eta);
 
 	stringstream str;
-	str << "kon_005.txt";
+	str << "eps_0.005.txt";
 	ofstream OUTF(str.str().c_str(),ios::app);
 	OUTF.precision(10);
 
@@ -2488,8 +2490,7 @@ class DWRTransport : public virtual DomainRightHandSide
 	//  GetMultiLevelSolver()->GetSolver()->Visu("Results/neuu",u,ADAITER);
 	//GetMultiLevelSolver()->GetSolver()->Visu("Results/PU",oldu,ADAITER);
       }
-    cout<<"huhu"<<endl;
-    abort();
+ 
 
   }
 

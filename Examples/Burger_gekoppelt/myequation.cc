@@ -190,14 +190,14 @@ void MyDualEquation::Form(VectorIterator b,
   b[0] += (Z[0].m()-(*oldz)[0].m()) *(1.0)*N.m();
   b[1] += (Z[1].m()-(*oldz)[1].m()) *(1.0)* N.m();
   
-  b[0]+=Z[0].m()*((*oldh)[0].m()+((*h)[0].m()))*N.m();
-  b[1]+=Z[1].m()*((*oldh)[1].m()+((*h)[1].m()))*N.m();
+  b[0]+=Z[0].m()*0.5*((*oldh)[0].m()+((*h)[0].m()))*N.m();
+  b[1]+=Z[1].m()*0.5*((*oldh)[1].m()+((*h)[1].m()))*N.m();
 
   
   if(!FIRSTDUAL){
       
-     b[0]+=(*oldz)[0].m()*((*newH)[0].m()+((*h)[0].m()))*N.m();
-     b[1]+=(*oldz)[1].m()*((*h)[1].m()+((*newH)[1].m()))*N.m()  ;
+     b[0]-=(*oldz)[0].m()*0.5*((*newH)[0].m()+((*h)[0].m()))*N.m();
+     b[1]-=(*oldz)[1].m()*0.5*((*h)[1].m()+((*newH)[1].m()))*N.m()  ;
       
   }
 
@@ -276,9 +276,9 @@ void MyDualEquation::Matrix(EntryMatrix &A,
   A(1,1) += M.m()*(1.0)*N.m();
   
   // b[0]+=Z[0].m()*((*oldh)[0].m()+((*h)[0].m()))*N.m();
-  A(0,0)+=M.m()*((*oldh)[0].m()+((*h)[0].m()))*N.m();
+  A(0,0)+=M.m()*0.5*((*oldh)[0].m()+((*h)[0].m()))*N.m();
   
-  A(1,1)+=M.m()*((*oldh)[1].m()+((*h)[1].m()))*N.m();
+  A(1,1)+=M.m()*0.5*((*oldh)[1].m()+((*h)[1].m()))*N.m();
   
   
  
@@ -448,8 +448,11 @@ void MyDualTransportEquation::Form(VectorIterator b,
    Nonlinear(b, 0.5-0.5/sqrt(3.0), (*u1), (*u2), U, N,        0.5+0.5/sqrt(3.0),DTM1);
 
    // Kopplungsterm
-  Kopplung(b, 0.5+0.5/sqrt(3.0), (*dtu1), (*dtu2), (*oldz), N,       0.5+0.5/sqrt(3.0));
-  Kopplung(b, 0.5-0.5/sqrt(3.0), (*dtu1), (*dtu2), (*oldz), N,       0.5-0.5/sqrt(3.0));
+   
+  b[0]+=0.5*((*u2)[0].m()-(*u1)[0].m())*(*oldz)[0].m()*N.m();
+  b[1]+=0.5*((*u2)[1].m()-(*u1)[1].m())*(*oldz)[1].m()*N.m();
+  //Kopplung(b, 0.5+0.5/sqrt(3.0), (*dtu1), (*dtu2), (*oldz), N,       0.5+0.5/sqrt(3.0));
+ // Kopplung(b, 0.5-0.5/sqrt(3.0), (*dtu1), (*dtu2), (*oldz), N,       0.5-0.5/sqrt(3.0));
   }
   
 
@@ -459,8 +462,11 @@ void MyDualTransportEquation::Form(VectorIterator b,
    Nonlinear(b, 0.5+0.5/sqrt(3.0), (*u2), (*u3), (*oldw), N,        0.5-0.5/sqrt(3.0),DTM2);
    Nonlinear(b, 0.5-0.5/sqrt(3.0), (*u2), (*u3), (*oldw), N,        0.5+0.5/sqrt(3.0),DTM2);  
    
-  Kopplung(b, 0.5+0.5/sqrt(3.0),(*dtu2), (*dtu3), (*z), N,       0.5+0.5/sqrt(3.0));
-  Kopplung(b, 0.5-0.5/sqrt(3.0), (*dtu2), (*dtu3), (*z), N,       0.5-0.5/sqrt(3.0));
+  b[0]+=0.5*((*u3)[0].m()-(*u2)[0].m())*(*z)[0].m()*N.m();
+  b[1]+=0.5*((*u3)[1].m()-(*u2)[1].m())*(*z)[1].m()*N.m();
+   
+  //Kopplung(b, 0.5+0.5/sqrt(3.0),(*dtu2), (*dtu3), (*z), N,       0.5+0.5/sqrt(3.0));
+  //Kopplung(b, 0.5-0.5/sqrt(3.0), (*dtu2), (*dtu3), (*z), N,       0.5-0.5/sqrt(3.0));
       
   }
 }
@@ -550,7 +556,7 @@ void MyKoppelEquation::Form(VectorIterator b,
                       const TestFunction &N) const
 {
    
- //Zeit
+ //Zeit nur die Transport gleichung , die monetengleuchung bliebt gleich.
   b[0] += (U[0].m() -(*oldh)[0].m()) * N.m();
   b[1] += (U[1].m() -(*oldh)[1].m()) * N.m();  
   // ganz einfache stabilisierung...
