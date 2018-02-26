@@ -10,8 +10,8 @@ initial file
 initial boundary
 
 time	    0.0
-dt	       0.5
-dtmax	    0.5
+dt	    0.05
+dtmax	    0.125
 endtime	    4.0
 M           4
 //Block Visualization

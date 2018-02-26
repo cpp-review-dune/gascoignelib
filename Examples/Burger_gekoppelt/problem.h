@@ -319,24 +319,24 @@ namespace Gascoigne
   
   
   
-/*
+
  class KoppelDualProblem : public ProblemDescriptorBase
   {
   public:
   
-    std::string GetName() const {return "Koppel  Problem";}
+    std::string GetName() const {return "KoppelDual Problem";}
     void BasicInit(const ParamFile* pf)
     {
       // equation to solve
       GetEquationPointer()      = new MyKoppelDualEquation(pf); 
-      GetRightHandSidePointer() = new MyDualRhs(pf);
-      GetDirichletDataPointer() = new MyDualDD();
+      GetRightHandSidePointer() = new MyDualTransportRhs(pf);
+      GetDirichletDataPointer() = new MyDualTransportDD();
       // 
       ProblemDescriptorBase::BasicInit(pf);
     }
   };
 
-  */
+  
   
 }
 

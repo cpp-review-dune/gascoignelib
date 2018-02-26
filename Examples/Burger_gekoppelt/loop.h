@@ -37,7 +37,7 @@ namespace Gascoigne
 
     string SolveTransportSingle(VectorInterface& h, VectorInterface& f, string name);
     string SolvePrimalSingle(VectorInterface& u, VectorInterface& f, string name);
-    void SolvePrimalProblem(vector<GlobalVector> &Utotal, VectorInterface& u, VectorInterface& oldu,VectorInterface& newu, VectorInterface& f,vector<GlobalVector> &Htotal, VectorInterface& h, VectorInterface& oldh, int ADAITER);
+    void SolvePrimalProblem(vector<GlobalVector> &Utotal, VectorInterface& u, VectorInterface& oldu,VectorInterface& newu,VectorInterface& dtu3, VectorInterface& f,vector<GlobalVector> &Htotal, VectorInterface& h, VectorInterface& oldh, int ADAITER);
 
     
     void MittelInt(GlobalVector& avg_old,GlobalVector& avg, const vector<GlobalVector>& U, int  start, int stopp,double DTM);
@@ -61,6 +61,8 @@ string SolveDualSingle(vector<GlobalVector>& Ztotal,vector<GlobalVector>& Wtotal
 			     DoubleVector& eta3,
 			   DoubleVector& eta4,
 			      DoubleVector& eta5,
+			DoubleVector& eta6,
+			DoubleVector& eta7,
 			   vector<GlobalVector>& Utotal,
                vector<GlobalVector>& Htotal,
                vector<GlobalVector>& Wtotal,
@@ -72,6 +74,7 @@ string SolveDualSingle(vector<GlobalVector>& Ztotal,vector<GlobalVector>& Wtotal
 			VectorInterface& u,
 		   	   VectorInterface& oldu,
 			VectorInterface& newu,
+			VectorInterface& dtu3,
 			   VectorInterface& z,
 			  VectorInterface& oldz,
              VectorInterface& h ,
@@ -81,23 +84,28 @@ string SolveDualSingle(vector<GlobalVector>& Ztotal,vector<GlobalVector>& Wtotal
 			VectorInterface& f, vector<double>& DT_M,vector<double>& T,vector<double>& eta_time);
  
  
-
+  
     void EstimateDWRprim(DoubleVector& eta, int m, const GlobalVector& Pu_kM,  vector<GlobalVector>& U,vector<GlobalVector>& H,
 			 GlobalVector& Z,VectorInterface& u, VectorInterface& oldu,VectorInterface& h,VectorInterface& oldh,VectorInterface& z,VectorInterface& f,vector<double>& T);
 
      void EstimateDWRdual(DoubleVector& eta, int m, vector<GlobalVector>& Pu_kM,vector<GlobalVector>&Htotal,vector<GlobalVector>&Wtotal, GlobalVector& Pu_M,
-			  const GlobalVector& OLDZ, GlobalVector& Z,VectorInterface& u, VectorInterface& oldu,VectorInterface& newu,VectorInterface& z,VectorInterface& oldz,VectorInterface& h,VectorInterface& oldh,VectorInterface& w,VectorInterface& oldw,VectorInterface& f, vector<double>& DT_M,vector<double>& T);
-
-   void EstimateAvg(DoubleVector& eta,  GlobalVector& Pu, const GlobalVector &Puold,
-		     const GlobalVector& U, const GlobalVector &Uold, GlobalVector& Z,const GlobalVector& H,
-		     VectorInterface& u, VectorInterface& oldu,VectorInterface& z,VectorInterface& h,VectorInterface& f);
+			  const GlobalVector& OLDZ, GlobalVector& Z,VectorInterface& u, VectorInterface& oldu,VectorInterface& newu,VectorInterface& dtu3,VectorInterface& z,VectorInterface& oldz,VectorInterface& h,VectorInterface& oldh,VectorInterface& w,VectorInterface& oldw,VectorInterface& f, vector<double>& DT_M,vector<double>& T);
 
 
-   void EstimateRest(DoubleVector& eta,int m,
-		     const GlobalVector& Pu, const GlobalVector &Puold,
-		     const GlobalVector& Puk, const GlobalVector &Pukold,
-		     const GlobalVector& U, const GlobalVector &Uold, GlobalVector& Z,const GlobalVector& H,
-		     VectorInterface& u, VectorInterface& oldu,VectorInterface& z,VectorInterface& h,VectorInterface& f);
+    
+void EstimateAvg(DoubleVector& eta, GlobalVector& Pu, const GlobalVector &Puold,GlobalVector& Ph, const GlobalVector &Phold,
+		       const GlobalVector& U, const GlobalVector &Uold, GlobalVector& Z,GlobalVector& W, GlobalVector& H,GlobalVector& OLDH,
+		 VectorInterface& u, VectorInterface& oldu,VectorInterface& z,VectorInterface& h,VectorInterface& f);
+     
+  
+
+
+ void EstimateRest(DoubleVector& eta, int m,
+			  const GlobalVector& Pu, const GlobalVector &Puold,
+			  const GlobalVector& Puk, const GlobalVector &Pukold,
+			  const GlobalVector& U, const GlobalVector &Uold, GlobalVector& Z,GlobalVector& W,const GlobalVector &H,const GlobalVector &OLD,const GlobalVector &Phk,const GlobalVector &Phkold,
+		   VectorInterface& u, VectorInterface& oldu,VectorInterface& z,VectorInterface& h,VectorInterface& oldh,VectorInterface& f);
+
 
     void EstimateNonU(DoubleVector& eta,
 		       vector<GlobalVector>& Utotal, GlobalVector& Z,
@@ -113,6 +121,11 @@ string SolveDualSingle(vector<GlobalVector>& Ztotal,vector<GlobalVector>& Wtotal
     void EstimateNonMeanPu(DoubleVector& eta,int m,
 		 GlobalVector& Pu,vector<GlobalVector>& Pu_k, vector<GlobalVector>& U, GlobalVector& Z,
 		 VectorInterface& u, VectorInterface& oldu,VectorInterface& z,VectorInterface& f,double DTM_U);
+
+ void  EstimateKonsistenz(DoubleVector& eta, int m,
+			      vector<GlobalVector>& U,vector<GlobalVector>& H,  GlobalVector& W,
+		     VectorInterface& u, VectorInterface& oldu,VectorInterface& h,VectorInterface& z,VectorInterface& f, int start , int stopp);
+    
 
 
  MySolver* GetMySolver()

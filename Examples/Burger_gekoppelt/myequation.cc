@@ -74,8 +74,8 @@ void MyEquation::Form(VectorIterator b,
   //Zeitkopplung
  //v(n)-v(n-1) 
   
- Zeit(b,1.0, (*oldh), (*h), Ug,      N,1-CHIGAUSS ,1.0);
- Zeit(b,-1.0, (*oldh), (*h), Ug_old, N,1-CHIGAUSS ,1.0);
+   Zeit(b,1.0, (*oldh), (*h), Ug,      N,1-CHIGAUSS ,1.0);
+   Zeit(b,-1.0, (*oldh), (*h), Ug_old, N,1-CHIGAUSS ,1.0);
  
 
 }
@@ -131,7 +131,7 @@ void MyEquation::Matrix(EntryMatrix &A,
   A(1,1)+=DT*CHIGAUSS *(Ug[0].m()*M.x()+M.m()*Ug[1].y()+Ug[1].m()*M.y())*N.m();
   A(1,0)+=DT*CHIGAUSS*(M.m()*Ug[1].x())*N.m();
   
- Zeit_Matrix(A, CHIGAUSS, (*oldh), (*h), Ug, M,N, 1-CHIGAUSS,DTM1);
+  Zeit_Matrix(A, CHIGAUSS, (*oldh), (*h), Ug, M,N, 1-CHIGAUSS,DTM1);
 
   
   
@@ -345,15 +345,13 @@ void MyTransportEquation::Form(VectorIterator b,
   //   //// div v*h
   b[1]+=DT/2.* ((*V)[0].x()+(*V)[1].y())*U[1].m()*N.m();
   b[1]+=DT/2.* ((*V)[0].x()+(*V)[1].y())*(*oldh)[1].m()*N.m();
-  // v nabla h
-  
+
+
+  ////// v nabla h
   b[0]+=DT/2.*((*V)[0].m()*U[0].x()      + (*V)[1].m()*U[0].y()      )*N.m();
   b[0]+=DT/2.*((*V)[0].m()*(*oldh)[0].x()+ (*V)[1].m()*(*oldh)[0].y())*N.m();
 
   //2te Komponente
-
-
-  // v nabla h
   b[1]+=DT/2.*((*V)[0].m()*U[1].x()+(*V)[1].m()*U[1].y())*N.m();
   b[1]+=DT/2.*((*V)[0].m()*(*oldh)[1].x()+(*V)[1].m()*(*oldh)[1].y())*N.m(); 
 
@@ -540,8 +538,8 @@ void MyKoppelEquation::Nonlinear(VectorIterator b, double s, const FemFunction &
     b[0] += w*DTM * 0.5 * (s*(U1[0].x()+U1[1].y())+(1-s)*(U2[0].x()+U2[1].y())) * N.m()*Z[0].m();
     b[1] += w*DTM * 0.5 * (s*(U1[0].x()+U1[1].y())+(1-s)*(U2[0].x()+U2[1].y())) * N.m()*Z[1].m();
 			    //v nabla h
-    b[0] += w*DTM * 0.5*((s*U1[0].m()+(1-s)*U2[0].m())*Z[0].x()+ (s*U1[1].m()+(1-s)*U2[1].m())*Z[1].y())*N.m();
-    b[1] += w*DTM * 0.5*((s*U1[0].m()+(1-s)*U2[0].m())*Z[0].x()+ (s*U1[1].m()+(1-s)*U2[1].m())*Z[1].y())*N.m();
+    b[0] += w*DTM * 0.5*((s*U1[0].m()+(1-s)*U2[0].m())*Z[0].x()+ (s*U1[1].m()+(1-s)*U2[1].m())*Z[0].y())*N.m();
+    b[1] += w*DTM * 0.5*((s*U1[0].m()+(1-s)*U2[0].m())*Z[0].x()+ (s*U1[1].m()+(1-s)*U2[1].m())*Z[0].y())*N.m();
   }
 
 
@@ -577,7 +575,8 @@ void MyKoppelEquation::Form(VectorIterator b,
 
 void MyKoppelEquation::Nonlinear_Matrix(EntryMatrix&A, double s, const FemFunction &U1, const FemFunction& U2, const TestFunction &M, const TestFunction& N,double w,int DTM) const
   {
-   
+
+    abort();
     //b[0] += w*DTM * 0.5 * (s*(U1[0].x()+U1[1].y())+(1-s)*(U2[0].x()+U2[1].y())) * N.m()*Z[0].m();
       
       A(0,0)+=w*DTM * 0.5 * (s*(U1[0].x()+U1[1].y())+(1-s)*(U2[0].x()+U2[1].y())) * N.m()*M.m();
@@ -621,6 +620,23 @@ void MyKoppelEquation::Matrix(EntryMatrix &A,
 }
   
   
+
+
+
+
+
+/*----------------------------------------------------------------------------*/
+
+
+  
+
+
+
+
+/*----------------------------------------------------------------------------*/
+
+
+
 
  
 }
