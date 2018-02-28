@@ -2412,12 +2412,13 @@ class DWRTransport : public virtual DomainRightHandSide
     
 	vector<double> DT_M(_M+1);
 	vector<double> T(_M+1);
-       
+
 	T[0]=0;
 	T[1]=1.0;
 	T[2]=3.0;
 	T[3]=3.5;
 	T[4]=4.0;
+
 
   /*
    T[0]=0;
@@ -2436,6 +2437,7 @@ class DWRTransport : public virtual DomainRightHandSide
 	T[8]=4.0;
   
   */
+
 	double checki=0.0;
 	for( int k=1;k<=_M;k++)
 	  {
