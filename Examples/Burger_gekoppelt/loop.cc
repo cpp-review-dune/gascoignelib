@@ -1692,8 +1692,8 @@ class DWRTransport : public virtual DomainRightHandSide
   }
 
   void Loop::EstimateRest(DoubleVector& eta, int m,
-			  const GlobalVector& Pu, const GlobalVector &Puold,
 			  const GlobalVector& Puk, const GlobalVector &Pukold,
+
 			  const GlobalVector& U, const GlobalVector &Uold, GlobalVector& Z,GlobalVector& W,const GlobalVector &H,const GlobalVector &OLDH,const GlobalVector &Phk,const GlobalVector &Phkold,
 			  VectorInterface& u, VectorInterface& oldu,VectorInterface& z,VectorInterface& h,VectorInterface& oldh,VectorInterface& f)
   {
@@ -2226,7 +2226,7 @@ class DWRTransport : public virtual DomainRightHandSide
 	EstimateAvg(eta2, Pu_M[m], Pu_M[m-1],  Ph_M[m], Ph_M[m-1], Utotal[stoppi], Utotal[start], Ztotal[m],Wtotal[m], Htotal[stoppi], Htotal[start],u,oldu,z,h,f);
 	cout<<eta2.sum()<<"ETA2 "<<endl;
 
-	EstimateRest(eta3, m,Pu_M[m], Pu_M[m-1], Pu_kM[m], Pu_kM[m-1], Utotal[stoppi], Utotal[start], Ztotal[m],Wtotal[m], Htotal[m],Htotal[m-1],Ph_M[m], Ph_M[m-1],u, oldu, z,h,oldh,f);
+	EstimateRest(eta3, m,Pu_M[m], Pu_M[m-1],Utotal[stoppi], Utotal[start], Ztotal[m],Wtotal[m], Htotal[m],Htotal[m-1],Ph_M[m], Ph_M[m-1],u, oldu, z,h,oldh,f);
 	cout<<eta3.sum()<<"ETA3 "<<endl;
 
 
@@ -2412,19 +2412,36 @@ class DWRTransport : public virtual DomainRightHandSide
     
 	vector<double> DT_M(_M+1);
 	vector<double> T(_M+1);
-        
+       
 	T[0]=0;
 	T[1]=1.0;
 	T[2]=3.0;
 	T[3]=3.5;
 	T[4]=4.0;
-    
-    
+
+  /*
+   T[0]=0;
+   T[1]=3.0;
+   T[2]=4.0;
+*/
+  /*
+    T[0]=0;
+    T[1]=0.5;
+    T[2]=1.0;
+    T[3]=1.75;
+    T[4]=2.0;
+	T[5]=2.75;
+    T[6]=3.0;
+    T[7]=3.25;
+	T[8]=4.0;
+  
+  */
 	double checki=0.0;
 	for( int k=1;k<=_M;k++)
 	  {
 	    DT_M[k]=T[k]-T[k-1];
 	    checki+=DT_M[k];
+        cout<<checki<<"checki"<<endl;
 	  }
 	assert( checki== endtime);
     
@@ -2467,7 +2484,7 @@ class DWRTransport : public virtual DomainRightHandSide
 	this->EtaVisu("Results/eta",ADAITER,eta);
 
 	stringstream str;
-	str << "eps_0.005.txt";
+	str << "eps0.1._01325txt";
 	ofstream OUTF(str.str().c_str(),ios::app);
 	OUTF.precision(10);
 

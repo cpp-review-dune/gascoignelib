@@ -101,7 +101,6 @@ void EstimateAvg(DoubleVector& eta, GlobalVector& Pu, const GlobalVector &Puold,
 
 
  void EstimateRest(DoubleVector& eta, int m,
-			  const GlobalVector& Pu, const GlobalVector &Puold,
 			  const GlobalVector& Puk, const GlobalVector &Pukold,
 			  const GlobalVector& U, const GlobalVector &Uold, GlobalVector& Z,GlobalVector& W,const GlobalVector &H,const GlobalVector &OLD,const GlobalVector &Phk,const GlobalVector &Phkold,
 		   VectorInterface& u, VectorInterface& oldu,VectorInterface& z,VectorInterface& h,VectorInterface& oldh,VectorInterface& f);
