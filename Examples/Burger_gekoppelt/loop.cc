@@ -508,7 +508,6 @@ class DWRTransport : public virtual DomainRightHandSide
   void operator()(VectorIterator b, const TestFunction& N, const Vertex2d& v) const 
   {
     b[0] += (1)*(*Z)[0].m() * N.m();
-    b[1] +=(1)*(*Z)[1].m() * N.m();
   }
 
 };
@@ -1680,11 +1679,10 @@ class DWRTransport : public virtual DomainRightHandSide
     // Auswerten, kein Filtern
     for(int i=0; i<Z.n(); i++)
       {
-	for (int c=0; c<Z.ncomp(); c++)
-	  {
-	    eta[i] += F1(i,c)*W(i,0);
+    
+	    eta[i] += F1(i,0)*W(i,0);
 	  }  
-      }
+    
 
 
   
@@ -1713,12 +1711,17 @@ class DWRTransport : public virtual DomainRightHandSide
     DUk.add( 1.0,Uold);
 
     GlobalVector Hk = Phk;
-    DUk.add(-1.0,Phkold);
-    DUk.add(-1.0,H);
-    DUk.add( 1.0,OLDH);
+    Hk.add(-1.0,Phkold);
+    Hk.add(-1.0,H);
+    Hk.add( 1.0,OLDH);
   
     MyS->GetGV(u) = DUk;
     MyS->GetGV(z) = Hk;
+    
+     GetMultiLevelSolver()->GetSolver()->Visu("Results/HK",z,m);  
+      GetMultiLevelSolver()->GetSolver()->Visu("Results/DUK",u,m);  
+    
+
 
     MyS->AddNodeVector("OLDH",oldh);  
     MyS->AddNodeVector("H",h);    
@@ -1786,7 +1789,7 @@ class DWRTransport : public virtual DomainRightHandSide
     MyS->SetDiscretization(*saveD);
 
 
-// Std Disc
+// Std Disc ---------------------------------------------------
 
     DWRTransport DWR;
     MyS->Zero(f);
@@ -1800,27 +1803,26 @@ class DWRTransport : public virtual DomainRightHandSide
 
 
     MyS->HNDistribute(f);
-    MyS->GetDiscretization()->HNAverage(Z);
+    MyS->GetDiscretization()->HNAverage(W);
     MyS->SetBoundaryVectorZero(f);
 
      
-    MyS->GetDiscretization()->HNAverage(Z);
+    MyS->GetDiscretization()->HNAverage(W);
 
-    // Auswerten, kein Filtern
+// Auswerten, kein Filtern
     for(int i=0; i<Z.n(); i++)
       {
-	for (int c=0; c<Z.ncomp(); c++)
-	  {
-	    eta[i] +=  MyS->GetGV(f)(i,c)*W(i,0);
+    
+	    eta[i] +=  MyS->GetGV(f)(i,0)*W(i,0);
 	  }  
-      }
+    
 
     
 
     // DWR Disc
-    DwrFemQ1Q22d DWRFEM1;
+   Q22d  DWRFEM1;
     DWRFEM1.BasicInit(this->_paramfile);
- 
+
     MyS->SetDiscretization(DWRFEM1,true);
      MyS->Zero(f);
     MyS->AddNodeVector("Z",z);
@@ -1830,22 +1832,23 @@ class DWRTransport : public virtual DomainRightHandSide
 
 
     // Std Disc
-    MyS->SetDiscretization(*saveD);
 
     MyS->SetBoundaryVectorZero(f);
 
    
-    MyS->GetDiscretization()->HNAverage(Z);
+    MyS->GetDiscretization()->HNAverage(W);
 
     // Auswerten, kein Filtern
+  // Auswerten, kein Filtern
     for(int i=0; i<Z.n(); i++)
       {
-	for (int c=0; c<Z.ncomp(); c++)
-	  {
-	    eta[i] +=  MyS->GetGV(f)(i,c)*W(i,0);
+    
+	    eta[i] +=  MyS->GetGV(f)(i,0)*W(i,0);
 	  }  
-      }
+    
+
      MyS->SetDiscretization(*saveD);
+
     
   }
 
@@ -1980,7 +1983,7 @@ class DWRTransport : public virtual DomainRightHandSide
  
 
   void Loop::EstimateKonsistenz(DoubleVector& eta, int m,
-				vector<GlobalVector>& U,vector<GlobalVector>& H,  GlobalVector& W,
+				vector<GlobalVector>& U,vector<GlobalVector>& H,  GlobalVector& W,GlobalVector& Z,
 				VectorInterface& u, VectorInterface& oldu,VectorInterface& h,VectorInterface& z,VectorInterface& f, int start , int stopp)
 
   {
@@ -1991,7 +1994,6 @@ class DWRTransport : public virtual DomainRightHandSide
     assert(MyS);
 
     KomsitenzPrimal Kon;
-
     int I_m = stopp-start;
 
     MyS->Zero(f);
@@ -2048,12 +2050,21 @@ class DWRTransport : public virtual DomainRightHandSide
   
     MyS->GetDiscretization()->HNAverage(W);
     
+     for(int i=0; i<Z.n(); i++)
+      {
+	for (int c=0; c<Z.ncomp(); c++)
+	  {
+	    eta[i] += F(i,c)*Z(i,c);
+	  }  
+      }
+    
     // Auswerten, kein Filtern
     // NUR die erste Komponenten berechnen.
-    for(int i=0; i<W.n(); i++)
+    /*for(int i=0; i<W.n(); i++)
       {
 	eta[i] += F(i,0)*W(i,0);
-      }  
+      } 
+      */
 
   }
 
@@ -2226,7 +2237,7 @@ class DWRTransport : public virtual DomainRightHandSide
 	EstimateAvg(eta2, Pu_M[m], Pu_M[m-1],  Ph_M[m], Ph_M[m-1], Utotal[stoppi], Utotal[start], Ztotal[m],Wtotal[m], Htotal[stoppi], Htotal[start],u,oldu,z,h,f);
 	cout<<eta2.sum()<<"ETA2 "<<endl;
 
-	EstimateRest(eta3, m,Pu_M[m], Pu_M[m-1],Utotal[stoppi], Utotal[start], Ztotal[m],Wtotal[m], Htotal[m],Htotal[m-1],Ph_M[m], Ph_M[m-1],u, oldu, z,h,oldh,f);
+	EstimateRest(eta3, m,Pu_M[m], Pu_M[m-1],Utotal[stoppi], Utotal[start], Ztotal[m],Wtotal[m], Htotal[stoppi],Htotal[start],Ph_M[m], Ph_M[m-1],u, oldu, z,h,oldh,f);
 	cout<<eta3.sum()<<"ETA3 "<<endl;
 
 
@@ -2247,7 +2258,7 @@ class DWRTransport : public virtual DomainRightHandSide
 
 
    
-	EstimateKonsistenz(eta6, m, Utotal,Htotal, Wtotal[m], u,oldu,h,z,f,T[m-1]/DT+1.e-10,T[m]/DT+1.e-10);
+	EstimateKonsistenz(eta6, m, Utotal,Htotal, Wtotal[m],Ztotal[m],  u,oldu,h,z,f,T[m-1]/DT+1.e-10,T[m]/DT+1.e-10);
 	cout<<eta6.sum()<<"eta6"<<endl<<endl;
 	//eta_time[m-1]=0.5*eta1.sum()+0.5*eta11.sum()+eta2.sum()+eta22.sum()-eta23.sum()+eta3.sum()+eta4.sum()+eta5.sum();
     
@@ -2403,7 +2414,7 @@ class DWRTransport : public virtual DomainRightHandSide
 	vector<GlobalVector> Pu_kM(_M+1,GlobalVector(MyS->GetGV(u).ncomp(), MyS->GetGV(u).n()));
 	vector<GlobalVector> Pu_M (_M+1,GlobalVector(MyS->GetGV(u).ncomp(), MyS->GetGV(u).n()));
 	vector<GlobalVector> U_2(_M+1,GlobalVector(MyS->GetGV(u).ncomp(), MyS->GetGV(u).n()));
-	vector<GlobalVector> Ph_M(_M+1,GlobalVector(MyS->GetGV(u).ncomp(), MyS->GetGV(u).n()));
+	vector<GlobalVector> Ph_M(_M+1,GlobalVector(MyS->GetGV(h).ncomp(), MyS->GetGV(u).n()));
 	Pu_M[0]=Utotal[0];
 	Ph_M[0]=Htotal[0];
 	Pu_kM[0]=Utotal[0];
@@ -2486,7 +2497,7 @@ class DWRTransport : public virtual DomainRightHandSide
 	this->EtaVisu("Results/eta",ADAITER,eta);
 
 	stringstream str;
-	str << "eps0.1._01325txt";
+	str << "huhu001.txt";
 	ofstream OUTF(str.str().c_str(),ios::app);
 	OUTF.precision(10);
 

@@ -122,7 +122,7 @@ void EstimateAvg(DoubleVector& eta, GlobalVector& Pu, const GlobalVector &Puold,
 		 VectorInterface& u, VectorInterface& oldu,VectorInterface& z,VectorInterface& f,double DTM_U);
 
  void  EstimateKonsistenz(DoubleVector& eta, int m,
-			      vector<GlobalVector>& U,vector<GlobalVector>& H,  GlobalVector& W,
+			      vector<GlobalVector>& U,vector<GlobalVector>& H,  GlobalVector& W,GlobalVector& Z,
 		     VectorInterface& u, VectorInterface& oldu,VectorInterface& h,VectorInterface& z,VectorInterface& f, int start , int stopp);
     
 

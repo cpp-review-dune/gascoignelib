@@ -29,8 +29,12 @@ public:
   std::string GetName() const {return "Ellipse";}
   double J(const FemFunction& U, const Vertex2d& v) const
   { 
-    if(TIME>3.0 && TIME<4.0)
+    if(TIME>3.0 && TIME<3.5)
     { double x=v.x()-0.5; double y=v.y()-0.5;
+        
+      //    b[0]+= N.x()*exp(-x*x-y*y);
+	   //    b[1]+=-N.y()*exp(-x*x-y*y);
+        
       return  (U[0].m()*exp(-x*x-y*y));}
     
     return 0;
