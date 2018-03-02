@@ -12,6 +12,25 @@
 #include "weightedpointfunctional.h"
 #include "resfunctional.h"
 #include "local.h"
+#include "colors.h"
+enum name_type
+{
+    error,
+    functional,
+    visualization
+};
+enum iter_type
+{
+    fine_last,
+    fine,
+    coarse
+};
+enum log_level
+{
+    results       = 0,
+    visu_info     = 1,
+    visu_detailed = 2
+};
 
 namespace Gascoigne
 {
@@ -61,12 +80,13 @@ namespace Gascoigne
  *
  * Every Instance of parareal correponds to one solver on an subinterval. Thus every solver also
  * has its own map of vectors. The user
- * does not have to interact directly with them. He only needs to call runPara or compareParaSerial,
- * everything else is handled automatically by the class. For better debugging one can specify the
- * `PDBG` flag (i.e. `-PDBG=n`), where`n` can be 1 or something arbitrary larger. In the case where
- * `n=1` only some more timings are taken. Otherwise additional visualization will be written.
+ * does not have to interact directly with them. He only needs to call runPara or
+ * compareParaSerial, everything else is handled automatically by the class. For better
+ * debugging one can specify the `PDBG` flag (i.e. `-PDBG=n`), where`n` can be 1 or something
+ * arbitrary larger. In the case where `n=1` only some more timings are taken. Otherwise
+ * additional visualization will be written.
  */
-template <int DIM>
+template <int DIM, log_level logging>
 class parareal : public Loop<DIM>
 {
 public:
@@ -88,7 +108,6 @@ public:
     static void outputParameters(std::ostream& ostrm = std::cerr);
 
     /*! \brief Method setting parameters and calling the algorithm.
-     *
      * This method takes some parameters (maybe from command line) and sets them and calls
      * paraAlgo afterwards to execute parareal algorithm. If no parameters are given, the
      * parameters will be read from the paramfile. Only parameters which may be varied in some
@@ -102,20 +121,18 @@ public:
     static double runPara(const int maxIterations   = 1,
                           const double coarse_theta = getParam<double>("thetacoarse", "Equation"),
                           const double dtcoarse     = getParam<double>("dtcoarse", "Equation"),
-                          const double theta        = getParam<double>("theta", "Equation"),
+                          const double fine_theta   = getParam<double>("theta", "Equation"),
                           const double dtfine       = getParam<double>("dt", "Equation"));
 
     /*! \brief Method comparing parareal with sequential execution.
      *
-     * Executes the parareal algorithm with the specified coarse time step sizes and coarse thetas,
-     * values for fine method is taken from the paramfile.
-     * Before execution of parareal it solves the problem sequentially and calculates the norm
-     * \f$l_2\f$ vector norm between the two solutions on every time node.
-     * \param maxIterations maximal number of iterations executed by parareal algorithm
-     * \param dtcoarse_vec Vector with coarse time step sizes that will be tested against sequential
-     * execution
-     * \param coarse_theta_vec Vector with coarse theta values for step sizes specified by
-     * dtcoarse_vec
+     * Executes the parareal algorithm with the specified coarse time step sizes and coarse
+     * thetas, values for fine method is taken from the paramfile. Before execution of parareal
+     * it solves the problem sequentially and calculates the norm \f$l_2\f$ vector norm between
+     * the two solutions on every time node. \param maxIterations maximal number of iterations
+     * executed by parareal algorithm \param dtcoarse_vec Vector with coarse time step sizes
+     * that will be tested against sequential execution \param coarse_theta_vec Vector with
+     * coarse theta values for step sizes specified by dtcoarse_vec
      */
     static void compareParaSerial(const unsigned int maxIterations,
                                   const std::vector<double>& dtcoarse_vec,
@@ -139,7 +156,8 @@ protected:
     SolverInterface* GetSolver();
 
     /*!
-     * \brief Wrapper function for GetMultiLevelSolver returning *const* pointer to MultiLevelSolver
+     * \brief Wrapper function for GetMultiLevelSolver returning *const* pointer to
+     * MultiLevelSolver
      */
     const MultiLevelSolverInterface* GetMultiLevelSolver() const;
 
@@ -158,27 +176,16 @@ private:
     static double paraAlgo();
 
     /*!
-     * \brief Fine time stepping method.
+     * \brief Time stepping method.
      *
-     * This method encapsulates *noFineSteps* timesteps into one call. The step size
-     * used is dtfine. This method writes a logfile.
-     * \param time          current time from where the steps are executed
-     * \param u             VectorInterface with approximation at current time
-     * \param f             Right hand inside
+     * This method encapsulates *noFineSteps* or *noCoarseSteps* timesteps into one call.
+     * The step size used is dtfine or *dtcoarse* (depending on whether coarse or fine is
+     * specified by the template parameter). This method writes a logfile if method equals
+     * fine_last. \param time          current time from where the steps are executed \param u
+     * VectorInterface with approximation at current time \param f             Right hand inside
      */
-    template <bool last>
-    void step_fine_final(double time, VectorInterface& u, VectorInterface& f);
-
-    /*!
-     * \brief Coarse time stepping method.
-     *
-     * This method encapsulates *noCoarseSteps* timesteps into one call. The step size
-     * used is dtcoarse.
-     * \param time          current time from where the steps are executed
-     * \param u             VectorInterface with approximation at current time
-     * \param f             Right hand inside
-     */
-    void step_coarse(double time, VectorInterface& u, VectorInterface& f);
+    template <iter_type method>
+    void step(double time, VectorInterface& u, VectorInterface& f, const int current = 0);
 
     /*!
      * \brief Method checking for convergence on one subinterval
@@ -248,7 +255,9 @@ private:
     template <typename T>
     static const T getParam(const std::string& paramName, const std::string& block);
 
-    static const std::vector<GlobalVector> setTimeGridVector(std::size_t noIntervals);
+    template <name_type name>
+    static const std::string getName(double dtc = dtcoarse, double tc = coarse_theta,
+                                     unsigned maxIter = maxIterations);
 
     VectorInterface
       fi_solution;  //!< Vector containing the fine solution on the corresponding interval.
@@ -259,7 +268,7 @@ private:
       u_solution;  //!< Vector containing the final solution on the corresponding interval.
     std::vector<DoubleVector> log_buffer;  //!< Vector for buffering log entries.
 
-    static double theta;
+    static double fine_theta;
     static double coarse_theta;
 
     static double start_time;           //!< Start time point
@@ -275,10 +284,8 @@ private:
     static double dtcoarse;            //!< Time step size of the coarse propagator
     static std::size_t noCoarseSteps;  //!< Number of coarse timesteps per subinterval
 
-#if PDBG >= 1
     static double coarse_exec_time;
     static double fine_exec_time;
-#endif
 
     static std::vector<GlobalVector>
       u_sol_arr;                    //!< Vector containing the final solutions on every time node
@@ -290,8 +297,8 @@ private:
 public methods
 ***************************************************************************************************/
 
-template <int DIM>
-parareal<DIM>::parareal(size_t id)
+template <int DIM, log_level logging>
+parareal<DIM, logging>::parareal(size_t id)
     : fi_solution("f" + std::to_string(id))
     , co_solution("g" + std::to_string(id))
     , old("old" + std::to_string(id))
@@ -303,8 +310,8 @@ parareal<DIM>::parareal(size_t id)
 
 //--------------------------------------------------------------------------------------------------
 
-template <int DIM>
-void parareal<DIM>::outputParameters(std::ostream& ostrm)
+template <int DIM, log_level logging>
+void parareal<DIM, logging>::outputParameters(std::ostream& ostrm)
 {
     // clang-format off
     ostrm << "\n========================================================="
@@ -320,7 +327,7 @@ void parareal<DIM>::outputParameters(std::ostream& ostrm)
           << "\nParameter for fine method:\
               \nFine steps per interval:               " << noFineSteps
           << "\nFine step size:                        " << dtfine
-          << "\nTheta for fine steps                   " << theta
+          << "\nTheta for fine steps                   " << fine_theta
           << "\nUsing paramfile:                       " << paramfile
           << "\nProblemlabel is:                       " << problemlabel
           << "\n=========================================================\n\n";
@@ -329,15 +336,17 @@ void parareal<DIM>::outputParameters(std::ostream& ostrm)
 
 //--------------------------------------------------------------------------------------------------
 
-template <int DIM>
-double parareal<DIM>::runPara(const int maxIterations, const double coarse_theta,
-                              const double dtcoarse, const double theta, const double dtfine)
+template <int DIM, log_level logging>
+double parareal<DIM, logging>::runPara(const int maxIterations, const double coarse_theta,
+                                       const double dtcoarse, const double fine_theta,
+                                       const double dtfine)
 {
+    std::cout << style::g << "[Running Parareal]" << style::n << '\n';
     assert(dtcoarse >= dtfine && "coarse step size should be bigger than fine step size");
     parareal::maxIterations = maxIterations;
     parareal::coarse_theta  = coarse_theta;
     parareal::dtcoarse      = dtcoarse;
-    parareal::theta         = theta;
+    parareal::fine_theta    = fine_theta;
     parareal::dtfine        = dtfine;
     parareal::noCoarseSteps = static_cast<size_t>(intervalLength / dtcoarse);
     parareal::noFineSteps   = static_cast<size_t>(intervalLength / dtfine);
@@ -363,28 +372,29 @@ double parareal<DIM>::runPara(const int maxIterations, const double coarse_theta
     assert(noIntervals > 1
            && "Number of intervals is 1 or 0. You should prefer sequential execution.");
     assert(intervalLength > 0 && "intervalLength should be greater zero!");
-    assert(theta > 0 && coarse_theta > 0 && "Thetas have to be positive");
+    assert(fine_theta > 0 && coarse_theta > 0 && "Thetas have to be positive");
     assert(dtcoarse * noCoarseSteps - dtfine * noFineSteps <= numeric_limits<double>::epsilon()
            && "Coarse and fine step sizes and number of time steps don't match");
 
+    if (!func_log.is_open())
+    {
+        func_log.open(getName<functional>());
+    }
     auto exec_time = paraAlgo();
 
-    // clang-format off
-    std::cerr << "\n==================================================\n"
-                 "Finished parareal.\nElapsed time is\t" << exec_time << '\n';
-#if PDBG >= 1
-    std::cerr << ".\nTime spent in coarse method: "      << coarse_exec_time
-              << "\nTime spent in fine method: "         << fine_exec_time;
-#endif
-    // clang-format on
+    std::cerr << style::bb << "\n==================================================\n"
+              << style::G << "Finished parareal" << style::b << ".\nElapsed time is\t" << exec_time
+              << "\n\nTime spent in coarse method: " << coarse_exec_time
+              << "\nTime spent in fine method: " << fine_exec_time << style::n << '\n';
+    func_log.close();
     return exec_time;
 }
 
 //--------------------------------------------------------------------------------------------------
 
 #ifdef _OPENMP  // parareal can't be run without OpenMP
-template <int DIM>
-double parareal<DIM>::paraAlgo()
+template <int DIM, log_level logging>
+double parareal<DIM, logging>::paraAlgo()
 {
     double time     = start_time;
     auto start_wall = omp_get_wtime();
@@ -401,7 +411,7 @@ double parareal<DIM>::paraAlgo()
     std::vector<parareal*> loop_interval(noIntervals);
     for (size_t i = 0; i < noIntervals; ++i)
     {
-        loop_interval[i] = new parareal<DIM>(i);
+        loop_interval[i] = new parareal<DIM, logging>(i);
         loop_interval[i]->setupProblem(paramfile, problemlabel);
 
         loop_interval[i]->GetMultiLevelSolver()->ReInit(problemlabel);
@@ -466,29 +476,22 @@ double parareal<DIM>::paraAlgo()
             {
                 omp_set_lock(&interval_locker[i]);
                 // u ⟵ G⁰(i)
-                loop_interval[i]->step_coarse(time + i * intervalLength, u, f);
+                loop_interval[i]->template step<coarse>(time + i * intervalLength, u, f, 1);
                 // G⁰(i) ⟵ u;
                 loop_interval[i]->GetSolver()->Equ(loop_interval[i]->co_solution, 1., u);
                 // U⁰(i) ⟵ u;
                 loop_interval[i]->GetSolver()->Equ(loop_interval[i]->u_solution, 1., u);
 
-// Visualization for debugging
-#if PDBG > 1
+                // Visualization for debugging
+                if constexpr (logging > 0)
                 {
-                    loop_interval[i]->GetSolver()->Visu("Results/initU", u, i);
-                    loop_interval[i]->WriteMeshAndSolution("Results/initU", u);
-
+                    std::cout << style::bb << style::g << "\n[Done]" << style::n
+                              << " Initialization on subinterval " << i << '\n';
                     loop_interval[i]->GetSolver()->Visu("Results/initsol",
                                                         loop_interval[i]->u_solution, i);
                     loop_interval[i]->WriteMeshAndSolution("Results/initsol",
                                                            loop_interval[i]->u_solution);
-
-                    loop_interval[i]->GetSolver()->Visu("Results/initfine",
-                                                        loop_interval[i]->fi_solution, i);
-                    loop_interval[i]->WriteMeshAndSolution("Results/initfine",
-                                                           loop_interval[i]->fi_solution);
                 }
-#endif
 
                 if (i < noIntervals - 1)
                 {
@@ -519,30 +522,32 @@ double parareal<DIM>::paraAlgo()
                 // Fᵏ(m) ⟵ F(Uᵏ⁻¹(m-1))
                 if (m == 0 || k == maxIterations)
                 {
-                    loop_interval[m]->template step_fine_final<true>(
-                      time + m * intervalLength, loop_interval[m]->fi_solution, f);
+                    loop_interval[m]->template step<fine_last>(time + m * intervalLength,
+                                                               loop_interval[m]->fi_solution, f, k);
                 }
                 else  // we are not in the last iteration and not exact
                 {
-                    loop_interval[m]->template step_fine_final<false>(
-                      time + m * intervalLength, loop_interval[m]->fi_solution, f);
+                    loop_interval[m]->template step<fine>(time + m * intervalLength,
+                                                          loop_interval[m]->fi_solution, f, k);
                 }
-#if PDBG > 1
+                if constexpr (logging > 0)
                 {
+                    std::cout << style::bb << style::g << "\n[Done]" << style::n
+                              << " Fine solution on subinterval " << m << "in iteration number "
+                              << k << '\n';
                     loop_interval[m]->GetSolver()->Visu(
                       "Results/fineres", loop_interval[m]->fi_solution, (k - 1) * 10 + m);
                     loop_interval[m]->WriteMeshAndSolution("Results/fineres",
                                                            loop_interval[m]->fi_solution);
                 }
-#endif
                 omp_unset_lock(&interval_locker[m]);
                 //                }
             }
             // barrier for debugging
-//#pragma omp barrier
-//
-// coarse propagations and corrections
-//
+            //#pragma omp barrier
+            //
+            // coarse propagations and corrections
+            //
 #pragma omp for ordered nowait schedule(monotonic : static)
             // Corrections
             for (int m = 0; m < noIntervals - k; ++m)
@@ -580,8 +585,9 @@ double parareal<DIM>::paraAlgo()
                       .equ(1., loop_interval[m]->GetSolver()->GetGV(loop_interval[m]->u_solution));
                     omp_unset_lock(&interval_locker[m]);
                     // predictor step with coarse method
-                    loop_interval[m]->step_coarse(time + (m + 1) * intervalLength,
-                                                  loop_interval[m]->co_solution, f);
+                    loop_interval[m]->template step<coarse>(
+                      time + (m + 1) * intervalLength, loop_interval[m]->co_solution, f, k + 1);
+
                     // omp_unset_lock(&interval_locker[m]);
                     omp_set_lock(&interval_locker[m + 1]);
 
@@ -607,18 +613,25 @@ double parareal<DIM>::paraAlgo()
                     omp_unset_lock(&interval_locker[m + 1]);
 
                     // Visualization for debugging
-#if PDBG > 1
+                    if constexpr (logging > 0)
                     {
+                        std::cout << style::bb << style::g << "\n[Done]" << style::n
+                                  << " Coarse solution on subinterval " << m + 1
+                                  << "in iteration number " << k << '\n';
                         loop_interval[m]->GetSolver()->Visu(
                           "Results/coarseres", loop_interval[m]->co_solution, (k - 1) * 10 + m);
                         loop_interval[m]->WriteMeshAndSolution("Results/coarseres",
                                                                loop_interval[m]->co_solution);
+                        std::cout << style::bb << style::g << "\n[Done]" << style::n
+                                  << " initial value on subinterval " << m + 1
+                                  << "in iteration number " << k << '\n';
                         loop_interval[m]->GetSolver()->Visu(
                           "Results/iterres", loop_interval[m]->u_solution, (k - 1) * 10 + m);
                         loop_interval[m]->WriteMeshAndSolution("Results/iterres",
                                                                loop_interval[m]->u_solution);
+                        std::cout << style::bb << style::g << "[Done]" << style::b
+                                  << " Iteration number" << k << "of parareal" << style::n << '\n';
                     }
-#endif
                 }
 
             }  // Corrections
@@ -633,16 +646,6 @@ double parareal<DIM>::paraAlgo()
     {
         // write final solution vectors
         loop_interval[m]->setGVsize(u_sol_arr[m]);
-#if PDBG > 1
-        assert(
-          u_sol_arr[m].size()
-            == loop_interval[m + 1]->GetSolver()->GetGV(loop_interval[m + 1]->u_solution).size()
-          && u_sol_arr[m].ncomp()
-               == loop_interval[m + 1]->GetSolver()->GetGV(loop_interval[m + 1]->u_solution).ncomp()
-          && u_sol_arr[m].n()
-               == loop_interval[m + 1]->GetSolver()->GetGV(loop_interval[m + 1]->u_solution).n()
-          && "Dimension mismatch");
-#endif
         // final solutions on time nodes
         u_sol_arr[m + maxIterations].equ(
           1., loop_interval[m + 1]->GetSolver()->GetGV(loop_interval[m + 1]->u_solution));
@@ -654,10 +657,9 @@ double parareal<DIM>::paraAlgo()
 
         // Visu part
         // loop_interval[m]->setGV(u, u_sol_arr[m]);
-        loop_interval[m + maxIterations]->GetSolver()->Visu(
-          "Results/p", loop_interval[m + maxIterations]->u_solution, m + maxIterations);
-        loop_interval[m + maxIterations]->WriteMeshAndSolution(
-          "Results/p", loop_interval[m + maxIterations]->u_solution);
+        loop_interval[m + 1]->GetSolver()->Visu("Results/p", loop_interval[m + 1]->u_solution,
+                                                m + maxIterations);
+        loop_interval[m + 1]->WriteMeshAndSolution("Results/p", loop_interval[m + 1]->u_solution);
         std::cout << "wrote subinterval " << m + maxIterations << '\n';
     }
 
@@ -668,16 +670,15 @@ double parareal<DIM>::paraAlgo()
     {
         delete loop_interval[i];
     }
-    func_log.close();
     return exec_time;
 }
 
 //--------------------------------------------------------------------------------------------------
 
-template <int DIM>
-void parareal<DIM>::compareParaSerial(const unsigned int maxIterations,
-                                      const std::vector<double>& dtcoarse_vec,
-                                      const std::vector<double>& coarse_theta_vec)
+template <int DIM, log_level logging>
+void parareal<DIM, logging>::compareParaSerial(const unsigned int maxIterations,
+                                               const std::vector<double>& dtcoarse_vec,
+                                               const std::vector<double>& coarse_theta_vec)
 {
     // ParamFile paramfile(paramstr);
     ofstream timings_log({"timingsI" + to_string(maxIterations) + ".txt"});
@@ -685,7 +686,7 @@ void parareal<DIM>::compareParaSerial(const unsigned int maxIterations,
 
     // serial part
     auto start   = omp_get_wtime();
-    auto loopSeq = new parareal<DIM>(0);
+    auto loopSeq = new parareal<DIM, logging>(0);
     loopSeq->setupProblem(paramfile, problemlabel);
     loopSeq->GetMultiLevelSolver()->ReInit(problemlabel);
     loopSeq->GetSolver()->OutputSettings();
@@ -711,12 +712,14 @@ void parareal<DIM>::compareParaSerial(const unsigned int maxIterations,
     loopSeq->InitSolution(loopSeq->old);
 
     if (func_log.is_open())
+    {
         func_log.close();
+    }
     func_log.open("functional.txt");
     // sequential run
     for (int i = 0; i < noIntervals; ++i)
     {
-        loopSeq->template step_fine_final<true>(time + i * intervalLength, loopSeq->u_solution, f);
+        loopSeq->template step<fine_last>(time + i * intervalLength, loopSeq->u_solution, f);
         loopSeq->GetSolver()->Equ(U_seq[i], 1., loopSeq->u_solution);
         // time += intervalLength;
         for (const auto& x : loopSeq->log_buffer)
@@ -738,14 +741,11 @@ void parareal<DIM>::compareParaSerial(const unsigned int maxIterations,
     assert(dtcoarse_vec.size() == coarse_theta_vec.size()
            && "For every dtcoarse there has to be one coarse_theta given and the other way round");
 
-    string dtc = to_string(dtcoarse_vec[0]);
     ofstream error_log;
 
     for (size_t i = 0; i < dtcoarse_vec.size(); ++i)
     {
-        dtc = to_string(dtcoarse_vec[i]);
-        dtc = dtc.substr(dtc.find(".") + 1);
-        func_log.open("para_functionalC" + dtc + "t" + to_string(i) + ".txt");
+        func_log.open(getName<functional>(dtcoarse_vec[i], coarse_theta_vec[i]));
 
         // run Parareal
         auto ratio           = static_cast<int>(dtcoarse_vec[i] / dtfine);
@@ -754,7 +754,7 @@ void parareal<DIM>::compareParaSerial(const unsigned int maxIterations,
         func_log.close();
 
         // calculate error
-        error_log.open({"error_paraC" + dtc + "I" + to_string(maxIterations) + ".txt"});
+        error_log.open(getName<error>(dtcoarse_vec[i], coarse_theta_vec[i]));
         error_log << "interval error\n";
         for (size_t i = 0; i < noIntervals; ++i)
         {
@@ -775,8 +775,8 @@ void parareal<DIM>::compareParaSerial(const unsigned int maxIterations,
 
 //--------------------------------------------------------------------------------------------------
 
-template <int DIM>
-double parareal<DIM>::paraAlgo()
+template <int DIM, log_level logging>
+double parareal<DIM, logging>::paraAlgo()
 {
     std::cerr << "Running parareal relies on OpenMP" << '\n';
     std::exit(EXIT_FAILURE);
@@ -784,10 +784,10 @@ double parareal<DIM>::paraAlgo()
 
 //--------------------------------------------------------------------------------------------------
 
-template <int DIM>
-void parareal<DIM>::compareParaSerial(const unsigned int maxIterations,
-                                      const std::vector<double>& dtcoarse_vec,
-                                      const std::vector<double>& coarse_theta_vec)
+template <int DIM, log_level logging>
+void parareal<DIM, logging>::compareParaSerial(const unsigned int maxIterations,
+                                               const std::vector<double>& dtcoarse_vec,
+                                               const std::vector<double>& coarse_theta_vec)
 {
     std::cerr << "Running parareal relies on OpenMP, comparison makes no sense!" << '\n';
     std::exit(EXIT_FAILURE);
@@ -799,32 +799,32 @@ void parareal<DIM>::compareParaSerial(const unsigned int maxIterations,
 protected methods
 ***************************************************************************************************/
 
-template <int DIM>
-const SolverInterface* parareal<DIM>::GetSolver() const
+template <int DIM, log_level logging>
+const SolverInterface* parareal<DIM, logging>::GetSolver() const
 {
     return StdLoop::GetMultiLevelSolver()->GetSolver();
 }
 
 //--------------------------------------------------------------------------------------------------
 
-template <int DIM>
-SolverInterface* parareal<DIM>::GetSolver()
+template <int DIM, log_level logging>
+SolverInterface* parareal<DIM, logging>::GetSolver()
 {
     return StdLoop::GetMultiLevelSolver()->GetSolver();
 }
 
 //--------------------------------------------------------------------------------------------------
 
-template <int DIM>
-const MultiLevelSolverInterface* parareal<DIM>::GetMultiLevelSolver() const
+template <int DIM, log_level logging>
+const MultiLevelSolverInterface* parareal<DIM, logging>::GetMultiLevelSolver() const
 {
     return StdLoop::GetMultiLevelSolver();
 }
 
 //--------------------------------------------------------------------------------------------------
 
-template <int DIM>
-MultiLevelSolverInterface* parareal<DIM>::GetMultiLevelSolver()
+template <int DIM, log_level logging>
+MultiLevelSolverInterface* parareal<DIM, logging>::GetMultiLevelSolver()
 {
     return StdLoop::GetMultiLevelSolver();
 }
@@ -833,78 +833,106 @@ MultiLevelSolverInterface* parareal<DIM>::GetMultiLevelSolver()
 private methods
 ***************************************************************************************************/
 
-template <int DIM>
-template <bool last>
-void parareal<DIM>::step_fine_final(double time, VectorInterface& u, VectorInterface& f)
+template <int DIM, log_level logging>
+template <iter_type method>
+void parareal<DIM, logging>::step(double time, VectorInterface& u, VectorInterface& f, int current)
 {
-#if PDBG >= 1
+    double dt;
+    double theta;
+    size_t noSteps;
     auto start = omp_get_wtime();
-#endif
+    // Some compile-time branching...
+    if constexpr (method == fine || method == fine_last)
+    {
+        dt      = dtfine;
+        theta   = fine_theta;
+        noSteps = noFineSteps;
+    }
+    else if constexpr (method == coarse)
+    {
+        dt      = dtcoarse;
+        theta   = coarse_theta;
+        noSteps = noCoarseSteps;
+    }
+
     dynamic_cast<const FSI<DIM>*>(GetSolver()->GetProblemDescriptor()->GetEquation())->getTheta() =
       theta;
     //
-    SetTime(dtfine, time);
-    DoubleVector juh(4, 0.);
-    for (auto iter = 0; iter < noFineSteps; ++iter)
+    SetTime(dt, time);
+    for (auto iter = 0; iter < noSteps; ++iter)
     {
-        cout << "Fine " << time << " -> " << time + dtfine << '\n';
-        time += dtfine;
-        SetTime(dtfine, time);
+        if constexpr (method == fine || method == fine_last)
+        {
+            cout << style::bb << style::i << "Fine " << time << " -> " << time + dt << style::n
+                 << '\n';
+        }
+        else if constexpr (method == coarse)
+        {
+            cout << style::bb << "Coarse " << time << " -> " << time + dt << style::n << '\n';
+        }
+
+        // actual solving
+        time += dt;
+        SetTime(dt, time);
         GetMultiLevelSolver()->Equ(old, 1.0, u);
         GetMultiLevelSolver()->AddNodeVector("old", old);
         assert(StdLoop::Solve(u, f) == "converged");
-        if constexpr (last)
+
+        if constexpr (logging == visu_detailed)
+        {
+            if constexpr (method == fine || method == fine_last)
+            {
+                if (iter < 50 || iter > noSteps - 25)
+                {
+                    std::cout << style::bb << style::g << "[Info]" << style::n
+                              << "Fine Visualization\n";
+                    GetMultiLevelSolver()->GetSolver()->Visu(
+                      "Results_detail/u_fine_" + to_string(time) + "_k" + to_string(current), u,
+                      iter);
+                }
+            }
+            else if constexpr (method == coarse)
+            {
+                if (iter < 20 || iter > noSteps - 10)
+                {
+                    std::cout << style::bb << style::g << "[Info]" << style::n
+                              << "Coarse Visualization\n";
+                    GetMultiLevelSolver()->GetSolver()->Visu(
+                      "Results_detail/u_coarse_" + to_string(time) + "_k" + to_string(current), u,
+                      iter);
+                }
+            }
+        }
+
+        if constexpr (method == fine_last)
         {
             log_buffer[iter][0] = time;
-            juh                 = StdLoop::Functionals(u, f);
-            for (short i = 0; i < 4; i++)
+            DoubleVector juh    = StdLoop::Functionals(u, f);
+            for (short i = 0; i < 4; ++i)
             {
                 log_buffer[iter][i + 1] = juh[i];
             }
         }
+
         GetMultiLevelSolver()->DeleteNodeVector("old");
     }
 
-#if PDBG >= 1
     auto end = omp_get_wtime();
-#pragma omp atomic update
-    fine_exec_time += (end - start);
-#endif
-}
-
-//--------------------------------------------------------------------------------------------------
-
-template <int DIM>
-void parareal<DIM>::step_coarse(double time, VectorInterface& u, VectorInterface& f)
-{
-//
-#if PDBG >= 1
-    auto start = omp_get_wtime();
-#endif
-    dynamic_cast<const FSI<DIM>*>(GetSolver()->GetProblemDescriptor()->GetEquation())->getTheta() =
-      coarse_theta;
-    SetTime(dtcoarse, time);
-    for (auto iter = 0; iter < noCoarseSteps; ++iter)
+    if constexpr (method == fine || method == fine_last)
     {
-        cout << "Coarse " << time << " -> " << time + dtfine << '\n';
-        time += dtcoarse;
-        SetTime(dtcoarse, time);
-        GetMultiLevelSolver()->Equ(old, 1.0, u);
-
-        GetMultiLevelSolver()->AddNodeVector("old", old);
-        assert(StdLoop::Solve(u, f) == "converged");
-        GetMultiLevelSolver()->DeleteNodeVector("old");
+#pragma omp atomic update
+        fine_exec_time += (end - start);
     }
 
-#if PDBG >= 1
-    auto end = omp_get_wtime();
+    if constexpr (method == coarse)
+    {
 #pragma omp atomic update
-    coarse_exec_time += (end - start);
-#endif
+        coarse_exec_time += (end - start);
+    }
 }
 
-template <int DIM>
-void parareal<DIM>::SetTime(const double dt, const double time) const
+template <int DIM, log_level logging>
+void parareal<DIM, logging>::SetTime(const double dt, const double time) const
 {
     for (int i = 0; i < GetMultiLevelSolver()->nlevels(); ++i)
     {
@@ -914,16 +942,16 @@ void parareal<DIM>::SetTime(const double dt, const double time) const
 
 //--------------------------------------------------------------------------------------------------
 
-template <int DIM>
-void parareal<DIM>::setGV(VectorInterface& v, const GlobalVector& v_ptr) const
+template <int DIM, log_level logging>
+void parareal<DIM, logging>::setGV(VectorInterface& v, const GlobalVector& v_ptr) const
 {
     GetSolver()->GetGV(v) = v_ptr;
 }
 
 //--------------------------------------------------------------------------------------------------
 
-template <int DIM>
-void parareal<DIM>::setGVsize(GlobalVector& v_ptr)
+template <int DIM, log_level logging>
+void parareal<DIM, logging>::setGVsize(GlobalVector& v_ptr)
 {
     auto ncomp    = GetSolver()->GetProblemDescriptor()->GetEquation()->GetNcomp();
     auto n        = GetSolver()->GetDiscretization()->n();
@@ -934,8 +962,9 @@ void parareal<DIM>::setGVsize(GlobalVector& v_ptr)
 
 //--------------------------------------------------------------------------------------------------
 
-template <int DIM>
-void parareal<DIM>::setupProblem(const ParamFile& paramfile, const std::string& problemlabel)
+template <int DIM, log_level logging>
+void parareal<DIM, logging>::setupProblem(const ParamFile& paramfile,
+                                          const std::string& problemlabel)
 {
     auto Problem2d = new ProblemDescriptor2d();
     Problem2d->BasicInit(&paramfile);
@@ -970,34 +999,42 @@ void parareal<DIM>::setupProblem(const ParamFile& paramfile, const std::string& 
 
 //--------------------------------------------------------------------------------------------------
 
-template <int DIM>
-int parareal<DIM>::setNoIntervals()
+template <int DIM, log_level logging>
+int parareal<DIM, logging>::setNoIntervals()
 {
-    auto noIntervals = omp_get_num_threads();
-    if (noIntervals < 2)
+    auto noIntervals = getParam<double>("threads", "Loop");
+    if (noIntervals == 0)
     {
-        noIntervals = omp_get_max_threads();
+        noIntervals = omp_get_num_threads();
+        if (noIntervals < 2)
+        {
+            noIntervals = omp_get_max_threads();
+        }
+        else if (!omp_in_parallel())
+        {
+            std::cerr << "Number of Threads already set, so we are using this" << '\n';
+        }
+        else if (omp_in_parallel())
+        {
+            std::cerr << "At the moment calling parareal inside parallel "
+                         "region is not guaranteed to work, will set it anyways."
+                      << '\n';
+            noIntervals = omp_get_max_threads();
+        }
+        assert(noIntervals > 1 && "Only 1 thread available");
+        return noIntervals;
     }
-    else if (!omp_in_parallel())
+    else
     {
-        std::cerr << "Number of Threads already set, so we are using this" << '\n';
+        return noIntervals;
     }
-    else if (omp_in_parallel())
-    {
-        std::cerr << "At the moment calling parareal inside parallel "
-                     "region is not guaranteed to work, will set it anyways."
-                  << '\n';
-        noIntervals = omp_get_max_threads();
-    }
-    assert(noIntervals > 1 && "Only 1 thread available");
-    return noIntervals;
 }
 
 //--------------------------------------------------------------------------------------------------
 
-template <int DIM>
+template <int DIM, log_level logging>
 template <typename T>
-const T parareal<DIM>::getParam(const std::string& paramName, const std::string& block)
+const T parareal<DIM, logging>::getParam(const std::string& paramName, const std::string& block)
 {
     T param;
     DataFormatHandler DFH;
@@ -1010,16 +1047,43 @@ const T parareal<DIM>::getParam(const std::string& paramName, const std::string&
 
 //--------------------------------------------------------------------------------------------------
 
-template <int DIM>
-const std::vector<GlobalVector> parareal<DIM>::setTimeGridVector(const size_t noIntervals)
+template <int DIM, log_level logging>
+template <name_type name>
+const std::string parareal<DIM, logging>::getName(double dtc, double tc, unsigned maxIter)
 {
-    std::vector<GlobalVector> tGridVec_ptr(noIntervals);
-    tGridVec_ptr.reserve(noIntervals);
-    for (size_t i = 0; i < noIntervals; ++i)
+    std::string dtc_str = to_string(dtc);
+    if (dtc < 1.)
     {
-        tGridVec_ptr[i] = GlobalVector();
+        dtc_str = dtc_str.substr(dtc_str.find(".") + 1);
+        dtc_str = dtc_str.substr(0, dtc_str.find_last_not_of("0") + 1);
     }
-    return tGridVec_ptr;
+    else
+    {
+        dtc_str = dtc_str.substr(0, dtc_str.find_last_not_of("0") + 1);
+    }
+    std::string tc_str = to_string(tc);
+    if (tc < 1.)
+    {
+        tc_str = tc_str.substr(tc_str.find(".") + 1);
+        tc_str = tc_str.substr(0, tc_str.find_last_not_of("0") + 1);
+    }
+    else
+    {
+        tc_str = tc_str.substr(0, tc_str.find_last_not_of("0") + 1);
+    }
+
+    if constexpr (name == error)
+    {
+        return "para_errorC" + dtc_str + "tc" + tc_str + "I" + to_string(maxIter) + ".txt";
+    }
+    else if constexpr (name == functional)
+    {
+        return "para_functionalC" + dtc_str + "tc" + tc_str + "I" + to_string(maxIter) + ".txt";
+    }
+    else if constexpr (name == visualization)
+    {
+        return "u_dt" + dtc_str;
+    }
 }
 
 /**************************************************************************************************
@@ -1036,49 +1100,57 @@ Setting up parareal:
      intervalLength     - length of intervals
 **************************************************************************************************/
 
-template <int DIM>
-ParamFile parareal<DIM>::paramfile = ParamFile("fsi-3.param");
-template <int DIM>
-string parareal<DIM>::problemlabel = "fsi";
+template <int DIM, log_level logging>
+ParamFile parareal<DIM, logging>::paramfile = ParamFile("fsi-3.param");
+template <int DIM, log_level logging>
+string parareal<DIM, logging>::problemlabel = "fsi";
 
-template <int DIM>
-double parareal<DIM>::theta = parareal::getParam<double>("theta", "Equation");
-template <int DIM>
-double parareal<DIM>::coarse_theta = parareal::getParam<double>("thetacoarse", "Equation");
+template <int DIM, log_level logging>
+double parareal<DIM, logging>::fine_theta = parareal::getParam<double>("theta", "Equation");
+template <int DIM, log_level logging>
+double parareal<DIM, logging>::coarse_theta = parareal::getParam<double>("thetacoarse", "Equation");
 
-template <int DIM>
-unsigned int parareal<DIM>::noIntervals = static_cast<unsigned int>(setNoIntervals());
-template <int DIM>
-unsigned int parareal<DIM>::maxIterations = static_cast<unsigned int>(1);
-template <int DIM>
-double parareal<DIM>::start_time = parareal::getParam<double>("start_time", "Equation");
-template <int DIM>
-double parareal<DIM>::stop_time = parareal::getParam<double>("stop_time", "Equation");
+template <int DIM, log_level logging>
+unsigned int parareal<DIM, logging>::noIntervals = static_cast<unsigned int>(setNoIntervals());
+template <int DIM, log_level logging>
+unsigned int parareal<DIM, logging>::maxIterations = static_cast<unsigned int>(1);
+template <int DIM, log_level logging>
+double parareal<DIM, logging>::start_time = parareal::getParam<double>("start_time", "Equation");
+template <int DIM, log_level logging>
+double parareal<DIM, logging>::stop_time = parareal::getParam<double>("stop_time", "Equation");
 
-template <int DIM>
-double parareal<DIM>::intervalLength = static_cast<double>((stop_time - start_time) / noIntervals);
+template <int DIM, log_level logging>
+double parareal<DIM, logging>::intervalLength = static_cast<double>((stop_time - start_time)
+                                                                    / noIntervals);
 
-template <int DIM>
-double parareal<DIM>::dtfine = parareal::getParam<double>("dt", "Equation");
-template <int DIM>
-size_t parareal<DIM>::noFineSteps = static_cast<size_t>(intervalLength / dtfine);
+template <int DIM, log_level logging>
+double parareal<DIM, logging>::dtfine = parareal::getParam<double>("dt", "Equation");
+template <int DIM, log_level logging>
+size_t parareal<DIM, logging>::noFineSteps = static_cast<size_t>(intervalLength / dtfine);
 
-template <int DIM>
-double parareal<DIM>::dtcoarse = parareal::getParam<double>("dtcoarse", "Equation");
-template <int DIM>
-size_t parareal<DIM>::noCoarseSteps = static_cast<size_t>(parareal::intervalLength
-                                                          / parareal::dtcoarse);
-#if PDBG >= 1
-template <int DIM>
-double parareal<DIM>::coarse_exec_time = 0;
+template <int DIM, log_level logging>
+double parareal<DIM, logging>::dtcoarse = parareal::getParam<double>("dtcoarse", "Equation");
+template <int DIM, log_level logging>
+size_t parareal<DIM, logging>::noCoarseSteps = static_cast<size_t>(parareal::intervalLength
+                                                                   / parareal::dtcoarse);
+template <int DIM, log_level logging>
+double parareal<DIM, logging>::coarse_exec_time = 0;
 
-template <int DIM>
-double parareal<DIM>::fine_exec_time = 0;
-#endif
+template <int DIM, log_level logging>
+double parareal<DIM, logging>::fine_exec_time = 0;
 
-template <int DIM>
-std::vector<GlobalVector> parareal<DIM>::u_sol_arr = parareal::setTimeGridVector(noIntervals);
-template <int DIM>
-std::ofstream parareal<DIM>::func_log("functional_para.txt");
+template <int DIM, log_level logging>
+std::vector<GlobalVector> parareal<DIM, logging>::u_sol_arr = [] {
+    std::vector<GlobalVector> tGridVec_ptr(parareal::noIntervals);
+    tGridVec_ptr.reserve(parareal::noIntervals);
+    for (size_t i = 0; i < parareal::noIntervals; ++i)
+    {
+        tGridVec_ptr[i] = GlobalVector();
+    }
+    return tGridVec_ptr;
+}();
+
+template <int DIM, log_level logging>
+std::ofstream parareal<DIM, logging>::func_log;
 }  // namespace Gascoigne
 #endif  // PARAREAL_H

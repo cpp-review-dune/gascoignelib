@@ -52,7 +52,7 @@ writevtk    0
 
 
 niter       1
-
+threads 8
 etapatcher  0
 extrapolate yes
 
