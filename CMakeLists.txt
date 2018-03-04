@@ -1,33 +1,31 @@
 PROJECT(GASCOIGNESTD CXX C)
 
+#### CMAKE CONFIG
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
+cmake_policy(SET CMP0042 NEW)
 
 LIST(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/)
+
+
+#### Set Standard options
+# Relase
+SET(CMAKE_BUILD_TYPE "Release" CACHE STRING "Configuration type" FORCE)
+SET(CMAKE_CXX_FLAGS_RELEASE "-O3" CACHE STRING "Configuration type" FORCE)
+
 
 #
 # Configuration options:
 #
 OPTION(BUILD_SHARED_LIBS "Build shared libraries" ON)
-
 OPTION(MATRIX_DOUBLE_PRECISION "Matrix in double precision" OFF)
-
 OPTION(WITH_UMFPACK "Build with support for UMFPACK" OFF)
-
 OPTION(WITH_THREADS "Build with support for openmp" OFF)
-
 OPTION(WITH_RSTStopWatch "Use RSTStopWatch" OFF)
 
 
-#### Never use -DNDEBUG for Release
-OPTION(CMAKE_CXX_FLAGS_RELEASE "" "-O3")
-
 ### Directory Settings
 
-SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"  CACHE PATH "output path for libraries")
-
-
-
-
+SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/../lib"  CACHE PATH "output path for libraries")
 
 #
 # The name of the library:
@@ -37,21 +35,10 @@ SET(GASCOIGNE_LIBRARY GascoigneStd)
 #
 # Include directories:
 #
-SET(GASCOIGNE_INCLUDE_DIRS
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/Common
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/Discretization/Face
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/Discretization/Gls
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/Discretization/Lps
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/Discretization/Q1
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/Discretization/Q2
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/Discretization/Q4
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/Discretization/DG
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/Interface
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/LinAlg
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/Mesh
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/Problems
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/Solver
-  )
+SET (GASCOIGNE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+INCLUDE(CMakeLists_Includes.txt)
+
+
 
 #
 # Setup compiler flags and compile definitions:
@@ -127,5 +114,3 @@ ENDIF()
 SET(GASCOIGNE_LIBS "GascoigneStd${BUILD_ENDING}")
 
 ADD_SUBDIRECTORY(src)
-ADD_SUBDIRECTORY(Examples)
-

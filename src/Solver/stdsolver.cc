@@ -45,7 +45,6 @@
 #include "cfdblock3d.h"
 #include "fmatrixblock.h"
 #include "sparseblockilu.h"
-#include "sparse_umf.h"
 
 /*--------------------------------*/
 #ifdef __WITH_UMFPACK__
@@ -674,7 +673,7 @@ namespace Gascoigne
     {
       return new PointMatrix(ncomp, "node");
     }
-    else if ((matrixtype == "block") || (matrixtype == "sparseumf"))
+    else if (matrixtype == "block")
     {
       if (ncomp == 1)
         return new SparseBlockMatrix<FMatrixBlock<1>>;
@@ -772,32 +771,6 @@ namespace Gascoigne
         return new SparseBlockIlu<FMatrixBlock<4>>;
       else if (ncomp == 5)
         return new SparseBlockIlu<FMatrixBlock<5>>;
-      else
-      {
-        cerr << "No SparseBlockIlu for " << ncomp << "components." << endl;
-        abort();
-      }
-    }
-    else if (matrixtype == "sparseumf")
-    {
-
-#ifdef __WITH_THREADS__
-      if (__n_threads > 1)
-      {
-        return new ThreadIlu(ncomp);
-      }
-#endif
-
-      if (ncomp == 1)
-        return new SparseUmf<FMatrixBlock<1>>(GetMatrix());
-      else if (ncomp == 2)
-        return new SparseUmf<FMatrixBlock<2>>(GetMatrix());
-      else if (ncomp == 3)
-        return new SparseUmf<FMatrixBlock<3>>(GetMatrix());
-      else if (ncomp == 4)
-        return new SparseUmf<FMatrixBlock<4>>(GetMatrix());
-      else if (ncomp == 5)
-        return new SparseUmf<FMatrixBlock<5>>(GetMatrix());
       else
       {
         cerr << "No SparseBlockIlu for " << ncomp << "components." << endl;

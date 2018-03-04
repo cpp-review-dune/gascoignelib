@@ -1,9 +1,0 @@
-IF(COPY_PARAMFILES)
-  SET(_SRC ${GASCOIGNESTD_SOURCE_DIR}/Examples/Example4)
-  ADD_CUSTOM_TARGET(COPY ALL cp ${_SRC}/*.param ${_SRC}/*.inp .)
-ENDIF(COPY_PARAMFILES)
-
-ADD_EXECUTABLE("Gascoigne4${BUILD_ENDING}" main.cc)
-
-
-

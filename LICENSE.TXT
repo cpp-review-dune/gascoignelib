@@ -1,4 +1,4 @@
-			GASCOIGNE 3D
+###GASCOIGNE3D###
 
 Gascoigne 3D is published under the Gnu General Public License (GPL)
 in Version 3. Copyright of the Gascoigne 3D library is with the

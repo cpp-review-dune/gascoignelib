@@ -1,5 +1,5 @@
 ****************************************************
-For installation, we require:
+For installation, we require several third party packages
 ****************************************************
 
 a) cmake, see
@@ -21,30 +21,31 @@ http://www-users.cs.umn.edu/~karypis/metis/
 Architecture
 ****************************************************
 
-The copiler known to work is gcc3.x.x
+We require c++ version 11 compilers
 
 
 ****************************************************
-Installation
+Quick Installation
 ****************************************************
 
-1.) Copy the file "gascoignerc_example" to ${HOME}/.gascoignerc and 
-set the variable "GASCOIGNE_STD" to point to the location of GascoigneStd.
-The other variables are optional.
+1.) In the Gascoigne directory call the bash script
 
-2) You can compile in the directory GascoigneStd, but it is a good idea 
-to do compile in an empty dir which we call <GAS_STD_OBJ> in the following,
-<GAS_STD> stands for GascoigneStd.
+    sh ./install_gascoigne.sh
 
-3) cd <GAS_STD_OBJ>
+****************************************************
+Custom Installation
+****************************************************
 
-4) ccmake <GAS_STD>
-   Follow the instructions of ccmake, e.g. press "c" for configure,
-   Validate the path for external libraries metis and umfpack.
-   A newer version of umfpack needs the additional library libamd.a.
-   In this case, choose UMFPACK_WITH_AMD ON.
-   Press "c" several times, until all "*" disappear.
-   Press "g" for generate all Makefiles
+Let <GAS_DIR> be the main directory of Gascoigne 3d
 
-5) make
+1.) Create a build directory, e.g. and in this directory configure
+Gascoigne by
+
+	  mkdir build
+	  cd build
+	  ccmake <GAS_DIR>
+
+2.) Compile Gascoigne. In the build directory
+
+    	    make
 
