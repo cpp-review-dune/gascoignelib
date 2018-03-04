@@ -7,7 +7,7 @@ CMakeCache.txt
 CMakeSystem.cmake
 CMakeTmp
 Makefile
-cmake*
+#cmake*
 *.kdev4
 
 # ignore all Results in Examples directory
@@ -16,5 +16,5 @@ cmake*
 # ./doc directory
 /doc/gascoigne.tag
 /doc/html/
-/doc/latex/
+]/doc/latex/
 /doc/taginformation.cmake

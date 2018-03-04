@@ -12,16 +12,10 @@ LIST(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/)
 SET(CMAKE_BUILD_TYPE "Release" CACHE STRING "Configuration type" FORCE)
 SET(CMAKE_CXX_FLAGS_RELEASE "-O3" CACHE STRING "Configuration type" FORCE)
 
-
 #
 # Configuration options:
 #
-OPTION(BUILD_SHARED_LIBS "Build shared libraries" ON)
-OPTION(MATRIX_DOUBLE_PRECISION "Matrix in double precision" OFF)
-OPTION(WITH_UMFPACK "Build with support for UMFPACK" OFF)
-OPTION(WITH_THREADS "Build with support for openmp" OFF)
-OPTION(WITH_RSTStopWatch "Use RSTStopWatch" OFF)
-
+INCLUDE(CMakeLists_Options.txt)
 
 ### Directory Settings
 

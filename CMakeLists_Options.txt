@@ -1,0 +1,9 @@
+#### Standard options for building Gascoigne
+
+OPTION(BUILD_SHARED_LIBS  	   "Build shared libraries"		ON)
+OPTION(MATRIX_DOUBLE_PRECISION 	   "Matrix in double precision" 	ON)
+OPTION(WITH_UMFPACK 		   "Build with support for UMFPACK" 	ON)
+OPTION(WITH_THREADS 		   "Build with support for openmp" 	OFF)
+OPTION(WITH_RSTStopWatch 	   "Use RSTStopWatch"  	   		OFF)
+
+
