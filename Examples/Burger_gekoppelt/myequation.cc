@@ -74,8 +74,8 @@ void MyEquation::Form(VectorIterator b,
   //Zeitkopplung
  //v(n)-v(n-1) 
   
-   Zeit(b,1.0, (*oldh), (*h), Ug,      N,1-CHIGAUSS ,1.0);
-   Zeit(b,-1.0, (*oldh), (*h), Ug_old, N,1-CHIGAUSS ,1.0);
+  Zeit(b,1.0, (*oldh), (*h), Ug,      N,1-CHIGAUSS ,1.0);
+  Zeit(b,-1.0, (*oldh), (*h), Ug_old, N,1-CHIGAUSS ,1.0);
  
 
 }
@@ -131,7 +131,7 @@ void MyEquation::Matrix(EntryMatrix &A,
   A(1,1)+=DT*CHIGAUSS *(Ug[0].m()*M.x()+M.m()*Ug[1].y()+Ug[1].m()*M.y())*N.m();
   A(1,0)+=DT*CHIGAUSS*(M.m()*Ug[1].x())*N.m();
   
-  Zeit_Matrix(A, CHIGAUSS, (*oldh), (*h), Ug, M,N, 1-CHIGAUSS,DTM1);
+  // Zeit_Matrix(A, CHIGAUSS, (*oldh), (*h), Ug, M,N, 1-CHIGAUSS,DTM1);
 
   
   
@@ -334,8 +334,8 @@ void MyTransportEquation::Form(VectorIterator b,
   b[0] += (U[0].m() -(*oldh)[0].m()) * N.m();
   b[1] += (U[1].m() -(*oldh)[1].m()) * N.m();  
   // ganz einfache stabilisierung...
-  b[0] += 0.1*DT * (U[0].x()*N.x() + U[0].y()*N.y());
-  b[1] += 0.1*DT * (U[1].x()*N.x() + U[1].y()*N.y());
+  b[0] += 0.01*DT * (U[0].x()*N.x() + U[0].y()*N.y());
+  b[1] += 0.01*DT * (U[1].x()*N.x() + U[1].y()*N.y());
 
 
   // //// div v*h
@@ -351,7 +351,7 @@ void MyTransportEquation::Form(VectorIterator b,
   b[0]+=DT/2.*((*V)[0].m()*U[0].x()      + (*V)[1].m()*U[0].y()      )*N.m();
   b[0]+=DT/2.*((*V)[0].m()*(*oldh)[0].x()+ (*V)[1].m()*(*oldh)[0].y())*N.m();
 
-  //2te Komponente
+  
   b[1]+=DT/2.*((*V)[0].m()*U[1].x()+(*V)[1].m()*U[1].y())*N.m();
   b[1]+=DT/2.*((*V)[0].m()*(*oldh)[1].x()+(*V)[1].m()*(*oldh)[1].y())*N.m(); 
 
@@ -369,8 +369,8 @@ void MyTransportEquation::Matrix(EntryMatrix &A,
   A(1,1) += M.m() * N.m() ;
 
 
-  A(0,0) += 0.1*DT * (M.x()*N.x() + M.y()*N.y());
-  A(1,1) += 0.1*DT * (M.x()*N.x() + M.y()*N.y());
+  A(0,0) += 0.01*DT * (M.x()*N.x() + M.y()*N.y());
+  A(1,1) += 0.01*DT * (M.x()*N.x() + M.y()*N.y());
 
   
 
@@ -560,15 +560,15 @@ void MyKoppelEquation::Form(VectorIterator b,
   b[0] += (U[0].m() -(*oldh)[0].m()) * N.m();
   b[1] += (U[1].m() -(*oldh)[1].m()) * N.m();  
   // ganz einfache stabilisierung...
-  b[0] += 0.1*DT * (U[0].x()*N.x() + U[0].y()*N.y());
-  b[1] += 0.1*DT * (U[1].x()*N.x() + U[1].y()*N.y());
+  b[0] += 0.01*DT * (U[0].x()*N.x() + U[0].y()*N.y());
+  b[1] += 0.01*DT * (U[1].x()*N.x() + U[1].y()*N.y());
 
 
-   Nonlinear(b, 0.5+0.5/sqrt(3.0), (*u1), (*u2), U, N,        0.5-0.5/sqrt(3.0),DTM1);
-   Nonlinear(b, 0.5-0.5/sqrt(3.0), (*u1), (*u2), U, N,        0.5+0.5/sqrt(3.0),DTM1);
+   Nonlinear(b, 0.5+0.5/sqrt(3.0), (*u1), (*u2), U, N,        0.5-0.5/sqrt(3.0),DT);
+   Nonlinear(b, 0.5-0.5/sqrt(3.0), (*u1), (*u2), U, N,        0.5+0.5/sqrt(3.0),DT);
    
-   Nonlinear(b, 0.5+0.5/sqrt(3.0), (*u1), (*u2), (*oldh), N,        0.5+0.5/sqrt(3.0),DTM1);
-   Nonlinear(b, 0.5-0.5/sqrt(3.0), (*u1), (*u2), (*oldh), N,        0.5-0.5/sqrt(3.0),DTM1);
+   Nonlinear(b, 0.5+0.5/sqrt(3.0), (*u1), (*u2), (*oldh), N,        0.5+0.5/sqrt(3.0),DT);
+   Nonlinear(b, 0.5-0.5/sqrt(3.0), (*u1), (*u2), (*oldh), N,        0.5-0.5/sqrt(3.0),DT);
   
  
 

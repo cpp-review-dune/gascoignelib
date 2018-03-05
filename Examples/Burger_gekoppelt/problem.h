@@ -88,17 +88,16 @@ namespace Gascoigne
 
     void operator()(VectorIterator b, const TestFunction& N, const Vertex2d& v) const 
     {
-	   //if(v.x()>0.0 && v.x()<0.5 &&v.y()>0.0 && v.y()<0.5) 
-	     //{
+	   
                    double x=v.x()-0.5;
              double y =v.y()-0.5;
 
-	     if(TIME>3.0 && TIME<3.5)
+	     if(TIME>3.0 && TIME<4.0)
 	       {
-	 //      b[0]+= N.x()*exp(-x*x-y*y);
-	 //      b[1]+=-N.y()*exp(-x*x-y*y);
+	      b[0]+= N.x()*exp(-x*x-y*y);
+	      b[1]+=-N.y()*exp(-x*x-y*y);
 	       }
-	  //   }
+	
 	}
   };
   
@@ -151,8 +150,8 @@ namespace Gascoigne
       double x= v.x()+0.125;
       double y =v.y()+0.125;
       
-      b[0]=0.01*exp(-x*x-y*y);
-      b[1]=0.01*exp(-x*x-y*y);
+      b[0]=0.1*exp(-x*x-y*y);
+      b[1]=0.1*exp(-x*x-y*y);
     }
     
   };
@@ -195,8 +194,8 @@ namespace Gascoigne
 	     if(TIME>3.0 && TIME<3.5)
          
          {
-        b[0]+= N.m()*exp(-x*x-y*y);
-	    b[1]+= 0.0*N.m();
+	   //  b[0]+= N.m()*exp(-x*x-y*y);
+	   //    b[1]+= 0.0*N.m();
          }
         
         }

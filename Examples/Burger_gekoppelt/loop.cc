@@ -611,9 +611,9 @@ class DWRTransport : public virtual DomainRightHandSide
 
 
   void Loop::EstimateDWRprim(DoubleVector& eta, int m, const GlobalVector& Pu_kM, vector<GlobalVector>& U,vector<GlobalVector>& H,
-			     GlobalVector& Z,VectorInterface& u, VectorInterface& oldu,VectorInterface& z,VectorInterface& h,VectorInterface& oldh,VectorInterface& f,vector<double>&T)
+			     GlobalVector& Z,GlobalVector& W,VectorInterface& u, VectorInterface& oldu,VectorInterface& z,VectorInterface& h,VectorInterface& oldh,VectorInterface& f,vector<double>&T)
   {
-
+    
     GetMultiLevelSolver()->SetProblem("Koppel");
 
     PRIMALPROBLEM = false;
@@ -719,29 +719,37 @@ class DWRTransport : public virtual DomainRightHandSide
     //////////////////////////  Auswerten, kein Filtern
     MyS->GetDiscretization()->HNAverage(Z);
     GlobalVector& F = MyS->GetGV(f);
-    assert(eta.size() == Z.n());
-    for(int i=0; i<Z.n(); i++)
+    assert(eta.size() == W.n());
+
+    
+      for(int i=0; i<W.n(); i++)
       {
-	for (int c=0; c<Z.ncomp(); c++)
-	  {
-	    eta[i] += F(i,c)*Z(i,c);
-	  }
-      }
+	eta[i] += F(i,0)*W(i,0);
+      } 
+    
+	
+      
     
     cout<<eta.sum()<<"ETA1_T "<<endl;    
 
     
-
+    
     GetMultiLevelSolver()->SetProblem("LaplaceT");
-    PRIMALPROBLEM = true;
-    MyS->SetDiscretization(*saveD);
 
+
+    PRIMALPROBLEM = true;
+
+
+    I_m = (T[m]-T[m-1])/DT+1.e-10;
+
+     SAVETIME = TIME;
 
 
     ////////////////////////// Rechte Seite mit Gauss-Regel; TT ist mitte der Intervalle
     // Std-Diskretisierung
 
     MyS->Zero(f);
+ start=T[m-1]/DT+1.e-10;
 
     I_m = (T[m]-T[m-1])/DT+1.e-10;
     SAVETIME = TIME;
@@ -814,8 +822,7 @@ class DWRTransport : public virtual DomainRightHandSide
 
       }
    
-    
-    MyS->SetDiscretization(DWRFEM,true);
+    MyS->SetDiscretization(DWRFEM1,true);
 
     for (int l=1;l<=I_m; l++)
       {
@@ -869,12 +876,12 @@ class DWRTransport : public virtual DomainRightHandSide
 	  }
       }
       
-    
+  
     
     
 
     cout<<eta.sum()<<"ETA1_L "<<endl;
-
+    
   }
 
   void Loop::EstimateDWRdual(DoubleVector& eta, int m, vector<GlobalVector>&Pu_kM, vector<GlobalVector>&Htotal,vector<GlobalVector>&Wtotal, GlobalVector& Pu_M,
@@ -891,7 +898,7 @@ class DWRTransport : public virtual DomainRightHandSide
     FIRSTDUAL = (m==_M); 
     LASTDUAL  = (m==0);
 
-
+   
     GetMultiLevelSolver()->SetProblem("Transport_Dual");
 
     StdSolver* MyS = dynamic_cast<StdSolver*> (GetMultiLevelSolver()->GetSolver());
@@ -1164,7 +1171,7 @@ class DWRTransport : public virtual DomainRightHandSide
 
 
 
-
+   
 
 
     //_____________________________________________________________________________________________//
@@ -1173,6 +1180,8 @@ class DWRTransport : public virtual DomainRightHandSide
     GetMultiLevelSolver()->SetProblem("dp");
 
     PRIMALPROBLEM = false;
+      
+
 
 
     GetMultiLevelSolver()->GetSolver()->Zero(f);
@@ -1852,8 +1861,7 @@ class DWRTransport : public virtual DomainRightHandSide
     
   }
 
-  void Loop::EstimateNonMeanU(DoubleVector& eta, int m,
-			      GlobalVector& Pu, GlobalVector& Pu_k,  vector<GlobalVector>& U, vector<GlobalVector>& U_2, GlobalVector& Z,
+void Loop::EstimateNonMeanU(DoubleVector& eta, int m,  vector<GlobalVector>& U , GlobalVector& Z,
 			      VectorInterface& u, VectorInterface& oldu,VectorInterface& z,VectorInterface& f, int start, int stopp)
 
   {
@@ -1878,30 +1886,18 @@ class DWRTransport : public virtual DomainRightHandSide
 
     for (int l=0;l<I_m; ++l)
       {
-	// MyS->GetGV(u) = U[(m-1)*I_m + l];
 	MyS->GetGV(u).equ((1.0-gx), U[start+ l],gx,  U[start + l+1]);
-	// MyS->GetGV(oldu).equ(1,Pu_k,-1*(1.0-gx), U[(m-1)*I_m + l],-gx,  U[(m-1)*I_m + l+1]);
 	MyS->AddNodeVector("U",u);       
-	//  MyS->AddNodeVector("W",oldu);
-	//  TIME = DT * ((m-1)*I_m + l) + 0.5 * DT -  0.5*sqrt(1.0/3.0) * DT;
 	MyS->GetDiscretization()->Rhs(MyS->GetGV(f), NoLinM, -DT*0.5);
-	// MyS->DeleteNodeVector("Pu");
-
-    
 	MyS->DeleteNodeVector("U");
     
 	MyS->GetGV(u).equ(gx, U[start + l],(1.0-gx),  U[start + l+1]);
-	// MyS->GetGV(oldu).equ(1,Pu_k,-gx, U[(m-1)*I_m + l],-1*(1.0-gx),  U[(m-1)*I_m + l+1]);
 	MyS->AddNodeVector("U",u);       
-	//   MyS->AddNodeVector("W",oldu);
-	//  TIME = DT * ((m-1)*I_m + l) + 0.5 * DT +  0.5*sqrt(1.0/3.0) * DT;
+	
 	MyS->GetDiscretization()->Rhs(MyS->GetGV(f), NoLinM, -DT*0.5);
 	MyS->DeleteNodeVector("U");
-	//   MyS->DeleteNodeVector("W");
 
       }
-
-
 
 
     MyS->HNDistribute(f);
@@ -1938,23 +1934,15 @@ class DWRTransport : public virtual DomainRightHandSide
     for (int l=0;l<I_m; ++l)
       {
 	MyS->GetGV(u).equ((1.0-gx), U[start + l],gx,  U[start + l+1]);
-	// MyS->GetGV(oldu).equ(1,Pu_k,-1*(1.0-gx), U[(m-1)*I_m + l],-gx,  U[(m-1)*I_m + l+1]);
 	MyS->AddNodeVector("U",u);       
-	//MyS->AddNodeVector("W",oldu);
-    
-	// TIME = DT * ((m-1)*I_m + l) + 0.5 * DT -  0.5*sqrt(1.0/3.0) * DT;
 	MyS->GetDiscretization()->Rhs(MyS->GetGV(f), NoLinM, DT*0.5);
 	MyS->DeleteNodeVector("U");
-	//MyS->DeleteNodeVector("W");
 
 	MyS->GetGV(u).equ(gx, U[start + l],(1.0-gx),  U[start + l+1]);
-	//MyS->GetGV(oldu).equ(1,Pu_k,-gx, U[(m-1)*I_m + l],-1*(1.0-gx),  U[(m-1)*I_m + l+1]);
 	MyS->AddNodeVector("U",u);       
-	// MyS->AddNodeVector("W",oldu);
-	//  TIME = DT * ((m-1)*I_m + l) + 0.5 * DT +  0.5*sqrt(1.0/3.0) * DT;
 	MyS->GetDiscretization()->Rhs(MyS->GetGV(f), NoLinM, DT*0.5);
 	MyS->DeleteNodeVector("U");
-	//  MyS->DeleteNodeVector("W");
+
 
       }
 
@@ -1965,7 +1953,6 @@ class DWRTransport : public virtual DomainRightHandSide
     const GlobalVector& F1 = MyS->GetGV(f);
 
     MyS->GetDiscretization()->HNAverage(Z);
-    MyS->GetDiscretization()->HNAverage(Pu);
 
 
     // Auswerten, kein Filtern
@@ -1976,7 +1963,10 @@ class DWRTransport : public virtual DomainRightHandSide
 	    eta[i] += F1(i,c)*Z(i,c);
 	  }  
       }
+
+    eta= MyS->GetGV(z);
     MyS->SetDiscretization(*saveD);
+       MyS->Visu("Results/eta5",z,m);
 
   }
 
@@ -2050,21 +2040,15 @@ class DWRTransport : public virtual DomainRightHandSide
   
     MyS->GetDiscretization()->HNAverage(W);
     
-     for(int i=0; i<Z.n(); i++)
-      {
-	for (int c=0; c<Z.ncomp(); c++)
-	  {
-	    eta[i] += F(i,c)*Z(i,c);
-	  }  
-      }
+    
     
     // Auswerten, kein Filtern
     // NUR die erste Komponenten berechnen.
-    /*for(int i=0; i<W.n(); i++)
+    for(int i=0; i<W.n(); i++)
       {
 	eta[i] += F(i,0)*W(i,0);
       } 
-      */
+      
 
   }
 
@@ -2219,7 +2203,7 @@ class DWRTransport : public virtual DomainRightHandSide
 	//  eta11.zero(),eta2.zero(),eta22.zero(),eta23.zero(),eta3.zero(),eta4.zero(),eta5.zero();
 
 	///////////// Teil 1 - DWR-Anteil     
-	EstimateDWRprim(eta1, m, Pu_kM[m],Utotal,Htotal,Ztotal[m], u,oldu,z,h,oldh,f,T);
+	EstimateDWRprim(eta1, m, Pu_kM[m],Utotal,Htotal,Ztotal[m],Wtotal[m], u,oldu,z,h,oldh,f,T);
 	cout<<eta1.sum()<<"ETA1 "<<endl;
     
     
@@ -2234,31 +2218,31 @@ class DWRTransport : public virtual DomainRightHandSide
 	int stoppi=T[m]/DT+1.e-10;
 
     
-	EstimateAvg(eta2, Pu_M[m], Pu_M[m-1],  Ph_M[m], Ph_M[m-1], Utotal[stoppi], Utotal[start], Ztotal[m],Wtotal[m], Htotal[stoppi], Htotal[start],u,oldu,z,h,f);
+		EstimateAvg(eta2, Pu_M[m], Pu_M[m-1],  Ph_M[m], Ph_M[m-1], Utotal[stoppi], Utotal[start], Ztotal[m],Wtotal[m], Htotal[stoppi], Htotal[start],u,oldu,z,h,f);
 	cout<<eta2.sum()<<"ETA2 "<<endl;
 
-	EstimateRest(eta3, m,Pu_M[m], Pu_M[m-1],Utotal[stoppi], Utotal[start], Ztotal[m],Wtotal[m], Htotal[stoppi],Htotal[start],Ph_M[m], Ph_M[m-1],u, oldu, z,h,oldh,f);
+		EstimateRest(eta3, m,Pu_M[m], Pu_M[m-1],Utotal[stoppi], Utotal[start], Ztotal[m],Wtotal[m], Htotal[stoppi],Htotal[start],Ph_M[m], Ph_M[m-1],u, oldu, z,h,oldh,f);
 	cout<<eta3.sum()<<"ETA3 "<<endl;
 
 
 	// Nichtlinearitaet
 
-        EstimateNonU(eta22,Utotal, Ztotal[m], u,oldu,z,f,T[m-1]/DT+1.e-10,T[m]/DT+1.e-10);
+	    EstimateNonU(eta22,Utotal, Ztotal[m], u,oldu,z,f,T[m-1]/DT+1.e-10,T[m]/DT+1.e-10);
 	cout<<eta22.sum()<<"ETA22 "<<endl;
 
-        EstimateNonPu(eta23, Pu_kM, Ztotal[m], u,oldu,z,f,m,DT_M[m]);
+	   EstimateNonPu(eta23, Pu_kM, Ztotal[m], u,oldu,z,f,m,DT_M[m]);
 	cout<<eta23.sum()<<"ETA23 "<<endl;
 
-	EstimateNonMeanU(eta5, m, Pu_M[m],Pu_kM[m],Utotal,U_2, Ztotal[m], u,oldu,z,f,T[m-1]/DT+1.e-10,T[m]/DT+1.e-10);
+		EstimateNonMeanU(eta5, m, Utotal, Ztotal[m], u,oldu,z,f,T[m-1]/DT+1.e-10,T[m]/DT+1.e-10);
 	cout<<eta5.sum()<<"ETA5"<<endl;
 
 	//Teil 4 Fehler vom geittelten Problem zu Pu
-	EstimateNonMeanPu(eta4, m, Pu_M[m],Pu_kM,Utotal, Ztotal[m], u,oldu,z,f,DT_M[m]);
+		EstimateNonMeanPu(eta4, m, Pu_M[m],Pu_kM,Utotal, Ztotal[m], u,oldu,z,f,DT_M[m]);
 	cout<<eta4.sum()<<"ETA4"<<endl;
 
 
    
-	EstimateKonsistenz(eta6, m, Utotal,Htotal, Wtotal[m],Ztotal[m],  u,oldu,h,z,f,T[m-1]/DT+1.e-10,T[m]/DT+1.e-10);
+		EstimateKonsistenz(eta6, m, Utotal,Htotal, Wtotal[m],Ztotal[m],  u,oldu,h,z,f,T[m-1]/DT+1.e-10,T[m]/DT+1.e-10);
 	cout<<eta6.sum()<<"eta6"<<endl<<endl;
 	//eta_time[m-1]=0.5*eta1.sum()+0.5*eta11.sum()+eta2.sum()+eta22.sum()-eta23.sum()+eta3.sum()+eta4.sum()+eta5.sum();
     
@@ -2423,31 +2407,50 @@ class DWRTransport : public virtual DomainRightHandSide
     
 	vector<double> DT_M(_M+1);
 	vector<double> T(_M+1);
-
+	/*		 
 	T[0]=0;
 	T[1]=1.0;
-	T[2]=3.0;
-	T[3]=3.5;
+	T[2]=2.0;
+	T[3]=3.0;
 	T[4]=4.0;
-
-
+	
+	/*
   /*
    T[0]=0;
    T[1]=3.0;
    T[2]=4.0;
 */
-  /*
+	/*
     T[0]=0;
     T[1]=0.5;
     T[2]=1.0;
-    T[3]=1.75;
+    T[3]=1.5;
     T[4]=2.0;
-	T[5]=2.75;
+    T[5]=2.5;
     T[6]=3.0;
-    T[7]=3.25;
-	T[8]=4.0;
+    T[7]=3.5;
+    T[8]=4.0;
+
+	*/
   
-  */
+    T[0]=0;
+    T[1]=0.25;
+    T[2]=0.5;
+    T[3]=0.75;
+    T[4]=1.0;
+    T[5]=1.25;
+    T[6]=1.5;
+    T[7]=1.75;
+    T[8]=2.0;
+    T[9]=2.25;
+    T[10]=2.5;
+    T[11]=2.75;
+    T[12]=3.0;
+    T[13]=3.25;
+    T[14]=3.5;
+    T[15]=3.75;
+    T[16]=4.0;
+    
 
 	double checki=0.0;
 	for( int k=1;k<=_M;k++)
@@ -2492,12 +2495,12 @@ class DWRTransport : public virtual DomainRightHandSide
 	vector<double> eta_time(_M,0.0);
 
 	EstimateDualError(eta,eta0,eta1,eta11,eta2,eta22,eta23,eta3,eta4,eta5,eta6,eta7, Utotal,Htotal,Wtotal,U_2, Ztotal, Pu_kM, Pu_M,Ph_M,u,oldu,newu,dtu3,z,oldz,h,oldh, w,oldw,f,DT_M,T,eta_time);
-   
+   	cout<<eta1.sum()<<"ETA1 "<<eta.sum()<<"ETA "<<eta0.sum()<<"ETA0 "<<endl;
 
 	this->EtaVisu("Results/eta",ADAITER,eta);
 
 	stringstream str;
-	str << "huhu001.txt";
+	str << "j2_neu.txt";
 	ofstream OUTF(str.str().c_str(),ios::app);
 	OUTF.precision(10);
 

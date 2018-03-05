@@ -86,7 +86,7 @@ string SolveDualSingle(vector<GlobalVector>& Ztotal,vector<GlobalVector>& Wtotal
  
   
     void EstimateDWRprim(DoubleVector& eta, int m, const GlobalVector& Pu_kM,  vector<GlobalVector>& U,vector<GlobalVector>& H,
-			 GlobalVector& Z,VectorInterface& u, VectorInterface& oldu,VectorInterface& h,VectorInterface& oldh,VectorInterface& z,VectorInterface& f,vector<double>& T);
+			 GlobalVector& Z, GlobalVector& W,VectorInterface& u, VectorInterface& oldu,VectorInterface& h,VectorInterface& oldh,VectorInterface& z,VectorInterface& f,vector<double>& T);
 
      void EstimateDWRdual(DoubleVector& eta, int m, vector<GlobalVector>& Pu_kM,vector<GlobalVector>&Htotal,vector<GlobalVector>&Wtotal, GlobalVector& Pu_M,
 			  const GlobalVector& OLDZ, GlobalVector& Z,VectorInterface& u, VectorInterface& oldu,VectorInterface& newu,VectorInterface& dtu3,VectorInterface& z,VectorInterface& oldz,VectorInterface& h,VectorInterface& oldh,VectorInterface& w,VectorInterface& oldw,VectorInterface& f, vector<double>& DT_M,vector<double>& T);
@@ -114,7 +114,7 @@ void EstimateAvg(DoubleVector& eta, GlobalVector& Pu, const GlobalVector &Puold,
 		       VectorInterface& u, VectorInterface& oldu,VectorInterface& z,VectorInterface& f,int m, double DTM_PU);
 
     void EstimateNonMeanU(DoubleVector& eta, int m,
-		    GlobalVector& Pu, GlobalVector& Pu_k,vector<GlobalVector>& U,vector<GlobalVector>& U_2, GlobalVector& Z,
+		   vector<GlobalVector>& U, GlobalVector& Z,
 		 VectorInterface& u, VectorInterface& oldu,VectorInterface& z,VectorInterface& f,int start, int stopp);
     
     void EstimateNonMeanPu(DoubleVector& eta,int m,
