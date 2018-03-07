@@ -1,4 +1,6 @@
-namespace Gascoigne::style
+namespace Gascoigne
+{
+namespace style
 {
 /*! \brief Some escape sequences for output styling
  * Normally works on linux machines, won't work on windows machines. Terminal needs to understand
@@ -28,4 +30,5 @@ const char* const ft = "\033[2m";   //!< faint
 const char* const i  = "\033[7m";   //!< inverse
 const char* const p  = "\033[27m";  //!< positive
 const char* const n  = "\033[0m";   //!< normal
-}  // namespace Gascoigne::style
+}  // namespace style
+}  // namespace Gascoigne
