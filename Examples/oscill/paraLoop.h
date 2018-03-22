@@ -117,6 +117,7 @@ public:
      * \param theta \f$\theta\f$ for fine time stepping
      * \param dtfine fine time step size
      */
+
     static double runPara(const int maxIterations   = 1,
                           const double coarse_theta = getParam<double>("thetacoarse", "Equation"),
                           const double dtcoarse     = getParam<double>("dtcoarse", "Equation"),
@@ -133,6 +134,7 @@ public:
      * that will be tested against sequential execution \param coarse_theta_vec Vector with
      * coarse theta values for step sizes specified by dtcoarse_vec
      */
+
     static void compareParaSerial(const unsigned int maxIterations,
                                   const std::vector<double>& dtcoarse_vec,
                                   const std::vector<double>& coarse_theta_vec);
@@ -172,6 +174,7 @@ private:
      * This is the method that is called after runPara has set all parameters for
      * parareal.
      */
+
     static double paraAlgo();
 
     /*!
