@@ -25,7 +25,7 @@ int main(int argc, char* argv[])
     }
     else
     {
-        parareal<2, results>::compareParaSerial(maxIterations, dtcoarse, coarse_theta);
+        parareal<2, log_level::results>::compareParaSerial(maxIterations, dtcoarse, coarse_theta);
     }
 }
 
