@@ -18,8 +18,8 @@ dt		0.001
 dtcoarse 0.01
 theta		0.51
 thetacoarse 0.52
-implicit_coarse 2
-implicit_fine 2
+implicit_coarse 0
+implicit_fine 0
 
 start_time	0.0
 stop_time	5.04
