@@ -1,0 +1,114 @@
+//Block BoundaryManager
+
+dirichlet   6 1  0  4  2 80 81
+
+dirichletcomp      0    6   1 2 3 4 5 6  // inflow
+dirichletcomp      1    1         4      // outlow
+
+dirichletcomp      80   6   1 2 3 4 5 6  // obstacle
+dirichletcomp      81   6   1 2 3 4 5 6  // obstacle small
+
+dirichletcomp      4    4   1 2 3     6  // front/back
+dirichletcomp      2    4   1 2 3   5    // bottom/top
+
+
+
+
+equation 2 1 0
+
+functional 2 80 81
+
+//Block Equation
+
+damp 0.0
+dt	0.005
+theta	0.505
+start_time	10.0
+stop_time	14.0
+
+solid_type	benchmark3d
+lps		0.05
+extend		0.01
+
+nu_f		1.e-3
+
+mu_s		2.0e6
+lambda_s	8.0e6
+
+rho_f		1000.0
+rho_s		1000.0
+
+vmean		1.0
+
+
+
+//Block Loop
+
+
+initialrefine	0
+writebupgup 0
+writevtk    0
+
+initial file
+reload start.bup
+
+//initial boundary
+
+niter       20
+
+etapatcher  0
+extrapolate yes
+
+estimator drag
+
+refiner global
+
+
+
+//Block Mesh
+
+
+etapatcher 0
+dimension   3
+prerefine   2
+gridname    fsi-3d.inp
+
+
+
+
+//Block MultiLevelSolver
+
+
+linear_pstep 0
+nonlinear_pstep	0
+linearsolve     mumps
+nonlinear_rho	0.1
+nonlinear_maxiter	20
+nonlinear_tol	1.e-9
+nonlinear_globaltol	1.e-9
+linear_tol	1.e-3
+linear_maxiter	2
+
+
+//Block Solver
+
+omega	1.0
+
+matrixtype	sparse
+
+// Q1: delta_lps_p = 0.5, Q2: delta_lps_p = 0.1
+
+iterpre                 2
+iterpost                2
+iterexact               8
+
+discname       AleQ2Lps
+
+ndirect	      5
+
+ilum 7 0.01 0.001 0.001 0.001 0. 0. 0.
+
+//Block Visualization
+showoutput 0
+
+//Block Nix
