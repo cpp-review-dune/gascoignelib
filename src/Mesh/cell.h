@@ -26,6 +26,7 @@
 #define __cell_h
 
 #include "gascoigne.h"
+#include "vertex.h"
 #include "stlio.h"
 #include <array>
 #include <string>
@@ -45,7 +46,8 @@ namespace Gascoigne
   protected:
     /* Data */
 
-    int qlevel, qfather,mat;
+    int qlevel, qfather,mat,mat_Vanka;
+    std::array<Vertex3d,3> bas_Vanka;
     IntVector qchilds;
     std::array<int, E> qedges; /* edge numbers */
 
@@ -57,6 +59,7 @@ namespace Gascoigne
         , qlevel(0)
         , qfather(-1)
         ,    mat(0)
+        , mat_Vanka(0)
     {
       qedges.fill(-1);
     }
@@ -66,6 +69,8 @@ namespace Gascoigne
         , qlevel(c.level())
         , qfather(c.father())
         , mat(c.material())
+        , mat_Vanka(c.material_Vanka())
+        , bas_Vanka(c.basis_Vanka())
         , qchilds(c.childs())
         , qedges(c.edges())
     {
@@ -76,6 +81,7 @@ namespace Gascoigne
         , qlevel(l)
         , qfather(f)
         , mat(0) 
+        , mat_Vanka(0)
     {
       this->fill(-17);
     }
@@ -181,6 +187,15 @@ namespace Gascoigne
     
     int  material()     const { return mat; }
     int& material()           { return mat; }   
+    
+
+    int  material_Vanka()     const { return mat_Vanka; }
+    int& material_Vanka()           { return mat_Vanka; }   
+        
+    std::array<Vertex3d,3>  basis_Vanka()     const { return bas_Vanka; }
+    std::array<Vertex3d,3>& basis_Vanka()           { return bas_Vanka; }   
+    
+    
     /* Functions */
 
     template <int M>

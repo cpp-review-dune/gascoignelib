@@ -148,7 +148,47 @@ void SimpleMatrix::vmult_transpose(GlobalVector& y, const GlobalVector& x, doubl
       px++;
     }
 }
+/* ----------------------------------------- */
 
+void SimpleMatrix::vmult(DoubleVector& y, const DoubleVector& x, double d) const
+{
+  int n = ST.n();
+  assert(n==y.size());
+  assert(n==x.size());
+
+  DoubleVector::iterator py=y.begin();
+  for(int i=0;i<n;i++)
+    {
+      for(int pos=ST.start(i);pos<ST.stop(i);pos++)
+        {
+          int j = ST.col(pos);
+          // y[i] += d*value[pos]*x[j];
+          *py += d*value[pos]*x[j];
+        }
+      py++;
+    }
+}
+
+/* ----------------------------------------- */
+
+void SimpleMatrix::vmult_transpose(DoubleVector& y, const DoubleVector& x, double d) const
+{
+  int n = ST.n();
+  assert(n==y.size());
+  assert(n==x.size());
+
+  DoubleVector::const_iterator px=x.begin();
+  for(int i=0;i<n;i++)
+    {
+      for(int pos=ST.start(i);pos<ST.stop(i);pos++)
+	{
+	  int j = ST.col(pos);
+// 	  y[j] += d*value[pos]*x[i];
+	  y[j] += d*value[pos] * *px;
+	}
+      px++;
+    }
+}
 /*-----------------------------------------*/
 
 void SimpleMatrix::vmult_comp(int c, int d, GlobalVector& y, const GlobalVector& x, double s) const

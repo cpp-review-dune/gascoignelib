@@ -105,6 +105,8 @@ class SparseBlockMatrix : public MatrixInterface
   void GaussSeidel      (GlobalVector& y, const GlobalVector& x) const;
   void Jacobi           (GlobalVector& x) const;
 
+  void MatrixResidualSome(const std::vector<int>& indices,
+			  GlobalVector& h, const GlobalVector& x, const GlobalVector& y) const;
   void vmult(GlobalVector& y, const GlobalVector& x, double s=1.) const;
   void vmult(GlobalVector& y, const GlobalVector& x, const TimePattern& TP, double s=1.)const;
   void entry_diag(int i, const nmatrix<double>& M);

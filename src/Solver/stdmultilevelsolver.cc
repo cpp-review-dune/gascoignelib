@@ -483,6 +483,7 @@ void StdMultiLevelSolver::newton(VectorInterface& u, const VectorInterface& f, V
 {
   info.reset();
   double rr = NewtonResidual(r,u,f);
+  GetSolver()->Visu("newton",r,GetSolver()->GetGV(r).n());
   bool reached = info.check(0,rr,0.);
   NewtonOutput(info);
   NewtonPreProcess(u,f,info);
@@ -566,6 +567,10 @@ void StdMultiLevelSolver::NewtonLinearSolve(VectorInterface& x, const VectorInte
 
   assert(DataP->LinearSolve()=="mg"  || DataP->LinearSolve()=="gmres");
 
+  //GlobalVector H = GetSolver()->GetGV(b);
+  //dynamic_cast<const StdSolver*>(GetSolver())->GetMatrix()->vmult(H,GetSolver()->GetGV(x),-1.0);
+  //double n1 = H.norm();
+
   if (DataP->LinearSolve()=="mg")
     {
       int clevel=Gascoigne::max_int(DataP->CoarseLevel() ,0);
@@ -576,6 +581,12 @@ void StdMultiLevelSolver::NewtonLinearSolve(VectorInterface& x, const VectorInte
     {
       Gmres(x,b,info);
     }
+
+  //H = GetSolver()->GetGV(b);
+  //dynamic_cast<const StdSolver*>(GetSolver())->GetMatrix()->vmult(H,GetSolver()->GetGV(x),-1.0);
+  //double n2 = H.norm();
+  //cout << "NORM: " << n1 << " " << n2 << "\t" << n2/n1 << endl;
+
 
   GetSolver(ComputeLevel)->SubtractMean(x);
   _clock_solve.stop();

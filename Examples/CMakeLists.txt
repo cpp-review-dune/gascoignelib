@@ -8,11 +8,13 @@ SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GASCOIGNE_CXX_FLAGS}")
 SET(COMPILE_DEFINITIONS "${GASCOIGNE_DEFINITIONS}")
 
 SUBDIRS(
-oscill
-Vanka
+   fsi3dbench
+	 Vanka
+	 Solid3D
+	 SolidEuler
+	 Vein
    DG
    fast3d_neu
-   fsi3dbench
    Example1
    Example2
    Example3
