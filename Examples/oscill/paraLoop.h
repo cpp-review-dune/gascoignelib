@@ -286,6 +286,7 @@ private:
 
     static double start_time;           //!< Start time point
     static double stop_time;            //!< End time point
+    static double precompute_time;      //!< Time from which it should run parallel
     static unsigned int noIntervals;    //!< Number of intervals parareal is using. Usually this
                                         //!< is the maximum number of threads
     static unsigned int maxIterations;  //!< Maximum number of iterations parareal should execute.
@@ -331,6 +332,7 @@ void parareal<DIM, logging>::outputParameters(std::ostream& ostrm)
     ostrm << "\n========================================================="
           << "\nStart time                             " << start_time
           << "\nEnd time                               " << stop_time
+          << "\nPrecompute time                        " << precompute_time
           << "\nNumber of threads is                   " << noIntervals
           << "\nInterval length                        " << intervalLength
           << "\nMaximal number of iterations           " << maxIterations
@@ -370,9 +372,10 @@ double parareal<DIM, logging>::runPara(const int maxIterations, const double coa
         noFineSteps += noFineSteps % ratio;
         noCoarseSteps  = static_cast<int>(noFineSteps / ratio);
         intervalLength = noFineSteps * dtfine;
+        stop_time      = start_time + precompute_time + intervalLength * noIntervals;
     }
 
-    std::cerr << style::bb << style::g << "[Info] " << style::n << "Fine Visualization\n";
+    std::cerr << style::bb << style::g << "[Info] " << style::n << "Initialized Parameters\n";
     outputParameters();
     func_log.precision(12);
     // Checking if input is correct
@@ -380,7 +383,8 @@ double parareal<DIM, logging>::runPara(const int maxIterations, const double coa
     assert(isfinite(noCoarseSteps) && isfinite(noFineSteps) && "Amount of steps is infinite.");
     assert(isfinite(intervalLength) && isfinite(start_time)
            && "intervalLength or start time is infinite");
-    assert(stop_time - start_time > 0 && "start has to be be before stop");
+    assert(precompute_time > 0 && "precompute time ha s to be greater zero");
+    assert(stop_time - start_time > precompute_time && "start has to be be before stop");
 
     assert(dtcoarse > 0 && dtfine > 0 && "At least one timestep is less or equal 0.");
     assert(noCoarseSteps != 0 && noFineSteps != 0 && "Amount of steps is 0.");
@@ -462,6 +466,9 @@ double parareal<DIM, logging>::paraAlgo()
     {
         subinterval[m]->setGVsize(u_sol_arr[m]);
     }
+    // precompute till given time
+    auto precompute_steps = static_cast<unsigned>(precompute_time / dtfine);
+    subinterval[0]->template propagator<iter_type::fine>(time, u, f, 0, precompute_steps);
 
     /// Initializing locks
     auto interval_locker = new omp_lock_t[noIntervals];
@@ -1172,6 +1179,9 @@ template <int DIM, log_level logging>
 double parareal<DIM, logging>::coarse_theta = parareal::getParam<double>("thetacoarse", "Equation");
 
 template <int DIM, log_level logging>
+double parareal<DIM, logging>::precompute_time = parareal::getParam<double>("precompute",
+                                                                            "Equation");
+template <int DIM, log_level logging>
 unsigned int parareal<DIM, logging>::noIntervals = static_cast<unsigned int>(setNoIntervals());
 template <int DIM, log_level logging>
 unsigned int parareal<DIM, logging>::maxIterations = static_cast<unsigned int>(1);
@@ -1181,8 +1191,8 @@ template <int DIM, log_level logging>
 double parareal<DIM, logging>::stop_time = parareal::getParam<double>("stop_time", "Equation");
 
 template <int DIM, log_level logging>
-double parareal<DIM, logging>::intervalLength = static_cast<double>((stop_time - start_time)
-                                                                    / noIntervals);
+double parareal<DIM, logging>::intervalLength =
+  static_cast<double>((stop_time - start_time - precompute_time) / noIntervals);
 
 template <int DIM, log_level logging>
 double parareal<DIM, logging>::dtfine = parareal::getParam<double>("dt", "Equation");
