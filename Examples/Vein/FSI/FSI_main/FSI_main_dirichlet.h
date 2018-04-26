@@ -1,6 +1,6 @@
 
-#ifndef  __fsi_dirichlet_h
-#define  __fsi_dirichlet_h
+#ifndef  __FSI_main_dirichlet_h
+#define  __FSI_main_dirichlet_h
 
 #include  "dirichletdata.h"
 #include  "paramfile.h"
@@ -15,13 +15,13 @@ using namespace Gascoigne;
 extern double __TIME;
 
 
-class MyDDFSI : public DirichletData
+class FSI_main_MyDD : public DirichletData
 {
 protected:
   double vmean;
   
 public:
-  MyDDFSI(const ParamFile* pf)
+  FSI_main_MyDD(const ParamFile* pf)
   {
     DataFormatHandler DFH;
     DFH.insert("vmean" ,    &vmean , 0.0);
@@ -115,13 +115,13 @@ public:
   }
 };
 
-class MyDDFSI3d : public DirichletData
+class FSI_main_MyDD3d : public DirichletData
 {
 protected:
   double vmean;
   
 public:
-  MyDDFSI3d(const ParamFile* pf)
+  FSI_main_MyDD3d(const ParamFile* pf)
   {
     DataFormatHandler DFH;
     DFH.insert("vmean" ,    &vmean , 0.0);

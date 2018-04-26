@@ -48,6 +48,8 @@ namespace Gascoigne
     cout << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" << endl << endl;
     _U.resize(DIM);
     _Uold.resize(DIM);
+    _VELP.resize(DIM+1);
+    _VELPold.resize(DIM+1);
   }
 
   ////////////////////////////////////////////////// 
@@ -72,7 +74,7 @@ namespace Gascoigne
 }
 
  template<int DIM>
-  void FSI<DIM>::point(double h, const FemFunction& U, const Vertex<DIM>& v) const
+  void FSI<DIM>::point(double h, const FemFunction& U_dummy, const Vertex<DIM>& v) const
   {
     __h = h;
     __v = v;
@@ -88,9 +90,16 @@ namespace Gascoigne
 
     for (int i=0;i<DIM;++i)
       {
-		_U[i] = (*DEF)[i];
-		_Uold[i] = (*DEFOLD)[i];
+		_U[i] = (*U_Vec)[i+DIM+1];
+		_Uold[i] = (*UOLD_Vec)[i+DIM+1];
+		
       }
+     for (int i=0;i<DIM+1;++i)
+      {
+		_VELP[i] = (*U_Vec)[i];
+		_VELPold[i] = (*UOLD_Vec)[i];
+		
+      } 
     // // in solid
     // if (domain>0)
     //   {
@@ -110,11 +119,11 @@ namespace Gascoigne
 
     multiplex_init_dtU<DIM>(dtU,_U,_Uold);
     
-	multiplex_init_NV<DIM>(NV,U);
+	multiplex_init_NV<DIM>(NV,_VELP);
 
-	multiplex_init_V<DIM>(V,U);
-	multiplex_init_NV<DIM>(NV_old,*OLD);
-	multiplex_init_V<DIM>(V_old,*OLD);
+	multiplex_init_V<DIM>(V,_VELP);
+	multiplex_init_NV<DIM>(NV_old,_VELPold);
+	multiplex_init_V<DIM>(V_old,_VELPold);
     
 
 
@@ -167,7 +176,7 @@ namespace Gascoigne
   
   
   template<int DIM>
-  void FSI<DIM>::Form(VectorIterator b, const FemFunction& U, const TestFunction& N) const
+  void FSI<DIM>::Form(VectorIterator b, const FemFunction& U_dummy, const TestFunction& N) const
   {
     VECTOR phi; multiplex_init_test<DIM>(phi,N);
     
@@ -180,7 +189,7 @@ namespace Gascoigne
 	if(true)
 	{
 		for (int i=0;i<DIM;++i)
-	 	 b[i+1] += J * rho_f * (U[i+1].m() - (*OLD)[i+1].m()) / __DT * N.m();
+	 	 b[i+1] += J * rho_f * ((*U_Vec)[i+1].m() - (*UOLD_Vec)[i+1].m()) / __DT * N.m();
 	}
 	// tensor
 	VECTOR X = J * SIGMAf * F.inverse().transpose() * phi;
@@ -209,7 +218,7 @@ namespace Gascoigne
 
 
 	// pressure
-	X = -U[0].m() * J * F.inverse().transpose()*phi;
+	X = -(*U_Vec)[0].m() * J * F.inverse().transpose()*phi;
 	for (int i=0;i<DIM;++i)
 	  b[i+1] += X(i,0);
 
@@ -221,7 +230,7 @@ namespace Gascoigne
 
 	// time-derivative	
 	for (int i=0;i<DIM;++i)
-	  	b[i+1] += J_PRES*rho_s * (U[i+1].m() - (*OLD)[i+1].m()) / __DT * N.m();
+	  	b[i+1] += J_PRES*rho_s * ((*U_Vec)[i+1].m() - (*UOLD_Vec)[i+1].m()) / __DT * N.m();
 	  
 
 	// FULL tensor F Sigma
@@ -246,7 +255,7 @@ namespace Gascoigne
   
 
   template<int DIM>
-  void FSI<DIM>::Matrix(EntryMatrix& A, const FemFunction& U, const TestFunction& M, const TestFunction& N) const
+  void FSI<DIM>::Matrix(EntryMatrix& A, const FemFunction& U_dummy, const TestFunction& M, const TestFunction& N) const
   {    
     
     VECTOR phi; multiplex_init_test<DIM>(phi,N);
@@ -388,7 +397,7 @@ namespace Gascoigne
 
 
  template<int DIM>
- void FSI<DIM>::point_M(int j, const FemFunction& U, const TestFunction& M) const
+ void FSI<DIM>::point_M(int j, const FemFunction& U_dummy, const TestFunction& M) const
   {
     VECTOR psi; multiplex_init_test<DIM>(psi,M);
     for (int j=0;j<DIM;++j)
@@ -487,18 +496,18 @@ namespace Gascoigne
 
 
   template<int DIM>
-  void FSI<DIM>::MatrixBlock(EntryMatrix& A, const FemFunction& U, const FemFunction& N) const
+  void FSI<DIM>::MatrixBlock(EntryMatrix& A, const FemFunction& U_dummy, const FemFunction& N) const
   {;
     for (int j=0; j<N.size();++j)  // trial
       {
 #define M N[j]
-	point_M(j,U,M);
+	point_M(j,U_dummy,M);
 	
 
 	for (int i=0; i<N.size();++i) // test
 	  {
 	    A.SetDofIndex(i,j);
-	    Matrix(A,U,M , N[i]);
+	    Matrix(A,U_dummy,M , N[i]);
 	  }
 #undef M
       }

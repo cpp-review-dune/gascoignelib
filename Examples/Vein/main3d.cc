@@ -39,26 +39,83 @@ public:
 
 // -----------------------------------------
 
-#include  "FSI/fsi.h"
-#include  "FSI/boundaryfsi.h"
-#include  "FSI/fsi_dirichlet.h"
+#include  "FSI/FSI_reduced/fsi.h"
+#include  "FSI/FSI_reduced/boundaryfsi.h"
 
 class ProblemDescriptorFSI3d : public ProblemDescriptorBase
 {
 public:
   
-  std::string GetName() const {return "fsi";}
+  std::string GetName() const {return "fsi_reduced";}
   void BasicInit(const ParamFile* pf)
   {
     GetParamFilePointer() = pf;
     GetEquationPointer() = new FSI<3>(GetParamFile());
     GetBoundaryEquationPointer() = new BoundaryFSI<3>(GetParamFile());
-    GetDirichletDataPointer() = new MyDDFSI3d(GetParamFile());
+    GetDirichletDataPointer() = NULL;
+    
+    ProblemDescriptorBase::BasicInit(pf);
+    GetComponentInformationPointer() = NULL;
+    
+  }
+};
+/*---------------------------------------------------*/
+#include  "FSI/MeshMotion/meshmotion.h"
+
+class ProblemDescriptormMeshMotion : public ProblemDescriptorBase
+{
+public:
+  
+  std::string GetName() const {return "meshmotion";}
+  void BasicInit(const ParamFile* pf)
+  {
+    GetParamFilePointer() = pf;
+    GetEquationPointer() = new MeshMotion<3>(GetParamFile());
+    GetBoundaryEquationPointer() = NULL;
+    GetDirichletDataPointer() = NULL;
+    
+    ProblemDescriptorBase::BasicInit(pf);
+        
+  }
+};
+/*---------------------------------------------------*/
+#include  "FSI/Deformation_Solid/def_solid.h"
+
+class ProblemDescriptormDef_Solid : public ProblemDescriptorBase
+{
+public:
+  
+  std::string GetName() const {return "def_solid";}
+  void BasicInit(const ParamFile* pf)
+  {
+    GetParamFilePointer() = pf;
+    GetEquationPointer() = new Def_Solid<3>(GetParamFile());
+    GetBoundaryEquationPointer() = NULL;
+    GetDirichletDataPointer() = NULL;
     
     ProblemDescriptorBase::BasicInit(pf);
     
-    GetComponentInformationPointer() = new FSI_CI<3>;
+  }
+};
+/*---------------------------------------------------*/
+#include  "FSI/FSI_main/FSI_main.h"
+#include  "FSI/FSI_main/FSI_main_dirichlet.h"
+
+
+class ProblemDescriptormFSI_main : public ProblemDescriptorBase
+{
+public:
+  
+  std::string GetName() const {return "fsi_main";}
+  void BasicInit(const ParamFile* pf)
+  {
+    GetParamFilePointer() = pf;
+    GetEquationPointer() = new FSI_main<3>(GetParamFile());
+    GetBoundaryEquationPointer() = NULL;
+    GetDirichletDataPointer() =  new FSI_main_MyDD3d(GetParamFile());
     
+    ProblemDescriptorBase::BasicInit(pf);
+    GetComponentInformationPointer() = new FSI_CI<3>;
   }
 };
 /*---------------------------------------------------*/
@@ -118,13 +175,29 @@ public:
 
 int main(int argc, char** argv)
 {
-  ParamFile pf("box3d.param");
-  if (argc==2)
-    pf.SetName(argv[1]);
+  ParamFile pf_fsi_red("vein_fsi_reduced.param");
+  ParamFile pf_meshmotion("vein_meshmotion.param");
+  ParamFile pf_def_solid("vein_def_solid.param");
+  
+  ParamFile pf_fsi_main("vein_fsi_reduced.param");
+  ParamFile pf("vein_fsi_reduced.param");
+
+  //if (argc==2)
+  //  pf.SetName(argv[1]);
 
   
   ProblemDescriptorFSI3d ProblemFSI3d;
-  ProblemFSI3d.BasicInit(&pf);
+  ProblemFSI3d.BasicInit(&pf_fsi_red);
+  
+  ProblemDescriptormFSI_main ProblemFSI_main;
+  ProblemFSI_main.BasicInit(&pf_fsi_main);
+
+  ProblemDescriptormMeshMotion ProblemMeshMotion;
+  ProblemMeshMotion.BasicInit(&pf_meshmotion);
+  
+  ProblemDescriptormDef_Solid ProblemDef_Solid;
+  ProblemDef_Solid.BasicInit(&pf_def_solid);
+  
 
   ProblemDescriptorFluid_Stat3d ProblemFluid_Stat3d;
   ProblemFluid_Stat3d.BasicInit(&pf);
@@ -133,9 +206,14 @@ int main(int argc, char** argv)
   ProblemSolid_Euler3d.BasicInit(&pf);
   
   ProblemContainer PC3d;
-  PC3d.AddProblem("fsi", &ProblemFSI3d);
+  PC3d.AddProblem("fsi_reduced", &ProblemFSI3d);
+  PC3d.AddProblem("fsi_main", &ProblemFSI_main);
+  PC3d.AddProblem("meshmotion", &ProblemMeshMotion);
+  PC3d.AddProblem("def_solid", &ProblemDef_Solid);
+  
   PC3d.AddProblem("fluid_stat", &ProblemFluid_Stat3d);
   PC3d.AddProblem("solid_euler", &ProblemSolid_Euler3d);
+  
 
   FunctionalContainer FC3d;
   WeightedPointFunctional Ux;

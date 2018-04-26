@@ -13,6 +13,7 @@
 //#include "mumpsilu.h"
 #include "fmatrixblock.h"
 #include "lpsequation.h"
+#include "facediscretization.h"
 
 
 using namespace std;
@@ -27,17 +28,32 @@ namespace Gascoigne
       
     DiscretizationInterface* NewDiscretization(int dimension, const std::string& discname);
 
-      IluInterface *__IF,*__IS;
+     IluInterface *__IF,*__IS;
 
-    SparseUmf<FMatrixBlock<DIM+1> >         _LAP_M;    
-    SparseBlockMatrix<FMatrixBlock<DIM+1> > _LAP_A;
-
+    //SparseUmf<FMatrixBlock<DIM+1> >         _LAP_M;    
+    //SparseBlockMatrix<FMatrixBlock<DIM+1> > _LAP_A;
+	
+	std::string SolverLabel;
       
       //MumpsIlu<DIM+1>                         _LAP_M;
 
-     public:
-
-
+    public:
+    
+    DiscretizationInterface *&GetDiscretizationPointerPublic()
+    {
+      return _ZP;
+    }
+    FaceDiscretization *&GetFaceDiscretizationPointerPublic()
+    {
+      return _FZP;
+    }
+    
+	  void SetSolverLabel(std::string solverlabel)
+	  {
+	  	SolverLabel=solverlabel;
+	  }
+	  std::string GetSolverLabel() const {return SolverLabel;}
+	  
       vector<vector<double> >_precond;
       
       void do_precondition(VectorInterface gx) const;
@@ -46,7 +62,7 @@ namespace Gascoigne
       FSISolver();
 
       void ReInitMatrix() ;
-      void ReInitExtensionMatrix();
+  
 
      void SolveExtension(VectorInterface& x);
 
@@ -102,102 +118,16 @@ namespace Gascoigne
       
     MatrixInterface* NewMatrix(int ncomp, const std::string& matrixtype);
     IluInterface* NewIlu(int ncomp, const std::string& matrixtype);
-      
+    
+    void AddNodeVector(const std::string &name, const GlobalVector &q)
+    {
+
+      GetDiscretization()->AddNodeVector(name, &q);
+    }  
   };
   
   
 
-  template<int DIM>
-  class FSIMultiLevelSolver : public StdMultiLevelSolver
-  {
-  public:
-      
-            
-    std::string GetName() const {return "FSI MultiLevelSolver";}
-
-	  
-    SolverInterface* NewSolver(int solverlevel)
-    { return new FSISolver<DIM>; }
-      
-    const FSISolver<DIM>* GetFSISolver(int l) const
-    {
-      assert(dynamic_cast<const FSISolver<DIM>* > (GetSolver(l)));
-      return dynamic_cast<const FSISolver<DIM>* > (GetSolver(l));
-    }
-    FSISolver<DIM>* GetFSISolver(int l) 
-    {
-      assert(dynamic_cast<FSISolver<DIM>* > (GetSolver(l)));
-      return dynamic_cast<FSISolver<DIM>* > (GetSolver(l));
-    }
-
-    const FSISolver<DIM>* GetFSISolver() const
-    {
-      assert(dynamic_cast<const FSISolver<DIM>* > (GetSolver()));
-      return dynamic_cast<const FSISolver<DIM>* > (GetSolver());
-    }
-    FSISolver<DIM>* GetFSISolver() 
-    {
-      assert(dynamic_cast<FSISolver<DIM>* > (GetSolver()));
-      return dynamic_cast<FSISolver<DIM>* > (GetSolver());
-    }
-
-
-    void UpdateDeformation(VectorInterface& x);
-      
-    double NewtonUpdate(double& rr, VectorInterface& x, VectorInterface& dx, VectorInterface& r, const VectorInterface& f, NLInfo& nlinfo);
-      
-
-  };
-
-  /// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Laplace-matrix-stuff
-  template<int DIM> // laplace eq for extension
-  class ExtensionEquation : public LpsEquation
-  {
-    mutable double ext;
-    mutable int domain;
-
-    
-  public:
-    std::string GetName()  const { return "Extension"; }
-    int         GetNcomp() const { return DIM+1; }
-    
-    void point(double h, const FemFunction& U, const Vertex<DIM>& v) const
-    {
-      double dx = std::max(0.0,fabs(v.x()-0.4)-0.4);
-      double dy = std::max(0.0,fabs(v.y()-0.2)-0.01);
-      double dist = sqrt(dx*dx+dy*dy);
-      ext = 1.0 / (1.e-2+dist);
-
-      
-    }
-    
-    void point_cell(int material) const 
-    {
-    	if(material==1) domain=1;
-			if(material==2) domain=-1;
-		}
-		
-    void Form(VectorIterator b, const FemFunction& U, const TestFunction& N) const
-    { 
-      if (domain>0) return;
-      
-      for (int i=0;i<DIM;++i) 
-	for (int j=0;j<DIM;++j)
-	  b[i] += ext * U[i][j+1] * N[j+1]; 
-    }
-    void Matrix(EntryMatrix& A, const FemFunction& U, const TestFunction& M, const TestFunction& N) const
-    {
-      if (domain>0) return;
-      
-      for (int i=0;i<DIM;++i) 
-	for (int j=0;j<DIM;++j) 
-	  A(i,i) += ext * M[j+1] * N[j+1]; 
-    }
-    
-    void StabForm(VectorIterator b, const FemFunction& U, const FemFunction& UP, const TestFunction& N) const{}
-    void StabMatrix(EntryMatrix& A, const FemFunction& U, const TestFunction& Np, const TestFunction& Mp) const{}
-    void lpspoint(double h, const FemFunction& U, const Vertex<DIM>& v) const{}
-  };
   
 }
 

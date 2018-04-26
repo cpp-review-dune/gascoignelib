@@ -36,19 +36,19 @@ namespace Gascoigne
   }
 
   template<int DIM>
-  void BoundaryFSI<DIM>::Form(VectorIterator b, const FemFunction& U, const TestFunction& N, int col) const
+  void BoundaryFSI<DIM>::Form(VectorIterator b, const FemFunction& U_Dummy, const TestFunction& N, int col) const
   {
   	//______________________________________________________________________________
   	if(DIM==3)
  			{
 	 			NU << 
-		    (*DEF)[0].x(), (*DEF)[0].y(),(*DEF)[0].z(),
-		    (*DEF)[1].x(), (*DEF)[1].y(),(*DEF)[1].z(),
-		    (*DEF)[2].x(), (*DEF)[2].y(),(*DEF)[2].z(),
+		    (*U_Vec)[DIM+1+0].x(), (*U_Vec)[DIM+1+0].y(),(*U_Vec)[DIM+1+0].z(),
+		    (*U_Vec)[DIM+1+1].x(), (*U_Vec)[DIM+1+1].y(),(*U_Vec)[DIM+1+1].z(),
+		    (*U_Vec)[DIM+1+2].x(), (*U_Vec)[DIM+1+2].y(),(*U_Vec)[DIM+1+2].z();
 		  	NV << 
-		    U[1].x(), U[1].y(),U[1].z(),
-		    U[2].x(), U[2].y(),U[2].z(),
-		    U[3].x(), U[3].y(),U[3].z();
+		    (*U_Vec)[1+0].x(), (*U_Vec)[1+0].y(),(*U_Vec)[1+0].z(),
+		    (*U_Vec)[1+1].x(), (*U_Vec)[1+1].y(),(*U_Vec)[1+1].z(),
+		    (*U_Vec)[1+2].x(), (*U_Vec)[1+2].y(),(*U_Vec)[1+2].z();
 		  }
     //Berechnung einiger Werte
     // Deformationsgradient
@@ -57,14 +57,15 @@ namespace Gascoigne
     //______________________________________________________________________________
     if(DIM==3)
  			{
-				NU_OLD << 
-				  (*DEFOLD)[0].x(), (*DEFOLD)[0].y(),(*DEFOLD)[0].z(),
-				  (*DEFOLD)[1].x(), (*DEFOLD)[1].y(),(*DEFOLD)[1].z(),
-				  (*DEFOLD)[2].x(), (*DEFOLD)[2].y(),(*DEFOLD)[2].z(),
+	 			NU_OLD << 
+				(*UOLD_Vec)[DIM+1+0].x(), (*UOLD_Vec)[DIM+1+0].y(),(*UOLD_Vec)[DIM+1+0].z(),
+				(*UOLD_Vec)[DIM+1+1].x(), (*UOLD_Vec)[DIM+1+1].y(),(*UOLD_Vec)[DIM+1+1].z(),
+				(*UOLD_Vec)[DIM+1+2].x(), (*UOLD_Vec)[DIM+1+2].y(),(*UOLD_Vec)[DIM+1+2].z();
 				NV_OLD << 
-				  (*OLD)[1].x(), (*OLD)[1].y(),(*OLD)[1].z(),
-				  (*OLD)[2].x(), (*OLD)[2].y(),(*OLD)[2].z(),
-				  (*OLD)[3].x(), (*OLD)[3].y(),(*OLD)[3].z();
+				(*UOLD_Vec)[1+0].x(), (*UOLD_Vec)[1+0].y(),(*UOLD_Vec)[1+0].z(),
+				(*UOLD_Vec)[1+1].x(), (*UOLD_Vec)[1+1].y(),(*UOLD_Vec)[1+1].z(),
+				(*UOLD_Vec)[1+2].x(), (*UOLD_Vec)[1+2].y(),(*UOLD_Vec)[1+2].z();
+
 			}
     //Berechnung einiger Werte
     // Deformationsgradient
@@ -85,10 +86,10 @@ namespace Gascoigne
 			for (int i=0;i<DIM;++i)
 				{
 				 b[i+1] += __THETA*g(i)*N.m()+(1.0-__THETA)*g_OLD(i)*N.m() +__n[i]*fact_time*(p_2)*N.m();
-				 if((U[1].m()*__n[0]+U[2].m()*__n[1]+U[3].m()*__n[2])<0)
-				 		b[i+1] -= 0.5*__THETA*(U[1].m()*__n[0]+U[2].m()*__n[1]+U[3].m()*__n[2])*U[1+i].m()*N.m();
-				 if(((*OLD)[1].m()*__n[0]+(*OLD)[2].m()*__n[1]+(*OLD)[3].m()*__n[2])<0)
-				 		b[i+1] -= 0.5*(1.0-__THETA)*((*OLD)[1].m()*__n[0]+(*OLD)[2].m()*__n[1]+(*OLD)[3].m()*__n[2])*(*OLD)[1+i].m()*N.m();
+				 if(((*U_Vec)[1+0].m()*__n[0]+(*U_Vec)[1+1].m()*__n[1]+(*U_Vec)[1+2].m()*__n[2])<0)
+				 		b[i+1] -= 0.5*__THETA*((*U_Vec)[1+0].m()*__n[0]+(*U_Vec)[1+1].m()*__n[1]+(*U_Vec)[1+2].m()*__n[2])*(*U_Vec)[1+i].m()*N.m();
+				 if(((*UOLD_Vec)[1+0].m()*__n[0]+(*UOLD_Vec)[1+1].m()*__n[1]+(*UOLD_Vec)[1+2].m()*__n[2])<0)
+				 		b[i+1] -= 0.5*(1.0-__THETA)*((*UOLD_Vec)[1+0].m()*__n[0]+(*UOLD_Vec)[1+1].m()*__n[1]+(*UOLD_Vec)[1+2].m()*__n[2])*(*UOLD_Vec)[1+i].m()*N.m();
 				 }
 		}
 		
@@ -97,30 +98,30 @@ namespace Gascoigne
 			for (int i=0;i<DIM;++i)
 				{
 					 b[i+1] += __THETA*g(i)*N.m()+(1.0-__THETA)*g_OLD(i)*N.m()+__n[i]*fact_time*p_4*N.m();
-				 if((U[1].m()*__n[0]+U[2].m()*__n[1]+U[3].m()*__n[2])<0)
-				 		b[i+1] -= 0.5*__THETA*(U[1].m()*__n[0]+U[2].m()*__n[1]+U[3].m()*__n[2])*U[1+i].m()*N.m();
-				 if(((*OLD)[1].m()*__n[0]+(*OLD)[2].m()*__n[1]+(*OLD)[3].m()*__n[2])<0)
-				 		b[i+1] -= 0.5*(1.0-__THETA)*((*OLD)[1].m()*__n[0]+(*OLD)[2].m()*__n[1]+(*OLD)[3].m()*__n[2])*(*OLD)[1+i].m()*N.m();
+				 if(((*U_Vec)[1+0].m()*__n[0]+(*U_Vec)[1+1].m()*__n[1]+(*U_Vec)[1+2].m()*__n[2])<0)
+				 		b[i+1] -= 0.5*__THETA*((*U_Vec)[1+0].m()*__n[0]+(*U_Vec)[1+1].m()*__n[1]+(*U_Vec)[1+2].m()*__n[2])*(*U_Vec)[1+i].m()*N.m();
+				 if(((*UOLD_Vec)[1+0].m()*__n[0]+(*UOLD_Vec)[1+1].m()*__n[1]+(*UOLD_Vec)[1+2].m()*__n[2])<0)
+				 		b[i+1] -= 0.5*(1.0-__THETA)*((*UOLD_Vec)[1+0].m()*__n[0]+(*UOLD_Vec)[1+1].m()*__n[1]+(*UOLD_Vec)[1+2].m()*__n[2])*(*UOLD_Vec)[1+i].m()*N.m();
 				 }
 		}
 		
   }
   
   template<int DIM>
-   void BoundaryFSI<DIM>::Matrix(EntryMatrix& A, const FemFunction& U, const TestFunction& M, const TestFunction& N, int col) const
+   void BoundaryFSI<DIM>::Matrix(EntryMatrix& A, const FemFunction& U_Dummy, const TestFunction& M, const TestFunction& N, int col) const
    {
 				 
 			//_______________________________________________________________
 			if(DIM==3)	
 			{
-				NU << 
-				  (*DEF)[0].x(), (*DEF)[0].y(),(*DEF)[0].z(),
-				  (*DEF)[1].x(), (*DEF)[1].y(),(*DEF)[1].z(),
-				  (*DEF)[2].x(), (*DEF)[2].y(),(*DEF)[2].z(),
-				NV << 
-				  U[1].x(), U[1].y(),U[1].z(),
-				  U[2].x(), U[2].y(),U[2].z(),
-				  U[3].x(), U[3].y(),U[3].z();
+	 			NU << 
+				(*U_Vec)[DIM+1+0].x(), (*U_Vec)[DIM+1+0].y(),(*U_Vec)[DIM+1+0].z(),
+				(*U_Vec)[DIM+1+1].x(), (*U_Vec)[DIM+1+1].y(),(*U_Vec)[DIM+1+1].z(),
+				(*U_Vec)[DIM+1+2].x(), (*U_Vec)[DIM+1+2].y(),(*U_Vec)[DIM+1+2].z(),
+			  	NV << 
+				(*U_Vec)[1+0].x(), (*U_Vec)[1+0].y(),(*U_Vec)[1+0].z(),
+				(*U_Vec)[1+1].x(), (*U_Vec)[1+1].y(),(*U_Vec)[1+1].z(),
+				(*U_Vec)[1+2].x(), (*U_Vec)[1+2].y(),(*U_Vec)[1+2].z();
 			}
 			//________________________________________________________________
 
@@ -142,10 +143,10 @@ namespace Gascoigne
 				 	         {
 				 						A(1+i,j+1) +=__THETA*g(i)*N.m();					
 				 						
-				 						if((U[1].m()*__n[0]+U[2].m()*__n[1]+U[3].m()*__n[2])<0)
+				 						 if(((*U_Vec)[1+0].m()*__n[0]+(*U_Vec)[1+1].m()*__n[1]+(*U_Vec)[1+2].m()*__n[2])<0)
 				 								{
-				 									A(1+i,j+1)  -= 0.5*__THETA*(U[1].m()*__n[0]+U[2].m()*__n[1]+U[3].m()*__n[2])*PHI[i]*N.m();
-				 								 	A(1+i,j+1) 	-= 0.5*__THETA*(PHI[0]*__n[0]+PHI[1]*__n[1]+PHI[2]*__n[2])*U[1+i].m()*N.m();      	 
+				 									A(1+i,j+1)  -= 0.5*__THETA*((*U_Vec)[1+0].m()*__n[0]+(*U_Vec)[1+1].m()*__n[1]+(*U_Vec)[1+2].m()*__n[2])*PHI[i]*N.m();
+				 								 	A(1+i,j+1) 	-= 0.5*__THETA*(PHI[0]*__n[0]+PHI[1]*__n[1]+PHI[2]*__n[2])*(*U_Vec)[1+i].m()*N.m();      	 
 				 								}
 								   }
 							  
@@ -155,7 +156,7 @@ namespace Gascoigne
   
 
   template<int DIM>
-   void BoundaryFSI<DIM>::pointboundary(double h, const FemFunction& U, const Vertex<DIM>& v, const Vertex<DIM>& n) const
+   void BoundaryFSI<DIM>::pointboundary(double h, const FemFunction& U_Dummy, const Vertex<DIM>& v, const Vertex<DIM>& n) const
   {
 
  			 __n[0]=n[0];__n[1]=n[1]; if(DIM==3)__n[2]=n[2]; 

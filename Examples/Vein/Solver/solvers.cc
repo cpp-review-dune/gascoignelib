@@ -32,103 +32,12 @@ namespace Gascoigne
   
   
   
- 
-
-  template<int DIM>
-  void FSISolver<DIM>::ReInitExtensionMatrix()
-  {
-    cout << "Initialize extension matrix. Rand noch nicht sinnvoll" << endl;
-    
-    // set up structure
-    SparseStructure SA;
-    GetDiscretization()->Structure(&SA);
-    _LAP_A.ReInit(&SA);
-    _LAP_M.SetMatrix(&_LAP_A);
-    _LAP_M.ReInit(&SA);
-    
-
-    _LAP_A.zero();
-    GlobalVector dummy(DIM+1,GetMesh()->nnodes());
-
-    // discretization for laplace, 1component, delete interface-test functions
-    DiscretizationInterface* Q;
-    vector<int> delf,dels; 
-    for (int i=0;i<DIM;++i) delf.push_back(i);
-    if (DIM==2) 
-      {
-	Q = new AleQ2Lps2d;
-	dynamic_cast<AleQ2Lps2d*>(Q)->InitInterfaceComponents(delf,dels);
-      }
-    else if (DIM==3) 
-      {
-	Q = new AleQ2Lps3d;
-	dynamic_cast<AleQ2Lps3d*>(Q)->InitInterfaceComponents(delf,dels);
-      }
-    else abort();
-    assert(Q);
-    Q->BasicInit(_paramfile);
-    Q->ReInit(GetMesh());
-    ExtensionEquation<DIM> exteq;
-    Q->Matrix(_LAP_A,dummy,exteq,1.0);
-
-    // Dirichlet values, on colors, where DIM+1 .. 2 DIM are set
-    const BoundaryManager* BM = GetProblemDescriptor()->GetBoundaryManager();
-    const IntSet& Colors = BM->GetDirichletDataColors();
-    for(IntSet::const_iterator p=Colors.begin();p!=Colors.end();p++)
-      {
-	int col = *p;
-	// hier nochmal dran arbeitn...
-	/////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////
-	//Hier Randfarben der Extension andern
-	vector<int> cc;
-	cc.push_back(DIM);
-	//fsi3 bench
-	//if ((col==0)||(col==1)||(col==80)||(col==81)) cc.push_back(0);
-	//if ((col==2)||(col==80)||(col==81))           cc.push_back(1);
-	//box
-	//if ((col==0)||(col==1)||(col==4)||(col==84)) 		cc.push_back(0);
-	//if ((col==0)||(col==1)||(col==4)||(col==84))           cc.push_back(1);
-	//if ((col==0)||(col==1)||(col==4)||(col==5)||(col==84)||(col==85))           cc.push_back(2);
-	//vein
-	if ((col==7)||(col==2)||(col==4)||(col==12)||(col==11)||(col==13)) 		cc.push_back(0);
-	if ((col==7)||(col==2)||(col==4)||(col==12)||(col==11)||(col==13)) 	           cc.push_back(1);
-	if ((col==7)||(col==2)||(col==4)||(col==12)||(col==11)||(col==13)) 	           cc.push_back(2);
-	
-	if (cc.size()>0)
-	  GetDiscretization()->StrongDirichletMatrix(_LAP_A, col, cc);
-      }
-    
-    // modify in solid
-    const vector<int>&      s_nodes = GetAleDiscretization()->GetSolidL2G();
-    vector<int> cv; 
-    for (int i=0;i<DIM+1;++i) 
-      cv.push_back(i);
-
-    //for (auto node : s_nodes)
-    //_LAP_A.dirichlet_only_row(node,cv);
-    for(vector<int>::const_iterator it = s_nodes.begin() ; it != s_nodes.end(); ++it)
-      _LAP_A.dirichlet_only_row(*it,cv);
-    cv.clear();
-    cv.push_back(DIM);
-    for (int i=0;i<GetMesh()->nnodes();++i)
-      _LAP_A.dirichlet(i,cv);
-    
-    
-    // copy to mumps
-    _LAP_M.ConstructStructure(vector<int>(0), _LAP_A);
-    _LAP_M.copy_entries(&_LAP_A);
-    _LAP_M.compute_ilu();
-  }
-  
 
   template<int DIM>
   void FSISolver<DIM>::ReInitMatrix() 
   {
-    if(GetProblemDescriptor()->GetName()=="fsi")
-    	ReInitExtensionMatrix();
-    
 
+   
     if (((_matrixtype=="split") || (_matrixtype=="splitumf"))
 	&&(!_directsolver))
       {
@@ -356,15 +265,7 @@ namespace Gascoigne
 		  	
 		}
 	}
-	if(GetProblemDescriptor()->GetName()=="fsi")
-	{
-		//Delete Pressure	
-		for (vector<int>::const_iterator it = s_nodes.begin();it!=s_nodes.end();++it)
-		  if (i_nodes.find(*it)==i_nodes.end())
-		{
-		  GetGV(gf)(*it,0) = 0.0;
-		} 
-	}
+
 	
 	if(GetProblemDescriptor()->GetName()=="fluid_stat")
 	{
@@ -395,6 +296,37 @@ namespace Gascoigne
     // for (auto node : s_nodes)
     //   for (int c=0;c<DIM;++c)
     // 	GetGV(gf)(node,c+1+DIM) = 0.0;
+    if(GetProblemDescriptor()->GetName()!="fluid_stat" ||GetProblemDescriptor()->GetName()!="solid_euler")
+	{
+		if(GetSolverLabel()=="fsi_reduced")
+		{
+			//Delete Pressure	
+			for (vector<int>::const_iterator it = s_nodes.begin();it!=s_nodes.end();++it)
+			  if (i_nodes.find(*it)==i_nodes.end())
+			{
+			  GetGV(gf)(*it,0) = 0.0;
+			} 
+		}
+		if(GetSolverLabel()=="def_solid")
+		{
+
+			for (vector<int>::const_iterator it = f_nodes.begin();it!=f_nodes.end();++it)
+			  if (i_nodes.find(*it)==i_nodes.end())
+				{
+				  for(int i=0;i<DIM;i++)	
+				  	GetGV(gf)(*it,i) = 0.0;
+				} 
+		}
+		if(GetSolverLabel()=="meshmotion")
+		{
+			for (vector<int>::const_iterator it = s_nodes.begin();it!=s_nodes.end();++it)
+			{
+				for(int i=0;i<DIM;i++)	
+				  	GetGV(gf)(*it,i) = 0.0;
+			}
+		}
+	}
+    
   }
 
   template<int DIM>
@@ -420,7 +352,7 @@ namespace Gascoigne
     
     StdSolver::AssembleMatrix(gu,d);
     
-    
+
     if ((_directsolver)||(_matrixtype=="block"))
       {
 
@@ -472,11 +404,35 @@ namespace Gascoigne
 	else
 	{
 	//Delete Pressure variable in Matrix
-		vector<int> cv;
-		cv.push_back(0);
-		for (int i=0;i<s_nodes.size();++i)
-		  if (i_nodes.find(s_nodes[i])==i_nodes.end())
-		    GetMatrix()->dirichlet(s_nodes[i],cv);
+		if(GetSolverLabel()=="fsi_reduced"||GetSolverLabel()=="fsi_main")
+		{
+			vector<int> cv;
+			cv.push_back(0);
+			for (int i=0;i<s_nodes.size();++i)
+		  		if (i_nodes.find(s_nodes[i])==i_nodes.end())
+		    	GetMatrix()->dirichlet(s_nodes[i],cv);
+		}
+		if(GetSolverLabel()=="def_solid")
+		{
+
+			vector<int> cv;
+			for(int i=0;i<DIM;i++) cv.push_back(i);
+
+			for (int i=0;i<f_nodes.size();++i)
+		  	{	
+		  		if (i_nodes.find(f_nodes[i])==i_nodes.end())
+		    		GetMatrix()->dirichlet(f_nodes[i],cv);
+		    }
+		}
+		if(GetSolverLabel()=="meshmotion")
+		{
+			vector<int> cv;
+			for(int i=0;i<DIM;i++) cv.push_back(i);
+	
+			for (int i=0;i<s_nodes.size();++i)
+		  		//if (i_nodes.find(s_nodes[i])==i_nodes.end())
+		    	GetMatrix()->dirichlet(s_nodes[i],cv);
+		}
 	}
 	// cv.clear();
 	// for (int i=0;i<DIM;++i) cv.push_back(i+1+DIM);
@@ -744,61 +700,14 @@ namespace Gascoigne
   template<>
   void FSISolver<2>::PointVisu(const string& name, const GlobalVector& u, int iter) const
   {
-    VectorInterface def("def");
-    const GlobalVector& DEF = GetGV(def);
-    
-    GlobalVector U;
-    U.ncomp()  = 2*u.ncomp();
-    assert(2*2+2==U.ncomp());
-    U.resize(u.n());
-    
-    const GascoigneMesh2d* M = dynamic_cast<const GascoigneMesh2d*> (GetMesh());
-    assert(M);
-    
-    for (int i=0;i<u.n();++i)
-      {
-	const Vertex2d v = M->vertex2d(i);
-
-	int domain;
-			
-	if (find (GetAleDiscretization()->GetFluidL2G().begin(), 
-		  GetAleDiscretization()->GetFluidL2G().end(), i) != 
-	    GetAleDiscretization()->GetFluidL2G().end())
-	  {
-	    if (GetAleDiscretization()->GetInterfaceNodes().find(i)!= 
-		GetAleDiscretization()->GetInterfaceNodes().end())
-	      domain=0;
-	    else
-	      domain=-1;
-	  }
-	else
-	  {
-	    if (find (GetAleDiscretization()->GetSolidL2G().begin(), GetAleDiscretization()->GetSolidL2G().end(), i) != GetAleDiscretization()->GetSolidL2G().end())
-	      {
-		if (GetAleDiscretization()->GetInterfaceNodes().find(i)!= GetAleDiscretization()->GetInterfaceNodes().end())
-		  domain=0;
-		else
-		  domain=1;
-	      }
-	    else {cout<<"error writing mesh. Node neither fluid nor solid"<<endl; abort();}
-	  }
-	 
-				
-	//int domain = chi(v);
-	
-	for (int c=0;c<u.ncomp();++c)
-	  U(i,c) = u(i,c);
-	for (int c=0;c<2;++c)
-	  U(i,c+2+1) = DEF(i,c);
-	U(i,U.ncomp()-1) = domain;
-      }
-    StdSolver::PointVisu(name,U,iter);
+	cout<<	"PointVisu for DIM=2 not written "<<endl; abort();
+    StdSolver::PointVisu(name,u,iter);
   }
   template<>
   void FSISolver<3>::PointVisu(const string& name, const GlobalVector& u, int iter) const
   {
 
-		VectorInterface def("def");
+		/*VectorInterface def("def");
 		const GlobalVector& DEF = GetGV(def);
 		
 		GlobalVector U;
@@ -858,154 +767,20 @@ namespace Gascoigne
 			}
 			U(i,U.ncomp()-1) = domain;
 		  }
-		StdSolver::PointVisu(name,U,iter);
-
+		  		StdSolver::PointVisu(name,U,iter);
+		  */
+		StdSolver::PointVisu(name,u,iter);
+		
+		
 	   }
   //////////////////////////////////////////////////
 
-  //////// deformation update 
-  template<int DIM>
-  void FSISolver<DIM>::SolveExtension(VectorInterface& x)
-  {
 
-    VectorInterface def("def");
-    GlobalVector& DEF = GetGV(def);
-    for (int c=0;c<DIM;++c)
-      {
-	//	DEF.CompEq(c,1.0,c+DIM+1,X);
-	const vector<int>&      f_nodes = GetAleDiscretization()->GetFluidL2G();
-	const HASHSET<int>&     i_nodes = GetAleDiscretization()->GetInterfaceNodes();
-	//for (auto node : f_nodes)
-	//  if (i_nodes.find(node)==i_nodes.end())
-	//    DEF(node,c)=0.0;
-	for (vector<int>::const_iterator it = f_nodes.begin();it!=f_nodes.end();++it)
-	  if (i_nodes.find(*it)==i_nodes.end())
-	    DEF(*it,c)=0.0;
-      }
-    DEF.zero_comp(DIM);
-   
-    _LAP_M.solve(DEF);
-  }
   
 	  
 
-
-  template<int DIM>
-  void FSIMultiLevelSolver<DIM>::UpdateDeformation(VectorInterface& x)
-  {
-	if(GetProblemDescriptor()->GetName()=="fsi")
-    {
-		// update solid deformation
-		GlobalVector& X  = GetSolver()->GetGV(x);
-
-		VectorInterface def("def");
-		GlobalVector& DEF = GetSolver()->GetGV(def);
-		VectorInterface defold("defold");
-		GlobalVector& DEFOLD = GetSolver()->GetGV(defold);
-		VectorInterface old("old");
-		const GlobalVector& OLD = GetSolver()->GetGV(old);
-
-		const vector<int>&      s_nodes = GetFSISolver()->GetAleDiscretization()->GetSolidL2G();
-		/*for (auto node : s_nodes)
-		  {
-		  for (int c=0;c<DIM;++c)
-		  {
-		  DEF(node,c) = DEFOLD(node,c) 
-		  + __DT * (1.0-__THETA) * OLD(node,c+1)
-		  + __DT * __THETA       * X(node,c+1);
-		  }
-		  }
-		*/
-		for (vector<int>::const_iterator it = s_nodes.begin();it!=s_nodes.end();++it)
-		  {
-		for (int c=0;c<DIM;++c)
-		  {
-			DEF(*it,c) = DEFOLD(*it,c) 
-			  + __DT * (1.0-__THETA) * OLD(*it,c+1)
-			  + __DT * __THETA       * X(*it,c+1);
-				
-		  }
-		  }
-		  
-		// update deformation in fluid
-		GetFSISolver()->SolveExtension(x);
-
-	}
-  }
-  
-  
-  
-  template<int DIM>
-  double FSIMultiLevelSolver<DIM>::NewtonUpdate(double& rr, VectorInterface& x, VectorInterface& dx, VectorInterface& r, const VectorInterface& f, NLInfo& nlinfo)
-  {
-    const CGInfo& linfo = nlinfo.GetLinearInfo();
-    bool lex  = linfo.control().status()=="exploded";
-    
-    double nn = NewtonNorm(dx);
-
-    double nr = GetSolver(ComputeLevel)->Norm(r);
-    
-    if (nn>1.e30)  lex =1;
-    if (!(nn>=0.)) lex =1;
-    if (nr>1.e30)  lex =1;
-    if (!(nr>=0.)) lex =1;
-    
-    if(lex)
-      {
-	nlinfo.control().status()="diverged";
-	cerr << "linear : " << linfo.control().status() << endl;
-	cerr << "nonlinear : " << nn << endl;
-	return NewtonNorm(dx);
-      }
-    
-    double omega = 0.7;
-    double relax = 1.;
-    
-    GetSolver(ComputeLevel)->SetPeriodicVectorZero(dx);
-    
-    //VectorInterface XXX("old");
-    //GlobalVector OLD = GetSolver()->GetGV(XXX);
-    GetSolver(ComputeLevel)->Add(x,relax,dx);
-    UpdateDeformation(x);
-    
-    NewtonResidual(r,x,f);
-    rr = NewtonNorm(r);
-    
-    string message = "";
-    for(int iter=0;iter<nlinfo.user().maxrelax();iter++)
-      { 
-	message = nlinfo.check_damping(iter,rr);
-	
-	if (message=="ok")       break;
-	if (message=="continue") 
-	  {
-	    GetSolver(ComputeLevel)->Add(x,relax*(omega-1.),dx);  
-	    UpdateDeformation(x);	    
-    
-	    NewtonResidual(r,x,f);
-	    rr = NewtonNorm(r);
-	    relax *= omega;
-	    continue;
-	  }
-	if (message=="exploded")
-	  {
-	    GetSolver(ComputeLevel)->Add(x,-relax,dx);
-	    UpdateDeformation(x);
-	    
-	    relax = 0.;
-	    cout << "Damping exploded !!!!!" << endl;
-	    nlinfo.control().status() = "diverged";
-	    break;
-	  }
-      }
-    return NewtonNorm(dx);
-  }
-  
-  
   
 
   template class FSISolver<2>;
   template class FSISolver<3>;
-  template class FSIMultiLevelSolver<2>;
-  template class FSIMultiLevelSolver<3>;
 }

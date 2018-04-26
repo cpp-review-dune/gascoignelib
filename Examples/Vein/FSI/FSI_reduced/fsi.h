@@ -37,7 +37,7 @@ namespace Gascoigne
 	  std::string mat_law;
 	  double kapa_s;
 	  
-      mutable FemFunction _U, _Uold;
+      mutable FemFunction _U, _Uold,_VELP,_VELPold;
       
 
       // stuff from point_M
@@ -76,18 +76,18 @@ namespace Gascoigne
       mutable int domain;
       
       
-      mutable FemFunction *OLD, *DEF, *DEFOLD,*DEF_PRES;
-      
+      mutable FemFunction *DEF_PRES;
+      mutable FemFunction *U_Vec, *UOLD_Vec;
+           
       void SetFemData(FemData& q) const
       {
-	assert(q.find("OLD")!=q.end());
-	OLD = &q["OLD"];
 
-	assert(q.find("DEF")!=q.end());
-	DEF = &q["DEF"];
 
-	assert(q.find("DEFOLD")!=q.end());
-	DEFOLD = &q["DEFOLD"];
+	assert(q.find("U_Vec")!=q.end());
+	U_Vec = &q["U_Vec"];
+
+	assert(q.find("UOLD_Vec")!=q.end());
+	UOLD_Vec = &q["UOLD_Vec"];
 	
 	assert(q.find("DEF_PRES")!=q.end());
 	DEF_PRES = &q["DEF_PRES"];

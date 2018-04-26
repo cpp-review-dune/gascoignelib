@@ -32,18 +32,18 @@ namespace Gascoigne
      mutable double J,J_OLD ;
      double __nu_f,__rho_f;
      double p_2,p_4;
-     mutable FemFunction *OLD, *DEF, *DEFOLD;
+
+     mutable FemFunction *U_Vec, *UOLD_Vec;
      
      void SetFemData(FemData& q) const
       {
-				assert(q.find("OLD")!=q.end());
-				OLD = &q["OLD"];
 
-				assert(q.find("DEF")!=q.end());
-				DEF = &q["DEF"];
 
-				assert(q.find("DEFOLD")!=q.end());
-				DEFOLD = &q["DEFOLD"];
+				assert(q.find("U_Vec")!=q.end());
+				U_Vec = &q["U_Vec"];
+
+				assert(q.find("UOLD_Vec")!=q.end());
+				UOLD_Vec = &q["UOLD_Vec"];
       } 
     public:
       ~BoundaryFSI() { }

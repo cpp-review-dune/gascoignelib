@@ -1,15 +1,12 @@
 #include "loop.h"
 #include "gascoignemesh2d.h"
 #include "gascoignemesh3d.h"
-
+#include "Solver/multilevelsolvers.h"
 using namespace std;
 
 
 double __DT,__TIME, __THETA;
 bool InterfaceResidual=false;
-
-
-
 
 namespace Gascoigne
 {
@@ -38,7 +35,6 @@ namespace Gascoigne
     int DI = static_cast<int> (1.0 / __DT);
     cout << DI << endl;
     StopWatch _all;
-
   
 /*
      for (int i=0;i<2;++i)
@@ -71,65 +67,76 @@ namespace Gascoigne
   
     //////////////////////////////////////////////////////////////////////////////
     //Initialiseren der Vektoren
-    VectorInterface u("u"), f("f"), old("old"), vel("vel"), def("def"), defold("defold"),def_pres("def_pres");
- 
 
+    
+  
+    FSIMultiLevelSolver<DIM>* FSI_MLS= dynamic_cast<FSIMultiLevelSolver<DIM>*>(GetMultiLevelSolver());
 	
-    GetMultiLevelSolver()->ReInit("fsi");
-    GetMultiLevelSolver()->ReInitVector(u);
-    GetMultiLevelSolver()->ReInitVector(old);
-    GetMultiLevelSolver()->ReInitVector(vel);
-    GetMultiLevelSolver()->ReInitVector(f);
-    GetMultiLevelSolver()->ReInitVector(def);
-    GetMultiLevelSolver()->ReInitVector(defold);
-    GetMultiLevelSolver()->ReInitVector(def_pres);
+	FSI_MLS->ReInit("blubbb");
+	//Anlegen von vier Loesern  
+	// fsi_main 		Zum Abspeichern von Vektoren. Keine Matrix!	  	Anlegen mit Problem: "fsi_main"
+	// fsi_reduced 		Matrix mit (DIM+1)*(DIM+1)						Anlegen mit Problem: "fsi_reduced"
+	// meshmotion 		Matrix mit DIM*DIM								Anlegen mit Problem: "meshmotion"
+	// def_solid		Matrix mit DIM*DIM								Anlegen mit Problem: "def_solid"
+	
+    
+  
 	//////////////////////////////////////////////////////////////////////////////	
  	//////////////////////////////////////////////////////////////////////////////
     cout<<"================================================="<<endl;
-    cout<<"Only Fluid Stat to compute initial condition"<<endl;
-
+    cout<<"Only Fluid Stat to compute initial condition on fluid domain(!!!)"<<endl;
+    
+    FSI_MLS->SetSolverLabel("fsi_reduced");
     GetMultiLevelSolver()->SetProblem("fluid_stat");
+    
+    VectorInterface  f("f"), vel("VEL");    
+    GetMultiLevelSolver()->ReInitVector(vel);
+    GetMultiLevelSolver()->ReInitVector(f);
+    
 	//// SOLVE
-	GetMultiLevelSolver()->GetSolver()->GetGV(u).zero();
+	GetMultiLevelSolver()->GetSolver()->GetGV(vel).zero();
 	GetMultiLevelSolver()->GetSolver()->GetGV(f).zero();
 	GetMultiLevelSolver()->GetSolver()->Rhs(f);
 	GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(f);
 	// set offset first, so nodes that are both periodic and dirichlet will become dirichlet
-	GetMultiLevelSolver()->GetSolver()->SetPeriodicVector(u);
-	GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(u);
-
-    
-	string solved=GetMultiLevelSolver()->Solve(u,f,GetSolverInfos()->GetNLInfo());
+	GetMultiLevelSolver()->GetSolver()->SetPeriodicVector(vel);
+	GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(vel);
+	GetSolverInfos()->GetNLInfo().control().matrixmustbebuild() = 1;
+	
+	string solved=GetMultiLevelSolver()->Solve(vel,f,GetSolverInfos()->GetNLInfo());
 	assert(solved=="converged");
 		
-	Output(u,"Results/init_v");
-	
-    //Abspeichern des Geschwindigkeit als Anfangsbed
-    GetMultiLevelSolver()->Equ(vel,1.0,u);
-   
+	Output(vel,"Results/init_v");
+	   
    	//////////////////////////////////////////////////////////////////////////////	
  	//////////////////////////////////////////////////////////////////////////////
  	cout<<"================================================="<<endl;
-    cout<<"Only Solid Euler to compute prestress"<<endl;
+    cout<<"Only Solid Euler to compute prestress on solid domain!!"<<endl;
     
-
+    FSI_MLS->SetSolverLabel("fsi_reduced");
     GetMultiLevelSolver()->SetProblem("solid_euler");
-	GetMultiLevelSolver()->GetSolver()->GetGV(u).zero();
+     
+    VectorInterface   def_pres("def_pres");    
+     
+    GetMultiLevelSolver()->ReInitVector(def_pres);
+    GetMultiLevelSolver()->GetSolver()->GetGV(def_pres).zero();
+	
 	GetMultiLevelSolver()->AddNodeVector("VEL",vel);
+	
 	//// SOLVE
-
 	GetMultiLevelSolver()->GetSolver()->GetGV(f).zero();
 	GetMultiLevelSolver()->GetSolver()->Rhs(f);
 	GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(f);
 	// set offset first, so nodes that are both periodic and dirichlet will become dirichlet
-	GetMultiLevelSolver()->GetSolver()->SetPeriodicVector(u);
-	GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(u);
+	GetMultiLevelSolver()->GetSolver()->SetPeriodicVector(def_pres);
+	GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(def_pres);
 	GetSolverInfos()->GetNLInfo().control().matrixmustbebuild() = 1;
-	solved=GetMultiLevelSolver()->Solve(u,f,GetSolverInfos()->GetNLInfo());
-	Output(u,"Results/def_pres");
+	
+	solved=GetMultiLevelSolver()->Solve(def_pres,f,GetSolverInfos()->GetNLInfo());
+	Output(def_pres,"Results/def_pres");
 	assert(solved=="converged");
 	
-    GetMultiLevelSolver()->Equ(def_pres,-1.0,u);
+    GetMultiLevelSolver()->Equ(def_pres,-1.0,def_pres);
 	GetMultiLevelSolver()->DeleteNodeVector("VEL");
 	
    	//////////////////////////////////////////////////////////////////////////////	
@@ -137,63 +144,100 @@ namespace Gascoigne
   	cout<<"================================================="<<endl;
     cout<<"Prestressed Fluid-Structure Interaction Problem"<<endl;		
     
-    GetMultiLevelSolver()->SetProblem("fsi");
-    GetMultiLevelSolver()->GetSolver()->Zero(def);
-    
-    GetMultiLevelSolver()->Equ(u,1.0,vel);
-	Output(u,"Results/init");
-    //InitSolution(u);
+
+     SolverInfos*   _SI_Solid_Disp= new SolverInfos;
+  	_SI_Solid_Disp->BasicInit(_paramfile);
+    SolverInfos*   _SI_Solid_MeshMotion= new SolverInfos;
+  	_SI_Solid_MeshMotion->BasicInit(_paramfile);
+  	
+  	_SI_Solid_Disp->GetNLInfo().control().matrixmustbebuild() = 1;
+  	_SI_Solid_MeshMotion->GetNLInfo().control().matrixmustbebuild() = 1;
     GetSolverInfos()->GetNLInfo().control().matrixmustbebuild() = 1;
+    
+    FSI_MLS->SetSolverLabel("fsi_main");
+    GetMultiLevelSolver()->SetProblem("fsi_main");
+    
+    FSI_MLS->SetSolverLabel("meshmotion");
+    GetMultiLevelSolver()->SetProblem("meshmotion");
+    
+    FSI_MLS->SetSolverLabel("def_solid");
+    GetMultiLevelSolver()->SetProblem("def_solid");
+        
+    FSI_MLS->SetSolverLabel("fsi_reduced");
+    GetMultiLevelSolver()->SetProblem("fsi_reduced");
+    GetMultiLevelSolver()->AddNodeVector("DEF_PRES",def_pres);
+    
+    
+    FSI_MLS->SetSolverLabel("fsi_main")	;
+    VectorInterface U_Vec("U_Vec"),UOLD_Vec("UOLD_Vec"), F("F");
+    
+    FSI_MLS->ReInitVector(U_Vec);
+    FSI_MLS->GetSolver()->GetGV(U_Vec).zero();
+    FSI_MLS->ReInitVector(UOLD_Vec);
+    FSI_MLS->GetSolver()->GetGV(UOLD_Vec).zero();
+    FSI_MLS->ReInitVector(F);
+    FSI_MLS->GetSolver()->GetGV(F).zero();
+
+    
+    FSI_MLS->AddNodeVectorinAllSolvers("U_Vec",U_Vec);
+    FSI_MLS->AddNodeVectorinAllSolvers("UOLD_Vec",UOLD_Vec);
+
+	//Init Condition aus Vel Vektor ubertragen
+	GlobalVector &U_GV =GetMultiLevelSolver()->GetSolver()->GetGV(U_Vec); 
+	for (int node=0;node<GetMultiLevelSolver()->GetSolver()->GetMesh()->nnodes();++node)
+	  {
+		for(int i=0;i<DIM+1;i++)
+	  		U_GV(node,i) = FSI_MLS->GetSolver("fsi_reduced")->GetGV(vel)(node,i); 	
+	  	for(int i=0;i<DIM;i++)
+	  		U_GV(node,DIM+1+i)=0.0	;	
+	  }
+	  
+	Output(U_Vec,"Results/init");
+    //InitSolution(u);
+
     for (_iter=1; _iter<=_niter; _iter++)
       {
-	cout << "========== " << _iter << ": " << __TIME << " -> " 
-			 << __TIME+__DT << "  (" << __THETA << ")" << endl;
-	__TIME += __DT;
+		cout << "========== " << _iter << ": " << __TIME << " -> " 
+				 << __TIME+__DT << "  (" << __THETA << ")" << endl;
+		__TIME += __DT;
 
-	GetMultiLevelSolver()->Equ(old,1.0,u);
-	GetMultiLevelSolver()->Equ(defold,1.0,def);
+		GetMultiLevelSolver()->Equ(UOLD_Vec,1.0,U_Vec);
 
-	GetMultiLevelSolver()->AddNodeVector("OLD",old);
-	GetMultiLevelSolver()->AddNodeVector("DEFOLD",defold);
-	GetMultiLevelSolver()->AddNodeVector("DEF",def);
-    GetMultiLevelSolver()->AddNodeVector("DEF_PRES",def_pres);
+		//// SOLVE
+		GetMultiLevelSolver()->GetSolver()->Zero(F);
+		GetMultiLevelSolver()->GetSolver()->Rhs(F);
+		GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(F);
+		// set offset first, so nodes that are both periodic and dirichlet will become dirichlet
+		GetMultiLevelSolver()->GetSolver()->SetPeriodicVector(U_Vec);
+		GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(U_Vec);
+		
+		solved=FSI_MLS->Solve(U_Vec,F,GetSolverInfos()->GetNLInfo(),_SI_Solid_Disp->GetNLInfo(),_SI_Solid_MeshMotion->GetNLInfo());
+		assert(solved=="converged");
+		Output(U_Vec,"Results/uuuuuu");
+	  
+		if (_iter%5==0)
+		{
+		GetMultiLevelSolver()->GetSolver()->Visu("Results/U",U_Vec,_iter);
+		WriteMeshAndSolution("Results/U",U_Vec);
+		}
 
-	//	GetSolverInfos()->GetNLInfo().control().matrixmustbebuild() = 1;
-	//assert(Solve(u,f)=="converged");
-	//// SOLVE
-	GetMultiLevelSolver()->GetSolver()->Zero(f);
-	GetMultiLevelSolver()->GetSolver()->Rhs(f);
-	GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(f);
-	// set offset first, so nodes that are both periodic and dirichlet will become dirichlet
-	GetMultiLevelSolver()->GetSolver()->SetPeriodicVector(u);
-	GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(u);
-	dynamic_cast<FSIMultiLevelSolver<DIM>*>(GetMultiLevelSolver())->UpdateDeformation(u);
-
-	solved=GetMultiLevelSolver()->Solve(u,f,GetSolverInfos()->GetNLInfo());
-	assert(solved=="converged");
-	Output(u,"Results/uuuuuu");
-  
-	if (_iter%5==0)
-	{
-	GetMultiLevelSolver()->GetSolver()->Visu("Results/u",u,_iter);
-	WriteMeshAndSolution("Results/u",u);
-	}
-
-	/*		
-	DoubleVector juh = Functionals(u,f);
-	DoubleVector juh2 = Functionals(def,f);
+		/*		
+		DoubleVector juh = Functionals(u,f);
+		DoubleVector juh2 = Functionals(def,f);
 	
-	InterfaceResidual=true;
-	DoubleVector juh3 = Functionals(u,f);
-	InterfaceResidual=false;
-	*/
-	GetMultiLevelSolver()->DeleteNodeVector("OLD");
-	GetMultiLevelSolver()->DeleteNodeVector("DEFOLD");
-	GetMultiLevelSolver()->DeleteNodeVector("DEF");
-	GetMultiLevelSolver()->DeleteNodeVector("DEF_PRES");
-	//func_log <<__TIME << "\t" << 0.0 << "\t" << juh<<"\t"<<juh3[5]<<"  "<<juh3[7]<<"  "<<juh2[8]<<"  "<<juh2[9]<< endl;
+		InterfaceResidual=true;
+		DoubleVector juh3 = Functionals(u,f);
+		InterfaceResidual=false;
+		*/
 
+		//func_log <<__TIME << "\t" << 0.0 << "\t" << juh<<"\t"<<juh3[5]<<"  "<<juh3[7]<<"  "<<juh2[8]<<"  "<<juh2[9]<< endl;
     }
+    FSI_MLS->SetSolverLabel("fsi_main"); 
+    	FSI_MLS->DeleteNodeVectorinAllSolvers("U_Vec");
+    	FSI_MLS->DeleteNodeVectorinAllSolvers("UOLD_Vec");
+    
+    FSI_MLS->SetSolverLabel("fsi_reduced")	;
+		GetMultiLevelSolver()->DeleteNodeVector("DEF_PRES");
 
     func_log.close();
 

@@ -56,14 +56,15 @@ class StdMultiLevelSolver : public virtual MultiLevelSolverInterface
 
   std::vector<SolverInterface*>  _SP;
   const MeshAgentInterface* _MAP;
-  std::vector<MgInterpolatorInterface*>   _Interpolator;
+
 
   protected :
-
+  std::vector<MgInterpolatorInterface*>   _Interpolator;
+  
   const MeshAgentInterface* GetMeshAgent() const {return _MAP;}
 
-  std::vector<SolverInterface*>& GetSolverPointers() { return _SP; }
-  const std::vector<SolverInterface*>& GetSolverPointers() const { return _SP; }
+  virtual std::vector<SolverInterface*>& GetSolverPointers() { return _SP; }
+  virtual const std::vector<SolverInterface*>& GetSolverPointers() const { return _SP; }
   
   mutable VectorInterface _cor, _res, _mg0, _mg1;
 
@@ -147,14 +148,14 @@ class StdMultiLevelSolver : public virtual MultiLevelSolverInterface
   virtual const ProblemContainer* GetProblemContainer()        const { assert(_PC); return _PC; }
   virtual void SetProblemContainer(const ProblemContainer* PC)       { _PC=PC;     }
 
-  SolverInterface* GetSolver(int l) {assert(l<_SP.size()); return _SP[l];}
-  const SolverInterface* GetSolver(int l) const {assert(l<_SP.size()); return _SP[l];}
-  SolverInterface* GetSolver() {assert(_SP.size()==nlevels()); return _SP[FinestLevel()];}
-  const SolverInterface* GetSolver() const {assert(_SP.size()==nlevels()); return _SP[FinestLevel()];}
+  virtual SolverInterface* GetSolver(int l) {assert(l<_SP.size()); return _SP[l];}
+  virtual const SolverInterface* GetSolver(int l) const {assert(l<_SP.size()); return _SP[l];}
+  virtual SolverInterface* GetSolver() {assert(_SP.size()==nlevels()); return _SP[FinestLevel()];}
+  virtual const SolverInterface* GetSolver() const {assert(_SP.size()==nlevels()); return _SP[FinestLevel()];}
 
   void SetMonitorPtr(Monitor* mon) { MON = mon;}
 
-  void ReInit(const std::string& problemlabel);
+  virtual void ReInit(const std::string& problemlabel);
   void SetProblem(const std::string& label);
 
   // neue vektoren
@@ -175,9 +176,9 @@ class StdMultiLevelSolver : public virtual MultiLevelSolverInterface
 
 
   void AssembleMatrix(VectorInterface& u, NLInfo& nlinfo);
-  void AssembleMatrix(VectorInterface& u);
+  virtual void AssembleMatrix(VectorInterface& u);
   /// not used in the library -- might be used in local
-  void ComputeIlu(VectorInterface& u);
+  virtual void ComputeIlu(VectorInterface& u);
   void ComputeIlu();
   
   void BoundaryInit(VectorInterface& u) const;
@@ -204,7 +205,7 @@ class StdMultiLevelSolver : public virtual MultiLevelSolverInterface
   void AddNodeVector(const std::string& name, VectorInterface& q);
   void DeleteNodeVector(const std::string& q);
 
-  void newton(VectorInterface& u, const VectorInterface& f, VectorInterface& r, VectorInterface& w, NLInfo& info);
+  virtual void newton(VectorInterface& u, const VectorInterface& f, VectorInterface& r, VectorInterface& w, NLInfo& info);
 };
 }
 

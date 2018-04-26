@@ -45,12 +45,12 @@ StdMultiLevelSolver::~StdMultiLevelSolver()
   if(DataP) delete DataP;
   DataP=NULL;
 
-  for(int i=0;i<_SP.size();i++) 
+  for(int i=0;i<GetSolverPointers().size();i++) 
     { 
-      if (_SP[i]) 
+      if (GetSolverPointers()[i]) 
         {
-          delete _SP[i]; 
-          _SP[i]=NULL; 
+          delete GetSolverPointers()[i]; 
+          GetSolverPointers()[i]=NULL; 
         }
     }
    for(int i=0; i<_Interpolator.size(); i++)  
@@ -78,7 +78,7 @@ void StdMultiLevelSolver::ViewProtocoll() const
   double so=0.;
   double ca=0., ci=0., cs=0.;
   double re=0;
-  for(int level=0;level<_SP.size();level++)
+  for(int level=0;level<GetSolverPointers().size();level++)
     {
       const StdSolver* S = dynamic_cast<const StdSolver*>(GetSolver(level));
       assert(S);
@@ -161,7 +161,7 @@ SolverInterface* StdMultiLevelSolver::NewSolver(int solverlevel)
 
 void StdMultiLevelSolver::RegisterVectors() 
 {
-  assert(nlevels()==_SP.size());
+  assert(nlevels()==GetSolverPointers().size());
   for (int level=0; level<nlevels(); ++level)  
     {
       GetSolver(level)->RegisterVector(_cor);
@@ -196,18 +196,18 @@ void StdMultiLevelSolver::ReInitVector(VectorInterface& v, int comp)
 
 void StdMultiLevelSolver::NewSolvers()
 {
-  oldnlevels = _SP.size();
+  oldnlevels = GetSolverPointers().size();
 
   if (oldnlevels>nlevels())
     {
       for (int l=oldnlevels-1; l>=nlevels(); l--)
         {
-          delete _SP[l];
-          _SP[l] = NULL;
+          delete GetSolverPointers()[l];
+          GetSolverPointers()[l] = NULL;
         }
     }
-  _SP.resize(nlevels(),NULL);
-  ComputeLevel = _SP.size()-1;
+  GetSolverPointers().resize(nlevels(),NULL);
+  ComputeLevel = GetSolverPointers().size()-1;
 
   for(int level=0; level<nlevels(); ++level)  
     {
@@ -711,7 +711,7 @@ void StdMultiLevelSolver::ComputeIlu(VectorInterface& u)
 
 void StdMultiLevelSolver::BoundaryInit(VectorInterface& u) const
 {
-  for(int l=0;l<_SP.size();l++)
+  for(int l=0;l<GetSolverPointers().size();l++)
     GetSolver(l)->BoundaryInit(u);
 }
 

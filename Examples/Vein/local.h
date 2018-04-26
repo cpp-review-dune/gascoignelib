@@ -2,8 +2,7 @@
 #ifndef  __local_h
 #define  __local_h
 
-#include  "FSI/fsi.h"
-#include  "FSI/boundaryfsi.h"
+
 #include  "dirichletdata.h"
 #include  "problemdescriptorbase.h"
 #include  "domainrighthandside.h"

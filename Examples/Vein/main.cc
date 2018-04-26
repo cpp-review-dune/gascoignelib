@@ -313,9 +313,9 @@ class DomainFunctionalAddResidualLift : public Gascoigne::DomainFunctional
   };
   
   
-#include  "FSI/fsi.h"
-#include  "FSI/boundaryfsi.h"
-#include  "FSI/fsi_dirichlet.h"
+#include  "FSI/FSI_reduced/fsi.h"
+#include  "FSI/FSI_reduced/boundaryfsi.h"
+#include  "FSI/FSI_reduced/fsi_dirichlet.h"
 
 /*---------------------------------------------------*/
 class ProblemDescriptorFSI2d : public ProblemDescriptorBase
