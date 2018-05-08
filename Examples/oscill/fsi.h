@@ -19,6 +19,7 @@ template <int DIM>
 class FSI : public LpsEquation  // , public BoundaryEquation
 {
 protected:
+    static constexpr bool s = false;
     typedef Eigen::Matrix<double, DIM, DIM> MATRIX;
     typedef Eigen::Matrix<double, DIM, 1> VECTOR;
 

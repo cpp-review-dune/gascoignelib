@@ -62,17 +62,27 @@ void FSI<DIM>::point(double h, const FemFunction& U, const Vertex<DIM>& v) const
 
     multiplex_init_NU<DIM>(NU, U);
     multiplex_init_NU<DIM>(NU_old, *OLD);
+    // set F, F_old to Identity in fluid
+    if (s)
+    {
+        multiplex_init_F<DIM>(F, U);
+        multiplex_init_F<DIM>(F_old, *OLD);
 
-    multiplex_init_F<DIM>(F, U);
-    multiplex_init_F<DIM>(F_old, *OLD);
-
-    multiplex_init_dtU<DIM>(dtU, U, *OLD);
-
-    J     = F.determinant();
-    J_old = F_old.determinant();
-
+        J     = F.determinant();
+        J_old = F_old.determinant();
+    }
+    // multiplex_init_dtU<DIM>(dtU, U, *OLD);
+    dtU = VECTOR::Zero();
     if (domain < 0)
     {
+        if (!s)
+        {
+            F     = MATRIX::Identity();
+            F_old = MATRIX::Identity();
+
+            J     = 1.;
+            J_old = 1.;
+        }
         multiplex_init_NV<DIM>(NV, U);
 
         multiplex_init_V<DIM>(V, U);
@@ -88,6 +98,14 @@ void FSI<DIM>::point(double h, const FemFunction& U, const Vertex<DIM>& v) const
     }
     if (domain > 0)
     {
+        if (!s)
+        {
+            multiplex_init_F<DIM>(F, U);
+            multiplex_init_F<DIM>(F_old, *OLD);
+
+            J     = F.determinant();
+            J_old = F_old.determinant();
+        }
         E            = 0.5 * (F.transpose() * F - MATRIX::Identity());
         MATRIX E_old = 0.5 * (F_old.transpose() * F_old - MATRIX::Identity());
 
@@ -375,14 +393,25 @@ void FSI<DIM>::point_M(int j, const FemFunction& U, const TestFunction& M) const
 {
     VECTOR psi;
     multiplex_init_test<DIM>(psi, M);
-    for (int j = 0; j < DIM; ++j)
+    if (s)
     {
-        Jj[j]  = (psi.transpose() * J * F.inverse().block(0, j, DIM, 1))(0, 0);
-        Fij[j] = -F.inverse().block(0, j, DIM, 1) * psi.transpose() * F.inverse();
+        for (int j = 0; j < DIM; ++j)
+        {
+            // set to zero
+            Jj[j]  = (psi.transpose() * J * F.inverse().block(0, j, DIM, 1))(0, 0);
+            Fij[j] = -F.inverse().block(0, j, DIM, 1) * psi.transpose() * F.inverse();
+        }
     }
-
     if (domain < 0)
     {
+        if (!s)
+        {
+            for (int j = 0; j < DIM; ++j)
+            {
+                Jj[j]  = 0.;
+                Fij[j] = MATRIX::Zero();
+            }
+        }
         divergence = (F.inverse().transpose().array() * NV.array()).sum();
         CONV_dV1   = rho_f * J * NV * F.inverse();
 
@@ -420,6 +449,14 @@ void FSI<DIM>::point_M(int j, const FemFunction& U, const TestFunction& M) const
 
     if (domain > 0)
     {
+        if (!s)
+        {
+            for (int j = 0; j < DIM; ++j)
+            {
+                Jj[j]  = (psi.transpose() * J * F.inverse().block(0, j, DIM, 1))(0, 0);
+                Fij[j] = -F.inverse().block(0, j, DIM, 1) * psi.transpose() * F.inverse();
+            }
+        }
         for (int j = 0; j < DIM; ++j)
             SIGMA_dF[j] = (psi.transpose() * SIGMAs).transpose();
         for (int j = 0; j < DIM; ++j)
