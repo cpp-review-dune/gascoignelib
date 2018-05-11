@@ -89,7 +89,9 @@ namespace Gascoigne
         
     VectorInterface  f("f"), vel("VEL");    
     VectorInterface   def_pres("def_pres"); 
-   for (int i=0;i<_initial_refine;++i)
+    GetMultiLevelSolver()->ReInitVector(def_pres);
+    GetMultiLevelSolver()->GetSolver()->GetGV(def_pres).zero();	
+  /* for (int i=0;i<_initial_refine;++i)
       {
       	GetMultiLevelSolver()->ReInit("blubbb");	
         FSI_MLS->SetSolverLabel("fsi_reduced");
@@ -159,6 +161,7 @@ namespace Gascoigne
 	}	
 	
 	GetMultiLevelSolver()->Equ(def_pres,-1.0,def_pres);
+	*/
    	//////////////////////////////////////////////////////////////////////////////	
  	//////////////////////////////////////////////////////////////////////////////	
   	cout<<"================================================="<<endl;
@@ -207,7 +210,8 @@ namespace Gascoigne
 	for (int node=0;node<GetMultiLevelSolver()->GetSolver()->GetMesh()->nnodes();++node)
 	  {
 		for(int i=0;i<DIM+1;i++)
-	  		U_GV(node,i) = FSI_MLS->GetSolver("fsi_reduced")->GetGV(vel)(node,i); 	
+	  		//U_GV(node,i) = FSI_MLS->GetSolver("fsi_reduced")->GetGV(vel)(node,i);
+	  		U_GV(node,i) = 0.0; 	 	
 	  	for(int i=0;i<DIM;i++)
 	  		U_GV(node,DIM+1+i)=0.0	;	
 	  }
@@ -220,7 +224,8 @@ namespace Gascoigne
 		cout << "========== " << _iter << ": " << __TIME << " -> " 
 				 << __TIME+__DT << "  (" << __THETA << ")" << endl;
 		__TIME += __DT;
-
+		
+		FSI_MLS->SetSolverLabel("fsi_main")	;
 		GetMultiLevelSolver()->Equ(UOLD_Vec,1.0,U_Vec);
 
 		//// SOLVE
@@ -241,8 +246,9 @@ namespace Gascoigne
 		WriteMeshAndSolution("Results/U",U_Vec);
 		}
 
-		/*		
-		DoubleVector juh = Functionals(u,f);
+
+		DoubleVector juh = Functionals(U_Vec,F);
+		/*
 		DoubleVector juh2 = Functionals(def,f);
 	
 		InterfaceResidual=true;

@@ -1,5 +1,5 @@
 
-ADD_EXECUTABLE("vein_3d" 
+ADD_EXECUTABLE("FSI3DBenchmark_new" 
  Solver/alebase.cc    
  Solver/alediscretization.cc   
  Solver/solvers.cc 
@@ -27,7 +27,7 @@ ADD_EXECUTABLE("vein_3d"
 )
 
 SET_TARGET_PROPERTIES(
-  vein_3d
+  FSI3DBenchmark_new
   PROPERTIES
   COMPILE_DEFINITIONS "${GASCOIGNE_DEFINITIONS}"
   )
