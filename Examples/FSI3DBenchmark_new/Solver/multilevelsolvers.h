@@ -22,6 +22,8 @@ namespace Gascoigne
   map<std::string,std::vector<SolverInterface*>>  _MSP;
   mutable std::string _SolverLabel;
   mutable VectorInterface _f,_u;
+  
+  void NewtonMatrixControl_nomonitor(VectorInterface& u, NLInfo& nlinfo);
   public:
   FSIMultiLevelSolver();     
   ~FSIMultiLevelSolver();        
@@ -164,6 +166,7 @@ namespace Gascoigne
 	  std::string Solve( VectorInterface& x, const VectorInterface& b, NLInfo& info_fsi_reduced ,NLInfo& info_solid_disp,NLInfo& info_meshmotion);
 	  void VelocityandPressureUto_u(GlobalVector& U_Vec_GV, VectorInterface& _u);
 	  void AssembleMatrix(VectorInterface& u);
+	  void AssembleMatrix(VectorInterface& u, NLInfo& nlinfo);
 	  void ComputeIlu(VectorInterface& u);
   };
 

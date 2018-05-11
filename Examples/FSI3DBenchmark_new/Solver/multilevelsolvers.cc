@@ -1,4 +1,5 @@
 #include "multilevelsolvers.h"
+#include "stdmultilevelsolver.h"
 #include  "mginterpolatormatrix.h"
 #include  "mginterpolatornested.h"
 #include <algorithm>
@@ -210,6 +211,20 @@ namespace Gascoigne
 		}
 			  
 	} 
+	
+	/*-------------------------------------------------------------*/
+    template<int DIM>
+  void FSIMultiLevelSolver<DIM>::NewtonMatrixControl_nomonitor(VectorInterface& u, NLInfo& nlinfo)
+	{
+	  int nm1 = nlinfo.control().newmatrix();
+	  int nm2 = nlinfo.control().matrixmustbebuild();
+
+	  if (nm1+nm2==0) return;
+	  
+	  cout<<" NewtonMatrixControl_nomonitor AssembleMatrix"<<endl;
+	  AssembleMatrix(u,nlinfo);
+	  ComputeIlu(u);
+	}
   	/*-----------------------------------------------------------------------*/
 
   
@@ -222,7 +237,7 @@ namespace Gascoigne
 	  	double rrr = NewtonResidual(_res,_cor,_f);
 	  	
 
-	 	NewtonMatrixControl(_cor,info_solid_disp);
+	 	NewtonMatrixControl_nomonitor(_cor,info_solid_disp);
 		NewtonVectorZero(_cor);
 		NewtonLinearSolve(_cor,_res,info_solid_disp.GetLinearInfo());
 		
@@ -238,7 +253,7 @@ namespace Gascoigne
 		NewtonVectorZero(_f);
 	  	double rrrr = NewtonResidual(_res,_cor,_f);
 
-	 	NewtonMatrixControl(_cor,info_meshmotion);
+	 	NewtonMatrixControl_nomonitor(_cor,info_meshmotion);
 		NewtonVectorZero(_cor);
 		NewtonLinearSolve(_cor,_res,info_meshmotion.GetLinearInfo());
 	 	
@@ -402,6 +417,8 @@ namespace Gascoigne
   	  info_solid_disp.control().iteration()=0;
 	  info_meshmotion.control().iteration()=0;
 	  
+	  info_solid_disp.control().iteration()=-1;
+	  info_meshmotion.control().iteration()=-1;
 	  cout<<"Res solid_disp: "; NewtonOutput(info_solid_disp);
 	  cout<<"Res meshmotion: ";	NewtonOutput(info_meshmotion);
 	  
@@ -448,7 +465,16 @@ namespace Gascoigne
 
 	}
 	
-	
+	/*-------------------------------------------------------------*/
+
+	  template<int DIM>
+	  void FSIMultiLevelSolver<DIM>::AssembleMatrix(VectorInterface& u, NLInfo& nlinfo)
+	{
+	  AssembleMatrix(u);
+	  nlinfo.control().matrixmustbebuild() = 0;
+	}
+
+
 		/*-----------------------------------------------------------------------*/
 	  template<int DIM>
   void FSIMultiLevelSolver<DIM>::AssembleMatrix(VectorInterface& u)

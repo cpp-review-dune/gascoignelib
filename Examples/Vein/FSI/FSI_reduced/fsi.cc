@@ -653,7 +653,7 @@ namespace Gascoigne
   {
 
     //double vel =10.0;  
-    double vel =1.0*sqrt(U[1].m()*U[1].m()+U[2].m()*U[2].m()+U[3].m()*U[3].m());
+    double vel =1.0*sqrt((*U_Vec)[1].m()*(*U_Vec)[1].m()+(*U_Vec)[2].m()*(*U_Vec)[2].m()+(*U_Vec)[3].m()*(*U_Vec)[3].m());
     
     
     lps = lps0 / (vel/h + nu_f/h/h);

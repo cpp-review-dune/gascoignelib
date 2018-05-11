@@ -26,11 +26,6 @@ namespace Gascoigne
       void SetILUPointer(int ncomp);
     protected: 
       IluInterface *NewIlu(int ncomp, const string &matrixtype);  
-	  void modify_ilu(IluInterface &I, int ncomp) const{if(StdSolver::_directsolver==true) StdSolver::modify_ilu(I, ncomp);}
-	  void PermutateIlu(const VectorInterface &gu) const{if(StdSolver::_directsolver==true) StdSolver::PermutateIlu(gu);}
-	  void	smooth_exact(VectorInterface &x,
-                               const VectorInterface &y,
-                               VectorInterface &help) const{if(StdSolver::_directsolver==true) StdSolver::smooth_exact(x,y,help);}
      
     public:
 	 ~FSIVankaSolver();
