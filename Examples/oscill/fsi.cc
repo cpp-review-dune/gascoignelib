@@ -71,8 +71,8 @@ void FSI<DIM>::point(double h, const FemFunction& U, const Vertex<DIM>& v) const
         J     = F.determinant();
         J_old = F_old.determinant();
     }
-    // multiplex_init_dtU<DIM>(dtU, U, *OLD);
-    dtU = VECTOR::Zero();
+    multiplex_init_dtU<DIM>(dtU, U, *OLD);
+    // dtU = VECTOR::Zero();
     if (domain < 0)
     {
         if (!s)
