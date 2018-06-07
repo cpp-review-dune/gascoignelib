@@ -1,5 +1,5 @@
 ADD_EXECUTABLE("oscill"
-umfsplit.cc alebase.cc  ale.cc  alediscretization.cc  chi.cc  fsi.cc    loop.cc
+umfsplit.cc alebase.cc  ale.cc  alediscretization.cc  chi.cc  fsi.cc div.cc loop.cc
 main.cc  solvers.cc
 )
 SET_TARGET_PROPERTIES(
@@ -9,7 +9,7 @@ SET_TARGET_PROPERTIES(
     )
 
 ADD_EXECUTABLE("paraoscill"
-umfsplit.cc alebase.cc  ale.cc  alediscretization.cc  chi.cc  fsi.cc loop.cc
+umfsplit.cc alebase.cc  ale.cc  alediscretization.cc  chi.cc  fsi.cc  div.cc  loop.cc
 mainPara.cc  solvers.cc
 )
 SET_TARGET_PROPERTIES(
@@ -19,7 +19,7 @@ SET_TARGET_PROPERTIES(
     )
 
 ADD_EXECUTABLE("paraoscill_bench"
-umfsplit.cc alebase.cc  ale.cc  alediscretization.cc  chi.cc  fsi.cc loop.cc
+umfsplit.cc alebase.cc  ale.cc  alediscretization.cc  chi.cc  fsi.cc  div.cc  loop.cc
 benchPara.cc  solvers.cc
 )
 SET_TARGET_PROPERTIES(
