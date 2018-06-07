@@ -19,6 +19,8 @@ cmake*
 #ignore pdf
 *.pdf
 *para_functional*
+*para_error*
+*functional.txt
 
 # ignore binaries
 /bin*
