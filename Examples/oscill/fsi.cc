@@ -1,6 +1,6 @@
 #include "fsi.h"
 #include "filescanner.h"
-
+#include "multiplex.h"
 extern double __DT;
 extern double __THETA;
 
@@ -45,7 +45,7 @@ FSI<DIM>::FSI(const ParamFile* pf)
 
 //////////////////////////////////////////////////
 
-#include "multiplex.xx"
+
 
 template <int DIM>
 void FSI<DIM>::point(double h, const FemFunction& U, const Vertex<DIM>& v) const
@@ -60,18 +60,18 @@ void FSI<DIM>::point(double h, const FemFunction& U, const Vertex<DIM>& v) const
 
     extend = extend0 / (1.e-2 + dist);
 
-    multiplex_init_NU<DIM>(NU, U);
-    multiplex_init_NU<DIM>(NU_old, *OLD);
+    Multiplex::init_NU<DIM>(NU, U);
+    Multiplex::init_NU<DIM>(NU_old, *OLD);
     // set F, F_old to Identity in fluid
     if (s)
     {
-        multiplex_init_F<DIM>(F, U);
-        multiplex_init_F<DIM>(F_old, *OLD);
+        Multiplex::init_F<DIM>(F, U);
+        Multiplex::init_F<DIM>(F_old, *OLD);
 
         J     = F.determinant();
         J_old = F_old.determinant();
     }
-    multiplex_init_dtU<DIM>(dtU, U, *OLD);
+    Multiplex::init_dtU<DIM>(dtU, U, *OLD);
     // dtU = VECTOR::Zero();
     if (domain < 0)
     {
@@ -83,12 +83,12 @@ void FSI<DIM>::point(double h, const FemFunction& U, const Vertex<DIM>& v) const
             J     = 1.;
             J_old = 1.;
         }
-        multiplex_init_NV<DIM>(NV, U);
+        Multiplex::init_NV<DIM>(NV, U);
 
-        multiplex_init_V<DIM>(V, U);
+        Multiplex::init_V<DIM>(V, U);
 
-        multiplex_init_NV<DIM>(NV_old, *OLD);
-        multiplex_init_V<DIM>(V_old, *OLD);
+        Multiplex::init_NV<DIM>(NV_old, *OLD);
+        Multiplex::init_V<DIM>(V_old, *OLD);
 
         // TENSOR
         SIGMAf = rho_f * nu_f * (F.inverse() * NV + NV.transpose() * F.inverse().transpose());
@@ -100,8 +100,8 @@ void FSI<DIM>::point(double h, const FemFunction& U, const Vertex<DIM>& v) const
     {
         if (!s)
         {
-            multiplex_init_F<DIM>(F, U);
-            multiplex_init_F<DIM>(F_old, *OLD);
+            Multiplex::init_F<DIM>(F, U);
+            Multiplex::init_F<DIM>(F_old, *OLD);
 
             J     = F.determinant();
             J_old = F_old.determinant();
@@ -118,7 +118,7 @@ template <int DIM>
 void FSI<DIM>::Form(VectorIterator b, const FemFunction& U, const TestFunction& N) const
 {
     VECTOR phi;
-    multiplex_init_test<DIM>(phi, N);
+    Multiplex::init_test<DIM>(phi, N);
 
     if (domain < 0)  // fluid
     {
@@ -214,9 +214,9 @@ void FSI<DIM>::Matrix(EntryMatrix& A, const FemFunction& U, const TestFunction& 
                       const TestFunction& N) const
 {
     VECTOR phi;
-    multiplex_init_test<DIM>(phi, N);
+    Multiplex::init_test<DIM>(phi, N);
     VECTOR psi;
-    multiplex_init_test<DIM>(psi, M);
+    Multiplex::init_test<DIM>(psi, M);
 
     if (domain < 0)  // fluid
     {
@@ -392,7 +392,7 @@ template <int DIM>
 void FSI<DIM>::point_M(int j, const FemFunction& U, const TestFunction& M) const
 {
     VECTOR psi;
-    multiplex_init_test<DIM>(psi, M);
+    Multiplex::init_test<DIM>(psi, M);
     if (s)
     {
         for (int j = 0; j < DIM; ++j)
@@ -565,7 +565,7 @@ TestFunction& N) const
 
 //   if (col==1)
 //     {
-//   	VECTOR psi; multiplex_init_test<DIM>(psi,M);
+//   	VECTOR psi; Multiplex::init_test<DIM>(psi,M);
 //   	for (int j=0;j<DIM;++j)
 //   	  {
 // 	    MATRIX FIJ = -F.inverse().block(0,j,DIM,1)*psi.transpose()*F.inverse();
@@ -594,16 +594,16 @@ TestFunction& N) const
 //   domain = chi(v);
 //   if (domain>0) return; // no boundary eq in solid
 
-//   multiplex_init_F<DIM>(F,U);
-//   multiplex_init_F<DIM>(F_old,*OLD);
+//   Multiplex::init_F<DIM>(F,U);
+//   Multiplex::init_F<DIM>(F_old,*OLD);
 
-//   multiplex_init_NV<DIM>(NV,U);
-//   multiplex_init_NV<DIM>(NV_old,*OLD);
+//   Multiplex::init_NV<DIM>(NV,U);
+//   Multiplex::init_NV<DIM>(NV_old,*OLD);
 
 //   J = F.determinant();
 //   J_old = F_old.determinant();
 
-//   multiplex_init_normal<DIM>(normal,n);
+//   Multiplex::init_normal<DIM>(normal,n);
 
 //   BOUNDARY = rho_f * nu_f * J *
 //   NV.transpose()*F.inverse().transpose()*F.inverse().transpose()*normal; BOUNDARY_old = rho_f *

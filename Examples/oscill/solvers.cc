@@ -4,10 +4,12 @@
 #include "gascoignemesh2d.h"
 #include "gascoignemesh3d.h"
 //#include "splittingilu.h"
+#include "colors.h"
 #include "umfilu.h"
 #include "fmatrixblock.h"
 #include "cuthillmckee.h"
 #include "mginterpolatornested.h"
+
 
 using namespace std;
 
@@ -19,15 +21,21 @@ template <int DIM>
 void FSISolver<DIM>::DeleteSolidPressure(VectorInterface& gf) const
 {
     ////////////////////
-
-    const HASHSET<int>& i_nodes = GetAleDiscretization()->GetInterfaceNodes();
-    const vector<int>& s_nodes  = GetAleDiscretization()->GetSolidL2G();
-    vector<int> cv;
-    for (int i = 0; i < s_nodes.size(); ++i)
-        if (i_nodes.find(s_nodes[i]) == i_nodes.end())
-        {
-            GetGV(gf)(s_nodes[i], 0) = 0.0;
-        }
+    if (GetProblemDescriptor()->GetName() == "div")
+    {
+        DeleteSolidPressure_DIV(gf);
+    }
+    else
+    {
+        const HASHSET<int>& i_nodes = GetAleDiscretization()->GetInterfaceNodes();
+        const vector<int>& s_nodes  = GetAleDiscretization()->GetSolidL2G();
+        vector<int> cv;
+        for (int i = 0; i < s_nodes.size(); ++i)
+            if (i_nodes.find(s_nodes[i]) == i_nodes.end())
+            {
+                GetGV(gf)(s_nodes[i], 0) = 0.0;
+            }
+    }
 }
 
 template <int DIM>
@@ -49,18 +57,69 @@ void FSISolver<DIM>::SetBoundaryVector(VectorInterface& gf) const
 template <int DIM>
 void FSISolver<DIM>::AssembleMatrix(const VectorInterface& gu, double d)
 {
-    StdSolver::AssembleMatrix(gu, d);
+    if (GetProblemDescriptor()->GetName() == "div")
+    {
+        AssembleMatrix_DIV(gu, d);
+    }
+    else
+    {
+        StdSolver::AssembleMatrix(gu, d);
+        // cout << GetProblemDescriptor()->GetName()
+        if ((_directsolver) || (_matrixtype == "block"))
+        {
+            // Modify for pressure zero in Solid-Part
+            const HASHSET<int>& i_nodes = GetAleDiscretization()->GetInterfaceNodes();
+            const vector<int>& s_nodes  = GetAleDiscretization()->GetSolidL2G();
+            const vector<int>& f_nodes  = GetAleDiscretization()->GetFluidL2G();
+            vector<int> cv;
+            cv.push_back(0);
+            for (int i = 0; i < s_nodes.size(); ++i)
+                if (i_nodes.find(s_nodes[i]) == i_nodes.end())
+                    GetMatrix()->dirichlet(s_nodes[i], cv);
+        }
+    }
+}
 
+template <int DIM>
+void FSISolver<DIM>::DeleteSolidPressure_DIV(VectorInterface& gf) const
+{
+    ////////////////////
+    VectorInterface old_iface("old");
+    GlobalVector& old_gv         = StdSolver::GetGV(old_iface);
+    // const HASHSET<int>& i_nodes = GetAleDiscretization()->GetInterfaceNodes();
+    const vector<int>& s_nodes  = GetAleDiscretization()->GetSolidL2G();
+    vector<int> cv;
+
+    // u=uold everywhere
+    for (auto i = 0; i < old_gv.n(); ++i)
+    {
+        GetGV(gf)(i, 0) = old_gv(i, 0);
+    }
+
+    //  v = vold in structure and interface
+    for (auto i = 0; i < s_nodes.size(); ++i)
+    {
+        GetGV(gf)(s_nodes[i], 1) = old_gv(s_nodes[i], 1);
+        GetGV(gf)(s_nodes[i], 2) = old_gv(s_nodes[i], 2);
+    }
+}
+
+template <int DIM>
+void FSISolver<DIM>::AssembleMatrix_DIV(const VectorInterface& gu, double d)
+{
+    StdSolver::AssembleMatrix(gu, d);
+    cout << style::bb << "Solving " << GetProblemDescriptor()->GetName();
     if ((_directsolver) || (_matrixtype == "block"))
     {
         // Modify for pressure zero in Solid-Part
         const HASHSET<int>& i_nodes = GetAleDiscretization()->GetInterfaceNodes();
         const vector<int>& s_nodes  = GetAleDiscretization()->GetSolidL2G();
+        const vector<int>& f_nodes  = GetAleDiscretization()->GetFluidL2G();
         vector<int> cv;
         cv.push_back(0);
         for (int i = 0; i < s_nodes.size(); ++i)
             if (i_nodes.find(s_nodes[i]) == i_nodes.end())
-                GetMatrix()->dirichlet(s_nodes[i], cv);
+                GetMatrix()->dirichlet_only_row(s_nodes[i], cv);
     }
 }
 

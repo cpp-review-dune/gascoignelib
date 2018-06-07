@@ -3,6 +3,7 @@
 #define __local_h
 
 #include "fsi.h"
+#include "div.h"
 #include "dirichletdata.h"
 #include "problemdescriptorbase.h"
 #include "domainrighthandside.h"
@@ -181,6 +182,27 @@ public:
         GetParamFilePointer() = pf;
         GetEquationPointer()  = new FSI<2>(GetParamFile());
         //    GetBoundaryEquationPointer() = new FSI<2>(GetParamFile());
+        GetDirichletDataPointer() = new MyDD(GetParamFile());
+
+        ProblemDescriptorBase::BasicInit(pf);
+
+        GetComponentInformationPointer() = new FSI_CI<2>;
+    }
+};
+
+class DivergenceDescriptor2d : public ProblemDescriptorBase
+{
+public:
+    std::string GetName() const
+    {
+        return "div";
+    }
+    void BasicInit(const ParamFile* pf)
+    {
+        GetParamFilePointer() = pf;
+        GetEquationPointer()  = new DIV_proj<2>(GetParamFile());
+        //    GetBoundaryEquationPointer() = new FSI<2>(GetParamFile());
+        // ?
         GetDirichletDataPointer() = new MyDD(GetParamFile());
 
         ProblemDescriptorBase::BasicInit(pf);
