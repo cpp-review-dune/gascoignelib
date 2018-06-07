@@ -194,6 +194,8 @@ private:
     void inline step(double& time, const double& dt, const int& iter, const double& theta,
                      VectorInterface& u, VectorInterface& f);
 
+    void inline divergence_stab(VectorInterface& u, VectorInterface& f);
+
     /*!
      * \brief Method checking for convergence on one subinterval
      *
@@ -520,8 +522,8 @@ double parareal<DIM, logging>::paraAlgo()
         {
 #pragma omp ordered
             {
-                auto im = i%threads;
-                auto im1 = (i+1)%threads;
+                auto im  = i % threads;
+                auto im1 = (i + 1) % threads;
                 omp_set_lock(&interval_locker[im]);
                 // u ⟵ G⁰(i)
                 subinterval[im]->template propagator<iter_type::coarse>(
@@ -538,10 +540,10 @@ double parareal<DIM, logging>::paraAlgo()
                 {
                     std::cerr << style::bb << style::g << "\n[Done] " << style::n
                               << " Initialization on subinterval " << i << '\n';
-                    subinterval[im]->GetSolver()->Visu("Results/initsol", subinterval[im]->u_solution,
-                                                      im);
+                    subinterval[im]->GetSolver()->Visu("Results/initsol",
+                                                       subinterval[im]->u_solution, im);
                     subinterval[im]->WriteMeshAndSolution("Results/initsol",
-                                                         subinterval[im]->u_solution);
+                                                          subinterval[im]->u_solution);
                 }
 
                 if (i < n_intervals - 1)
@@ -1037,6 +1039,20 @@ void parareal<DIM, logging>::step(double& time, const double& dt, const int& ite
 //--------------------------------------------------------------------------------------------------
 
 template <int DIM, log_level logging>
+void parareal<DIM, logging>::divergence_stab(VectorInterface& u, VectorInterface& f)
+{
+    GetMultiLevelSolver()->GetProblemDescriptor()->SetProblem("div");
+
+    GetMultiLevelSolver()->Equ(old, 1.0, u);
+    GetMultiLevelSolver()->AddNodeVector("old", old);
+    assert(StdLoop::Solve(u, f) == "converged");
+
+    GetMultiLevelSolver()->GetProblemDescriptor()->SetProblem("fsi");
+}
+
+//--------------------------------------------------------------------------------------------------
+
+template <int DIM, log_level logging>
 void parareal<DIM, logging>::set_time(const double dt, const double time) const
 {
     for (auto i = 0; i < GetMultiLevelSolver()->nlevels(); ++i)
@@ -1073,9 +1089,12 @@ void parareal<DIM, logging>::setup_problem(const ParamFile& paramfile,
 {
     auto Problem2d = new ProblemDescriptor2d();
     Problem2d->BasicInit(&paramfile);
+    auto Div2d = new DivergenceDescriptor2d();
+    Div2d->BasicInit(&paramfile);
 
     auto PC2d = new ProblemContainer();
     PC2d->AddProblem(problemlabel, Problem2d);
+    PC2d->AddProblem("div", Div2d);
 
     auto FC2d = new FunctionalContainer();
     auto Px   = new WeightedPointFunctional();
