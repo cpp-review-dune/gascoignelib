@@ -22,21 +22,21 @@ template <int DIM>
 class FSI_CI : public ComponentInformationBase
 {
 public:
-    void BasicInit(const ParamFile* pf)
+    void BasicInit(const ParamFile* pf) override
     {
     }
 
-    std::string GetName() const
+    std::string GetName() const override final
     {
         return "FSI CI";
     }
 
-    const int GetNScalars() const
+    const int GetNScalars() const override final
     {
         return 2 * DIM + 1;
     }
 
-    void GetScalarName(int i, std::string& s_name) const
+    void GetScalarName(int i, std::string& s_name) const override final
     {
         if (i == 0)
             s_name = "p";
@@ -68,11 +68,11 @@ public:
         }
     }
 
-    const int GetNVectors() const
+    const int GetNVectors() const override final
     {
         return 2;
     }
-    void GetVectorName(int i, std::string& s_name) const
+    void GetVectorName(int i, std::string& s_name) const override final
     {
         if (i == 0)
             s_name = "V";
@@ -81,7 +81,7 @@ public:
         else
             abort();
     }
-    void GetVectorIndices(int i, std::array<int, 3>& fa_vectorindices) const
+    void GetVectorIndices(int i, std::array<int, 3>& fa_vectorindices) const override final
     {
         if (i == 0)
         {

@@ -10,7 +10,6 @@
 #include "cuthillmckee.h"
 #include "mginterpolatornested.h"
 
-
 using namespace std;
 
 namespace Gascoigne
@@ -18,12 +17,12 @@ namespace Gascoigne
 /*-------------------------------------------------------*/
 
 template <int DIM>
-void FSISolver<DIM>::DeleteSolidPressure(VectorInterface& gf) const
+void FSISolver<DIM>::DeleteSolidPressure(VectorInterface& gf, bool zero) const
 {
     ////////////////////
     if (GetProblemDescriptor()->GetName() == "div")
     {
-        DeleteSolidPressure_DIV(gf);
+        DeleteSolidPressure_DIV(gf, zero);
     }
     else
     {
@@ -43,7 +42,7 @@ void FSISolver<DIM>::SetBoundaryVectorZero(VectorInterface& gf) const
 {
     StdSolver::SetBoundaryVectorZero(gf);
 
-    DeleteSolidPressure(gf);
+    DeleteSolidPressure(gf, true);
 }
 
 template <int DIM>
@@ -51,7 +50,7 @@ void FSISolver<DIM>::SetBoundaryVector(VectorInterface& gf) const
 {
     StdSolver::SetBoundaryVector(gf);
 
-    DeleteSolidPressure(gf);
+    DeleteSolidPressure(gf, false);
 }
 
 template <int DIM>
@@ -70,37 +69,67 @@ void FSISolver<DIM>::AssembleMatrix(const VectorInterface& gu, double d)
             // Modify for pressure zero in Solid-Part
             const HASHSET<int>& i_nodes = GetAleDiscretization()->GetInterfaceNodes();
             const vector<int>& s_nodes  = GetAleDiscretization()->GetSolidL2G();
-            const vector<int>& f_nodes  = GetAleDiscretization()->GetFluidL2G();
-            vector<int> cv;
-            cv.push_back(0);
+            // const vector<int>& f_nodes  = GetAleDiscretization()->GetFluidL2G();
+            const vector<int> cv = {0};
             for (int i = 0; i < s_nodes.size(); ++i)
                 if (i_nodes.find(s_nodes[i]) == i_nodes.end())
-                    GetMatrix()->dirichlet(s_nodes[i], cv);
+                    GetMatrix()->dirichlet_only_row(s_nodes[i], cv);
         }
     }
 }
 
 template <int DIM>
-void FSISolver<DIM>::DeleteSolidPressure_DIV(VectorInterface& gf) const
+void FSISolver<DIM>::DeleteSolidPressure_DIV(VectorInterface& gf, bool zero) const
 {
     ////////////////////
-    VectorInterface old_iface("old");
-    GlobalVector& old_gv         = StdSolver::GetGV(old_iface);
-    // const HASHSET<int>& i_nodes = GetAleDiscretization()->GetInterfaceNodes();
+    // VectorInterface old_iface("old");
+    // GlobalVector& old_gv         = StdSolver::GetGV(old_iface);
+    const GlobalVector* const old_gv =
+      GetDiscretization()->GetDataContainer().GetNodeData().find("old")->second;
+    const HASHSET<int>& i_nodes = GetAleDiscretization()->GetInterfaceNodes();
     const vector<int>& s_nodes  = GetAleDiscretization()->GetSolidL2G();
-    vector<int> cv;
-
-    // u=uold everywhere
-    for (auto i = 0; i < old_gv.n(); ++i)
+    const vector<int>& f_nodes  = GetAleDiscretization()->GetFluidL2G();
+    if (zero)
     {
-        GetGV(gf)(i, 0) = old_gv(i, 0);
+        // u = uold everywhere
+        // Fixed deformation everywhere
+        for (auto i = 0; i < old_gv->n(); ++i)
+        {
+            // GetGV(gf)(i, 0) = (*old_gv)(i, 0);
+            GetGV(gf)(i, 3) = 0;  //(*old_gv)(i, 3);
+            GetGV(gf)(i, 4) = 0;  //(*old_gv)(i, 4);
+        }
+
+        for (int i = 0; i < s_nodes.size(); ++i)
+            if (i_nodes.find(s_nodes[i]) == i_nodes.end())
+                GetGV(gf)(s_nodes[i], 0) = 0;  //(*old_gv)(s_nodes[i], 0);
+        //  v = vold in structure and interface
+        for (auto i = 0; i < s_nodes.size(); ++i)
+        {
+            GetGV(gf)(s_nodes[i], 1) = 0;  //(*old_gv)(s_nodes[i], 1);
+            GetGV(gf)(s_nodes[i], 2) = 0;  //(*old_gv)(s_nodes[i], 2);
+        }
     }
-
-    //  v = vold in structure and interface
-    for (auto i = 0; i < s_nodes.size(); ++i)
+    else
     {
-        GetGV(gf)(s_nodes[i], 1) = old_gv(s_nodes[i], 1);
-        GetGV(gf)(s_nodes[i], 2) = old_gv(s_nodes[i], 2);
+        // u = uold everywhere
+        // Fixed deformation everywhere
+        for (auto i = 0; i < old_gv->n(); ++i)
+        {
+            // GetGV(gf)(i, 0) = (*old_gv)(i, 0);
+            GetGV(gf)(i, 3) = (*old_gv)(i, 3);
+            GetGV(gf)(i, 4) = (*old_gv)(i, 4);
+        }
+
+        for (int i = 0; i < s_nodes.size(); ++i)
+            if (i_nodes.find(s_nodes[i]) == i_nodes.end())
+                GetGV(gf)(s_nodes[i], 0) = 0;  //(*old_gv)(s_nodes[i], 0);
+        //  v = vold in structure and interface
+        for (auto i = 0; i < s_nodes.size(); ++i)
+        {
+            GetGV(gf)(s_nodes[i], 1) = (*old_gv)(s_nodes[i], 1);
+            GetGV(gf)(s_nodes[i], 2) = (*old_gv)(s_nodes[i], 2);
+        }
     }
 }
 
@@ -108,18 +137,23 @@ template <int DIM>
 void FSISolver<DIM>::AssembleMatrix_DIV(const VectorInterface& gu, double d)
 {
     StdSolver::AssembleMatrix(gu, d);
-    cout << style::bb << "Solving " << GetProblemDescriptor()->GetName();
     if ((_directsolver) || (_matrixtype == "block"))
     {
         // Modify for pressure zero in Solid-Part
         const HASHSET<int>& i_nodes = GetAleDiscretization()->GetInterfaceNodes();
         const vector<int>& s_nodes  = GetAleDiscretization()->GetSolidL2G();
         const vector<int>& f_nodes  = GetAleDiscretization()->GetFluidL2G();
-        vector<int> cv;
-        cv.push_back(0);
+
+        // pressure in fluid
+        for (auto i = 0; i < f_nodes.size(); ++i)
+            GetMatrix()->dirichlet_only_row(f_nodes[i], {3, 4});
+
+        // pressure and velocity in structure
+        for (auto i = 0; i < s_nodes.size(); ++i)
+            GetMatrix()->dirichlet_only_row(s_nodes[i], {1, 2, 3, 4});
         for (int i = 0; i < s_nodes.size(); ++i)
             if (i_nodes.find(s_nodes[i]) == i_nodes.end())
-                GetMatrix()->dirichlet_only_row(s_nodes[i], cv);
+                GetMatrix()->dirichlet_only_row(s_nodes[i], {0});
     }
 }
 

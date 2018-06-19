@@ -43,7 +43,7 @@
 
 namespace Gascoigne
 {
-  
+
   /////////////////////////////////////////////
   ///
   ///@brief
@@ -56,13 +56,13 @@ namespace Gascoigne
   class ProblemDescriptorInterface
   {
     private:
-      
+
     protected:
 
     public:
       ProblemDescriptorInterface() {}
       virtual ~ProblemDescriptorInterface() {}
-  
+
       virtual void BasicInit(const ParamFile* pf) {}
 
       virtual std::string GetName() const=0;
@@ -83,6 +83,19 @@ namespace Gascoigne
       virtual const ExactSolution*             GetExactSolution           () const=0;
       virtual const BoundaryManager*           GetBoundaryManager         () const=0;
       virtual const ComponentInformation*      GetComponentInformation    () const=0;
+
+      // virtual Application*               GetRightHandSide           ();
+      // virtual BoundaryRightHandSide*     GetBoundaryRightHandSide   ();
+      // virtual Equation*                  GetEquation                ();
+      // virtual FaceEquation*              GetFaceEquation            ();
+      // virtual BoundaryEquation*          GetBoundaryEquation        ();
+      // virtual DirichletData*             GetDirichletData           ();
+      // virtual PeriodicData*              GetPeriodicData            ();
+      // virtual Application*               GetInitialCondition        ();
+      // virtual BoundaryInitialCondition*  GetBoundaryInitialCondition();
+      // virtual ExactSolution*             GetExactSolution           ();
+      // virtual BoundaryManager*           GetBoundaryManager         ();
+      //virtual ComponentInformation*      GetComponentInformation    ();
   };
 }
 

@@ -34,7 +34,7 @@ namespace Gascoigne
 class ProblemDescriptorBase : public ProblemDescriptorInterface
 {
  private:
-  
+
   Equation                 *EQ;
   FaceEquation             *FEQ;
   BoundaryManager          *BM;
@@ -48,13 +48,13 @@ class ProblemDescriptorBase : public ProblemDescriptorInterface
   BoundaryEquation         *BE;
   ComponentInformation     *CI;
 
-  
+
   const ParamFile *_paramfile;
-  
+
  protected:
-  
+
   const ParamFile*& GetParamFilePointer()           { return _paramfile;}
-  
+
   Equation*&                 GetEquationPointer()                 { return EQ;}
   FaceEquation*&             GetFaceEquationPointer()             { return FEQ;}
   BoundaryManager*&          GetBoundaryManagerPointer()          { return BM;}
@@ -78,9 +78,9 @@ class ProblemDescriptorBase : public ProblemDescriptorInterface
   ~ProblemDescriptorBase();
 
   std::ostream& OutputSettings(std::ostream& os) const;
-  
+
   void BasicInit(const ParamFile* pf);
-  
+
   const ParamFile* GetParamFile() const {return _paramfile;}
 
   const Application*              GetRightHandSide           () const { return RHS;}
@@ -96,11 +96,24 @@ class ProblemDescriptorBase : public ProblemDescriptorInterface
   const BoundaryManager*          GetBoundaryManager         () const { return BM;}
   const ComponentInformation*     GetComponentInformation    () const { return CI;}
 
+  // Application*              GetRightHandSide           () { return RHS;}
+  // DirichletData*            GetDirichletData           () { return DD;}
+  // PeriodicData*             GetPeriodicData            () { return PD;}
+  // BoundaryRightHandSide*    GetBoundaryRightHandSide   () { return BRHS;}
+  // BoundaryInitialCondition* GetBoundaryInitialCondition() { return BIC;}
+  // BoundaryEquation*         GetBoundaryEquation        () { return BE;}
+  // Application*              GetInitialCondition        () { return IC;}
+  // ExactSolution*            GetExactSolution           () { return ES;}
+  // Equation*                 GetEquation                () { return EQ;}
+  // FaceEquation*             GetFaceEquation            () { return FEQ;}
+  // //BoundaryManager*          GetBoundaryManager         () { return BM;}
+  //ComponentInformation*     GetComponentInformation    () { return CI;}
+
   void SetTime(double time, double dt) const;
 };
 
 
- 
+
 }
 
 /*--------------------------------------------------*/

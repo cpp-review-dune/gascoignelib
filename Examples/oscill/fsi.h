@@ -19,7 +19,7 @@ template <int DIM>
 class FSI : public LpsEquation  // , public BoundaryEquation
 {
 protected:
-    static constexpr bool s = false;
+    static constexpr bool s = true;
     typedef Eigen::Matrix<double, DIM, DIM> MATRIX;
     typedef Eigen::Matrix<double, DIM, 1> VECTOR;
 
@@ -68,7 +68,7 @@ protected:
 
     mutable FemFunction* OLD;
 
-    void SetFemData(FemData& q) const
+    void SetFemData(FemData& q) const override final
     {
         assert(q.find("old") != q.end());
         OLD = &q["old"];
@@ -84,12 +84,12 @@ public:
     }
     FSI(const ParamFile* pf);
 
-    std::string GetName() const
+    std::string GetName() const override final
     {
         return "FSI";
     }
 
-    int GetNcomp() const
+    int GetNcomp() const override final
     {
         return 2 * DIM + 1;
     }
@@ -98,14 +98,14 @@ public:
         return this->theta;
     }
 
-    void point(double h, const FemFunction& U, const Vertex<DIM>& v) const;
+    void point(double h, const FemFunction& U, const Vertex<DIM>& v) const override final;
     void point_M(int j, const FemFunction& U, const TestFunction& M) const;
 
-    void Form(VectorIterator b, const FemFunction& U, const TestFunction& N) const;
+    void Form(VectorIterator b, const FemFunction& U, const TestFunction& N) const override final;
 
     void Matrix(EntryMatrix& A, const FemFunction& U, const TestFunction& M,
-                const TestFunction& N) const;
-    void MatrixBlock(EntryMatrix& A, const FemFunction& U, const FemFunction& NNN) const;
+                const TestFunction& N) const override final;
+    void MatrixBlock(EntryMatrix& A, const FemFunction& U, const FemFunction& NNN) const override final;
 
     /* ////////////////////////////////////////////////// Boundary */
 
@@ -118,13 +118,13 @@ public:
 
     ////////////////////////////////////////////////// LPS
 
-    void lpspoint(double h, const FemFunction& U, const Vertex<DIM>& v) const;
+    void lpspoint(double h, const FemFunction& U, const Vertex<DIM>& v) const override final;
 
     void StabForm(VectorIterator b, const FemFunction& U, const FemFunction& UP,
-                  const TestFunction& N) const;
+                  const TestFunction& N) const override final;
 
     void StabMatrix(EntryMatrix& A, const FemFunction& U, const TestFunction& Np,
-                    const TestFunction& Mp) const;
+                    const TestFunction& Mp) const override final;
 };
 
 }  // namespace Gascoigne

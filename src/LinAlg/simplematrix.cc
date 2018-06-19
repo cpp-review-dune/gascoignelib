@@ -189,30 +189,31 @@ void SimpleMatrix::vmult_comp_trans(int c, int d, GlobalVector& y, const GlobalV
 
 void SimpleMatrix::dirichlet(const IntVector& indices)
 {
-  for(int ii=0;ii<indices.size();ii++)
-    {
-      int i = indices[ii];
-      if(i<0) cerr << "SimpleMatrix::dirichlet indices: " << indices << endl;
-      assert(i>=0);
-
-      for(int pos=ST.start(i);pos<ST.stop(i);pos++)
-	{
-	  int j = ST.col(pos);
-	  if(j==i) value[pos]=1.;
-	  else 
-	    {
-	      value[pos] = 0.;
-	      for(int pos2=ST.start(j);pos2<ST.stop(j);pos2++)
-		{
-		  if(ST.col(pos2)==i) 
-		    {
-		      value[pos2]=0.;
-		      break;
-		    }
-		}
-	    }
-	}
-    }
+    dirichlet_only_row(indices);
+  // for(int ii=0;ii<indices.size();ii++)
+  //   {
+  //     int i = indices[ii];
+  //     if(i<0) cerr << "SimpleMatrix::dirichlet indices: " << indices << endl;
+  //     assert(i>=0);
+  //
+  //     for(int pos=ST.start(i);pos<ST.stop(i);pos++)
+	// {
+	//   int j = ST.col(pos);
+	//   if(j==i) value[pos]=1.;
+	//   else
+	//     {
+	//       value[pos] = 0.;
+	//       for(int pos2=ST.start(j);pos2<ST.stop(j);pos2++)
+	// 	{
+	// 	  if(ST.col(pos2)==i)
+	// 	    {
+	// 	      value[pos2]=0.;
+	// 	      break;
+	// 	    }
+	// 	}
+	//     }
+	// }
+  //   }
 }
 
 /*-----------------------------------------*/
@@ -229,7 +230,7 @@ void SimpleMatrix::dirichlet_only_row(const IntVector& indices)
 	{
 	  int j = ST.col(pos);
 	  if(j==i) value[pos]=1.;
-	  else 
+	  else
 	    {
 	      value[pos] = 0.;
 	    }
@@ -275,9 +276,9 @@ void SimpleMatrix::entry_diag(int i, const nmatrix<double>& M)
 void SimpleMatrix::PrepareJacobi(double s)
 {
   int n = ST.n();
-  
+
   _diag.resize(n);
-  
+
   for(int i=0; i<n; i++)
   {
     _diag[i] = s * value[ST.Find(i,i)];
@@ -290,7 +291,7 @@ void SimpleMatrix::JacobiVector(GlobalVector &y) const
 {
   int n = ST.n();
   assert(n==y.n());
-  
+
   for(int i=0; i<n; i++)
   {
     for(int c=0; c<y.ncomp(); c++)
@@ -351,11 +352,11 @@ void SimpleMatrix::copy_entries(const MatrixInterface&  A)
   const ColumnDiagStencil* AS = dynamic_cast<const ColumnDiagStencil*>(AP->GetStencil());
   assert(AS);
   assert(AS->n()==ST.n());
-  if(ST.nentries()==AS->nentries()) 
+  if(ST.nentries()==AS->nentries())
     {
       value = AP->GetValues();
     }
-  else 
+  else
     {
       cerr << "copy_entries for simple matrix with different number of entries not implemented" << endl;
       abort();

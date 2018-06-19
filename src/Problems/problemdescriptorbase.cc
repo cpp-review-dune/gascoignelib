@@ -33,12 +33,12 @@ namespace Gascoigne{
 
 ProblemDescriptorBase::  ProblemDescriptorBase() : EQ(NULL),FEQ(NULL),BM(NULL),ES(NULL),RHS(NULL),
                                                    IC(NULL),DD(NULL),PD(NULL),BRHS(NULL),BIC(NULL),BE(NULL),CI(),
-                                                   _paramfile(NULL) 
+                                                   _paramfile(NULL)
 {}
 
 /*------------------------------------------------------------------------------*/
 
-ProblemDescriptorBase::~ProblemDescriptorBase() 
+ProblemDescriptorBase::~ProblemDescriptorBase()
 {
   if (EQ!=NULL)   { delete EQ;   EQ=NULL;}
   if (BM!=NULL)   { delete BM;   BM=NULL;}
@@ -55,7 +55,7 @@ ProblemDescriptorBase::~ProblemDescriptorBase()
 
 /*------------------------------------------------------------------------------*/
 
-ostream& ProblemDescriptorBase::OutputSettings(ostream& os) const 
+ostream& ProblemDescriptorBase::OutputSettings(ostream& os) const
 {
   if(EQ)   os << "Equation:                 " << EQ->GetName()   << endl;
   if(FEQ)  os << "Face Equation:            " << FEQ->GetName()   << endl;
@@ -71,10 +71,10 @@ ostream& ProblemDescriptorBase::OutputSettings(ostream& os) const
   if(CI)   os << "ComponentInformation:     " << CI->GetName()   << std::endl;
   return os;
 }
-  
+
 /*------------------------------------------------------------------------------*/
 
-void ProblemDescriptorBase::BasicInit(const ParamFile* pf) 
+void ProblemDescriptorBase::BasicInit(const ParamFile* pf)
 {
   if(GetParamFile()==NULL)
     {
@@ -90,12 +90,12 @@ void ProblemDescriptorBase::BasicInit(const ParamFile* pf)
     {
       GetComponentInformationPointer() = new ComponentInformationBase();
     }
-  GetComponentInformationPointer()->GetProblemDescriptorInterface() = this;
+  GetComponentInformationPointer()->SetProblemDescriptor(*this);
 }
 
 /*------------------------------------------------------------------------------*/
 
-void ProblemDescriptorBase::SetTime(double time, double dt) const 
+void ProblemDescriptorBase::SetTime(double time, double dt) const
 {
   if (EQ)   EQ  -> SetTime(time,dt);
   if (ES)   ES  -> SetTime(time,dt);

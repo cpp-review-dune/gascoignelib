@@ -169,7 +169,7 @@ namespace Gascoigne
                                      const DiscretizationInterface *DI) const
   {
     return;
-    
+
     string eq = DI->GetName();
 
     bool glseq = false, glsdi = false;
@@ -311,7 +311,7 @@ namespace Gascoigne
   {
     _PDX = &PDX;
     assert(_PDX);
-
+    GetProblemDescriptor()->GetComponentInformation()->SetProblemDescriptor(PDX);
     const Equation *EQ = GetProblemDescriptor()->GetEquation();
 
     if (EQ)

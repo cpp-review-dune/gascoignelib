@@ -55,8 +55,12 @@ int main(int argc, char** argv)
     ProblemDescriptor2d Problem2d;
     Problem2d.BasicInit(&pf);
 
+    DivergenceDescriptor2d Divergence2d;
+    Divergence2d.BasicInit(&pf);
+
     ProblemContainer PC2d;
     PC2d.AddProblem("fsi", &Problem2d);
+    PC2d.AddProblem("div", &Divergence2d);
 
     FunctionalContainer FC2d;
     WeightedPointFunctional Px, Py;

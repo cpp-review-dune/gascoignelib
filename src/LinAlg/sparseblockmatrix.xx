@@ -209,11 +209,11 @@ void SparseBlockMatrix<B>::dirichlet(int i, const std::vector<int>& cv)
 {
   for(int pos=US.start(i);pos<US.stop(i);pos++)
     {
-      int j = US.col(pos);
+      //int j = US.col(pos);
       smat[pos].DirichletRow(cv);
       // das ist N^2 !!!!
-      int pos2 = US.Find(j,i);
-      smat[pos2].DirichletCol(cv);
+      //int pos2 = US.Find(j,i);
+      //smat[pos2].DirichletCol(cv);
     }
   int diag = US.diag(i);
   smat[diag].DirichletDiag(cv);

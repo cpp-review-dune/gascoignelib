@@ -151,16 +151,17 @@ protected:
     const SolverInterface* GetSolver() const;
 
     /*!
-     * \brief Wrapper function for GetSolver calls via GetMultiLevelSolver returning *nonconst*
-     * pointer to Solver
-     */
-    SolverInterface* GetSolver();
-
-    /*!
      * \brief Wrapper function for GetMultiLevelSolver returning *const* pointer to
      * MultiLevelSolver
      */
     const MultiLevelSolverInterface* GetMultiLevelSolver() const;
+
+private:
+    /*!
+     * \brief Wrapper function for GetSolver calls via GetMultiLevelSolver returning *nonconst*
+     * pointer to Solver
+     */
+    SolverInterface* GetSolver();
 
     /*!
      * \brief Wrapper function for GetMultiLevelSolver returning *nonconst* pointer to
@@ -168,13 +169,11 @@ protected:
      */
     MultiLevelSolverInterface* GetMultiLevelSolver();
 
-private:
     /*! \brief Method executing parareal-algorithm.
      *
      * This is the method that is called after runPara has set all parameters for
      * parareal.
      */
-
     static double paraAlgo();
 
     /*!
@@ -193,6 +192,10 @@ private:
     template <iter_type method>
     void inline step(double& time, const double& dt, const int& iter, const double& theta,
                      VectorInterface& u, VectorInterface& f);
+
+    template <iter_type method>
+    void inline compute_functionals(VectorInterface& u, VectorInterface& f, const double& time,
+                                    const int& iter);
 
     void inline divergence_stab(VectorInterface& u, VectorInterface& f);
 
@@ -275,7 +278,7 @@ private:
       fi_solution;  //!< Vector containing the fine solution on the corresponding interval.
     VectorInterface
       co_solution;        //!< Vector containing the coarse solution on the corresponding interval.
-    VectorInterface old;  //!< Vector for temporary results.
+    VectorInterface old, tmp_vi;  //!< Vector for temporary results.
     VectorInterface
       u_solution;  //!< Vector containing the final solution on the corresponding interval.
     std::vector<DoubleVector> log_buffer;  //!< Vector for buffering log entries.
@@ -321,6 +324,7 @@ parareal<DIM, logging>::parareal(size_t id)
     , fi_solution("f" + std::to_string(id))
     , co_solution("g" + std::to_string(id))
     , old("old" + std::to_string(id))
+    , tmp_vi("tmp" + std::to_string(id))
     , u_solution("u" + std::to_string(id))
     , log_buffer(n_finesteps, DoubleVector(5, 0.))
 {
@@ -453,11 +457,13 @@ double parareal<DIM, logging>::paraAlgo()
         si->GetMultiLevelSolver()->ReInitVector(si->fi_solution);
         si->GetMultiLevelSolver()->ReInitVector(si->co_solution);
         si->GetMultiLevelSolver()->ReInitVector(si->old);
+        si->GetMultiLevelSolver()->ReInitVector(si->tmp_vi);
         si->GetMultiLevelSolver()->ReInitVector(si->u_solution);
 
         si->setGVsize(si->GetSolver()->GetGV(si->fi_solution));
         si->setGVsize(si->GetSolver()->GetGV(si->co_solution));
         si->setGVsize(si->GetSolver()->GetGV(si->old));
+        si->setGVsize(si->GetSolver()->GetGV(si->tmp_vi));
         si->setGVsize(si->GetSolver()->GetGV(si->u_solution));
 
         si->InitSolution(u);
@@ -941,6 +947,7 @@ void parareal<DIM, logging>::propagator(double time, VectorInterface& u, VectorI
             }
         }
     };
+
     double dt;
     double theta;
     auto start = omp_get_wtime();
@@ -982,7 +989,11 @@ void parareal<DIM, logging>::propagator(double time, VectorInterface& u, VectorI
             step_visu(iter, u);
         }
     }
-
+    GetMultiLevelSolver()->GetSolver()->Visu(
+      "Results/before_stab", u, 10*current + subinterval_idx);
+    divergence_stab(u, f);
+    GetMultiLevelSolver()->GetSolver()->Visu(
+      "Results/after_stab", u, 10*current + subinterval_idx);
     auto end = omp_get_wtime();
     if constexpr (method == iter_type::fine_last || method == iter_type::fine)
     {
@@ -1022,32 +1033,46 @@ void parareal<DIM, logging>::step(double& time, const double& dt, const int& ite
     GetMultiLevelSolver()->Equ(old, 1.0, u);
     GetMultiLevelSolver()->AddNodeVector("old", old);
     assert(StdLoop::Solve(u, f) == "converged");
+    GetMultiLevelSolver()->DeleteNodeVector("old");
 
+    compute_functionals<method>(u, f, time, iter);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+template <int DIM, log_level logging>
+template <iter_type method>
+void parareal<DIM, logging>::compute_functionals(VectorInterface& u, VectorInterface& f,
+                                                 const double& time, const int& iter)
+{
     if constexpr (method == iter_type::fine_last)
     {
+        GetMultiLevelSolver()->AddNodeVector("old", old);
         log_buffer[iter][0] = time;
         DoubleVector juh    = StdLoop::Functionals(u, f);
         for (short i = 0; i < 4; ++i)
         {
             log_buffer[iter][i + 1] = juh[i];
         }
+        GetMultiLevelSolver()->DeleteNodeVector("old");
     }
-
-    GetMultiLevelSolver()->DeleteNodeVector("old");
 }
 
 //--------------------------------------------------------------------------------------------------
-
+// TODO
 template <int DIM, log_level logging>
 void parareal<DIM, logging>::divergence_stab(VectorInterface& u, VectorInterface& f)
 {
-    GetMultiLevelSolver()->GetProblemDescriptor()->SetProblem("div");
+    cout << "div problem" << endl;
+    GetMultiLevelSolver()->SetProblem("div");
 
-    GetMultiLevelSolver()->Equ(old, 1.0, u);
-    GetMultiLevelSolver()->AddNodeVector("old", old);
+    StdLoop::GetSolverInfos()->GetNLInfo().control().matrixmustbebuild() = 1;
+    GetMultiLevelSolver()->Equ(tmp_vi, 1.0, u);
+    GetMultiLevelSolver()->AddNodeVector("old", tmp_vi);
     assert(StdLoop::Solve(u, f) == "converged");
+    GetMultiLevelSolver()->DeleteNodeVector("old");
 
-    GetMultiLevelSolver()->GetProblemDescriptor()->SetProblem("fsi");
+    GetMultiLevelSolver()->SetProblem("fsi");
 }
 
 //--------------------------------------------------------------------------------------------------

@@ -16,7 +16,7 @@
 namespace Gascoigne
 {
 template <int DIM>
-class DIV_proj : public Equation  // , public BoundaryEquation
+class DIV_proj : public LpsEquation  // , public BoundaryEquation
 {
 protected:
     typedef Eigen::Matrix<double, DIM, DIM> MATRIX;
@@ -46,7 +46,7 @@ protected:
     /* mutable VECTOR BOUNDARY, BOUNDARY_old; */
 
     // stuff from point
-    mutable double J, J_old;
+    mutable double lps, lps0, J, J_old;
     mutable MATRIX NV, NV_old, F, F_old;
     mutable MATRIX SIGMAf, SIGMAf_old;
 
@@ -55,7 +55,7 @@ protected:
 
     mutable FemFunction* OLD;
 
-    void SetFemData(FemData& q) const
+    void SetFemData(FemData& q) const override final
     {
         assert(q.find("old") != q.end());
         OLD = &q["old"];
@@ -69,27 +69,28 @@ public:
     {
         abort();
     }
-    
+
     DIV_proj(const ParamFile* pf);
 
-    std::string GetName() const
+    std::string GetName() const override final
     {
         return "div";
     }
 
-    int GetNcomp() const
+    int GetNcomp() const override final
     {
         return 2 * DIM + 1;
     }
 
-    void point(double h, const FemFunction& U, const Vertex<DIM>& v) const;
+    void point(double h, const FemFunction& U, const Vertex<DIM>& v) const override final;
     void point_M(int j, const FemFunction& U, const TestFunction& M) const;
 
-    void Form(VectorIterator b, const FemFunction& U, const TestFunction& N) const;
+    void Form(VectorIterator b, const FemFunction& U, const TestFunction& N) const override final;
 
     void Matrix(EntryMatrix& A, const FemFunction& U, const TestFunction& M,
-                const TestFunction& N) const;
-    void MatrixBlock(EntryMatrix& A, const FemFunction& U, const FemFunction& NNN) const;
+                const TestFunction& N) const override final;
+    void MatrixBlock(EntryMatrix& A, const FemFunction& U,
+                     const FemFunction& NNN) const override final;
 
     /* ////////////////////////////////////////////////// Boundary */
 
@@ -99,6 +100,16 @@ public:
 
     /* void pointboundary(double h, const FemFunction& U, const Vertex<DIM>& v, const Vertex<DIM>&
      * n) const; */
+
+    ////////////////////////////////////////////////// LPS
+
+    void lpspoint(double h, const FemFunction& U, const Vertex<DIM>& v) const override final;
+
+    void StabForm(VectorIterator b, const FemFunction& U, const FemFunction& UP,
+                  const TestFunction& N) const override final;
+
+    void StabMatrix(EntryMatrix& A, const FemFunction& U, const TestFunction& Np,
+                    const TestFunction& Mp) const override final;
 };
 
 }  // namespace Gascoigne

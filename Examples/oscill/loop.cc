@@ -55,12 +55,22 @@ void Loop<DIM>::run(const std::string& problemlabel)
         GetMultiLevelSolver()->Equ(old, 1.0, u);
         GetMultiLevelSolver()->AddNodeVector("old", old);
         assert(Solve(u, f) == "converged");
+        // GetMultiLevelSolver()->DeleteNodeVector("old");
+        // GetMultiLevelSolver()->SetProblem("div");
+        //
+        // std::cout << "set div" << '\n';
+        //
+        // GetMultiLevelSolver()->Equ(old, 1.0, u);
+        // GetMultiLevelSolver()->AddNodeVector("old", old);
+        // assert(StdLoop::Solve(u, f) == "converged");
+        // std::cout << "solved div" << '\n';
+        // GetMultiLevelSolver()->SetProblem("fsi");
 
-        if (_iter % 63 == 0)
-        {
-            GetMultiLevelSolver()->GetSolver()->Visu("Results/u", u, _iter);
-            WriteMeshAndSolution("Results/u", u);
-        }
+        // if (_iter % 63 == 0)
+        // {
+        //     GetMultiLevelSolver()->GetSolver()->Visu("Results/u", u, _iter);
+        //     WriteMeshAndSolution("Results/u", u);
+        // }
 
         DoubleVector juh = Functionals(u, f);
         GetMultiLevelSolver()->DeleteNodeVector("old");

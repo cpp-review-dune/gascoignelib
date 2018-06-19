@@ -18,7 +18,7 @@ class FSISolver : public StdSolver
 {
 private:
     DiscretizationInterface* NewDiscretization(int dimension, const std::string& discname);
-    void inline DeleteSolidPressure_DIV(VectorInterface& gf) const;
+    void inline DeleteSolidPressure_DIV(VectorInterface& gf, bool zero) const;
     void inline AssembleMatrix_DIV(const VectorInterface& gu, double d);
 
 public:
@@ -50,7 +50,7 @@ public:
     void NewMesh(const MeshInterface* mp);
     void SetBoundaryVectorZero(VectorInterface& gf) const;
     void SetBoundaryVector(VectorInterface& gf) const;
-    void DeleteSolidPressure(VectorInterface& gf) const;
+    void DeleteSolidPressure(VectorInterface& gf, bool zero) const;
 
     void AssembleMatrix(const VectorInterface& gu, double d);
 

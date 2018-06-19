@@ -25,7 +25,7 @@
 #include  "componentinformationbase.h"
 #include  "problemdescriptorinterface.h"
 #include  "domainrighthandside.h"
-#include  "compose_name.h" 
+#include  "compose_name.h"
 
 
 namespace Gascoigne
@@ -35,7 +35,7 @@ std::string ComponentInformationBase::GetName() const {
 }
 
 const int ComponentInformationBase::GetNScalars     () const{
-  ProblemDescriptorInterface* ppdi = GetProblemDescriptorInterface();
+  const ProblemDescriptorInterface* ppdi = GetProblemDescriptorInterface();
   assert( ppdi );
 
   int ncomps = -1;
@@ -78,7 +78,7 @@ const int ComponentInformationBase::GetNScalars     () const{
 }
 void      ComponentInformationBase::GetScalarName   (int i, std::string& s_name) const{
   s_name="u";
-  compose_name_without_dot(s_name,i); 
+  compose_name_without_dot(s_name,i);
 }
 const int ComponentInformationBase::GetNVectors     () const{
   int ncomps = GetNcomp();

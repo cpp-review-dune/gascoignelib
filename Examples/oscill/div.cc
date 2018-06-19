@@ -21,12 +21,14 @@ DIV_proj<DIM>::DIV_proj(const ParamFile* pf)
     DFH.insert("rho_f", &rho_f, 0.0);
     DFH.insert("nu_f", &nu_f, 0.0);
     DFH.insert("extend", &extend0, 0.0);
+    DFH.insert("lps", &lps0, 0.0);
     DFH.insert("nu_e", &nu_e, 0.0);
 
     FileScanner FS(DFH, pf, "Equation");
     assert(rho_f > 0);
     assert(nu_f > 0);
     assert(extend0 > 0);
+    assert(lps0 > 0);
     assert(rho_s > 0);
     assert(lambda_s > 0);
     assert(mu_s > 0);
@@ -34,7 +36,7 @@ DIV_proj<DIM>::DIV_proj(const ParamFile* pf)
     cout << "%%%%%%%%%% Problem %%%%%%%%%%" << endl
          << "  rho_f / nu_f: " << rho_f << " / " << nu_f << endl
          << "  rho_s / mu_s / lambda_s: " << rho_s << " / " << mu_s << " / " << lambda_s << endl
-         << "  extend: " << extend0 << endl;
+         << "  extend / lps: " << extend0 << " / " << lps0 << endl;
 
     cout << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" << endl << endl;
 }
@@ -46,14 +48,14 @@ DIV_proj<DIM>::DIV_proj(const ParamFile* pf)
 template <int DIM>
 void DIV_proj<DIM>::point(double h, const FemFunction& U, const Vertex<DIM>& v) const
 {
+    domain = chi(v);
     if (domain < 0)
     {
         __h    = h;
         __v    = v;
-        domain = chi(v);
 
         // set F, F_old to Identity in fluid
-        Multiplex::init_F<DIM>(F, U);
+        Multiplex::init_F<DIM>(F, *OLD);
         Multiplex::init_F<DIM>(F_old, *OLD);
 
         auto F_inv     = F.inverse();
@@ -92,15 +94,15 @@ void DIV_proj<DIM>::Form(VectorIterator b, const FemFunction& U, const TestFunct
         for (int i = 0; i < DIM; ++i)
             b[i + 1] += X(i, 0);
 
+
+        X = -U[0].m() * J * F.inverse().transpose() * phi;
+        for (int i = 0; i < DIM; ++i)
+                b[i + 1] += X(i, 0);
+
         // - (J_old*sigma_old*F_old^-T, grad(phi))
         X = J_old * (SIGMAf_old * F_inv.transpose())* phi;
         for (int i = 0; i < DIM; ++i)
             b[i + 1] -= X(i, 0);
-
-        for (int i = 0; i < DIM; ++i)
-        {
-            b[i + 1 + DIM] += (U[i + 1 + DIM].m() - (*OLD)[i + 1 + DIM].m()) * N.m();
-        }
     }
 }
 
@@ -121,12 +123,12 @@ void DIV_proj<DIM>::Matrix(EntryMatrix& A, const FemFunction& U, const TestFunct
         {
             // wrt v
             A(0, j + 1) += DIVERGENCE_V[j] * N.m();
-
+/*
             // wrt u
             A(0, j + 1 + DIM) += rho_f * Jj[j] * divergence * N.m();
 
             A(0, j + 1 + DIM) += DIVERGENCE_U[j] * N.m();
-        }
+*/        }
 
         ///////// tensor
         // wrt V
@@ -136,19 +138,19 @@ void DIV_proj<DIM>::Matrix(EntryMatrix& A, const FemFunction& U, const TestFunct
             for (int i = 0; i < DIM; ++i)
                 A(i + 1, j + 1) += X(i, 0);
         }
-        // wrt U
+/*        // wrt U
         for (int j = 0; j < DIM; ++j)
         {
             VECTOR X = TENSOR_dU[j] * phi;
             for (int i = 0; i < DIM; ++i)
                 A(i + 1, j + 1 + DIM) += X(i, 0);
         }
-
+*/
         // wrt P
         VECTOR X = PRESSURE_P * phi;
         for (int i = 0; i < DIM; ++i)
             A(i + 1, 0) += X(i, 0);
-        // wrt U
+/*        // wrt U
         for (int j = 0; j < DIM; ++j)
         {
             X = PRESSURE_U[j] * phi;
@@ -156,9 +158,7 @@ void DIV_proj<DIM>::Matrix(EntryMatrix& A, const FemFunction& U, const TestFunct
                 A(i + 1, j + 1 + DIM) += X(i, 0);
         }
 
-        for (int i = 0; i < DIM; ++i)
-            A(i + 1, i + 1) += M.m() * N.m();
-    }
+*/    }
 }
 
 template <int DIM>
@@ -214,6 +214,34 @@ void DIV_proj<DIM>::MatrixBlock(EntryMatrix& A, const FemFunction& U, const FemF
         }
 #undef M
     }
+}
+
+////////////////////////////////////////////////// LPS
+
+template <int DIM>
+void DIV_proj<DIM>::lpspoint(double h, const FemFunction& U, const Vertex<DIM>& v) const
+{
+    double vel = 1.0;
+
+    lps    = lps0 / (vel / h + nu_f / h / h);
+    domain = chi(v);
+}
+template <int DIM>
+void DIV_proj<DIM>::StabForm(VectorIterator b, const FemFunction& U, const FemFunction& UP,
+                        const TestFunction& N) const
+{
+    if (domain < 0)  /// fludi
+        for (int i = 0; i < DIM; ++i)
+            b[0] += lps * UP[0][i + 1] * N[i + 1];
+}
+
+template <int DIM>
+void DIV_proj<DIM>::StabMatrix(EntryMatrix& A, const FemFunction& U, const TestFunction& Np,
+                          const TestFunction& Mp) const
+{
+    if (domain < 0)
+        for (int i = 0; i < DIM; ++i)
+            A(0, 0) += lps * Mp[i + 1] * Np[i + 1];
 }
 
 template class DIV_proj<2>;
