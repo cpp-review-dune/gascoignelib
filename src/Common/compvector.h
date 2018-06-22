@@ -581,7 +581,21 @@ public:
         }
         in >> cc;
     }
+
+    inline std::ostream& operator<<(std::ostream& out)
+    {
+        out << "[";
+        for (auto i = 0; i < this->n(); ++i)
+        {
+            for (auto j = 0; j < this->ncomp(); ++j)
+                out << std::scientific << (*this)(i, j) << ' ';
+            if (i + 1 < this->n())
+                out << "; ";
+        }
+        return out << "]";
+    }
 };
+
 }  // namespace Gascoigne
 
 #endif

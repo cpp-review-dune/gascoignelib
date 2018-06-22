@@ -13,6 +13,10 @@
 #include "resfunctional.h"
 #include "local.h"
 #include "colors.h"
+#include "log.h"
+
+namespace Gascoigne
+{
 enum class name_type
 {
     error,
@@ -31,8 +35,13 @@ enum class log_level
     visu_detailed = 2
 };
 
-namespace Gascoigne
+struct dir_vec
 {
+    std::string dir;
+    VectorInterface vec;
+    size_t index;
+};
+
 /*!
  * \brief This class implements the [parareal-algorithm](https://en.wikipedia.org/wiki/Parareal)
  * for parallelizing the solution of PDEs using the FEM libary Gascoigne.
@@ -197,8 +206,15 @@ private:
     void inline compute_functionals(VectorInterface& u, VectorInterface& f, const double& time,
                                     const int& iter);
 
-    void inline divergence_stab(VectorInterface& u, VectorInterface& f);
+    void inline divergence_stab(VectorInterface& u, VectorInterface& f, const double& time,
+                                const double& dt, const int& current);
 
+    void visu_write(const std::string& dir, const VectorInterface& vec, size_t index) const;
+    void visu(const std::string& dir, const VectorInterface& vec, size_t index) const;
+    void inline visu(const dir_vec& dv) const;
+
+    template <typename... dir_vec_pack>
+    void inline visu(const dir_vec& dv, const dir_vec_pack&... dvs) const;
     /*!
      * \brief Method checking for convergence on one subinterval
      *
@@ -236,6 +252,7 @@ private:
      * \param v_ptr Adress of the GlobalVector to be modified
      */
     void setGVsize(GlobalVector& v_ptr);
+    void setGVsize(const VectorInterface& vec);
 
     /*!
      *\brief Setting up the problem.
@@ -275,12 +292,12 @@ private:
     std::size_t subinterval_idx;  //!< Identifies the subinterval on which the loop is acting in the
                                   //!< first iteration
     VectorInterface
-      fi_solution;  //!< Vector containing the fine solution on the corresponding interval.
+      fine_sol;  //!< Vector containing the fine solution on the corresponding interval.
     VectorInterface
-      co_solution;        //!< Vector containing the coarse solution on the corresponding interval.
+      coar_sol;  //!< Vector containing the coarse solution on the corresponding interval.
     VectorInterface old, tmp_vi;  //!< Vector for temporary results.
     VectorInterface
-      u_solution;  //!< Vector containing the final solution on the corresponding interval.
+      end_sol;  //!< Vector containing the final solution on the corresponding interval.
     std::vector<DoubleVector> log_buffer;  //!< Vector for buffering log entries.
 
     const int c_implicit_steps = get_param<int>("implicit_coarse", "Equation");
@@ -321,11 +338,11 @@ public methods
 template <int DIM, log_level logging>
 parareal<DIM, logging>::parareal(size_t id)
     : subinterval_idx(id)
-    , fi_solution("f" + std::to_string(id))
-    , co_solution("g" + std::to_string(id))
+    , fine_sol("f" + std::to_string(id))
+    , coar_sol("g" + std::to_string(id))
     , old("old" + std::to_string(id))
     , tmp_vi("tmp" + std::to_string(id))
-    , u_solution("u" + std::to_string(id))
+    , end_sol("u" + std::to_string(id))
     , log_buffer(n_finesteps, DoubleVector(5, 0.))
 {
     // StdLoop();
@@ -384,7 +401,7 @@ double parareal<DIM, logging>::runPara(const int max_iterations, const double co
         stop_time       = start_time + precompute_time + interval_length * n_intervals;
     }
 
-    std::cerr << style::bb << style::g << "[Info] " << style::n << "Initialized Parameters\n";
+    std::cerr << logwrite::info("Info", "Initialized Parameters");
     outputParameters();
     func_log.precision(12);
     // Checking if input is correct
@@ -411,7 +428,7 @@ double parareal<DIM, logging>::runPara(const int max_iterations, const double co
     auto exec_time = paraAlgo();
 
     std::cerr << style::bb << "\n==================================================\n"
-              << style::G << "Finished parareal" << style::b << ".\nElapsed time is\t" << exec_time
+              << style::g << "Finished parareal" << style::b << ".\nElapsed time is\t" << exec_time
               << "\n\nTime spent in coarse method: " << coarse_exec_time
               << "\nTime spent in fine method: " << fine_exec_time << style::n << '\n';
     func_log.close();
@@ -424,13 +441,29 @@ double parareal<DIM, logging>::runPara(const int max_iterations, const double co
 template <int DIM, log_level logging>
 double parareal<DIM, logging>::paraAlgo()
 {
+    auto equal = [&](parareal*& para_dest, VectorInterface& dest, parareal*& para_src,
+                     VectorInterface& source) {
+        para_dest->GetSolver()->GetGV(dest).equ(1., para_src->GetSolver()->GetGV(source));
+    };
+    auto w_equ_x_plus_y_minus_z = [&](parareal*& para_dest, VectorInterface& dest, parareal*& src_x,
+                                      VectorInterface& x, parareal*& src_y, VectorInterface& y,
+                                      parareal*& src_z, VectorInterface& z) {
+        // clang-format off
+        para_dest->GetSolver()->GetGV(dest).equ(1,  src_x->GetSolver()->GetGV(x),
+                                                1,  src_y->GetSolver()->GetGV(y),
+                                                -1, src_z->GetSolver()->GetGV(z));
+        // clang-format on
+    };
+    // auto add = [&](VectorInterface& dest, VectorInterface& source){
+    //
+    // };
     double time     = start_time;
     auto start_wall = omp_get_wtime();
     //
     // Initialization of solvers and problems and solutions from parareal
-    // co_solution   - VectorInterface for results of coarse method
-    // fi_solution   - VectorInterface for results of fine method
-    // u_solution    - VectorInterface for final results
+    // coar_sol   - VectorInterface for results of coarse method
+    // fine_sol   - VectorInterface for results of fine method
+    // end_sol    - VectorInterface for final results
     // old           - VectorInterface for temporary results
     // u             - VectorInterface used for initialization of the others
     //
@@ -454,26 +487,25 @@ double parareal<DIM, logging>::paraAlgo()
 
         si->GetMultiLevelSolver()->ReInitVector(f);
         si->GetMultiLevelSolver()->ReInitVector(u);
-        si->GetMultiLevelSolver()->ReInitVector(si->fi_solution);
-        si->GetMultiLevelSolver()->ReInitVector(si->co_solution);
+        si->GetMultiLevelSolver()->ReInitVector(si->fine_sol);
+        si->GetMultiLevelSolver()->ReInitVector(si->coar_sol);
         si->GetMultiLevelSolver()->ReInitVector(si->old);
         si->GetMultiLevelSolver()->ReInitVector(si->tmp_vi);
-        si->GetMultiLevelSolver()->ReInitVector(si->u_solution);
+        si->GetMultiLevelSolver()->ReInitVector(si->end_sol);
 
-        si->setGVsize(si->GetSolver()->GetGV(si->fi_solution));
-        si->setGVsize(si->GetSolver()->GetGV(si->co_solution));
+        si->setGVsize(si->GetSolver()->GetGV(si->fine_sol));
+        si->setGVsize(si->GetSolver()->GetGV(si->coar_sol));
         si->setGVsize(si->GetSolver()->GetGV(si->old));
         si->setGVsize(si->GetSolver()->GetGV(si->tmp_vi));
-        si->setGVsize(si->GetSolver()->GetGV(si->u_solution));
+        si->setGVsize(si->GetSolver()->GetGV(si->end_sol));
 
         si->InitSolution(u);
-        si->InitSolution(si->fi_solution);
-        si->InitSolution(si->co_solution);
-        // si->InitSolution(si->old);
-        si->InitSolution(si->u_solution);
+        si->InitSolution(si->fine_sol);
+        si->InitSolution(si->coar_sol);
+        si->InitSolution(si->end_sol);
     }
 
-    for (auto m = 0; m < threads; ++m)
+    for (auto m = 0; m < n_intervals; ++m)
     {
         subinterval[m]->setGVsize(u_sol_arr[m]);
     }
@@ -484,33 +516,23 @@ double parareal<DIM, logging>::paraAlgo()
         subinterval[0]->template propagator<iter_type::fine>(time, u, f, 0, precompute_steps, 0);
         subinterval[0]
           ->GetSolver()
-          ->GetGV(subinterval[0]->u_solution)
+          ->GetGV(subinterval[0]->end_sol)
           .equ(1., subinterval[0]->GetSolver()->GetGV(u));
-        for (auto m = 0; m < threads; ++m)
+        for (auto m = 0; m < n_intervals; ++m)
         {
-            subinterval[m]
-              ->GetSolver()
-              ->GetGV(subinterval[m]->u_solution)
-              .equ(1., subinterval[0]->GetSolver()->GetGV(u));
-            subinterval[m]
-              ->GetSolver()
-              ->GetGV(subinterval[m]->fi_solution)
-              .equ(1., subinterval[0]->GetSolver()->GetGV(u));
-            subinterval[m]
-              ->GetSolver()
-              ->GetGV(subinterval[m]->co_solution)
-              .equ(1., subinterval[0]->GetSolver()->GetGV(u));
+            equal(subinterval[m], subinterval[m]->end_sol, subinterval[0], u);
+            equal(subinterval[m], subinterval[m]->fine_sol, subinterval[0], u);
+            equal(subinterval[m], subinterval[m]->coar_sol, subinterval[0], u);
             if (m > 0)
             {
-                subinterval[m]->GetSolver()->GetGV(u).equ(1.,
-                                                          subinterval[0]->GetSolver()->GetGV(u));
+                equal(subinterval[m], u, subinterval[0], u);
             }
         }
         time += precompute_time;
     }
     /// Initializing locks
-    auto interval_locker = new omp_lock_t[threads];
-    for (auto m = 0; m < threads; ++m)
+    auto interval_locker = new omp_lock_t[n_intervals];
+    for (auto m = 0; m < n_intervals; ++m)
     {
         omp_init_lock(&interval_locker[m]);
     }
@@ -518,7 +540,7 @@ double parareal<DIM, logging>::paraAlgo()
 //
 // A C T U A L   A L G O R I T H M
 //
-#pragma omp parallel num_threads(threads) firstprivate(time) proc_bind(close)
+#pragma omp parallel num_threads(n_intervals) firstprivate(time) proc_bind(close)
     {
         // 'Iteration 0'
         //
@@ -528,39 +550,35 @@ double parareal<DIM, logging>::paraAlgo()
         {
 #pragma omp ordered
             {
-                auto im  = i % threads;
-                auto im1 = (i + 1) % threads;
-                omp_set_lock(&interval_locker[im]);
+                // auto im  = i % threads;
+                // auto im1 = (i + 1) % threads;
+                omp_set_lock(&interval_locker[i]);
                 // u ⟵ G⁰(i)
-                subinterval[im]->template propagator<iter_type::coarse>(
+                subinterval[i]->template propagator<iter_type::coarse>(
                   time + i * interval_length, u, f, 0, n_coarsesteps,
-                  subinterval[im]->c_implicit_steps);
+                  subinterval[i]->c_implicit_steps);
                 // G⁰(i) ⟵ u;
-                subinterval[im]->GetSolver()->Equ(subinterval[im]->co_solution, 1., u);
+                equal(subinterval[i], subinterval[i]->coar_sol, subinterval[i], u);
                 // U⁰(i) ⟵ u;
-                subinterval[im]->GetSolver()->Equ(subinterval[im]->u_solution, 1., u);
+                equal(subinterval[i], subinterval[i]->end_sol, subinterval[i], u);
 
                 // Visualization for debugging
                 if constexpr (logging == log_level::visu_info
                               || logging == log_level::visu_detailed)
                 {
-                    std::cerr << style::bb << style::g << "\n[Done] " << style::n
-                              << " Initialization on subinterval " << i << '\n';
-                    subinterval[im]->GetSolver()->Visu("Results/initsol",
-                                                       subinterval[im]->u_solution, im);
-                    subinterval[im]->WriteMeshAndSolution("Results/initsol",
-                                                          subinterval[im]->u_solution);
+                    std::cerr << logwrite::info("Done", "Initialization on subinterval ", i);
+                    subinterval[i]->visu_write("Results/initsol", subinterval[i]->end_sol, i);
                 }
 
                 if (i < n_intervals - 1)
                 {
                     // pass GlobalVector around
-                    subinterval[im1]->setGV(u, subinterval[im]->GetSolver()->GetGV(u));
+                    subinterval[i+1]->setGV(u, subinterval[i]->GetSolver()->GetGV(u));
                     // F⁰(i) ⟵ u
-                    subinterval[im1]->GetSolver()->Equ(subinterval[im1]->fi_solution, 1., u);
+                    equal(subinterval[i+1], subinterval[i+1]->fine_sol, subinterval[i+1], u);
                 }
 
-                omp_unset_lock(&interval_locker[im]);
+                omp_unset_lock(&interval_locker[i]);
             }
         }  // Initialization
 
@@ -584,25 +602,22 @@ double parareal<DIM, logging>::paraAlgo()
                 if (m == 0 || k == max_iterations)
                 {
                     subinterval[m]->template propagator<iter_type::fine_last>(
-                      time + m * interval_length, subinterval[m]->fi_solution, f, k, n_finesteps,
+                      time + m * interval_length, subinterval[m]->fine_sol, f, k, n_finesteps,
                       subinterval[m]->f_implicit_steps);
                 }
                 else  // we are not in the last iteration and not exact
                 {
                     subinterval[m]->template propagator<iter_type::fine>(
-                      time + m * interval_length, subinterval[m]->fi_solution, f, k, n_finesteps,
+                      time + m * interval_length, subinterval[m]->fine_sol, f, k, n_finesteps,
                       subinterval[m]->f_implicit_steps);
                 }
                 if constexpr (logging == log_level::visu_info
                               || logging == log_level::visu_detailed)
                 {
-                    std::cerr << style::bb << style::g << "\n[Done] " << style::n
-                              << " Fine solution on subinterval " << m + k - 1
-                              << " in iteration number " << k << '\n';
-                    subinterval[m]->GetSolver()->Visu(
-                      "Results/fineres", subinterval[m]->fi_solution, (k - 1) * 10 + m);
-                    subinterval[m]->WriteMeshAndSolution("Results/fineres",
-                                                         subinterval[m]->fi_solution);
+                    std::cerr << logwrite::info("Done", "Fine solution on subinterval ", m + k - 1,
+                                                " in iteration number ", k);
+                    subinterval[m]->visu_write("Results/fineres", subinterval[m]->fine_sol,
+                                               (k - 1) * 10 + m);
                 }
                 omp_unset_lock(&interval_locker[m]);
                 //                }
@@ -623,80 +638,51 @@ double parareal<DIM, logging>::paraAlgo()
                     {
                         omp_set_lock(&interval_locker[0]);
                         // Uᵏ(k) ⟵ Fᵏ(k)
-                        subinterval[0]
-                          ->GetSolver()
-                          ->GetGV(subinterval[0]->u_solution)
-                          .equ(1., subinterval[0]->GetSolver()->GetGV(subinterval[0]->fi_solution));
+                        equal(subinterval[0], subinterval[0]->end_sol, subinterval[0],
+                              subinterval[0]->fine_sol);
                         u_sol_arr[k - 1].equ(
-                          1., subinterval[0]->GetSolver()->GetGV(subinterval[0]->fi_solution));
+                          1., subinterval[0]->GetSolver()->GetGV(subinterval[0]->fine_sol));
                         for (const auto& x : subinterval[0]->log_buffer)
                         {
                             func_log << x << '\n';
                         }
-                        subinterval[0]->GetSolver()->Visu("Results/p", subinterval[0]->u_solution,
-                                                          k - 1);
-                        subinterval[0]->WriteMeshAndSolution("Results/p",
-                                                             subinterval[0]->u_solution);
+                        subinterval[0]->visu_write("Results/p", subinterval[0]->end_sol, k - 1);
                         omp_unset_lock(&interval_locker[0]);
                     }
 
                     // prepare predictor step
                     omp_set_lock(&interval_locker[m]);
-                    subinterval[m]
-                      ->GetSolver()
-                      ->GetGV(subinterval[m]->co_solution)
-                      .equ(1., subinterval[m]->GetSolver()->GetGV(subinterval[m]->u_solution));
+                    equal(subinterval[m], subinterval[m]->coar_sol, subinterval[m],
+                          subinterval[m]->end_sol);
                     omp_unset_lock(&interval_locker[m]);
                     // predictor step with coarse method
                     subinterval[m]->template propagator<iter_type::coarse>(
-                      time + (m + 1) * interval_length, subinterval[m]->co_solution, f, k,
+                      time + (m + 1) * interval_length, subinterval[m]->coar_sol, f, k,
                       n_coarsesteps, subinterval[m]->c_implicit_steps);
 
                     // omp_unset_lock(&interval_locker[m]);
                     omp_set_lock(&interval_locker[m + 1]);
 
                     // calculate corrector term
-                    // clang-format off
-                    subinterval[m + 1]
-                      ->GetSolver()
-                      ->GetGV(subinterval[m + 1]->u_solution)
-                      .equ(
-                        1,  subinterval[m]->GetSolver()->GetGV(subinterval[m]->co_solution),
-                        1,  subinterval[m + 1]->GetSolver()->GetGV(
-                                subinterval[m + 1]->fi_solution),
-                        -1, subinterval[m + 1]->GetSolver()->GetGV(
-                                subinterval[m + 1]->co_solution));
-                    // clang-format on
+                    w_equ_x_plus_y_minus_z(subinterval[m + 1], subinterval[m + 1]->end_sol,
+                                           subinterval[m], subinterval[m]->coar_sol,
+                                           subinterval[m + 1], subinterval[m + 1]->fine_sol,
+                                           subinterval[m + 1], subinterval[m + 1]->coar_sol);
 
                     // prepare next iteration
-                    subinterval[m + 1]
-                      ->GetSolver()
-                      ->GetGV(subinterval[m + 1]->fi_solution)
-                      .equ(1.,
-                           subinterval[m + 1]->GetSolver()->GetGV(subinterval[m + 1]->u_solution));
+                    equal(subinterval[m + 1], subinterval[m + 1]->fine_sol, subinterval[m + 1],
+                          subinterval[m + 1]->end_sol);
                     omp_unset_lock(&interval_locker[m + 1]);
 
                     // Visualization for debugging
                     if constexpr (logging == log_level::visu_info
                                   || logging == log_level::visu_detailed)
                     {
-                        std::cerr << style::bb << style::g << "\n[Done] " << style::n
-                                  << " Coarse solution on subinterval " << m + 1
-                                  << " in iteration number " << k << '\n';
-                        subinterval[m]->GetSolver()->Visu(
-                          "Results/coarseres", subinterval[m]->co_solution, (k - 1) * 10 + m);
-                        subinterval[m]->WriteMeshAndSolution("Results/coarseres",
-                                                             subinterval[m]->co_solution);
-                        std::cerr << style::bb << style::g << "\n[Done] " << style::n
-                                  << " initial value on subinterval " << m + 1
-                                  << " in iteration number " << k << '\n';
-                        subinterval[m]->GetSolver()->Visu(
-                          "Results/iterres", subinterval[m]->u_solution, (k - 1) * 10 + m);
-                        subinterval[m]->WriteMeshAndSolution("Results/iterres",
-                                                             subinterval[m]->u_solution);
-                        std::cerr << style::bb << style::g << "[Done] " << style::b
-                                  << " Iteration number " << k << " of parareal " << style::n
-                                  << '\n';
+                        subinterval[m]->visu(
+                          dir_vec{"Results/coarseres", subinterval[m]->coar_sol, (k - 1) * 10 + m},
+                          dir_vec{"Results/iterres", subinterval[m]->end_sol, (k - 1) * 10 + m});
+                        std::cerr << logwrite::info("Done", "Calculations on subinterval ", m + 1,
+                                                    " Iteration number ", k, " of parareal ");
                     }
                 }
             }  // Corrections
@@ -716,7 +702,7 @@ double parareal<DIM, logging>::paraAlgo()
         subinterval[m]->setGVsize(u_sol_arr[m]);
         // final solutions on time nodes
         u_sol_arr[m + max_iterations].equ(
-          1., subinterval[m + 1]->GetSolver()->GetGV(subinterval[m + 1]->u_solution));
+          1., subinterval[m + 1]->GetSolver()->GetGV(subinterval[m + 1]->end_sol));
         // logging
         for (const auto& x : subinterval[m + 1]->log_buffer)
         {
@@ -725,11 +711,9 @@ double parareal<DIM, logging>::paraAlgo()
 
         // Visu part
         // subinterval[m]->setGV(u, u_sol_arr[m]);
-        subinterval[m + 1]->GetSolver()->Visu("Results/p", subinterval[m + 1]->u_solution,
-                                              m + max_iterations);
-        subinterval[m + 1]->WriteMeshAndSolution("Results/p", subinterval[m + 1]->u_solution);
-        std::cerr << style::bb << style::g << "[Done] " << style::n << "Wrote subinterval "
-                  << m + max_iterations << '\n';
+        subinterval[m + 1]->visu_write("Results/p", subinterval[m + 1]->end_sol,
+                                       m + max_iterations);
+        std::cerr << logwrite::info("Done", "Wrote subinterval ", m + max_iterations);
     }
 
     // Clean up
@@ -777,9 +761,9 @@ void parareal<DIM, logging>::compare_para_serial(const int max_iterations,
         }
 
         loopSeq->GetMultiLevelSolver()->ReInitVector(loopSeq->old);
-        loopSeq->GetMultiLevelSolver()->ReInitVector(loopSeq->u_solution);
+        loopSeq->GetMultiLevelSolver()->ReInitVector(loopSeq->end_sol);
         loopSeq->GetMultiLevelSolver()->ReInitVector(f);
-        loopSeq->InitSolution(loopSeq->u_solution);
+        loopSeq->InitSolution(loopSeq->end_sol);
         loopSeq->InitSolution(loopSeq->old);
 
         if (func_log.is_open())
@@ -791,22 +775,21 @@ void parareal<DIM, logging>::compare_para_serial(const int max_iterations,
         for (auto i = 0; i < n_intervals; ++i)
         {
             loopSeq->template propagator<iter_type::fine_last>(time + i * interval_length,
-                                                               loopSeq->u_solution, f);
-            loopSeq->GetSolver()->Equ(U_seq[i], 1., loopSeq->u_solution);
+                                                               loopSeq->end_sol, f);
+            loopSeq->GetSolver()->Equ(U_seq[i], 1., loopSeq->end_sol);
             // time += interval_length;
             for (const auto& x : loopSeq->log_buffer)
             {
                 func_log << x << '\n';
             }
-            loopSeq->GetSolver()->Visu("Results/u", loopSeq->u_solution, i);
-            loopSeq->WriteMeshAndSolution("Results/u", loopSeq->u_solution);
+            loopSeq->visu_write("Results/u", loopSeq->end_sol, i);
         }
         func_log.close();
 
         auto end         = omp_get_wtime();
         auto serial_time = end - start;
-        std::cerr << "\n==================================================\n"
-                     "Finished sequential execution.\nElapsed time is\t"
+        std::cerr << style::bb << "\n==================================================\n"
+                  << style::g << "Finished serial execution" << style::b << ".\nElapsed time is\t"
                   << serial_time << ".\n";
         timings_log << 1 << ' ' << serial_time << ' ' << 1 << '\n';
 
@@ -924,26 +907,22 @@ void parareal<DIM, logging>::propagator(double time, VectorInterface& u, VectorI
         {
             if (iter % 10 == 0 && iter < 310)
             {
-                std::cerr << style::bb << style::g << "[Info] " << style::n
-                          << "Fine Visualization\n";
+                std::cerr << logwrite::info("Info", "Fine Visualization");
                 auto step = static_cast<int>(time / dtfine);
-                GetMultiLevelSolver()->GetSolver()->Visu(
-                  "Results_detail/subinterval" + std::to_string(subinterval_idx + current - 1)
-                    + "/iter" + std::to_string(current) + "/u_fine_no",
-                  u, current * static_cast<int>(pow(10, ceil(log10(step)))) + step);
+                visu("Results_detail/subinterval" + std::to_string(subinterval_idx + current - 1)
+                       + "/iter" + std::to_string(current) + "/u_fine_no",
+                     u, current * static_cast<int>(pow(10, ceil(log10(step)))) + step);
             }
         }
         else if constexpr (method == iter_type::coarse)
         {
             if (iter < 31)
             {
-                std::cerr << style::bb << style::g << "[Info] " << style::n
-                          << "Coarse Visualization\n";
+                std::cerr << logwrite::info("Info", "Coarse Visualization");
                 auto step = static_cast<int>(time / dtcoarse);
-                GetMultiLevelSolver()->GetSolver()->Visu(
-                  "Results_detail/subinterval" + std::to_string(subinterval_idx + current) + "/iter"
-                    + std::to_string(current) + "/u_coarse_no",
-                  u, current * static_cast<int>(pow(10, ceil(log10(step)))) + step);
+                visu("Results_detail/subinterval" + std::to_string(subinterval_idx + current)
+                       + "/iter" + std::to_string(current) + "/u_coarse_no",
+                     u, current * static_cast<int>(pow(10, ceil(log10(step)))) + step);
             }
         }
     };
@@ -989,11 +968,8 @@ void parareal<DIM, logging>::propagator(double time, VectorInterface& u, VectorI
             step_visu(iter, u);
         }
     }
-    GetMultiLevelSolver()->GetSolver()->Visu(
-      "Results/before_stab", u, 10*current + subinterval_idx);
-    divergence_stab(u, f);
-    GetMultiLevelSolver()->GetSolver()->Visu(
-      "Results/after_stab", u, 10*current + subinterval_idx);
+
+    divergence_stab(u, f, time, dt, current);
     auto end = omp_get_wtime();
     if constexpr (method == iter_type::fine_last || method == iter_type::fine)
     {
@@ -1018,13 +994,13 @@ void parareal<DIM, logging>::step(double& time, const double& dt, const int& ite
     {
         if constexpr (method == iter_type::fine || method == iter_type::fine_last)
         {
-            std::cerr << style::bb << style::i << "Fine " << time << " -> " << time + dt << style::n
-                      << " [" << theta << "]\n";
+            std::cerr << logwrite::info("Fine", style::bb, time, " -> ", time + dt, " [", theta,
+                                        " ]");
         }
         else if constexpr (method == iter_type::coarse)
         {
-            std::cerr << style::bb << "Coarse " << time << " -> " << time + dt << style::n << " ["
-                      << theta << "]\n";
+            std::cerr << logwrite::info("Coarse", style::bb, time, " -> ", time + dt, " [", theta,
+                                        " ]");
         }
     }
 
@@ -1033,9 +1009,17 @@ void parareal<DIM, logging>::step(double& time, const double& dt, const int& ite
     GetMultiLevelSolver()->Equ(old, 1.0, u);
     GetMultiLevelSolver()->AddNodeVector("old", old);
     assert(StdLoop::Solve(u, f) == "converged");
-    GetMultiLevelSolver()->DeleteNodeVector("old");
 
-    compute_functionals<method>(u, f, time, iter);
+    if constexpr (method == iter_type::fine_last)
+    {
+        log_buffer[iter][0] = time;
+        DoubleVector juh    = StdLoop::Functionals(u, f);
+        for (short i = 0; i < 4; ++i)
+        {
+            log_buffer[iter][i + 1] = juh[i];
+        }
+    }
+    GetMultiLevelSolver()->DeleteNodeVector("old");
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -1061,18 +1045,58 @@ void parareal<DIM, logging>::compute_functionals(VectorInterface& u, VectorInter
 //--------------------------------------------------------------------------------------------------
 // TODO
 template <int DIM, log_level logging>
-void parareal<DIM, logging>::divergence_stab(VectorInterface& u, VectorInterface& f)
+void parareal<DIM, logging>::divergence_stab(VectorInterface& u, VectorInterface& f,
+                                             const double& time, const double& dt,
+                                             const int& current)
 {
-    cout << "div problem" << endl;
+    cerr << logwrite::info("Info", "Problem for Stabilization");
+    visu("Results/before_stab", u, 10 * current + subinterval_idx);
+
     GetMultiLevelSolver()->SetProblem("div");
+    set_time(dt, time);
 
     StdLoop::GetSolverInfos()->GetNLInfo().control().matrixmustbebuild() = 1;
     GetMultiLevelSolver()->Equ(tmp_vi, 1.0, u);
     GetMultiLevelSolver()->AddNodeVector("old", tmp_vi);
     assert(StdLoop::Solve(u, f) == "converged");
     GetMultiLevelSolver()->DeleteNodeVector("old");
+    GetSolver()->Add(tmp_vi, -1, u);
+    visu(dir_vec{"Results/difference", tmp_vi, 10 * current + subinterval_idx},
+         dir_vec{"Results/after_stab", u, 10 * current + subinterval_idx});
 
     GetMultiLevelSolver()->SetProblem("fsi");
+    StdLoop::GetSolverInfos()->GetNLInfo().control().matrixmustbebuild() = 1;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+template <int DIM, log_level logging>
+void parareal<DIM, logging>::visu_write(const std::string& dir, const VectorInterface& vec,
+                                        size_t index) const
+{
+    GetSolver()->Visu(dir, vec, index);
+    StdLoop::WriteMeshAndSolution(dir, vec);
+}
+
+template <int DIM, log_level logging>
+void parareal<DIM, logging>::visu(const std::string& dir, const VectorInterface& vec,
+                                  size_t index) const
+{
+    GetSolver()->Visu(dir, vec, index);
+}
+
+template <int DIM, log_level logging>
+void parareal<DIM, logging>::visu(const dir_vec& dv) const
+{
+    GetSolver()->Visu(dv.dir, dv.vec, dv.index);
+}
+
+template <int DIM, log_level logging>
+template <typename... dir_vec_pack>
+void parareal<DIM, logging>::visu(const dir_vec& dv, const dir_vec_pack&... dvs) const
+{
+    visu(dv);
+    visu(dvs...);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -1104,6 +1128,13 @@ void parareal<DIM, logging>::setGVsize(GlobalVector& v_ptr)
     v_ptr.ncomp() = ncomp;
     v_ptr.resize(n);
     // v_ptr.zero();
+}
+
+template <int DIM, log_level logging>
+void parareal<DIM, logging>::setGVsize(const VectorInterface& vec)
+{
+    auto v_ptr = GetSolver()->GetGV(vec);
+    setGVsize(v_ptr);
 }
 
 //--------------------------------------------------------------------------------------------------
