@@ -106,7 +106,7 @@ namespace Gascoigne
       }
       virtual int VtkType(int i) const=0;
       
-            virtual const int material    (int i)     const
+      virtual const int material    (int i)     const
       {
 				std::cerr << "\"MeshInterface::material\" written!" << std::endl;
         abort();
@@ -119,6 +119,27 @@ namespace Gascoigne
       virtual  const IntVector&  GetPatch2Cell(int i) const  
       { 
 				std::cerr << "\"MeshInterface::GetPatch2Cell\" not written!" << std::endl;
+        abort();
+      }
+      
+      virtual const int material_Vanka    (int i)     const
+      {
+				std::cerr << "\"MeshInterface::material\" written!" << std::endl;
+        abort();
+      }
+      virtual const int material_Vanka_patch    (int i)     const
+      {
+				std::cerr << "\"MeshInterface::material_patch\" not written!" << std::endl;
+        abort();
+      }
+      virtual const  std::array<Vertex3d,3>  Vanka_basis    (int i)     const
+      {
+				std::cerr << "\"MeshInterface::material\" written!" << std::endl;
+        abort();
+      }
+      virtual const  std::array<Vertex3d,3> Vanka_basis_patch    (int i)     const
+      {
+				std::cerr << "\"MeshInterface::material_patch\" not written!" << std::endl;
         abort();
       }
   };

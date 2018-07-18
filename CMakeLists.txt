@@ -2,129 +2,16 @@ PROJECT(GASCOIGNESTD CXX C)
 
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
-LIST(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/)
-
 #
-# Configuration options:
+# .gascoignerc_newcmake contains the user dependent settings
 #
-OPTION(BUILD_SHARED_LIBS "Build shared libraries" ON)
 
-OPTION(MATRIX_DOUBLE_PRECISION "Matrix in double precision" OFF)
-
-OPTION(WITH_UMFPACK "Build with support for UMFPACK" OFF)
-
-OPTION(WITH_THREADS "Build with support for openmp" OFF)
-
-OPTION(WITH_RSTStopWatch "Use RSTStopWatch" OFF)
-
-
-#### Never use -DNDEBUG for Release
-OPTION(CMAKE_CXX_FLAGS_RELEASE "" "-O3")
-
-### Directory Settings
-
-SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"  CACHE PATH "output path for libraries")
-
-
-
-
-
+INCLUDE($ENV{HOME}/.gascoignerc_newcmake)
 #
-# The name of the library:
+# CMakeGlobal.txt is intended for use in derived projects
 #
-SET(GASCOIGNE_LIBRARY GascoigneStd)
 
-#
-# Include directories:
-#
-SET(GASCOIGNE_INCLUDE_DIRS
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/Common
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/Discretization/Face
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/Discretization/Gls
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/Discretization/Lps
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/Discretization/Q1
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/Discretization/Q2
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/Discretization/Q4
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/Discretization/DG
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/Interface
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/LinAlg
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/Mesh
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/Problems
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/Solver
-  )
-
-#
-# Setup compiler flags and compile definitions:
-#
-SET(GASCOIGNE_CXX_FLAGS
-  "-std=c++11 -pedantic -Wall -Wno-sign-compare -Wold-style-cast"
-  )
-
-IF(MATRIX_DOUBLE_PRECISION)
-  LIST(APPEND GASCOIGNE_DEFINITIONS __MATRIX_DOUBLE_PRECISION__)
-ENDIF(MATRIX_DOUBLE_PRECISION)
-
-IF(WITH_THREADS)
-  SET(GASCOIGNE_CXX_FLAGS "${GASCOIGNE_CXX_FLAGS} -fopenmp")
-  LIST(APPEND GASCOIGNE_DEFINITIONS __WITH_THREADS__)
-ENDIF(WITH_THREADS)
-
-IF(WITH_RSTStopWatch)
-  LIST(APPEND GASCOIGNE_DEFINITIONS __WITH_RSTStopWatch__)
-ENDIF(WITH_RSTStopWatch)
-
-#
-# Search for metis:
-#
-FIND_PACKAGE(METIS REQUIRED)
-
-LIST(APPEND GASCOIGNE_INCLUDE_DIRS ${METIS_INCLUDE_DIRS})
-LIST(APPEND GASCOIGNE_LIBRARIES ${METIS_LIBRARIES})
-
-#
-# Search for UMFPACK:
-#
-IF(WITH_UMFPACK)
-  FIND_PACKAGE(UMFPACK REQUIRED)
-
-  LIST(APPEND GASCOIGNE_INCLUDE_DIRS ${UMFPACK_INCLUDE_DIRS})
-  LIST(APPEND GASCOIGNE_LIBRARIES ${UMFPACK_LIBRARIES})
-  SET(GASCOIGNE_LINKER_FLAGS
-    "${GASCOIGNE_LINKER_FLAGS} ${UMFPACK_LINKER_FLAGS}"
-    )
-  LIST(APPEND GASCOIGNE_DEFINITIONS __WITH_UMFPACK__)
-ENDIF()
-
-#
-# Search for blas:
-#
-FIND_PACKAGE(BLAS REQUIRED)
-
-LIST(APPEND GASCOIGNE_LIBRARIES ${BLAS_LIBRARIES})
-SET(GASCOIGNE_LINKER_FLAGS "${GASCOIGNE_LINKER_FLAGS} ${BLAS_LINKER_FLAGS}")
-
-#
-# Check whether tr1/unordered_map is available:
-#
-INCLUDE(CheckCXXSourceCompiles)
-
-CHECK_CXX_SOURCE_COMPILES(
-  "
-  #include <tr1/unordered_map>
-  int main()
-  {
-    std::tr1::unordered_map<int, int> foo;
-    return 0;
-  }
-  "
-  HAVE_TR1_UNORDERED_MAP
-  )
-
-IF(HAVE_TR1_UNORDERED_MAP)
-  LIST(APPEND GASCOIGNE_DEFINITIONS __NEWER_THAN_GCC_4_2__)
-ENDIF()
-
-SET(GASCOIGNE_LIBS "GascoigneStd${BUILD_ENDING}")
+INCLUDE(CMakeGlobal.txt)
 
 ADD_SUBDIRECTORY(src)
 ADD_SUBDIRECTORY(Examples)

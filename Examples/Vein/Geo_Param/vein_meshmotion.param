@@ -1,0 +1,87 @@
+//Block BoundaryManager
+
+//12 11 13 Solid out/inflow
+
+//7 fluid inflow
+// 4 2 fluid outflow
+
+dirichlet    6 12 11 13 7 2 4
+
+dirichletcomp 12   3  0 1 2
+dirichletcomp 11   3  0 1 2
+dirichletcomp 13   3  0 1 2
+dirichletcomp 7    3  0 1 2
+dirichletcomp 2    3  0 1 2
+dirichletcomp 4    3  0 1 2
+
+
+
+//functional 2  84 85
+
+
+//Block Equation
+
+//dt	0.001
+dt	0.01
+theta	0.55
+
+//Q1 lps	 1.0
+//Q2 lps	 0.1
+lps	 1.0
+
+nu_f		0.05
+
+
+damp		0.0
+
+start_time	0.0
+stop_time	3.6
+
+extend		1.0
+
+mu_s	    1.4e6
+lambda_s	12.8e6
+
+rho_f		1.0
+rho_s		1.1
+
+vmean		1.0
+
+//mat_law artery
+mat_law STVK
+
+//Block Loop
+
+initial	boundary
+
+
+niter       1
+initialrefine	0
+
+writevtk	1
+writebubgup 	0
+
+
+
+
+//Block Solver
+
+omega 	0.8
+
+//matrixtype	split
+//matrixtype	splitumf
+//matrixtype	fsisplit
+matrixtype block
+
+iterpre                 5
+iterpost                5
+iterexact               8
+
+discname       AleQ1Lps
+
+ilum 3 0.01 0.01 0.01
+
+ndirect        4000
+
+
+//Block Nix

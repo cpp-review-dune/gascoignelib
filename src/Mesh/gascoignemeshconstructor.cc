@@ -249,14 +249,24 @@ void GascoigneMeshConstructor::Construct3d
   IntVector&  mat = NM->GetMaterialVector();
   IntVector&  matpatch = NM->GetMaterialPatchVector();
   
+  IntVector&  mat_Vanka = NM->GetMaterialVankaVector();
+  IntVector&  matpatch_Vanka = NM->GetMaterialVankaPatchVector();
+  
+  std::vector<std::array<Vertex3d,3>>& basis_Vanka = NM->GetbasisVankaVector();
+  std::vector<std::array<Vertex3d,3>>& basis_Vanka_patch = NM->GetbasisVankaPatchVector();
   // zellen
 
   nc.reservesize(8*LM->ncells());
   mat.reservesize(LM->ncells());
+  mat_Vanka.reservesize(LM->ncells());
+  basis_Vanka.resize(LM->ncells());
+  
   for(int i=0;i<LM->ncells();i++)
     {
       for(int ii=0;ii<8;ii++) nc[8*i+ii] = LM->vertex_of_cell(i,ii);
       mat[i] = LM->hex(i).material();
+      mat_Vanka[i] = LM->hex(i).material_Vanka();
+      basis_Vanka[i] = LM->hex(i).basis_Vanka();
     }
 
   // Koordinaten
@@ -283,12 +293,16 @@ void GascoigneMeshConstructor::Construct3d
   const nvector<IntVector>& p2c = PIH.GetAllPatch2Cell();
   assert(p2c.size()==NM->npatches());
   matpatch.resize(p2c.size());
-  cout << matpatch.size() << endl;
+  matpatch_Vanka.resize(p2c.size());
+  basis_Vanka_patch.resize(p2c.size());
+    
   for (int ip=0;ip<NM->npatches();++ip)
     {
       assert(p2c[ip].size()>0);
       assert(p2c[ip][0]<mat.size());
       matpatch[ip] = mat[p2c[ip][0]];
+      matpatch_Vanka[ip] = mat_Vanka[p2c[ip][0]];
+      basis_Vanka_patch[ip] = basis_Vanka[p2c[ip][0]];
     }
   // BoundaryIndices
 

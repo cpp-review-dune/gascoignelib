@@ -702,6 +702,9 @@ void HierarchicalMesh3d::new_hexs(const HangContainer3d& hangset,
       vector<int>&  qc = hexs[father].childs();
       qc.resize(8);
       int material = hexs[father].material();
+      int material_Vanka = hexs[father].material_Vanka();
+      std::array<Vertex3d,3> basis_Vanka = hexs[father].basis_Vanka();
+      
       int childlevel = hexs[father].level()+1;
       for(int ic=0; ic<8; ic++)
 	{
@@ -710,6 +713,8 @@ void HierarchicalMesh3d::new_hexs(const HangContainer3d& hangset,
 	  hexs[inold].level()  = childlevel;
 	  hexs[inold].father() = father;
 	  hexs[inold].material() = material;	
+	  hexs[inold].material_Vanka() =material_Vanka ;	
+	  hexs[inold].basis_Vanka() = basis_Vanka;	
 	  hexs[inold].childs().resize(0);
 	  hexs[inold].edges().fill(-1);
 	}
@@ -1441,6 +1446,52 @@ void HierarchicalMesh3d::read_inp(const string& name)
 	  if(first_one) for(int iii=0;iii<8;iii++) ihv[iii]--;
 	  hexs[ih].vertex() = ihv;
 	  hexs[ih].material() = atoi(matstring.c_str());
+	  
+	  hexs[ih].material_Vanka() = ih;
+	  
+	  /*----------------------------------------------*/ 
+	  vector<pair<Vertex3d,double> >v_orient;
+		Vertex3d v_zw=vertexs3d[ihv[1]];
+		v_zw+=vertexs3d[ihv[2]];
+		v_zw+=vertexs3d[ihv[5]];
+		v_zw+=vertexs3d[ihv[6]];
+		v_zw-=vertexs3d[ihv[0]];
+		v_zw-=vertexs3d[ihv[3]];
+		v_zw-=vertexs3d[ihv[4]];
+		v_zw-=vertexs3d[ihv[7]];
+		//v_zw-=vertexs3d[ihv[0]];
+	  v_orient.push_back(make_pair(v_zw,v_zw.norm()));
+	  v_zw=vertexs3d[ihv[4]];
+		v_zw+=vertexs3d[ihv[5]];
+		v_zw+=vertexs3d[ihv[6]];
+		v_zw+=vertexs3d[ihv[7]];
+		v_zw-=vertexs3d[ihv[0]];
+		v_zw-=vertexs3d[ihv[1]];
+		v_zw-=vertexs3d[ihv[2]];
+		v_zw-=vertexs3d[ihv[3]];
+	 
+	  //v_zw=vertexs3d[ihv[4]]	;
+		//v_zw-=vertexs3d[ihv[0]];
+	  v_orient.push_back(make_pair(v_zw,v_zw.norm()));
+	  v_zw=vertexs3d[ihv[2]];
+		v_zw+=vertexs3d[ihv[3]];
+		v_zw+=vertexs3d[ihv[6]];
+		v_zw+=vertexs3d[ihv[7]];
+		v_zw-=vertexs3d[ihv[0]];
+		v_zw-=vertexs3d[ihv[1]];
+		v_zw-=vertexs3d[ihv[5]];
+		v_zw-=vertexs3d[ihv[4]];
+	 
+	  //v_zw=vertexs3d[ihv[3]]	;
+		//v_zw-=vertexs3d[ihv[0]];
+	  v_orient.push_back(make_pair(v_zw,v_zw.norm()));
+		
+		std::sort(v_orient.begin(), v_orient.end(), sort_pred());
+	  for(int i=0;i<3;i++)	
+	  	{
+	  		hexs[ih].basis_Vanka()[i]=v_orient[i].first;
+	     }
+	  /*----------------------------------------------*/
 	  ih++;
 	}
       else if(name=="quad")
