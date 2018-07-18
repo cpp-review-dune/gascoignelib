@@ -1,18 +1,110 @@
 PROJECT(GASCOIGNESTD CXX C)
 
+#### CMAKE CONFIG
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
+cmake_policy(SET CMP0042 NEW)
+
+LIST(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/)
+
+
+#### Set Standard options
+# Relase
+SET(CMAKE_BUILD_TYPE "Release" CACHE STRING "Configuration type" FORCE)
+SET(CMAKE_CXX_FLAGS_RELEASE "-O3" CACHE STRING "Configuration type" FORCE)
 
 #
-# .gascoignerc_newcmake contains the user dependent settings
+# Configuration options:
 #
+INCLUDE(CMakeLists_Options.txt)
 
-INCLUDE($ENV{HOME}/.gascoignerc_newcmake)
-#
-# CMakeGlobal.txt is intended for use in derived projects
-#
+### Directory Settings
 
-INCLUDE(CMakeGlobal.txt)
+SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/../lib"  CACHE PATH "output path for libraries")
+
+#
+# The name of the library:
+#
+SET(GASCOIGNE_LIBRARY GascoigneStd)
+
+#
+# Include directories:
+#
+SET (GASCOIGNE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+INCLUDE(CMakeLists_Includes.txt)
+
+
+
+#
+# Setup compiler flags and compile definitions:
+#
+SET(GASCOIGNE_CXX_FLAGS
+  "-std=c++11 -pedantic -Wall -Wno-sign-compare -Wold-style-cast"
+  )
+
+IF(MATRIX_DOUBLE_PRECISION)
+  LIST(APPEND GASCOIGNE_DEFINITIONS __MATRIX_DOUBLE_PRECISION__)
+ENDIF(MATRIX_DOUBLE_PRECISION)
+
+IF(WITH_THREADS)
+  SET(GASCOIGNE_CXX_FLAGS "${GASCOIGNE_CXX_FLAGS} -fopenmp")
+  LIST(APPEND GASCOIGNE_DEFINITIONS __WITH_THREADS__)
+ENDIF(WITH_THREADS)
+
+IF(WITH_RSTStopWatch)
+  LIST(APPEND GASCOIGNE_DEFINITIONS __WITH_RSTStopWatch__)
+ENDIF(WITH_RSTStopWatch)
+
+#
+# Search for metis:
+#
+FIND_PACKAGE(METIS REQUIRED)
+
+LIST(APPEND GASCOIGNE_INCLUDE_DIRS ${METIS_INCLUDE_DIRS})
+LIST(APPEND GASCOIGNE_LIBRARIES ${METIS_LIBRARIES})
+
+#
+# Search for UMFPACK:
+#
+IF(WITH_UMFPACK)
+  FIND_PACKAGE(UMFPACK REQUIRED)
+
+  LIST(APPEND GASCOIGNE_INCLUDE_DIRS ${UMFPACK_INCLUDE_DIRS})
+  LIST(APPEND GASCOIGNE_LIBRARIES ${UMFPACK_LIBRARIES})
+  SET(GASCOIGNE_LINKER_FLAGS
+    "${GASCOIGNE_LINKER_FLAGS} ${UMFPACK_LINKER_FLAGS}"
+    )
+  LIST(APPEND GASCOIGNE_DEFINITIONS __WITH_UMFPACK__)
+ENDIF()
+
+#
+# Search for blas:
+#
+FIND_PACKAGE(BLAS REQUIRED)
+
+LIST(APPEND GASCOIGNE_LIBRARIES ${BLAS_LIBRARIES})
+SET(GASCOIGNE_LINKER_FLAGS "${GASCOIGNE_LINKER_FLAGS} ${BLAS_LINKER_FLAGS}")
+
+#
+# Check whether tr1/unordered_map is available:
+#
+INCLUDE(CheckCXXSourceCompiles)
+
+CHECK_CXX_SOURCE_COMPILES(
+  "
+  #include <tr1/unordered_map>
+  int main()
+  {
+    std::tr1::unordered_map<int, int> foo;
+    return 0;
+  }
+  "
+  HAVE_TR1_UNORDERED_MAP
+  )
+
+IF(HAVE_TR1_UNORDERED_MAP)
+  LIST(APPEND GASCOIGNE_DEFINITIONS __NEWER_THAN_GCC_4_2__)
+ENDIF()
+
+SET(GASCOIGNE_LIBS "GascoigneStd${BUILD_ENDING}")
 
 ADD_SUBDIRECTORY(src)
-ADD_SUBDIRECTORY(Examples)
-
