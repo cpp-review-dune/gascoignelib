@@ -58,6 +58,8 @@ protected:
   ~SparseBlockIlu();
 
   string GetName() const {return "SparseBlockIlu";}
+
+  void dirichletILU(int i, const vector<int>& cv);
   
   nvector<int>&       GetP() {return p;}
   nvector<int>&       GetQ() {return q;}

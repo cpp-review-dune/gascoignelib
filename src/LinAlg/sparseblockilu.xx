@@ -287,4 +287,24 @@ std::ostream& SparseBlockIlu<B>::Write(std::ostream &s) const
 {
   return SparseBlockMatrix<B>::Write(s);
 }
+
+  
+template<class B>
+void SparseBlockIlu<B>::dirichletILU(int I, const std::vector<int>& cv)
+{
+  int i = q[I];
+
+  
+  for(int pos=this->US.start(i);pos<this->US.stop(i);pos++)
+    {
+      int j = this->US.col(pos);
+      this->smat[pos].DirichletRow(cv);
+      // das ist N^2 !!!!
+      int pos2 = this->US.Find(j,i);
+      this->smat[pos2].DirichletCol(cv);
+    }
+  int diag = this->US.diag(i);
+  this->smat[diag].DirichletDiag(cv);
+}
+
 }

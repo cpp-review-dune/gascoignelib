@@ -500,9 +500,7 @@ namespace Gascoigne
                               const VectorInterface &u,
                               VectorInterface &z,
                               const BoundaryFunctional *FP) const;
-    virtual double ComputeDomainFunctional(VectorInterface &f,
-                                           const VectorInterface &u,
-                                           VectorInterface &z,
+    virtual double ComputeDomainFunctional(const VectorInterface &u,
                                            const DomainFunctional *FP) const;
     virtual double ComputePointFunctional(VectorInterface &f,
                                           const VectorInterface &u,

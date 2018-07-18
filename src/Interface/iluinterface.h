@@ -46,6 +46,12 @@ namespace Gascoigne
       virtual void ReInit(const SparseStructureInterface* A)=0;
       virtual void ConstructStructure(const IntVector& perm, const MatrixInterface& A)=0;
 
+      virtual void dirichletILU (int i, const std::vector<int>& cv) {
+        std::cerr << "\"MatrixInterface::dirichletILU\" not written!" << std::endl;
+        abort();
+      }
+
+
       virtual void modify(int c, double s) {
         std::cerr << "\"IluInterface::modify\" not written!" << std::endl;
         abort();

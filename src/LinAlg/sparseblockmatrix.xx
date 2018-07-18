@@ -91,12 +91,7 @@ void SparseBlockMatrix<B>::FillInterfaceList(const nvector<int>& elements,
       
       for (int r=0;r<ncomp;++r)
 	for (int c=0;c<ncomp;++c)
-	  {
-	    if ((r == 0))
-	      values.push_back(1.0*tmp[r*ncomp+c]);
-	    else
-	      values.push_back(1.0*tmp[r*ncomp+c]);
-	  }
+	  values.push_back(1.0*tmp[r*ncomp+c]);
       
       start[index+1]=start[index]+tmp.size();
     }

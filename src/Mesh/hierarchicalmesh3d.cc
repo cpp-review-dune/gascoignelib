@@ -784,46 +784,112 @@ void HierarchicalMesh3d::inner_vertex_newton3d(const IntVector& vnew,
       // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> NEU
       // edges
       for (int e=0;e<12;++e)
-	{
-	  int ev = HexLaO.edge_vertex(h,e);
-	  if (adjustvertex.find(ev)!=adjustvertex.end()) continue;
+      	{
+      	  int ev = HexLaO.edge_vertex(h,e);
+      	  if (adjustvertex.find(ev)!=adjustvertex.end()) continue;
 
-	  std::array<int,2> fe;
-	  HexLaO.globalvertices_of_edge(h,fe,e);
-	  vertexs3d[ev]  = vertexs3d[fe[0]];
-	  vertexs3d[ev] += vertexs3d[fe[1]];
-	  vertexs3d[ev]*=0.5;
-	}
+      	  std::array<int,2> fe;
+      	  HexLaO.globalvertices_of_edge(h,fe,e);
+      	  vertexs3d[ev]  = vertexs3d[fe[0]];
+      	  vertexs3d[ev] += vertexs3d[fe[1]];
+      	  vertexs3d[ev]*=0.5;
+      	}
       // faces
       for (int f=0;f<6;++f)
-	{
-	  int fv = HexLaO.face_vertex(h,f);
-	  if (adjustvertex.find(fv)!=adjustvertex.end()) continue;
+      	{
+      	  int fv = HexLaO.face_vertex(h,f);
+      	  if (adjustvertex.find(fv)!=adjustvertex.end()) continue;
 
-	  std::array<int,4> fe;
-	  HexLaO.LoadEdgeVerticesOfFace(h,f,fe);
-	  vertexs3d[fv].equ(0.25, vertexs3d[fe[0]],
-			    0.25, vertexs3d[fe[1]],
-			    0.25, vertexs3d[fe[2]],
-			    0.25, vertexs3d[fe[3]]);
-	}
+      	  std::array<int,4> fe;
+      	  HexLaO.LoadEdgeVerticesOfFace(h,f,fe);
+      	  vertexs3d[fv].equ(0.25, vertexs3d[fe[0]],
+      			    0.25, vertexs3d[fe[1]],
+      			    0.25, vertexs3d[fe[2]],
+      			    0.25, vertexs3d[fe[3]]);
+      	}
       // middle
-      int fv = HexLaO.middle_vertex(h);
-      assert (adjustvertex.find(fv)==adjustvertex.end());
-      std::array<int,6> fe;
-      HexLaO.LoadFaceVertices(h,fe);
-      vertexs3d[fv]=0;
-      for (int i=0;i<6;++i) vertexs3d[fv]+=vertexs3d[fe[i]];
-      vertexs3d[fv]*=1./6.;
+      int cv = HexLaO.middle_vertex(h);
+      assert (adjustvertex.find(cv)==adjustvertex.end());
+
+      // weighted sum of edge vertices
+      double edgewgt = 0.3;
+      // .. face vertices 
+      double facewgt = 0.3;
+      // ... and nodes
+      double nodewgt = 0.4;
+      assert(fabs(edgewgt + facewgt + nodewgt - 1.0)<1.e-10);
+
+      // All vertices of the patch
+      vector<int> pv;
+      pv.push_back(h.vertex(0));
+      pv.push_back(HexLaO.edge_vertex(h,0));
+      pv.push_back(h.vertex(1));
+      pv.push_back(HexLaO.edge_vertex(h,3));
+      pv.push_back(HexLaO.face_vertex(h,0));
+      pv.push_back(HexLaO.edge_vertex(h,1));
+      pv.push_back(h.vertex(3));
+      pv.push_back(HexLaO.edge_vertex(h,2));
+      pv.push_back(h.vertex(2));
+      //
+      pv.push_back(HexLaO.edge_vertex(h,8));
+      pv.push_back(HexLaO.face_vertex(h,4));
+      pv.push_back(HexLaO.edge_vertex(h,9));
+      pv.push_back(HexLaO.face_vertex(h,3));
+      pv.push_back(HexLaO.middle_vertex(h));
+      pv.push_back(HexLaO.face_vertex(h,1));
+      pv.push_back(HexLaO.edge_vertex(h,11));
+      pv.push_back(HexLaO.face_vertex(h,2));
+      pv.push_back(HexLaO.edge_vertex(h,10));
+      //
+      pv.push_back(h.vertex(4));
+      pv.push_back(HexLaO.edge_vertex(h,4));
+      pv.push_back(h.vertex(5));
+      pv.push_back(HexLaO.edge_vertex(h,7));
+      pv.push_back(HexLaO.face_vertex(h,5));
+      pv.push_back(HexLaO.edge_vertex(h,5));
+      pv.push_back(h.vertex(7));
+      pv.push_back(HexLaO.edge_vertex(h,6));
+      pv.push_back(h.vertex(6));
+      assert(pv.size()==27);
+
+      // measure hx/hy/hz in local coordinate system
+      double hx = (vertexs3d[pv[14]]-vertexs3d[pv[12]]).norm();
+      double hy = (vertexs3d[pv[16]]-vertexs3d[pv[10]]).norm();
+      double hz = (vertexs3d[pv[22]]-vertexs3d[pv[4]]).norm();
+      assert(hz>hx);
+      assert(hz>hy);
+
+
+      for (int z=0;z<3;++z)
+	{
+	  int i0=9*z;
+
+	  // edges orthogonal to z
+	  int ed[4][3]= {{1,0,2},{3,0,6},{5,2,8},{7,6,8}};
+	  for (int e=0;e<4;++e)
+	    {
+	      int ev = pv[i0+ed[e][0]];
+	      if (adjustvertex.find(ev)!=adjustvertex.end()) continue;
+	      vertexs3d[ev].equ(0.5,vertexs3d[pv[i0+ed[e][1]]],0.5,vertexs3d[pv[i0+ed[e][2]]]);
+	    }
+
+	  int mv = pv[i0+4];
+	  if (adjustvertex.find(mv)!=adjustvertex.end()) continue;
+	  vertexs3d[mv].equ(0.25,vertexs3d[pv[i0+1]],
+			    0.25,vertexs3d[pv[i0+3]],
+			    0.25,vertexs3d[pv[i0+5]],
+			    0.25,vertexs3d[pv[i0+7]]);
+	}
+      
       // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< NEU
+      
 
 
 
 
 
 
-
-      // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ALT
+//       // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ALT
 //       for (int face=0; face<6; face++)
 // 	{
 // 	  HexLaO.LoadEdgeVerticesOfFace(h,face,v);
@@ -835,7 +901,7 @@ void HierarchicalMesh3d::inner_vertex_newton3d(const IntVector& vnew,
 // //       int mv = HexLaO.middle_vertex(h);
 // //       HexLaO.LoadFaceVertices(h,w);
 // //       new_vertex3d(mv,w);
-      // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< ALT
+//       // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< ALT
 }
 }
 

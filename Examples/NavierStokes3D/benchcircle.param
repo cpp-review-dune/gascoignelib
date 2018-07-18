@@ -5,7 +5,7 @@ coarsening    0
 
 //Block Loop
 
-niter        3
+niter        1
 estimator    none
 initial      boundary
 refiner      global
@@ -13,9 +13,9 @@ refiner      global
 //Block Mesh
 
 dimension    3
-patchdepth   0
+patchdepth   1
 gridname     nsbenchZ3d.inp
-prerefine    1
+prerefine    3
 curvedboundary  6       80   FlacherKreis 5. 2. 0. 0.25
 
 //Block BoundaryManager
@@ -38,9 +38,9 @@ linear_maxiter          20
 linear_pstep		0
 
 //linearsolve		gmres_12
-linearsolve		mg
+linearsolve		gmres
 nonlinear_maxiter       20
-nonlinear_rho           0.
+nonlinear_rho           0.1
 nonlinear_tol		1e-8
 nonlinear_damp          10
 
@@ -48,11 +48,11 @@ nonlinear_damp          10
 
 matrixtype	block
 discname 	                Q1Lps
-iterpre                 4
-iterpost                4
-iterexact               8
+iterpre                 2
+iterpost                2
+iterexact               4
 ilum                    4  0.01  0.1  0.1  0.1
 ilusort                 cuthillmckee
-ndirect			10
+ndirect			1
 
 //Block nix

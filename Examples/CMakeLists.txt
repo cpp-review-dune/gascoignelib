@@ -7,33 +7,41 @@ ENDIF()
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GASCOIGNE_CXX_FLAGS}")
 SET(COMPILE_DEFINITIONS "${GASCOIGNE_DEFINITIONS}")
 
-SUBDIRS(
-oscill
-Vanka
-   DG
-   fast3d_neu
-   fsi3dbench
-   Example1
-   Example2
-   Example3
-   Example4
-   Example5
-   Example6
-   Example7
-   Example8
-   Example9
-   MeshTest
-  Laplace2D 
-  Laplace3D 
-  NavierStokes2D 
-  NavierStokes3D 
-  NavierStokesFace
-  Heat2D 
-  ConvectionDiffusion2D 
-#  IntegrationTest
-  Functionals
-  MeshInterpolator
-#   PeriodicStokes2D
-)
-
+SUBDIRS(  TestNS TestMS Galdi
+NavierStokes3D
+#Q2P1NS
+#  
+#  OptNS
+#  GaldiNew
+#  OptGaldi
+#  GaldiAll
+#  Galdi
+oscill)
+#  Vanka
+#     DG
+#     fast3d_neu
+#     fsi3dbench
+#     Example1
+#     Example2
+#     Example3
+#     Example4
+#     Example5
+#     Example6
+#     Example7
+#     Example8
+#     Example9
+#     MeshTest
+#    Laplace2D 
+#    Laplace3D 
+#    NavierStokes2D 
+#    NavierStokes3D 
+#    NavierStokesFace
+#    Heat2D 
+#    ConvectionDiffusion2D 
+#  #  IntegrationTest
+#    Functionals
+#    MeshInterpolator
+#  #   PeriodicStokes2D
+#  )
+#  
 LINK_LIBRARIES(${GASCOIGNE_LIBS})

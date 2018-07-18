@@ -272,7 +272,7 @@ namespace Gascoigne
 
     if (_useUMFPACK && _MIP != NULL)
     {
-      UmfIlu *UM = dynamic_cast<UmfIlu *>(GetIlu());
+      UmfIluLong *UM = dynamic_cast<UmfIluLong *>(GetIlu());
       if ((UM && !_directsolver) || (!UM && _directsolver))
       {
         delete _MIP;
@@ -740,7 +740,7 @@ namespace Gascoigne
 #ifdef __WITH_UMFPACK__
     if (_directsolver && _useUMFPACK)
     {
-      return new UmfIlu(GetMatrix());
+      return new UmfIluLong(GetMatrix());
     }
 #endif
 
@@ -1284,7 +1284,7 @@ namespace Gascoigne
     if (_directsolver && _useUMFPACK)
     {
       _so.start();
-      UmfIlu *UM = dynamic_cast<UmfIlu *>(GetIlu());
+      UmfIluLong *UM         = dynamic_cast<UmfIluLong *>(GetIlu());
       assert(UM);
       UM->Solve(GetGV(x), GetGV(y));
       _so.stop();
@@ -1486,7 +1486,7 @@ namespace Gascoigne
     const PointFunctional *NPFP = dynamic_cast<const PointFunctional *>(FP);
 
     if (DFP)
-      val = ComputeDomainFunctional(gf, gu, gh, DFP);
+      val = ComputeDomainFunctional(gu, DFP);
     else if (BFP)
       val = ComputeBoundaryFunctional(gf, gu, gh, BFP);
     else if (RFP)
@@ -1524,10 +1524,8 @@ namespace Gascoigne
 
   /*-------------------------------------------------------*/
 
-  double StdSolver::ComputeDomainFunctional(VectorInterface &gf,
-                                            const VectorInterface &gu,
-                                            VectorInterface &gz,
-                                            const DomainFunctional *FP) const
+  double StdSolver::ComputeDomainFunctional(const VectorInterface &gu,
+					    const DomainFunctional *FP) const
   {
     HNAverage(gu);
     HNAverageData();
@@ -1560,6 +1558,41 @@ namespace Gascoigne
                                        VectorInterface &gz,
                                        const ResidualFunctional *FP) const
   {
+    // cerr << "Aenderung in ResidualFunctional" << endl;
+   
+    // //    const BoundaryManager *BM = GetProblemDescriptor()->GetBoundaryManager();                                                            
+    
+    // HNAverage(gu);
+    // HNAverageData();
+    // Zero(gf);
+    // Rhs(gf);
+    // // Do not include Boundary Equation!
+    // //    Form(gf, gu, -1.); >>>>>>>> 
+    // const Equation *EQ = GetProblemDescriptor()->GetEquation();
+    // GetDiscretization()->Form(GetGV(gf), GetGV(gu), *EQ, -1.0);
+    // //    Form(gf, gu, -1.); <<<<<<<<
+
+    // const DirichletData *ABD = FP->GetDirichletData();                                                                                   
+    // assert(ABD);
+
+    // Zero(gz);
+
+    // // modification needed when funcitonal is not on dirichlet boundary
+    // //    SetBoundaryVectorStrong(gz, *BM, *ABD); >>>>>
+
+    // IntSet       PrefCol = ABD->preferred_colors();
+    // nvector<int> comps   = FP->GetComps();
+                                                                                                                                         
+    // for (auto it : PrefCol)
+    //   GetDiscretization()->StrongDirichletVector(GetGV(gz), *ABD, it, comps,1.0);
+    // //    SetBoundaryVectorStrong(gz, *BM, *ABD); <<<<
+    // HNAverage(gz);
+                                                                                                                                         
+    // double J = ScalarProduct(gz, gf); 
+    // HNZero(gu);
+    // HNZeroData();
+    // return J;
+
     const BoundaryManager *BM = GetProblemDescriptor()->GetBoundaryManager();
 
     HNAverage(gu);
@@ -1828,7 +1861,7 @@ namespace Gascoigne
     if (_directsolver && _useUMFPACK)
     {
       _cs.start();
-      UmfIlu *UM = dynamic_cast<UmfIlu *>(GetIlu());
+      UmfIluLong *UM = dynamic_cast<UmfIluLong *>(GetIlu());
       assert(UM);
       //       if(PrimalSolve==0) return;
       UM->Factorize();
@@ -1859,7 +1892,7 @@ namespace Gascoigne
     if (_directsolver && _useUMFPACK)
     {
       _cs.start();
-      UmfIlu *UM = dynamic_cast<UmfIlu *>(GetIlu());
+      UmfIluLong *UM = dynamic_cast<UmfIluLong *>(GetIlu());
       assert(UM);
       //       if(PrimalSolve==0) return;
       UM->Factorize();
