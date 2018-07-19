@@ -39,11 +39,11 @@ void GalerkinLpsIntegratorQ2<DIM>::Form(const Equation& EQ, LocalVector& F, cons
 /*-----------------------------------------*/
 
 template<int DIM>
-void GalerkinLpsIntegratorQ2<DIM>::Matrix(const Equation& EQ, EntryMatrix& E, const FemInterface& FEM, const LocalVector& U, 
+void GalerkinLpsIntegratorQ2<DIM>::Matrix(const Equation& EQ, ApplicationData* EQData, EntryMatrix& E, const FemInterface& FEM, const LocalVector& U, 
     const LocalData& Q, const LocalData& QC) const
 {
-  GalerkinIntegrator<DIM>::Matrix(EQ,E,FEM,U,Q,QC);
-  Lps.                     Matrix(EQ,E,FEM,U,Q,QC);
+  GalerkinIntegrator<DIM>::Matrix(EQ,EQData,E,FEM,U,Q,QC);
+  Lps.                     Matrix(EQ,EQData,E,FEM,U,Q,QC);
 }
 
 /*-----------------------------------------------------------*/

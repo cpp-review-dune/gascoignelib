@@ -142,7 +142,7 @@ void LpsIntegrator<DIM>::Form(const Equation& EQ, LocalVector& F, const FemInter
 /*-----------------------------------------------------------*/
 
 template<int DIM>
-void LpsIntegrator<DIM>::Matrix(const Equation& EQ, EntryMatrix& E, const FemInterface& FEM, const LocalVector& U, 
+void LpsIntegrator<DIM>::Matrix(const Equation& EQ, ApplicationData* EQData, EntryMatrix& E, const FemInterface& FEM, const LocalVector& U, 
     const LocalData& Q, const LocalData& QC) const
 {
   assert(E.Ndof()==FEM.n());

@@ -167,16 +167,19 @@ void CellDiscretization::Matrix(MatrixInterface& A, const GlobalVector& u, const
   
   GlobalToGlobalData();
   EQ.SetParameterData(__QP);
-  
+
+  auto EqData = EQ.CreateEquationData();
+
   for(int iq=0;iq<GetMesh()->ncells();++iq)
     {
       Transformation(T,iq);
       GetFem()->ReInit(T);
 
       GlobalToLocal(__U,u,iq);
-      EQ.point_cell(GetMesh()->material(iq));
+
+      EqData->setelementmaterial(GetMesh()->material(iq));
       //EQ.cell(GetMesh(),iq,__U,__QN);
-      GetIntegrator()->Matrix(EQ,__E,*GetFem(),__U,__QN,__QC);
+      GetIntegrator()->Matrix(EQ,EqData,__E,*GetFem(),__U,__QN,__QC);
       LocalToGlobal(A,__E,iq,d);
     }
 }

@@ -84,7 +84,7 @@ public:
       const LocalData& Q, const LocalData& QC) const;
   void BoundaryForm(const BoundaryEquation& BE, LocalVector& F, const FemInterface& FEM, const LocalVector& U, int ile, int col, 
       const LocalData& Q, const LocalData& QC) const;
-  void Matrix(const Equation& EQ, EntryMatrix& E, const FemInterface& FEM, const LocalVector& U, 
+  void Matrix(const Equation& EQ, ApplicationData* EQdata, EntryMatrix& E, const FemInterface& FEM, const LocalVector& U, 
       const LocalData& Q, const LocalData& QC) const;
   void BoundaryMatrix (const BoundaryEquation& BE, EntryMatrix& E, const FemInterface& FEM, const LocalVector& U, int ile, int col, 
       const LocalData& Q, const LocalData& QC) const;

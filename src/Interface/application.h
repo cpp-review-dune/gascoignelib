@@ -43,6 +43,7 @@ namespace Gascoigne
   ////
   /////////////////////////////////////////////
 
+
   class Application
   {
     private:

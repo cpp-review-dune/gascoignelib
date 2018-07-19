@@ -379,7 +379,7 @@ void GalerkinIntegrator<DIM>::BoundaryMassMatrix (EntryMatrix& E, const FemInter
 /* ----------------------------------------- */
 
 template<int DIM>
-void GalerkinIntegrator<DIM>::Matrix(const Equation& EQ, EntryMatrix& E, const FemInterface& FEM, const LocalVector& U, 
+void GalerkinIntegrator<DIM>::Matrix(const Equation& EQ, ApplicationData* EQData, EntryMatrix& E, const FemInterface& FEM, const LocalVector& U,  
     const LocalData& Q, const LocalData& QC) const
 {
   _NNN.resize(FEM.n());

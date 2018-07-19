@@ -98,11 +98,11 @@ namespace Gascoigne
         std::cerr << "\"IntegratorInterface::BoundaryMatrix\" not written!" << std::endl;
         abort();
       }
-      virtual void Matrix(const Equation& EQ, EntryMatrix& E, const FemInterface& FEM, const LocalVector& U, 
-          const LocalData& Q, const LocalData& QC) const {
-        std::cerr << "\"IntegratorInterface::Matrix\" not written!" << std::endl;
-        abort();
-      }
+    virtual void Matrix(const Equation& EQ, ApplicationData* EqData, EntryMatrix& E, const FemInterface& FEM, const LocalVector& U, 
+			const LocalData& Q, const LocalData& QC) const {
+      std::cerr << "\"IntegratorInterface::Matrix\" not written!" << std::endl;
+      abort();
+    }
       virtual double MassMatrix(EntryMatrix& E, const FemInterface& FEM) const {
         std::cerr << "\"IntegratorInterface::MassMatrix\" not written!" << std::endl;
         abort();

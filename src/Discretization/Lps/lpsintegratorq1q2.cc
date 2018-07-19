@@ -115,11 +115,11 @@ void LpsIntegratorQ1<DIM>::Form(const Equation& EQ, LocalVector& F, const FemInt
 /*-----------------------------------------*/
 
 template<int DIM>
-void LpsIntegratorQ1<DIM>::Matrix(const Equation& EQ, EntryMatrix& E, const FemInterface& FEM, const LocalVector& U, 
+void LpsIntegratorQ1<DIM>::Matrix(const Equation& EQ, ApplicationData* EQData, EntryMatrix& E, const FemInterface& FEM, const LocalVector& U, 
     const LocalData& Q, const LocalData& QC) const
 {
   ResetMatrix(E,FEM.n(),U.ncomp());
-  LpsIntegrator<DIM>::Matrix(EQ,E,FEM,U,Q,QC);
+  LpsIntegrator<DIM>::Matrix(EQ,EQData, E,FEM,U,Q,QC);
 }
 
 /*-----------------------------------------------------------*/

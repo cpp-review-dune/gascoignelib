@@ -28,6 +28,7 @@
 #include  "entrymatrix.h"
 #include  "vertex.h"
 #include  "application.h"
+#include  "applicationdata.h"
 
 
 /*-------------------------------------------------------------------------*/
@@ -58,6 +59,10 @@ namespace Gascoigne
       //
       Equation() : Application() {}
       virtual ~Equation() {}
+
+    // non-const data of the equation
+    ApplicationData *CreateEquationData() const 
+    { return new ApplicationData; }
 
       virtual void OperatorStrong(DoubleVector& b, const FemFunction& U) const {
         std::cerr << "\"Equation::OperatorStrong\" not written!" << std::endl;

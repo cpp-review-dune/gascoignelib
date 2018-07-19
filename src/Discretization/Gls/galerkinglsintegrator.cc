@@ -40,11 +40,11 @@ void GalerkinGlsIntegrator<DIM>::Form(const Equation& EQ, LocalVector& F, const 
 /*-----------------------------------------*/
 
 template<int DIM>
-void GalerkinGlsIntegrator<DIM>::Matrix(const Equation& EQ, EntryMatrix& E, const FemInterface& FEM, const LocalVector& U, 
+void GalerkinGlsIntegrator<DIM>::Matrix(const Equation& EQ, ApplicationData* EQData, EntryMatrix& E, const FemInterface& FEM, const LocalVector& U, 
     const LocalData& Q, const LocalData& QC) const
 {
-  GalerkinIntegrator<DIM>::Matrix(EQ,E,FEM,U,Q,QC);
-  Gls.                     Matrix(EQ,E,FEM,U,Q,QC);
+  GalerkinIntegrator<DIM>::Matrix(EQ,EQData,E,FEM,U,Q,QC);
+  Gls.                     Matrix(EQ,EQData,E,FEM,U,Q,QC);
 }
 
 /*-----------------------------------------*/

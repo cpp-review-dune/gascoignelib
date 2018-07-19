@@ -213,6 +213,7 @@ namespace Gascoigne
 
     EntryMatrix E;
 
+    auto EQData = EQ.CreateEquationData();
 
     for (int iq = 0; iq < _dofhandler.nelements(); ++iq)
     {
@@ -222,7 +223,7 @@ namespace Gascoigne
       //      _dofhandler.GlobalToLocalData();
       _dofhandler.GlobalToLocal(U, u, iq);
       // EQ.cell(GetMesh(),iq,__U,__QN);
-      _integrator.Matrix(EQ, E, _fe, U, QN, QC);
+      _integrator.Matrix(EQ, EQData, E, _fe, U, QN, QC);
       _dofhandler.LocalToGlobalMatrix(A, E, iq, d);
     }
     EdgeMatrix(A, u, dynamic_cast<const DGEquation &>(EQ), d);

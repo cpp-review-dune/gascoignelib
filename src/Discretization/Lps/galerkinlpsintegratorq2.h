@@ -61,7 +61,7 @@ public:
 
   void Form(const Equation& EQ, LocalVector& F, const FemInterface& FEM, const LocalVector&U, 
       const LocalData& Q, const LocalData& QC) const;
-  void Matrix(const Equation& EQ, EntryMatrix& E, const FemInterface& FEM, const LocalVector& U, 
+  void Matrix(const Equation& EQ, ApplicationData* EQData, EntryMatrix& E, const FemInterface& FEM, const LocalVector& U, 
       const LocalData& Q, const LocalData& QC) const;
 };
 }

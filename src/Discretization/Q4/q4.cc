@@ -224,6 +224,8 @@ void Q4::Matrix(MatrixInterface& A, const GlobalVector& u, const Equation& EQ, d
   GlobalToGlobalData();
   EQ.SetParameterData(__QP);
 
+  auto EqData = EQ.CreateEquationData();
+
   for(int iq=0; iq<GetPatchMesh()->nq4patches(); ++iq)
   {
     Transformation(T,iq);
@@ -231,7 +233,8 @@ void Q4::Matrix(MatrixInterface& A, const GlobalVector& u, const Equation& EQ, d
 
     GlobalToLocal(__U,u,iq);
     //EQ.cell(GetPatchMesh(),iq,__U,__QN);
-    GetIntegrator()->Matrix(EQ,__E,*GetFem(),__U,__QN,__QC);
+
+    GetIntegrator()->Matrix(EQ,EqData, __E,*GetFem(),__U,__QN,__QC);
     LocalToGlobal(A,__E,iq,d);
   }
 
