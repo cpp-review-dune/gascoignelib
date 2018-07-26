@@ -32,7 +32,16 @@
 #include  "boundaryfunction.h"
 #include  "hangcontainer3d.h" 
 #include  "hierarchicalmesh.h"
+#include  "metis.h"
+#include <fstream>
 
+#include <../../boost/config.hpp>
+#include <vector>
+#include <iostream>
+#include <../../boost/graph/adjacency_list.hpp>
+#include <../../boost/graph/cuthill_mckee_ordering.hpp>
+#include <../../boost/graph/properties.hpp>
+#include <../../boost/graph/bandwidth.hpp>
 /*---------------------------------------------------*/
 
 namespace Gascoigne
@@ -249,6 +258,178 @@ class HierarchicalMesh3d : public HierarchicalMesh
 
   void AddShape(int col, BoundaryFunction<3>* f) {
     GetCurvedShapes().AddShape(col,f);
+  }
+   void Sort()
+  {
+    // connectivity - patch based
+    std::set<int> patches;
+    GetAwakePatchs(patches);
+    idx_t nn = nnodes();
+    std::vector<std::set<int> > n2n_set(nn);
+
+    for (auto it : patches)
+      {
+    // list of vertices in patch
+    const Hex& H = hex(it);
+
+    std::set<int> nh; // vertices in patch
+    assert(H.nchilds() == 8);
+    for (int c=0;c<H.nchilds();++c)
+      {
+        const Hex& C = hex(H.child(c));
+        for (int n=0;n<8;++n)
+          nh.insert(C[n]);
+      }
+    assert(nh.size()==27);
+    for (auto i1 : nh)
+      for (auto i2 : nh)
+        n2n_set[i1].insert(i2);
+      }
+
+    for (int i=0;i<n2n_set.size();++i)
+      assert(n2n_set[i].size()>1);
+      
+	std::ofstream matrix_log("unsortedmatrix.txt");
+	for (auto itn2n_set : n2n_set)
+    	matrix_log <<itn2n_set << std::endl;
+    matrix_log.close();
+    
+    // copy coupling structure to METIS format
+    std::vector<idx_t> adj(nn+1,0);
+    std::vector<idx_t> adjncy;
+
+    int count = 0;
+    adj[0]=0;
+    for (int r=0;r<n2n_set.size();++r) // loop over 'rows'
+      {
+    for (auto it : n2n_set[r])     // loop over 'cols'
+      {
+        if (it == r) continue;
+        ++count;
+        adjncy.push_back(it);
+      }
+    adj[r+1] = count;
+      }
+
+/*
+    std::vector<idx_t> iperm(nn);
+    std::vector<idx_t> perm(nn);
+    for (int i=0;i<nn;++i)
+      perm[i]=i;
+
+
+    //////////// METIS!!!!
+    idx_t options[METIS_NOPTIONS];
+    METIS_SetDefaultOptions(options);
+    options[METIS_OPTION_NUMBERING] = 0;
+    //////////// METIS!!!!
+
+
+    METIS_NodeND(&nn,&adj[0],&adjncy[0],NULL,
+       &options[0], &perm[0], &iperm[0]);
+    //////////// CMC
+    //abort();
+*/
+  using namespace boost;
+  using namespace std;
+  typedef adjacency_list<vecS, vecS, undirectedS, 
+     property<vertex_color_t, default_color_type,
+       property<vertex_degree_t,int> > > Graph;
+  typedef graph_traits<Graph>::vertex_descriptor Vertex;
+  typedef graph_traits<Graph>::vertices_size_type size_type;
+
+  Graph G(nn);
+  for(int i=0;i<nn;i++)
+  	{
+  		for (auto j:n2n_set[i])
+  			if(j<=i) add_edge(i, j, G);
+	}
+
+  graph_traits<Graph>::vertex_iterator ui, ui_end;
+
+  property_map<Graph,vertex_degree_t>::type deg = get(vertex_degree, G);
+  for (boost::tie(ui, ui_end) = vertices(G); ui != ui_end; ++ui)
+    deg[*ui] = degree(*ui, G);
+
+  property_map<Graph, vertex_index_t>::type
+  
+  index_map = get(vertex_index, G);
+
+
+  std::vector<Vertex> perm(num_vertices(G));
+  std::vector<size_type> iperm(num_vertices(G));
+  
+    Vertex s = vertex(6, G);
+    //reverse cuthill_mckee_ordering
+    //cuthill_mckee_ordering(G, s, perm.rbegin(), get(vertex_color, G), 
+    //                       get(vertex_degree, G));
+    cuthill_mckee_ordering(G,  perm.rbegin(), get(vertex_color, G), 
+                           get(vertex_degree, G));
+    for (size_type c = 0; c != perm.size(); ++c)
+      iperm[index_map[perm[c]]] = c;
+	
+
+
+
+
+
+
+    assert(nnodes() == perm.size());
+    // vertices
+    VertexVec3d newVV(nnodes());
+    VertexVec3d& origVV = GetVertexVector();
+    for (int i=0;i<nnodes();++i)
+      newVV[i] = origVV[perm[i]];
+    for (int i=0;i<nnodes();++i)
+      origVV[i] = newVV[i];
+
+    for (int i=0;i<vo2n.size();++i)
+      vo2n[i] = iperm[vo2n[i]];
+
+    // hex
+    for (int h=0;h<hexs.size();++h)
+      for (int n=0;n<8;++n)
+    hexs[h][n] = iperm[hexs[h][n]];
+
+    // cell
+    for (int h=0;h<Bquads.size();++h)
+      for (int n=0;n<4;++n)
+    Bquads[h][n]=iperm[Bquads[h][n]];
+
+
+    check_mesh3d();
+    
+    
+    n2n_set.clear();
+	n2n_set.resize(nn);
+    for (auto it : patches)
+      {
+    // list of vertices in patch
+    const Hex& H = hex(it);
+
+    std::set<int> nh; // vertices in patch
+    assert(H.nchilds() == 8);
+    for (int c=0;c<H.nchilds();++c)
+      {
+        const Hex& C = hex(H.child(c));
+        for (int n=0;n<8;++n)
+          nh.insert(C[n]);
+      }
+    assert(nh.size()==27);
+    for (auto i1 : nh)
+      for (auto i2 : nh)
+        n2n_set[i1].insert(i2);
+      }
+
+    for (int i=0;i<n2n_set.size();++i)
+      assert(n2n_set[i].size()>1);
+      
+	std::ofstream matrix_sorted_log("sortedmatrix.txt");
+	for (auto itn2n_set : n2n_set)
+    	matrix_sorted_log <<itn2n_set << std::endl;
+    matrix_sorted_log.close();
+    
+    
   }
 };
 }

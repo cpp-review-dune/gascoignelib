@@ -122,6 +122,11 @@ class HierarchicalMesh2d : public HierarchicalMesh
   void recursive_childs(int q, IntVector& ref, int d) const;
 
 
+	struct sort_pred {
+    bool operator()(const std::pair<Vertex3d,double> &left, const std::pair<Vertex3d,double> &right) {
+        return left.second < right.second;
+    }
+	};
   public:
   
   HierarchicalMesh2d();
