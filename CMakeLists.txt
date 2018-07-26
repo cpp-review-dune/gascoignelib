@@ -1,3 +1,9 @@
+#### Set Standard options
+# Relase
+SET(CMAKE_BUILD_TYPE "Release" CACHE STRING "Configuration type" )
+SET(CMAKE_CXX_FLAGS_RELEASE "-O3" CACHE STRING "Configuration type" )
+
+
 PROJECT(GASCOIGNESTD CXX C)
 
 #### CMAKE CONFIG
@@ -7,15 +13,19 @@ cmake_policy(SET CMP0042 NEW)
 LIST(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/)
 
 
-#### Set Standard options
-# Relase
-SET(CMAKE_BUILD_TYPE "Release" CACHE STRING "Configuration type" FORCE)
-SET(CMAKE_CXX_FLAGS_RELEASE "-O3" CACHE STRING "Configuration type" FORCE)
+
 
 #
 # Configuration options:
 #
-INCLUDE(CMakeLists_Options.txt)
+#INCLUDE(CMakeLists_Options.txt)
+#### Standard options for building Gascoigne
+
+OPTION(BUILD_SHARED_LIBS  	   	"Build shared libraries"		ON)
+OPTION(MATRIX_DOUBLE_PRECISION 	"Matrix in double precision" 	ON)
+OPTION(WITH_UMFPACK 		   	"Build with support for UMFPACK" 	ON)
+OPTION(WITH_THREADS 		   	"Build with support for openmp" 	OFF)
+OPTION(WITH_RSTStopWatch 	   	"Use RSTStopWatch"  	   		OFF)
 
 ### Directory Settings
 
@@ -29,7 +39,7 @@ SET(GASCOIGNE_LIBRARY GascoigneStd)
 #
 # Include directories:
 #
-SET (GASCOIGNE_SRC ${CMAKE_CURRENT_SOURCE_DIR})
+SET (GASCOIGNE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 INCLUDE(CMakeLists_Includes.txt)
 
 
@@ -38,7 +48,7 @@ INCLUDE(CMakeLists_Includes.txt)
 # Setup compiler flags and compile definitions:
 #
 SET(GASCOIGNE_CXX_FLAGS
-  "-std=c++11 -pedantic -Wall -Wno-sign-compare -Wold-style-cast"
+  "-std=c++11 -pedantic -Wall -Wno-sign-compare -Wold-style-cast" CACHE STRING "Configuration flags"
   )
 
 IF(MATRIX_DOUBLE_PRECISION)
