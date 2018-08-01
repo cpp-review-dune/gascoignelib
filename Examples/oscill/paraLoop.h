@@ -24,9 +24,10 @@ enum class name_type
 };
 enum class iter_type
 {
-    fine_last,
-    fine,
-    coarse
+    fine_last    = 0,
+    fine         = 1,
+    coarse_first = 2,
+    coarse       = 3,
 };
 enum class log_level
 {
@@ -201,10 +202,6 @@ private:
     template <iter_type method>
     void inline step(double& time, const double& dt, const int& iter, const double& theta,
                      VectorInterface& u, VectorInterface& f);
-
-    template <iter_type method>
-    void inline compute_functionals(VectorInterface& u, VectorInterface& f, const double& time,
-                                    const int& iter);
 
     void inline divergence_stab(VectorInterface& u, VectorInterface& f, const double& time,
                                 const double& dt, const int& current);
@@ -427,10 +424,10 @@ double parareal<DIM, logging>::runPara(const int max_iterations, const double co
     }
     auto exec_time = paraAlgo();
 
-    std::cerr << style::bb << "\n==================================================\n"
-              << style::g << "Finished parareal" << style::b << ".\nElapsed time is\t" << exec_time
+    std::cerr << sty::bb << "\n==================================================\n"
+              << sty::g << "Finished parareal" << sty::b << ".\nElapsed time is\t" << exec_time
               << "\n\nTime spent in coarse method: " << coarse_exec_time
-              << "\nTime spent in fine method: " << fine_exec_time << style::n << '\n';
+              << "\nTime spent in fine method: " << fine_exec_time << sty::n << '\n';
     func_log.close();
     return exec_time;
 }
@@ -441,19 +438,19 @@ double parareal<DIM, logging>::runPara(const int max_iterations, const double co
 template <int DIM, log_level logging>
 double parareal<DIM, logging>::paraAlgo()
 {
-    auto equal = [&](parareal*& para_dest, VectorInterface& dest, parareal*& para_src,
-                     VectorInterface& source) {
+    static auto equal = [&](parareal*& para_dest, VectorInterface& dest, parareal*& para_src,
+                            VectorInterface& source) {
         para_dest->GetSolver()->GetGV(dest).equ(1., para_src->GetSolver()->GetGV(source));
     };
-    auto w_equ_x_plus_y_minus_z = [&](parareal*& para_dest, VectorInterface& dest, parareal*& src_x,
-                                      VectorInterface& x, parareal*& src_y, VectorInterface& y,
-                                      parareal*& src_z, VectorInterface& z) {
-        // clang-format off
+    static auto w_equ_x_plus_y_minus_z =
+      [&](parareal*& para_dest, VectorInterface& dest, parareal*& src_x, VectorInterface& x,
+          parareal*& src_y, VectorInterface& y, parareal*& src_z, VectorInterface& z) {
+          // clang-format off
         para_dest->GetSolver()->GetGV(dest).equ(1,  src_x->GetSolver()->GetGV(x),
                                                 1,  src_y->GetSolver()->GetGV(y),
                                                 -1, src_z->GetSolver()->GetGV(z));
-        // clang-format on
-    };
+          // clang-format on
+      };
     // auto add = [&](VectorInterface& dest, VectorInterface& source){
     //
     // };
@@ -540,7 +537,7 @@ double parareal<DIM, logging>::paraAlgo()
 //
 // A C T U A L   A L G O R I T H M
 //
-#pragma omp parallel num_threads(n_intervals) firstprivate(time) proc_bind(close)
+#pragma omp parallel num_threads(n_intervals) firstprivate(time)  // proc_bind(close)
     {
         // 'Iteration 0'
         //
@@ -554,7 +551,7 @@ double parareal<DIM, logging>::paraAlgo()
                 // auto im1 = (i + 1) % threads;
                 omp_set_lock(&interval_locker[i]);
                 // u ⟵ G⁰(i)
-                subinterval[i]->template propagator<iter_type::coarse>(
+                subinterval[i]->template propagator<iter_type::coarse_first>(
                   time + i * interval_length, u, f, 0, n_coarsesteps,
                   subinterval[i]->c_implicit_steps);
                 // G⁰(i) ⟵ u;
@@ -572,12 +569,13 @@ double parareal<DIM, logging>::paraAlgo()
 
                 if (i < n_intervals - 1)
                 {
+                    // omp_set_lock(&interval_locker[i + 1]);
                     // pass GlobalVector around
-                    subinterval[i+1]->setGV(u, subinterval[i]->GetSolver()->GetGV(u));
+                    subinterval[i + 1]->setGV(u, subinterval[i]->GetSolver()->GetGV(u));
                     // F⁰(i) ⟵ u
-                    equal(subinterval[i+1], subinterval[i+1]->fine_sol, subinterval[i+1], u);
+                    equal(subinterval[i + 1], subinterval[i + 1]->fine_sol, subinterval[i + 1], u);
+                    // omp_unset_lock(&interval_locker[i + 1]);
                 }
-
                 omp_unset_lock(&interval_locker[i]);
             }
         }  // Initialization
@@ -585,31 +583,35 @@ double parareal<DIM, logging>::paraAlgo()
         // for (auto n = 0; n <= n_intervals - threads; n++)
         // {
         //
-        //#pragma omp barrier  // barrier for debugging
+        // #pragma omp barrier  // barrier for debugging
         //
         // Do <max_iterations> parareal-iterations
         // Iterations
         for (auto k = 1; k <= max_iterations; ++k)
         {
             // fine propagations
-#pragma omp for nowait schedule(monotonic : static)
+#pragma omp for nowait schedule(static)
             for (auto m = 0; m < n_intervals - k + 1; ++m)
             {
                 // #pragma omp ordered  // for debugging
                 //                 {
-                omp_set_lock(&interval_locker[m]);
+                //omp_set_lock(&interval_locker[m]);
                 // Fᵏ(m) ⟵ F(Uᵏ⁻¹(m-1))
                 if (m == 0 || k == max_iterations)
                 {
+                    omp_set_lock(&interval_locker[m]);
                     subinterval[m]->template propagator<iter_type::fine_last>(
                       time + m * interval_length, subinterval[m]->fine_sol, f, k, n_finesteps,
                       subinterval[m]->f_implicit_steps);
+                    omp_unset_lock(&interval_locker[m]);
                 }
                 else  // we are not in the last iteration and not exact
                 {
+                    omp_set_lock(&interval_locker[m]);
                     subinterval[m]->template propagator<iter_type::fine>(
                       time + m * interval_length, subinterval[m]->fine_sol, f, k, n_finesteps,
                       subinterval[m]->f_implicit_steps);
+                    omp_unset_lock(&interval_locker[m]);
                 }
                 if constexpr (logging == log_level::visu_info
                               || logging == log_level::visu_detailed)
@@ -619,14 +621,14 @@ double parareal<DIM, logging>::paraAlgo()
                     subinterval[m]->visu_write("Results/fineres", subinterval[m]->fine_sol,
                                                (k - 1) * 10 + m);
                 }
-                omp_unset_lock(&interval_locker[m]);
-                //                }
+                //omp_unset_lock(&interval_locker[m]);
+                //}
             }
-            // barrier for debugging
-            //#pragma omp barrier
-            //
-            // coarse propagations and corrections
-            //
+// barrier for debugging
+// #pragma omp barrier
+//
+// coarse propagations and corrections
+//
 #pragma omp for ordered nowait schedule(monotonic : static)
             // Corrections
             for (auto m = 0; m < n_intervals - k; ++m)
@@ -788,8 +790,8 @@ void parareal<DIM, logging>::compare_para_serial(const int max_iterations,
 
         auto end         = omp_get_wtime();
         auto serial_time = end - start;
-        std::cerr << style::bb << "\n==================================================\n"
-                  << style::g << "Finished serial execution" << style::b << ".\nElapsed time is\t"
+        std::cerr << sty::bb << "\n==================================================\n"
+                  << sty::g << "Finished serial execution" << sty::b << ".\nElapsed time is\t"
                   << serial_time << ".\n";
         timings_log << 1 << ' ' << serial_time << ' ' << 1 << '\n';
 
@@ -914,7 +916,7 @@ void parareal<DIM, logging>::propagator(double time, VectorInterface& u, VectorI
                      u, current * static_cast<int>(pow(10, ceil(log10(step)))) + step);
             }
         }
-        else if constexpr (method == iter_type::coarse)
+        else if constexpr (method == iter_type::coarse || method == iter_type::coarse_first)
         {
             if (iter < 31)
             {
@@ -936,12 +938,17 @@ void parareal<DIM, logging>::propagator(double time, VectorInterface& u, VectorI
         dt    = dtfine;
         theta = fine_theta;
     }
-    else if constexpr (method == iter_type::coarse)
+    else if constexpr (method == iter_type::coarse || method == iter_type::coarse_first)
     {
         dt    = dtcoarse;
         theta = coarse_theta;
     }
-
+    // stabilization problem if not in initialization
+    if constexpr (method != iter_type::coarse_first)
+    {
+        divergence_stab(u, f, time, dt, current);
+    }
+    // std::cout << "Current iteration: " <<  current <<'\n';
     auto fsi_eq_ptr =
       dynamic_cast<const FSI<DIM>* const>(GetSolver()->GetProblemDescriptor()->GetEquation());
     if (implicit_steps > 0)
@@ -969,14 +976,13 @@ void parareal<DIM, logging>::propagator(double time, VectorInterface& u, VectorI
         }
     }
 
-    divergence_stab(u, f, time, dt, current);
     auto end = omp_get_wtime();
     if constexpr (method == iter_type::fine_last || method == iter_type::fine)
     {
 #pragma omp atomic update
         fine_exec_time += (end - start);
     }
-    else if constexpr (method == iter_type::coarse)
+    else if constexpr (method == iter_type::coarse || method == iter_type::coarse_first)
     {
 #pragma omp atomic update
         coarse_exec_time += (end - start);
@@ -994,12 +1000,12 @@ void parareal<DIM, logging>::step(double& time, const double& dt, const int& ite
     {
         if constexpr (method == iter_type::fine || method == iter_type::fine_last)
         {
-            std::cerr << logwrite::info("Fine", style::bb, time, " -> ", time + dt, " [", theta,
+            std::cerr << logwrite::info("Fine", sty::bb, time, " -> ", time + dt, " [", theta,
                                         " ]");
         }
-        else if constexpr (method == iter_type::coarse)
+        else if constexpr (method == iter_type::coarse || method == iter_type::coarse_first)
         {
-            std::cerr << logwrite::info("Coarse", style::bb, time, " -> ", time + dt, " [", theta,
+            std::cerr << logwrite::info("Coarse", sty::bb, time, " -> ", time + dt, " [", theta,
                                         " ]");
         }
     }
@@ -1020,26 +1026,6 @@ void parareal<DIM, logging>::step(double& time, const double& dt, const int& ite
         }
     }
     GetMultiLevelSolver()->DeleteNodeVector("old");
-}
-
-//--------------------------------------------------------------------------------------------------
-
-template <int DIM, log_level logging>
-template <iter_type method>
-void parareal<DIM, logging>::compute_functionals(VectorInterface& u, VectorInterface& f,
-                                                 const double& time, const int& iter)
-{
-    if constexpr (method == iter_type::fine_last)
-    {
-        GetMultiLevelSolver()->AddNodeVector("old", old);
-        log_buffer[iter][0] = time;
-        DoubleVector juh    = StdLoop::Functionals(u, f);
-        for (short i = 0; i < 4; ++i)
-        {
-            log_buffer[iter][i + 1] = juh[i];
-        }
-        GetMultiLevelSolver()->DeleteNodeVector("old");
-    }
 }
 
 //--------------------------------------------------------------------------------------------------

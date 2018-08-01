@@ -1,6 +1,6 @@
 namespace Gascoigne
 {
-namespace style
+namespace sty
 {
 /*! \brief Some escape sequences for output styling
  * Normally works on linux machines, won't work on windows machines. Terminal needs to understand

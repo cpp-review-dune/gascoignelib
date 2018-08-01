@@ -14,11 +14,11 @@ functional 2 80 81
 
 //Block Equation
 
-dt		0.01
+dt		0.001
 dtcoarse 0.01
-theta		0.51
-thetacoarse 0.52
-implicit_coarse 1
+theta		0.501
+thetacoarse 0.51
+implicit_coarse 0
 implicit_fine 0
 
 start_time	0.0

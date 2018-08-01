@@ -52,6 +52,7 @@ void FSI<DIM>::point(double h, const FemFunction& U, const Vertex<DIM>& v) const
 {
     __h    = h;
     __v    = v;
+    //domain = -1;
     domain = chi(v);
 
     double dx   = std::max(0.0, fabs(v.x() - 0.4) - 0.4);
@@ -620,6 +621,7 @@ void FSI<DIM>::lpspoint(double h, const FemFunction& U, const Vertex<DIM>& v) co
     double vel = 1.0;
 
     lps    = lps0 / (vel / h + nu_f / h / h);
+    //domain = -1;
     domain = chi(v);
 }
 template <int DIM>

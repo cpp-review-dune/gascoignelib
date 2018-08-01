@@ -48,6 +48,7 @@ DIV_proj<DIM>::DIV_proj(const ParamFile* pf)
 template <int DIM>
 void DIV_proj<DIM>::point(double h, const FemFunction& U, const Vertex<DIM>& v) const
 {
+    //domain = -1;
     domain = chi(v);
     if (domain < 0)
     {
@@ -96,6 +97,11 @@ void DIV_proj<DIM>::Form(VectorIterator b, const FemFunction& U, const TestFunct
 
 
         X = -U[0].m() * J * F.inverse().transpose() * phi;
+        for (int i = 0; i < DIM; ++i)
+                b[i + 1] += X(i, 0);
+
+        // Old pressure
+        X = (*OLD)[0].m() * J * F.inverse().transpose() * phi;
         for (int i = 0; i < DIM; ++i)
                 b[i + 1] += X(i, 0);
 
@@ -224,6 +230,7 @@ void DIV_proj<DIM>::lpspoint(double h, const FemFunction& U, const Vertex<DIM>& 
     double vel = 1.0;
 
     lps    = lps0 / (vel / h + nu_f / h / h);
+    //domain = -1;
     domain = chi(v);
 }
 template <int DIM>
