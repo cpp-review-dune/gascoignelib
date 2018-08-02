@@ -33,3 +33,5 @@ cmake*
 
 # ignore changes to oscill param file (it is not removed from the repo though)
 fsi-3.param
+*inflow
+*copies
