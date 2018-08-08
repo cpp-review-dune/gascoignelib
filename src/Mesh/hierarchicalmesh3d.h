@@ -359,7 +359,7 @@ class HierarchicalMesh3d : public HierarchicalMesh
   std::vector<Vertex> perm(num_vertices(G));
   std::vector<size_type> iperm(num_vertices(G));
   
-    Vertex s = vertex(6, G);
+//    Vertex s = vertex(6, G);
     //reverse cuthill_mckee_ordering
     //cuthill_mckee_ordering(G, s, perm.rbegin(), get(vertex_color, G), 
     //                       get(vertex_degree, G));
