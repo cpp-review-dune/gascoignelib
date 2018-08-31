@@ -813,7 +813,7 @@ void HierarchicalMesh3d::inner_vertex_newton3d(const IntVector& vnew,
       			    0.25, vertexs3d[fe[3]]);
       	}
       // middle
-      int cv = HexLaO.middle_vertex(h);
+ /*     int cv = HexLaO.middle_vertex(h);
       assert (adjustvertex.find(cv)==adjustvertex.end());
 
       // weighted sum of edge vertices
@@ -885,7 +885,15 @@ void HierarchicalMesh3d::inner_vertex_newton3d(const IntVector& vnew,
 			    0.25,vertexs3d[pv[i0+5]],
 			    0.25,vertexs3d[pv[i0+7]]);
 	}
-      
+   */  
+
+      int fv = HexLaO.middle_vertex(h);
+      assert (adjustvertex.find(fv)==adjustvertex.end());
+      std::array<int,6> fe;
+      HexLaO.LoadFaceVertices(h,fe);
+      vertexs3d[fv]=0;
+      for (int i=0;i<6;++i) vertexs3d[fv]+=vertexs3d[fe[i]];
+      vertexs3d[fv]*=1./6.; 
       // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< NEU
       
 
