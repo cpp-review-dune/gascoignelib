@@ -483,7 +483,6 @@ void StdMultiLevelSolver::newton(VectorInterface& u, const VectorInterface& f, V
 {
   info.reset();
   double rr = NewtonResidual(r,u,f);
-  GetSolver()->Visu("newton",r,GetSolver()->GetGV(r).n());
   bool reached = info.check(0,rr,0.);
   NewtonOutput(info);
   NewtonPreProcess(u,f,info);
