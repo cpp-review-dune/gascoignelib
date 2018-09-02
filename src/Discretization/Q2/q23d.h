@@ -55,13 +55,14 @@ public:
   Q23d();
   ~Q23d();
 
+  void InterpolateSolution(GlobalVector& u, const GlobalVector& uold) const;
+
   std::string GetName() const {return "Q23d";}
   
   void BasicInit(const ParamFile* paramfile);
 
   void ConstructInterpolator(MgInterpolatorInterface* I, const MeshTransferInterface* GMT);
 
-  nmatrix<double> GetLocalInterpolationWeights(int iq) const;
 };
 }
 

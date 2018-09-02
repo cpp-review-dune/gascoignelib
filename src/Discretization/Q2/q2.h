@@ -69,6 +69,7 @@ public:
   void StrongDirichletMatrixOnlyRow(MatrixInterface& A, int col, const std::vector<int>& comp) const;
   void StrongDirichletVector(GlobalVector& u, const DirichletData& BF, int col, const std::vector<int>& comp, double d) const;
   void StrongDirichletVectorZero(GlobalVector& u, int col, const std::vector<int>& comp) const;
+  virtual void InterpolateSolutionByPatches(GlobalVector& u, const GlobalVector& uold) const {}
   void InterpolateSolution(GlobalVector& u, const GlobalVector& uold)const;
   void StrongPeriodicVector(GlobalVector& u, const PeriodicData& BF, int col, const std::vector<int>& comp, double d) const;
   void HNAverage   (GlobalVector& x) const;

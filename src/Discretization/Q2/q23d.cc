@@ -54,23 +54,106 @@ Q23d::~Q23d()
 
 /* ----------------------------------------- */
 
-nmatrix<double> Q23d::GetLocalInterpolationWeights(int iq) const
+/* ----------------------------------------- */
+
+void Q23d::InterpolateSolution(GlobalVector& u, const GlobalVector& uold) const
 {
-  int nn = GetMesh()->nodes_per_cell(iq);
-  nmatrix<double> w(nn,nn);
-  w.zero();
-  w(0,1) =  0.5 ; w(0,2) = 0.5 ; w(0,3) = 0.25; w(0,4) = 0.5  ; w(0,5) = 0.25 ; w(0,6) = 0.25 ; w(0,7) = 0.125;
-  w(1,0) =  0.5 ; w(1,2) = 0.25; w(1,3) = 0.5 ; w(1,4) = 0.25 ; w(1,5) = 0.5  ; w(1,6) = 0.125; w(1,7) = 0.25;
-  w(2,0) =  0.5 ; w(2,1) = 0.25; w(2,3) = 0.5 ; w(2,4) = 0.25 ; w(2,5) = 0.125; w(2,6) = 0.5  ; w(2,7) = 0.25;
-  w(3,0) =  0.25; w(3,1) = 0.5 ; w(3,2) = 0.5 ; w(3,4) = 0.125; w(3,5) = 0.25 ; w(3,6) = 0.25 ; w(3,7) = 0.5;
-  w(4,0) =  0.5 ; w(4,1) = 0.25; w(4,2) = 0.25; w(4,3) = 0.125; w(4,5) = 0.5  ; w(4,6) = 0.5  ; w(4,7) = 0.25;
-  w(5,0) =  0.25; w(5,1) = 0.5 ; w(5,2) = 0.125;w(5,3) = 0.25 ; w(5,4) = 0.5  ; w(5,6) = 0.25 ; w(5,7) = 0.5;
-  w(6,0) =  0.25; w(6,1) = 0.125;w(6,2) = 0.5 ; w(6,3) = 0.25 ; w(6,4) = 0.5  ; w(6,5) = 0.25 ; w(6,7) = 0.5;
-  w(7,0) =  0.125;w(7,1) = 0.25; w(7,2) = 0.25; w(7,3) = 0.5  ; w(7,4) = 0.25 ; w(7,5) = 0.5  ; w(7,6) = 0.5;
-  return w;
+  const IntVector& vo2n = *GetMesh()->Vertexo2n();
+  nvector<bool> habschon(GetMesh()->nnodes(),0);  
+
+  assert(vo2n.size()==uold.n());
+
+  for(int i=0;i<vo2n.size();i++)
+    {
+      int in = vo2n[i];
+
+      if(in>=0) 
+	{
+	  u.equ_node(in,1.,i,uold);
+	  habschon[in] = 1;
+	}
+    }
+  nvector<std::array<int,3> > nodes(12);
+  nodes[0][0] = 1;    nodes[0][1] = 0;     nodes[0][2] = 2;
+  nodes[1][0] = 3;    nodes[1][1] = 0;     nodes[1][2] = 6;
+  nodes[2][0] = 5;    nodes[2][1] = 2;     nodes[2][2] = 8;
+  nodes[3][0] = 7;    nodes[3][1] = 6;     nodes[3][2] = 8;
+  nodes[4][0] = 1+18; nodes[4][1] = 0+18;  nodes[4][2] = 2+18;
+  nodes[5][0] = 3+18; nodes[5][1] = 0+18;  nodes[5][2] = 6+18;
+  nodes[6][0] = 5+18; nodes[6][1] = 2+18;  nodes[6][2] = 8+18;
+  nodes[7][0] = 7+18; nodes[7][1] = 6+18;  nodes[7][2] = 8+18;
+  nodes[8][0] = 9;    nodes[8][1] = 0;     nodes[8][2] = 18;
+  nodes[9][0] = 11;   nodes[9][1] = 2;     nodes[9][2] = 20;
+  nodes[10][0] = 15;  nodes[10][1] = 6;    nodes[10][2] = 24;
+  nodes[11][0] = 17;  nodes[11][1] = 8;    nodes[11][2] = 26;
+ 
+
+  nvector<std::array<int,5> > w(6);
+  w[0][0] = 4;  w[0][1] = 0;  w[0][2] = 2;  w[0][3] = 6;  w[0][4] = 8;
+  w[1][0] = 12; w[1][1] = 0;  w[1][2] = 18; w[1][3] = 6;  w[1][4] = 24;
+  w[2][0] = 14; w[2][1] = 2;  w[2][2] = 8;  w[2][3] = 20; w[2][4] = 26;
+  w[3][0] = 16; w[3][1] = 6;  w[3][2] = 8;  w[3][3] = 24; w[3][4] = 26;
+  w[4][0] = 10; w[4][1] = 0;  w[4][2] = 2;  w[4][3] = 18; w[4][4] = 20;
+  w[5][0] = 22; w[5][1] = 18; w[5][2] = 20; w[5][3] = 24; w[5][4] = 26;
+  
+  const PatchMesh* PM = dynamic_cast<const PatchMesh*>(GetMesh());
+  assert(PM);
+
+  for(int iq=0;iq<PM->npatches();++iq)
+    {
+      IntVector vi = *PM->IndicesOfPatch(iq);
+
+      for(int j=0; j<nodes.size(); j++)
+	{
+	  int v  = vi[nodes[j][0]];
+	  int v1 = vi[nodes[j][1]];
+	  int v2 = vi[nodes[j][2]];
+	  assert(habschon[v1]);
+	  assert(habschon[v2]);
+	  if (habschon[v]==0) 
+	    {
+	      u.equ_node(v,0.5,v1,uold);
+	      u.add_node(v,0.5,v2,uold);
+	      habschon[v] = 1;
+	    }
+	}
+      for(int j=0; j<w.size(); j++)
+	{
+	  int v  = vi[w[j][0]];
+	  int v1 = vi[w[j][1]];
+	  int v2 = vi[w[j][2]];
+	  int v3 = vi[w[j][3]];
+	  int v4 = vi[w[j][4]];
+	  assert(habschon[v1]);
+	  assert(habschon[v2]);
+	  assert(habschon[v3]);
+	  assert(habschon[v4]);
+	  if (habschon[v]==0) 
+	    {
+	      u.equ_node(v,0.25,v1,uold);
+	      u.add_node(v,0.25,v2,uold);
+	      u.add_node(v,0.25,v3,uold);
+	      u.add_node(v,0.25,v4,uold);
+	      habschon[v] = 1;
+	    }
+	}
+      int v = vi[13];
+      if (habschon[v]==0)
+	{
+	  u.equ_node(v,0.125,vi[0],uold);
+	  u.add_node(v,0.125,vi[2],uold);	  
+	  u.add_node(v,0.125,vi[6],uold);	  
+	  u.add_node(v,0.125,vi[8],uold);	  
+	  u.add_node(v,0.125,vi[18],uold);
+	  u.add_node(v,0.125,vi[20],uold);	  
+	  u.add_node(v,0.125,vi[24],uold);	  
+	  u.add_node(v,0.125,vi[26],uold);	  
+	  habschon[v] = 1;
+	}
+    }  
 }
 
-/* ----------------------------------------- */
+
 
 int Q23d::GetPatchNumber(const Vertex3d& p0, Vertex3d& p) const
 {

@@ -55,17 +55,6 @@ Q22d::~Q22d()
 
 /* ----------------------------------------- */
 
-nmatrix<double> Q22d::GetLocalInterpolationWeights(int iq) const
-{
-  int nn = GetMesh()->nodes_per_cell(iq);
-  nmatrix<double> w(nn,nn);
-  w.zero();
-  w(0,1) =  0.5  ; w(0,2) =  0.5  ; w(0,3) =  0.25;
-  w(1,0) =  0.5  ; w(1,2) =  0.25 ; w(1,3) =  0.5 ;
-  w(2,0) =  0.5  ; w(2,1) =  0.25 ; w(2,3) =  0.5 ;
-  w(3,0) =  0.25 ; w(3,1) =  0.5  ; w(3,2) =  0.5 ;
-  return w;
-}
 
 /* ----------------------------------------- */
 
@@ -126,6 +115,72 @@ int Q22d::GetPatchNumber(const Vertex2d& p0, Vertex2d& p) const
     return -1;
   }
 }
+
+  void Q22d::InterpolateSolution(GlobalVector &u, const GlobalVector &uold) const
+  {
+    const IntVector &vo2n = *GetMesh()->Vertexo2n();
+    nvector<bool> habschon(GetMesh()->nnodes(), 0);
+    
+    assert(vo2n.size() == uold.n());
+    assert(GetMesh()->nnodes() == u.n());
+    assert(u.ncomp() == uold.ncomp());
+
+    for (int i = 0; i < vo2n.size(); i++)
+    {
+      int in = vo2n[i];
+
+      if (in >= 0)
+      {
+        u.equ_node(in, 1., i, uold);
+        habschon[in] = 1;
+      }
+    }
+    nvector<std::array<int, 3>> nodes(4);
+    nodes[0][0] = 1;
+    nodes[0][1] = 0;
+    nodes[0][2] = 2;
+    nodes[1][0] = 3;
+    nodes[1][1] = 0;
+    nodes[1][2] = 6;
+    nodes[2][0] = 5;
+    nodes[2][1] = 2;
+    nodes[2][2] = 8;
+    nodes[3][0] = 7;
+    nodes[3][1] = 6;
+    nodes[3][2] = 8;
+
+    const PatchMesh *PM = dynamic_cast<const PatchMesh *>(GetMesh());
+    assert(PM);
+
+    for (int iq = 0; iq < PM->npatches(); ++iq)
+    {
+      IntVector vi = *PM->IndicesOfPatch(iq);
+
+      for (int j = 0; j < nodes.size(); j++)
+      {
+        int v = vi[nodes[j][0]];
+        int v1 = vi[nodes[j][1]];
+        int v2 = vi[nodes[j][2]];
+        assert(habschon[v1]);
+        assert(habschon[v2]);
+        if (habschon[v] == 0)
+        {
+          u.equ_node(v, 0.5, v1, uold);
+          u.add_node(v, 0.5, v2, uold);
+          habschon[v] = 1;
+        }
+      }
+      int v = vi[4];
+      if (habschon[v] == 0)
+      {
+        u.equ_node(v, 0.25, vi[0], uold);
+        u.add_node(v, 0.25, vi[2], uold);
+        u.add_node(v, 0.25, vi[6], uold);
+        u.add_node(v, 0.25, vi[8], uold);
+        habschon[v] = 1;
+      }
+    }
+  }
 
 /* ----------------------------------------- */
 
@@ -202,7 +257,7 @@ void Q22d::ConstructInterpolator(MgInterpolatorInterface* I, const MeshTransferI
   const map<int,std::array<int,4> >& vierer = GMT->GetVierer();
   const map<int,std::array<int,8> >& achter = GMT->GetAchter();
   const nvector<int>& c2f    = GMT->GetC2f();
-
+  
   int n  = c2f.size() +   zweier.size() +   vierer.size() +   achter.size();
   int nt = c2f.size() + 2*zweier.size() + 4*vierer.size() + 8*achter.size();
 

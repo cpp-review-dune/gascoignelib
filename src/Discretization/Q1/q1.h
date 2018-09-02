@@ -76,8 +76,6 @@ public:
   void StrongDirichletMatrix       (MatrixInterface& A, int col, const std::vector<int>& comp) const;
   void StrongDirichletMatrixOnlyRow(MatrixInterface& A, int col, const std::vector<int>& comp) const;
   void StrongDirichletVectorZero(GlobalVector& u, int col, const std::vector<int>& comp) const;
-  void InterpolateSolution(GlobalVector& u, const GlobalVector& uold)const;
-  virtual void InterpolateSolutionByPatches(GlobalVector& u, const GlobalVector& uold) const {}
   void HNAverage   (GlobalVector& x) const;
   void HNDistribute(GlobalVector& x) const;
   void HNZero      (GlobalVector& x) const;

@@ -58,10 +58,9 @@ public:
   std::string GetName() const {return "Q22d";}
   
   void BasicInit(const ParamFile* paramfile);
+  void InterpolateSolution(GlobalVector& u, const GlobalVector& uold) const;
 
   void ConstructInterpolator(MgInterpolatorInterface* I, const MeshTransferInterface* GMT);
-
-  nmatrix<double> GetLocalInterpolationWeights(int iq) const;
 };
 }
 

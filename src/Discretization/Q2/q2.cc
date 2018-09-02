@@ -368,53 +368,55 @@ void Q2::StrongPeriodicVector(GlobalVector& u, const PeriodicData& BF, int col, 
 
 void Q2::InterpolateSolution(GlobalVector& u, const GlobalVector& uold) const
 {
-  //
-  // Das ist einfach von Q1 kopiert !!!!!
-  //
-  const IntVector& vo2n = *GetMesh()->Vertexo2n();
-  assert(vo2n.size()==uold.n());
+  InterpolateSolutionByPatches(u,uold);
+  
 
-  DoubleVector habschon(GetMesh()->nnodes(),0.);  
-  nvector<bool> oldnode(GetMesh()->nnodes(),0);
+  // //
+  // // Das ist einfach von Q1 kopiert !!!!!
+  // //
+  // const IntVector& vo2n = *GetMesh()->Vertexo2n();
+  // assert(vo2n.size()==uold.n());
 
-  u.zero();
-  for(int i=0;i<vo2n.size();i++)
-    {
-      int in = vo2n[i];
+  // DoubleVector habschon(GetMesh()->nnodes(),0.);  
+  // nvector<bool> oldnode(GetMesh()->nnodes(),0);
 
-      if(in>=0) 
-	{
-	  u.equ_node(in,1.,i,uold);
-	  oldnode[in] = 1;
-	}
-    }
+  // u.zero();
+  // for(int i=0;i<vo2n.size();i++)
+  //   {
+  //     int in = vo2n[i];
 
-  for(int iq=0; iq<GetMesh()->ncells(); iq++)
-    {
-      nmatrix<double> w = GetLocalInterpolationWeights(iq);
+  //     if(in>=0) 
+  // 	{
+  // 	  u.equ_node(in,1.,i,uold);
+  // 	  oldnode[in] = 1;
+  // 	}
+  //   }
 
-      IntVector v = GetMesh()->IndicesOfCell(iq);
-      for(int iol=0; iol<v.size(); iol++)
-	{
-	  int io = v[iol];
+  // for(int iq=0; iq<GetMesh()->ncells(); iq++)
+  //   {
+  //     nmatrix<double> w = GetLocalInterpolationWeights(iq);
 
-	  if (oldnode[io])
-	    {
-	      for (int inl=0; inl<v.size(); inl++)
-		{
-		  if (iol==inl)        continue;
-		  int in = v[inl];
-		  if (oldnode[in])     continue;
-		  if (habschon[in]>=1) continue;
+  //     IntVector v = GetMesh()->IndicesOfCell(iq);
+  //     for(int iol=0; iol<v.size(); iol++)
+  // 	{
+  // 	  int io = v[iol];
 
-		  double weight = w(iol,inl);
+  // 	  if (oldnode[io])
+  // 	    {
+  // 	      for (int inl=0; inl<v.size(); inl++)
+  // 		{
+  // 		  if (iol==inl)        continue;
+  // 		  int in = v[inl];
+  // 		  if (oldnode[in])     continue;
+  // 		  if (habschon[in]>=1) continue;
 
-		  u.add_node(in,weight,io,uold);
+  // 		  double weight = w(iol,inl);
 
-		  habschon[in] += weight;
-		}
-	      
-	    }
-	}
-    }
+  // 		  u.add_node(in,weight,io,uold);
+
+  // 		  habschon[in] += weight;
+  // 		}
+  // 	    }
+  // 	}
+  //   }
 }

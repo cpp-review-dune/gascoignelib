@@ -119,61 +119,6 @@ void Q1::StrongDirichletVectorZero(GlobalVector& u, int col, const vector<int>& 
     }  
 }
 
-/* ----------------------------------------- */
-
-void Q1::InterpolateSolution(GlobalVector& u, const GlobalVector& uold) const
-{
-  InterpolateSolutionByPatches(u,uold);
-  return;
-
-  const IntVector& vo2n = *GetMesh()->Vertexo2n();
-  assert(vo2n.size()==uold.n());
-
-  DoubleVector habschon(GetMesh()->nnodes(),0.);  
-  nvector<bool> oldnode(GetMesh()->nnodes(),0);
-
-  u.zero();
-  for(int i=0;i<vo2n.size();i++)
-    {
-      int in = vo2n[i];
-
-      if(in>=0) 
-	{
-	  u.equ_node(in,1.,i,uold);
-	  oldnode[in] = 1;
-	}
-    }
-
-  nmatrix<double> w = GetLocalInterpolationWeights();
-
-  for(int iq=0; iq<GetMesh()->ncells(); iq++)
-    {
-      IntVector v = GetMesh()->IndicesOfCell(iq);
-      for(int iol=0; iol<v.size(); iol++)
-	{
-	  int io = v[iol];
-
-	  if (oldnode[io])
-	    {
-	      for (int inl=0; inl<v.size(); inl++)
-		{
-		  if (iol==inl)        continue;
-		  int in = v[inl];
-		  if (oldnode[in])     continue;
-		  if (habschon[in]>=1) continue;
-
-		  double weight = w(iol,inl);
-
-		  u.add_node(in,weight,io,uold);
-
-		  habschon[in] += weight;
-		}
-	      
-	    }
-	}
-    }
-}
-
 /*-----------------------------------------*/
 
 void Q1::HNAverage(GlobalVector& x) const

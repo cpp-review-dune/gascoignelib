@@ -81,28 +81,6 @@ namespace Gascoigne
 
   /* ----------------------------------------- */
 
-  nmatrix<double> Q12d::GetLocalInterpolationWeights() const
-  {
-    // w(i,j) = interpolation weight of node i to node j
-    int nn = 4; // GetMesh()->nodes_per_cell();
-    nmatrix<double> w(nn, nn);
-    w.zero();
-    w(0, 1) = 0.5;
-    w(0, 2) = 0.5;
-    w(0, 3) = 0.25;
-    w(1, 0) = 0.5;
-    w(1, 2) = 0.25;
-    w(1, 3) = 0.5;
-    w(2, 0) = 0.5;
-    w(2, 1) = 0.25;
-    w(2, 3) = 0.5;
-    w(3, 0) = 0.25;
-    w(3, 1) = 0.5;
-    w(3, 2) = 0.5;
-    return w;
-  }
-
-  /* ----------------------------------------- */
 
   void Q12d::StrongDirichletVector(GlobalVector &u,
                                    const DirichletData &BF,
@@ -259,8 +237,7 @@ namespace Gascoigne
   }
   /* ----------------------------------------- */
 
-  void Q12d::InterpolateSolutionByPatches(GlobalVector &u,
-                                          const GlobalVector &uold) const
+  void Q12d::InterpolateSolution(GlobalVector &u,const GlobalVector &uold) const
   {
     const IntVector &vo2n = *GetMesh()->Vertexo2n();
     nvector<bool> habschon(GetMesh()->nnodes(), 0);
