@@ -564,7 +564,7 @@ double parareal<DIM, logging>::paraAlgo()
                               || logging == log_level::visu_detailed)
                 {
                     std::cerr << logwrite::info("Done", "Initialization on subinterval ", i);
-                    subinterval[i]->visu_write("Results/initsol", subinterval[i]->end_sol, i);
+                    subinterval[i]->visu("Results/initsol", subinterval[i]->end_sol, i);
                 }
 
                 if (i < n_intervals - 1)
@@ -618,7 +618,7 @@ double parareal<DIM, logging>::paraAlgo()
                 {
                     std::cerr << logwrite::info("Done", "Fine solution on subinterval ", m + k - 1,
                                                 " in iteration number ", k);
-                    subinterval[m]->visu_write("Results/fineres", subinterval[m]->fine_sol,
+                    subinterval[m]->visu("Results/fineres", subinterval[m]->fine_sol,
                                                (k - 1) * 10 + m);
                 }
                 //omp_unset_lock(&interval_locker[m]);
@@ -648,7 +648,7 @@ double parareal<DIM, logging>::paraAlgo()
                         {
                             func_log << x << '\n';
                         }
-                        subinterval[0]->visu_write("Results/p", subinterval[0]->end_sol, k - 1);
+                        subinterval[0]->visu("Results/p", subinterval[0]->end_sol, k - 1);
                         omp_unset_lock(&interval_locker[0]);
                     }
 
@@ -713,7 +713,7 @@ double parareal<DIM, logging>::paraAlgo()
 
         // Visu part
         // subinterval[m]->setGV(u, u_sol_arr[m]);
-        subinterval[m + 1]->visu_write("Results/p", subinterval[m + 1]->end_sol,
+        subinterval[m + 1]->visu("Results/p", subinterval[m + 1]->end_sol,
                                        m + max_iterations);
         std::cerr << logwrite::info("Done", "Wrote subinterval ", m + max_iterations);
     }
@@ -784,7 +784,7 @@ void parareal<DIM, logging>::compare_para_serial(const int max_iterations,
             {
                 func_log << x << '\n';
             }
-            loopSeq->visu_write("Results/u", loopSeq->end_sol, i);
+            loopSeq->visu("Results/u", loopSeq->end_sol, i);
         }
         func_log.close();
 
@@ -944,10 +944,10 @@ void parareal<DIM, logging>::propagator(double time, VectorInterface& u, VectorI
         theta = coarse_theta;
     }
     // stabilization problem if not in initialization
-    if constexpr (method != iter_type::coarse_first)
-    {
-        divergence_stab(u, f, time, dt, current);
-    }
+    // if constexpr (method != iter_type::coarse_first)
+    // {
+    //     divergence_stab(u, f, time, dt, current);
+    // }
     // std::cout << "Current iteration: " <<  current <<'\n';
     auto fsi_eq_ptr =
       dynamic_cast<const FSI<DIM>* const>(GetSolver()->GetProblemDescriptor()->GetEquation());
@@ -1069,12 +1069,14 @@ void parareal<DIM, logging>::visu(const std::string& dir, const VectorInterface&
                                   size_t index) const
 {
     GetSolver()->Visu(dir, vec, index);
+    GetSolver()->Write(vec, dir + '.' + to_string(index));
 }
 
 template <int DIM, log_level logging>
 void parareal<DIM, logging>::visu(const dir_vec& dv) const
 {
     GetSolver()->Visu(dv.dir, dv.vec, dv.index);
+    GetSolver()->Write(dv.vec, dv.dir + '.' + to_string(dv.index));
 }
 
 template <int DIM, log_level logging>

@@ -26,8 +26,8 @@ void Loop<DIM>::run(const std::string& problemlabel)
         assert(__THETA > 0);
     }
 
-    _niter = static_cast<int>((STOP_TIME - __TIME + 1.e-12) / __DT);
-
+    _niter            = static_cast<int>((STOP_TIME - __TIME + 1.e-12) / __DT);
+    auto sub_int_time = static_cast<int>(_niter / 8);
     VectorInterface u("u"), f("f"), old("old");
 
     GetMultiLevelSolver()->ReInit(problemlabel);
@@ -65,12 +65,13 @@ void Loop<DIM>::run(const std::string& problemlabel)
         // assert(StdLoop::Solve(u, f) == "converged");
         // std::cout << "solved div" << '\n';
         // GetMultiLevelSolver()->SetProblem("fsi");
-
-        // if (_iter % 63 == 0)
-        // {
-        //     GetMultiLevelSolver()->GetSolver()->Visu("Results/u", u, _iter);
-        //     WriteMeshAndSolution("Results/u", u);
-        // }
+        if (_iter % sub_int_time == 0)
+        {
+            auto idx = static_cast<int>(_iter/sub_int_time);
+            GetMultiLevelSolver()->GetSolver()->Visu("Results/u", u, idx);
+            //WriteMeshAndSolution("Results/u", u);
+            GetMultiLevelSolver()->GetSolver()->Write(u, "Results/u." + to_string(idx));
+        }
 
         DoubleVector juh = Functionals(u, f);
         GetMultiLevelSolver()->DeleteNodeVector("old");
