@@ -21,7 +21,8 @@ namespace Gascoigne
                                  const int &slaveli,
                                  const LocalVector &U1,
                                  const LocalVector &U2,
-                                 const LocalData &Q,
+                                 const LocalData &QN_master,
+                                 const LocalData &QN_slave,
                                  const LocalData &QC) const
   {
     F1.ReInit(EQ.GetNcomp(), FEMASTER.n());
@@ -32,12 +33,13 @@ namespace Gascoigne
       F2.zero();
     }
 
-    const LineGauss2 IF1, IF2;
+    const LineGauss3 IF1, IF2;
 
     Vertex<2> x1, x2, n1, n2;
     Vertex<1> xi1, xi2;
 
     FemFunction UH1, UH2;
+    FemData QH1,QH2;
 
     for (int k = 0; k < IF1.n(); k++)
     {
@@ -47,22 +49,28 @@ namespace Gascoigne
       FEMASTER.x(x1);
       FEMASTER.normal(n1);
       universal_point(FEMASTER, UH1, U1);
+      universal_point(FEMASTER, QH1, QN_master);
+      EQ.SetFemDataMaster(QH1);
+
       double h = FEMASTER.G();
       double weight = IF1.w(k) * h;
 
       // slave, check ordering
       if (internaledge)
       {
-        IF2.xi(xi2, k);
+        IF2.xi(xi2, IF2.n()-k-1);
         FESLAVE.point_boundary(slaveli, xi2);
         FESLAVE.x(x2);
-        assert(fabs(x1[0] - x2[0]) < 1.e-12);
-        assert(fabs(x1[1] - x2[1]) < 1.e-12);
+	assert(fabs(x1[0] - x2[0]) < 1.e-12);
+	assert(fabs(x1[1] - x2[1]) < 1.e-12);
         FESLAVE.normal(n2);
-        assert(fabs(n1[0] + n2[0]) < 1.e-12);
-        assert(fabs(n1[1] + n2[1]) < 1.e-12);
-
+	assert(fabs(n1[0] + n2[0]) < 1.e-12);
+	assert(fabs(n1[1] + n2[1]) < 1.e-12);
+	
         universal_point(FESLAVE, UH2, U2);
+	universal_point(FESLAVE, QH2, QN_slave);
+	EQ.SetFemDataSlave(QH2);
+
         assert(fabs(h - FESLAVE.G()) < 1.e-12);
       }
       EQ.point_edge(internaledge, h, UH1, UH2, x1, n1);
@@ -100,7 +108,8 @@ namespace Gascoigne
                                    const int &slaveli,
                                    const LocalVector &U1,
                                    const LocalVector &U2,
-                                   const LocalData &Q,
+                                   const LocalData &QN_master,
+                                   const LocalData &QN_slave,
                                    const LocalData &QC) const
   {
     E11.SetDimensionDof(FEMASTER.n(), FEMASTER.n());
@@ -126,12 +135,13 @@ namespace Gascoigne
       E22.zero();
     }
 
-    const LineGauss2 IF1, IF2;
+    const LineGauss3 IF1, IF2;
 
     Vertex<2> x1, x2, n1, n2;
     Vertex<1> xi1, xi2;
 
     FemFunction UH1, UH2;
+    FemData QH1,QH2;
 
     for (int k = 0; k < IF1.n(); k++)
     {
@@ -141,13 +151,15 @@ namespace Gascoigne
       FEMASTER.x(x1);
       FEMASTER.normal(n1);
       universal_point(FEMASTER, UH1, U1);
+      universal_point(FEMASTER, QH1, QN_master);
+      EQ.SetFemDataMaster(QH1);
       double h = FEMASTER.G();
       double weight = IF1.w(k) * h;
 
       // slave, check ordering
       if (internaledge)
       {
-        IF2.xi(xi2, k);
+        IF2.xi(xi2, IF2.n()-k-1);
         FESLAVE.point_boundary(slaveli, xi2);
         FESLAVE.x(x2);
         assert(fabs(x1[0] - x2[0]) < 1.e-12);
@@ -157,6 +169,8 @@ namespace Gascoigne
         assert(fabs(n1[1] + n2[1]) < 1.e-12);
 
         universal_point(FESLAVE, UH2, U2);
+	universal_point(FESLAVE, QH2, QN_slave);
+	EQ.SetFemDataSlave(QH2);
         assert(fabs(h - FESLAVE.G()) < 1.e-12);
       }
       EQ.point_edge(internaledge, h, UH1, UH2, x1, n1);

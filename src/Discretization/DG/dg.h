@@ -24,33 +24,32 @@ namespace Gascoigne
     DGDofHandler<BASE> _dofhandler;
     const GascoigneMesh* _mesh;
 
-    Transformation2d<BASE> _trans;
-    FiniteElement<2,1, Transformation2d<BASE>, BASE> _fe;
-    FiniteElement<2,1, Transformation2d<BASE>, BASE> _feslave;
+    Transformation2d<BASEQ12D> _trans;
+    FiniteElement<2,1, Transformation2d<BASEQ12D>, BASE> _fe;
+    FiniteElement<2,1, Transformation2d<BASEQ12D>, BASE> _feslave;
 
     DGIntegrator<2> _integrator;
     
     mutable DataContainer _datacontainer;
     
+    mutable LocalData     __QN_master,__QN_slave;
+
   protected:
 
   public:
-
-
     
     // Init
     DG();
     void BasicInit(const ParamFile *pf);
     void ReInit(const MeshInterface *M);
     
+    void GlobalToLocalData(LocalData& QN, const DataContainer& DC, int iq) const;
 
-    
-
-    
+	
     // Handling of Vectors & Data
     const DataContainer &GetDataContainer() const
     {
-      return _datacontainer;
+      abort();
     }
     void SetDataContainer(const DataContainer &q) const
     {
@@ -58,11 +57,11 @@ namespace Gascoigne
     }
     void AddNodeVector(const std::string &name, const GlobalVector *q) const
     {
-      assert(0);
+      _datacontainer.AddNodeVector(name,q);
     };
     void DeleteNodeVector(const std::string &name) const
     {
-      assert(0);
+      _datacontainer.DeleteNodeVector(name);
     };
     void AddCellVector(const std::string &name, const GlobalVector *q) const
     {
@@ -265,52 +264,6 @@ namespace Gascoigne
     }
 
 
-    // Boundary Data
-    void StrongDirichletMatrix(MatrixInterface &A,
-                               int col,
-                               const std::vector<int> &comp) const
-    {
-      std::cerr
-          << "\"DiscretizationInterface::StrongDirichletmatrix\" not written!"
-          << std::endl;
-    }
-    void StrongDirichletMatrixOnlyRow(MatrixInterface &A,
-                                      int col,
-                                      const std::vector<int> &comp) const
-    {
-      std::cerr << "\"DiscretizationInterface::StrongDirichletMatrixOnlyRow\" "
-                   "not written!"
-                << std::endl;
-    }
-    void StrongDirichletVector(GlobalVector &u,
-                               const DirichletData &BF,
-                               int col,
-                               const std::vector<int> &comp,
-                               double d = 1.) const
-    {
-      std::cerr
-          << "\"DiscretizationInterface::StronDirichletVector\" not written!"
-          << std::endl;
-    }
-    void StrongDirichletVectorZero(GlobalVector &u,
-                                   int col,
-                                   const std::vector<int> &comp) const
-    {
-      std::cerr << "\"DiscretizationInterface::StrongDirichletVectorZero\" not "
-                   "written!"
-                << std::endl;
-    }
-    void StrongPeriodicVector(GlobalVector &u,
-                              const PeriodicData &BF,
-                              int col,
-                              const std::vector<int> &comp,
-                              double d = 1.) const
-    {
-      std::cerr
-          << "\"DiscretizationInterface::StrongPeriodicVector\" not written!"
-          << std::endl;
-      abort();
-    }
 
 
     /// ??
@@ -468,6 +421,15 @@ namespace Gascoigne
                 << std::endl;
       abort();
     }
+
+
+    // This functions are not used in DG methods
+    void StrongDirichletMatrix(MatrixInterface& A, int col, const std::vector<int>& comp) const   {}
+    void StrongDirichletMatrixOnlyRow(MatrixInterface& A, int col, const std::vector<int>& comp) const {}
+    void StrongDirichletVector(GlobalVector& u, const DirichletData& BF, int col, const std::vector<int>& comp, double d=1.) const {}
+    void StrongDirichletVectorZero(GlobalVector& u, int col, const std::vector<int>& comp) const {}
+    void StrongPeriodicVector(GlobalVector& u, const PeriodicData& BF, int col, const std::vector<int>& comp, double d=1.) const {}
+
   };
 }
 

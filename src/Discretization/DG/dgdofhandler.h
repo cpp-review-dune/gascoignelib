@@ -26,7 +26,7 @@ namespace Gascoigne
      *
      *  2D: (local index given on the edges)
      * 
-     *  3 - 2 - 2
+     *  2 - 2 - 3
      *  |       |
      *  3       1
      *  |       |

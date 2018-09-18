@@ -121,9 +121,7 @@ namespace Gascoigne
     assert(iq < nelements());
     const ElementType &LI = getelement(iq);
     assert(BASE::N == LI.size());
-
-    assert(U.ncomp() == u.ncomp());
-    assert(U.n() == BASE::N);
+    U.ReInit(u.ncomp(), BASE::N);
 
     for (int ii = 0; ii < LI.size(); ii++)
     {
@@ -191,6 +189,7 @@ namespace Gascoigne
     for (auto i : LS)
       iq2.push_back(i);
 
+
     auto  startq1 = iq1.begin();
     auto  stopq1  = iq1.end();
     auto  startq2 = iq2.begin();
@@ -226,4 +225,5 @@ namespace Gascoigne
 
 
   template class DGDofHandler<BASEQ12D>;
+  template class DGDofHandler<BASEQ22D>;
 }

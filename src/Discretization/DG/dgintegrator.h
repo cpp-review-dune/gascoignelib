@@ -31,7 +31,8 @@ namespace Gascoigne
 		  const int& slaveli,
                   const LocalVector &U1,
                   const LocalVector &U2,
-                  const LocalData &Q,
+                  const LocalData &QN_master,
+                  const LocalData &QN_slave,
                   const LocalData &QC) const;
     void EdgeMatrix(bool internaledge,
 		    const DGEquation &EQ,
@@ -45,7 +46,8 @@ namespace Gascoigne
 		    const int& slaveli,
 		    const LocalVector &U1,
 		    const LocalVector &U2,
-		    const LocalData &Q,
+		    const LocalData &QN_master,
+		    const LocalData &QN_slave,
 		    const LocalData &QC) const;
   };
 }

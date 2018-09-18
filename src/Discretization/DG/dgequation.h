@@ -13,6 +13,11 @@ namespace Gascoigne
   class DGEquation : virtual public Equation
   {
   public:
+
+    virtual void SetFemDataMaster(FemData& q) const {  }
+    virtual void SetFemDataSlave(FemData& q) const {  }
+    
+
     virtual void point_edge(bool internaledge,
 			    double h,
                             const FemFunction &U1,

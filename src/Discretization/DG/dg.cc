@@ -30,6 +30,7 @@ namespace Gascoigne
   template <class BASE>
   void DG<BASE>::GlobalToGlobalData(LocalParameterData &QP) const
   {
+    abort();
     const GlobalParameterData &gpd = GetDataContainer().GetParameterData();
 
     for (auto p : gpd)
@@ -37,6 +38,22 @@ namespace Gascoigne
       QP.insert(make_pair(p.first, *p.second));
     }
   }
+  
+  /* ----------------------------------------- */
+  
+  template<class BASE>
+  void DG<BASE>::GlobalToLocalData(LocalData& QN, const DataContainer& DC,int iq) const
+  {
+    const auto node = DC.GetNodeData();
+
+    QN.clear();
+    
+    for(auto it : node)
+      {
+	_dofhandler.GlobalToLocal(QN[it.first],*it.second,iq);
+      }
+  }
+
 
   ////////////////////////////////////////////////// Init
 
@@ -45,12 +62,11 @@ namespace Gascoigne
   {
     assert(_mesh);
     int dim = _mesh->dimension();
-    int ne = _mesh->nodes_per_cell(iq);
+    int ne = _mesh->nodes_per_cell(iq); // always Q1 transformation 
+    T.memory(dim, ne);
 
     IntVector indices = _mesh->IndicesOfCell(iq);
-    assert(ne == indices.size());
 
-    T.memory(dim, ne);
     if (dim == 2)
     {
       for (int ii = 0; ii < ne; ii++)
@@ -82,14 +98,13 @@ namespace Gascoigne
                       double d) const
   {
     nmatrix<double> T;
-    LocalParameterData QP;
-    GlobalToGlobalData(QP);
-    EQ.SetParameterData(QP);
+    // LocalParameterData QP;
+    // GlobalToGlobalData(QP);
+    // EQ.SetParameterData(QP);
 
     LocalVector U(u.ncomp(), BASE::N);
     LocalVector F(f.ncomp(), BASE::N);
 
-    LocalData QN;
     LocalData QC;
 
     for (int iq = 0; iq < _dofhandler.nelements(); ++iq)
@@ -97,13 +112,14 @@ namespace Gascoigne
       Transformation(T, iq);
       _fe.ReInit(T);
 
-      //_dofhandler.GlobalToLocalData(iq);
+      GlobalToLocalData(__QN_master, _datacontainer,iq);
       _dofhandler.GlobalToLocal(U, u, iq);
-      _integrator.Form(EQ, F, _fe, U, QN, QC);
+      _integrator.Form(EQ, F, _fe, U, __QN_master, QC);
       _dofhandler.LocalToGlobal(f, F, iq, d);
     }
 
     EdgeForm(f, u, dynamic_cast<const DGEquation &>(EQ), d);
+
   }
 
   template <class BASE>
@@ -113,16 +129,15 @@ namespace Gascoigne
                           double d) const
   {
     nmatrix<double> T1, T2;
-    LocalParameterData QP;
-    GlobalToGlobalData(QP);
-    EQ.SetParameterData(QP);
+    // LocalParameterData QP;
+    // GlobalToGlobalData(QP);
+    // EQ.SetParameterData(QP);
 
     LocalVector U1(u.ncomp(), BASE::N);
     LocalVector U2(u.ncomp(), BASE::N);
     LocalVector F1(f.ncomp(), BASE::N);
     LocalVector F2(f.ncomp(), BASE::N);
 
-    LocalData QN;
     LocalData QC;
 
     for (int ie = 0; ie < _dofhandler.nedges(); ++ie)
@@ -136,6 +151,8 @@ namespace Gascoigne
       Transformation(T1, master);
       _fe.ReInit(T1);
       _dofhandler.GlobalToLocal(U1, u, master);
+      GlobalToLocalData(__QN_master, _datacontainer,master);
+
 
       // slave
       size_t slave = E[1];
@@ -146,9 +163,9 @@ namespace Gascoigne
         Transformation(T2, slave);
         _feslave.ReInit(T2);
         _dofhandler.GlobalToLocal(U2, u, slave);
+	GlobalToLocalData(__QN_slave, _datacontainer,slave);
       }
-
-      //_dofhandler.GlobalToLocalData(iq);
+      
       _integrator.EdgeForm(internaledge,
                            EQ,
                            F1,
@@ -159,7 +176,8 @@ namespace Gascoigne
                            slaveli,
                            U1,
                            U2,
-                           QN,
+                           __QN_master,
+			   __QN_slave,
                            QC);
       _dofhandler.LocalToGlobal(f, F1, master, d);
       if (internaledge)
@@ -174,22 +192,20 @@ namespace Gascoigne
   {
     nmatrix<double> T;
 
-    LocalParameterData QP;
-    GlobalToGlobalData(QP);
-    RHS.SetParameterData(QP);
+    // LocalParameterData QP;
+    // GlobalToGlobalData(QP);
+    // RHS.SetParameterData(QP);
 
     LocalVector F(f.ncomp(), BASE::N);
 
-    LocalData QN;
     LocalData QC;
 
     for (int iq = 0; iq < _dofhandler.nelements(); ++iq)
     {
       Transformation(T, iq);
       _fe.ReInit(T);
-
-      //_dofhandler.GlobalToLocalData(iq);
-      _integrator.Rhs(RHS, F, _fe, QN, QC);
+      GlobalToLocalData(__QN_master, _datacontainer,iq);
+      _integrator.Rhs(RHS, F, _fe, __QN_master, QC);
       _dofhandler.LocalToGlobal(f, F, iq, s);
     }
   }
@@ -202,11 +218,10 @@ namespace Gascoigne
   {
     nmatrix<double> T;
 
-    LocalParameterData QP;
-    GlobalToGlobalData(QP);
-    EQ.SetParameterData(QP);
+    // LocalParameterData QP;
+    // GlobalToGlobalData(QP);
+    // EQ.SetParameterData(QP);
 
-    LocalData QN;
     LocalData QC;
 
     LocalVector U(u.ncomp(), BASE::N);
@@ -219,13 +234,15 @@ namespace Gascoigne
       Transformation(T, iq);
       _fe.ReInit(T);
 
-      //      _dofhandler.GlobalToLocalData();
       _dofhandler.GlobalToLocal(U, u, iq);
+      GlobalToLocalData(__QN_master, _datacontainer,iq);
+
       // EQ.cell(GetMesh(),iq,__U,__QN);
-      _integrator.Matrix(EQ, E, _fe, U, QN, QC);
+      _integrator.Matrix(EQ, E, _fe, U, __QN_master, QC);
       _dofhandler.LocalToGlobalMatrix(A, E, iq, d);
     }
     EdgeMatrix(A, u, dynamic_cast<const DGEquation &>(EQ), d);
+
   }
 
   template <class BASE>
@@ -235,15 +252,14 @@ namespace Gascoigne
                             double d) const
   {
     nmatrix<double> T1, T2;
-    LocalParameterData QP;
-    GlobalToGlobalData(QP);
-    EQ.SetParameterData(QP);
+    // LocalParameterData QP;
+    // GlobalToGlobalData(QP);
+    // EQ.SetParameterData(QP);
 
     LocalVector U1(u.ncomp(), BASE::N);
     LocalVector U2(u.ncomp(), BASE::N);
     EntryMatrix E11, E12, E21, E22;
 
-    LocalData QN;
     LocalData QC;
 
     for (int ie = 0; ie < _dofhandler.nedges(); ++ie)
@@ -257,6 +273,7 @@ namespace Gascoigne
       Transformation(T1, master);
       _fe.ReInit(T1);
       _dofhandler.GlobalToLocal(U1, u, master);
+      GlobalToLocalData(__QN_master, _datacontainer,master);
 
       // slave
       size_t slave = E[1];
@@ -267,6 +284,7 @@ namespace Gascoigne
         Transformation(T2, slave);
         _feslave.ReInit(T2);
         _dofhandler.GlobalToLocal(U2, u, slave);
+	GlobalToLocalData(__QN_slave, _datacontainer,slave);
       }
 
       //_dofhandler.GlobalToLocalData(iq);
@@ -282,7 +300,8 @@ namespace Gascoigne
                              slaveli,
                              U1,
                              U2,
-                             QN,
+                             __QN_master,
+			     __QN_slave,
                              QC);
       _dofhandler.LocalToGlobalMatrix(A, E11, master,master, d);
       if (internaledge)
@@ -296,6 +315,7 @@ namespace Gascoigne
 
 
   template class DG<BASEQ12D>;
+  template class DG<BASEQ22D>;
 }
 
 #include "finiteelement.xx"

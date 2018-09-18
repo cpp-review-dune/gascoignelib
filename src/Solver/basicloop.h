@@ -71,18 +71,18 @@ private:
   void WriteMesh() const;
   void WriteMeshInp(const std::string& name) const;
 
-  MeshAgentInterface*& GetMeshAgentPointer() { return _MA;}
-  MultiLevelSolverInterface*& GetMultiLevelSolverPointer() { return _ML;}
+  virtual MeshAgentInterface*& GetMeshAgentPointer() { return _MA;}
+  virtual MultiLevelSolverInterface*& GetMultiLevelSolverPointer() { return _ML;}
 
-  const MeshAgentInterface* GetMeshAgent() const { assert(_MA); return _MA;}
-  const MultiLevelSolverInterface* GetMultiLevelSolver() const { assert(_ML); return _ML;}
+  virtual const MeshAgentInterface* GetMeshAgent() const { assert(_MA); return _MA;}
+  virtual const MultiLevelSolverInterface* GetMultiLevelSolver() const { assert(_ML); return _ML;}
 
-  MeshAgentInterface* GetMeshAgent() { assert(_MA); return _MA;}
-  MultiLevelSolverInterface* GetMultiLevelSolver() { assert(_ML); return _ML;}
+  virtual MeshAgentInterface* GetMeshAgent() { assert(_MA); return _MA;}
+  virtual MultiLevelSolverInterface* GetMultiLevelSolver() { assert(_ML); return _ML;}
 
-        SolverInfos*& GetSolverInfosPointer() { return _SI;}
-        SolverInfos* GetSolverInfos()         { assert(_SI); return _SI;}
-  const SolverInfos* GetSolverInfos() const   { assert(_SI); return _SI;}
+  virtual SolverInfos*& GetSolverInfosPointer() { return _SI;}
+  virtual SolverInfos* GetSolverInfos()         { assert(_SI); return _SI;}
+  virtual const SolverInfos* GetSolverInfos() const   { assert(_SI); return _SI;}
 
   mutable StopWatch   _clock_newmesh, _clock_solve, _clock_functionals, _clock_write, _clock_estimate;
 

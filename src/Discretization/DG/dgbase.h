@@ -5,6 +5,7 @@
 /*----------------------------   dgbase.h     ---------------------------*/
 
 #include "baseq12d.h"
+#include "baseq22d.h"
 
 namespace Gascoigne
 {
@@ -12,6 +13,12 @@ namespace Gascoigne
   {
   public:
     static constexpr size_t N = 4;
+  };
+
+  class BASEQ22D : public BaseQ22d
+  {
+  public:
+    static constexpr size_t N = 9;
   };
 }
 

@@ -32,6 +32,32 @@ public:
     {
       return new DGSolver;
     }
+    
+    
+    
+    // Mehrgitter-Transfer nicht implementiert, alles nur auf dem feisnten gitter
+    
+    
+    void Transfer(int high, int low, VectorInterface& u) const
+    { assert(0); }
+    void AddNodeVector(const std::string& name, VectorInterface& gq)
+    {
+      GetSolver()->AddNodeVector(name,gq);
+    }
+    void DeleteNodeVector(const std::string& name)
+    {
+      GetSolver()->DeleteNodeVector(name);
+    }
+    
+    void AssembleMatrix(VectorInterface& u)
+    {
+      GetSolver()->MatrixZero();
+      GetSolver()->AssembleMatrix(u,1.);
+    }
+    void ComputeIlu(VectorInterface& u)
+    {
+      GetSolver()->ComputeIlu(u);
+    }
   };
   
 }

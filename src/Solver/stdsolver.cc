@@ -584,8 +584,10 @@ namespace Gascoigne
         return new Q22dWithSecond;
       else if (discname == "Q2LpsWithSecond")
         return new Q2Lps2dWithSecond;
-      else if (discname == "DG")
+      else if (discname == "DG1")
         return new DG<BASEQ12D>;
+      else if (discname == "DG2")
+        return new DG<BASEQ22D>;
       else
       {
         cerr << " Solver::NewDiscretization()\tunknown discname=" << discname

@@ -63,13 +63,13 @@ class Base2d : public Base
 	}
       else if(ie==2)      
 	{
-	  s.x() = s1.x(); s.y() = 1.;     
+	  s.x() = 1-s1.x(); s.y() = 1.;     
 	  bn.x() =  0.; bn.y() =  1.;
 	  bt.x() = -1.; bt.y() =  0.;
 	}
       else                
 	{
-	  s.x() = 0.    ; s.y() = s1.x(); 
+	  s.x() = 0.    ; s.y() =1- s1.x(); 
 	  bn.x() = -1.; bn.y() =  0.;
 	  bt.x() =  0.; bt.y() = -1.;
 	}
