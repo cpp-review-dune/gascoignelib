@@ -26,7 +26,7 @@
 #include  "fmatrixblock.h"
 #include  "simplematrix.h"
 
-#include  "omp.h"
+//#include  "omp.h"
 /*-------------------------------------------------------------*/
 
 namespace Gascoigne
@@ -51,9 +51,10 @@ template<class B>
 void SparseBlockMatrix<B>::Jacobi(GlobalVector& x) const
 {    
   for(int i=0; i< n(); i++)
-    {	  
-      double a = 1. / (*mat(US.diag(i)))(0,0);
-      *(x.start(i)) *= a; 
+    {
+      B Ad =  *mat(US.diag(i));
+      Ad.inverse();
+      Ad.vmult(x.start(i));
     }
 }   
 
