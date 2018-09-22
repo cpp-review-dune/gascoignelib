@@ -46,7 +46,8 @@ public:
 
   void Print();
   void NewValues(const DoubleVector& J);
-
+  const DoubleVector& GetExtrapolatedValues() const { return valextra; }
+  const DoubleVector& GetExtrapolatedOrder() const { return order; }
 };
 }
 
