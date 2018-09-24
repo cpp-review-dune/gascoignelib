@@ -81,7 +81,7 @@ namespace Gascoigne
 	VTKOUT << "DATASET UNSTRUCTURED_GRID" << std::endl
 	       << "POINTS " << M->ncells()*9 << " DOUBLE" << std::endl;
 	int itop[4] = {0,2,6,8}; // corners of patch
-	int itoj[4]= {0,1,3,2}; // counter-clockwise / lexico
+	//int itoj[4]= {0,1,3,2}; // counter-clockwise / lexico
 	int iinp[4][4] = {{0,1,4,3},{1,2,5,4},{3,4,7,6},{4,5,8,7}}; // cells in patch
 	int avge[4][3] = {{1,0,2},{5,2,8},{3,0,6},{7,6,8}}; //edges
 	for (int c = 0; c < M->ncells(); ++c)

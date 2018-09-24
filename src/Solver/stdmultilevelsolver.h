@@ -89,8 +89,6 @@ class StdMultiLevelSolver : public virtual MultiLevelSolverInterface
 
   virtual const ProblemDescriptorInterface* GetProblemDescriptor() const { return _PD;}
 
-  virtual const FunctionalContainer* GetFunctionalContainer()  const { return _FC; }
-  virtual void SetFunctionalContainer(const FunctionalContainer* FC) { _FC=FC;     }
 
   const DoubleVector GetExactValues() const;
   const DoubleVector ComputeFunctionals(VectorInterface& f, const VectorInterface& u);
@@ -147,6 +145,8 @@ class StdMultiLevelSolver : public virtual MultiLevelSolverInterface
   
   virtual const ProblemContainer* GetProblemContainer()        const { assert(_PC); return _PC; }
   virtual void SetProblemContainer(const ProblemContainer* PC)       { _PC=PC;     }
+  virtual const FunctionalContainer* GetFunctionalContainer()  const { return _FC; }
+  virtual void SetFunctionalContainer(const FunctionalContainer* FC) { _FC=FC;     }
 
   virtual SolverInterface* GetSolver(int l) {assert(l<_SP.size()); return _SP[l];}
   virtual const SolverInterface* GetSolver(int l) const {assert(l<_SP.size()); return _SP[l];}

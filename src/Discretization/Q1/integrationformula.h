@@ -153,6 +153,7 @@ typedef TensorFormula2d<10,LineGauss10> QuadGauss100;
 /*------------------------------------------------------------*/
 
 typedef TensorFormula3d<2,LineTrapez> HexTrapez;
+typedef TensorFormula3d<1,LineGauss1> HexGauss1; 
 typedef TensorFormula3d<2,LineGauss2> HexGauss8; 
 typedef TensorFormula3d<3,LineGauss3> HexGauss27; 
 typedef TensorFormula3d<4,LineGauss4> HexGauss64; 
