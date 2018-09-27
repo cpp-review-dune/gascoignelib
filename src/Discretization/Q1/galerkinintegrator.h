@@ -52,15 +52,15 @@ private:
 
 protected:
 
-  IntegrationFormulaInterface*& FormFormulaPointer() { return IFF;}
-  IntegrationFormulaInterface*& ErrorFormulaPointer() { return IFE;}
-  IntegrationFormulaInterface*& MassFormulaPointer() { return IFM;}
-  IntegrationFormulaInterface*& BoundaryFormulaPointer() { return IFB;}
+  virtual IntegrationFormulaInterface*& FormFormulaPointer() { return IFF;}
+  virtual IntegrationFormulaInterface*& ErrorFormulaPointer() { return IFE;}
+  virtual IntegrationFormulaInterface*& MassFormulaPointer() { return IFM;}
+  virtual IntegrationFormulaInterface*& BoundaryFormulaPointer() { return IFB;}
 
-  const IntegrationFormulaInterface* FormFormula() const { assert(GalerkinIntegrator<DIM>::IFF); return GalerkinIntegrator<DIM>::IFF;}
-  const IntegrationFormulaInterface* MassFormula() const { assert(GalerkinIntegrator<DIM>::IFM); return GalerkinIntegrator<DIM>::IFM;}
-  const IntegrationFormulaInterface* ErrorFormula() const { assert(GalerkinIntegrator<DIM>::IFE); return GalerkinIntegrator<DIM>::IFE;}
-  const IntegrationFormulaInterface* BoundaryFormula() const { assert(GalerkinIntegrator<DIM>::IFB); return GalerkinIntegrator<DIM>::IFB;}
+  virtual const IntegrationFormulaInterface* FormFormula() const { assert(GalerkinIntegrator<DIM>::IFF); return GalerkinIntegrator<DIM>::IFF;}
+  virtual const IntegrationFormulaInterface* MassFormula() const { assert(GalerkinIntegrator<DIM>::IFM); return GalerkinIntegrator<DIM>::IFM;}
+  virtual const IntegrationFormulaInterface* ErrorFormula() const { assert(GalerkinIntegrator<DIM>::IFE); return GalerkinIntegrator<DIM>::IFE;}
+  virtual const IntegrationFormulaInterface* BoundaryFormula() const { assert(GalerkinIntegrator<DIM>::IFB); return GalerkinIntegrator<DIM>::IFB;}
 
   double Volume2MeshSize(double vol) const { return pow(vol,1./float(DIM));}
 
