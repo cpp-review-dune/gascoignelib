@@ -1,0 +1,54 @@
+//Block Equation
+
+visc 0.01
+theta 0.5
+alpha0 0.5
+delta0 0.5
+
+//Block Loop
+
+niter        1000
+etapatcher  0
+estimator    none
+initial      zero
+refiner      global
+dt           0.005
+
+
+//Block BoundaryManager
+
+dirichlet        2 4 8
+dirichletcomp    4 2 1 2
+dirichletcomp    8 2 1 2
+
+
+//Block Mesh
+
+dimension   2
+prerefine   4
+gridname    rectangle.inp
+
+//Block MultiLevelSolver
+
+linear_pstep 0
+nonlinear_pstep 0
+linearsolve     mg
+nonlinear_rho   0.05
+nonlinear_maxiter       50
+nonlinear_tol   1.e-8
+nonlinear_globaltol     1.e-10
+linear_tol      1.e-4
+linear_maxiter  10
+gmressize       10
+
+//Block Solver
+omega 1.0
+discname Q1Lps
+ndirect 10000
+matrixtype block
+iterpre                 4
+iterpost                4
+iterexact               8
+ilum 3 0.01 0.1 0.1
+
+//Block Nix
