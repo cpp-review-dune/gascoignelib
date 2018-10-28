@@ -67,9 +67,9 @@ void Loop<DIM>::run(const std::string& problemlabel)
         // GetMultiLevelSolver()->SetProblem("fsi");
         if (_iter % sub_int_time == 0)
         {
-            auto idx = static_cast<int>(_iter/sub_int_time);
+            auto idx = static_cast<int>(_iter / sub_int_time);
             GetMultiLevelSolver()->GetSolver()->Visu("Results/u", u, idx);
-            //WriteMeshAndSolution("Results/u", u);
+            // WriteMeshAndSolution("Results/u", u);
             GetMultiLevelSolver()->GetSolver()->Write(u, "Results/u." + to_string(idx));
         }
 

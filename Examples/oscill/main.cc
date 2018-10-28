@@ -1,4 +1,4 @@
-
+#include <omp.h>
 #include "local.h"
 #include "loop.h"
 #include "weightedpointfunctional.h"
@@ -48,6 +48,7 @@ public:
 
 int main(int argc, char** argv)
 {
+    auto start = omp_get_wtime();
     ParamFile pf("fsi-3.param");
     if (argc == 2)
         pf.SetName(argv[1]);
@@ -85,6 +86,8 @@ int main(int argc, char** argv)
 
     loop.BasicInit(&pf, &PC2d, &FC2d);
     loop.run("fsi");
-
+    auto end         = omp_get_wtime();
+    auto serial_time = end - start;
+    std::cerr << "\nElapsed time is\t" << serial_time << ".\n";
     return 0;
 }

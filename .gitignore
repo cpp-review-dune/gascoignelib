@@ -35,4 +35,6 @@ cmake*
 fsi-3.param
 *inflow
 *copies
+*.bup
+*.gup
 functional.txt
