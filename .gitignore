@@ -37,4 +37,5 @@ fsi-3.param
 *copies
 *.bup
 *.gup
+*/functionals_etc*
 functional.txt
