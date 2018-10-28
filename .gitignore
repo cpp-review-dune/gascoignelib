@@ -31,11 +31,11 @@ cmake*
 /doc/latex/
 /doc/taginformation.cmake
 
-# ignore changes to oscill param file (it is not removed from the repo though)
-fsi-3.param
+# ignore changes to oscill param file
 *inflow
 *copies
 *.bup
 *.gup
-*/functionals_etc*
+*functionals_etc*
 functional.txt
+*.param

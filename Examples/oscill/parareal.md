@@ -7,3 +7,10 @@
 * Weitere Möglichkeiten zur Laufzeitreduktion von gröberem Verfahren
  - gröberes Gitter
  - Toleranz von groben Verfahren
+
+
+ Finished parareal.
+ Elapsed time is	695.128
+
+ Time spent in coarse method: 573.224
+ Time spent in fine method: 3522.5
