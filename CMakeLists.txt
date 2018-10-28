@@ -19,7 +19,7 @@ OPTION(WITH_RSTStopWatch "Use RSTStopWatch" OFF)
 
 
 #### Never use -DNDEBUG for Release
-OPTION(CMAKE_CXX_FLAGS_RELEASE "" "-O3")
+OPTION(CMAKE_CXX_FLAGS_RELEASE "" "-O3 -march=native")
 
 ### Directory Settings
 

@@ -4,13 +4,14 @@ IF(NOT "${EXAMPLE_OUTPUT_PATH}" STREQUAL "")
   SET(EXECUTABLE_OUTPUT_PATH "${EXAMPLE_OUTPUT_PATH}")
 ENDIF()
 
-SET(EXAMPLE_CXX_FLAGS "-fopenmp -O3 -Wextra -Wno-unused-parameter -std=c++1z")
+SET(EXAMPLE_CXX_FLAGS "-fopenmp -O3 -pedantic -march=native -Wall -Wextra -Wno-unused-parameter -std=c++1z")
 SET(GASCOIGNE_CXX_FLAGS "${GASCOIGNE_CXX_FLAGS} ${EXAMPLE_CXX_FLAGS}")
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GASCOIGNE_CXX_FLAGS}")
 SET(COMPILE_DEFINITIONS "${GASCOIGNE_DEFINITIONS}")
 
 SUBDIRS(
 oscill
+RANS
 #Vanka
    DG
    fast3d_neu
