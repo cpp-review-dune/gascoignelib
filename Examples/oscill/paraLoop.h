@@ -296,6 +296,7 @@ private:
     VectorInterface
       end_sol;  //!< Vector containing the final solution on the corresponding interval.
     std::vector<DoubleVector> log_buffer;  //!< Vector for buffering log entries.
+    double coar_weight;
 
     const int c_implicit_steps = get_param<int>("implicit_coarse", "Equation");
     const int f_implicit_steps = get_param<int>("implicit_fine", "Equation");
@@ -341,6 +342,7 @@ parareal<DIM, logging>::parareal(size_t id)
     , tmp_vi("tmp" + std::to_string(id))
     , end_sol("u" + std::to_string(id))
     , log_buffer(n_finesteps, DoubleVector(5, 0.))
+    , coar_weight(0)
 {
     // StdLoop();
 }
@@ -442,15 +444,58 @@ double parareal<DIM, logging>::paraAlgo()
                             VectorInterface& source) {
         para_dest->GetSolver()->GetGV(dest).equ(1., para_src->GetSolver()->GetGV(source));
     };
-    static auto w_equ_x_plus_y_minus_z =
+
+    static auto correction_w_weigths =
       [&](parareal*& para_dest, VectorInterface& dest, parareal*& src_x, VectorInterface& x,
           parareal*& src_y, VectorInterface& y, parareal*& src_z, VectorInterface& z) {
-          // clang-format off
-        para_dest->GetSolver()->GetGV(dest).equ(1,  src_x->GetSolver()->GetGV(x),
-                                                1,  src_y->GetSolver()->GetGV(y),
-                                                -1, src_z->GetSolver()->GetGV(z));
-          // clang-format on
+          auto dest_begin   = para_dest->GetSolver()->GetGV(dest).begin();
+          const auto weight = para_dest->coar_weight;
+          auto x_begin      = src_x->GetSolver()->GetGV(x).cbegin();
+          auto y_begin      = src_y->GetSolver()->GetGV(y).cbegin();
+          auto z_begin      = src_z->GetSolver()->GetGV(z).cbegin();
+
+          const auto dest_end = para_dest->GetSolver()->GetGV(dest).cend();
+          const auto length   = src_x->GetSolver()->GetGV(x).cend() - x_begin;
+          for (auto i = 0; i < length; i++)
+          {
+              *dest_begin = weight * *x_begin + *y_begin - weight * *z_begin;
+              x_begin++;
+              y_begin++;
+              z_begin++;
+              dest_begin++;
+          }
       };
+
+    static auto set_coar_weight = [&](parareal*& para_solver, VectorInterface& f,
+                                      VectorInterface& c, double damping) {
+        const nvector<double> c_c = para_solver->GetSolver()->GetGV(c).CompNorm();
+        const nvector<double> f_f = para_solver->GetSolver()->GetGV(f).CompNorm();
+        nvector<double> c_f(2 * DIM + 1, 0.0);
+        para_solver->GetSolver()->GetGV(f).ScalarProductComp(c_f,
+                                                             para_solver->GetSolver()->GetGV(c));
+
+        auto cw_iter  = c_f.begin();
+        auto c_c_iter = c_c.cbegin();
+        auto f_f_iter = f_f.cbegin();
+        for (auto i = 0; i < 2 * DIM + 1; ++i)
+        {
+            *cw_iter /= *c_c_iter * *f_f_iter;
+            cw_iter++;
+            c_c_iter++;
+            f_f_iter++;
+        }
+        double sc = 0.0;
+        for (auto i = 0; i < DIM + 1; i++)
+        {
+            sc += c_f[i];
+        }
+        sc /= DIM + 1;
+        sc *= sc * sc * sc;
+        sc *= damping;
+        para_solver->coar_weight = sc;
+        std::cerr << para_solver->coar_weight << '\n';
+    };
+
     // auto add = [&](VectorInterface& dest, VectorInterface& source){
     //
     // };
@@ -534,9 +579,10 @@ double parareal<DIM, logging>::paraAlgo()
         omp_init_lock(&interval_locker[m]);
     }
 
-//
-// A C T U A L   A L G O R I T H M
-//
+    //
+    // A C T U A L   A L G O R I T H M
+    //
+
 #pragma omp parallel num_threads(n_intervals) firstprivate(time)  // proc_bind(close)
     {
         // 'Iteration 0'
@@ -595,7 +641,7 @@ double parareal<DIM, logging>::paraAlgo()
             {
                 // #pragma omp ordered  // for debugging
                 //                 {
-                //omp_set_lock(&interval_locker[m]);
+                // omp_set_lock(&interval_locker[m]);
                 // Fᵏ(m) ⟵ F(Uᵏ⁻¹(m-1))
                 if (m == 0 || k == max_iterations)
                 {
@@ -619,16 +665,17 @@ double parareal<DIM, logging>::paraAlgo()
                     std::cerr << logwrite::info("Done", "Fine solution on subinterval ", m + k - 1,
                                                 " in iteration number ", k);
                     subinterval[m]->visu("Results/fineres", subinterval[m]->fine_sol,
-                                               (k - 1) * 10 + m);
+                                         (k - 1) * 10 + m);
                 }
-                //omp_unset_lock(&interval_locker[m]);
+                // omp_unset_lock(&interval_locker[m]);
                 //}
             }
-// barrier for debugging
-// #pragma omp barrier
-//
-// coarse propagations and corrections
-//
+            // barrier for debugging
+            // #pragma omp barrier
+            //
+            // coarse propagations and corrections
+            //
+
 #pragma omp for ordered nowait schedule(monotonic : static)
             // Corrections
             for (auto m = 0; m < n_intervals - k; ++m)
@@ -648,6 +695,7 @@ double parareal<DIM, logging>::paraAlgo()
                         {
                             func_log << x << '\n';
                         }
+
                         subinterval[0]->visu("Results/p", subinterval[0]->end_sol, k - 1);
                         omp_unset_lock(&interval_locker[0]);
                     }
@@ -664,13 +712,19 @@ double parareal<DIM, logging>::paraAlgo()
 
                     // omp_unset_lock(&interval_locker[m]);
                     omp_set_lock(&interval_locker[m + 1]);
+                    // calculate weights
+                    set_coar_weight(subinterval[m + 1], subinterval[m + 1]->fine_sol,
+                                    subinterval[m + 1]->coar_sol, 0.5);
 
                     // calculate corrector term
-                    w_equ_x_plus_y_minus_z(subinterval[m + 1], subinterval[m + 1]->end_sol,
-                                           subinterval[m], subinterval[m]->coar_sol,
-                                           subinterval[m + 1], subinterval[m + 1]->fine_sol,
-                                           subinterval[m + 1], subinterval[m + 1]->coar_sol);
-
+                    // clang-format off
+                    correction_w_weigths(
+                        subinterval[m + 1], subinterval[m + 1]->end_sol,  // source vector
+                        subinterval[m], subinterval[m]->coar_sol,         //+ w_x * coar_sol_old
+                        subinterval[m + 1], subinterval[m + 1]->fine_sol, //+ w_y * fine_sol
+                        subinterval[m + 1], subinterval[m + 1]->coar_sol  //+ w_z * coar_sol_new
+                    );
+                    //clang-format on
                     // prepare next iteration
                     equal(subinterval[m + 1], subinterval[m + 1]->fine_sol, subinterval[m + 1],
                           subinterval[m + 1]->end_sol);
@@ -713,18 +767,12 @@ double parareal<DIM, logging>::paraAlgo()
 
         // Visu part
         // subinterval[m]->setGV(u, u_sol_arr[m]);
-        subinterval[m + 1]->visu("Results/p", subinterval[m + 1]->end_sol,
-                                       m + max_iterations);
+        subinterval[m + 1]->visu("Results/p", subinterval[m + 1]->end_sol, m + max_iterations);
         std::cerr << logwrite::info("Done", "Wrote subinterval ", m + max_iterations);
     }
 
     // Clean up
     omp_destroy_lock(interval_locker);
-    delete[] interval_locker;
-    for (auto i = 0; i < n_intervals; ++i)
-    {
-        delete subinterval[i];
-    }
     return exec_time;
 }
 
