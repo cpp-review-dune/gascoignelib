@@ -1315,7 +1315,7 @@ Setting up parareal:
 **************************************************************************************************/
 
 template <int DIM, log_level logging>
-ParamFile parareal<DIM, logging>::paramfile = ParamFile("fsi-3.param");
+ParamFile parareal<DIM, logging>::paramfile = ParamFile("fsi-wm.param");
 template <int DIM, log_level logging>
 std::string parareal<DIM, logging>::problemlabel = "fsi";
 

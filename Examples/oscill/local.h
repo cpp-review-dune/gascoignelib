@@ -134,8 +134,12 @@ public:
         // veff *= veff;
         // veff *= 0.5;
         // for wall_mount color 8, for benchmark color 0
-        if (color == 0)
-            b[1] += v.y() * (0.41 - v.y()) / 0.205 / 0.205 * veff * 1.5;
+
+        // if (color == 0)
+        //     b[1] += v.y() * (0.41 - v.y()) / 0.205 / 0.205 * veff * 1.5;
+
+        if (color == 8)
+            b[1] += v.y() * (1 - v.y()) / 0.5 / 0.5 * veff * 1.5;
     }
 };
 

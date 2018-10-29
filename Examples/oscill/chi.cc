@@ -27,9 +27,9 @@ int Chi::operator()(const Vertex3d& v) const
 
 int Chi::operator()(const Vertex2d& v) const
 {
-    double eps         = 1.e-12;
-    std::string __type = "benchmark";
-    // std::string __type == "wall_mount";
+    double eps = 1.e-12;
+    // std::string __type = "benchmark";
+    std::string __type = "wall_mount";
     //    __type=="wall";
 
     if (__type == "benchmark")  // BENCHMARK
@@ -42,9 +42,9 @@ int Chi::operator()(const Vertex2d& v) const
     }
     else if (__type == "wall_mount")  // Parareal for FSI test
     {
-        if ((v.x() > 1.0) && (v.x() < 1.125 - eps) && (fabs(v.y() - 0.5) < -eps))
+        if ((v.x() > 1.0) && (v.x() < 1.125 - eps) && (v.y() < 0.5 - eps))
             return 1;
-        if ((v.x() > 1.0) && (v.x() < 1.125 + eps) && (fabs(v.y() - 0.5) < eps))
+        if ((v.x() > 1.0) && (v.x() < 1.125 + eps) && (v.y() < 0.5 + eps))
             return 0;
         return -1;
     }

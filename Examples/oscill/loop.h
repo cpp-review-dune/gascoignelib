@@ -100,8 +100,8 @@ public:
         double r2 = 0.05 * 0.05;
         Vertex2d v(0.2, 0.2);
         RK.BasicInit(v, r2);
-        AddShape(80, &RK);
-        AddShape(81, &RK);
+        // AddShape(80, &RK);
+        // AddShape(81, &RK);
     }
 };
 

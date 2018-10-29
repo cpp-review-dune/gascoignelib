@@ -22,7 +22,6 @@ public:
         __comps.push_back(1);
         __scales.push_back(1.0);
         __cols.insert(80);
-        __cols.insert(81);
         __DD = new DirichletDataByColor(GetComps(), GetColors(), GetScales());
     }
 };
@@ -39,7 +38,6 @@ public:
         __comps.push_back(2);
         __scales.push_back(1.0);
         __cols.insert(80);
-        __cols.insert(81);
         __DD = new DirichletDataByColor(GetComps(), GetColors(), GetScales());
     }
 };
@@ -49,7 +47,7 @@ public:
 int main(int argc, char** argv)
 {
     auto start = omp_get_wtime();
-    ParamFile pf("fsi-3.param");
+    ParamFile pf("fsi-wm.param");
     if (argc == 2)
         pf.SetName(argv[1]);
 
