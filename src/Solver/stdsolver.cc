@@ -272,7 +272,12 @@ namespace Gascoigne
 
     if (_useUMFPACK && _MIP != NULL)
     {
+#ifdef __WITH_UMFPACK_LONG__
       UmfIluLong *UM = dynamic_cast<UmfIluLong *>(GetIlu());
+#else
+      UmfIlu *UM = dynamic_cast<UmfIlu *>(GetIlu());
+#endif
+      
       if ((UM && !_directsolver) || (!UM && _directsolver))
       {
         delete _MIP;
@@ -742,7 +747,11 @@ namespace Gascoigne
 #ifdef __WITH_UMFPACK__
     if (_directsolver && _useUMFPACK)
     {
+#ifdef __WITH_UMFPACK_LONG__
       return new UmfIluLong(GetMatrix());
+#else
+      return new UmfIlu(GetMatrix());
+#endif
     }
 #endif
 
@@ -1286,7 +1295,11 @@ namespace Gascoigne
     if (_directsolver && _useUMFPACK)
     {
       _so.start();
+#ifdef __WITH_UMFPACK_LONG__
       UmfIluLong *UM         = dynamic_cast<UmfIluLong *>(GetIlu());
+#else
+      UmfIlu     *UM         = dynamic_cast<UmfIlu *>(GetIlu());
+#endif
       assert(UM);
       UM->Solve(GetGV(x), GetGV(y));
       _so.stop();
@@ -1863,7 +1876,11 @@ namespace Gascoigne
     if (_directsolver && _useUMFPACK)
     {
       _cs.start();
+#ifdef __WITH_UMFPACK_LONG__
       UmfIluLong *UM = dynamic_cast<UmfIluLong *>(GetIlu());
+#else
+      UmfIlu *UM = dynamic_cast<UmfIlu *>(GetIlu());
+#endif
       assert(UM);
       //       if(PrimalSolve==0) return;
       UM->Factorize();
@@ -1894,7 +1911,11 @@ namespace Gascoigne
     if (_directsolver && _useUMFPACK)
     {
       _cs.start();
+#ifdef __WITH_UMFPACK_LONG__
       UmfIluLong *UM = dynamic_cast<UmfIluLong *>(GetIlu());
+#else
+      UmfIlu *UM = dynamic_cast<UmfIlu *>(GetIlu());
+#endif
       assert(UM);
       //       if(PrimalSolve==0) return;
       UM->Factorize();

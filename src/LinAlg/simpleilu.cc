@@ -232,12 +232,11 @@ void SimpleIlu::compute_ilu()
 
 /*-------------------------------------------------*/
 
-void SimpleIlu::copy_entries(const MatrixInterface*  A)
+void SimpleIlu::copy_entries(const MatrixInterface&  A)
 {
-  const SimpleMatrix* AP = dynamic_cast<const SimpleMatrix*>(A);
-  assert(AP);
+  const SimpleMatrix& AP = dynamic_cast<const SimpleMatrix&>(A);
 
-  const ColumnDiagStencil* AS = dynamic_cast<const ColumnDiagStencil*>(AP->GetStencil());
+  const ColumnDiagStencil* AS = dynamic_cast<const ColumnDiagStencil*>(AP.GetStencil());
   assert(AS);
 
   for(int i=0;i<ST.n();i++)
@@ -254,7 +253,7 @@ void SimpleIlu::copy_entries(const MatrixInterface*  A)
               int k = ST.col(pos);
               if(k==pj)	
                 {
-                  value[pos] += AP->GetValue(posA);
+                  value[pos] += AP.GetValue(posA);
                   found=1;
                   break;
                 }

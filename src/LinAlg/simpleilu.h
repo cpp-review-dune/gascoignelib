@@ -76,7 +76,7 @@ namespace Gascoigne
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Woverloaded-virtual"
     void ReInit(int n, int nentries);
-    void copy_entries(const MatrixInterface *A);
+    void copy_entries(const MatrixInterface &A);
 #pragma GCC diagnostic pop
 
 
