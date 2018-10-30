@@ -80,7 +80,8 @@ namespace Gascoigne
       return "TimeSolver";
     }
 
-    void SetTimeData(double _dt, double _theta, double _time);
+    void SetTimeData(double dt, double theta, double time, double oldrhs = -1, double newrhs = -1);
+    
 
     const MatrixInterface *GetMassMatrix() const
     {

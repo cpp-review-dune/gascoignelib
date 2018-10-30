@@ -1878,7 +1878,7 @@ namespace Gascoigne
       iota(perm.begin(), perm.end(), 0);
       GetIlu()->ConstructStructure(perm, *GetMatrix());
       GetIlu()->zero();
-      GetIlu()->copy_entries(GetMatrix());
+      GetIlu()->copy_entries(*GetMatrix());
       int ncomp = GetProblemDescriptor()->GetEquation()->GetNcomp();
       modify_ilu(*GetIlu(), ncomp);
       GetIlu()->compute_ilu();
@@ -1908,7 +1908,7 @@ namespace Gascoigne
       _ci.start();
       PermutateIlu(gu);
       GetIlu()->zero();
-      GetIlu()->copy_entries(GetMatrix());
+      GetIlu()->copy_entries(*GetMatrix());
       modify_ilu(*GetIlu(), ncomp);
       GetIlu()->compute_ilu();
       _ci.stop();

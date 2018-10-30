@@ -64,7 +64,7 @@ namespace Gascoigne
         std::cerr << "\"IluInterface::compute_ilu\" not written!" << std::endl;
         abort();
       }
-      virtual void copy_entries(const MatrixInterface* A) {
+      virtual void copy_entries(const MatrixInterface& A) {
         std::cerr << "\"IluInterface::copy_entries\" not written!" << std::endl;
         abort();
       }

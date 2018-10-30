@@ -73,12 +73,12 @@ namespace Gascoigne
   }
 
   template<>
-  void SparseUmf<SparseBlock>::copy_entries(const MatrixInterface*  A)
+  void SparseUmf<SparseBlock>::copy_entries(const MatrixInterface&  A)
   {
  
     // check if __AS and A are the same object...
     // then, we do not need __AS!!!
-    assert (static_cast<const void*> (__AS) == static_cast<const void*>  (A));
+    assert (static_cast<const void*> (&__AS) == static_cast<const void*>  (&A));
     
     // Copy Entries
     assert(__ncomp == __AS->mat(0)->ncomp());

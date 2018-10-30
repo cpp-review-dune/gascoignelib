@@ -104,7 +104,7 @@ public:
 
   void PrintMeshInformation() const;
 
-  virtual void BasicInit(const ParamFile* paramfile, const NumericInterface* NI);
+  virtual void BasicInit(const ParamFile* paramfile, const NumericInterface* NI, const ProblemContainer* PC = NULL);
 };
 }
 

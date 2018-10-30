@@ -53,7 +53,7 @@ Algorithm::~Algorithm()
 
 /*-----------------------------------------*/
 
-void Algorithm::BasicInit(const ParamFile* paramfile, const NumericInterface* NI)
+  void Algorithm::BasicInit(const ParamFile* paramfile, const NumericInterface* NI, const ProblemContainer* PC)
 {
   _paramfile = paramfile;
   _NI = NI;

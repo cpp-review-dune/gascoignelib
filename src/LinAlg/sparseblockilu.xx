@@ -134,11 +134,10 @@ void SparseBlockIlu<B>::ConstructStructure(const nvector<int>& perm, const Matri
 /*-------------------------------------------------------------*/
 
 template<class B>
-void SparseBlockIlu<B>::copy_entries(const MatrixInterface* A)
+void SparseBlockIlu<B>::copy_entries(const MatrixInterface& A)
 {
-  const SparseBlockMatrix<B>* MM = dynamic_cast<const SparseBlockMatrix<B>*>(A);
-  assert(MM);
-  const ColumnDiagStencil* AS = dynamic_cast<const ColumnDiagStencil*>(MM->GetStencil());
+  const SparseBlockMatrix<B>& MM = dynamic_cast<const SparseBlockMatrix<B>& >(A);
+  const ColumnDiagStencil* AS = dynamic_cast<const ColumnDiagStencil*>(MM.GetStencil());
   assert(AS);
 
   for(int i=0;i<SparseBlockMatrix<B>::US.n();i++)
@@ -155,7 +154,7 @@ void SparseBlockIlu<B>::copy_entries(const MatrixInterface* A)
               int k = SparseBlockMatrix<B>::US.col(pos);
               if(k==pj)	
           {
-            *SparseBlockMatrix<B>::mat(pos) += *MM->mat(posA);
+            *SparseBlockMatrix<B>::mat(pos) += *MM.mat(posA);
             found=1;
             break;
           }
@@ -163,7 +162,7 @@ void SparseBlockIlu<B>::copy_entries(const MatrixInterface* A)
           if(!found)
             {
               std::cout << "not found " << std::endl;
-              std::cout << *MM->mat(posA) << std::endl;
+              std::cout << *MM.mat(posA) << std::endl;
               
       //	      *SparseBlockMatrix<B>::mat(SparseBlockMatrix<B>::US.diag(i)) += *MM.mat(posA);	
             }

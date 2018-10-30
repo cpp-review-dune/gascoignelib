@@ -83,7 +83,7 @@ namespace Gascoigne
       assert(dynamic_cast<const SparseBlockMatrix<B> *>(__AS));
     }
     
-    void copy_entries(const MatrixInterface*  A);
+    void copy_entries(const MatrixInterface& A);
     void add_entries(double s, const MatrixInterface*  A);
 
     void ConstructStructure(const IntVector& perm, const MatrixInterface& A);
