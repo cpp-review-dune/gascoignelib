@@ -700,7 +700,7 @@ double StdMultiLevelSolver::NewtonUpdate(double& rr, VectorInterface& x, VectorI
       return NewtonNorm(dx);
     }
 
-  double omega = 0.75;
+  double omega = 0.25;
   double relax = 1.0;
 
   
@@ -735,8 +735,8 @@ double StdMultiLevelSolver::NewtonUpdate(double& rr, VectorInterface& x, VectorI
   
 
   
-  // for(diter=0;diter<nlinfo.user().maxrelax();diter++)
-  for (diter=0;diter<15;diter++)
+  for(diter=0;diter<nlinfo.user().maxrelax();diter++)
+  //for (diter=0;diter<15;diter++)
     {
       message = nlinfo.check_damping(diter,rr);
        

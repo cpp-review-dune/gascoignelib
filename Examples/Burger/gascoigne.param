@@ -10,10 +10,10 @@ initial file
 initial boundary
 
 time	    0.0
-dt	    0.01
+dt	        0.125
 dtmax	    0.5
 endtime	    4.0
-M           4
+M           32
 //Block Visualization
 
 compress    0

@@ -1,7 +1,7 @@
 //Block Loop
 
-niter       20000000
-writebupgup 1
+niter       200000000
+writebupgup 0
 writevtk    0
 initial file 
 
@@ -9,8 +9,8 @@ initial file
 
 initial boundary
 
-time	    0.0
-dt	    2.
+time	    343.6
+dt	        2
 dtmax	    2.
 endtime	    32.0
 
@@ -21,7 +21,7 @@ compress    0
 //Block Mesh
 
 dimension   2
-prerefine   8
+prerefine   9
 gridname sq500.inp
 
 //Block BoundaryManager
@@ -52,13 +52,13 @@ functional 1 1
 linearsolve	mg
 nonlinear_rho	0.1
 nonlinear_tol	1.e-4
-nonlinear_globaltol	1.e-11
-linear_tol 1.e-2
+nonlinear_globaltol	1.e-13
+linear_tol 1.e-4
 linear_globaltol 1.e-20
-nonlinear_maxiter 100
+nonlinear_maxiter 200
 //nonlinear_damp 1
 linear_maxiter 50
-gmressize 50
+gmressize 100
 //linear_pstep	1	
 
 
@@ -68,7 +68,7 @@ matrixtype block
 
 discname       Q1
 
-ndirect        10000000 // fuer see eis
+ndirect        1000000 // fuer see eis
 ilum 2 0.1 0.1 // fuer see eis
 
 

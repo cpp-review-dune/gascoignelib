@@ -1,0 +1,10 @@
+ADD_EXECUTABLE("DG_test" main.cc loop.cc myequation.cc )
+
+
+
+
+SET_TARGET_PROPERTIES(
+  DG_test
+  PROPERTIES
+  COMPILE_DEFINITIONS "${GASCOIGNE_DEFINITIONS}"
+  )

@@ -1,5 +1,5 @@
 SUBDIRS(
-  NavierStokes2D  bench Burger Burger_gekoppelt
+  NavierStokes2D  bench Transport_split   DG_ice SUPG DG_test
 
 )
 
