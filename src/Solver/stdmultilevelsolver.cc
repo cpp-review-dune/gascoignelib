@@ -530,8 +530,6 @@ void StdMultiLevelSolver::newton(VectorInterface& u, const VectorInterface& f, V
       // DDD=1.0;
       //if(it==12)
       DDD=min(ET1*(0.2+4/(0.7+exp(1.51*rho1))),1);
-      if(DDD<0.5)
-	DDD=1.0;
       //cout<<it<<endl;
 	//	cout<<"DDD"<<DDD<<"it"<<it<<endl;
 	/*	//	cout<<"DDD"<<DDD<<"it"<<it<<endl;
@@ -547,14 +545,14 @@ void StdMultiLevelSolver::newton(VectorInterface& u, const VectorInterface& f, V
 	//{DDD=0.5;
 	//cout<<DDD<<"DDD"<<endl;
 	// }
-        DDD=max(DDD,0.1);
+       //   DDD=max(DDD,0.1);
 	
 	*/
 		//	 if(DDD<0.3)
 
-      //	 if(DDD<0.01) 
-      //	 DDD=1;
-      //	 	 cout  <<  "Steuerung Newton rho/DDD/ET: " << rho1 << "\t" << DDD << "\t"<< rr << endl; //	DDD=min(ET1*(0.2+4/(0.7+exp(1.51*rho1))),1);
+	 if(DDD<0.01) 
+	 DDD=1;
+	 //	 cout  <<  "Steuerung Newton rho/DDD/ET: " << rho1 << "\t" << DDD << "\t"<< rr << endl; //	DDD=min(ET1*(0.2+4/(0.7+exp(1.51*rho1))),1);
        
        
     }
@@ -737,8 +735,8 @@ double StdMultiLevelSolver::NewtonUpdate(double& rr, VectorInterface& x, VectorI
   
 
   
-  //for(diter=0;diter<nlinfo.user().maxrelax();diter++)
-   for (diter=0;diter<15;diter++)
+  for(diter=0;diter<nlinfo.user().maxrelax();diter++)
+  //for (diter=0;diter<15;diter++)
     {
       message = nlinfo.check_damping(diter,rr);
        

@@ -81,6 +81,63 @@ public:
   }
 };
 
+class MeanSpeed  : public virtual DomainFunctional
+{
+protected:
+  double rho; 
+ 
+public:
+  
+
+  MeanSpeed(const ParamFile* pf)
+  {
+    DataFormatHandler DFH;
+    FileScanner FS(DFH);
+    FS.NoComplain();
+    FS.readfile(pf, "Equation");
+    ExactValue() = 1404;
+  }
+  std::string GetName() const {return "MeanSpeed";}
+  double J(const FemFunction& U, const Vertex2d& v) const
+  {
+   
+    return  sqrt((U[0].m()*U[0].m())*(U[1].m()*U[1].m()));
+  
+    
+  }
+};
+
+
+class MeanDeformation : public virtual DomainFunctional
+{
+protected:
+  double rho; 
+ 
+public:
+  
+
+  MeanDeformation(const ParamFile* pf)
+  {
+    DataFormatHandler DFH;
+    FileScanner FS(DFH);
+    FS.NoComplain();
+    FS.readfile(pf, "Equation");
+    ExactValue() = 1404;
+  }
+  std::string GetName() const {return "MeanDeformation";}
+  double J(const FemFunction& U, const Vertex2d& v) const
+  {
+   
+      double div=U[0].x()+U[1].y();
+      double shear=sqrt((U[0].x() - U[1].y())*(U[0].x() - U[1].y())+(U[0].y()-U[1].x())*(U[0].y()-U[1].x()));
+    return  sqrt(div*div+shear*shear);
+  
+    
+  }
+};
+
+
+
 class AvMass  : public virtual DomainFunctional
 {
 protected:
@@ -295,13 +352,24 @@ int main(int argc, char** argv)
   Delta D(&paramfile);
   Force1 F1;
   Force1 F2;
-  Ellipse EF(&paramfile);
+  //Ellipse EF(&paramfile);
+  MeanSpeed MS(&paramfile);
+  MeanDeformation MD(&paramfile);
 
+<<<<<<< HEAD
   // FC.AddFunctional("0 Kinetic", &K);
   //  FC.AddFunctional("1 Mass", &M);
   // FC.AddFunctional("2 AvMass", &AvM);
   //  FC.AddFunctional("3 Delta", &D);
   // FC.AddFunctional("4 Ellipse", &EF);
+=======
+  FC.AddFunctional("0 Kinetic", &K);
+  FC.AddFunctional("1 Mass", &M);
+  FC.AddFunctional("2 AvMass", &AvM);
+  FC.AddFunctional("3 Delta", &D);
+  FC.AddFunctional("4 MeanSpeed", &MS);
+  FC.AddFunctional("5 MeanDeformation", &MD);
+>>>>>>> 57386a1770ecff28241d7293c1f24f9830f40954
 
   // loop for program control
   Loop loop;

@@ -422,9 +422,9 @@ if (_initial=="reload")
   AssembleMassMatrix();
 
   // set up system matrix
-  double writeeveryhour=0.0; // 1.0;
+ // double writeeveryhour=2.0; // 1.0;
   double stepback=0.0;
-  double writenext= writeeveryhour;
+  double writenext= 0;
   int writeiter = 0;
   string res;
   
@@ -510,7 +510,7 @@ if (_initial=="reload")
       /////////////////////// 
       /////////////////////// 
       GetMultiLevelSolver()->GetSolver()->Equ(oldh,1.0, hl); // oldh wird im Programm nicht gebraucht.
-      int NSUB = 20;
+      int NSUB = 1000;
       for (int sub=0;sub<NSUB;++sub)
 	{
 	  DTSUB = DT/NSUB;
@@ -551,49 +551,11 @@ if (_initial=="reload")
       GetMultiLevelSolver()->AssembleMatrix(u);
       GetMultiLevelSolver()->ComputeIlu(u);  
       res = Solve(u,f,"Results/u");
-
       
-
-      if (res!="converged")
-	{
-	  abort();
-	  a=1.0;
-
-	  /*
-	    timeinc++;
-	    stepback++;
-
- 
-	    GetMultiLevelSolver()->GetSolver()->Equ(u,1.0,oldu);
-	    GetMultiLevelSolver()->GetSolver()->Equ(oldu,1.0,oldoldu);
-     
-	    GetMultiLevelSolver()->GetSolver()->Equ(hl,1.0, oldh);
-   
-    
-
-	    GetMultiLevelSolver()->DeleteNodeVector("oldu");
-	    GetMultiLevelSolver()->DeleteNodeVector("extu");
-	    GetMultiLevelSolver()->DeleteNodeVector("H");
-
+       assert(res == "converged");
       
-	    continue;
-	  */
-	}
-      else
-	{
-	  stepback=0;
-	  a=0.0;
-	 
-	}
-  
-
-      
-       string ell_name="ellipse";
-         compose_name(ell_name,_iter);
-        ELLIPSE_OUT.open(ell_name.c_str());
       functionals = Functionals(u,f);
-       ELLIPSE_OUT.close();
-     
+   
       GetMultiLevelSolver()->DeleteNodeVector("oldu");
       GetMultiLevelSolver()->DeleteNodeVector("extu");
       GetMultiLevelSolver()->DeleteNodeVector("H");
@@ -614,11 +576,17 @@ if (_initial=="reload")
       //  jetzt ist gerechnet und es gibt umittel, hmittel
 
 
-      double time_in_hours = TIME*tref/60/60;
-      if (time_in_hours>writenext)
+      //double time_in_hours = TIME*tref/60/60; 
+    
+      writenext+=DT;
+      
+      
+        cout << writenext<< " Ausgabe" << endl;
+   
+     if (writenext>2.)
 	{
 	  
-	  writenext += writeeveryhour;
+	  writenext=0;
 	  ++writeiter;
         
 	  GetMultiLevelSolver()->GetSolver()->Visu("Results/u",u,writeiter);

@@ -10,11 +10,18 @@ initial file
 initial boundary
 
 time	    0.0
+<<<<<<< HEAD
 dt	    0.03125
 
 dtmax	    0.03125
 endtime	    4.0
 M           8
+=======
+dt	        0.0625
+dtmax	    0.03125
+endtime	    4.0
+M           64
+>>>>>>> 57386a1770ecff28241d7293c1f24f9830f40954
 //Block Visualization
 
 compress    0

@@ -1,6 +1,10 @@
 //Block Loop
 
+<<<<<<< HEAD
 niter       400
+=======
+niter       200000000
+>>>>>>> 57386a1770ecff28241d7293c1f24f9830f40954
 writebupgup 0
 writevtk    0
 initial file
@@ -13,9 +17,15 @@ initial file
 //wichtig omega 0.25 in source
 
 initial boundary
+<<<<<<< HEAD
 //time	   517.6
 time	   343.6
 dt	    2.
+=======
+
+time	    343.6
+dt	        2
+>>>>>>> 57386a1770ecff28241d7293c1f24f9830f40954
 dtmax	    2.
 endtime	    32.0
 
@@ -26,7 +36,11 @@ compress    0
 //Block Mesh
 
 dimension   2
+<<<<<<< HEAD
 prerefine   6
+=======
+prerefine   9
+>>>>>>> 57386a1770ecff28241d7293c1f24f9830f40954
 gridname sq500.inp
 
 //Block BoundaryManager
@@ -56,6 +70,7 @@ functional 1 1
 
 linearsolve	gmres
 nonlinear_rho	0.1
+<<<<<<< HEAD
 nonlinear_tol	1.e-2
 nonlinear_globaltol	1.e-13
 linear_tol 	1.e-4
@@ -64,6 +79,16 @@ nonlinear_maxiter 200
 nonlinear_damp 4
 linear_maxiter 200
 gmressize 200
+=======
+nonlinear_tol	1.e-4
+nonlinear_globaltol	1.e-13
+linear_tol 1.e-4
+linear_globaltol 1.e-20
+nonlinear_maxiter 200
+//nonlinear_damp 1
+linear_maxiter 50
+gmressize 100
+>>>>>>> 57386a1770ecff28241d7293c1f24f9830f40954
 //linear_pstep	1	
 
 
@@ -73,7 +98,11 @@ matrixtype block
 
 discname       Q2
 
+<<<<<<< HEAD
 ndirect        1000000000 // fuer see eis
+=======
+ndirect        1000000 // fuer see eis
+>>>>>>> 57386a1770ecff28241d7293c1f24f9830f40954
 ilum 2 0.1 0.1 // fuer see eis
 
 
