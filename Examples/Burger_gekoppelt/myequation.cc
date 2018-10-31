@@ -417,13 +417,7 @@ void MyDualTransportEquation::point(double h, const FemFunction &U, const Vertex
     b[1] += w*DTM * 0.5*((s*U1[0].m()+(1-s)*U2[0].m())*N.x()+ (s*U1[1].m()+(1-s)*U2[1].m())*N.y())*Z[1].m();
   }
 
-void MyDualTransportEquation::Kopplung(VectorIterator b, double s,const FemFunction &dtU1, const FemFunction& dtU2, const FemFunction& OLDZ, const TestFunction& N,double w) const
-  {   //partial_t vm + partial_t vm-1
-    
-    b[0] += w* 0.5 *  (s*(dtU2[0].m())+(1-s)*(dtU1[0].m())) * N.m()*OLDZ[0].m();
-    b[1] += w* 0.5 *  (s*(dtU2[1].m())+(1-s)*(dtU1[1].m())) * N.m()*OLDZ[1].m();
-	
-  }
+
   
 
 void MyDualTransportEquation::Form(VectorIterator b,
@@ -451,8 +445,7 @@ void MyDualTransportEquation::Form(VectorIterator b,
    
   b[0]+=0.5*((*u2)[0].m()-(*u1)[0].m())*(*oldz)[0].m()*N.m();
   b[1]+=0.5*((*u2)[1].m()-(*u1)[1].m())*(*oldz)[1].m()*N.m();
-  //Kopplung(b, 0.5+0.5/sqrt(3.0), (*dtu1), (*dtu2), (*oldz), N,       0.5+0.5/sqrt(3.0));
- // Kopplung(b, 0.5-0.5/sqrt(3.0), (*dtu1), (*dtu2), (*oldz), N,       0.5-0.5/sqrt(3.0));
+
   }
   
 
@@ -465,8 +458,7 @@ void MyDualTransportEquation::Form(VectorIterator b,
   b[0]+=0.5*((*u3)[0].m()-(*u2)[0].m())*(*z)[0].m()*N.m();
   b[1]+=0.5*((*u3)[1].m()-(*u2)[1].m())*(*z)[1].m()*N.m();
    
-  //Kopplung(b, 0.5+0.5/sqrt(3.0),(*dtu2), (*dtu3), (*z), N,       0.5+0.5/sqrt(3.0));
-  //Kopplung(b, 0.5-0.5/sqrt(3.0), (*dtu2), (*dtu3), (*z), N,       0.5-0.5/sqrt(3.0));
+
       
   }
 }

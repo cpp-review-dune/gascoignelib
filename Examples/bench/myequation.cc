@@ -98,16 +98,24 @@ namespace Gascoigne
     double ef = exp(-C*(1.0-(*H)[1].m()));
 
     double dmin = DELTAMIN*Tref;
-  
+    
     // DELTA implizit
     double DELTAsquare =
       (1.0 + pow(ellipse,-2.0)) * (U[0].x()*U[0].x() + U[1].y()*U[1].y())
       + pow(ellipse,-2.0) * pow(U[0].y() + U[1].x(),2.0)
       + 2.0 * (1.0-pow(ellipse,-2.0)) * U[0].x()*U[1].y();
-
-    DELTAsquare +=   dmin*dmin;
     
-    double DELTA = sqrt(DELTAsquare);
+    /*
+           //delta explizit
+  double   DELTAsquare = 
+      (1.0 + pow(ellipse,-2.0)) * ((*extu)[0].x()*(*extu)[0].x() + (*extu)[1].y()*(*extu)[1].y())
+      + pow(ellipse,-2.0) * pow((*extu)[0].y() + (*extu)[1].x(),2.0)
+      + 2.0 * (1.0-pow(ellipse,-2.0)) * (*extu)[0].x()*(*extu)[1].y();
+    */
+    DELTAsquare +=   dmin*dmin;
+    //normal 
+     double DELTA = sqrt(DELTAsquare);
+   
     
     ///////  (sigma, nabla phi)	
     // nabla u, nabla phi
@@ -165,12 +173,20 @@ namespace Gascoigne
 
      double dmin = DELTAMIN*Tref;
     // double dmin = DELTAMIN*DDD*Tref+(1.0-DDD)*Tref*0.05e-9;
-   
+    
     // implizit
     double DELTAsquare =
       (1.0 + pow(ellipse,-2.0)) * (U[0].x()*U[0].x() + U[1].y()*U[1].y())
       + pow(ellipse,-2.0) * pow(U[0].y() + U[1].x(),2.0)
       + 2.0 * (1.0-pow(ellipse,-2.0)) * U[0].x()*U[1].y();
+    
+
+     /*       //delta explizit
+   double DELTAsquare = 
+      (1.0 + pow(ellipse,-2.0)) * ((*extu)[0].x()*(*extu)[0].x() + (*extu)[1].y()*(*extu)[1].y())
+      + pow(ellipse,-2.0) * pow((*extu)[0].y() + (*extu)[1].x(),2.0)
+      + 2.0 * (1.0-pow(ellipse,-2.0)) * (*extu)[0].x()*(*extu)[1].y();
+     */
       
     DELTAsquare +=  dmin*dmin;
      
@@ -187,9 +203,16 @@ namespace Gascoigne
       (1.0 + pow(ellipse,-2.0)) * (2.0 * U[1].y()*M.y())
       + pow(ellipse,-2.0) * 2.0*(U[0].y() + U[1].x()) * M.x()
       + 2.0 * (1.0-pow(ellipse,-2.0)) * U[0].x()*M.y();
-   
-    double DELTA_0 = -0.5 * pow(DELTAsquare,-1.5) * DELTAsquare_0*DDD;
-    double DELTA_1 = -0.5 * pow(DELTAsquare,-1.5) * DELTAsquare_1*DDD;
+    //Standard
+     double DELTA_0 = -0.5 * pow(DELTAsquare,-1.5) * DELTAsquare_0*DDD;
+     double DELTA_1 = -0.5 * pow(DELTAsquare,-1.5) * DELTAsquare_1*DDD;
+
+
+    //explizit
+
+     // explizit
+    //  double DELTA_0 = 0.0;
+    // double  DELTA_1 = 0.0;
 
  
     // Exponentialfaktor

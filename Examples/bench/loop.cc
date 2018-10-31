@@ -394,8 +394,9 @@ void Loop::run(const std::string& problemlabel)
   
   // See-Eis
   GetMultiLevelSolver()->SetProblem("seaice");
-  if (_initial=="reload")	
+if (_initial=="reload")	
     {
+      abort();
       GetMultiLevelSolver()->GetSolver()->Read(u,_reloadu);
       GetMultiLevelSolver()->GetSolver()->Read(oldu,_reloadoldu);    
     }
@@ -404,6 +405,8 @@ void Loop::run(const std::string& problemlabel)
       InitSolution(u);     
       GetMultiLevelSolver()->Equ(oldu,1.0,u);
     }
+
+  
   // Transport
   GetMultiLevelSolver()->SetProblem("tg");
   if (_initial=="reload")
@@ -411,6 +414,8 @@ void Loop::run(const std::string& problemlabel)
       }
   else 
     InitSolution(h);
+
+
 
   GetMultiLevelSolver()->SetProblem("seaice");
   // Masse-Matrix
@@ -440,7 +445,6 @@ void Loop::run(const std::string& problemlabel)
   GetMultiLevelSolver()->GetSolver()->Visu("Results/o",other,writeiter);
 
 
-  
   for (_iter=1; _iter<=_niter; _iter++)
     {
 
@@ -605,7 +609,7 @@ void Loop::run(const std::string& problemlabel)
       GetMultiLevelSolver()->DeleteNodeVector("H");
       
       
-        OUTF << TIME << " " << functionals  <<a<<endl;
+      //  OUTF << TIME << " " << functionals  <<a<<endl;
 	zahl++;
       //  jetzt ist gerechnet und es gibt umittel, hmittel
 
@@ -631,7 +635,7 @@ void Loop::run(const std::string& problemlabel)
 	  compose_name(name,writeiter);
 	  GetMultiLevelSolver()->GetSolver()->Write(h,name);
 
-	  cout << "[" << name << ".bup]";
+	  // cout << "[" << name << ".bup]";
 	}
      
       

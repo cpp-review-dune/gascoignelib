@@ -200,7 +200,6 @@ void StdSolver::RegisterMatrix()
 
 void StdSolver::RegisterMatrix(int ncomp)
 {
-
 #ifdef __WITH_UMFPACK__
   if (_useUMFPACK && _MAP!=NULL)
   {
@@ -670,21 +669,6 @@ IluInterface* StdSolver::NewIlu(int ncomp, const string& matrixtype)
 
 /*-------------------------------------------------------*/
 
-void StdSolver::ReInitMatrix() 
-{
-  GetDiscretization()->InitFilter(GetPfilter());
-  SparseStructure SA;
-  GetDiscretization()->Structure(&SA);
-  
-  if (GetFaceDiscretization())
-    GetFaceDiscretization()->Structure(&SA);
-
-  AddPeriodicNodes(&SA);
-
-  GetMatrix()->ReInit(&SA);
-  GetIlu()->ReInit(&SA);
-}
-
 /*-------------------------------------------------------*/
 
 void StdSolver::AddPeriodicNodes(SparseStructure* SA)
@@ -750,6 +734,24 @@ void StdSolver::ReInitVector(VectorInterface& dst)
 }
 
 /*-------------------------------------------------------*/
+
+
+/*-------------------------------------------------------*/
+
+void StdSolver::ReInitMatrix() 
+{
+  GetDiscretization()->InitFilter(GetPfilter());
+  SparseStructure SA;
+  GetDiscretization()->Structure(&SA);
+  
+  if (GetFaceDiscretization())
+    GetFaceDiscretization()->Structure(&SA);
+
+  AddPeriodicNodes(&SA);
+
+  GetMatrix()->ReInit(&SA);
+  GetIlu()->ReInit(&SA);
+}
 
 void StdSolver::ReInitVector(VectorInterface& dst, int comp)
 {

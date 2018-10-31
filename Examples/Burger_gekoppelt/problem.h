@@ -92,10 +92,10 @@ namespace Gascoigne
                    double x=v.x()-0.5;
              double y =v.y()-0.5;
 
-	     if(TIME>3.0 && TIME<4.0)
+	      if(TIME>3.0 && TIME<=4.0)
 	       {
-	      b[0]+= N.x()*exp(-x*x-y*y);
-	      b[1]+=-N.y()*exp(-x*x-y*y);
+		   b[0]+= N.x()*exp(-x*x-y*y);
+		   b[1]+=-N.y()*exp(-x*x-y*y);
 	       }
 	
 	}
@@ -191,11 +191,11 @@ namespace Gascoigne
             double x=v.x()-0.5;
             double y =v.y()-0.5;
 
-	     if(TIME>3.0 && TIME<3.5)
+	     if(TIME>3.0 && TIME<=4.0)
          
          {
 	   //  b[0]+= N.m()*exp(-x*x-y*y);
-	   //    b[1]+= 0.0*N.m();
+           //b[1]+= 0.0*N.m();
          }
         
         }

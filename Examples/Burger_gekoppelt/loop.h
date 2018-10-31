@@ -81,7 +81,7 @@ string SolveDualSingle(vector<GlobalVector>& Ztotal,vector<GlobalVector>& Wtotal
               VectorInterface& oldh ,
                VectorInterface& w ,
                 VectorInterface& oldw ,
-			VectorInterface& f, vector<double>& DT_M,vector<double>& T,vector<double>& eta_time);
+			VectorInterface& f, vector<double>& DT_M,vector<double>& T,vector<double>& eta_time, int ADAITER);
  
  
   
@@ -109,17 +109,29 @@ void EstimateAvg(DoubleVector& eta, GlobalVector& Pu, const GlobalVector &Puold,
     void EstimateNonU(DoubleVector& eta,
 		       vector<GlobalVector>& Utotal, GlobalVector& Z,
 		 VectorInterface& u, VectorInterface& oldu,VectorInterface& z,VectorInterface& f, int start, int stopp);
+
+void EstimateNonH(DoubleVector& eta,
+			  vector<GlobalVector>& U,vector<GlobalVector>& H, GlobalVector& Z,
+		  VectorInterface& u, VectorInterface& oldu,VectorInterface& z,VectorInterface& f,int start, int stopp);
+
+ void EstimateNonPH(DoubleVector& eta,int m,
+			  vector<GlobalVector>& U,vector<GlobalVector>& H, GlobalVector& Z,
+		  VectorInterface& u, VectorInterface& oldu,VectorInterface& z,VectorInterface& f,int DT);
+    
     void EstimateNonPu(DoubleVector& eta, 
 		      vector<GlobalVector>& Pu_k, GlobalVector& Z,
 		       VectorInterface& u, VectorInterface& oldu,VectorInterface& z,VectorInterface& f,int m, double DTM_PU);
 
     void EstimateNonMeanU(DoubleVector& eta, int m,
 		   vector<GlobalVector>& U, GlobalVector& Z,
-		 VectorInterface& u, VectorInterface& oldu,VectorInterface& z,VectorInterface& f,int start, int stopp);
+			  VectorInterface& u, VectorInterface& oldu,VectorInterface& z,VectorInterface& f,int start, int stopp, int ADAITER);
     
     void EstimateNonMeanPu(DoubleVector& eta,int m,
 		 GlobalVector& Pu,vector<GlobalVector>& Pu_k, vector<GlobalVector>& U, GlobalVector& Z,
 		 VectorInterface& u, VectorInterface& oldu,VectorInterface& z,VectorInterface& f,double DTM_U);
+
+
+    
 
  void  EstimateKonsistenz(DoubleVector& eta, int m,
 			      vector<GlobalVector>& U,vector<GlobalVector>& H,  GlobalVector& W,GlobalVector& Z,

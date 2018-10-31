@@ -297,11 +297,11 @@ int main(int argc, char** argv)
   Force1 F2;
   Ellipse EF(&paramfile);
 
-  FC.AddFunctional("0 Kinetic", &K);
-  FC.AddFunctional("1 Mass", &M);
-  FC.AddFunctional("2 AvMass", &AvM);
-  FC.AddFunctional("3 Delta", &D);
-  FC.AddFunctional("4 Ellipse", &EF);
+  // FC.AddFunctional("0 Kinetic", &K);
+  //  FC.AddFunctional("1 Mass", &M);
+  // FC.AddFunctional("2 AvMass", &AvM);
+  //  FC.AddFunctional("3 Delta", &D);
+  // FC.AddFunctional("4 Ellipse", &EF);
 
   // loop for program control
   Loop loop;

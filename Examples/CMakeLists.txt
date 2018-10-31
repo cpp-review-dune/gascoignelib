@@ -1,6 +1,5 @@
 SUBDIRS(
-  NavierStokes2D  bench Burger Burger_gekoppelt
-
+  NavierStokes2D  bench DG
 )
 
 LINK_LIBRARIES(${GASCOIGNE_LIBRARIES} )
