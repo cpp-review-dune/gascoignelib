@@ -62,10 +62,10 @@ int Q22d::GetPatchNumber(const Vertex2d& p0, Vertex2d& p) const
 {
   int iq;
   
-  for(iq=0; iq<GetPatchMesh()->npatches(); ++iq)
+  for(iq=0; iq<GetMesh()->npatches(); ++iq)
   {
     bool found = true;
-    const IntVector& IOP = GetPatchMesh()->CoarseIndices(iq);
+    const IntVector& IOP = GetMesh()->CoarseIndices(iq);
     
     for(int d=0; d<2; ++d)
     {
@@ -75,8 +75,8 @@ int Q22d::GetPatchNumber(const Vertex2d& p0, Vertex2d& p) const
       {
         double x = GetMesh()->vertex2d(IOP[j])[d];
         
-        min = Gascoigne::min(min,x);
-        max = Gascoigne::max(max,x);
+        min = std::min(min,x);
+        max = std::max(max,x);
       }
       if((p0[d]<min)||(p0[d]>max)) 
       {
@@ -106,7 +106,7 @@ int Q22d::GetPatchNumber(const Vertex2d& p0, Vertex2d& p) const
     }
   }
 
-  if(iq<GetPatchMesh()->npatches())
+  if(iq<GetMesh()->npatches())
   {
     return iq;
   }
@@ -149,12 +149,10 @@ int Q22d::GetPatchNumber(const Vertex2d& p0, Vertex2d& p) const
     nodes[3][1] = 6;
     nodes[3][2] = 8;
 
-    const PatchMesh *PM = dynamic_cast<const PatchMesh *>(GetMesh());
-    assert(PM);
 
-    for (int iq = 0; iq < PM->npatches(); ++iq)
+    for (int iq = 0; iq < GetMesh()->npatches(); ++iq)
     {
-      IntVector vi = *PM->IndicesOfPatch(iq);
+      IntVector vi = *GetMesh()->IndicesOfPatch(iq);
 
       for (int j = 0; j < nodes.size(); j++)
       {

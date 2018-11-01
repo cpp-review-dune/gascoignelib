@@ -44,7 +44,7 @@ Q2::~Q2()
 
 /* ----------------------------------------- */
 
-void Q2::ReInit(const MeshInterface* MP)
+void Q2::ReInit(const GascoigneMesh* MP)
 {
   PatchDiscretization::ReInit(MP);
   HN->ReInit(MP);
@@ -79,7 +79,7 @@ void Q2::Structure(SparseStructureInterface* SI) const
   assert(S);
 
   S->build_begin(n());
-  for(int iq=0;iq<GetPatchMesh()->npatches();iq++)
+  for(int iq=0;iq<GetMesh()->npatches();iq++)
     {
       nvector<int> indices = GetLocalIndices(iq);
       HN->CondenseHanging(indices);
@@ -143,10 +143,10 @@ void Q2::InitFilter(nvector<double>& F) const
   PF->ReInit(GetMesh()->nnodes(),GetMesh()->nhanging());
   nmatrix<double> T;
 
-  int nv = GetPatchMesh()->nodes_per_patch();
+  int nv = GetMesh()->nodes_per_patch();
   EntryMatrix  E(nv,1);
 
-  for(int iq=0;iq<GetPatchMesh()->npatches();++iq)
+  for(int iq=0;iq<GetMesh()->npatches();++iq)
     {
       Transformation(T,iq);
       GetFem()->ReInit(T);
@@ -154,7 +154,7 @@ void Q2::InitFilter(nvector<double>& F) const
       double cellsize = GetIntegrator()->MassMatrix(E,*GetFem());
       PF->AddDomainPiece(cellsize);
 
-      IntVector ind = *GetPatchMesh()->IndicesOfPatch(iq);
+      IntVector ind = *GetMesh()->IndicesOfPatch(iq);
       HN->CondenseHanging(E,ind);
 
       for(int j=0; j<ind.size(); j++)

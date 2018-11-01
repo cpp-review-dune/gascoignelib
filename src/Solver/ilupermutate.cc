@@ -33,7 +33,7 @@ using namespace std;
 
 namespace Gascoigne
 {
-VecDirection::VecDirection (const MeshInterface* m)
+VecDirection::VecDirection (const GascoigneMesh* m)
 {
   M=m;
   dimension=0;
@@ -93,7 +93,7 @@ bool VecDirection::operator()(int i,int j) const
 /* =============================================================== */
 
 
-StreamDirection::StreamDirection (const MeshInterface* m,
+StreamDirection::StreamDirection (const GascoigneMesh* m,
 				  const StencilInterface *s,
 				  const GlobalVector& x):
   X(x)

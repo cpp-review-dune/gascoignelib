@@ -25,7 +25,7 @@
 #ifndef __DwrQ2Q4_h
 #define __DwrQ2Q4_h
 
-#include "solverinterface.h"
+#include "stdsolver.h"
 
 namespace Gascoigne
 {
@@ -35,7 +35,7 @@ namespace Gascoigne
   class DwrQ2Q4
   {
     private:
-      SolverInterface                  &_S;
+      StdSolver                  &_S;
       const ProblemDescriptorInterface *_P;
       DiscretizationInterface          *_D;
 
@@ -51,7 +51,7 @@ namespace Gascoigne
       void DualResidualsHigher(VectorInterface &gf, const VectorInterface &gu, const VectorInterface &gz, const ProblemDescriptorInterface &PDI);
 
     public:
-      DwrQ2Q4(SolverInterface &S);
+      DwrQ2Q4(StdSolver &S);
       ~DwrQ2Q4() { }
 
       double Estimator(DoubleVector &eta, VectorInterface &gf, const VectorInterface &gu, const VectorInterface &gz, const ProblemDescriptorInterface &PDI);

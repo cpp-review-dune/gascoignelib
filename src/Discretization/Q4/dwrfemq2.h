@@ -52,7 +52,7 @@ namespace Gascoigne
       ~DwrFemQ22d();
 
       void BasicInit(const ParamFile* paramfile);
-      void ReInit(const MeshInterface* MP);
+      void ReInit(const GascoigneMesh* MP);
   };
 
 /**********************************************************/
@@ -71,7 +71,7 @@ namespace Gascoigne
       ~DwrFemQ23d();
 
       void BasicInit(const ParamFile* paramfile);
-      void ReInit(const MeshInterface* MP);
+      void ReInit(const GascoigneMesh* MP);
   };
 
 /**********************************************************/

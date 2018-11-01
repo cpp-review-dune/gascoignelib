@@ -127,12 +127,12 @@ void MalteAdaptor::refine(IntVector& ref) const
   int ixmin = 0;
   int ixopt = ixmin;
 
-  int limit = Gascoigne::min_int(n,(maxnodes-N)/(1+ppp));
+  int limit = std::min(n,(maxnodes-N)/(1+ppp));
 
   for (int i=ixmin; i<limit; i++)
     {
       double x = float(i)*dx;
-      x = Gascoigne::min(x,1.);
+      x = std::min(x,1.);
       theta += eta[C[i]];
       double psi = Expectation(theta,x);
       if (psi<=minimum)
@@ -203,13 +203,13 @@ void MalteAdaptor::refine_and_coarse(IntVector& ref, IntVector& coars) const
       double x = float(ix)*dx;
       double y = float(zeta)/(1-zeta) * (maxnodes*fac-n-ix*(zeta-1)) / n;
       
-      y = Gascoigne::min(y,1.);
-      y = Gascoigne::max(y,0.);
+      y = std::min(y,1.);
+      y = std::max(y,0.);
       
       int iy = static_cast<int>(y * n);
       
       double thetax = g[ix];
-      double thetay = g[Gascoigne::min_int(n-iy,n-1)];
+      double thetay = g[std::min(n-iy,n-1)];
       double psi = Expectation(thetax,thetay,x,y);
       
       if (psi<=minimum)

@@ -100,8 +100,8 @@ public:
   int ncells() const {return GMG->GetGascoigneMesh(0)->ncells();}
   int nlevels() const {return GMG->nlevels();}
 
-  const MeshInterface* GetMesh()      const { return GMG->GetGascoigneMesh(0);}
-  const MeshInterface* GetMesh(int l) const { return GMG->GetGascoigneMesh(l);}
+  const GascoigneMesh* GetMesh()      const { return GMG->GetGascoigneMesh(0);}
+  const GascoigneMesh* GetMesh(int l) const { return GMG->GetGascoigneMesh(l);}
 
   void read_gup(const std::string& fname);
   void read_gip(const std::string& fname);

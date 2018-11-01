@@ -27,7 +27,6 @@
 
 
 #include  <string>
-#include  "meshinterface.h"
 #include  "gascoigne.h"
 #include  "equation.h"
 #include  "matrixinterface.h"
@@ -46,6 +45,7 @@
 #include  "diracrighthandside.h"
 #include  "domainfunction.h"
 #include  "curve.h"
+#include "gascoignemesh.h"
 
 namespace Gascoigne
 {
@@ -70,7 +70,7 @@ namespace Gascoigne
       virtual ~DiscretizationInterface() {}
 
       virtual const DataContainer& GetDataContainer() const=0;
-      virtual void SetDataContainer(const DataContainer& q) const=0;
+      virtual void SetDataContainer(const DataContainer& q)=0;
 
       //
       //// Functions called from the Solver
@@ -87,7 +87,7 @@ namespace Gascoigne
       virtual void DeleteParameterVector(const std::string& name) const=0;
 
       virtual void BasicInit(const ParamFile* pf)=0;
-      virtual void ReInit   (const MeshInterface* M)=0;
+      virtual void ReInit   (const GascoigneMesh* M)=0;
 
       virtual int n() const=0;
       virtual int nc() const=0;

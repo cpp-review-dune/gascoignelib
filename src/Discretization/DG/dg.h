@@ -5,7 +5,6 @@
 /*----------------------------   dg.h     ---------------------------*/
 
 #include "discretizationinterface.h"
-#include "meshinterface.h"
 #include "nvector.h"
 #include "dgdofhandler.h"
 #include "gascoignemesh.h"
@@ -41,7 +40,7 @@ namespace Gascoigne
     // Init
     DG();
     void BasicInit(const ParamFile *pf);
-    void ReInit(const MeshInterface *M);
+    void ReInit(const GascoigneMesh *M);
     
     void GlobalToLocalData(LocalData& QN, const DataContainer& DC, int iq) const;
 
@@ -51,7 +50,7 @@ namespace Gascoigne
     {
       abort();
     }
-    void SetDataContainer(const DataContainer &q) const
+    void SetDataContainer(const DataContainer &q) 
     {
       abort();
     }

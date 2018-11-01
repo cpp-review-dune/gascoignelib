@@ -25,7 +25,7 @@
 #ifndef __refiner_h
 #define __refiner_h
 
-#include "meshinterface.h"
+#include "gascoignemesh.h"
 #include "nmatrix.h"
 
 /*************************************************************/
@@ -34,7 +34,7 @@ namespace Gascoigne
 {
 class PointRefiner
 {
-  const MeshInterface& H;
+  const GascoigneMesh& H;
   const Vertex2d& V;
 
   nmatrix<double> A;
@@ -42,7 +42,7 @@ class PointRefiner
 
  public:
 
-  PointRefiner(const MeshInterface& h, const Vertex2d& v) 
+  PointRefiner(const GascoigneMesh& h, const Vertex2d& v) 
     : H(h), V(v), A(2,2) {}
 
   void BuildCellList(std::vector<int>&);
@@ -52,7 +52,7 @@ class PointRefiner
 
 class CircleRefiner 
 {
-  const MeshInterface&  H;
+  const GascoigneMesh&  H;
   const Vertex3d&  V;
   double R;
 
@@ -60,7 +60,7 @@ class CircleRefiner
 
  public:
 
-  CircleRefiner(const MeshInterface& h, const Vertex3d& v, double r) 
+  CircleRefiner(const GascoigneMesh& h, const Vertex3d& v, double r) 
     : H(h), V(v), R(r) {}
 
   void BuildCellList(std::vector<int>&);
@@ -70,7 +70,7 @@ class CircleRefiner
 
 class CylinderRefiner 
 {
-  const MeshInterface&  H;
+  const GascoigneMesh&  H;
   const Vertex3d&  V;
   double R;
   int D;
@@ -79,7 +79,7 @@ class CylinderRefiner
 
  public:
 
-  CylinderRefiner(const MeshInterface& h, const Vertex3d& v, 
+  CylinderRefiner(const GascoigneMesh& h, const Vertex3d& v, 
 		  double r, int d)
     : H(h), V(v), R(r), D(d) {}
 
@@ -90,7 +90,7 @@ class CylinderRefiner
 
 class BallRefiner 
 {
-  const MeshInterface&  H;
+  const GascoigneMesh&  H;
   const Vertex3d&  V;
   double R;
   
@@ -98,7 +98,7 @@ class BallRefiner
 
  public:
   
-  BallRefiner(const MeshInterface& h, const Vertex3d& v, 
+  BallRefiner(const GascoigneMesh& h, const Vertex3d& v, 
 	      double r)
     : H(h), V(v), R(r) {}
 

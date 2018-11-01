@@ -25,7 +25,7 @@
 #ifndef __visu_eps_h
 #define __visu_eps_h
 
-#include "patchmesh.h"
+#include "gascoignemesh.h"
 #include "string"
 #include <map>
 #include  "gascoigne.h"
@@ -41,7 +41,7 @@ class VisuEPS
   typedef std::pair<int,int> Line;
   typedef nvector<IntSet> Lines;
 
-  const PatchMesh* M;
+  const GascoigneMesh* M;
   int _i_compress;
 
   Lines lines;
@@ -86,10 +86,11 @@ class VisuEPS
   void SetOption(EPSOptions o, int v);
   void SetOption(EPSOptions o, double v);
   
-  void SetMesh(const MeshInterface& PM)  { 
-    const PatchMesh* PMP = dynamic_cast<const PatchMesh*>(&PM);
-    assert(PMP);
-    M = PMP;}
+  void SetMesh(const GascoigneMesh& PM)
+  {
+    M = &PM;
+    assert(M);
+  }
   void WriteGrid(std::string fname, int iter);
 };
 }

@@ -129,10 +129,10 @@ void VisuEPS::WriteGrid(string fname,int iter)
   
   for (int i=0;i<M->nnodes();++i)
     {
-      x_min = Gascoigne::min(x_min,M->vertex2d(i).x());
-      x_max = Gascoigne::max(x_max,M->vertex2d(i).x());
-      y_min = Gascoigne::min(y_min,M->vertex2d(i).y());
-      y_max = Gascoigne::max(y_max,M->vertex2d(i).y());
+      x_min = std::min(x_min,M->vertex2d(i).x());
+      x_max = std::max(x_max,M->vertex2d(i).x());
+      y_min = std::min(y_min,M->vertex2d(i).y());
+      y_max = std::max(y_max,M->vertex2d(i).y());
     }
 
   offset.x()=x_min;

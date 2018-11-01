@@ -48,7 +48,7 @@ namespace Gascoigne
   public:
     Pi();
 
-    void Init(const MeshInterface *MP);
+    void Init(const GascoigneMesh *MP);
 
     void vmult(CompVector<double> &y,
                const CompVector<double> &x,

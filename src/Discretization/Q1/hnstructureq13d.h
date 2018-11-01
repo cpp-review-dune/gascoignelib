@@ -63,7 +63,7 @@ namespace Gascoigne
       return edges->size() + faces->size();
     }
 
-    void ReInit(const MeshInterface *m);
+    void ReInit(const GascoigneMesh *m);
     int hanging(int i) const;
 
     void MatrixDiag(int ncomp, MatrixInterface &A) const;

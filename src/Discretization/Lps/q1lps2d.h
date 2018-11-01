@@ -60,7 +60,7 @@ public:
   std::string GetName() const {return "Q1Lps2d";}
   
   void BasicInit(const ParamFile* paramfile);
-  void ReInit   (const MeshInterface* M);
+  void ReInit   (const GascoigneMesh* M);
   void Structure(SparseStructureInterface* SI) const;
   void Form(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const;
   void Matrix(MatrixInterface& A, const GlobalVector& u, const Equation& EQ, double d) const;

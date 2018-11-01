@@ -73,7 +73,7 @@ namespace Gascoigne
     }
     assert(u.n() == size);
 
-    int v = max_int(u.ncomp(), comp);
+    int v = std::max(u.ncomp(), comp);
 
     double d;
     for (int i = 0; i < u.n(); i++)
@@ -135,7 +135,7 @@ namespace Gascoigne
       abort();
     }
 
-    int v = max_int(u.ncomp(), comp);
+    int v = std::max(u.ncomp(), comp);
 
     double d;
     for (int i = 0; i < u.n(); i++)

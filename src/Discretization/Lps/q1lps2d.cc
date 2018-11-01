@@ -46,7 +46,7 @@ void Q1Lps2d::BasicInit(const ParamFile* paramfile)
 
 /* ----------------------------------------- */
 
-void Q1Lps2d::ReInit(const MeshInterface* M)
+void Q1Lps2d::ReInit(const GascoigneMesh* M)
 {
   Q12d::ReInit(M);
   S   ->ReInit(M);

@@ -58,7 +58,7 @@ double Gascoigne::Q22dWithSecond::EstimateSecond(DoubleVector& eta, const Global
 
   nmatrix<double> T;
 
-  for(int iq=0;iq<GetPatchMesh()->npatches();++iq)
+  for(int iq=0;iq<GetMesh()->npatches();++iq)
   {
     Transformation(T,iq);
     GetFem()->ReInit(T);

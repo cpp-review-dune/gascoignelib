@@ -57,9 +57,9 @@ void DwrFemQ22d::TransformationQ2(FemInterface::Matrix& T, int iq) const
 {
   int dim = GetMesh()->dimension();
   assert(dim==2);
-  int ne = GetPatchMesh()->nodes_per_patch();
+  int ne = GetMesh()->nodes_per_patch();
 
-  IntVector indices = GetPatchMesh()->Q2IndicesOfQ4Patch(iq);
+  IntVector indices = GetMesh()->Q2IndicesOfQ4Patch(iq);
 
   assert(ne==indices.size());
 
@@ -92,7 +92,7 @@ void DwrFemQ22d::BasicInit(const ParamFile* paramfile)
 
 /**********************************************************/
 
-void DwrFemQ22d::ReInit(const MeshInterface* MP)
+void DwrFemQ22d::ReInit(const GascoigneMesh* MP)
 {
   Q42d::ReInit(MP);
 
@@ -150,7 +150,7 @@ void DwrFemQ2Q42d::Form(GlobalVector& f, const GlobalVector& u, const Equation& 
 
   const FemInterface& HighOrderFem(*GetFem());
 
-  for(int iq=0;iq<GetPatchMesh()->nq4patches();++iq)
+  for(int iq=0;iq<GetMesh()->nq4patches();++iq)
   {
     Transformation  (TH,iq);
     TransformationQ2(TL,iq);
@@ -178,7 +178,7 @@ void DwrFemQ2Q42d::AdjointForm(GlobalVector& f, const GlobalVector& u, const Equ
 
   const FemInterface& HighOrderFem(*GetFem());
 
-  for(int iq=0;iq<GetPatchMesh()->nq4patches();++iq)
+  for(int iq=0;iq<GetMesh()->nq4patches();++iq)
   {
     Transformation  (TH,iq);
     TransformationQ2(TL,iq);
@@ -206,7 +206,7 @@ void DwrFemQ2Q42d::BoundaryForm(GlobalVector& f, const GlobalVector& u, const In
 
   const FemInterface& HighOrderFem(*GetFem());
 
-  const nvector<IntVector>& q4patch2cell = GetGascoigneMesh()->GetPatchIndexHandler().GetAllQ4Patch2Cell();
+  const nvector<IntVector>& q4patch2cell = GetMesh()->GetPatchIndexHandler().GetAllQ4Patch2Cell();
 
   nvector<int> cell2q4patch(GetMesh()->ncells());
   for(int p=0; p<q4patch2cell.size(); p++)
@@ -265,7 +265,7 @@ void DwrFemQ2Q42d::Rhs(GlobalVector& f, const DomainRightHandSide& RHS, double s
 
   const FemInterface& HighOrderFem(*GetFem());
 
-  for(int iq=0; iq<GetPatchMesh()->nq4patches(); iq++)
+  for(int iq=0; iq<GetMesh()->nq4patches(); iq++)
   {
     Transformation  (TH,iq);
     TransformationQ2(TL,iq);
@@ -293,7 +293,7 @@ void DwrFemQ2Q42d::BoundaryRhs(GlobalVector& f, const IntSet& Colors, const Boun
 
   const FemInterface& HighOrderFem(*GetFem());
 
-  const nvector<IntVector>& q4patch2cell = GetGascoigneMesh()->GetPatchIndexHandler().GetAllQ4Patch2Cell();
+  const nvector<IntVector>& q4patch2cell = GetMesh()->GetPatchIndexHandler().GetAllQ4Patch2Cell();
 
   IntVector cell2q4patch(GetMesh()->ncells());
   for(int p=0; p<q4patch2cell.size(); p++)
@@ -348,7 +348,7 @@ void DwrFemQ2Q42d::MassMatrix(MatrixInterface& M) const
 
   const FemInterface& HighOrderFem(*GetFem());
 
-  for(int iq=0; iq<GetPatchMesh()->nq4patches(); ++iq)
+  for(int iq=0; iq<GetMesh()->nq4patches(); ++iq)
   {
     Transformation  (TH,iq);
     TransformationQ2(TL,iq);
@@ -372,7 +372,7 @@ void DwrFemQ2Q42d::MassForm(GlobalVector& f, const GlobalVector& u, const TimePa
 
   const FemInterface& HighOrderFem(*GetFem());
 
-  for(int iq=0;iq<GetPatchMesh()->nq4patches();++iq)
+  for(int iq=0;iq<GetMesh()->nq4patches();++iq)
   {
     Transformation  (TH,iq);
     TransformationQ2(TL,iq);
@@ -448,7 +448,7 @@ void DwrFemQ4Q22d::Form(GlobalVector& f, const GlobalVector& u, const Equation& 
 
   const FemInterface& HighOrderFem(*GetFem());
 
-  for(int iq=0;iq<GetPatchMesh()->nq4patches();++iq)
+  for(int iq=0;iq<GetMesh()->nq4patches();++iq)
   {
     Transformation  (TH,iq);
     TransformationQ2(TL,iq);
@@ -476,7 +476,7 @@ void DwrFemQ4Q22d::AdjointForm(GlobalVector& f, const GlobalVector& u, const Equ
 
   const FemInterface& HighOrderFem(*GetFem());
 
-  for(int iq=0;iq<GetPatchMesh()->nq4patches();++iq)
+  for(int iq=0;iq<GetMesh()->nq4patches();++iq)
   {
     Transformation  (TH,iq);
     TransformationQ2(TL,iq);
@@ -504,7 +504,7 @@ void DwrFemQ4Q22d::BoundaryForm(GlobalVector& f, const GlobalVector& u, const In
 
   const FemInterface& HighOrderFem(*GetFem());
 
-  const nvector<IntVector>& q4patch2cell = GetGascoigneMesh()->GetPatchIndexHandler().GetAllQ4Patch2Cell();
+  const nvector<IntVector>& q4patch2cell = GetMesh()->GetPatchIndexHandler().GetAllQ4Patch2Cell();
 
   nvector<int> cell2q4patch(GetMesh()->ncells());
   for(int p=0; p<q4patch2cell.size(); p++)
@@ -564,7 +564,7 @@ void DwrFemQ4Q22d::Rhs(GlobalVector& f, const DomainRightHandSide& RHS, double s
 
   const FemInterface& HighOrderFem(*GetFem());
 
-  for(int iq=0; iq<GetPatchMesh()->nq4patches(); iq++)
+  for(int iq=0; iq<GetMesh()->nq4patches(); iq++)
   {
     Transformation  (TH,iq);
     TransformationQ2(TL,iq);
@@ -592,7 +592,7 @@ void DwrFemQ4Q22d::BoundaryRhs(GlobalVector& f, const IntSet& Colors, const Boun
 
   const FemInterface& HighOrderFem(*GetFem());
 
-  const nvector<IntVector>& q4patch2cell = GetGascoigneMesh()->GetPatchIndexHandler().GetAllQ4Patch2Cell();
+  const nvector<IntVector>& q4patch2cell = GetMesh()->GetPatchIndexHandler().GetAllQ4Patch2Cell();
 
   IntVector cell2q4patch(GetMesh()->ncells());
   for(int p=0; p<q4patch2cell.size(); p++)
@@ -648,7 +648,7 @@ void DwrFemQ4Q22d::MassMatrix(MatrixInterface& M) const
 
   const FemInterface& HighOrderFem(*GetFem());
 
-  for(int iq=0; iq<GetPatchMesh()->nq4patches(); ++iq)
+  for(int iq=0; iq<GetMesh()->nq4patches(); ++iq)
   {
     Transformation  (TH,iq);
     TransformationQ2(TL,iq);
@@ -672,7 +672,7 @@ void DwrFemQ4Q22d::MassForm(GlobalVector& f, const GlobalVector& u, const TimePa
 
   const FemInterface& HighOrderFem(*GetFem());
 
-  for(int iq=0;iq<GetPatchMesh()->nq4patches();++iq)
+  for(int iq=0;iq<GetMesh()->nq4patches();++iq)
   {
     Transformation  (TH,iq);
     TransformationQ2(TL,iq);

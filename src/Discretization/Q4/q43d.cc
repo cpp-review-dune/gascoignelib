@@ -58,10 +58,10 @@ int Q43d::GetPatchNumber(const Vertex3d& p0, Vertex3d& p) const
 {
   int iq;
 
-  for(iq=0; iq<GetPatchMesh()->nq4patches(); ++iq)
+  for(iq=0; iq<GetMesh()->nq4patches(); ++iq)
   {
     bool found = true;
-    const IntVector& IOP = GetPatchMesh()->CoarseIndicesQ4(iq);
+    const IntVector& IOP = GetMesh()->CoarseIndicesQ4(iq);
 
     for(int d=0; d<3; ++d)
     {
@@ -71,8 +71,8 @@ int Q43d::GetPatchNumber(const Vertex3d& p0, Vertex3d& p) const
       {
         double x = GetMesh()->vertex3d(IOP[j])[d];
 
-        min = Gascoigne::min(min,x);
-        max = Gascoigne::max(max,x);
+        min = std::min(min,x);
+        max = std::max(max,x);
       }
       if((p0[d]<min)||(p0[d]>max)) 
       {
@@ -102,7 +102,7 @@ int Q43d::GetPatchNumber(const Vertex3d& p0, Vertex3d& p) const
     }
   }
 
-  if(iq<GetPatchMesh()->nq4patches())
+  if(iq<GetMesh()->nq4patches())
   {
     return iq;
   }

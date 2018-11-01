@@ -27,7 +27,7 @@
 
 #include  <vector>
 #include  <set>
-#include  "gascoignemath.h"
+
 
 namespace Gascoigne
 {
@@ -45,7 +45,7 @@ void compress(std::vector<C>& dst, const std::vector<int>& src) {
       if (j>=0)
 	{
 	  dst[j] = dst[i];
-	  mmax = max_int(mmax,j);
+	  mmax = std::max(mmax,j);
 	  //n++;
 	}
     }

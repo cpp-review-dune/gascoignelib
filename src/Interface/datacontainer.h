@@ -51,6 +51,7 @@ namespace Gascoigne
       GlobalData          _cell;
       GlobalParameterData _parameter;
 
+    
       //
       ////  Con(De)structor 
       //

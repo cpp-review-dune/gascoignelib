@@ -22,36 +22,33 @@
 **/
 
 
-#ifndef  __StdIoManager_h
-#define  __StdIoManager_h
+// #include  "gascoignemesh3d.h"
 
-#include  "solverinterface.h"
+// /*-----------------------------------------*/
 
-namespace Gascoigne
-{
+// namespace Gascoigne
+// {
+// GascoigneMesh3d::GascoigneMesh3d()
+// {
+// }
 
-/////////////////////////////////////////////
-///
-///@brief
-///  ... comments StdIoManager
-///
-///
-/////////////////////////////////////////////
+// /*---------------------------------------------------*/
 
-class StdIoManager
-{
-protected:
-
-  mutable std::string   _dirname;
+// IntVector GascoigneMesh3d::IndicesOfCell(int iq) const
+// {
+//   IntVector indices(8);
   
- public:
-  
-  //
-  ///  Constructor 
-  //
-    
-    StdIoManager(const std::string& dirname);
-};
-}
+//   int offset = 8*iq;
 
-#endif
+//   indices[0] = nc[offset];
+//   indices[1] = nc[offset+1];
+//   indices[2] = nc[offset+3];
+//   indices[3] = nc[offset+2];
+//   indices[4] = nc[offset+4];
+//   indices[5] = nc[offset+5];
+//   indices[6] = nc[offset+7];
+//   indices[7] = nc[offset+6];
+
+//   return indices;
+// }
+// }

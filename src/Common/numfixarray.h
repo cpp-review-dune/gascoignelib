@@ -27,7 +27,6 @@
 
 //#include  "fixarray.h"
 #include <array>
-#include  "gascoignemath.h"
 #include  "nvector.h"
 
 /*-------------------------------------------------*/
@@ -117,7 +116,7 @@ inline double numfixarray<N,T>::norm_l8() const
   double d=0.;
   while( first != last)
     {
-      d = Gascoigne::max(d,fabs(*first));
+      d = std::max(d,fabs(*first));
       first++;
     }
   return d;
@@ -258,7 +257,7 @@ inline double numfixarray<N,T>::max() const
 
   while( first != last)
     {
-      d = MAX( d, fabs((*first)));
+      d = std::max( d, fabs((*first)));
       first++;
     }
   return d;

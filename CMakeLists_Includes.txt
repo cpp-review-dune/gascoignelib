@@ -3,7 +3,8 @@
 #
 SET(GASCOIGNE_INCLUDE_DIRS
   ${GASCOIGNE_DIR}/src/Common
-  ${GASCOIGNE_DIR}/src/Discretization/Face
+  ${GASCOIGNE_DIR}/src/DofHandler
+  ${GASCOIGNE_DIR}/src/Discretization/Face	
   ${GASCOIGNE_DIR}/src/Discretization/Gls
   ${GASCOIGNE_DIR}/src/Discretization/Lps
   ${GASCOIGNE_DIR}/src/Discretization/Q1

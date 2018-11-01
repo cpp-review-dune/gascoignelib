@@ -49,7 +49,7 @@ namespace Gascoigne
 
     nvector<int> GetLocalIndices(int iq) const
     {
-      return *GetPatchMesh()->IndicesOfPatch(iq);
+      return *GetMesh()->IndicesOfPatch(iq);
     }
     void
     LocalToGlobal(MatrixInterface &A, EntryMatrix &E, int iq, double s) const;

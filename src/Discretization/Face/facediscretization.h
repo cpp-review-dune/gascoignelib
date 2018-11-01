@@ -30,7 +30,7 @@
 
 
 #include  <string>
-#include  "meshinterface.h"
+#include  "gascoignemesh.h"
 #include  "gascoigne.h"
 #include  "equation.h"
 #include  "matrixinterface.h"
@@ -54,7 +54,7 @@ namespace Gascoigne
     {
     protected:
       
-      const MeshInterface*  __MP;
+      const GascoigneMesh*  __MP;
 
       nvector<nvector<int> > __faces;
 
@@ -83,7 +83,7 @@ namespace Gascoigne
       
       virtual void BasicInit(const ParamFile* pf)
 	{ std::cerr << "\"FaceDiscretization::BasicInit not written\"" << std::endl;  abort(); } 
-      virtual void ReInit   (const MeshInterface* M)
+      virtual void ReInit   (const GascoigneMesh* M)
 	{ std::cerr << "\"FaceDiscretization::ReInit not written\"" << std::endl;  abort(); } 
       virtual void build_faces()
 	{ std::cerr << "\"FaceDiscretization::build_faces not written\"" << std::endl;  abort(); } 
@@ -93,7 +93,7 @@ namespace Gascoigne
       // acc
       int nfaces() const { return __faces.size(); }
       const nvector<int>& GetFace(int i) const { return __faces[i]; }
-      const MeshInterface* GetMesh() const { return __MP; }
+      const GascoigneMesh* GetMesh() const { return __MP; }
 
       virtual const FemInterface* GetFem1() const {assert(__FEM1); return __FEM1;}
       virtual const FemInterface* GetFem2() const {assert(__FEM2); return __FEM2;}

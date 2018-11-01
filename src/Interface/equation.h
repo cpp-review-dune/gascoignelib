@@ -44,8 +44,6 @@ namespace Gascoigne
   ///
   //////////////////////////////////////////////
 
-  class MeshInterface;
-  
   class Equation : public virtual Application
   {
     private:
@@ -85,17 +83,17 @@ namespace Gascoigne
       // .cell is analogous to .point
       //virtual void cell(const MeshInterface* p_mesh, int cell_id, const LocalVector& U, const LocalNodeData& Q) const { }
       
-      virtual void MatrixBlock(EntryMatrix& A, const FemFunction& U, const FemFunction& N) const
-      {
-				for (int j=0; j<N.size(); j++)
-					{
-						for (int i=0; i<N.size(); i++)
-							{
-								A.SetDofIndex(i,j);
-								Matrix(A,U,N[j],N[i]);
-							}
-					}
-      }
+    virtual void MatrixBlock(EntryMatrix& A, const FemFunction& U, const FemFunction& N) const
+    {
+      for (int j=0; j<N.size(); j++)
+	{
+	  for (int i=0; i<N.size(); i++)
+	    {
+	      A.SetDofIndex(i,j);
+	      Matrix(A,U,N[j],N[i]);
+	    }
+	}
+    }
   };
 }
 

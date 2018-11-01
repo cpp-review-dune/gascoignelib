@@ -19,7 +19,7 @@ namespace Gascoigne
 
 
   template <class BASE>
-  void DGDofHandler<BASE>::InitFromGascoigneMesh(const MeshInterface *M)
+  void DGDofHandler<BASE>::InitFromGascoigneMesh(const GascoigneMesh *M)
   {
     assert(M);
     const GascoigneMesh2d *M2 = dynamic_cast<const GascoigneMesh2d *>(M);

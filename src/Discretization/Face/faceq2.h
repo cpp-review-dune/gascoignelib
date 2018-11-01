@@ -60,7 +60,7 @@ namespace Gascoigne
       virtual std::string GetName() const { return "Face Q2"; }
       
       virtual void BasicInit(const ParamFile* pf);
-      virtual void ReInit   (const MeshInterface* M);
+      virtual void ReInit   (const GascoigneMesh* M);
       virtual void build_faces();
     };
 }

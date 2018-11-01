@@ -32,7 +32,6 @@
 #include  "edge.h" 
 #include  "hanglist.h" 
 #include  "curvedshapes.h"
-#include  "meshinterface.h"
 #include  "vertex.h"
 #include  "compvector.h"
 #include  "gascoigne.h"
@@ -42,7 +41,7 @@
 
 namespace Gascoigne
 {
-class HierarchicalMesh : public MeshInterface
+class HierarchicalMesh 
 {
  protected :
 
@@ -127,7 +126,11 @@ class HierarchicalMesh : public MeshInterface
       std::cerr << "\"HierarchicalMesh::Kinder\" not written!" << std::endl;
       abort();
     }
-    
+
+  
+  virtual int  nodes_per_cell(int i)         const=0;
+  virtual int  vertex_of_cell(int i, int ii) const=0;
+  
   void SetParameters(std::string gridname, int patchdepth, int epatcher);
   void ReadFile(const std::string& gridname);
   void BasicInit(const ParamFile* pf);

@@ -23,7 +23,6 @@
 
 
 #include  "sparsestructure.h"
-#include  "gascoignemath.h"
 #include  "stlio.h"
 
 using namespace std;
@@ -156,17 +155,17 @@ void SparseStructure::enlarge_lu()
       for(set<int>::iterator p=rowbegin(i); p != rowend(i); ++p)
 	{
 	  int j = *p;
-	  imin = Gascoigne::min_int(imin,j);
-	  imax = Gascoigne::max_int(imax,j);
+	  imin = std::min(imin,j);
+	  imax = std::max(imax,j);
 	}
-      maxbw = Gascoigne::max_int(maxbw,abs(imax-i));
-      maxbw = Gascoigne::max_int(maxbw,abs(imin-i));
+      maxbw = std::max(maxbw,abs(imax-i));
+      maxbw = std::max(maxbw,abs(imin-i));
     }
   //cerr << "bandbreite: " << maxbw << endl;
   for(int i=0;i<n();i++)
     {
-      int imin = Gascoigne::max_int(0,i-maxbw);
-      int imax = Gascoigne::min_int(i+maxbw,n()-1);
+      int imin = std::max(0,i-maxbw);
+      int imax = std::min(i+maxbw,n()-1);
       for(int im=imin;im<=imax;im++)
 	{
 	  row(i).insert(im);

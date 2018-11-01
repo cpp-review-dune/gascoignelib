@@ -310,7 +310,7 @@ void CellDiscretization::ComputeError(const GlobalVector& u, LocalVector& err, c
 	{
 	  err(0,c) += lerr(0,c);
 	  err(1,c) += lerr(1,c);
-	  err(2,c) = Gascoigne::max(err(2,c),lerr(2,c));
+	  err(2,c) = std::max(err(2,c),lerr(2,c));
 	}
     }
   for(int c=0;c<ncomp;c++)  
@@ -351,7 +351,7 @@ void CellDiscretization::AssembleError(GlobalVector& eta, const GlobalVector& u,
 	{
 	  err(0,c) += lerr(0,c);
 	  err(1,c) += lerr(1,c);
-	  err(2,c) = Gascoigne::max(err(2,c),lerr(2,c));
+	  err(2,c) = std::max(err(2,c),lerr(2,c));
 
 	  eta(iq,0) += lerr(0,c);
 	  eta(iq,1) += lerr(1,c);

@@ -97,7 +97,7 @@ void SparseBlockIlu<B>::ConstructStructure(const nvector<int>& perm, const Matri
   int zmax = 1;
   for(int i=0;i<n;i++)
     {
-      zmax = Gascoigne::max_int(zmax,SP->rowsize(i));
+      zmax = std::max(zmax,SP->rowsize(i));
     }
   nvector<int> ppi(zmax), picol(zmax);
 

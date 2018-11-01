@@ -561,7 +561,7 @@ namespace Gascoigne
 
   /**********************************************************/
 
-  void HNStructureQ43d::ReInit(const MeshInterface *m)
+  void HNStructureQ43d::ReInit(const GascoigneMesh *m)
   {
     HNStructureQ23d::ReInit(m);
     const GascoigneMesh *GM = dynamic_cast<const GascoigneMesh *>(m);

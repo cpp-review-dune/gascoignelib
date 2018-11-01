@@ -95,7 +95,7 @@ namespace Gascoigne
 
 	int zmax = 1;
 	for(int i=0;i<n();i++)
-	    zmax = Gascoigne::max_int(zmax,M.rowsize(i));
+	    zmax = std::max(zmax,M.rowsize(i));
 	
 	nvector<int> ppi(zmax), picol(zmax);
 

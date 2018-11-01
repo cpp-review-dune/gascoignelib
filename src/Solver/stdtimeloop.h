@@ -26,6 +26,7 @@
 #define  __StdTimeLoop_h
 
 #include  "stdloop.h"
+#include  "stdtimesolver.h"
 #include  "timeinfo.h"
 
 /*-----------------------------------------*/
@@ -43,6 +44,18 @@ protected:
   virtual void TimeInfoBroadcast();
   void InitSolution(VectorInterface& u);
 
+  virtual const StdTimeSolver* GetTimeSolver() const
+  {
+    assert(dynamic_cast<const StdTimeSolver* >(GetMultiLevelSolver()->GetSolver()));
+    return dynamic_cast<const StdTimeSolver* >(GetMultiLevelSolver()->GetSolver());
+  }
+  virtual StdTimeSolver* GetTimeSolver() 
+  {
+    assert(dynamic_cast<StdTimeSolver* >(GetMultiLevelSolver()->GetSolver()));
+    return dynamic_cast<StdTimeSolver* >(GetMultiLevelSolver()->GetSolver());
+  }
+  
+  
 public:
 
   StdTimeLoop() : StdLoop() {}

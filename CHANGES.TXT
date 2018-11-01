@@ -1,3 +1,5 @@
+%%%% Anfang 2018
+
 %%% C++
 
 use of some c++-11 features
@@ -17,3 +19,27 @@ fixarray<N,T> aber array<T,N>
 Es fehlt noch, numfixarray entsprechend anzupassen und Reihenfolge Tauschen.
 
 
+%%%% November 2018
+
+* gascoignemath.h     entfernt. War nicht notwendig. max/min
+  		      	  Funktionen in std
+
+* SolverInterface     entfernt. War immer von StdSolver abgeleitet
+
+* NumericInterface + Algorithms umkopiert. Muss neu angepasst werden,
+  verschiedene dateien, die gegenseitig voneinander abhaengig waren.
+
+* MeshInterface,PatchMesh     entfernt
+
+Macht bei HierarchicalMesh keinen Sinn. Ist etwas ganz anderes als
+GascoigneMesh.
+Die Sequenz MeshInterface -> PatchMesh -> GascoigneMesh wird nie
+anders genutzt, d.h. GascoigneMesh neue Basis
+
+* GascoigneMesh -> DofHandler
+
+Die Gascoigne-Meshes heissen nun DofHandler und sind als Template in
+der Dimension geschrieben. Noch gibt es die alten klassen als typedef
+auf DofHandler<2> und DofHandler<3>. Sollen aber verschwinden und in
+Zukunft durch einen guten, allgemeineren DofHandler ausgetauscht
+werden. 

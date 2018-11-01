@@ -25,7 +25,8 @@
 #ifndef __mult_h
 #define __mult_h
 
-#include "gascoignemath.h"
+#include <algorithm>
+
 
 namespace Gascoigne
 {
@@ -137,7 +138,7 @@ template<class MATRIX, class VECTOR>
 void backward(VECTOR& dst, const MATRIX& M, const VECTOR& src)
     {
       int i,j;
-      int nu = min_int(M.m(),M.n());
+      int nu = std::min(M.m(),M.n());
       double s;
       for (i=nu-1;i>=0;i--)
 	{

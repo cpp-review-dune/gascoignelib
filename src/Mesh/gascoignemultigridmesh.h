@@ -52,10 +52,10 @@ public:
 
   int nlevels() const {return M.size();}
 
-  const MeshInterface& operator()(int l) const {
+  const GascoigneMesh& operator()(int l) const {
     assert((l>=0)&&(l<M.size()));
     return *M[l];}
-
+  
   const GascoigneMesh* GetGascoigneMesh(int l) const {
     assert((l>=0)&&(l<M.size()));
     return M[l];}

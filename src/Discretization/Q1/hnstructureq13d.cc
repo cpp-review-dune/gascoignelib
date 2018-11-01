@@ -68,11 +68,10 @@ namespace Gascoigne
 
 /*--------------------------------------------------------*/
 
-  void HNStructureQ13d::ReInit(const MeshInterface* M)
+  void HNStructureQ13d::ReInit(const GascoigneMesh* M)
   {
-    const GascoigneMesh* GM = dynamic_cast<const GascoigneMesh*>(M);
-    edges = GM->GetHangingIndexHandler().GetStructure();
-    faces = GM->GetHangingIndexHandler().GetStructureFace();
+    edges = M->GetHangingIndexHandler().GetStructure();
+    faces = M->GetHangingIndexHandler().GetStructureFace();
     assert(edges);
     assert(faces);
   }

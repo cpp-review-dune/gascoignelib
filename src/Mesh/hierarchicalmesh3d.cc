@@ -1981,8 +1981,8 @@ void HierarchicalMesh3d::GetMinMaxLevels(IntVector& maxi, IntVector& mini,
       for (int j=0; j<8; j++)
 	{
 	  int k = q[j];
-	  maxi[k] = Gascoigne::max_int( maxi[k], lev);
-	  mini[k] = Gascoigne::min_int( mini[k], lev);
+	  maxi[k] = std::max( maxi[k], lev);
+	  mini[k] = std::min( mini[k], lev);
 	}
     }
 }
@@ -2040,7 +2040,7 @@ int HierarchicalMesh3d::regular_grid3d_three_coarse(IntSet& CellRef,
       {
 	const Hex& q = hex(*p);
 	int lev = q.level();
-	maxl = Gascoigne::max_int(maxl,lev);
+	maxl = std::max(maxl,lev);
       }
     LevelCellCoarse.resize(maxl+1);
     p = CellCoarse.begin();
@@ -2142,7 +2142,7 @@ void HierarchicalMesh3d::FillVertexLevels(IntVector& dst) const
       for (int j=0; j<8; j++)
 	{
 	  int k = Q[j];
-	  dst[k] = Gascoigne::min_int(dst[k],level);
+	  dst[k] = std::min(dst[k],level);
 	}
     }
 }
@@ -2175,7 +2175,7 @@ void HierarchicalMesh3d::RefineCoarseNodes
 	  int minlevel = vertexlevel[QF[0]];
 	  for (int v=1; v<8; v++)
 	    {
-	      minlevel = Gascoigne::min_int(minlevel,vertexlevel[QF[v]]);
+	      minlevel = std::min(minlevel,vertexlevel[QF[v]]);
 	    }
 	  for (int v=0; v<8; v++)
 	    {
@@ -2343,7 +2343,7 @@ void HierarchicalMesh3d::post_refine3d()
   mnlevels = 0;
   for(int i=0;i<hexs.size();i++)
     {
-      mnlevels = Gascoigne::max_int(mnlevels,hexs[i].level());
+      mnlevels = std::max(mnlevels,hexs[i].level());
     }
 }
 

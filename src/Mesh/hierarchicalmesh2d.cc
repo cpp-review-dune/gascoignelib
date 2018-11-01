@@ -886,7 +886,7 @@ void HierarchicalMesh2d::post_refine2d()
   mnlevels = 0;
   for(int i=0;i<quads.size();i++)
     {
-      mnlevels = Gascoigne::max_int(mnlevels,quads[i].level());
+      mnlevels = std::max(mnlevels,quads[i].level());
     }
 }
 
@@ -1892,8 +1892,8 @@ int HierarchicalMesh2d::regular_grid2d_three(IntSet& CellRef,
       for (int j=0; j<4; j++)
 	{
 	  int k = q[j];
-	  maxlevel[k] = Gascoigne::max_int( maxlevel[k], lev);
-	  minlevel[k] = Gascoigne::min_int( minlevel[k], lev);
+	  maxlevel[k] = std::max( maxlevel[k], lev);
+	  minlevel[k] = std::min( minlevel[k], lev);
 	}
     }
   set<int> cand;
@@ -1973,8 +1973,8 @@ void HierarchicalMesh2d::GetMinMaxLevels(IntVector& maxi, IntVector& mini,
       for (int j=0; j<4; j++)
 	{
 	  int k = q[j];
-	  maxi[k] = Gascoigne::max_int( maxi[k], lev);
-	  mini[k] = Gascoigne::min_int( mini[k], lev);
+	  maxi[k] = std::max( maxi[k], lev);
+	  mini[k] = std::min( mini[k], lev);
 	}
     }
 }
@@ -2033,7 +2033,7 @@ int HierarchicalMesh2d::regular_grid2d_three_coarse(IntSet& CellRef,
       {
 	const Quad& q = quad(*p);
 	int lev = q.level();
-	maxl = Gascoigne::max_int(maxl,lev);
+	maxl = std::max(maxl,lev);
       }
     LevelCellCoarse.resize(maxl+1);
     p = CellCoarse.begin();
@@ -2138,7 +2138,7 @@ void HierarchicalMesh2d::FillVertexLevels(IntVector& dst) const
       for (int j=0; j<4; j++)
 	{
 	  int k = Q[j];
-	  dst[k] = Gascoigne::min_int(dst[k],level);
+	  dst[k] = std::min(dst[k],level);
 	}
     }
 }
@@ -2171,7 +2171,7 @@ void HierarchicalMesh2d::RefineCoarseNodes
 	  int minlevel = vertexlevel[QF[0]];
 	  for (int v=1; v<4; v++)
 	    {
-	      minlevel = Gascoigne::min_int(minlevel,vertexlevel[QF[v]]);
+	      minlevel = std::min(minlevel,vertexlevel[QF[v]]);
 	    }
 	  for (int v=0; v<4; v++)
 	    {

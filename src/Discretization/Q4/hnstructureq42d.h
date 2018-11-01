@@ -56,7 +56,7 @@ namespace Gascoigne
       HNStructureQ42d();
       ~HNStructureQ42d() { }
 
-      void ReInit(const MeshInterface* m);
+      void ReInit(const GascoigneMesh* m);
 
       void CondenseHanging(IntVector& indices) const;
       void CondenseHanging(EntryMatrix& E, IntVector& indices) const;

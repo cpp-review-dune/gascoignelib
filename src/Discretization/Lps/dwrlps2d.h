@@ -35,12 +35,6 @@ class DwrLps2d : public Q1Lps2d
 {
  protected:
 
-  const PatchMesh* GetPatchMesh() const {
-    const PatchMesh* MP = dynamic_cast<const PatchMesh*>(GetMesh());
-    assert(MP);
-    return MP;
-  }
-
  public:
 
   DwrLps2d() : Q1Lps2d() {}

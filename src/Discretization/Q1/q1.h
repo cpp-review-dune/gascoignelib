@@ -72,7 +72,7 @@ public:
   }
   //  const HNStructureQ1* GetHNStructure() const { return HN;}
 
-  void ReInit   (const MeshInterface* MP);
+  void ReInit   (const GascoigneMesh* MP);
   void StrongDirichletMatrix       (MatrixInterface& A, int col, const std::vector<int>& comp) const;
   void StrongDirichletMatrixOnlyRow(MatrixInterface& A, int col, const std::vector<int>& comp) const;
   void StrongDirichletVectorZero(GlobalVector& u, int col, const std::vector<int>& comp) const;

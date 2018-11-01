@@ -24,7 +24,7 @@
 
 #ifndef __DwrQ1Q2_h
 
-#include "solverinterface.h"
+#include "stdsolver.h"
 
 /*-------------------------------------------------------*/
 
@@ -34,7 +34,7 @@ class DwrQ1Q2
 {
  protected:
 
-  SolverInterface& S;
+  StdSolver & S;
   const ProblemDescriptorInterface* primalproblem;
   DiscretizationInterface*         discretization;
 
@@ -48,7 +48,7 @@ class DwrQ1Q2
 
  public:
 
-  DwrQ1Q2(SolverInterface& SR);
+  DwrQ1Q2(StdSolver& SR);
   virtual ~DwrQ1Q2() {};
 
   double ScalarProductWithFluctuations(nvector<double>& eta, 

@@ -1,6 +1,6 @@
 /**
 *
-* Copyright (C) 2004, 2005 by the Gascoigne 3D authors
+* Copyright (C) 2004 by the Gascoigne 3D authors
 *
 * This file is part of Gascoigne 3D
 *
@@ -22,19 +22,36 @@
 **/
 
 
-#include  "gascoignemesh.h"
+#ifndef  __StdIoManager_h
+#define  __StdIoManager_h
 
-/*-----------------------------------------*/
+#include <string>
 
 namespace Gascoigne
 {
-GascoigneMesh::GascoigneMesh()
+
+/////////////////////////////////////////////
+///
+///@brief
+///  ... comments StdIoManager
+///
+///
+/////////////////////////////////////////////
+
+class StdIoManager
 {
+protected:
+
+  mutable std::string   _dirname;
+  
+ public:
+  
+  //
+  ///  Constructor 
+  //
+    
+    StdIoManager(const std::string& dirname);
+};
 }
 
-/*-----------------------------------------*/
-
-GascoigneMesh::~GascoigneMesh()
-{
-}
-}
+#endif

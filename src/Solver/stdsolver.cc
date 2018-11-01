@@ -44,8 +44,8 @@
 
 #include "cfdblock3d.h"
 #include "fmatrixblock.h"
-#include "sparseblockilu.h"
 #include "sparse_umf.h"
+#include "sparseblockilu.h"
 
 /*--------------------------------*/
 #ifdef __WITH_UMFPACK__
@@ -63,6 +63,8 @@
 
 #include "diracrighthandside.h"
 
+//////////////////// Discretization
+#include "cgdisc.h"
 #include "q12d.h"
 #include "q13d.h"
 #include "q1gls2d.h"
@@ -74,6 +76,15 @@
 #include "q2gls2d.h"
 #include "q2lps2d.h"
 #include "q2lps3d.h"
+
+#include  "transformation2d.h"
+#include  "transformation3d.h"
+#include  "finiteelement.h"
+#include  "baseq12d.h"
+#include  "baseq13d.h"
+#include  "baseq22d.h"
+#include  "baseq23d.h"
+
 
 #include "faceq1.h"
 #include "faceq2.h"
@@ -131,7 +142,7 @@ namespace Gascoigne
       , _ZP(NULL)
       , _FZP(NULL)
       , _PDX(NULL)
-      , _NI(NULL)
+	//      , _NI(NULL)
       , _distribute(true)
       , _ndirect(1000)
       , _directsolver(0)
@@ -169,7 +180,7 @@ namespace Gascoigne
                                      const DiscretizationInterface *DI) const
   {
     return;
-    
+
     string eq = DI->GetName();
 
     bool glseq = false, glsdi = false;
@@ -277,7 +288,7 @@ namespace Gascoigne
 #else
       UmfIlu *UM = dynamic_cast<UmfIlu *>(GetIlu());
 #endif
-      
+
       if ((UM && !_directsolver) || (!UM && _directsolver))
       {
         delete _MIP;
@@ -459,7 +470,7 @@ namespace Gascoigne
   /*-------------------------------------------------------*/
 
 
-  void StdSolver::NewMesh(const MeshInterface *mp)
+  void StdSolver::NewMesh(const GascoigneMesh *mp)
   {
 
     _MP = mp;
@@ -496,11 +507,11 @@ namespace Gascoigne
   /*-------------------------------------------------------*/
 
   void StdSolver::BasicInit(const ParamFile *paramfile,
-                            const int dimension,
-                            const NumericInterface *NI)
+                            const int dimension)
+  //                            const NumericInterface *NI)
   {
     _paramfile = paramfile;
-    _NI = NI;
+    //    _NI = NI;
 
     string xxx;
 
@@ -564,16 +575,29 @@ namespace Gascoigne
   DiscretizationInterface *StdSolver::NewDiscretization(int dimension,
                                                         const string &discname)
   {
-    if (_NI)
-    {
-      return _NI->NewDiscretization();
-    }
-    else
-    {
-    }
+    // if (_NI)
+    // {
+    //   return _NI->NewDiscretization();
+    // }
+    // else
+    // {
+    // }
+
     if (dimension == 2)
     {
-      if (discname == "Q1")
+      if (discname == "CGQ1")
+	{
+	  return new CGDisc<2,1,
+			    FiniteElement<2,1, Transformation2d<BaseQ12d>, BaseQ12d>,
+			    GalerkinIntegrator<2> >;
+	}
+      else if (discname == "CGQ2")
+	{
+	  return new CGDisc<2,2,
+			    FiniteElement<2,1, Transformation2d<BaseQ22d>, BaseQ22d>,
+			    GalerkinIntegratorQ2<2> >;
+	}
+      else if (discname == "Q1")
         return new Q12d;
       else if (discname == "Q2")
         return new Q22d;
@@ -602,7 +626,19 @@ namespace Gascoigne
     }
     else if (dimension == 3)
     {
-      if (discname == "Q1")
+      if (discname == "CGQ1")
+	{
+	  return new CGDisc<3,1,
+			    FiniteElement<3,2, Transformation3d<BaseQ13d>, BaseQ13d>,
+			    GalerkinIntegrator<3> >;
+	}
+      else if (discname == "CGQ2")
+	{
+	  return new CGDisc<3,2,
+			    FiniteElement<3,2, Transformation3d<BaseQ23d>, BaseQ23d>,
+			    GalerkinIntegratorQ2<3> >;
+	}
+      else if (discname == "Q1")
         return new Q13d;
       else if (discname == "Q2")
         return new Q23d;
@@ -723,8 +759,8 @@ namespace Gascoigne
     {
       if (ncomp == 4)
       {
-	abort();
-	//        return new SparseBlockMatrix<CFDBlock3d>;
+        abort();
+        //        return new SparseBlockMatrix<CFDBlock3d>;
       }
       else
       {
@@ -839,8 +875,8 @@ namespace Gascoigne
     {
       if (ncomp == 4)
       {
-	abort();
-	//        return new SparseBlockIlu<CFDBlock3d>;
+        abort();
+        //        return new SparseBlockIlu<CFDBlock3d>;
       }
     }
     cerr << "No such matrix type \"" << matrixtype << "and ncomp \"." << ncomp
@@ -879,7 +915,7 @@ namespace Gascoigne
     const BoundaryManager *BM = GetProblemDescriptor()->GetBoundaryManager();
     const IntVector &iv_PeriodicColors = BM->GetPeriodicDataColors();
 
-    const MeshInterface *p_mesh = GetMesh();
+    const GascoigneMesh *p_mesh = GetMesh();
     const GascoigneMesh *GMP = dynamic_cast<const GascoigneMesh *>(p_mesh);
     assert(GMP);
 
@@ -1200,7 +1236,7 @@ namespace Gascoigne
     const IntVector &iv_PeriodicColors = BM->GetPeriodicDataColors();
 
     GlobalVector &f = GetGV(gf);
-    const MeshInterface *p_mesh = GetMesh();
+    const GascoigneMesh *p_mesh = GetMesh();
     const GascoigneMesh *GMP = dynamic_cast<const GascoigneMesh *>(p_mesh);
     assert(GMP);
 
@@ -1296,9 +1332,9 @@ namespace Gascoigne
     {
       _so.start();
 #ifdef __WITH_UMFPACK_LONG__
-      UmfIluLong *UM         = dynamic_cast<UmfIluLong *>(GetIlu());
+      UmfIluLong *UM = dynamic_cast<UmfIluLong *>(GetIlu());
 #else
-      UmfIlu     *UM         = dynamic_cast<UmfIlu *>(GetIlu());
+      UmfIlu *UM = dynamic_cast<UmfIlu *>(GetIlu());
 #endif
       assert(UM);
       UM->Solve(GetGV(x), GetGV(y));
@@ -1540,7 +1576,7 @@ namespace Gascoigne
   /*-------------------------------------------------------*/
 
   double StdSolver::ComputeDomainFunctional(const VectorInterface &gu,
-					    const DomainFunctional *FP) const
+                                            const DomainFunctional *FP) const
   {
     HNAverage(gu);
     HNAverageData();
@@ -1574,20 +1610,21 @@ namespace Gascoigne
                                        const ResidualFunctional *FP) const
   {
     // cerr << "Aenderung in ResidualFunctional" << endl;
-   
-    // //    const BoundaryManager *BM = GetProblemDescriptor()->GetBoundaryManager();                                                            
-    
+
+    // //    const BoundaryManager *BM =
+    // GetProblemDescriptor()->GetBoundaryManager();
+
     // HNAverage(gu);
     // HNAverageData();
     // Zero(gf);
     // Rhs(gf);
     // // Do not include Boundary Equation!
-    // //    Form(gf, gu, -1.); >>>>>>>> 
+    // //    Form(gf, gu, -1.); >>>>>>>>
     // const Equation *EQ = GetProblemDescriptor()->GetEquation();
     // GetDiscretization()->Form(GetGV(gf), GetGV(gu), *EQ, -1.0);
     // //    Form(gf, gu, -1.); <<<<<<<<
 
-    // const DirichletData *ABD = FP->GetDirichletData();                                                                                   
+    // const DirichletData *ABD = FP->GetDirichletData();
     // assert(ABD);
 
     // Zero(gz);
@@ -1597,13 +1634,14 @@ namespace Gascoigne
 
     // IntSet       PrefCol = ABD->preferred_colors();
     // nvector<int> comps   = FP->GetComps();
-                                                                                                                                         
+
     // for (auto it : PrefCol)
-    //   GetDiscretization()->StrongDirichletVector(GetGV(gz), *ABD, it, comps,1.0);
+    //   GetDiscretization()->StrongDirichletVector(GetGV(gz), *ABD, it,
+    //   comps,1.0);
     // //    SetBoundaryVectorStrong(gz, *BM, *ABD); <<<<
     // HNAverage(gz);
-                                                                                                                                         
-    // double J = ScalarProduct(gz, gf); 
+
+    // double J = ScalarProduct(gz, gf);
     // HNZero(gu);
     // HNZeroData();
     // return J;
@@ -1848,7 +1886,7 @@ namespace Gascoigne
     const BoundaryManager *BM = GetProblemDescriptor()->GetBoundaryManager();
     const IntVector &iv_PeriodicColors = BM->GetPeriodicDataColors();
 
-    const MeshInterface *p_mesh = GetMesh();
+    const GascoigneMesh *p_mesh = GetMesh();
     const GascoigneMesh *GMP = dynamic_cast<const GascoigneMesh *>(p_mesh);
     assert(GMP);
 

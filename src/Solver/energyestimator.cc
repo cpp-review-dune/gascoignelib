@@ -32,7 +32,7 @@ namespace Gascoigne{
 
 /*--------------------------------------------------------*/
 
-EnergyEstimator::EnergyEstimator(SolverInterface& SR) : S(SR) 
+EnergyEstimator::EnergyEstimator(StdSolver& SR) : S(SR) 
 { 
   {
     DataFormatHandler DFH; 

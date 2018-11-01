@@ -32,7 +32,7 @@ namespace Gascoigne
 {
 /**********************************************************/
 
-DwrQ2Q4::DwrQ2Q4(SolverInterface &S) : _S(S)
+DwrQ2Q4::DwrQ2Q4(StdSolver &S) : _S(S)
 {
   _P = _S.GetProblemDescriptor();
   _D = _S.GetDiscretization();

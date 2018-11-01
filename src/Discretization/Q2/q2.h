@@ -46,7 +46,7 @@ protected:
   HNStructureQ1*    HN;
 
   nvector<int> GetLocalIndices(int iq) const {
-    return *GetPatchMesh()->IndicesOfPatch(iq);
+    return *GetMesh()->IndicesOfPatch(iq);
   }
   void LocalToGlobal(MatrixInterface& A, EntryMatrix& E, int iq, double s) const;
 
@@ -62,7 +62,7 @@ public:
   int n() const;
   int nc() const;
   int n_withouthanging() const;
-  void ReInit(const MeshInterface* MP);
+  void ReInit(const GascoigneMesh* MP);
 
   void Interpolate(GlobalVector& u, const DomainInitialCondition& U) const;
   void StrongDirichletMatrix(MatrixInterface& A, int col, const std::vector<int>& comp) const;

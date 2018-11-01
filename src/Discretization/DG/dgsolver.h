@@ -28,7 +28,7 @@ public:
   class DGMultiLevelSolver : public StdMultiLevelSolver
   {
   public:
-    SolverInterface* NewSolver(int solverlevel)
+    StdSolver* NewSolver(int solverlevel)
     {
       return new DGSolver;
     }

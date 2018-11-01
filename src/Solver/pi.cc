@@ -71,7 +71,7 @@ void Pi::vmult(CompVector<double>& y, const CompVector<double>& x,
 
 /*-----------------------------------------*/
 
-void Pi::Init(const MeshInterface* MP)
+void Pi::Init(const GascoigneMesh* MP)
 {
   edge.clear();
   face.clear();

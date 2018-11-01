@@ -24,7 +24,7 @@
 
 #ifndef __EnergyEstimator_h
 
-#include "solverinterface.h"
+#include "stdsolver.h"
 #include "q1.h"
 
 /*-------------------------------------------------------*/
@@ -36,7 +36,7 @@ class EnergyEstimator
 {
  protected:
 
-  SolverInterface& S;
+  StdSolver& S;
   const ProblemDescriptorInterface* primalproblem;
   Q1*                               discretization;
   double                            _d_visc;
@@ -44,7 +44,7 @@ class EnergyEstimator
 
  public:
 
-  EnergyEstimator(SolverInterface& SR);
+  EnergyEstimator(StdSolver& SR);
   ~EnergyEstimator() {};
 
   double Estimator(DoubleVector& eta, VectorInterface& gu, 

@@ -114,16 +114,16 @@ void NavierStokes3d::Matrix
 
   double tau = _cut * _h;
 
-  A(1,1) += Gascoigne::max(U[1].x()*MN, -tau);
-  A(2,2) += Gascoigne::max(U[2].y()*MN, -tau);
-  A(3,3) += Gascoigne::max(U[3].z()*MN, -tau);
+  A(1,1) += std::max(U[1].x()*MN, -tau);
+  A(2,2) += std::max(U[2].y()*MN, -tau);
+  A(3,3) += std::max(U[3].z()*MN, -tau);
 
-  A(1,2) += Gascoigne::min(U[1].y()*MN, tau);
-  A(1,3) += Gascoigne::min(U[1].z()*MN, tau);
-  A(2,1) += Gascoigne::min(U[2].x()*MN, tau);
-  A(2,3) += Gascoigne::min(U[2].z()*MN, tau);
-  A(3,1) += Gascoigne::min(U[3].x()*MN, tau);
-  A(3,2) += Gascoigne::min(U[3].y()*MN, tau);
+  A(1,2) += std::min(U[1].y()*MN, tau);
+  A(1,3) += std::min(U[1].z()*MN, tau);
+  A(2,1) += std::min(U[2].x()*MN, tau);
+  A(2,3) += std::min(U[2].z()*MN, tau);
+  A(3,1) += std::min(U[3].x()*MN, tau);
+  A(3,2) += std::min(U[3].y()*MN, tau);
 }
 
 /*-----------------------------------------*/

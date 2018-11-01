@@ -53,7 +53,7 @@ StdMultiLevelSolver::~StdMultiLevelSolver()
           GetSolverPointers()[i]=NULL; 
         }
     }
-   for(int i=0; i<_Interpolator.size(); i++)  
+  for(int i=0; i<_Interpolator.size(); i++)  
     {
       if (_Interpolator[i]) 
         {
@@ -63,99 +63,99 @@ StdMultiLevelSolver::~StdMultiLevelSolver()
     }
 }
 
-/*-------------------------------------------------------------*/
+  /*-------------------------------------------------------------*/
 
-void StdMultiLevelSolver::ViewProtocoll() const
-{
-  cout << "\n************************************************************************\n\n";
-  cout << "StdMultiLevelSolver\tTIME\n";
-  cout << "  Residual\t\t" << _clock_residual.read() << endl;
-  cout << "  Solve\t\t\t" << _clock_solve.read() << endl;
-  cout << "MATRIX\t\t\tTIME\n";
-
-  double vm=0.;
-  double il=0.;
-  double so=0.;
-  double ca=0., ci=0., cs=0.;
-  double re=0;
-  for(int level=0;level<GetSolverPointers().size();level++)
-    {
-      const StdSolver* S = dynamic_cast<const StdSolver*>(GetSolver(level));
-      assert(S);
-      vm += S->clock_vmult();
-      il += S->clock_ilu();
-      so += S->clock_solve();
-      ca += S->clock_computematrix();
-      ci += S->clock_computeilu();
-      cs += S->clock_computesolver();
-      re += S->clock_residual();
-    }
-
-  cout << "  vmult\t\t\t" << vm << endl;
-  cout << "  smooth\t\t\t" << il << endl;
-  cout << "  solve\t\t\t" << so << endl;
-  cout << "  compute matrix\t" << ca << endl;
-  cout << "  compute ilu\t\t" << ci << endl;
-  cout << "  compute solver\t" << cs << endl;
-  cout << "VECTOR\t\t\tTIME\n";
-  cout << "  residual\t\t" << re << endl;
-  cout << "\n************************************************************************\n";
-}
-
-/*-------------------------------------------------------------*/
-
-StdMultiLevelSolver::StdMultiLevelSolver() : 
-_MAP(NULL), _cor("cor"), _res("res"), _mg0("mg0"), _mg1("mg1"),
-oldnlevels(-1), _paramfile(NULL), MON(NULL), DataP(NULL), _PD(0), _PC(0)
-{
-}
-
-/*-------------------------------------------------------------*/
-
-void StdMultiLevelSolver::BasicInit(const MeshAgentInterface* MAP, const ParamFile* paramfile,
-				    const ProblemContainer* PC,
-				    const FunctionalContainer* FC)
-{
-  _MAP = MAP;
-
-  _paramfile = paramfile;
-
-  SetProblemContainer(PC);
-  SetFunctionalContainer(FC);
-  
-  if(!DataP)
+  void StdMultiLevelSolver::ViewProtocoll() const
   {
-    DataP = new StdMultiLevelSolverData;
+    cout << "\n************************************************************************\n\n";
+    cout << "StdMultiLevelSolver\tTIME\n";
+    cout << "  Residual\t\t" << _clock_residual.read() << endl;
+    cout << "  Solve\t\t\t" << _clock_solve.read() << endl;
+    cout << "MATRIX\t\t\tTIME\n";
+
+    double vm=0.;
+    double il=0.;
+    double so=0.;
+    double ca=0., ci=0., cs=0.;
+    double re=0;
+    for(int level=0;level<GetSolverPointers().size();level++)
+      {
+	const StdSolver* S = dynamic_cast<const StdSolver*>(GetSolver(level));
+	assert(S);
+	vm += S->clock_vmult();
+	il += S->clock_ilu();
+	so += S->clock_solve();
+	ca += S->clock_computematrix();
+	ci += S->clock_computeilu();
+	cs += S->clock_computesolver();
+	re += S->clock_residual();
+      }
+
+    cout << "  vmult\t\t\t" << vm << endl;
+    cout << "  smooth\t\t\t" << il << endl;
+    cout << "  solve\t\t\t" << so << endl;
+    cout << "  compute matrix\t" << ca << endl;
+    cout << "  compute ilu\t\t" << ci << endl;
+    cout << "  compute solver\t" << cs << endl;
+    cout << "VECTOR\t\t\tTIME\n";
+    cout << "  residual\t\t" << re << endl;
+    cout << "\n************************************************************************\n";
   }
-  DataP->BasicInit(_paramfile);
-}
 
-/*-------------------------------------------------------------*/
+  /*-------------------------------------------------------------*/
 
-void StdMultiLevelSolver::SetProblem(const std::string& label)
-{
-  _PD = GetProblemContainer()->GetProblem(label);
-  for(int level=0; level<nlevels(); ++level)  
-    {
-      int solverlevel = nlevels()-1-level;
-      assert(GetSolver(solverlevel)) ;
-      GetSolver(solverlevel)->SetProblem(*_PD);
-    }
-}
+  StdMultiLevelSolver::StdMultiLevelSolver() : 
+    _MAP(NULL), _cor("cor"), _res("res"), _mg0("mg0"), _mg1("mg1"),
+    oldnlevels(-1), _paramfile(NULL), MON(NULL), DataP(NULL), _PD(0), _PC(0)
+  {
+  }
 
-/*-------------------------------------------------------------*/
+  /*-------------------------------------------------------------*/
 
-SolverInterface* StdMultiLevelSolver::NewSolver(int solverlevel) 
-{ 
-  if(DataP->Solver()=="instat")
-    {
-      return new StdTimeSolver;
-    }
-  else
-    {
-      return new StdSolver;
-    }
-}
+  void StdMultiLevelSolver::BasicInit(const MeshAgentInterface* MAP, const ParamFile* paramfile,
+				      const ProblemContainer* PC,
+				      const FunctionalContainer* FC)
+  {
+    _MAP = MAP;
+
+    _paramfile = paramfile;
+
+    SetProblemContainer(PC);
+    SetFunctionalContainer(FC);
+  
+    if(!DataP)
+      {
+	DataP = new StdMultiLevelSolverData;
+      }
+    DataP->BasicInit(_paramfile);
+  }
+
+  /*-------------------------------------------------------------*/
+
+  void StdMultiLevelSolver::SetProblem(const std::string& label)
+  {
+    _PD = GetProblemContainer()->GetProblem(label);
+    for(int level=0; level<nlevels(); ++level)  
+      {
+	int solverlevel = nlevels()-1-level;
+	assert(GetSolver(solverlevel)) ;
+	GetSolver(solverlevel)->SetProblem(*_PD);
+      }
+  }
+
+  /*-------------------------------------------------------------*/
+
+  StdSolver* StdMultiLevelSolver::NewSolver(int solverlevel) 
+  { 
+    if(DataP->Solver()=="instat")
+      {
+	return new StdTimeSolver;
+      }
+    else
+      {
+	return new StdSolver;
+      }
+  }
 
 /*-------------------------------------------------------------*/
 
@@ -246,7 +246,7 @@ void StdMultiLevelSolver::SolverNewMesh()
 {
   for(int level=0; level<nlevels(); ++level)  
     {
-      const MeshInterface* MIP = GetMeshAgent()->GetMesh(level);
+      const GascoigneMesh* MIP = GetMeshAgent()->GetMesh(level);
       assert(MIP);
 
       int solverlevel = nlevels()-1-level;
@@ -572,7 +572,7 @@ void StdMultiLevelSolver::NewtonLinearSolve(VectorInterface& x, const VectorInte
 
   if (DataP->LinearSolve()=="mg")
     {
-      int clevel=Gascoigne::max_int(DataP->CoarseLevel() ,0);
+      int clevel=std::max(DataP->CoarseLevel() ,0);
       if(DataP->CoarseLevel() == -1) clevel = FinestLevel(); 
       LinearMg(ComputeLevel,clevel,x,b, info);
     }
@@ -724,7 +724,7 @@ string StdMultiLevelSolver::LinearSolve(int level, VectorInterface& u, const Vec
   
   info.reset();
   
-  int clevel=Gascoigne::max_int(DataP->CoarseLevel() ,0);
+  int clevel=std::max(DataP->CoarseLevel() ,0);
   if(DataP->CoarseLevel() == -1) clevel = FinestLevel(); 
 
   LinearMg(ComputeLevel,clevel,u,b,info);
@@ -831,7 +831,7 @@ void StdMultiLevelSolver::precondition(VectorInterface& x, VectorInterface& y)
   precinfo.reset();
   precinfo.check(0.,0.);
 
-  int clevel=Gascoigne::max_int(DataP->CoarseLevel(),0);
+  int clevel=std::max(DataP->CoarseLevel(),0);
   if(DataP->CoarseLevel() == -1) clevel = FinestLevel(); 
 
   LinearMg(ComputeLevel,clevel,x,y,precinfo);
