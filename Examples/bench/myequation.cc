@@ -225,19 +225,23 @@ namespace Gascoigne
 	{
 	  //	  b[i] += MZ * (*H)[0].m() * pow(ellipse,-2.0) * ef / DELTA * ( U[i][j+1] + U[j][i+1] ) * N[j+1];
 	  A(i,0) += MZ * (*H)[0].m() * pow(ellipse,-2.0) * ef * DELTA_0 * ( U[i][j+1] + U[j][i+1] ) * N[j+1];
-	  A(i,1) += MZ * (*H)[0].m() * pow(ellipse,-2.0) * ef * DELTA_1 * ( U[i][j+1] + U[j][i+1] ) * N[j+1];
+	  A(i,0) += MZ * (*H)[0].m() * (1.0-pow(ellipse,-2.0)) * ef * DELTA_0 * U[j][j+1]*N[i+1];
 
+	  A(i,1) += MZ * (*H)[0].m() * pow(ellipse,-2.0) * ef * DELTA_1 * ( U[i][j+1] + U[j][i+1] ) * N[j+1];
+	  A(i,1) += MZ * (*H)[0].m() * (1.0-pow(ellipse,-2.0)) * ef * DELTA_1 * U[j][j+1]*N[i+1];
+	  
+	  
 	  A(i,i) += MZ * (*H)[0].m() * pow(ellipse,-2.0) * ef / DELTA * M[j+1] * N[j+1];
-	  A(i,j) += MZ * (*H)[0].m() * pow(ellipse,-2.0) * ef / DELTA * M[i+1] * N[j+1];
+
+
 
 	  
 
 	  // // b[i] += MZ * (*H)[0].m() * (1.0-pow(ellipse,-2.0)) * ef / DELTA * U[j][j+1]*N[i+1];
 
+	  A(i,j) += MZ * (*H)[0].m() * pow(ellipse,-2.0) * ef / DELTA * M[i+1] * N[j+1];
 	  A(i,j) += MZ * (*H)[0].m() * (1.0-pow(ellipse,-2.0)) * ef / DELTA * M[j+1]*N[i+1];
 	  
-	  A(i,0) += MZ * (*H)[0].m() * (1.0-pow(ellipse,-2.0)) * ef * DELTA_0 * U[j][j+1]*N[i+1];
-	  A(i,1) += MZ * (*H)[0].m() * (1.0-pow(ellipse,-2.0)) * ef * DELTA_1 * U[j][j+1]*N[i+1];
 	}
   }
 

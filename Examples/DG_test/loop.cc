@@ -366,7 +366,7 @@ void Loop::SolveDualProblem(vector<GlobalVector>& Ztotal,vector<GlobalVector>& Q
       GetMultiLevelSolver()->DeleteNodeVector("V");
       GetMultiLevelSolver()->DeleteNodeVector("nextQ"); 
       GetMultiLevelSolver()->DeleteNodeVector("nextV");
-       GetMultiLevelSolver()->DeleteNodeVector("H");
+      GetMultiLevelSolver()->DeleteNodeVector("H");
      GetMultiLevelSolver()->DeleteNodeVector("oldH");
       
 

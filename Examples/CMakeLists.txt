@@ -1,5 +1,5 @@
 SUBDIRS(
-  NavierStokes2D  bench Transport_split   DG_ice SUPG DG_test
+  NavierStokes2D  DG_test
 )
 
 LINK_LIBRARIES(${GASCOIGNE_LIBRARIES} )

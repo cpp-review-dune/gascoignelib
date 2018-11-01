@@ -9,6 +9,7 @@
 
 #include  "paramfile.h"
 #include  "equation.h"
+#include "filescanner.h"
 
 using namespace std;
 
@@ -17,6 +18,53 @@ using namespace std;
 extern bool Jump;
 namespace Gascoigne
 {
+
+  class Ice
+  {
+  public:
+    
+    double Pstern, Tref, Lref, MZ, ellipse, C, Cdw, rhow, theta_w,f;
+    double deltamin;
+    mutable double uwx;
+    mutable double uwy;
+    mutable double rho;
+
+    Ice(){assert(0);}
+    Ice(const ParamFile* pf)
+      {
+	DataFormatHandler DFH;
+	DFH.insert("rho", &rho, 0.);
+	DFH.insert("rhow", &rhow, 0.);
+	DFH.insert("Tref",&Tref,0.0);
+	DFH.insert("Lref",&Lref,0.0);
+	DFH.insert("Pstern",&Pstern,2.75e4);
+	DFH.insert("ellipse",&ellipse,2.0);
+	DFH.insert("C",&C,20.0);
+	DFH.insert("Cdw",&Cdw,5.2e-3);
+	DFH.insert("f",&f,0.0);
+	DFH.insert("theta_w",&theta_w,0.0);
+	
+	FileScanner FS(DFH);
+	FS.NoComplain();
+	FS.readfile(pf, "Equation");
+	assert(rho>0);
+	assert(Tref>0);
+	assert(Lref>0);
+	assert(Pstern>0);
+	assert(ellipse>0);
+	assert(C>0);
+	assert(f>0);
+	
+	MZ = 0.5*Tref*Tref * Pstern / rho / Lref / Lref;
+      }
+
+    double delta(const FemFunction& U) const;
+    double delta_0(const FemFunction& V, const TestFunction& M) const;
+    double delta_1(const FemFunction& V, const TestFunction& M) const;
+    double SIGMA_ij(const FemFunction& V, const TestFunction& M, const TestFunction& N, int i, int j) const;
+  };
+  
+
   
   class TransportEquation : public virtual Equation
   {
@@ -26,8 +74,7 @@ namespace Gascoigne
     mutable FemFunction* V;
 
 
-   //     mutable FemFunction V;
-    mutable double h_;
+    //     mutable FemFunction V;
   public:
     
     TransportEquation() { abort(); }
@@ -56,7 +103,7 @@ namespace Gascoigne
   };
 
 
-  class MyDualEquation : public virtual Equation
+  class MyDualEquation : public virtual Equation, public Ice
   {
   protected:
     mutable FemFunction* nextV;
@@ -64,14 +111,9 @@ namespace Gascoigne
     mutable FemFunction* nextQ;
     mutable FemFunction* nextZ;
     
-  mutable FemFunction* oldH;
+    mutable FemFunction* H;
 
-    double _split, f;
     
-      mutable double uwx;
-    mutable double uwy;
-        double alpha0,  tau0, Cstern, Pstern, Tref, Lref, MZ, ellipse, C, Cdw, rhow, theta_w;
-         mutable double rho,h_;
   public:
     
     MyDualEquation() { abort(); }
@@ -92,8 +134,8 @@ namespace Gascoigne
       V= &q["V"];
       
 
-      assert(q.find("oldH") != q.end() );
-      oldH= &q["oldH"];
+      assert(q.find("H") != q.end() );
+      H= &q["H"];
       
       
       assert(q.find("nextQ") != q.end() );
@@ -105,30 +147,17 @@ namespace Gascoigne
     void Matrix(EntryMatrix& A, const FemFunction& Z, const TestFunction& M, const TestFunction& N) const;
 
   };
-  
-   class MyBurgerEquation : public virtual Equation
+
+  class MyBurgerEquation : public virtual Equation, public Ice
   {
   protected:
       
     mutable FemFunction* oldV;
     mutable FemFunction* oldH;
-  //   mutable FemFunction H;
-    double epsilon, _split;
-    mutable double h_;
-    double alpha0,  tau0, Cstern, Pstern, Tref, Lref, MZ, ellipse, C, Cdw, rhow, theta_w,f;
-    double deltamin, shock0;
-    mutable double shock;
-    mutable double alpha,tau;
-    mutable double visc;
-    mutable double uwx;
-    mutable double uwy;
-    
-     mutable double rho;
-    mutable double gamma;
-    double vin0;
-   
-    mutable double v_in, gamma0;
-    mutable Vertex2d _n;
+    //   mutable FemFunction H;
+
+
+  
   public:
     
     MyBurgerEquation() { abort(); }
@@ -153,26 +182,17 @@ namespace Gascoigne
    
   };
   
- class MyBurgerDualEquation : public virtual Equation
+  class MyBurgerDualEquation : public virtual Equation, public Ice
   {
   protected:
 
-     mutable FemFunction* nextQ;
-     mutable FemFunction* V;
-     mutable FemFunction* H;
-     mutable FemFunction* oldH;
-     mutable FemFunction* Z;
+    mutable FemFunction* nextQ;
+    mutable FemFunction* V;
+    mutable FemFunction* H;
+    mutable FemFunction* oldH;
+    mutable FemFunction* Z;
     //   mutable FemFunction H;
-     
-     double epsilon, _split;
-    mutable double rho;
-    double alpha0,  tau0, Cstern, Pstern, Tref, Lref, MZ, ellipse, C, Cdw, rhow, theta_w,f;
-    double deltamin;
-    mutable double uwx;
-     mutable double uwy;
-     
-           mutable double h_;
-       
+   
      
   public:
     

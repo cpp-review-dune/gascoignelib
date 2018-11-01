@@ -36,8 +36,8 @@ namespace Gascoigne
       double y=v.y()-0.25;
       
       
-      b[0] +=(exp(-10*x*x-10*y*y)) * N.m(); 
-      b[1] +=0;
+      //  b[0] +=(exp(-10*x*x-10*y*y)) * N.m(); 
+      //  b[1] +=0;
     }
   };
 
