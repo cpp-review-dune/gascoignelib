@@ -454,7 +454,19 @@ void HierarchicalMesh3d::basic_refine3d(HangContainer3d& hangset,
   new_boundary3d(QuadRefList, QuadCoarseList, ccdel);
 
   IntSet adjustvertex;
+  write_inp("refined0.inp");
   boundary_newton3d(adjustvertex);
+  write_inp("refined1.inp");
+  boundary_newton3d(adjustvertex);
+  write_inp("refined2.inp");
+  boundary_newton3d(adjustvertex);
+  write_inp("refined3.inp");
+  boundary_newton3d(adjustvertex);
+  write_inp("refined4.inp");
+  boundary_newton3d(adjustvertex);
+  write_inp("refined5.inp");
+  boundary_newton3d(adjustvertex);
+  write_inp("refined6.inp");
   inner_vertex_newton3d(vnew,CellRefList,adjustvertex);
 
   if (withfaces) EM.Build(CellRefList,hangset);

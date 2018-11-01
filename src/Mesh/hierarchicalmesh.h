@@ -180,7 +180,7 @@ class HierarchicalMesh : public MeshInterface
   }
 
   void ShowOutput(int i) const { _i_showoutput=i; } 
-
+  virtual void ProjectBoundary(){std::cout<<"ProjectBoundary not written"<<std::endl;}
 };
 }
 

@@ -141,6 +141,7 @@ void HierarchicalMesh::BasicInit(const ParamFile* pf)
   FS.readfile(pf, "Mesh");
 
   SetParameters(gridname,patchdepth,epatcher);
+  ProjectBoundary();
   global_refine(prerefine);
 }
 

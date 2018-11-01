@@ -736,7 +736,7 @@ void HierarchicalMesh2d::init_line(BoundaryLine& newline)
 	      newline.edge_in_quad() = edge;
 	      return;
 	    }
-	  w[0] = v[1];
+/*	  w[0] = v[1];
 	  w[1] = v[0];
 	  if (newline==w)
 	    {
@@ -746,6 +746,7 @@ void HierarchicalMesh2d::init_line(BoundaryLine& newline)
 	      newline[1] = v[1];
 	      return;
 	    }
+*/
 	}
     }
   cerr << "Sophie im Brunnen !" << endl;
