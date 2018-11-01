@@ -23,8 +23,7 @@
 
 
 #include "nlinfo.h"
-#include "math.h"
-#include "gascoignemath.h"
+#include <cmath>
 #include  <iostream>
 
 using namespace std;
@@ -155,7 +154,7 @@ void NLInfo::reset()
 void NLInfo::compute_reduction_rate()
 {
   double b = CD.residual()/CD.firstresidual();
-  double p = 1./max_int(1,CD.iteration());
+  double p = 1./std::max(1,CD.iteration());
   SD.rate() = pow(b,p);  
 
   if (CD.iteration()>1)

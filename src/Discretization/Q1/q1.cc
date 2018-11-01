@@ -46,7 +46,7 @@ Q1::~Q1()
 
 /* ----------------------------------------- */
 
-void Q1::ReInit(const MeshInterface* MP)
+void Q1::ReInit(const GascoigneMesh* MP)
 {
   CellDiscretization::ReInit(MP);
   HN->ReInit(MP);

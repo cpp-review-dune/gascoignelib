@@ -67,7 +67,7 @@ namespace Gascoigne
   //////////////////////////////////////////////////
   
   template<int DIM>
-  void FaceQ1<DIM>::ReInit   (const MeshInterface* M)
+  void FaceQ1<DIM>::ReInit   (const GascoigneMesh* M)
   {
     // build face/edge-structur
     __MP = M;

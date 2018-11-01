@@ -63,7 +63,7 @@ namespace Gascoigne
   //////////////////////////////////////////////////
   
   template<int DIM>
-  void FaceQ2<DIM>::ReInit   (const MeshInterface* M)
+  void FaceQ2<DIM>::ReInit   (const GascoigneMesh* M)
   {
     // build face/edge-structur
     __MP = M;
@@ -155,7 +155,7 @@ namespace Gascoigne
   template<int DIM>
   void FaceQ2<DIM>::TransformationFace(FemInterface::Matrix& T1,FemInterface::Matrix& T2,int f) const
   {
-    const PatchMesh* PM = dynamic_cast<const PatchMesh*> (GetMesh());
+    const GascoigneMesh* PM = dynamic_cast<const GascoigneMesh*> (GetMesh());
     assert(PM);
     
     int dim = PM->dimension();

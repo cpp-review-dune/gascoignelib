@@ -61,8 +61,8 @@ OptAdaptor::OptAdaptor
 
 void OptAdaptor::prepare()
 {
-  n_aimed = Gascoigne::max_int(1,static_cast<int>(info.rfactor()*info.ncells()));
-  n_aimed = Gascoigne::min_int(info.maxnodes(),n_aimed);
+  n_aimed = std::max(1,static_cast<int>(info.rfactor()*info.ncells()));
+  n_aimed = std::min(info.maxnodes(),n_aimed);
 
   info.reset();
 
@@ -92,8 +92,8 @@ void OptAdaptor::prepare()
 	  double h_aimed = co * pow(eta[i],-1./alpha);
 	  double fac = h/h_aimed;
 	  eta[i] = fac;
-	  min = Gascoigne::min(min,fac);
-	  max = Gascoigne::max(max,fac);
+	  min = std::min(min,fac);
+	  max = std::max(max,fac);
 	}
     }
   info.minf() = min;

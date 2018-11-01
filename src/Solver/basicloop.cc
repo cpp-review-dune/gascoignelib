@@ -39,7 +39,7 @@ using namespace std;
 
 namespace Gascoigne
 {
-  BasicLoop::BasicLoop() : _MA(NULL), _ML(NULL), _SI(NULL), _iter(0), _paramfile(NULL), IOM("Results") 
+  BasicLoop::BasicLoop() : _MA(NULL), _ML(NULL), _SI(NULL), _iter(0), _paramfile(NULL)
 {
   _reload  = "none";
 }
@@ -132,7 +132,7 @@ void BasicLoop::PrintMeshInformation(int outputlevel) const
     {
       for(int l=0;l<GetMeshAgent()->nlevels();l++)
         {
-          const MeshInterface* M = GetMeshAgent()->GetMesh(l);
+          const GascoigneMesh* M = GetMeshAgent()->GetMesh(l);
           cout << l << " [n,c] " << M->nnodes() << " " << M->ncells() << endl;
         }
     }
@@ -242,7 +242,8 @@ string BasicLoop::Solve(VectorInterface& u, VectorInterface& f, string name)
   GetMultiLevelSolver()->GetSolver()->SetPeriodicVector(u);
   GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(u);
   
-  string status = GetMultiLevelSolver()->Solve(u,f,GetSolverInfos()->GetNLInfo());
+  string status = GetMultiLevelSolver()->
+    Solve(u,f,GetSolverInfos()->GetNLInfo());
   _clock_solve.stop();
 
   _clock_write.start();

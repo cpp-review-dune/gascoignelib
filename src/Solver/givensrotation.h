@@ -25,7 +25,7 @@
 #ifndef __givensrotation_h
 #define __givensrotation_h
 
-#include "solverinterface.h"
+#include "stdsolver.h"
 
 /*---------------------------------------------------------------*/
  

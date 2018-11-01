@@ -51,7 +51,7 @@ class DwrFem2d : public Q22d
   ~DwrFem2d();
 
   void BasicInit(const ParamFile* paramfile);
-  void ReInit(const MeshInterface* MP);
+  void ReInit(const GascoigneMesh* MP);
 };
 
 /*---------------------------------------------------*/
@@ -70,7 +70,7 @@ class DwrFem3d : public Q23d
   ~DwrFem3d();
 
   void BasicInit(const ParamFile* paramfile);
-  void ReInit(const MeshInterface* MP);
+  void ReInit(const GascoigneMesh* MP);
 };
 
 /*---------------------------------------------------*/

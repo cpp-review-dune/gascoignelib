@@ -18,10 +18,10 @@ namespace Gascoigne
   void DG<BASE>::BasicInit(const ParamFile *pf){}
 
   template <class BASE>
-  void DG<BASE>::ReInit(const MeshInterface *M)
+  void DG<BASE>::ReInit(const GascoigneMesh *M)
   {
     _dofhandler.InitFromGascoigneMesh(M);
-    _mesh = dynamic_cast<const GascoigneMesh *>(M);
+    _mesh = M;
     assert(_mesh);
   }
 

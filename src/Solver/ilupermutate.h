@@ -25,7 +25,7 @@
 #ifndef __ilupermutate_H
 #define __ilupermutate_H
 
-#include  "meshinterface.h"
+#include "gascoignemesh.h"
 #include  "compvector.h"
 #include  "columnstencil.h"
 
@@ -35,7 +35,7 @@ class StreamDirection
 {
     int      dimension;
     int      dx,dy,dz;
-    const MeshInterface* M;
+    const GascoigneMesh* M;
     const ColumnStencil* S;
     const GlobalVector&  X;
 
@@ -43,7 +43,7 @@ class StreamDirection
     
     
   public:
-    StreamDirection (const MeshInterface* m, const StencilInterface *s,
+    StreamDirection (const GascoigneMesh* m, const StencilInterface *s,
 		     const GlobalVector& x);
     
     void Permutate    (IntVector &perm,const IntVector d);
@@ -57,12 +57,12 @@ class VecDirection
     Vertex2d dir2d;
     Vertex3d dir3d;
     int      dimension;
-    const MeshInterface* M;
+    const GascoigneMesh* M;
 
     void Permutate    (IntVector &perm);
     
   public:
-    VecDirection (const MeshInterface* m);
+    VecDirection (const GascoigneMesh* m);
 
     void Permutate    (IntVector &perm,DoubleVector v);
 

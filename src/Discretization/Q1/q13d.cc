@@ -21,6 +21,7 @@
 *
 **/
 
+#include "hangingnodes.h"
 
 #include  "q13d.h"
 #include  "galerkinintegrator.h"
@@ -49,7 +50,9 @@ Q13d::Q13d() : Q1()
 
 HNStructureInterface* Q13d::NewHNStructure()
 {
-  return new HNStructureQ13d;
+  return new HangingNodes<3,2>;
+  
+  //  return new HNStructureQ13d;
 }
 
 /* ----------------------------------------- */
@@ -212,7 +215,7 @@ void Q13d::InterpolateSolution(GlobalVector& u, const GlobalVector& uold) const
   w[4][0] = 10; w[4][1] = 0;  w[4][2] = 2;  w[4][3] = 18; w[4][4] = 20;
   w[5][0] = 22; w[5][1] = 18; w[5][2] = 20; w[5][3] = 24; w[5][4] = 26;
   
-  const PatchMesh* PM = dynamic_cast<const PatchMesh*>(GetMesh());
+  const GascoigneMesh* PM = dynamic_cast<const GascoigneMesh*>(GetMesh());
   assert(PM);
 
   for(int iq=0;iq<PM->npatches();++iq)
@@ -281,6 +284,8 @@ void Q13d::ConstructInterpolator(MgInterpolatorInterface* I, const MeshTransferI
 	return;
       }
   }
+  abort();
+  
 
   MgInterpolatorMatrix* IP = dynamic_cast<MgInterpolatorMatrix*>(I);
   assert(IP);
@@ -495,8 +500,8 @@ int Q13d::GetCellNumber(const Vertex3d& p0, Vertex3d& p, int c0) const
       {
         double x = GetMesh()->vertex3d(GetMesh()->vertex_of_cell(iq,j))[d];
         
-        min = Gascoigne::min(min,x);
-        max = Gascoigne::max(max,x);
+        min = std::min(min,x);
+        max = std::max(max,x);
       }
       if((p0[d]<min)||(p0[d]>max)) 
       {

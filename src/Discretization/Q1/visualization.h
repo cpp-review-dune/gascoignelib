@@ -25,7 +25,7 @@
 #ifndef __visualization_h
 #define __visualization_h
 
-#include  "meshinterface.h"
+#include  "gascoignemesh.h"
 #include  "visudata.h"
 #include  "visudatainfo.h"
 #include  "gnuplot.h"
@@ -44,7 +44,7 @@ class Visualization
 
   /* Data */
 
-  const MeshInterface*   mesh;
+  const GascoigneMesh*   mesh;
   const VisuData*        PointData;
   const VisuData*        CellData;
   const VisuDataInfo*    PointDataInfo;
@@ -123,7 +123,7 @@ class Visualization
   Visualization(const Visualization&);
   Visualization& operator=(const Visualization&);
 
-  void SetMesh(const MeshInterface* M) {mesh = M;}
+  void SetMesh(const GascoigneMesh* M) {mesh = M;}
 
   /* Functions */
 

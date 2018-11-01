@@ -23,7 +23,6 @@
 
 
 #include  "vecalgo.h"
-#include  "gascoignemath.h"
 #include  <algorithm>
 #include  "giota.h"
 

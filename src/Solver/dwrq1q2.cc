@@ -30,7 +30,7 @@ namespace Gascoigne
 {
 /*--------------------------------------------------------*/
 
-DwrQ1Q2::DwrQ1Q2(SolverInterface& SR) : S(SR) 
+DwrQ1Q2::DwrQ1Q2(StdSolver& SR) : S(SR) 
 { 
   primalproblem  = S.GetProblemDescriptor();
   discretization = S.GetDiscretization();

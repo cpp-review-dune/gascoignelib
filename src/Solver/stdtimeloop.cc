@@ -61,9 +61,9 @@ void StdTimeLoop::BasicInit(const ParamFile* paramfile, const ProblemContainer* 
 
 string StdTimeLoop::SolveTimePrimal(VectorInterface& u, VectorInterface& f)
 {
-  GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(f);
-  GetMultiLevelSolver()->GetSolver()->SetPeriodicVector(u);
-  GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(u);
+  GetTimeSolver()->SetBoundaryVector(f);
+  GetTimeSolver()->SetPeriodicVector(u);
+  GetTimeSolver()->SetBoundaryVector(u);
   string status = GetMultiLevelSolver()->Solve(u,f,GetSolverInfos()->GetNLInfo());
 
   return status;
@@ -89,7 +89,7 @@ void StdTimeLoop::adaptive_run(const std::string& problemlabel)
 
       if (_iter==1) 
         {
-          GetMultiLevelSolver()->GetSolver()->OutputSettings();
+          GetTimeSolver()->OutputSettings();
           InitSolution(u);
         }
 
@@ -104,20 +104,20 @@ void StdTimeLoop::adaptive_run(const std::string& problemlabel)
       //
       // rhs fuer alten Zeitschritt
       //
-      GetMultiLevelSolver()->GetSolver()->GetGV(f).zero();
-      GetMultiLevelSolver()->GetSolver()->TimeRhsOperator(f,u);
-      GetMultiLevelSolver()->GetSolver()->TimeRhs(1,f);
+      GetTimeSolver()->GetGV(f).zero();
+      GetTimeSolver()->TimeRhsOperator(f,u);
+      GetTimeSolver()->TimeRhs(1,f);
       
       // neuer Zeitschritt
       //
       _timeinfo.iteration(_iter);
       TimeInfoBroadcast();
 
-      GetMultiLevelSolver()->GetSolver()->TimeRhs(2,f);
+      GetTimeSolver()->TimeRhs(2,f);
       SolveTimePrimal(u,f);
       Output(u,_s_resultsdir+"/solve");
       
-      StdSolver* S = dynamic_cast<StdSolver*>(GetMultiLevelSolver()->GetSolver());
+      StdSolver* S = dynamic_cast<StdSolver*>(GetTimeSolver());
       assert(S);
       if (_estimator=="energy")
 	{
@@ -155,9 +155,9 @@ void StdTimeLoop::InitSolution(VectorInterface& u)
     {
       VectorInterface f("ff");
       GetMultiLevelSolver()->ReInitVector(f);
-      GetMultiLevelSolver()->GetSolver()->L2Projection(u,f);
+      GetTimeSolver()->L2Projection(u,f);
       GetMultiLevelSolver()->DeleteVector(f);
-      GetMultiLevelSolver()->GetSolver()->Write(u,_s_resultsdir+"/initialu");
+      GetTimeSolver()->Write(u,_s_resultsdir+"/initialu");
     }
   else
     {
@@ -180,16 +180,16 @@ void StdTimeLoop::run(const std::string& problemlabel)
   
   cout << "\nMesh [l,nn,nc]: ";
   cout << GetMeshAgent()->nlevels() << " " << GetMeshAgent()->nnodes() << " " << GetMeshAgent()->ncells() << endl;
-  GetMultiLevelSolver()->GetSolver()->OutputSettings();
+  GetTimeSolver()->OutputSettings();
   
   TimeInfoBroadcast();
 
   // Anfangswerte
   InitSolution(u);
   
-  GetMultiLevelSolver()->GetSolver()->SetPeriodicVector(u);
-  GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(u);
-  GetMultiLevelSolver()->GetSolver()->Visu(_s_resultsdir+"/solve",u,0);
+  GetTimeSolver()->SetPeriodicVector(u);
+  GetTimeSolver()->SetBoundaryVector(u);
+  GetTimeSolver()->Visu(_s_resultsdir+"/solve",u,0);
 
   for (_iter=1; _iter<=_niter; _iter++)
     {
@@ -200,16 +200,16 @@ void StdTimeLoop::run(const std::string& problemlabel)
       //
       // rhs fuer alten Zeitschritt
       //
-      GetMultiLevelSolver()->GetSolver()->GetGV(f).zero();
-      GetMultiLevelSolver()->GetSolver()->TimeRhsOperator(f,u);
-      GetMultiLevelSolver()->GetSolver()->TimeRhs(1,f);
+      GetTimeSolver()->GetGV(f).zero();
+      GetTimeSolver()->TimeRhsOperator(f,u);
+      GetTimeSolver()->TimeRhs(1,f);
       
       // neuer Zeitschritt
       //
       _timeinfo.iteration(_iter);
       TimeInfoBroadcast();
 
-      GetMultiLevelSolver()->GetSolver()->TimeRhs(2,f);
+      GetTimeSolver()->TimeRhs(2,f);
 
       SolveTimePrimal(u,f);
       Output(u,_s_resultsdir+"/solve");

@@ -39,7 +39,7 @@ void PatchDiscretization::Structure(SparseStructureInterface* SI) const
   assert(S);
 
   S->build_begin(n());
-  for(int iq=0;iq<GetPatchMesh()->npatches();iq++)
+  for(int iq=0;iq<GetMesh()->npatches();iq++)
     {
       nvector<int> indices = GetLocalIndices(iq);
       S->build_add(indices.begin(), indices.end());
@@ -51,10 +51,10 @@ void PatchDiscretization::Structure(SparseStructureInterface* SI) const
 
 void PatchDiscretization::Transformation(FemInterface::Matrix& T, int iq) const
 {
-  int dim = GetPatchMesh()->dimension();
-  int ne = GetPatchMesh()->nodes_per_patch();
+  int dim = GetMesh()->dimension();
+  int ne = GetMesh()->nodes_per_patch();
 
-  nvector<int> indices = *GetPatchMesh()->IndicesOfPatch(iq);
+  nvector<int> indices = *GetMesh()->IndicesOfPatch(iq);
   assert(ne==indices.size());
 
   T.memory(dim,ne);
@@ -62,7 +62,7 @@ void PatchDiscretization::Transformation(FemInterface::Matrix& T, int iq) const
     {
       for(int ii=0;ii<ne;ii++)
 	{
-	  Vertex2d v = GetPatchMesh()->vertex2d(indices[ii]);
+	  Vertex2d v = GetMesh()->vertex2d(indices[ii]);
 	  T(0,ii) = v.x();               
 	  T(1,ii) = v.y();
 	}
@@ -71,7 +71,7 @@ void PatchDiscretization::Transformation(FemInterface::Matrix& T, int iq) const
     {
       for(int ii=0;ii<ne;ii++)
 	{
-	  Vertex3d v = GetPatchMesh()->vertex3d(indices[ii]);
+	  Vertex3d v = GetMesh()->vertex3d(indices[ii]);
 	  T(0,ii) = v.x();               
 	  T(1,ii) = v.y();
 	  T(2,ii) = v.z();
@@ -88,14 +88,14 @@ void PatchDiscretization::Form(GlobalVector& f, const GlobalVector& u, const Equ
   GlobalToGlobalData();
   EQ.SetParameterData(__QP);
 
-  for(int iq=0;iq<GetPatchMesh()->npatches();++iq)
+  for(int iq=0;iq<GetMesh()->npatches();++iq)
     {
       Transformation(T,iq);
       GetFem()->ReInit(T);
 
       GlobalToLocal(__U,u,iq);
       EQ.point_cell(GetMesh()->material_patch(iq));
-      //EQ.cell(GetPatchMesh(),iq,__U,__QN);
+      //EQ.cell(GetMesh(),iq,__U,__QN);
       GetIntegrator()->Form(EQ,__F,*GetFem(),__U,__QN,__QC);
       LocalToGlobal(f,__F,iq,d);
     }
@@ -110,14 +110,14 @@ void PatchDiscretization::AdjointForm(GlobalVector& f, const GlobalVector& u, co
   GlobalToGlobalData();
   EQ.SetParameterData(__QP);
 
-  for(int iq=0;iq<GetPatchMesh()->npatches();++iq)
+  for(int iq=0;iq<GetMesh()->npatches();++iq)
     {
       Transformation(T,iq);
       GetFem()->ReInit(T);
 
       GlobalToLocal(__U,u,iq);
       EQ.point_cell(GetMesh()->material_patch(iq));
-      //EQ.cell(GetPatchMesh(),iq,__U,__QN);
+      //EQ.cell(GetMesh(),iq,__U,__QN);
       GetIntegrator()->AdjointForm(EQ,__F,*GetFem(),__U,__QN,__QC);
       LocalToGlobal(f,__F,iq,d);
     }
@@ -163,14 +163,14 @@ void PatchDiscretization::Matrix(MatrixInterface& A, const GlobalVector& u, cons
   GlobalToGlobalData();
   EQ.SetParameterData(__QP);
 
-  for(int iq=0;iq<GetPatchMesh()->npatches();++iq)
+  for(int iq=0;iq<GetMesh()->npatches();++iq)
     {
       Transformation(T,iq);
       GetFem()->ReInit(T);
 
       GlobalToLocal(__U,u,iq);
       EQ.point_cell(GetMesh()->material_patch(iq));
-      //EQ.cell(GetPatchMesh(),iq,__U,__QN);
+      //EQ.cell(GetMesh(),iq,__U,__QN);
       GetIntegrator()->Matrix(EQ,__E,*GetFem(),__U,__QN,__QC);
       LocalToGlobal(A,__E,iq,d);
     }
@@ -214,7 +214,7 @@ void PatchDiscretization::BoundaryMatrix(MatrixInterface& A, const GlobalVector&
 void PatchDiscretization::MassMatrix(MatrixInterface& A) const
 {
   nmatrix<double> T;
-  for(int iq=0;iq<GetPatchMesh()->npatches();++iq)
+  for(int iq=0;iq<GetMesh()->npatches();++iq)
     {
       Transformation(T,iq);
       GetFem()->ReInit(T);
@@ -229,7 +229,7 @@ void Gascoigne::PatchDiscretization::MassForm(GlobalVector& f, const GlobalVecto
 {
   nmatrix<double> T;
 
-  for(int iq=0;iq<GetPatchMesh()->npatches();++iq)
+  for(int iq=0;iq<GetMesh()->npatches();++iq)
   {
     Transformation(T,iq);
     GetFem()->ReInit(T);
@@ -258,7 +258,7 @@ void PatchDiscretization::ComputeError(const GlobalVector& u, LocalVector& err, 
   GlobalToGlobalData();
   ES->SetParameterData(__QP);
 
-  for(int iq=0; iq<GetPatchMesh()->npatches(); iq++)
+  for(int iq=0; iq<GetMesh()->npatches(); iq++)
     {
       Transformation(T,iq);
       GetFem()->ReInit(T);
@@ -268,7 +268,7 @@ void PatchDiscretization::ComputeError(const GlobalVector& u, LocalVector& err, 
 	{
 	  err(0,c) += lerr(0,c);
 	  err(1,c) += lerr(1,c);
-	  err(2,c) = Gascoigne::max(err(2,c),lerr(2,c));
+	  err(2,c) = std::max(err(2,c),lerr(2,c));
 	}
     }
   for(int c=0;c<ncomp;c++)  
@@ -287,7 +287,7 @@ void PatchDiscretization::Rhs(GlobalVector& f, const DomainRightHandSide& RHS, d
   GlobalToGlobalData();
   RHS.SetParameterData(__QP);
 
-  for(int iq=0;iq<GetPatchMesh()->npatches();++iq)
+  for(int iq=0;iq<GetMesh()->npatches();++iq)
     {
       Transformation(T,iq);
       GetFem()->ReInit(T);
@@ -349,10 +349,10 @@ void PatchDiscretization::InitFilter(nvector<double>& F) const
   PF->ReInit(GetMesh()->nnodes(),GetMesh()->nhanging());
   nmatrix<double> T;
 
-  int nv = GetPatchMesh()->nodes_per_patch();
+  int nv = GetMesh()->nodes_per_patch();
   EntryMatrix  E(nv,1);
 
-  for(int iq=0;iq<GetPatchMesh()->npatches();++iq)
+  for(int iq=0;iq<GetMesh()->npatches();++iq)
     {
       Transformation(T,iq);
       GetFem()->ReInit(T);
@@ -360,7 +360,7 @@ void PatchDiscretization::InitFilter(nvector<double>& F) const
       double cellsize = GetIntegrator()->MassMatrix(E,*GetFem());
       PF->AddDomainPiece(cellsize);
 
-      nvector<int> ind = *GetPatchMesh()->IndicesOfPatch(iq);
+      nvector<int> ind = *GetMesh()->IndicesOfPatch(iq);
 
       for(int j=0; j<ind.size(); j++)
 	{
@@ -467,7 +467,7 @@ void PatchDiscretization::DiracRhsPoint(GlobalVector& f,const DiracRightHandSide
 
 void Gascoigne::PatchDiscretization::GlobalToLocalCell(LocalVector& U, const GlobalVector& u, int iq) const
 {
-  IntVector cells = GetGascoigneMesh()->GetPatchIndexHandler().GetPatch2Cell(iq);
+  IntVector cells = GetMesh()->GetPatchIndexHandler().GetPatch2Cell(iq);
   U.ReInit(u.ncomp(),cells.size());
 
   for(int i=0;i<cells.size();i++)
@@ -519,7 +519,7 @@ double PatchDiscretization::ComputeDomainFunctional(const GlobalVector& u, const
   
   nmatrix<double> T;
   double j=0.;
-  for(int iq=0;iq<GetPatchMesh()->npatches();++iq)
+  for(int iq=0;iq<GetMesh()->npatches();++iq)
     {
       Transformation(T,iq);
       GetFem()->ReInit(T);
@@ -622,7 +622,7 @@ void Gascoigne::PatchDiscretization::EvaluateParameterRightHandSide(GlobalVector
   GlobalToGlobalData();
   CF.SetParameterData(__QP);
 
-  for(int iq=0;iq<GetPatchMesh()->npatches();++iq)
+  for(int iq=0;iq<GetMesh()->npatches();++iq)
     {
       Transformation(T,iq);
       GetFem()->ReInit(T);

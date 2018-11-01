@@ -91,7 +91,7 @@ void PointIlu::ConstructStructure(const IntVector& perm, const MatrixInterface& 
   int zmax = 1;
   for(int i=0;i<n;i++)
     {
-      zmax = Gascoigne::max_int(zmax,AS->rowsize(i));
+      zmax = std::max(zmax,AS->rowsize(i));
     }
   IntVector ppi(zmax), picol(zmax);
 

@@ -28,6 +28,7 @@
 #include  "nvector.h"
 #include  "nmatrix.h"
 #include  <cassert>
+#include <cmath>
 
 /*------------------------------------------------------*/
 
@@ -246,7 +247,7 @@ class CompVector : public nvector<T>
       
       while( first < last)
         {
-          d = Gascoigne::max( d, fabs(*first));
+          d = std::max( d, fabs(*first));
           first += N;
         }
       return d;
@@ -259,7 +260,7 @@ class CompVector : public nvector<T>
       
       while( first < last)
         {
-          d = Gascoigne::min( d, *first);
+          d = std::min( d, *first);
           first += N;
         }
       return d;
@@ -272,7 +273,7 @@ class CompVector : public nvector<T>
       
       while( first < last)
         {
-          d = Gascoigne::max( d, *first);
+          d = std::max( d, *first);
           first += N;
         }
       return d;
@@ -285,7 +286,7 @@ class CompVector : public nvector<T>
       
       while( first < last)
 	{
-	  (*first) = Gascoigne::max(val,(*first));
+	  (*first) = std::max(val,(*first));
 	  first += N;
 	}
     }

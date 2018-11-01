@@ -23,8 +23,7 @@
 
 
 #include  "cginfo.h"
-#include  "math.h"
-#include  "gascoignemath.h"
+#include <cmath>
 #include  <iostream>
 
 using namespace std;
@@ -123,7 +122,7 @@ void ControlData::reset()
 void CGInfo::compute_reduction_rate()
 {
   double b = CD.residual()/CD.firstresidual();
-  double p = 1./max_int(1,CD.iteration());
+  double p = 1./std::max(1,CD.iteration());
   SD.rate() = pow(b,p);  
 }
 

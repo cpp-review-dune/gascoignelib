@@ -87,16 +87,16 @@ void Q1LpsStab3d::BasicInit(const ParamFile* paramfile, const HNStructureInterfa
 void Q1LpsStab2d::Transformation(FemInterface::Matrix& T, int iq) const
 {
   int dim = 2;
-  int ne = GetPatchMesh()->nodes_per_cell(iq);
+  int ne = GetMesh()->nodes_per_cell(iq);
 
-  nvector<int> indices = GetPatchMesh()->CoarseIndices(iq);
+  nvector<int> indices = GetMesh()->CoarseIndices(iq);
   assert(ne==indices.size());
 
   T.memory(dim,ne);
 
   for(int ii=0;ii<ne;ii++)
     {
-      Vertex2d v = GetPatchMesh()->vertex2d(indices[ii]);
+      Vertex2d v = GetMesh()->vertex2d(indices[ii]);
       T(0,ii) = v.x();               
       T(1,ii) = v.y();
     }
@@ -107,16 +107,16 @@ void Q1LpsStab2d::Transformation(FemInterface::Matrix& T, int iq) const
 void Q1LpsStab3d::Transformation(FemInterface::Matrix& T, int iq) const
 {
   int dim = 3;
-  int ne = GetPatchMesh()->nodes_per_cell(iq);
+  int ne = GetMesh()->nodes_per_cell(iq);
 
-  nvector<int> indices = GetPatchMesh()->CoarseIndices(iq);
+  nvector<int> indices = GetMesh()->CoarseIndices(iq);
   assert(ne==indices.size());
 
   T.memory(dim,ne);
 
   for(int ii=0;ii<ne;ii++)
     {
-      Vertex3d v = GetPatchMesh()->vertex3d(indices[ii]);
+      Vertex3d v = GetMesh()->vertex3d(indices[ii]);
       T(0,ii) = v.x();               
       T(1,ii) = v.y();
       T(2,ii) = v.z();

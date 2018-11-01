@@ -1,26 +1,26 @@
 /**
-*
-* Copyright (C) 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011 by the Gascoigne
-*3D authors
-*
-* This file is part of Gascoigne 3D
-*
-* Gascoigne 3D is free software: you can redistribute it
-* and/or modify it under the terms of the GNU General Public
-* License as published by the Free Software Foundation, either
-* version 3 of the License, or (at your option) any later
-* version.
-*
-* Gascoigne 3D is distributed in the hope that it will be
-* useful, but WITHOUT ANY WARRANTY; without even the implied
-* warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-* PURPOSE.  See the GNU General Public License for more
-* details.
-*
-* Please refer to the file LICENSE.TXT for further information
-* on this license.
-*
-**/
+ *
+ * Copyright (C) 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011 by the Gascoigne
+ *3D authors
+ *
+ * This file is part of Gascoigne 3D
+ *
+ * Gascoigne 3D is free software: you can redistribute it
+ * and/or modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation, either
+ * version 3 of the License, or (at your option) any later
+ * version.
+ *
+ * Gascoigne 3D is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more
+ * details.
+ *
+ * Please refer to the file LICENSE.TXT for further information
+ * on this license.
+ *
+ **/
 
 
 #ifndef __SolverInterface_h
@@ -39,7 +39,7 @@
 #include "meshinterface.h"
 #include "meshtransferinterface.h"
 #include "mginterpolatorinterface.h"
-#include "numericinterface.h"
+//#include "numericinterface.h"
 #include "paramfile.h"
 #include "problemdescriptorinterface.h"
 #include "vectorinterface.h"
@@ -69,12 +69,8 @@ namespace Gascoigne
   private:
   protected:
   public:
-    SolverInterface()
-    {
-    }
-    virtual ~SolverInterface()
-    {
-    }
+    SolverInterface() {}
+    virtual ~SolverInterface() {}
 
     virtual std::string GetName() const = 0;
 
@@ -327,5 +323,5 @@ namespace Gascoigne
                                   const VectorInterface &gf,
                                   const VectorInterface &gz) const = 0;
   };
-}
+} // namespace Gascoigne
 #endif

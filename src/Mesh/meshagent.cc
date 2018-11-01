@@ -224,7 +224,7 @@ void MeshAgent::AssemblePeriodicBoundaries()
 
     for (int i = 0; i < n; i++)
     {
-      MeshInterface* p_mesh = GMG->GetGascoigneMesh(i);
+      GascoigneMesh* p_mesh = GMG->GetGascoigneMesh(i);
       GascoigneMesh* GMP    = dynamic_cast<GascoigneMesh*>(p_mesh);
       assert(GMP);
  

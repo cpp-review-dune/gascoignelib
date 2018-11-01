@@ -55,7 +55,7 @@ namespace Gascoigne
       return edges->size();
     }
     void SparseStructureDiag(SparseStructure *S) const;
-    void ReInit(const MeshInterface *m);
+    void ReInit(const GascoigneMesh *m);
 
     void MatrixDiag(int ncomp, MatrixInterface &A) const;
     void Average(GlobalVector &u) const;

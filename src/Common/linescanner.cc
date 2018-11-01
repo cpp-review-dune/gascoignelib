@@ -23,7 +23,6 @@
 
 
 #include  "linescanner.h"
-#include  "gascoignemath.h"
 #include  "stlio.h"
 #include  "stringutil.h"
 

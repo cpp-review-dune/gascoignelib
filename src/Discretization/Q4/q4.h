@@ -44,14 +44,14 @@ namespace Gascoigne
 
       nvector<int> GetLocalIndices(int iq) const
       {
-        return *GetPatchMesh()->IndicesOfQ4Patch(iq);
+        return *GetMesh()->IndicesOfQ4Patch(iq);
       }
 
     public:
       Q4() : PatchDiscretization(), HN(NULL) { }
       virtual ~Q4() { }
 
-      void ReInit(const MeshInterface* MP);
+      void ReInit(const GascoigneMesh* MP);
       void Structure(SparseStructureInterface* S) const;
 
       void Form(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const;

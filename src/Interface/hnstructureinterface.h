@@ -27,7 +27,7 @@
 
 
 #include  "gascoigne.h"
-#include  "meshinterface.h"
+#include  "gascoignemesh.h"
 #include  "matrixinterface.h"
 #include  "sparsestructure.h"
 
@@ -58,7 +58,7 @@ namespace Gascoigne
       HNStructureInterface() {}
       virtual ~HNStructureInterface() {}
 
-      virtual void ReInit(const MeshInterface* m)=0;
+      virtual void ReInit(const GascoigneMesh* m)=0;
       virtual void MatrixDiag(int ncomp, MatrixInterface& A) const=0;
       virtual void SparseStructureDiag(SparseStructure* S) const=0;
 

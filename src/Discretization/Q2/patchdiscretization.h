@@ -26,7 +26,6 @@
 #define  __PatchDiscretization_h
 
 #include  "basicdiscretization.h"
-#include  "patchmesh.h"
 #include  "gascoignemesh.h"
 
 
@@ -65,16 +64,9 @@ protected:
     abort();
   }
   
-  const PatchMesh* GetPatchMesh() const {
-    const PatchMesh* MP = dynamic_cast<const PatchMesh*>(GetMesh());
-    assert(MP);
-    return MP;
-  }
-
-  const GascoigneMesh*  GetGascoigneMesh() const {
-    const GascoigneMesh* MP = dynamic_cast<const GascoigneMesh*>(GetMesh());
-    assert(MP);
-    return MP;
+  const GascoigneMesh* GetMesh() const
+  {
+    return __MP;
   }
   
   double ComputePointValue(const GlobalVector& u, const Vertex2d& p0,int comp) const;

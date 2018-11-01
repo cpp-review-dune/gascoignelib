@@ -32,8 +32,7 @@
 #include <numeric>
 #include <iterator>
 #include <vector>
-
-#include "gascoignemath.h"
+#include <cmath>
 
 /*----------------------------------------------*/
 
@@ -243,7 +242,7 @@ namespace Gascoigne
     double n(0);
     while (first != last)
     {
-      n = Gascoigne::max(n, fabs(*first));
+      n = std::max(n, fabs(*first));
       first++;
     }
     return n;
@@ -322,7 +321,7 @@ namespace Gascoigne
 
     while (first != last)
     {
-      d = Gascoigne::max(d, fabs((*first)));
+      d = std::max(d, fabs((*first)));
       first++;
     }
     return d;
@@ -340,7 +339,7 @@ namespace Gascoigne
 
     while (first != last)
     {
-      d = Gascoigne::min(d, fabs((*first)));
+      d = std::min(d, fabs((*first)));
       first++;
     }
     return d;

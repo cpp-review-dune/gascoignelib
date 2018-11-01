@@ -44,8 +44,8 @@ namespace Gascoigne
 
 class BasicDiscretization : public DiscretizationInterface
 {
- private:
-   const MeshInterface*  __MP;
+ protected:
+   const GascoigneMesh*  __MP;
    mutable DataContainer __q;
   
  protected:
@@ -58,9 +58,9 @@ class BasicDiscretization : public DiscretizationInterface
    mutable LocalParameterData  __QP;
    
    virtual const DataContainer& GetDataContainer() const {return __q;}
-   virtual void SetDataContainer(const DataContainer& q) const {__q = q;}
+   virtual void SetDataContainer(const DataContainer& q)  {__q = q;}
 
-   virtual const MeshInterface* GetMesh() const { assert(__MP); return __MP;}
+   virtual const GascoigneMesh* GetMesh() const { assert(__MP); return __MP;}
 
    virtual void GlobalToGlobalData() const;
    virtual void GlobalToLocal(LocalVector& U, const GlobalVector& u, int iq) const {
@@ -84,7 +84,7 @@ class BasicDiscretization : public DiscretizationInterface
    ~BasicDiscretization();
    
    void BasicInit(const ParamFile* pf) {}
-   void ReInit   (const MeshInterface* MP) {__MP=MP;}
+   void ReInit   (const GascoigneMesh* MP) {__MP=MP;}
    
    virtual void AddNodeVector(const std::string& name, const GlobalVector* q) const {
      __q.AddNodeVector(name,q);

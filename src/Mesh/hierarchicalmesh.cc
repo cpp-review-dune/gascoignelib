@@ -30,7 +30,9 @@
 #include  "giota.h"
 #include  "stringutil.h"
 
+#include <random>
 #include <algorithm>
+
 
 
 using namespace std;
@@ -192,12 +194,11 @@ void HierarchicalMesh::random_refine(double p, int c)
 
   IntVector v(ncells());
 
-  iota(v.begin(),v.end(),0);
+  for (int i=0;i<ncells();++i)
+    if (random()%100<100.0*p)
+      cell_ref.push_back(i);
 
-  std::cerr << " Random_sample noch nicht implementiert!!!" << std::endl;
-  abort();
-  //random_sample(v.begin(),v.end(),cell_ref.begin(),cell_ref.end());
-
+  
   if (c)
     {
       int nq = ncells();
@@ -214,7 +215,7 @@ void HierarchicalMesh::random_patch_coarsen(double p, int r)
   int nq = ncells();
   int nc = 1+static_cast<int>(p*nq);      
 
-  nc = Gascoigne::min_int(nc,nq);
+  nc = std::min(nc,nq);
   if (p<0) nc=0;
 
   IntVector cell_coarsen(nc), cell_refine;
@@ -241,17 +242,19 @@ void HierarchicalMesh::random_patch_refine(double p, int c)
   int nq = ncells();
   int nc = 1+static_cast<int>(p*nq);      
 
-  nc = Gascoigne::min_int(nc,nq);
+  nc = std::min(nc,nq);
   if (p<0) nc=0;
+  assert(p>0);
+  
 
-  IntVector cell_ref(nc), cell_coarse;
-  IntVector v(ncells());
-  iota(v.begin(),v.end(),0);
+  IntVector cell_ref, cell_coarse;
 
-  std::cerr << " Random_sample noch nicht implementiert!!!" << std::endl;
-  abort();
-  //  random_sample(v.begin(),v.end(),cell_ref.begin(),cell_ref.end());
-
+  while (cell_ref.size()==0)
+    for (int i=0;i<ncells();++i)
+      if (random()%ncells()<100*p)
+	cell_ref.push_back(i);
+  cout << cell_ref << endl;
+  
   if (c)
     {
       int nq = ncells();

@@ -96,12 +96,10 @@ void Q23d::InterpolateSolution(GlobalVector& u, const GlobalVector& uold) const
   w[4][0] = 10; w[4][1] = 0;  w[4][2] = 2;  w[4][3] = 18; w[4][4] = 20;
   w[5][0] = 22; w[5][1] = 18; w[5][2] = 20; w[5][3] = 24; w[5][4] = 26;
   
-  const PatchMesh* PM = dynamic_cast<const PatchMesh*>(GetMesh());
-  assert(PM);
 
-  for(int iq=0;iq<PM->npatches();++iq)
+  for(int iq=0;iq<GetMesh()->npatches();++iq)
     {
-      IntVector vi = *PM->IndicesOfPatch(iq);
+      IntVector vi = *GetMesh()->IndicesOfPatch(iq);
 
       for(int j=0; j<nodes.size(); j++)
 	{
@@ -159,10 +157,10 @@ int Q23d::GetPatchNumber(const Vertex3d& p0, Vertex3d& p) const
 {
   int iq;
   
-  for(iq=0; iq<GetPatchMesh()->npatches(); ++iq)
+  for(iq=0; iq<GetMesh()->npatches(); ++iq)
   {
     bool found = true;
-    const IntVector& IOP = GetPatchMesh()->CoarseIndices(iq);
+    const IntVector& IOP = GetMesh()->CoarseIndices(iq);
     
     for(int d=0; d<3; ++d)
     {
@@ -172,8 +170,8 @@ int Q23d::GetPatchNumber(const Vertex3d& p0, Vertex3d& p) const
       {
         double x = GetMesh()->vertex3d(IOP[j])[d];
         
-        min = Gascoigne::min(min,x);
-        max = Gascoigne::max(max,x);
+        min = std::min(min,x);
+        max = std::max(max,x);
       }
       if((p0[d]<min)||(p0[d]>max)) 
       {
@@ -203,7 +201,7 @@ int Q23d::GetPatchNumber(const Vertex3d& p0, Vertex3d& p) const
     }
   }
 
-  if(iq<GetPatchMesh()->npatches())
+  if(iq<GetMesh()->npatches())
   {
     return iq;
   }

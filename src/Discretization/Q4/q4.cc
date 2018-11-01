@@ -37,7 +37,7 @@ namespace Gascoigne
 
 void Q4::GlobalToLocalCell(LocalVector& U, const GlobalVector& u, int iq) const
 {
-  IntVector cells = GetGascoigneMesh()->GetPatchIndexHandler().GetQ4Patch2Cell(iq);
+  IntVector cells = GetMesh()->GetPatchIndexHandler().GetQ4Patch2Cell(iq);
   U.ReInit(u.ncomp(),cells.size());
 
   for(int i=0;i<cells.size();i++)
@@ -64,10 +64,10 @@ void Q4::LocalToGlobal(MatrixInterface& A, EntryMatrix& E, int iq, double s) con
 
 void Q4::Transformation(FemInterface::Matrix& T, int iq) const
 {
-  int dim = GetPatchMesh()->dimension();
-  int ne = GetPatchMesh()->nodes_per_q4patch();
+  int dim = GetMesh()->dimension();
+  int ne = GetMesh()->nodes_per_q4patch();
 
-  nvector<int> indices = *GetPatchMesh()->IndicesOfQ4Patch(iq);
+  nvector<int> indices = *GetMesh()->IndicesOfQ4Patch(iq);
   assert(ne==indices.size());
 
   T.memory(dim,ne);
@@ -75,7 +75,7 @@ void Q4::Transformation(FemInterface::Matrix& T, int iq) const
   {
     for(int ii=0; ii<ne; ii++)
     {
-      Vertex2d v = GetPatchMesh()->vertex2d(indices[ii]);
+      Vertex2d v = GetMesh()->vertex2d(indices[ii]);
       T(0,ii) = v.x();
       T(1,ii) = v.y();
     }
@@ -84,7 +84,7 @@ void Q4::Transformation(FemInterface::Matrix& T, int iq) const
   {
     for(int ii=0; ii<ne; ii++)
     {
-      Vertex3d v = GetPatchMesh()->vertex3d(indices[ii]);
+      Vertex3d v = GetMesh()->vertex3d(indices[ii]);
       T(0,ii) = v.x();
       T(1,ii) = v.y();
       T(2,ii) = v.z();
@@ -94,7 +94,7 @@ void Q4::Transformation(FemInterface::Matrix& T, int iq) const
 
 /**********************************************************/
 
-void Q4::ReInit(const MeshInterface* MP)
+void Q4::ReInit(const GascoigneMesh* MP)
 {
   PatchDiscretization::ReInit(MP);
   HN->ReInit(MP);
@@ -108,7 +108,7 @@ void Q4::Structure(SparseStructureInterface* SI) const
   assert(S);
 
   S->build_begin(n());
-  for(int iq=0; iq<GetPatchMesh()->nq4patches(); iq++)
+  for(int iq=0; iq<GetMesh()->nq4patches(); iq++)
   {
     nvector<int> indices = GetLocalIndices(iq);
     HN->CondenseHanging(indices);
@@ -127,13 +127,13 @@ void Q4::Form(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double
   GlobalToGlobalData();
   EQ.SetParameterData(__QP);
 
-  for(int iq=0; iq<GetPatchMesh()->nq4patches(); iq++)
+  for(int iq=0; iq<GetMesh()->nq4patches(); iq++)
   {
     Transformation(T,iq);
     GetFem()->ReInit(T);
 
     GlobalToLocal(__U,u,iq);
-    //EQ.cell(GetPatchMesh(),iq,__U,__QN);
+    //EQ.cell(GetMesh(),iq,__U,__QN);
     GetIntegrator()->Form(EQ,__F,*GetFem(),__U,__QN,__QC);
     PatchDiscretization::LocalToGlobal(f,__F,iq,d);
   }
@@ -148,13 +148,13 @@ void Q4::AdjointForm(GlobalVector& f, const GlobalVector& u, const Equation& EQ,
   GlobalToGlobalData();
   EQ.SetParameterData(__QP);
 
-  for(int iq=0; iq<GetPatchMesh()->nq4patches(); iq++)
+  for(int iq=0; iq<GetMesh()->nq4patches(); iq++)
   {
     Transformation(T,iq);
     GetFem()->ReInit(T);
 
     GlobalToLocal(__U,u,iq);
-    //EQ.cell(GetPatchMesh(),iq,__U,__QN);
+    //EQ.cell(GetMesh(),iq,__U,__QN);
     GetIntegrator()->AdjointForm(EQ,__F,*GetFem(),__U,__QN,__QC);
     PatchDiscretization::LocalToGlobal(f,__F,iq,d);
   }
@@ -164,7 +164,7 @@ void Q4::AdjointForm(GlobalVector& f, const GlobalVector& u, const Equation& EQ,
 
 void Q4::BoundaryForm(GlobalVector& f, const GlobalVector& u, const IntSet& Colors, const BoundaryEquation& BE, double d) const
 {
-  int dim = GetPatchMesh()->dimension();
+  int dim = GetMesh()->dimension();
   nmatrix<double> T;
 
   GlobalToGlobalData();
@@ -172,7 +172,7 @@ void Q4::BoundaryForm(GlobalVector& f, const GlobalVector& u, const IntSet& Colo
 
   /// die cell2patch - liste
 
-  const nvector<IntVector>& q4patch2cell = GetGascoigneMesh()->GetPatchIndexHandler().GetAllQ4Patch2Cell();
+  const nvector<IntVector>& q4patch2cell = GetMesh()->GetPatchIndexHandler().GetAllQ4Patch2Cell();
 
   nvector<int> cell2q4patch(GetMesh()->ncells());
   for(int p=0; p<q4patch2cell.size(); p++)
@@ -224,13 +224,13 @@ void Q4::Matrix(MatrixInterface& A, const GlobalVector& u, const Equation& EQ, d
   GlobalToGlobalData();
   EQ.SetParameterData(__QP);
 
-  for(int iq=0; iq<GetPatchMesh()->nq4patches(); ++iq)
+  for(int iq=0; iq<GetMesh()->nq4patches(); ++iq)
   {
     Transformation(T,iq);
     GetFem()->ReInit(T);
 
     GlobalToLocal(__U,u,iq);
-    //EQ.cell(GetPatchMesh(),iq,__U,__QN);
+    //EQ.cell(GetMesh(),iq,__U,__QN);
     GetIntegrator()->Matrix(EQ,__E,*GetFem(),__U,__QN,__QC);
     LocalToGlobal(A,__E,iq,d);
   }
@@ -244,7 +244,7 @@ void Q4::Matrix(MatrixInterface& A, const GlobalVector& u, const Equation& EQ, d
 
 void Q4::BoundaryMatrix(MatrixInterface& A, const GlobalVector& u, const IntSet& Colors, const BoundaryEquation& BE, double d) const
 {
-  int dim = GetPatchMesh()->dimension();
+  int dim = GetMesh()->dimension();
   nmatrix<double> T;
 
   GlobalToGlobalData();
@@ -252,7 +252,7 @@ void Q4::BoundaryMatrix(MatrixInterface& A, const GlobalVector& u, const IntSet&
 
   /// die cell2patch - liste
 
-  const nvector<IntVector>& q4patch2cell = GetGascoigneMesh()->GetPatchIndexHandler().GetAllQ4Patch2Cell();
+  const nvector<IntVector>& q4patch2cell = GetMesh()->GetPatchIndexHandler().GetAllQ4Patch2Cell();
 
   nvector<int> cell2q4patch(GetMesh()->ncells());
 
@@ -299,7 +299,7 @@ void Q4::BoundaryMatrix(MatrixInterface& A, const GlobalVector& u, const IntSet&
 void Q4::MassMatrix(MatrixInterface& A) const
 {
   nmatrix<double> T;
-  for(int iq=0; iq<GetPatchMesh()->nq4patches(); ++iq)
+  for(int iq=0; iq<GetMesh()->nq4patches(); ++iq)
   {
     Transformation(T,iq);
     GetFem()->ReInit(T);
@@ -316,7 +316,7 @@ void Q4::MassForm(GlobalVector& f, const GlobalVector& u, const TimePattern& TP,
 {
   nmatrix<double> T;
 
-  for(int iq=0; iq<GetPatchMesh()->nq4patches(); ++iq)
+  for(int iq=0; iq<GetMesh()->nq4patches(); ++iq)
   {
     Transformation(T,iq);
     GetFem()->ReInit(T);
@@ -343,7 +343,7 @@ void Q4::ComputeError(const GlobalVector& u, LocalVector& err, const ExactSoluti
   GlobalToGlobalData();
   ES->SetParameterData(__QP);
 
-  for(int iq=0; iq<GetPatchMesh()->nq4patches(); iq++)
+  for(int iq=0; iq<GetMesh()->nq4patches(); iq++)
   {
     Transformation(T,iq);
     GetFem()->ReInit(T);
@@ -353,7 +353,7 @@ void Q4::ComputeError(const GlobalVector& u, LocalVector& err, const ExactSoluti
     {
       err(0,c) += lerr(0,c);
       err(1,c) += lerr(1,c);
-      err(2,c) = Gascoigne::max(err(2,c),lerr(2,c));
+      err(2,c) = std::max(err(2,c),lerr(2,c));
     }
   }
   for(int c=0;c<ncomp;c++)
@@ -372,7 +372,7 @@ void Q4::Rhs(GlobalVector& f, const DomainRightHandSide& RHS, double s) const
   GlobalToGlobalData();
   RHS.SetParameterData(__QP);
 
-  for(int iq=0; iq<GetPatchMesh()->nq4patches(); ++iq)
+  for(int iq=0; iq<GetMesh()->nq4patches(); ++iq)
   {
     Transformation(T,iq);
     GetFem()->ReInit(T);
@@ -387,14 +387,14 @@ void Q4::Rhs(GlobalVector& f, const DomainRightHandSide& RHS, double s) const
 
 void Q4::BoundaryRhs(GlobalVector& f, const IntSet& Colors,  const BoundaryRightHandSide& NRHS, double s) const
 {  
-  int dim = GetPatchMesh()->dimension();
+  int dim = GetMesh()->dimension();
   nmatrix<double> T;
 
   GlobalToGlobalData();
   NRHS.SetParameterData(__QP);
   /// die cell2patch - liste
 
-  const nvector<IntVector>& q4patch2cell = GetGascoigneMesh()->GetPatchIndexHandler().GetAllQ4Patch2Cell();
+  const nvector<IntVector>& q4patch2cell = GetMesh()->GetPatchIndexHandler().GetAllQ4Patch2Cell();
 
   nvector<int> cell2q4patch(GetMesh()->ncells());
   for(int p=0; p<q4patch2cell.size(); p++)
@@ -447,10 +447,10 @@ void Q4::InitFilter(nvector<double>& F) const
   PF->ReInit(GetMesh()->nnodes(),GetMesh()->nhanging());
   nmatrix<double> T;
 
-  int nv = GetPatchMesh()->nodes_per_q4patch();
+  int nv = GetMesh()->nodes_per_q4patch();
   EntryMatrix  E(nv,1);
 
-  for(int iq=0; iq<GetPatchMesh()->nq4patches(); ++iq)
+  for(int iq=0; iq<GetMesh()->nq4patches(); ++iq)
   {
     Transformation(T,iq);
     GetFem()->ReInit(T);
@@ -458,7 +458,7 @@ void Q4::InitFilter(nvector<double>& F) const
     double cellsize = GetIntegrator()->MassMatrix(E,*GetFem());
     PF->AddDomainPiece(cellsize);
 
-    nvector<int> ind = *GetPatchMesh()->IndicesOfQ4Patch(iq);
+    nvector<int> ind = *GetMesh()->IndicesOfQ4Patch(iq);
     HN->CondenseHanging(E,ind);
 
     for(int j=0; j<ind.size(); j++)
@@ -476,14 +476,14 @@ void Q4::InitFilter(nvector<double>& F) const
 
 double Q4::ComputeBoundaryFunctional(const GlobalVector& u, const IntSet& Colors, const BoundaryFunctional& BF) const
 {
-  int dim = GetPatchMesh()->dimension();
+  int dim = GetMesh()->dimension();
   nmatrix<double> T;
 
   GlobalToGlobalData();
   BF.SetParameterData(__QP);
   /// die cell2patch - liste
 
-  const nvector<IntVector>& q4patch2cell = GetGascoigneMesh()->GetPatchIndexHandler().GetAllQ4Patch2Cell();
+  const nvector<IntVector>& q4patch2cell = GetMesh()->GetPatchIndexHandler().GetAllQ4Patch2Cell();
 
   nvector<int> cell2q4patch(GetMesh()->ncells());
   for(int p=0; p<q4patch2cell.size(); p++)
@@ -534,7 +534,7 @@ double Q4::ComputeDomainFunctional(const GlobalVector& u, const DomainFunctional
 
   nmatrix<double> T;
   double j=0.;
-  for(int iq=0; iq<GetPatchMesh()->nq4patches(); ++iq)
+  for(int iq=0; iq<GetMesh()->nq4patches(); ++iq)
   {
     Transformation(T,iq);
     GetFem()->ReInit(T);

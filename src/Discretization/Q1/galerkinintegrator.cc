@@ -752,7 +752,7 @@ void GalerkinIntegrator<DIM>::ErrorsByExactSolution(LocalVector& dst, const FemI
 	  if (DIM==3) a += _UH[c].z() * _UH[c].z();
 	  dst(1,c) += weight * a;
 	  // L8 Norm
-	  dst(2,c) = Gascoigne::max(dst(2,c),fabs(_UH[c].m()));
+	  dst(2,c) = std::max(dst(2,c),fabs(_UH[c].m()));
 	}
     }
 }

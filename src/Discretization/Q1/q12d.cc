@@ -270,7 +270,7 @@ namespace Gascoigne
     nodes[3][1] = 6;
     nodes[3][2] = 8;
 
-    const PatchMesh *PM = dynamic_cast<const PatchMesh *>(GetMesh());
+    const GascoigneMesh *PM = dynamic_cast<const GascoigneMesh *>(GetMesh());
     assert(PM);
 
     for (int iq = 0; iq < PM->npatches(); ++iq)
@@ -311,12 +311,13 @@ namespace Gascoigne
     {
       MgInterpolatorNested *IP = dynamic_cast<MgInterpolatorNested *>(I);
       if (IP)
-      {
-        IP->BasicInit(MT);
-        return;
-      }
+	{
+	  IP->BasicInit(MT);
+	  return;
+	}
     }
-
+    abort();
+    
     MgInterpolatorMatrix *IP = dynamic_cast<MgInterpolatorMatrix *>(I);
     assert(IP);
     const GascoigneMeshTransfer *GT =
@@ -591,8 +592,8 @@ namespace Gascoigne
           {
             double x = GetMesh()->vertex2d(GetMesh()->vertex_of_cell(iq, j))[d];
 
-            min = Gascoigne::min(min, x);
-            max = Gascoigne::max(max, x);
+            min = std::min(min, x);
+            max = std::max(max, x);
           }
           if ((p0[d] < min) || (p0[d] > max))
           {

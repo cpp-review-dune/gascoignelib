@@ -4,7 +4,7 @@
 #define __dgdofs_H
 /*----------------------------   dgdofs.h     ---------------------------*/
 
-#include "meshinterface.h"
+#include "gascoignemesh.h"
 #include "nvector.h"
 #include "dgbase.h"
 #include "matrixinterface.h"
@@ -46,7 +46,7 @@ namespace Gascoigne
 
   public:
     // INIT
-    void InitFromGascoigneMesh(const MeshInterface *M);
+    void InitFromGascoigneMesh(const GascoigneMesh *M);
 
     // ACCESS
     int nelements() const

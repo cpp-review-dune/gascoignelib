@@ -71,6 +71,11 @@ class NavierStokes3d : public NavierStokes2d
     { 
       _h = h;
     }
+  void point(double h, const FemFunction& U, const Vertex2d& v) const 
+    { 
+      std::cerr << "cannot use 2d-point in 3d!" << std::endl;
+      abort();
+    }
 
   void Form(VectorIterator b, const FemFunction& U, const TestFunction& N) const;
 
