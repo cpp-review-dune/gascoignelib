@@ -33,6 +33,7 @@
 #include  "sparsestructure.h"
 #include  "mginterpolatornested.h"
 #include  "pressurefilter.h"
+#include  "omp.h"
 
 namespace Gascoigne
 {
@@ -241,7 +242,7 @@ namespace Gascoigne
       integrator.BasicInit();
       LocalVector     __U,__F;
       LocalData       __QN, __QC;
-#pragma omp parallel for private(T,finiteelement,integrator,__U,__F,__QN, __QC) 
+      //#pragma omp parallel for private(T,finiteelement,integrator,__U,__F,__QN, __QC) 
       for(int iq=0;iq<GetDofHandler()->nelements(DEGREE);++iq)
 	{
 	  Transformation(T,iq);
