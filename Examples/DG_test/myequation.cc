@@ -92,8 +92,8 @@ namespace Gascoigne
 	b[1] += (U[1].m() -(*oldH)[1].m()) * N.m();
       }
     // ganz einfache stabilisierung...
-    b[0] += 0.1 * DT * (U[0].x()*N.x() + U[0].y()*N.y());
-    b[1] += 0.1 * DT * (U[1].x()*N.x() + U[1].y()*N.y());
+    b[0] += 0.0001 * DT * (U[0].x()*N.x() + U[0].y()*N.y());
+    b[1] += 0.0001 * DT * (U[1].x()*N.x() + U[1].y()*N.y());
     
     // div (vH)
     b[0] += DT * ( (*V)[0].m()*U[0].x() + (*V)[1].m()*U[0].y() ) * N.m();
@@ -119,8 +119,8 @@ namespace Gascoigne
     
     //stabilisierung
 
-    A(0,0) += 0.1 * DT * (M.x()*N.x() + M.y()*N.y());
-    A(1,1) += 0.1 * DT * (M.x()*N.x() + M.y()*N.y());
+    A(0,0) += 0.0001 * DT * (M.x()*N.x() + M.y()*N.y());
+    A(1,1) += 0.0001 * DT * (M.x()*N.x() + M.y()*N.y());
     
     // div (vH)
     A(0,0) += DT * ( (*V)[0].m()*M.x() + (*V)[1].m()*M.y() ) * N.m();
@@ -182,8 +182,8 @@ namespace Gascoigne
       }
     
     // Stabilisierung
-    b[0] += 0.1*DT * (Z[0].x()*N.x() + Z[0].y()*N.y());
-    b[1] += 0.1*DT * (Z[1].x()*N.x() + Z[1].y()*N.y());
+    b[0] += 0.0001*DT * (Z[0].x()*N.x() + Z[0].y()*N.y());
+    b[1] += 0.0001*DT * (Z[1].x()*N.x() + Z[1].y()*N.y());
     
     // //// div v*h +v grad h
     b[0]+=DT * ( (*V)[0].x() + (*V)[1].y() ) * Z[0].m() * N.m();
@@ -195,7 +195,7 @@ namespace Gascoigne
     // kopplung tensor
     
     // Exponentialfaktor
-            
+        
     double ef = exp(-C*(1.0-(*H)[1].m()));
    
     double DELTA = delta(*nextV);
@@ -236,6 +236,8 @@ namespace Gascoigne
     // Korreolistermkopplung in H
     b[0] += -Tref*DT*N.m()*f*(vd_y) * (*nextQ)[0].m();
     b[0] +=  Tref*DT*N.m()*f*(vd_x) * (*nextQ)[1].m(); 
+    
+    
   }
   
   void MyDualEquation::Matrix(EntryMatrix &A,
@@ -248,8 +250,8 @@ namespace Gascoigne
     A(1,1) += M.m() * N.m();
     
     // ganz einfache stabilisierung...
-    A(0,0) += 0.1*DT * (M.x()*N.x() + M.y()*N.y());
-    A(1,1) += 0.1*DT * (M.x()*N.x() + M.y()*N.y());
+    A(0,0) += 0.0001*DT * (M.x()*N.x() + M.y()*N.y());
+    A(1,1) += 0.0001*DT * (M.x()*N.x() + M.y()*N.y());
     
     //div vh 
     

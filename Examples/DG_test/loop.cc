@@ -332,8 +332,8 @@ void Loop::SolveDualProblem(vector<GlobalVector>& Ztotal,vector<GlobalVector>& Q
       GetMultiLevelSolver()->AddNodeVector("oldH",oldh);
       
       GetMultiLevelSolver()->GetSolver()->Rhs(f,DT);
-      
       GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(f);
+      GetMultiLevelSolver()->GetSolver()->Visu("Results/f",f,1000*ADAITER+m);
       GetMultiLevelSolver()->Zero(z);
       GetMultiLevelSolver()->GetSolver()->SetPeriodicVector(z);
       GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(z);
@@ -417,6 +417,10 @@ void Loop::SolveDualProblem(vector<GlobalVector>& Ztotal,vector<GlobalVector>& Q
     }
     Ztotal[0] = Ztotal[1];
     Qtotal[0] = Qtotal[1];
+    
+   GetMultiLevelSolver()->GetSolver()->GetGV(q)=Qtotal[0]; 
+    
+        GetMultiLevelSolver()->GetSolver()->Visu("Results/q",q,1000*ADAITER); 
 }
 
 void Loop::ETAProduct(DoubleVector& eta, const GlobalVector& F, const GlobalVector& Z, double wgt, int MC)
@@ -453,6 +457,7 @@ double Loop::DWRResidual(VectorInterface& f, VectorInterface& u,
   MyS->HNDistribute(f);
   
   ETAProduct(eta, MyS->GetGV(f), Z,1.0, MC);
+
   
   if (U1!="") MyS->DeleteNodeVector(U1);if (U2!="") MyS->DeleteNodeVector(U2);if (U3!="") MyS->DeleteNodeVector(U3);
   if (U4!="") MyS->DeleteNodeVector(U4);if (U5!="") MyS->DeleteNodeVector(U5);if (U6!="") MyS->DeleteNodeVector(U6);
@@ -463,8 +468,6 @@ double Loop::DWRResidual(VectorInterface& f, VectorInterface& u,
   DWRFEM.BasicInit(this->_paramfile);
   DiscretizationInterface* saveD = MyS->GetDiscretization();
   MyS->SetDiscretization(DWRFEM,true);
-  
-
   if (U1!="") MyS->AddNodeVector(U1,G1);if (U2!="") MyS->AddNodeVector(U2,G2);if (U3!="") MyS->AddNodeVector(U3,G3);
   if (U4!="") MyS->AddNodeVector(U4,G4);if (U5!="") MyS->AddNodeVector(U5,G5);if (U6!="") MyS->AddNodeVector(U6,G6);
   if (U7!="") MyS->AddNodeVector(U7,G7);if (U8!="") MyS->AddNodeVector(U8,G8);if (U9!="") MyS->AddNodeVector(U9,G9);
@@ -473,22 +476,21 @@ double Loop::DWRResidual(VectorInterface& f, VectorInterface& u,
   MyS->Form(f,u,-formwgt);
   MyS->SetBoundaryVectorZero(f);
   MyS->HNDistribute(f);
- 
-  
    ETAProduct(eta, MyS->GetGV(f), Z,1.0, MC);
+  
   /*
   ETAProduct(eta, MyS->GetGV(f), Z, 0.5*( weight_li+weight_re), MC);
   ETAProduct(eta, MyS->GetGV(f),OLDZ,0.5*weight_li, MC);
   ETAProduct(eta, MyS->GetGV(f),NEXTZ,0.5*weight_re, MC);
  
+ */
  
- 
- //ETAProduct(eta, MyS->GetGV(f), Z,1.0, MC);
   if (U1!="") MyS->DeleteNodeVector(U1);if (U2!="") MyS->DeleteNodeVector(U2);if (U3!="") MyS->DeleteNodeVector(U3);
   if (U4!="") MyS->DeleteNodeVector(U4);if (U5!="") MyS->DeleteNodeVector(U5);if (U6!="") MyS->DeleteNodeVector(U6);
   if (U7!="") MyS->DeleteNodeVector(U7);if (U8!="") MyS->DeleteNodeVector(U8);if (U9!="") MyS->DeleteNodeVector(U9);
   
-*/
+
+  
   
 MyS->SetDiscretization(*saveD);
   
@@ -1425,15 +1427,18 @@ void Loop::EstimateDualError(DoubleVector& eta,
   eta.zero(); eta1.zero();   eta2.zero();   eta3.zero();   eta4.zero(); eta5.zero(); eta6.zero(); eta7.zero(); 
   assert(eta.size() == MyS->GetMesh()->nnodes());
 
-  for (int m=2;m<=_M;++m)
+  for (int m=1;m<=_M;++m)
     {
       cout << "m="<< m << "\\Fehlerschaetzer DWR" << "\t";
       cout.precision(5);
-     
+    
      EstimateDWRprim(eta1, m,
 		     Htotal,Vtotal,Ztotal,
 		      h, oldh, v, oldv, f);
-      
+    
+ 
+ 
+  
       EstimateDWRdual(eta2, m, Htotal, Vtotal, Ztotal, Qtotal,
 		     z, nextz,
 		     v, nextv, 
@@ -1442,7 +1447,6 @@ void Loop::EstimateDualError(DoubleVector& eta,
 		      f);
 
      
-       
       EstimateDWRprimBurger(eta3, m,
 			    Vtotal, Htotal, Qtotal,
 			    v, oldv,
@@ -1454,6 +1458,7 @@ void Loop::EstimateDualError(DoubleVector& eta,
 			    h, oldh,nexth,
 			    q, nextq,
 			    z, nextz,f);
+			   
   /*    
     Splittingerror(eta5, m, Vtotal, Htotal,Qtotal,
 		    v, oldv,
@@ -1477,7 +1482,6 @@ void Loop::EstimateDualError(DoubleVector& eta,
       cout << endl;
       
     }
-  
   eta.add(0.5,eta1);
   
   eta.add(0.5,eta2);

@@ -32,12 +32,12 @@ namespace Gascoigne
     
     void operator()(VectorIterator b, const TestFunction& N, const Vertex2d& v) const 
     {
-      double x=v.x()-0.75;
-      double y=v.y()-0.25;
+  //    double x=v.x()-0.75;
+  //    double y=v.y()-0.25;
+    
       
-      
-      //  b[0] +=(exp(-10*x*x-10*y*y)) * N.m(); 
-      //  b[1] +=0;
+      // b[0] +=(exp(-10*x*x-10*y*y)) * N.m(); 
+       // b[1] +=0;
     }
   };
 
@@ -52,8 +52,12 @@ namespace Gascoigne
   
     void operator()(DoubleVector& b, const Vertex2d& v, int col) const 
     {
-      b[0]=0.5;
-      b[1]=1.0;
+        double x=v.x();
+        double y=v.y();
+        double x1=x-0.5;
+        
+      b[0]=(exp(-10*x1*x1-10*y*y))*(1-x*x)*(1-y*y); 
+      b[1]=(exp(-10*x1*x1-10*y*y))*(1-x*x)*(1-y*y); 
      	
     }
     
@@ -96,7 +100,7 @@ namespace Gascoigne
       double x = v.x()-0.75;
       double y = v.y()-0.25;
       
-      b[0]+= N.m()*exp(-10*x*x-10*y*y);
+      b[0]+= N.m()*(exp(-10*x*x-10*y*y))*(1-x*x)*(1-y*y);
     }
   };
   
@@ -129,22 +133,13 @@ namespace Gascoigne
     
     void operator()(VectorIterator b, const TestFunction& N, const Vertex2d& v) const 
     {
-      double x=( v.x()+0.5)*( v.x()+0.5)+(v.y()-0.2)*(v.y()-0.2);
-      double y=( v.x()-0.5)*( v.x()-0.5)+(v.y()+0.2)*(v.y()+0.2);
+        double x = v.x();
+      double y = v.y(); 
       
+     b[0]+= -v.y()*N.m()*(1-x*x)*(1-y*y) ; 
+     b[1]+=  v.x()*N.m()*(1-x*x)*(1-y*y) ;
+     
       
-      
-      //   double TG[2] = {TIME - DT + DT * (0.5-0.5*sqrt(1.0/3.0)),
-      //	      TIME - DT + DT * (0.5+0.5*sqrt(1.0/3.0))};
-      //for (int g=0;g<2;++g)
-      //{
-      TIME-=0.5*DT;
-      double w = 0.0;
-      // if (TIME<0.5)
-      w=cos(M_PI*TIME/10);
-      b[0] += w *(exp(-10*x)-exp(-10*y)) * N.m(); 
-      b[1] += w *(exp(-10*y)-exp(-10*x)) * N.m();
-      TIME+=0.5*DT;
     }
   };
 

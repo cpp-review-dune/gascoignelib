@@ -31,7 +31,7 @@ public:
   //  return 0.5 * (pow(U[0].x()-U[1].y(),2.0) +
 	//	  pow(U[1].y()+U[0].x(),2.0));
       
-      return (U[0].m()*exp(-10*x*x-10*y*y));
+      return (U[0].m()*exp(-10*x*x-10*y*y)*(1-x*x)*(1-y*y));
   }
 };
 

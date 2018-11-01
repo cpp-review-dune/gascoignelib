@@ -1,5 +1,5 @@
 SUBDIRS(
-  NavierStokes2D  DG_test
+  NavierStokes2D  DG_test DG_test_tra
 )
 
 LINK_LIBRARIES(${GASCOIGNE_LIBRARIES} )
