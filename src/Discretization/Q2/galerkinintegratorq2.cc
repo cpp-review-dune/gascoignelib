@@ -42,6 +42,7 @@ GalerkinIntegratorQ2<DIM>::~GalerkinIntegratorQ2<DIM>() {}
 template<int DIM>
 void GalerkinIntegratorQ2<DIM>::BasicInit()
 {
+  
   if (DIM==2)
     {
       if (!GalerkinIntegrator<DIM>::FormFormulaPointer())     GalerkinIntegrator<DIM>::FormFormulaPointer() = new QuadGauss9;
@@ -51,7 +52,7 @@ void GalerkinIntegratorQ2<DIM>::BasicInit()
     }
   else if (DIM==3)
     {
-      if (!GalerkinIntegrator<DIM>::FormFormulaPointer())     GalerkinIntegrator<DIM>::FormFormulaPointer() = new HexGauss27;
+      if (!GalerkinIntegrator<DIM>::FormFormulaPointer())   {std::cout <<"hhhhhhuuu"<<std::endl;  GalerkinIntegrator<DIM>::FormFormulaPointer() = new HexGauss27;}
       if (!GalerkinIntegrator<DIM>::MassFormulaPointer())     GalerkinIntegrator<DIM>::MassFormulaPointer() = new HexGauss27; // ?????
       if (!GalerkinIntegrator<DIM>::ErrorFormulaPointer())    GalerkinIntegrator<DIM>::ErrorFormulaPointer() = new HexGauss64;
       if (!GalerkinIntegrator<DIM>::BoundaryFormulaPointer()) GalerkinIntegrator<DIM>::BoundaryFormulaPointer() = new QuadGauss9;
