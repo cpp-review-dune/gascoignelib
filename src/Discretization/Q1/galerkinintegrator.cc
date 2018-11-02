@@ -34,26 +34,7 @@ template<int DIM>
 GalerkinIntegrator<DIM>::GalerkinIntegrator() : BasicIntegrator(),
   IFF(NULL), IFE(NULL), IFB(NULL), IFM(NULL)
 {
-  if (DIM==2)
-    {
-      FormFormulaPointer() = new QuadGauss4;
-      ErrorFormulaPointer() = new QuadGauss9;
-      BoundaryFormulaPointer() = new LineGauss2;
-      MassFormulaPointer() = new QuadGauss4;;
-      //if (!MassFormulaPointer())     MassFormulaPointer() = new QuadTrapez;
-    }
-  else if (DIM==3)
-    {
-      FormFormulaPointer() = new HexGauss8;
-      ErrorFormulaPointer() = new HexGauss27;
-      BoundaryFormulaPointer() = new QuadGauss4;
-      MassFormulaPointer() = new HexGauss8;
-//      if (!MassFormulaPointer())     MassFormulaPointer() = new HexTrapez;
-    }
-  assert(FormFormulaPointer());
-  assert(ErrorFormulaPointer());
-  assert(BoundaryFormulaPointer());
-  assert(MassFormulaPointer());
+ 
 }
 
 /* ----------------------------------------- */
@@ -61,6 +42,8 @@ GalerkinIntegrator<DIM>::GalerkinIntegrator() : BasicIntegrator(),
 template<int DIM>
 void GalerkinIntegrator<DIM>::BasicInit()
 {
+  std::cout << "GI: BasicInit" << std::endl;
+  
   if (DIM==2)
     {
       if (!FormFormulaPointer())     FormFormulaPointer() = new QuadGauss4;

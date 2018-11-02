@@ -62,22 +62,27 @@ void Q1Lps3d::Structure(SparseStructureInterface* SI) const
 
 void Q1Lps3d::StabForm(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const
 {
-  S->Form(f,u,EQ,d);
+  assert(0);
+  
+  //  S->Form(f,u,EQ,d);
 }
 
 /* ----------------------------------------- */
 
 void Q1Lps3d::Form(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const
 {
-  Q13d::Form(f,u,EQ,d);
-  S   ->Form(f,u,EQ,d);
+  assert(0);
+  // Q13d::Form(f,u,EQ,d);
+  // S   ->Form(f,u,EQ,d);
 }
 
 /* ----------------------------------------- */
 
 void Q1Lps3d::Matrix(MatrixInterface& A, const GlobalVector& u, const Equation& EQ, double d) const
 {
-  Q13d::Matrix(A,u,EQ,d);
-  S   ->Matrix(A,u,EQ,d);
+  assert(0);
+  
+  // Q13d::Matrix(A,u,EQ,d);
+  // S   ->Matrix(A,u,EQ,d);
 }
 }

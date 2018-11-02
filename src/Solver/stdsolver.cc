@@ -1,26 +1,26 @@
 /**
-*
-* Copyright (C) 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011 by the Gascoigne
-*3D authors
-*
-* This file is part of Gascoigne 3D
-*
-* Gascoigne 3D is free software: you can redistribute it
-* and/or modify it under the terms of the GNU General Public
-* License as published by the Free Software Foundation, either
-* version 3 of the License, or (at your option) any later
-* version.
-*
-* Gascoigne 3D is distributed in the hope that it will be
-* useful, but WITHOUT ANY WARRANTY; without even the implied
-* warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-* PURPOSE.  See the GNU General Public License for more
-* details.
-*
-* Please refer to the file LICENSE.TXT for further information
-* on this license.
-*
-**/
+ *
+ * Copyright (C) 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011 by the Gascoigne
+ *3D authors
+ *
+ * This file is part of Gascoigne 3D
+ *
+ * Gascoigne 3D is free software: you can redistribute it
+ * and/or modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation, either
+ * version 3 of the License, or (at your option) any later
+ * version.
+ *
+ * Gascoigne 3D is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more
+ * details.
+ *
+ * Please refer to the file LICENSE.TXT for further information
+ * on this license.
+ *
+ **/
 
 
 #include <iomanip>
@@ -77,14 +77,14 @@
 #include "q2lps2d.h"
 #include "q2lps3d.h"
 
-#include  "transformation2d.h"
-#include  "transformation3d.h"
-#include  "finiteelement.h"
-#include  "baseq12d.h"
-#include  "baseq13d.h"
-#include  "baseq22d.h"
-#include  "baseq23d.h"
-
+#include "baseq12d.h"
+#include "baseq13d.h"
+#include "baseq22d.h"
+#include "baseq23d.h"
+#include "elementintegrator.h"
+#include "finiteelement.h"
+#include "transformation2d.h"
+#include "transformation3d.h"
 
 #include "faceq1.h"
 #include "faceq2.h"
@@ -142,7 +142,7 @@ namespace Gascoigne
       , _ZP(NULL)
       , _FZP(NULL)
       , _PDX(NULL)
-	//      , _NI(NULL)
+      //      , _NI(NULL)
       , _distribute(true)
       , _ndirect(1000)
       , _directsolver(0)
@@ -347,7 +347,7 @@ namespace Gascoigne
     GetDiscretizationPointer() = &DI;
   }
 
-/*-------------------------------------------------------*/
+  /*-------------------------------------------------------*/
 
 #ifdef __WITH_THREADS__
   void StdSolver::ThreadPartitionMesh()
@@ -506,8 +506,7 @@ namespace Gascoigne
 
   /*-------------------------------------------------------*/
 
-  void StdSolver::BasicInit(const ParamFile *paramfile,
-                            const int dimension)
+  void StdSolver::BasicInit(const ParamFile *paramfile, const int dimension)
   //                            const NumericInterface *NI)
   {
     _paramfile = paramfile;
@@ -586,17 +585,9 @@ namespace Gascoigne
     if (dimension == 2)
     {
       if (discname == "CGQ1")
-	{
-	  return new CGDisc<2,1,
-			    FiniteElement<2,1, Transformation2d<BaseQ12d>, BaseQ12d>,
-			    GalerkinIntegrator<2> >;
-	}
+        return new CGDiscQ12d;
       else if (discname == "CGQ2")
-	{
-	  return new CGDisc<2,2,
-			    FiniteElement<2,1, Transformation2d<BaseQ22d>, BaseQ22d>,
-			    GalerkinIntegratorQ2<2> >;
-	}
+        return new CGDiscQ22d;
       else if (discname == "Q1")
         return new Q12d;
       else if (discname == "Q2")
@@ -627,17 +618,9 @@ namespace Gascoigne
     else if (dimension == 3)
     {
       if (discname == "CGQ1")
-	{
-	  return new CGDisc<3,1,
-			    FiniteElement<3,2, Transformation3d<BaseQ13d>, BaseQ13d>,
-			    GalerkinIntegrator<3> >;
-	}
+        return new CGDiscQ13d;
       else if (discname == "CGQ2")
-	{
-	  return new CGDisc<3,2,
-			    FiniteElement<3,2, Transformation3d<BaseQ23d>, BaseQ23d>,
-			    GalerkinIntegratorQ2<3> >;
-	}
+        return new CGDiscQ23d;
       else if (discname == "Q1")
         return new Q13d;
       else if (discname == "Q2")
@@ -1369,9 +1352,7 @@ namespace Gascoigne
     HNAverage(gx);
     HNAverageData();
 
-    const Equation *EQ = GetProblemDescriptor()->GetEquation();
-    assert(EQ);
-    GetDiscretization()->Form(GetGV(gy), GetGV(gx), *EQ, d);
+    GetDiscretization()->Form(GetGV(gy), GetGV(gx), *GetProblemDescriptor(), d);
 
     // Face
     if (GetFaceDiscretization())
@@ -1816,8 +1797,7 @@ namespace Gascoigne
     HNAverage(gu);
     HNAverageData();
 
-    GetDiscretization()->Matrix(
-        *GetMatrix(), u, *GetProblemDescriptor()->GetEquation(), d);
+    GetDiscretization()->Matrix(*GetMatrix(), u, *GetProblemDescriptor(), d);
 
     // Face
     if (GetFaceDiscretization())
@@ -2356,4 +2336,4 @@ namespace Gascoigne
     }
     return dz * f;
   }
-}
+} // namespace Gascoigne
