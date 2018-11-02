@@ -27,11 +27,33 @@
 
 #include  "equation.h"
 #include  "paramfile.h"
+#include "problemdescriptorinterface.h"
 
 /*-----------------------------------------*/
 
 namespace Gascoigne
 {
+  
+  class LaplaceData2d : virtual public ProblemData
+  {
+  public:
+    double visc;
+
+    LaplaceData2d()
+    {
+      visc = 1;
+    }
+    
+    LaplaceData2d(const ParamFile* pf)
+    {
+      DataFormatHandler DFH;
+      DFH.insert("visc",&visc,0.);
+      FileScanner FS(DFH, pf, "Equation");
+    }
+    
+  };
+  
+
 class Laplace2d : public virtual Equation
 {
   protected:
@@ -41,7 +63,12 @@ class Laplace2d : public virtual Equation
   public:
 
   Laplace2d();
-  Laplace2d(const ParamFile* pf);
+  Laplace2d(const LaplaceData2d& data)
+  {
+    visc = data.visc;
+  }
+  
+  
 
   std::string GetName()  const { return "Laplace2d";}
 

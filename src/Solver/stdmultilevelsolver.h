@@ -53,7 +53,7 @@ namespace Gascoigne
 
   class StdMultiLevelSolver
   {
-  private:
+  protected:///!!!!
     std::vector<StdSolver *> _SP;
     const MeshAgentInterface *_MAP;
     std::vector<MgInterpolatorInterface *> _Interpolator;

@@ -82,6 +82,7 @@
 #include "baseq22d.h"
 #include "baseq23d.h"
 #include "elementintegrator.h"
+#include "elementlpsintegrator.h"
 #include "finiteelement.h"
 #include "transformation2d.h"
 #include "transformation3d.h"
@@ -621,6 +622,8 @@ namespace Gascoigne
         return new CGDiscQ13d;
       else if (discname == "CGQ2")
         return new CGDiscQ23d;
+      else if (discname == "CGQ2Lps")
+        return new CGDiscQ23dLps;
       else if (discname == "Q1")
         return new Q13d;
       else if (discname == "Q2")

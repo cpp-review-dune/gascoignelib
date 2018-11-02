@@ -246,7 +246,7 @@ namespace Gascoigne
       for (int c = 0; c < u.ncomp(); ++c)
         U(0, c) = u(iq, c);
     }
-    void GlobalToLocalData(int iq, LocalData& QN, LocalData& QC) const
+    void GlobalToLocalData(int iq, LocalData &QN, LocalData &QC) const
     {
       const GlobalData &gnd = GetDataContainer().GetNodeData();
       QN.clear();
@@ -544,6 +544,27 @@ namespace Gascoigne
          FiniteElement<3, 2, Transformation3d<BaseQ23d>, BaseQ23d>,            \
          ElementIntegratorQ23d>
 
+
+  ////// LPS
+#define ElementIntegratorQ22dLps						\
+  ElementLpsIntegrator<2, QuadGauss9, QuadGauss16, LineGauss3, QuadGauss9>
+#define CGDiscQ22dLps                                                             \
+  CGDisc<2,                                                                    \
+         2,                                                                    \
+         FiniteElement<2,1, Transformation2d<BaseQ22d>, BaseQ22d>,	\
+         ElementIntegratorQ22dLps>
+
+
+#define ElementIntegratorQ23dLps					\
+  ElementLpsIntegrator<3, HexGauss27, HexGauss64, QuadGauss9, HexGauss27>
+#define CGDiscQ23dLps                                                             \
+  CGDisc<3,                                                                    \
+         2,                                                                    \
+         FiniteElement<3, 2, Transformation3d<BaseQ23d>, BaseQ23d>,            \
+         ElementIntegratorQ23dLps>
+
+
+  
 
 } // namespace Gascoigne
 

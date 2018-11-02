@@ -35,14 +35,6 @@ Laplace2d:: Laplace2d()
   visc = 1.;
 }
 
-/*-----------------------------------------*/
-
-Laplace2d::Laplace2d(const ParamFile* pf) : Equation()
-{
-  DataFormatHandler DFH;
-  DFH.insert("visc",&visc,1.);
-  FileScanner FS(DFH,pf,"Equation");
-}
  
 /*-----------------------------------------*/
 
