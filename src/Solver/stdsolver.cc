@@ -585,23 +585,9 @@ namespace Gascoigne
     if (dimension == 2)
     {
       if (discname == "CGQ1")
-      {
-        return new CGDisc<
-            2,
-            1,
-            FiniteElement<2, 1, Transformation2d<BaseQ12d>, BaseQ12d>,
-            ElementIntegrator<2, QuadGauss4, QuadGauss9, LineGauss2, QuadGauss4>
-            //			    GalerkinIntegrator<2>
-            >;
-      }
+        return new CGDiscQ12d;
       else if (discname == "CGQ2")
-      {
-        return new CGDisc<
-            2,
-            2,
-            FiniteElement<2, 1, Transformation2d<BaseQ22d>, BaseQ22d>,
-            GalerkinIntegratorQ2<2>>;
-      }
+        return new CGDiscQ22d;
       else if (discname == "Q1")
         return new Q12d;
       else if (discname == "Q2")
@@ -632,26 +618,9 @@ namespace Gascoigne
     else if (dimension == 3)
     {
       if (discname == "CGQ1")
-      {
-        return new CGDisc<
-	  3,
-	  1,
-	  FiniteElement<3, 2, Transformation3d<BaseQ13d>, BaseQ13d>,
-	  ElementIntegrator<3,HexGauss8,HexGauss27,QuadGauss4,HexGauss8>
-	  //	  GalerkinIntegrator<3>
-	>;
-	
-      }
+        return new CGDiscQ13d;
       else if (discname == "CGQ2")
-      {
-        return new CGDisc<
-	  3,
-	  2,
-	  FiniteElement<3, 2, Transformation3d<BaseQ23d>, BaseQ23d>,
-	  ElementIntegrator<3,HexGauss27,HexGauss64,QuadGauss9,HexGauss27>
-	  //	  GalerkinIntegratorQ2<3>
-	  >;
-      }
+        return new CGDiscQ23d;
       else if (discname == "Q1")
         return new Q13d;
       else if (discname == "Q2")
@@ -1383,9 +1352,7 @@ namespace Gascoigne
     HNAverage(gx);
     HNAverageData();
 
-    const Equation *EQ = GetProblemDescriptor()->GetEquation();
-    assert(EQ);
-    GetDiscretization()->Form(GetGV(gy), GetGV(gx), *EQ, d);
+    GetDiscretization()->Form(GetGV(gy), GetGV(gx), *GetProblemDescriptor(), d);
 
     // Face
     if (GetFaceDiscretization())
@@ -1830,8 +1797,7 @@ namespace Gascoigne
     HNAverage(gu);
     HNAverageData();
 
-    GetDiscretization()->Matrix(
-        *GetMatrix(), u, *GetProblemDescriptor()->GetEquation(), d);
+    GetDiscretization()->Matrix(*GetMatrix(), u, *GetProblemDescriptor(), d);
 
     // Face
     if (GetFaceDiscretization())

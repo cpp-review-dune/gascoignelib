@@ -198,9 +198,9 @@ bool Q2::HNZeroCheck(const GlobalVector& x) const
 
 /* ----------------------------------------- */
 
-void Q2::Matrix(MatrixInterface& A, const GlobalVector& u, const Equation& EQ, double d) const
+void Q2::Matrix(MatrixInterface& A, const GlobalVector& u, const ProblemDescriptorInterface& PD, double d) const
 {
-  PatchDiscretization::Matrix(A,u,EQ,d);
+  PatchDiscretization::Matrix(A,u,PD,d);
 
   HN->MatrixDiag(u.ncomp(),A);
 }

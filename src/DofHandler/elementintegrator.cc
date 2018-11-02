@@ -142,6 +142,7 @@ namespace Gascoigne
       BasicIntegrator::universal_point(FEM, _UH, U);
       BasicIntegrator::universal_point(FEM, _QH, Q);
       FEM.x(x);
+      
       EQ.SetFemData(_QH);
       EQ.point(h, _UH, x);
       for (int i = 0; i < FEM.n(); i++)

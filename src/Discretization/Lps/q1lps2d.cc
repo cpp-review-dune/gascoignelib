@@ -64,22 +64,28 @@ void Q1Lps2d::Structure(SparseStructureInterface* SI) const
 
 void Q1Lps2d::StabForm(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const
 {
-  S->Form(f,u,EQ,d);
+  assert(0);
+  
+  //  S->Form(f,u,EQ,d);
 }
 
 /* ----------------------------------------- */
 
 void Q1Lps2d::Form(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const
 {
-  Q12d::Form(f,u,EQ,d);
-  S   ->Form(f,u,EQ,d);
+  assert(0);
+  
+  // Q12d::Form(f,u,EQ,d);
+  // S   ->Form(f,u,EQ,d);
 }
 
 /* ----------------------------------------- */
 
 void Q1Lps2d::Matrix(MatrixInterface& A, const GlobalVector& u, const Equation& EQ, double d) const
 {
-  Q12d::Matrix(A,u,EQ,d);
-  S   ->Matrix(A,u,EQ,d);
+  assert(0);
+  
+  // Q12d::Matrix(A,u,EQ,d);
+  //  S   ->Matrix(A,u,EQ,d);
 }
 }
