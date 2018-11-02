@@ -1,9 +1,10 @@
-/*----------------------------   elementlpsintegrator.h     ---------------------------*/
+/*----------------------------   elementlpsintegrator.h
+ * ---------------------------*/
 /*      $Id:$                 */
 #ifndef __elementlpsintegrator_H
 #define __elementlpsintegrator_H
-/*----------------------------   elementlpsintegrator.h     ---------------------------*/
-
+/*----------------------------   elementlpsintegrator.h
+ * ---------------------------*/
 
 
 /**
@@ -29,9 +30,8 @@
  *
  **/
 
-#include "basicintegrator.h"
-#include "integrationformula.h"
-#include "integrationformulasummed.h"
+#include "elementintegrator.h"
+#include "lpsequation.h"
 
 namespace Gascoigne
 {
@@ -45,157 +45,185 @@ namespace Gascoigne
   /////////////////////////////////////////////
 
   template <int DIM, class IFF, class IFE, class IFB, class IFM>
-  class ElementLpsIntegrator : public ElementIntegrator<DIM,IFF,IFB,IFM>
+  class ElementLpsIntegrator : public ElementIntegrator<DIM, IFF, IFE, IFB, IFM>
   {
   private:
   protected:
-
   public:
     //
     ////  Con(De)structor
     //
 
-    ElementLpsIntegrator<DIM,IFF,IFE,IFB,IFM>(){};
-    ~ElementLpsIntegrator<DIM,IFF,IFE,IFB,IFM>(){};
+    ElementLpsIntegrator<DIM, IFF, IFE, IFB, IFM>(){};
+    ~ElementLpsIntegrator<DIM, IFF, IFE, IFB, IFM>(){};
 
     std::string GetName() const
     {
       return "ElementLpsIntegrator";
     }
 
-    void Rhs(const DomainRightHandSide &RHS,
-             LocalVector &F,
-             const FemInterface &FEM,
-             const LocalData &Q,
-             const LocalData &QC) const;
+    void Projection(FemFunction &NLPS, const FemInterface &FEM) const
+    {
+      for (int ii = 0; ii < FEM.n(); ii++)
+      {
+        FEM.init_test_functions(NLPS[ii], 1., ii);
+      }
+      if (DIM == 2)
+      {
+        NLPS[0].equ(-0.25, NLPS[4]);
+        NLPS[2].equ(-0.25, NLPS[4]);
+        NLPS[6].equ(-0.25, NLPS[4]);
+        NLPS[8].equ(-0.25, NLPS[4]);
+
+        NLPS[0].add(-0.5, NLPS[1], -0.5, NLPS[3]);
+        NLPS[2].add(-0.5, NLPS[1], -0.5, NLPS[5]);
+        NLPS[6].add(-0.5, NLPS[3], -0.5, NLPS[7]);
+        NLPS[8].add(-0.5, NLPS[5], -0.5, NLPS[7]);
+      }
+      else if (DIM == 3)
+      {
+        NLPS[0].equ(-0.125, NLPS[13]);
+        NLPS[2].equ(-0.125, NLPS[13]);
+        NLPS[6].equ(-0.125, NLPS[13]);
+        NLPS[8].equ(-0.125, NLPS[13]);
+        NLPS[18].equ(-0.125, NLPS[13]);
+        NLPS[20].equ(-0.125, NLPS[13]);
+        NLPS[24].equ(-0.125, NLPS[13]);
+        NLPS[26].equ(-0.125, NLPS[13]);
+
+        NLPS[0].add(-0.5, NLPS[1], -0.5, NLPS[3], -0.5, NLPS[9]);
+        NLPS[2].add(-0.5, NLPS[1], -0.5, NLPS[5], -0.5, NLPS[11]);
+        NLPS[6].add(-0.5, NLPS[3], -0.5, NLPS[7], -0.5, NLPS[15]);
+        NLPS[8].add(-0.5, NLPS[5], -0.5, NLPS[7], -0.5, NLPS[17]);
+        NLPS[18].add(-0.5, NLPS[19], -0.5, NLPS[21], -0.5, NLPS[9]);
+        NLPS[20].add(-0.5, NLPS[19], -0.5, NLPS[23], -0.5, NLPS[11]);
+        NLPS[24].add(-0.5, NLPS[21], -0.5, NLPS[25], -0.5, NLPS[15]);
+        NLPS[26].add(-0.5, NLPS[23], -0.5, NLPS[25], -0.5, NLPS[17]);
+
+        NLPS[0].add(-0.25, NLPS[4], -0.25, NLPS[10], -0.25, NLPS[12]);
+        NLPS[2].add(-0.25, NLPS[4], -0.25, NLPS[10], -0.25, NLPS[14]);
+        NLPS[6].add(-0.25, NLPS[4], -0.25, NLPS[16], -0.25, NLPS[12]);
+        NLPS[8].add(-0.25, NLPS[4], -0.25, NLPS[16], -0.25, NLPS[14]);
+        NLPS[18].add(-0.25, NLPS[22], -0.25, NLPS[10], -0.25, NLPS[12]);
+        NLPS[20].add(-0.25, NLPS[22], -0.25, NLPS[10], -0.25, NLPS[14]);
+        NLPS[24].add(-0.25, NLPS[22], -0.25, NLPS[16], -0.25, NLPS[12]);
+        NLPS[26].add(-0.25, NLPS[22], -0.25, NLPS[16], -0.25, NLPS[14]);
+      }
+    }
+
+
     void Form(const Equation &EQ,
               LocalVector &F,
               const FemInterface &FEM,
               const LocalVector &U,
               const LocalData &Q,
-              const LocalData &QC) const;
-    void AdjointForm(const Equation &EQ,
-                     LocalVector &F,
-                     const FemInterface &FEM,
-                     const LocalVector &U,
-                     const LocalData &Q,
-                     const LocalData &QC) const;
-    void BoundaryForm(const BoundaryEquation &BE,
-                      LocalVector &F,
-                      const FemInterface &FEM,
-                      const LocalVector &U,
-                      int ile,
-                      int col,
-                      const LocalData &Q,
-                      const LocalData &QC) const;
+              const LocalData &QC) const
+    {
+      ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::Form(EQ, F, FEM, U, Q, QC);
+
+
+      FemFunction NLPS(FEM.n());
+      FemFunction MLPS(FEM.n());
+      FemFunction UHP;
+
+      const LpsEquation &LEQ = dynamic_cast<const LpsEquation &>(EQ);
+
+      IFF IF;
+      Vertex<DIM> x, xi;
+
+      for (int k = 0; k < IF.n(); k++)
+      {
+        IF.xi(xi, k);
+        FEM.point(xi);
+
+        double vol = FEM.J();
+        double weight = IF.w(k) * vol;
+        double h =
+            ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::Volume2MeshSize(vol);
+
+        FEM.x(x);
+        BasicIntegrator::universal_point(
+            FEM, ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::_UH, U);
+        BasicIntegrator::universal_point(
+            FEM, ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::_QH, Q);
+
+        LEQ.SetFemData(ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::_QH);
+        LEQ.lpspoint(h, ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::_UH, x);
+
+        Projection(NLPS, FEM); // fuellt NLPS
+        BasicIntegrator::universal_point(UHP, U, NLPS);
+        for (int i = 0; i < FEM.n(); i++)
+          MLPS[i].equ(weight, NLPS[i]);
+
+        for (int i = 0; i < FEM.n(); i++)
+        {
+          LEQ.StabForm(F.start(i),
+                       ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::_UH,
+                       UHP,
+                       MLPS[i]);
+        }
+      }
+    }
+
     void Matrix(const Equation &EQ,
                 EntryMatrix &E,
                 const FemInterface &FEM,
                 const LocalVector &U,
                 const LocalData &Q,
-                const LocalData &QC) const;
-    void BoundaryMatrix(const BoundaryEquation &BE,
-                        EntryMatrix &E,
-                        const FemInterface &FEM,
-                        const LocalVector &U,
-                        int ile,
-                        int col,
-                        const LocalData &Q,
-                        const LocalData &QC) const;
-    double MassMatrix(EntryMatrix &E, const FemInterface &FEM) const;
-    void
-    BoundaryMassMatrix(EntryMatrix &E, const FemInterface &FEM, int ile) const;
-    void MassForm(const TimePattern &TP,
-                  LocalVector &F,
-                  const FemInterface &FEM,
-                  const LocalVector &U) const;
-
-    void RhsPoint(LocalVector &b,
-                  const FemInterface &E,
-                  const Vertex<DIM> &p,
-                  int comp) const;
-    void DiracRhsPoint(LocalVector &b,
-                       const FemInterface &E,
-                       const Vertex<DIM> &p,
-                       const DiracRightHandSide &DRHS,
-                       int j,
-                       const LocalData &Q,
-                       const LocalData &QC) const;
-    double ComputePointValue(const FemInterface &E,
-                             const Vertex<DIM> &p,
-                             const LocalVector &U,
-                             int comp) const;
-    double ComputeDomainFunctional(const DomainFunctional &F,
-                                   const FemInterface &FEM,
-                                   const LocalVector &U,
-                                   const LocalData &Q,
-                                   const LocalData &QC) const;
-    double ComputeErrorDomainFunctional(const DomainFunctional &F,
-                                        const FemInterface &FEM,
-                                        const LocalVector &U,
-                                        const LocalData &Q,
-                                        const LocalData &QC) const;
-    double ComputeBoundaryFunctional(const BoundaryFunctional &F,
-                                     const FemInterface &FEM,
-                                     int ile,
-                                     int col,
-                                     const LocalVector &U,
-                                     const LocalData &Q,
-                                     const LocalData &QC) const;
-    void EvaluateCellRightHandSide(LocalVector &F,
-                                   const DomainRightHandSide &CF,
-                                   const FemInterface &FEM,
-                                   const LocalData &Q,
-                                   const LocalData &QC) const;
-    void EvaluateBoundaryCellRightHandSide(LocalVector &F,
-                                           const BoundaryRightHandSide &CF,
-                                           const FemInterface &FEM,
-                                           int ile,
-                                           int col,
-                                           const LocalData &Q,
-                                           const LocalData &QC) const;
-
-    void ErrorsByExactSolution(LocalVector &dst,
-                               const FemInterface &FE,
-                               const ExactSolution &ES,
-                               const LocalVector &U,
-                               const LocalData &Q,
-                               const LocalData &QC) const;
-
-    void BoundaryRhs(const BoundaryRightHandSide &RHS,
-                     LocalVector &F,
-                     const FemInterface &FEM,
-                     int ile,
-                     int col,
-                     const LocalData &Q,
-                     const LocalData &QC) const;
-
-    void IntegrateMassDiag(DoubleVector &F, const FemInterface &FEM) const;
-
-    void IntegrateBoundaryMassDiag(DoubleVector &F,
-                                   const FemInterface &FEM,
-                                   int ile,
-                                   int col) const;
+                const LocalData &QC) const
+    {
+      ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::Matrix(EQ, E, FEM, U, Q, QC);
 
 
-    // no warning for overloaded virtual function (2d/3d)
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Woverloaded-virtual"
-    void RhsCurve(LocalVector &F,
-                  const FemInterface &FEM,
-                  Vertex<DIM> &xr0,
-                  Vertex<DIM> &xr1,
-                  double H,
-                  double ND0,
-                  double ND1,
-                  int ncomp,
-                  int comp) const;
-#pragma GCC diagnostic pop
+
+      assert(E.Ndof() == FEM.n());
+      assert(E.Mdof() == FEM.n());
+      assert(E.Ncomp() == U.ncomp());
+
+      FemFunction NLPS(FEM.n());
+      FemFunction MLPS(FEM.n());
+
+      const LpsEquation &LEQ = dynamic_cast<const LpsEquation &>(EQ);
+      
+      IFF IF;
+      
+      Vertex<DIM> x, xi;
+      for (int k = 0; k < IF.n(); k++)
+      {
+        IF.xi(xi, k);
+        FEM.point(xi);
+
+        double vol = FEM.J();
+        double weight = IF.w(k) * vol;
+        FEM.x(x);
+        BasicIntegrator::universal_point(FEM, ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::_UH, U);
+        BasicIntegrator::universal_point(FEM, ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::_QH, Q);
+        double h = ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::Volume2MeshSize(vol);
+        LEQ.SetFemData(ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::_QH);
+        LEQ.lpspointmatrix(h, ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::_UH, x);
+
+        Projection(NLPS,FEM);
+
+        for (int i = 0; i < FEM.n(); i++)
+          MLPS[i].equ(weight, NLPS[i]);
+
+        for (int j = 0; j < FEM.n(); j++)
+        {
+          for (int i = 0; i < FEM.n(); i++)
+          {
+            E.SetDofIndex(i, j);
+            LEQ.StabMatrix(E, ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::_UH, NLPS[i], MLPS[j]);
+          }
+        }
+      }
+    }
   };
 } // namespace Gascoigne
 
 
-/*----------------------------   elementlpsintegrator.h     ---------------------------*/
+/*----------------------------   elementlpsintegrator.h
+ * ---------------------------*/
 /* end of #ifndef __elementlpsintegrator_H */
 #endif
-/*----------------------------   elementlpsintegrator.h     ---------------------------*/
+/*----------------------------   elementlpsintegrator.h
+ * ---------------------------*/

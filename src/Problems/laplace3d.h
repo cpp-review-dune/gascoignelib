@@ -31,13 +31,40 @@
 
 namespace Gascoigne
 {
+
+  class LaplaceData3d : virtual public LaplaceData2d
+  {
+  public:
+    double betax, betay, betaz;
+
+    LaplaceData3d() : LaplaceData2d()
+    {
+    }
+    
+    LaplaceData3d(const ParamFile* pf) : LaplaceData2d(pf)
+    {
+      DataFormatHandler DFH;
+      DFH.insert("betax",&betax,0.);
+      DFH.insert("betay",&betay,0.);
+      DFH.insert("betaz",&betaz,0.);
+      FileScanner FS(DFH, pf, "Equation");
+    }
+    
+  };
+  
 class Laplace3d : public Laplace2d
 {
   double betax, betay, betaz;
 
 public:
 
-  Laplace3d(const ParamFile* pf);
+  Laplace3d(const LaplaceData3d& data) : Laplace2d(data)
+  {
+    betax = data.betax;
+    betay = data.betay;
+    betaz = data.betaz;
+  }
+  
 
   std::string GetName() const { return "Laplace3d";}
 

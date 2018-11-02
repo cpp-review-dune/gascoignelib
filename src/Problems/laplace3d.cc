@@ -30,16 +30,6 @@
 
 namespace Gascoigne
 {
-Laplace3d::Laplace3d(const ParamFile* pf) : 
-  Laplace2d(pf)
-{
-  DataFormatHandler DFH;
-  DFH.insert("betax",&betax,0.);
-  DFH.insert("betay",&betay,0.);
-  DFH.insert("betaz",&betaz,0.);
-  FileScanner FS(DFH, pf, "Equation");
-}
-
 /*-----------------------------------------*/
 
 void Laplace3d::Form(VectorIterator b, const FemFunction& U, const TestFunction& N) const
