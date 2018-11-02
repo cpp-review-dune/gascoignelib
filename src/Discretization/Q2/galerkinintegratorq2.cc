@@ -30,7 +30,10 @@ namespace Gascoigne
 /* ----------------------------------------- */
 
 template<int DIM>
-GalerkinIntegratorQ2<DIM>::GalerkinIntegratorQ2() {}
+GalerkinIntegratorQ2<DIM>::GalerkinIntegratorQ2() : GalerkinIntegrator<DIM>()
+{
+  BasicInit();
+}
   
 /* ----------------------------------------- */
 

@@ -34,6 +34,7 @@
 #include  "mginterpolatornested.h"
 #include  "pressurefilter.h"
 #include  "omp.h"
+#include "stopwatch.h"
 
 namespace Gascoigne
 {
@@ -242,7 +243,7 @@ namespace Gascoigne
       integrator.BasicInit();
       LocalVector     __U,__F;
       LocalData       __QN, __QC;
-      //#pragma omp parallel for private(T,finiteelement,integrator,__U,__F,__QN, __QC) 
+#pragma omp parallel for private(T,finiteelement,integrator,__U,__F,__QN, __QC) 
       for(int iq=0;iq<GetDofHandler()->nelements(DEGREE);++iq)
 	{
 	  Transformation(T,iq);
@@ -284,6 +285,9 @@ namespace Gascoigne
     }
     void Matrix(MatrixInterface& A, const GlobalVector& u, const Equation& EQ, double d) const
     {
+      RTStopWatch S;
+      S.start();
+      
       LocalParameterData QP;
       GlobalToGlobalData(QP);
       EQ.SetParameterData(QP);
@@ -295,7 +299,7 @@ namespace Gascoigne
       LocalVector     __F, __U;
       LocalData       __QN, __QC;
       EntryMatrix     __E;
-      
+#pragma omp parallel for private(T,finiteelement,integrator,__U,__F,__QN, __QC,__E) 
       for(int iq=0;iq<GetDofHandler()->nelements(DEGREE);++iq)
 	{
 	  Transformation(T,iq);
@@ -311,6 +315,10 @@ namespace Gascoigne
 	}
       // HANGING NODES
       //    HN->MatrixDiag(u.ncomp(),A);
+
+      S.stop();
+      std::cout << "Matrix: " << S.read() << std::endl;
+      
     }
 
     
