@@ -175,7 +175,6 @@ namespace Gascoigne
       ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::Matrix(EQ, E, FEM, U, Q, QC);
 
 
-
       assert(E.Ndof() == FEM.n());
       assert(E.Mdof() == FEM.n());
       assert(E.Ncomp() == U.ncomp());
@@ -184,9 +183,9 @@ namespace Gascoigne
       FemFunction MLPS(FEM.n());
 
       const LpsEquation &LEQ = dynamic_cast<const LpsEquation &>(EQ);
-      
+
       IFF IF;
-      
+
       Vertex<DIM> x, xi;
       for (int k = 0; k < IF.n(); k++)
       {
@@ -196,13 +195,18 @@ namespace Gascoigne
         double vol = FEM.J();
         double weight = IF.w(k) * vol;
         FEM.x(x);
-        BasicIntegrator::universal_point(FEM, ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::_UH, U);
-        BasicIntegrator::universal_point(FEM, ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::_QH, Q);
-        double h = ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::Volume2MeshSize(vol);
+	
+        BasicIntegrator::universal_point(
+            FEM, ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::_UH, U);
+        BasicIntegrator::universal_point(
+            FEM, ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::_QH, Q);
+        double h =
+            ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::Volume2MeshSize(vol);
         LEQ.SetFemData(ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::_QH);
-        LEQ.lpspointmatrix(h, ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::_UH, x);
+        LEQ.lpspointmatrix(
+            h, ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::_UH, x);
 
-        Projection(NLPS,FEM);
+        Projection(NLPS, FEM);
 
         for (int i = 0; i < FEM.n(); i++)
           MLPS[i].equ(weight, NLPS[i]);
@@ -212,13 +216,34 @@ namespace Gascoigne
           for (int i = 0; i < FEM.n(); i++)
           {
             E.SetDofIndex(i, j);
-            LEQ.StabMatrix(E, ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::_UH, NLPS[i], MLPS[j]);
+            LEQ.StabMatrix(E,
+                           ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::_UH,
+                           NLPS[i],
+                           MLPS[j]);
           }
         }
       }
+
     }
   };
 } // namespace Gascoigne
+
+#define ElementLpsIntegratorQ12d                                               \
+  ElementLpsIntegrator<2,                                                      \
+                       PatchFormula2d<4, QuadGauss4>,                          \
+                       PatchFormula2d<9, QuadGauss9>,                          \
+                       PatchFormula1d<2, LineGauss2>,                          \
+                       PatchFormula2d<4, QuadGauss4>>
+#define ElementLpsIntegratorQ22d                                               \
+  ElementLpsIntegrator<2, QuadGauss9, QuadGauss16, LineGauss3, QuadGauss9>
+#define ElementLpsIntegratorQ13d                                               \
+  ElementLpsIntegrator<3,                                                      \
+                       PatchFormula3d<8, HexGauss8>,                           \
+                       PatchFormula3d<27, HexGauss27>,                         \
+                       PatchFormula2d<4, QuadGauss4>,                          \
+                       PatchFormula3d<8, HexGauss8>>
+#define ElementLpsIntegratorQ23d                                               \
+  ElementLpsIntegrator<3, HexGauss27, HexGauss64, QuadGauss9, HexGauss27>
 
 
 /*----------------------------   elementlpsintegrator.h

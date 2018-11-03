@@ -62,9 +62,9 @@ public:
   void BasicInit(const ParamFile* paramfile);
   void ReInit   (const GascoigneMesh* M);
   void Structure(SparseStructureInterface* SI) const;
-  void Form(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const;
-  void Matrix(MatrixInterface& A, const GlobalVector& u, const Equation& EQ, double d) const;
-  void StabForm(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const;
+  void Form(GlobalVector& f, const GlobalVector& u, const ProblemDescriptorInterface& PD, double d) const;
+  void Matrix(MatrixInterface& A, const GlobalVector& u, const ProblemDescriptorInterface& PD, double d) const;
+  void StabForm(GlobalVector& f, const GlobalVector& u, const ProblemDescriptorInterface& PD, double d) const;
   void AddNodeVector(const std::string& name, const GlobalVector* q) const 
     {
       Q12d::AddNodeVector(name,q);

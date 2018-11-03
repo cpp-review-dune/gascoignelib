@@ -62,7 +62,7 @@ void Q1Lps2d::Structure(SparseStructureInterface* SI) const
 
 /* ----------------------------------------- */
 
-void Q1Lps2d::StabForm(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const
+void Q1Lps2d::StabForm(GlobalVector& f, const GlobalVector& u, const ProblemDescriptorInterface& PD, double d) const
 {
   assert(0);
   
@@ -71,21 +71,17 @@ void Q1Lps2d::StabForm(GlobalVector& f, const GlobalVector& u, const Equation& E
 
 /* ----------------------------------------- */
 
-void Q1Lps2d::Form(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const
+void Q1Lps2d::Form(GlobalVector& f, const GlobalVector& u, const ProblemDescriptorInterface& PD, double d) const
 {
-  assert(0);
-  
-  // Q12d::Form(f,u,EQ,d);
-  // S   ->Form(f,u,EQ,d);
+  Q12d::Form(f,u,PD,d);
+  S   ->Form(f,u,PD,d);
 }
 
 /* ----------------------------------------- */
 
-void Q1Lps2d::Matrix(MatrixInterface& A, const GlobalVector& u, const Equation& EQ, double d) const
+void Q1Lps2d::Matrix(MatrixInterface& A, const GlobalVector& u, const ProblemDescriptorInterface& PD, double d) const
 {
-  assert(0);
-  
-  // Q12d::Matrix(A,u,EQ,d);
-  //  S   ->Matrix(A,u,EQ,d);
+  Q12d::Matrix(A,u,PD,d);
+  S   ->Matrix(A,u,PD,d);
 }
 }

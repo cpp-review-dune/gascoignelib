@@ -42,8 +42,6 @@ GalerkinIntegrator<DIM>::GalerkinIntegrator() : BasicIntegrator(),
 template<int DIM>
 void GalerkinIntegrator<DIM>::BasicInit()
 {
-  std::cout << "GI: BasicInit" << std::endl;
-  
   if (DIM==2)
     {
       if (!FormFormulaPointer())     FormFormulaPointer() = new QuadGauss4;

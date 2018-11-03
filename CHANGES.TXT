@@ -43,3 +43,23 @@ der Dimension geschrieben. Noch gibt es die alten klassen als typedef
 auf DofHandler<2> und DofHandler<3>. Sollen aber verschwinden und in
 Zukunft durch einen guten, allgemeineren DofHandler ausgetauscht
 werden. 
+
+******* Bei Lukas
+
+* Parallelisierung in CGDisc
+
+* Entfernung von allen alten discs und integratoren
+
+* Problem/NavierStokes neu
+
+
+********* Equation / EquationData
+
+Equations are now created on the fly within the
+discretization. Necessary for parallelization. mutable is not any more
+required, equations must not be const
+
+All data that is persistent is within an Data-object that is part of
+the ProblemDescriptor and passed to the equation in the constructor
+(if needed). Example: src/Problem/navierstokes.h
+

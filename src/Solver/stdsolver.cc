@@ -81,11 +81,14 @@
 #include "baseq13d.h"
 #include "baseq22d.h"
 #include "baseq23d.h"
+#include "baseq1patch.h"
+#include "baseq13dpatch.h"
 #include "elementintegrator.h"
 #include "elementlpsintegrator.h"
 #include "finiteelement.h"
 #include "transformation2d.h"
 #include "transformation3d.h"
+#include  "patchintegrationformula.h"
 
 #include "faceq1.h"
 #include "faceq2.h"
@@ -622,6 +625,8 @@ namespace Gascoigne
         return new CGDiscQ13d;
       else if (discname == "CGQ2")
         return new CGDiscQ23d;
+      else if (discname == "CGQ1Lps")
+        return new CGDiscQ13dLps;
       else if (discname == "CGQ2Lps")
         return new CGDiscQ23dLps;
       else if (discname == "Q1")
@@ -2288,9 +2293,8 @@ namespace Gascoigne
 
     HNAverage(gu);
 
-    const Equation &EQ = *GetProblemDescriptor()->GetEquation();
     M->zero();
-    GetDiscretization()->Matrix(*M, GetGV(gu), EQ, d);
+    GetDiscretization()->Matrix(*M, GetGV(gu), *GetProblemDescriptor(), d);
     M->transpose();
 
     // PeriodicMatrix() hier nicht getestet!

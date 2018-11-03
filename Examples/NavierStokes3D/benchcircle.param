@@ -15,7 +15,7 @@ refiner      global
 dimension    3
 patchdepth   1
 gridname     nsbenchZ3d.inp
-prerefine    3
+prerefine    2
 curvedboundary  6       80   FlacherKreis 5. 2. 0. 0.25
 
 //Block BoundaryManager
@@ -29,7 +29,6 @@ dirichletcomp   80      3       1 2 3
 //Block Equation
 
 visc            0.01
-delta           0.5
 alpha           0.5
 
 //Block MultiLevelSolver
@@ -37,7 +36,6 @@ alpha           0.5
 linear_maxiter          20
 linear_pstep		0
 
-//linearsolve		gmres_12
 linearsolve		gmres
 nonlinear_maxiter       20
 nonlinear_rho           0.1
@@ -46,8 +44,9 @@ nonlinear_damp          10
 
 //Block Solver
 
-matrixtype	block
-discname 	                Q1Lps
+matrixtype		block
+discname 	        CGQ2Lpklsjds
+
 iterpre                 2
 iterpost                2
 iterexact               4

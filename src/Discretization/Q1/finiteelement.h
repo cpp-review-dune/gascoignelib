@@ -1,87 +1,127 @@
 /**
-*
-* Copyright (C) 2004, 2005, 2010 by the Gascoigne 3D authors
-*
-* This file is part of Gascoigne 3D
-*
-* Gascoigne 3D is free software: you can redistribute it
-* and/or modify it under the terms of the GNU General Public
-* License as published by the Free Software Foundation, either
-* version 3 of the License, or (at your option) any later
-* version.
-*
-* Gascoigne 3D is distributed in the hope that it will be
-* useful, but WITHOUT ANY WARRANTY; without even the implied
-* warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-* PURPOSE.  See the GNU General Public License for more
-* details.
-*
-* Please refer to the file LICENSE.TXT for further information
-* on this license.
-*
-**/
+ *
+ * Copyright (C) 2004, 2005, 2010 by the Gascoigne 3D authors
+ *
+ * This file is part of Gascoigne 3D
+ *
+ * Gascoigne 3D is free software: you can redistribute it
+ * and/or modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation, either
+ * version 3 of the License, or (at your option) any later
+ * version.
+ *
+ * Gascoigne 3D is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more
+ * details.
+ *
+ * Please refer to the file LICENSE.TXT for further information
+ * on this license.
+ *
+ **/
 
 
 #ifndef __FiniteElement_h
 #define __FiniteElement_h
 
-#include  "feminterface.h"
+#include "feminterface.h"
 
 /*-----------------------------------------------------*/
 
 namespace Gascoigne
 {
 
-/////////////////////////////////////////////
-///
-///@brief
-///  FE based on Transformation (TRAFO) and Referenzelement (BASE)
+  /////////////////////////////////////////////
+  ///
+  ///@brief
+  ///  FE based on Transformation (TRAFO) and Referenzelement (BASE)
 
-///
-///
-/////////////////////////////////////////////
+  ///
+  ///
+  /////////////////////////////////////////////
 
-template<int DIM, int BDIM, class TRAFO, class BASE>
-class FiniteElement : public FemInterface
-{
- protected:
+  template <int DIM, int BDIM, class TRAFO, class BASE>
+  class FiniteElement : public FemInterface
+  {
+  protected:
+    TRAFO T;
+    BASE B;
+    mutable std::vector<Vertex<DIM>> grad;
+    mutable double det;
 
-  TRAFO                   T;
-  BASE                    B;
-  mutable std::vector<Vertex<DIM> >    grad;
-  mutable double                  det;
+    virtual void ComputeGrad() const;
 
-  virtual void ComputeGrad() const;
+  public:
+    FiniteElement();
 
- public:
+    std::string GetName() const
+    {
+      return "FiniteElement";
+    }
 
-  FiniteElement();
+    int n() const
+    {
+      return B.n();
+    }
+    double N(int i) const
+    {
+      return B.phi(i);
+    }
+    double N_x(int i) const
+    {
+      return grad[i].x();
+    }
+    double N_y(int i) const
+    {
+      return grad[i].y();
+    }
+    double N_z(int i) const
+    {
+      return grad[i].z();
+    }
+    double J() const
+    {
+      return det;
+    }
+    double G() const
+    {
+      return T.G();
+    }
 
-  std::string GetName() const {return "FiniteElement";}
+    void x(Vertex<DIM> &v) const
+    {
+      v = T.x();
+    }
+    void normal(Vertex<DIM> &v) const
+    {
+      v = T.normal();
+    };
 
-  int    n()          const { return B.n(); }
-  double N   (int i)  const { return B.phi(i); }
-  double N_x (int i)  const { return grad[i].x(); }
-  double N_y (int i)  const { return grad[i].y(); }
-  double N_z (int i)  const { return grad[i].z(); }
-  double J()          const { return det;}
-  double G()          const { return T.G();}
+    void point(const Vertex<DIM> &) const;
+    void point_boundary(int ie, const Vertex<BDIM> &s1) const;
+    /// depreciated
+    void ReInit(const Matrix &M) const
+    {
+      T.ReInit(M);
+    }
 
-  void x     (Vertex<DIM>& v) const { v = T.x();}
-  void normal(Vertex<DIM>& v) const { v = T.normal();};
+    void init_test_functions(TestFunction &Phi, double w, int i) const;
 
-  void point(const Vertex<DIM>&) const;
-  void point_boundary(int ie, const Vertex<BDIM>& s1) const;
-  /// depreciated
-  void ReInit(const Matrix& M) const { T.ReInit(M); }
+    void Anisotropy(DoubleMatrix &A) const;
 
-  void  init_test_functions(TestFunction& Phi, double w, int i) const;
+    void GetCoordinates(DoubleMatrix &A) const
+    {
+      T.GetCoordinates(A);
+    }
+  };
 
-  void Anisotropy(DoubleMatrix& A) const;
-
-  void GetCoordinates(DoubleMatrix& A) const { T.GetCoordinates(A);}
-};
-}
+#define FiniteElementQ12d FiniteElement<2,1,Transformation2d<BaseQ12d>,BaseQ12d>
+#define FiniteElementQ22d FiniteElement<2,1,Transformation2d<BaseQ22d>,BaseQ22d>
+#define FiniteElementQ13d FiniteElement<3,2,Transformation3d<BaseQ13d>,BaseQ13d>
+#define FiniteElementQ23d FiniteElement<3,2,Transformation3d<BaseQ23d>,BaseQ23d>
+  
+} // namespace Gascoigne
 
 /*-----------------------------------------------------*/
 

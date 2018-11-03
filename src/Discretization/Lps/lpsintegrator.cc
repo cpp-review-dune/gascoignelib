@@ -119,6 +119,7 @@ void LpsIntegrator<DIM>::Form(const Equation& EQ, LocalVector& F, const FemInter
       
       double vol = FEM.J();
       double weight  =  CellWeight * IF.w(k) * vol;
+
       double h  = Volume2MeshSize(vol);
       
       FEM.x(x);
@@ -137,6 +138,9 @@ void LpsIntegrator<DIM>::Form(const Equation& EQ, LocalVector& F, const FemInter
 	  LEQ.StabForm(F.start(i),_UH,UHP,MLPS[i]);
 	}
     }
+
+  
+  
 }
 
 /*-----------------------------------------------------------*/

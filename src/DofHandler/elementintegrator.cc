@@ -23,6 +23,7 @@
 
 
 #include "elementintegrator.h"
+#include "patchintegrationformula.h"
 
 using namespace std;
 
@@ -399,6 +400,8 @@ namespace Gascoigne
                                 }*/
     }
   }
+
+    /* ----------------------------------------- */
 
   /*-----------------------------------------------------------*/
 
@@ -884,28 +887,16 @@ namespace Gascoigne
     }
   }
 
-  /* ----------------------------------------- */
 
-  template class ElementIntegrator<2, // linear
-				   QuadGauss4,
-				   QuadGauss9,
-				   LineGauss2,
-				   QuadGauss4>;
-  template class ElementIntegrator<2, // quadratic
-                                   QuadGauss9,
-                                   QuadGauss16,
-                                   LineGauss3,
-                                   QuadGauss9>;
-  template class ElementIntegrator<3, // linear 
-                                   HexGauss8,
-                                   HexGauss27,
-                                   QuadGauss4,
-                                   HexGauss8>;
-  template class ElementIntegrator<3, // quadratic
-                                   HexGauss27,
-                                   HexGauss64,
-                                   QuadGauss9,
-                                   HexGauss27>;
+
+  template class ElementIntegratorQ12d;
+  template class ElementIntegratorQ13d;
+  template class ElementIntegratorQ22d;
+  template class ElementIntegratorQ23d;
+
+  ////////////////////////////////////////////////// required for LPS  
+  template class ElementIntegrator<2, PatchFormula2d<4,QuadGauss4>, PatchFormula2d<9,QuadGauss9>,  PatchFormula1d<2,LineGauss2>, PatchFormula2d<4,QuadGauss4>>;
+  template class ElementIntegrator<3, PatchFormula3d<8,HexGauss8>,  PatchFormula3d<27,HexGauss27>, PatchFormula2d<4,QuadGauss4>, PatchFormula3d<8,HexGauss8>>;
 
   /* ----------------------------------------- */
 

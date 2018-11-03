@@ -10,8 +10,12 @@
 #include "baseq13d.h"
 #include "baseq22d.h"
 #include "baseq23d.h"
-  
 
+#include "baseq1patch.h"
+#include "baseq13dpatch.h"
+
+#include "patchintegrationformula.h"
+#include "finiteelement.xx"
 
 namespace Gascoigne
 {
@@ -20,6 +24,10 @@ namespace Gascoigne
   template class CGDiscQ13d;
   template class CGDiscQ23d;
 
+  template class Transformation3d<BaseQ13dPatch>;
+  template class FiniteElement<3, 2, Transformation3d<BaseQ13dPatch>, BaseQ13dPatch>;
+
+  template class CGDiscQ13dLps;
   template class CGDiscQ23dLps;
 
 }

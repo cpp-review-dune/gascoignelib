@@ -52,16 +52,6 @@ namespace Gascoigne
   ///
   /////////////////////////////////////////////
 
-  class ProblemData
-  {
-  public:
-    ProblemData()    {}
-    virtual ~ProblemData() { }
-    
-    
-    virtual void BasicInit(const ParamFile* pf){};
-  };
-    
   class ProblemDescriptorInterface
   {
   private:

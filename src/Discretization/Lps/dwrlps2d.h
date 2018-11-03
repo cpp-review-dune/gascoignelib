@@ -41,7 +41,7 @@ class DwrLps2d : public Q1Lps2d
   ~DwrLps2d() {}
 
   std::string GetName() const {return "DwrLps2d";}
-  void Form(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const;
+  void Form(GlobalVector& f, const GlobalVector& u, const ProblemDescriptorInterface& PD, double d) const;
 };
 }
 /*-------------------------------------------------*/
