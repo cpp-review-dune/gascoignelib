@@ -168,6 +168,13 @@ namespace Gascoigne
       return 0;
     }
 
+    
+    virtual IntVector GetElement(int degree, int iq) const
+    { assert(0); }
+    virtual int nodes_per_element(int degree) const
+    { assert(0); }
+    
+
     // Access: Patch-Structure
     virtual int nodes_per_patch() const
     {
