@@ -29,7 +29,7 @@ namespace Gascoigne
 
 /*-------------------------------------------------*/
 
-void DwrLps2d::Form(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const
+void DwrLps2d::Form(GlobalVector& f, const GlobalVector& u, const ProblemDescriptorInterface& PD, double d) const
 {
 //   nmatrix<double> T;
 //   for(int iq=0; iq<GetPatchMesh()->npatches(); ++iq)
@@ -41,7 +41,7 @@ void DwrLps2d::Form(GlobalVector& f, const GlobalVector& u, const Equation& EQ, 
 //       GetIntegrator()->Form(EQ,__F,*GetFem(),__U,__Q);
 //       LocalToGlobal(f,__F,iq,d);
 //     }
-  Q1Lps2d::Form(f,u,EQ,d);
+  Q1Lps2d::Form(f,u,PD,d);
 }
 
 /*-------------------------------------------------*/

@@ -80,13 +80,13 @@ LpsIntegratorQ1<DIM>::LpsIntegratorQ1() : LpsIntegrator<DIM>()
   if (DIM==2)
     {
       LpsIntegrator<DIM>::_IF = new PatchFormula2d<4,QuadGauss4>;
-      LpsIntegrator<DIM>::CellWeight = 0.25;
+      LpsIntegrator<DIM>::CellWeight = 1;//0.25;
       femn = 9;
     }
   else
     {
       LpsIntegrator<DIM>::_IF = new PatchFormula3d<8,HexGauss8>;
-      LpsIntegrator<DIM>::CellWeight = 0.125;
+      LpsIntegrator<DIM>::CellWeight = 1;//0.125;
       femn = 27;
     }
   assert(LpsIntegrator<DIM>::_IF);

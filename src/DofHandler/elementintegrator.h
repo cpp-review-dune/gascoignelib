@@ -197,6 +197,14 @@ namespace Gascoigne
                   int comp) const;
 #pragma GCC diagnostic pop
   };
+
+
+
+#define ElementIntegratorQ12d  ElementIntegrator<2, QuadGauss4, QuadGauss9,  LineGauss2, QuadGauss4>
+#define ElementIntegratorQ22d  ElementIntegrator<2, QuadGauss9, QuadGauss16, LineGauss3, QuadGauss9>
+#define ElementIntegratorQ13d  ElementIntegrator<3, HexGauss8,  HexGauss27,  QuadGauss4, HexGauss8>
+#define ElementIntegratorQ23d  ElementIntegrator<3, HexGauss27, HexGauss64,  QuadGauss9, HexGauss27>
+
 } // namespace Gascoigne
 
 

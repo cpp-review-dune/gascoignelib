@@ -87,12 +87,14 @@ void CellDiscretization::Transformation(FemInterface::Matrix& T, int iq) const
 /* ----------------------------------------- */
 /* ----------------------------------------- */
 
-void CellDiscretization::Form(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const
+void CellDiscretization::Form(GlobalVector& f, const GlobalVector& u, const ProblemDescriptorInterface& PD, double d) const
 {
   nmatrix<double> T;
   
   GlobalToGlobalData();
-  EQ.SetParameterData(__QP);
+
+  Equation* EQ = PD.NewEquation();
+  EQ->SetParameterData(__QP);
   
   for(int iq=0;iq<GetMesh()->ncells();++iq)
     {
@@ -100,9 +102,9 @@ void CellDiscretization::Form(GlobalVector& f, const GlobalVector& u, const Equa
       GetFem()->ReInit(T);
 
       GlobalToLocal(__U,u,iq);
-      EQ.point_cell(GetMesh()->material(iq));
+      EQ->point_cell(GetMesh()->material(iq));
       //EQ.cell(GetMesh(),iq,__U,__QN);
-      GetIntegrator()->Form(EQ,__F,*GetFem(),__U,__QN,__QC);
+      GetIntegrator()->Form(*EQ,__F,*GetFem(),__U,__QN,__QC);
       LocalToGlobal(f,__F,iq,d);
     }
 }
@@ -161,12 +163,14 @@ void CellDiscretization::BoundaryForm(GlobalVector& f, const GlobalVector& u, co
 
 /* ----------------------------------------- */
 
-void CellDiscretization::Matrix(MatrixInterface& A, const GlobalVector& u, const Equation& EQ, double d) const
+void CellDiscretization::Matrix(MatrixInterface& A, const GlobalVector& u, const ProblemDescriptorInterface& PD, double d) const
 {
   nmatrix<double> T;
   
   GlobalToGlobalData();
-  EQ.SetParameterData(__QP);
+
+  Equation* EQ = PD.NewEquation();
+  EQ->SetParameterData(__QP);
   
   for(int iq=0;iq<GetMesh()->ncells();++iq)
     {
@@ -174,9 +178,9 @@ void CellDiscretization::Matrix(MatrixInterface& A, const GlobalVector& u, const
       GetFem()->ReInit(T);
 
       GlobalToLocal(__U,u,iq);
-      EQ.point_cell(GetMesh()->material(iq));
+      EQ->point_cell(GetMesh()->material(iq));
       //EQ.cell(GetMesh(),iq,__U,__QN);
-      GetIntegrator()->Matrix(EQ,__E,*GetFem(),__U,__QN,__QC);
+      GetIntegrator()->Matrix(*EQ,__E,*GetFem(),__U,__QN,__QC);
       LocalToGlobal(A,__E,iq,d);
     }
 }

@@ -283,7 +283,7 @@ namespace Gascoigne
 
     void CondenseHangingPatch(EntryMatrix & E, IntVector & indices) const
     {
-      assert(0);
+      //      assert(0);
     }
   };
 }

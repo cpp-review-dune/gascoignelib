@@ -4,59 +4,58 @@
 #define __dg_H
 /*----------------------------   dg.h     ---------------------------*/
 
-#include "discretizationinterface.h"
-#include "nvector.h"
 #include "dgdofhandler.h"
-#include "gascoignemesh.h"
-#include "transformation2d.h"
-#include "finiteelement.h"
-#include "dgintegrator.h"
 #include "dgequation.h"
+#include "dgintegrator.h"
+#include "discretizationinterface.h"
+#include "finiteelement.h"
+#include "gascoignemesh.h"
+#include "nvector.h"
+#include "transformation2d.h"
 
 
 namespace Gascoigne
 {
-  template<class BASE>
+  template <class BASE>
   class DG : public DiscretizationInterface
   {
   private:
     DGDofHandler<BASE> _dofhandler;
-    const GascoigneMesh* _mesh;
+    const GascoigneMesh *_mesh;
 
     Transformation2d<BASEQ12D> _trans;
-    FiniteElement<2,1, Transformation2d<BASEQ12D>, BASE> _fe;
-    FiniteElement<2,1, Transformation2d<BASEQ12D>, BASE> _feslave;
+    FiniteElement<2, 1, Transformation2d<BASEQ12D>, BASE> _fe;
+    FiniteElement<2, 1, Transformation2d<BASEQ12D>, BASE> _feslave;
 
     DGIntegrator<2> _integrator;
-    
+
     mutable DataContainer _datacontainer;
-    
-    mutable LocalData     __QN_master,__QN_slave;
+
+    mutable LocalData __QN_master, __QN_slave;
 
   protected:
-
   public:
-    
     // Init
     DG();
     void BasicInit(const ParamFile *pf);
     void ReInit(const GascoigneMesh *M);
-    
-    void GlobalToLocalData(LocalData& QN, const DataContainer& DC, int iq) const;
 
-	
+    void
+    GlobalToLocalData(LocalData &QN, const DataContainer &DC, int iq) const;
+
+
     // Handling of Vectors & Data
     const DataContainer &GetDataContainer() const
     {
       abort();
     }
-    void SetDataContainer(const DataContainer &q) 
+    void SetDataContainer(const DataContainer &q)
     {
       abort();
     }
     void AddNodeVector(const std::string &name, const GlobalVector *q) const
     {
-      _datacontainer.AddNodeVector(name,q);
+      _datacontainer.AddNodeVector(name, q);
     };
     void DeleteNodeVector(const std::string &name) const
     {
@@ -79,7 +78,7 @@ namespace Gascoigne
     {
       assert(0);
     }
-    void GlobalToGlobalData(LocalParameterData& QP) const;
+    void GlobalToGlobalData(LocalParameterData &QP) const;
 
 
     // Info
@@ -102,25 +101,26 @@ namespace Gascoigne
 
 
     // Dof-Handling
-        
-    void Transformation(FemInterface::Matrix& T, int iq) const;
-    
+
+    void Transformation(FemInterface::Matrix &T, int iq) const;
+
     void Structure(SparseStructureInterface *S) const
     {
       _dofhandler.Structure(S);
     }
-    
+
 
     // Integration functions
     void EdgeForm(GlobalVector &f,
-		  const GlobalVector &u,
-		  const DGEquation &EQ,
-		  double d) const;
-    void EdgeRhs(GlobalVector &f, const DomainRightHandSide &RHS, double s) const;
+                  const GlobalVector &u,
+                  const DGEquation &EQ,
+                  double d) const;
+    void
+    EdgeRhs(GlobalVector &f, const DomainRightHandSide &RHS, double s) const;
     void EdgeMatrix(MatrixInterface &A,
-                const GlobalVector &u,
-                const DGEquation &EQ,
-                double) const;
+                    const GlobalVector &u,
+                    const DGEquation &EQ,
+                    double) const;
 
 
     void Form(GlobalVector &f,
@@ -133,7 +133,7 @@ namespace Gascoigne
                 const Equation &EQ,
                 double) const;
 
-    
+
     void AdjointForm(GlobalVector &f,
                      const GlobalVector &u,
                      const Equation &EQ,
@@ -214,25 +214,15 @@ namespace Gascoigne
 
 
     // Hanging Nodes
-    void HNAverage(GlobalVector &x) const
-    {
-    }
-    void HNDistribute(GlobalVector &x) const
-    {
-    }
-    void HNZero(GlobalVector &x) const
-    {
-    }
+    void HNAverage(GlobalVector &x) const {}
+    void HNDistribute(GlobalVector &x) const {}
+    void HNZero(GlobalVector &x) const {}
     bool HNZeroCheck(const GlobalVector &x) const
     {
       return false;
     }
-    void HNAverageData() const
-    {
-    }
-    void HNZeroData() const
-    {
-    }
+    void HNAverageData() const {}
+    void HNZeroData() const {}
 
 
     // Interpolation?
@@ -261,8 +251,6 @@ namespace Gascoigne
           << "\"DiscretizationInterface::ConstructInterpolator\" not written!"
           << std::endl;
     }
-
-
 
 
     /// ??
@@ -423,14 +411,37 @@ namespace Gascoigne
 
 
     // This functions are not used in DG methods
-    void StrongDirichletMatrix(MatrixInterface& A, int col, const std::vector<int>& comp) const   {}
-    void StrongDirichletMatrixOnlyRow(MatrixInterface& A, int col, const std::vector<int>& comp) const {}
-    void StrongDirichletVector(GlobalVector& u, const DirichletData& BF, int col, const std::vector<int>& comp, double d=1.) const {}
-    void StrongDirichletVectorZero(GlobalVector& u, int col, const std::vector<int>& comp) const {}
-    void StrongPeriodicVector(GlobalVector& u, const PeriodicData& BF, int col, const std::vector<int>& comp, double d=1.) const {}
-
+    void StrongDirichletMatrix(MatrixInterface &A,
+                               int col,
+                               const std::vector<int> &comp) const
+    {
+    }
+    void StrongDirichletMatrixOnlyRow(MatrixInterface &A,
+                                      int col,
+                                      const std::vector<int> &comp) const
+    {
+    }
+    void StrongDirichletVector(GlobalVector &u,
+                               const DirichletData &BF,
+                               int col,
+                               const std::vector<int> &comp,
+                               double d = 1.) const
+    {
+    }
+    void StrongDirichletVectorZero(GlobalVector &u,
+                                   int col,
+                                   const std::vector<int> &comp) const
+    {
+    }
+    void StrongPeriodicVector(GlobalVector &u,
+                              const PeriodicData &BF,
+                              int col,
+                              const std::vector<int> &comp,
+                              double d = 1.) const
+    {
+    }
   };
-}
+} // namespace Gascoigne
 
 
 /*----------------------------   dg.h     ---------------------------*/

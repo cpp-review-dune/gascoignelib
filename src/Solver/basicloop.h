@@ -161,7 +161,8 @@ namespace Gascoigne
 
     virtual void BasicInit(const ParamFile *paramfile,
                            const ProblemContainer *PC,
-                           const FunctionalContainer *FC = NULL);
+                           const FunctionalContainer *FC);
+    
 
     void run(const std::string &problemlabel);
     void ClockOutput() const;

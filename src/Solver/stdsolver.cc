@@ -35,6 +35,8 @@
 #include "dynamicblockilu.h"
 #include "dynamicblockmatrix.h"
 
+#include "vankasmoother.h"
+
 /*--------------------------------*/
 #ifdef __WITH_THREADS__
 #include "threadilu.h"
@@ -79,11 +81,14 @@
 
 #include "baseq12d.h"
 #include "baseq13d.h"
+#include "baseq13dpatch.h"
+#include "baseq1patch.h"
 #include "baseq22d.h"
 #include "baseq23d.h"
 #include "elementintegrator.h"
 #include "elementlpsintegrator.h"
 #include "finiteelement.h"
+#include "patchintegrationformula.h"
 #include "transformation2d.h"
 #include "transformation3d.h"
 
@@ -622,6 +627,8 @@ namespace Gascoigne
         return new CGDiscQ13d;
       else if (discname == "CGQ2")
         return new CGDiscQ23d;
+      else if (discname == "CGQ1Lps")
+        return new CGDiscQ13dLps;
       else if (discname == "CGQ2Lps")
         return new CGDiscQ23dLps;
       else if (discname == "Q1")
@@ -703,7 +710,7 @@ namespace Gascoigne
     {
       return new PointMatrix(ncomp, "node");
     }
-    else if ((matrixtype == "block") || (matrixtype == "sparseumf"))
+    else if ((matrixtype == "block") || (matrixtype == "sparseumf") || (matrixtype == "vanka"))
     {
       if (ncomp == 1)
         return new SparseBlockMatrix<FMatrixBlock<1>>;
@@ -794,7 +801,6 @@ namespace Gascoigne
         return new ThreadIlu(ncomp);
       }
 #endif
-
       if (ncomp == 1)
         return new SparseBlockIlu<FMatrixBlock<1>>;
       else if (ncomp == 2)
@@ -810,6 +816,10 @@ namespace Gascoigne
         cerr << "No SparseBlockIlu for " << ncomp << "components." << endl;
         abort();
       }
+    }
+    else if (matrixtype == "vanka")
+    {
+      return new VankaSmoother(GetMesh());
     }
     else if (matrixtype == "sparseumf")
     {
@@ -1893,6 +1903,7 @@ namespace Gascoigne
 
   void StdSolver::ComputeIlu() const
   {
+    
 #ifdef __WITH_UMFPACK__
     if (_directsolver && _useUMFPACK)
     {
@@ -1922,6 +1933,7 @@ namespace Gascoigne
       GetIlu()->compute_ilu();
       _ci.stop();
     }
+    
   }
 
   /* -------------------------------------------------------*/
@@ -2288,9 +2300,8 @@ namespace Gascoigne
 
     HNAverage(gu);
 
-    const Equation &EQ = *GetProblemDescriptor()->GetEquation();
     M->zero();
-    GetDiscretization()->Matrix(*M, GetGV(gu), EQ, d);
+    GetDiscretization()->Matrix(*M, GetGV(gu), *GetProblemDescriptor(), d);
     M->transpose();
 
     // PeriodicMatrix() hier nicht getestet!

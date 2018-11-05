@@ -97,10 +97,8 @@ namespace Gascoigne
       }
 
     virtual void Structure(SparseStructureInterface* S) const=0;
-    virtual void Form(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const{assert(0);}
     virtual void Form(GlobalVector& f, const GlobalVector& u, const ProblemDescriptorInterface& PD, double d) const{assert(0);}
     virtual void Rhs(GlobalVector& f, const DomainRightHandSide& RHS, double s) const=0;
-    virtual void Matrix(MatrixInterface& A, const GlobalVector& u, const Equation& EQ, double) const{assert(0);}
     virtual void Matrix(MatrixInterface& A, const GlobalVector& u, const ProblemDescriptorInterface& PD, double) const{assert(0);}
 
       virtual void AdjointForm(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const {
@@ -185,7 +183,7 @@ namespace Gascoigne
         abort();
       }
 			
-      virtual void StabForm(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const {
+      virtual void StabForm(GlobalVector& f, const GlobalVector& u, const ProblemDescriptorInterface& PD, double d) const {
         std::cerr << "\"DiscretizationInterface::StabForm\" not written!" << std::endl;
         abort();
       }

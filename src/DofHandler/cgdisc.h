@@ -339,12 +339,12 @@ namespace Gascoigne
       FINITEELEMENT finiteelement;
       INTEGRATOR integrator;
       integrator.BasicInit();
-      LocalVector __F, __U;
+      LocalVector __U;
       LocalData __QN, __QC;
       EntryMatrix __E;
 
 #pragma omp parallel private(                                                  \
-    T, finiteelement, integrator, __U, __F, __QN, __QC, __E)
+    T, finiteelement, integrator, __U,  __QN, __QC, __E)
       {
         Equation *EQ = PD.NewEquation();
         EQ->SetParameterData(QP);
@@ -512,16 +512,6 @@ namespace Gascoigne
 
 // namespace Gascoigne
 // {
-#define ElementIntegratorQ12d                                                  \
-  ElementIntegrator<2, QuadGauss4, QuadGauss9, LineGauss2, QuadGauss4>
-#define ElementIntegratorQ22d                                                  \
-  ElementIntegrator<2, QuadGauss9, QuadGauss16, LineGauss3, QuadGauss9>
-
-#define ElementIntegratorQ13d                                                  \
-  ElementIntegrator<3, HexGauss8, HexGauss27, QuadGauss4, HexGauss8>
-#define ElementIntegratorQ23d                                                  \
-  ElementIntegrator<3, HexGauss27, HexGauss64, QuadGauss9, HexGauss27>
-
 
 #define CGDiscQ12d                                                             \
   CGDisc<2,                                                                    \
@@ -546,25 +536,23 @@ namespace Gascoigne
 
 
   ////// LPS
-#define ElementIntegratorQ22dLps						\
-  ElementLpsIntegrator<2, QuadGauss9, QuadGauss16, LineGauss3, QuadGauss9>
-#define CGDiscQ22dLps                                                             \
+#define CGDiscQ22dLps                                                          \
   CGDisc<2,                                                                    \
          2,                                                                    \
-         FiniteElement<2,1, Transformation2d<BaseQ22d>, BaseQ22d>,	\
-         ElementIntegratorQ22dLps>
+         FiniteElement<2, 1, Transformation2d<BaseQ22d>, BaseQ22d>,            \
+         ElementLpsIntegratorQ22d>
 
-
-#define ElementIntegratorQ23dLps					\
-  ElementLpsIntegrator<3, HexGauss27, HexGauss64, QuadGauss9, HexGauss27>
-#define CGDiscQ23dLps                                                             \
+#define CGDiscQ13dLps                                                          \
+  CGDisc<3,                                                                    \
+         2,                                                                    \
+         FiniteElement<3, 2, Transformation3d<BaseQ13dPatch>, BaseQ13dPatch>,  \
+         ElementLpsIntegratorQ13d>
+#define CGDiscQ23dLps                                                          \
   CGDisc<3,                                                                    \
          2,                                                                    \
          FiniteElement<3, 2, Transformation3d<BaseQ23d>, BaseQ23d>,            \
-         ElementIntegratorQ23dLps>
+         ElementLpsIntegratorQ23d>
 
-
-  
 
 } // namespace Gascoigne
 
