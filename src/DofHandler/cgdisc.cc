@@ -30,5 +30,8 @@ namespace Gascoigne
   template class CGDiscQ13dLps;
   template class CGDiscQ23dLps;
 
+  template class CGDiscQ12dLps;
+  template class CGDiscQ22dLps;
+
 }
 

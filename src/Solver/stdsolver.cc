@@ -606,6 +606,8 @@ namespace Gascoigne
         return new Q1Lps2d;
       else if (discname == "Q2Lps")
         return new Q2Lps2d;
+      else if (discname == "CGQ2Lps")
+        return new CGDiscQ22dLps;
       else if (discname == "Q2WithSecond")
         return new Q22dWithSecond;
       else if (discname == "Q2LpsWithSecond")

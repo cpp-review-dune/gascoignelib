@@ -536,6 +536,12 @@ namespace Gascoigne
 
 
   ////// LPS
+#define CGDiscQ12dLps                                                          \
+  CGDisc<2,                                                                    \
+         2,                                                                    \
+         FiniteElement<2, 1, Transformation2d<BaseQ12dPatch>, BaseQ12dPatch>,            \
+         ElementLpsIntegratorQ12d>
+  
 #define CGDiscQ22dLps                                                          \
   CGDisc<2,                                                                    \
          2,                                                                    \
