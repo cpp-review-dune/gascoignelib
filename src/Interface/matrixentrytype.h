@@ -29,13 +29,12 @@
 **/
 
 
-#define MatrixEntryType double
-// #ifdef __MATRIX_DOUBLE_PRECISION__
-//   #define MatrixEntryType double
-// #else
-//   #define MatrixEntryType float
-// #endif
-// 
+#ifdef __MATRIX_DOUBLE_PRECISION__
+  #define MatrixEntryType double
+#else
+  #define MatrixEntryType float
+#endif
+
 
 
 /*----------------------------   matrixentrytype.h     ---------------------------*/

@@ -42,7 +42,7 @@ namespace Gascoigne
   class NavierStokesData
   {
   public:
-    double visc, alpha0, dt;
+    double visc, alpha0, dt, theta;
 
     void BasicInit(const ParamFile *pf);
   };
@@ -89,6 +89,7 @@ namespace Gascoigne
     NavierStokesLps<DIM>(const NavierStokesData &PD)
         : NavierStokes<DIM>(PD)
     {
+      
     }
     std::string GetName() const
     { return "NavierStokesLps"; }
@@ -115,6 +116,9 @@ namespace Gascoigne
     NavierStokesLpsTime<DIM>(const NavierStokesData &PD)
       : NavierStokes<DIM>(PD), NavierStokesLps<DIM>(PD)
     {
+      assert(NavierStokes<DIM>::data.dt>0);
+      assert(NavierStokes<DIM>::data.theta>0);
+      assert(NavierStokes<DIM>::data.theta<=1);
     }
     std::string GetName() const
     { return "NavierStokesTimeLps"; }
@@ -129,21 +133,46 @@ namespace Gascoigne
     void
     Form(VectorIterator b, const FemFunction &U, const TestFunction &N) const
     {      
-      NavierStokesLps<DIM>::Form(b, U, N);
-      
-      for (int i = 0; i < DIM; ++i)
-        b[i+1] += (U[i + 1].m() - (*OLD)[i+1].m()) / NavierStokes<DIM>::data.dt * N.m();
+      {
+	for (int i=0;i<DIM;++i)
+	  {
+	    b[0] += U[i + 1][i + 1] * N.m();
+		
+	    b[i+1] += (U[i + 1].m() - (*OLD)[i+1].m()) / NavierStokes<DIM>::data.dt * N.m();
+	    
+	    for (int j = 0; j < DIM; ++j)
+	      {
+		b[i + 1] += NavierStokes<DIM>::data.theta * NavierStokes<DIM>::data.visc * U[i + 1][j + 1] * N[j + 1];
+		b[i + 1] += NavierStokes<DIM>::data.theta * U[j + 1].m() * U[i + 1][j + 1] * N.m();
+		b[i + 1] += (1.0-NavierStokes<DIM>::data.theta) * NavierStokes<DIM>::data.visc * (*OLD)[i + 1][j + 1] * N[j + 1];
+		b[i + 1] += (1.0-NavierStokes<DIM>::data.theta) * (*OLD)[j + 1].m() * (*OLD)[i + 1][j + 1] * N.m();
+	      }
+	    b[i + 1] -= U[0].m() * N[i + 1];
+	  }
+      }
     }
-
+    
     void Matrix(EntryMatrix &A,
                 const FemFunction &U,
                 const TestFunction &M,
                 const TestFunction &N) const
     {
-      NavierStokesLps<DIM>::Matrix(A, U, M, N);
-
       for (int i = 0; i < DIM; ++i)
-        A(i+1, i+1) += M.m() / NavierStokes<DIM>::data.dt * N.m();
+	{
+	  A(i+1,i+1) += M.m() * N.m() / NavierStokes<DIM>::data.dt;
+	  A(0, i + 1) += M[i + 1] * N.m();
+	  for (int j = 0; j < DIM; ++j)
+	    {
+	      
+	      A(i + 1, i + 1) += NavierStokes<DIM>::data.theta * NavierStokes<DIM>::data.visc * M[j + 1] * N[j + 1];
+	      
+	      A(i + 1, j + 1) += NavierStokes<DIM>::data.theta * M.m() * U[i + 1][j + 1] * N.m();
+	      A(i + 1, i + 1) += NavierStokes<DIM>::data.theta * U[j + 1].m() * M[j + 1] * N.m();
+	    }
+	  
+	  A(i + 1, 0) -= M.m() * N[i + 1];
+	}
+      
     }
   };
 

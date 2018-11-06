@@ -370,7 +370,83 @@ namespace Gascoigne
       }
     }
 
+    
+    ////////////////////////////////////////////////// Functionals
+    double ComputePointValue(const GlobalVector& u, const Vertex2d& p0,int comp) const 
+    {
+      assert(DIM==2);
+      // very simple version. Only finds nodes
+      for (int n=0;n<GetDofHandler()->nnodes();++n)
+	{
+	  double dist = 0;
+	  for (int d=0;d<DIM;++d)
+	    dist += pow(GetDofHandler()->vertex(n)[d]-p0[d],2.0);
+	  if (dist< sqrt(1.e-13))
+	    return u(n,comp);
+	}
+      std::cerr << "DofHandler::ComputePointValue. Vertex " << p0 << " not found!"
+		<< std::endl;
+      abort();
+    }
+    double ComputePointValue(const GlobalVector& u, const Vertex3d& p0,int comp) const 
+    {
+      assert(DIM==2);
+      // very simple version. Only finds nodes
+      for (int n=0;n<GetDofHandler()->nnodes();++n)
+	{
+	  double dist = 0;
+	  for (int d=0;d<DIM;++d)
+	    dist += pow(GetDofHandler()->vertex(n)[d]-p0[d],2.0);
+	  if (dist< sqrt(1.e-13))
+	    return u(n,comp);
+	}
+      std::cerr << "DofHandler::ComputePointValue. Vertex " << p0 << " not found!"
+		<< std::endl;
+      abort();
+    }
 
+    double ComputePointFunctional(const GlobalVector& u, const PointFunctional& FP) const
+    {
+      LocalParameterData QP;
+      GlobalToGlobalData(QP);
+      FP.SetParameterData(QP);
+      
+      int dim = GetDofHandler()->dimension();
+      assert(dim==DIM);
+      std::vector<int> comps = FP.GetComps();
+      int nn = comps.size();
+      
+      std::vector<double> up(nn,0);
+      
+      if (dim == 2)
+	{
+	  auto v2d = FP.GetPoints2d();
+	  assert(nn==v2d.size());
+	  
+	  for(int i=0;i<nn;++i)
+	    {
+	      up[i] = ComputePointValue(u,v2d[i],comps[i]);
+	    }
+	}
+      else if (dim == 3)
+	{
+	  auto v3d = FP.GetPoints3d();
+	  assert(nn==v3d.size());
+	  for(int i=0;i<nn;++i)
+	    {
+	      up[i] = ComputePointValue(u,v3d[i],comps[i]);
+	    }
+	}
+      else
+	{
+	  std::cout << "wronng dimension: dim = " << dim << std::endl;
+	  abort();
+	}
+      
+      return FP.J(up);
+    }
+    
+    
     ////////////////////////////////////////////////// Pressure Filter, set
     /// average zero
     void InitFilter(nvector<double> &F) const
