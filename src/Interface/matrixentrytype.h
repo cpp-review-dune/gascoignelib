@@ -29,7 +29,6 @@
 **/
 
 
-
 #ifdef __MATRIX_DOUBLE_PRECISION__
   #define MatrixEntryType double
 #else

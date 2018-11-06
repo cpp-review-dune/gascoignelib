@@ -11,6 +11,7 @@ namespace Gascoigne
     DFH.insert("visc", &visc, 1.);
     DFH.insert("alpha", &alpha0, 0.);
     DFH.insert("dt", &dt, 0.);
+    DFH.insert("theta", &theta, 0.);
     FileScanner FS(DFH, pf, "Equation");
     assert(visc>0);
   }
@@ -56,6 +57,7 @@ namespace Gascoigne
 
       A(i + 1, 0) -= M.m() * N[i + 1];
     }
+
   }
 
   ////////////////////////////////////////////////// NavierStokesLps
@@ -64,7 +66,8 @@ namespace Gascoigne
   void NavierStokesLps<DIM>::lpspoint(double h, const FemFunction &U, const Vertex<DIM> &v) const
   {
     _h = h;
-    _alpha = NavierStokes<DIM>::data.alpha0 * _h * _h/ NavierStokes<DIM>::data.visc;
+    _alpha = NavierStokes<DIM>::data.alpha0 /
+      (NavierStokes<DIM>::data.visc/(_h*_h) + 0.3/_h);
   }
   
   template<int DIM>

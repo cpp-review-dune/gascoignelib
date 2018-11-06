@@ -245,6 +245,7 @@ int Visualization::CheckPointData() const
     }
 
   // vectors
+  if (0)
   for(VisuDataInfo::viterator p=PointDataInfo->vbegin();p!=PointDataInfo->vend();++p)
     {
       for(int i=0;i<3;i++)
