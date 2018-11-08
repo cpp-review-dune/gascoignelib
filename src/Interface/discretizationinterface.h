@@ -115,7 +115,18 @@ namespace Gascoigne
         std::cerr << "\"DiscretizationInterface::BoundaryMatrix\" not written!" << std::endl;
         abort();
       }
-      virtual void MassMatrix(MatrixInterface& M) const {
+
+    // New Inteface. 
+    virtual void BoundaryForm(GlobalVector& f, const GlobalVector& u, const ProblemDescriptorInterface& PD, double d) const {
+      std::cerr << "\"DiscretizationInterface::BoundaryForm-NEW\" not written!" << std::endl;
+      abort();
+    }
+    virtual void BoundaryMatrix(MatrixInterface& A, const GlobalVector& u, const ProblemDescriptorInterface& PD, double d) const {
+      std::cerr << "\"DiscretizationInterface::BoundaryMatrix-NEW\" not written!" << std::endl;
+      abort();
+    }
+    
+    virtual void MassMatrix(MatrixInterface& M) const {
         std::cerr << "\"DiscretizationInterface::MassMatrix\" not written!" << std::endl;
         abort();
       } 

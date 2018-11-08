@@ -441,6 +441,7 @@ namespace Gascoigne
       double weight = IF.w(k) * h;
       BE.SetFemData(_QH);
       BE.pointmatrixboundary(h, _UH, x, n);
+      BE.pointboundary(h, _UH, x, n);
       double sw = sqrt(weight);
       for (int i = 0; i < FEM.n(); i++)
       {

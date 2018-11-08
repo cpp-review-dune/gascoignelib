@@ -30,6 +30,7 @@
 
 
 #include "equation.h"
+#include "boundaryequation.h"
 #include "lpsequation.h"
 #include "paramfile.h"
 
@@ -43,9 +44,11 @@ namespace Gascoigne
   {
   public:
     double visc, alpha0, dt, theta;
+    bool fulltensor;
 
     void BasicInit(const ParamFile *pf);
   };
+
 
   template <int DIM>
   class NavierStokes : public virtual Equation
@@ -79,6 +82,70 @@ namespace Gascoigne
                 const TestFunction &N) const;
   };
 
+
+  //////////////////////////////////////////////////. Boundary
+  
+  template <int DIM>
+  class NavierStokesBoundary : public virtual BoundaryEquation
+  {
+
+  protected:
+    NavierStokesData data;
+    mutable Vertex<DIM> _n;
+    
+  public:
+    NavierStokesBoundary<DIM>(const NavierStokesData &PD)
+        : data(PD)
+    {
+    }
+
+    std::string GetName() const
+    { return "NavierStokesBoundary"; }
+    int GetNcomp() const
+    {
+      return DIM + 1;
+    }
+
+    // Boundary 
+    void Form(VectorIterator b, const FemFunction& U, const TestFunction& N, int col) const;  
+    void Matrix(EntryMatrix& E, const FemFunction& U, const TestFunction& M, const TestFunction& N, int col) const;
+    void pointboundary(double h, const FemFunction& U, const Vertex<DIM>& v, const Vertex<DIM>& n) const;
+  };
+  
+  template <int DIM>
+  class NavierStokesBoundaryTime : public virtual BoundaryEquation
+  {
+
+  protected:
+    NavierStokesData data;
+    mutable Vertex<DIM> _n;
+    mutable FemFunction *OLD;
+    
+  public:
+    NavierStokesBoundaryTime<DIM>(const NavierStokesData &PD)
+        : data(PD)
+    {
+    }
+
+    void SetFemData(FemData& q) const
+    {
+      assert(q.find("OLD")!=q.end());
+      OLD = &q["OLD"];
+    }
+
+    
+    std::string GetName() const
+    { return "NavierStokesBoundary-Time"; }
+    int GetNcomp() const
+    {
+      return DIM + 1;
+    }
+
+    // Boundary 
+    void Form(VectorIterator b, const FemFunction& U, const TestFunction& N, int col) const;  
+    void Matrix(EntryMatrix& E, const FemFunction& U, const TestFunction& M, const TestFunction& N, int col) const;
+    void pointboundary(double h, const FemFunction& U, const Vertex<DIM>& v, const Vertex<DIM>& n) const;
+  };
 
   template <int DIM>
   class NavierStokesLps : public virtual NavierStokes<DIM>, public LpsEquation
@@ -131,53 +198,19 @@ namespace Gascoigne
     }
 
     void
-    Form(VectorIterator b, const FemFunction &U, const TestFunction &N) const
-    {      
-      {
-	for (int i=0;i<DIM;++i)
-	  {
-	    b[0] += U[i + 1][i + 1] * N.m();
-		
-	    b[i+1] += (U[i + 1].m() - (*OLD)[i+1].m()) / NavierStokes<DIM>::data.dt * N.m();
-	    
-	    for (int j = 0; j < DIM; ++j)
-	      {
-		b[i + 1] += NavierStokes<DIM>::data.theta * NavierStokes<DIM>::data.visc * U[i + 1][j + 1] * N[j + 1];
-		b[i + 1] += NavierStokes<DIM>::data.theta * U[j + 1].m() * U[i + 1][j + 1] * N.m();
-		b[i + 1] += (1.0-NavierStokes<DIM>::data.theta) * NavierStokes<DIM>::data.visc * (*OLD)[i + 1][j + 1] * N[j + 1];
-		b[i + 1] += (1.0-NavierStokes<DIM>::data.theta) * (*OLD)[j + 1].m() * (*OLD)[i + 1][j + 1] * N.m();
-	      }
-	    b[i + 1] -= U[0].m() * N[i + 1];
-	  }
-      }
-    }
-    
+    Form(VectorIterator b, const FemFunction &U, const TestFunction &N) const;
+   
     void Matrix(EntryMatrix &A,
                 const FemFunction &U,
                 const TestFunction &M,
-                const TestFunction &N) const
-    {
-      for (int i = 0; i < DIM; ++i)
-	{
-	  A(i+1,i+1) += M.m() * N.m() / NavierStokes<DIM>::data.dt;
-	  A(0, i + 1) += M[i + 1] * N.m();
-	  for (int j = 0; j < DIM; ++j)
-	    {
-	      
-	      A(i + 1, i + 1) += NavierStokes<DIM>::data.theta * NavierStokes<DIM>::data.visc * M[j + 1] * N[j + 1];
-	      
-	      A(i + 1, j + 1) += NavierStokes<DIM>::data.theta * M.m() * U[i + 1][j + 1] * N.m();
-	      A(i + 1, i + 1) += NavierStokes<DIM>::data.theta * U[j + 1].m() * M[j + 1] * N.m();
-	    }
-	  
-	  A(i + 1, 0) -= M.m() * N[i + 1];
-	}
+                const TestFunction &N) const;
       
-    }
+
   };
 
 #define NavierStokes2d NavierStokes<2>
 #define NavierStokes3d NavierStokes<3>
+
 #define NavierStokesLps2d NavierStokesLps<2>
 #define NavierStokesLps3d NavierStokesLps<3>
   

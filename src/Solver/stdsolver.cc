@@ -1367,22 +1367,21 @@ namespace Gascoigne
     HNAverage(gx);
     HNAverageData();
 
+    //////////// Form in elements
     GetDiscretization()->Form(GetGV(gy), GetGV(gx), *GetProblemDescriptor(), d);
 
-    // Face
+    //////////// Face
     if (GetFaceDiscretization())
     {
       const FaceEquation *FEQ = GetProblemDescriptor()->GetFaceEquation();
       assert(FEQ);
       GetFaceDiscretization()->FaceForm(GetGV(gy), GetGV(gx), *FEQ, d);
     }
-    const BoundaryEquation *BE = GetProblemDescriptor()->GetBoundaryEquation();
-    if (BE)
-    {
-      const BoundaryManager *BM = GetProblemDescriptor()->GetBoundaryManager();
-      GetDiscretization()->BoundaryForm(
-          GetGV(gy), GetGV(gx), BM->GetBoundaryEquationColors(), *BE, d);
-    }
+
+    //////////// Boundary
+    // 
+    GetDiscretization()->BoundaryForm(GetGV(gy), GetGV(gx), *GetProblemDescriptor(), d);
+
     HNZero(gx);
     HNZeroData();
     HNDistribute(gy);
@@ -1407,6 +1406,7 @@ namespace Gascoigne
     assert(EQ);
     GetDiscretization()->AdjointForm(y, x, *EQ, d);
 
+    abort();
     const BoundaryEquation *BE = GetProblemDescriptor()->GetBoundaryEquation();
     if (BE)
     {
@@ -1812,22 +1812,26 @@ namespace Gascoigne
     HNAverage(gu);
     HNAverageData();
 
+    //////////// Elements
     GetDiscretization()->Matrix(*GetMatrix(), u, *GetProblemDescriptor(), d);
 
-    // Face
+    //////////// Face
     if (GetFaceDiscretization())
     {
       const FaceEquation *FEQ = GetProblemDescriptor()->GetFaceEquation();
       assert(FEQ);
       GetFaceDiscretization()->FaceMatrix(*GetMatrix(), u, *FEQ, d);
     }
-    const BoundaryEquation *BE = GetProblemDescriptor()->GetBoundaryEquation();
-    if (BE)
-    {
-      const BoundaryManager *BM = GetProblemDescriptor()->GetBoundaryManager();
-      GetDiscretization()->BoundaryMatrix(
-          *GetMatrix(), u, BM->GetBoundaryEquationColors(), *BE, d);
-    }
+    //////////// Boundary
+    GetDiscretization()->BoundaryMatrix(*GetMatrix(), u, *GetProblemDescriptor(), d);
+    // const BoundaryEquation *BE = GetProblemDescriptor()->GetBoundaryEquation();
+    // if (BE)
+    // {
+    //   const BoundaryManager *BM = GetProblemDescriptor()->GetBoundaryManager();
+    //   GetDiscretization()->BoundaryMatrix(
+    //       *GetMatrix(), u, BM->GetBoundaryEquationColors(), *BE, d);
+    // }
+    
     PeriodicMatrix();
     DirichletMatrix();
     HNZero(gu);
