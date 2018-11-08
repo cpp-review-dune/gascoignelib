@@ -30,7 +30,7 @@
 
 #include "discretizationinterface.h"
 #include "mginterpolatornested.h"
-#include "omp.h"
+//#include "omp.h"
 #include "pressurefilter.h"
 #include "problemdescriptorbase.h"
 #include "sparsestructure.h"
@@ -446,7 +446,7 @@ namespace Gascoigne
 	  {
 	    const IntVector& q = *GetDofHandler()->ElementOnBoundary(DEGREE,col);
 	    const IntVector& l = *GetDofHandler()->ElementLocalOnBoundary(DEGREE,col);
-#pragma parallel for
+#pragma omp for
 	    for (int i=0; i<q.size(); i++)
 	      {
 		int iq  = q[i];
@@ -464,6 +464,41 @@ namespace Gascoigne
 	  }
 	delete BEQ;
       }
+    }
+    double ComputeBoundaryFunctional(const GlobalVector& u, const IntSet& Colors, const BoundaryFunctional& BF) const 
+    {
+      LocalParameterData QP;
+      GlobalToGlobalData(QP);
+
+      nmatrix<double> T;
+
+      FINITEELEMENT finiteelement;
+      INTEGRATOR integrator;
+      integrator.BasicInit();
+      LocalVector __U;
+      LocalData __QN, __QC;
+      
+      double j=0.;
+      for(const auto col : Colors)
+	{
+	  const IntVector& q = *GetDofHandler()->ElementOnBoundary(DEGREE,col);
+	  const IntVector& l = *GetDofHandler()->ElementLocalOnBoundary(DEGREE,col);
+	  for (int i=0; i<q.size(); i++)
+	    {
+	      int iq  = q[i];
+	      int ile = l[i];
+	      
+	      Transformation(T,iq);
+	      finiteelement.ReInit(T);
+	      
+	      GlobalToLocal(__U,u,iq);
+	      GlobalToLocalData(iq,__QN,__QC);
+	      
+	      j += integrator.ComputeBoundaryFunctional(BF,finiteelement,ile,col,__U,__QN,__QC);
+	    }
+	}
+      
+      return j;
     }
 	
     ////////////////////////////////////////////////// Functionals
