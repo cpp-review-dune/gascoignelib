@@ -270,6 +270,25 @@ namespace Gascoigne
     {
       return &(BoundaryHandler.LocalPatchind(color));
     }
+
+    virtual const IntVector *ElementOnBoundary(int degree, int color) const
+    {
+      if (degree == 1)
+	return CellOnBoundary(color);
+      else if (degree == 2)
+	return PatchOnBoundary(color);
+      else assert(0);	     
+    }
+    virtual const IntVector *ElementLocalOnBoundary(int degree,int color) const
+    {
+      if (degree == 1)
+	return LocalOnBoundary(color);
+      else if (degree == 2)
+	return LocalPatchOnBoundary(color);
+      else
+	assert(0);	          
+    }
+
     virtual std::set<int> GetColors() const
     {
       return BoundaryHandler.GetColors();

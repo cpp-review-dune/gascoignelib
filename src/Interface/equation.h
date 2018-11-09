@@ -1,25 +1,25 @@
 /**
-*
-* Copyright (C) 2004, 2005 by the Gascoigne 3D authors
-*
-* This file is part of Gascoigne 3D
-*
-* Gascoigne 3D is free software: you can redistribute it
-* and/or modify it under the terms of the GNU General Public
-* License as published by the Free Software Foundation, either
-* version 3 of the License, or (at your option) any later
-* version.
-*
-* Gascoigne 3D is distributed in the hope that it will be
-* useful, but WITHOUT ANY WARRANTY; without even the implied
-* warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-* PURPOSE.  See the GNU General Public License for more
-* details.
-*
-* Please refer to the file LICENSE.TXT for further information
-* on this license.
-*
-**/
+ *
+ * Copyright (C) 2004, 2005,2018 by the Gascoigne 3D authors
+ *
+ * This file is part of Gascoigne 3D
+ *
+ * Gascoigne 3D is free software: you can redistribute it
+ * and/or modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation, either
+ * version 3 of the License, or (at your option) any later
+ * version.
+ *
+ * Gascoigne 3D is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more
+ * details.
+ *
+ * Please refer to the file LICENSE.TXT for further information
+ * on this license.
+ *
+ **/
 
 
 #ifndef __Equation_h
@@ -46,43 +46,58 @@ namespace Gascoigne
 
   class Equation : public virtual Application
   {
-    private:
+  private:
 
-    protected:
+  protected:
 
-    public:
-      //
-      // Constructors
-      //
-      Equation() : Application() {}
-      virtual ~Equation() {}
+  public:
+    //
+    // Constructors
+    //
+    Equation() : Application() {}
+    virtual ~Equation() {}
 
-      virtual void OperatorStrong(DoubleVector& b, const FemFunction& U) const {
-        std::cerr << "\"Equation::OperatorStrong\" not written!" << std::endl;
-        abort();
-      } 
-      virtual void SetTimePattern(TimePattern& TP) const {
-        std::cerr << "\"Equation::SetTimePattern\" not written!" << std::endl;
-        abort();
-      } 
+    virtual void OperatorStrong(DoubleVector& b, const FemFunction& U) const {
+      std::cerr << "\"Equation::OperatorStrong\" not written!" << std::endl;
+      abort();
+    } 
+    virtual void SetTimePattern(TimePattern& TP) const {
+      std::cerr << "\"Equation::SetTimePattern\" not written!" << std::endl;
+      abort();
+    } 
 
-      virtual void point_cell(int material) const {}
-      virtual void point(double h, const FemFunction& U, const Vertex2d& v) const {}
-      virtual void point(double h, const FemFunction& U, const Vertex3d& v) const {}
+    virtual void point_cell(int material) const {}
+    virtual void point(double h, const FemFunction& U, const Vertex2d& v) const {}
+    virtual void point(double h, const FemFunction& U, const Vertex3d& v) const {}
      
-      virtual void pointmatrix(double h, const FemFunction& U, const Vertex2d& v) const {
-        point(h,U,v);
-      }
-      virtual void pointmatrix(double h, const FemFunction& U, const Vertex3d& v) const {
-        point(h,U,v);
-      }
-     
-      virtual int GetNcomp() const=0;
-      virtual void Form(VectorIterator b, const FemFunction& U, const TestFunction& N) const=0;
-      virtual void Matrix(EntryMatrix& A, const FemFunction& U, const TestFunction& M, const TestFunction& N) const=0;
-      // .cell is analogous to .point
-      //virtual void cell(const MeshInterface* p_mesh, int cell_id, const LocalVector& U, const LocalNodeData& Q) const { }
-      
+    virtual void pointmatrix(double h, const FemFunction& U, const Vertex2d& v) const {
+      point(h,U,v);
+    }
+    virtual void pointmatrix(double h, const FemFunction& U, const Vertex3d& v) const {
+      point(h,U,v);
+    }
+
+    // Elements
+    virtual int GetNcomp() const=0;
+    virtual void Form(VectorIterator b, const FemFunction& U, const TestFunction& N) const=0;
+    virtual void Matrix(EntryMatrix& A, const FemFunction& U, const TestFunction& M, const TestFunction& N) const=0;
+
+    // Boundary 
+    virtual void Form(VectorIterator b, const FemFunction& U, const TestFunction& N, int col) const{}
+    virtual void Matrix(EntryMatrix& E, const FemFunction& U, const TestFunction& M, const TestFunction& N, int col) const{}
+
+    virtual void pointboundary(double h, const FemFunction& U, const Vertex2d& v, const Vertex2d& n) const {}
+    virtual void pointboundary(double h, const FemFunction& U, const Vertex3d& v, const Vertex3d& n) const {}
+    virtual void pointmatrixboundary(double h, const FemFunction& U, const Vertex2d& v, 
+				     const Vertex2d& n) const {
+      pointboundary(h,U,v,n);
+    }
+    virtual void pointmatrixboundary(double h, const FemFunction& U, const Vertex3d& v, 
+				     const Vertex3d& n) const {
+      pointboundary(h,U,v,n);
+    }
+
+    
     virtual void MatrixBlock(EntryMatrix& A, const FemFunction& U, const FemFunction& N) const
     {
       for (int j=0; j<N.size(); j++)

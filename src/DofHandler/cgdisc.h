@@ -30,7 +30,7 @@
 
 #include "discretizationinterface.h"
 #include "mginterpolatornested.h"
-#include "omp.h"
+//#include "omp.h"
 #include "pressurefilter.h"
 #include "problemdescriptorbase.h"
 #include "sparsestructure.h"
@@ -370,7 +370,137 @@ namespace Gascoigne
       }
     }
 
-    
+
+    ////////////////////////////////////////////////// Integration on the Boundary
+    void BoundaryForm(GlobalVector& f, const GlobalVector& u, const ProblemDescriptorInterface& PD, double d) const 
+    {
+      // Do we have a boundary equation?
+      if (PD.NewBoundaryEquation() == NULL)
+	return;
+      
+      LocalParameterData QP;
+      GlobalToGlobalData(QP);
+      
+      nmatrix<double> T;
+      FINITEELEMENT finiteelement;
+      INTEGRATOR integrator;
+      integrator.BasicInit();
+      LocalVector __U, __F;
+      LocalData __QN, __QC;
+      
+#pragma omp parallel private(T,finiteelement,integrator, __U,__F,__QN,__QC)
+      {
+	const auto *BEQ = PD.NewBoundaryEquation();
+	auto COLS = PD.GetBoundaryManager()->GetBoundaryEquationColors();
+	BEQ->SetParameterData(QP);
+	
+	for(auto col : COLS)
+	  {
+	    const IntVector& q = *GetDofHandler()->ElementOnBoundary(DEGREE,col);
+	    const IntVector& l = *GetDofHandler()->ElementLocalOnBoundary(DEGREE,col);
+
+#pragma omp for
+	    for (int i=0; i<q.size(); i++)
+	      {
+		int iq  = q[i];
+		int ile = l[i];
+		
+		Transformation(T,iq);
+		finiteelement.ReInit(T);
+	      
+		GlobalToLocal(__U,u,iq);
+		GlobalToLocalData(iq, __QN, __QC);
+		
+		integrator.BoundaryForm(*BEQ,__F,finiteelement,__U,ile,col,__QN,__QC);
+		LocalToGlobal(f,__F,iq,d);
+	      }
+	  }
+	delete BEQ;
+      }
+    }
+    void BoundaryMatrix(MatrixInterface& A, const GlobalVector& u, const ProblemDescriptorInterface& PD, double d) const
+    {
+      // Do we have a boundary equation?
+      if (PD.NewBoundaryEquation() == NULL)
+	return;
+      
+      LocalParameterData QP;
+      GlobalToGlobalData(QP);
+      
+      nmatrix<double> T;
+      FINITEELEMENT finiteelement;
+      INTEGRATOR integrator;
+      integrator.BasicInit();
+      LocalVector __U;
+      LocalData __QN, __QC;
+      EntryMatrix __E;
+      
+
+#pragma omp parallel private(T,finiteelement,integrator,__U,__QN,__QC,__E)
+      {
+	auto *BEQ = PD.NewBoundaryEquation();
+	const auto COLS = PD.GetBoundaryManager()->GetBoundaryEquationColors();
+	BEQ->SetParameterData(QP);
+      
+	for(const auto col : COLS)
+	  {
+	    const IntVector& q = *GetDofHandler()->ElementOnBoundary(DEGREE,col);
+	    const IntVector& l = *GetDofHandler()->ElementLocalOnBoundary(DEGREE,col);
+#pragma omp for
+	    for (int i=0; i<q.size(); i++)
+	      {
+		int iq  = q[i];
+		int ile = l[i];
+		
+		Transformation(T,iq);
+		finiteelement.ReInit(T);
+		
+		GlobalToLocal(__U,u,iq);
+		GlobalToLocalData(iq, __QN, __QC);
+		
+		integrator.BoundaryMatrix(*BEQ,__E,finiteelement,__U,ile,col,__QN,__QC);
+		LocalToGlobal(A,__E,iq,d);
+	      }
+	  }
+	delete BEQ;
+      }
+    }
+    double ComputeBoundaryFunctional(const GlobalVector& u, const IntSet& Colors, const BoundaryFunctional& BF) const 
+    {
+      LocalParameterData QP;
+      GlobalToGlobalData(QP);
+
+      nmatrix<double> T;
+
+      FINITEELEMENT finiteelement;
+      INTEGRATOR integrator;
+      integrator.BasicInit();
+      LocalVector __U;
+      LocalData __QN, __QC;
+      
+      double j=0.;
+      for(const auto col : Colors)
+	{
+	  const IntVector& q = *GetDofHandler()->ElementOnBoundary(DEGREE,col);
+	  const IntVector& l = *GetDofHandler()->ElementLocalOnBoundary(DEGREE,col);
+	  for (int i=0; i<q.size(); i++)
+	    {
+	      int iq  = q[i];
+	      int ile = l[i];
+	      
+	      Transformation(T,iq);
+	      finiteelement.ReInit(T);
+	      
+	      GlobalToLocal(__U,u,iq);
+	      GlobalToLocalData(iq,__QN,__QC);
+	      
+	      j += integrator.ComputeBoundaryFunctional(BF,finiteelement,ile,col,__U,__QN,__QC);
+	    }
+	}
+      
+      return j;
+    }
+	
     ////////////////////////////////////////////////// Functionals
     double ComputePointValue(const GlobalVector& u, const Vertex2d& p0,int comp) const 
     {

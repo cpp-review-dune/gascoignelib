@@ -59,7 +59,11 @@ namespace Gascoigne
   public:
     virtual Equation *NewEquation() const
     {
-      abort();
+      return NULL;
+    }
+    virtual BoundaryEquation *NewBoundaryEquation() const
+    {
+      return NULL;
     }
 
     ProblemDescriptorInterface() {}
