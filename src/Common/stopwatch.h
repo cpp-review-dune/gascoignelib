@@ -1,163 +1,243 @@
+/*----------------------------   stopwatch.h     ---------------------------*/
+/*      $Id:$                 */
+#ifndef __stopwatch_H
+#define __stopwatch_H
+/*----------------------------   stopwatch.h     ---------------------------*/
+
+
 /**
-*
-* Copyright (C) 2004, 2005, 2006, 2008 by the Gascoigne 3D authors
-*
-* This file is part of Gascoigne 3D
-*
-* Gascoigne 3D is free software: you can redistribute it
-* and/or modify it under the terms of the GNU General Public
-* License as published by the Free Software Foundation, either
-* version 3 of the License, or (at your option) any later
-* version.
-*
-* Gascoigne 3D is distributed in the hope that it will be
-* useful, but WITHOUT ANY WARRANTY; without even the implied
-* warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-* PURPOSE.  See the GNU General Public License for more
-* details.
-*
-* Please refer to the file LICENSE.TXT for further information
-* on this license.
-*
-**/
+ *
+ * Copyright (C) 2004, 2005, 2006, 2008, 2018 by the Gascoigne 3D authors
+ *
+ * This file is part of Gascoigne 3D
+ *
+ * Gascoigne 3D is free software: you can redistribute it
+ * and/or modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation, either
+ * version 3 of the License, or (at your option) any later
+ * version.
+ *
+ * Gascoigne 3D is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more
+ * details.
+ *
+ * Please refer to the file LICENSE.TXT for further information
+ * on this license.
+ *
+ **/
 
-
-#ifndef STPWATCH_H
-#define STPWATCH_H
-
-#include  <ctime>
-#include  "gostream.h"
-#include  <unistd.h>
-#include <sys/resource.h>
-#include <time.h>
-
-/***********************************************************
- *****   ueberarbeitete und fehlerbereinigte Version   ***** 
- *****   Michael Schmich                  15.01.2002   *****
- ***********************************************************/
+#include <chrono>
+#include <ctime>
+#include <cassert>
+#include <string>
+#include <map>
+#include <iostream>
 
 /*----------------------------------------------------*/
 
 namespace Gascoigne
 {
-class Time
-{
- protected:
-
-  double sec;
-  int min, hour, day;
-  
- public:
-
-  Time() : sec(0.), min(0), hour(0),day(0) {}
-
-  void reset() {sec=0.; min=hour=day=0;}
-
-  double GetSeconds () const {return sec;}
-  int    GetMinutes () const {return min;}
-  int    GetHours   () const {return hour;}
-  int    GetDays    () const {return day;}
-
-  double GetTotalSeconds () const;
-
-  void add(double s);
-
-  friend std::ostream& operator<<(std::ostream &s, const Time& A);
-};
-
-/*----------------------------------------------------*/
-
-class StopWatch 
-{
- protected:
-  bool     running;
-  clock_t  last_time;
-  Time     T;
-  
- public:
-  StopWatch();
-
-  const Time& GetTime() const {return T;}
-
-  void  add(double s) { T.add(s);}
-  void  reset();
-  void  start();
-  double stop() ;
-  double read() const;
-  double read100() const;
-};
-
-/*----------------------------------------------------*/
-
-#ifdef __WITH_RSTStopWatch__
-	  // measures the walltime
-class RTStopWatch 
-{
- protected:
-  bool     running;
-  timespec t1,t2;
-  timespec my_time;
-  
- public:
-  RTStopWatch() 
-    {
-      reset();
-    }
-  
-
-  void  reset()
-    {
-      running         = 0;
-      my_time.tv_sec  = 0;
-      my_time.tv_nsec = 0;
-    }
-  
-  void  start()
-    {
-      if (!running) clock_gettime(CLOCK_REALTIME,&t1);
-      running = 1;
-    }
-  
-  double stop()
-    {
-      if (running)
-	{
-	  clock_gettime(CLOCK_REALTIME,&t2);
-	  my_time.tv_sec  += t2.tv_sec-t1.tv_sec;
-	  my_time.tv_nsec += t2.tv_nsec-t1.tv_nsec;
-
-	  while (long(my_time.tv_nsec)>long(1000000000))
-	    {
-	      my_time.tv_nsec -= long(1000000000);
-	      my_time.tv_sec  += 1;
-	    }
-	  while (long(my_time.tv_nsec)<long(0))
-	    {
-	      my_time.tv_nsec += long(1000000000);
-	      my_time.tv_sec  -= 1;
-	    }
-	}
-      running = 0;
-      return double( my_time.tv_sec)+1.e-9 * double (my_time.tv_nsec);
-    }
-  
-  double read() const
-    {
-      if (running) return -1;
-      return double (my_time.tv_sec)+1.e-9 * double (my_time.tv_nsec);
-    }
-
-  double read100() const
+  /**
+   *
+   * StopWatch that measure the 'real time'
+   *
+   **/
+  class StopWatch 
   {
-    if (running) return -1;
-    return static_cast<double> (0.01 * static_cast<int> (100 * read()));
-  }
+  protected:
+    std::chrono::high_resolution_clock::time_point last_time;
+    std::chrono::duration<double> sum_time;
+
+    bool     running;
   
-};
+  public:
+    StopWatch() : sum_time(std::chrono::duration<double>::zero()), running(false)
+    {}
+
+    void  reset()
+    {
+      sum_time = std::chrono::duration<double>::zero();
+      running = false;
+    }
+    void  start()
+    {
+      assert(!running);
+      last_time = std::chrono::high_resolution_clock::now();
+    }
+    void stop()
+    {
+      std::chrono::high_resolution_clock::time_point now = std::chrono::high_resolution_clock::now();
+      running = false;
+      sum_time += std::chrono::duration_cast<std::chrono::duration<double> >(now - last_time);
+    }
+    double read() const
+    {
+      assert(!running);
+      return sum_time.count();
+    }
+    double read100() const
+    {
+      return static_cast<double>(static_cast<int>(read()*100))/100.0;
+    }
+  };
+
  
-#endif /*__WITH_RSTStopWatch__*/
+  /**
+   *
+   * StopWatch that measure the 'cpu time'
+   *
+   **/
+  
+  class CPUStopWatch 
+  {
+  protected:
+    std::clock_t last_time;
+    double sum_time;
+
+    bool     running;
+  
+  public:
+    CPUStopWatch() : sum_time(0), running(false)
+    {}
+
+    void  reset()
+    {
+      sum_time = 0;
+      running = false;
+    }
+    void  start()
+    {
+      assert(!running);
+      last_time = std::clock();
+    }
+    void stop()
+    {
+      std::clock_t now = std::clock();
+      running = false;
+      sum_time += static_cast<double>(now - last_time)/CLOCKS_PER_SEC;
+    }
+    double read() const
+    {
+      assert(!running);
+      return sum_time;
+    }
+    double read100() const
+    {
+      return static_cast<double>(static_cast<int>(read()*100))/100.0;
+    }
+  };
+
+  /*----------------------------------------------------*/
+
+  /**
+   *
+   * class for managing StopWatches
+   *
+   **/
+
+  class Timer
+  {
+  protected:
+    std::map<std::string, StopWatch> watches;
+    std::map<std::string, CPUStopWatch> cpuwatches;
+
+  public:
+    void  reset()
+    {
+      watches.clear();
+      cpuwatches.clear();
+    }
+    void reset(const std::string& label)
+    {
+      auto it = watches.find(label);
+      assert(it!=watches.end());
+      watches.erase(it);
+      
+      auto cpuit = cpuwatches.find(label);
+      assert(cpuit!=cpuwatches.end());
+      cpuwatches.erase(cpuit);
+    }
+    
+    void  start(const std::string& label)
+    {
+      watches[label].start();
+      cpuwatches[label].start();
+    }
+    void stop(const std::string& label)
+    {
+      assert(watches.find(label)!=watches.end());
+      assert(cpuwatches.find(label)!=cpuwatches.end());
+      watches[label].stop();
+      cpuwatches[label].stop();
+    }
+    double read(const std::string& label) const
+    {
+      auto it = watches.find(label);
+      assert(it!=watches.end());
+      return it->second.read();
+    }
+    double read100(const std::string& label) const
+    { 
+      auto it = watches.find(label);
+      assert(it!=watches.end());
+      return it->second.read100();
+    }
+
+    double cpuread(const std::string& label) const
+    {
+      auto it = cpuwatches.find(label);
+      assert(it!=cpuwatches.end());
+      return it->second.read();
+    }
+    double cpuread100(const std::string& label) const
+    { 
+      auto it = cpuwatches.find(label);
+      assert(it!=cpuwatches.end());
+      return it->second.read100();
+    }
+
+    void print(const std::string& label) const
+    {
+      auto it = watches.find(label);
+      assert(it!=watches.end());
+      auto cit = cpuwatches.find(label);
+      assert(cit!=cpuwatches.end());
+      
+      std::cout << label << "\t" << it->second.read() << "\t" << cit->second.read() << std::endl;
+    }
+    void print100(const std::string& label) const
+    {
+      auto it = watches.find(label);
+      assert(it!=watches.end());
+      auto cit = cpuwatches.find(label);
+      assert(cit!=cpuwatches.end());
+
+      std::cout << label << "\t" << it->second.read100() << "\t" << cit->second.read100() << std::endl;
+    }
+    
+    void print() const
+    {
+      for (auto it : watches)
+	print(it.first);
+      std::cout << std::endl;
+    }
+    void print100() const
+    {
+      for (auto it : watches)
+	print100(it.first);
+      std::cout << std::endl;
+    }
+
+  };
  
  
 }
 
+
+
+/*----------------------------   stopwatch.h     ---------------------------*/
+/* end of #ifndef __stopwatch_H */
 #endif
+/*----------------------------   stopwatch.h     ---------------------------*/

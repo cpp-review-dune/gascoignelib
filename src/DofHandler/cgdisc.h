@@ -534,7 +534,6 @@ namespace Gascoigne
 		<< std::endl;
       abort();
     }
-
     double ComputePointFunctional(const GlobalVector& u, const PointFunctional& FP) const
     {
       LocalParameterData QP;
@@ -575,6 +574,32 @@ namespace Gascoigne
       
       return FP.J(up);
     }
+    double ComputeDomainFunctional(const GlobalVector& u, const DomainFunctional& F) const
+    {
+      LocalParameterData QP;
+      GlobalToGlobalData(QP);
+      F.SetParameterData(QP);
+      
+      nmatrix<double> T;
+      FINITEELEMENT finiteelement;
+      INTEGRATOR integrator;
+      integrator.BasicInit();
+      LocalVector __U;
+      LocalData __QN, __QC;
+      double j=0.;
+      for(int iq=0;iq<GetDofHandler()->nelements(DEGREE);++iq)
+	{
+	  Transformation(T,iq);
+	  finiteelement.ReInit(T);
+	  
+	  GlobalToLocal(__U,u,iq);
+	  GlobalToLocalData(iq, __QN, __QC);
+	  F.point_cell(GetDofHandler()->material(DEGREE,iq));
+	  j += integrator.ComputeDomainFunctional(F,finiteelement,__U,__QN,__QC);
+	}
+      return j;
+    }
+    
     
     
     ////////////////////////////////////////////////// Pressure Filter, set

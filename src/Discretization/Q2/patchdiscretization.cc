@@ -127,12 +127,18 @@ void PatchDiscretization::AdjointForm(GlobalVector& f, const GlobalVector& u, co
 
 /* ----------------------------------------- */
 
-void PatchDiscretization::BoundaryForm(GlobalVector& f, const GlobalVector& u, const IntSet& Colors, const BoundaryEquation& BE, double d) const
+void PatchDiscretization::BoundaryForm(GlobalVector& f, const GlobalVector& u, const ProblemDescriptorInterface& PD, double d) const
 {
+  if (!PD.NewBoundaryEquation())
+    return;
+  
   nmatrix<double> T;
+
+  auto *BE = PD.NewBoundaryEquation();
+  auto Colors = PD.GetBoundaryManager()->GetBoundaryEquationColors();
   
   GlobalToGlobalData();
-  BE.SetParameterData(__QP);
+  BE->SetParameterData(__QP);
 
   for(IntSet::const_iterator p=Colors.begin();p!=Colors.end();p++)
     {
@@ -150,7 +156,7 @@ void PatchDiscretization::BoundaryForm(GlobalVector& f, const GlobalVector& u, c
 
           GlobalToLocal(__U,u,ip);
 
-          GetIntegrator()->BoundaryForm(BE,__F,*GetFem(),__U,ile,col,__QN,__QC);
+          GetIntegrator()->BoundaryForm(*BE,__F,*GetFem(),__U,ile,col,__QN,__QC);
           LocalToGlobal(f,__F,ip,d);
         }
     }
@@ -183,12 +189,16 @@ void PatchDiscretization::Matrix(MatrixInterface& A, const GlobalVector& u, cons
 
 /* ----------------------------------------- */
 
-void PatchDiscretization::BoundaryMatrix(MatrixInterface& A, const GlobalVector& u, const IntSet& Colors, const BoundaryEquation& BE, double d) const
+void PatchDiscretization::BoundaryMatrix(MatrixInterface& A, const GlobalVector& u, const ProblemDescriptorInterface&  PD, double d) const
 {
+  if (!PD.NewBoundaryEquation())
+    return;
+  const auto *BE = PD.NewBoundaryEquation();
+  auto Colors = PD.GetBoundaryManager()->GetBoundaryEquationColors();
   nmatrix<double> T;
   
   GlobalToGlobalData();
-  BE.SetParameterData(__QP);
+  BE->SetParameterData(__QP);
 
   for(IntSet::const_iterator p=Colors.begin();p!=Colors.end();p++)
     {
@@ -205,7 +215,7 @@ void PatchDiscretization::BoundaryMatrix(MatrixInterface& A, const GlobalVector&
           GetFem()->ReInit(T);
 
           GlobalToLocal(__U,u,ip);
-          GetIntegrator()->BoundaryMatrix(BE,__E,*GetFem(),__U,ile,col,__QN,__QC);
+          GetIntegrator()->BoundaryMatrix(*BE,__E,*GetFem(),__U,ile,col,__QN,__QC);
           LocalToGlobal(A,__E,ip,d);
         }
     }

@@ -42,6 +42,8 @@ using namespace std;
 
 namespace Gascoigne
 {
+  extern Timer GlobalTimer;
+  
 StdLoop::StdLoop() : BasicLoop()
 {
   _estimator = _extrapolate = "none";
@@ -55,9 +57,6 @@ StdLoop::~StdLoop() {}
 
 void StdLoop::ClockOutput() const
 {
-  BasicLoop::ClockOutput();
-  cout << "  Functionals\t\t" << _clock_functionals.read() << endl;
-  cout << "  Estimate\t\t" << _clock_estimate.read() << endl;
 }
 
 /*-----------------------------------------*/
@@ -379,6 +378,7 @@ void StdLoop::AdaptMesh(const DoubleVector& eta)
 
 /*-------------------------------------------------*/
 
+
 void StdLoop::run(const std::string& problemlabel)
 {
   VectorInterface u("u"), f("f");
@@ -388,19 +388,18 @@ void StdLoop::run(const std::string& problemlabel)
   
   for (_iter=1; _iter<=_niter; _iter++)
     {
+      GlobalTimer.reset();
+      GlobalTimer.start("iteration");
       cout << "\n================== " << _iter << " ================";
       PrintMeshInformation();
       Moning.SetMeshInformation(_iter,GetMeshAgent()->nnodes(),GetMeshAgent()->ncells());
 
-      _clock_newmesh.start();
-
+      GlobalTimer.start("---> reinit");
       GetMultiLevelSolver()->ReInit(problemlabel);
       GetMultiLevelSolver()->ReInitVector(u);
       GetMultiLevelSolver()->ReInitVector(f);
       GetMultiLevelSolver()->InterpolateSolution(u,ualt);
       GetSolverInfos()->GetNLInfo().control().matrixmustbebuild() = 1;
-
-      _clock_newmesh.stop();
 
       if (_iter==1) 
         {
@@ -408,43 +407,32 @@ void StdLoop::run(const std::string& problemlabel)
           InitSolution(u);
           Moning.BasicInit(GetExactValues());
         }
+      GlobalTimer.stop("---> reinit");
+      
       Solve(u,f);
 
+      GlobalTimer.start("---> errors");
       ComputeGlobalErrors(u);
-      
-      _clock_functionals.start();
       DoubleVector juh = Functionals(u,f);
-      _clock_functionals.stop();
-
+      GlobalTimer.stop("---> errors");
+      
       DoubleVector eta;
-
-      _clock_estimate.start();
       if (_estimator!="none")
         {
+	  GlobalTimer.start("---> estimate");
           double est = Estimator(eta,u,f);
           Moning.SetSolutionInformation(_iter,juh,est);
+	  GlobalTimer.stop("---> estimate");
         }
       if (_iter<_niter) 
         {
           CopyVector(ualt,u);
-
           AdaptMesh(eta);
-          //  wenn gleichzeitig verfeinert und vergroebert werden soll, dann sollte
-          //  AdaptMesh zweimal folgendermassen aufgerufen werden :
-          //     
-          //    CopyVector(ualt,u);
-          //    AdaptMesh(eta,"refine");
-          //    GetSolverInfos()->GetNLInfo().control().matrixmustbebuild() = 1;
-          //    GetMultiLevelSolver()->ReInit(problemlabel);
-          //    GetMultiLevelSolver()->InterpolateSolution(u,ualt);
-          //    CopyVector(ualt,u);
-          //    AdaptMesh(eta,"coarsen");
-          //   
         }
-      _clock_estimate.stop();
+      GlobalTimer.stop("iteration");
      }
 
-  ClockOutput();
+  GlobalTimer.print100();
 }
 }
 

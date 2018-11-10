@@ -47,6 +47,7 @@ namespace Gascoigne
                                  const TestFunction &M,
                                  const TestFunction &N) const
   {
+	
     for (int i = 0; i < DIM; ++i)
     {
       A(0, i + 1) += M[i + 1] * N.m();
@@ -62,6 +63,7 @@ namespace Gascoigne
 
       A(i + 1, 0) -= M.m() * N[i + 1];
     }
+
 
   }
 
@@ -120,7 +122,7 @@ namespace Gascoigne
 	      }
 	    b[i + 1] -= U[0].m() * N[i + 1];
 	  }
-      }
+    }
     }
   
   template<int DIM>
@@ -145,7 +147,7 @@ namespace Gascoigne
 	
 	  A(i + 1, 0) -= M.m() * N[i + 1];
       }
-    
+
   }
 
   ////////////////////////////////////////////////// BOUNDARY

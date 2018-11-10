@@ -133,8 +133,6 @@ namespace Gascoigne
     PressureFilter _PF;
     /*   double               omega_domain; */
 
-    mutable StopWatch _vm, _il, _so, _ca, _ci, _cs, _re;
-
     //
     //        Funktionen
     //
@@ -277,34 +275,6 @@ namespace Gascoigne
     {
       assert(_MIP);
       return _MIP;
-    }
-    virtual double clock_vmult() const
-    {
-      return _vm.read();
-    }
-    virtual double clock_ilu() const
-    {
-      return _il.read();
-    }
-    virtual double clock_solve() const
-    {
-      return _so.read();
-    }
-    virtual double clock_computematrix() const
-    {
-      return _ca.read();
-    }
-    virtual double clock_computeilu() const
-    {
-      return _ci.read();
-    }
-    virtual double clock_computesolver() const
-    {
-      return _cs.read();
-    }
-    virtual double clock_residual() const
-    {
-      return _re.read();
     }
 
     virtual bool DirectSolver() const

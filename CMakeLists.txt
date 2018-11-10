@@ -16,7 +16,6 @@ OPTION(MATRIX_DOUBLE_PRECISION "Matrix in double precision" ON)
 OPTION(WITH_UMFPACK "Build with support for UMFPACK" ON)
 OPTION(WITH_UMFPACK_LONG "Long-integer indices in UMFPACK >4GB matrices" OFF)
 OPTION(WITH_THREADS "Build with support for openmp" OFF)
-OPTION(WITH_RSTStopWatch "Use RSTStopWatch" OFF)
 
 ### Directory Settings
 
@@ -47,10 +46,6 @@ ENDIF(MATRIX_DOUBLE_PRECISION)
 IF(WITH_THREADS)
   SET(GASCOIGNE_CXX_FLAGS "${GASCOIGNE_CXX_FLAGS} -fopenmp")
 ENDIF(WITH_THREADS)
-
-IF(WITH_RSTStopWatch)
-  LIST(APPEND GASCOIGNE_DEFINITIONS -D __WITH_RSTStopWatch__)
-ENDIF(WITH_RSTStopWatch)
 
 #
 # Search for metis:
