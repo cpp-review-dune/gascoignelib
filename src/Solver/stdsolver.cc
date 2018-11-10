@@ -140,6 +140,8 @@ extern "C" void METIS_PartGraphKway(int *,
 namespace Gascoigne
 {
 
+  extern Timer GlobalTimer;
+
   StdSolver::StdSolver()
       : _MP(NULL)
       , _HM(NULL)
@@ -821,7 +823,7 @@ namespace Gascoigne
     }
     else if (matrixtype == "vanka")
     {
-      return new VankaSmoother(GetMesh());
+      return new VankaSmoother;
     }
     else if (matrixtype == "sparseumf")
     {
@@ -896,6 +898,13 @@ namespace Gascoigne
     AddPeriodicNodes(&SA);
 
     GetMatrix()->ReInit(&SA);
+
+    if (!_directsolver && (_matrixtype == "vanka") )
+      {
+	assert(dynamic_cast<const VankaSmoother*>(GetIlu()));
+	dynamic_cast<const VankaSmoother*>(GetIlu())->SetDofHandler(GetMesh());
+      }
+
     GetIlu()->ReInit(&SA);
   }
 
@@ -1093,9 +1102,9 @@ namespace Gascoigne
                         const VectorInterface &gx,
                         double d) const
   {
-    _vm.start();
+    GlobalTimer.start("---> vmult");
     GetMatrix()->vmult(GetGV(gy), GetGV(gx), d);
-    _vm.stop();
+    GlobalTimer.stop("---> vmult");
   }
 
   /*-----------------------------------------*/
@@ -1104,10 +1113,10 @@ namespace Gascoigne
                           const VectorInterface &gx,
                           double d) const
   {
-    _vm.start();
+    GlobalTimer.start("---> vmult");
     Zero(gy);
-    _vm.stop();
-    vmult(gy, gx, d);
+    GlobalTimer.stop("---> vmult");
+    vmult(gy,gx,d);
   }
 
   /*-----------------------------------------*/
@@ -1273,20 +1282,24 @@ namespace Gascoigne
                          const VectorInterface &y,
                          VectorInterface &h) const
   {
-    _il.start();
+    GlobalTimer.start("---> smooth");
     double omega = GetSolverData().GetOmega();
 
     for (int iter = 0; iter < niter; iter++)
     {
       if (GetSolverData().GetLinearSmooth() == "ilu")
       {
+	GlobalTimer.stop("---> smooth");
         MatrixResidual(h, x, y);
+	GlobalTimer.start("---> smooth");
         GetIlu()->solve(GetGV(h));
         Add(x, omega, h);
       }
       else if (GetSolverData().GetLinearSmooth() == "jacobi")
       {
+	GlobalTimer.stop("---> smooth");
         MatrixResidual(h, x, y);
+	GlobalTimer.start("---> smooth");
         GetMatrix()->Jacobi(GetGV(h));
         Add(x, omega, h);
       }
@@ -1305,8 +1318,8 @@ namespace Gascoigne
         abort();
       }
       SubtractMean(x);
-    }
-    _il.stop();
+    }    
+    GlobalTimer.stop("---> smooth");
   }
 
   /*-------------------------------------------------------*/
@@ -1328,7 +1341,7 @@ namespace Gascoigne
 #ifdef __WITH_UMFPACK__
     if (_directsolver && _useUMFPACK)
     {
-      _so.start();
+    GlobalTimer.start("---> direct");
 #ifdef __WITH_UMFPACK_LONG__
       UmfIluLong *UM = dynamic_cast<UmfIluLong *>(GetIlu());
 #else
@@ -1336,7 +1349,7 @@ namespace Gascoigne
 #endif
       assert(UM);
       UM->Solve(GetGV(x), GetGV(y));
-      _so.stop();
+      GlobalTimer.stop("---> direct");
     }
     else
 #endif
@@ -1362,7 +1375,7 @@ namespace Gascoigne
                        const VectorInterface &gx,
                        double d) const
   {
-    _re.start();
+    GlobalTimer.start("---> form");
 
     HNAverage(gx);
     HNAverageData();
@@ -1387,7 +1400,7 @@ namespace Gascoigne
     HNDistribute(gy);
     SubtractMeanAlgebraic(gy);
 
-    _re.stop();
+    GlobalTimer.stop("---> form");
   }
 
   /*-------------------------------------------------------*/
@@ -1411,8 +1424,7 @@ namespace Gascoigne
     if (BE)
     {
       const BoundaryManager *BM = GetProblemDescriptor()->GetBoundaryManager();
-      GetDiscretization()->BoundaryForm(
-          y, x, BM->GetBoundaryEquationColors(), *BE, d);
+      GetDiscretization()->BoundaryForm(y, x, *GetProblemDescriptor(), d);
     }
 
     HNZero(gx);
@@ -1805,7 +1817,7 @@ namespace Gascoigne
 
   void StdSolver::AssembleMatrix(const VectorInterface &gu, double d)
   {
-    _ca.start();
+    GlobalTimer.start("---> matrix");
     assert(GetMatrix());
 
     const GlobalVector &u = GetGV(gu);
@@ -1837,7 +1849,7 @@ namespace Gascoigne
     HNZero(gu);
     HNZeroData();
 
-    _ca.stop();
+    GlobalTimer.stop("---> matrix");
   }
 
   /*-------------------------------------------------------*/
@@ -1909,11 +1921,13 @@ namespace Gascoigne
 
   void StdSolver::ComputeIlu() const
   {
+    assert(0);
+    abort();
     
 #ifdef __WITH_UMFPACK__
     if (_directsolver && _useUMFPACK)
     {
-      _cs.start();
+      GlobalTimer.start("---> direct");
 #ifdef __WITH_UMFPACK_LONG__
       UmfIluLong *UM = dynamic_cast<UmfIluLong *>(GetIlu());
 #else
@@ -1922,26 +1936,26 @@ namespace Gascoigne
       assert(UM);
       //       if(PrimalSolve==0) return;
       UM->Factorize();
-      _cs.stop();
+      GlobalTimer.stop("---> direct");
     }
     else
 #endif
-        if (GetSolverData().GetLinearSmooth() == "ilu")
-    {
-      _ci.start();
-      IntVector perm(GetIlu()->n());
-      iota(perm.begin(), perm.end(), 0);
-      GetIlu()->ConstructStructure(perm, *GetMatrix());
-      GetIlu()->zero();
-      GetIlu()->copy_entries(*GetMatrix());
-      int ncomp = GetProblemDescriptor()->GetEquation()->GetNcomp();
-      modify_ilu(*GetIlu(), ncomp);
-      GetIlu()->compute_ilu();
-      _ci.stop();
+      if (GetSolverData().GetLinearSmooth() == "ilu")
+	{
+	  GlobalTimer.start("---> ilu");
+	  IntVector perm(GetIlu()->n());
+	  iota(perm.begin(), perm.end(), 0);
+	  GetIlu()->ConstructStructure(perm, *GetMatrix());
+	  GetIlu()->zero();
+	  GetIlu()->copy_entries(*GetMatrix());
+	  int ncomp = GetProblemDescriptor()->GetEquation()->GetNcomp();
+	  modify_ilu(*GetIlu(), ncomp);
+	  GetIlu()->compute_ilu();
+	  GlobalTimer.stop("---> ilu");
     }
     
   }
-
+  
   /* -------------------------------------------------------*/
 
   void StdSolver::ComputeIlu(const VectorInterface &gu) const
@@ -1949,7 +1963,7 @@ namespace Gascoigne
 #ifdef __WITH_UMFPACK__
     if (_directsolver && _useUMFPACK)
     {
-      _cs.start();
+      GlobalTimer.start("---> direct");
 #ifdef __WITH_UMFPACK_LONG__
       UmfIluLong *UM = dynamic_cast<UmfIluLong *>(GetIlu());
 #else
@@ -1958,23 +1972,23 @@ namespace Gascoigne
       assert(UM);
       //       if(PrimalSolve==0) return;
       UM->Factorize();
-      _cs.stop();
+      GlobalTimer.stop("---> direct");
     }
     else
 #endif
-        if (GetSolverData().GetLinearSmooth() == "ilu")
-    {
-      int ncomp = GetProblemDescriptor()->GetEquation()->GetNcomp();
-      _ci.start();
-      PermutateIlu(gu);
-      GetIlu()->zero();
-      GetIlu()->copy_entries(*GetMatrix());
-      modify_ilu(*GetIlu(), ncomp);
-      GetIlu()->compute_ilu();
-      _ci.stop();
-    }
+      if (GetSolverData().GetLinearSmooth() == "ilu")
+	{
+	  GlobalTimer.start("---> ilu");
+	  int ncomp = GetProblemDescriptor()->GetEquation()->GetNcomp();
+	  PermutateIlu(gu);
+	  GetIlu()->zero();
+	  GetIlu()->copy_entries(*GetMatrix());
+	  modify_ilu(*GetIlu(), ncomp);
+	  GetIlu()->compute_ilu();
+	  GlobalTimer.stop("---> ilu");
+	}
   }
-
+  
   /*-------------------------------------------------------*/
 
   void StdSolver::modify_ilu(IluInterface &I, int ncomp) const
@@ -2069,6 +2083,7 @@ namespace Gascoigne
   void
   StdSolver::Visu(const string &name, const VectorInterface &gu, int i) const
   {
+    GlobalTimer.start("---> visu");
     if (gu.GetType() == "node")
     {
       PointVisu(name, GetGV(gu), i);
@@ -2082,6 +2097,7 @@ namespace Gascoigne
       cerr << "No such vector type: " << gu.GetType() << endl;
       abort();
     }
+    GlobalTimer.stop("---> visu");
   }
 
   /* -------------------------------------------------------*/
@@ -2298,7 +2314,7 @@ namespace Gascoigne
 
   void StdSolver::AssembleDualMatrix(const VectorInterface &gu, double d)
   {
-    _ca.start();
+    GlobalTimer.start("---> matrix");
 
     MatrixInterface *M = GetMatrix();
 
@@ -2315,7 +2331,7 @@ namespace Gascoigne
     DirichletMatrixOnlyRow();
     HNZero(gu);
 
-    _ca.stop();
+    GlobalTimer.stop("---> matrix");    
   }
 
   /*---------------------------------------------------*/

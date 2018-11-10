@@ -62,7 +62,7 @@ namespace Gascoigne
   class VankaSmoother : public virtual IluInterface
   {
 
-    const DofHandlerBase *_dofhandler;
+    mutable const DofHandlerBase *_dofhandler;
     int _ncomp, _sizeofpatch;
 
   protected:
@@ -71,16 +71,16 @@ namespace Gascoigne
 
   public:
     //////////////////// Constructor & Co
-    VankaSmoother()
+    VankaSmoother() : _dofhandler(NULL), _ncomp(-1), _sizeofpatch(-1)
     {
-      std::cerr << "VankaSmoother requires DofHandler!" << std::endl;
-    }
-    VankaSmoother(const DofHandlerBase *dh) : _ncomp(-1), _sizeofpatch(-1)
-    {
-      _dofhandler = dh;
     }
     ~VankaSmoother() {}
 
+    void SetDofHandler(const DofHandlerBase* dh) const
+    {
+      _dofhandler = dh;
+    }
+    
     string GetName() const
     {
       return "VankaSmoother";

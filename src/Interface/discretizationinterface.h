@@ -105,11 +105,6 @@ namespace Gascoigne
         std::cerr << "\"DiscretizationInterface::AdjointForm\" not written!" << std::endl;
         abort();
       }
-      virtual void BoundaryForm(GlobalVector& f, const GlobalVector& u, const IntSet& Colors, 
-          const BoundaryEquation& BE, double d) const {
-        std::cerr << "\"DiscretizationInterface::BoundaryForm\" not written!" << std::endl;
-        abort();
-      }
       virtual void BoundaryMatrix(MatrixInterface& A, const GlobalVector& u, const IntSet& Colors, 
           const BoundaryEquation& BE, double d) const {
         std::cerr << "\"DiscretizationInterface::BoundaryMatrix\" not written!" << std::endl;

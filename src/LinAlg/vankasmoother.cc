@@ -39,11 +39,12 @@ namespace Gascoigne
     
     ////////// Construct patches
     int patchlevel = 2;
-    int npatches    = _dofhandler->nelements(patchlevel);
+
+    int npatches  = _dofhandler->nelements(patchlevel);
     _sizeofpatch = _dofhandler->nodes_per_element(patchlevel);
     _patchlist.resize(npatches,std::vector<int>(_sizeofpatch));
 #pragma omp parallel for
-    for (int p=0;p<_dofhandler->nelements(patchlevel);++p)
+    for (int p=0;p<npatches;++p)
       {
 	const IntVector iop = _dofhandler->GetElement(patchlevel,p);
 	assert(iop.size() == _patchlist[p].size());
@@ -69,16 +70,19 @@ namespace Gascoigne
 	Eigen::MatrixXd Matrix_on_Block;	
         Matrix_on_Block.resize(_sizeofpatch * NCOMP,_sizeofpatch * NCOMP);
         Matrix_on_Block.setZero();
+
+
+	// inverse index set? store globally?
+	HASHMAP<int,int> INP;
+	for (int i=0;i<_patchlist[p].size();++i)
+	  INP[_patchlist[p][i]] = i;
 	
 	for (int r = 0; r < _sizeofpatch; ++r)
 	  {
+	    assert(r<_patchlist[p].size());
 	    int row = _patchlist[p][r];
-
-	    // inverse index set? store globally?
-	    HASHMAP<int,int> INP;
-	    for (int i=0;i<_patchlist[p].size();++i)
-	      INP[_patchlist[p][i]] = i;
-	    
+	    assert(row < S.n());
+	    	    
 	    // Copy Matrix
 	    for (int pos = S.start(row); pos < S.stop(row); ++pos)
 	      {
