@@ -45,14 +45,12 @@ FSI<DIM>::FSI(const ParamFile* pf)
 
 //////////////////////////////////////////////////
 
-
-
 template <int DIM>
 void FSI<DIM>::point(double h, const FemFunction& U, const Vertex<DIM>& v) const
 {
-    __h    = h;
-    __v    = v;
-    //domain = -1;
+    __h = h;
+    __v = v;
+    // domain = -1;
     domain = chi(v);
 
     double dx   = std::max(0.0, fabs(v.x() - 0.4) - 0.4);
@@ -543,74 +541,71 @@ TestFunction& N) const
 
 ////////////////////////////////////////////////// BOUNDARY
 
-// template<int DIM>
+// template <int DIM>
 // void FSI<DIM>::Form(VectorIterator b, const FemFunction& U, const TestFunction& N, int col) const
 // {
-//   if (domain>0) return;
-
-//   if (col==1)
+//     if (domain > 0)
+//         return;
+//
+//     if (col == 5)
 //     {
-// 	for (int i=0;i<DIM;++i)
-// 	  b[i+1] -= theta       * BOUNDARY(i,0)*N.m();
-// 	for (int i=0;i<DIM;++i)
-// 	  b[i+1] -= (1.0-theta) * BOUNDARY_old(i,0)*N.m();
+//         for (int i = 0; i < DIM; ++i)
+//             b[i + 1] -= theta * BOUNDARY(i, 0) * N.m();
+//         for (int i = 0; i < DIM; ++i)
+//             b[i + 1] -= (1.0 - theta) * BOUNDARY_old(i, 0) * N.m();
 //     }
-
 // }
-
-// template<int DIM>
-// void FSI<DIM>::Matrix(EntryMatrix& A, const FemFunction& U, const TestFunction& M, const
-// TestFunction& N, int col) const
+//
+// template <int DIM>
+// void FSI<DIM>::Matrix(EntryMatrix& A, const FemFunction& U, const TestFunction& M,
+//                       const TestFunction& N, int col) const
 // {
-//   if (domain>0) return;
-
-//   if (col==1)
+//     if (domain > 0)
+//         return;
+//
+//     if (col == 1)
 //     {
-//   	VECTOR psi; Multiplex::init_test<DIM>(psi,M);
-//   	for (int j=0;j<DIM;++j)
-//   	  {
-// 	    MATRIX FIJ = -F.inverse().block(0,j,DIM,1)*psi.transpose()*F.inverse();
-// 	    double JJ =  (psi.transpose() * J  * F.inverse().block(0,j,DIM,1))(0,0);
-
-// 	    VECTOR BOUNDARY_U = rho_f * nu_f * N.m() *
-// 	      (  JJ * NV.transpose()*F.inverse().transpose()*F.inverse().transpose() +
-// 		 JJ * NV.transpose() * (FIJ.transpose()*F.inverse().transpose() +
-// F.inverse().transpose()*FIJ.transpose()) )  * normal; 	    double BOUNDARY_V = rho_f * nu_f *
-// N.m() * J * 	      (psi.transpose() *
-// (F.inverse().transpose()*F.inverse().transpose())*normal)(0,0); 	    for (int i=0;i<DIM;++i)
-// 	      {
-// 		A(i+1,j+1+DIM) -= theta * BOUNDARY_U(i,0);
-// 		A(i+1,j+1)     -= theta * BOUNDARY_V;
-// 	      }
-//   	  }
-
+//         VECTOR psi;
+//         Multiplex::init_test<DIM>(psi, M);
+//         for (int j = 0; j < DIM; ++j)
+//         {
+//             MATRIX FIJ = -F.inverse().block(0, j, DIM, 1) * psi.transpose() * F.inverse();
+//             double JJ  = (psi.transpose() * J * F.inverse().block(0, j, DIM, 1))(0, 0);
+//
+//             VECTOR BOUNDARY_U =
+//               rho_f * nu_f * N.m()
+//               * (JJ * NV.transpose() * F.inverse().transpose() * F.inverse().transpose()
+//                  + JJ * NV.transpose()
+//                      * (FIJ.transpose() * F.inverse().transpose()
+//                         + F.inverse().transpose() * FIJ.transpose()))
+//               * normal;
+//             double BOUNDARY_V =
+//               rho_f * nu_f * N.m() * J
+//               * (psi.transpose() * (F.inverse().transpose() * F.inverse().transpose()) *
+//               normal)(0,
+//                                                                                                  0);
+//             for (int i = 0; i < DIM; ++i)
+//             {
+//                 A(i + 1, j + 1 + DIM) -= theta * BOUNDARY_U(i, 0);
+//                 A(i + 1, j + 1) -= theta * BOUNDARY_V;
+//             }
+//         }
 //     }
-
 // }
-
-// template<int DIM>
-// void FSI<DIM>::pointboundary(double h, const FemFunction& U, const Vertex<DIM>& v, const
-// Vertex<DIM>& n) const
+//
+// template <int DIM>
+// void FSI<DIM>::pointboundary(double h, const FemFunction& U, const Vertex<DIM>& v,
+//                              const Vertex<DIM>& n) const
 // {
-//   domain = chi(v);
-//   if (domain>0) return; // no boundary eq in solid
-
-//   Multiplex::init_F<DIM>(F,U);
-//   Multiplex::init_F<DIM>(F_old,*OLD);
-
-//   Multiplex::init_NV<DIM>(NV,U);
-//   Multiplex::init_NV<DIM>(NV_old,*OLD);
-
-//   J = F.determinant();
-//   J_old = F_old.determinant();
-
-//   Multiplex::init_normal<DIM>(normal,n);
-
-//   BOUNDARY = rho_f * nu_f * J *
-//   NV.transpose()*F.inverse().transpose()*F.inverse().transpose()*normal; BOUNDARY_old = rho_f *
-//   nu_f * J_old *
-//   NV_old.transpose()*F_old.inverse().transpose()*F_old.inverse().transpose()*normal;
-
+//     domain = chi(v);
+//
+//     Multiplex::init_F<DIM>(F, U);
+//     Multiplex::init_F<DIM>(F_old, *OLD);
+//
+//     Multiplex::init_NV<DIM>(NV, U);
+//     Multiplex::init_NV<DIM>(NV_old, *OLD);
+//
+//     Multiplex::init_normal<DIM>(normal, n);
 // }
 
 ////////////////////////////////////////////////// LPS
@@ -620,8 +615,8 @@ void FSI<DIM>::lpspoint(double h, const FemFunction& U, const Vertex<DIM>& v) co
 {
     double vel = 1.0;
 
-    lps    = lps0 / (vel / h + nu_f / h / h);
-    //domain = -1;
+    lps = lps0 / (vel / h + nu_f / h / h);
+    // domain = -1;
     domain = chi(v);
 }
 template <int DIM>

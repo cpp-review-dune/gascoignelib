@@ -15,7 +15,7 @@ bool parseCommandlineArguments(int argc, char* argv[], int& maxIterations, doubl
 
 int main(int argc, char* argv[])
 {
-    parareal<2, log_level::results>::paramfile = ParamFile("fsi-wm.param");
+    parareal<3, log_level::results>::paramfile = ParamFile("fsi_box3d.param");
     int maxIterations;
     double coarse_theta;
     double dtcoarse;
@@ -32,21 +32,21 @@ int main(int argc, char* argv[])
     {
         if (fine_theta == 0 && dtfine == 0)
         {
-            parareal<2, log_level::results>::runPara(maxIterations, coarse_theta, dtcoarse);
+            parareal<3, log_level::results>::runPara(maxIterations, coarse_theta, dtcoarse);
         }
         else
         {
-            parareal<2, log_level::results>::runPara(maxIterations, coarse_theta, dtcoarse,
+            parareal<3, log_level::results>::runPara(maxIterations, coarse_theta, dtcoarse,
                                                      fine_theta, dtfine);
         }
     }
     else if (parse && argc == 2)
     {
-        parareal<2, log_level::results>::runPara(maxIterations);
+        parareal<3, log_level::results>::runPara(maxIterations);
     }
     else
     {
-        parareal<2, log_level::results>::runPara();
+        parareal<3, log_level::results>::runPara();
     }
 }
 

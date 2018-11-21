@@ -85,7 +85,7 @@ public:
         double r2 = 0.012 * 0.012;
         Vertex2d v(0.0, 0.0);
         RK.BasicInit(v, r2);
-        AddShape(4, &RK);
+        // AddShape(4, &RK);
     }
 };
 
@@ -112,7 +112,14 @@ public:
     void BasicInit(const ParamFile* paramfile, const ProblemContainer* PC,
                    const FunctionalContainer* FC)
     {
-        GetMeshAgentPointer() = new MA2d;
+        if constexpr (DIM == 2)
+        {
+            GetMeshAgentPointer() = new MA2d();
+        }
+        else if constexpr (DIM == 3)
+        {
+            GetMeshAgentPointer() = new MA3d();
+        }
 
         GetMultiLevelSolverPointer() = new FSIMultiLevelSolver<DIM>;
 

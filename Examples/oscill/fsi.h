@@ -16,7 +16,7 @@
 namespace Gascoigne
 {
 template <int DIM>
-class FSI : public LpsEquation  // , public BoundaryEquation
+class FSI : public LpsEquation  //, public BoundaryEquation
 {
 protected:
     static constexpr bool s = true;
@@ -52,9 +52,9 @@ protected:
     mutable VECTOR SIGMA_dF[DIM];
     mutable MATRIX SIGMA_dU[DIM];
 
-    /* // boundary */
-    /* mutable VECTOR normal; */
-    /* mutable VECTOR BOUNDARY, BOUNDARY_old; */
+    // boundary
+    // mutable VECTOR normal;
+    // mutable VECTOR BOUNDARY, BOUNDARY_old;
 
     // stuff from point
     mutable double extend, lps, J, J_old;
@@ -105,16 +105,18 @@ public:
 
     void Matrix(EntryMatrix& A, const FemFunction& U, const TestFunction& M,
                 const TestFunction& N) const override final;
-    void MatrixBlock(EntryMatrix& A, const FemFunction& U, const FemFunction& NNN) const override final;
+    void MatrixBlock(EntryMatrix& A, const FemFunction& U,
+                     const FemFunction& NNN) const override final;
 
     /* ////////////////////////////////////////////////// Boundary */
 
-    /* void Form(VectorIterator b, const FemFunction& U, const TestFunction& N, int col) const; */
-    /* void Matrix(EntryMatrix& E, const FemFunction& U, const TestFunction& M, const TestFunction&
-     * N, int col) const; */
-
-    /* void pointboundary(double h, const FemFunction& U, const Vertex<DIM>& v, const Vertex<DIM>&
-     * n) const; */
+    // void Form(VectorIterator b, const FemFunction& U, const TestFunction& N, int col) const;
+    // void Matrix(EntryMatrix& E, const FemFunction& U, const TestFunction& M, const TestFunction&
+    // N,
+    //             int col) const;
+    //
+    // void pointboundary(double h, const FemFunction& U, const Vertex<DIM>& v,
+    //                    const Vertex<DIM>& n) const;
 
     ////////////////////////////////////////////////// LPS
 

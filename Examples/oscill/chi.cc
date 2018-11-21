@@ -42,9 +42,9 @@ int Chi::operator()(const Vertex2d& v) const
     }
     else if (__type == "wall_mount")  // Parareal for FSI test
     {
-        if ((v.x() > 1.0) && (v.x() < 1.125 - eps) && (v.y() < 0.5 - eps))
+        if ((v.x() > 1.0 + eps) && (v.x() < 1.125 - eps) && (v.y() < 0.5 - eps))
             return 1;
-        if ((v.x() > 1.0) && (v.x() < 1.125 + eps) && (v.y() < 0.5 + eps))
+        if ((v.x() > 1.0 - eps) && (v.x() < 1.125 + eps) && (v.y() < 0.5 + eps))
             return 0;
         return -1;
     }

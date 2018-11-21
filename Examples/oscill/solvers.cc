@@ -283,7 +283,7 @@ void FSISolver<3>::reinit_element(int en, const nvector<int>& indices,
     vector<int> ni;
     for (int i = 0; i < indices.size(); ++i)
     {
-        //int domain = -1;//
+        // int domain = -1;//
         int domain = chi(M->vertex3d(indices[i]));
         if (domain > 0)
         {
@@ -453,7 +453,7 @@ void FSISolver<2>::PointVisu(const string& name, const GlobalVector& u, int iter
     for (int i = 0; i < u.n(); ++i)
     {
         const Vertex2d v = M->vertex2d(i);
-        //int domain       = -1;//
+        // int domain       = -1;//
         int domain = chi(v);
         for (int c = 0; c < u.ncomp(); ++c)
             U(i, c) = u(i, c);
@@ -476,7 +476,7 @@ void FSISolver<3>::PointVisu(const string& name, const GlobalVector& u, int iter
     for (int i = 0; i < u.n(); ++i)
     {
         const Vertex3d v = M->vertex3d(i);
-        //int domain = -1;
+        // int domain = -1;
         int domain = chi(v);
         for (int c = 0; c < u.ncomp(); ++c)
             U(i, c) = u(i, c);

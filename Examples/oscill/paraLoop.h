@@ -118,7 +118,7 @@ public:
 
     /*! \brief Method setting parameters and calling the algorithm.
      * This method takes some parameters (maybe from command line) and sets them and calls
-     * paraAlgo afterwards to execute parareal algorithm. If no parameters are given, the
+     * parareal_algorithm afterwards to execute parareal algorithm. If no parameters are given, the
      * parameters will be read from the paramfile. Only parameters which may be varied in some
      * tests are included.
      * \param max_iterations maximal number of iterations executed by parareal algorithm
@@ -158,33 +158,33 @@ protected:
      * \brief Wrapper function for GetSolver calls via GetMultiLevelSolver returning *const*
      * pointer to Solver
      */
-    const SolverInterface* GetSolver() const;
+    inline const SolverInterface* GetSolver() const;
 
     /*!
      * \brief Wrapper function for GetMultiLevelSolver returning *const* pointer to
      * MultiLevelSolver
      */
-    const MultiLevelSolverInterface* GetMultiLevelSolver() const;
+    inline const MultiLevelSolverInterface* GetMultiLevelSolver() const;
 
 private:
     /*!
      * \brief Wrapper function for GetSolver calls via GetMultiLevelSolver returning *nonconst*
      * pointer to Solver
      */
-    SolverInterface* GetSolver();
+    inline SolverInterface* GetSolver();
 
     /*!
      * \brief Wrapper function for GetMultiLevelSolver returning *nonconst* pointer to
      * MultiLevelSolver
      */
-    MultiLevelSolverInterface* GetMultiLevelSolver();
+    inline MultiLevelSolverInterface* GetMultiLevelSolver();
 
     /*! \brief Method executing parareal-algorithm.
      *
      * This is the method that is called after runPara has set all parameters for
      * parareal.
      */
-    static double paraAlgo();
+    static double parareal_algorithm(const int n_intervals, const int max_iterations);
 
     /*!
      * \brief Time stepping method.
@@ -200,18 +200,18 @@ private:
                     const int n_steps = n_finesteps, const int implicit_steps = 0);
 
     template <iter_type method>
-    void inline step(double& time, const double& dt, const int& iter, const double& theta,
+    inline void step(double& time, const double& dt, const int& iter, const double& theta,
                      VectorInterface& u, VectorInterface& f);
 
-    void inline divergence_stab(VectorInterface& u, VectorInterface& f, const double& time,
+    inline void divergence_stab(VectorInterface& u, VectorInterface& f, const double& time,
                                 const double& dt, const int& current);
 
     void visu_write(const std::string& dir, const VectorInterface& vec, size_t index) const;
     void visu(const std::string& dir, const VectorInterface& vec, size_t index) const;
-    void inline visu(const dir_vec& dv) const;
+    inline void visu(const dir_vec& dv) const;
 
     template <typename... dir_vec_pack>
-    void inline visu(const dir_vec& dv, const dir_vec_pack&... dvs) const;
+    inline void visu(const dir_vec& dv, const dir_vec_pack&... dvs) const;
     /*!
      * \brief Method checking for convergence on one subinterval
      *
@@ -229,7 +229,7 @@ private:
      * \param dt is the time step size
      * \param time is for time dependent problems and zero by default
      */
-    void set_time(const double dt, const double time = 0.) const;
+    inline void set_time(const double dt, const double time = 0.) const;
 
     /*!
      * \brief Utility method for assigning a VectorInterface to a specific GlobalVector.
@@ -240,7 +240,7 @@ private:
      * \param v Key in the map associated with the solver
      * \param v_ptr Value in the map associated with the solver
      */
-    void setGV(VectorInterface& v, const GlobalVector& v_ptr) const;
+    inline void setGV(VectorInterface& v, const GlobalVector& v_ptr) const;
 
     /*!
      * \brief Utility method for preallocating GlobalVector with correct size.
@@ -248,8 +248,8 @@ private:
      * The method calculates the correct size of a GlobalVector with parameters of the solver.
      * \param v_ptr Adress of the GlobalVector to be modified
      */
-    void setGVsize(GlobalVector& v_ptr);
-    void setGVsize(const VectorInterface& vec);
+    inline void setGVsize(GlobalVector& v_ptr);
+    inline void setGVsize(const VectorInterface& vec);
 
     /*!
      *\brief Setting up the problem.
@@ -286,8 +286,8 @@ private:
     static const std::string get_name(double dtc = dtcoarse, double tc = coarse_theta,
                                       int max_iter = max_iterations);
 
-    std::size_t subinterval_idx;  //!< Identifies the subinterval on which the loop is acting in the
-                                  //!< first iteration
+    const std::size_t subinterval_idx;  //!< Identifies the subinterval on which the loop is acting
+                                        //!< in the first iteration
     VectorInterface
       fine_sol;  //!< Vector containing the fine solution on the corresponding interval.
     VectorInterface
@@ -424,7 +424,7 @@ double parareal<DIM, logging>::runPara(const int max_iterations, const double co
     {
         func_log.open(get_name<name_type::functional>());
     }
-    auto exec_time = paraAlgo();
+    auto exec_time = parareal_algorithm(parareal::n_intervals, parareal::max_iterations);
 
     std::cerr << sty::bb << "\n==================================================\n"
               << sty::g << "Finished parareal" << sty::b << ".\nElapsed time is\t" << exec_time
@@ -438,35 +438,44 @@ double parareal<DIM, logging>::runPara(const int max_iterations, const double co
 
 #ifdef _OPENMP  // parareal can't be run without OpenMP
 template <int DIM, log_level logging>
-double parareal<DIM, logging>::paraAlgo()
+double parareal<DIM, logging>::parareal_algorithm(const int n_intervals, const int max_iterations)
 {
-    static auto equal = [&](parareal*& para_dest, VectorInterface& dest, parareal*& para_src,
-                            VectorInterface& source) {
-        para_dest->GetSolver()->GetGV(dest).equ(1., para_src->GetSolver()->GetGV(source));
+    static auto equal = [&](parareal const* const& para_dest, VectorInterface& dest,
+                            parareal const* const& para_src, VectorInterface& source) {
+        auto dest_begin = para_dest->GetSolver()->GetGV(dest).begin();
+        auto src_begin  = para_src->GetSolver()->GetGV(source).cbegin();
+
+        const auto length = para_src->GetSolver()->GetGV(source).cend() - src_begin;
+        for (auto i = 0; i < length; ++i)
+        {
+            *dest_begin = *src_begin;
+            ++src_begin;
+            ++dest_begin;
+        }
     };
 
-    static auto correction_w_weigths =
-      [&](parareal*& para_dest, VectorInterface& dest, parareal*& src_x, VectorInterface& x,
-          parareal*& src_y, VectorInterface& y, parareal*& src_z, VectorInterface& z) {
-          auto dest_begin   = para_dest->GetSolver()->GetGV(dest).begin();
-          const auto weight = para_dest->coar_weight;
-          auto x_begin      = src_x->GetSolver()->GetGV(x).cbegin();
-          auto y_begin      = src_y->GetSolver()->GetGV(y).cbegin();
-          auto z_begin      = src_z->GetSolver()->GetGV(z).cbegin();
+    static auto correction_w_weigths = [&](parareal const* const& para_dest, VectorInterface& dest,
+                                           parareal const* const& src_x, VectorInterface& x,
+                                           parareal const* const& src_y, VectorInterface& y,
+                                           parareal const* const& src_z, VectorInterface& z) {
+        auto dest_begin   = para_dest->GetSolver()->GetGV(dest).begin();
+        const auto weight = para_dest->coar_weight;
+        auto x_begin      = src_x->GetSolver()->GetGV(x).cbegin();
+        auto y_begin      = src_y->GetSolver()->GetGV(y).cbegin();
+        auto z_begin      = src_z->GetSolver()->GetGV(z).cbegin();
 
-          const auto dest_end = para_dest->GetSolver()->GetGV(dest).cend();
-          const auto length   = src_x->GetSolver()->GetGV(x).cend() - x_begin;
-          for (auto i = 0; i < length; i++)
-          {
-              *dest_begin = weight * *x_begin + *y_begin - weight * *z_begin;
-              x_begin++;
-              y_begin++;
-              z_begin++;
-              dest_begin++;
-          }
-      };
+        const auto length = src_x->GetSolver()->GetGV(x).cend() - x_begin;
+        for (auto i = 0; i < length; ++i)
+        {
+            *dest_begin = weight * *x_begin + *y_begin - weight * *z_begin;
+            ++x_begin;
+            ++y_begin;
+            ++z_begin;
+            ++dest_begin;
+        }
+    };
 
-    static auto set_coar_weight = [&](parareal*& para_solver, VectorInterface& f,
+    static auto set_coar_weight = [&](parareal* const& para_solver, VectorInterface& f,
                                       VectorInterface& c, double damping) {
         const nvector<double> c_c = para_solver->GetSolver()->GetGV(c).CompNorm();
         const nvector<double> f_f = para_solver->GetSolver()->GetGV(f).CompNorm();
@@ -480,9 +489,9 @@ double parareal<DIM, logging>::paraAlgo()
         for (auto i = 0; i < 2 * DIM + 1; ++i)
         {
             *cw_iter /= *c_c_iter * *f_f_iter;
-            cw_iter++;
-            c_c_iter++;
-            f_f_iter++;
+            ++cw_iter;
+            ++c_c_iter;
+            ++f_f_iter;
         }
         double sc = 0.0;
         for (auto i = 0; i < DIM + 1; i++)
@@ -490,17 +499,12 @@ double parareal<DIM, logging>::paraAlgo()
             sc += c_f[i];
         }
         sc /= DIM + 1;
-        sc *= sc * sc * sc;
         sc *= damping;
         para_solver->coar_weight = sc;
-        std::cerr << para_solver->coar_weight << '\n';
     };
 
-    // auto add = [&](VectorInterface& dest, VectorInterface& source){
-    //
-    // };
-    double time     = start_time;
-    auto start_wall = omp_get_wtime();
+    double time           = start_time;
+    const auto start_wall = omp_get_wtime();
     //
     // Initialization of solvers and problems and solutions from parareal
     // coar_sol   - VectorInterface for results of coarse method
@@ -511,8 +515,8 @@ double parareal<DIM, logging>::paraAlgo()
     //
     VectorInterface u("u");
     VectorInterface f("f");
-    std::vector<parareal*> subinterval(threads);
-    for (auto m = 0; m < threads; ++m)
+    std::vector<parareal*> subinterval(n_intervals);
+    for (auto m = 0; m < n_intervals; ++m)
     {
         subinterval[m] = new parareal<DIM, logging>(m + 1);
     }
@@ -714,7 +718,7 @@ double parareal<DIM, logging>::paraAlgo()
                     omp_set_lock(&interval_locker[m + 1]);
                     // calculate weights
                     set_coar_weight(subinterval[m + 1], subinterval[m + 1]->fine_sol,
-                                    subinterval[m + 1]->coar_sol, 0.5);
+                                    subinterval[m + 1]->coar_sol, 0.95);
 
                     // calculate corrector term
                     // clang-format off
@@ -889,7 +893,7 @@ void parareal<DIM, logging>::compare_para_serial(const int max_iterations,
 //--------------------------------------------------------------------------------------------------
 
 template <int DIM, log_level logging>
-double parareal<DIM, logging>::paraAlgo()
+double parareal<DIM, logging>::parareal_algorithm(const int n_intervals, const int max_iterations)
 {
     std::cerr << "Running parareal relies on OpenMP" << '\n';
     std::exit(EXIT_FAILURE);
@@ -1068,7 +1072,7 @@ void parareal<DIM, logging>::step(double& time, const double& dt, const int& ite
     {
         log_buffer[iter][0] = time;
         DoubleVector juh    = StdLoop::Functionals(u, f);
-        for (short i = 0; i < 4; ++i)
+        for (auto i = 0; i < 4; ++i)
         {
             log_buffer[iter][i + 1] = juh[i];
         }
@@ -1179,38 +1183,80 @@ template <int DIM, log_level logging>
 void parareal<DIM, logging>::setup_problem(const ParamFile& paramfile,
                                            const std::string& problemlabel)
 {
-    auto Problem2d = new ProblemDescriptor2d();
-    Problem2d->BasicInit(&paramfile);
-    auto Div2d = new DivergenceDescriptor2d();
-    Div2d->BasicInit(&paramfile);
+    if constexpr(DIM==2)
+    {
+        auto Problem2d = new ProblemDescriptor2d();
+        Problem2d->BasicInit(&paramfile);
+        auto Div2d = new DivergenceDescriptor2d();
+        Div2d->BasicInit(&paramfile);
 
-    auto PC2d = new ProblemContainer();
-    PC2d->AddProblem(problemlabel, Problem2d);
-    PC2d->AddProblem("div", Div2d);
+        auto PC2d = new ProblemContainer();
+        PC2d->AddProblem(problemlabel, Problem2d);
+        PC2d->AddProblem("div", Div2d);
 
-    auto FC2d = new FunctionalContainer();
-    auto Px   = new WeightedPointFunctional();
-    auto Py   = new WeightedPointFunctional();
+        auto FC2d = new FunctionalContainer();
+        auto Px   = new WeightedPointFunctional();
+        auto Py   = new WeightedPointFunctional();
 
-    vector<Vertex2d> v2d;
-    v2d.push_back(Vertex2d(0.6, 0.2));
-    vector<int> cx, cy;
-    cx.push_back(3);
-    cy.push_back(4);
-    vector<double> weigh;
-    weigh.push_back(1.0);
-    Px->BasicInit(v2d, cx, weigh);
-    Py->BasicInit(v2d, cy, weigh);
+        vector<Vertex2d> v2d;
+        v2d.push_back(Vertex2d(0.6, 0.2));
+        vector<int> cx, cy;
+        cx.push_back(3);
+        cy.push_back(4);
+        vector<double> weigh;
+        weigh.push_back(1.0);
+        Px->BasicInit(v2d, cx, weigh);
+        Py->BasicInit(v2d, cy, weigh);
 
-    auto drag = new Drag();
-    auto lift = new Lift();
+        auto drag = new Drag();
+        auto lift = new Lift();
 
-    FC2d->AddFunctional("ux", Px);
-    FC2d->AddFunctional("uy", Py);
-    FC2d->AddFunctional("drag", drag);
-    FC2d->AddFunctional("lift", lift);
+        FC2d->AddFunctional("ux", Px);
+        FC2d->AddFunctional("uy", Py);
+        FC2d->AddFunctional("drag", drag);
+        FC2d->AddFunctional("lift", lift);
 
-    this->Loop<DIM>::BasicInit(&paramfile, PC2d, FC2d);
+        this->Loop<DIM>::BasicInit(&paramfile, PC2d, FC2d);
+    }
+    else if constexpr(DIM==3)
+    {
+        auto Problem3d = new ProblemDescriptor3d();
+        Problem3d->BasicInit(&paramfile);
+
+        auto PC3d = new ProblemContainer();
+        PC3d->AddProblem("fsi", Problem3d);
+
+        auto FC3d = new FunctionalContainer();
+        auto Ux = new WeightedPointFunctional();
+        auto Uy = new WeightedPointFunctional();
+        auto Uz = new WeightedPointFunctional();
+        vector<Vertex3d> v1;
+        v1.push_back(Vertex3d(0.45,0.15,0.15));
+
+        vector<int> cx;
+        cx.push_back(4);
+        vector<int> cy;
+        cy.push_back(5);
+        vector<int> cz;
+        cz.push_back(6);
+
+        vector<double> weigh;
+        weigh.push_back(1.0);
+        Ux->BasicInit(v1,cx,weigh);
+        Uy->BasicInit(v1,cy,weigh);
+        Uz->BasicInit(v1,cz,weigh);
+
+        auto drag = new Drag();
+        auto lift = new Lift();
+
+        FC3d->AddFunctional("ux", Ux);
+        FC3d->AddFunctional("uy", Uy);
+        FC3d->AddFunctional("uz", Uz);
+        FC3d->AddFunctional("drag", drag);
+        FC3d->AddFunctional("lift", lift);
+
+        this->Loop<DIM>::BasicInit(&paramfile, PC3d, FC3d);
+    }
 }
 
 //--------------------------------------------------------------------------------------------------

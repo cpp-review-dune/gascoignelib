@@ -18,7 +18,7 @@ public:
         __comps.push_back(1);
         __scales.push_back(1.0);
         __cols.insert(80);
-        __cols.insert(81);
+        //__cols.insert(81);
         __DD = new DirichletDataByColor(GetComps(), GetColors(), GetScales());
     }
 };
@@ -36,7 +36,7 @@ public:
         __comps.push_back(2);
         __scales.push_back(1.0);
         __cols.insert(80);
-        __cols.insert(81);
+        //__cols.insert(81);
         __DD = new DirichletDataByColor(GetComps(), GetColors(), GetScales());
     }
 };

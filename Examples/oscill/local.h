@@ -40,7 +40,7 @@ public:
     {
         if (i == 0)
             s_name = "p";
-        if (DIM == 2)
+        if constexpr (DIM == 2)
         {
             if (i == 1)
                 s_name = "vx";
@@ -51,7 +51,7 @@ public:
             if (i == 4)
                 s_name = "uy";
         }
-        if (DIM == 3)
+        else if constexpr (DIM == 3)
         {
             if (i == 1)
                 s_name = "vx";
@@ -87,17 +87,27 @@ public:
         {
             fa_vectorindices[0] = 1;
             fa_vectorindices[1] = 2;
-            fa_vectorindices[2] = -1;
-            if (DIM == 3)
-                fa_vectorindices[3] = 3;
+            if constexpr (DIM == 2)
+            {
+                fa_vectorindices[2] = -1;
+            }
+            else if constexpr (DIM == 3)
+            {
+                fa_vectorindices[2] = 3;
+            }
         }
         else
         {
             fa_vectorindices[0] = DIM + 1;
             fa_vectorindices[1] = DIM + 2;
-            fa_vectorindices[2] = -1;
-            if (DIM == 3)
-                fa_vectorindices[3] = DIM + 3;
+            if constexpr (DIM == 2)
+            {
+                fa_vectorindices[2] = -1;
+            }
+            else if constexpr (DIM == 3)
+            {
+                fa_vectorindices[2] = DIM + 3;
+            }
         }
     }
 };
@@ -127,8 +137,8 @@ public:
         double t = GetTime();
 
         double sc = 1.0;
-        if (t < 1.0)
-            sc = 0.5 - 0.5 * cos(M_PI * t);
+        // if (t < 1.0)
+        sc          = 0.5 - 0.5 * cos(M_PI * t);
         double veff = vmean * sc;
 
         // veff *= veff;

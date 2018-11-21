@@ -27,7 +27,7 @@ void Loop<DIM>::run(const std::string& problemlabel)
     }
 
     _niter            = static_cast<int>((STOP_TIME - __TIME + 1.e-12) / __DT);
-    auto sub_int_time = static_cast<int>(_niter / 256);
+    auto sub_int_time = static_cast<int>(_niter / 8);
     VectorInterface u("u"), f("f"), old("old");
 
     GetMultiLevelSolver()->ReInit(problemlabel);
@@ -76,7 +76,7 @@ void Loop<DIM>::run(const std::string& problemlabel)
         DoubleVector juh = Functionals(u, f);
         GetMultiLevelSolver()->DeleteNodeVector("old");
 
-        func_log << __TIME << "\t" << juh << endl;
+        func_log << __TIME << ' ' << juh << endl;
     }
 
     func_log.close();
