@@ -9,6 +9,8 @@
 #include <usefullfunctionsbd.h>
 #include "rans_lsq.h"
 #include "rans_twomodels.h"
+#include "rans_lin.h"
+#include "rans_const.h"
 
 using namespace Gascoigne;
 
@@ -33,13 +35,15 @@ public:
         b.zero();
         if (color == 8)
         {
-            double vmax;
-            if (GetTime() > 0.1)
-                vmax = 9.0 / 3;
-            else
-                vmax = 90.0 / 3 * GetTime();
+            double vmax = 3.0;
 
-            b[1] = vmax * ParabelFunction(y, 0., 1);
+            double sc = 1.0;
+            if (GetTime() < 0.5)
+            {
+                sc = 0.5 - 0.5 * cos(2 * M_PI * GetTime());
+            }
+
+            b[1] = sc * vmax * ParabelFunction(y, 0., 1);
         }
     }
 
@@ -142,7 +146,8 @@ public:
     {
         GetParamFilePointer() = pf;
         // GetEquationPointer()  = new rans_base<2>(GetParamFile());
-        GetEquationPointer()      = new rans_lsq<2, 10, 3>(GetParamFile());
+        GetEquationPointer() = new rans_lsq<2, 10, 3>(GetParamFile());
+        // GetBoundaryEquationPointer() = new rans_lsq<2, 10, 3>(GetParamFile());
         GetDirichletDataPointer() = new MyDirichletData;
         ProblemDescriptorBase::BasicInit(pf);
     }
@@ -160,7 +165,7 @@ public:
     {
         GetParamFilePointer() = pf;
         // GetEquationPointer()  = new rans_base<2>(GetParamFile());
-        GetEquationPointer()      = new rans_twomodels<2, 9, 2>(GetParamFile());
+        GetEquationPointer()      = new rans_twomodels<2, 7, 2>(GetParamFile());
         GetDirichletDataPointer() = new MyDirichletData;
         ProblemDescriptorBase::BasicInit(pf);
     }
@@ -178,6 +183,41 @@ public:
     {
         GetParamFilePointer()     = pf;
         GetEquationPointer()      = new rans_base<2>(GetParamFile());
+        GetDirichletDataPointer() = new MyDirichletData;
+        ProblemDescriptorBase::BasicInit(pf);
+    }
+};
+
+class LinProblemDescriptor : public ProblemDescriptorBase
+{
+public:
+    std::string GetName() const
+    {
+        return "Benchmark Problem";
+    }
+
+    void BasicInit(const ParamFile* pf)
+    {
+        GetParamFilePointer() = pf;
+        // GetEquationPointer()  = new rans_base<2>(GetParamFile());
+        GetEquationPointer()      = new rans_twomodels<2, 7, 1>(GetParamFile());
+        GetDirichletDataPointer() = new MyDirichletData;
+        ProblemDescriptorBase::BasicInit(pf);
+    }
+};
+
+class ConstProblemDescriptor : public ProblemDescriptorBase
+{
+public:
+    std::string GetName() const
+    {
+        return "Benchmark Problem";
+    }
+
+    void BasicInit(const ParamFile* pf)
+    {
+        GetParamFilePointer()     = pf;
+        GetEquationPointer()      = new rans_const<2>(GetParamFile());
         GetDirichletDataPointer() = new MyDirichletData;
         ProblemDescriptorBase::BasicInit(pf);
     }

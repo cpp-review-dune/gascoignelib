@@ -7,6 +7,7 @@
 #include <cmath>
 #include <limits>
 #include <iostream>
+#include <deque>
 
 #include "loop.h"
 #include "weightedpointfunctional.h"
@@ -323,8 +324,6 @@ private:
     static double coarse_exec_time;
     static double fine_exec_time;
 
-    static std::vector<GlobalVector>
-      u_sol_arr;                    //!< Vector containing the final solutions on every time node
     static std::ofstream func_log;  //! Ofstream object for logfile writing
 };
 // end class definition
@@ -382,6 +381,8 @@ double parareal<DIM, logging>::runPara(const int max_iterations, const double co
                                        const double dtcoarse, const double fine_theta,
                                        const double dtfine)
 {
+    set_interval_threads(parareal::n_intervals, parareal::threads);
+    parareal::interval_length = (stop_time - start_time) / (n_intervals);
     assert(dtcoarse >= dtfine && "coarse step size should be bigger than fine step size");
     parareal::max_iterations = max_iterations;
     parareal::coarse_theta   = coarse_theta;
@@ -390,15 +391,15 @@ double parareal<DIM, logging>::runPara(const int max_iterations, const double co
     parareal::dtfine         = dtfine;
     parareal::n_coarsesteps  = static_cast<size_t>(interval_length / dtcoarse);
     parareal::n_finesteps    = static_cast<size_t>(interval_length / dtfine);
-    set_interval_threads(parareal::n_intervals, parareal::threads);
-    auto ratio = static_cast<int>(dtcoarse / dtfine);
-    if (ratio * n_coarsesteps != n_finesteps)
-    {
-        n_finesteps += n_finesteps % ratio;
-        n_coarsesteps   = static_cast<int>(n_finesteps / ratio);
-        interval_length = n_finesteps * dtfine;
-        stop_time       = start_time + precompute_time + interval_length * n_intervals;
-    }
+
+    // auto ratio = static_cast<int>(dtcoarse / dtfine);
+    // if (ratio * n_coarsesteps != n_finesteps)
+    // {
+    //     n_finesteps += n_finesteps % ratio;
+    //     n_coarsesteps   = static_cast<int>(n_finesteps / ratio);
+    //     interval_length = n_finesteps * dtfine;
+    //     stop_time       = start_time + precompute_time + interval_length * n_intervals;
+    // }
 
     std::cerr << logwrite::info("Info", "Initialized Parameters");
     outputParameters();
@@ -527,7 +528,6 @@ double parareal<DIM, logging>::parareal_algorithm(const int n_intervals, const i
         si->GetMultiLevelSolver()->ReInit(problemlabel);
         si->GetSolver()->OutputSettings();
         cout << si->GetMeshAgent()->ncells() << " cells" << '\n';
-
         si->GetSolverInfos()->GetNLInfo().control().matrixmustbebuild() = 1;
         si->set_time(dtfine, start_time);
 
@@ -551,10 +551,6 @@ double parareal<DIM, logging>::parareal_algorithm(const int n_intervals, const i
         si->InitSolution(si->end_sol);
     }
 
-    for (auto m = 0; m < n_intervals; ++m)
-    {
-        subinterval[m]->setGVsize(u_sol_arr[m]);
-    }
     // precompute till given time
     if (precompute_time > 0)
     {
@@ -693,13 +689,10 @@ double parareal<DIM, logging>::parareal_algorithm(const int n_intervals, const i
                         // Uᵏ(k) ⟵ Fᵏ(k)
                         equal(subinterval[0], subinterval[0]->end_sol, subinterval[0],
                               subinterval[0]->fine_sol);
-                        u_sol_arr[k - 1].equ(
-                          1., subinterval[0]->GetSolver()->GetGV(subinterval[0]->fine_sol));
                         for (const auto& x : subinterval[0]->log_buffer)
                         {
                             func_log << x << '\n';
                         }
-
                         subinterval[0]->visu("Results/p", subinterval[0]->end_sol, k - 1);
                         omp_unset_lock(&interval_locker[0]);
                     }
@@ -758,19 +751,12 @@ double parareal<DIM, logging>::parareal_algorithm(const int n_intervals, const i
 
     for (auto m = 0; m < n_intervals - max_iterations; ++m)
     {
-        // write final solution vectors
-        subinterval[m]->setGVsize(u_sol_arr[m]);
-        // final solutions on time nodes
-        u_sol_arr[m + max_iterations].equ(
-          1., subinterval[m + 1]->GetSolver()->GetGV(subinterval[m + 1]->end_sol));
         // logging
         for (const auto& x : subinterval[m + 1]->log_buffer)
         {
             func_log << x << '\n';
         }
-
         // Visu part
-        // subinterval[m]->setGV(u, u_sol_arr[m]);
         subinterval[m + 1]->visu("Results/p", subinterval[m + 1]->end_sol, m + max_iterations);
         std::cerr << logwrite::info("Done", "Wrote subinterval ", m + max_iterations);
     }
@@ -863,22 +849,6 @@ void parareal<DIM, logging>::compare_para_serial(const int max_iterations,
             timings_log << ratio << ' ' << parallel_time << ' ' << serial_time / parallel_time
                         << '\n';
             func_log.close();
-
-            // calculate error
-            error_log.open(get_name<name_type::error>(dtcoarse_vec[i], coarse_theta_vec[i]));
-            error_log << "interval error\n";
-            for (auto i = 0; i < n_intervals; ++i)
-            {
-                double norm_seq = loopSeq->GetSolver()->Norm(U_seq[i]);
-                assert(u_sol_arr[i].size() == loopSeq->GetSolver()->GetGV(U_seq[i]).size()
-                       && "vector size mismatch");
-                u_sol_arr[i].add(-1., loopSeq->GetSolver()->GetGV(U_seq[i]));
-                double error = u_sol_arr[i].norm();
-                std::cerr << "Error on interval no. " << i << ": " << error / norm_seq << '\n';
-                error_log << i << ' ' << error / norm_seq << '\n';
-                u_sol_arr[i].zero();
-            }
-            error_log.close();
         }
     }
     else
@@ -1246,8 +1216,8 @@ void parareal<DIM, logging>::setup_problem(const ParamFile& paramfile,
         Uy->BasicInit(v1,cy,weigh);
         Uz->BasicInit(v1,cz,weigh);
 
-        auto drag = new Drag();
-        auto lift = new Lift();
+        auto drag = new Drag3d();
+        auto lift = new Lift3d();
 
         FC3d->AddFunctional("ux", Ux);
         FC3d->AddFunctional("uy", Uy);
@@ -1361,7 +1331,12 @@ Setting up parareal:
 **************************************************************************************************/
 
 template <int DIM, log_level logging>
-ParamFile parareal<DIM, logging>::paramfile = ParamFile("fsi-wm.param");
+ParamFile parareal<DIM, logging>::paramfile = [] {
+    if constexpr(DIM == 2)
+        return ParamFile("fsi-wm.param");
+    else if constexpr(DIM==3)
+        return ParamFile("fsi_box3d.param");
+}();
 template <int DIM, log_level logging>
 std::string parareal<DIM, logging>::problemlabel = "fsi";
 
@@ -1386,8 +1361,7 @@ template <int DIM, log_level logging>
 double parareal<DIM, logging>::stop_time = parareal::get_param<double>("stop_time", "Equation");
 
 template <int DIM, log_level logging>
-double parareal<DIM, logging>::interval_length =
-  static_cast<double>((stop_time - start_time - precompute_time) / n_intervals);
+double parareal<DIM, logging>::interval_length = (stop_time - start_time) / (n_intervals);
 
 template <int DIM, log_level logging>
 double parareal<DIM, logging>::dtfine = parareal::get_param<double>("dt", "Equation");
@@ -1404,17 +1378,6 @@ double parareal<DIM, logging>::coarse_exec_time = 0;
 
 template <int DIM, log_level logging>
 double parareal<DIM, logging>::fine_exec_time = 0;
-
-template <int DIM, log_level logging>
-std::vector<GlobalVector> parareal<DIM, logging>::u_sol_arr = [] {
-    std::vector<GlobalVector> tGridVec_ptr(parareal::n_intervals);
-    tGridVec_ptr.reserve(parareal::n_intervals);
-    for (auto i = 0; i < parareal::n_intervals; ++i)
-    {
-        tGridVec_ptr[i] = GlobalVector();
-    }
-    return tGridVec_ptr;
-}();
 
 template <int DIM, log_level logging>
 std::ofstream parareal<DIM, logging>::func_log;

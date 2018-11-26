@@ -5,6 +5,7 @@
 #include <iostream>
 #include <array>
 #include <vector>
+#include <fstream>
 #include <eigen3/Eigen/Dense>
 #include <type_traits>
 
@@ -45,7 +46,7 @@ constexpr inline size_t sum_weighted(const std::array<size_t, size>& arr);
 //! \brief Generates the next combination of length degree (with repetition) chosen from 0,...,
 //! n_features-1 in lexicograpgical order from given array (in-place!).
 template <size_t n_features, size_t degree>
-constexpr inline bool next_combination(std::array<size_t, degree>& inp);
+constexpr inline bool next_combination_w_r(std::array<size_t, degree>& inp);
 
 //
 //! \brief Generates every possible combination of length degree (with repetition) of integers from
@@ -212,7 +213,14 @@ public:
             {
                 for (size_t l = 0; l < ((i < 1) ? 1 : i); l++)
                 {
-                    res[k] *= features[*comb_iterator];
+                    if (k == 0)
+                    {
+                        res[k] = 1;
+                    }
+                    else
+                    {
+                        res[k] *= features[*comb_iterator];
+                    }
                     comb_iterator++;
                 }
                 k++;
@@ -322,7 +330,7 @@ constexpr inline size_t sum_weighted(const std::array<size_t, size>& arr)
 
 //
 template <size_t n_features, size_t degree>
-constexpr inline bool next_combination(std::array<size_t, degree>& inp)
+constexpr inline bool next_combination_w_r(std::array<size_t, degree>& inp)
 {
     if constexpr (n_features == 0 || degree == 0)
     {
@@ -371,12 +379,13 @@ constexpr inline std::array<size_t, n_poly_features * degree> generate_combs()
 
     using comb_array = typename std::array<size_t, degree>;
     comb_array single_comb{};
-
+    bool has_next = true;
     for (size_t j = 0; j < n_poly_features; ++j)
     {
         std::copy(single_comb.begin(), single_comb.end(), iter);
         iter += degree;
-        next_combination<n_features>(single_comb);
+        assert(has_next && "No next combination");
+        has_next = next_combination_w_r<n_features>(single_comb);
     }
     return combs;
 }

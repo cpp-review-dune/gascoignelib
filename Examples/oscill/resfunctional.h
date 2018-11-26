@@ -41,4 +41,37 @@ public:
     }
 };
 
+class Drag3d : public virtual ResidualFunctional
+{
+    std::string GetName() const
+    {
+        return "drag";
+    }
+
+public:
+    Drag3d()
+    {
+        __comps.push_back(1);
+        __scales.push_back(1.0);
+        __cols.insert(84);
+        __DD = new DirichletDataByColor(GetComps(), GetColors(), GetScales());
+    }
+};
+class Lift3d : public virtual ResidualFunctional
+{
+    std::string GetName() const
+    {
+        return "drag";
+    }
+
+public:
+    Lift3d()
+    {
+        __comps.push_back(2);
+        __scales.push_back(1.0);
+        __cols.insert(84);
+        __DD = new DirichletDataByColor(GetComps(), GetColors(), GetScales());
+    }
+};
+
 #endif

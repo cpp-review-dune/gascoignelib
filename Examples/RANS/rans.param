@@ -1,9 +1,10 @@
 //Block Equation
 
-visc 0.01
-theta 0.5
-alpha0 0.5
-delta0 0.5
+turb_visc 0.015
+visc 0.001
+theta 0.51
+alpha0 0.1
+delta0 0.1
 
 //Block Loop
 
@@ -12,7 +13,7 @@ etapatcher  0
 estimator    none
 initial      zero
 refiner      global
-dt           0.005
+dt           0.01
 
 
 //Block BoundaryManager
@@ -21,12 +22,13 @@ dirichlet        2 4 8
 dirichletcomp    4 2 1 2
 dirichletcomp    8 2 1 2
 
+equation 1 0
 
 //Block Mesh
 
 dimension   2
-prerefine   4
-gridname    rectangle.inp
+prerefine   2
+gridname    tut.inp
 
 //Block MultiLevelSolver
 

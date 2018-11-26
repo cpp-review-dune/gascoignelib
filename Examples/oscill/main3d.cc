@@ -4,49 +4,17 @@
 #include "weightedpointfunctional.h"
 #include "boundaryfunctional.h"
 #include "residualfunctional.h"
+#include "resfunctional.h"
 #include "dirichletdatabycolor.h"
 
 using namespace Gascoigne;
 using namespace std;
 
-class Drag : public virtual ResidualFunctional
-{
-    std::string GetName() const
-    {
-        return "drag";
-    }
-
-public:
-    Drag()
-    {
-        __comps.push_back(1);
-        __scales.push_back(1.0);
-        __cols.insert(84);
-        __DD = new DirichletDataByColor(GetComps(), GetColors(), GetScales());
-    }
-};
-class Lift : public virtual ResidualFunctional
-{
-    std::string GetName() const
-    {
-        return "drag";
-    }
-
-public:
-    Lift()
-    {
-        __comps.push_back(2);
-        __scales.push_back(1.0);
-        __cols.insert(84);
-        __DD = new DirichletDataByColor(GetComps(), GetColors(), GetScales());
-    }
-};
-
 /*---------------------------------------------------*/
 
 int main(int argc, char** argv)
 {
-    ParamFile pf("box3d.param");
+    ParamFile pf("fsi_box3d.param");
     if (argc == 2)
         pf.SetName(argv[1]);
 
@@ -76,8 +44,8 @@ int main(int argc, char** argv)
     Uy.BasicInit(v1, cy, weigh);
     Uz.BasicInit(v1, cz, weigh);
 
-    Drag drag;
-    Lift lift;
+    Drag3d drag;
+    Lift3d lift;
 
     FC3d.AddFunctional("ux", &Ux);
     FC3d.AddFunctional("uy", &Uy);
