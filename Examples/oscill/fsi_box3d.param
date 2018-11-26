@@ -18,19 +18,19 @@ functional 2  84 85
 //Block Equation
 
 damp 0.0
-dt		0.00125
-dtcoarse 0.0125
-theta		1.0
-thetacoarse 1.0
-implicit_coarse 2
+dt		0.001
+dtcoarse 0.01
+theta		0.501
+thetacoarse 0.51
+implicit_coarse 1
 implicit_fine 1
 
 start_time	0.0
-stop_time	0.1
+stop_time	8.0
 precompute 0.0
 
 solid_type	box3d
-lps		0.1
+lps		0.05
 extend		1.0
 
 nu_f		1.e-3
@@ -108,7 +108,7 @@ iterexact               0
 
 discname       AleQ2Lps
 
-ndirect	      1200
+ndirect	      100000
 
 ilum 7 0.01 0.001 0.001 0.001 0. 0. 0.
 

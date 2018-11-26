@@ -176,8 +176,8 @@ public:
         b.zero();
         double sc = 1.0;
         double t  = GetTime();
-        if (t < 2.0)
-            sc = 0.5 * (1.0 - cos(M_PI * t / 2.0));
+        // if (t < 2.0)
+        sc = 0.5 - 0.5 * cos(M_PI * t);
 
         if (color == 0)
             b[1] += v.y() * (0.4 - v.y()) / 0.2 / 0.2 * (0.4 - v.z()) * (0.4 + v.z()) / 0.4 / 0.4
