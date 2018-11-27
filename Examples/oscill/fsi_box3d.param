@@ -108,7 +108,7 @@ iterexact               0
 
 discname       AleQ2Lps
 
-ndirect	      100000
+ndirect	      1000000
 
 ilum 7 0.01 0.001 0.001 0.001 0. 0. 0.
 
