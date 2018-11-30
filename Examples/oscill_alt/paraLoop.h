@@ -931,7 +931,7 @@ void parareal<DIM>::step(double& time, const double& dt, const int& iter,
     if(StdLoop::Solve(u, f) != "converged")
         abort();
 
-    if constexpr (method == iter_type::fine_last)
+    if (method == iter_type::fine_last)
     {
         log_buffer[iter][0] = time;
         DoubleVector juh    = StdLoop::Functionals(u, f);
