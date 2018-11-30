@@ -570,7 +570,7 @@ double parareal<DIM>::parareal_algorithm(const int n_intervals, const int max_it
     // A C T U A L   A L G O R I T H M
     //
 
-#pragma omp parallel num_threads(n_intervals) firstprivate(time)  // proc_bind(close)
+#pragma omp parallel num_threads(n_intervals) firstprivate(time) proc_bind(close)
     {
         // 'Iteration 0'
         //
@@ -682,7 +682,7 @@ double parareal<DIM>::parareal_algorithm(const int n_intervals, const int max_it
                     omp_set_lock(&interval_locker[m + 1]);
                     // calculate weights
                     set_coar_weight(subinterval[m + 1], subinterval[m + 1]->fine_sol,
-                                    subinterval[m + 1]->coar_sol, 0.95);
+                                    subinterval[m + 1]->coar_sol, 1);
 
                     // calculate corrector term
                     // clang-format off
