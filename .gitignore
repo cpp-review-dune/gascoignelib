@@ -39,3 +39,7 @@ cmake*
 *functionals_etc*
 functional.txt
 *.param
+*.vtk
+*.png
+*Plots_and_data*
+*backup*

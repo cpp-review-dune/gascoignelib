@@ -13,8 +13,6 @@
 #include "weightedpointfunctional.h"
 #include "resfunctional.h"
 #include "local.h"
-#include "colors.h"
-#include "log.h"
 
 namespace Gascoigne
 {
@@ -29,12 +27,6 @@ enum class iter_type
     fine         = 1,
     coarse_first = 2,
     coarse       = 3,
-};
-enum class log_level
-{
-    results       = 0,
-    visu_info     = 1,
-    visu_detailed = 2
 };
 
 struct dir_vec
@@ -96,7 +88,7 @@ struct dir_vec
  * arbitrary larger. In the case where `n=1` only some more timings are taken. Otherwise
  * additional visualization will be written.
  */
-template <int DIM, log_level logging>
+template <int DIM>
 class parareal : public Loop<DIM>
 {
 public:
@@ -332,8 +324,8 @@ private:
 public methods
 ***************************************************************************************************/
 
-template <int DIM, log_level logging>
-parareal<DIM, logging>::parareal(size_t id)
+template <int DIM>
+parareal<DIM>::parareal(size_t id)
     : subinterval_idx(id)
     , fine_sol("f" + std::to_string(id))
     , coar_sol("g" + std::to_string(id))
@@ -348,8 +340,8 @@ parareal<DIM, logging>::parareal(size_t id)
 
 //--------------------------------------------------------------------------------------------------
 
-template <int DIM, log_level logging>
-void parareal<DIM, logging>::outputParameters(std::ostream& ostrm)
+template <int DIM>
+void parareal<DIM>::outputParameters(std::ostream& ostrm)
 {
     // clang-format off
     ostrm << "\n========================================================="
@@ -376,10 +368,9 @@ void parareal<DIM, logging>::outputParameters(std::ostream& ostrm)
 
 //--------------------------------------------------------------------------------------------------
 
-template <int DIM, log_level logging>
-double parareal<DIM, logging>::runPara(const int max_iterations, const double coarse_theta,
-                                       const double dtcoarse, const double fine_theta,
-                                       const double dtfine)
+template <int DIM>
+double parareal<DIM>::runPara(const int max_iterations, const double coarse_theta,
+                              const double dtcoarse, const double fine_theta, const double dtfine)
 {
     set_interval_threads(parareal::n_intervals, parareal::threads);
     parareal::interval_length = (stop_time - start_time) / (n_intervals);
@@ -400,8 +391,6 @@ double parareal<DIM, logging>::runPara(const int max_iterations, const double co
     //     interval_length = n_finesteps * dtfine;
     //     stop_time       = start_time + precompute_time + interval_length * n_intervals;
     // }
-
-    std::cerr << logwrite::info("Info", "Initialized Parameters");
     outputParameters();
     func_log.precision(12);
     // Checking if input is correct
@@ -427,10 +416,11 @@ double parareal<DIM, logging>::runPara(const int max_iterations, const double co
     }
     auto exec_time = parareal_algorithm(parareal::n_intervals, parareal::max_iterations);
 
-    std::cerr << sty::bb << "\n==================================================\n"
-              << sty::g << "Finished parareal" << sty::b << ".\nElapsed time is\t" << exec_time
+    std::cerr << "\n==================================================\n"
+              << "Finished parareal"
+              << ".\nElapsed time is\t" << exec_time
               << "\n\nTime spent in coarse method: " << coarse_exec_time
-              << "\nTime spent in fine method: " << fine_exec_time << sty::n << '\n';
+              << "\nTime spent in fine method: " << fine_exec_time << '\n';
     func_log.close();
     return exec_time;
 }
@@ -438,8 +428,8 @@ double parareal<DIM, logging>::runPara(const int max_iterations, const double co
 //--------------------------------------------------------------------------------------------------
 
 #ifdef _OPENMP  // parareal can't be run without OpenMP
-template <int DIM, log_level logging>
-double parareal<DIM, logging>::parareal_algorithm(const int n_intervals, const int max_iterations)
+template <int DIM>
+double parareal<DIM>::parareal_algorithm(const int n_intervals, const int max_iterations)
 {
     static auto equal = [&](parareal const* const& para_dest, VectorInterface& dest,
                             parareal const* const& para_src, VectorInterface& source) {
@@ -519,7 +509,7 @@ double parareal<DIM, logging>::parareal_algorithm(const int n_intervals, const i
     std::vector<parareal*> subinterval(n_intervals);
     for (auto m = 0; m < n_intervals; ++m)
     {
-        subinterval[m] = new parareal<DIM, logging>(m + 1);
+        subinterval[m] = new parareal<DIM>(m + 1);
     }
     for (const auto& si : subinterval)
     {
@@ -556,10 +546,7 @@ double parareal<DIM, logging>::parareal_algorithm(const int n_intervals, const i
     {
         auto precompute_steps = static_cast<int>(precompute_time / dtfine);
         subinterval[0]->template propagator<iter_type::fine>(time, u, f, 0, precompute_steps, 0);
-        subinterval[0]
-          ->GetSolver()
-          ->GetGV(subinterval[0]->end_sol)
-          .equ(1., subinterval[0]->GetSolver()->GetGV(u));
+        equal(subinterval[0], subinterval[0]->end_sol, subinterval[0], u);
         for (auto m = 0; m < n_intervals; ++m)
         {
             equal(subinterval[m], subinterval[m]->end_sol, subinterval[0], u);
@@ -604,14 +591,6 @@ double parareal<DIM, logging>::parareal_algorithm(const int n_intervals, const i
                 equal(subinterval[i], subinterval[i]->coar_sol, subinterval[i], u);
                 // U⁰(i) ⟵ u;
                 equal(subinterval[i], subinterval[i]->end_sol, subinterval[i], u);
-
-                // Visualization for debugging
-                if constexpr (logging == log_level::visu_info
-                              || logging == log_level::visu_detailed)
-                {
-                    std::cerr << logwrite::info("Done", "Initialization on subinterval ", i);
-                    subinterval[i]->visu("Results/initsol", subinterval[i]->end_sol, i);
-                }
 
                 if (i < n_intervals - 1)
                 {
@@ -658,14 +637,6 @@ double parareal<DIM, logging>::parareal_algorithm(const int n_intervals, const i
                       time + m * interval_length, subinterval[m]->fine_sol, f, k, n_finesteps,
                       subinterval[m]->f_implicit_steps);
                     omp_unset_lock(&interval_locker[m]);
-                }
-                if constexpr (logging == log_level::visu_info
-                              || logging == log_level::visu_detailed)
-                {
-                    std::cerr << logwrite::info("Done", "Fine solution on subinterval ", m + k - 1,
-                                                " in iteration number ", k);
-                    subinterval[m]->visu("Results/fineres", subinterval[m]->fine_sol,
-                                         (k - 1) * 10 + m);
                 }
                 // omp_unset_lock(&interval_locker[m]);
                 //}
@@ -726,17 +697,6 @@ double parareal<DIM, logging>::parareal_algorithm(const int n_intervals, const i
                     equal(subinterval[m + 1], subinterval[m + 1]->fine_sol, subinterval[m + 1],
                           subinterval[m + 1]->end_sol);
                     omp_unset_lock(&interval_locker[m + 1]);
-
-                    // Visualization for debugging
-                    if constexpr (logging == log_level::visu_info
-                                  || logging == log_level::visu_detailed)
-                    {
-                        subinterval[m]->visu(
-                          dir_vec{"Results/coarseres", subinterval[m]->coar_sol, (k - 1) * 10 + m},
-                          dir_vec{"Results/iterres", subinterval[m]->end_sol, (k - 1) * 10 + m});
-                        std::cerr << logwrite::info("Done", "Calculations on subinterval ", m + 1,
-                                                    " Iteration number ", k, " of parareal ");
-                    }
                 }
             }  // Corrections
 
@@ -758,7 +718,6 @@ double parareal<DIM, logging>::parareal_algorithm(const int n_intervals, const i
         }
         // Visu part
         subinterval[m + 1]->visu("Results/p", subinterval[m + 1]->end_sol, m + max_iterations);
-        std::cerr << logwrite::info("Done", "Wrote subinterval ", m + max_iterations);
     }
 
     // Clean up
@@ -768,20 +727,18 @@ double parareal<DIM, logging>::parareal_algorithm(const int n_intervals, const i
 
 //--------------------------------------------------------------------------------------------------
 
-template <int DIM, log_level logging>
-void parareal<DIM, logging>::compare_para_serial(const int max_iterations,
+template <int DIM>
+void parareal<DIM>::compare_para_serial(const int max_iterations,
                                                  const std::vector<double>& dtcoarse_vec,
                                                  const std::vector<double>& coarse_theta_vec)
 {
     // ParamFile paramfile(paramstr);
-    if constexpr (logging == log_level::results)
-    {
         ofstream timings_log({"timingsI" + std::to_string(max_iterations) + ".txt"});
         timings_log << "ratio time accel\n";
 
         // serial part
         auto start   = omp_get_wtime();
-        auto loopSeq = new parareal<DIM, logging>(0);
+        auto loopSeq = new parareal<DIM>(0);
         loopSeq->setup_problem(paramfile, problemlabel);
         loopSeq->GetMultiLevelSolver()->ReInit(problemlabel);
         loopSeq->GetSolver()->OutputSettings();
@@ -828,8 +785,8 @@ void parareal<DIM, logging>::compare_para_serial(const int max_iterations,
 
         auto end         = omp_get_wtime();
         auto serial_time = end - start;
-        std::cerr << sty::bb << "\n==================================================\n"
-                  << sty::g << "Finished serial execution" << sty::b << ".\nElapsed time is\t"
+        std::cerr  << "\n==================================================\n"
+                   << "Finished serial execution"  << ".\nElapsed time is\t"
                   << serial_time << ".\n";
         timings_log << 1 << ' ' << serial_time << ' ' << 1 << '\n';
 
@@ -850,20 +807,14 @@ void parareal<DIM, logging>::compare_para_serial(const int max_iterations,
                         << '\n';
             func_log.close();
         }
-    }
-    else
-    {
-        std::cerr << "Comparison will only be effective with low log_level (i.e. results)" << '\n';
-        std::exit(EXIT_FAILURE);
-    }
 }
 
 #else  // if OpenMP is not available, exit program when methods are called
 
 //--------------------------------------------------------------------------------------------------
 
-template <int DIM, log_level logging>
-double parareal<DIM, logging>::parareal_algorithm(const int n_intervals, const int max_iterations)
+template <int DIM>
+double parareal<DIM>::parareal_algorithm(const int n_intervals, const int max_iterations)
 {
     std::cerr << "Running parareal relies on OpenMP" << '\n';
     std::exit(EXIT_FAILURE);
@@ -871,8 +822,8 @@ double parareal<DIM, logging>::parareal_algorithm(const int n_intervals, const i
 
 //--------------------------------------------------------------------------------------------------
 
-template <int DIM, log_level logging>
-void parareal<DIM, logging>::compare_para_serial(const int max_iterations,
+template <int DIM>
+void parareal<DIM>::compare_para_serial(const int max_iterations,
                                                  const std::vector<double>& dtcoarse_vec,
                                                  const std::vector<double>& coarse_theta_vec)
 {
@@ -886,32 +837,32 @@ void parareal<DIM, logging>::compare_para_serial(const int max_iterations,
 protected methods
 ***************************************************************************************************/
 
-template <int DIM, log_level logging>
-const SolverInterface* parareal<DIM, logging>::GetSolver() const
+template <int DIM>
+const SolverInterface* parareal<DIM>::GetSolver() const
 {
     return StdLoop::GetMultiLevelSolver()->GetSolver();
 }
 
 //--------------------------------------------------------------------------------------------------
 
-template <int DIM, log_level logging>
-SolverInterface* parareal<DIM, logging>::GetSolver()
+template <int DIM>
+SolverInterface* parareal<DIM>::GetSolver()
 {
     return StdLoop::GetMultiLevelSolver()->GetSolver();
 }
 
 //--------------------------------------------------------------------------------------------------
 
-template <int DIM, log_level logging>
-const MultiLevelSolverInterface* parareal<DIM, logging>::GetMultiLevelSolver() const
+template <int DIM>
+const MultiLevelSolverInterface* parareal<DIM>::GetMultiLevelSolver() const
 {
     return StdLoop::GetMultiLevelSolver();
 }
 
 //--------------------------------------------------------------------------------------------------
 
-template <int DIM, log_level logging>
-MultiLevelSolverInterface* parareal<DIM, logging>::GetMultiLevelSolver()
+template <int DIM>
+MultiLevelSolverInterface* parareal<DIM>::GetMultiLevelSolver()
 {
     return StdLoop::GetMultiLevelSolver();
 }
@@ -920,47 +871,22 @@ MultiLevelSolverInterface* parareal<DIM, logging>::GetMultiLevelSolver()
 private methods
 ***************************************************************************************************/
 
-template <int DIM, log_level logging>
+template <int DIM>
 template <iter_type method>
-void parareal<DIM, logging>::propagator(double time, VectorInterface& u, VectorInterface& f,
+void parareal<DIM>::propagator(double time, VectorInterface& u, VectorInterface& f,
                                         int current, int n_steps, int implicit_steps)
 {
     // lambda for visualisation of steps
-    auto step_visu = [&](int iter, VectorInterface& u) {
-        if constexpr (method == iter_type::fine || method == iter_type::fine_last)
-        {
-            if (iter % 10 == 0 && iter < 310)
-            {
-                std::cerr << logwrite::info("Info", "Fine Visualization");
-                auto step = static_cast<int>(time / dtfine);
-                visu("Results_detail/subinterval" + std::to_string(subinterval_idx + current - 1)
-                       + "/iter" + std::to_string(current) + "/u_fine_no",
-                     u, current * static_cast<int>(pow(10, ceil(log10(step)))) + step);
-            }
-        }
-        else if constexpr (method == iter_type::coarse || method == iter_type::coarse_first)
-        {
-            if (iter < 31)
-            {
-                std::cerr << logwrite::info("Info", "Coarse Visualization");
-                auto step = static_cast<int>(time / dtcoarse);
-                visu("Results_detail/subinterval" + std::to_string(subinterval_idx + current)
-                       + "/iter" + std::to_string(current) + "/u_coarse_no",
-                     u, current * static_cast<int>(pow(10, ceil(log10(step)))) + step);
-            }
-        }
-    };
 
     double dt;
     double theta;
-    auto start = omp_get_wtime();
     // Some compile-time branching...
-    if constexpr (method == iter_type::fine_last || method == iter_type::fine)
+    if (method == iter_type::fine_last || method == iter_type::fine)
     {
         dt    = dtfine;
         theta = fine_theta;
     }
-    else if constexpr (method == iter_type::coarse || method == iter_type::coarse_first)
+    else if (method == iter_type::coarse || method == iter_type::coarse_first)
     {
         dt    = dtcoarse;
         theta = coarse_theta;
@@ -979,10 +905,6 @@ void parareal<DIM, logging>::propagator(double time, VectorInterface& u, VectorI
         for (auto iter = 0; iter < implicit_steps; ++iter)
         {
             step<method>(time, dt, iter, 1., u, f);
-            if constexpr (logging == log_level::visu_detailed)
-            {
-                step_visu(iter, u);
-            }
         }
     }
     fsi_eq_ptr->getTheta() = theta;
@@ -992,46 +914,16 @@ void parareal<DIM, logging>::propagator(double time, VectorInterface& u, VectorI
     {
         // actual solving
         step<method>(time, dt, iter, theta, u, f);
-        if constexpr (logging == log_level::visu_detailed)
-        {
-            step_visu(iter, u);
-        }
-    }
-
-    auto end = omp_get_wtime();
-    if constexpr (method == iter_type::fine_last || method == iter_type::fine)
-    {
-#pragma omp atomic update
-        fine_exec_time += (end - start);
-    }
-    else if constexpr (method == iter_type::coarse || method == iter_type::coarse_first)
-    {
-#pragma omp atomic update
-        coarse_exec_time += (end - start);
     }
 }
 
 //--------------------------------------------------------------------------------------------------
 
-template <int DIM, log_level logging>
+template <int DIM>
 template <iter_type method>
-void parareal<DIM, logging>::step(double& time, const double& dt, const int& iter,
+void parareal<DIM>::step(double& time, const double& dt, const int& iter,
                                   const double& theta, VectorInterface& u, VectorInterface& f)
 {
-    if constexpr (logging == log_level::visu_info || logging == log_level::visu_detailed)
-    {
-        if constexpr (method == iter_type::fine || method == iter_type::fine_last)
-        {
-            std::cerr << logwrite::info("Fine", sty::bb, time, " -> ", time + dt, " [", theta,
-                                        " ]");
-        }
-        else if constexpr (method == iter_type::coarse || method == iter_type::coarse_first)
-        {
-            std::cerr << logwrite::info("Coarse", sty::bb, time, " -> ", time + dt, " [", theta,
-                                        " ]");
-        }
-    }
-
     time += dt;
     set_time(dt, time);
     GetMultiLevelSolver()->Equ(old, 1.0, u);
@@ -1053,12 +945,11 @@ void parareal<DIM, logging>::step(double& time, const double& dt, const int& ite
 
 //--------------------------------------------------------------------------------------------------
 // TODO
-template <int DIM, log_level logging>
-void parareal<DIM, logging>::divergence_stab(VectorInterface& u, VectorInterface& f,
+template <int DIM>
+void parareal<DIM>::divergence_stab(VectorInterface& u, VectorInterface& f,
                                              const double& time, const double& dt,
                                              const int& current)
 {
-    cerr << logwrite::info("Info", "Problem for Stabilization");
     visu("Results/before_stab", u, 10 * current + subinterval_idx);
 
     GetMultiLevelSolver()->SetProblem("div");
@@ -1079,32 +970,32 @@ void parareal<DIM, logging>::divergence_stab(VectorInterface& u, VectorInterface
 
 //--------------------------------------------------------------------------------------------------
 
-template <int DIM, log_level logging>
-void parareal<DIM, logging>::visu_write(const std::string& dir, const VectorInterface& vec,
+template <int DIM>
+void parareal<DIM>::visu_write(const std::string& dir, const VectorInterface& vec,
                                         size_t index) const
 {
     GetSolver()->Visu(dir, vec, index);
     StdLoop::WriteMeshAndSolution(dir, vec);
 }
 
-template <int DIM, log_level logging>
-void parareal<DIM, logging>::visu(const std::string& dir, const VectorInterface& vec,
+template <int DIM>
+void parareal<DIM>::visu(const std::string& dir, const VectorInterface& vec,
                                   size_t index) const
 {
     GetSolver()->Visu(dir, vec, index);
     GetSolver()->Write(vec, dir + '.' + to_string(index));
 }
 
-template <int DIM, log_level logging>
-void parareal<DIM, logging>::visu(const dir_vec& dv) const
+template <int DIM>
+void parareal<DIM>::visu(const dir_vec& dv) const
 {
     GetSolver()->Visu(dv.dir, dv.vec, dv.index);
     GetSolver()->Write(dv.vec, dv.dir + '.' + to_string(dv.index));
 }
 
-template <int DIM, log_level logging>
+template <int DIM>
 template <typename... dir_vec_pack>
-void parareal<DIM, logging>::visu(const dir_vec& dv, const dir_vec_pack&... dvs) const
+void parareal<DIM>::visu(const dir_vec& dv, const dir_vec_pack&... dvs) const
 {
     visu(dv);
     visu(dvs...);
@@ -1112,8 +1003,8 @@ void parareal<DIM, logging>::visu(const dir_vec& dv, const dir_vec_pack&... dvs)
 
 //--------------------------------------------------------------------------------------------------
 
-template <int DIM, log_level logging>
-void parareal<DIM, logging>::set_time(const double dt, const double time) const
+template <int DIM>
+void parareal<DIM>::set_time(const double dt, const double time) const
 {
     for (auto i = 0; i < GetMultiLevelSolver()->nlevels(); ++i)
     {
@@ -1123,16 +1014,16 @@ void parareal<DIM, logging>::set_time(const double dt, const double time) const
 
 //--------------------------------------------------------------------------------------------------
 
-template <int DIM, log_level logging>
-void parareal<DIM, logging>::setGV(VectorInterface& v, const GlobalVector& v_ptr) const
+template <int DIM>
+void parareal<DIM>::setGV(VectorInterface& v, const GlobalVector& v_ptr) const
 {
     GetSolver()->GetGV(v) = v_ptr;
 }
 
 //--------------------------------------------------------------------------------------------------
 
-template <int DIM, log_level logging>
-void parareal<DIM, logging>::setGVsize(GlobalVector& v_ptr)
+template <int DIM>
+void parareal<DIM>::setGVsize(GlobalVector& v_ptr)
 {
     auto ncomp    = GetSolver()->GetProblemDescriptor()->GetEquation()->GetNcomp();
     auto n        = GetSolver()->GetDiscretization()->n();
@@ -1141,8 +1032,8 @@ void parareal<DIM, logging>::setGVsize(GlobalVector& v_ptr)
     // v_ptr.zero();
 }
 
-template <int DIM, log_level logging>
-void parareal<DIM, logging>::setGVsize(const VectorInterface& vec)
+template <int DIM>
+void parareal<DIM>::setGVsize(const VectorInterface& vec)
 {
     auto v_ptr = GetSolver()->GetGV(vec);
     setGVsize(v_ptr);
@@ -1150,11 +1041,11 @@ void parareal<DIM, logging>::setGVsize(const VectorInterface& vec)
 
 //--------------------------------------------------------------------------------------------------
 
-template <int DIM, log_level logging>
-void parareal<DIM, logging>::setup_problem(const ParamFile& paramfile,
+template <int DIM>
+void parareal<DIM>::setup_problem(const ParamFile& paramfile,
                                            const std::string& problemlabel)
 {
-    if constexpr(DIM==2)
+    if (DIM==2)
     {
         auto Problem2d = new ProblemDescriptor2d();
         Problem2d->BasicInit(&paramfile);
@@ -1189,7 +1080,7 @@ void parareal<DIM, logging>::setup_problem(const ParamFile& paramfile,
 
         this->Loop<DIM>::BasicInit(&paramfile, PC2d, FC2d);
     }
-    else if constexpr(DIM==3)
+    else if (DIM==3)
     {
         auto Problem3d = new ProblemDescriptor3d();
         Problem3d->BasicInit(&paramfile);
@@ -1232,8 +1123,8 @@ void parareal<DIM, logging>::setup_problem(const ParamFile& paramfile,
 
 //--------------------------------------------------------------------------------------------------
 
-template <int DIM, log_level logging>
-void parareal<DIM, logging>::set_interval_threads(int& n_intervals, int& threads)
+template <int DIM>
+void parareal<DIM>::set_interval_threads(int& n_intervals, int& threads)
 {
     if (n_intervals == 0 && threads == 0)
     {
@@ -1266,9 +1157,9 @@ void parareal<DIM, logging>::set_interval_threads(int& n_intervals, int& threads
 
 //--------------------------------------------------------------------------------------------------
 
-template <int DIM, log_level logging>
+template <int DIM>
 template <typename T>
-const T parareal<DIM, logging>::get_param(const std::string& paramName, const std::string& block)
+const T parareal<DIM>::get_param(const std::string& paramName, const std::string& block)
 {
     T param;
     DataFormatHandler DFH;
@@ -1281,9 +1172,9 @@ const T parareal<DIM, logging>::get_param(const std::string& paramName, const st
 
 //--------------------------------------------------------------------------------------------------
 
-template <int DIM, log_level logging>
+template <int DIM>
 template <name_type name>
-const std::string parareal<DIM, logging>::get_name(double dtc, double tc, int max_iter)
+const std::string parareal<DIM>::get_name(double dtc, double tc, int max_iter)
 {
     std::string dtc_str = std::to_string(dtc);
     if (dtc < 1.)
@@ -1306,11 +1197,11 @@ const std::string parareal<DIM, logging>::get_name(double dtc, double tc, int ma
         tc_str = tc_str.substr(0, tc_str.find_last_not_of("0") + 1);
     }
 
-    if constexpr (name == name_type::error)
+    if (name == name_type::error)
     {
         return "para_errorC" + dtc_str + "tc" + tc_str + "I" + std::to_string(max_iter) + ".txt";
     }
-    else if constexpr (name == name_type::functional)
+    else if (name == name_type::functional)
     {
         return "para_functionalC" + dtc_str + "tc" + tc_str + "I" + std::to_string(max_iter)
                + ".txt";
@@ -1331,56 +1222,56 @@ Setting up parareal:
      interval_length     - length of intervals
 **************************************************************************************************/
 
-template <int DIM, log_level logging>
-ParamFile parareal<DIM, logging>::paramfile = [] {
-    if constexpr(DIM == 2)
+template <int DIM>
+ParamFile parareal<DIM>::paramfile = [] {
+    if (DIM == 2)
         return ParamFile("fsi-wm.param");
-    else if constexpr(DIM==3)
+    else if (DIM==3)
         return ParamFile("fsi_box3d.param");
 }();
-template <int DIM, log_level logging>
-std::string parareal<DIM, logging>::problemlabel = "fsi";
+template <int DIM>
+std::string parareal<DIM>::problemlabel = "fsi";
 
-template <int DIM, log_level logging>
-double parareal<DIM, logging>::fine_theta = parareal::get_param<double>("theta", "Equation");
-template <int DIM, log_level logging>
-double parareal<DIM, logging>::coarse_theta = parareal::get_param<double>("thetacoarse",
+template <int DIM>
+double parareal<DIM>::fine_theta = parareal::get_param<double>("theta", "Equation");
+template <int DIM>
+double parareal<DIM>::coarse_theta = parareal::get_param<double>("thetacoarse",
                                                                           "Equation");
 
-template <int DIM, log_level logging>
-double parareal<DIM, logging>::precompute_time = parareal::get_param<double>("precompute",
+template <int DIM>
+double parareal<DIM>::precompute_time = parareal::get_param<double>("precompute",
                                                                              "Equation");
-template <int DIM, log_level logging>
-int parareal<DIM, logging>::n_intervals = parareal::get_param<double>("subintervals", "Loop");
-template <int DIM, log_level logging>
-int parareal<DIM, logging>::threads = parareal::get_param<double>("threads", "Loop");
-template <int DIM, log_level logging>
-int parareal<DIM, logging>::max_iterations = static_cast<int>(1);
-template <int DIM, log_level logging>
-double parareal<DIM, logging>::start_time = parareal::get_param<double>("start_time", "Equation");
-template <int DIM, log_level logging>
-double parareal<DIM, logging>::stop_time = parareal::get_param<double>("stop_time", "Equation");
+template <int DIM>
+int parareal<DIM>::n_intervals = parareal::get_param<double>("subintervals", "Loop");
+template <int DIM>
+int parareal<DIM>::threads = parareal::get_param<double>("threads", "Loop");
+template <int DIM>
+int parareal<DIM>::max_iterations = static_cast<int>(1);
+template <int DIM>
+double parareal<DIM>::start_time = parareal::get_param<double>("start_time", "Equation");
+template <int DIM>
+double parareal<DIM>::stop_time = parareal::get_param<double>("stop_time", "Equation");
 
-template <int DIM, log_level logging>
-double parareal<DIM, logging>::interval_length = (stop_time - start_time) / (n_intervals);
+template <int DIM>
+double parareal<DIM>::interval_length = (stop_time - start_time) / (n_intervals);
 
-template <int DIM, log_level logging>
-double parareal<DIM, logging>::dtfine = parareal::get_param<double>("dt", "Equation");
-template <int DIM, log_level logging>
-size_t parareal<DIM, logging>::n_finesteps = static_cast<size_t>(interval_length / dtfine);
+template <int DIM>
+double parareal<DIM>::dtfine = parareal::get_param<double>("dt", "Equation");
+template <int DIM>
+size_t parareal<DIM>::n_finesteps = static_cast<size_t>(interval_length / dtfine);
 
-template <int DIM, log_level logging>
-double parareal<DIM, logging>::dtcoarse = parareal::get_param<double>("dtcoarse", "Equation");
-template <int DIM, log_level logging>
-size_t parareal<DIM, logging>::n_coarsesteps = static_cast<size_t>(parareal::interval_length
+template <int DIM>
+double parareal<DIM>::dtcoarse = parareal::get_param<double>("dtcoarse", "Equation");
+template <int DIM>
+size_t parareal<DIM>::n_coarsesteps = static_cast<size_t>(parareal::interval_length
                                                                    / parareal::dtcoarse);
-template <int DIM, log_level logging>
-double parareal<DIM, logging>::coarse_exec_time = 0;
+template <int DIM>
+double parareal<DIM>::coarse_exec_time = 0;
 
-template <int DIM, log_level logging>
-double parareal<DIM, logging>::fine_exec_time = 0;
+template <int DIM>
+double parareal<DIM>::fine_exec_time = 0;
 
-template <int DIM, log_level logging>
-std::ofstream parareal<DIM, logging>::func_log;
+template <int DIM>
+std::ofstream parareal<DIM>::func_log;
 }  // namespace Gascoigne
 #endif  // PARAREAL_H
