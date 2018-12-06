@@ -56,7 +56,8 @@ initial boundary
 //reload start.bup
 
 //initial boundary
-
+threads 16
+subintervals 16
 niter       20
 
 etapatcher  0

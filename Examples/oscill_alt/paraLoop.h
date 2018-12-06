@@ -570,7 +570,7 @@ double parareal<DIM>::parareal_algorithm(const int n_intervals, const int max_it
     // A C T U A L   A L G O R I T H M
     //
 
-#pragma omp parallel num_threads(n_intervals) firstprivate(time) proc_bind(close)
+#pragma omp parallel num_threads(n_intervals) firstprivate(time) proc_bind(spread)
     {
         // 'Iteration 0'
         //
