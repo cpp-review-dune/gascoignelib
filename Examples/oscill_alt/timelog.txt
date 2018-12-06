@@ -1387,3 +1387,278 @@ Elapsed time is	162.399
 
 Time spent in coarse method: 221.684
 Time spent in fine method: 642.992[0m
+
+=========================================================
+Start time                             0
+End time                               8
+Precompute time                        0
+Number of threads is                   16
+Number of subintervals is              16
+Interval length                        0.5
+Maximal number of iterations           1
+Parameter for coarse method:              
+Coarse steps per interval:             50
+Coarse step size:                      0.01
+Theta for coarse steps                 0.51
+Parameter for fine method:              
+Fine steps per interval:               500
+Fine step size:                        0.001
+Theta for fine steps                   0.501
+Using paramfile:                       fsi_box3d.param
+Problemlabel is:                       fsi
+=========================================================
+
+
+=========================================================
+Start time                             0
+End time                               8
+Precompute time                        0
+Number of threads is                   16
+Number of subintervals is              16
+Interval length                        0.5
+Maximal number of iterations           1
+Parameter for coarse method:              
+Coarse steps per interval:             50
+Coarse step size:                      0.01
+Theta for coarse steps                 0.51
+Parameter for fine method:              
+Fine steps per interval:               500
+Fine step size:                        0.001
+Theta for fine steps                   0.501
+Using paramfile:                       fsi_box3d.param
+Problemlabel is:                       fsi
+=========================================================
+
+
+==================================================
+Finished parareal.
+Elapsed time is	17149.7
+
+Time spent in coarse method: 0
+Time spent in fine method: 0
+
+=========================================================
+Start time                             0
+End time                               8
+Precompute time                        0
+Number of threads is                   16
+Number of subintervals is              16
+Interval length                        0.5
+Maximal number of iterations           2
+Parameter for coarse method:              
+Coarse steps per interval:             50
+Coarse step size:                      0.01
+Theta for coarse steps                 0.51
+Parameter for fine method:              
+Fine steps per interval:               500
+Fine step size:                        0.001
+Theta for fine steps                   0.501
+Using paramfile:                       fsi_box3d.param
+Problemlabel is:                       fsi
+=========================================================
+
+
+==================================================
+Finished parareal.
+Elapsed time is	26818.6
+
+Time spent in coarse method: 0
+Time spent in fine method: 0
+
+=========================================================
+Start time                             0
+End time                               8
+Precompute time                        0
+Number of threads is                   16
+Number of subintervals is              16
+Interval length                        0.5
+Maximal number of iterations           3
+Parameter for coarse method:              
+Coarse steps per interval:             50
+Coarse step size:                      0.01
+Theta for coarse steps                 0.51
+Parameter for fine method:              
+Fine steps per interval:               500
+Fine step size:                        0.001
+Theta for fine steps                   0.501
+Using paramfile:                       fsi_box3d.param
+Problemlabel is:                       fsi
+=========================================================
+
+
+==================================================
+Finished parareal.
+Elapsed time is	25579.4
+
+Time spent in coarse method: 0
+Time spent in fine method: 0
+
+=========================================================
+Start time                             0
+End time                               8
+Precompute time                        0
+Number of threads is                   16
+Number of subintervals is              16
+Interval length                        0.5
+Maximal number of iterations           1
+Parameter for coarse method:              
+Coarse steps per interval:             25
+Coarse step size:                      0.02
+Theta for coarse steps                 0.52
+Parameter for fine method:              
+Fine steps per interval:               500
+Fine step size:                        0.001
+Theta for fine steps                   0.501
+Using paramfile:                       fsi_box3d.param
+Problemlabel is:                       fsi
+=========================================================
+
+
+==================================================
+Finished parareal.
+Elapsed time is	14703.5
+
+Time spent in coarse method: 0
+Time spent in fine method: 0
+
+=========================================================
+Start time                             0
+End time                               8
+Precompute time                        0
+Number of threads is                   16
+Number of subintervals is              16
+Interval length                        0.5
+Maximal number of iterations           2
+Parameter for coarse method:              
+Coarse steps per interval:             25
+Coarse step size:                      0.02
+Theta for coarse steps                 0.52
+Parameter for fine method:              
+Fine steps per interval:               500
+Fine step size:                        0.001
+Theta for fine steps                   0.501
+Using paramfile:                       fsi_box3d.param
+Problemlabel is:                       fsi
+=========================================================
+
+
+==================================================
+Finished parareal.
+Elapsed time is	23908.5
+
+Time spent in coarse method: 0
+Time spent in fine method: 0
+
+=========================================================
+Start time                             0
+End time                               8
+Precompute time                        0
+Number of threads is                   16
+Number of subintervals is              16
+Interval length                        0.5
+Maximal number of iterations           3
+Parameter for coarse method:              
+Coarse steps per interval:             25
+Coarse step size:                      0.02
+Theta for coarse steps                 0.52
+Parameter for fine method:              
+Fine steps per interval:               500
+Fine step size:                        0.001
+Theta for fine steps                   0.501
+Using paramfile:                       fsi_box3d.param
+Problemlabel is:                       fsi
+=========================================================
+
+
+==================================================
+Finished parareal.
+Elapsed time is	30734
+
+Time spent in coarse method: 0
+Time spent in fine method: 0
+
+
+
+=========================================================
+Start time                             0
+End time                               8
+Precompute time                        0
+Number of threads is                   16
+Number of subintervals is              16
+Interval length                        0.5
+Maximal number of iterations           1
+Parameter for coarse method:              
+Coarse steps per interval:             10
+Coarse step size:                      0.05
+Theta for coarse steps                 0.55
+Parameter for fine method:              
+Fine steps per interval:               500
+Fine step size:                        0.001
+Theta for fine steps                   0.501
+Using paramfile:                       fsi_box3d.param
+Problemlabel is:                       fsi
+=========================================================
+
+
+==================================================
+Finished parareal.
+Elapsed time is	13642.3
+
+Time spent in coarse method: 0
+Time spent in fine method: 0
+
+=========================================================
+Start time                             0
+End time                               8
+Precompute time                        0
+Number of threads is                   16
+Number of subintervals is              16
+Interval length                        0.5
+Maximal number of iterations           2
+Parameter for coarse method:              
+Coarse steps per interval:             10
+Coarse step size:                      0.05
+Theta for coarse steps                 0.55
+Parameter for fine method:              
+Fine steps per interval:               500
+Fine step size:                        0.001
+Theta for fine steps                   0.501
+Using paramfile:                       fsi_box3d.param
+Problemlabel is:                       fsi
+=========================================================
+
+
+==================================================
+Finished parareal.
+Elapsed time is	20999.6
+
+Time spent in coarse method: 0
+Time spent in fine method: 0
+
+=========================================================
+Start time                             0
+End time                               8
+Precompute time                        0
+Number of threads is                   16
+Number of subintervals is              16
+Interval length                        0.5
+Maximal number of iterations           3
+Parameter for coarse method:              
+Coarse steps per interval:             10
+Coarse step size:                      0.05
+Theta for coarse steps                 0.55
+Parameter for fine method:              
+Fine steps per interval:               500
+Fine step size:                        0.001
+Theta for fine steps                   0.501
+Using paramfile:                       fsi_box3d.param
+Problemlabel is:                       fsi
+=========================================================
+
+
+==================================================
+Finished parareal.
+Elapsed time is	28864.2
+
+Time spent in coarse method: 0
+Time spent in fine method: 0

@@ -27,7 +27,7 @@ void Loop<DIM>::run(const std::string& problemlabel)
     }
 
     _niter            = static_cast<int>((STOP_TIME - __TIME + 1.e-12) / __DT);
-    auto sub_int_time = static_cast<int>(_niter / 8);
+    auto sub_int_time = static_cast<int>(_niter / 64);
     VectorInterface u("u"), f("f"), old("old");
 
     GetMultiLevelSolver()->ReInit(problemlabel);
@@ -54,7 +54,8 @@ void Loop<DIM>::run(const std::string& problemlabel)
 
         GetMultiLevelSolver()->Equ(old, 1.0, u);
         GetMultiLevelSolver()->AddNodeVector("old", old);
-        assert(Solve(u, f) == "converged");
+        if(Solve(u, f) != "converged")
+	    abort();
         // GetMultiLevelSolver()->DeleteNodeVector("old");
         // GetMultiLevelSolver()->SetProblem("div");
         //
