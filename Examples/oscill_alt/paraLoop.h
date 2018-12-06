@@ -468,9 +468,13 @@ double parareal<DIM>::parareal_algorithm(const int n_intervals, const int max_it
 
     static auto set_coar_weight = [&](parareal* const& para_solver, VectorInterface& f,
                                       VectorInterface& c, double damping) {
-        const nvector<double> c_c = para_solver->GetSolver()->GetGV(c).CompNorm();
-        const nvector<double> f_f = para_solver->GetSolver()->GetGV(f).CompNorm();
+        const nvector<double> c_c(2 * DIM + 1, 0);
+        const nvector<double> f_f(2 * DIM + 1, 0);
         nvector<double> c_f(2 * DIM + 1, 0.0);
+        para_solver->GetSolver()->GetGV(c).ScalarProductComp(c_c,
+                                                             para_solver->GetSolver()->GetGV(c));
+        para_solver->GetSolver()->GetGV(f).ScalarProductComp(f_f,
+                                                             para_solver->GetSolver()->GetGV(f));
         para_solver->GetSolver()->GetGV(f).ScalarProductComp(c_f,
                                                              para_solver->GetSolver()->GetGV(c));
 
@@ -479,6 +483,7 @@ double parareal<DIM>::parareal_algorithm(const int n_intervals, const int max_it
         auto f_f_iter = f_f.cbegin();
         for (auto i = 0; i < 2 * DIM + 1; ++i)
         {
+            *cw_iter *= *cw_iter;
             *cw_iter /= *c_c_iter * *f_f_iter;
             ++cw_iter;
             ++c_c_iter;
@@ -682,7 +687,7 @@ double parareal<DIM>::parareal_algorithm(const int n_intervals, const int max_it
                     omp_set_lock(&interval_locker[m + 1]);
                     // calculate weights
                     set_coar_weight(subinterval[m + 1], subinterval[m + 1]->fine_sol,
-                                    subinterval[m + 1]->coar_sol, 1);
+                                    subinterval[m]->coar_sol, 1);
 
                     // calculate corrector term
                     // clang-format off
