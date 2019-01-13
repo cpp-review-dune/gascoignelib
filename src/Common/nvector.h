@@ -26,7 +26,7 @@
 #define __nvector_h
 
 #include <cassert>
-#include <climits>
+//#include <climits>
 #include <cstdlib>
 #include <iostream>
 #include <numeric>

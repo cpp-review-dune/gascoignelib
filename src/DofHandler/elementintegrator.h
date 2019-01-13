@@ -63,10 +63,10 @@ namespace Gascoigne
     ~ElementIntegrator<DIM,IFF,IFE,IFB,IFM>(){};
 
     // Integration-Formulas
-    virtual IFF* NewIFF() const { return new IFF; }
-    virtual IFE* NewIFE() const { return new IFE; }
-    virtual IFB* NewIFB() const { return new IFB; }
-    virtual IFM* NewIFM() const { return new IFM; }
+    virtual IntegrationFormulaInterface* NewIFF() const { return new IFF; }
+    virtual IntegrationFormulaInterface* NewIFE() const { return new IFE; }
+    virtual IntegrationFormulaInterface* NewIFB() const { return new IFB; }
+    virtual IntegrationFormulaInterface* NewIFM() const { return new IFM; }
 
     std::string GetName() const
     {

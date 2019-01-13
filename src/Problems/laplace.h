@@ -57,6 +57,8 @@ namespace Gascoigne
     
   protected:
     LaplaceData    data;
+    mutable double vv;
+    
 
   public:
     Laplace(const LaplaceData &PD) : data(PD)
@@ -72,13 +74,23 @@ namespace Gascoigne
     {
       return 1;
     }
-
+    void point(double h, const FemFunction& U, const Vertex2d& v) const
+    {
+      double kappa1 = 4.0;
+      double kappa2 = 1.0;
+      
+      double y = v.y()-0.912112;
+      if (y>0)
+	vv = kappa1;
+      else
+	vv = kappa2;
+    }
 
     void
     Form(VectorIterator b, const FemFunction &U, const TestFunction &N) const
     {
       for (int i = 0; i < DIM; ++i)
-        b[0] += data.visc * U[0][i + 1] * N[i+1];
+        b[0] += vv * U[0][i + 1] * N[i+1];
     }
 
 
@@ -88,7 +100,7 @@ namespace Gascoigne
                 const TestFunction &N) const
     {
       for (int i = 0; i < DIM; ++i)
-	A(0,0) += data.visc * M[i+1] * N[i+1];
+	A(0,0) += vv * M[i+1] * N[i+1];
     }
   };
 
