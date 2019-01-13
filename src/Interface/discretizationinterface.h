@@ -90,12 +90,14 @@ namespace Gascoigne
       virtual void BasicInit(const ParamFile* pf)=0;
       virtual void ReInit   (const GascoigneMesh* M)=0;
 
-      virtual int n() const=0;
-      virtual int nc() const=0;
-      virtual int n_withouthanging()const {
-        return n();
-      }
-
+    virtual int ndofs()     const=0;  // returns the number of degrees of freedom
+    virtual int nelements() const=0;  // returns the number of elements in the discretization
+    virtual int ndofs_withouthanging()const {
+      return ndofs();
+    }
+    virtual Vertex2d vertex2d(int i) const{ abort(); }
+    virtual Vertex3d vertex3d(int i) const{ abort(); }
+    
     virtual void Structure(SparseStructureInterface* S) const=0;
     virtual void Form(GlobalVector& f, const GlobalVector& u, const ProblemDescriptorInterface& PD, double d) const{assert(0);}
     virtual void Rhs(GlobalVector& f, const DomainRightHandSide& RHS, double s) const=0;
@@ -110,6 +112,15 @@ namespace Gascoigne
         std::cerr << "\"DiscretizationInterface::BoundaryMatrix\" not written!" << std::endl;
         abort();
       }
+
+
+    // Visualization
+    virtual void VisuVtk(const ComponentInformation* CI, const ParamFile& pf,
+			 const std::string &name, const GlobalVector& u, int i) const
+    {
+      std::cerr << "\"DiscretizationInterface::VisuVtk not written!" << std::endl;
+      abort();
+    }
 
     // New Inteface. 
     virtual void BoundaryForm(GlobalVector& f, const GlobalVector& u, const ProblemDescriptorInterface& PD, double d) const {

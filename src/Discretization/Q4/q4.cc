@@ -107,7 +107,7 @@ void Q4::Structure(SparseStructureInterface* SI) const
   SparseStructure* S = dynamic_cast<SparseStructure*>(SI);
   assert(S);
 
-  S->build_begin(n());
+  S->build_begin(ndofs());
   for(int iq=0; iq<GetMesh()->nq4patches(); iq++)
   {
     nvector<int> indices = GetLocalIndices(iq);

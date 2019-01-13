@@ -23,6 +23,9 @@
 
 
 #include  "basicdiscretization.h"
+#include "gascoignevisualization.h"
+
+
 
 using namespace std;
 
@@ -149,5 +152,31 @@ void BasicDiscretization::LocalToGlobal(MatrixInterface& A, EntryMatrix& E, int 
 }
 
 /*-----------------------------------------*/
+  
+  void BasicDiscretization::VisuVtk(const ComponentInformation* CI,
+				    const ParamFile& pf,
+				    const std::string &name, const GlobalVector& u, int i) const
+  {
+    HNAverage(const_cast<GlobalVector &>(u));
 
+    GascoigneVisualization Visu;
+
+    Visu.SetMesh(GetMesh());
+    
+    if (CI)
+      {
+	Visu.AddPointVector(CI, &u);
+      }
+    else
+      {
+	Visu.AddPointVector(&u);
+      }
+    
+    Visu.read_parameters(&pf);
+    Visu.set_name(name);
+    Visu.step(i);
+    Visu.write();
+    
+    HNZero(const_cast<GlobalVector &>(u));
+  }
 }

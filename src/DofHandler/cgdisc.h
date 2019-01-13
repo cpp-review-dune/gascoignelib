@@ -36,6 +36,7 @@
 #include "sparsestructure.h"
 #include "stopwatch.h"
 
+
 namespace Gascoigne
 {
 
@@ -85,6 +86,13 @@ namespace Gascoigne
     {
       return "CG Discretization";
     }
+    // Visualization
+    void VisuVtk(const ComponentInformation* CI, const ParamFile& pf,
+			 const std::string &name, const GlobalVector& u, int i) const
+    {
+      std::cerr << "\"CGDisc::VisuVtk not written!" << std::endl;
+    }
+
 
     void AddNodeVector(const std::string &name, const GlobalVector *q) const
     {
@@ -122,20 +130,26 @@ namespace Gascoigne
     {
       dofhandler = dynamic_cast<const DofHandler<DIM> *>(M);
       assert(dofhandler);
-      // HANGING NODES
     }
 
-    int n() const
+    
+    Vertex2d vertex2d(int i) const{ assert(i<GetDofHandler()->nnodes()); return GetDofHandler()->vertex2d(i); }
+    Vertex3d vertex3d(int i) const{ assert(i<GetDofHandler()->nnodes()); return GetDofHandler()->vertex3d(i); }
+    
+
+    
+
+    int ndofs() const
     {
       return GetDofHandler()->nnodes();
     }
-    int nc() const
+    int nelements() const
     {
       return GetDofHandler()->nelements(DEGREE);
     }
-    int n_withouthanging() const
+    int ndofs_withouthanging() const
     {
-      return n();
+      return ndofs();
       // HANGING NODES
     }
 
@@ -184,7 +198,7 @@ namespace Gascoigne
       SparseStructure *S = dynamic_cast<SparseStructure *>(SI);
       assert(S);
 
-      S->build_begin(n());
+      S->build_begin(ndofs());
       for (int iq = 0; iq < GetDofHandler()->nelements(DEGREE); iq++)
       {
         IntVector indices = GetDofHandler()->GetElement(DEGREE, iq);

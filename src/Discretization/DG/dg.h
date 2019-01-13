@@ -86,11 +86,11 @@ namespace Gascoigne
     {
       return "DG";
     }
-    int n() const // number of unknowns
+    int ndofs() const // number of unknowns
     {
       return _dofhandler.ndofs();
     };
-    int nc() const
+    int nelements() const
     {
       return _dofhandler.nelements();
     };

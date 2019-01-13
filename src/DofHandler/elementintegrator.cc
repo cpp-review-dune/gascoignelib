@@ -46,18 +46,18 @@ namespace Gascoigne
     BasicIntegrator::universal_point(_QCH, QC);
     f.SetCellData(_QCH);
 
-    IFF IF;
+    IFF* IF = NewIFF();
 
     F.zero();
     Vertex<DIM> x, xi;
 
-    for (int k = 0; k < IF.n(); k++)
+    for (int k = 0; k < IF->n(); k++)
     {
-      IF.xi(xi, k);
+      IF->xi(xi, k);
       FEM.point(xi);
       double vol = FEM.J();
       double h = Volume2MeshSize(vol);
-      double weight = IF.w(k) * vol;
+      double weight = IF->w(k) * vol;
       BasicIntegrator::universal_point(FEM, _QH, Q);
       f.SetCellSize(h);
       f.SetFemData(_QH);
@@ -68,6 +68,7 @@ namespace Gascoigne
         f(F.start(i), _NN, x);
       }
     }
+    delete IF;
   }
 
   /* ----------------------------------------- */
@@ -87,22 +88,22 @@ namespace Gascoigne
     BasicIntegrator::universal_point(_QCH, QC);
     f.SetCellData(_QCH);
 
-    IFB IF;
+    IFB* IF = NewIFB();
 
     F.zero();
     Vertex<DIM> x, n;
     Vertex<DIM - 1> xi;
 
-    for (int k = 0; k < IF.n(); k++)
+    for (int k = 0; k < IF->n(); k++)
     {
-      IF.xi(xi, k);
+      IF->xi(xi, k);
       FEM.point_boundary(ile, xi);
       BasicIntegrator::universal_point(FEM, _QH, Q);
       f.SetFemData(_QH);
       FEM.x(x);
       FEM.normal(n);
       double h = FEM.G();
-      double weight = IF.w(k) * h;
+      double weight = IF->w(k) * h;
       f.SetCellSize(h);
       for (int i = 0; i < FEM.n(); i++)
       {
@@ -110,6 +111,8 @@ namespace Gascoigne
         f(F.start(i), _NN, x, n, col);
       }
     }
+
+    delete IF;
   }
 
   /* ----------------------------------------- */
@@ -127,19 +130,20 @@ namespace Gascoigne
 
     BasicIntegrator::universal_point(_QCH, QC);
     EQ.SetCellData(_QCH);
-
-    IFF IF;
+    
+    IFF* IF = NewIFF();
 
     F.zero();
     Vertex<DIM> x, xi;
 
-    for (int k = 0; k < IF.n(); k++)
+    for (int k = 0; k < IF->n(); k++)
     {
-      IF.xi(xi, k);
+      IF->xi(xi, k);
       FEM.point(xi);
+
       double vol = FEM.J();
       double h = Volume2MeshSize(vol);
-      double weight = IF.w(k) * vol;
+      double weight = IF->w(k) * vol;
       BasicIntegrator::universal_point(FEM, _UH, U);
       BasicIntegrator::universal_point(FEM, _QH, Q);
       FEM.x(x);
@@ -152,6 +156,8 @@ namespace Gascoigne
         EQ.Form(F.start(i), _UH, _NN);
       }
     }
+
+    delete IF;
   }
 
   /* ----------------------------------------- */
@@ -170,7 +176,7 @@ namespace Gascoigne
     BasicIntegrator::universal_point(_QCH, QC);
     EQ.SetCellData(_QCH);
 
-    IFF IF;
+    IFF* IF=NewIFF();
 
     F.zero();
     Vertex<DIM> x, xi;
@@ -182,13 +188,13 @@ namespace Gascoigne
     E.resize();
     E.zero();
 
-    for (int k = 0; k < IF.n(); k++)
+    for (int k = 0; k < IF->n(); k++)
     {
-      IF.xi(xi, k);
+      IF->xi(xi, k);
       FEM.point(xi);
       double vol = FEM.J();
       double h = Volume2MeshSize(vol);
-      double weight = IF.w(k) * vol;
+      double weight = IF->w(k) * vol;
       BasicIntegrator::universal_point(FEM, _UH, Z);
       BasicIntegrator::universal_point(FEM, _QH, Q);
       FEM.x(x);
@@ -223,6 +229,8 @@ namespace Gascoigne
         F(i, c) += sum;
       }
     }
+
+    delete IF;
   }
 
   /* ----------------------------------------- */
@@ -243,22 +251,22 @@ namespace Gascoigne
     BasicIntegrator::universal_point(_QCH, QC);
     BE.SetCellData(_QCH);
 
-    IFB IF;
+    IFB* IF=NewIFB();
 
     F.zero();
     Vertex<DIM> x, n;
     Vertex<DIM - 1> xi;
 
-    for (int k = 0; k < IF.n(); k++)
+    for (int k = 0; k < IF->n(); k++)
     {
-      IF.xi(xi, k);
+      IF->xi(xi, k);
       FEM.point_boundary(ile, xi);
       BasicIntegrator::universal_point(FEM, _UH, U);
       BasicIntegrator::universal_point(FEM, _QH, Q);
       FEM.x(x);
       FEM.normal(n);
       double h = FEM.G();
-      double weight = IF.w(k) * h;
+      double weight = IF->w(k) * h;
       BE.SetFemData(_QH);
       BE.pointboundary(h, _UH, x, n);
       for (int i = 0; i < FEM.n(); i++)
@@ -267,6 +275,8 @@ namespace Gascoigne
         BE.Form(F.start(i), _UH, _NN, col);
       }
     }
+
+    delete IF;
   }
 
   /* ----------------------------------------- */
@@ -282,16 +292,16 @@ namespace Gascoigne
     E.resize();
     E.zero();
 
-    IFM IF;
+    IFM* IF=NewIFM();
 
     Vertex<DIM> x, xi;
     double omega = 0.;
-    for (int k = 0; k < IF.n(); k++)
+    for (int k = 0; k < IF->n(); k++)
     {
-      IF.xi(xi, k);
+      IF->xi(xi, k);
       FEM.point(xi);
       double vol = FEM.J();
-      double weight = IF.w(k) * vol;
+      double weight = IF->w(k) * vol;
       omega += weight;
       for (int i = 0; i < FEM.n(); i++)
       {
@@ -306,6 +316,8 @@ namespace Gascoigne
         }
       }
     }
+
+    delete IF;
     return omega;
   }
   /*-----------------------------------------------------------*/
@@ -320,18 +332,18 @@ namespace Gascoigne
     E.resize();
     E.zero();
 
-    IFB IF;
+    IFB* IF=NewIFB();
 
     Vertex<DIM> x, n;
     Vertex<DIM - 1> xi;
-    for (int k = 0; k < IF.n(); k++)
+    for (int k = 0; k < IF->n(); k++)
     {
-      IF.xi(xi, k);
+      IF->xi(xi, k);
       FEM.point_boundary(ile, xi);
       FEM.x(x);
       FEM.normal(n);
       double h = FEM.G();
-      double weight = IF.w(k) * h;
+      double weight = IF->w(k) * h;
       double sw = sqrt(weight);
       for (int i = 0; i < FEM.n(); i++)
       {
@@ -346,6 +358,8 @@ namespace Gascoigne
         }
       }
     }
+
+    delete IF;
   }
 
   /* ----------------------------------------- */
@@ -368,16 +382,16 @@ namespace Gascoigne
     BasicIntegrator::universal_point(_QCH, QC);
     EQ.SetCellData(_QCH);
 
-    IFF IF;
+    IFF* IF=NewIFF();
 
     Vertex<DIM> x, xi;
-    for (int k = 0; k < IF.n(); k++)
+    for (int k = 0; k < IF->n(); k++)
     {
-      IF.xi(xi, k);
+      IF->xi(xi, k);
       FEM.point(xi);
       double vol = FEM.J();
       double h = Volume2MeshSize(vol);
-      double weight = IF.w(k) * vol;
+      double weight = IF->w(k) * vol;
       BasicIntegrator::universal_point(FEM, _UH, U);
       BasicIntegrator::universal_point(FEM, _QH, Q);
       FEM.x(x);
@@ -399,6 +413,7 @@ namespace Gascoigne
                                         }
                                 }*/
     }
+    delete IF;
   }
 
     /* ----------------------------------------- */
@@ -425,20 +440,20 @@ namespace Gascoigne
     BasicIntegrator::universal_point(_QCH, QC);
     BE.SetCellData(_QCH);
 
-    IFB IF;
+    IFB* IF=NewIFB();
 
     Vertex<DIM> x, n;
     Vertex<DIM - 1> xi;
-    for (int k = 0; k < IF.n(); k++)
+    for (int k = 0; k < IF->n(); k++)
     {
-      IF.xi(xi, k);
+      IF->xi(xi, k);
       FEM.point_boundary(ile, xi);
       BasicIntegrator::universal_point(FEM, _UH, U);
       BasicIntegrator::universal_point(FEM, _QH, Q);
       FEM.x(x);
       FEM.normal(n);
       double h = FEM.G();
-      double weight = IF.w(k) * h;
+      double weight = IF->w(k) * h;
       BE.SetFemData(_QH);
       BE.pointmatrixboundary(h, _UH, x, n);
       BE.pointboundary(h, _UH, x, n);
@@ -456,6 +471,7 @@ namespace Gascoigne
         }
       }
     }
+    delete IF;
   }
 
   /*-----------------------------------------------------------*/
@@ -469,17 +485,17 @@ namespace Gascoigne
   {
     F.ReInit(U.ncomp(), FEM.n());
 
-    IFM IF;
+    IFM* IF=NewIFM();
 
     F.zero();
     Vertex<DIM> xi;
 
-    for (int k = 0; k < IF.n(); k++)
+    for (int k = 0; k < IF->n(); k++)
     {
-      IF.xi(xi, k);
+      IF->xi(xi, k);
       FEM.point(xi);
       double vol = FEM.J();
-      double weight = IF.w(k) * vol;
+      double weight = IF->w(k) * vol;
       BasicIntegrator::universal_point(FEM, _UH, U);
       for (int i = 0; i < FEM.n(); i++)
       {
@@ -493,6 +509,7 @@ namespace Gascoigne
         }
       }
     }
+    delete IF;
   }
 
   /*-----------------------------------------------------------*/
@@ -573,19 +590,19 @@ namespace Gascoigne
     BasicIntegrator::universal_point(_QCH, QC);
     F.SetCellData(_QCH);
 
-    IFB IF;
+    IFB* IF=NewIFB();
 
     Vertex<DIM> x, n;
     Vertex<DIM - 1> xi;
 
 
     double j = 0.;
-    for (int k = 0; k < IF.n(); k++)
+    for (int k = 0; k < IF->n(); k++)
     {
-      IF.xi(xi, k);
+      IF->xi(xi, k);
       FEM.point_boundary(ile, xi);
       double h = FEM.G();
-      double weight = IF.w(k) * h;
+      double weight = IF->w(k) * h;
       BasicIntegrator::universal_point(FEM, _UH, U);
       BasicIntegrator::universal_point(FEM, _QH, Q);
       F.SetFemData(_QH);
@@ -595,6 +612,8 @@ namespace Gascoigne
       // FEM.normal(n);
       j += weight * F.J(_UH, x, n, col);
     }
+
+    delete IF;
     return j;
   }
 
@@ -611,22 +630,24 @@ namespace Gascoigne
     BasicIntegrator::universal_point(_QCH, QC);
     F.SetCellData(_QCH);
 
-    IFF IF;
+    IFF* IF=NewIFF();
 
     Vertex<DIM> x, xi;
     double j = 0.;
-    for (int k = 0; k < IF.n(); k++)
+    for (int k = 0; k < IF->n(); k++)
     {
-      IF.xi(xi, k);
+      IF->xi(xi, k);
       FEM.point(xi);
       double vol = FEM.J();
-      double weight = IF.w(k) * vol;
+      double weight = IF->w(k) * vol;
       BasicIntegrator::universal_point(FEM, _UH, U);
       BasicIntegrator::universal_point(FEM, _QH, Q);
       FEM.x(x);
       F.SetFemData(_QH);
       j += weight * F.J(_UH, x);
     }
+
+    delete IF;
     return j;
   }
 
@@ -644,22 +665,23 @@ namespace Gascoigne
     BasicIntegrator::universal_point(_QCH, QC);
     F.SetCellData(_QCH);
 
-    IFE IF;
+    IFE* IF=NewIFE();
 
     Vertex<DIM> x, xi;
     double j = 0.;
-    for (int k = 0; k < IF.n(); k++)
+    for (int k = 0; k < IF->n(); k++)
     {
-      IF.xi(xi, k);
+      IF->xi(xi, k);
       FEM.point(xi);
       double vol = FEM.J();
-      double weight = IF.w(k) * vol;
+      double weight = IF->w(k) * vol;
       BasicIntegrator::universal_point(FEM, _UH, U);
       BasicIntegrator::universal_point(FEM, _QH, Q);
       FEM.x(x);
       F.SetFemData(_QH);
       j += weight * F.J(_UH, x);
     }
+    delete IF;
     return j;
   }
 
@@ -678,17 +700,17 @@ namespace Gascoigne
     BasicIntegrator::universal_point(_QCH, QC);
     CF.SetCellData(_QCH);
 
-    IFF IF;
+    IFF* IF=NewIFF();
     Vertex<DIM> x, xi;
 
     F.zero();
-    for (int k = 0; k < IF.n(); k++)
+    for (int k = 0; k < IF->n(); k++)
     {
-      IF.xi(xi, k);
+      IF->xi(xi, k);
       FEM.point(xi);
       double vol = FEM.J();
       double h = Volume2MeshSize(vol);
-      double weight = IF.w(k) * vol;
+      double weight = IF->w(k) * vol;
 
       BasicIntegrator::universal_point(FEM, _QH, Q);
       FEM.x(x);
@@ -700,6 +722,7 @@ namespace Gascoigne
 
       CF(F.start(0), _NN, x);
     }
+    delete IF;
   }
 
   /* ----------------------------------------- */
@@ -720,28 +743,29 @@ namespace Gascoigne
     BasicIntegrator::universal_point(_QCH, QC);
     CF.SetCellData(_QCH);
 
-    IFB IF;
+    IFB* IF=NewIFB();
 
     F.zero();
     Vertex<DIM> x, n;
     Vertex<DIM - 1> xi;
 
-    for (int k = 0; k < IF.n(); k++)
+    for (int k = 0; k < IF->n(); k++)
     {
-      IF.xi(xi, k);
+      IF->xi(xi, k);
       FEM.point_boundary(ile, xi);
       BasicIntegrator::universal_point(FEM, _QH, Q);
       CF.SetFemData(_QH);
       FEM.x(x);
       FEM.normal(n);
       double h = FEM.G();
-      double weight = IF.w(k) * h;
+      double weight = IF->w(k) * h;
       CF.SetCellSize(h);
 
       _NN.zero();
       _NN.m() = weight;
       CF(F.start(0), _NN, x, n, col);
     }
+    delete IF;
   }
 
   /* ----------------------------------------- */
@@ -758,17 +782,17 @@ namespace Gascoigne
     BasicIntegrator::universal_point(_QCH, QC);
     ES.SetCellData(_QCH);
 
-    IFF IF;
+    IFF* IF=NewIFF();
 
     Vertex<DIM> x, xi;
     dst.zero();
-    for (int k = 0; k < IF.n(); k++)
+    for (int k = 0; k < IF->n(); k++)
     {
-      IF.xi(xi, k);
+      IF->xi(xi, k);
       FE.point(xi);
       BasicIntegrator::universal_point(FE, _UH, U);
       double vol = FE.J();
-      double weight = IF.w(k) * vol;
+      double weight = IF->w(k) * vol;
 
       FE.x(x);
       for (int c = 0; c < U.ncomp(); c++)
@@ -792,6 +816,7 @@ namespace Gascoigne
         dst(2, c) = std::max(dst(2, c), fabs(_UH[c].m()));
       }
     }
+    delete IF;
   }
 
   /* ----------------------------------------- */
@@ -802,23 +827,24 @@ namespace Gascoigne
   {
     F.resize(FEM.n());
 
-    IFF IF;
+    IFF* IF=NewIFF();
 
     F.zero();
     Vertex<DIM> x, xi;
 
-    for (int k = 0; k < IF.n(); k++)
+    for (int k = 0; k < IF->n(); k++)
     {
-      IF.xi(xi, k);
+      IF->xi(xi, k);
       FEM.point(xi);
       double vol = FEM.J();
-      double weight = IF.w(k) * vol;
+      double weight = IF->w(k) * vol;
       for (int i = 0; i < FEM.n(); i++)
       {
         FEM.init_test_functions(_NN, 1., i);
         F[i] += weight * _NN.m() * _NN.m();
       }
     }
+    delete IF;
   }
 
   /* ----------------------------------------- */
@@ -829,19 +855,19 @@ namespace Gascoigne
   {
     F.resize(FEM.n());
 
-    IFB IF;
+    IFB* IF=NewIFB();
 
     F.zero();
     Vertex<DIM> x, n;
     Vertex<DIM - 1> xi;
 
-    for (int k = 0; k < IF.n(); k++)
+    for (int k = 0; k < IF->n(); k++)
     {
-      IF.xi(xi, k);
+      IF->xi(xi, k);
       FEM.point_boundary(ile, xi);
 
       double h = FEM.G();
-      double weight = IF.w(k) * h;
+      double weight = IF->w(k) * h;
 
       for (int i = 0; i < FEM.n(); i++)
       {
@@ -849,6 +875,7 @@ namespace Gascoigne
         F[i] += _NN.m() * _NN.m() * weight;
       }
     }
+    delete IF;
   }
 
   /* ----------------------------------------- */
@@ -891,14 +918,17 @@ namespace Gascoigne
 
 
   template class ElementIntegratorQ12d;
-  template class ElementIntegratorQ13d;
   template class ElementIntegratorQ22d;
+  template class ElementIntegratorQ42d;
+  
+  template class ElementIntegratorQ13d;
   template class ElementIntegratorQ23d;
 
   ////////////////////////////////////////////////// required for LPS  
   template class ElementIntegrator<2, PatchFormula2d<4,QuadGauss4>, PatchFormula2d<9,QuadGauss9>,  PatchFormula1d<2,LineGauss2>, PatchFormula2d<4,QuadGauss4>>;
   template class ElementIntegrator<3, PatchFormula3d<8,HexGauss8>,  PatchFormula3d<27,HexGauss27>, PatchFormula2d<4,QuadGauss4>, PatchFormula3d<8,HexGauss8>>;
 
+  
   /* ----------------------------------------- */
 
 } // namespace Gascoigne

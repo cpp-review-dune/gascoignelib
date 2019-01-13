@@ -313,7 +313,6 @@ namespace Gascoigne
     }
 
     virtual void OutputSettings() const;
-    virtual GascoigneVisualization *NewGascoigneVisualization() const;
     virtual void
     PointVisu(const std::string &name, const GlobalVector &u, int i) const;
     virtual void

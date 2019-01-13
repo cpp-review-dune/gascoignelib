@@ -151,8 +151,12 @@ UmfIlu::~UmfIlu()
   umfpack_di_free_symbolic (&Symbolic) ;
   umfpack_di_free_numeric (&Numeric) ;
 
-  if(Control) delete[] Control; Control=NULL;
-  if(Info) delete[] Info; Info=NULL;
+  if(Control)
+    delete[] Control;
+  Control=NULL;
+  if(Info)
+    delete[] Info;
+  Info=NULL;
 }
 
 /*-------------------------------------------------------------*/

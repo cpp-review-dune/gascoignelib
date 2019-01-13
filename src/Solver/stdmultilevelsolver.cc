@@ -264,6 +264,8 @@ namespace Gascoigne
 
   void StdMultiLevelSolver::NewMgInterpolator()
   {
+    if (DataP->LinearSolve()=="direct") return; // No interpolator for direct solver
+    
     for (int i=0;i<_Interpolator.size();++i)
       {
 	assert(_Interpolator[i]!=NULL);
@@ -570,7 +572,7 @@ namespace Gascoigne
     info.reset();
     GetSolver(FinestLevel())->Zero(x);
 
-    assert(DataP->LinearSolve()=="mg"  || DataP->LinearSolve()=="gmres");
+    assert(DataP->LinearSolve()=="mg"  || DataP->LinearSolve()=="gmres" || DataP->LinearSolve()=="direct");
 
     //GlobalVector H = GetSolver()->GetGV(b);
     //dynamic_cast<const StdSolver*>(GetSolver())->GetMatrix()->vmult(H,GetSolver()->GetGV(x),-1.0);
@@ -580,6 +582,11 @@ namespace Gascoigne
       {
 	int clevel=std::max(DataP->CoarseLevel() ,0);
 	if(DataP->CoarseLevel() == -1) clevel = FinestLevel(); 
+	LinearMg(ComputeLevel,clevel,x,b, info);
+      }
+    else if (DataP->LinearSolve()=="direct")
+      {
+	int clevel = FinestLevel(); 
 	LinearMg(ComputeLevel,clevel,x,b, info);
       }
     else if (DataP->LinearSolve()=="gmres")
@@ -773,6 +780,8 @@ namespace Gascoigne
 
   void StdMultiLevelSolver::Transfer(int high, int low, VectorInterface& u) const
   {
+    if (DataP->LinearSolve()=="direct") return; // No transfer for direct solver
+    
     for(int l=high;l>=low;l--)
       {
 	GetSolver(l)->HNAverage(u);
@@ -796,6 +805,8 @@ namespace Gascoigne
 
   void StdMultiLevelSolver::SolutionTransfer(int high, int low, VectorInterface& u) const
   {
+    if (DataP->LinearSolve()=="direct") return; // No transfer for direct solver
+
     Transfer(high,low,u);
 
     for(int l=high;l>=low;l--)
