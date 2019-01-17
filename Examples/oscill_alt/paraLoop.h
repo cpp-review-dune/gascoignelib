@@ -107,7 +107,7 @@ public:
      * \param ostrm std::ostream where data should be written; cerr by default but can also be a
      * file (ofstream)
      */
-    static void outputParameters(std::ostream& ostrm = std::cerr);
+    static void outputParameters(std::ostream& ostrm = std::cout);
 
     /*! \brief Method setting parameters and calling the algorithm.
      * This method takes some parameters (maybe from command line) and sets them and calls
@@ -333,7 +333,7 @@ parareal<DIM>::parareal(size_t id)
     , tmp_vi("tmp" + std::to_string(id))
     , end_sol("u" + std::to_string(id))
     , log_buffer(n_finesteps, DoubleVector(5, 0.))
-    , coar_weight(0)
+    , coar_weight(1.0)
 {
     // StdLoop();
 }
@@ -416,11 +416,7 @@ double parareal<DIM>::runPara(const int max_iterations, const double coarse_thet
     }
     auto exec_time = parareal_algorithm(parareal::n_intervals, parareal::max_iterations);
 
-    std::cerr << "\n==================================================\n"
-              << "Finished parareal"
-              << ".\nElapsed time is\t" << exec_time
-              << "\n\nTime spent in coarse method: " << coarse_exec_time
-              << "\nTime spent in fine method: " << fine_exec_time << '\n';
+    std::cerr << dtfine << ' ' << dtcoarse << ' ' << max_iterations << ' ' << exec_time << '\n';
     func_log.close();
     return exec_time;
 }
@@ -467,16 +463,16 @@ double parareal<DIM>::parareal_algorithm(const int n_intervals, const int max_it
     };
 
     static auto set_coar_weight = [&](parareal* const& para_solver, VectorInterface& f,
-                                      VectorInterface& c, double damping) {
-        const nvector<double> c_c(2 * DIM + 1, 0);
-        const nvector<double> f_f(2 * DIM + 1, 0);
-        nvector<double> c_f(2 * DIM + 1, 0.0);
-        para_solver->GetSolver()->GetGV(c).ScalarProductComp(c_c,
-                                                             para_solver->GetSolver()->GetGV(c));
+				      parareal* const& para_coarse, VectorInterface& c, double damping) {
+        nvector<double> c_c(2 * DIM + 1, 0);
+        nvector<double> f_f(2 * DIM + 1, 0);
+        nvector<double> c_f(2 * DIM + 1, 0);
+        para_coarse->GetSolver()->GetGV(c).ScalarProductComp(c_c,
+                                                             para_coarse->GetSolver()->GetGV(c));
         para_solver->GetSolver()->GetGV(f).ScalarProductComp(f_f,
                                                              para_solver->GetSolver()->GetGV(f));
         para_solver->GetSolver()->GetGV(f).ScalarProductComp(c_f,
-                                                             para_solver->GetSolver()->GetGV(c));
+                                                             para_coarse->GetSolver()->GetGV(c));
 
         auto cw_iter  = c_f.begin();
         auto c_c_iter = c_c.cbegin();
@@ -686,8 +682,8 @@ double parareal<DIM>::parareal_algorithm(const int n_intervals, const int max_it
                     // omp_unset_lock(&interval_locker[m]);
                     omp_set_lock(&interval_locker[m + 1]);
                     // calculate weights
-                    set_coar_weight(subinterval[m + 1], subinterval[m + 1]->fine_sol,
-                                    subinterval[m]->coar_sol, 1);
+                    // set_coar_weight(subinterval[m + 1], subinterval[m + 1]->fine_sol,
+		    // subinterval[m + 1], subinterval[m + 1]->coar_sol, 1);
 
                     // calculate corrector term
                     // clang-format off

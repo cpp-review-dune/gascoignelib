@@ -12,7 +12,7 @@ SET(COMPILE_DEFINITIONS "${GASCOIGNE_DEFINITIONS}")
 SUBDIRS(
 #oscill
 oscill_alt
-RANS
+#RANS
 #Vanka
    DG
    fast3d_neu
