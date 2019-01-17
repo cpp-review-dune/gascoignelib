@@ -37,6 +37,9 @@
 #include "stopwatch.h"
 
 
+#include "hnstructureq23d.h"
+
+
 namespace Gascoigne
 {
 
@@ -59,9 +62,22 @@ namespace Gascoigne
     mutable DataContainer datacontainer;
 
   protected:
+
+
+    // Hanging nodes
+    HNStructureInterface*    HN;
+
+    
+    
   public:
-    CGDisc() {}
+    CGDisc():HN(NULL) {}
     ~CGDisc() {}
+
+    //    HNStructureInterface* NewHNStructure() {abort();}
+    HNStructureInterface* NewHNStructure()
+    {
+      return new HNStructureQ23d;
+    }
 
     const DofHandler<DIM> *GetDofHandler() const
     {
@@ -88,12 +104,8 @@ namespace Gascoigne
     }
     // Visualization
     void VisuVtk(const ComponentInformation* CI, const ParamFile& pf,
-			 const std::string &name, const GlobalVector& u, int i) const
-    {
-      std::cerr << "\"CGDisc::VisuVtk not written!" << std::endl;
-    }
-
-
+		 const std::string &name, const GlobalVector& u, int i) const;
+    
     void AddNodeVector(const std::string &name, const GlobalVector *q) const
     {
       datacontainer.AddNodeVector(name, q);
@@ -124,12 +136,17 @@ namespace Gascoigne
 
     void BasicInit(const ParamFile *pf)
     {
-      // HANGING NODES
+      assert(HN==NULL);
+      HN = NewHNStructure();
+      assert(HN);
     }
     void ReInit(const GascoigneMesh *M)
     {
       dofhandler = dynamic_cast<const DofHandler<DIM> *>(M);
       assert(dofhandler);
+
+      assert(HN);
+      HN->ReInit(M);
     }
 
     
@@ -151,6 +168,24 @@ namespace Gascoigne
     {
       return ndofs();
       // HANGING NODES
+    }
+
+    // Hanging nodes
+    void HNAverage   (GlobalVector& x) const { assert(HN); HN->Average(x); }
+    void HNDistribute(GlobalVector& x) const { assert(HN); HN->Distribute(x); }
+    void HNZero      (GlobalVector& x) const { assert(HN); HN->Zero(x); }
+    bool HNZeroCheck (const GlobalVector& x) const { assert(HN); return HN->ZeroCheck(x); }
+    void HNAverageData() const
+    {
+      const GlobalData& gd = GetDataContainer().GetNodeData();
+      for (const auto &it : gd)
+	HNAverage(*const_cast<GlobalVector*>(it.second));
+    }
+    void HNZeroData   () const
+    {
+      const GlobalData& gd = GetDataContainer().GetNodeData();
+      for (const auto &it : gd)
+	HNZero(*const_cast<GlobalVector*>(it.second));
     }
 
 
@@ -203,12 +238,12 @@ namespace Gascoigne
       {
         IntVector indices = GetDofHandler()->GetElement(DEGREE, iq);
         // HANGING NODES
-        // HN->CondenseHanging(indices);
+	HN->CondenseHanging(indices);
         S->build_add(indices.begin(), indices.end());
       }
       S->build_end();
       // HANGING NODES
-      // HN->SparseStructureDiag(S);
+      HN->SparseStructureDiag(S);
     }
 
 
@@ -227,7 +262,7 @@ namespace Gascoigne
       IntVector indices = GetDofHandler()->GetElement(DEGREE, iq);
 
       // HANGING NODES
-      // HN->CondenseHanging(E,indices);
+       HN->CondenseHanging(E,indices);
       IntVector::const_iterator start = indices.begin();
       IntVector::const_iterator stop = indices.end();
 #pragma omp critical
@@ -378,7 +413,7 @@ namespace Gascoigne
             LocalToGlobal(A, __E, iq, d);
           }
           // HANGING NODES
-          //    HN->MatrixDiag(u.ncomp(),A);
+	  HN->MatrixDiag(u.ncomp(),A);
           delete EQ;
         }
       }
@@ -534,7 +569,6 @@ namespace Gascoigne
     }
     double ComputePointValue(const GlobalVector& u, const Vertex3d& p0,int comp) const 
     {
-      assert(DIM==2);
       // very simple version. Only finds nodes
       for (int n=0;n<GetDofHandler()->nnodes();++n)
 	{
