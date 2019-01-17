@@ -16,9 +16,42 @@
 
 #include "patchintegrationformula.h"
 #include "finiteelement.xx"
-
+#include "gascoignevisualization.h"
 namespace Gascoigne
 {
+  // Visualization
+  template <int DIM, int DEGREE, class FINITEELEMENT, class INTEGRATOR>
+  void CGDisc<DIM,DEGREE,FINITEELEMENT,INTEGRATOR>::VisuVtk(const ComponentInformation* CI, const ParamFile& pf,
+							    const std::string &name, const GlobalVector& u, int i) const
+  {
+    HNAverage(const_cast<GlobalVector &>(u));
+
+    GascoigneVisualization Visu;
+
+    Visu.SetMesh(GetDofHandler());
+    
+    if (CI)
+      {
+	Visu.AddPointVector(CI, &u);
+      }
+    else
+      {
+	Visu.AddPointVector(&u);
+      }
+    
+    Visu.read_parameters(&pf);
+    Visu.set_name(name);
+    Visu.step(i);
+    Visu.write();
+    
+    HNZero(const_cast<GlobalVector &>(u));
+  }
+    
+
+
+
+
+  
   template class CGDiscQ12d;
   template class CGDiscQ22d;
   template class CGDiscQ13d;
