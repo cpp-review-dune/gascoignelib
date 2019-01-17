@@ -518,7 +518,6 @@ namespace Gascoigne
     ////////////////////////////////////////////////// Functionals
     double ComputePointValue(const GlobalVector& u, const Vertex2d& p0,int comp) const 
     {
-      assert(DIM==2);
       // very simple version. Only finds nodes
       for (int n=0;n<GetDofHandler()->nnodes();++n)
 	{
