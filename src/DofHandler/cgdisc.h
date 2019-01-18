@@ -520,7 +520,7 @@ namespace Gascoigne
     }
     double ComputePointValue(const GlobalVector& u, const Vertex3d& p0,int comp) const 
     {
-      assert(DIM==2);
+      assert(DIM==3);
       // very simple version. Only finds nodes
       for (int n=0;n<GetDofHandler()->nnodes();++n)
 	{

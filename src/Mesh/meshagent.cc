@@ -54,20 +54,21 @@ MeshAgent::~MeshAgent()
 void MeshAgent::ReInit()
 {
   // ///////////////  Sort mesh nodes
-  // if(GetDimension()==2)
-  // {
-  //  //HierarchicalMesh2d* H2 = dynamic_cast<HierarchicalMesh2d*> (HMP);
-  //  //assert(H2);
-  //  //H2->Sort(); 
-  // }
-  // else if(GetDimension()==3)
-  // {
-  //  HierarchicalMesh3d* H3 = dynamic_cast<HierarchicalMesh3d*> (HMP);
-  //  assert(H3);
-  //  H3->Sort(); 
-  // }
-  // else
-  // {abort();}
+   if(GetDimension()==2)
+   {
+     //HierarchicalMesh2d* H2 = dynamic_cast<HierarchicalMesh2d*> (HMP);
+  	 //assert(H2);
+  	 //H2->Sort(); 
+   }
+   else
+   if(GetDimension()==3)
+   {
+    //HierarchicalMesh3d* H3 = dynamic_cast<HierarchicalMesh3d*> (HMP);
+    //assert(H3);
+    //H3->Sort(); 
+   }
+   //else
+   //{abort();}
 
   ///////////////
   //////////////////////////////
