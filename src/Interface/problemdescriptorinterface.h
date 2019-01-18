@@ -26,8 +26,6 @@
 #define __ProblemDescriptorInterface_h
 
 #include "filescanner.h"
-#include "gostream.h"
-#include "stringutil.h"
 
 #include "boundaryequation.h"
 #include "boundarymanager.h"

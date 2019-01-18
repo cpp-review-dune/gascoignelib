@@ -52,14 +52,14 @@ void Q2::ReInit(const GascoigneMesh* MP)
 
 /* ----------------------------------------- */
 
-int Q2::n() const
+int Q2::ndofs() const
 {
   return GetMesh()->nnodes();
 }
 
 /* ----------------------------------------- */
 
-int Q2::nc() const
+int Q2::nelements() const
 {
   return GetMesh()->ncells();
 }
@@ -78,7 +78,7 @@ void Q2::Structure(SparseStructureInterface* SI) const
   SparseStructure* S = dynamic_cast<SparseStructure*>(SI);
   assert(S);
 
-  S->build_begin(n());
+  S->build_begin(ndofs());
   for(int iq=0;iq<GetMesh()->npatches();iq++)
     {
       nvector<int> indices = GetLocalIndices(iq);

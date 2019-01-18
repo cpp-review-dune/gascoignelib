@@ -164,7 +164,7 @@ namespace Gascoigne
   {
     for (int i=0;i<DIM;++i)
       for (int j=0;j<DIM;++j)
-	A(i+1,j+1) -= data.visc * U[j+1][i+1] * _n[j] * N.m();
+	A(i+1,j+1) -= data.visc * M[i+1] * _n[j] * N.m();
   }
   template<int DIM>
   void NavierStokesBoundary<DIM>::pointboundary(double h, const FemFunction& U, const Vertex<DIM>& v, const Vertex<DIM>& n) const

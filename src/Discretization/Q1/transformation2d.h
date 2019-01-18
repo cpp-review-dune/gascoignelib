@@ -62,8 +62,8 @@ class Transformation2d
   inline double        G     () const;
   inline Vertex2d      x     () const;
   inline Vertex2d      normal() const;
-  inline void  init          (const Matrix& M) {X=M;}
-  inline void  ReInit          (const Matrix& M) const {X=M;}
+  inline void  init          (const Matrix& M) { std::cerr << "init"  << std::endl; abort(); X=M;}
+  inline void  ReInit          (const Matrix& M) const { X=M; }
   inline void  point         (const Vertex2d& xi) const;
   inline void  point_boundary(int ie, const Vertex1d& s) const;
   inline void  GetCoordinates(Matrix& A) const { A.equ(1.,X);}

@@ -59,8 +59,8 @@ public:
   Q2();
   ~Q2();
 
-  int n() const;
-  int nc() const;
+  int ndofs() const;
+  int nelements() const;
   int n_withouthanging() const;
   void ReInit(const GascoigneMesh* MP);
 

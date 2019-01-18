@@ -57,7 +57,6 @@
 
 #include "backup.h"
 #include "cuthillmckee.h"
-#include "gascoignevisualization.h"
 #include "ilupermutate.h"
 #include "pi.h"
 #include "stopwatch.h"
@@ -67,6 +66,7 @@
 
 //////////////////// Discretization
 #include "cgdisc.h"
+
 #include "q12d.h"
 #include "q13d.h"
 #include "q1gls2d.h"
@@ -610,6 +610,7 @@ namespace Gascoigne
         return new Q2Lps2d;
       else if (discname == "CGQ2Lps")
         return new CGDiscQ22dLps;
+      
       else if (discname == "Q2WithSecond")
         return new Q22dWithSecond;
       else if (discname == "Q2LpsWithSecond")
@@ -986,8 +987,8 @@ namespace Gascoigne
 
   void StdSolver::ReInitVector(VectorInterface &dst, int comp)
   {
-    int n = GetDiscretization()->n();
-    int nc = GetDiscretization()->nc();
+    int n = GetDiscretization()->ndofs();
+    int nc = GetDiscretization()->nelements();
 
     // VectorInterface already registered ?
     //
@@ -1451,12 +1452,13 @@ namespace Gascoigne
     DoubleVector y(ncomp);
 
     int dim = GetMesh()->dimension();
-    for (int ind = 0; ind < GetMesh()->nnodes(); ind++)
+    
+    for (int ind = 0; ind < GetDiscretization()->ndofs(); ind++)
     {
       if (dim == 2)
-        (*DD)(y, GetMesh()->vertex2d(ind), color);
+        (*DD)(y, GetDiscretization()->vertex2d(ind), color);
       else
-        (*DD)(y, GetMesh()->vertex3d(ind), color);
+        (*DD)(y, GetDiscretization()->vertex3d(ind), color);
 
       for (int c = 0; c < u.ncomp(); c++)
       {
@@ -1481,6 +1483,7 @@ namespace Gascoigne
 
     assert(u.ncomp() == GetProblemDescriptor()->GetEquation()->GetNcomp());
 
+    assert(0);
     for (int ind = 0; ind < GetMesh()->nnodes(); ind++)
     {
       if (GetMesh()->dimension() == 2)
@@ -1850,6 +1853,7 @@ namespace Gascoigne
     HNZeroData();
 
     GlobalTimer.stop("---> matrix");
+
   }
 
   /*-------------------------------------------------------*/
@@ -1863,6 +1867,7 @@ namespace Gascoigne
     {
       int col = *p;
       const IntVector &comp = BM->GetDirichletDataComponents(col);
+
       GetDiscretization()->StrongDirichletMatrix(*GetMatrix(), col, comp);
     }
   }
@@ -2083,6 +2088,16 @@ namespace Gascoigne
   void
   StdSolver::Visu(const string &name, const VectorInterface &gu, int i) const
   {
+    // const GlobalVector& U = GetGV(gu);
+    // assert(U.n() == GetDiscretization()->ndofs());
+    // char s[20];
+    // sprintf(s,"%s-%i.txt",name.c_str(),i);
+    // ofstream OUT(s);
+    // for (int i=0;i<U.n();++i)
+    //   OUT << GetDiscretization()->vertex2d(i) << "\t" << U(i,0) << endl;
+    // OUT.close();
+    
+    
     GlobalTimer.start("---> visu");
     if (gu.GetType() == "node")
     {
@@ -2102,47 +2117,11 @@ namespace Gascoigne
 
   /* -------------------------------------------------------*/
 
-  GascoigneVisualization *StdSolver::NewGascoigneVisualization() const
-  {
-    // by virtualizing the instantiation of the GascoigneVisualization object
-    // two things can be achieved
-    // * setting the time in the overloaded instantiation in StdTimeSolver
-    // * instantiating a derived class of GascoigneVisualization = good for
-    // transforming the output grid
-    GascoigneVisualization *p_gv = new GascoigneVisualization;
-    return p_gv;
-  }
-
-  /* -------------------------------------------------------*/
-
   void
   StdSolver::PointVisu(const string &name, const GlobalVector &u, int i) const
   {
-    GetDiscretization()->HNAverage(const_cast<GlobalVector &>(u));
-
-    GascoigneVisualization *p_gv = NewGascoigneVisualization();
-    GascoigneVisualization &Visu = *p_gv;
-
-    Visu.SetMesh(GetMesh());
-
-    const ComponentInformation *CI =
-        GetProblemDescriptor()->GetComponentInformation();
-    if (CI)
-    {
-      Visu.AddPointVector(CI, &u);
-    }
-    else
-    {
-      Visu.AddPointVector(&u);
-    }
-
-    Visu.read_parameters(_paramfile);
-    Visu.set_name(name);
-    Visu.step(i);
-    Visu.write();
-
-    delete p_gv;
-    GetDiscretization()->HNZero(const_cast<GlobalVector &>(u));
+    GetDiscretization()->VisuVtk(GetProblemDescriptor()->GetComponentInformation(),*_paramfile,
+				 name,u,i);
   }
 
   /* -------------------------------------------------------*/
@@ -2150,8 +2129,7 @@ namespace Gascoigne
   void
   StdSolver::CellVisu(const string &name, const GlobalVector &u, int i) const
   {
-    GascoigneVisualization *p_gv = NewGascoigneVisualization();
-    GascoigneVisualization &Visu = *p_gv;
+    GascoigneVisualization Visu;
 
     Visu.SetMesh(GetMesh());
 
@@ -2170,8 +2148,6 @@ namespace Gascoigne
     Visu.set_name(name);
     Visu.step(i);
     Visu.write();
-
-    delete p_gv;
   }
 
   /* -------------------------------------------------------*/

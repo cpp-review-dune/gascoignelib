@@ -77,9 +77,9 @@ namespace Gascoigne
       void HNZero      (GlobalVector& x) const { HN->Zero(x); }
       bool HNZeroCheck (const GlobalVector& x) const { return HN->ZeroCheck(x); }
 
-      int n() const                { return GetMesh()->nnodes(); }
-      int nc() const               { return GetMesh()->ncells(); }
-      int n_withouthanging() const { return GetMesh()->nnodes()-HN->nhnodes(); }
+      int ndofs() const                { return GetMesh()->nnodes(); }
+      int nelements() const               { return GetMesh()->ncells(); }
+      int ndofs_withouthanging() const { return GetMesh()->nnodes()-HN->nhnodes(); }
 
       std::string GetName() const {return "Q4";}
   };

@@ -242,10 +242,12 @@ namespace Gascoigne
     }
     virtual int &material(int i)
     {
+      assert(i<mat.size());
       return mat[i];
     }
     virtual int &material_patch(int i)
     {
+      assert(i<matpatch.size());
       return matpatch[i];
     }
 
@@ -296,18 +298,22 @@ namespace Gascoigne
 
     virtual int &material_Vanka(int i)
     {
+      assert(i<mat_Vanka.size());
       return mat_Vanka[i];
     }
     virtual int &material_Vanka_patch(int i)
     {
+      assert(i<mat_Vanka_patch.size());
       return mat_Vanka_patch[i];
     }
     virtual std::array<Vertex3d, 3> &Vanka_basis(int i)
     {
+      assert(i<basis_Vanka.size());
       return basis_Vanka[i];
     }
     virtual std::array<Vertex3d, 3> &Vanka_basis_patch(int i)
     {
+      assert(i<basis_Vanka_patch.size());
       return basis_Vanka[i];
     }
 
@@ -440,6 +446,7 @@ namespace Gascoigne
 
     const Vertex<DIM> &vertex(int i) const
     {
+      assert(i<nx.size());
       return nx[i];
     }
 
@@ -448,6 +455,7 @@ namespace Gascoigne
         
     int vertex_of_cell(int i, int ii) const
     {
+      assert(nodes_per_cell(i) * i + ii < nc.size());
       return nc[nodes_per_cell(i) * i + ii];
     }
     

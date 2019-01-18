@@ -85,7 +85,14 @@ class BasicDiscretization : public DiscretizationInterface
    
    void BasicInit(const ParamFile* pf) {}
    void ReInit   (const GascoigneMesh* MP) {__MP=MP;}
-   
+
+  
+  Vertex2d vertex2d(int i) const{ assert(i<GetMesh()->nnodes()); return GetMesh()->vertex2d(i); }
+  Vertex3d vertex3d(int i) const{ assert(i<GetMesh()->nnodes()); return GetMesh()->vertex3d(i); }
+
+  void VisuVtk(const ComponentInformation* CI, const ParamFile& pf,
+	       const std::string &name, const GlobalVector& u, int i) const;
+  
    virtual void AddNodeVector(const std::string& name, const GlobalVector* q) const {
      __q.AddNodeVector(name,q);
    }

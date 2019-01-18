@@ -147,7 +147,7 @@ namespace Gascoigne
 
   void EdgeManager::Build(const IntSet &CellRefList, HangContainer2d &hangset)
   {
-    IntVector SwappedEdge;
+    //    IntVector SwappedEdge;
 
     Update();
     InnerEdges(CellRefList);

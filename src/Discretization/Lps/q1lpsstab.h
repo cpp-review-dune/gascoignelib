@@ -57,11 +57,11 @@ namespace Gascoigne
   public:
     Q1LpsStab()
         : PatchDiscretization(){};
-    int n() const
+    int ndofs() const
     {
       return GetMesh()->nnodes();
     }
-    int nc() const
+    int nelements() const
     {
       return GetMesh()->ncells();
     }
