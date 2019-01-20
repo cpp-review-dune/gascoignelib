@@ -38,6 +38,7 @@
 
 
 #include "hnstructureq23d.h"
+#include "hnstructureq22d.h"
 
 
 namespace Gascoigne
@@ -76,7 +77,12 @@ namespace Gascoigne
     //    HNStructureInterface* NewHNStructure() {abort();}
     HNStructureInterface* NewHNStructure()
     {
-      return new HNStructureQ23d;
+      if (DIM==3)
+	return new HNStructureQ23d;
+      else if (DIM==2)
+	return new HNStructureQ22d;
+      else assert(0);
+      
     }
 
     const DofHandler<DIM> *GetDofHandler() const
