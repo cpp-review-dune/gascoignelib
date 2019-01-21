@@ -1536,7 +1536,8 @@ void HierarchicalMesh2d::write_gip(const string& bname) const
     {
       int mat = Blines[i].material();
       out.write(reinterpret_cast<const char*>(&mat),sizeInt);
-      ArrayBinWrite(out,Blines[i]);
+      Blines[i].BinWrite(out);
+//      ArrayBinWrite(out,Blines[i]);
     }
   int nedges=edges.size();
   out.write(reinterpret_cast<const char*>(&nedges),sizeInt);
@@ -1742,7 +1743,8 @@ void HierarchicalMesh2d::read_gip (const string& bname)
   for (int i=0; i<n; i++)
     {
       file.read(reinterpret_cast<char*>(&bol.material()),sizeInt);
-      ArrayBinRead(file,bol);
+//      ArrayBinRead(file,bol);
+      bol.BinRead(file);
       Blines.push_back(bol);
     }
   number = n;
