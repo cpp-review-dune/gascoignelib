@@ -39,6 +39,7 @@
 
 #include "hnstructureq22d.h"
 #include "hnstructureq23d.h"
+#include "hnstructureq22d.h"
 
 
 namespace Gascoigne
