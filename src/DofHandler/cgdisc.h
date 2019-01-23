@@ -35,9 +35,11 @@
 #include "problemdescriptorbase.h"
 #include "sparsestructure.h"
 #include "stopwatch.h"
+#include "gascoignevisualization.h"
 
-
+#include "hnstructureq22d.h"
 #include "hnstructureq23d.h"
+#include "hnstructureq22d.h"
 
 
 namespace Gascoigne
@@ -76,7 +78,11 @@ namespace Gascoigne
     //    HNStructureInterface* NewHNStructure() {abort();}
     HNStructureInterface* NewHNStructure()
     {
-      return new HNStructureQ23d;
+      if (DIM==3)
+	return new HNStructureQ23d;
+      else if (DIM==2)
+	return new HNStructureQ22d;
+      else assert(0);
     }
 
     const DofHandler<DIM> *GetDofHandler() const
@@ -104,7 +110,31 @@ namespace Gascoigne
     }
     // Visualization
     void VisuVtk(const ComponentInformation* CI, const ParamFile& pf,
-		 const std::string &name, const GlobalVector& u, int i) const;
+		 const std::string &name, const GlobalVector& u, int i) const
+    {
+      HNAverage(const_cast<GlobalVector &>(u));
+      
+      GascoigneVisualization Visu;
+      
+      Visu.SetMesh(GetDofHandler());
+      
+      if (CI)
+	{
+	  Visu.AddPointVector(CI, &u);
+	}
+      else
+      {
+	Visu.AddPointVector(&u);
+      }
+      
+      Visu.read_parameters(&pf);
+      Visu.set_name(name);
+      Visu.step(i);
+      Visu.write();
+      
+      HNZero(const_cast<GlobalVector &>(u));
+    }
+
     
     void AddNodeVector(const std::string &name, const GlobalVector *q) const
     {
