@@ -1,6 +1,9 @@
 #include "navierstokes.h"
 #include "filescanner.h"
 
+bool BDF;
+
+
 namespace Gascoigne
 {
   ////////////////////////////////////////////////// DATA
@@ -103,27 +106,25 @@ namespace Gascoigne
   void
   NavierStokesLpsTime<DIM>::Form(VectorIterator b, const FemFunction &U, const TestFunction &N) const
   {      
-    {
-	for (int i=0;i<DIM;++i)
+    for (int i=0;i<DIM;++i)
+      {
+	b[0] += U[i + 1][i + 1] * N.m();
+	
+	b[i+1] += (U[i + 1].m() - (*OLD)[i+1].m()) / NavierStokes<DIM>::data.dt * N.m();
+	
+	for (int j = 0; j < DIM; ++j)
 	  {
-	    b[0] += U[i + 1][i + 1] * N.m();
-		
-	    b[i+1] += (U[i + 1].m() - (*OLD)[i+1].m()) / NavierStokes<DIM>::data.dt * N.m();
+	    b[i + 1] += NavierStokes<DIM>::data.theta * NavierStokes<DIM>::data.visc * U[i + 1][j + 1] * N[j + 1];
+	    if (NavierStokes<DIM>::data.fulltensor)
+	      b[i + 1] += NavierStokes<DIM>::data.theta * NavierStokes<DIM>::data.visc * U[j + 1][i + 1] * N[j + 1];
 	    
-	    for (int j = 0; j < DIM; ++j)
-	      {
-		b[i + 1] += NavierStokes<DIM>::data.theta * NavierStokes<DIM>::data.visc * U[i + 1][j + 1] * N[j + 1];
-		if (NavierStokes<DIM>::data.fulltensor)
-		  b[i + 1] += NavierStokes<DIM>::data.theta * NavierStokes<DIM>::data.visc * U[j + 1][i + 1] * N[j + 1];
-		
 		b[i + 1] += NavierStokes<DIM>::data.theta * U[j + 1].m() * U[i + 1][j + 1] * N.m();
 		b[i + 1] += (1.0-NavierStokes<DIM>::data.theta) * NavierStokes<DIM>::data.visc * (*OLD)[i + 1][j + 1] * N[j + 1];
 		b[i + 1] += (1.0-NavierStokes<DIM>::data.theta) * (*OLD)[j + 1].m() * (*OLD)[i + 1][j + 1] * N.m();
-	      }
-	    b[i + 1] -= U[0].m() * N[i + 1];
+	    }
+	  b[i + 1] -= U[0].m() * N[i + 1];
 	  }
-    }
-    }
+  }
   
   template<int DIM>
   void NavierStokesLpsTime<DIM>::Matrix(EntryMatrix &A,
