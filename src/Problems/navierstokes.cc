@@ -213,12 +213,14 @@ namespace Gascoigne
       }
     else  if (NSSCHEME == 1)
       {
-	// BDF-4
+	// BDF
 	for (int i=0;i<DIM;++i)
 	  {
 	    b[0] += U[i + 1][i + 1] * N.m();
 	
-	    b[i+1] += (25.0/12.0*U[i + 1].m() +  (*OLD)[i+1].m()) / NavierStokes<DIM>::data.dt * N.m(); // in OLD steht die KOmbination der alten Werte 
+	    // BDF 4:	    b[i+1] += (25.0/12.0*U[i + 1].m() +  (*OLD)[i+1].m()) / NavierStokes<DIM>::data.dt * N.m(); // in OLD steht die KOmbination der alten Werte 
+	    // BDF 3: 
+	    b[i+1] += (11.0/6.0*U[i + 1].m() +  (*OLD)[i+1].m()) / NavierStokes<DIM>::data.dt * N.m(); // in OLD steht die KOmbination der alten Werte 
 	
 	    for (int j = 0; j < DIM; ++j)
 	      {
@@ -265,7 +267,8 @@ namespace Gascoigne
 	// BDF-4
 	for (int i = 0; i < DIM; ++i)
 	  {
-	    A(i+1,i+1) += 25./12. * M.m() * N.m() / NavierStokes<DIM>::data.dt;
+	    //	    A(i+1,i+1) += 25./12. * M.m() * N.m() / NavierStokes<DIM>::data.dt;
+	    A(i+1,i+1) += 11./6. * M.m() * N.m() / NavierStokes<DIM>::data.dt;
 	    A(0, i + 1) += M[i + 1] * N.m();
 	    for (int j = 0; j < DIM; ++j)
 	      {
