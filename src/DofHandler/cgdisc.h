@@ -345,7 +345,7 @@ namespace Gascoigne
     }
     void InterpolateSolution(GlobalVector &u, const GlobalVector &uold) const;
 
-    ////////////////////////////////////////////////// integration ueber Zellen
+    ////////////////////////////////////////////////// integration ueber Zellen   
     void Form(GlobalVector &f,
               const GlobalVector &u,
               const ProblemDescriptorInterface &PD,

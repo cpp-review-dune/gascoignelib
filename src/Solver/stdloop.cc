@@ -133,9 +133,12 @@ DoubleVector StdLoop::GetExactValues() const
 
 DoubleVector StdLoop::Functionals(VectorInterface& u, VectorInterface& f)
 {
+  bool output = false;
+  
   DoubleVector J      = ComputeFunctionals(f,u);
   DoubleVector Jexact = GetExactValues();
   _JErr.resize(J.size());
+  if (output)
   if (J.size())
     {
       cout << "\nvalue";

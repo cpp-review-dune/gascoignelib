@@ -108,7 +108,7 @@ namespace Gascoigne
 
   void VankaSmoother::copy_entries(const MatrixInterface& A)
   {
-    if (_ncomp == 1) copy_entries_sparseblockmatrix(dynamic_cast<const SparseBlockMatrix<FMatrixBlock<1> >&>(A));
+    if      (_ncomp == 1) copy_entries_sparseblockmatrix(dynamic_cast<const SparseBlockMatrix<FMatrixBlock<1> >&>(A));
     else if (_ncomp == 2) copy_entries_sparseblockmatrix(dynamic_cast<const SparseBlockMatrix<FMatrixBlock<2> >&>(A));
     else if (_ncomp == 3) copy_entries_sparseblockmatrix(dynamic_cast<const SparseBlockMatrix<FMatrixBlock<3> >&>(A));
     else if (_ncomp == 4) copy_entries_sparseblockmatrix(dynamic_cast<const SparseBlockMatrix<FMatrixBlock<4> >&>(A));
