@@ -68,7 +68,7 @@ namespace Gascoigne
 
     // Hanging nodes
     HNStructureInterface*    HN;
-
+    std::vector<std::vector<int> >  Coloring;	
     
     
   public:
@@ -174,9 +174,13 @@ namespace Gascoigne
     {
       dofhandler = dynamic_cast<const DofHandler<DIM> *>(M);
       assert(dofhandler);
-
+		
       assert(HN);
       HN->ReInit(M);
+      
+	  std::cout<<"huhhhhhuuuuu coloring for dofhandler"<<std::endl;	    
+      ElementColoring(DEGREE);
+      std::cout<<"GetDofHandler()->NumberofColors(): "<<NumberofColors()<<std::endl;
     }
 
     
@@ -364,18 +368,24 @@ namespace Gascoigne
       {
         auto *EQ = PD.NewEquation();
         EQ->SetParameterData(QP);
-#pragma omp for
-        for (int iq = 0; iq < GetDofHandler()->nelements(DEGREE); ++iq)
+        //for(int col=0;col<NumberofColors();col++)
         {
-          Transformation(T, iq);
-          finiteelement.ReInit(T);
+        //const std::vector<int>& ewcol= elementswithcolor(col);
+#pragma omp for
+		    for (int iq = 0; iq < GetDofHandler()->nelements(DEGREE); ++iq)
+		    //for (int iii = 0; iii < ewcol.size(); ++iii)
+		    {
+		    //  int iq=ewcol[iii];
+		      Transformation(T, iq);
+		      finiteelement.ReInit(T);
 
-          GlobalToLocal(__U, u, iq);
-          GlobalToLocalData(iq, __QN, __QC);
-          EQ->point_cell(GetDofHandler()->material(DEGREE, iq));
+		      GlobalToLocal(__U, u, iq);
+		      GlobalToLocalData(iq, __QN, __QC);
+		      EQ->point_cell(GetDofHandler()->material(DEGREE, iq));
 
-          integrator.Form(*EQ, __F, finiteelement, __U, __QN, __QC);
-          LocalToGlobal(f, __F, iq, d);
+		      integrator.Form(*EQ, __F, finiteelement, __U, __QN, __QC);
+		      LocalToGlobal(f, __F, iq, d);
+		    }
         }
         delete EQ;
       }
@@ -427,10 +437,18 @@ namespace Gascoigne
       {
         Equation *EQ = PD.NewEquation();
         EQ->SetParameterData(QP);
+        //for(int col=0;col<NumberofColors();col++)
         {
+        //const std::vector<int>& ewcol= elementswithcolor(col);
 #pragma omp for
-          for (int iq = 0; iq < GetDofHandler()->nelements(DEGREE); ++iq)
-          {
+		    for (int iq = 0; iq < GetDofHandler()->nelements(DEGREE); ++iq)
+		    //for (int iii = 0; iii < ewcol.size(); ++iii)
+		    {
+		      //int iq=ewcol[iii];
+        //{
+//#pragma omp for
+//          for (int iq = 0; iq < GetDofHandler()->nelements(DEGREE); ++iq)
+//          {
             Transformation(T, iq);
             finiteelement.ReInit(T);
 
@@ -442,10 +460,11 @@ namespace Gascoigne
             integrator.Matrix(*EQ, __E, finiteelement, __U, __QN, __QC);
             LocalToGlobal(A, __E, iq, d);
           }
+         }
           // HANGING NODES
 	  HN->MatrixDiag(u.ncomp(),A);
           delete EQ;
-        }
+        //}
       }
     }
 
@@ -807,6 +826,82 @@ namespace Gascoigne
         err(1, c) = sqrt(err(1, c));
       }
     }
+    
+    
+    void ElementColoring(int degree) 
+    {
+      // convert mesh to graph
+      std::vector<std::vector<int> > node2patch(GetDofHandler()->nnodes());
+
+      for (int p=0;p<GetDofHandler()->nelements(degree);++p)
+		{
+		  const auto &iop = GetDofHandler()->GetElement(degree,p);
+		  for (auto it : iop)
+		    node2patch[it].push_back(p);
+		}
+      std::vector<std::vector<int> > adj(GetDofHandler()->nelements(degree));
+      for (int p=0;p<GetDofHandler()->nelements(degree);++p)
+		{
+		  std::set<int> neigh;
+		  const auto &iop =GetDofHandler()->GetElement(degree,p);
+		  for (auto it : iop)
+		    neigh.insert(node2patch[it].begin(),node2patch[it].end());
+		  for (auto it : neigh)
+		    if (it!=p)
+		      adj[p].push_back(it);
+		}
+      /////////
+      std::vector<int> patch2color(GetDofHandler()->nelements(degree),0);
+      bool done = true;
+      int color = 0;
+      //faerben aller fluid patches
+      do
+		{
+		  done = true;
+		  for (int p=0;p<GetDofHandler()->nelements(degree);++p)
+		    if ((patch2color[p]==color) ) // not given a color and fluid
+		      {
+		    done = false;
+		    // block neighbors
+		    for (auto n : adj[p])
+		      {
+		        if ((patch2color[n] == color) ) // neighbor not set, block
+		          patch2color[n] = color+1;
+		      }
+		      }
+		  ++color;
+      } while (!done);
+      
+     
+	  
+      Coloring.clear();
+      Coloring.resize(color-1);
+      for (int p=0;p<GetDofHandler()->nelements(degree);++p)
+		{
+		  int col = patch2color[p];
+		  assert(col<Coloring.size());
+		  Coloring[col].push_back(p);
+		}
+      std::cout << "Coloring:" << std::endl;
+    
+      int colnumb=0;
+      for (auto it : Coloring)
+   		{
+   			 std::cout<<" col " <<colnumb<< " with "<<it.size()<<"elements"<<std::endl;
+   			 colnumb++;
+   		}
+      std::cout << std::endl;
+
+    }
+    int NumberofColors() const
+	{
+		return Coloring.size();
+	}	
+
+	const std::vector<int>&   elementswithcolor(int col) const
+	{
+	  return Coloring[col];
+	}    
   };
 
 

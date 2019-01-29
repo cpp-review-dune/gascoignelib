@@ -123,7 +123,7 @@ namespace Gascoigne
     void new_vertexs3d(HangContainer3d &, const IntVector &, const IntSet &);
     void basic_refine3d(HangContainer3d &, const IntSet &, const IntSet &);
     void basic_fill_neighbours3d();
-    void boundary_newton3d(IntSet &);
+    virtual void boundary_newton3d(IntSet &);
     virtual void
     inner_vertex_newton3d(const IntVector &, const IntSet &, const IntSet &);
     void update_boundary_data3d(const IntSet &);
