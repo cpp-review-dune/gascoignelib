@@ -30,6 +30,7 @@
 #include  "gascoignehash.h"
 #include  "hierarchicalmesh2d.h"
 #include  "hierarchicalmesh3d.h"
+#include  "stopwatch.h"
 
 using namespace std;
 
@@ -37,6 +38,11 @@ using namespace std;
 
 namespace Gascoigne
 {
+
+  extern Timer GlobalTimer;
+  
+  
+  
   MeshAgent::MeshAgent() : MeshAgentInterface(), _goc2nc(false), HMP(NULL), GMG(NULL)
 {
 }
@@ -53,6 +59,8 @@ MeshAgent::~MeshAgent()
 
 void MeshAgent::ReInit()
 {
+  GlobalTimer.start("---> mesh");
+
   // ///////////////  Sort mesh nodes
    if(GetDimension()==2)
    {
@@ -146,6 +154,7 @@ void MeshAgent::ReInit()
   }
 
   AssemblePeriodicBoundaries();
+  GlobalTimer.stop("---> mesh");
 }
 
 /*-----------------------------------------*/
@@ -352,6 +361,7 @@ void MeshAgent::AssemblePeriodicBoundaries()
 
 void MeshAgent::BasicInit(const ParamFile* paramfile)
 {
+  
   assert(HMP==NULL);
   int dim = 0;
 
@@ -491,8 +501,10 @@ void MeshAgent::global_patch_coarsen(int n)
 
 void MeshAgent::global_refine(int n)
 {
+  GlobalTimer.start("---> mesh");
   assert(HMP);
   HMP->global_refine(n);
+  GlobalTimer.stop("---> mesh");
   ReInit();
 }
 
@@ -509,8 +521,10 @@ void MeshAgent::random_patch_coarsen(double p, int n)
 
 void MeshAgent::random_patch_refine(double p, int n)
 {
+  GlobalTimer.start("---> mesh");
   assert(HMP);
   HMP->random_patch_refine(p,n);
+  GlobalTimer.stop("---> mesh");
   ReInit();
 }
 
@@ -526,8 +540,10 @@ void MeshAgent::refine_nodes(IntVector& refnodes)
 
 void MeshAgent::refine_nodes(IntVector& refnodes, IntVector& coarsenodes)
 {
+  GlobalTimer.start("---> mesh");
   assert(HMP);
   HMP->vertex_patch_refine(refnodes,coarsenodes);
+  GlobalTimer.stop("---> mesh");
   ReInit();
 }
 
