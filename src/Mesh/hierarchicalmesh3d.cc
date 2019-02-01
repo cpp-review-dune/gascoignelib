@@ -456,9 +456,9 @@ void HierarchicalMesh3d::basic_refine3d(HangContainer3d& hangset,
 
 //   Lukas ?????
 //
-//   IntSet adjustvertex;
+   IntSet adjustvertex;
 //   write_inp("refined0.inp");
-//   boundary_newton3d(adjustvertex);
+   boundary_newton3d(adjustvertex);
 //   write_inp("refined1.inp");
 //   boundary_newton3d(adjustvertex);
 //   write_inp("refined2.inp");
@@ -470,7 +470,8 @@ void HierarchicalMesh3d::basic_refine3d(HangContainer3d& hangset,
 //   write_inp("refined5.inp");
 //   boundary_newton3d(adjustvertex);
 //   write_inp("refined6.inp");
-//   inner_vertex_newton3d(vnew,CellRefList,adjustvertex);
+
+  inner_vertex_newton3d(vnew,CellRefList,adjustvertex);
 
   if (withfaces) EM.Build(CellRefList,hangset);
   Testing();

@@ -83,47 +83,6 @@ namespace Gascoigne
   };
 
 
-  ////////////////////////////////////////////////// Tangent
-  
-  template <int DIM>
-  class NavierStokesTangent : public virtual Equation
-  {
-    
-  protected:
-    NavierStokesData data;
-    mutable FemFunction *U;
-    
-  public:
-    NavierStokesTangent<DIM>(const NavierStokesData &PD)
-        : data(PD)
-    {
-    }
-
-    void SetFemData(FemData& q) const
-    {
-      assert(q.find("U")!=q.end());
-      U = &q["U"];
-    }
-
-    
-    std::string GetName() const
-    { return "NavierStokesTangent"; }
-    int GetNcomp() const
-    {
-      return DIM + 1;
-    }
-
-    //
-    // Semilinear Form
-    //
-
-    void
-    Form(VectorIterator b, const FemFunction &Z, const TestFunction &N) const;
-    void Matrix(EntryMatrix &A,
-                const FemFunction &Z,
-                const TestFunction &M,
-                const TestFunction &N) const;
-  };
 
 
   //////////////////////////////////////////////////. Boundary
@@ -144,38 +103,6 @@ namespace Gascoigne
 
     std::string GetName() const
     { return "NavierStokesBoundary"; }
-    int GetNcomp() const
-    {
-      return DIM + 1;
-    }
-
-    // Boundary 
-    void Form(VectorIterator b, const FemFunction& U, const TestFunction& N, int col) const;  
-    void Matrix(EntryMatrix& E, const FemFunction& U, const TestFunction& M, const TestFunction& N, int col) const;
-    void pointboundary(double h, const FemFunction& U, const Vertex<DIM>& v, const Vertex<DIM>& n) const;
-  };
-
-
-
-
-  //////////////////////////////////////////////////. Boundary Tangent
-  
-  template <int DIM>
-  class NavierStokesTangentBoundary : public virtual BoundaryEquation
-  {
-    
-  protected:
-    NavierStokesData data;
-    mutable Vertex<DIM> _n;
-    
-  public:
-    NavierStokesTangentBoundary<DIM>(const NavierStokesData &PD)
-        : data(PD)
-    {
-    }
-
-    std::string GetName() const
-    { return "NavierStokesTangentBoundary"; }
     int GetNcomp() const
     {
       return DIM + 1;
@@ -251,32 +178,6 @@ namespace Gascoigne
   };
 
   //////////////////////////////////////////////////
-
-  template <int DIM>
-  class NavierStokesTangentLps : public virtual NavierStokesTangent<DIM>, public LpsEquation
-  {
-    mutable double _h, _alpha;
-    
-  public:
-    NavierStokesTangentLps<DIM>(const NavierStokesData &PD)
-        : NavierStokesTangent<DIM>(PD)
-    {
-      
-    }
-    std::string GetName() const
-    { return "NavierStokesTangentLps"; }
-    
-
-    void lpspoint(double h, const FemFunction &U, const Vertex<DIM> &v) const;
-    void StabForm(VectorIterator b,
-                  const FemFunction &U,
-                  const FemFunction &UP,
-                  const TestFunction &NP) const;
-    void StabMatrix(EntryMatrix &A,
-                    const FemFunction &U,
-                    const TestFunction &Np,
-                    const TestFunction &Mp) const;
-  };
 
   template <int DIM>
   class NavierStokesLpsTime : public virtual NavierStokesLps<DIM>
