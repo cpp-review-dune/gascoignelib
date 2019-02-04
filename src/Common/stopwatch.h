@@ -34,6 +34,7 @@
 #include <string>
 #include <map>
 #include <iostream>
+#include <fstream>
 
 /*----------------------------------------------------*/
 
@@ -215,6 +216,22 @@ namespace Gascoigne
       assert(cit!=cpuwatches.end());
 
       std::cout << label << "\t" << it->second.read100() << "\t" << cit->second.read100() << std::endl;
+    }
+    
+    void print100tofile(const std::string& filename) const
+    {
+      	std::ofstream watch_logfile(filename);
+      	watch_logfile.precision(12);
+		for (auto it : watches)
+		{
+		  auto itt = watches.find(it.first);
+		  assert(itt!=watches.end());
+		  auto cit = cpuwatches.find(it.first);
+		  assert(cit!=cpuwatches.end());
+		
+      	  watch_logfile<< it.first << "\t" << itt->second.read100() << "\t" << cit->second.read100() << std::endl;
+       }
+       watch_logfile.close();
     }
     
     void print() const

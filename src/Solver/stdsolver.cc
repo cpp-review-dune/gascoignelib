@@ -1342,7 +1342,7 @@ namespace Gascoigne
 #ifdef __WITH_UMFPACK__
     if (_directsolver && _useUMFPACK)
     {
-    GlobalTimer.start("---> direct");
+    GlobalTimer.start("---> smooth_exact");
 #ifdef __WITH_UMFPACK_LONG__
       UmfIluLong *UM = dynamic_cast<UmfIluLong *>(GetIlu());
 #else
@@ -1350,7 +1350,7 @@ namespace Gascoigne
 #endif
       assert(UM);
       UM->Solve(GetGV(x), GetGV(y));
-      GlobalTimer.stop("---> direct");
+      GlobalTimer.stop("---> smooth_exact");
     }
     else
 #endif

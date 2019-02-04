@@ -291,7 +291,30 @@ namespace Gascoigne
         QP.insert(make_pair(p.first, *p.second));
     }
     void
-    LocalToGlobal(MatrixInterface &A, EntryMatrix &E, int iq, double s) const
+    LocalToGlobal_ohnecritic(MatrixInterface &A, EntryMatrix &E, int iq, double s) const
+    {
+      IntVector indices = GetDofHandler()->GetElement(DEGREE, iq);
+
+      // HANGING NODES
+       HN->CondenseHanging(E,indices);
+      IntVector::const_iterator start = indices.begin();
+      IntVector::const_iterator stop = indices.end();
+//#pragma omp critical
+      A.entry(start, stop, E, s);
+    }
+    void
+    LocalToGlobal_ohnecritic(GlobalVector &f, const LocalVector &F, int iq, double s) const
+    {
+      IntVector indices = GetDofHandler()->GetElement(DEGREE, iq);
+      for (int ii = 0; ii < indices.size(); ii++)
+      {
+        int i = indices[ii];
+//#pragma omp critical
+        f.add_node(i, s, ii, F);
+      }
+    }
+    
+    void LocalToGlobal(MatrixInterface &A, EntryMatrix &E, int iq, double s) const
     {
       IntVector indices = GetDofHandler()->GetElement(DEGREE, iq);
 
@@ -302,8 +325,7 @@ namespace Gascoigne
 #pragma omp critical
       A.entry(start, stop, E, s);
     }
-    void
-    LocalToGlobal(GlobalVector &f, const LocalVector &F, int iq, double s) const
+    void LocalToGlobal(GlobalVector &f, const LocalVector &F, int iq, double s) const
     {
       IntVector indices = GetDofHandler()->GetElement(DEGREE, iq);
       for (int ii = 0; ii < indices.size(); ii++)
@@ -368,14 +390,14 @@ namespace Gascoigne
       {
         auto *EQ = PD.NewEquation();
         EQ->SetParameterData(QP);
-        //for(int col=0;col<NumberofColors();col++)
+        for(int col=0;col<NumberofColors();col++)
         {
-        //const std::vector<int>& ewcol= elementswithcolor(col);
+        const std::vector<int>& ewcol= elementswithcolor(col);
 #pragma omp for
-		    for (int iq = 0; iq < GetDofHandler()->nelements(DEGREE); ++iq)
-		    //for (int iii = 0; iii < ewcol.size(); ++iii)
+		    //for (int iq = 0; iq < GetDofHandler()->nelements(DEGREE); ++iq)
+		    for (int iii = 0; iii < ewcol.size(); ++iii)
 		    {
-		    //  int iq=ewcol[iii];
+		      int iq=ewcol[iii];
 		      Transformation(T, iq);
 		      finiteelement.ReInit(T);
 
@@ -384,7 +406,7 @@ namespace Gascoigne
 		      EQ->point_cell(GetDofHandler()->material(DEGREE, iq));
 
 		      integrator.Form(*EQ, __F, finiteelement, __U, __QN, __QC);
-		      LocalToGlobal(f, __F, iq, d);
+		      LocalToGlobal_ohnecritic(f, __F, iq, d);
 		    }
         }
         delete EQ;
@@ -404,17 +426,28 @@ namespace Gascoigne
       LocalVector __F;
       LocalData __QN, __QC;
 
-#pragma omp parallel for private(T, finiteelement, integrator, __F, __QN, __QC)
-      for (int iq = 0; iq < GetDofHandler()->nelements(DEGREE); ++iq)
-      {
-        Transformation(T, iq);
-        finiteelement.ReInit(T);
 
-        GlobalToLocalData(iq, __QN, __QC);
-        RHS.point_cell(GetDofHandler()->material(DEGREE, iq));
-        integrator.Rhs(RHS, __F, finiteelement, __QN, __QC);
-        LocalToGlobal(f, __F, iq, s);
-      }
+#pragma omp parallel private(T, finiteelement, integrator, __F, __QN, __QC)
+    {
+        for(int col=0;col<NumberofColors();col++)
+        {
+        const std::vector<int>& ewcol= elementswithcolor(col);
+#pragma omp for
+      		//for (int iq = 0; iq < GetDofHandler()->nelements(DEGREE); ++iq)
+		    for (int iii = 0; iii < ewcol.size(); ++iii)
+		    {
+		      int iq=ewcol[iii];
+
+				Transformation(T, iq);
+				finiteelement.ReInit(T);
+
+				GlobalToLocalData(iq, __QN, __QC);
+				RHS.point_cell(GetDofHandler()->material(DEGREE, iq));
+				integrator.Rhs(RHS, __F, finiteelement, __QN, __QC);
+				LocalToGlobal_ohnecritic(f, __F, iq, s);
+      		}
+      	 }
+     }
     }
     void Matrix(MatrixInterface &A,
                 const GlobalVector &u,
@@ -437,18 +470,14 @@ namespace Gascoigne
       {
         Equation *EQ = PD.NewEquation();
         EQ->SetParameterData(QP);
-        //for(int col=0;col<NumberofColors();col++)
+        for(int col=0;col<NumberofColors();col++)
         {
-        //const std::vector<int>& ewcol= elementswithcolor(col);
+        const std::vector<int>& ewcol= elementswithcolor(col);
 #pragma omp for
-		    for (int iq = 0; iq < GetDofHandler()->nelements(DEGREE); ++iq)
-		    //for (int iii = 0; iii < ewcol.size(); ++iii)
+		    //for (int iq = 0; iq < GetDofHandler()->nelements(DEGREE); ++iq)
+		    for (int iii = 0; iii < ewcol.size(); ++iii)
 		    {
-		      //int iq=ewcol[iii];
-        //{
-//#pragma omp for
-//          for (int iq = 0; iq < GetDofHandler()->nelements(DEGREE); ++iq)
-//          {
+		    int iq=ewcol[iii];
             Transformation(T, iq);
             finiteelement.ReInit(T);
 
@@ -458,14 +487,15 @@ namespace Gascoigne
             EQ->point_cell(GetDofHandler()->material(DEGREE, iq));
             // EQ.cell(GetDofHandler(),iq,__U,__QN);
             integrator.Matrix(*EQ, __E, finiteelement, __U, __QN, __QC);
-            LocalToGlobal(A, __E, iq, d);
+            LocalToGlobal_ohnecritic(A, __E, iq, d);
           }
          }
           // HANGING NODES
-	  HN->MatrixDiag(u.ncomp(),A);
+
           delete EQ;
         //}
-      }
+        	 
+      } HN->MatrixDiag(u.ncomp(),A);
     }
 
 
@@ -882,15 +912,15 @@ namespace Gascoigne
 		  assert(col<Coloring.size());
 		  Coloring[col].push_back(p);
 		}
-      std::cout << "Coloring:" << std::endl;
+      //std::cout << "Coloring:" << std::endl;
     
-      int colnumb=0;
-      for (auto it : Coloring)
-   		{
-   			 std::cout<<" col " <<colnumb<< " with "<<it.size()<<"elements"<<std::endl;
-   			 colnumb++;
-   		}
-      std::cout << std::endl;
+      //int colnumb=0;
+      //for (auto it : Coloring)
+   	//	{
+   	//		 std::cout<<" col " <<colnumb<< " with "<<it.size()<<"elements"<<std::endl;
+   	//		 colnumb++;
+   	//	}
+    //  std::cout << std::endl;
 
     }
     int NumberofColors() const

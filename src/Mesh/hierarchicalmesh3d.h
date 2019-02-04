@@ -124,8 +124,7 @@ namespace Gascoigne
     void basic_refine3d(HangContainer3d &, const IntSet &, const IntSet &);
     void basic_fill_neighbours3d();
     virtual void boundary_newton3d(IntSet &);
-    virtual void
-    inner_vertex_newton3d(const IntVector &, const IntSet &, const IntSet &);
+    virtual void inner_vertex_newton3d(const IntVector &, const IntSet &, const IntSet &);
     void update_boundary_data3d(const IntSet &);
     void new_bquads(const IntVector &, const IntVector &, const IntSet &);
     void new_middle_vertex3d(int, int);
