@@ -470,7 +470,7 @@ void HierarchicalMesh3d::basic_refine3d(HangContainer3d& hangset,
 //   write_inp("refined5.inp");
 //   boundary_newton3d(adjustvertex);
 //   write_inp("refined6.inp");
-   inner_vertex_newton3d(vnew,CellRefList,adjustvertex);
+  inner_vertex_newton3d(vnew,CellRefList,adjustvertex);
 
   if (withfaces) EM.Build(CellRefList,hangset);
   Testing();
