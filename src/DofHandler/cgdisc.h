@@ -178,9 +178,9 @@ namespace Gascoigne
       assert(HN);
       HN->ReInit(M);
       
-	  std::cout<<"huhhhhhuuuuu coloring for dofhandler"<<std::endl;	    
+	  //std::cout<<"huhhhhhuuuuu coloring for dofhandler"<<std::endl;	    
       ElementColoring(DEGREE);
-      std::cout<<"GetDofHandler()->NumberofColors(): "<<NumberofColors()<<std::endl;
+      //std::cout<<"GetDofHandler()->NumberofColors(): "<<NumberofColors()<<std::endl;
     }
 
     
@@ -858,7 +858,7 @@ namespace Gascoigne
     }
     
     
-    void ElementColoring(int degree) 
+    virtual void ElementColoring(int degree) 
     {
       // convert mesh to graph
       std::vector<std::vector<int> > node2patch(GetDofHandler()->nnodes());

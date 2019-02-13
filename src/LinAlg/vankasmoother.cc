@@ -54,6 +54,8 @@ namespace Gascoigne
 
     /////////// Init LU-List
     _lu.resize(npatches, Eigen::PartialPivLU<Eigen::MatrixXd>(_sizeofpatch  * _ncomp)); 
+    
+    ElementColoring(patchlevel);
   }
 
   template<int NCOMP>
@@ -131,31 +133,41 @@ namespace Gascoigne
     std::vector<int> count(x.n(),0);
     
     // perform Vanka loop
-#pragma omp parallel for
-    for (int p=0;p<_patchlist.size();++p)
+//#pragma omp parallel for
+    //for (int p=0;p<_patchlist.size();++p)
+//#pragma omp parallel for
+    //for (int p=0;p<_patchlist.size();++p)
+#pragma omp parallel    
+     for(int col=0;col<NumberofColors();col++)     
       {
-	// copy local patch-vector
-	Eigen::VectorXd H(_sizeofpatch * _ncomp);
-	for (int r=0;r<_sizeofpatch;++r)
-	  for (int c=0;c<_ncomp;++c)
-	    H(_ncomp*r+c,0) = B(_patchlist[p][r],c);
+        const std::vector<int>& ewcol= elementswithcolor(col);
+		  #pragma omp for
+		  for (int iii = 0; iii < ewcol.size(); ++iii)
+		  {	
+		  	int p=ewcol[iii];
+			// copy local patch-vector
+			Eigen::VectorXd H(_sizeofpatch * _ncomp);
+			for (int r=0;r<_sizeofpatch;++r)
+			  for (int c=0;c<_ncomp;++c)
+				H(_ncomp*r+c,0) = B(_patchlist[p][r],c);
 
-	// perform inversion
-	H = _lu[p].permutationP() * H;
-	_lu[p].matrixLU().triangularView<Eigen::UnitLower>().solveInPlace(H);
-	_lu[p].matrixLU().triangularView<Eigen::Upper>().solveInPlace(H);
+			// perform inversion
+			H = _lu[p].permutationP() * H;
+			_lu[p].matrixLU().triangularView<Eigen::UnitLower>().solveInPlace(H);
+			_lu[p].matrixLU().triangularView<Eigen::Upper>().solveInPlace(H);
 
-	// update
-	for (int r=0;r<_sizeofpatch;++r)
-	  {
-#pragma omp critical
-	    {
-	      count[_patchlist[p][r]]++;
-	      for (int c=0;c<_ncomp;++c)
-		x(_patchlist[p][r],c) += H(_ncomp*r+c,0);
-	    }
-	  }	
-      }
+			// update
+			for (int r=0;r<_sizeofpatch;++r)
+			  {
+		//#pragma omp critical
+				{
+				  count[_patchlist[p][r]]++;
+				  for (int c=0;c<_ncomp;++c)
+				x(_patchlist[p][r],c) += H(_ncomp*r+c,0);
+				}
+			  }	
+		  }
+	   }
 
     // average
 #pragma omp parallel for

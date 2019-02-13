@@ -68,7 +68,7 @@ namespace Gascoigne
   protected:
     std::vector<std::vector<int>> _patchlist;
     mutable std::vector<Eigen::PartialPivLU<Eigen::MatrixXd>> _lu;
-
+    std::vector<std::vector<int> >  Coloring;	
   public:
     //////////////////// Constructor & Co
     VankaSmoother() : _dofhandler(NULL), _ncomp(-1), _sizeofpatch(-1)
@@ -119,6 +119,79 @@ namespace Gascoigne
     void copy_entries_sparseblockmatrix(const SparseBlockMatrix<FMatrixBlock<NCOMP> >& A);
     void copy_entries(const MatrixInterface& A);
 
+
+    void ElementColoring(int degree) 
+    {
+      // convert mesh to graph
+      std::vector<std::vector<int> > node2patch(_dofhandler->nnodes());
+
+      for (int p=0;p<_patchlist.size();++p)
+		{
+		  const auto &iop = _patchlist[p];
+		  for (auto it : iop)
+		    node2patch[it].push_back(p);
+		}
+      std::vector<std::vector<int> > adj(_patchlist.size());
+      for (int p=0;p<_patchlist.size();++p)
+		{
+		  std::set<int> neigh;
+		  const auto &iop =_patchlist[p];
+		  for (auto it : iop)
+		    neigh.insert(node2patch[it].begin(),node2patch[it].end());
+		  for (auto it : neigh)
+		    if (it!=p)
+		      adj[p].push_back(it);
+		}
+      /////////
+      std::vector<int> patch2color(_patchlist.size(),0);
+      bool done = true;
+      int color = 0;
+      //faerben aller patches
+      do
+		{
+		  done = true;
+		  for (int p=0;p<_patchlist.size();++p)
+		    if ((patch2color[p]==color) ) // not given a color and fluid
+		      {
+		    done = false;
+		    // block neighbors
+		    for (auto n : adj[p])
+		      {
+		        if ((patch2color[n] == color) ) // neighbor not set, block
+		          patch2color[n] = color+1;
+		      }
+		      }
+		  ++color;
+      } while (!done);
+      
+      Coloring.clear();
+      Coloring.resize(color-1);
+      for (int p=0;p<_patchlist.size();++p)
+		{
+		  int col = patch2color[p];
+		  assert(col<Coloring.size());
+		  Coloring[col].push_back(p);
+		}
+      //std::cout << "Coloring:" << std::endl;
+    
+      //int colnumb=0;
+      //for (auto it : Coloring)
+   	//	{
+   	//		 std::cout<<" col " <<colnumb<< " with "<<it.size()<<"elements"<<std::endl;
+   	//		 colnumb++;
+   	//	}
+    //  std::cout << std::endl;
+
+    }
+    int NumberofColors() const
+	{
+		return Coloring.size();
+	}	
+
+	const std::vector<int>&   elementswithcolor(int col) const
+	{
+	  return Coloring[col];
+	}    
   };
 } // namespace Gascoigne
 
