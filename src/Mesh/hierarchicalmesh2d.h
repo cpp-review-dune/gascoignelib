@@ -32,16 +32,17 @@
 #include  "boundaryfunction.h"
 #include  "hangcontainer2d.h"
 #include  "hierarchicalmesh.h"
-/// Hier muessen wir was machen. Das ist zuviel in der h-Datei...
- #include "metis.h"
- #include <fstream>
- // #include <../../boost/config.hpp>
- // #include <vector>
- // #include <iostream>
- // #include <../../boost/graph/adjacency_list.hpp>
- // #include <../../boost/graph/cuthill_mckee_ordering.hpp>
- // #include <../../boost/graph/properties.hpp>
- // #include <../../boost/graph/bandwidth.hpp>
+// /// Hier muessen wir was machen. Das ist zuviel in der h-Datei...
+//  #include "metis.h"
+//  #include <fstream>
+//  #include <../../boost/config.hpp>
+//  #include <vector>
+//  #include <iostream>
+//  #include <../../boost/graph/adjacency_list.hpp>
+//  #include <../../boost/graph/cuthill_mckee_ordering.hpp>
+//  #include <../../boost/graph/properties.hpp>
+//  #include <../../boost/graph/bandwidth.hpp>
+
 /*---------------------------------------------------*/
 
 namespace Gascoigne
