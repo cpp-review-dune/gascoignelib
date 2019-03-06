@@ -55,6 +55,10 @@ namespace Gascoigne
   private:
   protected:
   public:
+
+    // returns new objects for equations and boundary equations
+    // classes are created on the fly to allow for parallelization
+    
     virtual Equation *NewEquation() const
     {
       return NULL;

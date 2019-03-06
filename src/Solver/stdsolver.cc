@@ -1135,36 +1135,39 @@ namespace Gascoigne
 
   void StdSolver::SetBoundaryVectorZero(VectorInterface &gf) const
   {
-    GlobalVector &f = GetGV(gf);
+    GetDiscretization()->StrongDirichletVectorZero(GetGV(gf),*GetProblemDescriptor());
+    
+    // GlobalVector &f = GetGV(gf);
 
-    const BoundaryManager *BM = GetProblemDescriptor()->GetBoundaryManager();
-    const IntSet &Colors = BM->GetDirichletDataColors();
+    // const BoundaryManager *BM = GetProblemDescriptor()->GetBoundaryManager();
+    // const IntSet &Colors = BM->GetDirichletDataColors();
 
-    for (IntSet::const_iterator p = Colors.begin(); p != Colors.end(); p++)
-    {
-      int col = *p;
-      const IntVector &comp = BM->GetDirichletDataComponents(col);
-      GetDiscretization()->StrongDirichletVectorZero(f, col, comp);
-    }
+    // for (IntSet::const_iterator p = Colors.begin(); p != Colors.end(); p++)
+    // {
+    //   int col = *p;
+    //   const IntVector &comp = BM->GetDirichletDataComponents(col);
+    //   GetDiscretization()->StrongDirichletVectorZero(f, col, comp);
+    //    }
   }
 
   /*-------------------------------------------------------*/
 
   void StdSolver::SetBoundaryVector(VectorInterface &gf) const
   {
-    const BoundaryManager *BM = GetProblemDescriptor()->GetBoundaryManager();
-    const DirichletData *DD = GetProblemDescriptor()->GetDirichletData();
-    if (DD == NULL)
-    {
-      if (BM->GetDirichletDataColors().size() != 0)
-      {
-        cerr << "No DirichetData given but DirichetColors in ParamFile!"
-             << endl;
-        abort();
-      }
-      return;
-    }
-    SetBoundaryVectorStrong(gf, *BM, *DD);
+    GetDiscretization()->StrongDirichletVector(GetGV(gf),*GetProblemDescriptor());
+    // const BoundaryManager *BM = GetProblemDescriptor()->GetBoundaryManager();
+    // const DirichletData *DD = GetProblemDescriptor()->GetDirichletData();
+    // if (DD == NULL)
+    // {
+    //   if (BM->GetDirichletDataColors().size() != 0)
+    //   {
+    //     cerr << "No DirichetData given but DirichetColors in ParamFile!"
+    //          << endl;
+    //     abort();
+    //   }
+    //   return;
+    // }
+    // SetBoundaryVectorStrong(gf, *BM, *DD);
   }
 
   /*-------------------------------------------------------*/
@@ -1424,7 +1427,6 @@ namespace Gascoigne
     const BoundaryEquation *BE = GetProblemDescriptor()->GetBoundaryEquation();
     if (BE)
     {
-      const BoundaryManager *BM = GetProblemDescriptor()->GetBoundaryManager();
       GetDiscretization()->BoundaryForm(y, x, *GetProblemDescriptor(), d);
     }
 
@@ -1443,7 +1445,9 @@ namespace Gascoigne
     if (DD == NULL)
     {
       u.zero();
-      cerr << "StdSolver::BoundaryInit():\t No DirichletData !!\n";
+      cerr << "StdSolver::BoundaryInit():\t No DirichletData given but required for boundary init!!\n";
+      cerr << "\t\t\t\t Alternative: use initial solution" << endl;
+      cerr << "\t\t\t\t or: use Dirichlet data without dirichlet_colors" << endl;
       abort();
     }
 
@@ -1860,16 +1864,18 @@ namespace Gascoigne
 
   void StdSolver::DirichletMatrix() const
   {
-    const BoundaryManager *BM = GetProblemDescriptor()->GetBoundaryManager();
-    const IntSet &Colors = BM->GetDirichletDataColors();
+    GetDiscretization()->StrongDirichletMatrix(*GetMatrix(), *GetProblemDescriptor());
+    
+    // const BoundaryManager *BM = GetProblemDescriptor()->GetBoundaryManager();
+    // const IntSet &Colors = BM->GetDirichletDataColors();
 
-    for (IntSet::const_iterator p = Colors.begin(); p != Colors.end(); p++)
-    {
-      int col = *p;
-      const IntVector &comp = BM->GetDirichletDataComponents(col);
+    // for (IntSet::const_iterator p = Colors.begin(); p != Colors.end(); p++)
+    // {
+    //   int col = *p;
+    //   const IntVector &comp = BM->GetDirichletDataComponents(col);
 
-      GetDiscretization()->StrongDirichletMatrix(*GetMatrix(), col, comp);
-    }
+    //   GetDiscretization()->StrongDirichletMatrix(*GetMatrix(), col, comp);
+    // }
   }
 
   /* -------------------------------------------------------*/

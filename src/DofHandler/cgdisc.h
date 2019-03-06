@@ -198,9 +198,14 @@ namespace Gascoigne
     {
       return GetDofHandler()->nelements(DEGREE);
     }
+    int nhanging() const
+    {
+      return GetDofHandler()->nhanging();
+    }
+    
     int ndofs_withouthanging() const
     {
-      return ndofs();
+      return ndofs() - nhanging();
       // HANGING NODES
     }
 
@@ -734,79 +739,127 @@ namespace Gascoigne
     {
       PressureFilter *PF = static_cast<PressureFilter *>(&F);
       assert(PF);
-      assert(!PF->Active());
+      if (!PF->Active()) return;
+      
+      PF->ReInit(ndofs(), nhanging());
+      nmatrix<double> T;
+
+      FINITEELEMENT finiteelement;
+      INTEGRATOR integrator;
+      integrator.BasicInit();
+
+      for(int iq=0; iq<nelements(); ++iq)
+	{
+	  int nv = GetDofHandler()->nodes_per_element(DEGREE);
+	  EntryMatrix  E(nv,1);
+	  
+	  Transformation(T,iq);
+	  finiteelement.ReInit(T);
+	  
+	  double cellsize = integrator.MassMatrix(E,finiteelement);
+	  PF->AddDomainPiece(cellsize);
+	  
+	  IntVector ind = GetDofHandler()->GetElement(DEGREE,iq);
+	  HN->CondenseHanging(E,ind);
+	  
+	  for(int i=0;i<ind.size();i++)
+	    for(int j=0;j<ind.size();j++)
+	      F[ind[j]] += E(i,j,0,0);
+	}
     }
 
 
     ////////////////////////////////////////////////// Dirichlet Data
+    //// NEW Interface
+    ////////////////////////////////////////////////// Dirichlet Data
     void StrongDirichletVector(GlobalVector &u,
-                               const DirichletData &BF,
-                               int col,
-                               const std::vector<int> &comp,
-                               double d) const
+			       const ProblemDescriptorInterface& PD, double d) const
     {
-      const IntVector &bv = *GetDofHandler()->VertexOnBoundary(col);
+      const DirichletData* DD = PD.GetDirichletData();
+      if (DD==NULL) return; // no Dirichlet Data
 
-      LocalParameterData QP;
-      GlobalToGlobalData(QP);
-      BF.SetParameterData(QP);
+      for (const auto color : DD->dirichlet_colors())
+	{
+	  
+	  const IntVector &bv = *GetDofHandler()->VertexOnBoundary(color);
+	  
+	  LocalParameterData QP;
+	  GlobalToGlobalData(QP);
+	  DD->SetParameterData(QP);
+	  
+	  FemData QH;
+	  nvector<double> ff(u.ncomp(), 0.);
 
-
-      FemData QH;
-      nvector<double> ff(u.ncomp(), 0.);
+	  // threadsafe???
+	  // kann Dirichlet-Data nicht sowas wie Add Node zeugs haben?
 #pragma omp parallel for private(QH) firstprivate(ff)
-      for (int i = 0; i < bv.size(); ++i)
-      {
-        int index = bv[i];
-        QH.clear();
-        auto p = GetDataContainer().GetNodeData().begin();
-        for (; p != GetDataContainer().GetNodeData().end(); p++)
-        {
-          QH[p->first].resize(p->second->ncomp());
-          for (int c = 0; c < p->second->ncomp(); c++)
-          {
-            QH[p->first][c].m() = p->second->operator()(index, c);
-          }
-        }
-        const Vertex<DIM> &v = GetDofHandler()->vertex(index);
-        BF(ff, v, col);
-        for (int iii = 0; iii < comp.size(); iii++)
-        {
-          int c = comp[iii];
-          u(index, c) = d * ff[c];
-        }
-      }
+	  for (int i = 0; i < bv.size(); ++i)
+	    {
+	      int index = bv[i];
+	      QH.clear();
+	      auto p = GetDataContainer().GetNodeData().begin();
+	      for (; p != GetDataContainer().GetNodeData().end(); p++)
+		{
+		  QH[p->first].resize(p->second->ncomp());
+		  for (int c = 0; c < p->second->ncomp(); c++)
+		    {
+		      QH[p->first][c].m() = p->second->operator()(index, c);
+		    }
+		}
+	      const Vertex<DIM> &v = GetDofHandler()->vertex(index);
+	      (*DD)(ff, v, color);
+	      for (auto comp : DD->components_on_color(color))
+		u(index, comp) = d * ff[comp];
+	    }
+	}
     }
     void StrongDirichletMatrix(MatrixInterface &A,
-                               int col,
-                               const std::vector<int> &comp) const
+			       const ProblemDescriptorInterface& PD) const
     {
-      const IntVector &bv = *GetDofHandler()->VertexOnBoundary(col);
+      const DirichletData* DD = PD.GetDirichletData();
+      if (DD==NULL) return; // no Dirichlet Data
+
+      for (auto color : DD->dirichlet_colors())
+	{
+	  const IntVector &bv = *GetDofHandler()->VertexOnBoundary(color);
 #pragma omp parallel for
-      for (int i = 0; i < bv.size(); i++)
-        A.dirichlet(bv[i], comp);
+	  for (int i = 0; i < bv.size(); i++)
+	    A.dirichlet(bv[i], DD->components_on_color(color));
+	}
     }
     void StrongDirichletMatrixOnlyRow(MatrixInterface &A,
-                                      int col,
-                                      const std::vector<int> &comp) const
+				      const ProblemDescriptorInterface& PD) const
     {
-      const IntVector &bv = *GetDofHandler()->VertexOnBoundary(col);
+      const DirichletData* DD = PD.GetDirichletData();
+      if (DD==NULL) return; // no Dirichlet Data
+
+      for (auto color : DD->dirichlet_colors())
+	{
+	  const IntVector &bv = *GetDofHandler()->VertexOnBoundary(color);
 #pragma omp parallel for
-      for (int i = 0; i < bv.size(); i++)
-        A.dirichlet_only_row(bv[i], comp);
+	  for (int i = 0; i < bv.size(); i++)
+	    A.dirichlet_only_row(bv[i], DD->components_on_color(color));
+	}
     }
     void StrongDirichletVectorZero(GlobalVector &u,
-                                   int col,
-                                   const std::vector<int> &comp) const
+				   const ProblemDescriptorInterface& PD) const
     {
-      const IntVector &bv = *GetDofHandler()->VertexOnBoundary(col);
+      const DirichletData* DD = PD.GetDirichletData();
+      if (DD==NULL) return; // no Dirichlet Data
+
+      for (auto color : DD->dirichlet_colors())
+	{
+	  const IntVector &bv = *GetDofHandler()->VertexOnBoundary(color);
+	  
 #pragma omp parallel for
-      for (int i = 0; i < bv.size(); i++)
-      {
-        int index = bv[i];
-        for (int iii = 0; iii < comp.size(); iii++)
-          u(index, comp[iii]) = 0.;
-      }
+	  for (int i = 0; i < bv.size(); i++)
+	    {
+	      int index = bv[i];
+	      for (auto comp : DD->components_on_color(color))
+		u(index, comp) = 0.;
+	    }
+	}
+      
     }
 
 
@@ -889,13 +942,13 @@ namespace Gascoigne
 		{
 		  done = true;
 		  for (int p=0;p<GetDofHandler()->nelements(degree);++p)
-		    if ((patch2color[p]==color) ) // not given a color and fluid
+		    if (patch2color[p]==color)  // not given a color and fluid
 		      {
 		    done = false;
 		    // block neighbors
 		    for (auto n : adj[p])
 		      {
-		        if ((patch2color[n] == color) ) // neighbor not set, block
+		        if (patch2color[n] == color) // neighbor not set, block
 		          patch2color[n] = color+1;
 		      }
 		      }

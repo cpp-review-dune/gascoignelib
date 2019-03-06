@@ -141,41 +141,41 @@ namespace Gascoigne
      for(int col=0;col<NumberofColors();col++)     
       {
         const std::vector<int>& ewcol= elementswithcolor(col);
-		  #pragma omp for
-		  for (int iii = 0; iii < ewcol.size(); ++iii)
-		  {	
-		  	int p=ewcol[iii];
-			// copy local patch-vector
-			Eigen::VectorXd H(_sizeofpatch * _ncomp);
-			for (int r=0;r<_sizeofpatch;++r)
-			  for (int c=0;c<_ncomp;++c)
-				H(_ncomp*r+c,0) = B(_patchlist[p][r],c);
-
-			// perform inversion
-			H = _lu[p].permutationP() * H;
-			_lu[p].matrixLU().triangularView<Eigen::UnitLower>().solveInPlace(H);
-			_lu[p].matrixLU().triangularView<Eigen::Upper>().solveInPlace(H);
-
-			// update
-			for (int r=0;r<_sizeofpatch;++r)
-			  {
+#pragma omp for
+	for (int iii = 0; iii < ewcol.size(); ++iii)
+	  {	
+	    int p=ewcol[iii];
+	    // copy local patch-vector
+	    Eigen::VectorXd H(_sizeofpatch * _ncomp);
+	    for (int r=0;r<_sizeofpatch;++r)
+	      for (int c=0;c<_ncomp;++c)
+		H(_ncomp*r+c,0) = B(_patchlist[p][r],c);
+	    
+	    // perform inversion
+	    H = _lu[p].permutationP() * H;
+	    _lu[p].matrixLU().triangularView<Eigen::UnitLower>().solveInPlace(H);
+	    _lu[p].matrixLU().triangularView<Eigen::Upper>().solveInPlace(H);
+	    
+	    // update
+	    for (int r=0;r<_sizeofpatch;++r)
+	      {
 		//#pragma omp critical
-				{
-				  count[_patchlist[p][r]]++;
-				  for (int c=0;c<_ncomp;++c)
-				x(_patchlist[p][r],c) += H(_ncomp*r+c,0);
-				}
-			  }	
-		  }
-	   }
-
-    // average
-#pragma omp parallel for
-    for (int i=0;i<x.n();++i)
-      {
-	assert(count[i]>0);
-	x.scale_node(i,1.0/count[i]);
+		{
+		  count[_patchlist[p][r]]++;
+		  for (int c=0;c<_ncomp;++c)
+		    x(_patchlist[p][r],c) += H(_ncomp*r+c,0);
+		}
+	      }	
+	  }
       }
+     
+     // average
+#pragma omp parallel for
+     for (int i=0;i<x.n();++i)
+       {
+	 assert(count[i]>0);
+	 x.scale_node(i,1.0/count[i]);
+       }
   }
   
 }

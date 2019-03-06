@@ -20,6 +20,7 @@ namespace Gascoigne
     DFH.insert("fulltensor", &fulltensor, 0);
     FileScanner FS(DFH, pf, "Equation");
     assert(visc>0);
+    assert(alpha0>0);
   }
 
   ////////////////////////////////////////////////// NavierStokes
