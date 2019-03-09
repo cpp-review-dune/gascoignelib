@@ -242,7 +242,7 @@ void StdSolver::RegisterMatrix(int ncomp)
 
     if (_useUMFPACK && _MIP != NULL)
     {
-        UmfIlu* UM = dynamic_cast<UmfIlu*>(GetIlu());
+        UmfIluLong* UM = dynamic_cast<UmfIluLong*>(GetIlu());
         if ((UM && !_directsolver) || (!UM && _directsolver))
         {
             delete _MIP;
@@ -676,7 +676,7 @@ IluInterface* StdSolver::NewIlu(int ncomp, const string& matrixtype)
 #ifdef __WITH_UMFPACK__
     if (_directsolver && _useUMFPACK)
     {
-        return new UmfIlu(GetMatrix());
+        return new UmfIluLong(GetMatrix());
     }
 #endif
 
@@ -1190,7 +1190,7 @@ void StdSolver::smooth_exact(VectorInterface& x, const VectorInterface& y,
     if (_directsolver && _useUMFPACK)
     {
         _so.start();
-        UmfIlu* UM = dynamic_cast<UmfIlu*>(GetIlu());
+        UmfIluLong* UM = dynamic_cast<UmfIluLong*>(GetIlu());
         assert(UM);
         UM->Solve(GetGV(x), GetGV(y));
         _so.stop();
@@ -1694,7 +1694,7 @@ void StdSolver::ComputeIlu() const
     if (_directsolver && _useUMFPACK)
     {
         _cs.start();
-        UmfIlu* UM = dynamic_cast<UmfIlu*>(GetIlu());
+        UmfIluLong* UM = dynamic_cast<UmfIluLong*>(GetIlu());
         assert(UM);
         //       if(PrimalSolve==0) return;
         UM->Factorize();
@@ -1725,7 +1725,7 @@ void StdSolver::ComputeIlu(const VectorInterface& gu) const
     if (_directsolver && _useUMFPACK)
     {
         _cs.start();
-        UmfIlu* UM = dynamic_cast<UmfIlu*>(GetIlu());
+        UmfIluLong* UM = dynamic_cast<UmfIluLong*>(GetIlu());
         assert(UM);
         //       if(PrimalSolve==0) return;
         UM->Factorize();

@@ -22,8 +22,8 @@ dt		0.001
 dtcoarse 0.01
 theta		0.501
 thetacoarse 0.51
-implicit_coarse 1
-implicit_fine 1
+implicit_coarse 0
+implicit_fine 0
 
 start_time	0.0
 stop_time	8.0
@@ -33,7 +33,7 @@ solid_type	box3d
 lps		0.05
 extend		1.0
 
-nu_f		1.e-3
+nu_f		1.e-2
 
 mu_s		5.0e5
 lambda_s	2.0e6
@@ -56,8 +56,8 @@ initial boundary
 //reload start.bup
 
 //initial boundary
-threads 16
-subintervals 16
+threads 20
+subintervals 20
 niter       20
 
 etapatcher  0

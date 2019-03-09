@@ -1,7 +1,23 @@
 import pathlib
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib.backends.backend_pdf import PdfPages
+from matplotlib.backends.backend_pgf import PdfPages
+import matplotlib
+matplotlib.use('pgf')
+
+plt.rcParams.update({
+    'text.usetex': True,
+    'pgf.texsystem': 'pdflatex',
+    'pgf.rcfonts': False,
+    'font.family': 'serif',
+    'font.serif': [],           # empty ones can be filled
+    'font.sans-serif': [],
+    'font.monospace': [],
+    'font.size': 8,
+    'figure.figsize': (3, 3),
+    'pgf.preamble': [],
+})
+
 
 
 def bup_reader(file):
@@ -21,20 +37,18 @@ def bup_reader(file):
 
 
 def L2_error(path, approx_pattern, ref_pattern, out_path,
-             pdf_export=None):
+             pdf_export=True):
     app_list = list(sorted(path.glob(approx_pattern)))
     # exa_list = list(sorted(path.glob(exa_pattern)))
     ref_list = list(sorted(path.glob(ref_pattern)))
-
     # exa_length = len(exa_list)
     app_length = len(app_list)
     ref_length = len(ref_list)
-    
     err_arr = np.zeros((ref_length, int(2 * app_length/ref_length)))
     # ref_err_arr = np.zeros((exa_length, 2))
     base = ['Pressure_L2_error_iteration_', 'Velocity_L2_error_iteration_']
-    lbase = [r'$\frac{\Vert p_s-p_p\Vert}{\Vert p_s\Vert},\:k=',
-             r'$\frac{\Vert v_s-v_p\Vert}{\Vert v_s\Vert},\:k=']
+    lbase = [r'$k=',
+             r'$k=']
     cols = []
     [cols.append(b + str(i))
      for i in range(1, 1+int(app_length / ref_length)) for b in base]
@@ -55,28 +69,70 @@ def L2_error(path, approx_pattern, ref_pattern, out_path,
     out_fname = pathlib.Path(out_path + '.txt')
     np.savetxt(out_fname, err_arr, delimiter=' ', header=cols_str, comments='')
     pdf_name = out_fname.with_suffix('.pdf')
+    pgf_name = out_fname.with_suffix('.pgf')
     if pdf_export:
         with PdfPages(pdf_name.with_name('V' + pdf_name.name)) as pdf:
             X = np.linspace(1, ref_length, ref_length)
             plt.rc('text', usetex=True)
             plt.figure()
+            plt.tight_layout(pad=0)
             plt.yscale('log')
-            # plt.plot(X, ref_err_arr[:, 1], linewidth=.5, color='0.666')
+            # plt.plot(X, ref_err_arr[:, 1], linewidth=.5, color='0.666')                                
             for i in range(1, 2 * int(app_length/ref_length), 2):
                 plt.plot(X, err_arr[:, i], linewidth=.85, label=legend[i])
                 plt.legend()
             pdf.savefig()
+            plt.savefig(pgf_name.with_name('V' + pgf_name.name))
             plt.close()
 
         with PdfPages(pdf_name.with_name('P' + pdf_name.name)) as pdf:
             plt.rc('text', usetex=True)
             plt.figure()
+            plt.tight_layout(pad=0)
             plt.yscale('log')
-            # plt.plot(X, ref_err_arr[:, 0], linewidth=.5, color='0.666')
+            # plt.plot(X, ref_err_arr[:, 0], linewidth=.5, color='0.666')                                
             for i in range(0, 2 * int(app_length/ref_length), 2):
                 plt.plot(X, err_arr[:, i], linewidth=.85, label=legend[i])
                 plt.legend()
             pdf.savefig()
+            plt.savefig(pgf_name.with_name('P' + pgf_name.name))
             plt.close()
     else:
         pass
+
+
+curr_dir = pathlib.Path('.')
+
+ref_pat_16 = 'box3d/F001seq16/u.*.bup'
+ref_pat_32 = 'box3d/F001seq32/u.*.bup'
+approx_pat = 'box3d/Intervals16/C01tc51*/p.*.bup'
+L2_error(curr_dir, approx_pat, ref_pat_16, 'box3d/C01tc51')
+
+approx_pat = 'box3d/Intervals16/C02tc52*/p.*.bup'
+L2_error(curr_dir, approx_pat, ref_pat_16, 'box3d/C02tc52')
+
+approx_pat = 'box3d/Intervals16/C05tc55*/p.*.bup'
+L2_error(curr_dir, approx_pat, ref_pat_16, 'box3d/C05tc55')
+
+approx_pat = 'box3d/Intervals16/C1tc6*/p.*.bup'
+L2_error(curr_dir, approx_pat, ref_pat_16, 'box3d/C1tc6')
+
+# no theta (is 1)
+approx_pat = 'box3d/Intervals16_no_theta/C01tc51*/p.*.bup'
+L2_error(curr_dir, approx_pat, ref_pat_16, 'box3d/C01tc51_no_theta')
+
+approx_pat = 'box3d/Intervals16_no_theta/C05tc55*/p.*.bup'
+L2_error(curr_dir, approx_pat, ref_pat_16, 'box3d/C05tc55_no_theta')
+
+approx_pat = 'box3d/Intervals16_no_theta/C1tc6*/p.*.bup'
+L2_error(curr_dir, approx_pat, ref_pat_16, 'box3d/C1tc6_no_theta')
+
+# 32 intervals
+approx_pat = 'box3d/Intervals32/C01tc51*/p.*.bup'
+L2_error(curr_dir, approx_pat, ref_pat_32, 'box3d/C01tc51_32')
+
+approx_pat = 'box3d/Intervals32/C02tc52*/p.*.bup'
+L2_error(curr_dir, approx_pat, ref_pat_32, 'box3d/C02tc52_32')
+
+approx_pat = 'box3d/Intervals32/C05tc55*/p.*.bup'
+L2_error(curr_dir, approx_pat, ref_pat_32, 'box3d/C05tc55_32')
