@@ -1,3 +1,4 @@
+import sys
 import pathlib
 import numpy as np
 import matplotlib.pyplot as plt
@@ -14,10 +15,9 @@ plt.rcParams.update({
     'font.sans-serif': [],
     'font.monospace': [],
     'font.size': 8,
-    'figure.figsize': (3, 3),
+    'figure.figsize': (3.15, 3),
     'pgf.preamble': [],
 })
-
 
 
 def bup_reader(file):
@@ -77,7 +77,7 @@ def L2_error(path, approx_pattern, ref_pattern, out_path,
             plt.figure()
             plt.tight_layout(pad=0)
             plt.yscale('log')
-            # plt.plot(X, ref_err_arr[:, 1], linewidth=.5, color='0.666')                                
+            # plt.plot(X, ref_err_arr[:, 1], linewidth=.5, color='0.666')
             for i in range(1, 2 * int(app_length/ref_length), 2):
                 plt.plot(X, err_arr[:, i], linewidth=.85, label=legend[i])
                 plt.legend()
@@ -90,7 +90,7 @@ def L2_error(path, approx_pattern, ref_pattern, out_path,
             plt.figure()
             plt.tight_layout(pad=0)
             plt.yscale('log')
-            # plt.plot(X, ref_err_arr[:, 0], linewidth=.5, color='0.666')                                
+            # plt.plot(X, ref_err_arr[:, 0], linewidth=.5, color='0.666')
             for i in range(0, 2 * int(app_length/ref_length), 2):
                 plt.plot(X, err_arr[:, i], linewidth=.85, label=legend[i])
                 plt.legend()
@@ -101,38 +101,34 @@ def L2_error(path, approx_pattern, ref_pattern, out_path,
         pass
 
 
-curr_dir = pathlib.Path('.')
+if __name__ == "__main__":
+    curr_dir = pathlib.Path('.')
+    if len(sys.argv) == 2:
+        if sys.argv[1] == '2d':
+            ref_pat = 'wm_2d/F001seq20/u.*.bup'
+            approx_pat = 'wm_2d/Intervals20/C01tc51*/p.*.bup'
+            L2_error(curr_dir, approx_pat, ref_pat, 'wm_2d/C01tc51')
 
-ref_pat_16 = 'box3d/F001seq16/u.*.bup'
-ref_pat_32 = 'box3d/F001seq32/u.*.bup'
-approx_pat = 'box3d/Intervals16/C01tc51*/p.*.bup'
-L2_error(curr_dir, approx_pat, ref_pat_16, 'box3d/C01tc51')
+            approx_pat = 'wm_2d/Intervals20/C02tc52*/p.*.bup'
+            L2_error(curr_dir, approx_pat, ref_pat, 'wm_2d/C02tc52')
 
-approx_pat = 'box3d/Intervals16/C02tc52*/p.*.bup'
-L2_error(curr_dir, approx_pat, ref_pat_16, 'box3d/C02tc52')
+            approx_pat = 'wm_2d/Intervals20/C05tc55*/p.*.bup'
+            L2_error(curr_dir, approx_pat, ref_pat, 'wm_2d/C05tc55')
 
-approx_pat = 'box3d/Intervals16/C05tc55*/p.*.bup'
-L2_error(curr_dir, approx_pat, ref_pat_16, 'box3d/C05tc55')
+            approx_pat = 'wm_2d/Intervals20/C1tc6*/p.*.bup'
+            L2_error(curr_dir, approx_pat, ref_pat, 'wm_2d/C1tc6')
+        elif sys.argv[1] == '3d':
+            ref_pat = 'box3d/F001seq20/u.*.bup'
+            approx_pat = 'box3d/Intervals20/C01tc51*/p.*.bup'
+            L2_error(curr_dir, approx_pat, ref_pat, 'box3d/C01tc51')
 
-approx_pat = 'box3d/Intervals16/C1tc6*/p.*.bup'
-L2_error(curr_dir, approx_pat, ref_pat_16, 'box3d/C1tc6')
+            approx_pat = 'box3d/Intervals20/C02tc52*/p.*.bup'
+            L2_error(curr_dir, approx_pat, ref_pat, 'box3d/C02tc52')
 
-# no theta (is 1)
-approx_pat = 'box3d/Intervals16_no_theta/C01tc51*/p.*.bup'
-L2_error(curr_dir, approx_pat, ref_pat_16, 'box3d/C01tc51_no_theta')
+            approx_pat = 'box3d/Intervals20/C05tc55*/p.*.bup'
+            L2_error(curr_dir, approx_pat, ref_pat, 'box3d/C05tc55')
 
-approx_pat = 'box3d/Intervals16_no_theta/C05tc55*/p.*.bup'
-L2_error(curr_dir, approx_pat, ref_pat_16, 'box3d/C05tc55_no_theta')
-
-approx_pat = 'box3d/Intervals16_no_theta/C1tc6*/p.*.bup'
-L2_error(curr_dir, approx_pat, ref_pat_16, 'box3d/C1tc6_no_theta')
-
-# 32 intervals
-approx_pat = 'box3d/Intervals32/C01tc51*/p.*.bup'
-L2_error(curr_dir, approx_pat, ref_pat_32, 'box3d/C01tc51_32')
-
-approx_pat = 'box3d/Intervals32/C02tc52*/p.*.bup'
-L2_error(curr_dir, approx_pat, ref_pat_32, 'box3d/C02tc52_32')
-
-approx_pat = 'box3d/Intervals32/C05tc55*/p.*.bup'
-L2_error(curr_dir, approx_pat, ref_pat_32, 'box3d/C05tc55_32')
+            approx_pat = 'box3d/Intervals20/C1tc6*/p.*.bup'
+            L2_error(curr_dir, approx_pat, ref_pat, 'box3d/C1tc6')
+    else:
+        pass
