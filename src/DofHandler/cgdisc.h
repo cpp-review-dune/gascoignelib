@@ -773,9 +773,8 @@ namespace Gascoigne
     //// NEW Interface
     ////////////////////////////////////////////////// Dirichlet Data
     void StrongDirichletVector(GlobalVector &u,
-			       const ProblemDescriptorInterface& PD, double d) const
+			       const DirichletData* DD, double d) const
     {
-      const DirichletData* DD = PD.GetDirichletData();
       if (DD==NULL) return; // no Dirichlet Data
 
       for (const auto color : DD->dirichlet_colors())

@@ -196,7 +196,7 @@ namespace Gascoigne
       }
 
     ////////////////////////////////////////////////// New Interface Colors and Components in ProblemDescriptor
-    virtual void StrongDirichletVector(GlobalVector& u, const ProblemDescriptorInterface& PD, double d=1.) const
+    virtual void StrongDirichletVector(GlobalVector& u, const DirichletData* DD, double d=1.) const
     {
       std::cerr << "\"DiscretizationInterface::StronDirichletVector - NEW\" not written!" << std::endl;
       abort();
