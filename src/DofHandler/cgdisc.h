@@ -629,10 +629,115 @@ namespace Gascoigne
       return j;
     }
 	
+	
+	void VertexTransformation(const Vertex<DIM>& p0, Vertex<DIM>& p, int iq) const
+{
+  nmatrix<double> T;
+  Transformation(T,iq);
+
+  FINITEELEMENT finiteelement;
+  finiteelement.ReInit(T);
+  Vertex<DIM> res;
+  Vertex<DIM> update;
+  p = 0.5;
+  
+  for(int niter=1; ;niter++)
+  {
+    finiteelement.point_T(p);
+    
+    res = p0;
+    finiteelement.x(update);
+    res.add(-1,update);
+
+    if(res.norm()<1.e-13)
+    {
+      break;
+    }
+    assert(niter<10);
+    
+    finiteelement.mult_ad(p,res);
+  } 
+}
+	
+	
+  int GetElementNumber(const Vertex<DIM>& p0, Vertex<DIM>& p) const
+{
+  int iq;
+  for(iq=0; iq<GetDofHandler()->nelements(DEGREE); ++iq)
+  {
+    bool found = true;
+    
+    IntVector indices = GetDofHandler()->GetElement(DEGREE, iq);
+        
+    for(int d=0; d<DIM; ++d)
+    {
+      //double min=GetDofHandler()->vertex3d(GetDofHandler()->CornerIndices(DEGREE,iq,0))[d];
+      double min=GetDofHandler()->vertex3d(indices[0])[d];
+      
+      double max=min;
+      //int cornernodes;
+      
+      //if(DIM==2 && DEGREE==1) cornernodes=4;
+      //else if(DIM==2 && DEGREE==2) cornernodes=9;
+      //else if(DIM==3 && DEGREE==1) cornernodes=8;
+      //else if(DIM==3 && DEGREE==2) cornernodes=27;
+      //else abort();
+      
+      //for(int j=1; j<cornernodes; ++j)
+      for (int ii = 1; ii < indices.size(); ii++)
+      {
+        //double x = GetDofHandler()->vertex3d(GetDofHandler()->CornerIndices(DEGREE,iq,j))[d];
+        double x = GetDofHandler()->vertex3d(indices[ii])[d];
+        
+        min = std::min(min,x);
+        max = std::max(max,x);
+      }
+      if((p0[d]<min)||(p0[d]>max)) 
+      {
+        found = false;
+        break;
+      }
+    }
+    
+    if(!found)
+    {
+      continue;
+    }
+    VertexTransformation(p0,p,iq);
+    
+    for(int d=0; d<DIM; ++d)
+    {
+      if((p[d]<0.-1.e-08)||(p[d]>1.+1.e-08))
+      {
+        found = false;
+        //std::cout<<"p[d]: "<<p[d]<<std::endl;
+      }
+    }
+    if(found)
+    {
+      break;
+    }
+  }
+
+  //std::cout<<"iq"<<iq<<std::endl;
+  //std::cout<<"GetDofHandler()->nelements(DEGREE)"<<GetDofHandler()->nelements(DEGREE)<<std::endl;
+  
+  if(iq<GetDofHandler()->nelements(DEGREE))
+  {
+    return iq;
+  }
+  else
+  {
+    return -1;
+  }
+}	
+	
+	
+ 
     ////////////////////////////////////////////////// Functionals
     double ComputePointValue(const GlobalVector& u, const Vertex2d& p0,int comp) const 
     {
-      // very simple version. Only finds nodes
+     /* // very simple version. Only finds nodes
       for (int n=0;n<GetDofHandler()->nnodes();++n)
 	{
 	  double dist = 0;
@@ -643,11 +748,33 @@ namespace Gascoigne
 	}
       std::cerr << "DofHandler::ComputePointValue. Vertex " << p0 << " not found!"
 		<< std::endl;
-      abort();
+      abort();*/
+     	Vertex<DIM> Tranfo_p0;
+		Vertex<DIM> p0_local;
+		for(int i=0;i<DIM;i++)
+			p0_local[i]=p0[i];
+			
+		int iq = GetElementNumber(p0_local,Tranfo_p0);
+		if (iq==-1)
+		  {
+		std::cerr << "CellDiscretization::ComputePointValue point not found\n";
+		abort();
+		  }
+      	FINITEELEMENT finiteelement;
+      	INTEGRATOR integrator;
+      	LocalVector __U;
+		nmatrix<double> T;
+		Transformation(T,iq);
+		finiteelement.ReInit(T);
+
+		GlobalToLocal(__U,u,iq);
+
+		return integrator.ComputePointValue(finiteelement,Tranfo_p0,__U,comp); 
+      
     }
     double ComputePointValue(const GlobalVector& u, const Vertex3d& p0,int comp) const 
     {
-      // very simple version. Only finds nodes
+      /*// very simple version. Only finds nodes
       for (int n=0;n<GetDofHandler()->nnodes();++n)
 	{
 	  double dist = 0;
@@ -658,7 +785,32 @@ namespace Gascoigne
 	}
       std::cerr << "DofHandler::ComputePointValue. Vertex " << p0 << " not found!"
 		<< std::endl;
-      abort();
+      abort();*/
+      
+        Vertex<DIM> Tranfo_p0;
+		Vertex<DIM> p0_local;
+		for(int i=0;i<DIM;i++)
+			p0_local[i]=p0[i];
+		
+		//std::cout<<"p0_local "<<p0_local<<std::endl;
+		//std::cout<<"Call Get Element Number"<<std::endl;	
+		int iq = GetElementNumber(p0_local,Tranfo_p0);
+		//std::cout<<"Element Number"<<iq<<std::endl;
+		if (iq==-1)
+		  {
+		std::cerr << "CellDiscretization::ComputePointValue point not found\n";
+		abort();
+		  }
+      	FINITEELEMENT finiteelement;
+      	INTEGRATOR integrator;
+      	LocalVector __U;
+		nmatrix<double> T;
+		Transformation(T,iq);
+		finiteelement.ReInit(T);
+
+		GlobalToLocal(__U,u,iq);
+
+		return integrator.ComputePointValue(finiteelement,Tranfo_p0,__U,comp); 
     }
     double ComputePointFunctional(const GlobalVector& u, const PointFunctional& FP) const
     {

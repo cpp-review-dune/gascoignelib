@@ -93,12 +93,21 @@ namespace Gascoigne
     {
       v = T.x();
     }
+    
+    void mult_ad(Vertex<DIM> &p1,Vertex<DIM> &p2) const
+    {
+      T.DTI().mult_ad(p1, p2);
+    }
     void normal(Vertex<DIM> &v) const
     {
       v = T.normal();
     };
 
     void point(const Vertex<DIM> &) const;
+    void point_T(const Vertex<DIM> &xi) const
+    {
+    	T.point(xi);
+    }
     void point_boundary(int ie, const Vertex<BDIM> &s1) const;
     /// depreciated
     void ReInit(const Matrix &M) const
