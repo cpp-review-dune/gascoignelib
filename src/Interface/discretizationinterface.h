@@ -195,6 +195,27 @@ namespace Gascoigne
         abort();
       }
 
+    ////////////////////////////////////////////////// New Interface Colors and Components in ProblemDescriptor
+    virtual void StrongDirichletVector(GlobalVector& u, const DirichletData* DD, double d=1.) const
+    {
+      std::cerr << "\"DiscretizationInterface::StronDirichletVector - NEW\" not written!" << std::endl;
+      abort();
+    }
+    virtual void StrongDirichletVectorZero(GlobalVector& u, const ProblemDescriptorInterface& PD) const
+    {
+      std::cerr << "\"DiscretizationInterface::StrongDirichletVectorZero - NEW\" not written!" << std::endl;
+      abort();
+    }
+    virtual void StrongDirichletMatrix(MatrixInterface& A, const ProblemDescriptorInterface& PD) const {
+      std::cerr << "\"DiscretizationInterface::StrongDirichletmatrix - NEW\" not written!" << std::endl;
+        abort();
+      }
+    virtual void StrongDirichletMatrixOnlyRow(MatrixInterface& A, const ProblemDescriptorInterface& PD) const{
+      std::cerr << "\"DiscretizationInterface::StrongDirichletMatrixOnlyRow - NEW\" not written!" << std::endl;
+      abort();
+    }
+
+
       virtual void InitFilter(DoubleVector&) const {
         std::cerr << "\"DiscretizationInterface::InitFilter\" not written!" << std::endl;
         abort();

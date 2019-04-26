@@ -723,7 +723,7 @@ void HierarchicalMesh2d::new_vertexs2d(HangContainer2d& hangset,
 
 void HierarchicalMesh2d::init_line(BoundaryLine& newline)
 {
-  std::array<int,2> v,w;
+  std::array<int,2> v;
   for (int i=0; i<quads.size(); i++)
     {
       for (int edge=0; edge<4; edge++)

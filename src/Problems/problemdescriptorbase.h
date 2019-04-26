@@ -35,11 +35,7 @@ namespace Gascoigne
   {
   public:
 
-    Equation* NewEquation() const
-    {
-      abort();
-    }
-    
+
     
   private:
     Equation *EQ;
