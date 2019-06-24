@@ -188,6 +188,11 @@ namespace Gascoigne
 						assert(0);
       }
 
+	   virtual std::string RHSQS(bool b) const {
+		   std::cerr << "RHSQS not implemented!" << std::endl;
+		   abort();
+	  }
+
   };
 }
 
