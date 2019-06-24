@@ -1114,4 +1114,11 @@ void CellDiscretization::GetBoundaryMassDiag(DoubleVector& a) const
     }
 }
 
+//void CellDiscretization::RHSQuadratureSwitch(bool b) const;
+//{
+//	  std::cout << "CellDiscretization1" << std::endl;
+//	  std::cout << GetIntegrator()->RHSQS(b) << std::endl;
+//	  std::cout << "CellDiscretization2" << std::endl;
+//}
+
 }
