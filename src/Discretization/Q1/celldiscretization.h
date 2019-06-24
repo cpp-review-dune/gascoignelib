@@ -90,6 +90,7 @@ public:
   }
 
   std::string GetName() const {return "CellDiscretization";}
+  std::string GetIntegratorName() const { return GetIntegrator()->GetName(); }
 
   void Structure(SparseStructureInterface* S) const;
 
@@ -135,7 +136,8 @@ public:
   void GetVolumes(DoubleVector& a) const;
   void GetAreas(DoubleVector& a, const IntSet& Colors) const;
   void GetMassDiag(DoubleVector& a) const;
-  void GetBoundaryMassDiag(DoubleVector& a) const;      
+  void GetBoundaryMassDiag(DoubleVector& a) const;
+  void RHSQuadratureSwitch(bool b) const;
 };
 }
 
