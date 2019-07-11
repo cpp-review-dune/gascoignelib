@@ -49,6 +49,7 @@ private:
   IntegrationFormulaInterface*  IFE;
   IntegrationFormulaInterface*  IFB;
   IntegrationFormulaInterface*  IFM;
+  bool _quadratureSwitch;
 
 protected:
 
@@ -125,6 +126,7 @@ public:
 		Vertex<DIM>& xr1, double H, double ND0,double ND1, int ncomp, int comp) const;
 #pragma GCC diagnostic pop
 
+  void RHSQuadratureSwitch( bool b);
 
 };
 }
