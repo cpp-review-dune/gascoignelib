@@ -55,10 +55,14 @@ void GalerkinIntegrator<DIM>::BasicInit()
       if (!BoundaryFormulaPointer()) BoundaryFormulaPointer() = new QuadGauss4;
       if (!MassFormulaPointer())     MassFormulaPointer() = new HexTrapez;
     }
+
+  if (!RhsFormulaPointer())			 RhsFormulaPointer() = FormFormulaPointer();
+
   assert(FormFormulaPointer());
   assert(ErrorFormulaPointer());
   assert(BoundaryFormulaPointer());
   assert(MassFormulaPointer());
+  assert(RhsFormulaPointer());
 }
 
 /* ----------------------------------------- */
@@ -99,17 +103,7 @@ void GalerkinIntegrator<DIM>::Rhs(const DomainRightHandSide& f, LocalVector& F, 
   BasicIntegrator::universal_point(_QCH,QC);
   f.SetCellData(_QCH);
 
-  const IntegrationFormulaInterface* IFP;
-  if(_quadratureSwitch){
-	  IFP = MassFormula();
-  }
-  else
-  {
-	  IFP = FormFormula();
-  }
-  const IntegrationFormulaInterface& IF = *IFP;
-
-  //TODO how to know if the IF was set to right value
+  const IntegrationFormulaInterface& IF = *RhsFormula();
 
   F.zero();
   Vertex<DIM> x, xi;
@@ -187,27 +181,19 @@ void GalerkinIntegrator<DIM>::Form(const Equation& EQ, LocalVector& F, const Fem
 
   for (int k=0; k<IF.n(); k++)
     {
-		// consider just one part of the element
       IF.xi(xi,k);
-	  // evaluate at point xi
       FEM.point(xi);
       double vol = FEM.J();
       double h  = Volume2MeshSize(vol);
       double weight  = IF.w(k) * vol;
-	  // do evaluation on U
       BasicIntegrator::universal_point(FEM,_UH,U);
-	  // do evaluation on Q
       BasicIntegrator::universal_point(FEM,_QH,Q);
       FEM.x(x);
       EQ.SetFemData(_QH);
-	  // now this point comes into play where we can evaluate sth at depending only on point
-	  // once without running the sam calculation for each FEM element
       EQ.point(h,_UH,x);
       for (int i=0;i<FEM.n();i++)
 	{
 	  FEM.init_test_functions(_NN,weight,i);
-	  // finally the Form written in the localoptequation
-	  // if we writte sth stupid in the Form we woulf heavily influence the performance
 	  EQ.Form(F.start(i),_UH,_NN);
 	}
     }
@@ -861,7 +847,16 @@ void GalerkinIntegrator<DIM>::RhsCurve(LocalVector& F, const FemInterface& FEM,
 }
 
 template<int DIM>
-void GalerkinIntegrator<DIM>::RHSQuadratureSwitch(bool b){_quadratureSwitch = b;}
+void GalerkinIntegrator<DIM>::RHSQuadratureSwitch(bool b)
+{
+  if(b){
+	  RhsFormulaPointer() = MassFormulaPointer();
+  }
+  else
+  {
+	  RhsFormulaPointer() = FormFormulaPointer();
+  }
+}
 
 /* ----------------------------------------- */
 
