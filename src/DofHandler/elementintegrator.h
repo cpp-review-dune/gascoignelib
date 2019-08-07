@@ -52,7 +52,16 @@ namespace Gascoigne
   protected:
     double Volume2MeshSize(double vol) const
     {
-      return pow(vol, 1. / static_cast<double>(DIM));
+      //return pow(vol, 1. / static_cast<double>(DIM));
+      if(DIM==2)
+      	return sqrt(vol);
+      else if(DIM==3)
+        return  cbrt(vol);
+      else
+          {
+			  std::cerr << "Volume2MeshSize not written for Dimnsion " <<DIM<<"!!!!!"<< std::endl;
+			  abort();
+    	  } 
     }
 
   public:

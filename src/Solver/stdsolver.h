@@ -422,6 +422,11 @@ namespace Gascoigne
     vmult(VectorInterface &y, const VectorInterface &x, double d) const;
     virtual void
     vmulteq(VectorInterface &y, const VectorInterface &x, double d) const;
+    
+    virtual void
+    vmult_transposed(VectorInterface &y, const VectorInterface &x, double d) const;
+    virtual void
+    vmult_transposedeq(VectorInterface &y, const VectorInterface &x, double d) const;
     virtual void smooth_pre(VectorInterface &y,
                             const VectorInterface &x,
                             VectorInterface &h) const;

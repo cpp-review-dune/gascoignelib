@@ -59,7 +59,7 @@ namespace Gascoigne
     std::vector<MgInterpolatorInterface *> _Interpolator;
 
     // Variables used within Newton and Multigrid
-    mutable VectorInterface _cor, _res, _mg0, _mg1;
+    mutable VectorInterface _cor, _res, _mg0, _mg1,_trustdirection0,_trustdirection1,_trustdirection2;
     
     mutable StopWatch _clock_residual, _clock_solve;
     mutable int ComputeLevel;
@@ -262,6 +262,15 @@ namespace Gascoigne
                             VectorInterface &u,
                             const VectorInterface &b,
                             CGInfo &info);
+   virtual std::string LinearSolve(
+                            VectorInterface &u,
+                            const VectorInterface &b,
+                            CGInfo &info)
+    {
+    	return LinearSolve(nlevels()-1,u,b,info);
+    }                                                
+                            
+                            
     virtual std::string Solve(int level,
 			      VectorInterface &x,
 			      const VectorInterface &b,
@@ -287,6 +296,14 @@ namespace Gascoigne
                                 VectorInterface &r,
                                 const VectorInterface &f,
                                 NLInfo &nlinfo);
+   virtual double NewtonUpdateTrustRegion(double &rr,
+                                VectorInterface &x,
+                                VectorInterface &dx,
+                                VectorInterface &r,
+                                const VectorInterface &f,
+                                NLInfo &nlinfo,
+                                double& sigma);
+                                                            
     virtual void NewtonLinearSolve(VectorInterface &x,
                                    const VectorInterface &b,
                                    CGInfo &info);

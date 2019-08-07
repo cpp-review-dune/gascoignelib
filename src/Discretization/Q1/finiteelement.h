@@ -104,7 +104,7 @@ namespace Gascoigne
     void ReInit(const Matrix &M) const
     {
       assert(M.n() == DIM);
-      assert(M.m() == B.n());
+      //assert(M.m() == B.n());
       T.ReInit(M);
     }
 

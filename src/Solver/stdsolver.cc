@@ -608,6 +608,8 @@ namespace Gascoigne
         return new Q1Lps2d;
       else if (discname == "Q2Lps")
         return new Q2Lps2d;
+      else if (discname == "CGQ1Lps")
+        return new CGDiscQ12dLps;        
       else if (discname == "CGQ2Lps")
         return new CGDiscQ22dLps;
       
@@ -1097,6 +1099,31 @@ namespace Gascoigne
     SetBoundaryVectorZero(gy);
   }
 
+
+  /*-----------------------------------------*/
+
+  void StdSolver::vmult_transposed(VectorInterface &gy,
+                        const VectorInterface &gx,
+                        double d) const
+  {
+    GlobalTimer.start("---> vmult_transposed");
+    GetMatrix()->transpose();
+    GetMatrix()->vmult(GetGV(gy), GetGV(gx), d);
+    GetMatrix()->transpose();
+    GlobalTimer.stop("---> vmult_transposed");
+  }
+
+  /*-----------------------------------------*/
+
+  void StdSolver::vmult_transposedeq(VectorInterface &gy,
+                          const VectorInterface &gx,
+                          double d) const
+  {
+    GlobalTimer.start("---> vmult_transposed");
+    Zero(gy);
+    GlobalTimer.stop("---> vmult_transposed");
+    vmult_transposed(gy,gx,d);
+  }
   /*-----------------------------------------*/
 
   void StdSolver::vmult(VectorInterface &gy,
@@ -2058,29 +2085,38 @@ namespace Gascoigne
     }
 #endif
     // keine Threads oder nur einer zur Verfuegung
-    int n = GetMatrix()->GetStencil()->n();
-    IntVector perm(n);
+    if(GetIlu()->GetName()!="VankaSmoother")
+    {
+		int n = GetMatrix()->GetStencil()->n();
+		IntVector perm(n);
 
-    iota(perm.begin(), perm.end(), 0);
-    if (GetSolverData().GetIluSort() == "cuthillmckee")
-    {
-      CuthillMcKee cmc(GetMatrix()->GetStencil());
-      cmc.Permutate(perm);
-    }
-    else if (GetSolverData().GetIluSort() == "streamdirection")
-    {
-      assert(GetProblemDescriptor()->GetEquation());
-      assert(GetSolverData().GetStreamDirection().size() <=
-             GetProblemDescriptor()->GetEquation()->GetNcomp());
-      StreamDirection sd(GetMesh(), GetMatrix()->GetStencil(), u);
-      sd.Permutate(perm, GetSolverData().GetStreamDirection());
-    }
-    else if (GetSolverData().GetIluSort() == "vectordirection")
-    {
-      VecDirection vd(GetMesh());
-      vd.Permutate(perm, GetSolverData().GetVectorDirection());
-    }
-    GetIlu()->ConstructStructure(perm, *GetMatrix());
+		iota(perm.begin(), perm.end(), 0);
+		if (GetSolverData().GetIluSort() == "cuthillmckee")
+		{
+		  CuthillMcKee cmc(GetMatrix()->GetStencil());
+		  cmc.Permutate(perm);
+		}
+		else if (GetSolverData().GetIluSort() == "streamdirection")
+		{
+		  assert(GetProblemDescriptor()->GetEquation());
+		  assert(GetSolverData().GetStreamDirection().size() <=
+		         GetProblemDescriptor()->GetEquation()->GetNcomp());
+		  StreamDirection sd(GetMesh(), GetMatrix()->GetStencil(), u);
+		  sd.Permutate(perm, GetSolverData().GetStreamDirection());
+		}
+		else if (GetSolverData().GetIluSort() == "vectordirection")
+		{
+		  VecDirection vd(GetMesh());
+		  vd.Permutate(perm, GetSolverData().GetVectorDirection());
+		}
+		GetIlu()->ConstructStructure(perm, *GetMatrix());
+	}
+	else
+	{	
+		int n = GetMatrix()->GetStencil()->n();
+		IntVector perm(n);
+		GetIlu()->ConstructStructure(perm, *GetMatrix());
+	}
   }
 
   /* -------------------------------------------------------*/

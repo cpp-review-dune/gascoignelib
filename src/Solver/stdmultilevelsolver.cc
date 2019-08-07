@@ -111,7 +111,7 @@ namespace Gascoigne
   /*-------------------------------------------------------------*/
 
   StdMultiLevelSolver::StdMultiLevelSolver() : 
-    _MAP(NULL), _cor("cor"), _res("res"), _mg0("mg0"), _mg1("mg1"),
+    _MAP(NULL), _cor("cor"), _res("res"), _mg0("mg0"), _mg1("mg1"),_trustdirection0("trustdirection0"),_trustdirection1("trustdirection1"),_trustdirection2("trustdirection2"),
     oldnlevels(-1), _paramfile(NULL), MON(NULL), DataP(NULL), _PD(0), _PC(0)
   {
   }
@@ -174,6 +174,9 @@ namespace Gascoigne
 	GetSolver(level)->RegisterVector(_res);
 	GetSolver(level)->RegisterVector(_mg0);
 	GetSolver(level)->RegisterVector(_mg1);
+	GetSolver(level)->RegisterVector(_trustdirection0);
+	GetSolver(level)->RegisterVector(_trustdirection1);
+	GetSolver(level)->RegisterVector(_trustdirection2);
       }
   }
 
@@ -312,6 +315,9 @@ namespace Gascoigne
     ReInitVector(_res);
     ReInitVector(_mg0);
     ReInitVector(_mg1);
+    ReInitVector(_trustdirection0);
+    ReInitVector(_trustdirection1);
+    ReInitVector(_trustdirection2);
   }
 
   /*-------------------------------------------------------------*/
@@ -489,6 +495,7 @@ namespace Gascoigne
 
   void StdMultiLevelSolver::newton(VectorInterface& u, const VectorInterface& f, VectorInterface& r, VectorInterface& w, NLInfo& info)
   {
+  	double sigma;
     info.reset();
     double rr = NewtonResidual(r,u,f);
     bool reached = info.check(0,rr,0.);
@@ -499,7 +506,9 @@ namespace Gascoigne
 	NewtonMatrixControl(u,info);
 	NewtonVectorZero(w);
 	NewtonLinearSolve(w,r,info.GetLinearInfo());
+	//if(it==1) sigma=min(GetSolver(ComputeLevel)->Norm(w),1.0e10);
 	double rw = NewtonUpdate(rr,u,w,r,f,info);
+	//double rw = NewtonUpdateTrustRegion(rr,u,w,r,f,info,sigma);
 	reached = info.check(it,rr,rw);
 	NewtonOutput(info);
       }
@@ -665,11 +674,19 @@ namespace Gascoigne
 	  }
 	if (message=="exploded")
 	  {
-	    GetSolver(ComputeLevel)->Add(x,-relax,dx);
-	    relax = 0.;
+	    //GetSolver(ComputeLevel)->Add(x,-relax,dx);
+	    //relax = 0.;
+	    //cout << "Damping exploded !!!!!" << endl;
+	    //nlinfo.control().status() = "diverged";
+	    //break;
 	    cout << "Damping exploded !!!!!" << endl;
-	    nlinfo.control().status() = "diverged";
-	    break;
+	    //nlinfo.control().status() = "diverged";
+	    GetSolver(ComputeLevel)->Add(x,relax*(omega-1.),dx);  
+
+	    NewtonResidual(r,x,f);
+	    rr = NewtonNorm(r);
+	    relax *= omega;
+	    continue;
 	  }
       }
 
@@ -678,6 +695,209 @@ namespace Gascoigne
     return NewtonNorm(dx);
   }
 
+  double StdMultiLevelSolver::NewtonUpdateTrustRegion(double& rr, VectorInterface& x, VectorInterface& dx, VectorInterface& r, const VectorInterface& f, NLInfo& nlinfo,double& sigma)
+  {
+    cout<<"===================================================="<<endl;
+    //const CGInfo& linfo = nlinfo.GetLinearInfo();
+    double nn = NewtonNorm(dx);
+    double nr = GetSolver(ComputeLevel)->Norm(r);
+    
+    bool trust_failed=true;
+    
+    
+    GetSolver(ComputeLevel)->vmulteq(_trustdirection0,dx,1.0);
+    GetSolver(ComputeLevel)->Add(_trustdirection0,-1.0,r);
+
+
+    while(trust_failed)
+    {
+		double tau=0;
+		double tau1=0;
+		double tau2=0;
+		GetSolver(ComputeLevel)->Equ(r,-1.0,r);
+		//cout<<"Norm(dx)"<<GetSolver(ComputeLevel)->Norm(dx)<<endl;
+		/*if(GetSolver(ComputeLevel)->Norm(dx)<sigma  )
+		{
+		  cout<<"Newton ";
+		  GetSolver(ComputeLevel)->Equ(_trustdirection0,1.0,dx);
+		}
+		else*/
+		{
+			//Cauchy Point: _trustdirection0
+			//Newton direction: dx
+		
+			GetSolver(ComputeLevel)->vmult_transposedeq(_trustdirection0,r,1.0);
+			double nJTxr = GetSolver(ComputeLevel)->Norm(_trustdirection0);
+
+			GetSolver(ComputeLevel)->vmulteq(_trustdirection1,_trustdirection0,1.0);
+		
+			//GetSolver(ComputeLevel)->vmult_transposedeq(_trustdirection0,_trustdirection1,1.0);
+			//GetSolver(ComputeLevel)->vmulteq(_trustdirection1,_trustdirection0,1.0);
+			//double tau= std::min(1.0,pow(nJTxr,3)/(sigma*GetSolver(ComputeLevel)->ScalarProduct(r,_trustdirection1)));
+
+			tau= std::min(1.0,pow(nJTxr,3)/(sigma*GetSolver(ComputeLevel)->ScalarProduct(_trustdirection1,_trustdirection1)));	
+	
+			//GetSolver(ComputeLevel)->vmult_transposedeq(_trustdirection0,r,1.0);
+			GetSolver(ComputeLevel)->Equ(_trustdirection0,-tau*sigma/nJTxr,_trustdirection0);
+			//cout<<"tau: "<<tau<<endl;
+			if(tau!=1 )
+			{ //Cauchy Punkt nicht auf Rand der TrustRegion
+
+				double n1=GetSolver(ComputeLevel)->ScalarProduct(_trustdirection0,_trustdirection0);
+				double n2=GetSolver(ComputeLevel)->ScalarProduct(_trustdirection0,dx);
+				double n3=GetSolver(ComputeLevel)->ScalarProduct(dx,dx);
+				
+				tau1=((2.0*n1-2.0*n2)+sqrt((2.0*n1-2.0*n2)*(2.0*n1-2.0*n2)-4.0*(n1-2.0*n2+n3)*(n1-sigma*sigma)))/(2.0*(n1-2.0*n2+n3));
+				tau2=((2.0*n1-2.0*n2)-sqrt((2.0*n1-2.0*n2)*(2.0*n1-2.0*n2)-4.0*(n1-2.0*n2+n3)*(n1-sigma*sigma)))/(2.0*(n1-2.0*n2+n3));
+				
+				
+				// Cauchy Point _trustdirection0
+				// dx Newton Point
+				
+				//Residuums vector r(x)+J*p_cauchy
+			   	GetSolver(ComputeLevel)->vmulteq(_trustdirection1,_trustdirection0,1.0);
+				GetSolver(ComputeLevel)->Add(_trustdirection1,1.0,r);
+				//double r_model_cauchy=GetSolver(ComputeLevel)->Norm(_trustdirection1);
+				//cout<<"Model Norm Cauchy Residuum: "<<r_model_cauchy<<endl;
+								
+				//Residuums vector r(x)+J*p_Newt
+			   	GetSolver(ComputeLevel)->vmulteq(_trustdirection2,dx,1.0);
+				GetSolver(ComputeLevel)->Add(_trustdirection2,1.0,r);
+				//double r_model_newt=GetSolver(ComputeLevel)->Norm(_trustdirection2);
+				//cout<<"Model Norm Newton Residuum: "<<r_model_newt<<endl;
+				
+
+				GetSolver(ComputeLevel)->Add(_trustdirection2,-1.0,_trustdirection1);
+				
+				n1= -GetSolver(ComputeLevel)->ScalarProduct(_trustdirection1,_trustdirection2);
+				n2= GetSolver(ComputeLevel)->ScalarProduct(_trustdirection2,_trustdirection2);
+				
+				double gamma = n1/n2;
+				//if(gamma<0.1) gamma=0;
+				double gamma_min=min(tau1,tau2);
+				double gamma_plus=max(tau1,tau2);
+				//if(max(tau1,tau2)<0 && min(tau1,tau2)>1.0)
+				//{
+				//	cout<< "error in Trust Region"<<endl; abort();
+				//}
+				//else 
+				//{
+					GetSolver(ComputeLevel)->Equ(_trustdirection1,1.0,dx);
+					GetSolver(ComputeLevel)->Add(_trustdirection1,-1.0,_trustdirection0);
+
+					//GetSolver(ComputeLevel)->Add(_trustdirection0,max(tau1,tau2),_trustdirection1);
+					GetSolver(ComputeLevel)->Add(_trustdirection0,max(gamma_min,min(gamma,gamma_plus)),_trustdirection1);
+					cout<<"gamma_min: "<<gamma_min<<" gamma: "<<gamma<<" gamma_plus: "<<gamma_plus<<"used gamma: "<<max(gamma_min,min(gamma,gamma_plus))<<endl;
+				//}
+				//cout<<"n1: "<<n1<<" n2: "<<n2<<" n3: "<<n3<<" ||tr_dir||: "<<GetSolver(ComputeLevel)->Norm(_trustdirection0)<<endl;
+			}
+		}
+		//Update TrustRegion
+		//||r(x)||
+		double r_old=GetSolver(ComputeLevel)->Norm(r);
+		double r_old_infty=NewtonNorm(r);
+		//||r(x)+J*p||
+	   	GetSolver(ComputeLevel)->vmulteq(_trustdirection1,_trustdirection0,1.0);
+		GetSolver(ComputeLevel)->Add(r,1.0,_trustdirection1);
+		
+		double r_model=GetSolver(ComputeLevel)->Norm(r);
+		double r_model_infty=NewtonNorm(r);
+		
+		//Update 		
+		GetSolver(ComputeLevel)->SetPeriodicVectorZero(_trustdirection0);
+		GetSolver(ComputeLevel)->Add(x,1.0,_trustdirection0);
+		//||r(x+p)||
+		NewtonResidual(r,x,f);
+		double r_new = GetSolver(ComputeLevel)->Norm(r);  
+		double r_new_infty = NewtonNorm(r);  
+		//NewtonNorm = l_infty norm!!!!
+		rr= NewtonNorm(r);
+		
+		//Check auf Abstieg:
+		string message = nlinfo.check_damping(0,rr);
+		
+		
+
+		//cout<<"r_old*r_old-r_model*r_model: "<<r_old*r_old-r_model*r_model<<endl;
+		//cout<<"r_old*r_old-r_new*r_new: "<<r_old*r_old-r_new*r_new<<endl;
+		
+		double rho=(r_old-r_new)/(r_old-r_model);
+		//double rho_infty=(r_old_infty*r_old_infty-r_new_infty*r_new_infty)/(r_old_infty*r_old_infty-r_model_infty*r_model_infty);
+		
+		  double sigma_max=1.0e10;
+		  double sigma_min=1.0e-6;
+		  double eps = 0.25;
+		  double k1  = 2.0;
+		  double k2  = 0.25;
+
+		  double c=fabs(rho-1);
+		  //double c_infty=fabs(rho_infty-1);
+		  if((r_old*r_old-r_model*r_model<=0) && (r_old*r_old-r_new*r_new<=0))
+			cout<<"no reduction in model!!! Singularity in Matrix??????"<<endl;
+		  
+		  if(rho<=0.0 && sigma>sigma_min)
+		  {
+		  	
+		  	sigma*=k2*k2;
+		  	sigma=max(sigma,sigma_min);
+			//cout<<"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"<<endl;
+			cout<<" !Reject ! ";
+			//cout<<"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"<<endl;
+			GetSolver(ComputeLevel)->Add(x,-1.0,_trustdirection0);
+			NewtonResidual(r,x,f);
+			rr = NewtonNorm(r);
+			message = nlinfo.check_damping(0,rr);
+
+			
+		  }
+		  else
+		  {
+		  	trust_failed=false;	
+			  if(c<eps/8.)
+			  {
+				if(k1*k1*sigma>sigma_max)
+				{
+				  sigma=sigma_max;
+				}
+				else
+				{
+				  sigma*=k1*k1;
+				}
+			  }
+			  else if (rho>1.0-eps )
+			  {
+				if(k1*sigma>sigma_max)
+				{
+				  sigma=sigma_max;
+				}
+				else
+				{
+				  sigma*=k1;
+				}
+			  }
+			  else if (rho>0.5 )
+			  {
+				if(1.2*sigma>sigma_max)
+				{
+				  sigma=sigma_max;
+				}
+				else
+				{
+				  sigma*=1.2;
+				}
+			  }
+			  else if (rho<0.1 )
+			  {
+				sigma*=k2;
+				sigma=max(sigma,sigma_min);
+			  }
+			
+		}
+		cout<<" rho: "<<rho<<" sigma_new: "<<sigma<<"||r||_2: "<<r_new<<endl;
+	}
+
+    return NewtonNorm(_trustdirection0);
+  }
   /*-------------------------------------------------------------*/
 
   void StdMultiLevelSolver::AssembleMatrix(VectorInterface& u)

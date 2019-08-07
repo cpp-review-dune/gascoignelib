@@ -24,6 +24,7 @@
 
 #include "timesolver.h"
 #include "cg.h"
+#include "vankasmoother.h"
 
 using namespace std;
 
@@ -31,7 +32,7 @@ using namespace std;
 
 namespace Gascoigne
 {
-
+extern Timer GlobalTimer; 
   void TimeSolver::SetTimeData(double _dt,
 			       double _theta,
 			       double _time,
@@ -69,6 +70,11 @@ namespace Gascoigne
     GetDiscretization()->Structure(&SA);
 
     GetMatrix()->ReInit(&SA);
+    if (!_directsolver && (_matrixtype == "vanka") )
+      {
+	assert(dynamic_cast<const VankaSmoother*>(GetIlu()));
+	dynamic_cast<const VankaSmoother*>(GetIlu())->SetDofHandler(GetMesh());
+      }
     GetIlu()->ReInit(&SA);
 
     GetMassMatrix()->ReInit(&SA);
@@ -83,8 +89,9 @@ namespace Gascoigne
     StdSolver::AssembleMatrix(gu, d);
 
     double scale = d / (dt * theta);
+    GlobalTimer.start("---> AddMassWDS");
     GetMatrix()->AddMassWithDifferentStencil(GetMassMatrix(), _TP, scale);
-
+    GlobalTimer.stop("---> AddMassWDS");
     StdSolver::DirichletMatrix();
   }
 
@@ -128,7 +135,9 @@ namespace Gascoigne
   {
     GlobalVector &f = GetGV(gf);
     const GlobalVector &u = GetGV(gu);
+    GlobalTimer.start("---> vmult_time");
     GetMassMatrix()->vmult_time(f, u, _TP, d);
+    GlobalTimer.stop("---> vmult_time");
   }
 
   /*-----------------------------------------*/

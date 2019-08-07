@@ -25,7 +25,7 @@
 #include "solverinfos.h"
 #include <cassert>
 #include "filescanner.h"
-
+#include "omp.h"
 using namespace std;
 
 namespace Gascoigne
@@ -88,6 +88,7 @@ void SolverInfos::BasicInit(const ParamFile *param)
 
   double nonlinear_tol, nonlinear_globaltol, nonlinear_rho, nonlinear_increase;
   int    nonlinear_miniter, nonlinear_maxiter, nonlinear_pstep, nonlinear_damp;
+  int 	nthreads;
 
   DFH.insert("linearsolve",         &_linearsolve,        "mg");
   DFH.insert("linear_tol",          &linear_tol,          1.e-2);
@@ -104,7 +105,8 @@ void SolverInfos::BasicInit(const ParamFile *param)
   DFH.insert("nonlinear_pstep",     &nonlinear_pstep,     0);
   DFH.insert("nonlinear_damp",      &nonlinear_damp,      4);
   DFH.insert("nonlinear_increase",  &nonlinear_increase,  1.e3);
-
+  
+  DFH.insert("nthreads",  &nthreads,  1);
   FileScanner FS(DFH);
   FS.NoComplain();
   FS.readfile(param,"MultiLevelSolver");
@@ -125,6 +127,8 @@ void SolverInfos::BasicInit(const ParamFile *param)
   GetNLInfo().user().printstep()         = nonlinear_pstep;
   GetNLInfo().user().maxrelax()          = nonlinear_damp;
   GetNLInfo().user().maxresincrease()    = nonlinear_increase;
+  
+ omp_set_num_threads(nthreads);
 }
 
 /*---------------------------------------------------------------*/

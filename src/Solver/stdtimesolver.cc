@@ -25,13 +25,14 @@
 #include  "stdtimesolver.h"
 #include  "simplematrix.h"
 #include  "compose_name.h"
-
+#include "vankasmoother.h"
 using namespace std;
 
 /*-------------------------------------------------------------*/
   
 namespace Gascoigne
 {
+extern Timer GlobalTimer;
 StdTimeSolver::StdTimeSolver()
   : StdSolver(), _MMP(NULL), _dt(0.), _theta(0.), _time(0.)
 {
@@ -119,6 +120,11 @@ void StdTimeSolver::ReInitMatrix()
   StdSolver::AddPeriodicNodes(&SA);
 
   GetMatrix()->ReInit(&SA);
+  if (!_directsolver && (_matrixtype == "vanka") )
+  {
+assert(dynamic_cast<const VankaSmoother*>(GetIlu()));
+dynamic_cast<const VankaSmoother*>(GetIlu())->SetDofHandler(GetMesh());
+  }
   GetIlu()->ReInit(&SA);
 
   GetMassMatrix()->ReInit(&SA);
@@ -188,7 +194,9 @@ void StdTimeSolver::TimeRhsOperator(VectorInterface& gf, const VectorInterface& 
       const GlobalVector& u = GetGV(gu);
       
       double d = 1./(_dt*_theta);
+      GlobalTimer.start("---> vmult_time");
       GetMassMatrix()->vmult_time(f,u,GetTimePattern(),d);
+      GlobalTimer.stop("---> vmult_time");
     }
 }
 
@@ -198,7 +206,9 @@ void StdTimeSolver::MassMatrixVector(VectorInterface& gf, const VectorInterface&
 {
   GlobalVector& f = GetGV(gf);
   const GlobalVector& u = GetGV(gu);
+  GlobalTimer.start("---> vmult_time");
   GetMassMatrix()->vmult_time(f,u,GetTimePattern(),d);
+  GlobalTimer.stop("---> vmult_time");
 }
 
 /*-------------------------------------------------------*/
@@ -224,7 +234,9 @@ void StdTimeSolver::Form(VectorInterface& gy, const VectorInterface& gx, double 
   GlobalVector& y = GetGV(gy);
 
   assert(y.n()==x.n());
+  GlobalTimer.start("---> vmult_time");
   GetMassMatrix()->vmult_time(y,x,GetTimePattern(),scale);
+  GlobalTimer.stop("---> vmult_time");
 }
 
 /*-------------------------------------------------------*/
@@ -237,8 +249,10 @@ void StdTimeSolver::AssembleMatrix(const VectorInterface& gu, double d)
   assert(_theta>0.);
 
   double scale = d/(_dt*_theta);
+  GlobalTimer.start("---> AddMassWDS");
   GetMatrix()->AddMassWithDifferentStencil(GetMassMatrix(),GetTimePattern(),scale);
-
+  GlobalTimer.stop("---> AddMassWDS");
+    
   StdSolver::PeriodicMatrix();
   StdSolver::DirichletMatrix();
 }

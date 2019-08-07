@@ -412,6 +412,7 @@ namespace Gascoigne
         delete EQ;
       }
     }
+    
     void Rhs(GlobalVector &f, const DomainRightHandSide &RHS, double s) const
     {
       LocalParameterData QP;
@@ -427,12 +428,12 @@ namespace Gascoigne
       LocalData __QN, __QC;
 
 
-#pragma omp parallel private(T, finiteelement, integrator, __F, __QN, __QC)
+//#pragma omp parallel private(T, finiteelement, integrator, __F, __QN, __QC)
     {
         for(int col=0;col<NumberofColors();col++)
         {
         const std::vector<int>& ewcol= elementswithcolor(col);
-#pragma omp for
+//#pragma omp for
       		//for (int iq = 0; iq < GetDofHandler()->nelements(DEGREE); ++iq)
 		    for (int iii = 0; iii < ewcol.size(); ++iii)
 		    {
@@ -449,6 +450,41 @@ namespace Gascoigne
       	 }
      }
     }
+    
+    void BoundaryRhs(GlobalVector& f, const IntSet& Colors,  const BoundaryRightHandSide& NRHS, double s) const
+	{
+	  LocalParameterData QP;
+	  GlobalToGlobalData(QP);
+	  
+	  nmatrix<double> T;
+	  FINITEELEMENT finiteelement;
+	  INTEGRATOR integrator;
+	  integrator.BasicInit();
+	  LocalVector  __F;
+	  LocalData __QN, __QC;
+	  NRHS.SetParameterData(QP);
+	  
+	  for(IntSet::const_iterator p=Colors.begin();p!=Colors.end();p++)
+		{
+		  int col = *p;
+
+		  const IntVector& q = *GetDofHandler()->ElementOnBoundary(DEGREE,col);
+		  const IntVector& l = *GetDofHandler()->ElementLocalOnBoundary(DEGREE,col);
+		  for (int i=0; i<q.size(); i++)
+			{
+			  int ip  = q[i];
+			  int ile = l[i];
+
+			  Transformation(T,ip);
+			  finiteelement.ReInit(T);
+
+			  GlobalToLocalData(ip, __QN, __QC);
+			  integrator.BoundaryRhs(NRHS,__F,finiteelement,ile,col,__QN,__QC);
+			  LocalToGlobal(f,__F,ip,s);
+			}
+		}
+	}
+
     void Matrix(MatrixInterface &A,
                 const GlobalVector &u,
                 const ProblemDescriptorInterface &PD,
@@ -498,7 +534,35 @@ namespace Gascoigne
       } HN->MatrixDiag(u.ncomp(),A);
     }
 
+  /* ----------------------------------------- */
 
+  void MassMatrix(MatrixInterface& A) const
+  {
+    nmatrix<double> T;
+    FINITEELEMENT finiteelement;
+    INTEGRATOR integrator;
+    integrator.BasicInit();
+    EntryMatrix __E;
+//#pragma omp parallel private(T, finiteelement, integrator, __F, __QN, __QC)
+    {
+        for(int col=0;col<NumberofColors();col++)
+        {
+        const std::vector<int>& ewcol= elementswithcolor(col);
+//#pragma omp for
+      		//for (int iq = 0; iq < GetDofHandler()->nelements(DEGREE); ++iq)
+		    for (int iii = 0; iii < ewcol.size(); ++iii)
+		    {
+		    int iq=ewcol[iii];
+			Transformation(T,iq);
+            finiteelement.ReInit(T);
+			integrator.MassMatrix(__E,finiteelement);
+			LocalToGlobal_ohnecritic(A,__E,iq,1.);
+	//      CellDiscretization::LocalToGlobal(A,__E,iq,1.);
+			}	
+      }
+    }
+  }
+    /* ----------------------------------------- */
     ////////////////////////////////////////////////// Integration on the Boundary
     void BoundaryForm(GlobalVector& f, const GlobalVector& u, const ProblemDescriptorInterface& PD, double d) const 
     {
@@ -856,8 +920,78 @@ namespace Gascoigne
         err(1, c) = sqrt(err(1, c));
       }
     }
-    
-    
+/* ----------------------------------------- */
+
+void EvaluateParameterRightHandSide(GlobalVector& f, const DomainRightHandSide& CF, double d) const
+{
+  LocalParameterData QP;
+  GlobalToGlobalData(QP);
+  
+  nmatrix<double> T;
+  FINITEELEMENT finiteelement;
+  INTEGRATOR integrator;
+  integrator.BasicInit();
+  LocalVector __F;
+  LocalData __QN, __QC;
+
+  CF.SetParameterData(QP);
+
+	for(int col=0;col<NumberofColors();col++)
+	{
+		const std::vector<int>& ewcol= elementswithcolor(col);
+   		for (int iii = 0; iii < ewcol.size(); ++iii)
+		    {
+		      int iq=ewcol[iii];
+		      
+			  Transformation(T,iq);
+			  finiteelement.ReInit(T);
+
+			  GlobalToLocalData(iq,__QN, __QC);
+			  CF.point_cell(GetDofHandler()->material(DEGREE, iq));
+			  integrator.EvaluateCellRightHandSide(__F,CF,finiteelement,__QN,__QC);
+
+			  f.add(d,__F);
+    		}
+    }
+}
+
+/* ----------------------------------------- */
+
+void EvaluateBoundaryParameterRightHandSide(GlobalVector& f,const IntSet& Colors, const BoundaryRightHandSide& CF, double d) const
+{
+      LocalParameterData QP;
+      GlobalToGlobalData(QP);
+      
+      nmatrix<double> T;
+      FINITEELEMENT finiteelement;
+      INTEGRATOR integrator;
+      integrator.BasicInit();
+      LocalVector  __F;
+      LocalData __QN, __QC;
+      
+  	 CF.SetParameterData(QP);
+  
+  for(IntSet::const_iterator p=Colors.begin();p!=Colors.end();p++)
+    {
+      int col = *p;
+    const IntVector& q = *GetDofHandler()->ElementOnBoundary(DEGREE,col);
+    const IntVector& l = *GetDofHandler()->ElementLocalOnBoundary(DEGREE,col);
+      for (int i=0; i<q.size(); i++)
+        {
+          int iq  = q[i];
+          int ile = l[i];
+
+          Transformation(T,iq);
+          finiteelement.ReInit(T);
+
+          GlobalToLocalData(iq, __QN, __QC);
+          integrator.EvaluateBoundaryCellRightHandSide(__F,CF,finiteelement,ile,col,__QN,__QC);
+
+          f.add(d,__F);
+        }
+    }
+}    
+    /* ----------------------------------------- */
     virtual void ElementColoring(int degree) 
     {
       // convert mesh to graph
