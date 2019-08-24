@@ -44,9 +44,9 @@ namespace Gascoigne
   private:
   public:
 
-    ~nvector()
-    {
-    }
+    // ~nvector()
+    // {
+    // }
     nvector()
         : std::vector<T>()
     {
@@ -266,7 +266,7 @@ namespace Gascoigne
   /**************************************************/
 
   template <class T>
-  inline nvector<T> &nvector<T>::operator=(const std::vector<T> &v)
+  inline nvector<T>& nvector<T>::operator=(const std::vector<T>& __restrict__ v)
   {
     assert(std::vector<T>::size() == v.std::template vector<T>::size());
     auto first = std::vector<T>::begin();
@@ -348,7 +348,7 @@ namespace Gascoigne
   /**************************************************/
 
   template <class T>
-  inline T nvector<T>::operator*(const nvector<T> &v) const
+  inline T nvector<T>::operator*(const nvector<T>& __restrict__ v) const
   {
     auto first = std::vector<T>::begin();
     auto last = std::vector<T>::end();
@@ -367,7 +367,7 @@ namespace Gascoigne
   /**************************************************/
 
   template <class T>
-  inline void nvector<T>::equ(const T &d)
+  inline void nvector<T>::equ(const T& __restrict__ d)
   {
     auto first = std::vector<T>::begin();
     auto last = std::vector<T>::end();
@@ -381,7 +381,7 @@ namespace Gascoigne
   /**************************************************/
 
   template <class T>
-  inline void nvector<T>::equ(const T &d, const nvector<T> &v)
+  inline void nvector<T>::equ(const T& d, const nvector<T>& __restrict__ v)
   {
     auto first = std::vector<T>::begin();
     auto last = std::vector<T>::end();
@@ -415,12 +415,9 @@ namespace Gascoigne
   /**************************************************/
 
   template <class T>
-  inline void nvector<T>::equ(const T &d,
-                              const nvector<T> &v,
-                              const T &e,
-                              const nvector<T> &w,
-                              const T &f,
-                              const nvector<T> &x)
+  inline void nvector<T>::equ(const T& d, const nvector<T>& __restrict__ v,
+                              const T& __restrict__ e, const nvector<T>& __restrict__ w,
+                              const T& f, const nvector<T>& __restrict__ x)
   {
     auto first = std::vector<T>::begin();
     auto last = std::vector<T>::end();
@@ -437,7 +434,7 @@ namespace Gascoigne
   /**************************************************/
 
   template <class T>
-  inline void nvector<T>::sequ(const T &s, const T &d, const nvector<T> &v)
+  inline void nvector<T>::sequ(const T& s, const T& d, const nvector<T>& __restrict__ v)
   {
     auto first = std::vector<T>::begin();
     auto last = std::vector<T>::end();
@@ -467,7 +464,7 @@ namespace Gascoigne
   /**************************************************/
 
   template <class T>
-  inline void nvector<T>::add(const T &d, const nvector<T> &v)
+  inline void nvector<T>::add(const T& d, const nvector<T>& __restrict__ v)
   {
     auto first = std::vector<T>::begin();
     auto last = std::vector<T>::end();
@@ -482,10 +479,8 @@ namespace Gascoigne
   /**************************************************/
 
   template <class T>
-  inline void nvector<T>::add(const T &d,
-                              const nvector<T> &v,
-                              const T &e,
-                              const nvector<T> &w)
+  inline void nvector<T>::add(const T& d, const nvector<T>& __restrict__ v, const T& e,
+                              const nvector<T>& __restrict__ w)
   {
     auto first = std::vector<T>::begin();
     auto last = std::vector<T>::end();
@@ -501,12 +496,9 @@ namespace Gascoigne
   /**************************************************/
 
   template <class T>
-  inline void nvector<T>::add(const T &d,
-                              const nvector<T> &v,
-                              const T &e,
-                              const nvector<T> &w,
-                              const T &f,
-                              const nvector<T> &x)
+  inline void nvector<T>::add(const T& d, const nvector<T>& __restrict__ v, const T& e,
+                              const nvector<T>& __restrict__ w, const T& f,
+                              const nvector<T>& __restrict__ x)
   {
     auto first = std::vector<T>::begin();
     auto last = std::vector<T>::end();
@@ -523,7 +515,7 @@ namespace Gascoigne
   /**************************************************/
 
   template <class T>
-  inline void nvector<T>::sadd(const T &a, const T &d, const nvector<T> &v)
+  inline void nvector<T>::sadd(const T& a, const T& d, const nvector<T>& __restrict__ v)
   {
     auto first = std::vector<T>::begin();
     auto last = std::vector<T>::end();

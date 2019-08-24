@@ -19,25 +19,18 @@
 
 namespace Gascoigne
 {
-    
+template class CGDiscQ12d;
+template class CGDiscQ22d;
+template class CGDiscQ13d;
+template class CGDiscQ23d;
 
+  //template class Transformation3d<BaseQ13dPatch>;
+template class FiniteElement<3, 2, Transformation3d<BaseQ13dPatch>, BaseQ13dPatch>;
 
+template class CGDiscQ13dLps;
+template class CGDiscQ23dLps;
 
+template class CGDiscQ12dLps;
+template class CGDiscQ22dLps;
 
-  
-  template class CGDiscQ12d;
-  template class CGDiscQ22d;
-  template class CGDiscQ13d;
-  template class CGDiscQ23d;
-
-  template class Transformation3d<BaseQ13dPatch>;
-  template class FiniteElement<3, 2, Transformation3d<BaseQ13dPatch>, BaseQ13dPatch>;
-
-  template class CGDiscQ13dLps;
-  template class CGDiscQ23dLps;
-
-  template class CGDiscQ12dLps;
-  template class CGDiscQ22dLps;
-
-}
-
+}  // namespace Gascoigne

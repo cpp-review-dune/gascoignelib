@@ -45,7 +45,7 @@ void MgInterpolatorNested::BasicInit(const MeshTransferInterface* MT)
 }
 
 /*-----------------------------------------*/
-  
+
 void MgInterpolatorNested::restrict_zero(GlobalVector& uL, const GlobalVector& ul) const
 {
   for(int i=0;i<c2f.size();i++)  uL.equ_node(i,1.,c2f[i],ul);
@@ -82,7 +82,7 @@ void MgInterpolatorNested::prolongate_add(GlobalVector& ul, const GlobalVector& 
 {
   for(int i=0;i<c2f.size();i++)  ul.add_node(c2f[i],1.,i,uL);
   for(map<int,std::array<int,2> >::const_iterator p=zweier.begin();
-      p!=zweier.end();p++) 
+      p!=zweier.end();p++)
     {
       int il = p->first;
       std::array<int,2> n2 = p->second;
@@ -90,7 +90,7 @@ void MgInterpolatorNested::prolongate_add(GlobalVector& ul, const GlobalVector& 
       ul.add_node(il,0.5,n2[1],uL);
     }
   for(map<int,std::array<int,4> >::const_iterator p=vierer.begin();
-      p!=vierer.end();p++) 
+      p!=vierer.end();p++)
     {
       int il = p->first;
       std::array<int,4> n4 = p->second;
@@ -100,7 +100,7 @@ void MgInterpolatorNested::prolongate_add(GlobalVector& ul, const GlobalVector& 
       ul.add_node(il,0.25,n4[3],uL);
     }
   for(map<int,std::array<int,8> >::const_iterator p=achter.begin();
-      p!=achter.end();p++) 
+      p!=achter.end();p++)
     {
       int il = p->first;
       std::array<int,8> n8 = p->second;

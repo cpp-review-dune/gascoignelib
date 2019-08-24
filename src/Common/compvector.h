@@ -54,7 +54,10 @@ class CompVector : public nvector<T>
   CompVector(int NN)                       : nvector<T>()      , N(NN) {}
   CompVector(int NN, size_t n)             : nvector<T>(NN*n)  , N(NN) {}
   CompVector(int NN, size_t n, const T& d) : nvector<T>(NN*n,d), N(NN) {}
-
+  CompVector(int NN, size_t n, T* b, T* e) : nvector<T>(std::vector<double>(b, e)), N(NN)
+  {
+    n = n;
+  }
   CompVector(const std::vector<T>& u)
     {
       N = 1;
@@ -73,7 +76,7 @@ class CompVector : public nvector<T>
        return *this;
      }
 
-  size_t  n() const { return nvector<T>::size()/N; } 
+  size_t  n() const { return nvector<T>::size()/N; }
 
   const_iterator  start(int i) const { return std::vector<T>::begin() + i*N; }
   iterator        start(int i)       { return std::vector<T>::begin() + i*N; }
@@ -84,18 +87,18 @@ class CompVector : public nvector<T>
   T&       operator()(int i, int c)       {return *(start(i)+c);}
 
   void ReInit(size_t ncomp, size_t n) {assert(ncomp); N=ncomp; reservesize(n);}
-  
+
   void ReInit(const CompVector& u) {
     N = u.ncomp();
     nvector<T>::reservesize(u.size());
     copy(u.begin(),u.end(),nvector<T>::begin());
   }
-  
+
   void reservesize(size_t n, const T& s=0) { nvector<T>::reservesize(n*N,s); }
-  void reservesize(const CompVector& u) 
+  void reservesize(const CompVector& u)
     {
       ncomp() = u.ncomp();
-      nvector<T>::reservesize(u.size()); 
+      nvector<T>::reservesize(u.size());
     }
   void resize(size_t n, const T& s=0.) { nvector<T>::resize(n*N,s); }
   void total_reservesize(size_t n)    { nvector<T>::reservesize(n); }
@@ -106,11 +109,11 @@ class CompVector : public nvector<T>
       const_iterator q = start(i)+N;
       while(p!=q) *(p++) = d0;
    }
-  void scale_comp(int c,double d0)                                                                                                                                    
-    { 
-      iterator       p = nvector<T>::begin()+c; 
-      while(p<nvector<T>::end()) {*p *= d0; p+=N;} 
-    } 
+  void scale_comp(int c,double d0)
+    {
+      iterator       p = nvector<T>::begin()+c;
+      while(p<nvector<T>::end()) {*p *= d0; p+=N;}
+    }
   void scale_node(int i, double d0)
     {
       iterator       p = start(i);
@@ -118,7 +121,7 @@ class CompVector : public nvector<T>
       while(p!=q) *(p++) *= d0;
    }
 
-  void add_node(int i, double d0, const nvector<T>& u0)
+  void add_node(int i, double d0, const nvector<T>& __restrict__ u0)
     {
             iterator       p = start(i);
       const_iterator pp= p+N;
@@ -126,7 +129,7 @@ class CompVector : public nvector<T>
       while(p!=pp) *(p++) += d0 * *(q++);
     }
 
-  void equ_node(int i, int j, const CompVector<T>& u0)
+    void equ_node(int i, int j, const CompVector<T>& __restrict__ u0)
     {
             iterator       p = start(i);
       const_iterator pp= p+N;
@@ -134,7 +137,7 @@ class CompVector : public nvector<T>
       while(p!=pp) *(p++) = *(q++);
     }
 
-  void equ_node(int i, double d0, int i0, const CompVector<T>& u0)
+    void equ_node(int i, double d0, int i0, const CompVector<T>& __restrict__ u0)
     {
             iterator       p = start(i);
       const_iterator pp= p+N;
@@ -167,7 +170,7 @@ class CompVector : public nvector<T>
       const_iterator q2 = start(i2);
       while(p!=pp) *(p++) += d0* *q0++ + d1* *q1++ + d2* *q2++;
     }
-  void equ_node(int i, double d0, int i0, double d1, int i1, 
+  void equ_node(int i, double d0, int i0, double d1, int i1,
 		       double d2, int i2, double d3, int i3)
     {
             iterator       p = start(i);
@@ -178,8 +181,8 @@ class CompVector : public nvector<T>
       const_iterator q3 = start(i3);
       while(p!=pp) *(p++) = d0* *q0++ + d1* *q1++ + d2* *q2++ + d3* *q3++;
     }
-   void equ_node(int i, double d0, int i0, const CompVector<T>& u0,
-		double d1, int i1, const CompVector<T>& u1)
+    void equ_node(int i, double d0, int i0, const CompVector<T>& __restrict__ u0,
+                  double d1, int i1, const CompVector<T>& __restrict__ u1)
     {
             iterator       p  = start(i);
       const_iterator q0 = u0.start(i0);
@@ -218,19 +221,19 @@ class CompVector : public nvector<T>
       for(int c=0;c<N;c++) *(p++) += d0 * *(q0++) + d1* *(q1++);
     }
 
-  void add_node(int i, double d0, int i0, const CompVector<T>& u0)
+    void add_node(int i, double d0, int i0, const CompVector<T>& __restrict__ u0)
     {
             iterator       p = start(i);
       const_iterator q = u0.start(i0);
       for(int c=0;c<N;c++) *(p++) += d0 * *(q++);
     }
-  double CompScp(int c, const CompVector<T>& v) const
+    double CompScp(int c, const CompVector<T>& __restrict__ v) const
     {
       double d = 0.;
       const_iterator first  = std::vector<T>::begin()+c;
       const_iterator last   = std::vector<T>::end();
       const_iterator first2  = v.begin()+c;
-      
+
       while( first < last)
         {
           d += *first * *first2;
@@ -244,7 +247,7 @@ class CompVector : public nvector<T>
       double d = 0;
       const_iterator first  = std::vector<T>::begin()+c;
       const_iterator last   = std::vector<T>::end();
-      
+
       while( first < last)
         {
           d = std::max( d, fabs(*first));
@@ -257,7 +260,7 @@ class CompVector : public nvector<T>
       double d = 1.e40;
       const_iterator first  = std::vector<T>::begin()+c;
       const_iterator last   = std::vector<T>::end();
-      
+
       while( first < last)
         {
           d = std::min( d, *first);
@@ -270,7 +273,7 @@ class CompVector : public nvector<T>
       double d = -1e14;
       const_iterator first  = std::vector<T>::begin()+c;
       const_iterator last   = std::vector<T>::end();
-      
+
       while( first < last)
         {
           d = std::max( d, *first);
@@ -283,7 +286,7 @@ class CompVector : public nvector<T>
     {
       iterator first  = std::vector<T>::begin()+c;
       const_iterator last   = std::vector<T>::end();
-      
+
       while( first < last)
 	{
 	  (*first) = std::max(val,(*first));
@@ -291,7 +294,7 @@ class CompVector : public nvector<T>
 	}
     }
 //////////////////////////////////////
-  void FillLocal(int i, nvector<double>& uloc) const
+    void FillLocal(int i, nvector<double>& __restrict__ uloc) const
     {
       assert(uloc.size()==N);
       const_iterator  first  = start(i);
@@ -301,27 +304,27 @@ class CompVector : public nvector<T>
     {
       iterator  first  = start(i);
       const_iterator last   = stop(i);
-      
+
       while( first != last)      {*first++ = 0.;}
     }
   void CompAdd(int c, double d)
     {
       iterator       first  = std::vector<T>::begin()+c;
       const_iterator last   = std::vector<T>::end();
-      
+
       while( first < last)
         {
           *first += d;
           first += N;
         }
     }
-  void CompAdd(int c1, double d, int c2, const CompVector& y)
+    void CompAdd(int c1, double d, int c2, const CompVector& __restrict__ y)
     {
       iterator       first  = std::vector<T>::begin()+c1;
       const_iterator first2 = y.begin()+c2;
       const_iterator last   = std::vector<T>::end();
       int N2 = y.ncomp();
-      
+
       while( first < last)
         {
           *first += d * *first2;
@@ -329,7 +332,7 @@ class CompVector : public nvector<T>
           first2 += N2;
         }
     }
-  void CompAdd(int c, double d, const CompVector& y)
+    void CompAdd(int c, double d, const CompVector& __restrict__ y)
     {
       CompAdd(c,d,c,y);
     }
@@ -337,20 +340,20 @@ class CompVector : public nvector<T>
     {
       iterator       first  = std::vector<T>::begin()+c;
       const_iterator last   = std::vector<T>::end();
-      
+
       while( first < last)
         {
           *first = d;
           first += N;
         }
     }
-  void CompEq(int c1, double d,  int c2, const CompVector& y)
+    void CompEq(int c1, double d, int c2, const CompVector& __restrict__ y)
     {
       iterator       first  = std::vector<T>::begin()+c1;
       const_iterator first2 = y.begin()+c2;
       const_iterator last   = std::vector<T>::end();
       int N2 = y.ncomp();
-      
+
       while( first < last)
         {
           *first = d * *first2;
@@ -358,7 +361,7 @@ class CompVector : public nvector<T>
           first2 += N2;
         }
     }
-  void CompEq(int c, double d,  const CompVector& y)
+    void CompEq(int c, double d, const CompVector& __restrict__ y)
     {
       CompEq(c,d,c,y);
     }
@@ -367,7 +370,7 @@ class CompVector : public nvector<T>
       double d = 0.;
       const_iterator first  = std::vector<T>::begin()+c;
       const_iterator last   = std::vector<T>::end();
-      
+
       while( first < last)
         {
           d += *first;
@@ -380,7 +383,7 @@ class CompVector : public nvector<T>
       double d = 0.;
       const_iterator first  = std::vector<T>::begin()+c;
       const_iterator last   = std::vector<T>::end();
-      
+
       while( first < last)
         {
           d += *first * *first;
@@ -389,14 +392,14 @@ class CompVector : public nvector<T>
       return sqrt(d);
     }
   nvector<double> CompNorm() const
-    {      
+    {
       nvector<double> d(N,0.);
 
       for(int c=0;c<N;c++)
         {
           const_iterator       first   = std::vector<T>::begin()  +c;
 	  const_iterator last   = std::vector<T>::end();
-      
+
 	  while( first < last)
 	    {
 	      d[c] += *first * *first;
@@ -406,21 +409,22 @@ class CompVector : public nvector<T>
 	}
       return d;
     }
-  void Add(const nvector<double>& scp, const CompVector<T>& y)
+    void Add(const nvector<double>& __restrict__ scp, const CompVector<T>& __restrict__ y)
     {
       for(int c=0;c<N;c++)
         {
           iterator       first   = std::vector<T>::begin()  +c;
           const_iterator first2  = y.begin()+c;
           const_iterator last    = std::vector<T>::end();
-          while( first < last) 
+          while( first < last)
             {
               *first += scp[c] * *first2;
               first += N;   first2 += N;
             }
         }
     }
-  void ScalarProductComp(nvector<double>& scp, const CompVector<T>& y) const
+    void ScalarProductComp(nvector<double>& __restrict__ scp,
+                           const CompVector<T>& __restrict__ y) const
     {
       scp.resize(N);
       scp.zero();
@@ -430,14 +434,15 @@ class CompVector : public nvector<T>
           const_iterator first   = std::vector<T>::begin()  +c;
           const_iterator first2  = y.begin()+c;
           const_iterator last    = std::vector<T>::end();
-          while( first < last) 
+          while( first < last)
             {
               scp[c] += *first * *first2;
               first += N;   first2 += N;
             }
         }
     }
-  void ScalarProductCompMatrix(nmatrix<double>& scp, const CompVector<T>& y) const
+    void ScalarProductCompMatrix(nmatrix<double>& __restrict__ scp,
+                                 const CompVector<T>& __restrict__ y) const
     {
       scp.memory(N,N);
       scp.zero();
@@ -450,7 +455,7 @@ class CompVector : public nvector<T>
               const_iterator first   = std::vector<T>::begin()  +c;
               const_iterator first2  = y.begin()+d;
               const_iterator last    = std::vector<T>::end();
-              while( first < last) 
+              while( first < last)
           {
             scp(c,d) += *first * *first2;
             first += N;   first2 += N;
@@ -469,23 +474,23 @@ class CompVector : public nvector<T>
     {
       iterator first   = std::vector<T>::begin()+c;
       const_iterator last    = std::vector<T>::end();
-      while( first < last) 
+      while( first < last)
         {
           s >> *first;
           first += N;
         }
     }
-  
+
   void BinWrite(std::ostream& out) const
     {
       out << ncomp() << " " << n() << std::endl << "[";
-      
+
       int sizeT = sizeof(T);
       for(int i=0; i<nvector<T>::size(); i++)
         {
           out.write(reinterpret_cast<const char*>(&(nvector<T>::operator[](i))),sizeT);
         }
-      out << "]"; 
+      out << "]";
     }
 
   void BinRead(std::istream& in)
@@ -495,7 +500,7 @@ class CompVector : public nvector<T>
       in >> c >> n >> cc;
       ncomp() = c;
       resize(n);
-      
+
       int sizeT = sizeof(T);
       for(int i=0; i<nvector<T>::size(); i++)
         {

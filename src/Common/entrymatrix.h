@@ -50,7 +50,7 @@ class EntryMatrix
   int index(int i, int j,int c, int d) const {return dofindex(i,j)+compindex(c,d);}
 
   public :
-    
+
     EntryMatrix() {}
   EntryMatrix(int nd, int nc)
     {
@@ -67,7 +67,7 @@ class EntryMatrix
   ~EntryMatrix()
     {
       val.clear();
-      
+
     }
 
   const_iterator begin(int i, int j) const {return val.begin()+dofindex(i,j);}
@@ -82,18 +82,18 @@ class EntryMatrix
   void SetDimensionDof (int n, int m) {ndof =n; mdof =m; nmdof =n*m;}
   void SetDimensionComp(int n, int m) {ncomp=n; mcomp=m; nmcomp=n*m;}
   void resize() {val.reservesize(nmdof*nmcomp);}
-  
+
   int Ncomp() const {return ncomp;}
   int Mcomp() const {return mcomp;}
   int Ndof() const {return ndof;}
   int Mdof() const {return mdof;}
-  
-  double   operator()(int i, int j, int c, int d) const { return val[index(i,j,c,d)];}
-  double&  operator()(int i, int j, int c, int d)       { return val[index(i,j,c,d)];}
-  double   operator()(int i, int j, int p) const { return val[dofindex(i,j)+p];}
-  
+
+  inline double   operator()(int i, int j, int c, int d) const { return val[index(i,j,c,d)];}
+  inline double&  operator()(int i, int j, int c, int d)       { return val[index(i,j,c,d)];}
+  inline double   operator()(int i, int j, int p) const { return val[dofindex(i,j)+p];}
+
   void zero() {val.zero();}
-  
+
   friend std::ostream& operator<<(std::ostream& s, const EntryMatrix& A)
     {
     s << A.Ndof()  << "\t" << A.Mdof() << std::endl;
@@ -114,8 +114,8 @@ class EntryMatrix
       }
     return s;
     }
-  
-  
+
+
     void add(int il, int jl, int i, int j, const EntryMatrix& E)
     {
       iterator        p = begin(il,jl);
@@ -124,7 +124,7 @@ class EntryMatrix
       while(p!=q) *p++ += *pE++;
   }
 
-    void zero_row(int i1)    
+    void zero_row(int i1)
     {
       for(int j=0;j<mdof;j++)
 	{
@@ -143,7 +143,7 @@ class EntryMatrix
 	}
     }
 
-    void add_row(int i1, int i2, double s=1.) 
+    void add_row(int i1, int i2, double s=1.)
     {
       for(int j=0;j<mdof;j++)
 	{
@@ -165,13 +165,13 @@ class EntryMatrix
 	}
     }
 
-    void add_column_row(int i1, int i2)    
+    void add_column_row(int i1, int i2)
     {
       add_column(i1,i2);
       add_row   (i1,i2);
     }
 
-    void multiply_row(int i, double s=1.)    
+    void multiply_row(int i, double s=1.)
       {
 	for(int j=0;j<mdof;j++)
 	  {
@@ -180,7 +180,7 @@ class EntryMatrix
 	    while(p!=q) *p++ *= s;
 	  }
       }
-    void multiply_column(int j, double s=1.)    
+    void multiply_column(int j, double s=1.)
     {
       for(int i=0;i<ndof;i++)
 	{
@@ -190,26 +190,26 @@ class EntryMatrix
 	}
     }
 
-    void multiply_column_row(int j, double s=1.)    
+    void multiply_column_row(int j, double s=1.)
     {
       multiply_column(j,s);
       multiply_row   (j,s);
     }
 
-    void distribute_row(int s, int t1, int t2)    
+    void distribute_row(int s, int t1, int t2)
     {
       add_column(t1, s, 0.5);
       add_column(t2, s, 0.5);
       multiply_column(s,0.);
     }
 
-    void distribute_column(int s, int t1, int t2)    
+    void distribute_column(int s, int t1, int t2)
     {
       add_row(t1, s, 0.5);
       add_row(t2, s, 0.5);
       multiply_row(s,0.);
     }
-    void transpose(EntryMatrix& E)    
+    void transpose(EntryMatrix& E)
     {
       for(int i=0; i<ndof; i++)
 	{
@@ -227,7 +227,7 @@ class EntryMatrix
 	    }
 	}
     }
-    void equ(double d)    
+    void equ(double d)
     {
       for(iterator p = val.begin(); p!=val.end(); p++)
 	{

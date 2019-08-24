@@ -35,18 +35,18 @@ namespace Gascoigne
 template<int N, class T>
 class NodeMatrix : public numfixarray<N*N,T>
 {
-  
+
 public:
-  
+
   NodeMatrix<N,T>()           : numfixarray<N*N,T>() {}
   NodeMatrix<N,T>(const T& A) : numfixarray<N*N,T>(A) {}
 
-  T&       operator()(int i,int j)       { return (*this)[j+i*N];}
-  const T& operator()(int i,int j) const { return (*this)[j+i*N];}
+  inline T&       operator()(int i,int j)       { return (this->data())[j+i*N];}
+  inline const T& operator()(int i,int j) const { return (this->data())[j+i*N];}
 
-  T&       value(int i,int j)       { return (*this)[j+i*N];}
-  const T& value(int i,int j) const { return (*this)[j+i*N];}
-  
+  inline T&       value(int i,int j)       { return (this->data())[j+i*N];}
+  inline const T& value(int i,int j) const { return (this->data())[j+i*N];}
+
   void reserve(int) const {};
   void resize(int) const {};
 
@@ -77,7 +77,7 @@ public:
 
 /**************************************************/
 
-  void addmult(double k, const NodeMatrix<N,T>& A, const NodeMatrix<N,T>& B)  
+  void addmult(double k, const NodeMatrix<N,T>& A, const NodeMatrix<N,T>& B)
     // this += k*A*B
     {
       for(int i=0;i<N;i++)
@@ -86,7 +86,7 @@ public:
             {
               for(int k=0;k<N;k++)
                 {
-                  value(i,j) += k*A.value(i,k) * B.value(k,j); 
+                  value(i,j) += k*A.value(i,k) * B.value(k,j);
                 }
             }
         }
@@ -108,7 +108,7 @@ public:
 
       *this = A;
 
-      
+
       // LU decomposition
 
       for(int i=1;i<N;i++)
@@ -136,7 +136,7 @@ public:
 		}
 	    }
 	}
-      
+
 
       // Inverse von U
 
@@ -154,7 +154,7 @@ public:
 	    }
 	  value(nlin,nlin) = 1./value(nlin,nlin);
 	}
-      
+
 
       // Inverse von A
 
@@ -176,7 +176,7 @@ public:
 		}
 	    }
 	}
-      
+
     }
 
   void gauss_jordan()
@@ -185,9 +185,9 @@ public:
 
       int i,j,k,r;
       double max, hr;
-      
+
       for (i=0;i<N;i++) p[i] = i;
-      
+
       for (j=0;j<N;j++)
 	{
 	  max = fabs(value(j,j));
@@ -208,7 +208,7 @@ public:
 		}
 	      i = p[j] ; p[j] = p[r] ; p[r] = i;
 	    }
-	  
+
 	  hr = 1./value(j,j);
 	  value(j,j) = hr;
 	  for (k=0;k<N;k++)
@@ -234,9 +234,8 @@ public:
 	  for (k=0;k<N;k++) value(i,k) = hv[k];
 	}
     }
-  
+
 };
 }
 
 #endif
-

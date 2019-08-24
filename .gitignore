@@ -10,7 +10,8 @@ CMakeTmp
 Makefile
 cmake*
 *.kdev4
-
+*.ccls-cache
+*.plist
 # ignore all Results in Examples directory
 /Examples*/Results*
 
