@@ -55,12 +55,12 @@ public:
       return *this;
     }
 
-  inline const double& x() const  { return (this->data())[0]; }
-  inline const double& y() const  { return (this->data())[1]; }
-  inline const double& z() const  { return (this->data())[2]; }
-  inline double&       x()        { return (this->data())[0]; }
-  inline double&       y()        { return (this->data())[1]; }
-  inline double&       z()        { return (this->data())[2]; }
+  const double& x() const  { return (*this)[0]; }
+  const double& y() const  { return (*this)[1]; }
+  const double& z() const  { return (*this)[2]; }
+  double&       x()        { return (*this)[0]; }
+  double&       y()        { return (*this)[1]; }
+  double&       z()        { return (*this)[2]; }
 };
 
 /*------------------------------------------------------------*/

@@ -38,19 +38,19 @@ class DerivativeVector : public numfixarray<6,double>
 
  public:
 
-  inline double m() const { return (this->data())[0]; }
-  inline double x() const { return (this->data())[1]; }
-  inline double y() const { return (this->data())[2]; }
-  inline double z() const { return (this->data())[3]; }
+  inline double m() const { return (*this)[0]; }
+  inline double x() const { return (*this)[1]; }
+  inline double y() const { return (*this)[2]; }
+  inline double z() const { return (*this)[3]; }
   inline double n() const { std::cerr << "Normal derivative not written!" << std::endl;  abort(); }
-  inline double D() const { return (this->data())[5]; }  // fuer Laplace
+  inline double D() const { return (*this)[5]; }  // fuer Laplace
 
-  inline double& m() { return (this->data())[0]; }
-  inline double& x() { return (this->data())[1]; }
-  inline double& y() { return (this->data())[2]; }
-  inline double& z() { return (this->data())[3]; }
+  inline double& m() { return (*this)[0]; }
+  inline double& x() { return (*this)[1]; }
+  inline double& y() { return (*this)[2]; }
+  inline double& z() { return (*this)[3]; }
   inline double& n() { std::cerr << "Normal derivative not written!" << std::endl;  abort(); }
-  inline double& D() { return (this->data())[5]; }
+  inline double& D() { return (*this)[5]; }
 
   double aux(const std::string &name) const
     {

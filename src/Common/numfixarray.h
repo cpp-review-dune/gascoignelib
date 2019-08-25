@@ -55,7 +55,7 @@ public:
   }
   numfixarray(const numfixarray<N, T>& v) : std::array<T, N>(v)
   {
-    std::memcpy(this->data(), v.data(), N*sizeof(double));
+    std::memcpy(this->data(), v.data(), N * sizeof(double));
   }
 
   double operator*(const numfixarray& v) const;
@@ -164,8 +164,7 @@ inline double numfixarray<N, T>::norm() const
   //   n += ((*first)) * ((*first));
   //   first++;
   // }
-  const double* __restrict__ tc =
-    static_cast<const double*>(__builtin_assume_aligned(this->data(), ALIGN));
+  const double* __restrict__ tc = static_cast<const double*>(this->data());
   for (int i = 0; i < N; ++i)
   {
     n += tc[i] * tc[i];
@@ -186,8 +185,7 @@ inline double numfixarray<N, T>::norm_l1() const
   // {
   //   n += fabs((*first++));
   // }
-  const double* __restrict__ tc =
-    static_cast<const double*>(__builtin_assume_aligned(this->data(), ALIGN));
+  const double* __restrict__ tc = static_cast<const double*>(this->data());
   for (int i = 0; i < N; ++i)
   {
     n += fabs(tc[i]);
@@ -207,8 +205,7 @@ inline numfixarray<N, T>& numfixarray<N, T>::operator=(const T& d)
   // {
   //   *first++ = d;
   // }
-  double* __restrict__ tc =
-    static_cast<double*>(__builtin_assume_aligned(this->data(), ALIGN));
+  double* __restrict__ tc = static_cast<double*>(this->data());
   for (int i = 0; i < N; ++i)
   {
     tc[i] = d;
@@ -230,10 +227,8 @@ inline numfixarray<N, T>& numfixarray<N, T>::operator=(const numfixarray<N, T>& 
   //   *first++ = *vfirst++;
   // }
   // return *this;
-  const double* __restrict__ vc =
-    static_cast<const double*>(__builtin_assume_aligned(v.data(), ALIGN));
-  double* __restrict__ tc =
-    static_cast<double*>(__builtin_assume_aligned(this->data(), ALIGN));
+  const double* __restrict__ vc = static_cast<const double*>(v.data());
+  double* __restrict__ tc       = static_cast<double*>(this->data());
   for (int i = 0; i < N; ++i)
   {
     tc[i] = vc[i];
@@ -255,10 +250,8 @@ inline numfixarray<N, T>& numfixarray<N, T>::operator*=(const numfixarray<N, T>&
   //   (*first++) *= (*fd++);
   // }
   // return *this;
-  std::array<double, N>* dc =
-    static_cast<std::array<double, N>*>(__builtin_assume_aligned(&d, ALIGN));
-  std::array<double, N>* tc =
-    static_cast<std::array<double, N>*>(__builtin_assume_aligned(&this, ALIGN));
+  std::array<double, N>* __restrict__ dc = static_cast<std::array<double, N>*>(&d);
+  std::array<double, N>* __restrict__ tc = static_cast<std::array<double, N>*>(&this);
   for (int i = 0; i < N; ++i)
   {
     (*tc)[i] *= (*dc)[i];
@@ -279,8 +272,7 @@ inline numfixarray<N, T>& numfixarray<N, T>::operator*=(double d)
   //   (*first++) *= d;
   // }
   // return *this;
-  double* __restrict__ tc =
-    static_cast<double*>(__builtin_assume_aligned(this->data(), ALIGN));
+  double* __restrict__ tc = static_cast<double*>(this->data());
   for (int i = 0; i < N; ++i)
   {
     tc[i] *= d;
@@ -300,8 +292,7 @@ inline numfixarray<N, T>& numfixarray<N, T>::operator/=(double d)
   // {
   //   (*first++) /= d;
   // }
-  double* __restrict__ tc =
-    static_cast<double*>(__builtin_assume_aligned(this->data(), ALIGN));
+  double* __restrict__ tc = static_cast<double*>(this->data());
   for (int i = 0; i < N; ++i)
   {
     tc[i] /= d;
@@ -318,8 +309,7 @@ inline void numfixarray<N, T>::zero()
   // {
   //   el = 0.;
   // }
-  double* __restrict__ tc =
-    static_cast<double*>(__builtin_assume_aligned(this->data(), ALIGN));
+  double* __restrict__ tc = static_cast<double*>(this->data());
   for (int i = 0; i < N; ++i)
   {
     tc[i] = 0.0;
@@ -358,10 +348,8 @@ inline double numfixarray<N, T>::operator*(const numfixarray<N, T>& v) const
   //   d += (*first++) * (*first2++);
   // }
 
-  const double* __restrict__ vc =
-    static_cast<const double*>(__builtin_assume_aligned(v.data(), ALIGN));
-  const double* __restrict__ tc =
-    static_cast<const double*>(__builtin_assume_aligned(this->data(), ALIGN));
+  const double* __restrict__ vc = static_cast<const double*>(v.data());
+  const double* __restrict__ tc = static_cast<const double*>(this->data());
   for (int i = 0; i < N; ++i)
   {
     d += tc[i] * vc[i];
@@ -383,10 +371,8 @@ inline double numfixarray<N, T>::operator*(const nvector<T>& v) const
   // {
   //   d += (*first++) * (*first2++);
   // }
-  const double* __restrict__ vc =
-    static_cast<const double*>(__builtin_assume_aligned(v.data(), ALIGN));
-  double* __restrict__ tc =
-    static_cast<double*>(__builtin_assume_aligned(this->data(), ALIGN));
+  const double* __restrict__ vc = static_cast<const double*>(v.data());
+  double* __restrict__ tc       = static_cast<double*>(this->data());
   for (int i = 0; i < N; ++i)
   {
     d += tc[i] * vc[i];
@@ -406,8 +392,7 @@ inline void numfixarray<N, T>::equ(const T& d)
   // {
   //   (*first++) = d;
   // }
-  double* __restrict__ tc =
-    static_cast<double*>(__builtin_assume_aligned(this->data(), ALIGN));
+  double* __restrict__ tc = static_cast<double*>(this->data());
   for (int i = 0; i < N; ++i)
   {
     tc[i] = d;
@@ -427,10 +412,8 @@ inline void numfixarray<N, T>::equ(double d, const numfixarray<N, T>& v)
   // {
   //   (*first++) = d * (*first2++);
   // }
-  const double* __restrict__ vc =
-    static_cast<const double*>(__builtin_assume_aligned(v.data(), ALIGN));
-  double* __restrict__ tc =
-    static_cast<double*>(__builtin_assume_aligned(this->data(), ALIGN));
+  const double* __restrict__ vc = static_cast<const double*>(v.data());
+  double* __restrict__ tc       = static_cast<double*>(this->data());
   for (int i = 0; i < N; ++i)
   {
     tc[i] = d * vc[i];
@@ -452,12 +435,9 @@ inline void numfixarray<N, T>::equ(double d, const numfixarray<N, T>& v, double 
   // {
   //   (*first++) = d * (*first2++) + e * (*first3++);
   // }
-  const double* __restrict__ vc =
-    static_cast<const double*>(__builtin_assume_aligned(v.data(), ALIGN));
-  const double* __restrict__ wc =
-    static_cast<const double*>(__builtin_assume_aligned(w.data(), ALIGN));
-  double* __restrict__ tc =
-    static_cast<double*>(__builtin_assume_aligned(this->data(), ALIGN));
+  const double* __restrict__ vc = static_cast<const double*>(v.data());
+  const double* __restrict__ wc = static_cast<const double*>(w.data());
+  double* __restrict__ tc       = static_cast<double*>(this->data());
   for (int i = 0; i < N; ++i)
   {
     tc[i] = d * vc[i] + e * wc[i];
@@ -481,14 +461,10 @@ inline void numfixarray<N, T>::equ(double d, const numfixarray<N, T>& v, double 
   // {
   //   (*first++) = d * (*first2++) + e * (*first3++) + f * (*first4++);
   // }
-  const double* __restrict__ vc =
-    static_cast<const double*>(__builtin_assume_aligned(v.data(), ALIGN));
-  const double* __restrict__ wc =
-    static_cast<const double*>(__builtin_assume_aligned(w.data(), ALIGN));
-  const double* __restrict__ xc =
-    static_cast<const double*>(__builtin_assume_aligned(x.data(), ALIGN));
-  double* __restrict__ tc =
-    static_cast<double*>(__builtin_assume_aligned(this->data(), ALIGN));
+  const double* __restrict__ vc = static_cast<const double*>(v.data());
+  const double* __restrict__ wc = static_cast<const double*>(w.data());
+  const double* __restrict__ xc = static_cast<const double*>(x.data());
+  double* __restrict__ tc       = static_cast<double*>(this->data());
   for (int i = 0; i < N; ++i)
   {
     tc[i] = d * vc[i] + e * wc[i] + f * xc[i];
@@ -514,16 +490,11 @@ inline void numfixarray<N, T>::equ(double d, const numfixarray<N, T>& v, double 
   // {
   //   (*first++) = d * (*first2++) + e * (*first3++) + f * (*first4++) + g * (*first5++);
   // }
-  const double* __restrict__ vc =
-    static_cast<const double*>(__builtin_assume_aligned(v.data(), ALIGN));
-  const double* __restrict__ wc =
-    static_cast<const double*>(__builtin_assume_aligned(w.data(), ALIGN));
-  const double* __restrict__ xc =
-    static_cast<const double*>(__builtin_assume_aligned(x.data(), ALIGN));
-  const double* __restrict__ yc =
-    static_cast<const double*>(__builtin_assume_aligned(y.data(), ALIGN));
-  double* __restrict__ tc =
-    static_cast<double*>(__builtin_assume_aligned(this->data(), ALIGN));
+  const double* __restrict__ vc = static_cast<const double*>(v.data());
+  const double* __restrict__ wc = static_cast<const double*>(w.data());
+  const double* __restrict__ xc = static_cast<const double*>(x.data());
+  const double* __restrict__ yc = static_cast<const double*>(y.data());
+  double* __restrict__ tc       = static_cast<double*>(this->data());
   for (int i = 0; i < N; ++i)
   {
     tc[i] = d * vc[i] + e * wc[i] + f * xc[i] + g * yc[i];
@@ -554,20 +525,13 @@ inline void numfixarray<N, T>::equ(double d, const numfixarray<N, T>& v, double 
   //   (*first++) = d * (*first2++) + e * (*first3++) + f * (*first4++) + g * (*first5++)
   //                + h * (*first6++) + i * (*first7++);
   // }
-  const double* __restrict__ vc =
-    static_cast<const double*>(__builtin_assume_aligned(v.data(), ALIGN));
-  const double* __restrict__ wc =
-    static_cast<const double*>(__builtin_assume_aligned(w.data(), ALIGN));
-  const double* __restrict__ xc =
-    static_cast<const double*>(__builtin_assume_aligned(x.data(), ALIGN));
-  const double* __restrict__ yc =
-    static_cast<const double*>(__builtin_assume_aligned(y.data(), ALIGN));
-  const double* __restrict__ zc =
-    static_cast<const double*>(__builtin_assume_aligned(z.data(), ALIGN));
-  const double* __restrict__ zzc =
-    static_cast<const double*>(__builtin_assume_aligned(zz.data(), ALIGN));
-  double* __restrict__ tc =
-    static_cast<double*>(__builtin_assume_aligned(this->data(), ALIGN));
+  const double* __restrict__ vc  = static_cast<const double*>(v.data());
+  const double* __restrict__ wc  = static_cast<const double*>(w.data());
+  const double* __restrict__ xc  = static_cast<const double*>(x.data());
+  const double* __restrict__ yc  = static_cast<const double*>(y.data());
+  const double* __restrict__ zc  = static_cast<const double*>(z.data());
+  const double* __restrict__ zzc = static_cast<const double*>(zz.data());
+  double* __restrict__ tc        = static_cast<double*>(this->data());
   for (int i = 0; i < N; ++i)
   {
     tc[i] = d * vc[i] + e * wc[i] + f * xc[i] + g * yc[i] + h * zc[i] + i * zzc[i];
@@ -592,10 +556,8 @@ inline void numfixarray<N, T>::sequ(double s, double d, const numfixarray<N, T>&
   //   (*first) = s * (*first) + d * (*first2++);
   //   first++;
   // }
-  const double* __restrict__ vc =
-    static_cast<const double*>(__builtin_assume_aligned(v.data(), ALIGN));
-  double* __restrict__ tc =
-    static_cast<double*>(__builtin_assume_aligned(this->data(), ALIGN));
+  const double* __restrict__ vc = static_cast<const double*>(v.data());
+  double* __restrict__ tc       = static_cast<double*>(this->data());
   for (int i = 0; i < N; ++i)
   {
     tc[i] = s * tc[i] + d * vc[i];
@@ -607,8 +569,7 @@ inline void numfixarray<N, T>::sequ(double s, double d, const numfixarray<N, T>&
 template <size_t N, typename T>
 inline void numfixarray<N, T>::add(double d)
 {
-  double* __restrict__ tc =
-    static_cast<double*>(__builtin_assume_aligned(this->data(), ALIGN));
+  double* __restrict__ tc = static_cast<double*>(this->data());
   for (int i = 0; i < N; ++i)
   {
     tc[i] += d;
@@ -620,10 +581,8 @@ inline void numfixarray<N, T>::add(double d)
 template <size_t N, typename T>
 inline void numfixarray<N, T>::add(T d, const numfixarray<N, T>& v)
 {
-  const double* __restrict__ vc =
-    static_cast<const double*>(__builtin_assume_aligned(v.data(), ALIGN));
-  double* __restrict__ tc =
-    static_cast<double*>(__builtin_assume_aligned(this->data(), ALIGN));
+  const double* __restrict__ vc = static_cast<const double*>(v.data());
+  double* __restrict__ tc       = static_cast<double*>(this->data());
   for (int i = 0; i < N; ++i)
   {
     tc[i] += d * vc[i];
@@ -645,12 +604,9 @@ inline void numfixarray<N, T>::add(double d, const numfixarray<N, T>& v, double 
   // {
   //   (*first++) += d * (*first2++) + e * (*first3++);
   // }
-  const double* __restrict__ vc =
-    static_cast<const double*>(__builtin_assume_aligned(v.data(), ALIGN));
-  const double* __restrict__ wc =
-    static_cast<const double*>(__builtin_assume_aligned(w.data(), ALIGN));
-  double* __restrict__ tc =
-    static_cast<double*>(__builtin_assume_aligned(this->data(), ALIGN));
+  const double* __restrict__ vc = static_cast<const double*>(v.data());
+  const double* __restrict__ wc = static_cast<const double*>(w.data());
+  double* __restrict__ tc       = static_cast<double*>(this->data());
   for (int i = 0; i < N; ++i)
   {
     tc[i] += d * vc[i] + e * wc[i];
@@ -675,14 +631,10 @@ inline void numfixarray<N, T>::add(double d, const numfixarray<N, T>& v, double 
   //   (*first++) += d * (*first2++) + e * (*first3++) + f * (*first4++);
   // }
 
-  const double* __restrict__ vc =
-    static_cast<const double*>(__builtin_assume_aligned(v.data(), ALIGN));
-  const double* __restrict__ wc =
-    static_cast<const double*>(__builtin_assume_aligned(w.data(), ALIGN));
-  const double* __restrict__ xc =
-    static_cast<const double*>(__builtin_assume_aligned(x.data(), ALIGN));
-  double* __restrict__ tc =
-    static_cast<double*>(__builtin_assume_aligned(this->data(), ALIGN));
+  const double* __restrict__ vc = static_cast<const double*>(v.data());
+  const double* __restrict__ wc = static_cast<const double*>(w.data());
+  const double* __restrict__ xc = static_cast<const double*>(x.data());
+  double* __restrict__ tc       = static_cast<double*>(this->data());
   for (int i = 0; i < N; ++i)
   {
     tc[i] += d * vc[i] + e * wc[i] + f * xc[i];
@@ -703,10 +655,8 @@ inline void numfixarray<N, T>::sadd(double a, double d, const numfixarray<N, T>&
   //   (*first) = a * (*first) + d * (*first2++);
   //   first++;
   // }
-  const double* __restrict__ vc =
-    static_cast<const double*>(__builtin_assume_aligned(v.data(), ALIGN));
-  double* __restrict__ tc =
-    static_cast<double*>(__builtin_assume_aligned(this->data(), ALIGN));
+  const double* __restrict__ vc = static_cast<const double*>(v.data());
+  double* __restrict__ tc       = static_cast<double*>(this->data());
   for (int i = 0; i < N; ++i)
   {
     tc[i] += a * tc[i] + d * vc[i];

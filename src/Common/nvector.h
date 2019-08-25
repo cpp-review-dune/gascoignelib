@@ -1,26 +1,25 @@
 /**
-*
-* Copyright (C) 2004, 2005, 2008 by the Gascoigne 3D authors
-*
-* This file is part of Gascoigne 3D
-*
-* Gascoigne 3D is free software: you can redistribute it
-* and/or modify it under the terms of the GNU General Public
-* License as published by the Free Software Foundation, either
-* version 3 of the License, or (at your option) any later
-* version.
-*
-* Gascoigne 3D is distributed in the hope that it will be
-* useful, but WITHOUT ANY WARRANTY; without even the implied
-* warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-* PURPOSE.  See the GNU General Public License for more
-* details.
-*
-* Please refer to the file LICENSE.TXT for further information
-* on this license.
-*
-**/
-
+ *
+ * Copyright (C) 2004, 2005, 2008 by the Gascoigne 3D authors
+ *
+ * This file is part of Gascoigne 3D
+ *
+ * Gascoigne 3D is free software: you can redistribute it
+ * and/or modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation, either
+ * version 3 of the License, or (at your option) any later
+ * version.
+ *
+ * Gascoigne 3D is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more
+ * details.
+ *
+ * Please refer to the file LICENSE.TXT for further information
+ * on this license.
+ *
+ **/
 
 #ifndef __nvector_h
 #define __nvector_h
@@ -38,545 +37,524 @@
 
 namespace Gascoigne
 {
-  template <class T>
-  class nvector : public std::vector<T>
+template <class T>
+class nvector : public std::vector<T>
+{
+private:
+public:
+  // ~nvector()
+  // {
+  // }
+  nvector() : std::vector<T>()
   {
-  private:
-  public:
-
-    // ~nvector()
-    // {
-    // }
-    nvector()
-        : std::vector<T>()
-    {
-    }
-    nvector(size_t n)
-        : std::vector<T>(n)
-    {
-    }
-    nvector(size_t n, const T &d)
-        : std::vector<T>(n, d)
-    {
-    }
-    nvector(const std::vector<T> &v)
-        : std::vector<T>(v)
-    {
-    }
-
-    friend std::ostream &operator<<(std::ostream &s, const nvector<T> &A)
-    {
-      std::ostream_iterator<T> os(s, " ");
-      copy(A.begin(), A.end(), os);
-      return s;
-    }
-    friend std::istream &operator>>(std::istream &s, nvector<T> &A)
-    {
-      auto p = A.begin();
-      while (p != A.end())
-        s >> *p++;
-      return s;
-    }
-
-    void write_data(std::ostream &s) const
-    {
-      s << std::vector<T>::size() << std::endl << *this;
-    }
-
-    void read_data(std::istream &s)
-    {
-      size_t n;
-      s >> n;
-      reservesize(n);
-      s >> *this;
-    }
-
-    const T &secure_access(int i) const
-    {
-      assert(i < std::vector<T>::size());
-      assert(i >= 0);
-      return std::vector<T>::operator[](i);
-    }
-    T &secure_access(int i)
-    {
-      assert(i < std::vector<T>::size());
-      assert(i >= 0);
-      return std::vector<T>::operator[](i);
-    }
-
-
-    T operator*(const nvector &v) const;
-    nvector<T> &operator=(const T &);
-    nvector<T> &operator=(const std::vector<T> &);
-    nvector<T> &operator*=(const T &d);
-    nvector<T> &operator+=(const T &d)
-    {
-      add(d);
-      return *this;
-    }
-    nvector<T> &operator+=(const nvector &v)
-    {
-      add(1, v);
-      return *this;
-    }
-    nvector<T> &operator-=(const nvector &v)
-    {
-      add(-1, v);
-      return *this;
-    }
-
-    void zero();
-    void equ(const T &);
-    void equ(const T &, const nvector &);
-    void equ(const T &, const nvector &, const T &, const nvector &);
-    void equ(const T &,
-             const nvector &,
-             const T &,
-             const nvector &,
-             const T &,
-             const nvector &);
-    void sequ(const T &, const T &, const nvector &);
-    void add(const T &);
-    void add(const T &, const nvector &);
-    void add(const T &, const nvector &, const T &, const nvector &);
-    void add(const T &,
-             const nvector &,
-             const T &,
-             const nvector &,
-             const T &,
-             const nvector &);
-    void sadd(const T &, const T &, const nvector &);
-    double max() const;
-    double min() const;
-    T sum() const;
-    double norm() const;
-    double norm_l1() const;
-    double norm_l8() const;
-
-    void ReInit(size_t n)
-    {
-      std::vector<T>::reserve(n);
-      std::vector<T>::resize(n);
-    }
-    void memory(size_t n)
-    {
-      ReInit(n);
-    }
-    void reservesize(size_t n)
-    {
-      ReInit(n);
-    }
-    void reservesize(size_t n, const T &s)
-    {
-      std::vector<T>::reserve(n);
-      std::vector<T>::resize(n, s);
-    }
-    void reservesize(const nvector<T> &v)
-    {
-      reservesize(v.size());
-    }
-
-    void BinWrite(std::ostream &out) const;
-    void BinRead(std::istream &in);
-    int find(const T &x) const;
-  };
-
-
-  /**************************************************/
-
-  template <class T>
-  inline double nvector<T>::norm() const
+  }
+  nvector(size_t n) : std::vector<T>(n)
   {
-    auto first = std::vector<T>::begin();
-    auto last = std::vector<T>::end();
-
-    T n(0);
-    while (first != last)
-    {
-      n += ((*first)) * ((*first));
-      first++;
-    }
-    return sqrt(static_cast<double>(n));
+  }
+  nvector(size_t n, const T& d) : std::vector<T>(n, d)
+  {
+  }
+  nvector(const std::vector<T>& v) : std::vector<T>(v)
+  {
   }
 
-  /**************************************************/
-
-  template <class T>
-  inline T nvector<T>::sum() const
+  friend std::ostream& operator<<(std::ostream& s, const nvector<T>& A)
   {
-    auto first = std::vector<T>::begin();
-    auto last = std::vector<T>::end();
-
-    T n(0);
-    while (first != last)
-    {
-      n += (*first++);
-    }
-    return n;
+    std::ostream_iterator<T> os(s, " ");
+    copy(A.begin(), A.end(), os);
+    return s;
+  }
+  friend std::istream& operator>>(std::istream& s, nvector<T>& A)
+  {
+    auto p = A.begin();
+    while (p != A.end())
+      s >> *p++;
+    return s;
   }
 
-  /**************************************************/
-
-  template <class T>
-  inline double nvector<T>::norm_l1() const
+  void write_data(std::ostream& s) const
   {
-    auto first = std::vector<T>::begin();
-    auto last = std::vector<T>::end();
-
-    double n(0);
-    while (first != last)
-    {
-      n += fabs((*first++));
-    }
-    return n;
+    s << std::vector<T>::size() << std::endl << *this;
   }
 
-  /**************************************************/
-
-  template <class T>
-  inline double nvector<T>::norm_l8() const
+  void read_data(std::istream& s)
   {
-    auto first = std::vector<T>::begin();
-    auto last = std::vector<T>::end();
-
-    double n(0);
-    while (first != last)
-    {
-      n = std::max(n, fabs(*first));
-      first++;
-    }
-    return n;
+    size_t n;
+    s >> n;
+    reservesize(n);
+    s >> *this;
   }
 
-  /**************************************************/
-
-  template <class T>
-  inline nvector<T> &nvector<T>::operator=(const T &d)
+  const T& secure_access(int i) const
   {
-    auto first = std::vector<T>::begin();
-    auto last = std::vector<T>::end();
+    assert(i < std::vector<T>::size());
+    assert(i >= 0);
+    return std::vector<T>::operator[](i);
+  }
+  T& secure_access(int i)
+  {
+    assert(i < std::vector<T>::size());
+    assert(i >= 0);
+    return std::vector<T>::operator[](i);
+  }
 
-    while (first != last)
-    {
-      *first++ = d;
-    }
+  T operator*(const nvector& __restrict__ v) const;
+  nvector<T>& operator=(const T&);
+  nvector<T>& operator=(const std::vector<T>&);
+  nvector<T>& operator*=(const T& d);
+  nvector<T>& operator+=(const T& d)
+  {
+    add(d);
+    return *this;
+  }
+  nvector<T>& operator+=(const nvector& __restrict__ v)
+  {
+    add(1, v);
+    return *this;
+  }
+  nvector<T>& operator-=(const nvector& __restrict__ v)
+  {
+    add(-1, v);
     return *this;
   }
 
-  /**************************************************/
+  void zero();
+  void equ(const T&);
+  void equ(const T&, const nvector&);
+  void equ(const T&, const nvector&, const T&, const nvector&);
+  void equ(const T&, const nvector&, const T&, const nvector&, const T&, const nvector&);
+  void sequ(const T&, const T&, const nvector&);
+  void add(const T&);
+  void add(const T&, const nvector&);
+  void add(const T&, const nvector&, const T&, const nvector&);
+  void add(const T&, const nvector&, const T&, const nvector&, const T&, const nvector&);
+  void sadd(const T&, const T&, const nvector&);
+  double max() const;
+  double min() const;
+  T sum() const;
+  double norm() const;
+  double norm_l1() const;
+  double norm_l8() const;
 
-  template <class T>
-  inline nvector<T>& nvector<T>::operator=(const std::vector<T>& __restrict__ v)
+  void ReInit(size_t n)
   {
-    assert(std::vector<T>::size() == v.std::template vector<T>::size());
-    auto first = std::vector<T>::begin();
-    auto last = std::vector<T>::end();
-    auto vfirst = v.std::template vector<T>::begin();
-
-    while (first != last)
-    {
-      *first++ = *vfirst++;
-    }
-    return *this;
-  }
-
-  /**************************************************/
-
-  template <class T>
-  inline nvector<T> &nvector<T>::operator*=(const T &d)
-  {
-    auto first = std::vector<T>::begin();
-    auto last = std::vector<T>::end();
-
-    while (first != last)
-    {
-      (*first++) *= d;
-    }
-    return *this;
-  }
-
-  /**************************************************/
-
-  template <class T>
-  inline void nvector<T>::zero()
-  {
-    auto first = std::vector<T>::begin();
-    auto last = std::vector<T>::end();
-
-    while (first != last)
-    {
-      *first++ = 0;
-    }
-  }
-
-  /**************************************************/
-
-  template <class T>
-  inline double nvector<T>::max() const
-  {
-    double d = 0; // std::numeric_limits<double>::min();
-    /*   double d = std::numeric_limits<double>::min(); */
-    auto first = std::vector<T>::begin();
-    auto last = std::vector<T>::end();
-
-    while (first != last)
-    {
-      d = std::max(d, fabs((*first)));
-      first++;
-    }
-    return d;
-  }
-
-  /**************************************************/
-
-  template <class T>
-  inline double nvector<T>::min() const
-  {
-    double d = 100000.; // std::numeric_limits<double>::max();
-    /*   double d = std::numeric_limits<double>::max(); */
-    auto first = std::vector<T>::begin();
-    auto last = std::vector<T>::end();
-
-    while (first != last)
-    {
-      d = std::min(d, fabs((*first)));
-      first++;
-    }
-    return d;
-  }
-
-  /**************************************************/
-
-  template <class T>
-  inline T nvector<T>::operator*(const nvector<T>& __restrict__ v) const
-  {
-    auto first = std::vector<T>::begin();
-    auto last = std::vector<T>::end();
-    auto first2 = v.begin();
-
-    T d(0);
-    while (first != last)
-    {
-      d += (*first++) * (*first2++);
-    }
-    return d;
-
-    // return inner_product(first,last,first2,0.);
-  }
-
-  /**************************************************/
-
-  template <class T>
-  inline void nvector<T>::equ(const T& __restrict__ d)
-  {
-    auto first = std::vector<T>::begin();
-    auto last = std::vector<T>::end();
-
-    while (first != last)
-    {
-      (*first++) = d;
-    }
-  }
-
-  /**************************************************/
-
-  template <class T>
-  inline void nvector<T>::equ(const T& d, const nvector<T>& __restrict__ v)
-  {
-    auto first = std::vector<T>::begin();
-    auto last = std::vector<T>::end();
-    auto first2 = v.begin();
-
-    while (first != last)
-    {
-      (*first++) = d * (*first2++);
-    }
-  }
-
-  /**************************************************/
-
-  template <class T>
-  inline void nvector<T>::equ(const T &d,
-                              const nvector<T> &v,
-                              const T &e,
-                              const nvector<T> &w)
-  {
-    auto first = std::vector<T>::begin();
-    auto last = std::vector<T>::end();
-    auto first2 = v.begin();
-    auto first3 = w.begin();
-
-    while (first != last)
-    {
-      (*first++) = d * (*first2++) + e * (*first3++);
-    }
-  }
-
-  /**************************************************/
-
-  template <class T>
-  inline void nvector<T>::equ(const T& d, const nvector<T>& __restrict__ v,
-                              const T& __restrict__ e, const nvector<T>& __restrict__ w,
-                              const T& f, const nvector<T>& __restrict__ x)
-  {
-    auto first = std::vector<T>::begin();
-    auto last = std::vector<T>::end();
-    auto first2 = v.begin();
-    auto first3 = w.begin();
-    auto first4 = x.begin();
-
-    while (first != last)
-    {
-      (*first++) = d * (*first2++) + e * (*first3++) + f * (*first4++);
-    }
-  }
-
-  /**************************************************/
-
-  template <class T>
-  inline void nvector<T>::sequ(const T& s, const T& d, const nvector<T>& __restrict__ v)
-  {
-    auto first = std::vector<T>::begin();
-    auto last = std::vector<T>::end();
-    auto first2 = v.begin();
-
-    while (first != last)
-    {
-      (*first) = s * (*first) + d * (*first2++);
-      first++;
-    }
-  }
-
-  /**************************************************/
-
-  template <class T>
-  inline void nvector<T>::add(const T &d)
-  {
-    auto first = std::vector<T>::begin();
-    auto last = std::vector<T>::end();
-
-    while (first != last)
-    {
-      (*first++) += d;
-    }
-  }
-
-  /**************************************************/
-
-  template <class T>
-  inline void nvector<T>::add(const T& d, const nvector<T>& __restrict__ v)
-  {
-    auto first = std::vector<T>::begin();
-    auto last = std::vector<T>::end();
-    auto first2 = v.begin();
-
-    while (first != last)
-    {
-      (*first++) += d * (*first2++);
-    }
-  }
-
-  /**************************************************/
-
-  template <class T>
-  inline void nvector<T>::add(const T& d, const nvector<T>& __restrict__ v, const T& e,
-                              const nvector<T>& __restrict__ w)
-  {
-    auto first = std::vector<T>::begin();
-    auto last = std::vector<T>::end();
-    auto first2 = v.begin();
-    auto first3 = w.begin();
-
-    while (first != last)
-    {
-      (*first++) += d * (*first2++) + e * (*first3++);
-    }
-  }
-
-  /**************************************************/
-
-  template <class T>
-  inline void nvector<T>::add(const T& d, const nvector<T>& __restrict__ v, const T& e,
-                              const nvector<T>& __restrict__ w, const T& f,
-                              const nvector<T>& __restrict__ x)
-  {
-    auto first = std::vector<T>::begin();
-    auto last = std::vector<T>::end();
-    auto first2 = v.begin();
-    auto first3 = w.begin();
-    auto first4 = x.begin();
-
-    while (first != last)
-    {
-      (*first++) += d * (*first2++) + e * (*first3++) + f * (*first4++);
-    }
-  }
-
-  /**************************************************/
-
-  template <class T>
-  inline void nvector<T>::sadd(const T& a, const T& d, const nvector<T>& __restrict__ v)
-  {
-    auto first = std::vector<T>::begin();
-    auto last = std::vector<T>::end();
-    auto first2 = v.begin();
-
-    while (first != last)
-    {
-      (*first) = a * (*first) + d * (*first2++);
-      first++;
-    }
-  }
-
-  /**************************************************/
-
-  template <class T>
-  inline void nvector<T>::BinWrite(std::ostream &out) const
-  {
-    out << std::vector<T>::size() << std::endl << "[";
-
-    int sizeT = sizeof(T);
-    for (int i = 0; i < std::vector<T>::size(); i++)
-    {
-      out.write(
-          reinterpret_cast<const char *>(&(std::vector<T>::operator[](i))),
-          sizeT);
-    }
-    out << "]";
-  }
-
-  /**********************************************************/
-
-  template <class T>
-  inline void nvector<T>::BinRead(std::istream &in)
-  {
-    char c;
-    int n;
-    in >> n >> c;
+    std::vector<T>::reserve(n);
     std::vector<T>::resize(n);
-
-    int sizeT = sizeof(T);
-    for (int i = 0; i < std::vector<T>::size(); i++)
-    {
-      in.read(reinterpret_cast<char *>(&(nvector<T>::operator[](i))), sizeT);
-    }
-    in >> c;
   }
-
-  /**********************************************************/
-
-  template <class T>
-  inline int nvector<T>::find(const T &x) const
+  void memory(size_t n)
   {
-    for (int i = 0; i < std::vector<T>::size(); i++)
-    {
-      if ((*this)[i] == x)
-        return i;
-    }
-    return -1;
+    ReInit(n);
+  }
+  void reservesize(size_t n)
+  {
+    ReInit(n);
+  }
+  void reservesize(size_t n, const T& s)
+  {
+    std::vector<T>::reserve(n);
+    std::vector<T>::resize(n, s);
+  }
+  void reservesize(const nvector<T>& v)
+  {
+    reservesize(v.size());
   }
 
-  /**********************************************************/
+  void BinWrite(std::ostream& out) const;
+  void BinRead(std::istream& in);
+  int find(const T& x) const;
+};
+
+/**************************************************/
+
+template <class T>
+inline double nvector<T>::norm() const
+{
+  auto first = std::vector<T>::begin();
+  auto last  = std::vector<T>::end();
+
+  T n(0);
+  while (first != last)
+  {
+    n += ((*first)) * ((*first));
+    first++;
+  }
+  return sqrt(static_cast<double>(n));
 }
+
+/**************************************************/
+
+template <class T>
+inline T nvector<T>::sum() const
+{
+  auto first = std::vector<T>::begin();
+  auto last  = std::vector<T>::end();
+
+  T n(0);
+  while (first != last)
+  {
+    n += (*first++);
+  }
+  return n;
+}
+
+/**************************************************/
+
+template <class T>
+inline double nvector<T>::norm_l1() const
+{
+  auto first = std::vector<T>::begin();
+  auto last  = std::vector<T>::end();
+
+  double n(0);
+  while (first != last)
+  {
+    n += fabs((*first++));
+  }
+  return n;
+}
+
+/**************************************************/
+
+template <class T>
+inline double nvector<T>::norm_l8() const
+{
+  auto first = std::vector<T>::begin();
+  auto last  = std::vector<T>::end();
+
+  double n(0);
+  while (first != last)
+  {
+    n = std::max(n, fabs(*first));
+    first++;
+  }
+  return n;
+}
+
+/**************************************************/
+
+template <class T>
+inline nvector<T>& nvector<T>::operator=(const T& d)
+{
+  auto first = std::vector<T>::begin();
+  auto last  = std::vector<T>::end();
+
+  while (first != last)
+  {
+    *first++ = d;
+  }
+  return *this;
+}
+
+/**************************************************/
+
+template <class T>
+inline nvector<T>& nvector<T>::operator=(const std::vector<T>& __restrict__ v)
+{
+  assert(std::vector<T>::size() == v.std::template vector<T>::size());
+  auto first  = std::vector<T>::begin();
+  auto last   = std::vector<T>::end();
+  auto vfirst = v.std::template vector<T>::begin();
+
+  while (first != last)
+  {
+    *first++ = *vfirst++;
+  }
+  return *this;
+}
+
+/**************************************************/
+
+template <class T>
+inline nvector<T>& nvector<T>::operator*=(const T& d)
+{
+  auto first = std::vector<T>::begin();
+  auto last  = std::vector<T>::end();
+
+  while (first != last)
+  {
+    (*first++) *= d;
+  }
+  return *this;
+}
+
+/**************************************************/
+
+template <class T>
+inline void nvector<T>::zero()
+{
+  auto first = std::vector<T>::begin();
+  auto last  = std::vector<T>::end();
+
+  while (first != last)
+  {
+    *first++ = 0;
+  }
+}
+
+/**************************************************/
+
+template <class T>
+inline double nvector<T>::max() const
+{
+  double d = 0;  // std::numeric_limits<double>::min();
+  /*   double d = std::numeric_limits<double>::min(); */
+  auto first = std::vector<T>::begin();
+  auto last  = std::vector<T>::end();
+
+  while (first != last)
+  {
+    d = std::max(d, fabs((*first)));
+    first++;
+  }
+  return d;
+}
+
+/**************************************************/
+
+template <class T>
+inline double nvector<T>::min() const
+{
+  double d = 100000.;  // std::numeric_limits<double>::max();
+  /*   double d = std::numeric_limits<double>::max(); */
+  auto first = std::vector<T>::begin();
+  auto last  = std::vector<T>::end();
+
+  while (first != last)
+  {
+    d = std::min(d, fabs((*first)));
+    first++;
+  }
+  return d;
+}
+
+/**************************************************/
+
+template <class T>
+inline T nvector<T>::operator*(const nvector<T>& __restrict__ v) const
+{
+  auto first  = std::vector<T>::begin();
+  auto last   = std::vector<T>::end();
+  auto first2 = v.begin();
+
+  T d(0);
+  while (first != last)
+  {
+    d += (*first++) * (*first2++);
+  }
+  return d;
+
+  // return inner_product(first,last,first2,0.);
+}
+
+/**************************************************/
+
+template <class T>
+inline void nvector<T>::equ(const T& __restrict__ d)
+{
+  auto first = std::vector<T>::begin();
+  auto last  = std::vector<T>::end();
+
+  while (first != last)
+  {
+    (*first++) = d;
+  }
+}
+
+/**************************************************/
+
+template <class T>
+inline void nvector<T>::equ(const T& d, const nvector<T>& __restrict__ v)
+{
+  auto first  = std::vector<T>::begin();
+  auto last   = std::vector<T>::end();
+  auto first2 = v.begin();
+
+  while (first != last)
+  {
+    (*first++) = d * (*first2++);
+  }
+}
+
+/**************************************************/
+
+template <class T>
+inline void nvector<T>::equ(const T& d, const nvector<T>& v, const T& e,
+                            const nvector<T>& w)
+{
+  auto first  = std::vector<T>::begin();
+  auto last   = std::vector<T>::end();
+  auto first2 = v.begin();
+  auto first3 = w.begin();
+
+  while (first != last)
+  {
+    (*first++) = d * (*first2++) + e * (*first3++);
+  }
+}
+
+/**************************************************/
+
+template <class T>
+inline void nvector<T>::equ(const T& d, const nvector<T>& __restrict__ v,
+                            const T& __restrict__ e, const nvector<T>& __restrict__ w,
+                            const T& f, const nvector<T>& __restrict__ x)
+{
+  auto first  = std::vector<T>::begin();
+  auto last   = std::vector<T>::end();
+  auto first2 = v.begin();
+  auto first3 = w.begin();
+  auto first4 = x.begin();
+
+  while (first != last)
+  {
+    (*first++) = d * (*first2++) + e * (*first3++) + f * (*first4++);
+  }
+}
+
+/**************************************************/
+
+template <class T>
+inline void nvector<T>::sequ(const T& s, const T& d, const nvector<T>& __restrict__ v)
+{
+  auto first  = std::vector<T>::begin();
+  auto last   = std::vector<T>::end();
+  auto first2 = v.begin();
+
+  while (first != last)
+  {
+    (*first) = s * (*first) + d * (*first2++);
+    first++;
+  }
+}
+
+/**************************************************/
+
+template <class T>
+inline void nvector<T>::add(const T& d)
+{
+  auto first = std::vector<T>::begin();
+  auto last  = std::vector<T>::end();
+
+  while (first != last)
+  {
+    (*first++) += d;
+  }
+}
+
+/**************************************************/
+
+template <class T>
+inline void nvector<T>::add(const T& d, const nvector<T>& __restrict__ v)
+{
+  auto first  = std::vector<T>::begin();
+  auto last   = std::vector<T>::end();
+  auto first2 = v.begin();
+
+  while (first != last)
+  {
+    (*first++) += d * (*first2++);
+  }
+}
+
+/**************************************************/
+
+template <class T>
+inline void nvector<T>::add(const T& d, const nvector<T>& __restrict__ v, const T& e,
+                            const nvector<T>& __restrict__ w)
+{
+  auto first  = std::vector<T>::begin();
+  auto last   = std::vector<T>::end();
+  auto first2 = v.begin();
+  auto first3 = w.begin();
+
+  while (first != last)
+  {
+    (*first++) += d * (*first2++) + e * (*first3++);
+  }
+}
+
+/**************************************************/
+
+template <class T>
+inline void nvector<T>::add(const T& d, const nvector<T>& __restrict__ v, const T& e,
+                            const nvector<T>& __restrict__ w, const T& f,
+                            const nvector<T>& __restrict__ x)
+{
+  auto first  = std::vector<T>::begin();
+  auto last   = std::vector<T>::end();
+  auto first2 = v.begin();
+  auto first3 = w.begin();
+  auto first4 = x.begin();
+
+  while (first != last)
+  {
+    (*first++) += d * (*first2++) + e * (*first3++) + f * (*first4++);
+  }
+}
+
+/**************************************************/
+
+template <class T>
+inline void nvector<T>::sadd(const T& a, const T& d, const nvector<T>& __restrict__ v)
+{
+  auto first  = std::vector<T>::begin();
+  auto last   = std::vector<T>::end();
+  auto first2 = v.begin();
+
+  while (first != last)
+  {
+    (*first) = a * (*first) + d * (*first2++);
+    first++;
+  }
+}
+
+/**************************************************/
+
+template <class T>
+inline void nvector<T>::BinWrite(std::ostream& out) const
+{
+  out << std::vector<T>::size() << std::endl << "[";
+
+  int sizeT = sizeof(T);
+  for (int i = 0; i < std::vector<T>::size(); i++)
+  {
+    out.write(reinterpret_cast<const char*>(&(std::vector<T>::operator[](i))), sizeT);
+  }
+  out << "]";
+}
+
+/**********************************************************/
+
+template <class T>
+inline void nvector<T>::BinRead(std::istream& in)
+{
+  char c;
+  int n;
+  in >> n >> c;
+  std::vector<T>::resize(n);
+
+  int sizeT = sizeof(T);
+  for (int i = 0; i < std::vector<T>::size(); i++)
+  {
+    in.read(reinterpret_cast<char*>(&(nvector<T>::operator[](i))), sizeT);
+  }
+  in >> c;
+}
+
+/**********************************************************/
+
+template <class T>
+inline int nvector<T>::find(const T& x) const
+{
+  for (int i = 0; i < std::vector<T>::size(); i++)
+  {
+    if ((*this)[i] == x)
+      return i;
+  }
+  return -1;
+}
+
+/**********************************************************/
+}  // namespace Gascoigne
 
 #endif
