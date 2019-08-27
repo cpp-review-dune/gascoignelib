@@ -229,7 +229,7 @@ namespace Gascoigne
 
 
     //////////////////////////////////////////////////
-    void Transformation(nmatrix<double> &T, int iq) const
+    virtual void Transformation(nmatrix<double> &T, int iq) const
     {
       assert(GetDofHandler()->dimension() == DIM);
       int ne = GetDofHandler()->nodes_per_element(DEGREE);

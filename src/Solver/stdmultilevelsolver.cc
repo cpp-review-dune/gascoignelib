@@ -356,10 +356,8 @@ namespace Gascoigne
     for (FunctionalContainer::const_iterator it = GetFunctionalContainer()->begin();
 	 it!=GetFunctionalContainer()->end();++it,++i)
       {
-	cout << it->first << " ";
 	j[i] = GetSolver(ComputeLevel)->ComputeFunctional(f,u,it->second);
       }
-    cout << endl;
     return j;
   }
 
