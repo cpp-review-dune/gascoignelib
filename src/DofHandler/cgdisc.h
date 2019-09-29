@@ -341,8 +341,8 @@ public:
       for (int ii = 0; ii < ne; ii++)
       {
         Vertex2d v = GetDofHandler()->vertex2d(indices[ii]);
-        T(0, ii)   = v.x();
-        T(1, ii)   = v.y();
+        T(0, ii)   = v[0];
+        T(1, ii)   = v[1];
       }
     }
     else if (DIM == 3)
@@ -350,9 +350,9 @@ public:
       for (int ii = 0; ii < ne; ii++)
       {
         Vertex3d v = GetDofHandler()->vertex3d(indices[ii]);
-        T(0, ii)   = v.x();
-        T(1, ii)   = v.y();
-        T(2, ii)   = v.z();
+        T(0, ii)   = v[0];
+        T(1, ii)   = v[1];
+        T(2, ii)   = v[2];
       }
     }
   }
@@ -449,7 +449,7 @@ public:
   void GlobalToLocalCell(LocalVector& U, const GlobalVector& u, int iq) const
   {
     U.ReInit(u.ncomp(), 1);
-#pragma omp simd
+    //#pragma omp simd
     for (int c = 0; c < u.ncomp(); ++c)
       U(0, c) = u(iq, c);
   }
@@ -501,11 +501,9 @@ public:
         {
           Transformation(T, iq);
           finiteelement.ReInit(T);
-
           GlobalToLocal(__U, u, iq);
           GlobalToLocalData(iq, __QN, __QC);
           EQ->point_cell(GetDofHandler()->material(DEGREE, iq));
-
           integrator.Form(*EQ, __F, finiteelement, __U, __QN, __QC);
           LocalToGlobal(f, __F, iq, d);
         }
@@ -534,6 +532,7 @@ public:
       }
     }
   }
+
   void Rhs(GlobalVector& f, const DomainRightHandSide& RHS, double s) const
   {
     LocalParameterData QP;
@@ -677,7 +676,6 @@ public:
       const auto* BEQ = PD.NewBoundaryEquation();
       auto COLS       = PD.GetBoundaryManager()->GetBoundaryEquationColors();
       BEQ->SetParameterData(QP);
-
       for (auto col : COLS)
       {
         const IntVector& q = *GetDofHandler()->ElementOnBoundary(DEGREE, col);
@@ -748,6 +746,48 @@ public:
       delete BEQ;
     }
   }
+
+  void BoundaryRhs(GlobalVector& f, const IntSet& Colors,
+                   const BoundaryRightHandSide& NRHS, double s) const override
+  {
+    LocalParameterData QP;
+    GlobalToGlobalData(QP);
+    NRHS.SetParameterData(QP);
+
+    nmatrix<double> T;
+    FINITEELEMENT finiteelement;
+    INTEGRATOR integrator;
+    integrator.BasicInit();
+    LocalVector __U, __F;
+    LocalData __QN, __QC;
+    // if constexpr (experiments::do_experiments)
+    // {
+    //   std::cerr << "Do experiments";
+    // }
+    // experiments::stop_watch("::RHS:: Begin timing...", "::RHS:: Elapsed time ",
+    //                         std::cerr);
+    // Rhs muss im Problemdescriptor neu erstellt werden, genau wie Equation...
+    for (auto col : Colors)
+    {
+      const IntVector& q = *GetDofHandler()->ElementOnBoundary(DEGREE, col);
+      const IntVector& l = *GetDofHandler()->ElementLocalOnBoundary(DEGREE, col);
+
+//#pragma omp for schedule(static)
+      for (int i = 0; i < q.size(); i++)
+      {
+        int iq  = q[i];
+        int ile = l[i];
+
+        Transformation(T, iq);
+        finiteelement.ReInit(T);
+
+        GlobalToLocalData(iq, __QN, __QC);
+        integrator.BoundaryRhs(NRHS, __F, finiteelement, ile, col, __QN, __QC);
+        LocalToGlobal(f, __F, iq, s);
+      }
+    }
+  }
+
   double ComputeBoundaryFunctional(const GlobalVector& u, const IntSet& Colors,
                                    const BoundaryFunctional& BF) const
   {

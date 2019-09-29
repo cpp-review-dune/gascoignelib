@@ -35,8 +35,8 @@ namespace Gascoigne
 
 BaseQ23d::BaseQ23d()
 {
-  N  .resize(NDOF);  
-  DN .resize(NDOF);  
+  N  .resize(NDOF);
+  DN .resize(NDOF);
   //DDN.resize(NDOF);
 
   //for(int i=0;i<NDOF;i++) DDN[i].zero();
@@ -50,8 +50,8 @@ BaseQ23d::BaseQ23d()
 
 void BaseQ23d::point(const Vertex3d& s)const
 {
-  for(int i=0;i<NDOF;i++) 
-    { 
+  for(int i=0;i<NDOF;i++)
+    {
       // nicht geprueft !!!!!!!!!!
 //       int ix = i%NDOF1d;
 //       int iy = i/NDOF1d;
@@ -64,24 +64,24 @@ void BaseQ23d::point(const Vertex3d& s)const
       double px = psi(ix,s.x());
       double py = psi(iy,s.y());
       double pz = psi(iz,s.z());
-      
+
       double dpx = psi_x(ix,s.x());
       double dpy = psi_x(iy,s.y());
       double dpz = psi_x(iz,s.z());
-      
+
       N  [i]     =  px *  py *  pz;
       DN [i].x() = dpx *  py *  pz;
       DN [i].y() =  px * dpy *  pz;
       DN [i].z() =  px *  py * dpz;
-      
+
 //       double ddpx = psi_xx(ix,s.x());
 //       double ddpy = psi_xx(iy,s.y());
 //       double ddpz = psi_xx(iz,s.z());
-      
+
 //       DDN[i][0]  = ddpx *   py *   pz;
 //       DDN[i][1]  =   px * ddpy *   pz;
 //       DDN[i][2]  =   px *   py * ddpz;
-      
+
 //       DDN[i][3]  = dpx * dpy *  pz;
 //       DDN[i][4]  = dpx *  py * dpz;
 //       DDN[i][5]  =  px * dpy * dpz;
@@ -93,4 +93,3 @@ void BaseQ23d::point(const Vertex3d& s)const
 #undef NDOF
 #undef NDOF1d
 #undef NDOF2d
-

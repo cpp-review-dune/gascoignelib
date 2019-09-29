@@ -118,32 +118,32 @@ public:
 
   void cadd(double s, viterator p, const_viterator q0) const
   {
-    //const_iterator pm    = numfixarray<N * N, MatrixEntryType>::begin();
-    //const_viterator pend = p + N;
-    // for (; p != pend; p++)
-    // {
-    //   double sum = 0.;
-    //   //const_viterator qend(q0 + N);
-    //   for (const_viterator q = q0; q != q0 + N; q++)
-    //   {
-    //     sum += *pm++ * *q;
-    //   }
-    //   *p += s * sum;
-    // }
-    const MatrixEntryType* __restrict__ tc = static_cast<const MatrixEntryType*>(
-      __builtin_assume_aligned(this->data(), N * sizeof(MatrixEntryType)));
-//#pragma omp parallel for schedule(static)
-    for (int i = 0; i < N; ++i)
+    const_iterator pm    = numfixarray<N * N, MatrixEntryType>::begin();
+    const_viterator pend = p + N;
+    for (; p != pend; p++)
     {
       double sum = 0.;
-#pragma omp simd reduction(+ : sum)
-      for (int j = 0; j < N; ++j)
+      // const_viterator qend(q0 + N);
+      for (const_viterator q = q0; q != q0 + N; q++)
       {
-        sum += tc[j] * q0[j];
+        sum += *pm++ * *q;
       }
-      p[i] += s * sum;
-      tc += N;
+      *p += s * sum;
     }
+    //     const MatrixEntryType* __restrict__ tc = static_cast<const MatrixEntryType*>(
+    //       __builtin_assume_aligned(this->data(), N * sizeof(MatrixEntryType)));
+    // //#pragma omp parallel for schedule(static)
+    //     for (int i = 0; i < N; ++i)
+    //     {
+    //       double sum = 0.;
+    // #pragma omp simd reduction(+ : sum)
+    //       for (int j = 0; j < N; ++j)
+    //       {
+    //         sum += tc[j] * q0[j];
+    //       }
+    //       p[i] += s * sum;
+    //       tc += N;
+    //     }
   }
   void caddtrans(double s, viterator p, const_viterator q0) const
   {

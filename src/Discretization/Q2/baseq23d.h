@@ -54,14 +54,20 @@ class BaseQ23d : public Base3d
  protected:
 
   std::array<double,NDOF1d>        a,b,c;
-  
+
   double psi   (int i, double x) const { return a[i] + b[i]*x + c[i]*x*x;}
   double psi_x (int i, double x) const { return b[i] + 2.*c[i]*x;       }
   double psi_xx(int i, double x) const { return 2.*c[i];       }
+  // static constexpr std::array<int, NDOF> ix = {0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1,
+  //                                              2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2};
+  // static constexpr std::array<int, NDOF> iy = {0, 0, 0, 1, 1, 1, 2, 2, 2, 0, 0, 0, 1, 1,
+  //                                              1, 2, 2, 2, 0, 0, 0, 1, 1, 1, 2, 2, 2};
+  // static constexpr std::array<int, NDOF> iz = {0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1,
+  //                                              1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2};
 
- public:
-  
-  BaseQ23d();
+public :
+
+    BaseQ23d();
 
   int  n() const {return NDOF;}
   void point(const Vertex3d& s) const;

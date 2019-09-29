@@ -12,6 +12,7 @@ cmake*
 *.kdev4
 *.ccls-cache
 *.plist
+*.json
 # ignore all Results in Examples directory
 /Examples*/Results*
 

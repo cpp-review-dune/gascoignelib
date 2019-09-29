@@ -1,9 +1,8 @@
 #### Set Standard options
 SET(CMAKE_BUILD_TYPE "Release" CACHE STRING "Configuration type" )
 SET(CMAKE_CXX_FLAGS_RELEASE "-O3" CACHE STRING "Configuration type" )
-
+set(CMAKE_CXX_STANDARD 17)
 PROJECT(GASCOIGNE CXX C)
-
 #### CMAKE CONFIG
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 cmake_policy(SET CMP0042 NEW)
@@ -15,7 +14,7 @@ OPTION(BUILD_SHARED_LIBS "Build shared libraries" ON)
 OPTION(MATRIX_DOUBLE_PRECISION "Matrix in double precision" ON)
 OPTION(WITH_UMFPACK "Build with support for UMFPACK" ON)
 OPTION(WITH_UMFPACK_LONG "Long-integer indices in UMFPACK >4GB matrices" OFF)
-OPTION(WITH_THREADS "Build with support for openmp" OFF)
+OPTION(WITH_THREADS "Build with support for openmp" ON)
 
 ### Directory Settings
 
@@ -36,7 +35,7 @@ INCLUDE(CMakeLists_Includes.txt)
 # Setup compiler flags and compile definitions:
 #
 SET(GASCOIGNE_CXX_FLAGS
-  "-std=c++11 -pedantic -Wall -Wno-sign-compare -Wold-style-cast" CACHE STRING "Configuration flags"
+  "-std=c++17 -pedantic -Wall -Wno-sign-compare -Wold-style-cast" CACHE STRING "Configuration flags"
   )
 
 IF(MATRIX_DOUBLE_PRECISION)

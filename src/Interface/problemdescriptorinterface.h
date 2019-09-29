@@ -58,12 +58,16 @@ namespace Gascoigne
 
     // returns new objects for equations and boundary equations
     // classes are created on the fly to allow for parallelization
-    
+
     virtual Equation *NewEquation() const
     {
       return NULL;
     }
     virtual BoundaryEquation *NewBoundaryEquation() const
+    {
+      return NULL;
+    }
+    virtual Application *NewRHS() const
     {
       return NULL;
     }

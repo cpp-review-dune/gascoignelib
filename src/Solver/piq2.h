@@ -21,7 +21,6 @@
  *
  **/
 
-
 #ifndef __PiQ2_h
 #define __PiQ2_h
 
@@ -29,25 +28,26 @@
 
 namespace Gascoigne
 {
+/**********************************************************/
 
-  /**********************************************************/
+class PiQ2
+{
+protected:
+  const GascoigneMesh* _MP;
+  nvector<DoubleVector> _q2weight;
 
-  class PiQ2
+public:
+  PiQ2();
+  ~PiQ2()
   {
-  protected:
-    const GascoigneMesh *_MP;
-    nvector<DoubleVector> _q2weight;
+  }
 
-  public:
-    PiQ2();
-    ~PiQ2() {}
+  void Init(const GascoigneMesh* MI);
+  void vmult(GlobalVector& y, const GlobalVector& x) const;
+};
 
-    void Init(const GascoigneMesh *MI);
-    void vmult(GlobalVector &y, const GlobalVector &x) const;
-  };
+/**********************************************************/
 
-  /**********************************************************/
-
-} // namespace Gascoigne
+}  // namespace Gascoigne
 
 #endif
