@@ -26,7 +26,7 @@
 #include  "fmatrixblock.h"
 #include  "simplematrix.h"
 
-//#include  "omp.h"
+#include  "omp.h"
 /*-------------------------------------------------------------*/
 
 namespace Gascoigne
@@ -393,7 +393,6 @@ void SparseBlockMatrix<B>::MatrixResidualSome(const std::vector<int>& indices,
 template<class B>
 void SparseBlockMatrix<B>::vmult(GlobalVector& y, const GlobalVector& x, double s) const
 {
-
 #pragma omp parallel for schedule(static)
   for(int i=0; i<US.n(); i++)
     {

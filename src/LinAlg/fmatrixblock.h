@@ -118,32 +118,31 @@ public:
 
   void cadd(double s, viterator p, const_viterator q0) const
   {
-    const_iterator pm    = numfixarray<N * N, MatrixEntryType>::begin();
+    const_iterator pm    = numfixarray<N * N, MatrixEntryType>::cbegin();
     const_viterator pend = p + N;
-    for (; p != pend; p++)
+    for (; p != pend; ++p)
     {
       double sum = 0.;
-      // const_viterator qend(q0 + N);
-      for (const_viterator q = q0; q != q0 + N; q++)
+      for (const_viterator q = q0; q != q0 + N; ++q)
       {
-        sum += *pm++ * *q;
+        sum += *pm * *q;
+        ++pm;
       }
       *p += s * sum;
     }
-    //     const MatrixEntryType* __restrict__ tc = static_cast<const MatrixEntryType*>(
-    //       __builtin_assume_aligned(this->data(), N * sizeof(MatrixEntryType)));
-    // //#pragma omp parallel for schedule(static)
-    //     for (int i = 0; i < N; ++i)
-    //     {
-    //       double sum = 0.;
-    // #pragma omp simd reduction(+ : sum)
-    //       for (int j = 0; j < N; ++j)
-    //       {
-    //         sum += tc[j] * q0[j];
-    //       }
-    //       p[i] += s * sum;
-    //       tc += N;
-    //     }
+    // const MatrixEntryType* __restrict__ tc =
+    //   static_cast<const MatrixEntryType*>(this->data());
+    // for (int i = 0; i < N; ++i)
+    // {
+    //   double sum = 0.;
+    //   //#pragma omp simd reduction(+ : sum)
+    //   for (int j = 0; j < N; ++j)
+    //   {
+    //     sum += tc[j] * q0[j];
+    //   }
+    //   p[i] += s * sum;
+    //   tc += N;
+    // }
   }
   void caddtrans(double s, viterator p, const_viterator q0) const
   {
@@ -227,26 +226,26 @@ inline void FMatrixBlock<N>::vmult(viterator p) const
   numfixarray<N, double> vhelp;
   // copy old entries of vector in vhelp
   //
-  typename numfixarray<N, double>::iterator a       = vhelp.begin();
-  typename numfixarray<N, double>::const_iterator b = vhelp.end();
+  // typename numfixarray<N, double>::iterator a       = vhelp.begin();
+  // typename numfixarray<N, double>::const_iterator b = vhelp.end();
 
-  for (; a != b; a++)
-  {
-    *a = *p++;
-  }
-  p -= N;
-  a -= N;
-
+  // for (; a != b; a++)
+  // {
+  //   *a = *p++;
+  // }
+  // p -= N;
+  // a -= N;
+  std::copy(p, p + N, vhelp.begin());
   //  nvector<MatrixEntryType>::const_iterator q(NodeMatrix<N,MatrixEntryType>::begin());
   auto q = NodeMatrix<N, MatrixEntryType>::begin();
   for (viterator c = p; c != p + N; c++)
   {
     *c = 0.;
-    for (; a != b; a++)
+    for (auto a = vhelp.begin(); a != vhelp.cend(); ++a)
     {
       *c += *q++ * *a;
     }
-    a -= N;
+    // a -= N;
   }
 }
 
