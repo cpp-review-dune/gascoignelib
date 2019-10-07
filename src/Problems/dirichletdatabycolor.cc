@@ -36,6 +36,15 @@ namespace Gascoigne
     assert(__comps.size()==__scales.size());
     assert(__comps.size()>0);
     assert(__cols.size()>0);
+
+    for (auto it : __cols)
+      {
+	colors.insert(it);
+	for (auto cc : __comps)
+	  comp_on_color[it].push_back(cc);
+      }
+    
+    
   }
 
   DirichletDataByColor::DirichletDataByColor(int comps, std::set<int>& cl, double s) : __cols(cl)
