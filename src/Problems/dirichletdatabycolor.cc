@@ -30,6 +30,17 @@ using namespace std;
 
 namespace Gascoigne
 {
+  DirichletDataByColor::DirichletDataByColor(const ParamFile& pf, nvector<int> comps, const set<int>& cl, nvector<double> s)
+    : DirichletData(pf), __cols(cl), __comps(comps), __scales(s)
+  {
+    for (auto col : __cols)
+      assert(colors.find(col)!=colors.end());
+    
+    assert(__comps.size()==__scales.size());
+    assert(__comps.size()>0);
+    assert(__cols.size()>0);
+  }
+
   DirichletDataByColor::DirichletDataByColor(nvector<int> comps, const set<int>& cl, nvector<double> s)
     : DirichletData(), __cols(cl), __comps(comps), __scales(s)
   {
@@ -84,11 +95,11 @@ namespace Gascoigne
   /*-----------------------------------------*/
 
   void DirichletDataByColor::operator()
-    (DoubleVector& b, const Vertex2d& v, int color) const
+    (DoubleVector& b, const Vertex2d& v, int col) const
   {
     b.zero();
 
-    if(__cols.find(color)!=__cols.end()) 
+    if(__cols.find(col)!=__cols.end()) 
       for (int i=0;i<__comps.size();++i)
 	b[__comps[i]] = __scales[i];
   }
@@ -96,10 +107,10 @@ namespace Gascoigne
   /*-----------------------------------------*/
 
   void DirichletDataByColor::operator()
-    (DoubleVector& b, const Vertex3d& v, int color) const
+    (DoubleVector& b, const Vertex3d& v, int col) const
   {
     b.zero();
-    if(__cols.find(color)!=__cols.end()) 
+    if(__cols.find(col)!=__cols.end()) 
       for (int i=0;i<__comps.size();++i)
 	b[__comps[i]] = __scales[i];
   }

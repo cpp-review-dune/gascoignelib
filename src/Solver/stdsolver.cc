@@ -1154,7 +1154,7 @@ namespace Gascoigne
 
   void StdSolver::SetBoundaryVector(VectorInterface &gf) const
   {
-    GetDiscretization()->StrongDirichletVector(GetGV(gf),*GetProblemDescriptor());
+    GetDiscretization()->StrongDirichletVector(GetGV(gf),GetProblemDescriptor()->GetDirichletData());
     // const BoundaryManager *BM = GetProblemDescriptor()->GetBoundaryManager();
     // const DirichletData *DD = GetProblemDescriptor()->GetDirichletData();
     // if (DD == NULL)
@@ -1198,24 +1198,27 @@ namespace Gascoigne
                                           const DirichletData &DD,
                                           double d) const
   {
-    GlobalVector &f = GetGV(gf);
+    cerr << "StdSolver::SetBoundaryVectorStrong(...). Old Interface. Not used any more" << endl
+	 << "\t New interface has colors in Dirichlet Data. Directly called in Discretization" << endl;
+    abort();
+    // GlobalVector &f = GetGV(gf);
 
-    IntSet PrefCol = DD.preferred_colors();
-    list<int> colors(BM.GetDirichletDataColors().begin(),
-                     BM.GetDirichletDataColors().end());
+    // IntSet PrefCol = DD.preferred_colors();
+    // list<int> colors(BM.GetDirichletDataColors().begin(),
+    //                  BM.GetDirichletDataColors().end());
 
-    for (IntSet::const_iterator p = PrefCol.begin(); p != PrefCol.end(); p++)
-    {
-      int col = *p;
-      colors.remove(col);
-      colors.push_back(col);
-    }
-    for (list<int>::const_iterator p = colors.begin(); p != colors.end(); p++)
-    {
-      int col = *p;
-      const IntVector &comp = BM.GetDirichletDataComponents(col);
-      GetDiscretization()->StrongDirichletVector(f, DD, col, comp, d);
-    }
+    // for (IntSet::const_iterator p = PrefCol.begin(); p != PrefCol.end(); p++)
+    // {
+    //   int col = *p;
+    //   colors.remove(col);
+    //   colors.push_back(col);
+    // }
+    // for (list<int>::const_iterator p = colors.begin(); p != colors.end(); p++)
+    // {
+    //   int col = *p;
+    //   const IntVector &comp = BM.GetDirichletDataComponents(col);
+    //   GetDiscretization()->StrongDirichletVector(f, DD, col, comp, d);
+    // }
   }
 
   /*-------------------------------------------------------*/
@@ -1661,21 +1664,18 @@ namespace Gascoigne
     // HNZeroData();
     // return J;
 
-    const BoundaryManager *BM = GetProblemDescriptor()->GetBoundaryManager();
 
     HNAverage(gu);
     HNAverageData();
     Zero(gf);
     Rhs(gf);
-
-
     Form(gf, gu, -1.);
 
     const DirichletData *ABD = FP->GetDirichletData();
     assert(ABD);
 
     Zero(gz);
-    SetBoundaryVectorStrong(gz, *BM, *ABD);
+    GetDiscretization()->StrongDirichletVector(GetGV(gz),ABD);
 
     HNAverage(gz);
 
