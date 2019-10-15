@@ -229,6 +229,11 @@ namespace Gascoigne
         abort();
       }
 
+      virtual void EvaluateParameterDiracRhs(GlobalVector& f, const DiracRightHandSide &D, double d = 1.) const {
+        std::cerr << "\"DiscretizationInterface::EvaluateParameterDiracRhs\" not written!" << std::endl;
+        abort();
+      }
+
       virtual void EvaluateBoundaryParameterRightHandSide(GlobalVector& f,const IntSet& Colors, const BoundaryRightHandSide& CF, double d = 1.) const{
         std::cerr << "\"DiscretizationInterface::EvaluateBoundaryParameterRighthandside\" not written!" << std::endl;
         abort();

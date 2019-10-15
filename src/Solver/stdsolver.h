@@ -519,8 +519,13 @@ namespace Gascoigne
                                       const BoundaryRightHandSide &CF,
                                       const BoundaryManager &BM,
                                       double d = 1.) const;
+
     virtual void EvaluateParameterRightHandSide(VectorInterface &f,
-                                                const DomainRightHandSide &CF,
+                                                const DomainRightHandSide &D,
+                                                double d = 1.) const;
+
+    virtual void EvaluateParameterDiracRhs(VectorInterface &f,
+                                                const DiracRightHandSide &D,
                                                 double d = 1.) const;
     virtual void
     EvaluateBoundaryParameterRightHandSide(VectorInterface &f,

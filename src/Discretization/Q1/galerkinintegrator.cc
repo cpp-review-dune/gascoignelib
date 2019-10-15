@@ -717,6 +717,29 @@ void GalerkinIntegrator<DIM>::EvaluateBoundaryCellRightHandSide(LocalVector& F, 
 /* ----------------------------------------- */
 
 template<int DIM>
+void GalerkinIntegrator<DIM>::ParameterDiracRhsPoint(LocalVector& b, const FemInterface& E, const Vertex<DIM>& p,
+    const DiracRightHandSide& DRHS, int j, const LocalData& Q, const LocalData& QC) const
+{
+  b.zero();
+
+  BasicIntegrator::universal_point(_QCH,QC);
+  DRHS.SetCellData(_QCH);
+
+  Vertex<DIM> x;
+  E.point(p);
+  E.x(x);
+  BasicIntegrator::universal_point(E,_QH,Q);
+  DRHS.SetFemData(_QH);
+
+  _NN.zero();
+  _NN.m() = 1.;
+
+  DRHS.operator()(j,b.start(0),_NN,x);
+}
+
+/* ----------------------------------------- */
+
+template<int DIM>
 void GalerkinIntegrator<DIM>::ErrorsByExactSolution(LocalVector& dst, const FemInterface& FE, const ExactSolution& ES, const LocalVector& U, 
     const LocalData& Q, const LocalData& QC) const
 {

@@ -76,6 +76,8 @@ protected:
   virtual void DiracRhsPoint(GlobalVector& f,const DiracRightHandSide& DRHS,const Vertex2d& p0,int i,double s) const;
   virtual void DiracRhsPoint(GlobalVector& f,const DiracRightHandSide& DRHS,const Vertex3d& p0,int i,double s) const;
 
+  virtual void ParameterDiracRhsPoint(GlobalVector& f,const DiracRightHandSide& DRHS,const Vertex2d& p0,int i,double s) const;
+  virtual void ParameterDiracRhsPoint(GlobalVector& f,const DiracRightHandSide& DRHS,const Vertex3d& p0,int i,double s) const;
 
 public:
 
@@ -122,6 +124,7 @@ public:
   void EvaluateCellRightHandSide(GlobalVector& f, const DomainRightHandSide& CF, double d) const;
   void EvaluateBoundaryCellRightHandSide(GlobalVector& f,const IntSet& Colors, const BoundaryRightHandSide& CF, double d) const;
   void EvaluateParameterRightHandSide(GlobalVector& f, const DomainRightHandSide& CF, double d) const;
+  void EvaluateParameterDiracRhs(GlobalVector& f, const DiracRightHandSide &DRHS, double s)  const;
   void EvaluateBoundaryParameterRightHandSide(GlobalVector& f,const IntSet& Colors, const BoundaryRightHandSide& CF, double d) const;
 
   void InterpolateDomainFunction(GlobalVector& f, const DomainFunction& DF) const;

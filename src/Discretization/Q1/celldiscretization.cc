@@ -771,7 +771,97 @@ void CellDiscretization::EvaluateParameterRightHandSide(GlobalVector& f, const D
 }
 
 /* ----------------------------------------- */ 
-  
+
+void CellDiscretization::EvaluateParameterDiracRhs(GlobalVector& f, const DiracRightHandSide &DRHS, double s)  const
+{
+  int dim = GetMesh()->dimension();
+  vector<int> comps = DRHS.GetComps();
+  int nn = comps.size();
+
+  vector<double> up(nn,0);
+
+  if (dim == 2)
+  {
+    vector<Vertex2d> v2d = DRHS.GetPoints2d();
+    assert(nn==v2d.size());
+
+    for(int i=0;i<nn;++i)
+    {
+      ParameterDiracRhsPoint(f,DRHS,v2d[i],i,s);
+    }
+  }
+  else if (dim == 3)
+  {
+    vector<Vertex3d> v3d = DRHS.GetPoints3d();
+    assert(nn==v3d.size());
+    for(int i=0;i<nn;++i)
+    {
+      ParameterDiracRhsPoint(f,DRHS,v3d[i],i,s);
+    }
+  }
+  else
+  {
+    cerr << "wrong dim = " << dim << endl;
+    abort();
+  }
+}
+
+/* ----------------------------------------- */ 
+
+void CellDiscretization::ParameterDiracRhsPoint(GlobalVector& f,const DiracRightHandSide& DRHS,const Vertex2d& p0,int i,double s) const
+{
+  __F.ReInit(f.ncomp(),1);
+
+  Vertex2d Tranfo_p0;
+
+  int iq = GetCellNumber(p0,Tranfo_p0);
+  if (iq==-1)
+    {
+      cerr << "CellDiscretization::DiracRhsPoint 2D point not found\n";
+      abort();
+    }
+
+  nmatrix<double> T;
+  Transformation(T,iq);
+  GetFem()->ReInit(T);
+
+  GlobalToLocalData(iq);
+  GlobalToGlobalData();
+  DRHS.SetParameterData(__QP);
+
+  GetIntegrator()->ParameterDiracRhsPoint(__F,*GetFem(),Tranfo_p0,DRHS,i,__QN,__QC);
+  f.add(s,__F);
+}
+
+/* ----------------------------------------- */
+
+void CellDiscretization::ParameterDiracRhsPoint(GlobalVector& f,const DiracRightHandSide& DRHS,const Vertex3d& p0,int i,double s) const
+{
+  __F.ReInit(f.ncomp(),1);
+
+  Vertex3d Tranfo_p0;
+
+  int iq = GetCellNumber(p0,Tranfo_p0);
+  if (iq==-1)
+    {
+      cerr << "CellDiscretization::DiracRhsPoint 3D point not found\n";
+      abort();
+    }
+
+  nmatrix<double> T;
+  Transformation(T,iq);
+  GetFem()->ReInit(T);
+
+  GlobalToLocalData(iq);
+  GlobalToGlobalData();
+  DRHS.SetParameterData(__QP);
+
+  GetIntegrator()->ParameterDiracRhsPoint(__F,*GetFem(),Tranfo_p0,DRHS,i,__QN,__QC);
+  f.add(s,__F);
+}
+
+/* ----------------------------------------- */
+
 void Gascoigne::CellDiscretization::EvaluateBoundaryParameterRightHandSide(GlobalVector& f,const IntSet& Colors,
     const BoundaryRightHandSide& CF, double d) const
 {

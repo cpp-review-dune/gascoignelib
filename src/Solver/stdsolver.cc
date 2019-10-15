@@ -1679,6 +1679,18 @@ namespace Gascoigne
 
   /*-------------------------------------------------------*/
 
+  void StdSolver::EvaluateParameterDiracRhs(VectorInterface &f, const DiracRightHandSide &D, double d) const
+  {
+    assert(f.GetType() == "parameter");
+    HNAverageData();
+
+    GetDiscretization()->EvaluateParameterDiracRhs(GetGV(f), D, d);
+
+    HNZeroData();
+  }
+
+  /*-------------------------------------------------------*/
+
   void StdSolver::EvaluateBoundaryParameterRightHandSide(
       VectorInterface &f,
       const BoundaryRightHandSide &CF,
