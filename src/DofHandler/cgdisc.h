@@ -423,7 +423,7 @@ public:
     HN->CondenseHanging(E, indices);
     IntVector::const_iterator start = indices.cbegin();
     IntVector::const_iterator stop  = indices.cend();
-#pragma omp critical
+#pragma omp critical(ltcm) hint(8 + 1)
     A.entry(start, stop, E, s);
   }
   void LocalToGlobal(GlobalVector& f, const LocalVector& F, int iq, double s) const
@@ -431,7 +431,9 @@ public:
     const IntVector& indices = GetDofHandler()->GetElement(DEGREE, iq);
     for (int ii = 0; ii < indices.size(); ii++)
     {
-      // int i = indices[ii];
+      //       int i = indices[ii];
+      // #pragma omp critical(ltc) hint(8 + 1)
+      //       f.add_node(i, s, ii, F);
       experiments::add_node(s, indices[ii], f, ii, F);
     }
   }
@@ -772,7 +774,7 @@ public:
       const IntVector& q = *GetDofHandler()->ElementOnBoundary(DEGREE, col);
       const IntVector& l = *GetDofHandler()->ElementLocalOnBoundary(DEGREE, col);
 
-//#pragma omp for schedule(static)
+      //#pragma omp for schedule(static)
       for (int i = 0; i < q.size(); i++)
       {
         int iq  = q[i];

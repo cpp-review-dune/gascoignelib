@@ -32,16 +32,16 @@
 namespace Gascoigne
 {
 template<class B>
-SparseBlockMatrix<B>::SparseBlockMatrix() :
-  MatrixInterface()
+SparseBlockMatrix<B>::SparseBlockMatrix(bool cuda) :
+  MatrixInterface(), use_cuda(cuda)
 {
 }
 
 /*-------------------------------------------------------------*/
 
 template<class B>
-SparseBlockMatrix<B>::SparseBlockMatrix(const SparseBlockMatrix<B>& A) :
-  MatrixInterface()
+SparseBlockMatrix<B>::SparseBlockMatrix(const SparseBlockMatrix<B>& A, bool cuda) :
+  MatrixInterface(), use_cuda(cuda)
 {
 }
 

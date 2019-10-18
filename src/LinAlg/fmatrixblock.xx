@@ -146,14 +146,13 @@ void FMatrixBlock<N>::setcolumn(std::vector<double>& v, int i)
 template <int N>
 void FMatrixBlock<N>::entry(const nmatrix<double>& E)
 {
-  // double* __restrict__ tc =
-  //  static_cast<double*>(__builtin_assume_aligned(this->data(), N * sizeof(double)));
+  double* __restrict__ tc = static_cast<double*>(this->data());
   for (int c = 0; c < N; c++)
   {
     for (int d = 0; d < N; d++)
     {
-#pragma omp atomic update
-      (*this)[d + c * N] += E(c, d);
+      //#pragma omp atomic update
+      tc[d + c * N] += E(c, d);
     }
   }
 }
@@ -163,14 +162,13 @@ void FMatrixBlock<N>::entry(const nmatrix<double>& E)
 template <int N>
 void FMatrixBlock<N>::entry(int i, int j, const EntryMatrix& E, double s)
 {
-  // double* __restrict__ tc =
-  //  static_cast<double*>(__builtin_assume_aligned(this->data(), N * sizeof(double)));
+  double* __restrict__ tc = static_cast<double*>(this->data());
   for (int c = 0; c < N; c++)
   {
     for (int d = 0; d < N; d++)
     {
-#pragma omp atomic update
-      (*this)[d + c * N] += s * E(i, j, c, d);
+      //#pragma omp atomic update
+      tc[d + c * N] += s * E(i, j, c, d);
     }
   }
 }

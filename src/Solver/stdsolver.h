@@ -82,6 +82,11 @@ private:
   const HierarchicalMesh* _HM;
   std::map<int, int> _PeriodicPairs;
 
+#ifdef USE_CUDA
+  static constexpr bool use_cuda = true;
+#else
+  static constexpr bool use_cuda = false;
+#endif
   // 2. Matrizen
 
   MatrixInterface* _MAP;
