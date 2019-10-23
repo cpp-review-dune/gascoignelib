@@ -216,26 +216,7 @@ namespace Gascoigne
                           const EntryMatrix &M,
                           double s)
   {
-    int n = stop - start;
-
-    for (int ii = 0; ii < n; ii++)
-    {
-      int i = *(start + ii);
-      for (int c = 0; c < _ncomp; c++)
-      {
-        int iglob = SSAP->index(i, c);
-        for (int jj = 0; jj < n; jj++)
-        {
-          int j = *(start + jj);
-          for (int d = 0; d < _ncomp; d++)
-          {
-            int jglob = SSAP->index(j, d);
-            int pos = ST.Find(iglob, jglob);
-            value[pos] += s * M(ii, jj, c, d);
-          }
-        }
-      }
-    }
+    entry_universal<false>(start,stop, M, s);
   }
 
   void PointMatrix::entry(niiterator start1,
@@ -245,29 +226,19 @@ namespace Gascoigne
                           const EntryMatrix &M,
                           double s)
   {
-    int n1 = stop1 - start1;
-    int n2 = stop2 - start2;
-    assert(n1==n2);
-    
+    entry_universal<false>(start1, stop1, start2, stop2, M, s);
+  }
 
-    for (int ii = 0; ii < n1; ii++)
-    {
-      int i = *(start1 + ii);
-      for (int c = 0; c < _ncomp; c++)
-      {
-        int iglob = SSAP->index(i, c);
-        for (int jj = 0; jj < n1; jj++)
-        {
-          int j = *(start2 + jj);
-          for (int d = 0; d < _ncomp; d++)
-          {
-            int jglob = SSAP->index(j, d);
-            int pos = ST.Find(iglob, jglob);
-            value[pos] += s * M(ii, jj, c, d);
-          }
-        }
-      }
-    }
+  void PointMatrix::entry_atomic(niiterator start, niiterator stop, const EntryMatrix& M,
+                          double s)
+  {
+    entry_universal<true>(start, stop, M, s);
+  }
+
+  void PointMatrix::entry_atomic(niiterator start1, niiterator stop1, niiterator start2,
+                          niiterator stop2, const EntryMatrix& M, double s)
+  {
+    entry_universal<true>(start1, stop1, start2, stop2, M, s);
   }
 
   /*-----------------------------------------*/

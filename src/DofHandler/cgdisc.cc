@@ -19,12 +19,12 @@
 
 namespace Gascoigne
 {
-    
 
 
 
 
-  
+
+
   template class CGDiscQ12d;
   template class CGDiscQ22d;
   template class CGDiscQ13d;
@@ -40,4 +40,3 @@ namespace Gascoigne
   template class CGDiscQ22dLps;
 
 }
-

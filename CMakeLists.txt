@@ -16,6 +16,7 @@ OPTION(MATRIX_DOUBLE_PRECISION "Matrix in double precision" ON)
 OPTION(WITH_UMFPACK "Build with support for UMFPACK" ON)
 OPTION(WITH_UMFPACK_LONG "Long-integer indices in UMFPACK >4GB matrices" OFF)
 OPTION(WITH_THREADS "Build with support for openmp" OFF)
+OPTION(WITH_ATOMIC_OPS "Build with atomic operations instead of coloring" OFF)
 
 ### Directory Settings
 
@@ -46,6 +47,10 @@ ENDIF(MATRIX_DOUBLE_PRECISION)
 IF(WITH_THREADS)
   SET(GASCOIGNE_CXX_FLAGS "${GASCOIGNE_CXX_FLAGS} -fopenmp")
 ENDIF(WITH_THREADS)
+
+IF(WITH_ATOMIC_OPS)
+  SET(GASCOIGNE_CXX_FLAGS "${GASCOIGNE_CXX_FLAGS} -DATOMIC_OPS=1")
+ENDIF(WITH_ATOMIC_OPS)
 
 #
 # Search for metis:

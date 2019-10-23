@@ -41,7 +41,7 @@ class CFDBlock3d
 
   MatrixEntryType lapx,dx,dy,dz,gx,gy,gz,s;
   MatrixEntryType lapy,lapz;
-  
+
   void swap(MatrixEntryType a, MatrixEntryType b) const { MatrixEntryType c = a; a=b; b=c;}
 
 public:
@@ -83,30 +83,32 @@ public:
   void transpose();
   void transpose(CFDBlock3d& A);
 
-  void copy_transpose(const CFDBlock3d& A) 
+  void copy_transpose(const CFDBlock3d& A)
     { std::cerr << "CFDBlock3d::copy_transpose noch schreiben" << std::endl; }
 
   void   getrow   (std::vector<double>& v, int i) {abort();}
   void   getcolumn(std::vector<double>& v, int i) {abort();}
   void   setrow   (std::vector<double>& v, int i) {abort();}
   void   setcolumn(std::vector<double>& v, int i) {abort();}
-  
+
   void   DirichletRow (const std::vector<int>& cv);
   void   DirichletCol (const std::vector<int>& cv);
   void   DirichletDiag(const std::vector<int>& cv);
 
   void   entry     (const nmatrix<double>&);
   void   entry     (int i, int j, const EntryMatrix&, double s=1.);
+  void   entry_atomic(const nmatrix<double>&);
+  void   entry_atomic(int i, int j, const EntryMatrix&, double s = 1.);
   void   dual_entry(int i, int j, const EntryMatrix&, double s=1.);
   void   inverse ();
-  void   submult (const CFDBlock3d&, const CFDBlock3d&); 
+  void   submult (const CFDBlock3d&, const CFDBlock3d&);
   void   vmult   (iterator) const;
-  void   mult    (CFDBlock3d&, const CFDBlock3d&) const; 
+  void   mult    (CFDBlock3d&, const CFDBlock3d&) const;
 
   void add(double s, const CFDBlock3d& A);
   void add(double s, const TimePattern& TP);
   void adddiag(const nvector<double>& s, double l);
- 
+
   void cadd(double d, iterator p, const_iterator q0) const
     {
       // p and q are the vector offsets
@@ -116,7 +118,7 @@ public:
 
       a = gradx() * *q0  + laplx()* *(q0+1);
       *p++ += d*a;
-      
+
       a = grady() * *q0  + laply()* *(q0+2);
       *p++ += d*a;
 
@@ -127,7 +129,7 @@ public:
     }
 
   void caddtrans(double s, iterator p, const_iterator q0) const
-    { 
+    {
       std::cerr << "CFDBlock3d::caddtrans noch schreiben" << std::endl;
       abort();
     }
@@ -162,5 +164,3 @@ public:
 }
 
 #endif
-
-

@@ -39,16 +39,27 @@ namespace Gascoigne
 template<class B>
 class SparseBlockMatrix : public MatrixInterface
 {
- protected:
+private:
+  template<bool atom>
+  void entry_universal(nvector<int>::const_iterator start1,
+                       nvector<int>::const_iterator stop1,
+                       nvector<int>::const_iterator start2,
+                       nvector<int>::const_iterator stop2, const EntryMatrix& M,
+                       double s = 1.);
+  template<bool atom>
+  void entry_universal(niiterator start, niiterator stop, const EntryMatrix& M,
+                       double s = 1.);
+
+protected:
 
   typedef typename vector<B>::const_iterator      const_iterator;
   typedef typename vector<B>::iterator            iterator;
   typedef typename std::pair<int,int>                  IntPair;
-  
+
   ColumnDiagStencil  US;
   vector<B>      smat;
   int            nc;
-  
+
   void matrix_vector_trans(int p, double* yp, const double* xp, double s=1.) const;
  public:
 
@@ -57,7 +68,7 @@ class SparseBlockMatrix : public MatrixInterface
   SparseBlockMatrix<B>();
   SparseBlockMatrix<B>(const SparseBlockMatrix<B>& A);
   virtual ~SparseBlockMatrix<B>() {}
-  
+
   void transpose();
 
   string GetName() const {return "SparseBlockMatrix";}
@@ -78,14 +89,14 @@ class SparseBlockMatrix : public MatrixInterface
 
   ///// Methods //////////////////////
 
-  void AddMassWithDifferentStencil(const MatrixInterface* M, 
+  void AddMassWithDifferentStencil(const MatrixInterface* M,
 				   const TimePattern& TP, double s=1.);
   void AddMassWithDifferentStencilJacobi(const MatrixInterface* M,
 				   const TimePattern& TP, double s=1.);
 
   void copy_entries(const MatrixInterface& S);
 
-  SparseBlockMatrix& operator=(const SparseBlockMatrix<B>& S); 
+  SparseBlockMatrix& operator=(const SparseBlockMatrix<B>& S);
 
   void ReInit   (const SparseStructureInterface*);
   void scale_diag(int i, const vector<int>& cv,double s);
@@ -99,7 +110,15 @@ class SparseBlockMatrix : public MatrixInterface
   void entry(nvector<int>::const_iterator start1, nvector<int>::const_iterator stop1,
 	     nvector<int>::const_iterator start2, nvector<int>::const_iterator stop2,
 	     const EntryMatrix& M, double s=1.);
-  void entry(nvector<int>::const_iterator start, nvector<int>::const_iterator stop, const EntryMatrix& M, double s=1.);
+  void entry(nvector<int>::const_iterator start, nvector<int>::const_iterator stop, const
+  EntryMatrix& M, double s=1.);
+  void entry_atomic(nvector<int>::const_iterator start1,
+                    nvector<int>::const_iterator stop1,
+                    nvector<int>::const_iterator start2,
+                    nvector<int>::const_iterator stop2, const EntryMatrix& M,
+                    double s = 1.);
+  void entry_atomic(niiterator start, niiterator stop, const EntryMatrix& M,
+                    double s = 1.);
   void entrydual(nvector<int>::const_iterator start, nvector<int>::const_iterator stop, const EntryMatrix& M, double s=1.);
 
   void GaussSeidel      (GlobalVector& y, const GlobalVector& x) const;
@@ -110,7 +129,7 @@ class SparseBlockMatrix : public MatrixInterface
   void vmult(GlobalVector& y, const GlobalVector& x, double s=1.) const;
   void vmult(GlobalVector& y, const GlobalVector& x, const TimePattern& TP, double s=1.)const;
   void entry_diag(int i, const nmatrix<double>& M);
- 
+
 	    /*-----------------------------------------------*/
 
   void FillInterfaceList(const nvector<int>& elements,nvector<int>& start, nvector<MatrixEntryType>& values) const;

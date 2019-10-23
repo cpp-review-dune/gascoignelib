@@ -22,7 +22,7 @@
 **/
 
 
-//    -*- c++ -*- 
+//    -*- c++ -*-
 
 #include  "dynamicblockmatrix.h"
 #include  "fmatrixblock.h"
@@ -33,23 +33,23 @@
 namespace Gascoigne
 {
     template<class B>
-    DynamicBlockMatrix<B>::DynamicBlockMatrix() : 
+    DynamicBlockMatrix<B>::DynamicBlockMatrix() :
 	MatrixInterface()
-    {  
+    {
     }
 
 /*-------------------------------------------------------------*/
 
     template<class B>
-    DynamicBlockMatrix<B>::DynamicBlockMatrix(const DynamicBlockMatrix<B>& A) : 
+    DynamicBlockMatrix<B>::DynamicBlockMatrix(const DynamicBlockMatrix<B>& A) :
 	MatrixInterface()
     {
     }
-  
+
 /*-------------------------------------------------------------*/
 
 
-	
+
     template<class B>
     DynamicBlockMatrix<B>& DynamicBlockMatrix<B>::operator=(const DynamicBlockMatrix<B>& S)
     {
@@ -61,21 +61,21 @@ namespace Gascoigne
 
 // 	smat.reserve(S.size());
 // 	smat.resize (S.size());
-  
-// 	US.col()  .reserve(AS->nentries());  
+
+// 	US.col()  .reserve(AS->nentries());
 // 	US.col()  .resize (AS->nentries());
-// 	US.start().reserve(AS->n()+1);     
+// 	US.start().reserve(AS->n()+1);
 // 	US.start().resize (AS->n()+1);
-// 	US.diag() .reserve(AS->n());        
+// 	US.diag() .reserve(AS->n());
 // 	US.diag() .resize (AS->n());
-  
+
 // 	smat   = S.mat();
 // 	US.col()   = AS->col();
 // 	US.start() = AS->start();
 // 	US.diag()  = AS->diag();
-  
+
 // 	return *this;
-    } 
+    }
 
 /*-------------------------------------------------------------*/
 
@@ -86,7 +86,7 @@ namespace Gascoigne
 	const SparseStructure* SS = dynamic_cast<const SparseStructure*>(SI);
 	assert(SS);
 	assert(SS->n()>0);
-	
+
 	DS.cols.clear();
 	DS.cols.resize(SS->n());
 	int count=0;
@@ -155,7 +155,7 @@ namespace Gascoigne
     }
 
 /*-------------------------------------------------------------*/
-    
+
     template<class B>
     void DynamicBlockMatrix<B>::AddMassWithDifferentStencil(const MatrixInterface* M, const TimePattern& TP, double s)
     {
@@ -163,7 +163,7 @@ namespace Gascoigne
 	assert(MP);
 	const ColumnDiagStencil* USM = dynamic_cast<const ColumnDiagStencil*>(MP->GetStencil());
 	assert(USM);
-	
+
 	assert(n()==USM->n());
 	for(int i=0; i<USM->n(); i++)
 	{
@@ -191,7 +191,7 @@ namespace Gascoigne
 		assert(cit!=DS.cstop(i));
 		vit->add(sm,TP);
 	    }
-	    
+
 	}
     }
 
@@ -213,7 +213,7 @@ namespace Gascoigne
 	    }
 	}
     }
-    
+
 /*-------------------------------------------------------------*/
 
     template<class B>
@@ -246,7 +246,7 @@ namespace Gascoigne
 // 	const ColumnDiagStencil* AS = dynamic_cast<const ColumnDiagStencil*>(AP->GetStencil());
 // 	assert(AS);
 
-// 	if(US.nentries()==AS->nentries()) 
+// 	if(US.nentries()==AS->nentries())
 // 	{
 // 	    smat = A.mat();
 // 	}
@@ -261,7 +261,7 @@ namespace Gascoigne
 // 		    for(int pos=US.start(i); pos<US.stop(i); pos++)
 // 		    {
 // 			int j = US.col(pos);
-// 			if(jA==j)  *mat(pos) += *A.mat(posA);	
+// 			if(jA==j)  *mat(pos) += *A.mat(posA);
 // 		    }
 // 		}
 // 	    }
@@ -272,18 +272,19 @@ namespace Gascoigne
 
     template<class B>
     void DynamicBlockMatrix<B>::Jacobi(GlobalVector& x) const
-    {    
+    {
 	for(int i=0; i< n(); i++)
-	{	  
+	{
 	    double a = 1. / ((*vdiag(i))(0,0));
-	    *(x.start(i)) *= a; 
+	    *(x.start(i)) *= a;
 	}
-    }   
+    }
 
  /*-------------------------------------------------------------*/
 
     template<class B>
-    void DynamicBlockMatrix<B>::entry(nvector<int>::const_iterator start, nvector<int>::const_iterator stop, const EntryMatrix& M, double s)
+    template<bool atom>
+    void DynamicBlockMatrix<B>::entry_universal(nvector<int>::const_iterator start, nvector<int>::const_iterator stop, const EntryMatrix& M, double s)
     {
 	nvector<int>::const_iterator p, q;
 	int ii = 0;
@@ -299,7 +300,13 @@ namespace Gascoigne
 		{
 		    if(*cit==j)
 		    {
-			vit -> entry(ii,jj,M,s);
+        if constexpr(atom)
+        {
+          vit -> entry_atomic(ii,jj,M,s);
+        }else
+        {
+          vit -> entry(ii,jj,M,s);
+        }
 			break;
 		    }
 		}
@@ -308,9 +315,25 @@ namespace Gascoigne
 	    ii++;
 	}
     }
-    
+
+/*-------------------------------------------------------------*/
+
+    template<class B>
+    void DynamicBlockMatrix<B>::entry(nvector<int>::const_iterator start, nvector<int>::const_iterator stop, const EntryMatrix& M, double s)
+    {
+      entry_universal<false>(start, stop, M, s);
+    }
+
+/*-------------------------------------------------------------*/
+
+    template<class B>
+    void DynamicBlockMatrix<B>::entry_atomic(nvector<int>::const_iterator start, nvector<int>::const_iterator stop, const EntryMatrix& M, double s)
+    {
+      entry_universal<true>(start, stop, M, s);
+    }
+
 // /*-------------------------------------------------------------*/
-    
+
 //     template<class B>
 //     void DynamicBlockMatrix<B>::entry(nvector<int>::const_iterator start1,
 // 				      nvector<int>::const_iterator stop1,
@@ -325,21 +348,21 @@ namespace Gascoigne
 // 	    int i = *p;
 // 	    int jj = 0;
 // 	    for(q=start2; q!=stop2; q++)
-// 	    {			
+// 	    {
 // 		int j = *q;
 // 		for(int pos=US.start(i);pos<US.stop(i);pos++)
 // 		{
 // 		    if(US.col(pos)==j)
 // 		    {
 // 			mat(pos) -> entry(ii,jj,M,s);
-// 			break;	
+// 			break;
 // 		    }
 //         	}
 // 		jj++;
 // 	    }
 // 	    ii++;
 // 	}
-//     } 
+//     }
 
 // /*-------------------------------------------------------------*/
 
@@ -357,7 +380,7 @@ namespace Gascoigne
 // 		int j = *q;
 // 		for(int pos=US.start(i);pos<US.stop(i);pos++)
 // 		{
-// 		    if(US.col(pos)==j)   
+// 		    if(US.col(pos)==j)
 // 		    {
 // 			mat(pos) -> dual_entry(ii,jj,M,s);
 // 			break;

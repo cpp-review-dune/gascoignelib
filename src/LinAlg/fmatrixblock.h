@@ -65,15 +65,17 @@ public:
   void   DirichletRow (const std::vector<int>& cv);
   void   DirichletCol (const std::vector<int>& cv);
   void   DirichletDiag(const std::vector<int>& cv);
- 
+
 
 
   void   entry     (const nmatrix<double>&);
   void   entry     (int i, int j, const EntryMatrix&, double s=1.);
+  void   entry_atomic(const nmatrix<double>&);
+  void   entry_atomic(int i, int j, const EntryMatrix&, double s = 1.);
   void   dual_entry(int i, int j, const EntryMatrix&, double s=1.);
   void   inverse ();
   inline void   vmult   (viterator) const;
-  void   mult    (FMatrixBlock<N>&, const FMatrixBlock<N>&) const; 
+  void   mult    (FMatrixBlock<N>&, const FMatrixBlock<N>&) const;
 
   void   submult(const FMatrixBlock<N>& B, const FMatrixBlock<N>& C)
   {
@@ -86,7 +88,7 @@ public:
 	    auto pC=C.begin()+j;
 	    auto pB=B.begin()+i*N;
 	    auto qB=pB+N;
-    
+
 	    //for (int k=0; k<N; k++)
 	    for (; pB!=qB; pB++)
 	      {
@@ -95,7 +97,7 @@ public:
 		pC += N;
 	      }
 	    p++;
-        }      
+        }
       }
   }
 
@@ -203,7 +205,7 @@ inline void FMatrixBlock<N>::operator *= (const FMatrixBlock<N>& B)
             {
               NodeMatrix<N,MatrixEntryType>::value(i,j) += vhelp[k] * B(k,j);
             }
-        }      
+        }
     }
 }
 
@@ -217,7 +219,7 @@ inline void FMatrixBlock<N>::vmult(viterator p) const
   //
   typename numfixarray<N,double>::iterator       a = vhelp.begin();
   typename numfixarray<N,double>::const_iterator b = vhelp.end();
-  
+
   for ( ; a!=b; a++)
     {
       *a = *p++;
@@ -233,15 +235,13 @@ inline void FMatrixBlock<N>::vmult(viterator p) const
       for (; a!=b; a++)
 	{
 	  *c += *q++ * *a;
-	} 
+	}
       a -= N;
     }
-  
+
 }
 
 
 }
 
 #endif
-
-
