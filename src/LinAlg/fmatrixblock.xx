@@ -83,7 +83,7 @@ void FMatrixBlock<N>::zero_row(int c)
 {
   for (int i=0; i<N; i++) NodeMatrix<N,MatrixEntryType>::value(c,i) =0.;
 }
- 
+
 template<int N>
 void FMatrixBlock<N>::uno_diag(int c)
 {
@@ -141,7 +141,7 @@ void FMatrixBlock<N>::entry(const nmatrix<double>& E)
     {
       for (int d=0; d<N; d++)
         {
-            NodeMatrix<N,MatrixEntryType>::value(c,d) += E(c,d); 
+            NodeMatrix<N,MatrixEntryType>::value(c,d) += E(c,d);
         }
     }
 }
@@ -155,7 +155,38 @@ void FMatrixBlock<N>::entry(int i, int j, const EntryMatrix& E, double s)
     {
       for (int d=0; d<N; d++)
         {
-            NodeMatrix<N,MatrixEntryType>::value(c,d) += s * E(i,j,c,d); 
+            NodeMatrix<N,MatrixEntryType>::value(c,d) += s * E(i,j,c,d);
+        }
+    }
+}
+
+/**********************************************************/
+
+
+template<int N>
+void FMatrixBlock<N>::entry_atomic(const nmatrix<double>& E)
+{
+  for (int c=0; c<N; c++)
+    {
+      for (int d=0; d<N; d++)
+        {
+#pragma omp atomic update
+            NodeMatrix<N,MatrixEntryType>::value(c,d) += E(c,d);
+        }
+    }
+}
+
+/**********************************************************/
+
+template<int N>
+void FMatrixBlock<N>::entry_atomic(int i, int j, const EntryMatrix& E, double s)
+{
+  for (int c=0; c<N; c++)
+    {
+      for (int d=0; d<N; d++)
+        {
+#pragma omp atomic update
+            NodeMatrix<N,MatrixEntryType>::value(c,d) += s * E(i,j,c,d);
         }
     }
 }
@@ -169,7 +200,7 @@ void FMatrixBlock<N>::dual_entry(int i, int j, const EntryMatrix& E, double s)
     {
       for (int d=0; d<N; d++)
         {
-            NodeMatrix<N,MatrixEntryType>::value(c,d) += s * E(j,i,d,c); 
+            NodeMatrix<N,MatrixEntryType>::value(c,d) += s * E(j,i,d,c);
         }
     }
 }
@@ -177,7 +208,7 @@ void FMatrixBlock<N>::dual_entry(int i, int j, const EntryMatrix& E, double s)
 /**********************************************************/
 
 template<int N>
-void FMatrixBlock<N>::transpose() 
+void FMatrixBlock<N>::transpose()
 {
   for(int i=0;i<N;i++)
     {
@@ -191,7 +222,7 @@ void FMatrixBlock<N>::transpose()
 /**********************************************************/
 
 template<int N>
-void FMatrixBlock<N>::transpose(FMatrixBlock<N>& A) 
+void FMatrixBlock<N>::transpose(FMatrixBlock<N>& A)
 {
   for(int i=0;i<N;i++)
     {
@@ -205,7 +236,7 @@ void FMatrixBlock<N>::transpose(FMatrixBlock<N>& A)
 /**********************************************************/
 
 template<int N>
-void FMatrixBlock<N>::copy_transpose(const FMatrixBlock<N>& A) 
+void FMatrixBlock<N>::copy_transpose(const FMatrixBlock<N>& A)
 {
   for(int i=0;i<N;i++)
     {
@@ -223,7 +254,7 @@ void FMatrixBlock<N>::operator *= (double s)
 {
   auto p=NodeMatrix<N,MatrixEntryType>::begin();
   auto q=p+N*N;
- 
+
   for ( ; p!=q; p++)
     {
       *p *= s;
@@ -234,7 +265,7 @@ void FMatrixBlock<N>::operator *= (double s)
 
 template<int N>
 void FMatrixBlock<N>::inverse()
-{ 
+{
   NodeMatrix<N,MatrixEntryType>::gauss_jordan();
 }
 

@@ -68,7 +68,7 @@ namespace Gascoigne
   protected:
     std::vector<std::vector<int>> _patchlist;
     mutable std::vector<Eigen::PartialPivLU<Eigen::MatrixXd>> _lu;
-    std::vector<std::vector<int> >  Coloring;	
+    std::vector<std::vector<int> >  Coloring;
   public:
     //////////////////// Constructor & Co
     VankaSmoother() : _dofhandler(NULL), _ncomp(-1), _sizeofpatch(-1)
@@ -80,7 +80,7 @@ namespace Gascoigne
     {
       _dofhandler = dh;
     }
-    
+
     string GetName() const
     {
       return "VankaSmoother";
@@ -113,14 +113,14 @@ namespace Gascoigne
 
     //////////////////// Solve
     void solve(GlobalVector& x) const;
-    
-    
+
+
     template<int NCOMP>
     void copy_entries_sparseblockmatrix(const SparseBlockMatrix<FMatrixBlock<NCOMP> >& A);
     void copy_entries(const MatrixInterface& A);
 
 
-    void ElementColoring(int degree) 
+    void ElementColoring(int degree)
     {
       // convert mesh to graph
       std::vector<std::vector<int> > node2patch(_dofhandler->nnodes());
@@ -163,7 +163,7 @@ namespace Gascoigne
 		      }
 		  ++color;
       } while (!done);
-      
+
       Coloring.clear();
       Coloring.resize(color-1);
       for (int p=0;p<_patchlist.size();++p)
@@ -173,7 +173,7 @@ namespace Gascoigne
 		  Coloring[col].push_back(p);
 		}
       //std::cout << "Coloring:" << std::endl;
-    
+
       //int colnumb=0;
       //for (auto it : Coloring)
    	//	{
@@ -186,12 +186,12 @@ namespace Gascoigne
     int NumberofColors() const
 	{
 		return Coloring.size();
-	}	
+	}
 
 	const std::vector<int>&   elementswithcolor(int col) const
 	{
 	  return Coloring[col];
-	}    
+	}
   };
 } // namespace Gascoigne
 

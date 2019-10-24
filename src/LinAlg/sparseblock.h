@@ -18,14 +18,14 @@ namespace Gascoigne
 
   class SparseBlock : public numfixarray<SPARSE_NENTRIES,MatrixEntryType>
   {
-    
+
     typedef nvector<double>::iterator        viterator;
     typedef nvector<double>::const_iterator  const_viterator;
 
   public:
-    
+
     int ncomp() const { return SPARSE_NROWS;}
-    
+
     inline  void   operator *= (const SparseBlock&) {assert(0);}
     void   operator *= (double s) {assert(0);}
 
@@ -51,8 +51,8 @@ namespace Gascoigne
       else
 	return numfixarray<SPARSE_NENTRIES,MatrixEntryType>::operator[](p);
     }
-    
-    
+
+
     void   DirichletRow (const std::vector<int>& cv)
     {
       for (auto row : cv)
@@ -61,8 +61,8 @@ namespace Gascoigne
 	    numfixarray<SPARSE_NENTRIES,MatrixEntryType>::operator[](p)=0;
 	}
     }
-    
-    
+
+
     void   DirichletCol (const std::vector<int>& cv)
     {
       for (auto col : cv)
@@ -74,7 +74,7 @@ namespace Gascoigne
 	}
     }
 
-    
+
     void   DirichletDiag(const std::vector<int>& cv)
     {
       for (auto row : cv)
@@ -83,14 +83,14 @@ namespace Gascoigne
 	  for (p=SPARSE_START[row];p<SPARSE_START[row+1];++p)
 	    if (SPARSE_COL[p]==row)
 	      break;
-	  
+
 	  assert(p<SPARSE_START[row+1]);
 	  numfixarray<SPARSE_NENTRIES,MatrixEntryType>::operator[](p)=1.;
 	}
-      
-    } 
-    
-    
+
+    }
+
+
     void   entry     (const nmatrix<double>&){assert(0);}
     void   entry     (int i, int j, const EntryMatrix& E, double s=1.)
     {
@@ -102,12 +102,24 @@ namespace Gascoigne
 	      += s * E(i,j,row,col);
 	  }
     }
-    
+
+    void entry_atomic(int i, int j, const EntryMatrix& E, double s = 1.)
+    {
+      for (int row = 0; row < SPARSE_NROWS; ++row)
+        for (int p = SPARSE_START[row]; p < SPARSE_START[row + 1]; ++p)
+        {
+          int col = SPARSE_COL[p];
+#pragma omp atomic update
+          numfixarray<SPARSE_NENTRIES, MatrixEntryType>::operator[](p) +=
+            s * E(i, j, row, col);
+        }
+    }
+
     void   dual_entry(int i, int j, const EntryMatrix&, double s=1.){assert(0);}
     void   inverse () {assert(0);}
     inline void   vmult   (viterator) const{assert(0);}
-    void   mult    (SparseBlock&, const SparseBlock&) const{assert(0);} 
-    
+    void   mult    (SparseBlock&, const SparseBlock&) const{assert(0);}
+
     void   submult(const SparseBlock& B, const SparseBlock& C)
     {assert(0);}
 
@@ -120,14 +132,14 @@ namespace Gascoigne
     {
       assert(0);
     }
-    
-      
+
+
     void add(double s, const TimePattern& TP)
     {
       assert(0);
     }
-    
-    
+
+
     void cadd(double s, viterator p, const_viterator q0) const
     {
       auto it = this->begin();
@@ -135,7 +147,7 @@ namespace Gascoigne
       for (int row=0;row<SPARSE_NROWS;++row)
 	{
 	  double sum = 0.0;
-	  
+
 	  for (int pos = SPARSE_START[row];pos<SPARSE_START[row+1];++pos,++it)
 	    {
 	      int col = SPARSE_COL[pos];
@@ -145,9 +157,9 @@ namespace Gascoigne
 	  *p += s * sum;
 	  p++;
 	}
-      
+
     }
-    
+
     void caddtrans(double s, viterator p, const_viterator q0) const
     {
       assert(0);
