@@ -38,7 +38,7 @@ protected:
 
 
 public:
-  ZeroDirichletData()  { std::err << "ZeroDirichletData without comps and colors" << std::endl; abort(); }
+  ZeroDirichletData()  { std::cerr << "ZeroDirichletData without comps and colors" << std::endl; abort(); }
   ZeroDirichletData(const ParamFile& pf) : DirichletData(pf) {}
   std::string GetName() const {return "Zero";}
   void operator()(DoubleVector& b, const Vertex2d& v, int col) const {b.zero();}
