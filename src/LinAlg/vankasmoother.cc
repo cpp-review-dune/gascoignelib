@@ -163,6 +163,31 @@ void VankaSmoother::solve(GlobalVector& x) const
 #pragma omp parallel
   {
 #if USE_ATOMIC_OPS(1)
+#pragma omp parallel for schedule(static)
+    for (int p = 0; p < _patchlist.size(); ++p)
+    {
+      // copy local patch-vector
+      Eigen::VectorXd H(_sizeofpatch * _ncomp);
+      for (int r = 0; r < _sizeofpatch; ++r)
+        for (int c = 0; c < _ncomp; ++c)
+          H(_ncomp * r + c, 0) = B(_patchlist[p][r], c);
+
+      // perform inversion
+      H = _lu[p].permutationP() * H;
+      _lu[p].matrixLU().triangularView<Eigen::UnitLower>().solveInPlace(H);
+      _lu[p].matrixLU().triangularView<Eigen::Upper>().solveInPlace(H);
+
+      // update
+      for (int r = 0; r < _sizeofpatch; ++r)
+      {
+#pragma omp atomic update
+        count[_patchlist[p][r]]++;
+        for (int c = 0; c < _ncomp; ++c)
+#pragma omp atomic update
+          x(_patchlist[p][r], c) += H(_ncomp * r + c, 0);
+      }
+    }
+#else
     for (int col = 0; col < NumberofColors(); col++)
     {
       const std::vector<int>& ewcol = elementswithcolor(col);
@@ -188,29 +213,6 @@ void VankaSmoother::solve(GlobalVector& x) const
           for (int c = 0; c < _ncomp; ++c)
             x(_patchlist[p][r], c) += H(_ncomp * r + c, 0);
         }
-      }
-    }
-#else
-#pragma omp parallel for schedule(static)
-    for (int p = 0; p < _patchlist.size(); ++p)
-    {
-      // copy local patch-vector
-      Eigen::VectorXd H(_sizeofpatch * _ncomp);
-      for (int r = 0; r < _sizeofpatch; ++r)
-        for (int c = 0; c < _ncomp; ++c)
-          H(_ncomp * r + c, 0) = B(_patchlist[p][r], c);
-
-      // perform inversion
-      H = _lu[p].permutationP() * H;
-      _lu[p].matrixLU().triangularView<Eigen::UnitLower>().solveInPlace(H);
-      _lu[p].matrixLU().triangularView<Eigen::Upper>().solveInPlace(H);
-
-      // update
-      for (int r = 0; r < _sizeofpatch; ++r)
-      {
-        count[_patchlist[p][r]]++;
-        for (int c = 0; c < _ncomp; ++c)
-          x(_patchlist[p][r], c) += H(_ncomp * r + c, 0);
       }
     }
 #endif
