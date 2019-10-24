@@ -54,8 +54,6 @@ namespace Gascoigne
 	for (auto cc : __comps)
 	  comp_on_color[it].push_back(cc);
       }
-    
-    
   }
 
   DirichletDataByColor::DirichletDataByColor(int comps, std::set<int>& cl, double s) : __cols(cl)
