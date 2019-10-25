@@ -1,5 +1,3 @@
-#define USE_ATOMIC_OPS(X) ((X) == (ATOMIC_OPS))
-
 #include "vankasmoother.h"
 #include "gascoignehash.h"
 
@@ -162,7 +160,7 @@ void VankaSmoother::solve(GlobalVector& x) const
 
 #pragma omp parallel
   {
-#if USE_ATOMIC_OPS(1)
+#ifdef ATOMIC_OPS
 #pragma omp parallel for schedule(static)
     for (int p = 0; p < _patchlist.size(); ++p)
     {

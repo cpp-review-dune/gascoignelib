@@ -26,8 +26,6 @@
  * on this license.
  *
  **/
-#define USE_ATOMIC_OPS(X) ((X) == (ATOMIC_OPS))
-
 #include "discretizationinterface.h"
 #include "mginterpolatornested.h"
 //#include "omp.h"
@@ -416,7 +414,7 @@ public:
       LocalData __QN, __QC;
       const auto EQ = PD.NewEquation();
       EQ->SetParameterData(QP);
-#if USE_ATOMIC_OPS(1)
+#ifdef ATOMIC_OPS
 #pragma omp for schedule(static)
       for (int iq = 0; iq < GetDofHandler()->nelements(DEGREE); ++iq)
       {
@@ -504,8 +502,7 @@ public:
 
       const auto EQ = PD.NewEquation();
       EQ->SetParameterData(QP);
-#if USE_ATOMIC_OPS(1)
-
+#ifdef ATOMIC_OPS
 #pragma omp for schedule(static)
       for (int iq = 0; iq < GetDofHandler()->nelements(DEGREE); ++iq)
       {
@@ -559,7 +556,7 @@ public:
 
     LocalParameterData QP;
     GlobalToGlobalData(QP);
-#pragma omp parallel //private(T, finiteelement, integrator, __U, __F, __QN, __QC)
+#pragma omp parallel  // private(T, finiteelement, integrator, __U, __F, __QN, __QC)
     {
       nmatrix<double> T;
       FINITEELEMENT finiteelement;
@@ -606,7 +603,7 @@ public:
     LocalParameterData QP;
     GlobalToGlobalData(QP);
 
-#pragma omp parallel //private(T, finiteelement, integrator, __U, __QN, __QC, __E)
+#pragma omp parallel  // private(T, finiteelement, integrator, __U, __QN, __QC, __E)
     {
       nmatrix<double> T;
       FINITEELEMENT finiteelement;
