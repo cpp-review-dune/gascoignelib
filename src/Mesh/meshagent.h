@@ -116,6 +116,10 @@ public:
   void refine_nodes(IntVector& refnodes);
   void refine_cells(IntVector& ref);
 
+  //Hilfsfunktionen für FSI
+  void mark_cells(IntVector& refcells, IntVector& coarsecells, IntVector& refnodes, IntVector& coarsenodes);
+  void refine_with_added_cells(IntVector& refcells, IntVector& coarsecells);
+
   const GascoigneMeshTransfer* GetTransfer(int l) const {return GMG->GetTransfer(l);}
 
   const std::set<int> Cello2n(int i)const;

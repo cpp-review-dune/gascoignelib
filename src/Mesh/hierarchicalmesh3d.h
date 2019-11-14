@@ -213,6 +213,11 @@ class HierarchicalMesh3d : public HierarchicalMesh
 
   void   refine      (const IntVector&, const IntVector&);
   void   patch_refine(IntVector&, IntVector&);
+
+  // Hilfsfunktionen für FSI
+  void prepare_for_refine(IntVector& cell_ref, IntVector &cell_coarse);
+
+
   //  int    smooth_edges();
   void   FillAllBoundaryLines();
 
@@ -228,6 +233,8 @@ class HierarchicalMesh3d : public HierarchicalMesh
   void ConstructQ2PatchMesh(IntVector& pm) const;
   IntVector ConstructQ4Patch(int c) const;
   std::set<int> GetColors() const;
+
+
 
   
   int nactivedescendants(int i)      const;

@@ -2154,6 +2154,39 @@ void HierarchicalMesh3d::patch_refine(IntVector& cell_ref,
 
 /*---------------------------------------------------*/
 
+void HierarchicalMesh3d::prepare_for_refine(IntVector& cell_ref, IntVector &cell_coarse)
+{
+	{
+	  for (int i=0; i<pdepth; i++)
+	    {
+	      LoadFathers3d(cell_ref);
+	      LoadFathers3d(cell_coarse);
+	    }
+
+	  CoarseHierarchicalMesh3d CM(*this);
+
+	  CM.BasicInit(pdepth);
+	  CM.refine(cell_ref,cell_coarse);
+	  CM.GetRefinedList(cell_ref);
+	  CM.GetCoarsedList(cell_coarse);
+
+	  IntVector ref(0), coarse(0);
+
+	  for (int i=0; i<cell_ref.size(); i++)
+	    {
+	      recursive_childs(cell_ref[i],ref,pdepth);
+	    }
+	  for (int i=0; i<cell_coarse.size(); i++)
+	    {
+	      recursive_childs(cell_coarse[i],coarse,pdepth+1);
+	    }
+	  cell_ref = ref;
+	  cell_coarse = coarse;
+	}
+}
+
+/*---------------------------------------------------*/
+
 void HierarchicalMesh3d::refine
 (const IntVector& cell_ref, const IntVector& cell_coarse)
 {

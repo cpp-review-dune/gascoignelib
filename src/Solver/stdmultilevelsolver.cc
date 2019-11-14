@@ -384,6 +384,7 @@ void StdMultiLevelSolver::vmulteq(VectorInterface& y, const VectorInterface& x) 
 void StdMultiLevelSolver::LinearMg(int finelevel, int coarselevel, VectorInterface& u, const VectorInterface& f, CGInfo& info)
 {
   int clevel=coarselevel;
+
   for(int level=coarselevel;level<nlevels();level++)
     {
       if(GetSolver(level)->DirectSolver()) clevel=level;
@@ -402,7 +403,6 @@ void StdMultiLevelSolver::LinearMg(int finelevel, int coarselevel, VectorInterfa
   res[finelevel] = GetSolver(finelevel)->Norm(_mg1);
   rw[finelevel] = 0.;
   info.check(res[finelevel],rw[finelevel]);
-
   bool reached = false; // mindestens einen schritt machen
 
   for(int it=0; !reached; it++)
@@ -410,9 +410,12 @@ void StdMultiLevelSolver::LinearMg(int finelevel, int coarselevel, VectorInterfa
       string p = DataP->MgType();
       string p0 = p;
       if(p=="F") p0="W";
+
       mgstep(res,rw,finelevel,finelevel,clevel,p0,p,u,_mg0,_mg1);
       reached = info.check(res[finelevel],rw[finelevel]);
     }
+  GetSolver(finelevel)->MatrixResidual(_mg1,u,_mg0);
+
 }
 
 /*-------------------------------------------------------------*/
@@ -423,6 +426,7 @@ void StdMultiLevelSolver::mgstep(vector<double>& res, vector<double>& rw,
 {
   if(l==coarselevel)
     {
+
       if(p=="F") {p0="V";}
       GetSolver(l)->smooth_exact(u,b,v);
       if(l==finelevel)
@@ -433,6 +437,7 @@ void StdMultiLevelSolver::mgstep(vector<double>& res, vector<double>& rw,
     }
   else
     {
+
       GetSolver(l)->smooth_pre(u,b,v);
       GetSolver(l)->MatrixResidual(v,u,b);
       
@@ -554,6 +559,7 @@ void StdMultiLevelSolver::NewtonMatrixControl(VectorInterface& u, NLInfo& nlinfo
   if (nm1+nm2==0) return;
   
   MON->new_matrix() = 1;
+
   
   AssembleMatrix(u,nlinfo);
   ComputeIlu(u);
@@ -574,13 +580,17 @@ void StdMultiLevelSolver::NewtonLinearSolve(VectorInterface& x, const VectorInte
       int clevel=Gascoigne::max_int(DataP->CoarseLevel() ,0);
       if(DataP->CoarseLevel() == -1) clevel = FinestLevel(); 
       LinearMg(ComputeLevel,clevel,x,b, info);
+
     }
   else if (DataP->LinearSolve()=="gmres")
     {
       Gmres(x,b,info);
     }
 
+
+
   GetSolver(ComputeLevel)->SubtractMean(x);
+
   _clock_solve.stop();
 }
 
@@ -594,6 +604,7 @@ void StdMultiLevelSolver::Gmres(VectorInterface& x, const VectorInterface& f, CG
   GMRES<StdSolver,StdMultiLevelSolver,VectorInterface> gmres(*S,*this,n);
 
   gmres.solve(x,f,info);
+//  gmres.restarted_solve(x,f,info);
 }
 
 /*-------------------------------------------------------------*/
@@ -605,6 +616,7 @@ double StdMultiLevelSolver::NewtonUpdate(double& rr, VectorInterface& x, VectorI
 
   double nn = NewtonNorm(dx);
   double nr = GetSolver(ComputeLevel)->Norm(r);
+
 
   if (nn>1.e30)  lex =1;
   if (!(nn>=0.)) lex =1;
@@ -627,7 +639,6 @@ double StdMultiLevelSolver::NewtonUpdate(double& rr, VectorInterface& x, VectorI
   GetSolver(ComputeLevel)->Add(x,relax,dx);
   NewtonResidual(r,x,f);
   rr = NewtonNorm(r);
-
   string message = "";
   for(int iter=0;iter<nlinfo.user().maxrelax();iter++)
     {
@@ -637,7 +648,6 @@ double StdMultiLevelSolver::NewtonUpdate(double& rr, VectorInterface& x, VectorI
       if (message=="continue") 
       {
         GetSolver(ComputeLevel)->Add(x,relax*(omega-1.),dx);  
-
         NewtonResidual(r,x,f);
         rr = NewtonNorm(r);
         relax *= omega;
@@ -653,7 +663,7 @@ double StdMultiLevelSolver::NewtonUpdate(double& rr, VectorInterface& x, VectorI
       }
     }
 
-  // NewtonUpdateShowCompResiduals(nlinfo.control().iteration(), x, r, f,dx);
+//   NewtonUpdateShowCompResiduals(nlinfo.control().iteration(), x, r, f,dx);
 
   return NewtonNorm(dx);
 }

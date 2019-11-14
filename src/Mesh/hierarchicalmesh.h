@@ -159,6 +159,11 @@ class HierarchicalMesh : public MeshInterface
   virtual void patch_refine(IntVector&, IntVector&)=0;
   virtual void vertex_patch_refine(IntVector& ref, IntVector& coarse);
   virtual void vertex_patch_refine(IntVector&);
+
+  //Hilfsfunktionen für FSI
+  virtual void mark_cells(IntVector& refcells, IntVector& coarsecells, IntVector& refnodes, IntVector& coarsenodes);
+  virtual void prepare_for_refine(IntVector& cell_ref, IntVector &cell_coarse) = 0;
+
   virtual void GetAwakePatchs(std::set<int>&) const =0;
   virtual void GetAwakeCells(std::set<int>&) const =0;
   virtual void ConstructQ2PatchMesh(IntVector& pm) const=0;

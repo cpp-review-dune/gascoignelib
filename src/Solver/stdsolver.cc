@@ -1031,7 +1031,7 @@ void StdSolver::smooth(int niter, VectorInterface& x, const VectorInterface& y, 
 {
   _il.start();
   double omega = GetSolverData().GetOmega();
-  
+
   for(int iter=0; iter<niter; iter++)
     {
       if (GetSolverData().GetLinearSmooth()=="ilu")

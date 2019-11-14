@@ -202,6 +202,12 @@ class HierarchicalMesh2d : public HierarchicalMesh
 
   void   refine      (const IntVector&, const IntVector&);
   void   patch_refine  (IntVector&, IntVector&);
+
+  // Hilfsfunktionen FSI
+  void prepare_for_refine(IntVector& cell_ref, IntVector &cell_coarse);
+
+
+
   int    smooth_edges();
   void   FillAllBoundaryLines();
 
@@ -224,6 +230,9 @@ class HierarchicalMesh2d : public HierarchicalMesh
       if( p!=quadofcurved.end() ) return p->second;
       return -1;
     }
+
+
+
 
   std::set<int>   CellNeighbours(int i)    const;
 

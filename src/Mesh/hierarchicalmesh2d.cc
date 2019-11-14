@@ -2321,6 +2321,38 @@ void HierarchicalMesh2d::patch_refine
 }
 
 /*---------------------------------------------------*/
+void HierarchicalMesh2d::prepare_for_refine(IntVector& cell_ref, IntVector &cell_coarse)
+{
+	{
+	  for (int i=0; i<pdepth; i++)
+	    {
+	      LoadFathers(cell_ref);
+	      LoadFathers(cell_coarse);
+	    }
+
+	  CoarseHierarchicalMesh2d CM(*this);
+
+	  CM.BasicInit(pdepth);
+	  CM.refine(cell_ref,cell_coarse);
+	  CM.GetRefinedList(cell_ref);
+	  CM.GetCoarsedList(cell_coarse);
+
+	  IntVector ref(0), coarse(0);
+
+	  for (int i=0; i<cell_ref.size(); i++)
+	    {
+	      recursive_childs(cell_ref[i],ref,pdepth);
+	    }
+	  for (int i=0; i<cell_coarse.size(); i++)
+	    {
+	      recursive_childs(cell_coarse[i],coarse,pdepth+1);
+	    }
+	  cell_ref = ref;
+	  cell_coarse = coarse;
+	}
+}
+
+/*---------------------------------------------------*/
 
 void HierarchicalMesh2d::FillVolumes(DoubleVector& vol) const
 {

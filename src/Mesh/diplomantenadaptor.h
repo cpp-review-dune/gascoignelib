@@ -66,6 +66,7 @@ public:
   DiplomandenAdaptor(AdaptorData&, const DoubleVector& eta);
   void refine(IntVector& ref);
   void MalteRefine(IntVector& ref) const;
+  void ThomasRefine(IntVector & ref);
 };
 }
 

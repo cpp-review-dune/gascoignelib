@@ -125,6 +125,7 @@ void AdaptorData::read(const ParamFile* pf)
 //   CheckEstimate();
 }
 
+
 /*-------------------------------------------------*/
 
 void AdaptorData::reset()

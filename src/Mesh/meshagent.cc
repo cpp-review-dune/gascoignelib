@@ -533,6 +533,25 @@ void MeshAgent::refine_cells(IntVector& ref)
   refine_nodes(refnodes);
 }
 
+
+/*----------------------------------------*/
+void MeshAgent::mark_cells(IntVector& refcells, IntVector& coarsecells, IntVector& refnodes, IntVector& coarsenodes)
+{
+	assert(HMP);
+	HMP->mark_cells(refcells, coarsecells, refnodes, coarsenodes);
+
+
+}
+
+/*----------------------------------------*/
+void MeshAgent::refine_with_added_cells(IntVector& refcells, IntVector& coarsecells)
+{
+	assert(HMP);
+	HMP->patch_refine(refcells, coarsecells);
+	ReInit();
+}
+
+
 /*----------------------------------------*/
 
 inline const set<int> MeshAgent::Cello2n(int i)const

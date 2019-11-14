@@ -87,6 +87,11 @@ namespace Gascoigne
       virtual const int Cello2nFather(int i)const=0;
       virtual const bool Goc2nc()const=0;
 
+
+      //Hilfsfunktionen für FSI
+      virtual void mark_cells(IntVector& refcells, IntVector& coarsecells, IntVector& refnodes, IntVector& coarsenodes) = 0;
+      virtual void refine_with_added_cells(IntVector& refcells, IntVector& coarsecells) =0;
+
       virtual void AddShape(int col, BoundaryFunction<2>* f) {std::cerr << "MeshAgentInterface::AddShape not written" << std::endl; abort();}
       virtual void AddShape(int col, BoundaryFunction<3>* f) {std::cerr << "MeshAgentInterface::AddShape not written" << std::endl; abort();}
 

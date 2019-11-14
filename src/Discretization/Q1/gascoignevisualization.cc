@@ -113,9 +113,13 @@ void GascoigneVisualization::AddVector(const GlobalVector* v)
     {
       fixarray<3,int> ff;
       int dim = mesh->dimension();
-      if (dim==3)
+      if (dim==3 && (ncomp ==3))
 	{
-	  ff[0] = 1; ff[1] = 2; ff[2] = 3;
+	  ff[0] = 0; ff[1] = 1; ff[2] = 2;
+	}
+    else if( (dim ==3) && (ncomp ==4))
+	{
+    	ff[0] = 1; ff[1] = 2; ff[2] = 3;
 	}
       else if ((dim==2) && (ncomp>2))
 	{

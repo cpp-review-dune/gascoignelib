@@ -237,6 +237,7 @@ int Visualization::CheckPointData() const
     {
       int q = p->second;
 
+
       assert(q>=0);
       assert(q<PointData->visucomp());
 

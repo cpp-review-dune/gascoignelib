@@ -185,6 +185,57 @@ void DiplomandenAdaptor::refine(IntVector& ref)
       ref[j] = C[j];
     }
 }
-}
+
 
 /*-----------------------------------------*/
+
+
+void DiplomandenAdaptor::ThomasRefine(IntVector  &ref)
+{
+  int n = eta.size();
+
+  if (n==0) return;
+
+
+  double alpha = 2.0;
+
+  IntVector C(eta.size());
+  iota(C.begin(),C.end(),0);
+
+  typedef CompareObjectBigToSmall<DoubleVector >  CoC;
+
+  sort(C.begin(),C.end(),CoC(eta));
+
+  int i;
+  for(i=0; i<n; i++)
+    {
+      if(eta[C[i]]==0.) break;
+    }
+  n = i;
+
+  double etasum = accumulate(eta.begin(),eta.end(),0.);
+
+  int nelem = n;
+
+
+
+  double goal = etasum*alpha*1/n;
+
+  for(i=0; i<n; i++)
+    {
+      if (eta[C[i]] < goal)
+      {
+    	  break;
+      }
+
+    }
+  if(i==0) i = n/10;  // 10% verfeinern
+
+  ref.resize(i);
+  for(int j=0; j<i; j++)
+    {
+      ref[j] = C[j];
+    }
+}
+}
+

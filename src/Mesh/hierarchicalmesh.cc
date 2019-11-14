@@ -277,7 +277,12 @@ void HierarchicalMesh::vertex_patch_refine(IntVector& refnodes, IntVector& coars
   VertexToCells          (ref   ,refcoarsenodes   ,vertexlevel);
   VertexToCellsCoarsening(coarse,coarsecoarsenodes,vertexlevel);
 
+  for (int i = 0; i < ref.size(); i++)
+  {
+	  cout << ref[i] << endl;
+  }
   patch_refine(ref,coarse);
+
 }
 
 /*---------------------------------------------------*/
@@ -304,6 +309,40 @@ void HierarchicalMesh::vertex_patch_refine(IntVector& refnodes)
 
   patch_refine(ref,coarse);
 }
+
+/*---------------------------------------------------*/
+
+void HierarchicalMesh::mark_cells(IntVector& refcells, IntVector& coarsecells, IntVector& refnodes, IntVector& coarsenodes)
+{
+	IntVector vertexlevel;
+	IntSet    refcoarsenodes, coarsecoarsenodes;
+
+	FillVertexLevels  (vertexlevel);
+
+	  // RefineCoarseNodes verteilt auf die Patche
+	  // can be switched off for more localized refinement
+	  // (ausgefranzt)
+	if (etapatcher)
+	  {
+	    RefineCoarseNodes (refcoarsenodes,refnodes,vertexlevel);
+	  }
+	else
+	{
+		refcoarsenodes.insert(refnodes.begin(),refnodes.end());
+	}
+	coarsecoarsenodes.insert(coarsenodes.begin(),coarsenodes.end());
+
+	VertexToCells          (refcells   ,refcoarsenodes   ,vertexlevel);
+	VertexToCellsCoarsening(coarsecells,coarsecoarsenodes,vertexlevel);
+
+	prepare_for_refine(refcells,  coarsecells);
+
+
+
+
+}
+
+
 
 /*---------------------------------------------------*/
 

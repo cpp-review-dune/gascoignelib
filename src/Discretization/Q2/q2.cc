@@ -251,6 +251,8 @@ void Q2::StrongDirichletVector(GlobalVector& u, const DirichletData& BF, int col
   GlobalToGlobalData();
   BF.SetParameterData(__QP);
 
+
+
   for(int i=0;i<bv.size();i++)
     {
       int index = bv[i];
