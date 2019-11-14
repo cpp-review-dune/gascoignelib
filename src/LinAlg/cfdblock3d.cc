@@ -206,6 +206,59 @@ void CFDBlock3d::entry(int i, int j, const EntryMatrix& E, double d)
 
 /**********************************************************/
 
+void CFDBlock3d::entry_atomic(const nmatrix<double>& E)
+{
+#pragma omp atomic update
+  s += E(0, 0);
+#pragma omp atomic update
+  dx += E(0, 1);
+#pragma omp atomic update
+  dy += E(0, 2);
+#pragma omp atomic update
+  dz += E(0, 3);
+#pragma omp atomic update
+  laplx() += E(1, 1);
+#pragma omp atomic update
+  laply() += E(2, 2);
+#pragma omp atomic update
+  laplz() += E(3, 3);
+
+#pragma omp atomic update
+  gx += E(1, 0);
+#pragma omp atomic update
+  gy += E(2, 0);
+#pragma omp atomic update
+  gz += E(3, 0);
+}
+
+/**********************************************************/
+
+void CFDBlock3d::entry_atomic(int i, int j, const EntryMatrix& E, double d)
+{
+#pragma omp atomic update
+  s += d * E(i, j, 0, 0);
+#pragma omp atomic update
+  dx += d * E(i, j, 0, 1);
+#pragma omp atomic update
+  dy += d * E(i, j, 0, 2);
+#pragma omp atomic update
+  dz += d * E(i, j, 0, 3);
+#pragma omp atomic update
+  laplx() += d * E(i, j, 1, 1);
+#pragma omp atomic update
+  laply() += d * E(i, j, 2, 2);
+#pragma omp atomic update
+  laplz() += d * E(i, j, 3, 3);
+
+#pragma omp atomic update
+  gx += d * E(i, j, 1, 0);
+#pragma omp atomic update
+  gy += d * E(i, j, 2, 0);
+#pragma omp atomic update
+  gz += d * E(i, j, 3, 0);
+}
+
+/**********************************************************/
 void CFDBlock3d::dual_entry(int i, int j, const EntryMatrix& E, double d)
 { 
   std::cerr << "\"CFDBlock3d::dual_entry\" not written!" << std::endl;

@@ -459,6 +459,19 @@ namespace Gascoigne
       return nc[nodes_per_cell(i) * i + ii];
     }
     
+    virtual int CornerIndices(int degree,int iq,int ii) const
+    {
+      if (degree == 1)
+      {      
+      		assert(nodes_per_cell(iq) * iq + ii < nc.size());
+      		return nc[nodes_per_cell(iq) * iq + ii];
+      }
+      else if (degree == 2) 		
+      {
+      	return PatchHandler.CoarseIndices(iq)[ii];
+      }
+      assert(0);
+    }
     IntVector IndicesOfCell(int iq) const;
 
     IntVector GetElement(int degree, int iq) const

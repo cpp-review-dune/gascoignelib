@@ -42,6 +42,16 @@ namespace Gascoigne
     template<class B>
 	class DynamicBlockMatrix : public MatrixInterface
     {
+    private:
+      template<bool atom>
+      void entry_universal(nvector<int>::const_iterator start1,
+                           nvector<int>::const_iterator stop1,
+                           nvector<int>::const_iterator start2,
+                           nvector<int>::const_iterator stop2, const EntryMatrix& M,
+                           double s = 1.);
+      template<bool atom>
+      void entry_universal(niiterator start, niiterator stop, const EntryMatrix& M,
+                           double s = 1.);
     protected:
 
 	typedef typename list<int>::const_iterator    const_citerator;
@@ -183,7 +193,19 @@ namespace Gascoigne
           std::cerr << "\"DynamicBlockMatrix::entry\" not written!" << std::endl;
           abort();
         }
-	void entry(nvector<int>::const_iterator start, nvector<int>::const_iterator stop, const EntryMatrix& M, double s=1.);
+	void entry(nvector<int>::const_iterator start, nvector<int>::const_iterator stop, const
+	EntryMatrix& M, double s=1.);
+  void entry_atomic(nvector<int>::const_iterator start1,
+                    nvector<int>::const_iterator stop1,
+                    nvector<int>::const_iterator start2,
+                    nvector<int>::const_iterator stop2, const EntryMatrix& M,
+                    double s = 1.)
+  {
+    std::cerr << "\"DynamicBlockMatrix::entry\" not written!" << std::endl;
+    abort();
+  }
+  void entry_atomic(niiterator start, niiterator stop, const EntryMatrix& M,
+                    double s = 1.);
 	void entrydual(nvector<int>::const_iterator start, nvector<int>::const_iterator stop, const EntryMatrix& M, double s=1.){
           std::cerr << "\"DynamicBlockMatrix::entrydual\" not written!" << std::endl;
           abort();

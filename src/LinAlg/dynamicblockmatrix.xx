@@ -283,7 +283,8 @@ namespace Gascoigne
  /*-------------------------------------------------------------*/
 
     template<class B>
-    void DynamicBlockMatrix<B>::entry(nvector<int>::const_iterator start, nvector<int>::const_iterator stop, const EntryMatrix& M, double s)
+    template<bool atom>
+    void DynamicBlockMatrix<B>::entry_universal(nvector<int>::const_iterator start, nvector<int>::const_iterator stop, const EntryMatrix& M, double s)
     {
 	nvector<int>::const_iterator p, q;
 	int ii = 0;
@@ -299,7 +300,14 @@ namespace Gascoigne
 		{
 		    if(*cit==j)
 		    {
+        //if constexpr(atom)
+        if (atom)
+        {
+          vit -> entry_atomic(ii,jj,M,s);
+        }else
+		    {
 			vit -> entry(ii,jj,M,s);
+        }
 			break;
 		    }
 		}
@@ -307,6 +315,22 @@ namespace Gascoigne
 	    }
 	    ii++;
 	}
+    }
+
+/*-------------------------------------------------------------*/
+
+    template<class B>
+    void DynamicBlockMatrix<B>::entry(nvector<int>::const_iterator start, nvector<int>::const_iterator stop, const EntryMatrix& M, double s)
+    {
+      entry_universal<false>(start, stop, M, s);
+    }
+
+/*-------------------------------------------------------------*/
+
+    template<class B>
+    void DynamicBlockMatrix<B>::entry_atomic(nvector<int>::const_iterator start, nvector<int>::const_iterator stop, const EntryMatrix& M, double s)
+    {
+      entry_universal<true>(start, stop, M, s);
     }
     
 // /*-------------------------------------------------------------*/

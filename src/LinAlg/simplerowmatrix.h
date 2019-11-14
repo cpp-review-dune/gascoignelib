@@ -43,42 +43,72 @@ namespace Gascoigne
 class SimpleRowMatrix : virtual public MatrixInterface
 {
 private:
-  
-  
+  template<bool atom>
+  void entry_universal(niiterator start, niiterator stop, const EntryMatrix& M, double s = 1.);
+
 protected:
-  
+
   RowColumnStencil  ST;
-  nvector<double> value; 
-  
+  nvector<double> value;
+
 public:
-  
-  
+
+
   //
-  ////  Con(De)structor 
+  ////  Con(De)structor
   //
-  
+
   SimpleRowMatrix() : MatrixInterface() {}
   ~SimpleRowMatrix() {}
-  
+
   std::string GetName() const {return "SimpleRowMatrix";}
-  
+
   std::ostream& Write(std::ostream& os) const;
-  
+
   const StencilInterface* GetStencil() const { return &ST;}
   double& GetValue(int pos) {return value[pos];}
   const double& GetValue(int pos) const {return value[pos];}
   const double& GetValue(int i, int j) const {return value[ST.Find(i,j)];}
-  
+
   void zero() {value.zero();}
   void ReInit(int n, int nentries);
   void ReInit(const SparseStructureInterface* S);
   void entry(niiterator start, niiterator stop, const EntryMatrix& M, double s=1.);
+  void entry_atomic(niiterator start, niiterator stop, const EntryMatrix& M,
+                    double s = 1.);
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Woverloaded-virtual"
   void vmult(nvector<double>& y, const nvector<double>& x, double d=1.) const;
 #pragma GCC diagnostic pop
-  
+
 };
+
+template<bool atom>
+void SimpleRowMatrix::entry_universal(niiterator start, niiterator stop,
+                                   const EntryMatrix& M, double s)
+{
+  int n = stop - start;
+
+  for (int ii = 0; ii < n; ii++)
+  {
+    int i = *(start + ii);
+    for (int jj = 0; jj < n; jj++)
+    {
+      int j   = *(start + jj);
+      int pos = ST.Find(i, j);
+      //if constexpr(atom)
+      if (atom)
+      {
+#pragma omp atomic update
+        value[pos] += s * M(ii, jj, 0, 0);
+      }
+      else
+      {
+        value[pos] += s * M(ii, jj, 0, 0);
+      }
+    }
+  }
+}
 }
 
 #endif

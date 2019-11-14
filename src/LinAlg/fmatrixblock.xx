@@ -163,6 +163,35 @@ void FMatrixBlock<N>::entry(int i, int j, const EntryMatrix& E, double s)
 /**********************************************************/
 
 template<int N>
+void FMatrixBlock<N>::entry_atomic(const nmatrix<double>& E)
+{
+  for (int c=0; c<N; c++)
+    {
+      for (int d=0; d<N; d++)
+        {
+#pragma omp atomic update
+            NodeMatrix<N,MatrixEntryType>::value(c,d) += E(c,d);
+        }
+    }
+}
+
+/**********************************************************/
+
+template<int N>
+void FMatrixBlock<N>::entry_atomic(int i, int j, const EntryMatrix& E, double s)
+{
+  for (int c=0; c<N; c++)
+    {
+      for (int d=0; d<N; d++)
+        {
+#pragma omp atomic update
+            NodeMatrix<N,MatrixEntryType>::value(c,d) += s * E(i,j,c,d);
+        }
+    }
+}
+
+/**********************************************************/
+template<int N>
 void FMatrixBlock<N>::dual_entry(int i, int j, const EntryMatrix& E, double s)
 {
   for (int c=0; c<N; c++)

@@ -45,16 +45,20 @@ namespace Gascoigne
 
 class SimpleMatrix : virtual public MatrixInterface
 {
+  template<bool atom>
+  void entry_universal(niiterator start, niiterator stop, const EntryMatrix& M,
+                       double s = 1.);
+
 protected:
 
   ColumnDiagStencil  ST;
-  DoubleVector value; 
+  DoubleVector value;
   DoubleVector _diag;
 
 public:
 
 //
-///  Constructor 
+///  Constructor
 //
     SimpleMatrix() : MatrixInterface() {}
     ~SimpleMatrix() {}
@@ -73,6 +77,8 @@ public:
     void ReInit(const SparseStructureInterface* S);
     void ReInit(int n, int nentries);
     void entry(niiterator start, niiterator stop, const EntryMatrix& M, double s=1.);
+    void entry_atomic(niiterator start, niiterator stop, const EntryMatrix& M,
+                      double s = 1.);
     void vmult(DoubleVector& y, const DoubleVector& x, double d=1.) const;
     void vmult_transpose(DoubleVector& y, const DoubleVector& x, double d=1.) const;
     void vmult(GlobalVector& y, const GlobalVector& x, double d=1.) const;
@@ -88,10 +94,10 @@ public:
     void dirichlet_only_row(const IntVector& indices);
 #pragma GCC diagnostic pop
 
-  
+
     void transpose();
     void entry_diag(int i, const nmatrix<double>& M);
-    
+
     void PrepareJacobi(double s=1.);
     void JacobiVector(GlobalVector &y) const;
     void Jacobi(GlobalVector &y) const;
@@ -99,6 +105,33 @@ public:
     void copy_entries(const MatrixInterface& A);
 
 };
+
+template <bool atom>
+void SimpleMatrix::entry_universal(niiterator start, niiterator stop,
+                                   const EntryMatrix& M, double s)
+{
+  int n = stop - start;
+
+  for (int ii = 0; ii < n; ii++)
+  {
+    int i = *(start + ii);
+    for (int jj = 0; jj < n; jj++)
+    {
+      int j   = *(start + jj);
+      int pos = ST.Find(i, j);
+      //if constexpr (atom)
+      if (atom)
+      {
+#pragma omp atomic update
+        value[pos] += s * M(ii, jj, 0, 0);
+      }
+      else
+      {
+        value[pos] += s * M(ii, jj, 0, 0);
+      }
+    }
+  }
+}
 }
 
 #endif

@@ -32,31 +32,31 @@
 namespace Gascoigne
 {
 template<class B>
-SparseBlockMatrix<B>::SparseBlockMatrix() : 
+SparseBlockMatrix<B>::SparseBlockMatrix() :
   MatrixInterface()
-{  
+{
 }
 
 /*-------------------------------------------------------------*/
 
 template<class B>
-SparseBlockMatrix<B>::SparseBlockMatrix(const SparseBlockMatrix<B>& A) : 
+SparseBlockMatrix<B>::SparseBlockMatrix(const SparseBlockMatrix<B>& A) :
   MatrixInterface()
 {
 }
-  
+
 /*-------------------------------------------------------------*/
 
 template<class B>
 void SparseBlockMatrix<B>::Jacobi(GlobalVector& x) const
-{    
+{
   for(int i=0; i< n(); i++)
     {
       B Ad =  *mat(US.diag(i));
       Ad.inverse();
       Ad.vmult(x.start(i));
     }
-}   
+}
 
 /*-------------------------------------------------------------*/
 
@@ -82,19 +82,19 @@ void SparseBlockMatrix<B>::FillInterfaceList(const nvector<int>& elements,
       assert (row>=cur_row);
       cur_row = row;
       pos = US.start(row);
-      while ((US.col(pos)!=col)) 
-	{ 
+      while ((US.col(pos)!=col))
+	{
 	  ++pos;
 	  assert (pos!=US.stop(row));
 	}
       mat(pos)->vector_get(tmp);
       int ncomp = mat(pos)->ncomp();
       assert(tmp.size() == ncomp*ncomp);
-      
+
       for (int r=0;r<ncomp;++r)
 	for (int c=0;c<ncomp;++c)
 	  values.push_back(1.0*tmp[r*ncomp+c]);
-      
+
       start[index+1]=start[index]+tmp.size();
     }
 }
@@ -108,7 +108,7 @@ void SparseBlockMatrix<B>::FurbishInterface (double d,
 					     const nvector<MatrixEntryType>& values)
 {
   int ne = elements.size()/2;
-  
+
   nvector<MatrixEntryType> tmp;
   int row;
   int pos=-1;
@@ -124,7 +124,7 @@ void SparseBlockMatrix<B>::FurbishInterface (double d,
 	  if (pos==US.stop(row)) break;
 	}
       if (pos == US.stop(row) ) continue;
-      
+
       tmp.resize(start[index+1]-start[index]);
       for (int i=0;i<tmp.size();++i)
 	tmp[i] = values[i+start[index]];
@@ -133,7 +133,7 @@ void SparseBlockMatrix<B>::FurbishInterface (double d,
 }
 
 /*-------------------------------------------------------------*/
-	
+
 template<class B>
 SparseBlockMatrix<B>& SparseBlockMatrix<B>::operator=(const SparseBlockMatrix<B>& S)
 {
@@ -142,28 +142,28 @@ SparseBlockMatrix<B>& SparseBlockMatrix<B>::operator=(const SparseBlockMatrix<B>
 
   smat.reserve(S.size());
   smat.resize (S.size());
-  
-  US.col()  .reserve(AS->nentries());  
+
+  US.col()  .reserve(AS->nentries());
   US.col()  .resize (AS->nentries());
-  US.start().reserve(AS->n()+1);     
+  US.start().reserve(AS->n()+1);
   US.start().resize (AS->n()+1);
-  US.diag() .reserve(AS->n());        
+  US.diag() .reserve(AS->n());
   US.diag() .resize (AS->n());
-  
+
   smat   = S.mat();
   US.col()   = AS->col();
   US.start() = AS->start();
   US.diag()  = AS->diag();
-  
+
   return *this;
-} 
+}
 
 /*-------------------------------------------------------------*/
 
 template<class B>
 void SparseBlockMatrix<B>::ReInit(const SparseStructureInterface* SI)
 {
-  US.memory(SI);			
+  US.memory(SI);
 
   const SparseStructure* S = dynamic_cast<const SparseStructure*>(SI);
   smat.reserve(S->ntotal());
@@ -196,7 +196,7 @@ void SparseBlockMatrix<B>::scale_diag(int i, const std::vector<int>& cv,double s
       int comp = cv[c];
       assert(comp<nc);
       smat[diag].diag(comp)*=s;
-    }  
+    }
 }
 
 /*-------------------------------------------------------------*/
@@ -233,7 +233,7 @@ void SparseBlockMatrix<B>::dirichlet_only_row(int i, const std::vector<int>& cv)
 template<class B>
 void SparseBlockMatrix<B>::dirichlet_only_column(int i, const std::vector<int>& cv)
 {
-  // very slow... ?? 
+  // very slow... ??
   for (int r=0;r<US.n();++r)
     for (int p=US.start(r);p<US.stop(r);++p)
       if (US.col(p)==i)
@@ -394,7 +394,7 @@ template<class B>
 void SparseBlockMatrix<B>::vmult(GlobalVector& y, const GlobalVector& x, double s) const
 {
 
-#pragma omp parallel for 
+#pragma omp parallel for schedule(static)
   for(int i=0; i<US.n(); i++)
     {
       GlobalVector::iterator  off = y.start(i);
@@ -429,7 +429,7 @@ void SparseBlockMatrix<B>::vmult(GlobalVector& y, const GlobalVector& x, const T
 template<class B>
 void SparseBlockMatrix<B>::AddMassWithDifferentStencil(const MatrixInterface* M, const TimePattern& TP, double s)
 {
-//   const SparseBlockMatrix<FMatrixBlock<1> >* MP = 
+//   const SparseBlockMatrix<FMatrixBlock<1> >* MP =
 //     dynamic_cast<const SparseBlockMatrix<FMatrixBlock<1> >*>(M);
 //   assert(MP);
   const SimpleMatrix* MP = dynamic_cast<const SimpleMatrix*>(M);
@@ -446,7 +446,7 @@ void SparseBlockMatrix<B>::AddMassWithDifferentStencil(const MatrixInterface* M,
 	  double sm = s * MP->GetValue(pos);
 
 	  int mpos = US.Find(i,j);
-	  smat[mpos].add(sm,TP); 
+	  smat[mpos].add(sm,TP);
 	}
     }
 }
@@ -514,7 +514,7 @@ void SparseBlockMatrix<B>::copy_entries(const MatrixInterface& AI)
   const ColumnDiagStencil* AS = dynamic_cast<const ColumnDiagStencil*>(AP->GetStencil());
   assert(AS);
 
-  if(US.nentries()==AS->nentries()) 
+  if(US.nentries()==AS->nentries())
     {
       smat = A.mat();
     }
@@ -529,7 +529,7 @@ void SparseBlockMatrix<B>::copy_entries(const MatrixInterface& AI)
 	      for(int pos=US.start(i); pos<US.stop(i); pos++)
 		{
 		  int j = US.col(pos);
-		  if(jA==j)  *mat(pos) += *A.mat(posA);	
+		  if(jA==j)  *mat(pos) += *A.mat(posA);
 		}
 	    }
 	}
@@ -539,7 +539,10 @@ void SparseBlockMatrix<B>::copy_entries(const MatrixInterface& AI)
 /*-------------------------------------------------------------*/
 
 template<class B>
-void SparseBlockMatrix<B>::entry(nvector<int>::const_iterator start, nvector<int>::const_iterator stop, const EntryMatrix& M, double s)
+template<bool atom>
+void SparseBlockMatrix<B>::entry_universal(nvector<int>::const_iterator start,
+                                           nvector<int>::const_iterator stop,
+                                           const EntryMatrix& M, double s)
 {
   nvector<int>::const_iterator p, q;
   int ii = 0;
@@ -552,9 +555,16 @@ void SparseBlockMatrix<B>::entry(nvector<int>::const_iterator start, nvector<int
 	  int j = *q;
 	  for(int pos=US.start(i);pos<US.stop(i);pos++)
 	    {
-	      if(US.col(pos)==j)   
+	      if(US.col(pos)==j)
 		{
- 		  mat(pos) -> entry(ii,jj,M,s);
+    //if constexpr(atom)
+       if (atom)
+       {
+ 		   mat(pos) -> entry_atomic(ii,jj,M,s);
+       }else
+       {
+       mat(pos) -> entry(ii,jj,M,s);
+       }
 		  break;
 		}
 	    }
@@ -567,11 +577,12 @@ void SparseBlockMatrix<B>::entry(nvector<int>::const_iterator start, nvector<int
 /*-------------------------------------------------------------*/
 
 template<class B>
-void SparseBlockMatrix<B>::entry(nvector<int>::const_iterator start1,
-                 nvector<int>::const_iterator stop1,
-                 nvector<int>::const_iterator start2,
-                 nvector<int>::const_iterator stop2,
-                 const EntryMatrix& M, double s)
+template<bool atom>
+void SparseBlockMatrix<B>::entry_universal(nvector<int>::const_iterator start1,
+                                           nvector<int>::const_iterator stop1,
+                                           nvector<int>::const_iterator start2,
+                                           nvector<int>::const_iterator stop2,
+                                           const EntryMatrix& M, double s)
 {
   nvector<int>::const_iterator p, q;
   int ii = 0;
@@ -580,21 +591,68 @@ void SparseBlockMatrix<B>::entry(nvector<int>::const_iterator start1,
       int i = *p;
       int jj = 0;
       for(q=start2; q!=stop2; q++)
-    	{			
+    	{
       	  int j = *q;
       	  for(int pos=US.start(i);pos<US.stop(i);pos++)
             {
               if(US.col(pos)==j)
             	{
-                  mat(pos) -> entry(ii,jj,M,s);
-                  break;	
+                //if constexpr(atom)
+                if (atom)
+                 {
+ 		             mat(pos) -> entry_atomic(ii,jj,M,s);
+                 }else
+                 {
+                 mat(pos) -> entry(ii,jj,M,s);
+                 }
+                  break;
         	}
         	}
     	jj++;
     	}
       ii++;
     }
-} 
+}
+
+/*-------------------------------------------------------------*/
+
+template<class B>
+void SparseBlockMatrix<B>::entry(nvector<int>::const_iterator start, nvector<int>::const_iterator stop, const EntryMatrix& M, double s)
+{
+  entry_universal<false>(start, stop, M, s);
+}
+
+/*-------------------------------------------------------------*/
+
+template<class B>
+void SparseBlockMatrix<B>::entry(nvector<int>::const_iterator start1,
+                 nvector<int>::const_iterator stop1,
+                 nvector<int>::const_iterator start2,
+                 nvector<int>::const_iterator stop2,
+                 const EntryMatrix& M, double s)
+{
+  entry_universal<false>(start1, stop1, start2, stop2, M, s);
+}
+
+/*-------------------------------------------------------------*/
+
+template<class B>
+void SparseBlockMatrix<B>::entry_atomic(nvector<int>::const_iterator start, nvector<int>::const_iterator stop, const EntryMatrix& M, double s)
+{
+  entry_universal<true>(start, stop, M, s);
+}
+
+/*-------------------------------------------------------------*/
+
+template<class B>
+void SparseBlockMatrix<B>::entry_atomic(nvector<int>::const_iterator start1,
+                 nvector<int>::const_iterator stop1,
+                 nvector<int>::const_iterator start2,
+                 nvector<int>::const_iterator stop2,
+                 const EntryMatrix& M, double s)
+{
+  entry_universal<true>(start1, stop1, start2, stop2, M, s);
+}
 
 /*-------------------------------------------------------------*/
 
@@ -612,7 +670,7 @@ void SparseBlockMatrix<B>::entrydual(nvector<int>::const_iterator start, nvector
 	  int j = *q;
 	  for(int pos=US.start(i);pos<US.stop(i);pos++)
 	    {
-	      if(US.col(pos)==j)   
+	      if(US.col(pos)==j)
 		{
  		  mat(pos) -> dual_entry(ii,jj,M,s);
 		  break;

@@ -89,17 +89,12 @@ void SimpleRowMatrix::ReInit(const SparseStructureInterface* SI)
 
 void SimpleRowMatrix::entry(niiterator start, niiterator stop, const EntryMatrix& M, double s)
 {
-  int n = stop-start;
+  entry_universal<false>(start, stop, M, s);
+}
 
-  for(int ii=0;ii<n;ii++)
-    {
-      int i = *(start+ii);
-      for(int jj=0;jj<n;jj++)
-	{
-	  int j = *(start+jj);
-	  int pos = ST.Find(i,j);
-	  value[pos] += s*M(ii,jj,0,0);
-	}
-    }
+void SimpleRowMatrix::entry_atomic(niiterator start, niiterator stop,
+                                    const EntryMatrix& M, double s)
+{
+  entry_universal<true>(start, stop, M, s);
 }
 }

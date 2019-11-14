@@ -44,6 +44,20 @@
 
 namespace Gascoigne
 {
+namespace atom_ops
+{
+inline void add_node(double s, int i_f, GlobalVector& __restrict__ f, int i_F,
+                     const LocalVector& __restrict__ F)
+{
+  const int iif = i_f * f.ncomp();
+  const int iiF = i_F * F.ncomp();
+  for (int c = 0; c < f.ncomp(); c++)
+  {
+#pragma omp atomic update
+    f[iif + c] += s * F[iiF + c];
+  }
+}
+}  // namespace atom_ops
 
   /////////////////////////////////////////////
   ///
@@ -72,8 +86,12 @@ namespace Gascoigne
     
     
   public:
-    CGDisc():HN(NULL) {}
-    ~CGDisc() {}
+  CGDisc() : HN(NULL)
+  {
+  }
+  ~CGDisc()
+  {
+  }
 
     //    HNStructureInterface* NewHNStructure() {abort();}
     HNStructureInterface* NewHNStructure()
@@ -82,7 +100,8 @@ namespace Gascoigne
 	return new HNStructureQ23d;
       else if (DIM==2)
 	return new HNStructureQ22d;
-      else assert(0);
+    else
+      assert(0);
     }
 
     const DofHandler<DIM> *GetDofHandler() const
@@ -154,8 +173,7 @@ namespace Gascoigne
       datacontainer.DeleteCellVector(name);
     }
 
-    void AddParameterVector(const std::string &name,
-                            const GlobalParameterVector *q) const
+  void AddParameterVector(const std::string& name, const GlobalParameterVector* q) const
     {
       datacontainer.AddParameterVector(name, q);
     }
@@ -184,8 +202,16 @@ namespace Gascoigne
     }
 
     
-    Vertex2d vertex2d(int i) const{ assert(i<GetDofHandler()->nnodes()); return GetDofHandler()->vertex2d(i); }
-    Vertex3d vertex3d(int i) const{ assert(i<GetDofHandler()->nnodes()); return GetDofHandler()->vertex3d(i); }
+  Vertex2d vertex2d(int i) const
+  {
+    assert(i < GetDofHandler()->nnodes());
+    return GetDofHandler()->vertex2d(i);
+  }
+  Vertex3d vertex3d(int i) const
+  {
+    assert(i < GetDofHandler()->nnodes());
+    return GetDofHandler()->vertex3d(i);
+  }
     
 
     
@@ -198,17 +224,37 @@ namespace Gascoigne
     {
       return GetDofHandler()->nelements(DEGREE);
     }
+  int nhanging() const
+  {
+    return GetDofHandler()->nhanging();
+  }
     int ndofs_withouthanging() const
     {
-      return ndofs();
+    return ndofs() - nhanging();
       // HANGING NODES
     }
 
     // Hanging nodes
-    void HNAverage   (GlobalVector& x) const { assert(HN); HN->Average(x); }
-    void HNDistribute(GlobalVector& x) const { assert(HN); HN->Distribute(x); }
-    void HNZero      (GlobalVector& x) const { assert(HN); HN->Zero(x); }
-    bool HNZeroCheck (const GlobalVector& x) const { assert(HN); return HN->ZeroCheck(x); }
+  void HNAverage(GlobalVector& x) const
+  {
+    assert(HN);
+    HN->Average(x);
+  }
+  void HNDistribute(GlobalVector& x) const
+  {
+    assert(HN);
+    HN->Distribute(x);
+  }
+  void HNZero(GlobalVector& x) const
+  {
+    assert(HN);
+    HN->Zero(x);
+  }
+  bool HNZeroCheck(const GlobalVector& x) const
+  {
+    assert(HN);
+    return HN->ZeroCheck(x);
+  }
     void HNAverageData() const
     {
       const GlobalData& gd = GetDataContainer().GetNodeData();
@@ -224,7 +270,7 @@ namespace Gascoigne
 
 
     //////////////////////////////////////////////////
-    void Transformation(nmatrix<double> &T, int iq) const
+  virtual void Transformation(nmatrix<double>& T, int iq) const
     {
       assert(GetDofHandler()->dimension() == DIM);
       int ne = GetDofHandler()->nodes_per_element(DEGREE);
@@ -253,8 +299,7 @@ namespace Gascoigne
         }
       }
     }
-    void ConstructInterpolator(MgInterpolatorInterface *I,
-                               const MeshTransferInterface *MT)
+  void ConstructInterpolator(MgInterpolatorInterface* I, const MeshTransferInterface* MT)
     {
       MgInterpolatorNested *IP = dynamic_cast<MgInterpolatorNested *>(I);
       assert(IP);
@@ -290,8 +335,8 @@ namespace Gascoigne
       for (auto p : gpd)
         QP.insert(make_pair(p.first, *p.second));
     }
-    void
-    LocalToGlobal_ohnecritic(MatrixInterface &A, EntryMatrix &E, int iq, double s) const
+  void LocalToGlobal_ohnecritic(MatrixInterface& A, EntryMatrix& E, int iq,
+                                double s) const
     {
       IntVector indices = GetDofHandler()->GetElement(DEGREE, iq);
 
@@ -302,8 +347,8 @@ namespace Gascoigne
 //#pragma omp critical
       A.entry(start, stop, E, s);
     }
-    void
-    LocalToGlobal_ohnecritic(GlobalVector &f, const LocalVector &F, int iq, double s) const
+  void LocalToGlobal_ohnecritic(GlobalVector& f, const LocalVector& F, int iq,
+                                double s) const
     {
       IntVector indices = GetDofHandler()->GetElement(DEGREE, iq);
       for (int ii = 0; ii < indices.size(); ii++)
@@ -322,17 +367,14 @@ namespace Gascoigne
        HN->CondenseHanging(E,indices);
       IntVector::const_iterator start = indices.begin();
       IntVector::const_iterator stop = indices.end();
-#pragma omp critical
-      A.entry(start, stop, E, s);
+    A.entry_atomic(start, stop, E, s);
     }
     void LocalToGlobal(GlobalVector &f, const LocalVector &F, int iq, double s) const
     {
       IntVector indices = GetDofHandler()->GetElement(DEGREE, iq);
       for (int ii = 0; ii < indices.size(); ii++)
       {
-        int i = indices[ii];
-#pragma omp critical
-        f.add_node(i, s, ii, F);
+      atom_ops::add_node(s, indices[ii], f, ii, F);
       }
     }
     void GlobalToLocal(LocalVector &U, const GlobalVector &u, int iq) const
@@ -372,43 +414,34 @@ namespace Gascoigne
     void InterpolateSolution(GlobalVector &u, const GlobalVector &uold) const;
 
     ////////////////////////////////////////////////// integration ueber Zellen   
-    void Form(GlobalVector &f,
-              const GlobalVector &u,
-              const ProblemDescriptorInterface &PD,
+  void Form(GlobalVector& f, const GlobalVector& u, const ProblemDescriptorInterface& PD,
               double d) const
     {
       LocalParameterData QP;
       GlobalToGlobalData(QP);
 
+#pragma omp parallel
+    {
       nmatrix<double> T;
       FINITEELEMENT finiteelement;
       INTEGRATOR integrator;
       integrator.BasicInit();
       LocalVector __U, __F;
       LocalData __QN, __QC;
-#pragma omp parallel private(T, finiteelement, integrator, __U, __F, __QN, __QC)
+      const auto EQ = PD.NewEquation();
+      EQ->SetParameterData(QP);
+      #pragma omp for schedule(static)
+      for (int iq = 0; iq < GetDofHandler()->nelements(DEGREE); ++iq)
       {
-        auto *EQ = PD.NewEquation();
-        EQ->SetParameterData(QP);
-        for(int col=0;col<NumberofColors();col++)
-        {
-        const std::vector<int>& ewcol= elementswithcolor(col);
-#pragma omp for
-		    //for (int iq = 0; iq < GetDofHandler()->nelements(DEGREE); ++iq)
-		    for (int iii = 0; iii < ewcol.size(); ++iii)
-		    {
-		      int iq=ewcol[iii];
-		      Transformation(T, iq);
-		      finiteelement.ReInit(T);
+        Transformation(T, iq);
+        finiteelement.ReInit(T);
+        GlobalToLocal(__U, u, iq);
+        GlobalToLocalData(iq, __QN, __QC);
+        EQ->point_cell(GetDofHandler()->material(DEGREE, iq));
+        integrator.Form(*EQ, __F, finiteelement, __U, __QN, __QC);
+        LocalToGlobal(f, __F, iq, d);
+      }
 
-		      GlobalToLocal(__U, u, iq);
-		      GlobalToLocalData(iq, __QN, __QC);
-		      EQ->point_cell(GetDofHandler()->material(DEGREE, iq));
-
-		      integrator.Form(*EQ, __F, finiteelement, __U, __QN, __QC);
-		      LocalToGlobal_ohnecritic(f, __F, iq, d);
-		    }
-        }
         delete EQ;
       }
     }
@@ -485,14 +518,14 @@ namespace Gascoigne
 		}
 	}
 
-    void Matrix(MatrixInterface &A,
-                const GlobalVector &u,
-                const ProblemDescriptorInterface &PD,
-                double d) const
+  /* ----------------------------------------- */
+  void Matrix(MatrixInterface& A, const GlobalVector& u,
+              const ProblemDescriptorInterface& PD, double d) const
+  {
+    LocalParameterData QP;
+    GlobalToGlobalData(QP);
+#pragma omp parallel
     {
-      LocalParameterData QP;
-      GlobalToGlobalData(QP);
-
       nmatrix<double> T;
       FINITEELEMENT finiteelement;
       INTEGRATOR integrator;
@@ -501,40 +534,31 @@ namespace Gascoigne
       LocalData __QN, __QC;
       EntryMatrix __E;
 
-#pragma omp parallel private(                                                  \
-    T, finiteelement, integrator, __U,  __QN, __QC, __E)
+      const auto EQ = PD.NewEquation();
+      EQ->SetParameterData(QP);
+
+#pragma omp for schedule(static)
+      for (int iq = 0; iq < GetDofHandler()->nelements(DEGREE); ++iq)
       {
-        Equation *EQ = PD.NewEquation();
-        EQ->SetParameterData(QP);
-        for(int col=0;col<NumberofColors();col++)
-        {
-        const std::vector<int>& ewcol= elementswithcolor(col);
-#pragma omp for
-		    //for (int iq = 0; iq < GetDofHandler()->nelements(DEGREE); ++iq)
-		    for (int iii = 0; iii < ewcol.size(); ++iii)
-		    {
-		    int iq=ewcol[iii];
-            Transformation(T, iq);
-            finiteelement.ReInit(T);
+        Transformation(T, iq);
+        finiteelement.ReInit(T);
 
-            GlobalToLocal(__U, u, iq);
-            GlobalToLocalData(iq, __QN, __QC);
+        GlobalToLocal(__U, u, iq);
+        GlobalToLocalData(iq, __QN, __QC);
 
-            EQ->point_cell(GetDofHandler()->material(DEGREE, iq));
-            // EQ.cell(GetDofHandler(),iq,__U,__QN);
-            integrator.Matrix(*EQ, __E, finiteelement, __U, __QN, __QC);
-            LocalToGlobal_ohnecritic(A, __E, iq, d);
-          }
-         }
-          // HANGING NODES
-
-          delete EQ;
-        //}
-        	 
-      } HN->MatrixDiag(u.ncomp(),A);
+        EQ->point_cell(GetDofHandler()->material(DEGREE, iq));
+        // EQ.cell(GetDofHandler(),iq,__U,__QN);
+        integrator.Matrix(*EQ, __E, finiteelement, __U, __QN, __QC);
+        LocalToGlobal(A, __E, iq, d);
+      }
+      // HANGING NODES
+      delete EQ;
+      //}
     }
+    HN->MatrixDiag(u.ncomp(), A);
+  }
 
-  /* ----------------------------------------- */
+ /* ----------------------------------------- */
 
   void MassMatrix(MatrixInterface& A) const
   {
@@ -573,6 +597,8 @@ namespace Gascoigne
       LocalParameterData QP;
       GlobalToGlobalData(QP);
       
+#pragma omp parallel //private(T, finiteelement, integrator, __U, __F, __QN, __QC)
+    {
       nmatrix<double> T;
       FINITEELEMENT finiteelement;
       INTEGRATOR integrator;
@@ -580,8 +606,6 @@ namespace Gascoigne
       LocalVector __U, __F;
       LocalData __QN, __QC;
       
-#pragma omp parallel private(T,finiteelement,integrator, __U,__F,__QN,__QC)
-      {
 	const auto *BEQ = PD.NewBoundaryEquation();
 	auto COLS = PD.GetBoundaryManager()->GetBoundaryEquationColors();
 	BEQ->SetParameterData(QP);
@@ -591,7 +615,7 @@ namespace Gascoigne
 	    const IntVector& q = *GetDofHandler()->ElementOnBoundary(DEGREE,col);
 	    const IntVector& l = *GetDofHandler()->ElementLocalOnBoundary(DEGREE,col);
 
-#pragma omp for
+#pragma omp for schedule(static)
 	    for (int i=0; i<q.size(); i++)
 	      {
 		int iq  = q[i];
@@ -610,7 +634,8 @@ namespace Gascoigne
 	delete BEQ;
       }
     }
-    void BoundaryMatrix(MatrixInterface& A, const GlobalVector& u, const ProblemDescriptorInterface& PD, double d) const
+  void BoundaryMatrix(MatrixInterface& A, const GlobalVector& u,
+                      const ProblemDescriptorInterface& PD, double d) const
     {
       // Do we have a boundary equation?
       if (PD.NewBoundaryEquation() == NULL)
@@ -619,6 +644,8 @@ namespace Gascoigne
       LocalParameterData QP;
       GlobalToGlobalData(QP);
       
+#pragma omp parallel //private(T, finiteelement, integrator, __U, __QN, __QC, __E)
+    {
       nmatrix<double> T;
       FINITEELEMENT finiteelement;
       INTEGRATOR integrator;
@@ -628,8 +655,6 @@ namespace Gascoigne
       EntryMatrix __E;
       
 
-#pragma omp parallel private(T,finiteelement,integrator,__U,__QN,__QC,__E)
-      {
 	auto *BEQ = PD.NewBoundaryEquation();
 	const auto COLS = PD.GetBoundaryManager()->GetBoundaryEquationColors();
 	BEQ->SetParameterData(QP);
@@ -638,7 +663,7 @@ namespace Gascoigne
 	  {
 	    const IntVector& q = *GetDofHandler()->ElementOnBoundary(DEGREE,col);
 	    const IntVector& l = *GetDofHandler()->ElementLocalOnBoundary(DEGREE,col);
-#pragma omp for
+#pragma omp for schedule(static)
 	    for (int i=0; i<q.size(); i++)
 	      {
 		int iq  = q[i];
@@ -686,17 +711,120 @@ namespace Gascoigne
 	      GlobalToLocal(__U,u,iq);
 	      GlobalToLocalData(iq,__QN,__QC);
 	      
-	      j += integrator.ComputeBoundaryFunctional(BF,finiteelement,ile,col,__U,__QN,__QC);
+        j += integrator.ComputeBoundaryFunctional(BF, finiteelement, ile, col, __U, __QN,
+                                                  __QC);
 	    }
 	}
       
       return j;
+  }
+
+  void VertexTransformation(const Vertex<DIM>& p0, Vertex<DIM>& p, int iq) const
+  {
+    nmatrix<double> T;
+    Transformation(T, iq);
+
+    FINITEELEMENT finiteelement;
+    finiteelement.ReInit(T);
+    Vertex<DIM> res;
+    Vertex<DIM> update;
+    p = 0.5;
+
+    for (int niter = 1;; niter++)
+    {
+      finiteelement.point_T(p);
+
+      res = p0;
+      finiteelement.x(update);
+      res.add(-1, update);
+      if (res.norm() < 1.e-13)
+      {
+        break;
+      }
+      assert(niter < 10);
+
+      finiteelement.mult_ad(p, res);
+    }
+  }
+
+  int GetElementNumber(const Vertex<DIM>& p0, Vertex<DIM>& p) const
+  {
+    int iq;
+    for (iq = 0; iq < GetDofHandler()->nelements(DEGREE); ++iq)
+    {
+      bool found = true;
+
+      IntVector indices = GetDofHandler()->GetElement(DEGREE, iq);
+
+      for (int d = 0; d < DIM; ++d)
+      {
+        // double
+        // min=GetDofHandler()->vertex3d(GetDofHandler()->CornerIndices(DEGREE,iq,0))[d];
+        double min = GetDofHandler()->vertex3d(indices[0])[d];
+
+        double max = min;
+        // int cornernodes;
+
+        // if(DIM==2 && DEGREE==1) cornernodes=4;
+        // else if(DIM==2 && DEGREE==2) cornernodes=9;
+        // else if(DIM==3 && DEGREE==1) cornernodes=8;
+        // else if(DIM==3 && DEGREE==2) cornernodes=27;
+        // else abort();
+
+        // for(int j=1; j<cornernodes; ++j)
+        for (int ii = 1; ii < indices.size(); ii++)
+        {
+          // double x =
+          // GetDofHandler()->vertex3d(GetDofHandler()->CornerIndices(DEGREE,iq,j))[d];
+          double x = GetDofHandler()->vertex3d(indices[ii])[d];
+
+          min = std::min(min, x);
+          max = std::max(max, x);
+        }
+        if ((p0[d] < min) || (p0[d] > max))
+        {
+          found = false;
+          break;
+        }
+      }
+
+      if (!found)
+      {
+        continue;
+      }
+      VertexTransformation(p0, p, iq);
+
+      for (int d = 0; d < DIM; ++d)
+      {
+        if ((p[d] < 0. - 1.e-08) || (p[d] > 1. + 1.e-08))
+        {
+          found = false;
+          // std::cout<<"p[d]: "<<p[d]<<std::endl;
+        }
+      }
+      if (found)
+      {
+        break;
+      }
+    }
+
+    // std::cout<<"iq"<<iq<<std::endl;
+    // std::cout<<"GetDofHandler()->nelements(DEGREE)"<<GetDofHandler()->nelements(DEGREE)<<std::endl;
+
+    if (iq < GetDofHandler()->nelements(DEGREE))
+    {
+      return iq;
+    }
+    else
+    {
+      return -1;
+    }
     }
 	
     ////////////////////////////////////////////////// Functionals
     double ComputePointValue(const GlobalVector& u, const Vertex2d& p0,int comp) const 
     {
-      // very simple version. Only finds nodes
+    /* // very simple version. Only finds nodes
       for (int n=0;n<GetDofHandler()->nnodes();++n)
 	{
 	  double dist = 0;
@@ -707,11 +835,32 @@ namespace Gascoigne
 	}
       std::cerr << "DofHandler::ComputePointValue. Vertex " << p0 << " not found!"
 		<< std::endl;
+     abort();*/
+    Vertex<DIM> Tranfo_p0;
+    Vertex<DIM> p0_local;
+    for (int i = 0; i < DIM; i++)
+      p0_local[i] = p0[i];
+
+    int iq = GetElementNumber(p0_local, Tranfo_p0);
+    if (iq == -1)
+    {
+      std::cerr << "CellDiscretization::ComputePointValue point not found\n";
       abort();
     }
+    FINITEELEMENT finiteelement;
+    INTEGRATOR integrator;
+    LocalVector __U;
+    nmatrix<double> T;
+    Transformation(T, iq);
+    finiteelement.ReInit(T);
+
+    GlobalToLocal(__U, u, iq);
+
+    return integrator.ComputePointValue(finiteelement, Tranfo_p0, __U, comp);
+  }
     double ComputePointValue(const GlobalVector& u, const Vertex3d& p0,int comp) const 
     {
-      // very simple version. Only finds nodes
+    /*// very simple version. Only finds nodes
       for (int n=0;n<GetDofHandler()->nnodes();++n)
 	{
 	  double dist = 0;
@@ -722,8 +871,33 @@ namespace Gascoigne
 	}
       std::cerr << "DofHandler::ComputePointValue. Vertex " << p0 << " not found!"
 		<< std::endl;
+    abort();*/
+
+    Vertex<DIM> Tranfo_p0;
+    Vertex<DIM> p0_local;
+    for (int i = 0; i < DIM; i++)
+      p0_local[i] = p0[i];
+
+    // std::cout<<"p0_local "<<p0_local<<std::endl;
+    // std::cout<<"Call Get Element Number"<<std::endl;
+    int iq = GetElementNumber(p0_local, Tranfo_p0);
+    // std::cout<<"Element Number"<<iq<<std::endl;
+    if (iq == -1)
+    {
+      std::cerr << "CellDiscretization::ComputePointValue point not found\n";
       abort();
     }
+    FINITEELEMENT finiteelement;
+    INTEGRATOR integrator;
+    LocalVector __U;
+    nmatrix<double> T;
+    Transformation(T, iq);
+    finiteelement.ReInit(T);
+
+    GlobalToLocal(__U, u, iq);
+
+    return integrator.ComputePointValue(finiteelement, Tranfo_p0, __U, comp);
+  }
     double ComputePointFunctional(const GlobalVector& u, const PointFunctional& FP) const
     {
       LocalParameterData QP;
@@ -798,9 +972,35 @@ namespace Gascoigne
     {
       PressureFilter *PF = static_cast<PressureFilter *>(&F);
       assert(PF);
-      assert(!PF->Active());
-    }
+    if (!PF->Active())
+      return;
 
+    PF->ReInit(ndofs(), nhanging());
+    nmatrix<double> T;
+
+    FINITEELEMENT finiteelement;
+    INTEGRATOR integrator;
+    integrator.BasicInit();
+
+    for (int iq = 0; iq < nelements(); ++iq)
+    {
+      int nv = GetDofHandler()->nodes_per_element(DEGREE);
+      EntryMatrix E(nv, 1);
+
+      Transformation(T, iq);
+      finiteelement.ReInit(T);
+
+      double cellsize = integrator.MassMatrix(E, finiteelement);
+      PF->AddDomainPiece(cellsize);
+
+      IntVector ind = GetDofHandler()->GetElement(DEGREE, iq);
+      HN->CondenseHanging(E, ind);
+
+      for (int i = 0; i < ind.size(); i++)
+        for (int j = 0; j < ind.size(); j++)
+          F[ind[j]] += E(i, j, 0, 0);
+    }
+  }
 
     ////////////////////////////////////////////////// Dirichlet Data
     void StrongDirichletVector(GlobalVector &u,
@@ -875,8 +1075,7 @@ namespace Gascoigne
 
 
     ////////////////////////////////////////////////// Errors
-    void ComputeError(const GlobalVector &u,
-                      LocalVector &err,
+  void ComputeError(const GlobalVector& u, LocalVector& err,
                       const ExactSolution *ES) const
     {
       int ncomp = u.ncomp();
@@ -1023,13 +1222,13 @@ void EvaluateBoundaryParameterRightHandSide(GlobalVector& f,const IntSet& Colors
 		{
 		  done = true;
 		  for (int p=0;p<GetDofHandler()->nelements(degree);++p)
-		    if ((patch2color[p]==color) ) // not given a color and fluid
+        if (patch2color[p] == color)  // not given a color and fluid
 		      {
 		    done = false;
 		    // block neighbors
 		    for (auto n : adj[p])
 		      {
-		        if ((patch2color[n] == color) ) // neighbor not set, block
+            if (patch2color[n] == color)  // neighbor not set, block
 		          patch2color[n] = color+1;
 		      }
 		      }
