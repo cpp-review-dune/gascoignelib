@@ -56,7 +56,6 @@ class CompVector : public nvector<T>
   CompVector(int NN, size_t n, const T& d) : nvector<T>(NN*n,d), N(NN) {}
   CompVector(int NN, size_t n, T* b, T* e) : nvector<T>(std::vector<double>(b, e)), N(NN)
   {
-    n = n;
   }
   CompVector(const std::vector<T>& u)
     {
