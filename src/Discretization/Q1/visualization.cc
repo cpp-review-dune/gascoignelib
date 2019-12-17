@@ -123,6 +123,7 @@ void Visualization::read_parameters(const ParamFile* pf)
   DH.insert("tecplot"    ,& teca,0);
   DH.insert("avs"        ,& avsa,0);
   DH.insert("compress"   ,& compress, 0);
+  DH.insert("cellmaterial"   ,& cellmaterial, 0);
 
   FileScanner FS(DH,pf,"Visualization");
 
@@ -222,6 +223,7 @@ void Visualization::write()
   if (gnua)         gnuplot(filename);
   if (vtka)         vtk(filename);
   if (b_rotatedvtk) rotatedvtk(filename);
+    
   if (showoutput) cout << "[" << filename << ".vtk]\n";
 }
 

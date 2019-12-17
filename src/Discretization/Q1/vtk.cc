@@ -150,7 +150,9 @@ void Visualization::_vtk_points(ofstream& out) const
 
 /* ----------------------------------------- */
 
-void Visualization::_vtk_cells(ofstream& out) const
+
+
+  void Visualization::_vtk_cells(ofstream& out) const
 {
   int ne = mesh->ncells();
 
@@ -180,6 +182,19 @@ void Visualization::_vtk_cells(ofstream& out) const
   out << endl;
 }
 
+  void Visualization::_vtk_cellmaterial(ofstream& out) const
+  {
+    int ne = mesh->ncells();
+    
+    out << endl << "CELL_DATA " << ne << endl
+	<< "FIELD FieldData 1" << endl
+	<< "material 1 " << ne << " int"  << endl;
+    
+    for (int c=0; c<ne; c++)
+      out << mesh->material(c) << " ";
+    out << endl;
+  }
+
 /* ----------------------------------------- */
 
 void Visualization::vtk(const string& bname) const
@@ -197,14 +212,17 @@ void Visualization::vtk(const string& bname) const
   out << "ASCII" << endl;
   out << "DATASET UNSTRUCTURED_GRID" << endl;
   out << "FIELD FieldData 1" << endl;
-    out << "TIME 1 1 double" << endl;
-    out << time << endl;
-
+  out << "TIME 1 1 double" << endl;
+  out << time << endl;
+  
  //  Mesh
 
   _vtk_points(out);
   _vtk_cells(out);
 
+  // material
+  if (cellmaterial)
+    _vtk_cellmaterial(out); 
  //  Data
 
   _vtk_pointdata(out);

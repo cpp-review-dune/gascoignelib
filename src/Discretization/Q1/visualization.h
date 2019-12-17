@@ -62,7 +62,7 @@ class Visualization
   double  d_rotatedvtk_angle;
   int     pstep, showoutput;
   double  time, tstep, nexttime;
-
+  bool    cellmaterial;
   /* Functions */
 
   void   BasicInit();
@@ -89,6 +89,7 @@ class Visualization
   virtual void _vtk_celldata(std::ofstream& out) const;
   virtual void _vtk_points(std::ofstream& out) const;
   virtual void _vtk_cells(std::ofstream& out) const;
+  virtual void _vtk_cellmaterial(std::ofstream& out) const;
 
 
   virtual void _rotatedvtk_pointdata(std::ofstream& out) const;
