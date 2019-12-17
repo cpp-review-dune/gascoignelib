@@ -37,6 +37,7 @@
 
 #include "hnstructureq22d.h"
 #include "hnstructureq23d.h"
+#include "hnstructureq13d.h"
 #include "hnstructureq22d.h"
 
 namespace Gascoigne
@@ -91,7 +92,12 @@ public:
   HNStructureInterface* NewHNStructure()
   {
     if (DIM == 3)
-      return new HNStructureQ23d;
+      {
+	if (DEGREE==2)
+	  return new HNStructureQ23d;
+	else
+	  return new HNStructureQ13d;
+      }
     else if (DIM == 2)
       return new HNStructureQ22d;
     else
