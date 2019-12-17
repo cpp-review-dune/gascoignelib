@@ -91,17 +91,25 @@ public:
   //    HNStructureInterface* NewHNStructure() {abort();}
   HNStructureInterface* NewHNStructure()
   {
-    if (DIM == 3)
-      {
-	if (DEGREE==2)
-	  return new HNStructureQ23d;
-	else
-	  return new HNStructureQ13d;
-      }
-    else if (DIM == 2)
-      return new HNStructureQ22d;
-    else
+    if (DEGREE == 1)
+    {
+      if (DIM == 3)
+        return new HNStructureQ13d;
+      else if (DIM == 2)
+        return new HNStructureQ12d;
+      else
       assert(0);
+      }
+    else if (DEGREE == 2)
+    {
+      if (DIM == 3)
+        return new HNStructureQ23d;
+      else if (DIM == 2)
+        return new HNStructureQ22d;
+      else
+        assert(0);
+      }
+    else abort();
   }
 
   const DofHandler<DIM>* GetDofHandler() const
