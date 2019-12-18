@@ -31,7 +31,6 @@
 #include "hex.h"
 #include "hexlawandorder.h"
 #include "hierarchicalmesh.h"
-#include "metis.h"
 #include "vertex.h"
 #include <fstream>
 
@@ -374,7 +373,7 @@ namespace Gascoigne
     void Sort()
     {
       abort();
-      
+
     //   // connectivity - patch based
     //    std::set<int> patches;
     //    GetAwakePatchs(patches);
