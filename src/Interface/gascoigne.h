@@ -41,11 +41,14 @@
 #include  "compvector.h"
 #include  "nmatrix.h"
 #include  "derivativevector.h"
+#include  "matrixentrytype.h"
 
 namespace Gascoigne
 {
   typedef CompVector<double>                                        GlobalVector;
   typedef CompVector<double>                                        LocalVector;
+  typedef CompVector<MatrixEntryType>                               GlobalVectorMET; // for linear solver
+  typedef CompVector<MatrixEntryType>                               LocalVectorMET;  // for linear solver
   typedef std::map<std::string,const GlobalVector*>           GlobalData;
   typedef std::map<std::string,LocalVector>                   LocalData;
 

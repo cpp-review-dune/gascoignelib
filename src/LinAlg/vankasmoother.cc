@@ -60,9 +60,11 @@ void VankaSmoother::ConstructStructure(const IntVector& perm, const MatrixInterf
   }
 
   /////////// Init LU-List
-  _lu.resize(npatches, Eigen::PartialPivLU<Eigen::MatrixXd>(_sizeofpatch * _ncomp));
+  _lu.resize(npatches, Eigen::PartialPivLU<VankaMatrix>(_sizeofpatch * _ncomp));
 
+#ifndef ATOMIC_OPS
   ElementColoring(patchlevel);
+#endif
 }
 
 template <int NCOMP>
@@ -77,7 +79,7 @@ void VankaSmoother::copy_entries_sparseblockmatrix(
   {
     assert(_patchlist[p].size() == _sizeofpatch);
 
-    Eigen::MatrixXd Matrix_on_Block;
+    VankaMatrix Matrix_on_Block;
     Matrix_on_Block.resize(_sizeofpatch * NCOMP, _sizeofpatch * NCOMP);
     Matrix_on_Block.setZero();
 
@@ -152,11 +154,6 @@ void VankaSmoother::solve(GlobalVector& x) const
   // vector for averaging
   std::vector<int> count(x.n(), 0);
 
-  // perform Vanka loop
-  //#pragma omp parallel for
-  // for (int p=0;p<_patchlist.size();++p)
-  //#pragma omp parallel for
-  // for (int p=0;p<_patchlist.size();++p)
 
 #pragma omp parallel
   {
@@ -165,7 +162,7 @@ void VankaSmoother::solve(GlobalVector& x) const
     for (int p = 0; p < _patchlist.size(); ++p)
     {
       // copy local patch-vector
-      Eigen::VectorXd H(_sizeofpatch * _ncomp);
+      VankaVector H(_sizeofpatch * _ncomp);
       for (int r = 0; r < _sizeofpatch; ++r)
         for (int c = 0; c < _ncomp; ++c)
           H(_ncomp * r + c, 0) = B(_patchlist[p][r], c);
@@ -194,7 +191,7 @@ void VankaSmoother::solve(GlobalVector& x) const
       {
         int p = ewcol[iii];
         // copy local patch-vector
-        Eigen::VectorXd H(_sizeofpatch * _ncomp);
+        VankaVector H(_sizeofpatch * _ncomp);
         for (int r = 0; r < _sizeofpatch; ++r)
           for (int c = 0; c < _ncomp; ++c)
             H(_ncomp * r + c, 0) = B(_patchlist[p][r], c);

@@ -32,8 +32,8 @@
 
 namespace Gascoigne
 {
-  template class FiniteElementQ22d;
-  template class FiniteElementWithSecond<2, 1, Transformation2d<BaseQ22dWithSecond>, BaseQ22dWithSecond>;
+  // template class FiniteElementQ22d;
+  // template class FiniteElementWithSecond<2, 1, Transformation2d<BaseQ22dWithSecond>, BaseQ22dWithSecond>;
 }
 /*-----------------------------------------------------*/
 

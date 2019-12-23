@@ -31,7 +31,7 @@
 /*-----------------------------------------------------*/
 namespace Gascoigne
 {
-  template class FiniteElementQ23d;
-  template class FiniteElementWithSecond<3, 2, Transformation3d<BaseQ23dWithSecond>, BaseQ23dWithSecond>;
+  // template class FiniteElementQ23d;
+  // template class FiniteElementWithSecond<3, 2, Transformation3d<BaseQ23dWithSecond>, BaseQ23dWithSecond>;
 }
 /*-----------------------------------------------------*/

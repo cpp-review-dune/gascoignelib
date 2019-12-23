@@ -49,7 +49,7 @@ GhostVectorAgent::~GhostVectorAgent()
   
 /*-------------------------------------------------*/
 
-void GhostVectorAgent::Register(const VectorInterface& mg) 
+  void GhostVectorAgent::Register(const VectorInterface& mg)
 {
   iterator p = find(mg);
   if(p==end())
