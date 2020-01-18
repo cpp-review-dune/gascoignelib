@@ -1200,6 +1200,29 @@ public:
     }
     return hvec;
   }
+
+  void MassMatrix(MatrixInterface& A) const
+  {
+    // #pragma omp parallel
+    {
+      nmatrix<double> T;
+
+      FINITEELEMENT finiteelement;
+      INTEGRATOR integrator;
+      EntryMatrix __E;
+      integrator.BasicInit();
+
+      //#pragma omp for schedule(static)
+      for (int iq = 0; iq < GetDofHandler()->nelements(DEGREE); ++iq)
+      {
+        Transformation(T, iq);
+        finiteelement.ReInit(T);
+        integrator.MassMatrix(__E, finiteelement);
+        LocalToGlobal_ohnecritic(A, __E, iq, 1.);
+      }
+      HN->MatrixDiag(1, A);
+    }
+  }
 };
 
 // #include "finiteelement.h"
