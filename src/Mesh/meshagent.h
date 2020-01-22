@@ -31,8 +31,6 @@
 #include  "boundaryfunction.h"
 #include  "stdperiodicmapping.h"
 
-using namespace std;
-
 /*-----------------------------------------*/
 
 namespace Gascoigne
@@ -43,21 +41,21 @@ class MeshAgent : public virtual MeshAgentInterface
 {
 private:
 
-  map<int,BoundaryFunction<2>* > _curved2d;
-  map<int,BoundaryFunction<3>* > _curved3d;
+  std::map<int,BoundaryFunction<2>* > _curved2d;
+  std::map<int,BoundaryFunction<3>* > _curved3d;
 
   //Fuer die Zuordnung GM Nr auf altem Gitter zu GM Nr. auf neuem Gitter
   IntVector _cl2g, _celll2g;
   IntVector _fathers;//GM Nr zu HM nr.
   IntMap _cg2l, _cellg2l;
-  map<int,set<int> > _co2n;
+  std::map<int,std::set<int> > _co2n;
   bool _goc2nc;
   nvector<IntVector> _q4patch,_q4toq2;
 
 protected:
 
-  int GetDimension() const {return HMP->dimension();}	
-	
+  int GetDimension() const {return HMP->dimension();}
+
   HierarchicalMesh*         HMP;
   GascoigneMultiGridMesh*   GMG;
 
@@ -67,23 +65,23 @@ protected:
   virtual void BuildQ4PatchList(const IntVector &patchl2g);
 
   IntVector _periodicCols;
-  map<int,map<int,PeriodicMapping*> > _periodicMaps;
+  std::map<int,std::map<int,PeriodicMapping*> > _periodicMaps;
   virtual void AssemblePeriodicBoundaries();
 
   GascoigneMesh*  GMesh(int l) { return GMG->GetGascoigneMesh(l);}
 
 public:
-    
+
   MeshAgent();
   ~MeshAgent();
 
   void AddShape(int col, BoundaryFunction<2>* f) { _curved2d[col] = f;}
   void AddShape(int col, BoundaryFunction<3>* f) { _curved3d[col] = f;}
 
-        map<int,BoundaryFunction<2>* >& GetShapes2d()       { return _curved2d; }
-        map<int,BoundaryFunction<3>* >& GetShapes3d()       { return _curved3d; }
-  const map<int,BoundaryFunction<2>* >& GetShapes2d() const { return _curved2d; }
-  const map<int,BoundaryFunction<3>* >& GetShapes3d() const { return _curved3d; }
+  std::map<int,BoundaryFunction<2>* >& GetShapes2d()       { return _curved2d; }
+  std::map<int,BoundaryFunction<3>* >& GetShapes3d()       { return _curved3d; }
+  const std::map<int,BoundaryFunction<2>* >& GetShapes2d() const { return _curved2d; }
+  const std::map<int,BoundaryFunction<3>* >& GetShapes3d() const { return _curved3d; }
 
   void AddPeriodicMapping(int col, int col2, PeriodicMapping* map) { _periodicMaps[col][col2] = map; }
 

@@ -37,15 +37,15 @@ namespace Gascoigne
     {
     protected:
 
-	typedef typename list<int>::const_iterator    const_citerator;
-	typedef typename list<int>::iterator          citerator;
-	typedef typename list<B>::const_iterator      const_viterator;
-	typedef typename list<B>::iterator            viterator;
+      typedef typename std::list<int>::const_iterator    const_citerator;
+      typedef typename std::list<int>::iterator          citerator;
+      typedef typename std::list<B>::const_iterator      const_viterator;
+      typedef typename std::list<B>::iterator            viterator;
 
 
 	nvector<int>          p,q;
 	GlobalVector*         yp;
-    
+
 	void backward() const;
 	void forward () const;
 	virtual void hin(const GlobalVector& x) const;
@@ -76,8 +76,8 @@ namespace Gascoigne
 
 
 
-	string GetName() const {return "DynamicBlockIlu";}
-  
+  std::string GetName() const {return "DynamicBlockIlu";}
+
 	nvector<int>&       GetP() {return p;}
 	nvector<int>&       GetQ() {return q;}
 	const nvector<int>& GetP() const {return p;}
@@ -94,7 +94,7 @@ namespace Gascoigne
 	void copy_entries(const MatrixInterface* A);
 #pragma GCC diagnostic pop
 	void solve       (GlobalVector& x) const;
-	void solvetrans  (GlobalVector& x) const { 
+	void solvetrans  (GlobalVector& x) const {
           std::cerr << "\"DynamicBlockIlu::solvetrans\" not written!" << std::endl;
           abort();
         };

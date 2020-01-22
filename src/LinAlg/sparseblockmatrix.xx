@@ -254,7 +254,7 @@ void SparseBlockMatrix<B>::dirichlet_only_row_no_diag(int i, const std::vector<i
 /*-------------------------------------------------------------*/
 
 template<class B>
-void SparseBlockMatrix<B>::periodic(const map<int,int> &m_PeriodicPairs, const IntVector &iv_Components)
+void SparseBlockMatrix<B>::periodic(const std::map<int,int> &m_PeriodicPairs, const IntVector &iv_Components)
 {
   for (int i = 0; i < iv_Components.size(); i++)
   {
@@ -262,7 +262,7 @@ void SparseBlockMatrix<B>::periodic(const map<int,int> &m_PeriodicPairs, const I
     int first,second;
     std::vector<double> iv_first,iv_second;
 
-    for (map<int,int>::const_iterator p_pair = m_PeriodicPairs.begin(); p_pair!=m_PeriodicPairs.end(); p_pair++)
+    for (std::map<int,int>::const_iterator p_pair = m_PeriodicPairs.begin(); p_pair!=m_PeriodicPairs.end(); p_pair++)
     {
       first = p_pair->first;
       second = p_pair->second;
@@ -463,7 +463,7 @@ void SparseBlockMatrix<B>::AddMassWithDifferentStencilJacobi(const MatrixInterfa
   assert(USM);
 
   int n = USM->n();
-  vector<double> diag(n);
+  std::vector<double> diag(n);
   for(int i=0; i<n; i++)
   {
     diag[i] = MP->GetValue(i,i);

@@ -32,8 +32,6 @@
 #include  "gascoigne.h"
 #include  <list>
 
-using namespace std;
-
 /*-------------------------------------------------------------*/
 
 namespace Gascoigne
@@ -55,10 +53,10 @@ namespace Gascoigne
 
     protected:
 
-	typedef typename list<int>::const_iterator    const_citerator;
-	typedef typename list<int>::iterator          citerator;
-	typedef typename list<B>::const_iterator      const_viterator;
-	typedef typename list<B>::iterator            viterator;
+      typedef typename std::list<int>::const_iterator    const_citerator;
+      typedef typename std::list<int>::iterator          citerator;
+      typedef typename std::list<B>::const_iterator      const_viterator;
+      typedef typename std::list<B>::iterator            viterator;
 
 	// it would be more easy to read if the stencil would be
 	// embedded. However for ilu-sorting we need to access the stencil
@@ -68,7 +66,7 @@ namespace Gascoigne
 	DynamicStencil  DS;
 
 	// the entries of the matrix, one list for every row!
-	vector<list<B> >   smat;
+      std::vector<std::list<B> >   smat;
 	// number of components
 	int              nc;
 
@@ -86,7 +84,7 @@ namespace Gascoigne
 	DynamicBlockMatrix<B>(const DynamicBlockMatrix<B>& A);
 	virtual ~DynamicBlockMatrix<B>() {}
 
-	string GetName() const {return "DynamicBlockMatrix";}
+  std::string GetName() const {return "DynamicBlockMatrix";}
 
 	/////// Zugriff //////////////////////
 
@@ -183,8 +181,8 @@ namespace Gascoigne
 	DynamicBlockMatrix& operator=(const DynamicBlockMatrix<B>& S);
 	void transpose();
 	void ReInit   (const SparseStructureInterface*);
-	void dirichlet(int i, const vector<int>& cv);
-	void dirichlet_only_row(int i, const vector<int>& cv);
+  void dirichlet(int i, const std::vector<int>& cv);
+  void dirichlet_only_row(int i, const std::vector<int>& cv);
 
 	void zero();
 	void entry_diag(int i, const nmatrix<double>& M);
@@ -234,12 +232,12 @@ namespace Gascoigne
 
 	/*-----------------------------------------------*/
 
-	ostream& Write(ostream &s) const
+      std::ostream& Write(std::ostream &s) const
 	{
           std::cerr << "\"DynamicBlockMatrix::Write\" not written!" << std::endl;
           abort();
         }
-	friend   ostream& operator<<(ostream &s, const DynamicBlockMatrix<B>& A)
+      friend   std::ostream& operator<<(std::ostream &s, const DynamicBlockMatrix<B>& A)
 	{
           std::cerr << "\"ostream& operator<<(ostream &s, const DynamicBlockMatrix<B>& A)\" not written!" << std::endl;
           abort();

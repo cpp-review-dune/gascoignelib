@@ -46,10 +46,10 @@ protected:
   virtual void her(GlobalVector& x) const;
 
   int   n()          const { return SparseBlockMatrix<B>::US.n();};
-  const int&  start(int i) const { return SparseBlockMatrix<B>::US.start(i); }; 
-  const int&  stop (int i) const { return SparseBlockMatrix<B>::US.stop (i); }; 
+  const int&  start(int i) const { return SparseBlockMatrix<B>::US.start(i); };
+  const int&  stop (int i) const { return SparseBlockMatrix<B>::US.stop (i); };
   const int&  col(int pos) const { return SparseBlockMatrix<B>::US.col(pos); };
-  const int&  diag(int i)  const { return SparseBlockMatrix<B>::US.diag(i); }; 
+  const int&  diag(int i)  const { return SparseBlockMatrix<B>::US.diag(i); };
 
   public:
 
@@ -57,10 +57,10 @@ protected:
   SparseBlockIlu<B>(const SparseBlockIlu<B>& I);
   ~SparseBlockIlu();
 
-  string GetName() const {return "SparseBlockIlu";}
+  std::string GetName() const {return "SparseBlockIlu";}
 
-  void dirichletILU(int i, const vector<int>& cv);
-  
+  void dirichletILU(int i, const std::vector<int>& cv);
+
   nvector<int>&       GetP() {return p;}
   nvector<int>&       GetQ() {return q;}
   const nvector<int>& GetP() const {return p;}
@@ -80,7 +80,7 @@ protected:
     std::cerr << "\"SparseBlockIlu::solvetrans\" not written!" << std::endl;
     abort();
   }
-  ostream& Write(ostream &s) const;
+  std::ostream& Write(std::ostream &s) const;
 };
 }
 

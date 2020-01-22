@@ -61,14 +61,14 @@
 namespace Gascoigne
 {
   class VankaSmoother : public virtual IluInterface
-  {    
+  {
     mutable const DofHandlerBase *_dofhandler;
     int _ncomp, _sizeofpatch;
 
   protected:
     typedef Eigen::Matrix<MatrixEntryType, Eigen::Dynamic, Eigen::Dynamic> VankaMatrix;
     typedef Eigen::Matrix<MatrixEntryType, Eigen::Dynamic, 1>              VankaVector;
-    
+
     std::vector<std::vector<int>> _patchlist;
     mutable std::vector<Eigen::PartialPivLU<VankaMatrix> > _lu;
     std::vector<std::vector<int> >  Coloring;
@@ -84,7 +84,7 @@ namespace Gascoigne
       _dofhandler = dh;
     }
 
-    string GetName() const
+    std::string GetName() const
     {
       return "VankaSmoother";
     }
@@ -180,7 +180,7 @@ namespace Gascoigne
     {
       return Coloring.size();
     }
-    
+
     const std::vector<int>&   elementswithcolor(int col) const
     {
       return Coloring[col];

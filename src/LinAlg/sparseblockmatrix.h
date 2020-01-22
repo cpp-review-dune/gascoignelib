@@ -30,8 +30,6 @@
 #include  "matrixinterface.h"
 #include  "gascoigne.h"
 
-using namespace std;
-
 /*-------------------------------------------------------------*/
 
 namespace Gascoigne
@@ -52,12 +50,12 @@ private:
 
 protected:
 
-  typedef typename vector<B>::const_iterator      const_iterator;
-  typedef typename vector<B>::iterator            iterator;
+  typedef typename std::vector<B>::const_iterator      const_iterator;
+  typedef typename std::vector<B>::iterator            iterator;
   typedef typename std::pair<int,int>                  IntPair;
 
   ColumnDiagStencil  US;
-  vector<B>      smat;
+  std::vector<B>      smat;
   int            nc;
 
   void matrix_vector_trans(int p, double* yp, const double* xp, double s=1.) const;
@@ -71,7 +69,7 @@ protected:
 
   void transpose();
 
-  string GetName() const {return "SparseBlockMatrix";}
+  std::string GetName() const {return "SparseBlockMatrix";}
 
   /////// Zugriff //////////////////////
 
@@ -85,7 +83,7 @@ protected:
   int   ntotal()     const { return smat.size();};
 
   int  rowsize(int i)     const { return US.start(i+1)-US.start(i);}
-  const vector<B>& mat()  const { return smat; }
+  const std::vector<B>& mat()  const { return smat; }
 
   ///// Methods //////////////////////
 
@@ -99,11 +97,11 @@ protected:
   SparseBlockMatrix& operator=(const SparseBlockMatrix<B>& S);
 
   void ReInit   (const SparseStructureInterface*);
-  void scale_diag(int i, const vector<int>& cv,double s);
-  void dirichlet(int i, const vector<int>& cv);
-  void dirichlet_only_row(int i, const vector<int>& cv);
-  void dirichlet_only_column(int i, const vector<int>& cv);
-  void dirichlet_only_row_no_diag(int i, const vector<int>& cv);
+  void scale_diag(int i, const std::vector<int>& cv,double s);
+  void dirichlet(int i, const std::vector<int>& cv);
+  void dirichlet_only_row(int i, const std::vector<int>& cv);
+  void dirichlet_only_column(int i, const std::vector<int>& cv);
+  void dirichlet_only_row_no_diag(int i, const std::vector<int>& cv);
   void periodic(const std::map<int,int> &m_PeriodicPairs, const IntVector &iv_Components);
 
   void zero();
@@ -137,8 +135,8 @@ protected:
 
 	    /*-----------------------------------------------*/
 
-  ostream& Write(ostream &s) const;
-  friend   ostream& operator<<(ostream &s, const SparseBlockMatrix<B>& A) {
+  std::ostream& Write(std::ostream &s) const;
+  friend   std::ostream& operator<<(std::ostream &s, const SparseBlockMatrix<B>& A) {
     std::cerr << "\"ostream& operator<<(ostream &s, const SparseBlockMatrix<B>& A)\" not written!" << std::endl;
     abort();
   }

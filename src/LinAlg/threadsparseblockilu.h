@@ -45,7 +45,7 @@ namespace Gascoigne
                                     const MatrixInterface &A,
                                     const nvector<int> &nodes_of_domain)
     {
-      std::cerr << "ThreadSparseBlockIluInterface::ConstructStructure" << endl;
+      std::cerr << "ThreadSparseBlockIluInterface::ConstructStructure" << std::endl;
       abort();
     }
 #pragma GCC diagnostic pop
@@ -94,7 +94,7 @@ namespace Gascoigne
     ThreadSparseBlockIlu<B>(const ThreadSparseBlockIlu<B> &I);
     ~ThreadSparseBlockIlu();
 
-    string GetName() const
+    std::string GetName() const
     {
       return "ThreadSparseBlockIlu";
     }
@@ -120,7 +120,7 @@ namespace Gascoigne
     {
       abort();
     }
-    
+
     void ConstructStructure(const nvector<int> &perm,
                             const MatrixInterface &A,
                             const nvector<int> &nodes_of_domain);
@@ -129,14 +129,14 @@ namespace Gascoigne
 #pragma GCC diagnostic ignored "-Woverloaded-virtual"
     void copy_entries(const MatrixInterface *A);
 #pragma GCC diagnostic pop
-    
+
     void solve(GlobalVector &x) const;
     void solvetrans(GlobalVector &x) const
     {
       std::cerr << "\"ThreadSparseIlu::solvetrans\" not written!" << std::endl;
       abort();
     }
-    ostream &Write(ostream &s) const;
+    std::ostream &Write(std::ostream &s) const;
   };
 }
 
