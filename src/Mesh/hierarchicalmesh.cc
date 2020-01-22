@@ -90,7 +90,8 @@ void HierarchicalMesh::clear_transfer_lists()
 
 /*------------------------------------------------------*/
 
-void HierarchicalMesh::SetParameters(string gridname, int patchdepth, int epatcher)
+void HierarchicalMesh::SetParameters(string gridname, int patchdepth,
+                                     int epatcher)
 {
   pdepth     = patchdepth;
   etapatcher = epatcher;
@@ -122,7 +123,7 @@ void HierarchicalMesh::SetParameters(string gridname, int patchdepth, int epatch
 
 /*------------------------------------------------------*/
 
-void HierarchicalMesh::BasicInit(const ParamFile* pf, std::optional<int> pdepth)
+void HierarchicalMesh::BasicInit(const ParamFile* pf, int pdepth)
 {
   int patchdepth, epatcher;
   int prerefine;
@@ -132,17 +133,21 @@ void HierarchicalMesh::BasicInit(const ParamFile* pf, std::optional<int> pdepth)
 
   DFH.insert("gridname", &gridname, "none");  // inp oder gup Format
   DFH.insert("prerefine", &prerefine, 0);
-  DFH.insert("patchdepth", &patchdepth, 1);
+  if (pdepth != 0)
+  {
+    patchdepth = pdepth;
+  }
+  else
+  {
+    DFH.insert("patchdepth", &patchdepth, 1);
+  }
   DFH.insert("etapatcher", &epatcher, 1);
   DFH.insert("showoutput", &_i_showoutput, 1);
 
   FileScanner FS(DFH);
   FS.NoComplain();
   FS.readfile(pf, "Mesh");
-  if (pdepth.has_value())
-  {
-    patchdepth = pdepth.value();
-  }
+
   SetParameters(gridname, patchdepth, epatcher);
   ProjectBoundary();
   global_refine(prerefine);
@@ -269,7 +274,8 @@ void HierarchicalMesh::random_patch_refine(double p, int c)
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh::vertex_patch_refine(IntVector& refnodes, IntVector& coarsenodes)
+void HierarchicalMesh::vertex_patch_refine(IntVector& refnodes,
+                                           IntVector& coarsenodes)
 {
   IntVector ref, coarse, vertexlevel;
   IntSet refcoarsenodes, coarsecoarsenodes;

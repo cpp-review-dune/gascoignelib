@@ -114,7 +114,7 @@ public:
   }
 
   void BasicInit(const ParamFile* pf);
-  void BasicInit(const ParamFile* pf, std::optional<int> pdepth);
+  void BasicInit(const ParamFile* pf, int pdepth);
   void BasicInit(const std::string& gridname, int dim, int patchdepth, int epatcher,
                  bool goc2nc = false);
 
