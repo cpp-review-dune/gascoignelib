@@ -22,7 +22,6 @@
  *
  **/
 
-
 #ifndef __StdSolver_h
 #define __StdSolver_h
 
@@ -50,518 +49,477 @@
 
 namespace Gascoigne
 {
+//////////////////////////////////////////////
+///
+///@brief
+/// Default nonlinear StdSolver
 
-  //////////////////////////////////////////////
-  ///
-  ///@brief
-  /// Default nonlinear StdSolver
+///
+///
+//////////////////////////////////////////////
 
-  ///
-  ///
-  //////////////////////////////////////////////
+class StdSolver
+{
+private:
+  //
+  //   Daten
+  //
 
-  class StdSolver
+  // 0.
+
+#ifdef __WITH_THREADS__
+  int __n_threads, __min_patches_per_thread;
+  bool __with_thread_ilu;
+  std::vector<std::vector<int>> __thread_domain2node;
+  // First component of pair is domain in wich the node lies, second is
+  // local index of this node in __thread_domain2node
+  std::vector<std::vector<std::pair<int, int>>> __thread_node2domain;
+#endif
+
+  // 1. Gitter
+
+  const GascoigneMesh* _MP;
+  const HierarchicalMesh* _HM;
+  std::map<int, int> _PeriodicPairs;
+
+#ifdef USE_CUDA
+  static constexpr bool use_cuda = true;
+#else
+  static constexpr bool use_cuda = false;
+#endif
+  // 2. Matrizen
+
+  MatrixInterface* _MAP;
+  IluInterface* _MIP;
+
+protected:
+#ifdef __WITH_THREADS__
+  int NThreads() const
   {
-  private:
-    //
-    //   Daten
-    //
-
-    // 0.
-
-#ifdef __WITH_THREADS__
-    int __n_threads, __min_patches_per_thread;
-    bool __with_thread_ilu;
-    std::vector<std::vector<int>> __thread_domain2node;
-    // First component of pair is domain in wich the node lies, second is
-    // local index of this node in __thread_domain2node
-    std::vector<std::vector<std::pair<int, int>>> __thread_node2domain;
+    return __n_threads;
+  }
 #endif
 
+  // 3. Discretization
 
-    // 1. Gitter
+  DiscretizationInterface* _ZP;
+  FaceDiscretization* _FZP;
 
-    const GascoigneMesh *_MP;
-    const HierarchicalMesh *_HM;
-    std::map<int, int> _PeriodicPairs;
+  // 4. Vektoren
 
-    // 2. Matrizen
+  mutable GhostVectorAgent _NGVA;
 
-    MatrixInterface *_MAP;
-    IluInterface *_MIP;
+  // 5. Anwendungsklassen
 
-  protected:
-#ifdef __WITH_THREADS__
-    int NThreads() const
-    {
-      return __n_threads;
-    }
-#endif
+  const ProblemDescriptorInterface* _PDX;
+  //    const NumericInterface *_NI;
 
-    // 3. Discretization
+  // 6. Steuerparameter
 
-    DiscretizationInterface *_ZP;
-    FaceDiscretization *_FZP;
+  bool _distribute;
 
-    // 4. Vektoren
+  mutable int _ndirect;
+  mutable bool _directsolver;
+  mutable std::string _discname;
+  mutable std::string _facediscname;
+  mutable std::string _matrixtype;
 
-    mutable GhostVectorAgent _NGVA;
+  SolverData _Dat;
+  mutable int _PrimalSolve;
+  const ParamFile* _paramfile;
 
-    // 5. Anwendungsklassen
+  bool _useUMFPACK;
 
-    const ProblemDescriptorInterface *_PDX;
-    //    const NumericInterface *_NI;
+  // 5. sonstiges
 
-    // 6. Steuerparameter
+  PressureFilter _PF;
+  /*   double               omega_domain; */
 
-    bool _distribute;
+  //
+  //        Funktionen
+  //
 
-    mutable int _ndirect;
-    mutable bool _directsolver;
-    mutable std::string _discname;
-    mutable std::string _facediscname;
-    mutable std::string _matrixtype;
+  // 0. Zugriff
 
-    SolverData _Dat;
-    mutable int _PrimalSolve;
-    const ParamFile *_paramfile;
+  const GascoigneMesh*& GetMeshPointer()
+  {
+    return _MP;
+  }
 
-    bool _useUMFPACK;
+  virtual SolverData& GetSolverData()
+  {
+    return _Dat;
+  }
+  virtual const SolverData& GetSolverData() const
+  {
+    return _Dat;
+  }
+  virtual PressureFilter& GetPfilter()
+  {
+    return _PF;
+  }
+  virtual const PressureFilter& GetPfilter() const
+  {
+    return _PF;
+  }
 
-    // 5. sonstiges
+  // 0.3 Matrizen
 
-    PressureFilter _PF;
-    /*   double               omega_domain; */
+  MatrixInterface*& GetMatrixPointer()
+  {
+    return _MAP;
+  }
 
-    //
-    //        Funktionen
-    //
+  virtual DiscretizationInterface*& GetDiscretizationPointer()
+  {
+    return _ZP;
+  }
+  virtual FaceDiscretization*& GetFaceDiscretizationPointer()
+  {
+    return _FZP;
+  }
 
-    // 0. Zugriff
+  virtual IluInterface*& GetIluPointer()
+  {
+    return _MIP;
+  }
 
-    const GascoigneMesh *&GetMeshPointer()
-    {
-      return _MP;
-    }
+  // 1. Initialisierung
 
-    virtual SolverData &GetSolverData()
-    {
-      return _Dat;
-    }
-    virtual const SolverData &GetSolverData() const
-    {
-      return _Dat;
-    }
-    virtual PressureFilter &GetPfilter()
-    {
-      return _PF;
-    }
-    virtual const PressureFilter &GetPfilter() const
-    {
-      return _PF;
-    }
+  virtual void SetDefaultValues(std::string discname, std::string matrixtype,
+                                int ndirect);
 
-    // 0.3 Matrizen
+  virtual DiscretizationInterface* NewDiscretization(int dimension,
+                                                     const std::string& discname);
+  virtual FaceDiscretization* NewFaceDiscretization(int dimension,
+                                                    const std::string& facediscname);
 
-    MatrixInterface *&GetMatrixPointer()
-    {
-      return _MAP;
-    }
+  virtual MatrixInterface* NewMatrix(int ncomp, const std::string& matrixtype);
+  virtual IluInterface* NewIlu(int ncomp, const std::string& matrixtype);
 
-    virtual DiscretizationInterface *&GetDiscretizationPointer()
-    {
-      return _ZP;
-    }
-    virtual FaceDiscretization *&GetFaceDiscretizationPointer()
-    {
-      return _FZP;
-    }
+  virtual void RegisterMatrix(int ncomp);
 
-    virtual IluInterface *&GetIluPointer()
-    {
-      return _MIP;
-    }
+  //
+  /// new interface-function for individual size of vectors
+  //
 
-    // 1. Initialisierung
+  virtual void smooth(int niter, VectorInterface& x, const VectorInterface& y,
+                      VectorInterface& h) const;
+  virtual void PermutateIlu(const VectorInterface& gu) const;
+  virtual void modify_ilu(IluInterface& I, int ncomp) const;
 
-    virtual void
-    SetDefaultValues(std::string discname, std::string matrixtype, int ndirect);
+  virtual DoubleVector IntegrateSolutionVector(const VectorInterface& u) const;
+  virtual void _check_consistency(const Equation* EQ,
+                                  const DiscretizationInterface* DI) const;
+  virtual void DirichletMatrixOnlyRow() const;
 
-    virtual DiscretizationInterface *
-    NewDiscretization(int dimension, const std::string &discname);
-    virtual FaceDiscretization *
-    NewFaceDiscretization(int dimension, const std::string &facediscname);
+public:
+  StdSolver();
+  virtual ~StdSolver();
 
-    virtual MatrixInterface *NewMatrix(int ncomp,
-                                       const std::string &matrixtype);
-    virtual IluInterface *NewIlu(int ncomp, const std::string &matrixtype);
+  virtual std::string GetName() const
+  {
+    return "StdSolver";
+  }
 
-    virtual void RegisterMatrix(int ncomp);
+  virtual void BasicInit(const ParamFile* paramfile, const int dimension);
+  ////                const NumericInterface *NI);
+  virtual void SetProblem(const ProblemDescriptorInterface& PDX);
+  virtual void SetDiscretization(DiscretizationInterface& DI, bool init = false);
+  virtual const ProblemDescriptorInterface* GetProblemDescriptor() const
+  {
+    assert(_PDX);
+    return _PDX;
+  }
+  virtual const ParamFile* GetParamfile() const
+  {
+    return _paramfile;
+  }
 
-    //
-    /// new interface-function for individual size of vectors
-    //
+  virtual void NewMesh(const GascoigneMesh* MP);
 
-    virtual void smooth(int niter,
-                        VectorInterface &x,
-                        const VectorInterface &y,
-                        VectorInterface &h) const;
-    virtual void PermutateIlu(const VectorInterface &gu) const;
-    virtual void modify_ilu(IluInterface &I, int ncomp) const;
+  virtual const GascoigneMesh* GetMesh() const
+  {
+    return _MP;
+  }
 
-    virtual DoubleVector
-    IntegrateSolutionVector(const VectorInterface &u) const;
-    virtual void _check_consistency(const Equation *EQ,
-                                    const DiscretizationInterface *DI) const;
-    virtual void DirichletMatrixOnlyRow() const;
+  // 0.2 Discretization
 
-  public:
-    StdSolver();
-    virtual ~StdSolver();
+  virtual const DiscretizationInterface* GetDiscretization() const
+  {
+    assert(_ZP);
+    return _ZP;
+  }
+  virtual DiscretizationInterface* GetDiscretization()
+  {
+    assert(_ZP);
+    return _ZP;
+  }
 
-    virtual std::string GetName() const
-    {
-      return "StdSolver";
-    }
+  virtual const FaceDiscretization* GetFaceDiscretization() const
+  {
+    return _FZP;
+  }
+  virtual FaceDiscretization* GetFaceDiscretization()
+  {
+    return _FZP;
+  }
 
-    virtual void BasicInit(const ParamFile *paramfile, const int dimension);
-    ////                const NumericInterface *NI);
-    virtual void SetProblem(const ProblemDescriptorInterface &PDX);
-    virtual void SetDiscretization(DiscretizationInterface &DI,
-                                   bool init = false);
-    virtual const ProblemDescriptorInterface *GetProblemDescriptor() const
-    {
-      assert(_PDX);
-      return _PDX;
-    }
-    virtual const ParamFile *GetParamfile() const
-    {
-      return _paramfile;
-    }
+  virtual void ReInitMatrix();
+  virtual void AddPeriodicNodes(SparseStructure* SA);
 
-    virtual void NewMesh(const GascoigneMesh *MP);
+  virtual IluInterface* GetIlu() const
+  {
+    assert(_MIP);
+    return _MIP;
+  }
 
-    virtual const GascoigneMesh *GetMesh() const
-    {
-      return _MP;
-    }
+  virtual bool DirectSolver() const
+  {
+    return _directsolver;
+  }
 
-    // 0.2 Discretization
+  virtual void AddNodeVector(const std::string& name, const VectorInterface& q)
+  {
+    assert(q.GetType() == "node");
+    GetDiscretization()->AddNodeVector(name, &GetGV(q));
+  }
+  virtual void AddCellVector(const std::string& name, const VectorInterface& q)
+  {
+    assert(q.GetType() == "cell");
+    GetDiscretization()->AddCellVector(name, &GetGV(q));
+  }
+  virtual void AddParameterVector(const std::string& name, const GlobalParameterVector* q)
+  {
+    GetDiscretization()->AddParameterVector(name, q);
+  }
+  virtual void DeleteNodeVector(const std::string& name)
+  {
+    GetDiscretization()->DeleteNodeVector(name);
+  }
+  virtual void DeleteCellVector(const std::string& name)
+  {
+    GetDiscretization()->DeleteCellVector(name);
+  }
+  virtual void DeleteParameterVector(const std::string& name)
+  {
+    GetDiscretization()->DeleteParameterVector(name);
+  }
 
-    virtual const DiscretizationInterface *GetDiscretization() const
-    {
-      assert(_ZP);
-      return _ZP;
-    }
-    virtual DiscretizationInterface *GetDiscretization()
-    {
-      assert(_ZP);
-      return _ZP;
-    }
+  virtual void OutputSettings() const;
+  virtual void PointVisu(const std::string& name, const GlobalVector& u, int i) const;
+  virtual void CellVisu(const std::string& name, const GlobalVector& u, int i) const;
 
-    virtual const FaceDiscretization *GetFaceDiscretization() const
-    {
-      return _FZP;
-    }
-    virtual FaceDiscretization *GetFaceDiscretization()
-    {
-      return _FZP;
-    }
+  virtual void ConstructInterpolator(MgInterpolatorInterface* I,
+                                     const MeshTransferInterface* MT);
+  virtual void VisuGrid(const std::string& name, int i) const;
 
-    virtual void ReInitMatrix();
-    virtual void AddPeriodicNodes(SparseStructure *SA);
+  //
+  /// vector - manamgement
+  //
 
-    virtual IluInterface *GetIlu() const
-    {
-      assert(_MIP);
-      return _MIP;
-    }
+  virtual void RegisterMatrix();
+  virtual void RegisterVector(const VectorInterface& g);
+  virtual void ReInitVector(VectorInterface& dst);
+  virtual void ReInitVector(VectorInterface& dst, int comp);
 
-    virtual bool DirectSolver() const
-    {
-      return _directsolver;
-    }
+  virtual GlobalVector& GetGV(VectorInterface& u) const
+  {
+    return _NGVA(u);
+  }
+  virtual const GlobalVector& GetGV(const VectorInterface& u) const
+  {
+    return _NGVA(u);
+  }
 
-    virtual void AddNodeVector(const std::string &name,
-                               const VectorInterface &q)
-    {
-      assert(q.GetType() == "node");
-      GetDiscretization()->AddNodeVector(name, &GetGV(q));
-    }
-    virtual void AddCellVector(const std::string &name,
-                               const VectorInterface &q)
-    {
-      assert(q.GetType() == "cell");
-      GetDiscretization()->AddCellVector(name, &GetGV(q));
-    }
-    virtual void AddParameterVector(const std::string &name,
-                                    const GlobalParameterVector *q)
-    {
-      GetDiscretization()->AddParameterVector(name, q);
-    }
-    virtual void DeleteNodeVector(const std::string &name)
-    {
-      GetDiscretization()->DeleteNodeVector(name);
-    }
-    virtual void DeleteCellVector(const std::string &name)
-    {
-      GetDiscretization()->DeleteCellVector(name);
-    }
-    virtual void DeleteParameterVector(const std::string &name)
-    {
-      GetDiscretization()->DeleteParameterVector(name);
-    }
+  //
+  /// vector - hanging nodes
+  //
 
-    virtual void OutputSettings() const;
-    virtual void
-    PointVisu(const std::string &name, const GlobalVector &u, int i) const;
-    virtual void
-    CellVisu(const std::string &name, const GlobalVector &u, int i) const;
+  virtual bool GetDistribute() const
+  {
+    return _distribute;
+  }
+  virtual void SetDistribute(bool dist)
+  {
+    _distribute = dist;
+  }
 
-    virtual void ConstructInterpolator(MgInterpolatorInterface *I,
-                                       const MeshTransferInterface *MT);
-    virtual void VisuGrid(const std::string &name, int i) const;
+  virtual void HNAverage(const VectorInterface& x) const;
+  virtual void HNZero(const VectorInterface& x) const;
+  virtual void HNDistribute(VectorInterface& x) const;
+  virtual void HNAverageData() const;
+  virtual void HNZeroData() const;
 
-    //
-    /// vector - manamgement
-    //
+  //
+  /// vector - io
+  //
 
-    virtual void RegisterMatrix();
-    virtual void RegisterVector(const VectorInterface &g);
-    virtual void ReInitVector(VectorInterface &dst);
-    virtual void ReInitVector(VectorInterface &dst, int comp);
+  virtual void Visu(const std::string& name, const VectorInterface& u, int i) const;
+  virtual void Write(const VectorInterface& u, const std::string& filename) const;
+  virtual void Read(VectorInterface& u, const std::string& filename) const;
 
-    virtual GlobalVector &GetGV(VectorInterface &u) const
-    {
-      return _NGVA(u);
-    }
-    virtual const GlobalVector &GetGV(const VectorInterface &u) const
-    {
-      return _NGVA(u);
-    }
+  //
+  /// vector - interpolation
+  //
 
-    //
-    /// vector - hanging nodes
-    //
+  virtual void InterpolateSolution(VectorInterface& u, const GlobalVector& uold) const;
 
-    virtual bool GetDistribute() const
-    {
-      return _distribute;
-    }
-    virtual void SetDistribute(bool dist)
-    {
-      _distribute = dist;
-    }
+  //
+  /// vector - rhs (integration)
+  //
 
-    virtual void HNAverage(const VectorInterface &x) const;
-    virtual void HNZero(const VectorInterface &x) const;
-    virtual void HNDistribute(VectorInterface &x) const;
-    virtual void HNAverageData() const;
-    virtual void HNZeroData() const;
+  virtual void Rhs(VectorInterface& f, double d = 1.) const;
 
-    //
-    /// vector - io
-    //
+  //
+  /// vector - residual (integration)
+  //
 
-    virtual void
-    Visu(const std::string &name, const VectorInterface &u, int i) const;
-    virtual void Write(const VectorInterface &u,
-                       const std::string &filename) const;
-    virtual void Read(VectorInterface &u, const std::string &filename) const;
+  virtual void Form(VectorInterface& y, const VectorInterface& x, double d) const;
+  virtual void AdjointForm(VectorInterface& y, const VectorInterface& x, double d) const;
 
-    //
-    /// vector - interpolation
-    //
+  //
+  /// vector - boundary condition
+  //
+  virtual void SetBoundaryVector(VectorInterface& f) const;
+  virtual void SetPeriodicVector(VectorInterface& f) const;
+  virtual void SetBoundaryVectorZero(VectorInterface& Gf) const;
+  virtual void SetBoundaryVectorStrong(VectorInterface& f, const BoundaryManager& BM,
+                                       const DirichletData& DD, double d = 1.) const;
+  virtual void SetPeriodicVectorStrong(VectorInterface& f, const BoundaryManager& BM,
+                                       const PeriodicData& PD, double d = 1.) const;
+  virtual void SetPeriodicVectorZero(VectorInterface& gf) const;
 
-    virtual void InterpolateSolution(VectorInterface &u,
-                                     const GlobalVector &uold) const;
+  //
+  /// vector - linear algebra
+  //
 
-    //
-    /// vector - rhs (integration)
-    //
+  virtual double NewtonNorm(const VectorInterface& u) const;
+  virtual void residualgmres(VectorInterface& y, const VectorInterface& x,
+                             const VectorInterface& b) const;
+  virtual void MatrixResidual(VectorInterface& y, const VectorInterface& x,
+                              const VectorInterface& b) const;
+  virtual void vmult(VectorInterface& y, const VectorInterface& x, double d) const;
+  virtual void vmulteq(VectorInterface& y, const VectorInterface& x, double d) const;
+  virtual void smooth_pre(VectorInterface& y, const VectorInterface& x,
+                          VectorInterface& h) const;
+  virtual void smooth_exact(VectorInterface& y, const VectorInterface& x,
+                            VectorInterface& h) const;
+  virtual void smooth_post(VectorInterface& y, const VectorInterface& x,
+                           VectorInterface& h) const;
+  virtual void Zero(VectorInterface& dst) const;
 
-    virtual void Rhs(VectorInterface &f, double d = 1.) const;
+  //
+  /// vector - additional
+  //
 
-    //
-    /// vector - residual (integration)
-    //
+  virtual void SubtractMean(VectorInterface& x) const;
+  virtual void SubtractMeanAlgebraic(VectorInterface& x) const;
 
-    virtual void
-    Form(VectorInterface &y, const VectorInterface &x, double d) const;
-    virtual void
-    AdjointForm(VectorInterface &y, const VectorInterface &x, double d) const;
+  //
+  /// vector - matrix
+  //
 
-    //
-    /// vector - boundary condition
-    //
-    virtual void SetBoundaryVector(VectorInterface &f) const;
-    virtual void SetPeriodicVector(VectorInterface &f) const;
-    virtual void SetBoundaryVectorZero(VectorInterface &Gf) const;
-    virtual void SetBoundaryVectorStrong(VectorInterface &f,
-                                         const BoundaryManager &BM,
-                                         const DirichletData &DD,
+  virtual void AssembleMatrix(const VectorInterface& u, double d);
+  virtual void DirichletMatrix() const;
+  virtual void PeriodicMatrix() const;
+  virtual void MatrixZero() const;
+  virtual void ComputeIlu(const VectorInterface& u) const;
+  virtual void ComputeIlu() const;
+  virtual void AssembleDualMatrix(const VectorInterface& gu, double d);
+  virtual void MassMatrixVector(VectorInterface& f, const VectorInterface& gu,
+                                double d) const
+  {
+    abort();
+  }
+
+  virtual MatrixInterface* GetMatrix() const
+  {
+    return _MAP;
+  }
+
+  //
+  /// vector - "postprocessing"
+  //
+
+  virtual void ComputeError(const VectorInterface& u, GlobalVector& err) const;
+  virtual void AssembleError(GlobalVector& eta, const VectorInterface& u,
+                             GlobalVector& err) const;
+  virtual double ComputeFunctional(VectorInterface& f, const VectorInterface& u,
+                                   const Functional* FP);
+
+  virtual double ComputeBoundaryFunctional(VectorInterface& f, const VectorInterface& u,
+                                           VectorInterface& z,
+                                           const BoundaryFunctional* FP) const;
+  virtual double ComputeDomainFunctional(const VectorInterface& u,
+                                         const DomainFunctional* FP) const;
+  virtual double ComputePointFunctional(VectorInterface& f, const VectorInterface& u,
+                                        VectorInterface& z,
+                                        const PointFunctional* NFP) const;
+  virtual double ComputeResidualFunctional(VectorInterface& f, const VectorInterface& u,
+                                           VectorInterface& z,
+                                           const ResidualFunctional* FP) const;
+  virtual void EvaluateCellRightHandSide(VectorInterface& f,
+                                         const DomainRightHandSide& CF,
                                          double d = 1.) const;
-    virtual void SetPeriodicVectorStrong(VectorInterface &f,
-                                         const BoundaryManager &BM,
-                                         const PeriodicData &PD,
-                                         double d = 1.) const;
-    virtual void SetPeriodicVectorZero(VectorInterface &gf) const;
+  virtual void EvaluateBoundaryCellRightHandSide(VectorInterface& f,
+                                                 const BoundaryRightHandSide& CF,
+                                                 const BoundaryManager& BM,
+                                                 double d = 1.) const;
+  virtual void EvaluateParameterRightHandSide(VectorInterface& f,
+                                              const DomainRightHandSide& CF,
+                                              double d = 1.) const;
+  virtual void EvaluateBoundaryParameterRightHandSide(VectorInterface& f,
+                                                      const BoundaryRightHandSide& CF,
+                                                      const BoundaryManager& BM,
+                                                      double d = 1.) const;
+  virtual void InterpolateDomainFunction(VectorInterface& f,
+                                         const DomainFunction& DF) const;
 
-    //
-    /// vector - linear algebra
-    //
+  //
+  /// vector - initialize
+  //
 
-    virtual double NewtonNorm(const VectorInterface &u) const;
-    virtual void residualgmres(VectorInterface &y,
-                               const VectorInterface &x,
-                               const VectorInterface &b) const;
-    virtual void MatrixResidual(VectorInterface &y,
-                                const VectorInterface &x,
-                                const VectorInterface &b) const;
-    virtual void
-    vmult(VectorInterface &y, const VectorInterface &x, double d) const;
-    virtual void
-    vmulteq(VectorInterface &y, const VectorInterface &x, double d) const;
-    virtual void smooth_pre(VectorInterface &y,
-                            const VectorInterface &x,
-                            VectorInterface &h) const;
-    virtual void smooth_exact(VectorInterface &y,
-                              const VectorInterface &x,
-                              VectorInterface &h) const;
-    virtual void smooth_post(VectorInterface &y,
-                             const VectorInterface &x,
-                             VectorInterface &h) const;
-    virtual void Zero(VectorInterface &dst) const;
+  virtual void BoundaryInit(VectorInterface& u) const;
+  virtual void SolutionInit(VectorInterface& u) const;
 
-    //
-    /// vector - additional
-    //
+  //
+  /// HierarchicalMesh
+  //
 
-    virtual void SubtractMean(VectorInterface &x) const;
-    virtual void SubtractMeanAlgebraic(VectorInterface &x) const;
+  virtual const HierarchicalMesh*& GetHierarchicalMeshPointer()
+  {
+    return _HM;
+  }
+  virtual const HierarchicalMesh* GetHierarchicalMesh() const
+  {
+    return _HM;
+  }
 
-    //
-    /// vector - matrix
-    //
+  //
+  /// for gmres
+  //
+  virtual void DeleteVector(VectorInterface& p) const;
 
-    virtual void AssembleMatrix(const VectorInterface &u, double d);
-    virtual void DirichletMatrix() const;
-    virtual void PeriodicMatrix() const;
-    virtual void MatrixZero() const;
-    virtual void ComputeIlu(const VectorInterface &u) const;
-    virtual void ComputeIlu() const;
-    virtual void AssembleDualMatrix(const VectorInterface &gu, double d);
-    virtual void MassMatrixVector(VectorInterface &f,
-                                  const VectorInterface &gu,
-                                  double d) const
-    {
-      abort();
-    }
+  virtual double ScalarProduct(const VectorInterface& y, const VectorInterface& x) const;
+  virtual void Equ(VectorInterface& dst, double s, const VectorInterface& src) const;
+  virtual void Add(VectorInterface& dst, double s, const VectorInterface& src) const;
+  virtual void SAdd(double s1, VectorInterface& dst, double s2,
+                    const VectorInterface& src) const;
+  virtual double Norm(const VectorInterface& dst) const;
 
-    virtual MatrixInterface *GetMatrix() const
-    {
-      return _MAP;
-    }
-
-    //
-    /// vector - "postprocessing"
-    //
-
-    virtual void ComputeError(const VectorInterface &u,
-                              GlobalVector &err) const;
-    virtual void AssembleError(GlobalVector &eta,
-                               const VectorInterface &u,
-                               GlobalVector &err) const;
-    virtual double ComputeFunctional(VectorInterface &f,
-                                     const VectorInterface &u,
-                                     const Functional *FP);
-
-    virtual double
-    ComputeBoundaryFunctional(VectorInterface &f,
-                              const VectorInterface &u,
-                              VectorInterface &z,
-                              const BoundaryFunctional *FP) const;
-    virtual double ComputeDomainFunctional(const VectorInterface &u,
-                                           const DomainFunctional *FP) const;
-    virtual double ComputePointFunctional(VectorInterface &f,
-                                          const VectorInterface &u,
-                                          VectorInterface &z,
-                                          const PointFunctional *NFP) const;
-    virtual double
-    ComputeResidualFunctional(VectorInterface &f,
-                              const VectorInterface &u,
-                              VectorInterface &z,
-                              const ResidualFunctional *FP) const;
-    virtual void EvaluateCellRightHandSide(VectorInterface &f,
-                                           const DomainRightHandSide &CF,
-                                           double d = 1.) const;
-    virtual void
-    EvaluateBoundaryCellRightHandSide(VectorInterface &f,
-                                      const BoundaryRightHandSide &CF,
-                                      const BoundaryManager &BM,
-                                      double d = 1.) const;
-    virtual void EvaluateParameterRightHandSide(VectorInterface &f,
-                                                const DomainRightHandSide &CF,
-                                                double d = 1.) const;
-    virtual void
-    EvaluateBoundaryParameterRightHandSide(VectorInterface &f,
-                                           const BoundaryRightHandSide &CF,
-                                           const BoundaryManager &BM,
-                                           double d = 1.) const;
-    virtual void InterpolateDomainFunction(VectorInterface &f,
-                                           const DomainFunction &DF) const;
-
-    //
-    /// vector - initialize
-    //
-
-    virtual void BoundaryInit(VectorInterface &u) const;
-    virtual void SolutionInit(VectorInterface &u) const;
-
-    //
-    /// HierarchicalMesh
-    //
-
-    virtual const HierarchicalMesh *&GetHierarchicalMeshPointer()
-    {
-      return _HM;
-    }
-    virtual const HierarchicalMesh *GetHierarchicalMesh() const
-    {
-      return _HM;
-    }
-
-    //
-    /// for gmres
-    //
-    virtual void DeleteVector(VectorInterface &p) const;
-
-    virtual double ScalarProduct(const VectorInterface &y,
-                                 const VectorInterface &x) const;
-    virtual void
-    Equ(VectorInterface &dst, double s, const VectorInterface &src) const;
-    virtual void
-    Add(VectorInterface &dst, double s, const VectorInterface &src) const;
-    virtual void SAdd(double s1,
-                      VectorInterface &dst,
-                      double s2,
-                      const VectorInterface &src) const;
-    virtual double Norm(const VectorInterface &dst) const;
-
-    virtual void
-    RhsCurve(VectorInterface &f, const Curve &C, int comp, int N) const;
-    virtual double
-    ScalarProductWithFluctuations(DoubleVector &eta,
-                                  const VectorInterface &gf,
-                                  const VectorInterface &gz) const;
+  virtual void RhsCurve(VectorInterface& f, const Curve& C, int comp, int N) const;
+  virtual double ScalarProductWithFluctuations(DoubleVector& eta,
+                                               const VectorInterface& gf,
+                                               const VectorInterface& gz) const;
 
 #ifdef __WITH_THREADS__
-    //
-    /// For Threads
-    //
-    virtual void ThreadPartitionMesh();
+  //
+  /// For Threads
+  //
+  virtual void ThreadPartitionMesh();
 #endif
-  };
-} // namespace Gascoigne
+};
+}  // namespace Gascoigne
 
 #endif
