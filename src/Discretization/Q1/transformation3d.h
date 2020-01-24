@@ -27,7 +27,7 @@
 
 #include  "nmatrix.h"
 #include  "vertex.h"
-
+#include "baseq13dpatch.h"
 /*-----------------------------------------------------*/
 
 namespace Gascoigne
@@ -56,7 +56,7 @@ class Transformation3d
 
   	    // inverse of second derivatives tensor
   const nvector<Matrix>  DDTI(const Vertex3d& xi) const;
-  
+
   inline double        J     () const;
   inline double        G     () const;
   inline Vertex3d      x     () const;
@@ -81,7 +81,7 @@ inline Transformation3d<BASE>::Transformation3d() : B()
 /*-----------------------------------------------------*/
 
 template<class BASE>
-inline Vertex3d  Transformation3d<BASE>::x() const 
+inline Vertex3d  Transformation3d<BASE>::x() const
 {
   Vertex3d xp;
   for(int i=0;i<B.n();i++)
@@ -96,7 +96,7 @@ inline Vertex3d  Transformation3d<BASE>::x() const
 /*-----------------------------------------------------*/
 
 template<class BASE>
-inline Vertex3d  Transformation3d<BASE>::normal() const 
+inline Vertex3d  Transformation3d<BASE>::normal() const
 {
   Vertex3d xn;
   dti.mult(xn,*B.normal3d());
@@ -143,10 +143,10 @@ template<class BASE>
 inline const nvector<nmatrix<double> > Transformation3d<BASE>::DDTI(const Vertex3d& xi) const
 {
   const nvector<nmatrix<double> >& ddt = ComputeDDT(xi);
-  
+
   nvector<nmatrix<double> > ddti(3,nmatrix<double> (3,3));
   Matrix dti_ = dti;
-  
+
 
   dti_.transpose();
   for (int i=0;i<3;++i)
@@ -160,7 +160,7 @@ inline const nvector<nmatrix<double> > Transformation3d<BASE>::DDTI(const Vertex
       ddti[i].mmult(tmp,dti_);
       dti_.mmult(ddti[i],tmp);
     }
-  return ddti;  
+  return ddti;
 }
 
 /*-----------------------------------------------------*/
@@ -168,7 +168,7 @@ template<class BASE>
 inline const nvector<nmatrix<double> > Transformation3d<BASE>::ComputeDDT(const Vertex3d& xi) const
 {
   const_cast<BASE*> (&B)->point(xi);
-  
+
   nvector<nmatrix<double> > ddt(3,nmatrix<double> (3,3));
   for (int i=0;i<3;++i) ddt[i].zero();
 
@@ -183,13 +183,13 @@ inline const nvector<nmatrix<double> > Transformation3d<BASE>::ComputeDDT(const 
 	  ddt[1](j,0) += X(j,i) * B.phi_xy(i);
 	  ddt[1](j,1) += X(j,i) * B.phi_yy(i);
 	  ddt[1](j,2) += X(j,i) * B.phi_yz(i);
-	  
+
 	  ddt[2](j,0) += X(j,i) * B.phi_xz(i);
 	  ddt[2](j,1) += X(j,i) * B.phi_yz(i);
 	  ddt[2](j,2) += X(j,i) * B.phi_zz(i);
 	}
     }
-  return ddt;  
+  return ddt;
 }
 
 /*-----------------------------------------------------*/
@@ -213,7 +213,7 @@ inline void  Transformation3d<BASE>::point_boundary(int ie, const Vertex2d& s) c
 /*-----------------------------------------------------*/
 
 template<class BASE>
-inline double  Transformation3d<BASE>::J() const  
+inline double  Transformation3d<BASE>::J() const
 {
   double h = dt.det();
   if (h<0)
@@ -226,7 +226,7 @@ inline double  Transformation3d<BASE>::J() const
 /*-----------------------------------------------------*/
 
 template<class BASE>
-inline double  Transformation3d<BASE>::G() const  
+inline double  Transformation3d<BASE>::G() const
 {
   double d1phi=0,d2phi=0,d12phi=0;
   const std::array<int,2>& fc = *B.faces();
@@ -240,6 +240,7 @@ inline double  Transformation3d<BASE>::G() const
   assert(h>=0);
   return sqrt(h);
 }
+template class Transformation3d<BaseQ13dPatch>;
 }
 
 #endif
