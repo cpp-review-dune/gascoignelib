@@ -42,7 +42,7 @@ namespace Gascoigne
 class CellDiscretization : public BasicDiscretization
 {
 private:
-  
+
 protected:
 
   FemInterface*         __FEM;
@@ -56,7 +56,7 @@ protected:
   virtual void Transformation(FemInterface::Matrix& T, int iq) const;
 
   double ComputePointValue(const GlobalVector& u, const Vertex2d& p0,int comp) const;
-  double ComputePointValue(const GlobalVector& u, const Vertex3d& p0,int comp) const; 
+  double ComputePointValue(const GlobalVector& u, const Vertex3d& p0,int comp) const;
 
   virtual int GetCellNumber(const Vertex2d& p0, Vertex2d& p, int c0=0) const {
     std::cerr << "\"CellDiscretization::GetCellNumber\" not written!" << std::endl;
@@ -72,7 +72,7 @@ protected:
   void Transformation_HM(FemInterface::Matrix& T, const HierarchicalMesh* HM, int iq) const;
   void GlobalToLocal_HM(LocalVector& U, const GlobalVector& u, const HierarchicalMesh* HM, int iq) const;
   void swapIndices(IntVector& indices) const;
-  
+
   virtual void DiracRhsPoint(GlobalVector& f,const DiracRightHandSide& DRHS,const Vertex2d& p0,int i,double s) const;
   virtual void DiracRhsPoint(GlobalVector& f,const DiracRightHandSide& DRHS,const Vertex3d& p0,int i,double s) const;
 
@@ -80,7 +80,7 @@ protected:
 public:
 
   //
-  ////  Constructor 
+  ////  Constructor
   //
 
   CellDiscretization() : BasicDiscretization(), __FEM(NULL), __INT(NULL) {}
@@ -105,10 +105,12 @@ public:
   void ComputeError(const GlobalVector& u, LocalVector& err, const ExactSolution* ES) const;
   void AssembleError(GlobalVector& eta, const GlobalVector& u, LocalVector& err, const ExactSolution* ES) const;
 
-  void Rhs(GlobalVector& f, const DomainRightHandSide& RHS, double s) const;
+  void Rhs(GlobalVector& f, const ProblemDescriptorInterface& PD,
+           double s) const;
   void DiracRhs(GlobalVector& f, const DiracRightHandSide& DRHS, double s) const;
 
-  void BoundaryRhs(GlobalVector& f, const IntSet& Colors,  const BoundaryRightHandSide& NRHS, double s) const;
+  void BoundaryRhs(GlobalVector& f, const IntSet& Colors,
+                   const ProblemDescriptorInterface& PD, double s) const;
 
   void InitFilter(DoubleVector&) const;
 
@@ -135,7 +137,7 @@ public:
   void GetVolumes(DoubleVector& a) const;
   void GetAreas(DoubleVector& a, const IntSet& Colors) const;
   void GetMassDiag(DoubleVector& a) const;
-  void GetBoundaryMassDiag(DoubleVector& a) const;      
+  void GetBoundaryMassDiag(DoubleVector& a) const;
 };
 }
 

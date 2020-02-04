@@ -64,8 +64,10 @@ namespace Gascoigne
 
       void ComputeError(const GlobalVector& u, LocalVector& err, const ExactSolution* ES) const;
 
-      void Rhs(GlobalVector& f, const DomainRightHandSide& RHS, double s) const;
-      void BoundaryRhs(GlobalVector& f, const IntSet& Colors,  const BoundaryRightHandSide& NRHS, double s) const;
+      void Rhs(GlobalVector& f, const ProblemDescriptorInterface& PD,
+               double s) const;
+      void BoundaryRhs(GlobalVector& f, const IntSet& Colors,
+                       const ProblemDescriptorInterface& PD, double s) const;
 
       void InitFilter(nvector<double>&) const;
 

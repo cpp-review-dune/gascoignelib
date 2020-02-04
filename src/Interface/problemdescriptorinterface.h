@@ -21,7 +21,6 @@
  *
  **/
 
-
 #ifndef __ProblemDescriptorInterface_h
 #define __ProblemDescriptorInterface_h
 
@@ -30,6 +29,8 @@
 #include "boundaryequation.h"
 #include "boundarymanager.h"
 #include "boundaryrighthandside.h"
+#include "domainrighthandside.h"
+#include "diracrighthandside.h"
 #include "componentinformation.h"
 #include "dirichletdata.h"
 #include "equation.h"
@@ -37,62 +38,77 @@
 #include "faceequation.h"
 #include "periodicdata.h"
 
-
 namespace Gascoigne
 {
+/////////////////////////////////////////////
+///
+///@brief
+///  ... comments ProblemDescriptorInterface
 
-  /////////////////////////////////////////////
-  ///
-  ///@brief
-  ///  ... comments ProblemDescriptorInterface
+///
+///
+/////////////////////////////////////////////
 
-  ///
-  ///
-  /////////////////////////////////////////////
+class ProblemDescriptorInterface
+{
+private:
+protected:
+public:
+  // returns new objects for equations and boundary equations
+  // classes are created on the fly to allow for parallelization
 
-  class ProblemDescriptorInterface
+  virtual Equation* NewEquation() const
   {
-  private:
-  protected:
-  public:
+    return NULL;
+  }
+  virtual BoundaryEquation* NewBoundaryEquation() const
+  {
+    return NULL;
+  }
+  virtual DomainRightHandSide* NewRightHandSide() const
+  {
+    return NULL;
+  }
+  virtual DiracRightHandSide* NewDiracRightHandSide() const
+  {
+    return NULL;
+  }
+  virtual BoundaryRightHandSide* NewBoundaryRightHandSide() const
+  {
+    return NULL;
+  }
 
-    // returns new objects for equations and boundary equations
-    // classes are created on the fly to allow for parallelization
-    
-    virtual Equation *NewEquation() const
-    {
-      return NULL;
-    }
-    virtual BoundaryEquation *NewBoundaryEquation() const
-    {
-      return NULL;
-    }
+  ProblemDescriptorInterface()
+  {
+  }
+  virtual ~ProblemDescriptorInterface()
+  {
+  }
 
-    ProblemDescriptorInterface() {}
-    virtual ~ProblemDescriptorInterface() {}
+  virtual void BasicInit(const ParamFile* pf)
+  {
+  }
 
-    virtual void BasicInit(const ParamFile *pf) {}
+  virtual std::string GetName() const                          = 0;
+  virtual std::ostream& OutputSettings(std::ostream& os) const = 0;
+  virtual void SetTime(double time, double dt) const           = 0;
 
-    virtual std::string GetName() const = 0;
-    virtual std::ostream &OutputSettings(std::ostream &os) const = 0;
-    virtual void SetTime(double time, double dt) const = 0;
+  virtual const ParamFile* GetParamFile() const = 0;
 
-    virtual const ParamFile *GetParamFile() const = 0;
-
-    virtual const Application *GetRightHandSide() const = 0;
-    virtual const BoundaryRightHandSide *GetBoundaryRightHandSide() const = 0;
-    virtual const Equation *GetEquation() const = 0;
-    virtual const FaceEquation *GetFaceEquation() const = 0;
-    virtual const BoundaryEquation *GetBoundaryEquation() const = 0;
-    virtual const DirichletData *GetDirichletData() const = 0;
-    virtual const PeriodicData *GetPeriodicData() const = 0;
-    virtual const Application *GetInitialCondition() const = 0;
-    virtual const BoundaryInitialCondition *
-    GetBoundaryInitialCondition() const = 0;
-    virtual const ExactSolution *GetExactSolution() const = 0;
-    virtual const BoundaryManager *GetBoundaryManager() const = 0;
-    virtual const ComponentInformation *GetComponentInformation() const = 0;
-  };
-} // namespace Gascoigne
+  virtual const Application* GetRightHandSide() const                   = 0;
+  virtual const BoundaryRightHandSide* GetBoundaryRightHandSide() const = 0;
+  virtual const Equation* GetEquation() const                           = 0;
+  virtual const FaceEquation* GetFaceEquation() const                   = 0;
+  virtual const BoundaryEquation* GetBoundaryEquation() const           = 0;
+  virtual const DirichletData* GetDirichletData() const                 = 0;
+  virtual const PeriodicData* GetPeriodicData() const                   = 0;
+  virtual const Application* GetInitialCondition() const                = 0;
+  virtual const BoundaryInitialCondition* GetBoundaryInitialCondition()
+    const                                                             = 0;
+  virtual const ExactSolution* GetExactSolution() const               = 0;
+  virtual const BoundaryManager* GetBoundaryManager() const           = 0;
+  virtual const ComponentInformation* GetComponentInformation() const = 0;
+};
+}  // namespace Gascoigne
 
 #endif

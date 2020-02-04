@@ -63,14 +63,14 @@ protected:
     std::cerr << "\"PatchDiscretization::GetPatchNumber\" not written!" << std::endl;
     abort();
   }
-  
+
   const GascoigneMesh* GetMesh() const
   {
     return __MP;
   }
-  
+
   double ComputePointValue(const GlobalVector& u, const Vertex2d& p0,int comp) const;
-  double ComputePointValue(const GlobalVector& u, const Vertex3d& p0,int comp) const; 
+  double ComputePointValue(const GlobalVector& u, const Vertex3d& p0,int comp) const;
 
   virtual void DiracRhsPoint(GlobalVector& f,const DiracRightHandSide& DRHS,const Vertex2d& p0,int i,double s) const;
   virtual void DiracRhsPoint(GlobalVector& f,const DiracRightHandSide& DRHS,const Vertex3d& p0,int i,double s) const;
@@ -80,7 +80,7 @@ protected:
 public:
 
 //
-///  Constructor 
+///  Constructor
 //
   PatchDiscretization() : BasicDiscretization(), __FEM(NULL), __INT(NULL) {}
   ~PatchDiscretization(){
@@ -101,10 +101,12 @@ public:
 
   void ComputeError(const GlobalVector& u, LocalVector& err, const ExactSolution* ES) const;
 
-  void Rhs(GlobalVector& f, const DomainRightHandSide& RHS, double s) const;
+  void Rhs(GlobalVector& f, const ProblemDescriptorInterface& PD,
+           double s) const;
   void DiracRhs(GlobalVector& f, const DiracRightHandSide& DRHS, double s) const;
-  
-  void BoundaryRhs(GlobalVector& f, const IntSet& Colors,  const BoundaryRightHandSide& NRHS, double s) const;
+
+  void BoundaryRhs(GlobalVector& f, const IntSet& Colors,
+                   const ProblemDescriptorInterface& PD, double s) const;
 
   void InitFilter(nvector<double>&) const;
 

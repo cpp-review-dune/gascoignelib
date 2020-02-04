@@ -98,8 +98,8 @@ public:
       else if (DIM == 2)
         return new HNStructureQ12d;
       else
-      assert(0);
-      }
+        assert(0);
+    }
     else if (DEGREE == 2)
     {
       if (DIM == 3)
@@ -108,8 +108,9 @@ public:
         return new HNStructureQ22d;
       else
         assert(0);
-      }
-    else abort();
+    }
+    else
+      abort();
   }
 
   const DofHandler<DIM>* GetDofHandler() const
@@ -178,7 +179,8 @@ public:
     datacontainer.DeleteCellVector(name);
   }
 
-  void AddParameterVector(const std::string& name, const GlobalParameterVector* q) const
+  void AddParameterVector(const std::string& name,
+                          const GlobalParameterVector* q) const
   {
     datacontainer.AddParameterVector(name, q);
   }
@@ -203,7 +205,8 @@ public:
 
     // std::cout<<"huhhhhhuuuuu coloring for dofhandler"<<std::endl;
     ElementColoring(DEGREE);
-    // std::cout<<"GetDofHandler()->NumberofColors(): "<<NumberofColors()<<std::endl;
+    // std::cout<<"GetDofHandler()->NumberofColors():
+    // "<<NumberofColors()<<std::endl;
   }
 
   Vertex2d vertex2d(int i) const
@@ -300,7 +303,8 @@ public:
       }
     }
   }
-  void ConstructInterpolator(MgInterpolatorInterface* I, const MeshTransferInterface* MT)
+  void ConstructInterpolator(MgInterpolatorInterface* I,
+                             const MeshTransferInterface* MT)
   {
     MgInterpolatorNested* IP = dynamic_cast<MgInterpolatorNested*>(I);
     assert(IP);
@@ -368,7 +372,8 @@ public:
     IntVector::const_iterator stop  = indices.end();
     A.entry_atomic(start, stop, E, s);
   }
-  void LocalToGlobal(GlobalVector& f, const LocalVector& F, int iq, double s) const
+  void LocalToGlobal(GlobalVector& f, const LocalVector& F, int iq,
+                     double s) const
   {
     IntVector indices = GetDofHandler()->GetElement(DEGREE, iq);
     for (int ii = 0; ii < indices.size(); ii++)
@@ -413,8 +418,8 @@ public:
   void InterpolateSolution(GlobalVector& u, const GlobalVector& uold) const;
 
   ////////////////////////////////////////////////// integration ueber Zellen
-  void Form(GlobalVector& f, const GlobalVector& u, const ProblemDescriptorInterface& PD,
-            double d) const
+  void Form(GlobalVector& f, const GlobalVector& u,
+            const ProblemDescriptorInterface& PD, double d) const
   {
     LocalParameterData QP;
     GlobalToGlobalData(QP);
@@ -464,12 +469,11 @@ public:
     }
   }
 
-  void Rhs(GlobalVector& f, const DomainRightHandSide& RHS, double s) const
+  void Rhs(GlobalVector& f, const ProblemDescriptorInterface& PD,
+           double s) const
   {
     LocalParameterData QP;
     GlobalToGlobalData(QP);
-    RHS.SetParameterData(QP);
-
 #pragma omp parallel
     {
       nmatrix<double> T;
@@ -478,6 +482,8 @@ public:
       integrator.BasicInit();
       LocalVector __F;
       LocalData __QN, __QC;
+      const auto RHS = PD.NewRightHandSide();
+      RHS->SetParameterData(QP);
       for (int col = 0; col < NumberofColors(); col++)
       {
         const std::vector<int>& ewcol = elementswithcolor(col);
@@ -491,9 +497,48 @@ public:
           finiteelement.ReInit(T);
 
           GlobalToLocalData(iq, __QN, __QC);
-          RHS.point_cell(GetDofHandler()->material(DEGREE, iq));
-          integrator.Rhs(RHS, __F, finiteelement, __QN, __QC);
-          LocalToGlobal_ohnecritic(f, __F, iq, s);
+          RHS->point_cell(GetDofHandler()->material(DEGREE, iq));
+          integrator.Rhs(*RHS, __F, finiteelement, __QN, __QC);
+          LocalToGlobal(f, __F, iq, s);
+        }
+      }
+      delete RHS;
+    }
+  }
+
+  void BoundaryRhs(GlobalVector& f, const IntSet& Colors,
+                   const ProblemDescriptorInterface& PD, double s) const
+  {
+    LocalParameterData QP;
+    GlobalToGlobalData(QP);
+#pragma omp parallel
+    {
+      nmatrix<double> T;
+      FINITEELEMENT finiteelement;
+      INTEGRATOR integrator;
+      integrator.BasicInit();
+      LocalVector __U, __F;
+      LocalData __QN, __QC;
+      const auto NRHS = PD.NewBoundaryRightHandSide();
+      NRHS->SetParameterData(QP);
+      for (auto col : Colors)
+      {
+        const IntVector& q = *GetDofHandler()->ElementOnBoundary(DEGREE, col);
+        const IntVector& l =
+          *GetDofHandler()->ElementLocalOnBoundary(DEGREE, col);
+#pragma omp for schedule(static)
+        for (int i = 0; i < q.size(); i++)
+        {
+          const int iq  = q[i];
+          const int ile = l[i];
+
+          Transformation(T, iq);
+          finiteelement.ReInit(T);
+
+          GlobalToLocalData(iq, __QN, __QC);
+          integrator.BoundaryRhs(*NRHS, __F, finiteelement, ile, col, __QN,
+                                 __QC);
+          LocalToGlobal(f, __F, iq, s);
         }
       }
     }
@@ -570,7 +615,8 @@ public:
 
     LocalParameterData QP;
     GlobalToGlobalData(QP);
-#pragma omp parallel  // private(T, finiteelement, integrator, __U, __F, __QN, __QC)
+#pragma omp \
+  parallel  // private(T, finiteelement, integrator, __U, __F, __QN, __QC)
     {
       nmatrix<double> T;
       FINITEELEMENT finiteelement;
@@ -586,7 +632,8 @@ public:
       for (auto col : COLS)
       {
         const IntVector& q = *GetDofHandler()->ElementOnBoundary(DEGREE, col);
-        const IntVector& l = *GetDofHandler()->ElementLocalOnBoundary(DEGREE, col);
+        const IntVector& l =
+          *GetDofHandler()->ElementLocalOnBoundary(DEGREE, col);
 
 #pragma omp for schedule(static)
         for (int i = 0; i < q.size(); i++)
@@ -600,7 +647,8 @@ public:
           GlobalToLocal(__U, u, iq);
           GlobalToLocalData(iq, __QN, __QC);
 
-          integrator.BoundaryForm(*BEQ, __F, finiteelement, __U, ile, col, __QN, __QC);
+          integrator.BoundaryForm(*BEQ, __F, finiteelement, __U, ile, col, __QN,
+                                  __QC);
           LocalToGlobal(f, __F, iq, d);
         }
       }
@@ -617,7 +665,8 @@ public:
     LocalParameterData QP;
     GlobalToGlobalData(QP);
 
-#pragma omp parallel  // private(T, finiteelement, integrator, __U, __QN, __QC, __E)
+#pragma omp \
+  parallel  // private(T, finiteelement, integrator, __U, __QN, __QC, __E)
     {
       nmatrix<double> T;
       FINITEELEMENT finiteelement;
@@ -634,7 +683,8 @@ public:
       for (const auto col : COLS)
       {
         const IntVector& q = *GetDofHandler()->ElementOnBoundary(DEGREE, col);
-        const IntVector& l = *GetDofHandler()->ElementLocalOnBoundary(DEGREE, col);
+        const IntVector& l =
+          *GetDofHandler()->ElementLocalOnBoundary(DEGREE, col);
 #pragma omp for schedule(static)
         for (int i = 0; i < q.size(); i++)
         {
@@ -647,7 +697,8 @@ public:
           GlobalToLocal(__U, u, iq);
           GlobalToLocalData(iq, __QN, __QC);
 
-          integrator.BoundaryMatrix(*BEQ, __E, finiteelement, __U, ile, col, __QN, __QC);
+          integrator.BoundaryMatrix(*BEQ, __E, finiteelement, __U, ile, col,
+                                    __QN, __QC);
           LocalToGlobal(A, __E, iq, d);
         }
       }
@@ -672,7 +723,8 @@ public:
     for (const auto col : Colors)
     {
       const IntVector& q = *GetDofHandler()->ElementOnBoundary(DEGREE, col);
-      const IntVector& l = *GetDofHandler()->ElementLocalOnBoundary(DEGREE, col);
+      const IntVector& l =
+        *GetDofHandler()->ElementLocalOnBoundary(DEGREE, col);
       for (int i = 0; i < q.size(); i++)
       {
         int iq  = q[i];
@@ -684,8 +736,8 @@ public:
         GlobalToLocal(__U, u, iq);
         GlobalToLocalData(iq, __QN, __QC);
 
-        j += integrator.ComputeBoundaryFunctional(BF, finiteelement, ile, col, __U, __QN,
-                                                  __QC);
+        j += integrator.ComputeBoundaryFunctional(BF, finiteelement, ile, col,
+                                                  __U, __QN, __QC);
       }
     }
 
@@ -795,7 +847,8 @@ public:
   }
 
   ////////////////////////////////////////////////// Functionals
-  double ComputePointValue(const GlobalVector& u, const Vertex2d& p0, int comp) const
+  double ComputePointValue(const GlobalVector& u, const Vertex2d& p0,
+                           int comp) const
   {
     /* // very simple version. Only finds nodes
      for (int n=0;n<GetDofHandler()->nnodes();++n)
@@ -806,7 +859,8 @@ public:
    if (dist< sqrt(1.e-13))
      return u(n,comp);
  }
-     std::cerr << "DofHandler::ComputePointValue. Vertex " << p0 << " not found!"
+     std::cerr << "DofHandler::ComputePointValue. Vertex " << p0 << " not
+ found!"
    << std::endl;
      abort();*/
     Vertex<DIM> Tranfo_p0;
@@ -831,7 +885,8 @@ public:
 
     return integrator.ComputePointValue(finiteelement, Tranfo_p0, __U, comp);
   }
-  double ComputePointValue(const GlobalVector& u, const Vertex3d& p0, int comp) const
+  double ComputePointValue(const GlobalVector& u, const Vertex3d& p0,
+                           int comp) const
   {
     /*// very simple version. Only finds nodes
     for (int n=0;n<GetDofHandler()->nnodes();++n)
@@ -871,7 +926,8 @@ public:
 
     return integrator.ComputePointValue(finiteelement, Tranfo_p0, __U, comp);
   }
-  double ComputePointFunctional(const GlobalVector& u, const PointFunctional& FP) const
+  double ComputePointFunctional(const GlobalVector& u,
+                                const PointFunctional& FP) const
   {
     LocalParameterData QP;
     GlobalToGlobalData(QP);
@@ -911,7 +967,8 @@ public:
 
     return FP.J(up);
   }
-  double ComputeDomainFunctional(const GlobalVector& u, const DomainFunctional& F) const
+  double ComputeDomainFunctional(const GlobalVector& u,
+                                 const DomainFunctional& F) const
   {
     LocalParameterData QP;
     GlobalToGlobalData(QP);
@@ -932,9 +989,32 @@ public:
       GlobalToLocal(__U, u, iq);
       GlobalToLocalData(iq, __QN, __QC);
       F.point_cell(GetDofHandler()->material(DEGREE, iq));
-      j += integrator.ComputeDomainFunctional(F, finiteelement, __U, __QN, __QC);
+      j +=
+        integrator.ComputeDomainFunctional(F, finiteelement, __U, __QN, __QC);
     }
     return j;
+  }
+
+  void MassMatrix(MatrixInterface& A) const
+  {
+#pragma omp parallel
+    {
+      nmatrix<double> T;
+      FINITEELEMENT finiteelement;
+      INTEGRATOR integrator;
+      EntryMatrix __E;
+      integrator.BasicInit();
+
+#pragma omp for schedule(static)
+      for (int iq = 0; iq < GetDofHandler()->nelements(DEGREE); ++iq)
+      {
+        Transformation(T, iq);
+        finiteelement.ReInit(T);
+        integrator.MassMatrix(__E, finiteelement);
+        LocalToGlobal_ohnecritic(A, __E, iq, 1.);
+      }
+      HN->MatrixDiag(1, A);
+    }
   }
 
   ////////////////////////////////////////////////// Pressure Filter, set
@@ -976,7 +1056,8 @@ public:
   ////////////////////////////////////////////////// Dirichlet Data
   //// NEW Interface
   ////////////////////////////////////////////////// Dirichlet Data
-  void StrongDirichletVector(GlobalVector& u, const DirichletData* DD, double d) const
+  void StrongDirichletVector(GlobalVector& u, const DirichletData* DD,
+                             double d) const
   {
     if (DD == NULL)
       return;  // no Dirichlet Data
@@ -1167,8 +1248,8 @@ public:
     // int colnumb=0;
     // for (auto it : Coloring)
     //	{
-    //		 std::cout<<" col " <<colnumb<< " with "<<it.size()<<"elements"<<std::endl;
-    //		 colnumb++;
+    //		 std::cout<<" col " <<colnumb<< " with
+    //"<<it.size()<<"elements"<<std::endl; 		 colnumb++;
     //	}
     //  std::cout << std::endl;
   }
@@ -1208,16 +1289,18 @@ public:
          ElementIntegratorQ23d>
 
 ////// LPS
-#define CGDiscQ12dLps                                                               \
-  CGDisc<2, 2, FiniteElement<2, 1, Transformation2d<BaseQ12dPatch>, BaseQ12dPatch>, \
+#define CGDiscQ12dLps                                                         \
+  CGDisc<2, 2,                                                                \
+         FiniteElement<2, 1, Transformation2d<BaseQ12dPatch>, BaseQ12dPatch>, \
          ElementLpsIntegratorQ12d>
 
 #define CGDiscQ22dLps                                                     \
   CGDisc<2, 2, FiniteElement<2, 1, Transformation2d<BaseQ22d>, BaseQ22d>, \
          ElementLpsIntegratorQ22d>
 
-#define CGDiscQ13dLps                                                               \
-  CGDisc<3, 2, FiniteElement<3, 2, Transformation3d<BaseQ13dPatch>, BaseQ13dPatch>, \
+#define CGDiscQ13dLps                                                         \
+  CGDisc<3, 2,                                                                \
+         FiniteElement<3, 2, Transformation3d<BaseQ13dPatch>, BaseQ13dPatch>, \
          ElementLpsIntegratorQ13d>
 #define CGDiscQ23dLps                                                     \
   CGDisc<3, 2, FiniteElement<3, 2, Transformation3d<BaseQ23d>, BaseQ23d>, \

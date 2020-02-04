@@ -58,16 +58,30 @@ class ProjectionRightHandSide : public DomainRightHandSide
       __U = q["U"];
     }
 
-    void operator()(VectorIterator b, const TestFunction& N, const Vertex2d& v) const 
+    void operator()(VectorIterator b, const TestFunction& N, const Vertex2d& v) const
     {
       for (int i=0; i<_ncomp; i++)
         b[i] += __U[i].m() * N.m();
     }
-    void operator()(VectorIterator b, const TestFunction& N, const Vertex3d& v) const 
+    void operator()(VectorIterator b, const TestFunction& N, const Vertex3d& v) const
     {
       for (int i=0; i<_ncomp; i++)
         b[i] += __U[i].m() * N.m();
     }
+};
+
+/// @brief Dummy Problemdescriptor for the Projectionrighthandside
+class ProjectionRhsPD : public ProblemDescriptorBase
+{
+public:
+  ProjectionRhsPD(int ncomp) : ProblemDescriptorBase()
+  {
+    GetRightHandSidePointer() = new ProjectionRightHandSide(ncomp);
+  }
+  std::string GetName() const
+  {
+    return "ProjectionRhsPD";
+  }
 };
 
 /**********************************************************/
@@ -306,7 +320,7 @@ void MeshInterpolator::InitInterpolationWeights(int dim)
   w1d(0,0) = 1.    ; w1d(0,1) = 0.375; w1d(0,3) = -0.125;
   w1d(1,1) = 0.75  ; w1d(1,2) = 1.   ; w1d(1,3) = 0.75  ;
   w1d(2,1) = -0.125; w1d(2,3) = 0.375; w1d(2,4) = 1.    ;
-  
+
   int sizeq1 = static_cast<int>(pow(2.,static_cast<double>(dim)));
   int sizeq2 = static_cast<int>(pow(3.,static_cast<double>(dim)));
   _wq1.resize(sizeq1,sizeq1);
@@ -446,7 +460,7 @@ void MeshInterpolator::RefineAndInterpolate(HierarchicalMesh* Mesh,
   assert(childs==refined);
 
   int dim = Mesh->dimension();
-  
+
   for (IntSet::const_iterator p=refine.begin(); p!=refine.end(); p++)
   {
     for (int s=0; s<u.size(); s++)
@@ -598,7 +612,7 @@ void MeshInterpolator::BasicInit(DiscretizationInterface* DI, MeshAgentInterface
   GetMeshAgent()->GetShapes2d() = GetOriginalMeshAgent()->GetShapes2d();
   GetMeshAgent()->GetShapes3d() = GetOriginalMeshAgent()->GetShapes3d();
   GetMeshAgent()->BasicInit(_name+".gup",dim,0,0);
-    
+
   // neue Discretization anlegen
   const Q2* Q2DP = dynamic_cast<const Q2*>(GetOriginalDiscretization());
   if (Q2DP)
@@ -853,12 +867,12 @@ void MeshInterpolator::RhsForProjection(GlobalVector& f, const GlobalVector& u)
   GetMeshAgent()->global_refine(0);
   GetDiscretization()->ReInit(GetMeshAgent()->GetMesh(0));
 
-  ProjectionRightHandSide PRHS(u.ncomp());
-  
+  ProjectionRhsPD PPD(u.ncomp());
+
   GlobalVector _help(u.ncomp(),_New->nnodes(),0.);
   assert(_VecNew.size()==1);
   GetDiscretization()->AddNodeVector("U",&_VecNew[0].first);
-  GetDiscretization()->Rhs(_help,PRHS,1.);
+  GetDiscretization()->Rhs(_help,PPD,1.);
   GetDiscretization()->DeleteNodeVector("U");
 
   if (DI)
@@ -888,4 +902,3 @@ void MeshInterpolator::RhsForProjection(GlobalVector& f, const GlobalVector& u)
 
 /**********************************************************/
 }
-

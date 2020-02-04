@@ -50,7 +50,7 @@
 
 namespace Gascoigne
 {
-  
+
   /////////////////////////////////////////////
   ///
   ///@brief
@@ -97,17 +97,18 @@ namespace Gascoigne
     }
     virtual Vertex2d vertex2d(int i) const{ abort(); }
     virtual Vertex3d vertex3d(int i) const{ abort(); }
-    
+
     virtual void Structure(SparseStructureInterface* S) const=0;
     virtual void Form(GlobalVector& f, const GlobalVector& u, const ProblemDescriptorInterface& PD, double d) const{assert(0);}
-    virtual void Rhs(GlobalVector& f, const DomainRightHandSide& RHS, double s) const=0;
+    virtual void Rhs(GlobalVector& f, const ProblemDescriptorInterface& RHS,
+                     double s) const {assert(0);};
     virtual void Matrix(MatrixInterface& A, const GlobalVector& u, const ProblemDescriptorInterface& PD, double) const{assert(0);}
 
       virtual void AdjointForm(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const {
         std::cerr << "\"DiscretizationInterface::AdjointForm\" not written!" << std::endl;
         abort();
       }
-      virtual void BoundaryMatrix(MatrixInterface& A, const GlobalVector& u, const IntSet& Colors, 
+      virtual void BoundaryMatrix(MatrixInterface& A, const GlobalVector& u, const IntSet& Colors,
           const BoundaryEquation& BE, double d) const {
         std::cerr << "\"DiscretizationInterface::BoundaryMatrix\" not written!" << std::endl;
         abort();
@@ -122,7 +123,7 @@ namespace Gascoigne
       abort();
     }
 
-    // New Inteface. 
+    // New Inteface.
     virtual void BoundaryForm(GlobalVector& f, const GlobalVector& u, const ProblemDescriptorInterface& PD, double d) const {
       std::cerr << "\"DiscretizationInterface::BoundaryForm-NEW\" not written!" << std::endl;
       abort();
@@ -131,12 +132,12 @@ namespace Gascoigne
       std::cerr << "\"DiscretizationInterface::BoundaryMatrix-NEW\" not written!" << std::endl;
       abort();
     }
-    
+
     virtual void MassMatrix(MatrixInterface& M) const {
         std::cerr << "\"DiscretizationInterface::MassMatrix\" not written!" << std::endl;
         abort();
-      } 
-      
+      }
+
       virtual void BoundaryMassMatrix(MatrixInterface& A, const IntSet& Colors) const {
         std::cerr << "\"DiscretizationInterface::BoundaryMassMatrix\" not written!" << std::endl;
         abort();
@@ -148,8 +149,8 @@ namespace Gascoigne
       virtual void DiracRhs(GlobalVector& f, const DiracRightHandSide& DRHS, double s) const {
         std::cerr << "\"DiscretizationInterface::DiracRhs\" not written!" << std::endl;
         abort();
-      }		
-      virtual void BoundaryRhs(GlobalVector& f, const IntSet& Colors,  const BoundaryRightHandSide& NRHS, 
+      }
+      virtual void BoundaryRhs(GlobalVector& f, const IntSet& Colors,  const ProblemDescriptorInterface& PD,
           double s) const{
         std::cerr << "\"DiscretizationInterface::BoundaryRhs\" not written!" << std::endl;
         abort();
@@ -220,7 +221,7 @@ namespace Gascoigne
         std::cerr << "\"DiscretizationInterface::InitFilter\" not written!" << std::endl;
         abort();
       }
-			
+
       virtual void StabForm(GlobalVector& f, const GlobalVector& u, const ProblemDescriptorInterface& PD, double d) const {
         std::cerr << "\"DiscretizationInterface::StabForm\" not written!" << std::endl;
         abort();
@@ -247,7 +248,7 @@ namespace Gascoigne
         std::cerr << "\"DiscretizationInterface::ComputeDomainFunctional\" not written!" << std::endl;
         abort();
       }
-			
+
       virtual double ComputePointFunctional(const GlobalVector& u, const PointFunctional& FP) const{
         std::cerr << "\"DiscretizationInterface::ComputePointFunctional\" not written!" << std::endl;
         abort();
@@ -262,7 +263,7 @@ namespace Gascoigne
         std::cerr << "\"DiscretizationInterface::EvaluateBoundaryCellRighthandside\" not written!" << std::endl;
         abort();
       }
-      
+
       virtual void EvaluateParameterRightHandSide(GlobalVector& f, const DomainRightHandSide& CF, double d = 1.) const{
         std::cerr << "\"DiscretizationInterface::EvaluateParameterRighthandside\" not written!" << std::endl;
         abort();
@@ -272,7 +273,7 @@ namespace Gascoigne
         std::cerr << "\"DiscretizationInterface::EvaluateBoundaryParameterRighthandside\" not written!" << std::endl;
         abort();
       }
-      
+
       virtual void InterpolateDomainFunction(GlobalVector& f, const DomainFunction& DF) const{
         std::cerr << "\"DiscretizationInterface::InterpolateDomainFunction\" not written!" << std::endl;
         abort();
@@ -282,7 +283,7 @@ namespace Gascoigne
         std::cerr << "\"DiscretizationInterface::InterpolateCellDomainFunction\" not written!" << std::endl;
         abort();
       }
-			
+
       virtual void ConstructInterpolator(MgInterpolatorInterface* I, const MeshTransferInterface* MT) {
         std::cerr << "\"DiscretizationInterface::ConstructInterpolator\" not written!" << std::endl;
         abort();
@@ -291,12 +292,12 @@ namespace Gascoigne
       virtual void GetVolumes(DoubleVector& a) const {
 	std::cerr << "\"DiscretizationInterface::GetVolumes\" not written!" << std::endl;
         abort();
-      } 
+      }
 
       virtual void GetAreas(DoubleVector& a, const IntSet& Colors) const{
 	std::cerr << "\"DiscretizationInterface::GetAreas\" not written!" << std::endl;
         abort();
-      } 
+      }
 
       virtual void GetMassDiag(DoubleVector& a) const{
 	std::cerr << "\"DiscretizationInterface::GetMassDiag\" not written!" << std::endl;

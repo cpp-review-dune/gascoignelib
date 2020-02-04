@@ -44,7 +44,7 @@ void PatchDiscretization::Structure(SparseStructureInterface* SI) const
       nvector<int> indices = GetLocalIndices(iq);
       S->build_add(indices.begin(), indices.end());
     }
-  S->build_end();  
+  S->build_end();
 }
 
 /* ----------------------------------------- */
@@ -63,7 +63,7 @@ void PatchDiscretization::Transformation(FemInterface::Matrix& T, int iq) const
       for(int ii=0;ii<ne;ii++)
 	{
 	  Vertex2d v = GetMesh()->vertex2d(indices[ii]);
-	  T(0,ii) = v.x();               
+	  T(0,ii) = v.x();
 	  T(1,ii) = v.y();
 	}
     }
@@ -72,7 +72,7 @@ void PatchDiscretization::Transformation(FemInterface::Matrix& T, int iq) const
       for(int ii=0;ii<ne;ii++)
 	{
 	  Vertex3d v = GetMesh()->vertex3d(indices[ii]);
-	  T(0,ii) = v.x();               
+	  T(0,ii) = v.x();
 	  T(1,ii) = v.y();
 	  T(2,ii) = v.z();
 	}
@@ -131,12 +131,12 @@ void PatchDiscretization::BoundaryForm(GlobalVector& f, const GlobalVector& u, c
 {
   if (!PD.NewBoundaryEquation())
     return;
-  
+
   nmatrix<double> T;
 
   auto *BE = PD.NewBoundaryEquation();
   auto Colors = PD.GetBoundaryManager()->GetBoundaryEquationColors();
-  
+
   GlobalToGlobalData();
   BE->SetParameterData(__QP);
 
@@ -170,7 +170,7 @@ void PatchDiscretization::Matrix(MatrixInterface& A, const GlobalVector& u, cons
 
   auto* EQ = PD.NewEquation();
   EQ->SetParameterData(__QP);
-  
+
   for(int iq=0;iq<GetMesh()->npatches();++iq)
     {
       Transformation(T,iq);
@@ -182,7 +182,7 @@ void PatchDiscretization::Matrix(MatrixInterface& A, const GlobalVector& u, cons
       GetIntegrator()->Matrix(*EQ,__E,*GetFem(),__U,__QN,__QC);
       LocalToGlobal(A,__E,iq,d);
     }
-  
+
 //   ofstream file("MATRIX");
 //   A.Write(file);
 }
@@ -196,7 +196,7 @@ void PatchDiscretization::BoundaryMatrix(MatrixInterface& A, const GlobalVector&
   const auto *BE = PD.NewBoundaryEquation();
   auto Colors = PD.GetBoundaryManager()->GetBoundaryEquationColors();
   nmatrix<double> T;
-  
+
   GlobalToGlobalData();
   BE->SetParameterData(__QP);
 
@@ -210,7 +210,7 @@ void PatchDiscretization::BoundaryMatrix(MatrixInterface& A, const GlobalVector&
         {
           int ip  = q[i];
 	  int ile = l[i];
-          
+
           Transformation(T,ip);
           GetFem()->ReInit(T);
 
@@ -263,7 +263,7 @@ void PatchDiscretization::ComputeError(const GlobalVector& u, LocalVector& err, 
   err.reservesize(3);
   err = 0.;
 
-  CompVector<double> lerr(ncomp,3); 
+  CompVector<double> lerr(ncomp,3);
 
   nmatrix<double> T;
 
@@ -276,14 +276,14 @@ void PatchDiscretization::ComputeError(const GlobalVector& u, LocalVector& err, 
       GetFem()->ReInit(T);
       GlobalToLocal(__U,u,iq);
       GetIntegrator()->ErrorsByExactSolution(lerr,*GetFem(),*ES,__U,__QN,__QC);
-      for(int c=0;c<ncomp;c++)  
+      for(int c=0;c<ncomp;c++)
 	{
 	  err(0,c) += lerr(0,c);
 	  err(1,c) += lerr(1,c);
 	  err(2,c) = std::max(err(2,c),lerr(2,c));
 	}
     }
-  for(int c=0;c<ncomp;c++)  
+  for(int c=0;c<ncomp;c++)
     {
       err(0,c) = sqrt(err(0,c));
       err(1,c) = sqrt(err(1,c));
@@ -292,12 +292,14 @@ void PatchDiscretization::ComputeError(const GlobalVector& u, LocalVector& err, 
 
 /* ----------------------------------------- */
 
-void PatchDiscretization::Rhs(GlobalVector& f, const DomainRightHandSide& RHS, double s) const
+void PatchDiscretization::Rhs(GlobalVector& f, const ProblemDescriptorInterface& PD,
+                              double s) const
 {
   nmatrix<double> T;
-
   GlobalToGlobalData();
-  RHS.SetParameterData(__QP);
+  const auto RHS =
+    dynamic_cast<const DomainRightHandSide*>(PD.GetRightHandSide());
+  RHS->SetParameterData(__QP);
 
   for(int iq=0;iq<GetMesh()->npatches();++iq)
     {
@@ -305,21 +307,24 @@ void PatchDiscretization::Rhs(GlobalVector& f, const DomainRightHandSide& RHS, d
       GetFem()->ReInit(T);
 
       GlobalToLocalData(iq);
-      RHS.point_cell(GetMesh()->material_patch(iq));
-      GetIntegrator()->Rhs(RHS,__F,*GetFem(),__QN,__QC);
+      RHS->point_cell(GetMesh()->material_patch(iq));
+      GetIntegrator()->Rhs(*RHS,__F,*GetFem(),__QN,__QC);
       LocalToGlobal(f,__F,iq,s);
     }
 }
 
 /* ----------------------------------------- */
 
-void PatchDiscretization::BoundaryRhs(GlobalVector& f, const IntSet& Colors,  const BoundaryRightHandSide& NRHS, double s) const
+void PatchDiscretization::BoundaryRhs(GlobalVector& f, const IntSet& Colors,
+                                      const ProblemDescriptorInterface& PD,
+                                      double s) const
 {
   nmatrix<double> T;
 
   GlobalToGlobalData();
-  NRHS.SetParameterData(__QP);
-  
+  const auto NRHS = PD.GetBoundaryRightHandSide();
+  NRHS->SetParameterData(__QP);
+
   for(IntSet::const_iterator p=Colors.begin();p!=Colors.end();p++)
     {
       int col = *p;
@@ -335,7 +340,7 @@ void PatchDiscretization::BoundaryRhs(GlobalVector& f, const IntSet& Colors,  co
 	  GetFem()->ReInit(T);
 
 	  GlobalToLocalData(ip);
-	  GetIntegrator()->BoundaryRhs(NRHS,__F,*GetFem(),ile,col,__QN,__QC);
+	  GetIntegrator()->BoundaryRhs(*NRHS,__F,*GetFem(),ile,col,__QN,__QC);
 	  LocalToGlobal(f,__F,ip,s);
 	}
     }
@@ -394,12 +399,12 @@ void PatchDiscretization::DiracRhs(GlobalVector& f, const DiracRightHandSide& DR
   int nn = comps.size();
 
   vector<double> up(nn,0);
- 
+
   if (dim == 2)
     {
       vector<Vertex2d> v2d = DRHS.GetPoints2d();
       assert(nn==v2d.size());
-      
+
       for(int i=0;i<nn;++i)
 	{
 	  DiracRhsPoint(f,DRHS,v2d[i],i,s);
@@ -428,7 +433,7 @@ void PatchDiscretization::DiracRhsPoint(GlobalVector& f,const DiracRightHandSide
   __F.ReInit(f.ncomp(),GetFem()->n());
 
   Vertex2d Tranfo_p0;
-   
+
   int iq = GetPatchNumber(p0,Tranfo_p0);
   if (iq==-1)
     {
@@ -439,7 +444,7 @@ void PatchDiscretization::DiracRhsPoint(GlobalVector& f,const DiracRightHandSide
   nmatrix<double> T;
   Transformation(T,iq);
   GetFem()->ReInit(T);
-  
+
   GlobalToLocalData(iq);
   GlobalToGlobalData();
   DRHS.SetParameterData(__QP);
@@ -455,7 +460,7 @@ void PatchDiscretization::DiracRhsPoint(GlobalVector& f,const DiracRightHandSide
   __F.ReInit(f.ncomp(),GetFem()->n());
 
   Vertex3d Tranfo_p0;
-   
+
   int iq = GetPatchNumber(p0,Tranfo_p0);
   if (iq==-1)
     {
@@ -466,7 +471,7 @@ void PatchDiscretization::DiracRhsPoint(GlobalVector& f,const DiracRightHandSide
   nmatrix<double> T;
   Transformation(T,iq);
   GetFem()->ReInit(T);
-  
+
   GlobalToLocalData(iq);
   GlobalToGlobalData();
   DRHS.SetParameterData(__QP);
@@ -493,7 +498,7 @@ void Gascoigne::PatchDiscretization::GlobalToLocalCell(LocalVector& U, const Glo
 
 /* ----------------------------------------- */
 
-double PatchDiscretization::ComputeBoundaryFunctional(const GlobalVector& u, const IntSet& Colors, const BoundaryFunctional& BF) const 
+double PatchDiscretization::ComputeBoundaryFunctional(const GlobalVector& u, const IntSet& Colors, const BoundaryFunctional& BF) const
 {
   nmatrix<double> T;
 
@@ -524,11 +529,11 @@ double PatchDiscretization::ComputeBoundaryFunctional(const GlobalVector& u, con
 
 /* ----------------------------------------- */
 
-double PatchDiscretization::ComputeDomainFunctional(const GlobalVector& u, const DomainFunctional& F) const 
+double PatchDiscretization::ComputeDomainFunctional(const GlobalVector& u, const DomainFunctional& F) const
 {
   GlobalToGlobalData();
   F.SetParameterData(__QP);
-  
+
   nmatrix<double> T;
   double j=0.;
   for(int iq=0;iq<GetMesh()->npatches();++iq)
@@ -552,12 +557,12 @@ double PatchDiscretization::ComputePointFunctional(const GlobalVector& u, const 
   int nn = comps.size();
 
   vector<double> up(nn,0);
- 
+
   if (dim == 2)
     {
       vector<Vertex2d> v2d = FP.GetPoints2d();
       assert(nn==v2d.size());
-      
+
       for(int i=0;i<nn;++i)
 	{
 	  up[i] = ComputePointValue(u,v2d[i],comps[i]);
@@ -599,7 +604,7 @@ double PatchDiscretization::ComputePointValue(const GlobalVector& u, const Verte
   GetFem()->ReInit(T);
 
   GlobalToLocal(__U,u,iq);
-  
+
   return GetIntegrator()->ComputePointValue(*GetFem(),Tranfo_p0,__U,comp);
 }
 
@@ -621,7 +626,7 @@ double PatchDiscretization::ComputePointValue(const GlobalVector& u, const Verte
   GetFem()->ReInit(T);
 
   GlobalToLocal(__U,u,iq);
-  
+
   return GetIntegrator()->ComputePointValue(*GetFem(),Tranfo_p0,__U,comp);
 }
 
@@ -652,10 +657,10 @@ void Gascoigne::PatchDiscretization::EvaluateParameterRightHandSide(GlobalVector
 void Gascoigne::PatchDiscretization::EvaluateBoundaryParameterRightHandSide(GlobalVector& f,const IntSet& Colors, const BoundaryRightHandSide& CF, double d) const
 {
   nmatrix<double> T;
-  
+
   GlobalToGlobalData();
   CF.SetParameterData(__QP);
-  
+
   for(IntSet::const_iterator p=Colors.begin();p!=Colors.end();p++)
     {
       int col = *p;

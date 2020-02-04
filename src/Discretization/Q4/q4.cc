@@ -276,7 +276,7 @@ void Q4::BoundaryMatrix(MatrixInterface& A, const GlobalVector& u, const IntSet&
       int iq  = q[i];
       int ip  = cell2q4patch[iq];
       int ile = l[i];
-	    
+
       // gabs den patch schon?
       if(habschon.find((ip<<dim)+ile)!=habschon.end())
       {
@@ -365,12 +365,15 @@ void Q4::ComputeError(const GlobalVector& u, LocalVector& err, const ExactSoluti
 
 /**********************************************************/
 
-void Q4::Rhs(GlobalVector& f, const DomainRightHandSide& RHS, double s) const
+void Q4::Rhs(GlobalVector& f, const ProblemDescriptorInterface& PD,
+             double s) const
 {
   nmatrix<double> T;
 
   GlobalToGlobalData();
-  RHS.SetParameterData(__QP);
+  const auto RHS =
+    dynamic_cast<const DomainRightHandSide*>(PD.GetRightHandSide());
+  RHS->SetParameterData(__QP);
 
   for(int iq=0; iq<GetMesh()->nq4patches(); ++iq)
   {
@@ -378,20 +381,22 @@ void Q4::Rhs(GlobalVector& f, const DomainRightHandSide& RHS, double s) const
     GetFem()->ReInit(T);
 
     GlobalToLocalData(iq);
-    GetIntegrator()->Rhs(RHS,__F,*GetFem(),__QN,__QC);
+    GetIntegrator()->Rhs(*RHS,__F,*GetFem(),__QN,__QC);
     PatchDiscretization::LocalToGlobal(f,__F,iq,s);
   }
 }
 
 /**********************************************************/
 
-void Q4::BoundaryRhs(GlobalVector& f, const IntSet& Colors,  const BoundaryRightHandSide& NRHS, double s) const
-{  
+void Q4::BoundaryRhs(GlobalVector& f, const IntSet& Colors,
+                     const ProblemDescriptorInterface& PD, double s) const
+{
   int dim = GetMesh()->dimension();
   nmatrix<double> T;
 
   GlobalToGlobalData();
-  NRHS.SetParameterData(__QP);
+  const auto NRHS = PD.GetBoundaryRightHandSide();
+  NRHS->SetParameterData(__QP);
   /// die cell2patch - liste
 
   const nvector<IntVector>& q4patch2cell = GetMesh()->GetPatchIndexHandler().GetAllQ4Patch2Cell();
@@ -429,7 +434,7 @@ void Q4::BoundaryRhs(GlobalVector& f, const IntSet& Colors,  const BoundaryRight
       GetFem()->ReInit(T);
 
       GlobalToLocalData(ip);
-      GetIntegrator()->BoundaryRhs(NRHS,__F,*GetFem(),ile,col,__QN,__QC);
+      GetIntegrator()->BoundaryRhs(*NRHS,__F,*GetFem(),ile,col,__QN,__QC);
       PatchDiscretization::LocalToGlobal(f,__F,ip,s);
     }
   }
@@ -549,4 +554,3 @@ double Q4::ComputeDomainFunctional(const GlobalVector& u, const DomainFunctional
 }
 
 #undef HASHSET
-

@@ -48,7 +48,7 @@ namespace Gascoigne
 	IntVector indices = GetLocalIndices(iq);
 	S->build_add(indices.begin(), indices.end());
       }
-    S->build_end();  
+    S->build_end();
   }
 
   /* ----------------------------------------- */
@@ -57,17 +57,17 @@ namespace Gascoigne
   {
     int dim = GetMesh()->dimension();
     int ne = GetMesh()->nodes_per_cell(iq);
-	
+
     IntVector indices = GetMesh()->IndicesOfCell(iq);
     assert(ne==indices.size());
-	
+
     T.memory(dim,ne);
     if(dim==2)
       {
 	for(int ii=0;ii<ne;ii++)
 	  {
 	    Vertex2d v = GetMesh()->vertex2d(indices[ii]);
-	    T(0,ii) = v.x();               
+	    T(0,ii) = v.x();
 	    T(1,ii) = v.y();
 	  }
       }
@@ -76,7 +76,7 @@ namespace Gascoigne
 	for(int ii=0;ii<ne;ii++)
 	  {
 	    Vertex3d v = GetMesh()->vertex3d(indices[ii]);
-	    T(0,ii) = v.x();               
+	    T(0,ii) = v.x();
 	    T(1,ii) = v.y();
 	    T(2,ii) = v.z();
 	  }
@@ -90,12 +90,12 @@ namespace Gascoigne
   void CellDiscretization::Form(GlobalVector& f, const GlobalVector& u, const ProblemDescriptorInterface& PD, double d) const
   {
     nmatrix<double> T;
-  
+
     GlobalToGlobalData();
 
     Equation* EQ = PD.NewEquation();
     EQ->SetParameterData(__QP);
-  
+
     for(int iq=0;iq<GetMesh()->ncells();++iq)
       {
 	Transformation(T,iq);
@@ -114,10 +114,10 @@ namespace Gascoigne
   void CellDiscretization::AdjointForm(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const
   {
     nmatrix<double> T;
-  
+
     GlobalToGlobalData();
     EQ.SetParameterData(__QP);
-  
+
     for(int iq=0;iq<GetMesh()->ncells();++iq)
       {
 	Transformation(T,iq);
@@ -139,12 +139,12 @@ namespace Gascoigne
       return;
     const auto *BE = PD.NewBoundaryEquation();
     auto Colors = PD.GetBoundaryManager()->GetBoundaryEquationColors();
-  
+
     nmatrix<double> T;
 
     GlobalToGlobalData();
     BE->SetParameterData(__QP);
-  
+
     for(IntSet::const_iterator p=Colors.begin();p!=Colors.end();p++)
       {
 	int col = *p;
@@ -171,12 +171,12 @@ namespace Gascoigne
   void CellDiscretization::Matrix(MatrixInterface& A, const GlobalVector& u, const ProblemDescriptorInterface& PD, double d) const
   {
     nmatrix<double> T;
-  
+
     GlobalToGlobalData();
 
     Equation* EQ = PD.NewEquation();
     EQ->SetParameterData(__QP);
-  
+
     for(int iq=0;iq<GetMesh()->ncells();++iq)
       {
 	Transformation(T,iq);
@@ -198,12 +198,12 @@ namespace Gascoigne
       return;
     const auto *BE = PD.NewBoundaryEquation();
     auto Colors = PD.GetBoundaryManager()->GetBoundaryEquationColors();
-  
+
     nmatrix<double> T;
-  
+
     GlobalToGlobalData();
     BE->SetParameterData(__QP);
-  
+
     for(IntSet::const_iterator p=Colors.begin();p!=Colors.end();p++)
       {
 	int col = *p;
@@ -213,7 +213,7 @@ namespace Gascoigne
 	  {
 	    int iq  = q[i];
 	    int ile = l[i];
-          
+
 	    Transformation(T,iq);
 	    GetFem()->ReInit(T);
 
@@ -244,7 +244,7 @@ namespace Gascoigne
   {
     A.zero();
     nmatrix<double> T;
-  
+
     for(IntSet::const_iterator p=Colors.begin();p!=Colors.end();p++)
       {
 	int col = *p;
@@ -254,7 +254,7 @@ namespace Gascoigne
 	  {
 	    int iq  = q[i];
 	    int ile = l[i];
-          
+
 	    Transformation(T,iq);
 	    GetFem()->ReInit(T);
 
@@ -284,7 +284,7 @@ namespace Gascoigne
   void Gascoigne::CellDiscretization::MassForm(GlobalVector& f, const GlobalVector& u, const TimePattern& TP, double s) const
   {
     nmatrix<double> T;
- 
+
     for(int iq=0;iq<GetMesh()->ncells();++iq)
       {
 	Transformation(T,iq);
@@ -305,14 +305,14 @@ namespace Gascoigne
     err.reservesize(3);
     err = 0.;
 
-    GlobalVector lerr(ncomp,3); 
+    GlobalVector lerr(ncomp,3);
     lerr.zero();
 
     nmatrix<double> T;
-  
+
     GlobalToGlobalData();
     ES->SetParameterData(__QP);
-  
+
     for(int iq=0; iq<GetMesh()->ncells(); iq++)
       {
 	Transformation(T,iq);
@@ -320,14 +320,14 @@ namespace Gascoigne
 	GlobalToLocal(__U,u,iq);
 	GetIntegrator()->ErrorsByExactSolution(lerr,*GetFem(),*ES,__U,__QN,__QC);
 
-	for(int c=0;c<ncomp;c++)  
+	for(int c=0;c<ncomp;c++)
 	  {
 	    err(0,c) += lerr(0,c);
 	    err(1,c) += lerr(1,c);
 	    err(2,c) = std::max(err(2,c),lerr(2,c));
 	  }
       }
-    for(int c=0;c<ncomp;c++)  
+    for(int c=0;c<ncomp;c++)
       {
 	err(0,c) = sqrt(err(0,c));
 	err(1,c) = sqrt(err(1,c));
@@ -346,14 +346,14 @@ namespace Gascoigne
     eta.ncomp() = 3;
     eta.reservesize(GetMesh()->ncells());
 
-    GlobalVector lerr(ncomp,3); 
+    GlobalVector lerr(ncomp,3);
     lerr.zero();
 
     nmatrix<double> T;
-  
+
     GlobalToGlobalData();
     ES->SetParameterData(__QP);
-  
+
     for(int iq=0; iq<GetMesh()->ncells(); iq++)
       {
 	Transformation(T,iq);
@@ -361,7 +361,7 @@ namespace Gascoigne
 	GlobalToLocal(__U,u,iq);
 	GetIntegrator()->ErrorsByExactSolution(lerr,*GetFem(),*ES,__U,__QN,__QC);
 
-	for(int c=0;c<ncomp;c++)  
+	for(int c=0;c<ncomp;c++)
 	  {
 	    err(0,c) += lerr(0,c);
 	    err(1,c) += lerr(1,c);
@@ -375,7 +375,7 @@ namespace Gascoigne
 	eta(iq,1) = sqrt(eta(iq,1));
 	eta(iq,2) = sqrt(eta(iq,2));
       }
-    for(int c=0;c<ncomp;c++)  
+    for(int c=0;c<ncomp;c++)
       {
 	err(0,c) = sqrt(err(0,c));
 	err(1,c) = sqrt(err(1,c));
@@ -384,34 +384,38 @@ namespace Gascoigne
 
   /* ----------------------------------------- */
 
-  void CellDiscretization::Rhs(GlobalVector& f, const DomainRightHandSide& RHS, double s) const
+  void CellDiscretization::Rhs(GlobalVector& f,
+                               const ProblemDescriptorInterface& PD,
+                               double s) const
   {
     nmatrix<double> T;
-  
-    GlobalToGlobalData();
-    RHS.SetParameterData(__QP);
-  
-    for(int iq=0;iq<GetMesh()->ncells();++iq)
-      {
-	Transformation(T,iq);
-	GetFem()->ReInit(T);
 
-	GlobalToLocalData(iq);
-	RHS.point_cell(GetMesh()->material(iq));
-	GetIntegrator()->Rhs(RHS,__F,*GetFem(),__QN,__QC);
-	LocalToGlobal(f,__F,iq,s);
+    GlobalToGlobalData();
+    PD.GetRightHandSide()->SetParameterData(__QP);
+    const auto RHS = dynamic_cast<const DomainRightHandSide*>(PD.GetRightHandSide());
+    for (int iq = 0; iq < GetMesh()->ncells(); ++iq)
+    {
+      Transformation(T, iq);
+      GetFem()->ReInit(T);
+
+      GlobalToLocalData(iq);
+      RHS->point_cell(GetMesh()->material(iq));
+      GetIntegrator()->Rhs(*RHS, __F, *GetFem(), __QN, __QC);
+      LocalToGlobal(f, __F, iq, s);
       }
   }
 
   /* ----------------------------------------- */
 
-  void CellDiscretization::BoundaryRhs(GlobalVector& f, const IntSet& Colors, const BoundaryRightHandSide& NRHS, double s) const
+  void CellDiscretization::BoundaryRhs(GlobalVector& f, const IntSet& Colors,
+                                       const ProblemDescriptorInterface& PD,
+                                       double s) const
   {
     nmatrix<double> T;
-  
+    const auto NRHS = PD.GetBoundaryRightHandSide();
     GlobalToGlobalData();
-    NRHS.SetParameterData(__QP);
-  
+    NRHS->SetParameterData(__QP);
+
     for(IntSet::const_iterator p=Colors.begin();p!=Colors.end();p++)
       {
 	int col = *p;
@@ -426,7 +430,7 @@ namespace Gascoigne
 	    GetFem()->ReInit(T);
 
 	    GlobalToLocalData(iq);
-	    GetIntegrator()->BoundaryRhs(NRHS,__F,*GetFem(),ile,col,__QN,__QC);
+	    GetIntegrator()->BoundaryRhs(*NRHS,__F,*GetFem(),ile,col,__QN,__QC);
 	    LocalToGlobal(f,__F,iq,s);
 	  }
       }
@@ -475,12 +479,12 @@ namespace Gascoigne
     int nn = comps.size();
 
     vector<double> up(nn,0);
- 
+
     if (dim == 2)
       {
 	vector<Vertex2d> v2d = DRHS.GetPoints2d();
 	assert(nn==v2d.size());
-      
+
 	for(int i=0;i<nn;++i)
 	  {
 	    DiracRhsPoint(f,DRHS,v2d[i],i,s);
@@ -509,18 +513,18 @@ namespace Gascoigne
     __F.ReInit(f.ncomp(),GetFem()->n());
 
     Vertex2d Tranfo_p0;
-   
+
     int iq = GetCellNumber(p0,Tranfo_p0);
     if (iq==-1)
       {
 	cerr << "CellDiscretization::DiracRhsPoint point not found\n";
 	abort();
       }
-  
+
     nmatrix<double> T;
     Transformation(T,iq);
     GetFem()->ReInit(T);
-  
+
     GlobalToLocalData(iq);
     GlobalToGlobalData();
     DRHS.SetParameterData(__QP);
@@ -536,18 +540,18 @@ namespace Gascoigne
     __F.ReInit(f.ncomp(),GetFem()->n());
 
     Vertex3d Tranfo_p0;
-   
+
     int iq = GetCellNumber(p0,Tranfo_p0);
     if (iq==-1)
       {
 	cerr << "CellDiscretization::DiracRhsPoint point not found\n";
 	abort();
       }
-  
+
     nmatrix<double> T;
     Transformation(T,iq);
     GetFem()->ReInit(T);
-  
+
     GlobalToLocalData(iq);
     GlobalToGlobalData();
     DRHS.SetParameterData(__QP);
@@ -558,11 +562,11 @@ namespace Gascoigne
 
   /*-----------------------------------------*/
 
-  double CellDiscretization::ComputeBoundaryFunctional(const GlobalVector& u, const IntSet& Colors, const BoundaryFunctional& BF) const 
+  double CellDiscretization::ComputeBoundaryFunctional(const GlobalVector& u, const IntSet& Colors, const BoundaryFunctional& BF) const
   {
     GlobalToGlobalData();
     BF.SetParameterData(__QP);
-  
+
     nmatrix<double> T;
     double j=0.;
     for(IntSet::const_iterator p=Colors.begin();p!=Colors.end();p++)
@@ -592,7 +596,7 @@ namespace Gascoigne
   {
     GlobalToGlobalData();
     F.SetParameterData(__QP);
-  
+
     nmatrix<double> T;
     double j=0.;
     for(int iq=0;iq<GetMesh()->ncells();++iq)
@@ -638,12 +642,12 @@ namespace Gascoigne
     int nn = comps.size();
 
     vector<double> up(nn,0);
- 
+
     if (dim == 2)
       {
 	vector<Vertex2d> v2d = FP.GetPoints2d();
 	assert(nn==v2d.size());
-      
+
 	for(int i=0;i<nn;++i)
 	  {
 	    up[i] = ComputePointValue(u,v2d[i],comps[i]);
@@ -706,7 +710,7 @@ namespace Gascoigne
     GetFem()->ReInit(T);
 
     GlobalToLocal(__U,u,iq);
-  
+
     return GetIntegrator()->ComputePointValue(*GetFem(),Tranfo_p0,__U,comp);
   }
 
@@ -737,10 +741,10 @@ namespace Gascoigne
   void CellDiscretization::EvaluateBoundaryCellRightHandSide(GlobalVector& f,const IntSet& Colors, const BoundaryRightHandSide& CF, double d) const
   {
     nmatrix<double> T;
-  
+
     GlobalToGlobalData();
     CF.SetParameterData(__QP);
-  
+
     for(IntSet::const_iterator p=Colors.begin();p!=Colors.end();p++)
       {
 	int col = *p;
@@ -784,16 +788,16 @@ namespace Gascoigne
       }
   }
 
-  /* ----------------------------------------- */ 
-  
+  /* ----------------------------------------- */
+
   void Gascoigne::CellDiscretization::EvaluateBoundaryParameterRightHandSide(GlobalVector& f,const IntSet& Colors,
 									     const BoundaryRightHandSide& CF, double d) const
   {
     nmatrix<double> T;
-  
+
     GlobalToGlobalData();
     CF.SetParameterData(__QP);
-  
+
     for(IntSet::const_iterator p=Colors.begin();p!=Colors.end();p++)
       {
 	int col = *p;
@@ -815,8 +819,8 @@ namespace Gascoigne
       }
   }
 
-  /* ----------------------------------------- */ 
-  
+  /* ----------------------------------------- */
+
   void CellDiscretization::InterpolateDomainFunction(GlobalVector& f, const DomainFunction& DF) const
   {
     int dim = GetMesh()->dimension();
@@ -877,7 +881,7 @@ namespace Gascoigne
       }
   }
 
-  /* ----------------------------------------- */  
+  /* ----------------------------------------- */
 
   void CellDiscretization::InterpolateCellDomainFunction(GlobalVector& f, const DomainFunction& DF) const
   {
@@ -938,7 +942,7 @@ namespace Gascoigne
 	for(int ii=0;ii<ne;ii++)
 	  {
 	    Vertex2d v = GetMesh()->vertex2d(indices[ii]);
-	    T(0,ii) = v.x();               
+	    T(0,ii) = v.x();
 	    T(1,ii) = v.y();
 	  }
       }
@@ -947,7 +951,7 @@ namespace Gascoigne
 	for(int ii=0;ii<ne;ii++)
 	  {
 	    Vertex3d v = GetMesh()->vertex3d(indices[ii]);
-	    T(0,ii) = v.x();               
+	    T(0,ii) = v.x();
 	    T(1,ii) = v.y();
 	    T(2,ii) = v.z();
 	  }
@@ -962,7 +966,7 @@ namespace Gascoigne
     swapIndices(indices);
 
     U.ReInit(u.ncomp(),indices.size());
-    for(int ii=0; ii<indices.size(); ii++) 
+    for(int ii=0; ii<indices.size(); ii++)
       {
 	int i = indices[ii];
 	U.equ_node(ii,i,u);
@@ -993,7 +997,7 @@ namespace Gascoigne
     a.resize(GetMesh()->ncells());
     nmatrix<double> T;
     int dim = GetMesh()->dimension();
-  
+
     for(int iq=0;iq<GetMesh()->ncells();++iq)
       {
 	Transformation(T,iq);
@@ -1023,7 +1027,7 @@ namespace Gascoigne
     a.resize(GetMesh()->ncells(),1.);
     nmatrix<double> T;
     int dim = GetMesh()->dimension();
-   
+
     for(IntSet::const_iterator p=Colors.begin();p!=Colors.end();p++)
       {
 	int col = *p;
@@ -1033,7 +1037,7 @@ namespace Gascoigne
 	  {
 	    int iq  = q[i];
 	    int ile = l[i];
-      
+
 	    Transformation(T,iq);
 	    GetFem()->ReInit(T);
 	    if(dim==2)
@@ -1069,10 +1073,10 @@ namespace Gascoigne
 	GetFem()->ReInit(T);
 
 	GetIntegrator()->IntegrateMassDiag(F,*GetFem());
-	
+
 	//Auf Globalen Vektor verteielen
 	IntVector indices = GetLocalIndices(iq);
-	for(int ii=0; ii<indices.size(); ii++) 
+	for(int ii=0; ii<indices.size(); ii++)
 	  {
 	    int i = indices[ii];
 	    a[i] += F[ii];
@@ -1086,7 +1090,7 @@ namespace Gascoigne
   {
     a.resize(GetMesh()->nnodes());
     a.equ(1.);
-    
+
     const GascoigneMesh* GMP = dynamic_cast<const GascoigneMesh*>(GetMesh());
     assert(GMP);
     std::set<int> Colors =  GMP->GetColors();
@@ -1097,9 +1101,9 @@ namespace Gascoigne
 	for(int i=0;i<bv.size();i++)
 	  {
 	    a[bv[i]] = 0;
-	  }  
+	  }
       }
-    
+
     DoubleVector F;
     nmatrix<double> T;
     for(IntSet::const_iterator p=Colors.begin();p!=Colors.end();p++)
@@ -1119,7 +1123,7 @@ namespace Gascoigne
 
 	    //Auf Globalen Vektor verteielen
 	    IntVector indices = GetLocalIndices(iq);
-	    for(int ii=0; ii<indices.size(); ii++) 
+	    for(int ii=0; ii<indices.size(); ii++)
 	      {
 		int i = indices[ii];
 		a[i] += F[ii];
