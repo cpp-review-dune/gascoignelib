@@ -484,11 +484,22 @@ public:
       LocalData __QN, __QC;
       const auto RHS = PD.NewRightHandSide();
       RHS->SetParameterData(QP);
+#ifdef ATOMIC_OPS
+#pragma omp for schedule(static)
+      for (int iq = 0; iq < GetDofHandler()->nelements(DEGREE); ++iq)
+      {
+        Transformation(T, iq);
+        finiteelement.ReInit(T);
+        GlobalToLocalData(iq, __QN, __QC);
+        RHS->point_cell(GetDofHandler()->material(DEGREE, iq));
+        integrator.Rhs(*RHS, __F, finiteelement, __QN, __QC);
+        LocalToGlobal(f, __F, iq, s);
+      }
+#else
       for (int col = 0; col < NumberofColors(); col++)
       {
         const std::vector<int>& ewcol = elementswithcolor(col);
 #pragma omp for schedule(static)
-        // for (int iq = 0; iq < GetDofHandler()->nelements(DEGREE); ++iq)
         for (int iii = 0; iii < ewcol.size(); ++iii)
         {
           int iq = ewcol[iii];
@@ -499,9 +510,10 @@ public:
           GlobalToLocalData(iq, __QN, __QC);
           RHS->point_cell(GetDofHandler()->material(DEGREE, iq));
           integrator.Rhs(*RHS, __F, finiteelement, __QN, __QC);
-          LocalToGlobal(f, __F, iq, s);
+          LocalToGlobal_ohnecritic(f, __F, iq, s);
         }
       }
+#endif
       delete RHS;
     }
   }
