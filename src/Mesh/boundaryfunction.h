@@ -44,7 +44,8 @@ public :
   BoundaryFunction() {}
   virtual ~BoundaryFunction() {}
 
-  virtual std::string GetName() const=0;
+  virtual std::string GetName() const { return "No Name"; }
+    
   virtual double operator()(const Vector& c) const=0;
   
   virtual void grad(Vector& dst, const Vector& src) const;

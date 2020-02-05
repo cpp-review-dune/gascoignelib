@@ -56,7 +56,7 @@ public:
   {
   }
 
-  virtual std::string GetName() const = 0;
+  virtual std::string GetName() const { return "No Name"; }
 
   virtual void SetTime(double time, double dt) const
   {

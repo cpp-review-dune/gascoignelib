@@ -157,7 +157,6 @@ void StdMultiLevelSolver::BasicInit(const MeshAgentInterface* MAP,
 
   SetProblemContainer(PC);
   SetFunctionalContainer(FC);
-
   DataP = StdMultiLevelSolverData();
   DataP.BasicInit(_paramfile);
   MON = Monitor(_paramfile, 1);
@@ -447,14 +446,14 @@ void StdMultiLevelSolver::LinearMg(int finelevel, int coarselevel, VectorInterfa
 
   bool reached = false;  // mindestens einen schritt machen
   for (int it = 0; !reached; it++)
-  {
-    string p  = DataP.MgType();
-    string p0 = p;
-    if (p == "F")
-      p0 = "W";
-    mgstep(res, rw, finelevel, finelevel, clevel, p0, p, u, _mg0, _mg1);
-    reached = info.check(res[finelevel], rw[finelevel]);
-  }
+    {
+      string p  = DataP.MgType();
+      string p0 = p;
+      if (p == "F")
+	p0 = "W";
+      mgstep(res, rw, finelevel, finelevel, clevel, p0, p, u, _mg0, _mg1);
+      reached = info.check(res[finelevel], rw[finelevel]);
+    }
 }
 
 /*-------------------------------------------------------------*/
@@ -925,7 +924,7 @@ void StdMultiLevelSolver::precondition(VectorInterface& x, VectorInterface& y)
   int clevel = std::max(DataP.CoarseLevel(), 0);
   if (DataP.CoarseLevel() == -1)
     clevel = FinestLevel();
-
+  
   LinearMg(ComputeLevel, clevel, x, y, precinfo);
 }
 

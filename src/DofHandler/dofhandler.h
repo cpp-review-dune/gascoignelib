@@ -170,9 +170,9 @@ namespace Gascoigne
 
     
     virtual IntVector GetElement(int degree, int iq) const
-    { assert(0); }
+    { std::cerr << "DofHandler::GetElement" << std::endl; abort(); }
     virtual int nodes_per_element(int degree) const
-    { assert(0); }
+    { std::cerr << "DofHandler::nodes_per_element" << std::endl; abort(); }
     
 
     // Access: Patch-Structure

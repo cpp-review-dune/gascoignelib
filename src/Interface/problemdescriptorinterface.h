@@ -89,7 +89,7 @@ public:
   {
   }
 
-  virtual std::string GetName() const                          = 0;
+  virtual std::string GetName() const                          {return "No Name";}
   virtual std::ostream& OutputSettings(std::ostream& os) const = 0;
   virtual void SetTime(double time, double dt) const           = 0;
 
