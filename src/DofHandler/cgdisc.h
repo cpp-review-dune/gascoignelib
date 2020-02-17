@@ -472,6 +472,10 @@ public:
   void Rhs(GlobalVector& f, const ProblemDescriptorInterface& PD,
            double s) const
   {
+    if (PD.NewRightHandSide() == NULL)
+    {
+      return;
+    }
     LocalParameterData QP;
     GlobalToGlobalData(QP);
 #pragma omp parallel
@@ -521,6 +525,10 @@ public:
   void BoundaryRhs(GlobalVector& f, const IntSet& Colors,
                    const ProblemDescriptorInterface& PD, double s) const
   {
+    if (PD.NewBoundaryRightHandSide() == NULL)
+    {
+      return;
+    }
     LocalParameterData QP;
     GlobalToGlobalData(QP);
 #pragma omp parallel
