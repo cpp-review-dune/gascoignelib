@@ -29,11 +29,14 @@
 **/
 
 
-
 #ifdef __MATRIX_DOUBLE_PRECISION__
   #define MatrixEntryType double
 #else
-  #define MatrixEntryType float
+  #ifdef __MATRIX_SINGLE_PRECISION__
+    #define MatrixEntryType float
+  #else
+    #include <stophere> // either define __MATRIX_DOUBLE_PRECISION__ or __MATRIX_SINGLE_PRECISION
+  #endif
 #endif
 
 

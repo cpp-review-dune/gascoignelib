@@ -1,36 +1,36 @@
-#### Set Standard options
-SET(CMAKE_BUILD_TYPE "Release" CACHE STRING "Configuration type" )
-SET(CMAKE_CXX_FLAGS_RELEASE "-O3" CACHE STRING "Configuration type" )
-
 PROJECT(GASCOIGNE CXX C)
-
-#### CMAKE CONFIG
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
-cmake_policy(SET CMP0042 NEW)
-
-LIST(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/)
-
-OPTION(BUILD_SHARED_LIBS "Build shared libraries" ON)
-
-OPTION(MATRIX_DOUBLE_PRECISION "Matrix in double precision" ON)
-OPTION(WITH_UMFPACK "Build with support for UMFPACK" ON)
-OPTION(WITH_UMFPACK_LONG "Long-integer indices in UMFPACK >4GB matrices" OFF)
-OPTION(WITH_THREADS "Build with support for openmp" OFF)
-OPTION(WITH_RSTStopWatch "Use RSTStopWatch" OFF)
-
-### Directory Settings
-
-SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/../lib"  CACHE PATH "output path for libraries")
 
 #
 # The name of the library:
 #
 SET(GASCOIGNE_LIBRARY GascoigneStd)
 
+
+
+
+#### CMAKE CONFIG
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
+cmake_policy(SET CMP0042 NEW)
+LIST(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/)
+
+
+#### Import all Options with standard values that are also used in dependent projects
+INCLUDE(CMakeOptions.txt)
+
+#### Directory Settings
+SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/../lib"  CACHE PATH "output path for libraries")
+SET (GASCOIGNE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+
+#### Options for Gascoigne Core Library
+#### not necessarily used in derived projects
+OPTION(WITH_UMFPACK      "Build with support for UMFPACK" ON)
+OPTION(WITH_UMFPACK_LONG "Long-integer indices in UMFPACK >4GB matrices" OFF)
+OPTION(WITH_THREADS      "Build with support for openmp" OFF)
+OPTION(WITH_ATOMIC_OPS   "Build with atomic operations instead of coloring" OFF)
+
 #
 # Include directories:
 #
-SET (GASCOIGNE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 INCLUDE(CMakeLists_Includes.txt)
 
 #
@@ -40,18 +40,14 @@ SET(GASCOIGNE_CXX_FLAGS
   "-std=c++11 -pedantic -Wall -Wno-sign-compare -Wold-style-cast" CACHE STRING "Configuration flags"
   )
 
-IF(MATRIX_DOUBLE_PRECISION)
-  LIST(APPEND GASCOIGNE_DEFINITIONS -D __MATRIX_DOUBLE_PRECISION__)
-ENDIF(MATRIX_DOUBLE_PRECISION)
 
 IF(WITH_THREADS)
   SET(GASCOIGNE_CXX_FLAGS "${GASCOIGNE_CXX_FLAGS} -fopenmp")
-  #LIST(APPEND GASCOIGNE_DEFINITIONS -D __WITH_THREADS__)  Anpassungen an neue METIS-Version noetig
 ENDIF(WITH_THREADS)
 
-IF(WITH_RSTStopWatch)
-  LIST(APPEND GASCOIGNE_DEFINITIONS -D __WITH_RSTStopWatch__)
-ENDIF(WITH_RSTStopWatch)
+IF(WITH_ATOMIC_OPS)
+  SET(GASCOIGNE_CXX_FLAGS "${GASCOIGNE_CXX_FLAGS} -DATOMIC_OPS=1")
+ENDIF(WITH_ATOMIC_OPS)
 
 #
 # Search for metis:
