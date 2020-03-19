@@ -114,6 +114,8 @@ public:
 
   void InitFilter(DoubleVector&) const;
 
+  void MeasureRhs(GlobalVector& f, const MeasureRightHandSide &MRHS, double d) const;
+
   // Functionals
   double ComputeBoundaryFunctional(const GlobalVector& u, const IntSet& Colors, const BoundaryFunctional& BF) const;
   double ComputeDomainFunctional(const GlobalVector& u, const DomainFunctional& F) const;

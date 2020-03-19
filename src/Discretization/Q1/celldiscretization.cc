@@ -1204,4 +1204,29 @@ void CellDiscretization::GetBoundaryMassDiag(DoubleVector& a) const
     }
 }
 
+/* ----------------------------------------- */
+
+void CellDiscretization::MeasureRhs(GlobalVector& f, const MeasureRightHandSide &MRHS, double d) const
+{
+  FemData QH;
+
+  for(int node=0; node<f.n(); node++)
+  {
+    GlobalToLocalDataNode(node);
+    QH.clear();
+    LocalData::const_iterator p=__QN.begin();
+    for(; p!=__QN.end(); p++)
+    {
+      QH[p->first].resize(p->second.ncomp());
+      for (int c=0; c<QH[p->first].size(); c++)
+      {
+        QH[p->first][c].m() = p->second(0,c);
+      }
+    }
+    MRHS.SetFemData(QH);
+    MRHS(f.start(node),node);
+  }
+  f *= d;
+}
+
 }

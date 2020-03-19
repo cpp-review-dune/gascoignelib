@@ -1761,7 +1761,7 @@ namespace Gascoigne
       if (!done)
       {
         cerr << "RightHandSide should be either of type DomainRightHandSide or "
-                "DiracRightHandSide!!!"
+          "DiracRightHandSide!!!"
              << endl;
         abort();
       }

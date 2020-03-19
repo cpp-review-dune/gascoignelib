@@ -26,6 +26,7 @@
 #define  __StdTimeSolver_h
 
 #include  "stdsolver.h"
+#include  "measurerighthandside.h"
 
 /*-------------------------------------------------------------*/
 
