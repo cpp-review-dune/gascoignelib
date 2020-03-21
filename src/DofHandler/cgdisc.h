@@ -370,7 +370,7 @@ public:
     HN->CondenseHanging(E, indices);
     IntVector::const_iterator start = indices.begin();
     IntVector::const_iterator stop  = indices.end();
-    A.entry_atomic(start, stop, E, s);
+    A.entry(start, stop, E, s);
   }
   void LocalToGlobal(GlobalVector& f, const LocalVector& F, int iq,
                      double s) const
@@ -433,7 +433,6 @@ public:
       LocalData __QN, __QC;
       const auto EQ = PD.NewEquation();
       EQ->SetParameterData(QP);
-#ifdef ATOMIC_OPS
 #pragma omp for schedule(static)
       for (int iq = 0; iq < GetDofHandler()->nelements(DEGREE); ++iq)
       {
@@ -445,26 +444,6 @@ public:
         integrator.Form(*EQ, __F, finiteelement, __U, __QN, __QC);
         LocalToGlobal(f, __F, iq, d);
       }
-#else
-      for (int col = 0; col < NumberofColors(); col++)
-      {
-        const std::vector<int>& ewcol = elementswithcolor(col);
-#pragma omp for schedule(static)
-        for (int iii = 0; iii < ewcol.size(); ++iii)
-        {
-          int iq = ewcol[iii];
-          Transformation(T, iq);
-          finiteelement.ReInit(T);
-
-          GlobalToLocal(__U, u, iq);
-          GlobalToLocalData(iq, __QN, __QC);
-          EQ->point_cell(GetDofHandler()->material(DEGREE, iq));
-
-          integrator.Form(*EQ, __F, finiteelement, __U, __QN, __QC);
-          LocalToGlobal_ohnecritic(f, __F, iq, d);
-        }
-      }
-#endif
       delete EQ;
     }
   }
@@ -488,7 +467,6 @@ public:
       LocalData __QN, __QC;
       const auto RHS = PD.NewRightHandSide();
       RHS->SetParameterData(QP);
-#ifdef ATOMIC_OPS
 #pragma omp for schedule(static)
       for (int iq = 0; iq < GetDofHandler()->nelements(DEGREE); ++iq)
       {
@@ -499,25 +477,6 @@ public:
         integrator.Rhs(*RHS, __F, finiteelement, __QN, __QC);
         LocalToGlobal(f, __F, iq, s);
       }
-#else
-      for (int col = 0; col < NumberofColors(); col++)
-      {
-        const std::vector<int>& ewcol = elementswithcolor(col);
-#pragma omp for schedule(static)
-        for (int iii = 0; iii < ewcol.size(); ++iii)
-        {
-          int iq = ewcol[iii];
-
-          Transformation(T, iq);
-          finiteelement.ReInit(T);
-
-          GlobalToLocalData(iq, __QN, __QC);
-          RHS->point_cell(GetDofHandler()->material(DEGREE, iq));
-          integrator.Rhs(*RHS, __F, finiteelement, __QN, __QC);
-          LocalToGlobal_ohnecritic(f, __F, iq, s);
-        }
-      }
-#endif
       delete RHS;
     }
   }
@@ -581,7 +540,6 @@ public:
 
       const auto EQ = PD.NewEquation();
       EQ->SetParameterData(QP);
-#ifdef ATOMIC_OPS
 #pragma omp for schedule(static)
       for (int iq = 0; iq < GetDofHandler()->nelements(DEGREE); ++iq)
       {
@@ -596,31 +554,7 @@ public:
         integrator.Matrix(*EQ, __E, finiteelement, __U, __QN, __QC);
         LocalToGlobal(A, __E, iq, d);
       }
-#else
-      for (int col = 0; col < NumberofColors(); col++)
-      {
-        const std::vector<int>& ewcol = elementswithcolor(col);
-#pragma omp for schedule(static)
-        // for (int iq = 0; iq < GetDofHandler()->nelements(DEGREE); ++iq)
-        for (int iii = 0; iii < ewcol.size(); ++iii)
-        {
-          int iq = ewcol[iii];
-          Transformation(T, iq);
-          finiteelement.ReInit(T);
-
-          GlobalToLocal(__U, u, iq);
-          GlobalToLocalData(iq, __QN, __QC);
-
-          EQ->point_cell(GetDofHandler()->material(DEGREE, iq));
-          // EQ.cell(GetDofHandler(),iq,__U,__QN);
-          integrator.Matrix(*EQ, __E, finiteelement, __U, __QN, __QC);
-          LocalToGlobal_ohnecritic(A, __E, iq, d);
-        }
-      }
-#endif
-      // HANGING NODES
       delete EQ;
-      //}
     }
     HN->MatrixDiag(u.ncomp(), A);
   }
@@ -635,8 +569,7 @@ public:
 
     LocalParameterData QP;
     GlobalToGlobalData(QP);
-#pragma omp \
-  parallel  // private(T, finiteelement, integrator, __U, __F, __QN, __QC)
+#pragma omp parallel
     {
       nmatrix<double> T;
       FINITEELEMENT finiteelement;
@@ -654,7 +587,6 @@ public:
         const IntVector& q = *GetDofHandler()->ElementOnBoundary(DEGREE, col);
         const IntVector& l =
           *GetDofHandler()->ElementLocalOnBoundary(DEGREE, col);
-
 #pragma omp for schedule(static)
         for (int i = 0; i < q.size(); i++)
         {

@@ -4,7 +4,8 @@
 namespace Gascoigne
 {
 //////////////////// Construction
-void VankaSmoother::ConstructStructure(const IntVector& perm, const MatrixInterface& A)
+void VankaSmoother::ConstructStructure(const IntVector& perm,
+                                       const MatrixInterface& A)
 {
   assert(_dofhandler);
   const SparseBlockMatrix<FMatrixBlock<1>>* M1 =
@@ -61,17 +62,14 @@ void VankaSmoother::ConstructStructure(const IntVector& perm, const MatrixInterf
 
   /////////// Init LU-List
   _lu.resize(npatches, Eigen::PartialPivLU<VankaMatrix>(_sizeofpatch * _ncomp));
-
-#ifndef ATOMIC_OPS
-  ElementColoring(patchlevel);
-#endif
 }
 
 template <int NCOMP>
 void VankaSmoother::copy_entries_sparseblockmatrix(
   const SparseBlockMatrix<FMatrixBlock<NCOMP>>& A)
 {
-  const ColumnDiagStencil& S = dynamic_cast<const ColumnDiagStencil&>(*A.GetStencil());
+  const ColumnDiagStencil& S =
+    dynamic_cast<const ColumnDiagStencil&>(*A.GetStencil());
 
   // Copy entries & assemble ILU
 #pragma omp parallel for schedule(static)
@@ -154,11 +152,9 @@ void VankaSmoother::solve(GlobalVector& x) const
   // vector for averaging
   std::vector<int> count(x.n(), 0);
 
-
 #pragma omp parallel
   {
-#ifdef ATOMIC_OPS
-#pragma omp parallel for schedule(static)
+#pragma omp for schedule(static)
     for (int p = 0; p < _patchlist.size(); ++p)
     {
       // copy local patch-vector
@@ -182,35 +178,6 @@ void VankaSmoother::solve(GlobalVector& x) const
           x(_patchlist[p][r], c) += H(_ncomp * r + c, 0);
       }
     }
-#else
-    for (int col = 0; col < NumberofColors(); col++)
-    {
-      const std::vector<int>& ewcol = elementswithcolor(col);
-#pragma omp for schedule(static)
-      for (int iii = 0; iii < ewcol.size(); ++iii)
-      {
-        int p = ewcol[iii];
-        // copy local patch-vector
-        VankaVector H(_sizeofpatch * _ncomp);
-        for (int r = 0; r < _sizeofpatch; ++r)
-          for (int c = 0; c < _ncomp; ++c)
-            H(_ncomp * r + c, 0) = B(_patchlist[p][r], c);
-
-        // perform inversion
-        H = _lu[p].permutationP() * H;
-        _lu[p].matrixLU().triangularView<Eigen::UnitLower>().solveInPlace(H);
-        _lu[p].matrixLU().triangularView<Eigen::Upper>().solveInPlace(H);
-
-        // update
-        for (int r = 0; r < _sizeofpatch; ++r)
-        {
-          count[_patchlist[p][r]]++;
-          for (int c = 0; c < _ncomp; ++c)
-            x(_patchlist[p][r], c) += H(_ncomp * r + c, 0);
-        }
-      }
-    }
-#endif
 #pragma omp barrier
     // average
 #pragma omp for schedule(static)
