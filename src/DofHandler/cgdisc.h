@@ -78,7 +78,6 @@ private:
 protected:
   // Hanging nodes
   HNStructureInterface* HN;
-  std::vector<std::vector<int>> Coloring;
 
 public:
   CGDisc() : HN(NULL)
@@ -202,11 +201,6 @@ public:
 
     assert(HN);
     HN->ReInit(M);
-
-    // std::cout<<"huhhhhhuuuuu coloring for dofhandler"<<std::endl;
-    ElementColoring(DEGREE);
-    // std::cout<<"GetDofHandler()->NumberofColors():
-    // "<<NumberofColors()<<std::endl;
   }
 
   Vertex2d vertex2d(int i) const
@@ -617,8 +611,7 @@ public:
     LocalParameterData QP;
     GlobalToGlobalData(QP);
 
-#pragma omp \
-  parallel  // private(T, finiteelement, integrator, __U, __QN, __QC, __E)
+#pragma omp parallel
     {
       nmatrix<double> T;
       FINITEELEMENT finiteelement;
@@ -1141,78 +1134,6 @@ public:
       err(0, c) = sqrt(err(0, c));
       err(1, c) = sqrt(err(1, c));
     }
-  }
-
-  virtual void ElementColoring(int degree)
-  {
-    // convert mesh to graph
-    std::vector<std::vector<int>> node2patch(GetDofHandler()->nnodes());
-
-    for (int p = 0; p < GetDofHandler()->nelements(degree); ++p)
-    {
-      const auto& iop = GetDofHandler()->GetElement(degree, p);
-      for (auto it : iop)
-        node2patch[it].push_back(p);
-    }
-    std::vector<std::vector<int>> adj(GetDofHandler()->nelements(degree));
-    for (int p = 0; p < GetDofHandler()->nelements(degree); ++p)
-    {
-      std::set<int> neigh;
-      const auto& iop = GetDofHandler()->GetElement(degree, p);
-      for (auto it : iop)
-        neigh.insert(node2patch[it].begin(), node2patch[it].end());
-      for (auto it : neigh)
-        if (it != p)
-          adj[p].push_back(it);
-    }
-    /////////
-    std::vector<int> patch2color(GetDofHandler()->nelements(degree), 0);
-    bool done = true;
-    int color = 0;
-    // faerben aller fluid patches
-    do
-    {
-      done = true;
-      for (int p = 0; p < GetDofHandler()->nelements(degree); ++p)
-        if (patch2color[p] == color)  // not given a color and fluid
-        {
-          done = false;
-          // block neighbors
-          for (auto n : adj[p])
-          {
-            if (patch2color[n] == color)  // neighbor not set, block
-              patch2color[n] = color + 1;
-          }
-        }
-      ++color;
-    } while (!done);
-
-    Coloring.clear();
-    Coloring.resize(color - 1);
-    for (int p = 0; p < GetDofHandler()->nelements(degree); ++p)
-    {
-      int col = patch2color[p];
-      assert(col < Coloring.size());
-      Coloring[col].push_back(p);
-    }
-    // std::cout << "Coloring:" << std::endl;
-
-    // int colnumb=0;
-    // for (auto it : Coloring)
-    //	{
-    //		 std::cout<<" col " <<colnumb<< " with
-    //"<<it.size()<<"elements"<<std::endl; 		 colnumb++;
-    //	}
-    //  std::cout << std::endl;
-  }
-  int NumberofColors() const
-  {
-    return Coloring.size();
-  }
-
-  const std::vector<int>& elementswithcolor(int col) const
-  {
-    return Coloring[col];
   }
 };
 
