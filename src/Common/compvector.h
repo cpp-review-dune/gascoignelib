@@ -84,8 +84,9 @@ public:
 
   CompVector& operator=(const CompVector& u)
   {
-    *this = u;
-    N     = u.ncomp();
+    N = u.ncomp();
+    nvector<T>::resize(u.size());
+    copy(u.begin(), u.end(), nvector<T>::begin());
     return *this;
   }
 
