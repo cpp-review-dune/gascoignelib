@@ -93,22 +93,28 @@ namespace Gascoigne
       pointboundary(h,U,v,n);
     }
     virtual void pointmatrixboundary(double h, const FemFunction& U, const Vertex3d& v, 
-				     const Vertex3d& n) const {
+        const Vertex3d& n) const {
       pointboundary(h,U,v,n);
     }
 
-    
+
     virtual void MatrixBlock(EntryMatrix& A, const FemFunction& U, const FemFunction& N) const
     {
       for (int j=0; j<N.size(); j++)
-	{
-	  for (int i=0; i<N.size(); i++)
-	    {
-	      A.SetDofIndex(i,j);
-	      Matrix(A,U,N[j],N[i]);
-	    }
-	}
+      {
+        for (int i=0; i<N.size(); i++)
+        {
+          A.SetDofIndex(i,j);
+          Matrix(A,U,N[j],N[i]);
+        }
+      }
     }
+
+    virtual Equation* createNew() const {
+      std::cerr << "\"Equation::createNew\" not written!" << std::endl;
+      abort();
+    }
+
   };
 }
 

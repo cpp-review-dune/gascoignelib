@@ -425,7 +425,8 @@ public:
       integrator.BasicInit();
       LocalVector __U, __F;
       LocalData __QN, __QC;
-      const auto EQ = PD.NewEquation();
+//      const auto EQ = PD.NewEquation();
+      const auto EQ = PD.GetEquation() -> createNew();
       EQ->SetParameterData(QP);
 #pragma omp for schedule(static)
       for (int iq = 0; iq < GetDofHandler()->nelements(DEGREE); ++iq)
@@ -532,7 +533,8 @@ public:
       LocalData __QN, __QC;
       EntryMatrix __E;
 
-      const auto EQ = PD.NewEquation();
+//      const auto EQ = PD.NewEquation();
+      const auto EQ = PD.GetEquation() -> createNew();
       EQ->SetParameterData(QP);
 #pragma omp for schedule(static)
       for (int iq = 0; iq < GetDofHandler()->nelements(DEGREE); ++iq)

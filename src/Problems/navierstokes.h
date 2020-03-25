@@ -80,6 +80,11 @@ namespace Gascoigne
                 const FemFunction &U,
                 const TestFunction &M,
                 const TestFunction &N) const;
+
+    NavierStokes<DIM>* createNew() const
+    {
+      return new NavierStokes<DIM>(data);
+    }
   };
 
 
@@ -175,6 +180,11 @@ namespace Gascoigne
                     const FemFunction &U,
                     const TestFunction &Np,
                     const TestFunction &Mp) const;
+
+    NavierStokesLps<DIM>* createNew() const
+    {
+      return new NavierStokesLps<DIM>(NavierStokes<DIM>::data);
+    }
   };
 
   //////////////////////////////////////////////////
