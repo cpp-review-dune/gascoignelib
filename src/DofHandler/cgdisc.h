@@ -411,7 +411,7 @@ public:
   }
   void InterpolateSolution(GlobalVector& u, const GlobalVector& uold) const;
 
-  ////////////////////////////////////////////////// integration ueber Zellen
+  // assemble of the weak formulation for all test functions
   void Form(GlobalVector& f, const GlobalVector& u,
             const ProblemDescriptorInterface& PD, double d) const
   {
@@ -427,6 +427,8 @@ public:
       LocalData __QN, __QC;
       const auto EQ = PD.NewEquation();
       EQ->SetParameterData(QP);
+      EQ->SetTime(PD.time(),PD.dt());
+      
 #pragma omp for schedule(static)
       for (int iq = 0; iq < GetDofHandler()->nelements(DEGREE); ++iq)
       {
@@ -461,6 +463,8 @@ public:
       LocalData __QN, __QC;
       const auto RHS = PD.NewRightHandSide();
       RHS->SetParameterData(QP);
+      RHS->SetTime(PD.time(),PD.dt());
+
 #pragma omp for schedule(static)
       for (int iq = 0; iq < GetDofHandler()->nelements(DEGREE); ++iq)
       {
@@ -494,6 +498,7 @@ public:
       LocalData __QN, __QC;
       const auto NRHS = PD.NewBoundaryRightHandSide();
       NRHS->SetParameterData(QP);
+      NRHS->SetTime(PD.time(),PD.dt());
       for (auto col : Colors)
       {
         const IntVector& q = *GetDofHandler()->ElementOnBoundary(DEGREE, col);
@@ -534,6 +539,7 @@ public:
 
       const auto EQ = PD.NewEquation();
       EQ->SetParameterData(QP);
+      EQ->SetTime(PD.time(),PD.dt());
 #pragma omp for schedule(static)
       for (int iq = 0; iq < GetDofHandler()->nelements(DEGREE); ++iq)
       {
@@ -575,6 +581,7 @@ public:
       const auto* BEQ = PD.NewBoundaryEquation();
       auto COLS       = PD.GetBoundaryManager()->GetBoundaryEquationColors();
       BEQ->SetParameterData(QP);
+      BEQ->SetTime(PD.time(),PD.dt());
 
       for (auto col : COLS)
       {
@@ -624,6 +631,7 @@ public:
       auto* BEQ       = PD.NewBoundaryEquation();
       const auto COLS = PD.GetBoundaryManager()->GetBoundaryEquationColors();
       BEQ->SetParameterData(QP);
+      BEQ->SetTime(PD.time(),PD.dt());
 
       for (const auto col : COLS)
       {

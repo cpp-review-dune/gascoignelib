@@ -50,9 +50,7 @@ namespace Gascoigne
 
   void TimeSolver::RegisterMatrix()
   {
-    const Equation *EQ = GetProblemDescriptor()->GetEquation();
-    assert(EQ);
-    int ncomp = EQ->GetNcomp();
+    int ncomp = GetProblemDescriptor()->GetNcomp();
 
     if (GetMassMatrixPointer() == NULL)
       GetMassMatrixPointer() = NewMassMatrix(ncomp, _matrixtype);
@@ -112,11 +110,12 @@ namespace Gascoigne
 
   void TimeSolver::ReInitTimePattern(const ProblemDescriptorInterface &PDX)
   {
-    const Equation *EQ = PDX.GetEquation();
+    const Equation *EQ = PDX.NewEquation();
     if (EQ)
     {
       _TP.reservesize(EQ->GetNcomp(), EQ->GetNcomp(), 0.);
       EQ->SetTimePattern(_TP);
+      delete EQ;
     }
   }
 

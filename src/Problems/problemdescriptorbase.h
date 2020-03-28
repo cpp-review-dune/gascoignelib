@@ -38,21 +38,17 @@ namespace Gascoigne
 
     
   private:
-    Equation *EQ;
     FaceEquation *FEQ;
     BoundaryManager *BM;
     ExactSolution *ES;
-    Application *RHS;
     Application *IC;
     DirichletData *DD;
     PeriodicData *PD;
-    BoundaryRightHandSide *BRHS;
     BoundaryInitialCondition *BIC;
-    BoundaryEquation *BE;
     ComponentInformation *CI;
 
-
     const ParamFile *_paramfile;
+    mutable double _time,_dt;
 
   protected:
     const ParamFile *&GetParamFilePointer()
@@ -60,10 +56,6 @@ namespace Gascoigne
       return _paramfile;
     }
 
-    Equation *&GetEquationPointer()
-    {
-      return EQ;
-    }
     FaceEquation *&GetFaceEquationPointer()
     {
       return FEQ;
@@ -80,10 +72,6 @@ namespace Gascoigne
     {
       return IC;
     }
-    Application *&GetRightHandSidePointer()
-    {
-      return RHS;
-    }
     DirichletData *&GetDirichletDataPointer()
     {
       return DD;
@@ -92,19 +80,10 @@ namespace Gascoigne
     {
       return PD;
     }
-    BoundaryRightHandSide *&GetBoundaryRightHandSidePointer()
-    {
-      return BRHS;
-    }
     BoundaryInitialCondition *&GetBoundaryInitialConditionPointer()
     {
       return BIC;
     }
-    BoundaryEquation *&GetBoundaryEquationPointer()
-    {
-      return BE;
-    }
-
     BoundaryManager *GetBoundaryManager()
     {
       return BM;
@@ -124,15 +103,21 @@ namespace Gascoigne
 
     void BasicInit(const ParamFile *pf);
 
+  // Gives the number of solution components. 
+    int GetNcomp() const 
+    {
+      const Equation* EQ = NewEquation();
+      assert(EQ);
+      return EQ->GetNcomp();
+      delete EQ;
+    }
+    
+
     const ParamFile *GetParamFile() const
     {
       return _paramfile;
     }
 
-    const Application *GetRightHandSide() const
-    {
-      return RHS;
-    }
     const DirichletData *GetDirichletData() const
     {
       return DD;
@@ -141,17 +126,9 @@ namespace Gascoigne
     {
       return PD;
     }
-    const BoundaryRightHandSide *GetBoundaryRightHandSide() const
-    {
-      return BRHS;
-    }
     const BoundaryInitialCondition *GetBoundaryInitialCondition() const
     {
       return BIC;
-    }
-    const BoundaryEquation *GetBoundaryEquation() const
-    {
-      return BE;
     }
     const Application *GetInitialCondition() const
     {
@@ -160,10 +137,6 @@ namespace Gascoigne
     const ExactSolution *GetExactSolution() const
     {
       return ES;
-    }
-    const Equation *GetEquation() const
-    {
-      return EQ;
     }
     const FaceEquation *GetFaceEquation() const
     {
@@ -178,7 +151,14 @@ namespace Gascoigne
       return CI;
     }
 
+    // stores the time and the time step
+    // (should be moved to the problem data)
     void SetTime(double time, double dt) const;
+    // access to time
+    double time() const { return _time; }
+    // access to time step
+    double dt() const   { return _dt; }     
+    
   };
 
 

@@ -66,10 +66,9 @@ namespace Gascoigne
 
   void PiQ2::vmult(GlobalVector &pu, const GlobalVector &u) const
   {
-    int npatch = 25, MAXZ = 1, MAXIZ = 1;
+    int MAXZ = 1, MAXIZ = 1;
     if (_MP->dimension() == 3)
     {
-      npatch = 125;
       MAXZ = 5;
       MAXIZ = 3;
     }

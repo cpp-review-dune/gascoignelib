@@ -659,7 +659,9 @@ std::ostream& SparseBlockMatrix<B>::Write(std::ostream& os) const
   os << "Diag\n";
   for (int i = 0; i < US.n(); i++)
   {
-    os << smat[US.diag(i)] << " ";
+    std::cerr << "SparseBlockMatrix<B>::Write not implemented for all block-types" << std::endl;
+    abort();
+    //    os << smat[US.diag(i)] << " ";
   }
   os << std::endl << std::endl;
   for (int i = 0; i < US.n(); i++)
@@ -667,6 +669,8 @@ std::ostream& SparseBlockMatrix<B>::Write(std::ostream& os) const
     // const int*    cp = &(US.col(US.start(i)));
     for (int pos = US.start(i); pos < US.stop(i); pos++)
     {
+      std::cerr << "SparseBlockMatrix<B>::Write not implemented for all block-types" << std::endl;
+      abort();
       os << *mat(pos) << " ";
     }
     os << std::endl;

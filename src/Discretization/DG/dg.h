@@ -96,7 +96,8 @@ namespace Gascoigne
     };
     int n_withouthanging() const
     {
-      assert(0);
+      std::cerr << "DG::n_withouthanging() not implemented" << std::endl;
+      abort();
     }
 
 

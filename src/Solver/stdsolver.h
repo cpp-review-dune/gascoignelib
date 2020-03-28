@@ -26,7 +26,6 @@
 #define __StdSolver_h
 
 #include "domainfunction.h"
-#include "facediscretization.h"
 #include "gascoigne.h"
 #include "gascoignemesh.h"
 #include "gascoignevisualization.h"
@@ -103,7 +102,6 @@ protected:
   // 3. Discretization
 
   DiscretizationInterface* _ZP;
-  FaceDiscretization* _FZP;
 
   // 4. Vektoren
 
@@ -121,7 +119,6 @@ protected:
   mutable int _ndirect;
   mutable bool _directsolver;
   mutable std::string _discname;
-  mutable std::string _facediscname;
   mutable std::string _matrixtype;
 
   SolverData _Dat;
@@ -174,10 +171,6 @@ protected:
   {
     return _ZP;
   }
-  virtual FaceDiscretization*& GetFaceDiscretizationPointer()
-  {
-    return _FZP;
-  }
 
   virtual IluInterface*& GetIluPointer()
   {
@@ -191,9 +184,6 @@ protected:
 
   virtual DiscretizationInterface* NewDiscretization(int dimension,
                                                      const std::string& discname);
-  virtual FaceDiscretization* NewFaceDiscretization(int dimension,
-                                                    const std::string& facediscname);
-
   virtual MatrixInterface* NewMatrix(int ncomp, const std::string& matrixtype);
   virtual IluInterface* NewIlu(int ncomp, const std::string& matrixtype);
 
@@ -256,15 +246,6 @@ public:
     return _ZP;
   }
 
-  virtual const FaceDiscretization* GetFaceDiscretization() const
-  {
-    return _FZP;
-  }
-  virtual FaceDiscretization* GetFaceDiscretization()
-  {
-    return _FZP;
-  }
-
   virtual void ReInitMatrix();
   virtual void AddPeriodicNodes(SparseStructure* SA);
 
@@ -274,7 +255,7 @@ public:
     return _MIP;
   }
 
-  virtual bool DirectSolver() const
+   virtual bool DirectSolver() const
   {
     return _directsolver;
   }

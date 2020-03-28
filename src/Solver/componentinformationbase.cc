@@ -38,43 +38,7 @@ const int ComponentInformationBase::GetNScalars     () const{
   ProblemDescriptorInterface* ppdi = GetProblemDescriptorInterface();
   assert( ppdi );
 
-  int ncomps = -1;
-
-  int ncomps_rhs=-1;
-  // geht nicht :/
-  // const Application* prhs   = ppdi->GetRightHandSide();
-  // if( prhs!=NULL ){ ncomps = ncomps_rhs = prhs->GetNcomp(); }
-
-  int ncomps_brhs=-1;
-  const BoundaryRightHandSide* pbrhs   = ppdi->GetBoundaryRightHandSide();
-  if( pbrhs!=NULL ){ ncomps = ncomps_brhs = pbrhs->GetNcomp(); }
-
-  int ncomps_equation=-1;
-  const Equation* peq   = ppdi->GetEquation();
-  if( peq!=NULL ){ ncomps = ncomps_equation = peq->GetNcomp(); }
-
-  int ncomps_boundaryequation=-1;
-  const BoundaryEquation* pbeq   = ppdi->GetBoundaryEquation();
-  if( pbeq!=NULL ){ ncomps = ncomps_boundaryequation = pbeq->GetNcomp(); }
-
-  //int ncomps_dirichlet=-1;
-  // doesn't have this method
-  // const DirichletData* pdd   = ppdi->GetDirichletData();
-  // if( pdd!=NULL ){ ncomps = ncomps_dirichlet = pdd->GetNcomp(); }
-
-  int ncomps_initialcondition=-1;
-  // doesn't have this method
-  // const Application* pic   = ppdi->GetInitialCondition();
-  // if( pic!=NULL ){ ncomps = ncomps_initialcondition = pic->GetNcomp(); }
-
-  assert(0<ncomps);
-  if(0<ncomps_rhs              ) assert(ncomps==ncomps_rhs             ) ;
-  if(0<ncomps_brhs             ) assert(ncomps==ncomps_brhs            ) ;
-  if(0<ncomps_equation         ) assert(ncomps==ncomps_equation        ) ;
-  if(0<ncomps_boundaryequation ) assert(ncomps==ncomps_boundaryequation) ;
-  if(0<ncomps_initialcondition ) assert(ncomps==ncomps_initialcondition) ;
-
-  return ncomps;
+  return ppdi->GetNcomp();
 }
 void      ComponentInformationBase::GetScalarName   (int i, std::string& s_name) const{
   s_name="u";

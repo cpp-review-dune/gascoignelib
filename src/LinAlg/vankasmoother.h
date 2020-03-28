@@ -38,11 +38,16 @@
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wunused-variable"
 #pragma clang diagnostic ignored "-Wold-style-cast"
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma GCC diagnostic ignored "-Wold-style-cast"
 #include <eigen3/Eigen/Dense>
 #include <eigen3/Eigen/OrderingMethods>
 #include <eigen3/Eigen/Sparse>
 #include <eigen3/Eigen/SparseLU>
 #pragma clang diagnostic pop
+#pragma GCC diagnostic pop
 
 
 /*-------------------------------------------------------------*/

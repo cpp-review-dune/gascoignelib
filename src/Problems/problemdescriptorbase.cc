@@ -32,20 +32,17 @@ namespace Gascoigne
 
   /*------------------------------------------------------------------------------*/
 
-  ProblemDescriptorBase::ProblemDescriptorBase()
-      : EQ(NULL)
-      , FEQ(NULL)
-      , BM(NULL)
-      , ES(NULL)
-      , RHS(NULL)
-      , IC(NULL)
-      , DD(NULL)
-      , PD(NULL)
-      , BRHS(NULL)
-      , BIC(NULL)
-      , BE(NULL)
-      , CI()
-      , _paramfile(NULL)
+  ProblemDescriptorBase::ProblemDescriptorBase() :
+    BM(NULL),
+    ES(NULL),
+    IC(NULL),
+    DD(NULL),
+    PD(NULL),
+    BIC(NULL),
+    CI(),
+    _paramfile(NULL),
+    _time(-1),
+    _dt(-1)
   {
   }
 
@@ -53,11 +50,6 @@ namespace Gascoigne
 
   ProblemDescriptorBase::~ProblemDescriptorBase()
   {
-    if (EQ != NULL)
-    {
-      delete EQ;
-      EQ = NULL;
-    }
     if (BM != NULL)
     {
       delete BM;
@@ -73,11 +65,6 @@ namespace Gascoigne
       delete IC;
       IC = NULL;
     }
-    if (RHS != NULL)
-    {
-      delete RHS;
-      RHS = NULL;
-    }
     if (DD != NULL)
     {
       delete DD;
@@ -88,20 +75,10 @@ namespace Gascoigne
       delete PD;
       PD = NULL;
     }
-    if (BRHS != NULL)
-    {
-      delete BRHS;
-      BRHS = NULL;
-    }
     if (BIC != NULL)
     {
       delete BIC;
       BIC = NULL;
-    }
-    if (BE != NULL)
-    {
-      delete BE;
-      BE = NULL;
     }
     if (CI != NULL)
     {
@@ -114,16 +91,6 @@ namespace Gascoigne
 
   ostream &ProblemDescriptorBase::OutputSettings(ostream &os) const
   {
-    if (EQ)
-      os << "Equation:                 " << EQ->GetName() << endl;
-    if (FEQ)
-      os << "Face Equation:            " << FEQ->GetName() << endl;
-    if (BE)
-      os << "BoundaryEquation:         " << BE->GetName() << endl;
-    if (RHS)
-      os << "Rhs:                      " << RHS->GetName() << endl;
-    if (BRHS)
-      os << "BoundaryRhs:              " << BRHS->GetName() << endl;
     if (DD)
       os << "DirichletData:            " << DD->GetName() << endl;
     if (PD)
@@ -166,20 +133,15 @@ namespace Gascoigne
 
   void ProblemDescriptorBase::SetTime(double time, double dt) const
   {
-    if (EQ)
-      EQ->SetTime(time, dt);
+    _time = time;
+    _dt   = dt;
+    
     if (ES)
       ES->SetTime(time, dt);
-    if (RHS)
-      RHS->SetTime(time, dt);
     if (DD)
       DD->SetTime(time, dt);
     if (PD)
       PD->SetTime(time, dt);
-    if (BRHS)
-      BRHS->SetTime(time, dt);
-    if (BE)
-      BE->SetTime(time, dt);
     if (IC)
       IC->SetTime(time, dt);
     if (BIC)

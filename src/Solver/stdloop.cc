@@ -30,8 +30,6 @@
 #include "stdmultilevelsolver.h"
 #include "meshagent.h"
 #include "stdsolver.h"
-#include "energyestimator.h"
-#include "q22dwithsecond.h"
 
 using namespace std;
 
@@ -151,7 +149,7 @@ DoubleVector StdLoop::GetExactValues() const
 
 DoubleVector StdLoop::Functionals(VectorInterface& u, VectorInterface& f)
 {
-  bool output = false;
+  bool output = true;
 
   DoubleVector J      = ComputeFunctionals(f, u);
   DoubleVector Jexact = GetExactValues();
@@ -197,37 +195,42 @@ double StdLoop::Estimator(DoubleVector& eta, VectorInterface& u, VectorInterface
     assert(MA);
     S->GetHierarchicalMeshPointer() = MA->GetHierarchicalMesh();
 
-    EnergyEstimator E(*S);
-    est = E.Estimator(eta, u, f);
-    EtaVisu(_s_resultsdir + "/eta", _iter, eta);
+    std::cerr << "EnergyEstimator E(*S) not implemented!" << std::endl;
+    abort();
+    // EnergyEstimator E(*S);
+    // est = E.Estimator(eta, u, f);
+    // EtaVisu(_s_resultsdir + "/eta", _iter, eta);
   }
   else if (_estimator == "second")
-  {
-    int dim = GetMeshAgent()->GetMesh(0)->dimension();
-
-    if (dim == 2)
     {
-      DiscretizationInterface* DIL;
-      DIL = GetMultiLevelSolver()->GetSolver()->GetDiscretization();
-
-      Q22dWithSecond DIH;
-      DIH.BasicInit(_paramfile);
-
-      GetMultiLevelSolver()->GetSolver()->SetDiscretization(DIH, true);
-      GetMultiLevelSolver()->GetSolver()->HNAverage(u);
-
-      eta.resize(GetMeshAgent()->nnodes());
-      eta.zero();
-      DIH.EstimateSecond(eta, GetMultiLevelSolver()->GetSolver()->GetGV(u));
-      GetMultiLevelSolver()->GetSolver()->HNZero(u);
-
-      GetMultiLevelSolver()->GetSolver()->SetDiscretization(*DIL);
-    }
-    else
-    {
-      cerr << "Estimator \"second\" not written for 3D!" << endl;
+      std::cerr << "_estimator 'second' not implemented!" << std::endl;
       abort();
-    }
+      
+    // int dim = GetMeshAgent()->GetMesh(0)->dimension();
+
+    // if (dim == 2)
+    // {
+    //   DiscretizationInterface* DIL;
+    //   DIL = GetMultiLevelSolver()->GetSolver()->GetDiscretization();
+
+    //   Q22dWithSecond DIH;
+    //   DIH.BasicInit(_paramfile);
+
+    //   GetMultiLevelSolver()->GetSolver()->SetDiscretization(DIH, true);
+    //   GetMultiLevelSolver()->GetSolver()->HNAverage(u);
+
+    //   eta.resize(GetMeshAgent()->nnodes());
+    //   eta.zero();
+    //   DIH.EstimateSecond(eta, GetMultiLevelSolver()->GetSolver()->GetGV(u));
+    //   GetMultiLevelSolver()->GetSolver()->HNZero(u);
+
+    //   GetMultiLevelSolver()->GetSolver()->SetDiscretization(*DIL);
+    // }
+    // else
+    // {
+    //   cerr << "Estimator \"second\" not written for 3D!" << endl;
+    //   abort();
+      //    }
   }
   else
   {

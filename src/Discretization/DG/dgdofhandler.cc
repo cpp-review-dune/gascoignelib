@@ -24,10 +24,11 @@ namespace Gascoigne
     assert(M);
     const GascoigneMesh2d *M2 = dynamic_cast<const GascoigneMesh2d *>(M);
     const GascoigneMesh3d *M3 = dynamic_cast<const GascoigneMesh3d *>(M);
-    assert(M2 || M3);
-
-    //    const IntVector&          M_cells = M->GetCellVector();
-
+    if (!(M2 || M3))
+      {
+	std::cerr << "cannot cast Mesh to GascoigneMesh2d/3d" << std::endl;
+	abort();
+      }
     ////////////////////////////////////////////////// ELEMENTS
     _ndofs = M->ncells() * BASE::N;
     _elements.resize(M->ncells());

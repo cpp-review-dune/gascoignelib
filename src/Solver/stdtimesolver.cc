@@ -83,12 +83,13 @@ GascoigneVisualization* StdTimeSolver::NewGascoigneVisualization() const {
 
 void StdTimeSolver::SetProblem(const ProblemDescriptorInterface& PDX)
 {
-  const Equation* EQ = PDX.GetEquation();
+  const Equation* EQ = PDX.NewEquation();
 
   if (EQ)
     {
       GetTimePattern().reservesize(EQ->GetNcomp(),EQ->GetNcomp(),0.);
       EQ->SetTimePattern(GetTimePattern());
+      delete EQ;
     }
 
   StdSolver::SetProblem(PDX);
@@ -98,10 +99,8 @@ void StdTimeSolver::SetProblem(const ProblemDescriptorInterface& PDX)
 
 void StdTimeSolver::RegisterMatrix()
 {
-  const Equation*  EQ = GetProblemDescriptor()->GetEquation();
-  assert(EQ);
-  int ncomp = EQ->GetNcomp();
-
+  int ncomp = GetProblemDescriptor()->GetNcomp();
+  
   if (GetMassMatrixPointer()==NULL)
     GetMassMatrixPointer() = NewMassMatrix(ncomp,_matrixtype);
 

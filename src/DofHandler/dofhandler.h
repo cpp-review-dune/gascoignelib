@@ -238,7 +238,7 @@ namespace Gascoigne
 	return material(i);
       else if (degree == 2)
 	return material_patch(i);
-      assert(0);
+      abort();
     }
     virtual int &material(int i)
     {
@@ -279,7 +279,8 @@ namespace Gascoigne
 	return CellOnBoundary(color);
       else if (degree == 2)
 	return PatchOnBoundary(color);
-      else assert(0);	     
+      else
+	abort();
     }
     virtual const IntVector *ElementLocalOnBoundary(int degree,int color) const
     {
@@ -288,7 +289,7 @@ namespace Gascoigne
       else if (degree == 2)
 	return LocalPatchOnBoundary(color);
       else
-	assert(0);	          
+	abort();
     }
 
     virtual std::set<int> GetColors() const
@@ -416,7 +417,8 @@ namespace Gascoigne
 	return ncells();
       else if (degree == 2)
 	return npatches();
-      else assert(0);
+      else
+	abort();
     }
     
     int nhanging() const
@@ -435,7 +437,7 @@ namespace Gascoigne
       else if (degree == 2)
 	return nodes_per_patch();
       else
-	assert(0);
+	abort();
     }
 
     
@@ -481,7 +483,7 @@ namespace Gascoigne
 	return IndicesOfCell(iq);
       else if (degree == 2)
 	return *IndicesOfPatch(iq);
-      assert(0);
+      abort();
     }
     
   };
