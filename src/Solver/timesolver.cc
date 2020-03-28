@@ -110,12 +110,11 @@ namespace Gascoigne
 
   void TimeSolver::ReInitTimePattern(const ProblemDescriptorInterface &PDX)
   {
-    const Equation *EQ = PDX.NewEquation();
+    const Equation *EQ = PDX.GetEquation();
     if (EQ)
     {
       _TP.reservesize(EQ->GetNcomp(), EQ->GetNcomp(), 0.);
       EQ->SetTimePattern(_TP);
-      delete EQ;
     }
   }
 

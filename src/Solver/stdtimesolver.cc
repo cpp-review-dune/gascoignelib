@@ -83,13 +83,12 @@ GascoigneVisualization* StdTimeSolver::NewGascoigneVisualization() const {
 
 void StdTimeSolver::SetProblem(const ProblemDescriptorInterface& PDX)
 {
-  const Equation* EQ = PDX.NewEquation();
+  const Equation* EQ = PDX.GetEquation();
 
   if (EQ)
     {
       GetTimePattern().reservesize(EQ->GetNcomp(),EQ->GetNcomp(),0.);
       EQ->SetTimePattern(GetTimePattern());
-      delete EQ;
     }
 
   StdSolver::SetProblem(PDX);

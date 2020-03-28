@@ -417,6 +417,7 @@ public:
   {
     LocalParameterData QP;
     GlobalToGlobalData(QP);
+
 #pragma omp parallel
     {
       nmatrix<double> T;
@@ -425,7 +426,8 @@ public:
       integrator.BasicInit();
       LocalVector __U, __F;
       LocalData __QN, __QC;
-      const auto EQ = PD.NewEquation();
+      const auto EQ = PD.GetEquation()->createNew();
+      
       EQ->SetParameterData(QP);
       EQ->SetTime(PD.time(),PD.dt());
       
@@ -447,7 +449,7 @@ public:
   void Rhs(GlobalVector& f, const ProblemDescriptorInterface& PD,
            double s) const
   {
-    if (PD.NewRightHandSide() == NULL)
+    if (PD.GetRightHandSide() == NULL)
     {
       return;
     }
@@ -461,7 +463,7 @@ public:
       integrator.BasicInit();
       LocalVector __F;
       LocalData __QN, __QC;
-      const auto RHS = PD.NewRightHandSide();
+      const auto RHS = PD.GetRightHandSide()->createNew();
       RHS->SetParameterData(QP);
       RHS->SetTime(PD.time(),PD.dt());
 
@@ -482,7 +484,7 @@ public:
   void BoundaryRhs(GlobalVector& f, const IntSet& Colors,
                    const ProblemDescriptorInterface& PD, double s) const
   {
-    if (PD.NewBoundaryRightHandSide() == NULL)
+    if (PD.GetBoundaryRightHandSide() == NULL)
     {
       return;
     }
@@ -496,7 +498,7 @@ public:
       integrator.BasicInit();
       LocalVector __U, __F;
       LocalData __QN, __QC;
-      const auto NRHS = PD.NewBoundaryRightHandSide();
+      const auto NRHS = PD.GetBoundaryRightHandSide()->createNew();
       NRHS->SetParameterData(QP);
       NRHS->SetTime(PD.time(),PD.dt());
       for (auto col : Colors)
@@ -537,7 +539,7 @@ public:
       LocalData __QN, __QC;
       EntryMatrix __E;
 
-      const auto EQ = PD.NewEquation();
+      const auto EQ = PD.GetEquation()->createNew();
       EQ->SetParameterData(QP);
       EQ->SetTime(PD.time(),PD.dt());
 #pragma omp for schedule(static)
@@ -564,7 +566,7 @@ public:
                     const ProblemDescriptorInterface& PD, double d) const
   {
     // Do we have a boundary equation?
-    if (PD.NewBoundaryEquation() == NULL)
+    if (PD.GetBoundaryEquation() == NULL)
       return;
 
     LocalParameterData QP;
@@ -578,7 +580,7 @@ public:
       LocalVector __U, __F;
       LocalData __QN, __QC;
 
-      const auto* BEQ = PD.NewBoundaryEquation();
+      const auto* BEQ = PD.GetBoundaryEquation()->createNew();
       auto COLS       = PD.GetBoundaryManager()->GetBoundaryEquationColors();
       BEQ->SetParameterData(QP);
       BEQ->SetTime(PD.time(),PD.dt());
@@ -612,7 +614,7 @@ public:
                       const ProblemDescriptorInterface& PD, double d) const
   {
     // Do we have a boundary equation?
-    if (PD.NewBoundaryEquation() == NULL)
+    if (PD.GetBoundaryEquation() == NULL)
       return;
 
     LocalParameterData QP;
@@ -628,7 +630,7 @@ public:
       LocalData __QN, __QC;
       EntryMatrix __E;
 
-      auto* BEQ       = PD.NewBoundaryEquation();
+      auto* BEQ       = PD.GetBoundaryEquation()->createNew();
       const auto COLS = PD.GetBoundaryManager()->GetBoundaryEquationColors();
       BEQ->SetParameterData(QP);
       BEQ->SetTime(PD.time(),PD.dt());

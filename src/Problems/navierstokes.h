@@ -63,6 +63,12 @@ namespace Gascoigne
     {
     }
 
+    NavierStokes<DIM>* createNew() const
+    {
+      return new NavierStokes<DIM>(data);
+    }
+    
+
     std::string GetName() const
     { return "NavierStokes"; }
     int GetNcomp() const
@@ -162,6 +168,13 @@ namespace Gascoigne
     {
       
     }
+
+    NavierStokesLps<DIM>* createNew() const
+    {
+      return new NavierStokesLps<DIM>(NavierStokes<DIM>::data);
+    }
+
+    
     std::string GetName() const
     { return "NavierStokesLps"; }
     
@@ -193,6 +206,11 @@ namespace Gascoigne
       assert(NavierStokes<DIM>::data.theta>0);
       assert(NavierStokes<DIM>::data.theta<=1);
     }
+    NavierStokesLpsTime<DIM>* createNew() const
+    {
+      return new NavierStokesLpsTime<DIM>(NavierStokes<DIM>::data);
+    }
+
     std::string GetName() const
     { return "NavierStokesTimeLps"; }
     

@@ -38,6 +38,12 @@ namespace Gascoigne
 
     
   private:
+    Equation* EQ;
+    BoundaryEquation* BEQ;
+    DomainRightHandSide* RHS;
+    DiracRightHandSide* DRHS;
+    BoundaryRightHandSide* BRHS;
+
     FaceEquation *FEQ;
     BoundaryManager *BM;
     ExactSolution *ES;
@@ -56,6 +62,28 @@ namespace Gascoigne
       return _paramfile;
     }
 
+
+    Equation*& GetEquationPointer()
+    {
+      return EQ;
+    }
+    BoundaryEquation*& GetBoundaryEquationPointer()
+    {
+      return BEQ;
+    }
+    DomainRightHandSide*& GetRightHandSidePointer()
+    {
+      return RHS;
+    }
+    DiracRightHandSide*& GetDiracRightHandSidePointer()
+    {
+      return DRHS;
+    }
+    BoundaryRightHandSide*& GetBoundaryRightHandSidePointer()
+    {
+      return BRHS;
+    }
+    
     FaceEquation *&GetFaceEquationPointer()
     {
       return FEQ;
@@ -106,10 +134,7 @@ namespace Gascoigne
   // Gives the number of solution components. 
     int GetNcomp() const 
     {
-      const Equation* EQ = NewEquation();
-      assert(EQ);
-      return EQ->GetNcomp();
-      delete EQ;
+      return GetEquation()->GetNcomp();
     }
     
 
@@ -118,6 +143,27 @@ namespace Gascoigne
       return _paramfile;
     }
 
+    const Equation* GetEquation() const
+    {
+      return EQ;
+    }
+    const BoundaryEquation* GetBoundaryEquation() const
+    {
+      return BEQ;
+    }
+    const DomainRightHandSide* GetRightHandSide() const
+    {
+      return RHS;
+    }
+    const DiracRightHandSide* GetDiracRightHandSide() const
+    {
+      return DRHS;
+    }
+    const BoundaryRightHandSide* GetBoundaryRightHandSide() const
+    {
+      return BRHS;
+    }
+    
     const DirichletData *GetDirichletData() const
     {
       return DD;

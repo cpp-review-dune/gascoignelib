@@ -278,13 +278,10 @@ void StdSolver::SetProblem(const ProblemDescriptorInterface& PDX)
   _PDX = &PDX;
   assert(_PDX);
 
-  Equation* EQ = GetProblemDescriptor()->NewEquation();
-
+  const Equation* EQ = GetProblemDescriptor()->GetEquation();
+  
   if (EQ)
-    {
-      _check_consistency(EQ, GetDiscretization());
-      delete EQ;
-    }
+    _check_consistency(EQ, GetDiscretization());
 }
 
 /*-------------------------------------------------------*/
@@ -1239,18 +1236,16 @@ void StdSolver::AdjointForm(VectorInterface& gy, const VectorInterface& gx,
   HNAverage(gx);
   HNAverageData();
 
-  const Equation* EQ = GetProblemDescriptor()->NewEquation();
+  const Equation* EQ = GetProblemDescriptor()->GetEquation();
   assert(EQ);
   GetDiscretization()->AdjointForm(y, x, *EQ, d);
-  delete EQ;
   
 
   abort();
-  const BoundaryEquation* BE = GetProblemDescriptor()->NewBoundaryEquation();
+  const BoundaryEquation* BE = GetProblemDescriptor()->GetBoundaryEquation();
   if (BE)
   {
     GetDiscretization()->BoundaryForm(y, x, *GetProblemDescriptor(), d);
-    delete BE;
   }
 
   HNZero(gx);
@@ -1585,8 +1580,8 @@ void StdSolver::InterpolateDomainFunction(VectorInterface& f,
 
 void StdSolver::Rhs(VectorInterface& gf, double d) const
 {
-  const auto *RHS  = GetProblemDescriptor()->NewRightHandSide();
-  const auto *BRHS = GetProblemDescriptor()->NewBoundaryRightHandSide();
+  const auto *RHS  = GetProblemDescriptor()->GetRightHandSide();
+  const auto *BRHS = GetProblemDescriptor()->GetBoundaryRightHandSide();
     
   if ((RHS==NULL) && (BRHS==NULL))
     return;
@@ -1880,11 +1875,10 @@ void StdSolver::PermutateIlu(const VectorInterface& gu) const
   }
   else if (GetSolverData().GetIluSort() == "streamdirection")
   {
-    const Equation* EQ = GetProblemDescriptor()->NewEquation();
+    const Equation* EQ = GetProblemDescriptor()->GetEquation();
     assert(EQ);
     assert(GetSolverData().GetStreamDirection().size()
            <= EQ->GetNcomp());
-    delete EQ;
     StreamDirection sd(GetMesh(), GetMatrix()->GetStencil(), u);
     sd.Permutate(perm, GetSolverData().GetStreamDirection());
   }

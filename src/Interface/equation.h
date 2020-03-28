@@ -34,15 +34,30 @@
 
 namespace Gascoigne
 {
-  
-  //////////////////////////////////////////////
-  ///
-  ///@brief
-  /// Interface class for Equation
 
-  ///
-  ///
-  //////////////////////////////////////////////
+  /**
+    \brief Interface class for defining equations
+
+    Defines an equation object in Gascoigne. Equations may not have persistent data, only references or pointers to a data object are ok. 
+
+    The most important members are
+
+    - Form(U,N)
+      which defines the variational formulation, U being the trial-functions, N the tests-functions. Form fills a vector b of size ncomp (number of solutions components). Remember to allways add values to b[...]
+
+    - Matrix(U,M,N)
+      defines the Jacobian of the variational formulation at U. Fills a matrix A of size ncomp x ncomps. A(j,i) corresponds to test-function number i and derivative in direction U[j]
+
+    - point(U,v)
+      for precomputing values to be used in Form. Depends on solution state U and coordinate v, but is reused for all test-functions
+
+    - pointmatrix(U,v)
+      same but used in Matrix. If pointmatrix() is not given, point() is used instead
+
+    - createNew()
+      used to clone the entire class. Required for parallelization where each trhead has it own instance of the equation object. 
+
+   */
 
   class Equation : public virtual Application
   {
@@ -56,6 +71,16 @@ namespace Gascoigne
     //
     Equation() : Application() {}
     virtual ~Equation() {}
+
+    /**
+       clones an Equation. Usually it is simply to return a new instance of the same object passing the required variables to the constructor. It takes the role of a copy constructor and the cloning of classes is required for multithreading. 
+    */
+    virtual Equation* createNew() const 
+    {
+      std::cerr << "\"Equation::createNew\" not written!" << std::endl;
+      abort();
+    }
+    
 
     virtual void OperatorStrong(DoubleVector& b, const FemFunction& U) const {
       std::cerr << "\"Equation::OperatorStrong\" not written!" << std::endl;

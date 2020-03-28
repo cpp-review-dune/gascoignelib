@@ -54,31 +54,7 @@ class ProblemDescriptorInterface
 private:
 protected:
 public:
-  // returns new objects for equations and boundary equations
-  // classes are created on the fly to allow for parallelization
-  // these classes have no persistant data as they will be created
-  // and destroyed frequently
 
-  virtual Equation* NewEquation() const
-  {
-    return NULL;
-  }
-  virtual BoundaryEquation* NewBoundaryEquation() const
-  {
-    return NULL;
-  }
-  virtual DomainRightHandSide* NewRightHandSide() const
-  {
-    return NULL;
-  }
-  virtual DiracRightHandSide* NewDiracRightHandSide() const
-  {
-    return NULL;
-  }
-  virtual BoundaryRightHandSide* NewBoundaryRightHandSide() const
-  {
-    return NULL;
-  }
 
   ProblemDescriptorInterface()
   {
@@ -113,6 +89,12 @@ public:
 
   virtual const ParamFile* GetParamFile() const = 0;
 
+
+  virtual const Equation* GetEquation() const = 0;
+  virtual const BoundaryEquation* GetBoundaryEquation() const = 0;
+  virtual const DomainRightHandSide* GetRightHandSide() const = 0;
+  virtual const DiracRightHandSide* GetDiracRightHandSide() const = 0;
+  virtual const BoundaryRightHandSide* GetBoundaryRightHandSide() const = 0;
   virtual const FaceEquation* GetFaceEquation() const                   = 0;
   virtual const DirichletData* GetDirichletData() const                 = 0;
   virtual const PeriodicData* GetPeriodicData() const                   = 0;

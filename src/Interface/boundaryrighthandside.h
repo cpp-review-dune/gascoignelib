@@ -1,25 +1,25 @@
 /**
-*
-* Copyright (C) 2004, 2006 by the Gascoigne 3D authors
-*
-* This file is part of Gascoigne 3D
-*
-* Gascoigne 3D is free software: you can redistribute it
-* and/or modify it under the terms of the GNU General Public
-* License as published by the Free Software Foundation, either
-* version 3 of the License, or (at your option) any later
-* version.
-*
-* Gascoigne 3D is distributed in the hope that it will be
-* useful, but WITHOUT ANY WARRANTY; without even the implied
-* warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-* PURPOSE.  See the GNU General Public License for more
-* details.
-*
-* Please refer to the file LICENSE.TXT for further information
-* on this license.
-*
-**/
+ *
+ * Copyright (C) 2004, 2006 by the Gascoigne 3D authors
+ *
+ * This file is part of Gascoigne 3D
+ *
+ * Gascoigne 3D is free software: you can redistribute it
+ * and/or modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation, either
+ * version 3 of the License, or (at your option) any later
+ * version.
+ *
+ * Gascoigne 3D is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more
+ * details.
+ *
+ * Please refer to the file LICENSE.TXT for further information
+ * on this license.
+ *
+ **/
 
 
 #ifndef  __BoundaryRightHandSide_h
@@ -51,44 +51,54 @@ namespace Gascoigne
 
   class BoundaryRightHandSide : public virtual Application
   {
-    private:
+  private:
 
-    protected:
+  protected:
 
-    public:
-      BoundaryRightHandSide() : Application() {}
-      ~BoundaryRightHandSide() {}
+  public:
+    BoundaryRightHandSide() : Application() {}
+    ~BoundaryRightHandSide() {}
 
-      virtual int GetNcomp() const=0;
+    /**
+       clones an BRHS. Usually it is simply to return a new instance of the same object passing the required variables to the constructor. It takes the role of a copy constructor and the cloning of classes is required for multithreading. 
+    */
+    virtual BoundaryRightHandSide* createNew() const 
+    {
+      std::cerr << "\"BRHS::createNew\" not written!" << std::endl;
+      abort();
+    }
 
-      virtual double operator()(int c, const Vertex2d& v, const Vertex2d& n, int color) const {
-        std::cerr << "\"BoundaryRightHandSide::operator()\" not written!" << std::endl;
-        abort();
-      }
-      virtual double operator()(int c, const Vertex3d& v, const Vertex3d& n, int color) const {
-        std::cerr << "\"BoundaryRightHandSide::operator()\" not written!" << std::endl;
-        abort();
-      }
+    
+    virtual int GetNcomp() const=0;
 
-      virtual void operator()(VectorIterator b, const TestFunction& N, const Vertex2d& v, const Vertex2d& n, int color) const {
-        for(int c=0;c<GetNcomp();c++)
+    virtual double operator()(int c, const Vertex2d& v, const Vertex2d& n, int color) const {
+      std::cerr << "\"BoundaryRightHandSide::operator()\" not written!" << std::endl;
+      abort();
+    }
+    virtual double operator()(int c, const Vertex3d& v, const Vertex3d& n, int color) const {
+      std::cerr << "\"BoundaryRightHandSide::operator()\" not written!" << std::endl;
+      abort();
+    }
+
+    virtual void operator()(VectorIterator b, const TestFunction& N, const Vertex2d& v, const Vertex2d& n, int color) const {
+      for(int c=0;c<GetNcomp();c++)
         {
           b[c] += N.m()* (*this)(c,v,n,color);
         }
-      }
-      virtual void operator()(VectorIterator b, const TestFunction& N, const Vertex3d& v, const Vertex3d& n, int color) const {
-        for(int c=0;c<GetNcomp();c++)
+    }
+    virtual void operator()(VectorIterator b, const TestFunction& N, const Vertex3d& v, const Vertex3d& n, int color) const {
+      for(int c=0;c<GetNcomp();c++)
         {
           b[c] += N.m()* (*this)(c,v,n,color);
         }
-      }
+    }
 
-      virtual void SetCellSize(double h) const { }
+    virtual void SetCellSize(double h) const { }
   };
 
   typedef BoundaryRightHandSide BoundaryInitialCondition;
 
-/*-------------------------------------------------------*/
+  /*-------------------------------------------------------*/
 
 }
 

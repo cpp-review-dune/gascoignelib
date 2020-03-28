@@ -44,6 +44,16 @@ namespace Gascoigne
       BoundaryEquation() : Application() { }
       ~BoundaryEquation() { }
 
+    /**
+       clones a BoundaryEquation. Usually it is simply to return a new instance of the same object passing the required variables to the constructor. It takes the role of a copy constructor and the cloning of classes is required for multithreading. 
+    */
+    virtual BoundaryEquation* createNew() const 
+    {
+      std::cerr << "\"BoundaryEquation::createNew\" not written!" << std::endl;
+      abort();
+    }
+
+
       virtual int GetNcomp() const=0;
 
       virtual void Form(VectorIterator b, const FemFunction& U, const TestFunction& N, int col) const=0;
