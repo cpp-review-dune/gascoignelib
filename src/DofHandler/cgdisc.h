@@ -413,7 +413,7 @@ public:
 
   // assemble of the weak formulation for all test functions
   void Form(GlobalVector& f, const GlobalVector& u,
-            const ProblemDescriptorInterface& PD, double d) const
+            const Equation& EQ, double d) const
   {
     LocalParameterData QP;
     GlobalToGlobalData(QP);
@@ -426,11 +426,11 @@ public:
       integrator.BasicInit();
       LocalVector __U, __F;
       LocalData __QN, __QC;
-      const auto EQ = PD.GetEquation()->createNew();
-      
-      EQ->SetParameterData(QP);
-      EQ->SetTime(PD.time(),PD.dt());
-      
+      const auto EQCP = EQ.createNew();
+
+      EQCP->SetParameterData(QP);
+      //EQCP->SetTime(PD.time(),PD.dt());
+
 #pragma omp for schedule(static)
       for (int iq = 0; iq < GetDofHandler()->nelements(DEGREE); ++iq)
       {
@@ -438,21 +438,17 @@ public:
         finiteelement.ReInit(T);
         GlobalToLocal(__U, u, iq);
         GlobalToLocalData(iq, __QN, __QC);
-        EQ->point_cell(GetDofHandler()->material(DEGREE, iq));
-        integrator.Form(*EQ, __F, finiteelement, __U, __QN, __QC);
+        EQCP->point_cell(GetDofHandler()->material(DEGREE, iq));
+        integrator.Form(*EQCP, __F, finiteelement, __U, __QN, __QC);
         LocalToGlobal(f, __F, iq, d);
       }
-      delete EQ;
+      delete EQCP;
     }
   }
 
-  void Rhs(GlobalVector& f, const ProblemDescriptorInterface& PD,
+  void Rhs(GlobalVector& f, const DomainRightHandSide& RHS,
            double s) const
   {
-    if (PD.GetRightHandSide() == NULL)
-    {
-      return;
-    }
     LocalParameterData QP;
     GlobalToGlobalData(QP);
 #pragma omp parallel
@@ -463,9 +459,9 @@ public:
       integrator.BasicInit();
       LocalVector __F;
       LocalData __QN, __QC;
-      const auto RHS = PD.GetRightHandSide()->createNew();
-      RHS->SetParameterData(QP);
-      RHS->SetTime(PD.time(),PD.dt());
+      const auto RHSCP = RHS.createNew();
+      RHSCP->SetParameterData(QP);
+      //RHSCP->SetTime(PD.time(),PD.dt());
 
 #pragma omp for schedule(static)
       for (int iq = 0; iq < GetDofHandler()->nelements(DEGREE); ++iq)
@@ -473,21 +469,17 @@ public:
         Transformation(T, iq);
         finiteelement.ReInit(T);
         GlobalToLocalData(iq, __QN, __QC);
-        RHS->point_cell(GetDofHandler()->material(DEGREE, iq));
-        integrator.Rhs(*RHS, __F, finiteelement, __QN, __QC);
+        RHSCP->point_cell(GetDofHandler()->material(DEGREE, iq));
+        integrator.Rhs(*RHSCP, __F, finiteelement, __QN, __QC);
         LocalToGlobal(f, __F, iq, s);
       }
-      delete RHS;
+      delete RHSCP;
     }
   }
 
   void BoundaryRhs(GlobalVector& f, const IntSet& Colors,
-                   const ProblemDescriptorInterface& PD, double s) const
+                   const BoundaryRightHandSide& BRHS, double s) const
   {
-    if (PD.GetBoundaryRightHandSide() == NULL)
-    {
-      return;
-    }
     LocalParameterData QP;
     GlobalToGlobalData(QP);
 #pragma omp parallel
@@ -498,9 +490,9 @@ public:
       integrator.BasicInit();
       LocalVector __U, __F;
       LocalData __QN, __QC;
-      const auto NRHS = PD.GetBoundaryRightHandSide()->createNew();
+      const auto NRHS = BRHS.createNew();
       NRHS->SetParameterData(QP);
-      NRHS->SetTime(PD.time(),PD.dt());
+      //NRHS->SetTime(PD.time(),PD.dt());
       for (auto col : Colors)
       {
         const IntVector& q = *GetDofHandler()->ElementOnBoundary(DEGREE, col);
@@ -521,11 +513,12 @@ public:
           LocalToGlobal(f, __F, iq, s);
         }
       }
+      delete NRHS;
     }
   }
 
   void Matrix(MatrixInterface& A, const GlobalVector& u,
-              const ProblemDescriptorInterface& PD, double d) const
+              const Equation& EQ, double d) const
   {
     LocalParameterData QP;
     GlobalToGlobalData(QP);
@@ -539,9 +532,9 @@ public:
       LocalData __QN, __QC;
       EntryMatrix __E;
 
-      const auto EQ = PD.GetEquation()->createNew();
-      EQ->SetParameterData(QP);
-      EQ->SetTime(PD.time(),PD.dt());
+      const auto EQCP = EQ.createNew();
+      EQCP->SetParameterData(QP);
+      //EQ->SetTime(PD.time(),PD.dt());
 #pragma omp for schedule(static)
       for (int iq = 0; iq < GetDofHandler()->nelements(DEGREE); ++iq)
       {
@@ -551,12 +544,12 @@ public:
         GlobalToLocal(__U, u, iq);
         GlobalToLocalData(iq, __QN, __QC);
 
-        EQ->point_cell(GetDofHandler()->material(DEGREE, iq));
+        EQCP->point_cell(GetDofHandler()->material(DEGREE, iq));
         // EQ.cell(GetDofHandler(),iq,__U,__QN);
-        integrator.Matrix(*EQ, __E, finiteelement, __U, __QN, __QC);
+        integrator.Matrix(*EQCP, __E, finiteelement, __U, __QN, __QC);
         LocalToGlobal(A, __E, iq, d);
       }
-      delete EQ;
+      delete EQCP;
     }
     HN->MatrixDiag(u.ncomp(), A);
   }

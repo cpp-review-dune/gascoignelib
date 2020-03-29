@@ -279,7 +279,7 @@ void StdSolver::SetProblem(const ProblemDescriptorInterface& PDX)
   assert(_PDX);
 
   const Equation* EQ = GetProblemDescriptor()->GetEquation();
-  
+
   if (EQ)
     _check_consistency(EQ, GetDiscretization());
 }
@@ -1210,7 +1210,7 @@ void StdSolver::Form(VectorInterface& gy, const VectorInterface& gx,
   HNAverageData();
 
   //////////// Form in elements
-  GetDiscretization()->Form(GetGV(gy), GetGV(gx), *GetProblemDescriptor(), d);
+  GetDiscretization()->Form(GetGV(gy), GetGV(gx), *GetProblemDescriptor()->GetEquation(), d);
 
   //////////// Boundary
   //
@@ -1239,7 +1239,7 @@ void StdSolver::AdjointForm(VectorInterface& gy, const VectorInterface& gx,
   const Equation* EQ = GetProblemDescriptor()->GetEquation();
   assert(EQ);
   GetDiscretization()->AdjointForm(y, x, *EQ, d);
-  
+
 
   abort();
   const BoundaryEquation* BE = GetProblemDescriptor()->GetBoundaryEquation();
@@ -1582,11 +1582,11 @@ void StdSolver::Rhs(VectorInterface& gf, double d) const
 {
   const auto *RHS  = GetProblemDescriptor()->GetRightHandSide();
   const auto *BRHS = GetProblemDescriptor()->GetBoundaryRightHandSide();
-    
+
   if ((RHS==NULL) && (BRHS==NULL))
     return;
 
-  
+
   GlobalVector& f = GetGV(gf);
   HNAverageData();
 
@@ -1598,7 +1598,7 @@ void StdSolver::Rhs(VectorInterface& gf, double d) const
       dynamic_cast<const DomainRightHandSide*>(RHS);
     if (DRHS)
     {
-      GetDiscretization()->Rhs(f, *GetProblemDescriptor(), d);
+      GetDiscretization()->Rhs(f, *DRHS, d);
       done = true;
     }
     const DiracRightHandSide* NDRHS =
@@ -1622,7 +1622,7 @@ void StdSolver::Rhs(VectorInterface& gf, double d) const
     assert(BRHS->GetNcomp() == f.ncomp());
     const BoundaryManager* BM = GetProblemDescriptor()->GetBoundaryManager();
     GetDiscretization()->BoundaryRhs(f, BM->GetBoundaryRightHandSideColors(),
-                                     *GetProblemDescriptor(), d);
+                                     *BRHS, d);
   }
 
   HNZeroData();
@@ -1641,7 +1641,7 @@ void StdSolver::AssembleMatrix(const VectorInterface& gu, double d)
   HNAverageData();
 
   //////////// Elements
-  GetDiscretization()->Matrix(*GetMatrix(), u, *GetProblemDescriptor(), d);
+  GetDiscretization()->Matrix(*GetMatrix(), u, *GetProblemDescriptor()->GetEquation(), d);
 
   //////////// Boundary
   GetDiscretization()->BoundaryMatrix(*GetMatrix(), u, *GetProblemDescriptor(),
@@ -2098,7 +2098,7 @@ void StdSolver::AssembleDualMatrix(const VectorInterface& gu, double d)
   HNAverage(gu);
 
   M->zero();
-  GetDiscretization()->Matrix(*M, GetGV(gu), *GetProblemDescriptor(), d);
+  GetDiscretization()->Matrix(*M, GetGV(gu), *GetProblemDescriptor()->GetEquation(), d);
   M->transpose();
 
   // PeriodicMatrix() hier nicht getestet!

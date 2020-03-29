@@ -99,10 +99,10 @@ namespace Gascoigne
     virtual Vertex3d vertex3d(int i) const{ abort(); }
 
     virtual void Structure(SparseStructureInterface* S) const=0;
-    virtual void Form(GlobalVector& f, const GlobalVector& u, const ProblemDescriptorInterface& PD, double d) const{assert(0);}
-    virtual void Rhs(GlobalVector& f, const ProblemDescriptorInterface& RHS,
+    virtual void Form(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const{assert(0);}
+    virtual void Rhs(GlobalVector& f, const DomainRightHandSide& RHS,
                      double s) const {assert(0);};
-    virtual void Matrix(MatrixInterface& A, const GlobalVector& u, const ProblemDescriptorInterface& PD, double) const{assert(0);}
+    virtual void Matrix(MatrixInterface& A, const GlobalVector& u, const Equation& EQ, double) const{assert(0);}
 
       virtual void AdjointForm(GlobalVector& f, const GlobalVector& u, const Equation& EQ, double d) const {
         std::cerr << "\"DiscretizationInterface::AdjointForm\" not written!" << std::endl;
@@ -150,7 +150,7 @@ namespace Gascoigne
         std::cerr << "\"DiscretizationInterface::DiracRhs\" not written!" << std::endl;
         abort();
       }
-      virtual void BoundaryRhs(GlobalVector& f, const IntSet& Colors,  const ProblemDescriptorInterface& PD,
+      virtual void BoundaryRhs(GlobalVector& f, const IntSet& Colors,  const BoundaryRightHandSide& BRHS,
           double s) const{
         std::cerr << "\"DiscretizationInterface::BoundaryRhs\" not written!" << std::endl;
         abort();

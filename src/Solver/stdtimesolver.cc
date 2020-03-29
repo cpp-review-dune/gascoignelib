@@ -99,7 +99,7 @@ void StdTimeSolver::SetProblem(const ProblemDescriptorInterface& PDX)
 void StdTimeSolver::RegisterMatrix()
 {
   int ncomp = GetProblemDescriptor()->GetNcomp();
-  
+
   if (GetMassMatrixPointer()==NULL)
     GetMassMatrixPointer() = NewMassMatrix(ncomp,_matrixtype);
 
@@ -149,7 +149,7 @@ void Gascoigne::StdTimeSolver::InitialCondition(VectorInterface& gf, double d) c
        {
          //TODO: Has to be changed so that the call to Rhs actually uses the initial condition,
          // not the RHS. Easiest solution: Dummy Problemdescriptor
-         GetDiscretization()->Rhs(f, *GetProblemDescriptor(),d);
+         GetDiscretization()->Rhs(f, *DRHS,d);
          done = true;
        }
        const DiracInitialCondition *NDRHS = dynamic_cast<const DiracInitialCondition *>(IC);
@@ -169,7 +169,7 @@ void Gascoigne::StdTimeSolver::InitialCondition(VectorInterface& gf, double d) c
       assert(NIC->GetNcomp()==f.ncomp());
       const BoundaryManager*  BM   = GetProblemDescriptor()->GetBoundaryManager();
       //TODO: Has to be changed so that it uses the initial condition
-      GetDiscretization()->BoundaryRhs(f,BM->GetBoundaryRightHandSideColors(),*GetProblemDescriptor(),d);
+      GetDiscretization()->BoundaryRhs(f,BM->GetBoundaryRightHandSideColors(),*NIC,d);
     }
   HNZeroData();
   HNDistribute(gf);
