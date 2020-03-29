@@ -33,16 +33,10 @@ namespace Gascoigne
   /*------------------------------------------------------------------------------*/
 
   ProblemDescriptorBase::ProblemDescriptorBase() :
-    BM(NULL),
-    ES(NULL),
-    IC(NULL),
-    DD(NULL),
-    PD(NULL),
-    BIC(NULL),
-    CI(),
-    _paramfile(NULL),
-    _time(-1),
-    _dt(-1)
+    EQ(NULL),BEQ(NULL),RHS(NULL),DRHS(NULL),
+    BRHS(NULL),FEQ(NULL),BM(NULL),ES(NULL),IC(NULL),
+    DD(NULL),PD(NULL),BIC(NULL),CI(NULL),_paramfile(NULL),
+    _time(0.0),_dt(0.0)
   {
   }
 
