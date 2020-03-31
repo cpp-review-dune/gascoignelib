@@ -601,7 +601,7 @@ double GalerkinIntegrator<DIM>::ComputeDomainFunctional(const DomainFunctional& 
   BasicIntegrator::universal_point(_QCH,QC);
   F.SetCellData(_QCH);
 
-  const IntegrationFormulaInterface& IF = *FormFormula();
+  const IntegrationFormulaInterface& IF = *RhsFormula();
 
   Vertex<DIM> x, xi;
   double j = 0.;
