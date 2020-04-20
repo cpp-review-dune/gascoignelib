@@ -129,7 +129,19 @@ namespace Gascoigne
   {
     _time = time;
     _dt   = dt;
-    
+
+    if (FEQ)
+      FEQ->SetTime(time, dt);
+    if (BRHS)
+      BRHS->SetTime(time, dt);
+    if (DRHS)
+      DRHS->SetTime(time, dt);
+    if (RHS)
+      RHS->SetTime(time, dt);
+    if (BEQ)
+      BEQ->SetTime(time, dt);
+    if(EQ)
+      EQ->SetTime(time, dt);
     if (ES)
       ES->SetTime(time, dt);
     if (DD)
