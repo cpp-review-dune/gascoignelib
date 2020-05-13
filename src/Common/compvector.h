@@ -238,6 +238,25 @@ public:
     while (p != pp)
       *(p++) += d0 * *q0++ + d1 * *q1++ + d2 * *q2++;
   }
+  void add_node(int i, double d0, int i0, double d1, int i1, double d2, int i2,
+                double d3, int i3, double d4, int i4, double d5, int i5,
+                double d6, int i6, double d7, int i7, double d8, int i8)
+  {
+    iterator p        = start(i);
+    const_iterator pp = p + N;
+    const_iterator p0 = start(i0);
+    const_iterator p1 = start(i1);
+    const_iterator p2 = start(i2);
+    const_iterator p3 = start(i3);
+    const_iterator p4 = start(i4);
+    const_iterator p5 = start(i5);
+    const_iterator p6 = start(i6);
+    const_iterator p7 = start(i7);
+    const_iterator p8 = start(i8);
+    while (p != pp)
+      *(p++) += d0 * *p0++ + d1 * *p1++ + d2 * *p2++ + d3 * *p3++ + d4 * *p4++
+                + d5 * *p5++ + d6 * *p6++ + d7 * *p7++ + d8 * *p8++;
+  }
   void equ_node(int i, double d0, int i0, double d1, int i1, double d2, int i2,
                 double d3, int i3)
   {
