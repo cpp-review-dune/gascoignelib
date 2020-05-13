@@ -53,14 +53,12 @@ public:
   std::map<int,std::array<int,4> >&  GetVierer(){return vierer; }
   std::map<int,std::array<int,8> >&  GetAchter(){return achter; }
   IntVector&                       GetC2F()   {return c2f;  }
-  
-  
-  
+  const IntVector&                 GetC2F() const {return c2f;}
 
   MgInterpolatorNested() : MgInterpolatorInterface() {}
 
   void BasicInit(const MeshTransferInterface* MT);
-  
+
   void restrict_zero   (GlobalVector&, const GlobalVector&) const;
   void prolongate_add  (GlobalVector&, const GlobalVector&) const;
   void SolutionTransfer(GlobalVector&, const GlobalVector&) const;
