@@ -60,6 +60,7 @@ StdLoop::StdLoop(const ParamFile* paramfile, const ProblemContainer* PC,
   FileScanner FS(DFH);
   FS.NoComplain();
   FS.readfile(paramfile, "Loop");
+
 }
 
 /*-----------------------------------------*/
@@ -91,9 +92,17 @@ void StdLoop::BasicInit(const ParamFile* paramfile, const ProblemContainer* PC,
   DFH.insert("refiner", &_refiner, "global");
   DFH.insert("estimator", &_estimator, "none");
   DFH.insert("extrapolate", &_extrapolate, "no");
+  DFH.insert("writevtk", &_writeVtk, true);
+  DFH.insert("writebupgup", &_writeBupGup, false);
+  DFH.insert("resultsdir", &_s_resultsdir, "Results");
   FileScanner FS(DFH);
   FS.NoComplain();
   FS.readfile(_paramfile, "Loop");
+
+  //create resultsdir
+  string command("mkdir -p ");
+  command += _s_resultsdir;
+  system(command.c_str());
 }
 
 /*-------------------------------------------------------*/
@@ -205,7 +214,7 @@ double StdLoop::Estimator(DoubleVector& eta, VectorInterface& u, VectorInterface
     {
       std::cerr << "_estimator 'second' not implemented!" << std::endl;
       abort();
-      
+
     // int dim = GetMeshAgent()->GetMesh(0)->dimension();
 
     // if (dim == 2)
