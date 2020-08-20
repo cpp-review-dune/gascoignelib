@@ -50,6 +50,8 @@ protected:
 
   const FemInterface* GetFem() const {assert(__FEM); return __FEM;}
   const IntegratorInterface* GetIntegrator() const {assert(__INT); return __INT;}
+  // Getter that allows the change of the quadrature rule of the integrator
+  IntegratorInterface* GetModifiableIntegrator() const {assert(__INT); return __INT;}
   IntegratorInterface*& GetIntegratorPointer() {return __INT;}
   FemInterface*& GetFemPointer() {return __FEM;}
 
@@ -92,6 +94,7 @@ public:
   }
 
   std::string GetName() const {return "CellDiscretization";}
+  std::string GetIntegratorName() const { return GetIntegrator()->GetName(); }
 
   void Structure(SparseStructureInterface* S) const;
 
@@ -140,7 +143,8 @@ public:
   void GetVolumes(DoubleVector& a) const;
   void GetAreas(DoubleVector& a, const IntSet& Colors) const;
   void GetMassDiag(DoubleVector& a) const;
-  void GetBoundaryMassDiag(DoubleVector& a) const;      
+  void GetBoundaryMassDiag(DoubleVector& a) const;
+  void RHSQuadratureSwitch(bool b) const;
 };
 }
 

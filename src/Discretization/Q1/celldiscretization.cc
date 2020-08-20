@@ -1229,4 +1229,11 @@ void CellDiscretization::MeasureRhs(GlobalVector& f, const MeasureRightHandSide 
   f *= d;
 }
 
+/* ----------------------------------------- */
+
+void CellDiscretization::RHSQuadratureSwitch(bool b) const
+{
+  GetModifiableIntegrator()->RHSQuadratureSwitch(b);
+}
+
 }

@@ -46,21 +46,23 @@ void GalerkinIntegrator<DIM>::BasicInit()
       if (!FormFormulaPointer())     FormFormulaPointer() = new QuadGauss4;
       if (!ErrorFormulaPointer())    ErrorFormulaPointer() = new QuadGauss9;
       if (!BoundaryFormulaPointer()) BoundaryFormulaPointer() = new LineGauss2;
-      if (!MassFormulaPointer())     MassFormulaPointer() = new QuadGauss4;;
-      //if (!MassFormulaPointer())     MassFormulaPointer() = new QuadTrapez;
+      if (!MassFormulaPointer())     MassFormulaPointer() = new QuadTrapez;
     }
   else if (DIM==3)
     {
       if (!FormFormulaPointer())     FormFormulaPointer() = new HexGauss8;
       if (!ErrorFormulaPointer())    ErrorFormulaPointer() = new HexGauss27;
       if (!BoundaryFormulaPointer()) BoundaryFormulaPointer() = new QuadGauss4;
-      if (!MassFormulaPointer())     MassFormulaPointer() = new HexGauss8;
-//      if (!MassFormulaPointer())     MassFormulaPointer() = new HexTrapez;
+      if (!MassFormulaPointer())     MassFormulaPointer() = new HexTrapez;
     }
+
+  if (!RhsFormulaPointer())			 RhsFormulaPointer() = FormFormulaPointer();
+
   assert(FormFormulaPointer());
   assert(ErrorFormulaPointer());
   assert(BoundaryFormulaPointer());
   assert(MassFormulaPointer());
+  assert(RhsFormulaPointer());
 }
 
 /* ----------------------------------------- */
@@ -101,7 +103,7 @@ void GalerkinIntegrator<DIM>::Rhs(const DomainRightHandSide& f, LocalVector& F, 
   BasicIntegrator::universal_point(_QCH,QC);
   f.SetCellData(_QCH);
 
-  const IntegrationFormulaInterface& IF = *FormFormula();
+  const IntegrationFormulaInterface& IF = *RhsFormula();
 
   F.zero();
   Vertex<DIM> x, xi;
@@ -311,7 +313,8 @@ double GalerkinIntegrator<DIM>::MassMatrix(EntryMatrix& E, const FemInterface& F
   E.SetDimensionComp(ncomp,ncomp);
   E.resize();
   E.zero();
-  const IntegrationFormulaInterface& IF = *MassFormula();
+  //const IntegrationFormulaInterface& IF = *MassFormula();
+  const IntegrationFormulaInterface& IF = *FormFormula();
 
   Vertex<DIM> x, xi;
   double omega = 0.;
@@ -478,7 +481,8 @@ void Gascoigne::GalerkinIntegrator<DIM>::MassForm(const TimePattern& TP, LocalVe
 {
   F.ReInit(U.ncomp(),FEM.n());
 
-  const IntegrationFormulaInterface& IF = *MassFormula();
+  //const IntegrationFormulaInterface& IF = *MassFormula();
+  const IntegrationFormulaInterface& IF = *FormFormula();
 
   F.zero();
   Vertex<DIM> xi;
@@ -597,7 +601,7 @@ double GalerkinIntegrator<DIM>::ComputeDomainFunctional(const DomainFunctional& 
   BasicIntegrator::universal_point(_QCH,QC);
   F.SetCellData(_QCH);
 
-  const IntegrationFormulaInterface& IF = *FormFormula();
+  const IntegrationFormulaInterface& IF = *RhsFormula();
 
   Vertex<DIM> x, xi;
   double j = 0.;
@@ -862,6 +866,18 @@ void GalerkinIntegrator<DIM>::RhsCurve(LocalVector& F, const FemInterface& FEM,
   {
     FEM.init_test_functions(_NN,1.,i);
     F(i,comp) += H*ND1*0.5*_NN.m();
+  }
+}
+
+template<int DIM>
+void GalerkinIntegrator<DIM>::RHSQuadratureSwitch(bool b)
+{
+  if(b){
+	  RhsFormulaPointer() = MassFormulaPointer();
+  }
+  else
+  {
+	  RhsFormulaPointer() = FormFormulaPointer();
   }
 }
 

@@ -200,6 +200,11 @@ namespace Gascoigne
 						assert(0);
       }
 
+	  virtual void RHSQuadratureSwitch(bool b) {
+		  std::cerr << "RHSQuadratureSwitch not implemented!" << std::endl;
+		  abort();
+	  } 
+
   };
 }
 

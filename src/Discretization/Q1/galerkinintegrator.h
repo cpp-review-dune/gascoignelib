@@ -49,6 +49,7 @@ private:
   IntegrationFormulaInterface*  IFE;
   IntegrationFormulaInterface*  IFB;
   IntegrationFormulaInterface*  IFM;
+  IntegrationFormulaInterface*  IFRHS;
 
 protected:
 
@@ -56,11 +57,13 @@ protected:
   virtual IntegrationFormulaInterface*& ErrorFormulaPointer() { return IFE;}
   virtual IntegrationFormulaInterface*& MassFormulaPointer() { return IFM;}
   virtual IntegrationFormulaInterface*& BoundaryFormulaPointer() { return IFB;}
+  virtual IntegrationFormulaInterface*& RhsFormulaPointer() { return IFRHS;}
 
   virtual const IntegrationFormulaInterface* FormFormula() const { assert(GalerkinIntegrator<DIM>::IFF); return GalerkinIntegrator<DIM>::IFF;}
   virtual const IntegrationFormulaInterface* MassFormula() const { assert(GalerkinIntegrator<DIM>::IFM); return GalerkinIntegrator<DIM>::IFM;}
   virtual const IntegrationFormulaInterface* ErrorFormula() const { assert(GalerkinIntegrator<DIM>::IFE); return GalerkinIntegrator<DIM>::IFE;}
   virtual const IntegrationFormulaInterface* BoundaryFormula() const { assert(GalerkinIntegrator<DIM>::IFB); return GalerkinIntegrator<DIM>::IFB;}
+  virtual const IntegrationFormulaInterface* RhsFormula() const { assert(GalerkinIntegrator<DIM>::IFRHS); return GalerkinIntegrator<DIM>::IFRHS;}
 
   double Volume2MeshSize(double vol) const { return pow(vol,1./float(DIM));}
 
@@ -127,6 +130,7 @@ public:
 		Vertex<DIM>& xr1, double H, double ND0,double ND1, int ncomp, int comp) const;
 #pragma GCC diagnostic pop
 
+  void RHSQuadratureSwitch(bool b);
 
 };
 }
