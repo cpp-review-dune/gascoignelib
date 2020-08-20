@@ -109,6 +109,8 @@ public:
       const LocalData& Q, const LocalData& QC) const;
   void EvaluateBoundaryCellRightHandSide(LocalVector& F, const BoundaryRightHandSide& CF,const FemInterface& FEM, int ile, int col, 
       const LocalData& Q, const LocalData& QC) const;
+  void ParameterDiracRhsPoint(LocalVector& b, const FemInterface& E, const Vertex<DIM>& p, const DiracRightHandSide& DRHS, 
+      int j, const LocalData& Q, const LocalData& QC) const;
 
   void ErrorsByExactSolution(LocalVector& dst, const FemInterface& FE, const ExactSolution& ES, const LocalVector& U, 
       const LocalData& Q, const LocalData& QC) const;
