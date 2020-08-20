@@ -1227,6 +1227,9 @@ void CellDiscretization::MeasureRhs(GlobalVector& f, const MeasureRightHandSide 
     MRHS(f.start(node),node);
   }
   f *= d;
+}
+
+/* ----------------------------------------- */
 
 void CellDiscretization::RHSQuadratureSwitch(bool b) const
 {

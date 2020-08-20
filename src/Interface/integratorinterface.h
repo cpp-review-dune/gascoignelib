@@ -144,6 +144,18 @@ namespace Gascoigne
         std::cerr << "\"IntegratorInterface::EvaluateBoundaryCellRightHandSide\" not written!" << std::endl;
         abort(); }
 
+      virtual void ParameterDiracRhsPoint(LocalVector& b, const FemInterface& E, const Vertex2d& p, const DiracRightHandSide& DRHS, 
+          int i, const LocalData& Q, const LocalData& QC) const {
+        std::cerr << "\"IntegratorInterface::ParameterDiracRhsPoint\" not written!" << std::endl;
+        abort();
+      }
+
+      virtual void ParameterDiracRhsPoint(LocalVector& b, const FemInterface& E, const Vertex3d& p, const DiracRightHandSide& DRHS, 
+          int i, const LocalData& Q, const LocalData& QC) const {
+        std::cerr << "\"IntegratorInterface::ParameterDiracRhsPoint\" not written!" << std::endl;
+        abort();
+      }
+
       virtual void DiracRhsPoint(LocalVector& b, const FemInterface& E, const Vertex2d& p, const DiracRightHandSide& DRHS, 
           int i, const LocalData& Q, const LocalData& QC) const {
         std::cerr << "\"IntegratorInterface::DiracRhsPoint\" not written!" << std::endl;

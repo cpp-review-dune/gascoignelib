@@ -158,6 +158,12 @@ void Gascoigne::StdTimeSolver::InitialCondition(VectorInterface& gf, double d) c
          GetDiscretization()->DiracRhs(f,*NDRHS,d);
          done =true;
        }
+       const MeasureInitialCondition *MRHS = dynamic_cast<const MeasureInitialCondition *>(IC);
+       if(MRHS)
+       {
+         GetDiscretization()->MeasureRhs(f,*MRHS,d);
+         done =true;
+       }
        if(!done)
        {
          cerr << "InitialCondition should be either of type DomainRightHandSide or DiracRightHandSide!!!" << endl;

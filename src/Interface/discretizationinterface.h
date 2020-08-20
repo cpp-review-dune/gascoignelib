@@ -46,6 +46,7 @@
 #include  "diracrighthandside.h"
 #include  "domainfunction.h"
 #include  "curve.h"
+#include  "measurerighthandside.h"
 
 namespace Gascoigne
 {
@@ -229,6 +230,11 @@ namespace Gascoigne
         abort();
       }
 
+      virtual void EvaluateParameterDiracRhs(GlobalVector& f, const DiracRightHandSide &D, double d = 1.) const {
+        std::cerr << "\"DiscretizationInterface::EvaluateParameterDiracRhs\" not written!" << std::endl;
+        abort();
+      }
+
       virtual void EvaluateBoundaryParameterRightHandSide(GlobalVector& f,const IntSet& Colors, const BoundaryRightHandSide& CF, double d = 1.) const{
         std::cerr << "\"DiscretizationInterface::EvaluateBoundaryParameterRighthandside\" not written!" << std::endl;
         abort();
@@ -274,7 +280,10 @@ namespace Gascoigne
         abort();
       }
 
-
+      virtual void MeasureRhs(GlobalVector& f, const MeasureRightHandSide &MRHS, double d) const {
+        std::cerr << "\"DiscretizationInterface::MeasureRightHandSide\" not written!" << std::endl;
+        abort();
+      }
   };
 }
 
