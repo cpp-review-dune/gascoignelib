@@ -128,6 +128,23 @@ void BasicDiscretization::GlobalToLocalCell(LocalVector& U, const GlobalVector& 
 
 /* ----------------------------------------- */
 
+void BasicDiscretization::GlobalToLocalDataNode(int node) const
+{
+  const GlobalData& gnd = GetDataContainer().GetNodeData();
+  __QN.clear();
+  GlobalData::const_iterator p=gnd.begin();
+  for(; p!=gnd.end(); p++)
+    {
+      __QN[p->first].ReInit((*p->second).ncomp(),1);
+      for(int c=0;c<(*p->second).ncomp();++c)
+      {
+        __QN[p->first] = (*p->second)(node,c);
+      }
+    }
+}
+
+/* ----------------------------------------- */
+
 void BasicDiscretization::LocalToGlobal(GlobalVector& f, const LocalVector& F, int iq, double s) const
 {
   IntVector indices = GetLocalIndices(iq);

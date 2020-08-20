@@ -71,6 +71,8 @@ class BasicDiscretization : public DiscretizationInterface
    virtual void GlobalToLocalSingle(LocalVector& U, const GlobalVector& u, int iq) const;
    virtual void GlobalToLocalCell(LocalVector& U, const GlobalVector& u, int iq) const;
 
+   virtual void GlobalToLocalDataNode(int node) const;
+
    virtual void LocalToGlobal(GlobalVector& f, const LocalVector& F, int iq, double s) const;
    virtual void LocalToGlobal(MatrixInterface& A, EntryMatrix& E, int iq, double s) const;
 
