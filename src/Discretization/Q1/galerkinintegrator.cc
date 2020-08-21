@@ -32,7 +32,7 @@ namespace Gascoigne
 {
 template<int DIM>
 GalerkinIntegrator<DIM>::GalerkinIntegrator() : BasicIntegrator(),
-  IFF(NULL), IFE(NULL), IFB(NULL), IFM(NULL)
+  IFF(NULL), IFE(NULL), IFB(NULL), IFM(NULL), IFRHS(NULL)
 {
 }
 
@@ -56,7 +56,7 @@ void GalerkinIntegrator<DIM>::BasicInit()
       if (!MassFormulaPointer())     MassFormulaPointer() = new HexTrapez;
     }
 
-  if (!RhsFormulaPointer())			 RhsFormulaPointer() = FormFormulaPointer();
+  if (!RhsFormulaPointer()) RhsFormulaPointer() = FormFormulaPointer();
 
   assert(FormFormulaPointer());
   assert(ErrorFormulaPointer());

@@ -56,10 +56,14 @@ void GalerkinIntegratorQ2<DIM>::BasicInit()
       if (!GalerkinIntegrator<DIM>::ErrorFormulaPointer())    GalerkinIntegrator<DIM>::ErrorFormulaPointer() = new HexGauss64;
       if (!GalerkinIntegrator<DIM>::BoundaryFormulaPointer()) GalerkinIntegrator<DIM>::BoundaryFormulaPointer() = new QuadGauss9;
     }
+
+  if (!GalerkinIntegrator<DIM>::RhsFormulaPointer()) GalerkinIntegrator<DIM>::RhsFormulaPointer() = GalerkinIntegrator<DIM>::FormFormulaPointer();
+
   assert(GalerkinIntegrator<DIM>::FormFormulaPointer());
   assert(GalerkinIntegrator<DIM>::ErrorFormulaPointer());
   assert(GalerkinIntegrator<DIM>::BoundaryFormulaPointer());
   assert(GalerkinIntegrator<DIM>::MassFormulaPointer());
+  assert(GalerkinIntegrator<DIM>::RhsFormulaPointer());
 }
 
 /* ----------------------------------------- */
