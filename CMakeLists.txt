@@ -1,3 +1,4 @@
+set(CMAKE_CXX_FLAGS_RELEASE "_UNSET" CACHE STRING "")
 PROJECT(GASCOIGNE CXX C)
 
 #
@@ -36,7 +37,7 @@ INCLUDE(CMakeLists_Includes.txt)
 # Setup compiler flags and compile definitions:
 #
 SET(GASCOIGNE_CXX_FLAGS
-  "-std=c++11 -pedantic -Wall -Wno-sign-compare -Wold-style-cast" CACHE STRING "Configuration flags"
+  "-std=c++11 -pedantic -Wall -Wno-sign-compare -Wold-style-cast -Wno-unknown-pragmas" CACHE STRING "Configuration flags"
   )
 
 
@@ -104,3 +105,4 @@ ADD_DEFINITIONS(${GASCOIGNE_DEFINITIONS})
 SET(GASCOIGNE_LIBS "GascoigneStd${BUILD_ENDING}")
 
 ADD_SUBDIRECTORY(src)
+ADD_SUBDIRECTORY(doc)

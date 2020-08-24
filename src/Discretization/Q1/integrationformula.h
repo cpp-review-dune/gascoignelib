@@ -157,7 +157,8 @@ typedef TensorFormula3d<1,LineGauss1> HexGauss1;
 typedef TensorFormula3d<2,LineGauss2> HexGauss8; 
 typedef TensorFormula3d<3,LineGauss3> HexGauss27; 
 typedef TensorFormula3d<4,LineGauss4> HexGauss64; 
-typedef TensorFormula3d<5,LineGauss5> HexGauss125; 
+typedef TensorFormula3d<5,LineGauss5> HexGauss125;
+typedef TensorFormula3d<6,LineGauss6> HexGauss216; 
 }
 
 /*------------------------------------------------------------*/

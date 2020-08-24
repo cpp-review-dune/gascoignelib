@@ -49,6 +49,10 @@ protected:
   int _nmin, _nmax, _coarse;
   double _p;
   int _random_coarsening;
+
+  /// if yes: print statistic on the runtime after each iteration
+  bool _runtime_statistics; 
+  
   std::string _estimator, _extrapolate, _refiner;
   DoubleVector _JErr;
   Extrapolator Extra;
@@ -57,7 +61,8 @@ protected:
 
   DoubleVector ComputeFunctionals(VectorInterface& f, VectorInterface& u);
 
-  DoubleVector GetExactValues() const;
+  const DoubleVector GetExactValues() const;
+  const std::vector<std::string> GetFunctionalNames() const;
 
   virtual void EtaVisu(std::string name, int i, const DoubleVector& eta) const;
   virtual void EtaCellVisu(std::string name, int i, const GlobalVector& eta) const;

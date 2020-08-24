@@ -23,6 +23,7 @@
 
 
 #include  "extrapolator.h"
+#include <iomanip>
 
 using namespace std;
 
@@ -44,9 +45,14 @@ void Extrapolator::Print()
   cout.precision(12);
   for (int i=0; i<n; i++)
     {
-      cout << valextra[i];
+      cout << fixed << std::setw(16) << valextra[i];
+    }
+  cout << endl << "[rate]\t";
+  for (int i=0; i<n; i++)
+    {
       cout.precision(4);
-      cout << " [" << order[i] << "]  ";
+      cout << setw(8) << "[";
+      cout << setw(4) << order[i] << "]";
       cout.precision(12);
     }
   cout << endl;

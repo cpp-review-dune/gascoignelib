@@ -114,7 +114,9 @@ namespace Gascoigne
     if (EQ)
     {
       _TP.reservesize(EQ->GetNcomp(), EQ->GetNcomp(), 0.);
-      EQ->SetTimePattern(_TP);
+      std::cerr << "irgendwas ist nicht mehr in der form unterstuett..." << std::endl;
+      abort();
+      //      EQ->SetTimePattern(_TP);
     }
   }
 

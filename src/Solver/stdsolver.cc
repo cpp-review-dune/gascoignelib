@@ -64,6 +64,7 @@
 #include "diracrighthandside.h"
 
 //////////////////// Discretization
+#include "lagrangedisc.h"
 #include "cgdisc.h"
 #include "baseq12d.h"
 #include "baseq22d.h"
@@ -513,6 +514,14 @@ DiscretizationInterface* StdSolver::NewDiscretization(int dimension,
       return new CGDiscQ12dLps;
     else if (discname == "CGQ2Lps")
       return new CGDiscQ22dLps;
+
+    else if (discname == "LQ1")
+      return new LagrangeDiscQ12d;
+    else if (discname == "LQ2")
+      return new LagrangeDiscQ22d;
+    else if (discname == "LQ4")
+      return new LagrangeDiscQ42d;
+
     else if (discname == "DG1")
       return new DG<BASEQ12D>;
     else if (discname == "DG2")
@@ -534,6 +543,14 @@ DiscretizationInterface* StdSolver::NewDiscretization(int dimension,
       return new CGDiscQ13dLps;
     else if (discname == "CGQ2Lps")
       return new CGDiscQ23dLps;
+
+    else if (discname == "LQ1")
+      return new LagrangeDiscQ13d;
+    else if (discname == "LQ2")
+      return new LagrangeDiscQ23d;
+    else if (discname == "LQ4")
+      return new LagrangeDiscQ43d;
+
     else
     {
       cerr << " Solver::NewDiscretization()\tunknown discname=" << discname
@@ -1172,7 +1189,7 @@ void StdSolver::smooth_exact(VectorInterface& x, const VectorInterface& y,
 #ifdef __WITH_UMFPACK__
   if (_directsolver && _useUMFPACK)
   {
-    GlobalTimer.start("---> smooth_exact");
+    GlobalTimer.start("---> smooth (ex)");
 #ifdef __WITH_UMFPACK_LONG__
     UmfIluLong* UM = dynamic_cast<UmfIluLong*>(GetIlu());
 #else
@@ -1180,7 +1197,7 @@ void StdSolver::smooth_exact(VectorInterface& x, const VectorInterface& y,
 #endif
     assert(UM);
     UM->Solve(GetGV(x), GetGV(y));
-    GlobalTimer.stop("---> smooth_exact");
+    GlobalTimer.stop("---> smooth (ex)");
   }
   else
 #endif
@@ -1581,15 +1598,23 @@ void StdSolver::InterpolateDomainFunction(VectorInterface& f,
 void StdSolver::Rhs(VectorInterface& gf, double d) const
 {
   const auto *RHS  = GetProblemDescriptor()->GetRightHandSide();
+  const auto *DRHS = GetProblemDescriptor()->GetDiracRightHandSide();
   const auto *BRHS = GetProblemDescriptor()->GetBoundaryRightHandSide();
 
-  if ((RHS==NULL) && (BRHS==NULL))
+  if ((RHS==NULL) && (BRHS==NULL) && (DRHS==NULL))
     return;
 
 
   GlobalVector& f = GetGV(gf);
   HNAverageData();
 
+  if (DRHS)
+    {
+      GetDiscretization()->DiracRhs(f, *DRHS, d);
+    }
+  
+  
+  
 
   if (RHS)
   {
@@ -1605,6 +1630,7 @@ void StdSolver::Rhs(VectorInterface& gf, double d) const
       dynamic_cast<const DiracRightHandSide*>(RHS);
     if (NDRHS)
     {
+      abort();
       GetDiscretization()->DiracRhs(f, *NDRHS, d);
       done = true;
     }
@@ -1894,15 +1920,6 @@ void StdSolver::PermutateIlu(const VectorInterface& gu) const
 
 void StdSolver::Visu(const string& name, const VectorInterface& gu, int i) const
 {
-  // const GlobalVector& U = GetGV(gu);
-  // assert(U.n() == GetDiscretization()->ndofs());
-  // char s[20];
-  // sprintf(s,"%s-%i.txt",name.c_str(),i);
-  // ofstream OUT(s);
-  // for (int i=0;i<U.n();++i)
-  //   OUT << GetDiscretization()->vertex2d(i) << "\t" << U(i,0) << endl;
-  // OUT.close();
-
   GlobalTimer.start("---> visu");
   if (gu.GetType() == "node")
   {
@@ -1925,8 +1942,7 @@ void StdSolver::Visu(const string& name, const VectorInterface& gu, int i) const
 void StdSolver::PointVisu(const string& name, const GlobalVector& u,
                           int i) const
 {
-  GetDiscretization()->VisuVtk(
-    GetProblemDescriptor()->GetComponentInformation(), *_paramfile, name, u, i);
+  GetDiscretization()->VisuVtk(GetProblemDescriptor()->GetComponentInformation(), *_paramfile, name, u, i);
 }
 
 /* -------------------------------------------------------*/

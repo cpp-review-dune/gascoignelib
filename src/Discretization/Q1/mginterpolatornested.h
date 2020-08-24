@@ -52,7 +52,7 @@ public:
   std::map<int,std::array<int,2> >&  GetZweier(){return zweier; }
   std::map<int,std::array<int,4> >&  GetVierer(){return vierer; }
   std::map<int,std::array<int,8> >&  GetAchter(){return achter; }
-  IntVector&                       GetC2F()   {return c2f;  }
+  IntVector&                         GetC2F()   {return c2f;  }
   
   
   

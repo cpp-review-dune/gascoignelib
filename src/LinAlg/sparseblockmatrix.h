@@ -162,6 +162,14 @@ public:
   /*-----------------------------------------------*/
 
   std::ostream& Write(std::ostream& s) const;
+
+  /// write matrix to file in simple format:
+  /// row col value
+  /// can be used by matlab
+  ///   load mat.dat
+  ///   A = spconvert(mat)
+  void write_raw(std::string fname) const;
+  
   friend std::ostream& operator<<(std::ostream& s,
                                   const SparseBlockMatrix<B>& A)
   {

@@ -180,6 +180,7 @@ public:
 
   //////////////////////////////////////////////////
   // Functionals
+  virtual const std::vector<std::string> GetFunctionalNames() const;
   virtual const DoubleVector GetExactValues() const;
   virtual const DoubleVector ComputeFunctionals(VectorInterface& f,
                                                 const VectorInterface& u);

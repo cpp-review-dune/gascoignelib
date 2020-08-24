@@ -140,9 +140,7 @@ public:
     HNAverage(const_cast<GlobalVector&>(u));
 
     GascoigneVisualization Visu;
-
     Visu.SetMesh(GetDofHandler());
-
     if (CI)
     {
       Visu.AddPointVector(CI, &u);
@@ -444,6 +442,54 @@ public:
       }
       delete EQCP;
     }
+  }
+
+  void DiracRhs(GlobalVector& f, const DiracRightHandSide& DRHS, double s) const
+  {
+    const std::vector<int>& comps = DRHS.GetComps();
+    int nn = comps.size();
+
+    if (DIM == 2)
+      {
+	// super simple...
+	
+	std::vector<Vertex2d> v2d = DRHS.GetPoints2d();
+	assert(nn==v2d.size());
+	
+	for(int i=0;i<nn;++i)
+	  {
+	    int j=0;
+	    for (j=0;j<ndofs();++j)
+	      {
+		double dist = pow(v2d[i].x()-vertex2d(j).x(),2.0)+
+		  pow(v2d[i].y()-vertex2d(j).y(),2.0);
+		if (dist<1.e-12)
+		  break;
+	      }
+	    if (j==ndofs())
+	      {
+		std::cerr << "point " << v2d[i] << " not found" << std::endl;
+		abort();
+	      }
+	    f(j,comps[i]) += 1.0/M_PI;
+	  }
+      }
+    // else if (dim == 3)
+    //   {
+    // 	abort();
+	
+    // 	vector<Vertex3d> v3d = DRHS.GetPoints3d();
+    // 	assert(nn==v3d.size());
+    // 	for(int i=0;i<nn;++i)
+    // 	  {
+    // 	    DiracRhsPoint(f,DRHS,v3d[i],i,s);
+    // 	  }
+    //   }
+    else
+      {
+	std::cerr << "wrong dim = " << DIM << std::endl;
+	abort();
+      }
   }
 
   void Rhs(GlobalVector& f, const DomainRightHandSide& RHS,
@@ -798,40 +844,40 @@ public:
   double ComputePointValue(const GlobalVector& u, const Vertex2d& p0,
                            int comp) const
   {
-    /* // very simple version. Only finds nodes
-     for (int n=0;n<GetDofHandler()->nnodes();++n)
- {
-   double dist = 0;
-   for (int d=0;d<DIM;++d)
-     dist += pow(GetDofHandler()->vertex(n)[d]-p0[d],2.0);
-   if (dist< sqrt(1.e-13))
-     return u(n,comp);
- }
-     std::cerr << "DofHandler::ComputePointValue. Vertex " << p0 << " not
- found!"
-   << std::endl;
-     abort();*/
+    // very simple version. Only finds nodes
+    for (int n=0;n<GetDofHandler()->nnodes();++n)
+      {
+	double dist = 0;
+	for (int d=0;d<DIM;++d)
+	  dist += pow(GetDofHandler()->vertex(n)[d]-p0[d],2.0);
+	if (dist< sqrt(1.e-13))
+	  return u(n,comp);
+      }
+    std::cerr << "DofHandler::ComputePointValue. Vertex " << p0 << " not found!"
+	      << std::endl;
+    abort();
+    /*
     Vertex<DIM> Tranfo_p0;
     Vertex<DIM> p0_local;
     for (int i = 0; i < DIM; i++)
       p0_local[i] = p0[i];
-
+    
     int iq = GetElementNumber(p0_local, Tranfo_p0);
     if (iq == -1)
-    {
-      std::cerr << "CellDiscretization::ComputePointValue point not found\n";
-      abort();
-    }
+      {
+	std::cerr << "CellDiscretization::ComputePointValue point not found\n";
+	abort();
+      }
     FINITEELEMENT finiteelement;
     INTEGRATOR integrator;
     LocalVector __U;
     nmatrix<double> T;
     Transformation(T, iq);
     finiteelement.ReInit(T);
-
+    
     GlobalToLocal(__U, u, iq);
-
-    return integrator.ComputePointValue(finiteelement, Tranfo_p0, __U, comp);
+    
+    return integrator.ComputePointValue(finiteelement, Tranfo_p0, __U, comp); */
   }
   double ComputePointValue(const GlobalVector& u, const Vertex3d& p0,
                            int comp) const

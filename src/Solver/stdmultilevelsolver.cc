@@ -342,6 +342,21 @@ void StdMultiLevelSolver::ReInit(const std::string& problemlabel)
 
 /*-------------------------------------------------------------*/
 
+const std::vector<std::string> StdMultiLevelSolver::GetFunctionalNames() const
+{
+  std::vector<std::string> names;
+  if (!GetFunctionalContainer())
+    return names;
+
+  int n = GetFunctionalContainer()->size();
+  for (FunctionalContainer::const_iterator it = GetFunctionalContainer()->begin();
+       it != GetFunctionalContainer()->end(); ++it)
+    names.push_back(it->second->GetName());
+  return names;
+}
+
+/*-------------------------------------------------------------*/
+
 const DoubleVector StdMultiLevelSolver::GetExactValues() const
 {
   if (!GetFunctionalContainer())

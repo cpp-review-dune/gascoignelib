@@ -24,6 +24,7 @@
 #include "sparseblockmatrix.h"
 #include "fmatrixblock.h"
 #include "simplematrix.h"
+#include <fstream>
 
 //#include  "omp.h"
 /*-------------------------------------------------------------*/
@@ -677,4 +678,24 @@ std::ostream& SparseBlockMatrix<B>::Write(std::ostream& os) const
   }
   return os;
 }
+
+template <class B>
+void SparseBlockMatrix<B>::write_raw(std::string fname) const
+{
+  std::ofstream OUT(fname);
+  OUT.precision(12);
+  assert(OUT.is_open());
+  for (int r=0;r<US.n();++r)
+    for (int p=US.start(r);p<US.stop(r);++p)
+      {
+	int c = US.col(p);
+	  for (int rc=0;rc<mat(p)->ncomp();++rc)
+	    for (int cc=0;cc<mat(p)->ncomp();++cc)
+	      OUT << r*mat(p)->ncomp() + rc << "\t"
+		  << c*mat(p)->ncomp() + cc << "\t"
+		  << mat(p)->operator()(rc,cc) << std::endl;
+      }
+  OUT.close();
+}
+
 }  // namespace Gascoigne

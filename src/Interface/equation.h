@@ -86,15 +86,23 @@ namespace Gascoigne
       std::cerr << "\"Equation::OperatorStrong\" not written!" << std::endl;
       abort();
     } 
-    virtual void SetTimePattern(TimePattern& TP) const {
+    virtual void Pattern(TimePattern& TP) const {
       std::cerr << "\"Equation::SetTimePattern\" not written!" << std::endl;
       abort();
     } 
 
     virtual void point_cell(int material) const {}
+
+    /// point is called once the quadrature point is defined and the finite
+    /// element function U is initialized in this point.
     virtual void point(double h, const FemFunction& U, const Vertex2d& v) const {}
     virtual void point(double h, const FemFunction& U, const Vertex3d& v) const {}
-     
+
+    /// point_M is after calling point(...) and before calling Matrix(...) here,
+    /// the update M is initialized in the quadrature point and more values can
+    /// be precomputed
+    virtual void point_M(const FemFunction& U, const TestFunction& M) const{}
+    
     virtual void pointmatrix(double h, const FemFunction& U, const Vertex2d& v) const {
       point(h,U,v);
     }
@@ -127,6 +135,7 @@ namespace Gascoigne
     {
       for (int j=0; j<N.size(); j++)
 	{
+	  point_M(U,N[j]);
 	  for (int i=0; i<N.size(); i++)
 	    {
 	      A.SetDofIndex(i,j);

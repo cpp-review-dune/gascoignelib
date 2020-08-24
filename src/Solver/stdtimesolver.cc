@@ -88,7 +88,10 @@ void StdTimeSolver::SetProblem(const ProblemDescriptorInterface& PDX)
   if (EQ)
     {
       GetTimePattern().reservesize(EQ->GetNcomp(),EQ->GetNcomp(),0.);
-      EQ->SetTimePattern(GetTimePattern());
+      std::cerr << "irgendwas ist nicht mehr in der form unterstuett..." << std::endl;
+      abort();
+
+      //      EQ->SetTimePattern(GetTimePattern());
     }
 
   StdSolver::SetProblem(PDX);

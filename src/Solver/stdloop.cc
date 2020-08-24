@@ -31,6 +31,8 @@
 #include "meshagent.h"
 #include "stdsolver.h"
 
+#include <iomanip>
+
 using namespace std;
 
 /*-----------------------------------------*/
@@ -48,18 +50,20 @@ StdLoop::StdLoop(const ParamFile* paramfile, const ProblemContainer* PC,
                  const FunctionalContainer* FC)
   : BasicLoop(paramfile, PC, FC)
 {
-  DataFormatHandler DFH;
-  DFH.insert("nmin", &_nmin, 1000);
-  DFH.insert("nmax", &_nmax, 100000);
-  DFH.insert("p", &_p, 0.1);
-  DFH.insert("random_coarsening", &_random_coarsening, 0);
-  DFH.insert("coarse", &_coarse, 0);
-  DFH.insert("refiner", &_refiner, "global");
-  DFH.insert("estimator", &_estimator, "none");
-  DFH.insert("extrapolate", &_extrapolate, "no");
-  FileScanner FS(DFH);
-  FS.NoComplain();
-  FS.readfile(paramfile, "Loop");
+  abort();
+  
+  // DataFormatHandler DFH;
+  // DFH.insert("nmin", &_nmin, 1000);
+  // DFH.insert("nmax", &_nmax, 100000);
+  // DFH.insert("p", &_p, 0.1);
+  // DFH.insert("random_coarsening", &_random_coarsening, 0);
+  // DFH.insert("coarse", &_coarse, 0);
+  // DFH.insert("refiner", &_refiner, "global");
+  // DFH.insert("estimator", &_estimator, "none");
+  // DFH.insert("extrapolate", &_extrapolate, "no");
+  // FileScanner FS(DFH);
+  // FS.NoComplain();
+  // FS.readfile(paramfile, "Loop");
 }
 
 /*-----------------------------------------*/
@@ -91,9 +95,12 @@ void StdLoop::BasicInit(const ParamFile* paramfile, const ProblemContainer* PC,
   DFH.insert("refiner", &_refiner, "global");
   DFH.insert("estimator", &_estimator, "none");
   DFH.insert("extrapolate", &_extrapolate, "no");
+  DFH.insert("runtime_statistics",&_runtime_statistics,0);
   FileScanner FS(DFH);
   FS.NoComplain();
   FS.readfile(_paramfile, "Loop");
+  std::cout << _runtime_statistics << std::endl;
+  
 }
 
 /*-------------------------------------------------------*/
@@ -140,46 +147,63 @@ void StdLoop::EtaCellVisu(string name, int i, const GlobalVector& eta) const
 
 /*-------------------------------------------------*/
 
-DoubleVector StdLoop::GetExactValues() const
+const DoubleVector StdLoop::GetExactValues() const
 {
   return GetMultiLevelSolver()->GetExactValues();
 }
 
 /*-------------------------------------------------*/
 
+  const std::vector<std::string> StdLoop::GetFunctionalNames() const
+  {
+    return GetMultiLevelSolver()->GetFunctionalNames();
+  }
+  
+/*-------------------------------------------------*/
+
 DoubleVector StdLoop::Functionals(VectorInterface& u, VectorInterface& f)
 {
   bool output = true;
 
-  DoubleVector J      = ComputeFunctionals(f, u);
-  DoubleVector Jexact = GetExactValues();
+  const std::vector<std::string> N = GetFunctionalNames();
+  const DoubleVector J      = ComputeFunctionals(f, u);
+  const DoubleVector Jexact = GetExactValues();
+  
   _JErr.resize(J.size());
   if (output)
     if (J.size())
-    {
-      cout << "\nvalue";
-      cout.precision(16);
-      for (int i = 0; i < J.size(); i++)
       {
-        cout << "\t" << J[i];
+	cout << "\nname\t";
+	for (int i = 0; i < J.size(); i++)
+	  cout << std::setw(16) << N[i];
+	cout << "\n\t";
+	for (int i = 0; i < J.size(); i++)
+	  cout << std::setw(16) << "----------";
+	
+	cout << "\nvalue\t";
+	cout.precision(10);
+	for (int i = 0; i < J.size(); i++)
+	  cout << std::fixed << std::setw(16)  << J[i];
+
+	cout << "\nerror\t";
+	cout.precision(4);
+	for (int i = 0; i < J.size(); i++)
+	  {
+	    _JErr[i] = Jexact[i] - J[i];
+	    cout << std::scientific <<  std::setw(16) << _JErr[i];
+	  }
+	cout << endl;
+	
+	if (_extrapolate == "yes")
+	  {
+	    Extra.NewValues(J);
+	    Extra.Print();
+	  }
+	cout << endl;
       }
-      cout << "\nerror";
-      for (int i = 0; i < J.size(); i++)
-      {
-        _JErr[i] = Jexact[i] - J[i];
-        cout << "\t" << _JErr[i];
-      }
-      cout << endl;
-      if (_extrapolate == "yes")
-      {
-        Extra.NewValues(J);
-        Extra.Print();
-      }
-      cout << endl;
-    }
   return J;
 }
-
+  
 /*-------------------------------------------------*/
 
 double StdLoop::Estimator(DoubleVector& eta, VectorInterface& u, VectorInterface& f)
@@ -456,6 +480,7 @@ void StdLoop::run(const std::string& problemlabel)
 
   Monitoring Moning;
 
+  
   for (_iter = 1; _iter <= _niter; _iter++)
   {
     GlobalTimer.reset();
@@ -480,7 +505,7 @@ void StdLoop::run(const std::string& problemlabel)
     GlobalTimer.stop("---> reinit");
 
     Solve(u, f);
-
+    
     GlobalTimer.start("---> errors");
     ComputeGlobalErrors(u);
     DoubleVector juh = Functionals(u, f);
@@ -500,9 +525,16 @@ void StdLoop::run(const std::string& problemlabel)
       AdaptMesh(eta);
     }
     GlobalTimer.stop("iteration");
+
+    if (_runtime_statistics)
+      {
+	std::cout << std::endl;
+	GlobalTimer.print100();
+      }
+    
   }
 
-  GlobalTimer.print100();
+
 }
 }  // namespace Gascoigne
 

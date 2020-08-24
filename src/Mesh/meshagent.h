@@ -66,7 +66,7 @@ protected:
     return new GascoigneMultiGridMesh;
   }
 
-  virtual void ReInit();
+
   virtual void BuildQ4PatchList(const IntVector& patchl2g);
 
   IntVector _periodicCols;
@@ -82,6 +82,8 @@ public:
   MeshAgent();
   ~MeshAgent();
 
+  virtual void ReInit();
+  
   void AddShape(int col, BoundaryFunction<2>* f)
   {
     _curved2d[col] = f;

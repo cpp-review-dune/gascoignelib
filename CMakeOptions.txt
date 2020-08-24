@@ -11,10 +11,15 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
     "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
 endif()
 
+### make sure that assert is working
+if(${CMAKE_CXX_FLAGS_RELEASE} STREQUAL "_UNSET")
+    set(CMAKE_CXX_FLAGS_RELEASE "-O3" CACHE STRING "" FORCE)
+endif()
+
 SET(CMAKE_BUILD_TYPE         "Release" CACHE STRING "Configuration type" )
 
-### make sure that assert is working
-SET(CMAKE_CXX_FLAGS_RELEASE  "-O3"     CACHE STRING "Configuration type" )
+
+
 
 OPTION(BUILD_SHARED_LIBS       "Build shared libraries" ON)
 

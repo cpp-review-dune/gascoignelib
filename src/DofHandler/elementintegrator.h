@@ -210,8 +210,9 @@ namespace Gascoigne
 #define ElementIntegratorQ22d  ElementIntegrator<2, QuadGauss9, QuadGauss16, LineGauss3, QuadGauss9>
 #define ElementIntegratorQ42d  ElementIntegrator<2, QuadGauss25, QuadGauss36, LineGauss5, QuadGauss25>
 
-#define ElementIntegratorQ13d  ElementIntegrator<3, HexGauss8,  HexGauss27,  QuadGauss4, HexGauss8>
-#define ElementIntegratorQ23d  ElementIntegrator<3, HexGauss27, HexGauss64,  QuadGauss9, HexGauss27>
+#define ElementIntegratorQ13d  ElementIntegrator<3, HexGauss8,   HexGauss27,  QuadGauss4,  HexGauss8>
+#define ElementIntegratorQ23d  ElementIntegrator<3, HexGauss27,  HexGauss64,  QuadGauss9,  HexGauss27>
+#define ElementIntegratorQ43d  ElementIntegrator<3, HexGauss125, HexGauss216, QuadGauss16, HexGauss125>
 
 
 } // namespace Gascoigne
