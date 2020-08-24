@@ -50,6 +50,7 @@ StdLoop::StdLoop(const ParamFile* paramfile, const ProblemContainer* PC,
                  const FunctionalContainer* FC)
   : BasicLoop(paramfile, PC, FC)
 {
+<<<<<<< HEAD
   abort();
   
   // DataFormatHandler DFH;
@@ -64,6 +65,21 @@ StdLoop::StdLoop(const ParamFile* paramfile, const ProblemContainer* PC,
   // FileScanner FS(DFH);
   // FS.NoComplain();
   // FS.readfile(paramfile, "Loop");
+=======
+  DataFormatHandler DFH;
+  DFH.insert("nmin", &_nmin, 1000);
+  DFH.insert("nmax", &_nmax, 100000);
+  DFH.insert("p", &_p, 0.1);
+  DFH.insert("random_coarsening", &_random_coarsening, 0);
+  DFH.insert("coarse", &_coarse, 0);
+  DFH.insert("refiner", &_refiner, "global");
+  DFH.insert("estimator", &_estimator, "none");
+  DFH.insert("extrapolate", &_extrapolate, "no");
+  FileScanner FS(DFH);
+  FS.NoComplain();
+  FS.readfile(paramfile, "Loop");
+
+>>>>>>> 07a8200c9bedf8295c7f1961ea142e43bed7e459
 }
 
 /*-----------------------------------------*/
@@ -95,12 +111,26 @@ void StdLoop::BasicInit(const ParamFile* paramfile, const ProblemContainer* PC,
   DFH.insert("refiner", &_refiner, "global");
   DFH.insert("estimator", &_estimator, "none");
   DFH.insert("extrapolate", &_extrapolate, "no");
+<<<<<<< HEAD
   DFH.insert("runtime_statistics",&_runtime_statistics,0);
   FileScanner FS(DFH);
   FS.NoComplain();
   FS.readfile(_paramfile, "Loop");
   std::cout << _runtime_statistics << std::endl;
   
+=======
+  DFH.insert("writevtk", &_writeVtk, true);
+  DFH.insert("writebupgup", &_writeBupGup, false);
+  DFH.insert("resultsdir", &_s_resultsdir, "Results");
+  FileScanner FS(DFH);
+  FS.NoComplain();
+  FS.readfile(_paramfile, "Loop");
+
+  //create resultsdir
+  string command("mkdir -p ");
+  command += _s_resultsdir;
+  system(command.c_str());
+>>>>>>> 07a8200c9bedf8295c7f1961ea142e43bed7e459
 }
 
 /*-------------------------------------------------------*/
@@ -229,7 +259,7 @@ double StdLoop::Estimator(DoubleVector& eta, VectorInterface& u, VectorInterface
     {
       std::cerr << "_estimator 'second' not implemented!" << std::endl;
       abort();
-      
+
     // int dim = GetMeshAgent()->GetMesh(0)->dimension();
 
     // if (dim == 2)

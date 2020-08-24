@@ -1,25 +1,25 @@
 /**
-*
-* Copyright (C) 2004, 2007, 2008 by the Gascoigne 3D authors
-*
-* This file is part of Gascoigne 3D
-*
-* Gascoigne 3D is free software: you can redistribute it
-* and/or modify it under the terms of the GNU General Public
-* License as published by the Free Software Foundation, either
-* version 3 of the License, or (at your option) any later
-* version.
-*
-* Gascoigne 3D is distributed in the hope that it will be
-* useful, but WITHOUT ANY WARRANTY; without even the implied
-* warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-* PURPOSE.  See the GNU General Public License for more
-* details.
-*
-* Please refer to the file LICENSE.TXT for further information
-* on this license.
-*
-**/
+ *
+ * Copyright (C) 2004, 2007, 2008 by the Gascoigne 3D authors
+ *
+ * This file is part of Gascoigne 3D
+ *
+ * Gascoigne 3D is free software: you can redistribute it
+ * and/or modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation, either
+ * version 3 of the License, or (at your option) any later
+ * version.
+ *
+ * Gascoigne 3D is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more
+ * details.
+ *
+ * Please refer to the file LICENSE.TXT for further information
+ * on this license.
+ *
+ **/
 
 
 #include  "dirichletdatabycolor.h"
@@ -30,93 +30,93 @@ using namespace std;
 
 namespace Gascoigne
 {
-  DirichletDataByColor::DirichletDataByColor(const ParamFile& pf, nvector<int> comps, const set<int>& cl, nvector<double> s)
-    : DirichletData(pf), __cols(cl), __comps(comps), __scales(s)
+DirichletDataByColor::DirichletDataByColor(const ParamFile& pf, nvector<int> comps, const set<int>& cl, nvector<double> s)
+  : DirichletData(pf), __cols(cl), __comps(comps), __scales(s)
+{
+  for (auto col : __cols)
+    assert(colors.find(col)!=colors.end());
+
+  assert(__comps.size()==__scales.size());
+  assert(__comps.size()>0);
+  assert(__cols.size()>0);
+}
+
+DirichletDataByColor::DirichletDataByColor(nvector<int> comps, const set<int>& cl, nvector<double> s)
+  : __cols(cl), __comps(comps), __scales(s)
+{
+  assert(__comps.size()==__scales.size());
+  assert(__comps.size()>0);
+  assert(__cols.size()>0);
+
+  for (auto it : __cols)
   {
-    for (auto col : __cols)
-      assert(colors.find(col)!=colors.end());
-    
-    assert(__comps.size()==__scales.size());
-    assert(__comps.size()>0);
-    assert(__cols.size()>0);
+    colors.insert(it);
+    for (auto cc : __comps)
+      comp_on_color[it].push_back(cc);
+  }
+}
+
+DirichletDataByColor::DirichletDataByColor(int comps, std::set<int>& cl, double s) : __cols(cl)
+{
+  __comps.push_back(comps);
+  __scales.push_back(s);
+}
+
+/*-----------------------------------------*/
+
+DirichletDataByColor::DirichletDataByColor(const vector<string>& args)
+{
+  bool ok=true;
+
+  int n = args.size();
+  if (n<5) ok=false;
+  int ncol = atoi(args[0].c_str());
+  if (n<4+ncol) ok = false;
+  for (int i=0; i<ncol; ++i)
+    __cols.insert(atoi(args[i+1].c_str()));
+  int ncomp = atoi(args[ncol+1].c_str());
+  if (n!=2*ncomp+ncol+2) ok = false;
+  for (int i=0; i<ncol; ++i)
+  {
+    __comps.push_back( atoi(args[2*i+ncol+2].c_str()));
+    __scales.push_back(atof(args[2*i+ncol+3].c_str()));
   }
 
-  DirichletDataByColor::DirichletDataByColor(nvector<int> comps, const set<int>& cl, nvector<double> s)
-    : DirichletData(), __cols(cl), __comps(comps), __scales(s)
+  if (!ok)
   {
-    assert(__comps.size()==__scales.size());
-    assert(__comps.size()>0);
-    assert(__cols.size()>0);
-
-    for (auto it : __cols)
-      {
-	colors.insert(it);
-	for (auto cc : __comps)
-	  comp_on_color[it].push_back(cc);
-      }
+    cerr << "DirichletDataByColor::DirichletDataByColor: Usage" << endl
+         << "\t ncols_[cols]_ncomps_[comp_weight] " << endl;
+    abort();
   }
+}
 
-  DirichletDataByColor::DirichletDataByColor(int comps, std::set<int>& cl, double s) : __cols(cl)
-  {
-    __comps .push_back(comps);
-    __scales.push_back(s);
-  }
+/*-----------------------------------------*/
 
-  /*-----------------------------------------*/
+void DirichletDataByColor::operator()
+  (DoubleVector& b, const Vertex2d& v, int col) const
+{
+  b.zero();
 
-  DirichletDataByColor::DirichletDataByColor(const vector<string>& args)
-  {
-    bool ok=true;
-    
-    int n = args.size(); 
-    if (n<5) ok=false;
-    int ncol = atoi(args[0].c_str());
-    if (n<4+ncol) ok = false;
-    for (int i=0;i<ncol;++i)
-      __cols.insert(atoi(args[i+1].c_str()));
-    int ncomp = atoi(args[ncol+1].c_str());
-    if (n!=2*ncomp+ncol+2) ok = false;
-    for (int i=0;i<ncol;++i)
-      {
-	__comps.push_back( atoi(args[2*i+ncol+2].c_str()));
-	__scales.push_back(atof(args[2*i+ncol+3].c_str()));
-      }
-    
-    if (!ok)
-      {
-	cerr << "DirichletDataByColor::DirichletDataByColor: Usage" << endl
-	     << "\t ncols_[cols]_ncomps_[comp_weight] " << endl;
-	abort();
-      }
-  }
+  if(__cols.find(col)!=__cols.end())
+    for (int i=0; i<__comps.size(); ++i)
+      b[__comps[i]] = __scales[i];
+}
 
-  /*-----------------------------------------*/
+/*-----------------------------------------*/
 
-  void DirichletDataByColor::operator()
-    (DoubleVector& b, const Vertex2d& v, int col) const
-  {
-    b.zero();
+void DirichletDataByColor::operator()
+  (DoubleVector& b, const Vertex3d& v, int col) const
+{
+  b.zero();
+  if(__cols.find(col)!=__cols.end())
+    for (int i=0; i<__comps.size(); ++i)
+      b[__comps[i]] = __scales[i];
+}
 
-    if(__cols.find(col)!=__cols.end()) 
-      for (int i=0;i<__comps.size();++i)
-	b[__comps[i]] = __scales[i];
-  }
+/*-----------------------------------------*/
 
-  /*-----------------------------------------*/
-
-  void DirichletDataByColor::operator()
-    (DoubleVector& b, const Vertex3d& v, int col) const
-  {
-    b.zero();
-    if(__cols.find(col)!=__cols.end()) 
-      for (int i=0;i<__comps.size();++i)
-	b[__comps[i]] = __scales[i];
-  }
-
-  /*-----------------------------------------*/
-
-  set<int> DirichletDataByColor::preferred_colors()const 
-  {
-    return __cols;
-  }
+set<int> DirichletDataByColor::preferred_colors() const
+{
+  return __cols;
+}
 }
