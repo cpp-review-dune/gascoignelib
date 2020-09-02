@@ -699,6 +699,44 @@ public:
       delete BEQ;
     }
   }
+
+
+  ////////////////////////////////////////////////// Functionals
+
+
+  // Computes the divergence (squared) on one element given by Vector M
+  double LocalDiv(const LocalVector& U, const LocalVector& M) const
+  {
+    // LocalVector = GlobalVector soll nur verdeutlichen, dass es nicht das ganze Gitter ist
+    // U hat Laenge 9, 2 Komponenten in 2d
+    // M ist das Gitter, Laenge 9, 2 Kompoennten
+    // U(i, *) gehoert zu M(i,*)
+    assert(U.n() == 9);
+    assert(M.n() == 9);
+    assert(U.ncomp() == 2);
+    assert(M.ncomp() == 2);
+
+    assert(GetDofHandler()->dimension() == DIM);
+    int ne = GetDofHandler()->nodes_per_element(DEGREE);
+    assert(ne == 9);
+    
+    nmatrix<double> T(2,9);  // initialisiert das FE, d.h. die Koordinaten
+    for (int i=0;i<9;++i)    
+      {
+	T(0,i) = M(i,0);
+	T(1,i) = M(i,1);
+      }
+    assert(GetDofHandler()->dimension() == DIM);
+    FINITEELEMENT finiteelement;
+    finiteelement.ReInit(T);
+
+    INTEGRATOR integrator;
+    integrator.BasicInit();
+
+    return integrator.LocalDiv(finiteelement, U);    
+  }
+  
+  
   double ComputeBoundaryFunctional(const GlobalVector& u, const IntSet& Colors,
                                    const BoundaryFunctional& BF) const
   {
@@ -1140,6 +1178,66 @@ public:
       }
     }
   }
+  
+  void StrongPeriodicVector(GlobalVector &u,
+			    const PeriodicData &BF,
+			    int col,
+			    const std::vector<int> &comp,
+			    double d) const
+  {
+    const GascoigneMesh *GMP = dynamic_cast<const GascoigneMesh *>(GetDofHandler());
+    assert(GMP);
+    DoubleVector ff(u.ncomp(), 0.);
+    const IntVector &bv = *GMP->VertexOnBoundary(col);
+
+    FemData QH;
+
+    LocalParameterData QP;
+    GlobalToGlobalData(QP);
+    BF.SetParameterData(QP);
+
+    // for(int ii=0;ii<comp.size();ii++)
+    //{
+    //  int c = comp[ii];
+    //  if(c<0) {
+    //    cerr << "negative component: " << c << endl;
+    //    abort();
+    //  } else if(c>=u.ncomp()){
+    //    cerr << "unknown component: " << c << endl;
+    //    abort();
+    //  }
+    //}
+
+    for (int i = 0; i < bv.size(); i++)
+    {
+      int index = bv[i];
+
+      QH.clear();
+      GlobalData::const_iterator p = GetDataContainer().GetNodeData().begin();
+      for (; p != GetDataContainer().GetNodeData().end(); p++)
+      {
+        QH[p->first].resize(p->second->ncomp());
+        for (int c = 0; c < p->second->ncomp(); c++)
+        {
+          QH[p->first][c].m() = p->second->operator()(index, c);
+        }
+      }
+
+      BF.SetFemData(QH);
+
+      const Vertex2d &v = GMP->vertex2d(index);
+
+      BF(ff, v, col);
+      for (int iii = 0; iii < comp.size(); iii++)
+      {
+        int c = comp[iii];
+        u(index, c) = d * ff[c];
+      }
+    }
+  }
+
+
+  
 
   ////////////////////////////////////////////////// Errors
   void ComputeError(const GlobalVector& u, LocalVector& err,

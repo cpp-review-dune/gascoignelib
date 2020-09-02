@@ -119,7 +119,7 @@ namespace Gascoigne
                   LocalVector &F,
                   const FemInterface &FEM,
                   const LocalVector &U) const;
-
+    
     void RhsPoint(LocalVector &b,
                   const FemInterface &E,
                   const Vertex<DIM> &p,
@@ -131,6 +131,11 @@ namespace Gascoigne
                        int j,
                        const LocalData &Q,
                        const LocalData &QC) const;
+
+    ////////////////////////////////////////////////// Functionals
+    double LocalDiv(const FemInterface& F, const LocalVector& U) const;
+    
+    
     double ComputePointValue(const FemInterface &E,
                              const Vertex<DIM> &p,
                              const LocalVector &U,

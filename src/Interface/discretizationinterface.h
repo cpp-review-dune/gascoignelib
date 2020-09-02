@@ -236,6 +236,13 @@ namespace Gascoigne
         std::cerr << "\"DiscretizationInterface::AssembleError\" not written!" << std::endl;
         abort();
       }
+
+    ////////////////////////////////////////////////// Functionals
+    virtual double LocalDiv(const LocalVector& U, const LocalVector& M) const 
+    {
+      return 0.0;
+    }
+    
       virtual double ComputeBoundaryFunctional(const GlobalVector& u, const IntSet& Colors, const BoundaryFunctional& BF) const{
         std::cerr << "\"DiscretizationInterface::ComputeBoundaryFunctional\" not written!" << std::endl;
         abort();

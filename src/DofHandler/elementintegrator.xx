@@ -617,6 +617,28 @@ namespace Gascoigne
 
   /* ----------------------------------------- */
 
+
+  template <int DIM, class IFF, class IFE, class IFB, class IFM>
+  double ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::LocalDiv(
+      const FemInterface &FEM,
+      const LocalVector &U) const
+  {
+    IntegrationFormulaInterface* IF=NewIFF();
+    Vertex<DIM> xi;
+    double j = 0.;
+    for (int k = 0; k < IF->n(); k++)
+    {
+      IF->xi(xi, k);
+      FEM.point(xi);
+      double vol = FEM.J();
+      double weight = IF->w(k) * vol;
+      BasicIntegrator::universal_point(FEM, _UH, U);
+      j += weight * pow(_UH[0].x()+_UH[1].y(),2.0);
+    }
+    return j;
+  }
+  
+
   template <int DIM, class IFF, class IFE, class IFB, class IFM>
   double ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::ComputeDomainFunctional(
       const DomainFunctional &F,
