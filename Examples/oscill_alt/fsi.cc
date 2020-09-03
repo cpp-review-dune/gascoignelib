@@ -99,7 +99,14 @@ void FSI<DIM>::Form(VectorIterator b, const FemFunction& U, const TestFunction& 
 {
     VECTOR phi;
     Multiplex::init_test<DIM>(phi, N);
+    #ifdef BDF
+    if(domain < 0){
 
+    }
+    else{
+
+    }
+    #else
     if (domain < 0)  // fluid
     {
         // divergence
@@ -187,6 +194,7 @@ void FSI<DIM>::Form(VectorIterator b, const FemFunction& U, const TestFunction& 
             b[i + 1 + DIM] -= scaling * (1.0 - theta) * (*OLD)[i + 1].m() * N.m();
         }
     }
+    #endif
 }
 
 template <int DIM>
@@ -197,7 +205,14 @@ void FSI<DIM>::Matrix(EntryMatrix& A, const FemFunction& U, const TestFunction& 
     Multiplex::init_test<DIM>(phi, N);
     VECTOR psi;
     Multiplex::init_test<DIM>(psi, M);
+#ifdef BDF
+    if(domain < 0){
 
+    }
+    else{
+
+    }
+#else
     if (domain < 0)  // fluid
     {
         //////////////// divergence
@@ -366,6 +381,7 @@ void FSI<DIM>::Matrix(EntryMatrix& A, const FemFunction& U, const TestFunction& 
             A(i + 1 + DIM, i + 1) -= scaling * theta * M.m() * N.m();
         }
     }
+    #endif
 }
 
 template <int DIM>
@@ -379,6 +395,9 @@ void FSI<DIM>::point_M(int j, const FemFunction& U, const TestFunction& M) const
         Jj[j]  = (psi.transpose() * J * F.inverse().block(0, j, DIM, 1))(0, 0);
         Fij[j] = -F.inverse().block(0, j, DIM, 1) * psi.transpose() * F.inverse();
     }
+#ifdef BDF
+
+#else
     if (domain < 0)
     {
         divergence = (F.inverse().transpose().array() * NV.array()).sum();
@@ -415,6 +434,7 @@ void FSI<DIM>::point_M(int j, const FemFunction& U, const TestFunction& M) const
               -U[0].m() * Jj[j] * F.inverse().transpose() - U[0].m() * J * Fij[j].transpose();
         }
     }
+    #endif
 
     if (domain > 0)
     {
@@ -446,60 +466,6 @@ void FSI<DIM>::MatrixBlock(EntryMatrix& A, const FemFunction& U, const FemFuncti
 #undef M
     }
 }
-
-/*
-template<int DIM>
-void FSI<DIM>::Matrix(EntryMatrix& A, const FemFunction& U, const TestFunction& M, const
-TestFunction& N) const
-{
-  DoubleVector B(GetNcomp());
-
-  B.zero();
-
-
-  point(__h,U,__v);
-
-  Form(B.begin(), U, N);
-
-
-  double EPS = 1.e-9;
-
-  assert(U.size()==GetNcomp());
-
-
-  for (int j=0;j<GetNcomp();++j)
-    {
-
-  DoubleVector Bj(GetNcomp());
-
-  Bj.zero();
-
-
-  FemFunction Uj(GetNcomp());
-
-  for (int i=0; i<GetNcomp(); ++i)
-    Uj[i] = U[i];
-
-  Uj[j].add(EPS, M);
-
-
-
-
-  point(__h,Uj,__v);
-
-  Form(Bj.begin(), Uj, N);
-
-
-  for (int i=0;i<GetNcomp();++i)
-    A(i,j)+= (Bj[i]-B[i])/EPS;
-
-    }
-
-  return;
-
-
-}
-*/
 
 ////////////////////////////////////////////////// BOUNDARY
 

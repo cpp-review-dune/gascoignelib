@@ -64,13 +64,21 @@ protected:
 
     Chi chi;
     mutable int domain;
-
+  mutable bool bdf1=true;
     mutable FemFunction* OLD;
-
+  mutable FemFunction* OLDOLD;
     void SetFemData(FemData& q) const override final
     {
-        assert(q.find("old") != q.end());
-        OLD = &q["old"];
+      auto qold = q.find("OLD1");
+      if (qold != q.end())
+      {
+        OLD = &qold->second;
+      }
+      qold = q.find("OLD0");
+      if (qold != q.end())
+      {
+        OLDOLD = &qold->second;
+      }
     }
 
 public:
@@ -96,6 +104,9 @@ public:
     {
         return this->theta;
     }
+  bool& bdf1() const {
+    return this->bdf1;
+  }
 
     void point(double h, const FemFunction& U, const Vertex<DIM>& v) const override final;
     void point_M(int j, const FemFunction& U, const TestFunction& M) const;

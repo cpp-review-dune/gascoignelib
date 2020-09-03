@@ -427,7 +427,7 @@ double parareal<DIM>::runPara(const int max_iterations, const double coarse_thet
 template <int DIM>
 double parareal<DIM>::parareal_algorithm(const int n_intervals, const int max_iterations)
 {
-    static auto equal = [&](parareal const* const& para_dest, VectorInterface& dest,
+    static auto equal = [](parareal const* const& para_dest, VectorInterface& dest,
                             parareal const* const& para_src, VectorInterface& source) {
         auto dest_begin = para_dest->GetSolver()->GetGV(dest).begin();
         auto src_begin  = para_src->GetSolver()->GetGV(source).cbegin();
@@ -441,7 +441,7 @@ double parareal<DIM>::parareal_algorithm(const int n_intervals, const int max_it
         }
     };
 
-    static auto correction_w_weigths = [&](parareal const* const& para_dest, VectorInterface& dest,
+    static auto correction_w_weigths = [](parareal const* const& para_dest, VectorInterface& dest,
                                            parareal const* const& src_x, VectorInterface& x,
                                            parareal const* const& src_y, VectorInterface& y,
                                            parareal const* const& src_z, VectorInterface& z) {
@@ -462,7 +462,7 @@ double parareal<DIM>::parareal_algorithm(const int n_intervals, const int max_it
         }
     };
 
-    static auto set_coar_weight = [&](parareal* const& para_solver, VectorInterface& f,
+    static auto set_coar_weight = [](parareal* const& para_solver, VectorInterface& f,
 				      parareal* const& para_coarse, VectorInterface& c, double damping) {
         nvector<double> c_c(2 * DIM + 1, 0);
         nvector<double> f_f(2 * DIM + 1, 0);
@@ -877,45 +877,53 @@ template <iter_type method>
 void parareal<DIM>::propagator(double time, VectorInterface& u, VectorInterface& f,
                                         int current, int n_steps, int implicit_steps)
 {
-    // lambda for visualisation of steps
+#ifdef BDF
+  auto fsi_eq_ptr =
+    dynamic_cast<const FSI<DIM>* const>(GetSolver()->GetProblemDescriptor()->GetEquation());
+  // 1. one BDF1 step
+  fsi_eq_ptr->bdf1()=true;
+  // 2. continue with BDF2
+#else
+  // lambda for visualisation of steps
 
-    double dt;
-    double theta;
-    // Some compile-time branching...
-    if (method == iter_type::fine_last || method == iter_type::fine)
+  double dt;
+  double theta;
+  // Some compile-time branching...
+  if (method == iter_type::fine_last || method == iter_type::fine)
+  {
+    dt    = dtfine;
+    theta = fine_theta;
+  }
+  else if (method == iter_type::coarse || method == iter_type::coarse_first)
+  {
+    dt    = dtcoarse;
+    theta = coarse_theta;
+  }
+  // stabilization problem if not in initialization
+  // if constexpr (method != iter_type::coarse_first)
+  // {
+  //     divergence_stab(u, f, time, dt, current);
+  // }
+  // std::cout << "Current iteration: " <<  current <<'\n';
+  auto fsi_eq_ptr =
+    dynamic_cast<const FSI<DIM>* const>(GetSolver()->GetProblemDescriptor()->GetEquation());
+  if (implicit_steps > 0)
+  {
+    fsi_eq_ptr->getTheta() = 1.;
+    for (auto iter = 0; iter < implicit_steps; ++iter)
     {
-        dt    = dtfine;
-        theta = fine_theta;
+      step<method>(time, dt, iter, 1., u, f);
     }
-    else if (method == iter_type::coarse || method == iter_type::coarse_first)
-    {
-        dt    = dtcoarse;
-        theta = coarse_theta;
-    }
-    // stabilization problem if not in initialization
-    // if constexpr (method != iter_type::coarse_first)
-    // {
-    //     divergence_stab(u, f, time, dt, current);
-    // }
-    // std::cout << "Current iteration: " <<  current <<'\n';
-    auto fsi_eq_ptr =
-      dynamic_cast<const FSI<DIM>* const>(GetSolver()->GetProblemDescriptor()->GetEquation());
-    if (implicit_steps > 0)
-    {
-        fsi_eq_ptr->getTheta() = 1.;
-        for (auto iter = 0; iter < implicit_steps; ++iter)
-        {
-            step<method>(time, dt, iter, 1., u, f);
-        }
-    }
-    fsi_eq_ptr->getTheta() = theta;
+  }
+  fsi_eq_ptr->getTheta() = theta;
 
-    // Time stepping loop over subinterval
-    for (auto iter = implicit_steps; iter < n_steps; ++iter)
-    {
-        // actual solving
-        step<method>(time, dt, iter, theta, u, f);
-    }
+  // Time stepping loop over subinterval
+  for (auto iter = implicit_steps; iter < n_steps; ++iter)
+  {
+    // actual solving
+    step<method>(time, dt, iter, theta, u, f);
+  }
+#endif
 }
 
 //--------------------------------------------------------------------------------------------------
