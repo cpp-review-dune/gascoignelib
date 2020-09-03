@@ -290,7 +290,7 @@ private:
     fine_sol;  //!< Vector containing the fine solution on the corresponding interval.
   VectorInterface
                   coar_sol;  //!< Vector containing the coarse solution on the corresponding interval.
-  VectorInterface old, tmp_vi;  //!< Vector for temporary results.
+  VectorInterface old, old0, tmp_vi;  //!< Vector for temporary results.
   VectorInterface
                             end_sol;  //!< Vector containing the final solution on the corresponding interval.
   std::vector<DoubleVector> log_buffer;  //!< Vector for buffering log entries.
@@ -335,6 +335,7 @@ parareal<DIM>::parareal(size_t id)
   , fine_sol("f" + std::to_string(id))
   , coar_sol("g" + std::to_string(id))
   , old("old" + std::to_string(id))
+  , old0("old0" + std::to_string(id))
   , tmp_vi("tmp" + std::to_string(id))
   , end_sol("u" + std::to_string(id))
   , log_buffer(n_finesteps, DoubleVector(5, 0.))
@@ -537,12 +538,14 @@ double parareal<DIM>::parareal_algorithm(const int n_intervals,
     si->GetMultiLevelSolver()->ReInitVector(si->fine_sol);
     si->GetMultiLevelSolver()->ReInitVector(si->coar_sol);
     si->GetMultiLevelSolver()->ReInitVector(si->old);
+    si->GetMultiLevelSolver()->ReInitVector(si->old0);
     si->GetMultiLevelSolver()->ReInitVector(si->tmp_vi);
     si->GetMultiLevelSolver()->ReInitVector(si->end_sol);
 
     si->setGVsize(si->GetSolver()->GetGV(si->fine_sol));
     si->setGVsize(si->GetSolver()->GetGV(si->coar_sol));
     si->setGVsize(si->GetSolver()->GetGV(si->old));
+    si->setGVsize(si->GetSolver()->GetGV(si->old0));
     si->setGVsize(si->GetSolver()->GetGV(si->tmp_vi));
     si->setGVsize(si->GetSolver()->GetGV(si->end_sol));
 
@@ -777,11 +780,12 @@ void parareal<DIM>::compare_para_serial(const int max_iterations,
         }
 
         loopSeq->GetMultiLevelSolver()->ReInitVector(loopSeq->old);
+        loopSeq->GetMultiLevelSolver()->ReInitVector(loopSeq->old0);
         loopSeq->GetMultiLevelSolver()->ReInitVector(loopSeq->end_sol);
         loopSeq->GetMultiLevelSolver()->ReInitVector(f);
         loopSeq->InitSolution(loopSeq->end_sol);
         loopSeq->InitSolution(loopSeq->old);
-
+        loopSeq->InitSolution(loopSeq->old0);
         if (func_log.is_open())
         {
             func_log.close();
@@ -897,10 +901,32 @@ void parareal<DIM>::propagator(double time, VectorInterface& u, VectorInterface&
 {
 #ifdef BDF
   auto fsi_eq_ptr =
-    dynamic_cast<const FSI<DIM>* const>(GetSolver()->GetProblemDescriptor()->GetEquation());
+    dynamic_cast<const FSI<DIM>*
+    const>(GetSolver()->GetProblemDescriptor()->GetEquation());
+  double dt=std::numeric_limits<double>::signaling_NaN();
+  // catch usage of theta when it shouldn't be used
+  constexpr double theta=std::numeric_limits<double>::signaling_NaN();
+  if (method == iter_type::fine_last || method == iter_type::fine)
+  {
+    dt    = dtfine;
+  }
+  else if (method == iter_type::coarse || method == iter_type::coarse_first)
+  {
+    dt    = dtcoarse;
+  }
+
   // 1. one BDF1 step
+  int iter=0;
   fsi_eq_ptr->bdf1()=true;
+  step<method>(time, dt, iter, theta, u, f);
+  fsi_eq_ptr->bdf1()=false;
+  ++iter;
   // 2. continue with BDF2
+  for (; iter < n_steps; ++iter)
+  {
+    // actual solving
+    step<method>(time, dt, iter, theta, u, f);
+  }
 #else
   // lambda for visualisation of steps
 
@@ -951,23 +977,51 @@ template <iter_type method>
 void parareal<DIM>::step(double& time, const double& dt, const int& iter,
                                   const double& theta, VectorInterface& u, VectorInterface& f)
 {
-    time += dt;
-    set_time(dt, time);
-    GetMultiLevelSolver()->Equ(old, 1.0, u);
-    GetMultiLevelSolver()->AddNodeVector("old", old);
-    if(StdLoop::Solve(u, f) != "converged")
-        abort();
+#ifdef BDF
+  time += dt;
+  set_time(dt, time);
+  if(iter > 0){
+    GetMultiLevelSolver()->Equ(old0, 1.0, old);
+    GetMultiLevelSolver()->AddNodeVector("old0", old0);
+  }
+  GetMultiLevelSolver()->Equ(old, 1.0, u);
+  GetMultiLevelSolver()->AddNodeVector("old", old);
 
-    if (method == iter_type::fine_last)
+  if(StdLoop::Solve(u, f) != "converged")
+    abort();
+
+  if (method == iter_type::fine_last)
+  {
+    log_buffer[iter][0] = time;
+    DoubleVector juh    = StdLoop::Functionals(u, f);
+    for (auto i = 0; i < 4; ++i)
     {
-        log_buffer[iter][0] = time;
-        DoubleVector juh    = StdLoop::Functionals(u, f);
-        for (auto i = 0; i < 4; ++i)
-        {
-            log_buffer[iter][i + 1] = juh[i];
-        }
+      log_buffer[iter][i + 1] = juh[i];
     }
-    GetMultiLevelSolver()->DeleteNodeVector("old");
+  }
+  GetMultiLevelSolver()->DeleteNodeVector("old");
+  if(iter >0){
+    GetMultiLevelSolver()->DeleteNodeVector("old0");
+  }
+#else
+  time += dt;
+  set_time(dt, time);
+  GetMultiLevelSolver()->Equ(old, 1.0, u);
+  GetMultiLevelSolver()->AddNodeVector("old", old);
+  if(StdLoop::Solve(u, f) != "converged")
+    abort();
+
+  if (method == iter_type::fine_last)
+  {
+    log_buffer[iter][0] = time;
+    DoubleVector juh    = StdLoop::Functionals(u, f);
+    for (auto i = 0; i < 4; ++i)
+    {
+      log_buffer[iter][i + 1] = juh[i];
+    }
+  }
+  GetMultiLevelSolver()->DeleteNodeVector("old");
+#endif
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -1251,10 +1305,15 @@ Setting up parareal:
 
 template <int DIM>
 ParamFile parareal<DIM>::paramfile = [] {
-    if (DIM == 2)
-        return ParamFile("fsi-wm.param");
-    else if (DIM==3)
-        return ParamFile("fsi_box3d.param");
+  if (DIM == 2){
+#ifdef BDF
+    return ParamFile("fsi-3.param");
+#else
+    return ParamFile("fsi-wm.param");
+#endif
+  }else if (DIM==3){
+    return ParamFile("fsi_box3d.param");
+  }
 }();
 template <int DIM>
 std::string parareal<DIM>::problemlabel = "fsi";

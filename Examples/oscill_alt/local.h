@@ -114,19 +114,21 @@ public:
     double t= GetTime();
 
     double sc= 1.0;
-    // if (t < 1.0)
-    sc         = 0.5 - 0.5 * cos(M_PI * t);
+#ifdef BDF
+    if (t < 1.0)
+      sc= 0.5 - 0.5 * cos(M_PI * t);
+#endif
     double veff= vmean * sc;
-
-    // veff *= veff;
-    // veff *= 0.5;
     // for wall_mount color 8, for benchmark color 0
-
-    // if (color == 0)
-    //     b[1] += v.y() * (0.41 - v.y()) / 0.205 / 0.205 * veff * 1.5;
-
+#ifdef BDF
+    // veff*= veff;
+    // veff*= 0.5;
+    if (color == 0)
+      b[1]+= v.y() * (0.41 - v.y()) / 0.205 / 0.205 * veff * 1.5;
+#else
     if (color == 8)
       b[1]+= v.y() * (1 - v.y()) / 0.5 / 0.5 * veff * 1.5;
+#endif
   }
 };
 

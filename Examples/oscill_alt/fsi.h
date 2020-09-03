@@ -67,11 +67,11 @@ protected:
   mutable FemFunction* OLD;
   mutable FemFunction* OLDOLD;
   void                 SetFemData(FemData& q) const override final {
-    auto qold= q.find("OLD");
+    auto qold= q.find("old");
     if (qold != q.end()) {
       OLD= &qold->second;
     }
-    qold= q.find("OLD0");
+    qold= q.find("old0");
     if (qold != q.end()) {
       OLDOLD= &qold->second;
     }

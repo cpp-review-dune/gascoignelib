@@ -56,8 +56,8 @@ writevtk    0
 
 
 niter       1
-threads 8
-subintervals 8
+threads 18
+subintervals 18
 etapatcher  0
 extrapolate yes
 

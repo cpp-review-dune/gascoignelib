@@ -39,8 +39,12 @@ public:
 /*---------------------------------------------------*/
 
 int main(int argc, char** argv) {
-  auto      start= omp_get_wtime();
+  auto start= omp_get_wtime();
+#ifdef BDF
+  ParamFile pf("fsi-3.param");
+#else
   ParamFile pf("fsi-wm.param");
+#endif
   if (argc == 2)
     pf.SetName(argv[1]);
 

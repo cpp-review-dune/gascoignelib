@@ -69,6 +69,7 @@ void FSI<DIM>::point(double h, const FemFunction& U, const Vertex<DIM>& v) const
   if (bdf1()) {
     Multiplex::init_dtU<DIM>(dtU, U, *OLD);
   } else {
+    // Multiplex::init_dtU<DIM>(dtU, U, *OLD);
     Multiplex::init_dtU_bdf2(dtU, U, *OLD, *OLDOLD);
   }
 #else
@@ -106,21 +107,7 @@ void FSI<DIM>::Form(VectorIterator b, const FemFunction& U, const TestFunction& 
   if (domain < 0) {
     // divergence
     b[0]+= rho_f * J * (F.inverse().transpose().array() * NV.array()).sum() * N.m();
-    // pressure
-    VECTOR X= -U[0].m() * J * F.inverse().transpose() * phi;
-    for (int i= 0; i < DIM; ++i)
-      b[i + 1]+= X(i, 0);
-    // laplace
-    for (int i= 0; i < DIM; ++i)
-      b[i + 1 + DIM]+= extend * (NU * phi)(i, 0);
-    //  convection
-    X= J * rho_f * NV * F.inverse() * V * N.m();
-    for (int i= 0; i < DIM; ++i)
-      b[i + 1]+= X(i, 0);
-    // DOMAIN Convection
-    X= -rho_f * J * NV * F.inverse() * dtU * N.m() / GetTimeStep();
-    for (int i= 0; i < DIM; ++i)
-      b[i + 1]+= X(i, 0);
+
     // time-derivative
     for (int i= 0; i < DIM; ++i) {
       if (bdf1()) {
@@ -132,6 +119,30 @@ void FSI<DIM>::Form(VectorIterator b, const FemFunction& U, const TestFunction& 
           / GetTimeStep() * N.m();
       }
     }
+
+    // tensor
+    VECTOR X= J * SIGMAf * F.inverse().transpose() * phi;
+    for (int i= 0; i < DIM; ++i)
+      b[i + 1]+= X(i, 0);
+
+    //  convection
+    X= J * rho_f * NV * F.inverse() * V * N.m();
+    for (int i= 0; i < DIM; ++i)
+      b[i + 1]+= X(i, 0);
+
+    // DOMAIN Convection
+    X= -rho_f * J * NV * F.inverse() * dtU * N.m() / GetTimeStep();
+    for (int i= 0; i < DIM; ++i)
+      b[i + 1]+= X(i, 0);
+
+    // pressure
+    X= -U[0].m() * J * F.inverse().transpose() * phi;
+    for (int i= 0; i < DIM; ++i)
+      b[i + 1]+= X(i, 0);
+
+    // laplace
+    for (int i= 0; i < DIM; ++i)
+      b[i + 1 + DIM]+= extend * (NU * phi)(i, 0);
   } else {
     // time-derivative
     for (int i= 0; i < DIM; ++i) {
@@ -144,9 +155,11 @@ void FSI<DIM>::Form(VectorIterator b, const FemFunction& U, const TestFunction& 
           / GetTimeStep() * N.m();
       }
     }
+
     // FULL tensor F Sigma
     for (int i= 0; i < DIM; ++i)
       b[i + 1]+= (F * SIGMAs * phi)(i, 0);
+
     // dt u-v=0
     double scaling= 1.0;
     for (int i= 0; i < DIM; ++i) {
@@ -176,7 +189,6 @@ void FSI<DIM>::Form(VectorIterator b, const FemFunction& U, const TestFunction& 
     VECTOR X= J * SIGMAf * F.inverse().transpose() * phi;
     for (int i= 0; i < DIM; ++i)
       b[i + 1]+= theta * X(i, 0);
-
     X= J_old * SIGMAf_old * F_old.inverse().transpose() * phi;
     for (int i= 0; i < DIM; ++i)
       b[i + 1]+= (1.0 - theta) * X(i, 0);
@@ -185,7 +197,6 @@ void FSI<DIM>::Form(VectorIterator b, const FemFunction& U, const TestFunction& 
     X= theta * J * rho_f * NV * F.inverse() * V * N.m();
     for (int i= 0; i < DIM; ++i)
       b[i + 1]+= X(i, 0);
-
     X= (1.0 - theta) * J_old * rho_f * NV_old * F_old.inverse() * V_old * N.m();
     for (int i= 0; i < DIM; ++i)
       b[i + 1]+= X(i, 0);
@@ -205,14 +216,12 @@ void FSI<DIM>::Form(VectorIterator b, const FemFunction& U, const TestFunction& 
     // laplace
     for (int i= 0; i < DIM; ++i)
       b[i + 1 + DIM]+= extend * (NU * phi)(i, 0);
-
   } else {
     // time-derivative
     for (int i= 0; i < DIM; ++i)
       b[i + 1]+= rho_s * (U[i + 1].m() - (*OLD)[i + 1].m()) / GetTimeStep() * N.m();
 
     // FULL tensor F Sigma
-
     for (int i= 0; i < DIM; ++i)
       b[i + 1]+= theta * (F * SIGMAs * phi)(i, 0);
     for (int i= 0; i < DIM; ++i)
@@ -249,38 +258,44 @@ void FSI<DIM>::Matrix(EntryMatrix&        A,
       // wrt u
       A(0, j + 1 + DIM)+= rho_f * Jj[j] * divergence * N.m();
       A(0, j + 1 + DIM)+= DIVERGENCE_U[j] * N.m();
-      ///////////// time-derivative
-      // wrt v
-      for (int i= 0; i < DIM; ++i)
+    }
+    ///////////// time-derivative
+    // wrt v
+    for (int i= 0; i < DIM; ++i) {
+      if (bdf1()) {
         A(i + 1, i + 1)+= rho_f * J * M.m() * N.m() / GetTimeStep();
-      // wrt u
-      for (int j= 0; j < DIM; ++j) {
-        for (int i= 0; i < DIM; ++i) {
-          if (bdf1()) {
-            A(i + 1, j + 1 + DIM)+=
-              Jj[j] * rho_f * (U[i + 1].m() - (*OLD)[i + 1].m()) / GetTimeStep() * N.m();
-          } else {
-            A(i + 1, j + 1 + DIM)+=
-              Jj[j] * rho_f
-              * (1.5 * U[i + 1].m() - 2 * (*OLD)[i + 1].m() + .5 * (*OLDOLD)[i + 1].m())
-              / GetTimeStep() * N.m();
-          }
+      } else {
+        A(i + 1, i + 1)+= rho_f * J * 1.5 * M.m() * N.m() / GetTimeStep();
+      }
+    }
+    // wrt u
+    for (int j= 0; j < DIM; ++j) {
+      for (int i= 0; i < DIM; ++i) {
+        if (bdf1()) {
+          A(i + 1, j + 1 + DIM)+=
+            Jj[j] * rho_f * (U[i + 1].m() - (*OLD)[i + 1].m()) / GetTimeStep() * N.m();
+        } else {
+          A(i + 1, j + 1 + DIM)+=
+            Jj[j] * rho_f
+            * (1.5 * U[i + 1].m() - 2 * (*OLD)[i + 1].m() + .5 * (*OLDOLD)[i + 1].m())
+            / GetTimeStep() * N.m();
         }
       }
-      ///////// tensor
-      // wrt V
-      for (int j= 0; j < DIM; ++j) {
-        VECTOR X= TENSOR_dV[j] * phi;
-        for (int i= 0; i < DIM; ++i)
-          A(i + 1, j + 1)+= X(i, 0);
-      }
-      // wrt U
-      for (int j= 0; j < DIM; ++j) {
-        VECTOR X= TENSOR_dU[j] * phi;
-        for (int i= 0; i < DIM; ++i)
-          A(i + 1, j + 1 + DIM)+= X(i, 0);
-      }
-    }  // //////////////// // convection
+    }
+    ///////// tensor
+    // wrt V
+    for (int j= 0; j < DIM; ++j) {
+      VECTOR X= TENSOR_dV[j] * phi;
+      for (int i= 0; i < DIM; ++i)
+        A(i + 1, j + 1)+= X(i, 0);
+    }
+    // wrt U
+    for (int j= 0; j < DIM; ++j) {
+      VECTOR X= TENSOR_dU[j] * phi;
+      for (int i= 0; i < DIM; ++i)
+        A(i + 1, j + 1 + DIM)+= X(i, 0);
+    }
+    // //////////////// // convection
     // wrt v
     for (int i= 0; i < DIM; ++i)
       for (int j= 0; j < DIM; ++j)
@@ -298,7 +313,7 @@ void FSI<DIM>::Matrix(EntryMatrix&        A,
     // wrt dtU
     for (int i= 0; i < DIM; ++i)
       for (int j= 0; j < DIM; ++j)
-        A(i + 1, j + 1 + DIM)+= DOMAIN_U1(i, j) * M.m() * N.m();
+        A(i + 1, j + 1 + DIM)+= DOMAIN_U1(i, j) * 1.5 * M.m() * N.m();
 
     // wrt V
     for (int j= 0; j < DIM; ++j)
@@ -326,11 +341,15 @@ void FSI<DIM>::Matrix(EntryMatrix&        A,
     }
     for (int i= 0; i < DIM; ++i)
       A(i + 1 + DIM, i + 1 + DIM)+= extend * phi.dot(psi);
-
   } else {
     // time-derivative
-    for (int i= 0; i < DIM; ++i)
-      A(i + 1, i + 1)+= rho_s * M.m() / GetTimeStep() * N.m();
+    for (int i= 0; i < DIM; ++i) {
+      if (bdf1()) {
+        A(i + 1, i + 1)+= rho_s * M.m() / GetTimeStep() * N.m();
+      } else {
+        A(i + 1, i + 1)+= rho_s * 1.5 * M.m() / GetTimeStep() * N.m();
+      }
+    }
 
     // F Sigma
     // wrt F,
@@ -347,7 +366,11 @@ void FSI<DIM>::Matrix(EntryMatrix&        A,
     // dt u-v=0
     double scaling= 1.0;
     for (int i= 0; i < DIM; ++i) {
-      A(i + 1 + DIM, i + 1 + DIM)+= scaling * M.m() * N.m() / GetTimeStep();
+      if (bdf1()) {
+        A(i + 1 + DIM, i + 1 + DIM)+= scaling * M.m() * N.m() / GetTimeStep();
+      } else {
+        A(i + 1 + DIM, i + 1 + DIM)+= scaling * 1.5 * M.m() * N.m() / GetTimeStep();
+      }
       A(i + 1 + DIM, i + 1)-= scaling * M.m() * N.m();
     }
   }
@@ -462,7 +485,7 @@ void FSI<DIM>::Matrix(EntryMatrix&        A,
     }
   }
 #endif
-}
+}  // namespace Gascoigne
 
 template <int DIM>
 void FSI<DIM>::point_M(int j, const FemFunction& U, const TestFunction& M) const {
@@ -575,78 +598,6 @@ void FSI<DIM>::MatrixBlock(EntryMatrix&       A,
 #undef M
   }
 }
-
-////////////////////////////////////////////////// BOUNDARY
-
-// template <int DIM>
-// void FSI<DIM>::Form(VectorIterator b, const FemFunction& U, const TestFunction& N, int
-// col) const
-// {
-//     if (domain > 0)
-//         return;
-//
-//     if (col == 5)
-//     {
-//         for (int i = 0; i < DIM; ++i)
-//             b[i + 1] -= theta * BOUNDARY(i, 0) * N.m();
-//         for (int i = 0; i < DIM; ++i)
-//             b[i + 1] -= (1.0 - theta) * BOUNDARY_old(i, 0) * N.m();
-//     }
-// }
-//
-// template <int DIM>
-// void FSI<DIM>::Matrix(EntryMatrix& A, const FemFunction& U, const TestFunction& M,
-//                       const TestFunction& N, int col) const
-// {
-//     if (domain > 0)
-//         return;
-//
-//     if (col == 1)
-//     {
-//         VECTOR psi;
-//         Multiplex::init_test<DIM>(psi, M);
-//         for (int j = 0; j < DIM; ++j)
-//         {
-//             MATRIX FIJ = -F.inverse().block(0, j, DIM, 1) * psi.transpose() *
-//             F.inverse(); double JJ  = (psi.transpose() * J * F.inverse().block(0, j,
-//             DIM, 1))(0, 0);
-//
-//             VECTOR BOUNDARY_U =
-//               rho_f * nu_f * N.m()
-//               * (JJ * NV.transpose() * F.inverse().transpose() *
-//               F.inverse().transpose()
-//                  + JJ * NV.transpose()
-//                      * (FIJ.transpose() * F.inverse().transpose()
-//                         + F.inverse().transpose() * FIJ.transpose()))
-//               * normal;
-//             double BOUNDARY_V =
-//               rho_f * nu_f * N.m() * J
-//               * (psi.transpose() * (F.inverse().transpose() * F.inverse().transpose())
-//               * normal)(0,
-//                                                                                                  0);
-//             for (int i = 0; i < DIM; ++i)
-//             {
-//                 A(i + 1, j + 1 + DIM) -= theta * BOUNDARY_U(i, 0);
-//                 A(i + 1, j + 1) -= theta * BOUNDARY_V;
-//             }
-//         }
-//     }
-// }
-//
-// template <int DIM>
-// void FSI<DIM>::pointboundary(double h, const FemFunction& U, const Vertex<DIM>& v,
-//                              const Vertex<DIM>& n) const
-// {
-//     domain = chi(v);
-//
-//     Multiplex::init_F<DIM>(F, U);
-//     Multiplex::init_F<DIM>(F_old, *OLD);
-//
-//     Multiplex::init_NV<DIM>(NV, U);
-//     Multiplex::init_NV<DIM>(NV_old, *OLD);
-//
-//     Multiplex::init_normal<DIM>(normal, n);
-// }
 
 ////////////////////////////////////////////////// LPS
 

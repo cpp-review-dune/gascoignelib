@@ -19,7 +19,11 @@ bool parseCommandlineArguments(int     argc,
 //--------------------------------------------------------------------------------------------------
 
 int main(int argc, char* argv[]) {
+#ifdef BDF
+  parareal<2>::paramfile= ParamFile("fsi-3.param");
+#else
   parareal<2>::paramfile= ParamFile("fsi-wm.param");
+#endif
   int    maxIterations;
   double coarse_theta;
   double dtcoarse;

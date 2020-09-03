@@ -1,5 +1,5 @@
 #include "chi.h"
-
+#include "fsi.h"
 namespace Gascoigne {
 int Chi::operator()(const Vertex3d& v) const {
   std::string __type= "box3d";
@@ -22,10 +22,12 @@ int Chi::operator()(const Vertex3d& v) const {
 
 int Chi::operator()(const Vertex2d& v) const {
   double eps= 1.e-12;
-  // std::string __type = "benchmark";
+#ifdef BDF
+  std::string __type= "benchmark";
+#else
   std::string __type= "wall_mount";
+#endif
   //    __type=="wall";
-
   if (__type == "benchmark")  // BENCHMARK
   {
     if ((v.x() > 0.2) && (v.x() < 0.6 - eps) && (fabs(v.y() - 0.2) < 0.01 - eps))
