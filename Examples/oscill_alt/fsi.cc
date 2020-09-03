@@ -66,7 +66,7 @@ void FSI<DIM>::point(double h, const FemFunction& U, const Vertex<DIM>& v) const
   J    = F.determinant();
   J_old= F_old.determinant();
 #ifdef BDF
-  if (bdf1) {
+  if (bdf1()) {
     Multiplex::init_dtU<DIM>(dtU, U, *OLD);
   } else {
     Multiplex::init_dtU_bdf2(dtU, U, *OLD, *OLDOLD);
@@ -107,7 +107,7 @@ void FSI<DIM>::Form(VectorIterator b, const FemFunction& U, const TestFunction& 
     // divergence
     b[0]+= rho_f * J * (F.inverse().transpose().array() * NV.array()).sum() * N.m();
     // pressure
-    X= -U[0].m() * J * F.inverse().transpose() * phi;
+    VECTOR X= -U[0].m() * J * F.inverse().transpose() * phi;
     for (int i= 0; i < DIM; ++i)
       b[i + 1]+= X(i, 0);
     // laplace
@@ -123,7 +123,7 @@ void FSI<DIM>::Form(VectorIterator b, const FemFunction& U, const TestFunction& 
       b[i + 1]+= X(i, 0);
     // time-derivative
     for (int i= 0; i < DIM; ++i) {
-      if (bdf1) {
+      if (bdf1()) {
         b[i + 1]+= J * rho_f * (U[i + 1].m() - (*OLD)[i + 1].m()) / GetTimeStep() * N.m();
       } else {
         b[i + 1]+=
@@ -135,7 +135,7 @@ void FSI<DIM>::Form(VectorIterator b, const FemFunction& U, const TestFunction& 
   } else {
     // time-derivative
     for (int i= 0; i < DIM; ++i) {
-      if (bdf1) {
+      if (bdf1()) {
         b[i + 1]+= rho_s * (U[i + 1].m() - (*OLD)[i + 1].m()) / GetTimeStep() * N.m();
       } else {
         b[i + 1]+=
@@ -150,7 +150,7 @@ void FSI<DIM>::Form(VectorIterator b, const FemFunction& U, const TestFunction& 
     // dt u-v=0
     double scaling= 1.0;
     for (int i= 0; i < DIM; ++i) {
-      if (bdf1) {
+      if (bdf1()) {
         b[i + 1 + DIM]+= scaling * (U[i + 1 + DIM].m() - (*OLD)[i + 1 + DIM].m())
                          / GetTimeStep() * N.m();
       } else {
@@ -256,7 +256,7 @@ void FSI<DIM>::Matrix(EntryMatrix&        A,
       // wrt u
       for (int j= 0; j < DIM; ++j) {
         for (int i= 0; i < DIM; ++i) {
-          if (bdf1) {
+          if (bdf1()) {
             A(i + 1, j + 1 + DIM)+=
               Jj[j] * rho_f * (U[i + 1].m() - (*OLD)[i + 1].m()) / GetTimeStep() * N.m();
           } else {
@@ -291,7 +291,7 @@ void FSI<DIM>::Matrix(EntryMatrix&        A,
     // wrt u
     for (int j= 0; j < DIM; ++j) {
       for (int i= 0; i < DIM; ++i)
-        A(i + 1, j + 1 + DIM)+=  CONV_dU[j](i, 0) * N.m();
+        A(i + 1, j + 1 + DIM)+= CONV_dU[j](i, 0) * N.m();
     }
 
     // DOMAIN Convection
@@ -345,10 +345,10 @@ void FSI<DIM>::Matrix(EntryMatrix&        A,
     }
 
     // dt u-v=0
-    double scaling       = 1.0;
+    double scaling= 1.0;
     for (int i= 0; i < DIM; ++i) {
       A(i + 1 + DIM, i + 1 + DIM)+= scaling * M.m() * N.m() / GetTimeStep();
-      A(i + 1 + DIM, i + 1)-= scaling * theta * M.m() * N.m();
+      A(i + 1 + DIM, i + 1)-= scaling * M.m() * N.m();
     }
   }
 #else

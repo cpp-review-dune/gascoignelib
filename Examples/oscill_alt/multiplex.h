@@ -112,7 +112,8 @@ void inline init_test<3>(Eigen::Matrix<double, 3, 1>& phi, const TestFunction& N
 template <int DIM>
 void inline init_dtU_bdf2(Eigen::Matrix<double, DIM, 1>& dtU,
                           const FemFunction&             U,
-                          const FemFunction&             OLD) {
+                          const FemFunction&             OLD,
+                          const FemFunction&             OLDOLD) {
   assert(0);
 }
 

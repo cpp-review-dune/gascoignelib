@@ -3,7 +3,7 @@
 #ifndef __fsi_H
 #define __fsi_H
 /*----------------------------   fsi.h     ---------------------------*/
-
+#define BDF
 #include "equation.h"
 #include "boundaryequation.h"
 #include "paramfile.h"
@@ -63,7 +63,7 @@ protected:
 
   Chi                  chi;
   mutable int          domain;
-  mutable bool         bdf1= true;
+  mutable bool         bdf1_= true;
   mutable FemFunction* OLD;
   mutable FemFunction* OLDOLD;
   void                 SetFemData(FemData& q) const override final {
@@ -96,7 +96,7 @@ public:
     return this->theta;
   }
   bool& bdf1() const {
-    return this->bdf1;
+    return this->bdf1_;
   }
 
   void point(double h, const FemFunction& U, const Vertex<DIM>& v) const override final;
