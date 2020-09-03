@@ -6,30 +6,19 @@
 
 #include "vertex.h"
 
-namespace Gascoigne
-{
+namespace Gascoigne {
 
-  
-  class Chi
-  {
-    
-  public:
+class Chi {
+public:
+  //  0: interface
+  // -1: fluid
+  //  1: solid
 
+  int operator()(const Vertex3d& v) const;
+  int operator()(const Vertex2d& v) const;
+};
 
-    
-    //  0: interface
-    // -1: fluid
-    //  1: solid
-
-    int operator()(const Vertex3d& v) const;
-    int operator()(const Vertex2d& v) const;
-  };
-  
-  
-  
-}
-
-
+}  // namespace Gascoigne
 
 /*----------------------------   chi.h     ---------------------------*/
 /* end of #ifndef __chi_H */

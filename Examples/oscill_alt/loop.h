@@ -12,121 +12,102 @@
 #include "gascoignemesh2d.h"
 #include "solvers.h"
 
-namespace Gascoigne
-{
-class Cyl : public BoundaryFunction<3>
-{
-    double squareradius;
-    Vertex2d center;
+namespace Gascoigne {
+class Cyl : public BoundaryFunction<3> {
+  double   squareradius;
+  Vertex2d center;
 
 public:
-    std::string GetName() const
-    {
-        return "Cyl";
-    }
+  std::string GetName() const {
+    return "Cyl";
+  }
 
-    void BasicInit(Vertex2d c, double r)
-    {
-        center       = c;
-        squareradius = r;
-    }
+  void BasicInit(Vertex2d c, double r) {
+    center      = c;
+    squareradius= r;
+  }
 
-    double operator()(const Vertex3d& c) const
-    {
-        double r = -squareradius;
-        for (int i = 0; i < 2; i++)
-        {
-            double dx = c[i] - center[i];
-            r += dx * dx;
-        }
-        return r;
+  double operator()(const Vertex3d& c) const {
+    double r= -squareradius;
+    for (int i= 0; i < 2; i++) {
+      double dx= c[i] - center[i];
+      r+= dx * dx;
     }
+    return r;
+  }
 };
 
-class Cir : public BoundaryFunction<2>
-{
-    double squareradius;
-    Vertex2d center;
+class Cir : public BoundaryFunction<2> {
+  double   squareradius;
+  Vertex2d center;
 
 public:
-    std::string GetName() const
-    {
-        return "Cir";
-    }
+  std::string GetName() const {
+    return "Cir";
+  }
 
-    void BasicInit(Vertex2d c, double r)
-    {
-        center       = c;
-        squareradius = r;
-    }
+  void BasicInit(Vertex2d c, double r) {
+    center      = c;
+    squareradius= r;
+  }
 
-    double operator()(const Vertex2d& c) const
-    {
-        double r = -squareradius;
-        for (int i = 0; i < 2; i++)
-        {
-            double dx = c[i] - center[i];
-            r += dx * dx;
-        }
-        return r;
+  double operator()(const Vertex2d& c) const {
+    double r= -squareradius;
+    for (int i= 0; i < 2; i++) {
+      double dx= c[i] - center[i];
+      r+= dx * dx;
     }
+    return r;
+  }
 };
 
 /*---------------------------------------------------*/
 
-class MA3d : public MeshAgent
-{
+class MA3d : public MeshAgent {
 protected:
-    Cyl RK;
+  Cyl RK;
 
 public:
-    MA3d() : MeshAgent()
-    {
-        double r2 = 0.012 * 0.012;
-        Vertex2d v(0.0, 0.0);
-        RK.BasicInit(v, r2);
-        // AddShape(4, &RK);
-    }
+  MA3d() : MeshAgent() {
+    double   r2= 0.012 * 0.012;
+    Vertex2d v(0.0, 0.0);
+    RK.BasicInit(v, r2);
+    // AddShape(4, &RK);
+  }
 };
 
-class MA2d : public MeshAgent
-{
+class MA2d : public MeshAgent {
 protected:
-    Cir RK;
+  Cir RK;
 
 public:
-    MA2d() : MeshAgent()
-    {
-        double r2 = 0.05 * 0.05;
-        Vertex2d v(0.2, 0.2);
-        RK.BasicInit(v, r2);
-        // AddShape(80, &RK);
-        // AddShape(81, &RK);
-    }
+  MA2d() : MeshAgent() {
+    double   r2= 0.05 * 0.05;
+    Vertex2d v(0.2, 0.2);
+    RK.BasicInit(v, r2);
+    // AddShape(80, &RK);
+    // AddShape(81, &RK);
+  }
 };
 
 template <int DIM>
-class Loop : public StdLoop
-{
+class Loop : public StdLoop {
 public:
-    void BasicInit(const ParamFile* paramfile, const ProblemContainer* PC,
-                   const FunctionalContainer* FC)
-    {
-        if (DIM == 2)
-        {
-            GetMeshAgentPointer() = new MA2d();
-        }
-        else if (DIM == 3)
-        {
-            GetMeshAgentPointer() = new MA3d();
-        }
-
-        GetMultiLevelSolverPointer() = new FSIMultiLevelSolver<DIM>;
-
-        StdLoop::BasicInit(paramfile, PC, FC);
+  void BasicInit(const ParamFile*           paramfile,
+                 const ProblemContainer*    PC,
+                 const FunctionalContainer* FC) {
+    if (DIM == 2) {
+      GetMeshAgentPointer()= new MA2d();
+    } else if (DIM == 3) {
+      GetMeshAgentPointer()= new MA3d();
     }
 
-    void run(const std::string& problemlabel);
+    GetMultiLevelSolverPointer()= new FSIMultiLevelSolver<DIM>;
+
+    StdLoop::BasicInit(paramfile, PC, FC);
+  }
+
+  void run(const std::string& problemlabel);
 };
 
 }  // namespace Gascoigne
