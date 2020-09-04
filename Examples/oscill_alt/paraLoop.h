@@ -987,7 +987,7 @@ void parareal<DIM>::step(double& time, const double& dt, const int& iter,
   GetMultiLevelSolver()->Equ(old, 1.0, u);
   GetMultiLevelSolver()->AddNodeVector("old", old);
 
-  StdLoop::Solve(u, f)
+  StdLoop::Solve(u, f);
 
   if (method == iter_type::fine_last)
   {
