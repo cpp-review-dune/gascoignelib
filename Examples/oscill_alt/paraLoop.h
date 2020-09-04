@@ -987,8 +987,7 @@ void parareal<DIM>::step(double& time, const double& dt, const int& iter,
   GetMultiLevelSolver()->Equ(old, 1.0, u);
   GetMultiLevelSolver()->AddNodeVector("old", old);
 
-  if(StdLoop::Solve(u, f) != "converged")
-    abort();
+  StdLoop::Solve(u, f)
 
   if (method == iter_type::fine_last)
   {
@@ -1008,8 +1007,9 @@ void parareal<DIM>::step(double& time, const double& dt, const int& iter,
   set_time(dt, time);
   GetMultiLevelSolver()->Equ(old, 1.0, u);
   GetMultiLevelSolver()->AddNodeVector("old", old);
-  if(StdLoop::Solve(u, f) != "converged")
+  if(StdLoop::Solve(u, f) != "converged"){
     abort();
+  }
 
   if (method == iter_type::fine_last)
   {
