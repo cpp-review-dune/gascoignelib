@@ -27,6 +27,9 @@ namespace Gascoigne
   template class FiniteElement<2, 1, Transformation2d<BaseQ12dPatch>, BaseQ12dPatch>;
   template class FiniteElement<3, 2, Transformation3d<BaseQ13dPatch>, BaseQ13dPatch>;
 
+  template class FiniteElement<2, 1, Transformation2d<BaseQ22d>, BaseQ22d>;
+  template class FiniteElement<3, 2, Transformation3d<BaseQ23d>, BaseQ23d>;
+
   template class CGDiscQ13dLps;
   template class CGDiscQ23dLps;
 
