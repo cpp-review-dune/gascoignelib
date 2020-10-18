@@ -22,44 +22,48 @@
 **/
 
 
-#ifndef  __StokesLps2d_h
-#define  __StokesLps2d_h
+#ifndef  __StokesGls3d_h
+#define  __StokesGls3d_h
 
-#include  "stokes2d.h"
-#include  "lpsequation.h"
+#include  "stokes3d.h"
+#include  "glsequation.h"
 #include  "stabilization.h"
 
 /*-----------------------------------------*/
 
 namespace Gascoigne
 {
-class StokesLps2d : public Stokes2d, public virtual LpsEquation
+class StokesGls3d : public Stokes3d, public virtual GlsEquation
 {
 protected:
 
+  //
+  /// handles the stabilization parameters
+  //
   mutable Stabilization ST;
 
 public:
 
-  ~StokesLps2d();
-  StokesLps2d();
-  StokesLps2d(const ParamFile* filename);
+  ~StokesGls3d();
+  StokesGls3d();
+  StokesGls3d(const ParamFile& pf);
 
-  std::string GetName() const { return "StokesLps2d";}
+  std::string GetName() const { return "StokesGls3d";}
 
   void SetTime(double time, double dt) const {Application::SetTime(time,dt); ST.DeltaT() = dt;}
   //
-  /// Computation of stabilization parameters
+  /// Computation of gls stabilization parameters
   //
-  void lpspoint(double h, const FemFunction& U, const Vertex2d& v) const;
+  void glspoint(double h, const FemFunction& U, const Vertex3d& v) const;
+  //
+  /// for Galerkin-Least-Squares
+  //
+  void L(DoubleVector& dst, const FemFunction& U) const;
+  void S(nmatrix<double>& dst, const FemFunction& U, const TestFunction& N) const;
 
-  void StabForm(VectorIterator b, const FemFunction& U, const FemFunction& UP, const TestFunction& N) const;
-    
-  void StabMatrix(EntryMatrix& A, const FemFunction& U, const TestFunction& Np, const TestFunction& Mp) const;
+  void LMatrix(nmatrix<double>& dst, const FemFunction& U, const TestFunction& N) const;
 
 };
 }
-
-/*-----------------------------------------*/
 
 #endif

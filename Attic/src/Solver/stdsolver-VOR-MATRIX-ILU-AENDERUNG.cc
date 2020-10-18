@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (C) 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2020 by the Gascoigne
+ * Copyright (C) 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011 by the Gascoigne
  *3D authors
  *
  * This file is part of Gascoigne 3D
@@ -37,6 +37,12 @@
 #include "vankasmoother.h"
 
 /*--------------------------------*/
+#ifdef __WITH_THREADS__
+#include "threadilu.h"
+#include <omp.h>
+#endif
+/*--------------------------------*/
+
 #include "cfdblock3d.h"
 #include "fmatrixblock.h"
 #include "sparse_umf.h"
@@ -76,7 +82,19 @@
 #include "glsequation.h"
 #include "lpsequation.h"
 
+#include "dg.h"
+#include "dgdofhandler.h"
+
 using namespace std;
+
+/*-----------------------------------------*/
+#ifdef __WITH_THREADS__
+extern "C" void METIS_PartGraphRecursive(int*, int*, int*, int*, int*, int*,
+                                         int*, int*, int*, int*, int*);
+extern "C" void METIS_PartGraphKway(int*, int*, int*, int*, int*, int*, int*,
+                                    int*, int*, int*, int*);
+#endif
+/*-----------------------------------------*/
 
 namespace Gascoigne
 {
@@ -85,6 +103,8 @@ extern Timer GlobalTimer;
 StdSolver::StdSolver()
   : _MP(NULL)
   , _HM(NULL)
+  , _MAP(NULL)
+  , _MIP(NULL)
   , _ZP(NULL)
   , _PDX(NULL)
   //      , _NI(NULL)
@@ -94,6 +114,7 @@ StdSolver::StdSolver()
   , _discname("none")
   , _matrixtype("point_node")
   , _PrimalSolve(1)
+  , _paramfile(NULL)
   , _useUMFPACK(true)
 // , omega_domain(0.)
 {
@@ -103,6 +124,12 @@ StdSolver::StdSolver()
 
 StdSolver::~StdSolver()
 {
+  if (_MAP)
+    delete _MAP;
+  _MAP = NULL;
+  if (_MIP)
+    delete _MIP;
+  _MIP = NULL;
   if (_ZP)
     delete _ZP;
   _ZP = NULL;
@@ -165,11 +192,9 @@ void StdSolver::_check_consistency(const Equation* EQ,
 
 /*-------------------------------------------------------*/
 
-
-  
-void StdSolver::MatrixZero(Matrix& A) const
+void StdSolver::MatrixZero() const
 {
-  GetMatrix(A).zero();
+  GetMatrix()->zero();
 }
 
 /*-------------------------------------------------------*/
@@ -185,7 +210,70 @@ void StdSolver::OutputSettings() const
 }
 
 /*-------------------------------------------------------*/
-  
+
+void StdSolver::RegisterMatrix()
+{
+  RegisterMatrix(GetProblemDescriptor()->GetNcomp());
+}
+
+/*-------------------------------------------------------*/
+
+void StdSolver::RegisterMatrix(int ncomp)
+{
+#ifdef __WITH_UMFPACK__
+  if (_useUMFPACK && _MAP != NULL)
+  {
+    SimpleMatrix* SM = dynamic_cast<SimpleMatrix*>(GetMatrix());
+    if ((SM && !_directsolver && _matrixtype != "point_node")
+        || (!SM && _directsolver))
+    {
+      delete _MAP;
+      _MAP = NULL;
+    }
+  }
+
+  if (_useUMFPACK && _MIP != NULL)
+  {
+#ifdef __WITH_UMFPACK_LONG__
+    UmfIluLong* UM = dynamic_cast<UmfIluLong*>(GetIlu());
+#else
+    UmfIlu* UM = dynamic_cast<UmfIlu*>(GetIlu());
+#endif
+
+    if ((UM && !_directsolver) || (!UM && _directsolver))
+    {
+      delete _MIP;
+      _MIP = NULL;
+    }
+  }
+#endif
+
+#ifdef __WITH_THREADS__
+  if (__with_thread_ilu && _MIP != NULL)
+  {
+    ThreadIlu* TIlu = dynamic_cast<ThreadIlu*>(GetIlu());
+    if (!TIlu && __n_threads > 1)
+    {
+      delete _MIP;
+      _MIP = NULL;
+    }
+    if (TIlu && __n_threads == 1)
+    {
+      delete _MIP;
+      _MIP = NULL;
+    }
+  }
+#endif
+
+  if (_MAP == NULL)
+    GetMatrixPointer() = NewMatrix(ncomp, _matrixtype);
+
+  if (_MIP == NULL)
+    GetIluPointer() = NewIlu(ncomp, _matrixtype);
+}
+
+/*-------------------------------------------------------*/
+
 void StdSolver::SetProblem(const ProblemDescriptorInterface& PDX)
 {
   _PDX = &PDX;
@@ -212,6 +300,105 @@ void StdSolver::SetDiscretization(DiscretizationInterface& DI, bool init)
 
 /*-------------------------------------------------------*/
 
+#ifdef __WITH_THREADS__
+void StdSolver::ThreadPartitionMesh()
+{
+  if (!__with_thread_ilu)
+  {
+    __n_threads = 1;
+    return;
+  }
+  assert(GetMesh());
+  const GascoigneMesh* M = dynamic_cast<const GascoigneMesh*>(GetMesh());
+  assert(M);
+  assert(M->HasPatch());
+
+  int n_max_threads = omp_get_max_threads();
+  int n_per_thread  = __min_patches_per_thread;
+  int __n           = M->npatches();
+  __n_threads =
+    std::max(1, std::min(n_max_threads, M->npatches() / n_per_thread));
+
+  // nur wenns sinn macht
+  if (__n_threads > 1)
+  {
+    vector<int> adj1;
+    vector<int> adj;
+    adj.push_back(0);
+
+    vector<vector<int>> node2patch(M->nnodes());
+    for (int p = 0; p < M->npatches(); ++p)
+    {
+      const vector<int>& ciop = M->CoarseIndices(p);
+      for (int i = 0; i < ciop.size(); ++i)
+        node2patch[ciop[i]].push_back(p);
+    }
+    // adjazenzliste erstellen
+    for (int p = 0; p < M->npatches(); ++p)
+    {
+      set<int> neighbors;
+      const vector<int>& ciop = M->CoarseIndices(p);
+      for (int i = 0; i < ciop.size(); ++i)
+        for (int n = 0; n < node2patch[ciop[i]].size(); ++n)
+        {
+          int neighbor = node2patch[ciop[i]][n];
+          neighbors.insert(neighbor);
+        }
+      for (set<int>::const_iterator it = neighbors.begin();
+           it != neighbors.end(); ++it)
+        if (*it != p)
+          adj1.push_back(*it);
+      adj.push_back(adj1.size());
+    }
+    assert(adj.size() == M->npatches() + 1);
+    assert(adj1.size() == adj[adj.size() - 1]);
+
+    int wgtflag    = 0;
+    int numflag    = 0;
+    int options[5] = {0, 0, 0, 0, 0};
+    int edgecut    = -1;
+
+    vector<int> patch_partition(M->npatches());
+
+    if (__n_threads < 8)
+      METIS_PartGraphRecursive(&__n, &adj[0], &adj1[0], NULL, NULL, &wgtflag,
+                               &numflag, &__n_threads, &options[0], &edgecut,
+                               &patch_partition[0]);
+    else
+      METIS_PartGraphKway(&__n, &adj[0], &adj1[0], NULL, NULL, &wgtflag,
+                          &numflag, &__n_threads, &options[0], &edgecut,
+                          &patch_partition[0]);
+
+    __thread_domain2node.clear();
+    __thread_domain2node.resize(__n_threads);
+
+    vector<set<int>> __thread_domain2node_set(__n_threads);
+    for (int p = 0; p < M->npatches(); ++p)
+    {
+      const vector<int>& iop = *(M->IndicesOfPatch(p));
+      __thread_domain2node_set[patch_partition[p]].insert(iop.begin(),
+                                                          iop.end());
+    }
+    for (int p = 0; p < __n_threads; ++p)
+      for (set<int>::const_iterator it = __thread_domain2node_set[p].begin();
+           it != __thread_domain2node_set[p].end(); ++it)
+        __thread_domain2node[p].push_back(*it);
+
+    // The invers  mapping
+    __thread_node2domain.clear();
+    __thread_node2domain.resize(M->nnodes());
+    for (int d = 0; d < __n_threads; d++)
+    {
+      for (int n = 0; n < __thread_domain2node[d].size(); n++)
+      {
+        __thread_node2domain[__thread_domain2node[d][n]].push_back(
+          make_pair(d, n));
+      }
+    }
+  }  // end of the case __n_threads > 1 sonst tun wir nix
+}
+// Endof threads
+#endif
 
 /*-------------------------------------------------------*/
 
@@ -219,7 +406,7 @@ void StdSolver::NewMesh(const GascoigneMesh* mp)
 {
   _MP = mp;
   assert(_MP);
-  
+
   if (_MP->nnodes() < _ndirect)
   {
     _directsolver = 1;
@@ -230,8 +417,10 @@ void StdSolver::NewMesh(const GascoigneMesh* mp)
   }
   GetDiscretization()->ReInit(_MP);
 
-  // reinit the pressure filter
-  GetDiscretization()->InitFilter(GetPfilter());
+//
+#ifdef __WITH_THREADS__
+  ThreadPartitionMesh();
+#endif
 }
 
 /*-----------------------------------------*/
@@ -246,7 +435,7 @@ void StdSolver::SetDefaultValues(string discname, string matrixtype,
 
 /*-------------------------------------------------------*/
 
-void StdSolver::BasicInit(const ParamFile& paramfile, const int dimension)
+void StdSolver::BasicInit(const ParamFile* paramfile, const int dimension)
 //                            const NumericInterface *NI)
 {
   _paramfile = paramfile;
@@ -260,6 +449,18 @@ void StdSolver::BasicInit(const ParamFile& paramfile, const int dimension)
   DFH.insert("useUMFPACK", &_useUMFPACK);
   DFH.insert("discname", &_discname);
   DFH.insert("disc", &xxx, "void");
+
+#ifdef __WITH_THREADS__
+  int default_min_per_thread = 450;
+  if (dimension == 3)
+    default_min_per_thread = 150;
+  // Default is approximately 4000 nodes per Thread, the value is the
+  // minumum number of Patches for each thread, e.g in 2d 450*9 \approx 4000
+  DFH.insert("min_patches_per_thread", &__min_patches_per_thread,
+             default_min_per_thread);
+  DFH.insert("with_thread_ilu", &__with_thread_ilu, false);
+#endif
+
   FileScanner FS(DFH);
   FS.NoComplain();
   FS.readfile(_paramfile, "Solver");
@@ -269,6 +470,17 @@ void StdSolver::BasicInit(const ParamFile& paramfile, const int dimension)
     cout << "Expression 'disc' in ParamFile not longer valid !" << endl;
     abort();
   }
+
+#ifdef __WITH_THREADS__
+  if (__with_thread_ilu && _matrixtype != "block")
+  {
+    cerr << "Thread Ilu (with_thread_ilu) not available for matrixtype "
+         << _matrixtype << "!" << endl;
+    cerr << "Select matrixtype block if you want to use it." << endl;
+    abort();
+  }
+#endif
+
   if (GetDiscretizationPointer() == NULL)
     GetDiscretizationPointer() = NewDiscretization(dimension, _discname);
   assert(_ZP);
@@ -309,7 +521,11 @@ DiscretizationInterface* StdSolver::NewDiscretization(int dimension,
       return new LagrangeDiscQ22d;
     else if (discname == "LQ4")
       return new LagrangeDiscQ42d;
-    
+
+    else if (discname == "DG1")
+      return new DG<BASEQ12D>;
+    else if (discname == "DG2")
+      return new DG<BASEQ22D>;
     else
     {
       cerr << " Solver::NewDiscretization()\tunknown discname=" << discname
@@ -421,15 +637,15 @@ MatrixInterface* StdSolver::NewMatrix(int ncomp, const string& matrixtype)
 
 /*-------------------------------------------------------------*/
 
-IluInterface* StdSolver::NewIlu(const Matrix& A, int ncomp, const string& matrixtype)
+IluInterface* StdSolver::NewIlu(int ncomp, const string& matrixtype)
 {
 #ifdef __WITH_UMFPACK__
   if (_directsolver && _useUMFPACK)
   {
 #ifdef __WITH_UMFPACK_LONG__
-    return new UmfIluLong(&GetMatrix(A));
+    return new UmfIluLong(GetMatrix());
 #else
-    return new UmfIlu(&GetMatrix(A));
+    return new UmfIlu(GetMatrix());
 #endif
   }
 #endif
@@ -444,6 +660,12 @@ IluInterface* StdSolver::NewIlu(const Matrix& A, int ncomp, const string& matrix
 
   else if (matrixtype == "block")
   {
+#ifdef __WITH_THREADS__
+    if (__n_threads > 1)
+    {
+      return new ThreadIlu(ncomp);
+    }
+#endif
     if (ncomp == 1)
       return new SparseBlockIlu<FMatrixBlock<1>>;
     else if (ncomp == 2)
@@ -468,16 +690,23 @@ IluInterface* StdSolver::NewIlu(const Matrix& A, int ncomp, const string& matrix
   }
   else if (matrixtype == "sparseumf")
   {
+#ifdef __WITH_THREADS__
+    if (__n_threads > 1)
+    {
+      return new ThreadIlu(ncomp);
+    }
+#endif
+
     if (ncomp == 1)
-      return new SparseUmf<FMatrixBlock<1>>(&GetMatrix(A));
+      return new SparseUmf<FMatrixBlock<1>>(GetMatrix());
     else if (ncomp == 2)
-      return new SparseUmf<FMatrixBlock<2>>(&GetMatrix(A));
+      return new SparseUmf<FMatrixBlock<2>>(GetMatrix());
     else if (ncomp == 3)
-      return new SparseUmf<FMatrixBlock<3>>(&GetMatrix(A));
+      return new SparseUmf<FMatrixBlock<3>>(GetMatrix());
     else if (ncomp == 4)
-      return new SparseUmf<FMatrixBlock<4>>(&GetMatrix(A));
+      return new SparseUmf<FMatrixBlock<4>>(GetMatrix());
     else if (ncomp == 5)
-      return new SparseUmf<FMatrixBlock<5>>(&GetMatrix(A));
+      return new SparseUmf<FMatrixBlock<5>>(GetMatrix());
     else
     {
       cerr << "No SparseBlockIlu for " << ncomp << "components." << endl;
@@ -517,6 +746,26 @@ IluInterface* StdSolver::NewIlu(const Matrix& A, int ncomp, const string& matrix
   abort();
 }
 
+/*-------------------------------------------------------*/
+
+void StdSolver::ReInitMatrix()
+{
+  GetDiscretization()->InitFilter(GetPfilter());
+  SparseStructure SA;
+  GetDiscretization()->Structure(&SA);
+
+  AddPeriodicNodes(&SA);
+
+  GetMatrix()->ReInit(&SA);
+
+  if (!_directsolver && (_matrixtype == "vanka"))
+  {
+    assert(dynamic_cast<const VankaSmoother*>(GetIlu()));
+    dynamic_cast<const VankaSmoother*>(GetIlu())->SetDofHandler(GetMesh());
+  }
+
+  GetIlu()->ReInit(&SA);
+}
 
 /*-------------------------------------------------------*/
 
@@ -577,7 +826,7 @@ void StdSolver::AddPeriodicNodes(SparseStructure* SA)
 
 void StdSolver::RegisterVector(const VectorInterface& g)
 {
-  vector_agent.Register(g);
+  _NGVA.Register(g);
 }
 
 /*-------------------------------------------------------*/
@@ -597,13 +846,13 @@ void StdSolver::ReInitVector(VectorInterface& dst, int comp)
 
   // VectorInterface already registered ?
   //
-  GhostVectorAgent::iterator p = vector_agent.find(dst);
-  if (p == vector_agent.end())
+  GhostVectorAgent::iterator p = _NGVA.find(dst);
+  if (p == _NGVA.end())
   {
-    vector_agent.Register(dst);
-    p = vector_agent.find(dst);
+    _NGVA.Register(dst);
+    p = _NGVA.find(dst);
   }
-  assert(p != vector_agent.end());
+  assert(p != _NGVA.end());
 
   // GlobalVector already registered ?
   //
@@ -637,93 +886,47 @@ void StdSolver::ReInitVector(VectorInterface& dst, int comp)
 
 /*-------------------------------------------------------*/
 
-void StdSolver::ReInitMatrix(const Matrix& A)
+void StdSolver::ReInitMatrix(Matrix& A)
 {
-  GlobalTimer.start("---> matrix init");
-  
   // number of components in current problem
   int ncomp = GetProblemDescriptor()->GetNcomp();
 
-  //////////
-  ////////// create new matrix
-  //////////
-  auto matrix = matrix_agent.find(A);
-  if (matrix == matrix_agent.end())
+  // matrixtype
+  
+  auto p = matrix_agent.find(dst);
+  if (p == matrix_agent.end())
   {
     matrix_agent.Register(A);
-    matrix = matrix_agent.find(A);
+    p = matrix_agent.find(A);
   }
-  assert(matrix != matrix_agent.end());
+  assert(p != matrix_agent.end());
 
-  // check if matrix is an umfpack object. If yes, delete it
-#ifdef __WITH_UMFPACK__ 
-  if (_useUMFPACK && matrix->second != NULL)
-    {
-      SimpleMatrix* SM = dynamic_cast<SimpleMatrix*>(matrix->second);
-      if ((SM && !_directsolver && _matrixtype != "point_node")
-	  || (!SM && _directsolver))
-	{
-	  delete matrix->second;
-	  matrix->second = NULL;
-	}
-    }
-#endif
+  // GlobalVector already registered ?
+  //
+  if (p->second == NULL)
+    p->second = new NewMatrix(ncomp,matrixtype);
 
-  // create new matrix
-  if (matrix->second == NULL)
-    matrix->second = NewMatrix(ncomp,_matrixtype);
+  // resize GlobalVector
+  //
+  p->second->ncomp() = comp;
 
-  //////////
-  ////////// create new ilu
-  //////////
-  auto ilu = ilu_agent.find(A);
-  if (ilu == ilu_agent.end())
+  if (p->first.GetType() == "node")
   {
-    ilu_agent.Register(A);
-    ilu = ilu_agent.find(A);
+    p->second->reservesize(n);
   }
-  assert(ilu != ilu_agent.end());
-
-  // if umfpack is used and matrix is umfpack object, delete it
-#ifdef __WITH_UMFPACK__   
-  if (_useUMFPACK && ilu->second != NULL)
+  else if (p->first.GetType() == "cell")
   {
-#ifdef __WITH_UMFPACK_LONG__
-    UmfIluLong* UM = dynamic_cast<UmfIluLong*>(ilu->second);
-#else
-    UmfIlu* UM = dynamic_cast<UmfIlu*>(ilu->second);
-#endif
-
-    if ((UM && !_directsolver) || (!UM && _directsolver))
-    {
-      delete ilu->second;
-      ilu->second = NULL;
-    }
+    p->second->reservesize(nc);
   }
-#endif
-
-  
-  if (ilu->second == NULL)
-    ilu->second = NewIlu(A, ncomp,_matrixtype);
-
-  // if Vankasmoother is used, attach dofhandler
-  if (!_directsolver && (_matrixtype == "vanka"))
-    {
-      assert(dynamic_cast<const VankaSmoother*>(ilu->second));
-      dynamic_cast<const VankaSmoother*>(ilu->second)->SetDofHandler(GetMesh());
-    }
-  
-  ////////// setup the stencil
-  // is it a drawback that the stencil cannot be reused for multiple matrices?
-
-  SparseStructure SA;
-  GetDiscretization()->Structure(&SA);
-  AddPeriodicNodes(&SA);
-  
-  matrix->second->ReInit(&SA);
-  ilu   ->second->ReInit(&SA);
-
-  GlobalTimer.stop("---> matrix init");
+  else if (p->first.GetType() == "parameter")
+  {
+    p->second->reservesize(1);
+  }
+  else
+  {
+    cerr << "No such vector type: " << p->first.GetType() << endl;
+    abort();
+  }
 }
 
 /*-------------------------------------------------------*/
@@ -781,48 +984,45 @@ void StdSolver::InterpolateSolution(VectorInterface& gu,
 
 /*-----------------------------------------*/
 
-void StdSolver::residualgmres(const Matrix& A,
-			      VectorInterface& gy, const VectorInterface& gx,
+void StdSolver::residualgmres(VectorInterface& gy, const VectorInterface& gx,
                               const VectorInterface& gb) const
 {
   GlobalVector& y       = GetGV(gy);
   const GlobalVector& b = GetGV(gb);
 
-  vmulteq(A, gy, gx, 1.);
+  vmulteq(gy, gx, 1.);
   y.sadd(-1., 1., b);
   SetBoundaryVectorZero(gy);
 }
 
 /*-----------------------------------------*/
 
-void StdSolver::vmult(const Matrix& A,
-		      VectorInterface& gy, const VectorInterface& gx,
+void StdSolver::vmult(VectorInterface& gy, const VectorInterface& gx,
                       double d) const
 {
   GlobalTimer.start("---> vmult");
-  GetMatrix(A).vmult(GetGV(gy), GetGV(gx), d);
+  GetMatrix()->vmult(GetGV(gy), GetGV(gx), d);
   GlobalTimer.stop("---> vmult");
 }
 
 /*-----------------------------------------*/
 
-void StdSolver::vmulteq(const Matrix& A, VectorInterface& gy, const VectorInterface& gx,
+void StdSolver::vmulteq(VectorInterface& gy, const VectorInterface& gx,
                         double d) const
 {
   GlobalTimer.start("---> vmult");
   Zero(gy);
   GlobalTimer.stop("---> vmult");
-  vmult(A, gy, gx, d);
+  vmult(gy, gx, d);
 }
 
 /*-----------------------------------------*/
 
-void StdSolver::MatrixResidual(const Matrix& A,
-			       VectorInterface& gy, const VectorInterface& gx,
+void StdSolver::MatrixResidual(VectorInterface& gy, const VectorInterface& gx,
                                const VectorInterface& gb) const
 {
   Equ(gy, 1., gb);
-  vmult(A, gy, gx, -1.);
+  vmult(gy, gx, -1.);
   SubtractMeanAlgebraic(gy);
 }
 
@@ -978,9 +1178,7 @@ void StdSolver::SetPeriodicVectorZero(VectorInterface& gf) const
 
 /*-------------------------------------------------------*/
 
-void StdSolver::smooth(int niter,
-		       const Matrix& A,
-		       VectorInterface& x, const VectorInterface& y,
+void StdSolver::smooth(int niter, VectorInterface& x, const VectorInterface& y,
                        VectorInterface& h) const
 {
   GlobalTimer.start("---> smooth");
@@ -991,22 +1189,22 @@ void StdSolver::smooth(int niter,
     if (GetSolverData().GetLinearSmooth() == "ilu")
     {
       GlobalTimer.stop("---> smooth");
-      MatrixResidual(A, h, x, y);
+      MatrixResidual(h, x, y);
       GlobalTimer.start("---> smooth");
-      GetIlu(A).solve(GetGV(h));
+      GetIlu()->solve(GetGV(h));
       Add(x, omega, h);
     }
     else if (GetSolverData().GetLinearSmooth() == "jacobi")
     {
       GlobalTimer.stop("---> smooth");
-      MatrixResidual(A, h, x, y);
+      MatrixResidual(h, x, y);
       GlobalTimer.start("---> smooth");
-      GetMatrix(A).Jacobi(GetGV(h));
+      GetMatrix()->Jacobi(GetGV(h));
       Add(x, omega, h);
     }
     else if (GetSolverData().GetLinearSmooth() == "richardson")
     {
-      MatrixResidual(A, h, x, y);
+      MatrixResidual(h, x, y);
       Add(x, omega, h);
     }
     else if (GetSolverData().GetLinearSmooth() == "none")
@@ -1025,18 +1223,16 @@ void StdSolver::smooth(int niter,
 
 /*-------------------------------------------------------*/
 
-void StdSolver::smooth_pre(const Matrix& A,
-			   VectorInterface& x, const VectorInterface& y,
+void StdSolver::smooth_pre(VectorInterface& x, const VectorInterface& y,
                            VectorInterface& help) const
 {
   int niter = GetSolverData().GetIterPre();
-  smooth(niter, A, x, y, help);
+  smooth(niter, x, y, help);
 }
 
 /*-------------------------------------------------------*/
 
-void StdSolver::smooth_exact(const Matrix& A,
-			     VectorInterface& x, const VectorInterface& y,
+void StdSolver::smooth_exact(VectorInterface& x, const VectorInterface& y,
                              VectorInterface& help) const
 {
 #ifdef __WITH_UMFPACK__
@@ -1044,9 +1240,9 @@ void StdSolver::smooth_exact(const Matrix& A,
   {
     GlobalTimer.start("---> smooth (ex)");
 #ifdef __WITH_UMFPACK_LONG__
-    const UmfIluLong* UM = dynamic_cast<const UmfIluLong*>(&GetIlu(A));
+    UmfIluLong* UM = dynamic_cast<UmfIluLong*>(GetIlu());
 #else
-    const UmfIlu* UM = dynamic_cast<const UmfIlu*>(&GetIlu(A));
+    UmfIlu* UM = dynamic_cast<UmfIlu*>(GetIlu());
 #endif
     assert(UM);
     UM->Solve(GetGV(x), GetGV(y));
@@ -1056,18 +1252,17 @@ void StdSolver::smooth_exact(const Matrix& A,
 #endif
   {
     int niter = GetSolverData().GetIterExact();
-    smooth(niter, A, x, y, help);
+    smooth(niter, x, y, help);
   }
 }
 
 /*-------------------------------------------------------*/
 
-void StdSolver::smooth_post(const Matrix& A,
-			    VectorInterface& x, const VectorInterface& y,
+void StdSolver::smooth_post(VectorInterface& x, const VectorInterface& y,
                             VectorInterface& help) const
 {
   int niter = GetSolverData().GetIterPost();
-  smooth(niter, A, x, y, help);
+  smooth(niter, x, y, help);
 }
 
 /*-------------------------------------------------------*/
@@ -1510,19 +1705,20 @@ void StdSolver::Rhs(VectorInterface& gf, double d) const
 
 /*-------------------------------------------------------*/
 
-void StdSolver::AssembleMatrix(Matrix& A, const VectorInterface& gu, double d)
+void StdSolver::AssembleMatrix(const VectorInterface& gu, double d)
 {
   GlobalTimer.start("---> matrix");
+  assert(GetMatrix());
 
   const GlobalVector& u = GetGV(gu);
   HNAverage(gu);
   HNAverageData();
 
   //////////// Elements
-  GetDiscretization()->Matrix(GetMatrix(A), u, *GetProblemDescriptor()->GetEquation(), d);
+  GetDiscretization()->Matrix(*GetMatrix(), u, *GetProblemDescriptor()->GetEquation(), d);
 
   //////////// Boundary
-  GetDiscretization()->BoundaryMatrix(GetMatrix(A), u, *GetProblemDescriptor(),
+  GetDiscretization()->BoundaryMatrix(*GetMatrix(), u, *GetProblemDescriptor(),
                                       d);
   // const BoundaryEquation *BE = GetProblemDescriptor()->GetBoundaryEquation();
   // if (BE)
@@ -1532,8 +1728,8 @@ void StdSolver::AssembleMatrix(Matrix& A, const VectorInterface& gu, double d)
   //       *GetMatrix(), u, BM->GetBoundaryEquationColors(), *BE, d);
   // }
 
-  PeriodicMatrix(A);
-  DirichletMatrix(A);
+  PeriodicMatrix();
+  DirichletMatrix();
   HNZero(gu);
   HNZeroData();
 
@@ -1542,23 +1738,41 @@ void StdSolver::AssembleMatrix(Matrix& A, const VectorInterface& gu, double d)
 
 /*-------------------------------------------------------*/
 
-void StdSolver::DirichletMatrix(Matrix& A) const
+void StdSolver::DirichletMatrix() const
 {
-  GetDiscretization()->StrongDirichletMatrix(GetMatrix(A),
+  GetDiscretization()->StrongDirichletMatrix(*GetMatrix(),
                                              *GetProblemDescriptor());
+
+  // const BoundaryManager *BM = GetProblemDescriptor()->GetBoundaryManager();
+  // const IntSet &Colors = BM->GetDirichletDataColors();
+
+  // for (IntSet::const_iterator p = Colors.begin(); p != Colors.end(); p++)
+  // {
+  //   int col = *p;
+  //   const IntVector &comp = BM->GetDirichletDataComponents(col);
+
+  //   GetDiscretization()->StrongDirichletMatrix(*GetMatrix(), col, comp);
+  // }
 }
 
 /* -------------------------------------------------------*/
 
-void StdSolver::DirichletMatrixOnlyRow(Matrix& A) const
+void StdSolver::DirichletMatrixOnlyRow() const
 {
-  GetDiscretization()->StrongDirichletMatrixOnlyRow(GetMatrix(A),
-						    *GetProblemDescriptor());
+  const BoundaryManager* BM = GetProblemDescriptor()->GetBoundaryManager();
+  const IntSet& Colors      = BM->GetDirichletDataColors();
+
+  for (IntSet::const_iterator p = Colors.begin(); p != Colors.end(); p++)
+  {
+    int col               = *p;
+    const IntVector& comp = BM->GetDirichletDataComponents(col);
+    GetDiscretization()->StrongDirichletMatrixOnlyRow(*GetMatrix(), col, comp);
+  }
 }
 
 /* -------------------------------------------------------*/
 
-void StdSolver::PeriodicMatrix(Matrix& A) const
+void StdSolver::PeriodicMatrix() const
 {
   /*-------------------------------------------------------
   | Modifiziert die Systemmatrix, um den periodischen
@@ -1585,23 +1799,60 @@ void StdSolver::PeriodicMatrix(Matrix& A) const
 
     const IntVector iv_PeriodicComponents = BM->GetPeriodicDataComponents(col);
 
-    GetMatrix(A).periodic(mm_PeriodicPairs[col], iv_PeriodicComponents);
+    GetMatrix()->periodic(mm_PeriodicPairs[col], iv_PeriodicComponents);
   }
 }
 
+/* -------------------------------------------------------*/
+
+void StdSolver::ComputeIlu() const
+{
+  assert(0);
+  abort();
+
+#ifdef __WITH_UMFPACK__
+  if (_directsolver && _useUMFPACK)
+  {
+    GlobalTimer.start("---> direct");
+#ifdef __WITH_UMFPACK_LONG__
+    UmfIluLong* UM = dynamic_cast<UmfIluLong*>(GetIlu());
+#else
+    UmfIlu* UM = dynamic_cast<UmfIlu*>(GetIlu());
+#endif
+    assert(UM);
+    //       if(PrimalSolve==0) return;
+    UM->Factorize();
+    GlobalTimer.stop("---> direct");
+  }
+  else
+#endif
+    if (GetSolverData().GetLinearSmooth() == "ilu")
+  {
+    GlobalTimer.start("---> ilu");
+    IntVector perm(GetIlu()->n());
+    iota(perm.begin(), perm.end(), 0);
+    GetIlu()->ConstructStructure(perm, *GetMatrix());
+    GetIlu()->zero();
+    GetIlu()->copy_entries(*GetMatrix());
+    int ncomp = GetProblemDescriptor()->GetNcomp();
+    modify_ilu(*GetIlu(), ncomp);
+    GetIlu()->compute_ilu();
+    GlobalTimer.stop("---> ilu");
+  }
+}
 
 /* -------------------------------------------------------*/
 
-void StdSolver::ComputeIlu(Matrix& A, const VectorInterface& gu) const
+void StdSolver::ComputeIlu(const VectorInterface& gu) const
 {
 #ifdef __WITH_UMFPACK__
   if (_directsolver && _useUMFPACK)
   {
     GlobalTimer.start("---> direct");
 #ifdef __WITH_UMFPACK_LONG__
-    UmfIluLong* UM = dynamic_cast<UmfIluLong*>(&GetIlu(A));
+    UmfIluLong* UM = dynamic_cast<UmfIluLong*>(GetIlu());
 #else
-    UmfIlu* UM = dynamic_cast<UmfIlu*>(&GetIlu(A));
+    UmfIlu* UM = dynamic_cast<UmfIlu*>(GetIlu());
 #endif
     assert(UM);
     //       if(PrimalSolve==0) return;
@@ -1614,11 +1865,11 @@ void StdSolver::ComputeIlu(Matrix& A, const VectorInterface& gu) const
   {
     GlobalTimer.start("---> ilu");
     int ncomp = GetProblemDescriptor()->GetNcomp();
-    PermutateIlu(A, gu);
-    GetIlu(A).zero();
-    GetIlu(A).copy_entries(GetMatrix(A));
-    modify_ilu(GetIlu(A), ncomp);
-    GetIlu(A).compute_ilu();
+    PermutateIlu(gu);
+    GetIlu()->zero();
+    GetIlu()->copy_entries(*GetMatrix());
+    modify_ilu(*GetIlu(), ncomp);
+    GetIlu()->compute_ilu();
     GlobalTimer.stop("---> ilu");
   }
 }
@@ -1647,17 +1898,53 @@ void StdSolver::modify_ilu(IluInterface& I, int ncomp) const
 
 /* -------------------------------------------------------*/
 
-void StdSolver::PermutateIlu(Matrix& A, const VectorInterface& gu) const
+void StdSolver::PermutateIlu(const VectorInterface& gu) const
 {
   const GlobalVector& u = GetGV(gu);
 
-  int n = GetMatrix(A).GetStencil()->n();
+#ifdef __WITH_THREADS__
+  if (__n_threads > 1)
+  {
+    assert(__n_threads == __thread_domain2node.size());
+
+    if (GetSolverData().GetIluSort() == "cuthillmckee")
+    {
+      std::vector<IntVector> perm(__n_threads);
+      for (int d = 0; d < __n_threads; d++)
+      {
+        int n = __thread_domain2node[d].size();
+        perm[d].resize(n);
+        iota(perm[d].begin(), perm[d].end(), 0);
+
+        CuthillMcKee cmc(GetMatrix()->GetStencil());
+        cmc.Permutate(perm[d], __thread_domain2node[d], __thread_node2domain,
+                      d);
+      }
+      // Wie das?
+      ThreadIlu* TIlu = dynamic_cast<ThreadIlu*>(GetIlu());
+      assert(TIlu);
+      TIlu->ConstructStructure(perm, *GetMatrix(), __thread_domain2node);
+    }
+    else
+    {
+      std::cerr << "In StdSolver::PermutateIlu: IluSort "
+                << GetSolverData().GetIluSort()
+                << " is not available with threads." << std::endl;
+      abort();
+    }
+    // end of the thread section return to allow for special case if only one
+    // thread is used
+    return;
+  }
+#endif
+  // keine Threads oder nur einer zur Verfuegung
+  int n = GetMatrix()->GetStencil()->n();
   IntVector perm(n);
 
   iota(perm.begin(), perm.end(), 0);
   if (GetSolverData().GetIluSort() == "cuthillmckee")
   {
-    CuthillMcKee cmc(GetMatrix(A).GetStencil());
+    CuthillMcKee cmc(GetMatrix()->GetStencil());
     cmc.Permutate(perm);
   }
   else if (GetSolverData().GetIluSort() == "streamdirection")
@@ -1666,7 +1953,7 @@ void StdSolver::PermutateIlu(Matrix& A, const VectorInterface& gu) const
     assert(EQ);
     assert(GetSolverData().GetStreamDirection().size()
            <= EQ->GetNcomp());
-    StreamDirection sd(GetMesh(), GetMatrix(A).GetStencil(), u);
+    StreamDirection sd(GetMesh(), GetMatrix()->GetStencil(), u);
     sd.Permutate(perm, GetSolverData().GetStreamDirection());
   }
   else if (GetSolverData().GetIluSort() == "vectordirection")
@@ -1674,7 +1961,7 @@ void StdSolver::PermutateIlu(Matrix& A, const VectorInterface& gu) const
     VecDirection vd(GetMesh());
     vd.Permutate(perm, GetSolverData().GetVectorDirection());
   }
-  GetIlu(A).ConstructStructure(perm, GetMatrix(A));
+  GetIlu()->ConstructStructure(perm, *GetMatrix());
 }
 
 /* -------------------------------------------------------*/
@@ -1703,7 +1990,7 @@ void StdSolver::Visu(const string& name, const VectorInterface& gu, int i) const
 void StdSolver::PointVisu(const string& name, const GlobalVector& u,
                           int i) const
 {
-  GetDiscretization()->VisuVtk(GetProblemDescriptor()->GetComponentInformation(), _paramfile, name, u, i);
+  GetDiscretization()->VisuVtk(GetProblemDescriptor()->GetComponentInformation(), *_paramfile, name, u, i);
 }
 
 /* -------------------------------------------------------*/
@@ -1820,7 +2107,7 @@ void StdSolver::SubtractMeanAlgebraic(VectorInterface& gx) const
 
 void StdSolver::DeleteVector(VectorInterface& p) const
 {
-  vector_agent.Delete(p);
+  _NGVA.Delete(p);
 }
 
 /*-----------------------------------------*/
@@ -1864,21 +2151,23 @@ double StdSolver::ScalarProduct(const VectorInterface& y,
 
 /*---------------------------------------------------*/
 
-void StdSolver::AssembleDualMatrix(Matrix& A, const VectorInterface& gu, double d)
+void StdSolver::AssembleDualMatrix(const VectorInterface& gu, double d)
 {
   GlobalTimer.start("---> matrix");
 
-  MatrixInterface& M = GetMatrix(A);
+  MatrixInterface* M = GetMatrix();
+
+  assert(M);
 
   HNAverage(gu);
 
-  M.zero();
-  GetDiscretization()->Matrix(M, GetGV(gu), *GetProblemDescriptor()->GetEquation(), d);
-  M.transpose();
+  M->zero();
+  GetDiscretization()->Matrix(*M, GetGV(gu), *GetProblemDescriptor()->GetEquation(), d);
+  M->transpose();
 
   // PeriodicMatrix() hier nicht getestet!
-  PeriodicMatrix(A);
-  DirichletMatrixOnlyRow(A);
+  PeriodicMatrix();
+  DirichletMatrixOnlyRow();
   HNZero(gu);
 
   GlobalTimer.stop("---> matrix");

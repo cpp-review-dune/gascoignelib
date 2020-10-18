@@ -38,12 +38,12 @@ using namespace std;
 
 namespace Gascoigne
 {
-BasicLoop::BasicLoop() : _MA(NULL), _ML(NULL), _SI(NULL), _iter(0), _paramfile(NULL)
+BasicLoop::BasicLoop() : _MA(NULL), _ML(NULL), _SI(NULL), _iter(0)
 {
   _reload = "none";
 }
 
-BasicLoop::BasicLoop(const ParamFile* paramfile, const ProblemContainer* PC,
+BasicLoop::BasicLoop(const ParamFile& paramfile, const ProblemContainer* PC,
                      const FunctionalContainer* FC)
   : _paramfile(paramfile)
 {
@@ -110,7 +110,7 @@ void BasicLoop::ClockOutput() const
 
 /*-----------------------------------------*/
 
-void BasicLoop::BasicInit(const ParamFile* paramfile, const ProblemContainer* PC,
+void BasicLoop::BasicInit(const ParamFile& paramfile, const ProblemContainer* PC,
                           const FunctionalContainer* FC)
 {
   _paramfile = paramfile;
@@ -275,7 +275,7 @@ void BasicLoop::InitSolution(VectorInterface& u)
 
 /*-------------------------------------------------*/
 
-string BasicLoop::Solve(VectorInterface& u, VectorInterface& f, string name)
+string BasicLoop::Solve(Matrix& A, VectorInterface& u, VectorInterface& f, string name)
 {
   _clock_solve.start();
 
@@ -287,7 +287,7 @@ string BasicLoop::Solve(VectorInterface& u, VectorInterface& f, string name)
   GetMultiLevelSolver()->GetSolver()->SetPeriodicVector(u);
   GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(u);
 
-  string status = GetMultiLevelSolver()->Solve(u, f, GetSolverInfos()->GetNLInfo());
+  string status = GetMultiLevelSolver()->Solve(A, u, f, GetSolverInfos()->GetNLInfo());
   _clock_solve.stop();
 
   _clock_write.start();
@@ -348,6 +348,7 @@ void BasicLoop::CopyVector(VectorInterface& dst, GlobalVector& src)
 
 void BasicLoop::run(const std::string& problemlabel)
 {
+  Matrix A("A");
   VectorInterface u("u"), f("f");
   GlobalVector ualt;
 
@@ -362,7 +363,9 @@ void BasicLoop::run(const std::string& problemlabel)
     _clock_newmesh.start();
 
     GetSolverInfos()->GetNLInfo().control().matrixmustbebuild() = 1;
-    GetMultiLevelSolver()->ReInit(problemlabel);
+    GetMultiLevelSolver()->ReInit();
+    GetMultiLevelSolver()->SetProblem(problemlabel);
+    GetMultiLevelSolver()->ReInitMatrix(A);
     GetMultiLevelSolver()->ReInitVector(u);
     GetMultiLevelSolver()->ReInitVector(f);
     GetMultiLevelSolver()->InterpolateSolution(u, ualt);
@@ -376,7 +379,7 @@ void BasicLoop::run(const std::string& problemlabel)
       InitSolution(u);
     }
 
-    Solve(u, f);
+    Solve(A, u, f);
     ComputeGlobalErrors(u);
 
     if (_iter < _niter)

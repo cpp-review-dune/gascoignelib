@@ -83,7 +83,7 @@ class BasicDiscretization : public DiscretizationInterface
    BasicDiscretization();
    ~BasicDiscretization();
    
-   void BasicInit(const ParamFile* pf) {}
+   void BasicInit(const ParamFile& pf) {}
    void ReInit   (const GascoigneMesh* MP) {__MP=MP;}
 
   

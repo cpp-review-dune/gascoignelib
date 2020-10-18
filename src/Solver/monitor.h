@@ -77,7 +77,7 @@ public:
   mutable std::stringstream new_message;
 
   Monitor();
-  Monitor(const ParamFile* pf, int);
+  Monitor(const ParamFile& pf, int);
 
   void SetAos(const std::string& s)
   {
@@ -102,7 +102,7 @@ public:
   void failed_step();
   void pre_monitor(char*);
   void post_monitor();
-  void init(const ParamFile* pf, int);
+  void init(const ParamFile& pf, int);
   void mesh(int, int);
   void pre_nonlinear(int);
   void post_nonlinear(const DoubleVector&, double, int, int, int);

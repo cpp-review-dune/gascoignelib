@@ -35,7 +35,7 @@ using namespace std;
 
 namespace Gascoigne
 {
-MalteAdaptor::MalteAdaptor(const ParamFile* pf, const DoubleVector& _eta) :
+MalteAdaptor::MalteAdaptor(const ParamFile& pf, const DoubleVector& _eta) :
   eta(_eta)
 {
   int idim = 0;

@@ -35,7 +35,7 @@ namespace Gascoigne
   ProblemDescriptorBase::ProblemDescriptorBase() :
     EQ(NULL),BEQ(NULL),RHS(NULL),DRHS(NULL),
     BRHS(NULL),FEQ(NULL),BM(NULL),ES(NULL),IC(NULL),
-    DD(NULL),PD(NULL),BIC(NULL),CI(NULL),_paramfile(NULL),
+    DD(NULL),PD(NULL),BIC(NULL),CI(NULL),
     _time(0.0),_dt(0.0)
   {
   }
@@ -104,12 +104,10 @@ namespace Gascoigne
 
   /*------------------------------------------------------------------------------*/
 
-  void ProblemDescriptorBase::BasicInit(const ParamFile *pf)
+  void ProblemDescriptorBase::BasicInit(const ParamFile &pf)
   {
-    if (GetParamFile() == NULL)
-    {
-      GetParamFilePointer() = pf;
-    }
+    _paramfile = pf;
+    
     if (GetBoundaryManagerPointer() == NULL)
     {
       GetBoundaryManagerPointer() = new BoundaryManager();

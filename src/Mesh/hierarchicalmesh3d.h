@@ -176,7 +176,7 @@ namespace Gascoigne
     HierarchicalMesh3d();
     HierarchicalMesh3d(const HierarchicalMesh3d &H);
     HierarchicalMesh3d &operator=(const HierarchicalMesh3d &H);
-    HierarchicalMesh3d(const ParamFile *paramfile);
+    HierarchicalMesh3d(const ParamFile &paramfile);
     ~HierarchicalMesh3d()
     {
       GetCurvedShapes().clear();

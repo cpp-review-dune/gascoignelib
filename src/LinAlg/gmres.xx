@@ -35,8 +35,8 @@ namespace Gascoigne
 /********************************************************************/
 
 TEMPLATE
-inline GMRESSPV::GMRES(SOLVER& A_, PRECONDITIONER& P_, int vm) :
-  H(vm), gamma(vm+1), ci(vm), si(vm), vmax(vm), A(A_), P(P_)
+inline GMRESSPV::GMRES(SOLVER& S_, PRECONDITIONER& P_, int vm) :
+  H(vm), gamma(vm+1), ci(vm), si(vm), vmax(vm), S(S_), P(P_)
 {   
   left_precondition = 1;
   for(int i=0; i<3; i++)
@@ -115,11 +115,11 @@ inline double GMRESSPV::orthogonalization(dvector& h, int dim, VECTOR& vv) const
 {
   for (int i=0 ; i<dim ; i++)
     {
-      double d = A.ScalarProduct(vv,mem[i]);
+      double d = S.ScalarProduct(vv,mem[i]);
       h[i] += d;
-      A.Add(vv,-d,mem[i]);
+      S.Add(vv,-d,mem[i]);
     }
-  h[dim] = sqrt(A.ScalarProduct(vv,vv));
+  h[dim] = sqrt(S.ScalarProduct(vv,vv));
   return h[dim];
 }
 
@@ -130,7 +130,7 @@ inline bool GMRESSPV::reortho_test(const VECTOR& u, double norm) const
 {
   bool   test    = 0;
   double delta   = 1.e-3;
-  double oldnorm = sqrt(A.ScalarProduct(u,u));
+  double oldnorm = sqrt(S.ScalarProduct(u,u));
   double newnorm = oldnorm + delta*norm;
 
   if (oldnorm==newnorm) 
@@ -144,13 +144,13 @@ inline bool GMRESSPV::reortho_test(const VECTOR& u, double norm) const
 /********************************************************************/
 
 TEMPLATE
-inline int GMRESSPV::restarted_solve(VECTOR& x, const VECTOR& b, CGInfo& info)
+inline int GMRESSPV::restarted_solve(const Matrix& A, VECTOR& x, const VECTOR& b, CGInfo& info)
 {
   int reached;
   for(int j=0;;j++)
     {
       info.control().iteration() = j*(vmax-1);
-      reached = solve(x,b,info);
+      reached = solve(A, x,b,info);
       if(reached) break;
     }
   if (reached<0) return 1;
@@ -160,7 +160,7 @@ inline int GMRESSPV::restarted_solve(VECTOR& x, const VECTOR& b, CGInfo& info)
 /********************************************************************/
 
 TEMPLATE
-inline int GMRESSPV::solve(VECTOR& x, const VECTOR& b, CGInfo& info)
+inline int GMRESSPV::solve(const Matrix& A, VECTOR& x, const VECTOR& b, CGInfo& info)
 {
   init();
 
@@ -177,15 +177,15 @@ inline int GMRESSPV::solve(VECTOR& x, const VECTOR& b, CGInfo& info)
   
   if (left_precondition)
   {
-    A.residualgmres(p,x,b);
-    P.precondition(v,p);
+    S.residualgmres(A, p, x, b);
+    P.precondition(A, v, p);
   }
   else
   {
-    A.residualgmres(v,x,b);
+    S.residualgmres(A, v, x, b);
   }
   
-  double rho = sqrt(A.ScalarProduct(v,v));
+  double rho = sqrt(S.ScalarProduct(v,v));
   if(rho==0.)
     {
       P.DeleteVector(p);
@@ -196,7 +196,7 @@ inline int GMRESSPV::solve(VECTOR& x, const VECTOR& b, CGInfo& info)
 
  // reached = info.check(rho,0);
   
-  A.Equ(v,1./rho,v);
+  S.Equ(v,1./rho,v);
   
   int dim = 0;
   while ((dim<vmax-1) && !reached)
@@ -210,22 +210,21 @@ inline int GMRESSPV::solve(VECTOR& x, const VECTOR& b, CGInfo& info)
       VECTOR& vv = mem[dim];
       if (left_precondition)
 	{
-	  A.vmulteq(p, mem[last],1.);
-	  P.precondition(vv,p);
+	  S.vmulteq(A, p, mem[last],1.);
+	  P.precondition(A, vv, p);
 	}
       else
 	{
-          //A.Equ(p,0.,p);
-	  A.Zero(p);
-	  P.precondition(p,mem[last]);
-	  A.vmulteq(vv,p,1.);
+	  S.Zero(p);
+	  P.precondition(A, p,mem[last]);
+	  S.vmulteq(A, vv, p, 1.);
 	}      
       double s = orthogonalization(H[last],dim,vv);
       if (reortho_test(vv,s))
 	{
 	  s = orthogonalization(H[last],dim,vv);
 	}
-      A.Equ(vv,1./s,vv);
+      S.Equ(vv,1./s,vv);
       
       givens_rotation(H[last],last);
       
@@ -237,7 +236,7 @@ inline int GMRESSPV::solve(VECTOR& x, const VECTOR& b, CGInfo& info)
     }
   /*  Calculate solution  */  
 
-  solution(x,p,dim);
+  solution(A, x, p, dim);
 
   P.DeleteVector(p);
   return reached;
@@ -246,7 +245,7 @@ inline int GMRESSPV::solve(VECTOR& x, const VECTOR& b, CGInfo& info)
 /********************************************************************/
 
 TEMPLATE
-inline void GMRESSPV::solution(VECTOR& x, VECTOR& p, int dim)
+inline void GMRESSPV::solution(const Matrix& A, VECTOR& x, VECTOR& p, int dim)
 {
   nmatrix<double> H1(dim+1,dim);
   H1.zero();	
@@ -263,16 +262,16 @@ inline void GMRESSPV::solution(VECTOR& x, VECTOR& p, int dim)
   if (left_precondition)
     {
       for (int i=0 ; i<dim ; i++)
-	A.Add(x,h[i],mem[i]);
+	S.Add(x,h[i],mem[i]);
     }
   else
     {
-      A.Zero(p);
+      S.Zero(p);
       for (int i=0 ; i<dim ; i++)
-	A.Add(p,h[i], mem[i]);
-       A.Equ(mem[0],0.,mem[0]);
-       P.precondition(mem[0],p);
-       A.Add(x,1.,mem[0]);
+	S.Add(p,h[i], mem[i]);
+       S.Equ(mem[0],0.,mem[0]);
+       P.precondition(A, mem[0],p);
+       S.Add(x,1.,mem[0]);
     }
 }
 }

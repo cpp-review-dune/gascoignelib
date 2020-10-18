@@ -40,6 +40,8 @@
 #include "stopwatch.h"
 #include "vectorinterface.h"
 
+#include "matrix.h"
+
 /*-----------------------------------------*/
 
 namespace Gascoigne
@@ -122,16 +124,16 @@ protected:
 
   std::string _reload, _initial;
   std::string _s_resultsdir;
-  const ParamFile* _paramfile;
+  ParamFile _paramfile;
 
   GlobalVector _GlobalErr;
 
   // new vectors
 
-  virtual std::string Solve(VectorInterface& u, VectorInterface& f, std::string name);
-  virtual std::string Solve(VectorInterface& u, VectorInterface& f)
+  virtual std::string Solve(Matrix& A, VectorInterface& u, VectorInterface& f, std::string name);
+  virtual std::string Solve(Matrix& A, VectorInterface& u, VectorInterface& f)
   {
-    return Solve(u, f, _s_resultsdir + "/solve");
+    return Solve(A, u, f, _s_resultsdir + "/solve");
   }
 
   virtual void PrintMeshInformation(int outputlevel = 0) const;
@@ -150,12 +152,12 @@ protected:
 
 public:
   BasicLoop();
-  BasicLoop(const ParamFile* paramfile, const ProblemContainer* PC,
+  BasicLoop(const ParamFile& paramfile, const ProblemContainer* PC,
             const FunctionalContainer* FC);
 
   virtual ~BasicLoop();
 
-  virtual void BasicInit(const ParamFile* paramfile, const ProblemContainer* PC,
+  virtual void BasicInit(const ParamFile& paramfile, const ProblemContainer* PC,
                          const FunctionalContainer* FC);
 
   void run(const std::string& problemlabel);

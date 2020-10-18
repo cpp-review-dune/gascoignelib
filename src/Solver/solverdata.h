@@ -52,7 +52,7 @@ protected:
   double _cgMassTol, _cgMassGlobalTol;
 
 public:
-  void BasicInit(const ParamFile* pf);
+  void BasicInit(const ParamFile& pf);
 
   const IntVector& GetPfilter() const
   {

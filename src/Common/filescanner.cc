@@ -49,7 +49,7 @@ FileScanner::FileScanner(DataFormatHandler& D) : DH(D)
 
 /***************************************************/
 
-FileScanner::FileScanner(DataFormatHandler& D, const ParamFile* pf, const string& blockname) : DH(D)
+FileScanner::FileScanner(DataFormatHandler& D, const ParamFile& pf, const string& blockname) : DH(D)
 {
   complain    = 0;
   blocksymbol = "//Block";
@@ -71,15 +71,10 @@ void FileScanner::_assert(bool b, const vector<string>& words) const
 
 /***************************************************/
 
-void FileScanner::readfile(const ParamFile* pf, const string& blockname)
+void FileScanner::readfile(const ParamFile& pf, const string& blockname)
 {
-  if(pf==NULL)
-    {
-      return;
-    }
 
-
-  string inputname = pf->GetName();
+  string inputname = pf.GetName();
   LineScanner LS(inputname);
 
   if(blockname=="Multilevelsolver"){
@@ -111,12 +106,12 @@ void FileScanner::readfile(const ParamFile* pf, const string& blockname)
      _i_defaultvalues_level++;
      if( 10 < _i_defaultvalues_level ){
        cerr<< __FILE__ << ":" << __LINE__ << ": there seems to be a 'Block DefaultValues' loop"<<endl;
-       cerr<< __FILE__ << ":" << __LINE__ << ": last used file: "<< pf->GetName() <<endl;
+       cerr<< __FILE__ << ":" << __LINE__ << ": last used file: "<< pf.GetName() <<endl;
        abort();
      }
      DataFormatHandler DFH;    
      vector<string>    vs_files;
-     string            s_paramfile = pf->GetName();
+     string            s_paramfile = pf.GetName();
 
      DFH.insert("files"            , &vs_files                                                              );
      DFH.insert("save_all_to_file" , &_i_defaultvalues_save_all_to_file , _i_defaultvalues_save_all_to_file );
@@ -142,7 +137,7 @@ void FileScanner::readfile(const ParamFile* pf, const string& blockname)
          FileScanner FS2(DH);
          FS2._i_defaultvalues_level = _i_defaultvalues_level;
          FS2.NoComplain();
-         FS2.readfile(&paramfile,blockname);
+         FS2.readfile(paramfile,blockname);
        }
      }
   }
@@ -284,7 +279,7 @@ void FileScanner::readfile(const ParamFile* pf, const string& blockname)
     }
 
     ofstream savefile(_s_defaultvalues_save_filename.c_str() , ios_base::app);
-    savefile << "<Block name='"<< blockname << "' file='"<< pf->GetName() <<"' date='"<< ca_date <<"'>\n";
+    savefile << "<Block name='"<< blockname << "' file='"<< pf.GetName() <<"' date='"<< ca_date <<"'>\n";
     DH.print(savefile);
     savefile << "</Block>\n\n";
     savefile.close();

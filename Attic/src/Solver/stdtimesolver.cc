@@ -113,18 +113,20 @@ void StdTimeSolver::RegisterMatrix()
 
 void StdTimeSolver::ReInitMatrix()
 {
-  GetDiscretization()->InitFilter(_PF);
-  SparseStructure SA;
-  GetDiscretization()->Structure(&SA);
+  std::cout << "Muss an neues matrix-handling angepasst werden" << std::endl;
+  abort();
+  // GetDiscretization()->InitFilter(_PF);
+  // SparseStructure SA;
+  // GetDiscretization()->Structure(&SA);
 
-  StdSolver::AddPeriodicNodes(&SA);
+  // StdSolver::AddPeriodicNodes(&SA);
 
-  GetMatrix()->ReInit(&SA);
-  GetIlu()->ReInit(&SA);
+  // GetMatrix()->ReInit(&SA);
+  // GetIlu()->ReInit(&SA);
 
-  GetMassMatrix()->ReInit(&SA);
-  GetMassMatrix()->zero();
-  GetDiscretization()->MassMatrix(*GetMassMatrix());
+  // GetMassMatrix()->ReInit(&SA);
+  // GetMassMatrix()->zero();
+  // GetDiscretization()->MassMatrix(*GetMassMatrix());
 }
 
 /*-------------------------------------------------------*/
@@ -233,18 +235,18 @@ void StdTimeSolver::Form(VectorInterface& gy, const VectorInterface& gx, double 
 
 /*-------------------------------------------------------*/
 
-void StdTimeSolver::AssembleMatrix(const VectorInterface& gu, double d)
+  void StdTimeSolver::AssembleMatrix(Matrix& A, const VectorInterface& gu, double d)
 {
-  StdSolver::AssembleMatrix(gu,d);
+  StdSolver::AssembleMatrix(A, gu,d);
 
   if (_dt==0.) return;
   assert(_theta>0.);
 
   double scale = d/(_dt*_theta);
-  GetMatrix()->AddMassWithDifferentStencil(GetMassMatrix(),GetTimePattern(),scale);
+  GetMatrix(A).AddMassWithDifferentStencil(GetMassMatrix(),GetTimePattern(),scale);
 
-  StdSolver::PeriodicMatrix();
-  StdSolver::DirichletMatrix();
+  StdSolver::PeriodicMatrix(A);
+  StdSolver::DirichletMatrix(A);
 }
 
 /*-------------------------------------------------------*/

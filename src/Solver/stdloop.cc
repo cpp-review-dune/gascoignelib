@@ -46,7 +46,7 @@ StdLoop::StdLoop() : BasicLoop()
   _estimator = _extrapolate = "none";
 }
 
-StdLoop::StdLoop(const ParamFile* paramfile, const ProblemContainer* PC,
+StdLoop::StdLoop(const ParamFile& paramfile, const ProblemContainer* PC,
                  const FunctionalContainer* FC)
   : BasicLoop(paramfile, PC, FC)
 {
@@ -80,7 +80,7 @@ void StdLoop::ClockOutput() const
 
 /*-----------------------------------------*/
 
-void StdLoop::BasicInit(const ParamFile* paramfile, const ProblemContainer* PC,
+void StdLoop::BasicInit(const ParamFile& paramfile, const ProblemContainer* PC,
                         const FunctionalContainer* FC)
 {
   BasicLoop::BasicInit(paramfile, PC, FC);
@@ -482,6 +482,8 @@ void StdLoop::AdaptMesh(const DoubleVector& eta)
 void StdLoop::run(const std::string& problemlabel)
 {
   VectorInterface u("u"), f("f");
+  Matrix A("A");
+  
   GlobalVector ualt;
 
   Monitoring Moning;
@@ -496,9 +498,12 @@ void StdLoop::run(const std::string& problemlabel)
     Moning.SetMeshInformation(_iter, GetMeshAgent()->nnodes(), GetMeshAgent()->ncells());
 
     GlobalTimer.start("---> reinit");
-    GetMultiLevelSolver()->ReInit(problemlabel);
+    GetMultiLevelSolver()->ReInit();
+    GetMultiLevelSolver()->SetProblem(problemlabel);
+    GetMultiLevelSolver()->ReInitMatrix(A);
     GetMultiLevelSolver()->ReInitVector(u);
     GetMultiLevelSolver()->ReInitVector(f);
+    
     GetMultiLevelSolver()->InterpolateSolution(u, ualt);
     GetSolverInfos()->GetNLInfo().control().matrixmustbebuild() = 1;
 
@@ -510,7 +515,7 @@ void StdLoop::run(const std::string& problemlabel)
     }
     GlobalTimer.stop("---> reinit");
 
-    Solve(u, f);
+    Solve(A, u, f);
     
     GlobalTimer.start("---> errors");
     ComputeGlobalErrors(u);

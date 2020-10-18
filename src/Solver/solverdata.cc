@@ -32,7 +32,7 @@ namespace Gascoigne
 {
 /*-----------------------------------------*/
 
-void SolverData::BasicInit(const ParamFile* pf)
+void SolverData::BasicInit(const ParamFile& pf)
 {
   DataFormatHandler DFH;
 

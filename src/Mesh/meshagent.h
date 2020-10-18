@@ -115,8 +115,8 @@ public:
     _periodicMaps[col][col2] = map;
   }
 
-  void BasicInit(const ParamFile* pf);
-  void BasicInit(const ParamFile* pf, int pdepth);
+  void BasicInit(const ParamFile& pf);
+  void BasicInit(const ParamFile& pf, int pdepth);
   void BasicInit(const std::string& gridname, int dim, int patchdepth, int epatcher,
                  bool goc2nc = false);
 

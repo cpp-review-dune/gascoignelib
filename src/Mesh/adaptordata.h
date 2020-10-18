@@ -89,7 +89,7 @@ public:
   AdaptorData();
 
   void reset();
-  void read (const ParamFile* pf);
+  void read (const ParamFile& pf);
 };
 }
 

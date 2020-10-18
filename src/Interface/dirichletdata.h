@@ -63,7 +63,7 @@ namespace Gascoigne
       DataFormatHandler DF;
       DF.insert("dirichlet"    ,&colors);
       DF.insert("dirichletcomp",&comp_on_color);
-      FileScanner FS(DF,&pf,"BoundaryManager");
+      FileScanner FS(DF,pf,"BoundaryManager");
     }
     
     DirichletData() { std::cerr << "Warning: DirichletData without colors and comp_on_color" << std::endl; }

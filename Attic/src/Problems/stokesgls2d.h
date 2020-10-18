@@ -43,7 +43,7 @@ public:
 
   ~StokesGls2d();
   StokesGls2d();
-  StokesGls2d(const ParamFile* pf);
+  StokesGls2d(const ParamFile& pf);
 
   std::string GetName() const { return "StokesGls2d";}
 

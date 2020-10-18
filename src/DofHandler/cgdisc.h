@@ -150,7 +150,7 @@ public:
       Visu.AddPointVector(&u);
     }
 
-    Visu.read_parameters(&pf);
+    Visu.read_parameters(pf);
     Visu.set_name(name);
     Visu.step(i);
     Visu.write();
@@ -186,7 +186,7 @@ public:
     datacontainer.DeleteParameterVector(name);
   }
 
-  void BasicInit(const ParamFile* pf)
+  void BasicInit(const ParamFile& pf)
   {
     assert(HN == NULL);
     HN = NewHNStructure();
@@ -1236,9 +1236,6 @@ public:
     }
   }
 
-
-  
-
   ////////////////////////////////////////////////// Errors
   void ComputeError(const GlobalVector& u, LocalVector& err,
                     const ExactSolution* ES) const
@@ -1248,52 +1245,53 @@ public:
     err.reservesize(3);
     err = 0.;
 
-    GlobalVector lerr(ncomp, 3);
-    lerr.zero();
 
     LocalParameterData QP;
     GlobalToGlobalData(QP);
     ES->SetParameterData(QP);
 
-    nmatrix<double> T;
-    LocalVector U;
-    LocalData QN, QC;
-    FINITEELEMENT finiteelement;
-    INTEGRATOR integrator;
-    integrator.BasicInit();
-    for (int iq = 0; iq < GetDofHandler()->nelements(DEGREE); iq++)
+#pragma omp parallel
     {
-      Transformation(T, iq);
-      finiteelement.ReInit(T);
-      GlobalToLocal(U, u, iq);
-      GlobalToLocalData(iq, QN, QC);
-      integrator.ErrorsByExactSolution(lerr, finiteelement, *ES, U, QN, QC);
+      nmatrix<double> T;
+      LocalVector U;
+      LocalData QN, QC;
+      FINITEELEMENT finiteelement;
+      INTEGRATOR integrator;
+      integrator.BasicInit();
 
-      for (int c = 0; c < ncomp; c++)
-      {
-        err(0, c) += lerr(0, c);
-        err(1, c) += lerr(1, c);
-        err(2, c) = std::max(err(2, c), lerr(2, c));
-      }
+      // local error computed in each element
+      GlobalVector lerr(ncomp, 3);
+      lerr.zero();
+
+#pragma omp for schedule(static)
+      for (int iq = 0; iq < GetDofHandler()->nelements(DEGREE); iq++)
+	{
+	  Transformation(T, iq);
+	  finiteelement.ReInit(T);
+	  GlobalToLocal(U, u, iq);
+	  GlobalToLocalData(iq, QN, QC);
+	  integrator.ErrorsByExactSolution(lerr, finiteelement, *ES, U, QN, QC);
+
+	  // this update must be guarded for multithreading
+#pragma omp critical 
+	  for (int c = 0; c < ncomp; c++)
+	    {
+	      err(0, c) += lerr(0, c);
+	      err(1, c) += lerr(1, c);
+	      err(2, c) = std::max(err(2, c), lerr(2, c));
+	    }
+	}
     }
+    
     for (int c = 0; c < ncomp; c++)
-    {
-      err(0, c) = sqrt(err(0, c));
-      err(1, c) = sqrt(err(1, c));
-    }
+      {
+	err(0, c) = sqrt(err(0, c));
+	err(1, c) = sqrt(err(1, c));
+      }
   }
+  
 };
 
-// #include "finiteelement.h"
-// #include "elementintegrator.h"
-// #include "integrationformula.h"
-// #include "transformation2d.h"
-// #include "transformation3d.h"
-// #include "baseq22d.h"
-// #include "baseq23d.h"
-
-// namespace Gascoigne
-// {
 
 #define CGDiscQ12d                                                        \
   CGDisc<2, 1, FiniteElement<2, 1, Transformation2d<BaseQ12d>, BaseQ12d>, \

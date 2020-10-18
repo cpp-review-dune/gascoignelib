@@ -80,7 +80,7 @@ public:
   void TimeRhsOperator(VectorInterface& f, const VectorInterface& u) const; 
   void TimeRhs(int k, VectorInterface& f) const;
   void Form (VectorInterface& y, const VectorInterface& x, double d) const;
-  void AssembleMatrix(const VectorInterface& u, double d);
+  void AssembleMatrix(Matrix& A, const VectorInterface& u, double d);
   std::string GetName() const;
   void L2Projection(VectorInterface& u, VectorInterface& f);
   

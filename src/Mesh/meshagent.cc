@@ -373,14 +373,14 @@ void MeshAgent::AssemblePeriodicBoundaries()
 
 /*-----------------------------------------*/
 
-void MeshAgent::BasicInit(const ParamFile* paramfile)
+void MeshAgent::BasicInit(const ParamFile& paramfile)
 {
   BasicInit(paramfile, 0);
 }
 
 /*-----------------------------------------*/
 
-void MeshAgent::BasicInit(const ParamFile* paramfile, int pdepth)
+void MeshAgent::BasicInit(const ParamFile& paramfile, int pdepth)
 {
   assert(HMP == NULL);
   int dim = 0;

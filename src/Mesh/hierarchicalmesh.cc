@@ -123,7 +123,7 @@ void HierarchicalMesh::SetParameters(string gridname, int patchdepth,
 
 /*------------------------------------------------------*/
 
-void HierarchicalMesh::BasicInit(const ParamFile* pf, int pdepth)
+void HierarchicalMesh::BasicInit(const ParamFile &pf, int pdepth)
 {
   int patchdepth, epatcher;
   int prerefine;

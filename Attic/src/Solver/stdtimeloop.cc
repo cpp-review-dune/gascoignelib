@@ -58,12 +58,12 @@ void StdTimeLoop::BasicInit(const ParamFile* paramfile, const ProblemContainer* 
 
 /*-------------------------------------------------*/
 
-string StdTimeLoop::SolveTimePrimal(VectorInterface& u, VectorInterface& f)
+  string StdTimeLoop::SolveTimePrimal(Matrix& A, VectorInterface& u, VectorInterface& f)
 {
   GetTimeSolver()->SetBoundaryVector(f);
   GetTimeSolver()->SetPeriodicVector(u);
   GetTimeSolver()->SetBoundaryVector(u);
-  string status = GetMultiLevelSolver()->Solve(u,f,GetSolverInfos()->GetNLInfo());
+  string status = GetMultiLevelSolver()->Solve(A, u,f,GetSolverInfos()->GetNLInfo());
 
   return status;
 }
@@ -72,6 +72,7 @@ string StdTimeLoop::SolveTimePrimal(VectorInterface& u, VectorInterface& f)
 
 void StdTimeLoop::adaptive_run(const std::string& problemlabel)
 {
+  Matrix A("A");
   VectorInterface u("u"), f("f");
   GlobalVector ualt;
   
@@ -80,6 +81,7 @@ void StdTimeLoop::adaptive_run(const std::string& problemlabel)
   for (_iter=1; _iter<=_niter; _iter++)
     {
       GetMultiLevelSolver()->ReInit(problemlabel);
+      GetMultiLevelSolver()->ReInitMatrix(A);
       GetMultiLevelSolver()->ReInitVector(u);
       GetMultiLevelSolver()->ReInitVector(f);
       TimeInfoBroadcast();
@@ -113,7 +115,7 @@ void StdTimeLoop::adaptive_run(const std::string& problemlabel)
       TimeInfoBroadcast();
 
       GetTimeSolver()->TimeRhs(2,f);
-      SolveTimePrimal(u,f);
+      SolveTimePrimal(A, u,f);
       Output(u,_s_resultsdir+"/solve");
       
       StdSolver* S = dynamic_cast<StdSolver*>(GetTimeSolver());
@@ -162,11 +164,13 @@ void StdTimeLoop::InitSolution(VectorInterface& u)
 void StdTimeLoop::run(const std::string& problemlabel)
 {
   VectorInterface u("u"), f("f");
+  Matrix A("A");
   
   DoubleVector eta;
   
   GetSolverInfos()->GetNLInfo().control().matrixmustbebuild() = 1;
   GetMultiLevelSolver()->ReInit(problemlabel);
+  GetMultiLevelSolver()->ReInitMatrix(A);
   GetMultiLevelSolver()->ReInitVector(u);
   GetMultiLevelSolver()->ReInitVector(f);
   
@@ -203,7 +207,7 @@ void StdTimeLoop::run(const std::string& problemlabel)
 
       GetTimeSolver()->TimeRhs(2,f);
 
-      SolveTimePrimal(u,f);
+      SolveTimePrimal(A, u,f);
       Output(u,_s_resultsdir+"/solve");
 
       Functionals(u,f);

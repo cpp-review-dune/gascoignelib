@@ -172,7 +172,7 @@ void BasicDiscretization::LocalToGlobal(MatrixInterface& A, EntryMatrix& E, int 
 	Visu.AddPointVector(&u);
       }
     
-    Visu.read_parameters(&pf);
+    Visu.read_parameters(pf);
     Visu.set_name(name);
     Visu.step(i);
     Visu.write();

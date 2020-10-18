@@ -28,6 +28,7 @@
 #include "mult.h"
 #include "cginfo.h"
 #include "nvector.h"
+#include "matrix.h"
 
 /********************************************************************/
 
@@ -47,11 +48,11 @@ class GMRES
   
   void   new_memory          ();
   void   givens_rotation     (dvector&, int);
-  void   solution            (VECTOR&, VECTOR&, int);
+  void   solution            (const Matrix& A, VECTOR&, VECTOR&, int);
   double orthogonalization   (dvector&, int, VECTOR&) const;
   bool   reortho_test        (const VECTOR&, double) const;
 
-  SOLVER&         A;
+  SOLVER&         S;
   PRECONDITIONER& P;
   
  public:
@@ -60,8 +61,8 @@ class GMRES
   ~GMRES();
   void init();
 
-  int solve          (VECTOR& x, const VECTOR& b, CGInfo& info);
-  int restarted_solve(VECTOR& x, const VECTOR& b, CGInfo& info);
+  int solve          (const Matrix& A, VECTOR& x, const VECTOR& b, CGInfo& info);
+  int restarted_solve(const Matrix& A, VECTOR& x, const VECTOR& b, CGInfo& info);
 };
 }
 

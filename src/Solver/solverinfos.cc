@@ -76,7 +76,7 @@ NLInfo& SolverInfos::GetNLInfo(string s) const
 
 /*---------------------------------------------------------------*/
 
-void SolverInfos::BasicInit(const ParamFile *param)
+void SolverInfos::BasicInit(const ParamFile &param)
 {
   __L["State"]   = new CGInfo();
   _NL["State"]   = new NLInfo(GetLInfo());

@@ -35,7 +35,7 @@ using namespace std;
 
 namespace Gascoigne
 {
-NCAdaptor::NCAdaptor(const ParamFile* paramfile, const DoubleVector& _eta) 
+NCAdaptor::NCAdaptor(const ParamFile& paramfile, const DoubleVector& _eta) 
   :  eta(_eta)
 {
   DataFormatHandler DH;

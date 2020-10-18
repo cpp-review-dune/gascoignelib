@@ -62,7 +62,7 @@ class VisuEPS
     
   public:
 
-  VisuEPS(const ParamFile* paramfile);
+  VisuEPS(const ParamFile& paramfile);
 
   /**
    * Options for output:

@@ -87,7 +87,7 @@ namespace Gascoigne
       virtual void AddParameterVector(const std::string& name, const GlobalParameterVector* q) const=0;
       virtual void DeleteParameterVector(const std::string& name) const=0;
 
-      virtual void BasicInit(const ParamFile* pf)=0;
+      virtual void BasicInit(const ParamFile& pf)=0;
       virtual void ReInit   (const GascoigneMesh* M)=0;
 
     virtual int ndofs()     const=0;  // returns the number of degrees of freedom

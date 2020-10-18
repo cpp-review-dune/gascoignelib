@@ -63,7 +63,7 @@ public:
   {
   }
 
-  virtual void BasicInit(const ParamFile* pf)
+  virtual void BasicInit(const ParamFile& pf)
   {
   }
 
@@ -87,7 +87,7 @@ public:
   { std::cerr << "PDI::time()" << std::endl; abort(); }
   
 
-  virtual const ParamFile* GetParamFile() const = 0;
+  virtual const ParamFile& GetParamFile() const = 0;
 
 
   virtual const Equation* GetEquation() const = 0;

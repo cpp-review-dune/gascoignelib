@@ -31,7 +31,7 @@ using namespace std;
 
 namespace Gascoigne
 {
-StdMultiLevelSolverData::StdMultiLevelSolverData(const ParamFile* param)
+StdMultiLevelSolverData::StdMultiLevelSolverData(const ParamFile& param)
 {
   _countresidual = 0;
 
@@ -79,7 +79,7 @@ StdMultiLevelSolverData::~StdMultiLevelSolverData()
 
 /**********************************************************/
 
-void StdMultiLevelSolverData::BasicInit(const ParamFile* param)
+void StdMultiLevelSolverData::BasicInit(const ParamFile& param)
 {
   _countresidual = 0;
 

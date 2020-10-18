@@ -44,6 +44,7 @@ namespace Gascoigne
 class StdLoop : public virtual BasicLoop
 {
 protected:
+  // for computational time measurement
   mutable StopWatch _clock_newmesh, _clock_solve, _clock_write;
 
   int _nmin, _nmax, _coarse;
@@ -73,11 +74,11 @@ protected:
 
 public:
   StdLoop();
-  StdLoop(const ParamFile* paramfile, const ProblemContainer* PC,
+  StdLoop(const ParamFile& paramfile, const ProblemContainer* PC,
           const FunctionalContainer* FC);
   ~StdLoop();
 
-  void BasicInit(const ParamFile* paramfile, const ProblemContainer* PC,
+  void BasicInit(const ParamFile& paramfile, const ProblemContainer* PC,
                  const FunctionalContainer* FC);
 
   void run(const std::string& problemlabel);

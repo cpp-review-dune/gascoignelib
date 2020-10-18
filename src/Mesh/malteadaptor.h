@@ -61,7 +61,7 @@ protected:
 
 public:
 
-  MalteAdaptor(const ParamFile* pf, const DoubleVector& eta);
+  MalteAdaptor(const ParamFile& pf, const DoubleVector& eta);
   void coarse(IntVector& coarse) const;
   void refine(IntVector& ref) const;
   void refine(IntVector& ref, IntVector& coarse) const;

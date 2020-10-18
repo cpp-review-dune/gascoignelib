@@ -1,6 +1,6 @@
 /**
 *
-* Copyright (C) 2004, 2005 by the Gascoigne 3D authors
+* Copyright (C) 2004, 2005, 2020 by the Gascoigne 3D authors
 *
 * This file is part of Gascoigne 3D
 *
@@ -62,7 +62,7 @@ public:
   friend std::ostream& operator<<(std::ostream& os, const GhostVectorAgent& gva) {
     int i=0,n=gva.size();
     os << "GhostVectorAgent: size=" << n << ", ";
-    for (const_iterator p=gva.begin(); p!=gva.end(); p++,i++){
+    for (auto p=gva.begin(); p!=gva.end(); p++,i++){
       os << "VectorInterface("<<i<<")=('"<< p->first.GetName() << "',"<< p->second <<")";
       if( i <n-1 ) os << ", "; else os << ". ";
     }
