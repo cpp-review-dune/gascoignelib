@@ -362,6 +362,7 @@ public:
     HN->CondenseHanging(E, indices);
     IntVector::const_iterator start = indices.begin();
     IntVector::const_iterator stop  = indices.end();
+    
     A.entry(start, stop, E, s);
   }
   void LocalToGlobal(GlobalVector& f, const LocalVector& F, int iq,

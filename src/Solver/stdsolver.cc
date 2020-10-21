@@ -643,7 +643,6 @@ void StdSolver::ReInitMatrix(const Matrix& A)
   
   // number of components in current problem
   int ncomp = GetProblemDescriptor()->GetNcomp();
-
   //////////
   ////////// create new matrix
   //////////
@@ -684,6 +683,7 @@ void StdSolver::ReInitMatrix(const Matrix& A)
   }
   assert(ilu != ilu_agent.end());
 
+
   // if umfpack is used and matrix is umfpack object, delete it
 #ifdef __WITH_UMFPACK__   
   if (_useUMFPACK && ilu->second != NULL)
@@ -702,7 +702,7 @@ void StdSolver::ReInitMatrix(const Matrix& A)
   }
 #endif
 
-  
+
   if (ilu->second == NULL)
     ilu->second = NewIlu(A, ncomp,_matrixtype);
 
@@ -719,7 +719,7 @@ void StdSolver::ReInitMatrix(const Matrix& A)
   SparseStructure SA;
   GetDiscretization()->Structure(&SA);
   AddPeriodicNodes(&SA);
-  
+
   matrix->second->ReInit(&SA);
   ilu   ->second->ReInit(&SA);
 
@@ -1522,15 +1522,7 @@ void StdSolver::AssembleMatrix(Matrix& A, const VectorInterface& gu, double d)
   GetDiscretization()->Matrix(GetMatrix(A), u, *GetProblemDescriptor()->GetEquation(), d);
 
   //////////// Boundary
-  GetDiscretization()->BoundaryMatrix(GetMatrix(A), u, *GetProblemDescriptor(),
-                                      d);
-  // const BoundaryEquation *BE = GetProblemDescriptor()->GetBoundaryEquation();
-  // if (BE)
-  // {
-  //   const BoundaryManager *BM = GetProblemDescriptor()->GetBoundaryManager();
-  //   GetDiscretization()->BoundaryMatrix(
-  //       *GetMatrix(), u, BM->GetBoundaryEquationColors(), *BE, d);
-  // }
+  GetDiscretization()->BoundaryMatrix(GetMatrix(A), u, *GetProblemDescriptor(), d);
 
   PeriodicMatrix(A);
   DirichletMatrix(A);
