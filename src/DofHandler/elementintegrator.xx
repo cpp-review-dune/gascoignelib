@@ -626,8 +626,8 @@ namespace Gascoigne
     // // Python Routine
     assert(U.n() == 9);
 
-    double hx = 0.21/4.0;
-    double hy = 0.21/4.0;   
+    double hx = 0.205*2/4.0;
+    double hy = 0.205/4.0;   
 
     std::array<double,9> S  = {-3,4,-1,  -1,0,1,  1,-4,3};
     std::array<double,3> sw = {1./6.,4./6.,1./6.};
