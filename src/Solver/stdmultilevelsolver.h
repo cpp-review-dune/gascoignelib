@@ -31,7 +31,7 @@
 #include "problemdescriptorinterface.h"
 #include "stdmultilevelsolverdata.h"
 #include "stopwatch.h"
-#include "meshagentinterface.h"
+#include "meshagent.h"
 #include "stdsolver.h"
 
 /*-------------------------------------------------------------*/
@@ -53,7 +53,7 @@ class StdMultiLevelSolver
 {
 protected:  ///!!!!
   std::vector<StdSolver*> _SP;
-  const MeshAgentInterface* _MAP;
+  const MeshAgent* _MAP;
   std::vector<MgInterpolatorInterface*> _Interpolator;
 
   mutable StopWatch _clock_residual, _clock_solve;
@@ -74,7 +74,7 @@ public:
   // Constructor, Init
 
   StdMultiLevelSolver();
-  explicit StdMultiLevelSolver(const MeshAgentInterface* GMGM, const ParamFile& paramfile,
+  explicit StdMultiLevelSolver(const MeshAgent* GMGM, const ParamFile& paramfile,
                       const ProblemContainer* PC, const FunctionalContainer* FC = NULL);
   virtual ~StdMultiLevelSolver();
 
@@ -83,7 +83,7 @@ public:
     return "StdMultiLevelSolver";
   }
 
-  virtual void BasicInit(const MeshAgentInterface* GMGM, const ParamFile& paramfile,
+  virtual void BasicInit(const MeshAgent* GMGM, const ParamFile& paramfile,
                          const ProblemContainer* PC,
                          const FunctionalContainer* FC = NULL);
 
@@ -94,7 +94,7 @@ public:
   //////////////////////////////////////////////////
   // Access
 
-  virtual const MeshAgentInterface* GetMeshAgent() const
+  virtual const MeshAgent* GetMeshAgent() const
   {
     return _MAP;
   }

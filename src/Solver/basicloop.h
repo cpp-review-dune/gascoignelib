@@ -26,7 +26,7 @@
 
 #include "adaptordata.h"
 #include "extrapolator.h"
-#include "meshagentinterface.h"
+#include "meshagent.h"
 #include "monitor.h"
 #include "stdmultilevelsolver.h"
 #include "visualization.h"
@@ -58,7 +58,7 @@ namespace Gascoigne
 class BasicLoop
 {
 private:
-  MeshAgentInterface* _MA;
+  MeshAgent* _MA;
   StdMultiLevelSolver* _ML;
   SolverInfos* _SI;
 
@@ -68,7 +68,7 @@ protected:
   void WriteMesh() const;
   void WriteMeshInp(const std::string& name) const;
 
-  virtual MeshAgentInterface*& GetMeshAgentPointer()
+  virtual MeshAgent*& GetMeshAgentPointer()
   {
     return _MA;
   }
@@ -77,7 +77,7 @@ protected:
     return _ML;
   }
 
-  virtual const MeshAgentInterface* GetMeshAgent() const
+  virtual const MeshAgent* GetMeshAgent() const
   {
     assert(_MA);
     return _MA;
@@ -88,7 +88,7 @@ protected:
     return _ML;
   }
 
-  virtual MeshAgentInterface* GetMeshAgent()
+  virtual MeshAgent* GetMeshAgent()
   {
     assert(_MA);
     return _MA;

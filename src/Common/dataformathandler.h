@@ -89,6 +89,26 @@ private:
 
 public:
 
+  void clear()
+  {
+    NT.clear();
+    TS.clear();
+    TI.clear();
+    TB.clear();
+    TF.clear();
+    TD.clear();
+    TF2D.clear();
+    TF3D.clear();
+    TND.clear();
+    TNI.clear();
+    TVS.clear();
+    TSI.clear();
+    TSVS.clear();
+    TMINI.clear();
+    TSD.clear();    
+  }
+  
+
   // without default values
   void insert(const std::string&, std::string*);
   void insert(const std::string&, int*);

@@ -39,7 +39,7 @@ namespace Gascoigne
 {
 extern Timer GlobalTimer;
 
-MeshAgent::MeshAgent() : MeshAgentInterface(), _goc2nc(false), HMP(NULL), GMG(NULL)
+MeshAgent::MeshAgent() : _goc2nc(false), HMP(NULL), GMG(NULL)
 {
 }
 

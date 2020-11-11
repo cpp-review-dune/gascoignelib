@@ -119,7 +119,7 @@ StdMultiLevelSolver::StdMultiLevelSolver()
 {
 }
 
-StdMultiLevelSolver::StdMultiLevelSolver(const MeshAgentInterface* MAP,
+StdMultiLevelSolver::StdMultiLevelSolver(const MeshAgent* MAP,
                                          const ParamFile& paramfile,
                                          const ProblemContainer* PC,
                                          const FunctionalContainer* FC)
@@ -135,7 +135,7 @@ StdMultiLevelSolver::StdMultiLevelSolver(const MeshAgentInterface* MAP,
 
 /*-------------------------------------------------------------*/
 
-void StdMultiLevelSolver::BasicInit(const MeshAgentInterface* MAP,
+void StdMultiLevelSolver::BasicInit(const MeshAgent* MAP,
                                     const ParamFile& paramfile,
                                     const ProblemContainer* PC,
                                     const FunctionalContainer* FC)

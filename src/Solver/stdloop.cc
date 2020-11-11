@@ -187,12 +187,12 @@ DoubleVector StdLoop::Functionals(VectorInterface& u, VectorInterface& f)
 	  cout << std::setw(16) << "----------";
 	
 	cout << "\nvalue\t";
-	cout.precision(10);
+	cout.precision(6);
 	for (int i = 0; i < J.size(); i++)
-	  cout << std::fixed << std::setw(16)  << J[i];
+	  cout << std::scientific << std::setw(16)  << J[i];
 
 	cout << "\nerror\t";
-	cout.precision(4);
+	cout.precision(6);
 	for (int i = 0; i < J.size(); i++)
 	  {
 	    _JErr[i] = Jexact[i] - J[i];

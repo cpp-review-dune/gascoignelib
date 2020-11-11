@@ -35,9 +35,9 @@
 #include "matrixentrytype.h"
 
 // we use Eigen to store and invert the local matrices
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wunused-variable"
-#pragma clang diagnostic ignored "-Wold-style-cast"
+//#pragma clang diagnostic push
+//#pragma clang diagnostic ignored "-Wunused-variable"
+//#pragma clang diagnostic ignored "-Wold-style-cast"
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
@@ -46,7 +46,7 @@
 #include <eigen3/Eigen/OrderingMethods>
 #include <eigen3/Eigen/Sparse>
 #include <eigen3/Eigen/SparseLU>
-#pragma clang diagnostic pop
+//#pragma clang diagnostic pop
 #pragma GCC diagnostic pop
 
 
@@ -67,13 +67,14 @@ namespace Gascoigne
 {
   class VankaSmoother : public virtual IluInterface
   {
-    mutable const DofHandlerBase *_dofhandler;
-    int _ncomp, _sizeofpatch;
 
   protected:
     typedef Eigen::Matrix<MatrixEntryType, Eigen::Dynamic, Eigen::Dynamic> VankaMatrix;
     typedef Eigen::Matrix<MatrixEntryType, Eigen::Dynamic, 1>              VankaVector;
-
+    
+    mutable const DofHandlerBase *_dofhandler;
+    int _ncomp, _sizeofpatch;
+    
     std::vector<std::vector<int>> _patchlist;
     mutable std::vector<Eigen::PartialPivLU<VankaMatrix> > _lu;
   public:
