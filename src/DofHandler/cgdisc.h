@@ -1056,8 +1056,8 @@ public:
   {
     PressureFilter* PF = static_cast<PressureFilter*>(&F);
     assert(PF);
-    if (!PF->Active())
-      return;
+    // if (!PF->Active())
+    //   return;
 
     PF->ReInit(ndofs(), nhanging());
     nmatrix<double> T;

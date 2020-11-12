@@ -63,11 +63,14 @@ protected:  ///!!!!
   ParamFile _paramfile;
 
   Monitor MON;
-  StdMultiLevelSolverData DataP;
+
   const ProblemDescriptorInterface* _PD;
   const ProblemContainer* _PC;
   const FunctionalContainer* _FC;
 
+  StdMultiLevelSolverData  DataP;
+  
+  
 protected:
 public:
   //////////////////////////////////////////////////
@@ -107,14 +110,14 @@ public:
     return _SP;
   }
   virtual const ProblemDescriptorInterface* GetProblemDescriptor() const
-  {
-    return _PD;
-  }
+  { return _PD; }
+
   virtual StdSolver*& GetSolverPointer(int l)
   {
     assert(l < _SP.size());
     return _SP[l];
   }
+  
 
   //////////////////////////////////////////////////
   // Solver

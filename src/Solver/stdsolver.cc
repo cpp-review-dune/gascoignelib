@@ -195,6 +195,7 @@ void StdSolver::SetProblem(const ProblemDescriptorInterface& PDX)
 
   if (EQ)
     _check_consistency(EQ, GetDiscretization());
+  _PF.SetComponents(GetSolverData().GetPfilter());
 }
 
 /*-------------------------------------------------------*/
@@ -274,9 +275,6 @@ void StdSolver::BasicInit(const ParamFile& paramfile, const int dimension)
   assert(_ZP);
 
   GetDiscretization()->BasicInit(_paramfile);
-
-  _Dat.BasicInit(_paramfile);
-  _PF.SetComponents(_Dat.GetPfilter());
 }
 
 /*-------------------------------------------------------*/

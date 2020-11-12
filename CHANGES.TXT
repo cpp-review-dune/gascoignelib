@@ -1,3 +1,12 @@
+%%%% November 2020
+
+- SolverData moved to ProblemDescriptor. If multiple problems are
+  solved it is now simple to have different pressure filters, solvers,
+  etc.
+- MeshAgentInterface removed. New interface class is MeshAgent itself
+
+
+
 %%%% Oktober 2020
 
 - Multigrid vectors _cor, _res, _mg0, _mg1 are initialized locally on

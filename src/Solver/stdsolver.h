@@ -127,7 +127,6 @@ protected:
   mutable std::string _discname;
   mutable std::string _matrixtype;
 
-  SolverData _Dat;
   mutable int _PrimalSolve;
   ParamFile _paramfile;
 
@@ -149,13 +148,13 @@ protected:
     return _MP;
   }
 
-  virtual SolverData& GetSolverData()
-  {
-    return _Dat;
-  }
+  // virtual SolverData& GetSolverData()
+  // {
+  //   return _Dat;
+  // }
   virtual const SolverData& GetSolverData() const
   {
-    return _Dat;
+    return GetProblemDescriptor()->GetSolverData();
   }
   virtual PressureFilter& GetPfilter()
   {

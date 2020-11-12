@@ -107,6 +107,10 @@ namespace Gascoigne
   void ProblemDescriptorBase::BasicInit(const ParamFile &pf)
   {
     _paramfile = pf;
+
+    // read all input to control the solver
+    GetSolverData().BasicInit(pf);
+
     
     if (GetBoundaryManagerPointer() == NULL)
     {

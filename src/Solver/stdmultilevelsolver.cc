@@ -42,9 +42,6 @@ StdMultiLevelSolver::~StdMultiLevelSolver()
 {
   // ViewProtocoll();
 
-  // if (DataP)
-  //  delete DataP;
-  // DataP = NULL;
 
   for (int i = 0; i < GetSolverPointers().size(); i++)
   {

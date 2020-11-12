@@ -38,6 +38,8 @@
 #include "faceequation.h"
 #include "periodicdata.h"
 
+#include "solverdata.h"
+
 namespace Gascoigne
 {
 /////////////////////////////////////////////
@@ -53,6 +55,9 @@ class ProblemDescriptorInterface
 {
 private:
 protected:
+
+  SolverData              solverdata;
+
 public:
 
 
@@ -90,6 +95,11 @@ public:
   virtual const ParamFile& GetParamFile() const = 0;
 
 
+  //// Description of the Numerics
+  virtual const SolverData&  GetSolverData() const  { return solverdata; }
+  virtual       SolverData&  GetSolverData()        { return solverdata; }
+
+  //// Description of the Problem
   virtual const Equation* GetEquation() const = 0;
   virtual const BoundaryEquation* GetBoundaryEquation() const = 0;
   virtual const DomainRightHandSide* GetRightHandSide() const = 0;
