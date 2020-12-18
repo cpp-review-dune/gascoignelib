@@ -220,6 +220,10 @@ public:
   {
     return GetDofHandler()->nelements(DEGREE);
   }
+  int ndegree() const
+  {
+    return DEGREE;
+  }
   int nhanging() const
   {
     return GetDofHandler()->nhanging();
@@ -362,7 +366,7 @@ public:
     HN->CondenseHanging(E, indices);
     IntVector::const_iterator start = indices.begin();
     IntVector::const_iterator stop  = indices.end();
-    
+
     A.entry(start, stop, E, s);
   }
   void LocalToGlobal(GlobalVector& f, const LocalVector& F, int iq,
@@ -453,10 +457,10 @@ public:
     if (DIM == 2)
       {
 	// super simple...
-	
+
 	std::vector<Vertex2d> v2d = DRHS.GetPoints2d();
 	assert(nn==v2d.size());
-	
+
 	for(int i=0;i<nn;++i)
 	  {
 	    int j=0;
@@ -478,7 +482,7 @@ public:
     // else if (dim == 3)
     //   {
     // 	abort();
-	
+
     // 	vector<Vertex3d> v3d = DRHS.GetPoints3d();
     // 	assert(nn==v3d.size());
     // 	for(int i=0;i<nn;++i)
@@ -720,9 +724,9 @@ public:
     assert(GetDofHandler()->dimension() == DIM);
     int ne = GetDofHandler()->nodes_per_element(DEGREE);
     assert(ne == 9);
-    
+
     nmatrix<double> T(2,9);  // initialisiert das FE, d.h. die Koordinaten
-    for (int i=0;i<9;++i)    
+    for (int i=0;i<9;++i)
       {
 	T(0,i) = M(i,0);
 	T(1,i) = M(i,1);
@@ -734,10 +738,10 @@ public:
     INTEGRATOR integrator;
     integrator.BasicInit();
 
-    return integrator.LocalDiv(finiteelement, U);    
+    return integrator.LocalDiv(finiteelement, U);
   }
-  
-  
+
+
   double ComputeBoundaryFunctional(const GlobalVector& u, const IntSet& Colors,
                                    const BoundaryFunctional& BF) const
   {
@@ -900,7 +904,7 @@ public:
     Vertex<DIM> p0_local;
     for (int i = 0; i < DIM; i++)
       p0_local[i] = p0[i];
-    
+
     int iq = GetElementNumber(p0_local, Tranfo_p0);
     if (iq == -1)
       {
@@ -913,9 +917,9 @@ public:
     nmatrix<double> T;
     Transformation(T, iq);
     finiteelement.ReInit(T);
-    
+
     GlobalToLocal(__U, u, iq);
-    
+
     return integrator.ComputePointValue(finiteelement, Tranfo_p0, __U, comp); */
   }
   double ComputePointValue(const GlobalVector& u, const Vertex3d& p0,
@@ -1179,7 +1183,7 @@ public:
       }
     }
   }
-  
+
   void StrongPeriodicVector(GlobalVector &u,
 			    const PeriodicData &BF,
 			    int col,
@@ -1274,7 +1278,7 @@ public:
 	  integrator.ErrorsByExactSolution(lerr, finiteelement, *ES, U, QN, QC);
 
 	  // this update must be guarded for multithreading
-#pragma omp critical 
+#pragma omp critical
 	  for (int c = 0; c < ncomp; c++)
 	    {
 	      err(0, c) += lerr(0, c);
@@ -1283,14 +1287,14 @@ public:
 	    }
 	}
     }
-    
+
     for (int c = 0; c < ncomp; c++)
       {
 	err(0, c) = sqrt(err(0, c));
 	err(1, c) = sqrt(err(1, c));
       }
   }
-  
+
 };
 
 
