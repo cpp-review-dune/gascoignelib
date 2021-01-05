@@ -1,4 +1,3 @@
-
 #include "local.h"
 #include "paraLoop.h"
 #include "weightedpointfunctional.h"

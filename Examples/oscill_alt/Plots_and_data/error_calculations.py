@@ -1,9 +1,10 @@
 import sys
 import pathlib
 import numpy as np
+import matplotlib
+matplotlib.use('pgf')
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pgf import PdfPages
-import matplotlib
 matplotlib.use('pgf')
 
 plt.rcParams.update({
@@ -40,7 +41,9 @@ def L2_error(path, approx_pattern, ref_pattern, out_path,
              pdf_export=True):
     app_list = list(sorted(path.glob(approx_pattern)))
     # exa_list = list(sorted(path.glob(exa_pattern)))
+    print(app_list)
     ref_list = list(sorted(path.glob(ref_pattern)))
+    print(ref_list)
     # exa_length = len(exa_list)
     app_length = len(app_list)
     ref_length = len(ref_list)
@@ -105,13 +108,17 @@ if __name__ == "__main__":
     curr_dir = pathlib.Path('.')
     if len(sys.argv) == 2:
         if sys.argv[1] == '2d':
-            ref_pat = 'wm_2d/F001seq20/u.*.bup'
-            approx_pat = 'wm_2d/Intervals20/C01tc51*/p.*.bup'
-            L2_error(curr_dir, approx_pat, ref_pat, 'wm_2d/C01tc51')
+            exa_pat = 'paraoscillref/p.*.bup'
+            ref_pat = 'paraoscill/F001/p.*.bup'
+            approx_pat = 'paraoscill/C05tc55*/p.*.bup'
+            L2_error(curr_dir, approx_pat, ref_pat, 'paraoscill/C05tc55')
+            L2_error(curr_dir, ref_pat, exa_pat, 'paraoscill/ref_exa')
 
-            approx_pat = 'wm_2d/Intervals20/C02tc52*/p.*.bup'
-            L2_error(curr_dir, approx_pat, ref_pat, 'wm_2d/C02tc52')
-
+            ref_pat =    'paraoscillF002/F002/p.*.bup'
+            approx_pat = 'paraoscillF002/C05tc55*/p.*.bup'
+            L2_error(curr_dir, approx_pat, ref_pat, 'paraoscillF002/C05tc55')
+            L2_error(curr_dir, ref_pat, exa_pat, 'paraoscillF002/ref_exa')
+            quit()
             approx_pat = 'wm_2d/Intervals20/C05tc55*/p.*.bup'
             L2_error(curr_dir, approx_pat, ref_pat, 'wm_2d/C05tc55')
 

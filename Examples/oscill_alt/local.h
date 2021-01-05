@@ -116,8 +116,9 @@ public:
     double sc= 1.0;
 #ifdef BDF
     if (t < 1.0)
-      sc= 0.5 - 0.5 * cos(M_PI * t);
 #endif
+      sc= 0.5 - 0.5 * cos(M_PI * t);
+    
     double veff= vmean * sc;
     // for wall_mount color 8, for benchmark color 0
 #ifdef BDF

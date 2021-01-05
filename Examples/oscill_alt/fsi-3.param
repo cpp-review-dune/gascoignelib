@@ -18,7 +18,7 @@ dt		0.001
 dtcoarse 0.01
 theta		0.501
 thetacoarse 0.51
-implicit_coarse 2
+implicit_coarse 1
 implicit_fine 1
 
 start_time	0.0
@@ -56,8 +56,8 @@ writevtk    0
 
 
 niter       1
-threads 18
-subintervals 18
+threads 20
+subintervals 20
 etapatcher  0
 extrapolate yes
 
@@ -72,7 +72,7 @@ refiner global
 
 etapatcher 0
 dimension   2
-prerefine   2
+prerefine   3
 gridname    bench_fs_t0100_tw.inp
 
 

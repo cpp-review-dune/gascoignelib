@@ -3,7 +3,6 @@
 #ifndef __fsi_H
 #define __fsi_H
 /*----------------------------   fsi.h     ---------------------------*/
-#define BDF
 #include "equation.h"
 #include "boundaryequation.h"
 #include "paramfile.h"
