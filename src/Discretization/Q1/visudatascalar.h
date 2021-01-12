@@ -45,7 +45,7 @@ class VisuDataScalar : public VisuData
 
   virtual int    visucomp()     const {return 1;}
   virtual int    visun()        const {return vR.size();}
-  virtual double visudata(int i,int c) const { return vR[i];}
+  virtual double visudata(int i,int c) const { assert(i<vR.size()); return vR[i];}
 };
 }
 

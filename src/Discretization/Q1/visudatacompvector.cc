@@ -69,6 +69,9 @@ int    VisuDataCompVector::visun()        const
 
 double VisuDataCompVector::visudata(int i, int c) const 
 {
+  assert(_v);
+  assert (i<_v->n());
+  assert (c<_v->ncomp());
   return (*_v)(i,c);
 }
 }

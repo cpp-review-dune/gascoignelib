@@ -46,6 +46,7 @@ namespace Gascoigne
 	out << "LOOKUP_TABLE default"<< endl;
 	for (int ind=0; ind<PointData->visun(); ind++) {
 	  if(mesh->dimension()==2) {
+	    assert(ind < mesh->nnodes());
 	    out << PointData->visudata2(ind,p->second,mesh->vertex2d(ind)) << endl;
 	  } else {
 	    out << PointData->visudata2(ind,p->second,mesh->vertex3d(ind)) << endl;
