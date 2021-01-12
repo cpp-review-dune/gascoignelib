@@ -39,12 +39,12 @@
 /*--------------------------------*/
 #include "cfdblock3d.h"
 #include "fmatrixblock.h"
-#include "sparse_umf.h"
 #include "sparseblockilu.h"
 
 /*--------------------------------*/
 #ifdef __WITH_UMFPACK__
 #include "umfilu.h"
+#include "sparse_umf.h"
 #endif
 /*--------------------------------*/
 
@@ -466,6 +466,7 @@ IluInterface* StdSolver::NewIlu(const Matrix& A, int ncomp, const string& matrix
   }
   else if (matrixtype == "sparseumf")
   {
+#ifdef __WITH_UMFPACK__
     if (ncomp == 1)
       return new SparseUmf<FMatrixBlock<1>>(&GetMatrix(A));
     else if (ncomp == 2)
@@ -477,6 +478,7 @@ IluInterface* StdSolver::NewIlu(const Matrix& A, int ncomp, const string& matrix
     else if (ncomp == 5)
       return new SparseUmf<FMatrixBlock<5>>(&GetMatrix(A));
     else
+#endif
     {
       cerr << "No SparseBlockIlu for " << ncomp << "components." << endl;
       abort();
@@ -1508,7 +1510,7 @@ void StdSolver::Rhs(VectorInterface& gf, double d) const
 
 /*-------------------------------------------------------*/
 
-void StdSolver::AssembleMatrix(Matrix& A, const VectorInterface& gu, double d)
+void StdSolver::AssembleMatrix(Matrix& A, const VectorInterface& gu, double d) const
 {
   GlobalTimer.start("---> matrix");
 

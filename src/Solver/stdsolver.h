@@ -434,7 +434,7 @@ public:
   /// vector - matrix
   //
 
-  virtual void AssembleMatrix(Matrix& A, const VectorInterface& u, double d);
+  virtual void AssembleMatrix(Matrix& A, const VectorInterface& u, double d) const;
   virtual void DirichletMatrix(Matrix& A) const;
   virtual void PeriodicMatrix(Matrix& A) const;
   virtual void MatrixZero(Matrix& A) const;
