@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (C) 2004, 2005, 2006 by the Gascoigne 3D authors
+ * Copyright (C) 2020 by the Gascoigne 3D authors
  *
  * This file is part of Gascoigne 3D
  *
@@ -22,19 +22,18 @@
  **/
 
 
-#include "ghostvectoragent.h"
-#include "stlio.h"
+#include "iluagent.h"
 
 namespace Gascoigne
 {
 
   /*-------------------------------------------------*/
 
-  GhostVectorAgent::GhostVectorAgent() {}
+  IluAgent::IluAgent() {}
 
   /*-------------------------------------------------*/
 
-  GhostVectorAgent::~GhostVectorAgent()
+  IluAgent::~IluAgent()
   {
     for (auto p=begin(); p!=end(); p++)
       { 
@@ -44,22 +43,21 @@ namespace Gascoigne
 	    p->second = NULL;
 	  } 
       }
+    std::map<Matrix,IluInterface*>::clear();
   }
   
   /*-------------------------------------------------*/
   
-  void GhostVectorAgent::Register(const VectorInterface& mg)
+  void IluAgent::Register(const Matrix& mg)
   {
     auto p = find(mg);
     if(p==end())
-      {
-	insert(std::make_pair(mg,static_cast<GlobalVector*>(NULL)));
-      }
+      insert(std::make_pair(mg,static_cast<IluInterface*>(NULL)));
   }
   
   /*-------------------------------------------------*/
 
-  void GhostVectorAgent::Delete(VectorInterface& mg) 
+  void IluAgent::Delete(Matrix& mg) 
   {
     auto p=find(mg);
     if (p!=end())
@@ -71,22 +69,22 @@ namespace Gascoigne
     
   /*-------------------------------------------------*/
   
-  GlobalVector& GhostVectorAgent::operator()(const VectorInterface& g) 
+  IluInterface& IluAgent::operator()(const Matrix& g) 
   {
     auto p = find(g);
     if (p==end())
       {
 	std::cerr << __FILE__ << ":" << __LINE__;
-	std::cerr << ": GhostVectorAgent::operator(): ERROR"<<std::endl;
+	std::cerr << ": IluAgent::operator(): ERROR"<<std::endl;
 	std::cerr << __FILE__ << ":" << __LINE__;
-	std::cerr << ": Ghostvector '"<< g <<"' not found in list of: "<<std::endl;
+	std::cerr << ": Matrix '"<< g <<"' not found in list of: "<<std::endl;
 	std::cerr << " "<< *this << std::endl;
 	abort();
       }
-    GlobalVector* vp = p->second;
+    IluInterface* vp = p->second;
     if (vp==NULL) 
       {
-	std::cerr <<  "GhostVectorAgent  GlobalVector* NULL\t" << p->first;
+	std::cerr <<  "IluAgent  IluInterface* NULL\t" << p->first;
 	std::cerr << "\n" << *this << std::endl;
 	abort();
       }

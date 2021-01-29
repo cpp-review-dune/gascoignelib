@@ -74,7 +74,7 @@ namespace Gascoigne
     void copy_entries(const MatrixInterface &A);
     void ConstructStructure(const IntVector &perm, const MatrixInterface &A);
     void Factorize();
-    void Solve(DoubleVector &x, const DoubleVector &b);
+    void Solve(DoubleVector &x, const DoubleVector &b) const;
     void SolveTranspose(DoubleVector &x, const DoubleVector &b);
   };
 
@@ -111,7 +111,7 @@ namespace Gascoigne
     void copy_entries(const MatrixInterface &A);
     void ConstructStructure(const IntVector &perm, const MatrixInterface &A);
     void Factorize();
-    void Solve(DoubleVector &x, const DoubleVector &b);
+    void Solve(DoubleVector &x, const DoubleVector &b) const;
     void SolveTranspose(DoubleVector &x, const DoubleVector &b);
   };
 }

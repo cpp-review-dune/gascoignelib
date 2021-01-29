@@ -22,59 +22,74 @@
 **/
 
 
-#include "stokeslps3d.h"
-#include "filescanner.h"
+#include  "stokesgls3d.h"
+#include  "filescanner.h"
+
 
 /*-----------------------------------------*/
 
 namespace Gascoigne
 {
-StokesLps3d::~StokesLps3d() {}
-
-/*-----------------------------------------*/
-
-StokesLps3d::StokesLps3d() : 
-  LpsEquation(), Stokes3d() 
-{ 
-  _penalty = 0.; _visc = 1.;
-  
-  ST.xeta0 = 6.;
-  ST.alpha0 = 0.2;
+StokesGls3d::~StokesGls3d()
+{
 }
 
 /*-----------------------------------------*/
 
-StokesLps3d::StokesLps3d(const ParamFile* filename) : 
-  LpsEquation(), Stokes3d() 
+StokesGls3d::StokesGls3d() : GlsEquation(), Stokes3d() 
+{
+}
+ 
+/*-----------------------------------------*/
+
+StokesGls3d::StokesGls3d(const ParamFile& pf) : GlsEquation(), Stokes3d() 
 {
   DataFormatHandler DFH;
   DFH.insert("visc" , &_visc , 0.01);
   DFH.insert("alpha", &ST.alpha0, 0.25);
-  DFH.insert("xeta" , &ST.xeta0, 6.);
   DFH.insert("penalty",&_penalty, 0.);
 
-  FileScanner FS(DFH,filename,"Equation");
+  FileScanner FS(DFH, pf, "Equation");
 }
 
 /*-----------------------------------------*/
 
-void StokesLps3d::lpspoint(double h, const FemFunction& U, const Vertex3d& v)const
+void StokesGls3d::glspoint(double h, const FemFunction& U, const Vertex3d& v)const
 {
   ST.ReInit(h,_visc);
 }
 
 /*-----------------------------------------*/
 
-void StokesLps3d::StabForm(VectorIterator b, const FemFunction& U, const FemFunction& UP, const TestFunction& N) const
+void StokesGls3d::L(DoubleVector& dst, const FemFunction& U) const
 {
-  b[0] += ST.alpha() * Laplace(UP[0],N);
+  dst[0] = Divergence(U);
+  dst[1] = U[0].x();
+  dst[2] = U[0].y();
+  dst[3] = U[0].z();
 }
- 
+
 /*-----------------------------------------*/
 
-void StokesLps3d::StabMatrix(EntryMatrix& A,  const FemFunction& U, const TestFunction& Np, 
-			     const TestFunction& Mp) const
+void StokesGls3d::S(nmatrix<double>& dst, const FemFunction& U, const TestFunction& N) const
 {
-  A(0,0) += ST.alpha() * Laplace(Mp,Np);
+  dst(0,1) = ST.alpha() * N.x();
+  dst(0,2) = ST.alpha() * N.y();
+  dst(0,3) = ST.alpha() * N.z();
+}
+
+/*-----------------------------------------*/
+
+void StokesGls3d::LMatrix(nmatrix<double>& A, const FemFunction& U, const TestFunction& N) const
+{
+  A(0,1) = N.x();
+  A(0,2) = N.y();
+  A(0,3) = N.z();
+  A(1,0) = N.x();
+  A(2,0) = N.y();
+  A(3,0) = N.z();
 }
 }
+
+/*-----------------------------------------*/
+

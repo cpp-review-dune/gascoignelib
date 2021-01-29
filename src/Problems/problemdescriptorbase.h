@@ -53,15 +53,10 @@ namespace Gascoigne
     BoundaryInitialCondition *BIC;
     ComponentInformation *CI;
 
-    const ParamFile *_paramfile;
+    ParamFile _paramfile;
     mutable double _time,_dt;
 
   protected:
-    const ParamFile *&GetParamFilePointer()
-    {
-      return _paramfile;
-    }
-
 
     Equation*& GetEquationPointer()
     {
@@ -129,7 +124,7 @@ namespace Gascoigne
 
     std::ostream &OutputSettings(std::ostream &os) const;
 
-    void BasicInit(const ParamFile *pf);
+    void BasicInit(const ParamFile &pf);
 
   // Gives the number of solution components. 
     int GetNcomp() const 
@@ -138,10 +133,8 @@ namespace Gascoigne
     }
     
 
-    const ParamFile *GetParamFile() const
-    {
-      return _paramfile;
-    }
+    const ParamFile& GetParamFile() const { return _paramfile; }
+    ParamFile& GetParamFile() { return _paramfile; }
 
     const Equation* GetEquation() const
     {

@@ -68,7 +68,7 @@ namespace Gascoigne
     
 
     // reads parameters from the input file
-    void BasicInit(const ParamFile *pf)
+    void BasicInit(const ParamFile &pf)
     {
       DataFormatHandler DFH;
       DFH.insert("visc", &visc, 1.);              // viscosity, must be positive

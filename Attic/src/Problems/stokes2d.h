@@ -46,7 +46,7 @@ public:
 
   ~Stokes2d();
   Stokes2d();
-  Stokes2d(const ParamFile* pf);
+  Stokes2d(const ParamFile& pf);
 
   std::string GetName() const { return "Stokes2d";}
 

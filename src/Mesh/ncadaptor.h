@@ -44,7 +44,7 @@ protected:
 
 public:
 
-  NCAdaptor(const ParamFile* paramfile, const DoubleVector& eta);
+  NCAdaptor(const ParamFile& paramfile, const DoubleVector& eta);
   void refine(IntVector& ref, IntVector& coarse) const;
 };
 }

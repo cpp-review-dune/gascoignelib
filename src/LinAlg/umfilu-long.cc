@@ -236,7 +236,7 @@ void UmfIluLong::Factorize()
 
 /*-----------------------------------------*/
 
-void UmfIluLong::Solve(DoubleVector& x, const DoubleVector& b)
+void UmfIluLong::Solve(DoubleVector& x, const DoubleVector& b) const 
 {
   const ColumnStencil* SA = dynamic_cast<const ColumnStencil*>(AP->GetStencil());
   assert(SA);

@@ -33,7 +33,7 @@ using namespace std;
 
 namespace Gascoigne
 {
-void BoundaryManager::BasicInit(const ParamFile* pf)
+void BoundaryManager::BasicInit(const ParamFile& pf)
 {
   IntSet colsNeumann, colsRobin;
   

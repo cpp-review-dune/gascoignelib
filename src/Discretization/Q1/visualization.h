@@ -131,7 +131,7 @@ class Visualization
   const std::string& get_name() const { return stepname;}
   void set_name       (const std::string&);
 
-  void read_parameters(const ParamFile* pf);
+  void read_parameters(const ParamFile& pf);
 
   void set_time(double t)       
     {

@@ -46,7 +46,7 @@ public:
 
   ~StokesLps3d();
   StokesLps3d();
-  StokesLps3d(const ParamFile* filename);
+  StokesLps3d(const ParamFile& filename);
 
   std::string GetName() const { return "StokesLps3d";}
 

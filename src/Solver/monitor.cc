@@ -43,7 +43,7 @@ Monitor::Monitor() : prec(6)
   ps        = 1;
 }
 
-Monitor::Monitor(const ParamFile* pf, int c)
+Monitor::Monitor(const ParamFile& pf, int c)
   : prec(6), ps(1), aos("Gascoigne"), bos("Adaptive"), control(c)
 {
   string dir;
@@ -156,7 +156,7 @@ void Monitor::set_directory(const string& dir)
 
 /*****************************************************************/
 
-void Monitor::init(const ParamFile* pf, int c)
+void Monitor::init(const ParamFile& pf, int c)
 {
   control = c;
 

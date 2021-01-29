@@ -1,3 +1,27 @@
+%%%% November 2020
+
+- SolverData moved to ProblemDescriptor. If multiple problems are
+  solved it is now simple to have different pressure filters, solvers,
+  etc.
+- MeshAgentInterface removed. New interface class is MeshAgent itself
+
+
+
+%%%% Oktober 2020
+
+- Multigrid vectors _cor, _res, _mg0, _mg1 are initialized locally on
+  the fly. This helps to clean everything up. There is no drawback in
+  terms of computational cost by re-initializing these vectors in each
+  call of the multigrid. (tested with NavierStokes3d)
+- StdMultiLevelSolver::ReInit() does not depend on the problem any
+  more. It must be called whenever a new mesh is given. Hence,
+  SetProblem must be called separately.
+- Matrix and ILU are no longer members of the Solver. Instead,
+  matrices are stored in the matrix_agent (similar to the
+  GhostVectorAgent) and defined in the loop. 
+- ParamFile is mostly a reference (has been pointer before)
+
+
 %%%% Anfang 2018
 
 %%% C++

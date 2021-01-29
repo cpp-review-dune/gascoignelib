@@ -29,12 +29,7 @@
 #include "gascoigne.h"
 #include "gascoignemesh.h"
 #include "gascoignevisualization.h"
-
-
 #include "ghostvectoragent.h"
-#include "matrixagent.h"
-#include "iluagent.h"
-
 #include "hierarchicalmesh.h"
 #include "multigridmeshinterface.h"
 #include "pointfunctional.h"
@@ -93,8 +88,8 @@ private:
 #endif
   // 2. Matrizen
 
-  //  MatrixInterface* _MAP;
-  //  IluInterface* _MIP;
+  MatrixInterface* _MAP;
+  IluInterface* _MIP;
 
 protected:
 #ifdef __WITH_THREADS__
@@ -109,9 +104,9 @@ protected:
   DiscretizationInterface* _ZP;
 
   // 4. Vectors and Matrices
-  mutable GhostVectorAgent vector_agent;
+
+  mutable GhostVectorAgent _NGVA;
   mutable MatrixAgent      matrix_agent;
-  mutable IluAgent         ilu_agent;
 
   // 5. Anwendungsklassen
 
@@ -127,8 +122,9 @@ protected:
   mutable std::string _discname;
   mutable std::string _matrixtype;
 
+  SolverData _Dat;
   mutable int _PrimalSolve;
-  ParamFile _paramfile;
+  const ParamFile* _paramfile;
 
   bool _useUMFPACK;
 
@@ -148,13 +144,13 @@ protected:
     return _MP;
   }
 
-  // virtual SolverData& GetSolverData()
-  // {
-  //   return _Dat;
-  // }
+  virtual SolverData& GetSolverData()
+  {
+    return _Dat;
+  }
   virtual const SolverData& GetSolverData() const
   {
-    return GetProblemDescriptor()->GetSolverData();
+    return _Dat;
   }
   virtual PressureFilter& GetPfilter()
   {
@@ -167,20 +163,20 @@ protected:
 
   // 0.3 Matrizen
 
-  // MatrixInterface*& GetMatrixPointer()
-  // {
-  //   return _MAP;
-  // }
+  MatrixInterface*& GetMatrixPointer()
+  {
+    return _MAP;
+  }
 
   virtual DiscretizationInterface*& GetDiscretizationPointer()
   {
     return _ZP;
   }
 
-  // virtual IluInterface*& GetIluPointer()
-  // {
-  //   return _MIP;
-  // }
+  virtual IluInterface*& GetIluPointer()
+  {
+    return _MIP;
+  }
 
   // 1. Initialisierung
 
@@ -190,24 +186,23 @@ protected:
   virtual DiscretizationInterface* NewDiscretization(int dimension,
                                                      const std::string& discname);
   virtual MatrixInterface* NewMatrix(int ncomp, const std::string& matrixtype);
-  virtual IluInterface* NewIlu(const Matrix& A, int ncomp, const std::string& matrixtype);
+  virtual IluInterface* NewIlu(int ncomp, const std::string& matrixtype);
 
+  virtual void RegisterMatrix(int ncomp);
 
   //
   /// new interface-function for individual size of vectors
   //
 
-  virtual void smooth(int niter,
-		      const Matrix& A,
-		      VectorInterface& x, const VectorInterface& y,
+  virtual void smooth(int niter, VectorInterface& x, const VectorInterface& y,
                       VectorInterface& h) const;
-  virtual void PermutateIlu(Matrix& A, const VectorInterface& gu) const;
+  virtual void PermutateIlu(const VectorInterface& gu) const;
   virtual void modify_ilu(IluInterface& I, int ncomp) const;
 
   virtual DoubleVector IntegrateSolutionVector(const VectorInterface& u) const;
   virtual void _check_consistency(const Equation* EQ,
                                   const DiscretizationInterface* DI) const;
-  virtual void DirichletMatrixOnlyRow(Matrix& A) const;
+  virtual void DirichletMatrixOnlyRow() const;
 
 public:
   StdSolver();
@@ -218,7 +213,7 @@ public:
     return "StdSolver";
   }
 
-  virtual void BasicInit(const ParamFile& paramfile, const int dimension);
+  virtual void BasicInit(const ParamFile* paramfile, const int dimension);
   ////                const NumericInterface *NI);
   virtual void SetProblem(const ProblemDescriptorInterface& PDX);
   virtual void SetDiscretization(DiscretizationInterface& DI, bool init = false);
@@ -227,7 +222,7 @@ public:
     assert(_PDX);
     return _PDX;
   }
-  virtual const ParamFile& GetParamfile() const
+  virtual const ParamFile* GetParamfile() const
   {
     return _paramfile;
   }
@@ -252,13 +247,14 @@ public:
     return _ZP;
   }
 
+  virtual void ReInitMatrix();
   virtual void AddPeriodicNodes(SparseStructure* SA);
 
-  // virtual IluInterface* GetIlu() const
-  // {
-  //   assert(_MIP);
-  //   return _MIP;
-  // }
+  virtual IluInterface* GetIlu() const
+  {
+    assert(_MIP);
+    return _MIP;
+  }
 
    virtual bool DirectSolver() const
   {
@@ -304,42 +300,22 @@ public:
   /// vector & Matrix  - manamgement
   //
 
-  virtual void ReInitMatrix(const Matrix& A);
+  virtual void RegisterMatrix();
+
+  virtual void ReInitMatrix(Matrix& A);
   
   virtual void RegisterVector(const VectorInterface& g);
   virtual void ReInitVector(VectorInterface& dst);
   virtual void ReInitVector(VectorInterface& dst, int comp);
 
-
-  // Access to Vector & Matrix Data
   virtual GlobalVector& GetGV(VectorInterface& u) const
   {
-    return vector_agent(u);
+    return _NGVA(u);
   }
   virtual const GlobalVector& GetGV(const VectorInterface& u) const
   {
-    return vector_agent(u);
+    return _NGVA(u);
   }
-
-  // Access to Vector & Matrix Data
-  virtual MatrixInterface& GetMatrix(Matrix& A) const
-  {
-    return matrix_agent(A);
-  }
-  virtual const MatrixInterface& GetMatrix(const Matrix& A) const
-  {
-    return matrix_agent(A);
-  }
-  virtual IluInterface& GetIlu(Matrix& A) const
-  {
-    return ilu_agent(A);
-  }
-  virtual const IluInterface& GetIlu(const Matrix& A) const
-  {
-    return ilu_agent(A);
-  }
-
-  
 
   //
   /// vector - hanging nodes
@@ -404,22 +380,17 @@ public:
   //
 
   virtual double NewtonNorm(const VectorInterface& u) const;
-  virtual void residualgmres(const Matrix& A,
-			     VectorInterface& y, const VectorInterface& x,
+  virtual void residualgmres(VectorInterface& y, const VectorInterface& x,
                              const VectorInterface& b) const;
-  virtual void MatrixResidual(const Matrix& A,
-			      VectorInterface& y, const VectorInterface& x,
+  virtual void MatrixResidual(VectorInterface& y, const VectorInterface& x,
                               const VectorInterface& b) const;
-  virtual void vmult(const Matrix& A, VectorInterface& y, const VectorInterface& x, double d) const;
-  virtual void vmulteq(const Matrix& A, VectorInterface& y, const VectorInterface& x, double d) const;
-  virtual void smooth_pre(const Matrix& A,
-			  VectorInterface& y, const VectorInterface& x,
+  virtual void vmult(VectorInterface& y, const VectorInterface& x, double d) const;
+  virtual void vmulteq(VectorInterface& y, const VectorInterface& x, double d) const;
+  virtual void smooth_pre(VectorInterface& y, const VectorInterface& x,
                           VectorInterface& h) const;
-  virtual void smooth_exact(const Matrix& A,
-			    VectorInterface& y, const VectorInterface& x,
+  virtual void smooth_exact(VectorInterface& y, const VectorInterface& x,
                             VectorInterface& h) const;
-  virtual void smooth_post(const Matrix& A,
-			   VectorInterface& y, const VectorInterface& x,
+  virtual void smooth_post(VectorInterface& y, const VectorInterface& x,
                            VectorInterface& h) const;
   virtual void Zero(VectorInterface& dst) const;
 
@@ -434,22 +405,23 @@ public:
   /// vector - matrix
   //
 
-  virtual void AssembleMatrix(Matrix& A, const VectorInterface& u, double d) const;
-  virtual void DirichletMatrix(Matrix& A) const;
-  virtual void PeriodicMatrix(Matrix& A) const;
-  virtual void MatrixZero(Matrix& A) const;
-  virtual void ComputeIlu(Matrix& A, const VectorInterface& u) const;
-  virtual void AssembleDualMatrix(Matrix& A, const VectorInterface& gu, double d);
+  virtual void AssembleMatrix(const VectorInterface& u, double d);
+  virtual void DirichletMatrix() const;
+  virtual void PeriodicMatrix() const;
+  virtual void MatrixZero() const;
+  virtual void ComputeIlu(const VectorInterface& u) const;
+  virtual void ComputeIlu() const;
+  virtual void AssembleDualMatrix(const VectorInterface& gu, double d);
   virtual void MassMatrixVector(VectorInterface& f, const VectorInterface& gu,
                                 double d) const
   {
     abort();
   }
 
-  // virtual MatrixInterface* GetMatrix() const
-  // {
-  //   return _MAP;
-  // }
+  virtual MatrixInterface* GetMatrix() const
+  {
+    return _MAP;
+  }
 
   //
   /// vector - "postprocessing"

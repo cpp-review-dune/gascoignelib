@@ -99,7 +99,7 @@ void Visualization::BasicInit()
 
 /********************************************************************/
 
-void Visualization::read_parameters(const ParamFile* pf)
+void Visualization::read_parameters(const ParamFile& pf)
 {
   double time;
 

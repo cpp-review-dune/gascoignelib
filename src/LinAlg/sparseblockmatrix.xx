@@ -691,8 +691,8 @@ void SparseBlockMatrix<B>::write_raw(std::string fname) const
 	int c = US.col(p);
 	  for (int rc=0;rc<mat(p)->ncomp();++rc)
 	    for (int cc=0;cc<mat(p)->ncomp();++cc)
-	      OUT << r*mat(p)->ncomp() + rc << "\t"
-		  << c*mat(p)->ncomp() + cc << "\t"
+	      OUT << r*mat(p)->ncomp() + rc +1 << "\t"  // +1 for matlab
+		  << c*mat(p)->ncomp() + cc +1 << "\t"
 		  << mat(p)->operator()(rc,cc) << std::endl;
       }
   OUT.close();

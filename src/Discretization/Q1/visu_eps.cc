@@ -33,7 +33,7 @@ using namespace std;
 
 namespace Gascoigne
 {
-VisuEPS::VisuEPS(const ParamFile* paramfile) : M(0)
+VisuEPS::VisuEPS(const ParamFile& paramfile) : M(0)
 {
   {
     DataFormatHandler DFH;

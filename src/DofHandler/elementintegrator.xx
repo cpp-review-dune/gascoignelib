@@ -623,19 +623,68 @@ namespace Gascoigne
       const FemInterface &FEM,
       const LocalVector &U) const
   {
-    IntegrationFormulaInterface* IF=NewIFF();
-    Vertex<DIM> xi;
-    double j = 0.;
-    for (int k = 0; k < IF->n(); k++)
-    {
-      IF->xi(xi, k);
-      FEM.point(xi);
-      double vol = FEM.J();
-      double weight = IF->w(k) * vol;
-      BasicIntegrator::universal_point(FEM, _UH, U);
-      j += weight * pow(_UH[0].x()+_UH[1].y(),2.0);
-    }
-    return j;
+    // // Python Routine
+    assert(U.n() == 9);
+
+    double hx = 0.205*2/4.0;
+    double hy = 0.205/4.0;   
+
+    std::array<double,9> S  = {-3,4,-1,  -1,0,1,  1,-4,3};
+    std::array<double,3> sw = {1./6.,4./6.,1./6.};
+
+    double div = 0;
+    for (int i=0;i<3;++i)
+      for (int j=0;j<3;++j)
+	{
+	  double dx = 0;
+	  double dy = 0;
+	  for (int k=0;k<3;++k)
+	    {
+	      dx += S[3*j+k] * U(3*i+k,0) / hx;
+	      dy += S[3*i+k] * U(3*k+j,1) / hy;
+	    }
+	  div += hx * hy * sw[i] * sw[j] * pow(dx+dy,2.0);
+	}
+    
+    return div;
+    
+    
+  // # Stencil um die 1te Ableitung zu berechnen
+  //     S = np.array( [ [-3,4,-1],[-1,0,1],[1,-4,3] ] )
+  //     dx = np.dot(S[i],V[3*j:3*j+3,0])/hx
+  //     dy = np.dot(S[j],V[i::3,1])/hy
+  //     return dx+dy
+
+  //     ### int div(v)^2 mit Simpson-Regel
+  //     def simpson(V,hx,hy):
+  //     d = 0
+  // # Quadratur-Gewicht Simpson
+  //     W = 1.0/6.0 * np.array([1.0,4.0,1.0])
+  //     for i in range(3):
+  //   for j in range(3):
+  //   d = d + div(V,hx,hy,i,j)**2.0*hx*hy*W[i]*W[j]
+  //           return d
+
+
+
+
+
+
+    // // with std quadrature
+    
+    // IntegrationFormulaInterface* IF=NewIFF();
+    // Vertex<DIM> xi;
+    // double j = 0.;
+    // for (int k = 0; k < IF->n(); k++)
+    // {
+    //   IF->xi(xi, k);
+    //   FEM.point(xi);
+    //   double vol = FEM.J();
+    //   double weight = IF->w(k) * vol;
+    //   BasicIntegrator::universal_point(FEM, _UH, U);
+    //   j += weight * pow(_UH[0].x()+_UH[1].y(),2.0);
+    // }
+    // return j;
   }
   
 

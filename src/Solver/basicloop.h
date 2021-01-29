@@ -26,7 +26,7 @@
 
 #include "adaptordata.h"
 #include "extrapolator.h"
-#include "meshagentinterface.h"
+#include "meshagent.h"
 #include "monitor.h"
 #include "stdmultilevelsolver.h"
 #include "visualization.h"
@@ -39,6 +39,8 @@
 #include "solverinfos.h"
 #include "stopwatch.h"
 #include "vectorinterface.h"
+
+#include "matrix.h"
 
 /*-----------------------------------------*/
 
@@ -56,7 +58,7 @@ namespace Gascoigne
 class BasicLoop
 {
 private:
-  MeshAgentInterface* _MA;
+  MeshAgent* _MA;
   StdMultiLevelSolver* _ML;
   SolverInfos* _SI;
 
@@ -66,7 +68,7 @@ protected:
   void WriteMesh() const;
   void WriteMeshInp(const std::string& name) const;
 
-  virtual MeshAgentInterface*& GetMeshAgentPointer()
+  virtual MeshAgent*& GetMeshAgentPointer()
   {
     return _MA;
   }
@@ -75,7 +77,7 @@ protected:
     return _ML;
   }
 
-  virtual const MeshAgentInterface* GetMeshAgent() const
+  virtual const MeshAgent* GetMeshAgent() const
   {
     assert(_MA);
     return _MA;
@@ -86,7 +88,7 @@ protected:
     return _ML;
   }
 
-  virtual MeshAgentInterface* GetMeshAgent()
+  virtual MeshAgent* GetMeshAgent()
   {
     assert(_MA);
     return _MA;
@@ -122,16 +124,16 @@ protected:
 
   std::string _reload, _initial;
   std::string _s_resultsdir;
-  const ParamFile* _paramfile;
+  ParamFile _paramfile;
 
   GlobalVector _GlobalErr;
 
   // new vectors
 
-  virtual std::string Solve(VectorInterface& u, VectorInterface& f, std::string name);
-  virtual std::string Solve(VectorInterface& u, VectorInterface& f)
+  virtual std::string Solve(Matrix& A, VectorInterface& u, VectorInterface& f, std::string name);
+  virtual std::string Solve(Matrix& A, VectorInterface& u, VectorInterface& f)
   {
-    return Solve(u, f, _s_resultsdir + "/solve");
+    return Solve(A, u, f, _s_resultsdir + "/solve");
   }
 
   virtual void PrintMeshInformation(int outputlevel = 0) const;
@@ -150,12 +152,12 @@ protected:
 
 public:
   BasicLoop();
-  BasicLoop(const ParamFile* paramfile, const ProblemContainer* PC,
+  BasicLoop(const ParamFile& paramfile, const ProblemContainer* PC,
             const FunctionalContainer* FC);
 
   virtual ~BasicLoop();
 
-  virtual void BasicInit(const ParamFile* paramfile, const ProblemContainer* PC,
+  virtual void BasicInit(const ParamFile& paramfile, const ProblemContainer* PC,
                          const FunctionalContainer* FC);
 
   void run(const std::string& problemlabel);

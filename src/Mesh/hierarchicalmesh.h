@@ -164,7 +164,7 @@ public:
   void SetParameters(std::string gridname, int patchdepth, int epatcher);
   void SetParameters(int patchdepth);
   void ReadFile(const std::string& gridname);
-  void BasicInit(const ParamFile* pf, int pdepth = 0);
+  void BasicInit(const ParamFile &pf, int pdepth = 0);
   void global_refine(int k);
   void global_patch_coarsen(int k);
   void random_refine(double, int k = 1);

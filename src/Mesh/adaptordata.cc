@@ -103,7 +103,7 @@ AdaptorData::AdaptorData()
 
 /*-------------------------------------------------*/
 
-void AdaptorData::read(const ParamFile* pf)
+void AdaptorData::read(const ParamFile& pf)
 {
   DataFormatHandler DH;
 

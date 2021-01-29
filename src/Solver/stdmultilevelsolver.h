@@ -31,7 +31,7 @@
 #include "problemdescriptorinterface.h"
 #include "stdmultilevelsolverdata.h"
 #include "stopwatch.h"
-#include "meshagentinterface.h"
+#include "meshagent.h"
 #include "stdsolver.h"
 
 /*-------------------------------------------------------------*/
@@ -53,31 +53,31 @@ class StdMultiLevelSolver
 {
 protected:  ///!!!!
   std::vector<StdSolver*> _SP;
-  const MeshAgentInterface* _MAP;
+  const MeshAgent* _MAP;
   std::vector<MgInterpolatorInterface*> _Interpolator;
-
-  // Variables used within Newton and Multigrid
-  mutable VectorInterface _cor, _res, _mg0, _mg1;
 
   mutable StopWatch _clock_residual, _clock_solve;
   mutable int ComputeLevel;
   mutable int oldnlevels;
 
-  const ParamFile* _paramfile;
+  ParamFile _paramfile;
 
   Monitor MON;
-  StdMultiLevelSolverData DataP;
+
   const ProblemDescriptorInterface* _PD;
   const ProblemContainer* _PC;
   const FunctionalContainer* _FC;
 
+  StdMultiLevelSolverData  DataP;
+  
+  
 protected:
 public:
   //////////////////////////////////////////////////
   // Constructor, Init
 
   StdMultiLevelSolver();
-  explicit StdMultiLevelSolver(const MeshAgentInterface* GMGM, const ParamFile* paramfile,
+  explicit StdMultiLevelSolver(const MeshAgent* GMGM, const ParamFile& paramfile,
                       const ProblemContainer* PC, const FunctionalContainer* FC = NULL);
   virtual ~StdMultiLevelSolver();
 
@@ -86,19 +86,18 @@ public:
     return "StdMultiLevelSolver";
   }
 
-  virtual void BasicInit(const MeshAgentInterface* GMGM, const ParamFile* paramfile,
+  virtual void BasicInit(const MeshAgent* GMGM, const ParamFile& paramfile,
                          const ProblemContainer* PC,
                          const FunctionalContainer* FC = NULL);
-  virtual void RegisterVectors();
-  virtual void RegisterMatrix();
-  virtual void ReInitMatrix();
+
+  virtual void ReInitMatrix(const Matrix& A);
   virtual void ReInitVector(VectorInterface& v);
   virtual void ReInitVector(VectorInterface& v, int comp);
 
   //////////////////////////////////////////////////
   // Access
 
-  virtual const MeshAgentInterface* GetMeshAgent() const
+  virtual const MeshAgent* GetMeshAgent() const
   {
     return _MAP;
   }
@@ -111,14 +110,14 @@ public:
     return _SP;
   }
   virtual const ProblemDescriptorInterface* GetProblemDescriptor() const
-  {
-    return _PD;
-  }
+  { return _PD; }
+
   virtual StdSolver*& GetSolverPointer(int l)
   {
     assert(l < _SP.size());
     return _SP[l];
   }
+  
 
   //////////////////////////////////////////////////
   // Solver
@@ -195,23 +194,19 @@ public:
     return GetSolver(ComputeLevel)->NewtonNorm(u);
   }
   virtual void mgstep(std::vector<double>& res, std::vector<double>& rw, int l, int maxl,
-                      int minl, std::string& p0, std::string p, VectorInterface& u,
+                      int minl, std::string& p0, std::string p,
+		      const Matrix& A, VectorInterface& u,
                       VectorInterface& b, VectorInterface& v);
 
   virtual void Cg(VectorInterface& x, const VectorInterface& f, CGInfo& info);
-  virtual void Gmres(VectorInterface& x, const VectorInterface& f, CGInfo& info);
+  virtual void Gmres(const Matrix& A, VectorInterface& x, const VectorInterface& f, CGInfo& info);
 
   virtual void SolutionTransfer(int high, int low, VectorInterface& u) const;
   virtual void Transfer(int high, int low, VectorInterface& u) const;
 
   virtual void ViewProtocoll() const;
 
-  // Zugriff
-
-  //  virtual void SetState(const std::string& s) {
-  //    for(int l=0;l<_SP.size();l++) _SP[l]->SetState(s);
-  //  }
-
+  
   virtual int nlevels() const
   {
     assert(GetMeshAgent());
@@ -236,18 +231,22 @@ public:
     return MON;
   }
 
-  virtual void ReInit(const std::string& problemlabel);
+  // ReInit is to be called, whenever the mesh (hierarchy) has changed
+  virtual void ReInit();
+  // SetProblem announces the current ProblemDescriptor to all solvers in the hierarchy
   virtual void SetProblem(const std::string& label);
 
   // neue vektoren
 
-  virtual std::string LinearSolve(int level, VectorInterface& u, const VectorInterface& b,
+  virtual std::string LinearSolve(int level,
+				  const Matrix& A, VectorInterface& u, const VectorInterface& b,
                                   CGInfo& info);
-  virtual std::string Solve(int level, VectorInterface& x, const VectorInterface& b,
+  virtual std::string Solve(int level,
+			    Matrix& A, VectorInterface& x, const VectorInterface& b,
                             NLInfo& nlinfo);
-  virtual std::string Solve(VectorInterface& x, const VectorInterface& b, NLInfo& nlinfo)
+  virtual std::string Solve(Matrix& A, VectorInterface& x, const VectorInterface& b, NLInfo& nlinfo)
   {
-    return Solve(nlevels() - 1, x, b, nlinfo);
+    return Solve(nlevels() - 1, A, x, b, nlinfo);
   }
 
   virtual void InterpolateSolution(VectorInterface& u, const GlobalVector& uold) const;
@@ -260,39 +259,39 @@ public:
   virtual double NewtonUpdate(double& rr, VectorInterface& x, VectorInterface& dx,
                               VectorInterface& r, const VectorInterface& f,
                               NLInfo& nlinfo);
-  virtual void NewtonLinearSolve(VectorInterface& x, const VectorInterface& b,
+  virtual void NewtonLinearSolve(const Matrix& A, VectorInterface& x, const VectorInterface& b,
                                  CGInfo& info);
-  virtual void NewtonMatrixControl(VectorInterface& u, NLInfo& nlinfo);
+  virtual void NewtonMatrixControl(Matrix& A, VectorInterface& u, NLInfo& nlinfo);
   virtual void NewtonOutput(NLInfo& nlinfo) const;
   virtual void NewtonPreProcess(VectorInterface& u, const VectorInterface& f,
                                 NLInfo& info) const;
   virtual void NewtonPostProcess(VectorInterface& u, const VectorInterface& f,
                                  NLInfo& info) const;
 
-  virtual void AssembleMatrix(VectorInterface& u, NLInfo& nlinfo);
-  virtual void AssembleMatrix(VectorInterface& u);
-  /// not used in the library -- might be used in local
-  virtual void ComputeIlu(VectorInterface& u);
-  virtual void ComputeIlu();
+  virtual void AssembleMatrix(Matrix& A, VectorInterface& u, NLInfo& nlinfo);
+  virtual void AssembleMatrix(Matrix& A, VectorInterface& u);
+  virtual void ComputeIlu(Matrix& A, VectorInterface& u);
 
   virtual void BoundaryInit(VectorInterface& u) const;
 
   virtual void SolutionTransfer(VectorInterface& u) const;
   virtual void Transfer(VectorInterface& u) const;
 
-  virtual void vmulteq(VectorInterface& y, const VectorInterface& x) const;
+  virtual void vmulteq(const Matrix& A,
+		       VectorInterface& y, const VectorInterface& x) const;
 
-  virtual void LinearMg(int minlevel, int maxlevel, VectorInterface& u,
+  virtual void LinearMg(int minlevel, int maxlevel,
+			const Matrix& A, VectorInterface& u,
                         const VectorInterface& f, CGInfo&);
 
   virtual double ComputeFunctional(VectorInterface& f, const VectorInterface& u,
                                    const std::string& label);
 
-  virtual void AssembleDualMatrix(VectorInterface& u);
+  virtual void AssembleDualMatrix(Matrix& A, VectorInterface& u);
 
   // fuer gmres
 
-  virtual void precondition(VectorInterface& x, VectorInterface& y);
+  virtual void precondition(const Matrix& A, VectorInterface& x, VectorInterface& y);
   virtual void DeleteVector(VectorInterface& p);
   virtual void Equ(VectorInterface& dst, double s, const VectorInterface& src) const;
   virtual void Zero(VectorInterface& dst) const;
@@ -300,7 +299,8 @@ public:
   virtual void AddNodeVector(const std::string& name, VectorInterface& q);
   virtual void DeleteNodeVector(const std::string& q);
 
-  virtual void newton(VectorInterface& u, const VectorInterface& f, VectorInterface& r,
+  virtual void newton(Matrix& A,
+		      VectorInterface& u, const VectorInterface& f, VectorInterface& r,
                       VectorInterface& w, NLInfo& info);
 };
 }  // namespace Gascoigne

@@ -37,13 +37,13 @@
 
 namespace Gascoigne
 {
-  
+
   class LaplaceData
   {
   public:
     double visc;
 
-    void BasicInit(const ParamFile *pf)
+    void BasicInit(const ParamFile &pf)
     {
       DataFormatHandler DFH;
       DFH.insert("visc", &visc, 1.);
@@ -54,7 +54,7 @@ namespace Gascoigne
   template <int DIM>
   class Laplace : public virtual Equation
   {
-    
+
   protected:
     LaplaceData    data;
 
@@ -63,12 +63,12 @@ namespace Gascoigne
     {
     }
 
-    Laplace<DIM>* createNew() const 
+    Laplace<DIM>* createNew() const
     {
       return new Laplace<DIM>(data);
     }
-    
-    
+
+
     std::string GetName() const
     {
       return "Laplace";

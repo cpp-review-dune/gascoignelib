@@ -120,7 +120,7 @@ namespace Gascoigne
       datacontainer.DeleteParameterVector(name);
     }
 
-    void BasicInit(const ParamFile *pf)
+    void BasicInit(const ParamFile &pf)
     {
       // HANGING NODES
     }

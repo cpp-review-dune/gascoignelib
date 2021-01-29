@@ -48,13 +48,11 @@ protected:
   CGInfo precinfo;
 
 public:
-  StdMultiLevelSolverData()
-  {
-  }
-  StdMultiLevelSolverData(const ParamFile* param);
+  StdMultiLevelSolverData()  {  }
+  StdMultiLevelSolverData(const ParamFile& param);
   virtual ~StdMultiLevelSolverData();
 
-  virtual void BasicInit(const ParamFile* param);
+  virtual void BasicInit(const ParamFile& param);
 
   std::string& Solver()
   {

@@ -44,7 +44,7 @@ protected:
 
 public:
 
-  ConvectionDiffusionEquation2d(const ParamFile* paramfile);
+  ConvectionDiffusionEquation2d(const ParamFile& paramfile);
   ~ConvectionDiffusionEquation2d() {}
   void SetTimePattern(TimePattern& P) const;
 

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (C) 2004, 2005, 2006 by the Gascoigne 3D authors
+ * Copyright (C) 2004, 2005, 2006, 2020 by the Gascoigne 3D authors
  *
  * This file is part of Gascoigne 3D
  *
@@ -22,19 +22,18 @@
  **/
 
 
-#include "ghostvectoragent.h"
-#include "stlio.h"
+#include "matrixagent.h"
 
 namespace Gascoigne
 {
 
   /*-------------------------------------------------*/
 
-  GhostVectorAgent::GhostVectorAgent() {}
+  MatrixAgent::MatrixAgent() {}
 
   /*-------------------------------------------------*/
 
-  GhostVectorAgent::~GhostVectorAgent()
+  MatrixAgent::~MatrixAgent()
   {
     for (auto p=begin(); p!=end(); p++)
       { 
@@ -44,22 +43,21 @@ namespace Gascoigne
 	    p->second = NULL;
 	  } 
       }
+    std::map<Matrix,MatrixInterface*>::clear();
   }
   
   /*-------------------------------------------------*/
   
-  void GhostVectorAgent::Register(const VectorInterface& mg)
+  void MatrixAgent::Register(const Matrix& mg)
   {
     auto p = find(mg);
     if(p==end())
-      {
-	insert(std::make_pair(mg,static_cast<GlobalVector*>(NULL)));
-      }
+      insert(std::make_pair(mg,static_cast<MatrixInterface*>(NULL)));
   }
   
   /*-------------------------------------------------*/
 
-  void GhostVectorAgent::Delete(VectorInterface& mg) 
+  void MatrixAgent::Delete(Matrix& mg) 
   {
     auto p=find(mg);
     if (p!=end())
@@ -71,22 +69,44 @@ namespace Gascoigne
     
   /*-------------------------------------------------*/
   
-  GlobalVector& GhostVectorAgent::operator()(const VectorInterface& g) 
+  MatrixInterface& MatrixAgent::operator()(const Matrix& g) 
   {
     auto p = find(g);
     if (p==end())
       {
 	std::cerr << __FILE__ << ":" << __LINE__;
-	std::cerr << ": GhostVectorAgent::operator(): ERROR"<<std::endl;
+	std::cerr << ": MatrixAgent::operator(): ERROR"<<std::endl;
 	std::cerr << __FILE__ << ":" << __LINE__;
-	std::cerr << ": Ghostvector '"<< g <<"' not found in list of: "<<std::endl;
+	std::cerr << ": Matrix '"<< g <<"' not found in list of: "<<std::endl;
 	std::cerr << " "<< *this << std::endl;
 	abort();
       }
-    GlobalVector* vp = p->second;
+    MatrixInterface* vp = p->second;
     if (vp==NULL) 
       {
-	std::cerr <<  "GhostVectorAgent  GlobalVector* NULL\t" << p->first;
+	std::cerr <<  "MatrixAgent  MatrixInterface* NULL\t" << p->first;
+	std::cerr << "\n" << *this << std::endl;
+	abort();
+      }
+    return *vp;
+  }
+
+  const MatrixInterface& MatrixAgent::operator()(const Matrix& g)  const
+  {
+    const auto p = find(g);
+    if (p==end())
+      {
+	std::cerr << __FILE__ << ":" << __LINE__;
+	std::cerr << ": MatrixAgent::operator(): ERROR"<<std::endl;
+	std::cerr << __FILE__ << ":" << __LINE__;
+	std::cerr << ": Matrix '"<< g <<"' not found in list of: "<<std::endl;
+	std::cerr << " "<< *this << std::endl;
+	abort();
+      }
+    MatrixInterface* vp = p->second;
+    if (vp==NULL) 
+      {
+	std::cerr <<  "MatrixAgent  MatrixInterface* NULL\t" << p->first;
 	std::cerr << "\n" << *this << std::endl;
 	abort();
       }

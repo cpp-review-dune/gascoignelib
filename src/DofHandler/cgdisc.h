@@ -150,7 +150,7 @@ public:
       Visu.AddPointVector(&u);
     }
 
-    Visu.read_parameters(&pf);
+    Visu.read_parameters(pf);
     Visu.set_name(name);
     Visu.step(i);
     Visu.write();
@@ -186,7 +186,7 @@ public:
     datacontainer.DeleteParameterVector(name);
   }
 
-  void BasicInit(const ParamFile* pf)
+  void BasicInit(const ParamFile& pf)
   {
     assert(HN == NULL);
     HN = NewHNStructure();
@@ -219,6 +219,10 @@ public:
   int nelements() const
   {
     return GetDofHandler()->nelements(DEGREE);
+  }
+  int ndegree() const
+  {
+    return DEGREE;
   }
   int nhanging() const
   {
@@ -362,6 +366,7 @@ public:
     HN->CondenseHanging(E, indices);
     IntVector::const_iterator start = indices.begin();
     IntVector::const_iterator stop  = indices.end();
+
     A.entry(start, stop, E, s);
   }
   void LocalToGlobal(GlobalVector& f, const LocalVector& F, int iq,
@@ -452,10 +457,10 @@ public:
     if (DIM == 2)
       {
 	// super simple...
-	
+
 	std::vector<Vertex2d> v2d = DRHS.GetPoints2d();
 	assert(nn==v2d.size());
-	
+
 	for(int i=0;i<nn;++i)
 	  {
 	    int j=0;
@@ -477,7 +482,7 @@ public:
     // else if (dim == 3)
     //   {
     // 	abort();
-	
+
     // 	vector<Vertex3d> v3d = DRHS.GetPoints3d();
     // 	assert(nn==v3d.size());
     // 	for(int i=0;i<nn;++i)
@@ -719,9 +724,9 @@ public:
     assert(GetDofHandler()->dimension() == DIM);
     int ne = GetDofHandler()->nodes_per_element(DEGREE);
     assert(ne == 9);
-    
+
     nmatrix<double> T(2,9);  // initialisiert das FE, d.h. die Koordinaten
-    for (int i=0;i<9;++i)    
+    for (int i=0;i<9;++i)
       {
 	T(0,i) = M(i,0);
 	T(1,i) = M(i,1);
@@ -733,10 +738,10 @@ public:
     INTEGRATOR integrator;
     integrator.BasicInit();
 
-    return integrator.LocalDiv(finiteelement, U);    
+    return integrator.LocalDiv(finiteelement, U);
   }
-  
-  
+
+
   double ComputeBoundaryFunctional(const GlobalVector& u, const IntSet& Colors,
                                    const BoundaryFunctional& BF) const
   {
@@ -899,7 +904,7 @@ public:
     Vertex<DIM> p0_local;
     for (int i = 0; i < DIM; i++)
       p0_local[i] = p0[i];
-    
+
     int iq = GetElementNumber(p0_local, Tranfo_p0);
     if (iq == -1)
       {
@@ -912,9 +917,9 @@ public:
     nmatrix<double> T;
     Transformation(T, iq);
     finiteelement.ReInit(T);
-    
+
     GlobalToLocal(__U, u, iq);
-    
+
     return integrator.ComputePointValue(finiteelement, Tranfo_p0, __U, comp); */
   }
   double ComputePointValue(const GlobalVector& u, const Vertex3d& p0,
@@ -1055,8 +1060,8 @@ public:
   {
     PressureFilter* PF = static_cast<PressureFilter*>(&F);
     assert(PF);
-    if (!PF->Active())
-      return;
+    // if (!PF->Active())
+    //   return;
 
     PF->ReInit(ndofs(), nhanging());
     nmatrix<double> T;
@@ -1178,7 +1183,7 @@ public:
       }
     }
   }
-  
+
   void StrongPeriodicVector(GlobalVector &u,
 			    const PeriodicData &BF,
 			    int col,
@@ -1236,9 +1241,6 @@ public:
     }
   }
 
-
-  
-
   ////////////////////////////////////////////////// Errors
   void ComputeError(const GlobalVector& u, LocalVector& err,
                     const ExactSolution* ES) const
@@ -1248,52 +1250,53 @@ public:
     err.reservesize(3);
     err = 0.;
 
-    GlobalVector lerr(ncomp, 3);
-    lerr.zero();
 
     LocalParameterData QP;
     GlobalToGlobalData(QP);
     ES->SetParameterData(QP);
 
-    nmatrix<double> T;
-    LocalVector U;
-    LocalData QN, QC;
-    FINITEELEMENT finiteelement;
-    INTEGRATOR integrator;
-    integrator.BasicInit();
-    for (int iq = 0; iq < GetDofHandler()->nelements(DEGREE); iq++)
+#pragma omp parallel
     {
-      Transformation(T, iq);
-      finiteelement.ReInit(T);
-      GlobalToLocal(U, u, iq);
-      GlobalToLocalData(iq, QN, QC);
-      integrator.ErrorsByExactSolution(lerr, finiteelement, *ES, U, QN, QC);
+      nmatrix<double> T;
+      LocalVector U;
+      LocalData QN, QC;
+      FINITEELEMENT finiteelement;
+      INTEGRATOR integrator;
+      integrator.BasicInit();
 
-      for (int c = 0; c < ncomp; c++)
-      {
-        err(0, c) += lerr(0, c);
-        err(1, c) += lerr(1, c);
-        err(2, c) = std::max(err(2, c), lerr(2, c));
-      }
+      // local error computed in each element
+      GlobalVector lerr(ncomp, 3);
+      lerr.zero();
+
+#pragma omp for schedule(static)
+      for (int iq = 0; iq < GetDofHandler()->nelements(DEGREE); iq++)
+	{
+	  Transformation(T, iq);
+	  finiteelement.ReInit(T);
+	  GlobalToLocal(U, u, iq);
+	  GlobalToLocalData(iq, QN, QC);
+	  integrator.ErrorsByExactSolution(lerr, finiteelement, *ES, U, QN, QC);
+
+	  // this update must be guarded for multithreading
+#pragma omp critical
+	  for (int c = 0; c < ncomp; c++)
+	    {
+	      err(0, c) += lerr(0, c);
+	      err(1, c) += lerr(1, c);
+	      err(2, c) = std::max(err(2, c), lerr(2, c));
+	    }
+	}
     }
+
     for (int c = 0; c < ncomp; c++)
-    {
-      err(0, c) = sqrt(err(0, c));
-      err(1, c) = sqrt(err(1, c));
-    }
+      {
+	err(0, c) = sqrt(err(0, c));
+	err(1, c) = sqrt(err(1, c));
+      }
   }
+
 };
 
-// #include "finiteelement.h"
-// #include "elementintegrator.h"
-// #include "integrationformula.h"
-// #include "transformation2d.h"
-// #include "transformation3d.h"
-// #include "baseq22d.h"
-// #include "baseq23d.h"
-
-// namespace Gascoigne
-// {
 
 #define CGDiscQ12d                                                        \
   CGDisc<2, 1, FiniteElement<2, 1, Transformation2d<BaseQ12d>, BaseQ12d>, \

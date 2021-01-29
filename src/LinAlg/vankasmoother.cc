@@ -64,57 +64,111 @@ void VankaSmoother::ConstructStructure(const IntVector& perm,
   _lu.resize(npatches, Eigen::PartialPivLU<VankaMatrix>(_sizeofpatch * _ncomp));
 }
 
-template <int NCOMP>
-void VankaSmoother::copy_entries_sparseblockmatrix(
-  const SparseBlockMatrix<FMatrixBlock<NCOMP>>& A)
-{
-  const ColumnDiagStencil& S =
-    dynamic_cast<const ColumnDiagStencil&>(*A.GetStencil());
 
-  // Copy entries & assemble ILU
-#pragma omp parallel for schedule(static)
-  for (int p = 0; p < _patchlist.size(); ++p)
+  template <int NCOMP>
+  void VankaSmoother::copy_entries_sparseblockmatrix(const SparseBlockMatrix<FMatrixBlock<NCOMP>>& A)
   {
-    assert(_patchlist[p].size() == _sizeofpatch);
+    const ColumnDiagStencil& S =
+      dynamic_cast<const ColumnDiagStencil&>(*A.GetStencil());
 
-    VankaMatrix Matrix_on_Block;
-    Matrix_on_Block.resize(_sizeofpatch * NCOMP, _sizeofpatch * NCOMP);
-    Matrix_on_Block.setZero();
-
-    // inverse index set? store globally?
-    HASHMAP<int, int> INP;
-    for (int i = 0; i < _patchlist[p].size(); ++i)
-      INP[_patchlist[p][i]] = i;
-
-    for (int r = 0; r < _sizeofpatch; ++r)
-    {
-      assert(r < _patchlist[p].size());
-      int row = _patchlist[p][r];
-      assert(row < S.n());
-
-      // Copy Matrix
-      for (int pos = S.start(row); pos < S.stop(row); ++pos)
+    // Copy entries & assemble ILU
+#pragma omp parallel for schedule(static)
+    for (int p = 0; p < _patchlist.size(); ++p)
       {
-        int col = S.col(pos);
-        /* columnsinpatch.insert(col); */
+	int sop = _patchlist[p].size();
+	//	assert(_patchlist[p].size() == _sizeofpatch);
 
-        // find inverse index. Skip, if not n patch
-        auto inverseindex = INP.find(col);
-        if (inverseindex == INP.end())
-          continue;
-        int c = inverseindex->second;
+	VankaMatrix Matrix_on_Block;
+	Matrix_on_Block.resize(sop * NCOMP, sop * NCOMP);
+	Matrix_on_Block.setZero();
 
-        const FMatrixBlock<NCOMP>& B = (*A.mat(pos));
-        for (int cr = 0; cr < NCOMP; ++cr)
-          for (int cc = 0; cc < NCOMP; ++cc)
-            Matrix_on_Block(NCOMP * r + cr, NCOMP * c + cc) = B(cr, cc);
+	// inverse index set? store globally?
+	HASHMAP<int, int> INP;
+	for (int i = 0; i < _patchlist[p].size(); ++i)
+	  INP[_patchlist[p][i]] = i;
+
+	for (int r = 0; r < sop; ++r)
+	  {
+	    assert(r < _patchlist[p].size());
+	    int row = _patchlist[p][r];
+	    assert(row < S.n());
+
+	    // Copy Matrix
+	    for (int pos = S.start(row); pos < S.stop(row); ++pos)
+	      {
+		int col = S.col(pos);
+		/* columnsinpatch.insert(col); */
+
+		// find inverse index. Skip, if not n patch
+		auto inverseindex = INP.find(col);
+		if (inverseindex == INP.end())
+		  continue;
+		int c = inverseindex->second;
+
+		const FMatrixBlock<NCOMP>& B = (*A.mat(pos));
+		for (int cr = 0; cr < NCOMP; ++cr)
+		  for (int cc = 0; cc < NCOMP; ++cc)
+		    Matrix_on_Block(NCOMP * r + cr, NCOMP * c + cc) = B(cr, cc);
+	      }
+	  }
+	// Compute LU
+	_lu[p].compute(Matrix_on_Block);
       }
-    }
-    // Compute LU
-    _lu[p].compute(Matrix_on_Block);
   }
-}
 
+// template <int NCOMP>
+// void VankaSmoother::copy_entries_sparseblockmatrix(
+//   const SparseBlockMatrix<FMatrixBlock<NCOMP>>& A)
+// {
+//   const ColumnDiagStencil& S =
+//     dynamic_cast<const ColumnDiagStencil&>(*A.GetStencil());
+
+//   // Copy entries & assemble ILU
+// #pragma omp parallel for schedule(static)
+//   for (int p = 0; p < _patchlist.size(); ++p)
+//   {
+//     assert(_patchlist[p].size() == _sizeofpatch);
+
+//     VankaMatrix Matrix_on_Block;
+//     Matrix_on_Block.resize(_sizeofpatch * NCOMP, _sizeofpatch * NCOMP);
+//     Matrix_on_Block.setZero();
+
+//     // inverse index set? store globally?
+//     HASHMAP<int, int> INP;
+//     for (int i = 0; i < _patchlist[p].size(); ++i)
+//       INP[_patchlist[p][i]] = i;
+
+//     for (int r = 0; r < _sizeofpatch; ++r)
+//     {
+//       assert(r < _patchlist[p].size());
+//       int row = _patchlist[p][r];
+//       assert(row < S.n());
+
+//       // Copy Matrix
+//       for (int pos = S.start(row); pos < S.stop(row); ++pos)
+//       {
+//         int col = S.col(pos);
+//         /* columnsinpatch.insert(col); */
+
+//         // find inverse index. Skip, if not n patch
+//         auto inverseindex = INP.find(col);
+//         if (inverseindex == INP.end())
+//           continue;
+//         int c = inverseindex->second;
+
+//         const FMatrixBlock<NCOMP>& B = (*A.mat(pos));
+//         for (int cr = 0; cr < NCOMP; ++cr)
+//           for (int cc = 0; cc < NCOMP; ++cc)
+//             Matrix_on_Block(NCOMP * r + cr, NCOMP * c + cc) = B(cr, cc);
+//       }
+//     }
+//     // Compute LU
+//     _lu[p].compute(Matrix_on_Block);
+//   }
+// }
+
+
+  
 void VankaSmoother::copy_entries(const MatrixInterface& A)
 {
   if (_ncomp == 1)

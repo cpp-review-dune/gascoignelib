@@ -39,7 +39,7 @@ class StdTimeLoop : public virtual StdLoop
 protected:
 
   TimeInfo    _timeinfo;
-  virtual std::string SolveTimePrimal(VectorInterface& u, VectorInterface& f);
+  virtual std::string SolveTimePrimal(Matrix& A, VectorInterface& u, VectorInterface& f);
 
   virtual void TimeInfoBroadcast();
   void InitSolution(VectorInterface& u);

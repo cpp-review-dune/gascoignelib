@@ -87,11 +87,16 @@ namespace Gascoigne
       virtual void AddParameterVector(const std::string& name, const GlobalParameterVector* q) const=0;
       virtual void DeleteParameterVector(const std::string& name) const=0;
 
-      virtual void BasicInit(const ParamFile* pf)=0;
+      virtual void BasicInit(const ParamFile& pf)=0;
       virtual void ReInit   (const GascoigneMesh* M)=0;
 
     virtual int ndofs()     const=0;  // returns the number of degrees of freedom
     virtual int nelements() const=0;  // returns the number of elements in the discretization
+    virtual int ndegree()   const {
+      std::cerr << "\"DiscretizationInterface::ndegree\" not written!\n"
+                   "Continuing anyways." << std::endl;
+      return 1;
+    }
     virtual int ndofs_withouthanging()const {
       return ndofs();
     }
@@ -238,11 +243,11 @@ namespace Gascoigne
       }
 
     ////////////////////////////////////////////////// Functionals
-    virtual double LocalDiv(const LocalVector& U, const LocalVector& M) const 
+    virtual double LocalDiv(const LocalVector& U, const LocalVector& M) const
     {
       return 0.0;
     }
-    
+
       virtual double ComputeBoundaryFunctional(const GlobalVector& u, const IntSet& Colors, const BoundaryFunctional& BF) const{
         std::cerr << "\"DiscretizationInterface::ComputeBoundaryFunctional\" not written!" << std::endl;
         abort();
