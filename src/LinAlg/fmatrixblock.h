@@ -25,7 +25,7 @@
 #define __fmatrixblock_h
 
 #include "entrymatrix.h"
-#include "matrixentrytype.h"
+#include "gascoigne.h"
 #include "nodematrix.h"
 
 /*****************************************************/

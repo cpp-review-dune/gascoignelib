@@ -25,7 +25,7 @@
 #define __cfdblock3d_h
 
 #include "entrymatrix.h"
-#include "matrixentrytype.h"
+#include "gascoigne.h"
 
 /*****************************************************/
 

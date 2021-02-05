@@ -5,7 +5,7 @@
 /*----------------------------   sparseblock.h     ---------------------------*/
 
 #include "entrymatrix.h"
-#include "matrixentrytype.h"
+#include "gascoigne.h"
 
 #include "sparse_20.h"
 

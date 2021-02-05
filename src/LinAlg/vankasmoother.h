@@ -29,8 +29,8 @@
 
 #include "dofhandler.h"
 #include "fmatrixblock.h"
+#include "gascoigne.h"
 #include "iluinterface.h"
-#include "matrixentrytype.h"
 #include "sparseblockmatrix.h"
 
 // we use Eigen to store and invert the local matrices

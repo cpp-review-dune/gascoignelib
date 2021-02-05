@@ -33,15 +33,24 @@
 ////
 /////////////////////////////////////////////
 
-#include "compvector.h"
-#include "derivativevector.h"
-#include "matrixentrytype.h"
-#include "nmatrix.h"
 #include <map>
 #include <set>
 #include <string>
 
+#include "compvector.h"
+#include "derivativevector.h"
+#include "nmatrix.h"
+
 namespace Gascoigne {
+
+#ifdef __MATRIX_DOUBLE_PRECISION__
+typedef double MatrixEntryType;
+#else
+typedef float MatrixEntryType;
+#endif
+
+typedef uint64_t IndexType;
+
 typedef CompVector<double> GlobalVector;
 typedef CompVector<double> LocalVector;
 typedef CompVector<MatrixEntryType> GlobalVectorMET; // for linear solver
@@ -56,6 +65,7 @@ typedef std::map<std::string, const GlobalParameterVector *>
 typedef std::map<std::string, LocalParameterVector> LocalParameterData;
 
 typedef nvector<int> IntVector;
+typedef nvector<IndexType> IndexVector;
 typedef nvector<double> DoubleVector;
 typedef nmatrix<double> DoubleMatrix;
 typedef std::set<int> IntSet;

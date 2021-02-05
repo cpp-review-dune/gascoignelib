@@ -26,7 +26,7 @@
 
 #include "compvector.h"
 #include "entrymatrix.h"
-#include "matrixentrytype.h"
+#include "gascoigne.h"
 #include "periodicdata.h"
 #include "sparsestructureinterface.h"
 #include "stencilinterface.h"

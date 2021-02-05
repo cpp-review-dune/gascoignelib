@@ -569,7 +569,8 @@ void CGDofHandler<DIM, M>::InitFromGascoigneMesh(const DofHandler<DIM> &GM) {
   // 			  << nx[nc[dofs_per_element()*el+iz*M*M+iy*M+ix]].y() <<
   // "
   // "
-  // 			  << nx[nc[dofs_per_element()*el+iz*M*M+iy*M+ix]].z() << "
+  // 			  << nx[nc[dofs_per_element()*el+iz*M*M+iy*M+ix]].z() <<
+  // "
   // "
   // << std::endl; 	std::cerr << std::endl << std::endl;
   //   }
