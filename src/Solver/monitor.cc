@@ -22,30 +22,27 @@
  **/
 
 #include "monitor.h"
-#include <string>
-#include <fstream>
-#include <cstdio>
-#include <cstring>
 #include "filescanner.h"
 #include "stlio.h"
+#include <cstdio>
+#include <cstring>
+#include <fstream>
+#include <string>
 
 using namespace std;
 
 /*****************************************************************/
 
-namespace Gascoigne
-{
-Monitor::Monitor() : prec(6)
-{
-  aos       = "Gascoigne";
-  bos       = "Adaptive";
+namespace Gascoigne {
+Monitor::Monitor() : prec(6) {
+  aos = "Gascoigne";
+  bos = "Adaptive";
   directory = ".";
-  ps        = 1;
+  ps = 1;
 }
 
-Monitor::Monitor(const ParamFile& pf, int c)
-  : prec(6), ps(1), aos("Gascoigne"), bos("Adaptive"), control(c)
-{
+Monitor::Monitor(const ParamFile &pf, int c)
+    : prec(6), ps(1), aos("Gascoigne"), bos("Adaptive"), control(c) {
   string dir;
   DataFormatHandler DFH;
   DFH.insert("directory", &dir, ".");
@@ -62,8 +59,7 @@ Monitor::Monitor(const ParamFile& pf, int c)
 
 /*******************************************************************/
 
-void Monitor::PrintInfoSummary(const CGInfo& info) const
-{
+void Monitor::PrintInfoSummary(const CGInfo &info) const {
   cout.precision(3);
   cout.setf(ios::fixed, ios::floatfield);
   cout << info.statistics().totaliter() << "\t";
@@ -83,9 +79,8 @@ void Monitor::PrintInfoSummary(const CGInfo& info) const
 
 /*******************************************************************/
 
-void Monitor::PrintInfoSummary(const NLInfo& nlinfo) const
-{
-  const CGInfo& cginfo = nlinfo.GetLinearInfo();
+void Monitor::PrintInfoSummary(const NLInfo &nlinfo) const {
+  const CGInfo &cginfo = nlinfo.GetLinearInfo();
 
   cout.precision(3);
   cout.setf(ios::fixed, ios::floatfield);
@@ -109,11 +104,10 @@ void Monitor::PrintInfoSummary(const NLInfo& nlinfo) const
 
 /*****************************************************************/
 
-void Monitor::set_directory(const string& dir)
-{
+void Monitor::set_directory(const string &dir) {
   // cout << "Monitor::set_directory()\tdirectory = " << dir << endl;
   directory = dir;
-  texfile   = directory;
+  texfile = directory;
   texfile += "/TexResults";
   numfile = directory;
   numfile += "/NumResults";
@@ -156,8 +150,7 @@ void Monitor::set_directory(const string& dir)
 
 /*****************************************************************/
 
-void Monitor::init(const ParamFile& pf, int c)
-{
+void Monitor::init(const ParamFile &pf, int c) {
   control = c;
 
   string dir;
@@ -176,8 +169,7 @@ void Monitor::init(const ParamFile& pf, int c)
 
 /*****************************************************************/
 
-void Monitor::error_io(const string& s) const
-{
+void Monitor::error_io(const string &s) const {
   cout << "Monitor::error_io()\n";
   cout << "Fehler beim Oeffnen von " << s << endl;
   cout << "directory = " << directory << endl;
@@ -186,10 +178,8 @@ void Monitor::error_io(const string& s) const
 
 /*****************************************************************/
 
-void Monitor::pre_monitor(char* s)
-{
-  if (control > 2)
-  {
+void Monitor::pre_monitor(char *s) {
+  if (control > 2) {
     m_length[m_counter++] = strlen(s);
     cout << s;
   }
@@ -197,10 +187,8 @@ void Monitor::pre_monitor(char* s)
 
 /*****************************************************************/
 
-void Monitor::post_monitor()
-{
-  if (control > 2)
-  {
+void Monitor::post_monitor() {
+  if (control > 2) {
     int l = m_length[--m_counter];
     for (int i = 0; i < l; i++)
       cout << "\b";
@@ -213,8 +201,7 @@ void Monitor::post_monitor()
 
 /*****************************************************************/
 
-void Monitor::print_message() const
-{
+void Monitor::print_message() const {
   //  ofstream pfile( protokoll.c_str(),ios::app);
 
   //  if(!pfile)
@@ -234,8 +221,7 @@ void Monitor::print_message() const
 
 /*******************************************************************/
 
-void Monitor::failed_step()
-{
+void Monitor::failed_step() {
   print_message();
 
   new_message << " repeat";
@@ -244,20 +230,18 @@ void Monitor::failed_step()
 
 /*******************************************************************/
 
-void Monitor::mesh(int nc, int nl)
-{
+void Monitor::mesh(int nc, int nl) {
   new_message << " (N=" << nc << "[" << nl << "])";
   print_message();
 }
 
 /*******************************************************************/
 
-void Monitor::post_nonlinear(const DoubleVector& Ju, double eta, int ncells, int cg,
-                             int dcg)
-{
+void Monitor::post_nonlinear(const DoubleVector &Ju, double eta, int ncells,
+                             int cg, int dcg) {
   new_message.str("");
-  new_message << "cg dnl: " << cg << " " << dcg << " [J(u)=" << Ju[0] << " eta=" << eta
-              << "]";
+  new_message << "cg dnl: " << cg << " " << dcg << " [J(u)=" << Ju[0]
+              << " eta=" << eta << "]";
   //   sprintf (message,"cg dnl: %d %d",cg,dcg);
   //   sprintf (message,"%s [J(u)=%10.7e eta=%7.3e]",message,Ju[0],eta);
 
@@ -266,8 +250,7 @@ void Monitor::post_nonlinear(const DoubleVector& Ju, double eta, int ncells, int
 
 /*******************************************************************/
 
-void Monitor::pre_nonlinear(int i)
-{
+void Monitor::pre_nonlinear(int i) {
   print_message();
   new_message.str("----------------------------------------");
   print_message();
@@ -283,15 +266,11 @@ void Monitor::pre_nonlinear(int i)
 
 /*******************************************************************/
 
-void Monitor::matrix_info(int i) const
-{
-  if (!i)
-  {
+void Monitor::matrix_info(int i) const {
+  if (!i) {
     for (int j = 0; j < ps; j++)
       new_message << " ";
-  }
-  else
-  {
+  } else {
     if (_newmatrix)
       new_message << "M";
     else
@@ -301,8 +280,7 @@ void Monitor::matrix_info(int i) const
 
 /*******************************************************************/
 
-void Monitor::nonlinear_step(const CGInfo& cginfo, const NLInfo& nlinfo) const
-{
+void Monitor::nonlinear_step(const CGInfo &cginfo, const NLInfo &nlinfo) const {
   int i = nlinfo.control().iteration();
 
   matrix_info(i);
@@ -320,16 +298,14 @@ void Monitor::nonlinear_step(const CGInfo& cginfo, const NLInfo& nlinfo) const
   new_message.precision(2);
   new_message << r;
 
-  if (i && (control > 1))
-  {
+  if (i && (control > 1)) {
     double c = nlinfo.control().correction();
     new_message << " " << c;
   }
-  if (i)
-  {
+  if (i) {
     double rr = nlinfo.statistics().rate();
     double lr = nlinfo.statistics().lastrate();
-    int p     = nlinfo.control().relax();
+    int p = nlinfo.control().relax();
 
     // sprintf(message,"%s [%4.2f %4.2f]",message,lr,rr);
     new_message << " [";
@@ -337,17 +313,14 @@ void Monitor::nonlinear_step(const CGInfo& cginfo, const NLInfo& nlinfo) const
     new_message.setf(ios::fixed);
     new_message.width(3);
     new_message << lr << " " << rr << "]";
-    if (p)
-    {
+    if (p) {
       new_message << " " << p;
-    }
-    else
-    {
+    } else {
       new_message << "  ";
     }
 
-    rr        = cginfo.statistics().rate();
-    lr        = cginfo.control().residual();
+    rr = cginfo.statistics().rate();
+    lr = cginfo.control().residual();
     double lc = cginfo.control().correction();
 
     new_message << " - ";
@@ -359,8 +332,7 @@ void Monitor::nonlinear_step(const CGInfo& cginfo, const NLInfo& nlinfo) const
     new_message.unsetf(ios::scientific);
     new_message.setf(ios::fixed);
     new_message.precision(3);
-    if (control > 1)
-    {
+    if (control > 1) {
       new_message << " " << lc;
     }
     new_message << " [" << rr << "] {" << iter;
@@ -368,8 +340,7 @@ void Monitor::nonlinear_step(const CGInfo& cginfo, const NLInfo& nlinfo) const
       new_message << "*";
     new_message << "}";
   }
-  if (cginfo.control().status() == "diverged")
-  {
+  if (cginfo.control().status() == "diverged") {
     new_message << " @";
   }
   print_message();
@@ -377,8 +348,7 @@ void Monitor::nonlinear_step(const CGInfo& cginfo, const NLInfo& nlinfo) const
 
 /*******************************************************************/
 
-void Monitor::PrintResults(const string& s) const
-{
+void Monitor::PrintResults(const string &s) const {
   //  ofstream   file(texfile.c_str(),ios::app);
   //  if(!file)  error_io(texfile);
   //  if(format=="latex")   PrintAscii(file,s);
@@ -390,8 +360,7 @@ void Monitor::PrintResults(const string& s) const
 
 /*******************************************************************/
 
-void Monitor::PrintResults(int i) const
-{
+void Monitor::PrintResults(int i) const {
   //  ofstream   file(texfile.c_str(),ios::app);
   //  if(!file)  error_io(texfile);
   //  if(format=="latex")   PrintAscii(file,i);
@@ -400,8 +369,7 @@ void Monitor::PrintResults(int i) const
 
 /*******************************************************************/
 
-void Monitor::PrintResults(double d) const
-{
+void Monitor::PrintResults(double d) const {
   //  ofstream   file(texfile.c_str(),ios::app);
   //  if(!file)  error_io(texfile);
   //  if(format=="latex")   PrintAscii(file,d);
@@ -410,8 +378,7 @@ void Monitor::PrintResults(double d) const
 
 /*******************************************************************/
 
-void Monitor::PrintResults(const IntVector& iv) const
-{
+void Monitor::PrintResults(const IntVector &iv) const {
   //  ofstream   file(texfile.c_str(),ios::app);
   //  if(!file)  error_io(texfile);
   //  if(format=="latex")   PrintAscii(file,iv);
@@ -420,8 +387,7 @@ void Monitor::PrintResults(const IntVector& iv) const
 
 /*******************************************************************/
 
-void Monitor::PrintResults(const DoubleVector& dv) const
-{
+void Monitor::PrintResults(const DoubleVector &dv) const {
   //  ofstream   file(texfile.c_str(),ios::app);
   //  if(!file)  error_io(texfile);
   //  if(format=="latex")   PrintAscii(file,dv);
@@ -430,8 +396,7 @@ void Monitor::PrintResults(const DoubleVector& dv) const
 
 /*******************************************************************/
 
-void Monitor::Print(const string& s, string se) const
-{
+void Monitor::Print(const string &s, string se) const {
   //  ofstream   file(texfile.c_str(),ios::app);
   //  if(!file)  error_io(texfile);
 
@@ -442,8 +407,7 @@ void Monitor::Print(const string& s, string se) const
 
 /*******************************************************************/
 
-void Monitor::PrintHeader(ostream& os) const
-{
+void Monitor::PrintHeader(ostream &os) const {
   if (header.size() == 0)
     return;
   for (int i = 0; i < header.size() - 1; i++)
@@ -453,16 +417,14 @@ void Monitor::PrintHeader(ostream& os) const
 
 /*******************************************************************/
 
-void Monitor::PrintAscii(ostream& os, const IntVector& iv) const
-{
+void Monitor::PrintAscii(ostream &os, const IntVector &iv) const {
   os.precision(prec);
   os << iv;
 }
 
 /*******************************************************************/
 
-void Monitor::PrintAscii(ostream& os, const DoubleVector& dv) const
-{
+void Monitor::PrintAscii(ostream &os, const DoubleVector &dv) const {
   os.precision(prec);
   os.setf(ios::scientific, ios::floatfield);
   os << dv;
@@ -470,8 +432,5 @@ void Monitor::PrintAscii(ostream& os, const DoubleVector& dv) const
 
 /*******************************************************************/
 
-void Monitor::PrintAscii(ostream& os, const string& s) const
-{
-  os << s;
-}
-}  // namespace Gascoigne
+void Monitor::PrintAscii(ostream &os, const string &s) const { os << s; }
+} // namespace Gascoigne

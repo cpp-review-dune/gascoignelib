@@ -4,9 +4,4 @@
 
 using namespace std;
 
-namespace Gascoigne
-{
-  
-
-
-}
+namespace Gascoigne {}

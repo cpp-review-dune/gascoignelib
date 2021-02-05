@@ -27,8 +27,7 @@
 #include "matrixinterface.h"
 #include "rowcolumnstencil.h"
 
-namespace Gascoigne
-{
+namespace Gascoigne {
 /////////////////////////////////////////////
 ////
 ////@brief
@@ -38,8 +37,7 @@ namespace Gascoigne
 ////
 /////////////////////////////////////////////
 
-class SimpleRowMatrix : virtual public MatrixInterface
-{
+class SimpleRowMatrix : virtual public MatrixInterface {
 private:
 protected:
   RowColumnStencil ST;
@@ -50,50 +48,28 @@ public:
   ////  Con(De)structor
   //
 
-  SimpleRowMatrix() : MatrixInterface()
-  {
-  }
-  ~SimpleRowMatrix()
-  {
-  }
+  SimpleRowMatrix() : MatrixInterface() {}
+  ~SimpleRowMatrix() {}
 
-  std::string GetName() const
-  {
-    return "SimpleRowMatrix";
-  }
+  std::string GetName() const { return "SimpleRowMatrix"; }
 
-  std::ostream& Write(std::ostream& os) const;
+  std::ostream &Write(std::ostream &os) const;
 
-  const StencilInterface* GetStencil() const
-  {
-    return &ST;
-  }
-  double& GetValue(int pos)
-  {
-    return value[pos];
-  }
-  const double& GetValue(int pos) const
-  {
-    return value[pos];
-  }
-  const double& GetValue(int i, int j) const
-  {
-    return value[ST.Find(i, j)];
-  }
+  const StencilInterface *GetStencil() const { return &ST; }
+  double &GetValue(int pos) { return value[pos]; }
+  const double &GetValue(int pos) const { return value[pos]; }
+  const double &GetValue(int i, int j) const { return value[ST.Find(i, j)]; }
 
-  void zero()
-  {
-    value.zero();
-  }
+  void zero() { value.zero(); }
   void ReInit(int n, int nentries);
-  void ReInit(const SparseStructureInterface* S);
-  void entry(niiterator start, niiterator stop, const EntryMatrix& M,
+  void ReInit(const SparseStructureInterface *S);
+  void entry(niiterator start, niiterator stop, const EntryMatrix &M,
              double s = 1.);
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Woverloaded-virtual"
-  void vmult(nvector<double>& y, const nvector<double>& x, double d = 1.) const;
+  void vmult(nvector<double> &y, const nvector<double> &x, double d = 1.) const;
 #pragma GCC diagnostic pop
 };
-}  // namespace Gascoigne
+} // namespace Gascoigne
 
 #endif

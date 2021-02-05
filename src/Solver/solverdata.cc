@@ -28,12 +28,10 @@ using namespace std;
 
 /*-----------------------------------------*/
 
-namespace Gascoigne
-{
+namespace Gascoigne {
 /*-----------------------------------------*/
 
-void SolverData::BasicInit(const ParamFile& pf)
-{
+void SolverData::BasicInit(const ParamFile &pf) {
   DataFormatHandler DFH;
 
   _pfilter.resize(0);
@@ -65,8 +63,7 @@ void SolverData::BasicInit(const ParamFile& pf)
   FS.NoComplain();
   FS.readfile(pf, "Solver");
 
-  if ((ilusort == "streamdirection") && (stream_direction.size() == 0))
-  {
+  if ((ilusort == "streamdirection") && (stream_direction.size() == 0)) {
     cerr << "Bei \n\tilusort\tstreamdiretion\nmuss" << endl
          << "\tstream_direction\n"
          << "mit Komponenten, nach denen sortiert wird, "
@@ -75,4 +72,4 @@ void SolverData::BasicInit(const ParamFile& pf)
   }
 }
 
-}  // namespace Gascoigne
+} // namespace Gascoigne

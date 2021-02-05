@@ -4,7 +4,6 @@
 #define __vanksmoother_H
 /*----------------------------   vank_smoother.h ---------------------------*/
 
-
 /**
  *
  * Copyright (C) 2018 by the Gascoigne 3D authors
@@ -29,10 +28,10 @@
  **/
 
 #include "dofhandler.h"
-#include "iluinterface.h"
-#include "sparseblockmatrix.h"
 #include "fmatrixblock.h"
+#include "iluinterface.h"
 #include "matrixentrytype.h"
+#include "sparseblockmatrix.h"
 
 // we use Eigen to store and invert the local matrices
 //#pragma clang diagnostic push
@@ -49,7 +48,6 @@
 //#pragma clang diagnostic pop
 #pragma GCC diagnostic pop
 
-
 /*-------------------------------------------------------------*/
 
 /**
@@ -63,72 +61,56 @@
  * Solve performs an Jacobi-iteration with averaging on the common
  * nodes for the patches.
  **/
-namespace Gascoigne
-{
-  class VankaSmoother : public virtual IluInterface
-  {
+namespace Gascoigne {
+class VankaSmoother : public virtual IluInterface {
 
-  protected:
-    typedef Eigen::Matrix<MatrixEntryType, Eigen::Dynamic, Eigen::Dynamic> VankaMatrix;
-    typedef Eigen::Matrix<MatrixEntryType, Eigen::Dynamic, 1>              VankaVector;
-    
-    mutable const DofHandlerBase *_dofhandler;
-    int _ncomp, _sizeofpatch;
-    
-    std::vector<std::vector<int>> _patchlist;
-    mutable std::vector<Eigen::PartialPivLU<VankaMatrix> > _lu;
-  public:
-    //////////////////// Constructor & Co
-    VankaSmoother() : _dofhandler(NULL), _ncomp(-1), _sizeofpatch(-1)
-    {
-    }
-    ~VankaSmoother() {}
+protected:
+  typedef Eigen::Matrix<MatrixEntryType, Eigen::Dynamic, Eigen::Dynamic>
+      VankaMatrix;
+  typedef Eigen::Matrix<MatrixEntryType, Eigen::Dynamic, 1> VankaVector;
 
-    void SetDofHandler(const DofHandlerBase* dh) const
-    {
-      _dofhandler = dh;
-    }
+  mutable const DofHandlerBase *_dofhandler;
+  int _ncomp, _sizeofpatch;
 
-    std::string GetName() const
-    {
-      return "VankaSmoother";
-    }
+  std::vector<std::vector<int>> _patchlist;
+  mutable std::vector<Eigen::PartialPivLU<VankaMatrix>> _lu;
 
-    //////////////////// Access
-    int n() const
-    {
-      assert(0);
-    }
-    void ReInit(const SparseStructureInterface *A)
-    {
-      // nothing to be done, Vanka smoother does not depend on the stencil
-    }
+public:
+  //////////////////// Constructor & Co
+  VankaSmoother() : _dofhandler(NULL), _ncomp(-1), _sizeofpatch(-1) {}
+  ~VankaSmoother() {}
 
-    //////////////////// Construction
-    void ConstructStructure(const IntVector &perm, const MatrixInterface &A);
-    void zero()
-    {
-      // not necessary. entries will be copied
-    }
-    void modify(int c, double s)
-    {
-      // not necessary
-    }
-    void compute_ilu ()
-    {
-      // directly done in ConstructStructure
-    }
+  void SetDofHandler(const DofHandlerBase *dh) const { _dofhandler = dh; }
 
-    //////////////////// Solve
-    void solve(GlobalVector& x) const;
+  std::string GetName() const { return "VankaSmoother"; }
 
+  //////////////////// Access
+  int n() const { assert(0); }
+  void ReInit(const SparseStructureInterface *A) {
+    // nothing to be done, Vanka smoother does not depend on the stencil
+  }
 
-    template<int NCOMP>
-    void copy_entries_sparseblockmatrix(const SparseBlockMatrix<FMatrixBlock<NCOMP> >& A);
-    void copy_entries(const MatrixInterface& A);
-  };
+  //////////////////// Construction
+  void ConstructStructure(const IntVector &perm, const MatrixInterface &A);
+  void zero() {
+    // not necessary. entries will be copied
+  }
+  void modify(int c, double s) {
+    // not necessary
+  }
+  void compute_ilu() {
+    // directly done in ConstructStructure
+  }
+
+  //////////////////// Solve
+  void solve(GlobalVector &x) const;
+
+  template <int NCOMP>
+  void copy_entries_sparseblockmatrix(
+      const SparseBlockMatrix<FMatrixBlock<NCOMP>> &A);
+  void copy_entries(const MatrixInterface &A);
+};
 } // namespace Gascoigne
-
 
 /*----------------------------   vank_smoother.h ---------------------------*/
 /* end of #ifndef __vanksmoother_H */

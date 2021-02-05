@@ -5,7 +5,6 @@
 #define __iluagent_H
 /*----------------------------   iluagent.h     ---------------------------*/
 
-
 /**
  *
  * Copyright (C) 2020 by the Gascoigne 3D authors
@@ -29,53 +28,50 @@
  *
  **/
 
-#include  "gascoigne.h"
-#include  "matrix.h"
-#include  "iluinterface.h"
+#include "gascoigne.h"
+#include "iluinterface.h"
+#include "matrix.h"
 
-namespace Gascoigne
-{
+namespace Gascoigne {
 
-  /////////////////////////////////////////////
-  ////
-  ////@brief
-  ////  stores the ilu data objects belonging to the Ilu labels
-  //// 
-  /////////////////////////////////////////////
+/////////////////////////////////////////////
+////
+////@brief
+////  stores the ilu data objects belonging to the Ilu labels
+////
+/////////////////////////////////////////////
 
-  class IluAgent : public std::map<Matrix,IluInterface*>
-  {
-  public:
+class IluAgent : public std::map<Matrix, IluInterface *> {
+public:
+  typedef std::map<Matrix, IluInterface *>::const_iterator const_iterator;
+  typedef std::map<Matrix, IluInterface *>::iterator iterator;
 
-    typedef std::map<Matrix,IluInterface*>::const_iterator const_iterator;
-    typedef std::map<Matrix,IluInterface*>::iterator       iterator;
+  //
+  ////  Con(De)structor
+  //
 
-    //
-    ////  Con(De)structor 
-    //
+  IluAgent();
+  ~IluAgent();
 
-    IluAgent();
-    ~IluAgent();
+  void Register(const Matrix &mat);
+  void Delete(Matrix &mat);
 
-    void Register(const Matrix& mat);
-    void Delete  (Matrix& mat);
+  IluInterface &operator()(const Matrix &g);
 
-    IluInterface& operator()(const Matrix& g);
-
-    friend std::ostream& operator<<(std::ostream& os, const IluAgent& gva) {
-      int i=0,n=gva.size();
-      os << "IluAgent: size=" << n << ", ";
-      for (auto p=gva.begin(); p!=gva.end(); p++,i++){
-	os << "Ilu("<<i<<")=('"<< p->first << "',"<< p->second <<")";
-	if( i <n-1 ) os << ", "; else os << ". ";
-      }
-      return os;
+  friend std::ostream &operator<<(std::ostream &os, const IluAgent &gva) {
+    int i = 0, n = gva.size();
+    os << "IluAgent: size=" << n << ", ";
+    for (auto p = gva.begin(); p != gva.end(); p++, i++) {
+      os << "Ilu(" << i << ")=('" << p->first << "'," << p->second << ")";
+      if (i < n - 1)
+        os << ", ";
+      else
+        os << ". ";
     }
-
-  };
-}
-
-
+    return os;
+  }
+};
+} // namespace Gascoigne
 
 /*----------------------------   iluagent.h     ---------------------------*/
 /* end of #ifndef __iluagent_H */

@@ -1,70 +1,70 @@
 /**
-*
-* Copyright (C) 2005, 2011 by the Gascoigne 3D authors
-*
-* This file is part of Gascoigne 3D
-*
-* Gascoigne 3D is free software: you can redistribute it
-* and/or modify it under the terms of the GNU General Public
-* License as published by the Free Software Foundation, either
-* version 3 of the License, or (at your option) any later
-* version.
-*
-* Gascoigne 3D is distributed in the hope that it will be
-* useful, but WITHOUT ANY WARRANTY; without even the implied
-* warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-* PURPOSE.  See the GNU General Public License for more
-* details.
-*
-* Please refer to the file LICENSE.TXT for further information
-* on this license.
-*
-**/
+ *
+ * Copyright (C) 2005, 2011 by the Gascoigne 3D authors
+ *
+ * This file is part of Gascoigne 3D
+ *
+ * Gascoigne 3D is free software: you can redistribute it
+ * and/or modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation, either
+ * version 3 of the License, or (at your option) any later
+ * version.
+ *
+ * Gascoigne 3D is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more
+ * details.
+ *
+ * Please refer to the file LICENSE.TXT for further information
+ * on this license.
+ *
+ **/
 
+#include "componentinformationbase.h"
+#include "compose_name.h"
+#include "domainrighthandside.h"
+#include "problemdescriptorinterface.h"
 
-#include  "componentinformationbase.h"
-#include  "problemdescriptorinterface.h"
-#include  "domainrighthandside.h"
-#include  "compose_name.h" 
-
-
-namespace Gascoigne
-{
+namespace Gascoigne {
 std::string ComponentInformationBase::GetName() const {
   return "ComponentInformationBase";
 }
 
-const int ComponentInformationBase::GetNScalars     () const{
-  ProblemDescriptorInterface* ppdi = GetProblemDescriptorInterface();
-  assert( ppdi );
+const int ComponentInformationBase::GetNScalars() const {
+  ProblemDescriptorInterface *ppdi = GetProblemDescriptorInterface();
+  assert(ppdi);
 
   return ppdi->GetNcomp();
 }
-void      ComponentInformationBase::GetScalarName   (int i, std::string& s_name) const{
-  s_name="u";
-  compose_name_without_dot(s_name,i); 
+void ComponentInformationBase::GetScalarName(int i, std::string &s_name) const {
+  s_name = "u";
+  compose_name_without_dot(s_name, i);
 }
-const int ComponentInformationBase::GetNVectors     () const{
+const int ComponentInformationBase::GetNVectors() const {
   int ncomps = GetNcomp();
-  if( ncomps<=2) return 0;
+  if (ncomps <= 2)
+    return 0;
   return 1;
 }
-void      ComponentInformationBase::GetVectorName   (int i, std::string& s_name) const{
-  s_name="v";
+void ComponentInformationBase::GetVectorName(int i, std::string &s_name) const {
+  s_name = "v";
 }
-void      ComponentInformationBase::GetVectorIndices(int i, std::array<int,3>& fa_vectorindices) const{
-  if ( GetDimension() ==2) {
+void ComponentInformationBase::GetVectorIndices(
+    int i, std::array<int, 3> &fa_vectorindices) const {
+  if (GetDimension() == 2) {
     fa_vectorindices[0] = 1;
     fa_vectorindices[1] = 2;
-    fa_vectorindices[2] =-1;
-  } else if ( GetDimension() ==3) {
+    fa_vectorindices[2] = -1;
+  } else if (GetDimension() == 3) {
     fa_vectorindices[0] = 1;
     fa_vectorindices[1] = 2;
     fa_vectorindices[2] = 3;
   } else {
-    std::cerr << __FILE__ << " :bad dimension="<<GetDimension()<<"."<<std::endl;
+    std::cerr << __FILE__ << " :bad dimension=" << GetDimension() << "."
+              << std::endl;
     abort();
   }
 }
 
-}
+} // namespace Gascoigne

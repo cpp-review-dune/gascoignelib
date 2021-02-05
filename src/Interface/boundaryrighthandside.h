@@ -21,85 +21,87 @@
  *
  **/
 
+#ifndef __BoundaryRightHandSide_h
+#define __BoundaryRightHandSide_h
 
-#ifndef  __BoundaryRightHandSide_h
-#define  __BoundaryRightHandSide_h
-
-#include  "vertex.h"
-#include  <set>
-#include  "nvector.h"
-#include  <string>
-#include  "gascoigne.h"
-#include  "application.h"
+#include "application.h"
+#include "gascoigne.h"
+#include "nvector.h"
+#include "vertex.h"
+#include <set>
+#include <string>
 
 /*-------------------------------------------------------*/
 
-namespace Gascoigne
-{
-  
-  //////////////////////////////////////////////
-  ///
-  ///@brief
-  /// Interface class for Boundary Conditions of Neumann
-  /// or Robin type
+namespace Gascoigne {
 
-  /// void operator()(Vector& b, const Vertex2d& v, int col)
-  /// gets the coordinate v and color of boundarypart "col" and 
-  /// sets the values of b. b is a vector of length ncomp
-  ///
-  //////////////////////////////////////////////
+//////////////////////////////////////////////
+///
+///@brief
+/// Interface class for Boundary Conditions of Neumann
+/// or Robin type
 
-  class BoundaryRightHandSide : public virtual Application
-  {
-  private:
+/// void operator()(Vector& b, const Vertex2d& v, int col)
+/// gets the coordinate v and color of boundarypart "col" and
+/// sets the values of b. b is a vector of length ncomp
+///
+//////////////////////////////////////////////
 
-  protected:
+class BoundaryRightHandSide : public virtual Application {
+private:
+protected:
+public:
+  BoundaryRightHandSide() : Application() {}
+  ~BoundaryRightHandSide() {}
 
-  public:
-    BoundaryRightHandSide() : Application() {}
-    ~BoundaryRightHandSide() {}
+  /**
+     clones an BRHS. Usually it is simply to return a new instance of the same
+     object passing the required variables to the constructor. It takes the role
+     of a copy constructor and the cloning of classes is required for
+     multithreading.
+  */
+  virtual BoundaryRightHandSide *createNew() const {
+    std::cerr << "\"BRHS::createNew\" not written!" << std::endl;
+    abort();
+  }
 
-    /**
-       clones an BRHS. Usually it is simply to return a new instance of the same object passing the required variables to the constructor. It takes the role of a copy constructor and the cloning of classes is required for multithreading. 
-    */
-    virtual BoundaryRightHandSide* createNew() const 
-    {
-      std::cerr << "\"BRHS::createNew\" not written!" << std::endl;
-      abort();
+  virtual int GetNcomp() const = 0;
+
+  virtual double operator()(int c, const Vertex2d &v, const Vertex2d &n,
+                            int color) const {
+    std::cerr << "\"BoundaryRightHandSide::operator()\" not written!"
+              << std::endl;
+    abort();
+  }
+  virtual double operator()(int c, const Vertex3d &v, const Vertex3d &n,
+                            int color) const {
+    std::cerr << "\"BoundaryRightHandSide::operator()\" not written!"
+              << std::endl;
+    abort();
+  }
+
+  virtual void operator()(VectorIterator b, const TestFunction &N,
+                          const Vertex2d &v, const Vertex2d &n,
+                          int color) const {
+    for (int c = 0; c < GetNcomp(); c++) {
+      b[c] += N.m() * (*this)(c, v, n, color);
     }
-
-    
-    virtual int GetNcomp() const=0;
-
-    virtual double operator()(int c, const Vertex2d& v, const Vertex2d& n, int color) const {
-      std::cerr << "\"BoundaryRightHandSide::operator()\" not written!" << std::endl;
-      abort();
+  }
+  virtual void operator()(VectorIterator b, const TestFunction &N,
+                          const Vertex3d &v, const Vertex3d &n,
+                          int color) const {
+    for (int c = 0; c < GetNcomp(); c++) {
+      b[c] += N.m() * (*this)(c, v, n, color);
     }
-    virtual double operator()(int c, const Vertex3d& v, const Vertex3d& n, int color) const {
-      std::cerr << "\"BoundaryRightHandSide::operator()\" not written!" << std::endl;
-      abort();
-    }
+  }
 
-    virtual void operator()(VectorIterator b, const TestFunction& N, const Vertex2d& v, const Vertex2d& n, int color) const {
-      for(int c=0;c<GetNcomp();c++)
-        {
-          b[c] += N.m()* (*this)(c,v,n,color);
-        }
-    }
-    virtual void operator()(VectorIterator b, const TestFunction& N, const Vertex3d& v, const Vertex3d& n, int color) const {
-      for(int c=0;c<GetNcomp();c++)
-        {
-          b[c] += N.m()* (*this)(c,v,n,color);
-        }
-    }
+  virtual void SetCellSize(double h) const {}
+};
 
-    virtual void SetCellSize(double h) const { }
-  };
+typedef BoundaryRightHandSide BoundaryInitialCondition;
 
-  typedef BoundaryRightHandSide BoundaryInitialCondition;
+/*-------------------------------------------------------*/
 
-  /*-------------------------------------------------------*/
-
-}
+} // namespace Gascoigne
 
 #endif

@@ -24,11 +24,11 @@
 #include "stdloop.h"
 #include "adaptordata.h"
 #include "diplomantenadaptor.h"
-#include "malteadaptor.h"
-#include "monitoring.h"
 #include "filescanner.h"
-#include "stdmultilevelsolver.h"
+#include "malteadaptor.h"
 #include "meshagent.h"
+#include "monitoring.h"
+#include "stdmultilevelsolver.h"
 #include "stdsolver.h"
 
 #include <iomanip>
@@ -37,21 +37,16 @@ using namespace std;
 
 /*-----------------------------------------*/
 
-namespace Gascoigne
-{
+namespace Gascoigne {
 extern Timer GlobalTimer;
 
-StdLoop::StdLoop() : BasicLoop()
-{
-  _estimator = _extrapolate = "none";
-}
+StdLoop::StdLoop() : BasicLoop() { _estimator = _extrapolate = "none"; }
 
-StdLoop::StdLoop(const ParamFile& paramfile, const ProblemContainer* PC,
-                 const FunctionalContainer* FC)
-  : BasicLoop(paramfile, PC, FC)
-{
+StdLoop::StdLoop(const ParamFile &paramfile, const ProblemContainer *PC,
+                 const FunctionalContainer *FC)
+    : BasicLoop(paramfile, PC, FC) {
   abort();
-  
+
   // DataFormatHandler DFH;
   // DFH.insert("nmin", &_nmin, 1000);
   // DFH.insert("nmax", &_nmax, 100000);
@@ -68,21 +63,16 @@ StdLoop::StdLoop(const ParamFile& paramfile, const ProblemContainer* PC,
 
 /*-----------------------------------------*/
 
-StdLoop::~StdLoop()
-{
-}
+StdLoop::~StdLoop() {}
 
 /*-----------------------------------------*/
 
-void StdLoop::ClockOutput() const
-{
-}
+void StdLoop::ClockOutput() const {}
 
 /*-----------------------------------------*/
 
-void StdLoop::BasicInit(const ParamFile& paramfile, const ProblemContainer* PC,
-                        const FunctionalContainer* FC)
-{
+void StdLoop::BasicInit(const ParamFile &paramfile, const ProblemContainer *PC,
+                        const FunctionalContainer *FC) {
   BasicLoop::BasicInit(paramfile, PC, FC);
 
   DataFormatHandler DFH;
@@ -95,7 +85,7 @@ void StdLoop::BasicInit(const ParamFile& paramfile, const ProblemContainer* PC,
   DFH.insert("refiner", &_refiner, "global");
   DFH.insert("estimator", &_estimator, "none");
   DFH.insert("extrapolate", &_extrapolate, "no");
-  DFH.insert("runtime_statistics",&_runtime_statistics,0);
+  DFH.insert("runtime_statistics", &_runtime_statistics, 0);
   DFH.insert("writevtk", &_writeVtk, true);
   DFH.insert("writebupgup", &_writeBupGup, false);
   DFH.insert("resultsdir", &_s_resultsdir, "Results");
@@ -103,7 +93,7 @@ void StdLoop::BasicInit(const ParamFile& paramfile, const ProblemContainer* PC,
   FS.NoComplain();
   FS.readfile(_paramfile, "Loop");
 
-  //create resultsdir
+  // create resultsdir
   string command("mkdir -p ");
   command += _s_resultsdir;
   system(command.c_str());
@@ -111,16 +101,15 @@ void StdLoop::BasicInit(const ParamFile& paramfile, const ProblemContainer* PC,
 
 /*-------------------------------------------------------*/
 
-DoubleVector StdLoop::ComputeFunctionals(VectorInterface& f, VectorInterface& u)
-{
+DoubleVector StdLoop::ComputeFunctionals(VectorInterface &f,
+                                         VectorInterface &u) {
   DoubleVector j = GetMultiLevelSolver()->ComputeFunctionals(f, u);
   return j;
 }
 
 /*-----------------------------------------*/
 
-void StdLoop::EtaVisu(string name, int i, const DoubleVector& eta) const
-{
+void StdLoop::EtaVisu(string name, int i, const DoubleVector &eta) const {
   Visualization Visu;
   Visu.format("vtk");
   Visu.set_name(name);
@@ -136,8 +125,7 @@ void StdLoop::EtaVisu(string name, int i, const DoubleVector& eta) const
 
 /*-----------------------------------------*/
 
-void StdLoop::EtaCellVisu(string name, int i, const GlobalVector& eta) const
-{
+void StdLoop::EtaCellVisu(string name, int i, const GlobalVector &eta) const {
   Visualization Visu;
   Visu.format("vtk");
   Visu.set_name(name);
@@ -153,75 +141,69 @@ void StdLoop::EtaCellVisu(string name, int i, const GlobalVector& eta) const
 
 /*-------------------------------------------------*/
 
-const DoubleVector StdLoop::GetExactValues() const
-{
+const DoubleVector StdLoop::GetExactValues() const {
   return GetMultiLevelSolver()->GetExactValues();
 }
 
 /*-------------------------------------------------*/
 
-  const std::vector<std::string> StdLoop::GetFunctionalNames() const
-  {
-    return GetMultiLevelSolver()->GetFunctionalNames();
-  }
-  
+const std::vector<std::string> StdLoop::GetFunctionalNames() const {
+  return GetMultiLevelSolver()->GetFunctionalNames();
+}
+
 /*-------------------------------------------------*/
 
-DoubleVector StdLoop::Functionals(VectorInterface& u, VectorInterface& f)
-{
+DoubleVector StdLoop::Functionals(VectorInterface &u, VectorInterface &f) {
   bool output = true;
 
   const std::vector<std::string> N = GetFunctionalNames();
-  const DoubleVector J      = ComputeFunctionals(f, u);
+  const DoubleVector J = ComputeFunctionals(f, u);
   const DoubleVector Jexact = GetExactValues();
-  
+
   _JErr.resize(J.size());
   if (output)
-    if (J.size())
-      {
-	cout << "\nname\t";
-	for (int i = 0; i < J.size(); i++)
-	  cout << std::setw(16) << N[i];
-	cout << "\n\t";
-	for (int i = 0; i < J.size(); i++)
-	  cout << std::setw(16) << "----------";
-	
-	cout << "\nvalue\t";
-	cout.precision(6);
-	for (int i = 0; i < J.size(); i++)
-	  cout << std::scientific << std::setw(16)  << J[i];
+    if (J.size()) {
+      cout << "\nname\t";
+      for (int i = 0; i < J.size(); i++)
+        cout << std::setw(16) << N[i];
+      cout << "\n\t";
+      for (int i = 0; i < J.size(); i++)
+        cout << std::setw(16) << "----------";
 
-	cout << "\nerror\t";
-	cout.precision(6);
-	for (int i = 0; i < J.size(); i++)
-	  {
-	    _JErr[i] = Jexact[i] - J[i];
-	    cout << std::scientific <<  std::setw(16) << _JErr[i];
-	  }
-	cout << endl;
-	
-	if (_extrapolate == "yes")
-	  {
-	    Extra.NewValues(J);
-	    Extra.Print();
-	  }
-	cout << endl;
+      cout << "\nvalue\t";
+      cout.precision(6);
+      for (int i = 0; i < J.size(); i++)
+        cout << std::scientific << std::setw(16) << J[i];
+
+      cout << "\nerror\t";
+      cout.precision(6);
+      for (int i = 0; i < J.size(); i++) {
+        _JErr[i] = Jexact[i] - J[i];
+        cout << std::scientific << std::setw(16) << _JErr[i];
       }
+      cout << endl;
+
+      if (_extrapolate == "yes") {
+        Extra.NewValues(J);
+        Extra.Print();
+      }
+      cout << endl;
+    }
   return J;
 }
-  
+
 /*-------------------------------------------------*/
 
-double StdLoop::Estimator(DoubleVector& eta, VectorInterface& u, VectorInterface& f)
-{
+double StdLoop::Estimator(DoubleVector &eta, VectorInterface &u,
+                          VectorInterface &f) {
   double est = 0.;
-  if (_estimator == "energy" || _estimator == "energy_laplace"
-      || _estimator == "energy_stokes")
-  {
-    StdSolver* S = dynamic_cast<StdSolver*>(GetMultiLevelSolver()->GetSolver());
+  if (_estimator == "energy" || _estimator == "energy_laplace" ||
+      _estimator == "energy_stokes") {
+    StdSolver *S =
+        dynamic_cast<StdSolver *>(GetMultiLevelSolver()->GetSolver());
     assert(S);
 
-    MeshAgent* MA = dynamic_cast<MeshAgent*>(GetMeshAgent());
+    MeshAgent *MA = dynamic_cast<MeshAgent *>(GetMeshAgent());
     assert(MA);
     S->GetHierarchicalMeshPointer() = MA->GetHierarchicalMesh();
 
@@ -230,11 +212,9 @@ double StdLoop::Estimator(DoubleVector& eta, VectorInterface& u, VectorInterface
     // EnergyEstimator E(*S);
     // est = E.Estimator(eta, u, f);
     // EtaVisu(_s_resultsdir + "/eta", _iter, eta);
-  }
-  else if (_estimator == "second")
-    {
-      std::cerr << "_estimator 'second' not implemented!" << std::endl;
-      abort();
+  } else if (_estimator == "second") {
+    std::cerr << "_estimator 'second' not implemented!" << std::endl;
+    abort();
 
     // int dim = GetMeshAgent()->GetMesh(0)->dimension();
 
@@ -260,10 +240,8 @@ double StdLoop::Estimator(DoubleVector& eta, VectorInterface& u, VectorInterface
     // {
     //   cerr << "Estimator \"second\" not written for 3D!" << endl;
     //   abort();
-      //    }
-  }
-  else
-  {
+    //    }
+  } else {
     cerr << "Estimator type '" << _estimator
          << "' unknown. Use either energy_laplace or energy_stokes\n";
     abort();
@@ -273,8 +251,8 @@ double StdLoop::Estimator(DoubleVector& eta, VectorInterface& u, VectorInterface
 
 /*-------------------------------------------------*/
 
-void StdLoop::AdaptMesh(const DoubleVector& eta, string refine_or_coarsen_step)
-{
+void StdLoop::AdaptMesh(const DoubleVector &eta,
+                        string refine_or_coarsen_step) {
   // das gleichzeitige vergroebern und verfeinern FUNKTIONIERT NICHT
   // wer das machen moechte, muss stattdessen in zwei getrennten laeufen
   // das gitter verfeinern, reinit+interpolate und dann das gitter vergroebern
@@ -282,76 +260,55 @@ void StdLoop::AdaptMesh(const DoubleVector& eta, string refine_or_coarsen_step)
     ;
   else if (refine_or_coarsen_step == "coarsen")
     ;
-  else
-  {
-    cerr << "the variable refine_or_coarsen_step has to be set, either to 'refine' or "
+  else {
+    cerr << "the variable refine_or_coarsen_step has to be set, either to "
+            "'refine' or "
             "'coarsen'"
          << endl;
     abort();
   }
 
-  if (_refiner == "global")
-  {
-    if (refine_or_coarsen_step == "refine")
-    {
+  if (_refiner == "global") {
+    if (refine_or_coarsen_step == "refine") {
       GetMeshAgent()->global_refine(1);
-    }
-    else
-    {
+    } else {
       GetMeshAgent()->random_patch_refine(-0.1, 0);
     }
-  }
-  else if (_refiner == "none")
-  {
+  } else if (_refiner == "none") {
     GetMeshAgent()->global_refine(0);
-  }
-  else if (_refiner == "random")
-  {
+  } else if (_refiner == "random") {
     if (GetMeshAgent()->nnodes() > _nmax)
       _p *= 0.5;
     if (GetMeshAgent()->nnodes() < _nmin)
       _p *= 1.1;
 
-    if (refine_or_coarsen_step == "refine")
-    {
+    if (refine_or_coarsen_step == "refine") {
       GetMeshAgent()->random_patch_refine(_p, 0);
     }
-    if (refine_or_coarsen_step == "coarsen")
-    {
-      if (_random_coarsening)
-      {
+    if (refine_or_coarsen_step == "coarsen") {
+      if (_random_coarsening) {
         GetMeshAgent()->random_patch_coarsen(_p, 0);
-      }
-      else
-      {
+      } else {
         GetMeshAgent()->random_patch_refine(-0.1, 0);
       }
     }
-  }
-  else if (_refiner == "random_refine")
-  {
-    if (refine_or_coarsen_step == "refine")
-    {
+  } else if (_refiner == "random_refine") {
+    if (refine_or_coarsen_step == "refine") {
       if (GetMeshAgent()->nnodes() > _nmax)
         _p *= 0.5;
       if (GetMeshAgent()->nnodes() < _nmin)
         _p *= 1.1;
       GetMeshAgent()->random_patch_refine(_p, 0);
     }
-  }
-  else if (_refiner == "random_coarsen")
-  {
-    if (refine_or_coarsen_step == "coarsen")
-    {
+  } else if (_refiner == "random_coarsen") {
+    if (refine_or_coarsen_step == "coarsen") {
       if (GetMeshAgent()->nnodes() > _nmax)
         _p *= 0.5;
       if (GetMeshAgent()->nnodes() < _nmin)
         _p *= 1.1;
       GetMeshAgent()->random_patch_coarsen(_p, 0);
     }
-  }
-  else if (_refiner == "eta")
-  {
+  } else if (_refiner == "eta") {
     IntVector refnodes, coarsenodes, dummynodes;
 
     MalteAdaptor A(_paramfile, eta);
@@ -361,27 +318,21 @@ void StdLoop::AdaptMesh(const DoubleVector& eta, string refine_or_coarsen_step)
       GetMeshAgent()->refine_nodes(dummynodes, coarsenodes);
     if (refine_or_coarsen_step == "refine")
       GetMeshAgent()->refine_nodes(refnodes);
-  }
-  else if (_refiner == "dip")
-  {
+  } else if (_refiner == "dip") {
     IntVector refnodes, coarsenodes;
 
     AdaptorData info;
     info.rfactor() = 1.;
     DiplomandenAdaptor A(info, eta);
     A.refine(refnodes);
-    if (refine_or_coarsen_step == "refine")
-    {
+    if (refine_or_coarsen_step == "refine") {
       GetMeshAgent()->refine_nodes(refnodes, coarsenodes);
-    }
-    else
-    {
+    } else {
       GetMeshAgent()->random_patch_refine(-0.1, 0);
     }
-  }
-  else
-  {
-    cerr << "Unknown value \"" << _refiner << "\" for \"refiner\" in paramfile. " << endl;
+  } else {
+    cerr << "Unknown value \"" << _refiner
+         << "\" for \"refiner\" in paramfile. " << endl;
     cerr << "Please use \"global\", \"none\", \"random\", \"random_refine\", "
             "\"random_coarsen\", "
             "\"eta\" or \"dip\" instead."
@@ -392,72 +343,66 @@ void StdLoop::AdaptMesh(const DoubleVector& eta, string refine_or_coarsen_step)
 
 /*-------------------------------------------------*/
 
-void StdLoop::AdaptMesh(const DoubleVector& eta)
-{
+void StdLoop::AdaptMesh(const DoubleVector &eta) {
   // das gleichzeitige vergroebern und verfeinern FUNKTIONIERT NICHT
-  // wer das machen moechte, sollte stattdessen zwei getrennte laeufe durchfuehren:
-  // das gitter vergroebern, reinit+interpolate und dann das gitter verfeinern
-  // das entsprechend die methode AdaptMesh(eta,refine_or_coarsen_step) aufrufen
+  // wer das machen moechte, sollte stattdessen zwei getrennte laeufe
+  // durchfuehren: das gitter vergroebern, reinit+interpolate und dann das
+  // gitter verfeinern das entsprechend die methode
+  // AdaptMesh(eta,refine_or_coarsen_step) aufrufen
   if (_refiner == "global")
     GetMeshAgent()->global_refine(1);
-  else if (_refiner == "none")
-  {
+  else if (_refiner == "none") {
     GetMeshAgent()->global_refine(0);
-  }
-  else if (_refiner == "random")
-  {
+  } else if (_refiner == "random") {
     if (GetMeshAgent()->nnodes() > _nmax)
       _p *= 0.5;
     if (GetMeshAgent()->nnodes() < _nmin)
       _p *= 1.1;
-    if (_random_coarsening)
-    {
-      cerr << "Das gleichzeitige Vergroebern und Verfeinern FUNKTIONIERT NICHT!" << endl;
+    if (_random_coarsening) {
+      cerr << "Das gleichzeitige Vergroebern und Verfeinern FUNKTIONIERT NICHT!"
+           << endl;
+      cerr << "Fuehre stattdessen zwei getrennte Laeufe durch: random_refine, "
+              "random_coarsen"
+           << endl;
       cerr
-        << "Fuehre stattdessen zwei getrennte Laeufe durch: random_refine, random_coarsen"
-        << endl;
-      cerr << "und rufe dazu jewweils AdaptMesh(eta,refine_or_coarsen_step) auf." << endl;
+          << "und rufe dazu jewweils AdaptMesh(eta,refine_or_coarsen_step) auf."
+          << endl;
       abort();
     }
     GetMeshAgent()->random_patch_refine(_p, _random_coarsening);
-  }
-  else if (_refiner == "random_refine")
-  {
+  } else if (_refiner == "random_refine") {
     if (GetMeshAgent()->nnodes() > _nmax)
       _p *= 0.5;
     if (GetMeshAgent()->nnodes() < _nmin)
       _p *= 1.1;
     GetMeshAgent()->random_patch_refine(_p, 0);
-  }
-  else if (_refiner == "random_coarsen")
-  {
+  } else if (_refiner == "random_coarsen") {
     if (GetMeshAgent()->nnodes() > _nmax)
       _p *= 0.5;
     if (GetMeshAgent()->nnodes() < _nmin)
       _p *= 1.1;
     GetMeshAgent()->random_patch_coarsen(_p, 0);
-  }
-  else if (_refiner == "eta")
-  {
+  } else if (_refiner == "eta") {
     IntVector refnodes, coarsenodes;
 
     MalteAdaptor A(_paramfile, eta);
     A.refine(refnodes, coarsenodes);
 
-    if (refnodes.size() > 0 && coarsenodes.size() > 0)
-    {
-      cerr << "Das gleichzeitige Vergroebern und Verfeinern FUNKTIONIERT NICHT!" << endl;
-      cerr << "Fuehre stattdessen zwei getrennte Laeufe durch, einmal vergroebern, "
+    if (refnodes.size() > 0 && coarsenodes.size() > 0) {
+      cerr << "Das gleichzeitige Vergroebern und Verfeinern FUNKTIONIERT NICHT!"
+           << endl;
+      cerr << "Fuehre stattdessen zwei getrennte Laeufe durch, einmal "
+              "vergroebern, "
               "einmal verfeinern"
            << endl;
-      cerr << "und rufe dazu jewweils AdaptMesh(eta,refine_or_coarsen_step) auf." << endl;
+      cerr
+          << "und rufe dazu jewweils AdaptMesh(eta,refine_or_coarsen_step) auf."
+          << endl;
       abort();
     }
 
     GetMeshAgent()->refine_nodes(refnodes, coarsenodes);
-  }
-  else if (_refiner == "dip")
-  {
+  } else if (_refiner == "dip") {
     IntVector refnodes, coarsenodes;
 
     AdaptorData info;
@@ -465,10 +410,9 @@ void StdLoop::AdaptMesh(const DoubleVector& eta)
     DiplomandenAdaptor A(info, eta);
     A.refine(refnodes);
     GetMeshAgent()->refine_nodes(refnodes, coarsenodes);
-  }
-  else
-  {
-    cerr << "Unknown value \"" << _refiner << "\" for \"refiner\" in paramfile. " << endl;
+  } else {
+    cerr << "Unknown value \"" << _refiner
+         << "\" for \"refiner\" in paramfile. " << endl;
     cerr << "Please use \"global\", \"none\", \"random\", \"random_refine\", "
             "\"random_coarsen\", "
             "\"eta\" or \"dip\" instead."
@@ -479,23 +423,21 @@ void StdLoop::AdaptMesh(const DoubleVector& eta)
 
 /*-------------------------------------------------*/
 
-void StdLoop::run(const std::string& problemlabel)
-{
+void StdLoop::run(const std::string &problemlabel) {
   VectorInterface u("u"), f("f");
   Matrix A("A");
-  
+
   GlobalVector ualt;
 
   Monitoring Moning;
 
-  
-  for (_iter = 1; _iter <= _niter; _iter++)
-  {
+  for (_iter = 1; _iter <= _niter; _iter++) {
     GlobalTimer.reset();
     GlobalTimer.start("iteration");
     cout << "\n================== " << _iter << " ================";
     PrintMeshInformation();
-    Moning.SetMeshInformation(_iter, GetMeshAgent()->nnodes(), GetMeshAgent()->ncells());
+    Moning.SetMeshInformation(_iter, GetMeshAgent()->nnodes(),
+                              GetMeshAgent()->ncells());
 
     GlobalTimer.start("---> reinit");
     GetMultiLevelSolver()->ReInit();
@@ -503,12 +445,11 @@ void StdLoop::run(const std::string& problemlabel)
     GetMultiLevelSolver()->ReInitMatrix(A);
     GetMultiLevelSolver()->ReInitVector(u);
     GetMultiLevelSolver()->ReInitVector(f);
-    
+
     GetMultiLevelSolver()->InterpolateSolution(u, ualt);
     GetSolverInfos()->GetNLInfo().control().matrixmustbebuild() = 1;
 
-    if (_iter == 1)
-    {
+    if (_iter == 1) {
       GetMultiLevelSolver()->GetSolver()->OutputSettings();
       InitSolution(u);
       Moning.BasicInit(GetExactValues());
@@ -516,37 +457,31 @@ void StdLoop::run(const std::string& problemlabel)
     GlobalTimer.stop("---> reinit");
 
     Solve(A, u, f);
-    
+
     GlobalTimer.start("---> errors");
     ComputeGlobalErrors(u);
     DoubleVector juh = Functionals(u, f);
     GlobalTimer.stop("---> errors");
 
     DoubleVector eta;
-    if (_estimator != "none")
-    {
+    if (_estimator != "none") {
       GlobalTimer.start("---> estimate");
       double est = Estimator(eta, u, f);
       Moning.SetSolutionInformation(_iter, juh, est);
       GlobalTimer.stop("---> estimate");
     }
-    if (_iter < _niter)
-    {
+    if (_iter < _niter) {
       CopyVector(ualt, u);
       AdaptMesh(eta);
     }
     GlobalTimer.stop("iteration");
 
-    if (_runtime_statistics)
-      {
-	std::cout << std::endl;
-	GlobalTimer.print100();
-      }
-    
+    if (_runtime_statistics) {
+      std::cout << std::endl;
+      GlobalTimer.print100();
+    }
   }
-
-
 }
-}  // namespace Gascoigne
+} // namespace Gascoigne
 
 /*-------------------------------------------------*/

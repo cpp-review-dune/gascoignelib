@@ -1,223 +1,195 @@
 /**
-*
-* Copyright (C) 2004, 2011 by the Gascoigne 3D authors
-*
-* This file is part of Gascoigne 3D
-*
-* Gascoigne 3D is free software: you can redistribute it
-* and/or modify it under the terms of the GNU General Public
-* License as published by the Free Software Foundation, either
-* version 3 of the License, or (at your option) any later
-* version.
-*
-* Gascoigne 3D is distributed in the hope that it will be
-* useful, but WITHOUT ANY WARRANTY; without even the implied
-* warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-* PURPOSE.  See the GNU General Public License for more
-* details.
-*
-* Please refer to the file LICENSE.TXT for further information
-* on this license.
-*
-**/
+ *
+ * Copyright (C) 2004, 2011 by the Gascoigne 3D authors
+ *
+ * This file is part of Gascoigne 3D
+ *
+ * Gascoigne 3D is free software: you can redistribute it
+ * and/or modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation, either
+ * version 3 of the License, or (at your option) any later
+ * version.
+ *
+ * Gascoigne 3D is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more
+ * details.
+ *
+ * Please refer to the file LICENSE.TXT for further information
+ * on this license.
+ *
+ **/
 
-
-#include  "q1.h"
-#include  "gascoignemesh.h"
-#include  "pressurefilter.h"
+#include "q1.h"
+#include "gascoignemesh.h"
+#include "pressurefilter.h"
 
 using namespace std;
 
 /* ----------------------------------------- */
 
-namespace Gascoigne
-{
-Q1::Q1() : CellDiscretization(), HN(NULL) 
-{
-}
+namespace Gascoigne {
+Q1::Q1() : CellDiscretization(), HN(NULL) {}
 
 /* ----------------------------------------- */
 
-Q1::~Q1()
-{
-  if (HN) delete HN;
+Q1::~Q1() {
+  if (HN)
+    delete HN;
   HN = NULL;
 }
 
 /* ----------------------------------------- */
 
-void Q1::ReInit(const GascoigneMesh* MP)
-{
+void Q1::ReInit(const GascoigneMesh *MP) {
   CellDiscretization::ReInit(MP);
   HN->ReInit(MP);
 }
 
 /* ----------------------------------------- */
 
-void Q1::LocalToGlobal(MatrixInterface& A, EntryMatrix& E, int iq, double s) const
-{
+void Q1::LocalToGlobal(MatrixInterface &A, EntryMatrix &E, int iq,
+                       double s) const {
   IntVector indices = GetLocalIndices(iq);
-  HN->CondenseHanging(E,indices);
-  IntVector::const_iterator  start = indices.begin();
-  IntVector::const_iterator  stop  = indices.end();
-  A.entry(start,stop,__E,s);
+  HN->CondenseHanging(E, indices);
+  IntVector::const_iterator start = indices.begin();
+  IntVector::const_iterator stop = indices.end();
+  A.entry(start, stop, __E, s);
 }
 
 /* ----------------------------------------- */
 
-void Q1::StrongDirichletMatrix(MatrixInterface& A, int col, const vector<int>& comp) const
-{
-  const GascoigneMesh* GMP = dynamic_cast<const GascoigneMesh*>(GetMesh());
+void Q1::StrongDirichletMatrix(MatrixInterface &A, int col,
+                               const vector<int> &comp) const {
+  const GascoigneMesh *GMP = dynamic_cast<const GascoigneMesh *>(GetMesh());
   assert(GMP);
-  const IntVector& bv = *GMP->VertexOnBoundary(col);
-  for(int i=0;i<bv.size();i++)
-    {
-      A.dirichlet(bv[i], comp);
-    }  
+  const IntVector &bv = *GMP->VertexOnBoundary(col);
+  for (int i = 0; i < bv.size(); i++) {
+    A.dirichlet(bv[i], comp);
+  }
 }
 
 /* ----------------------------------------- */
 
-void Q1::StrongDirichletMatrixOnlyRow(MatrixInterface& A, int col, const vector<int>& comp) const
-{
-  const GascoigneMesh* GMP = dynamic_cast<const GascoigneMesh*>(GetMesh());
+void Q1::StrongDirichletMatrixOnlyRow(MatrixInterface &A, int col,
+                                      const vector<int> &comp) const {
+  const GascoigneMesh *GMP = dynamic_cast<const GascoigneMesh *>(GetMesh());
   assert(GMP);
-  const IntVector& bv = *GMP->VertexOnBoundary(col);
-  for(int i=0;i<bv.size();i++)
-    {
-      A.dirichlet_only_row(bv[i], comp);
-    }  
+  const IntVector &bv = *GMP->VertexOnBoundary(col);
+  for (int i = 0; i < bv.size(); i++) {
+    A.dirichlet_only_row(bv[i], comp);
+  }
 }
 
 /* ----------------------------------------- */
 
-void Q1::StrongDirichletVectorZero(GlobalVector& u, int col, const vector<int>& comp) const
-{
-  const GascoigneMesh* GMP = dynamic_cast<const GascoigneMesh*>(GetMesh());
+void Q1::StrongDirichletVectorZero(GlobalVector &u, int col,
+                                   const vector<int> &comp) const {
+  const GascoigneMesh *GMP = dynamic_cast<const GascoigneMesh *>(GetMesh());
   assert(GMP);
-  const IntVector& bv = *GMP->VertexOnBoundary(col);
+  const IntVector &bv = *GMP->VertexOnBoundary(col);
 
-  for(int ii=0;ii<comp.size();ii++)
-    {
-      int c = comp[ii];
-      if(c<0) {
-	cerr << "negative component: " << c << endl;
-        abort();
-      } else if(c>=u.ncomp()){
-	cerr << "unknown component: " << c << endl;
-        abort();
-      }
+  for (int ii = 0; ii < comp.size(); ii++) {
+    int c = comp[ii];
+    if (c < 0) {
+      cerr << "negative component: " << c << endl;
+      abort();
+    } else if (c >= u.ncomp()) {
+      cerr << "unknown component: " << c << endl;
+      abort();
     }
+  }
 
-  for(int i=0;i<bv.size();i++)
-    {
-      int index = bv[i];
-      for(int ii=0;ii<comp.size();ii++)
-	{
-	  u( index,comp[ii] ) = 0.;
-	}
-    }  
+  for (int i = 0; i < bv.size(); i++) {
+    int index = bv[i];
+    for (int ii = 0; ii < comp.size(); ii++) {
+      u(index, comp[ii]) = 0.;
+    }
+  }
 }
 
 /*-----------------------------------------*/
 
-void Q1::HNAverage(GlobalVector& x) const
-{
-  HN->Average(x);
-}
+void Q1::HNAverage(GlobalVector &x) const { HN->Average(x); }
 
 /* ----------------------------------------- */
 
-void Q1::HNDistribute(GlobalVector& x) const
-{
-  HN->Distribute(x);
-}
+void Q1::HNDistribute(GlobalVector &x) const { HN->Distribute(x); }
 
 /* ----------------------------------------- */
 
-void Q1::HNZero(GlobalVector& x) const
-{
-  HN->Zero(x);
-}
+void Q1::HNZero(GlobalVector &x) const { HN->Zero(x); }
 
 /* ----------------------------------------- */
 
-bool Q1::HNZeroCheck(const GlobalVector& x) const
-{
-  return HN->ZeroCheck(x);
-}
+bool Q1::HNZeroCheck(const GlobalVector &x) const { return HN->ZeroCheck(x); }
 
 /* ----------------------------------------- */
 
-void Q1::Structure(SparseStructureInterface* SI) const
-{
-  SparseStructure* S = dynamic_cast<SparseStructure*>(SI);
+void Q1::Structure(SparseStructureInterface *SI) const {
+  SparseStructure *S = dynamic_cast<SparseStructure *>(SI);
   assert(S);
 
   S->build_begin(ndofs());
-  for(int iq=0;iq<GetMesh()->ncells();iq++)
-    {
-      IntVector indices = GetLocalIndices(iq);
-      HN->CondenseHanging(indices);
-      S->build_add(indices.begin(), indices.end());
-    }
+  for (int iq = 0; iq < GetMesh()->ncells(); iq++) {
+    IntVector indices = GetLocalIndices(iq);
+    HN->CondenseHanging(indices);
+    S->build_add(indices.begin(), indices.end());
+  }
   HN->SparseStructureDiag(S);
   S->build_end();
 }
 
 /* ----------------------------------------- */
 
-void Q1::Matrix(MatrixInterface& A, const GlobalVector& u, const ProblemDescriptorInterface& PD, double d) const
-{
-  CellDiscretization::Matrix(A,u,PD,d);
+void Q1::Matrix(MatrixInterface &A, const GlobalVector &u,
+                const ProblemDescriptorInterface &PD, double d) const {
+  CellDiscretization::Matrix(A, u, PD, d);
 
-  HN->MatrixDiag(u.ncomp(),A);
+  HN->MatrixDiag(u.ncomp(), A);
 }
 
 /* ----------------------------------------- */
 
-void Q1::MassMatrix(MatrixInterface& A) const
-{
+void Q1::MassMatrix(MatrixInterface &A) const {
   CellDiscretization::MassMatrix(A);
 
-  HN->MatrixDiag(1,A);  
+  HN->MatrixDiag(1, A);
 }
 
 /* ----------------------------------------- */
 
-void Q1::InitFilter(DoubleVector& F) const
-{
-  PressureFilter* PF = static_cast<PressureFilter*>(&F);
+void Q1::InitFilter(DoubleVector &F) const {
+  PressureFilter *PF = static_cast<PressureFilter *>(&F);
   assert(PF);
 
-  if (!PF->Active()) return;
+  if (!PF->Active())
+    return;
 
-  PF->ReInit(GetMesh()->nnodes(),GetMesh()->nhanging());
+  PF->ReInit(GetMesh()->nnodes(), GetMesh()->nhanging());
   nmatrix<double> T;
-  for(int iq=0; iq<GetMesh()->ncells(); ++iq)
-    {
-      int nv = GetMesh()->nodes_per_cell(iq);
-      EntryMatrix  E(nv,1);
+  for (int iq = 0; iq < GetMesh()->ncells(); ++iq) {
+    int nv = GetMesh()->nodes_per_cell(iq);
+    EntryMatrix E(nv, 1);
 
-      Transformation(T,iq);
-      GetFem()->ReInit(T);
+    Transformation(T, iq);
+    GetFem()->ReInit(T);
 
-      double cellsize = GetIntegrator()->MassMatrix(E,*GetFem());
-      PF->AddDomainPiece(cellsize);
+    double cellsize = GetIntegrator()->MassMatrix(E, *GetFem());
+    PF->AddDomainPiece(cellsize);
 
-      IntVector ind = GetMesh()->IndicesOfCell(iq);
-      HN->CondenseHanging(E,ind);
+    IntVector ind = GetMesh()->IndicesOfCell(iq);
+    HN->CondenseHanging(E, ind);
 
-      for(int i=0;i<ind.size();i++)
- 	{
-	  for(int j=0;j<ind.size();j++)
-	    {
-	      F[ind[j]] += E(i,j,0,0);
-	    }
-      	}
+    for (int i = 0; i < ind.size(); i++) {
+      for (int j = 0; j < ind.size(); j++) {
+        F[ind[j]] += E(i, j, 0, 0);
+      }
     }
+  }
 }
 
 /*----------------------------------------------*/
 
-}
+} // namespace Gascoigne

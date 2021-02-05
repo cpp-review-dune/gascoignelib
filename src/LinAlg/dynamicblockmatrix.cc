@@ -22,15 +22,14 @@
  **/
 
 #include "dynamicblockmatrix.xx"
-#include "fmatrixblock.h"
 #include "cfdblock3d.h"
+#include "fmatrixblock.h"
 
-namespace Gascoigne
-{
+namespace Gascoigne {
 template class DynamicBlockMatrix<FMatrixBlock<1>>;
 template class DynamicBlockMatrix<FMatrixBlock<2>>;
 template class DynamicBlockMatrix<FMatrixBlock<3>>;
 template class DynamicBlockMatrix<FMatrixBlock<4>>;
 
 template class DynamicBlockMatrix<CFDBlock3d>;
-}  // namespace Gascoigne
+} // namespace Gascoigne

@@ -44,8 +44,7 @@
 
 /*-----------------------------------------*/
 
-namespace Gascoigne
-{
+namespace Gascoigne {
 //////////////////////////////////////////////
 //
 ///@brief
@@ -55,67 +54,52 @@ namespace Gascoigne
 ///
 //////////////////////////////////////////////
 
-class BasicLoop
-{
+class BasicLoop {
 private:
-  MeshAgent* _MA;
-  StdMultiLevelSolver* _ML;
-  SolverInfos* _SI;
+  MeshAgent *_MA;
+  StdMultiLevelSolver *_ML;
+  SolverInfos *_SI;
 
 protected:
-  void WriteMeshAndSolution(const std::string& filename, const VectorInterface& u) const;
-  void WriteSolution(const VectorInterface& u) const;
+  void WriteMeshAndSolution(const std::string &filename,
+                            const VectorInterface &u) const;
+  void WriteSolution(const VectorInterface &u) const;
   void WriteMesh() const;
-  void WriteMeshInp(const std::string& name) const;
+  void WriteMeshInp(const std::string &name) const;
 
-  virtual MeshAgent*& GetMeshAgentPointer()
-  {
-    return _MA;
-  }
-  virtual StdMultiLevelSolver*& GetMultiLevelSolverPointer()
-  {
-    return _ML;
-  }
+  virtual MeshAgent *&GetMeshAgentPointer() { return _MA; }
+  virtual StdMultiLevelSolver *&GetMultiLevelSolverPointer() { return _ML; }
 
-  virtual const MeshAgent* GetMeshAgent() const
-  {
+  virtual const MeshAgent *GetMeshAgent() const {
     assert(_MA);
     return _MA;
   }
-  virtual const StdMultiLevelSolver* GetMultiLevelSolver() const
-  {
+  virtual const StdMultiLevelSolver *GetMultiLevelSolver() const {
     assert(_ML);
     return _ML;
   }
 
-  virtual MeshAgent* GetMeshAgent()
-  {
+  virtual MeshAgent *GetMeshAgent() {
     assert(_MA);
     return _MA;
   }
-  virtual StdMultiLevelSolver* GetMultiLevelSolver()
-  {
+  virtual StdMultiLevelSolver *GetMultiLevelSolver() {
     assert(_ML);
     return _ML;
   }
 
-  virtual SolverInfos*& GetSolverInfosPointer()
-  {
-    return _SI;
-  }
-  virtual SolverInfos* GetSolverInfos()
-  {
+  virtual SolverInfos *&GetSolverInfosPointer() { return _SI; }
+  virtual SolverInfos *GetSolverInfos() {
     assert(_SI);
     return _SI;
   }
-  virtual const SolverInfos* GetSolverInfos() const
-  {
+  virtual const SolverInfos *GetSolverInfos() const {
     assert(_SI);
     return _SI;
   }
 
-  mutable StopWatch _clock_newmesh, _clock_solve, _clock_functionals, _clock_write,
-    _clock_estimate;
+  mutable StopWatch _clock_newmesh, _clock_solve, _clock_functionals,
+      _clock_write, _clock_estimate;
 
   int _niter, _iter;
   bool _writeVtk;
@@ -130,40 +114,39 @@ protected:
 
   // new vectors
 
-  virtual std::string Solve(Matrix& A, VectorInterface& u, VectorInterface& f, std::string name);
-  virtual std::string Solve(Matrix& A, VectorInterface& u, VectorInterface& f)
-  {
+  virtual std::string Solve(Matrix &A, VectorInterface &u, VectorInterface &f,
+                            std::string name);
+  virtual std::string Solve(Matrix &A, VectorInterface &u, VectorInterface &f) {
     return Solve(A, u, f, _s_resultsdir + "/solve");
   }
 
   virtual void PrintMeshInformation(int outputlevel = 0) const;
 
-  virtual void Output(const VectorInterface& u, std::string name) const;
-  virtual void Output(const VectorInterface& u)
-  {
+  virtual void Output(const VectorInterface &u, std::string name) const;
+  virtual void Output(const VectorInterface &u) {
     Output(u, _s_resultsdir + "/solve");
   }
 
-  virtual void ComputeGlobalErrors(const VectorInterface& u);
+  virtual void ComputeGlobalErrors(const VectorInterface &u);
 
-  virtual void InitSolution(VectorInterface& u);
-  virtual void CopyVector(GlobalVector& dst, VectorInterface& src);
-  virtual void CopyVector(VectorInterface& dst, GlobalVector& src);
+  virtual void InitSolution(VectorInterface &u);
+  virtual void CopyVector(GlobalVector &dst, VectorInterface &src);
+  virtual void CopyVector(VectorInterface &dst, GlobalVector &src);
 
 public:
   BasicLoop();
-  BasicLoop(const ParamFile& paramfile, const ProblemContainer* PC,
-            const FunctionalContainer* FC);
+  BasicLoop(const ParamFile &paramfile, const ProblemContainer *PC,
+            const FunctionalContainer *FC);
 
   virtual ~BasicLoop();
 
-  virtual void BasicInit(const ParamFile& paramfile, const ProblemContainer* PC,
-                         const FunctionalContainer* FC);
+  virtual void BasicInit(const ParamFile &paramfile, const ProblemContainer *PC,
+                         const FunctionalContainer *FC);
 
-  void run(const std::string& problemlabel);
+  void run(const std::string &problemlabel);
   void ClockOutput() const;
 };
-}  // namespace Gascoigne
+} // namespace Gascoigne
 
 /*-----------------------------------------*/
 

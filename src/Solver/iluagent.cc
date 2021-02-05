@@ -21,74 +21,63 @@
  *
  **/
 
-
 #include "iluagent.h"
 
-namespace Gascoigne
-{
+namespace Gascoigne {
 
-  /*-------------------------------------------------*/
+/*-------------------------------------------------*/
 
-  IluAgent::IluAgent() {}
+IluAgent::IluAgent() {}
 
-  /*-------------------------------------------------*/
+/*-------------------------------------------------*/
 
-  IluAgent::~IluAgent()
-  {
-    for (auto p=begin(); p!=end(); p++)
-      { 
-	if(p->second) 
-	  {
-	    delete p->second; 
-	    p->second = NULL;
-	  } 
-      }
-    std::map<Matrix,IluInterface*>::clear();
+IluAgent::~IluAgent() {
+  for (auto p = begin(); p != end(); p++) {
+    if (p->second) {
+      delete p->second;
+      p->second = NULL;
+    }
   }
-  
-  /*-------------------------------------------------*/
-  
-  void IluAgent::Register(const Matrix& mg)
-  {
-    auto p = find(mg);
-    if(p==end())
-      insert(std::make_pair(mg,static_cast<IluInterface*>(NULL)));
-  }
-  
-  /*-------------------------------------------------*/
-
-  void IluAgent::Delete(Matrix& mg) 
-  {
-    auto p=find(mg);
-    if (p!=end())
-      {
-	delete p->second; 
-	erase(p);
-      }
-  }
-    
-  /*-------------------------------------------------*/
-  
-  IluInterface& IluAgent::operator()(const Matrix& g) 
-  {
-    auto p = find(g);
-    if (p==end())
-      {
-	std::cerr << __FILE__ << ":" << __LINE__;
-	std::cerr << ": IluAgent::operator(): ERROR"<<std::endl;
-	std::cerr << __FILE__ << ":" << __LINE__;
-	std::cerr << ": Matrix '"<< g <<"' not found in list of: "<<std::endl;
-	std::cerr << " "<< *this << std::endl;
-	abort();
-      }
-    IluInterface* vp = p->second;
-    if (vp==NULL) 
-      {
-	std::cerr <<  "IluAgent  IluInterface* NULL\t" << p->first;
-	std::cerr << "\n" << *this << std::endl;
-	abort();
-      }
-    return *vp;
-  }
-
+  std::map<Matrix, IluInterface *>::clear();
 }
+
+/*-------------------------------------------------*/
+
+void IluAgent::Register(const Matrix &mg) {
+  auto p = find(mg);
+  if (p == end())
+    insert(std::make_pair(mg, static_cast<IluInterface *>(NULL)));
+}
+
+/*-------------------------------------------------*/
+
+void IluAgent::Delete(Matrix &mg) {
+  auto p = find(mg);
+  if (p != end()) {
+    delete p->second;
+    erase(p);
+  }
+}
+
+/*-------------------------------------------------*/
+
+IluInterface &IluAgent::operator()(const Matrix &g) {
+  auto p = find(g);
+  if (p == end()) {
+    std::cerr << __FILE__ << ":" << __LINE__;
+    std::cerr << ": IluAgent::operator(): ERROR" << std::endl;
+    std::cerr << __FILE__ << ":" << __LINE__;
+    std::cerr << ": Matrix '" << g << "' not found in list of: " << std::endl;
+    std::cerr << " " << *this << std::endl;
+    abort();
+  }
+  IluInterface *vp = p->second;
+  if (vp == NULL) {
+    std::cerr << "IluAgent  IluInterface* NULL\t" << p->first;
+    std::cerr << "\n" << *this << std::endl;
+    abort();
+  }
+  return *vp;
+}
+
+} // namespace Gascoigne

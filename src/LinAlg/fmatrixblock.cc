@@ -23,8 +23,7 @@
 
 #include "fmatrixblock.xx"
 
-namespace Gascoigne
-{
+namespace Gascoigne {
 template class FMatrixBlock<1>;
 template class FMatrixBlock<2>;
 template class FMatrixBlock<3>;
@@ -33,4 +32,4 @@ template class FMatrixBlock<5>;
 template class FMatrixBlock<6>;
 template class FMatrixBlock<7>;
 template class FMatrixBlock<8>;
-}  // namespace Gascoigne
+} // namespace Gascoigne

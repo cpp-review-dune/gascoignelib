@@ -21,30 +21,30 @@
  *
  **/
 
-
 #include "elementintegrator.xx"
 
 using namespace std;
 
 /* ----------------------------------------- */
 
-namespace Gascoigne
-{
+namespace Gascoigne {
 
+template class ElementIntegratorQ12d;
+template class ElementIntegratorQ22d;
+template class ElementIntegratorQ42d;
 
-  template class ElementIntegratorQ12d;
-  template class ElementIntegratorQ22d;
-  template class ElementIntegratorQ42d;
-  
-  template class ElementIntegratorQ13d;
-  template class ElementIntegratorQ23d;
-  template class ElementIntegratorQ43d;
+template class ElementIntegratorQ13d;
+template class ElementIntegratorQ23d;
+template class ElementIntegratorQ43d;
 
-  ////////////////////////////////////////////////// required for LPS  
-  template class ElementIntegrator<2, PatchFormula2d<4,QuadGauss4>, PatchFormula2d<9,QuadGauss9>,  PatchFormula1d<2,LineGauss2>, PatchFormula2d<4,QuadGauss4>>;
-  template class ElementIntegrator<3, PatchFormula3d<8,HexGauss8>,  PatchFormula3d<27,HexGauss27>, PatchFormula2d<4,QuadGauss4>, PatchFormula3d<8,HexGauss8>>;
+////////////////////////////////////////////////// required for LPS
+template class ElementIntegrator<
+    2, PatchFormula2d<4, QuadGauss4>, PatchFormula2d<9, QuadGauss9>,
+    PatchFormula1d<2, LineGauss2>, PatchFormula2d<4, QuadGauss4>>;
+template class ElementIntegrator<
+    3, PatchFormula3d<8, HexGauss8>, PatchFormula3d<27, HexGauss27>,
+    PatchFormula2d<4, QuadGauss4>, PatchFormula3d<8, HexGauss8>>;
 
-  
-  /* ----------------------------------------- */
+/* ----------------------------------------- */
 
 } // namespace Gascoigne

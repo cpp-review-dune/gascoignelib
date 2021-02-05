@@ -19,7 +19,11 @@ LIST(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/)
 INCLUDE(CMakeOptions.txt)
 
 #### Directory Settings
-SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/../lib"  CACHE PATH "output path for libraries")
+
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../lib)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../lib)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../bin)
+#SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/../lib"  CACHE PATH "output path for libraries")
 SET (GASCOIGNE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
 #### Options for Gascoigne Core Library
@@ -103,6 +107,39 @@ ADD_COMPILE_OPTIONS(${GASCOIGNE_CXX_FLAGS})
 ADD_DEFINITIONS(${GASCOIGNE_DEFINITIONS})
 
 SET(GASCOIGNE_LIBS "GascoigneStd${BUILD_ENDING}")
+
+#
+# Code Quality
+#
+
+OPTION(USE_IWYU "Use include what you use for include optimization" OFF)
+IF(USE_IWYU)
+    find_program(IWYU include-what-you-use HINTS /usr/bin/)
+    if(NOT IWYU)
+        message("IWYU not found!")
+    endif()
+
+    set_property(TARGET ${GASCOIGNE_LIBRARY} 
+        PROPERTY CXX_INCLUDE_WHAT_YOU_USE ${IWYU})
+endif()
+
+OPTION(USE_CLANG_FORMAT "Formats the codebase" ON)
+if(USE_CLANG_FORMAT)
+  FILE(GLOB_RECURSE ALL_CXX_SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/**/*.cc ${CMAKE_CURRENT_SOURCE_DIR}/**/*.h ${CMAKE_CURRENT_SOURCE_DIR}/**/*.xx ${CMAKE_CURRENT_SOURCE_DIR}/**/*.cu)
+  # Adding clang-format target if executable is found
+  find_program(CLANG_FORMAT "clang-format")
+  if(CLANG_FORMAT)
+    add_custom_target(
+      clang-format ALL
+      COMMAND ${CLANG_FORMAT}
+      -i
+      -style=LLVM
+      ${ALL_CXX_SOURCE_FILES}
+      )
+  else()
+    message(STATUS "Could not find clang-format")
+  endif()
+endif()
 
 ADD_SUBDIRECTORY(src)
 ADD_SUBDIRECTORY(doc)

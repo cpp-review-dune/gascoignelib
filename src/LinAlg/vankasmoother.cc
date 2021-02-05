@@ -1,29 +1,26 @@
 #include "vankasmoother.h"
 #include "gascoignehash.h"
 
-namespace Gascoigne
-{
+namespace Gascoigne {
 //////////////////// Construction
-void VankaSmoother::ConstructStructure(const IntVector& perm,
-                                       const MatrixInterface& A)
-{
+void VankaSmoother::ConstructStructure(const IntVector &perm,
+                                       const MatrixInterface &A) {
   assert(_dofhandler);
-  const SparseBlockMatrix<FMatrixBlock<1>>* M1 =
-    dynamic_cast<const SparseBlockMatrix<FMatrixBlock<1>>*>(&A);
-  const SparseBlockMatrix<FMatrixBlock<2>>* M2 =
-    dynamic_cast<const SparseBlockMatrix<FMatrixBlock<2>>*>(&A);
-  const SparseBlockMatrix<FMatrixBlock<3>>* M3 =
-    dynamic_cast<const SparseBlockMatrix<FMatrixBlock<3>>*>(&A);
-  const SparseBlockMatrix<FMatrixBlock<4>>* M4 =
-    dynamic_cast<const SparseBlockMatrix<FMatrixBlock<4>>*>(&A);
-  const SparseBlockMatrix<FMatrixBlock<5>>* M5 =
-    dynamic_cast<const SparseBlockMatrix<FMatrixBlock<5>>*>(&A);
-  const SparseBlockMatrix<FMatrixBlock<6>>* M6 =
-    dynamic_cast<const SparseBlockMatrix<FMatrixBlock<6>>*>(&A);
-  const SparseBlockMatrix<FMatrixBlock<7>>* M7 =
-    dynamic_cast<const SparseBlockMatrix<FMatrixBlock<7>>*>(&A);
-  if (!(M1 || M2 || M3 || M4 || M5 || M6 || M7))
-  {
+  const SparseBlockMatrix<FMatrixBlock<1>> *M1 =
+      dynamic_cast<const SparseBlockMatrix<FMatrixBlock<1>> *>(&A);
+  const SparseBlockMatrix<FMatrixBlock<2>> *M2 =
+      dynamic_cast<const SparseBlockMatrix<FMatrixBlock<2>> *>(&A);
+  const SparseBlockMatrix<FMatrixBlock<3>> *M3 =
+      dynamic_cast<const SparseBlockMatrix<FMatrixBlock<3>> *>(&A);
+  const SparseBlockMatrix<FMatrixBlock<4>> *M4 =
+      dynamic_cast<const SparseBlockMatrix<FMatrixBlock<4>> *>(&A);
+  const SparseBlockMatrix<FMatrixBlock<5>> *M5 =
+      dynamic_cast<const SparseBlockMatrix<FMatrixBlock<5>> *>(&A);
+  const SparseBlockMatrix<FMatrixBlock<6>> *M6 =
+      dynamic_cast<const SparseBlockMatrix<FMatrixBlock<6>> *>(&A);
+  const SparseBlockMatrix<FMatrixBlock<7>> *M7 =
+      dynamic_cast<const SparseBlockMatrix<FMatrixBlock<7>> *>(&A);
+  if (!(M1 || M2 || M3 || M4 || M5 || M6 || M7)) {
     std::cerr << "VankaSmoother: wrong matrix" << std::endl;
     abort();
   }
@@ -52,8 +49,7 @@ void VankaSmoother::ConstructStructure(const IntVector& perm,
   _sizeofpatch = _dofhandler->nodes_per_element(patchlevel);
   _patchlist.resize(npatches, std::vector<int>(_sizeofpatch));
 #pragma omp parallel for schedule(static)
-  for (int p = 0; p < npatches; ++p)
-  {
+  for (int p = 0; p < npatches; ++p) {
     const IntVector iop = _dofhandler->GetElement(patchlevel, p);
     assert(iop.size() == _patchlist[p].size());
     for (int i = 0; i < iop.size(); ++i)
@@ -64,57 +60,53 @@ void VankaSmoother::ConstructStructure(const IntVector& perm,
   _lu.resize(npatches, Eigen::PartialPivLU<VankaMatrix>(_sizeofpatch * _ncomp));
 }
 
+template <int NCOMP>
+void VankaSmoother::copy_entries_sparseblockmatrix(
+    const SparseBlockMatrix<FMatrixBlock<NCOMP>> &A) {
+  const ColumnDiagStencil &S =
+      dynamic_cast<const ColumnDiagStencil &>(*A.GetStencil());
 
-  template <int NCOMP>
-  void VankaSmoother::copy_entries_sparseblockmatrix(const SparseBlockMatrix<FMatrixBlock<NCOMP>>& A)
-  {
-    const ColumnDiagStencil& S =
-      dynamic_cast<const ColumnDiagStencil&>(*A.GetStencil());
-
-    // Copy entries & assemble ILU
+  // Copy entries & assemble ILU
 #pragma omp parallel for schedule(static)
-    for (int p = 0; p < _patchlist.size(); ++p)
-      {
-	int sop = _patchlist[p].size();
-	//	assert(_patchlist[p].size() == _sizeofpatch);
+  for (int p = 0; p < _patchlist.size(); ++p) {
+    int sop = _patchlist[p].size();
+    //	assert(_patchlist[p].size() == _sizeofpatch);
 
-	VankaMatrix Matrix_on_Block;
-	Matrix_on_Block.resize(sop * NCOMP, sop * NCOMP);
-	Matrix_on_Block.setZero();
+    VankaMatrix Matrix_on_Block;
+    Matrix_on_Block.resize(sop * NCOMP, sop * NCOMP);
+    Matrix_on_Block.setZero();
 
-	// inverse index set? store globally?
-	HASHMAP<int, int> INP;
-	for (int i = 0; i < _patchlist[p].size(); ++i)
-	  INP[_patchlist[p][i]] = i;
+    // inverse index set? store globally?
+    HASHMAP<int, int> INP;
+    for (int i = 0; i < _patchlist[p].size(); ++i)
+      INP[_patchlist[p][i]] = i;
 
-	for (int r = 0; r < sop; ++r)
-	  {
-	    assert(r < _patchlist[p].size());
-	    int row = _patchlist[p][r];
-	    assert(row < S.n());
+    for (int r = 0; r < sop; ++r) {
+      assert(r < _patchlist[p].size());
+      int row = _patchlist[p][r];
+      assert(row < S.n());
 
-	    // Copy Matrix
-	    for (int pos = S.start(row); pos < S.stop(row); ++pos)
-	      {
-		int col = S.col(pos);
-		/* columnsinpatch.insert(col); */
+      // Copy Matrix
+      for (int pos = S.start(row); pos < S.stop(row); ++pos) {
+        int col = S.col(pos);
+        /* columnsinpatch.insert(col); */
 
-		// find inverse index. Skip, if not n patch
-		auto inverseindex = INP.find(col);
-		if (inverseindex == INP.end())
-		  continue;
-		int c = inverseindex->second;
+        // find inverse index. Skip, if not n patch
+        auto inverseindex = INP.find(col);
+        if (inverseindex == INP.end())
+          continue;
+        int c = inverseindex->second;
 
-		const FMatrixBlock<NCOMP>& B = (*A.mat(pos));
-		for (int cr = 0; cr < NCOMP; ++cr)
-		  for (int cc = 0; cc < NCOMP; ++cc)
-		    Matrix_on_Block(NCOMP * r + cr, NCOMP * c + cc) = B(cr, cc);
-	      }
-	  }
-	// Compute LU
-	_lu[p].compute(Matrix_on_Block);
+        const FMatrixBlock<NCOMP> &B = (*A.mat(pos));
+        for (int cr = 0; cr < NCOMP; ++cr)
+          for (int cc = 0; cc < NCOMP; ++cc)
+            Matrix_on_Block(NCOMP * r + cr, NCOMP * c + cc) = B(cr, cc);
       }
+    }
+    // Compute LU
+    _lu[p].compute(Matrix_on_Block);
   }
+}
 
 // template <int NCOMP>
 // void VankaSmoother::copy_entries_sparseblockmatrix(
@@ -167,35 +159,31 @@ void VankaSmoother::ConstructStructure(const IntVector& perm,
 //   }
 // }
 
-
-  
-void VankaSmoother::copy_entries(const MatrixInterface& A)
-{
+void VankaSmoother::copy_entries(const MatrixInterface &A) {
   if (_ncomp == 1)
     copy_entries_sparseblockmatrix(
-      dynamic_cast<const SparseBlockMatrix<FMatrixBlock<1>>&>(A));
+        dynamic_cast<const SparseBlockMatrix<FMatrixBlock<1>> &>(A));
   else if (_ncomp == 2)
     copy_entries_sparseblockmatrix(
-      dynamic_cast<const SparseBlockMatrix<FMatrixBlock<2>>&>(A));
+        dynamic_cast<const SparseBlockMatrix<FMatrixBlock<2>> &>(A));
   else if (_ncomp == 3)
     copy_entries_sparseblockmatrix(
-      dynamic_cast<const SparseBlockMatrix<FMatrixBlock<3>>&>(A));
+        dynamic_cast<const SparseBlockMatrix<FMatrixBlock<3>> &>(A));
   else if (_ncomp == 4)
     copy_entries_sparseblockmatrix(
-      dynamic_cast<const SparseBlockMatrix<FMatrixBlock<4>>&>(A));
+        dynamic_cast<const SparseBlockMatrix<FMatrixBlock<4>> &>(A));
   else if (_ncomp == 5)
     copy_entries_sparseblockmatrix(
-      dynamic_cast<const SparseBlockMatrix<FMatrixBlock<5>>&>(A));
+        dynamic_cast<const SparseBlockMatrix<FMatrixBlock<5>> &>(A));
   else if (_ncomp == 6)
     copy_entries_sparseblockmatrix(
-      dynamic_cast<const SparseBlockMatrix<FMatrixBlock<6>>&>(A));
+        dynamic_cast<const SparseBlockMatrix<FMatrixBlock<6>> &>(A));
   else if (_ncomp == 7)
     copy_entries_sparseblockmatrix(
-      dynamic_cast<const SparseBlockMatrix<FMatrixBlock<7>>&>(A));
+        dynamic_cast<const SparseBlockMatrix<FMatrixBlock<7>> &>(A));
 }
 
-void VankaSmoother::solve(GlobalVector& x) const
-{
+void VankaSmoother::solve(GlobalVector &x) const {
   assert(x.ncomp() == _ncomp);
   ////////////////////// Jacobi smoother
 
@@ -209,8 +197,7 @@ void VankaSmoother::solve(GlobalVector& x) const
 #pragma omp parallel
   {
 #pragma omp for schedule(static)
-    for (int p = 0; p < _patchlist.size(); ++p)
-    {
+    for (int p = 0; p < _patchlist.size(); ++p) {
       // copy local patch-vector
       VankaVector H(_sizeofpatch * _ncomp);
       for (int r = 0; r < _sizeofpatch; ++r)
@@ -223,8 +210,7 @@ void VankaSmoother::solve(GlobalVector& x) const
       _lu[p].matrixLU().triangularView<Eigen::Upper>().solveInPlace(H);
 
       // update
-      for (int r = 0; r < _sizeofpatch; ++r)
-      {
+      for (int r = 0; r < _sizeofpatch; ++r) {
 #pragma omp atomic update
         count[_patchlist[p][r]]++;
         for (int c = 0; c < _ncomp; ++c)
@@ -235,12 +221,11 @@ void VankaSmoother::solve(GlobalVector& x) const
 #pragma omp barrier
     // average
 #pragma omp for schedule(static)
-    for (int i = 0; i < x.n(); ++i)
-    {
+    for (int i = 0; i < x.n(); ++i) {
       assert(count[i] > 0);
       x.scale_node(i, 1.0 / count[i]);
     }
   }
 }
 
-}  // namespace Gascoigne
+} // namespace Gascoigne

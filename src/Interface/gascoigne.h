@@ -33,26 +33,26 @@
 ////
 /////////////////////////////////////////////
 
-#include <set>
-#include <map>
-#include <string>
 #include "compvector.h"
-#include "nmatrix.h"
 #include "derivativevector.h"
 #include "matrixentrytype.h"
+#include "nmatrix.h"
+#include <map>
+#include <set>
+#include <string>
 
-namespace Gascoigne
-{
+namespace Gascoigne {
 typedef CompVector<double> GlobalVector;
 typedef CompVector<double> LocalVector;
-typedef CompVector<MatrixEntryType> GlobalVectorMET;  // for linear solver
-typedef CompVector<MatrixEntryType> LocalVectorMET;   // for linear solver
-typedef std::map<std::string, const GlobalVector*> GlobalData;
+typedef CompVector<MatrixEntryType> GlobalVectorMET; // for linear solver
+typedef CompVector<MatrixEntryType> LocalVectorMET;  // for linear solver
+typedef std::map<std::string, const GlobalVector *> GlobalData;
 typedef std::map<std::string, LocalVector> LocalData;
 
 typedef nvector<double> GlobalParameterVector;
 typedef nvector<double> LocalParameterVector;
-typedef std::map<std::string, const GlobalParameterVector*> GlobalParameterData;
+typedef std::map<std::string, const GlobalParameterVector *>
+    GlobalParameterData;
 typedef std::map<std::string, LocalParameterVector> LocalParameterData;
 
 typedef nvector<int> IntVector;
@@ -70,13 +70,10 @@ typedef std::map<std::string, FemFunction> FemData;
 typedef nvector<double> CellFunction;
 typedef std::map<std::string, CellFunction> CellData;
 
-#define BASE_CLONEABLE(Type) virtual Type* createNew() const = 0;
+#define BASE_CLONEABLE(Type) virtual Type *createNew() const = 0;
 
-#define CLONEABLE(Type)                    \
-  virtual Type* createNew() const override \
-  {                                        \
-    return new Type(*this);                \
-  }
-}  // namespace Gascoigne
+#define CLONEABLE(Type)                                                        \
+  virtual Type *createNew() const override { return new Type(*this); }
+} // namespace Gascoigne
 
 #endif

@@ -4,7 +4,6 @@
 #define __matrix_H
 /*----------------------------   matrix.h     ---------------------------*/
 
-
 /**
  *
  * Copyright (C) 2020 by the Gascoigne 3D authors
@@ -28,54 +27,39 @@
  *
  **/
 
-
-#include <string>
-#include <iostream>
 #include <cassert>
+#include <iostream>
+#include <string>
 
-namespace Gascoigne
-{
-  /////////////////////////////////////////////
-  ////
-  ////@brief
-  ////  Matrix is just a placeholder for any kind of (large) matrices that act on 
-  ////  all dof's of a discretization. This class takes the same role as the 
-  ////  VectorInterface (to be renamed as Vector).
-  ////  The Matrix class does not have any real data. The connection to the data
-  ////  is by means of the MatrixAgent class.
-  ////  However, the Matrix class stores some extra information such as
-  ////
-  ////  -
-  /////////////////////////////////////////////
+namespace Gascoigne {
+/////////////////////////////////////////////
+////
+////@brief
+////  Matrix is just a placeholder for any kind of (large) matrices that act on
+////  all dof's of a discretization. This class takes the same role as the
+////  VectorInterface (to be renamed as Vector).
+////  The Matrix class does not have any real data. The connection to the data
+////  is by means of the MatrixAgent class.
+////  However, the Matrix class stores some extra information such as
+////
+////  -
+/////////////////////////////////////////////
 
-  class Matrix : public std::string
-  {
-  private:
+class Matrix : public std::string {
+private:
+protected:
+public:
+  Matrix() {
+    std::cerr << "Matrix: no Constructor without indicating the label!"
+              << std::endl;
+    abort();
+  }
 
-  protected:
-
-  public:
-
-
-    Matrix()
-    {
-      std::cerr << "Matrix: no Constructor without indicating the label!" << std::endl;
-      abort();
-    }
-    
-    Matrix(const std::string& label) : std::string(label)
-    {
-    }
-    Matrix(const Matrix& mat) : std::string(mat)
-    {
-    }
-    virtual ~Matrix()
-    {
-    }
-  };
-}  // namespace Gascoigne
-
-
+  Matrix(const std::string &label) : std::string(label) {}
+  Matrix(const Matrix &mat) : std::string(mat) {}
+  virtual ~Matrix() {}
+};
+} // namespace Gascoigne
 
 /*----------------------------   matrix.h     ---------------------------*/
 /* end of #ifndef __matrix_H */

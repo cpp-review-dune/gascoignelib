@@ -21,76 +21,65 @@
  *
  **/
 
-
 #include "ghostvectoragent.h"
 #include "stlio.h"
 
-namespace Gascoigne
-{
+namespace Gascoigne {
 
-  /*-------------------------------------------------*/
+/*-------------------------------------------------*/
 
-  GhostVectorAgent::GhostVectorAgent() {}
+GhostVectorAgent::GhostVectorAgent() {}
 
-  /*-------------------------------------------------*/
+/*-------------------------------------------------*/
 
-  GhostVectorAgent::~GhostVectorAgent()
-  {
-    for (auto p=begin(); p!=end(); p++)
-      { 
-	if(p->second) 
-	  {
-	    delete p->second; 
-	    p->second = NULL;
-	  } 
-      }
+GhostVectorAgent::~GhostVectorAgent() {
+  for (auto p = begin(); p != end(); p++) {
+    if (p->second) {
+      delete p->second;
+      p->second = NULL;
+    }
   }
-  
-  /*-------------------------------------------------*/
-  
-  void GhostVectorAgent::Register(const VectorInterface& mg)
-  {
-    auto p = find(mg);
-    if(p==end())
-      {
-	insert(std::make_pair(mg,static_cast<GlobalVector*>(NULL)));
-      }
-  }
-  
-  /*-------------------------------------------------*/
-
-  void GhostVectorAgent::Delete(VectorInterface& mg) 
-  {
-    auto p=find(mg);
-    if (p!=end())
-      {
-	delete p->second; 
-	erase(p);
-      }
-  }
-    
-  /*-------------------------------------------------*/
-  
-  GlobalVector& GhostVectorAgent::operator()(const VectorInterface& g) 
-  {
-    auto p = find(g);
-    if (p==end())
-      {
-	std::cerr << __FILE__ << ":" << __LINE__;
-	std::cerr << ": GhostVectorAgent::operator(): ERROR"<<std::endl;
-	std::cerr << __FILE__ << ":" << __LINE__;
-	std::cerr << ": Ghostvector '"<< g <<"' not found in list of: "<<std::endl;
-	std::cerr << " "<< *this << std::endl;
-	abort();
-      }
-    GlobalVector* vp = p->second;
-    if (vp==NULL) 
-      {
-	std::cerr <<  "GhostVectorAgent  GlobalVector* NULL\t" << p->first;
-	std::cerr << "\n" << *this << std::endl;
-	abort();
-      }
-    return *vp;
-  }
-
 }
+
+/*-------------------------------------------------*/
+
+void GhostVectorAgent::Register(const VectorInterface &mg) {
+  auto p = find(mg);
+  if (p == end()) {
+    insert(std::make_pair(mg, static_cast<GlobalVector *>(NULL)));
+  }
+}
+
+/*-------------------------------------------------*/
+
+void GhostVectorAgent::Delete(VectorInterface &mg) {
+  auto p = find(mg);
+  if (p != end()) {
+    delete p->second;
+    erase(p);
+  }
+}
+
+/*-------------------------------------------------*/
+
+GlobalVector &GhostVectorAgent::operator()(const VectorInterface &g) {
+  auto p = find(g);
+  if (p == end()) {
+    std::cerr << __FILE__ << ":" << __LINE__;
+    std::cerr << ": GhostVectorAgent::operator(): ERROR" << std::endl;
+    std::cerr << __FILE__ << ":" << __LINE__;
+    std::cerr << ": Ghostvector '" << g
+              << "' not found in list of: " << std::endl;
+    std::cerr << " " << *this << std::endl;
+    abort();
+  }
+  GlobalVector *vp = p->second;
+  if (vp == NULL) {
+    std::cerr << "GhostVectorAgent  GlobalVector* NULL\t" << p->first;
+    std::cerr << "\n" << *this << std::endl;
+    abort();
+  }
+  return *vp;
+}
+
+} // namespace Gascoigne

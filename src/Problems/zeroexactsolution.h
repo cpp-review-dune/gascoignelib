@@ -1,35 +1,32 @@
 /**
-*
-* Copyright (C) 2004 by the Gascoigne 3D authors
-*
-* This file is part of Gascoigne 3D
-*
-* Gascoigne 3D is free software: you can redistribute it
-* and/or modify it under the terms of the GNU General Public
-* License as published by the Free Software Foundation, either
-* version 3 of the License, or (at your option) any later
-* version.
-*
-* Gascoigne 3D is distributed in the hope that it will be
-* useful, but WITHOUT ANY WARRANTY; without even the implied
-* warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-* PURPOSE.  See the GNU General Public License for more
-* details.
-*
-* Please refer to the file LICENSE.TXT for further information
-* on this license.
-*
-**/
+ *
+ * Copyright (C) 2004 by the Gascoigne 3D authors
+ *
+ * This file is part of Gascoigne 3D
+ *
+ * Gascoigne 3D is free software: you can redistribute it
+ * and/or modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation, either
+ * version 3 of the License, or (at your option) any later
+ * version.
+ *
+ * Gascoigne 3D is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more
+ * details.
+ *
+ * Please refer to the file LICENSE.TXT for further information
+ * on this license.
+ *
+ **/
 
+#ifndef __ZeroExactSolution_h
+#define __ZeroExactSolution_h
 
-#ifndef  __ZeroExactSolution_h
-#define  __ZeroExactSolution_h
+#include "exactsolution.h"
 
-#include  "exactsolution.h"
-
-
-namespace Gascoigne
-{
+namespace Gascoigne {
 
 /////////////////////////////////////////////
 ///
@@ -40,29 +37,19 @@ namespace Gascoigne
 ///
 /////////////////////////////////////////////
 
-class ZeroExactSolution : public ExactSolution
-{
+class ZeroExactSolution : public ExactSolution {
 public:
-
-
 private:
-
-
 protected:
-
-
 public:
-
-
-//
-///  Constructor 
-//
+  //
+  ///  Constructor
+  //
 
   ZeroExactSolution() {}
-  std::string GetName() const{return "Zero";}
-  double operator()(int c, const Vertex2d& v)const {return 0.;}
-
+  std::string GetName() const { return "Zero"; }
+  double operator()(int c, const Vertex2d &v) const { return 0.; }
 };
-}
+} // namespace Gascoigne
 
 #endif

@@ -24,58 +24,50 @@
 #ifndef __matrixinterface_h
 #define __matrixinterface_h
 
-#include "entrymatrix.h"
 #include "compvector.h"
+#include "entrymatrix.h"
+#include "matrixentrytype.h"
+#include "periodicdata.h"
 #include "sparsestructureinterface.h"
 #include "stencilinterface.h"
-#include "periodicdata.h"
 #include <string>
-#include "matrixentrytype.h"
 
 /*-------------------------------------------------------------*/
 
-namespace Gascoigne
-{
-class MatrixInterface
-{
+namespace Gascoigne {
+class MatrixInterface {
 private:
 protected:
 public:
-  MatrixInterface()
-  {
-  }
-  virtual ~MatrixInterface()
-  {
-  }
+  MatrixInterface() {}
+  virtual ~MatrixInterface() {}
 
   virtual std::string GetName() const = 0;
 
-  virtual const StencilInterface* GetStencil() const     = 0;
-  virtual void ReInit(const SparseStructureInterface* S) = 0;
-  virtual void AddMassWithDifferentStencil(const MatrixInterface* M,
-                                           const TimePattern& TP, double s = 1.)
-  {
+  virtual const StencilInterface *GetStencil() const = 0;
+  virtual void ReInit(const SparseStructureInterface *S) = 0;
+  virtual void AddMassWithDifferentStencil(const MatrixInterface *M,
+                                           const TimePattern &TP,
+                                           double s = 1.) {
     std::cerr << "\"MatrixInterface::AddMassWithDifferentStencil\" not written!"
               << std::endl;
     abort();
   }
-  virtual void AddMassWithDifferentStencilJacobi(const MatrixInterface* M,
-                                                 const TimePattern& TP,
-                                                 double s = 1.)
-  {
+  virtual void AddMassWithDifferentStencilJacobi(const MatrixInterface *M,
+                                                 const TimePattern &TP,
+                                                 double s = 1.) {
     std::cerr << "\"MatrixInterface::AddMassWithDifferentStencil\" not written!"
               << std::endl;
     abort();
   }
-  virtual void copy_entries(const MatrixInterface& S)
-  {
+  virtual void copy_entries(const MatrixInterface &S) {
     std::cerr << "\"MatrixInterface::copy_entries\" not written!" << std::endl;
     abort();
   }
-  virtual void zero()      = 0;
+  virtual void zero() = 0;
   virtual void transpose() = 0;
 
-  virtual std::ostream& Write(std::ostream& os) const = 0;
+  virtual std::ostream &Write(std::ostream &os) const = 0;
 
   //
   /// for matrix assembling
@@ -85,17 +77,15 @@ public:
   virtual void entry(nvector<int>::const_iterator start1,
                      nvector<int>::const_iterator stop1,
                      nvector<int>::const_iterator start2,
-                     nvector<int>::const_iterator stop2, const EntryMatrix& M,
-                     double s = 1.)
-  {
+                     nvector<int>::const_iterator stop2, const EntryMatrix &M,
+                     double s = 1.) {
     std::cerr << "\"MatrixInterface::entry\" not written!" << std::endl;
     abort();
   }
-  virtual void entry(niiterator start, niiterator stop, const EntryMatrix& M,
+  virtual void entry(niiterator start, niiterator stop, const EntryMatrix &M,
                      double s = 1.) = 0;
   virtual void entrydual(niiterator start, niiterator stop,
-                         const EntryMatrix& M, double s = 1.)
-  {
+                         const EntryMatrix &M, double s = 1.) {
     std::cerr << "\"MatrixInterface::entrydual\" not written!" << std::endl;
     abort();
   }
@@ -103,99 +93,86 @@ public:
   //
   /// for hanging nodes
   //
-  virtual void entry_diag(int i, const nmatrix<double>& M) = 0;
+  virtual void entry_diag(int i, const nmatrix<double> &M) = 0;
 
   //
   /// for boundary conditions
   //
-  virtual void scale_diag(int i, const std::vector<int>& cv, double s)
-  {
+  virtual void scale_diag(int i, const std::vector<int> &cv, double s) {
     std::cerr << "\"MatrixInterface::scale_diag\" not written!" << std::endl;
     abort();
   }
-  virtual void dirichlet(int i, const std::vector<int>& cv)
-  {
+  virtual void dirichlet(int i, const std::vector<int> &cv) {
     std::cerr << "\"MatrixInterface::dirichlet\" not written!" << std::endl;
     abort();
   }
-  virtual void dirichlet_only_row(int i, const std::vector<int>& indices)
-  {
+  virtual void dirichlet_only_row(int i, const std::vector<int> &indices) {
     std::cerr << "\"MatrixInterface::dirichlet_only_row\" not written!"
               << std::endl;
     abort();
   }
-  virtual void dirichlet_only_column(int i, const std::vector<int>& indices)
-  {
+  virtual void dirichlet_only_column(int i, const std::vector<int> &indices) {
     std::cerr << "\"MatrixInterface::dirichlet_only_column\" not written!"
               << std::endl;
     abort();
   }
   virtual void dirichlet_only_row_no_diag(int i,
-                                          const std::vector<int>& indices)
-  {
+                                          const std::vector<int> &indices) {
     std::cerr << "\"MatrixInterface::dirichlet_only_row_no_diag\" not written!"
               << std::endl;
     abort();
   }
-  virtual void periodic(const std::map<int, int>& m_PeriodicPairs,
-                        const IntVector& iv_Components)
-  {
+  virtual void periodic(const std::map<int, int> &m_PeriodicPairs,
+                        const IntVector &iv_Components) {
     std::cerr << "\"MatrixInterface::periodic\" not written!" << std::endl;
     abort();
   }
-  virtual void vmult(GlobalVector& y, const GlobalVector& x,
-                     double s = 1.) const
-  {
+  virtual void vmult(GlobalVector &y, const GlobalVector &x,
+                     double s = 1.) const {
     std::cerr << "\"MatrixInterface::vmult\" not written!" << std::endl;
     abort();
   }
-  virtual void vmult_transpose(GlobalVector& y, const GlobalVector& x,
-                               double s = 1.) const
-  {
+  virtual void vmult_transpose(GlobalVector &y, const GlobalVector &x,
+                               double s = 1.) const {
     std::cerr << "\"MatrixInterface::vmult_tranpose\" not written!"
               << std::endl;
     abort();
   }
-  virtual void vmult_time(GlobalVector& y, const GlobalVector& x,
-                          const TimePattern& TP, double s = 1.) const
-  {
+  virtual void vmult_time(GlobalVector &y, const GlobalVector &x,
+                          const TimePattern &TP, double s = 1.) const {
     std::cerr << "\"MatrixInterface::vmult_time\" not written!" << std::endl;
     abort();
   }
 
   /*-----------------------------------------------*/
 
-  virtual void FillInterfaceList(const nvector<int>& elements,
-                                 nvector<int>& start,
-                                 nvector<MatrixEntryType>& values) const
-  {
+  virtual void FillInterfaceList(const nvector<int> &elements,
+                                 nvector<int> &start,
+                                 nvector<MatrixEntryType> &values) const {
     std::cerr << "\"MatrixInterface::FillInterfaceList\" not written!"
               << std::endl;
     abort();
   }
-  virtual void FurbishInterface(double d, const nvector<int>& elements,
-                                const nvector<int>& start,
-                                const nvector<MatrixEntryType>& values)
-  {
+  virtual void FurbishInterface(double d, const nvector<int> &elements,
+                                const nvector<int> &start,
+                                const nvector<MatrixEntryType> &values) {
     std::cerr << "\"MatrixInterface::FurbishInterface\" not written!"
               << std::endl;
     abort();
   }
 
-  virtual void PrepareJacobi(double s)
-  {
+  virtual void PrepareJacobi(double s) {
     std::cerr << "\"MatrixInterface::PrepareJacobi\" not written!" << std::endl;
     abort();
   }
-  virtual void Jacobi(GlobalVector& x) const
-  {
+  virtual void Jacobi(GlobalVector &x) const {
     std::cerr << "\"MatrixInterface::Jacobi\" not written!" << std::endl;
     abort();
   }
 
   /*-----------------------------------------------*/
 };
-}  // namespace Gascoigne
+} // namespace Gascoigne
 
 /*-------------------------------------------------------------*/
 

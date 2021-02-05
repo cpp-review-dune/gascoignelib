@@ -4,20 +4,9 @@
 
 using namespace std;
 
+namespace Gascoigne {
 
+template class Loop<2>;
+template class Loop<3>;
 
-namespace Gascoigne
-{
-
-  
-
-  template class Loop<2>;
-  template class Loop<3>;
-
-
-}
-
-
-
-
-
+} // namespace Gascoigne

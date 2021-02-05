@@ -25,14 +25,12 @@
 
 using namespace std;
 
-namespace Gascoigne
-{
+namespace Gascoigne {
 static CFDBlock3d H;
 
 /**********************************************************/
 
-ostream& CFDBlock3d::print(ostream& os) const
-{
+ostream &CFDBlock3d::print(ostream &os) const {
   os << "CFD\n";
   os << s << " " << dx << " " << dy << " " << dz << endl;
   os << gx << " " << laplx() << " " << 0 << 0 << endl;
@@ -44,17 +42,14 @@ ostream& CFDBlock3d::print(ostream& os) const
 
 /**********************************************************/
 
-void CFDBlock3d::zero()
-{
+void CFDBlock3d::zero() {
   s = dx = dy = dz = gx = laplx() = laply() = laplz() = gy = gz = 0.;
 }
 
 /**********************************************************/
 
-void CFDBlock3d::DirichletRow(const vector<int>& cv)
-{
-  for (int i = 0; i < cv.size(); i++)
-  {
+void CFDBlock3d::DirichletRow(const vector<int> &cv) {
+  for (int i = 0; i < cv.size(); i++) {
     int c = cv[i];
     if (c == 1)
       gradx() = 0.;
@@ -73,10 +68,8 @@ void CFDBlock3d::DirichletRow(const vector<int>& cv)
 
 /**********************************************************/
 
-void CFDBlock3d::DirichletCol(const vector<int>& cv)
-{
-  for (int i = 0; i < cv.size(); i++)
-  {
+void CFDBlock3d::DirichletCol(const vector<int> &cv) {
+  for (int i = 0; i < cv.size(); i++) {
     int c = cv[i];
     if (c == 1)
       divx() = 0.;
@@ -95,10 +88,8 @@ void CFDBlock3d::DirichletCol(const vector<int>& cv)
 
 /**********************************************************/
 
-void CFDBlock3d::DirichletDiag(const vector<int>& cv)
-{
-  for (int i = 0; i < cv.size(); i++)
-  {
+void CFDBlock3d::DirichletDiag(const vector<int> &cv) {
+  for (int i = 0; i < cv.size(); i++) {
     int c = cv[i];
     if (c == 1)
       laplx() = 1.;
@@ -111,10 +102,8 @@ void CFDBlock3d::DirichletDiag(const vector<int>& cv)
 
 /**********************************************************/
 
-MatrixEntryType CFDBlock3d::operator()(int i, int j) const
-{
-  if (i == 0)
-  {
+MatrixEntryType CFDBlock3d::operator()(int i, int j) const {
+  if (i == 0) {
     assert(0 <= j && j <= 3);
     if (j == 0)
       return s;
@@ -125,8 +114,7 @@ MatrixEntryType CFDBlock3d::operator()(int i, int j) const
     if (j == 3)
       return dz;
   }
-  if (i == j)
-  {
+  if (i == j) {
     if (i == 1)
       return laplx();
     if (i == 2)
@@ -134,8 +122,7 @@ MatrixEntryType CFDBlock3d::operator()(int i, int j) const
     if (i == 3)
       return laplz();
   }
-  if (j == 0)
-  {
+  if (j == 0) {
     if (i == 1)
       return gradx();
     if (i == 2)
@@ -148,8 +135,7 @@ MatrixEntryType CFDBlock3d::operator()(int i, int j) const
 
 /**********************************************************/
 
-MatrixEntryType& CFDBlock3d::diag(int i)
-{
+MatrixEntryType &CFDBlock3d::diag(int i) {
   assert(0 <= i && i <= 3);
   if (i == 0)
     return s;
@@ -164,8 +150,7 @@ MatrixEntryType& CFDBlock3d::diag(int i)
 
 /**********************************************************/
 
-void CFDBlock3d::adddiag(const nvector<double>& src, double l)
-{
+void CFDBlock3d::adddiag(const nvector<double> &src, double l) {
   s += l * src[0];
   lapx += l * src[1];
   lapy += l * src[2];
@@ -174,8 +159,7 @@ void CFDBlock3d::adddiag(const nvector<double>& src, double l)
 
 /**********************************************************/
 
-void CFDBlock3d::add(double d, const CFDBlock3d& A)
-{
+void CFDBlock3d::add(double d, const CFDBlock3d &A) {
   s += d * A.stab();
   dx += d * A.divx();
   dy += d * A.divy();
@@ -190,8 +174,7 @@ void CFDBlock3d::add(double d, const CFDBlock3d& A)
 
 /**********************************************************/
 
-void CFDBlock3d::add(double d, const TimePattern& TP)
-{
+void CFDBlock3d::add(double d, const TimePattern &TP) {
   s += d * TP(0, 0);
   laplx() += d * TP(1, 1);
   laply() += d * TP(2, 2);
@@ -200,8 +183,7 @@ void CFDBlock3d::add(double d, const TimePattern& TP)
 
 /**********************************************************/
 
-void CFDBlock3d::entry(const nmatrix<double>& E)
-{
+void CFDBlock3d::entry(const nmatrix<double> &E) {
 #pragma omp atomic update
   s += E(0, 0);
 #pragma omp atomic update
@@ -227,8 +209,7 @@ void CFDBlock3d::entry(const nmatrix<double>& E)
 
 /**********************************************************/
 
-void CFDBlock3d::entry(int i, int j, const EntryMatrix& E, double d)
-{
+void CFDBlock3d::entry(int i, int j, const EntryMatrix &E, double d) {
 #pragma omp atomic update
   s += d * E(i, j, 0, 0);
 #pragma omp atomic update
@@ -254,8 +235,7 @@ void CFDBlock3d::entry(int i, int j, const EntryMatrix& E, double d)
 
 /**********************************************************/
 
-void CFDBlock3d::dual_entry(int i, int j, const EntryMatrix& E, double d)
-{
+void CFDBlock3d::dual_entry(int i, int j, const EntryMatrix &E, double d) {
   std::cerr << "\"CFDBlock3d::dual_entry\" not written!" << std::endl;
   abort();
   //   s    += d*E(j,i,0,0);
@@ -273,8 +253,7 @@ void CFDBlock3d::dual_entry(int i, int j, const EntryMatrix& E, double d)
 
 /**********************************************************/
 
-void CFDBlock3d::operator*=(double d)
-{
+void CFDBlock3d::operator*=(double d) {
   s *= d;
   dx *= d;
   gx *= d;
@@ -289,8 +268,7 @@ void CFDBlock3d::operator*=(double d)
 
 /**********************************************************/
 
-void CFDBlock3d::operator*=(const CFDBlock3d& B)
-{
+void CFDBlock3d::operator*=(const CFDBlock3d &B) {
   double news = s * B.stab() + dx * B.gradx() + dy * B.grady() + dz * B.gradz();
   double newdx = s * B.divx() + dx * B.laplx();
   double newdy = s * B.divy() + dy * B.laply();
@@ -308,28 +286,27 @@ void CFDBlock3d::operator*=(const CFDBlock3d& B)
   newly += laply() * B.laply();
   newlz += laplz() * B.laplz();
 
-  s       = news;
-  dx      = newdx;
-  dy      = newdy;
-  dz      = newdz;
-  gx      = newgx;
-  gy      = newgy;
-  gz      = newgz;
+  s = news;
+  dx = newdx;
+  dy = newdy;
+  dz = newdz;
+  gx = newgx;
+  gy = newgy;
+  gz = newgz;
   laplx() = newlx;
   laply() = newly;
   laplz() = newlz;
 }
 /**********************************************************/
 
-void CFDBlock3d::operator=(const CFDBlock3d& B)
-{
-  s       = B.stab();
-  dx      = B.divx();
-  dy      = B.divy();
-  dz      = B.divz();
-  gx      = B.gradx();
-  gy      = B.grady();
-  gz      = B.gradz();
+void CFDBlock3d::operator=(const CFDBlock3d &B) {
+  s = B.stab();
+  dx = B.divx();
+  dy = B.divy();
+  dz = B.divz();
+  gx = B.gradx();
+  gy = B.grady();
+  gz = B.gradz();
   laplx() = B.laplx();
   laply() = B.laply();
   laplz() = B.laplz();
@@ -337,8 +314,7 @@ void CFDBlock3d::operator=(const CFDBlock3d& B)
 
 /**********************************************************/
 
-void CFDBlock3d::operator+=(const CFDBlock3d& B)
-{
+void CFDBlock3d::operator+=(const CFDBlock3d &B) {
   s += B.stab();
   dx += B.divx();
   dy += B.divy();
@@ -353,8 +329,7 @@ void CFDBlock3d::operator+=(const CFDBlock3d& B)
 
 /**********************************************************/
 
-void CFDBlock3d::operator-=(const CFDBlock3d& B)
-{
+void CFDBlock3d::operator-=(const CFDBlock3d &B) {
   s -= B.stab();
   dx -= B.divx();
   dy -= B.divy();
@@ -369,8 +344,7 @@ void CFDBlock3d::operator-=(const CFDBlock3d& B)
 
 /**********************************************************/
 
-void CFDBlock3d::inverse()
-{
+void CFDBlock3d::inverse() {
   // A = ( C D )
   //     ( G L )
   //
@@ -384,13 +358,13 @@ void CFDBlock3d::inverse()
   //     D' = -C^{-1}DS
   //
 
-  double is     = 1. / s;
+  double is = 1. / s;
   double schurx = lapx - (gx * dx + gy * dy + gz * dz) * is;
   double schury = lapy - (gx * dx + gy * dy + gz * dz) * is;
   double schurz = lapz - (gx * dx + gy * dy + gz * dz) * is;
-  schurx        = 1. / schurx;
-  schury        = 1. / schury;
-  schurz        = 1. / schurz;
+  schurx = 1. / schurx;
+  schury = 1. / schury;
+  schurz = 1. / schurz;
 
   lapx = schurx;
   lapy = schury;
@@ -412,8 +386,7 @@ void CFDBlock3d::inverse()
 
 /**********************************************************/
 
-void CFDBlock3d::submult(const CFDBlock3d& B, const CFDBlock3d& C)
-{
+void CFDBlock3d::submult(const CFDBlock3d &B, const CFDBlock3d &C) {
   // this -= B*C
 
   H = B;
@@ -423,15 +396,13 @@ void CFDBlock3d::submult(const CFDBlock3d& B, const CFDBlock3d& C)
 
 /**********************************************************/
 
-void CFDBlock3d::transpose()
-{
+void CFDBlock3d::transpose() {
   swap(dx, gx);
   swap(dy, gy);
   swap(dz, gz);
 }
 
-void CFDBlock3d::transpose(CFDBlock3d& A)
-{
+void CFDBlock3d::transpose(CFDBlock3d &A) {
   swap(s, A.stab());
   swap(gx, A.divx());
   swap(gy, A.divy());
@@ -446,8 +417,7 @@ void CFDBlock3d::transpose(CFDBlock3d& A)
 
 /**********************************************************/
 
-void CFDBlock3d::vmult(iterator p) const
-{
+void CFDBlock3d::vmult(iterator p) const {
   double v0 = *p;
   double v1 = *(p + 1);
   double v2 = *(p + 2);
@@ -456,15 +426,14 @@ void CFDBlock3d::vmult(iterator p) const
   *p++ = s * v0 + dx * v1 + dy * v2 + dz * v3;
   *p++ = gradx() * v0 + laplx() * v1;
   *p++ = grady() * v0 + laply() * v2;
-  *p   = gradz() * v0 + laplz() * v3;
+  *p = gradz() * v0 + laplz() * v3;
 
   p -= 3;
 }
 
 /**********************************************************/
 
-void CFDBlock3d::subtract(iterator p, const_iterator q0) const
-{
+void CFDBlock3d::subtract(iterator p, const_iterator q0) const {
   double a = s * *(q0) + dx * *(q0 + 1) + dy * *(q0 + 2) + dz * *(q0 + 3);
   *p++ -= a;
 
@@ -479,4 +448,4 @@ void CFDBlock3d::subtract(iterator p, const_iterator q0) const
 
   p -= 3;
 }
-}  // namespace Gascoigne
+} // namespace Gascoigne

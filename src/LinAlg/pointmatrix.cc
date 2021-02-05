@@ -31,22 +31,15 @@ using namespace std;
 
 /* ----------------------------------------- */
 
-namespace Gascoigne
-{
+namespace Gascoigne {
 PointMatrix::PointMatrix(int ncomp, string type)
-  : MatrixInterface(), _ncomp(ncomp)
-{
-  if (type == "node")
-  {
+    : MatrixInterface(), _ncomp(ncomp) {
+  if (type == "node") {
     //       SSAP = new SimpleSparseStructureAdaptor;
     SSAP = new NodeSparseStructureAdaptor(_ncomp);
-  }
-  else if (type == "component")
-  {
+  } else if (type == "component") {
     SSAP = new ComponentSparseStructureAdaptor(_ncomp);
-  }
-  else
-  {
+  } else {
     cerr << "PointMatrix::PointMatrix(): unknown type " << type << endl;
     abort();
   }
@@ -54,10 +47,8 @@ PointMatrix::PointMatrix(int ncomp, string type)
 
 /* ----------------------------------------- */
 
-PointMatrix::~PointMatrix()
-{
-  if (SSAP)
-  {
+PointMatrix::~PointMatrix() {
+  if (SSAP) {
     delete SSAP;
     SSAP = NULL;
   }
@@ -65,8 +56,7 @@ PointMatrix::~PointMatrix()
 
 /* ----------------------------------------- */
 
-void PointMatrix::ReInit(const SparseStructureInterface* S)
-{
+void PointMatrix::ReInit(const SparseStructureInterface *S) {
   SSAP->InitStructure(S);
   SimpleMatrix::ReInit(SSAP->n(), SSAP->nentries());
   SSAP->FillStencil(ST);
@@ -74,81 +64,68 @@ void PointMatrix::ReInit(const SparseStructureInterface* S)
 
 /* ----------------------------------------- */
 
-void PointMatrix::vmult(GlobalVector& y, const GlobalVector& x, double d) const
-{
+void PointMatrix::vmult(GlobalVector &y, const GlobalVector &x,
+                        double d) const {
   assert(SSAP->GetName() == "Node");
   SimpleMatrix::vmult(y, x, d);
 }
 
 /* ----------------------------------------- */
 
-void PointMatrix::vmult_transpose(GlobalVector& y, const GlobalVector& x,
-                                  double d) const
-{
+void PointMatrix::vmult_transpose(GlobalVector &y, const GlobalVector &x,
+                                  double d) const {
   assert(SSAP->GetName() == "Node");
   SimpleMatrix::vmult_transpose(y, x, d);
 }
 
 /*-----------------------------------------*/
 
-void PointMatrix::dirichlet(int inode, const vector<int>& cv)
-{
+void PointMatrix::dirichlet(int inode, const vector<int> &cv) {
   assert(SSAP);
   SimpleMatrix::dirichlet(SSAP->GetIndicesDirichlet(inode, cv));
 }
 
 /*-----------------------------------------*/
 
-void PointMatrix::dirichlet_only_row(int inode, const vector<int>& cv)
-{
+void PointMatrix::dirichlet_only_row(int inode, const vector<int> &cv) {
   assert(SSAP);
   SimpleMatrix::dirichlet_only_row(SSAP->GetIndicesDirichlet(inode, cv));
 }
 
 /*-----------------------------------------*/
 
-void PointMatrix::periodic(const map<int, int>& m_PeriodicPairs,
-                           const IntVector& iv_Components)
-{
-  const ColumnStencil S = *(dynamic_cast<const ColumnStencil*>(GetStencil()));
+void PointMatrix::periodic(const map<int, int> &m_PeriodicPairs,
+                           const IntVector &iv_Components) {
+  const ColumnStencil S = *(dynamic_cast<const ColumnStencil *>(GetStencil()));
 
-  for (int i = 0; i < iv_Components.size(); i++)
-  {
+  for (int i = 0; i < iv_Components.size(); i++) {
     int comp = iv_Components[i];
     int first, second;
 
     for (map<int, int>::const_iterator p_pair = m_PeriodicPairs.begin();
-         p_pair != m_PeriodicPairs.end(); p_pair++)
-    {
+         p_pair != m_PeriodicPairs.end(); p_pair++) {
       {
         // convert node and component to entry of matrix
-        first  = p_pair->first * _ncomp + comp;
+        first = p_pair->first * _ncomp + comp;
         second = p_pair->second * _ncomp + comp;
 
         // normalize row "first" and row "second"
-        for (int pos = S.start(first); pos < S.stop(first); pos++)
-        {
+        for (int pos = S.start(first); pos < S.stop(first); pos++) {
           int j = S.col(pos);
-          for (int pos2 = S.start(second); pos2 < S.stop(second); pos2++)
-          {
-            if (S.col(pos2) == j)
-            {
+          for (int pos2 = S.start(second); pos2 < S.stop(second); pos2++) {
+            if (S.col(pos2) == j) {
               value[pos2] = .5 * value[pos2] + .5 * value[pos];
-              value[pos]  = value[pos2];
+              value[pos] = value[pos2];
               break;
             }
           }
 
           // modify columns
-          if (j != first && j != second)
-          {
-            for (int pos3 = S.start(j); pos3 < S.stop(j); pos3++)
-            {
-              if (S.col(pos3) == first)
-              {
+          if (j != first && j != second) {
+            for (int pos3 = S.start(j); pos3 < S.stop(j); pos3++) {
+              if (S.col(pos3) == first) {
                 for (int pos4 = S.start(j); pos4 < S.stop(j); pos4++)
-                  if (S.col(pos4) == second)
-                  {
+                  if (S.col(pos4) == second) {
                     value[pos4] = .5 * value[pos4] + .5 * value[pos3];
                     value[pos3] = value[pos4];
                     break;
@@ -160,13 +137,10 @@ void PointMatrix::periodic(const map<int, int>& m_PeriodicPairs,
         }
 
         // finish modification of columns
-        for (int pos = S.start(first); pos < S.stop(first); pos++)
-        {
-          if (S.col(pos) == first)
-          {
+        for (int pos = S.start(first); pos < S.stop(first); pos++) {
+          if (S.col(pos) == first) {
             for (int pos2 = S.start(first); pos2 < S.stop(first); pos2++)
-              if (S.col(pos2) == second)
-              {
+              if (S.col(pos2) == second) {
                 value[pos] += value[pos2];
                 value[pos2] = 0.;
                 break;
@@ -174,13 +148,10 @@ void PointMatrix::periodic(const map<int, int>& m_PeriodicPairs,
             break;
           }
         }
-        for (int pos = S.start(second); pos < S.stop(second); pos++)
-        {
-          if (S.col(pos) == first)
-          {
+        for (int pos = S.start(second); pos < S.stop(second); pos++) {
+          if (S.col(pos) == first) {
             for (int pos2 = S.start(second); pos2 < S.stop(second); pos2++)
-              if (S.col(pos2) == second)
-              {
+              if (S.col(pos2) == second) {
                 value[pos2] += value[pos];
                 value[pos] = 0.;
                 break;
@@ -195,32 +166,26 @@ void PointMatrix::periodic(const map<int, int>& m_PeriodicPairs,
 
 /*-----------------------------------------*/
 
-void PointMatrix::entry_diag(int i, const nmatrix<double>& M)
-{
+void PointMatrix::entry_diag(int i, const nmatrix<double> &M) {
   IntVector cv(_ncomp);
   iota(cv.begin(), cv.end(), 0);
   dirichlet(i, cv);
 }
 
 /*-----------------------------------------*/
-void PointMatrix::entry(niiterator start, niiterator stop, const EntryMatrix& M,
-                        double s)
-{
+void PointMatrix::entry(niiterator start, niiterator stop, const EntryMatrix &M,
+                        double s) {
   int n = stop - start;
 
-  for (int ii = 0; ii < n; ii++)
-  {
+  for (int ii = 0; ii < n; ii++) {
     int i = *(start + ii);
-    for (int c = 0; c < _ncomp; c++)
-    {
+    for (int c = 0; c < _ncomp; c++) {
       int iglob = SSAP->index(i, c);
-      for (int jj = 0; jj < n; jj++)
-      {
+      for (int jj = 0; jj < n; jj++) {
         int j = *(start + jj);
-        for (int d = 0; d < _ncomp; d++)
-        {
+        for (int d = 0; d < _ncomp; d++) {
           int jglob = SSAP->index(j, d);
-          int pos   = ST.Find(iglob, jglob);
+          int pos = ST.Find(iglob, jglob);
 #pragma omp atomic update
           value[pos] += s * M(ii, jj, c, d);
         }
@@ -230,24 +195,19 @@ void PointMatrix::entry(niiterator start, niiterator stop, const EntryMatrix& M,
 }
 
 void PointMatrix::entry(niiterator start1, niiterator stop1, niiterator start2,
-                        niiterator stop2, const EntryMatrix& M, double s)
-{
+                        niiterator stop2, const EntryMatrix &M, double s) {
   int n1 = stop1 - start1;
   int n2 = stop2 - start2;
   assert(n1 == n2);
-  for (int ii = 0; ii < n1; ii++)
-  {
+  for (int ii = 0; ii < n1; ii++) {
     int i = *(start1 + ii);
-    for (int c = 0; c < _ncomp; c++)
-    {
+    for (int c = 0; c < _ncomp; c++) {
       int iglob = SSAP->index(i, c);
-      for (int jj = 0; jj < n1; jj++)
-      {
+      for (int jj = 0; jj < n1; jj++) {
         int j = *(start2 + jj);
-        for (int d = 0; d < _ncomp; d++)
-        {
+        for (int d = 0; d < _ncomp; d++) {
           int jglob = SSAP->index(j, d);
-          int pos   = ST.Find(iglob, jglob);
+          int pos = ST.Find(iglob, jglob);
 #pragma omp atomic update
           value[pos] += s * M(ii, jj, c, d);
         }
@@ -255,40 +215,33 @@ void PointMatrix::entry(niiterator start1, niiterator stop1, niiterator start2,
     }
   }
 }
-void PointMatrix::AddMassWithDifferentStencil(const MatrixInterface* MP,
-                                              const TimePattern& TP, double s)
-{
-  const SimpleMatrix* SM = dynamic_cast<const SimpleMatrix*>(MP);
+void PointMatrix::AddMassWithDifferentStencil(const MatrixInterface *MP,
+                                              const TimePattern &TP, double s) {
+  const SimpleMatrix *SM = dynamic_cast<const SimpleMatrix *>(MP);
   assert(SM);
 
   int n = SSAP->nnodes();
 
-  const ColumnStencil* SMS =
-    dynamic_cast<const ColumnStencil*>(SM->GetStencil());
-  const NodeSparseStructureAdaptor* NSMS =
-    dynamic_cast<const NodeSparseStructureAdaptor*>(SSAP);
+  const ColumnStencil *SMS =
+      dynamic_cast<const ColumnStencil *>(SM->GetStencil());
+  const NodeSparseStructureAdaptor *NSMS =
+      dynamic_cast<const NodeSparseStructureAdaptor *>(SSAP);
   assert(NSMS);
 
   assert(n == SMS->n());
 
-  for (int i = 0; i < n; i++)
-  {
-    for (int pos = SMS->start(i); pos < SMS->stop(i); pos++)
-    {
-      int j    = SMS->col(pos);
+  for (int i = 0; i < n; i++) {
+    for (int pos = SMS->start(i); pos < SMS->stop(i); pos++) {
+      int j = SMS->col(pos);
       double m = s * SM->GetValue(pos);
 
-      for (int c = 0; c < _ncomp; c++)
-      {
+      for (int c = 0; c < _ncomp; c++) {
         int isystem = NSMS->index(i, c);
-        for (int d = 0; d < _ncomp; d++)
-        {
+        for (int d = 0; d < _ncomp; d++) {
           int jsystem = NSMS->index(j, d);
-          bool found  = 0;
-          for (int pos2 = ST.start(isystem); pos2 < ST.stop(isystem); pos2++)
-          {
-            if (ST.col(pos2) == jsystem)
-            {
+          bool found = 0;
+          for (int pos2 = ST.start(isystem); pos2 < ST.stop(isystem); pos2++) {
+            if (ST.col(pos2) == jsystem) {
               found = 1;
               value[pos2] += m * TP(c, d);
             }
@@ -320,49 +273,41 @@ void PointMatrix::AddMassWithDifferentStencil(const MatrixInterface* MP,
 
 /*-----------------------------------------*/
 
-void PointMatrix::AddMassWithDifferentStencilJacobi(const MatrixInterface* MP,
-                                                    const TimePattern& TP,
-                                                    double s)
-{
-  const SimpleMatrix* SM = dynamic_cast<const SimpleMatrix*>(MP);
+void PointMatrix::AddMassWithDifferentStencilJacobi(const MatrixInterface *MP,
+                                                    const TimePattern &TP,
+                                                    double s) {
+  const SimpleMatrix *SM = dynamic_cast<const SimpleMatrix *>(MP);
   assert(SM);
 
   int n = SSAP->nnodes();
 
-  const ColumnStencil* SMS =
-    dynamic_cast<const ColumnStencil*>(SM->GetStencil());
-  const NodeSparseStructureAdaptor* NSMS =
-    dynamic_cast<const NodeSparseStructureAdaptor*>(SSAP);
+  const ColumnStencil *SMS =
+      dynamic_cast<const ColumnStencil *>(SM->GetStencil());
+  const NodeSparseStructureAdaptor *NSMS =
+      dynamic_cast<const NodeSparseStructureAdaptor *>(SSAP);
   assert(NSMS);
 
   assert(n == SMS->n());
 
   vector<double> diag(n);
-  for (int i = 0; i < n; i++)
-  {
+  for (int i = 0; i < n; i++) {
     diag[i] = SM->GetValue(i, i);
   }
 
-  for (int i = 0; i < n; i++)
-  {
-    for (int pos = SMS->start(i); pos < SMS->stop(i); pos++)
-    {
-      int j    = SMS->col(pos);
+  for (int i = 0; i < n; i++) {
+    for (int pos = SMS->start(i); pos < SMS->stop(i); pos++) {
+      int j = SMS->col(pos);
       double m = s * SM->GetValue(pos);
 
       m /= sqrt(diag[i] * diag[j]);
 
-      for (int c = 0; c < _ncomp; c++)
-      {
+      for (int c = 0; c < _ncomp; c++) {
         int isystem = NSMS->index(i, c);
-        for (int d = 0; d < _ncomp; d++)
-        {
+        for (int d = 0; d < _ncomp; d++) {
           int jsystem = NSMS->index(j, d);
-          bool found  = 0;
-          for (int pos2 = ST.start(isystem); pos2 < ST.stop(isystem); pos2++)
-          {
-            if (ST.col(pos2) == jsystem)
-            {
+          bool found = 0;
+          for (int pos2 = ST.start(isystem); pos2 < ST.stop(isystem); pos2++) {
+            if (ST.col(pos2) == jsystem) {
               found = 1;
               value[pos2] += m * TP(c, d);
             }
@@ -377,9 +322,8 @@ void PointMatrix::AddMassWithDifferentStencilJacobi(const MatrixInterface* MP,
 
 /*-----------------------------------------*/
 
-void PointMatrix::RestrictMatrix(const MgInterpolatorMatrix& I,
-                                 const PointMatrix& Ah)
-{
+void PointMatrix::RestrictMatrix(const MgInterpolatorMatrix &I,
+                                 const PointMatrix &Ah) {
   std::cerr << "\"PointMatrix::RestrictMatrix\" not written!" << std::endl;
   abort();
 
@@ -412,4 +356,4 @@ void PointMatrix::RestrictMatrix(const MgInterpolatorMatrix& I,
   // 	}
   //     }
 }
-}  // namespace Gascoigne
+} // namespace Gascoigne

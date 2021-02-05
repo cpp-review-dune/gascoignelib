@@ -6,103 +6,84 @@
 
 //#ifdef __WITH_UMFPACK__
 
+#include "iluinterface.h"
+#include "sparseblockmatrix.h"
 
-#include  "iluinterface.h"
-#include  "sparseblockmatrix.h"
+namespace Gascoigne {
 
+/////////////////////////////////////////////
+///
+///@brief
+///  ... comments UmfIlu
+///
+///
+/////////////////////////////////////////////
 
-namespace Gascoigne
-{
+template <class B> class SparseUmf : virtual public IluInterface {
+protected:
+  const SparseBlockMatrix<B> *__AS;
 
-  /////////////////////////////////////////////
-  ///
-  ///@brief
-  ///  ... comments UmfIlu
-  ///
-  ///
-  /////////////////////////////////////////////
+  mutable nvector<double> __diag;
 
-  template<class B>
-  class SparseUmf : virtual public IluInterface
-  {
-  protected:
-    const SparseBlockMatrix<B>* __AS;
+protected:
+  // fuer umfpack
+  double *Control;
+  double *Info;
+  void *Symbolic, *Numeric;
 
-    mutable nvector<double> __diag;
+  std::vector<long> __Ap, __Ac;
+  nvector<double> __Ax;
 
+  int __ncomp;
 
-  protected:
+public:
+  //
+  ///  Constructor
+  //
+  SparseUmf(const MatrixInterface *A);
+  SparseUmf();
 
-    // fuer umfpack
-    double *Control;
-    double *Info;
-    void *Symbolic, *Numeric ;
+  void SetMatrix(const MatrixInterface *A);
 
-    std::vector<long>     __Ap,__Ac;
-    nvector<double> __Ax;
+  ~SparseUmf();
 
-    int __ncomp;
+  std::string GetName() const { return "Sparse-UMF"; }
 
+  nvector<double> &GetRaw() { return __Ax; }
+  std::vector<long> &GetRawColumn() { return __Ac; }
+  std::vector<long> &GetRawPosition() { return __Ap; }
 
-  public:
+  double exec(std::string cmd) const;
+  double condition_number() const;
+  void do_precondition();
+  void undo_precondition();
 
-    //
-    ///  Constructor
-    //
-    SparseUmf(const MatrixInterface* A);
-    SparseUmf();
+  int n() const {
+    std::cerr << "SparseUmf::n()" << std::endl;
+    abort();
+  }
 
+  void zero() { __Ax.zero(); }
 
-    void SetMatrix(const MatrixInterface* A);
+  void ReInit(const SparseStructureInterface *SS) {
+    assert(dynamic_cast<const SparseBlockMatrix<B> *>(__AS));
+  }
 
-    ~SparseUmf();
+  void copy_entries(const MatrixInterface &A);
+  void add_entries(double s, const MatrixInterface *A);
 
+  void ConstructStructure(const IntVector &perm, const MatrixInterface &A);
+  void ConstructStructure(int ncomp, const SparseStructure &SS);
+  void modify(int c, double s) {}
+  void compute_ilu();
 
-    std::string GetName() const { return "Sparse-UMF"; }
+  void solve(GlobalVector &x) const;
 
-    nvector<double>& GetRaw() { return __Ax; }
-    std::vector<long>&    GetRawColumn() { return __Ac; }
-    std::vector<long>&    GetRawPosition() { return __Ap; }
-
-    double exec(std::string cmd) const;
-    double condition_number()  const;
-    void do_precondition();
-    void undo_precondition();
-
-
-
-    int   n()          const { std::cerr << "SparseUmf::n()" << std::endl; abort(); }
-
-    void zero()
-    {
-      __Ax.zero();
-    }
-
-    void ReInit(const SparseStructureInterface* SS)
-    {
-      assert(dynamic_cast<const SparseBlockMatrix<B> *>(__AS));
-    }
-
-    void copy_entries(const MatrixInterface& A);
-    void add_entries(double s, const MatrixInterface*  A);
-
-    void ConstructStructure(const IntVector& perm, const MatrixInterface& A);
-    void ConstructStructure(int ncomp, const SparseStructure& SS);
-    void modify(int c, double s) {}
-    void compute_ilu ();
-
-    void solve(GlobalVector& x) const;
-
-    void SolveTranspose(DoubleVector& x, const DoubleVector& b)
-    {
-      abort();
-    }
-
-  };
-}
+  void SolveTranspose(DoubleVector &x, const DoubleVector &b) { abort(); }
+};
+} // namespace Gascoigne
 
 //#endif
-
 
 /*----------------------------   sparse_umf.h     ---------------------------*/
 /* end of #ifndef __sparse_umf_H */

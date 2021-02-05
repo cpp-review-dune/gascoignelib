@@ -22,12 +22,11 @@
  **/
 
 #include "sparseblockmatrix.xx"
-#include "fmatrixblock.h"
 #include "cfdblock3d.h"
+#include "fmatrixblock.h"
 #include "sparseblock.h"
 
-namespace Gascoigne
-{
+namespace Gascoigne {
 template class SparseBlockMatrix<FMatrixBlock<1>>;
 template class SparseBlockMatrix<FMatrixBlock<2>>;
 template class SparseBlockMatrix<FMatrixBlock<3>>;
@@ -39,4 +38,4 @@ template class SparseBlockMatrix<FMatrixBlock<8>>;
 
 template class SparseBlockMatrix<SparseBlock>;
 
-}  // namespace Gascoigne
+} // namespace Gascoigne

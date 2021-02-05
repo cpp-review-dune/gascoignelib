@@ -21,96 +21,82 @@
  *
  **/
 
-
 #include "matrixagent.h"
 
-namespace Gascoigne
-{
+namespace Gascoigne {
 
-  /*-------------------------------------------------*/
+/*-------------------------------------------------*/
 
-  MatrixAgent::MatrixAgent() {}
+MatrixAgent::MatrixAgent() {}
 
-  /*-------------------------------------------------*/
+/*-------------------------------------------------*/
 
-  MatrixAgent::~MatrixAgent()
-  {
-    for (auto p=begin(); p!=end(); p++)
-      { 
-	if(p->second) 
-	  {
-	    delete p->second; 
-	    p->second = NULL;
-	  } 
-      }
-    std::map<Matrix,MatrixInterface*>::clear();
+MatrixAgent::~MatrixAgent() {
+  for (auto p = begin(); p != end(); p++) {
+    if (p->second) {
+      delete p->second;
+      p->second = NULL;
+    }
   }
-  
-  /*-------------------------------------------------*/
-  
-  void MatrixAgent::Register(const Matrix& mg)
-  {
-    auto p = find(mg);
-    if(p==end())
-      insert(std::make_pair(mg,static_cast<MatrixInterface*>(NULL)));
-  }
-  
-  /*-------------------------------------------------*/
-
-  void MatrixAgent::Delete(Matrix& mg) 
-  {
-    auto p=find(mg);
-    if (p!=end())
-      {
-	delete p->second; 
-	erase(p);
-      }
-  }
-    
-  /*-------------------------------------------------*/
-  
-  MatrixInterface& MatrixAgent::operator()(const Matrix& g) 
-  {
-    auto p = find(g);
-    if (p==end())
-      {
-	std::cerr << __FILE__ << ":" << __LINE__;
-	std::cerr << ": MatrixAgent::operator(): ERROR"<<std::endl;
-	std::cerr << __FILE__ << ":" << __LINE__;
-	std::cerr << ": Matrix '"<< g <<"' not found in list of: "<<std::endl;
-	std::cerr << " "<< *this << std::endl;
-	abort();
-      }
-    MatrixInterface* vp = p->second;
-    if (vp==NULL) 
-      {
-	std::cerr <<  "MatrixAgent  MatrixInterface* NULL\t" << p->first;
-	std::cerr << "\n" << *this << std::endl;
-	abort();
-      }
-    return *vp;
-  }
-
-  const MatrixInterface& MatrixAgent::operator()(const Matrix& g)  const
-  {
-    const auto p = find(g);
-    if (p==end())
-      {
-	std::cerr << __FILE__ << ":" << __LINE__;
-	std::cerr << ": MatrixAgent::operator(): ERROR"<<std::endl;
-	std::cerr << __FILE__ << ":" << __LINE__;
-	std::cerr << ": Matrix '"<< g <<"' not found in list of: "<<std::endl;
-	std::cerr << " "<< *this << std::endl;
-	abort();
-      }
-    MatrixInterface* vp = p->second;
-    if (vp==NULL) 
-      {
-	std::cerr <<  "MatrixAgent  MatrixInterface* NULL\t" << p->first;
-	std::cerr << "\n" << *this << std::endl;
-	abort();
-      }
-    return *vp;
-  }
-
+  std::map<Matrix, MatrixInterface *>::clear();
 }
+
+/*-------------------------------------------------*/
+
+void MatrixAgent::Register(const Matrix &mg) {
+  auto p = find(mg);
+  if (p == end())
+    insert(std::make_pair(mg, static_cast<MatrixInterface *>(NULL)));
+}
+
+/*-------------------------------------------------*/
+
+void MatrixAgent::Delete(Matrix &mg) {
+  auto p = find(mg);
+  if (p != end()) {
+    delete p->second;
+    erase(p);
+  }
+}
+
+/*-------------------------------------------------*/
+
+MatrixInterface &MatrixAgent::operator()(const Matrix &g) {
+  auto p = find(g);
+  if (p == end()) {
+    std::cerr << __FILE__ << ":" << __LINE__;
+    std::cerr << ": MatrixAgent::operator(): ERROR" << std::endl;
+    std::cerr << __FILE__ << ":" << __LINE__;
+    std::cerr << ": Matrix '" << g << "' not found in list of: " << std::endl;
+    std::cerr << " " << *this << std::endl;
+    abort();
+  }
+  MatrixInterface *vp = p->second;
+  if (vp == NULL) {
+    std::cerr << "MatrixAgent  MatrixInterface* NULL\t" << p->first;
+    std::cerr << "\n" << *this << std::endl;
+    abort();
+  }
+  return *vp;
+}
+
+const MatrixInterface &MatrixAgent::operator()(const Matrix &g) const {
+  const auto p = find(g);
+  if (p == end()) {
+    std::cerr << __FILE__ << ":" << __LINE__;
+    std::cerr << ": MatrixAgent::operator(): ERROR" << std::endl;
+    std::cerr << __FILE__ << ":" << __LINE__;
+    std::cerr << ": Matrix '" << g << "' not found in list of: " << std::endl;
+    std::cerr << " " << *this << std::endl;
+    abort();
+  }
+  MatrixInterface *vp = p->second;
+  if (vp == NULL) {
+    std::cerr << "MatrixAgent  MatrixInterface* NULL\t" << p->first;
+    std::cerr << "\n" << *this << std::endl;
+    abort();
+  }
+  return *vp;
+}
+
+} // namespace Gascoigne

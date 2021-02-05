@@ -1,26 +1,25 @@
 /**
-*
-* Copyright (C) 2004, 2005 by the Gascoigne 3D authors
-*
-* This file is part of Gascoigne 3D
-*
-* Gascoigne 3D is free software: you can redistribute it
-* and/or modify it under the terms of the GNU General Public
-* License as published by the Free Software Foundation, either
-* version 3 of the License, or (at your option) any later
-* version.
-*
-* Gascoigne 3D is distributed in the hope that it will be
-* useful, but WITHOUT ANY WARRANTY; without even the implied
-* warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-* PURPOSE.  See the GNU General Public License for more
-* details.
-*
-* Please refer to the file LICENSE.TXT for further information
-* on this license.
-*
-**/
-
+ *
+ * Copyright (C) 2004, 2005 by the Gascoigne 3D authors
+ *
+ * This file is part of Gascoigne 3D
+ *
+ * Gascoigne 3D is free software: you can redistribute it
+ * and/or modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation, either
+ * version 3 of the License, or (at your option) any later
+ * version.
+ *
+ * Gascoigne 3D is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more
+ * details.
+ *
+ * Please refer to the file LICENSE.TXT for further information
+ * on this license.
+ *
+ **/
 
 #ifndef __SimpleIlu_h
 #define __SimpleIlu_h
@@ -28,62 +27,49 @@
 #include "matrixinterface.h"
 #include "simplematrix.h"
 
+namespace Gascoigne {
 
-namespace Gascoigne
-{
+/////////////////////////////////////////////
+///
+///@brief
+///  ... comments SimpleIlu
 
-  /////////////////////////////////////////////
-  ///
-  ///@brief
-  ///  ... comments SimpleIlu
+///
+///
+/////////////////////////////////////////////
 
-  ///
-  ///
-  /////////////////////////////////////////////
+class SimpleIlu : public SimpleMatrix {
+protected:
+  IntVector p, q;
+  mutable DoubleVector yp;
 
-  class SimpleIlu : public SimpleMatrix
-  {
-  protected:
-    IntVector p, q;
-    mutable DoubleVector yp;
+  void hin(const DoubleVector &y) const;
+  void her(DoubleVector &y) const;
+  void backward() const;
+  void forward() const;
+  void backward_transpose() const;
+  void forward_transpose() const;
 
-    void hin(const DoubleVector &y) const;
-    void her(DoubleVector &y) const;
-    void backward() const;
-    void forward() const;
-    void backward_transpose() const;
-    void forward_transpose() const;
+public:
+  //
+  ///  Constructor
+  //
 
-  public:
-    //
-    ///  Constructor
-    //
+  SimpleIlu() : SimpleMatrix() {}
 
-    SimpleIlu()
-        : SimpleMatrix()
-    {
-    }
-
-    int n() const
-    {
-      return GetStencil()->n();
-    };
-    void zero()
-    {
-      SimpleMatrix::zero();
-    }
+  int n() const { return GetStencil()->n(); };
+  void zero() { SimpleMatrix::zero(); }
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Woverloaded-virtual"
-    void ReInit(int n, int nentries);
-    void copy_entries(const MatrixInterface &A);
+  void ReInit(int n, int nentries);
+  void copy_entries(const MatrixInterface &A);
 #pragma GCC diagnostic pop
 
-
-    void compute_ilu();
-    void solve(DoubleVector &x) const;
-    void solve_transpose(DoubleVector &x) const;
-  };
-}
+  void compute_ilu();
+  void solve(DoubleVector &x) const;
+  void solve_transpose(DoubleVector &x) const;
+};
+} // namespace Gascoigne
 
 #endif

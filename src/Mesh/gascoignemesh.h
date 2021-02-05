@@ -1,9 +1,8 @@
-/*----------------------------   gascoignemesh.h     ---------------------------*/
+/*----------------------------   gascoignemesh.h ---------------------------*/
 /*      $Id:$                 */
 #ifndef __gascoignemesh_H
 #define __gascoignemesh_H
-/*----------------------------   gascoignemesh.h     ---------------------------*/
-
+/*----------------------------   gascoignemesh.h ---------------------------*/
 
 /**
  *
@@ -31,13 +30,11 @@
 // class will be replaced by DofHandler
 #include "dofhandler.h"
 
-namespace Gascoigne
-{
-  typedef DofHandlerBase GascoigneMesh;
+namespace Gascoigne {
+typedef DofHandlerBase GascoigneMesh;
 }
 
-
-/*----------------------------   gascoignemesh.h     ---------------------------*/
+/*----------------------------   gascoignemesh.h ---------------------------*/
 /* end of #ifndef __gascoignemesh_H */
 #endif
-/*----------------------------   gascoignemesh.h     ---------------------------*/
+/*----------------------------   gascoignemesh.h ---------------------------*/

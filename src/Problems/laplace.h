@@ -4,8 +4,6 @@
 #define __laplace_H
 /*----------------------------   laplace.h     ---------------------------*/
 
-
-
 /**
  *
  * Copyright (C) 2004,2018 by the Gascoigne 3D authors
@@ -29,83 +27,54 @@
  *
  **/
 
-
 #include "equation.h"
 #include "paramfile.h"
 
 /*-----------------------------------------*/
 
-namespace Gascoigne
-{
+namespace Gascoigne {
 
-  class LaplaceData
-  {
-  public:
-    double visc;
+class LaplaceData {
+public:
+  double visc;
 
-    void BasicInit(const ParamFile &pf)
-    {
-      DataFormatHandler DFH;
-      DFH.insert("visc", &visc, 1.);
-      FileScanner FS(DFH, pf, "Equation");
-    }
-  };
+  void BasicInit(const ParamFile &pf) {
+    DataFormatHandler DFH;
+    DFH.insert("visc", &visc, 1.);
+    FileScanner FS(DFH, pf, "Equation");
+  }
+};
 
-  template <int DIM>
-  class Laplace : public virtual Equation
-  {
+template <int DIM> class Laplace : public virtual Equation {
 
-  protected:
-    LaplaceData    data;
+protected:
+  LaplaceData data;
 
-  public:
-    Laplace(const LaplaceData &PD) : data(PD)
-    {
-    }
+public:
+  Laplace(const LaplaceData &PD) : data(PD) {}
 
-    Laplace<DIM>* createNew() const
-    {
-      return new Laplace<DIM>(data);
-    }
+  Laplace<DIM> *createNew() const { return new Laplace<DIM>(data); }
 
+  std::string GetName() const { return "Laplace"; }
+  int GetNcomp() const { return 1; }
+  void point(double h, const FemFunction &U, const Vertex2d &v) const {}
 
-    std::string GetName() const
-    {
-      return "Laplace";
-    }
-    int GetNcomp() const
-    {
-      return 1;
-    }
-    void point(double h, const FemFunction& U, const Vertex2d& v) const
-    {
-    }
+  void Form(VectorIterator b, const FemFunction &U,
+            const TestFunction &N) const {
+    for (int i = 0; i < DIM; ++i)
+      b[0] += data.visc * U[0][i + 1] * N[i + 1];
+  }
 
-    void
-    Form(VectorIterator b, const FemFunction &U, const TestFunction &N) const
-    {
-      for (int i = 0; i < DIM; ++i)
-        b[0] += data.visc * U[0][i + 1] * N[i+1];
-    }
-
-
-    void Matrix(EntryMatrix &A,
-                const FemFunction &U,
-                const TestFunction &M,
-                const TestFunction &N) const
-    {
-      for (int i = 0; i < DIM; ++i)
-	A(0,0) += data.visc * M[i+1] * N[i+1];
-    }
-  };
+  void Matrix(EntryMatrix &A, const FemFunction &U, const TestFunction &M,
+              const TestFunction &N) const {
+    for (int i = 0; i < DIM; ++i)
+      A(0, 0) += data.visc * M[i + 1] * N[i + 1];
+  }
+};
 
 #define Laplace3d Laplace<3>
 #define Laplace2d Laplace<2>
-}
-
-
-
-
+} // namespace Gascoigne
 
 /*----------------------------   laplace.h     ---------------------------*/
 /* end of #ifndef __laplace_H */

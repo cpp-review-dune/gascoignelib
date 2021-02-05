@@ -29,38 +29,31 @@
 #include "giota.h"
 #include "stringutil.h"
 
-#include <random>
 #include <algorithm>
+#include <random>
 
 using namespace std;
 
 /*------------------------------------------------------*/
 
-namespace Gascoigne
-{
+namespace Gascoigne {
 HierarchicalMesh::HierarchicalMesh()
-  : mnlevels(1), pdepth(1), etapatcher(1), _i_showoutput(0), withfaces(1)
-{
-}
+    : mnlevels(1), pdepth(1), etapatcher(1), _i_showoutput(0), withfaces(1) {}
 
 /*------------------------------------------------------*/
 
-HierarchicalMesh::HierarchicalMesh(const HierarchicalMesh& H)
-  : mnlevels(1), pdepth(1), etapatcher(1), withfaces(1)
-{
+HierarchicalMesh::HierarchicalMesh(const HierarchicalMesh &H)
+    : mnlevels(1), pdepth(1), etapatcher(1), withfaces(1) {
   *this = H;
 }
 
 /*------------------------------------------------------*/
 
-HierarchicalMesh::~HierarchicalMesh()
-{
-}
+HierarchicalMesh::~HierarchicalMesh() {}
 
 /*------------------------------------------------------*/
 
-HierarchicalMesh& HierarchicalMesh::operator=(const HierarchicalMesh& H)
-{
+HierarchicalMesh &HierarchicalMesh::operator=(const HierarchicalMesh &H) {
   // copy nearly all data
   mnlevels = H.nlevels() - 1;
 
@@ -72,8 +65,8 @@ HierarchicalMesh& HierarchicalMesh::operator=(const HierarchicalMesh& H)
   eo2n = *H.Edgeo2n();
   co2n = *H.Cello2n();
 
-  edges     = H.edge();
-  pdepth    = H.patchdepth();
+  edges = H.edge();
+  pdepth = H.patchdepth();
   withfaces = H.withfaces;
 
   return *this;
@@ -81,8 +74,7 @@ HierarchicalMesh& HierarchicalMesh::operator=(const HierarchicalMesh& H)
 
 /*------------------------------------------------------*/
 
-void HierarchicalMesh::clear_transfer_lists()
-{
+void HierarchicalMesh::clear_transfer_lists() {
   vo2n.resize(0);
   eo2n.resize(0);
   co2n.resize(0);
@@ -91,31 +83,24 @@ void HierarchicalMesh::clear_transfer_lists()
 /*------------------------------------------------------*/
 
 void HierarchicalMesh::SetParameters(string gridname, int patchdepth,
-                                     int epatcher)
-{
-  pdepth     = patchdepth;
+                                     int epatcher) {
+  pdepth = patchdepth;
   etapatcher = epatcher;
 
-  if (gridname == "none")
-  {
+  if (gridname == "none") {
     cerr << "no \"gridname\" " << endl;
     return;
     abort();
   }
 
   vector<string> s = StringSplit(gridname.c_str(), '.');
-  string suff      = s[s.size() - 1];
+  string suff = s[s.size() - 1];
 
-  if (suff == "inp")
-  {
+  if (suff == "inp") {
     read_inp(gridname);
-  }
-  else if (suff == "gup")
-  {
+  } else if (suff == "gup") {
     read_gup(gridname);
-  }
-  else
-  {
+  } else {
     cerr << "HierarchicalMesh::read():\tunknown suffix " << suff << endl;
     abort();
   }
@@ -123,22 +108,18 @@ void HierarchicalMesh::SetParameters(string gridname, int patchdepth,
 
 /*------------------------------------------------------*/
 
-void HierarchicalMesh::BasicInit(const ParamFile &pf, int pdepth)
-{
+void HierarchicalMesh::BasicInit(const ParamFile &pf, int pdepth) {
   int patchdepth, epatcher;
   int prerefine;
   string gridname;
 
   DataFormatHandler DFH;
 
-  DFH.insert("gridname", &gridname, "none");  // inp oder gup Format
+  DFH.insert("gridname", &gridname, "none"); // inp oder gup Format
   DFH.insert("prerefine", &prerefine, 0);
-  if (pdepth != 0)
-  {
+  if (pdepth != 0) {
     patchdepth = pdepth;
-  }
-  else
-  {
+  } else {
     DFH.insert("patchdepth", &patchdepth, 1);
   }
   DFH.insert("etapatcher", &epatcher, 1);
@@ -155,18 +136,13 @@ void HierarchicalMesh::BasicInit(const ParamFile &pf, int pdepth)
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh::global_refine(int k)
-{
+void HierarchicalMesh::global_refine(int k) {
   IntVector cell_coarse(0);
 
-  if (k == 0)
-  {
+  if (k == 0) {
     refine(cell_coarse, cell_coarse);
-  }
-  else
-  {
-    for (int i = 0; i < k; i++)
-    {
+  } else {
+    for (int i = 0; i < k; i++) {
       IntVector v(ncells());
       iota(v.begin(), v.end(), 0);
       refine(v, cell_coarse);
@@ -176,12 +152,10 @@ void HierarchicalMesh::global_refine(int k)
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh::global_patch_coarsen(int k)
-{
+void HierarchicalMesh::global_patch_coarsen(int k) {
   IntVector cell_refine(0);
 
-  for (int i = 0; i < k; i++)
-  {
+  for (int i = 0; i < k; i++) {
     IntVector cell_coarse(ncells());
     iota(cell_coarse.begin(), cell_coarse.end(), 0);
     patch_refine(cell_refine, cell_coarse);
@@ -190,8 +164,7 @@ void HierarchicalMesh::global_patch_coarsen(int k)
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh::random_refine(double p, int c)
-{
+void HierarchicalMesh::random_refine(double p, int c) {
   int nq = ncells();
   int nc = 1 + static_cast<int>(p * nq);
 
@@ -206,8 +179,7 @@ void HierarchicalMesh::random_refine(double p, int c)
     if (random() % 100 < 100.0 * p)
       cell_ref.push_back(i);
 
-  if (c)
-  {
+  if (c) {
     int nq = ncells();
     cell_coarse.resize(nq);
     iota(cell_coarse.begin(), cell_coarse.end(), 0);
@@ -217,8 +189,7 @@ void HierarchicalMesh::random_refine(double p, int c)
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh::random_patch_coarsen(double p, int r)
-{
+void HierarchicalMesh::random_patch_coarsen(double p, int r) {
   int nq = ncells();
   int nc = 1 + static_cast<int>(p * nq);
 
@@ -234,8 +205,7 @@ void HierarchicalMesh::random_patch_coarsen(double p, int r)
   abort();
   //  random_sample(v.begin(),v.end(),cell_coarsen.begin(),cell_coarsen.end());
 
-  if (r)
-  {
+  if (r) {
     int nq = ncells();
     cell_refine.resize(nq);
     iota(cell_refine.begin(), cell_refine.end(), 0);
@@ -245,8 +215,7 @@ void HierarchicalMesh::random_patch_coarsen(double p, int r)
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh::random_patch_refine(double p, int c)
-{
+void HierarchicalMesh::random_patch_refine(double p, int c) {
   int nq = ncells();
   int nc = 1 + static_cast<int>(p * nq);
 
@@ -263,8 +232,7 @@ void HierarchicalMesh::random_patch_refine(double p, int c)
         cell_ref.push_back(i);
   cout << cell_ref << endl;
 
-  if (c)
-  {
+  if (c) {
     int nq = ncells();
     cell_coarse.resize(nq);
     iota(cell_coarse.begin(), cell_coarse.end(), 0);
@@ -274,9 +242,8 @@ void HierarchicalMesh::random_patch_refine(double p, int c)
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh::vertex_patch_refine(IntVector& refnodes,
-                                           IntVector& coarsenodes)
-{
+void HierarchicalMesh::vertex_patch_refine(IntVector &refnodes,
+                                           IntVector &coarsenodes) {
   IntVector ref, coarse, vertexlevel;
   IntSet refcoarsenodes, coarsecoarsenodes;
 
@@ -285,12 +252,9 @@ void HierarchicalMesh::vertex_patch_refine(IntVector& refnodes,
   // RefineCoarseNodes verteilt auf die Patche
   // can be switched off for more localized refinement
   // (ausgefranzt)
-  if (etapatcher)
-  {
+  if (etapatcher) {
     RefineCoarseNodes(refcoarsenodes, refnodes, vertexlevel);
-  }
-  else
-  {
+  } else {
     refcoarsenodes.insert(refnodes.begin(), refnodes.end());
   }
   coarsecoarsenodes.insert(coarsenodes.begin(), coarsenodes.end());
@@ -303,8 +267,7 @@ void HierarchicalMesh::vertex_patch_refine(IntVector& refnodes,
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh::vertex_patch_refine(IntVector& refnodes)
-{
+void HierarchicalMesh::vertex_patch_refine(IntVector &refnodes) {
   IntVector ref, coarse, vertexlevel;
   IntSet refcoarsenodes;
 
@@ -313,12 +276,9 @@ void HierarchicalMesh::vertex_patch_refine(IntVector& refnodes)
   // RefineCoarseNodes verteilt auf die Patche
   // can be switched off for more localized refinement
   // (ausgefranzt)
-  if (etapatcher)
-  {
+  if (etapatcher) {
     RefineCoarseNodes(refcoarsenodes, refnodes, vertexlevel);
-  }
-  else
-  {
+  } else {
     refcoarsenodes.insert(refnodes.begin(), refnodes.end());
   }
   VertexToCells(ref, refcoarsenodes, vertexlevel);
@@ -328,28 +288,21 @@ void HierarchicalMesh::vertex_patch_refine(IntVector& refnodes)
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh::update_edges(IntVector& SwappedEdge)
-{
-  for (int i = 0; i < edges.size(); i++)
-  {
+void HierarchicalMesh::update_edges(IntVector &SwappedEdge) {
+  for (int i = 0; i < edges.size(); i++) {
     int m = edges[i].master();
     int s = edges[i].slave();
 
     assert(m >= 0);
 
     int nm = co2n[m];
-    if (nm >= 0)
-    {
+    if (nm >= 0) {
       edges[i].master() = nm;
-      if (s >= 0)
-      {
+      if (s >= 0) {
         edges[i].slave() = co2n[s];
       }
-    }
-    else
-    {
-      if (s < 0)
-      {
+    } else {
+      if (s < 0) {
         edges[i].master() = -1;
         SwappedEdge.push_back(i);
         continue;
@@ -358,4 +311,4 @@ void HierarchicalMesh::update_edges(IntVector& SwappedEdge)
     }
   }
 }
-}  // namespace Gascoigne
+} // namespace Gascoigne

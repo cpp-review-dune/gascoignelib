@@ -1,68 +1,63 @@
 /**
-*
-* Copyright (C) 2004, 2007 by the Gascoigne 3D authors
-*
-* This file is part of Gascoigne 3D
-*
-* Gascoigne 3D is free software: you can redistribute it
-* and/or modify it under the terms of the GNU General Public
-* License as published by the Free Software Foundation, either
-* version 3 of the License, or (at your option) any later
-* version.
-*
-* Gascoigne 3D is distributed in the hope that it will be
-* useful, but WITHOUT ANY WARRANTY; without even the implied
-* warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-* PURPOSE.  See the GNU General Public License for more
-* details.
-*
-* Please refer to the file LICENSE.TXT for further information
-* on this license.
-*
-**/
-
+ *
+ * Copyright (C) 2004, 2007 by the Gascoigne 3D authors
+ *
+ * This file is part of Gascoigne 3D
+ *
+ * Gascoigne 3D is free software: you can redistribute it
+ * and/or modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation, either
+ * version 3 of the License, or (at your option) any later
+ * version.
+ *
+ * Gascoigne 3D is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more
+ * details.
+ *
+ * Please refer to the file LICENSE.TXT for further information
+ * on this license.
+ *
+ **/
 
 #ifndef __visu_eps_h
 #define __visu_eps_h
 
+#include "gascoigne.h"
 #include "gascoignemesh.h"
 #include "string"
 #include <map>
-#include  "gascoigne.h"
 
 /*-------------------------------------------------------------------------*/
 
-namespace Gascoigne
-{
-class VisuEPS
-{
-  protected:  
-
-  typedef std::pair<int,int> Line;
+namespace Gascoigne {
+class VisuEPS {
+protected:
+  typedef std::pair<int, int> Line;
   typedef nvector<IntSet> Lines;
 
-  const GascoigneMesh* M;
+  const GascoigneMesh *M;
   int _i_compress;
 
   Lines lines;
-  int   n_lines;
+  int n_lines;
   Vertex2d offset;
-  
+
   // EPS optionen
-  std::map<int,int>    INTOPT;
-  std::map<int,double> DOUBLEOPT;
+  std::map<int, int> INTOPT;
+  std::map<int, double> DOUBLEOPT;
 
   // sort line p (left,bottom) first
-  void Lexiko(Line& p) const;
+  void Lexiko(Line &p) const;
 
   // test if vertices a,b,c are aligned straightly
-  bool InLine(int a,int b,int c) const;
-  
-  void CombineLines();
-    
-  public:
+  bool InLine(int a, int b, int c) const;
 
-  VisuEPS(const ParamFile& paramfile);
+  void CombineLines();
+
+public:
+  VisuEPS(const ParamFile &paramfile);
 
   /**
    * Options for output:
@@ -82,17 +77,16 @@ class VisuEPS
    *
    **/
   enum EPSOptions { WRITE_PATCH, LINEWIDTH, WIDTH, COMBINE_LINES };
-  
+
   void SetOption(EPSOptions o, int v);
   void SetOption(EPSOptions o, double v);
-  
-  void SetMesh(const GascoigneMesh& PM)
-  {
+
+  void SetMesh(const GascoigneMesh &PM) {
     M = &PM;
     assert(M);
   }
   void WriteGrid(std::string fname, int iter);
 };
-}
+} // namespace Gascoigne
 
 #endif

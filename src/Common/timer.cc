@@ -21,7 +21,6 @@
 // *
 // **/
 
-
 // #include  <iomanip>
 // #include  <vector>
 // #include  <algorithm>
@@ -55,27 +54,28 @@
 //   os << " ------------------------------------\n";
 //   os << " --  Timing  ------------------------\n";
 //   os << " ------------------------------------\n";
-//   vector<double>  x; 
-//   vector<string>  s; 
+//   vector<double>  x;
+//   vector<string>  s;
 //   while(p!=T.end())
 //     {
 //       s.push_back(p->first);
 //       x.push_back(p->second.read());
 //       p++;
 //     }
-//   IntVector C(x.size()); 
+//   IntVector C(x.size());
 //   iota(C.begin(),C.end(),0);
 //   sort(C.begin(),C.end(),CompareObjectBigToSmall<vector<double> > (x));
-  
+
 //   for (int i=0; i<x.size(); i++)
 //     {
 //       os.setf(ios::left);
 //       int l = s[C[i]].size();
 //       os << setw(TABWIDTH-l) << s[C[i]] <<"  ";
-//       os << T.Get(s[C[i]]).GetTime() << "  " << static_cast<int>(100.*x[C[i]]/tt) <<" %"<<endl;
+//       os << T.Get(s[C[i]]).GetTime() << "  " <<
+//       static_cast<int>(100.*x[C[i]]/tt) <<" %"<<endl;
 //     }
 //   os << " ------------------------------------\n";
 //   os << "   Total       : " << st.GetTime() << endl << endl;
 //   return os;
-// } 
+// }
 // }

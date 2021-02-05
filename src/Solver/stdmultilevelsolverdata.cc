@@ -29,10 +29,8 @@ using namespace std;
 
 /**********************************************************/
 
-namespace Gascoigne
-{
-StdMultiLevelSolverData::StdMultiLevelSolverData(const ParamFile& param)
-{
+namespace Gascoigne {
+StdMultiLevelSolverData::StdMultiLevelSolverData(const ParamFile &param) {
   _countresidual = 0;
 
   double prec_tol, prec_globaltol;
@@ -52,9 +50,11 @@ StdMultiLevelSolverData::StdMultiLevelSolverData(const ParamFile& param)
   DFH.insert("prec_pstep", &prec_pstep, 0);
   DFH.insert("gmressize", &_gmresmemsize, 10);
 
-  DFH.insert("save_nonlinear_comp_residuals", &_i_save_nonlinear_comp_residuals, 0);
+  DFH.insert("save_nonlinear_comp_residuals", &_i_save_nonlinear_comp_residuals,
+             0);
   DFH.insert("save_linear_comp_residuals", &_i_save_linear_comp_residuals, 0);
-  DFH.insert("show_nonlinear_comp_residuals", &_i_show_nonlinear_comp_residuals, 0);
+  DFH.insert("show_nonlinear_comp_residuals", &_i_show_nonlinear_comp_residuals,
+             0);
   DFH.insert("show_linear_comp_residuals", &_i_show_linear_comp_residuals, 0);
   DFH.insert("show_comp_residual_names", &_i_show_comp_residual_names, 0);
 
@@ -62,25 +62,21 @@ StdMultiLevelSolverData::StdMultiLevelSolverData(const ParamFile& param)
   FS.NoComplain();
   FS.readfile(param, "MultiLevelSolver");
 
-  if ((_mgtype != "V") && (_mgtype != "W") && (_mgtype != "F"))
-  {
+  if ((_mgtype != "V") && (_mgtype != "W") && (_mgtype != "F")) {
     _mgtype = "V";
   }
-  precinfo.user().tol()       = prec_tol;
+  precinfo.user().tol() = prec_tol;
   precinfo.user().globaltol() = prec_globaltol;
-  precinfo.user().maxiter()   = prec_maxiter;
+  precinfo.user().maxiter() = prec_maxiter;
   precinfo.user().printstep() = prec_pstep;
-  precinfo.user().text()      = "PrecInfo";
+  precinfo.user().text() = "PrecInfo";
 }
 
-StdMultiLevelSolverData::~StdMultiLevelSolverData()
-{
-}
+StdMultiLevelSolverData::~StdMultiLevelSolverData() {}
 
 /**********************************************************/
 
-void StdMultiLevelSolverData::BasicInit(const ParamFile& param)
-{
+void StdMultiLevelSolverData::BasicInit(const ParamFile &param) {
   _countresidual = 0;
 
   double prec_tol, prec_globaltol;
@@ -100,9 +96,11 @@ void StdMultiLevelSolverData::BasicInit(const ParamFile& param)
   DFH.insert("prec_pstep", &prec_pstep, 0);
   DFH.insert("gmressize", &_gmresmemsize, 10);
 
-  DFH.insert("save_nonlinear_comp_residuals", &_i_save_nonlinear_comp_residuals, 0);
+  DFH.insert("save_nonlinear_comp_residuals", &_i_save_nonlinear_comp_residuals,
+             0);
   DFH.insert("save_linear_comp_residuals", &_i_save_linear_comp_residuals, 0);
-  DFH.insert("show_nonlinear_comp_residuals", &_i_show_nonlinear_comp_residuals, 0);
+  DFH.insert("show_nonlinear_comp_residuals", &_i_show_nonlinear_comp_residuals,
+             0);
   DFH.insert("show_linear_comp_residuals", &_i_show_linear_comp_residuals, 0);
   DFH.insert("show_comp_residual_names", &_i_show_comp_residual_names, 0);
 
@@ -110,14 +108,13 @@ void StdMultiLevelSolverData::BasicInit(const ParamFile& param)
   FS.NoComplain();
   FS.readfile(param, "MultiLevelSolver");
 
-  if ((_mgtype != "V") && (_mgtype != "W") && (_mgtype != "F"))
-  {
+  if ((_mgtype != "V") && (_mgtype != "W") && (_mgtype != "F")) {
     _mgtype = "V";
   }
-  precinfo.user().tol()       = prec_tol;
+  precinfo.user().tol() = prec_tol;
   precinfo.user().globaltol() = prec_globaltol;
-  precinfo.user().maxiter()   = prec_maxiter;
+  precinfo.user().maxiter() = prec_maxiter;
   precinfo.user().printstep() = prec_pstep;
-  precinfo.user().text()      = "PrecInfo";
+  precinfo.user().text() = "PrecInfo";
 }
-}  // namespace Gascoigne
+} // namespace Gascoigne

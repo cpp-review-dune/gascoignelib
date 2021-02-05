@@ -21,7 +21,6 @@
  *
  **/
 
-
 #ifndef __NumericInterface_h
 #define __NumericInterface_h
 
@@ -32,38 +31,30 @@
 #include "meshagentinterface.h"
 #include "solverinterface.h"
 
+namespace Gascoigne {
 
-namespace Gascoigne
-{
+/*----------------------------------------------------------------------------*/
 
+class NumericInterface {
+public:
+  NumericInterface(){};
+  virtual ~NumericInterface(){};
 
-  /*----------------------------------------------------------------------------*/
+  virtual DiscretizationInterface *NewDiscretization(int level = 0) const {
+    std::cerr << "NumericInterface incomplete: NewDiscretization" << std::endl;
+    abort();
+  }
 
-  class NumericInterface
-  {
-  public:
-    NumericInterface(){};
-    virtual ~NumericInterface(){};
+  virtual SolverInterface *NewSolver(int level = 0) const {
+    std::cerr << "NumericInterface incomplete: NewSolver" << std::endl;
+    abort();
+  }
 
-    virtual DiscretizationInterface* NewDiscretization(int level = 0) const
-    {
-      std::cerr << "NumericInterface incomplete: NewDiscretization"
-                << std::endl;
-      abort();
-    }
-
-    virtual SolverInterface* NewSolver(int level = 0) const
-    {
-      std::cerr << "NumericInterface incomplete: NewSolver" << std::endl;
-      abort();
-    }
-
-    virtual MeshAgentInterface* NewMeshAgent() const
-    {
-      std::cerr << "NumericInterface incomplete: NewMeshAgent" << std::endl;
-      abort();
-    }
-  };
+  virtual MeshAgentInterface *NewMeshAgent() const {
+    std::cerr << "NumericInterface incomplete: NewMeshAgent" << std::endl;
+    abort();
+  }
+};
 
 } // namespace Gascoigne
 

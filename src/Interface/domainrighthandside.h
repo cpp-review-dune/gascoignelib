@@ -21,71 +21,66 @@
  *
  **/
 
-
 #ifndef __DomainRightHandSide_h
 #define __DomainRightHandSide_h
 
-#include  "application.h"
-#include  "vertex.h"
+#include "application.h"
+#include "vertex.h"
 
-namespace Gascoigne
-{
+namespace Gascoigne {
 
-  /*-------------------------------------------------------*/
+/*-------------------------------------------------------*/
 
-  class DomainRightHandSide : public virtual Application
-  {
-  private:
+class DomainRightHandSide : public virtual Application {
+private:
+protected:
+public:
+  DomainRightHandSide() {}
+  ~DomainRightHandSide() {}
 
-  protected:
+  /**
+     clones a DRHS. Usually it is simply to return a new instance of the same
+     object passing the required variables to the constructor. It takes the role
+     of a copy constructor and the cloning of classes is required for
+     multithreading.
+  */
+  virtual DomainRightHandSide *createNew() const {
+    std::cerr << "\"DomainRightHandSide::createNew\" not written!" << std::endl;
+    abort();
+  }
 
-  public:
-    DomainRightHandSide() { }
-    ~DomainRightHandSide() { }
+  virtual int GetNcomp() const = 0;
 
-    /**
-       clones a DRHS. Usually it is simply to return a new instance of the same object passing the required variables to the constructor. It takes the role of a copy constructor and the cloning of classes is required for multithreading. 
-    */
-    virtual DomainRightHandSide* createNew() const 
-    {
-      std::cerr << "\"DomainRightHandSide::createNew\" not written!" << std::endl;
-      abort();
+  virtual double operator()(int c, const Vertex2d &v) const {
+    std::cerr << "\"DomainRightHandSide::operator()\" not written" << std::endl;
+    abort();
+  }
+  virtual double operator()(int c, const Vertex3d &v) const {
+    std::cerr << "\"DomainRightHandSide::operator()\" not written" << std::endl;
+    abort();
+  }
+
+  virtual void operator()(VectorIterator b, const TestFunction &N,
+                          const Vertex2d &v) const {
+    for (int c = 0; c < GetNcomp(); c++) {
+      b[c] += N.m() * (*this)(c, v);
     }
-    
-    virtual int GetNcomp() const=0;
-
-    virtual double operator()(int c, const Vertex2d& v) const {
-      std::cerr << "\"DomainRightHandSide::operator()\" not written" << std::endl;
-      abort();
+  }
+  virtual void operator()(VectorIterator b, const TestFunction &N,
+                          const Vertex3d &v) const {
+    for (int c = 0; c < GetNcomp(); c++) {
+      b[c] += N.m() * (*this)(c, v);
     }
-    virtual double operator()(int c, const Vertex3d& v) const {
-      std::cerr << "\"DomainRightHandSide::operator()\" not written" << std::endl;
-      abort();
-    }
+  }
 
-    virtual void operator()(VectorIterator b, const TestFunction& N, const Vertex2d& v) const 
-    {
-      for(int c=0;c<GetNcomp();c++)
-	{
-	  b[c] += N.m()* (*this)(c,v);
-	}
-    }
-    virtual void operator()(VectorIterator b, const TestFunction& N, const Vertex3d& v) const 
-    {
-      for(int c=0;c<GetNcomp();c++)
-	{
-	  b[c] += N.m()* (*this)(c,v);
-	}
-    }
+  virtual void SetCellSize(double h) const {}
+  virtual void point_cell(int material) const {}
+};
 
-    virtual void SetCellSize(double h) const { }
-    virtual void point_cell(int material) const {}
-  };
-  
-  typedef DomainRightHandSide DomainInitialCondition;
+typedef DomainRightHandSide DomainInitialCondition;
 
-  /*-------------------------------------------------------*/
+/*-------------------------------------------------------*/
 
-}
+} // namespace Gascoigne
 
 #endif
