@@ -96,7 +96,9 @@ void StdLoop::BasicInit(const ParamFile &paramfile, const ProblemContainer *PC,
   // create resultsdir
   string command("mkdir -p ");
   command += _s_resultsdir;
-  system(command.c_str());
+  int status = system(command.c_str());
+  (void)status; // to avoid warning;
+  assert(status == 0);
 }
 
 /*-------------------------------------------------------*/

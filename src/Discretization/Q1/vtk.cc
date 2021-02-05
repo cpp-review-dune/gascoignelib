@@ -224,7 +224,9 @@ void Visualization::vtk(const string &bname) const {
   out.close();
   if (compress) {
     string command = "gzip -f " + name;
-    system(command.c_str());
+    int status = system(command.c_str());
+    (void)status; // to avoid warning;
+    assert(status == 0);
   }
 }
 } // namespace Gascoigne

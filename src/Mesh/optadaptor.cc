@@ -190,7 +190,9 @@ void OptAdaptor::RefineGnuplot(IntVector &reflist) {
   }
 
   file.close();
-  system("gnuplot cmd.gpl");
+  int status = system("gnuplot cmd.gpl");
+  (void)status; // to avoid warning;
+  assert(status == 0);
 
   while ((marge > used) && (i < eta.size())) {
     reflist.push_back(C[i]);

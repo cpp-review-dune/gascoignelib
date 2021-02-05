@@ -116,7 +116,9 @@ void Monitor::set_directory(const string &dir) {
 
   string command("mkdir -p ");
   command += dir;
-  system(command.c_str());
+  int status = system(command.c_str());
+  (void)status; // to avoid warning;
+  assert(status == 0);
 
   //  ofstream tfile( texfile.c_str() );
   //  if(!tfile)

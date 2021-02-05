@@ -196,7 +196,9 @@ void Visualization::gnuplot(const string &name) const {
 
     if (compress) {
       string command = "gzip -f " + gnuname;
-      system(command.c_str());
+      int status = system(command.c_str());
+      (void)status; // to avoid warning;
+      assert(status == 0);
     }
   }
 }

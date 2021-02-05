@@ -218,7 +218,9 @@ void VisuEPS::WriteGrid(string fname, int iter) {
 
   if (_i_compress) {
     string command = "gzip -f " + fname;
-    system(command.c_str());
+    int status = system(command.c_str());
+    (void)status; // to avoid warning;
+    assert(status == 0);
   }
 }
 

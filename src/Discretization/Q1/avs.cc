@@ -106,7 +106,9 @@ void Visualization::avs(const string &bname) const {
 
   if (compress) {
     string command = "gzip -f " + name;
-    system(command.c_str());
+    int status = system(command.c_str());
+    (void)status; // to avoid warning;
+    assert(status == 0);
   }
 }
 } // namespace Gascoigne
