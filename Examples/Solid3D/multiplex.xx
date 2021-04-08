@@ -1,0 +1,141 @@
+
+namespace Gascoigne {
+
+template <int DIM>
+void multiplex_init_NV(Eigen::Matrix<double, DIM, DIM> &NV,
+                       const FemFunction &U) {
+  assert(0);
+}
+
+template <>
+void multiplex_init_NV<2>(Eigen::Matrix<double, 2, 2> &NV,
+                          const FemFunction &U) {
+  NV << U[1].x(), U[1].y(), U[2].x(), U[2].y();
+}
+
+template <>
+void multiplex_init_NV<3>(Eigen::Matrix<double, 3, 3> &NV,
+                          const FemFunction &U) {
+  NV << U[1].x(), U[1].y(), U[1].z(), U[2].x(), U[2].y(), U[2].z(), U[3].x(),
+      U[3].y(), U[3].z();
+}
+
+template <int DIM>
+void multiplex_init_normal(Eigen::Matrix<double, DIM, 1> &normal,
+                           const Vertex<DIM> &n) {
+  assert(0);
+}
+
+template <>
+void multiplex_init_normal<2>(Eigen::Matrix<double, 2, 1> &normal,
+                              const Vertex<2> &n) {
+  normal << n.x(), n.y();
+}
+template <>
+void multiplex_init_normal<3>(Eigen::Matrix<double, 3, 1> &normal,
+                              const Vertex<3> &n) {
+  normal << n.x(), n.y(), n.z();
+}
+
+template <int DIM>
+void multiplex_init_NU(Eigen::Matrix<double, DIM, DIM> &NU,
+                       const FemFunction &U) {
+  assert(0);
+}
+
+template <>
+void multiplex_init_NU<2>(Eigen::Matrix<double, 2, 2> &NU,
+                          const FemFunction &U) {
+  NU << U[0].x(), U[0].y(), U[1].x(), U[1].y();
+}
+
+template <>
+void multiplex_init_NU<3>(Eigen::Matrix<double, 3, 3> &NU,
+                          const FemFunction &U) {
+  NU << U[0].x(), U[0].y(), U[0].z(), U[1].x(), U[1].y(), U[1].z(), U[2].x(),
+      U[2].y(), U[2].z();
+}
+
+template <int DIM>
+void multiplex_init_F(Eigen::Matrix<double, DIM, DIM> &F,
+                      const FemFunction &U) {
+  assert(0);
+}
+
+template <>
+void multiplex_init_F<2>(Eigen::Matrix<double, 2, 2> &F, const FemFunction &U) {
+  F << 1.0 + U[0].x(), U[0].y(), U[1].x(), 1.0 + U[1].y();
+}
+
+template <>
+void multiplex_init_F<3>(Eigen::Matrix<double, 3, 3> &F, const FemFunction &U) {
+  F << 1.0 + U[0].x(), U[0].y(), U[0].z(), U[1].x(), 1.0 + U[1].y(), U[1].z(),
+      U[2].x(), U[2].y(), 1.0 + U[2].z();
+}
+
+template <int DIM>
+void multiplex_init_f(Eigen::Matrix<double, DIM, DIM> &f,
+                      const FemFunction &U) {
+  assert(0);
+}
+
+template <>
+void multiplex_init_f<2>(Eigen::Matrix<double, 2, 2> &f, const FemFunction &U) {
+  f << 1.0 - U[0].x(), -U[0].y(), -U[1].x(), 1.0 - U[1].y();
+}
+
+template <>
+void multiplex_init_f<3>(Eigen::Matrix<double, 3, 3> &f, const FemFunction &U) {
+  f << 1.0 - U[0].x(), -U[0].y(), -U[0].z(), -U[1].x(), 1.0 - U[1].y(),
+      -U[1].z(), -U[2].x(), -U[2].y(), 1.0 - U[2].z();
+}
+
+template <int DIM>
+void multiplex_init_V(Eigen::Matrix<double, DIM, 1> &V, const FemFunction &U) {
+  assert(0);
+}
+
+template <>
+void multiplex_init_V<2>(Eigen::Matrix<double, 2, 1> &V, const FemFunction &U) {
+  V << U[1].m(), U[2].m();
+}
+
+template <>
+void multiplex_init_V<3>(Eigen::Matrix<double, 3, 1> &V, const FemFunction &U) {
+  V << U[1].m(), U[2].m(), U[3].m();
+}
+
+template <int DIM>
+void multiplex_init_dtU(Eigen::Matrix<double, DIM, 1> &dtU,
+                        const FemFunction &U, const FemFunction &OLD) {
+  assert(0);
+}
+
+template <>
+void multiplex_init_dtU<2>(Eigen::Matrix<double, 2, 1> &dtU,
+                           const FemFunction &U, const FemFunction &OLD) {
+  dtU << U[0].m() - OLD[0].m(), U[1].m() - OLD[1].m();
+}
+template <>
+void multiplex_init_dtU<3>(Eigen::Matrix<double, 3, 1> &dtU,
+                           const FemFunction &U, const FemFunction &OLD) {
+  dtU << U[0].m() - OLD[0].m(), U[1].m() - OLD[1].m(), U[2].m() - OLD[2].m();
+}
+
+template <int DIM>
+void multiplex_init_test(Eigen::Matrix<double, DIM, 1> &phi,
+                         const TestFunction &N) {
+  assert(0);
+}
+template <>
+void multiplex_init_test<2>(Eigen::Matrix<double, 2, 1> &phi,
+                            const TestFunction &N) {
+  phi << N.x(), N.y();
+}
+template <>
+void multiplex_init_test<3>(Eigen::Matrix<double, 3, 1> &phi,
+                            const TestFunction &N) {
+  phi << N.x(), N.y(), N.z();
+}
+
+} // namespace Gascoigne

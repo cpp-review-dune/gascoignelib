@@ -1,43 +1,41 @@
 /**
-*
-* Copyright (C) 2004, 2005, 2011 by the Gascoigne 3D authors
-*
-* This file is part of Gascoigne 3D
-*
-* Gascoigne 3D is free software: you can redistribute it
-* and/or modify it under the terms of the GNU General Public
-* License as published by the Free Software Foundation, either
-* version 3 of the License, or (at your option) any later
-* version.
-*
-* Gascoigne 3D is distributed in the hope that it will be
-* useful, but WITHOUT ANY WARRANTY; without even the implied
-* warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-* PURPOSE.  See the GNU General Public License for more
-* details.
-*
-* Please refer to the file LICENSE.TXT for further information
-* on this license.
-*
-**/
-
+ *
+ * Copyright (C) 2004, 2005, 2011 by the Gascoigne 3D authors
+ *
+ * This file is part of Gascoigne 3D
+ *
+ * Gascoigne 3D is free software: you can redistribute it
+ * and/or modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation, either
+ * version 3 of the License, or (at your option) any later
+ * version.
+ *
+ * Gascoigne 3D is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more
+ * details.
+ *
+ * Please refer to the file LICENSE.TXT for further information
+ * on this license.
+ *
+ **/
 
 #ifndef __baseq23d_h
 #define __baseq23d_h
 
-#include  <vector>
-#include  <string>
-#include  <utility>
-#include  <cassert>
-#include  "vertex.h"
-#include  "numfixarray.h"
-#include  "base3d.h"
+#include "base3d.h"
+#include "numfixarray.h"
+#include "vertex.h"
+#include <cassert>
+#include <string>
+#include <utility>
+#include <vector>
 
-#define NDOF   27
+#define NDOF 27
 #define NDOF1d 3
 
-namespace Gascoigne
-{
+namespace Gascoigne {
 
 /////////////////////////////////////////////
 ///
@@ -48,28 +46,25 @@ namespace Gascoigne
 ///
 /////////////////////////////////////////////
 
-class BaseQ23d : public Base3d
-{
+class BaseQ23d : public Base3d {
 
- protected:
+protected:
+  std::array<double, NDOF1d> a, b, c;
 
-  fixarray<NDOF1d,double>        a,b,c;
-  
-  double psi   (int i, double x) const { return a[i] + b[i]*x + c[i]*x*x;}
-  double psi_x (int i, double x) const { return b[i] + 2.*c[i]*x;       }
-  double psi_xx(int i, double x) const { return 2.*c[i];       }
+  double psi(int i, double x) const { return a[i] + b[i] * x + c[i] * x * x; }
+  double psi_x(int i, double x) const { return b[i] + 2. * c[i] * x; }
+  double psi_xx(int i, double x) const { return 2. * c[i]; }
 
- public:
-  
+public:
   BaseQ23d();
 
-  int  n() const {return NDOF;}
-  void point(const Vertex3d& s) const;
+  int n() const { return NDOF; }
+  void point(const Vertex3d &s) const;
 
-  double phi   (int i) const {return N  [i];}
-  double phi_x (int i) const {return DN [i].x();}
-  double phi_y (int i) const {return DN [i].y();}
-  double phi_z (int i) const {return DN [i].z();}
+  double phi(int i) const { return N[i]; }
+  double phi_x(int i) const { return DN[i].x(); }
+  double phi_y(int i) const { return DN[i].y(); }
+  double phi_z(int i) const { return DN[i].z(); }
   double phi_xx(int i) const {
     std::cerr << "\"BaseQ23d::phi_xx\" not written!" << std::endl;
     abort();
@@ -95,9 +90,9 @@ class BaseQ23d : public Base3d
     abort();
   }
 
-  const Vertex3d&  phi_grad (int i) const {return DN [i];}
+  const Vertex3d &phi_grad(int i) const { return DN[i]; }
 };
-}
+} // namespace Gascoigne
 
 #undef NDOF
 #undef NDOF1d

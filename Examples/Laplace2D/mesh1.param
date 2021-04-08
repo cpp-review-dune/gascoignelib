@@ -14,7 +14,7 @@ refiner     global
 //Block Mesh
 
 dimension   2
-prerefine   2
+prerefine   3
 gridname    square.inp
 
 //Block Solver

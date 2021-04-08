@@ -1,26 +1,25 @@
 /**
-*
-* Copyright (C) 2004, 2005, 2006, 2007, 2009 by the Gascoigne 3D authors
-*
-* This file is part of Gascoigne 3D
-*
-* Gascoigne 3D is free software: you can redistribute it
-* and/or modify it under the terms of the GNU General Public
-* License as published by the Free Software Foundation, either
-* version 3 of the License, or (at your option) any later
-* version.
-*
-* Gascoigne 3D is distributed in the hope that it will be
-* useful, but WITHOUT ANY WARRANTY; without even the implied
-* warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-* PURPOSE.  See the GNU General Public License for more
-* details.
-*
-* Please refer to the file LICENSE.TXT for further information
-* on this license.
-*
-**/
-
+ *
+ * Copyright (C) 2004, 2005, 2006, 2007, 2009 by the Gascoigne 3D authors
+ *
+ * This file is part of Gascoigne 3D
+ *
+ * Gascoigne 3D is free software: you can redistribute it
+ * and/or modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation, either
+ * version 3 of the License, or (at your option) any later
+ * version.
+ *
+ * Gascoigne 3D is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more
+ * details.
+ *
+ * Please refer to the file LICENSE.TXT for further information
+ * on this license.
+ *
+ **/
 
 #ifndef __ProblemDescriptorBase_h
 #define __ProblemDescriptorBase_h
@@ -29,79 +28,90 @@
 
 /*--------------------------------------------------*/
 
-namespace Gascoigne
-{
-class ProblemDescriptorBase : public ProblemDescriptorInterface
-{
- private:
-  
-  Equation                 *EQ;
-  FaceEquation             *FEQ;
-  BoundaryManager          *BM;
-  ExactSolution            *ES;
-  Application              *RHS;
-  Application              *IC;
-  DirichletData            *DD;
-  PeriodicData             *PD;
-  BoundaryRightHandSide    *BRHS;
+namespace Gascoigne {
+class ProblemDescriptorBase : public ProblemDescriptorInterface {
+public:
+private:
+  Equation *EQ;
+  BoundaryEquation *BEQ;
+  DomainRightHandSide *RHS;
+  DiracRightHandSide *DRHS;
+  BoundaryRightHandSide *BRHS;
+
+  FaceEquation *FEQ;
+  BoundaryManager *BM;
+  ExactSolution *ES;
+  Application *IC;
+  DirichletData *DD;
+  PeriodicData *PD;
   BoundaryInitialCondition *BIC;
-  BoundaryEquation         *BE;
-  ComponentInformation     *CI;
+  ComponentInformation *CI;
 
-  
-  const ParamFile *_paramfile;
-  
- protected:
-  
-  const ParamFile*& GetParamFilePointer()           { return _paramfile;}
-  
-  Equation*&                 GetEquationPointer()                 { return EQ;}
-  FaceEquation*&             GetFaceEquationPointer()             { return FEQ;}
-  BoundaryManager*&          GetBoundaryManagerPointer()          { return BM;}
-  ExactSolution*&            GetExactSolutionPointer()            { return ES;}
-  Application*&              GetInitialConditionPointer()         { return IC;}
-  Application*&              GetRightHandSidePointer()            { return RHS;}
-  DirichletData*&            GetDirichletDataPointer()            { return DD;}
-  PeriodicData*&             GetPeriodicDataPointer()             { return PD;}
-  BoundaryRightHandSide*&    GetBoundaryRightHandSidePointer()    { return BRHS;}
-  BoundaryInitialCondition*& GetBoundaryInitialConditionPointer() { return BIC;}
-  BoundaryEquation*&         GetBoundaryEquationPointer()         { return BE; }
+  ParamFile _paramfile;
+  mutable double _time, _dt;
 
-  BoundaryManager* GetBoundaryManager () { return BM;}
+protected:
+  Equation *&GetEquationPointer() { return EQ; }
+  BoundaryEquation *&GetBoundaryEquationPointer() { return BEQ; }
+  DomainRightHandSide *&GetRightHandSidePointer() { return RHS; }
+  DiracRightHandSide *&GetDiracRightHandSidePointer() { return DRHS; }
+  BoundaryRightHandSide *&GetBoundaryRightHandSidePointer() { return BRHS; }
 
-  ComponentInformation*&  GetComponentInformationPointer ()        { return CI;}
+  FaceEquation *&GetFaceEquationPointer() { return FEQ; }
+  BoundaryManager *&GetBoundaryManagerPointer() { return BM; }
+  ExactSolution *&GetExactSolutionPointer() { return ES; }
+  Application *&GetInitialConditionPointer() { return IC; }
+  DirichletData *&GetDirichletDataPointer() { return DD; }
+  PeriodicData *&GetPeriodicDataPointer() { return PD; }
+  BoundaryInitialCondition *&GetBoundaryInitialConditionPointer() {
+    return BIC;
+  }
+  BoundaryManager *GetBoundaryManager() { return BM; }
 
- public:
+  ComponentInformation *&GetComponentInformationPointer() { return CI; }
 
+public:
   ProblemDescriptorBase();
 
   ~ProblemDescriptorBase();
 
-  std::ostream& OutputSettings(std::ostream& os) const;
-  
-  void BasicInit(const ParamFile* pf);
-  
-  const ParamFile* GetParamFile() const {return _paramfile;}
+  std::ostream &OutputSettings(std::ostream &os) const;
 
-  const Application*              GetRightHandSide           () const { return RHS;}
-  const DirichletData*            GetDirichletData           () const { return DD;}
-  const PeriodicData*             GetPeriodicData            () const { return PD;}
-  const BoundaryRightHandSide*    GetBoundaryRightHandSide   () const { return BRHS;}
-  const BoundaryInitialCondition* GetBoundaryInitialCondition() const { return BIC;}
-  const BoundaryEquation*         GetBoundaryEquation        () const { return BE;}
-  const Application*              GetInitialCondition        () const { return IC;}
-  const ExactSolution*            GetExactSolution           () const { return ES;}
-  const Equation*                 GetEquation                () const { return EQ;}
-  const FaceEquation*             GetFaceEquation            () const { return FEQ;}
-  const BoundaryManager*          GetBoundaryManager         () const { return BM;}
-  const ComponentInformation*     GetComponentInformation    () const { return CI;}
+  void BasicInit(const ParamFile &pf);
 
+  // Gives the number of solution components.
+  int GetNcomp() const { return GetEquation()->GetNcomp(); }
+
+  const ParamFile &GetParamFile() const { return _paramfile; }
+  ParamFile &GetParamFile() { return _paramfile; }
+
+  const Equation *GetEquation() const { return EQ; }
+  const BoundaryEquation *GetBoundaryEquation() const { return BEQ; }
+  const DomainRightHandSide *GetRightHandSide() const { return RHS; }
+  const DiracRightHandSide *GetDiracRightHandSide() const { return DRHS; }
+  const BoundaryRightHandSide *GetBoundaryRightHandSide() const { return BRHS; }
+
+  const DirichletData *GetDirichletData() const { return DD; }
+  const PeriodicData *GetPeriodicData() const { return PD; }
+  const BoundaryInitialCondition *GetBoundaryInitialCondition() const {
+    return BIC;
+  }
+  const Application *GetInitialCondition() const { return IC; }
+  const ExactSolution *GetExactSolution() const { return ES; }
+  const FaceEquation *GetFaceEquation() const { return FEQ; }
+  const BoundaryManager *GetBoundaryManager() const { return BM; }
+  const ComponentInformation *GetComponentInformation() const { return CI; }
+
+  // stores the time and the time step
+  // (should be moved to the problem data)
   void SetTime(double time, double dt) const;
+  // access to time
+  double time() const { return _time; }
+  // access to time step
+  double dt() const { return _dt; }
 };
 
-
- 
-}
+} // namespace Gascoigne
 
 /*--------------------------------------------------*/
 

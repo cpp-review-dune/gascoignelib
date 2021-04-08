@@ -1,0 +1,102 @@
+//Block BoundaryManager
+
+//12 11 13 Solid out/inflow
+
+//7 fluid inflow
+// 4 2 fluid outflow
+
+dirichlet    4 12 11 13 7 
+
+dirichletcomp 12   3  1 2 3
+dirichletcomp 11   3  1 2 3
+dirichletcomp 13   3  1 2 3
+dirichletcomp 7    3  1 2 3
+
+equation 2  2 4 
+
+
+//functional 2  84 85
+
+
+//Block Equation
+
+dt	0.001
+theta	0.51
+
+lps	 1.0
+
+nu_f		0.01
+rho_f		1.0
+
+damp		0.0
+
+start_time	0.0
+stop_time	3.6
+
+extend		1.0
+
+mu_s		5.0e5
+lambda_s	2.0e6
+
+rho_f		1.0
+rho_s		1.1
+
+vmean		1.0
+
+
+
+//Block Loop
+
+initial	boundary
+
+
+niter       1
+initialrefine	0
+
+writevtk	0
+writebubgup 	0
+
+
+
+//Block Mesh
+
+dimension   3
+prerefine   2
+gridname    Verzweigung_FSI_neu.inp
+etapatcher 0
+
+
+//Block MultiLevelSolver
+
+linear_pstep		0
+nonlinear_pstep		0
+linearsolve		gmres
+nonlinear_rho		0.1
+nonlinear_maxiter	20
+nonlinear_tol		1.e-7
+nonlinear_globaltol	1.e-7
+linear_tol		1.e-2
+linear_maxiter		25
+gmressize		25
+mgtype            W
+//Block Solver
+
+omega 	1.0
+
+//matrixtype	split
+//matrixtype	splitumf
+//matrixtype	fsisplit
+matrixtype block
+
+iterpre                 15
+iterpost                15
+iterexact               15
+
+discname       AleQ2Lps
+
+ilum 4 0.01 0.05 0.05 0.05 
+
+ndirect        4000
+
+
+//Block Nix
