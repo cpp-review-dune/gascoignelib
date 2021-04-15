@@ -87,7 +87,7 @@ void SparseBlockIlu<B>::ConstructStructure(const nvector<int> &perm,
   for (int i = 0; i < n; i++)
     q[p[i]] = i;
 
-  int zmax = 1;
+  IndexType zmax = 1;
   for (int i = 0; i < n; i++) {
     zmax = std::max(zmax, SP->rowsize(i));
   }

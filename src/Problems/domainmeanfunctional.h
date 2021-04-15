@@ -32,7 +32,7 @@
 namespace Gascoigne {
 class AllDomainFunctional : public virtual DomainFunctional {
 protected:
-  int _comp, _ncomp;
+  IndexType _comp, _ncomp;
 
 public:
   AllDomainFunctional(int nc, int c) {
@@ -43,8 +43,8 @@ public:
 
   std::string GetName() const { return "AllDomainFunctional"; }
 
-  int GetNcomp() const { return _ncomp; }
-  int GetComp() const { return _comp; }
+  IndexType GetNcomp() const { return _ncomp; }
+  IndexType GetComp() const { return _comp; }
 
   double J(const FemFunction &U, const Vertex2d &v) const;
   double J(const FemFunction &U, const Vertex3d &v) const;

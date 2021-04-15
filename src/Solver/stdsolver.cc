@@ -547,7 +547,7 @@ void StdSolver::ReInitMatrix(const Matrix &A) {
   GlobalTimer.start("---> matrix init");
 
   // number of components in current problem
-  int ncomp = GetProblemDescriptor()->GetNcomp();
+  IndexType ncomp = GetProblemDescriptor()->GetNcomp();
   //////////
   ////////// create new matrix
   //////////
@@ -1444,6 +1444,7 @@ void StdSolver::PermutateIlu(Matrix &A, const VectorInterface &gu) const {
     cmc.Permutate(perm);
   } else if (GetSolverData().GetIluSort() == "streamdirection") {
     const Equation *EQ = GetProblemDescriptor()->GetEquation();
+    (void)EQ;
     assert(EQ);
     assert(GetSolverData().GetStreamDirection().size() <= EQ->GetNcomp());
     StreamDirection sd(GetMesh(), GetMatrix(A).GetStencil(), u);

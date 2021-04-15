@@ -24,6 +24,8 @@
 #include "sparsestructure.h"
 #include "stlio.h"
 
+#include "gascoigne.h"
+
 using namespace std;
 
 /*----------------------------------------------*/
@@ -132,21 +134,23 @@ void SparseStructure::build_end() {
 /*----------------------------------------------*/
 
 void SparseStructure::enlarge_lu() {
-  int maxbw = 0;
-  for (int i = 0; i < n(); i++) {
-    int imax = -1;
-    int imin = n();
+  IndexType maxbw = 0;
+  for (IndexType i = 0; i < n(); i++) {
+    IndexType imax = 0;
+    IndexType imin = n();
     for (set<int>::iterator p = rowbegin(i); p != rowend(i); ++p) {
-      int j = *p;
+      IndexType j = *p;
       imin = std::min(imin, j);
       imax = std::max(imax, j);
     }
-    maxbw = std::max(maxbw, abs(imax - i));
-    maxbw = std::max(maxbw, abs(imin - i));
+    assert(imax >= i);
+    maxbw = std::max(maxbw, imax - i);
+    assert(imin >= i);
+    maxbw = std::max(maxbw, imin - i);
   }
   // cerr << "bandbreite: " << maxbw << endl;
-  for (int i = 0; i < n(); i++) {
-    int imin = std::max(0, i - maxbw);
+  for (IndexType i = 0; i < n(); i++) {
+    int imin = std::max((IndexType) 0, i - maxbw);
     int imax = std::min(i + maxbw, n() - 1);
     for (int im = imin; im <= imax; im++) {
       row(i).insert(im);

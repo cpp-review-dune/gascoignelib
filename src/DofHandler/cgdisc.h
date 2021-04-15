@@ -617,6 +617,7 @@ public:
 
     assert(GetDofHandler()->dimension() == DIM);
     int ne = GetDofHandler()->nodes_per_element(DEGREE);
+    (void)ne;
     assert(ne == 9);
 
     nmatrix<double> T(2, 9); // initialisiert das FE, d.h. die Koordinaten

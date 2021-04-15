@@ -101,7 +101,7 @@ void UmfIluLong::ReInit(const SparseStructureInterface *SS) {
     start_long[i] = start[i];
   }
 
-  IntVector col = SA->col();
+  IndexVector col = SA->col();
   nvector<long> col_long;
 
   col_long.resize(col.size());
@@ -147,7 +147,7 @@ void UmfIluLong::Factorize() {
       dynamic_cast<const ColumnStencil *>(AP->GetStencil());
   assert(SA);
 
-  IntVector start = SA->start();
+  IndexVector start = SA->start();
   nvector<long> start_long;
 
   start_long.resize(start.size());
@@ -155,7 +155,7 @@ void UmfIluLong::Factorize() {
     start_long[i] = start[i];
   }
 
-  IntVector col = SA->col();
+  IndexVector col = SA->col();
   nvector<long> col_long;
 
   col_long.resize(col.size());
@@ -184,7 +184,7 @@ void UmfIluLong::Solve(DoubleVector &x, const DoubleVector &b) const {
       dynamic_cast<const ColumnStencil *>(AP->GetStencil());
   assert(SA);
 
-  IntVector start = SA->start();
+  IndexVector start = SA->start();
   nvector<long> start_long;
 
   start_long.resize(start.size());
@@ -192,7 +192,7 @@ void UmfIluLong::Solve(DoubleVector &x, const DoubleVector &b) const {
     start_long[i] = start[i];
   }
 
-  IntVector col = SA->col();
+  IndexVector col = SA->col();
   nvector<long> col_long;
 
   col_long.resize(col.size());
@@ -223,7 +223,7 @@ void UmfIluLong::SolveTranspose(DoubleVector &x, const DoubleVector &b) {
       dynamic_cast<const ColumnStencil *>(AP->GetStencil());
   assert(SA);
 
-  IntVector start = SA->start();
+  IndexVector start = SA->start();
   nvector<long> start_long;
 
   start_long.resize(start.size());
@@ -231,7 +231,7 @@ void UmfIluLong::SolveTranspose(DoubleVector &x, const DoubleVector &b) {
     start_long[i] = start[i];
   }
 
-  IntVector col = SA->col();
+  IndexVector col = SA->col();
   nvector<long> col_long;
 
   col_long.resize(col.size());

@@ -58,7 +58,7 @@ public:
 
   std::string GetName() const { return "UmfIlu"; }
 
-  int n() const { return GetStencil()->n(); };
+  IndexType n() const { return GetStencil()->n(); };
   void ReInit(const SparseStructureInterface *SS);
 
   void copy_entries(const MatrixInterface &A);
@@ -87,7 +87,7 @@ public:
 
   std::string GetName() const { return "UmfIlu"; }
 
-  int n() const { return GetStencil()->n(); };
+  IndexType n() const { return GetStencil()->n(); };
   void ReInit(const SparseStructureInterface *SS);
 
   void copy_entries(const MatrixInterface &A);

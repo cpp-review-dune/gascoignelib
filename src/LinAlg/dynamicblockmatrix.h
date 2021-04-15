@@ -81,15 +81,15 @@ public:
 
   /////// Zugriff //////////////////////
 
-  int n() const {
+  IndexType n() const {
     assert(smat.size() == DS.n());
     return DS.n();
   }
-  int nentries() const {
+  IndexType nentries() const {
     std::cerr << "\"DynamicBlockMatrix::nentries\" not written!" << std::endl;
     abort();
   }
-  int ntotal() const {
+  IndexType ntotal() const {
     std::cerr << "\"DynamicBlockMatrix::ntotal\" not written!" << std::endl;
     abort();
   }

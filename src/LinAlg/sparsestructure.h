@@ -49,8 +49,8 @@ public:
     sindices.clear();
   }
 
-  int n() const { return sindices.size(); }
-  int ntotal() const { return sntot; }
+  IndexType n() const { return sindices.size(); }
+  IndexType ntotal() const { return sntot; }
 
   const Indices &indices() const { return sindices; }
   const IntSet &row(int i) const {

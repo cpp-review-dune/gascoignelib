@@ -172,8 +172,8 @@ void UmfIlu::Solve(DoubleVector &x, const DoubleVector &b) const {
       dynamic_cast<const ColumnStencil *>(AP->GetStencil());
   assert(SA);
 
-  const int *sb = &(*SA->start().begin());
-  const int *cb = &(*SA->col().begin());
+  const IndexType *sb = &(*SA->start().begin());
+  const IndexType *cb = &(*SA->col().begin());
   const double *mb = &AP->GetValue(0);
   double *xb = &(*x.begin());
   const double *bb = &(*b.begin());

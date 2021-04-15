@@ -153,6 +153,7 @@ public:
   IntVector IndicesOfCell(int iq) const {
     std::cerr << "CGDofHandler: Use GetElement" << std::endl;
     assert(0);
+    return IntVector();
   }
 
   IntVector GetElement(int degree, int iq) const {

@@ -49,7 +49,7 @@ typedef double MatrixEntryType;
 typedef float MatrixEntryType;
 #endif
 
-typedef uint64_t IndexType;
+typedef size_t IndexType;
 
 typedef CompVector<double> GlobalVector;
 typedef CompVector<double> LocalVector;

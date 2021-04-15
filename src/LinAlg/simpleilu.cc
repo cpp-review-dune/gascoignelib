@@ -155,9 +155,9 @@ void SimpleIlu::compute_ilu() {
   // und die Vermeidung von redundanten Aufrufen, tom.
   // (ein "inline"-ing der Methoden von ST (Class ColumnStencil) bringt nichts)
   int ST_n = ST.n();
-  IntVector &ST_start = ST.start();
-  IntVector &ST_diag = ST.diag();
-  IntVector &ST_col = ST.col();
+  IndexVector &ST_start = ST.start();
+  IndexVector &ST_diag = ST.diag();
+  IndexVector &ST_col = ST.col();
   int ST_start_i;
   int ST_stop_i;
   int ST_diag_i;

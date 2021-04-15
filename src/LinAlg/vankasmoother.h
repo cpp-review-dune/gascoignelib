@@ -85,7 +85,7 @@ public:
   std::string GetName() const { return "VankaSmoother"; }
 
   //////////////////// Access
-  int n() const { assert(0); }
+  IndexType n() const { assert(0); return 0; }
   void ReInit(const SparseStructureInterface *A) {
     // nothing to be done, Vanka smoother does not depend on the stencil
   }

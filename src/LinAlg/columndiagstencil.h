@@ -39,7 +39,7 @@ namespace Gascoigne {
 
 class ColumnDiagStencil : public ColumnStencil {
 protected:
-  IntVector sdiag;
+  IndexVector sdiag;
 
 public:
   //
@@ -48,10 +48,10 @@ public:
   ColumnDiagStencil() : ColumnStencil() {}
   ~ColumnDiagStencil() {}
 
-  const IntVector &diag() const { return sdiag; }
-  IntVector &diag() { return sdiag; }
-  int &diag(int i) { return sdiag[i]; }
-  const int &diag(int i) const { return sdiag[i]; }
+  const IndexVector &diag() const { return sdiag; }
+  IndexVector &diag() { return sdiag; }
+  IndexType &diag(int i) { return sdiag[i]; }
+  const IndexType &diag(int i) const { return sdiag[i]; }
 
   void memory(int n, int nt);
   void memory(const SparseStructureInterface *);

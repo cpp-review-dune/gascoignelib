@@ -41,8 +41,8 @@ public:
         break;
     if (p == SPARSE_START[r + 1])
       assert(0);
-    else
-      return numfixarray<SPARSE_NENTRIES, MatrixEntryType>::operator[](p);
+      return 0;
+    return numfixarray<SPARSE_NENTRIES, MatrixEntryType>::operator[](p);
   }
 
   void DirichletRow(const std::vector<int> &cv) {
@@ -118,7 +118,7 @@ public:
 
   void caddtrans(double s, viterator p, const_viterator q0) const { assert(0); }
   void subtract(viterator p0, const_viterator q0) const { assert(0); }
-  std::ostream &print(std::ostream &s) const { assert(0); }
+  std::ostream &print(std::ostream &s) const { assert(0);}
 
   // Zugriff auf Inhalt ueber ganzen Vektor, damits auch ohne
   // Struktur geht.
