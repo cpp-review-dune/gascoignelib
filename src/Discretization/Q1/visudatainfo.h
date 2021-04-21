@@ -26,6 +26,7 @@
 
 #include <array>
 
+#include "gascoigne.h"
 #include "visudata.h"
 
 #include <map>
@@ -36,17 +37,18 @@
 namespace Gascoigne {
 class VisuDataInfo {
 protected:
-  std::map<std::string, int> scalars;
-  std::map<std::string, std::array<int, 3>> vectors;
-  std::map<std::string, int> scalar_order;
-  std::map<std::string, int> vector_order;
+  std::map<std::string, IndexType> scalars;
+  std::map<std::string, std::array<IndexType, 3>> vectors;
+  std::map<std::string, IndexType> scalar_order;
+  std::map<std::string, IndexType> vector_order;
 
 public:
-  typedef std::map<std::string, int>::const_iterator siterator;
-  typedef std::map<std::string, std::array<int, 3>>::const_iterator viterator;
+  typedef std::map<std::string, IndexType>::const_iterator siterator;
+  typedef std::map<std::string, std::array<IndexType, 3>>::const_iterator
+      viterator;
 
   VisuDataInfo() {}
-  VisuDataInfo(int ncomp) { AddScalars(ncomp); }
+  VisuDataInfo(IndexType ncomp) { AddScalars(ncomp); }
   VisuDataInfo(const VisuData &V, std::string def = "U");
   VisuDataInfo(const VisuDataInfo &V)
       : scalars(V.Scalars()), vectors(V.Vectors()) {}
@@ -61,7 +63,7 @@ public:
     vectors.clear();
   }
 
-  siterator GetSIterator(int i) {
+  siterator GetSIterator(IndexType i) {
     for (siterator p = sbegin(); p != send(); p++) {
       std::string s = p->first;
       if (scalar_order[s] == i)
@@ -69,7 +71,7 @@ public:
     }
     abort();
   }
-  viterator GetVIterator(int i) {
+  viterator GetVIterator(IndexType i) {
     for (viterator p = vbegin(); p != vend(); p++) {
       std::string s = p->first;
       if (vector_order[s] == i)
@@ -78,23 +80,23 @@ public:
     abort();
   }
 
-  void AddScalar(int index, const std::string &name, int i) {
+  void AddScalar(IndexType index, const std::string &name, int i) {
     scalar_order[name] = index;
     scalars[name] = i;
   }
-  void AddVector(int index, const std::string &name,
-                 const std::array<int, 3> &i) {
+  void AddVector(IndexType index, const std::string &name,
+                 const std::array<IndexType, 3> &i) {
     vector_order[name] = index;
     vectors[name] = i;
   }
 
-  void AddScalars(int ncomp, std::string def = "U");
+  void AddScalars(IndexType ncomp, std::string def = "U");
 
-  int nscalars() const { return scalars.size(); }
-  int nvectors() const { return vectors.size(); }
+  IndexType nscalars() const { return scalars.size(); }
+  IndexType nvectors() const { return vectors.size(); }
 
-  const std::map<std::string, int> &Scalars() const { return scalars; }
-  const std::map<std::string, std::array<int, 3>> &Vectors() const {
+  const std::map<std::string, IndexType> &Scalars() const { return scalars; }
+  const std::map<std::string, std::array<IndexType, 3>> &Vectors() const {
     return vectors;
   }
 

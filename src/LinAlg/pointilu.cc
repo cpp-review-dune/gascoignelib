@@ -28,6 +28,8 @@
 #include "nodesparsestructureadaptor.h"
 #include "pointmatrix.h"
 
+#include "gascoigne.h"
+
 using namespace std;
 
 /* ----------------------------------------- */
@@ -82,7 +84,7 @@ void PointIlu::ConstructStructure(const IntVector &perm,
   for (int i = 0; i < n; i++)
     q[p[i]] = i;
 
-  int zmax = 1;
+  IndexType zmax = 1;
   for (int i = 0; i < n; i++) {
     zmax = std::max(zmax, AS->rowsize(i));
   }

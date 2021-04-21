@@ -389,7 +389,7 @@ public:
           std::cerr << "point " << v2d[i] << " not found" << std::endl;
           abort();
         }
-        f(j, comps[i]) += 1.0 ;
+        f(j, comps[i]) += 1.0;
       }
     }
     // else if (dim == 3)
@@ -617,6 +617,7 @@ public:
 
     assert(GetDofHandler()->dimension() == DIM);
     int ne = GetDofHandler()->nodes_per_element(DEGREE);
+    (void)ne;
     assert(ne == 9);
 
     nmatrix<double> T(2, 9); // initialisiert das FE, d.h. die Koordinaten

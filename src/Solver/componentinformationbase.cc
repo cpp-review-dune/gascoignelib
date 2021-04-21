@@ -31,27 +31,29 @@ std::string ComponentInformationBase::GetName() const {
   return "ComponentInformationBase";
 }
 
-const int ComponentInformationBase::GetNScalars() const {
+const IndexType ComponentInformationBase::GetNScalars() const {
   ProblemDescriptorInterface *ppdi = GetProblemDescriptorInterface();
   assert(ppdi);
 
   return ppdi->GetNcomp();
 }
-void ComponentInformationBase::GetScalarName(int i, std::string &s_name) const {
+void ComponentInformationBase::GetScalarName(IndexType i,
+                                             std::string &s_name) const {
   s_name = "u";
   compose_name_without_dot(s_name, i);
 }
-const int ComponentInformationBase::GetNVectors() const {
+const IndexType ComponentInformationBase::GetNVectors() const {
   int ncomps = GetNcomp();
   if (ncomps <= 2)
     return 0;
   return 1;
 }
-void ComponentInformationBase::GetVectorName(int i, std::string &s_name) const {
+void ComponentInformationBase::GetVectorName(IndexType i,
+                                             std::string &s_name) const {
   s_name = "v";
 }
 void ComponentInformationBase::GetVectorIndices(
-    int i, std::array<int, 3> &fa_vectorindices) const {
+    IndexType i, std::array<IndexType, 3> &fa_vectorindices) const {
   if (GetDimension() == 2) {
     fa_vectorindices[0] = 1;
     fa_vectorindices[1] = 2;

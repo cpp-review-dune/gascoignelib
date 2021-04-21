@@ -570,6 +570,7 @@ public:
   /// average zero
   void InitFilter(nvector<double> &F) const {
     PressureFilter *PF = static_cast<PressureFilter *>(&F);
+    (void)PF;
     assert(PF);
     assert(!PF->Active());
   }

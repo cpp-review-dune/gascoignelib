@@ -29,7 +29,7 @@
 /**************************************************/
 
 namespace Gascoigne {
-template <int N, class T> class NodeMatrix : public numfixarray<N * N, T> {
+template <size_t N, class T> class NodeMatrix : public numfixarray<N * N, T> {
 
 public:
   NodeMatrix<N, T>() : numfixarray<N * N, T>() {}

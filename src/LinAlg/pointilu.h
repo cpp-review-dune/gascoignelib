@@ -56,7 +56,7 @@ public:
 
   void ReInit(const SparseStructureInterface *S);
 
-  int n() const { return GetStencil()->n(); };
+  IndexType n() const { return GetStencil()->n(); };
   void zero() { SimpleIlu::zero(); }
 
   void ConstructStructure(const IntVector &perm, const MatrixInterface &A);

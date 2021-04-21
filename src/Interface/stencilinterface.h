@@ -24,6 +24,8 @@
 #ifndef __StencilInterface_h
 #define __StencilInterface_h
 
+#include "gascoigne.h"
+
 namespace Gascoigne {
 
 /////////////////////////////////////////////
@@ -44,7 +46,7 @@ public:
   //
   StencilInterface() {}
   virtual ~StencilInterface() {}
-  virtual int n() const = 0;
+  virtual IndexType n() const = 0;
 };
 } // namespace Gascoigne
 

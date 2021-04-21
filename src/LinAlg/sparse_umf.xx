@@ -172,8 +172,8 @@ void SparseUmf<B>::ConstructStructure(int ncomp, const SparseStructure &SS) {
 
   __ncomp = ncomp;
 
-  int n = SS.n();
-  int nentries = SS.ntotal();
+  IndexType n = SS.n();
+  IndexType nentries = SS.ntotal();
 
   // reserve size for matrix-entries
   __Ax.resize(__ncomp * __ncomp * nentries);
@@ -194,8 +194,8 @@ void SparseUmf<B>::ConstructStructure(int ncomp, const SparseStructure &SS) {
     }
   }
 
-  int n_umf = n * __ncomp;
-  int n_entries_umf = nentries * __ncomp * __ncomp;
+  IndexType n_umf = n * __ncomp;
+  IndexType n_entries_umf = nentries * __ncomp * __ncomp;
 
   assert(__Ac.size() == n_entries_umf);
   assert(__Ax.size() == n_entries_umf);

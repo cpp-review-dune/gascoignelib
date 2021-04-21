@@ -47,7 +47,7 @@ protected:
   virtual void hin(const GlobalVector &x) const;
   virtual void her(GlobalVector &x) const;
 
-  int n() const { return DynamicBlockMatrix<B>::n(); };
+  IndexType n() const { return DynamicBlockMatrix<B>::n(); };
 
 public:
   DynamicBlockIlu<B>();

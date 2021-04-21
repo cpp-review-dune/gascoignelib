@@ -35,7 +35,7 @@ void GascoigneVisualization::AddVector(const ComponentInformation *CI,
   assert(v);
   _v = v;
 
-  int ncomp = v->ncomp();
+  IndexType ncomp = v->ncomp();
   assert(ncomp);
 
   VDI.Clear();
@@ -47,10 +47,10 @@ void GascoigneVisualization::AddVector(const ComponentInformation *CI,
 
   // VDI.AddScalars(ncomp);
   {
-    int ncomp2 = CI->GetNScalars();
+    IndexType ncomp2 = CI->GetNScalars();
     if (ncomp == ncomp2) {
       std::string s_name;
-      int i_notset = 0;
+      IndexType i_notset = 0;
       for (int i = 0; i < ncomp; i++) {
         s_name = "notnamed";
         CI->GetScalarName(i, s_name);
@@ -62,7 +62,7 @@ void GascoigneVisualization::AddVector(const ComponentInformation *CI,
       }
     } else {
       std::string s_name;
-      for (int i = 0; i < ncomp; i++) {
+      for (IndexType i = 0; i < ncomp; i++) {
         s_name = "u";
         compose_name_without_dot(s_name, i);
         VDI.AddScalar(i, s_name, i);
@@ -72,11 +72,11 @@ void GascoigneVisualization::AddVector(const ComponentInformation *CI,
 
   // add vectors
   {
-    int nvectors = CI->GetNVectors();
-    std::array<int, 3> fa_vectorindices;
+    IndexType nvectors = CI->GetNVectors();
+    std::array<IndexType, 3> fa_vectorindices;
     std::string s_name;
-    int i_notset = 0;
-    for (int i = 0; i < nvectors; i++) {
+    IndexType i_notset = 0;
+    for (IndexType i = 0; i < nvectors; i++) {
       s_name = "notnamed";
       CI->GetVectorName(i, s_name);
       if (s_name == "notnamed") {
@@ -104,9 +104,9 @@ void GascoigneVisualization::AddVector(const GlobalVector *v) {
   VD.SetGlobalVector(v);
   VDI.AddScalars(ncomp);
 
-  int vector_index = 0;
+  IndexType vector_index = 0;
   if (ncomp >= 2) {
-    std::array<int, 3> ff;
+    std::array<IndexType, 3> ff;
     int dim = mesh->dimension();
     if (dim == 3) {
       ff[0] = 1;

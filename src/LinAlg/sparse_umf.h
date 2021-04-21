@@ -58,7 +58,7 @@ public:
   void do_precondition();
   void undo_precondition();
 
-  int n() const {
+  IndexType n() const {
     std::cerr << "SparseUmf::n()" << std::endl;
     abort();
   }

@@ -28,6 +28,7 @@
 #include <list>
 #include <vector>
 
+#include "gascoigne.h"
 #include "stencilinterface.h"
 
 namespace Gascoigne {
@@ -42,7 +43,7 @@ protected:
 public:
   std::vector<std::list<int>> cols;
 
-  int n() const { return cols.size(); }
+  IndexType n() const { return cols.size(); }
 
   const_citerator cstart(int i) const {
     assert(i < n());

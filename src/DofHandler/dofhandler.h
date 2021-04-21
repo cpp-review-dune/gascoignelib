@@ -330,6 +330,7 @@ public:
       return PatchHandler.CoarseIndices(iq)[ii];
     }
     assert(0);
+    return 0;
   }
 
   IntVector IndicesOfCell(int iq) const;

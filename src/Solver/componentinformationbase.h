@@ -52,12 +52,13 @@ public:
 
   virtual std::string GetName() const;
 
-  virtual const int GetNScalars() const;
-  virtual void GetScalarName(int i, std::string &s_name) const;
-  virtual const int GetNVectors() const;
-  virtual void GetVectorName(int i, std::string &s_name) const;
-  virtual void GetVectorIndices(int i,
-                                std::array<int, 3> &fa_vectorindices) const;
+  virtual const IndexType GetNScalars() const;
+  virtual void GetScalarName(IndexType i, std::string &s_name) const;
+  virtual const IndexType GetNVectors() const;
+  virtual void GetVectorName(IndexType i, std::string &s_name) const;
+  virtual void
+  GetVectorIndices(IndexType i,
+                   std::array<IndexType, 3> &fa_vectorindices) const;
 };
 } // namespace Gascoigne
 

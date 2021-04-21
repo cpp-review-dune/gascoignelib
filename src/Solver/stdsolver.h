@@ -201,7 +201,10 @@ public:
                                  bool init = false);
   virtual const ProblemDescriptorInterface *GetProblemDescriptor() const {
     assert(_PDX);
-    return _PDX;
+    if (_PDX) {
+      return _PDX;
+    }
+    return nullptr;
   }
   virtual const ParamFile &GetParamfile() const { return _paramfile; }
 

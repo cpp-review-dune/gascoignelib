@@ -64,14 +64,15 @@ public:
   };
 
   const int ncomp() const { return GetNScalars(); };
-  const int GetNcomp() const { return GetNScalars(); };
+  const IndexType GetNcomp() const { return GetNScalars(); };
 
-  virtual const int GetNScalars() const = 0;
-  virtual void GetScalarName(int i, std::string &s_name) const = 0;
-  virtual const int GetNVectors() const = 0;
-  virtual void GetVectorName(int i, std::string &s_name) const = 0;
-  virtual void GetVectorIndices(int i,
-                                std::array<int, 3> &fa_vectorindices) const = 0;
+  virtual const IndexType GetNScalars() const = 0;
+  virtual void GetScalarName(IndexType i, std::string &s_name) const = 0;
+  virtual const IndexType GetNVectors() const = 0;
+  virtual void GetVectorName(IndexType i, std::string &s_name) const = 0;
+  virtual void
+  GetVectorIndices(IndexType i,
+                   std::array<IndexType, 3> &fa_vectorindices) const = 0;
 };
 } // namespace Gascoigne
 

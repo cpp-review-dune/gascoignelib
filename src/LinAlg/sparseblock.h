@@ -41,8 +41,8 @@ public:
         break;
     if (p == SPARSE_START[r + 1])
       assert(0);
-    else
-      return numfixarray<SPARSE_NENTRIES, MatrixEntryType>::operator[](p);
+    return 0;
+    return numfixarray<SPARSE_NENTRIES, MatrixEntryType>::operator[](p);
   }
 
   void DirichletRow(const std::vector<int> &cv) {
