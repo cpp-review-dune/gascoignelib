@@ -43,10 +43,18 @@ protected:
   virtual void her(GlobalVector &x) const;
 
   IndexType n() const { return SparseBlockMatrix<B>::US.n(); };
-  const IndexType &start(int i) const { return SparseBlockMatrix<B>::US.start(i); };
-  const IndexType &stop(int i) const { return SparseBlockMatrix<B>::US.stop(i); };
-  const IndexType &col(int pos) const { return SparseBlockMatrix<B>::US.col(pos); };
-  const IndexType &diag(int i) const { return SparseBlockMatrix<B>::US.diag(i); };
+  const IndexType &start(int i) const {
+    return SparseBlockMatrix<B>::US.start(i);
+  };
+  const IndexType &stop(int i) const {
+    return SparseBlockMatrix<B>::US.stop(i);
+  };
+  const IndexType &col(int pos) const {
+    return SparseBlockMatrix<B>::US.col(pos);
+  };
+  const IndexType &diag(int i) const {
+    return SparseBlockMatrix<B>::US.diag(i);
+  };
 
 public:
   SparseBlockIlu<B>();

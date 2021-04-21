@@ -71,19 +71,19 @@ public:
     assert((pos >= 0) && (pos < scol.size()));
     return scol[pos];
   }
-  IndexType& start(int i) {
+  IndexType &start(int i) {
     assert((i >= 0) && (i < sstart.size()));
     return sstart[i];
   }
-  const IndexType& start(int i) const {
+  const IndexType &start(int i) const {
     assert((i >= 0) && (i < sstart.size()));
     return sstart[i];
   }
-  IndexType&  stop(int i) {
+  IndexType &stop(int i) {
     assert((i >= 0) && (i + 1 < sstart.size()));
     return sstart[i + 1];
   }
-  const IndexType&  stop(int i) const {
+  const IndexType &stop(int i) const {
     assert((i >= 0) && (i + 1 < sstart.size()));
     return sstart[i + 1];
   }

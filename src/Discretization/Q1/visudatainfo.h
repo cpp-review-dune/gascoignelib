@@ -26,8 +26,8 @@
 
 #include <array>
 
-#include "visudata.h"
 #include "gascoigne.h"
+#include "visudata.h"
 
 #include <map>
 #include <string>
@@ -44,7 +44,8 @@ protected:
 
 public:
   typedef std::map<std::string, IndexType>::const_iterator siterator;
-  typedef std::map<std::string, std::array<IndexType, 3>>::const_iterator viterator;
+  typedef std::map<std::string, std::array<IndexType, 3>>::const_iterator
+      viterator;
 
   VisuDataInfo() {}
   VisuDataInfo(IndexType ncomp) { AddScalars(ncomp); }

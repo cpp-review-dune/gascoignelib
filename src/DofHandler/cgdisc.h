@@ -389,7 +389,7 @@ public:
           std::cerr << "point " << v2d[i] << " not found" << std::endl;
           abort();
         }
-        f(j, comps[i]) += 1.0 ;
+        f(j, comps[i]) += 1.0;
       }
     }
     // else if (dim == 3)

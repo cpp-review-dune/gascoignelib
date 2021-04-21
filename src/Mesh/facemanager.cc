@@ -205,7 +205,7 @@ void FaceManager::Check(const HangContainer3d &hangset) const {
     }
   }
   assert(ok);
-  (void) ok;
+  (void)ok;
 }
 
 /*---------------------------------------------------*/

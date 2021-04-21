@@ -37,7 +37,8 @@ const IndexType ComponentInformationBase::GetNScalars() const {
 
   return ppdi->GetNcomp();
 }
-void ComponentInformationBase::GetScalarName(IndexType i, std::string &s_name) const {
+void ComponentInformationBase::GetScalarName(IndexType i,
+                                             std::string &s_name) const {
   s_name = "u";
   compose_name_without_dot(s_name, i);
 }
@@ -47,7 +48,8 @@ const IndexType ComponentInformationBase::GetNVectors() const {
     return 0;
   return 1;
 }
-void ComponentInformationBase::GetVectorName(IndexType i, std::string &s_name) const {
+void ComponentInformationBase::GetVectorName(IndexType i,
+                                             std::string &s_name) const {
   s_name = "v";
 }
 void ComponentInformationBase::GetVectorIndices(

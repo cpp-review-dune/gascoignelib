@@ -43,10 +43,10 @@
 
 namespace Gascoigne {
 
-#ifdef __MATRIX_DOUBLE_PRECISION__
-typedef double MatrixEntryType;
-#else
+#ifdef __MATRIX_SINGLE_PRECISION__
 typedef float MatrixEntryType;
+#else
+typedef double MatrixEntryType;
 #endif
 
 typedef size_t IndexType;

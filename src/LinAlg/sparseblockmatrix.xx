@@ -70,7 +70,7 @@ void SparseBlockMatrix<B>::FillInterfaceList(
     col = elements[2 * index + 1];
     assert(row >= cur_row);
     cur_row = row;
-    (void) cur_row;
+    (void)cur_row;
     pos = US.start(row);
     while ((US.col(pos) != col)) {
       ++pos;
