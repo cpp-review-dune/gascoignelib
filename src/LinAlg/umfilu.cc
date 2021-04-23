@@ -112,9 +112,20 @@ void UmfIlu::ReInit(const SparseStructureInterface *SS) {
 
   umfpack_di_free_symbolic(&Symbolic);
 
-  int n = SA->n();
-  const int *sb = &(*SA->start().begin());
-  const int *cb = &(*SA->col().begin());
+  int n = static_cast<int>(SA->n());
+  auto start = SA->start();
+  nvector<int> start_int(start.size());
+  for (size_t i = 0; i < start.size(); i++) {
+    start_int[i] = static_cast<long>(start[i]);
+  }
+  const int *sb = start_int.data();
+
+  auto col = SA->col();
+  nvector<int> col_int(col.size());
+  for (size_t i = 0; i < col.size(); i++) {
+    col_int[i] = static_cast<int>(col[i]);
+  }
+  const int *cb = col_int.data();
 
   int status =
       umfpack_di_symbolic(n, n, sb, cb, NULL, &Symbolic, Control, Info);
@@ -151,9 +162,21 @@ void UmfIlu::Factorize() {
       dynamic_cast<const ColumnStencil *>(AP->GetStencil());
   assert(SA);
 
-  const int *sb = &(*SA->start().begin());
-  const int *cb = &(*SA->col().begin());
-  const double *mb = &AP->GetValue(0);
+  auto start = SA->start();
+  nvector<int> start_int(start.size());
+  for (size_t i = 0; i < start.size(); i++) {
+    start_int[i] = static_cast<long>(start[i]);
+  }
+  const int *sb = start_int.data();
+
+  auto col = SA->col();
+  nvector<int> col_int(col.size());
+  for (size_t i = 0; i < col.size(); i++) {
+    col_int[i] = static_cast<int>(col[i]);
+  }
+  const int *cb = col_int.data();
+
+  const double *mb = AP->GetValues().data();
   int status =
       umfpack_di_numeric(sb, cb, mb, Symbolic, &Numeric, Control, Info);
   if (status != UMFPACK_OK) {
@@ -172,8 +195,20 @@ void UmfIlu::Solve(DoubleVector &x, const DoubleVector &b) const {
       dynamic_cast<const ColumnStencil *>(AP->GetStencil());
   assert(SA);
 
-  const IndexType *sb = &(*SA->start().begin());
-  const IndexType *cb = &(*SA->col().begin());
+  auto start = SA->start();
+  nvector<int> start_int(start.size());
+  for (size_t i = 0; i < start.size(); i++) {
+    start_int[i] = static_cast<long>(start[i]);
+  }
+  const int *sb = start_int.data();
+
+  auto col = SA->col();
+  nvector<int> col_int(col.size());
+  for (size_t i = 0; i < col.size(); i++) {
+    col_int[i] = static_cast<int>(col[i]);
+  }
+  const int *cb = col_int.data();
+
   const double *mb = &AP->GetValue(0);
   double *xb = &(*x.begin());
   const double *bb = &(*b.begin());
@@ -195,8 +230,20 @@ void UmfIlu::SolveTranspose(DoubleVector &x, const DoubleVector &b) {
       dynamic_cast<const ColumnStencil *>(AP->GetStencil());
   assert(SA);
 
-  const int *sb = &(*SA->start().begin());
-  const int *cb = &(*SA->col().begin());
+  auto start = SA->start();
+  nvector<int> start_int(start.size());
+  for (size_t i = 0; i < start.size(); i++) {
+    start_int[i] = static_cast<long>(start[i]);
+  }
+  const int *sb = start_int.data();
+
+  auto col = SA->col();
+  nvector<int> col_int(col.size());
+  for (size_t i = 0; i < col.size(); i++) {
+    col_int[i] = static_cast<int>(col[i]);
+  }
+  const int *cb = col_int.data();
+
   const double *mb = &AP->GetValue(0);
   double *xb = &(*x.begin());
   const double *bb = &(*b.begin());

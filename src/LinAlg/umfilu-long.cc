@@ -93,12 +93,12 @@ void UmfIluLong::ReInit(const SparseStructureInterface *SS) {
 
   long n = SA->n();
 
-  IntVector start = SA->start();
+  IndexVector start = SA->start();
   nvector<long> start_long;
 
   start_long.resize(start.size());
   for (int i = 0; i < start.size(); i++) {
-    start_long[i] = start[i];
+    start_long[i] = static_cast<long>(start[i]);
   }
 
   IndexVector col = SA->col();
@@ -106,7 +106,7 @@ void UmfIluLong::ReInit(const SparseStructureInterface *SS) {
 
   col_long.resize(col.size());
   for (int i = 0; i < col.size(); i++) {
-    col_long[i] = col[i];
+    col_long[i] = static_cast<long>(col[i]);
   }
 
   const long *sb = &(*start_long.begin());
@@ -152,7 +152,7 @@ void UmfIluLong::Factorize() {
 
   start_long.resize(start.size());
   for (int i = 0; i < start.size(); i++) {
-    start_long[i] = start[i];
+    start_long[i] = static_cast<long>(start[i]);
   }
 
   IndexVector col = SA->col();
@@ -160,7 +160,7 @@ void UmfIluLong::Factorize() {
 
   col_long.resize(col.size());
   for (int i = 0; i < col.size(); i++) {
-    col_long[i] = col[i];
+    col_long[i] = static_cast<long>(col[i]);
   }
 
   const long *sb = &(*start_long.begin());
@@ -189,7 +189,7 @@ void UmfIluLong::Solve(DoubleVector &x, const DoubleVector &b) const {
 
   start_long.resize(start.size());
   for (int i = 0; i < start.size(); i++) {
-    start_long[i] = start[i];
+    start_long[i] = static_cast<long>(start[i]);
   }
 
   IndexVector col = SA->col();
@@ -197,7 +197,7 @@ void UmfIluLong::Solve(DoubleVector &x, const DoubleVector &b) const {
 
   col_long.resize(col.size());
   for (int i = 0; i < col.size(); i++) {
-    col_long[i] = col[i];
+    col_long[i] = static_cast<long>(col[i]);
   }
 
   const long *sb = &(*start_long.begin());
@@ -228,7 +228,7 @@ void UmfIluLong::SolveTranspose(DoubleVector &x, const DoubleVector &b) {
 
   start_long.resize(start.size());
   for (int i = 0; i < start.size(); i++) {
-    start_long[i] = start[i];
+    start_long[i] = static_cast<long>(start[i]);
   }
 
   IndexVector col = SA->col();
@@ -236,7 +236,7 @@ void UmfIluLong::SolveTranspose(DoubleVector &x, const DoubleVector &b) {
 
   col_long.resize(col.size());
   for (int i = 0; i < col.size(); i++) {
-    col_long[i] = col[i];
+    col_long[i] = static_cast<long>(col[i]);
   }
 
   const long *sb = &(*start_long.begin());
