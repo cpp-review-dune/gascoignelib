@@ -25,6 +25,7 @@
 #define __vtkvisu_h
 
 #include "visualization.h"
+#include "compvector.h"
 
 /*--------------------------------------------------*/
 

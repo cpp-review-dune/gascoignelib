@@ -26,6 +26,7 @@
 
 #include "edge.h"
 #include "gascoigne.h"
+#include "compvector.h"
 
 /**********************************************************/
 

@@ -25,6 +25,7 @@
 #define __MgInterpolatorInterface_h
 
 #include "gascoigne.h"
+#include "compvector.h"
 
 /*--------------------------------------------------------*/
 

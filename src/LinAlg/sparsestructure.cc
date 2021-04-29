@@ -150,7 +150,7 @@ void SparseStructure::enlarge_lu() {
   }
   // cerr << "bandbreite: " << maxbw << endl;
   for (IndexType i = 0; i < n(); i++) {
-    int imin = std::max((IndexType)0, i - maxbw);
+    int imin = std::max(static_cast<IndexType>(0), i - maxbw);
     int imax = std::min(i + maxbw, n() - 1);
     for (int im = imin; im <= imax; im++) {
       row(i).insert(im);

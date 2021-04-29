@@ -26,6 +26,7 @@
 
 #include "application.h"
 #include "vertex.h"
+#include "compvector.h"
 #include <vector>
 
 /**********************************************************/

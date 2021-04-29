@@ -24,6 +24,7 @@
 #ifndef __compvector_h
 #define __compvector_h
 
+#include "gascoigne.h"
 #include "nmatrix.h"
 #include "nvector.h"
 #include <cassert>
@@ -490,6 +491,16 @@ public:
     in >> cc;
   }
 };
+
+  typedef CompVector<double> GlobalVector;
+  typedef CompVector<double> LocalVector;
+  typedef CompVector<MatrixEntryType> GlobalVectorMET; // for linear solver
+  typedef CompVector<MatrixEntryType> LocalVectorMET;  // for linear solver
+  typedef std::map<std::string, const GlobalVector *> GlobalData;
+  typedef std::map<std::string, LocalVector> LocalData;
+  typedef CompVector<double>::iterator VectorIterator;
+
+  
 } // namespace Gascoigne
 
 #endif

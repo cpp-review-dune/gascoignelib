@@ -44,6 +44,7 @@
 #include "paramfile.h"
 #include "pointfunctional.h"
 #include "problemdescriptorbase.h"
+#include "compvector.h"
 #include <string>
 
 namespace Gascoigne {
