@@ -48,7 +48,9 @@ typedef float MatrixEntryType;
 typedef double MatrixEntryType;
 #endif
 
-typedef size_t IndexType;
+typedef size_t IndexType;                  // data type for global indices
+typedef unsigned short int ShortIndexType;                  // data type for local indices
+  
 
 typedef nvector<double> GlobalParameterVector;
 typedef nvector<double> LocalParameterVector;

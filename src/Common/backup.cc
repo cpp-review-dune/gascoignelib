@@ -52,7 +52,8 @@ ReadBackUp::ReadBackUp(GlobalVector &u, const string &name) {
     abort();
   }
 
-  int size, comp;
+  IndexType size;
+  ShortIndexType comp;
 
   file >> size;
   file >> comp;
@@ -66,16 +67,16 @@ ReadBackUp::ReadBackUp(GlobalVector &u, const string &name) {
   }
   assert(u.n() == size);
 
-  int v = std::max(u.ncomp(), comp);
+  ShortIndexType v = std::max(u.ncomp(), comp);
 
   double d;
-  for (int i = 0; i < u.n(); i++) {
-    for (int c = 0; c < v; c++) {
+  for (IndexType i = 0; i < u.n(); i++) {
+    for (ShortIndexType c = 0; c < v; c++) {
       double val = 0.;
       file >> val;
       u(i, c) += val;
     }
-    for (int c = v; c < comp; c++) {
+    for (ShortIndexType c = v; c < comp; c++) {
       file >> d;
     }
   }
@@ -104,7 +105,8 @@ ReadBackUpResize::ReadBackUpResize(GlobalVector &u, const string &name) {
     abort();
   }
 
-  int size, comp;
+  IndexType size;
+  ShortIndexType comp;
 
   file >> size;
   file >> comp;
@@ -119,14 +121,14 @@ ReadBackUpResize::ReadBackUpResize(GlobalVector &u, const string &name) {
     abort();
   }
 
-  int v = std::max(u.ncomp(), comp);
+  ShortIndexType v = std::max(u.ncomp(), comp);
 
   double d;
-  for (int i = 0; i < u.n(); i++) {
-    for (int c = 0; c < v; c++) {
+  for (IndexType i = 0; i < u.n(); i++) {
+    for (ShortIndexType c = 0; c < v; c++) {
       file >> u(i, c);
     }
-    for (int c = v; c < comp; c++) {
+    for (ShortIndexType c = v; c < comp; c++) {
       file >> d;
     }
   }
@@ -160,8 +162,8 @@ WriteBackUp::WriteBackUp(const GlobalVector &u, const string &bname) {
   file << u.n() << " " << u.ncomp() << endl;
 
   file.precision(16);
-  for (int i = 0; i < u.n(); i++) {
-    for (int c = 0; c < u.ncomp(); c++) {
+  for (IndexType i = 0; i < u.n(); i++) {
+    for (ShortIndexType c = 0; c < u.ncomp(); c++) {
       file << u(i, c) << " ";
     }
     file << endl;

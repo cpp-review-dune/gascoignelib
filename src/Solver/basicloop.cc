@@ -262,9 +262,10 @@ string BasicLoop::Solve(Matrix &A, VectorInterface &u, VectorInterface &f,
   GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(f);
   // set offset first, so nodes that are both periodic and dirichlet will become
   // dirichlet
+  
   GetMultiLevelSolver()->GetSolver()->SetPeriodicVector(u);
   GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(u);
-
+  
   string status =
       GetMultiLevelSolver()->Solve(A, u, f, GetSolverInfos()->GetNLInfo());
   _clock_solve.stop();
