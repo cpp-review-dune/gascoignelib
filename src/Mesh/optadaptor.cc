@@ -24,8 +24,8 @@
 #include "optadaptor.h"
 #include "compareclass.h"
 
-#include "giota.h"
 #include <fstream>
+#include <numeric>
 
 using namespace std;
 

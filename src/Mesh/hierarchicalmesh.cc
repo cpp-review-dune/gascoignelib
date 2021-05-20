@@ -26,8 +26,8 @@
 #undef __STL_NO_DRAND48
 
 #include "filescanner.h"
-#include "giota.h"
 #include "stringutil.h"
+#include <numeric>
 
 #include <algorithm>
 #include <random>

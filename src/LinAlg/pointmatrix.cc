@@ -23,9 +23,9 @@
 
 #include "pointmatrix.h"
 #include "componentsparsestructureadaptor.h"
-#include "giota.h"
 #include "nodesparsestructureadaptor.h"
 #include "simplesparsestructureadaptor.h"
+#include <numeric>
 
 using namespace std;
 

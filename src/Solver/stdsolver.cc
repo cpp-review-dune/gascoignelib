@@ -25,8 +25,8 @@
 #include <iomanip>
 #include <list>
 
-#include "giota.h"
 #include "stdsolver.h"
+#include <numeric>
 
 #include "pointilu.h"
 #include "pointmatrix.h"

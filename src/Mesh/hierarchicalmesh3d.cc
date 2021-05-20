@@ -32,8 +32,8 @@
 #include "stlio.h"
 #include "vecalgo.h"
 
-#include "giota.h"
 #include <fstream>
+#include <numeric>
 
 using namespace std;
 

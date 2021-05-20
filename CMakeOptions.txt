@@ -29,6 +29,9 @@ OPTION(BUILD_SHARED_LIBS       "Build shared libraries" ON)
 OPTION(MATRIX_DOUBLE_PRECISION "Matrix in double precision" ON)
 IF(NOT MATRIX_DOUBLE_PRECISION)
   LIST(APPEND GASCOIGNE_DEFINITIONS -D __MATRIX_SINGLE_PRECISION__)
+  message(STATUS "Using Single Percision for MatrixEntryType!")
+ELSE(NOT MATRIX_DOUBLE_PRECISION)
+  message(STATUS "Using Double Percision for MatrixEntryType!")
 ENDIF(NOT MATRIX_DOUBLE_PRECISION)
 
 

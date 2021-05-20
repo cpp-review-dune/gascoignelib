@@ -24,8 +24,8 @@
 #ifndef __nmatrix_h
 #define __nmatrix_h
 
-#include "giota.h"
 #include "nvector.h"
+#include <numeric>
 
 /**************************************************/
 

@@ -24,8 +24,8 @@
 #include "malteadaptor.h"
 #include "compareclass.h"
 #include "filescanner.h"
-#include "giota.h"
 #include <fstream>
+#include <numeric>
 
 using namespace std;
 

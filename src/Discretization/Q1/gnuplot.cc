@@ -27,8 +27,8 @@
 #include "errormacros.h"
 #include "visualization.h"
 
-#include "giota.h"
 #include <algorithm>
+#include <numeric>
 
 using namespace std;
 

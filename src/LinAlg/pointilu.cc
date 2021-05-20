@@ -24,9 +24,9 @@
 #include "pointilu.h"
 #include "compareclass.h"
 #include "componentsparsestructureadaptor.h"
-#include "giota.h"
 #include "nodesparsestructureadaptor.h"
 #include "pointmatrix.h"
+#include <numeric>
 
 #include "gascoigne.h"
 

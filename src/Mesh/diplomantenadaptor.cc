@@ -23,7 +23,7 @@
 
 #include "diplomantenadaptor.h"
 #include "compareclass.h"
-#include "giota.h"
+#include <numeric>
 
 #include <fstream>
 

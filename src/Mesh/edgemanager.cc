@@ -22,11 +22,11 @@
  **/
 
 #include "edgemanager.h"
-#include "giota.h"
 #include "hangsort.h"
 #include "vecalgo.h"
 #include <algorithm>
 #include <map>
+#include <numeric>
 
 #include "gascoignehash.h"
 

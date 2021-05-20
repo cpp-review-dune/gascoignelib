@@ -24,8 +24,8 @@
 #include "ncadaptor.h"
 #include "compareclass.h"
 #include "filescanner.h"
-#include "giota.h"
 #include <limits>
+#include <numeric>
 
 using namespace std;
 

@@ -31,9 +31,9 @@
 #include "stlio.h"
 #include "vecalgo.h"
 
-#include "giota.h"
 #include <fstream>
 #include <iterator>
+#include <numeric>
 #include <set>
 #include <stdio.h>
 

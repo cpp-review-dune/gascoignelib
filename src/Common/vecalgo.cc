@@ -22,8 +22,8 @@
  **/
 
 #include "vecalgo.h"
-#include "giota.h"
 #include <algorithm>
+#include <numeric>
 
 using namespace std;
 
