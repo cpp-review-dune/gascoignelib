@@ -49,14 +49,76 @@ public:
   ////  Con(De)structor
   //
 
-  GhostAgent();
-  ~GhostAgent();
+  GhostAgent(){};
+  ~GhostAgent()
+  {
+    for (auto p = std::map<std::string, T*>::begin();
+         p != std::map<std::string, T*>::end();
+         p++) {
+      if (p->second) {
+        delete p->second;
+        p->second = NULL;
+      }
+    }
+  };
 
-  void Register(const std::string& mg);
-  void Delete(std::string& mg);
+  void Register(const std::string& mg)
+  {
+    auto p = std::map<std::string, T*>::find(mg);
+    if (p == std::map<std::string, T*>::end()) {
+      std::map<std::string, T*>::emplace(mg, static_cast<T*>(NULL));
+    }
+  };
 
-  T& operator()(const std::string& g);
-  const T& operator()(const std::string& g) const;
+  void Delete(std::string& mg)
+  {
+    auto p = std::map<std::string, T*>::find(mg);
+    if (p != std::map<std::string, T*>::end()) {
+      delete p->second;
+      std::map<std::string, T*>::erase(p);
+    }
+  };
+
+  T& operator()(const std::string& g)
+  {
+    auto p = std::map<std::string, T*>::find(g);
+    if (p == std::map<std::string, T*>::end()) {
+      std::cerr << __FILE__ << ":" << __LINE__;
+      std::cerr << ": GhostAgent::operator(): ERROR" << std::endl;
+      std::cerr << __FILE__ << ":" << __LINE__;
+      std::cerr << ": Ghostvector '" << g
+                << "' not found in list of: " << std::endl;
+      std::cerr << " " << *this << std::endl;
+      abort();
+    }
+    T* vp = p->second;
+    if (vp == NULL) {
+      std::cerr << "GhostAgent  T* NULL\t" << p->first;
+      std::cerr << "\n" << *this << std::endl;
+      abort();
+    }
+    return *vp;
+  };
+  const T& operator()(const std::string& g) const
+  {
+    auto p = std::map<std::string, T*>::find(g);
+    if (p == std::map<std::string, T*>::end()) {
+      std::cerr << __FILE__ << ":" << __LINE__;
+      std::cerr << ": GhostAgent::operator(): ERROR" << std::endl;
+      std::cerr << __FILE__ << ":" << __LINE__;
+      std::cerr << ": Ghostvector '" << g
+                << "' not found in list of: " << std::endl;
+      std::cerr << " " << *this << std::endl;
+      abort();
+    }
+    T* vp = p->second;
+    if (vp == NULL) {
+      std::cerr << "GhostAgent  T* NULL\t" << p->first;
+      std::cerr << "\n" << *this << std::endl;
+      abort();
+    }
+    return *vp;
+  };
 
   friend std::ostream& operator<<(std::ostream& os, const GhostAgent& gva)
   {
