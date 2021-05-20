@@ -21,12 +21,11 @@
  *
  **/
 
-#ifndef __GhostVectorAgent_h
-#define __GhostVectorAgent_h
+#ifndef __GhostAgent_h
+#define __GhostAgent_h
 
-#include "compvector.h"
 #include "gascoigne.h"
-#include "vectorinterface.h"
+#include "matrixinterface.h"
 #include <string>
 
 namespace Gascoigne {
@@ -39,31 +38,32 @@ namespace Gascoigne {
 ////
 /////////////////////////////////////////////
 
-class GhostVectorAgent : public std::map<Vector, GlobalVector*>
+template<typename T>
+class GhostAgent : public std::map<std::string, T*>
 {
 public:
-  typedef std::map<Vector, GlobalVector*>::const_iterator const_iterator;
-  typedef std::map<Vector, GlobalVector*>::iterator iterator;
+  // typedef std::map<std::string, T*>::const_iterator const_iterator;
+  // typedef std::map<std::string, T*>::iterator iterator;
 
   //
   ////  Con(De)structor
   //
 
-  GhostVectorAgent();
-  ~GhostVectorAgent();
+  GhostAgent();
+  ~GhostAgent();
 
-  void Register(const Vector& mg);
-  void Delete(Vector& mg);
+  void Register(const std::string& mg);
+  void Delete(std::string& mg);
 
-  GlobalVector& operator()(const Vector& g);
+  T& operator()(const std::string& g);
+  const T& operator()(const std::string& g) const;
 
-  friend std::ostream& operator<<(std::ostream& os, const GhostVectorAgent& gva)
+  friend std::ostream& operator<<(std::ostream& os, const GhostAgent& gva)
   {
     int i = 0, n = gva.size();
-    os << "GhostVectorAgent: size=" << n << ", ";
+    os << "GhostAgent: size=" << n << ", ";
     for (auto p = gva.begin(); p != gva.end(); p++, i++) {
-      os << "VectorInterface(" << i << ")=('" << p->first.GetName() << "',"
-         << p->second << ")";
+      os << "Vector(" << i << ")=('" << p->first << "'," << p->second << ")";
       if (i < n - 1)
         os << ", ";
       else
@@ -72,6 +72,10 @@ public:
     return os;
   }
 };
+
+using GhostVectorAgent = GhostAgent<GlobalVector>;
+using MatrixAgent = GhostAgent<MatrixInterface>;
+
 } // namespace Gascoigne
 
 #endif

@@ -569,14 +569,14 @@ StdSolver::ReInitVector(Vector& dst, int comp)
   //
   p->second->ncomp() = comp;
 
-  if (p->first.GetType() == "node") {
+  if (dst.GetType() == "node") {
     p->second->reservesize(n);
-  } else if (p->first.GetType() == "cell") {
+  } else if (dst.GetType() == "cell") {
     p->second->reservesize(nc);
-  } else if (p->first.GetType() == "parameter") {
+  } else if (dst.GetType() == "parameter") {
     p->second->reservesize(1);
   } else {
-    cerr << "No such vector type: " << p->first.GetType() << endl;
+    cerr << "No such vector type: " << dst.GetType() << endl;
     abort();
   }
 }

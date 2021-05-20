@@ -33,6 +33,7 @@
 #include "stdmultilevelsolverdata.h"
 #include "stdsolver.h"
 #include "stopwatch.h"
+#include "vectorinterface.h"
 
 /*-------------------------------------------------------------*/
 

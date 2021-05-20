@@ -30,9 +30,8 @@
 #include "gascoignemesh.h"
 #include "gascoignevisualization.h"
 
-#include "ghostvectoragent.h"
+#include "ghostagent.h"
 #include "iluagent.h"
-#include "matrixagent.h"
 
 #include "hierarchicalmesh.h"
 #include "multigridmeshinterface.h"
@@ -47,6 +46,7 @@
 #include "iluinterface.h"
 #include "matrixinterface.h"
 #include "problemdescriptorinterface.h"
+#include "vectorinterface.h"
 
 /*-----------------------------------------*/
 
