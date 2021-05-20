@@ -37,7 +37,6 @@
 #include <set>
 #include <string>
 
-#include "compvector.h"
 #include "derivativevector.h"
 #include "nmatrix.h"
 
@@ -49,14 +48,9 @@ typedef float MatrixEntryType;
 typedef double MatrixEntryType;
 #endif
 
-typedef size_t IndexType;
-
-typedef CompVector<double> GlobalVector;
-typedef CompVector<double> LocalVector;
-typedef CompVector<MatrixEntryType> GlobalVectorMET; // for linear solver
-typedef CompVector<MatrixEntryType> LocalVectorMET;  // for linear solver
-typedef std::map<std::string, const GlobalVector *> GlobalData;
-typedef std::map<std::string, LocalVector> LocalData;
+typedef size_t IndexType;                  // data type for global indices
+typedef unsigned short int ShortIndexType;                  // data type for local indices
+  
 
 typedef nvector<double> GlobalParameterVector;
 typedef nvector<double> LocalParameterVector;
@@ -69,7 +63,6 @@ typedef nvector<IndexType> IndexVector;
 typedef nvector<double> DoubleVector;
 typedef nmatrix<double> DoubleMatrix;
 typedef std::set<int> IntSet;
-typedef CompVector<double>::iterator VectorIterator;
 
 typedef nmatrix<double> TimePattern;
 

@@ -25,6 +25,7 @@
 #define __PressureFilter_h
 
 #include "gascoigne.h"
+#include "compvector.h"
 #include "nvector.h"
 
 /*-----------------------------------------*/

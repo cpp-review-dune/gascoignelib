@@ -26,6 +26,7 @@
 
 #include "gascoigne.h"
 #include "visudata.h"
+#include "compvector.h"
 
 /*----------------------------------------------*/
 

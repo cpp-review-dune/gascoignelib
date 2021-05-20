@@ -24,6 +24,7 @@
 #ifndef __compvector_h
 #define __compvector_h
 
+#include "gascoigne.h"
 #include "nmatrix.h"
 #include "nvector.h"
 #include <cassert>
@@ -34,21 +35,21 @@
 namespace Gascoigne {
 template <class T> class CompVector : public nvector<T> {
 protected:
-  int N;
+  ShortIndexType N;
 
 public:
   typedef typename nvector<T>::const_iterator const_iterator;
   typedef typename nvector<T>::iterator iterator;
 
-  int ncomp() const { return N; }
-  int &ncomp() { return N; }
+  ShortIndexType ncomp() const { return N; }
+  ShortIndexType &ncomp() { return N; }
 
   ~CompVector() {}
   CompVector() : nvector<T>(), N(0) {}
-  CompVector(int NN) : nvector<T>(), N(NN) {}
-  CompVector(int NN, size_t n) : nvector<T>(NN * n), N(NN) {}
-  CompVector(int NN, size_t n, const T &d) : nvector<T>(NN * n, d), N(NN) {}
-  CompVector(int NN, size_t n, T *b, T *e)
+  CompVector(ShortIndexType NN) : nvector<T>(), N(NN) {}
+  CompVector(ShortIndexType NN, size_t n) : nvector<T>(NN * n), N(NN) {}
+  CompVector(ShortIndexType NN, size_t n, const T &d) : nvector<T>(NN * n, d), N(NN) {}
+  CompVector(ShortIndexType NN, size_t n, T *b, T *e)
       : nvector<T>(std::vector<double>(b, e)), N(NN) {}
   CompVector(const std::vector<T> &u) {
     N = 1;
@@ -70,17 +71,17 @@ public:
     return *this;
   }
 
-  size_t n() const { return nvector<T>::size() / N; }
+  IndexType n() const { return nvector<T>::size() / N; }
 
-  const_iterator start(int i) const { return std::vector<T>::begin() + i * N; }
-  iterator start(int i) { return std::vector<T>::begin() + i * N; }
-  const_iterator stop(int i) const {
+  const_iterator start(IndexType i) const { return std::vector<T>::begin() + i * N; }
+  iterator       start(IndexType i) { return std::vector<T>::begin() + i * N; }
+  const_iterator stop(IndexType i) const {
     return std::vector<T>::begin() + (i + 1) * N;
   }
-  iterator stop(int i) { return std::vector<T>::begin() + (i + 1) * N; }
+  iterator stop(IndexType i) { return std::vector<T>::begin() + (i + 1) * N; }
 
-  const T &operator()(int i, int c) const { return *(start(i) + c); }
-  T &operator()(int i, int c) { return *(start(i) + c); }
+  const T &operator()(IndexType i, ShortIndexType c) const { return *(start(i) + c); }
+  T &operator()(IndexType i, ShortIndexType c) { return *(start(i) + c); }
 
   void ReInit(size_t ncomp, size_t n) {
     assert(ncomp);
@@ -110,7 +111,7 @@ public:
     while (p != q)
       *(p++) = d0;
   }
-  void scale_comp(int c, double d0) {
+  void scale_comp(ShortIndexType c, double d0) {
     iterator p = nvector<T>::begin() + c;
     while (p < nvector<T>::end()) {
       *p *= d0;
@@ -209,12 +210,12 @@ public:
     iterator p = start(i);
     const_iterator q0 = u0.start(i0);
     const_iterator q1 = u1.start(i1);
-    for (int c = 0; c < N; c++) {
+    for (ShortIndexType c = 0; c < N; c++) {
       *(p++) = d0 * *(q0++) + d1 * *(q1++);
     }
   }
 
-  void zero_comp(int c) {
+  void zero_comp(ShortIndexType c) {
     iterator p = std::vector<T>::begin() + c;
     while (p < nvector<T>::end()) {
       *p = 0.;
@@ -233,7 +234,7 @@ public:
   void add_node(int i, double d0, int i0) {
     iterator p = start(i);
     const_iterator q = start(i0);
-    for (int c = 0; c < N; c++)
+    for (ShortIndexType c = 0; c < N; c++)
       *(p++) += d0 * *(q++);
   }
 
@@ -241,17 +242,17 @@ public:
     iterator p = start(i);
     const_iterator q0 = start(i0);
     const_iterator q1 = start(i1);
-    for (int c = 0; c < N; c++)
+    for (ShortIndexType c = 0; c < N; c++)
       *(p++) += d0 * *(q0++) + d1 * *(q1++);
   }
 
   void add_node(int i, double d0, int i0, const CompVector<T> &u0) {
     iterator p = start(i);
     const_iterator q = u0.start(i0);
-    for (int c = 0; c < N; c++)
+    for (ShortIndexType c = 0; c < N; c++)
       *(p++) += d0 * *(q++);
   }
-  double CompScp(int c, const CompVector<T> &v) const {
+  double CompScp(ShortIndexType c, const CompVector<T> &v) const {
     double d = 0.;
     const_iterator first = std::vector<T>::begin() + c;
     const_iterator last = std::vector<T>::end();
@@ -264,7 +265,7 @@ public:
     }
     return d;
   }
-  double CompNormL8(int c) const {
+  double CompNormL8(ShortIndexType c) const {
     double d = 0;
     const_iterator first = std::vector<T>::begin() + c;
     const_iterator last = std::vector<T>::end();
@@ -275,7 +276,7 @@ public:
     }
     return d;
   }
-  double CompMin(int c) const {
+  double CompMin(ShortIndexType c) const {
     double d = 1.e40;
     const_iterator first = std::vector<T>::begin() + c;
     const_iterator last = std::vector<T>::end();
@@ -286,7 +287,7 @@ public:
     }
     return d;
   }
-  double CompMax(int c) const {
+  double CompMax(ShortIndexType c) const {
     double d = -1e14;
     const_iterator first = std::vector<T>::begin() + c;
     const_iterator last = std::vector<T>::end();
@@ -298,7 +299,7 @@ public:
     return d;
   }
   //////////////////////////////////////
-  void SetMax(int c, double val) {
+  void SetMax(ShortIndexType c, double val) {
     iterator first = std::vector<T>::begin() + c;
     const_iterator last = std::vector<T>::end();
 
@@ -311,7 +312,7 @@ public:
   void FillLocal(int i, nvector<double> &uloc) const {
     assert(uloc.size() == N);
     const_iterator first = start(i);
-    for (int ii = 0; ii < N; ++ii)
+    for (ShortIndexType ii = 0; ii < N; ++ii)
       uloc[ii] = *first++;
   }
   void node_zero(int i) {
@@ -322,7 +323,7 @@ public:
       *first++ = 0.;
     }
   }
-  void CompAdd(int c, double d) {
+  void CompAdd(ShortIndexType c, double d) {
     iterator first = std::vector<T>::begin() + c;
     const_iterator last = std::vector<T>::end();
 
@@ -331,7 +332,7 @@ public:
       first += N;
     }
   }
-  void CompAdd(int c1, double d, int c2, const CompVector &y) {
+  void CompAdd(ShortIndexType c1, double d, ShortIndexType c2, const CompVector &y) {
     iterator first = std::vector<T>::begin() + c1;
     const_iterator first2 = y.begin() + c2;
     const_iterator last = std::vector<T>::end();
@@ -343,8 +344,8 @@ public:
       first2 += N2;
     }
   }
-  void CompAdd(int c, double d, const CompVector &y) { CompAdd(c, d, c, y); }
-  void CompEq(int c, double d) {
+  void CompAdd(ShortIndexType c, double d, const CompVector &y) { CompAdd(c, d, c, y); }
+  void CompEq(ShortIndexType c, double d) {
     iterator first = std::vector<T>::begin() + c;
     const_iterator last = std::vector<T>::end();
 
@@ -353,7 +354,7 @@ public:
       first += N;
     }
   }
-  void CompEq(int c1, double d, int c2, const CompVector &y) {
+  void CompEq(ShortIndexType c1, double d, ShortIndexType c2, const CompVector &y) {
     iterator first = std::vector<T>::begin() + c1;
     const_iterator first2 = y.begin() + c2;
     const_iterator last = std::vector<T>::end();
@@ -365,8 +366,8 @@ public:
       first2 += N2;
     }
   }
-  void CompEq(int c, double d, const CompVector &y) { CompEq(c, d, c, y); }
-  double CompSum(int c) const {
+  void CompEq(ShortIndexType c, double d, const CompVector &y) { CompEq(c, d, c, y); }
+  double CompSum(ShortIndexType c) const {
     double d = 0.;
     const_iterator first = std::vector<T>::begin() + c;
     const_iterator last = std::vector<T>::end();
@@ -377,7 +378,7 @@ public:
     }
     return d;
   }
-  double CompNorm(int c) const {
+  double CompNorm(ShortIndexType c) const {
     double d = 0.;
     const_iterator first = std::vector<T>::begin() + c;
     const_iterator last = std::vector<T>::end();
@@ -391,7 +392,7 @@ public:
   nvector<double> CompNorm() const {
     nvector<double> d(N, 0.);
 
-    for (int c = 0; c < N; c++) {
+    for (ShortIndexType c = 0; c < N; c++) {
       const_iterator first = std::vector<T>::begin() + c;
       const_iterator last = std::vector<T>::end();
 
@@ -404,7 +405,7 @@ public:
     return d;
   }
   void Add(const nvector<double> &scp, const CompVector<T> &y) {
-    for (int c = 0; c < N; c++) {
+    for (ShortIndexType c = 0; c < N; c++) {
       iterator first = std::vector<T>::begin() + c;
       const_iterator first2 = y.begin() + c;
       const_iterator last = std::vector<T>::end();
@@ -419,7 +420,7 @@ public:
     scp.resize(N);
     scp.zero();
 
-    for (int c = 0; c < N; c++) {
+    for (ShortIndexType c = 0; c < N; c++) {
       const_iterator first = std::vector<T>::begin() + c;
       const_iterator first2 = y.begin() + c;
       const_iterator last = std::vector<T>::end();
@@ -435,8 +436,8 @@ public:
     scp.memory(N, N);
     scp.zero();
 
-    for (int c = 0; c < N; c++) {
-      for (int d = 0; d < N; d++) {
+    for (ShortIndexType c = 0; c < N; c++) {
+      for (ShortIndexType d = 0; d < N; d++) {
         if (d > c)
           continue;
         const_iterator first = std::vector<T>::begin() + c;
@@ -449,14 +450,14 @@ public:
         }
       }
     }
-    for (int c = 0; c < N; c++) {
-      for (int d = 0; d < N; d++) {
+    for (ShortIndexType c = 0; c < N; c++) {
+      for (ShortIndexType d = 0; d < N; d++) {
         if (d > c)
           scp(c, d) = scp(d, c);
       }
     }
   }
-  void Read(std::istream &s, int c) {
+  void Read(std::istream &s, ShortIndexType c) {
     iterator first = std::vector<T>::begin() + c;
     const_iterator last = std::vector<T>::end();
     while (first < last) {
@@ -468,8 +469,8 @@ public:
   void BinWrite(std::ostream &out) const {
     out << ncomp() << " " << n() << std::endl << "[";
 
-    int sizeT = sizeof(T);
-    for (int i = 0; i < nvector<T>::size(); i++) {
+    IndexType sizeT = sizeof(T);
+    for (IndexType i = 0; i < nvector<T>::size(); i++) {
       out.write(reinterpret_cast<const char *>(&(nvector<T>::operator[](i))),
                 sizeT);
     }
@@ -478,18 +479,28 @@ public:
 
   void BinRead(std::istream &in) {
     char cc;
-    int c, n;
+    ShortIndexType c, n;
     in >> c >> n >> cc;
     ncomp() = c;
     resize(n);
 
-    int sizeT = sizeof(T);
-    for (int i = 0; i < nvector<T>::size(); i++) {
+    IndexType sizeT = sizeof(T);
+    for (IndexType i = 0; i < nvector<T>::size(); i++) {
       in.read(reinterpret_cast<char *>(&(nvector<T>::operator[](i))), sizeT);
     }
     in >> cc;
   }
 };
+
+  typedef CompVector<double> GlobalVector;
+  typedef CompVector<double> LocalVector;
+  typedef CompVector<MatrixEntryType> GlobalVectorMET; // for linear solver
+  typedef CompVector<MatrixEntryType> LocalVectorMET;  // for linear solver
+  typedef std::map<std::string, const GlobalVector *> GlobalData;
+  typedef std::map<std::string, LocalVector> LocalData;
+  typedef CompVector<double>::iterator VectorIterator;
+
+  
 } // namespace Gascoigne
 
 #endif

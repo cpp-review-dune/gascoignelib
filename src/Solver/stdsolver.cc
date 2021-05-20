@@ -846,6 +846,7 @@ void StdSolver::SetPeriodicVectorZero(VectorInterface &gf) const {
 
 void StdSolver::smooth(int niter, const Matrix &A, VectorInterface &x,
                        const VectorInterface &y, VectorInterface &h) const {
+
   GlobalTimer.start("---> smooth");
   double omega = GetSolverData().GetOmega();
 

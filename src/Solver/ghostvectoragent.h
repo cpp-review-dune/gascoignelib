@@ -26,6 +26,7 @@
 
 #include "gascoigne.h"
 #include "vectorinterface.h"
+#include "compvector.h"
 #include <string>
 
 namespace Gascoigne {

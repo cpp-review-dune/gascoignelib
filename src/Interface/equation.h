@@ -26,6 +26,7 @@
 
 #include "application.h"
 #include "entrymatrix.h"
+#include "compvector.h"
 #include "vertex.h"
 
 /*-------------------------------------------------------------------------*/
