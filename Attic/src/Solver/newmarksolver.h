@@ -34,14 +34,12 @@ public:
   NewmarkSolver()
     : Gascoigne::TimeSolver()
   {}
-  void Form(Gascoigne::VectorInterface& gy,
-            const Gascoigne::VectorInterface& gx,
-            double d) const;
-  void FormWithoutMass(Gascoigne::VectorInterface& gy,
-                       const Gascoigne::VectorInterface& gx,
+  void Form(Gascoigne::Vector& gy, const Gascoigne::Vector& gx, double d) const;
+  void FormWithoutMass(Gascoigne::Vector& gy,
+                       const Gascoigne::Vector& gx,
                        double d,
                        double s = 1.) const;
-  void AssembleMatrix(const Gascoigne::VectorInterface& gu, double d);
+  void AssembleMatrix(const Gascoigne::Vector& gu, double d);
 };
 
 /*----------------------------------------------------------------------------*/

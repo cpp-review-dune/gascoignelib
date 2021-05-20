@@ -49,7 +49,7 @@ OneLevelAlgorithm::BasicInit(const ParamFile* paramfile,
 /*-----------------------------------------*/
 
 void
-OneLevelAlgorithm::Precondition(VectorInterface& x, VectorInterface& y)
+OneLevelAlgorithm::Precondition(Vector& x, Vector& y)
 {
   CGInfo pinfo;
   pinfo.user().tol() = 1.e-12;
@@ -64,11 +64,9 @@ OneLevelAlgorithm::Precondition(VectorInterface& x, VectorInterface& y)
 /*-----------------------------------------*/
 
 void
-OneLevelAlgorithm::IluSolver(VectorInterface& du,
-                             const VectorInterface& f,
-                             CGInfo& info)
+OneLevelAlgorithm::IluSolver(Vector& du, const Vector& f, CGInfo& info)
 {
-  VectorInterface help("help");
+  Vector help("help");
   ReInitVector(help);
 
   bool ok = info.check(GetSolver()->Norm(f), 0.);
@@ -89,11 +87,9 @@ OneLevelAlgorithm::IluSolver(VectorInterface& du,
 /*-----------------------------------------*/
 
 void
-OneLevelAlgorithm::JacobiSolver(VectorInterface& du,
-                                const VectorInterface& f,
-                                CGInfo& info)
+OneLevelAlgorithm::JacobiSolver(Vector& du, const Vector& f, CGInfo& info)
 {
-  VectorInterface help("help");
+  Vector help("help");
   ReInitVector(help);
 
   bool ok = info.check(GetSolver()->Norm(f), 0.);
@@ -124,7 +120,7 @@ OneLevelAlgorithm::RunLinear(const std::string& problemlabel)
   GetSolver()->OutputSettings();
   PrintMeshInformation();
 
-  VectorInterface u("u"), f("f"), du("du");
+  Vector u("u"), f("f"), du("du");
 
   ReInitVector(u);
   ReInitVector(f);
@@ -175,7 +171,7 @@ OneLevelAlgorithm::RunLinear(const std::string& problemlabel)
 /*-----------------------------------------*/
 
 void
-OneLevelAlgorithm::AssembleMatrixAndIlu(VectorInterface& u)
+OneLevelAlgorithm::AssembleMatrixAndIlu(Vector& u)
 {
   GetSolver()->MatrixZero();
   GetSolver()->AssembleMatrix(u, 1.);
@@ -185,9 +181,7 @@ OneLevelAlgorithm::AssembleMatrixAndIlu(VectorInterface& u)
 /*-----------------------------------------*/
 
 void
-OneLevelAlgorithm::LinearSolve(VectorInterface& du,
-                               const VectorInterface& y,
-                               CGInfo& cginfo)
+OneLevelAlgorithm::LinearSolve(Vector& du, const Vector& y, CGInfo& cginfo)
 {
   cginfo.reset();
   IluSolver(du, y, cginfo);
@@ -205,7 +199,7 @@ OneLevelAlgorithm::RunNonLinear(const std::string& problemlabel)
   GetSolver()->OutputSettings();
   PrintMeshInformation();
 
-  VectorInterface u("u"), f("f");
+  Vector u("u"), f("f");
 
   ReInitVector(u);
   ReInitVector(f);

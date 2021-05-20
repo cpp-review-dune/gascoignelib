@@ -6,7 +6,7 @@
 namespace Gascoigne {
 
 void
-DGSolver::Visu(const std::string& name, const VectorInterface& gu, int i) const
+DGSolver::Visu(const std::string& name, const Vector& gu, int i) const
 {
   assert(gu.GetType() == "node");
   std::string filename = name;

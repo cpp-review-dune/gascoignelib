@@ -40,7 +40,7 @@ public:
     : StdSolver(){};
   ~LocalSolver() {}
 
-  double Integral(const VectorInterface& gu) const
+  double Integral(const Vector& gu) const
   {
     const GlobalVector& u = GetGV(gu);
     HNAverage(gu);
@@ -93,7 +93,7 @@ main(int argc, char** argv)
   MeshAgent M;
   M.BasicInit(&paramfile);
 
-  VectorInterface gu("u");
+  Vector gu("u");
 
   for (int iter = 1; iter <= niter; iter++) {
     LocalSolver S;

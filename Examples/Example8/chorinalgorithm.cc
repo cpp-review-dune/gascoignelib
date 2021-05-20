@@ -71,8 +71,8 @@ ChorinAlgorithm::Run(const std::string& problem1, const std::string& problem2)
 /*-------------------------------------------------*/
 
 void
-ChorinAlgorithm::VelocityPredictor(VectorInterface& v,
-                                   VectorInterface& fv,
+ChorinAlgorithm::VelocityPredictor(Vector& v,
+                                   Vector& fv,
                                    NLInfo& nlinfo,
                                    int iter)
 {
@@ -87,9 +87,7 @@ ChorinAlgorithm::VelocityPredictor(VectorInterface& v,
 /*-------------------------------------------------*/
 
 void
-ChorinAlgorithm::PressurePoissonProblem(VectorInterface& q,
-                                        VectorInterface& fp,
-                                        CGInfo& cginfo)
+ChorinAlgorithm::PressurePoissonProblem(Vector& q, Vector& fp, CGInfo& cginfo)
 {
   GetMultiLevelSolver()->SetProblem(pproblem);
   GetSolver()->Zero(fp);
@@ -101,9 +99,9 @@ ChorinAlgorithm::PressurePoissonProblem(VectorInterface& q,
 /*-------------------------------------------------*/
 
 void
-ChorinAlgorithm::VelocityProjection(VectorInterface& v,
-                                    VectorInterface& q,
-                                    VectorInterface& fv,
+ChorinAlgorithm::VelocityProjection(Vector& v,
+                                    Vector& q,
+                                    Vector& fv,
                                     CGInfo& cginfo,
                                     int iter)
 {
@@ -116,16 +114,14 @@ ChorinAlgorithm::VelocityProjection(VectorInterface& v,
   GetSolver()->Zero(v);
   cginfo.reset();
   GetSplittingSolver()->InverseMassMatrix(
-    v, fv, cginfo); // löst das Gleichungssystem Mv=fv
+    v, fv, cginfo); // lï¿½st das Gleichungssystem Mv=fv
   GetSolver()->Visu("Results/velocity", v, iter);
 }
 
 /*-------------------------------------------------*/
 
 void
-ChorinAlgorithm::PressureUpdate(VectorInterface& p,
-                                VectorInterface& q,
-                                int iter)
+ChorinAlgorithm::PressureUpdate(Vector& p, Vector& q, int iter)
 {
   GetMultiLevelSolver()->SetProblem(pproblem);
   GetSolver()->Equ(p, 1., q);
@@ -138,14 +134,14 @@ void
 ChorinAlgorithm::Chorin()
 {
   GetMultiLevelSolver()->SetProblem(vproblem);
-  VectorInterface v("v"), fv("fv");
+  Vector v("v"), fv("fv");
   ReInitVector(v);
   ReInitVector(fv);
   InitSolution(initial, v);
   GetMultiLevelSolver()->AssembleMatrix(v);
 
   GetMultiLevelSolver()->SetProblem(pproblem);
-  VectorInterface p("p"), fp("fp"), q("q");
+  Vector p("p"), fp("fp"), q("q");
   ReInitVector(p);
   ReInitVector(q);
   ReInitVector(fp);
@@ -203,7 +199,7 @@ void
 ChorinAlgorithm::ChorinUzawa()
 {
   GetMultiLevelSolver()->SetProblem(vproblem);
-  VectorInterface v("v"), fv("fv"), u("u");
+  Vector v("v"), fv("fv"), u("u");
   ReInitVector(v);
   ReInitVector(u);
   ReInitVector(fv);
@@ -211,7 +207,7 @@ ChorinAlgorithm::ChorinUzawa()
   GetMultiLevelSolver()->AssembleMatrix(v);
 
   GetMultiLevelSolver()->SetProblem(pproblem);
-  VectorInterface p("p"), fp("fp"), pold("pold"), q("q");
+  Vector p("p"), fp("fp"), pold("pold"), q("q");
   ReInitVector(p);
   ReInitVector(q);
   ReInitVector(pold);
@@ -286,14 +282,14 @@ void
 ChorinAlgorithm::VanKan()
 {
   GetMultiLevelSolver()->SetProblem(vproblem);
-  VectorInterface v("v"), fv("fv");
+  Vector v("v"), fv("fv");
   ReInitVector(v);
   ReInitVector(fv);
   InitSolution(initial, v);
   GetMultiLevelSolver()->AssembleMatrix(v);
 
   GetMultiLevelSolver()->SetProblem(pproblem);
-  VectorInterface p("p"), fp("fp"), q("q");
+  Vector p("p"), fp("fp"), q("q");
   ReInitVector(p);
   ReInitVector(fp);
   ReInitVector(q);

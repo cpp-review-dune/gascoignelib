@@ -43,25 +43,20 @@ public:
 
   vector<vector<double>> _precond;
 
-  void do_precondition(VectorInterface gx) const;
-  void undo_precondition(VectorInterface gx) const;
+  void do_precondition(Vector gx) const;
+  void undo_precondition(Vector gx) const;
 
   FSISolver();
 
   virtual void ReInitMatrix();
 
-  void SolveExtension(VectorInterface& x);
+  void SolveExtension(Vector& x);
 
-  void ComputeIlu(const VectorInterface& gu) const;
+  void ComputeIlu(const Vector& gu) const;
   void modify_ilu(IluInterface& I, int ncomp) const;
 
-  void smooth(int niter,
-              VectorInterface& x,
-              const VectorInterface& y,
-              VectorInterface& h) const;
-  void smooth_exact(VectorInterface& x,
-                    const VectorInterface& y,
-                    VectorInterface& help) const;
+  void smooth(int niter, Vector& x, const Vector& y, Vector& h) const;
+  void smooth_exact(Vector& x, const Vector& y, Vector& help) const;
 
   std::string GetName() const { return "FSI Solver"; }
 
@@ -93,18 +88,18 @@ public:
     HASHSET<int>& interface_nodes,
     int material);
 
-  void Form(VectorInterface& y, const VectorInterface& x, double d) const;
+  void Form(Vector& y, const Vector& x, double d) const;
 
   void NewMesh(const MeshInterface* mp);
-  void SetBoundaryVectorZero(VectorInterface& gf) const;
-  void SetBoundaryVector(VectorInterface& gf) const;
-  void DeleteSolidPressure(VectorInterface& gf) const;
+  void SetBoundaryVectorZero(Vector& gf) const;
+  void SetBoundaryVector(Vector& gf) const;
+  void DeleteSolidPressure(Vector& gf) const;
 
-  void AssembleMatrix(const VectorInterface& gu, double d);
+  void AssembleMatrix(const Vector& gu, double d);
 
   void PointVisu(const string& name, const GlobalVector& u, int iter) const;
 
-  //      void ComputeIlu(const VectorInterface& gu) const;
+  //      void ComputeIlu(const Vector& gu) const;
 
   MatrixInterface* NewMatrix(int ncomp, const std::string& matrixtype);
   IluInterface* NewIlu(int ncomp, const std::string& matrixtype);

@@ -59,7 +59,7 @@ StdTimeLoop::BasicInit(const ParamFile* paramfile,
 /*-------------------------------------------------*/
 
 string
-StdTimeLoop::SolveTimePrimal(Matrix& A, VectorInterface& u, VectorInterface& f)
+StdTimeLoop::SolveTimePrimal(Matrix& A, Vector& u, Vector& f)
 {
   GetTimeSolver()->SetBoundaryVector(f);
   GetTimeSolver()->SetPeriodicVector(u);
@@ -76,7 +76,7 @@ void
 StdTimeLoop::adaptive_run(const std::string& problemlabel)
 {
   Matrix A("A");
-  VectorInterface u("u"), f("f");
+  Vector u("u"), f("f");
   GlobalVector ualt;
 
   DoubleVector eta;
@@ -150,10 +150,10 @@ StdTimeLoop::TimeInfoBroadcast()
 /*-------------------------------------------------*/
 
 void
-StdTimeLoop::InitSolution(VectorInterface& u)
+StdTimeLoop::InitSolution(Vector& u)
 {
   if (_initial == "analytic") {
-    VectorInterface f("ff");
+    Vector f("ff");
     GetMultiLevelSolver()->ReInitVector(f);
     GetTimeSolver()->L2Projection(u, f);
     GetMultiLevelSolver()->DeleteVector(f);
@@ -168,7 +168,7 @@ StdTimeLoop::InitSolution(VectorInterface& u)
 void
 StdTimeLoop::run(const std::string& problemlabel)
 {
-  VectorInterface u("u"), f("f");
+  Vector u("u"), f("f");
   Matrix A("A");
 
   DoubleVector eta;

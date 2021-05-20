@@ -89,8 +89,8 @@ public:
                          const FunctionalContainer* FC = NULL);
 
   virtual void ReInitMatrix(const Matrix& A);
-  virtual void ReInitVector(VectorInterface& v);
-  virtual void ReInitVector(VectorInterface& v, int comp);
+  virtual void ReInitVector(Vector& v);
+  virtual void ReInitVector(Vector& v, int comp);
 
   //////////////////////////////////////////////////
   // Access
@@ -169,15 +169,14 @@ public:
   // Functionals
   virtual const std::vector<std::string> GetFunctionalNames() const;
   virtual const DoubleVector GetExactValues() const;
-  virtual const DoubleVector ComputeFunctionals(VectorInterface& f,
-                                                const VectorInterface& u);
-  virtual const DoubleVector ComputeFunctionals(VectorInterface& f,
-                                                const VectorInterface& u,
+  virtual const DoubleVector ComputeFunctionals(Vector& f, const Vector& u);
+  virtual const DoubleVector ComputeFunctionals(Vector& f,
+                                                const Vector& u,
                                                 FunctionalContainer* FC);
 
   //////////////////////////////////////////////////
   // Newton and Multigrid
-  virtual double NewtonNorm(const VectorInterface& u) const
+  virtual double NewtonNorm(const Vector& u) const
   {
     return GetSolver(ComputeLevel)->NewtonNorm(u);
   }
@@ -189,18 +188,15 @@ public:
                       std::string& p0,
                       std::string p,
                       const Matrix& A,
-                      VectorInterface& u,
-                      VectorInterface& b,
-                      VectorInterface& v);
+                      Vector& u,
+                      Vector& b,
+                      Vector& v);
 
-  virtual void Cg(VectorInterface& x, const VectorInterface& f, CGInfo& info);
-  virtual void Gmres(const Matrix& A,
-                     VectorInterface& x,
-                     const VectorInterface& f,
-                     CGInfo& info);
+  virtual void Cg(Vector& x, const Vector& f, CGInfo& info);
+  virtual void Gmres(const Matrix& A, Vector& x, const Vector& f, CGInfo& info);
 
-  virtual void SolutionTransfer(int high, int low, VectorInterface& u) const;
-  virtual void Transfer(int high, int low, VectorInterface& u) const;
+  virtual void SolutionTransfer(int high, int low, Vector& u) const;
+  virtual void Transfer(int high, int low, Vector& u) const;
 
   virtual void ViewProtocoll() const;
 
@@ -226,97 +222,86 @@ public:
 
   virtual std::string LinearSolve(int level,
                                   const Matrix& A,
-                                  VectorInterface& u,
-                                  const VectorInterface& b,
+                                  Vector& u,
+                                  const Vector& b,
                                   CGInfo& info);
   virtual std::string Solve(int level,
                             Matrix& A,
-                            VectorInterface& x,
-                            const VectorInterface& b,
+                            Vector& x,
+                            const Vector& b,
                             NLInfo& nlinfo);
   virtual std::string Solve(Matrix& A,
-                            VectorInterface& x,
-                            const VectorInterface& b,
+                            Vector& x,
+                            const Vector& b,
                             NLInfo& nlinfo)
   {
     return Solve(nlevels() - 1, A, x, b, nlinfo);
   }
 
-  virtual void InterpolateSolution(VectorInterface& u,
-                                   const GlobalVector& uold) const;
-  virtual void InterpolateCellSolution(VectorInterface& u,
+  virtual void InterpolateSolution(Vector& u, const GlobalVector& uold) const;
+  virtual void InterpolateCellSolution(Vector& u,
                                        const GlobalVector& uold) const;
 
-  virtual void NewtonVectorZero(VectorInterface& w) const;
-  virtual double NewtonResidual(VectorInterface& y,
-                                const VectorInterface& x,
-                                const VectorInterface& b) const;
+  virtual void NewtonVectorZero(Vector& w) const;
+  virtual double NewtonResidual(Vector& y,
+                                const Vector& x,
+                                const Vector& b) const;
   virtual double NewtonUpdate(double& rr,
-                              VectorInterface& x,
-                              VectorInterface& dx,
-                              VectorInterface& r,
-                              const VectorInterface& f,
+                              Vector& x,
+                              Vector& dx,
+                              Vector& r,
+                              const Vector& f,
                               NLInfo& nlinfo);
   virtual void NewtonLinearSolve(const Matrix& A,
-                                 VectorInterface& x,
-                                 const VectorInterface& b,
+                                 Vector& x,
+                                 const Vector& b,
                                  CGInfo& info);
-  virtual void NewtonMatrixControl(Matrix& A,
-                                   VectorInterface& u,
-                                   NLInfo& nlinfo);
+  virtual void NewtonMatrixControl(Matrix& A, Vector& u, NLInfo& nlinfo);
   virtual void NewtonOutput(NLInfo& nlinfo) const;
-  virtual void NewtonPreProcess(VectorInterface& u,
-                                const VectorInterface& f,
-                                NLInfo& info) const;
-  virtual void NewtonPostProcess(VectorInterface& u,
-                                 const VectorInterface& f,
+  virtual void NewtonPreProcess(Vector& u, const Vector& f, NLInfo& info) const;
+  virtual void NewtonPostProcess(Vector& u,
+                                 const Vector& f,
                                  NLInfo& info) const;
 
-  virtual void AssembleMatrix(Matrix& A, VectorInterface& u, NLInfo& nlinfo);
-  virtual void AssembleMatrix(Matrix& A, VectorInterface& u);
-  virtual void ComputeIlu(Matrix& A, VectorInterface& u);
+  virtual void AssembleMatrix(Matrix& A, Vector& u, NLInfo& nlinfo);
+  virtual void AssembleMatrix(Matrix& A, Vector& u);
+  virtual void ComputeIlu(Matrix& A, Vector& u);
 
-  virtual void BoundaryInit(VectorInterface& u) const;
+  virtual void BoundaryInit(Vector& u) const;
 
-  virtual void SolutionTransfer(VectorInterface& u) const;
-  virtual void Transfer(VectorInterface& u) const;
+  virtual void SolutionTransfer(Vector& u) const;
+  virtual void Transfer(Vector& u) const;
 
-  virtual void vmulteq(const Matrix& A,
-                       VectorInterface& y,
-                       const VectorInterface& x) const;
+  virtual void vmulteq(const Matrix& A, Vector& y, const Vector& x) const;
 
   virtual void LinearMg(int minlevel,
                         int maxlevel,
                         const Matrix& A,
-                        VectorInterface& u,
-                        const VectorInterface& f,
+                        Vector& u,
+                        const Vector& f,
                         CGInfo&);
 
-  virtual double ComputeFunctional(VectorInterface& f,
-                                   const VectorInterface& u,
+  virtual double ComputeFunctional(Vector& f,
+                                   const Vector& u,
                                    const std::string& label);
 
-  virtual void AssembleDualMatrix(Matrix& A, VectorInterface& u);
+  virtual void AssembleDualMatrix(Matrix& A, Vector& u);
 
   // fuer gmres
 
-  virtual void precondition(const Matrix& A,
-                            VectorInterface& x,
-                            VectorInterface& y);
-  virtual void DeleteVector(VectorInterface& p);
-  virtual void Equ(VectorInterface& dst,
-                   double s,
-                   const VectorInterface& src) const;
-  virtual void Zero(VectorInterface& dst) const;
+  virtual void precondition(const Matrix& A, Vector& x, Vector& y);
+  virtual void DeleteVector(Vector& p);
+  virtual void Equ(Vector& dst, double s, const Vector& src) const;
+  virtual void Zero(Vector& dst) const;
 
-  virtual void AddNodeVector(const std::string& name, VectorInterface& q);
+  virtual void AddNodeVector(const std::string& name, Vector& q);
   virtual void DeleteNodeVector(const std::string& q);
 
   virtual void newton(Matrix& A,
-                      VectorInterface& u,
-                      const VectorInterface& f,
-                      VectorInterface& r,
-                      VectorInterface& w,
+                      Vector& u,
+                      const Vector& f,
+                      Vector& r,
+                      Vector& w,
                       NLInfo& info);
 };
 } // namespace Gascoigne

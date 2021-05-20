@@ -70,8 +70,8 @@ protected:
   void RegisterMatrix();
   virtual void NewSolvers();
   // virtual SolverInterface* NewSolver(int solverlevel);
-  void Transfer(int high, int low, VectorInterface& u) const;
-  void SolutionTransfer(VectorInterface& u) const;
+  void Transfer(int high, int low, Vector& u) const;
+  void SolutionTransfer(Vector& u) const;
 
 public:
   // Constructor
@@ -125,16 +125,16 @@ public:
                  const ParamFile* paramfile,
                  const ProblemContainer* PC);
 
-  void ReInitVector(VectorInterface& v);
-  void DeleteVector(VectorInterface& g);
+  void ReInitVector(Vector& v);
+  void DeleteVector(Vector& g);
   void SetProblem(const std::string& label);
   void ReInit(const std::string& problemlabel);
-  void AssembleMatrix(VectorInterface& u);
-  void AssembleDualMatrix(VectorInterface& u);
+  void AssembleMatrix(Vector& u);
+  void AssembleDualMatrix(Vector& u);
   void ComputeIlu();
-  void ComputeIlu(VectorInterface& u);
-  const DoubleVector ComputeFunctionals(VectorInterface& f,
-                                        const VectorInterface& u,
+  void ComputeIlu(Vector& u);
+  const DoubleVector ComputeFunctionals(Vector& f,
+                                        const Vector& u,
                                         FunctionalContainer* FC) const;
 };
 } // namespace Gascoigne

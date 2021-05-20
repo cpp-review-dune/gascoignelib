@@ -62,9 +62,8 @@ private:
   SolverInfos* _SI;
 
 protected:
-  void WriteMeshAndSolution(const std::string& filename,
-                            const VectorInterface& u) const;
-  void WriteSolution(const VectorInterface& u) const;
+  void WriteMeshAndSolution(const std::string& filename, const Vector& u) const;
+  void WriteSolution(const Vector& u) const;
   void WriteMesh() const;
   void WriteMeshInp(const std::string& name) const;
 
@@ -121,28 +120,22 @@ protected:
 
   // new vectors
 
-  virtual std::string Solve(Matrix& A,
-                            VectorInterface& u,
-                            VectorInterface& f,
-                            std::string name);
-  virtual std::string Solve(Matrix& A, VectorInterface& u, VectorInterface& f)
+  virtual std::string Solve(Matrix& A, Vector& u, Vector& f, std::string name);
+  virtual std::string Solve(Matrix& A, Vector& u, Vector& f)
   {
     return Solve(A, u, f, _s_resultsdir + "/solve");
   }
 
   virtual void PrintMeshInformation(int outputlevel = 0) const;
 
-  virtual void Output(const VectorInterface& u, std::string name) const;
-  virtual void Output(const VectorInterface& u)
-  {
-    Output(u, _s_resultsdir + "/solve");
-  }
+  virtual void Output(const Vector& u, std::string name) const;
+  virtual void Output(const Vector& u) { Output(u, _s_resultsdir + "/solve"); }
 
-  virtual void ComputeGlobalErrors(const VectorInterface& u);
+  virtual void ComputeGlobalErrors(const Vector& u);
 
-  virtual void InitSolution(VectorInterface& u);
-  virtual void CopyVector(GlobalVector& dst, VectorInterface& src);
-  virtual void CopyVector(VectorInterface& dst, GlobalVector& src);
+  virtual void InitSolution(Vector& u);
+  virtual void CopyVector(GlobalVector& dst, Vector& src);
+  virtual void CopyVector(Vector& dst, GlobalVector& src);
 
 public:
   BasicLoop();

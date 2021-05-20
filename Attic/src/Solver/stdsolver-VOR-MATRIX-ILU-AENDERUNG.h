@@ -168,14 +168,11 @@ protected:
   /// new interface-function for individual size of vectors
   //
 
-  virtual void smooth(int niter,
-                      VectorInterface& x,
-                      const VectorInterface& y,
-                      VectorInterface& h) const;
-  virtual void PermutateIlu(const VectorInterface& gu) const;
+  virtual void smooth(int niter, Vector& x, const Vector& y, Vector& h) const;
+  virtual void PermutateIlu(const Vector& gu) const;
   virtual void modify_ilu(IluInterface& I, int ncomp) const;
 
-  virtual DoubleVector IntegrateSolutionVector(const VectorInterface& u) const;
+  virtual DoubleVector IntegrateSolutionVector(const Vector& u) const;
   virtual void _check_consistency(const Equation* EQ,
                                   const DiscretizationInterface* DI) const;
   virtual void DirichletMatrixOnlyRow() const;
@@ -226,12 +223,12 @@ public:
 
   virtual bool DirectSolver() const { return _directsolver; }
 
-  virtual void AddNodeVector(const std::string& name, const VectorInterface& q)
+  virtual void AddNodeVector(const std::string& name, const Vector& q)
   {
     assert(q.GetType() == "node");
     GetDiscretization()->AddNodeVector(name, &GetGV(q));
   }
-  virtual void AddCellVector(const std::string& name, const VectorInterface& q)
+  virtual void AddCellVector(const std::string& name, const Vector& q)
   {
     assert(q.GetType() == "cell");
     GetDiscretization()->AddCellVector(name, &GetGV(q));
@@ -274,15 +271,12 @@ public:
 
   virtual void ReInitMatrix(Matrix& A);
 
-  virtual void RegisterVector(const VectorInterface& g);
-  virtual void ReInitVector(VectorInterface& dst);
-  virtual void ReInitVector(VectorInterface& dst, int comp);
+  virtual void RegisterVector(const Vector& g);
+  virtual void ReInitVector(Vector& dst);
+  virtual void ReInitVector(Vector& dst, int comp);
 
-  virtual GlobalVector& GetGV(VectorInterface& u) const { return _NGVA(u); }
-  virtual const GlobalVector& GetGV(const VectorInterface& u) const
-  {
-    return _NGVA(u);
-  }
+  virtual GlobalVector& GetGV(Vector& u) const { return _NGVA(u); }
+  virtual const GlobalVector& GetGV(const Vector& u) const { return _NGVA(u); }
 
   //
   /// vector - hanging nodes
@@ -291,9 +285,9 @@ public:
   virtual bool GetDistribute() const { return _distribute; }
   virtual void SetDistribute(bool dist) { _distribute = dist; }
 
-  virtual void HNAverage(const VectorInterface& x) const;
-  virtual void HNZero(const VectorInterface& x) const;
-  virtual void HNDistribute(VectorInterface& x) const;
+  virtual void HNAverage(const Vector& x) const;
+  virtual void HNZero(const Vector& x) const;
+  virtual void HNDistribute(Vector& x) const;
   virtual void HNAverageData() const;
   virtual void HNZeroData() const;
 
@@ -301,102 +295,80 @@ public:
   /// vector - io
   //
 
-  virtual void Visu(const std::string& name,
-                    const VectorInterface& u,
-                    int i) const;
-  virtual void Write(const VectorInterface& u,
-                     const std::string& filename) const;
-  virtual void Read(VectorInterface& u, const std::string& filename) const;
+  virtual void Visu(const std::string& name, const Vector& u, int i) const;
+  virtual void Write(const Vector& u, const std::string& filename) const;
+  virtual void Read(Vector& u, const std::string& filename) const;
 
   //
   /// vector - interpolation
   //
 
-  virtual void InterpolateSolution(VectorInterface& u,
-                                   const GlobalVector& uold) const;
+  virtual void InterpolateSolution(Vector& u, const GlobalVector& uold) const;
 
   //
   /// vector - rhs (integration)
   //
 
-  virtual void Rhs(VectorInterface& f, double d = 1.) const;
+  virtual void Rhs(Vector& f, double d = 1.) const;
 
   //
   /// vector - residual (integration)
   //
 
-  virtual void Form(VectorInterface& y,
-                    const VectorInterface& x,
-                    double d) const;
-  virtual void AdjointForm(VectorInterface& y,
-                           const VectorInterface& x,
-                           double d) const;
+  virtual void Form(Vector& y, const Vector& x, double d) const;
+  virtual void AdjointForm(Vector& y, const Vector& x, double d) const;
 
   //
   /// vector - boundary condition
   //
-  virtual void SetBoundaryVector(VectorInterface& f) const;
-  virtual void SetPeriodicVector(VectorInterface& f) const;
-  virtual void SetBoundaryVectorZero(VectorInterface& Gf) const;
-  virtual void SetBoundaryVectorStrong(VectorInterface& f,
+  virtual void SetBoundaryVector(Vector& f) const;
+  virtual void SetPeriodicVector(Vector& f) const;
+  virtual void SetBoundaryVectorZero(Vector& Gf) const;
+  virtual void SetBoundaryVectorStrong(Vector& f,
                                        const BoundaryManager& BM,
                                        const DirichletData& DD,
                                        double d = 1.) const;
-  virtual void SetPeriodicVectorStrong(VectorInterface& f,
+  virtual void SetPeriodicVectorStrong(Vector& f,
                                        const BoundaryManager& BM,
                                        const PeriodicData& PD,
                                        double d = 1.) const;
-  virtual void SetPeriodicVectorZero(VectorInterface& gf) const;
+  virtual void SetPeriodicVectorZero(Vector& gf) const;
 
   //
   /// vector - linear algebra
   //
 
-  virtual double NewtonNorm(const VectorInterface& u) const;
-  virtual void residualgmres(VectorInterface& y,
-                             const VectorInterface& x,
-                             const VectorInterface& b) const;
-  virtual void MatrixResidual(VectorInterface& y,
-                              const VectorInterface& x,
-                              const VectorInterface& b) const;
-  virtual void vmult(VectorInterface& y,
-                     const VectorInterface& x,
-                     double d) const;
-  virtual void vmulteq(VectorInterface& y,
-                       const VectorInterface& x,
-                       double d) const;
-  virtual void smooth_pre(VectorInterface& y,
-                          const VectorInterface& x,
-                          VectorInterface& h) const;
-  virtual void smooth_exact(VectorInterface& y,
-                            const VectorInterface& x,
-                            VectorInterface& h) const;
-  virtual void smooth_post(VectorInterface& y,
-                           const VectorInterface& x,
-                           VectorInterface& h) const;
-  virtual void Zero(VectorInterface& dst) const;
+  virtual double NewtonNorm(const Vector& u) const;
+  virtual void residualgmres(Vector& y, const Vector& x, const Vector& b) const;
+  virtual void MatrixResidual(Vector& y,
+                              const Vector& x,
+                              const Vector& b) const;
+  virtual void vmult(Vector& y, const Vector& x, double d) const;
+  virtual void vmulteq(Vector& y, const Vector& x, double d) const;
+  virtual void smooth_pre(Vector& y, const Vector& x, Vector& h) const;
+  virtual void smooth_exact(Vector& y, const Vector& x, Vector& h) const;
+  virtual void smooth_post(Vector& y, const Vector& x, Vector& h) const;
+  virtual void Zero(Vector& dst) const;
 
   //
   /// vector - additional
   //
 
-  virtual void SubtractMean(VectorInterface& x) const;
-  virtual void SubtractMeanAlgebraic(VectorInterface& x) const;
+  virtual void SubtractMean(Vector& x) const;
+  virtual void SubtractMeanAlgebraic(Vector& x) const;
 
   //
   /// vector - matrix
   //
 
-  virtual void AssembleMatrix(const VectorInterface& u, double d);
+  virtual void AssembleMatrix(const Vector& u, double d);
   virtual void DirichletMatrix() const;
   virtual void PeriodicMatrix() const;
   virtual void MatrixZero() const;
-  virtual void ComputeIlu(const VectorInterface& u) const;
+  virtual void ComputeIlu(const Vector& u) const;
   virtual void ComputeIlu() const;
-  virtual void AssembleDualMatrix(const VectorInterface& gu, double d);
-  virtual void MassMatrixVector(VectorInterface& f,
-                                const VectorInterface& gu,
-                                double d) const
+  virtual void AssembleDualMatrix(const Vector& gu, double d);
+  virtual void MassMatrixVector(Vector& f, const Vector& gu, double d) const
   {
     abort();
   }
@@ -407,53 +379,53 @@ public:
   /// vector - "postprocessing"
   //
 
-  virtual void ComputeError(const VectorInterface& u, GlobalVector& err) const;
+  virtual void ComputeError(const Vector& u, GlobalVector& err) const;
   virtual void AssembleError(GlobalVector& eta,
-                             const VectorInterface& u,
+                             const Vector& u,
                              GlobalVector& err) const;
-  virtual double ComputeFunctional(VectorInterface& f,
-                                   const VectorInterface& u,
+  virtual double ComputeFunctional(Vector& f,
+                                   const Vector& u,
                                    const Functional* FP);
 
-  virtual double ComputeBoundaryFunctional(VectorInterface& f,
-                                           const VectorInterface& u,
-                                           VectorInterface& z,
+  virtual double ComputeBoundaryFunctional(Vector& f,
+                                           const Vector& u,
+                                           Vector& z,
                                            const BoundaryFunctional* FP) const;
-  virtual double ComputeDomainFunctional(const VectorInterface& u,
+  virtual double ComputeDomainFunctional(const Vector& u,
                                          const DomainFunctional* FP) const;
-  virtual double ComputePointFunctional(VectorInterface& f,
-                                        const VectorInterface& u,
-                                        VectorInterface& z,
+  virtual double ComputePointFunctional(Vector& f,
+                                        const Vector& u,
+                                        Vector& z,
                                         const PointFunctional* NFP) const;
-  virtual double ComputeResidualFunctional(VectorInterface& f,
-                                           const VectorInterface& u,
-                                           VectorInterface& z,
+  virtual double ComputeResidualFunctional(Vector& f,
+                                           const Vector& u,
+                                           Vector& z,
                                            const ResidualFunctional* FP) const;
-  virtual void EvaluateCellRightHandSide(VectorInterface& f,
+  virtual void EvaluateCellRightHandSide(Vector& f,
                                          const DomainRightHandSide& CF,
                                          double d = 1.) const;
   virtual void EvaluateBoundaryCellRightHandSide(
-    VectorInterface& f,
+    Vector& f,
     const BoundaryRightHandSide& CF,
     const BoundaryManager& BM,
     double d = 1.) const;
-  virtual void EvaluateParameterRightHandSide(VectorInterface& f,
+  virtual void EvaluateParameterRightHandSide(Vector& f,
                                               const DomainRightHandSide& CF,
                                               double d = 1.) const;
   virtual void EvaluateBoundaryParameterRightHandSide(
-    VectorInterface& f,
+    Vector& f,
     const BoundaryRightHandSide& CF,
     const BoundaryManager& BM,
     double d = 1.) const;
-  virtual void InterpolateDomainFunction(VectorInterface& f,
+  virtual void InterpolateDomainFunction(Vector& f,
                                          const DomainFunction& DF) const;
 
   //
   /// vector - initialize
   //
 
-  virtual void BoundaryInit(VectorInterface& u) const;
-  virtual void SolutionInit(VectorInterface& u) const;
+  virtual void BoundaryInit(Vector& u) const;
+  virtual void SolutionInit(Vector& u) const;
 
   //
   /// HierarchicalMesh
@@ -465,29 +437,18 @@ public:
   //
   /// for gmres
   //
-  virtual void DeleteVector(VectorInterface& p) const;
+  virtual void DeleteVector(Vector& p) const;
 
-  virtual double ScalarProduct(const VectorInterface& y,
-                               const VectorInterface& x) const;
-  virtual void Equ(VectorInterface& dst,
-                   double s,
-                   const VectorInterface& src) const;
-  virtual void Add(VectorInterface& dst,
-                   double s,
-                   const VectorInterface& src) const;
-  virtual void SAdd(double s1,
-                    VectorInterface& dst,
-                    double s2,
-                    const VectorInterface& src) const;
-  virtual double Norm(const VectorInterface& dst) const;
+  virtual double ScalarProduct(const Vector& y, const Vector& x) const;
+  virtual void Equ(Vector& dst, double s, const Vector& src) const;
+  virtual void Add(Vector& dst, double s, const Vector& src) const;
+  virtual void SAdd(double s1, Vector& dst, double s2, const Vector& src) const;
+  virtual double Norm(const Vector& dst) const;
 
-  virtual void RhsCurve(VectorInterface& f,
-                        const Curve& C,
-                        int comp,
-                        int N) const;
+  virtual void RhsCurve(Vector& f, const Curve& C, int comp, int N) const;
   virtual double ScalarProductWithFluctuations(DoubleVector& eta,
-                                               const VectorInterface& gf,
-                                               const VectorInterface& gz) const;
+                                               const Vector& gf,
+                                               const Vector& gz) const;
 
 #ifdef __WITH_THREADS__
   //

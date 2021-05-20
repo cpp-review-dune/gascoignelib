@@ -208,7 +208,7 @@ FSIMultiLevelSolver<DIM>::NewSolvers(std::string solverlabel)
 /*-------------------------------------------------------------*/
 template<int DIM>
 void
-FSIMultiLevelSolver<DIM>::NewtonMatrixControl_nomonitor(VectorInterface& u,
+FSIMultiLevelSolver<DIM>::NewtonMatrixControl_nomonitor(Vector& u,
                                                         NLInfo& nlinfo)
 {
   int nm1 = nlinfo.control().newmatrix();
@@ -270,7 +270,7 @@ FSIMultiLevelSolver<DIM>::NewtonUpdateDisplacement(GlobalVector& U_Vec_GV,
 template<int DIM>
 void
 FSIMultiLevelSolver<DIM>::AddNodeVectorinAllSolvers(const string& name,
-                                                    VectorInterface& gq)
+                                                    Vector& gq)
 {
   Transfer(ComputeLevel, 1, gq);
   for (int l = 0; l < nlevels(); l++) {
@@ -297,7 +297,7 @@ template<int DIM>
 void
 FSIMultiLevelSolver<DIM>::UpdateVelocityandPressureinU(GlobalVector& U_Vec_GV,
                                                        double factor,
-                                                       VectorInterface& dx)
+                                                       Vector& dx)
 {
 
   SetSolverLabel("fsi_reduced");
@@ -312,7 +312,7 @@ FSIMultiLevelSolver<DIM>::UpdateVelocityandPressureinU(GlobalVector& U_Vec_GV,
 template<int DIM>
 void
 FSIMultiLevelSolver<DIM>::VelocityandPressureUto_u(GlobalVector& U_Vec_GV,
-                                                   VectorInterface& _u)
+                                                   Vector& _u)
 {
   SetSolverLabel("fsi_reduced");
   for (int node = 0; node < GetSolver(ComputeLevel)->GetMesh()->nnodes();
@@ -327,10 +327,10 @@ template<int DIM>
 double
 FSIMultiLevelSolver<DIM>::NewtonUpdate(GlobalVector& U_Vec_GV,
                                        double& rr,
-                                       VectorInterface& x,
-                                       VectorInterface& dx,
-                                       VectorInterface& r,
-                                       const VectorInterface& f,
+                                       Vector& x,
+                                       Vector& dx,
+                                       Vector& r,
+                                       const Vector& f,
                                        NLInfo& nlinfo,
                                        NLInfo& info_solid_disp,
                                        NLInfo& info_meshmotion)
@@ -364,7 +364,7 @@ FSIMultiLevelSolver<DIM>::NewtonUpdate(GlobalVector& U_Vec_GV,
 
   GetSolver(ComputeLevel)->SetPeriodicVectorZero(dx);
 
-  // VectorInterface XXX("old");
+  // Vector XXX("old");
   // GlobalVector OLD = GetSolver()->GetGV(XXX);
   // For LPS Stabilization
   GetSolver(ComputeLevel)->Add(x, relax, dx);
@@ -413,10 +413,10 @@ FSIMultiLevelSolver<DIM>::NewtonUpdate(GlobalVector& U_Vec_GV,
 
 template<int DIM>
 void
-FSIMultiLevelSolver<DIM>::newton(VectorInterface& U_Vec,
-                                 const VectorInterface& f,
-                                 VectorInterface& r,
-                                 VectorInterface& w,
+FSIMultiLevelSolver<DIM>::newton(Vector& U_Vec,
+                                 const Vector& f,
+                                 Vector& r,
+                                 Vector& w,
                                  NLInfo& info_fsi_reduced,
                                  NLInfo& info_solid_disp,
                                  NLInfo& info_meshmotion)
@@ -478,8 +478,8 @@ FSIMultiLevelSolver<DIM>::newton(VectorInterface& U_Vec,
 /*-----------------------------------------------------------------------*/
 template<int DIM>
 string
-FSIMultiLevelSolver<DIM>::Solve(VectorInterface& U_Vec,
-                                const VectorInterface& b,
+FSIMultiLevelSolver<DIM>::Solve(Vector& U_Vec,
+                                const Vector& b,
                                 NLInfo& info_fsi_reduced,
                                 NLInfo& info_solid_disp,
                                 NLInfo& info_meshmotion)
@@ -501,7 +501,7 @@ FSIMultiLevelSolver<DIM>::Solve(VectorInterface& U_Vec,
 
 template<int DIM>
 void
-FSIMultiLevelSolver<DIM>::AssembleMatrix(VectorInterface& u, NLInfo& nlinfo)
+FSIMultiLevelSolver<DIM>::AssembleMatrix(Vector& u, NLInfo& nlinfo)
 {
   AssembleMatrix(u);
   nlinfo.control().matrixmustbebuild() = 0;
@@ -510,7 +510,7 @@ FSIMultiLevelSolver<DIM>::AssembleMatrix(VectorInterface& u, NLInfo& nlinfo)
 /*-----------------------------------------------------------------------*/
 template<int DIM>
 void
-FSIMultiLevelSolver<DIM>::AssembleMatrix(VectorInterface& u)
+FSIMultiLevelSolver<DIM>::AssembleMatrix(Vector& u)
 {
 
   // SolutionTransfer(u);
@@ -527,7 +527,7 @@ FSIMultiLevelSolver<DIM>::AssembleMatrix(VectorInterface& u)
 /*-----------------------------------------------------------------------*/
 template<int DIM>
 void
-FSIMultiLevelSolver<DIM>::ComputeIlu(VectorInterface& u)
+FSIMultiLevelSolver<DIM>::ComputeIlu(Vector& u)
 {
   // SolutionTransfer(u);
   Transfer(ComputeLevel, 1, u);

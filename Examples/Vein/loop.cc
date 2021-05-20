@@ -90,8 +90,8 @@ Loop<DIM>::run(const std::string& problemlabel)
   cout << "Only Fluid Stat to compute initial condition on fluid domain(!!!)"
        << endl;
 
-  VectorInterface f("f"), vel("VEL");
-  VectorInterface def_pres("def_pres");
+  Vector f("f"), vel("VEL");
+  Vector def_pres("def_pres");
   for (int i = 0; i < _initial_refine; ++i) {
     GetMultiLevelSolver()->ReInit("blubbb");
     FSI_MLS->SetSolverLabel("fsi_reduced");
@@ -191,7 +191,7 @@ Loop<DIM>::run(const std::string& problemlabel)
   GetMultiLevelSolver()->AddNodeVector("DEF_PRES", def_pres);
 
   FSI_MLS->SetSolverLabel("fsi_main");
-  VectorInterface U_Vec("U_Vec"), UOLD_Vec("UOLD_Vec"), F("F");
+  Vector U_Vec("U_Vec"), UOLD_Vec("UOLD_Vec"), F("F");
 
   FSI_MLS->ReInitVector(U_Vec);
   FSI_MLS->GetSolver()->GetGV(U_Vec).zero();

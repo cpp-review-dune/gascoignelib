@@ -61,13 +61,11 @@ protected:
   virtual const MultiLevelSolver* GetMultiLevelSolver() const { return _S; }
   virtual MultiLevelSolver* GetMultiLevelSolver() { return _S; }
 
-  void DeleteVector(VectorInterface& u) const { _S->DeleteVector(u); }
-  void AssembleMatrixAndIlu(VectorInterface& u);
-  void LinearSolve(VectorInterface& du,
-                   const VectorInterface& y,
-                   CGInfo& cginfo);
-  void NonLinear(VectorInterface& u,
-                 VectorInterface& f,
+  void DeleteVector(Vector& u) const { _S->DeleteVector(u); }
+  void AssembleMatrixAndIlu(Vector& u);
+  void LinearSolve(Vector& du, const Vector& y, CGInfo& cginfo);
+  void NonLinear(Vector& u,
+                 Vector& f,
                  const std::string& problemlabel,
                  int iter);
   void VWCycle(std::vector<double>& res,
@@ -76,13 +74,11 @@ protected:
                int finelevel,
                int coarselevel,
                const std::string& p,
-               VectorInterface& u,
-               VectorInterface& b,
-               VectorInterface& v);
-  void LinearMGSolve(VectorInterface& du,
-                     const VectorInterface& y,
-                     CGInfo& cginfo);
-  virtual void Precondition(VectorInterface& x, VectorInterface& y);
+               Vector& u,
+               Vector& b,
+               Vector& v);
+  void LinearMGSolve(Vector& du, const Vector& y, CGInfo& cginfo);
+  virtual void Precondition(Vector& x, Vector& y);
 
 public:
   MultiLevelAlgorithm()
@@ -98,7 +94,7 @@ public:
                  const ProblemContainer* PC);
 #pragma GCC diagnostic pop
 
-  void ReInitVector(VectorInterface& u) const { _S->ReInitVector(u); }
+  void ReInitVector(Vector& u) const { _S->ReInitVector(u); }
   void RunLinear(const std::string& problemlabel);
   void RunNonLinear(const std::string& problemlabel, int iter = 0);
   void GlobalRefineLoop(const std::string& problemlabel);

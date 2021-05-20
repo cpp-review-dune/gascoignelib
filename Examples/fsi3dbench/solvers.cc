@@ -23,9 +23,7 @@ FSISolver<DIM>::FSISolver()
 
 template<int DIM>
 void
-FSISolver<DIM>::Form(VectorInterface& y,
-                     const VectorInterface& x,
-                     double d) const
+FSISolver<DIM>::Form(Vector& y, const Vector& x, double d) const
 {
   StdSolver::Form(y, x, d);
 }
@@ -249,7 +247,7 @@ FSISolver<DIM>::ComputeSAI() const
 
 template<int DIM>
 void
-FSISolver<DIM>::ComputeIlu(const VectorInterface& gu) const
+FSISolver<DIM>::ComputeIlu(const Vector& gu) const
 {
   ComputeSAI();
 
@@ -314,10 +312,7 @@ FSISolver<DIM>::modify_ilu(IluInterface& I, int ncomp) const
 
 template<int DIM>
 void
-FSISolver<DIM>::smooth(int niter,
-                       VectorInterface& x,
-                       const VectorInterface& y,
-                       VectorInterface& h) const
+FSISolver<DIM>::smooth(int niter, Vector& x, const Vector& y, Vector& h) const
 {
   // const std::vector<int>& fl2g = GetAleDiscretization()->GetFluidL2G();
   // const std::vector<int>& sl2g = GetAleDiscretization()->GetSolidL2G();
@@ -377,9 +372,7 @@ FSISolver<DIM>::smooth(int niter,
 
 template<int DIM>
 void
-FSISolver<DIM>::smooth_exact(VectorInterface& x,
-                             const VectorInterface& y,
-                             VectorInterface& help) const
+FSISolver<DIM>::smooth_exact(Vector& x, const Vector& y, Vector& help) const
 {
   StdSolver::smooth_exact(x, y, help);
 }
@@ -442,7 +435,7 @@ FSISolver<DIM>::NewIlu(int ncomp, const string& matrixtype)
 
 template<int DIM>
 void
-FSISolver<DIM>::DeleteSolidPressure(VectorInterface& gf) const
+FSISolver<DIM>::DeleteSolidPressure(Vector& gf) const
 {
   ////////////////////
 
@@ -467,7 +460,7 @@ FSISolver<DIM>::DeleteSolidPressure(VectorInterface& gf) const
 
 template<int DIM>
 void
-FSISolver<DIM>::SetBoundaryVectorZero(VectorInterface& gf) const
+FSISolver<DIM>::SetBoundaryVectorZero(Vector& gf) const
 {
   StdSolver::SetBoundaryVectorZero(gf);
 
@@ -476,7 +469,7 @@ FSISolver<DIM>::SetBoundaryVectorZero(VectorInterface& gf) const
 
 template<int DIM>
 void
-FSISolver<DIM>::SetBoundaryVector(VectorInterface& gf) const
+FSISolver<DIM>::SetBoundaryVector(Vector& gf) const
 {
   StdSolver::SetBoundaryVector(gf);
 
@@ -485,7 +478,7 @@ FSISolver<DIM>::SetBoundaryVector(VectorInterface& gf) const
 
 template<int DIM>
 void
-FSISolver<DIM>::AssembleMatrix(const VectorInterface& gu, double d)
+FSISolver<DIM>::AssembleMatrix(const Vector& gu, double d)
 {
 
   StdSolver::AssembleMatrix(gu, d);
@@ -807,7 +800,7 @@ FSISolver<2>::PointVisu(const string& name,
                         const GlobalVector& u,
                         int iter) const
 {
-  VectorInterface def("def");
+  Vector def("def");
   const GlobalVector& DEF = GetGV(def);
 
   GlobalVector U;
@@ -860,7 +853,7 @@ FSISolver<3>::PointVisu(const string& name,
                         const GlobalVector& u,
                         int iter) const
 {
-  VectorInterface def("def");
+  Vector def("def");
   const GlobalVector& DEF = GetGV(def);
   GlobalVector U;
   U.ncomp() = 2 * u.ncomp();
@@ -910,10 +903,10 @@ FSISolver<3>::PointVisu(const string& name,
 //////// deformation update
 template<int DIM>
 void
-FSISolver<DIM>::SolveExtension(VectorInterface& x)
+FSISolver<DIM>::SolveExtension(Vector& x)
 {
 
-  VectorInterface def("def");
+  Vector def("def");
   GlobalVector& DEF = GetGV(def);
   for (int c = 0; c < DIM; ++c) {
     //	DEF.CompEq(c,1.0,c+DIM+1,X);
@@ -934,17 +927,17 @@ FSISolver<DIM>::SolveExtension(VectorInterface& x)
 
 template<int DIM>
 void
-FSIMultiLevelSolver<DIM>::UpdateDeformation(VectorInterface& x)
+FSIMultiLevelSolver<DIM>::UpdateDeformation(Vector& x)
 {
 
   // update solid deformation
   GlobalVector& X = GetSolver()->GetGV(x);
 
-  VectorInterface def("def");
+  Vector def("def");
   GlobalVector& DEF = GetSolver()->GetGV(def);
-  VectorInterface defold("defold");
+  Vector defold("defold");
   GlobalVector& DEFOLD = GetSolver()->GetGV(defold);
-  VectorInterface old("old");
+  Vector old("old");
   const GlobalVector& OLD = GetSolver()->GetGV(old);
 
   const vector<int>& s_nodes =
@@ -974,10 +967,10 @@ FSIMultiLevelSolver<DIM>::UpdateDeformation(VectorInterface& x)
 template<int DIM>
 double
 FSIMultiLevelSolver<DIM>::NewtonUpdate(double& rr,
-                                       VectorInterface& x,
-                                       VectorInterface& dx,
-                                       VectorInterface& r,
-                                       const VectorInterface& f,
+                                       Vector& x,
+                                       Vector& dx,
+                                       Vector& r,
+                                       const Vector& f,
                                        NLInfo& nlinfo)
 {
 
@@ -1008,7 +1001,7 @@ FSIMultiLevelSolver<DIM>::NewtonUpdate(double& rr,
 
   GetSolver(ComputeLevel)->SetPeriodicVectorZero(dx);
 
-  VectorInterface XXX("old");
+  Vector XXX("old");
   GlobalVector OLD = GetSolver()->GetGV(XXX);
   GetSolver(ComputeLevel)->Add(x, relax, dx);
   UpdateDeformation(x);

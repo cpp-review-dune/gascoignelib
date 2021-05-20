@@ -91,9 +91,9 @@ Algorithm::PrintMeshInformation() const
 /*-----------------------------------------*/
 
 void
-Algorithm::Newton(VectorInterface& u, const VectorInterface& f, NLInfo& nlinfo)
+Algorithm::Newton(Vector& u, const Vector& f, NLInfo& nlinfo)
 {
-  VectorInterface y("y"), du("du");
+  Vector y("y"), du("du");
 
   ReInitVector(du);
   ReInitVector(y);
@@ -187,7 +187,7 @@ Algorithm::Newton(VectorInterface& u, const VectorInterface& f, NLInfo& nlinfo)
 /*-------------------------------------------------------*/
 
 void
-Algorithm::CopyVector(GlobalVector& dst, VectorInterface& src) const
+Algorithm::CopyVector(GlobalVector& dst, Vector& src) const
 {
   GetSolver()->HNAverage(src);
 
@@ -205,16 +205,14 @@ Algorithm::CopyVector(GlobalVector& dst, VectorInterface& src) const
 /*-----------------------------------------*/
 
 void
-Algorithm::GmresSolve(VectorInterface& x,
-                      const VectorInterface& b,
-                      CGInfo& info)
+Algorithm::GmresSolve(Vector& x, const Vector& b, CGInfo& info)
 {
   // we could implement restarted gmres for maxiter > gmresmemsize
   // for now maxiter = min(gmresmemsize, linear_maxiter)
   int maxiter = Gascoigne::min(_gmresmemsize, info.user().maxiter());
 
   int minsize = Gascoigne::max(1, Gascoigne::min(5, maxiter));
-  vector<VectorInterface> mem;
+  vector<Vector> mem;
 
   int left_precondition = 1;
 
@@ -226,8 +224,8 @@ Algorithm::GmresSolve(VectorInterface& x,
   }
   int reached = 0;
 
-  VectorInterface& v = mem[0];
-  VectorInterface p("gmresp");
+  Vector& v = mem[0];
+  Vector p("gmresp");
   ReInitVector(p);
   ReInitVector(v);
 
@@ -251,8 +249,8 @@ Algorithm::GmresSolve(VectorInterface& x,
       mem.resize(i + 1, s);
       ReInitVector(mem[i]);
     }
-    VectorInterface& um = mem[m];
-    VectorInterface& un = mem[n];
+    Vector& um = mem[m];
+    Vector& un = mem[n];
     if (left_precondition) {
       GetSolver()->vmulteq(p, um, 1.);
       Precondition(un, p);
@@ -263,7 +261,7 @@ Algorithm::GmresSolve(VectorInterface& x,
     }
 
     for (int i = 0; i < n; i++) {
-      VectorInterface& ui = mem[i];
+      Vector& ui = mem[i];
       double d = GetSolver()->ScalarProduct(un, ui);
       GR.matrix(i, m) = d;
       GetSolver()->Add(un, -d, ui);
@@ -303,7 +301,7 @@ Algorithm::GmresSolve(VectorInterface& x,
 /*-----------------------------------------*/
 
 void
-Algorithm::Precondition(VectorInterface& x, VectorInterface& y)
+Algorithm::Precondition(Vector& x, Vector& y)
 {
   GetSolver()->Equ(x, 1., y);
 }

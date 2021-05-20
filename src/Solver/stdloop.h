@@ -59,7 +59,7 @@ protected:
 
   // new vectors
 
-  DoubleVector ComputeFunctionals(VectorInterface& f, VectorInterface& u);
+  DoubleVector ComputeFunctionals(Vector& f, Vector& u);
 
   const DoubleVector GetExactValues() const;
   const std::vector<std::string> GetFunctionalNames() const;
@@ -71,10 +71,8 @@ protected:
   virtual void AdaptMesh(const DoubleVector& eta);
   virtual void AdaptMesh(const DoubleVector& eta,
                          std::string refine_or_coarsen_step);
-  virtual DoubleVector Functionals(VectorInterface& u, VectorInterface& f);
-  virtual double Estimator(DoubleVector& eta,
-                           VectorInterface& u,
-                           VectorInterface& f);
+  virtual DoubleVector Functionals(Vector& u, Vector& f);
+  virtual double Estimator(DoubleVector& eta, Vector& u, Vector& f);
 
 public:
   StdLoop();

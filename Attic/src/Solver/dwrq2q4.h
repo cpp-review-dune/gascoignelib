@@ -44,17 +44,17 @@ protected:
                        const GlobalVector& f,
                        const GlobalVector& z) const;
   double ScalarProduct(DoubleVector& eta,
-                       const VectorInterface& gf,
-                       const VectorInterface& gz) const;
+                       const Vector& gf,
+                       const Vector& gz) const;
   double ScalarProductWithFluctuations(DoubleVector& eta,
-                                       const VectorInterface& gf,
-                                       const VectorInterface& gz) const;
+                                       const Vector& gf,
+                                       const Vector& gz) const;
 
-  void PrimalResidualsHigher(VectorInterface& gf, const VectorInterface& gu);
+  void PrimalResidualsHigher(Vector& gf, const Vector& gu);
 
-  void DualResidualsHigher(VectorInterface& gf,
-                           const VectorInterface& gu,
-                           const VectorInterface& gz,
+  void DualResidualsHigher(Vector& gf,
+                           const Vector& gu,
+                           const Vector& gz,
                            const ProblemDescriptorInterface& PDI);
 
 public:
@@ -62,9 +62,9 @@ public:
   ~DwrQ2Q4() {}
 
   double Estimator(DoubleVector& eta,
-                   VectorInterface& gf,
-                   const VectorInterface& gu,
-                   const VectorInterface& gz,
+                   Vector& gf,
+                   const Vector& gu,
+                   const Vector& gz,
                    const ProblemDescriptorInterface& PDI);
 };
 

@@ -35,12 +35,10 @@ class StdTimeLoop : public virtual StdLoop
 {
 protected:
   TimeInfo _timeinfo;
-  virtual std::string SolveTimePrimal(Matrix& A,
-                                      VectorInterface& u,
-                                      VectorInterface& f);
+  virtual std::string SolveTimePrimal(Matrix& A, Vector& u, Vector& f);
 
   virtual void TimeInfoBroadcast();
-  void InitSolution(VectorInterface& u);
+  void InitSolution(Vector& u);
 
   virtual const StdTimeSolver* GetTimeSolver() const
   {

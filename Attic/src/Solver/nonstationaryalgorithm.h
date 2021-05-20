@@ -42,8 +42,7 @@ class NonstationaryAlgorithm : public MultiLevelAlgorithm
 protected:
   double dt, time, theta;
 
-  void InitSolution(const std::string& initial,
-                    Gascoigne::VectorInterface& u) const;
+  void InitSolution(const std::string& initial, Gascoigne::Vector& u) const;
   void TimeInfoBroadcast();
 
 public:

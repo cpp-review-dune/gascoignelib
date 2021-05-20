@@ -115,7 +115,7 @@ StdLoop::BasicInit(const ParamFile& paramfile,
 /*-------------------------------------------------------*/
 
 DoubleVector
-StdLoop::ComputeFunctionals(VectorInterface& f, VectorInterface& u)
+StdLoop::ComputeFunctionals(Vector& f, Vector& u)
 {
   DoubleVector j = GetMultiLevelSolver()->ComputeFunctionals(f, u);
   return j;
@@ -176,7 +176,7 @@ StdLoop::GetFunctionalNames() const
 /*-------------------------------------------------*/
 
 DoubleVector
-StdLoop::Functionals(VectorInterface& u, VectorInterface& f)
+StdLoop::Functionals(Vector& u, Vector& f)
 {
   bool output = true;
 
@@ -219,7 +219,7 @@ StdLoop::Functionals(VectorInterface& u, VectorInterface& f)
 /*-------------------------------------------------*/
 
 double
-StdLoop::Estimator(DoubleVector& eta, VectorInterface& u, VectorInterface& f)
+StdLoop::Estimator(DoubleVector& eta, Vector& u, Vector& f)
 {
   double est = 0.;
   if (_estimator == "energy" || _estimator == "energy_laplace" ||
@@ -453,7 +453,7 @@ StdLoop::AdaptMesh(const DoubleVector& eta)
 void
 StdLoop::run(const std::string& problemlabel)
 {
-  VectorInterface u("u"), f("f");
+  Vector u("u"), f("f");
   Matrix A("A");
 
   GlobalVector ualt;

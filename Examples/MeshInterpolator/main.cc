@@ -73,7 +73,7 @@ main(int argc, char** argv)
   // Rhs Vector
   ///////////////////////
 
-  VectorInterface f("f");
+  Vector f("f");
   MLS.ReInitVector(f);
   MLS.Zero(f);
 
@@ -95,7 +95,7 @@ main(int argc, char** argv)
   moni.set_directory("Results");
   MLS.SetMonitorPtr(&moni);
 
-  VectorInterface u("u");
+  Vector u("u");
   MLS.ReInitVector(u);
   MLS.Zero(u);
 

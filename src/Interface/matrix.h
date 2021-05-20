@@ -37,7 +37,7 @@ namespace Gascoigne {
 ////@brief
 ////  Matrix is just a placeholder for any kind of (large) matrices that act on
 ////  all dof's of a discretization. This class takes the same role as the
-////  VectorInterface (to be renamed as Vector).
+////  Vector (to be renamed as Vector).
 ////  The Matrix class does not have any real data. The connection to the data
 ////  is by means of the MatrixAgent class.
 ////  However, the Matrix class stores some extra information such as

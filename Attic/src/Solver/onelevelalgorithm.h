@@ -48,17 +48,13 @@ protected:
   virtual const SolverInterface* GetSolver() const { return _S; }
   virtual SolverInterface* GetSolver() { return _S; }
 
-  void JacobiSolver(VectorInterface& du,
-                    const VectorInterface& f,
-                    CGInfo& info);
-  void IluSolver(VectorInterface& du, const VectorInterface& f, CGInfo& info);
+  void JacobiSolver(Vector& du, const Vector& f, CGInfo& info);
+  void IluSolver(Vector& du, const Vector& f, CGInfo& info);
 
-  void ReInitVector(VectorInterface& u) const { _S->ReInitVector(u); }
-  void DeleteVector(VectorInterface& u) const { _S->DeleteVector(u); }
-  void AssembleMatrixAndIlu(VectorInterface& u);
-  void LinearSolve(VectorInterface& du,
-                   const VectorInterface& y,
-                   CGInfo& cginfo);
+  void ReInitVector(Vector& u) const { _S->ReInitVector(u); }
+  void DeleteVector(Vector& u) const { _S->DeleteVector(u); }
+  void AssembleMatrixAndIlu(Vector& u);
+  void LinearSolve(Vector& du, const Vector& y, CGInfo& cginfo);
 
 public:
   OneLevelAlgorithm()
@@ -74,7 +70,7 @@ public:
                          const NumericInterface* NI,
                          const ProblemContainer* PC);
 
-  void Precondition(VectorInterface& x, VectorInterface& y);
+  void Precondition(Vector& x, Vector& y);
   void RunLinear(const std::string& problemlabel);
   void RunNonLinear(const std::string& problemlabel);
 };

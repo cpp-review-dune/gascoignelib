@@ -68,7 +68,7 @@ MultiLevelAlgorithm::BasicInit(const ParamFile* paramfile,
 void
 MultiLevelAlgorithm::RunLinear(const std::string& problemlabel)
 {
-  VectorInterface u("u"), f("f"), du("du");
+  Vector u("u"), f("f"), du("du");
 
   GetMultiLevelSolver()->ReInit(problemlabel);
 
@@ -120,7 +120,7 @@ MultiLevelAlgorithm::RunLinear(const std::string& problemlabel)
 /*-----------------------------------------*/
 
 void
-MultiLevelAlgorithm::AssembleMatrixAndIlu(VectorInterface& u)
+MultiLevelAlgorithm::AssembleMatrixAndIlu(Vector& u)
 {
   GetMultiLevelSolver()->AssembleMatrix(u);
   GetMultiLevelSolver()->ComputeIlu(u);
@@ -135,9 +135,9 @@ MultiLevelAlgorithm::VWCycle(vector<double>& res,
                              int finelevel,
                              int coarselevel,
                              const string& p,
-                             VectorInterface& u,
-                             VectorInterface& b,
-                             VectorInterface& v)
+                             Vector& u,
+                             Vector& b,
+                             Vector& v)
 {
   if (l > coarselevel) {
     GetSolver(l)->smooth_pre(u, b, v);
@@ -179,9 +179,7 @@ MultiLevelAlgorithm::VWCycle(vector<double>& res,
 /*-----------------------------------------*/
 
 void
-MultiLevelAlgorithm::LinearSolve(VectorInterface& du,
-                                 const VectorInterface& y,
-                                 CGInfo& cginfo)
+MultiLevelAlgorithm::LinearSolve(Vector& du, const Vector& y, CGInfo& cginfo)
 {
   cginfo.reset();
 
@@ -204,7 +202,7 @@ MultiLevelAlgorithm::LinearSolve(VectorInterface& du,
 /*-----------------------------------------*/
 
 void
-MultiLevelAlgorithm::Precondition(VectorInterface& x, VectorInterface& y)
+MultiLevelAlgorithm::Precondition(Vector& x, Vector& y)
 {
   GetSolver()->Equ(x, 1., y);
 
@@ -221,9 +219,7 @@ MultiLevelAlgorithm::Precondition(VectorInterface& x, VectorInterface& y)
 /*-----------------------------------------*/
 
 void
-MultiLevelAlgorithm::LinearMGSolve(VectorInterface& du,
-                                   const VectorInterface& y,
-                                   CGInfo& cginfo)
+MultiLevelAlgorithm::LinearMGSolve(Vector& du, const Vector& y, CGInfo& cginfo)
 {
   int nl = GetMultiLevelSolver()->nlevels();
   int finelevel = nl - 1;
@@ -235,7 +231,7 @@ MultiLevelAlgorithm::LinearMGSolve(VectorInterface& du,
   }
   DoubleVector res(nl, 0.), rw(nl, 0.);
 
-  VectorInterface _mg0("xmg0"), _mg1("xmg1");
+  Vector _mg0("xmg0"), _mg1("xmg1");
 
   ReInitVector(_mg0);
   ReInitVector(_mg1);
@@ -256,8 +252,8 @@ MultiLevelAlgorithm::LinearMGSolve(VectorInterface& du,
 /*-----------------------------------------*/
 
 void
-MultiLevelAlgorithm::NonLinear(VectorInterface& u,
-                               VectorInterface& f,
+MultiLevelAlgorithm::NonLinear(Vector& u,
+                               Vector& f,
                                const std::string& problemlabel,
                                int iter)
 {
@@ -290,7 +286,7 @@ MultiLevelAlgorithm::RunNonLinear(const std::string& problemlabel, int iter)
   GetSolver()->OutputSettings();
   PrintMeshInformation();
 
-  VectorInterface u("u"), f("f");
+  Vector u("u"), f("f");
 
   ReInitVector(u);
   ReInitVector(f);
@@ -320,7 +316,7 @@ MultiLevelAlgorithm::GlobalRefineLoop(const std::string& problemlabel)
   GetMultiLevelSolver()->ReInit(problemlabel);
   GetSolver()->OutputSettings();
 
-  VectorInterface u("u"), f("f");
+  Vector u("u"), f("f");
   GlobalVector uold;
 
   for (int iter = 1; iter <= niter; iter++) {
@@ -373,7 +369,7 @@ MultiLevelAlgorithm::LocalRefineLoop(const std::string& problemlabel,
   GetMultiLevelSolver()->ReInit(problemlabel);
   GetSolver()->OutputSettings();
 
-  VectorInterface u("u"), f("f");
+  Vector u("u"), f("f");
   GlobalVector uold;
 
   for (int iter = 1; iter <= niter; iter++) {

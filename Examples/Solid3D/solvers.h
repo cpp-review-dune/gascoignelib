@@ -22,12 +22,9 @@ private:
 public:
   ~FSISolver();
 
-  void smooth(int niter,
-              VectorInterface& x,
-              const VectorInterface& y,
-              VectorInterface& h) const;
+  void smooth(int niter, Vector& x, const Vector& y, Vector& h) const;
   void invert_local_matrices() const;
-  void ComputeIlu(const VectorInterface& gu) const;
+  void ComputeIlu(const Vector& gu) const;
   void ComputeIlu() const;
   void RegisterMatrix();
   void Anisotropy() const;

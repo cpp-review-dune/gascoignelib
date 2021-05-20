@@ -73,8 +73,8 @@ DwrQ2Q4::ScalarProduct(DoubleVector& eta,
 
 double
 DwrQ2Q4::ScalarProduct(DoubleVector& eta,
-                       const VectorInterface& gf,
-                       const VectorInterface& gz) const
+                       const Vector& gf,
+                       const Vector& gz) const
 {
   const GlobalVector& f = _S.GetGV(gf);
   const GlobalVector& z = _S.GetGV(gz);
@@ -86,8 +86,8 @@ DwrQ2Q4::ScalarProduct(DoubleVector& eta,
 
 double
 DwrQ2Q4::ScalarProductWithFluctuations(DoubleVector& eta,
-                                       const VectorInterface& gf,
-                                       const VectorInterface& gz) const
+                                       const Vector& gf,
+                                       const Vector& gz) const
 {
   const GlobalVector& f = _S.GetGV(gf);
 
@@ -102,7 +102,7 @@ DwrQ2Q4::ScalarProductWithFluctuations(DoubleVector& eta,
 /**********************************************************/
 
 void
-DwrQ2Q4::PrimalResidualsHigher(VectorInterface& gf, const VectorInterface& gu)
+DwrQ2Q4::PrimalResidualsHigher(Vector& gf, const Vector& gu)
 {
   _S.GetGV(gf).zero();
 
@@ -125,9 +125,9 @@ DwrQ2Q4::PrimalResidualsHigher(VectorInterface& gf, const VectorInterface& gu)
 /**********************************************************/
 
 void
-DwrQ2Q4::DualResidualsHigher(VectorInterface& gf,
-                             const VectorInterface& gu,
-                             const VectorInterface& gz,
+DwrQ2Q4::DualResidualsHigher(Vector& gf,
+                             const Vector& gu,
+                             const Vector& gz,
                              const ProblemDescriptorInterface& PDI)
 {
   _S.GetGV(gf).zero();
@@ -162,9 +162,9 @@ DwrQ2Q4::DualResidualsHigher(VectorInterface& gf,
 
 double
 DwrQ2Q4::Estimator(DoubleVector& eta,
-                   VectorInterface& gf,
-                   const VectorInterface& gu,
-                   const VectorInterface& gz,
+                   Vector& gf,
+                   const Vector& gu,
+                   const Vector& gz,
                    const ProblemDescriptorInterface& PDI)
 {
   double rho = 0, rhostern = 0;

@@ -23,7 +23,7 @@ Loop<DIM>::run(const std::string& problemlabel)
            << "time" << endl;
   clock_t t;
 
-  VectorInterface u("u"), f("f");
+  Vector u("u"), f("f");
 
   GetMultiLevelSolver()->ReInit(problemlabel);
   GetMultiLevelSolver()->ReInitVector(u);

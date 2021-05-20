@@ -39,12 +39,11 @@ namespace Gascoigne {
 ////
 /////////////////////////////////////////////
 
-class GhostVectorAgent : public std::map<VectorInterface, GlobalVector*>
+class GhostVectorAgent : public std::map<Vector, GlobalVector*>
 {
 public:
-  typedef std::map<VectorInterface, GlobalVector*>::const_iterator
-    const_iterator;
-  typedef std::map<VectorInterface, GlobalVector*>::iterator iterator;
+  typedef std::map<Vector, GlobalVector*>::const_iterator const_iterator;
+  typedef std::map<Vector, GlobalVector*>::iterator iterator;
 
   //
   ////  Con(De)structor
@@ -53,10 +52,10 @@ public:
   GhostVectorAgent();
   ~GhostVectorAgent();
 
-  void Register(const VectorInterface& mg);
-  void Delete(VectorInterface& mg);
+  void Register(const Vector& mg);
+  void Delete(Vector& mg);
 
-  GlobalVector& operator()(const VectorInterface& g);
+  GlobalVector& operator()(const Vector& g);
 
   friend std::ostream& operator<<(std::ostream& os, const GhostVectorAgent& gva)
   {

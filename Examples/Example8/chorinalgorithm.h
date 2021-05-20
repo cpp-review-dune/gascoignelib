@@ -61,19 +61,14 @@ protected:
   void Chorin();
   void ChorinUzawa();
   void VanKan();
-  void VelocityPredictor(VectorInterface& v,
-                         VectorInterface& fv,
-                         NLInfo& nlinfo,
-                         int iter);
-  void PressurePoissonProblem(VectorInterface& q,
-                              VectorInterface& fp,
-                              CGInfo& cginfo);
-  void VelocityProjection(VectorInterface& v,
-                          VectorInterface& q,
-                          VectorInterface& fv,
+  void VelocityPredictor(Vector& v, Vector& fv, NLInfo& nlinfo, int iter);
+  void PressurePoissonProblem(Vector& q, Vector& fp, CGInfo& cginfo);
+  void VelocityProjection(Vector& v,
+                          Vector& q,
+                          Vector& fv,
                           CGInfo& cginfo,
                           int iter);
-  void PressureUpdate(VectorInterface& p, VectorInterface& q, int iter);
+  void PressureUpdate(Vector& p, Vector& q, int iter);
 
 public:
   ChorinAlgorithm()

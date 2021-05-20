@@ -51,8 +51,7 @@ DwrAlgorithm::CreateOtherDiscretization() const
 /*-------------------------------------------------------*/
 
 void
-DwrAlgorithm::PrimalResidualsHigher(VectorInterface& f,
-                                    const VectorInterface& u)
+DwrAlgorithm::PrimalResidualsHigher(Vector& f, const Vector& u)
 {
   GetSolver()->Zero(f);
 
@@ -77,9 +76,7 @@ DwrAlgorithm::PrimalResidualsHigher(VectorInterface& f,
 /*--------------------------------------------------------*/
 
 void
-DwrAlgorithm::DualResidualsHigher(VectorInterface& f,
-                                  const VectorInterface& u,
-                                  const VectorInterface& z)
+DwrAlgorithm::DualResidualsHigher(Vector& f, const Vector& u, const Vector& z)
 {
   GetSolver()->Zero(f);
   // dual problem
@@ -128,7 +125,7 @@ DwrAlgorithm::AdaptiveLoop(const std::string& primallabel,
   GetMultiLevelSolver()->ReInit(primallabel);
   GetSolver()->OutputSettings();
 
-  VectorInterface u("u"), f("f"), z("z");
+  Vector u("u"), f("f"), z("z");
   GlobalVector uold;
 
   for (int iter = 1; iter <= niter; iter++) {

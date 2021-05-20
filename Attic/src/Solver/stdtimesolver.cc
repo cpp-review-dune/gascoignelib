@@ -154,7 +154,7 @@ StdTimeSolver::NewMassMatrix(int ncomp, const string& matrixtype)
 /*-------------------------------------------------------------*/
 
 void
-Gascoigne::StdTimeSolver::InitialCondition(VectorInterface& gf, double d) const
+Gascoigne::StdTimeSolver::InitialCondition(Vector& gf, double d) const
 {
   GlobalVector& f = GetGV(gf);
   HNAverageData();
@@ -201,8 +201,7 @@ Gascoigne::StdTimeSolver::InitialCondition(VectorInterface& gf, double d) const
 /*-------------------------------------------------------*/
 
 void
-StdTimeSolver::TimeRhsOperator(VectorInterface& gf,
-                               const VectorInterface& gu) const
+StdTimeSolver::TimeRhsOperator(Vector& gf, const Vector& gu) const
 {
   assert(_theta > 0.);
   double d = -(1. - _theta) / _theta;
@@ -220,9 +219,7 @@ StdTimeSolver::TimeRhsOperator(VectorInterface& gf,
 /*-------------------------------------------------------*/
 
 void
-StdTimeSolver::MassMatrixVector(VectorInterface& gf,
-                                const VectorInterface& gu,
-                                double d) const
+StdTimeSolver::MassMatrixVector(Vector& gf, const Vector& gu, double d) const
 {
   GlobalVector& f = GetGV(gf);
   const GlobalVector& u = GetGV(gu);
@@ -232,7 +229,7 @@ StdTimeSolver::MassMatrixVector(VectorInterface& gf,
 /*-------------------------------------------------------*/
 
 void
-StdTimeSolver::TimeRhs(int k, VectorInterface& gf) const
+StdTimeSolver::TimeRhs(int k, Vector& gf) const
 {
   StdSolver::Rhs(gf, _rhs[k - 1]);
 }
@@ -240,9 +237,7 @@ StdTimeSolver::TimeRhs(int k, VectorInterface& gf) const
 /*-------------------------------------------------------*/
 
 void
-StdTimeSolver::Form(VectorInterface& gy,
-                    const VectorInterface& gx,
-                    double d) const
+StdTimeSolver::Form(Vector& gy, const Vector& gx, double d) const
 {
   StdSolver::Form(gy, gx, d);
 
@@ -263,7 +258,7 @@ StdTimeSolver::Form(VectorInterface& gy,
 /*-------------------------------------------------------*/
 
 void
-StdTimeSolver::AssembleMatrix(Matrix& A, const VectorInterface& gu, double d)
+StdTimeSolver::AssembleMatrix(Matrix& A, const Vector& gu, double d)
 {
   StdSolver::AssembleMatrix(A, gu, d);
 
@@ -282,7 +277,7 @@ StdTimeSolver::AssembleMatrix(Matrix& A, const VectorInterface& gu, double d)
 /*-------------------------------------------------------*/
 
 void
-StdTimeSolver::L2Projection(VectorInterface& Gu, VectorInterface& Gf)
+StdTimeSolver::L2Projection(Vector& Gu, Vector& Gf)
 {
   GlobalVector& u = GetGV(Gu);
   GlobalVector& f = GetGV(Gf);

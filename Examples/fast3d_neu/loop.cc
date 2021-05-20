@@ -34,7 +34,7 @@ Loop<DIM>::run(const std::string& problemlabel)
 
   _niter = static_cast<int>((STOP_TIME - __TIME + 1.e-12) / __DT);
 
-  VectorInterface u("u"), f("f"), old("old"), def("def"), defold("defold");
+  Vector u("u"), f("f"), old("old"), def("def"), defold("defold");
 
   GetMultiLevelSolver()->ReInit(problemlabel);
   GetMultiLevelSolver()->ReInitVector(u);

@@ -42,10 +42,8 @@ class DwrAlgorithm : public MultiLevelAlgorithm
 protected:
   DiscretizationInterface* CreateOtherDiscretization() const;
 
-  void PrimalResidualsHigher(VectorInterface& f, const VectorInterface& u);
-  void DualResidualsHigher(VectorInterface& f,
-                           const VectorInterface& u,
-                           const VectorInterface& z);
+  void PrimalResidualsHigher(Vector& f, const Vector& u);
+  void DualResidualsHigher(Vector& f, const Vector& u, const Vector& z);
 
 public:
   DwrAlgorithm()

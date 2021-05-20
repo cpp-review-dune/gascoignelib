@@ -25,9 +25,7 @@ FSISolver<DIM>::FSISolver()
 
 template<int DIM>
 void
-FSISolver<DIM>::Form(VectorInterface& y,
-                     const VectorInterface& x,
-                     double d) const
+FSISolver<DIM>::Form(Vector& y, const Vector& x, double d) const
 {
   StdSolver::Form(y, x, d);
 }
@@ -51,7 +49,7 @@ FSISolver<DIM>::ReInitMatrix()
 
 template<int DIM>
 void
-FSISolver<DIM>::ComputeIlu(const VectorInterface& gu) const
+FSISolver<DIM>::ComputeIlu(const Vector& gu) const
 {
   if ((_matrixtype == "umfsplit") && (!_directsolver)) {
     abort();
@@ -97,10 +95,7 @@ FSISolver<DIM>::modify_ilu(IluInterface& I, int ncomp) const
 
 template<int DIM>
 void
-FSISolver<DIM>::smooth(int niter,
-                       VectorInterface& x,
-                       const VectorInterface& y,
-                       VectorInterface& h) const
+FSISolver<DIM>::smooth(int niter, Vector& x, const Vector& y, Vector& h) const
 {
   if ((_matrixtype == "splitumf") && (!_directsolver)) {
     abort();
@@ -117,16 +112,14 @@ FSISolver<DIM>::smooth(int niter,
 
 template<int DIM>
 void
-FSISolver<DIM>::smooth_exact(VectorInterface& x,
-                             const VectorInterface& y,
-                             VectorInterface& help) const
+FSISolver<DIM>::smooth_exact(Vector& x, const Vector& y, Vector& help) const
 {
   StdSolver::smooth_exact(x, y, help);
 }
 
 template<int DIM>
 void
-FSISolver<DIM>::do_precondition(VectorInterface gx) const
+FSISolver<DIM>::do_precondition(Vector gx) const
 {
   GlobalVector& H = GetGV(gx);
   assert(H.n() == _precond.size());
@@ -137,7 +130,7 @@ FSISolver<DIM>::do_precondition(VectorInterface gx) const
 }
 template<int DIM>
 void
-FSISolver<DIM>::undo_precondition(VectorInterface gx) const
+FSISolver<DIM>::undo_precondition(Vector gx) const
 {
   GlobalVector& H = GetGV(gx);
   assert(H.n() == _precond.size());
@@ -214,7 +207,7 @@ FSISolver<DIM>::NewIlu(int ncomp, const string& matrixtype)
 
 template<int DIM>
 void
-FSISolver<DIM>::DeleteSolidPressure(VectorInterface& gf) const
+FSISolver<DIM>::DeleteSolidPressure(Vector& gf) const
 {
   ////////////////////
 
@@ -304,7 +297,7 @@ FSISolver<DIM>::DeleteSolidPressure(VectorInterface& gf) const
 
 template<int DIM>
 void
-FSISolver<DIM>::SetBoundaryVectorZero(VectorInterface& gf) const
+FSISolver<DIM>::SetBoundaryVectorZero(Vector& gf) const
 {
   StdSolver::SetBoundaryVectorZero(gf);
 
@@ -313,7 +306,7 @@ FSISolver<DIM>::SetBoundaryVectorZero(VectorInterface& gf) const
 
 template<int DIM>
 void
-FSISolver<DIM>::SetBoundaryVector(VectorInterface& gf) const
+FSISolver<DIM>::SetBoundaryVector(Vector& gf) const
 {
   StdSolver::SetBoundaryVector(gf);
 
@@ -322,7 +315,7 @@ FSISolver<DIM>::SetBoundaryVector(VectorInterface& gf) const
 
 template<int DIM>
 void
-FSISolver<DIM>::AssembleMatrix(const VectorInterface& gu, double d)
+FSISolver<DIM>::AssembleMatrix(const Vector& gu, double d)
 {
 
   StdSolver::AssembleMatrix(gu, d);
@@ -763,7 +756,7 @@ FSISolver<3>::PointVisu(const string& name,
 
     U(i, U.ncomp() - 1) = domain;
   }
-  /*VectorInterface def("def");
+  /*Vector def("def");
   const GlobalVector& DEF = GetGV(def);
 
   GlobalVector U;

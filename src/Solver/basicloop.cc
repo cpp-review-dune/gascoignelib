@@ -181,7 +181,7 @@ BasicLoop::PrintMeshInformation(int outputlevel) const
 /*-------------------------------------------------------*/
 
 void
-BasicLoop::Output(const VectorInterface& u, string name) const
+BasicLoop::Output(const Vector& u, string name) const
 {
   if (_writeVtk) {
     GetMultiLevelSolver()->GetSolver()->Visu(name, u, _iter);
@@ -197,8 +197,7 @@ BasicLoop::Output(const VectorInterface& u, string name) const
 /*-------------------------------------------------*/
 
 void
-BasicLoop::WriteMeshAndSolution(const string& filename,
-                                const VectorInterface& u) const
+BasicLoop::WriteMeshAndSolution(const string& filename, const Vector& u) const
 {
   string name;
   name = filename;
@@ -216,7 +215,7 @@ BasicLoop::WriteMeshAndSolution(const string& filename,
 /*-------------------------------------------------*/
 
 void
-BasicLoop::WriteSolution(const VectorInterface& u) const
+BasicLoop::WriteSolution(const Vector& u) const
 {
   _clock_write.start();
   string filename = _s_resultsdir + "/solution";
@@ -255,7 +254,7 @@ BasicLoop::WriteMeshInp(const string& name) const
 /*-------------------------------------------------*/
 
 void
-BasicLoop::InitSolution(VectorInterface& u)
+BasicLoop::InitSolution(Vector& u)
 {
   GetMultiLevelSolver()->GetSolver()->Zero(u);
 
@@ -279,7 +278,7 @@ BasicLoop::InitSolution(VectorInterface& u)
 /*-------------------------------------------------*/
 
 string
-BasicLoop::Solve(Matrix& A, VectorInterface& u, VectorInterface& f, string name)
+BasicLoop::Solve(Matrix& A, Vector& u, Vector& f, string name)
 {
   _clock_solve.start();
 
@@ -307,7 +306,7 @@ BasicLoop::Solve(Matrix& A, VectorInterface& u, VectorInterface& f, string name)
 /*-------------------------------------------------*/
 
 void
-BasicLoop::ComputeGlobalErrors(const VectorInterface& u)
+BasicLoop::ComputeGlobalErrors(const Vector& u)
 {
   GetMultiLevelSolver()->GetSolver()->ComputeError(u, _GlobalErr);
   if (_GlobalErr.size() > 0) {
@@ -324,7 +323,7 @@ BasicLoop::ComputeGlobalErrors(const VectorInterface& u)
 /*-------------------------------------------------------*/
 
 void
-BasicLoop::CopyVector(GlobalVector& dst, VectorInterface& src)
+BasicLoop::CopyVector(GlobalVector& dst, Vector& src)
 {
   GetMultiLevelSolver()->GetSolver()->HNAverage(src);
 
@@ -342,7 +341,7 @@ BasicLoop::CopyVector(GlobalVector& dst, VectorInterface& src)
 /*-------------------------------------------------*/
 
 void
-BasicLoop::CopyVector(VectorInterface& dst, GlobalVector& src)
+BasicLoop::CopyVector(Vector& dst, GlobalVector& src)
 {
   int nn = src.n();
   int cc = src.ncomp();
@@ -358,7 +357,7 @@ void
 BasicLoop::run(const std::string& problemlabel)
 {
   Matrix A("A");
-  VectorInterface u("u"), f("f");
+  Vector u("u"), f("f");
   GlobalVector ualt;
 
   Monitoring Moning;

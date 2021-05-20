@@ -16,10 +16,7 @@ class FSISolver : public StdSolver
 {
 private:
 public:
-  void smooth(int niter,
-              VectorInterface& x,
-              const VectorInterface& y,
-              VectorInterface& h) const;
+  void smooth(int niter, Vector& x, const Vector& y, Vector& h) const;
 };
 
 template<int DIM>

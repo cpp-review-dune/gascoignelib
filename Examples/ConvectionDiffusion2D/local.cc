@@ -36,7 +36,7 @@ LocalLoop::run(const std::string& problemlabel)
 {
   _iter = 1;
 
-  VectorInterface u("u"), f("f"), dat("dat");
+  Vector u("u"), f("f"), dat("dat");
   GlobalVector ualt;
 
   Monitoring Moning;

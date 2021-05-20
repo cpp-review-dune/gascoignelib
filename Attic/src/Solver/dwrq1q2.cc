@@ -54,8 +54,8 @@ DwrQ1Q2::ScalarProduct(DoubleVector& eta,
 
 double
 DwrQ1Q2::ScalarProduct(DoubleVector& eta,
-                       const VectorInterface& gf,
-                       const VectorInterface& gz) const
+                       const Vector& gf,
+                       const Vector& gz) const
 {
   const GlobalVector& f = S.GetGV(gf);
   const GlobalVector& z = S.GetGV(gz);
@@ -67,8 +67,8 @@ DwrQ1Q2::ScalarProduct(DoubleVector& eta,
 
 double
 DwrQ1Q2::ScalarProductWithFluctuations(DoubleVector& eta,
-                                       const VectorInterface& gf,
-                                       const VectorInterface& gz) const
+                                       const Vector& gf,
+                                       const Vector& gz) const
 {
   const GlobalVector& f = S.GetGV(gf);
   const GlobalVector& z = S.GetGV(gz);
@@ -103,7 +103,7 @@ DwrQ1Q2::CreateOtherDiscretization() const
 /*-------------------------------------------------------*/
 
 void
-DwrQ1Q2::PrimalResidualsHigher(VectorInterface& gf, const VectorInterface& gu)
+DwrQ1Q2::PrimalResidualsHigher(Vector& gf, const Vector& gu)
 {
   GlobalVector& f = S.GetGV(gf);
 
@@ -129,9 +129,9 @@ DwrQ1Q2::PrimalResidualsHigher(VectorInterface& gf, const VectorInterface& gu)
 /*--------------------------------------------------------*/
 
 void
-DwrQ1Q2::DualResidualsHigher(VectorInterface& gf,
-                             const VectorInterface& gu,
-                             const VectorInterface& gz,
+DwrQ1Q2::DualResidualsHigher(Vector& gf,
+                             const Vector& gu,
+                             const Vector& gz,
                              const ProblemDescriptorInterface& PDI)
 {
   S.GetGV(gf).zero();
@@ -170,9 +170,9 @@ DwrQ1Q2::DualResidualsHigher(VectorInterface& gf,
 
 double
 DwrQ1Q2::Estimator(DoubleVector& eta,
-                   VectorInterface& gf,
-                   const VectorInterface& gu,
-                   const VectorInterface& gz,
+                   Vector& gf,
+                   const Vector& gu,
+                   const Vector& gz,
                    const ProblemDescriptorInterface& PDI)
 {
   double rho = 0, rhostern = 0;
@@ -190,9 +190,7 @@ DwrQ1Q2::Estimator(DoubleVector& eta,
 /*--------------------------------------------------------*/
 
 double
-DwrQ1Q2::EstimatorEnergy(DoubleVector& eta,
-                         VectorInterface& gf,
-                         const VectorInterface& gu)
+DwrQ1Q2::EstimatorEnergy(DoubleVector& eta, Vector& gf, const Vector& gu)
 {
   eta.resize(S.GetGV(gu).n());
 

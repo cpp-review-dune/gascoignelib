@@ -88,27 +88,25 @@ protected:
   virtual const SolverInterface* GetSolver() const = 0;
   virtual SolverInterface* GetSolver() = 0;
 
-  virtual void ReInitVector(VectorInterface& u) const = 0;
-  virtual void DeleteVector(VectorInterface& u) const = 0;
+  virtual void ReInitVector(Vector& u) const = 0;
+  virtual void DeleteVector(Vector& u) const = 0;
 
-  virtual void AssembleMatrixAndIlu(VectorInterface& u)
+  virtual void AssembleMatrixAndIlu(Vector& u)
   {
     std::cerr << "Error: AssembleMatrixAndIlu" << std::endl;
     abort();
   }
 
-  virtual void LinearSolve(VectorInterface& du,
-                           const VectorInterface& y,
-                           CGInfo& cginfo)
+  virtual void LinearSolve(Vector& du, const Vector& y, CGInfo& cginfo)
   {
     std::cerr << "Error: LinearSolve" << std::endl;
     abort();
   }
 
-  void Newton(VectorInterface& u, const VectorInterface& f, NLInfo& nlinfo);
-  void CopyVector(GlobalVector& dst, VectorInterface& src) const;
-  void GmresSolve(VectorInterface& x, const VectorInterface& b, CGInfo& info);
-  virtual void Precondition(VectorInterface& x, VectorInterface& y);
+  void Newton(Vector& u, const Vector& f, NLInfo& nlinfo);
+  void CopyVector(GlobalVector& dst, Vector& src) const;
+  void GmresSolve(Vector& x, const Vector& b, CGInfo& info);
+  virtual void Precondition(Vector& x, Vector& y);
 
 public:
   Algorithm();

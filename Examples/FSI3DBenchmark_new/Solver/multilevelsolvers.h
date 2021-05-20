@@ -20,9 +20,9 @@ class FSIMultiLevelSolver : public StdMultiLevelSolver
 private:
   map<std::string, std::vector<SolverInterface*>> _MSP;
   mutable std::string _SolverLabel;
-  mutable VectorInterface _f, _u;
+  mutable Vector _f, _u;
 
-  void NewtonMatrixControl_nomonitor(VectorInterface& u, NLInfo& nlinfo);
+  void NewtonMatrixControl_nomonitor(Vector& u, NLInfo& nlinfo);
 
 public:
   FSIMultiLevelSolver();
@@ -147,38 +147,38 @@ public:
 
   double NewtonUpdate(GlobalVector& U_Vec_GV,
                       double& rr,
-                      VectorInterface& x,
-                      VectorInterface& dx,
-                      VectorInterface& r,
-                      const VectorInterface& f,
+                      Vector& x,
+                      Vector& dx,
+                      Vector& r,
+                      const Vector& f,
                       NLInfo& nlinfo,
                       NLInfo& info_solid_disp,
                       NLInfo& info_meshmotion);
-  void AddNodeVectorinAllSolvers(const string& name, VectorInterface& gq);
+  void AddNodeVectorinAllSolvers(const string& name, Vector& gq);
   void DeleteNodeVectorinAllSolvers(const string& name);
   void RegisterVectors();
   void NewtonUpdateDisplacement(GlobalVector& U_Vec_GV,
                                 NLInfo& info_solid_disp,
                                 NLInfo& info_meshmotion);
-  void newton(VectorInterface& U_Vec,
-              const VectorInterface& f,
-              VectorInterface& r,
-              VectorInterface& w,
+  void newton(Vector& U_Vec,
+              const Vector& f,
+              Vector& r,
+              Vector& w,
               NLInfo& info_fsi_reduced,
               NLInfo& info_solid_disp,
               NLInfo& info_meshmotion);
   void UpdateVelocityandPressureinU(GlobalVector& U_Vec_GV,
                                     double factor,
-                                    VectorInterface& dx);
-  std::string Solve(VectorInterface& x,
-                    const VectorInterface& b,
+                                    Vector& dx);
+  std::string Solve(Vector& x,
+                    const Vector& b,
                     NLInfo& info_fsi_reduced,
                     NLInfo& info_solid_disp,
                     NLInfo& info_meshmotion);
-  void VelocityandPressureUto_u(GlobalVector& U_Vec_GV, VectorInterface& _u);
-  void AssembleMatrix(VectorInterface& u);
-  void AssembleMatrix(VectorInterface& u, NLInfo& nlinfo);
-  void ComputeIlu(VectorInterface& u);
+  void VelocityandPressureUto_u(GlobalVector& U_Vec_GV, Vector& _u);
+  void AssembleMatrix(Vector& u);
+  void AssembleMatrix(Vector& u, NLInfo& nlinfo);
+  void ComputeIlu(Vector& u);
 };
 
 } // namespace Gascoigne

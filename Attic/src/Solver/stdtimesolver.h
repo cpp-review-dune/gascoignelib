@@ -78,20 +78,18 @@ public:
 
   void SetProblem(const ProblemDescriptorInterface& PDX);
 
-  void InitialCondition(VectorInterface& f, double d = 1.) const;
-  void TimeRhsOperator(VectorInterface& f, const VectorInterface& u) const;
-  void TimeRhs(int k, VectorInterface& f) const;
-  void Form(VectorInterface& y, const VectorInterface& x, double d) const;
-  void AssembleMatrix(Matrix& A, const VectorInterface& u, double d);
+  void InitialCondition(Vector& f, double d = 1.) const;
+  void TimeRhsOperator(Vector& f, const Vector& u) const;
+  void TimeRhs(int k, Vector& f) const;
+  void Form(Vector& y, const Vector& x, double d) const;
+  void AssembleMatrix(Matrix& A, const Vector& u, double d);
   std::string GetName() const;
-  void L2Projection(VectorInterface& u, VectorInterface& f);
+  void L2Projection(Vector& u, Vector& f);
 
   void SetMassMatrix(MatrixInterface& MM, bool init = false);
   const MatrixInterface* GetMassMatrix() const { return _MMP; }
   MatrixInterface* GetMassMatrix() { return _MMP; }
-  void MassMatrixVector(VectorInterface& gf,
-                        const VectorInterface& gu,
-                        double d) const;
+  void MassMatrixVector(Vector& gf, const Vector& gu, double d) const;
 };
 } // namespace Gascoigne
 

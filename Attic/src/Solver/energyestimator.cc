@@ -56,9 +56,7 @@ EnergyEstimator::EnergyEstimator(StdSolver& SR)
 /*--------------------------------------------------------*/
 
 double
-EnergyEstimator::Estimator(DoubleVector& eta,
-                           VectorInterface& gu,
-                           const VectorInterface& gf)
+EnergyEstimator::Estimator(DoubleVector& eta, Vector& gu, const Vector& gf)
 {
   const GlobalVector& u = S.GetGV(gu);
 

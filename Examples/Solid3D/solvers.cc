@@ -18,10 +18,7 @@ namespace Gascoigne {
 
 template<int DIM>
 void
-FSISolver<DIM>::smooth(int niter,
-                       VectorInterface& x,
-                       const VectorInterface& y,
-                       VectorInterface& h) const
+FSISolver<DIM>::smooth(int niter, Vector& x, const Vector& y, Vector& h) const
 {
   GlobalVector& gvX = GetGV(x);
   const GlobalVector& gvY = GetGV(y);
@@ -268,7 +265,7 @@ FSISolver<DIM>::ComputeIlu() const
 
 template<int DIM>
 void
-FSISolver<DIM>::ComputeIlu(const VectorInterface& gu) const
+FSISolver<DIM>::ComputeIlu(const Vector& gu) const
 {
   if ((GetSolverData().GetLinearSmooth() == "vanka_jacobi" ||
        GetSolverData().GetLinearSmooth() == "vanka_jacobi_av" ||

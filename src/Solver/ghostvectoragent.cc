@@ -45,7 +45,7 @@ GhostVectorAgent::~GhostVectorAgent()
 /*-------------------------------------------------*/
 
 void
-GhostVectorAgent::Register(const VectorInterface& mg)
+GhostVectorAgent::Register(const Vector& mg)
 {
   auto p = find(mg);
   if (p == end()) {
@@ -56,7 +56,7 @@ GhostVectorAgent::Register(const VectorInterface& mg)
 /*-------------------------------------------------*/
 
 void
-GhostVectorAgent::Delete(VectorInterface& mg)
+GhostVectorAgent::Delete(Vector& mg)
 {
   auto p = find(mg);
   if (p != end()) {
@@ -68,7 +68,7 @@ GhostVectorAgent::Delete(VectorInterface& mg)
 /*-------------------------------------------------*/
 
 GlobalVector&
-GhostVectorAgent::operator()(const VectorInterface& g)
+GhostVectorAgent::operator()(const Vector& g)
 {
   auto p = find(g);
   if (p == end()) {

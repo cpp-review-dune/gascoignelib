@@ -29,9 +29,7 @@ using namespace std;
 /*----------------------------------------------------------------------------*/
 
 void
-NewmarkSolver::Form(VectorInterface& gy,
-                    const VectorInterface& gx,
-                    double d) const
+NewmarkSolver::Form(Vector& gy, const Vector& gx, double d) const
 {
   FormWithoutMass(gy, gx, d);
   MassMatrixVector(gy, gx, d);
@@ -40,8 +38,8 @@ NewmarkSolver::Form(VectorInterface& gy,
 /*----------------------------------------------------------------------------*/
 
 void
-NewmarkSolver::FormWithoutMass(VectorInterface& gy,
-                               const VectorInterface& gx,
+NewmarkSolver::FormWithoutMass(Vector& gy,
+                               const Vector& gx,
                                double d,
                                double s) const
 {
@@ -72,7 +70,7 @@ NewmarkSolver::FormWithoutMass(VectorInterface& gy,
 /*----------------------------------------------------------------------------*/
 
 void
-NewmarkSolver::AssembleMatrix(const VectorInterface& gu, double d)
+NewmarkSolver::AssembleMatrix(const Vector& gu, double d)
 {
   assert(GetMatrix());
 

@@ -13,10 +13,7 @@ namespace Gascoigne {
 
 template<int DIM>
 void
-FSISolver<DIM>::smooth(int niter,
-                       VectorInterface& x,
-                       const VectorInterface& y,
-                       VectorInterface& h) const
+FSISolver<DIM>::smooth(int niter, Vector& x, const Vector& y, Vector& h) const
 {
   if (GetSolverData().GetLinearSmooth() == "vanka") {
     double omega = GetSolverData().GetOmega();

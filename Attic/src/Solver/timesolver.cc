@@ -78,7 +78,7 @@ TimeSolver::ReInitMatrix()
 /*-----------------------------------------*/
 
 void
-TimeSolver::AssembleMatrix(const VectorInterface& gu, double d)
+TimeSolver::AssembleMatrix(const Vector& gu, double d)
 {
   StdSolver::AssembleMatrix(gu, d);
 
@@ -91,7 +91,7 @@ TimeSolver::AssembleMatrix(const VectorInterface& gu, double d)
 /*-----------------------------------------*/
 
 void
-TimeSolver::Form(VectorInterface& gy, const VectorInterface& gx, double d) const
+TimeSolver::Form(Vector& gy, const Vector& gx, double d) const
 {
   StdSolver::Form(gy, gx, d);
 
@@ -126,9 +126,7 @@ TimeSolver::ReInitTimePattern(const ProblemDescriptorInterface& PDX)
 /*-----------------------------------------*/
 
 void
-TimeSolver::MassMatrixVector(VectorInterface& gf,
-                             const VectorInterface& gu,
-                             double d) const
+TimeSolver::MassMatrixVector(Vector& gf, const Vector& gu, double d) const
 {
   GlobalVector& f = GetGV(gf);
   const GlobalVector& u = GetGV(gu);
@@ -138,18 +136,16 @@ TimeSolver::MassMatrixVector(VectorInterface& gf,
 /*-----------------------------------------*/
 
 void
-TimeSolver::InverseMassMatrix(VectorInterface& u,
-                              const VectorInterface& f,
-                              CGInfo& info)
+TimeSolver::InverseMassMatrix(Vector& u, const Vector& f, CGInfo& info)
 {
-  CG<TimeSolver, VectorInterface> cg(*this);
+  CG<TimeSolver, Vector> cg(*this);
   cg.solve(u, f, info);
 }
 
 /*-----------------------------------------*/
 
 void
-TimeSolver::precondition(VectorInterface& u, const VectorInterface& f)
+TimeSolver::precondition(Vector& u, const Vector& f)
 {
   Equ(u, 1., f);
   GetMassMatrix()->PrepareJacobi(1.);
@@ -159,9 +155,7 @@ TimeSolver::precondition(VectorInterface& u, const VectorInterface& f)
 /*-----------------------------------------*/
 
 void
-TimeSolver::cgvmult(VectorInterface& y,
-                    const VectorInterface& x,
-                    double d) const
+TimeSolver::cgvmult(Vector& y, const Vector& x, double d) const
 {
   MassMatrixVector(y, x, d);
 }
@@ -169,7 +163,7 @@ TimeSolver::cgvmult(VectorInterface& y,
 /*-----------------------------------------*/
 
 void
-TimeSolver::L2Projection(VectorInterface& Gu, VectorInterface& Gf)
+TimeSolver::L2Projection(Vector& Gu, Vector& Gf)
 {
   GlobalVector& u = GetGV(Gu);
   GlobalVector& f = GetGV(Gf);

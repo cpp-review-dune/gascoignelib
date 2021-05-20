@@ -78,7 +78,7 @@ MultiLevelSolver::BasicInit(const NumericInterface* NI,
 /*-------------------------------------------------------------*/
 
 void
-MultiLevelSolver::ReInitVector(VectorInterface& v)
+MultiLevelSolver::ReInitVector(Vector& v)
 {
   for (int level = 0; level < nlevels(); ++level) {
     GetSolver(level)->ReInitVector(v);
@@ -88,7 +88,7 @@ MultiLevelSolver::ReInitVector(VectorInterface& v)
 /*-------------------------------------------------------------*/
 
 void
-MultiLevelSolver::DeleteVector(VectorInterface& v)
+MultiLevelSolver::DeleteVector(Vector& v)
 {
   for (int l = 0; l < nlevels(); ++l) {
     GetSolver(l)->DeleteVector(v);
@@ -214,7 +214,7 @@ MultiLevelSolver::ReInit(const std::string& problemlabel)
 /*-------------------------------------------------------------*/
 
 void
-MultiLevelSolver::AssembleMatrix(VectorInterface& u)
+MultiLevelSolver::AssembleMatrix(Vector& u)
 {
   SolutionTransfer(u);
   for (int l = 0; l <= ComputeLevel; l++) {
@@ -226,7 +226,7 @@ MultiLevelSolver::AssembleMatrix(VectorInterface& u)
 /*-------------------------------------------------------------*/
 
 void
-MultiLevelSolver::AssembleDualMatrix(VectorInterface& u)
+MultiLevelSolver::AssembleDualMatrix(Vector& u)
 {
   for (int l = 0; l < nlevels(); l++) {
     GetSolver(l)->AssembleDualMatrix(u, 1.);
@@ -236,7 +236,7 @@ MultiLevelSolver::AssembleDualMatrix(VectorInterface& u)
 /*-------------------------------------------------------------*/
 
 void
-MultiLevelSolver::Transfer(int high, int low, VectorInterface& u) const
+MultiLevelSolver::Transfer(int high, int low, Vector& u) const
 {
   for (int l = high; l >= low; l--) {
     GetSolver(l)->HNAverage(u);
@@ -252,7 +252,7 @@ MultiLevelSolver::Transfer(int high, int low, VectorInterface& u) const
 /*-------------------------------------------------------------*/
 
 void
-MultiLevelSolver::SolutionTransfer(VectorInterface& u) const
+MultiLevelSolver::SolutionTransfer(Vector& u) const
 {
   Transfer(ComputeLevel, 1, u);
 
@@ -273,7 +273,7 @@ MultiLevelSolver::ComputeIlu()
 /*-------------------------------------------------------------*/
 
 void
-MultiLevelSolver::ComputeIlu(VectorInterface& u)
+MultiLevelSolver::ComputeIlu(Vector& u)
 {
   SolutionTransfer(u);
   for (int l = 0; l <= ComputeLevel; l++) {

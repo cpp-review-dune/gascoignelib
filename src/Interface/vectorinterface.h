@@ -37,28 +37,28 @@ namespace Gascoigne {
 ////
 /////////////////////////////////////////////
 
-class VectorInterface : public std::string
+class Vector : public std::string
 {
 private:
   std::string _type;
 
 protected:
 public:
-  VectorInterface(const std::string& name)
+  Vector(const std::string& name)
     : std::string(name)
     , _type("node")
   {}
-  VectorInterface(const std::string& name, const std::string& type)
+  Vector(const std::string& name, const std::string& type)
     : std::string(name)
   {
     assert(type == "node" || type == "cell" || type == "parameter");
     GetType() = type;
   }
-  VectorInterface(const VectorInterface& v)
+  Vector(const Vector& v)
     : std::string(v)
     , _type(v.GetType())
   {}
-  virtual ~VectorInterface() {}
+  virtual ~Vector() {}
 
   void SetName(const std::string& name) { GetName() = name; }
   std::string& GetName() { return *this; }
@@ -72,7 +72,7 @@ public:
   std::string& GetType() { return _type; }
   const std::string& GetType() const { return _type; }
 
-  friend std::ostream& operator<<(std::ostream& os, const VectorInterface& g)
+  friend std::ostream& operator<<(std::ostream& os, const Vector& g)
   {
     os << "Name: '" << g.GetName() << "' ";
     os << "Type: '" << g.GetType() << "'" << std::endl;

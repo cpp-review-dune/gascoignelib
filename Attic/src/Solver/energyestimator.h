@@ -43,9 +43,7 @@ public:
   EnergyEstimator(StdSolver& SR);
   ~EnergyEstimator(){};
 
-  double Estimator(DoubleVector& eta,
-                   VectorInterface& gu,
-                   const VectorInterface& gf);
+  double Estimator(DoubleVector& eta, Vector& gu, const Vector& gf);
 };
 
 /*-------------------------------------------------------*/

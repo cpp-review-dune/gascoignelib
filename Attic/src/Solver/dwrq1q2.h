@@ -42,32 +42,30 @@ protected:
                        const GlobalVector& z) const;
 
   double ScalarProduct(nvector<double>& eta,
-                       const VectorInterface& gf,
-                       const VectorInterface& gz) const;
+                       const Vector& gf,
+                       const Vector& gz) const;
 
 public:
   DwrQ1Q2(StdSolver& SR);
   virtual ~DwrQ1Q2(){};
 
   double ScalarProductWithFluctuations(nvector<double>& eta,
-                                       const VectorInterface& gf,
-                                       const VectorInterface& gz) const;
+                                       const Vector& gf,
+                                       const Vector& gz) const;
 
-  void PrimalResidualsHigher(VectorInterface& gf, const VectorInterface& gu);
+  void PrimalResidualsHigher(Vector& gf, const Vector& gu);
 
-  void DualResidualsHigher(VectorInterface& gf,
-                           const VectorInterface& gu,
-                           const VectorInterface& gz,
+  void DualResidualsHigher(Vector& gf,
+                           const Vector& gu,
+                           const Vector& gz,
                            const ProblemDescriptorInterface& PDI);
 
   double Estimator(nvector<double>& eta,
-                   VectorInterface& gf,
-                   const VectorInterface& gu,
-                   const VectorInterface& gz,
+                   Vector& gf,
+                   const Vector& gu,
+                   const Vector& gz,
                    const ProblemDescriptorInterface& PDI);
-  double EstimatorEnergy(nvector<double>& eta,
-                         VectorInterface& gf,
-                         const VectorInterface& gu);
+  double EstimatorEnergy(nvector<double>& eta, Vector& gf, const Vector& gu);
 };
 } // namespace Gascoigne
 /*-------------------------------------------------------*/

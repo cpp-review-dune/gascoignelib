@@ -26,5 +26,5 @@
 #include "stdsolver.h"
 
 namespace Gascoigne {
-template class GMRES<StdSolver, StdMultiLevelSolver, VectorInterface>;
+template class GMRES<StdSolver, StdMultiLevelSolver, Vector>;
 }

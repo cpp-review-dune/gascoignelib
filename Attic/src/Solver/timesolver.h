@@ -89,22 +89,18 @@ public:
     return new SimpleMatrix;
   }
 
-  void AssembleMatrix(const VectorInterface& gu, double d);
-  void Form(VectorInterface& gy, const VectorInterface& gx, double d) const;
-  void MassMatrixVector(VectorInterface& gf,
-                        const VectorInterface& gu,
-                        double d) const;
+  void AssembleMatrix(const Vector& gu, double d);
+  void Form(Vector& gy, const Vector& gx, double d) const;
+  void MassMatrixVector(Vector& gf, const Vector& gu, double d) const;
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Woverloaded-virtual"
-  void InverseMassMatrix(VectorInterface& u,
-                         const VectorInterface& f,
-                         CGInfo& info);
+  void InverseMassMatrix(Vector& u, const Vector& f, CGInfo& info);
 #pragma GCC diagnostic pop
 
-  void precondition(VectorInterface& u, const VectorInterface& f);
-  void cgvmult(VectorInterface& y, const VectorInterface& x, double d) const;
-  void L2Projection(VectorInterface& Gu, VectorInterface& Gf);
+  void precondition(Vector& u, const Vector& f);
+  void cgvmult(Vector& y, const Vector& x, double d) const;
+  void L2Projection(Vector& Gu, Vector& Gf);
 };
 
 /*-------------------------------------------------------------*/

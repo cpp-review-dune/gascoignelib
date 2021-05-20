@@ -30,14 +30,12 @@ protected:
     if (StdSolver::_directsolver == true)
       StdSolver::modify_ilu(I, ncomp);
   }
-  void PermutateIlu(const VectorInterface& gu) const
+  void PermutateIlu(const Vector& gu) const
   {
     if (StdSolver::_directsolver == true)
       StdSolver::PermutateIlu(gu);
   }
-  void smooth_exact(VectorInterface& x,
-                    const VectorInterface& y,
-                    VectorInterface& help) const
+  void smooth_exact(Vector& x, const Vector& y, Vector& help) const
   {
     if (StdSolver::_directsolver == true)
       StdSolver::smooth_exact(x, y, help);
@@ -47,12 +45,9 @@ public:
   ~FSIVankaSolver();
 
   void ReInitMatrix();
-  void smooth(int niter,
-              VectorInterface& x,
-              const VectorInterface& y,
-              VectorInterface& h) const;
+  void smooth(int niter, Vector& x, const Vector& y, Vector& h) const;
   void invert_local_matrices() const;
-  void ComputeIlu(const VectorInterface& gu) const;
+  void ComputeIlu(const Vector& gu) const;
   void ComputeIlu() const;
   void RegisterMatrix();
   void Anisotropy() const;

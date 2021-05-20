@@ -47,7 +47,7 @@ NewmarkAlgorithm::Run(const std::string& problemlabel)
 
   TimeInfoBroadcast();
 
-  VectorInterface u("u"), f("f"), uold("uold");
+  Vector u("u"), f("f"), uold("uold");
   ReInitVector(u);
   ReInitVector(uold);
   ReInitVector(f);

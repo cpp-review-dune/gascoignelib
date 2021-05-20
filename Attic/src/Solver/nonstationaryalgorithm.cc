@@ -63,8 +63,7 @@ NonstationaryAlgorithm::TimeInfoBroadcast()
 /*-------------------------------------------------*/
 
 void
-NonstationaryAlgorithm::InitSolution(const string& initial,
-                                     VectorInterface& u) const
+NonstationaryAlgorithm::InitSolution(const string& initial, Vector& u) const
 {
   GetMultiLevelSolver()->GetSolver()->Zero(u);
 
@@ -122,7 +121,7 @@ NonstationaryAlgorithm::ThetaScheme(const std::string& problemlabel)
 
   TimeInfoBroadcast();
 
-  VectorInterface u("u"), f("f");
+  Vector u("u"), f("f");
   ReInitVector(u);
   ReInitVector(f);
   InitSolution(initial, u);
@@ -189,7 +188,7 @@ NonstationaryAlgorithm::FractionalStepThetaScheme(
 
   TimeInfoBroadcast();
 
-  VectorInterface u("u"), f("f");
+  Vector u("u"), f("f");
   ReInitVector(u);
   ReInitVector(f);
   InitSolution(initial, u);

@@ -15,7 +15,7 @@ class DGSolver : public StdSolver
 public:
   std::string GetName() const { return "DG Solver"; }
 
-  void Visu(const std::string& name, const VectorInterface& gu, int i) const;
+  void Visu(const std::string& name, const Vector& gu, int i) const;
 };
 
 class DGMultiLevelSolver : public StdMultiLevelSolver
@@ -25,8 +25,8 @@ public:
 
   // Mehrgitter-Transfer nicht implementiert, alles nur auf dem feisnten gitter
 
-  void Transfer(int high, int low, VectorInterface& u) const { assert(0); }
-  void AddNodeVector(const std::string& name, VectorInterface& gq)
+  void Transfer(int high, int low, Vector& u) const { assert(0); }
+  void AddNodeVector(const std::string& name, Vector& gq)
   {
     GetSolver()->AddNodeVector(name, gq);
   }
@@ -35,12 +35,12 @@ public:
     GetSolver()->DeleteNodeVector(name);
   }
 
-  void AssembleMatrix(VectorInterface& u)
+  void AssembleMatrix(Vector& u)
   {
     GetSolver()->MatrixZero();
     GetSolver()->AssembleMatrix(u, 1.);
   }
-  void ComputeIlu(VectorInterface& u) { GetSolver()->ComputeIlu(u); }
+  void ComputeIlu(Vector& u) { GetSolver()->ComputeIlu(u); }
 };
 
 } // namespace Gascoigne
