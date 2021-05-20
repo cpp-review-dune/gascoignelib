@@ -8,15 +8,16 @@
 
 namespace Gascoigne {
 
-class Chi {
+class Chi
+{
 
 public:
   //  0: interface
   // -1: fluid
   //  1: solid
 
-  int operator()(const Vertex3d &v) const;
-  int operator()(const Vertex2d &v) const;
+  int operator()(const Vertex3d& v) const;
+  int operator()(const Vertex2d& v) const;
 };
 
 } // namespace Gascoigne

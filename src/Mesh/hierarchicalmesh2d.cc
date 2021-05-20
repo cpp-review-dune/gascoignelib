@@ -42,25 +42,34 @@ using namespace std;
 /*------------------------------------------------------*/
 
 namespace Gascoigne {
-HierarchicalMesh2d::HierarchicalMesh2d() : HierarchicalMesh(), QuadLaO(quads) {}
+HierarchicalMesh2d::HierarchicalMesh2d()
+  : HierarchicalMesh()
+  , QuadLaO(quads)
+{}
 
 /*------------------------------------------------------*/
 
-HierarchicalMesh2d::HierarchicalMesh2d(const ParamFile &paramfile)
-    : HierarchicalMesh(), QuadLaO(quads) {
+HierarchicalMesh2d::HierarchicalMesh2d(const ParamFile& paramfile)
+  : HierarchicalMesh()
+  , QuadLaO(quads)
+{
   BasicInit(paramfile);
 }
 
 /*------------------------------------------------------*/
 
-HierarchicalMesh2d::HierarchicalMesh2d(const HierarchicalMesh2d &H)
-    : HierarchicalMesh(), QuadLaO(quads) {
+HierarchicalMesh2d::HierarchicalMesh2d(const HierarchicalMesh2d& H)
+  : HierarchicalMesh()
+  , QuadLaO(quads)
+{
   *this = H;
 }
 
 /*------------------------------------------------------*/
 
-HierarchicalMesh2d &HierarchicalMesh2d::operator=(const HierarchicalMesh2d &H) {
+HierarchicalMesh2d&
+HierarchicalMesh2d::operator=(const HierarchicalMesh2d& H)
+{
   HierarchicalMesh::operator=(H);
   // copy all data
   vertexs2d = H.vertex2d();
@@ -75,7 +84,9 @@ HierarchicalMesh2d &HierarchicalMesh2d::operator=(const HierarchicalMesh2d &H) {
 
 /*------------------------------------------------------*/
 
-pair<int, int> HierarchicalMesh2d::GetBoundaryInformation(int i) const {
+pair<int, int>
+HierarchicalMesh2d::GetBoundaryInformation(int i) const
+{
   int material = -1;
   int le = -1;
   int ib = GetBoundaryCellOfCurved(i);
@@ -88,16 +99,18 @@ pair<int, int> HierarchicalMesh2d::GetBoundaryInformation(int i) const {
 
 /*------------------------------------------------------*/
 
-int HierarchicalMesh2d::FindPatchDepth() const {
+int
+HierarchicalMesh2d::FindPatchDepth() const
+{
   // simple version, sucht nur p=1, p=0
   for (int i = 0; i < ncells(); i++) {
-    const Quad &q = quad(i);
+    const Quad& q = quad(i);
     if (q.sleep())
       continue;
     int father = q.father();
     if (father == -1)
       return 0;
-    const Quad &qf = quad(father);
+    const Quad& qf = quad(father);
     for (int ii = 0; ii < 4; ii++) {
       if (quad(qf.child(ii)).sleep())
         return 0;
@@ -108,7 +121,9 @@ int HierarchicalMesh2d::FindPatchDepth() const {
 
 /*------------------------------------------------------*/
 
-const BoundaryFunction<2> *HierarchicalMesh2d::line_shape(int i) const {
+const BoundaryFunction<2>*
+HierarchicalMesh2d::line_shape(int i) const
+{
   if (GetCurvedShapes().empty())
     return NULL;
   if (GetCurvedShapes().Curved(i))
@@ -118,7 +133,9 @@ const BoundaryFunction<2> *HierarchicalMesh2d::line_shape(int i) const {
 
 /*------------------------------------------------------*/
 
-set<int> HierarchicalMesh2d::GetColors() const {
+set<int>
+HierarchicalMesh2d::GetColors() const
+{
   set<int> coleur;
   for (int i = 0; i < nblines(); i++) {
     coleur.insert(bline(i).material());
@@ -128,14 +145,16 @@ set<int> HierarchicalMesh2d::GetColors() const {
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh2d::InitQuadOfCurved() {
+void
+HierarchicalMesh2d::InitQuadOfCurved()
+{
   quadofcurved.clear();
 
   if (GetCurvedShapes().empty())
     return;
 
   for (int il = 0; il < nblines(); ++il) {
-    const BoundaryLine &B = bline(il);
+    const BoundaryLine& B = bline(il);
 
     if (GetCurvedShapes().Curved(B.material())) {
       int iq = B.of_quad();
@@ -146,11 +165,17 @@ void HierarchicalMesh2d::InitQuadOfCurved() {
 
 /*------------------------------------------------------*/
 
-int HierarchicalMesh2d::Vater(const int i) const { return quad(i).father(); }
+int
+HierarchicalMesh2d::Vater(const int i) const
+{
+  return quad(i).father();
+}
 
 /*------------------------------------------------------*/
 
-IntVector HierarchicalMesh2d::Nachkommen(const int i) const {
+IntVector
+HierarchicalMesh2d::Nachkommen(const int i) const
+{
   IntVector k = Kinder(i);
   if (k.size() == 0)
     return k;
@@ -166,7 +191,9 @@ IntVector HierarchicalMesh2d::Nachkommen(const int i) const {
 
 /*------------------------------------------------------*/
 
-int HierarchicalMesh2d::nactivedescendants(int i) const {
+int
+HierarchicalMesh2d::nactivedescendants(int i) const
+{
   if (!quads[i].sleep())
     return 1;
   int k = 0;
@@ -177,7 +204,9 @@ int HierarchicalMesh2d::nactivedescendants(int i) const {
 
 /*------------------------------------------------------*/
 
-IntVector HierarchicalMesh2d::GetVertices(int c) const {
+IntVector
+HierarchicalMesh2d::GetVertices(int c) const
+{
   IntVector v;
   for (int i = 0; i < quads[c].nvertexs(); ++i)
     v.push_back(quads[c][i]);
@@ -186,15 +215,19 @@ IntVector HierarchicalMesh2d::GetVertices(int c) const {
 
 /*------------------------------------------------------*/
 
-IntVector HierarchicalMesh2d::Kinder(const int i) const {
+IntVector
+HierarchicalMesh2d::Kinder(const int i) const
+{
   IntVector k = quad(i).childs();
   return k;
 }
 
 /*------------------------------------------------------*/
 
-IntVector HierarchicalMesh2d::Geschwister(const int i) const {
-  const Quad &q = quad(i);
+IntVector
+HierarchicalMesh2d::Geschwister(const int i) const
+{
+  const Quad& q = quad(i);
   int father = q.father();
   if (father == -1) {
     IntVector n(1, i);
@@ -205,7 +238,9 @@ IntVector HierarchicalMesh2d::Geschwister(const int i) const {
 
 /*------------------------------------------------------*/
 
-std::array<int, 2> HierarchicalMesh2d::ChildrenOfEdge(int e) const {
+std::array<int, 2>
+HierarchicalMesh2d::ChildrenOfEdge(int e) const
+{
   int s = edge(e).slave();
   int is = edge(e).LocalSlaveIndex();
 
@@ -222,7 +257,9 @@ std::array<int, 2> HierarchicalMesh2d::ChildrenOfEdge(int e) const {
 
 /*---------------------------------------------------*/
 
-int HierarchicalMesh2d::NodeOnEdge(int e) const {
+int
+HierarchicalMesh2d::NodeOnEdge(int e) const
+{
   // only for real hanging nodes
   int m = edge(e).master();
   int im = edge(e).LocalMasterIndex();
@@ -240,8 +277,10 @@ int HierarchicalMesh2d::NodeOnEdge(int e) const {
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh2d::ghostglobalcoarse(HangContainer2d &hangset,
-                                           const IntSet &cellcoarse) {
+void
+HierarchicalMesh2d::ghostglobalcoarse(HangContainer2d& hangset,
+                                      const IntSet& cellcoarse)
+{
   EdgeVector lineglob;
 
   IntVector coarse;
@@ -267,9 +306,11 @@ void HierarchicalMesh2d::ghostglobalcoarse(HangContainer2d &hangset,
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh2d::ghost2d(HangContainer2d &hangset,
-                                 const IntSet &cellref,
-                                 const IntSet &cellcoarse) {
+void
+HierarchicalMesh2d::ghost2d(HangContainer2d& hangset,
+                            const IntSet& cellref,
+                            const IntSet& cellcoarse)
+{
   EdgeVector lineglob;
 
   for (IntSetIt cp = cellcoarse.begin(); cp != cellcoarse.end(); ++cp) {
@@ -295,10 +336,12 @@ void HierarchicalMesh2d::ghost2d(HangContainer2d &hangset,
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh2d::prepare2d(const IntVector &cell_ref,
-                                   const IntVector &cell_coarse,
-                                   IntSet &CellRefList,
-                                   IntSet &CellCoarseList) {
+void
+HierarchicalMesh2d::prepare2d(const IntVector& cell_ref,
+                              const IntVector& cell_coarse,
+                              IntSet& CellRefList,
+                              IntSet& CellCoarseList)
+{
   /* copies cell_ref into CellRefList without duplets  */
 
   IntVector::const_iterator cp = cell_ref.begin();
@@ -319,12 +362,13 @@ void HierarchicalMesh2d::prepare2d(const IntVector &cell_ref,
   IntSet help;
 
   for (IntVector::const_iterator cp = cell_coarse.begin();
-       cp != cell_coarse.end(); ++cp) {
+       cp != cell_coarse.end();
+       ++cp) {
     int ic = *cp;
     if ((ic < 0) || (ic >= quads.size()))
       continue;
 
-    Quad &q = quads[ic];
+    Quad& q = quads[ic];
     if (q.sleep())
       continue;
     if (!q.level())
@@ -358,7 +402,9 @@ void HierarchicalMesh2d::prepare2d(const IntVector &cell_ref,
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh2d::ghost_fill_neighbours2d() {
+void
+HierarchicalMesh2d::ghost_fill_neighbours2d()
+{
   EdgeVector lineglob;
   for (int ic = 0; ic < quads.size(); ic++) {
     for (int i = 0; i < 4; i++) {
@@ -387,7 +433,9 @@ void HierarchicalMesh2d::ghost_fill_neighbours2d() {
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh2d::basic_fill_neighbours2d() {
+void
+HierarchicalMesh2d::basic_fill_neighbours2d()
+{
   EdgeVector lineglob;
   for (int ic = 0; ic < quads.size(); ic++) {
     for (int i = 0; i < 4; i++) {
@@ -410,9 +458,11 @@ void HierarchicalMesh2d::basic_fill_neighbours2d() {
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh2d::basic_refine2d(HangContainer2d &hangset,
-                                        const IntSet &CellRefList,
-                                        const IntSet &CellCoarseList) {
+void
+HierarchicalMesh2d::basic_refine2d(HangContainer2d& hangset,
+                                   const IntSet& CellRefList,
+                                   const IntSet& CellCoarseList)
+{
   int ov = nnodes();
   int oc = quads.size();
   int oe = edges.size();
@@ -436,7 +486,7 @@ void HierarchicalMesh2d::basic_refine2d(HangContainer2d &hangset,
   IntVector cdel, vdel, edel;
 
   for (IntSetCIt p = CellCoarseList.begin(); p != CellCoarseList.end(); p++) {
-    const Quad &q = quad(*p);
+    const Quad& q = quad(*p);
     vdel.push_back(QuadLaO.middle_vertex(q));
     cdel.insert(cdel.end(), q.childs().begin(), q.childs().end());
   }
@@ -491,13 +541,15 @@ void HierarchicalMesh2d::basic_refine2d(HangContainer2d &hangset,
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh2d::boundary_prepare2d(IntSet &LineRefList,
-                                            IntSet &LineCoarseList,
-                                            IntSet &ccdel,
-                                            const HangContainer2d &hangset) {
+void
+HierarchicalMesh2d::boundary_prepare2d(IntSet& LineRefList,
+                                       IntSet& LineCoarseList,
+                                       IntSet& ccdel,
+                                       const HangContainer2d& hangset)
+{
   EdgeVector lineglob;
   for (int i = 0; i < Blines.size(); i++) {
-    const BoundaryLine &bl = Blines[i];
+    const BoundaryLine& bl = Blines[i];
 
     lineglob[0] = bl.vertex(0);
     lineglob[1] = bl.vertex(1);
@@ -519,8 +571,9 @@ void HierarchicalMesh2d::boundary_prepare2d(IntSet &LineRefList,
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh2d::new_boundary2d(IntSet &ref, IntSet &coarse,
-                                        IntSet &ccdel) {
+void
+HierarchicalMesh2d::new_boundary2d(IntSet& ref, IntSet& coarse, IntSet& ccdel)
+{
   int oc = Blines.size();
   int csub = 2 * coarse.size();
   int cadd = 2 * ref.size();
@@ -543,9 +596,13 @@ void HierarchicalMesh2d::new_boundary2d(IntSet &ref, IntSet &coarse,
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh2d::new_quads(const HangContainer2d &hangset,
-                                   const IntVector &cnew, const IntVector &vnew,
-                                   int nvold, const IntSet &CellRefList) {
+void
+HierarchicalMesh2d::new_quads(const HangContainer2d& hangset,
+                              const IntVector& cnew,
+                              const IntVector& vnew,
+                              int nvold,
+                              const IntSet& CellRefList)
+{
   // cerr << "new_quads()" << endl;
   // neue zellen erzeugen
   // eintragen der "Vater-Vertexs" in den kindern
@@ -560,7 +617,7 @@ void HierarchicalMesh2d::new_quads(const HangContainer2d &hangset,
 
     assert(father >= 0);
 
-    vector<int> &qc = quads[father].childs();
+    vector<int>& qc = quads[father].childs();
     qc.resize(4);
     int material = quads[father].material();
 
@@ -595,8 +652,10 @@ void HierarchicalMesh2d::new_quads(const HangContainer2d &hangset,
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh2d::inner_vertex_newton2d(const IntVector &vnew,
-                                               const IntSet &CellRefList) {
+void
+HierarchicalMesh2d::inner_vertex_newton2d(const IntVector& vnew,
+                                          const IntSet& CellRefList)
+{
   if (GetCurvedShapes().empty())
     return;
 
@@ -610,7 +669,7 @@ void HierarchicalMesh2d::inner_vertex_newton2d(const IntVector &vnew,
     if (quadofcurved.find(oldind) == quadofcurved.end())
       continue;
 
-    const Quad &f = quad(ind);
+    const Quad& f = quad(ind);
 
     // alter version
     //       for (int j=0; j<4; j++) v[j] = QuadLawOrder().edge_vertex(f,j);
@@ -629,9 +688,11 @@ void HierarchicalMesh2d::inner_vertex_newton2d(const IntVector &vnew,
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh2d::new_vertexs2d(HangContainer2d &hangset,
-                                       const IntVector &vnew,
-                                       const IntSet &CellRefList) {
+void
+HierarchicalMesh2d::new_vertexs2d(HangContainer2d& hangset,
+                                  const IntVector& vnew,
+                                  const IntSet& CellRefList)
+{
   int nv1 = CellRefList.size();
 
   IntSetIt cp = CellRefList.begin();
@@ -649,7 +710,9 @@ void HierarchicalMesh2d::new_vertexs2d(HangContainer2d &hangset,
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh2d::init_line(BoundaryLine &newline) {
+void
+HierarchicalMesh2d::init_line(BoundaryLine& newline)
+{
   std::array<int, 2> v;
   for (int i = 0; i < quads.size(); i++) {
     for (int edge = 0; edge < 4; edge++) {
@@ -680,7 +743,9 @@ void HierarchicalMesh2d::init_line(BoundaryLine &newline) {
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh2d::update_boundary_data2d(const IntSet &LCoarse) {
+void
+HierarchicalMesh2d::update_boundary_data2d(const IntSet& LCoarse)
+{
   int no = Blines.size() - 2 * LCoarse.size();
   for (int i = 0; i < no; ++i) {
     int oq = Blines[i].of_quad();
@@ -692,12 +757,14 @@ void HierarchicalMesh2d::update_boundary_data2d(const IntSet &LCoarse) {
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh2d::boundary_newton2d() {
+void
+HierarchicalMesh2d::boundary_newton2d()
+{
   if (GetCurvedShapes().empty())
     return;
 
   for (int i = 0; i < Blines.size(); i++) {
-    BoundaryLine &bl = Blines[i];
+    BoundaryLine& bl = Blines[i];
     int color = bl.material();
 
     if (GetCurvedShapes().Curved(color)) {
@@ -709,8 +776,11 @@ void HierarchicalMesh2d::boundary_newton2d() {
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh2d::new_lines(const IntVector &lo2n, const IntVector &cnew,
-                                   const IntSet &LRef) {
+void
+HierarchicalMesh2d::new_lines(const IntVector& lo2n,
+                              const IntVector& cnew,
+                              const IntSet& LRef)
+{
   int nci = 0;
 
   for (IntSetCIt cp = LRef.begin(); cp != LRef.end(); ++cp) {
@@ -718,9 +788,9 @@ void HierarchicalMesh2d::new_lines(const IntVector &lo2n, const IntVector &cnew,
 
     assert(father >= 0);
 
-    BoundaryLine &blf = Blines[father];
+    BoundaryLine& blf = Blines[father];
     // change father boundary
-    vector<int> &qc = blf.childs();
+    vector<int>& qc = blf.childs();
     qc.resize(2);
 
     int edge = blf.edge_in_quad();
@@ -734,7 +804,7 @@ void HierarchicalMesh2d::new_lines(const IntVector &lo2n, const IntVector &cnew,
       // set childs in father
       qc[ic] = inold;
       // set properties of childs
-      BoundaryLine &bl = Blines[inold];
+      BoundaryLine& bl = Blines[inold];
       bl.level() = blf.level() + 1;
       bl.father() = father;
       bl.material() = blf.material();
@@ -753,17 +823,22 @@ void HierarchicalMesh2d::new_lines(const IntVector &lo2n, const IntVector &cnew,
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh2d::refine(const IntVector &cell_ref,
-                                const IntVector &cell_coarse) {
+void
+HierarchicalMesh2d::refine(const IntVector& cell_ref,
+                           const IntVector& cell_coarse)
+{
   IntSet CellRefList, CellCoarseList;
   _refine2d(CellRefList, CellCoarseList, cell_ref, cell_coarse);
 }
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh2d::_refine2d(IntSet &CellRefList, IntSet &CellCoarseList,
-                                   const IntVector &cell_ref,
-                                   const IntVector &cell_coarse) {
+void
+HierarchicalMesh2d::_refine2d(IntSet& CellRefList,
+                              IntSet& CellCoarseList,
+                              const IntVector& cell_ref,
+                              const IntVector& cell_coarse)
+{
   prepare2d(cell_ref, cell_coarse, CellRefList, CellCoarseList);
 
   while (regular_grid2d_three_refine(CellRefList)) {
@@ -782,7 +857,9 @@ void HierarchicalMesh2d::_refine2d(IntSet &CellRefList, IntSet &CellCoarseList,
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh2d::delete_vertexs2d(const IntVector &vo2n) {
+void
+HierarchicalMesh2d::delete_vertexs2d(const IntVector& vo2n)
+{
   for (unsigned oi = 0; oi < vo2n.size(); ++oi) {
     int ni = vo2n[oi];
     if (ni >= 0) {
@@ -793,7 +870,9 @@ void HierarchicalMesh2d::delete_vertexs2d(const IntVector &vo2n) {
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh2d::post_refine2d() {
+void
+HierarchicalMesh2d::post_refine2d()
+{
   check_mesh2d();
   mnlevels = 0;
   for (int i = 0; i < quads.size(); i++) {
@@ -803,34 +882,48 @@ void HierarchicalMesh2d::post_refine2d() {
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh2d::new_edge_vertex2d(int nv, const EdgeVector &v) {
+void
+HierarchicalMesh2d::new_edge_vertex2d(int nv, const EdgeVector& v)
+{
   vertexs2d[nv].equ(0.5, vertexs2d[v[0]], 0.5, vertexs2d[v[1]]);
 }
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh2d::new_face_vertex2d(int nv, const FaceVector &v) {
-  vertexs2d[nv].equ(0.25, vertexs2d[v[0]], 0.25, vertexs2d[v[1]], 0.25,
-                    vertexs2d[v[2]], 0.25, vertexs2d[v[3]]);
+void
+HierarchicalMesh2d::new_face_vertex2d(int nv, const FaceVector& v)
+{
+  vertexs2d[nv].equ(0.25,
+                    vertexs2d[v[0]],
+                    0.25,
+                    vertexs2d[v[1]],
+                    0.25,
+                    vertexs2d[v[2]],
+                    0.25,
+                    vertexs2d[v[3]]);
 }
 
 /*---------------------------------------------------*/
 
-ostream &operator<<(ostream &os, const pair<std::array<int, 2>, Hang> &H) {
+ostream&
+operator<<(ostream& os, const pair<std::array<int, 2>, Hang>& H)
+{
   cerr << H.first << " -> " << H.second << endl;
   return os;
 }
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh2d::check_mesh2d() const {
+void
+HierarchicalMesh2d::check_mesh2d() const
+{
   // check quads
 
   int cmin = 0, cmax = quads.size();
   int vmin = 0, vmax = nnodes();
 
   for (vector<Quad>::const_iterator p = quads.begin(); p != quads.end(); p++) {
-    const Quad &q = *p;
+    const Quad& q = *p;
 
     // check vertex id
     for (int i = 0; i < q.nvertexs(); i++) {
@@ -860,7 +953,9 @@ void HierarchicalMesh2d::check_mesh2d() const {
 
 /*---------------------------------------------------*/
 
-int HierarchicalMesh2d::QuadNeighbour(const Quad &q, int e) const {
+int
+HierarchicalMesh2d::QuadNeighbour(const Quad& q, int e) const
+{
   int ie = q.edge(e);
   int m = edges[ie].master();
   if (q == quads[m])
@@ -870,7 +965,9 @@ int HierarchicalMesh2d::QuadNeighbour(const Quad &q, int e) const {
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh2d::init_edges2d() {
+void
+HierarchicalMesh2d::init_edges2d()
+{
   EdgeManager EM(edges, quads, co2n, eo2n);
   EM.InitEdges();
   EM.SortHangings();
@@ -878,9 +975,11 @@ void HierarchicalMesh2d::init_edges2d() {
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh2d::GetVertexesOfEdge(std::array<int, 3> &v, int e) const {
-  const Edge &E = edge(e);
-  const Quad *Q = &quad(E.master());
+void
+HierarchicalMesh2d::GetVertexesOfEdge(std::array<int, 3>& v, int e) const
+{
+  const Edge& E = edge(e);
+  const Quad* Q = &quad(E.master());
 
   int le = E.LocalMasterIndex();
   v[0] = (*Q)[le];
@@ -898,9 +997,11 @@ void HierarchicalMesh2d::GetVertexesOfEdge(std::array<int, 3> &v, int e) const {
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh2d::GetVertexesOfEdge(std::array<int, 2> &v, int e) const {
-  const Edge &E = edge(e);
-  const Quad *Q = &quad(E.master());
+void
+HierarchicalMesh2d::GetVertexesOfEdge(std::array<int, 2>& v, int e) const
+{
+  const Edge& E = edge(e);
+  const Quad* Q = &quad(E.master());
 
   int le = E.LocalMasterIndex();
   v[0] = (*Q)[le];
@@ -909,7 +1010,9 @@ void HierarchicalMesh2d::GetVertexesOfEdge(std::array<int, 2> &v, int e) const {
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh2d::GetAwakeCells(set<int> &v) const {
+void
+HierarchicalMesh2d::GetAwakeCells(set<int>& v) const
+{
   for (int i = 0; i < ncells(); i++) {
     if (!quads[i].sleep())
       v.insert(i);
@@ -918,7 +1021,9 @@ void HierarchicalMesh2d::GetAwakeCells(set<int> &v) const {
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh2d::GetAwakePatchs(set<int> &v) const {
+void
+HierarchicalMesh2d::GetAwakePatchs(set<int>& v) const
+{
   v.clear();
 
   for (int i = 0; i < ncells(); i++) {
@@ -932,7 +1037,9 @@ void HierarchicalMesh2d::GetAwakePatchs(set<int> &v) const {
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh2d::ConstructQ2PatchMesh(IntVector &q2patchmesh) const {
+void
+HierarchicalMesh2d::ConstructQ2PatchMesh(IntVector& q2patchmesh) const
+{
   typedef IntSet::iterator It;
   IntSet patche;
   GetAwakePatchs(patche);
@@ -960,7 +1067,9 @@ void HierarchicalMesh2d::ConstructQ2PatchMesh(IntVector &q2patchmesh) const {
 
 /*---------------------------------------------------*/
 
-IntVector HierarchicalMesh2d::ConstructQ4Patch(int c) const {
+IntVector
+HierarchicalMesh2d::ConstructQ4Patch(int c) const
+{
   IntVector patch(25, -1);
 
   for (int i = 0; i < 25; i++) {
@@ -993,16 +1102,18 @@ IntVector HierarchicalMesh2d::ConstructQ4Patch(int c) const {
 
 /*---------------------------------------------------*/
 
-set<int> HierarchicalMesh2d::CellNeighbours(int iq) const {
+set<int>
+HierarchicalMesh2d::CellNeighbours(int iq) const
+{
   // soll nur wache Zellen zurueckgeben !!
   set<int> neighbors;
-  const Quad &q = quad(iq);
+  const Quad& q = quad(iq);
   if (q.sleep())
     return neighbors;
 
   for (int i = 0; i < 4; i++) {
     int ge = q.edge(i);
-    const Edge &e = edge(ge);
+    const Edge& e = edge(ge);
     int m = e.master();
     int s = e.slave();
     if (m != -1) {
@@ -1028,11 +1139,13 @@ set<int> HierarchicalMesh2d::CellNeighbours(int iq) const {
 
 /*------------------------------------------------------*/
 
-int HierarchicalMesh2d::neighbour(int c, int le) const {
+int
+HierarchicalMesh2d::neighbour(int c, int le) const
+{
   assert(le < 4);
-  const Quad &Q = quad(c);
+  const Quad& Q = quad(c);
   assert(Q.edge(le) >= 0);
-  const Edge &E = edge(Q.edge(le));
+  const Edge& E = edge(Q.edge(le));
   int m = E.master();
   int nq = m;
   if (m == c)
@@ -1042,7 +1155,9 @@ int HierarchicalMesh2d::neighbour(int c, int le) const {
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh2d::FillAllBoundaryLines() {
+void
+HierarchicalMesh2d::FillAllBoundaryLines()
+{
   HangBLList B;
   // erstmal alle rein
   EdgeVector edge;
@@ -1065,7 +1180,7 @@ void HierarchicalMesh2d::FillAllBoundaryLines() {
         nb.material() = -1;
         B.insert(make_pair(edge, nb));
       } else {
-        BoundaryLine &b = p->second;
+        BoundaryLine& b = p->second;
         if (b.material() == -1)
           B.erase(p);
         else {
@@ -1089,7 +1204,9 @@ void HierarchicalMesh2d::FillAllBoundaryLines() {
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh2d::WriteAll(const string &name) const {
+void
+HierarchicalMesh2d::WriteAll(const string& name) const
+{
   ofstream out(name.c_str());
 
   out << dimension() << " dimension" << endl;
@@ -1111,7 +1228,9 @@ void HierarchicalMesh2d::WriteAll(const string &name) const {
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh2d::write_inp(const string &bname) const {
+void
+HierarchicalMesh2d::write_inp(const string& bname) const
+{
   string name = bname;
   int name_size = name.size();
   if (name_size < 4)
@@ -1144,7 +1263,9 @@ void HierarchicalMesh2d::write_inp(const string &bname) const {
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh2d::write_vtk(const string &name) const {
+void
+HierarchicalMesh2d::write_vtk(const string& name) const
+{
   ofstream file(name.c_str());
   if (!file.is_open()) {
     cerr << "HierarchicalMesh2d::write_vtk()\n";
@@ -1182,7 +1303,8 @@ void HierarchicalMesh2d::write_vtk(const string &name) const {
 /*---------------------------------------------------*/
 
 pair<bool, triple<int, int, int>>
-HierarchicalMesh2d::check_inp(const string &name) {
+HierarchicalMesh2d::check_inp(const string& name)
+{
   //  detect some errors in input-file... and more
 
   ifstream file(name.c_str());
@@ -1241,7 +1363,9 @@ HierarchicalMesh2d::check_inp(const string &name) {
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh2d::read_inp(const string &name) {
+void
+HierarchicalMesh2d::read_inp(const string& name)
+{
   // check mesh.....
 
   pair<bool, tint> p = check_inp(name);
@@ -1321,11 +1445,17 @@ void HierarchicalMesh2d::read_inp(const string &name) {
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh2d::write(const string &bname) const { write_gup(bname); }
+void
+HierarchicalMesh2d::write(const string& bname) const
+{
+  write_gup(bname);
+}
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh2d::write_gup(const string &bname) const {
+void
+HierarchicalMesh2d::write_gup(const string& bname) const
+{
   string name = bname;
   int name_size = name.size();
   if (name_size < 4)
@@ -1364,7 +1494,9 @@ void HierarchicalMesh2d::write_gup(const string &bname) const {
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh2d::write_gip(const string &bname) const {
+void
+HierarchicalMesh2d::write_gip(const string& bname) const
+{
   string name = bname;
   int name_size = name.size();
   if (name_size < 4)
@@ -1377,15 +1509,15 @@ void HierarchicalMesh2d::write_gip(const string &bname) const {
 
   out.precision(16);
   int dim = dimension(), n = nnodes(), sizeInt = sizeof(int);
-  out.write(reinterpret_cast<const char *>(&dim), sizeInt);
-  out.write(reinterpret_cast<const char *>(&n), sizeInt);
+  out.write(reinterpret_cast<const char*>(&dim), sizeInt);
+  out.write(reinterpret_cast<const char*>(&n), sizeInt);
 
   for (int i = 0; i < nnodes(); i++) {
     ArrayBinWrite(out, vertex2d(i));
   }
 
   int nquads = quads.size();
-  out.write(reinterpret_cast<const char *>(&nquads), sizeInt);
+  out.write(reinterpret_cast<const char*>(&nquads), sizeInt);
 
   for (int i = 0; i < quads.size(); i++) {
     ArrayBinWrite(out, quad(i));
@@ -1393,14 +1525,14 @@ void HierarchicalMesh2d::write_gip(const string &bname) const {
 
   LineHang.BinWrite(out);
   int nblines = Blines.size();
-  out.write(reinterpret_cast<const char *>(&nblines), sizeInt);
+  out.write(reinterpret_cast<const char*>(&nblines), sizeInt);
   for (int i = 0; i < Blines.size(); i++) {
     int mat = Blines[i].material();
-    out.write(reinterpret_cast<const char *>(&mat), sizeInt);
+    out.write(reinterpret_cast<const char*>(&mat), sizeInt);
     ArrayBinWrite(out, Blines[i]);
   }
   int nedges = edges.size();
-  out.write(reinterpret_cast<const char *>(&nedges), sizeInt);
+  out.write(reinterpret_cast<const char*>(&nedges), sizeInt);
   for (int i = 0; i < edges.size(); i++) {
     edges[i].BinWrite(out);
   }
@@ -1409,7 +1541,9 @@ void HierarchicalMesh2d::write_gip(const string &bname) const {
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh2d::read_gup(const string &bname) {
+void
+HierarchicalMesh2d::read_gup(const string& bname)
+{
   string name = bname;
   int name_size = name.size();
   if (name_size < 4)
@@ -1525,7 +1659,9 @@ void HierarchicalMesh2d::read_gup(const string &bname) {
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh2d::read_gip(const string &bname) {
+void
+HierarchicalMesh2d::read_gip(const string& bname)
+{
   string name = bname;
   int name_size = name.size();
   if (name_size < 4)
@@ -1548,8 +1684,8 @@ void HierarchicalMesh2d::read_gip(const string &bname) {
   LineHang.clear();
 
   int n, dim, sizeInt = sizeof(int);
-  file.read(reinterpret_cast<char *>(&dim), sizeInt);
-  file.read(reinterpret_cast<char *>(&n), sizeInt);
+  file.read(reinterpret_cast<char*>(&dim), sizeInt);
+  file.read(reinterpret_cast<char*>(&n), sizeInt);
 
   assert(dim == 2);
 
@@ -1565,7 +1701,7 @@ void HierarchicalMesh2d::read_gip(const string &bname) {
   if (_i_showoutput) {
     cout << n << " nodes, ";
   }
-  file.read(reinterpret_cast<char *>(&n), sizeInt);
+  file.read(reinterpret_cast<char*>(&n), sizeInt);
   quads.reserve(n);
   quads.resize(n);
   for (int i = 0; i < quads.size(); i++) {
@@ -1578,11 +1714,11 @@ void HierarchicalMesh2d::read_gip(const string &bname) {
   if (_i_showoutput) {
     cout << LineHang.size() << " hangs, ";
   }
-  file.read(reinterpret_cast<char *>(&n), sizeInt);
+  file.read(reinterpret_cast<char*>(&n), sizeInt);
   int number = 0;
   BoundaryLine bol;
   for (int i = 0; i < n; i++) {
-    file.read(reinterpret_cast<char *>(&bol.material()), sizeInt);
+    file.read(reinterpret_cast<char*>(&bol.material()), sizeInt);
     ArrayBinRead(file, bol);
     Blines.push_back(bol);
   }
@@ -1590,7 +1726,7 @@ void HierarchicalMesh2d::read_gip(const string &bname) {
   if (_i_showoutput) {
     cout << number << " lines, ";
   }
-  file.read(reinterpret_cast<char *>(&n), sizeInt);
+  file.read(reinterpret_cast<char*>(&n), sizeInt);
   if (_i_showoutput) {
     cout << n << " edges" << endl;
   }
@@ -1607,10 +1743,12 @@ void HierarchicalMesh2d::read_gip(const string &bname) {
 
 /*---------------------------------------------------*/
 
-int HierarchicalMesh2d::regular_grid2d_one(IntSet &celllist,
-                                           IntVector &coarsesub,
-                                           IntSet &CellRefList,
-                                           IntSet &CellCoarseList) const {
+int
+HierarchicalMesh2d::regular_grid2d_one(IntSet& celllist,
+                                       IntVector& coarsesub,
+                                       IntSet& CellRefList,
+                                       IntSet& CellCoarseList) const
+{
   /* detects jump over two levels across LineHangs */
 
   int n = 0;
@@ -1654,8 +1792,10 @@ int HierarchicalMesh2d::regular_grid2d_one(IntSet &celllist,
 
 /*---------------------------------------------------*/
 
-int HierarchicalMesh2d::regular_grid2d_two(IntSet &celllist,
-                                           IntSet &CellRefList) const {
+int
+HierarchicalMesh2d::regular_grid2d_two(IntSet& celllist,
+                                       IntSet& CellRefList) const
+{
   /* detects more than 2 HangLines on one Quad */
 
   int nto = 0;
@@ -1684,7 +1824,9 @@ int HierarchicalMesh2d::regular_grid2d_two(IntSet &celllist,
 
 /*---------------------------------------------------*/
 
-int HierarchicalMesh2d::smooth_edges() {
+int
+HierarchicalMesh2d::smooth_edges()
+{
   IntSet CellRefList, CellCoarseList, coarseadd;
   HangContainer2d hangset(LineHang);
 
@@ -1700,14 +1842,16 @@ int HierarchicalMesh2d::smooth_edges() {
 
 /*---------------------------------------------------*/
 
-int HierarchicalMesh2d::regular_grid2d_three(IntSet &CellRef,
-                                             IntSet &CellCoarse) const {
+int
+HierarchicalMesh2d::regular_grid2d_three(IntSet& CellRef,
+                                         IntSet& CellCoarse) const
+{
   vector<int> maxlevel(nnodes());
   vector<int> minlevel(nnodes(), 1000);
 
   // set maximal levels for vertices
   for (int i = 0; i < quads.size(); i++) {
-    const Quad &q = quad(i);
+    const Quad& q = quad(i);
     if (q.sleep())
       continue;
 
@@ -1736,7 +1880,7 @@ int HierarchicalMesh2d::regular_grid2d_three(IntSet &CellRef,
 
   int ref = 0;
   for (int i = 0; i < quads.size(); i++) {
-    const Quad &q = quad(i);
+    const Quad& q = quad(i);
     if (q.sleep())
       continue;
     int lev = q.level();
@@ -1755,7 +1899,7 @@ int HierarchicalMesh2d::regular_grid2d_three(IntSet &CellRef,
   IntSet coarsesub;
   IntSet::const_iterator p = CellCoarse.begin();
   for (; p != CellCoarse.end(); p++) {
-    const Quad &q = quad(*p);
+    const Quad& q = quad(*p);
     int lev = q.level();
     for (int j = 0; j < 4; j++) {
       int k = q[j];
@@ -1778,15 +1922,18 @@ int HierarchicalMesh2d::regular_grid2d_three(IntSet &CellRef,
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh2d::GetMinMaxLevels(IntVector &maxi, IntVector &mini,
-                                         const IntSet &CellRef) const {
+void
+HierarchicalMesh2d::GetMinMaxLevels(IntVector& maxi,
+                                    IntVector& mini,
+                                    const IntSet& CellRef) const
+{
   // set maximal levels for vertices
   //
   maxi.resize(nnodes());
   mini.resize(nnodes());
   mini = 1000;
   for (int i = 0; i < quads.size(); i++) {
-    const Quad &q = quad(i);
+    const Quad& q = quad(i);
     if (q.sleep())
       continue;
 
@@ -1803,7 +1950,9 @@ void HierarchicalMesh2d::GetMinMaxLevels(IntVector &maxi, IntVector &mini,
 
 /*---------------------------------------------------*/
 
-int HierarchicalMesh2d::regular_grid2d_three_refine(IntSet &CellRef) const {
+int
+HierarchicalMesh2d::regular_grid2d_three_refine(IntSet& CellRef) const
+{
   IntVector maxlevel, minlevel;
 
   GetMinMaxLevels(maxlevel, minlevel, CellRef);
@@ -1817,7 +1966,7 @@ int HierarchicalMesh2d::regular_grid2d_three_refine(IntSet &CellRef) const {
 
   int ref = 0;
   for (int i = 0; i < quads.size(); i++) {
-    const Quad &q = quad(i);
+    const Quad& q = quad(i);
     if (q.sleep())
       continue;
     int lev = q.level();
@@ -1839,21 +1988,23 @@ int HierarchicalMesh2d::regular_grid2d_three_refine(IntSet &CellRef) const {
 
 /*---------------------------------------------------*/
 
-int HierarchicalMesh2d::regular_grid2d_three_coarse(IntSet &CellRef,
-                                                    IntSet &CellCoarse) const {
+int
+HierarchicalMesh2d::regular_grid2d_three_coarse(IntSet& CellRef,
+                                                IntSet& CellCoarse) const
+{
   int maxl = 0;
   vector<IntSet> LevelCellCoarse;
   {
     IntSet::const_iterator p = CellCoarse.begin();
     for (; p != CellCoarse.end(); p++) {
-      const Quad &q = quad(*p);
+      const Quad& q = quad(*p);
       int lev = q.level();
       maxl = std::max(maxl, lev);
     }
     LevelCellCoarse.resize(maxl + 1);
     p = CellCoarse.begin();
     for (; p != CellCoarse.end(); p++) {
-      const Quad &q = quad(*p);
+      const Quad& q = quad(*p);
       int lev = q.level();
       LevelCellCoarse[lev].insert(*p);
     }
@@ -1867,7 +2018,7 @@ int HierarchicalMesh2d::regular_grid2d_three_coarse(IntSet &CellRef,
     IntSet coarsesub;
     IntSet::const_iterator p = LevelCellCoarse[i].begin();
     for (; p != LevelCellCoarse[i].end(); p++) {
-      const Quad &q = quad(*p);
+      const Quad& q = quad(*p);
       int lev = q.level();
       for (int j = 0; j < 4; j++) {
         int k = q[j];
@@ -1892,11 +2043,13 @@ int HierarchicalMesh2d::regular_grid2d_three_coarse(IntSet &CellRef,
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh2d::global_coarse() {
+void
+HierarchicalMesh2d::global_coarse()
+{
   IntSet RefList, CoarseList;
 
   for (int i = 0; i < quads.size(); i++) {
-    const Quad &q = quads[i];
+    const Quad& q = quads[i];
     if (q.sleep())
       continue;
     if (!q.level())
@@ -1915,7 +2068,9 @@ void HierarchicalMesh2d::global_coarse() {
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh2d::LoadFathers(IntVector &v) const {
+void
+HierarchicalMesh2d::LoadFathers(IntVector& v) const
+{
   IntSet fathers;
   for (int i = 0; i < v.size(); i++) {
     if (quad(v[i]).level() == 0)
@@ -1932,10 +2087,12 @@ void HierarchicalMesh2d::LoadFathers(IntVector &v) const {
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh2d::FillVertexLevels(IntVector &dst) const {
+void
+HierarchicalMesh2d::FillVertexLevels(IntVector& dst) const
+{
   dst.resize(nnodes(), 100);
   for (int i = 0; i < ncells(); i++) {
-    const Quad &Q = quads[i];
+    const Quad& Q = quads[i];
     if (Q.sleep())
       continue;
 
@@ -1949,16 +2106,18 @@ void HierarchicalMesh2d::FillVertexLevels(IntVector &dst) const {
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh2d::RefineCoarseNodes(IntSet &dst,
-                                           const IntVector &refnodes,
-                                           const IntVector &vertexlevel) const {
+void
+HierarchicalMesh2d::RefineCoarseNodes(IntSet& dst,
+                                      const IntVector& refnodes,
+                                      const IntVector& vertexlevel) const
+{
   IntSet h;
 
   Vec2Set(h, refnodes);
 
   dst.clear();
   for (int i = 0; i < ncells(); i++) {
-    const Quad &Q = quads[i];
+    const Quad& Q = quads[i];
     if (Q.sleep())
       continue;
 
@@ -1966,7 +2125,7 @@ void HierarchicalMesh2d::RefineCoarseNodes(IntSet &dst,
     if (f < 0)
       continue;
 
-    const Quad &QF = quads[f];
+    const Quad& QF = quads[f];
 
     for (int j = 0; j < 4; j++) {
       int k = Q[j];
@@ -1990,10 +2149,13 @@ void HierarchicalMesh2d::RefineCoarseNodes(IntSet &dst,
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh2d::VertexToCells(IntVector &dst, const IntSet &src,
-                                       const IntVector &vertexlevel) const {
+void
+HierarchicalMesh2d::VertexToCells(IntVector& dst,
+                                  const IntSet& src,
+                                  const IntVector& vertexlevel) const
+{
   for (int i = 0; i < ncells(); i++) {
-    const Quad &Q = quads[i];
+    const Quad& Q = quads[i];
     if (Q.sleep())
       continue;
     int level = Q.level();
@@ -2011,12 +2173,15 @@ void HierarchicalMesh2d::VertexToCells(IntVector &dst, const IntSet &src,
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh2d::VertexToCellsCoarsening(
-    IntVector &dst, const IntSet &src, const IntVector &vertexlevel) const {
+void
+HierarchicalMesh2d::VertexToCellsCoarsening(IntVector& dst,
+                                            const IntSet& src,
+                                            const IntVector& vertexlevel) const
+{
   int limit = 2;
 
   for (int i = 0; i < ncells(); i++) {
-    const Quad &Q = quads[i];
+    const Quad& Q = quads[i];
     if (Q.sleep())
       continue;
     int count = 0;
@@ -2074,9 +2239,11 @@ void HierarchicalMesh2d::VertexToCellsCoarsening(
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh2d::recursive_childs(int q, IntVector &ref, int d) const {
+void
+HierarchicalMesh2d::recursive_childs(int q, IntVector& ref, int d) const
+{
   if (d > 0) {
-    const Quad &Q = quad(q);
+    const Quad& Q = quad(q);
     assert(Q.sleep());
     for (int j = 0; j < 4; j++) {
       int child = Q.child(j);
@@ -2089,8 +2256,9 @@ void HierarchicalMesh2d::recursive_childs(int q, IntVector &ref, int d) const {
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh2d::patch_refine(IntVector &cell_ref,
-                                      IntVector &cell_coarse) {
+void
+HierarchicalMesh2d::patch_refine(IntVector& cell_ref, IntVector& cell_coarse)
+{
   for (int i = 0; i < pdepth; i++) {
     LoadFathers(cell_ref);
     LoadFathers(cell_coarse);
@@ -2116,10 +2284,12 @@ void HierarchicalMesh2d::patch_refine(IntVector &cell_ref,
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh2d::FillVolumes(DoubleVector &vol) const {
+void
+HierarchicalMesh2d::FillVolumes(DoubleVector& vol) const
+{
   vol.resize(ncells(), 0.);
   for (int i = 0; i < ncells(); i++) {
-    const Quad &Q = quad(i);
+    const Quad& Q = quad(i);
     Vertex2d V = vertex2d(Q[2]);
     V -= vertex2d(Q[0]);
     vol[i] = V * V;
@@ -2128,15 +2298,18 @@ void HierarchicalMesh2d::FillVolumes(DoubleVector &vol) const {
 
 /*---------------------------------------------------*/
 
-void HierarchicalMesh2d::writeq2(const IntVector &a, const vector<int> &b,
-                                 int np) const {
+void
+HierarchicalMesh2d::writeq2(const IntVector& a,
+                            const vector<int>& b,
+                            int np) const
+{
   char s[29];
   for (int p = 0; p < np; ++p) {
     sprintf(s, "n_%d_%d", ncells(), p);
     ofstream aus(s);
 
     for (int i = 0; i < a.size(); ++i) {
-      const Quad &Q = quads[a[i]];
+      const Quad& Q = quads[a[i]];
       if (b[i] == p) {
         aus << vertex2d(Q[0]) << endl;
         aus << vertex2d(Q[1]) << endl;

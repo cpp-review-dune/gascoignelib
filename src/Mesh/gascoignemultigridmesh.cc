@@ -34,7 +34,8 @@ GascoigneMultiGridMesh::GascoigneMultiGridMesh() {}
 
 /*-----------------------------------------*/
 
-GascoigneMultiGridMesh::~GascoigneMultiGridMesh() {
+GascoigneMultiGridMesh::~GascoigneMultiGridMesh()
+{
   for (int l = 0; l < M.size(); l++) {
     if (M[l] != NULL) {
       delete M[l];
@@ -51,7 +52,9 @@ GascoigneMultiGridMesh::~GascoigneMultiGridMesh() {
 
 /*-----------------------------------------*/
 
-GascoigneMesh *GascoigneMultiGridMesh::NewMesh(int dim) {
+GascoigneMesh*
+GascoigneMultiGridMesh::NewMesh(int dim)
+{
   assert(2 <= dim && dim <= 3);
 
   if (dim == 2)
@@ -64,7 +67,9 @@ GascoigneMesh *GascoigneMultiGridMesh::NewMesh(int dim) {
 
 /*-----------------------------------------*/
 
-GascoigneMeshTransfer *GascoigneMultiGridMesh::NewTransfer(int dim) {
+GascoigneMeshTransfer*
+GascoigneMultiGridMesh::NewTransfer(int dim)
+{
   assert(2 <= dim && dim <= 3);
 
   if (dim == 2) {
@@ -78,7 +83,9 @@ GascoigneMeshTransfer *GascoigneMultiGridMesh::NewTransfer(int dim) {
 
 /*-----------------------------------------*/
 
-void GascoigneMultiGridMesh::ReInit(int dim, int nlevels) {
+void
+GascoigneMultiGridMesh::ReInit(int dim, int nlevels)
+{
   // Mesh
   for (int l = 0; l < M.size(); l++) {
     if (M[l] != NULL) {

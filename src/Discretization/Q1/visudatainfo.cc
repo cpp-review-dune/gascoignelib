@@ -29,7 +29,9 @@ using namespace std;
 /*-------------------------------------------------------------------------*/
 
 namespace Gascoigne {
-VisuDataInfo &VisuDataInfo::operator=(const VisuDataInfo &V) {
+VisuDataInfo&
+VisuDataInfo::operator=(const VisuDataInfo& V)
+{
   scalars = V.Scalars();
   vectors = V.Vectors();
   return *this;
@@ -37,13 +39,16 @@ VisuDataInfo &VisuDataInfo::operator=(const VisuDataInfo &V) {
 
 /*-------------------------------------------------------------------------*/
 
-bool VisuDataInfo::operator!=(const VisuDataInfo &V) const {
+bool
+VisuDataInfo::operator!=(const VisuDataInfo& V) const
+{
   return (scalars != V.Scalars()) || (vectors != V.Vectors());
 }
 
 /*-------------------------------------------------------------------------*/
 
-VisuDataInfo::VisuDataInfo(const VisuData &D, string def) {
+VisuDataInfo::VisuDataInfo(const VisuData& D, string def)
+{
   for (int c = 0; c < D.visucomp(); c++) {
     string name(def);
     compose_name_without_dot(name, c);
@@ -53,7 +58,9 @@ VisuDataInfo::VisuDataInfo(const VisuData &D, string def) {
 
 /*-------------------------------------------------------------------------*/
 
-void VisuDataInfo::AddScalars(IndexType ncomp, string def) {
+void
+VisuDataInfo::AddScalars(IndexType ncomp, string def)
+{
   for (IndexType c = 0; c < ncomp; c++) {
     string name(def);
     compose_name_without_dot(name, c);

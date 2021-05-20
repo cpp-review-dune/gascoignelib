@@ -32,9 +32,12 @@ using namespace std;
 
 namespace Gascoigne {
 
-ThreadIlu::ThreadIlu(int ncomp) : __ncomp(ncomp) {}
+ThreadIlu::ThreadIlu(int ncomp)
+  : __ncomp(ncomp)
+{}
 
-ThreadIlu::~ThreadIlu() {
+ThreadIlu::~ThreadIlu()
+{
   for (int i = 0; i < __local_ilu.size(); ++i)
     if (__local_ilu[i])
       delete __local_ilu[i];
@@ -43,13 +46,18 @@ ThreadIlu::~ThreadIlu() {
 
 // --------------------------------------------------
 
-void ThreadIlu::ReInit(const SparseStructureInterface *A) {}
+void
+ThreadIlu::ReInit(const SparseStructureInterface* A)
+{}
 
 // --------------------------------------------------
 
-void ThreadIlu::ConstructStructure(
-    const std::vector<IntVector> &perm, const MatrixInterface &MAP,
-    const std::vector<std::vector<int>> &domains2nodes) {
+void
+ThreadIlu::ConstructStructure(
+  const std::vector<IntVector>& perm,
+  const MatrixInterface& MAP,
+  const std::vector<std::vector<int>>& domains2nodes)
+{
 
   __n_threads = perm.size();
 
@@ -120,7 +128,9 @@ void ThreadIlu::ConstructStructure(
 
 // --------------------------------------------------
 
-void ThreadIlu::zero() {
+void
+ThreadIlu::zero()
+{
 #pragma omp parallel for schedule(static, 1)
   for (int p = 0; p < __n_threads; ++p)
     __local_ilu[p]->zero();
@@ -128,7 +138,9 @@ void ThreadIlu::zero() {
 
 // --------------------------------------------------
 
-void ThreadIlu::modify(int c, double s) {
+void
+ThreadIlu::modify(int c, double s)
+{
 #pragma omp parallel for schedule(static, 1)
   for (int p = 0; p < __n_threads; ++p)
     __local_ilu[p]->modify(c, s);
@@ -136,7 +148,9 @@ void ThreadIlu::modify(int c, double s) {
 
 // --------------------------------------------------
 
-void ThreadIlu::copy_entries(const MatrixInterface *A) {
+void
+ThreadIlu::copy_entries(const MatrixInterface* A)
+{
 #pragma omp parallel for schedule(static, 1)
   for (int p = 0; p < __n_threads; ++p)
     __local_ilu[p]->copy_entries(A);
@@ -144,7 +158,9 @@ void ThreadIlu::copy_entries(const MatrixInterface *A) {
 
 // --------------------------------------------------
 
-void ThreadIlu::compute_ilu() {
+void
+ThreadIlu::compute_ilu()
+{
 #pragma omp parallel for schedule(static, 1)
   for (int p = 0; p < __n_threads; ++p)
     __local_ilu[p]->compute_ilu();
@@ -152,7 +168,9 @@ void ThreadIlu::compute_ilu() {
 
 // --------------------------------------------------
 
-void ThreadIlu::solve(GlobalVector &x) const {
+void
+ThreadIlu::solve(GlobalVector& x) const
+{
 #pragma omp parallel for schedule(static, 1)
   for (int p = 0; p < __n_threads; ++p) {
     assert(__local_vectors[p].n() == __local_ilu[p]->n());

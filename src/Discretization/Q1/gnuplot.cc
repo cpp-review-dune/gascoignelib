@@ -35,8 +35,10 @@ using namespace std;
 /*-----------------------------------------*/
 
 namespace Gascoigne {
-GnuplotData::GnuplotData(const string &s, const Vertex3d &_pos)
-    : plane(s), pos(_pos) {
+GnuplotData::GnuplotData(const string& s, const Vertex3d& _pos)
+  : plane(s)
+  , pos(_pos)
+{
   if ((plane != "x") && (plane != "y") && (plane != "z") && (plane != "xz") &&
       (plane != "yz") && (plane != "xy")) {
     cerr << "GnuplotData::GnuplotData() plane=" << plane << endl;
@@ -46,12 +48,16 @@ GnuplotData::GnuplotData(const string &s, const Vertex3d &_pos)
 
 /*-----------------------------------------*/
 
-GnuplotData::GnuplotData(const GnuplotData &GP)
-    : plane(GP.plane), pos(GP.pos) {}
+GnuplotData::GnuplotData(const GnuplotData& GP)
+  : plane(GP.plane)
+  , pos(GP.pos)
+{}
 
 /*-----------------------------------------*/
 
-void GnuplotData::SetName(string &filename) const {
+void
+GnuplotData::SetName(string& filename) const
+{
   if (plane == "x")
     filename += "_x";
   if (plane == "y")
@@ -68,7 +74,9 @@ void GnuplotData::SetName(string &filename) const {
 
 /*-----------------------------------------*/
 
-bool GnuplotData::TestVertex(const Vertex2d &v) const {
+bool
+GnuplotData::TestVertex(const Vertex2d& v) const
+{
   if ((plane == "x") && (v.x() == pos.x()))
     return 1;
   if ((plane == "y") && (v.y() == pos.y()))
@@ -76,7 +84,9 @@ bool GnuplotData::TestVertex(const Vertex2d &v) const {
   return 0;
 }
 
-bool GnuplotData::TestVertex(const Vertex3d &v) const {
+bool
+GnuplotData::TestVertex(const Vertex3d& v) const
+{
   if ((plane == "xz") && (v.x() == pos.x()) && (v.z() == pos.z()))
     return 1;
   if ((plane == "yz") && (v.y() == pos.y()) && (v.z() == pos.z()))
@@ -88,7 +98,9 @@ bool GnuplotData::TestVertex(const Vertex3d &v) const {
 
 /*-----------------------------------------*/
 
-double GnuplotData::SetVertex(const Vertex2d &v) const {
+double
+GnuplotData::SetVertex(const Vertex2d& v) const
+{
   assert(plane == "x" || plane == "y");
 
   if (plane == "x")
@@ -99,7 +111,9 @@ double GnuplotData::SetVertex(const Vertex2d &v) const {
     return 0.;
 }
 
-double GnuplotData::SetVertex(const Vertex3d &v) const {
+double
+GnuplotData::SetVertex(const Vertex3d& v) const
+{
   assert(plane == "xz" || plane == "yz" || plane == "xy");
 
   if (plane == "xz")
@@ -114,7 +128,9 @@ double GnuplotData::SetVertex(const Vertex3d &v) const {
 
 /********************************************************************/
 
-void Visualization::gnuplot(const string &name) const {
+void
+Visualization::gnuplot(const string& name) const
+{
   if (!PointData)
     return;
 
@@ -123,13 +139,13 @@ void Visualization::gnuplot(const string &name) const {
 
     if (mesh->dimension() == 3) {
       for (int ind = 0; ind < mesh->nnodes(); ind++) {
-        const Vertex3d &V = mesh->vertex3d(ind);
+        const Vertex3d& V = mesh->vertex3d(ind);
         if (GP[k].TestVertex(V))
           i++;
       }
     } else {
       for (int ind = 0; ind < mesh->nnodes(); ind++) {
-        const Vertex2d &V = mesh->vertex2d(ind);
+        const Vertex2d& V = mesh->vertex2d(ind);
         if (GP[k].TestVertex(V))
           i++;
       }
@@ -145,7 +161,7 @@ void Visualization::gnuplot(const string &name) const {
     i = 0;
     if (mesh->dimension() == 3) {
       for (int ind = 0; ind < mesh->nnodes(); ind++) {
-        const Vertex3d &V = mesh->vertex3d(ind);
+        const Vertex3d& V = mesh->vertex3d(ind);
         if (GP[k].TestVertex(V)) {
           x[i] = GP[k].SetVertex(V);
           for (int c = 0; c < comp; c++) {
@@ -156,7 +172,7 @@ void Visualization::gnuplot(const string &name) const {
       }
     } else {
       for (int ind = 0; ind < mesh->nnodes(); ind++) {
-        const Vertex2d &V = mesh->vertex2d(ind);
+        const Vertex2d& V = mesh->vertex2d(ind);
         if (GP[k].TestVertex(V)) {
           x[i] = GP[k].SetVertex(V);
           for (int c = 0; c < comp; c++) {

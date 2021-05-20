@@ -30,7 +30,9 @@
 
 namespace Gascoigne {
 
-BaseQ42dWithSecond::BaseQ42dWithSecond() : BaseQ42d() {
+BaseQ42dWithSecond::BaseQ42dWithSecond()
+  : BaseQ42d()
+{
   dxx.reservesize(NDOF);
   dyy.reservesize(NDOF);
   dxy.reservesize(NDOF);
@@ -38,7 +40,9 @@ BaseQ42dWithSecond::BaseQ42dWithSecond() : BaseQ42d() {
 
 /*------------------------------------------------------------------*/
 
-void BaseQ42dWithSecond::point(const Vertex2d &s) const {
+void
+BaseQ42dWithSecond::point(const Vertex2d& s) const
+{
   BaseQ42d::point(s);
   for (int i = 0; i < NDOF; i++) {
     int ix = i % NDOF1d;

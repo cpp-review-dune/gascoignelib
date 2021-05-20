@@ -112,11 +112,15 @@ namespace Gascoigne {
 //   return s;
 // }
 
-void write_data(const GlobalVector &v, ostream &s) {
+void
+write_data(const GlobalVector& v, ostream& s)
+{
   s << v.n() << endl << v.ncomp() << endl << v << endl;
 }
 
-void read_data(GlobalVector &v, istream &s) {
+void
+read_data(GlobalVector& v, istream& s)
+{
   int n;
   int ncomp;
   s >> n;
@@ -126,11 +130,17 @@ void read_data(GlobalVector &v, istream &s) {
   s >> v;
 }
 
-template <class T> void write_data(const set<T> &v, ostream &s) {
+template<class T>
+void
+write_data(const set<T>& v, ostream& s)
+{
   s << v.size() << endl << v;
 }
 
-template <class T> void read_data(set<T> &v, istream &s) {
+template<class T>
+void
+read_data(set<T>& v, istream& s)
+{
   size_t n;
   s >> n;
   for (int i = 0; i < n; ++i) {
@@ -140,25 +150,56 @@ template <class T> void read_data(set<T> &v, istream &s) {
   }
 }
 
-void write_data(const int &v, ostream &s) { s << v; }
-void read_data(int &v, istream &s) { s >> v; }
-
-template <size_t N, typename T>
-void write_data(const std::array<T, N> &v, ostream &s) {
+void
+write_data(const int& v, ostream& s)
+{
   s << v;
 }
-template <size_t N, typename T>
-void read_data(std::array<T, N> &v, istream &s) {
+void
+read_data(int& v, istream& s)
+{
   s >> v;
 }
 
-void write_data(const double &v, ostream &s) { s << v; }
-void read_data(double &v, istream &s) { s >> v; }
+template<size_t N, typename T>
+void
+write_data(const std::array<T, N>& v, ostream& s)
+{
+  s << v;
+}
+template<size_t N, typename T>
+void
+read_data(std::array<T, N>& v, istream& s)
+{
+  s >> v;
+}
 
-void write_data(const string &v, ostream &s) { s << v; }
-void read_data(string &v, istream &s) { s >> v; }
+void
+write_data(const double& v, ostream& s)
+{
+  s << v;
+}
+void
+read_data(double& v, istream& s)
+{
+  s >> v;
+}
 
-template <class T> void write_data(const vector<T> &v, ostream &s) {
+void
+write_data(const string& v, ostream& s)
+{
+  s << v;
+}
+void
+read_data(string& v, istream& s)
+{
+  s >> v;
+}
+
+template<class T>
+void
+write_data(const vector<T>& v, ostream& s)
+{
   s << v.size() << endl;
   for (int i = 0; i < v.size(); ++i) {
     write_data(v[i], s);
@@ -167,7 +208,10 @@ template <class T> void write_data(const vector<T> &v, ostream &s) {
   s << endl;
 }
 
-template <class T> void read_data(vector<T> &v, istream &s) {
+template<class T>
+void
+read_data(vector<T>& v, istream& s)
+{
   size_t n;
   s >> n;
   if (v.size() != n)
@@ -176,32 +220,57 @@ template <class T> void read_data(vector<T> &v, istream &s) {
     read_data(v[i], s);
 }
 
-template void write_data(const std::array<int, 2> &, ostream &);
-template void write_data(const std::array<int, 3> &, ostream &);
-template void write_data(const std::array<int, 4> &, ostream &);
-template void write_data(const std::array<int, 8> &, ostream &);
-template void write_data(const std::array<int, 9> &, ostream &);
+template void
+write_data(const std::array<int, 2>&, ostream&);
+template void
+write_data(const std::array<int, 3>&, ostream&);
+template void
+write_data(const std::array<int, 4>&, ostream&);
+template void
+write_data(const std::array<int, 8>&, ostream&);
+template void
+write_data(const std::array<int, 9>&, ostream&);
 
-template void write_data(const vector<int> &, ostream &);
-template void write_data(const vector<Vertex<2>> &, ostream &);
-template void write_data(const vector<Vertex<3>> &, ostream &);
-template void write_data(const vector<IntVector> &, ostream &);
-template void write_data(const vector<std::array<int, 4>> &, ostream &);
-template void write_data(const vector<std::array<int, 8>> &, ostream &);
-template void write_data(const vector<set<int>> &, ostream &);
+template void
+write_data(const vector<int>&, ostream&);
+template void
+write_data(const vector<Vertex<2>>&, ostream&);
+template void
+write_data(const vector<Vertex<3>>&, ostream&);
+template void
+write_data(const vector<IntVector>&, ostream&);
+template void
+write_data(const vector<std::array<int, 4>>&, ostream&);
+template void
+write_data(const vector<std::array<int, 8>>&, ostream&);
+template void
+write_data(const vector<set<int>>&, ostream&);
 
-template void read_data(std::array<int, 2> &, istream &);
-template void read_data(std::array<int, 3> &, istream &);
-template void read_data(std::array<int, 4> &, istream &);
-template void read_data(std::array<int, 8> &, istream &);
-template void read_data(std::array<int, 9> &, istream &);
+template void
+read_data(std::array<int, 2>&, istream&);
+template void
+read_data(std::array<int, 3>&, istream&);
+template void
+read_data(std::array<int, 4>&, istream&);
+template void
+read_data(std::array<int, 8>&, istream&);
+template void
+read_data(std::array<int, 9>&, istream&);
 
-template void read_data(vector<int> &, istream &);
-template void read_data(vector<Vertex<2>> &, istream &);
-template void read_data(vector<Vertex<3>> &, istream &);
-template void read_data(vector<IntVector> &, istream &);
-template void read_data(vector<std::array<int, 4>> &, istream &);
-template void read_data(vector<std::array<int, 8>> &, istream &);
-template void read_data(vector<set<int>> &, istream &);
-template void read_data(set<int> &, istream &);
+template void
+read_data(vector<int>&, istream&);
+template void
+read_data(vector<Vertex<2>>&, istream&);
+template void
+read_data(vector<Vertex<3>>&, istream&);
+template void
+read_data(vector<IntVector>&, istream&);
+template void
+read_data(vector<std::array<int, 4>>&, istream&);
+template void
+read_data(vector<std::array<int, 8>>&, istream&);
+template void
+read_data(vector<set<int>>&, istream&);
+template void
+read_data(set<int>&, istream&);
 } // namespace Gascoigne

@@ -31,7 +31,10 @@
 /*-----------------------------------------*/
 
 namespace Gascoigne {
-class StokesLps3d : public Stokes3d, public virtual LpsEquation {
+class StokesLps3d
+  : public Stokes3d
+  , public virtual LpsEquation
+{
 protected:
   //
   /// handles the stabilization parameters
@@ -41,27 +44,32 @@ protected:
 public:
   ~StokesLps3d();
   StokesLps3d();
-  StokesLps3d(const ParamFile &filename);
+  StokesLps3d(const ParamFile& filename);
 
   std::string GetName() const { return "StokesLps3d"; }
 
-  void SetTime(double time, double dt) const {
+  void SetTime(double time, double dt) const
+  {
     Application::SetTime(time, dt);
     ST.DeltaT() = dt;
   }
   //
   /// Computation of lps stabilization parameters
   //
-  void lpspoint(double h, const FemFunction &U, const Vertex3d &v) const;
+  void lpspoint(double h, const FemFunction& U, const Vertex3d& v) const;
 
   //
   /// Stablization terms
   //
-  void StabForm(VectorIterator b, const FemFunction &U, const FemFunction &UP,
-                const TestFunction &N) const;
+  void StabForm(VectorIterator b,
+                const FemFunction& U,
+                const FemFunction& UP,
+                const TestFunction& N) const;
 
-  void StabMatrix(EntryMatrix &A, const FemFunction &U, const TestFunction &Np,
-                  const TestFunction &Mp) const;
+  void StabMatrix(EntryMatrix& A,
+                  const FemFunction& U,
+                  const TestFunction& Np,
+                  const TestFunction& Mp) const;
 };
 } // namespace Gascoigne
 

@@ -38,14 +38,18 @@ namespace Gascoigne {
 ////
 /////////////////////////////////////////////
 
-class Q2 : public PatchDiscretization {
+class Q2 : public PatchDiscretization
+{
 protected:
-  HNStructureQ1 *HN;
+  HNStructureQ1* HN;
 
-  nvector<int> GetLocalIndices(int iq) const {
+  nvector<int> GetLocalIndices(int iq) const
+  {
     return *GetMesh()->IndicesOfPatch(iq);
   }
-  void LocalToGlobal(MatrixInterface &A, EntryMatrix &E, int iq,
+  void LocalToGlobal(MatrixInterface& A,
+                     EntryMatrix& E,
+                     int iq,
                      double s) const;
 
 public:
@@ -59,31 +63,43 @@ public:
   int ndofs() const;
   int nelements() const;
   int n_withouthanging() const;
-  void ReInit(const GascoigneMesh *MP);
+  void ReInit(const GascoigneMesh* MP);
 
-  void Interpolate(GlobalVector &u, const DomainInitialCondition &U) const;
-  void StrongDirichletMatrix(MatrixInterface &A, int col,
-                             const std::vector<int> &comp) const;
-  void StrongDirichletMatrixOnlyRow(MatrixInterface &A, int col,
-                                    const std::vector<int> &comp) const;
-  void StrongDirichletVector(GlobalVector &u, const DirichletData &BF, int col,
-                             const std::vector<int> &comp, double d) const;
-  void StrongDirichletVectorZero(GlobalVector &u, int col,
-                                 const std::vector<int> &comp) const;
-  virtual void InterpolateSolutionByPatches(GlobalVector &u,
-                                            const GlobalVector &uold) const {}
-  void InterpolateSolution(GlobalVector &u, const GlobalVector &uold) const;
-  void StrongPeriodicVector(GlobalVector &u, const PeriodicData &BF, int col,
-                            const std::vector<int> &comp, double d) const;
-  void HNAverage(GlobalVector &x) const;
-  void HNDistribute(GlobalVector &x) const;
-  void HNZero(GlobalVector &x) const;
-  bool HNZeroCheck(const GlobalVector &x) const;
-  void Matrix(MatrixInterface &A, const GlobalVector &u,
-              const ProblemDescriptorInterface &PD, double d) const;
-  void MassMatrix(MatrixInterface &A) const;
-  void Structure(SparseStructureInterface *SI) const;
-  void InitFilter(nvector<double> &F) const;
+  void Interpolate(GlobalVector& u, const DomainInitialCondition& U) const;
+  void StrongDirichletMatrix(MatrixInterface& A,
+                             int col,
+                             const std::vector<int>& comp) const;
+  void StrongDirichletMatrixOnlyRow(MatrixInterface& A,
+                                    int col,
+                                    const std::vector<int>& comp) const;
+  void StrongDirichletVector(GlobalVector& u,
+                             const DirichletData& BF,
+                             int col,
+                             const std::vector<int>& comp,
+                             double d) const;
+  void StrongDirichletVectorZero(GlobalVector& u,
+                                 int col,
+                                 const std::vector<int>& comp) const;
+  virtual void InterpolateSolutionByPatches(GlobalVector& u,
+                                            const GlobalVector& uold) const
+  {}
+  void InterpolateSolution(GlobalVector& u, const GlobalVector& uold) const;
+  void StrongPeriodicVector(GlobalVector& u,
+                            const PeriodicData& BF,
+                            int col,
+                            const std::vector<int>& comp,
+                            double d) const;
+  void HNAverage(GlobalVector& x) const;
+  void HNDistribute(GlobalVector& x) const;
+  void HNZero(GlobalVector& x) const;
+  bool HNZeroCheck(const GlobalVector& x) const;
+  void Matrix(MatrixInterface& A,
+              const GlobalVector& u,
+              const ProblemDescriptorInterface& PD,
+              double d) const;
+  void MassMatrix(MatrixInterface& A) const;
+  void Structure(SparseStructureInterface* SI) const;
+  void InitFilter(nvector<double>& F) const;
 };
 } // namespace Gascoigne
 

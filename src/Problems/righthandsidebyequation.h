@@ -31,14 +31,18 @@
 /*-----------------------------------------*/
 
 namespace Gascoigne {
-class RightHandSideByEquation : public DomainRightHandSide {
+class RightHandSideByEquation : public DomainRightHandSide
+{
 protected:
-  const Equation *_EQ;
-  const ExactSolution *_ES;
+  const Equation* _EQ;
+  const ExactSolution* _ES;
 
 public:
-  RightHandSideByEquation(const Equation *eq, const ExactSolution *es)
-      : DomainRightHandSide(), _EQ(eq), _ES(es) {
+  RightHandSideByEquation(const Equation* eq, const ExactSolution* es)
+    : DomainRightHandSide()
+    , _EQ(eq)
+    , _ES(es)
+  {
     assert(es);
     assert(eq);
   }
@@ -46,7 +50,8 @@ public:
   std::string GetName() const { return "RightHandSideByEquation"; }
   int GetNcomp() const { return _EQ->GetNcomp(); }
 
-  double operator()(int c, const Vertex2d &v) const {
+  double operator()(int c, const Vertex2d& v) const
+  {
     int n = _EQ->GetNcomp();
     DoubleVector b(n, 0.);
     FemFunction U(n);
@@ -74,7 +79,8 @@ public:
     }
     return b[c];
   }
-  double operator()(int c, const Vertex3d &v) const {
+  double operator()(int c, const Vertex3d& v) const
+  {
     int n = _EQ->GetNcomp();
     DoubleVector b(n, 0.);
     FemFunction U(n);

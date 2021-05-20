@@ -38,7 +38,8 @@ namespace Gascoigne {
 ////
 /////////////////////////////////////////////
 
-class Application {
+class Application
+{
 private:
   mutable double _dt, _time;
 
@@ -47,12 +48,16 @@ public:
   ////  Con(De)structor
   //
 
-  Application() : _dt(0.), _time(0.) {}
+  Application()
+    : _dt(0.)
+    , _time(0.)
+  {}
   virtual ~Application() {}
 
   virtual std::string GetName() const { return "No Name"; }
 
-  virtual void SetTime(double time, double dt) const {
+  virtual void SetTime(double time, double dt) const
+  {
     _time = time;
     _dt = dt;
   }
@@ -60,9 +65,9 @@ public:
   double GetTime() const { return _time; }
   double GetTimeStep() const { return _dt; }
 
-  virtual void SetFemData(FemData &q) const {}
-  virtual void SetCellData(CellData &q) const {}
-  virtual void SetParameterData(LocalParameterData &q) const {}
+  virtual void SetFemData(FemData& q) const {}
+  virtual void SetCellData(CellData& q) const {}
+  virtual void SetParameterData(LocalParameterData& q) const {}
 };
 } // namespace Gascoigne
 

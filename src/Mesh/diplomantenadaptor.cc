@@ -32,9 +32,11 @@ using namespace std;
 /*-----------------------------------------*/
 
 namespace Gascoigne {
-DiplomandenAdaptor::DiplomandenAdaptor(AdaptorData &_info,
-                                       const DoubleVector &_eta)
-    : info(_info), eta(_eta) {
+DiplomandenAdaptor::DiplomandenAdaptor(AdaptorData& _info,
+                                       const DoubleVector& _eta)
+  : info(_info)
+  , eta(_eta)
+{
   if (info.dim() == 1) {
     ppp = 1;
   } else if (info.dim() == 2) {
@@ -49,7 +51,9 @@ DiplomandenAdaptor::DiplomandenAdaptor(AdaptorData &_info,
 
 /*-----------------------------------------*/
 
-void DiplomandenAdaptor::analyse() const {
+void
+DiplomandenAdaptor::analyse() const
+{
   double s = accumulate(eta.begin(), eta.end(), 0.);
   // double s = 1.;
   double reduction = 1. - pow(0.5, info.local_conv());
@@ -68,7 +72,7 @@ void DiplomandenAdaptor::analyse() const {
     double x = float(i) * dx;
     theta += eta[C[i]] * dx;
     double f =
-        theta + eta[C[i]] * (x + 1. / ppp) + s / (reduction * eta.size());
+      theta + eta[C[i]] * (x + 1. / ppp) + s / (reduction * eta.size());
     // theta += dx*dx;
     // double f = theta + dx * (x+1./ppp) + s/(reduction*eta.size());
     file << x << " " << f << endl;
@@ -79,7 +83,9 @@ void DiplomandenAdaptor::analyse() const {
 
 /*-----------------------------------------*/
 
-void DiplomandenAdaptor::MalteRefine(IntVector &ref) const {
+void
+DiplomandenAdaptor::MalteRefine(IntVector& ref) const
+{
   if (eta.size() == 0)
     return;
 
@@ -126,7 +132,9 @@ void DiplomandenAdaptor::MalteRefine(IntVector &ref) const {
 
 /*-----------------------------------------*/
 
-void DiplomandenAdaptor::refine(IntVector &ref) {
+void
+DiplomandenAdaptor::refine(IntVector& ref)
+{
   int n = eta.size();
 
   if (n == 0)
@@ -156,7 +164,7 @@ void DiplomandenAdaptor::refine(IntVector &ref) {
   double value = etasum * pow(nelem, info.global_conv());
 
   double goal =
-      etasum * (info.rfactor() + (1. - info.rfactor()) * pow(0.5, alpha));
+    etasum * (info.rfactor() + (1. - info.rfactor()) * pow(0.5, alpha));
 
   for (i = 0; i < n; i++) {
     etasum -= t * eta[C[i]];

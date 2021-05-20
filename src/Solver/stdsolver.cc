@@ -82,17 +82,25 @@ namespace Gascoigne {
 extern Timer GlobalTimer;
 
 StdSolver::StdSolver()
-    : _MP(NULL), _HM(NULL), _ZP(NULL), _PDX(NULL)
-      //      , _NI(NULL)
-      ,
-      _distribute(true), _ndirect(1000), _directsolver(0), _discname("none"),
-      _matrixtype("point_node"), _PrimalSolve(1), _useUMFPACK(true)
+  : _MP(NULL)
+  , _HM(NULL)
+  , _ZP(NULL)
+  , _PDX(NULL)
+  //      , _NI(NULL)
+  , _distribute(true)
+  , _ndirect(1000)
+  , _directsolver(0)
+  , _discname("none")
+  , _matrixtype("point_node")
+  , _PrimalSolve(1)
+  , _useUMFPACK(true)
 // , omega_domain(0.)
 {}
 
 /*-----------------------------------------*/
 
-StdSolver::~StdSolver() {
+StdSolver::~StdSolver()
+{
   if (_ZP)
     delete _ZP;
   _ZP = NULL;
@@ -100,15 +108,17 @@ StdSolver::~StdSolver() {
 
 /*-------------------------------------------------------*/
 
-void StdSolver::_check_consistency(const Equation *EQ,
-                                   const DiscretizationInterface *DI) const {
+void
+StdSolver::_check_consistency(const Equation* EQ,
+                              const DiscretizationInterface* DI) const
+{
   return;
 
   string eq = DI->GetName();
 
   bool glseq = false, glsdi = false;
 
-  if (dynamic_cast<const GlsEquation *>(EQ)) {
+  if (dynamic_cast<const GlsEquation*>(EQ)) {
     glseq = true;
   }
   if (eq == "Q1Gls2d" || eq == "Q2Gls2d" || eq == "Q1Gls3d" ||
@@ -126,7 +136,7 @@ void StdSolver::_check_consistency(const Equation *EQ,
 
   bool lpseq = false, lpsdi = false;
 
-  if (dynamic_cast<const LpsEquation *>(EQ)) {
+  if (dynamic_cast<const LpsEquation*>(EQ)) {
     lpseq = true;
   }
   if (eq == "Q1Lps2d" || eq == "Q2Lps2d" || eq == "Q1Lps3d" ||
@@ -146,11 +156,17 @@ void StdSolver::_check_consistency(const Equation *EQ,
 
 /*-------------------------------------------------------*/
 
-void StdSolver::MatrixZero(Matrix &A) const { GetMatrix(A).zero(); }
+void
+StdSolver::MatrixZero(Matrix& A) const
+{
+  GetMatrix(A).zero();
+}
 
 /*-------------------------------------------------------*/
 
-void StdSolver::OutputSettings() const {
+void
+StdSolver::OutputSettings() const
+{
   cout << "==================================================" << endl;
   cout << "Solver:                   " << GetName() << endl;
   cout << "Discretization:           " << GetDiscretization()->GetName()
@@ -161,11 +177,13 @@ void StdSolver::OutputSettings() const {
 
 /*-------------------------------------------------------*/
 
-void StdSolver::SetProblem(const ProblemDescriptorInterface &PDX) {
+void
+StdSolver::SetProblem(const ProblemDescriptorInterface& PDX)
+{
   _PDX = &PDX;
   assert(_PDX);
 
-  const Equation *EQ = GetProblemDescriptor()->GetEquation();
+  const Equation* EQ = GetProblemDescriptor()->GetEquation();
 
   if (EQ)
     _check_consistency(EQ, GetDiscretization());
@@ -174,7 +192,9 @@ void StdSolver::SetProblem(const ProblemDescriptorInterface &PDX) {
 
 /*-------------------------------------------------------*/
 
-void StdSolver::SetDiscretization(DiscretizationInterface &DI, bool init) {
+void
+StdSolver::SetDiscretization(DiscretizationInterface& DI, bool init)
+{
   if (init) {
     DI.ReInit(GetMesh());
     DI.SetDataContainer(GetDiscretization()->GetDataContainer());
@@ -187,7 +207,9 @@ void StdSolver::SetDiscretization(DiscretizationInterface &DI, bool init) {
 
 /*-------------------------------------------------------*/
 
-void StdSolver::NewMesh(const GascoigneMesh *mp) {
+void
+StdSolver::NewMesh(const GascoigneMesh* mp)
+{
   _MP = mp;
   assert(_MP);
 
@@ -204,8 +226,9 @@ void StdSolver::NewMesh(const GascoigneMesh *mp) {
 
 /*-----------------------------------------*/
 
-void StdSolver::SetDefaultValues(string discname, string matrixtype,
-                                 int ndirect) {
+void
+StdSolver::SetDefaultValues(string discname, string matrixtype, int ndirect)
+{
   _discname = discname;
   _matrixtype = matrixtype;
   _ndirect = ndirect;
@@ -213,7 +236,8 @@ void StdSolver::SetDefaultValues(string discname, string matrixtype,
 
 /*-------------------------------------------------------*/
 
-void StdSolver::BasicInit(const ParamFile &paramfile, const int dimension)
+void
+StdSolver::BasicInit(const ParamFile& paramfile, const int dimension)
 //                            const NumericInterface *NI)
 {
   _paramfile = paramfile;
@@ -244,8 +268,9 @@ void StdSolver::BasicInit(const ParamFile &paramfile, const int dimension)
 
 /*-------------------------------------------------------*/
 
-DiscretizationInterface *StdSolver::NewDiscretization(int dimension,
-                                                      const string &discname) {
+DiscretizationInterface*
+StdSolver::NewDiscretization(int dimension, const string& discname)
+{
   // if (_NI)
   // {
   //   return _NI->NewDiscretization();
@@ -307,7 +332,9 @@ DiscretizationInterface *StdSolver::NewDiscretization(int dimension,
 
 /*-------------------------------------------------------------*/
 
-MatrixInterface *StdSolver::NewMatrix(int ncomp, const string &matrixtype) {
+MatrixInterface*
+StdSolver::NewMatrix(int ncomp, const string& matrixtype)
+{
   if (_directsolver || matrixtype == "point_node") {
     return new PointMatrix(ncomp, "node");
   } else if ((matrixtype == "block") || (matrixtype == "sparseumf") ||
@@ -359,8 +386,9 @@ MatrixInterface *StdSolver::NewMatrix(int ncomp, const string &matrixtype) {
 
 /*-------------------------------------------------------------*/
 
-IluInterface *StdSolver::NewIlu(const Matrix &A, int ncomp,
-                                const string &matrixtype) {
+IluInterface*
+StdSolver::NewIlu(const Matrix& A, int ncomp, const string& matrixtype)
+{
 #ifdef __WITH_UMFPACK__
   if (_directsolver && _useUMFPACK) {
 #ifdef __WITH_UMFPACK_LONG__
@@ -443,7 +471,9 @@ IluInterface *StdSolver::NewIlu(const Matrix &A, int ncomp,
 
 /*-------------------------------------------------------*/
 
-void StdSolver::AddPeriodicNodes(SparseStructure *SA) {
+void
+StdSolver::AddPeriodicNodes(SparseStructure* SA)
+{
   /*-------------------------------------------------------
   | Vereinigt die Nachbarschaften von zusammengehoerenden
   | Knoten auf den periodischen Raendern, so dass es
@@ -451,38 +481,42 @@ void StdSolver::AddPeriodicNodes(SparseStructure *SA) {
   | anderen zu schieben.
   -------------------------------------------------------*/
 
-  const BoundaryManager *BM = GetProblemDescriptor()->GetBoundaryManager();
-  const IntVector &iv_PeriodicColors = BM->GetPeriodicDataColors();
+  const BoundaryManager* BM = GetProblemDescriptor()->GetBoundaryManager();
+  const IntVector& iv_PeriodicColors = BM->GetPeriodicDataColors();
 
-  const GascoigneMesh *p_mesh = GetMesh();
-  const GascoigneMesh *GMP = dynamic_cast<const GascoigneMesh *>(p_mesh);
+  const GascoigneMesh* p_mesh = GetMesh();
+  const GascoigneMesh* GMP = dynamic_cast<const GascoigneMesh*>(p_mesh);
   assert(GMP);
 
   map<int, map<int, int>> mm_PeriodicPairs =
-      GMP->GetBoundaryIndexHandler().GetPeriodicPairs();
+    GMP->GetBoundaryIndexHandler().GetPeriodicPairs();
 
   for (IntVector::const_iterator p_col = iv_PeriodicColors.begin();
-       p_col != iv_PeriodicColors.end(); p_col += 2) {
+       p_col != iv_PeriodicColors.end();
+       p_col += 2) {
     int col = *p_col;
 
     IntSet is_neighbours1;
     IntSet is_neighbours2;
 
     for (map<int, int>::const_iterator p_pair = mm_PeriodicPairs[col].begin();
-         p_pair != mm_PeriodicPairs[col].end(); p_pair++) {
+         p_pair != mm_PeriodicPairs[col].end();
+         p_pair++) {
       // beide raender abgrasen und die kopplungen in columns1 und columns2
       // eintragen
       is_neighbours1 = SA->row(p_pair->first);
       is_neighbours2 = SA->row(p_pair->second);
 
       for (IntSet::const_iterator p_neighbour1 = is_neighbours1.begin();
-           p_neighbour1 != is_neighbours1.end(); p_neighbour1++) {
+           p_neighbour1 != is_neighbours1.end();
+           p_neighbour1++) {
         SA->build_add(p_pair->second, *p_neighbour1);
         SA->build_add(*p_neighbour1, p_pair->second);
       }
 
       for (IntSet::const_iterator p_neighbour2 = is_neighbours2.begin();
-           p_neighbour2 != is_neighbours2.end(); p_neighbour2++) {
+           p_neighbour2 != is_neighbours2.end();
+           p_neighbour2++) {
         SA->build_add(p_pair->first, *p_neighbour2);
         SA->build_add(*p_neighbour2, p_pair->first);
       }
@@ -493,20 +527,26 @@ void StdSolver::AddPeriodicNodes(SparseStructure *SA) {
 
 /*-------------------------------------------------------*/
 
-void StdSolver::RegisterVector(const VectorInterface &g) {
+void
+StdSolver::RegisterVector(const VectorInterface& g)
+{
   vector_agent.Register(g);
 }
 
 /*-------------------------------------------------------*/
 
-void StdSolver::ReInitVector(VectorInterface &dst) {
+void
+StdSolver::ReInitVector(VectorInterface& dst)
+{
   int ncomp = GetProblemDescriptor()->GetNcomp();
   ReInitVector(dst, ncomp);
 }
 
 /*-------------------------------------------------------*/
 
-void StdSolver::ReInitVector(VectorInterface &dst, int comp) {
+void
+StdSolver::ReInitVector(VectorInterface& dst, int comp)
+{
   int n = GetDiscretization()->ndofs();
   int nc = GetDiscretization()->nelements();
 
@@ -543,7 +583,9 @@ void StdSolver::ReInitVector(VectorInterface &dst, int comp) {
 
 /*-------------------------------------------------------*/
 
-void StdSolver::ReInitMatrix(const Matrix &A) {
+void
+StdSolver::ReInitMatrix(const Matrix& A)
+{
   GlobalTimer.start("---> matrix init");
 
   // number of components in current problem
@@ -561,7 +603,7 @@ void StdSolver::ReInitMatrix(const Matrix &A) {
   // check if matrix is an umfpack object. If yes, delete it
 #ifdef __WITH_UMFPACK__
   if (_useUMFPACK && matrix->second != NULL) {
-    SimpleMatrix *SM = dynamic_cast<SimpleMatrix *>(matrix->second);
+    SimpleMatrix* SM = dynamic_cast<SimpleMatrix*>(matrix->second);
     if ((SM && !_directsolver && _matrixtype != "point_node") ||
         (!SM && _directsolver)) {
       delete matrix->second;
@@ -588,9 +630,9 @@ void StdSolver::ReInitMatrix(const Matrix &A) {
 #ifdef __WITH_UMFPACK__
   if (_useUMFPACK && ilu->second != NULL) {
 #ifdef __WITH_UMFPACK_LONG__
-    UmfIluLong *UM = dynamic_cast<UmfIluLong *>(ilu->second);
+    UmfIluLong* UM = dynamic_cast<UmfIluLong*>(ilu->second);
 #else
-    UmfIlu *UM = dynamic_cast<UmfIlu *>(ilu->second);
+    UmfIlu* UM = dynamic_cast<UmfIlu*>(ilu->second);
 #endif
 
     if ((UM && !_directsolver) || (!UM && _directsolver)) {
@@ -605,8 +647,8 @@ void StdSolver::ReInitMatrix(const Matrix &A) {
 
   // if Vankasmoother is used, attach dofhandler
   if (!_directsolver && (_matrixtype == "vanka")) {
-    assert(dynamic_cast<const VankaSmoother *>(ilu->second));
-    dynamic_cast<const VankaSmoother *>(ilu->second)->SetDofHandler(GetMesh());
+    assert(dynamic_cast<const VankaSmoother*>(ilu->second));
+    dynamic_cast<const VankaSmoother*>(ilu->second)->SetDofHandler(GetMesh());
   }
 
   ////////// setup the stencil
@@ -624,26 +666,46 @@ void StdSolver::ReInitMatrix(const Matrix &A) {
 
 /*-------------------------------------------------------*/
 
-void StdSolver::Zero(VectorInterface &dst) const { GetGV(dst).zero(); }
+void
+StdSolver::Zero(VectorInterface& dst) const
+{
+  GetGV(dst).zero();
+}
 
 /*-----------------------------------------*/
 
-double StdSolver::NewtonNorm(const VectorInterface &u) const {
+double
+StdSolver::NewtonNorm(const VectorInterface& u) const
+{
   return GetGV(u).norm_l8();
 }
 
 /*-----------------------------------------*/
 
-void StdSolver::HNAverageData() const { GetDiscretization()->HNAverageData(); }
-void StdSolver::HNZeroData() const { GetDiscretization()->HNZeroData(); }
-void StdSolver::HNAverage(const VectorInterface &x) const {
-  GetDiscretization()->HNAverage(const_cast<GlobalVector &>(GetGV(x)));
+void
+StdSolver::HNAverageData() const
+{
+  GetDiscretization()->HNAverageData();
 }
-void StdSolver::HNZero(const VectorInterface &x) const {
-  GetDiscretization()->HNZero(const_cast<GlobalVector &>(GetGV(x)));
+void
+StdSolver::HNZeroData() const
+{
+  GetDiscretization()->HNZeroData();
+}
+void
+StdSolver::HNAverage(const VectorInterface& x) const
+{
+  GetDiscretization()->HNAverage(const_cast<GlobalVector&>(GetGV(x)));
+}
+void
+StdSolver::HNZero(const VectorInterface& x) const
+{
+  GetDiscretization()->HNZero(const_cast<GlobalVector&>(GetGV(x)));
   ;
 }
-void StdSolver::HNDistribute(VectorInterface &x) const {
+void
+StdSolver::HNDistribute(VectorInterface& x) const
+{
   if (GetDistribute()) {
     GetDiscretization()->HNDistribute(GetGV(x));
   }
@@ -651,9 +713,11 @@ void StdSolver::HNDistribute(VectorInterface &x) const {
 
 /*-------------------------------------------------------*/
 
-void StdSolver::InterpolateSolution(VectorInterface &gu,
-                                    const GlobalVector &uold) const {
-  GlobalVector &u = GetGV(gu);
+void
+StdSolver::InterpolateSolution(VectorInterface& gu,
+                               const GlobalVector& uold) const
+{
+  GlobalVector& u = GetGV(gu);
 
   u.zero();
   GetDiscretization()->InterpolateSolution(u, uold);
@@ -662,11 +726,14 @@ void StdSolver::InterpolateSolution(VectorInterface &gu,
 
 /*-----------------------------------------*/
 
-void StdSolver::residualgmres(const Matrix &A, VectorInterface &gy,
-                              const VectorInterface &gx,
-                              const VectorInterface &gb) const {
-  GlobalVector &y = GetGV(gy);
-  const GlobalVector &b = GetGV(gb);
+void
+StdSolver::residualgmres(const Matrix& A,
+                         VectorInterface& gy,
+                         const VectorInterface& gx,
+                         const VectorInterface& gb) const
+{
+  GlobalVector& y = GetGV(gy);
+  const GlobalVector& b = GetGV(gb);
 
   vmulteq(A, gy, gx, 1.);
   y.sadd(-1., 1., b);
@@ -675,8 +742,12 @@ void StdSolver::residualgmres(const Matrix &A, VectorInterface &gy,
 
 /*-----------------------------------------*/
 
-void StdSolver::vmult(const Matrix &A, VectorInterface &gy,
-                      const VectorInterface &gx, double d) const {
+void
+StdSolver::vmult(const Matrix& A,
+                 VectorInterface& gy,
+                 const VectorInterface& gx,
+                 double d) const
+{
   GlobalTimer.start("---> vmult");
   GetMatrix(A).vmult(GetGV(gy), GetGV(gx), d);
   GlobalTimer.stop("---> vmult");
@@ -684,8 +755,12 @@ void StdSolver::vmult(const Matrix &A, VectorInterface &gy,
 
 /*-----------------------------------------*/
 
-void StdSolver::vmulteq(const Matrix &A, VectorInterface &gy,
-                        const VectorInterface &gx, double d) const {
+void
+StdSolver::vmulteq(const Matrix& A,
+                   VectorInterface& gy,
+                   const VectorInterface& gx,
+                   double d) const
+{
   GlobalTimer.start("---> vmult");
   Zero(gy);
   GlobalTimer.stop("---> vmult");
@@ -694,9 +769,12 @@ void StdSolver::vmulteq(const Matrix &A, VectorInterface &gy,
 
 /*-----------------------------------------*/
 
-void StdSolver::MatrixResidual(const Matrix &A, VectorInterface &gy,
-                               const VectorInterface &gx,
-                               const VectorInterface &gb) const {
+void
+StdSolver::MatrixResidual(const Matrix& A,
+                          VectorInterface& gy,
+                          const VectorInterface& gx,
+                          const VectorInterface& gb) const
+{
   Equ(gy, 1., gb);
   vmult(A, gy, gx, -1.);
   SubtractMeanAlgebraic(gy);
@@ -704,7 +782,9 @@ void StdSolver::MatrixResidual(const Matrix &A, VectorInterface &gy,
 
 /*-------------------------------------------------------*/
 
-void StdSolver::SetBoundaryVectorZero(VectorInterface &gf) const {
+void
+StdSolver::SetBoundaryVectorZero(VectorInterface& gf) const
+{
   GetDiscretization()->StrongDirichletVectorZero(GetGV(gf),
                                                  *GetProblemDescriptor());
 
@@ -723,9 +803,11 @@ void StdSolver::SetBoundaryVectorZero(VectorInterface &gf) const {
 
 /*-------------------------------------------------------*/
 
-void StdSolver::SetBoundaryVector(VectorInterface &gf) const {
+void
+StdSolver::SetBoundaryVector(VectorInterface& gf) const
+{
   GetDiscretization()->StrongDirichletVector(
-      GetGV(gf), GetProblemDescriptor()->GetDirichletData());
+    GetGV(gf), GetProblemDescriptor()->GetDirichletData());
   // const BoundaryManager *BM = GetProblemDescriptor()->GetBoundaryManager();
   // const DirichletData *DD = GetProblemDescriptor()->GetDirichletData();
   // if (DD == NULL)
@@ -743,9 +825,11 @@ void StdSolver::SetBoundaryVector(VectorInterface &gf) const {
 
 /*-------------------------------------------------------*/
 
-void StdSolver::SetPeriodicVector(VectorInterface &gf) const {
-  const BoundaryManager *BM = GetProblemDescriptor()->GetBoundaryManager();
-  const PeriodicData *PD = GetProblemDescriptor()->GetPeriodicData();
+void
+StdSolver::SetPeriodicVector(VectorInterface& gf) const
+{
+  const BoundaryManager* BM = GetProblemDescriptor()->GetBoundaryManager();
+  const PeriodicData* PD = GetProblemDescriptor()->GetPeriodicData();
 
   if (PD == NULL) {
     if (BM->GetPeriodicDataColors().size() != 0) {
@@ -760,10 +844,12 @@ void StdSolver::SetPeriodicVector(VectorInterface &gf) const {
 
 /*-------------------------------------------------------*/
 
-void StdSolver::SetBoundaryVectorStrong(VectorInterface &gf,
-                                        const BoundaryManager &BM,
-                                        const DirichletData &DD,
-                                        double d) const {
+void
+StdSolver::SetBoundaryVectorStrong(VectorInterface& gf,
+                                   const BoundaryManager& BM,
+                                   const DirichletData& DD,
+                                   double d) const
+{
   cerr << "StdSolver::SetBoundaryVectorStrong(...). Old Interface. Not used "
           "any more"
        << endl
@@ -793,49 +879,56 @@ void StdSolver::SetBoundaryVectorStrong(VectorInterface &gf,
 
 /*-------------------------------------------------------*/
 
-void StdSolver::SetPeriodicVectorStrong(VectorInterface &gf,
-                                        const BoundaryManager &BM,
-                                        const PeriodicData &PD,
-                                        double d) const {
-  GlobalVector &f = GetGV(gf);
+void
+StdSolver::SetPeriodicVectorStrong(VectorInterface& gf,
+                                   const BoundaryManager& BM,
+                                   const PeriodicData& PD,
+                                   double d) const
+{
+  GlobalVector& f = GetGV(gf);
 
   list<int> periodic_cols(BM.GetPeriodicDataColors().begin(),
                           BM.GetPeriodicDataColors().end());
   for (list<int>::const_iterator p = periodic_cols.begin();
-       p != periodic_cols.end(); p++) {
+       p != periodic_cols.end();
+       p++) {
     int col = *p;
-    const IntVector &comp = BM.GetPeriodicDataComponents(col);
+    const IntVector& comp = BM.GetPeriodicDataComponents(col);
     GetDiscretization()->StrongPeriodicVector(f, PD, col, comp, d);
   }
 }
 
 /*-------------------------------------------------------*/
 
-void StdSolver::SetPeriodicVectorZero(VectorInterface &gf) const {
-  const BoundaryManager *BM = GetProblemDescriptor()->GetBoundaryManager();
-  const IntVector &iv_PeriodicColors = BM->GetPeriodicDataColors();
+void
+StdSolver::SetPeriodicVectorZero(VectorInterface& gf) const
+{
+  const BoundaryManager* BM = GetProblemDescriptor()->GetBoundaryManager();
+  const IntVector& iv_PeriodicColors = BM->GetPeriodicDataColors();
 
-  GlobalVector &f = GetGV(gf);
-  const GascoigneMesh *p_mesh = GetMesh();
-  const GascoigneMesh *GMP = dynamic_cast<const GascoigneMesh *>(p_mesh);
+  GlobalVector& f = GetGV(gf);
+  const GascoigneMesh* p_mesh = GetMesh();
+  const GascoigneMesh* GMP = dynamic_cast<const GascoigneMesh*>(p_mesh);
   assert(GMP);
 
   map<int, map<int, int>> mm_PeriodicPairs =
-      GMP->GetBoundaryIndexHandler().GetPeriodicPairs();
+    GMP->GetBoundaryIndexHandler().GetPeriodicPairs();
 
   for (IntVector::const_iterator p_col = iv_PeriodicColors.begin();
        p_col != iv_PeriodicColors.end();) {
     int col = *p_col++;
     *p_col++;
 
-    const IntVector &iv_PeriodicComponents = BM->GetPeriodicDataComponents(col);
+    const IntVector& iv_PeriodicComponents = BM->GetPeriodicDataComponents(col);
 
     for (map<int, int>::const_iterator p_pair = mm_PeriodicPairs[col].begin();
-         p_pair != mm_PeriodicPairs[col].end(); p_pair++) {
+         p_pair != mm_PeriodicPairs[col].end();
+         p_pair++) {
       for (IntVector::const_iterator p_comp = iv_PeriodicComponents.begin();
-           p_comp != iv_PeriodicComponents.end(); p_comp++) {
+           p_comp != iv_PeriodicComponents.end();
+           p_comp++) {
         f(p_pair->second, *p_comp) =
-            .5 * (f(p_pair->second, *p_comp) + f(p_pair->first, *p_comp));
+          .5 * (f(p_pair->second, *p_comp) + f(p_pair->first, *p_comp));
         f(p_pair->first, *p_comp) = f(p_pair->second, *p_comp);
       }
     }
@@ -844,8 +937,13 @@ void StdSolver::SetPeriodicVectorZero(VectorInterface &gf) const {
 
 /*-------------------------------------------------------*/
 
-void StdSolver::smooth(int niter, const Matrix &A, VectorInterface &x,
-                       const VectorInterface &y, VectorInterface &h) const {
+void
+StdSolver::smooth(int niter,
+                  const Matrix& A,
+                  VectorInterface& x,
+                  const VectorInterface& y,
+                  VectorInterface& h) const
+{
 
   GlobalTimer.start("---> smooth");
   double omega = GetSolverData().GetOmega();
@@ -879,25 +977,31 @@ void StdSolver::smooth(int niter, const Matrix &A, VectorInterface &x,
 
 /*-------------------------------------------------------*/
 
-void StdSolver::smooth_pre(const Matrix &A, VectorInterface &x,
-                           const VectorInterface &y,
-                           VectorInterface &help) const {
+void
+StdSolver::smooth_pre(const Matrix& A,
+                      VectorInterface& x,
+                      const VectorInterface& y,
+                      VectorInterface& help) const
+{
   int niter = GetSolverData().GetIterPre();
   smooth(niter, A, x, y, help);
 }
 
 /*-------------------------------------------------------*/
 
-void StdSolver::smooth_exact(const Matrix &A, VectorInterface &x,
-                             const VectorInterface &y,
-                             VectorInterface &help) const {
+void
+StdSolver::smooth_exact(const Matrix& A,
+                        VectorInterface& x,
+                        const VectorInterface& y,
+                        VectorInterface& help) const
+{
 #ifdef __WITH_UMFPACK__
   if (_directsolver && _useUMFPACK) {
     GlobalTimer.start("---> smooth (ex)");
 #ifdef __WITH_UMFPACK_LONG__
-    const UmfIluLong *UM = dynamic_cast<const UmfIluLong *>(&GetIlu(A));
+    const UmfIluLong* UM = dynamic_cast<const UmfIluLong*>(&GetIlu(A));
 #else
-    const UmfIlu *UM = dynamic_cast<const UmfIlu *>(&GetIlu(A));
+    const UmfIlu* UM = dynamic_cast<const UmfIlu*>(&GetIlu(A));
 #endif
     assert(UM);
     UM->Solve(GetGV(x), GetGV(y));
@@ -912,29 +1016,33 @@ void StdSolver::smooth_exact(const Matrix &A, VectorInterface &x,
 
 /*-------------------------------------------------------*/
 
-void StdSolver::smooth_post(const Matrix &A, VectorInterface &x,
-                            const VectorInterface &y,
-                            VectorInterface &help) const {
+void
+StdSolver::smooth_post(const Matrix& A,
+                       VectorInterface& x,
+                       const VectorInterface& y,
+                       VectorInterface& help) const
+{
   int niter = GetSolverData().GetIterPost();
   smooth(niter, A, x, y, help);
 }
 
 /*-------------------------------------------------------*/
 
-void StdSolver::Form(VectorInterface &gy, const VectorInterface &gx,
-                     double d) const {
+void
+StdSolver::Form(VectorInterface& gy, const VectorInterface& gx, double d) const
+{
   GlobalTimer.start("---> form");
 
   HNAverage(gx);
   HNAverageData();
 
   //////////// Form in elements
-  GetDiscretization()->Form(GetGV(gy), GetGV(gx),
-                            *GetProblemDescriptor()->GetEquation(), d);
+  GetDiscretization()->Form(
+    GetGV(gy), GetGV(gx), *GetProblemDescriptor()->GetEquation(), d);
 
   //////////// Boundary
-  GetDiscretization()->BoundaryForm(GetGV(gy), GetGV(gx),
-                                    *GetProblemDescriptor(), d);
+  GetDiscretization()->BoundaryForm(
+    GetGV(gy), GetGV(gx), *GetProblemDescriptor(), d);
 
   HNZero(gx);
   HNZeroData();
@@ -946,20 +1054,23 @@ void StdSolver::Form(VectorInterface &gy, const VectorInterface &gx,
 
 /*-------------------------------------------------------*/
 
-void StdSolver::AdjointForm(VectorInterface &gy, const VectorInterface &gx,
-                            double d) const {
-  GlobalVector &y = GetGV(gy);
-  const GlobalVector &x = GetGV(gx);
+void
+StdSolver::AdjointForm(VectorInterface& gy,
+                       const VectorInterface& gx,
+                       double d) const
+{
+  GlobalVector& y = GetGV(gy);
+  const GlobalVector& x = GetGV(gx);
 
   HNAverage(gx);
   HNAverageData();
 
-  const Equation *EQ = GetProblemDescriptor()->GetEquation();
+  const Equation* EQ = GetProblemDescriptor()->GetEquation();
   assert(EQ);
   GetDiscretization()->AdjointForm(y, x, *EQ, d);
 
   abort();
-  const BoundaryEquation *BE = GetProblemDescriptor()->GetBoundaryEquation();
+  const BoundaryEquation* BE = GetProblemDescriptor()->GetBoundaryEquation();
   if (BE) {
     GetDiscretization()->BoundaryForm(y, x, *GetProblemDescriptor(), d);
   }
@@ -972,9 +1083,11 @@ void StdSolver::AdjointForm(VectorInterface &gy, const VectorInterface &gx,
 
 /*-------------------------------------------------------*/
 
-void StdSolver::BoundaryInit(VectorInterface &Gu) const {
-  GlobalVector &u = GetGV(Gu);
-  const DirichletData *DD = GetProblemDescriptor()->GetDirichletData();
+void
+StdSolver::BoundaryInit(VectorInterface& Gu) const
+{
+  GlobalVector& u = GetGV(Gu);
+  const DirichletData* DD = GetProblemDescriptor()->GetDirichletData();
   if (DD == NULL) {
     u.zero();
     cerr << "StdSolver::BoundaryInit():\t No DirichletData given but required "
@@ -1005,10 +1118,12 @@ void StdSolver::BoundaryInit(VectorInterface &Gu) const {
 
 /*-------------------------------------------------------*/
 
-void StdSolver::SolutionInit(VectorInterface &Gu) const {
-  GlobalVector &u = GetGV(Gu);
-  const DomainInitialCondition *u0 = dynamic_cast<const DomainRightHandSide *>(
-      GetProblemDescriptor()->GetInitialCondition());
+void
+StdSolver::SolutionInit(VectorInterface& Gu) const
+{
+  GlobalVector& u = GetGV(Gu);
+  const DomainInitialCondition* u0 = dynamic_cast<const DomainRightHandSide*>(
+    GetProblemDescriptor()->GetInitialCondition());
   if (u0 == NULL) {
     u.zero();
     return;
@@ -1032,41 +1147,47 @@ void StdSolver::SolutionInit(VectorInterface &Gu) const {
 
 /*-------------------------------------------------------*/
 
-void StdSolver::ComputeError(const VectorInterface &u,
-                             GlobalVector &err) const {
+void
+StdSolver::ComputeError(const VectorInterface& u, GlobalVector& err) const
+{
   if (GetProblemDescriptor()->GetExactSolution() == NULL)
     return;
   HNAverage(u);
-  GetDiscretization()->ComputeError(GetGV(u), err,
-                                    GetProblemDescriptor()->GetExactSolution());
+  GetDiscretization()->ComputeError(
+    GetGV(u), err, GetProblemDescriptor()->GetExactSolution());
   HNZero(u);
 }
 
 /*-------------------------------------------------------*/
 
-void StdSolver::AssembleError(GlobalVector &eta, const VectorInterface &u,
-                              GlobalVector &err) const {
+void
+StdSolver::AssembleError(GlobalVector& eta,
+                         const VectorInterface& u,
+                         GlobalVector& err) const
+{
   if (GetProblemDescriptor()->GetExactSolution() == NULL)
     return;
   HNAverage(u);
   GetDiscretization()->AssembleError(
-      eta, GetGV(u), err, GetProblemDescriptor()->GetExactSolution());
+    eta, GetGV(u), err, GetProblemDescriptor()->GetExactSolution());
   HNZero(u);
 }
 
 /*-------------------------------------------------------*/
 
-double StdSolver::ComputeFunctional(VectorInterface &gf,
-                                    const VectorInterface &gu,
-                                    const Functional *FP) {
+double
+StdSolver::ComputeFunctional(VectorInterface& gf,
+                             const VectorInterface& gu,
+                             const Functional* FP)
+{
   VectorInterface gh("XXX");
   ReInitVector(gh);
   double val = 0.;
 
-  const DomainFunctional *DFP = dynamic_cast<const DomainFunctional *>(FP);
-  const BoundaryFunctional *BFP = dynamic_cast<const BoundaryFunctional *>(FP);
-  const ResidualFunctional *RFP = dynamic_cast<const ResidualFunctional *>(FP);
-  const PointFunctional *NPFP = dynamic_cast<const PointFunctional *>(FP);
+  const DomainFunctional* DFP = dynamic_cast<const DomainFunctional*>(FP);
+  const BoundaryFunctional* BFP = dynamic_cast<const BoundaryFunctional*>(FP);
+  const ResidualFunctional* RFP = dynamic_cast<const ResidualFunctional*>(FP);
+  const PointFunctional* NPFP = dynamic_cast<const PointFunctional*>(FP);
 
   if (DFP)
     val = ComputeDomainFunctional(gu, DFP);
@@ -1088,14 +1209,17 @@ double StdSolver::ComputeFunctional(VectorInterface &gf,
 
 /*-------------------------------------------------------*/
 
-double StdSolver::ComputeBoundaryFunctional(
-    VectorInterface &gf, const VectorInterface &gu, VectorInterface &gz,
-    const BoundaryFunctional *FP) const {
+double
+StdSolver::ComputeBoundaryFunctional(VectorInterface& gf,
+                                     const VectorInterface& gu,
+                                     VectorInterface& gz,
+                                     const BoundaryFunctional* FP) const
+{
   HNAverage(gu);
   HNAverageData();
-  const BoundaryManager *BM = GetProblemDescriptor()->GetBoundaryManager();
+  const BoundaryManager* BM = GetProblemDescriptor()->GetBoundaryManager();
   double J = GetDiscretization()->ComputeBoundaryFunctional(
-      GetGV(gu), BM->GetBoundaryFunctionalColors(), *FP);
+    GetGV(gu), BM->GetBoundaryFunctionalColors(), *FP);
   HNZero(gu);
   HNZeroData();
   return J;
@@ -1103,8 +1227,10 @@ double StdSolver::ComputeBoundaryFunctional(
 
 /*-------------------------------------------------------*/
 
-double StdSolver::ComputeDomainFunctional(const VectorInterface &gu,
-                                          const DomainFunctional *FP) const {
+double
+StdSolver::ComputeDomainFunctional(const VectorInterface& gu,
+                                   const DomainFunctional* FP) const
+{
   HNAverage(gu);
   HNAverageData();
   double J = GetDiscretization()->ComputeDomainFunctional(GetGV(gu), *FP);
@@ -1115,10 +1241,12 @@ double StdSolver::ComputeDomainFunctional(const VectorInterface &gu,
 
 /*-------------------------------------------------------*/
 
-double StdSolver::ComputePointFunctional(VectorInterface &gf,
-                                         const VectorInterface &gu,
-                                         VectorInterface &gz,
-                                         const PointFunctional *FP) const {
+double
+StdSolver::ComputePointFunctional(VectorInterface& gf,
+                                  const VectorInterface& gu,
+                                  VectorInterface& gz,
+                                  const PointFunctional* FP) const
+{
   HNAverage(gu);
   HNAverageData();
   double J = GetDiscretization()->ComputePointFunctional(GetGV(gu), *FP);
@@ -1129,9 +1257,12 @@ double StdSolver::ComputePointFunctional(VectorInterface &gf,
 
 /*-------------------------------------------------------*/
 
-double StdSolver::ComputeResidualFunctional(
-    VectorInterface &gf, const VectorInterface &gu, VectorInterface &gz,
-    const ResidualFunctional *FP) const {
+double
+StdSolver::ComputeResidualFunctional(VectorInterface& gf,
+                                     const VectorInterface& gu,
+                                     VectorInterface& gz,
+                                     const ResidualFunctional* FP) const
+{
   // cerr << "Aenderung in ResidualFunctional" << endl;
 
   // //    const BoundaryManager *BM =
@@ -1175,7 +1306,7 @@ double StdSolver::ComputeResidualFunctional(
   Rhs(gf);
   Form(gf, gu, -1.);
 
-  const DirichletData *ABD = FP->GetDirichletData();
+  const DirichletData* ABD = FP->GetDirichletData();
   assert(ABD);
 
   Zero(gz);
@@ -1191,9 +1322,11 @@ double StdSolver::ComputeResidualFunctional(
 
 /*-------------------------------------------------------*/
 
-void StdSolver::EvaluateCellRightHandSide(VectorInterface &f,
-                                          const DomainRightHandSide &CF,
-                                          double d) const {
+void
+StdSolver::EvaluateCellRightHandSide(VectorInterface& f,
+                                     const DomainRightHandSide& CF,
+                                     double d) const
+{
   assert(f.GetType() == "cell");
   HNAverageData();
 
@@ -1204,23 +1337,28 @@ void StdSolver::EvaluateCellRightHandSide(VectorInterface &f,
 
 /*-------------------------------------------------------*/
 
-void StdSolver::EvaluateBoundaryCellRightHandSide(
-    VectorInterface &f, const BoundaryRightHandSide &CF,
-    const BoundaryManager &BM, double d) const {
+void
+StdSolver::EvaluateBoundaryCellRightHandSide(VectorInterface& f,
+                                             const BoundaryRightHandSide& CF,
+                                             const BoundaryManager& BM,
+                                             double d) const
+{
   assert(f.GetType() == "cell");
   HNAverageData();
 
   GetDiscretization()->EvaluateBoundaryCellRightHandSide(
-      GetGV(f), BM.GetBoundaryRightHandSideColors(), CF, d);
+    GetGV(f), BM.GetBoundaryRightHandSideColors(), CF, d);
 
   HNZeroData();
 }
 
 /*-------------------------------------------------------*/
 
-void StdSolver::EvaluateParameterRightHandSide(VectorInterface &f,
-                                               const DomainRightHandSide &CF,
-                                               double d) const {
+void
+StdSolver::EvaluateParameterRightHandSide(VectorInterface& f,
+                                          const DomainRightHandSide& CF,
+                                          double d) const
+{
   assert(f.GetType() == "parameter");
   HNAverageData();
 
@@ -1231,22 +1369,28 @@ void StdSolver::EvaluateParameterRightHandSide(VectorInterface &f,
 
 /*-------------------------------------------------------*/
 
-void StdSolver::EvaluateBoundaryParameterRightHandSide(
-    VectorInterface &f, const BoundaryRightHandSide &CF,
-    const BoundaryManager &BM, double d) const {
+void
+StdSolver::EvaluateBoundaryParameterRightHandSide(
+  VectorInterface& f,
+  const BoundaryRightHandSide& CF,
+  const BoundaryManager& BM,
+  double d) const
+{
   assert(f.GetType() == "parameter");
   HNAverageData();
 
   GetDiscretization()->EvaluateBoundaryParameterRightHandSide(
-      GetGV(f), BM.GetBoundaryRightHandSideColors(), CF, d);
+    GetGV(f), BM.GetBoundaryRightHandSideColors(), CF, d);
 
   HNZeroData();
 }
 
 /*-------------------------------------------------------*/
 
-void StdSolver::InterpolateDomainFunction(VectorInterface &f,
-                                          const DomainFunction &DF) const {
+void
+StdSolver::InterpolateDomainFunction(VectorInterface& f,
+                                     const DomainFunction& DF) const
+{
   HNAverageData();
 
   if (f.GetType() == "node") {
@@ -1263,15 +1407,17 @@ void StdSolver::InterpolateDomainFunction(VectorInterface &f,
 
 /*-------------------------------------------------------*/
 
-void StdSolver::Rhs(VectorInterface &gf, double d) const {
-  const auto *RHS = GetProblemDescriptor()->GetRightHandSide();
-  const auto *DRHS = GetProblemDescriptor()->GetDiracRightHandSide();
-  const auto *BRHS = GetProblemDescriptor()->GetBoundaryRightHandSide();
+void
+StdSolver::Rhs(VectorInterface& gf, double d) const
+{
+  const auto* RHS = GetProblemDescriptor()->GetRightHandSide();
+  const auto* DRHS = GetProblemDescriptor()->GetDiracRightHandSide();
+  const auto* BRHS = GetProblemDescriptor()->GetBoundaryRightHandSide();
 
   if ((RHS == NULL) && (BRHS == NULL) && (DRHS == NULL))
     return;
 
-  GlobalVector &f = GetGV(gf);
+  GlobalVector& f = GetGV(gf);
   HNAverageData();
 
   if (DRHS) {
@@ -1280,14 +1426,14 @@ void StdSolver::Rhs(VectorInterface &gf, double d) const {
 
   if (RHS) {
     bool done = false;
-    const DomainRightHandSide *DRHS =
-        dynamic_cast<const DomainRightHandSide *>(RHS);
+    const DomainRightHandSide* DRHS =
+      dynamic_cast<const DomainRightHandSide*>(RHS);
     if (DRHS) {
       GetDiscretization()->Rhs(f, *DRHS, d);
       done = true;
     }
-    const DiracRightHandSide *NDRHS =
-        dynamic_cast<const DiracRightHandSide *>(RHS);
+    const DiracRightHandSide* NDRHS =
+      dynamic_cast<const DiracRightHandSide*>(RHS);
     if (NDRHS) {
       abort();
       GetDiscretization()->DiracRhs(f, *NDRHS, d);
@@ -1303,9 +1449,9 @@ void StdSolver::Rhs(VectorInterface &gf, double d) const {
 
   if (BRHS) {
     assert(BRHS->GetNcomp() == f.ncomp());
-    const BoundaryManager *BM = GetProblemDescriptor()->GetBoundaryManager();
-    GetDiscretization()->BoundaryRhs(f, BM->GetBoundaryRightHandSideColors(),
-                                     *BRHS, d);
+    const BoundaryManager* BM = GetProblemDescriptor()->GetBoundaryManager();
+    GetDiscretization()->BoundaryRhs(
+      f, BM->GetBoundaryRightHandSideColors(), *BRHS, d);
   }
 
   HNZeroData();
@@ -1314,21 +1460,22 @@ void StdSolver::Rhs(VectorInterface &gf, double d) const {
 
 /*-------------------------------------------------------*/
 
-void StdSolver::AssembleMatrix(Matrix &A, const VectorInterface &gu,
-                               double d) const {
+void
+StdSolver::AssembleMatrix(Matrix& A, const VectorInterface& gu, double d) const
+{
   GlobalTimer.start("---> matrix");
 
-  const GlobalVector &u = GetGV(gu);
+  const GlobalVector& u = GetGV(gu);
   HNAverage(gu);
   HNAverageData();
 
   //////////// Elements
-  GetDiscretization()->Matrix(GetMatrix(A), u,
-                              *GetProblemDescriptor()->GetEquation(), d);
+  GetDiscretization()->Matrix(
+    GetMatrix(A), u, *GetProblemDescriptor()->GetEquation(), d);
 
   //////////// Boundary
-  GetDiscretization()->BoundaryMatrix(GetMatrix(A), u, *GetProblemDescriptor(),
-                                      d);
+  GetDiscretization()->BoundaryMatrix(
+    GetMatrix(A), u, *GetProblemDescriptor(), d);
 
   PeriodicMatrix(A);
   DirichletMatrix(A);
@@ -1340,21 +1487,27 @@ void StdSolver::AssembleMatrix(Matrix &A, const VectorInterface &gu,
 
 /*-------------------------------------------------------*/
 
-void StdSolver::DirichletMatrix(Matrix &A) const {
+void
+StdSolver::DirichletMatrix(Matrix& A) const
+{
   GetDiscretization()->StrongDirichletMatrix(GetMatrix(A),
                                              *GetProblemDescriptor());
 }
 
 /* -------------------------------------------------------*/
 
-void StdSolver::DirichletMatrixOnlyRow(Matrix &A) const {
+void
+StdSolver::DirichletMatrixOnlyRow(Matrix& A) const
+{
   GetDiscretization()->StrongDirichletMatrixOnlyRow(GetMatrix(A),
                                                     *GetProblemDescriptor());
 }
 
 /* -------------------------------------------------------*/
 
-void StdSolver::PeriodicMatrix(Matrix &A) const {
+void
+StdSolver::PeriodicMatrix(Matrix& A) const
+{
   /*-------------------------------------------------------
   | Modifiziert die Systemmatrix, um den periodischen
   | Raendern Rechnung zu tragen.
@@ -1362,15 +1515,15 @@ void StdSolver::PeriodicMatrix(Matrix &A) const {
   | Ruft dazu Matrix->periodic() auf.
   -------------------------------------------------------*/
 
-  const BoundaryManager *BM = GetProblemDescriptor()->GetBoundaryManager();
-  const IntVector &iv_PeriodicColors = BM->GetPeriodicDataColors();
+  const BoundaryManager* BM = GetProblemDescriptor()->GetBoundaryManager();
+  const IntVector& iv_PeriodicColors = BM->GetPeriodicDataColors();
 
-  const GascoigneMesh *p_mesh = GetMesh();
-  const GascoigneMesh *GMP = dynamic_cast<const GascoigneMesh *>(p_mesh);
+  const GascoigneMesh* p_mesh = GetMesh();
+  const GascoigneMesh* GMP = dynamic_cast<const GascoigneMesh*>(p_mesh);
   assert(GMP);
 
   map<int, map<int, int>> mm_PeriodicPairs =
-      GMP->GetBoundaryIndexHandler().GetPeriodicPairs();
+    GMP->GetBoundaryIndexHandler().GetPeriodicPairs();
 
   for (IntVector::const_iterator p_col = iv_PeriodicColors.begin();
        p_col != iv_PeriodicColors.end();) {
@@ -1385,14 +1538,16 @@ void StdSolver::PeriodicMatrix(Matrix &A) const {
 
 /* -------------------------------------------------------*/
 
-void StdSolver::ComputeIlu(Matrix &A, const VectorInterface &gu) const {
+void
+StdSolver::ComputeIlu(Matrix& A, const VectorInterface& gu) const
+{
 #ifdef __WITH_UMFPACK__
   if (_directsolver && _useUMFPACK) {
     GlobalTimer.start("---> direct");
 #ifdef __WITH_UMFPACK_LONG__
-    UmfIluLong *UM = dynamic_cast<UmfIluLong *>(&GetIlu(A));
+    UmfIluLong* UM = dynamic_cast<UmfIluLong*>(&GetIlu(A));
 #else
-    UmfIlu *UM = dynamic_cast<UmfIlu *>(&GetIlu(A));
+    UmfIlu* UM = dynamic_cast<UmfIlu*>(&GetIlu(A));
 #endif
     assert(UM);
     //       if(PrimalSolve==0) return;
@@ -1400,7 +1555,7 @@ void StdSolver::ComputeIlu(Matrix &A, const VectorInterface &gu) const {
     GlobalTimer.stop("---> direct");
   } else
 #endif
-      if (GetSolverData().GetLinearSmooth() == "ilu") {
+    if (GetSolverData().GetLinearSmooth() == "ilu") {
     GlobalTimer.start("---> ilu");
     int ncomp = GetProblemDescriptor()->GetNcomp();
     PermutateIlu(A, gu);
@@ -1414,7 +1569,9 @@ void StdSolver::ComputeIlu(Matrix &A, const VectorInterface &gu) const {
 
 /*-------------------------------------------------------*/
 
-void StdSolver::modify_ilu(IluInterface &I, int ncomp) const {
+void
+StdSolver::modify_ilu(IluInterface& I, int ncomp) const
+{
   if (GetSolverData().GetIluModify().size() == 0)
     return;
   if (GetSolverData().GetIluModify().size() != ncomp) {
@@ -1433,8 +1590,10 @@ void StdSolver::modify_ilu(IluInterface &I, int ncomp) const {
 
 /* -------------------------------------------------------*/
 
-void StdSolver::PermutateIlu(Matrix &A, const VectorInterface &gu) const {
-  const GlobalVector &u = GetGV(gu);
+void
+StdSolver::PermutateIlu(Matrix& A, const VectorInterface& gu) const
+{
+  const GlobalVector& u = GetGV(gu);
 
   int n = GetMatrix(A).GetStencil()->n();
   IntVector perm(n);
@@ -1444,7 +1603,7 @@ void StdSolver::PermutateIlu(Matrix &A, const VectorInterface &gu) const {
     CuthillMcKee cmc(GetMatrix(A).GetStencil());
     cmc.Permutate(perm);
   } else if (GetSolverData().GetIluSort() == "streamdirection") {
-    const Equation *EQ = GetProblemDescriptor()->GetEquation();
+    const Equation* EQ = GetProblemDescriptor()->GetEquation();
     (void)EQ;
     assert(EQ);
     assert(GetSolverData().GetStreamDirection().size() <= EQ->GetNcomp());
@@ -1459,8 +1618,9 @@ void StdSolver::PermutateIlu(Matrix &A, const VectorInterface &gu) const {
 
 /* -------------------------------------------------------*/
 
-void StdSolver::Visu(const string &name, const VectorInterface &gu,
-                     int i) const {
+void
+StdSolver::Visu(const string& name, const VectorInterface& gu, int i) const
+{
   GlobalTimer.start("---> visu");
   if (gu.GetType() == "node") {
     PointVisu(name, GetGV(gu), i);
@@ -1475,23 +1635,24 @@ void StdSolver::Visu(const string &name, const VectorInterface &gu,
 
 /* -------------------------------------------------------*/
 
-void StdSolver::PointVisu(const string &name, const GlobalVector &u,
-                          int i) const {
+void
+StdSolver::PointVisu(const string& name, const GlobalVector& u, int i) const
+{
   GetDiscretization()->VisuVtk(
-      GetProblemDescriptor()->GetComponentInformation(), _paramfile, name, u,
-      i);
+    GetProblemDescriptor()->GetComponentInformation(), _paramfile, name, u, i);
 }
 
 /* -------------------------------------------------------*/
 
-void StdSolver::CellVisu(const string &name, const GlobalVector &u,
-                         int i) const {
+void
+StdSolver::CellVisu(const string& name, const GlobalVector& u, int i) const
+{
   GascoigneVisualization Visu;
 
   Visu.SetMesh(GetMesh());
 
-  const ComponentInformation *CI =
-      GetProblemDescriptor()->GetComponentInformation();
+  const ComponentInformation* CI =
+    GetProblemDescriptor()->GetComponentInformation();
   if (CI) {
     Visu.AddCellVector(CI, &u);
   } else {
@@ -1506,7 +1667,9 @@ void StdSolver::CellVisu(const string &name, const GlobalVector &u,
 
 /* -------------------------------------------------------*/
 
-void StdSolver::VisuGrid(const string &name, int i) const {
+void
+StdSolver::VisuGrid(const string& name, int i) const
+{
   assert(GetMesh());
 
   if (GetMesh()->dimension() == 2) {
@@ -1522,30 +1685,37 @@ void StdSolver::VisuGrid(const string &name, int i) const {
 
 /*-------------------------------------------------------*/
 
-void StdSolver::Read(VectorInterface &gu, const string &filename) const {
-  GlobalVector &u = GetGV(gu);
+void
+StdSolver::Read(VectorInterface& gu, const string& filename) const
+{
+  GlobalVector& u = GetGV(gu);
   u.zero();
   ReadBackUp(u, filename);
 }
 
 /*-------------------------------------------------------*/
 
-void StdSolver::Write(const VectorInterface &gu, const string &filename) const {
-  const GlobalVector &u = GetGV(gu);
+void
+StdSolver::Write(const VectorInterface& gu, const string& filename) const
+{
+  const GlobalVector& u = GetGV(gu);
   WriteBackUp(u, filename);
 }
 
 /*-------------------------------------------------------*/
 
-void StdSolver::ConstructInterpolator(MgInterpolatorInterface *I,
-                                      const MeshTransferInterface *MT) {
+void
+StdSolver::ConstructInterpolator(MgInterpolatorInterface* I,
+                                 const MeshTransferInterface* MT)
+{
   GetDiscretization()->ConstructInterpolator(I, MT);
 }
 
 /* -------------------------------------------------------*/
 
 DoubleVector
-StdSolver::IntegrateSolutionVector(const VectorInterface &gu) const {
+StdSolver::IntegrateSolutionVector(const VectorInterface& gu) const
+{
   HNAverage(gu);
   DoubleVector dst = GetPfilter().IntegrateVector(GetGV(gu));
   HNZero(gu);
@@ -1554,8 +1724,10 @@ StdSolver::IntegrateSolutionVector(const VectorInterface &gu) const {
 
 /* -------------------------------------------------------*/
 
-void StdSolver::SubtractMean(VectorInterface &gx) const {
-  GlobalVector &x = GetGV(gx);
+void
+StdSolver::SubtractMean(VectorInterface& gx) const
+{
+  GlobalVector& x = GetGV(gx);
   // In each nonlinear step: applied to Newton correction,
   // in each smoothing step
   //
@@ -1568,8 +1740,10 @@ void StdSolver::SubtractMean(VectorInterface &gx) const {
 
 /* -------------------------------------------------------*/
 
-void StdSolver::SubtractMeanAlgebraic(VectorInterface &gx) const {
-  GlobalVector &x = GetGV(gx);
+void
+StdSolver::SubtractMeanAlgebraic(VectorInterface& gx) const
+{
+  GlobalVector& x = GetGV(gx);
 
   // applies to residuals
   if (GetPfilter().Active()) {
@@ -1581,57 +1755,70 @@ void StdSolver::SubtractMeanAlgebraic(VectorInterface &gx) const {
 
 /*---------------------------------------------------*/
 
-void StdSolver::DeleteVector(VectorInterface &p) const {
+void
+StdSolver::DeleteVector(VectorInterface& p) const
+{
   vector_agent.Delete(p);
 }
 
 /*-----------------------------------------*/
 
-void StdSolver::Equ(VectorInterface &dst, double s,
-                    const VectorInterface &src) const {
+void
+StdSolver::Equ(VectorInterface& dst, double s, const VectorInterface& src) const
+{
   GetGV(dst).equ(s, GetGV(src));
 }
 
 /*-----------------------------------------*/
 
-void StdSolver::Add(VectorInterface &dst, double s,
-                    const VectorInterface &src) const {
+void
+StdSolver::Add(VectorInterface& dst, double s, const VectorInterface& src) const
+{
   GetGV(dst).add(s, GetGV(src));
 }
 
 /*-----------------------------------------*/
 
-void StdSolver::SAdd(double s1, VectorInterface &dst, double s2,
-                     const VectorInterface &src) const {
+void
+StdSolver::SAdd(double s1,
+                VectorInterface& dst,
+                double s2,
+                const VectorInterface& src) const
+{
   GetGV(dst).sadd(s1, s2, GetGV(src));
 }
 
 /*-----------------------------------------*/
 
-double StdSolver::Norm(const VectorInterface &dst) const {
+double
+StdSolver::Norm(const VectorInterface& dst) const
+{
   return GetGV(dst).norm();
 }
 
 /*-----------------------------------------*/
 
-double StdSolver::ScalarProduct(const VectorInterface &y,
-                                const VectorInterface &x) const {
+double
+StdSolver::ScalarProduct(const VectorInterface& y,
+                         const VectorInterface& x) const
+{
   return GetGV(y) * GetGV(x);
 }
 
 /*---------------------------------------------------*/
 
-void StdSolver::AssembleDualMatrix(Matrix &A, const VectorInterface &gu,
-                                   double d) {
+void
+StdSolver::AssembleDualMatrix(Matrix& A, const VectorInterface& gu, double d)
+{
   GlobalTimer.start("---> matrix");
 
-  MatrixInterface &M = GetMatrix(A);
+  MatrixInterface& M = GetMatrix(A);
 
   HNAverage(gu);
 
   M.zero();
-  GetDiscretization()->Matrix(M, GetGV(gu),
-                              *GetProblemDescriptor()->GetEquation(), d);
+  GetDiscretization()->Matrix(
+    M, GetGV(gu), *GetProblemDescriptor()->GetEquation(), d);
   M.transpose();
 
   // PeriodicMatrix() hier nicht getestet!
@@ -1644,8 +1831,9 @@ void StdSolver::AssembleDualMatrix(Matrix &A, const VectorInterface &gu,
 
 /*---------------------------------------------------*/
 
-void StdSolver::RhsCurve(VectorInterface &f, const Curve &C, int comp,
-                         int N) const {
+void
+StdSolver::RhsCurve(VectorInterface& f, const Curve& C, int comp, int N) const
+{
   HNAverageData();
 
   GetDiscretization()->RhsCurve(GetGV(f), C, comp, N);
@@ -1656,11 +1844,12 @@ void StdSolver::RhsCurve(VectorInterface &f, const Curve &C, int comp,
 /*--------------------------------------------------------*/
 
 double
-StdSolver::ScalarProductWithFluctuations(DoubleVector &eta,
-                                         const VectorInterface &gf,
-                                         const VectorInterface &gz) const {
-  const GlobalVector &f = GetGV(gf);
-  const GlobalVector &z = GetGV(gz);
+StdSolver::ScalarProductWithFluctuations(DoubleVector& eta,
+                                         const VectorInterface& gf,
+                                         const VectorInterface& gz) const
+{
+  const GlobalVector& f = GetGV(gf);
+  const GlobalVector& z = GetGV(gz);
 
   GlobalVector dz(f.ncomp(), f.n());
 

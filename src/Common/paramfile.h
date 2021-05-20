@@ -37,7 +37,8 @@ namespace Gascoigne {
 ////
 /////////////////////////////////////////////
 
-class ParamFile : public std::string {
+class ParamFile : public std::string
+{
 private:
 protected:
 public:
@@ -45,10 +46,14 @@ public:
   ////  Con(De)structor
   //
 
-  ParamFile() : std::string() {}
-  ParamFile(const std::string &name) : std::string(name) {}
+  ParamFile()
+    : std::string()
+  {}
+  ParamFile(const std::string& name)
+    : std::string(name)
+  {}
   std::string GetName() const { return *this; }
-  void SetName(const std::string &name) { std::string::operator=(name); }
+  void SetName(const std::string& name) { std::string::operator=(name); }
 };
 } // namespace Gascoigne
 

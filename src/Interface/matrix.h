@@ -45,18 +45,24 @@ namespace Gascoigne {
 ////  -
 /////////////////////////////////////////////
 
-class Matrix : public std::string {
+class Matrix : public std::string
+{
 private:
 protected:
 public:
-  Matrix() {
+  Matrix()
+  {
     std::cerr << "Matrix: no Constructor without indicating the label!"
               << std::endl;
     abort();
   }
 
-  Matrix(const std::string &label) : std::string(label) {}
-  Matrix(const Matrix &mat) : std::string(mat) {}
+  Matrix(const std::string& label)
+    : std::string(label)
+  {}
+  Matrix(const Matrix& mat)
+    : std::string(mat)
+  {}
   virtual ~Matrix() {}
 };
 } // namespace Gascoigne

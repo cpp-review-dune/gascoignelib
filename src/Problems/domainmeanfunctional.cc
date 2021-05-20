@@ -28,19 +28,29 @@ using namespace std;
 /*-----------------------------------------*/
 
 namespace Gascoigne {
-double AllDomainFunctional::J(const FemFunction &U, const Vertex2d &V) const {
+double
+AllDomainFunctional::J(const FemFunction& U, const Vertex2d& V) const
+{
   return U[_comp].m();
 }
 
 /*-----------------------------------------*/
 
-double AllDomainFunctional::J(const FemFunction &U, const Vertex3d &V) const {
+double
+AllDomainFunctional::J(const FemFunction& U, const Vertex3d& V) const
+{
   return U[_comp].m();
 }
 /*-----------------------------------------*/
 
-void SubDomainFunctional::SetCoordinates(double x0, double x1, double y0,
-                                         double y1, double z0, double z1) {
+void
+SubDomainFunctional::SetCoordinates(double x0,
+                                    double x1,
+                                    double y0,
+                                    double y1,
+                                    double z0,
+                                    double z1)
+{
   _x0 = x0;
   _x1 = x1;
   _y0 = y0;
@@ -51,7 +61,9 @@ void SubDomainFunctional::SetCoordinates(double x0, double x1, double y0,
 
 /*-----------------------------------------*/
 
-double SubDomainFunctional::J(const FemFunction &U, const Vertex2d &V) const {
+double
+SubDomainFunctional::J(const FemFunction& U, const Vertex2d& V) const
+{
   if ((V.x() > _x1) || (V.x() < _x0))
     return 0.;
   if ((V.y() > _y1) || (V.y() < _y0))
@@ -62,7 +74,9 @@ double SubDomainFunctional::J(const FemFunction &U, const Vertex2d &V) const {
 
 /*-----------------------------------------*/
 
-double SubDomainFunctional::J(const FemFunction &U, const Vertex3d &V) const {
+double
+SubDomainFunctional::J(const FemFunction& U, const Vertex3d& V) const
+{
   if ((V.x() > _x1) || (V.x() < _x0))
     return 0.;
   if ((V.y() > _y1) || (V.y() < _y0))

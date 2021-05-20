@@ -29,12 +29,17 @@ namespace Gascoigne {
 
 /*--------------------------------------------------------------*/
 
-template <size_t N>
-EdgeArray<N>::EdgeArray(const std::array<int, N> &e) : std::array<int, N>(e) {}
+template<size_t N>
+EdgeArray<N>::EdgeArray(const std::array<int, N>& e)
+  : std::array<int, N>(e)
+{}
 
 /*--------------------------------------------------------------*/
 
-template <> bool EdgeArray<2>::operator==(const std::array<int, 2> &A) const {
+template<>
+bool
+EdgeArray<2>::operator==(const std::array<int, 2>& A) const
+{
   // the correctness of this method relies on all vertices (in *this) being
   // different
 
@@ -47,11 +52,19 @@ template <> bool EdgeArray<2>::operator==(const std::array<int, 2> &A) const {
 
 /*--------------------------------------------------------------*/
 
-template <> int EdgeArray<2>::sum() const { return (*this)[0] + (*this)[1]; }
+template<>
+int
+EdgeArray<2>::sum() const
+{
+  return (*this)[0] + (*this)[1];
+}
 
 /*--------------------------------------------------------------*/
 
-template <> bool EdgeArray<4>::operator==(const std::array<int, 4> &A) const {
+template<>
+bool
+EdgeArray<4>::operator==(const std::array<int, 4>& A) const
+{
   // the correctness of this method relies on all vertices (in *this) being
   // different
   // and that we can identify a face by looking at only three vertices
@@ -70,7 +83,10 @@ template <> bool EdgeArray<4>::operator==(const std::array<int, 4> &A) const {
 
 /*--------------------------------------------------------------*/
 
-template <> int EdgeArray<4>::sum() const {
+template<>
+int
+EdgeArray<4>::sum() const
+{
   return (*this)[0] + (*this)[1] + (*this)[2] + (*this)[3];
 }
 

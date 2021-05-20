@@ -26,8 +26,10 @@
 /*------------------------------------------------------------*/
 
 namespace Gascoigne {
-template <int N, class Line>
-TensorFormula3d<N, Line>::TensorFormula3d() : IntegrationFormula3d(N * N * N) {
+template<int N, class Line>
+TensorFormula3d<N, Line>::TensorFormula3d()
+  : IntegrationFormula3d(N * N * N)
+{
   Line L;
   if (L.n() != N) {
     std::cerr << "IntegrationFormulaTensor3d: error\n";

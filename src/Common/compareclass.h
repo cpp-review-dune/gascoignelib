@@ -30,14 +30,17 @@
 /*********************************************************/
 
 namespace Gascoigne {
-template <class T> class CompareLess {
+template<class T>
+class CompareLess
+{
 protected:
-  const T *wp;
+  const T* wp;
 
 public:
   CompareLess<T>() {}
-  CompareLess<T>(const T &w) { wp = &w; }
-  bool operator()(int i1, int i2) const {
+  CompareLess<T>(const T& w) { wp = &w; }
+  bool operator()(int i1, int i2) const
+  {
     if ((*wp)[i1] < (*wp)[i2])
       return 1;
     return 0;
@@ -46,24 +49,30 @@ public:
 
 /*********************************************************/
 
-template <class T> class CompareObject {
+template<class T>
+class CompareObject
+{
 protected:
-  const T &P;
+  const T& P;
 
 public:
-  CompareObject(const T &p) : P(p){};
+  CompareObject(const T& p)
+    : P(p){};
 
   bool operator()(int i, int j) const { return P[i] < P[j]; }
 };
 
 /*********************************************************/
 
-template <class T> class CompareObjectBigToSmall {
+template<class T>
+class CompareObjectBigToSmall
+{
 protected:
-  const T &P;
+  const T& P;
 
 public:
-  CompareObjectBigToSmall(const T &p) : P(p){};
+  CompareObjectBigToSmall(const T& p)
+    : P(p){};
 
   bool operator()(int i, int j) const { return P[j] < P[i]; }
 };

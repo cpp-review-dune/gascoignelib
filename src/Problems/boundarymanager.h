@@ -45,7 +45,8 @@ namespace Gascoigne {
 //
 //////////////////////////////////////////////
 
-class BoundaryManager {
+class BoundaryManager
+{
 protected:
   IntSet _colsDirichlet, _colsRightHandSide, _colsEquation, _colsFunctional;
   IntVector _colsPeriodic;
@@ -56,11 +57,12 @@ public:
   BoundaryManager() {}
   virtual ~BoundaryManager() {}
 
-  virtual void BasicInit(const ParamFile &pf);
+  virtual void BasicInit(const ParamFile& pf);
 
   virtual std::string GetName() const { return "Std"; }
 
-  void AddDirichletData(int col, int c) {
+  void AddDirichletData(int col, int c)
+  {
     _colsDirichlet.insert(col);
     _compsDirichlet[col].push_back(c);
   }
@@ -69,25 +71,31 @@ public:
   void AddBoundaryEquation(int col) { _colsEquation.insert(col); }
   void AddBoundaryFunctional(int col) { _colsFunctional.insert(col); }
 
-  std::ostream &print(std::ostream &s) const;
+  std::ostream& print(std::ostream& s) const;
 
-  virtual const IntSet &GetBoundaryRightHandSideColors() const {
+  virtual const IntSet& GetBoundaryRightHandSideColors() const
+  {
     return _colsRightHandSide;
   }
-  virtual const IntSet &GetBoundaryEquationColors() const {
+  virtual const IntSet& GetBoundaryEquationColors() const
+  {
     return _colsEquation;
   }
-  virtual const IntSet &GetBoundaryFunctionalColors() const {
+  virtual const IntSet& GetBoundaryFunctionalColors() const
+  {
     return _colsFunctional;
   }
-  virtual const IntSet &GetDirichletDataColors() const {
+  virtual const IntSet& GetDirichletDataColors() const
+  {
     return _colsDirichlet;
   }
-  virtual const IntVector &GetPeriodicDataColors() const {
+  virtual const IntVector& GetPeriodicDataColors() const
+  {
     return _colsPeriodic;
   }
 
-  virtual const IntVector &GetDirichletDataComponents(int c) const {
+  virtual const IntVector& GetDirichletDataComponents(int c) const
+  {
     std::map<int, IntVector>::const_iterator p = _compsDirichlet.find(c);
     if (p == _compsDirichlet.end()) {
       std::cerr << "BoundaryManager::GetDirichletComponents()" << std::endl;
@@ -98,7 +106,8 @@ public:
     return p->second;
   }
 
-  virtual const IntVector &GetPeriodicDataComponents(int c) const {
+  virtual const IntVector& GetPeriodicDataComponents(int c) const
+  {
     std::map<int, IntVector>::const_iterator p = _compsPeriodic.find(c);
     if (p == _compsPeriodic.end()) {
       std::cerr << "BoundaryManager::GetPeriodicComponents()" << std::endl;

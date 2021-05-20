@@ -30,13 +30,17 @@
 using namespace std;
 
 namespace Gascoigne {
-void compose_name(string &s, int i) {
+void
+compose_name(string& s, int i)
+{
   char cname[200];
   sprintf(cname, "%s.%05d", s.c_str(), i);
   s = cname;
 }
 
-void compose_name(string &s, double d, string f) {
+void
+compose_name(string& s, double d, string f)
+{
   char cname[200];
   string format("%s");
   format += f;
@@ -44,13 +48,17 @@ void compose_name(string &s, double d, string f) {
   s = cname;
 }
 
-void compose_name(string &s, int i, string t) {
+void
+compose_name(string& s, int i, string t)
+{
   char cname[200];
   sprintf(cname, "%s.%05d.%s", s.c_str(), i, t.c_str());
   s = cname;
 }
 
-void compose_name(string &s, int i, int l) {
+void
+compose_name(string& s, int i, int l)
+{
   std::cerr << "compose_name: das ist bloedsinn" << std::endl;
   abort();
 
@@ -64,7 +72,9 @@ void compose_name(string &s, int i, int l) {
   s = cname;
 }
 
-void compose_name_without_dot(string &s, int i) {
+void
+compose_name_without_dot(string& s, int i)
+{
   char cname[200];
   sprintf(cname, "%s%03d", s.c_str(), i);
   s = cname;

@@ -29,7 +29,9 @@ using namespace std;
 /*-------------------------------------------------------------*/
 
 namespace Gascoigne {
-ostream &operator<<(ostream &s, const ColumnStencil &A) {
+ostream&
+operator<<(ostream& s, const ColumnStencil& A)
+{
   s << "start:\n" << A.start() << endl;
   s << "col:\n" << A.col() << endl;
   return s;
@@ -37,15 +39,19 @@ ostream &operator<<(ostream &s, const ColumnStencil &A) {
 
 /*-------------------------------------------------------------*/
 
-void ColumnStencil::memory(int n, int nt) {
+void
+ColumnStencil::memory(int n, int nt)
+{
   scol.reservesize(nt);
   sstart.reservesize(n + 1);
 }
 
 /*-------------------------------------------------------------*/
 
-void ColumnStencil::memory(const SparseStructureInterface *SI) {
-  const SparseStructure *SS = dynamic_cast<const SparseStructure *>(SI);
+void
+ColumnStencil::memory(const SparseStructureInterface* SI)
+{
+  const SparseStructure* SS = dynamic_cast<const SparseStructure*>(SI);
   assert(SS);
 
   memory(SS->n(), SS->ntotal());
@@ -65,7 +71,9 @@ void ColumnStencil::memory(const SparseStructureInterface *SI) {
 
 /*-------------------------------------------------------------*/
 
-std::ostream &ColumnStencil::Write(std::ostream &os) const {
+std::ostream&
+ColumnStencil::Write(std::ostream& os) const
+{
   os << n() << "\t" << nentries() << "\n\n" << sstart << "\n\n";
   for (int i = 0; i < n(); i++) {
     for (int pos = start(i); pos < stop(i); pos++) {

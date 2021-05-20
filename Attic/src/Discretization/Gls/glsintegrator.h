@@ -40,12 +40,14 @@ namespace Gascoigne {
 ////
 /////////////////////////////////////////////
 
-template <int DIM> class GlsIntegrator : public BasicIntegrator {
+template<int DIM>
+class GlsIntegrator : public BasicIntegrator
+{
 private:
 protected:
-  IntegrationFormulaInterface *IF;
+  IntegrationFormulaInterface* IF;
 
-  const IntegrationFormulaInterface &FormFormula() const { return *IF; }
+  const IntegrationFormulaInterface& FormFormula() const { return *IF; }
   double Volume2MeshSize(double vol) const { return pow(vol, 1. / float(DIM)); }
 
 public:
@@ -54,15 +56,23 @@ public:
 
   std::string GetName() const { return "Gls"; }
 
-  void Rhs(const DomainRightHandSide &RHS, LocalVector &F,
-           const FemInterface &FEM, const LocalData &Q,
-           const LocalData &QC) const {};
-  void Form(const Equation &EQ, LocalVector &F, const FemInterface &FEM,
-            const LocalVector &U, const LocalData &Q,
-            const LocalData &QC) const;
-  void Matrix(const Equation &EQ, EntryMatrix &E, const FemInterface &FEM,
-              const LocalVector &U, const LocalData &Q,
-              const LocalData &QC) const;
+  void Rhs(const DomainRightHandSide& RHS,
+           LocalVector& F,
+           const FemInterface& FEM,
+           const LocalData& Q,
+           const LocalData& QC) const {};
+  void Form(const Equation& EQ,
+            LocalVector& F,
+            const FemInterface& FEM,
+            const LocalVector& U,
+            const LocalData& Q,
+            const LocalData& QC) const;
+  void Matrix(const Equation& EQ,
+              EntryMatrix& E,
+              const FemInterface& FEM,
+              const LocalVector& U,
+              const LocalData& Q,
+              const LocalData& QC) const;
 };
 } // namespace Gascoigne
 

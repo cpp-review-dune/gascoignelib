@@ -28,7 +28,9 @@ using namespace std;
 /* ----------------------------------------- */
 
 namespace Gascoigne {
-ostream &SimpleMatrix::Write(ostream &os) const {
+ostream&
+SimpleMatrix::Write(ostream& os) const
+{
   int n = ST.n();
   for (int i = 0; i < n; i++) {
     os << i << endl;
@@ -43,23 +45,31 @@ ostream &SimpleMatrix::Write(ostream &os) const {
 
 /* ----------------------------------------- */
 
-void SimpleMatrix::ReInit(int n, int nentries) {
+void
+SimpleMatrix::ReInit(int n, int nentries)
+{
   ST.memory(n, nentries);
   value.reservesize(nentries);
 }
 
 /* ----------------------------------------- */
 
-void SimpleMatrix::ReInit(const SparseStructureInterface *SI) {
-  const SparseStructure *S = dynamic_cast<const SparseStructure *>(SI);
+void
+SimpleMatrix::ReInit(const SparseStructureInterface* SI)
+{
+  const SparseStructure* S = dynamic_cast<const SparseStructure*>(SI);
   SimpleMatrix::ReInit(S->n(), S->ntotal());
   ST.memory(S);
 }
 
 /* ----------------------------------------- */
 
-void SimpleMatrix::entry(niiterator start, niiterator stop,
-                         const EntryMatrix &M, double s) {
+void
+SimpleMatrix::entry(niiterator start,
+                    niiterator stop,
+                    const EntryMatrix& M,
+                    double s)
+{
   int n = stop - start;
 
   for (int ii = 0; ii < n; ii++) {
@@ -75,8 +85,12 @@ void SimpleMatrix::entry(niiterator start, niiterator stop,
 
 /* ----------------------------------------- */
 
-void SimpleMatrix::vmult_time(GlobalVector &y, const GlobalVector &x,
-                              const TimePattern &TP, double s) const {
+void
+SimpleMatrix::vmult_time(GlobalVector& y,
+                         const GlobalVector& x,
+                         const TimePattern& TP,
+                         double s) const
+{
   int n = ST.n();
   assert(n == y.n());
   assert(n == x.n());
@@ -96,8 +110,9 @@ void SimpleMatrix::vmult_time(GlobalVector &y, const GlobalVector &x,
 
 /* ----------------------------------------- */
 
-void SimpleMatrix::vmult(GlobalVector &y, const GlobalVector &x,
-                         double d) const {
+void
+SimpleMatrix::vmult(GlobalVector& y, const GlobalVector& x, double d) const
+{
   int n = ST.n();
   assert(n == y.size());
   assert(n == x.size());
@@ -115,8 +130,11 @@ void SimpleMatrix::vmult(GlobalVector &y, const GlobalVector &x,
 
 /* ----------------------------------------- */
 
-void SimpleMatrix::vmult_transpose(GlobalVector &y, const GlobalVector &x,
-                                   double d) const {
+void
+SimpleMatrix::vmult_transpose(GlobalVector& y,
+                              const GlobalVector& x,
+                              double d) const
+{
   int n = ST.n();
   assert(n == y.size());
   assert(n == x.size());
@@ -133,8 +151,9 @@ void SimpleMatrix::vmult_transpose(GlobalVector &y, const GlobalVector &x,
 }
 /* ----------------------------------------- */
 
-void SimpleMatrix::vmult(DoubleVector &y, const DoubleVector &x,
-                         double d) const {
+void
+SimpleMatrix::vmult(DoubleVector& y, const DoubleVector& x, double d) const
+{
   int n = ST.n();
   assert(n == y.size());
   assert(n == x.size());
@@ -152,8 +171,11 @@ void SimpleMatrix::vmult(DoubleVector &y, const DoubleVector &x,
 
 /* ----------------------------------------- */
 
-void SimpleMatrix::vmult_transpose(DoubleVector &y, const DoubleVector &x,
-                                   double d) const {
+void
+SimpleMatrix::vmult_transpose(DoubleVector& y,
+                              const DoubleVector& x,
+                              double d) const
+{
   int n = ST.n();
   assert(n == y.size());
   assert(n == x.size());
@@ -170,8 +192,13 @@ void SimpleMatrix::vmult_transpose(DoubleVector &y, const DoubleVector &x,
 }
 /*-----------------------------------------*/
 
-void SimpleMatrix::vmult_comp(int c, int d, GlobalVector &y,
-                              const GlobalVector &x, double s) const {
+void
+SimpleMatrix::vmult_comp(int c,
+                         int d,
+                         GlobalVector& y,
+                         const GlobalVector& x,
+                         double s) const
+{
   int n = ST.n();
   assert(n == y.n());
   assert(n == x.n());
@@ -186,8 +213,13 @@ void SimpleMatrix::vmult_comp(int c, int d, GlobalVector &y,
 
 /*-----------------------------------------*/
 
-void SimpleMatrix::vmult_comp_trans(int c, int d, GlobalVector &y,
-                                    const GlobalVector &x, double s) const {
+void
+SimpleMatrix::vmult_comp_trans(int c,
+                               int d,
+                               GlobalVector& y,
+                               const GlobalVector& x,
+                               double s) const
+{
   int n = ST.n();
   assert(n == y.n());
   assert(n == x.n());
@@ -202,7 +234,9 @@ void SimpleMatrix::vmult_comp_trans(int c, int d, GlobalVector &y,
 
 /*-----------------------------------------*/
 
-void SimpleMatrix::dirichlet(const IntVector &indices) {
+void
+SimpleMatrix::dirichlet(const IntVector& indices)
+{
   for (int ii = 0; ii < indices.size(); ii++) {
     int i = indices[ii];
     if (i < 0)
@@ -228,7 +262,9 @@ void SimpleMatrix::dirichlet(const IntVector &indices) {
 
 /*-----------------------------------------*/
 
-void SimpleMatrix::dirichlet_only_row(const IntVector &indices) {
+void
+SimpleMatrix::dirichlet_only_row(const IntVector& indices)
+{
   for (int ii = 0; ii < indices.size(); ii++) {
     int i = indices[ii];
     if (i < 0)
@@ -248,7 +284,9 @@ void SimpleMatrix::dirichlet_only_row(const IntVector &indices) {
 
 /*-----------------------------------------*/
 
-void SimpleMatrix::transpose() {
+void
+SimpleMatrix::transpose()
+{
   for (int i = 0; i < ST.n(); i++) {
     for (int pos = ST.start(i); pos < ST.stop(i); pos++) {
       int j = ST.col(pos);
@@ -267,14 +305,18 @@ void SimpleMatrix::transpose() {
 
 /*-----------------------------------------*/
 
-void SimpleMatrix::entry_diag(int i, const nmatrix<double> &M) {
+void
+SimpleMatrix::entry_diag(int i, const nmatrix<double>& M)
+{
   int pos = ST.Find(i, i);
   value[pos] = M(0, 0);
 }
 
 /*-----------------------------------------*/
 
-void SimpleMatrix::PrepareJacobi(double s) {
+void
+SimpleMatrix::PrepareJacobi(double s)
+{
   int n = ST.n();
 
   _diag.resize(n);
@@ -286,7 +328,9 @@ void SimpleMatrix::PrepareJacobi(double s) {
 
 /*-----------------------------------------*/
 
-void SimpleMatrix::JacobiVector(GlobalVector &y) const {
+void
+SimpleMatrix::JacobiVector(GlobalVector& y) const
+{
   int n = ST.n();
   assert(n == y.n());
 
@@ -299,7 +343,9 @@ void SimpleMatrix::JacobiVector(GlobalVector &y) const {
 
 /*-----------------------------------------*/
 
-void SimpleMatrix::Jacobi(GlobalVector &y) const {
+void
+SimpleMatrix::Jacobi(GlobalVector& y) const
+{
   int n = ST.n();
   assert(n == y.n());
 
@@ -312,8 +358,12 @@ void SimpleMatrix::Jacobi(GlobalVector &y) const {
 
 /*-----------------------------------------*/
 
-void SimpleMatrix::vmult_time_Jacobi(GlobalVector &y, const GlobalVector &x,
-                                     const TimePattern &TP, double s) const {
+void
+SimpleMatrix::vmult_time_Jacobi(GlobalVector& y,
+                                const GlobalVector& x,
+                                const TimePattern& TP,
+                                double s) const
+{
   int n = ST.n();
   assert(n == y.n());
   assert(n == x.n());
@@ -325,7 +375,7 @@ void SimpleMatrix::vmult_time_Jacobi(GlobalVector &y, const GlobalVector &x,
       for (int c = 0; c < x.ncomp(); c++) {
         for (int d = 0; d < x.ncomp(); d++) {
           y(i, c) +=
-              s * value[pos] * TP(c, d) * x(j, d) / sqrt(_diag[i] * _diag[j]);
+            s * value[pos] * TP(c, d) * x(j, d) / sqrt(_diag[i] * _diag[j]);
         }
       }
     }
@@ -334,12 +384,14 @@ void SimpleMatrix::vmult_time_Jacobi(GlobalVector &y, const GlobalVector &x,
 
 /*-------------------------------------------------*/
 
-void SimpleMatrix::copy_entries(const MatrixInterface &A) {
-  const SimpleMatrix *AP = dynamic_cast<const SimpleMatrix *>(&A);
+void
+SimpleMatrix::copy_entries(const MatrixInterface& A)
+{
+  const SimpleMatrix* AP = dynamic_cast<const SimpleMatrix*>(&A);
   assert(AP);
 
-  const ColumnDiagStencil *AS =
-      dynamic_cast<const ColumnDiagStencil *>(AP->GetStencil());
+  const ColumnDiagStencil* AS =
+    dynamic_cast<const ColumnDiagStencil*>(AP->GetStencil());
   assert(AS);
   assert(AS->n() == ST.n());
   if (ST.nentries() == AS->nentries()) {

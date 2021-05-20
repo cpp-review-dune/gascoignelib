@@ -32,11 +32,16 @@ using namespace std;
 namespace Gascoigne {
 /**********************************************************/
 
-DwrFemQ22d::DwrFemQ22d() : Q42d() { HNLow = new HNStructureQ22d; }
+DwrFemQ22d::DwrFemQ22d()
+  : Q42d()
+{
+  HNLow = new HNStructureQ22d;
+}
 
 /**********************************************************/
 
-DwrFemQ22d::~DwrFemQ22d() {
+DwrFemQ22d::~DwrFemQ22d()
+{
   if (HNLow) {
     delete HNLow;
     HNLow = NULL;
@@ -45,7 +50,9 @@ DwrFemQ22d::~DwrFemQ22d() {
 
 /**********************************************************/
 
-void DwrFemQ22d::TransformationQ2(FemInterface::Matrix &T, int iq) const {
+void
+DwrFemQ22d::TransformationQ2(FemInterface::Matrix& T, int iq) const
+{
   int dim = GetMesh()->dimension();
   assert(dim == 2);
   int ne = GetMesh()->nodes_per_patch();
@@ -64,7 +71,9 @@ void DwrFemQ22d::TransformationQ2(FemInterface::Matrix &T, int iq) const {
 
 /**********************************************************/
 
-void DwrFemQ22d::BasicInit(const ParamFile *paramfile) {
+void
+DwrFemQ22d::BasicInit(const ParamFile* paramfile)
+{
   assert(PatchDiscretization::GetIntegrator() == NULL);
   PatchDiscretization::GetIntegratorPointer() = new IntegratorQ2Q4<2>;
   assert(PatchDiscretization::GetIntegrator());
@@ -81,7 +90,9 @@ void DwrFemQ22d::BasicInit(const ParamFile *paramfile) {
 
 /**********************************************************/
 
-void DwrFemQ22d::ReInit(const GascoigneMesh *MP) {
+void
+DwrFemQ22d::ReInit(const GascoigneMesh* MP)
+{
   Q42d::ReInit(MP);
 
   HNLow->ReInit(MP);
@@ -90,9 +101,13 @@ void DwrFemQ22d::ReInit(const GascoigneMesh *MP) {
 /**********************************************************/
 /**********************************************************/
 
-void DwrFemQ2Q42d::DiracRhsPoint(GlobalVector &f,
-                                 const DiracRightHandSide &DRHS,
-                                 const Vertex2d &p0, int i, double s) const {
+void
+DwrFemQ2Q42d::DiracRhsPoint(GlobalVector& f,
+                            const DiracRightHandSide& DRHS,
+                            const Vertex2d& p0,
+                            int i,
+                            double s) const
+{
   __F.ReInit(f.ncomp(), GetFem()->n());
 
   Vertex2d Tranfo_p0;
@@ -108,38 +123,42 @@ void DwrFemQ2Q42d::DiracRhsPoint(GlobalVector &f,
   Transformation(TH, iq);
   TransformationQ2(TL, iq);
 
-  const FemInterface &HighOrderFem(*GetFem());
+  const FemInterface& HighOrderFem(*GetFem());
 
   HighOrderFem.ReInit(TH);
   LowOrderFem.ReInit(TL);
 
-  const IntegratorQ2Q4<2> *I =
-      dynamic_cast<const IntegratorQ2Q4<2> *>(GetIntegrator());
+  const IntegratorQ2Q4<2>* I =
+    dynamic_cast<const IntegratorQ2Q4<2>*>(GetIntegrator());
   assert(I);
 
   GlobalToLocalData(iq);
   GlobalToGlobalData();
   DRHS.SetParameterData(__QP);
 
-  I->DiracRhsPoint(__F, HighOrderFem, LowOrderFem, Tranfo_p0, DRHS, i, __QN,
-                   __QC);
+  I->DiracRhsPoint(
+    __F, HighOrderFem, LowOrderFem, Tranfo_p0, DRHS, i, __QN, __QC);
   PatchDiscretization::LocalToGlobal(f, __F, iq, s);
 }
 
 /**********************************************************/
 
-void DwrFemQ2Q42d::Form(GlobalVector &f, const GlobalVector &u,
-                        const Equation &EQ, double d) const {
+void
+DwrFemQ2Q42d::Form(GlobalVector& f,
+                   const GlobalVector& u,
+                   const Equation& EQ,
+                   double d) const
+{
   nmatrix<double> TH, TL;
 
   GlobalToGlobalData();
   EQ.SetParameterData(__QP);
 
-  const IntegratorQ2Q4<2> *I =
-      dynamic_cast<const IntegratorQ2Q4<2> *>(GetIntegrator());
+  const IntegratorQ2Q4<2>* I =
+    dynamic_cast<const IntegratorQ2Q4<2>*>(GetIntegrator());
   assert(I);
 
-  const FemInterface &HighOrderFem(*GetFem());
+  const FemInterface& HighOrderFem(*GetFem());
 
   for (int iq = 0; iq < GetMesh()->nq4patches(); ++iq) {
     Transformation(TH, iq);
@@ -156,18 +175,22 @@ void DwrFemQ2Q42d::Form(GlobalVector &f, const GlobalVector &u,
 
 /**********************************************************/
 
-void DwrFemQ2Q42d::AdjointForm(GlobalVector &f, const GlobalVector &u,
-                               const Equation &EQ, double d) const {
+void
+DwrFemQ2Q42d::AdjointForm(GlobalVector& f,
+                          const GlobalVector& u,
+                          const Equation& EQ,
+                          double d) const
+{
   nmatrix<double> TH, TL;
 
   GlobalToGlobalData();
   EQ.SetParameterData(__QP);
 
-  const IntegratorQ2Q4<2> *I =
-      dynamic_cast<const IntegratorQ2Q4<2> *>(GetIntegrator());
+  const IntegratorQ2Q4<2>* I =
+    dynamic_cast<const IntegratorQ2Q4<2>*>(GetIntegrator());
   assert(I);
 
-  const FemInterface &HighOrderFem(*GetFem());
+  const FemInterface& HighOrderFem(*GetFem());
 
   for (int iq = 0; iq < GetMesh()->nq4patches(); ++iq) {
     Transformation(TH, iq);
@@ -184,22 +207,26 @@ void DwrFemQ2Q42d::AdjointForm(GlobalVector &f, const GlobalVector &u,
 
 /**********************************************************/
 
-void DwrFemQ2Q42d::BoundaryForm(GlobalVector &f, const GlobalVector &u,
-                                const IntSet &Colors,
-                                const BoundaryEquation &BE, double d) const {
+void
+DwrFemQ2Q42d::BoundaryForm(GlobalVector& f,
+                           const GlobalVector& u,
+                           const IntSet& Colors,
+                           const BoundaryEquation& BE,
+                           double d) const
+{
   nmatrix<double> TH, TL;
 
   GlobalToGlobalData();
   BE.SetParameterData(__QP);
 
-  const IntegratorQ2Q4<2> *I =
-      dynamic_cast<const IntegratorQ2Q4<2> *>(GetIntegrator());
+  const IntegratorQ2Q4<2>* I =
+    dynamic_cast<const IntegratorQ2Q4<2>*>(GetIntegrator());
   assert(I);
 
-  const FemInterface &HighOrderFem(*GetFem());
+  const FemInterface& HighOrderFem(*GetFem());
 
-  const nvector<IntVector> &q4patch2cell =
-      GetMesh()->GetPatchIndexHandler().GetAllQ4Patch2Cell();
+  const nvector<IntVector>& q4patch2cell =
+    GetMesh()->GetPatchIndexHandler().GetAllQ4Patch2Cell();
 
   nvector<int> cell2q4patch(GetMesh()->ncells());
   for (int p = 0; p < q4patch2cell.size(); p++) {
@@ -213,8 +240,8 @@ void DwrFemQ2Q42d::BoundaryForm(GlobalVector &f, const GlobalVector &u,
 
     HASHSET<int> habschon;
 
-    const IntVector &q = *GetMesh()->CellOnBoundary(col);
-    const IntVector &l = *GetMesh()->LocalOnBoundary(col);
+    const IntVector& q = *GetMesh()->CellOnBoundary(col);
+    const IntVector& l = *GetMesh()->LocalOnBoundary(col);
     for (int i = 0; i < q.size(); i++) {
       int iq = q[i];
       int ip = cell2q4patch[iq];
@@ -233,8 +260,8 @@ void DwrFemQ2Q42d::BoundaryForm(GlobalVector &f, const GlobalVector &u,
       LowOrderFem.ReInit(TL);
 
       GlobalToLocal(__U, u, ip);
-      I->BoundaryForm(BE, __F, HighOrderFem, LowOrderFem, __U, ile, col, __QN,
-                      __QC);
+      I->BoundaryForm(
+        BE, __F, HighOrderFem, LowOrderFem, __U, ile, col, __QN, __QC);
       PatchDiscretization::LocalToGlobal(f, __F, ip, d);
     }
   }
@@ -242,18 +269,21 @@ void DwrFemQ2Q42d::BoundaryForm(GlobalVector &f, const GlobalVector &u,
 
 /**********************************************************/
 
-void DwrFemQ2Q42d::Rhs(GlobalVector &f, const DomainRightHandSide &RHS,
-                       double s) const {
+void
+DwrFemQ2Q42d::Rhs(GlobalVector& f,
+                  const DomainRightHandSide& RHS,
+                  double s) const
+{
   nmatrix<double> TH, TL;
 
   GlobalToGlobalData();
   RHS.SetParameterData(__QP);
 
-  const IntegratorQ2Q4<2> *I =
-      dynamic_cast<const IntegratorQ2Q4<2> *>(GetIntegrator());
+  const IntegratorQ2Q4<2>* I =
+    dynamic_cast<const IntegratorQ2Q4<2>*>(GetIntegrator());
   assert(I);
 
-  const FemInterface &HighOrderFem(*GetFem());
+  const FemInterface& HighOrderFem(*GetFem());
 
   for (int iq = 0; iq < GetMesh()->nq4patches(); iq++) {
     Transformation(TH, iq);
@@ -270,22 +300,25 @@ void DwrFemQ2Q42d::Rhs(GlobalVector &f, const DomainRightHandSide &RHS,
 
 /**********************************************************/
 
-void DwrFemQ2Q42d::BoundaryRhs(GlobalVector &f, const IntSet &Colors,
-                               const BoundaryRightHandSide &NRHS,
-                               double s) const {
+void
+DwrFemQ2Q42d::BoundaryRhs(GlobalVector& f,
+                          const IntSet& Colors,
+                          const BoundaryRightHandSide& NRHS,
+                          double s) const
+{
   nmatrix<double> TH, TL;
 
   GlobalToGlobalData();
   NRHS.SetParameterData(__QP);
 
-  const IntegratorQ2Q4<2> *I =
-      dynamic_cast<const IntegratorQ2Q4<2> *>(GetIntegrator());
+  const IntegratorQ2Q4<2>* I =
+    dynamic_cast<const IntegratorQ2Q4<2>*>(GetIntegrator());
   assert(I);
 
-  const FemInterface &HighOrderFem(*GetFem());
+  const FemInterface& HighOrderFem(*GetFem());
 
-  const nvector<IntVector> &q4patch2cell =
-      GetMesh()->GetPatchIndexHandler().GetAllQ4Patch2Cell();
+  const nvector<IntVector>& q4patch2cell =
+    GetMesh()->GetPatchIndexHandler().GetAllQ4Patch2Cell();
 
   IntVector cell2q4patch(GetMesh()->ncells());
   for (int p = 0; p < q4patch2cell.size(); p++) {
@@ -298,8 +331,8 @@ void DwrFemQ2Q42d::BoundaryRhs(GlobalVector &f, const IntSet &Colors,
     int col = *p;
     HASHSET<int> habschon;
 
-    const IntVector &q = *GetMesh()->CellOnBoundary(col);
-    const IntVector &l = *GetMesh()->LocalOnBoundary(col);
+    const IntVector& q = *GetMesh()->CellOnBoundary(col);
+    const IntVector& l = *GetMesh()->LocalOnBoundary(col);
     for (int i = 0; i < q.size(); i++) {
       int iq = q[i];
       int ip = cell2q4patch[iq];
@@ -318,8 +351,8 @@ void DwrFemQ2Q42d::BoundaryRhs(GlobalVector &f, const IntSet &Colors,
       LowOrderFem.ReInit(TL);
 
       GlobalToLocalData(ip);
-      I->BoundaryRhs(NRHS, __F, HighOrderFem, LowOrderFem, ile, col, __QN,
-                     __QC);
+      I->BoundaryRhs(
+        NRHS, __F, HighOrderFem, LowOrderFem, ile, col, __QN, __QC);
       PatchDiscretization::LocalToGlobal(f, __F, ip, s);
     }
   }
@@ -327,14 +360,16 @@ void DwrFemQ2Q42d::BoundaryRhs(GlobalVector &f, const IntSet &Colors,
 
 /**********************************************************/
 
-void DwrFemQ2Q42d::MassMatrix(MatrixInterface &M) const {
+void
+DwrFemQ2Q42d::MassMatrix(MatrixInterface& M) const
+{
   nmatrix<double> TH, TL;
 
-  const IntegratorQ2Q4<2> *I =
-      dynamic_cast<const IntegratorQ2Q4<2> *>(GetIntegrator());
+  const IntegratorQ2Q4<2>* I =
+    dynamic_cast<const IntegratorQ2Q4<2>*>(GetIntegrator());
   assert(I);
 
-  const FemInterface &HighOrderFem(*GetFem());
+  const FemInterface& HighOrderFem(*GetFem());
 
   for (int iq = 0; iq < GetMesh()->nq4patches(); ++iq) {
     Transformation(TH, iq);
@@ -350,15 +385,19 @@ void DwrFemQ2Q42d::MassMatrix(MatrixInterface &M) const {
 
 /**********************************************************/
 
-void DwrFemQ2Q42d::MassForm(GlobalVector &f, const GlobalVector &u,
-                            const TimePattern &TP, double s) const {
+void
+DwrFemQ2Q42d::MassForm(GlobalVector& f,
+                       const GlobalVector& u,
+                       const TimePattern& TP,
+                       double s) const
+{
   nmatrix<double> TH, TL;
 
-  const IntegratorQ2Q4<2> *I =
-      dynamic_cast<const IntegratorQ2Q4<2> *>(GetIntegrator());
+  const IntegratorQ2Q4<2>* I =
+    dynamic_cast<const IntegratorQ2Q4<2>*>(GetIntegrator());
   assert(I);
 
-  const FemInterface &HighOrderFem(*GetFem());
+  const FemInterface& HighOrderFem(*GetFem());
 
   for (int iq = 0; iq < GetMesh()->nq4patches(); ++iq) {
     Transformation(TH, iq);
@@ -375,10 +414,14 @@ void DwrFemQ2Q42d::MassForm(GlobalVector &f, const GlobalVector &u,
 
 /**********************************************************/
 
-void DwrFemQ2Q42d::LocalToGlobal(MatrixInterface &A, EntryMatrix &E, int iq,
-                                 double s) const {
+void
+DwrFemQ2Q42d::LocalToGlobal(MatrixInterface& A,
+                            EntryMatrix& E,
+                            int iq,
+                            double s) const
+{
   nvector<int> indices = GetLocalIndices(iq);
-  dynamic_cast<HNStructureQ42d *>(HN)->CondenseHangingLowerHigher(E, indices);
+  dynamic_cast<HNStructureQ42d*>(HN)->CondenseHangingLowerHigher(E, indices);
   nvector<int>::const_iterator start = indices.begin();
   nvector<int>::const_iterator stop = indices.end();
   A.entry(start, stop, E, s);
@@ -387,9 +430,13 @@ void DwrFemQ2Q42d::LocalToGlobal(MatrixInterface &A, EntryMatrix &E, int iq,
 /**********************************************************/
 /**********************************************************/
 
-void DwrFemQ4Q22d::DiracRhsPoint(GlobalVector &f,
-                                 const DiracRightHandSide &DRHS,
-                                 const Vertex2d &p0, int i, double s) const {
+void
+DwrFemQ4Q22d::DiracRhsPoint(GlobalVector& f,
+                            const DiracRightHandSide& DRHS,
+                            const Vertex2d& p0,
+                            int i,
+                            double s) const
+{
   __F.ReInit(f.ncomp(), GetFem()->n());
 
   Vertex2d Tranfo_p0;
@@ -405,38 +452,42 @@ void DwrFemQ4Q22d::DiracRhsPoint(GlobalVector &f,
   Transformation(TH, iq);
   TransformationQ2(TL, iq);
 
-  const FemInterface &HighOrderFem(*GetFem());
+  const FemInterface& HighOrderFem(*GetFem());
 
   HighOrderFem.ReInit(TH);
   LowOrderFem.ReInit(TL);
 
-  const IntegratorQ2Q4<2> *I =
-      dynamic_cast<const IntegratorQ2Q4<2> *>(GetIntegrator());
+  const IntegratorQ2Q4<2>* I =
+    dynamic_cast<const IntegratorQ2Q4<2>*>(GetIntegrator());
   assert(I);
 
   GlobalToLocalData(iq);
   GlobalToGlobalData();
   DRHS.SetParameterData(__QP);
 
-  I->DiracRhsPoint(__F, LowOrderFem, HighOrderFem, Tranfo_p0, DRHS, i, __QN,
-                   __QC);
+  I->DiracRhsPoint(
+    __F, LowOrderFem, HighOrderFem, Tranfo_p0, DRHS, i, __QN, __QC);
   PatchDiscretization::LocalToGlobal(f, __F, iq, s);
 }
 
 /**********************************************************/
 
-void DwrFemQ4Q22d::Form(GlobalVector &f, const GlobalVector &u,
-                        const Equation &EQ, double d) const {
+void
+DwrFemQ4Q22d::Form(GlobalVector& f,
+                   const GlobalVector& u,
+                   const Equation& EQ,
+                   double d) const
+{
   nmatrix<double> TH, TL;
 
   GlobalToGlobalData();
   EQ.SetParameterData(__QP);
 
-  const IntegratorQ2Q4<2> *I =
-      dynamic_cast<const IntegratorQ2Q4<2> *>(GetIntegrator());
+  const IntegratorQ2Q4<2>* I =
+    dynamic_cast<const IntegratorQ2Q4<2>*>(GetIntegrator());
   assert(I);
 
-  const FemInterface &HighOrderFem(*GetFem());
+  const FemInterface& HighOrderFem(*GetFem());
 
   for (int iq = 0; iq < GetMesh()->nq4patches(); ++iq) {
     Transformation(TH, iq);
@@ -453,18 +504,22 @@ void DwrFemQ4Q22d::Form(GlobalVector &f, const GlobalVector &u,
 
 /**********************************************************/
 
-void DwrFemQ4Q22d::AdjointForm(GlobalVector &f, const GlobalVector &u,
-                               const Equation &EQ, double d) const {
+void
+DwrFemQ4Q22d::AdjointForm(GlobalVector& f,
+                          const GlobalVector& u,
+                          const Equation& EQ,
+                          double d) const
+{
   nmatrix<double> TH, TL;
 
   GlobalToGlobalData();
   EQ.SetParameterData(__QP);
 
-  const IntegratorQ2Q4<2> *I =
-      dynamic_cast<const IntegratorQ2Q4<2> *>(GetIntegrator());
+  const IntegratorQ2Q4<2>* I =
+    dynamic_cast<const IntegratorQ2Q4<2>*>(GetIntegrator());
   assert(I);
 
-  const FemInterface &HighOrderFem(*GetFem());
+  const FemInterface& HighOrderFem(*GetFem());
 
   for (int iq = 0; iq < GetMesh()->nq4patches(); ++iq) {
     Transformation(TH, iq);
@@ -481,22 +536,26 @@ void DwrFemQ4Q22d::AdjointForm(GlobalVector &f, const GlobalVector &u,
 
 /**********************************************************/
 
-void DwrFemQ4Q22d::BoundaryForm(GlobalVector &f, const GlobalVector &u,
-                                const IntSet &Colors,
-                                const BoundaryEquation &BE, double d) const {
+void
+DwrFemQ4Q22d::BoundaryForm(GlobalVector& f,
+                           const GlobalVector& u,
+                           const IntSet& Colors,
+                           const BoundaryEquation& BE,
+                           double d) const
+{
   nmatrix<double> TH, TL;
 
   GlobalToGlobalData();
   BE.SetParameterData(__QP);
 
-  const IntegratorQ2Q4<2> *I =
-      dynamic_cast<const IntegratorQ2Q4<2> *>(GetIntegrator());
+  const IntegratorQ2Q4<2>* I =
+    dynamic_cast<const IntegratorQ2Q4<2>*>(GetIntegrator());
   assert(I);
 
-  const FemInterface &HighOrderFem(*GetFem());
+  const FemInterface& HighOrderFem(*GetFem());
 
-  const nvector<IntVector> &q4patch2cell =
-      GetMesh()->GetPatchIndexHandler().GetAllQ4Patch2Cell();
+  const nvector<IntVector>& q4patch2cell =
+    GetMesh()->GetPatchIndexHandler().GetAllQ4Patch2Cell();
 
   nvector<int> cell2q4patch(GetMesh()->ncells());
   for (int p = 0; p < q4patch2cell.size(); p++) {
@@ -510,8 +569,8 @@ void DwrFemQ4Q22d::BoundaryForm(GlobalVector &f, const GlobalVector &u,
 
     HASHSET<int> habschon;
 
-    const IntVector &q = *GetMesh()->CellOnBoundary(col);
-    const IntVector &l = *GetMesh()->LocalOnBoundary(col);
+    const IntVector& q = *GetMesh()->CellOnBoundary(col);
+    const IntVector& l = *GetMesh()->LocalOnBoundary(col);
     for (int i = 0; i < q.size(); i++) {
       int iq = q[i];
       int ip = cell2q4patch[iq];
@@ -531,8 +590,8 @@ void DwrFemQ4Q22d::BoundaryForm(GlobalVector &f, const GlobalVector &u,
       LowOrderFem.ReInit(TL);
 
       GlobalToLocal(__U, u, ip);
-      I->BoundaryForm(BE, __F, LowOrderFem, HighOrderFem, __U, ile, col, __QN,
-                      __QC);
+      I->BoundaryForm(
+        BE, __F, LowOrderFem, HighOrderFem, __U, ile, col, __QN, __QC);
       PatchDiscretization::LocalToGlobal(f, __F, ip, d);
     }
   }
@@ -540,18 +599,21 @@ void DwrFemQ4Q22d::BoundaryForm(GlobalVector &f, const GlobalVector &u,
 
 /**********************************************************/
 
-void DwrFemQ4Q22d::Rhs(GlobalVector &f, const DomainRightHandSide &RHS,
-                       double s) const {
+void
+DwrFemQ4Q22d::Rhs(GlobalVector& f,
+                  const DomainRightHandSide& RHS,
+                  double s) const
+{
   nmatrix<double> TH, TL;
 
   GlobalToGlobalData();
   RHS.SetParameterData(__QP);
 
-  const IntegratorQ2Q4<2> *I =
-      dynamic_cast<const IntegratorQ2Q4<2> *>(GetIntegrator());
+  const IntegratorQ2Q4<2>* I =
+    dynamic_cast<const IntegratorQ2Q4<2>*>(GetIntegrator());
   assert(I);
 
-  const FemInterface &HighOrderFem(*GetFem());
+  const FemInterface& HighOrderFem(*GetFem());
 
   for (int iq = 0; iq < GetMesh()->nq4patches(); iq++) {
     Transformation(TH, iq);
@@ -568,22 +630,25 @@ void DwrFemQ4Q22d::Rhs(GlobalVector &f, const DomainRightHandSide &RHS,
 
 /**********************************************************/
 
-void DwrFemQ4Q22d::BoundaryRhs(GlobalVector &f, const IntSet &Colors,
-                               const BoundaryRightHandSide &NRHS,
-                               double s) const {
+void
+DwrFemQ4Q22d::BoundaryRhs(GlobalVector& f,
+                          const IntSet& Colors,
+                          const BoundaryRightHandSide& NRHS,
+                          double s) const
+{
   nmatrix<double> TH, TL;
 
   GlobalToGlobalData();
   NRHS.SetParameterData(__QP);
 
-  const IntegratorQ2Q4<2> *I =
-      dynamic_cast<const IntegratorQ2Q4<2> *>(GetIntegrator());
+  const IntegratorQ2Q4<2>* I =
+    dynamic_cast<const IntegratorQ2Q4<2>*>(GetIntegrator());
   assert(I);
 
-  const FemInterface &HighOrderFem(*GetFem());
+  const FemInterface& HighOrderFem(*GetFem());
 
-  const nvector<IntVector> &q4patch2cell =
-      GetMesh()->GetPatchIndexHandler().GetAllQ4Patch2Cell();
+  const nvector<IntVector>& q4patch2cell =
+    GetMesh()->GetPatchIndexHandler().GetAllQ4Patch2Cell();
 
   IntVector cell2q4patch(GetMesh()->ncells());
   for (int p = 0; p < q4patch2cell.size(); p++) {
@@ -596,8 +661,8 @@ void DwrFemQ4Q22d::BoundaryRhs(GlobalVector &f, const IntSet &Colors,
     int col = *p;
     HASHSET<int> habschon;
 
-    const IntVector &q = *GetMesh()->CellOnBoundary(col);
-    const IntVector &l = *GetMesh()->LocalOnBoundary(col);
+    const IntVector& q = *GetMesh()->CellOnBoundary(col);
+    const IntVector& l = *GetMesh()->LocalOnBoundary(col);
     for (int i = 0; i < q.size(); i++) {
       int iq = q[i];
       int ip = cell2q4patch[iq];
@@ -617,8 +682,8 @@ void DwrFemQ4Q22d::BoundaryRhs(GlobalVector &f, const IntSet &Colors,
       LowOrderFem.ReInit(TL);
 
       GlobalToLocalData(ip);
-      I->BoundaryRhs(NRHS, __F, LowOrderFem, HighOrderFem, ile, col, __QN,
-                     __QC);
+      I->BoundaryRhs(
+        NRHS, __F, LowOrderFem, HighOrderFem, ile, col, __QN, __QC);
       PatchDiscretization::LocalToGlobal(f, __F, ip, s);
     }
   }
@@ -626,14 +691,16 @@ void DwrFemQ4Q22d::BoundaryRhs(GlobalVector &f, const IntSet &Colors,
 
 /**********************************************************/
 
-void DwrFemQ4Q22d::MassMatrix(MatrixInterface &M) const {
+void
+DwrFemQ4Q22d::MassMatrix(MatrixInterface& M) const
+{
   nmatrix<double> TH, TL;
 
-  const IntegratorQ2Q4<2> *I =
-      dynamic_cast<const IntegratorQ2Q4<2> *>(GetIntegrator());
+  const IntegratorQ2Q4<2>* I =
+    dynamic_cast<const IntegratorQ2Q4<2>*>(GetIntegrator());
   assert(I);
 
-  const FemInterface &HighOrderFem(*GetFem());
+  const FemInterface& HighOrderFem(*GetFem());
 
   for (int iq = 0; iq < GetMesh()->nq4patches(); ++iq) {
     Transformation(TH, iq);
@@ -649,15 +716,19 @@ void DwrFemQ4Q22d::MassMatrix(MatrixInterface &M) const {
 
 /**********************************************************/
 
-void DwrFemQ4Q22d::MassForm(GlobalVector &f, const GlobalVector &u,
-                            const TimePattern &TP, double s) const {
+void
+DwrFemQ4Q22d::MassForm(GlobalVector& f,
+                       const GlobalVector& u,
+                       const TimePattern& TP,
+                       double s) const
+{
   nmatrix<double> TH, TL;
 
-  const IntegratorQ2Q4<2> *I =
-      dynamic_cast<const IntegratorQ2Q4<2> *>(GetIntegrator());
+  const IntegratorQ2Q4<2>* I =
+    dynamic_cast<const IntegratorQ2Q4<2>*>(GetIntegrator());
   assert(I);
 
-  const FemInterface &HighOrderFem(*GetFem());
+  const FemInterface& HighOrderFem(*GetFem());
 
   for (int iq = 0; iq < GetMesh()->nq4patches(); ++iq) {
     Transformation(TH, iq);
@@ -674,10 +745,14 @@ void DwrFemQ4Q22d::MassForm(GlobalVector &f, const GlobalVector &u,
 
 /**********************************************************/
 
-void DwrFemQ4Q22d::LocalToGlobal(MatrixInterface &A, EntryMatrix &E, int iq,
-                                 double s) const {
+void
+DwrFemQ4Q22d::LocalToGlobal(MatrixInterface& A,
+                            EntryMatrix& E,
+                            int iq,
+                            double s) const
+{
   nvector<int> indices = GetLocalIndices(iq);
-  dynamic_cast<HNStructureQ42d *>(HN)->CondenseHangingHigherLower(E, indices);
+  dynamic_cast<HNStructureQ42d*>(HN)->CondenseHangingHigherLower(E, indices);
   nvector<int>::const_iterator start = indices.begin();
   nvector<int>::const_iterator stop = indices.end();
   A.entry(start, stop, E, s);

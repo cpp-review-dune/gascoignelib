@@ -38,10 +38,11 @@
 #include "exactsolution.h"
 
 class BoundaryRightHandSideByExactSolution
-    : public Gascoigne::BoundaryRightHandSide {
+  : public Gascoigne::BoundaryRightHandSide
+{
 private:
-  const Gascoigne::Equation *_EQ;
-  const Gascoigne::ExactSolution *_ES;
+  const Gascoigne::Equation* _EQ;
+  const Gascoigne::ExactSolution* _ES;
 
 protected:
 public:
@@ -49,9 +50,12 @@ public:
   ////  Con(De)structor
   //
 
-  BoundaryRightHandSideByExactSolution(const Gascoigne::Equation *eq,
-                                       const Gascoigne::ExactSolution *es)
-      : BoundaryRightHandSide(), _EQ(eq), _ES(es) {
+  BoundaryRightHandSideByExactSolution(const Gascoigne::Equation* eq,
+                                       const Gascoigne::ExactSolution* es)
+    : BoundaryRightHandSide()
+    , _EQ(eq)
+    , _ES(es)
+  {
     assert(es);
     assert(eq);
   }
@@ -60,9 +64,12 @@ public:
   std::string GetName() const { return "BoundaryRightHandSideByExactSolution"; }
   int GetNcomp() const { return _EQ->GetNcomp(); }
 
-  void operator()(Gascoigne::VectorIterator b, const Gascoigne::TestFunction &N,
-                  const Gascoigne::Vertex2d &v, const Gascoigne::Vertex2d &n,
-                  int col) const {
+  void operator()(Gascoigne::VectorIterator b,
+                  const Gascoigne::TestFunction& N,
+                  const Gascoigne::Vertex2d& v,
+                  const Gascoigne::Vertex2d& n,
+                  int col) const
+  {
     b[0] += (_ES->x(0, v) * n.x() + _ES->y(0, v) * n.y()) * N.m();
   }
 };

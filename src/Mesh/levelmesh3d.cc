@@ -34,8 +34,10 @@ using namespace std;
 /*---------------------------------------------------*/
 
 namespace Gascoigne {
-LevelMesh3d::LevelMesh3d(const HierarchicalMesh *hmp) : Index() {
-  HMP = dynamic_cast<const HierarchicalMesh3d *>(hmp);
+LevelMesh3d::LevelMesh3d(const HierarchicalMesh* hmp)
+  : Index()
+{
+  HMP = dynamic_cast<const HierarchicalMesh3d*>(hmp);
 }
 
 /*---------------------------------------------------*/
@@ -44,12 +46,16 @@ LevelMesh3d::~LevelMesh3d() {}
 
 /*---------------------------------------------------*/
 
-void LevelMesh3d::BasicInit(const IntSet &newh, const IntSet &oldh) {
+void
+LevelMesh3d::BasicInit(const IntSet& newh, const IntSet& oldh)
+{
   int n = newh.size() + oldh.size();
   Index::Hexl2g().memory(n);
-  IntVector::const_iterator p =
-      set_union(newh.begin(), newh.end(), oldh.begin(), oldh.end(),
-                Index::Hexl2g().begin());
+  IntVector::const_iterator p = set_union(newh.begin(),
+                                          newh.end(),
+                                          oldh.begin(),
+                                          oldh.end(),
+                                          Index::Hexl2g().begin());
   n = p - Index::Hexl2g().begin();
 
   InitCells(n);
@@ -59,7 +65,9 @@ void LevelMesh3d::BasicInit(const IntSet &newh, const IntSet &oldh) {
 
 /*-----------------------------------------*/
 
-void LevelMesh3d::InitCells(int n) {
+void
+LevelMesh3d::InitCells(int n)
+{
   Index::Hexl2g().memory(n);
 
   sort(Index::Hexl2g().begin(), Index::Hexl2g().end(), LevelSorter3d(*HMP));
@@ -69,7 +77,9 @@ void LevelMesh3d::InitCells(int n) {
 
 /*-----------------------------------------*/
 
-void LevelMesh3d::InitNodes(int n) {
+void
+LevelMesh3d::InitNodes(int n)
+{
   IntSet nodes;
   for (int i = 0; i < n; i++) {
     int ind = Index::Hexl2g()[i];
@@ -82,10 +92,12 @@ void LevelMesh3d::InitNodes(int n) {
 
 /*-----------------------------------------*/
 
-void LevelMesh3d::InitEdges(int n) {
+void
+LevelMesh3d::InitEdges(int n)
+{
   IntSet edges;
   for (int i = 0; i < n; i++) {
-    const Hex &Q = HMP->hex(Index::Hexl2g()[i]);
+    const Hex& Q = HMP->hex(Index::Hexl2g()[i]);
     for (int ii = 0; ii < 6; ii++) {
       edges.insert(Q.edge(ii));
     }
@@ -102,15 +114,17 @@ void LevelMesh3d::InitEdges(int n) {
 
 /*-----------------------------------------*/
 
-bool LevelMesh3d::BuildFathers(set<int> &Vaeter) const {
+bool
+LevelMesh3d::BuildFathers(set<int>& Vaeter) const
+{
   for (int i = 0; i < ncells(); i++) {
-    const Hex &h = hex(i);
+    const Hex& h = hex(i);
     int findex = h.father();
     if (findex == -1) {
       return 0;
     }
 
-    const Hex &hf = HMP->hex(findex);
+    const Hex& hf = HMP->hex(findex);
     for (int ii = 0; ii < hf.nchilds(); ii++) {
       int cindex = hf.child(ii);
       if (Hexg2lCheck(cindex) == -2) {
@@ -124,7 +138,9 @@ bool LevelMesh3d::BuildFathers(set<int> &Vaeter) const {
 
 /*---------------------------------------------------*/
 
-void LevelMesh3d::ConstructIndOfPatch(nvector<IntVector> &dst) const {
+void
+LevelMesh3d::ConstructIndOfPatch(nvector<IntVector>& dst) const
+{
   set<int> Vaeter;
   BuildFathers(Vaeter);
 
@@ -195,7 +211,7 @@ void LevelMesh3d::ConstructIndOfPatch(nvector<IntVector> &dst) const {
 
   while (pf != Vaeter.end()) {
     int findex = *pf;
-    const Hex &hf = HMP->hex(findex);
+    const Hex& hf = HMP->hex(findex);
     std::array<int, 8> FineHexs;
     for (int ii = 0; ii < hf.nchilds(); ii++) {
       FineHexs[ii] = hf.child(ii);
@@ -212,7 +228,9 @@ void LevelMesh3d::ConstructIndOfPatch(nvector<IntVector> &dst) const {
 
 /*---------------------------------------------------*/
 
-bool LevelMesh3d::ConstructCellIndOfPatch(IntVector &dst) const {
+bool
+LevelMesh3d::ConstructCellIndOfPatch(IntVector& dst) const
+{
   set<int> Vaeter;
   BuildFathers(Vaeter);
 
@@ -234,16 +252,19 @@ bool LevelMesh3d::ConstructCellIndOfPatch(IntVector &dst) const {
 
 /*---------------------------------------------------*/
 
-void LevelMesh3d::ConstructHangingStructureQuadratic(
-    QuadraticHNStructure3 &hnq2, QuadraticHNStructure9 &hnq2face) const {
+void
+LevelMesh3d::ConstructHangingStructureQuadratic(
+  QuadraticHNStructure3& hnq2,
+  QuadraticHNStructure9& hnq2face) const
+{
   hnq2.clear();
   hnq2face.clear();
   set<int> habschon;
 
-  const HexLawAndOrder &HLaO = HMP->HexLawOrder();
+  const HexLawAndOrder& HLaO = HMP->HexLawOrder();
 
   for (int i = 0; i < ncells(); i++) {
-    const Hex &q = HMP->hex(Hexl2g(i));
+    const Hex& q = HMP->hex(Hexl2g(i));
     int father = q.father();
     if (father < 0)
       continue;
@@ -254,7 +275,7 @@ void LevelMesh3d::ConstructHangingStructureQuadratic(
       int neighbour = HMP->neighbour(father, in);
       if (neighbour < 0)
         continue;
-      const Hex &qfn = HMP->hex(neighbour);
+      const Hex& qfn = HMP->hex(neighbour);
       if (qfn.nchilds() == 0)
         continue;
 
@@ -278,7 +299,7 @@ void LevelMesh3d::ConstructHangingStructureQuadratic(
         if (Hexg2lCheck(child) >= 0)
           continue;
 
-        const Hex &qfc = HMP->hex(child);
+        const Hex& qfc = HMP->hex(child);
 
         if (qfc.nchilds() == 0)
           continue;
@@ -294,7 +315,7 @@ void LevelMesh3d::ConstructHangingStructureQuadratic(
 
       // ordne F;
       for (int j = 0; j < 4; j++) {
-        const Hex &qfcc = HMP->hex(childs[j]);
+        const Hex& qfcc = HMP->hex(childs[j]);
 
         int hnl = Vertexg2l(HLaO.face_vertex(qfcc, nec));
 
@@ -375,8 +396,11 @@ void LevelMesh3d::ConstructHangingStructureQuadratic(
 
 /*---------------------------------------------------*/
 
-void LevelMesh3d::ConstructHangingStructureQuartic(
-    QuarticHNStructure5 &hnq4, QuarticHNStructure25 &hnq4face) const {
+void
+LevelMesh3d::ConstructHangingStructureQuartic(
+  QuarticHNStructure5& hnq4,
+  QuarticHNStructure25& hnq4face) const
+{
   hnq4.clear();
   hnq4face.clear();
   assert(HMP->patchdepth() >= 2);
@@ -418,11 +442,13 @@ void LevelMesh3d::ConstructHangingStructureQuartic(
 /*---------------------------------------------------*/
 
 // tiefe, bis Kinder aktiv sind
-int LevelMesh3d::refine_level(int n) const {
+int
+LevelMesh3d::refine_level(int n) const
+{
   int l = 0;
   while (Hexg2lCheck(n) < 0) {
     ++l;
-    const Hex &h = HMP->hex(n);
+    const Hex& h = HMP->hex(n);
     assert(h.nchilds() > 0);
     n = h.child(0);
   }
@@ -434,9 +460,12 @@ int LevelMesh3d::refine_level(int n) const {
 // Sucht alle 81 Knoten, die an einer haengenden
 // Flaeche einer groben Q4-Zelle liegen
 // Dazu wird die entsprechende Funktion der Q2-Face verwendet
-void LevelMesh3d::ConstructNodesOnFaceQ4(std::array<int, 81> &nodesonface,
-                                         int opa, int ni) const {
-  const HexLawAndOrder &HLaO = HMP->HexLawOrder();
+void
+LevelMesh3d::ConstructNodesOnFaceQ4(std::array<int, 81>& nodesonface,
+                                    int opa,
+                                    int ni) const
+{
+  const HexLawAndOrder& HLaO = HMP->HexLawOrder();
   assert(opa >= 0);
   int neighbour = HMP->neighbour(opa, ni);
   assert(neighbour >= 0);
@@ -458,7 +487,7 @@ void LevelMesh3d::ConstructNodesOnFaceQ4(std::array<int, 81> &nodesonface,
   // die zellen so sortieren, dass sie von links unten
   // nach recht oben lexikogr. liegen
   // Dazu wird jeweils die Zelle gesucht, so dass der Mittelknoten richtig liegt
-  int edges[4] = {24, 20, 4, 0};
+  int edges[4] = { 24, 20, 4, 0 };
   std::array<int, 4> s;
   for (int c = 0; c < 4; ++c) { // zelle finden, die an Position c liegt, also
                                 // zelle, von der edges[c] die mittelzelle ist.
@@ -484,8 +513,10 @@ void LevelMesh3d::ConstructNodesOnFaceQ4(std::array<int, 81> &nodesonface,
 
 /*---------------------------------------------------*/
 
-void LevelMesh3d::InsertHangingFacesQ4(QuarticHNStructure25 &hnq4face,
-                                       const std::array<int, 81> &nof) const {
+void
+LevelMesh3d::InsertHangingFacesQ4(QuarticHNStructure25& hnq4face,
+                                  const std::array<int, 81>& nof) const
+{
   std::array<int, 25> I;
 
   for (int y = 0; y < 5; ++y)
@@ -508,27 +539,48 @@ void LevelMesh3d::InsertHangingFacesQ4(QuarticHNStructure25 &hnq4face,
 
 /*---------------------------------------------------*/
 
-void LevelMesh3d::InsertHangingEdgesQ4(QuarticHNStructure5 &hnq4,
-                                       const std::array<int, 81> &nof) const {
+void
+LevelMesh3d::InsertHangingEdgesQ4(QuarticHNStructure5& hnq4,
+                                  const std::array<int, 81>& nof) const
+{
   // horizontal
   for (int y = 0; y < 5; ++y)
-    InsertHangingEdgeQ4(hnq4, nof, 18 * y + 1, 18 * y + 3, 18 * y + 5,
-                        18 * y + 7, 18 * y + 0, 18 * y + 2, 18 * y + 4,
-                        18 * y + 6, 18 * y + 8);
+    InsertHangingEdgeQ4(hnq4,
+                        nof,
+                        18 * y + 1,
+                        18 * y + 3,
+                        18 * y + 5,
+                        18 * y + 7,
+                        18 * y + 0,
+                        18 * y + 2,
+                        18 * y + 4,
+                        18 * y + 6,
+                        18 * y + 8);
   // vertikal
   for (int x = 0; x < 5; ++x)
-    InsertHangingEdgeQ4(hnq4, nof, 2 * x + 9, 2 * x + 27, 2 * x + 45,
-                        2 * x + 63, 2 * x + 0, 2 * x + 18, 2 * x + 36,
-                        2 * x + 54, 2 * x + 72);
+    InsertHangingEdgeQ4(hnq4,
+                        nof,
+                        2 * x + 9,
+                        2 * x + 27,
+                        2 * x + 45,
+                        2 * x + 63,
+                        2 * x + 0,
+                        2 * x + 18,
+                        2 * x + 36,
+                        2 * x + 54,
+                        2 * x + 72);
 }
 
 /*---------------------------------------------------*/
 
 // Sucht alle 25 Knoten, die an einer haengenden
 // Flaeche einer groben Q2-Zelle liegen
-void LevelMesh3d::ConstructNodesOnFace(std::array<int, 25> &nodesonface,
-                                       int vater, int ni) const {
-  const HexLawAndOrder &HLaO = HMP->HexLawOrder();
+void
+LevelMesh3d::ConstructNodesOnFace(std::array<int, 25>& nodesonface,
+                                  int vater,
+                                  int ni) const
+{
+  const HexLawAndOrder& HLaO = HMP->HexLawOrder();
   assert(vater >= 0);
   int neighbour = HMP->neighbour(vater, ni);
   assert(neighbour >= 0);
@@ -551,7 +603,7 @@ void LevelMesh3d::ConstructNodesOnFace(std::array<int, 25> &nodesonface,
   // die zellen so sortieren, dass sie von links unten
   // nach recht oben lexikogr. liegen
   // Dazu wird jeweils die Zelle gesucht, so dass der Mittelknoten richtig liegt
-  int edges[4] = {8, 6, 2, 0};
+  int edges[4] = { 8, 6, 2, 0 };
   std::array<int, 4> s;
   for (int c = 0; c < 4; ++c) { // zelle finden, die an Position c liegt, also
                                 // zelle, von der edges[c] die mittelzelle ist.
@@ -576,10 +628,15 @@ void LevelMesh3d::ConstructNodesOnFace(std::array<int, 25> &nodesonface,
 
 /*---------------------------------------------------*/
 
-void LevelMesh3d::InsertHangingFaceQ4(QuarticHNStructure25 &hnq4face,
-                                      const std::array<int, 81> &nof, int n1,
-                                      int n2, int n3, int n4,
-                                      const std::array<int, 25> &I) const {
+void
+LevelMesh3d::InsertHangingFaceQ4(QuarticHNStructure25& hnq4face,
+                                 const std::array<int, 81>& nof,
+                                 int n1,
+                                 int n2,
+                                 int n3,
+                                 int n4,
+                                 const std::array<int, 25>& I) const
+{
   // eine haengende face hat 4 haengende. Die vier typen dieser Knoten
   // sind so wie die 9 Stuetzknoten lexikografisch vergeben.
   assert(hnq4face.find(Vertexg2l(nof[n1])) == hnq4face.end());
@@ -598,10 +655,19 @@ void LevelMesh3d::InsertHangingFaceQ4(QuarticHNStructure25 &hnq4face,
 
 /*---------------------------------------------------*/
 
-void LevelMesh3d::InsertHangingEdgeQ4(QuarticHNStructure5 &hnq4,
-                                      const std::array<int, 81> &nof, int n1,
-                                      int n2, int n3, int n4, int i1, int i2,
-                                      int i3, int i4, int i5) const {
+void
+LevelMesh3d::InsertHangingEdgeQ4(QuarticHNStructure5& hnq4,
+                                 const std::array<int, 81>& nof,
+                                 int n1,
+                                 int n2,
+                                 int n3,
+                                 int n4,
+                                 int i1,
+                                 int i2,
+                                 int i3,
+                                 int i4,
+                                 int i5) const
+{
   // die ganze Kante muss neu haengen. Es gibt 2 mal 2 haengende Knoten.
   // Knoten am Rand haben jeweils den Typ 0, die in der Mitte Typ 1
   if (hnq4.find(Vertexg2l(nof[n1])) != hnq4.end()) {
@@ -630,10 +696,12 @@ void LevelMesh3d::InsertHangingEdgeQ4(QuarticHNStructure5 &hnq4,
 
 /*---------------------------------------------------*/
 
-bool LevelMesh3d::EnkelUniform(const Hex &Q) const {
+bool
+LevelMesh3d::EnkelUniform(const Hex& Q) const
+{
   for (int ii = 0; ii < Q.nchilds(); ii++) {
     int qccindex = Q.child(ii);
-    const Hex &qcc = HMP->hex(qccindex);
+    const Hex& qcc = HMP->hex(qccindex);
     for (int iii = 0; iii < qcc.nchilds(); iii++) {
       int qcindex = qcc.child(iii);
       if (Hexg2lCheck(qcindex) == -2) {
@@ -646,9 +714,11 @@ bool LevelMesh3d::EnkelUniform(const Hex &Q) const {
 
 /*---------------------------------------------------*/
 
-void LevelMesh3d::fill_opis(IntSet &dst, IntSet &oldhexs) const {
+void
+LevelMesh3d::fill_opis(IntSet& dst, IntSet& oldhexs) const
+{
   for (int i = 0; i < ncells(); i++) {
-    const Hex &Q = hex(i);
+    const Hex& Q = hex(i);
 
     int f = Q.father();
     assert(f >= 0);
@@ -666,7 +736,9 @@ void LevelMesh3d::fill_opis(IntSet &dst, IntSet &oldhexs) const {
 
 /*---------------------------------------------------*/
 
-void LevelMesh3d::fill_childs(IntSet &dst, const Hex &Q) const {
+void
+LevelMesh3d::fill_childs(IntSet& dst, const Hex& Q) const
+{
   for (int i = 0; i < Q.nchilds(); i++) {
     dst.insert(Q.child(i));
   }
@@ -674,9 +746,11 @@ void LevelMesh3d::fill_childs(IntSet &dst, const Hex &Q) const {
 
 /*---------------------------------------------------*/
 
-void LevelMesh3d::fill_enkel(IntSet &dst, const Hex &Q) const {
+void
+LevelMesh3d::fill_enkel(IntSet& dst, const Hex& Q) const
+{
   for (int i = 0; i < Q.nchilds(); i++) {
-    const Hex &C = HMP->hex(Q.child(i));
+    const Hex& C = HMP->hex(Q.child(i));
     for (int j = 0; j < C.nchilds(); j++) {
       int cc = C.child(j);
       if (Hexg2lCheck(cc) >= 0) {
@@ -688,7 +762,9 @@ void LevelMesh3d::fill_enkel(IntSet &dst, const Hex &Q) const {
 
 /*---------------------------------------------------*/
 
-void LevelMesh3d::check_leveljump() const {
+void
+LevelMesh3d::check_leveljump() const
+{
   LevelJumper Phi;
   for (int c = 0; c < ncells(); c++) {
     Phi.update(hex(c));
@@ -698,7 +774,9 @@ void LevelMesh3d::check_leveljump() const {
 
 /*---------------------------------------------------*/
 
-void LevelMesh3d::construct_lists(IntSet &newhexs, IntSet &oldhexs) const {
+void
+LevelMesh3d::construct_lists(IntSet& newhexs, IntSet& oldhexs) const
+{
   newhexs.clear();
   oldhexs.clear();
 
@@ -707,7 +785,7 @@ void LevelMesh3d::construct_lists(IntSet &newhexs, IntSet &oldhexs) const {
   set<int> Opis;
   fill_opis(Opis, oldhexs);
   for (set<int>::const_iterator p = Opis.begin(); p != Opis.end(); p++) {
-    const Hex &Q = HMP->hex(*p);
+    const Hex& Q = HMP->hex(*p);
 
     if (EnkelUniform(Q)) {
       fill_childs(newhexs, Q);
@@ -734,10 +812,10 @@ void LevelMesh3d::construct_lists(IntSet &newhexs, IntSet &oldhexs) const {
     IntSet help(newhexs);
     for (set<int>::const_iterator p = newhexs.begin(); p != newhexs.end();
          p++) {
-      const Hex &q = HMP->hex(*p);
+      const Hex& q = HMP->hex(*p);
       if (!Phi.VertexOK(q)) {
         rep++;
-        const Hex &qf = HMP->hex(q.father());
+        const Hex& qf = HMP->hex(q.father());
         for (int ii = 0; ii < 8; ii++) {
           help.erase(qf.child(ii));
         }
@@ -751,8 +829,10 @@ void LevelMesh3d::construct_lists(IntSet &newhexs, IntSet &oldhexs) const {
 
 /*---------------------------------------------------*/
 
-void LevelMesh3d::InitBoundaryHandler(BoundaryIndexHandler &BI,
-                                      const PatchIndexHandler &PIH) const {
+void
+LevelMesh3d::InitBoundaryHandler(BoundaryIndexHandler& BI,
+                                 const PatchIndexHandler& PIH) const
+{
   // bquads
   // probably slowly (could be in multigridmesh !)
   // since we cannnot go from quad -> bline
@@ -767,7 +847,7 @@ void LevelMesh3d::InitBoundaryHandler(BoundaryIndexHandler &BI,
   // which colors are there ?
   BI.clear();
   for (IntSet::const_iterator p = bquads.begin(); p != bquads.end(); p++) {
-    const BoundaryQuad &bl = HMP->bquad(*p);
+    const BoundaryQuad& bl = HMP->bquad(*p);
     int col = bl.material();
     BI.GetColors().insert(col);
   }
@@ -787,7 +867,7 @@ void LevelMesh3d::InitBoundaryHandler(BoundaryIndexHandler &BI,
   vector<set<std::array<int, 2>>> H2(nc);
 
   for (IntSet::const_iterator q = bquads.begin(); q != bquads.end(); q++) {
-    const BoundaryQuad &bl = HMP->bquad(*q);
+    const BoundaryQuad& bl = HMP->bquad(*q);
     int col = bl.material();
 
     map<int, int>::const_iterator p = inv.find(col);
@@ -824,7 +904,7 @@ void LevelMesh3d::InitBoundaryHandler(BoundaryIndexHandler &BI,
     BI.GetLocal().insert(make_pair(color, v2));
   }
 
-  const nvector<IntVector> &patch2cell = PIH.GetAllPatch2Cell();
+  const nvector<IntVector>& patch2cell = PIH.GetAllPatch2Cell();
 
   nvector<int> cell2patch(PIH.npatches() << 3);
   for (int p = 0; p < patch2cell.size(); ++p)
@@ -832,10 +912,11 @@ void LevelMesh3d::InitBoundaryHandler(BoundaryIndexHandler &BI,
       cell2patch[patch2cell[p][i]] = p;
 
   for (IntSet::const_iterator c = BI.GetColors().begin();
-       c != BI.GetColors().end(); c++) {
+       c != BI.GetColors().end();
+       c++) {
     int col = *c;
-    const IntVector &cells = BI.Cells(col);
-    const IntVector &locals = BI.Localind(col);
+    const IntVector& cells = BI.Cells(col);
+    const IntVector& locals = BI.Localind(col);
     HASHSET<int> habschon;
 
     IntVector p1;

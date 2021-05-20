@@ -28,15 +28,22 @@
 #include <vector>
 
 namespace Gascoigne {
-std::string GetBase(const char *buf, char sep = '.');
-std::string GetTail(const char *buf, char sep = '.');
-std::vector<std::string> StringSplit(const char *buf, char sep);
-std::vector<std::string> StringSplit(const char *buf, char sep1, char sep2);
+std::string
+GetBase(const char* buf, char sep = '.');
+std::string
+GetTail(const char* buf, char sep = '.');
+std::vector<std::string>
+StringSplit(const char* buf, char sep);
+std::vector<std::string>
+StringSplit(const char* buf, char sep1, char sep2);
 
-std::string Int2String(int a);
-std::string Double2String(double a);
+std::string
+Int2String(int a);
+std::string
+Double2String(double a);
 
-std::pair<std::string, std::vector<std::string>> SplitArgs(std::string s);
+std::pair<std::string, std::vector<std::string>>
+SplitArgs(std::string s);
 } // namespace Gascoigne
 
 #endif

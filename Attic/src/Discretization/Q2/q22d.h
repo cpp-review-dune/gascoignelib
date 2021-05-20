@@ -37,10 +37,11 @@ namespace Gascoigne {
 ////
 /////////////////////////////////////////////
 
-class Q22d : public Q2 {
+class Q22d : public Q2
+{
 protected:
-  int GetPatchNumber(const Vertex2d &p0, Vertex2d &p) const;
-  void VertexTransformation(const Vertex2d &p0, Vertex2d &p, int iq) const;
+  int GetPatchNumber(const Vertex2d& p0, Vertex2d& p) const;
+  void VertexTransformation(const Vertex2d& p0, Vertex2d& p, int iq) const;
 
 public:
   //
@@ -52,11 +53,11 @@ public:
 
   std::string GetName() const { return "Q22d"; }
 
-  void BasicInit(const ParamFile *paramfile);
-  void InterpolateSolution(GlobalVector &u, const GlobalVector &uold) const;
+  void BasicInit(const ParamFile* paramfile);
+  void InterpolateSolution(GlobalVector& u, const GlobalVector& uold) const;
 
-  void ConstructInterpolator(MgInterpolatorInterface *I,
-                             const MeshTransferInterface *GMT);
+  void ConstructInterpolator(MgInterpolatorInterface* I,
+                             const MeshTransferInterface* GMT);
 };
 } // namespace Gascoigne
 

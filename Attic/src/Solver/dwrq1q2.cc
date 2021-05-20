@@ -28,15 +28,20 @@
 namespace Gascoigne {
 /*--------------------------------------------------------*/
 
-DwrQ1Q2::DwrQ1Q2(StdSolver &SR) : S(SR) {
+DwrQ1Q2::DwrQ1Q2(StdSolver& SR)
+  : S(SR)
+{
   primalproblem = S.GetProblemDescriptor();
   discretization = S.GetDiscretization();
 }
 
 /*--------------------------------------------------------*/
 
-double DwrQ1Q2::ScalarProduct(DoubleVector &eta, const GlobalVector &f,
-                              const GlobalVector &z) const {
+double
+DwrQ1Q2::ScalarProduct(DoubleVector& eta,
+                       const GlobalVector& f,
+                       const GlobalVector& z) const
+{
   for (int i = 0; i < z.n(); i++) {
     for (int c = 0; c < z.ncomp(); c++) {
       eta[i] += fabs(f(i, c) * z(i, c));
@@ -47,21 +52,26 @@ double DwrQ1Q2::ScalarProduct(DoubleVector &eta, const GlobalVector &f,
 
 /*--------------------------------------------------------*/
 
-double DwrQ1Q2::ScalarProduct(DoubleVector &eta, const VectorInterface &gf,
-                              const VectorInterface &gz) const {
-  const GlobalVector &f = S.GetGV(gf);
-  const GlobalVector &z = S.GetGV(gz);
+double
+DwrQ1Q2::ScalarProduct(DoubleVector& eta,
+                       const VectorInterface& gf,
+                       const VectorInterface& gz) const
+{
+  const GlobalVector& f = S.GetGV(gf);
+  const GlobalVector& z = S.GetGV(gz);
 
   return ScalarProduct(eta, f, z);
 }
 
 /*--------------------------------------------------------*/
 
-double DwrQ1Q2::ScalarProductWithFluctuations(DoubleVector &eta,
-                                              const VectorInterface &gf,
-                                              const VectorInterface &gz) const {
-  const GlobalVector &f = S.GetGV(gf);
-  const GlobalVector &z = S.GetGV(gz);
+double
+DwrQ1Q2::ScalarProductWithFluctuations(DoubleVector& eta,
+                                       const VectorInterface& gf,
+                                       const VectorInterface& gz) const
+{
+  const GlobalVector& f = S.GetGV(gf);
+  const GlobalVector& z = S.GetGV(gz);
 
   GlobalVector dz(f.ncomp(), f.n());
 
@@ -75,8 +85,10 @@ double DwrQ1Q2::ScalarProductWithFluctuations(DoubleVector &eta,
 
 /*--------------------------------------------------------*/
 
-DiscretizationInterface *DwrQ1Q2::CreateOtherDiscretization() const {
-  DiscretizationInterface *D;
+DiscretizationInterface*
+DwrQ1Q2::CreateOtherDiscretization() const
+{
+  DiscretizationInterface* D;
 
   if (S.GetMesh()->dimension() == 2) {
     D = new DwrFemQ1Q22d;
@@ -90,9 +102,10 @@ DiscretizationInterface *DwrQ1Q2::CreateOtherDiscretization() const {
 
 /*-------------------------------------------------------*/
 
-void DwrQ1Q2::PrimalResidualsHigher(VectorInterface &gf,
-                                    const VectorInterface &gu) {
-  GlobalVector &f = S.GetGV(gf);
+void
+DwrQ1Q2::PrimalResidualsHigher(VectorInterface& gf, const VectorInterface& gu)
+{
+  GlobalVector& f = S.GetGV(gf);
 
   f.zero();
 
@@ -101,7 +114,7 @@ void DwrQ1Q2::PrimalResidualsHigher(VectorInterface &gf,
   S.Rhs(gf, -0.5);
   S.Form(gf, gu, 0.5);
 
-  DiscretizationInterface *D = CreateOtherDiscretization();
+  DiscretizationInterface* D = CreateOtherDiscretization();
 
   S.SetDiscretization(*D, true);
 
@@ -115,10 +128,12 @@ void DwrQ1Q2::PrimalResidualsHigher(VectorInterface &gf,
 
 /*--------------------------------------------------------*/
 
-void DwrQ1Q2::DualResidualsHigher(VectorInterface &gf,
-                                  const VectorInterface &gu,
-                                  const VectorInterface &gz,
-                                  const ProblemDescriptorInterface &PDI) {
+void
+DwrQ1Q2::DualResidualsHigher(VectorInterface& gf,
+                             const VectorInterface& gu,
+                             const VectorInterface& gz,
+                             const ProblemDescriptorInterface& PDI)
+{
   S.GetGV(gf).zero();
   // dual problem
   S.SetProblem(PDI);
@@ -135,7 +150,7 @@ void DwrQ1Q2::DualResidualsHigher(VectorInterface &gf,
   // residual respect Q2 test functions
   //
   {
-    DiscretizationInterface *D = CreateOtherDiscretization();
+    DiscretizationInterface* D = CreateOtherDiscretization();
     S.SetDiscretization(*D, true);
 
     S.Rhs(gf, 0.5);
@@ -153,9 +168,13 @@ void DwrQ1Q2::DualResidualsHigher(VectorInterface &gf,
 
 /*--------------------------------------------------------*/
 
-double DwrQ1Q2::Estimator(DoubleVector &eta, VectorInterface &gf,
-                          const VectorInterface &gu, const VectorInterface &gz,
-                          const ProblemDescriptorInterface &PDI) {
+double
+DwrQ1Q2::Estimator(DoubleVector& eta,
+                   VectorInterface& gf,
+                   const VectorInterface& gu,
+                   const VectorInterface& gz,
+                   const ProblemDescriptorInterface& PDI)
+{
   double rho = 0, rhostern = 0;
   eta.resize(S.GetGV(gz).n());
 
@@ -170,8 +189,11 @@ double DwrQ1Q2::Estimator(DoubleVector &eta, VectorInterface &gf,
 
 /*--------------------------------------------------------*/
 
-double DwrQ1Q2::EstimatorEnergy(DoubleVector &eta, VectorInterface &gf,
-                                const VectorInterface &gu) {
+double
+DwrQ1Q2::EstimatorEnergy(DoubleVector& eta,
+                         VectorInterface& gf,
+                         const VectorInterface& gu)
+{
   eta.resize(S.GetGV(gu).n());
 
   PrimalResidualsHigher(gf, gu);

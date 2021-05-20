@@ -29,7 +29,8 @@
 /*-----------------------------------------*/
 
 namespace Gascoigne {
-class Extrapolator {
+class Extrapolator
+{
 protected:
   std::vector<DoubleVector> vals;
 
@@ -40,9 +41,9 @@ public:
   ~Extrapolator();
 
   void Print();
-  void NewValues(const DoubleVector &J);
-  const DoubleVector &GetExtrapolatedValues() const { return valextra; }
-  const DoubleVector &GetExtrapolatedOrder() const { return order; }
+  void NewValues(const DoubleVector& J);
+  const DoubleVector& GetExtrapolatedValues() const { return valextra; }
+  const DoubleVector& GetExtrapolatedOrder() const { return order; }
 };
 } // namespace Gascoigne
 

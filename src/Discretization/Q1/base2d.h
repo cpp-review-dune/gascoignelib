@@ -30,7 +30,8 @@
 /**************************************************/
 
 namespace Gascoigne {
-class Base2d : public Base {
+class Base2d : public Base
+{
 protected:
   mutable DoubleVector N;
   mutable std::vector<Vertex2d> DN;
@@ -38,10 +39,11 @@ protected:
   mutable Vertex2d bn, bt;
 
 public:
-  const Vertex2d *normal2d() const { return &bn; }
-  const Vertex2d *tangent2d() const { return &bt; }
+  const Vertex2d* normal2d() const { return &bn; }
+  const Vertex2d* tangent2d() const { return &bt; }
 
-  void point_boundary(int ie, const Vertex1d &s1) const {
+  void point_boundary(int ie, const Vertex1d& s1) const
+  {
     Vertex2d s;
     if (ie == 0) {
       s.x() = s1.x();

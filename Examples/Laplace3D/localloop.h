@@ -30,10 +30,13 @@
 
 /*-----------------------------------------*/
 
-class LocalLoop : public Loop {
+class LocalLoop : public Loop
+{
 protected:
 public:
-  LocalLoop() : Loop() {}
+  LocalLoop()
+    : Loop()
+  {}
   ~LocalLoop() {}
 };
 

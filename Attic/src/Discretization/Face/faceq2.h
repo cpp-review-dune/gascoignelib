@@ -40,13 +40,18 @@ namespace Gascoigne {
 ///
 /////////////////////////////////////////////
 
-template <int DIM> class FaceQ2 : public virtual FaceDiscretization {
+template<int DIM>
+class FaceQ2 : public virtual FaceDiscretization
+{
 protected:
-  void TransformationFace(FemInterface::Matrix &T1, FemInterface::Matrix &T2,
+  void TransformationFace(FemInterface::Matrix& T1,
+                          FemInterface::Matrix& T2,
                           int f) const;
 
 public:
-  FaceQ2() : FaceDiscretization() {}
+  FaceQ2()
+    : FaceDiscretization()
+  {}
   virtual ~FaceQ2() {}
 
   //
@@ -54,8 +59,8 @@ public:
   //
   virtual std::string GetName() const { return "Face Q2"; }
 
-  virtual void BasicInit(const ParamFile *pf);
-  virtual void ReInit(const GascoigneMesh *M);
+  virtual void BasicInit(const ParamFile* pf);
+  virtual void ReInit(const GascoigneMesh* M);
   virtual void build_faces();
 };
 } // namespace Gascoigne

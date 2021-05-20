@@ -29,54 +29,65 @@
 /*-----------------------------------------*/
 
 namespace Gascoigne {
-class OneRightHandSideData : public DomainRightHandSide {
+class OneRightHandSideData : public DomainRightHandSide
+{
 protected:
   int ncomp;
 
 public:
-  OneRightHandSideData(int n) : DomainRightHandSide(), ncomp(n) {}
+  OneRightHandSideData(int n)
+    : DomainRightHandSide()
+    , ncomp(n)
+  {}
   std::string GetName() const { return "one"; }
   int GetNcomp() const { return ncomp; }
-  double operator()(int c, const Vertex2d &v) const { return 1.; }
-  double operator()(int c, const Vertex3d &v) const { return 1.; }
+  double operator()(int c, const Vertex2d& v) const { return 1.; }
+  double operator()(int c, const Vertex3d& v) const { return 1.; }
 };
 
 /*-----------------------------------------*/
 
-class ConstantRightHandSideData : public DomainRightHandSide {
+class ConstantRightHandSideData : public DomainRightHandSide
+{
 protected:
   int _comp, _ncomp;
   double _d;
 
 public:
-  ConstantRightHandSideData(const std::vector<std::string> &args);
+  ConstantRightHandSideData(const std::vector<std::string>& args);
   ConstantRightHandSideData(const int ncomp, const int comp, const double d);
   std::string GetName() const { return "constant"; }
   int GetNcomp() const { return _ncomp; }
-  double operator()(int c, const Vertex2d &v) const;
-  double operator()(int c, const Vertex3d &v) const;
+  double operator()(int c, const Vertex2d& v) const;
+  double operator()(int c, const Vertex3d& v) const;
 };
 
 /*-----------------------------------------*/
 
-class OneComponentRightHandSideData : public DomainRightHandSide {
+class OneComponentRightHandSideData : public DomainRightHandSide
+{
 protected:
   int ncomp, comp; // ist die Komponente die Eins ist
 
 public:
   OneComponentRightHandSideData(int n, int c)
-      : DomainRightHandSide(), ncomp(n), comp(c) {}
+    : DomainRightHandSide()
+    , ncomp(n)
+    , comp(c)
+  {}
 
   std::string GetName() const { return "one_onecomp"; }
 
   int GetNcomp() const { return ncomp; }
 
-  double operator()(int c, const Vertex2d &) const {
+  double operator()(int c, const Vertex2d&) const
+  {
     if (c == comp)
       return 1.;
     return 0.;
   }
-  double operator()(int c, const Vertex3d &) const {
+  double operator()(int c, const Vertex3d&) const
+  {
     if (c == comp)
       return 1.;
     return 0.;
@@ -85,23 +96,40 @@ public:
 
 /*-----------------------------------------*/
 
-class RectangleRightHandSideData : public DomainRightHandSide {
+class RectangleRightHandSideData : public DomainRightHandSide
+{
   int ncomp, comp; // ist die Komponente die Eins ist
   double x0, x1, y0, y1, z0, z1;
 
 public:
-  RectangleRightHandSideData(int n, int c, double xx0, double xx1, double yy0,
+  RectangleRightHandSideData(int n,
+                             int c,
+                             double xx0,
+                             double xx1,
+                             double yy0,
                              double yy1)
-      : DomainRightHandSide(), ncomp(n), comp(c) {
+    : DomainRightHandSide()
+    , ncomp(n)
+    , comp(c)
+  {
     x0 = xx0;
     x1 = xx1;
     y0 = yy0;
     y1 = yy1;
     z0 = z1 = 0.;
   }
-  RectangleRightHandSideData(int n, int c, double xx0, double xx1, double yy0,
-                             double yy1, double zz0, double zz1)
-      : DomainRightHandSide(), ncomp(n), comp(c) {
+  RectangleRightHandSideData(int n,
+                             int c,
+                             double xx0,
+                             double xx1,
+                             double yy0,
+                             double yy1,
+                             double zz0,
+                             double zz1)
+    : DomainRightHandSide()
+    , ncomp(n)
+    , comp(c)
+  {
     x0 = xx0;
     x1 = xx1;
     y0 = yy0;
@@ -114,7 +142,8 @@ public:
 
   int GetNcomp() const { return ncomp; }
 
-  double operator()(int c, const Vertex2d &V) const {
+  double operator()(int c, const Vertex2d& V) const
+  {
     if (c != comp)
       return 0.;
     if ((V.x() > x1) || (V.x() < x0))
@@ -123,7 +152,8 @@ public:
       return 0.;
     return 1.;
   }
-  double operator()(int c, const Vertex3d &V) const {
+  double operator()(int c, const Vertex3d& V) const
+  {
     if (c != comp)
       return 0.;
     if ((V.x() > x1) || (V.x() < x0))

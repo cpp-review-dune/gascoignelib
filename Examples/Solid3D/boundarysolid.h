@@ -15,7 +15,9 @@
 /*-----------------------------------------*/
 
 namespace Gascoigne {
-template <int DIM> class BoundarySolid : public BoundaryEquation {
+template<int DIM>
+class BoundarySolid : public BoundaryEquation
+{
 
 protected:
   typedef Eigen::Matrix<double, DIM, DIM> MATRIX;
@@ -30,7 +32,8 @@ protected:
 
   // mutable FemFunction *OLD, *DEF, *DEFOLD;
 
-  void SetFemData(FemData &q) const {
+  void SetFemData(FemData& q) const
+  {
     // assert(q.find("OLD")!=q.end());
     // OLD = &q["OLD"];
 
@@ -44,18 +47,25 @@ protected:
 public:
   ~BoundarySolid() {}
   BoundarySolid() { abort(); }
-  BoundarySolid(const ParamFile *pf);
+  BoundarySolid(const ParamFile* pf);
 
   std::string GetName() const { return "BoundarySolid"; }
 
   int GetNcomp() const { return DIM; }
-  void Form(VectorIterator b, const FemFunction &U, const TestFunction &N,
+  void Form(VectorIterator b,
+            const FemFunction& U,
+            const TestFunction& N,
             int col) const;
-  void Matrix(EntryMatrix &E, const FemFunction &U, const TestFunction &M,
-              const TestFunction &N, int col) const;
-  void pointboundary(double h, const FemFunction &U, const Vertex<DIM> &v,
-                     const Vertex<DIM> &n) const;
-  void point_M(int j, const FemFunction &U, const TestFunction &M) const;
+  void Matrix(EntryMatrix& E,
+              const FemFunction& U,
+              const TestFunction& M,
+              const TestFunction& N,
+              int col) const;
+  void pointboundary(double h,
+                     const FemFunction& U,
+                     const Vertex<DIM>& v,
+                     const Vertex<DIM>& n) const;
+  void point_M(int j, const FemFunction& U, const TestFunction& M) const;
 };
 
 } // namespace Gascoigne

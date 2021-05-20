@@ -6,8 +6,10 @@
 #include "sparsestructure.h"
 
 namespace Gascoigne {
-struct TmpEdgeHash {
-  std::size_t operator()(const std::array<size_t, 2> &a) const {
+struct TmpEdgeHash
+{
+  std::size_t operator()(const std::array<size_t, 2>& a) const
+  {
     std::size_t h = 0;
     for (auto e : a)
       h += std::hash<int>{}(e);
@@ -15,11 +17,13 @@ struct TmpEdgeHash {
   }
 };
 
-template <class BASE>
-void DGDofHandler<BASE>::InitFromGascoigneMesh(const GascoigneMesh *M) {
+template<class BASE>
+void
+DGDofHandler<BASE>::InitFromGascoigneMesh(const GascoigneMesh* M)
+{
   assert(M);
-  const GascoigneMesh2d *M2 = dynamic_cast<const GascoigneMesh2d *>(M);
-  const GascoigneMesh3d *M3 = dynamic_cast<const GascoigneMesh3d *>(M);
+  const GascoigneMesh2d* M2 = dynamic_cast<const GascoigneMesh2d*>(M);
+  const GascoigneMesh3d* M3 = dynamic_cast<const GascoigneMesh3d*>(M);
   if (!(M2 || M3)) {
     std::cerr << "cannot cast Mesh to GascoigneMesh2d/3d" << std::endl;
     abort();
@@ -38,7 +42,7 @@ void DGDofHandler<BASE>::InitFromGascoigneMesh(const GascoigneMesh *M) {
   // tmp-structure to identify edges, point nodes + edgeno.
   HASHMAP<std::array<size_t, 2>, size_t, TmpEdgeHash> edgetmp;
   int ei = 0;
-  int itoj[4] = {0, 1, 3, 2};
+  int itoj[4] = { 0, 1, 3, 2 };
   for (int cell = 0; cell < M->ncells(); ++cell) {
     const IntVector ioc = M->IndicesOfCell(cell);
     for (int e = 0; e < 4; ++e) {
@@ -71,7 +75,7 @@ void DGDofHandler<BASE>::InitFromGascoigneMesh(const GascoigneMesh *M) {
       int index = IT->second;
 
       assert(index < _edges.size());
-      EdgeType &E = _edges[index];
+      EdgeType& E = _edges[index];
 
       if (E[0] == -1) {
         E[0] = cell; // cell number
@@ -93,11 +97,14 @@ void DGDofHandler<BASE>::InitFromGascoigneMesh(const GascoigneMesh *M) {
 
 //////////////////////////////////////////// Global/Local
 
-template <class BASE>
-void DGDofHandler<BASE>::GlobalToLocal(LocalVector &U, const GlobalVector &u,
-                                       int iq) const {
+template<class BASE>
+void
+DGDofHandler<BASE>::GlobalToLocal(LocalVector& U,
+                                  const GlobalVector& u,
+                                  int iq) const
+{
   assert(iq < nelements());
-  const ElementType &LI = getelement(iq);
+  const ElementType& LI = getelement(iq);
   assert(BASE::N == LI.size());
   U.ReInit(u.ncomp(), BASE::N);
 
@@ -107,11 +114,15 @@ void DGDofHandler<BASE>::GlobalToLocal(LocalVector &U, const GlobalVector &u,
   }
 }
 
-template <class BASE>
-void DGDofHandler<BASE>::LocalToGlobal(GlobalVector &f, const LocalVector &F,
-                                       int iq, double s) const {
+template<class BASE>
+void
+DGDofHandler<BASE>::LocalToGlobal(GlobalVector& f,
+                                  const LocalVector& F,
+                                  int iq,
+                                  double s) const
+{
   assert(iq < nelements());
-  const ElementType &LI = getelement(iq);
+  const ElementType& LI = getelement(iq);
   assert(BASE::N == LI.size());
 
   assert(F.ncomp() == f.ncomp());
@@ -125,11 +136,15 @@ void DGDofHandler<BASE>::LocalToGlobal(GlobalVector &f, const LocalVector &F,
 
 //////////////////////////////////////////////////
 
-template <class BASE>
-void DGDofHandler<BASE>::LocalToGlobalMatrix(MatrixInterface &A, EntryMatrix &E,
-                                             int iq, double s) const {
+template<class BASE>
+void
+DGDofHandler<BASE>::LocalToGlobalMatrix(MatrixInterface& A,
+                                        EntryMatrix& E,
+                                        int iq,
+                                        double s) const
+{
   assert(iq < nelements());
-  const ElementType &LI = getelement(iq);
+  const ElementType& LI = getelement(iq);
 
   /// temp!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   IntVector indices;
@@ -143,13 +158,18 @@ void DGDofHandler<BASE>::LocalToGlobalMatrix(MatrixInterface &A, EntryMatrix &E,
 
 //////////////////////////////////////////////////
 
-template <class BASE>
-void DGDofHandler<BASE>::LocalToGlobalMatrix(MatrixInterface &A, EntryMatrix &E,
-                                             int q1, int q2, double s) const {
+template<class BASE>
+void
+DGDofHandler<BASE>::LocalToGlobalMatrix(MatrixInterface& A,
+                                        EntryMatrix& E,
+                                        int q1,
+                                        int q2,
+                                        double s) const
+{
   assert(q1 < nelements());
   assert(q2 < nelements());
-  const ElementType &LM = getelement(q1);
-  const ElementType &LS = getelement(q2);
+  const ElementType& LM = getelement(q1);
+  const ElementType& LS = getelement(q2);
 
   /// temp!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   IntVector iq1;
@@ -167,9 +187,11 @@ void DGDofHandler<BASE>::LocalToGlobalMatrix(MatrixInterface &A, EntryMatrix &E,
 }
 
 //// Matrix Structure
-template <class BASE>
-void DGDofHandler<BASE>::Structure(SparseStructureInterface *SI) const {
-  SparseStructure *S = dynamic_cast<SparseStructure *>(SI);
+template<class BASE>
+void
+DGDofHandler<BASE>::Structure(SparseStructureInterface* SI) const
+{
+  SparseStructure* S = dynamic_cast<SparseStructure*>(SI);
   assert(S);
 
   S->build_begin(ndofs());

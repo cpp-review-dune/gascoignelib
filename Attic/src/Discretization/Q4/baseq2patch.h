@@ -32,7 +32,8 @@
 namespace Gascoigne {
 /**************************************************/
 
-class BaseQ22dPatch : public Base2d {
+class BaseQ22dPatch : public Base2d
+{
 protected:
   bool second;
   mutable int pB;
@@ -40,14 +41,19 @@ protected:
   nvector<int> perm;
   mutable DoubleVector dxx, dxy, dyy;
 
-  void BasicInit() {
+  void BasicInit()
+  {
     N.resize(NDOF);
     DN.resize(NDOF);
     dxy.resize(NDOF);
   }
 
 public:
-  BaseQ22dPatch() : Base2d(), second(false), perm(9) {
+  BaseQ22dPatch()
+    : Base2d()
+    , second(false)
+    , perm(9)
+  {
     BasicInit();
 
     perm[0] = 0;
@@ -65,21 +71,25 @@ public:
   double phi(int i) const { return N[i]; }
   double phi_x(int i) const { return DN[i].x(); }
   double phi_y(int i) const { return DN[i].y(); }
-  double phi_xx(int i) const {
+  double phi_xx(int i) const
+  {
     assert(second);
     return dxx[i];
   }
-  double phi_xy(int i) const {
+  double phi_xy(int i) const
+  {
     assert(second);
     return dxy[i];
   }
-  double phi_yy(int i) const {
+  double phi_yy(int i) const
+  {
     assert(second);
     return dyy[i];
   }
-  const Vertex2d &phi_grad(int i) const { return DN[i]; }
+  const Vertex2d& phi_grad(int i) const { return DN[i]; }
 
-  void point(const Vertex2d &s) const {
+  void point(const Vertex2d& s) const
+  {
     Vertex2d t(s);
     if ((s.x() <= 0.5) && (s.y() <= 0.5)) {
       pB = 0;

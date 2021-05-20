@@ -30,7 +30,8 @@
 /*-----------------------------------------*/
 
 namespace Gascoigne {
-class HNStructureQ1 : public virtual HNStructureInterface {
+class HNStructureQ1 : public virtual HNStructureInterface
+{
 protected:
   typedef std::array<int, 3> EdgeVector;
   typedef std::map<int, EdgeVector>::iterator iterator;

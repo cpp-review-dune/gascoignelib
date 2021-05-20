@@ -47,7 +47,9 @@ typedef triple<int, int, int> tint;
 /*------------------------------------------------------*/
 
 FineHierarchicalMesh3d::FineHierarchicalMesh3d(const std::string gridname)
-    : HierarchicalMesh3d(), HexLaO(hexs) {
+  : HierarchicalMesh3d()
+  , HexLaO(hexs)
+{
 
   if (gridname == "none") {
     cerr << "no \"gridname\" " << endl;
@@ -90,7 +92,9 @@ FineHierarchicalMesh3d::FineHierarchicalMesh3d(const std::string gridname)
 
 /*---------------------------------------------------*/
 
-pair<bool, tint> FineHierarchicalMesh3d::check_inp(const string &name) {
+pair<bool, tint>
+FineHierarchicalMesh3d::check_inp(const string& name)
+{
   //  detect some errors in input-file... and more
 
   ifstream file(name.c_str());
@@ -158,7 +162,9 @@ pair<bool, tint> FineHierarchicalMesh3d::check_inp(const string &name) {
 
 /*---------------------------------------------------*/
 
-void FineHierarchicalMesh3d::read_inp(const string &name) {
+void
+FineHierarchicalMesh3d::read_inp(const string& name)
+{
   cout << "read_inpcalled " << endl;
   // check mesh.....
   pair<bool, tint> p = check_inp(name);

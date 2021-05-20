@@ -30,17 +30,21 @@
 /***************************************************************/
 
 namespace Gascoigne {
-class VisuDataScalar : public VisuData {
+class VisuDataScalar : public VisuData
+{
 protected:
-  const DoubleVector &vR;
+  const DoubleVector& vR;
 
 public:
   virtual ~VisuDataScalar() {}
-  VisuDataScalar(const DoubleVector &v) : vR(v) {}
+  VisuDataScalar(const DoubleVector& v)
+    : vR(v)
+  {}
 
   virtual int visucomp() const { return 1; }
   virtual int visun() const { return vR.size(); }
-  virtual double visudata(int i, int c) const {
+  virtual double visudata(int i, int c) const
+  {
     assert(i < vR.size());
     return vR[i];
   }

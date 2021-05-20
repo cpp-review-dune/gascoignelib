@@ -28,9 +28,10 @@
 
 /*----------------------------------------------------------------------------*/
 
-class NewmarkAlgorithm : public Gascoigne::NonstationaryAlgorithm {
+class NewmarkAlgorithm : public Gascoigne::NonstationaryAlgorithm
+{
 public:
-  void Run(const std::string &problemlabel);
+  void Run(const std::string& problemlabel);
 };
 
 #endif

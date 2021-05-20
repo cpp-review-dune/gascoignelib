@@ -15,7 +15,7 @@
 /*-----------------------------------------*/
 
 namespace Gascoigne {
-template <int DIM>
+template<int DIM>
 class SolidEuler : public LpsEquation // , public BoundaryEquation
 {
 
@@ -36,9 +36,10 @@ protected:
   double lps0;
   mutable double lps;
   // mutable FemFunction *OLD, *DEF, *DEFOLD;
-  mutable FemFunction *VEL;
+  mutable FemFunction* VEL;
 
-  void SetFemData(FemData &q) const {
+  void SetFemData(FemData& q) const
+  {
     if (q.find("VEL") == q.end()) {
       std::cout << "VEL in solideuler not found" << std::endl;
       abort();
@@ -59,33 +60,43 @@ protected:
 public:
   ~SolidEuler() {}
   SolidEuler() { abort(); }
-  SolidEuler(const ParamFile *pf);
+  SolidEuler(const ParamFile* pf);
 
   std::string GetName() const { return "Prestress"; }
 
   int GetNcomp() const { return DIM + 1; }
 
-  void point(double h, const FemFunction &U, const Vertex<DIM> &v) const;
-  void point_M(int j, const FemFunction &U, const TestFunction &M) const;
+  void point(double h, const FemFunction& U, const Vertex<DIM>& v) const;
+  void point_M(int j, const FemFunction& U, const TestFunction& M) const;
 
-  void Form(VectorIterator b, const FemFunction &U,
-            const TestFunction &N) const;
+  void Form(VectorIterator b,
+            const FemFunction& U,
+            const TestFunction& N) const;
 
-  void Matrix(EntryMatrix &A, const FemFunction &U, const TestFunction &M,
-              const TestFunction &N) const;
-  void MatrixBlock(EntryMatrix &A, const FemFunction &U,
-                   const FemFunction &NNN) const;
+  void Matrix(EntryMatrix& A,
+              const FemFunction& U,
+              const TestFunction& M,
+              const TestFunction& N) const;
+  void MatrixBlock(EntryMatrix& A,
+                   const FemFunction& U,
+                   const FemFunction& NNN) const;
   void point_cell(int material) const;
 
   ////////////////////////////////////////////////// LPS
 
-  void lpspoint(double h, const FemFunction &U, const Vertex<DIM> &v) const {}
+  void lpspoint(double h, const FemFunction& U, const Vertex<DIM>& v) const {}
 
-  void StabForm(VectorIterator b, const FemFunction &U, const FemFunction &UP,
-                const TestFunction &N) const {}
+  void StabForm(VectorIterator b,
+                const FemFunction& U,
+                const FemFunction& UP,
+                const TestFunction& N) const
+  {}
 
-  void StabMatrix(EntryMatrix &A, const FemFunction &U, const TestFunction &Np,
-                  const TestFunction &Mp) const {}
+  void StabMatrix(EntryMatrix& A,
+                  const FemFunction& U,
+                  const TestFunction& Np,
+                  const TestFunction& Mp) const
+  {}
 };
 
 } // namespace Gascoigne

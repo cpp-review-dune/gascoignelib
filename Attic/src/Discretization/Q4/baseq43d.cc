@@ -31,7 +31,8 @@ namespace Gascoigne {
 
 /*------------------------------------------------------------------*/
 
-BaseQ43d::BaseQ43d() {
+BaseQ43d::BaseQ43d()
+{
   N.resize(NDOF);
   DN.resize(NDOF);
 
@@ -64,7 +65,9 @@ BaseQ43d::BaseQ43d() {
 
 /*------------------------------------------------------------------*/
 
-void BaseQ43d::point(const Vertex3d &s) const {
+void
+BaseQ43d::point(const Vertex3d& s) const
+{
   for (int i = 0; i < NDOF; i++) {
     int ix = (i % NDOF2d) % NDOF1d;
     int iy = (i % NDOF2d) / NDOF1d;

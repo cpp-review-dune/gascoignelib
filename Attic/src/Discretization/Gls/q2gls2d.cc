@@ -33,15 +33,19 @@ using namespace std;
 namespace Gascoigne {
 /* ----------------------------------------- */
 
-void Q2Gls2d::BasicInit(const ParamFile *paramfile) {
+void
+Q2Gls2d::BasicInit(const ParamFile* paramfile)
+{
   assert(GetIntegrator() == NULL);
   GetIntegratorPointer() = new GalerkinGlsIntegratorQ2<2>;
   GetIntegratorPointer()->BasicInit();
 
   assert(GetFem() == NULL);
-  typedef FiniteElementWithSecond<2, 1, Transformation2d<BaseQ22dWithSecond>,
+  typedef FiniteElementWithSecond<2,
+                                  1,
+                                  Transformation2d<BaseQ22dWithSecond>,
                                   BaseQ22dWithSecond>
-      FiniteElement;
+    FiniteElement;
   PatchDiscretization::GetFemPointer() = new FiniteElement;
 
   PatchDiscretization::BasicInit(paramfile);

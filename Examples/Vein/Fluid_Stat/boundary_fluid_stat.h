@@ -16,7 +16,9 @@
 /*-----------------------------------------*/
 
 namespace Gascoigne {
-template <int DIM> class Boundary_Fluid_Stat : public BoundaryEquation {
+template<int DIM>
+class Boundary_Fluid_Stat : public BoundaryEquation
+{
 
 protected:
   typedef Eigen::Matrix<double, DIM, DIM> MATRIX;
@@ -32,19 +34,26 @@ protected:
 public:
   ~Boundary_Fluid_Stat() {}
   Boundary_Fluid_Stat() { abort(); }
-  Boundary_Fluid_Stat(const ParamFile *pf);
+  Boundary_Fluid_Stat(const ParamFile* pf);
 
   std::string GetName() const { return "Boundary_Fluid_Stat"; }
 
   int GetNcomp() const { return DIM + 1; }
 
-  void Form(VectorIterator b, const FemFunction &U, const TestFunction &N,
+  void Form(VectorIterator b,
+            const FemFunction& U,
+            const TestFunction& N,
             int col) const;
-  void Matrix(EntryMatrix &E, const FemFunction &U, const TestFunction &M,
-              const TestFunction &N, int col) const;
+  void Matrix(EntryMatrix& E,
+              const FemFunction& U,
+              const TestFunction& M,
+              const TestFunction& N,
+              int col) const;
 
-  void pointboundary(double h, const FemFunction &U, const Vertex<DIM> &v,
-                     const Vertex<DIM> &n) const;
+  void pointboundary(double h,
+                     const FemFunction& U,
+                     const Vertex<DIM>& v,
+                     const Vertex<DIM>& n) const;
 };
 
 } // namespace Gascoigne

@@ -34,28 +34,33 @@ using namespace Gascoigne;
 
 /*----------------------------------------------------------------------------*/
 
-class TimeMultiLevelSolver : public MultiLevelSolver {
+class TimeMultiLevelSolver : public MultiLevelSolver
+{
 public:
-  SolverInterface *NewSolver(int solverlevel) { return new TimeSolver; }
+  SolverInterface* NewSolver(int solverlevel) { return new TimeSolver; }
   string GetName() const { return "TimeMultiLevelSolver"; }
 };
 
 /*----------------------------------------------------------------------------*/
 
-class Numeric : public NumericInterface {
+class Numeric : public NumericInterface
+{
 public:
   // DiscretizationInterface*    NewDiscretization(int level) const { return new
   // Q12d; }
-  DiscretizationInterface *NewDiscretization(int level) const {
+  DiscretizationInterface* NewDiscretization(int level) const
+  {
     return new Q1Lps2d;
   }
-  SolverInterface *NewSolver(int level) const { return new TimeSolver; }
-  MeshAgentInterface *NewMeshAgent() const { return new CurvedMeshAgent; }
+  SolverInterface* NewSolver(int level) const { return new TimeSolver; }
+  MeshAgentInterface* NewMeshAgent() const { return new CurvedMeshAgent; }
 };
 
 /*----------------------------------------------------------------------------*/
 
-int main(int argc, char **argv) {
+int
+main(int argc, char** argv)
+{
   ParamFile paramfile("gascoigne.param");
   if (argc >= 2) {
     paramfile.SetName(argv[1]);

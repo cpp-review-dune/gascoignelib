@@ -37,7 +37,8 @@ namespace Gascoigne {
 ////
 /////////////////////////////////////////////
 
-class ColumnDiagStencil : public ColumnStencil {
+class ColumnDiagStencil : public ColumnStencil
+{
 protected:
   IndexVector sdiag;
 
@@ -45,16 +46,18 @@ public:
   //
   ////  Con(De)structor
   //
-  ColumnDiagStencil() : ColumnStencil() {}
+  ColumnDiagStencil()
+    : ColumnStencil()
+  {}
   ~ColumnDiagStencil() {}
 
-  const IndexVector &diag() const { return sdiag; }
-  IndexVector &diag() { return sdiag; }
-  IndexType &diag(int i) { return sdiag[i]; }
-  const IndexType &diag(int i) const { return sdiag[i]; }
+  const IndexVector& diag() const { return sdiag; }
+  IndexVector& diag() { return sdiag; }
+  IndexType& diag(int i) { return sdiag[i]; }
+  const IndexType& diag(int i) const { return sdiag[i]; }
 
   void memory(int n, int nt);
-  void memory(const SparseStructureInterface *);
+  void memory(const SparseStructureInterface*);
 };
 } // namespace Gascoigne
 

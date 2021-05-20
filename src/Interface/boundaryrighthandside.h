@@ -47,11 +47,14 @@ namespace Gascoigne {
 ///
 //////////////////////////////////////////////
 
-class BoundaryRightHandSide : public virtual Application {
+class BoundaryRightHandSide : public virtual Application
+{
 private:
 protected:
 public:
-  BoundaryRightHandSide() : Application() {}
+  BoundaryRightHandSide()
+    : Application()
+  {}
   ~BoundaryRightHandSide() {}
 
   /**
@@ -60,36 +63,49 @@ public:
      of a copy constructor and the cloning of classes is required for
      multithreading.
   */
-  virtual BoundaryRightHandSide *createNew() const {
+  virtual BoundaryRightHandSide* createNew() const
+  {
     std::cerr << "\"BRHS::createNew\" not written!" << std::endl;
     abort();
   }
 
   virtual int GetNcomp() const = 0;
 
-  virtual double operator()(int c, const Vertex2d &v, const Vertex2d &n,
-                            int color) const {
+  virtual double operator()(int c,
+                            const Vertex2d& v,
+                            const Vertex2d& n,
+                            int color) const
+  {
     std::cerr << "\"BoundaryRightHandSide::operator()\" not written!"
               << std::endl;
     abort();
   }
-  virtual double operator()(int c, const Vertex3d &v, const Vertex3d &n,
-                            int color) const {
+  virtual double operator()(int c,
+                            const Vertex3d& v,
+                            const Vertex3d& n,
+                            int color) const
+  {
     std::cerr << "\"BoundaryRightHandSide::operator()\" not written!"
               << std::endl;
     abort();
   }
 
-  virtual void operator()(VectorIterator b, const TestFunction &N,
-                          const Vertex2d &v, const Vertex2d &n,
-                          int color) const {
+  virtual void operator()(VectorIterator b,
+                          const TestFunction& N,
+                          const Vertex2d& v,
+                          const Vertex2d& n,
+                          int color) const
+  {
     for (int c = 0; c < GetNcomp(); c++) {
       b[c] += N.m() * (*this)(c, v, n, color);
     }
   }
-  virtual void operator()(VectorIterator b, const TestFunction &N,
-                          const Vertex3d &v, const Vertex3d &n,
-                          int color) const {
+  virtual void operator()(VectorIterator b,
+                          const TestFunction& N,
+                          const Vertex3d& v,
+                          const Vertex3d& n,
+                          int color) const
+  {
     for (int c = 0; c < GetNcomp(); c++) {
       b[c] += N.m() * (*this)(c, v, n, color);
     }

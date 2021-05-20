@@ -30,7 +30,8 @@
 namespace Gascoigne {
 /*-----------------------------------------*/
 
-class Curve {
+class Curve
+{
 private:
 protected:
 public:
@@ -45,18 +46,21 @@ public:
   virtual double DX(double t) const = 0;
   virtual double DY(double t) const = 0;
 
-  virtual Vertex2d operator()(double t) const {
+  virtual Vertex2d operator()(double t) const
+  {
     Vertex2d x;
     x.x() = X(t);
     x.y() = Y(t);
     return x;
   }
 
-  virtual double NormD(double t) const {
+  virtual double NormD(double t) const
+  {
     return sqrt(DX(t) * DX(t) + DY(t) * DY(t));
   }
 
-  virtual void Normal(nvector<double> &n, double t) const {
+  virtual void Normal(nvector<double>& n, double t) const
+  {
     n.resize(2);
     double d = NormD(t);
     assert(d >= 0);
@@ -64,7 +68,8 @@ public:
     n[0] = -DX(t) / d;
   }
 
-  virtual void Vertices(nvector<Vertex2d> &V, const nvector<double> &t) const {
+  virtual void Vertices(nvector<Vertex2d>& V, const nvector<double>& t) const
+  {
     assert(V.size() == t.size());
     for (int i = 0; i < t.size(); ++i) {
       V[i].x() = X(t[i]);

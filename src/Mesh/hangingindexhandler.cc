@@ -28,26 +28,29 @@ using namespace std;
 /*-----------------------------------------*/
 
 namespace Gascoigne {
-HangingIndexHandler::HangingIndexHandler() {
+HangingIndexHandler::HangingIndexHandler()
+{
   hnq2.clear();
   hnq2face.clear();
 }
 
 /*-----------------------------------------*/
 
-void HangingIndexHandler::CopyLevel2Nibble(const HangingIndexHandler &Lhih,
-                                           IntVector &Vg2l) {
+void
+HangingIndexHandler::CopyLevel2Nibble(const HangingIndexHandler& Lhih,
+                                      IntVector& Vg2l)
+{
   hnq2.clear();
   hnq2face.clear();
 
   map<int, std::array<int, 3>>::const_iterator it3 =
-      Lhih.GetStructure()->begin();
+    Lhih.GetStructure()->begin();
   map<int, std::array<int, 9>>::const_iterator it9 =
-      Lhih.GetStructureFace()->begin();
+    Lhih.GetStructureFace()->begin();
   map<int, std::array<int, 3>>::const_iterator end3 =
-      Lhih.GetStructure()->end();
+    Lhih.GetStructure()->end();
   map<int, std::array<int, 9>>::const_iterator end9 =
-      Lhih.GetStructureFace()->end();
+    Lhih.GetStructureFace()->end();
 
   for (; it3 != end3; ++it3) {
     int gf = it3->first;

@@ -40,23 +40,31 @@ namespace Gascoigne {
 ////
 /////////////////////////////////////////////
 
-template <int DIM>
-class GalerkinGlsIntegrator : public GalerkinIntegrator<DIM> {
+template<int DIM>
+class GalerkinGlsIntegrator : public GalerkinIntegrator<DIM>
+{
 protected:
   GlsIntegrator<DIM> Gls;
 
 public:
-  GalerkinGlsIntegrator<DIM>() : GalerkinIntegrator<DIM>(){};
+  GalerkinGlsIntegrator<DIM>()
+    : GalerkinIntegrator<DIM>(){};
   ~GalerkinGlsIntegrator<DIM>() {}
 
   std::string GetName() const { return "GalerkinGlsIntegrator"; }
 
-  void Form(const Equation &EQ, LocalVector &F, const FemInterface &FEM,
-            const LocalVector &U, const LocalData &Q,
-            const LocalData &QC) const;
-  void Matrix(const Equation &EQ, EntryMatrix &E, const FemInterface &FEM,
-              const LocalVector &U, const LocalData &Q,
-              const LocalData &QC) const;
+  void Form(const Equation& EQ,
+            LocalVector& F,
+            const FemInterface& FEM,
+            const LocalVector& U,
+            const LocalData& Q,
+            const LocalData& QC) const;
+  void Matrix(const Equation& EQ,
+              EntryMatrix& E,
+              const FemInterface& FEM,
+              const LocalVector& U,
+              const LocalData& Q,
+              const LocalData& QC) const;
 };
 } // namespace Gascoigne
 

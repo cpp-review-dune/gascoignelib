@@ -30,33 +30,41 @@
 /*-------------------------------------------------------------*/
 
 namespace Gascoigne {
-template <class B>
+template<class B>
 DynamicBlockIlu<B>::DynamicBlockIlu()
-    : IluInterface(), DynamicBlockMatrix<B>() {
+  : IluInterface()
+  , DynamicBlockMatrix<B>()
+{
   yp = new GlobalVector;
 }
 
 /*-------------------------------------------------------------*/
 
-template <class B>
-DynamicBlockIlu<B>::DynamicBlockIlu(const DynamicBlockIlu<B> &I)
-    : IluInterface(), DynamicBlockMatrix<B>(I) {
+template<class B>
+DynamicBlockIlu<B>::DynamicBlockIlu(const DynamicBlockIlu<B>& I)
+  : IluInterface()
+  , DynamicBlockMatrix<B>(I)
+{
   yp = new GlobalVector;
 }
 
 /*-------------------------------------------------------------*/
 
-template <class B> DynamicBlockIlu<B>::~DynamicBlockIlu() {
+template<class B>
+DynamicBlockIlu<B>::~DynamicBlockIlu()
+{
   if (yp)
     delete yp;
 }
 
 /*-------------------------------------------------------------*/
 
-template <class B>
-void DynamicBlockIlu<B>::ReInit(const SparseStructureInterface *SI) {
-  const Gascoigne::SparseStructure *S =
-      dynamic_cast<const SparseStructure *>(SI);
+template<class B>
+void
+DynamicBlockIlu<B>::ReInit(const SparseStructureInterface* SI)
+{
+  const Gascoigne::SparseStructure* S =
+    dynamic_cast<const SparseStructure*>(SI);
   assert(S);
 
   int n = S->n();
@@ -74,11 +82,13 @@ void DynamicBlockIlu<B>::ReInit(const SparseStructureInterface *SI) {
 
 /*-------------------------------------------------------------*/
 
-template <class B>
-void DynamicBlockIlu<B>::ConstructStructure(const nvector<int> &perm,
-                                            const MatrixInterface &MAP) {
-  const DynamicBlockMatrix<B> &M =
-      dynamic_cast<const DynamicBlockMatrix<B> &>(MAP);
+template<class B>
+void
+DynamicBlockIlu<B>::ConstructStructure(const nvector<int>& perm,
+                                       const MatrixInterface& MAP)
+{
+  const DynamicBlockMatrix<B>& M =
+    dynamic_cast<const DynamicBlockMatrix<B>&>(MAP);
 
   assert(n() > 0);
   assert(M.n() == n());
@@ -110,16 +120,18 @@ void DynamicBlockIlu<B>::ConstructStructure(const nvector<int> &perm,
     for (int ii = 0; ii < ni; ii++)
       DynamicBlockMatrix<B>::DS.cols[i].push_back(picol[ppi[ii]]);
     DynamicBlockMatrix<B>::smat[i].resize(
-        DynamicBlockMatrix<B>::DS.cols[i].size());
+      DynamicBlockMatrix<B>::DS.cols[i].size());
   }
 }
 
 /*-------------------------------------------------------------*/
 
-template <class B>
-void DynamicBlockIlu<B>::copy_entries(const MatrixInterface *A) {
-  const DynamicBlockMatrix<B> *MM =
-      dynamic_cast<const DynamicBlockMatrix<B> *>(A);
+template<class B>
+void
+DynamicBlockIlu<B>::copy_entries(const MatrixInterface* A)
+{
+  const DynamicBlockMatrix<B>* MM =
+    dynamic_cast<const DynamicBlockMatrix<B>*>(A);
   assert(MM);
   for (int i = 0; i < DynamicBlockMatrix<B>::n(); ++i) {
     int pi = p[i];
@@ -132,7 +144,8 @@ void DynamicBlockIlu<B>::copy_entries(const MatrixInterface *A) {
       bool found = 0;
       viterator vpos = DynamicBlockMatrix<B>::vstart(i);
       for (const_citerator cpos = DynamicBlockMatrix<B>::cstart(i);
-           cpos != DynamicBlockMatrix<B>::cstop(i); ++cpos, ++vpos) {
+           cpos != DynamicBlockMatrix<B>::cstop(i);
+           ++cpos, ++vpos) {
         assert(vpos != DynamicBlockMatrix<B>::vstop(i));
         if (*cpos == pj) {
           *vpos += *vposA;
@@ -150,7 +163,10 @@ void DynamicBlockIlu<B>::copy_entries(const MatrixInterface *A) {
 
 /*-------------------------------------------------------------*/
 
-template <class B> void DynamicBlockIlu<B>::hin(const GlobalVector &x) const {
+template<class B>
+void
+DynamicBlockIlu<B>::hin(const GlobalVector& x) const
+{
   yp->ncomp() = x.ncomp();
   yp->reservesize(x.n());
 
@@ -160,14 +176,20 @@ template <class B> void DynamicBlockIlu<B>::hin(const GlobalVector &x) const {
 
 /*-------------------------------------------------------------*/
 
-template <class B> void DynamicBlockIlu<B>::her(GlobalVector &x) const {
+template<class B>
+void
+DynamicBlockIlu<B>::her(GlobalVector& x) const
+{
   for (int i = 0; i < n(); i++)
     x.equ_node(i, 1., q[i], *yp);
 }
 
 /*-------------------------------------------------------------*/
 
-template <class B> void DynamicBlockIlu<B>::forward() const {
+template<class B>
+void
+DynamicBlockIlu<B>::forward() const
+{
   for (int i = 1; i < n(); i++) {
     const_viterator vp = DynamicBlockMatrix<B>::vstart(i);
     const_citerator cp = DynamicBlockMatrix<B>::cstart(i);
@@ -179,7 +201,10 @@ template <class B> void DynamicBlockIlu<B>::forward() const {
 
 /*-------------------------------------------------------------*/
 
-template <class B> void DynamicBlockIlu<B>::backward() const {
+template<class B>
+void
+DynamicBlockIlu<B>::backward() const
+{
   for (int i = DynamicBlockMatrix<B>::n() - 1; i >= 0; i--) {
     const_citerator end = DynamicBlockMatrix<B>::cdiag(i);
     const_citerator cp = DynamicBlockMatrix<B>::cstop(i);
@@ -194,7 +219,10 @@ template <class B> void DynamicBlockIlu<B>::backward() const {
 
 /*-------------------------------------------------------------*/
 
-template <class B> void DynamicBlockIlu<B>::solve(GlobalVector &x) const {
+template<class B>
+void
+DynamicBlockIlu<B>::solve(GlobalVector& x) const
+{
   hin(x);
   forward();
   backward();
@@ -203,7 +231,10 @@ template <class B> void DynamicBlockIlu<B>::solve(GlobalVector &x) const {
 
 /*-------------------------------------------------------------*/
 
-template <class B> void DynamicBlockIlu<B>::compute_ilu() {
+template<class B>
+void
+DynamicBlockIlu<B>::compute_ilu()
+{
   for (int i = 0; i < n(); i++) {
     const_citerator cpk = cstart(i);
     viterator vpk = vstart(i);
@@ -238,7 +269,10 @@ template <class B> void DynamicBlockIlu<B>::compute_ilu() {
 
 /*-------------------------------------------------------------*/
 
-template <class B> void DynamicBlockIlu<B>::modify(int c, double s) {
+template<class B>
+void
+DynamicBlockIlu<B>::modify(int c, double s)
+{
   for (int i = 0; i < n(); ++i) {
     double sum = 0.;
     const_citerator cpk = cstart(i);

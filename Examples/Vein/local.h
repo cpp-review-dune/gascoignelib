@@ -16,15 +16,18 @@ using namespace Gascoigne;
 
 extern double __TIME;
 
-template <int DIM> class Fluid_CI : public ComponentInformationBase {
+template<int DIM>
+class Fluid_CI : public ComponentInformationBase
+{
 public:
-  void BasicInit(const ParamFile *pf) {}
+  void BasicInit(const ParamFile* pf) {}
 
   std::string GetName() const { return "Fluid CI"; }
 
   const int GetNScalars() const { return DIM + 2; }
 
-  void GetScalarName(int i, std::string &s_name) const {
+  void GetScalarName(int i, std::string& s_name) const
+  {
     if (i == 0)
       s_name = "p";
     if (DIM == 2) {
@@ -44,13 +47,15 @@ public:
   }
 
   const int GetNVectors() const { return 1; }
-  void GetVectorName(int i, std::string &s_name) const {
+  void GetVectorName(int i, std::string& s_name) const
+  {
     if (i == 0)
       s_name = "V";
     else
       abort();
   }
-  void GetVectorIndices(int i, array<int, 3> &fa_vectorindices) const {
+  void GetVectorIndices(int i, array<int, 3>& fa_vectorindices) const
+  {
     if (i == 0) {
       fa_vectorindices[0] = 1;
       fa_vectorindices[1] = 2;
@@ -61,15 +66,18 @@ public:
   }
 };
 
-template <int DIM> class Solid_Euler_CI : public ComponentInformationBase {
+template<int DIM>
+class Solid_Euler_CI : public ComponentInformationBase
+{
 public:
-  void BasicInit(const ParamFile *pf) {}
+  void BasicInit(const ParamFile* pf) {}
 
   std::string GetName() const { return "Solid_Euler CI"; }
 
   const int GetNScalars() const { return DIM + 1; }
 
-  void GetScalarName(int i, std::string &s_name) const {
+  void GetScalarName(int i, std::string& s_name) const
+  {
     if (i == 0)
       s_name = "p";
     if (DIM == 2) {
@@ -89,13 +97,15 @@ public:
   }
 
   const int GetNVectors() const { return 1; }
-  void GetVectorName(int i, std::string &s_name) const {
+  void GetVectorName(int i, std::string& s_name) const
+  {
     if (i == 0)
       s_name = "U";
     else
       abort();
   }
-  void GetVectorIndices(int i, array<int, 3> &fa_vectorindices) const {
+  void GetVectorIndices(int i, array<int, 3>& fa_vectorindices) const
+  {
     if (i == 0) {
       fa_vectorindices[0] = 1;
       fa_vectorindices[1] = 2;
@@ -105,15 +115,18 @@ public:
     }
   }
 };
-template <int DIM> class FSI_CI : public ComponentInformationBase {
+template<int DIM>
+class FSI_CI : public ComponentInformationBase
+{
 public:
-  void BasicInit(const ParamFile *pf) {}
+  void BasicInit(const ParamFile* pf) {}
 
   std::string GetName() const { return "FSI CI"; }
 
   const int GetNScalars() const { return 2 * DIM + 2; }
 
-  void GetScalarName(int i, std::string &s_name) const {
+  void GetScalarName(int i, std::string& s_name) const
+  {
     if (i == 0)
       s_name = "p";
     if (DIM == 2) {
@@ -143,7 +156,8 @@ public:
   }
 
   const int GetNVectors() const { return 2; }
-  void GetVectorName(int i, std::string &s_name) const {
+  void GetVectorName(int i, std::string& s_name) const
+  {
     if (i == 0)
       s_name = "V";
     else if (i == 1)
@@ -151,7 +165,8 @@ public:
     else
       abort();
   }
-  void GetVectorIndices(int i, array<int, 3> &fa_vectorindices) const {
+  void GetVectorIndices(int i, array<int, 3>& fa_vectorindices) const
+  {
     if (i == 0) {
       fa_vectorindices[0] = 1;
       fa_vectorindices[1] = 2;

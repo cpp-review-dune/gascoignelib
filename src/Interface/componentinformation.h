@@ -41,25 +41,28 @@ namespace Gascoigne {
 /////////////////////////////////////////////
 
 class ProblemDescriptorInterface;
-class ComponentInformation : public virtual Application {
+class ComponentInformation : public virtual Application
+{
 private:
 protected:
   mutable int _i_dimension;
-  ProblemDescriptorInterface *PDI;
+  ProblemDescriptorInterface* PDI;
 
 public:
   ComponentInformation() { PDI = NULL; }
   virtual ~ComponentInformation() {}
 
-  virtual void BasicInit(const ParamFile *pf) {}
+  virtual void BasicInit(const ParamFile* pf) {}
 
   virtual std::string GetName() const = 0;
   virtual int GetDimension() const { return _i_dimension; };
-  virtual void SetDimension(int i_dimension) const {
+  virtual void SetDimension(int i_dimension) const
+  {
     _i_dimension = i_dimension;
   };
-  ProblemDescriptorInterface *&GetProblemDescriptorInterface() { return PDI; };
-  ProblemDescriptorInterface *GetProblemDescriptorInterface() const {
+  ProblemDescriptorInterface*& GetProblemDescriptorInterface() { return PDI; };
+  ProblemDescriptorInterface* GetProblemDescriptorInterface() const
+  {
     return PDI;
   };
 
@@ -67,12 +70,12 @@ public:
   const IndexType GetNcomp() const { return GetNScalars(); };
 
   virtual const IndexType GetNScalars() const = 0;
-  virtual void GetScalarName(IndexType i, std::string &s_name) const = 0;
+  virtual void GetScalarName(IndexType i, std::string& s_name) const = 0;
   virtual const IndexType GetNVectors() const = 0;
-  virtual void GetVectorName(IndexType i, std::string &s_name) const = 0;
-  virtual void
-  GetVectorIndices(IndexType i,
-                   std::array<IndexType, 3> &fa_vectorindices) const = 0;
+  virtual void GetVectorName(IndexType i, std::string& s_name) const = 0;
+  virtual void GetVectorIndices(
+    IndexType i,
+    std::array<IndexType, 3>& fa_vectorindices) const = 0;
 };
 } // namespace Gascoigne
 

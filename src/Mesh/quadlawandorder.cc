@@ -29,8 +29,9 @@ using namespace std;
 /*----------------------------------------------------------------------*/
 
 namespace Gascoigne {
-int QuadLawAndOrder::local_edge(const Quad &f,
-                                const EdgeVector &globaledge) const {
+int
+QuadLawAndOrder::local_edge(const Quad& f, const EdgeVector& globaledge) const
+{
   // globaledge muss sortiert sein !!!!!
   int li = f.global2local(globaledge[0]);
   // gives the local edge number of an edge
@@ -48,7 +49,9 @@ int QuadLawAndOrder::local_edge(const Quad &f,
 
 /*----------------------------------------------------------------------*/
 
-int QuadLawAndOrder::GlobalInnerEdge(int c, int i) const {
+int
+QuadLawAndOrder::GlobalInnerEdge(int c, int i) const
+{
   int ic = quads[c].child(i);
   int ie = InnerEdgeOfChild(i, 0);
   return quads[ic].edge(ie);
@@ -56,8 +59,9 @@ int QuadLawAndOrder::GlobalInnerEdge(int c, int i) const {
 
 /*----------------------------------------------------------------------*/
 
-int QuadLawAndOrder::GlobalChildEdge(const EdgeVector &edge, int q,
-                                     int j) const {
+int
+QuadLawAndOrder::GlobalChildEdge(const EdgeVector& edge, int q, int j) const
+{
   int ledge = local_edge_index(q, edge);
   int ic = ChildsOfEdge(ledge, j);
   int child = quads[q].child(ic);
@@ -68,10 +72,13 @@ int QuadLawAndOrder::GlobalChildEdge(const EdgeVector &edge, int q,
 
 /*---------------------------------------------------*/
 
-pair<int, int> QuadLawAndOrder::GetChildEdges(EdgeVector &edge,
-                                              const EdgeVector &bigedge,
-                                              int hanging, int bigquad,
-                                              int i) const {
+pair<int, int>
+QuadLawAndOrder::GetChildEdges(EdgeVector& edge,
+                               const EdgeVector& bigedge,
+                               int hanging,
+                               int bigquad,
+                               int i) const
+{
   int bigeind = local_edge_index(bigquad, bigedge);
   int ic = ChildsOfEdge(bigeind, i);
   int q = quads[bigquad].child(ic);
@@ -90,21 +97,28 @@ pair<int, int> QuadLawAndOrder::GetChildEdges(EdgeVector &edge,
 
 /*----------------------------------------------------------------------*/
 
-int QuadLawAndOrder::global_index(const Quad &q, int i) const {
+int
+QuadLawAndOrder::global_index(const Quad& q, int i) const
+{
   return quads[q.child(gc[i])].vertex(gv[i]);
 }
 
 /*----------------------------------------------------------------------*/
 
-void QuadLawAndOrder::local_edge_index(EdgeVector &index, int edge) const {
+void
+QuadLawAndOrder::local_edge_index(EdgeVector& index, int edge) const
+{
   index[0] = edge % 4;
   index[1] = (edge + 1) % 4;
 }
 
 /*----------------------------------------------------------------------*/
 
-void QuadLawAndOrder::globalvertices_of_edge(const Quad &q, EdgeVector &index,
-                                             int edge) const {
+void
+QuadLawAndOrder::globalvertices_of_edge(const Quad& q,
+                                        EdgeVector& index,
+                                        int edge) const
+{
   local_edge_index(index, edge);
 
   index[0] = q.vertex(index[0]);
@@ -113,7 +127,9 @@ void QuadLawAndOrder::globalvertices_of_edge(const Quad &q, EdgeVector &index,
 
 /*----------------------------------------------------------------------*/
 
-void QuadLawAndOrder::fill_corner_vertex_in_childs(const Quad &f) const {
+void
+QuadLawAndOrder::fill_corner_vertex_in_childs(const Quad& f) const
+{
   quads[f.child(0)].vertex(0) = f.vertex(0);
   quads[f.child(1)].vertex(1) = f.vertex(1);
   quads[f.child(2)].vertex(2) = f.vertex(2);
@@ -122,8 +138,11 @@ void QuadLawAndOrder::fill_corner_vertex_in_childs(const Quad &f) const {
 
 /*----------------------------------------------------------------------*/
 
-void QuadLawAndOrder::fill_edge_vertex_in_childs(const Quad &f, int edge,
-                                                 int number) const {
+void
+QuadLawAndOrder::fill_edge_vertex_in_childs(const Quad& f,
+                                            int edge,
+                                            int number) const
+{
   int c0 = childs_edge[edge][0];
   int c1 = childs_edge[edge][1];
   quads[f.child(c0)].vertex(vice[edge][0]) = number;
@@ -132,8 +151,9 @@ void QuadLawAndOrder::fill_edge_vertex_in_childs(const Quad &f, int edge,
 
 /*----------------------------------------------------------------------*/
 
-void QuadLawAndOrder::fill_middle_vertex_in_childs(const Quad &f,
-                                                   int number) const {
+void
+QuadLawAndOrder::fill_middle_vertex_in_childs(const Quad& f, int number) const
+{
   quads[f.child(0)].vertex(2) = number;
   quads[f.child(1)].vertex(3) = number;
   quads[f.child(2)].vertex(0) = number;
@@ -142,13 +162,17 @@ void QuadLawAndOrder::fill_middle_vertex_in_childs(const Quad &f,
 
 /*----------------------------------------------------------------------*/
 
-int QuadLawAndOrder::middle_vertex(const Quad &f) const {
+int
+QuadLawAndOrder::middle_vertex(const Quad& f) const
+{
   return quads[f.child(0)].vertex(cell_midpoint(0));
 }
 
 /*----------------------------------------------------------------------*/
 
-int QuadLawAndOrder::edge_vertex(const Quad &f, int edge) const {
+int
+QuadLawAndOrder::edge_vertex(const Quad& f, int edge) const
+{
   if (!f.sleep())
     return -1;
   int lic = childs_edge[edge][0];
@@ -160,24 +184,33 @@ int QuadLawAndOrder::edge_vertex(const Quad &f, int edge) const {
 
 /*----------------------------------------------------------------------*/
 
-void QuadLawAndOrder::childs_of_edge(QuadVector &child, const Quad &f,
-                                     int edge) const {
+void
+QuadLawAndOrder::childs_of_edge(QuadVector& child,
+                                const Quad& f,
+                                int edge) const
+{
   child[0] = f.child(childs_edge[edge][0]);
   child[1] = f.child(childs_edge[edge][1]);
 }
 
 /*----------------------------------------------------------------------*/
 
-void QuadLawAndOrder::childs_of_global_edge(
-    QuadVector &child, const Quad &f, const EdgeVector &globaledge) const {
+void
+QuadLawAndOrder::childs_of_global_edge(QuadVector& child,
+                                       const Quad& f,
+                                       const EdgeVector& globaledge) const
+{
   int localedge = local_edge(f, globaledge);
   childs_of_edge(child, f, localedge);
 }
 
 /*----------------------------------------------------------------------*/
 
-void QuadLawAndOrder::global_edge_unsorted(std::array<int, 2> &lineglob,
-                                           const Quad &q, int edge) const {
+void
+QuadLawAndOrder::global_edge_unsorted(std::array<int, 2>& lineglob,
+                                      const Quad& q,
+                                      int edge) const
+{
   std::array<int, 2> lineloc;
   local_edge_index(lineloc, edge);
   q.vertex_loc2glob<2>(lineglob, lineloc);
@@ -185,8 +218,10 @@ void QuadLawAndOrder::global_edge_unsorted(std::array<int, 2> &lineglob,
 
 /*----------------------------------------------------------------------*/
 
-void QuadLawAndOrder::globaledgechildren_of_father(vector<EdgeVector> &edges,
-                                                   const Quad &f) const {
+void
+QuadLawAndOrder::globaledgechildren_of_father(vector<EdgeVector>& edges,
+                                              const Quad& f) const
+{
   size_t n = 8;
   edges.resize(n);
   edges[0][0] = global_index(f, 0);
@@ -215,7 +250,9 @@ void QuadLawAndOrder::globaledgechildren_of_father(vector<EdgeVector> &edges,
 
 /*----------------------------------------------------------------------*/
 
-int QuadLawAndOrder::local_edge_index(int q, const EdgeVector &edge) const {
+int
+QuadLawAndOrder::local_edge_index(int q, const EdgeVector& edge) const
+{
   for (int i = 0; i < 4; i++) {
     if ((edge[0] == quads[q].vertex(i)) &&
         (edge[1] == quads[q].vertex((i + 1) % 4)))
@@ -229,8 +266,8 @@ int QuadLawAndOrder::local_edge_index(int q, const EdgeVector &edge) const {
 
 /*----------------------------------------------------------------------*/
 
-QuadLawAndOrder::QuadLawAndOrder(vector<Quad> &q)
-    : quads(q)
+QuadLawAndOrder::QuadLawAndOrder(vector<Quad>& q)
+  : quads(q)
 //  childs_edge(EdgeVector(2)),
 //  vice(EdgeVector(2)),
 //  child_point_cell(4),

@@ -30,13 +30,17 @@
 
 namespace Gascoigne {
 
-template <class INT>
-class IntegrationFormulaSummed1d : public IntegrationFormula1d {
+template<class INT>
+class IntegrationFormulaSummed1d : public IntegrationFormula1d
+{
 protected:
   INT I;
 
 public:
-  IntegrationFormulaSummed1d(int n) : IntegrationFormula1d(), I() {
+  IntegrationFormulaSummed1d(int n)
+    : IntegrationFormula1d()
+    , I()
+  {
     int N = static_cast<int>(pow(2., n));
 
     IntegrationFormula1d::ReInit(N * I.n());
@@ -65,13 +69,17 @@ public:
 
 /*------------------------------------------------------------*/
 
-template <class INT>
-class IntegrationFormulaSummed2d : public IntegrationFormula2d {
+template<class INT>
+class IntegrationFormulaSummed2d : public IntegrationFormula2d
+{
 protected:
   INT I;
 
 public:
-  IntegrationFormulaSummed2d(int n = 4) : IntegrationFormula2d(), I() {
+  IntegrationFormulaSummed2d(int n = 4)
+    : IntegrationFormula2d()
+    , I()
+  {
     int N = static_cast<int>(pow(4., n));
 
     IntegrationFormula2d::ReInit(N * I.n());
@@ -109,13 +117,17 @@ public:
 
 /*------------------------------------------------------------*/
 
-template <class INT>
-class IntegrationFormulaSummed3d : public IntegrationFormula3d {
+template<class INT>
+class IntegrationFormulaSummed3d : public IntegrationFormula3d
+{
 protected:
   INT I;
 
 public:
-  IntegrationFormulaSummed3d(int n = 2) : IntegrationFormula3d(), I() {
+  IntegrationFormulaSummed3d(int n = 2)
+    : IntegrationFormula3d()
+    , I()
+  {
     int N = static_cast<int>(pow(8., n));
 
     IntegrationFormula3d::ReInit(N * I.n());

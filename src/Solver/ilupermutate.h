@@ -29,37 +29,40 @@
 #include "gascoignemesh.h"
 
 namespace Gascoigne {
-class StreamDirection {
+class StreamDirection
+{
   int dimension;
   int dx, dy, dz;
-  const GascoigneMesh *M;
-  const ColumnStencil *S;
-  const GlobalVector &X;
+  const GascoigneMesh* M;
+  const ColumnStencil* S;
+  const GlobalVector& X;
 
-  void Permutate(IntVector &perm);
+  void Permutate(IntVector& perm);
 
 public:
-  StreamDirection(const GascoigneMesh *m, const StencilInterface *s,
-                  const GlobalVector &x);
+  StreamDirection(const GascoigneMesh* m,
+                  const StencilInterface* s,
+                  const GlobalVector& x);
 
-  void Permutate(IntVector &perm, const IntVector d);
+  void Permutate(IntVector& perm, const IntVector d);
 
   bool operator()(int i, int j) const;
   double est(int i, int j) const;
 };
 
-class VecDirection {
+class VecDirection
+{
   Vertex2d dir2d;
   Vertex3d dir3d;
   int dimension;
-  const GascoigneMesh *M;
+  const GascoigneMesh* M;
 
-  void Permutate(IntVector &perm);
+  void Permutate(IntVector& perm);
 
 public:
-  VecDirection(const GascoigneMesh *m);
+  VecDirection(const GascoigneMesh* m);
 
-  void Permutate(IntVector &perm, DoubleVector v);
+  void Permutate(IntVector& perm, DoubleVector v);
 
   bool operator()(int i, int j) const;
 };

@@ -33,21 +33,23 @@
 namespace Gascoigne {
 /*-----------------------------------------*/
 
-class Pi {
+class Pi
+{
 protected:
   std::map<int, std::array<int, 2>> edge;
   std::map<int, std::array<int, 4>> face;
   std::map<int, std::array<int, 8>> cell;
 
-  void Init2d(const GascoigneMesh2d *MP);
-  void Init3d(const GascoigneMesh3d *MP);
+  void Init2d(const GascoigneMesh2d* MP);
+  void Init3d(const GascoigneMesh3d* MP);
 
 public:
   Pi();
 
-  void Init(const GascoigneMesh *MP);
+  void Init(const GascoigneMesh* MP);
 
-  void vmult(CompVector<double> &y, const CompVector<double> &x,
+  void vmult(CompVector<double>& y,
+             const CompVector<double>& x,
              double s = 1.) const;
 };
 } // namespace Gascoigne

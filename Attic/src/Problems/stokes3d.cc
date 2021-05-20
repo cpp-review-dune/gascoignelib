@@ -32,28 +32,39 @@ Stokes3d::~Stokes3d() {}
 
 /*-----------------------------------------*/
 
-Stokes3d::Stokes3d() : Stokes2d() {}
+Stokes3d::Stokes3d()
+  : Stokes2d()
+{}
 
 /*-----------------------------------------*/
 
-Stokes3d::Stokes3d(const ParamFile &pf) : Stokes2d(pf) {}
+Stokes3d::Stokes3d(const ParamFile& pf)
+  : Stokes2d(pf)
+{}
 
 /*-----------------------------------------*/
 
-double Stokes3d::Divergence(const FemFunction &U) const {
+double
+Stokes3d::Divergence(const FemFunction& U) const
+{
   return U[1].x() + U[2].y() + U[3].z();
 }
 
 /*-----------------------------------------*/
 
-double Stokes3d::Laplace(const TestFunction &U, const TestFunction &N) const {
+double
+Stokes3d::Laplace(const TestFunction& U, const TestFunction& N) const
+{
   return U.x() * N.x() + U.y() * N.y() + U.z() * N.z();
 }
 
 /*-----------------------------------------*/
 
-void Stokes3d::Form(VectorIterator b, const FemFunction &U,
-                    const TestFunction &N) const {
+void
+Stokes3d::Form(VectorIterator b,
+               const FemFunction& U,
+               const TestFunction& N) const
+{
   ////////////// Continuity //////////////////////////
 
   b[0] += Divergence(U) * N.m();
@@ -72,8 +83,12 @@ void Stokes3d::Form(VectorIterator b, const FemFunction &U,
 
 /*-----------------------------------------*/
 
-void Stokes3d::Matrix(EntryMatrix &A, const FemFunction &U,
-                      const TestFunction &M, const TestFunction &N) const {
+void
+Stokes3d::Matrix(EntryMatrix& A,
+                 const FemFunction& U,
+                 const TestFunction& M,
+                 const TestFunction& N) const
+{
   double laplace = Laplace(M, N);
 
   ////////////// Continuity /////////////////////////////

@@ -29,8 +29,10 @@
 
 namespace Gascoigne {
 
-void GascoigneVisualization::AddVector(const ComponentInformation *CI,
-                                       const GlobalVector *v) {
+void
+GascoigneVisualization::AddVector(const ComponentInformation* CI,
+                                  const GlobalVector* v)
+{
   assert(mesh);
   assert(v);
   _v = v;
@@ -91,7 +93,9 @@ void GascoigneVisualization::AddVector(const ComponentInformation *CI,
 
 /*-----------------------------------------*/
 
-void GascoigneVisualization::AddVector(const GlobalVector *v) {
+void
+GascoigneVisualization::AddVector(const GlobalVector* v)
+{
   assert(mesh);
   assert(v);
   _v = v;
@@ -128,8 +132,10 @@ void GascoigneVisualization::AddVector(const GlobalVector *v) {
 
 /*-----------------------------------------*/
 
-void GascoigneVisualization::AddPointVector(const ComponentInformation *CI,
-                                            const GlobalVector *v) {
+void
+GascoigneVisualization::AddPointVector(const ComponentInformation* CI,
+                                       const GlobalVector* v)
+{
   AddVector(CI, v);
 
   SetPointData(&VD);
@@ -138,7 +144,9 @@ void GascoigneVisualization::AddPointVector(const ComponentInformation *CI,
 
 /* -------------------------------------------------------*/
 
-void GascoigneVisualization::AddPointVector(const GlobalVector *v) {
+void
+GascoigneVisualization::AddPointVector(const GlobalVector* v)
+{
   AddVector(v);
 
   SetPointData(&VD);
@@ -147,8 +155,10 @@ void GascoigneVisualization::AddPointVector(const GlobalVector *v) {
 
 /* -------------------------------------------------------*/
 
-void GascoigneVisualization::AddCellVector(const ComponentInformation *CI,
-                                           const GlobalVector *v) {
+void
+GascoigneVisualization::AddCellVector(const ComponentInformation* CI,
+                                      const GlobalVector* v)
+{
   AddVector(CI, v);
 
   SetCellData(&VD);
@@ -157,7 +167,9 @@ void GascoigneVisualization::AddCellVector(const ComponentInformation *CI,
 
 /* -------------------------------------------------------*/
 
-void GascoigneVisualization::AddCellVector(const GlobalVector *v) {
+void
+GascoigneVisualization::AddCellVector(const GlobalVector* v)
+{
   AddVector(v);
 
   SetCellData(&VD);

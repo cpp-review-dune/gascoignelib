@@ -30,9 +30,11 @@
 /*-------------------------------------------------------------*/
 
 namespace Gascoigne {
-template <class B>
-class DynamicBlockIlu : public virtual IluInterface,
-                        public DynamicBlockMatrix<B> {
+template<class B>
+class DynamicBlockIlu
+  : public virtual IluInterface
+  , public DynamicBlockMatrix<B>
+{
 protected:
   typedef typename std::list<int>::const_iterator const_citerator;
   typedef typename std::list<int>::iterator citerator;
@@ -40,31 +42,33 @@ protected:
   typedef typename std::list<B>::iterator viterator;
 
   nvector<int> p, q;
-  GlobalVector *yp;
+  GlobalVector* yp;
 
   void backward() const;
   void forward() const;
-  virtual void hin(const GlobalVector &x) const;
-  virtual void her(GlobalVector &x) const;
+  virtual void hin(const GlobalVector& x) const;
+  virtual void her(GlobalVector& x) const;
 
   IndexType n() const { return DynamicBlockMatrix<B>::n(); };
 
 public:
   DynamicBlockIlu<B>();
-  DynamicBlockIlu<B>(const DynamicBlockIlu<B> &I);
+  DynamicBlockIlu<B>(const DynamicBlockIlu<B>& I);
   ~DynamicBlockIlu();
 
   viterator vdiag(int i) { return DynamicBlockMatrix<B>::vdiag(i); }
   const_viterator vdiag(int i) const { return DynamicBlockMatrix<B>::vdiag(i); }
   citerator cdiag(int i) { return DynamicBlockMatrix<B>::cdiag(i); }
   const_citerator cdiag(int i) const { return DynamicBlockMatrix<B>::cdiag(i); }
-  const_citerator cstart(int i) const {
+  const_citerator cstart(int i) const
+  {
     return DynamicBlockMatrix<B>::cstart(i);
   }
   const_citerator cstop(int i) const { return DynamicBlockMatrix<B>::cstop(i); }
   citerator cstart(int i) { return DynamicBlockMatrix<B>::cstart(i); }
   citerator cstop(int i) { return DynamicBlockMatrix<B>::cstop(i); }
-  const_viterator vstart(int i) const {
+  const_viterator vstart(int i) const
+  {
     return DynamicBlockMatrix<B>::vstart(i);
   }
   const_viterator vstop(int i) const { return DynamicBlockMatrix<B>::vstop(i); }
@@ -73,23 +77,24 @@ public:
 
   std::string GetName() const { return "DynamicBlockIlu"; }
 
-  nvector<int> &GetP() { return p; }
-  nvector<int> &GetQ() { return q; }
-  const nvector<int> &GetP() const { return p; }
-  const nvector<int> &GetQ() const { return q; }
+  nvector<int>& GetP() { return p; }
+  nvector<int>& GetQ() { return q; }
+  const nvector<int>& GetP() const { return p; }
+  const nvector<int>& GetQ() const { return q; }
 
   void modify(int c, double s);
   void zero() { DynamicBlockMatrix<B>::zero(); }
 
   void compute_ilu();
-  void ReInit(const SparseStructureInterface *SI);
-  void ConstructStructure(const nvector<int> &perm, const MatrixInterface &A);
+  void ReInit(const SparseStructureInterface* SI);
+  void ConstructStructure(const nvector<int>& perm, const MatrixInterface& A);
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Woverloaded-virtual"
-  void copy_entries(const MatrixInterface *A);
+  void copy_entries(const MatrixInterface* A);
 #pragma GCC diagnostic pop
-  void solve(GlobalVector &x) const;
-  void solvetrans(GlobalVector &x) const {
+  void solve(GlobalVector& x) const;
+  void solvetrans(GlobalVector& x) const
+  {
     std::cerr << "\"DynamicBlockIlu::solvetrans\" not written!" << std::endl;
     abort();
   };

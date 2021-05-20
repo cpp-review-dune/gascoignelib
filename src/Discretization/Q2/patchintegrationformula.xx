@@ -27,8 +27,10 @@ namespace Gascoigne {
 
 /*------------------------------------------------------------*/
 
-template <int N, class INT>
-PatchFormula1d<N, INT>::PatchFormula1d() : IntegrationFormula1d(2 * N) {
+template<int N, class INT>
+PatchFormula1d<N, INT>::PatchFormula1d()
+  : IntegrationFormula1d(2 * N)
+{
   INT I;
 
   assert(I.n() == N);
@@ -49,8 +51,10 @@ PatchFormula1d<N, INT>::PatchFormula1d() : IntegrationFormula1d(2 * N) {
 }
 
 /*------------------------------------------------------------*/
-template <int N, class INT>
-PatchFormula2d<N, INT>::PatchFormula2d() : IntegrationFormula2d(4 * N) {
+template<int N, class INT>
+PatchFormula2d<N, INT>::PatchFormula2d()
+  : IntegrationFormula2d(4 * N)
+{
   INT I;
 
   assert(I.n() == N);
@@ -80,8 +84,10 @@ PatchFormula2d<N, INT>::PatchFormula2d() : IntegrationFormula2d(4 * N) {
 
 /*------------------------------------------------------------*/
 
-template <int N, class INT>
-PatchFormula3d<N, INT>::PatchFormula3d() : IntegrationFormula3d(8 * N) {
+template<int N, class INT>
+PatchFormula3d<N, INT>::PatchFormula3d()
+  : IntegrationFormula3d(8 * N)
+{
   INT I;
   if (I.n() != N) {
     std::cerr << "PatchFormula3d: error\n";

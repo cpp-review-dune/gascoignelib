@@ -29,7 +29,10 @@ using namespace std;
 /*-----------------------------------------*/
 
 namespace Gascoigne {
-template <int DIM> GlsIntegrator<DIM>::GlsIntegrator() : BasicIntegrator() {
+template<int DIM>
+GlsIntegrator<DIM>::GlsIntegrator()
+  : BasicIntegrator()
+{
   if (DIM == 2)
     IF = new QuadGauss4;
   else
@@ -39,29 +42,40 @@ template <int DIM> GlsIntegrator<DIM>::GlsIntegrator() : BasicIntegrator() {
 
 /* ----------------------------------------- */
 
-template <> double GlsIntegrator<2>::Volume2MeshSize(double vol) const {
+template<>
+double
+GlsIntegrator<2>::Volume2MeshSize(double vol) const
+{
   return sqrt(vol);
 }
 
 /* ----------------------------------------- */
 
-template <> double GlsIntegrator<3>::Volume2MeshSize(double vol) const {
+template<>
+double
+GlsIntegrator<3>::Volume2MeshSize(double vol) const
+{
   return cbrt(vol);
 }
 
 /*-----------------------------------------*/
 
-template <int DIM>
-void GlsIntegrator<DIM>::Form(const Equation &EQ, LocalVector &F,
-                              const FemInterface &FEM, const LocalVector &U,
-                              const LocalData &Q, const LocalData &QC) const {
+template<int DIM>
+void
+GlsIntegrator<DIM>::Form(const Equation& EQ,
+                         LocalVector& F,
+                         const FemInterface& FEM,
+                         const LocalVector& U,
+                         const LocalData& Q,
+                         const LocalData& QC) const
+{
   assert(F.ncomp() == U.ncomp());
 
-  const GlsEquation &GEQ = dynamic_cast<const GlsEquation &>(EQ);
+  const GlsEquation& GEQ = dynamic_cast<const GlsEquation&>(EQ);
 
   Vertex<DIM> x, xi;
 
-  const IntegrationFormulaInterface &IFF = FormFormula();
+  const IntegrationFormulaInterface& IFF = FormFormula();
 
   DoubleVector Lu(U.ncomp());
   nmatrix<double> A(F.ncomp(), F.ncomp());
@@ -97,20 +111,25 @@ void GlsIntegrator<DIM>::Form(const Equation &EQ, LocalVector &F,
 
 /*-----------------------------------------------------------*/
 
-template <int DIM>
-void GlsIntegrator<DIM>::Matrix(const Equation &EQ, EntryMatrix &E,
-                                const FemInterface &FEM, const LocalVector &U,
-                                const LocalData &Q, const LocalData &QC) const {
+template<int DIM>
+void
+GlsIntegrator<DIM>::Matrix(const Equation& EQ,
+                           EntryMatrix& E,
+                           const FemInterface& FEM,
+                           const LocalVector& U,
+                           const LocalData& Q,
+                           const LocalData& QC) const
+{
   assert(E.Ndof() == FEM.n());
   assert(E.Mdof() == FEM.n());
   assert(E.Ncomp() == U.ncomp());
 
-  const GlsEquation &GEQ = dynamic_cast<const GlsEquation &>(EQ);
+  const GlsEquation& GEQ = dynamic_cast<const GlsEquation&>(EQ);
 
   Vertex<DIM> x, xi;
   FemFunction NNN(FEM.n());
 
-  const IntegrationFormulaInterface &IFF = FormFormula();
+  const IntegrationFormulaInterface& IFF = FormFormula();
 
   int ncomp = U.ncomp();
   vector<nmatrix<double>> LMat(FEM.n(), nmatrix<double>(ncomp, ncomp));

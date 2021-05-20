@@ -29,7 +29,9 @@ using namespace std;
 
 /*----------------------------------------------------------------------------*/
 
-void NewmarkAlgorithm::Run(const std::string &problemlabel) {
+void
+NewmarkAlgorithm::Run(const std::string& problemlabel)
+{
   int niter;
   string initial;
 
@@ -51,7 +53,7 @@ void NewmarkAlgorithm::Run(const std::string &problemlabel) {
   ReInitVector(f);
   InitSolution(initial, u);
 
-  NLInfo &nlinfo = GetSolverInfos()->GetNLInfo();
+  NLInfo& nlinfo = GetSolverInfos()->GetNLInfo();
 
   double alpha = 0.25 * dt * dt;
 
@@ -60,7 +62,7 @@ void NewmarkAlgorithm::Run(const std::string &problemlabel) {
     // rhs fuer alten Zeitschritt
     //
     GetSolver()->Zero(f);
-    NewmarkSolver *NMS0 = dynamic_cast<NewmarkSolver *>(GetSolver());
+    NewmarkSolver* NMS0 = dynamic_cast<NewmarkSolver*>(GetSolver());
     if (iter == 1) {
       GetSolver()->Rhs(f, alpha);
       NMS0->FormWithoutMass(f, u, -1., -1.);

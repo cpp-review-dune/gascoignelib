@@ -31,7 +31,10 @@ namespace Gascoigne {
 
 /*-----------------------------------------*/
 
-HNStructureQ13d::HNStructureQ13d() : HNStructureQ12d(), faces(NULL) {
+HNStructureQ13d::HNStructureQ13d()
+  : HNStructureQ12d()
+  , faces(NULL)
+{
   lnop[0][0] = 0;
   lnop[0][1] = 2;
   lnop[0][2] = 6;
@@ -109,7 +112,9 @@ HNStructureQ13d::~HNStructureQ13d() {}
 
 /*--------------------------------------------------------*/
 
-void HNStructureQ13d::ReInit(const GascoigneMesh *M) {
+void
+HNStructureQ13d::ReInit(const GascoigneMesh* M)
+{
   edges = M->GetHangingIndexHandler().GetStructure();
   faces = M->GetHangingIndexHandler().GetStructureFace();
   assert(edges);
@@ -118,7 +123,9 @@ void HNStructureQ13d::ReInit(const GascoigneMesh *M) {
 
 /*-----------------------------------------*/
 
-bool HNStructureQ13d::ZeroCheck(const GlobalVector &u) const {
+bool
+HNStructureQ13d::ZeroCheck(const GlobalVector& u) const
+{
   bool r = HNStructureQ12d::ZeroCheck(u);
   if (r)
     return r;
@@ -135,7 +142,9 @@ bool HNStructureQ13d::ZeroCheck(const GlobalVector &u) const {
 
 /*-----------------------------------------*/
 
-void HNStructureQ13d::Zero(GlobalVector &u) const {
+void
+HNStructureQ13d::Zero(GlobalVector& u) const
+{
   HNStructureQ12d::Zero(u);
 
   for (const_fiterator p = faces->begin(); p != faces->end(); p++) {
@@ -147,24 +156,28 @@ void HNStructureQ13d::Zero(GlobalVector &u) const {
 
 /*-----------------------------------------*/
 
-void HNStructureQ13d::Average(GlobalVector &u) const {
+void
+HNStructureQ13d::Average(GlobalVector& u) const
+{
   HNStructureQ12d::Average(u);
 
   for (const_fiterator p = faces->begin(); p != faces->end(); p++) {
     int i = p->first;
-    const std::array<int, 9> &f = p->second;
+    const std::array<int, 9>& f = p->second;
     u.equ_node(i, 0.25, f[0], 0.25, f[1], 0.25, f[3], 0.25, f[4]);
   }
 }
 
 /*-----------------------------------------*/
 
-void HNStructureQ13d::Distribute(GlobalVector &u) const {
+void
+HNStructureQ13d::Distribute(GlobalVector& u) const
+{
   HNStructureQ12d::Distribute(u);
 
   for (const_fiterator p = faces->begin(); p != faces->end(); p++) {
     int i = p->first;
-    const std::array<int, 9> &f = p->second;
+    const std::array<int, 9>& f = p->second;
 
     u.add_node(f[0], 0.25, i);
     u.add_node(f[1], 0.25, i);
@@ -176,7 +189,9 @@ void HNStructureQ13d::Distribute(GlobalVector &u) const {
 
 /*-----------------------------------------*/
 
-int HNStructureQ13d::hanging(int i) const {
+int
+HNStructureQ13d::hanging(int i) const
+{
   int r = HNStructureQ12d::hanging(i);
 
   if (r > 0)
@@ -188,7 +203,9 @@ int HNStructureQ13d::hanging(int i) const {
 
 /*-----------------------------------------*/
 
-void HNStructureQ13d::MatrixDiag(int ncomp, MatrixInterface &A) const {
+void
+HNStructureQ13d::MatrixDiag(int ncomp, MatrixInterface& A) const
+{
   HNStructureQ12d::MatrixDiag(ncomp, A);
 
   nmatrix<double> M(ncomp);
@@ -200,7 +217,9 @@ void HNStructureQ13d::MatrixDiag(int ncomp, MatrixInterface &A) const {
 
 /*-----------------------------------------*/
 
-void HNStructureQ13d::SparseStructureDiag(SparseStructure *S) const {
+void
+HNStructureQ13d::SparseStructureDiag(SparseStructure* S) const
+{
   HNStructureQ12d::SparseStructureDiag(S);
 
   for (const_fiterator p = faces->begin(); p != faces->end(); p++) {
@@ -211,7 +230,9 @@ void HNStructureQ13d::SparseStructureDiag(SparseStructure *S) const {
 
 /*----------------------------------------------*/
 
-std::array<int, 4> HNStructureQ13d::GetHangingFace(int i) const {
+std::array<int, 4>
+HNStructureQ13d::GetHangingFace(int i) const
+{
   const_fiterator p = faces->find(i);
   assert(p != faces->end());
 
@@ -226,7 +247,9 @@ std::array<int, 4> HNStructureQ13d::GetHangingFace(int i) const {
 
 /*----------------------------------------------*/
 
-std::array<int, 2> HNStructureQ13d::GetHangingEdge(int i) const {
+std::array<int, 2>
+HNStructureQ13d::GetHangingEdge(int i) const
+{
   map<int, EdgeVector>::const_iterator p = edges->find(i);
   assert(p != edges->end());
 
@@ -239,23 +262,27 @@ std::array<int, 2> HNStructureQ13d::GetHangingEdge(int i) const {
 
 /*----------------------------------------------*/
 
-void HNStructureQ13d::CondenseHanging(IntVector &indices) const {
+void
+HNStructureQ13d::CondenseHanging(IntVector& indices) const
+{
   CondenseHanging2er(indices);
   CondenseHanging4er(indices);
 }
 
 /*----------------------------------------------*/
 
-void HNStructureQ13d::CondenseHanging(EntryMatrix &E,
-                                      IntVector &indices) const {
+void
+HNStructureQ13d::CondenseHanging(EntryMatrix& E, IntVector& indices) const
+{
   CondenseHanging2er(E, indices);
   CondenseHanging4er(E, indices);
 }
 
 /*----------------------------------------------*/
 
-void HNStructureQ13d::CondenseHanging4er(EntryMatrix &E,
-                                         IntVector &indices) const {
+void
+HNStructureQ13d::CondenseHanging4er(EntryMatrix& E, IntVector& indices) const
+{
   IntVector x(0), y(0);
 
   for (int ii = 0; ii < 8; ii++) {
@@ -305,7 +332,9 @@ void HNStructureQ13d::CondenseHanging4er(EntryMatrix &E,
 
 /*----------------------------------------------*/
 
-void HNStructureQ13d::Couplings(IntVector &indices) const {
+void
+HNStructureQ13d::Couplings(IntVector& indices) const
+{
   // fuer Structure (nicht bigstencil)
   //
   // erst alle haengenden lines ersetzen
@@ -317,7 +346,7 @@ void HNStructureQ13d::Couplings(IntVector &indices) const {
   //    auto p1 = indices.end();
 
   for (int i = 0; i < 8; i++) {
-    int &ind = indices[i];
+    int& ind = indices[i];
 
     if (hanging(ind) != 2)
       continue;
@@ -341,7 +370,7 @@ void HNStructureQ13d::Couplings(IntVector &indices) const {
   // jetzt duerften zu haengenden quads
   // nur noch ein vertex nicht eingetragen sein
   for (int i = 0; i < 8; i++) {
-    int &ind = indices[i];
+    int& ind = indices[i];
 
     if (hanging(ind) != 4)
       continue;
@@ -368,8 +397,9 @@ void HNStructureQ13d::Couplings(IntVector &indices) const {
 
 /*----------------------------------------------*/
 
-void HNStructureQ13d::CondenseHanging2er(EntryMatrix &E,
-                                         IntVector &indices) const {
+void
+HNStructureQ13d::CondenseHanging2er(EntryMatrix& E, IntVector& indices) const
+{
   IntVector x(0), y(0);
 
   for (int ii = 0; ii < 8; ii++) {
@@ -409,7 +439,9 @@ void HNStructureQ13d::CondenseHanging2er(EntryMatrix &E,
 
 /*----------------------------------------------*/
 
-void HNStructureQ13d::CondenseHanging2er(IntVector &indices) const {
+void
+HNStructureQ13d::CondenseHanging2er(IntVector& indices) const
+{
   for (int ii = 0; ii < 8; ii++) {
     int i = indices[ii];
 
@@ -434,7 +466,9 @@ void HNStructureQ13d::CondenseHanging2er(IntVector &indices) const {
 
 /*----------------------------------------------*/
 
-void HNStructureQ13d::CondenseHanging4er(IntVector &indices) const {
+void
+HNStructureQ13d::CondenseHanging4er(IntVector& indices) const
+{
   for (int ii = 0; ii < 8; ii++) {
     int j = indices[ii];
 
@@ -463,8 +497,9 @@ void HNStructureQ13d::CondenseHanging4er(IntVector &indices) const {
 
 /*----------------------------------------------*/
 
-void HNStructureQ13d::CondenseHangingPatch(EntryMatrix &E,
-                                           IntVector &indices) const {
+void
+HNStructureQ13d::CondenseHangingPatch(EntryMatrix& E, IntVector& indices) const
+{
   assert(indices.size() == 27);
 
   for (int ii = 0; ii < 6; ii++) {
@@ -473,7 +508,7 @@ void HNStructureQ13d::CondenseHangingPatch(EntryMatrix &E,
     if (hanging(i) != 4)
       continue;
 
-    const std::array<int, 5> &p = lnop[ii];
+    const std::array<int, 5>& p = lnop[ii];
 
     int elim = p[4];
 
@@ -495,7 +530,7 @@ void HNStructureQ13d::CondenseHangingPatch(EntryMatrix &E,
     if (hanging(i) != 2)
       continue;
 
-    const std::array<int, 3> &p = lnoe[ii];
+    const std::array<int, 3>& p = lnoe[ii];
 
     int elim = p[1];
 

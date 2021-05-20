@@ -30,26 +30,38 @@
 /*---------------------------------------------------*/
 
 namespace Gascoigne {
-template <int N> class InterpolElement : public std::array<int, N> {
+template<int N>
+class InterpolElement : public std::array<int, N>
+{
 public:
   int nv;
 
-  InterpolElement() : std::array<int, N>(), nv(-1) {}
-  InterpolElement(const InterpolElement &i) : std::array<int, N>(i), nv(i.nv) {}
+  InterpolElement()
+    : std::array<int, N>()
+    , nv(-1)
+  {}
+  InterpolElement(const InterpolElement& i)
+    : std::array<int, N>(i)
+    , nv(i.nv)
+  {}
 
-  InterpolElement(const std::array<int, N> &f, int n)
-      : std::array<int, N>(f), nv(n) {}
+  InterpolElement(const std::array<int, N>& f, int n)
+    : std::array<int, N>(f)
+    , nv(n)
+  {}
 };
 
 /*---------------------------------------------------*/
 
-template <int N>
-class InterpolationList : public std::vector<InterpolElement<N>> {
+template<int N>
+class InterpolationList : public std::vector<InterpolElement<N>>
+{
 public:
   int newvertex(int i) const { return (*this)[i].nv; }
   int oldvertex(int i, int j) const { return (*this)[i][j]; }
 
-  void newentry(int nv, const std::array<int, N> &w) {
+  void newentry(int nv, const std::array<int, N>& w)
+  {
     InterpolElement<N> I(w, nv);
     push_back(I);
   }

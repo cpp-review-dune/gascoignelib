@@ -32,7 +32,8 @@
 namespace Gascoigne {
 /**************************************************/
 
-class BaseQ23dPatch : public Base3d {
+class BaseQ23dPatch : public Base3d
+{
 protected:
   bool second;
   mutable int pB;
@@ -41,7 +42,8 @@ protected:
 
   mutable nvector<double> dxx, dyy, dzz, dxy, dxz, dyz;
 
-  void BasicInit() {
+  void BasicInit()
+  {
     N.resize(NDOF);
     DN.resize(NDOF);
     dxx.reservesize(NDOF);
@@ -53,7 +55,11 @@ protected:
   }
 
 public:
-  BaseQ23dPatch() : Base3d(), second(false), perm(27) {
+  BaseQ23dPatch()
+    : Base3d()
+    , second(false)
+    , perm(27)
+  {
     BasicInit();
 
     perm[0] = 0;
@@ -90,33 +96,40 @@ public:
   double phi_x(int i) const { return DN[i].x(); }
   double phi_y(int i) const { return DN[i].y(); }
   double phi_z(int i) const { return DN[i].z(); }
-  double phi_xx(int i) const {
+  double phi_xx(int i) const
+  {
     assert(second);
     return dxx[i];
   }
-  double phi_yy(int i) const {
+  double phi_yy(int i) const
+  {
     assert(second);
     return dyy[i];
   }
-  double phi_zz(int i) const {
+  double phi_zz(int i) const
+  {
     assert(second);
     return dzz[i];
   }
-  double phi_xy(int i) const {
+  double phi_xy(int i) const
+  {
     assert(second);
     return dxy[i];
   }
-  double phi_xz(int i) const {
+  double phi_xz(int i) const
+  {
     assert(second);
     return dxz[i];
   }
-  double phi_yz(int i) const {
+  double phi_yz(int i) const
+  {
     assert(second);
     return dyz[i];
   }
-  const Vertex3d &phi_grad(int i) const { return DN[i]; }
+  const Vertex3d& phi_grad(int i) const { return DN[i]; }
 
-  void point(const Vertex3d &s) const {
+  void point(const Vertex3d& s) const
+  {
     Vertex3d t(s);
     if ((s.x() <= 0.5) && (s.y() <= 0.5)) {
       pB = 0;

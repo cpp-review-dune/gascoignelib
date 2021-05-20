@@ -28,13 +28,20 @@ using namespace Gascoigne;
 /*--------------------------------------------------------------------------*/
 
 GivensRotation::GivensRotation(int nn, double norm)
-    : n(0), H(nn, nn, 0.), ci(nn - 1, 0.), si(nn - 1, 0.), gamma(nn, 0.) {
+  : n(0)
+  , H(nn, nn, 0.)
+  , ci(nn - 1, 0.)
+  , si(nn - 1, 0.)
+  , gamma(nn, 0.)
+{
   gamma[0] = norm;
 }
 
 /*--------------------------------------------------------------------------*/
 
-void GivensRotation::givens(double &a, double &b, int i) const {
+void
+GivensRotation::givens(double& a, double& b, int i) const
+{
   double h = a;
   a = ci[i] * h + si[i] * b;
   b = -si[i] * h + ci[i] * b;
@@ -42,7 +49,9 @@ void GivensRotation::givens(double &a, double &b, int i) const {
 
 /*--------------------------------------------------------------------------*/
 
-double GivensRotation::orthogonalization(int dim) {
+double
+GivensRotation::orthogonalization(int dim)
+{
   assert(n == dim);
   int m = n;
   n++;
@@ -64,7 +73,9 @@ double GivensRotation::orthogonalization(int dim) {
 
 /*--------------------------------------------------------------------------*/
 
-DoubleVector GivensRotation::getcoefficients() {
+DoubleVector
+GivensRotation::getcoefficients()
+{
   nvector<double> h(n);
   for (int i = n - 1; i >= 0; i--) {
     double s = gamma[i];

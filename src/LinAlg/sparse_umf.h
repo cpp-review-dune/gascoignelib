@@ -19,16 +19,18 @@ namespace Gascoigne {
 ///
 /////////////////////////////////////////////
 
-template <class B> class SparseUmf : virtual public IluInterface {
+template<class B>
+class SparseUmf : virtual public IluInterface
+{
 protected:
-  const SparseBlockMatrix<B> *__AS;
+  const SparseBlockMatrix<B>* __AS;
 
   mutable nvector<double> __diag;
 
 protected:
   // fuer umfpack
-  double *Control;
-  double *Info;
+  double* Control;
+  double* Info;
   void *Symbolic, *Numeric;
 
   std::vector<long> __Ap, __Ac;
@@ -40,46 +42,48 @@ public:
   //
   ///  Constructor
   //
-  SparseUmf(const MatrixInterface *A);
+  SparseUmf(const MatrixInterface* A);
   SparseUmf();
 
-  void SetMatrix(const MatrixInterface *A);
+  void SetMatrix(const MatrixInterface* A);
 
   ~SparseUmf();
 
   std::string GetName() const { return "Sparse-UMF"; }
 
-  nvector<double> &GetRaw() { return __Ax; }
-  std::vector<long> &GetRawColumn() { return __Ac; }
-  std::vector<long> &GetRawPosition() { return __Ap; }
+  nvector<double>& GetRaw() { return __Ax; }
+  std::vector<long>& GetRawColumn() { return __Ac; }
+  std::vector<long>& GetRawPosition() { return __Ap; }
 
   double exec(std::string cmd) const;
   double condition_number() const;
   void do_precondition();
   void undo_precondition();
 
-  IndexType n() const {
+  IndexType n() const
+  {
     std::cerr << "SparseUmf::n()" << std::endl;
     abort();
   }
 
   void zero() { __Ax.zero(); }
 
-  void ReInit(const SparseStructureInterface *SS) {
-    assert(dynamic_cast<const SparseBlockMatrix<B> *>(__AS));
+  void ReInit(const SparseStructureInterface* SS)
+  {
+    assert(dynamic_cast<const SparseBlockMatrix<B>*>(__AS));
   }
 
-  void copy_entries(const MatrixInterface &A);
-  void add_entries(double s, const MatrixInterface *A);
+  void copy_entries(const MatrixInterface& A);
+  void add_entries(double s, const MatrixInterface* A);
 
-  void ConstructStructure(const IntVector &perm, const MatrixInterface &A);
-  void ConstructStructure(int ncomp, const SparseStructure &SS);
+  void ConstructStructure(const IntVector& perm, const MatrixInterface& A);
+  void ConstructStructure(int ncomp, const SparseStructure& SS);
   void modify(int c, double s) {}
   void compute_ilu();
 
-  void solve(GlobalVector &x) const;
+  void solve(GlobalVector& x) const;
 
-  void SolveTranspose(DoubleVector &x, const DoubleVector &b) { abort(); }
+  void SolveTranspose(DoubleVector& x, const DoubleVector& b) { abort(); }
 };
 } // namespace Gascoigne
 

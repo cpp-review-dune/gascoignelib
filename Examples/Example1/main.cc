@@ -36,11 +36,13 @@ using namespace Gascoigne;
 
 /*---------------------------------------------------*/
 
-class ProblemDescriptor : public ProblemDescriptorBase {
+class ProblemDescriptor : public ProblemDescriptorBase
+{
 public:
   std::string GetName() const { return "egal"; }
 
-  void BasicInit(const ParamFile *pf) {
+  void BasicInit(const ParamFile* pf)
+  {
     GetEquationPointer() = new Laplace2d;
     GetRightHandSidePointer() = new ConstantRightHandSideData(1, 0, 123.);
     GetDirichletDataPointer() = new ZeroDirichletData;
@@ -51,18 +53,22 @@ public:
 
 /*----------------------------------------------------------------------------*/
 
-class Numeric : public NumericInterface {
+class Numeric : public NumericInterface
+{
 public:
-  DiscretizationInterface *NewDiscretization(int level) const {
+  DiscretizationInterface* NewDiscretization(int level) const
+  {
     return new Q12d;
   }
-  SolverInterface *NewSolver(int level) const { return new StdSolver; }
-  MeshAgentInterface *NewMeshAgent() const { return new MeshAgent; }
+  SolverInterface* NewSolver(int level) const { return new StdSolver; }
+  MeshAgentInterface* NewMeshAgent() const { return new MeshAgent; }
 };
 
 /*----------------------------------------------------------------------------*/
 
-int main(int argc, char **argv) {
+int
+main(int argc, char** argv)
+{
   ParamFile paramfile("gascoigne.param");
   if (argc >= 2) {
     paramfile.SetName(argv[1]);

@@ -29,7 +29,8 @@
 /*-----------------------------------------*/
 
 namespace Gascoigne {
-class PatchMesh : public virtual MeshInterface {
+class PatchMesh : public virtual MeshInterface
+{
 
 private:
 protected:
@@ -46,20 +47,22 @@ public:
   virtual IntVector Q2IndicesOfQ4Patch(int iq) const = 0;
   virtual IntVector CoarseIndices(int iq) const = 0;
   virtual IntVector CoarseIndicesQ4(int iq) const = 0;
-  virtual const IntVector *IndicesOfPatch(int i) const = 0;
-  virtual const IntVector *IndicesOfQ4Patch(int i) const = 0;
-  virtual const IntVector *VertexOnBoundary(int color) const = 0;
-  virtual const IntVector *CellOnBoundary(int color) const = 0;
-  virtual const IntVector *LocalOnBoundary(int color) const = 0;
+  virtual const IntVector* IndicesOfPatch(int i) const = 0;
+  virtual const IntVector* IndicesOfQ4Patch(int i) const = 0;
+  virtual const IntVector* VertexOnBoundary(int color) const = 0;
+  virtual const IntVector* CellOnBoundary(int color) const = 0;
+  virtual const IntVector* LocalOnBoundary(int color) const = 0;
 
   virtual bool CellIsCurved(int iq) const { return false; }
 
   // MPI
-  virtual void send(int p) const {
+  virtual void send(int p) const
+  {
     std::cerr << "\"PatchMesh::send\" not written!" << std::endl;
     abort();
   }
-  virtual void recv(int p) {
+  virtual void recv(int p)
+  {
     std::cerr << "\"PatchMesh::recv\" not written!" << std::endl;
     abort();
   }

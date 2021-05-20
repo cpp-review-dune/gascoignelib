@@ -39,8 +39,9 @@ namespace Gascoigne {
 ///
 /////////////////////////////////////////////
 
-template <int DIM, int BDIM, class TRAFO, class BASE>
-class FiniteElement : public FemInterface {
+template<int DIM, int BDIM, class TRAFO, class BASE>
+class FiniteElement : public FemInterface
+{
 protected:
   TRAFO T;
   BASE B;
@@ -62,28 +63,30 @@ public:
   double J() const { return det; }
   double G() const { return T.G(); }
 
-  void x(Vertex<DIM> &v) const { v = T.x(); }
+  void x(Vertex<DIM>& v) const { v = T.x(); }
 
-  void mult_ad(Vertex<DIM> &p1, Vertex<DIM> &p2) const {
+  void mult_ad(Vertex<DIM>& p1, Vertex<DIM>& p2) const
+  {
     T.DTI().mult_ad(p1, p2);
   }
-  void normal(Vertex<DIM> &v) const { v = T.normal(); };
+  void normal(Vertex<DIM>& v) const { v = T.normal(); };
 
-  void point(const Vertex<DIM> &) const;
-  void point_T(const Vertex<DIM> &xi) const { T.point(xi); }
-  void point_boundary(int ie, const Vertex<BDIM> &s1) const;
+  void point(const Vertex<DIM>&) const;
+  void point_T(const Vertex<DIM>& xi) const { T.point(xi); }
+  void point_boundary(int ie, const Vertex<BDIM>& s1) const;
   /// depreciated
-  void ReInit(const Matrix &M) const {
+  void ReInit(const Matrix& M) const
+  {
     assert(M.n() == DIM);
     assert(M.m() == B.n());
     T.ReInit(M);
   }
 
-  void init_test_functions(TestFunction &Phi, double w, int i) const;
+  void init_test_functions(TestFunction& Phi, double w, int i) const;
 
-  void Anisotropy(DoubleMatrix &A) const;
+  void Anisotropy(DoubleMatrix& A) const;
 
-  void GetCoordinates(DoubleMatrix &A) const { T.GetCoordinates(A); }
+  void GetCoordinates(DoubleMatrix& A) const { T.GetCoordinates(A); }
 };
 
 #define FiniteElementQ12d                                                      \

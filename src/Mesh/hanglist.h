@@ -39,36 +39,43 @@ namespace Gascoigne {
 /// for EdgeArrays, i.e. permutated fixarrays
 //
 
-template <int N> class EdgeHash {
+template<int N>
+class EdgeHash
+{
 public:
-  int operator()(const EdgeArray<N> &h) const { return h.sum(); }
+  int operator()(const EdgeArray<N>& h) const { return h.sum(); }
 };
 
 #define HANGMAP HASHMAP<EdgeArray<N>, Hang, EdgeHash<N>>
 
 /*------------------------------------------------------*/
 
-template <int N> class HangList : public HANGMAP {
+template<int N>
+class HangList : public HANGMAP
+{
 protected:
 public:
   typedef typename HANGMAP::iterator iterator;
   typedef typename HANGMAP::const_iterator const_iterator;
 
-  void update(const std::vector<int> &);
-  void update(const std::vector<int> &, const std::vector<int> &);
-  void make_consistent(HangList<N> &);
-  void move(HangList<N> &src, iterator &p);
-  HangList<N> &operator=(const HangList<N> &A);
-  void BinWrite(std::ostream &s) const;
-  void BinRead(std::istream &s);
+  void update(const std::vector<int>&);
+  void update(const std::vector<int>&, const std::vector<int>&);
+  void make_consistent(HangList<N>&);
+  void move(HangList<N>& src, iterator& p);
+  HangList<N>& operator=(const HangList<N>& A);
+  void BinWrite(std::ostream& s) const;
+  void BinRead(std::istream& s);
 };
 
 /*------------------------------------------------------*/
 
-template <int N>
-std::ostream &operator<<(std::ostream &s, const HangList<N> &A);
+template<int N>
+std::ostream&
+operator<<(std::ostream& s, const HangList<N>& A);
 
-template <int N> std::istream &operator>>(std::istream &s, HangList<N> &A);
+template<int N>
+std::istream&
+operator>>(std::istream& s, HangList<N>& A);
 } // namespace Gascoigne
 
 /*------------------------------------------------------*/

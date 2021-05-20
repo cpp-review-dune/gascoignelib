@@ -47,7 +47,8 @@ namespace Gascoigne {
 
 /**************************************************/
 
-class BaseQ22d : public Base2d {
+class BaseQ22d : public Base2d
+{
 protected:
   std::array<double, NDOF1d> a, b, c;
 
@@ -59,25 +60,28 @@ public:
   BaseQ22d();
 
   int n() const { return NDOF; }
-  void point(const Vertex2d &s) const;
+  void point(const Vertex2d& s) const;
 
   double phi(int i) const { return N[i]; }
   double phi_x(int i) const { return DN[i].x(); }
   double phi_y(int i) const { return DN[i].y(); }
-  double phi_xx(int i) const {
+  double phi_xx(int i) const
+  {
     std::cerr << "\"BaseQ22d::phi_xx\" not written!" << std::endl;
     abort();
   }
-  double phi_yy(int i) const {
+  double phi_yy(int i) const
+  {
     std::cerr << "\"BaseQ22d::phi_yy\" not written!" << std::endl;
     abort();
   }
-  double phi_xy(int i) const {
+  double phi_xy(int i) const
+  {
     std::cerr << "\"BaseQ22d::phi_xy\" not written!" << std::endl;
     abort();
   }
 
-  const Vertex2d &phi_grad(int i) const { return DN[i]; }
+  const Vertex2d& phi_grad(int i) const { return DN[i]; }
 };
 } // namespace Gascoigne
 

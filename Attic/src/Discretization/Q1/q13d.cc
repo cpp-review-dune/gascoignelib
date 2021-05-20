@@ -41,11 +41,15 @@ using namespace std;
 /* ----------------------------------------- */
 
 namespace Gascoigne {
-Q13d::Q13d() : Q1() {}
+Q13d::Q13d()
+  : Q1()
+{}
 
 /* ----------------------------------------- */
 
-HNStructureInterface *Q13d::NewHNStructure() {
+HNStructureInterface*
+Q13d::NewHNStructure()
+{
   return new HangingNodes<3, 2>;
 
   //  return new HNStructureQ13d;
@@ -53,7 +57,9 @@ HNStructureInterface *Q13d::NewHNStructure() {
 
 /* ----------------------------------------- */
 
-void Q13d::BasicInit(const ParamFile *pf) {
+void
+Q13d::BasicInit(const ParamFile* pf)
+{
   assert(HN == NULL);
   HN = NewHNStructure();
   assert(HN);
@@ -76,19 +82,23 @@ void Q13d::BasicInit(const ParamFile *pf) {
 
 /* ----------------------------------------- */
 
-void Q13d::StrongDirichletVector(GlobalVector &u, const DirichletData &BF,
-                                 int col, const vector<int> &comp,
-                                 double d) const {
-  const GascoigneMesh *GMP = dynamic_cast<const GascoigneMesh *>(GetMesh());
+void
+Q13d::StrongDirichletVector(GlobalVector& u,
+                            const DirichletData& BF,
+                            int col,
+                            const vector<int>& comp,
+                            double d) const
+{
+  const GascoigneMesh* GMP = dynamic_cast<const GascoigneMesh*>(GetMesh());
   assert(GMP);
   DoubleVector ff(u.ncomp(), 0.);
-  const IntVector &bv = *GMP->VertexOnBoundary(col);
+  const IntVector& bv = *GMP->VertexOnBoundary(col);
 
   FemData QH;
 
   for (int i = 0; i < bv.size(); i++) {
     int index = bv[i];
-    const Vertex3d &v = GMP->vertex3d(index);
+    const Vertex3d& v = GMP->vertex3d(index);
 
     QH.clear();
     GlobalData::const_iterator p = GetDataContainer().GetNodeData().begin();
@@ -111,19 +121,23 @@ void Q13d::StrongDirichletVector(GlobalVector &u, const DirichletData &BF,
 
 /* ----------------------------------------- */
 
-void Q13d::StrongPeriodicVector(GlobalVector &u, const PeriodicData &BF,
-                                int col, const vector<int> &comp,
-                                double d) const {
-  const GascoigneMesh *GMP = dynamic_cast<const GascoigneMesh *>(GetMesh());
+void
+Q13d::StrongPeriodicVector(GlobalVector& u,
+                           const PeriodicData& BF,
+                           int col,
+                           const vector<int>& comp,
+                           double d) const
+{
+  const GascoigneMesh* GMP = dynamic_cast<const GascoigneMesh*>(GetMesh());
   assert(GMP);
   DoubleVector ff(u.ncomp(), 0.);
-  const IntVector &bv = *GMP->VertexOnBoundary(col);
+  const IntVector& bv = *GMP->VertexOnBoundary(col);
 
   FemData QH;
 
   for (int i = 0; i < bv.size(); i++) {
     int index = bv[i];
-    const Vertex3d &v = GMP->vertex3d(index);
+    const Vertex3d& v = GMP->vertex3d(index);
 
     QH.clear();
     GlobalData::const_iterator p = GetDataContainer().GetNodeData().begin();
@@ -146,7 +160,9 @@ void Q13d::StrongPeriodicVector(GlobalVector &u, const PeriodicData &BF,
 
 /* ----------------------------------------- */
 
-void Q13d::Interpolate(GlobalVector &u, const DomainInitialCondition &U) const {
+void
+Q13d::Interpolate(GlobalVector& u, const DomainInitialCondition& U) const
+{
   // Diese Abfrage macht keinen Sinn. U ist Referenz, wie soll das auf NULL
   // zeigen?
   //  if (&U==NULL) return;
@@ -161,9 +177,10 @@ void Q13d::Interpolate(GlobalVector &u, const DomainInitialCondition &U) const {
 
 /* ----------------------------------------- */
 
-void Q13d::InterpolateSolution(GlobalVector &u,
-                               const GlobalVector &uold) const {
-  const IntVector &vo2n = *GetMesh()->Vertexo2n();
+void
+Q13d::InterpolateSolution(GlobalVector& u, const GlobalVector& uold) const
+{
+  const IntVector& vo2n = *GetMesh()->Vertexo2n();
   nvector<bool> habschon(GetMesh()->nnodes(), 0);
 
   assert(vo2n.size() == uold.n());
@@ -246,7 +263,7 @@ void Q13d::InterpolateSolution(GlobalVector &u,
   w[5][3] = 24;
   w[5][4] = 26;
 
-  const GascoigneMesh *PM = dynamic_cast<const GascoigneMesh *>(GetMesh());
+  const GascoigneMesh* PM = dynamic_cast<const GascoigneMesh*>(GetMesh());
   assert(PM);
 
   for (int iq = 0; iq < PM->npatches(); ++iq) {
@@ -299,10 +316,12 @@ void Q13d::InterpolateSolution(GlobalVector &u,
 
 /* ----------------------------------------- */
 
-void Q13d::ConstructInterpolator(MgInterpolatorInterface *I,
-                                 const MeshTransferInterface *MT) {
+void
+Q13d::ConstructInterpolator(MgInterpolatorInterface* I,
+                            const MeshTransferInterface* MT)
+{
   {
-    MgInterpolatorNested *IP = dynamic_cast<MgInterpolatorNested *>(I);
+    MgInterpolatorNested* IP = dynamic_cast<MgInterpolatorNested*>(I);
     if (IP) {
       IP->BasicInit(MT);
       return;
@@ -310,23 +329,23 @@ void Q13d::ConstructInterpolator(MgInterpolatorInterface *I,
   }
   abort();
 
-  MgInterpolatorMatrix *IP = dynamic_cast<MgInterpolatorMatrix *>(I);
+  MgInterpolatorMatrix* IP = dynamic_cast<MgInterpolatorMatrix*>(I);
   assert(IP);
-  const GascoigneMeshTransfer *GT =
-      dynamic_cast<const GascoigneMeshTransfer *>(MT);
+  const GascoigneMeshTransfer* GT =
+    dynamic_cast<const GascoigneMeshTransfer*>(MT);
   assert(GT);
 
-  const map<int, std::array<int, 2>> &zweier = GT->GetZweier();
-  const map<int, std::array<int, 4>> &vierer = GT->GetVierer();
-  const map<int, std::array<int, 8>> &achter = GT->GetAchter();
-  const IntVector &c2f = GT->GetC2f();
+  const map<int, std::array<int, 2>>& zweier = GT->GetZweier();
+  const map<int, std::array<int, 4>>& vierer = GT->GetVierer();
+  const map<int, std::array<int, 8>>& achter = GT->GetAchter();
+  const IntVector& c2f = GT->GetC2f();
 
   int n = c2f.size() + zweier.size() + vierer.size() + achter.size();
   int nt =
-      c2f.size() + 2 * zweier.size() + 4 * vierer.size() + 8 * achter.size();
+    c2f.size() + 2 * zweier.size() + 4 * vierer.size() + 8 * achter.size();
 
-  ColumnStencil &ST = IP->GetStencil();
-  DoubleVector &val = IP->GetAlpha();
+  ColumnStencil& ST = IP->GetStencil();
+  DoubleVector& val = IP->GetAlpha();
 
   SparseStructure SS;
 
@@ -335,21 +354,24 @@ void Q13d::ConstructInterpolator(MgInterpolatorInterface *I,
     SS.build_add(i, c2f[i]);
   }
   for (map<int, std::array<int, 2>>::const_iterator p = zweier.begin();
-       p != zweier.end(); p++) {
+       p != zweier.end();
+       p++) {
     int il = p->first;
     std::array<int, 2> n2 = p->second;
     for (int ii = 0; ii < 2; ii++)
       SS.build_add(il, n2[ii]);
   }
   for (map<int, std::array<int, 4>>::const_iterator p = vierer.begin();
-       p != vierer.end(); p++) {
+       p != vierer.end();
+       p++) {
     int il = p->first;
     std::array<int, 4> n4 = p->second;
     for (int ii = 0; ii < 4; ii++)
       SS.build_add(il, n4[ii]);
   }
   for (map<int, std::array<int, 8>>::const_iterator p = achter.begin();
-       p != achter.end(); p++) {
+       p != achter.end();
+       p++) {
     int il = p->first;
     std::array<int, 8> n8 = p->second;
     for (int ii = 0; ii < 8; ii++)
@@ -367,14 +389,16 @@ void Q13d::ConstructInterpolator(MgInterpolatorInterface *I,
     val[ST.Find(c2f[i], i)] = 1.;
   }
   for (map<int, std::array<int, 2>>::const_iterator p = zweier.begin();
-       p != zweier.end(); p++) {
+       p != zweier.end();
+       p++) {
     int il = p->first;
     std::array<int, 2> n2 = p->second;
     val[ST.Find(il, n2[0])] = 0.5;
     val[ST.Find(il, n2[1])] = 0.5;
   }
   for (map<int, std::array<int, 4>>::const_iterator p = vierer.begin();
-       p != vierer.end(); p++) {
+       p != vierer.end();
+       p++) {
     int il = p->first;
     std::array<int, 4> n4 = p->second;
     val[ST.Find(il, n4[0])] = 0.25;
@@ -383,7 +407,8 @@ void Q13d::ConstructInterpolator(MgInterpolatorInterface *I,
     val[ST.Find(il, n4[3])] = 0.25;
   }
   for (map<int, std::array<int, 8>>::const_iterator p = achter.begin();
-       p != achter.end(); p++) {
+       p != achter.end();
+       p++) {
     int il = p->first;
     std::array<int, 8> n8 = p->second;
     for (int i = 0; i < 8; i++) {
@@ -394,16 +419,20 @@ void Q13d::ConstructInterpolator(MgInterpolatorInterface *I,
 
 /* ----------------------------------------- */
 
-void Q13d::EnergyEstimator(EdgeInfoContainerInterface &EIC, DoubleVector &eta,
-                           const GlobalVector &u, const Equation &EQ,
-                           const DomainRightHandSide *RHS,
-                           const std::string &s_energytype,
-                           double d_visc) const {
+void
+Q13d::EnergyEstimator(EdgeInfoContainerInterface& EIC,
+                      DoubleVector& eta,
+                      const GlobalVector& u,
+                      const Equation& EQ,
+                      const DomainRightHandSide* RHS,
+                      const std::string& s_energytype,
+                      double d_visc) const
+{
   EnergyEstimatorIntegrator<3> EEI(s_energytype, d_visc);
-  const HierarchicalMesh3d *HM =
-      dynamic_cast<const HierarchicalMesh3d *>(EIC.GetMesh());
+  const HierarchicalMesh3d* HM =
+    dynamic_cast<const HierarchicalMesh3d*>(EIC.GetMesh());
 
-  EdgeInfoContainer<3> &EICC = dynamic_cast<EdgeInfoContainer<3> &>(EIC);
+  EdgeInfoContainer<3>& EICC = dynamic_cast<EdgeInfoContainer<3>&>(EIC);
 
   EEI.BasicInit();
 
@@ -419,9 +448,12 @@ void Q13d::EnergyEstimator(EdgeInfoContainerInterface &EIC, DoubleVector &eta,
 
 /* ----------------------------------------- */
 
-void Q13d::EEJumps(EdgeInfoContainer<3> &EIC, const GlobalVector &u,
-                   const EnergyEstimatorIntegrator<3> &EEI,
-                   const HierarchicalMesh3d *HM) const {
+void
+Q13d::EEJumps(EdgeInfoContainer<3>& EIC,
+              const GlobalVector& u,
+              const EnergyEstimatorIntegrator<3>& EEI,
+              const HierarchicalMesh3d* HM) const
+{
   std::array<int, 4> vertexes;
   nmatrix<double> T;
 
@@ -438,9 +470,9 @@ void Q13d::EEJumps(EdgeInfoContainer<3> &EIC, const GlobalVector &u,
         int facenumber = HM->face_of_hex(iq, ile);
 
         if (EIC[facenumber] == NULL) {
-          const Edge &edge = HM->edge(facenumber);
+          const Edge& edge = HM->edge(facenumber);
           HM->HexLawOrder().globalvertices_of_face(
-              HM->hex(edge.master()), vertexes, edge.LocalMasterIndex());
+            HM->hex(edge.master()), vertexes, edge.LocalMasterIndex());
           EIC[facenumber] = new EdgeInfo<3>();
           EIC[facenumber]->BasicInit(&edge, u.ncomp(), vertexes);
         }
@@ -454,9 +486,12 @@ void Q13d::EEJumps(EdgeInfoContainer<3> &EIC, const GlobalVector &u,
 
 /* ----------------------------------------- */
 
-void Q13d::EEJumpNorm(EdgeInfoContainer<3> &EIC, DoubleVector &eta,
-                      const EnergyEstimatorIntegrator<3> &EEI,
-                      const HierarchicalMesh3d *HM) const {
+void
+Q13d::EEJumpNorm(EdgeInfoContainer<3>& EIC,
+                 DoubleVector& eta,
+                 const EnergyEstimatorIntegrator<3>& EEI,
+                 const HierarchicalMesh3d* HM) const
+{
   nmatrix<double> T;
 
   for (int iq = 0; iq < HM->ncells(); iq++) {
@@ -480,9 +515,13 @@ void Q13d::EEJumpNorm(EdgeInfoContainer<3> &EIC, DoubleVector &eta,
 
 /* ----------------------------------------- */
 
-void Q13d::EEResidual(DoubleVector &eta, const GlobalVector &u,
-                      const Equation &EQ, const DomainRightHandSide *RHS,
-                      const EnergyEstimatorIntegrator<3> &EEI) const {
+void
+Q13d::EEResidual(DoubleVector& eta,
+                 const GlobalVector& u,
+                 const Equation& EQ,
+                 const DomainRightHandSide* RHS,
+                 const EnergyEstimatorIntegrator<3>& EEI) const
+{
   nmatrix<double> T;
 
   GlobalToGlobalData();
@@ -505,7 +544,9 @@ void Q13d::EEResidual(DoubleVector &eta, const GlobalVector &u,
 
 /* ----------------------------------------- */
 
-int Q13d::GetCellNumber(const Vertex3d &p0, Vertex3d &p, int c0) const {
+int
+Q13d::GetCellNumber(const Vertex3d& p0, Vertex3d& p, int c0) const
+{
   int iq;
 
   for (iq = 0; iq < GetMesh()->ncells(); ++iq) {
@@ -552,7 +593,9 @@ int Q13d::GetCellNumber(const Vertex3d &p0, Vertex3d &p, int c0) const {
 
 /* ----------------------------------------- */
 
-void Q13d::VertexTransformation(const Vertex3d &p0, Vertex3d &p, int iq) const {
+void
+Q13d::VertexTransformation(const Vertex3d& p0, Vertex3d& p, int iq) const
+{
   nmatrix<double> T;
   Transformation(T, iq);
 

@@ -34,39 +34,48 @@
 
 namespace Gascoigne {
 
-class LaplaceData {
+class LaplaceData
+{
 public:
   double visc;
 
-  void BasicInit(const ParamFile &pf) {
+  void BasicInit(const ParamFile& pf)
+  {
     DataFormatHandler DFH;
     DFH.insert("visc", &visc, 1.);
     FileScanner FS(DFH, pf, "Equation");
   }
 };
 
-template <int DIM> class Laplace : public virtual Equation {
+template<int DIM>
+class Laplace : public virtual Equation
+{
 
 protected:
   LaplaceData data;
 
 public:
-  Laplace(const LaplaceData &PD) : data(PD) {}
+  Laplace(const LaplaceData& PD)
+    : data(PD)
+  {}
 
-  Laplace<DIM> *createNew() const { return new Laplace<DIM>(data); }
+  Laplace<DIM>* createNew() const { return new Laplace<DIM>(data); }
 
   std::string GetName() const { return "Laplace"; }
   int GetNcomp() const { return 1; }
-  void point(double h, const FemFunction &U, const Vertex2d &v) const {}
+  void point(double h, const FemFunction& U, const Vertex2d& v) const {}
 
-  void Form(VectorIterator b, const FemFunction &U,
-            const TestFunction &N) const {
+  void Form(VectorIterator b, const FemFunction& U, const TestFunction& N) const
+  {
     for (int i = 0; i < DIM; ++i)
       b[0] += data.visc * U[0][i + 1] * N[i + 1];
   }
 
-  void Matrix(EntryMatrix &A, const FemFunction &U, const TestFunction &M,
-              const TestFunction &N) const {
+  void Matrix(EntryMatrix& A,
+              const FemFunction& U,
+              const TestFunction& M,
+              const TestFunction& N) const
+  {
     for (int i = 0; i < DIM; ++i)
       A(0, 0) += data.visc * M[i + 1] * N[i + 1];
   }

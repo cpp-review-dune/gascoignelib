@@ -30,22 +30,26 @@
 /*-----------------------------------------*/
 
 namespace Gascoigne {
-template <size_t N> class EdgeArray : public std::array<int, N> {
+template<size_t N>
+class EdgeArray : public std::array<int, N>
+{
 public:
-  EdgeArray<N>(const std::array<int, N> &e);
+  EdgeArray<N>(const std::array<int, N>& e);
 
-  bool operator==(const std::array<int, N> &e) const;
+  bool operator==(const std::array<int, N>& e) const;
 
   int sum() const;
 
-  void BinWrite(std::ostream &s) const {
+  void BinWrite(std::ostream& s) const
+  {
     int sizeT = sizeof(int);
-    s.write(reinterpret_cast<const char *>(this->data()), sizeT * N);
+    s.write(reinterpret_cast<const char*>(this->data()), sizeT * N);
   }
 
-  void BinRead(std::istream &s) {
+  void BinRead(std::istream& s)
+  {
     int sizeT = sizeof(int);
-    s.read(reinterpret_cast<char *>(this->data()), sizeT * N);
+    s.read(reinterpret_cast<char*>(this->data()), sizeT * N);
   }
 };
 } // namespace Gascoigne

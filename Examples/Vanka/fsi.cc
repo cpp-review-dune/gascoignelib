@@ -6,7 +6,9 @@ using namespace std;
 /*-----------------------------------------*/
 
 namespace Gascoigne {
-template <int DIM> EQ<DIM>::EQ(const ParamFile *pf) {
+template<int DIM>
+EQ<DIM>::EQ(const ParamFile* pf)
+{
   DataFormatHandler DFH;
   DFH.insert("mu", &mu, 0.0);
   DFH.insert("lambda", &lambda, 0.0);
@@ -15,9 +17,12 @@ template <int DIM> EQ<DIM>::EQ(const ParamFile *pf) {
   assert(mu > 0);
 }
 
-template <int DIM>
-void EQ<DIM>::Form(VectorIterator b, const FemFunction &U,
-                   const TestFunction &N) const {
+template<int DIM>
+void
+EQ<DIM>::Form(VectorIterator b,
+              const FemFunction& U,
+              const TestFunction& N) const
+{
   b[1] += N.m();
   for (int i = 0; i < DIM; ++i)
     for (int j = 0; j < DIM; ++j) {
@@ -26,9 +31,13 @@ void EQ<DIM>::Form(VectorIterator b, const FemFunction &U,
     }
 }
 
-template <int DIM>
-void EQ<DIM>::Matrix(EntryMatrix &A, const FemFunction &U,
-                     const TestFunction &M, const TestFunction &N) const {
+template<int DIM>
+void
+EQ<DIM>::Matrix(EntryMatrix& A,
+                const FemFunction& U,
+                const TestFunction& M,
+                const TestFunction& N) const
+{
   for (int i = 0; i < DIM; ++i)
     for (int j = 0; j < DIM; ++j) {
       A(i, i) += mu * M[j + 1] * N[j + 1];

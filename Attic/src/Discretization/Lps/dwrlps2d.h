@@ -29,15 +29,20 @@
 namespace Gascoigne {
 /*-------------------------------------------------*/
 
-class DwrLps2d : public Q1Lps2d {
+class DwrLps2d : public Q1Lps2d
+{
 protected:
 public:
-  DwrLps2d() : Q1Lps2d() {}
+  DwrLps2d()
+    : Q1Lps2d()
+  {}
   ~DwrLps2d() {}
 
   std::string GetName() const { return "DwrLps2d"; }
-  void Form(GlobalVector &f, const GlobalVector &u,
-            const ProblemDescriptorInterface &PD, double d) const;
+  void Form(GlobalVector& f,
+            const GlobalVector& u,
+            const ProblemDescriptorInterface& PD,
+            double d) const;
 };
 } // namespace Gascoigne
 /*-------------------------------------------------*/

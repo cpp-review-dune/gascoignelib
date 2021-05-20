@@ -33,7 +33,8 @@
 /*------------------------------------------*/
 
 namespace Gascoigne {
-class Index {
+class Index
+{
 protected:
   typedef std::map<int, int> IntMap;
 
@@ -46,9 +47,9 @@ protected:
   // Local To Global
   ////////////////
 
-  const IntVector &Vertexl2g() const { return vl2g; }
-  const IntVector &Edgel2g() const { return el2g; }
-  IntVector &Edgel2g() { return el2g; }
+  const IntVector& Vertexl2g() const { return vl2g; }
+  const IntVector& Edgel2g() const { return el2g; }
+  IntVector& Edgel2g() { return el2g; }
 
   int Edgel2g(int i) const { return el2g[i]; }
 
@@ -58,25 +59,27 @@ public:
   ////////////////
 
   Index();
-  Index(const Index &I);
-  Index &operator=(const Index &I);
+  Index(const Index& I);
+  Index& operator=(const Index& I);
 
   int Vertexl2g(int i) const { return vl2g[i]; }
 
-  IntVector &Quadl2g() { return ql2g; }
-  IntVector &Hexl2g() { return hl2g; }
-  const IntVector &Hexl2g() const { return hl2g; }
-  const IntVector &Quadl2g() const { return ql2g; }
-  int Quadl2g(int i) const {
+  IntVector& Quadl2g() { return ql2g; }
+  IntVector& Hexl2g() { return hl2g; }
+  const IntVector& Hexl2g() const { return hl2g; }
+  const IntVector& Quadl2g() const { return ql2g; }
+  int Quadl2g(int i) const
+  {
     assert(i < ql2g.size());
     return ql2g[i];
   }
-  int Hexl2g(int i) const {
+  int Hexl2g(int i) const
+  {
     assert(i < hl2g.size());
     return hl2g[i];
   }
-  const IntMap &Quadg2l() const { return qg2l; }
-  const IntMap &Hexg2l() const { return hg2l; }
+  const IntMap& Quadg2l() const { return qg2l; }
+  const IntMap& Hexg2l() const { return hg2l; }
 
   ////////////////
   // Sizes
@@ -96,11 +99,12 @@ public:
   // Global To Local
   ////////////////
 
-  const IntMap &Vertexg2l() const { return vg2l; }
-  const IntMap &Edgeg2l() const { return eg2l; }
-  IntMap &Edgeg2l() { return eg2l; }
+  const IntMap& Vertexg2l() const { return vg2l; }
+  const IntMap& Edgeg2l() const { return eg2l; }
+  IntMap& Edgeg2l() { return eg2l; }
 
-  int Quadg2l(int i) const {
+  int Quadg2l(int i) const
+  {
     std::map<int, int>::const_iterator ip = qg2l.find(i);
     if (ip == qg2l.end()) {
       std::cerr << "Index:: Quadg2l" << std::endl;
@@ -110,7 +114,8 @@ public:
     }
     return ip->second;
   }
-  int Hexg2l(int i) const {
+  int Hexg2l(int i) const
+  {
     std::map<int, int>::const_iterator ip = hg2l.find(i);
     if (ip == hg2l.end()) {
       std::cerr << "Index:: Hexg2l" << std::endl;
@@ -120,7 +125,8 @@ public:
     }
     return ip->second;
   }
-  int Vertexg2l(int i) const {
+  int Vertexg2l(int i) const
+  {
     std::map<int, int>::const_iterator ip = vg2l.find(i);
     if (ip == vg2l.end()) {
       std::cerr << "Index:: Vertexg2l" << std::endl;
@@ -130,7 +136,8 @@ public:
     }
     return ip->second;
   }
-  int Edgeg2l(int i) const {
+  int Edgeg2l(int i) const
+  {
     std::map<int, int>::const_iterator ip = eg2l.find(i);
     if (ip == eg2l.end()) {
       std::cerr << "Index:: Edgeg2l" << std::endl;
@@ -147,35 +154,39 @@ public:
 
   // gibt -2 zurueck, falls globaler vertex nicht in levelmesh
 
-  int Vertexg2lCheck(int i) const {
+  int Vertexg2lCheck(int i) const
+  {
     IntMap::const_iterator ip = vg2l.find(i);
     if (ip == vg2l.end())
       return -2;
     return ip->second;
   }
-  int Edgeg2lCheck(int i) const {
+  int Edgeg2lCheck(int i) const
+  {
     IntMap::const_iterator ip = eg2l.find(i);
     if (ip == eg2l.end())
       return -2;
     return ip->second;
   }
-  int Quadg2lCheck(int i) const {
+  int Quadg2lCheck(int i) const
+  {
     IntMap::const_iterator ip = qg2l.find(i);
     if (ip == qg2l.end())
       return -2;
     return ip->second;
   }
-  int Hexg2lCheck(int i) const {
+  int Hexg2lCheck(int i) const
+  {
     IntMap::const_iterator ip = hg2l.find(i);
     if (ip == hg2l.end())
       return -2;
     return ip->second;
   }
 
-  friend std::ostream &operator<<(std::ostream &os, const Index &I);
+  friend std::ostream& operator<<(std::ostream& os, const Index& I);
 
-  void InitNodes(const IntSet &nodes);
-  void InitEdges(const IntSet &edges);
+  void InitNodes(const IntSet& nodes);
+  void InitEdges(const IntSet& edges);
   void InitQuads();
   void InitHexs();
 };

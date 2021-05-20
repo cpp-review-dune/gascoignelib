@@ -40,15 +40,23 @@ using namespace std;
 /* ----------------------------------------- */
 
 namespace Gascoigne {
-Q12d::Q12d() : Q1() {}
+Q12d::Q12d()
+  : Q1()
+{}
 
 /* ----------------------------------------- */
 
-HNStructureInterface *Q12d::NewHNStructure() { return new HNStructureQ12d; }
+HNStructureInterface*
+Q12d::NewHNStructure()
+{
+  return new HNStructureQ12d;
+}
 
 /* ----------------------------------------- */
 
-void Q12d::BasicInit(const ParamFile *pf) {
+void
+Q12d::BasicInit(const ParamFile* pf)
+{
   assert(HN == NULL);
   HN = NewHNStructure();
   assert(HN);
@@ -71,13 +79,17 @@ void Q12d::BasicInit(const ParamFile *pf) {
 
 /* ----------------------------------------- */
 
-void Q12d::StrongDirichletVector(GlobalVector &u, const DirichletData &BF,
-                                 int col, const vector<int> &comp,
-                                 double d) const {
-  const GascoigneMesh *GMP = dynamic_cast<const GascoigneMesh *>(GetMesh());
+void
+Q12d::StrongDirichletVector(GlobalVector& u,
+                            const DirichletData& BF,
+                            int col,
+                            const vector<int>& comp,
+                            double d) const
+{
+  const GascoigneMesh* GMP = dynamic_cast<const GascoigneMesh*>(GetMesh());
   assert(GMP);
   DoubleVector ff(u.ncomp(), 0.);
-  const IntVector &bv = *GMP->VertexOnBoundary(col);
+  const IntVector& bv = *GMP->VertexOnBoundary(col);
 
   FemData QH;
 
@@ -109,7 +121,7 @@ void Q12d::StrongDirichletVector(GlobalVector &u, const DirichletData &BF,
 
     BF.SetFemData(QH);
 
-    const Vertex2d &v = GMP->vertex2d(index);
+    const Vertex2d& v = GMP->vertex2d(index);
 
     BF(ff, v, col);
     for (int iii = 0; iii < comp.size(); iii++) {
@@ -121,13 +133,17 @@ void Q12d::StrongDirichletVector(GlobalVector &u, const DirichletData &BF,
 
 /* ----------------------------------------- */
 
-void Q12d::StrongPeriodicVector(GlobalVector &u, const PeriodicData &BF,
-                                int col, const vector<int> &comp,
-                                double d) const {
-  const GascoigneMesh *GMP = dynamic_cast<const GascoigneMesh *>(GetMesh());
+void
+Q12d::StrongPeriodicVector(GlobalVector& u,
+                           const PeriodicData& BF,
+                           int col,
+                           const vector<int>& comp,
+                           double d) const
+{
+  const GascoigneMesh* GMP = dynamic_cast<const GascoigneMesh*>(GetMesh());
   assert(GMP);
   DoubleVector ff(u.ncomp(), 0.);
-  const IntVector &bv = *GMP->VertexOnBoundary(col);
+  const IntVector& bv = *GMP->VertexOnBoundary(col);
 
   FemData QH;
   GlobalToGlobalData();
@@ -159,7 +175,7 @@ void Q12d::StrongPeriodicVector(GlobalVector &u, const PeriodicData &BF,
 
     BF.SetFemData(QH);
 
-    const Vertex2d &v = GMP->vertex2d(index);
+    const Vertex2d& v = GMP->vertex2d(index);
 
     BF(ff, v, col);
     for (int iii = 0; iii < comp.size(); iii++) {
@@ -171,7 +187,9 @@ void Q12d::StrongPeriodicVector(GlobalVector &u, const PeriodicData &BF,
 
 /* ----------------------------------------- */
 
-void Q12d::Interpolate(GlobalVector &u, const DomainInitialCondition &U) const {
+void
+Q12d::Interpolate(GlobalVector& u, const DomainInitialCondition& U) const
+{
   // Diese Abfrage macht keinen Sinn. U ist Referenz, wie soll das auf NULL
   // zeigen?
   //  if (&U==NULL) return;
@@ -185,8 +203,10 @@ void Q12d::Interpolate(GlobalVector &u, const DomainInitialCondition &U) const {
 }
 /* ----------------------------------------- */
 
-void Q12d::InterpolateDirac(GlobalVector &u, const GlobalVector &uold) const {
-  const IntVector &vo2n = *GetMesh()->Vertexo2n();
+void
+Q12d::InterpolateDirac(GlobalVector& u, const GlobalVector& uold) const
+{
+  const IntVector& vo2n = *GetMesh()->Vertexo2n();
 
   assert(vo2n.size() == uold.n());
   assert(GetMesh()->nnodes() == u.n());
@@ -202,9 +222,10 @@ void Q12d::InterpolateDirac(GlobalVector &u, const GlobalVector &uold) const {
 }
 /* ----------------------------------------- */
 
-void Q12d::InterpolateSolution(GlobalVector &u,
-                               const GlobalVector &uold) const {
-  const IntVector &vo2n = *GetMesh()->Vertexo2n();
+void
+Q12d::InterpolateSolution(GlobalVector& u, const GlobalVector& uold) const
+{
+  const IntVector& vo2n = *GetMesh()->Vertexo2n();
   nvector<bool> habschon(GetMesh()->nnodes(), 0);
 
   assert(vo2n.size() == uold.n());
@@ -233,7 +254,7 @@ void Q12d::InterpolateSolution(GlobalVector &u,
   nodes[3][1] = 6;
   nodes[3][2] = 8;
 
-  const GascoigneMesh *PM = dynamic_cast<const GascoigneMesh *>(GetMesh());
+  const GascoigneMesh* PM = dynamic_cast<const GascoigneMesh*>(GetMesh());
   assert(PM);
 
   for (int iq = 0; iq < PM->npatches(); ++iq) {
@@ -264,10 +285,12 @@ void Q12d::InterpolateSolution(GlobalVector &u,
 
 /* ----------------------------------------- */
 
-void Q12d::ConstructInterpolator(MgInterpolatorInterface *I,
-                                 const MeshTransferInterface *MT) {
+void
+Q12d::ConstructInterpolator(MgInterpolatorInterface* I,
+                            const MeshTransferInterface* MT)
+{
   {
-    MgInterpolatorNested *IP = dynamic_cast<MgInterpolatorNested *>(I);
+    MgInterpolatorNested* IP = dynamic_cast<MgInterpolatorNested*>(I);
     if (IP) {
       IP->BasicInit(MT);
       return;
@@ -275,23 +298,23 @@ void Q12d::ConstructInterpolator(MgInterpolatorInterface *I,
   }
   abort();
 
-  MgInterpolatorMatrix *IP = dynamic_cast<MgInterpolatorMatrix *>(I);
+  MgInterpolatorMatrix* IP = dynamic_cast<MgInterpolatorMatrix*>(I);
   assert(IP);
-  const GascoigneMeshTransfer *GT =
-      dynamic_cast<const GascoigneMeshTransfer *>(MT);
+  const GascoigneMeshTransfer* GT =
+    dynamic_cast<const GascoigneMeshTransfer*>(MT);
   assert(GT);
 
-  const map<int, std::array<int, 2>> &zweier = GT->GetZweier();
-  const map<int, std::array<int, 4>> &vierer = GT->GetVierer();
-  const map<int, std::array<int, 8>> &achter = GT->GetAchter();
-  const IntVector &c2f = GT->GetC2f();
+  const map<int, std::array<int, 2>>& zweier = GT->GetZweier();
+  const map<int, std::array<int, 4>>& vierer = GT->GetVierer();
+  const map<int, std::array<int, 8>>& achter = GT->GetAchter();
+  const IntVector& c2f = GT->GetC2f();
 
   int n = c2f.size() + zweier.size() + vierer.size() + achter.size();
   int nt =
-      c2f.size() + 2 * zweier.size() + 4 * vierer.size() + 8 * achter.size();
+    c2f.size() + 2 * zweier.size() + 4 * vierer.size() + 8 * achter.size();
 
-  ColumnStencil &ST = IP->GetStencil();
-  DoubleVector &val = IP->GetAlpha();
+  ColumnStencil& ST = IP->GetStencil();
+  DoubleVector& val = IP->GetAlpha();
 
   SparseStructure SS;
 
@@ -302,21 +325,24 @@ void Q12d::ConstructInterpolator(MgInterpolatorInterface *I,
     SS.build_add(c2f[i], i);
   }
   for (map<int, std::array<int, 2>>::const_iterator p = zweier.begin();
-       p != zweier.end(); p++) {
+       p != zweier.end();
+       p++) {
     int il = p->first;
     std::array<int, 2> n2 = p->second;
     for (int ii = 0; ii < 2; ii++)
       SS.build_add(il, n2[ii]);
   }
   for (map<int, std::array<int, 4>>::const_iterator p = vierer.begin();
-       p != vierer.end(); p++) {
+       p != vierer.end();
+       p++) {
     int il = p->first;
     std::array<int, 4> n4 = p->second;
     for (int ii = 0; ii < 4; ii++)
       SS.build_add(il, n4[ii]);
   }
   for (map<int, std::array<int, 8>>::const_iterator p = achter.begin();
-       p != achter.end(); p++) {
+       p != achter.end();
+       p++) {
     int il = p->first;
     std::array<int, 8> n8 = p->second;
     for (int ii = 0; ii < 8; ii++)
@@ -338,14 +364,16 @@ void Q12d::ConstructInterpolator(MgInterpolatorInterface *I,
     val[pos] = 1.;
   }
   for (map<int, std::array<int, 2>>::const_iterator p = zweier.begin();
-       p != zweier.end(); p++) {
+       p != zweier.end();
+       p++) {
     int il = p->first;
     std::array<int, 2> n2 = p->second;
     val[ST.Find(il, n2[0])] = 0.5;
     val[ST.Find(il, n2[1])] = 0.5;
   }
   for (map<int, std::array<int, 4>>::const_iterator p = vierer.begin();
-       p != vierer.end(); p++) {
+       p != vierer.end();
+       p++) {
     int il = p->first;
     std::array<int, 4> n4 = p->second;
     val[ST.Find(il, n4[0])] = 0.25;
@@ -354,7 +382,8 @@ void Q12d::ConstructInterpolator(MgInterpolatorInterface *I,
     val[ST.Find(il, n4[3])] = 0.25;
   }
   for (map<int, std::array<int, 8>>::const_iterator p = achter.begin();
-       p != achter.end(); p++) {
+       p != achter.end();
+       p++) {
     int il = p->first;
     std::array<int, 8> n8 = p->second;
     for (int i = 0; i < 8; i++) {
@@ -365,18 +394,22 @@ void Q12d::ConstructInterpolator(MgInterpolatorInterface *I,
 
 /* ----------------------------------------- */
 
-void Q12d::EnergyEstimator(EdgeInfoContainerInterface &EIC, DoubleVector &eta,
-                           const GlobalVector &u, const Equation &EQ,
-                           const DomainRightHandSide *RHS,
-                           const std::string &s_energytype,
-                           double d_visc) const {
+void
+Q12d::EnergyEstimator(EdgeInfoContainerInterface& EIC,
+                      DoubleVector& eta,
+                      const GlobalVector& u,
+                      const Equation& EQ,
+                      const DomainRightHandSide* RHS,
+                      const std::string& s_energytype,
+                      double d_visc) const
+{
   // RHS may be NULL
   //
   EnergyEstimatorIntegrator<2> EEI(s_energytype, d_visc);
-  const HierarchicalMesh2d *HM =
-      dynamic_cast<const HierarchicalMesh2d *>(EIC.GetMesh());
+  const HierarchicalMesh2d* HM =
+    dynamic_cast<const HierarchicalMesh2d*>(EIC.GetMesh());
 
-  EdgeInfoContainer<2> &EICC = dynamic_cast<EdgeInfoContainer<2> &>(EIC);
+  EdgeInfoContainer<2>& EICC = dynamic_cast<EdgeInfoContainer<2>&>(EIC);
 
   EEI.BasicInit();
 
@@ -392,9 +425,12 @@ void Q12d::EnergyEstimator(EdgeInfoContainerInterface &EIC, DoubleVector &eta,
 
 /* ----------------------------------------- */
 
-void Q12d::EEJumps(EdgeInfoContainer<2> &EIC, const GlobalVector &u,
-                   const EnergyEstimatorIntegrator<2> &EEI,
-                   const HierarchicalMesh2d *HM) const {
+void
+Q12d::EEJumps(EdgeInfoContainer<2>& EIC,
+              const GlobalVector& u,
+              const EnergyEstimatorIntegrator<2>& EEI,
+              const HierarchicalMesh2d* HM) const
+{
   std::array<int, 2> vertexes;
   nmatrix<double> T;
 
@@ -411,9 +447,9 @@ void Q12d::EEJumps(EdgeInfoContainer<2> &EIC, const GlobalVector &u,
         int edgenumber = HM->edge_of_quad(iq, ile);
 
         if (EIC[edgenumber] == NULL) {
-          const Edge &edge = HM->edge(edgenumber);
+          const Edge& edge = HM->edge(edgenumber);
           HM->QuadLawOrder().globalvertices_of_edge(
-              HM->quad(edge.master()), vertexes, edge.LocalMasterIndex());
+            HM->quad(edge.master()), vertexes, edge.LocalMasterIndex());
           EIC[edgenumber] = new EdgeInfo<2>();
           EIC[edgenumber]->BasicInit(&edge, u.ncomp(), vertexes);
         }
@@ -426,9 +462,12 @@ void Q12d::EEJumps(EdgeInfoContainer<2> &EIC, const GlobalVector &u,
 
 /* ----------------------------------------- */
 
-void Q12d::EEJumpNorm(EdgeInfoContainer<2> &EIC, DoubleVector &eta,
-                      const EnergyEstimatorIntegrator<2> &EEI,
-                      const HierarchicalMesh2d *HM) const {
+void
+Q12d::EEJumpNorm(EdgeInfoContainer<2>& EIC,
+                 DoubleVector& eta,
+                 const EnergyEstimatorIntegrator<2>& EEI,
+                 const HierarchicalMesh2d* HM) const
+{
   nmatrix<double> T;
 
   for (int iq = 0; iq < HM->ncells(); iq++) {
@@ -454,9 +493,13 @@ void Q12d::EEJumpNorm(EdgeInfoContainer<2> &EIC, DoubleVector &eta,
 
 /* ----------------------------------------- */
 
-void Q12d::EEResidual(DoubleVector &eta, const GlobalVector &u,
-                      const Equation &EQ, const DomainRightHandSide *RHS,
-                      const EnergyEstimatorIntegrator<2> &EEI) const {
+void
+Q12d::EEResidual(DoubleVector& eta,
+                 const GlobalVector& u,
+                 const Equation& EQ,
+                 const DomainRightHandSide* RHS,
+                 const EnergyEstimatorIntegrator<2>& EEI) const
+{
   nmatrix<double> T;
 
   GlobalToGlobalData();
@@ -485,7 +528,9 @@ void Q12d::EEResidual(DoubleVector &eta, const GlobalVector &u,
 
 /* ----------------------------------------- */
 
-int Q12d::GetCellNumber(const Vertex2d &p0, Vertex2d &p, int c0) const {
+int
+Q12d::GetCellNumber(const Vertex2d& p0, Vertex2d& p, int c0) const
+{
   if (c0 != 0) {
     VertexTransformation(p0, p, c0, false);
 
@@ -538,8 +583,12 @@ int Q12d::GetCellNumber(const Vertex2d &p0, Vertex2d &p, int c0) const {
 
 /* ----------------------------------------- */
 
-void Q12d::VertexTransformation(const Vertex2d &p0, Vertex2d &p, int iq,
-                                bool abortiffail) const {
+void
+Q12d::VertexTransformation(const Vertex2d& p0,
+                           Vertex2d& p,
+                           int iq,
+                           bool abortiffail) const
+{
   nmatrix<double> T;
   Transformation(T, iq);
 
@@ -576,7 +625,9 @@ void Q12d::VertexTransformation(const Vertex2d &p0, Vertex2d &p, int iq,
 
 /* ----------------------------------------- */
 
-void Q12d::RhsCurve(GlobalVector &F, const Curve &C, int comp, int N) const {
+void
+Q12d::RhsCurve(GlobalVector& F, const Curve& C, int comp, int N) const
+{
   double h = 1. / N;       // Schrittweite (im Parameterbereich der Kurve)
   double t0 = 0., t1;      // Zeitpunkte   (             "               )
   Vertex2d x0 = C(t0), x1; // zu t0, t1 korrespondierende Punkte auf der Kurve
@@ -606,8 +657,15 @@ void Q12d::RhsCurve(GlobalVector &F, const Curve &C, int comp, int N) const {
     Transformation(T, c0);
     GetFem()->ReInit(T);
 
-    GetIntegrator()->RhsCurve(__F, *GetFem(), xr0, xr1, fabs(t1 - t0),
-                              C.NormD(t0), C.NormD(t1), C.GetNcomp(), comp);
+    GetIntegrator()->RhsCurve(__F,
+                              *GetFem(),
+                              xr0,
+                              xr1,
+                              fabs(t1 - t0),
+                              C.NormD(t0),
+                              C.NormD(t1),
+                              C.GetNcomp(),
+                              comp);
     BasicDiscretization::LocalToGlobal(F, __F, c0, 1.);
 
     c0 = c1;
@@ -619,7 +677,9 @@ void Q12d::RhsCurve(GlobalVector &F, const Curve &C, int comp, int N) const {
 
 /* ----------------------------------------- */
 
-Vertex2d Q12d::randpunkt(const Curve &C, double t0, double &t1, int &cc) const {
+Vertex2d
+Q12d::randpunkt(const Curve& C, double t0, double& t1, int& cc) const
+{
   Vertex2d xr0, xr1, x_rand, abstand;
   int c0, c1, c_rand;
 

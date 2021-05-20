@@ -40,50 +40,60 @@ namespace Gascoigne {
 
 /*----------------------------------------------*/
 
-class Q1LpsStab : public PatchDiscretization {
+class Q1LpsStab : public PatchDiscretization
+{
 protected:
-  const HNStructureInterface *HN;
+  const HNStructureInterface* HN;
 
-  nvector<int> GetLocalIndices(int iq) const {
+  nvector<int> GetLocalIndices(int iq) const
+  {
     return *GetMesh()->IndicesOfPatch(iq);
   }
-  void LocalToGlobal(MatrixInterface &A, EntryMatrix &E, int iq,
+  void LocalToGlobal(MatrixInterface& A,
+                     EntryMatrix& E,
+                     int iq,
                      double s) const;
 
 public:
-  Q1LpsStab() : PatchDiscretization(){};
+  Q1LpsStab()
+    : PatchDiscretization(){};
   int ndofs() const { return GetMesh()->nnodes(); }
   int nelements() const { return GetMesh()->ncells(); }
 
-  void BasicInit(const ParamFile *paramfile) {
+  void BasicInit(const ParamFile* paramfile)
+  {
     std::cerr << "Q1lpsstab.h - 2 versions of Basic Init??" << std::endl;
     abort();
   }
 
-  virtual void BasicInit(const ParamFile *paramfile,
-                         const HNStructureInterface *);
+  virtual void BasicInit(const ParamFile* paramfile,
+                         const HNStructureInterface*);
 };
 
 /*----------------------------------------------*/
 
-class Q1LpsStab2d : public Q1LpsStab {
+class Q1LpsStab2d : public Q1LpsStab
+{
 protected:
-  void Transformation(FemInterface::Matrix &T, int iq) const;
+  void Transformation(FemInterface::Matrix& T, int iq) const;
 
 public:
-  Q1LpsStab2d() : Q1LpsStab(){};
-  void BasicInit(const ParamFile *paramfile, const HNStructureInterface *);
+  Q1LpsStab2d()
+    : Q1LpsStab(){};
+  void BasicInit(const ParamFile* paramfile, const HNStructureInterface*);
 };
 
 /*----------------------------------------------*/
 
-class Q1LpsStab3d : public Q1LpsStab {
+class Q1LpsStab3d : public Q1LpsStab
+{
 protected:
-  void Transformation(FemInterface::Matrix &T, int iq) const;
+  void Transformation(FemInterface::Matrix& T, int iq) const;
 
 public:
-  Q1LpsStab3d() : Q1LpsStab(){};
-  void BasicInit(const ParamFile *paramfile, const HNStructureInterface *);
+  Q1LpsStab3d()
+    : Q1LpsStab(){};
+  void BasicInit(const ParamFile* paramfile, const HNStructureInterface*);
 };
 
 /*----------------------------------------------*/

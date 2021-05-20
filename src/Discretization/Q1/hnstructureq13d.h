@@ -30,23 +30,24 @@
 /*-----------------------------------------*/
 
 namespace Gascoigne {
-class HNStructureQ13d : public HNStructureQ12d {
+class HNStructureQ13d : public HNStructureQ12d
+{
 protected:
   typedef std::array<int, 9> FaceVector;
 
   typedef std::map<int, FaceVector>::iterator fiterator;
   typedef std::map<int, FaceVector>::const_iterator const_fiterator;
 
-  const std::map<int, FaceVector> *faces;
+  const std::map<int, FaceVector>* faces;
 
   std::array<std::array<int, 3>, 12> lnoe;
   std::array<std::array<int, 5>, 6> lnop;
 
-  void CondenseHanging2er(IntVector &indices) const;
-  void CondenseHanging4er(IntVector &indices) const;
+  void CondenseHanging2er(IntVector& indices) const;
+  void CondenseHanging4er(IntVector& indices) const;
 
-  void CondenseHanging2er(EntryMatrix &E, IntVector &indices) const;
-  void CondenseHanging4er(EntryMatrix &E, IntVector &indices) const;
+  void CondenseHanging2er(EntryMatrix& E, IntVector& indices) const;
+  void CondenseHanging4er(EntryMatrix& E, IntVector& indices) const;
 
   std::array<int, 4> GetHangingFace(int i) const;
   std::array<int, 2> GetHangingEdge(int i) const;
@@ -57,22 +58,22 @@ public:
 
   int nhnodes() const { return edges->size() + faces->size(); }
 
-  void ReInit(const GascoigneMesh *m);
+  void ReInit(const GascoigneMesh* m);
   int hanging(int i) const;
 
-  void MatrixDiag(int ncomp, MatrixInterface &A) const;
-  void SparseStructureDiag(SparseStructure *A) const;
+  void MatrixDiag(int ncomp, MatrixInterface& A) const;
+  void SparseStructureDiag(SparseStructure* A) const;
 
-  void Average(GlobalVector &u) const;
-  void Distribute(GlobalVector &u) const;
-  void Zero(GlobalVector &u) const;
-  bool ZeroCheck(const GlobalVector &u) const;
+  void Average(GlobalVector& u) const;
+  void Distribute(GlobalVector& u) const;
+  void Zero(GlobalVector& u) const;
+  bool ZeroCheck(const GlobalVector& u) const;
 
-  void Couplings(IntVector &indices) const;
+  void Couplings(IntVector& indices) const;
 
-  void CondenseHanging(IntVector &indices) const;
-  void CondenseHanging(EntryMatrix &, IntVector &) const;
-  void CondenseHangingPatch(EntryMatrix &E, IntVector &indices) const;
+  void CondenseHanging(IntVector& indices) const;
+  void CondenseHanging(EntryMatrix&, IntVector&) const;
+  void CondenseHangingPatch(EntryMatrix& E, IntVector& indices) const;
 };
 } // namespace Gascoigne
 

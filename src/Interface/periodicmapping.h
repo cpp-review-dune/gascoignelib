@@ -46,14 +46,17 @@ namespace Gascoigne {
 ///
 //////////////////////////////////////////////
 
-class PeriodicMapping : public virtual Application {
+class PeriodicMapping : public virtual Application
+{
 public:
-  PeriodicMapping() : Application() {}
+  PeriodicMapping()
+    : Application()
+  {}
 
   virtual ~PeriodicMapping() {}
 
-  virtual void transformCoords(Vertex2d &w, const Vertex2d &v) const = 0;
-  virtual void transformCoords(Vertex3d &w, const Vertex3d &v) const = 0;
+  virtual void transformCoords(Vertex2d& w, const Vertex2d& v) const = 0;
+  virtual void transformCoords(Vertex3d& w, const Vertex3d& v) const = 0;
 
   virtual std::set<int> preferred_colors() const { return std::set<int>(); }
 };

@@ -31,7 +31,9 @@ namespace Gascoigne {
 
 /***************************************************/
 
-LineScanner::LineScanner(const string &filename) : fp(filename.c_str()) {
+LineScanner::LineScanner(const string& filename)
+  : fp(filename.c_str())
+{
   if (!fp.is_open()) {
     cout << "LineScanner::cannot open file " << filename << endl;
     abort();
@@ -40,11 +42,16 @@ LineScanner::LineScanner(const string &filename) : fp(filename.c_str()) {
 
 /***************************************************/
 
-LineScanner::~LineScanner() { fp.close(); }
+LineScanner::~LineScanner()
+{
+  fp.close();
+}
 
 /***************************************************/
 
-void LineScanner::split(vector<string> &words, const char &c) const {
+void
+LineScanner::split(vector<string>& words, const char& c) const
+{
   // Splits each string of the vector "words"
   // into separate strings due to separator "c"
   // The result is stored again in "words"
@@ -62,7 +69,9 @@ void LineScanner::split(vector<string> &words, const char &c) const {
 
 /***************************************************/
 
-void LineScanner::split(vector<string> &words, const vector<char> &c) const {
+void
+LineScanner::split(vector<string>& words, const vector<char>& c) const
+{
   for (int i = 0; i < c.size(); i++) {
     split(words, c[i]);
   }
@@ -70,7 +79,9 @@ void LineScanner::split(vector<string> &words, const vector<char> &c) const {
 
 /***************************************************/
 
-int LineScanner::NextLine(vector<double> &words) {
+int
+LineScanner::NextLine(vector<double>& words)
+{
   string toto;
   getline(fp, toto);
 
@@ -88,7 +99,9 @@ int LineScanner::NextLine(vector<double> &words) {
 
 /***************************************************/
 
-int LineScanner::NextLine(vector<string> &words) {
+int
+LineScanner::NextLine(vector<string>& words)
+{
   string toto;
   getline(fp, toto);
 
@@ -117,7 +130,9 @@ int LineScanner::NextLine(vector<string> &words) {
 
 /***************************************************/
 
-int LineScanner::NextLine(vector<string> &words, const vector<int> &w) {
+int
+LineScanner::NextLine(vector<string>& words, const vector<int>& w)
+{
   // usefull to read formated FORTRAN data bases
   // fills in "words" the strings of the next line
   // word[i] has fixed lenght w[i]

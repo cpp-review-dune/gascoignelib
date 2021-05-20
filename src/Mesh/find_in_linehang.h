@@ -27,9 +27,10 @@
 /*---------------------------------------------------*/
 
 namespace Gascoigne {
-template <int N>
+template<int N>
 std::pair<typename HangList<N>::iterator, bool>
-find_in_linehang(HangList<N> &LineHang, const std::array<int, N> &lineglob) {
+find_in_linehang(HangList<N>& LineHang, const std::array<int, N>& lineglob)
+{
   // sort(lineglob.begin(),lineglob.end());
   typename HangList<N>::iterator p = LineHang.find(lineglob);
   bool b = 0;

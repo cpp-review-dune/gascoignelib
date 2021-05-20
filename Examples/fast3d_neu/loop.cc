@@ -8,7 +8,10 @@ double __DT, __TIME, __THETA;
 
 namespace Gascoigne {
 
-template <int DIM> void Loop<DIM>::run(const std::string &problemlabel) {
+template<int DIM>
+void
+Loop<DIM>::run(const std::string& problemlabel)
+{
   double STOP_TIME;
   int _initial_refine = 0;
 
@@ -89,11 +92,11 @@ template <int DIM> void Loop<DIM>::run(const std::string &problemlabel) {
     // become dirichlet
     GetMultiLevelSolver()->GetSolver()->SetPeriodicVector(u);
     GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(u);
-    dynamic_cast<FSIMultiLevelSolver<DIM> *>(GetMultiLevelSolver())
-        ->UpdateDeformation(u);
+    dynamic_cast<FSIMultiLevelSolver<DIM>*>(GetMultiLevelSolver())
+      ->UpdateDeformation(u);
 
     string solved =
-        GetMultiLevelSolver()->Solve(u, f, GetSolverInfos()->GetNLInfo());
+      GetMultiLevelSolver()->Solve(u, f, GetSolverInfos()->GetNLInfo());
     assert(solved == "converged");
     Output(u, "Results/");
 

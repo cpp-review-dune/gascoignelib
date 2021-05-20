@@ -31,12 +31,15 @@
 
 /*-----------------------------------------*/
 
-class BenchMarkDirichletData : public Gascoigne::DirichletData {
+class BenchMarkDirichletData : public Gascoigne::DirichletData
+{
 public:
   BenchMarkDirichletData() {}
   std::string GetName() const { return "Bench"; }
-  void operator()(Gascoigne::DoubleVector &b, const Gascoigne::Vertex2d &v,
-                  int color) const {
+  void operator()(Gascoigne::DoubleVector& b,
+                  const Gascoigne::Vertex2d& v,
+                  int color) const
+  {
     double y = v.y();
 
     b.zero();
@@ -50,10 +53,12 @@ public:
 
 /*---------------------------------------------------*/
 
-class BenchMarkProblemDescriptor : public Gascoigne::ProblemDescriptorBase {
+class BenchMarkProblemDescriptor : public Gascoigne::ProblemDescriptorBase
+{
 public:
   std::string GetName() const { return "NavierStokesBenchmark"; }
-  void BasicInit(const Gascoigne::ParamFile *pf) {
+  void BasicInit(const Gascoigne::ParamFile* pf)
+  {
     GetParamFilePointer() = pf;
     GetEquationPointer() = new Gascoigne::NavierStokesLps2d(GetParamFile());
     GetDirichletDataPointer() = new BenchMarkDirichletData;

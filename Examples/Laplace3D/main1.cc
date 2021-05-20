@@ -28,7 +28,9 @@ using namespace Gascoigne;
 
 /*---------------------------------------------------*/
 
-int main(int argc, char **argv) {
+int
+main(int argc, char** argv)
+{
   ParamFile paramfile("box.param");
   if (argc >= 2) {
     paramfile.SetName(argv[1]);

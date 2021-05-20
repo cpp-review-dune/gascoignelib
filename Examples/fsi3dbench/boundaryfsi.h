@@ -14,7 +14,8 @@
 
 namespace Gascoigne {
 
-class BoundaryFSI : public BoundaryEquation {
+class BoundaryFSI : public BoundaryEquation
+{
 
 protected:
   mutable Vertex3d __n3d;
@@ -22,19 +23,26 @@ protected:
 public:
   ~BoundaryFSI() {}
   BoundaryFSI() {}
-  BoundaryFSI(const ParamFile *pf) {}
+  BoundaryFSI(const ParamFile* pf) {}
 
   std::string GetName() const { return "BoundaryFSI"; }
 
   int GetNcomp() const { return 3 + 1; }
 
-  void Form(VectorIterator b, const FemFunction &U, const TestFunction &N,
+  void Form(VectorIterator b,
+            const FemFunction& U,
+            const TestFunction& N,
             int col) const;
-  void Matrix(EntryMatrix &E, const FemFunction &U, const TestFunction &M,
-              const TestFunction &N, int col) const;
+  void Matrix(EntryMatrix& E,
+              const FemFunction& U,
+              const TestFunction& M,
+              const TestFunction& N,
+              int col) const;
 
-  void pointboundary(double h, const FemFunction &U, const Vertex3d &v,
-                     const Vertex3d &n) const;
+  void pointboundary(double h,
+                     const FemFunction& U,
+                     const Vertex3d& v,
+                     const Vertex3d& n) const;
 };
 
 } // namespace Gascoigne

@@ -41,14 +41,16 @@ using namespace Gascoigne;
 
 /* ----------------------------------------- */
 
-class BenchMarkDirichletData : public DirichletData {
+class BenchMarkDirichletData : public DirichletData
+{
 protected:
   double vmax;
 
 public:
   BenchMarkDirichletData() { vmax = 0.3; }
   std::string GetName() const { return "Bench"; }
-  void operator()(DoubleVector &b, const Vertex2d &v, int color) const {
+  void operator()(DoubleVector& b, const Vertex2d& v, int color) const
+  {
 
     double y = v.y();
 
@@ -62,10 +64,12 @@ public:
 
 /* ----------------------------------------- */
 
-class ProblemDescriptor : public ProblemDescriptorBase {
+class ProblemDescriptor : public ProblemDescriptorBase
+{
 public:
   std::string GetName() const { return "Local"; }
-  void BasicInit(const ParamFile *pf) {
+  void BasicInit(const ParamFile* pf)
+  {
     GetParamFilePointer() = pf;
     GetEquationPointer() = new NavierStokes2d(GetParamFile());
     GetFaceEquationPointer() = new NavierStokesFace2d(GetParamFile());
@@ -76,17 +80,20 @@ public:
 
 /* ----------------------------------------- */
 
-class RunderKreis : public BoundaryFunction<2> {
+class RunderKreis : public BoundaryFunction<2>
+{
   double _r;
   Vertex2d _c;
 
 public:
   std::string GetName() const { return "RunderKreis"; }
-  void BasicInit(Vertex2d c, double r) {
+  void BasicInit(Vertex2d c, double r)
+  {
     _c = c;
     _r = r;
   }
-  double operator()(const Vertex2d &c) const {
+  double operator()(const Vertex2d& c) const
+  {
     double r = -_r;
     for (int i = 0; i < 2; i++) {
       double dx = c[i] - _c[i];
@@ -98,23 +105,27 @@ public:
 
 /*---------------------------------------------------*/
 
-class BenchMarkMeshAgent : public MeshAgent {
+class BenchMarkMeshAgent : public MeshAgent
+{
 protected:
   RunderKreis RK;
 
 public:
-  BenchMarkMeshAgent() : MeshAgent() {
+  BenchMarkMeshAgent()
+    : MeshAgent()
+  {
     double r = 0.25;
     Vertex2d v(2., 2.);
     RK.BasicInit(v, r);
 
     AddShape(80, &RK);
   }
-  void BasicInit(const ParamFile *paramfile) {
+  void BasicInit(const ParamFile* paramfile)
+  {
     std::string inpname("nsbench4.inp");
 
     HMP = new HierarchicalMesh2d;
-    map<int, BoundaryFunction<2> *>::const_iterator p;
+    map<int, BoundaryFunction<2>*>::const_iterator p;
     for (p = GetShapes2d().begin(); p != GetShapes2d().end(); p++) {
       HMP->AddShape(p->first, p->second);
     }

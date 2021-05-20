@@ -31,7 +31,9 @@ using namespace std;
 /* -------------------------------------------------- */
 
 namespace Gascoigne {
-VisuEPS::VisuEPS(const ParamFile &paramfile) : M(0) {
+VisuEPS::VisuEPS(const ParamFile& paramfile)
+  : M(0)
+{
   {
     DataFormatHandler DFH;
     DFH.insert("compress_eps", &_i_compress, 0);
@@ -52,7 +54,9 @@ VisuEPS::VisuEPS(const ParamFile &paramfile) : M(0) {
 
 /* -------------------------------------------------- */
 
-void VisuEPS::SetOption(EPSOptions o, int v) {
+void
+VisuEPS::SetOption(EPSOptions o, int v)
+{
   if (INTOPT.find(o) == INTOPT.end()) {
     if (DOUBLEOPT.find(o) != DOUBLEOPT.end()) {
       SetOption(o, static_cast<double>(v));
@@ -66,16 +70,20 @@ void VisuEPS::SetOption(EPSOptions o, int v) {
 
 /* -------------------------------------------------- */
 
-void VisuEPS::SetOption(EPSOptions o, double v) {
+void
+VisuEPS::SetOption(EPSOptions o, double v)
+{
   assert(DOUBLEOPT.find(o) != DOUBLEOPT.end());
   DOUBLEOPT[o] = v;
 }
 
 /* -------------------------------------------------- */
 
-void VisuEPS::Lexiko(Line &p) const {
-  const Vertex2d &a = M->vertex2d(p.first);
-  const Vertex2d &b = M->vertex2d(p.second);
+void
+VisuEPS::Lexiko(Line& p) const
+{
+  const Vertex2d& a = M->vertex2d(p.first);
+  const Vertex2d& b = M->vertex2d(p.second);
 
   bool sm = (a.y() < b.y());
   if (a.y() == b.y())
@@ -89,17 +97,21 @@ void VisuEPS::Lexiko(Line &p) const {
 
 /* -------------------------------------------------- */
 
-bool VisuEPS::InLine(int a, int b, int c) const {
-  double det = (M->vertex2d(a) - M->vertex2d(b))[0] *
-                   (M->vertex2d(a) - M->vertex2d(c))[1] -
-               (M->vertex2d(a) - M->vertex2d(b))[1] *
-                   (M->vertex2d(a) - M->vertex2d(c))[0];
+bool
+VisuEPS::InLine(int a, int b, int c) const
+{
+  double det =
+    (M->vertex2d(a) - M->vertex2d(b))[0] *
+      (M->vertex2d(a) - M->vertex2d(c))[1] -
+    (M->vertex2d(a) - M->vertex2d(b))[1] * (M->vertex2d(a) - M->vertex2d(c))[0];
   return (fabs(det) < 1.e-13);
 }
 
 /* -------------------------------------------------- */
 
-void VisuEPS::WriteGrid(string fname, int iter) {
+void
+VisuEPS::WriteGrid(string fname, int iter)
+{
   assert(M);
 
   for (int i = 0; i < lines.size(); ++i)
@@ -148,7 +160,7 @@ void VisuEPS::WriteGrid(string fname, int iter) {
     bu[2] = 8;
     bu[3] = 6;
     for (int i = 0; i < M->npatches(); ++i) {
-      const IntVector &vop = *M->IndicesOfPatch(i);
+      const IntVector& vop = *M->IndicesOfPatch(i);
 
       for (int j = 0; j < 4; ++j) {
         pair<int, int> pu(vop[bu[j]], vop[bu[(j + 1) % 4]]);
@@ -226,7 +238,9 @@ void VisuEPS::WriteGrid(string fname, int iter) {
 
 /* ----------------------------------------------------- */
 
-void VisuEPS::CombineLines() {
+void
+VisuEPS::CombineLines()
+{
   int combine = 0;
   bool changed;
   int steps = 0;

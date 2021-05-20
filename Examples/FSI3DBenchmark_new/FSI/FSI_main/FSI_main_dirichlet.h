@@ -13,12 +13,14 @@ using namespace Gascoigne;
 
 extern double __TIME;
 
-class FSI_main_MyDD : public DirichletData {
+class FSI_main_MyDD : public DirichletData
+{
 protected:
   double vmean;
 
 public:
-  FSI_main_MyDD(const ParamFile *pf) {
+  FSI_main_MyDD(const ParamFile* pf)
+  {
     DataFormatHandler DFH;
     DFH.insert("vmean", &vmean, 0.0);
     FileScanner FS(DFH, pf, "Equation");
@@ -26,7 +28,8 @@ public:
 
   std::string GetName() const { return "MyDD"; }
 
-  void operator()(DoubleVector &b, const Vertex2d &v, int color) const {
+  void operator()(DoubleVector& b, const Vertex2d& v, int color) const
+  {
     b.zero();
 
     // double teff = __TIME;
@@ -94,12 +97,14 @@ public:
   }
 };
 
-class FSI_main_MyDD3d : public DirichletData {
+class FSI_main_MyDD3d : public DirichletData
+{
 protected:
   double vmean;
 
 public:
-  FSI_main_MyDD3d(const ParamFile *pf) {
+  FSI_main_MyDD3d(const ParamFile* pf)
+  {
     DataFormatHandler DFH;
     DFH.insert("vmean", &vmean, 0.0);
     FileScanner FS(DFH, pf, "Equation");
@@ -107,7 +112,8 @@ public:
 
   std::string GetName() const { return "MyDD"; }
 
-  void operator()(DoubleVector &b, const Vertex3d &v, int color) const {
+  void operator()(DoubleVector& b, const Vertex3d& v, int color) const
+  {
     double sc = 1.0;
     if (__TIME < 2.0)
       sc = 0.5 * (1.0 - cos(M_PI * __TIME / 2.0));

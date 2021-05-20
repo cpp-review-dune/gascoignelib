@@ -35,22 +35,25 @@ namespace Gascoigne {
 
 //////////////////////////////////////////////////
 
-template <int DIM> void FaceQ1<DIM>::BasicInit(const ParamFile *pf) {
+template<int DIM>
+void
+FaceQ1<DIM>::BasicInit(const ParamFile* pf)
+{
   if (!GetFem1Pointer()) {
     if (DIM == 2)
       GetFem1Pointer() =
-          new FiniteElement<2, 1, Transformation2d<BaseQ12d>, BaseQ12d>;
+        new FiniteElement<2, 1, Transformation2d<BaseQ12d>, BaseQ12d>;
     if (DIM == 3)
       GetFem1Pointer() =
-          new FiniteElement<3, 2, Transformation3d<BaseQ13d>, BaseQ13d>;
+        new FiniteElement<3, 2, Transformation3d<BaseQ13d>, BaseQ13d>;
   }
   if (!GetFem2Pointer()) {
     if (DIM == 2)
       GetFem2Pointer() =
-          new FiniteElement<2, 1, Transformation2d<BaseQ12d>, BaseQ12d>;
+        new FiniteElement<2, 1, Transformation2d<BaseQ12d>, BaseQ12d>;
     if (DIM == 3)
       GetFem2Pointer() =
-          new FiniteElement<3, 2, Transformation3d<BaseQ13d>, BaseQ13d>;
+        new FiniteElement<3, 2, Transformation3d<BaseQ13d>, BaseQ13d>;
   }
 
   if (!GetFaceIntegratorPointer())
@@ -59,7 +62,10 @@ template <int DIM> void FaceQ1<DIM>::BasicInit(const ParamFile *pf) {
 
 //////////////////////////////////////////////////
 
-template <int DIM> void FaceQ1<DIM>::ReInit(const GascoigneMesh *M) {
+template<int DIM>
+void
+FaceQ1<DIM>::ReInit(const GascoigneMesh* M)
+{
   // build face/edge-structur
   __MP = M;
   assert(__MP);
@@ -69,16 +75,19 @@ template <int DIM> void FaceQ1<DIM>::ReInit(const GascoigneMesh *M) {
 
 //////////////////////////////////////////////////
 
-template <> void FaceQ1<2>::build_faces() {
+template<>
+void
+FaceQ1<2>::build_faces()
+{
   this->__faces.clear();
-  const GascoigneMesh2d *GM = dynamic_cast<const GascoigneMesh2d *>(__MP);
+  const GascoigneMesh2d* GM = dynamic_cast<const GascoigneMesh2d*>(__MP);
 
   // list of neighbors
   std::map<pair<int, int>, std::array<int, 2>> fm;
   for (int c = 0; c < GM->ncells(); ++c) {
     for (int i = 0; i < 4; ++i) {
       pair<int, int> f = make_pair<int, int>(
-          GM->vertex_of_cell(c, i), GM->vertex_of_cell(c, (i + 1) % 4));
+        GM->vertex_of_cell(c, i), GM->vertex_of_cell(c, (i + 1) % 4));
       if (f.first > f.second)
         std::swap(f.first, f.second);
       if (fm.find(f) == fm.end()) {
@@ -94,8 +103,9 @@ template <> void FaceQ1<2>::build_faces() {
 
   // create list of internal faces
   for (std::map<pair<int, int>, std::array<int, 2>>::const_iterator it =
-           fm.begin();
-       it != fm.end(); ++it) {
+         fm.begin();
+       it != fm.end();
+       ++it) {
     if (it->second[1] == -1)
       continue;
     assert(it->second[0] != -1);
@@ -146,17 +156,23 @@ template <> void FaceQ1<2>::build_faces() {
   cout << "FaceQ1: build " << this->__faces.size() << " edges" << endl;
 }
 
-template <> void FaceQ1<3>::build_faces() {}
+template<>
+void
+FaceQ1<3>::build_faces()
+{}
 
 //////////////////////////////////////////////////
 
-template <int DIM>
-void FaceQ1<DIM>::TransformationFace(FemInterface::Matrix &T1,
-                                     FemInterface::Matrix &T2, int f) const {
+template<int DIM>
+void
+FaceQ1<DIM>::TransformationFace(FemInterface::Matrix& T1,
+                                FemInterface::Matrix& T2,
+                                int f) const
+{
   int dim = this->GetMesh()->dimension();
   int ne = this->GetMesh()->nodes_per_cell(0);
 
-  const nvector<int> &ei = GetFace(f);
+  const nvector<int>& ei = GetFace(f);
   assert(ei.size() == 6 * (DIM - 1));
 
   T1.memory(dim, ne);

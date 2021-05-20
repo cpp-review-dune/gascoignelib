@@ -37,30 +37,31 @@
 /***************************************************/
 
 namespace Gascoigne {
-class DataFormatHandler {
+class DataFormatHandler
+{
 private:
   typedef std::pair<std::string, std::string> NameType;
   typedef std::pair<std::string, double> StringDouble;
 
-  typedef std::map<std::string, std::string *> TypeString;
-  typedef std::map<std::string, int *> TypeInt;
-  typedef std::map<std::string, bool *> TypeBool; // neu
-  typedef std::map<std::string, float *> TypeFloat;
-  typedef std::map<std::string, double *> TypeDouble;
-  typedef std::map<std::string, StringDouble *> TypeStringDouble;
+  typedef std::map<std::string, std::string*> TypeString;
+  typedef std::map<std::string, int*> TypeInt;
+  typedef std::map<std::string, bool*> TypeBool; // neu
+  typedef std::map<std::string, float*> TypeFloat;
+  typedef std::map<std::string, double*> TypeDouble;
+  typedef std::map<std::string, StringDouble*> TypeStringDouble;
 
-  typedef std::map<std::string, std::array<double, 2> *> TypeFix2Double;
-  typedef std::map<std::string, std::array<double, 3> *> TypeFix3Double;
+  typedef std::map<std::string, std::array<double, 2>*> TypeFix2Double;
+  typedef std::map<std::string, std::array<double, 3>*> TypeFix3Double;
 
-  typedef std::map<std::string, std::vector<double> *> TypeVectorDouble;
-  typedef std::map<std::string, IntVector *> TypeVectorInt;
-  typedef std::map<std::string, std::vector<std::string> *> TypeVectorString;
+  typedef std::map<std::string, std::vector<double>*> TypeVectorDouble;
+  typedef std::map<std::string, IntVector*> TypeVectorInt;
+  typedef std::map<std::string, std::vector<std::string>*> TypeVectorString;
 
-  typedef std::map<std::string, std::set<int> *> TypeSetInt;
-  typedef std::map<std::string, std::set<std::vector<std::string>> *>
-      TypeSetVectorString;
+  typedef std::map<std::string, std::set<int>*> TypeSetInt;
+  typedef std::map<std::string, std::set<std::vector<std::string>>*>
+    TypeSetVectorString;
 
-  typedef std::map<std::string, std::map<int, IntVector> *> TypeMapIntVectorInt;
+  typedef std::map<std::string, std::map<int, IntVector>*> TypeMapIntVectorInt;
 
   std::set<NameType> NT;
   TypeString TS;
@@ -82,10 +83,11 @@ private:
 
   TypeStringDouble TSD;
 
-  std::string search(std::string &fo, const std::string &name);
+  std::string search(std::string& fo, const std::string& name);
 
 public:
-  void clear() {
+  void clear()
+  {
     NT.clear();
     TS.clear();
     TI.clear();
@@ -104,65 +106,66 @@ public:
   }
 
   // without default values
-  void insert(const std::string &, std::string *);
-  void insert(const std::string &, int *);
-  void insert(const std::string &, bool *); // neu
-  void insert(const std::string &, float *);
-  void insert(const std::string &, double *);
+  void insert(const std::string&, std::string*);
+  void insert(const std::string&, int*);
+  void insert(const std::string&, bool*); // neu
+  void insert(const std::string&, float*);
+  void insert(const std::string&, double*);
 
-  void insert(const std::string &, std::array<double, 2> *);
-  void insert(const std::string &, std::array<double, 3> *);
+  void insert(const std::string&, std::array<double, 2>*);
+  void insert(const std::string&, std::array<double, 3>*);
 
-  void insert(const std::string &, std::vector<double> *);
-  void insert(const std::string &, IntVector *);
-  void insert(const std::string &, std::vector<std::string> *);
+  void insert(const std::string&, std::vector<double>*);
+  void insert(const std::string&, IntVector*);
+  void insert(const std::string&, std::vector<std::string>*);
 
-  void insert(const std::string &, IntSet *);
-  void insert(const std::string &, std::set<std::vector<std::string>> *);
+  void insert(const std::string&, IntSet*);
+  void insert(const std::string&, std::set<std::vector<std::string>>*);
 
-  void insert(const std::string &, std::map<int, IntVector> *);
-  void insert(const std::string &, std::map<int, std::string> *);
+  void insert(const std::string&, std::map<int, IntVector>*);
+  void insert(const std::string&, std::map<int, std::string>*);
 
-  void insert(int, StringDouble *);
+  void insert(int, StringDouble*);
 
   // with default values
-  void insert(const std::string &, std::string *, const std::string &);
-  void insert(const std::string &, int *, int);
-  void insert(const std::string &, bool *, bool); // neu
-  void insert(const std::string &, float *, float);
-  void insert(const std::string &, double *, double);
-  void insert(const std::string &, std::array<double, 2> *,
-              std::array<double, 2> &);
-  void insert(const std::string &, std::array<double, 3> *,
-              std::array<double, 3> &);
-  void insert(const std::string &, std::vector<double> *,
-              std::vector<double> &);
-  void insert(const std::string &, IntVector *, IntVector &);
+  void insert(const std::string&, std::string*, const std::string&);
+  void insert(const std::string&, int*, int);
+  void insert(const std::string&, bool*, bool); // neu
+  void insert(const std::string&, float*, float);
+  void insert(const std::string&, double*, double);
+  void insert(const std::string&,
+              std::array<double, 2>*,
+              std::array<double, 2>&);
+  void insert(const std::string&,
+              std::array<double, 3>*,
+              std::array<double, 3>&);
+  void insert(const std::string&, std::vector<double>*, std::vector<double>&);
+  void insert(const std::string&, IntVector*, IntVector&);
 
-  void get(std::string &, const std::string &);
+  void get(std::string&, const std::string&);
 
-  void setvalue(const std::string &, const std::string &);
-  void setvalue(const std::string &, int);
-  void setvalue(const std::string &, bool); // neu
-  void setvalue(const std::string &, float);
-  void setvalue(const std::string &, double);
+  void setvalue(const std::string&, const std::string&);
+  void setvalue(const std::string&, int);
+  void setvalue(const std::string&, bool); // neu
+  void setvalue(const std::string&, float);
+  void setvalue(const std::string&, double);
 
-  void setvalue(const std::string &, std::array<double, 2> &);
-  void setvalue(const std::string &, std::array<double, 3> &);
+  void setvalue(const std::string&, std::array<double, 2>&);
+  void setvalue(const std::string&, std::array<double, 3>&);
 
-  void setvalue(const std::string &, std::vector<double> &);
-  void setvalue(const std::string &, IntVector &);
-  void setvalue(const std::string &, std::vector<std::string> &);
+  void setvalue(const std::string&, std::vector<double>&);
+  void setvalue(const std::string&, IntVector&);
+  void setvalue(const std::string&, std::vector<std::string>&);
 
-  void setvalue(const std::string &, IntSet &);
+  void setvalue(const std::string&, IntSet&);
 
-  void setvalue(const std::string &, std::pair<int, IntVector> &);
+  void setvalue(const std::string&, std::pair<int, IntVector>&);
 
-  void setvalue(const std::string &, StringDouble &);
+  void setvalue(const std::string&, StringDouble&);
 
-  void insertvalue(const std::string &, std::vector<std::string> &);
+  void insertvalue(const std::string&, std::vector<std::string>&);
 
-  void print(std::ostream &) const;
+  void print(std::ostream&) const;
 };
 } // namespace Gascoigne
 

@@ -45,7 +45,8 @@
 /*---------------------------------------------------*/
 
 namespace Gascoigne {
-class HierarchicalMesh3d : public HierarchicalMesh {
+class HierarchicalMesh3d : public HierarchicalMesh
+{
 protected:
   /*  typedef  */
 
@@ -81,85 +82,96 @@ protected:
 
   void post_refine3d();
 
-  void delete_vertexs3d(const IntVector &);
+  void delete_vertexs3d(const IntVector&);
 
-  void new_edge_vertex3d(int, const EdgeVector &);
-  void new_face_vertex3d(int, const FaceVector &);
-  void new_vertex3d(int, const std::array<int, 6> &);
+  void new_edge_vertex3d(int, const EdgeVector&);
+  void new_face_vertex3d(int, const FaceVector&);
+  void new_vertex3d(int, const std::array<int, 6>&);
 
   void check_mesh3d() const;
 
-  std::pair<bool, tint> check_inp(const std::string &);
+  std::pair<bool, tint> check_inp(const std::string&);
   std::pair<int, int> GetBoundaryInformation(int i) const;
 
-  void init_quad(BoundaryQuad &);
+  void init_quad(BoundaryQuad&);
 
   void build_neighbours() const;
 
-  void prepare3d(const IntVector &, const IntVector &, IntSet &, IntSet &);
-  void new_hexs(const HangContainer3d &, const IntVector &, const IntVector &,
-                int, const IntSet &);
+  void prepare3d(const IntVector&, const IntVector&, IntSet&, IntSet&);
+  void new_hexs(const HangContainer3d&,
+                const IntVector&,
+                const IntVector&,
+                int,
+                const IntSet&);
   void ghost_fill_neighbours2d();
   void ghost_fill_neighbours3d();
-  void UpdateHangs(HangContainer3d &hangset, const IntSet &cellref,
-                   const IntSet &cellcoarse);
-  void FaceCoarse(HangContainer3d &, const IntSet &) const;
-  void FaceRefine(HangContainer3d &, const IntSet &) const;
-  void UpdateHangingEdges(HangContainer3d &hangset, const IntSet &cellref,
-                          const IntSet &cellcoarse) const;
-  void boundary_prepare3d(IntSet &, IntSet &, IntSet &,
-                          const HangContainer3d &);
-  void new_boundary3d(IntSet &, IntSet &, IntSet &);
-  void new_vertexs3d(HangContainer3d &, const IntVector &, const IntSet &);
-  void basic_refine3d(HangContainer3d &, const IntSet &, const IntSet &);
+  void UpdateHangs(HangContainer3d& hangset,
+                   const IntSet& cellref,
+                   const IntSet& cellcoarse);
+  void FaceCoarse(HangContainer3d&, const IntSet&) const;
+  void FaceRefine(HangContainer3d&, const IntSet&) const;
+  void UpdateHangingEdges(HangContainer3d& hangset,
+                          const IntSet& cellref,
+                          const IntSet& cellcoarse) const;
+  void boundary_prepare3d(IntSet&, IntSet&, IntSet&, const HangContainer3d&);
+  void new_boundary3d(IntSet&, IntSet&, IntSet&);
+  void new_vertexs3d(HangContainer3d&, const IntVector&, const IntSet&);
+  void basic_refine3d(HangContainer3d&, const IntSet&, const IntSet&);
   void basic_fill_neighbours3d();
-  virtual void boundary_newton3d(IntSet &);
-  virtual void inner_vertex_newton3d(const IntVector &, const IntSet &,
-                                     const IntSet &);
-  void update_boundary_data3d(const IntSet &);
-  void new_bquads(const IntVector &, const IntVector &, const IntSet &);
+  virtual void boundary_newton3d(IntSet&);
+  virtual void inner_vertex_newton3d(const IntVector&,
+                                     const IntSet&,
+                                     const IntSet&);
+  void update_boundary_data3d(const IntSet&);
+  void new_bquads(const IntVector&, const IntVector&, const IntSet&);
   void new_middle_vertex3d(int, int);
 
-  int regular_grid3d_one(IntSet &, IntVector &, const IntSet &, const IntSet &);
-  int regular_grid3d_one(IntVector &, IntVector &, const IntSet &,
-                         const IntSet &);
-  int regular_grid3d_two(IntVector &, const IntSet &);
-  int regular_grid3d_three_refine(IntSet &) const;
-  int regular_grid3d_three_coarse(IntSet &, IntSet &) const;
+  int regular_grid3d_one(IntSet&, IntVector&, const IntSet&, const IntSet&);
+  int regular_grid3d_one(IntVector&, IntVector&, const IntSet&, const IntSet&);
+  int regular_grid3d_two(IntVector&, const IntSet&);
+  int regular_grid3d_three_refine(IntSet&) const;
+  int regular_grid3d_three_coarse(IntSet&, IntSet&) const;
 
-  void GetMinMaxLevels(IntVector &maxi, IntVector &mini,
-                       const IntSet &CellRef) const;
+  void GetMinMaxLevels(IntVector& maxi,
+                       IntVector& mini,
+                       const IntSet& CellRef) const;
 
   void init_edges3d();
-  void LoadFathers3d(IntVector &v) const;
+  void LoadFathers3d(IntVector& v) const;
 
-  void _refine3d(IntSet &, IntSet &, const IntVector &, const IntVector &);
-  void FillNeighbourFaces(const Hex &father, const FaceVector &Face,
+  void _refine3d(IntSet&, IntSet&, const IntVector&, const IntVector&);
+  void FillNeighbourFaces(const Hex& father,
+                          const FaceVector& Face,
                           int rneigh);
-  void FillNeighbourFaces(int M, int S, const FaceVector &Face);
+  void FillNeighbourFaces(int M, int S, const FaceVector& Face);
   void InitHexOfCurved();
   int FindPatchDepth() const;
-  void FillVertexLevels(IntVector &dst) const;
-  void RefineCoarseNodes(IntSet &dst, const IntVector &refnodes,
-                         const IntVector &vertexlevel) const;
-  void VertexToCells(IntVector &dst, const IntSet &src,
-                     const IntVector &vertexlevel) const;
-  void VertexToCellsCoarsening(IntVector &dst, const IntSet &src,
-                               const IntVector &vertexlevel) const;
-  void recursive_childs(int q, IntVector &ref, int d) const;
+  void FillVertexLevels(IntVector& dst) const;
+  void RefineCoarseNodes(IntSet& dst,
+                         const IntVector& refnodes,
+                         const IntVector& vertexlevel) const;
+  void VertexToCells(IntVector& dst,
+                     const IntSet& src,
+                     const IntVector& vertexlevel) const;
+  void VertexToCellsCoarsening(IntVector& dst,
+                               const IntSet& src,
+                               const IntVector& vertexlevel) const;
+  void recursive_childs(int q, IntVector& ref, int d) const;
 
-  struct sort_pred {
-    bool operator()(const std::pair<Vertex3d, double> &left,
-                    const std::pair<Vertex3d, double> &right) {
+  struct sort_pred
+  {
+    bool operator()(const std::pair<Vertex3d, double>& left,
+                    const std::pair<Vertex3d, double>& right)
+    {
       return left.second < right.second;
     }
   };
 
 public:
   HierarchicalMesh3d();
-  HierarchicalMesh3d(const HierarchicalMesh3d &H);
-  HierarchicalMesh3d &operator=(const HierarchicalMesh3d &H);
-  HierarchicalMesh3d(const ParamFile &paramfile);
+  HierarchicalMesh3d(const HierarchicalMesh3d& H);
+  HierarchicalMesh3d& operator=(const HierarchicalMesh3d& H);
+  HierarchicalMesh3d(const ParamFile& paramfile);
   ~HierarchicalMesh3d() { GetCurvedShapes().clear(); }
 
   std::string GetName() const { return "HierarchicalMesh3d"; }
@@ -175,16 +187,16 @@ public:
   int nodes_per_cell(int i) const { return 8; }
   int VtkType(int i) const { return 12; }
 
-  const CurvedShapes<3> &GetCurvedShapes() const { return _curvedshapes; }
-  CurvedShapes<3> &GetCurvedShapes() { return _curvedshapes; }
+  const CurvedShapes<3>& GetCurvedShapes() const { return _curvedshapes; }
+  CurvedShapes<3>& GetCurvedShapes() { return _curvedshapes; }
 
-  const VertexVec3d &GetVertexVector() const { return vertexs3d; }
-  VertexVec3d &GetVertexVector() { return vertexs3d; }
+  const VertexVec3d& GetVertexVector() const { return vertexs3d; }
+  VertexVec3d& GetVertexVector() { return vertexs3d; }
 
-  const Vertex3d &vertex3d(int i) const { return vertexs3d[i]; }
+  const Vertex3d& vertex3d(int i) const { return vertexs3d[i]; }
 
-  const Hex &hex(int i) const { return hexs[i]; }
-  const BoundaryQuad &bquad(int i) const { return Bquads[i]; }
+  const Hex& hex(int i) const { return hexs[i]; }
+  const BoundaryQuad& bquad(int i) const { return Bquads[i]; }
 
   int vertex_of_cell(int i, int ii) const { return hexs[i].vertex(ii); }
   int vertex_of_bquad(int i, int ii) const { return Bquads[i].vertex(ii); }
@@ -195,36 +207,36 @@ public:
   int child(int i, int ii) const { return hexs[i].child(ii); }
   int nchilds(int i) const { return hexs[i].nchilds(); }
 
-  const HexLawAndOrder &HexLawOrder() const { return HexLaO; }
-  const LineHangList &linehang() const { return LineHang; }
-  const QuadHangList &quadhanglist() const { return QuadHang; }
-  const BoundaryFunction3d *quad_shape(int i) const;
+  const HexLawAndOrder& HexLawOrder() const { return HexLaO; }
+  const LineHangList& linehang() const { return LineHang; }
+  const QuadHangList& quadhanglist() const { return QuadHang; }
+  const BoundaryFunction3d* quad_shape(int i) const;
 
-  const std::vector<BoundaryQuad> &quad_list() const { return Bquads; }
+  const std::vector<BoundaryQuad>& quad_list() const { return Bquads; }
 
-  const VertexVec3d &vertex3d() const { return vertexs3d; }
-  const HexVec &hex() const { return hexs; }
-  const BQuadVec &bquad() const { return Bquads; }
-  const QuadHangList &quadhang() const { return QuadHang; }
-  const std::map<int, int> &GetHexOfCurved() const { return hexofcurved; }
+  const VertexVec3d& vertex3d() const { return vertexs3d; }
+  const HexVec& hex() const { return hexs; }
+  const BQuadVec& bquad() const { return Bquads; }
+  const QuadHangList& quadhang() const { return QuadHang; }
+  const std::map<int, int>& GetHexOfCurved() const { return hexofcurved; }
 
   /*  Functionen  */
 
-  void write(const std::string &) const;
-  void write_gup(const std::string &) const;
-  void write_gip(const std::string &) const;
+  void write(const std::string&) const;
+  void write_gup(const std::string&) const;
+  void write_gip(const std::string&) const;
 
-  void WriteAll(const std::string &) const;
+  void WriteAll(const std::string&) const;
 
-  void write_inp(const std::string &) const;
-  void read_inp(const std::string &);
-  void read_gup(const std::string &);
-  void read_gip(const std::string &);
+  void write_inp(const std::string&) const;
+  void read_inp(const std::string&);
+  void read_gup(const std::string&);
+  void read_gip(const std::string&);
 
   void global_coarse3d();
 
-  void refine(const IntVector &, const IntVector &);
-  void patch_refine(IntVector &, IntVector &);
+  void refine(const IntVector&, const IntVector&);
+  void patch_refine(IntVector&, IntVector&);
   //  int    smooth_edges();
   void FillAllBoundaryLines();
 
@@ -233,18 +245,19 @@ public:
   int NodeOnFace(int e) const;
   std::array<int, 4> ChildrenOfFace(int e) const;
 
-  void GetVertexesOfFace(std::array<int, 4> &, int) const;
-  void GetVertexesOfFace(std::array<int, 5> &, int) const;
-  void GetAwakePatchs(std::set<int> &) const;
-  void GetAwakeCells(std::set<int> &) const;
-  void ConstructQ2PatchMesh(IntVector &pm) const;
+  void GetVertexesOfFace(std::array<int, 4>&, int) const;
+  void GetVertexesOfFace(std::array<int, 5>&, int) const;
+  void GetAwakePatchs(std::set<int>&) const;
+  void GetAwakeCells(std::set<int>&) const;
+  void ConstructQ2PatchMesh(IntVector& pm) const;
   IntVector ConstructQ4Patch(int c) const;
   std::set<int> GetColors() const;
 
   int nactivedescendants(int i) const;
   IntVector GetVertices(int c) const;
 
-  int GetBoundaryCellOfCurved(int iq) const {
+  int GetBoundaryCellOfCurved(int iq) const
+  {
     std::map<int, int>::const_iterator p = hexofcurved.find(iq);
     if (p != hexofcurved.end())
       return p->second;
@@ -254,10 +267,12 @@ public:
   int neighbour(int c, int le) const;
   int neighbour_neighbour(int c, int le) const;
 
-  void AddShape(int col, BoundaryFunction<3> *f) {
+  void AddShape(int col, BoundaryFunction<3>* f)
+  {
     GetCurvedShapes().AddShape(col, f);
   }
-  void Sort() {
+  void Sort()
+  {
     abort();
 
     //   // connectivity - patch based

@@ -29,7 +29,8 @@
 /*-------------------------------------------*/
 
 namespace Gascoigne {
-class LpsStabilization : public Stabilization {
+class LpsStabilization : public Stabilization
+{
 protected:
   double _delta, _tau;
   nvector<double> _sdelta;
@@ -41,22 +42,24 @@ public:
 
   double delta0, sdelta0, tau0;
 
-  double &tau() { return _tau; }
+  double& tau() { return _tau; }
   double tau() const { return _tau; }
-  double &delta() { return _delta; }
+  double& delta() { return _delta; }
   double delta() const { return _delta; }
   double delta(int i) const { return _sdelta[i]; }
   void BasicInit(int n);
-  void ReInit(double h, double visc, double u, double v) {
+  void ReInit(double h, double visc, double u, double v)
+  {
     norm(u, v);
     NavierStokes(h, visc);
   };
-  void ReInit(double h, double visc, double u, double v, double w) {
+  void ReInit(double h, double visc, double u, double v, double w)
+  {
     norm(u, v, w);
     NavierStokes(h, visc);
   };
   void ConvectionDiffusion(double visc);
-  void ConvectionDiffusion(const nvector<double> &visc);
+  void ConvectionDiffusion(const nvector<double>& visc);
 };
 } // namespace Gascoigne
 

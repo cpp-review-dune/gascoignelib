@@ -31,7 +31,8 @@
 /*-----------------------------------------*/
 
 namespace Gascoigne {
-class HangingIndexHandler {
+class HangingIndexHandler
+{
 protected:
   typedef std::array<int, 2> IntVector2;
   typedef std::array<int, 4> IntVector4;
@@ -45,33 +46,38 @@ protected:
 public:
   HangingIndexHandler();
 
-  void Equal(const std::map<int, std::array<int, 3>> &h2,
-             const std::map<int, std::array<int, 9>> &h2f) {
+  void Equal(const std::map<int, std::array<int, 3>>& h2,
+             const std::map<int, std::array<int, 9>>& h2f)
+  {
     hnq2 = h2;
     hnq2face = h2f;
   }
 
-  void CopyLevel2Nibble(const HangingIndexHandler &Lhih, IntVector &Vg2l);
+  void CopyLevel2Nibble(const HangingIndexHandler& Lhih, IntVector& Vg2l);
 
   // zugriff
 
-  const std::map<int, std::array<int, 3>> *GetStructure() const {
+  const std::map<int, std::array<int, 3>>* GetStructure() const
+  {
     return &hnq2;
   }
-  const std::map<int, std::array<int, 9>> *GetStructureFace() const {
+  const std::map<int, std::array<int, 9>>* GetStructureFace() const
+  {
     return &hnq2face;
   }
-  std::map<int, std::array<int, 3>> *GetStructure() { return &hnq2; }
-  std::map<int, std::array<int, 9>> *GetStructureFace() { return &hnq2face; }
+  std::map<int, std::array<int, 3>>* GetStructure() { return &hnq2; }
+  std::map<int, std::array<int, 9>>* GetStructureFace() { return &hnq2face; }
 
-  const std::map<int, std::array<int, 6>> *GetQ4Structure() const {
+  const std::map<int, std::array<int, 6>>* GetQ4Structure() const
+  {
     return &hnq4;
   }
-  const std::map<int, std::array<int, 26>> *GetQ4StructureFace() const {
+  const std::map<int, std::array<int, 26>>* GetQ4StructureFace() const
+  {
     return &hnq4face;
   }
-  std::map<int, std::array<int, 6>> *GetQ4Structure() { return &hnq4; }
-  std::map<int, std::array<int, 26>> *GetQ4StructureFace() { return &hnq4face; }
+  std::map<int, std::array<int, 6>>* GetQ4Structure() { return &hnq4; }
+  std::map<int, std::array<int, 26>>* GetQ4StructureFace() { return &hnq4face; }
 };
 } // namespace Gascoigne
 

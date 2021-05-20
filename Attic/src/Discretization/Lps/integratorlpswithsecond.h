@@ -30,9 +30,11 @@
 /**********************************************************/
 
 namespace Gascoigne {
-template <int DIM>
-class IntegratorLpsWithSecond : public IntegratorWithSecond<DIM>,
-                                public GalerkinLpsIntegratorQ2<DIM> {
+template<int DIM>
+class IntegratorLpsWithSecond
+  : public IntegratorWithSecond<DIM>
+  , public GalerkinLpsIntegratorQ2<DIM>
+{
 protected:
 public:
   std::string GetName() const { return "IntegratorLpsWithSecond"; }

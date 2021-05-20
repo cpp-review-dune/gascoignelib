@@ -28,7 +28,9 @@ using namespace std;
 /* ----------------------------------------- */
 
 namespace Gascoigne {
-void SimpleIlu::ReInit(int n, int nentries) {
+void
+SimpleIlu::ReInit(int n, int nentries)
+{
   SimpleMatrix::ReInit(n, nentries);
   p.reservesize(n, -1);
   q.reservesize(n, -1);
@@ -36,7 +38,9 @@ void SimpleIlu::ReInit(int n, int nentries) {
 
 /*-----------------------------------------*/
 
-void SimpleIlu::solve(DoubleVector &x) const {
+void
+SimpleIlu::solve(DoubleVector& x) const
+{
   hin(x);
   forward();
   backward();
@@ -45,7 +49,9 @@ void SimpleIlu::solve(DoubleVector &x) const {
 
 /*-----------------------------------------*/
 
-void SimpleIlu::solve_transpose(DoubleVector &x) const {
+void
+SimpleIlu::solve_transpose(DoubleVector& x) const
+{
   hin(x);
   forward_transpose();
   backward_transpose();
@@ -54,7 +60,9 @@ void SimpleIlu::solve_transpose(DoubleVector &x) const {
 
 /*-------------------------------------------------------------*/
 
-void SimpleIlu::hin(const DoubleVector &x) const {
+void
+SimpleIlu::hin(const DoubleVector& x) const
+{
   int n = x.size();
   yp.reservesize(n);
   assert(n == ST.n());
@@ -64,14 +72,18 @@ void SimpleIlu::hin(const DoubleVector &x) const {
 
 /*-------------------------------------------------------------*/
 
-void SimpleIlu::her(DoubleVector &x) const {
+void
+SimpleIlu::her(DoubleVector& x) const
+{
   for (int i = 0; i < ST.n(); i++)
     x[i] = yp[q[i]];
 }
 
 /*-------------------------------------------------------------*/
 
-void SimpleIlu::forward() const {
+void
+SimpleIlu::forward() const
+{
   for (int i = 1; i < ST.n(); i++) {
     int ende = ST.diag(i);
     for (int pos = ST.start(i); pos < ende; pos++) {
@@ -83,7 +95,9 @@ void SimpleIlu::forward() const {
 
 /*-------------------------------------------------------------*/
 
-void SimpleIlu::backward() const {
+void
+SimpleIlu::backward() const
+{
   for (int i = ST.n() - 1; i >= 0; i--) {
     int ende = ST.diag(i);
     for (int pos = ST.stop(i) - 1; pos > ende; pos--) {
@@ -96,7 +110,9 @@ void SimpleIlu::backward() const {
 
 /*-------------------------------------------------------------*/
 
-void SimpleIlu::forward_transpose() const {
+void
+SimpleIlu::forward_transpose() const
+{
   for (int i = 0; i < ST.n(); i++) {
     int ende = ST.diag(i);
     for (int pos = ST.start(i); pos < ende; pos++) {
@@ -110,7 +126,9 @@ void SimpleIlu::forward_transpose() const {
 
 /*-------------------------------------------------------------*/
 
-void SimpleIlu::backward_transpose() const {
+void
+SimpleIlu::backward_transpose() const
+{
   for (int i = ST.n() - 1; i >= 0; i--) {
     int ende = ST.diag(i);
     for (int pos = ST.stop(i) - 1; pos > ende; pos--) {
@@ -123,7 +141,9 @@ void SimpleIlu::backward_transpose() const {
 
 /* ----------------------------------------- */
 
-void SimpleIlu::compute_ilu() {
+void
+SimpleIlu::compute_ilu()
+{
   // // original
   // for(int i=0; i<ST.n(); i++)
   //   {
@@ -155,9 +175,9 @@ void SimpleIlu::compute_ilu() {
   // und die Vermeidung von redundanten Aufrufen, tom.
   // (ein "inline"-ing der Methoden von ST (Class ColumnStencil) bringt nichts)
   int ST_n = ST.n();
-  IndexVector &ST_start = ST.start();
-  IndexVector &ST_diag = ST.diag();
-  IndexVector &ST_col = ST.col();
+  IndexVector& ST_start = ST.start();
+  IndexVector& ST_diag = ST.diag();
+  IndexVector& ST_col = ST.col();
   int ST_start_i;
   int ST_stop_i;
   int ST_diag_i;
@@ -208,11 +228,13 @@ void SimpleIlu::compute_ilu() {
 
 /*-------------------------------------------------*/
 
-void SimpleIlu::copy_entries(const MatrixInterface &A) {
-  const SimpleMatrix &AP = dynamic_cast<const SimpleMatrix &>(A);
+void
+SimpleIlu::copy_entries(const MatrixInterface& A)
+{
+  const SimpleMatrix& AP = dynamic_cast<const SimpleMatrix&>(A);
 
-  const ColumnDiagStencil *AS =
-      dynamic_cast<const ColumnDiagStencil *>(AP.GetStencil());
+  const ColumnDiagStencil* AS =
+    dynamic_cast<const ColumnDiagStencil*>(AP.GetStencil());
   assert(AS);
 
   for (int i = 0; i < ST.n(); i++) {

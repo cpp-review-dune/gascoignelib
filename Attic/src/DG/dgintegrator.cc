@@ -1,16 +1,27 @@
 #include "dgintegrator.h"
 
 namespace Gascoigne {
-template <int DIM>
-DGIntegrator<DIM>::DGIntegrator() : GalerkinIntegrator<DIM>() {}
+template<int DIM>
+DGIntegrator<DIM>::DGIntegrator()
+  : GalerkinIntegrator<DIM>()
+{}
 
-template <>
-void DGIntegrator<2>::EdgeForm(
-    bool internaledge, const DGEquation &EQ, LocalVector &F1, LocalVector &F2,
-    const FemInterface &FEMASTER, const FemInterface &FESLAVE,
-    const int &masterli, const int &slaveli, const LocalVector &U1,
-    const LocalVector &U2, const LocalData &QN_master,
-    const LocalData &QN_slave, const LocalData &QC) const {
+template<>
+void
+DGIntegrator<2>::EdgeForm(bool internaledge,
+                          const DGEquation& EQ,
+                          LocalVector& F1,
+                          LocalVector& F2,
+                          const FemInterface& FEMASTER,
+                          const FemInterface& FESLAVE,
+                          const int& masterli,
+                          const int& slaveli,
+                          const LocalVector& U1,
+                          const LocalVector& U2,
+                          const LocalData& QN_master,
+                          const LocalData& QN_slave,
+                          const LocalData& QC) const
+{
   F1.ReInit(EQ.GetNcomp(), FEMASTER.n());
   F1.zero();
   if (internaledge) {
@@ -75,13 +86,24 @@ void DGIntegrator<2>::EdgeForm(
 
 // Die Matrix-Funktion wird 4mal aufgerufen,
 // jeweils Kopplungen zwischen den einzelnen Test-Ansatzfunktionen
-template <>
-void DGIntegrator<2>::EdgeMatrix(
-    bool internaledge, const DGEquation &EQ, EntryMatrix &E11, EntryMatrix &E12,
-    EntryMatrix &E21, EntryMatrix &E22, const FemInterface &FEMASTER,
-    const FemInterface &FESLAVE, const int &masterli, const int &slaveli,
-    const LocalVector &U1, const LocalVector &U2, const LocalData &QN_master,
-    const LocalData &QN_slave, const LocalData &QC) const {
+template<>
+void
+DGIntegrator<2>::EdgeMatrix(bool internaledge,
+                            const DGEquation& EQ,
+                            EntryMatrix& E11,
+                            EntryMatrix& E12,
+                            EntryMatrix& E21,
+                            EntryMatrix& E22,
+                            const FemInterface& FEMASTER,
+                            const FemInterface& FESLAVE,
+                            const int& masterli,
+                            const int& slaveli,
+                            const LocalVector& U1,
+                            const LocalVector& U2,
+                            const LocalData& QN_master,
+                            const LocalData& QN_slave,
+                            const LocalData& QC) const
+{
   E11.SetDimensionDof(FEMASTER.n(), FEMASTER.n());
   E11.SetDimensionComp(U1.ncomp(), U1.ncomp());
   E11.resize();

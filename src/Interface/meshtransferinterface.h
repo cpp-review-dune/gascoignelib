@@ -35,7 +35,8 @@ namespace Gascoigne {
 ////
 /////////////////////////////////////////////
 
-class MeshTransferInterface {
+class MeshTransferInterface
+{
 private:
 protected:
 public:

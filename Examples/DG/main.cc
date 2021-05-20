@@ -27,10 +27,13 @@
 
 using namespace Gascoigne;
 
-class MyLoop : public StdLoop {
+class MyLoop : public StdLoop
+{
 public:
-  void BasicInit(const ParamFile *paramfile, const ProblemContainer *PC,
-                 const FunctionalContainer *FC = NULL) {
+  void BasicInit(const ParamFile* paramfile,
+                 const ProblemContainer* PC,
+                 const FunctionalContainer* FC = NULL)
+  {
     GetMultiLevelSolverPointer() = new DGMultiLevelSolver;
     StdLoop::BasicInit(paramfile, PC, FC);
   }
@@ -38,7 +41,9 @@ public:
 
 /*---------------------------------------------------*/
 
-int main(int argc, char **argv) {
+int
+main(int argc, char** argv)
+{
   ParamFile paramfile("dg.param");
   if (argc >= 2) {
     paramfile.SetName(argv[1]);

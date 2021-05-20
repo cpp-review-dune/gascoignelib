@@ -7,8 +7,9 @@ using namespace std;
 
 namespace Gascoigne {
 
-template <int DIM>
-BoundarySolidEuler<DIM>::BoundarySolidEuler(const ParamFile *pf) {
+template<int DIM>
+BoundarySolidEuler<DIM>::BoundarySolidEuler(const ParamFile* pf)
+{
   DataFormatHandler DFH;
   DFH.insert("nu_f", &__nu_f, 0.0);
   DFH.insert("rho_f", &__rho_f);
@@ -22,13 +23,16 @@ BoundarySolidEuler<DIM>::BoundarySolidEuler(const ParamFile *pf) {
   cout << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" << endl;
 }
 
-template <int DIM>
-void BoundarySolidEuler<DIM>::Form(VectorIterator b, const FemFunction &U,
-                                   const TestFunction &N, int col) const {
+template<int DIM>
+void
+BoundarySolidEuler<DIM>::Form(VectorIterator b,
+                              const FemFunction& U,
+                              const TestFunction& N,
+                              int col) const
+{
   if (DIM == 3) {
     NV << (*VEL)[1].x(), (*VEL)[1].y(), (*VEL)[1].z(), (*VEL)[2].x(),
-        (*VEL)[2].y(), (*VEL)[2].z(), (*VEL)[3].x(), (*VEL)[3].y(),
-        (*VEL)[3].z();
+      (*VEL)[2].y(), (*VEL)[2].z(), (*VEL)[3].x(), (*VEL)[3].y(), (*VEL)[3].z();
   } else {
     NV << (*VEL)[1].x(), (*VEL)[1].y(), (*VEL)[2].x(), (*VEL)[2].y();
   }
@@ -60,15 +64,22 @@ void BoundarySolidEuler<DIM>::Form(VectorIterator b, const FemFunction &U,
   }
 }
 
-template <int DIM>
-void BoundarySolidEuler<DIM>::Matrix(EntryMatrix &A, const FemFunction &U,
-                                     const TestFunction &M,
-                                     const TestFunction &N, int col) const {}
+template<int DIM>
+void
+BoundarySolidEuler<DIM>::Matrix(EntryMatrix& A,
+                                const FemFunction& U,
+                                const TestFunction& M,
+                                const TestFunction& N,
+                                int col) const
+{}
 
-template <int DIM>
-void BoundarySolidEuler<DIM>::pointboundary(double h, const FemFunction &U,
-                                            const Vertex<DIM> &v,
-                                            const Vertex<DIM> &n) const {
+template<int DIM>
+void
+BoundarySolidEuler<DIM>::pointboundary(double h,
+                                       const FemFunction& U,
+                                       const Vertex<DIM>& v,
+                                       const Vertex<DIM>& n) const
+{
   __n[0] = n[0];
   __n[1] = n[1];
   if (DIM == 3)

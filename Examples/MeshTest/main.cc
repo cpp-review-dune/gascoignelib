@@ -39,7 +39,9 @@ using namespace Gascoigne;
 
 /* ----------------------------------------- */
 
-void Output(int iter, const MeshAgent &MA, const StopWatch &stop) {
+void
+Output(int iter, const MeshAgent& MA, const StopWatch& stop)
+{
   cout << iter << "\t" << MA.nnodes() << "\t" << MA.ncells() << "\t"
        << MA.nlevels() << "\t" << stop.read() << "\t" << flush;
   system("ps -C MeshTest -o rss | tail -1");
@@ -47,9 +49,11 @@ void Output(int iter, const MeshAgent &MA, const StopWatch &stop) {
 
 /* ----------------------------------------- */
 
-void refine_mesh(MeshAgent &MA, string type) {
-  const GascoigneMesh3d *GM =
-      dynamic_cast<const GascoigneMesh3d *>(MA.GetMesh(0));
+void
+refine_mesh(MeshAgent& MA, string type)
+{
+  const GascoigneMesh3d* GM =
+    dynamic_cast<const GascoigneMesh3d*>(MA.GetMesh(0));
 
   if (type == "global")
     MA.global_refine(1);
@@ -70,7 +74,9 @@ void refine_mesh(MeshAgent &MA, string type) {
 
 /* ----------------------------------------- */
 
-int main(int argc, char **argv) {
+int
+main(int argc, char** argv)
+{
   ParamFile paramfile("gascoigne.param");
   if (argc >= 2) {
     paramfile.SetName(argv[1]);

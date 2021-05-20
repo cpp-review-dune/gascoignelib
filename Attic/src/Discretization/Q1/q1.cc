@@ -30,11 +30,15 @@ using namespace std;
 /* ----------------------------------------- */
 
 namespace Gascoigne {
-Q1::Q1() : CellDiscretization(), HN(NULL) {}
+Q1::Q1()
+  : CellDiscretization()
+  , HN(NULL)
+{}
 
 /* ----------------------------------------- */
 
-Q1::~Q1() {
+Q1::~Q1()
+{
   if (HN)
     delete HN;
   HN = NULL;
@@ -42,15 +46,18 @@ Q1::~Q1() {
 
 /* ----------------------------------------- */
 
-void Q1::ReInit(const GascoigneMesh *MP) {
+void
+Q1::ReInit(const GascoigneMesh* MP)
+{
   CellDiscretization::ReInit(MP);
   HN->ReInit(MP);
 }
 
 /* ----------------------------------------- */
 
-void Q1::LocalToGlobal(MatrixInterface &A, EntryMatrix &E, int iq,
-                       double s) const {
+void
+Q1::LocalToGlobal(MatrixInterface& A, EntryMatrix& E, int iq, double s) const
+{
   IntVector indices = GetLocalIndices(iq);
   HN->CondenseHanging(E, indices);
   IntVector::const_iterator start = indices.begin();
@@ -60,11 +67,14 @@ void Q1::LocalToGlobal(MatrixInterface &A, EntryMatrix &E, int iq,
 
 /* ----------------------------------------- */
 
-void Q1::StrongDirichletMatrix(MatrixInterface &A, int col,
-                               const vector<int> &comp) const {
-  const GascoigneMesh *GMP = dynamic_cast<const GascoigneMesh *>(GetMesh());
+void
+Q1::StrongDirichletMatrix(MatrixInterface& A,
+                          int col,
+                          const vector<int>& comp) const
+{
+  const GascoigneMesh* GMP = dynamic_cast<const GascoigneMesh*>(GetMesh());
   assert(GMP);
-  const IntVector &bv = *GMP->VertexOnBoundary(col);
+  const IntVector& bv = *GMP->VertexOnBoundary(col);
   for (int i = 0; i < bv.size(); i++) {
     A.dirichlet(bv[i], comp);
   }
@@ -72,11 +82,14 @@ void Q1::StrongDirichletMatrix(MatrixInterface &A, int col,
 
 /* ----------------------------------------- */
 
-void Q1::StrongDirichletMatrixOnlyRow(MatrixInterface &A, int col,
-                                      const vector<int> &comp) const {
-  const GascoigneMesh *GMP = dynamic_cast<const GascoigneMesh *>(GetMesh());
+void
+Q1::StrongDirichletMatrixOnlyRow(MatrixInterface& A,
+                                 int col,
+                                 const vector<int>& comp) const
+{
+  const GascoigneMesh* GMP = dynamic_cast<const GascoigneMesh*>(GetMesh());
   assert(GMP);
-  const IntVector &bv = *GMP->VertexOnBoundary(col);
+  const IntVector& bv = *GMP->VertexOnBoundary(col);
   for (int i = 0; i < bv.size(); i++) {
     A.dirichlet_only_row(bv[i], comp);
   }
@@ -84,11 +97,14 @@ void Q1::StrongDirichletMatrixOnlyRow(MatrixInterface &A, int col,
 
 /* ----------------------------------------- */
 
-void Q1::StrongDirichletVectorZero(GlobalVector &u, int col,
-                                   const vector<int> &comp) const {
-  const GascoigneMesh *GMP = dynamic_cast<const GascoigneMesh *>(GetMesh());
+void
+Q1::StrongDirichletVectorZero(GlobalVector& u,
+                              int col,
+                              const vector<int>& comp) const
+{
+  const GascoigneMesh* GMP = dynamic_cast<const GascoigneMesh*>(GetMesh());
   assert(GMP);
-  const IntVector &bv = *GMP->VertexOnBoundary(col);
+  const IntVector& bv = *GMP->VertexOnBoundary(col);
 
   for (int ii = 0; ii < comp.size(); ii++) {
     int c = comp[ii];
@@ -111,24 +127,42 @@ void Q1::StrongDirichletVectorZero(GlobalVector &u, int col,
 
 /*-----------------------------------------*/
 
-void Q1::HNAverage(GlobalVector &x) const { HN->Average(x); }
+void
+Q1::HNAverage(GlobalVector& x) const
+{
+  HN->Average(x);
+}
 
 /* ----------------------------------------- */
 
-void Q1::HNDistribute(GlobalVector &x) const { HN->Distribute(x); }
+void
+Q1::HNDistribute(GlobalVector& x) const
+{
+  HN->Distribute(x);
+}
 
 /* ----------------------------------------- */
 
-void Q1::HNZero(GlobalVector &x) const { HN->Zero(x); }
+void
+Q1::HNZero(GlobalVector& x) const
+{
+  HN->Zero(x);
+}
 
 /* ----------------------------------------- */
 
-bool Q1::HNZeroCheck(const GlobalVector &x) const { return HN->ZeroCheck(x); }
+bool
+Q1::HNZeroCheck(const GlobalVector& x) const
+{
+  return HN->ZeroCheck(x);
+}
 
 /* ----------------------------------------- */
 
-void Q1::Structure(SparseStructureInterface *SI) const {
-  SparseStructure *S = dynamic_cast<SparseStructure *>(SI);
+void
+Q1::Structure(SparseStructureInterface* SI) const
+{
+  SparseStructure* S = dynamic_cast<SparseStructure*>(SI);
   assert(S);
 
   S->build_begin(ndofs());
@@ -143,8 +177,12 @@ void Q1::Structure(SparseStructureInterface *SI) const {
 
 /* ----------------------------------------- */
 
-void Q1::Matrix(MatrixInterface &A, const GlobalVector &u,
-                const ProblemDescriptorInterface &PD, double d) const {
+void
+Q1::Matrix(MatrixInterface& A,
+           const GlobalVector& u,
+           const ProblemDescriptorInterface& PD,
+           double d) const
+{
   CellDiscretization::Matrix(A, u, PD, d);
 
   HN->MatrixDiag(u.ncomp(), A);
@@ -152,7 +190,9 @@ void Q1::Matrix(MatrixInterface &A, const GlobalVector &u,
 
 /* ----------------------------------------- */
 
-void Q1::MassMatrix(MatrixInterface &A) const {
+void
+Q1::MassMatrix(MatrixInterface& A) const
+{
   CellDiscretization::MassMatrix(A);
 
   HN->MatrixDiag(1, A);
@@ -160,8 +200,10 @@ void Q1::MassMatrix(MatrixInterface &A) const {
 
 /* ----------------------------------------- */
 
-void Q1::InitFilter(DoubleVector &F) const {
-  PressureFilter *PF = static_cast<PressureFilter *>(&F);
+void
+Q1::InitFilter(DoubleVector& F) const
+{
+  PressureFilter* PF = static_cast<PressureFilter*>(&F);
   assert(PF);
 
   if (!PF->Active())

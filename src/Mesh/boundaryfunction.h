@@ -30,7 +30,9 @@
 /*---------------------------------------------------*/
 
 namespace Gascoigne {
-template <int DIM> class BoundaryFunction {
+template<int DIM>
+class BoundaryFunction
+{
 protected:
   typedef Vertex<DIM> Vector;
 
@@ -40,10 +42,10 @@ public:
 
   virtual std::string GetName() const { return "No Name"; }
 
-  virtual double operator()(const Vector &c) const = 0;
+  virtual double operator()(const Vector& c) const = 0;
 
-  virtual void grad(Vector &dst, const Vector &src) const;
-  virtual void newton(Vector &) const;
+  virtual void grad(Vector& dst, const Vector& src) const;
+  virtual void newton(Vector&) const;
 };
 } // namespace Gascoigne
 

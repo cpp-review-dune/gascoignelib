@@ -34,13 +34,20 @@ using namespace std;
 
 namespace Gascoigne {
 Visualization::Visualization()
-    : mesh(0), PointData(0), CellData(0), filename("none"), GP(0) {
+  : mesh(0)
+  , PointData(0)
+  , CellData(0)
+  , filename("none")
+  , GP(0)
+{
   BasicInit();
 }
 
 /********************************************************************/
 
-Visualization::Visualization(const Visualization &W) : mesh(W.mesh) {
+Visualization::Visualization(const Visualization& W)
+  : mesh(W.mesh)
+{
   *this = W;
 }
 
@@ -50,7 +57,9 @@ Visualization::~Visualization() {}
 
 /********************************************************************/
 
-Visualization &Visualization::operator=(const Visualization &W) {
+Visualization&
+Visualization::operator=(const Visualization& W)
+{
   stepname = W.stepname;
   title = W.title;
   avsa = W.avsa;
@@ -74,7 +83,9 @@ Visualization &Visualization::operator=(const Visualization &W) {
 
 /********************************************************************/
 
-void Visualization::BasicInit() {
+void
+Visualization::BasicInit()
+{
   pstep = 1;
   avsa = gmva = vua = vigiea = gnua = teca = 0;
   time = 0.;
@@ -91,7 +102,9 @@ void Visualization::BasicInit() {
 
 /********************************************************************/
 
-void Visualization::read_parameters(const ParamFile &pf) {
+void
+Visualization::read_parameters(const ParamFile& pf)
+{
   double time;
 
   vector<string> planes(0);
@@ -137,14 +150,18 @@ void Visualization::read_parameters(const ParamFile &pf) {
 
 /********************************************************************/
 
-void Visualization::set_name(const string &s) {
+void
+Visualization::set_name(const string& s)
+{
   stepname = s;
   filename = stepname;
 }
 
 /********************************************************************/
 
-void Visualization::format(const string &s) {
+void
+Visualization::format(const string& s)
+{
   if (s == "vtk")
     vtka = 1;
   else if (s == "rotatedvtk")
@@ -170,7 +187,9 @@ void Visualization::format(const string &s) {
 
 /********************************************************************/
 
-int Visualization::active(int i) const {
+int
+Visualization::active(int i) const
+{
   if (pstep < 0) {
     if (time < nexttime)
       return 0;
@@ -183,7 +202,9 @@ int Visualization::active(int i) const {
 
 /********************************************************************/
 
-void Visualization::step(int i) {
+void
+Visualization::step(int i)
+{
   if ((pstep == -1) || (!active(i))) {
     if (pstep < 0)
       nexttime = time + tstep;
@@ -196,7 +217,9 @@ void Visualization::step(int i) {
 
 /********************************************************************/
 
-void Visualization::write() {
+void
+Visualization::write()
+{
   if (mesh == 0) {
     cerr << "Visualization::write()\n";
     cerr << "mesh pointer not set\n";
@@ -226,7 +249,9 @@ void Visualization::write() {
 
 /********************************************************************/
 
-int Visualization::CheckPointData() const {
+int
+Visualization::CheckPointData() const
+{
   if (PointData == NULL)
     return 0;
 
@@ -234,7 +259,8 @@ int Visualization::CheckPointData() const {
 
   // scalars
   for (VisuDataInfo::siterator p = PointDataInfo->sbegin();
-       p != PointDataInfo->send(); ++p) {
+       p != PointDataInfo->send();
+       ++p) {
     int q = p->second;
 
     assert(q >= 0);
@@ -246,7 +272,8 @@ int Visualization::CheckPointData() const {
   // vectors
   if (0)
     for (VisuDataInfo::viterator p = PointDataInfo->vbegin();
-         p != PointDataInfo->vend(); ++p) {
+         p != PointDataInfo->vend();
+         ++p) {
       for (int i = 0; i < 3; i++) {
         int q = p->second[i];
 
@@ -261,7 +288,9 @@ int Visualization::CheckPointData() const {
 
 /********************************************************************/
 
-int Visualization::CheckCellData() const {
+int
+Visualization::CheckCellData() const
+{
   if (!CellData)
     return 0;
 
@@ -269,7 +298,8 @@ int Visualization::CheckCellData() const {
 
   // scalars
   for (VisuDataInfo::siterator p = CellDataInfo->sbegin();
-       p != CellDataInfo->send(); ++p) {
+       p != CellDataInfo->send();
+       ++p) {
     if ((p->second < 0) || (p->second >= CellData->visucomp())) {
       cerr << "Visualization::CheckCellData()\n";
       cerr << "scalar does not exist " << p->second << endl;
@@ -280,7 +310,8 @@ int Visualization::CheckCellData() const {
 
   // vectors
   for (VisuDataInfo::viterator p = CellDataInfo->vbegin();
-       p != CellDataInfo->vend(); ++p) {
+       p != CellDataInfo->vend();
+       ++p) {
     for (int i = 0; i < 3; i++) {
       if ((p->second[i] < -1) || (p->second[i] >= CellData->visucomp())) {
         cerr << "Visualization::CheckCellData()\n";
@@ -295,7 +326,9 @@ int Visualization::CheckCellData() const {
 
 /********************************************************************/
 
-void Visualization::output_vertexs(ofstream &file) const {
+void
+Visualization::output_vertexs(ofstream& file) const
+{
   if (mesh->dimension() == 2) {
     for (int i = 0; i < mesh->nnodes(); i++) {
       file << mesh->vertex2d(i) << endl;
@@ -309,7 +342,9 @@ void Visualization::output_vertexs(ofstream &file) const {
 
 /********************************************************************/
 
-void Visualization::output_vertexs_by_component(ofstream &file) const {
+void
+Visualization::output_vertexs_by_component(ofstream& file) const
+{
   if (mesh->dimension() == 2) {
     for (int i = 0; i < mesh->nnodes(); i++) {
       file << " " << mesh->vertex2d(i).x();
@@ -335,7 +370,9 @@ void Visualization::output_vertexs_by_component(ofstream &file) const {
 
 /********************************************************************/
 
-void Visualization::output_quads(ofstream &file, const string &text) const {
+void
+Visualization::output_quads(ofstream& file, const string& text) const
+{
   if (mesh->dimension() == 2) {
     for (int c = 0; c < mesh->ncells(); c++) {
       file << text;
@@ -349,7 +386,9 @@ void Visualization::output_quads(ofstream &file, const string &text) const {
 
 /********************************************************************/
 
-void Visualization::output_hexs(ofstream &file, const string &text) const {
+void
+Visualization::output_hexs(ofstream& file, const string& text) const
+{
   if (mesh->dimension() == 3) {
     for (int c = 0; c < mesh->ncells(); c++) {
       file << text;
@@ -363,7 +402,9 @@ void Visualization::output_hexs(ofstream &file, const string &text) const {
 
 /********************************************************************/
 
-void Visualization::output_solution(ofstream &file, int c) const {
+void
+Visualization::output_solution(ofstream& file, int c) const
+{
   for (int ind = 0; ind < PointData->visun(); ind++) {
     file << PointData->visudata(ind, c) << " ";
   }

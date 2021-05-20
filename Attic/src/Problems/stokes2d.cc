@@ -33,14 +33,18 @@ Stokes2d::~Stokes2d() {}
 
 /*-----------------------------------------*/
 
-Stokes2d::Stokes2d() : Equation() {
+Stokes2d::Stokes2d()
+  : Equation()
+{
   _penalty = 0.;
   _visc = 1.;
 }
 
 /*-----------------------------------------*/
 
-void Stokes2d::SetTimePattern(TimePattern &TP) const {
+void
+Stokes2d::SetTimePattern(TimePattern& TP) const
+{
   TP(0, 0) = _penalty;
   TP(1, 1) = 1.;
   TP(2, 2) = 1.;
@@ -48,7 +52,9 @@ void Stokes2d::SetTimePattern(TimePattern &TP) const {
 
 /*-----------------------------------------*/
 
-Stokes2d::Stokes2d(const ParamFile &pf) : Equation() {
+Stokes2d::Stokes2d(const ParamFile& pf)
+  : Equation()
+{
   DataFormatHandler DFH;
   DFH.insert("visc", &_visc, 1.);
   DFH.insert("penalty", &_penalty, 0.);
@@ -58,20 +64,27 @@ Stokes2d::Stokes2d(const ParamFile &pf) : Equation() {
 
 /*-----------------------------------------*/
 
-double Stokes2d::Laplace(const TestFunction &U, const TestFunction &N) const {
+double
+Stokes2d::Laplace(const TestFunction& U, const TestFunction& N) const
+{
   return U.x() * N.x() + U.y() * N.y();
 }
 
 /*-----------------------------------------*/
 
-double Stokes2d::Divergence(const FemFunction &U) const {
+double
+Stokes2d::Divergence(const FemFunction& U) const
+{
   return U[1].x() + U[2].y();
 }
 
 /*-----------------------------------------*/
 
-void Stokes2d::Form(VectorIterator b, const FemFunction &U,
-                    const TestFunction &N) const {
+void
+Stokes2d::Form(VectorIterator b,
+               const FemFunction& U,
+               const TestFunction& N) const
+{
   ////////////// Continuity ////////////////////////////////////////////////
 
   b[0] += Divergence(U) * N.m();
@@ -88,8 +101,12 @@ void Stokes2d::Form(VectorIterator b, const FemFunction &U,
 
 /*-----------------------------------------*/
 
-void Stokes2d::Matrix(EntryMatrix &A, const FemFunction &U,
-                      const TestFunction &M, const TestFunction &N) const {
+void
+Stokes2d::Matrix(EntryMatrix& A,
+                 const FemFunction& U,
+                 const TestFunction& M,
+                 const TestFunction& N) const
+{
   ////////////// Continuity ////////////////////////////////////////////////
 
   A(0, 1) += M.x() * N.m();

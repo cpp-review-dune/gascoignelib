@@ -41,10 +41,11 @@ namespace Gascoigne {
 ////
 /////////////////////////////////////////////
 
-class IluAgent : public std::map<Matrix, IluInterface *> {
+class IluAgent : public std::map<Matrix, IluInterface*>
+{
 public:
-  typedef std::map<Matrix, IluInterface *>::const_iterator const_iterator;
-  typedef std::map<Matrix, IluInterface *>::iterator iterator;
+  typedef std::map<Matrix, IluInterface*>::const_iterator const_iterator;
+  typedef std::map<Matrix, IluInterface*>::iterator iterator;
 
   //
   ////  Con(De)structor
@@ -53,12 +54,13 @@ public:
   IluAgent();
   ~IluAgent();
 
-  void Register(const Matrix &mat);
-  void Delete(Matrix &mat);
+  void Register(const Matrix& mat);
+  void Delete(Matrix& mat);
 
-  IluInterface &operator()(const Matrix &g);
+  IluInterface& operator()(const Matrix& g);
 
-  friend std::ostream &operator<<(std::ostream &os, const IluAgent &gva) {
+  friend std::ostream& operator<<(std::ostream& os, const IluAgent& gva)
+  {
     int i = 0, n = gva.size();
     os << "IluAgent: size=" << n << ", ";
     for (auto p = gva.begin(); p != gva.end(); p++, i++) {

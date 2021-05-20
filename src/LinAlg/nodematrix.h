@@ -29,37 +29,46 @@
 /**************************************************/
 
 namespace Gascoigne {
-template <size_t N, class T> class NodeMatrix : public numfixarray<N * N, T> {
+template<size_t N, class T>
+class NodeMatrix : public numfixarray<N * N, T>
+{
 
 public:
-  NodeMatrix<N, T>() : numfixarray<N * N, T>() {}
-  NodeMatrix<N, T>(const T &A) : numfixarray<N * N, T>(A) {}
+  NodeMatrix<N, T>()
+    : numfixarray<N * N, T>()
+  {}
+  NodeMatrix<N, T>(const T& A)
+    : numfixarray<N * N, T>(A)
+  {}
 
-  T &operator()(int i, int j) { return (*this)[j + i * N]; }
-  const T &operator()(int i, int j) const { return (*this)[j + i * N]; }
+  T& operator()(int i, int j) { return (*this)[j + i * N]; }
+  const T& operator()(int i, int j) const { return (*this)[j + i * N]; }
 
-  T &value(int i, int j) { return (*this)[j + i * N]; }
-  const T &value(int i, int j) const { return (*this)[j + i * N]; }
+  T& value(int i, int j) { return (*this)[j + i * N]; }
+  const T& value(int i, int j) const { return (*this)[j + i * N]; }
 
   void reserve(int) const {};
   void resize(int) const {};
 
   int m() const { return N; }
 
-  friend std::ostream &operator<<(std::ostream &s, const NodeMatrix<N, T> &A) {
+  friend std::ostream& operator<<(std::ostream& s, const NodeMatrix<N, T>& A)
+  {
     for (int c = 0; c < N * N; c++)
       s << A[c] << " ";
     s << "\t";
     return s;
   }
 
-  void identity() {
+  void identity()
+  {
     numfixarray<N * N, T>::zero();
     for (int d = 0; d < N; d++) {
       value(d, d) = 1.;
     }
   }
-  void zero_component(int c) {
+  void zero_component(int c)
+  {
     for (int d = 0; d < N; d++) {
       value(c, d) = 0.;
     }
@@ -67,7 +76,7 @@ public:
 
   /**************************************************/
 
-  void addmult(double k, const NodeMatrix<N, T> &A, const NodeMatrix<N, T> &B)
+  void addmult(double k, const NodeMatrix<N, T>& A, const NodeMatrix<N, T>& B)
   // this += k*A*B
   {
     for (int i = 0; i < N; i++) {
@@ -85,7 +94,8 @@ public:
 
   /**************************************************/
 
-  void inverse(const NodeMatrix<N, T> &A) {
+  void inverse(const NodeMatrix<N, T>& A)
+  {
     /*for(int i=0;i<N;i++)
       {
         value(i,i) = 1./A.value(i,i);
@@ -146,7 +156,8 @@ public:
     }
   }
 
-  void gauss_jordan() {
+  void gauss_jordan()
+  {
     std::vector<int> p(N);
 
     int i, j, k, r;

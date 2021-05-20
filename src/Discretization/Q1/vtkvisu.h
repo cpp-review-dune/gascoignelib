@@ -24,20 +24,21 @@
 #ifndef __vtkvisu_h
 #define __vtkvisu_h
 
-#include "visualization.h"
 #include "compvector.h"
+#include "visualization.h"
 
 /*--------------------------------------------------*/
 
 namespace Gascoigne {
 
-class VtkVisu : public Visualization {
+class VtkVisu : public Visualization
+{
 public:
-  VtkVisu(const GascoigneMesh &M, const std::string &name, int iter);
+  VtkVisu(const GascoigneMesh& M, const std::string& name, int iter);
   ~VtkVisu();
 
-  void WriteNodeData(const DoubleVector &eta);
-  void WriteCellData(const GlobalVector &eta);
+  void WriteNodeData(const DoubleVector& eta);
+  void WriteCellData(const GlobalVector& eta);
 };
 
 /*--------------------------------------------------*/

@@ -38,32 +38,41 @@
 /**********************************************************/
 
 namespace Gascoigne {
-template <int DIM>
-class IntegratorWithSecond : public GalerkinIntegratorQ2<DIM> {
+template<int DIM>
+class IntegratorWithSecond : public GalerkinIntegratorQ2<DIM>
+{
 protected:
-  void point_hesse(const FemInterface &E, const Vertex<DIM> &v) const;
+  void point_hesse(const FemInterface& E, const Vertex<DIM>& v) const;
 
-  void init_test_hesse(const FemInterface &E, TestFunction &N, double w,
+  void init_test_hesse(const FemInterface& E,
+                       TestFunction& N,
+                       double w,
                        int i) const;
 
-  void hesse(const FemInterface &E, FemFunction &UH,
-             const LocalVector &u) const;
+  void hesse(const FemInterface& E,
+             FemFunction& UH,
+             const LocalVector& u) const;
 
-  void hesse(const FemInterface &E, FemData &QH, const LocalData &Q) const;
+  void hesse(const FemInterface& E, FemData& QH, const LocalData& Q) const;
 
 public:
   std::string GetName() const { return "IntegratorWithSecond"; }
 
-  double ComputeDomainFunctional(const DomainFunctional &F,
-                                 const FemInterface &FEM, const LocalVector &U,
-                                 const LocalData &Q, const LocalData &QC) const;
+  double ComputeDomainFunctional(const DomainFunctional& F,
+                                 const FemInterface& FEM,
+                                 const LocalVector& U,
+                                 const LocalData& Q,
+                                 const LocalData& QC) const;
 
-  void Rhs(const DomainRightHandSide &RHS, LocalVector &F,
-           const FemInterface &FEM, const LocalData &Q,
-           const LocalData &QC) const;
+  void Rhs(const DomainRightHandSide& RHS,
+           LocalVector& F,
+           const FemInterface& FEM,
+           const LocalData& Q,
+           const LocalData& QC) const;
 
-  void EstimateSecond(LocalVector &F, const FemInterface &FEM,
-                      const LocalVector &U) const;
+  void EstimateSecond(LocalVector& F,
+                      const FemInterface& FEM,
+                      const LocalVector& U) const;
 };
 } // namespace Gascoigne
 

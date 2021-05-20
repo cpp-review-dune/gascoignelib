@@ -11,7 +11,9 @@
 
 namespace Gascoigne {
 
-template <class BASE> class DGDofHandler {
+template<class BASE>
+class DGDofHandler
+{
   typedef std::array<size_t, BASE::N> ElementType;
   /**
    *
@@ -42,31 +44,40 @@ protected:
 
 public:
   // INIT
-  void InitFromGascoigneMesh(const GascoigneMesh *M);
+  void InitFromGascoigneMesh(const GascoigneMesh* M);
 
   // ACCESS
   int nelements() const { return _elements.size(); }
   int nedges() const { return _edges.size(); }
   int ndofs() const { return _ndofs; }
-  const ElementType &getelement(int e) const {
+  const ElementType& getelement(int e) const
+  {
     assert(e < _elements.size());
     return _elements[e];
   }
-  const EdgeType &getedge(int e) const {
+  const EdgeType& getedge(int e) const
+  {
     assert(e < _edges.size());
     return _edges[e];
   }
 
   //// Matrix Structure
-  void Structure(SparseStructureInterface *S) const;
+  void Structure(SparseStructureInterface* S) const;
 
   ///// Global/Local
-  void GlobalToLocal(LocalVector &U, const GlobalVector &u, int iq) const;
-  void LocalToGlobal(GlobalVector &f, const LocalVector &F, int iq,
+  void GlobalToLocal(LocalVector& U, const GlobalVector& u, int iq) const;
+  void LocalToGlobal(GlobalVector& f,
+                     const LocalVector& F,
+                     int iq,
                      double s) const;
-  void LocalToGlobalMatrix(MatrixInterface &A, EntryMatrix &E, int iq,
+  void LocalToGlobalMatrix(MatrixInterface& A,
+                           EntryMatrix& E,
+                           int iq,
                            double s) const;
-  void LocalToGlobalMatrix(MatrixInterface &A, EntryMatrix &E, int iq1, int iq2,
+  void LocalToGlobalMatrix(MatrixInterface& A,
+                           EntryMatrix& E,
+                           int iq1,
+                           int iq2,
                            double s) const;
 };
 } // namespace Gascoigne

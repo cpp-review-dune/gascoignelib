@@ -27,8 +27,10 @@
 #include <algorithm>
 
 namespace Gascoigne {
-template <class MATRIX1, class MATRIX2, class MATRIX3>
-void multeq(MATRIX1 &M, const MATRIX2 &A, const MATRIX3 &B) {
+template<class MATRIX1, class MATRIX2, class MATRIX3>
+void
+multeq(MATRIX1& M, const MATRIX2& A, const MATRIX3& B)
+{
   typename MATRIX1::iterator p = M.begin();
   typename MATRIX2::const_iterator Ap = A.begin();
   typename MATRIX3::const_iterator Bp;
@@ -53,8 +55,10 @@ void multeq(MATRIX1 &M, const MATRIX2 &A, const MATRIX3 &B) {
   }
 }
 
-template <class MATRIX, class VECTOR>
-void vmult(VECTOR &y, const MATRIX &M, const VECTOR &x) {
+template<class MATRIX, class VECTOR>
+void
+vmult(VECTOR& y, const MATRIX& M, const VECTOR& x)
+{
   typename VECTOR::iterator py = y.begin();
   typename VECTOR::const_iterator px;
   typename MATRIX::const_iterator p = M.begin();
@@ -68,8 +72,10 @@ void vmult(VECTOR &y, const MATRIX &M, const VECTOR &x) {
   }
 }
 
-template <class MATRIX, class VECTOR1, class VECTOR2>
-void vmulteq(VECTOR1 &y, const MATRIX &M, const VECTOR2 &x) {
+template<class MATRIX, class VECTOR1, class VECTOR2>
+void
+vmulteq(VECTOR1& y, const MATRIX& M, const VECTOR2& x)
+{
   typename VECTOR1::iterator py = y.begin();
   typename VECTOR2::const_iterator px;
   typename MATRIX::const_iterator p = M.begin();
@@ -84,8 +90,10 @@ void vmulteq(VECTOR1 &y, const MATRIX &M, const VECTOR2 &x) {
   }
 }
 
-template <class MATRIX, class ITERATOR, class CITERATOR>
-void vmulteq2(ITERATOR &py, const MATRIX &M, CITERATOR &px0) {
+template<class MATRIX, class ITERATOR, class CITERATOR>
+void
+vmulteq2(ITERATOR& py, const MATRIX& M, CITERATOR& px0)
+{
   CITERATOR px;
   typename MATRIX::const_iterator p = M.begin();
 
@@ -99,8 +107,10 @@ void vmulteq2(ITERATOR &py, const MATRIX &M, CITERATOR &px0) {
   }
 }
 
-template <class MATRIX, class CITERATOR>
-double norme(const MATRIX &M, CITERATOR px0) {
+template<class MATRIX, class CITERATOR>
+double
+norme(const MATRIX& M, CITERATOR px0)
+{
   double d = 0.;
   typename MATRIX::const_iterator p = M.begin();
 
@@ -115,8 +125,10 @@ double norme(const MATRIX &M, CITERATOR px0) {
   return d;
 }
 
-template <class MATRIX, class VECTOR>
-void backward(VECTOR &dst, const MATRIX &M, const VECTOR &src) {
+template<class MATRIX, class VECTOR>
+void
+backward(VECTOR& dst, const MATRIX& M, const VECTOR& src)
+{
   int i, j;
   int nu = std::min(M.m(), M.n());
   double s;

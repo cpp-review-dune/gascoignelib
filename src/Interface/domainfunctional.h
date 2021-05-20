@@ -39,19 +39,24 @@ namespace Gascoigne {
 ///
 /////////////////////////////////////////////
 
-class DomainFunctional : public virtual Functional {
+class DomainFunctional : public virtual Functional
+{
 private:
 protected:
 public:
-  DomainFunctional() : Functional() {}
+  DomainFunctional()
+    : Functional()
+  {}
   virtual ~DomainFunctional() {}
 
-  virtual double J(const FemFunction &U, const Vertex2d &v) const {
+  virtual double J(const FemFunction& U, const Vertex2d& v) const
+  {
     std::cerr << "\"DomainFunctional::J\" not written" << std::endl;
     abort();
   }
 
-  virtual double J(const FemFunction &U, const Vertex3d &v) const {
+  virtual double J(const FemFunction& U, const Vertex3d& v) const
+  {
     std::cerr << "\"DomainFunctional::J\" not written" << std::endl;
     abort();
   }

@@ -33,11 +33,16 @@ using namespace std;
 /*-----------------------------------------*/
 
 namespace Gascoigne {
-TimeInfo::TimeInfo() { BasicInit(); }
+TimeInfo::TimeInfo()
+{
+  BasicInit();
+}
 
 /*-----------------------------------------*/
 
-void TimeInfo::BasicInit() {
+void
+TimeInfo::BasicInit()
+{
   // fractional theta parameter
   //
   double gamma = 1. - sqrt(0.5);
@@ -62,7 +67,9 @@ void TimeInfo::BasicInit() {
 
 /*-----------------------------------------*/
 
-void TimeInfo::ReInit() {
+void
+TimeInfo::ReInit()
+{
   _time = 0.;
   _tbegin = _tend = _deltat = 0.;
   _iter = 0;
@@ -70,7 +77,9 @@ void TimeInfo::ReInit() {
 
 /*-----------------------------------------*/
 
-void TimeInfo::ReInit(double det) {
+void
+TimeInfo::ReInit(double det)
+{
   _time = _tbegin;
   _deltat = det;
   _iter = 0;
@@ -78,7 +87,9 @@ void TimeInfo::ReInit(double det) {
 
 /*-----------------------------------------*/
 
-int TimeInfo::ftstep() const {
+int
+TimeInfo::ftstep() const
+{
   int step = (_iter - _neuler) % 3;
   while (step < 0)
     step += 3;
@@ -87,8 +98,14 @@ int TimeInfo::ftstep() const {
 
 /*-----------------------------------------*/
 
-void TimeInfo::ReInit(double tb, double te, double det, const string &sch,
-                      int ne, double tt) {
+void
+TimeInfo::ReInit(double tb,
+                 double te,
+                 double det,
+                 const string& sch,
+                 int ne,
+                 double tt)
+{
   _tbegin = tb;
   _time = _tbegin;
   _tend = te;
@@ -107,7 +124,9 @@ void TimeInfo::ReInit(double tb, double te, double det, const string &sch,
 
 /*-----------------------------------------*/
 
-void TimeInfo::ReInitTheta() {
+void
+TimeInfo::ReInitTheta()
+{
   assert(_actualscheme == "CN" || _actualscheme == "Euler" ||
          _actualscheme == "FractionalTheta" || _actualscheme == "Theta");
 
@@ -123,7 +142,9 @@ void TimeInfo::ReInitTheta() {
 
 /*-----------------------------------------*/
 
-double TimeInfo::theta() const {
+double
+TimeInfo::theta() const
+{
   if (_actualscheme == "FractionalTheta")
     return _fttheta[ftstep()];
   return _theta;
@@ -131,11 +152,17 @@ double TimeInfo::theta() const {
 
 /*-----------------------------------------*/
 
-void TimeInfo::ScaleTimeStep(double d) { _deltat *= d; }
+void
+TimeInfo::ScaleTimeStep(double d)
+{
+  _deltat *= d;
+}
 
 /*-----------------------------------------*/
 
-double TimeInfo::dt() const {
+double
+TimeInfo::dt() const
+{
   double h = 1.;
   if (_actualscheme == "FractionalTheta")
     h = _ftscale[ftstep()];
@@ -147,7 +174,9 @@ double TimeInfo::dt() const {
 
 /*-----------------------------------------*/
 
-double TimeInfo::oldrhs() const {
+double
+TimeInfo::oldrhs() const
+{
   if (_actualscheme == "FractionalTheta") {
     if (ftstep() == 1) {
       return 0.;
@@ -160,7 +189,9 @@ double TimeInfo::oldrhs() const {
 
 /*-----------------------------------------*/
 
-double TimeInfo::rhs() const {
+double
+TimeInfo::rhs() const
+{
   if (_actualscheme == "FractionalTheta") {
     if (ftstep() == 2) {
       return 1. / _fttheta[1];
@@ -173,14 +204,18 @@ double TimeInfo::rhs() const {
 
 /*-----------------------------------------*/
 
-void TimeInfo::ReInitBackward(int niter, double endtime) {
+void
+TimeInfo::ReInitBackward(int niter, double endtime)
+{
   _iter = niter;
   _time = endtime;
 }
 
 /*-----------------------------------------*/
 
-void TimeInfo::iteration_backward(int i) {
+void
+TimeInfo::iteration_backward(int i)
+{
   assert(i <= _iter);
 
   _iter = i;
@@ -196,14 +231,18 @@ void TimeInfo::iteration_backward(int i) {
 
 /*-----------------------------------------*/
 
-void TimeInfo::RejectTimeStep(double d) {
+void
+TimeInfo::RejectTimeStep(double d)
+{
   _time -= dt();
   _deltat *= d;
 }
 
 /*-----------------------------------------*/
 
-void TimeInfo::iteration(int i) {
+void
+TimeInfo::iteration(int i)
+{
   assert(i >= _iter);
 
   _iter = i;
@@ -216,7 +255,9 @@ void TimeInfo::iteration(int i) {
 
 /*-----------------------------------------*/
 
-void TimeInfo::SpecifyScheme(int i) {
+void
+TimeInfo::SpecifyScheme(int i)
+{
   if (i - 1 == _neuler) {
     cout << "Switching from Euler to " << _scheme << endl;
     _actualscheme = _scheme;

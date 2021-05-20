@@ -49,13 +49,11 @@ typedef double MatrixEntryType;
 #endif
 
 typedef size_t IndexType;                  // data type for global indices
-typedef unsigned short int ShortIndexType;                  // data type for local indices
-  
+typedef unsigned short int ShortIndexType; // data type for local indices
 
 typedef nvector<double> GlobalParameterVector;
 typedef nvector<double> LocalParameterVector;
-typedef std::map<std::string, const GlobalParameterVector *>
-    GlobalParameterData;
+typedef std::map<std::string, const GlobalParameterVector*> GlobalParameterData;
 typedef std::map<std::string, LocalParameterVector> LocalParameterData;
 
 typedef nvector<int> IntVector;
@@ -73,10 +71,10 @@ typedef std::map<std::string, FemFunction> FemData;
 typedef nvector<double> CellFunction;
 typedef std::map<std::string, CellFunction> CellData;
 
-#define BASE_CLONEABLE(Type) virtual Type *createNew() const = 0;
+#define BASE_CLONEABLE(Type) virtual Type* createNew() const = 0;
 
 #define CLONEABLE(Type)                                                        \
-  virtual Type *createNew() const override { return new Type(*this); }
+  virtual Type* createNew() const override { return new Type(*this); }
 } // namespace Gascoigne
 
 #endif

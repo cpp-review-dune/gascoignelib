@@ -30,20 +30,24 @@
 /*-------------------------------------------------------------*/
 
 namespace Gascoigne {
-template <class B>
-DynamicBlockMatrix<B>::DynamicBlockMatrix() : MatrixInterface() {}
+template<class B>
+DynamicBlockMatrix<B>::DynamicBlockMatrix()
+  : MatrixInterface()
+{}
 
 /*-------------------------------------------------------------*/
 
-template <class B>
-DynamicBlockMatrix<B>::DynamicBlockMatrix(const DynamicBlockMatrix<B> &A)
-    : MatrixInterface() {}
+template<class B>
+DynamicBlockMatrix<B>::DynamicBlockMatrix(const DynamicBlockMatrix<B>& A)
+  : MatrixInterface()
+{}
 
 /*-------------------------------------------------------------*/
 
-template <class B>
-DynamicBlockMatrix<B> &
-DynamicBlockMatrix<B>::operator=(const DynamicBlockMatrix<B> &S) {
+template<class B>
+DynamicBlockMatrix<B>&
+DynamicBlockMatrix<B>::operator=(const DynamicBlockMatrix<B>& S)
+{
   std::cerr << "\"DynamicBlockMatrix::operator=\" not written!" << std::endl;
   abort();
 
@@ -70,10 +74,12 @@ DynamicBlockMatrix<B>::operator=(const DynamicBlockMatrix<B> &S) {
 
 /*-------------------------------------------------------------*/
 
-template <class B>
-void DynamicBlockMatrix<B>::ReInit(const SparseStructureInterface *SI) {
+template<class B>
+void
+DynamicBlockMatrix<B>::ReInit(const SparseStructureInterface* SI)
+{
   // Stencil is in matrix!
-  const SparseStructure *SS = dynamic_cast<const SparseStructure *>(SI);
+  const SparseStructure* SS = dynamic_cast<const SparseStructure*>(SI);
   assert(SS);
   assert(SS->n() > 0);
 
@@ -94,7 +100,10 @@ void DynamicBlockMatrix<B>::ReInit(const SparseStructureInterface *SI) {
 
 /*-------------------------------------------------------------*/
 
-template <class B> void DynamicBlockMatrix<B>::zero() {
+template<class B>
+void
+DynamicBlockMatrix<B>::zero()
+{
   for (int i = 0; i < smat.size(); i++)
     for (viterator it = smat[i].begin(); it != smat[i].end(); ++it)
       it->zero();
@@ -102,8 +111,10 @@ template <class B> void DynamicBlockMatrix<B>::zero() {
 
 /*-------------------------------------------------------------*/
 
-template <class B>
-void DynamicBlockMatrix<B>::dirichlet(int i, const std::vector<int> &cv) {
+template<class B>
+void
+DynamicBlockMatrix<B>::dirichlet(int i, const std::vector<int>& cv)
+{
   const_citerator cit = DS.cstart(i);
   viterator vit = smat[i].begin();
   for (; cit != DS.cstop(i); ++cit, ++vit) {
@@ -117,9 +128,10 @@ void DynamicBlockMatrix<B>::dirichlet(int i, const std::vector<int> &cv) {
 
 /*-------------------------------------------------------------*/
 
-template <class B>
-void DynamicBlockMatrix<B>::dirichlet_only_row(int i,
-                                               const std::vector<int> &cv) {
+template<class B>
+void
+DynamicBlockMatrix<B>::dirichlet_only_row(int i, const std::vector<int>& cv)
+{
   const_citerator cit = DS.cstart(i);
   viterator vit = smat[i].begin();
   for (; cit != DS.cstop(i); ++cit, ++vit)
@@ -129,9 +141,12 @@ void DynamicBlockMatrix<B>::dirichlet_only_row(int i,
 
 /*-------------------------------------------------------------*/
 
-template <class B>
-void DynamicBlockMatrix<B>::vmult(GlobalVector &y, const GlobalVector &x,
-                                  double s) const {
+template<class B>
+void
+DynamicBlockMatrix<B>::vmult(GlobalVector& y,
+                             const GlobalVector& x,
+                             double s) const
+{
   for (int i = 0; i < n(); i++) {
     GlobalVector::iterator off = y.start(i);
     const_citerator ci = DS.cstart(i);
@@ -143,13 +158,16 @@ void DynamicBlockMatrix<B>::vmult(GlobalVector &y, const GlobalVector &x,
 
 /*-------------------------------------------------------------*/
 
-template <class B>
-void DynamicBlockMatrix<B>::AddMassWithDifferentStencil(
-    const MatrixInterface *M, const TimePattern &TP, double s) {
-  const SimpleMatrix *MP = dynamic_cast<const SimpleMatrix *>(M);
+template<class B>
+void
+DynamicBlockMatrix<B>::AddMassWithDifferentStencil(const MatrixInterface* M,
+                                                   const TimePattern& TP,
+                                                   double s)
+{
+  const SimpleMatrix* MP = dynamic_cast<const SimpleMatrix*>(M);
   assert(MP);
-  const ColumnDiagStencil *USM =
-      dynamic_cast<const ColumnDiagStencil *>(MP->GetStencil());
+  const ColumnDiagStencil* USM =
+    dynamic_cast<const ColumnDiagStencil*>(MP->GetStencil());
   assert(USM);
 
   assert(n() == USM->n());
@@ -182,9 +200,13 @@ void DynamicBlockMatrix<B>::AddMassWithDifferentStencil(
 
 /*-------------------------------------------------------------*/
 
-template <class B>
-void DynamicBlockMatrix<B>::vmult(GlobalVector &y, const GlobalVector &x,
-                                  const TimePattern &TP, double s) const {
+template<class B>
+void
+DynamicBlockMatrix<B>::vmult(GlobalVector& y,
+                             const GlobalVector& x,
+                             const TimePattern& TP,
+                             double s) const
+{
   for (int i = 0; i < n(); i++) {
     GlobalVector::iterator off = y.start(i);
     const_citerator ci = DS.cstart(i);
@@ -198,7 +220,10 @@ void DynamicBlockMatrix<B>::vmult(GlobalVector &y, const GlobalVector &x,
 
 /*-------------------------------------------------------------*/
 
-template <class B> void DynamicBlockMatrix<B>::transpose() {
+template<class B>
+void
+DynamicBlockMatrix<B>::transpose()
+{
   // not tested at all!
   // due to dynamic fill-ins it is also very
   // unlikely, that this matrix is symmetric!
@@ -251,7 +276,10 @@ template <class B> void DynamicBlockMatrix<B>::transpose() {
 
 /*-------------------------------------------------------------*/
 
-template <class B> void DynamicBlockMatrix<B>::Jacobi(GlobalVector &x) const {
+template<class B>
+void
+DynamicBlockMatrix<B>::Jacobi(GlobalVector& x) const
+{
   for (int i = 0; i < n(); i++) {
     double a = 1. / ((*vdiag(i))(0, 0));
     *(x.start(i)) *= a;
@@ -260,10 +288,13 @@ template <class B> void DynamicBlockMatrix<B>::Jacobi(GlobalVector &x) const {
 
 /*-------------------------------------------------------------*/
 
-template <class B>
-void DynamicBlockMatrix<B>::entry(nvector<int>::const_iterator start,
-                                  nvector<int>::const_iterator stop,
-                                  const EntryMatrix &M, double s) {
+template<class B>
+void
+DynamicBlockMatrix<B>::entry(nvector<int>::const_iterator start,
+                             nvector<int>::const_iterator stop,
+                             const EntryMatrix& M,
+                             double s)
+{
   nvector<int>::const_iterator p, q;
   int ii = 0;
   for (p = start; p != stop; p++) {
@@ -348,8 +379,10 @@ void DynamicBlockMatrix<B>::entry(nvector<int>::const_iterator start,
 
 // /*-------------------------------------------------------------*/
 
-template <class B>
-void DynamicBlockMatrix<B>::entry_diag(int i, const nmatrix<double> &M) {
+template<class B>
+void
+DynamicBlockMatrix<B>::entry_diag(int i, const nmatrix<double>& M)
+{
   vdiag(i)->entry(M);
 }
 

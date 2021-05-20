@@ -30,12 +30,15 @@
 /*-----------------------------------------*/
 
 namespace Gascoigne {
-class VisuDataNVector : public VisuData {
+class VisuDataNVector : public VisuData
+{
 protected:
-  const DoubleVector *vp;
+  const DoubleVector* vp;
 
 public:
-  VisuDataNVector(const DoubleVector &v) : vp(&v) {}
+  VisuDataNVector(const DoubleVector& v)
+    : vp(&v)
+  {}
 
   int visucomp() const { return 1; }
   int visun() const { return vp->size(); }

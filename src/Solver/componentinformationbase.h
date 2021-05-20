@@ -41,24 +41,27 @@ namespace Gascoigne {
 ///
 /////////////////////////////////////////////
 
-class ComponentInformationBase : public ComponentInformation {
+class ComponentInformationBase : public ComponentInformation
+{
 private:
 protected:
 public:
-  ComponentInformationBase() : ComponentInformation() {}
+  ComponentInformationBase()
+    : ComponentInformation()
+  {}
   virtual ~ComponentInformationBase() {}
 
-  virtual void BasicInit(const ParamFile *pf) {}
+  virtual void BasicInit(const ParamFile* pf) {}
 
   virtual std::string GetName() const;
 
   virtual const IndexType GetNScalars() const;
-  virtual void GetScalarName(IndexType i, std::string &s_name) const;
+  virtual void GetScalarName(IndexType i, std::string& s_name) const;
   virtual const IndexType GetNVectors() const;
-  virtual void GetVectorName(IndexType i, std::string &s_name) const;
-  virtual void
-  GetVectorIndices(IndexType i,
-                   std::array<IndexType, 3> &fa_vectorindices) const;
+  virtual void GetVectorName(IndexType i, std::string& s_name) const;
+  virtual void GetVectorIndices(
+    IndexType i,
+    std::array<IndexType, 3>& fa_vectorindices) const;
 };
 } // namespace Gascoigne
 

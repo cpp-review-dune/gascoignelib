@@ -28,13 +28,21 @@ using namespace std;
 /* ----------------------------------------- */
 
 namespace Gascoigne {
-template <int DIM>
+template<int DIM>
 GalerkinIntegrator<DIM>::GalerkinIntegrator()
-    : BasicIntegrator(), IFF(NULL), IFE(NULL), IFB(NULL), IFM(NULL) {}
+  : BasicIntegrator()
+  , IFF(NULL)
+  , IFE(NULL)
+  , IFB(NULL)
+  , IFM(NULL)
+{}
 
 /* ----------------------------------------- */
 
-template <int DIM> void GalerkinIntegrator<DIM>::BasicInit() {
+template<int DIM>
+void
+GalerkinIntegrator<DIM>::BasicInit()
+{
   if (DIM == 2) {
     if (!FormFormulaPointer())
       FormFormulaPointer() = new QuadGauss4;
@@ -65,7 +73,9 @@ template <int DIM> void GalerkinIntegrator<DIM>::BasicInit() {
 
 /* ----------------------------------------- */
 
-template <int DIM> GalerkinIntegrator<DIM>::~GalerkinIntegrator<DIM>() {
+template<int DIM>
+GalerkinIntegrator<DIM>::~GalerkinIntegrator<DIM>()
+{
   if (FormFormulaPointer()) {
     delete FormFormulaPointer();
   }
@@ -82,28 +92,38 @@ template <int DIM> GalerkinIntegrator<DIM>::~GalerkinIntegrator<DIM>() {
 
 /* ----------------------------------------- */
 
-template <> double GalerkinIntegrator<2>::Volume2MeshSize(double vol) const {
+template<>
+double
+GalerkinIntegrator<2>::Volume2MeshSize(double vol) const
+{
   return sqrt(vol);
 }
 
 /* ----------------------------------------- */
 
-template <> double GalerkinIntegrator<3>::Volume2MeshSize(double vol) const {
+template<>
+double
+GalerkinIntegrator<3>::Volume2MeshSize(double vol) const
+{
   return cbrt(vol);
 }
 
 /* ----------------------------------------- */
 
-template <int DIM>
-void GalerkinIntegrator<DIM>::Rhs(const DomainRightHandSide &f, LocalVector &F,
-                                  const FemInterface &FEM, const LocalData &Q,
-                                  const LocalData &QC) const {
+template<int DIM>
+void
+GalerkinIntegrator<DIM>::Rhs(const DomainRightHandSide& f,
+                             LocalVector& F,
+                             const FemInterface& FEM,
+                             const LocalData& Q,
+                             const LocalData& QC) const
+{
   F.ReInit(f.GetNcomp(), FEM.n());
 
   BasicIntegrator::universal_point(_QCH, QC);
   f.SetCellData(_QCH);
 
-  const IntegrationFormulaInterface &IF = *FormFormula();
+  const IntegrationFormulaInterface& IF = *FormFormula();
 
   F.zero();
   Vertex<DIM> x, xi;
@@ -127,18 +147,22 @@ void GalerkinIntegrator<DIM>::Rhs(const DomainRightHandSide &f, LocalVector &F,
 
 /* ----------------------------------------- */
 
-template <int DIM>
-void GalerkinIntegrator<DIM>::BoundaryRhs(const BoundaryRightHandSide &f,
-                                          LocalVector &F,
-                                          const FemInterface &FEM, int ile,
-                                          int col, const LocalData &Q,
-                                          const LocalData &QC) const {
+template<int DIM>
+void
+GalerkinIntegrator<DIM>::BoundaryRhs(const BoundaryRightHandSide& f,
+                                     LocalVector& F,
+                                     const FemInterface& FEM,
+                                     int ile,
+                                     int col,
+                                     const LocalData& Q,
+                                     const LocalData& QC) const
+{
   F.ReInit(f.GetNcomp(), FEM.n());
 
   BasicIntegrator::universal_point(_QCH, QC);
   f.SetCellData(_QCH);
 
-  const IntegrationFormulaInterface &IF = *BoundaryFormula();
+  const IntegrationFormulaInterface& IF = *BoundaryFormula();
 
   F.zero();
   Vertex<DIM> x, n;
@@ -163,17 +187,21 @@ void GalerkinIntegrator<DIM>::BoundaryRhs(const BoundaryRightHandSide &f,
 
 /* ----------------------------------------- */
 
-template <int DIM>
-void GalerkinIntegrator<DIM>::Form(const Equation &EQ, LocalVector &F,
-                                   const FemInterface &FEM,
-                                   const LocalVector &U, const LocalData &Q,
-                                   const LocalData &QC) const {
+template<int DIM>
+void
+GalerkinIntegrator<DIM>::Form(const Equation& EQ,
+                              LocalVector& F,
+                              const FemInterface& FEM,
+                              const LocalVector& U,
+                              const LocalData& Q,
+                              const LocalData& QC) const
+{
   F.ReInit(EQ.GetNcomp(), FEM.n());
 
   BasicIntegrator::universal_point(_QCH, QC);
   EQ.SetCellData(_QCH);
 
-  const IntegrationFormulaInterface &IF = *FormFormula();
+  const IntegrationFormulaInterface& IF = *FormFormula();
 
   F.zero();
   Vertex<DIM> x, xi;
@@ -198,18 +226,21 @@ void GalerkinIntegrator<DIM>::Form(const Equation &EQ, LocalVector &F,
 
 /* ----------------------------------------- */
 
-template <int DIM>
-void GalerkinIntegrator<DIM>::AdjointForm(const Equation &EQ, LocalVector &F,
-                                          const FemInterface &FEM,
-                                          const LocalVector &Z,
-                                          const LocalData &Q,
-                                          const LocalData &QC) const {
+template<int DIM>
+void
+GalerkinIntegrator<DIM>::AdjointForm(const Equation& EQ,
+                                     LocalVector& F,
+                                     const FemInterface& FEM,
+                                     const LocalVector& Z,
+                                     const LocalData& Q,
+                                     const LocalData& QC) const
+{
   F.ReInit(EQ.GetNcomp(), FEM.n());
 
   BasicIntegrator::universal_point(_QCH, QC);
   EQ.SetCellData(_QCH);
 
-  const IntegrationFormulaInterface &IF = *FormFormula();
+  const IntegrationFormulaInterface& IF = *FormFormula();
 
   F.zero();
   Vertex<DIM> x, xi;
@@ -258,19 +289,23 @@ void GalerkinIntegrator<DIM>::AdjointForm(const Equation &EQ, LocalVector &F,
 
 /* ----------------------------------------- */
 
-template <int DIM>
-void GalerkinIntegrator<DIM>::BoundaryForm(const BoundaryEquation &BE,
-                                           LocalVector &F,
-                                           const FemInterface &FEM,
-                                           const LocalVector &U, int ile,
-                                           int col, const LocalData &Q,
-                                           const LocalData &QC) const {
+template<int DIM>
+void
+GalerkinIntegrator<DIM>::BoundaryForm(const BoundaryEquation& BE,
+                                      LocalVector& F,
+                                      const FemInterface& FEM,
+                                      const LocalVector& U,
+                                      int ile,
+                                      int col,
+                                      const LocalData& Q,
+                                      const LocalData& QC) const
+{
   F.ReInit(BE.GetNcomp(), FEM.n());
 
   BasicIntegrator::universal_point(_QCH, QC);
   BE.SetCellData(_QCH);
 
-  const IntegrationFormulaInterface &IF = *BoundaryFormula();
+  const IntegrationFormulaInterface& IF = *BoundaryFormula();
 
   F.zero();
   Vertex<DIM> x, n;
@@ -296,16 +331,18 @@ void GalerkinIntegrator<DIM>::BoundaryForm(const BoundaryEquation &BE,
 
 /* ----------------------------------------- */
 
-template <int DIM>
-double GalerkinIntegrator<DIM>::MassMatrix(EntryMatrix &E,
-                                           const FemInterface &FEM) const {
+template<int DIM>
+double
+GalerkinIntegrator<DIM>::MassMatrix(EntryMatrix& E,
+                                    const FemInterface& FEM) const
+{
   _NNN.resize(FEM.n());
   E.SetDimensionDof(FEM.n(), FEM.n());
   int ncomp = 1;
   E.SetDimensionComp(ncomp, ncomp);
   E.resize();
   E.zero();
-  const IntegrationFormulaInterface &IF = *MassFormula();
+  const IntegrationFormulaInterface& IF = *MassFormula();
 
   Vertex<DIM> x, xi;
   double omega = 0.;
@@ -329,17 +366,19 @@ double GalerkinIntegrator<DIM>::MassMatrix(EntryMatrix &E,
 }
 /*-----------------------------------------------------------*/
 
-template <int DIM>
-void GalerkinIntegrator<DIM>::BoundaryMassMatrix(EntryMatrix &E,
-                                                 const FemInterface &FEM,
-                                                 int ile) const {
+template<int DIM>
+void
+GalerkinIntegrator<DIM>::BoundaryMassMatrix(EntryMatrix& E,
+                                            const FemInterface& FEM,
+                                            int ile) const
+{
   _NNN.resize(FEM.n());
   E.SetDimensionDof(FEM.n(), FEM.n());
   E.SetDimensionComp(1, 1);
   E.resize();
   E.zero();
 
-  const IntegrationFormulaInterface &IF = *BoundaryFormula();
+  const IntegrationFormulaInterface& IF = *BoundaryFormula();
 
   Vertex<DIM> x, n;
   Vertex<DIM - 1> xi;
@@ -365,11 +404,15 @@ void GalerkinIntegrator<DIM>::BoundaryMassMatrix(EntryMatrix &E,
 
 /* ----------------------------------------- */
 
-template <int DIM>
-void GalerkinIntegrator<DIM>::Matrix(const Equation &EQ, EntryMatrix &E,
-                                     const FemInterface &FEM,
-                                     const LocalVector &U, const LocalData &Q,
-                                     const LocalData &QC) const {
+template<int DIM>
+void
+GalerkinIntegrator<DIM>::Matrix(const Equation& EQ,
+                                EntryMatrix& E,
+                                const FemInterface& FEM,
+                                const LocalVector& U,
+                                const LocalData& Q,
+                                const LocalData& QC) const
+{
   _NNN.resize(FEM.n());
   E.SetDimensionDof(FEM.n(), FEM.n());
   E.SetDimensionComp(U.ncomp(), U.ncomp());
@@ -379,7 +422,7 @@ void GalerkinIntegrator<DIM>::Matrix(const Equation &EQ, EntryMatrix &E,
   BasicIntegrator::universal_point(_QCH, QC);
   EQ.SetCellData(_QCH);
 
-  const IntegrationFormulaInterface &IF = *FormFormula();
+  const IntegrationFormulaInterface& IF = *FormFormula();
 
   Vertex<DIM> x, xi;
   for (int k = 0; k < IF.n(); k++) {
@@ -412,13 +455,17 @@ void GalerkinIntegrator<DIM>::Matrix(const Equation &EQ, EntryMatrix &E,
 
 /*-----------------------------------------------------------*/
 
-template <int DIM>
-void GalerkinIntegrator<DIM>::BoundaryMatrix(const BoundaryEquation &BE,
-                                             EntryMatrix &E,
-                                             const FemInterface &FEM,
-                                             const LocalVector &U, int ile,
-                                             int col, const LocalData &Q,
-                                             const LocalData &QC) const {
+template<int DIM>
+void
+GalerkinIntegrator<DIM>::BoundaryMatrix(const BoundaryEquation& BE,
+                                        EntryMatrix& E,
+                                        const FemInterface& FEM,
+                                        const LocalVector& U,
+                                        int ile,
+                                        int col,
+                                        const LocalData& Q,
+                                        const LocalData& QC) const
+{
   _NNN.resize(FEM.n());
   E.SetDimensionDof(FEM.n(), FEM.n());
   E.SetDimensionComp(U.ncomp(), U.ncomp());
@@ -428,7 +475,7 @@ void GalerkinIntegrator<DIM>::BoundaryMatrix(const BoundaryEquation &BE,
   BasicIntegrator::universal_point(_QCH, QC);
   BE.SetCellData(_QCH);
 
-  const IntegrationFormulaInterface &IF = *BoundaryFormula();
+  const IntegrationFormulaInterface& IF = *BoundaryFormula();
 
   Vertex<DIM> x, n;
   Vertex<DIM - 1> xi;
@@ -458,14 +505,16 @@ void GalerkinIntegrator<DIM>::BoundaryMatrix(const BoundaryEquation &BE,
 
 /*-----------------------------------------------------------*/
 
-template <int DIM>
-void Gascoigne::GalerkinIntegrator<DIM>::MassForm(const TimePattern &TP,
-                                                  LocalVector &F,
-                                                  const FemInterface &FEM,
-                                                  const LocalVector &U) const {
+template<int DIM>
+void
+Gascoigne::GalerkinIntegrator<DIM>::MassForm(const TimePattern& TP,
+                                             LocalVector& F,
+                                             const FemInterface& FEM,
+                                             const LocalVector& U) const
+{
   F.ReInit(U.ncomp(), FEM.n());
 
-  const IntegrationFormulaInterface &IF = *MassFormula();
+  const IntegrationFormulaInterface& IF = *MassFormula();
 
   F.zero();
   Vertex<DIM> xi;
@@ -489,9 +538,13 @@ void Gascoigne::GalerkinIntegrator<DIM>::MassForm(const TimePattern &TP,
 
 /*-----------------------------------------------------------*/
 
-template <int DIM>
-void GalerkinIntegrator<DIM>::RhsPoint(LocalVector &F, const FemInterface &E,
-                                       const Vertex<DIM> &p, int comp) const {
+template<int DIM>
+void
+GalerkinIntegrator<DIM>::RhsPoint(LocalVector& F,
+                                  const FemInterface& E,
+                                  const Vertex<DIM>& p,
+                                  int comp) const
+{
   F.zero();
 
   E.point(p);
@@ -502,13 +555,16 @@ void GalerkinIntegrator<DIM>::RhsPoint(LocalVector &F, const FemInterface &E,
 }
 
 /* ----------------------------------------- */
-template <int DIM>
-void GalerkinIntegrator<DIM>::DiracRhsPoint(LocalVector &b,
-                                            const FemInterface &E,
-                                            const Vertex<DIM> &p,
-                                            const DiracRightHandSide &DRHS,
-                                            int j, const LocalData &Q,
-                                            const LocalData &QC) const {
+template<int DIM>
+void
+GalerkinIntegrator<DIM>::DiracRhsPoint(LocalVector& b,
+                                       const FemInterface& E,
+                                       const Vertex<DIM>& p,
+                                       const DiracRightHandSide& DRHS,
+                                       int j,
+                                       const LocalData& Q,
+                                       const LocalData& QC) const
+{
   b.zero();
 
   BasicIntegrator::universal_point(_QCH, QC);
@@ -527,11 +583,13 @@ void GalerkinIntegrator<DIM>::DiracRhsPoint(LocalVector &b,
 }
 
 /* ----------------------------------------- */
-template <int DIM>
-double GalerkinIntegrator<DIM>::ComputePointValue(const FemInterface &E,
-                                                  const Vertex<DIM> &p,
-                                                  const LocalVector &U,
-                                                  int comp) const {
+template<int DIM>
+double
+GalerkinIntegrator<DIM>::ComputePointValue(const FemInterface& E,
+                                           const Vertex<DIM>& p,
+                                           const LocalVector& U,
+                                           int comp) const
+{
   E.point(p);
   BasicIntegrator::universal_point(E, _UH, U);
 
@@ -540,15 +598,21 @@ double GalerkinIntegrator<DIM>::ComputePointValue(const FemInterface &E,
 
 /* ----------------------------------------- */
 
-template <int DIM>
-double GalerkinIntegrator<DIM>::ComputeBoundaryFunctional(
-    const BoundaryFunctional &F, const FemInterface &FEM, int ile, int col,
-    const LocalVector &U, const LocalData &Q, const LocalData &QC) const {
+template<int DIM>
+double
+GalerkinIntegrator<DIM>::ComputeBoundaryFunctional(const BoundaryFunctional& F,
+                                                   const FemInterface& FEM,
+                                                   int ile,
+                                                   int col,
+                                                   const LocalVector& U,
+                                                   const LocalData& Q,
+                                                   const LocalData& QC) const
+{
 
   BasicIntegrator::universal_point(_QCH, QC);
   F.SetCellData(_QCH);
 
-  const IntegrationFormulaInterface &IF = *BoundaryFormula();
+  const IntegrationFormulaInterface& IF = *BoundaryFormula();
 
   Vertex<DIM> x, n;
   Vertex<DIM - 1> xi;
@@ -573,14 +637,18 @@ double GalerkinIntegrator<DIM>::ComputeBoundaryFunctional(
 
 /* ----------------------------------------- */
 
-template <int DIM>
-double GalerkinIntegrator<DIM>::ComputeDomainFunctional(
-    const DomainFunctional &F, const FemInterface &FEM, const LocalVector &U,
-    const LocalData &Q, const LocalData &QC) const {
+template<int DIM>
+double
+GalerkinIntegrator<DIM>::ComputeDomainFunctional(const DomainFunctional& F,
+                                                 const FemInterface& FEM,
+                                                 const LocalVector& U,
+                                                 const LocalData& Q,
+                                                 const LocalData& QC) const
+{
   BasicIntegrator::universal_point(_QCH, QC);
   F.SetCellData(_QCH);
 
-  const IntegrationFormulaInterface &IF = *FormFormula();
+  const IntegrationFormulaInterface& IF = *FormFormula();
 
   Vertex<DIM> x, xi;
   double j = 0.;
@@ -600,14 +668,18 @@ double GalerkinIntegrator<DIM>::ComputeDomainFunctional(
 
 /* ----------------------------------------- */
 
-template <int DIM>
-double GalerkinIntegrator<DIM>::ComputeErrorDomainFunctional(
-    const DomainFunctional &F, const FemInterface &FEM, const LocalVector &U,
-    const LocalData &Q, const LocalData &QC) const {
+template<int DIM>
+double
+GalerkinIntegrator<DIM>::ComputeErrorDomainFunctional(const DomainFunctional& F,
+                                                      const FemInterface& FEM,
+                                                      const LocalVector& U,
+                                                      const LocalData& Q,
+                                                      const LocalData& QC) const
+{
   BasicIntegrator::universal_point(_QCH, QC);
   F.SetCellData(_QCH);
 
-  const IntegrationFormulaInterface &IF = *ErrorFormula();
+  const IntegrationFormulaInterface& IF = *ErrorFormula();
 
   Vertex<DIM> x, xi;
   double j = 0.;
@@ -627,16 +699,21 @@ double GalerkinIntegrator<DIM>::ComputeErrorDomainFunctional(
 
 /* ----------------------------------------- */
 
-template <int DIM>
-void GalerkinIntegrator<DIM>::EvaluateCellRightHandSide(
-    LocalVector &F, const DomainRightHandSide &CF, const FemInterface &FEM,
-    const LocalData &Q, const LocalData &QC) const {
+template<int DIM>
+void
+GalerkinIntegrator<DIM>::EvaluateCellRightHandSide(
+  LocalVector& F,
+  const DomainRightHandSide& CF,
+  const FemInterface& FEM,
+  const LocalData& Q,
+  const LocalData& QC) const
+{
   F.ReInit(CF.GetNcomp(), 1);
 
   BasicIntegrator::universal_point(_QCH, QC);
   CF.SetCellData(_QCH);
 
-  const IntegrationFormulaInterface &IF = *FormFormula();
+  const IntegrationFormulaInterface& IF = *FormFormula();
   Vertex<DIM> x, xi;
 
   F.zero();
@@ -661,16 +738,23 @@ void GalerkinIntegrator<DIM>::EvaluateCellRightHandSide(
 
 /* ----------------------------------------- */
 
-template <int DIM>
-void GalerkinIntegrator<DIM>::EvaluateBoundaryCellRightHandSide(
-    LocalVector &F, const BoundaryRightHandSide &CF, const FemInterface &FEM,
-    int ile, int col, const LocalData &Q, const LocalData &QC) const {
+template<int DIM>
+void
+GalerkinIntegrator<DIM>::EvaluateBoundaryCellRightHandSide(
+  LocalVector& F,
+  const BoundaryRightHandSide& CF,
+  const FemInterface& FEM,
+  int ile,
+  int col,
+  const LocalData& Q,
+  const LocalData& QC) const
+{
   F.ReInit(CF.GetNcomp(), 1);
 
   BasicIntegrator::universal_point(_QCH, QC);
   CF.SetCellData(_QCH);
 
-  const IntegrationFormulaInterface &IF = *BoundaryFormula();
+  const IntegrationFormulaInterface& IF = *BoundaryFormula();
 
   F.zero();
   Vertex<DIM> x, n;
@@ -695,14 +779,19 @@ void GalerkinIntegrator<DIM>::EvaluateBoundaryCellRightHandSide(
 
 /* ----------------------------------------- */
 
-template <int DIM>
-void GalerkinIntegrator<DIM>::ErrorsByExactSolution(
-    LocalVector &dst, const FemInterface &FE, const ExactSolution &ES,
-    const LocalVector &U, const LocalData &Q, const LocalData &QC) const {
+template<int DIM>
+void
+GalerkinIntegrator<DIM>::ErrorsByExactSolution(LocalVector& dst,
+                                               const FemInterface& FE,
+                                               const ExactSolution& ES,
+                                               const LocalVector& U,
+                                               const LocalData& Q,
+                                               const LocalData& QC) const
+{
   BasicIntegrator::universal_point(_QCH, QC);
   ES.SetCellData(_QCH);
 
-  const IntegrationFormulaInterface &IF = *ErrorFormula();
+  const IntegrationFormulaInterface& IF = *ErrorFormula();
 
   Vertex<DIM> x, xi;
   dst.zero();
@@ -737,12 +826,14 @@ void GalerkinIntegrator<DIM>::ErrorsByExactSolution(
 
 /* ----------------------------------------- */
 
-template <int DIM>
-void GalerkinIntegrator<DIM>::IntegrateMassDiag(DoubleVector &F,
-                                                const FemInterface &FEM) const {
+template<int DIM>
+void
+GalerkinIntegrator<DIM>::IntegrateMassDiag(DoubleVector& F,
+                                           const FemInterface& FEM) const
+{
   F.resize(FEM.n());
 
-  const IntegrationFormulaInterface &IF = *FormFormula();
+  const IntegrationFormulaInterface& IF = *FormFormula();
 
   F.zero();
   Vertex<DIM> x, xi;
@@ -761,14 +852,16 @@ void GalerkinIntegrator<DIM>::IntegrateMassDiag(DoubleVector &F,
 
 /* ----------------------------------------- */
 
-template <int DIM>
-void GalerkinIntegrator<DIM>::IntegrateBoundaryMassDiag(DoubleVector &F,
-                                                        const FemInterface &FEM,
-                                                        int ile,
-                                                        int col) const {
+template<int DIM>
+void
+GalerkinIntegrator<DIM>::IntegrateBoundaryMassDiag(DoubleVector& F,
+                                                   const FemInterface& FEM,
+                                                   int ile,
+                                                   int col) const
+{
   F.resize(FEM.n());
 
-  const IntegrationFormulaInterface &IF = *BoundaryFormula();
+  const IntegrationFormulaInterface& IF = *BoundaryFormula();
 
   F.zero();
   Vertex<DIM> x, n;
@@ -790,11 +883,18 @@ void GalerkinIntegrator<DIM>::IntegrateBoundaryMassDiag(DoubleVector &F,
 
 /* ----------------------------------------- */
 
-template <int DIM>
-void GalerkinIntegrator<DIM>::RhsCurve(LocalVector &F, const FemInterface &FEM,
-                                       Vertex<DIM> &xr0, Vertex<DIM> &xr1,
-                                       double H, double ND0, double ND1,
-                                       int ncomp, int comp) const {
+template<int DIM>
+void
+GalerkinIntegrator<DIM>::RhsCurve(LocalVector& F,
+                                  const FemInterface& FEM,
+                                  Vertex<DIM>& xr0,
+                                  Vertex<DIM>& xr1,
+                                  double H,
+                                  double ND0,
+                                  double ND1,
+                                  int ncomp,
+                                  int comp) const
+{
   if (DIM == 3) {
     cerr << "GalerkinIntegrator<3>::RhsCurve not implemented yet!" << endl;
     abort();

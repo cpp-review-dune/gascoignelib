@@ -50,7 +50,8 @@ namespace Gascoigne {
 ///
 /////////////////////////////////////////////
 
-class ProblemDescriptorInterface {
+class ProblemDescriptorInterface
+{
 private:
 protected:
   SolverData solverdata;
@@ -59,53 +60,56 @@ public:
   ProblemDescriptorInterface() {}
   virtual ~ProblemDescriptorInterface() {}
 
-  virtual void BasicInit(const ParamFile &pf) {}
+  virtual void BasicInit(const ParamFile& pf) {}
 
   virtual std::string GetName() const { return "No Name"; }
 
   // Gives the number of solution components.
-  virtual int GetNcomp() const {
+  virtual int GetNcomp() const
+  {
     std::cerr << "ProblemDescriptor::GetNcomp() must be written!" << std::endl;
     abort();
   }
 
-  virtual std::ostream &OutputSettings(std::ostream &os) const = 0;
+  virtual std::ostream& OutputSettings(std::ostream& os) const = 0;
 
   // stores the time and the time step
   // (should be moved to the problem data)
   virtual void SetTime(double time, double dt) const = 0;
   // access to time
-  virtual double time() const {
+  virtual double time() const
+  {
     std::cerr << "PDI::time()" << std::endl;
     abort();
   }
   // access to time step
-  virtual double dt() const {
+  virtual double dt() const
+  {
     std::cerr << "PDI::time()" << std::endl;
     abort();
   }
 
-  virtual const ParamFile &GetParamFile() const = 0;
+  virtual const ParamFile& GetParamFile() const = 0;
 
   //// Description of the Numerics
-  virtual const SolverData &GetSolverData() const { return solverdata; }
-  virtual SolverData &GetSolverData() { return solverdata; }
+  virtual const SolverData& GetSolverData() const { return solverdata; }
+  virtual SolverData& GetSolverData() { return solverdata; }
 
   //// Description of the Problem
-  virtual const Equation *GetEquation() const = 0;
-  virtual const BoundaryEquation *GetBoundaryEquation() const = 0;
-  virtual const DomainRightHandSide *GetRightHandSide() const = 0;
-  virtual const DiracRightHandSide *GetDiracRightHandSide() const = 0;
-  virtual const BoundaryRightHandSide *GetBoundaryRightHandSide() const = 0;
-  virtual const FaceEquation *GetFaceEquation() const = 0;
-  virtual const DirichletData *GetDirichletData() const = 0;
-  virtual const PeriodicData *GetPeriodicData() const = 0;
-  virtual const Application *GetInitialCondition() const = 0;
-  virtual const BoundaryInitialCondition *
-  GetBoundaryInitialCondition() const = 0;
-  virtual const ExactSolution *GetExactSolution() const = 0;
-  virtual const BoundaryManager *GetBoundaryManager() const = 0;
-  virtual const ComponentInformation *GetComponentInformation() const = 0;
+  virtual const Equation* GetEquation() const = 0;
+  virtual const BoundaryEquation* GetBoundaryEquation() const = 0;
+  virtual const DomainRightHandSide* GetRightHandSide() const = 0;
+  virtual const DiracRightHandSide* GetDiracRightHandSide() const = 0;
+  virtual const BoundaryRightHandSide* GetBoundaryRightHandSide() const = 0;
+  virtual const FaceEquation* GetFaceEquation() const = 0;
+  virtual const DirichletData* GetDirichletData() const = 0;
+  virtual const PeriodicData* GetPeriodicData() const = 0;
+  virtual const Application* GetInitialCondition() const = 0;
+  virtual const BoundaryInitialCondition* GetBoundaryInitialCondition()
+    const = 0;
+  virtual const ExactSolution* GetExactSolution() const = 0;
+  virtual const BoundaryManager* GetBoundaryManager() const = 0;
+  virtual const ComponentInformation* GetComponentInformation() const = 0;
 };
 } // namespace Gascoigne
 

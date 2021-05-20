@@ -28,11 +28,15 @@
 #include <vector>
 
 namespace Gascoigne {
-void transfer(int n, std::vector<int> &tr, const std::set<int> &del);
-void transfer(int n, std::vector<int> &tr, std::vector<int> &del);
+void
+transfer(int n, std::vector<int>& tr, const std::set<int>& del);
+void
+transfer(int n, std::vector<int>& tr, std::vector<int>& del);
 
-template <class C>
-void compress(std::vector<C> &dst, const std::vector<int> &src) {
+template<class C>
+void
+compress(std::vector<C>& dst, const std::vector<int>& src)
+{
   // int n = 0;
   int mmax = 0;
 

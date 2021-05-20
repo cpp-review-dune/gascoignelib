@@ -28,7 +28,10 @@
 #define HANGMAP HASHMAP<EdgeArray<N>, int, EdgeHash<N>>
 
 namespace Gascoigne {
-template <int N> HangList<N> &HangList<N>::operator=(const HangList<N> &A) {
+template<int N>
+HangList<N>&
+HangList<N>::operator=(const HangList<N>& A)
+{
   const_iterator hp = A.begin();
   while (hp != A.end()) {
     std::array<int, N> fa(hp->first);
@@ -43,7 +46,10 @@ template <int N> HangList<N> &HangList<N>::operator=(const HangList<N> &A) {
 
 /*********************************************************************/
 
-template <int N> void HangList<N>::move(HangList<N> &src, iterator &p) {
+template<int N>
+void
+HangList<N>::move(HangList<N>& src, iterator& p)
+{
   this->insert(std::make_pair(p->first, p->second));
 
   auto it = src.find(p->first);
@@ -52,9 +58,10 @@ template <int N> void HangList<N>::move(HangList<N> &src, iterator &p) {
 
 /*********************************************************************/
 
-template <int N>
-void HangList<N>::update(const std::vector<int> &vo2n,
-                         const std::vector<int> &co2n) {
+template<int N>
+void
+HangList<N>::update(const std::vector<int>& vo2n, const std::vector<int>& co2n)
+{
   HangList<N> HangCopy(*this);
   this->clear();
   const_iterator hp = HangCopy.begin();
@@ -83,7 +90,10 @@ void HangList<N>::update(const std::vector<int> &vo2n,
 
 /*********************************************************************/
 
-template <int N> void HangList<N>::update(const std::vector<int> &vo2n) {
+template<int N>
+void
+HangList<N>::update(const std::vector<int>& vo2n)
+{
   HangList<N> HangCopy(*this);
   this->clear();
 
@@ -108,7 +118,10 @@ template <int N> void HangList<N>::update(const std::vector<int> &vo2n) {
 
 /*********************************************************************/
 
-template <int N> void HangList<N>::make_consistent(HangList<N> &DH) {
+template<int N>
+void
+HangList<N>::make_consistent(HangList<N>& DH)
+{
   int n = 0;
   for (iterator p = this->begin(); p != this->end();) {
     iterator q = DH.find(p->first);
@@ -127,9 +140,12 @@ template <int N> void HangList<N>::make_consistent(HangList<N> &DH) {
 
 /*********************************************************************/
 
-template <int N> void HangList<N>::BinWrite(std::ostream &s) const {
+template<int N>
+void
+HangList<N>::BinWrite(std::ostream& s) const
+{
   int n = this->size(), sizeInt = sizeof(int);
-  s.write(reinterpret_cast<const char *>(&n), sizeInt);
+  s.write(reinterpret_cast<const char*>(&n), sizeInt);
 
   for (const_iterator p = this->begin(); p != this->end(); p++) {
     p->first.BinWrite(s);
@@ -139,9 +155,12 @@ template <int N> void HangList<N>::BinWrite(std::ostream &s) const {
 
 /*********************************************************************/
 
-template <int N> void HangList<N>::BinRead(std::istream &s) {
+template<int N>
+void
+HangList<N>::BinRead(std::istream& s)
+{
   int n, sizeInt = sizeof(int);
-  s.read(reinterpret_cast<char *>(&n), sizeInt);
+  s.read(reinterpret_cast<char*>(&n), sizeInt);
 
   std::array<int, N> ev;
   Hang info;

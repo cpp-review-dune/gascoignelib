@@ -29,15 +29,18 @@ using namespace std;
 
 namespace Gascoigne {
 GascoigneMeshTransferConstructor2d::GascoigneMeshTransferConstructor2d(
-    const HierarchicalMesh2d *HM, GascoigneMeshTransfer *GMT,
-    const LevelMesh2d *LMfine, const LevelMesh2d *LMcoarse) {
-  IntVector &c2f = GMT->GetC2f();
-  map<int, std::array<int, 2>> &zweier = GMT->GetZweier();
-  map<int, std::array<int, 4>> &vierer = GMT->GetVierer();
-  map<int, int> &CellEiner = GMT->GetCellEiner();
-  map<int, std::array<int, 4>> &CellVierer = GMT->GetCellVierer();
+  const HierarchicalMesh2d* HM,
+  GascoigneMeshTransfer* GMT,
+  const LevelMesh2d* LMfine,
+  const LevelMesh2d* LMcoarse)
+{
+  IntVector& c2f = GMT->GetC2f();
+  map<int, std::array<int, 2>>& zweier = GMT->GetZweier();
+  map<int, std::array<int, 4>>& vierer = GMT->GetVierer();
+  map<int, int>& CellEiner = GMT->GetCellEiner();
+  map<int, std::array<int, 4>>& CellVierer = GMT->GetCellVierer();
 
-  const QuadLawAndOrder &LaO = HM->QuadLawOrder();
+  const QuadLawAndOrder& LaO = HM->QuadLawOrder();
 
   CellEiner.clear();
   CellVierer.clear();
@@ -71,7 +74,7 @@ GascoigneMeshTransferConstructor2d::GascoigneMeshTransferConstructor2d(
     int igq = LMcoarse->Quadl2g(i);
     if (LMfine->Quadg2l().find(igq) != LMfine->Quadg2l().end())
       continue;
-    const Quad &q = HM->quad(igq);
+    const Quad& q = HM->quad(igq);
 
     // verfeinertes quad --> vierer
 
@@ -110,18 +113,21 @@ GascoigneMeshTransferConstructor2d::GascoigneMeshTransferConstructor2d(
 /*-----------------------------------------*/
 
 GascoigneMeshTransferConstructor3d::GascoigneMeshTransferConstructor3d(
-    const HierarchicalMesh3d *HM, GascoigneMeshTransfer *GMT,
-    const LevelMesh3d *LMfine, const LevelMesh3d *LMcoarse) {
+  const HierarchicalMesh3d* HM,
+  GascoigneMeshTransfer* GMT,
+  const LevelMesh3d* LMfine,
+  const LevelMesh3d* LMcoarse)
+{
   //   cerr << "GascoigneMeshTransferConstructor::Construct3d()\n";
   //   cerr << "noch keine konstanten!\n";
   //   abort();
 
-  IntVector &c2f = GMT->GetC2f();
-  map<int, std::array<int, 2>> &zweier = GMT->GetZweier();
-  map<int, std::array<int, 4>> &vierer = GMT->GetVierer();
-  map<int, std::array<int, 8>> &achter = GMT->GetAchter();
+  IntVector& c2f = GMT->GetC2f();
+  map<int, std::array<int, 2>>& zweier = GMT->GetZweier();
+  map<int, std::array<int, 4>>& vierer = GMT->GetVierer();
+  map<int, std::array<int, 8>>& achter = GMT->GetAchter();
 
-  const HexLawAndOrder &LaO = HM->HexLawOrder();
+  const HexLawAndOrder& LaO = HM->HexLawOrder();
 
   // 1er
   c2f.reservesize(LMcoarse->nnodes());
@@ -135,7 +141,7 @@ GascoigneMeshTransferConstructor3d::GascoigneMeshTransferConstructor3d(
     int igq = LMcoarse->Hexl2g(i);
     if (LMfine->Hexg2l().find(igq) != LMfine->Hexg2l().end())
       continue;
-    const Hex &q = HM->hex(igq);
+    const Hex& q = HM->hex(igq);
 
     // verfeinertes hex
 

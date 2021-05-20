@@ -14,11 +14,15 @@
 
 namespace Gascoigne {
 
-template <int DIM> class Loop : public StdLoop {
+template<int DIM>
+class Loop : public StdLoop
+{
 
 public:
-  void BasicInit(const ParamFile *paramfile, const ProblemContainer *PC,
-                 const FunctionalContainer *FC) {
+  void BasicInit(const ParamFile* paramfile,
+                 const ProblemContainer* PC,
+                 const FunctionalContainer* FC)
+  {
     GetMultiLevelSolverPointer() = new FSIMultiLevelSolver<DIM>;
     StdLoop::BasicInit(paramfile, PC, FC);
   }

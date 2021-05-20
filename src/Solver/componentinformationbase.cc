@@ -27,33 +27,44 @@
 #include "problemdescriptorinterface.h"
 
 namespace Gascoigne {
-std::string ComponentInformationBase::GetName() const {
+std::string
+ComponentInformationBase::GetName() const
+{
   return "ComponentInformationBase";
 }
 
-const IndexType ComponentInformationBase::GetNScalars() const {
-  ProblemDescriptorInterface *ppdi = GetProblemDescriptorInterface();
+const IndexType
+ComponentInformationBase::GetNScalars() const
+{
+  ProblemDescriptorInterface* ppdi = GetProblemDescriptorInterface();
   assert(ppdi);
 
   return ppdi->GetNcomp();
 }
-void ComponentInformationBase::GetScalarName(IndexType i,
-                                             std::string &s_name) const {
+void
+ComponentInformationBase::GetScalarName(IndexType i, std::string& s_name) const
+{
   s_name = "u";
   compose_name_without_dot(s_name, i);
 }
-const IndexType ComponentInformationBase::GetNVectors() const {
+const IndexType
+ComponentInformationBase::GetNVectors() const
+{
   int ncomps = GetNcomp();
   if (ncomps <= 2)
     return 0;
   return 1;
 }
-void ComponentInformationBase::GetVectorName(IndexType i,
-                                             std::string &s_name) const {
+void
+ComponentInformationBase::GetVectorName(IndexType i, std::string& s_name) const
+{
   s_name = "v";
 }
-void ComponentInformationBase::GetVectorIndices(
-    IndexType i, std::array<IndexType, 3> &fa_vectorindices) const {
+void
+ComponentInformationBase::GetVectorIndices(
+  IndexType i,
+  std::array<IndexType, 3>& fa_vectorindices) const
+{
   if (GetDimension() == 2) {
     fa_vectorindices[0] = 1;
     fa_vectorindices[1] = 2;

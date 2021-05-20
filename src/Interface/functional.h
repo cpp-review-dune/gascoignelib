@@ -36,19 +36,29 @@ namespace Gascoigne {
 //
 //////////////////////////////////////////////
 
-class Functional : public virtual Application {
+class Functional : public virtual Application
+{
 private:
 protected:
   double exact;
   bool exactisknown;
 
 public:
-  Functional() : Application(), exact(0.), exactisknown(0) {}
+  Functional()
+    : Application()
+    , exact(0.)
+    , exactisknown(0)
+  {}
   ~Functional() {}
-  Functional(const Functional &F) : Application(F) { exact = F.ExactValue(); }
+  Functional(const Functional& F)
+    : Application(F)
+  {
+    exact = F.ExactValue();
+  }
 
   double ExactValue() const { return exact; }
-  double &ExactValue() {
+  double& ExactValue()
+  {
     exactisknown = 1;
     return exact;
   }

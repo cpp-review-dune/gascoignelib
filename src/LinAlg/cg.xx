@@ -26,8 +26,10 @@
 /********************************************************************/
 
 namespace Gascoigne {
-template <class S, class V>
-void CG<S, V>::solve(V &x, const V &b, CGInfo &info) {
+template<class S, class V>
+void
+CG<S, V>::solve(V& x, const V& b, CGInfo& info)
+{
   V g("g"), h("h"), d("d"), Ad("Ad");
 
   solver.RegisterVector(g);

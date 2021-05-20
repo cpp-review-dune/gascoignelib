@@ -29,21 +29,28 @@ using namespace std;
 /*********************************************************************/
 
 namespace Gascoigne {
-bool HangContainer2d::ToBeDeleted(const EdgeVector &v) const {
+bool
+HangContainer2d::ToBeDeleted(const EdgeVector& v) const
+{
   return (VertexToBeDeleted.find(v) != VertexToBeDeleted.end());
 }
 
 /*********************************************************************/
 
-bool HangContainer2d::ToBeCreated(const EdgeVector &v) const {
+bool
+HangContainer2d::ToBeCreated(const EdgeVector& v) const
+{
   return (VertexToBeCreated.find(v) != VertexToBeCreated.end());
 }
 
 /*********************************************************************/
 
-void HangContainer2d::NeighbourSwapper() {
+void
+HangContainer2d::NeighbourSwapper()
+{
   for (HangList<2>::iterator p = VertexToBeDeleted.begin();
-       p != VertexToBeDeleted.end(); p++) {
+       p != VertexToBeDeleted.end();
+       p++) {
     int r = p->second.rneighbour();
     if (r < 0) {
       p->second.rneighbour() = p->second.cneighbour();
@@ -54,16 +61,21 @@ void HangContainer2d::NeighbourSwapper() {
 
 /*********************************************************************/
 
-void HangContainer2d::load_elimination(IntVector &v) const {
+void
+HangContainer2d::load_elimination(IntVector& v) const
+{
   for (HangList<2>::const_iterator p = VertexToBeDeleted.begin();
-       p != VertexToBeDeleted.end(); p++) {
+       p != VertexToBeDeleted.end();
+       p++) {
     v.push_back(p->second.hanging());
   }
 }
 
 /*********************************************************************/
 
-void HangContainer2d::update_olds(IntVector &v, const IntVector &c) {
+void
+HangContainer2d::update_olds(IntVector& v, const IntVector& c)
+{
   VertexToBeCreated.update(v, c);
   VertexToBeDeleted.update(v, c);
   NotAnyMoreHanging.update(v, c);
@@ -72,7 +84,9 @@ void HangContainer2d::update_olds(IntVector &v, const IntVector &c) {
 
 /*********************************************************************/
 
-int HangContainer2d::vertex_index(const EdgeVector &edge) const {
+int
+HangContainer2d::vertex_index(const EdgeVector& edge) const
+{
   HangList<2>::const_iterator p;
 
   p = VertexToBeCreated.find(edge);
@@ -92,12 +106,15 @@ int HangContainer2d::vertex_index(const EdgeVector &edge) const {
 
 /*********************************************************************/
 
-void HangContainer2d::update_news(const IntVector &vnew, int i) {
+void
+HangContainer2d::update_news(const IntVector& vnew, int i)
+{
   // cerr << "new_hangs()" << endl;
   // newhangs-hanging setzten fuer new-quad und linehang fuer die zukunft
 
   for (HangList<2>::iterator p = VertexToBeCreated.begin();
-       p != VertexToBeCreated.end(); p++) {
+       p != VertexToBeCreated.end();
+       p++) {
     p->second.hanging() = vnew[i];
     HangList<2>::iterator Lp = Hanging.find(p->first);
     if (Lp != Hanging.end()) {
@@ -109,7 +126,9 @@ void HangContainer2d::update_news(const IntVector &vnew, int i) {
 
 /*********************************************************************/
 
-void HangContainer2d::ghost_coarse(EdgeVector &edge, int f, int edge_vertex) {
+void
+HangContainer2d::ghost_coarse(EdgeVector& edge, int f, int edge_vertex)
+{
   assert(!find_in_linehang<2>(VertexToBeDeleted, edge).second);
 
   HangList<2>::iterator e = Hanging.find(edge);
@@ -128,7 +147,9 @@ void HangContainer2d::ghost_coarse(EdgeVector &edge, int f, int edge_vertex) {
 
 /*********************************************************************/
 
-void HangContainer2d::ghost_refine(EdgeVector &edge, int f) {
+void
+HangContainer2d::ghost_refine(EdgeVector& edge, int f)
+{
   HangList<2>::iterator d = VertexToBeDeleted.find(edge);
   HangList<2>::iterator e = Hanging.find(edge);
 

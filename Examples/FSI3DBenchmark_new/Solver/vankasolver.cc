@@ -17,13 +17,16 @@ using namespace std;
 
 namespace Gascoigne {
 
-template <int DIM>
-void FSIVankaSolver<DIM>::smooth(int niter, VectorInterface &x,
-                                 const VectorInterface &y,
-                                 VectorInterface &h) const {
-  GlobalVector &gvX = StdSolver::GetGV(x);
-  const GlobalVector &gvY = StdSolver::GetGV(y);
-  GlobalVector &gvH = StdSolver::GetGV(h);
+template<int DIM>
+void
+FSIVankaSolver<DIM>::smooth(int niter,
+                            VectorInterface& x,
+                            const VectorInterface& y,
+                            VectorInterface& h) const
+{
+  GlobalVector& gvX = StdSolver::GetGV(x);
+  const GlobalVector& gvY = StdSolver::GetGV(y);
+  GlobalVector& gvH = StdSolver::GetGV(h);
 
   if (StdSolver::GetSolverData().GetLinearSmooth() == "vanka_jacobi" ||
       StdSolver::GetSolverData().GetLinearSmooth() == "vanka_jacobi_av" ||
@@ -63,7 +66,8 @@ void FSIVankaSolver<DIM>::smooth(int niter, VectorInterface &x,
           niter > 0) {
         StdSolver::MatrixResidual(h, x, y);
         for (vector<int>::iterator it_weight = smooth_weight.begin();
-             it_weight != smooth_weight.end(); it_weight++)
+             it_weight != smooth_weight.end();
+             it_weight++)
           *it_weight = 0;
       }
       if (vanka_type == "vanka_jacobi_av") {
@@ -72,7 +76,7 @@ void FSIVankaSolver<DIM>::smooth(int niter, VectorInterface &x,
 
       for (int p = 0; p < Vanka_MV->patchindices_size(); p++) {
 
-        const nvector<int> &iop = Vanka_MV->Getpatchindices(p);
+        const nvector<int>& iop = Vanka_MV->Getpatchindices(p);
         // const HASHMAP<int,int>& inP=Vanka_MV->GetINP(p);
         // for (int i=0;i<iop.size();++i)
         //	inP[iop[i]]=i;
@@ -193,7 +197,10 @@ void FSIVankaSolver<DIM>::smooth(int niter, VectorInterface &x,
 
 /* -------------------------------------------------------*/
 
-template <int DIM> void FSIVankaSolver<DIM>::invert_local_matrices() const {
+template<int DIM>
+void
+FSIVankaSolver<DIM>::invert_local_matrices() const
+{
   // const int ncomp=4;
   // const int
   // ncomp=StdSolver::GetProblemDescriptor()->GetEquation()->GetNcomp();
@@ -263,7 +270,10 @@ template <int DIM> void FSIVankaSolver<DIM>::invert_local_matrices() const {
 }
 /* -------------------------------------------------------*/
 
-template <int DIM> void FSIVankaSolver<DIM>::ComputeIlu() const {
+template<int DIM>
+void
+FSIVankaSolver<DIM>::ComputeIlu() const
+{
   if ((StdSolver::GetSolverData().GetLinearSmooth() == "vanka_jacobi" ||
        StdSolver::GetSolverData().GetLinearSmooth() == "vanka_jacobi_av" ||
        StdSolver::GetSolverData().GetLinearSmooth() == "vanka_gs") &&
@@ -276,8 +286,10 @@ template <int DIM> void FSIVankaSolver<DIM>::ComputeIlu() const {
 
 /* -------------------------------------------------------*/
 
-template <int DIM>
-void FSIVankaSolver<DIM>::ComputeIlu(const VectorInterface &gu) const {
+template<int DIM>
+void
+FSIVankaSolver<DIM>::ComputeIlu(const VectorInterface& gu) const
+{
   if ((StdSolver::GetSolverData().GetLinearSmooth() == "vanka_jacobi" ||
        StdSolver::GetSolverData().GetLinearSmooth() == "vanka_jacobi_av" ||
        StdSolver::GetSolverData().GetLinearSmooth() == "vanka_gs") &&
@@ -287,24 +299,32 @@ void FSIVankaSolver<DIM>::ComputeIlu(const VectorInterface &gu) const {
     StdSolver::ComputeIlu(gu);
 }
 /* -------------------------------------------------------*/
-template <int DIM> void FSIVankaSolver<DIM>::RegisterMatrix() {
+template<int DIM>
+void
+FSIVankaSolver<DIM>::RegisterMatrix()
+{
   StdSolver::RegisterMatrix();
 }
-template <int DIM> void FSIVankaSolver<DIM>::SetILUPointer(int ncomp) {}
+template<int DIM>
+void
+FSIVankaSolver<DIM>::SetILUPointer(int ncomp)
+{}
 /* -------------------------------------------------------*/
-template <int DIM>
-IluInterface *FSIVankaSolver<DIM>::NewIlu(int ncomp, const string &matrixtype) {
+template<int DIM>
+IluInterface*
+FSIVankaSolver<DIM>::NewIlu(int ncomp, const string& matrixtype)
+{
   if ((StdSolver::GetSolverData().GetLinearSmooth() == "vanka_jacobi" ||
        StdSolver::GetSolverData().GetLinearSmooth() == "vanka_jacobi_av" ||
        StdSolver::GetSolverData().GetLinearSmooth() == "vanka_gs") &&
       StdSolver::_directsolver == false) {
-    const GascoigneMesh *M =
-        dynamic_cast<const GascoigneMesh *>(StdSolver::GetMesh());
+    const GascoigneMesh* M =
+      dynamic_cast<const GascoigneMesh*>(StdSolver::GetMesh());
     assert(M);
     cout << "RegisterMatrix" << endl;
     if (Vanka_MV == NULL) {
       const int ncomp =
-          StdSolver::GetProblemDescriptor()->GetEquation()->GetNcomp();
+        StdSolver::GetProblemDescriptor()->GetEquation()->GetNcomp();
       if (ncomp == 1) {
         Vanka_MV = new Vanka_Matrix_Vector<1>;
       } else if (ncomp == 2) {
@@ -325,7 +345,10 @@ IluInterface *FSIVankaSolver<DIM>::NewIlu(int ncomp, const string &matrixtype) {
     return StdSolver::NewIlu(ncomp, matrixtype);
 }
 /* -------------------------------------------------------*/
-template <int DIM> void FSIVankaSolver<DIM>::ReInitMatrix() {
+template<int DIM>
+void
+FSIVankaSolver<DIM>::ReInitMatrix()
+{
   StdSolver::GetDiscretization()->InitFilter(StdSolver::GetPfilter());
   SparseStructure SA;
   StdSolver::GetDiscretization()->Structure(&SA);
@@ -343,7 +366,9 @@ template <int DIM> void FSIVankaSolver<DIM>::ReInitMatrix() {
     StdSolver::GetIlu()->ReInit(&SA);
 }
 /* -------------------------------------------------------*/
-template <int DIM> FSIVankaSolver<DIM>::~FSIVankaSolver() {
+template<int DIM>
+FSIVankaSolver<DIM>::~FSIVankaSolver()
+{
   if ((StdSolver::GetSolverData().GetLinearSmooth() == "vanka_jacobi" ||
        StdSolver::GetSolverData().GetLinearSmooth() == "vanka_jacobi_av" ||
        StdSolver::GetSolverData().GetLinearSmooth() == "vanka_gs") &&

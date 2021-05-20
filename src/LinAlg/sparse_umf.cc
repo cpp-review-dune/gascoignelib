@@ -6,14 +6,16 @@
 
 namespace Gascoigne {
 
-template <>
-void SparseUmf<SparseBlock>::ConstructStructure(const IntVector &perm,
-                                                const MatrixInterface &__XXX) {
+template<>
+void
+SparseUmf<SparseBlock>::ConstructStructure(const IntVector& perm,
+                                           const MatrixInterface& __XXX)
+{
   assert(__AS);
   // reinit size of UMFPACK-structure
-  const ColumnStencil *ST =
-      dynamic_cast<const ColumnStencil *>(__AS->GetStencil());
-  assert(static_cast<const void *>(__AS) == static_cast<const void *>(&__XXX));
+  const ColumnStencil* ST =
+    dynamic_cast<const ColumnStencil*>(__AS->GetStencil());
+  assert(static_cast<const void*>(__AS) == static_cast<const void*>(&__XXX));
 
   assert(ST);
   __ncomp = __AS->mat(0)->ncomp();
@@ -55,11 +57,11 @@ void SparseUmf<SparseBlock>::ConstructStructure(const IntVector &perm,
 
   umfpack_dl_free_symbolic(&Symbolic);
 
-  const long *sb = &(*__Ap.begin());
-  const long *cb = &(*__Ac.begin());
+  const long* sb = &(*__Ap.begin());
+  const long* cb = &(*__Ac.begin());
 
   int status =
-      umfpack_dl_symbolic(n_umf, n_umf, sb, cb, NULL, &Symbolic, Control, Info);
+    umfpack_dl_symbolic(n_umf, n_umf, sb, cb, NULL, &Symbolic, Control, Info);
 
   if (status != UMFPACK_OK) {
     umfpack_dl_report_info(Control, Info);
@@ -69,24 +71,26 @@ void SparseUmf<SparseBlock>::ConstructStructure(const IntVector &perm,
   }
 }
 
-template <>
-void SparseUmf<SparseBlock>::copy_entries(const MatrixInterface &A) {
+template<>
+void
+SparseUmf<SparseBlock>::copy_entries(const MatrixInterface& A)
+{
 
   // check if __AS and A are the same object...
   // then, we do not need __AS!!!
-  assert(static_cast<const void *>(&__AS) == static_cast<const void *>(&A));
+  assert(static_cast<const void*>(&__AS) == static_cast<const void*>(&A));
 
   // Copy Entries
   assert(__ncomp == __AS->mat(0)->ncomp());
 
-  const ColumnStencil *ST =
-      dynamic_cast<const ColumnStencil *>(__AS->GetStencil());
+  const ColumnStencil* ST =
+    dynamic_cast<const ColumnStencil*>(__AS->GetStencil());
   assert(ST);
   int pp = 0;
   for (int rA = 0; rA < ST->n(); ++rA)
     for (int rn = 0; rn < SPARSE_NROWS; ++rn) {
       for (int pA = ST->start(rA); pA != ST->stop(rA); ++pA) {
-        const SparseBlock &b = *__AS->mat(pA);
+        const SparseBlock& b = *__AS->mat(pA);
         for (int p = SPARSE_START[rn]; p < SPARSE_START[rn + 1]; ++p, ++pp)
           __Ax[pp] = b[p];
       }

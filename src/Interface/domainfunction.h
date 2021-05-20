@@ -31,7 +31,8 @@ namespace Gascoigne {
 
 /**********************************************************/
 
-class DomainFunction : public Application {
+class DomainFunction : public Application
+{
 protected:
 public:
   DomainFunction() {}
@@ -39,11 +40,13 @@ public:
 
   virtual int GetNcomp() const = 0;
 
-  virtual void F(DoubleVector &f, const Vertex2d &v) const {
+  virtual void F(DoubleVector& f, const Vertex2d& v) const
+  {
     std::cerr << "DomainFunction::F not written\n";
     abort();
   }
-  virtual void F(DoubleVector &f, const Vertex3d &v) const {
+  virtual void F(DoubleVector& f, const Vertex3d& v) const
+  {
     std::cerr << "DomainFunction::F not written\n";
     abort();
   }

@@ -32,7 +32,9 @@ namespace Gascoigne {
 
 /***************************************************/
 
-void DataFormatHandler::insert(const string &nm, string *pos) {
+void
+DataFormatHandler::insert(const string& nm, string* pos)
+{
   string type = "string";
   string name = nm;
   NameType p = make_pair(name, type);
@@ -40,7 +42,9 @@ void DataFormatHandler::insert(const string &nm, string *pos) {
   TS.insert(make_pair(name, pos));
 }
 
-void DataFormatHandler::insert(const string &nm, int *pos) {
+void
+DataFormatHandler::insert(const string& nm, int* pos)
+{
   string type = "integer";
   string name = nm;
   NameType p = make_pair(name, type);
@@ -48,7 +52,9 @@ void DataFormatHandler::insert(const string &nm, int *pos) {
   TI.insert(make_pair(name, pos));
 }
 
-void DataFormatHandler::insert(const string &nm, bool *pos) {
+void
+DataFormatHandler::insert(const string& nm, bool* pos)
+{
   string type = "bool";
   string name = nm;
   NameType p = make_pair(name, type);
@@ -56,7 +62,9 @@ void DataFormatHandler::insert(const string &nm, bool *pos) {
   TB.insert(make_pair(name, pos));
 }
 
-void DataFormatHandler::insert(const string &nm, float *pos) {
+void
+DataFormatHandler::insert(const string& nm, float* pos)
+{
   string type = "float";
   string name = nm;
   NameType p = make_pair(name, type);
@@ -64,7 +72,9 @@ void DataFormatHandler::insert(const string &nm, float *pos) {
   TF.insert(make_pair(name, pos));
 }
 
-void DataFormatHandler::insert(const string &nm, double *pos) {
+void
+DataFormatHandler::insert(const string& nm, double* pos)
+{
   string type = "double";
   string name = nm;
   NameType p = make_pair(name, type);
@@ -74,7 +84,9 @@ void DataFormatHandler::insert(const string &nm, double *pos) {
 
 /*-----------------------------------------*/
 
-void DataFormatHandler::insert(const string &nm, std::array<double, 2> *pos) {
+void
+DataFormatHandler::insert(const string& nm, std::array<double, 2>* pos)
+{
   string type = "std::array<double,2>";
   string name = nm;
   NameType p = make_pair(name, type);
@@ -84,7 +96,9 @@ void DataFormatHandler::insert(const string &nm, std::array<double, 2> *pos) {
 
 /*-----------------------------------------*/
 
-void DataFormatHandler::insert(const string &nm, std::array<double, 3> *pos) {
+void
+DataFormatHandler::insert(const string& nm, std::array<double, 3>* pos)
+{
   string type = "std::array<double,3>";
   string name = nm;
   NameType p = make_pair(name, type);
@@ -94,7 +108,9 @@ void DataFormatHandler::insert(const string &nm, std::array<double, 3> *pos) {
 
 /*-----------------------------------------*/
 
-void DataFormatHandler::insert(const string &nm, vector<double> *pos) {
+void
+DataFormatHandler::insert(const string& nm, vector<double>* pos)
+{
   string type = "vector<double>";
   string name = nm;
   NameType p = make_pair(name, type);
@@ -102,7 +118,9 @@ void DataFormatHandler::insert(const string &nm, vector<double> *pos) {
   TND.insert(make_pair(name, pos));
 }
 
-void DataFormatHandler::insert(const string &nm, IntVector *pos) {
+void
+DataFormatHandler::insert(const string& nm, IntVector* pos)
+{
   string type = "IntVector";
   string name = nm;
   NameType p = make_pair(name, type);
@@ -110,7 +128,9 @@ void DataFormatHandler::insert(const string &nm, IntVector *pos) {
   TNI.insert(make_pair(name, pos));
 }
 
-void DataFormatHandler::insert(const string &nm, vector<string> *pos) {
+void
+DataFormatHandler::insert(const string& nm, vector<string>* pos)
+{
   string type = "vector<string>";
   string name = nm;
   NameType p = make_pair(name, type);
@@ -120,7 +140,9 @@ void DataFormatHandler::insert(const string &nm, vector<string> *pos) {
 
 /*-----------------------------------------*/
 
-void DataFormatHandler::insert(const string &nm, map<int, IntVector> *pos) {
+void
+DataFormatHandler::insert(const string& nm, map<int, IntVector>* pos)
+{
   string type = "map<int,IntVector >";
   string name = nm;
   NameType p = make_pair(name, type);
@@ -130,7 +152,9 @@ void DataFormatHandler::insert(const string &nm, map<int, IntVector> *pos) {
 
 /*-----------------------------------------*/
 
-void DataFormatHandler::insert(const string &nm, IntSet *pos) {
+void
+DataFormatHandler::insert(const string& nm, IntSet* pos)
+{
   string type = "set<int>";
   string name = nm;
   NameType p = make_pair(name, type);
@@ -140,7 +164,9 @@ void DataFormatHandler::insert(const string &nm, IntSet *pos) {
 
 /*-----------------------------------------*/
 
-void DataFormatHandler::insert(const string &nm, set<vector<string>> *pos) {
+void
+DataFormatHandler::insert(const string& nm, set<vector<string>>* pos)
+{
   string type = "set<vector<string> >";
   string name = nm;
   NameType p = make_pair(name, type);
@@ -150,7 +176,9 @@ void DataFormatHandler::insert(const string &nm, set<vector<string>> *pos) {
 
 /*-----------------------------------------*/
 
-void DataFormatHandler::insert(int i, StringDouble *pos) {
+void
+DataFormatHandler::insert(int i, StringDouble* pos)
+{
   char zahl[3];
   sprintf(zahl, "%01d", i);
   string name = zahl;
@@ -162,59 +190,80 @@ void DataFormatHandler::insert(int i, StringDouble *pos) {
 
 /***************************************************/
 
-void DataFormatHandler::insert(const string &nm, string *pos,
-                               const string &def) {
+void
+DataFormatHandler::insert(const string& nm, string* pos, const string& def)
+{
   insert(nm, pos);
   *pos = def;
 }
 
-void DataFormatHandler::insert(const string &nm, int *pos, int def) {
+void
+DataFormatHandler::insert(const string& nm, int* pos, int def)
+{
   insert(nm, pos);
   *pos = def;
 }
 
-void DataFormatHandler::insert(const string &nm, bool *pos, bool def) {
+void
+DataFormatHandler::insert(const string& nm, bool* pos, bool def)
+{
   insert(nm, pos);
   *pos = def;
 }
 
-void DataFormatHandler::insert(const string &nm, float *pos, float def) {
+void
+DataFormatHandler::insert(const string& nm, float* pos, float def)
+{
   insert(nm, pos);
   *pos = def;
 }
 
-void DataFormatHandler::insert(const string &nm, double *pos, double def) {
+void
+DataFormatHandler::insert(const string& nm, double* pos, double def)
+{
   insert(nm, pos);
   *pos = def;
 }
 
-void DataFormatHandler::insert(const string &nm, std::array<double, 2> *pos,
-                               std::array<double, 2> &def) {
+void
+DataFormatHandler::insert(const string& nm,
+                          std::array<double, 2>* pos,
+                          std::array<double, 2>& def)
+{
   insert(nm, pos);
   *pos = def;
 }
 
-void DataFormatHandler::insert(const string &nm, std::array<double, 3> *pos,
-                               std::array<double, 3> &def) {
+void
+DataFormatHandler::insert(const string& nm,
+                          std::array<double, 3>* pos,
+                          std::array<double, 3>& def)
+{
   insert(nm, pos);
   *pos = def;
 }
 
-void DataFormatHandler::insert(const string &nm, vector<double> *pos,
-                               vector<double> &def) {
+void
+DataFormatHandler::insert(const string& nm,
+                          vector<double>* pos,
+                          vector<double>& def)
+{
   insert(nm, pos);
   *pos = def;
 }
 
-void DataFormatHandler::insert(const string &nm, IntVector *pos,
-                               IntVector &def) {
+void
+DataFormatHandler::insert(const string& nm, IntVector* pos, IntVector& def)
+{
   insert(nm, pos);
   *pos = def;
 }
 
 /***************************************************/
 
-void DataFormatHandler::setvalue(const string &name, const string &value) {
+void
+DataFormatHandler::setvalue(const string& name, const string& value)
+{
   TypeString::const_iterator p;
   p = TS.find(name);
   if (p != TS.end()) {
@@ -223,7 +272,9 @@ void DataFormatHandler::setvalue(const string &name, const string &value) {
   }
 }
 
-void DataFormatHandler::setvalue(const string &name, int value) {
+void
+DataFormatHandler::setvalue(const string& name, int value)
+{
   TypeInt::const_iterator p;
   p = TI.find(name);
   if (p != TI.end()) {
@@ -232,7 +283,9 @@ void DataFormatHandler::setvalue(const string &name, int value) {
   }
 }
 
-void DataFormatHandler::setvalue(const string &name, bool value) {
+void
+DataFormatHandler::setvalue(const string& name, bool value)
+{
   TypeBool::const_iterator p;
   p = TB.find(name);
   if (p != TB.end()) {
@@ -241,7 +294,9 @@ void DataFormatHandler::setvalue(const string &name, bool value) {
   }
 }
 
-void DataFormatHandler::setvalue(const string &name, float value) {
+void
+DataFormatHandler::setvalue(const string& name, float value)
+{
   TypeFloat::const_iterator p;
   p = TF.find(name);
   if (p != TF.end()) {
@@ -250,7 +305,9 @@ void DataFormatHandler::setvalue(const string &name, float value) {
   }
 }
 
-void DataFormatHandler::setvalue(const string &name, double value) {
+void
+DataFormatHandler::setvalue(const string& name, double value)
+{
   TypeDouble::const_iterator p;
   p = TD.find(name);
   if (p != TD.end()) {
@@ -259,8 +316,9 @@ void DataFormatHandler::setvalue(const string &name, double value) {
   }
 }
 
-void DataFormatHandler::setvalue(const string &name,
-                                 std::array<double, 2> &value) {
+void
+DataFormatHandler::setvalue(const string& name, std::array<double, 2>& value)
+{
   TypeFix2Double::const_iterator p;
   p = TF2D.find(name);
   if (p != TF2D.end()) {
@@ -269,8 +327,9 @@ void DataFormatHandler::setvalue(const string &name,
   }
 }
 
-void DataFormatHandler::setvalue(const string &name,
-                                 std::array<double, 3> &value) {
+void
+DataFormatHandler::setvalue(const string& name, std::array<double, 3>& value)
+{
   TypeFix3Double::const_iterator p;
   p = TF3D.find(name);
   if (p != TF3D.end()) {
@@ -279,7 +338,9 @@ void DataFormatHandler::setvalue(const string &name,
   }
 }
 
-void DataFormatHandler::setvalue(const string &name, vector<double> &value) {
+void
+DataFormatHandler::setvalue(const string& name, vector<double>& value)
+{
   TypeVectorDouble::const_iterator p;
   p = TND.find(name);
   if (p != TND.end()) {
@@ -289,7 +350,9 @@ void DataFormatHandler::setvalue(const string &name, vector<double> &value) {
   }
 }
 
-void DataFormatHandler::setvalue(const string &name, IntVector &value) {
+void
+DataFormatHandler::setvalue(const string& name, IntVector& value)
+{
   TypeVectorInt::const_iterator p;
   p = TNI.find(name);
   if (p != TNI.end()) {
@@ -299,7 +362,9 @@ void DataFormatHandler::setvalue(const string &name, IntVector &value) {
   }
 }
 
-void DataFormatHandler::setvalue(const string &name, vector<string> &value) {
+void
+DataFormatHandler::setvalue(const string& name, vector<string>& value)
+{
   TypeVectorString::const_iterator p;
   p = TVS.find(name);
   if (p != TVS.end()) {
@@ -309,7 +374,9 @@ void DataFormatHandler::setvalue(const string &name, vector<string> &value) {
   }
 }
 
-void DataFormatHandler::setvalue(const string &name, IntSet &value) {
+void
+DataFormatHandler::setvalue(const string& name, IntSet& value)
+{
   TypeSetInt::const_iterator p;
   p = TSI.find(name);
   if (p != TSI.end()) {
@@ -318,8 +385,9 @@ void DataFormatHandler::setvalue(const string &name, IntSet &value) {
   }
 }
 
-void DataFormatHandler::setvalue(const string &name,
-                                 pair<int, IntVector> &value) {
+void
+DataFormatHandler::setvalue(const string& name, pair<int, IntVector>& value)
+{
   TypeMapIntVectorInt::const_iterator p;
   p = TMINI.find(name);
   if (p != TMINI.end()) {
@@ -339,7 +407,9 @@ void DataFormatHandler::setvalue(const string &name,
   }
 }
 
-void DataFormatHandler::setvalue(const string &name, StringDouble &value) {
+void
+DataFormatHandler::setvalue(const string& name, StringDouble& value)
+{
   TypeStringDouble::const_iterator p;
   p = TSD.find(name);
   if (p != TSD.end()) {
@@ -348,7 +418,9 @@ void DataFormatHandler::setvalue(const string &name, StringDouble &value) {
   }
 }
 
-void DataFormatHandler::insertvalue(const string &name, vector<string> &value) {
+void
+DataFormatHandler::insertvalue(const string& name, vector<string>& value)
+{
   TypeSetVectorString::const_iterator p;
   p = TSVS.find(name);
   if (p != TSVS.end()) {
@@ -359,7 +431,9 @@ void DataFormatHandler::insertvalue(const string &name, vector<string> &value) {
 
 /***************************************************/
 
-string DataFormatHandler::search(string &fo, const string &name) {
+string
+DataFormatHandler::search(string& fo, const string& name)
+{
   set<NameType>::const_iterator p = NT.find(make_pair(name, fo));
   if (p != NT.end()) {
     return p->second;
@@ -370,7 +444,9 @@ string DataFormatHandler::search(string &fo, const string &name) {
 
 /***************************************************/
 
-void DataFormatHandler::get(string &f, const string &name) {
+void
+DataFormatHandler::get(string& f, const string& name)
+{
   vector<string> s(14);
   s[0] = "string";
   s[1] = "integer";
@@ -396,7 +472,9 @@ void DataFormatHandler::get(string &f, const string &name) {
 
 /***************************************************/
 
-void DataFormatHandler::print(ostream &s) const {
+void
+DataFormatHandler::print(ostream& s) const
+{
   TypeString::const_iterator p = TS.begin();
   for (; p != TS.end(); p++) {
     s << p->first;

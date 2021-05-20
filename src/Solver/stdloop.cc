@@ -40,11 +40,17 @@ using namespace std;
 namespace Gascoigne {
 extern Timer GlobalTimer;
 
-StdLoop::StdLoop() : BasicLoop() { _estimator = _extrapolate = "none"; }
+StdLoop::StdLoop()
+  : BasicLoop()
+{
+  _estimator = _extrapolate = "none";
+}
 
-StdLoop::StdLoop(const ParamFile &paramfile, const ProblemContainer *PC,
-                 const FunctionalContainer *FC)
-    : BasicLoop(paramfile, PC, FC) {
+StdLoop::StdLoop(const ParamFile& paramfile,
+                 const ProblemContainer* PC,
+                 const FunctionalContainer* FC)
+  : BasicLoop(paramfile, PC, FC)
+{
   abort();
 
   // DataFormatHandler DFH;
@@ -67,12 +73,17 @@ StdLoop::~StdLoop() {}
 
 /*-----------------------------------------*/
 
-void StdLoop::ClockOutput() const {}
+void
+StdLoop::ClockOutput() const
+{}
 
 /*-----------------------------------------*/
 
-void StdLoop::BasicInit(const ParamFile &paramfile, const ProblemContainer *PC,
-                        const FunctionalContainer *FC) {
+void
+StdLoop::BasicInit(const ParamFile& paramfile,
+                   const ProblemContainer* PC,
+                   const FunctionalContainer* FC)
+{
   BasicLoop::BasicInit(paramfile, PC, FC);
 
   DataFormatHandler DFH;
@@ -103,15 +114,18 @@ void StdLoop::BasicInit(const ParamFile &paramfile, const ProblemContainer *PC,
 
 /*-------------------------------------------------------*/
 
-DoubleVector StdLoop::ComputeFunctionals(VectorInterface &f,
-                                         VectorInterface &u) {
+DoubleVector
+StdLoop::ComputeFunctionals(VectorInterface& f, VectorInterface& u)
+{
   DoubleVector j = GetMultiLevelSolver()->ComputeFunctionals(f, u);
   return j;
 }
 
 /*-----------------------------------------*/
 
-void StdLoop::EtaVisu(string name, int i, const DoubleVector &eta) const {
+void
+StdLoop::EtaVisu(string name, int i, const DoubleVector& eta) const
+{
   Visualization Visu;
   Visu.format("vtk");
   Visu.set_name(name);
@@ -127,7 +141,9 @@ void StdLoop::EtaVisu(string name, int i, const DoubleVector &eta) const {
 
 /*-----------------------------------------*/
 
-void StdLoop::EtaCellVisu(string name, int i, const GlobalVector &eta) const {
+void
+StdLoop::EtaCellVisu(string name, int i, const GlobalVector& eta) const
+{
   Visualization Visu;
   Visu.format("vtk");
   Visu.set_name(name);
@@ -143,19 +159,25 @@ void StdLoop::EtaCellVisu(string name, int i, const GlobalVector &eta) const {
 
 /*-------------------------------------------------*/
 
-const DoubleVector StdLoop::GetExactValues() const {
+const DoubleVector
+StdLoop::GetExactValues() const
+{
   return GetMultiLevelSolver()->GetExactValues();
 }
 
 /*-------------------------------------------------*/
 
-const std::vector<std::string> StdLoop::GetFunctionalNames() const {
+const std::vector<std::string>
+StdLoop::GetFunctionalNames() const
+{
   return GetMultiLevelSolver()->GetFunctionalNames();
 }
 
 /*-------------------------------------------------*/
 
-DoubleVector StdLoop::Functionals(VectorInterface &u, VectorInterface &f) {
+DoubleVector
+StdLoop::Functionals(VectorInterface& u, VectorInterface& f)
+{
   bool output = true;
 
   const std::vector<std::string> N = GetFunctionalNames();
@@ -196,16 +218,16 @@ DoubleVector StdLoop::Functionals(VectorInterface &u, VectorInterface &f) {
 
 /*-------------------------------------------------*/
 
-double StdLoop::Estimator(DoubleVector &eta, VectorInterface &u,
-                          VectorInterface &f) {
+double
+StdLoop::Estimator(DoubleVector& eta, VectorInterface& u, VectorInterface& f)
+{
   double est = 0.;
   if (_estimator == "energy" || _estimator == "energy_laplace" ||
       _estimator == "energy_stokes") {
-    StdSolver *S =
-        dynamic_cast<StdSolver *>(GetMultiLevelSolver()->GetSolver());
+    StdSolver* S = dynamic_cast<StdSolver*>(GetMultiLevelSolver()->GetSolver());
     assert(S);
 
-    MeshAgent *MA = dynamic_cast<MeshAgent *>(GetMeshAgent());
+    MeshAgent* MA = dynamic_cast<MeshAgent*>(GetMeshAgent());
     assert(MA);
     S->GetHierarchicalMeshPointer() = MA->GetHierarchicalMesh();
 
@@ -253,8 +275,9 @@ double StdLoop::Estimator(DoubleVector &eta, VectorInterface &u,
 
 /*-------------------------------------------------*/
 
-void StdLoop::AdaptMesh(const DoubleVector &eta,
-                        string refine_or_coarsen_step) {
+void
+StdLoop::AdaptMesh(const DoubleVector& eta, string refine_or_coarsen_step)
+{
   // das gleichzeitige vergroebern und verfeinern FUNKTIONIERT NICHT
   // wer das machen moechte, muss stattdessen in zwei getrennten laeufen
   // das gitter verfeinern, reinit+interpolate und dann das gitter vergroebern
@@ -345,7 +368,9 @@ void StdLoop::AdaptMesh(const DoubleVector &eta,
 
 /*-------------------------------------------------*/
 
-void StdLoop::AdaptMesh(const DoubleVector &eta) {
+void
+StdLoop::AdaptMesh(const DoubleVector& eta)
+{
   // das gleichzeitige vergroebern und verfeinern FUNKTIONIERT NICHT
   // wer das machen moechte, sollte stattdessen zwei getrennte laeufe
   // durchfuehren: das gitter vergroebern, reinit+interpolate und dann das
@@ -367,8 +392,8 @@ void StdLoop::AdaptMesh(const DoubleVector &eta) {
               "random_coarsen"
            << endl;
       cerr
-          << "und rufe dazu jewweils AdaptMesh(eta,refine_or_coarsen_step) auf."
-          << endl;
+        << "und rufe dazu jewweils AdaptMesh(eta,refine_or_coarsen_step) auf."
+        << endl;
       abort();
     }
     GetMeshAgent()->random_patch_refine(_p, _random_coarsening);
@@ -398,8 +423,8 @@ void StdLoop::AdaptMesh(const DoubleVector &eta) {
               "einmal verfeinern"
            << endl;
       cerr
-          << "und rufe dazu jewweils AdaptMesh(eta,refine_or_coarsen_step) auf."
-          << endl;
+        << "und rufe dazu jewweils AdaptMesh(eta,refine_or_coarsen_step) auf."
+        << endl;
       abort();
     }
 
@@ -425,7 +450,9 @@ void StdLoop::AdaptMesh(const DoubleVector &eta) {
 
 /*-------------------------------------------------*/
 
-void StdLoop::run(const std::string &problemlabel) {
+void
+StdLoop::run(const std::string& problemlabel)
+{
   VectorInterface u("u"), f("f");
   Matrix A("A");
 
@@ -438,8 +465,8 @@ void StdLoop::run(const std::string &problemlabel) {
     GlobalTimer.start("iteration");
     cout << "\n================== " << _iter << " ================";
     PrintMeshInformation();
-    Moning.SetMeshInformation(_iter, GetMeshAgent()->nnodes(),
-                              GetMeshAgent()->ncells());
+    Moning.SetMeshInformation(
+      _iter, GetMeshAgent()->nnodes(), GetMeshAgent()->ncells());
 
     GlobalTimer.start("---> reinit");
     GetMultiLevelSolver()->ReInit();

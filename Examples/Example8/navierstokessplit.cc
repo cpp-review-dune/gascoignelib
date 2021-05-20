@@ -29,28 +29,35 @@ using namespace Gascoigne;
 
 /*---------------------------------------------------*/
 
-double NavierStokesSplitLps2d::Laplace(const TestFunction &U,
-                                       const TestFunction &N) const {
+double
+NavierStokesSplitLps2d::Laplace(const TestFunction& U,
+                                const TestFunction& N) const
+{
   return U.x() * N.x() + U.y() * N.y();
 }
 
 /*---------------------------------------------------*/
 
-double NavierStokesSplitLps2d::Convection(const FemFunction &U,
-                                          const TestFunction &N) const {
+double
+NavierStokesSplitLps2d::Convection(const FemFunction& U,
+                                   const TestFunction& N) const
+{
   return U[0].m() * N.x() + U[1].m() * N.y();
 }
 
 /*---------------------------------------------------*/
 
-double NavierStokesSplitLps2d::Divergence(const FemFunction &U) const {
+double
+NavierStokesSplitLps2d::Divergence(const FemFunction& U) const
+{
   return U[0].x() + U[1].y();
 }
 
 /*---------------------------------------------------*/
 
-NavierStokesSplitLps2d::NavierStokesSplitLps2d(const ParamFile *pf)
-    : LpsEquation() {
+NavierStokesSplitLps2d::NavierStokesSplitLps2d(const ParamFile* pf)
+  : LpsEquation()
+{
   _h = 0.;
   DataFormatHandler DFH;
   DFH.insert("visc", &_visc, 1.);
@@ -63,22 +70,29 @@ NavierStokesSplitLps2d::NavierStokesSplitLps2d(const ParamFile *pf)
 
 /*---------------------------------------------------*/
 
-void NavierStokesSplitLps2d::SetTime(double time, double dt) const {
+void
+NavierStokesSplitLps2d::SetTime(double time, double dt) const
+{
   Application::SetTime(time, dt);
   ST.DeltaT() = dt;
 }
 
 /*---------------------------------------------------*/
 
-void NavierStokesSplitLps2d::SetTimePattern(TimePattern &P) const {
+void
+NavierStokesSplitLps2d::SetTimePattern(TimePattern& P) const
+{
   P(0, 0) = 1.;
   P(1, 1) = 1.;
 }
 
 /*---------------------------------------------------*/
 
-void NavierStokesSplitLps2d::Form(VectorIterator b, const FemFunction &U,
-                                  const TestFunction &N) const {
+void
+NavierStokesSplitLps2d::Form(VectorIterator b,
+                             const FemFunction& U,
+                             const TestFunction& N) const
+{
   ////////////// Momentum ////////////////////////////////////////////////
 
   b[0] += Convection(U, U[0]) * N.m();
@@ -91,9 +105,12 @@ void NavierStokesSplitLps2d::Form(VectorIterator b, const FemFunction &U,
 
 /*---------------------------------------------------*/
 
-void NavierStokesSplitLps2d::Matrix(EntryMatrix &A, const FemFunction &U,
-                                    const TestFunction &M,
-                                    const TestFunction &N) const {
+void
+NavierStokesSplitLps2d::Matrix(EntryMatrix& A,
+                               const FemFunction& U,
+                               const TestFunction& M,
+                               const TestFunction& N) const
+{
   double MN = M.m() * N.m();
   double laplace = Laplace(M, N);
 
@@ -112,9 +129,12 @@ void NavierStokesSplitLps2d::Matrix(EntryMatrix &A, const FemFunction &U,
 
 /*---------------------------------------------------*/
 
-void NavierStokesSplitLps2d::StabForm(VectorIterator b, const FemFunction &U,
-                                      const FemFunction &UP,
-                                      const TestFunction &N) const {
+void
+NavierStokesSplitLps2d::StabForm(VectorIterator b,
+                                 const FemFunction& U,
+                                 const FemFunction& UP,
+                                 const TestFunction& N) const
+{
   double betaN = Convection(U, N);
   double betaU1 = Convection(U, UP[0]);
   double betaU2 = Convection(U, UP[1]);
@@ -128,9 +148,12 @@ void NavierStokesSplitLps2d::StabForm(VectorIterator b, const FemFunction &U,
 
 /*---------------------------------------------------*/
 
-void NavierStokesSplitLps2d::StabMatrix(EntryMatrix &A, const FemFunction &U,
-                                        const TestFunction &Np,
-                                        const TestFunction &Mp) const {
+void
+NavierStokesSplitLps2d::StabMatrix(EntryMatrix& A,
+                                   const FemFunction& U,
+                                   const TestFunction& Np,
+                                   const TestFunction& Mp) const
+{
   double betaM = Convection(U, Mp);
   double betaN = Convection(U, Np);
   double betabeta = ST.delta() * betaM * betaN;

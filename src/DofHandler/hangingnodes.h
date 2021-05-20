@@ -36,13 +36,15 @@ namespace Gascoigne {
 // DIM:   spatial dimension
 // NODES: nodes involved (Q1: 2, Q2: 3)
 
-template <int DIM, int NODES> class HangingNodes : public HNStructureInterface {
+template<int DIM, int NODES>
+class HangingNodes : public HNStructureInterface
+{
   typedef std::array<int, 3> EdgeVector;
   typedef std::array<int, 9> FaceVector;
 
 protected:
-  const std::map<int, EdgeVector> *edges;
-  const std::map<int, FaceVector> *faces;
+  const std::map<int, EdgeVector>* edges;
+  const std::map<int, FaceVector>* faces;
 
   std::array<double, NODES> wei;
   std::array<double, NODES * NODES> fwei;
@@ -54,7 +56,8 @@ public:
   HangingNodes();
   ~HangingNodes() {}
 
-  void ReInit(const GascoigneMesh *M) {
+  void ReInit(const GascoigneMesh* M)
+  {
     edges = M->GetHangingIndexHandler().GetStructure();
     assert(edges);
     if (DIM == 3) {
@@ -63,7 +66,8 @@ public:
     }
   }
 
-  virtual void MatrixDiag(int ncomp, MatrixInterface &A) const {
+  virtual void MatrixDiag(int ncomp, MatrixInterface& A) const
+  {
     nmatrix<double> M(ncomp);
     M.identity();
 
@@ -74,7 +78,8 @@ public:
         A.entry_diag(it.first, M);
   }
 
-  virtual void SparseStructureDiag(SparseStructure *S) const {
+  virtual void SparseStructureDiag(SparseStructure* S) const
+  {
     for (auto it : *edges)
       S->build_add(it.first, it.first);
     if (DIM == 3)
@@ -83,7 +88,8 @@ public:
   }
 
   ///////////////////////////// Hanging nodes operations on vectors
-  virtual void Average(GlobalVector &u) const {
+  virtual void Average(GlobalVector& u) const
+  {
     for (auto it : *edges) {
       u.zero_node(it.first);
       for (int j = 0; j < NODES; ++j)
@@ -97,7 +103,8 @@ public:
       }
   }
 
-  void Distribute(GlobalVector &u) const {
+  void Distribute(GlobalVector& u) const
+  {
     for (auto it : *edges) {
       for (int j = 0; j < NODES; ++j)
         u.add_node(it.second[j], wei[j], it.first);
@@ -111,7 +118,8 @@ public:
       }
   }
 
-  void Zero(GlobalVector &u) const {
+  void Zero(GlobalVector& u) const
+  {
     for (auto it : *edges)
       u.zero_node(it.first);
     if (DIM == 3)
@@ -119,7 +127,8 @@ public:
         u.zero_node(it.first);
   }
 
-  bool ZeroCheck(const GlobalVector &u) const {
+  bool ZeroCheck(const GlobalVector& u) const
+  {
     for (auto it : *edges)
       for (int c = 0; c < u.ncomp(); c++)
         if (u(it.first, c) != 0.)
@@ -132,7 +141,8 @@ public:
     return 0;
   }
 
-  int nhnodes() const {
+  int nhnodes() const
+  {
     if (DIM == 2)
       return edges->size();
     else
@@ -140,7 +150,8 @@ public:
     ;
   }
 
-  int hanging(int i) const {
+  int hanging(int i) const
+  {
     // hanging on line: returns 1 in 2d and 2 in 3d
     if (edges->find(i) != edges->end())
       return DIM - 1;
@@ -151,7 +162,8 @@ public:
     return 0;
   }
 
-  std::array<int, 2> GetHangingEdge(int i) const {
+  std::array<int, 2> GetHangingEdge(int i) const
+  {
     auto p = edges->find(i);
     assert(p != edges->end());
 
@@ -160,7 +172,8 @@ public:
       Edge[j] = p->second[j];
     return Edge;
   }
-  std::array<int, 4> GetHangingFace(int i) const {
+  std::array<int, 4> GetHangingFace(int i) const
+  {
     auto p = faces->find(i);
     assert(p != faces->end());
 
@@ -172,13 +185,15 @@ public:
 
     return Face;
   }
-  const EdgeVector &regular_nodes(int i) const {
+  const EdgeVector& regular_nodes(int i) const
+  {
     auto p = edges->find(i);
     assert(p != edges->end());
     return p->second;
   }
 
-  void CondenseHanging(IntVector &indices) const {
+  void CondenseHanging(IntVector& indices) const
+  {
     if (DIM == 2)
       assert(indices.size() == NODES * NODES);
     else
@@ -240,9 +255,10 @@ public:
     }
   }
 
-  void CondenseHanging(EntryMatrix &E, IntVector &indices) const;
+  void CondenseHanging(EntryMatrix& E, IntVector& indices) const;
 
-  void CondenseHangingPatch(EntryMatrix &E, IntVector &indices) const {
+  void CondenseHangingPatch(EntryMatrix& E, IntVector& indices) const
+  {
     //      assert(0);
   }
 };

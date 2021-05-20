@@ -38,13 +38,15 @@ using namespace Gascoigne;
 
 /* ----------------------------------------- */
 
-class ThisDirichletData : public DirichletData {
+class ThisDirichletData : public DirichletData
+{
 protected:
 public:
   ThisDirichletData() {}
 
   std::string GetName() const { return "Guten Tag"; }
-  void operator()(DoubleVector &b, const Vertex3d &v, int color) const {
+  void operator()(DoubleVector& b, const Vertex3d& v, int color) const
+  {
     double y = v.y();
     double z = v.z();
 
@@ -57,10 +59,12 @@ public:
 
 /*---------------------------------------------------*/
 
-class ProblemDescriptor : public ProblemDescriptorBase {
+class ProblemDescriptor : public ProblemDescriptorBase
+{
 public:
   std::string GetName() const { return "Hallo"; }
-  void BasicInit(const ParamFile *pf) {
+  void BasicInit(const ParamFile* pf)
+  {
     GetParamFilePointer() = pf;
     GetEquationPointer() = new NavierStokesLps3d(GetParamFile());
     GetDirichletDataPointer() = new ThisDirichletData;
@@ -71,17 +75,20 @@ public:
 
 /* ----------------------------------------- */
 
-class RundeKugel : public BoundaryFunction<3> {
+class RundeKugel : public BoundaryFunction<3>
+{
   double _r;
   Vertex3d _c;
 
 public:
   std::string GetName() const { return "Eine RundeKugel Eis"; }
-  void BasicInit(Vertex3d c, double r) {
+  void BasicInit(Vertex3d c, double r)
+  {
     _c = c;
     _r = r;
   }
-  double operator()(const Vertex3d &c) const {
+  double operator()(const Vertex3d& c) const
+  {
     double r = -_r;
     for (int i = 0; i < 3; i++) {
       double dx = c[i] - _c[i];
@@ -93,12 +100,15 @@ public:
 
 /*----------------------------------------------------------------------------*/
 
-class CurvedMeshAgent : public MeshAgent {
+class CurvedMeshAgent : public MeshAgent
+{
 protected:
   RundeKugel RK;
 
 public:
-  CurvedMeshAgent() : MeshAgent() {
+  CurvedMeshAgent()
+    : MeshAgent()
+  {
     double r = 0.05;
     Vertex3d v(0.5, 0.5, 0.5);
     RK.BasicInit(v, r);
@@ -109,18 +119,22 @@ public:
 
 /*----------------------------------------------------------------------------*/
 
-class Numeric : public NumericInterface {
+class Numeric : public NumericInterface
+{
 public:
-  DiscretizationInterface *NewDiscretization(int level) const {
+  DiscretizationInterface* NewDiscretization(int level) const
+  {
     return new Q1Lps3d;
   }
-  SolverInterface *NewSolver(int level) const { return new StdSolver; }
-  MeshAgentInterface *NewMeshAgent() const { return new CurvedMeshAgent; }
+  SolverInterface* NewSolver(int level) const { return new StdSolver; }
+  MeshAgentInterface* NewMeshAgent() const { return new CurvedMeshAgent; }
 };
 
 /*----------------------------------------------------------------------------*/
 
-int main(int argc, char **argv) {
+int
+main(int argc, char** argv)
+{
   ParamFile paramfile("gascoigne.param");
   if (argc >= 2) {
     paramfile.SetName(argv[1]);

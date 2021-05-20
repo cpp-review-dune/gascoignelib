@@ -27,8 +27,12 @@ namespace Gascoigne {
 
 /*-------------------------------------------------*/
 
-void DwrLps2d::Form(GlobalVector &f, const GlobalVector &u,
-                    const ProblemDescriptorInterface &PD, double d) const {
+void
+DwrLps2d::Form(GlobalVector& f,
+               const GlobalVector& u,
+               const ProblemDescriptorInterface& PD,
+               double d) const
+{
   //   nmatrix<double> T;
   //   for(int iq=0; iq<GetPatchMesh()->npatches(); ++iq)
   //     {

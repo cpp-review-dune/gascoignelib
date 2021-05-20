@@ -26,7 +26,9 @@
 /*-----------------------------------------*/
 
 namespace Gascoigne {
-IntVector PatchIndexHandler::Q2IndicesOfQ4Patch(int i) const {
+IntVector
+PatchIndexHandler::Q2IndicesOfQ4Patch(int i) const
+{
   assert(hasq4patch);
 
   IntVector indices;
@@ -60,7 +62,9 @@ IntVector PatchIndexHandler::Q2IndicesOfQ4Patch(int i) const {
 
 /*-----------------------------------------*/
 
-IntVector PatchIndexHandler::CoarseIndices(int iq) const {
+IntVector
+PatchIndexHandler::CoarseIndices(int iq) const
+{
   IntVector indices;
 
   assert(iq >= 0);
@@ -90,7 +94,9 @@ IntVector PatchIndexHandler::CoarseIndices(int iq) const {
 
 /*-----------------------------------------*/
 
-IntVector PatchIndexHandler::CoarseIndicesQ4(int iq) const {
+IntVector
+PatchIndexHandler::CoarseIndicesQ4(int iq) const
+{
   assert(hasq4patch);
 
   IntVector indices;

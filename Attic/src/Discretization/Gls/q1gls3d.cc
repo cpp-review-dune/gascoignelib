@@ -32,7 +32,9 @@ using namespace std;
 /* ----------------------------------------- */
 
 namespace Gascoigne {
-void Q1Gls3d::BasicInit(const ParamFile *pf) {
+void
+Q1Gls3d::BasicInit(const ParamFile* pf)
+{
   assert(HN == NULL);
   HN = NewHNStructure();
   assert(HN);

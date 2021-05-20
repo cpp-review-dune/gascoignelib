@@ -29,9 +29,14 @@
 namespace Gascoigne {
 /**************************************************/
 
-class BaseQ23dPatchWithSecond : public BaseQ23dPatch {
+class BaseQ23dPatchWithSecond : public BaseQ23dPatch
+{
 public:
-  BaseQ23dPatchWithSecond() : BaseQ23dPatch() { second = true; }
+  BaseQ23dPatchWithSecond()
+    : BaseQ23dPatch()
+  {
+    second = true;
+  }
 };
 } // namespace Gascoigne
 

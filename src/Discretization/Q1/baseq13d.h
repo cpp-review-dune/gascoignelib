@@ -42,7 +42,8 @@ namespace Gascoigne {
 ///
 /////////////////////////////////////////////
 
-class BaseQ13d : public Base3d {
+class BaseQ13d : public Base3d
+{
 protected:
   typedef std::pair<int, int> pint;
 
@@ -50,7 +51,8 @@ protected:
 
   mutable DoubleVector dxy, dxz, dyz, dxyz;
 
-  void BasicInit() {
+  void BasicInit()
+  {
     N.resize(NDOF);
     DN.resize(NDOF);
     a[0] = 1.;
@@ -76,29 +78,33 @@ public:
   double phi_xx(int i) const { return 0.; }
   double phi_yy(int i) const { return 0.; }
   double phi_zz(int i) const { return 0.; }
-  double phi_xy(int i) const {
+  double phi_xy(int i) const
+  {
     std::cerr << "\"BaseQ13d::phi_xy\" not written!" << std::endl;
     abort();
     //     return dxy[i];
   }
-  double phi_xz(int i) const {
+  double phi_xz(int i) const
+  {
     std::cerr << "\"BaseQ13d::phi_xz\" not written!" << std::endl;
     abort();
     //     return dxz[i];
   }
-  double phi_yz(int i) const {
+  double phi_yz(int i) const
+  {
     std::cerr << "\"BaseQ13d::phi_yz\" not written!" << std::endl;
     abort();
     //     return dyz[i];
   }
-  double phi_xyz(int i) const {
+  double phi_xyz(int i) const
+  {
     std::cerr << "\"BaseQ13d::phi_xyz\" not written!" << std::endl;
     abort();
     //     return dxyz[i];
   }
-  const Vertex3d &phi_grad(int i) const { return DN[i]; }
+  const Vertex3d& phi_grad(int i) const { return DN[i]; }
 
-  void point(const Vertex3d &s) const;
+  void point(const Vertex3d& s) const;
 };
 } // namespace Gascoigne
 

@@ -30,7 +30,8 @@
 /**************************************************/
 
 namespace Gascoigne {
-class Base3d : public Base {
+class Base3d : public Base
+{
 protected:
   mutable DoubleVector N;
   mutable std::vector<Vertex3d> DN;
@@ -39,14 +40,16 @@ protected:
 
 public:
   Base3d() {}
-  const Vertex3d *normal3d() const { return &bn; }
-  const Vertex3d *tangent3d() const {
+  const Vertex3d* normal3d() const { return &bn; }
+  const Vertex3d* tangent3d() const
+  {
     std::cerr << "\"Base3d::tangent3d\" not written!" << std::endl;
     abort();
   }
-  const std::array<int, 2> *faces() const { return &face; }
+  const std::array<int, 2>* faces() const { return &face; }
 
-  void point_boundary(int ie, const Vertex2d &s1) const {
+  void point_boundary(int ie, const Vertex2d& s1) const
+  {
     Vertex3d s;
     if (ie == 0) {
       s.x() = s1.x();

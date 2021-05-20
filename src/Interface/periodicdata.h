@@ -45,13 +45,17 @@ namespace Gascoigne {
 ///
 //////////////////////////////////////////////
 
-class PeriodicData : public virtual Application {
+class PeriodicData : public virtual Application
+{
 public:
-  PeriodicData() : Application() {}
+  PeriodicData()
+    : Application()
+  {}
 
   virtual ~PeriodicData() {}
 
-  virtual void operator()(DoubleVector &b, const Vertex2d &v, int col) const {
+  virtual void operator()(DoubleVector& b, const Vertex2d& v, int col) const
+  {
     /*-------------------------------------------------------
    | Falls auf einem der beiden Raender ein Offset addiert
    | werden soll, um einen Sprungterm in der Loesung zu
@@ -61,7 +65,8 @@ public:
    -------------------------------------------------------*/
   }
 
-  virtual void operator()(DoubleVector &b, const Vertex3d &v, int col) const {
+  virtual void operator()(DoubleVector& b, const Vertex3d& v, int col) const
+  {
     /*-------------------------------------------------------
    | Falls auf einem der beiden Raender ein Offset addiert
    | werden soll, um einen Sprungterm in der Loesung zu

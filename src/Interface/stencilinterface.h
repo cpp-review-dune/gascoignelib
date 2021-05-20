@@ -37,7 +37,8 @@ namespace Gascoigne {
 ////
 /////////////////////////////////////////////
 
-class StencilInterface {
+class StencilInterface
+{
 private:
 protected:
 public:

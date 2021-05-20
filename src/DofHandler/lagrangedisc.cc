@@ -22,17 +22,29 @@
 #include "compose_name.h"
 
 namespace Gascoigne {
-template class FiniteElement<2, 1, Transformation2d<CGBase<2, 2>>,
+template class FiniteElement<2,
+                             1,
+                             Transformation2d<CGBase<2, 2>>,
                              CGBase<2, 2>>;
-template class FiniteElement<2, 1, Transformation2d<CGBase<2, 3>>,
+template class FiniteElement<2,
+                             1,
+                             Transformation2d<CGBase<2, 3>>,
                              CGBase<2, 3>>;
-template class FiniteElement<2, 1, Transformation2d<CGBase<2, 5>>,
+template class FiniteElement<2,
+                             1,
+                             Transformation2d<CGBase<2, 5>>,
                              CGBase<2, 5>>;
-template class FiniteElement<3, 2, Transformation3d<CGBase<3, 2>>,
+template class FiniteElement<3,
+                             2,
+                             Transformation3d<CGBase<3, 2>>,
                              CGBase<3, 2>>;
-template class FiniteElement<3, 2, Transformation3d<CGBase<3, 3>>,
+template class FiniteElement<3,
+                             2,
+                             Transformation3d<CGBase<3, 3>>,
                              CGBase<3, 3>>;
-template class FiniteElement<3, 2, Transformation3d<CGBase<3, 5>>,
+template class FiniteElement<3,
+                             2,
+                             Transformation3d<CGBase<3, 5>>,
                              CGBase<3, 5>>;
 
 template class LagrangeDiscQ12d;

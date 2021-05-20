@@ -27,7 +27,10 @@
 
 namespace Gascoigne {
 PressureFilter::PressureFilter()
-    : nvector<double>(), domainsize(0.), nhanging(0) {}
+  : nvector<double>()
+  , domainsize(0.)
+  , nhanging(0)
+{}
 
 /*-----------------------------------------*/
 
@@ -35,7 +38,9 @@ PressureFilter::~PressureFilter() {}
 
 /*-----------------------------------------*/
 
-void PressureFilter::ReInit(int n, int nhn) {
+void
+PressureFilter::ReInit(int n, int nhn)
+{
   resize(n);
   zero();
   domainsize = 0.;
@@ -44,7 +49,9 @@ void PressureFilter::ReInit(int n, int nhn) {
 
 /*-----------------------------------------*/
 
-DoubleVector PressureFilter::IntegrateVector(const GlobalVector &u) const {
+DoubleVector
+PressureFilter::IntegrateVector(const GlobalVector& u) const
+{
   assert(size());
   assert(Active());
 
@@ -61,7 +68,9 @@ DoubleVector PressureFilter::IntegrateVector(const GlobalVector &u) const {
 
 /*-----------------------------------------*/
 
-void PressureFilter::SubtractMean(GlobalVector &u) const {
+void
+PressureFilter::SubtractMean(GlobalVector& u) const
+{
   assert(size());
   assert(domainsize > 0.);
   DoubleVector mean = IntegrateVector(u);
@@ -75,7 +84,9 @@ void PressureFilter::SubtractMean(GlobalVector &u) const {
 
 /*-----------------------------------------*/
 
-void PressureFilter::SubtractMeanAlgebraic(GlobalVector &u) const {
+void
+PressureFilter::SubtractMeanAlgebraic(GlobalVector& u) const
+{
   for (int i = 0; i < component.size(); i++) {
     int comp = component[i];
     double d = 0.;

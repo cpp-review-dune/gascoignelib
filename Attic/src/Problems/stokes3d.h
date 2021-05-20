@@ -29,15 +29,16 @@
 /*-----------------------------------------*/
 
 namespace Gascoigne {
-class Stokes3d : public Stokes2d {
+class Stokes3d : public Stokes2d
+{
 protected:
-  double Divergence(const FemFunction &U) const;
-  double Laplace(const TestFunction &U, const TestFunction &N) const;
+  double Divergence(const FemFunction& U) const;
+  double Laplace(const TestFunction& U, const TestFunction& N) const;
 
 public:
   ~Stokes3d();
   Stokes3d();
-  Stokes3d(const ParamFile &pf);
+  Stokes3d(const ParamFile& pf);
 
   std::string GetName() const { return "Stokes3d"; }
 
@@ -47,11 +48,14 @@ public:
   // Semilinear Form
   //
 
-  void Form(VectorIterator b, const FemFunction &U,
-            const TestFunction &N) const;
+  void Form(VectorIterator b,
+            const FemFunction& U,
+            const TestFunction& N) const;
 
-  void Matrix(EntryMatrix &A, const FemFunction &U, const TestFunction &M,
-              const TestFunction &N) const;
+  void Matrix(EntryMatrix& A,
+              const FemFunction& U,
+              const TestFunction& M,
+              const TestFunction& N) const;
 };
 } // namespace Gascoigne
 

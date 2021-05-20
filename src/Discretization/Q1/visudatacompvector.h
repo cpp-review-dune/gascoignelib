@@ -24,22 +24,23 @@
 #ifndef __visudatacompvector_h
 #define __visudatacompvector_h
 
+#include "compvector.h"
 #include "gascoigne.h"
 #include "visudata.h"
-#include "compvector.h"
 
 /*----------------------------------------------*/
 
 namespace Gascoigne {
-class VisuDataCompVector : public VisuData {
+class VisuDataCompVector : public VisuData
+{
 protected:
-  const GlobalVector *_v;
+  const GlobalVector* _v;
 
 public:
   VisuDataCompVector();
-  VisuDataCompVector(const GlobalVector &v);
+  VisuDataCompVector(const GlobalVector& v);
 
-  void SetGlobalVector(const GlobalVector *v);
+  void SetGlobalVector(const GlobalVector* v);
 
   int visucomp() const;
   int visun() const;

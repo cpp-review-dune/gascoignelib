@@ -133,7 +133,7 @@ if(USE_CLANG_FORMAT)
       clang-format ALL
       COMMAND ${CLANG_FORMAT}
       -i
-      -style=LLVM
+      -style=Mozilla
       ${ALL_CXX_SOURCE_FILES}
       )
   else()

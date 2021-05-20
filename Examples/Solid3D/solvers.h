@@ -13,31 +13,37 @@ using namespace std;
 
 namespace Gascoigne {
 
-template <int DIM> class FSISolver : public StdSolver {
+template<int DIM>
+class FSISolver : public StdSolver
+{
 private:
-  Vanka_Matrix_Vector *Vanka_MV = NULL;
+  Vanka_Matrix_Vector* Vanka_MV = NULL;
 
 public:
   ~FSISolver();
 
-  void smooth(int niter, VectorInterface &x, const VectorInterface &y,
-              VectorInterface &h) const;
+  void smooth(int niter,
+              VectorInterface& x,
+              const VectorInterface& y,
+              VectorInterface& h) const;
   void invert_local_matrices() const;
-  void ComputeIlu(const VectorInterface &gu) const;
+  void ComputeIlu(const VectorInterface& gu) const;
   void ComputeIlu() const;
   void RegisterMatrix();
   void Anisotropy() const;
-  void Transformation(FemInterface::Matrix &T, int iq) const;
+  void Transformation(FemInterface::Matrix& T, int iq) const;
 
-  int NumberofSmoothingCells() const {
+  int NumberofSmoothingCells() const
+  {
 
-    const GascoigneMesh *M = dynamic_cast<const GascoigneMesh *>(GetMesh());
+    const GascoigneMesh* M = dynamic_cast<const GascoigneMesh*>(GetMesh());
     return M->npatches();
     // return 2*M->npatches();
     // return 8*M->nq4patches();
   }
-  const nvector<int> IndicesSmoothingCell(int p) const {
-    const GascoigneMesh *M = dynamic_cast<const GascoigneMesh *>(GetMesh());
+  const nvector<int> IndicesSmoothingCell(int p) const
+  {
+    const GascoigneMesh* M = dynamic_cast<const GascoigneMesh*>(GetMesh());
     return *(M->IndicesOfPatch(p));
     /*
         const GascoigneMesh* M = dynamic_cast<const GascoigneMesh*> (GetMesh());
@@ -116,15 +122,18 @@ public:
   }
 };
 
-template <int DIM> class FSIMultiLevelSolver : public StdMultiLevelSolver {
+template<int DIM>
+class FSIMultiLevelSolver : public StdMultiLevelSolver
+{
 public:
   std::string GetName() const { return "FSI MultiLevelSolver"; }
 
-  SolverInterface *NewSolver(int solverlevel) { return new FSISolver<DIM>; }
+  SolverInterface* NewSolver(int solverlevel) { return new FSISolver<DIM>; }
 
-  const FSISolver<DIM> *GetFSISolver(int l) const {
-    assert(dynamic_cast<const FSISolver<DIM> *>(GetSolver(l)));
-    return dynamic_cast<const FSISolver<DIM> *>(GetSolver(l));
+  const FSISolver<DIM>* GetFSISolver(int l) const
+  {
+    assert(dynamic_cast<const FSISolver<DIM>*>(GetSolver(l)));
+    return dynamic_cast<const FSISolver<DIM>*>(GetSolver(l));
   }
 };
 

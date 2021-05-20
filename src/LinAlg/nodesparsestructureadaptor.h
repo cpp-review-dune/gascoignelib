@@ -37,7 +37,8 @@ namespace Gascoigne {
 ///
 /////////////////////////////////////////////
 
-class NodeSparseStructureAdaptor : public SparseStructureAdaptor {
+class NodeSparseStructureAdaptor : public SparseStructureAdaptor
+{
 public:
 private:
 protected:
@@ -45,7 +46,9 @@ protected:
 
 public:
   NodeSparseStructureAdaptor(int ncomp)
-      : SparseStructureAdaptor(), _ncomp(ncomp) {}
+    : SparseStructureAdaptor()
+    , _ncomp(ncomp)
+  {}
 
   std::string GetName() const { return "Node"; }
 
@@ -54,8 +57,8 @@ public:
 
   int index(int i, int c) const { return i * _ncomp + c; }
 
-  void FillStencil(ColumnDiagStencil &S) const;
-  IntVector GetIndicesDirichlet(int inode, const std::vector<int> &cv) const;
+  void FillStencil(ColumnDiagStencil& S) const;
+  IntVector GetIndicesDirichlet(int inode, const std::vector<int>& cv) const;
 };
 } // namespace Gascoigne
 

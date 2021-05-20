@@ -46,10 +46,11 @@
  */
 
 namespace Gascoigne {
-class CuthillMcKee {
-  const StencilInterface *S;
-  const ColumnStencil *CS;
-  const DynamicStencil *DS;
+class CuthillMcKee
+{
+  const StencilInterface* S;
+  const ColumnStencil* CS;
+  const DynamicStencil* DS;
 
   //     Vertex2d dir2d;
   //     Vertex3d dir3d;
@@ -57,19 +58,20 @@ class CuthillMcKee {
   std::vector<int> neighbors;
 
 public:
-  CuthillMcKee(const StencilInterface *s);
+  CuthillMcKee(const StencilInterface* s);
   CuthillMcKee();
 
-  void Permutate(IntVector &perm);
+  void Permutate(IntVector& perm);
   //     void Permutate    (IntVector &perm, const Vertex2d v);
   //     void Permutate    (IntVector &perm, const Vertex3d v);
 
   //     bool operator()(int i,int j) const;
 #ifdef __WITH_THREADS__
-  void
-  Permutate(IntVector &perm, const IntVector &nodes_in_domain,
-            const std::vector<std::vector<std::pair<int, int>>> &node2domain,
-            int d);
+  void Permutate(
+    IntVector& perm,
+    const IntVector& nodes_in_domain,
+    const std::vector<std::vector<std::pair<int, int>>>& node2domain,
+    int d);
 #endif
 };
 } // namespace Gascoigne

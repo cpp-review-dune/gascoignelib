@@ -14,7 +14,9 @@ namespace Gascoigne {
 //////////////////////////////////////////////////
 
 ////////////////////////////////////////////////// BOUNDARY
-template <int DIM> BoundaryFSI<DIM>::BoundaryFSI(const ParamFile *pf) {
+template<int DIM>
+BoundaryFSI<DIM>::BoundaryFSI(const ParamFile* pf)
+{
   DataFormatHandler DFH;
   DFH.insert("nu_f", &__nu_f, 0.0);
   DFH.insert("rho_f", &__rho_f);
@@ -28,19 +30,30 @@ template <int DIM> BoundaryFSI<DIM>::BoundaryFSI(const ParamFile *pf) {
   cout << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" << endl;
 }
 
-template <int DIM>
-void BoundaryFSI<DIM>::Form(VectorIterator b, const FemFunction &U_Dummy,
-                            const TestFunction &N, int col) const {}
+template<int DIM>
+void
+BoundaryFSI<DIM>::Form(VectorIterator b,
+                       const FemFunction& U_Dummy,
+                       const TestFunction& N,
+                       int col) const
+{}
 
-template <int DIM>
-void BoundaryFSI<DIM>::Matrix(EntryMatrix &A, const FemFunction &U_Dummy,
-                              const TestFunction &M, const TestFunction &N,
-                              int col) const {}
+template<int DIM>
+void
+BoundaryFSI<DIM>::Matrix(EntryMatrix& A,
+                         const FemFunction& U_Dummy,
+                         const TestFunction& M,
+                         const TestFunction& N,
+                         int col) const
+{}
 
-template <int DIM>
-void BoundaryFSI<DIM>::pointboundary(double h, const FemFunction &U_Dummy,
-                                     const Vertex<DIM> &v,
-                                     const Vertex<DIM> &n) const {
+template<int DIM>
+void
+BoundaryFSI<DIM>::pointboundary(double h,
+                                const FemFunction& U_Dummy,
+                                const Vertex<DIM>& v,
+                                const Vertex<DIM>& n) const
+{
 
   __n[0] = n[0];
   __n[1] = n[1];

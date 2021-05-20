@@ -33,8 +33,10 @@ using namespace std;
 
 /*--------------------------------------------------------*/
 
-DiscretizationInterface *DwrAlgorithm::CreateOtherDiscretization() const {
-  DiscretizationInterface *D;
+DiscretizationInterface*
+DwrAlgorithm::CreateOtherDiscretization() const
+{
+  DiscretizationInterface* D;
 
   int dim = GetSolver()->GetMesh()->dimension();
   if (dim == 2)
@@ -48,8 +50,10 @@ DiscretizationInterface *DwrAlgorithm::CreateOtherDiscretization() const {
 
 /*-------------------------------------------------------*/
 
-void DwrAlgorithm::PrimalResidualsHigher(VectorInterface &f,
-                                         const VectorInterface &u) {
+void
+DwrAlgorithm::PrimalResidualsHigher(VectorInterface& f,
+                                    const VectorInterface& u)
+{
   GetSolver()->Zero(f);
 
   // only necessary if z has additional Dirichlet bc compared to u
@@ -57,8 +61,8 @@ void DwrAlgorithm::PrimalResidualsHigher(VectorInterface &f,
   GetSolver()->Rhs(f, -0.5);
   GetSolver()->Form(f, u, 0.5);
 
-  DiscretizationInterface *discretization = GetSolver()->GetDiscretization();
-  DiscretizationInterface *D = CreateOtherDiscretization();
+  DiscretizationInterface* discretization = GetSolver()->GetDiscretization();
+  DiscretizationInterface* D = CreateOtherDiscretization();
 
   GetSolver()->SetDiscretization(*D, true);
 
@@ -72,9 +76,11 @@ void DwrAlgorithm::PrimalResidualsHigher(VectorInterface &f,
 
 /*--------------------------------------------------------*/
 
-void DwrAlgorithm::DualResidualsHigher(VectorInterface &f,
-                                       const VectorInterface &u,
-                                       const VectorInterface &z) {
+void
+DwrAlgorithm::DualResidualsHigher(VectorInterface& f,
+                                  const VectorInterface& u,
+                                  const VectorInterface& z)
+{
   GetSolver()->Zero(f);
   // dual problem
   GetSolver()->AddNodeVector("u", u);
@@ -88,9 +94,9 @@ void DwrAlgorithm::DualResidualsHigher(VectorInterface &f,
 
   // residual respect Q2 test functions
   //
-  DiscretizationInterface *discretization = GetSolver()->GetDiscretization();
+  DiscretizationInterface* discretization = GetSolver()->GetDiscretization();
 
-  DiscretizationInterface *D = CreateOtherDiscretization();
+  DiscretizationInterface* D = CreateOtherDiscretization();
   GetSolver()->SetDiscretization(*D, true);
 
   GetSolver()->Rhs(f, 0.5);
@@ -106,8 +112,11 @@ void DwrAlgorithm::DualResidualsHigher(VectorInterface &f,
 
 /*--------------------------------------------------------*/
 
-void DwrAlgorithm::AdaptiveLoop(const std::string &primallabel,
-                                const std::string &duallabel, Functional &J) {
+void
+DwrAlgorithm::AdaptiveLoop(const std::string& primallabel,
+                           const std::string& duallabel,
+                           Functional& J)
+{
   int niter;
 
   DataFormatHandler DFH;

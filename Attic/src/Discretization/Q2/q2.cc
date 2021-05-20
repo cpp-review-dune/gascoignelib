@@ -30,35 +30,57 @@ using namespace std;
 
 /* ----------------------------------------- */
 
-Q2::Q2() : PatchDiscretization(), HN(NULL) {}
+Q2::Q2()
+  : PatchDiscretization()
+  , HN(NULL)
+{}
 
 /* ----------------------------------------- */
 
-Q2::~Q2() { assert(HN == NULL); }
+Q2::~Q2()
+{
+  assert(HN == NULL);
+}
 
 /* ----------------------------------------- */
 
-void Q2::ReInit(const GascoigneMesh *MP) {
+void
+Q2::ReInit(const GascoigneMesh* MP)
+{
   PatchDiscretization::ReInit(MP);
   HN->ReInit(MP);
 }
 
 /* ----------------------------------------- */
 
-int Q2::ndofs() const { return GetMesh()->nnodes(); }
+int
+Q2::ndofs() const
+{
+  return GetMesh()->nnodes();
+}
 
 /* ----------------------------------------- */
 
-int Q2::nelements() const { return GetMesh()->ncells(); }
+int
+Q2::nelements() const
+{
+  return GetMesh()->ncells();
+}
 
 /* ----------------------------------------- */
 
-int Q2::n_withouthanging() const { return GetMesh()->nnodes() - HN->nhnodes(); }
+int
+Q2::n_withouthanging() const
+{
+  return GetMesh()->nnodes() - HN->nhnodes();
+}
 
 /* ----------------------------------------- */
 
-void Q2::Structure(SparseStructureInterface *SI) const {
-  SparseStructure *S = dynamic_cast<SparseStructure *>(SI);
+void
+Q2::Structure(SparseStructureInterface* SI) const
+{
+  SparseStructure* S = dynamic_cast<SparseStructure*>(SI);
   assert(S);
 
   S->build_begin(ndofs());
@@ -73,8 +95,9 @@ void Q2::Structure(SparseStructureInterface *SI) const {
 
 /* ----------------------------------------- */
 
-void Q2::LocalToGlobal(MatrixInterface &A, EntryMatrix &E, int iq,
-                       double s) const {
+void
+Q2::LocalToGlobal(MatrixInterface& A, EntryMatrix& E, int iq, double s) const
+{
   nvector<int> indices = GetLocalIndices(iq);
   HN->CondenseHanging(E, indices);
   nvector<int>::const_iterator start = indices.begin();
@@ -84,7 +107,9 @@ void Q2::LocalToGlobal(MatrixInterface &A, EntryMatrix &E, int iq,
 
 /* ----------------------------------------- */
 
-void Q2::Interpolate(GlobalVector &u, const DomainInitialCondition &U) const {
+void
+Q2::Interpolate(GlobalVector& u, const DomainInitialCondition& U) const
+{
   std::cerr << "\"Q2::Interpolate\" not written!" << std::endl;
   abort();
 
@@ -114,8 +139,10 @@ void Q2::Interpolate(GlobalVector &u, const DomainInitialCondition &U) const {
 
 /* ----------------------------------------- */
 
-void Q2::InitFilter(nvector<double> &F) const {
-  PressureFilter *PF = static_cast<PressureFilter *>(&F);
+void
+Q2::InitFilter(nvector<double>& F) const
+{
+  PressureFilter* PF = static_cast<PressureFilter*>(&F);
   assert(PF);
 
   if (!PF->Active())
@@ -148,24 +175,44 @@ void Q2::InitFilter(nvector<double> &F) const {
 
 /* ----------------------------------------- */
 
-void Q2::HNAverage(GlobalVector &x) const { HN->Average(x); }
+void
+Q2::HNAverage(GlobalVector& x) const
+{
+  HN->Average(x);
+}
 
 /* ----------------------------------------- */
 
-void Q2::HNDistribute(GlobalVector &x) const { HN->Distribute(x); }
+void
+Q2::HNDistribute(GlobalVector& x) const
+{
+  HN->Distribute(x);
+}
 
 /* ----------------------------------------- */
 
-void Q2::HNZero(GlobalVector &x) const { HN->Zero(x); }
+void
+Q2::HNZero(GlobalVector& x) const
+{
+  HN->Zero(x);
+}
 
 /* ----------------------------------------- */
 
-bool Q2::HNZeroCheck(const GlobalVector &x) const { return HN->ZeroCheck(x); }
+bool
+Q2::HNZeroCheck(const GlobalVector& x) const
+{
+  return HN->ZeroCheck(x);
+}
 
 /* ----------------------------------------- */
 
-void Q2::Matrix(MatrixInterface &A, const GlobalVector &u,
-                const ProblemDescriptorInterface &PD, double d) const {
+void
+Q2::Matrix(MatrixInterface& A,
+           const GlobalVector& u,
+           const ProblemDescriptorInterface& PD,
+           double d) const
+{
   PatchDiscretization::Matrix(A, u, PD, d);
 
   HN->MatrixDiag(u.ncomp(), A);
@@ -173,7 +220,9 @@ void Q2::Matrix(MatrixInterface &A, const GlobalVector &u,
 
 /* ----------------------------------------- */
 
-void Q2::MassMatrix(MatrixInterface &A) const {
+void
+Q2::MassMatrix(MatrixInterface& A) const
+{
   PatchDiscretization::MassMatrix(A);
 
   HN->MatrixDiag(1, A);
@@ -181,10 +230,13 @@ void Q2::MassMatrix(MatrixInterface &A) const {
 
 /* ----------------------------------------- */
 
-void Q2::StrongDirichletMatrix(MatrixInterface &A, int col,
-                               const vector<int> &comp) const {
-  const GascoigneMesh *GMP = dynamic_cast<const GascoigneMesh *>(GetMesh());
-  const IntVector &bv = *GMP->VertexOnBoundary(col);
+void
+Q2::StrongDirichletMatrix(MatrixInterface& A,
+                          int col,
+                          const vector<int>& comp) const
+{
+  const GascoigneMesh* GMP = dynamic_cast<const GascoigneMesh*>(GetMesh());
+  const IntVector& bv = *GMP->VertexOnBoundary(col);
   for (int i = 0; i < bv.size(); i++) {
     A.dirichlet(bv[i], comp);
   }
@@ -192,10 +244,13 @@ void Q2::StrongDirichletMatrix(MatrixInterface &A, int col,
 
 /* ----------------------------------------- */
 
-void Q2::StrongDirichletMatrixOnlyRow(MatrixInterface &A, int col,
-                                      const vector<int> &comp) const {
-  const GascoigneMesh *GMP = dynamic_cast<const GascoigneMesh *>(GetMesh());
-  const IntVector &bv = *GMP->VertexOnBoundary(col);
+void
+Q2::StrongDirichletMatrixOnlyRow(MatrixInterface& A,
+                                 int col,
+                                 const vector<int>& comp) const
+{
+  const GascoigneMesh* GMP = dynamic_cast<const GascoigneMesh*>(GetMesh());
+  const IntVector& bv = *GMP->VertexOnBoundary(col);
   for (int i = 0; i < bv.size(); i++) {
     A.dirichlet_only_row(bv[i], comp);
   }
@@ -203,12 +258,16 @@ void Q2::StrongDirichletMatrixOnlyRow(MatrixInterface &A, int col,
 
 /* ----------------------------------------- */
 
-void Q2::StrongDirichletVector(GlobalVector &u, const DirichletData &BF,
-                               int col, const vector<int> &comp,
-                               double d) const {
-  const GascoigneMesh *GMP = dynamic_cast<const GascoigneMesh *>(GetMesh());
+void
+Q2::StrongDirichletVector(GlobalVector& u,
+                          const DirichletData& BF,
+                          int col,
+                          const vector<int>& comp,
+                          double d) const
+{
+  const GascoigneMesh* GMP = dynamic_cast<const GascoigneMesh*>(GetMesh());
   nvector<double> ff(u.ncomp(), 0.);
-  const IntVector &bv = *GMP->VertexOnBoundary(col);
+  const IntVector& bv = *GMP->VertexOnBoundary(col);
 
   FemData QH;
 
@@ -230,7 +289,7 @@ void Q2::StrongDirichletVector(GlobalVector &u, const DirichletData &BF,
     assert(GetMesh()->dimension() == 2 || GetMesh()->dimension() == 3);
 
     if (GetMesh()->dimension() == 2) {
-      const Vertex2d &v = GMP->vertex2d(index);
+      const Vertex2d& v = GMP->vertex2d(index);
 
       BF(ff, v, col);
       for (int iii = 0; iii < comp.size(); iii++) {
@@ -238,7 +297,7 @@ void Q2::StrongDirichletVector(GlobalVector &u, const DirichletData &BF,
         u(index, c) = d * ff[c];
       }
     } else if (GetMesh()->dimension() == 3) {
-      const Vertex3d &v = GMP->vertex3d(index);
+      const Vertex3d& v = GMP->vertex3d(index);
 
       BF(ff, v, col);
       for (int iii = 0; iii < comp.size(); iii++) {
@@ -251,10 +310,13 @@ void Q2::StrongDirichletVector(GlobalVector &u, const DirichletData &BF,
 
 /* ----------------------------------------- */
 
-void Q2::StrongDirichletVectorZero(GlobalVector &u, int col,
-                                   const vector<int> &comp) const {
-  const GascoigneMesh *GMP = dynamic_cast<const GascoigneMesh *>(GetMesh());
-  const IntVector &bv = *GMP->VertexOnBoundary(col);
+void
+Q2::StrongDirichletVectorZero(GlobalVector& u,
+                              int col,
+                              const vector<int>& comp) const
+{
+  const GascoigneMesh* GMP = dynamic_cast<const GascoigneMesh*>(GetMesh());
+  const IntVector& bv = *GMP->VertexOnBoundary(col);
   for (int i = 0; i < bv.size(); i++) {
     int index = bv[i];
     for (int iii = 0; iii < comp.size(); iii++) {
@@ -265,11 +327,16 @@ void Q2::StrongDirichletVectorZero(GlobalVector &u, int col,
 
 /* ----------------------------------------- */
 
-void Q2::StrongPeriodicVector(GlobalVector &u, const PeriodicData &BF, int col,
-                              const vector<int> &comp, double d) const {
-  const GascoigneMesh *GMP = dynamic_cast<const GascoigneMesh *>(GetMesh());
+void
+Q2::StrongPeriodicVector(GlobalVector& u,
+                         const PeriodicData& BF,
+                         int col,
+                         const vector<int>& comp,
+                         double d) const
+{
+  const GascoigneMesh* GMP = dynamic_cast<const GascoigneMesh*>(GetMesh());
   nvector<double> ff(u.ncomp(), 0.);
-  const IntVector &bv = *GMP->VertexOnBoundary(col);
+  const IntVector& bv = *GMP->VertexOnBoundary(col);
 
   FemData QH;
 
@@ -289,7 +356,7 @@ void Q2::StrongPeriodicVector(GlobalVector &u, const PeriodicData &BF, int col,
     }
 
     if (GetMesh()->dimension() == 2) {
-      const Vertex2d &v = GMP->vertex2d(index);
+      const Vertex2d& v = GMP->vertex2d(index);
 
       BF(ff, v, col);
       for (int iii = 0; iii < comp.size(); iii++) {
@@ -297,7 +364,7 @@ void Q2::StrongPeriodicVector(GlobalVector &u, const PeriodicData &BF, int col,
         u(index, c) = d * ff[c];
       }
     } else if (GetMesh()->dimension() == 3) {
-      const Vertex3d &v = GMP->vertex3d(index);
+      const Vertex3d& v = GMP->vertex3d(index);
 
       BF(ff, v, col);
       for (int iii = 0; iii < comp.size(); iii++) {
@@ -311,7 +378,9 @@ void Q2::StrongPeriodicVector(GlobalVector &u, const PeriodicData &BF, int col,
 
 /* ----------------------------------------- */
 
-void Q2::InterpolateSolution(GlobalVector &u, const GlobalVector &uold) const {
+void
+Q2::InterpolateSolution(GlobalVector& u, const GlobalVector& uold) const
+{
   InterpolateSolutionByPatches(u, uold);
 
   // //

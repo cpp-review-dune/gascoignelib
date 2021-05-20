@@ -8,8 +8,9 @@ using namespace std;
 namespace Gascoigne {
 
 ////////////////////////////////////////////////// BOUNDARY
-template <int DIM>
-Boundary_Fluid_Stat<DIM>::Boundary_Fluid_Stat(const ParamFile *pf) {
+template<int DIM>
+Boundary_Fluid_Stat<DIM>::Boundary_Fluid_Stat(const ParamFile* pf)
+{
   DataFormatHandler DFH;
   DFH.insert("nu_f", &__nu_f, 0.0);
   DFH.insert("rho_f", &__rho_f);
@@ -23,13 +24,17 @@ Boundary_Fluid_Stat<DIM>::Boundary_Fluid_Stat(const ParamFile *pf) {
   cout << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" << endl;
 }
 
-template <int DIM>
-void Boundary_Fluid_Stat<DIM>::Form(VectorIterator b, const FemFunction &U,
-                                    const TestFunction &N, int col) const {
+template<int DIM>
+void
+Boundary_Fluid_Stat<DIM>::Form(VectorIterator b,
+                               const FemFunction& U,
+                               const TestFunction& N,
+                               int col) const
+{
   //______________________________________________________________________________
   if (DIM == 3) {
     NV << U[1].x(), U[1].y(), U[1].z(), U[2].x(), U[2].y(), U[2].z(), U[3].x(),
-        U[3].y(), U[3].z();
+      U[3].y(), U[3].z();
   } else {
     NV << U[1].x(), U[1].y(), U[2].x(), U[2].y();
   }
@@ -41,8 +46,8 @@ void Boundary_Fluid_Stat<DIM>::Form(VectorIterator b, const FemFunction &U,
       b[i + 1] += g(i) * N.m() + __n[i] * p_2 * N.m();
       if ((U[1].m() * __n[0] + U[2].m() * __n[1] + U[3].m() * __n[2]) < 0)
         b[i + 1] -=
-            0.5 * (U[1].m() * __n[0] + U[2].m() * __n[1] + U[3].m() * __n[2]) *
-            U[1 + i].m() * N.m();
+          0.5 * (U[1].m() * __n[0] + U[2].m() * __n[1] + U[3].m() * __n[2]) *
+          U[1 + i].m() * N.m();
     }
   }
 
@@ -51,21 +56,25 @@ void Boundary_Fluid_Stat<DIM>::Form(VectorIterator b, const FemFunction &U,
       b[i + 1] += g(i) * N.m() + __n[i] * p_4 * N.m();
       if ((U[1].m() * __n[0] + U[2].m() * __n[1] + U[3].m() * __n[2]) < 0)
         b[i + 1] -=
-            0.5 * (U[1].m() * __n[0] + U[2].m() * __n[1] + U[3].m() * __n[2]) *
-            U[1 + i].m() * N.m();
+          0.5 * (U[1].m() * __n[0] + U[2].m() * __n[1] + U[3].m() * __n[2]) *
+          U[1 + i].m() * N.m();
     }
   }
 }
 
-template <int DIM>
-void Boundary_Fluid_Stat<DIM>::Matrix(EntryMatrix &A, const FemFunction &U,
-                                      const TestFunction &M,
-                                      const TestFunction &N, int col) const {
+template<int DIM>
+void
+Boundary_Fluid_Stat<DIM>::Matrix(EntryMatrix& A,
+                                 const FemFunction& U,
+                                 const TestFunction& M,
+                                 const TestFunction& N,
+                                 int col) const
+{
 
   //_______________________________________________________________
   if (DIM == 3) {
     NV << U[1].x(), U[1].y(), U[1].z(), U[2].x(), U[2].y(), U[2].z(), U[3].x(),
-        U[3].y(), U[3].z();
+      U[3].y(), U[3].z();
   } else {
     NV << U[1].x(), U[1].y(), U[2].x(), U[2].y();
   }
@@ -88,20 +97,23 @@ void Boundary_Fluid_Stat<DIM>::Matrix(EntryMatrix &A, const FemFunction &U,
 
       if ((U[1].m() * __n[0] + U[2].m() * __n[1] + U[3].m() * __n[2]) < 0) {
         A(1 + i, j + 1) -=
-            0.5 * (U[1].m() * __n[0] + U[2].m() * __n[1] + U[3].m() * __n[2]) *
-            PHI[i] * N.m();
+          0.5 * (U[1].m() * __n[0] + U[2].m() * __n[1] + U[3].m() * __n[2]) *
+          PHI[i] * N.m();
         A(1 + i, j + 1) -=
-            0.5 * (PHI[0] * __n[0] + PHI[1] * __n[1] + PHI[2] * __n[2]) *
-            U[1 + i].m() * N.m();
+          0.5 * (PHI[0] * __n[0] + PHI[1] * __n[1] + PHI[2] * __n[2]) *
+          U[1 + i].m() * N.m();
       }
     }
   }
 }
 
-template <int DIM>
-void Boundary_Fluid_Stat<DIM>::pointboundary(double h, const FemFunction &U,
-                                             const Vertex<DIM> &v,
-                                             const Vertex<DIM> &n) const {
+template<int DIM>
+void
+Boundary_Fluid_Stat<DIM>::pointboundary(double h,
+                                        const FemFunction& U,
+                                        const Vertex<DIM>& v,
+                                        const Vertex<DIM>& n) const
+{
 
   __n[0] = n[0];
   __n[1] = n[1];

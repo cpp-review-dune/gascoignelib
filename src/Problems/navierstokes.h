@@ -55,7 +55,8 @@ namespace Gascoigne {
  *
  * outflowcolor: color of the outflow do-nothing boundary
  */
-class NavierStokesData {
+class NavierStokesData
+{
 public:
   double visc, alpha, delta;
 
@@ -64,7 +65,8 @@ public:
   double dt, theta;
 
   // reads parameters from the input file
-  void BasicInit(const ParamFile &pf) {
+  void BasicInit(const ParamFile& pf)
+  {
     DataFormatHandler DFH;
     DFH.insert("visc", &visc, 1.);   // viscosity, must be positive
     DFH.insert("alpha", &alpha, 0.); // lps pressure stabilization
@@ -86,8 +88,11 @@ public:
  * \brief Navier-Stokes equations, 2d and 3d, LPS stabilization
  *
  */
-template <int DIM>
-class NavierStokesLps : public virtual LpsEquation, public BoundaryEquation {
+template<int DIM>
+class NavierStokesLps
+  : public virtual LpsEquation
+  , public BoundaryEquation
+{
 
 protected:
   /// Data object
@@ -99,9 +104,12 @@ protected:
   mutable double alpha, delta;
 
 public:
-  NavierStokesLps<DIM>(const NavierStokesData &PD) : data(PD) {}
+  NavierStokesLps<DIM>(const NavierStokesData& PD)
+    : data(PD)
+  {}
 
-  NavierStokesLps<DIM> *createNew() const {
+  NavierStokesLps<DIM>* createNew() const
+  {
     return new NavierStokesLps<DIM>(data);
   }
 
@@ -110,8 +118,8 @@ public:
   int GetNcomp() const { return DIM + 1; }
 
   /// Variational formulation
-  void Form(VectorIterator b, const FemFunction &U,
-            const TestFunction &N) const {
+  void Form(VectorIterator b, const FemFunction& U, const TestFunction& N) const
+  {
     for (int i = 0; i < DIM; ++i) {
       // divergence equation
       b[0] += U[i + 1][i + 1] * N.m();
@@ -133,8 +141,11 @@ public:
   }
 
   /// Jacobian
-  void Matrix(EntryMatrix &A, const FemFunction &U, const TestFunction &M,
-              const TestFunction &N) const {
+  void Matrix(EntryMatrix& A,
+              const FemFunction& U,
+              const TestFunction& M,
+              const TestFunction& N) const
+  {
     for (int i = 0; i < DIM; ++i) {
       // divergence equation
       A(0, i + 1) += M[i + 1] * N.m();
@@ -161,14 +172,20 @@ public:
   /// do-nothing boundary
 
   /// store the normal in each quadrature point on the boundary
-  void pointboundary(double h, const FemFunction &U, const Vertex<DIM> &v,
-                     const Vertex<DIM> &n) const {
+  void pointboundary(double h,
+                     const FemFunction& U,
+                     const Vertex<DIM>& v,
+                     const Vertex<DIM>& n) const
+  {
     normal = n;
   }
 
   /// variational form on the boundary
-  void Form(VectorIterator b, const FemFunction &U, const TestFunction &N,
-            int col) const {
+  void Form(VectorIterator b,
+            const FemFunction& U,
+            const TestFunction& N,
+            int col) const
+  {
     if (data.symmetrictensor ==
         false) // only correct outflow boundary if symmetric tensor is used
       return;
@@ -181,8 +198,12 @@ public:
   }
 
   /// Boundary-Jacobian
-  void Matrix(EntryMatrix &A, const FemFunction &U, const TestFunction &M,
-              const TestFunction &N, int col) const {
+  void Matrix(EntryMatrix& A,
+              const FemFunction& U,
+              const TestFunction& M,
+              const TestFunction& N,
+              int col) const
+  {
     if (data.symmetrictensor ==
         false) // only correct outflow boundary if symmetric tensor is used
       return;
@@ -197,7 +218,8 @@ public:
   ////////////////////////////////////////////////// LPS Stabilization
 
   /// define local stabilization parameters
-  void lpspoint(double h, const FemFunction &U, const Vertex<DIM> &v) const {
+  void lpspoint(double h, const FemFunction& U, const Vertex<DIM>& v) const
+  {
     double vel = 0;
 
     alpha = data.alpha / (data.visc / h / h + vel / h);
@@ -205,8 +227,11 @@ public:
   }
 
   /// Variational form of LPS
-  void StabForm(VectorIterator b, const FemFunction &U, const FemFunction &UP,
-                const TestFunction &NP) const {
+  void StabForm(VectorIterator b,
+                const FemFunction& U,
+                const FemFunction& UP,
+                const TestFunction& NP) const
+  {
     // pressure stabilization
     for (int i = 0; i < DIM; ++i)
       b[0] += alpha * UP[0][i + 1] * NP[i + 1];
@@ -223,8 +248,11 @@ public:
   }
 
   /// Jacobian of LPS
-  void StabMatrix(EntryMatrix &A, const FemFunction &U, const TestFunction &Np,
-                  const TestFunction &Mp) const {
+  void StabMatrix(EntryMatrix& A,
+                  const FemFunction& U,
+                  const TestFunction& Np,
+                  const TestFunction& Mp) const
+  {
     // pressure stabilization
     for (int i = 0; i < DIM; ++i)
       A(0, 0) += alpha * Mp[i + 1] * Np[i + 1];
@@ -250,9 +278,11 @@ public:
  * \brief Navier-Stokes equations, 2d and 3d, LPS stabilization, Non-STationary
  *
  */
-template <int DIM>
-class NavierStokesLpsTime : public virtual LpsEquation,
-                            public BoundaryEquation {
+template<int DIM>
+class NavierStokesLpsTime
+  : public virtual LpsEquation
+  , public BoundaryEquation
+{
 
 protected:
   /// Data object
@@ -267,14 +297,17 @@ protected:
    * GetMultiLevelSolver()->AddNodeVector("OLD",old)
    * Here, the keyword OLD is found in the function SetFemData
    */
-  mutable FemFunction *OLD;
+  mutable FemFunction* OLD;
 
 public:
-  NavierStokesLpsTime<DIM>(const NavierStokesData &PD) : data(PD) {
+  NavierStokesLpsTime<DIM>(const NavierStokesData& PD)
+    : data(PD)
+  {
     assert(PD.theta > 0 && PD.theta <= 1.0); // theta parameter must be in (0,1]
   }
 
-  NavierStokesLpsTime<DIM> *createNew() const {
+  NavierStokesLpsTime<DIM>* createNew() const
+  {
     return new NavierStokesLpsTime<DIM>(data);
   }
 
@@ -283,7 +316,8 @@ public:
   int GetNcomp() const { return DIM + 1; }
 
   /// Retrieves old solution OLD
-  void SetFemData(FemData &q) const {
+  void SetFemData(FemData& q) const
+  {
     assert(q.find("OLD") != q.end());
     OLD = &q["OLD"];
   }
@@ -294,8 +328,8 @@ public:
    * We implement the theta time stepping scheme, taking the pressure
    * and the divergence equation fully implicit
    */
-  void Form(VectorIterator b, const FemFunction &U,
-            const TestFunction &N) const {
+  void Form(VectorIterator b, const FemFunction& U, const TestFunction& N) const
+  {
     for (int i = 0; i < DIM; ++i) {
       // Time derivative
       b[i + 1] += (U[i + 1].m() - (*OLD)[i + 1].m()) / data.dt * N.m();
@@ -323,12 +357,12 @@ public:
         // viscosity
         for (int j = 0; j < DIM; ++j)
           b[i + 1] +=
-              (1.0 - data.theta) * data.visc * (*OLD)[i + 1][j + 1] * N[j + 1];
+            (1.0 - data.theta) * data.visc * (*OLD)[i + 1][j + 1] * N[j + 1];
 
         if (data.symmetrictensor)
           for (int j = 0; j < DIM; ++j)
-            b[i + 1] += (1.0 - data.theta) * data.visc * (*OLD)[j + 1][i + 1] *
-                        N[j + 1];
+            b[i + 1] +=
+              (1.0 - data.theta) * data.visc * (*OLD)[j + 1][i + 1] * N[j + 1];
 
         // convection
         for (int j = 0; j < DIM; ++j)
@@ -339,8 +373,11 @@ public:
   }
 
   /// Jacobian
-  void Matrix(EntryMatrix &A, const FemFunction &U, const TestFunction &M,
-              const TestFunction &N) const {
+  void Matrix(EntryMatrix& A,
+              const FemFunction& U,
+              const TestFunction& M,
+              const TestFunction& N) const
+  {
     for (int i = 0; i < DIM; ++i) {
       // Time derivative
       A(i + 1, i + 1) += M.m() / data.dt * N.m();
@@ -370,14 +407,20 @@ public:
   /// do-nothing boundary
 
   /// store the normal in each quadrature point on the boundary
-  void pointboundary(double h, const FemFunction &U, const Vertex<DIM> &v,
-                     const Vertex<DIM> &n) const {
+  void pointboundary(double h,
+                     const FemFunction& U,
+                     const Vertex<DIM>& v,
+                     const Vertex<DIM>& n) const
+  {
     normal = n;
   }
 
   /// variational form on the boundary
-  void Form(VectorIterator b, const FemFunction &U, const TestFunction &N,
-            int col) const {
+  void Form(VectorIterator b,
+            const FemFunction& U,
+            const TestFunction& N,
+            int col) const
+  {
     if (data.symmetrictensor ==
         false) // only correct outflow boundary if symmetric tensor is used
       return;
@@ -386,7 +429,7 @@ public:
       for (int i = 0; i < DIM; ++i)
         for (int j = 0; j < DIM; ++j) {
           b[i + 1] -=
-              data.theta * data.visc * normal[j] * U[j + 1][i + 1] * N.m();
+            data.theta * data.visc * normal[j] * U[j + 1][i + 1] * N.m();
           b[i + 1] -= (1.0 - data.theta) * data.visc * normal[j] *
                       (*OLD)[j + 1][i + 1] * N.m();
         }
@@ -394,8 +437,12 @@ public:
   }
 
   /// Boundary-Jacobian
-  void Matrix(EntryMatrix &A, const FemFunction &U, const TestFunction &M,
-              const TestFunction &N, int col) const {
+  void Matrix(EntryMatrix& A,
+              const FemFunction& U,
+              const TestFunction& M,
+              const TestFunction& N,
+              int col) const
+  {
     if (data.symmetrictensor ==
         false) // only correct outflow boundary if symmetric tensor is used
       return;
@@ -404,14 +451,15 @@ public:
       for (int i = 0; i < DIM; ++i)
         for (int j = 0; j < DIM; ++j)
           A(i + 1, j + 1) -=
-              data.theta * data.visc * normal[j] * M[i + 1] * N.m();
+            data.theta * data.visc * normal[j] * M[i + 1] * N.m();
     }
   }
 
   ////////////////////////////////////////////////// LPS Stabilization
 
   /// define local stabilization parameters
-  void lpspoint(double h, const FemFunction &U, const Vertex<DIM> &v) const {
+  void lpspoint(double h, const FemFunction& U, const Vertex<DIM>& v) const
+  {
     double vel = 0;
 
     alpha = data.alpha / (data.visc / h / h + vel / h + 1.0 / data.dt);
@@ -419,8 +467,11 @@ public:
   }
 
   /// Variational form of LPS
-  void StabForm(VectorIterator b, const FemFunction &U, const FemFunction &UP,
-                const TestFunction &NP) const {
+  void StabForm(VectorIterator b,
+                const FemFunction& U,
+                const FemFunction& UP,
+                const TestFunction& NP) const
+  {
     // pressure stabilization
     for (int i = 0; i < DIM; ++i)
       b[0] += alpha * UP[0][i + 1] * NP[i + 1];
@@ -437,8 +488,11 @@ public:
   }
 
   /// Jacobian of LPS
-  void StabMatrix(EntryMatrix &A, const FemFunction &U, const TestFunction &Np,
-                  const TestFunction &Mp) const {
+  void StabMatrix(EntryMatrix& A,
+                  const FemFunction& U,
+                  const TestFunction& Np,
+                  const TestFunction& Mp) const
+  {
     // pressure stabilization
     for (int i = 0; i < DIM; ++i)
       A(0, 0) += alpha * Mp[i + 1] * Np[i + 1];

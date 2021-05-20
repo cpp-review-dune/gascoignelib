@@ -30,7 +30,8 @@
 /*------------------------------------------------------------*/
 
 namespace Gascoigne {
-class IntegrationFormulaInterface {
+class IntegrationFormulaInterface
+{
 public:
   IntegrationFormulaInterface() {}
   virtual ~IntegrationFormulaInterface() {}
@@ -38,17 +39,20 @@ public:
   virtual int n() const = 0;
   virtual double w(int k) const = 0;
 
-  virtual void xi(Vertex1d &v, int k) const {
+  virtual void xi(Vertex1d& v, int k) const
+  {
     std::cerr << "\"IntegrationFormulaInterface::xi\" not written!"
               << std::endl;
     abort();
   }
-  virtual void xi(Vertex2d &v, int k) const {
+  virtual void xi(Vertex2d& v, int k) const
+  {
     std::cerr << "\"IntegrationFormulaInterface::xi\" not written!"
               << std::endl;
     abort();
   }
-  virtual void xi(Vertex3d &v, int k) const {
+  virtual void xi(Vertex3d& v, int k) const
+  {
     std::cerr << "\"IntegrationFormulaInterface::xi\" not written!"
               << std::endl;
     abort();

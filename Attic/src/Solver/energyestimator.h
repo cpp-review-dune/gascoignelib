@@ -30,20 +30,22 @@
 
 namespace Gascoigne {
 
-class EnergyEstimator {
+class EnergyEstimator
+{
 protected:
-  StdSolver &S;
-  const ProblemDescriptorInterface *primalproblem;
-  Q1 *discretization;
+  StdSolver& S;
+  const ProblemDescriptorInterface* primalproblem;
+  Q1* discretization;
   double _d_visc;
   std::string _s_energytype;
 
 public:
-  EnergyEstimator(StdSolver &SR);
+  EnergyEstimator(StdSolver& SR);
   ~EnergyEstimator(){};
 
-  double Estimator(DoubleVector &eta, VectorInterface &gu,
-                   const VectorInterface &gf);
+  double Estimator(DoubleVector& eta,
+                   VectorInterface& gu,
+                   const VectorInterface& gf);
 };
 
 /*-------------------------------------------------------*/

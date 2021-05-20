@@ -38,11 +38,16 @@ using namespace std;
 namespace Gascoigne {
 extern Timer GlobalTimer;
 
-MeshAgent::MeshAgent() : _goc2nc(false), HMP(NULL), GMG(NULL) {}
+MeshAgent::MeshAgent()
+  : _goc2nc(false)
+  , HMP(NULL)
+  , GMG(NULL)
+{}
 
 /*-----------------------------------------*/
 
-MeshAgent::~MeshAgent() {
+MeshAgent::~MeshAgent()
+{
   if (HMP != NULL) {
     delete HMP;
     HMP = NULL;
@@ -55,7 +60,9 @@ MeshAgent::~MeshAgent() {
 
 /*-----------------------------------------*/
 
-void MeshAgent::ReInit() {
+void
+MeshAgent::ReInit()
+{
   GlobalTimer.start("---> mesh");
 
   // ///////////////  Sort mesh nodes
@@ -82,8 +89,8 @@ void MeshAgent::ReInit() {
   if (HMP->patchdepth() >= 2) {
     BuildQ4PatchList(MGM.Patchl2g());
     assert(_q4patch.size() == _q4toq2.size());
-    PatchIndexHandler &PIH = GMesh(0)->GetPatchIndexHandler();
-    nvector<IntVector> &q4patch2cell = PIH.GetAllQ4Patch2Cell();
+    PatchIndexHandler& PIH = GMesh(0)->GetPatchIndexHandler();
+    nvector<IntVector>& q4patch2cell = PIH.GetAllQ4Patch2Cell();
     q4patch2cell.clear();
     for (int i = 0; i < _q4patch.size(); i++) {
       IntVector q2p = _q4toq2[i];
@@ -138,7 +145,9 @@ void MeshAgent::ReInit() {
 
 /*-----------------------------------------*/
 
-void MeshAgent::BuildQ4PatchList(const IntVector &patchl2g) {
+void
+MeshAgent::BuildQ4PatchList(const IntVector& patchl2g)
+{
   _q4patch.resize(0);
   _q4toq2.resize(0);
   IntSet q2patch, q4patchset;
@@ -180,7 +189,7 @@ void MeshAgent::BuildQ4PatchList(const IntVector &patchl2g) {
   int q4_l = 0;
   for (IntSet::const_iterator p = q4patchset.begin(); p != q4patchset.end();
        p++, q4_l++) {
-    const IntVector &K = HMP->Kinder(*p);
+    const IntVector& K = HMP->Kinder(*p);
     assert(K.size() == perm.size());
     for (int i = 0; i < K.size(); i++) {
       assert(patchg2l.find(K[perm[i]]) != patchg2l.end());
@@ -191,7 +200,9 @@ void MeshAgent::BuildQ4PatchList(const IntVector &patchl2g) {
 
 /*-----------------------------------------*/
 
-void MeshAgent::AssemblePeriodicBoundaries() {
+void
+MeshAgent::AssemblePeriodicBoundaries()
+{
   /*-------------------------------------------------------
   | Erstellt eine Zuordnung der Knoten der periodischen
   | Raender zueinander.
@@ -206,8 +217,8 @@ void MeshAgent::AssemblePeriodicBoundaries() {
     int n = GMG->nlevels();
 
     for (int i = 0; i < n; i++) {
-      GascoigneMesh *p_mesh = GMG->GetGascoigneMesh(i);
-      GascoigneMesh *GMP = dynamic_cast<GascoigneMesh *>(p_mesh);
+      GascoigneMesh* p_mesh = GMG->GetGascoigneMesh(i);
+      GascoigneMesh* GMP = dynamic_cast<GascoigneMesh*>(p_mesh);
       assert(GMP);
 
       // TODO: das soll eigentlich zu Solver gehoeren, damit die anderen Member
@@ -217,7 +228,8 @@ void MeshAgent::AssemblePeriodicBoundaries() {
       assert(_periodicCols.size() % 2 == 0);
 
       for (IntVector::const_iterator p_col = _periodicCols.begin();
-           p_col != _periodicCols.end(); p_col++) {
+           p_col != _periodicCols.end();
+           p_col++) {
         map<int, int> m_PeriodicPairsCol1, m_PeriodicPairsCol2;
         int col_v = *p_col;
         int col_w = *(++p_col);
@@ -240,7 +252,8 @@ void MeshAgent::AssemblePeriodicBoundaries() {
 
         // process each node on the first boundary
         for (IntVector::const_iterator p_first = iv_FirstBoundary.begin();
-             p_first != iv_FirstBoundary.end(); p_first++) {
+             p_first != iv_FirstBoundary.end();
+             p_first++) {
           if (i_dim == 2) {
             Vertex2d first = GMP->vertex2d(*p_first);
             Vertex2d otherside;
@@ -252,15 +265,15 @@ void MeshAgent::AssemblePeriodicBoundaries() {
             second = GMP->vertex2d(*p_second);
             bestfit = *p_second;
             diff_bestfit =
-                (second.x() - otherside.x()) * (second.x() - otherside.x()) +
-                (second.y() - otherside.y()) * (second.y() - otherside.y());
+              (second.x() - otherside.x()) * (second.x() - otherside.x()) +
+              (second.y() - otherside.y()) * (second.y() - otherside.y());
 
             // find the best fit on the other boundary
             for (; p_second != iv_SecondBoundary.end(); p_second++) {
               second = GMP->vertex2d(*p_second);
               diff =
-                  (second.x() - otherside.x()) * (second.x() - otherside.x()) +
-                  (second.y() - otherside.y()) * (second.y() - otherside.y());
+                (second.x() - otherside.x()) * (second.x() - otherside.x()) +
+                (second.y() - otherside.y()) * (second.y() - otherside.y());
               if (diff < diff_bestfit) {
                 bestfit = *p_second;
                 diff_bestfit = diff;
@@ -284,17 +297,17 @@ void MeshAgent::AssemblePeriodicBoundaries() {
             second = GMP->vertex3d(*p_second);
             bestfit = *p_second;
             diff_bestfit =
-                (second.x() - otherside.x()) * (second.x() - otherside.x()) +
-                (second.y() - otherside.y()) * (second.y() - otherside.y()) +
-                (second.z() - otherside.z()) * (second.z() - otherside.z());
+              (second.x() - otherside.x()) * (second.x() - otherside.x()) +
+              (second.y() - otherside.y()) * (second.y() - otherside.y()) +
+              (second.z() - otherside.z()) * (second.z() - otherside.z());
 
             // find the best fit on the other boundary
             for (; p_second != iv_SecondBoundary.end(); p_second++) {
               second = GMP->vertex3d(*p_second);
               diff =
-                  (second.x() - otherside.x()) * (second.x() - otherside.x()) +
-                  (second.y() - otherside.y()) * (second.y() - otherside.y()) +
-                  (second.z() - otherside.z()) * (second.z() - otherside.z());
+                (second.x() - otherside.x()) * (second.x() - otherside.x()) +
+                (second.y() - otherside.y()) * (second.y() - otherside.y()) +
+                (second.z() - otherside.z()) * (second.z() - otherside.z());
               if (diff < diff_bestfit) {
                 bestfit = *p_second;
                 diff_bestfit = diff;
@@ -333,13 +346,17 @@ void MeshAgent::AssemblePeriodicBoundaries() {
 
 /*-----------------------------------------*/
 
-void MeshAgent::BasicInit(const ParamFile &paramfile) {
+void
+MeshAgent::BasicInit(const ParamFile& paramfile)
+{
   BasicInit(paramfile, 0);
 }
 
 /*-----------------------------------------*/
 
-void MeshAgent::BasicInit(const ParamFile &paramfile, int pdepth) {
+void
+MeshAgent::BasicInit(const ParamFile& paramfile, int pdepth)
+{
   assert(HMP == NULL);
   int dim = 0;
 
@@ -362,14 +379,16 @@ void MeshAgent::BasicInit(const ParamFile &paramfile, int pdepth) {
 
   if (dim == 2) {
     HMP = new HierarchicalMesh2d;
-    for (map<int, BoundaryFunction<2> *>::const_iterator p = _curved2d.begin();
-         p != _curved2d.end(); p++) {
+    for (map<int, BoundaryFunction<2>*>::const_iterator p = _curved2d.begin();
+         p != _curved2d.end();
+         p++) {
       HMP->AddShape(p->first, p->second);
     }
   } else if (dim == 3) {
     HMP = new HierarchicalMesh3d;
-    for (map<int, BoundaryFunction<3> *>::const_iterator p = _curved3d.begin();
-         p != _curved3d.end(); p++) {
+    for (map<int, BoundaryFunction<3>*>::const_iterator p = _curved3d.begin();
+         p != _curved3d.end();
+         p++) {
       HMP->AddShape(p->first, p->second);
     }
   } else {
@@ -385,20 +404,27 @@ void MeshAgent::BasicInit(const ParamFile &paramfile, int pdepth) {
 
 /*-----------------------------------------*/
 
-void MeshAgent::BasicInit(const string &gridname, int dim, int patchdepth,
-                          int epatcher, bool goc2nc) {
+void
+MeshAgent::BasicInit(const string& gridname,
+                     int dim,
+                     int patchdepth,
+                     int epatcher,
+                     bool goc2nc)
+{
   assert(HMP == NULL);
   _goc2nc = goc2nc;
   if (dim == 2) {
     HMP = new HierarchicalMesh2d;
-    for (map<int, BoundaryFunction<2> *>::const_iterator p = _curved2d.begin();
-         p != _curved2d.end(); p++) {
+    for (map<int, BoundaryFunction<2>*>::const_iterator p = _curved2d.begin();
+         p != _curved2d.end();
+         p++) {
       HMP->AddShape(p->first, p->second);
     }
   } else if (dim == 3) {
     HMP = new HierarchicalMesh3d;
-    for (map<int, BoundaryFunction<3> *>::const_iterator p = _curved3d.begin();
-         p != _curved3d.end(); p++) {
+    for (map<int, BoundaryFunction<3>*>::const_iterator p = _curved3d.begin();
+         p != _curved3d.end();
+         p++) {
       HMP->AddShape(p->first, p->second);
     }
   } else {
@@ -414,7 +440,9 @@ void MeshAgent::BasicInit(const string &gridname, int dim, int patchdepth,
 
 /*-----------------------------------------*/
 
-void MeshAgent::read_gup(const string &fname) {
+void
+MeshAgent::read_gup(const string& fname)
+{
   assert(HMP);
   HMP->read_gup(fname);
   ClearCl2g();
@@ -423,7 +451,9 @@ void MeshAgent::read_gup(const string &fname) {
 
 /*-----------------------------------------*/
 
-void MeshAgent::read_gip(const string &fname) {
+void
+MeshAgent::read_gip(const string& fname)
+{
   assert(HMP);
   HMP->read_gip(fname);
   ClearCl2g();
@@ -432,28 +462,36 @@ void MeshAgent::read_gip(const string &fname) {
 
 /*-----------------------------------------*/
 
-void MeshAgent::write_gup(const string &fname) const {
+void
+MeshAgent::write_gup(const string& fname) const
+{
   assert(HMP);
   HMP->write_gup(fname);
 }
 
 /*-----------------------------------------*/
 
-void MeshAgent::write_gip(const string &fname) const {
+void
+MeshAgent::write_gip(const string& fname) const
+{
   assert(HMP);
   HMP->write_gip(fname);
 }
 
 /*-----------------------------------------*/
 
-void MeshAgent::write_inp(const string &fname) const {
+void
+MeshAgent::write_inp(const string& fname) const
+{
   assert(HMP);
   HMP->write_inp(fname);
 }
 
 /*-----------------------------------------*/
 
-void MeshAgent::global_patch_coarsen(int n) {
+void
+MeshAgent::global_patch_coarsen(int n)
+{
   assert(HMP);
   HMP->global_patch_coarsen(n);
   ReInit();
@@ -461,7 +499,9 @@ void MeshAgent::global_patch_coarsen(int n) {
 
 /*-----------------------------------------*/
 
-void MeshAgent::global_refine(int n) {
+void
+MeshAgent::global_refine(int n)
+{
   GlobalTimer.start("---> mesh");
   assert(HMP);
   HMP->global_refine(n);
@@ -471,7 +511,9 @@ void MeshAgent::global_refine(int n) {
 
 /*-----------------------------------------*/
 
-void MeshAgent::random_patch_coarsen(double p, int n) {
+void
+MeshAgent::random_patch_coarsen(double p, int n)
+{
   assert(HMP);
   HMP->random_patch_coarsen(p, n);
   ReInit();
@@ -479,7 +521,9 @@ void MeshAgent::random_patch_coarsen(double p, int n) {
 
 /*-----------------------------------------*/
 
-void MeshAgent::random_patch_refine(double p, int n) {
+void
+MeshAgent::random_patch_refine(double p, int n)
+{
   GlobalTimer.start("---> mesh");
   assert(HMP);
   HMP->random_patch_refine(p, n);
@@ -489,14 +533,18 @@ void MeshAgent::random_patch_refine(double p, int n) {
 
 /*-----------------------------------------*/
 
-void MeshAgent::refine_nodes(IntVector &refnodes) {
+void
+MeshAgent::refine_nodes(IntVector& refnodes)
+{
   IntVector coarsenodes(0);
   refine_nodes(refnodes, coarsenodes);
 }
 
 /*-----------------------------------------*/
 
-void MeshAgent::refine_nodes(IntVector &refnodes, IntVector &coarsenodes) {
+void
+MeshAgent::refine_nodes(IntVector& refnodes, IntVector& coarsenodes)
+{
   GlobalTimer.start("---> mesh");
   assert(HMP);
   HMP->vertex_patch_refine(refnodes, coarsenodes);
@@ -506,7 +554,9 @@ void MeshAgent::refine_nodes(IntVector &refnodes, IntVector &coarsenodes) {
 
 /*-----------------------------------------*/
 
-void MeshAgent::refine_cells(IntVector &ref) {
+void
+MeshAgent::refine_cells(IntVector& ref)
+{
   IntVector refnodes;
 
   for (int i = 0; i < ref.size(); i++) {
@@ -520,7 +570,9 @@ void MeshAgent::refine_cells(IntVector &ref) {
 
 /*----------------------------------------*/
 
-const set<int> MeshAgent::Cello2n(int i) const {
+const set<int>
+MeshAgent::Cello2n(int i) const
+{
   map<int, set<int>>::const_iterator p = _co2n.find(i);
   if (p == _co2n.end()) {
     return set<int>();
@@ -531,7 +583,9 @@ const set<int> MeshAgent::Cello2n(int i) const {
 
 /*----------------------------------------*/
 
-const int MeshAgent::Cello2nFather(int i) const {
+const int
+MeshAgent::Cello2nFather(int i) const
+{
   assert(_co2n.find(i) == _co2n.end());
   // Umrechnung alte HM nummer in neue GM nummer
   return _cg2l.find(HMP->Cello2n(_fathers[i]))->second;

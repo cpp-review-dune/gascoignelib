@@ -16,38 +16,44 @@ using namespace std;
 
 namespace Gascoigne {
 
-template <int DIM> class FSIVankaSolver : public FSISolver<DIM> {
+template<int DIM>
+class FSIVankaSolver : public FSISolver<DIM>
+{
 private:
-  Vanka_Matrix_Vector_base *Vanka_MV = NULL;
+  Vanka_Matrix_Vector_base* Vanka_MV = NULL;
   void SetILUPointer(int ncomp);
 
 protected:
-  IluInterface *NewIlu(int ncomp, const string &matrixtype);
+  IluInterface* NewIlu(int ncomp, const string& matrixtype);
 
 public:
   ~FSIVankaSolver();
 
   void ReInitMatrix();
-  void smooth(int niter, VectorInterface &x, const VectorInterface &y,
-              VectorInterface &h) const;
+  void smooth(int niter,
+              VectorInterface& x,
+              const VectorInterface& y,
+              VectorInterface& h) const;
   void invert_local_matrices() const;
-  void ComputeIlu(const VectorInterface &gu) const;
+  void ComputeIlu(const VectorInterface& gu) const;
   void ComputeIlu() const;
   void RegisterMatrix();
   void Anisotropy() const;
-  void Transformation(FemInterface::Matrix &T, int iq) const;
+  void Transformation(FemInterface::Matrix& T, int iq) const;
 
-  int NumberofSmoothingCells() const {
+  int NumberofSmoothingCells() const
+  {
 
-    const GascoigneMesh *M =
-        dynamic_cast<const GascoigneMesh *>(StdSolver::GetMesh());
+    const GascoigneMesh* M =
+      dynamic_cast<const GascoigneMesh*>(StdSolver::GetMesh());
     return M->npatches();
     // return 2*M->npatches();
     // return 8*M->nq4patches();
   }
-  const nvector<int> IndicesSmoothingCell(int p) const {
-    const GascoigneMesh *M =
-        dynamic_cast<const GascoigneMesh *>(StdSolver::GetMesh());
+  const nvector<int> IndicesSmoothingCell(int p) const
+  {
+    const GascoigneMesh* M =
+      dynamic_cast<const GascoigneMesh*>(StdSolver::GetMesh());
     return *(M->IndicesOfPatch(p));
     /*
         const GascoigneMesh* M = dynamic_cast<const GascoigneMesh*> (GetMesh());

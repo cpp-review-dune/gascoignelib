@@ -30,7 +30,8 @@
 /*-------------------------------------------------------------*/
 
 namespace Gascoigne {
-class EntryMatrix {
+class EntryMatrix
+{
 protected:
   typedef DoubleVector::const_iterator const_iterator;
   typedef DoubleVector::iterator iterator;
@@ -43,43 +44,50 @@ protected:
 
   int dofindex(int i, int j) const { return nmcomp * (mdof * i + j); }
   int compindex(int c, int d) const { return mcomp * c + d; }
-  int index(int i, int j, int c, int d) const {
+  int index(int i, int j, int c, int d) const
+  {
     return dofindex(i, j) + compindex(c, d);
   }
 
 public:
   EntryMatrix() {}
-  EntryMatrix(int nd, int nc) {
+  EntryMatrix(int nd, int nc)
+  {
     SetDimensionDof(nd, nd);
     SetDimensionComp(nc, nc);
     resize();
   }
-  EntryMatrix(int nd, int md, int nc, int mc) {
+  EntryMatrix(int nd, int md, int nc, int mc)
+  {
     SetDimensionDof(nd, md);
     SetDimensionComp(nc, mc);
     resize();
   }
   ~EntryMatrix() { val.clear(); }
 
-  const_iterator begin(int i, int j) const {
+  const_iterator begin(int i, int j) const
+  {
     return val.begin() + dofindex(i, j);
   }
   iterator begin(int i, int j) { return val.begin() + dofindex(i, j); }
-  const_iterator end(int i, int j) const {
+  const_iterator end(int i, int j) const
+  {
     return val.begin() + dofindex(i, j + 1);
   }
   iterator end(int i, int j) { return val.begin() + dofindex(i, j + 1); }
 
   void SetDofIndex(int i, int j) { ind = dofindex(i, j); }
   double operator()(int c, int d) const { return val[ind + compindex(c, d)]; }
-  double &operator()(int c, int d) { return val[ind + compindex(c, d)]; }
+  double& operator()(int c, int d) { return val[ind + compindex(c, d)]; }
 
-  void SetDimensionDof(int n, int m) {
+  void SetDimensionDof(int n, int m)
+  {
     ndof = n;
     mdof = m;
     nmdof = n * m;
   }
-  void SetDimensionComp(int n, int m) {
+  void SetDimensionComp(int n, int m)
+  {
     ncomp = n;
     mcomp = m;
     nmcomp = n * m;
@@ -91,19 +99,23 @@ public:
   int Ndof() const { return ndof; }
   int Mdof() const { return mdof; }
 
-  double operator()(int i, int j, int c, int d) const {
+  double operator()(int i, int j, int c, int d) const
+  {
     return val[index(i, j, c, d)];
   }
-  double &operator()(int i, int j, int c, int d) {
+  double& operator()(int i, int j, int c, int d)
+  {
     return val[index(i, j, c, d)];
   }
-  double operator()(int i, int j, int p) const {
+  double operator()(int i, int j, int p) const
+  {
     return val[dofindex(i, j) + p];
   }
 
   void zero() { val.zero(); }
 
-  friend std::ostream &operator<<(std::ostream &s, const EntryMatrix &A) {
+  friend std::ostream& operator<<(std::ostream& s, const EntryMatrix& A)
+  {
     s << A.Ndof() << "\t" << A.Mdof() << std::endl;
     s << A.Ncomp() << "\t" << A.Mcomp() << std::endl;
 
@@ -120,7 +132,8 @@ public:
     return s;
   }
 
-  void add(int il, int jl, int i, int j, const EntryMatrix &E) {
+  void add(int il, int jl, int i, int j, const EntryMatrix& E)
+  {
     iterator p = begin(il, jl);
     const_iterator q = end(il, jl);
     const_iterator pE = E.begin(i, j);
@@ -128,7 +141,8 @@ public:
       *p++ += *pE++;
   }
 
-  void zero_row(int i1) {
+  void zero_row(int i1)
+  {
     for (int j = 0; j < mdof; j++) {
       iterator p1 = begin(i1, j);
       const_iterator q1 = end(i1, j);
@@ -136,7 +150,8 @@ public:
         *p1++ = 0.;
     }
   }
-  void zero_column(int j1) {
+  void zero_column(int j1)
+  {
     for (int i = 0; i < ndof; i++) {
       iterator p1 = begin(i, j1);
       const_iterator q1 = end(i, j1);
@@ -145,7 +160,8 @@ public:
     }
   }
 
-  void add_row(int i1, int i2, double s = 1.) {
+  void add_row(int i1, int i2, double s = 1.)
+  {
     for (int j = 0; j < mdof; j++) {
       iterator p1 = begin(i1, j);
       const_iterator p2 = begin(i2, j);
@@ -155,7 +171,8 @@ public:
     }
   }
 
-  void add_column(int j1, int j2, double s = 1.) {
+  void add_column(int j1, int j2, double s = 1.)
+  {
     for (int i = 0; i < ndof; i++) {
       iterator p1 = begin(i, j1);
       const_iterator p2 = begin(i, j2);
@@ -165,12 +182,14 @@ public:
     }
   }
 
-  void add_column_row(int i1, int i2) {
+  void add_column_row(int i1, int i2)
+  {
     add_column(i1, i2);
     add_row(i1, i2);
   }
 
-  void multiply_row(int i, double s = 1.) {
+  void multiply_row(int i, double s = 1.)
+  {
     for (int j = 0; j < mdof; j++) {
       iterator p = begin(i, j);
       const_iterator q = end(i, j);
@@ -178,7 +197,8 @@ public:
         *p++ *= s;
     }
   }
-  void multiply_column(int j, double s = 1.) {
+  void multiply_column(int j, double s = 1.)
+  {
     for (int i = 0; i < ndof; i++) {
       iterator p = begin(i, j);
       const_iterator q = end(i, j);
@@ -187,23 +207,27 @@ public:
     }
   }
 
-  void multiply_column_row(int j, double s = 1.) {
+  void multiply_column_row(int j, double s = 1.)
+  {
     multiply_column(j, s);
     multiply_row(j, s);
   }
 
-  void distribute_row(int s, int t1, int t2) {
+  void distribute_row(int s, int t1, int t2)
+  {
     add_column(t1, s, 0.5);
     add_column(t2, s, 0.5);
     multiply_column(s, 0.);
   }
 
-  void distribute_column(int s, int t1, int t2) {
+  void distribute_column(int s, int t1, int t2)
+  {
     add_row(t1, s, 0.5);
     add_row(t2, s, 0.5);
     multiply_row(s, 0.);
   }
-  void transpose(EntryMatrix &E) {
+  void transpose(EntryMatrix& E)
+  {
     for (int i = 0; i < ndof; i++) {
       for (int j = 0; j < mdof; j++) {
         SetDofIndex(i, j);
@@ -216,12 +240,14 @@ public:
       }
     }
   }
-  void equ(double d) {
+  void equ(double d)
+  {
     for (iterator p = val.begin(); p != val.end(); p++) {
       *p *= d;
     }
   }
-  void mult(Vector &y, const Vector &x) {
+  void mult(Vector& y, const Vector& x)
+  {
     for (int i = 0; i < ndof; i++) {
       for (int j = 0; j < mdof; j++) {
         SetDofIndex(i, j);

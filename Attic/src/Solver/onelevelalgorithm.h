@@ -38,38 +38,45 @@ namespace Gascoigne {
 ///
 //////////////////////////////////////////////
 
-class OneLevelAlgorithm : public Algorithm {
+class OneLevelAlgorithm : public Algorithm
+{
 private:
-  SolverInterface *_S;
-  const ProblemContainer *_PC;
+  SolverInterface* _S;
+  const ProblemContainer* _PC;
 
 protected:
-  virtual const SolverInterface *GetSolver() const { return _S; }
-  virtual SolverInterface *GetSolver() { return _S; }
+  virtual const SolverInterface* GetSolver() const { return _S; }
+  virtual SolverInterface* GetSolver() { return _S; }
 
-  void JacobiSolver(VectorInterface &du, const VectorInterface &f,
-                    CGInfo &info);
-  void IluSolver(VectorInterface &du, const VectorInterface &f, CGInfo &info);
+  void JacobiSolver(VectorInterface& du,
+                    const VectorInterface& f,
+                    CGInfo& info);
+  void IluSolver(VectorInterface& du, const VectorInterface& f, CGInfo& info);
 
-  void ReInitVector(VectorInterface &u) const { _S->ReInitVector(u); }
-  void DeleteVector(VectorInterface &u) const { _S->DeleteVector(u); }
-  void AssembleMatrixAndIlu(VectorInterface &u);
-  void LinearSolve(VectorInterface &du, const VectorInterface &y,
-                   CGInfo &cginfo);
+  void ReInitVector(VectorInterface& u) const { _S->ReInitVector(u); }
+  void DeleteVector(VectorInterface& u) const { _S->DeleteVector(u); }
+  void AssembleMatrixAndIlu(VectorInterface& u);
+  void LinearSolve(VectorInterface& du,
+                   const VectorInterface& y,
+                   CGInfo& cginfo);
 
 public:
-  OneLevelAlgorithm() : _S(NULL) {}
-  virtual ~OneLevelAlgorithm() {
+  OneLevelAlgorithm()
+    : _S(NULL)
+  {}
+  virtual ~OneLevelAlgorithm()
+  {
     if (_S)
       delete _S;
   }
 
-  virtual void BasicInit(const ParamFile *paramfile, const NumericInterface *NI,
-                         const ProblemContainer *PC);
+  virtual void BasicInit(const ParamFile* paramfile,
+                         const NumericInterface* NI,
+                         const ProblemContainer* PC);
 
-  void Precondition(VectorInterface &x, VectorInterface &y);
-  void RunLinear(const std::string &problemlabel);
-  void RunNonLinear(const std::string &problemlabel);
+  void Precondition(VectorInterface& x, VectorInterface& y);
+  void RunLinear(const std::string& problemlabel);
+  void RunNonLinear(const std::string& problemlabel);
 };
 } // namespace Gascoigne
 

@@ -2,11 +2,14 @@
 
 namespace Gascoigne {
 
-template <int DIM, int DEGREE, class FINITEELEMENT, class INTEGRATOR>
-void CGDisc<DIM, DEGREE, FINITEELEMENT, INTEGRATOR>::InterpolateSolution(
-    GlobalVector &u, const GlobalVector &uold) const {
+template<int DIM, int DEGREE, class FINITEELEMENT, class INTEGRATOR>
+void
+CGDisc<DIM, DEGREE, FINITEELEMENT, INTEGRATOR>::InterpolateSolution(
+  GlobalVector& u,
+  const GlobalVector& uold) const
+{
   if (DIM == 2) {
-    const IntVector &vo2n = *GetDofHandler()->Vertexo2n();
+    const IntVector& vo2n = *GetDofHandler()->Vertexo2n();
     nvector<bool> habschon(GetDofHandler()->nnodes(), 0);
 
     assert(vo2n.size() == uold.n());
@@ -61,7 +64,7 @@ void CGDisc<DIM, DEGREE, FINITEELEMENT, INTEGRATOR>::InterpolateSolution(
     }
   } else if (DIM == 3) {
 
-    const IntVector &vo2n = *GetDofHandler()->Vertexo2n();
+    const IntVector& vo2n = *GetDofHandler()->Vertexo2n();
     nvector<bool> habschon(GetDofHandler()->nnodes(), 0);
 
     assert(vo2n.size() == uold.n());

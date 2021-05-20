@@ -31,12 +31,13 @@ namespace Gascoigne {
 
 /**********************************************************/
 
-class Q2Lps3dWithSecond : public Q2Lps3d {
+class Q2Lps3dWithSecond : public Q2Lps3d
+{
 protected:
 public:
   std::string GetName() const { return "Q2Lps3dWithSecond"; }
 
-  void BasicInit(const ParamFile *paramfile);
+  void BasicInit(const ParamFile* paramfile);
 };
 
 /**********************************************************/

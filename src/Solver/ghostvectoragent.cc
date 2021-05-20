@@ -32,7 +32,8 @@ GhostVectorAgent::GhostVectorAgent() {}
 
 /*-------------------------------------------------*/
 
-GhostVectorAgent::~GhostVectorAgent() {
+GhostVectorAgent::~GhostVectorAgent()
+{
   for (auto p = begin(); p != end(); p++) {
     if (p->second) {
       delete p->second;
@@ -43,16 +44,20 @@ GhostVectorAgent::~GhostVectorAgent() {
 
 /*-------------------------------------------------*/
 
-void GhostVectorAgent::Register(const VectorInterface &mg) {
+void
+GhostVectorAgent::Register(const VectorInterface& mg)
+{
   auto p = find(mg);
   if (p == end()) {
-    insert(std::make_pair(mg, static_cast<GlobalVector *>(NULL)));
+    insert(std::make_pair(mg, static_cast<GlobalVector*>(NULL)));
   }
 }
 
 /*-------------------------------------------------*/
 
-void GhostVectorAgent::Delete(VectorInterface &mg) {
+void
+GhostVectorAgent::Delete(VectorInterface& mg)
+{
   auto p = find(mg);
   if (p != end()) {
     delete p->second;
@@ -62,7 +67,9 @@ void GhostVectorAgent::Delete(VectorInterface &mg) {
 
 /*-------------------------------------------------*/
 
-GlobalVector &GhostVectorAgent::operator()(const VectorInterface &g) {
+GlobalVector&
+GhostVectorAgent::operator()(const VectorInterface& g)
+{
   auto p = find(g);
   if (p == end()) {
     std::cerr << __FILE__ << ":" << __LINE__;
@@ -73,7 +80,7 @@ GlobalVector &GhostVectorAgent::operator()(const VectorInterface &g) {
     std::cerr << " " << *this << std::endl;
     abort();
   }
-  GlobalVector *vp = p->second;
+  GlobalVector* vp = p->second;
   if (vp == NULL) {
     std::cerr << "GhostVectorAgent  GlobalVector* NULL\t" << p->first;
     std::cerr << "\n" << *this << std::endl;

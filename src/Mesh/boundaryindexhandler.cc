@@ -31,8 +31,10 @@ using namespace std;
 /*--------------------------------------------------------------*/
 
 namespace Gascoigne {
-ostream &operator<<(ostream &s, const BoundaryIndexHandler &A) {
-  const IntSet &colors = A.GetColors();
+ostream&
+operator<<(ostream& s, const BoundaryIndexHandler& A)
+{
+  const IntSet& colors = A.GetColors();
   cerr << "All Colors: " << colors << endl;
   for (IntSet::const_iterator p = colors.begin(); p != colors.end(); ++p) {
     cerr << "color: " << *p;
@@ -46,12 +48,14 @@ ostream &operator<<(ostream &s, const BoundaryIndexHandler &A) {
 
 /*--------------------------------------------------------------*/
 
-void BoundaryIndexHandler::check() const {
-  const IntSet &colors = GetColors();
+void
+BoundaryIndexHandler::check() const
+{
+  const IntSet& colors = GetColors();
   cerr << "All Colors: " << colors << endl;
   for (IntSet::const_iterator p = colors.begin(); p != colors.end(); ++p) {
     cerr << "color: " << *p;
-    const IntVector &v = Verteces(*p);
+    const IntVector& v = Verteces(*p);
     for (int i = 0; i < v.size(); i++) {
       if (v[i] < 0) {
         cerr << "....BoundaryIndexHandler::check() ERROR\n";
@@ -64,10 +68,14 @@ void BoundaryIndexHandler::check() const {
 
 /*--------------------------------------------------------------*/
 
-void BoundaryIndexHandler::Equal(const IntSet &col, const VecMap &v,
-                                 const VecMap &c, const VecMap &l,
-                                 const VecMap &patch,
-                                 const VecMap &patchlocal) {
+void
+BoundaryIndexHandler::Equal(const IntSet& col,
+                            const VecMap& v,
+                            const VecMap& c,
+                            const VecMap& l,
+                            const VecMap& patch,
+                            const VecMap& patchlocal)
+{
   AllColors = col;
   verteces = v;
   cells = c;
@@ -78,9 +86,11 @@ void BoundaryIndexHandler::Equal(const IntSet &col, const VecMap &v,
 
 /*--------------------------------------------------------------*/
 
-void BoundaryIndexHandler::CopySetToVector(const vector<IntSet> &H,
-                                           const IntVector &colorvec,
-                                           VecMap &dst) const {
+void
+BoundaryIndexHandler::CopySetToVector(const vector<IntSet>& H,
+                                      const IntVector& colorvec,
+                                      VecMap& dst) const
+{
   for (int i = 0; i < H.size(); i++) {
     IntVector v;
     Set2Vec(v, H[i]);
@@ -91,7 +101,9 @@ void BoundaryIndexHandler::CopySetToVector(const vector<IntSet> &H,
 
 /*--------------------------------------------------------------*/
 
-void BoundaryIndexHandler::clear() {
+void
+BoundaryIndexHandler::clear()
+{
   AllColors.clear();
   verteces.clear();
   cells.clear();
@@ -100,7 +112,9 @@ void BoundaryIndexHandler::clear() {
 
 /*--------------------------------------------------------------*/
 
-const IntVector &BoundaryIndexHandler::Verteces(int color) const {
+const IntVector&
+BoundaryIndexHandler::Verteces(int color) const
+{
   VecMap::const_iterator p = verteces.find(color);
   if (p == verteces.end()) {
     cerr << "BoundaryIndexHandler::Vertices\tcolor not found: " << color
@@ -112,7 +126,9 @@ const IntVector &BoundaryIndexHandler::Verteces(int color) const {
 
 /*--------------------------------------------------------------*/
 
-const IntVector &BoundaryIndexHandler::Cells(int color) const {
+const IntVector&
+BoundaryIndexHandler::Cells(int color) const
+{
   VecMap::const_iterator p = cells.find(color);
   if (p == cells.end()) {
     cerr << "BoundaryIndexHandler::Cells\tcolor not found: " << color << endl;
@@ -123,7 +139,9 @@ const IntVector &BoundaryIndexHandler::Cells(int color) const {
 
 /*--------------------------------------------------------------*/
 
-const IntVector &BoundaryIndexHandler::Localind(int color) const {
+const IntVector&
+BoundaryIndexHandler::Localind(int color) const
+{
   VecMap::const_iterator p = localci.find(color);
   if (p == localci.end()) {
     cerr << "BoundaryIndexHandler::Localind\tcolor not found: " << color
@@ -135,7 +153,9 @@ const IntVector &BoundaryIndexHandler::Localind(int color) const {
 
 /*--------------------------------------------------------------*/
 
-const IntVector &BoundaryIndexHandler::Patches(int color) const {
+const IntVector&
+BoundaryIndexHandler::Patches(int color) const
+{
   VecMap::const_iterator p = patches.find(color);
   if (p == patches.end()) {
     cerr << "BoundaryIndexHandler::Patches\tcolor not found: " << color << endl;
@@ -146,7 +166,9 @@ const IntVector &BoundaryIndexHandler::Patches(int color) const {
 
 /*--------------------------------------------------------------*/
 
-const IntVector &BoundaryIndexHandler::LocalPatchind(int color) const {
+const IntVector&
+BoundaryIndexHandler::LocalPatchind(int color) const
+{
   VecMap::const_iterator p = localpi.find(color);
   if (p == localpi.end()) {
     cerr << "BoundaryIndexHandler::LocalPatchind\tcolor not found: " << color
@@ -158,15 +180,18 @@ const IntVector &BoundaryIndexHandler::LocalPatchind(int color) const {
 
 /*--------------------------------------------------------------*/
 
-void BoundaryIndexHandler::SetPeriodicPairs(
-    std::map<int, std::map<int, int>> mm_PeriodicPairs) {
+void
+BoundaryIndexHandler::SetPeriodicPairs(
+  std::map<int, std::map<int, int>> mm_PeriodicPairs)
+{
   _PeriodicPairs = mm_PeriodicPairs;
 }
 
 /*--------------------------------------------------------------*/
 
 const std::map<int, std::map<int, int>>
-BoundaryIndexHandler::GetPeriodicPairs() const {
+BoundaryIndexHandler::GetPeriodicPairs() const
+{
   return _PeriodicPairs;
 }
 

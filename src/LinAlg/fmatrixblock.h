@@ -31,10 +31,12 @@
 /*****************************************************/
 
 namespace Gascoigne {
-template <int N> class FMatrixBlock : public NodeMatrix<N, MatrixEntryType> {
+template<int N>
+class FMatrixBlock : public NodeMatrix<N, MatrixEntryType>
+{
   typedef typename NodeMatrix<N, MatrixEntryType>::iterator iterator;
   typedef
-      typename NodeMatrix<N, MatrixEntryType>::const_iterator const_iterator;
+    typename NodeMatrix<N, MatrixEntryType>::const_iterator const_iterator;
 
   typedef nvector<double>::iterator viterator;
   typedef nvector<double>::const_iterator const_viterator;
@@ -42,33 +44,34 @@ template <int N> class FMatrixBlock : public NodeMatrix<N, MatrixEntryType> {
 public:
   int ncomp() const { return N; }
 
-  inline void operator*=(const FMatrixBlock<N> &);
+  inline void operator*=(const FMatrixBlock<N>&);
   void operator*=(double s);
 
   void transpose();
-  void transpose(FMatrixBlock<N> &A);
-  void copy_transpose(const FMatrixBlock<N> &A);
+  void transpose(FMatrixBlock<N>& A);
+  void copy_transpose(const FMatrixBlock<N>& A);
 
   void zero_row(int);
   void uno_diag(int);
-  MatrixEntryType &diag(int i);
-  void getrow(std::vector<double> &v, int i);
-  void getcolumn(std::vector<double> &v, int i);
-  void setrow(std::vector<double> &v, int i);
-  void setcolumn(std::vector<double> &v, int i);
+  MatrixEntryType& diag(int i);
+  void getrow(std::vector<double>& v, int i);
+  void getcolumn(std::vector<double>& v, int i);
+  void setrow(std::vector<double>& v, int i);
+  void setcolumn(std::vector<double>& v, int i);
 
-  void DirichletRow(const std::vector<int> &cv);
-  void DirichletCol(const std::vector<int> &cv);
-  void DirichletDiag(const std::vector<int> &cv);
+  void DirichletRow(const std::vector<int>& cv);
+  void DirichletCol(const std::vector<int>& cv);
+  void DirichletDiag(const std::vector<int>& cv);
 
-  void entry(const nmatrix<double> &);
-  void entry(int i, int j, const EntryMatrix &, double s = 1.);
-  void dual_entry(int i, int j, const EntryMatrix &, double s = 1.);
+  void entry(const nmatrix<double>&);
+  void entry(int i, int j, const EntryMatrix&, double s = 1.);
+  void dual_entry(int i, int j, const EntryMatrix&, double s = 1.);
   void inverse();
   inline void vmult(viterator) const;
-  void mult(FMatrixBlock<N> &, const FMatrixBlock<N> &) const;
+  void mult(FMatrixBlock<N>&, const FMatrixBlock<N>&) const;
 
-  void submult(const FMatrixBlock<N> &B, const FMatrixBlock<N> &C) {
+  void submult(const FMatrixBlock<N>& B, const FMatrixBlock<N>& C)
+  {
     // this -= B*C
     auto p = numfixarray<N * N, MatrixEntryType>::begin();
     for (char i = 0; i < N; i++) {
@@ -88,21 +91,24 @@ public:
     }
   }
 
-  void add(double s, const FMatrixBlock<N> &A) {
+  void add(double s, const FMatrixBlock<N>& A)
+  {
     for (int i = 0; i < N; i++) {
       for (int j = 0; j < N; j++) {
         NodeMatrix<N, MatrixEntryType>::value(i, j) += s * A(i, j);
       }
     }
   }
-  void adddiag(const nvector<double> &s, double l) {
+  void adddiag(const nvector<double>& s, double l)
+  {
     for (int i = 0; i < N; i++) {
       NodeMatrix<N, MatrixEntryType>::value(i, i) += s[i] * l;
     }
   }
-  void add(double s, const TimePattern &TP);
+  void add(double s, const TimePattern& TP);
 
-  void cadd(double s, viterator p, const_viterator q0) const {
+  void cadd(double s, viterator p, const_viterator q0) const
+  {
     const_iterator pm = numfixarray<N * N, MatrixEntryType>::begin();
     const_viterator pend = p + N;
     for (; p != pend; p++) {
@@ -114,7 +120,8 @@ public:
       *p += s * sum;
     }
   }
-  void caddtrans(double s, viterator p, const_viterator q0) const {
+  void caddtrans(double s, viterator p, const_viterator q0) const
+  {
     const_iterator pm = numfixarray<N * N, MatrixEntryType>::begin();
 
     for (int k = 0; k < N; k++) {
@@ -126,7 +133,8 @@ public:
       q0++;
     }
   }
-  void subtract(viterator p0, const_viterator q0) const {
+  void subtract(viterator p0, const_viterator q0) const
+  {
     const_iterator pm = numfixarray<N * N, MatrixEntryType>::begin();
 
     for (viterator p(p0); p != p0 + N; p++) {
@@ -135,21 +143,24 @@ public:
       }
     }
   };
-  std::ostream &print(std::ostream &s) const;
+  std::ostream& print(std::ostream& s) const;
 
   // Zugriff auf Inhalt ueber ganzen Vektor, damits auch ohne
   // Struktur geht.
-  void vector_get(nvector<MatrixEntryType> &v) const {
+  void vector_get(nvector<MatrixEntryType>& v) const
+  {
     v.resize(numfixarray<N * N, MatrixEntryType>::size());
     for (int i = 0; i < numfixarray<N * N, MatrixEntryType>::size(); ++i)
       v[i] = NodeMatrix<N, MatrixEntryType>::operator[](i);
   }
-  void vector_set(nvector<MatrixEntryType> &v) {
+  void vector_set(nvector<MatrixEntryType>& v)
+  {
     assert(v.size() == this->size());
     for (int i = 0; i < numfixarray<N * N, MatrixEntryType>::size(); ++i)
       NodeMatrix<N, MatrixEntryType>::operator[](i) = v[i];
   }
-  void vector_add(double d, nvector<MatrixEntryType> &v) {
+  void vector_add(double d, nvector<MatrixEntryType>& v)
+  {
     assert(v.size() == N * N);
     for (int i = 0; i < NodeMatrix<N, MatrixEntryType>::size(); ++i)
       NodeMatrix<N, MatrixEntryType>::operator[](i) += d * v[i];
@@ -158,8 +169,10 @@ public:
 
 /**********************************************************/
 
-template <int N>
-inline void FMatrixBlock<N>::operator*=(const FMatrixBlock<N> &B) {
+template<int N>
+inline void
+FMatrixBlock<N>::operator*=(const FMatrixBlock<N>& B)
+{
   numfixarray<N, double> vhelp;
   for (int i = 0; i < N; i++) {
     for (int j = 0; j < N; j++) {
@@ -176,7 +189,10 @@ inline void FMatrixBlock<N>::operator*=(const FMatrixBlock<N> &B) {
 
 /**********************************************************/
 
-template <int N> inline void FMatrixBlock<N>::vmult(viterator p) const {
+template<int N>
+inline void
+FMatrixBlock<N>::vmult(viterator p) const
+{
   numfixarray<N, double> vhelp;
   // copy old entries of vector in vhelp
   //

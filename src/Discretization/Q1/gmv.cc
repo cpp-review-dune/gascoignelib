@@ -29,7 +29,9 @@ using namespace std;
 /********************************************************************/
 
 namespace Gascoigne {
-void Visualization::gmv(const string &bname) const {
+void
+Visualization::gmv(const string& bname) const
+{
   string name = bname;
   name += ".gmv";
 
@@ -50,7 +52,8 @@ void Visualization::gmv(const string &bname) const {
     CheckPointData();
     file << "variable" << endl;
     for (VisuDataInfo::siterator p = PointDataInfo->sbegin();
-         p != PointDataInfo->send(); ++p) {
+         p != PointDataInfo->send();
+         ++p) {
       file << p->first << " 1" << endl;
       output_solution(file, p->second);
       file << endl;

@@ -32,11 +32,16 @@ Index::Index() {}
 
 /*---------------------------------------------------*/
 
-Index::Index(const Index &I) { *this = I; }
+Index::Index(const Index& I)
+{
+  *this = I;
+}
 
 /*---------------------------------------------------*/
 
-Index &Index::operator=(const Index &I) {
+Index&
+Index::operator=(const Index& I)
+{
   vl2g = I.Vertexl2g();
   vg2l = I.Vertexg2l();
   el2g = I.Edgel2g();
@@ -51,7 +56,9 @@ Index &Index::operator=(const Index &I) {
 
 /*---------------------------------------------------*/
 
-ostream &operator<<(ostream &os, const Index &I) {
+ostream&
+operator<<(ostream& os, const Index& I)
+{
   os << "Vertex l2g " << I.VertexSize() << endl;
   os << I.Vertexl2g();
   os << "Vertex g2l " << I.VertexSize() << endl;
@@ -77,7 +84,9 @@ ostream &operator<<(ostream &os, const Index &I) {
 
 /*---------------------------------------------------*/
 
-void Index::InitNodes(const IntSet &nodes) {
+void
+Index::InitNodes(const IntSet& nodes)
+{
   typedef IntSet::const_iterator iterator;
   int n = nodes.size();
   vl2g.memory(n);
@@ -95,7 +104,9 @@ void Index::InitNodes(const IntSet &nodes) {
 
 /*---------------------------------------------------*/
 
-void Index::InitEdges(const IntSet &edges) {
+void
+Index::InitEdges(const IntSet& edges)
+{
   typedef IntSet::const_iterator iterator;
   int n = edges.size();
   el2g.memory(n);
@@ -108,7 +119,9 @@ void Index::InitEdges(const IntSet &edges) {
 
 /*---------------------------------------------------*/
 
-void Index::InitQuads() {
+void
+Index::InitQuads()
+{
   int n = ql2g.size();
   qg2l.clear();
   for (int i = 0; i < n; i++) {
@@ -118,7 +131,9 @@ void Index::InitQuads() {
 
 /*---------------------------------------------------*/
 
-void Index::InitHexs() {
+void
+Index::InitHexs()
+{
   int n = hl2g.size();
   hg2l.clear();
   for (int i = 0; i < n; i++) {

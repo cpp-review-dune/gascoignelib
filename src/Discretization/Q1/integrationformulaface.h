@@ -29,10 +29,13 @@
 /*-----------------------------------------*/
 
 namespace Gascoigne {
-class IntegrationFormulaEdge1 : public IntegrationFormula2d {
+class IntegrationFormulaEdge1 : public IntegrationFormula2d
+{
 protected:
 public:
-  IntegrationFormulaEdge1() : IntegrationFormula2d(4) {
+  IntegrationFormulaEdge1()
+    : IntegrationFormula2d(4)
+  {
     iw = 0.25;
     ic[0].x() = 0.5;
     ic[0].y() = 0.0;

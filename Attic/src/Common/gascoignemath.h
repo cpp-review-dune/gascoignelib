@@ -27,33 +27,47 @@
 #include "math.h"
 
 namespace Gascoigne {
-inline double pi() { return 3.14159265358979323846; }
+inline double
+pi()
+{
+  return 3.14159265358979323846;
+}
 
-inline double max(double a, double b) {
+inline double
+max(double a, double b)
+{
   if (a > b)
     return a;
   return b;
 }
 
-inline int max_int(int a, int b) {
+inline int
+max_int(int a, int b)
+{
   if (a > b)
     return a;
   return b;
 }
 
-inline double min(double a, double b) {
+inline double
+min(double a, double b)
+{
   if (a < b)
     return a;
   return b;
 }
 
-inline int min_int(int a, int b) {
+inline int
+min_int(int a, int b)
+{
   if (a < b)
     return a;
   return b;
 }
 
-inline int abs_int(int a) {
+inline int
+abs_int(int a)
+{
   if (a > 0)
     return a;
   return -a;

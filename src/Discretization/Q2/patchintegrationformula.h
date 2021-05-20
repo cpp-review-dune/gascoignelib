@@ -30,20 +30,26 @@ namespace Gascoigne {
 
 /*------------------------------------------------------------*/
 
-template <int N, class INT> class PatchFormula1d : public IntegrationFormula1d {
+template<int N, class INT>
+class PatchFormula1d : public IntegrationFormula1d
+{
 public:
   PatchFormula1d();
 };
 
 /*------------------------------------------------------------*/
-template <int N, class INT> class PatchFormula2d : public IntegrationFormula2d {
+template<int N, class INT>
+class PatchFormula2d : public IntegrationFormula2d
+{
 public:
   PatchFormula2d();
 };
 
 /*------------------------------------------------------------*/
 
-template <int N, class INT> class PatchFormula3d : public IntegrationFormula3d {
+template<int N, class INT>
+class PatchFormula3d : public IntegrationFormula3d
+{
 public:
   PatchFormula3d();
 };

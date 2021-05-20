@@ -8,7 +8,10 @@ double __DT, __TIME, __THETA;
 bool InterfaceResidual = false;
 
 namespace Gascoigne {
-template <int DIM> void Loop<DIM>::run(const std::string &problemlabel) {
+template<int DIM>
+void
+Loop<DIM>::run(const std::string& problemlabel)
+{
   double STOP_TIME;
 
   DataFormatHandler DFH;
@@ -65,8 +68,8 @@ template <int DIM> void Loop<DIM>::run(const std::string &problemlabel) {
   //////////////////////////////////////////////////////////////////////////////
   // Initialiseren der Vektoren
 
-  FSIMultiLevelSolver<DIM> *FSI_MLS =
-      dynamic_cast<FSIMultiLevelSolver<DIM> *>(GetMultiLevelSolver());
+  FSIMultiLevelSolver<DIM>* FSI_MLS =
+    dynamic_cast<FSIMultiLevelSolver<DIM>*>(GetMultiLevelSolver());
 
   FSI_MLS->ReInit("blubbb");
   // Anlegen von vier Loesern
@@ -171,9 +174,9 @@ template <int DIM> void Loop<DIM>::run(const std::string &problemlabel) {
   cout << "=================================================" << endl;
   cout << "Prestressed Fluid-Structure Interaction Problem" << endl;
 
-  SolverInfos *_SI_Solid_Disp = new SolverInfos;
+  SolverInfos* _SI_Solid_Disp = new SolverInfos;
   _SI_Solid_Disp->BasicInit(_paramfile);
-  SolverInfos *_SI_Solid_MeshMotion = new SolverInfos;
+  SolverInfos* _SI_Solid_MeshMotion = new SolverInfos;
   _SI_Solid_MeshMotion->BasicInit(_paramfile);
 
   _SI_Solid_Disp->GetNLInfo().control().matrixmustbebuild() = 1;
@@ -207,9 +210,10 @@ template <int DIM> void Loop<DIM>::run(const std::string &problemlabel) {
   FSI_MLS->AddNodeVectorinAllSolvers("UOLD_Vec", UOLD_Vec);
 
   // Init Condition aus Vel Vektor ubertragen
-  GlobalVector &U_GV = GetMultiLevelSolver()->GetSolver()->GetGV(U_Vec);
+  GlobalVector& U_GV = GetMultiLevelSolver()->GetSolver()->GetGV(U_Vec);
   for (int node = 0;
-       node < GetMultiLevelSolver()->GetSolver()->GetMesh()->nnodes(); ++node) {
+       node < GetMultiLevelSolver()->GetSolver()->GetMesh()->nnodes();
+       ++node) {
     for (int i = 0; i < DIM + 1; i++)
       // U_GV(node,i) = FSI_MLS->GetSolver("fsi_reduced")->GetGV(vel)(node,i);
       U_GV(node, i) = 0.0;
@@ -237,7 +241,9 @@ template <int DIM> void Loop<DIM>::run(const std::string &problemlabel) {
     GetMultiLevelSolver()->GetSolver()->SetPeriodicVector(U_Vec);
     GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(U_Vec);
 
-    solved = FSI_MLS->Solve(U_Vec, F, GetSolverInfos()->GetNLInfo(),
+    solved = FSI_MLS->Solve(U_Vec,
+                            F,
+                            GetSolverInfos()->GetNLInfo(),
                             _SI_Solid_Disp->GetNLInfo(),
                             _SI_Solid_MeshMotion->GetNLInfo());
     assert(solved == "converged");

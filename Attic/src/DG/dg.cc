@@ -6,21 +6,33 @@
 
 namespace Gascoigne {
 /////////// INIT, Constructor, ReInit...
-template <class BASE> DG<BASE>::DG() { _integrator.BasicInit(); }
+template<class BASE>
+DG<BASE>::DG()
+{
+  _integrator.BasicInit();
+}
 
-template <class BASE> void DG<BASE>::BasicInit(const ParamFile *pf) {}
+template<class BASE>
+void
+DG<BASE>::BasicInit(const ParamFile* pf)
+{}
 
-template <class BASE> void DG<BASE>::ReInit(const GascoigneMesh *M) {
+template<class BASE>
+void
+DG<BASE>::ReInit(const GascoigneMesh* M)
+{
   _dofhandler.InitFromGascoigneMesh(M);
   _mesh = M;
   assert(_mesh);
 }
 
 ////////// STUFF Data, NodeVEctor, Cellvector ...
-template <class BASE>
-void DG<BASE>::GlobalToGlobalData(LocalParameterData &QP) const {
+template<class BASE>
+void
+DG<BASE>::GlobalToGlobalData(LocalParameterData& QP) const
+{
   abort();
-  const GlobalParameterData &gpd = GetDataContainer().GetParameterData();
+  const GlobalParameterData& gpd = GetDataContainer().GetParameterData();
 
   for (auto p : gpd) {
     QP.insert(make_pair(p.first, *p.second));
@@ -29,9 +41,12 @@ void DG<BASE>::GlobalToGlobalData(LocalParameterData &QP) const {
 
 /* ----------------------------------------- */
 
-template <class BASE>
-void DG<BASE>::GlobalToLocalData(LocalData &QN, const DataContainer &DC,
-                                 int iq) const {
+template<class BASE>
+void
+DG<BASE>::GlobalToLocalData(LocalData& QN,
+                            const DataContainer& DC,
+                            int iq) const
+{
   const auto node = DC.GetNodeData();
 
   QN.clear();
@@ -43,8 +58,10 @@ void DG<BASE>::GlobalToLocalData(LocalData &QN, const DataContainer &DC,
 
 ////////////////////////////////////////////////// Init
 
-template <class BASE>
-void DG<BASE>::Transformation(FemInterface::Matrix &T, int iq) const {
+template<class BASE>
+void
+DG<BASE>::Transformation(FemInterface::Matrix& T, int iq) const
+{
   assert(_mesh);
   int dim = _mesh->dimension();
   int ne = _mesh->nodes_per_cell(iq); // always Q1 transformation
@@ -70,9 +87,13 @@ void DG<BASE>::Transformation(FemInterface::Matrix &T, int iq) const {
 
 ////////////////////////////////////////////////// INTEGRATION
 
-template <class BASE>
-void DG<BASE>::Form(GlobalVector &f, const GlobalVector &u, const Equation &EQ,
-                    double d) const {
+template<class BASE>
+void
+DG<BASE>::Form(GlobalVector& f,
+               const GlobalVector& u,
+               const Equation& EQ,
+               double d) const
+{
   nmatrix<double> T;
   // LocalParameterData QP;
   // GlobalToGlobalData(QP);
@@ -93,12 +114,16 @@ void DG<BASE>::Form(GlobalVector &f, const GlobalVector &u, const Equation &EQ,
     _dofhandler.LocalToGlobal(f, F, iq, d);
   }
 
-  EdgeForm(f, u, dynamic_cast<const DGEquation &>(EQ), d);
+  EdgeForm(f, u, dynamic_cast<const DGEquation&>(EQ), d);
 }
 
-template <class BASE>
-void DG<BASE>::EdgeForm(GlobalVector &f, const GlobalVector &u,
-                        const DGEquation &EQ, double d) const {
+template<class BASE>
+void
+DG<BASE>::EdgeForm(GlobalVector& f,
+                   const GlobalVector& u,
+                   const DGEquation& EQ,
+                   double d) const
+{
   nmatrix<double> T1, T2;
   // LocalParameterData QP;
   // GlobalToGlobalData(QP);
@@ -112,7 +137,7 @@ void DG<BASE>::EdgeForm(GlobalVector &f, const GlobalVector &u,
   LocalData QC;
 
   for (int ie = 0; ie < _dofhandler.nedges(); ++ie) {
-    auto &E = _dofhandler.getedge(ie);
+    auto& E = _dofhandler.getedge(ie);
 
     // master
     size_t master = E[0];
@@ -134,17 +159,29 @@ void DG<BASE>::EdgeForm(GlobalVector &f, const GlobalVector &u,
       GlobalToLocalData(__QN_slave, _datacontainer, slave);
     }
 
-    _integrator.EdgeForm(internaledge, EQ, F1, F2, _fe, _feslave, masterli,
-                         slaveli, U1, U2, __QN_master, __QN_slave, QC);
+    _integrator.EdgeForm(internaledge,
+                         EQ,
+                         F1,
+                         F2,
+                         _fe,
+                         _feslave,
+                         masterli,
+                         slaveli,
+                         U1,
+                         U2,
+                         __QN_master,
+                         __QN_slave,
+                         QC);
     _dofhandler.LocalToGlobal(f, F1, master, d);
     if (internaledge)
       _dofhandler.LocalToGlobal(f, F2, slave, d);
   }
 }
 
-template <class BASE>
-void DG<BASE>::Rhs(GlobalVector &f, const DomainRightHandSide &RHS,
-                   double s) const {
+template<class BASE>
+void
+DG<BASE>::Rhs(GlobalVector& f, const DomainRightHandSide& RHS, double s) const
+{
   nmatrix<double> T;
 
   // LocalParameterData QP;
@@ -164,9 +201,13 @@ void DG<BASE>::Rhs(GlobalVector &f, const DomainRightHandSide &RHS,
   }
 }
 
-template <class BASE>
-void DG<BASE>::Matrix(MatrixInterface &A, const GlobalVector &u,
-                      const Equation &EQ, double d) const {
+template<class BASE>
+void
+DG<BASE>::Matrix(MatrixInterface& A,
+                 const GlobalVector& u,
+                 const Equation& EQ,
+                 double d) const
+{
   nmatrix<double> T;
 
   // LocalParameterData QP;
@@ -190,12 +231,16 @@ void DG<BASE>::Matrix(MatrixInterface &A, const GlobalVector &u,
     _integrator.Matrix(EQ, E, _fe, U, __QN_master, QC);
     _dofhandler.LocalToGlobalMatrix(A, E, iq, d);
   }
-  EdgeMatrix(A, u, dynamic_cast<const DGEquation &>(EQ), d);
+  EdgeMatrix(A, u, dynamic_cast<const DGEquation&>(EQ), d);
 }
 
-template <class BASE>
-void DG<BASE>::EdgeMatrix(MatrixInterface &A, const GlobalVector &u,
-                          const DGEquation &EQ, double d) const {
+template<class BASE>
+void
+DG<BASE>::EdgeMatrix(MatrixInterface& A,
+                     const GlobalVector& u,
+                     const DGEquation& EQ,
+                     double d) const
+{
   nmatrix<double> T1, T2;
   // LocalParameterData QP;
   // GlobalToGlobalData(QP);
@@ -208,7 +253,7 @@ void DG<BASE>::EdgeMatrix(MatrixInterface &A, const GlobalVector &u,
   LocalData QC;
 
   for (int ie = 0; ie < _dofhandler.nedges(); ++ie) {
-    auto &E = _dofhandler.getedge(ie);
+    auto& E = _dofhandler.getedge(ie);
 
     // master
     size_t master = E[0];
@@ -231,8 +276,20 @@ void DG<BASE>::EdgeMatrix(MatrixInterface &A, const GlobalVector &u,
     }
 
     //_dofhandler.GlobalToLocalData(iq);
-    _integrator.EdgeMatrix(internaledge, EQ, E11, E12, E21, E22, _fe, _feslave,
-                           masterli, slaveli, U1, U2, __QN_master, __QN_slave,
+    _integrator.EdgeMatrix(internaledge,
+                           EQ,
+                           E11,
+                           E12,
+                           E21,
+                           E22,
+                           _fe,
+                           _feslave,
+                           masterli,
+                           slaveli,
+                           U1,
+                           U2,
+                           __QN_master,
+                           __QN_slave,
                            QC);
     _dofhandler.LocalToGlobalMatrix(A, E11, master, master, d);
     if (internaledge) {

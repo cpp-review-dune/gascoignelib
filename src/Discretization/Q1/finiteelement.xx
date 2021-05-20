@@ -26,16 +26,21 @@
 /*-----------------------------------------------------*/
 
 namespace Gascoigne {
-template <int DIM, int BDIM, class TRAFO, class BASE>
-FiniteElement<DIM, BDIM, TRAFO, BASE>::FiniteElement() : T(), B() {
+template<int DIM, int BDIM, class TRAFO, class BASE>
+FiniteElement<DIM, BDIM, TRAFO, BASE>::FiniteElement()
+  : T()
+  , B()
+{
   grad.reserve(n());
   grad.resize(n());
 }
 
 /*-----------------------------------------------------*/
 
-template <int DIM, int BDIM, class TRAFO, class BASE>
-void FiniteElement<DIM, BDIM, TRAFO, BASE>::ComputeGrad() const {
+template<int DIM, int BDIM, class TRAFO, class BASE>
+void
+FiniteElement<DIM, BDIM, TRAFO, BASE>::ComputeGrad() const
+{
   for (int i = 0; i < n(); i++) {
     grad[i].zero();
     T.DTI().mult(grad[i], B.phi_grad(i));
@@ -44,8 +49,10 @@ void FiniteElement<DIM, BDIM, TRAFO, BASE>::ComputeGrad() const {
 
 /*-----------------------------------------------------*/
 
-template <int DIM, int BDIM, class TRAFO, class BASE>
-void FiniteElement<DIM, BDIM, TRAFO, BASE>::point(const Vertex<DIM> &xi) const {
+template<int DIM, int BDIM, class TRAFO, class BASE>
+void
+FiniteElement<DIM, BDIM, TRAFO, BASE>::point(const Vertex<DIM>& xi) const
+{
   T.point(xi);
   B.point(xi);
   ComputeGrad();
@@ -54,9 +61,12 @@ void FiniteElement<DIM, BDIM, TRAFO, BASE>::point(const Vertex<DIM> &xi) const {
 
 /*-----------------------------------------------------*/
 
-template <int DIM, int BDIM, class TRAFO, class BASE>
-void FiniteElement<DIM, BDIM, TRAFO, BASE>::point_boundary(
-    int ie, const Vertex<BDIM> &s) const {
+template<int DIM, int BDIM, class TRAFO, class BASE>
+void
+FiniteElement<DIM, BDIM, TRAFO, BASE>::point_boundary(
+  int ie,
+  const Vertex<BDIM>& s) const
+{
   T.point_boundary(ie, s);
   B.point_boundary(ie, s);
   ComputeGrad();
@@ -64,9 +74,12 @@ void FiniteElement<DIM, BDIM, TRAFO, BASE>::point_boundary(
 
 /*-----------------------------------------------------*/
 
-template <int DIM, int BDIM, class TRAFO, class BASE>
-void FiniteElement<DIM, BDIM, TRAFO, BASE>::init_test_functions(
-    TestFunction &Phi, double w, int i) const {
+template<int DIM, int BDIM, class TRAFO, class BASE>
+void
+FiniteElement<DIM, BDIM, TRAFO, BASE>::init_test_functions(TestFunction& Phi,
+                                                           double w,
+                                                           int i) const
+{
   Phi.m() = w * N(i);
   Phi.x() = w * N_x(i);
   Phi.y() = w * N_y(i);
@@ -76,8 +89,10 @@ void FiniteElement<DIM, BDIM, TRAFO, BASE>::init_test_functions(
 
 /*-----------------------------------------------------*/
 
-template <int DIM, int BDIM, class TRAFO, class BASE>
-void FiniteElement<DIM, BDIM, TRAFO, BASE>::Anisotropy(DoubleMatrix &A) const {
+template<int DIM, int BDIM, class TRAFO, class BASE>
+void
+FiniteElement<DIM, BDIM, TRAFO, BASE>::Anisotropy(DoubleMatrix& A) const
+{
   assert(A.n() == DIM);
   assert(A.m() == DIM);
 

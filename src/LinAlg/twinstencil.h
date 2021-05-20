@@ -37,16 +37,19 @@ namespace Gascoigne {
 ////
 /////////////////////////////////////////////
 
-class TwinStencil : public ColumnStencil {
+class TwinStencil : public ColumnStencil
+{
 protected:
 public:
-  TwinStencil() : ColumnStencil() {}
+  TwinStencil()
+    : ColumnStencil()
+  {}
   ~TwinStencil() {}
 
   int diag(int i) const { return sstart[i]; }
   int half(int i) const;
   void memory(int n, int nt);
-  void memory(const SparseStructureInterface *);
+  void memory(const SparseStructureInterface*);
 
   // sollte protected sein, wird aber im moment in "constructstructure" von ilu
   // benutzt

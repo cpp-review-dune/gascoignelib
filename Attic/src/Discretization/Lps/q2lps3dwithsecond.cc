@@ -29,14 +29,18 @@ using namespace std;
 namespace Gascoigne {
 /**********************************************************/
 
-void Q2Lps3dWithSecond::BasicInit(const ParamFile *paramfile) {
+void
+Q2Lps3dWithSecond::BasicInit(const ParamFile* paramfile)
+{
   if (GetIntegrator() == NULL)
     GetIntegratorPointer() = new IntegratorLpsWithSecond<3>;
   assert(GetIntegrator());
 
-  typedef FiniteElementWithSecond<3, 2, Transformation3d<BaseQ23dWithSecond>,
+  typedef FiniteElementWithSecond<3,
+                                  2,
+                                  Transformation3d<BaseQ23dWithSecond>,
                                   BaseQ23dWithSecond>
-      FEWithSecond;
+    FEWithSecond;
 
   if (GetFem() == NULL)
     GetFemPointer() = new FEWithSecond;

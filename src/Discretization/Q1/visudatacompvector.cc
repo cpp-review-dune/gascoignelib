@@ -28,33 +28,50 @@ using namespace std;
 /*---------------------------------------------------*/
 
 namespace Gascoigne {
-VisuDataCompVector::VisuDataCompVector() : VisuData(), _v(NULL) {}
+VisuDataCompVector::VisuDataCompVector()
+  : VisuData()
+  , _v(NULL)
+{}
 
 /*---------------------------------------------------*/
 
-VisuDataCompVector::VisuDataCompVector(const GlobalVector &v)
-    : VisuData(), _v(NULL) {
+VisuDataCompVector::VisuDataCompVector(const GlobalVector& v)
+  : VisuData()
+  , _v(NULL)
+{
   SetGlobalVector(&v);
 }
 
 /*---------------------------------------------------*/
 
-void VisuDataCompVector::SetGlobalVector(const GlobalVector *v) {
+void
+VisuDataCompVector::SetGlobalVector(const GlobalVector* v)
+{
   assert(v);
   _v = v;
 }
 
 /*---------------------------------------------------*/
 
-int VisuDataCompVector::visucomp() const { return _v->ncomp(); }
+int
+VisuDataCompVector::visucomp() const
+{
+  return _v->ncomp();
+}
 
 /*---------------------------------------------------*/
 
-int VisuDataCompVector::visun() const { return _v->n(); }
+int
+VisuDataCompVector::visun() const
+{
+  return _v->n();
+}
 
 /*---------------------------------------------------*/
 
-double VisuDataCompVector::visudata(int i, int c) const {
+double
+VisuDataCompVector::visudata(int i, int c) const
+{
   assert(_v);
   assert(i < _v->n());
   assert(c < _v->ncomp());

@@ -29,9 +29,11 @@ using namespace std;
 /*--------------------------------------------------------*/
 
 namespace Gascoigne {
-void MgInterpolatorNested::BasicInit(const MeshTransferInterface *MT) {
-  const GascoigneMeshTransfer *GT =
-      dynamic_cast<const GascoigneMeshTransfer *>(MT);
+void
+MgInterpolatorNested::BasicInit(const MeshTransferInterface* MT)
+{
+  const GascoigneMeshTransfer* GT =
+    dynamic_cast<const GascoigneMeshTransfer*>(MT);
 
   c2f.reservesize(GT->GetC2f().size());
 
@@ -43,19 +45,23 @@ void MgInterpolatorNested::BasicInit(const MeshTransferInterface *MT) {
 
 /*-----------------------------------------*/
 
-void MgInterpolatorNested::restrict_zero(GlobalVector &uL,
-                                         const GlobalVector &ul) const {
+void
+MgInterpolatorNested::restrict_zero(GlobalVector& uL,
+                                    const GlobalVector& ul) const
+{
   for (int i = 0; i < c2f.size(); i++)
     uL.equ_node(i, 1., c2f[i], ul);
   for (map<int, std::array<int, 2>>::const_iterator p = zweier.begin();
-       p != zweier.end(); p++) {
+       p != zweier.end();
+       p++) {
     int il = p->first;
     std::array<int, 2> n2 = p->second;
     uL.add_node(n2[0], 0.5, il, ul);
     uL.add_node(n2[1], 0.5, il, ul);
   }
   for (map<int, std::array<int, 4>>::const_iterator p = vierer.begin();
-       p != vierer.end(); p++) {
+       p != vierer.end();
+       p++) {
     int il = p->first;
     std::array<int, 4> n4 = p->second;
     uL.add_node(n4[0], 0.25, il, ul);
@@ -64,7 +70,8 @@ void MgInterpolatorNested::restrict_zero(GlobalVector &uL,
     uL.add_node(n4[3], 0.25, il, ul);
   }
   for (map<int, std::array<int, 8>>::const_iterator p = achter.begin();
-       p != achter.end(); p++) {
+       p != achter.end();
+       p++) {
     int il = p->first;
     std::array<int, 8> n8 = p->second;
     for (int i = 0; i < 8; i++) {
@@ -75,19 +82,23 @@ void MgInterpolatorNested::restrict_zero(GlobalVector &uL,
 
 /*-----------------------------------------*/
 
-void MgInterpolatorNested::prolongate_add(GlobalVector &ul,
-                                          const GlobalVector &uL) const {
+void
+MgInterpolatorNested::prolongate_add(GlobalVector& ul,
+                                     const GlobalVector& uL) const
+{
   for (int i = 0; i < c2f.size(); i++)
     ul.add_node(c2f[i], 1., i, uL);
   for (map<int, std::array<int, 2>>::const_iterator p = zweier.begin();
-       p != zweier.end(); p++) {
+       p != zweier.end();
+       p++) {
     int il = p->first;
     std::array<int, 2> n2 = p->second;
     ul.add_node(il, 0.5, n2[0], uL);
     ul.add_node(il, 0.5, n2[1], uL);
   }
   for (map<int, std::array<int, 4>>::const_iterator p = vierer.begin();
-       p != vierer.end(); p++) {
+       p != vierer.end();
+       p++) {
     int il = p->first;
     std::array<int, 4> n4 = p->second;
     ul.add_node(il, 0.25, n4[0], uL);
@@ -96,7 +107,8 @@ void MgInterpolatorNested::prolongate_add(GlobalVector &ul,
     ul.add_node(il, 0.25, n4[3], uL);
   }
   for (map<int, std::array<int, 8>>::const_iterator p = achter.begin();
-       p != achter.end(); p++) {
+       p != achter.end();
+       p++) {
     int il = p->first;
     std::array<int, 8> n8 = p->second;
     for (int i = 0; i < 8; i++) {
@@ -107,24 +119,30 @@ void MgInterpolatorNested::prolongate_add(GlobalVector &ul,
 
 /*-----------------------------------------*/
 
-void MgInterpolatorNested::SolutionTransfer(GlobalVector &uL,
-                                            const GlobalVector &ul) const {
+void
+MgInterpolatorNested::SolutionTransfer(GlobalVector& uL,
+                                       const GlobalVector& ul) const
+{
   for (int i = 0; i < c2f.size(); i++)
     uL.equ_node(i, 1., c2f[i], ul);
 }
 
 /*-----------------------------------------*/
 
-void MgInterpolatorNested::Pi(GlobalVector &u) const {
+void
+MgInterpolatorNested::Pi(GlobalVector& u) const
+{
   for (map<int, std::array<int, 2>>::const_iterator p = zweier.begin();
-       p != zweier.end(); p++) {
+       p != zweier.end();
+       p++) {
     int il = p->first;
     std::array<int, 2> n2 = p->second;
     u.add_node(il, -0.5, c2f[n2[0]], u);
     u.add_node(il, -0.5, c2f[n2[1]], u);
   }
   for (map<int, std::array<int, 4>>::const_iterator p = vierer.begin();
-       p != vierer.end(); p++) {
+       p != vierer.end();
+       p++) {
     int il = p->first;
     std::array<int, 4> n4 = p->second;
     u.add_node(il, -0.25, c2f[n4[0]], u);

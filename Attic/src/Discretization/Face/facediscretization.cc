@@ -29,8 +29,10 @@ using namespace std;
 
 namespace Gascoigne {
 
-void FaceDiscretization::Structure(SparseStructureInterface *SI) const {
-  SparseStructure *S = dynamic_cast<SparseStructure *>(SI);
+void
+FaceDiscretization::Structure(SparseStructureInterface* SI) const
+{
+  SparseStructure* S = dynamic_cast<SparseStructure*>(SI);
   assert(S);
   for (int iq = 0; iq < nfaces(); ++iq) {
     IntVector indices = GetFace(iq);
@@ -41,9 +43,11 @@ void FaceDiscretization::Structure(SparseStructureInterface *SI) const {
 
 /* ----------------------------------------- */
 
-void FaceDiscretization::GlobalToLocalFace(LocalVector &U,
-                                           const GlobalVector &u,
-                                           int iq) const {
+void
+FaceDiscretization::GlobalToLocalFace(LocalVector& U,
+                                      const GlobalVector& u,
+                                      int iq) const
+{
   const nvector<int> ei = GetFace(iq);
   U.ReInit(u.ncomp(), ei.size());
   for (int ii = 0; ii < ei.size(); ii++) {
@@ -54,9 +58,12 @@ void FaceDiscretization::GlobalToLocalFace(LocalVector &U,
 
 /* ----------------------------------------- */
 
-void FaceDiscretization::LocalToGlobalFace(GlobalVector &f,
-                                           const LocalVector &F, int iq,
-                                           double s) const {
+void
+FaceDiscretization::LocalToGlobalFace(GlobalVector& f,
+                                      const LocalVector& F,
+                                      int iq,
+                                      double s) const
+{
   const nvector<int> ei = GetFace(iq);
   for (int ii = 0; ii < ei.size(); ii++) {
     int i = ei[ii];
@@ -66,8 +73,12 @@ void FaceDiscretization::LocalToGlobalFace(GlobalVector &f,
 
 /* ----------------------------------------- */
 
-void FaceDiscretization::LocalToGlobalFace(MatrixInterface &A, EntryMatrix &E,
-                                           int iq, double s) const {
+void
+FaceDiscretization::LocalToGlobalFace(MatrixInterface& A,
+                                      EntryMatrix& E,
+                                      int iq,
+                                      double s) const
+{
   const nvector<int> indices = GetFace(iq);
   IntVector::const_iterator start = indices.begin();
   IntVector::const_iterator stop = indices.end();
@@ -76,8 +87,12 @@ void FaceDiscretization::LocalToGlobalFace(MatrixInterface &A, EntryMatrix &E,
 
 //////////////////////////////////////////////////
 
-void FaceDiscretization::FaceForm(GlobalVector &f, const GlobalVector &u,
-                                  const FaceEquation &FEQ, double d) const {
+void
+FaceDiscretization::FaceForm(GlobalVector& f,
+                             const GlobalVector& u,
+                             const FaceEquation& FEQ,
+                             double d) const
+{
   nmatrix<double> T1, T2;
 
   for (int iq = 0; iq < nfaces(); ++iq) {
@@ -94,8 +109,12 @@ void FaceDiscretization::FaceForm(GlobalVector &f, const GlobalVector &u,
 
 /* ----------------------------------------- */
 
-void FaceDiscretization::FaceMatrix(MatrixInterface &A, const GlobalVector &u,
-                                    const FaceEquation &FEQ, double d) const {
+void
+FaceDiscretization::FaceMatrix(MatrixInterface& A,
+                               const GlobalVector& u,
+                               const FaceEquation& FEQ,
+                               double d) const
+{
 
   nmatrix<double> T1, T2;
 

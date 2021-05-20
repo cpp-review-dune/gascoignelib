@@ -29,7 +29,9 @@ using namespace std;
 /*----------------------------------------------*/
 
 namespace Gascoigne {
-void regular_update(IntSet &hr, IntSet &hc, IntVector &vr, IntVector &vc) {
+void
+regular_update(IntSet& hr, IntSet& hc, IntVector& vr, IntVector& vc)
+{
   for (int i = 0; i < vr.size(); i++) {
     hr.insert(vr[i]);
   }

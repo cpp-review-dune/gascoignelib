@@ -37,10 +37,11 @@
 #include "glsstabilization.h"
 #include "paramfile.h"
 
-class LocalEquation : public Gascoigne::GlsEquation {
+class LocalEquation : public Gascoigne::GlsEquation
+{
 private:
   mutable Gascoigne::GlsStabilization ST;
-  mutable const Gascoigne::FemFunction *q;
+  mutable const Gascoigne::FemFunction* q;
 
 protected:
   mutable double visc, sigma;
@@ -53,30 +54,35 @@ public:
   ////  Con(De)structor
   //
 
-  LocalEquation(const Gascoigne::ParamFile *paramfile);
+  LocalEquation(const Gascoigne::ParamFile* paramfile);
   ~LocalEquation(){};
 
   std::string GetName() const { return "Local"; }
 
   int GetNcomp() const { return 1; }
 
-  void glspoint(double h, const Gascoigne::FemFunction &U,
-                const Gascoigne::Vertex2d &v) const;
+  void glspoint(double h,
+                const Gascoigne::FemFunction& U,
+                const Gascoigne::Vertex2d& v) const;
 
-  void SetFemData(Gascoigne::FemData &Q) const;
+  void SetFemData(Gascoigne::FemData& Q) const;
 
-  void Form(Gascoigne::VectorIterator b, const Gascoigne::FemFunction &U,
-            const Gascoigne::TestFunction &N) const;
+  void Form(Gascoigne::VectorIterator b,
+            const Gascoigne::FemFunction& U,
+            const Gascoigne::TestFunction& N) const;
 
-  void Matrix(Gascoigne::EntryMatrix &D, const Gascoigne::FemFunction &U,
-              const Gascoigne::TestFunction &M,
-              const Gascoigne::TestFunction &N) const;
+  void Matrix(Gascoigne::EntryMatrix& D,
+              const Gascoigne::FemFunction& U,
+              const Gascoigne::TestFunction& M,
+              const Gascoigne::TestFunction& N) const;
 
-  void L(Gascoigne::DoubleVector &dst, const Gascoigne::FemFunction &U) const;
-  void S(Gascoigne::nmatrix<double> &dst, const Gascoigne::FemFunction &U,
-         const Gascoigne::TestFunction &N) const;
-  void LMatrix(Gascoigne::nmatrix<double> &dst, const Gascoigne::FemFunction &U,
-               const Gascoigne::TestFunction &N) const;
+  void L(Gascoigne::DoubleVector& dst, const Gascoigne::FemFunction& U) const;
+  void S(Gascoigne::nmatrix<double>& dst,
+         const Gascoigne::FemFunction& U,
+         const Gascoigne::TestFunction& N) const;
+  void LMatrix(Gascoigne::nmatrix<double>& dst,
+               const Gascoigne::FemFunction& U,
+               const Gascoigne::TestFunction& N) const;
 };
 
 #endif

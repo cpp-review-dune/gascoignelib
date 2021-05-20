@@ -30,16 +30,20 @@ using namespace std;
 
 namespace Gascoigne {
 
-template <int DIM, class IFF, class IFE, class IFB, class IFM>
-void ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::Rhs(
-    const DomainRightHandSide &f, LocalVector &F, const FemInterface &FEM,
-    const LocalData &Q, const LocalData &QC) const {
+template<int DIM, class IFF, class IFE, class IFB, class IFM>
+void
+ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::Rhs(const DomainRightHandSide& f,
+                                                LocalVector& F,
+                                                const FemInterface& FEM,
+                                                const LocalData& Q,
+                                                const LocalData& QC) const
+{
   F.ReInit(f.GetNcomp(), FEM.n());
 
   BasicIntegrator::universal_point(_QCH, QC);
   f.SetCellData(_QCH);
 
-  IntegrationFormulaInterface *IF = NewIFF();
+  IntegrationFormulaInterface* IF = NewIFF();
 
   F.zero();
   Vertex<DIM> x, xi;
@@ -64,16 +68,23 @@ void ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::Rhs(
 
 /* ----------------------------------------- */
 
-template <int DIM, class IFF, class IFE, class IFB, class IFM>
-void ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::BoundaryRhs(
-    const BoundaryRightHandSide &f, LocalVector &F, const FemInterface &FEM,
-    int ile, int col, const LocalData &Q, const LocalData &QC) const {
+template<int DIM, class IFF, class IFE, class IFB, class IFM>
+void
+ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::BoundaryRhs(
+  const BoundaryRightHandSide& f,
+  LocalVector& F,
+  const FemInterface& FEM,
+  int ile,
+  int col,
+  const LocalData& Q,
+  const LocalData& QC) const
+{
   F.ReInit(f.GetNcomp(), FEM.n());
 
   BasicIntegrator::universal_point(_QCH, QC);
   f.SetCellData(_QCH);
 
-  IntegrationFormulaInterface *IF = NewIFB();
+  IntegrationFormulaInterface* IF = NewIFB();
 
   F.zero();
   Vertex<DIM> x, n;
@@ -100,16 +111,21 @@ void ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::BoundaryRhs(
 
 /* ----------------------------------------- */
 
-template <int DIM, class IFF, class IFE, class IFB, class IFM>
-void ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::Form(
-    const Equation &EQ, LocalVector &F, const FemInterface &FEM,
-    const LocalVector &U, const LocalData &Q, const LocalData &QC) const {
+template<int DIM, class IFF, class IFE, class IFB, class IFM>
+void
+ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::Form(const Equation& EQ,
+                                                 LocalVector& F,
+                                                 const FemInterface& FEM,
+                                                 const LocalVector& U,
+                                                 const LocalData& Q,
+                                                 const LocalData& QC) const
+{
   F.ReInit(EQ.GetNcomp(), FEM.n());
 
   BasicIntegrator::universal_point(_QCH, QC);
   EQ.SetCellData(_QCH);
 
-  IntegrationFormulaInterface *IF = NewIFF();
+  IntegrationFormulaInterface* IF = NewIFF();
 
   F.zero();
   Vertex<DIM> x, xi;
@@ -138,16 +154,22 @@ void ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::Form(
 
 /* ----------------------------------------- */
 
-template <int DIM, class IFF, class IFE, class IFB, class IFM>
-void ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::AdjointForm(
-    const Equation &EQ, LocalVector &F, const FemInterface &FEM,
-    const LocalVector &Z, const LocalData &Q, const LocalData &QC) const {
+template<int DIM, class IFF, class IFE, class IFB, class IFM>
+void
+ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::AdjointForm(
+  const Equation& EQ,
+  LocalVector& F,
+  const FemInterface& FEM,
+  const LocalVector& Z,
+  const LocalData& Q,
+  const LocalData& QC) const
+{
   F.ReInit(EQ.GetNcomp(), FEM.n());
 
   BasicIntegrator::universal_point(_QCH, QC);
   EQ.SetCellData(_QCH);
 
-  IntegrationFormulaInterface *IF = NewIFF();
+  IntegrationFormulaInterface* IF = NewIFF();
 
   F.zero();
   Vertex<DIM> x, xi;
@@ -198,17 +220,24 @@ void ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::AdjointForm(
 
 /* ----------------------------------------- */
 
-template <int DIM, class IFF, class IFE, class IFB, class IFM>
-void ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::BoundaryForm(
-    const BoundaryEquation &BE, LocalVector &F, const FemInterface &FEM,
-    const LocalVector &U, int ile, int col, const LocalData &Q,
-    const LocalData &QC) const {
+template<int DIM, class IFF, class IFE, class IFB, class IFM>
+void
+ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::BoundaryForm(
+  const BoundaryEquation& BE,
+  LocalVector& F,
+  const FemInterface& FEM,
+  const LocalVector& U,
+  int ile,
+  int col,
+  const LocalData& Q,
+  const LocalData& QC) const
+{
   F.ReInit(BE.GetNcomp(), FEM.n());
 
   BasicIntegrator::universal_point(_QCH, QC);
   BE.SetCellData(_QCH);
 
-  IntegrationFormulaInterface *IF = NewIFB();
+  IntegrationFormulaInterface* IF = NewIFB();
 
   F.zero();
   Vertex<DIM> x, n;
@@ -236,9 +265,12 @@ void ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::BoundaryForm(
 
 /* ----------------------------------------- */
 
-template <int DIM, class IFF, class IFE, class IFB, class IFM>
-double ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::MassMatrix(
-    EntryMatrix &E, const FemInterface &FEM) const {
+template<int DIM, class IFF, class IFE, class IFB, class IFM>
+double
+ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::MassMatrix(
+  EntryMatrix& E,
+  const FemInterface& FEM) const
+{
   _NNN.resize(FEM.n());
   E.SetDimensionDof(FEM.n(), FEM.n());
   int ncomp = 1;
@@ -246,7 +278,7 @@ double ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::MassMatrix(
   E.resize();
   E.zero();
 
-  IntegrationFormulaInterface *IF = NewIFM();
+  IntegrationFormulaInterface* IF = NewIFM();
 
   Vertex<DIM> x, xi;
   double omega = 0.;
@@ -272,16 +304,20 @@ double ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::MassMatrix(
 }
 /*-----------------------------------------------------------*/
 
-template <int DIM, class IFF, class IFE, class IFB, class IFM>
-void ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::BoundaryMassMatrix(
-    EntryMatrix &E, const FemInterface &FEM, int ile) const {
+template<int DIM, class IFF, class IFE, class IFB, class IFM>
+void
+ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::BoundaryMassMatrix(
+  EntryMatrix& E,
+  const FemInterface& FEM,
+  int ile) const
+{
   _NNN.resize(FEM.n());
   E.SetDimensionDof(FEM.n(), FEM.n());
   E.SetDimensionComp(1, 1);
   E.resize();
   E.zero();
 
-  IntegrationFormulaInterface *IF = NewIFB();
+  IntegrationFormulaInterface* IF = NewIFB();
 
   Vertex<DIM> x, n;
   Vertex<DIM - 1> xi;
@@ -309,10 +345,15 @@ void ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::BoundaryMassMatrix(
 
 /* ----------------------------------------- */
 
-template <int DIM, class IFF, class IFE, class IFB, class IFM>
-void ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::Matrix(
-    const Equation &EQ, EntryMatrix &E, const FemInterface &FEM,
-    const LocalVector &U, const LocalData &Q, const LocalData &QC) const {
+template<int DIM, class IFF, class IFE, class IFB, class IFM>
+void
+ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::Matrix(const Equation& EQ,
+                                                   EntryMatrix& E,
+                                                   const FemInterface& FEM,
+                                                   const LocalVector& U,
+                                                   const LocalData& Q,
+                                                   const LocalData& QC) const
+{
   _NNN.resize(FEM.n());
   E.SetDimensionDof(FEM.n(), FEM.n());
   E.SetDimensionComp(U.ncomp(), U.ncomp());
@@ -322,7 +363,7 @@ void ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::Matrix(
   BasicIntegrator::universal_point(_QCH, QC);
   EQ.SetCellData(_QCH);
 
-  IntegrationFormulaInterface *IF = NewIFF();
+  IntegrationFormulaInterface* IF = NewIFF();
 
   Vertex<DIM> x, xi;
   for (int k = 0; k < IF->n(); k++) {
@@ -357,11 +398,18 @@ void ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::Matrix(
 
 /*-----------------------------------------------------------*/
 
-template <int DIM, class IFF, class IFE, class IFB, class IFM>
-void ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::BoundaryMatrix(
-    const BoundaryEquation &BE, EntryMatrix &E, const FemInterface &FEM,
-    const LocalVector &U, int ile, int col, const LocalData &Q,
-    const LocalData &QC) const {
+template<int DIM, class IFF, class IFE, class IFB, class IFM>
+void
+ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::BoundaryMatrix(
+  const BoundaryEquation& BE,
+  EntryMatrix& E,
+  const FemInterface& FEM,
+  const LocalVector& U,
+  int ile,
+  int col,
+  const LocalData& Q,
+  const LocalData& QC) const
+{
   _NNN.resize(FEM.n());
   E.SetDimensionDof(FEM.n(), FEM.n());
   E.SetDimensionComp(U.ncomp(), U.ncomp());
@@ -371,7 +419,7 @@ void ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::BoundaryMatrix(
   BasicIntegrator::universal_point(_QCH, QC);
   BE.SetCellData(_QCH);
 
-  IntegrationFormulaInterface *IF = NewIFB();
+  IntegrationFormulaInterface* IF = NewIFB();
 
   Vertex<DIM> x, n;
   Vertex<DIM - 1> xi;
@@ -403,13 +451,17 @@ void ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::BoundaryMatrix(
 
 /*-----------------------------------------------------------*/
 
-template <int DIM, class IFF, class IFE, class IFB, class IFM>
-void Gascoigne::ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::MassForm(
-    const TimePattern &TP, LocalVector &F, const FemInterface &FEM,
-    const LocalVector &U) const {
+template<int DIM, class IFF, class IFE, class IFB, class IFM>
+void
+Gascoigne::ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::MassForm(
+  const TimePattern& TP,
+  LocalVector& F,
+  const FemInterface& FEM,
+  const LocalVector& U) const
+{
   F.ReInit(U.ncomp(), FEM.n());
 
-  IntegrationFormulaInterface *IF = NewIFM();
+  IntegrationFormulaInterface* IF = NewIFM();
 
   F.zero();
   Vertex<DIM> xi;
@@ -434,11 +486,13 @@ void Gascoigne::ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::MassForm(
 
 /*-----------------------------------------------------------*/
 
-template <int DIM, class IFF, class IFE, class IFB, class IFM>
-void ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::RhsPoint(LocalVector &F,
-                                                          const FemInterface &E,
-                                                          const Vertex<DIM> &p,
-                                                          int comp) const {
+template<int DIM, class IFF, class IFE, class IFB, class IFM>
+void
+ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::RhsPoint(LocalVector& F,
+                                                     const FemInterface& E,
+                                                     const Vertex<DIM>& p,
+                                                     int comp) const
+{
   F.zero();
 
   E.point(p);
@@ -449,11 +503,17 @@ void ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::RhsPoint(LocalVector &F,
 }
 
 /* ----------------------------------------- */
-template <int DIM, class IFF, class IFE, class IFB, class IFM>
-void ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::DiracRhsPoint(
-    LocalVector &b, const FemInterface &E, const Vertex<DIM> &p,
-    const DiracRightHandSide &DRHS, int j, const LocalData &Q,
-    const LocalData &QC) const {
+template<int DIM, class IFF, class IFE, class IFB, class IFM>
+void
+ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::DiracRhsPoint(
+  LocalVector& b,
+  const FemInterface& E,
+  const Vertex<DIM>& p,
+  const DiracRightHandSide& DRHS,
+  int j,
+  const LocalData& Q,
+  const LocalData& QC) const
+{
   b.zero();
 
   BasicIntegrator::universal_point(_QCH, QC);
@@ -472,10 +532,14 @@ void ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::DiracRhsPoint(
 }
 
 /* ----------------------------------------- */
-template <int DIM, class IFF, class IFE, class IFB, class IFM>
-double ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::ComputePointValue(
-    const FemInterface &E, const Vertex<DIM> &p, const LocalVector &U,
-    int comp) const {
+template<int DIM, class IFF, class IFE, class IFB, class IFM>
+double
+ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::ComputePointValue(
+  const FemInterface& E,
+  const Vertex<DIM>& p,
+  const LocalVector& U,
+  int comp) const
+{
   E.point(p);
   BasicIntegrator::universal_point(E, _UH, U);
 
@@ -484,15 +548,22 @@ double ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::ComputePointValue(
 
 /* ----------------------------------------- */
 
-template <int DIM, class IFF, class IFE, class IFB, class IFM>
-double ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::ComputeBoundaryFunctional(
-    const BoundaryFunctional &F, const FemInterface &FEM, int ile, int col,
-    const LocalVector &U, const LocalData &Q, const LocalData &QC) const {
+template<int DIM, class IFF, class IFE, class IFB, class IFM>
+double
+ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::ComputeBoundaryFunctional(
+  const BoundaryFunctional& F,
+  const FemInterface& FEM,
+  int ile,
+  int col,
+  const LocalVector& U,
+  const LocalData& Q,
+  const LocalData& QC) const
+{
 
   BasicIntegrator::universal_point(_QCH, QC);
   F.SetCellData(_QCH);
 
-  IntegrationFormulaInterface *IF = NewIFB();
+  IntegrationFormulaInterface* IF = NewIFB();
 
   Vertex<DIM> x, n;
   Vertex<DIM - 1> xi;
@@ -519,17 +590,19 @@ double ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::ComputeBoundaryFunctional(
 
 /* ----------------------------------------- */
 
-template <int DIM, class IFF, class IFE, class IFB, class IFM>
-double ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::LocalDiv(
-    const FemInterface &FEM, const LocalVector &U) const {
+template<int DIM, class IFF, class IFE, class IFB, class IFM>
+double
+ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::LocalDiv(const FemInterface& FEM,
+                                                     const LocalVector& U) const
+{
   // // Python Routine
   assert(U.n() == 9);
 
   double hx = 0.205 * 2 / 4.0;
   double hy = 0.205 / 4.0;
 
-  std::array<double, 9> S = {-3, 4, -1, -1, 0, 1, 1, -4, 3};
-  std::array<double, 3> sw = {1. / 6., 4. / 6., 1. / 6.};
+  std::array<double, 9> S = { -3, 4, -1, -1, 0, 1, 1, -4, 3 };
+  std::array<double, 3> sw = { 1. / 6., 4. / 6., 1. / 6. };
 
   double div = 0;
   for (int i = 0; i < 3; ++i)
@@ -578,14 +651,19 @@ double ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::LocalDiv(
   // return j;
 }
 
-template <int DIM, class IFF, class IFE, class IFB, class IFM>
-double ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::ComputeDomainFunctional(
-    const DomainFunctional &F, const FemInterface &FEM, const LocalVector &U,
-    const LocalData &Q, const LocalData &QC) const {
+template<int DIM, class IFF, class IFE, class IFB, class IFM>
+double
+ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::ComputeDomainFunctional(
+  const DomainFunctional& F,
+  const FemInterface& FEM,
+  const LocalVector& U,
+  const LocalData& Q,
+  const LocalData& QC) const
+{
   BasicIntegrator::universal_point(_QCH, QC);
   F.SetCellData(_QCH);
 
-  IntegrationFormulaInterface *IF = NewIFF();
+  IntegrationFormulaInterface* IF = NewIFF();
 
   Vertex<DIM> x, xi;
   double j = 0.;
@@ -607,14 +685,19 @@ double ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::ComputeDomainFunctional(
 
 /* ----------------------------------------- */
 
-template <int DIM, class IFF, class IFE, class IFB, class IFM>
-double ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::ComputeErrorDomainFunctional(
-    const DomainFunctional &F, const FemInterface &FEM, const LocalVector &U,
-    const LocalData &Q, const LocalData &QC) const {
+template<int DIM, class IFF, class IFE, class IFB, class IFM>
+double
+ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::ComputeErrorDomainFunctional(
+  const DomainFunctional& F,
+  const FemInterface& FEM,
+  const LocalVector& U,
+  const LocalData& Q,
+  const LocalData& QC) const
+{
   BasicIntegrator::universal_point(_QCH, QC);
   F.SetCellData(_QCH);
 
-  IntegrationFormulaInterface *IF = NewIFE();
+  IntegrationFormulaInterface* IF = NewIFE();
 
   Vertex<DIM> x, xi;
   double j = 0.;
@@ -635,16 +718,21 @@ double ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::ComputeErrorDomainFunctional(
 
 /* ----------------------------------------- */
 
-template <int DIM, class IFF, class IFE, class IFB, class IFM>
-void ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::EvaluateCellRightHandSide(
-    LocalVector &F, const DomainRightHandSide &CF, const FemInterface &FEM,
-    const LocalData &Q, const LocalData &QC) const {
+template<int DIM, class IFF, class IFE, class IFB, class IFM>
+void
+ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::EvaluateCellRightHandSide(
+  LocalVector& F,
+  const DomainRightHandSide& CF,
+  const FemInterface& FEM,
+  const LocalData& Q,
+  const LocalData& QC) const
+{
   F.ReInit(CF.GetNcomp(), 1);
 
   BasicIntegrator::universal_point(_QCH, QC);
   CF.SetCellData(_QCH);
 
-  IntegrationFormulaInterface *IF = NewIFF();
+  IntegrationFormulaInterface* IF = NewIFF();
   Vertex<DIM> x, xi;
 
   F.zero();
@@ -670,19 +758,23 @@ void ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::EvaluateCellRightHandSide(
 
 /* ----------------------------------------- */
 
-template <int DIM, class IFF, class IFE, class IFB, class IFM>
-void ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::
-    EvaluateBoundaryCellRightHandSide(LocalVector &F,
-                                      const BoundaryRightHandSide &CF,
-                                      const FemInterface &FEM, int ile, int col,
-                                      const LocalData &Q,
-                                      const LocalData &QC) const {
+template<int DIM, class IFF, class IFE, class IFB, class IFM>
+void
+ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::EvaluateBoundaryCellRightHandSide(
+  LocalVector& F,
+  const BoundaryRightHandSide& CF,
+  const FemInterface& FEM,
+  int ile,
+  int col,
+  const LocalData& Q,
+  const LocalData& QC) const
+{
   F.ReInit(CF.GetNcomp(), 1);
 
   BasicIntegrator::universal_point(_QCH, QC);
   CF.SetCellData(_QCH);
 
-  IntegrationFormulaInterface *IF = NewIFB();
+  IntegrationFormulaInterface* IF = NewIFB();
 
   F.zero();
   Vertex<DIM> x, n;
@@ -708,14 +800,20 @@ void ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::
 
 /* ----------------------------------------- */
 
-template <int DIM, class IFF, class IFE, class IFB, class IFM>
-void ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::ErrorsByExactSolution(
-    LocalVector &dst, const FemInterface &FE, const ExactSolution &ES,
-    const LocalVector &U, const LocalData &Q, const LocalData &QC) const {
+template<int DIM, class IFF, class IFE, class IFB, class IFM>
+void
+ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::ErrorsByExactSolution(
+  LocalVector& dst,
+  const FemInterface& FE,
+  const ExactSolution& ES,
+  const LocalVector& U,
+  const LocalData& Q,
+  const LocalData& QC) const
+{
   BasicIntegrator::universal_point(_QCH, QC);
   ES.SetCellData(_QCH);
 
-  IntegrationFormulaInterface *IF = NewIFF();
+  IntegrationFormulaInterface* IF = NewIFF();
 
   Vertex<DIM> x, xi;
   dst.zero();
@@ -751,12 +849,15 @@ void ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::ErrorsByExactSolution(
 
 /* ----------------------------------------- */
 
-template <int DIM, class IFF, class IFE, class IFB, class IFM>
-void ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::IntegrateMassDiag(
-    DoubleVector &F, const FemInterface &FEM) const {
+template<int DIM, class IFF, class IFE, class IFB, class IFM>
+void
+ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::IntegrateMassDiag(
+  DoubleVector& F,
+  const FemInterface& FEM) const
+{
   F.resize(FEM.n());
 
-  IntegrationFormulaInterface *IF = NewIFF();
+  IntegrationFormulaInterface* IF = NewIFF();
 
   F.zero();
   Vertex<DIM> x, xi;
@@ -776,12 +877,17 @@ void ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::IntegrateMassDiag(
 
 /* ----------------------------------------- */
 
-template <int DIM, class IFF, class IFE, class IFB, class IFM>
-void ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::IntegrateBoundaryMassDiag(
-    DoubleVector &F, const FemInterface &FEM, int ile, int col) const {
+template<int DIM, class IFF, class IFE, class IFB, class IFM>
+void
+ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::IntegrateBoundaryMassDiag(
+  DoubleVector& F,
+  const FemInterface& FEM,
+  int ile,
+  int col) const
+{
   F.resize(FEM.n());
 
-  IntegrationFormulaInterface *IF = NewIFB();
+  IntegrationFormulaInterface* IF = NewIFB();
 
   F.zero();
   Vertex<DIM> x, n;
@@ -804,10 +910,18 @@ void ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::IntegrateBoundaryMassDiag(
 
 /* ----------------------------------------- */
 
-template <int DIM, class IFF, class IFE, class IFB, class IFM>
-void ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::RhsCurve(
-    LocalVector &F, const FemInterface &FEM, Vertex<DIM> &xr0, Vertex<DIM> &xr1,
-    double H, double ND0, double ND1, int ncomp, int comp) const {
+template<int DIM, class IFF, class IFE, class IFB, class IFM>
+void
+ElementIntegrator<DIM, IFF, IFE, IFB, IFM>::RhsCurve(LocalVector& F,
+                                                     const FemInterface& FEM,
+                                                     Vertex<DIM>& xr0,
+                                                     Vertex<DIM>& xr1,
+                                                     double H,
+                                                     double ND0,
+                                                     double ND1,
+                                                     int ncomp,
+                                                     int comp) const
+{
   if (DIM == 3) {
     cerr << "ElementIntegrator<3>::RhsCurve not implemented yet!" << endl;
     abort();

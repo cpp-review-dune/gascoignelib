@@ -33,19 +33,22 @@
 /*-----------------------------------------*/
 
 namespace Gascoigne {
-class ResidualFunctional : public virtual Functional {
+class ResidualFunctional : public virtual Functional
+{
 protected:
   nvector<int> __comps;
   nvector<double> __scales;
   std::set<int> __cols;
 
-  const DirichletData *__DD;
-  const PeriodicData *__PD;
+  const DirichletData* __DD;
+  const PeriodicData* __PD;
 
 public:
   ResidualFunctional();
   ~ResidualFunctional();
-  ResidualFunctional(const ResidualFunctional &F) : Functional(F) {
+  ResidualFunctional(const ResidualFunctional& F)
+    : Functional(F)
+  {
     __comps = F.GetComps();
     __scales = F.GetScales();
     __cols = F.GetColors();
@@ -56,18 +59,18 @@ public:
   std::string GetName() const { return "ResidualFunctional"; }
 
   nvector<int> GetComps() const { return __comps; }
-  nvector<int> &GetComps() { return __comps; }
+  nvector<int>& GetComps() { return __comps; }
 
   nvector<double> GetScales() const { return __scales; }
-  nvector<double> &GetScales() { return __scales; }
+  nvector<double>& GetScales() { return __scales; }
 
   std::set<int> GetColors() const { return __cols; }
-  std::set<int> &GetColors() { return __cols; }
+  std::set<int>& GetColors() { return __cols; }
 
-  const DirichletData *GetDirichletData() const { return __DD; }
-  const DirichletData *&GetDirichletDataPointer() { return __DD; }
-  const PeriodicData *GetPeriodicData() const { return __PD; }
-  const PeriodicData *&GetPeriodicDataPointer() { return __PD; }
+  const DirichletData* GetDirichletData() const { return __DD; }
+  const DirichletData*& GetDirichletDataPointer() { return __DD; }
+  const PeriodicData* GetPeriodicData() const { return __PD; }
+  const PeriodicData*& GetPeriodicDataPointer() { return __PD; }
 };
 } // namespace Gascoigne
 

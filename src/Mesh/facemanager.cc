@@ -36,13 +36,22 @@ using namespace std;
 /*---------------------------------------------------*/
 
 namespace Gascoigne {
-FaceManager::FaceManager(vector<Edge> &e, vector<Hex> &q, const IntVector &con,
-                         IntVector &eon)
-    : edges(e), hexs(q), co2n(con), eo2n(eon), HexLaO(q) {}
+FaceManager::FaceManager(vector<Edge>& e,
+                         vector<Hex>& q,
+                         const IntVector& con,
+                         IntVector& eon)
+  : edges(e)
+  , hexs(q)
+  , co2n(con)
+  , eo2n(eon)
+  , HexLaO(q)
+{}
 
 /*---------------------------------------------------*/
 
-void FaceManager::InitFaces() {
+void
+FaceManager::InitFaces()
+{
   HANGMAP H;
 
   FaceVector e;
@@ -73,11 +82,13 @@ void FaceManager::InitFaces() {
 
 /*---------------------------------------------------*/
 
-void FaceManager::DeleteFaces() {
+void
+FaceManager::DeleteFaces()
+{
   compress(edges, eo2n);
 
   for (int i = 0; i < hexs.size(); i++) {
-    Hex &H = hexs[i];
+    Hex& H = hexs[i];
     if (co2n[i] < 0) {
       H.edges().fill(-1);
     } else {
@@ -95,7 +106,9 @@ void FaceManager::DeleteFaces() {
 
 /*---------------------------------------------------*/
 
-void FaceManager::Update() {
+void
+FaceManager::Update()
+{
   for (int i = 0; i < edges.size(); i++) {
     int m = edges[i].master();
     int s = edges[i].slave();
@@ -121,7 +134,9 @@ void FaceManager::Update() {
 
 /*---------------------------------------------------*/
 
-void FaceManager::Build(const IntSet &CellRefList, HangContainer3d &hangset) {
+void
+FaceManager::Build(const IntSet& CellRefList, HangContainer3d& hangset)
+{
   SwappedEdge.resize(0);
 
   Update();
@@ -136,7 +151,9 @@ void FaceManager::Build(const IntSet &CellRefList, HangContainer3d &hangset) {
 
 /*---------------------------------------------------*/
 
-void FaceManager::InnerFaces(const IntSet &CellRefList) {
+void
+FaceManager::InnerFaces(const IntSet& CellRefList)
+{
   int n = edges.size();
   int nv1 = CellRefList.size();
 
@@ -173,7 +190,9 @@ void FaceManager::InnerFaces(const IntSet &CellRefList) {
 
 /*---------------------------------------------------*/
 
-void FaceManager::Check(const HangContainer3d &hangset) const {
+void
+FaceManager::Check(const HangContainer3d& hangset) const
+{
   HangList<4>::const_iterator p = hangset.FaceNotMore().begin();
 
   int ok = 1;
@@ -189,8 +208,8 @@ void FaceManager::Check(const HangContainer3d &hangset) const {
     if (S < 0)
       continue;
 
-    const Hex &HM = hexs[M];
-    const Hex &HS = hexs[S];
+    const Hex& HM = hexs[M];
+    const Hex& HS = hexs[S];
 
     if (!HM.sleep()) {
       cout << "Hex master has no childs " << M << endl;
@@ -210,7 +229,9 @@ void FaceManager::Check(const HangContainer3d &hangset) const {
 
 /*---------------------------------------------------*/
 
-void FaceManager::SortHangings() {
+void
+FaceManager::SortHangings()
+{
   // edges with hanging nodes swapped to the end of list
 
   vector<int> perm(edges.size());
@@ -254,7 +275,9 @@ void FaceManager::SortHangings() {
 
 /*---------------------------------------------------*/
 
-bool FaceManager::EdgeIsHanging(int e) const {
+bool
+FaceManager::EdgeIsHanging(int e) const
+{
   int m = edges[e].master();
   int s = edges[e].slave();
   if (s < 0)
@@ -268,7 +291,9 @@ bool FaceManager::EdgeIsHanging(int e) const {
 
 /*---------------------------------------------------*/
 
-bool FaceManager::EdgeIsHanging(const Edge &e) const {
+bool
+FaceManager::EdgeIsHanging(const Edge& e) const
+{
   int m = e.master();
   int s = e.slave();
   if (s < 0)
@@ -282,9 +307,11 @@ bool FaceManager::EdgeIsHanging(const Edge &e) const {
 
 /*---------------------------------------------------*/
 
-void FaceManager::LoadFaceElimination(IntVector &edel,
-                                      const IntSet &CellCoarseList,
-                                      const HangContainer3d &hangset) const {
+void
+FaceManager::LoadFaceElimination(IntVector& edel,
+                                 const IntSet& CellCoarseList,
+                                 const HangContainer3d& hangset) const
+{
   edel.resize(12 * CellCoarseList.size());
 
   int n = 0;
@@ -295,7 +322,7 @@ void FaceManager::LoadFaceElimination(IntVector &edel,
     if (*cp < 0)
       continue;
 
-    const Hex &H = hexs[*cp];
+    const Hex& H = hexs[*cp];
     for (int f = 0; f < 12; f++) {
       edel[n++] = HexLaO.InnerEdge(H, f);
     }
@@ -305,7 +332,7 @@ void FaceManager::LoadFaceElimination(IntVector &edel,
   edel.resize(n + 4 * hangset.nFaceVertexesToBeDeleted());
 
   for (; p != hangset.FaceDeleting().end(); p++) {
-    const FaceVector &F = p->first;
+    const FaceVector& F = p->first;
     int h = p->second.rneighbour();
     for (int i = 0; i < 4; i++) {
       edel[n++] = HexLaO.GlobalChildFace(F, h, i);
@@ -318,7 +345,9 @@ void FaceManager::LoadFaceElimination(IntVector &edel,
 
 /*---------------------------------------------------*/
 
-void FaceManager::NeighbourTester() const {
+void
+FaceManager::NeighbourTester() const
+{
   IntVector x(edges.size());
   for (int i = 0; i < hexs.size(); i++) {
     for (int e = 0; e < 6; e++) {
@@ -337,7 +366,7 @@ void FaceManager::NeighbourTester() const {
 
       if (edge < 0)
         continue;
-      const Edge &E = edges[edge];
+      const Edge& E = edges[edge];
       int m = E.master();
       int s = E.slave();
       int nachbar = -10;
@@ -356,8 +385,11 @@ void FaceManager::NeighbourTester() const {
 
 /*---------------------------------------------------*/
 
-void FaceManager::FillNeighbourFaces(const Hex &HM, const Hex &HS,
-                                     const FaceVector &Face) {
+void
+FaceManager::FillNeighbourFaces(const Hex& HM,
+                                const Hex& HS,
+                                const FaceVector& Face)
+{
   int MF = HexLaO.local_face(HM, Face);
   int SF = HexLaO.local_face(HS, Face);
 
@@ -386,14 +418,14 @@ void FaceManager::FillNeighbourFaces(const Hex &HM, const Hex &HS,
     assert(sj >= 0);
     assert(sj == sf);
 
-    Hex &hs = hexs[slave];
-    const Hex &hm = hexs[master];
+    Hex& hs = hexs[slave];
+    const Hex& hm = hexs[master];
     int e = hm.edge(mf);
 
     assert(hs.edge(sj) == -1);
 
     hs.edge(sj) = e;
-    Edge &E = edges[e];
+    Edge& E = edges[e];
 
     if (E.master() != master) {
       assert(E.slave() == master);
@@ -408,7 +440,9 @@ void FaceManager::FillNeighbourFaces(const Hex &HM, const Hex &HS,
 
 /*---------------------------------------------------*/
 
-void FaceManager::OuterFaces(const HangContainer3d &hangset) {
+void
+FaceManager::OuterFaces(const HangContainer3d& hangset)
+{
   int n = edges.size();
 
   edges.reserve(n + 4 * hangset.FaceCreating().size());
@@ -438,8 +472,8 @@ void FaceManager::OuterFaces(const HangContainer3d &hangset) {
     int S = p->second.cneighbour();
     // wenn neue Kinder-faces nicht hangen, dann Nachbarn eintragen
     if (S >= 0) {
-      const Hex &HM = hexs[M];
-      const Hex &HS = hexs[S];
+      const Hex& HM = hexs[M];
+      const Hex& HS = hexs[S];
       if (HS.sleep()) {
         FillNeighbourFaces(HM, HS, p->first);
       }
@@ -449,8 +483,9 @@ void FaceManager::OuterFaces(const HangContainer3d &hangset) {
 
 /*---------------------------------------------------*/
 
-void FaceManager::OldHangings(HangContainer3d &hangset,
-                              const IntSet &CellRefList) {
+void
+FaceManager::OldHangings(HangContainer3d& hangset, const IntSet& CellRefList)
+{
   HangList<4>::iterator p = hangset.FaceNotMore().begin();
 
   for (; p != hangset.FaceNotMore().end(); p++) {
@@ -465,10 +500,10 @@ void FaceManager::OldHangings(HangContainer3d &hangset,
     if (S < 0)
       continue;
 
-    const Hex &HM = hexs[M];
-    const Hex &HS = hexs[S];
+    const Hex& HM = hexs[M];
+    const Hex& HS = hexs[S];
 
-    const FaceVector &F = p->first;
+    const FaceVector& F = p->first;
 
     //       cout << M << " Master " << HM;
     //       for (int i=0; i<HS.nchilds(); i++)
@@ -497,11 +532,13 @@ void FaceManager::OldHangings(HangContainer3d &hangset,
 
 /*---------------------------------------------------*/
 
-void FaceManager::SwappedFaces() {
+void
+FaceManager::SwappedFaces()
+{
   int n = 0;
   int m = 0;
   for (int i = 0; i < hexs.size(); i++) {
-    const Hex &q = hexs[i];
+    const Hex& q = hexs[i];
     for (int e = 0; e < 6; e++) {
       if (q.edge(e) < 0)
         m++;
@@ -510,7 +547,7 @@ void FaceManager::SwappedFaces() {
   assert(m == SwappedEdge.size());
 
   for (int i = 0; i < hexs.size(); i++) {
-    Hex &q = hexs[i];
+    Hex& q = hexs[i];
     if (q.sleep())
       continue;
     for (int e = 0; e < 6; e++) {

@@ -35,180 +35,254 @@
 /*---------------------------------------------------*/
 
 namespace Gascoigne {
-class DwrFem2d : public Q22d {
+class DwrFem2d : public Q22d
+{
 protected:
   typedef Transformation2d<BaseQ12d> TransQ1;
   FiniteElement<2, 1, TransQ1, BaseQ12dPatch> LowOrderFem;
-  HNStructureQ1 *HNLow;
+  HNStructureQ1* HNLow;
 
-  void TransformationQ1(FemInterface::Matrix &T, int iq) const;
+  void TransformationQ1(FemInterface::Matrix& T, int iq) const;
 
 public:
   DwrFem2d();
   ~DwrFem2d();
 
-  void BasicInit(const ParamFile *paramfile);
-  void ReInit(const GascoigneMesh *MP);
+  void BasicInit(const ParamFile* paramfile);
+  void ReInit(const GascoigneMesh* MP);
 };
 
 /*---------------------------------------------------*/
 
-class DwrFem3d : public Q23d {
+class DwrFem3d : public Q23d
+{
 protected:
   typedef Transformation3d<BaseQ13d> TransQ1;
   FiniteElement<3, 2, TransQ1, BaseQ13dPatch> LowOrderFem;
-  HNStructureQ1 *HNLow;
+  HNStructureQ1* HNLow;
 
-  void TransformationQ1(FemInterface::Matrix &T, int iq) const;
+  void TransformationQ1(FemInterface::Matrix& T, int iq) const;
 
 public:
   DwrFem3d();
   ~DwrFem3d();
 
-  void BasicInit(const ParamFile *paramfile);
-  void ReInit(const GascoigneMesh *MP);
+  void BasicInit(const ParamFile* paramfile);
+  void ReInit(const GascoigneMesh* MP);
 };
 
 /*---------------------------------------------------*/
 /*---------------------------------------------------*/
 
-class DwrFemQ1Q22d : virtual public DwrFem2d {
+class DwrFemQ1Q22d : virtual public DwrFem2d
+{
 protected:
-  void DiracRhsPoint(GlobalVector &f, const DiracRightHandSide &DRHS,
-                     const Vertex2d &p0, int i, double s) const;
+  void DiracRhsPoint(GlobalVector& f,
+                     const DiracRightHandSide& DRHS,
+                     const Vertex2d& p0,
+                     int i,
+                     double s) const;
 
 public:
-  DwrFemQ1Q22d() : DwrFem2d() {}
+  DwrFemQ1Q22d()
+    : DwrFem2d()
+  {}
   ~DwrFemQ1Q22d() {}
 
-  void Form(GlobalVector &f, const GlobalVector &u, const Equation &EQ,
+  void Form(GlobalVector& f,
+            const GlobalVector& u,
+            const Equation& EQ,
             double d) const;
-  void AdjointForm(GlobalVector &f, const GlobalVector &u, const Equation &EQ,
+  void AdjointForm(GlobalVector& f,
+                   const GlobalVector& u,
+                   const Equation& EQ,
                    double d) const;
-  void BoundaryForm(GlobalVector &f, const GlobalVector &u,
-                    const IntSet &Colors, const BoundaryEquation &BE,
+  void BoundaryForm(GlobalVector& f,
+                    const GlobalVector& u,
+                    const IntSet& Colors,
+                    const BoundaryEquation& BE,
                     double d) const;
-  void Rhs(GlobalVector &f, const DomainRightHandSide &RHS, double s) const;
-  void BoundaryRhs(GlobalVector &f, const IntSet &Colors,
-                   const BoundaryRightHandSide &NRHS, double s) const;
+  void Rhs(GlobalVector& f, const DomainRightHandSide& RHS, double s) const;
+  void BoundaryRhs(GlobalVector& f,
+                   const IntSet& Colors,
+                   const BoundaryRightHandSide& NRHS,
+                   double s) const;
 
-  void MassMatrix(MatrixInterface &M) const;
-  void MassForm(GlobalVector &f, const GlobalVector &u, const TimePattern &TP,
+  void MassMatrix(MatrixInterface& M) const;
+  void MassForm(GlobalVector& f,
+                const GlobalVector& u,
+                const TimePattern& TP,
                 double s) const;
 
-  void LocalToGlobal(MatrixInterface &A, EntryMatrix &E, int iq,
+  void LocalToGlobal(MatrixInterface& A,
+                     EntryMatrix& E,
+                     int iq,
                      double s) const;
 
-  void HNAverage(GlobalVector &x) const { HNLow->Average(x); }
-  void HNDistribute(GlobalVector &x) const { HN->Distribute(x); }
-  void HNZero(GlobalVector &x) const { HNLow->Zero(x); }
-  bool HNZeroCheck(const GlobalVector &x) const { return HNLow->ZeroCheck(x); }
+  void HNAverage(GlobalVector& x) const { HNLow->Average(x); }
+  void HNDistribute(GlobalVector& x) const { HN->Distribute(x); }
+  void HNZero(GlobalVector& x) const { HNLow->Zero(x); }
+  bool HNZeroCheck(const GlobalVector& x) const { return HNLow->ZeroCheck(x); }
 };
 
 /*---------------------------------------------------*/
 
-class DwrFemQ1Q23d : virtual public DwrFem3d {
+class DwrFemQ1Q23d : virtual public DwrFem3d
+{
 protected:
-  void DiracRhsPoint(GlobalVector &f, const DiracRightHandSide &DRHS,
-                     const Vertex3d &p0, int i, double s) const;
+  void DiracRhsPoint(GlobalVector& f,
+                     const DiracRightHandSide& DRHS,
+                     const Vertex3d& p0,
+                     int i,
+                     double s) const;
 
 public:
-  DwrFemQ1Q23d() : DwrFem3d() {}
+  DwrFemQ1Q23d()
+    : DwrFem3d()
+  {}
   ~DwrFemQ1Q23d() {}
 
-  void Form(GlobalVector &f, const GlobalVector &u, const Equation &EQ,
+  void Form(GlobalVector& f,
+            const GlobalVector& u,
+            const Equation& EQ,
             double d) const;
-  void AdjointForm(GlobalVector &f, const GlobalVector &u, const Equation &EQ,
+  void AdjointForm(GlobalVector& f,
+                   const GlobalVector& u,
+                   const Equation& EQ,
                    double d) const;
-  void BoundaryForm(GlobalVector &f, const GlobalVector &u,
-                    const IntSet &Colors, const BoundaryEquation &BE,
+  void BoundaryForm(GlobalVector& f,
+                    const GlobalVector& u,
+                    const IntSet& Colors,
+                    const BoundaryEquation& BE,
                     double d) const;
-  void Rhs(GlobalVector &f, const DomainRightHandSide &RHS, double s) const;
-  void BoundaryRhs(GlobalVector &f, const IntSet &Colors,
-                   const BoundaryRightHandSide &NRHS, double s) const;
+  void Rhs(GlobalVector& f, const DomainRightHandSide& RHS, double s) const;
+  void BoundaryRhs(GlobalVector& f,
+                   const IntSet& Colors,
+                   const BoundaryRightHandSide& NRHS,
+                   double s) const;
 
-  void MassMatrix(MatrixInterface &M) const;
-  void MassForm(GlobalVector &f, const GlobalVector &u, const TimePattern &TP,
+  void MassMatrix(MatrixInterface& M) const;
+  void MassForm(GlobalVector& f,
+                const GlobalVector& u,
+                const TimePattern& TP,
                 double s) const;
 
-  void LocalToGlobal(MatrixInterface &A, EntryMatrix &E, int iq,
+  void LocalToGlobal(MatrixInterface& A,
+                     EntryMatrix& E,
+                     int iq,
                      double s) const;
 
-  void HNAverage(GlobalVector &x) const { HNLow->Average(x); }
-  void HNDistribute(GlobalVector &x) const { HN->Distribute(x); }
-  void HNZero(GlobalVector &x) const { HNLow->Zero(x); }
-  bool HNZeroCheck(const GlobalVector &x) const { return HNLow->ZeroCheck(x); }
+  void HNAverage(GlobalVector& x) const { HNLow->Average(x); }
+  void HNDistribute(GlobalVector& x) const { HN->Distribute(x); }
+  void HNZero(GlobalVector& x) const { HNLow->Zero(x); }
+  bool HNZeroCheck(const GlobalVector& x) const { return HNLow->ZeroCheck(x); }
 };
 
 /*---------------------------------------------------*/
 /*---------------------------------------------------*/
 
-class DwrFemQ2Q12d : virtual public DwrFem2d {
+class DwrFemQ2Q12d : virtual public DwrFem2d
+{
 protected:
-  void DiracRhsPoint(GlobalVector &f, const DiracRightHandSide &DRHS,
-                     const Vertex2d &p0, int i, double s) const;
+  void DiracRhsPoint(GlobalVector& f,
+                     const DiracRightHandSide& DRHS,
+                     const Vertex2d& p0,
+                     int i,
+                     double s) const;
 
 public:
-  DwrFemQ2Q12d() : DwrFem2d() {}
+  DwrFemQ2Q12d()
+    : DwrFem2d()
+  {}
   ~DwrFemQ2Q12d() {}
 
-  void Form(GlobalVector &f, const GlobalVector &u, const Equation &EQ,
+  void Form(GlobalVector& f,
+            const GlobalVector& u,
+            const Equation& EQ,
             double d) const;
-  void AdjointForm(GlobalVector &f, const GlobalVector &u, const Equation &EQ,
+  void AdjointForm(GlobalVector& f,
+                   const GlobalVector& u,
+                   const Equation& EQ,
                    double d) const;
-  void BoundaryForm(GlobalVector &f, const GlobalVector &u,
-                    const IntSet &Colors, const BoundaryEquation &BE,
+  void BoundaryForm(GlobalVector& f,
+                    const GlobalVector& u,
+                    const IntSet& Colors,
+                    const BoundaryEquation& BE,
                     double d) const;
-  void Rhs(GlobalVector &f, const DomainRightHandSide &RHS, double s) const;
-  void BoundaryRhs(GlobalVector &f, const IntSet &Colors,
-                   const BoundaryRightHandSide &NRHS, double s) const;
+  void Rhs(GlobalVector& f, const DomainRightHandSide& RHS, double s) const;
+  void BoundaryRhs(GlobalVector& f,
+                   const IntSet& Colors,
+                   const BoundaryRightHandSide& NRHS,
+                   double s) const;
 
-  void MassMatrix(MatrixInterface &M) const;
-  void MassForm(GlobalVector &f, const GlobalVector &u, const TimePattern &TP,
+  void MassMatrix(MatrixInterface& M) const;
+  void MassForm(GlobalVector& f,
+                const GlobalVector& u,
+                const TimePattern& TP,
                 double s) const;
 
-  void LocalToGlobal(MatrixInterface &A, EntryMatrix &E, int iq,
+  void LocalToGlobal(MatrixInterface& A,
+                     EntryMatrix& E,
+                     int iq,
                      double s) const;
 
-  void HNAverage(GlobalVector &x) const { HN->Average(x); }
-  void HNDistribute(GlobalVector &x) const { HNLow->Distribute(x); }
-  void HNZero(GlobalVector &x) const { HN->Zero(x); }
-  bool HNZeroCheck(const GlobalVector &x) const { return HN->ZeroCheck(x); }
+  void HNAverage(GlobalVector& x) const { HN->Average(x); }
+  void HNDistribute(GlobalVector& x) const { HNLow->Distribute(x); }
+  void HNZero(GlobalVector& x) const { HN->Zero(x); }
+  bool HNZeroCheck(const GlobalVector& x) const { return HN->ZeroCheck(x); }
 };
 
 /*---------------------------------------------------*/
 
-class DwrFemQ2Q13d : virtual public DwrFem3d {
+class DwrFemQ2Q13d : virtual public DwrFem3d
+{
 protected:
-  void DiracRhsPoint(GlobalVector &f, const DiracRightHandSide &DRHS,
-                     const Vertex3d &p0, int i, double s) const;
-
-public:
-  DwrFemQ2Q13d() : DwrFem3d() {}
-  ~DwrFemQ2Q13d() {}
-
-  void Form(GlobalVector &f, const GlobalVector &u, const Equation &EQ,
-            double d) const;
-  void AdjointForm(GlobalVector &f, const GlobalVector &u, const Equation &EQ,
-                   double d) const;
-  void BoundaryForm(GlobalVector &f, const GlobalVector &u,
-                    const IntSet &Colors, const BoundaryEquation &BE,
-                    double d) const;
-  void Rhs(GlobalVector &f, const DomainRightHandSide &RHS, double s) const;
-  void BoundaryRhs(GlobalVector &f, const IntSet &Colors,
-                   const BoundaryRightHandSide &NRHS, double s) const;
-
-  void MassMatrix(MatrixInterface &M) const;
-  void MassForm(GlobalVector &f, const GlobalVector &u, const TimePattern &TP,
-                double s) const;
-
-  void LocalToGlobal(MatrixInterface &A, EntryMatrix &E, int iq,
+  void DiracRhsPoint(GlobalVector& f,
+                     const DiracRightHandSide& DRHS,
+                     const Vertex3d& p0,
+                     int i,
                      double s) const;
 
-  void HNAverage(GlobalVector &x) const { HN->Average(x); }
-  void HNDistribute(GlobalVector &x) const { HNLow->Distribute(x); }
-  void HNZero(GlobalVector &x) const { HN->Zero(x); }
-  bool HNZeroCheck(const GlobalVector &x) const { return HN->ZeroCheck(x); }
+public:
+  DwrFemQ2Q13d()
+    : DwrFem3d()
+  {}
+  ~DwrFemQ2Q13d() {}
+
+  void Form(GlobalVector& f,
+            const GlobalVector& u,
+            const Equation& EQ,
+            double d) const;
+  void AdjointForm(GlobalVector& f,
+                   const GlobalVector& u,
+                   const Equation& EQ,
+                   double d) const;
+  void BoundaryForm(GlobalVector& f,
+                    const GlobalVector& u,
+                    const IntSet& Colors,
+                    const BoundaryEquation& BE,
+                    double d) const;
+  void Rhs(GlobalVector& f, const DomainRightHandSide& RHS, double s) const;
+  void BoundaryRhs(GlobalVector& f,
+                   const IntSet& Colors,
+                   const BoundaryRightHandSide& NRHS,
+                   double s) const;
+
+  void MassMatrix(MatrixInterface& M) const;
+  void MassForm(GlobalVector& f,
+                const GlobalVector& u,
+                const TimePattern& TP,
+                double s) const;
+
+  void LocalToGlobal(MatrixInterface& A,
+                     EntryMatrix& E,
+                     int iq,
+                     double s) const;
+
+  void HNAverage(GlobalVector& x) const { HN->Average(x); }
+  void HNDistribute(GlobalVector& x) const { HNLow->Distribute(x); }
+  void HNZero(GlobalVector& x) const { HN->Zero(x); }
+  bool HNZeroCheck(const GlobalVector& x) const { return HN->ZeroCheck(x); }
 };
 } // namespace Gascoigne
 

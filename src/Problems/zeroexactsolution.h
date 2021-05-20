@@ -37,7 +37,8 @@ namespace Gascoigne {
 ///
 /////////////////////////////////////////////
 
-class ZeroExactSolution : public ExactSolution {
+class ZeroExactSolution : public ExactSolution
+{
 public:
 private:
 protected:
@@ -48,7 +49,7 @@ public:
 
   ZeroExactSolution() {}
   std::string GetName() const { return "Zero"; }
-  double operator()(int c, const Vertex2d &v) const { return 0.; }
+  double operator()(int c, const Vertex2d& v) const { return 0.; }
 };
 } // namespace Gascoigne
 

@@ -27,26 +27,34 @@
 /*---------------------------------------------------*/
 
 namespace Gascoigne {
-class HangEdgeSort {
+class HangEdgeSort
+{
 protected:
-  const EdgeManager &HR;
+  const EdgeManager& HR;
 
 public:
-  HangEdgeSort(const EdgeManager &H) : HR(H) {}
-  bool operator()(int i, int j) const {
+  HangEdgeSort(const EdgeManager& H)
+    : HR(H)
+  {}
+  bool operator()(int i, int j) const
+  {
     return !HR.EdgeIsHanging(i) && HR.EdgeIsHanging(j);
   }
 };
 
 /*---------------------------------------------------*/
 
-class HangEdgeSort2 {
+class HangEdgeSort2
+{
 protected:
-  const EdgeManager &HR;
+  const EdgeManager& HR;
 
 public:
-  HangEdgeSort2(const EdgeManager &H) : HR(H) {}
-  bool operator()(const Edge &i, const Edge &j) const {
+  HangEdgeSort2(const EdgeManager& H)
+    : HR(H)
+  {}
+  bool operator()(const Edge& i, const Edge& j) const
+  {
     return !HR.EdgeIsHanging(i) && HR.EdgeIsHanging(j);
   }
 };

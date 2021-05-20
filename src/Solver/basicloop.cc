@@ -37,13 +37,20 @@ using namespace std;
 /*-----------------------------------------*/
 
 namespace Gascoigne {
-BasicLoop::BasicLoop() : _MA(NULL), _ML(NULL), _SI(NULL), _iter(0) {
+BasicLoop::BasicLoop()
+  : _MA(NULL)
+  , _ML(NULL)
+  , _SI(NULL)
+  , _iter(0)
+{
   _reload = "none";
 }
 
-BasicLoop::BasicLoop(const ParamFile &paramfile, const ProblemContainer *PC,
-                     const FunctionalContainer *FC)
-    : _paramfile(paramfile) {
+BasicLoop::BasicLoop(const ParamFile& paramfile,
+                     const ProblemContainer* PC,
+                     const FunctionalContainer* FC)
+  : _paramfile(paramfile)
+{
   //_paramfile = paramfile;
   string s_copy_param_file;
   DataFormatHandler DFH;
@@ -75,7 +82,8 @@ BasicLoop::BasicLoop(const ParamFile &paramfile, const ProblemContainer *PC,
 
 /*-----------------------------------------*/
 
-BasicLoop::~BasicLoop() {
+BasicLoop::~BasicLoop()
+{
   if (_MA != NULL) {
     delete _MA;
     _MA = NULL;
@@ -92,7 +100,9 @@ BasicLoop::~BasicLoop() {
 
 /*-----------------------------------------*/
 
-void BasicLoop::ClockOutput() const {
+void
+BasicLoop::ClockOutput() const
+{
   cout << "********************************************************************"
           "****\n\n";
   cout << "BasicLoop\t\tTIME\n";
@@ -103,9 +113,11 @@ void BasicLoop::ClockOutput() const {
 
 /*-----------------------------------------*/
 
-void BasicLoop::BasicInit(const ParamFile &paramfile,
-                          const ProblemContainer *PC,
-                          const FunctionalContainer *FC) {
+void
+BasicLoop::BasicInit(const ParamFile& paramfile,
+                     const ProblemContainer* PC,
+                     const FunctionalContainer* FC)
+{
   _paramfile = paramfile;
   string s_copy_param_file;
 
@@ -151,14 +163,16 @@ void BasicLoop::BasicInit(const ParamFile &paramfile,
 
 /*-------------------------------------------------------*/
 
-void BasicLoop::PrintMeshInformation(int outputlevel) const {
+void
+BasicLoop::PrintMeshInformation(int outputlevel) const
+{
   cout << " [l,n,c] " << GetMeshAgent()->nlevels() << " "
        << GetMeshAgent()->nnodes();
   cout << " " << GetMeshAgent()->ncells() << endl;
 
   if (outputlevel) {
     for (int l = 0; l < GetMeshAgent()->nlevels(); l++) {
-      const GascoigneMesh *M = GetMeshAgent()->GetMesh(l);
+      const GascoigneMesh* M = GetMeshAgent()->GetMesh(l);
       cout << l << " [n,c] " << M->nnodes() << " " << M->ncells() << endl;
     }
   }
@@ -166,7 +180,9 @@ void BasicLoop::PrintMeshInformation(int outputlevel) const {
 
 /*-------------------------------------------------------*/
 
-void BasicLoop::Output(const VectorInterface &u, string name) const {
+void
+BasicLoop::Output(const VectorInterface& u, string name) const
+{
   if (_writeVtk) {
     GetMultiLevelSolver()->GetSolver()->Visu(name, u, _iter);
   }
@@ -180,8 +196,10 @@ void BasicLoop::Output(const VectorInterface &u, string name) const {
 
 /*-------------------------------------------------*/
 
-void BasicLoop::WriteMeshAndSolution(const string &filename,
-                                     const VectorInterface &u) const {
+void
+BasicLoop::WriteMeshAndSolution(const string& filename,
+                                const VectorInterface& u) const
+{
   string name;
   name = filename;
   //   name = filename + "_value";
@@ -197,7 +215,9 @@ void BasicLoop::WriteMeshAndSolution(const string &filename,
 
 /*-------------------------------------------------*/
 
-void BasicLoop::WriteSolution(const VectorInterface &u) const {
+void
+BasicLoop::WriteSolution(const VectorInterface& u) const
+{
   _clock_write.start();
   string filename = _s_resultsdir + "/solution";
   compose_name(filename, _iter);
@@ -208,7 +228,9 @@ void BasicLoop::WriteSolution(const VectorInterface &u) const {
 
 /*-------------------------------------------------*/
 
-void BasicLoop::WriteMesh() const {
+void
+BasicLoop::WriteMesh() const
+{
   _clock_write.start();
   string filename = _s_resultsdir + "/mesh";
   compose_name(filename, _iter);
@@ -219,7 +241,9 @@ void BasicLoop::WriteMesh() const {
 
 /*-------------------------------------------------*/
 
-void BasicLoop::WriteMeshInp(const string &name) const {
+void
+BasicLoop::WriteMeshInp(const string& name) const
+{
   _clock_write.start();
   string filename = name;
   compose_name(filename, _iter);
@@ -230,7 +254,9 @@ void BasicLoop::WriteMeshInp(const string &name) const {
 
 /*-------------------------------------------------*/
 
-void BasicLoop::InitSolution(VectorInterface &u) {
+void
+BasicLoop::InitSolution(VectorInterface& u)
+{
   GetMultiLevelSolver()->GetSolver()->Zero(u);
 
   if (_initial == "analytic")
@@ -252,8 +278,9 @@ void BasicLoop::InitSolution(VectorInterface &u) {
 
 /*-------------------------------------------------*/
 
-string BasicLoop::Solve(Matrix &A, VectorInterface &u, VectorInterface &f,
-                        string name) {
+string
+BasicLoop::Solve(Matrix& A, VectorInterface& u, VectorInterface& f, string name)
+{
   _clock_solve.start();
 
   GetMultiLevelSolver()->GetSolver()->Zero(f);
@@ -262,12 +289,12 @@ string BasicLoop::Solve(Matrix &A, VectorInterface &u, VectorInterface &f,
   GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(f);
   // set offset first, so nodes that are both periodic and dirichlet will become
   // dirichlet
-  
+
   GetMultiLevelSolver()->GetSolver()->SetPeriodicVector(u);
   GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(u);
-  
+
   string status =
-      GetMultiLevelSolver()->Solve(A, u, f, GetSolverInfos()->GetNLInfo());
+    GetMultiLevelSolver()->Solve(A, u, f, GetSolverInfos()->GetNLInfo());
   _clock_solve.stop();
 
   _clock_write.start();
@@ -279,7 +306,9 @@ string BasicLoop::Solve(Matrix &A, VectorInterface &u, VectorInterface &f,
 
 /*-------------------------------------------------*/
 
-void BasicLoop::ComputeGlobalErrors(const VectorInterface &u) {
+void
+BasicLoop::ComputeGlobalErrors(const VectorInterface& u)
+{
   GetMultiLevelSolver()->GetSolver()->ComputeError(u, _GlobalErr);
   if (_GlobalErr.size() > 0) {
     cout.precision(6);
@@ -294,7 +323,9 @@ void BasicLoop::ComputeGlobalErrors(const VectorInterface &u) {
 
 /*-------------------------------------------------------*/
 
-void BasicLoop::CopyVector(GlobalVector &dst, VectorInterface &src) {
+void
+BasicLoop::CopyVector(GlobalVector& dst, VectorInterface& src)
+{
   GetMultiLevelSolver()->GetSolver()->HNAverage(src);
 
   int nn = GetMultiLevelSolver()->GetSolver()->GetGV(src).n();
@@ -310,7 +341,9 @@ void BasicLoop::CopyVector(GlobalVector &dst, VectorInterface &src) {
 
 /*-------------------------------------------------*/
 
-void BasicLoop::CopyVector(VectorInterface &dst, GlobalVector &src) {
+void
+BasicLoop::CopyVector(VectorInterface& dst, GlobalVector& src)
+{
   int nn = src.n();
   int cc = src.ncomp();
 
@@ -321,7 +354,9 @@ void BasicLoop::CopyVector(VectorInterface &dst, GlobalVector &src) {
 
 /*-------------------------------------------------*/
 
-void BasicLoop::run(const std::string &problemlabel) {
+void
+BasicLoop::run(const std::string& problemlabel)
+{
   Matrix A("A");
   VectorInterface u("u"), f("f");
   GlobalVector ualt;
@@ -331,8 +366,8 @@ void BasicLoop::run(const std::string &problemlabel) {
   for (_iter = 1; _iter <= _niter; _iter++) {
     cout << "\n================== " << _iter << " ================";
     PrintMeshInformation();
-    Moning.SetMeshInformation(_iter, GetMeshAgent()->nnodes(),
-                              GetMeshAgent()->ncells());
+    Moning.SetMeshInformation(
+      _iter, GetMeshAgent()->nnodes(), GetMeshAgent()->ncells());
 
     _clock_newmesh.start();
 
@@ -343,8 +378,8 @@ void BasicLoop::run(const std::string &problemlabel) {
     GetMultiLevelSolver()->ReInitVector(u);
     GetMultiLevelSolver()->ReInitVector(f);
     GetMultiLevelSolver()->InterpolateSolution(u, ualt);
-    GetMultiLevelSolver()->GetSolver()->Visu(_s_resultsdir + "/interpolate", u,
-                                             _iter);
+    GetMultiLevelSolver()->GetSolver()->Visu(
+      _s_resultsdir + "/interpolate", u, _iter);
 
     _clock_newmesh.stop();
 

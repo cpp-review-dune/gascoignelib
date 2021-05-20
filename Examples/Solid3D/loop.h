@@ -19,11 +19,15 @@
 
 namespace Gascoigne {
 
-template <int DIM> class Loop : public StdLoop {
+template<int DIM>
+class Loop : public StdLoop
+{
 
 public:
-  void BasicInit(const ParamFile *paramfile, const ProblemContainer *PC,
-                 const FunctionalContainer *FC) {
+  void BasicInit(const ParamFile* paramfile,
+                 const ProblemContainer* PC,
+                 const FunctionalContainer* FC)
+  {
     GetMeshAgentPointer() = new ProjectionOnFineMeshAgent(paramfile);
     // GetMultiLevelSolverPointer() = new StdMultiLevelSolver;
     GetMultiLevelSolverPointer() = new FSIMultiLevelSolver<DIM>;
@@ -31,7 +35,7 @@ public:
     StdLoop::BasicInit(paramfile, PC, FC);
   }
 
-  void run(const std::string &problemlabel);
+  void run(const std::string& problemlabel);
 };
 
 } // namespace Gascoigne

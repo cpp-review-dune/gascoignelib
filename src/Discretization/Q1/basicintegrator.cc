@@ -28,13 +28,17 @@ using namespace std;
 /*---------------------------------------------------------*/
 
 namespace Gascoigne {
-BasicIntegrator::BasicIntegrator() : IntegratorInterface() {}
+BasicIntegrator::BasicIntegrator()
+  : IntegratorInterface()
+{}
 
 /*---------------------------------------------------------*/
 
-void Gascoigne::BasicIntegrator::universal_point(CellFunction &UCH,
-                                                 const LocalVector &UC,
-                                                 int i) const {
+void
+Gascoigne::BasicIntegrator::universal_point(CellFunction& UCH,
+                                            const LocalVector& UC,
+                                            int i) const
+{
   UCH.resize(UC.ncomp());
   for (int c = 0; c < UC.ncomp(); c++) {
     UCH[c] = UC(i, c);
@@ -43,8 +47,11 @@ void Gascoigne::BasicIntegrator::universal_point(CellFunction &UCH,
 
 /*---------------------------------------------------------*/
 
-void BasicIntegrator::universal_point(const FemInterface &FEM, FemFunction &UH,
-                                      const LocalVector &U) const {
+void
+BasicIntegrator::universal_point(const FemInterface& FEM,
+                                 FemFunction& UH,
+                                 const LocalVector& U) const
+{
   UH.resize(U.ncomp());
 
   for (int c = 0; c < UH.size(); c++)
@@ -60,8 +67,11 @@ void BasicIntegrator::universal_point(const FemInterface &FEM, FemFunction &UH,
 
 /*---------------------------------------------------------*/
 
-void BasicIntegrator::universal_point(FemFunction &UH, const LocalVector &U,
-                                      const FemFunction &NN) const {
+void
+BasicIntegrator::universal_point(FemFunction& UH,
+                                 const LocalVector& U,
+                                 const FemFunction& NN) const
+{
   UH.resize(U.ncomp());
   for (int c = 0; c < UH.size(); c++)
     UH[c].zero();
@@ -75,8 +85,11 @@ void BasicIntegrator::universal_point(FemFunction &UH, const LocalVector &U,
 
 /*---------------------------------------------------------*/
 
-void BasicIntegrator::universal_point(const FemInterface &FEM, FemData &QH,
-                                      const LocalData &Q) const {
+void
+BasicIntegrator::universal_point(const FemInterface& FEM,
+                                 FemData& QH,
+                                 const LocalData& Q) const
+{
   QH.clear();
   LocalData::const_iterator p = Q.begin();
   for (; p != Q.end(); p++) {
@@ -86,9 +99,11 @@ void BasicIntegrator::universal_point(const FemInterface &FEM, FemData &QH,
 
 /*---------------------------------------------------------*/
 
-void Gascoigne::BasicIntegrator::universal_point(CellData &QCH,
-                                                 const LocalData &QC,
-                                                 int i) const {
+void
+Gascoigne::BasicIntegrator::universal_point(CellData& QCH,
+                                            const LocalData& QC,
+                                            int i) const
+{
   QCH.clear();
   LocalData::const_iterator p = QC.begin();
   for (; p != QC.end(); p++) {

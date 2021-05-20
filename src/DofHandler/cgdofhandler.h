@@ -80,7 +80,9 @@ namespace Gascoigne {
  ***/
 
 /// DIM is spatial dimension, M dof's per element in each direction
-template <int DIM, int M> class CGDofHandler : public DofHandlerBase {
+template<int DIM, int M>
+class CGDofHandler : public DofHandlerBase
+{
 protected:
   /// geometric coordinates for all dof's
   std::vector<Vertex<DIM>> nx;
@@ -95,7 +97,7 @@ public:
    * Each cell of the GascoigneMesh is filled with M^DIM dof's
    * dof's on nodes / edges / faces are shared
    **/
-  void InitFromGascoigneMesh(const DofHandler<DIM> &GM);
+  void InitFromGascoigneMesh(const DofHandler<DIM>& GM);
 
   /// General Access
   int dimension() const { return DIM; }
@@ -104,7 +106,8 @@ public:
   int nelements() const { return nc.size() / dofs_per_element(); }
   int nhanging() const { return HangingHandler.GetStructure()->size(); }
 
-  IntVector GetElement(int iq) const {
+  IntVector GetElement(int iq) const
+  {
     abort();
 
     IntVector tmp;
@@ -115,32 +118,37 @@ public:
   }
 
   /// Access to coordinates
-  std::vector<Vertex<DIM>> &GetVertexVector() { return nx; }
-  const std::vector<Vertex<DIM>> &GetVertexVector() const { return nx; }
+  std::vector<Vertex<DIM>>& GetVertexVector() { return nx; }
+  const std::vector<Vertex<DIM>>& GetVertexVector() const { return nx; }
 
-  const Vertex<DIM> &vertex(int i) const { return nx[i]; }
-  virtual const Vertex<2> &vertex2d(int i) const { abort(); }
-  virtual const Vertex<3> &vertex3d(int i) const { abort(); }
+  const Vertex<DIM>& vertex(int i) const { return nx[i]; }
+  virtual const Vertex<2>& vertex2d(int i) const { abort(); }
+  virtual const Vertex<3>& vertex3d(int i) const { abort(); }
 
   ////// Boundary
-  const IntVector *ElementOnBoundary(int color) const {
+  const IntVector* ElementOnBoundary(int color) const
+  {
     return &(BoundaryHandler.Cells(color));
   }
-  const IntVector *ElementLocalOnBoundary(int color) const {
+  const IntVector* ElementLocalOnBoundary(int color) const
+  {
     return &(BoundaryHandler.Localind(color));
   }
-  const IntVector *ElementOnBoundary(int degree, int color) const {
+  const IntVector* ElementOnBoundary(int degree, int color) const
+  {
     std::cerr << "Element on Boundary with degree not used!" << std::endl;
     abort();
   }
-  const IntVector *ElementLocalOnBoundary(int degree, int color) const {
+  const IntVector* ElementLocalOnBoundary(int degree, int color) const
+  {
     std::cerr << "ElementLocal on Boundary with degree not used!" << std::endl;
     abort();
   }
 
   int VtkType(int i) const { return (DIM == 2) ? 9 : 12; }
 
-  int vertex_of_cell(int i, int ii) const {
+  int vertex_of_cell(int i, int ii) const
+  {
     return nc[dofs_per_element() * i + ii];
   }
 
@@ -150,34 +158,54 @@ public:
   int nodes_per_cell(int i) const { abort(); }
   int nnodes() const { abort(); }
 
-  IntVector IndicesOfCell(int iq) const {
+  IntVector IndicesOfCell(int iq) const
+  {
     std::cerr << "CGDofHandler: Use GetElement" << std::endl;
     assert(0);
     return IntVector();
   }
 
-  IntVector GetElement(int degree, int iq) const {
+  IntVector GetElement(int degree, int iq) const
+  {
     std::cerr << "GetElement with degree not used" << std::endl;
     abort();
   }
 };
 
-template <> inline const Vertex<2> &CGDofHandler<2, 2>::vertex2d(int i) const {
+template<>
+inline const Vertex<2>&
+CGDofHandler<2, 2>::vertex2d(int i) const
+{
   return vertex(i);
 }
-template <> inline const Vertex<2> &CGDofHandler<2, 3>::vertex2d(int i) const {
+template<>
+inline const Vertex<2>&
+CGDofHandler<2, 3>::vertex2d(int i) const
+{
   return vertex(i);
 }
-template <> inline const Vertex<2> &CGDofHandler<2, 5>::vertex2d(int i) const {
+template<>
+inline const Vertex<2>&
+CGDofHandler<2, 5>::vertex2d(int i) const
+{
   return vertex(i);
 }
-template <> inline const Vertex<3> &CGDofHandler<3, 2>::vertex3d(int i) const {
+template<>
+inline const Vertex<3>&
+CGDofHandler<3, 2>::vertex3d(int i) const
+{
   return vertex(i);
 }
-template <> inline const Vertex<3> &CGDofHandler<3, 3>::vertex3d(int i) const {
+template<>
+inline const Vertex<3>&
+CGDofHandler<3, 3>::vertex3d(int i) const
+{
   return vertex(i);
 }
-template <> inline const Vertex<3> &CGDofHandler<3, 5>::vertex3d(int i) const {
+template<>
+inline const Vertex<3>&
+CGDofHandler<3, 5>::vertex3d(int i) const
+{
   return vertex(i);
 }
 

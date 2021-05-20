@@ -29,7 +29,8 @@
 /*---------------------------------------------------------*/
 
 namespace Gascoigne {
-class Monitoring {
+class Monitoring
+{
 protected:
   std::vector<DoubleVector> Juh, Je;
   DoubleVector eta, nnodes, ncells;
@@ -39,7 +40,8 @@ protected:
 
 public:
   Monitoring() { _i_show_status_on_destruct = 1; }
-  ~Monitoring() {
+  ~Monitoring()
+  {
     if (_i_show_status_on_destruct) {
       std::cout << "Monitor" << std::endl;
       std::cout << "----------------------------------" << std::endl;
@@ -56,11 +58,13 @@ public:
       std::cout << "----------------------------------" << std::endl;
     }
   }
-  void BasicInit(const DoubleVector &ju) { Ju = ju; }
-  void ShowStatusOnDestruct(int i_showvalue) {
+  void BasicInit(const DoubleVector& ju) { Ju = ju; }
+  void ShowStatusOnDestruct(int i_showvalue)
+  {
     _i_show_status_on_destruct = i_showvalue;
   }
-  void SetMeshInformation(int iter, int nodes, int cells) {
+  void SetMeshInformation(int iter, int nodes, int cells)
+  {
     assert(iter >= 1);
     niter = iter;
     Juh.resize(niter);
@@ -71,20 +75,23 @@ public:
     ncells.resize(niter);
     ncells[iter - 1] = cells;
   }
-  void SetSolutionInformation(int iter, DoubleVector juh, double et) {
+  void SetSolutionInformation(int iter, DoubleVector juh, double et)
+  {
     assert(niter == iter);
     Juh[iter - 1] = juh;
     Je[iter - 1] = Ju;
     Je[iter - 1].add(-1, juh);
     eta[iter - 1] = et;
   }
-  double eff(int i) const {
+  double eff(int i) const
+  {
     if (Je[i].size() == 0)
       return -1.;
     else
       return eta[i] / Je[i][0];
   }
-  void output() const {
+  void output() const
+  {
     int i = ncells.size() - 1;
     std::cout << "## " << nnodes[i] << " ";
     std::cout << ncells[i] << " ";

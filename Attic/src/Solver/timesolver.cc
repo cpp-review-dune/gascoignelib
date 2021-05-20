@@ -30,8 +30,13 @@ using namespace std;
 
 namespace Gascoigne {
 
-void TimeSolver::SetTimeData(double _dt, double _theta, double _time,
-                             double oldrhs, double newrhs) {
+void
+TimeSolver::SetTimeData(double _dt,
+                        double _theta,
+                        double _time,
+                        double oldrhs,
+                        double newrhs)
+{
   dt = _dt;
   theta = _theta;
   time = _time;
@@ -42,7 +47,9 @@ void TimeSolver::SetTimeData(double _dt, double _theta, double _time,
 
 /*-----------------------------------------*/
 
-void TimeSolver::RegisterMatrix() {
+void
+TimeSolver::RegisterMatrix()
+{
   int ncomp = GetProblemDescriptor()->GetNcomp();
 
   if (GetMassMatrixPointer() == NULL)
@@ -53,7 +60,9 @@ void TimeSolver::RegisterMatrix() {
 
 /*-----------------------------------------*/
 
-void TimeSolver::ReInitMatrix() {
+void
+TimeSolver::ReInitMatrix()
+{
   GetDiscretization()->InitFilter(_PF);
   SparseStructure SA;
   GetDiscretization()->Structure(&SA);
@@ -68,7 +77,9 @@ void TimeSolver::ReInitMatrix() {
 
 /*-----------------------------------------*/
 
-void TimeSolver::AssembleMatrix(const VectorInterface &gu, double d) {
+void
+TimeSolver::AssembleMatrix(const VectorInterface& gu, double d)
+{
   StdSolver::AssembleMatrix(gu, d);
 
   double scale = d / (dt * theta);
@@ -79,8 +90,9 @@ void TimeSolver::AssembleMatrix(const VectorInterface &gu, double d) {
 
 /*-----------------------------------------*/
 
-void TimeSolver::Form(VectorInterface &gy, const VectorInterface &gx,
-                      double d) const {
+void
+TimeSolver::Form(VectorInterface& gy, const VectorInterface& gx, double d) const
+{
   StdSolver::Form(gy, gx, d);
 
   double scale = d / (dt * theta);
@@ -89,15 +101,19 @@ void TimeSolver::Form(VectorInterface &gy, const VectorInterface &gx,
 
 /*-----------------------------------------*/
 
-void TimeSolver::SetProblem(const ProblemDescriptorInterface &PDX) {
+void
+TimeSolver::SetProblem(const ProblemDescriptorInterface& PDX)
+{
   ReInitTimePattern(PDX);
   StdSolver::SetProblem(PDX);
 }
 
 /*-----------------------------------------*/
 
-void TimeSolver::ReInitTimePattern(const ProblemDescriptorInterface &PDX) {
-  const Equation *EQ = PDX.GetEquation();
+void
+TimeSolver::ReInitTimePattern(const ProblemDescriptorInterface& PDX)
+{
+  const Equation* EQ = PDX.GetEquation();
   if (EQ) {
     _TP.reservesize(EQ->GetNcomp(), EQ->GetNcomp(), 0.);
     std::cerr << "irgendwas ist nicht mehr in der form unterstuett..."
@@ -109,24 +125,32 @@ void TimeSolver::ReInitTimePattern(const ProblemDescriptorInterface &PDX) {
 
 /*-----------------------------------------*/
 
-void TimeSolver::MassMatrixVector(VectorInterface &gf,
-                                  const VectorInterface &gu, double d) const {
-  GlobalVector &f = GetGV(gf);
-  const GlobalVector &u = GetGV(gu);
+void
+TimeSolver::MassMatrixVector(VectorInterface& gf,
+                             const VectorInterface& gu,
+                             double d) const
+{
+  GlobalVector& f = GetGV(gf);
+  const GlobalVector& u = GetGV(gu);
   GetMassMatrix()->vmult_time(f, u, _TP, d);
 }
 
 /*-----------------------------------------*/
 
-void TimeSolver::InverseMassMatrix(VectorInterface &u, const VectorInterface &f,
-                                   CGInfo &info) {
+void
+TimeSolver::InverseMassMatrix(VectorInterface& u,
+                              const VectorInterface& f,
+                              CGInfo& info)
+{
   CG<TimeSolver, VectorInterface> cg(*this);
   cg.solve(u, f, info);
 }
 
 /*-----------------------------------------*/
 
-void TimeSolver::precondition(VectorInterface &u, const VectorInterface &f) {
+void
+TimeSolver::precondition(VectorInterface& u, const VectorInterface& f)
+{
   Equ(u, 1., f);
   GetMassMatrix()->PrepareJacobi(1.);
   GetMassMatrix()->Jacobi(GetGV(u));
@@ -134,16 +158,21 @@ void TimeSolver::precondition(VectorInterface &u, const VectorInterface &f) {
 
 /*-----------------------------------------*/
 
-void TimeSolver::cgvmult(VectorInterface &y, const VectorInterface &x,
-                         double d) const {
+void
+TimeSolver::cgvmult(VectorInterface& y,
+                    const VectorInterface& x,
+                    double d) const
+{
   MassMatrixVector(y, x, d);
 }
 
 /*-----------------------------------------*/
 
-void TimeSolver::L2Projection(VectorInterface &Gu, VectorInterface &Gf) {
-  GlobalVector &u = GetGV(Gu);
-  GlobalVector &f = GetGV(Gf);
+void
+TimeSolver::L2Projection(VectorInterface& Gu, VectorInterface& Gf)
+{
+  GlobalVector& u = GetGV(Gu);
+  GlobalVector& f = GetGV(Gf);
 
   TimePattern TP(u.ncomp());
   TP.zero();
@@ -163,7 +192,7 @@ void TimeSolver::L2Projection(VectorInterface &Gu, VectorInterface &Gf) {
   assert(u.ncomp() == g.ncomp());
   assert(u.n() == g.n());
 
-  SimpleMatrix *SM = dynamic_cast<SimpleMatrix *>(GetMassMatrix());
+  SimpleMatrix* SM = dynamic_cast<SimpleMatrix*>(GetMassMatrix());
   assert(SM);
   SM->PrepareJacobi(s);
 
@@ -196,7 +225,7 @@ void TimeSolver::L2Projection(VectorInterface &Gu, VectorInterface &Gf) {
     Res = r * r;
     // cout << "\t\tpcg " << iter << "\t" << sqrt(Res) << endl;
     if (Res < GetSolverData().GetCgMassTol() * GetSolverData().GetCgMassTol() *
-                  FirstRes ||
+                FirstRes ||
         sqrt(Res) < GetSolverData().GetCgMassGlobalTol()) {
       reached = true;
     }

@@ -31,22 +31,24 @@
 /*-----------------------------------------*/
 
 namespace Gascoigne {
-class GascoigneMeshTransferConstructor2d {
+class GascoigneMeshTransferConstructor2d
+{
 public:
-  GascoigneMeshTransferConstructor2d(const HierarchicalMesh2d *HM,
-                                     GascoigneMeshTransfer *GMT,
-                                     const LevelMesh2d *LMfine,
-                                     const LevelMesh2d *LMcoarse);
+  GascoigneMeshTransferConstructor2d(const HierarchicalMesh2d* HM,
+                                     GascoigneMeshTransfer* GMT,
+                                     const LevelMesh2d* LMfine,
+                                     const LevelMesh2d* LMcoarse);
 };
 
 /*-----------------------------------------*/
 
-class GascoigneMeshTransferConstructor3d {
+class GascoigneMeshTransferConstructor3d
+{
 public:
-  GascoigneMeshTransferConstructor3d(const HierarchicalMesh3d *HM,
-                                     GascoigneMeshTransfer *GMT,
-                                     const LevelMesh3d *LMfine,
-                                     const LevelMesh3d *LMcoarse);
+  GascoigneMeshTransferConstructor3d(const HierarchicalMesh3d* HM,
+                                     GascoigneMeshTransfer* GMT,
+                                     const LevelMesh3d* LMfine,
+                                     const LevelMesh3d* LMcoarse);
 };
 } // namespace Gascoigne
 

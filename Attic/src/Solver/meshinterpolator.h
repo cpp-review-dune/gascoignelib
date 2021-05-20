@@ -34,7 +34,8 @@
 
 namespace Gascoigne {
 
-class MeshInterpolator {
+class MeshInterpolator
+{
 protected:
   HierarchicalMesh *_Old, *_New;
   IntSet _BaseCells, _ToBeRef, _ToBeRefNew;
@@ -54,41 +55,51 @@ protected:
   virtual void InitIndizes(int dim);
   virtual void InitInterpolationWeights(int dim);
   virtual void RefineAndInterpolate(
-      HierarchicalMesh *Mesh, std::vector<std::pair<GlobalVector, int>> &u,
-      const IntSet &refine, std::vector<std::vector<bool>> &done);
+    HierarchicalMesh* Mesh,
+    std::vector<std::pair<GlobalVector, int>>& u,
+    const IntSet& refine,
+    std::vector<std::vector<bool>>& done);
 
-  MeshAgent *GetMeshAgent() {
+  MeshAgent* GetMeshAgent()
+  {
     assert(_MA);
     return _MA;
   }
-  const MeshAgent *GetMeshAgent() const {
+  const MeshAgent* GetMeshAgent() const
+  {
     assert(_MA);
     return _MA;
   }
 
-  MeshAgent *GetOriginalMeshAgent() {
+  MeshAgent* GetOriginalMeshAgent()
+  {
     assert(_OMA);
     return _OMA;
   }
-  const MeshAgent *GetOriginalMeshAgent() const {
+  const MeshAgent* GetOriginalMeshAgent() const
+  {
     assert(_OMA);
     return _OMA;
   }
 
-  DiscretizationInterface *GetOriginalDiscretization() {
+  DiscretizationInterface* GetOriginalDiscretization()
+  {
     assert(_ODI);
     return _ODI;
   }
-  const DiscretizationInterface *GetOriginalDiscretization() const {
+  const DiscretizationInterface* GetOriginalDiscretization() const
+  {
     assert(_ODI);
     return _ODI;
   }
 
-  DiscretizationInterface *GetDiscretization() {
+  DiscretizationInterface* GetDiscretization()
+  {
     assert(_DI);
     return _DI;
   }
-  const DiscretizationInterface *GetDiscretization() const {
+  const DiscretizationInterface* GetDiscretization() const
+  {
     assert(_DI);
     return _DI;
   }
@@ -97,20 +108,21 @@ public:
   MeshInterpolator();
   virtual ~MeshInterpolator();
 
-  virtual void BasicInit(DiscretizationInterface *DI, MeshAgentInterface *MA,
-                         const std::string &name);
+  virtual void BasicInit(DiscretizationInterface* DI,
+                         MeshAgentInterface* MA,
+                         const std::string& name);
   virtual void ReInit();
-  virtual void RefineNodeVector(GlobalVector &uNew, const GlobalVector &uOld);
-  virtual void InterpolateCellVector(GlobalVector &uNew,
-                                     const GlobalVector &uOld);
-  virtual void RhsForProjection(GlobalVector &gf, const GlobalVector &u);
+  virtual void RefineNodeVector(GlobalVector& uNew, const GlobalVector& uOld);
+  virtual void InterpolateCellVector(GlobalVector& uNew,
+                                     const GlobalVector& uOld);
+  virtual void RhsForProjection(GlobalVector& gf, const GlobalVector& u);
 
-  virtual void AddVectorIntermediate(const GlobalVector &u, int order);
-  virtual void AddVectorOld(const GlobalVector &u, int order);
-  virtual void AddVectorNew(const GlobalVector &u, int order);
+  virtual void AddVectorIntermediate(const GlobalVector& u, int order);
+  virtual void AddVectorOld(const GlobalVector& u, int order);
+  virtual void AddVectorNew(const GlobalVector& u, int order);
 
-  virtual void AddCellVectorOld(const GlobalVector &u);
-  virtual void AddCellVectorNew(const GlobalVector &u);
+  virtual void AddCellVectorOld(const GlobalVector& u);
+  virtual void AddCellVectorNew(const GlobalVector& u);
 };
 } // namespace Gascoigne
 

@@ -31,7 +31,9 @@ namespace Gascoigne {
 
 /*--------------------------------------------------------*/
 
-EnergyEstimator::EnergyEstimator(StdSolver &SR) : S(SR) {
+EnergyEstimator::EnergyEstimator(StdSolver& SR)
+  : S(SR)
+{
   {
     DataFormatHandler DFH;
     DFH.insert("estimator", &_s_energytype, "energy_laplace");
@@ -47,18 +49,21 @@ EnergyEstimator::EnergyEstimator(StdSolver &SR) : S(SR) {
     FS.readfile(SR.GetParamfile(), "Equation");
   }
   primalproblem = S.GetProblemDescriptor();
-  discretization = dynamic_cast<Q1 *>(S.GetDiscretization());
+  discretization = dynamic_cast<Q1*>(S.GetDiscretization());
   assert(discretization);
 }
 
 /*--------------------------------------------------------*/
 
-double EnergyEstimator::Estimator(DoubleVector &eta, VectorInterface &gu,
-                                  const VectorInterface &gf) {
-  const GlobalVector &u = S.GetGV(gu);
+double
+EnergyEstimator::Estimator(DoubleVector& eta,
+                           VectorInterface& gu,
+                           const VectorInterface& gf)
+{
+  const GlobalVector& u = S.GetGV(gu);
 
-  const Equation *EQ = primalproblem->GetEquation();
-  const Application *RHS = primalproblem->GetRightHandSide();
+  const Equation* EQ = primalproblem->GetEquation();
+  const Application* RHS = primalproblem->GetRightHandSide();
 
   S.HNAverage(gu);
   S.HNAverageData();
@@ -66,23 +71,23 @@ double EnergyEstimator::Estimator(DoubleVector &eta, VectorInterface &gu,
   eta.reservesize(u.n());
   eta.zero();
 
-  const StdSolver *SS = dynamic_cast<const StdSolver *>(&S);
+  const StdSolver* SS = dynamic_cast<const StdSolver*>(&S);
   assert(SS);
 
-  const DomainRightHandSide *DRHS = NULL;
+  const DomainRightHandSide* DRHS = NULL;
   if (RHS) {
-    DRHS = dynamic_cast<const DomainRightHandSide *>(RHS);
+    DRHS = dynamic_cast<const DomainRightHandSide*>(RHS);
     assert(DRHS);
   }
-  EdgeInfoContainerInterface *EIC = NULL;
+  EdgeInfoContainerInterface* EIC = NULL;
   if (S.GetMesh()->dimension() == 2)
     EIC = new EdgeInfoContainer<2>;
   else if (S.GetMesh()->dimension() == 3)
     EIC = new EdgeInfoContainer<3>;
 
   EIC->BasicInit(SS->GetHierarchicalMesh(), u.ncomp());
-  discretization->EnergyEstimator(*EIC, eta, u, *EQ, DRHS, _s_energytype,
-                                  _d_visc);
+  discretization->EnergyEstimator(
+    *EIC, eta, u, *EQ, DRHS, _s_energytype, _d_visc);
   delete EIC;
 
   S.HNZero(gu);

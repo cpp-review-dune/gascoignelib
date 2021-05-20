@@ -26,17 +26,26 @@
 /*--------------------------------------------------------------*/
 
 namespace Gascoigne {
-LpsStabilization::LpsStabilization() : Stabilization(), _sdelta(0) {
+LpsStabilization::LpsStabilization()
+  : Stabilization()
+  , _sdelta(0)
+{
   _delta = delta0 = sdelta0 = tau0 = 0.;
 }
 
 /*--------------------------------------------------------------*/
 
-void LpsStabilization::BasicInit(int n) { _sdelta.resize(n, 0.); }
+void
+LpsStabilization::BasicInit(int n)
+{
+  _sdelta.resize(n, 0.);
+}
 
 /*--------------------------------------------------------------*/
 
-void LpsStabilization::NavierStokes(double h, double visc) {
+void
+LpsStabilization::NavierStokes(double h, double visc)
+{
   _h = h;
 
   double val = xeta0 * visc / (h * h) + _norm / h;
@@ -53,7 +62,9 @@ void LpsStabilization::NavierStokes(double h, double visc) {
 
 /*--------------------------------------------------------------*/
 
-void LpsStabilization::ConvectionDiffusion(double visc) {
+void
+LpsStabilization::ConvectionDiffusion(double visc)
+{
   double val = xeta0 * visc / (_h * _h) + _norm / _h;
   if (dt > 0.) {
     val += _dtfactor / dt;
@@ -63,7 +74,9 @@ void LpsStabilization::ConvectionDiffusion(double visc) {
 
 /*--------------------------------------------------------------*/
 
-void LpsStabilization::ConvectionDiffusion(const nvector<double> &visc) {
+void
+LpsStabilization::ConvectionDiffusion(const nvector<double>& visc)
+{
   double val = _norm / _h;
   if (dt > 0.) {
     val += _dtfactor / dt;

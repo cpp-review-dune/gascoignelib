@@ -26,7 +26,9 @@
 /*-----------------------------------------*/
 
 namespace Gascoigne {
-template <> HangingNodes<2, 2>::HangingNodes() {
+template<>
+HangingNodes<2, 2>::HangingNodes()
+{
   wei[0] = 0.5;
   wei[1] = 0.5;
 
@@ -56,7 +58,9 @@ template <> HangingNodes<2, 2>::HangingNodes() {
   lnop[3][1] = 0;
   lnop[3][2] = 3;
 }
-template <> HangingNodes<3, 2>::HangingNodes() {
+template<>
+HangingNodes<3, 2>::HangingNodes()
+{
   wei[0] = 0.375;
   wei[1] = 0.75;
   wei[2] = -0.125;
@@ -74,7 +78,9 @@ template <> HangingNodes<3, 2>::HangingNodes() {
   lnoe[3][1] = 7;
   lnoe[3][2] = 8;
 }
-template <> HangingNodes<2, 3>::HangingNodes() {
+template<>
+HangingNodes<2, 3>::HangingNodes()
+{
   wei[0] = 0.5;
   wei[1] = 0.5;
   for (int i = 0; i < 3; ++i)
@@ -125,7 +131,9 @@ template <> HangingNodes<2, 3>::HangingNodes() {
   lnop[5][3] = 26;
   lnop[5][4] = 22;
 }
-template <> HangingNodes<3, 3>::HangingNodes() {
+template<>
+HangingNodes<3, 3>::HangingNodes()
+{
   wei[0] = 0.375;
   wei[1] = 0.75;
   wei[2] = -0.125;
@@ -204,19 +212,20 @@ template <> HangingNodes<3, 3>::HangingNodes() {
   lnop[5][4] = 22;
 }
 
-template <>
-void HangingNodes<2, 2>::CondenseHanging(EntryMatrix &E,
-                                         IntVector &indices) const {
+template<>
+void
+HangingNodes<2, 2>::CondenseHanging(EntryMatrix& E, IntVector& indices) const
+{
   assert(indices.size() == lnoe.size());
   for (int ii = 0; ii < indices.size(); ii++) {
     std::array<int, 3> p = lnoe[ii];
 
-    int &hang = indices[p[1]];
+    int& hang = indices[p[1]];
 
     if (!hanging(hang))
       continue;
 
-    const std::array<int, 3> &f = regular_nodes(hang);
+    const std::array<int, 3>& f = regular_nodes(hang);
 
     if ((indices[p[2]] == f[0]) || (indices[p[2]] == f[1]))
       std::swap(p[0], p[2]);
@@ -236,16 +245,17 @@ void HangingNodes<2, 2>::CondenseHanging(EntryMatrix &E,
   }
 }
 
-template <>
-void HangingNodes<2, 3>::CondenseHanging(EntryMatrix &E,
-                                         IntVector &indices) const {
+template<>
+void
+HangingNodes<2, 3>::CondenseHanging(EntryMatrix& E, IntVector& indices) const
+{
   for (int ii = 0; ii < 4; ii++) // nur 4 kandiaten koennen haengen !!
   {
     int i = indices[2 * ii + 1];
     if (!hanging(i))
       continue;
 
-    const std::array<int, 3> &f = regular_nodes(i);
+    const std::array<int, 3>& f = regular_nodes(i);
 
     std::array<int, 3> p = lnoe[ii];
 
@@ -265,9 +275,10 @@ void HangingNodes<2, 3>::CondenseHanging(EntryMatrix &E,
   }
 }
 
-template <>
-void HangingNodes<3, 2>::CondenseHanging(EntryMatrix &E,
-                                         IntVector &indices) const {
+template<>
+void
+HangingNodes<3, 2>::CondenseHanging(EntryMatrix& E, IntVector& indices) const
+{
   if (1) {
     IntVector x(0), y(0);
 
@@ -354,9 +365,10 @@ void HangingNodes<3, 2>::CondenseHanging(EntryMatrix &E,
   }
 }
 
-template <>
-void HangingNodes<3, 3>::CondenseHanging(EntryMatrix &E,
-                                         IntVector &indices) const {
+template<>
+void
+HangingNodes<3, 3>::CondenseHanging(EntryMatrix& E, IntVector& indices) const
+{
   if (1) {
 
     IntVector x(0), y(0);
@@ -409,7 +421,7 @@ void HangingNodes<3, 3>::CondenseHanging(EntryMatrix &E,
       if (q == edges->end())
         continue;
 
-      const std::array<int, 3> &f = q->second;
+      const std::array<int, 3>& f = q->second;
 
       indices[elim] = f[2];
 
@@ -439,7 +451,7 @@ void HangingNodes<3, 3>::CondenseHanging(EntryMatrix &E,
       if (q == faces->end())
         continue;
 
-      const std::array<int, 9> &gf = q->second;
+      const std::array<int, 9>& gf = q->second;
 
       indices[elim] = gf[8];
 

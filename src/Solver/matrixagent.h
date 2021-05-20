@@ -40,10 +40,11 @@ namespace Gascoigne {
 ////
 /////////////////////////////////////////////
 
-class MatrixAgent : public std::map<Matrix, MatrixInterface *> {
+class MatrixAgent : public std::map<Matrix, MatrixInterface*>
+{
 public:
-  typedef std::map<Matrix, MatrixInterface *>::const_iterator const_iterator;
-  typedef std::map<Matrix, MatrixInterface *>::iterator iterator;
+  typedef std::map<Matrix, MatrixInterface*>::const_iterator const_iterator;
+  typedef std::map<Matrix, MatrixInterface*>::iterator iterator;
 
   //
   ////  Con(De)structor
@@ -51,13 +52,14 @@ public:
   MatrixAgent();
   ~MatrixAgent();
 
-  void Register(const Matrix &mat);
-  void Delete(Matrix &mat);
+  void Register(const Matrix& mat);
+  void Delete(Matrix& mat);
 
-  MatrixInterface &operator()(const Matrix &g);
-  const MatrixInterface &operator()(const Matrix &g) const;
+  MatrixInterface& operator()(const Matrix& g);
+  const MatrixInterface& operator()(const Matrix& g) const;
 
-  friend std::ostream &operator<<(std::ostream &os, const MatrixAgent &gva) {
+  friend std::ostream& operator<<(std::ostream& os, const MatrixAgent& gva)
+  {
     int i = 0, n = gva.size();
     os << "MatrixAgent: size=" << n << ", ";
     for (auto p = gva.begin(); p != gva.end(); p++, i++) {

@@ -43,22 +43,23 @@ namespace Gascoigne {
 /// theta(x) = int_0^x eta(t)dt
 //
 
-class MalteAdaptor {
+class MalteAdaptor
+{
 protected:
-  const DoubleVector &eta;
+  const DoubleVector& eta;
   int ppp, coarsening, refining, maxnodes, N;
   double etasum, gamma, alpha, beta, yfactor;
 
   double Expectation(double theta, double x) const;
   double Expectation(double thetax, double thetay, double x, double y) const;
   double ExpectationCoarsening(double theta, double x) const;
-  void refine_and_coarse(IntVector &ref, IntVector &coarse) const;
+  void refine_and_coarse(IntVector& ref, IntVector& coarse) const;
 
 public:
-  MalteAdaptor(const ParamFile &pf, const DoubleVector &eta);
-  void coarse(IntVector &coarse) const;
-  void refine(IntVector &ref) const;
-  void refine(IntVector &ref, IntVector &coarse) const;
+  MalteAdaptor(const ParamFile& pf, const DoubleVector& eta);
+  void coarse(IntVector& coarse) const;
+  void refine(IntVector& ref) const;
+  void refine(IntVector& ref, IntVector& coarse) const;
 };
 } // namespace Gascoigne
 

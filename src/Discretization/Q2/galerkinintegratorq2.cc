@@ -27,18 +27,25 @@ namespace Gascoigne {
 
 /* ----------------------------------------- */
 
-template <int DIM>
-GalerkinIntegratorQ2<DIM>::GalerkinIntegratorQ2() : GalerkinIntegrator<DIM>() {
+template<int DIM>
+GalerkinIntegratorQ2<DIM>::GalerkinIntegratorQ2()
+  : GalerkinIntegrator<DIM>()
+{
   BasicInit();
 }
 
 /* ----------------------------------------- */
 
-template <int DIM> GalerkinIntegratorQ2<DIM>::~GalerkinIntegratorQ2<DIM>() {}
+template<int DIM>
+GalerkinIntegratorQ2<DIM>::~GalerkinIntegratorQ2<DIM>()
+{}
 
 /* ----------------------------------------- */
 
-template <int DIM> void GalerkinIntegratorQ2<DIM>::BasicInit() {
+template<int DIM>
+void
+GalerkinIntegratorQ2<DIM>::BasicInit()
+{
 
   if (DIM == 2) {
     if (!GalerkinIntegrator<DIM>::FormFormulaPointer())

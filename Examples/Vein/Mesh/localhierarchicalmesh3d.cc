@@ -40,9 +40,11 @@ using namespace std;
 
 namespace Gascoigne {
 
-void LocalHierarchicalMesh3d::inner_vertex_newton3d(
-    const IntVector &vnew, const IntSet &CellRefList,
-    const IntSet &adjustvertex) {
+void
+LocalHierarchicalMesh3d::inner_vertex_newton3d(const IntVector& vnew,
+                                               const IntSet& CellRefList,
+                                               const IntSet& adjustvertex)
+{
 
   if (GetCurvedShapes().empty())
     return;
@@ -67,7 +69,7 @@ void LocalHierarchicalMesh3d::inner_vertex_newton3d(
 
   for (int i = 0; i < CellRefList.size(); i++) {
     int hi = co2n[*cp++];
-    const Hex &h = hex(hi);
+    const Hex& h = hex(hi);
     for (int e = 0; e < 12; ++e) {
       int ev = HexLaO.edge_vertex(h, e);
       RealBoundaryFaces[ev]++;
@@ -117,7 +119,7 @@ void LocalHierarchicalMesh3d::inner_vertex_newton3d(
     cp = CellRefList.begin();
     for (int i = 0; i < CellRefList.size(); i++) {
       int hi = co2n[*cp++];
-      const Hex &h = hex(hi);
+      const Hex& h = hex(hi);
 
       // if (Hexset.find(hi)==Hexset.end()) continue;
       // Abfrage ob es sich um eine Randzelle handelt
@@ -155,7 +157,7 @@ void LocalHierarchicalMesh3d::inner_vertex_newton3d(
             double lengthcell = 0;
             for (int iii = 0; iii < 3; iii++) {
               lengthverschiebungsvector +=
-                  verschiebungsvector[iii] * verschiebungsvector[iii];
+                verschiebungsvector[iii] * verschiebungsvector[iii];
               lengthcell += (0.5 * vertexs3d[fe[0]][iii] +
                              0.5 * vertexs3d[fe[1]][iii] - vertexs3d[ev][iii]) *
                             (0.5 * vertexs3d[fe[0]][iii] +
@@ -168,8 +170,8 @@ void LocalHierarchicalMesh3d::inner_vertex_newton3d(
               verschiebungsvector *= 1. / RealBoundaryFaces[ev];
             else
               verschiebungsvector *=
-                  1. / RealBoundaryFaces[ev] *
-                  sqrt(sqrt(lengthverschiebungsvector) / sqrt(lengthcell));
+                1. / RealBoundaryFaces[ev] *
+                sqrt(sqrt(lengthverschiebungsvector) / sqrt(lengthcell));
 
             vertexs3d[ev] += verschiebungsvector;
             adjustadditionalvertex.insert(ev);
@@ -186,7 +188,7 @@ void LocalHierarchicalMesh3d::inner_vertex_newton3d(
 
   for (int i = 0; i < CellRefList.size(); i++) {
     int hi = co2n[*cp++];
-    const Hex &h = hex(hi);
+    const Hex& h = hex(hi);
 
     // if (Hexset.find(hi)==Hexset.end()) { cout<<"hi not found"<<endl;
     // continue;} Abfrage ob es sich um eine Randzelle handelt
@@ -244,11 +246,22 @@ void LocalHierarchicalMesh3d::inner_vertex_newton3d(
                                       0.25, vertexs3d[fe[3]]);
        }*/
       Vertex3d zwischen1, zwischen2;
-      zwischen1.equ(0.5, vertexs3d[fe[0]], 0.5, vertexs3d[fe[1]], 0.5,
-                    vertexs3d[fe[2]], 0.5, vertexs3d[fe[3]]);
-      zwischen2.equ(-0.25, vertexs3d[fe_corner[0]], -0.25,
-                    vertexs3d[fe_corner[1]], -0.25, vertexs3d[fe_corner[2]],
-                    -0.25, vertexs3d[fe_corner[3]]);
+      zwischen1.equ(0.5,
+                    vertexs3d[fe[0]],
+                    0.5,
+                    vertexs3d[fe[1]],
+                    0.5,
+                    vertexs3d[fe[2]],
+                    0.5,
+                    vertexs3d[fe[3]]);
+      zwischen2.equ(-0.25,
+                    vertexs3d[fe_corner[0]],
+                    -0.25,
+                    vertexs3d[fe_corner[1]],
+                    -0.25,
+                    vertexs3d[fe_corner[2]],
+                    -0.25,
+                    vertexs3d[fe_corner[3]]);
       vertexs3d[fv].equ(1.0, zwischen1, 1.0, zwischen2);
     }
 
@@ -262,9 +275,13 @@ void LocalHierarchicalMesh3d::inner_vertex_newton3d(
     for (int f = 0; f < 6; ++f) {
       std::array<int, 4> fe_corner;
       HexLaO.globalvertices_of_face(h, fe_corner, f);
-      zwischen[f].equ(-0.25 / 12.0, vertexs3d[fe_corner[0]], -0.25 / 12.0,
-                      vertexs3d[fe_corner[1]], -0.25 / 12.0,
-                      vertexs3d[fe_corner[2]], -0.25 / 12.0,
+      zwischen[f].equ(-0.25 / 12.0,
+                      vertexs3d[fe_corner[0]],
+                      -0.25 / 12.0,
+                      vertexs3d[fe_corner[1]],
+                      -0.25 / 12.0,
+                      vertexs3d[fe_corner[2]],
+                      -0.25 / 12.0,
                       vertexs3d[fe_corner[3]]);
 
       int fface = HexLaO.face_vertex(h, f);
@@ -275,24 +292,47 @@ void LocalHierarchicalMesh3d::inner_vertex_newton3d(
         HexLaO.LoadEdgeVerticesOfFace(h, f, feedge);
 
         Vertex3d zwischen1, zwischen2;
-        zwischen1.equ(0.5, vertexs3d[feedge[0]], 0.5, vertexs3d[feedge[1]], 0.5,
-                      vertexs3d[feedge[2]], 0.5, vertexs3d[feedge[3]]);
-        zwischen2.equ(-0.25, vertexs3d[fe_corner[0]], -0.25,
-                      vertexs3d[fe_corner[1]], -0.25, vertexs3d[fe_corner[2]],
-                      -0.25, vertexs3d[fe_corner[3]]);
-        zwischen[f].equ(1.0, zwischen[f], -1.0 / 4.0, zwischen1, -1.0 / 4.0,
-                        zwischen2, +1.0 / 4.0, vertexs3d[fe[f]]);
+        zwischen1.equ(0.5,
+                      vertexs3d[feedge[0]],
+                      0.5,
+                      vertexs3d[feedge[1]],
+                      0.5,
+                      vertexs3d[feedge[2]],
+                      0.5,
+                      vertexs3d[feedge[3]]);
+        zwischen2.equ(-0.25,
+                      vertexs3d[fe_corner[0]],
+                      -0.25,
+                      vertexs3d[fe_corner[1]],
+                      -0.25,
+                      vertexs3d[fe_corner[2]],
+                      -0.25,
+                      vertexs3d[fe_corner[3]]);
+        zwischen[f].equ(1.0,
+                        zwischen[f],
+                        -1.0 / 4.0,
+                        zwischen1,
+                        -1.0 / 4.0,
+                        zwischen2,
+                        +1.0 / 4.0,
+                        vertexs3d[fe[f]]);
       }
     }
 
-    zwischen[6].equ(1.0, zwischen[0], 1.0, zwischen[1], 1.0, zwischen[2], 1.0,
-                    zwischen[3]);
+    zwischen[6].equ(
+      1.0, zwischen[0], 1.0, zwischen[1], 1.0, zwischen[2], 1.0, zwischen[3]);
     zwischen[7].equ(1.0, zwischen[6], 1.0, zwischen[4], 1.0, zwischen[5]);
 
-    zwischen[8].equ(0.25, vertexs3d[fe[0]], 0.25, vertexs3d[fe[1]], 0.25,
-                    vertexs3d[fe[2]], 0.25, vertexs3d[fe[3]]);
-    zwischen[9].equ(1.0, zwischen[8], 0.25, vertexs3d[fe[4]], 0.25,
-                    vertexs3d[fe[5]]);
+    zwischen[8].equ(0.25,
+                    vertexs3d[fe[0]],
+                    0.25,
+                    vertexs3d[fe[1]],
+                    0.25,
+                    vertexs3d[fe[2]],
+                    0.25,
+                    vertexs3d[fe[3]]);
+    zwischen[9].equ(
+      1.0, zwischen[8], 0.25, vertexs3d[fe[4]], 0.25, vertexs3d[fe[5]]);
 
     vertexs3d[fv].equ(1.0, zwischen[7], 1.0, zwischen[9]);
   }

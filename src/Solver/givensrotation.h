@@ -29,7 +29,8 @@
 /*---------------------------------------------------------------*/
 
 namespace Gascoigne {
-class GivensRotation {
+class GivensRotation
+{
   //
   // Data
   //
@@ -39,8 +40,8 @@ class GivensRotation {
 
 public:
   GivensRotation(int nn, double);
-  double &matrix(int i, int j) { return H(i, j); }
-  void givens(double &a, double &b, int i) const;
+  double& matrix(int i, int j) { return H(i, j); }
+  void givens(double& a, double& b, int i) const;
   double orthogonalization(int dim);
   DoubleVector getcoefficients();
 };

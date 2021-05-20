@@ -29,7 +29,8 @@
 /*-----------------------------------------*/
 
 namespace Gascoigne {
-class ConstantBoundaryFunctional : public BoundaryFunctional {
+class ConstantBoundaryFunctional : public BoundaryFunctional
+{
 protected:
   int comp;
   std::set<int> colors;
@@ -37,9 +38,9 @@ protected:
 
 public:
   ConstantBoundaryFunctional();
-  ConstantBoundaryFunctional(const std::vector<std::string> &args);
+  ConstantBoundaryFunctional(const std::vector<std::string>& args);
   ~ConstantBoundaryFunctional();
-  void Construct(const std::vector<std::string> &args);
+  void Construct(const std::vector<std::string>& args);
 
   std::string GetName() const { return "ConstantBoundaryFunctional"; }
 
@@ -49,7 +50,7 @@ public:
   void SetComp(int c) { comp = c; }
   void SetValue(double v) { value = v; }
 
-  double J(const FemFunction &U, const Vertex2d &v) const;
+  double J(const FemFunction& U, const Vertex2d& v) const;
 };
 } // namespace Gascoigne
 

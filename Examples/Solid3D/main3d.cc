@@ -7,15 +7,16 @@ using namespace std;
 
 /*---------------------------------------------------*/
 
-class DomainFunctionalDisp : public Gascoigne::DomainFunctional {
+class DomainFunctionalDisp : public Gascoigne::DomainFunctional
+{
 private:
 protected:
 public:
-  DomainFunctionalDisp(const Gascoigne::ParamFile *paramfile) {}
+  DomainFunctionalDisp(const Gascoigne::ParamFile* paramfile) {}
   ~DomainFunctionalDisp() {}
 
-  double J(const Gascoigne::FemFunction &U,
-           const Gascoigne::Vertex3d &v) const {
+  double J(const Gascoigne::FemFunction& U, const Gascoigne::Vertex3d& v) const
+  {
     return (U[0].m() * U[0].m()) + (U[1].m() * U[1].m()) +
            (U[2].m() * U[2].m());
   }
@@ -23,7 +24,9 @@ public:
   std::string GetName() const { return "DomainFunctionalDisp"; }
 };
 
-int main(int argc, char **argv) {
+int
+main(int argc, char** argv)
+{
   ParamFile pf("box3d.param");
   if (argc == 2)
     pf.SetName(argv[1]);

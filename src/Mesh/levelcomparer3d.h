@@ -30,13 +30,15 @@
 /*---------------------------------------------------*/
 
 namespace Gascoigne {
-class LevelComparer3d {
-  const HierarchicalMesh3d &Mesh;
-  const IntVector &v;
+class LevelComparer3d
+{
+  const HierarchicalMesh3d& Mesh;
+  const IntVector& v;
 
 public:
-  LevelComparer3d(const HierarchicalMesh3d &HM, const IntVector &vv)
-      : Mesh(HM), v(vv){};
+  LevelComparer3d(const HierarchicalMesh3d& HM, const IntVector& vv)
+    : Mesh(HM)
+    , v(vv){};
 
   int size() const { return v.size(); }
   int operator[](int i) const { return Mesh.hex(v[i]).level(); }

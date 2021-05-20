@@ -30,7 +30,9 @@ using namespace std;
 /*-------------------------------------------------------*/
 
 namespace Gascoigne {
-void BoundaryManager::BasicInit(const ParamFile &pf) {
+void
+BoundaryManager::BasicInit(const ParamFile& pf)
+{
   IntSet colsNeumann, colsRobin;
 
   DataFormatHandler DF;
@@ -72,7 +74,9 @@ void BoundaryManager::BasicInit(const ParamFile &pf) {
 
 /*-------------------------------------------------------*/
 
-ostream &BoundaryManager::print(ostream &s) const {
+ostream&
+BoundaryManager::print(ostream& s) const
+{
   s << "BoundaryManager" << endl;
   s << "ColorsEquation     :\t" << _colsEquation << endl;
   s << "ColorsRightHandSide:\t" << _colsRightHandSide << endl;

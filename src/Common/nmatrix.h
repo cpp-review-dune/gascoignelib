@@ -30,7 +30,9 @@
 /**************************************************/
 
 namespace Gascoigne {
-template <class T> class nmatrix : public nvector<T> {
+template<class T>
+class nmatrix : public nvector<T>
+{
   int nn, mm;
 
 public:
@@ -41,26 +43,48 @@ public:
     Constructeurs
    */
 
-  nmatrix<T>() : nvector<T>(), nn(0), mm(0) {}
-  nmatrix<T>(size_t n) : nvector<T>(n * n), nn(n), mm(n) {}
-  nmatrix<T>(size_t n, size_t m) : nvector<T>(n * m), nn(n), mm(m) {}
-  nmatrix<T>(size_t n, size_t m, const T &d)
-      : nvector<T>(n * m, d), nn(n), mm(m) {}
-  nmatrix<T>(const nmatrix<T> &m) : nvector<T>(m), nn(m.n()), mm(m.m()) {}
+  nmatrix<T>()
+    : nvector<T>()
+    , nn(0)
+    , mm(0)
+  {}
+  nmatrix<T>(size_t n)
+    : nvector<T>(n * n)
+    , nn(n)
+    , mm(n)
+  {}
+  nmatrix<T>(size_t n, size_t m)
+    : nvector<T>(n * m)
+    , nn(n)
+    , mm(m)
+  {}
+  nmatrix<T>(size_t n, size_t m, const T& d)
+    : nvector<T>(n * m, d)
+    , nn(n)
+    , mm(m)
+  {}
+  nmatrix<T>(const nmatrix<T>& m)
+    : nvector<T>(m)
+    , nn(m.n())
+    , mm(m.m())
+  {}
 
   /*
     Fonctions memoire
    */
   // void reservesize(size_t n, size_t m, T s = static_cast<T>(0))
-  void reservesize(size_t n, size_t m, T s) {
+  void reservesize(size_t n, size_t m, T s)
+  {
     nn = n;
     mm = m;
     nvector<T>::reservesize(n * m, s);
   }
-  void reservesize(const nmatrix<T> &M) {
+  void reservesize(const nmatrix<T>& M)
+  {
     nmatrix<T>::reservesize(M.n(), M.m(), 0);
   }
-  void memory(size_t n, size_t m) {
+  void memory(size_t n, size_t m)
+  {
     // nmatrix<T>::reservesize(n,m);
     nmatrix<T>::reservesize(n, m, 0);
   }
@@ -73,12 +97,13 @@ public:
 
   size_t n() const { return nn; }
   size_t m() const { return mm; }
-  const T &operator()(int i, int j) const { return (*this)[j + mm * i]; }
-  T &operator()(int i, int j) { return (*this)[j + mm * i]; }
-  const T &value(int i, int j) const { return (*this)[j + mm * i]; }
-  T &value(int i, int j) { return (*this)[j + mm * i]; }
+  const T& operator()(int i, int j) const { return (*this)[j + mm * i]; }
+  T& operator()(int i, int j) { return (*this)[j + mm * i]; }
+  const T& value(int i, int j) const { return (*this)[j + mm * i]; }
+  T& value(int i, int j) { return (*this)[j + mm * i]; }
 
-  nmatrix<T> &operator=(const nmatrix<T> &A) {
+  nmatrix<T>& operator=(const nmatrix<T>& A)
+  {
     if ((n() != A.n()) || (m() != A.m())) {
       std::cerr << "nmatrix<T>::operator=(const nmatrix<T>& A)\n";
       std::cerr << "no = possible " << n() << " " << A.n() << " " << m() << " "
@@ -93,11 +118,13 @@ public:
     return *this;
   }
 
-  const_iterator rowstart(int i) const {
+  const_iterator rowstart(int i) const
+  {
     return std::vector<T>::begin() + mm * i;
   }
 
-  void identity() {
+  void identity()
+  {
     nvector<T>::zero();
     for (int i = 0; i < n(); i++) {
       (*this)(i, i) = 1.;
@@ -107,8 +134,9 @@ public:
   /*
     Fonctions numeriques
    */
-  T det() const {
-    const nmatrix<T> &A = *this;
+  T det() const
+  {
+    const nmatrix<T>& A = *this;
     T d;
     if ((n() == 2) && (m() == 2)) {
       d = A(0, 0) * A(1, 1) - A(0, 1) * A(1, 0);
@@ -124,7 +152,8 @@ public:
     return d;
   }
 
-  void gram(const nmatrix<T> &B) {
+  void gram(const nmatrix<T>& B)
+  {
     nvector<T>::zero();
     for (int i = 0; i < n(); i++) {
       for (int j = 0; j < m(); j++) {
@@ -134,7 +163,8 @@ public:
       }
     }
   }
-  void transpose() {
+  void transpose()
+  {
     nmatrix<T> B(*this);
     resize(m(), n());
     for (int i = 0; i < n(); i++) {
@@ -144,7 +174,8 @@ public:
     }
   }
 
-  void mmult(nmatrix<T> &A, const nmatrix<T> &B) const {
+  void mmult(nmatrix<T>& A, const nmatrix<T>& B) const
+  {
     assert(this->m() == B.n());
     assert(A.n() == this->n());
     assert(A.m() == B.m());
@@ -158,7 +189,8 @@ public:
     }
   }
 
-  void mmult_ad(nmatrix<T> &A, const nmatrix<T> &B) const {
+  void mmult_ad(nmatrix<T>& A, const nmatrix<T>& B) const
+  {
     assert(this->n() == B.n());
     assert(A.n() == this->m());
     assert(A.m() == B.m());
@@ -173,8 +205,9 @@ public:
     }
   }
 
-  template <class VECTOR>
-  void Mult(VECTOR &y, const VECTOR &x, double s = 1.) const {
+  template<class VECTOR>
+  void Mult(VECTOR& y, const VECTOR& x, double s = 1.) const
+  {
     const_iterator p = std::vector<T>::begin();
     typename VECTOR::iterator py = y.begin();
     typename VECTOR::const_iterator px;
@@ -187,7 +220,9 @@ public:
       py++;
     }
   }
-  template <class VECTOR> void mult(VECTOR &y, const VECTOR &x) const {
+  template<class VECTOR>
+  void mult(VECTOR& y, const VECTOR& x) const
+  {
     const_iterator p = std::vector<T>::begin();
     typename VECTOR::iterator py = y.begin();
     typename VECTOR::const_iterator px;
@@ -200,8 +235,9 @@ public:
       py++;
     }
   }
-  template <class VECTOR>
-  void multtrans(VECTOR &y, const VECTOR &x, double s = 1.) const {
+  template<class VECTOR>
+  void multtrans(VECTOR& y, const VECTOR& x, double s = 1.) const
+  {
     assert(y.size() == this->n());
     const_iterator p = std::vector<T>::begin();
     typename VECTOR::iterator py = y.begin();
@@ -217,8 +253,9 @@ public:
     }
   }
 
-  template <class VECTOR>
-  void multeq(VECTOR &y, const VECTOR &x, double s = 1.) const {
+  template<class VECTOR>
+  void multeq(VECTOR& y, const VECTOR& x, double s = 1.) const
+  {
     const_iterator p = std::vector<T>::begin();
     typename VECTOR::iterator py = y.begin();
     typename VECTOR::const_iterator px;
@@ -233,7 +270,9 @@ public:
     }
   }
 
-  template <class VECTOR> void mult_ad(VECTOR &y, const VECTOR &x) const {
+  template<class VECTOR>
+  void mult_ad(VECTOR& y, const VECTOR& x) const
+  {
     // vmult with the adjoint matrix
     const_iterator p = std::vector<T>::begin();
     typename VECTOR::iterator py = y.begin();
@@ -249,8 +288,9 @@ public:
     }
   }
 
-  template <class ITER1, class ITER2>
-  void mult_ad(ITER1 py, ITER2 px, double s = 1.) const {
+  template<class ITER1, class ITER2>
+  void mult_ad(ITER1 py, ITER2 px, double s = 1.) const
+  {
     // vmult with the adjoint matrix
     const_iterator p = std::vector<T>::begin();
 
@@ -264,8 +304,9 @@ public:
     }
   }
 
-  template <class ITER1, class ITER2>
-  void mult(ITER1 py, ITER2 px0, double s = 1.) const {
+  template<class ITER1, class ITER2>
+  void mult(ITER1 py, ITER2 px0, double s = 1.) const
+  {
     const_iterator p = std::vector<T>::begin();
     ITER2 px;
 
@@ -278,7 +319,9 @@ public:
     }
   }
 
-  template <class VECTOR> void multeq_ad(VECTOR &y, const VECTOR &x) const {
+  template<class VECTOR>
+  void multeq_ad(VECTOR& y, const VECTOR& x) const
+  {
     // vmulteq with the adjoint matrix
     const_iterator p = std::vector<T>::begin();
     typename VECTOR::iterator py = y.begin();
@@ -295,7 +338,9 @@ public:
     }
   }
 
-  template <class ITER1, class ITER2> void multeq_ad(ITER1 py, ITER2 px) const {
+  template<class ITER1, class ITER2>
+  void multeq_ad(ITER1 py, ITER2 px) const
+  {
     // vmult with the adjoint matrix
     const_iterator p = std::vector<T>::begin();
 
@@ -315,7 +360,8 @@ public:
 
   /**************************************************/
 
-  void lu() {
+  void lu()
+  {
     /* LU decomposition */
 
     for (int i = 1; i < n(); i++) {
@@ -330,7 +376,8 @@ public:
 
   /**************************************************/
 
-  void inverse2() {
+  void inverse2()
+  {
     T a = value(0, 0);
     T b = value(0, 1);
     T c = value(1, 0);
@@ -346,7 +393,8 @@ public:
 
   /**************************************************/
 
-  void inverse3() {
+  void inverse3()
+  {
     T idet = 1. / det();
 
     T a = value(0, 0);
@@ -373,7 +421,8 @@ public:
 
   /**************************************************/
 
-  void inverse() {
+  void inverse()
+  {
     if (n() == 2) {
       inverse2();
       return;
@@ -434,7 +483,8 @@ public:
     }
   }
 
-  void gauss_jordan() {
+  void gauss_jordan()
+  {
     nvector<int> p(n());
     iota(p.begin(), p.end(), 0);
 

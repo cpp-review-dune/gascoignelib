@@ -32,34 +32,43 @@
 /*-------------------------------------------------------------*/
 
 namespace Gascoigne {
-template <class B>
-ThreadSparseBlockIlu<B>::ThreadSparseBlockIlu() : SparseBlockMatrix<B>() {}
+template<class B>
+ThreadSparseBlockIlu<B>::ThreadSparseBlockIlu()
+  : SparseBlockMatrix<B>()
+{}
 
 /*-------------------------------------------------------------*/
 
-template <class B>
-ThreadSparseBlockIlu<B>::ThreadSparseBlockIlu(const ThreadSparseBlockIlu<B> &I)
-    : SparseBlockMatrix<B>(I) {
+template<class B>
+ThreadSparseBlockIlu<B>::ThreadSparseBlockIlu(const ThreadSparseBlockIlu<B>& I)
+  : SparseBlockMatrix<B>(I)
+{
   abort();
 }
 
 /*-------------------------------------------------------------*/
 
-template <class B> ThreadSparseBlockIlu<B>::~ThreadSparseBlockIlu() {}
+template<class B>
+ThreadSparseBlockIlu<B>::~ThreadSparseBlockIlu()
+{}
 
 /*-------------------------------------------------------------*/
 
-template <class B>
-void ThreadSparseBlockIlu<B>::ReInit(const SparseStructureInterface *SI) {}
+template<class B>
+void
+ThreadSparseBlockIlu<B>::ReInit(const SparseStructureInterface* SI)
+{}
 
 /*-------------------------------------------------------------*/
 
-template <class B>
-void ThreadSparseBlockIlu<B>::ConstructStructure(
-    const nvector<int> &perm, const MatrixInterface &MAP,
-    const nvector<int> &nodes_of_domain) {
-  const ColumnDiagStencil *SP =
-      dynamic_cast<const ColumnDiagStencil *>(MAP.GetStencil());
+template<class B>
+void
+ThreadSparseBlockIlu<B>::ConstructStructure(const nvector<int>& perm,
+                                            const MatrixInterface& MAP,
+                                            const nvector<int>& nodes_of_domain)
+{
+  const ColumnDiagStencil* SP =
+    dynamic_cast<const ColumnDiagStencil*>(MAP.GetStencil());
   assert(perm.size() <= SP->n());
   assert(perm.size() == nodes_of_domain.size());
 
@@ -95,14 +104,15 @@ void ThreadSparseBlockIlu<B>::ConstructStructure(
 
 /*-------------------------------------------------------------*/
 
-template <class B>
-void ThreadSparseBlockIlu<B>::copy_entries(const MatrixInterface *A) {
+template<class B>
+void
+ThreadSparseBlockIlu<B>::copy_entries(const MatrixInterface* A)
+{
 
-  const SparseBlockMatrix<B> *MM =
-      dynamic_cast<const SparseBlockMatrix<B> *>(A);
+  const SparseBlockMatrix<B>* MM = dynamic_cast<const SparseBlockMatrix<B>*>(A);
   assert(MM);
-  const ColumnDiagStencil *AS =
-      dynamic_cast<const ColumnDiagStencil *>(MM->GetStencil());
+  const ColumnDiagStencil* AS =
+    dynamic_cast<const ColumnDiagStencil*>(MM->GetStencil());
   assert(AS);
 
   for (int row_in_ILU = 0; row_in_ILU < SparseBlockMatrix<B>::US.n();
@@ -125,59 +135,72 @@ void ThreadSparseBlockIlu<B>::copy_entries(const MatrixInterface *A) {
 
 /*-------------------------------------------------------------*/
 
-template <class B>
-void ThreadSparseBlockIlu<B>::forward(GlobalVector &x) const {
+template<class B>
+void
+ThreadSparseBlockIlu<B>::forward(GlobalVector& x) const
+{
   for (int i = 1; i < SparseBlockMatrix<B>::US.n(); i++) {
     int ende = SparseBlockMatrix<B>::US.diag(i);
     for (int pos = SparseBlockMatrix<B>::US.start(i); pos < ende; pos++) {
       SparseBlockMatrix<B>::mat(pos)->subtract(
-          x.start(i), x.start(SparseBlockMatrix<B>::US.col(pos)));
+        x.start(i), x.start(SparseBlockMatrix<B>::US.col(pos)));
     }
   }
 }
 
 /*-------------------------------------------------------------*/
 
-template <class B>
-void ThreadSparseBlockIlu<B>::backward(GlobalVector &x) const {
+template<class B>
+void
+ThreadSparseBlockIlu<B>::backward(GlobalVector& x) const
+{
   for (int i = SparseBlockMatrix<B>::US.n() - 1; i >= 0; i--) {
     int ende = SparseBlockMatrix<B>::US.diag(i);
     for (int pos = SparseBlockMatrix<B>::US.stop(i) - 1; pos > ende; pos--) {
       SparseBlockMatrix<B>::mat(pos)->subtract(
-          x.start(i), x.start(SparseBlockMatrix<B>::US.col(pos)));
+        x.start(i), x.start(SparseBlockMatrix<B>::US.col(pos)));
     }
     SparseBlockMatrix<B>::mat(SparseBlockMatrix<B>::US.diag(i))
-        ->vmult(x.start(i));
+      ->vmult(x.start(i));
   }
 }
 
 /*-------------------------------------------------------------*/
 
-template <class B> void ThreadSparseBlockIlu<B>::solve(GlobalVector &x) const {
+template<class B>
+void
+ThreadSparseBlockIlu<B>::solve(GlobalVector& x) const
+{
   forward(x);
   backward(x);
 }
 
 /*-------------------------------------------------------------*/
 
-template <class B> void ThreadSparseBlockIlu<B>::compute_ilu() {
+template<class B>
+void
+ThreadSparseBlockIlu<B>::compute_ilu()
+{
   for (int i = 0; i < SparseBlockMatrix<B>::US.n(); i++) {
     for (int pk = SparseBlockMatrix<B>::US.start(i);
-         pk < SparseBlockMatrix<B>::US.diag(i); pk++) {
+         pk < SparseBlockMatrix<B>::US.diag(i);
+         pk++) {
       int k = SparseBlockMatrix<B>::US.col(pk);
 
       *SparseBlockMatrix<B>::mat(pk) *= *SparseBlockMatrix<B>::mat(
-          SparseBlockMatrix<B>::US.diag(k)); /*  a(i,k) *= a(k,k) */
+        SparseBlockMatrix<B>::US.diag(k)); /*  a(i,k) *= a(k,k) */
 
       for (int pj = SparseBlockMatrix<B>::US.diag(k) + 1;
-           pj < SparseBlockMatrix<B>::US.stop(k); pj++) {
+           pj < SparseBlockMatrix<B>::US.stop(k);
+           pj++) {
         int j = SparseBlockMatrix<B>::US.col(pj);
         // suche ph
         for (int ph = SparseBlockMatrix<B>::US.start(i);
-             ph < SparseBlockMatrix<B>::US.stop(i); ph++) {
+             ph < SparseBlockMatrix<B>::US.stop(i);
+             ph++) {
           if (SparseBlockMatrix<B>::US.col(ph) == j) {
             SparseBlockMatrix<B>::mat(ph)->submult(
-                *SparseBlockMatrix<B>::mat(pk), *SparseBlockMatrix<B>::mat(pj));
+              *SparseBlockMatrix<B>::mat(pk), *SparseBlockMatrix<B>::mat(pj));
             break;
           }
         }
@@ -189,7 +212,10 @@ template <class B> void ThreadSparseBlockIlu<B>::compute_ilu() {
 
 /*-------------------------------------------------------------*/
 
-template <class B> void ThreadSparseBlockIlu<B>::modify(int c, double s) {
+template<class B>
+void
+ThreadSparseBlockIlu<B>::modify(int c, double s)
+{
   for (int i = 0; i < n(); ++i) {
     double sum = 0.;
     for (int pos = start(i); pos < stop(i); pos++) {
@@ -202,8 +228,10 @@ template <class B> void ThreadSparseBlockIlu<B>::modify(int c, double s) {
 
 /*-------------------------------------------------------------*/
 
-template <class B>
-std::ostream &ThreadSparseBlockIlu<B>::Write(std::ostream &s) const {
+template<class B>
+std::ostream&
+ThreadSparseBlockIlu<B>::Write(std::ostream& s) const
+{
   return SparseBlockMatrix<B>::Write(s);
 }
 } // namespace Gascoigne

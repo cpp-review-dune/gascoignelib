@@ -32,10 +32,13 @@
 
 namespace Gascoigne {
 
-class LocalLoop : public StdLoop {
+class LocalLoop : public StdLoop
+{
 public:
-  void BasicInit(const ParamFile *paramfile, const ProblemContainer *PC,
-                 const FunctionalContainer *FC = NULL) {
+  void BasicInit(const ParamFile* paramfile,
+                 const ProblemContainer* PC,
+                 const FunctionalContainer* FC = NULL)
+  {
     GetMeshAgentPointer() = new MeshAgent;
 
     GetMeshAgent()->AddPeriodicMapping(90, 92, new StdPeriodicMapping);

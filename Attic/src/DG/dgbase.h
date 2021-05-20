@@ -8,12 +8,14 @@
 #include "baseq22d.h"
 
 namespace Gascoigne {
-class BASEQ12D : public BaseQ12d {
+class BASEQ12D : public BaseQ12d
+{
 public:
   static constexpr size_t N = 4;
 };
 
-class BASEQ22D : public BaseQ22d {
+class BASEQ22D : public BaseQ22d
+{
 public:
   static constexpr size_t N = 9;
 };

@@ -25,13 +25,15 @@
 #define __cgmatrix_h
 
 namespace Gascoigne {
-template <class MT, class VT, class MEM, class INFO>
-inline int CgMatrix(const MT &M, VT &x, const VT &b, MEM &mem, INFO &info) {
+template<class MT, class VT, class MEM, class INFO>
+inline int
+CgMatrix(const MT& M, VT& x, const VT& b, MEM& mem, INFO& info)
+{
 
-  VT &g = mem[0];
-  VT &h = mem[1];
-  VT &d = mem[2];
-  VT &Ad = mem[3];
+  VT& g = mem[0];
+  VT& h = mem[1];
+  VT& d = mem[2];
+  VT& Ad = mem[3];
 
   int it = 0, reached = 0;
   double gh, alpha, beta;

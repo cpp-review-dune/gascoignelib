@@ -31,27 +31,32 @@ IluAgent::IluAgent() {}
 
 /*-------------------------------------------------*/
 
-IluAgent::~IluAgent() {
+IluAgent::~IluAgent()
+{
   for (auto p = begin(); p != end(); p++) {
     if (p->second) {
       delete p->second;
       p->second = NULL;
     }
   }
-  std::map<Matrix, IluInterface *>::clear();
+  std::map<Matrix, IluInterface*>::clear();
 }
 
 /*-------------------------------------------------*/
 
-void IluAgent::Register(const Matrix &mg) {
+void
+IluAgent::Register(const Matrix& mg)
+{
   auto p = find(mg);
   if (p == end())
-    insert(std::make_pair(mg, static_cast<IluInterface *>(NULL)));
+    insert(std::make_pair(mg, static_cast<IluInterface*>(NULL)));
 }
 
 /*-------------------------------------------------*/
 
-void IluAgent::Delete(Matrix &mg) {
+void
+IluAgent::Delete(Matrix& mg)
+{
   auto p = find(mg);
   if (p != end()) {
     delete p->second;
@@ -61,7 +66,9 @@ void IluAgent::Delete(Matrix &mg) {
 
 /*-------------------------------------------------*/
 
-IluInterface &IluAgent::operator()(const Matrix &g) {
+IluInterface&
+IluAgent::operator()(const Matrix& g)
+{
   auto p = find(g);
   if (p == end()) {
     std::cerr << __FILE__ << ":" << __LINE__;
@@ -71,7 +78,7 @@ IluInterface &IluAgent::operator()(const Matrix &g) {
     std::cerr << " " << *this << std::endl;
     abort();
   }
-  IluInterface *vp = p->second;
+  IluInterface* vp = p->second;
   if (vp == NULL) {
     std::cerr << "IluAgent  IluInterface* NULL\t" << p->first;
     std::cerr << "\n" << *this << std::endl;

@@ -32,7 +32,8 @@
 /*-----------------------------------------*/
 
 namespace Gascoigne {
-class GascoigneMeshTransfer : public MeshTransferInterface {
+class GascoigneMeshTransfer : public MeshTransferInterface
+{
 protected:
   std::map<int, std::array<int, 2>> zweier;
   std::map<int, std::array<int, 4>> vierer;
@@ -44,27 +45,29 @@ protected:
   std::map<int, std::array<int, 8>> CellAchter;
 
 public:
-  const std::map<int, std::array<int, 2>> &GetZweier() const { return zweier; }
-  const std::map<int, std::array<int, 4>> &GetVierer() const { return vierer; }
-  const std::map<int, std::array<int, 8>> &GetAchter() const { return achter; }
-  const IntVector &GetC2f() const { return c2f; }
+  const std::map<int, std::array<int, 2>>& GetZweier() const { return zweier; }
+  const std::map<int, std::array<int, 4>>& GetVierer() const { return vierer; }
+  const std::map<int, std::array<int, 8>>& GetAchter() const { return achter; }
+  const IntVector& GetC2f() const { return c2f; }
 
-  std::map<int, std::array<int, 2>> &GetZweier() { return zweier; }
-  std::map<int, std::array<int, 4>> &GetVierer() { return vierer; }
-  std::map<int, std::array<int, 8>> &GetAchter() { return achter; }
-  IntVector &GetC2f() { return c2f; }
+  std::map<int, std::array<int, 2>>& GetZweier() { return zweier; }
+  std::map<int, std::array<int, 4>>& GetVierer() { return vierer; }
+  std::map<int, std::array<int, 8>>& GetAchter() { return achter; }
+  IntVector& GetC2f() { return c2f; }
 
-  const std::map<int, int> &GetCellEiner() const { return CellEiner; }
-  const std::map<int, std::array<int, 4>> &GetCellVierer() const {
+  const std::map<int, int>& GetCellEiner() const { return CellEiner; }
+  const std::map<int, std::array<int, 4>>& GetCellVierer() const
+  {
     return CellVierer;
   }
-  const std::map<int, std::array<int, 8>> &GetCellAchter() const {
+  const std::map<int, std::array<int, 8>>& GetCellAchter() const
+  {
     return CellAchter;
   }
 
-  std::map<int, int> &GetCellEiner() { return CellEiner; }
-  std::map<int, std::array<int, 4>> &GetCellVierer() { return CellVierer; }
-  std::map<int, std::array<int, 8>> &GetCellAchter() { return CellAchter; }
+  std::map<int, int>& GetCellEiner() { return CellEiner; }
+  std::map<int, std::array<int, 4>>& GetCellVierer() { return CellVierer; }
+  std::map<int, std::array<int, 8>>& GetCellAchter() { return CellAchter; }
 
   GascoigneMeshTransfer();
 };

@@ -35,7 +35,8 @@
 /*---------------------------------------------------*/
 
 namespace Gascoigne {
-class FineHierarchicalMesh3d : public HierarchicalMesh3d {
+class FineHierarchicalMesh3d : public HierarchicalMesh3d
+{
 protected:
   /*  typedef  */
 
@@ -55,7 +56,7 @@ protected:
 
   /*  Functionen  */
 
-  std::pair<bool, tint> check_inp(const std::string &);
+  std::pair<bool, tint> check_inp(const std::string&);
 
 public:
   // FineHierarchicalMesh3d(const FineHierarchicalMesh3d& H);
@@ -76,13 +77,13 @@ public:
   int nodes_per_cell(int i) const { return 8; }
   int VtkType(int i) const { return 12; }
 
-  const VertexVec3d &GetVertexVector() const { return vertexs3d; }
-  VertexVec3d &GetVertexVector() { return vertexs3d; }
+  const VertexVec3d& GetVertexVector() const { return vertexs3d; }
+  VertexVec3d& GetVertexVector() { return vertexs3d; }
 
-  const Vertex3d &vertex3d(int i) const { return vertexs3d[i]; }
+  const Vertex3d& vertex3d(int i) const { return vertexs3d[i]; }
 
-  const Hex &hex(int i) const { return hexs[i]; }
-  const BoundaryQuad &bquad(int i) const { return Bquads[i]; }
+  const Hex& hex(int i) const { return hexs[i]; }
+  const BoundaryQuad& bquad(int i) const { return Bquads[i]; }
 
   int vertex_of_cell(int i, int ii) const { return hexs[i].vertex(ii); }
   int vertex_of_bquad(int i, int ii) const { return Bquads[i].vertex(ii); }
@@ -90,15 +91,15 @@ public:
   int level(int i) const { return hexs[i].level(); }
   bool sleep(int i) const { return hexs[i].sleep(); }
 
-  const std::vector<BoundaryQuad> &quad_list() const { return Bquads; }
+  const std::vector<BoundaryQuad>& quad_list() const { return Bquads; }
 
-  const VertexVec3d &vertex3d() const { return vertexs3d; }
-  const HexVec &hex() const { return hexs; }
-  const BQuadVec &bquad() const { return Bquads; }
+  const VertexVec3d& vertex3d() const { return vertexs3d; }
+  const HexVec& hex() const { return hexs; }
+  const BQuadVec& bquad() const { return Bquads; }
 
   /*  Functionen  */
 
-  void read_inp(const std::string &);
+  void read_inp(const std::string&);
 };
 } // namespace Gascoigne
 

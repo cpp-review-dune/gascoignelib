@@ -39,10 +39,13 @@ namespace Gascoigne {
 ///
 /////////////////////////////////////////////
 
-class PointIlu : public SimpleIlu, virtual public IluInterface {
+class PointIlu
+  : public SimpleIlu
+  , virtual public IluInterface
+{
 protected:
   int _ncomp;
-  SparseStructureAdaptor *SSAP;
+  SparseStructureAdaptor* SSAP;
 
 public:
   //
@@ -54,17 +57,17 @@ public:
 
   std::string GetName() const { return "PointIlu"; }
 
-  void ReInit(const SparseStructureInterface *S);
+  void ReInit(const SparseStructureInterface* S);
 
   IndexType n() const { return GetStencil()->n(); };
   void zero() { SimpleIlu::zero(); }
 
-  void ConstructStructure(const IntVector &perm, const MatrixInterface &A);
+  void ConstructStructure(const IntVector& perm, const MatrixInterface& A);
   void modify(int c, double s);
-  void copy_entries(const MatrixInterface &A) { SimpleIlu::copy_entries(A); }
+  void copy_entries(const MatrixInterface& A) { SimpleIlu::copy_entries(A); }
   void compute_ilu() { SimpleIlu::compute_ilu(); }
-  void solve(GlobalVector &x) const { SimpleIlu::solve(x); }
-  void solve_transpose(GlobalVector &x) const { SimpleIlu::solve_transpose(x); }
+  void solve(GlobalVector& x) const { SimpleIlu::solve(x); }
+  void solve_transpose(GlobalVector& x) const { SimpleIlu::solve_transpose(x); }
 };
 } // namespace Gascoigne
 

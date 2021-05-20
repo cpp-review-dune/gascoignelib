@@ -16,16 +16,26 @@ using namespace std;
 extern double __DT, __THETA;
 
 namespace Gascoigne {
-template <int DIM>
-FSISolver<DIM>::FSISolver() : StdSolver(), __IF(0), __IS(0) {}
+template<int DIM>
+FSISolver<DIM>::FSISolver()
+  : StdSolver()
+  , __IF(0)
+  , __IS(0)
+{}
 
-template <int DIM>
-void FSISolver<DIM>::Form(VectorInterface &y, const VectorInterface &x,
-                          double d) const {
+template<int DIM>
+void
+FSISolver<DIM>::Form(VectorInterface& y,
+                     const VectorInterface& x,
+                     double d) const
+{
   StdSolver::Form(y, x, d);
 }
 
-template <int DIM> void FSISolver<DIM>::ReInitExtensionMatrix() {
+template<int DIM>
+void
+FSISolver<DIM>::ReInitExtensionMatrix()
+{
   cout << "Initialize extension matrix. Rand noch nicht sinnvoll" << endl;
 
   // set up structure
@@ -39,16 +49,16 @@ template <int DIM> void FSISolver<DIM>::ReInitExtensionMatrix() {
   GlobalVector dummy(DIM + 1, GetMesh()->nnodes());
 
   // discretization for laplace, 1component, delete interface-test functions
-  DiscretizationInterface *Q;
+  DiscretizationInterface* Q;
   vector<int> delf, dels;
   for (int i = 0; i < DIM; ++i)
     delf.push_back(i);
   if (DIM == 2) {
     Q = new AleQ2Lps2d;
-    dynamic_cast<AleQ2Lps2d *>(Q)->InitInterfaceComponents(delf, dels);
+    dynamic_cast<AleQ2Lps2d*>(Q)->InitInterfaceComponents(delf, dels);
   } else if (DIM == 3) {
     Q = new AleQ2Lps3d;
-    dynamic_cast<AleQ2Lps3d *>(Q)->InitInterfaceComponents(delf, dels);
+    dynamic_cast<AleQ2Lps3d*>(Q)->InitInterfaceComponents(delf, dels);
   } else
     abort();
   assert(Q);
@@ -58,8 +68,8 @@ template <int DIM> void FSISolver<DIM>::ReInitExtensionMatrix() {
   Q->Matrix(_LAP_A, dummy, exteq, 1.0);
 
   // Dirichlet values, on colors, where DIM+1 .. 2 DIM are set
-  const BoundaryManager *BM = GetProblemDescriptor()->GetBoundaryManager();
-  const IntSet &Colors = BM->GetDirichletDataColors();
+  const BoundaryManager* BM = GetProblemDescriptor()->GetBoundaryManager();
+  const IntSet& Colors = BM->GetDirichletDataColors();
   for (IntSet::const_iterator p = Colors.begin(); p != Colors.end(); p++) {
     int col = *p;
     // hier nochmal dran arbeitn...
@@ -91,7 +101,7 @@ template <int DIM> void FSISolver<DIM>::ReInitExtensionMatrix() {
   }
 
   // modify in solid
-  const vector<int> &s_nodes = GetAleDiscretization()->GetSolidL2G();
+  const vector<int>& s_nodes = GetAleDiscretization()->GetSolidL2G();
   vector<int> cv;
   for (int i = 0; i < DIM + 1; ++i)
     cv.push_back(i);
@@ -112,7 +122,10 @@ template <int DIM> void FSISolver<DIM>::ReInitExtensionMatrix() {
   _LAP_M.compute_ilu();
 }
 
-template <int DIM> void FSISolver<DIM>::ReInitMatrix() {
+template<int DIM>
+void
+FSISolver<DIM>::ReInitMatrix()
+{
   ReInitExtensionMatrix();
 
   if (((_matrixtype == "split") || (_matrixtype == "splitumf")) &&
@@ -127,8 +140,10 @@ template <int DIM> void FSISolver<DIM>::ReInitMatrix() {
     StdSolver::ReInitMatrix();
 }
 
-template <int DIM>
-void FSISolver<DIM>::ComputeIlu(const VectorInterface &gu) const {
+template<int DIM>
+void
+FSISolver<DIM>::ComputeIlu(const VectorInterface& gu) const
+{
   if ((_matrixtype == "umfsplit") && (!_directsolver)) {
     abort();
   } else if (((_matrixtype == "splitumf") || (_matrixtype == "fsisplitumf")) &&
@@ -150,8 +165,10 @@ void FSISolver<DIM>::ComputeIlu(const VectorInterface &gu) const {
     StdSolver::ComputeIlu(gu);
 }
 
-template <int DIM>
-void FSISolver<DIM>::modify_ilu(IluInterface &I, int ncomp) const {
+template<int DIM>
+void
+FSISolver<DIM>::modify_ilu(IluInterface& I, int ncomp) const
+{
   if (GetSolverData().GetIluModify().size() == 0)
     return;
   if (GetSolverData().GetIluModify().size() != ncomp) {
@@ -169,10 +186,13 @@ void FSISolver<DIM>::modify_ilu(IluInterface &I, int ncomp) const {
   }
 }
 
-template <int DIM>
-void FSISolver<DIM>::smooth(int niter, VectorInterface &x,
-                            const VectorInterface &y,
-                            VectorInterface &h) const {
+template<int DIM>
+void
+FSISolver<DIM>::smooth(int niter,
+                       VectorInterface& x,
+                       const VectorInterface& y,
+                       VectorInterface& h) const
+{
   if ((_matrixtype == "splitumf") && (!_directsolver)) {
     abort();
   } else if (GetSolverData().GetLinearSmooth() == "ilu") {
@@ -186,24 +206,31 @@ void FSISolver<DIM>::smooth(int niter, VectorInterface &x,
     StdSolver::smooth(niter, x, y, h);
 }
 
-template <int DIM>
-void FSISolver<DIM>::smooth_exact(VectorInterface &x, const VectorInterface &y,
-                                  VectorInterface &help) const {
+template<int DIM>
+void
+FSISolver<DIM>::smooth_exact(VectorInterface& x,
+                             const VectorInterface& y,
+                             VectorInterface& help) const
+{
   StdSolver::smooth_exact(x, y, help);
 }
 
-template <int DIM>
-void FSISolver<DIM>::do_precondition(VectorInterface gx) const {
-  GlobalVector &H = GetGV(gx);
+template<int DIM>
+void
+FSISolver<DIM>::do_precondition(VectorInterface gx) const
+{
+  GlobalVector& H = GetGV(gx);
   assert(H.n() == _precond.size());
   assert(H.ncomp() == _precond[0].size());
   for (int i = 0; i < H.n(); ++i)
     for (int c = 0; c < H.ncomp(); ++c)
       H(i, c) *= _precond[i][c];
 }
-template <int DIM>
-void FSISolver<DIM>::undo_precondition(VectorInterface gx) const {
-  GlobalVector &H = GetGV(gx);
+template<int DIM>
+void
+FSISolver<DIM>::undo_precondition(VectorInterface gx) const
+{
+  GlobalVector& H = GetGV(gx);
   assert(H.n() == _precond.size());
   assert(H.ncomp() == _precond[0].size());
   for (int i = 0; i < H.n(); ++i)
@@ -213,9 +240,10 @@ void FSISolver<DIM>::undo_precondition(VectorInterface gx) const {
 
 /// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-template <int DIM>
-MatrixInterface *FSISolver<DIM>::NewMatrix(int ncomp,
-                                           const std::string &matrixtype) {
+template<int DIM>
+MatrixInterface*
+FSISolver<DIM>::NewMatrix(int ncomp, const std::string& matrixtype)
+{
 
 #ifdef __WITH_UMFPACK__
   if (_directsolver && _useUMFPACK)
@@ -238,8 +266,10 @@ MatrixInterface *FSISolver<DIM>::NewMatrix(int ncomp,
     return StdSolver::NewMatrix(ncomp, mt);
 }
 
-template <int DIM>
-IluInterface *FSISolver<DIM>::NewIlu(int ncomp, const string &matrixtype) {
+template<int DIM>
+IluInterface*
+FSISolver<DIM>::NewIlu(int ncomp, const string& matrixtype)
+{
 #ifdef __WITH_UMFPACK__
   // if(_directsolver && _useUMFPACK)             return new
   // UmfIluLong(GetMatrix());
@@ -273,12 +303,14 @@ IluInterface *FSISolver<DIM>::NewIlu(int ncomp, const string &matrixtype) {
 
 /*-------------------------------------------------------*/
 
-template <int DIM>
-void FSISolver<DIM>::DeleteSolidPressure(VectorInterface &gf) const {
+template<int DIM>
+void
+FSISolver<DIM>::DeleteSolidPressure(VectorInterface& gf) const
+{
   ////////////////////
 
-  const HASHSET<int> &i_nodes = GetAleDiscretization()->GetInterfaceNodes();
-  const vector<int> &s_nodes = GetAleDiscretization()->GetSolidL2G();
+  const HASHSET<int>& i_nodes = GetAleDiscretization()->GetInterfaceNodes();
+  const vector<int>& s_nodes = GetAleDiscretization()->GetSolidL2G();
   /*
     for (auto node : s_nodes)
     if (i_nodes.find(node)==i_nodes.end())
@@ -296,30 +328,36 @@ void FSISolver<DIM>::DeleteSolidPressure(VectorInterface &gf) const {
   // 	GetGV(gf)(node,c+1+DIM) = 0.0;
 }
 
-template <int DIM>
-void FSISolver<DIM>::SetBoundaryVectorZero(VectorInterface &gf) const {
+template<int DIM>
+void
+FSISolver<DIM>::SetBoundaryVectorZero(VectorInterface& gf) const
+{
   StdSolver::SetBoundaryVectorZero(gf);
 
   DeleteSolidPressure(gf);
 }
 
-template <int DIM>
-void FSISolver<DIM>::SetBoundaryVector(VectorInterface &gf) const {
+template<int DIM>
+void
+FSISolver<DIM>::SetBoundaryVector(VectorInterface& gf) const
+{
   StdSolver::SetBoundaryVector(gf);
 
   DeleteSolidPressure(gf);
 }
 
-template <int DIM>
-void FSISolver<DIM>::AssembleMatrix(const VectorInterface &gu, double d) {
+template<int DIM>
+void
+FSISolver<DIM>::AssembleMatrix(const VectorInterface& gu, double d)
+{
 
   StdSolver::AssembleMatrix(gu, d);
 
   if ((_directsolver) || (_matrixtype == "block")) {
 
     // Modify for pressure zero in Solid-Part
-    const HASHSET<int> &i_nodes = GetAleDiscretization()->GetInterfaceNodes();
-    const vector<int> &s_nodes = GetAleDiscretization()->GetSolidL2G();
+    const HASHSET<int>& i_nodes = GetAleDiscretization()->GetInterfaceNodes();
+    const vector<int>& s_nodes = GetAleDiscretization()->GetSolidL2G();
     vector<int> cv;
     cv.push_back(0);
     for (int i = 0; i < s_nodes.size(); ++i)
@@ -335,9 +373,10 @@ void FSISolver<DIM>::AssembleMatrix(const VectorInterface &gu, double d) {
   }
 }
 
-template <int DIM>
-DiscretizationInterface *
-FSISolver<DIM>::NewDiscretization(int dimension, const string &discname) {
+template<int DIM>
+DiscretizationInterface*
+FSISolver<DIM>::NewDiscretization(int dimension, const string& discname)
+{
   if (dimension == 2) {
     if (discname == "AleQ1") {
       abort();
@@ -350,11 +389,11 @@ FSISolver<DIM>::NewDiscretization(int dimension, const string &discname) {
     }
 
     else if (discname == "AleQ2Lps") {
-      DiscretizationInterface *X = new AleQ2Lps2d;
+      DiscretizationInterface* X = new AleQ2Lps2d;
       vector<int> delf, dels;
       //	    for (int i=0;i<DIM;++i) delf.push_back(i+1+DIM);
       dels.push_back(0);
-      dynamic_cast<AleQ2Lps2d *>(X)->InitInterfaceComponents(delf, dels);
+      dynamic_cast<AleQ2Lps2d*>(X)->InitInterfaceComponents(delf, dels);
       return X;
     }
 
@@ -365,11 +404,11 @@ FSISolver<DIM>::NewDiscretization(int dimension, const string &discname) {
     if (discname == "AleQ1Lps")
       return new AleQ1Lps3d;
     else if (discname == "AleQ2Lps") {
-      DiscretizationInterface *X = new AleQ2Lps3d;
+      DiscretizationInterface* X = new AleQ2Lps3d;
       vector<int> delf, dels;
       //	    for (int i=0;i<DIM;++i) delf.push_back(i+1+DIM);
       dels.push_back(0);
-      dynamic_cast<AleQ2Lps3d *>(X)->InitInterfaceComponents(delf, dels);
+      dynamic_cast<AleQ2Lps3d*>(X)->InitInterfaceComponents(delf, dels);
       return X;
     }
 
@@ -380,12 +419,16 @@ FSISolver<DIM>::NewDiscretization(int dimension, const string &discname) {
     abort();
 }
 
-template <int DIM>
-void FSISolver<DIM>::reinit_interface_element(
-    int en, const nvector<int> &indices,
-    HASHMAP<int, std::vector<int>> &solid_interface_cells,
-    HASHMAP<int, std::vector<int>> &fluid_interface_cells,
-    HASHSET<int> &interface_nodes, int material) {
+template<int DIM>
+void
+FSISolver<DIM>::reinit_interface_element(
+  int en,
+  const nvector<int>& indices,
+  HASHMAP<int, std::vector<int>>& solid_interface_cells,
+  HASHMAP<int, std::vector<int>>& fluid_interface_cells,
+  HASHSET<int>& interface_nodes,
+  int material)
+{
   vector<int> ni;
   for (int i = 0; i < indices.size(); ++i) {
     if (interface_nodes.find(indices[i]) != interface_nodes.end()) {
@@ -407,12 +450,16 @@ void FSISolver<DIM>::reinit_interface_element(
   }
 }
 
-template <int DIM>
-void FSISolver<DIM>::reinit_element(int en, const nvector<int> &indices,
-                                    HASHSET<int> &fluid_cells,
-                                    HASHSET<int> &solid_cells,
-                                    set<int> &fluid_nodes,
-                                    set<int> &solid_nodes, int material) {
+template<int DIM>
+void
+FSISolver<DIM>::reinit_element(int en,
+                               const nvector<int>& indices,
+                               HASHSET<int>& fluid_cells,
+                               HASHSET<int>& solid_cells,
+                               set<int>& fluid_nodes,
+                               set<int>& solid_nodes,
+                               int material)
+{
 
   if (material == 1) { // solid cell
     for (int i = 0; i < indices.size(); ++i) {
@@ -432,19 +479,21 @@ void FSISolver<DIM>::reinit_element(int en, const nvector<int> &indices,
   }
 }
 
-template <int DIM>
-void FSISolver<DIM>::ReInitInterface(AleBaseDiscretization *ALEDISC) {
-  HASHMAP<int, std::vector<int>> &solid_interface_cells =
-      ALEDISC->GetSolidInterfaceCells();
-  HASHMAP<int, std::vector<int>> &fluid_interface_cells =
-      ALEDISC->GetFluidInterfaceCells();
-  HASHSET<int> &interface_nodes = ALEDISC->GetInterfaceNodes();
-  HASHSET<int> &fluid_cells = ALEDISC->GetFluidCells();
-  HASHSET<int> &solid_cells = ALEDISC->GetSolidCells();
-  vector<int> &fluid_l2g = ALEDISC->GetFluidL2G();
-  vector<int> &solid_l2g = ALEDISC->GetSolidL2G();
-  HASHMAP<int, int> &fluid_g2l = ALEDISC->GetFluidG2L();
-  HASHMAP<int, int> &solid_g2l = ALEDISC->GetSolidG2L();
+template<int DIM>
+void
+FSISolver<DIM>::ReInitInterface(AleBaseDiscretization* ALEDISC)
+{
+  HASHMAP<int, std::vector<int>>& solid_interface_cells =
+    ALEDISC->GetSolidInterfaceCells();
+  HASHMAP<int, std::vector<int>>& fluid_interface_cells =
+    ALEDISC->GetFluidInterfaceCells();
+  HASHSET<int>& interface_nodes = ALEDISC->GetInterfaceNodes();
+  HASHSET<int>& fluid_cells = ALEDISC->GetFluidCells();
+  HASHSET<int>& solid_cells = ALEDISC->GetSolidCells();
+  vector<int>& fluid_l2g = ALEDISC->GetFluidL2G();
+  vector<int>& solid_l2g = ALEDISC->GetSolidL2G();
+  HASHMAP<int, int>& fluid_g2l = ALEDISC->GetFluidG2L();
+  HASHMAP<int, int>& solid_g2l = ALEDISC->GetSolidG2L();
 
   set<int> fluid_nodes, solid_nodes;
 
@@ -457,92 +506,128 @@ void FSISolver<DIM>::ReInitInterface(AleBaseDiscretization *ALEDISC) {
   int dim = GetMesh()->dimension();
 
   if (dim == 2) {
-    const GascoigneMesh2d *M = dynamic_cast<const GascoigneMesh2d *>(GetMesh());
+    const GascoigneMesh2d* M = dynamic_cast<const GascoigneMesh2d*>(GetMesh());
     assert(M);
     if ((GetDiscretization()->GetName() == "Q1 Ale 2d Lps") ||
         (GetDiscretization()->GetName() == "Q1 Ale 2d")) {
       // Einsortieren der Solid und Fluid Nodes
       for (int c = 0; c < M->ncells(); ++c) {
-        reinit_element(c, M->IndicesOfCell(c), fluid_cells, solid_cells,
-                       fluid_nodes, solid_nodes, M->material(c));
+        reinit_element(c,
+                       M->IndicesOfCell(c),
+                       fluid_cells,
+                       solid_cells,
+                       fluid_nodes,
+                       solid_nodes,
+                       M->material(c));
       }
       // Interface Node: Sowohl Fluid als auch Solid Node
       // Kann erst aufgerufen werden wenn man durch alle Zellen einmal durch
       // ist!
       for (set<int>::const_iterator it = fluid_nodes.begin();
-           it != fluid_nodes.end(); ++it)
+           it != fluid_nodes.end();
+           ++it)
         if (solid_nodes.find(*it) != solid_nodes.end())
           interface_nodes.insert(*it);
       // Interface Cells und Interfacenodes on InterfaceCells abspeichern
       for (int c = 0; c < M->ncells(); ++c) {
-        reinit_interface_element(c, M->IndicesOfCell(c), solid_interface_cells,
-                                 fluid_interface_cells, interface_nodes,
+        reinit_interface_element(c,
+                                 M->IndicesOfCell(c),
+                                 solid_interface_cells,
+                                 fluid_interface_cells,
+                                 interface_nodes,
                                  M->material(c));
       }
     } else if ((GetDiscretization()->GetName() == "Q2 Ale 2d Lps") ||
                (GetDiscretization()->GetName() == "Q2 Ale 2d")) {
       // Einsortieren der Solid und Fluid Nodes
       for (int c = 0; c < M->npatches(); ++c) {
-        reinit_element(c, *(M->IndicesOfPatch(c)), fluid_cells, solid_cells,
-                       fluid_nodes, solid_nodes, M->material_patch(c));
+        reinit_element(c,
+                       *(M->IndicesOfPatch(c)),
+                       fluid_cells,
+                       solid_cells,
+                       fluid_nodes,
+                       solid_nodes,
+                       M->material_patch(c));
       }
       // Interface Node: Sowohl Fluid als auch Solid Node
       // Kann erst aufgerufen werden wenn man durch alle Zellen einmal durch
       // ist!
       for (set<int>::const_iterator it = fluid_nodes.begin();
-           it != fluid_nodes.end(); ++it)
+           it != fluid_nodes.end();
+           ++it)
         if (solid_nodes.find(*it) != solid_nodes.end())
           interface_nodes.insert(*it);
       // Interface Cells und Interfacenodes on InterfaceCells abspeichern
       for (int c = 0; c < M->npatches(); ++c) {
-        reinit_interface_element(c, *(M->IndicesOfPatch(c)),
-                                 solid_interface_cells, fluid_interface_cells,
-                                 interface_nodes, M->material_patch(c));
+        reinit_interface_element(c,
+                                 *(M->IndicesOfPatch(c)),
+                                 solid_interface_cells,
+                                 fluid_interface_cells,
+                                 interface_nodes,
+                                 M->material_patch(c));
       }
     } else
       abort();
 
   } else if (dim == 3) {
-    const GascoigneMesh3d *M = dynamic_cast<const GascoigneMesh3d *>(GetMesh());
+    const GascoigneMesh3d* M = dynamic_cast<const GascoigneMesh3d*>(GetMesh());
     assert(M);
 
     if (GetDiscretization()->GetName() == "Q1 Ale 3d Lps") {
       // Einsortieren der Solid und Fluid Nodes
       for (int c = 0; c < M->ncells(); ++c) {
-        reinit_element(c, M->IndicesOfCell(c), fluid_cells, solid_cells,
-                       fluid_nodes, solid_nodes, M->material(c));
+        reinit_element(c,
+                       M->IndicesOfCell(c),
+                       fluid_cells,
+                       solid_cells,
+                       fluid_nodes,
+                       solid_nodes,
+                       M->material(c));
       }
       // Interface Node: Sowohl Fluid als auch Solid Node
       // Kann erst aufgerufen werden wenn man durch alle Zellen einmal durch
       // ist!
       for (set<int>::const_iterator it = fluid_nodes.begin();
-           it != fluid_nodes.end(); ++it)
+           it != fluid_nodes.end();
+           ++it)
         if (solid_nodes.find(*it) != solid_nodes.end())
           interface_nodes.insert(*it);
       // Interface Cells und Interfacenodes on InterfaceCells abspeichern
       for (int c = 0; c < M->ncells(); ++c) {
-        reinit_interface_element(c, M->IndicesOfCell(c), solid_interface_cells,
-                                 fluid_interface_cells, interface_nodes,
+        reinit_interface_element(c,
+                                 M->IndicesOfCell(c),
+                                 solid_interface_cells,
+                                 fluid_interface_cells,
+                                 interface_nodes,
                                  M->material(c));
       }
     } else if (GetDiscretization()->GetName() == "Q2 Ale 3d Lps") {
       // Einsortieren der Solid und Fluid Nodes
       for (int c = 0; c < M->npatches(); ++c) {
-        reinit_element(c, *(M->IndicesOfPatch(c)), fluid_cells, solid_cells,
-                       fluid_nodes, solid_nodes, M->material_patch(c));
+        reinit_element(c,
+                       *(M->IndicesOfPatch(c)),
+                       fluid_cells,
+                       solid_cells,
+                       fluid_nodes,
+                       solid_nodes,
+                       M->material_patch(c));
       }
       // Interface Node: Sowohl Fluid als auch Solid Node
       // Kann erst aufgerufen werden wenn man durch alle Zellen einmal durch
       // ist!
       for (set<int>::const_iterator it = fluid_nodes.begin();
-           it != fluid_nodes.end(); ++it)
+           it != fluid_nodes.end();
+           ++it)
         if (solid_nodes.find(*it) != solid_nodes.end())
           interface_nodes.insert(*it);
       // Interface Cells und Interfacenodes on InterfaceCells abspeichern
       for (int c = 0; c < M->npatches(); ++c) {
-        reinit_interface_element(c, *(M->IndicesOfPatch(c)),
-                                 solid_interface_cells, fluid_interface_cells,
-                                 interface_nodes, M->material_patch(c));
+        reinit_interface_element(c,
+                                 *(M->IndicesOfPatch(c)),
+                                 solid_interface_cells,
+                                 fluid_interface_cells,
+                                 interface_nodes,
+                                 M->material_patch(c));
       }
     } else {
       std::cout << GetDiscretization()->GetName() << std::endl;
@@ -562,10 +647,12 @@ void FSISolver<DIM>::ReInitInterface(AleBaseDiscretization *ALEDISC) {
 
   // l2g
   for (set<int>::const_iterator it = fluid_nodes.begin();
-       it != fluid_nodes.end(); ++it)
+       it != fluid_nodes.end();
+       ++it)
     fluid_l2g.push_back(*it);
   for (set<int>::const_iterator it = solid_nodes.begin();
-       it != solid_nodes.end(); ++it)
+       it != solid_nodes.end();
+       ++it)
     solid_l2g.push_back(*it);
 
   // g2l
@@ -577,24 +664,30 @@ void FSISolver<DIM>::ReInitInterface(AleBaseDiscretization *ALEDISC) {
 
 // --------------------------------------------------
 
-template <int DIM> void FSISolver<DIM>::NewMesh(const MeshInterface *mp) {
+template<int DIM>
+void
+FSISolver<DIM>::NewMesh(const MeshInterface* mp)
+{
   StdSolver::NewMesh(mp);
 
   ReInitInterface(GetAleDiscretization());
 }
 
-template <>
-void FSISolver<2>::PointVisu(const string &name, const GlobalVector &u,
-                             int iter) const {
+template<>
+void
+FSISolver<2>::PointVisu(const string& name,
+                        const GlobalVector& u,
+                        int iter) const
+{
   VectorInterface def("def");
-  const GlobalVector &DEF = GetGV(def);
+  const GlobalVector& DEF = GetGV(def);
 
   GlobalVector U;
   U.ncomp() = 2 * u.ncomp();
   assert(2 * 2 + 2 == U.ncomp());
   U.resize(u.n());
 
-  const GascoigneMesh2d *M = dynamic_cast<const GascoigneMesh2d *>(GetMesh());
+  const GascoigneMesh2d* M = dynamic_cast<const GascoigneMesh2d*>(GetMesh());
   assert(M);
 
   for (int i = 0; i < u.n(); ++i) {
@@ -635,18 +728,21 @@ void FSISolver<2>::PointVisu(const string &name, const GlobalVector &u,
   }
   StdSolver::PointVisu(name, U, iter);
 }
-template <>
-void FSISolver<3>::PointVisu(const string &name, const GlobalVector &u,
-                             int iter) const {
+template<>
+void
+FSISolver<3>::PointVisu(const string& name,
+                        const GlobalVector& u,
+                        int iter) const
+{
   VectorInterface def("def");
-  const GlobalVector &DEF = GetGV(def);
+  const GlobalVector& DEF = GetGV(def);
   GlobalVector U;
   U.ncomp() = 2 * u.ncomp();
   // 1 pressure ,3 fluid ,3 solid ,1 domain
   assert(2 * 3 + 2 == U.ncomp());
   U.resize(u.n());
 
-  const GascoigneMesh3d *M = dynamic_cast<const GascoigneMesh3d *>(GetMesh());
+  const GascoigneMesh3d* M = dynamic_cast<const GascoigneMesh3d*>(GetMesh());
   assert(M);
 
   for (int i = 0; i < u.n(); ++i) {
@@ -687,14 +783,17 @@ void FSISolver<3>::PointVisu(const string &name, const GlobalVector &u,
 //////////////////////////////////////////////////
 
 //////// deformation update
-template <int DIM> void FSISolver<DIM>::SolveExtension(VectorInterface &x) {
+template<int DIM>
+void
+FSISolver<DIM>::SolveExtension(VectorInterface& x)
+{
 
   VectorInterface def("def");
-  GlobalVector &DEF = GetGV(def);
+  GlobalVector& DEF = GetGV(def);
   for (int c = 0; c < DIM; ++c) {
     //	DEF.CompEq(c,1.0,c+DIM+1,X);
-    const vector<int> &f_nodes = GetAleDiscretization()->GetFluidL2G();
-    const HASHSET<int> &i_nodes = GetAleDiscretization()->GetInterfaceNodes();
+    const vector<int>& f_nodes = GetAleDiscretization()->GetFluidL2G();
+    const HASHSET<int>& i_nodes = GetAleDiscretization()->GetInterfaceNodes();
     // for (auto node : f_nodes)
     //  if (i_nodes.find(node)==i_nodes.end())
     //    DEF(node,c)=0.0;
@@ -708,21 +807,23 @@ template <int DIM> void FSISolver<DIM>::SolveExtension(VectorInterface &x) {
   _LAP_M.solve(DEF);
 }
 
-template <int DIM>
-void FSIMultiLevelSolver<DIM>::UpdateDeformation(VectorInterface &x) {
+template<int DIM>
+void
+FSIMultiLevelSolver<DIM>::UpdateDeformation(VectorInterface& x)
+{
 
   // update solid deformation
-  GlobalVector &X = GetSolver()->GetGV(x);
+  GlobalVector& X = GetSolver()->GetGV(x);
 
   VectorInterface def("def");
-  GlobalVector &DEF = GetSolver()->GetGV(def);
+  GlobalVector& DEF = GetSolver()->GetGV(def);
   VectorInterface defold("defold");
-  GlobalVector &DEFOLD = GetSolver()->GetGV(defold);
+  GlobalVector& DEFOLD = GetSolver()->GetGV(defold);
   VectorInterface old("old");
-  const GlobalVector &OLD = GetSolver()->GetGV(old);
+  const GlobalVector& OLD = GetSolver()->GetGV(old);
 
-  const vector<int> &s_nodes =
-      GetFSISolver()->GetAleDiscretization()->GetSolidL2G();
+  const vector<int>& s_nodes =
+    GetFSISolver()->GetAleDiscretization()->GetSolidL2G();
   /*for (auto node : s_nodes)
     {
     for (int c=0;c<DIM;++c)
@@ -745,14 +846,17 @@ void FSIMultiLevelSolver<DIM>::UpdateDeformation(VectorInterface &x) {
   GetFSISolver()->SolveExtension(x);
 }
 
-template <int DIM>
-double FSIMultiLevelSolver<DIM>::NewtonUpdate(double &rr, VectorInterface &x,
-                                              VectorInterface &dx,
-                                              VectorInterface &r,
-                                              const VectorInterface &f,
-                                              NLInfo &nlinfo) {
+template<int DIM>
+double
+FSIMultiLevelSolver<DIM>::NewtonUpdate(double& rr,
+                                       VectorInterface& x,
+                                       VectorInterface& dx,
+                                       VectorInterface& r,
+                                       const VectorInterface& f,
+                                       NLInfo& nlinfo)
+{
 
-  const CGInfo &linfo = nlinfo.GetLinearInfo();
+  const CGInfo& linfo = nlinfo.GetLinearInfo();
   bool lex = linfo.control().status() == "exploded";
 
   double nn = NewtonNorm(dx);

@@ -6,7 +6,9 @@ using namespace std;
 /*--------------------------------------------------------------------*/
 
 namespace Gascoigne {
-template <int DIM> Fluid_Stat<DIM>::Fluid_Stat(const ParamFile *pf) {
+template<int DIM>
+Fluid_Stat<DIM>::Fluid_Stat(const ParamFile* pf)
+{
   DataFormatHandler DFH;
 
   DFH.insert("rho_f", &rho_f, 0.0);
@@ -28,16 +30,22 @@ template <int DIM> Fluid_Stat<DIM>::Fluid_Stat(const ParamFile *pf) {
 #include "multiplex_fluid_stat.xx"
 
 /*--------------------------------------------------------------------*/
-template <int DIM> void Fluid_Stat<DIM>::point_cell(int material) const {
+template<int DIM>
+void
+Fluid_Stat<DIM>::point_cell(int material) const
+{
   if (material == 1)
     domain = 1;
   if (material == 2)
     domain = -1;
 }
 /*--------------------------------------------------------------------*/
-template <int DIM>
-void Fluid_Stat<DIM>::point(double h, const FemFunction &U,
-                            const Vertex<DIM> &v) const {
+template<int DIM>
+void
+Fluid_Stat<DIM>::point(double h,
+                       const FemFunction& U,
+                       const Vertex<DIM>& v) const
+{
   __h = h;
   __v = v;
 
@@ -51,9 +59,12 @@ void Fluid_Stat<DIM>::point(double h, const FemFunction &U,
 }
 
 /*--------------------------------------------------------------------*/
-template <int DIM>
-void Fluid_Stat<DIM>::Form(VectorIterator b, const FemFunction &U,
-                           const TestFunction &N) const {
+template<int DIM>
+void
+Fluid_Stat<DIM>::Form(VectorIterator b,
+                      const FemFunction& U,
+                      const TestFunction& N) const
+{
   VECTOR phi;
   multiplex_fluid_stat_init_test<DIM>(phi, N);
 
@@ -80,10 +91,13 @@ void Fluid_Stat<DIM>::Form(VectorIterator b, const FemFunction &U,
 }
 
 /*--------------------------------------------------------------------*/
-template <int DIM>
-void Fluid_Stat<DIM>::Matrix(EntryMatrix &A, const FemFunction &U,
-                             const TestFunction &M,
-                             const TestFunction &N) const {
+template<int DIM>
+void
+Fluid_Stat<DIM>::Matrix(EntryMatrix& A,
+                        const FemFunction& U,
+                        const TestFunction& M,
+                        const TestFunction& N) const
+{
 
   VECTOR phi;
   multiplex_fluid_stat_init_test<DIM>(phi, N);
@@ -126,9 +140,12 @@ void Fluid_Stat<DIM>::Matrix(EntryMatrix &A, const FemFunction &U,
 }
 
 /*--------------------------------------------------------------------*/
-template <int DIM>
-void Fluid_Stat<DIM>::point_M(int j, const FemFunction &U,
-                              const TestFunction &M) const {
+template<int DIM>
+void
+Fluid_Stat<DIM>::point_M(int j,
+                         const FemFunction& U,
+                         const TestFunction& M) const
+{
   VECTOR psi;
   multiplex_fluid_stat_init_test<DIM>(psi, M);
 
@@ -138,10 +155,10 @@ void Fluid_Stat<DIM>::point_M(int j, const FemFunction &U,
 
     for (int jj = 0; jj < DIM; ++jj) {
       TENSOR_dV[jj] =
-          rho_f * nu_f *
-          (MATRIX::Identity().block(0, jj, DIM, 1) * psi.transpose() +
-           (MATRIX::Identity().block(0, jj, DIM, 1) * psi.transpose())
-               .transpose());
+        rho_f * nu_f *
+        (MATRIX::Identity().block(0, jj, DIM, 1) * psi.transpose() +
+         (MATRIX::Identity().block(0, jj, DIM, 1) * psi.transpose())
+           .transpose());
 
       DIVERGENCE_V[jj] = rho_f * psi[jj];
 
@@ -153,9 +170,12 @@ void Fluid_Stat<DIM>::point_M(int j, const FemFunction &U,
 }
 
 /*--------------------------------------------------------------------*/
-template <int DIM>
-void Fluid_Stat<DIM>::MatrixBlock(EntryMatrix &A, const FemFunction &U,
-                                  const FemFunction &N) const {
+template<int DIM>
+void
+Fluid_Stat<DIM>::MatrixBlock(EntryMatrix& A,
+                             const FemFunction& U,
+                             const FemFunction& N) const
+{
   ;
   for (int j = 0; j < N.size(); ++j) // trial
   {
@@ -173,31 +193,40 @@ void Fluid_Stat<DIM>::MatrixBlock(EntryMatrix &A, const FemFunction &U,
 /*--------------------------------------------------------------------*/
 ////////////////////////////////////////////////// LPS
 
-template <int DIM>
-void Fluid_Stat<DIM>::lpspoint(double h, const FemFunction &U,
-                               const Vertex<DIM> &v) const {
+template<int DIM>
+void
+Fluid_Stat<DIM>::lpspoint(double h,
+                          const FemFunction& U,
+                          const Vertex<DIM>& v) const
+{
 
   // double vel =10.0;
-  double vel = 1.0 * sqrt(U[1].m() * U[1].m() + U[2].m() * U[2].m() +
-                          U[3].m() * U[3].m());
+  double vel =
+    1.0 * sqrt(U[1].m() * U[1].m() + U[2].m() * U[2].m() + U[3].m() * U[3].m());
 
   lps = lps0 / (vel / h + nu_f / h / h);
 }
 /*--------------------------------------------------------------------*/
-template <int DIM>
-void Fluid_Stat<DIM>::StabForm(VectorIterator b, const FemFunction &U,
-                               const FemFunction &UP,
-                               const TestFunction &N) const {
+template<int DIM>
+void
+Fluid_Stat<DIM>::StabForm(VectorIterator b,
+                          const FemFunction& U,
+                          const FemFunction& UP,
+                          const TestFunction& N) const
+{
   if (domain < 0) /// fludi
     for (int i = 0; i < DIM; ++i)
       b[0] += lps * UP[0][i + 1] * N[i + 1];
 }
 
 /*--------------------------------------------------------------------*/
-template <int DIM>
-void Fluid_Stat<DIM>::StabMatrix(EntryMatrix &A, const FemFunction &U,
-                                 const TestFunction &Np,
-                                 const TestFunction &Mp) const {
+template<int DIM>
+void
+Fluid_Stat<DIM>::StabMatrix(EntryMatrix& A,
+                            const FemFunction& U,
+                            const TestFunction& Np,
+                            const TestFunction& Mp) const
+{
   if (domain < 0)
     for (int i = 0; i < DIM; ++i)
       A(0, 0) += lps * Mp[i + 1] * Np[i + 1];

@@ -31,21 +31,26 @@ using namespace std;
 /* =============================================================== */
 
 namespace Gascoigne {
-VecDirection::VecDirection(const GascoigneMesh *m) {
+VecDirection::VecDirection(const GascoigneMesh* m)
+{
   M = m;
   dimension = 0;
 }
 
 /* --------------------------------------------------------------- */
 
-void VecDirection::Permutate(IntVector &perm) {
+void
+VecDirection::Permutate(IntVector& perm)
+{
   assert(dimension == M->dimension());
   stable_sort(perm.begin(), perm.end(), *this);
 }
 
 /* --------------------------------------------------------------- */
 
-void VecDirection::Permutate(IntVector &perm, DoubleVector v) {
+void
+VecDirection::Permutate(IntVector& perm, DoubleVector v)
+{
   if (v.size() == 0) {
     v.resize(M->dimension(), 0);
     v[0] = 1.;
@@ -68,7 +73,9 @@ void VecDirection::Permutate(IntVector &perm, DoubleVector v) {
 
 /* --------------------------------------------------------------- */
 
-bool VecDirection::operator()(int i, int j) const {
+bool
+VecDirection::operator()(int i, int j) const
+{
   if (dimension == 2)
     return (((M->vertex2d(j) - M->vertex2d(i)) * dir2d) > 0);
   if (dimension == 3)
@@ -81,12 +88,13 @@ bool VecDirection::operator()(int i, int j) const {
 /* ============== StreamDirection ================================ */
 /* =============================================================== */
 
-StreamDirection::StreamDirection(const GascoigneMesh *m,
-                                 const StencilInterface *s,
-                                 const GlobalVector &x)
-    : X(x) {
+StreamDirection::StreamDirection(const GascoigneMesh* m,
+                                 const StencilInterface* s,
+                                 const GlobalVector& x)
+  : X(x)
+{
   M = m;
-  S = dynamic_cast<const ColumnStencil *>(s);
+  S = dynamic_cast<const ColumnStencil*>(s);
   assert(S);
   dimension = 0;
   dx = dy = dz = 0;
@@ -94,7 +102,9 @@ StreamDirection::StreamDirection(const GascoigneMesh *m,
 
 /* --------------------------------------------------------------- */
 
-void StreamDirection::Permutate(IntVector &perm) {
+void
+StreamDirection::Permutate(IntVector& perm)
+{
   assert(dimension == M->dimension());
   //  assert(perm.size()==M->nnodes());
   // assert(perm.size()==X.n());
@@ -173,7 +183,9 @@ void StreamDirection::Permutate(IntVector &perm) {
 
 /* --------------------------------------------------------------- */
 
-void StreamDirection::Permutate(IntVector &perm, const IntVector d) {
+void
+StreamDirection::Permutate(IntVector& perm, const IntVector d)
+{
   dimension = d.size();
   assert(dimension > 1);
   dx = d[0];
@@ -185,7 +197,9 @@ void StreamDirection::Permutate(IntVector &perm, const IntVector d) {
 
 /* --------------------------------------------------------------- */
 
-bool StreamDirection::operator()(int i, int j) const {
+bool
+StreamDirection::operator()(int i, int j) const
+{
   if (dimension == 2) {
     numfixarray<2, double> a = M->vertex2d(j) - M->vertex2d(i);
     double sc = a[0] * X(i, dx) + a[1] * X(i, dy);
@@ -197,15 +211,17 @@ bool StreamDirection::operator()(int i, int j) const {
     numfixarray<3, double> a = M->vertex3d(j) - M->vertex3d(i);
     double sc = a[0] * X(i, dx) + a[1] * X(i, dy) + a[2] * X(i, dz);
     double n =
-        sqrt(a[0] * a[0] + a[1] * a[1] + a[2] * a[2]) *
-        sqrt(X(i, dx) * X(i, dx) + X(i, dy) * X(i, dy) + X(i, dz) * X(i, dz));
+      sqrt(a[0] * a[0] + a[1] * a[1] + a[2] * a[2]) *
+      sqrt(X(i, dx) * X(i, dx) + X(i, dy) * X(i, dy) + X(i, dz) * X(i, dz));
     return (sc > 0.5 * n);
   }
 }
 
 /* --------------------------------------------------------------- */
 
-double StreamDirection::est(int i, int j) const {
+double
+StreamDirection::est(int i, int j) const
+{
   if (dimension == 2) {
     numfixarray<2, double> a = M->vertex2d(j) - M->vertex2d(i);
     double sc = a[0] * (X(i, dx) + X(j, dx)) + a[1] * (X(i, dy) + X(j, dy));
@@ -220,8 +236,8 @@ double StreamDirection::est(int i, int j) const {
     numfixarray<3, double> a = M->vertex3d(j) - M->vertex3d(i);
     double sc = a[0] * X(i, dx) + a[1] * X(i, dy) + a[2] * X(i, dz);
     double n =
-        sqrt(a[0] * a[0] + a[1] * a[1] + a[2] * a[2]) *
-        sqrt(X(i, dx) * X(i, dx) + X(i, dy) * X(i, dy) + X(i, dz) * X(i, dz));
+      sqrt(a[0] * a[0] + a[1] * a[1] + a[2] * a[2]) *
+      sqrt(X(i, dx) * X(i, dx) + X(i, dy) * X(i, dy) + X(i, dz) * X(i, dz));
     if (n < 0.0000001)
       return 0.51;
     return sc / n;

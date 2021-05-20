@@ -31,7 +31,9 @@ namespace Gascoigne {
 
 /*************************************************************/
 
-void transfer(int n, vector<int> &tr, const set<int> &del) {
+void
+transfer(int n, vector<int>& tr, const set<int>& del)
+{
   tr.resize(n, -1);
 
   int count = 0;
@@ -44,7 +46,9 @@ void transfer(int n, vector<int> &tr, const set<int> &del) {
 
 /*************************************************************/
 
-void transfer(int n, vector<int> &tr, vector<int> &del) {
+void
+transfer(int n, vector<int>& tr, vector<int>& del)
+{
   tr.resize(n, -1);
 
   if (del.size() == 0) {

@@ -29,12 +29,13 @@
 #include <string>
 
 namespace Gascoigne {
-class AdaptorData {
+class AdaptorData
+{
   int inc, inr, indr, inactual, idim, mnodes, iorder;
   double irfactor, icfactor, idrfactor, iminf, imaxf, itol, ieta, _randomp;
   double iglobal_conv, ilocal_conv;
 
-  void ErrorMessage(const std::string &, const std::string &) const;
+  void ErrorMessage(const std::string&, const std::string&) const;
 
   void CheckEstimate() const;
   void CheckFunctional() const;
@@ -45,38 +46,38 @@ class AdaptorData {
 public:
   /* Zugriff */
 
-  const std::string &functional() const { return _functional; }
-  std::string &functional() { return _functional; }
-  const std::string &adaptor() const { return _adaptor; }
-  const std::string &estimate() const { return _estimate; }
+  const std::string& functional() const { return _functional; }
+  std::string& functional() { return _functional; }
+  const std::string& adaptor() const { return _adaptor; }
+  const std::string& estimate() const { return _estimate; }
 
   int order() const { return iorder; }
-  int &order() { return iorder; }
+  int& order() { return iorder; }
   int dim() const { return idim; }
-  int &dim() { return idim; }
+  int& dim() { return idim; }
   int maxnodes() const { return mnodes; }
   int ncells() const { return inactual; }
-  int &ncells() { return inactual; }
+  int& ncells() { return inactual; }
   int nc() const { return inc; }
-  int &nc() { return inc; }
+  int& nc() { return inc; }
   int nr() const { return inr; }
-  int &nr() { return inr; }
+  int& nr() { return inr; }
   int ndr() const { return indr; }
   double tol() const { return itol; }
   double drfactor() const { return idrfactor; }
   double rfactor() const { return irfactor; }
-  double &rfactor() { return irfactor; }
+  double& rfactor() { return irfactor; }
   double global_conv() const { return iglobal_conv; }
-  double &global_conv() { return iglobal_conv; }
+  double& global_conv() { return iglobal_conv; }
   double local_conv() const { return ilocal_conv; }
-  double &local_conv() { return ilocal_conv; }
+  double& local_conv() { return ilocal_conv; }
   double cfactor() const { return icfactor; }
   double minf() const { return iminf; }
-  double &minf() { return iminf; }
+  double& minf() { return iminf; }
   double maxf() const { return imaxf; }
-  double &maxf() { return imaxf; }
+  double& maxf() { return imaxf; }
   double eta() const { return ieta; }
-  double &eta() { return ieta; }
+  double& eta() { return ieta; }
   double randomp() const { return _randomp; }
 
   /*   Funktionen   */
@@ -84,7 +85,7 @@ public:
   AdaptorData();
 
   void reset();
-  void read(const ParamFile &pf);
+  void read(const ParamFile& pf);
 };
 } // namespace Gascoigne
 

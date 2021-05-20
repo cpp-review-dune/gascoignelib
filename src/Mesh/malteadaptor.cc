@@ -32,8 +32,9 @@ using namespace std;
 /*-----------------------------------------*/
 
 namespace Gascoigne {
-MalteAdaptor::MalteAdaptor(const ParamFile &pf, const DoubleVector &_eta)
-    : eta(_eta) {
+MalteAdaptor::MalteAdaptor(const ParamFile& pf, const DoubleVector& _eta)
+  : eta(_eta)
+{
   int idim = 0;
   N = eta.size();
 
@@ -65,7 +66,9 @@ MalteAdaptor::MalteAdaptor(const ParamFile &pf, const DoubleVector &_eta)
 
 /*-----------------------------------------*/
 
-double MalteAdaptor::Expectation(double theta, double x) const {
+double
+MalteAdaptor::Expectation(double theta, double x) const
+{
   double neta = etasum + gamma * theta;
   double nwork = pow(1. + ppp * x, beta);
 
@@ -74,7 +77,9 @@ double MalteAdaptor::Expectation(double theta, double x) const {
 
 /*-----------------------------------------*/
 
-double MalteAdaptor::ExpectationCoarsening(double theta, double x) const {
+double
+MalteAdaptor::ExpectationCoarsening(double theta, double x) const
+{
   double neta = theta + (etasum - theta) * pow(0.5, alpha);
   double nwork = pow(1. + ppp * x, beta);
 
@@ -83,10 +88,14 @@ double MalteAdaptor::ExpectationCoarsening(double theta, double x) const {
 
 /*-----------------------------------------*/
 
-double MalteAdaptor::Expectation(double thetax, double thetay, double x,
-                                 double y) const {
-  double neta = thetax * gamma + thetay * (1. - pow(0.5, alpha)) +
-                etasum * pow(0.5, alpha);
+double
+MalteAdaptor::Expectation(double thetax,
+                          double thetay,
+                          double x,
+                          double y) const
+{
+  double neta =
+    thetax * gamma + thetay * (1. - pow(0.5, alpha)) + etasum * pow(0.5, alpha);
   double nwork = x * (1 + ppp) + 1. - y - x + y / (1 + ppp);
 
   nwork = pow(nwork, beta);
@@ -96,7 +105,9 @@ double MalteAdaptor::Expectation(double thetax, double thetay, double x,
 
 /*-----------------------------------------*/
 
-void MalteAdaptor::refine(IntVector &ref) const {
+void
+MalteAdaptor::refine(IntVector& ref) const
+{
   if (etasum == 0)
     return;
 
@@ -136,7 +147,9 @@ void MalteAdaptor::refine(IntVector &ref) const {
 
 /*-----------------------------------------*/
 
-void MalteAdaptor::coarse(IntVector &coars) const {
+void
+MalteAdaptor::coarse(IntVector& coars) const
+{
   coars.resize(0);
   if (etasum == 0)
     return;
@@ -158,7 +171,9 @@ void MalteAdaptor::coarse(IntVector &coars) const {
 
 /*-----------------------------------------*/
 
-void MalteAdaptor::refine_and_coarse(IntVector &ref, IntVector &coars) const {
+void
+MalteAdaptor::refine_and_coarse(IntVector& ref, IntVector& coars) const
+{
   if (etasum == 0)
     return;
 
@@ -188,7 +203,7 @@ void MalteAdaptor::refine_and_coarse(IntVector &ref, IntVector &coars) const {
   for (int ix = 0; ix < n; ix++) {
     double x = float(ix) * dx;
     double y =
-        float(zeta) / (1 - zeta) * (maxnodes * fac - n - ix * (zeta - 1)) / n;
+      float(zeta) / (1 - zeta) * (maxnodes * fac - n - ix * (zeta - 1)) / n;
 
     y = std::min(y, 1.);
     y = std::max(y, 0.);
@@ -216,7 +231,9 @@ void MalteAdaptor::refine_and_coarse(IntVector &ref, IntVector &coars) const {
 
 /*-----------------------------------------*/
 
-void MalteAdaptor::refine(IntVector &ref, IntVector &coars) const {
+void
+MalteAdaptor::refine(IntVector& ref, IntVector& coars) const
+{
   coars.resize(0);
   ref.resize(0);
 

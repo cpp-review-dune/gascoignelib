@@ -28,7 +28,9 @@ using namespace std;
 /*-------------------------------------------------------------*/
 
 namespace Gascoigne {
-void ColumnDiagStencil::memory(const SparseStructureInterface *SI) {
+void
+ColumnDiagStencil::memory(const SparseStructureInterface* SI)
+{
   ColumnStencil::memory(SI);
 
   sdiag.reservesize(n());
@@ -45,7 +47,9 @@ void ColumnDiagStencil::memory(const SparseStructureInterface *SI) {
 
 /*-------------------------------------------------------------*/
 
-void ColumnDiagStencil::memory(int n, int nt) {
+void
+ColumnDiagStencil::memory(int n, int nt)
+{
   ColumnStencil::memory(n, nt);
   sdiag.reservesize(n);
 }

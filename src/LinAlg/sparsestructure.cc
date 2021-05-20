@@ -31,7 +31,9 @@ using namespace std;
 /*----------------------------------------------*/
 
 namespace Gascoigne {
-ostream &operator<<(ostream &s, const SparseStructure &A) {
+ostream&
+operator<<(ostream& s, const SparseStructure& A)
+{
   A.statistics(s);
   s << endl;
   for (int i = 0; i < A.n(); i++) {
@@ -44,13 +46,17 @@ ostream &operator<<(ostream &s, const SparseStructure &A) {
 
 /*----------------------------------------------*/
 
-void SparseStructure::statistics(ostream &s) const {
+void
+SparseStructure::statistics(ostream& s) const
+{
   s << n() << " " << ntotal() << "  " << ntotal() / static_cast<double>(n());
 }
 
 /*----------------------------------------------*/
 
-SparseStructure &SparseStructure::operator=(const SparseStructure &A) {
+SparseStructure&
+SparseStructure::operator=(const SparseStructure& A)
+{
   sindices.reserve(A.n());
   sindices.resize(A.n());
   sntot = A.ntotal();
@@ -76,7 +82,9 @@ SparseStructure &SparseStructure::operator=(const SparseStructure &A) {
 
 /*----------------------------------------------*/
 
-void SparseStructure::build_begin(int n) {
+void
+SparseStructure::build_begin(int n)
+{
   sindices.reserve(n);
   sindices.resize(n);
   for (int i = 0; i < n; i++)
@@ -85,11 +93,17 @@ void SparseStructure::build_begin(int n) {
 
 /*----------------------------------------------*/
 
-void SparseStructure::build_clear(int i) { row(i).clear(); }
+void
+SparseStructure::build_clear(int i)
+{
+  row(i).clear();
+}
 
 /*----------------------------------------------*/
 
-void SparseStructure::hanging_node(int hi, int n1, int n2) {
+void
+SparseStructure::hanging_node(int hi, int n1, int n2)
+{
   // neu (eliminiert den hn in sich selbst und dann in den anderen), mit
   // gascoigne nicht getestet!
   row(hi).erase(hi);
@@ -124,7 +138,9 @@ void SparseStructure::hanging_node(int hi, int n1, int n2) {
 
 /*----------------------------------------------*/
 
-void SparseStructure::build_end() {
+void
+SparseStructure::build_end()
+{
   sntot = 0;
   for (int i = 0; i < n(); i++) {
     sntot += row(i).size();
@@ -133,7 +149,9 @@ void SparseStructure::build_end() {
 
 /*----------------------------------------------*/
 
-void SparseStructure::enlarge_lu() {
+void
+SparseStructure::enlarge_lu()
+{
   IndexType maxbw = 0;
   for (IndexType i = 0; i < n(); i++) {
     IndexType imax = 0;
@@ -161,7 +179,9 @@ void SparseStructure::enlarge_lu() {
 
 /*----------------------------------------------*/
 
-void SparseStructure::enlarge(const SparseStructure &S) {
+void
+SparseStructure::enlarge(const SparseStructure& S)
+{
   for (int i = 0; i < n(); i++) {
     for (set<int>::iterator p = S.rowbegin(i); p != S.rowend(i); ++p) {
       int j = *p;
@@ -173,7 +193,9 @@ void SparseStructure::enlarge(const SparseStructure &S) {
 
 /*----------------------------------------------*/
 
-void SparseStructure::enlarge_for_lu(const IntVector &p) {
+void
+SparseStructure::enlarge_for_lu(const IntVector& p)
+{
   assert(p.size() == n());
   vector<set<int>> transpose(n());
 
@@ -193,7 +215,8 @@ void SparseStructure::enlarge_for_lu(const IntVector &p) {
       int col = q[*col1];
       if (col >= row) {
         for (set<int>::iterator down1 = transpose[row1].begin();
-             down1 != transpose[row1].end(); ++down1) {
+             down1 != transpose[row1].end();
+             ++down1) {
           int down = q[*down1];
           if (down > row) {
             this->row(*down1).insert(*col1);

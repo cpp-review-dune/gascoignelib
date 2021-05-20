@@ -47,7 +47,8 @@ namespace Gascoigne {
 ///
 /////////////////////////////////////////////
 
-class BaseQ12d : public Base2d {
+class BaseQ12d : public Base2d
+{
 protected:
   std::array<double, 2> a, b;
   mutable DoubleVector dxy;
@@ -61,7 +62,7 @@ public:
 
   double psi(int i, double x) const { return a[i] + b[i] * x; }
   int n() const { return NDOF; }
-  void point(const Vertex2d &s) const;
+  void point(const Vertex2d& s) const;
 
   double phi(int i) const { return N[i]; }
   double phi_x(int i) const { return DN[i].x(); }
@@ -69,13 +70,14 @@ public:
   double phi_xx(int i) const { return 0.; }
   double phi_yy(int i) const { return 0.; }
   /*   double phi_xy(int i) const {return 0.;} */
-  double phi_xy(int i) const {
+  double phi_xy(int i) const
+  {
     std::cerr << "\"BaseQ12d::phi_xy\" not written!" << std::endl;
     abort();
     //     return dxy[i];
   }
 
-  const Vertex2d &phi_grad(int i) const { return DN[i]; }
+  const Vertex2d& phi_grad(int i) const { return DN[i]; }
 };
 } // namespace Gascoigne
 

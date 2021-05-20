@@ -29,8 +29,9 @@ using namespace std;
 
 namespace Gascoigne {
 
-SolverInfos::~SolverInfos() {
-  map<string, CGInfo *>::iterator p = __L.begin();
+SolverInfos::~SolverInfos()
+{
+  map<string, CGInfo*>::iterator p = __L.begin();
   while (p != __L.end()) {
     if (p->second) {
       delete p->second;
@@ -39,7 +40,7 @@ SolverInfos::~SolverInfos() {
     p++;
   }
 
-  map<string, NLInfo *>::iterator q = _NL.begin();
+  map<string, NLInfo*>::iterator q = _NL.begin();
   while (q != _NL.end()) {
     if (q->second) {
       delete q->second;
@@ -51,23 +52,29 @@ SolverInfos::~SolverInfos() {
 
 /*---------------------------------------------------------------*/
 
-CGInfo &SolverInfos::GetLInfo(string s) const {
-  map<string, CGInfo *>::const_iterator iter = __L.find(s);
+CGInfo&
+SolverInfos::GetLInfo(string s) const
+{
+  map<string, CGInfo*>::const_iterator iter = __L.find(s);
   assert(iter != __L.end());
   return *iter->second;
 }
 
 /*---------------------------------------------------------------*/
 
-NLInfo &SolverInfos::GetNLInfo(string s) const {
-  map<string, NLInfo *>::const_iterator iter = _NL.find(s);
+NLInfo&
+SolverInfos::GetNLInfo(string s) const
+{
+  map<string, NLInfo*>::const_iterator iter = _NL.find(s);
   assert(iter != _NL.end());
   return *iter->second;
 }
 
 /*---------------------------------------------------------------*/
 
-void SolverInfos::BasicInit(const ParamFile &param) {
+void
+SolverInfos::BasicInit(const ParamFile& param)
+{
   __L["State"] = new CGInfo();
   _NL["State"] = new NLInfo(GetLInfo());
 

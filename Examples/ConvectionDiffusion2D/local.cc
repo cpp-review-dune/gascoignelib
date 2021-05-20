@@ -31,7 +31,9 @@ using namespace Gascoigne;
 
 /*-------------------------------------------------*/
 
-void LocalLoop::run(const std::string &problemlabel) {
+void
+LocalLoop::run(const std::string& problemlabel)
+{
   _iter = 1;
 
   VectorInterface u("u"), f("f"), dat("dat");
@@ -48,7 +50,7 @@ void LocalLoop::run(const std::string &problemlabel) {
   GetSolverInfos()->GetNLInfo().control().matrixmustbebuild() = 1;
   _clock_newmesh.stop();
 
-  GlobalVector &d = GetMultiLevelSolver()->GetSolver()->GetGV(dat);
+  GlobalVector& d = GetMultiLevelSolver()->GetSolver()->GetGV(dat);
   string filename("convection.bup");
   ReadBackUpResize(d, filename);
 
@@ -62,8 +64,8 @@ void LocalLoop::run(const std::string &problemlabel) {
   cout << " [l,n,c] " << GetMeshAgent()->nlevels() << " "
        << GetMeshAgent()->nnodes();
   cout << " " << GetMeshAgent()->ncells() << endl;
-  Moning.SetMeshInformation(_iter, GetMeshAgent()->nnodes(),
-                            GetMeshAgent()->ncells());
+  Moning.SetMeshInformation(
+    _iter, GetMeshAgent()->nnodes(), GetMeshAgent()->ncells());
 
   Solve(u, f);
   ComputeGlobalErrors(u);

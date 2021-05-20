@@ -32,13 +32,17 @@
 // V = Vector
 
 namespace Gascoigne {
-template <class S, class V> class CG {
-  S &solver;
+template<class S, class V>
+class CG
+{
+  S& solver;
 
 public:
-  CG(S &s) : solver(s) {}
+  CG(S& s)
+    : solver(s)
+  {}
 
-  void solve(V &x, const V &b, CGInfo &info);
+  void solve(V& x, const V& b, CGInfo& info);
 };
 } // namespace Gascoigne
 

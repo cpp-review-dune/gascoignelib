@@ -27,12 +27,15 @@
 /*---------------------------------------------------*/
 
 namespace Gascoigne {
-CoarseHierarchicalMesh2d::CoarseHierarchicalMesh2d(const HierarchicalMesh2d &HM)
-    : HierarchicalMesh2d(HM) {}
+CoarseHierarchicalMesh2d::CoarseHierarchicalMesh2d(const HierarchicalMesh2d& HM)
+  : HierarchicalMesh2d(HM)
+{}
 
 /*---------------------------------------------------*/
 
-void CoarseHierarchicalMesh2d::BasicInit(int depth) {
+void
+CoarseHierarchicalMesh2d::BasicInit(int depth)
+{
   assert(1 <= depth && depth <= 2);
 
   if (depth == 1) {
@@ -71,7 +74,9 @@ void CoarseHierarchicalMesh2d::BasicInit(int depth) {
 
 /*---------------------------------------------------*/
 
-void CoarseHierarchicalMesh2d::loop(IntVector &dst) {
+void
+CoarseHierarchicalMesh2d::loop(IntVector& dst)
+{
   global_coarse();
   dst.resize(ncells());
   dst = -1;
@@ -85,8 +90,10 @@ void CoarseHierarchicalMesh2d::loop(IntVector &dst) {
 
 /*---------------------------------------------------*/
 
-void CoarseHierarchicalMesh2d::refine(const IntVector &cell_ref_old,
-                                      const IntVector &cell_coarse_old) {
+void
+CoarseHierarchicalMesh2d::refine(const IntVector& cell_ref_old,
+                                 const IntVector& cell_coarse_old)
+{
   CellRefList.clear();
   CellCoarseList.clear();
 
@@ -107,7 +114,9 @@ void CoarseHierarchicalMesh2d::refine(const IntVector &cell_ref_old,
 
 /*---------------------------------------------------*/
 
-void CoarseHierarchicalMesh2d::GetRefinedList(IntVector &ref) {
+void
+CoarseHierarchicalMesh2d::GetRefinedList(IntVector& ref)
+{
   ref.resize(0);
   IntVector ref2;
   Set2Vec(ref2, CellRefList);
@@ -120,7 +129,9 @@ void CoarseHierarchicalMesh2d::GetRefinedList(IntVector &ref) {
 
 /*---------------------------------------------------*/
 
-void CoarseHierarchicalMesh2d::GetCoarsedList(IntVector &coarse) {
+void
+CoarseHierarchicalMesh2d::GetCoarsedList(IntVector& coarse)
+{
   coarse.resize(0);
   IntVector coarse2;
   Set2Vec(coarse2, CellCoarseList);

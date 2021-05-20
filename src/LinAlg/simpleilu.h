@@ -38,13 +38,14 @@ namespace Gascoigne {
 ///
 /////////////////////////////////////////////
 
-class SimpleIlu : public SimpleMatrix {
+class SimpleIlu : public SimpleMatrix
+{
 protected:
   IntVector p, q;
   mutable DoubleVector yp;
 
-  void hin(const DoubleVector &y) const;
-  void her(DoubleVector &y) const;
+  void hin(const DoubleVector& y) const;
+  void her(DoubleVector& y) const;
   void backward() const;
   void forward() const;
   void backward_transpose() const;
@@ -55,7 +56,9 @@ public:
   ///  Constructor
   //
 
-  SimpleIlu() : SimpleMatrix() {}
+  SimpleIlu()
+    : SimpleMatrix()
+  {}
 
   int n() const { return GetStencil()->n(); };
   void zero() { SimpleMatrix::zero(); }
@@ -63,12 +66,12 @@ public:
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Woverloaded-virtual"
   void ReInit(int n, int nentries);
-  void copy_entries(const MatrixInterface &A);
+  void copy_entries(const MatrixInterface& A);
 #pragma GCC diagnostic pop
 
   void compute_ilu();
-  void solve(DoubleVector &x) const;
-  void solve_transpose(DoubleVector &x) const;
+  void solve(DoubleVector& x) const;
+  void solve_transpose(DoubleVector& x) const;
 };
 } // namespace Gascoigne
 

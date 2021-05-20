@@ -2,7 +2,9 @@
 
 namespace Gascoigne {
 
-int Chi::operator()(const Vertex3d &v) const {
+int
+Chi::operator()(const Vertex3d& v) const
+{
   std::string __type = "box3d";
 
   double eps = 1.e-12;
@@ -23,7 +25,9 @@ int Chi::operator()(const Vertex3d &v) const {
   }
 }
 
-int Chi::operator()(const Vertex2d &v) const {
+int
+Chi::operator()(const Vertex2d& v) const
+{
 
   double eps = 1.e-12;
   std::string __type = "benchmark";

@@ -6,7 +6,9 @@ using namespace std;
 
 /*---------------------------------------------------*/
 
-int main(int argc, char **argv) {
+int
+main(int argc, char** argv)
+{
   ParamFile pf("box3d.param");
   if (argc == 2)
     pf.SetName(argv[1]);

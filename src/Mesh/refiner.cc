@@ -28,7 +28,9 @@ using namespace std;
 /************************************************************/
 
 namespace Gascoigne {
-bool PointRefiner::VertexInQuad(int i) {
+bool
+PointRefiner::VertexInQuad(int i)
+{
   Vertex2d V0 = H.vertex2d(H.vertex_of_cell(i, 0));
   Vertex2d V1 = H.vertex2d(H.vertex_of_cell(i, 1));
   Vertex2d V2 = H.vertex2d(H.vertex_of_cell(i, 2));
@@ -64,7 +66,9 @@ bool PointRefiner::VertexInQuad(int i) {
 
 /************************************************************/
 
-void PointRefiner::BuildCellList(vector<int> &dst) {
+void
+PointRefiner::BuildCellList(vector<int>& dst)
+{
   for (int i = 0; i < H.ncells(); i++) {
     if (VertexInQuad(i)) {
       dst.push_back(i);
@@ -74,7 +78,9 @@ void PointRefiner::BuildCellList(vector<int> &dst) {
 
 /************************************************************/
 
-bool CircleRefiner::QuadOnRadius(int q) const {
+bool
+CircleRefiner::QuadOnRadius(int q) const
+{
   int out = 0;
   int in = 0;
   for (int i = 0; i < 8; i++) {
@@ -98,7 +104,9 @@ bool CircleRefiner::QuadOnRadius(int q) const {
 
 /************************************************************/
 
-void CircleRefiner::BuildCellList(vector<int> &dst) {
+void
+CircleRefiner::BuildCellList(vector<int>& dst)
+{
   for (int i = 0; i < H.ncells(); i++) {
     if (QuadOnRadius(i)) {
       dst.push_back(i);
@@ -108,7 +116,9 @@ void CircleRefiner::BuildCellList(vector<int> &dst) {
 
 /************************************************************/
 
-bool CylinderRefiner::QuadInCylinder(int q) const {
+bool
+CylinderRefiner::QuadInCylinder(int q) const
+{
   int i = 0;
   double di[3];
   for (i = 0; i < 8; i++) {
@@ -130,7 +140,9 @@ bool CylinderRefiner::QuadInCylinder(int q) const {
 
 /************************************************************/
 
-void CylinderRefiner::BuildCellList(vector<int> &dst) {
+void
+CylinderRefiner::BuildCellList(vector<int>& dst)
+{
   for (int i = 0; i < H.ncells(); i++) {
     if (QuadInCylinder(i))
       dst.push_back(i);
@@ -140,7 +152,9 @@ void CylinderRefiner::BuildCellList(vector<int> &dst) {
 
 /************************************************************/
 
-bool BallRefiner::QuadInBall(int q) const {
+bool
+BallRefiner::QuadInBall(int q) const
+{
   int i = 0;
   double di[3];
   for (i = 0; i < 8; i++) {
@@ -161,7 +175,9 @@ bool BallRefiner::QuadInBall(int q) const {
 
 /************************************************************/
 
-void BallRefiner::BuildCellList(vector<int> &dst) {
+void
+BallRefiner::BuildCellList(vector<int>& dst)
+{
   for (int i = 0; i < H.ncells(); i++) {
     if (QuadInBall(i))
       dst.push_back(i);

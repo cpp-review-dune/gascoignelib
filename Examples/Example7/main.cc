@@ -36,18 +36,23 @@ using namespace Gascoigne;
 
 /*----------------------------------------------------------------------------*/
 
-class DualDragProblemDescriptor : public ProblemDescriptorBase {
+class DualDragProblemDescriptor : public ProblemDescriptorBase
+{
 public:
-  DualDragProblemDescriptor() : ProblemDescriptorBase() {}
+  DualDragProblemDescriptor()
+    : ProblemDescriptorBase()
+  {}
   ~DualDragProblemDescriptor() { GetEquationPointer() = NULL; }
 
   std::string GetName() const { return "DualDragProblemDescriptor"; }
 
-  void BasicInit(const ParamFile *filename, const Equation *equation,
-                 const ResidualFunctional *fp) {
+  void BasicInit(const ParamFile* filename,
+                 const Equation* equation,
+                 const ResidualFunctional* fp)
+  {
     ProblemDescriptorBase::BasicInit(filename);
 
-    GetEquationPointer() = const_cast<Equation *>(equation);
+    GetEquationPointer() = const_cast<Equation*>(equation);
 
     nvector<int> comp = fp->GetComps();
     nvector<double> scale = fp->GetScales();
@@ -59,18 +64,22 @@ public:
 
 /*----------------------------------------------------------------------------*/
 
-class Numeric : public NumericInterface {
+class Numeric : public NumericInterface
+{
 public:
-  DiscretizationInterface *NewDiscretization(int level) const {
+  DiscretizationInterface* NewDiscretization(int level) const
+  {
     return new Q1Lps2d;
   }
-  SolverInterface *NewSolver(int level) const { return new StdSolver; }
-  MeshAgentInterface *NewMeshAgent() const { return new CurvedMeshAgent; }
+  SolverInterface* NewSolver(int level) const { return new StdSolver; }
+  MeshAgentInterface* NewMeshAgent() const { return new CurvedMeshAgent; }
 };
 
 /*----------------------------------------------------------------------------*/
 
-int main(int argc, char **argv) {
+int
+main(int argc, char** argv)
+{
   ParamFile paramfile("gascoigne.param");
   if (argc >= 2) {
     paramfile.SetName(argv[1]);

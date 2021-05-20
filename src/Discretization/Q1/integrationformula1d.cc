@@ -26,14 +26,18 @@
 /*------------------------------------------------------------*/
 
 namespace Gascoigne {
-LineMidPoint::LineMidPoint() : IntegrationFormulaBase<1>(1) {
+LineMidPoint::LineMidPoint()
+  : IntegrationFormulaBase<1>(1)
+{
   w(0) = 1.;
   c(0).x() = 0.5;
 }
 
 /*------------------------------------------------------------*/
 
-LineTrapez::LineTrapez() : IntegrationFormulaBase<1>(2) {
+LineTrapez::LineTrapez()
+  : IntegrationFormulaBase<1>(2)
+{
   w(0) = 0.5;
   w(1) = 0.5;
   c(0).x() = 0.;
@@ -42,7 +46,9 @@ LineTrapez::LineTrapez() : IntegrationFormulaBase<1>(2) {
 
 /*------------------------------------------------------------*/
 
-LineSimpson::LineSimpson() : IntegrationFormulaBase<1>(3) {
+LineSimpson::LineSimpson()
+  : IntegrationFormulaBase<1>(3)
+{
   w(0) = 0.1666666666666666666;
   w(1) = 0.6666666666666666666;
   w(2) = 0.1666666666666666666;
@@ -53,14 +59,18 @@ LineSimpson::LineSimpson() : IntegrationFormulaBase<1>(3) {
 
 /*------------------------------------------------------------*/
 
-LineGauss1::LineGauss1() : IntegrationFormulaBase<1>(1) {
+LineGauss1::LineGauss1()
+  : IntegrationFormulaBase<1>(1)
+{
   w(0) = 1.;
   c(0).x() = 0.5;
 }
 
 /*------------------------------------------------------------*/
 
-LineGauss2::LineGauss2() : IntegrationFormulaBase<1>(2) {
+LineGauss2::LineGauss2()
+  : IntegrationFormulaBase<1>(2)
+{
   w(0) = 0.5;
   w(1) = 0.5;
   c(0).x() = 0.21132486540518711775;
@@ -69,7 +79,9 @@ LineGauss2::LineGauss2() : IntegrationFormulaBase<1>(2) {
 
 /*------------------------------------------------------------*/
 
-LineGauss3::LineGauss3() : IntegrationFormulaBase<1>(3) {
+LineGauss3::LineGauss3()
+  : IntegrationFormulaBase<1>(3)
+{
   c(0).x() = 0.11270166537925831148;
   c(1).x() = 0.5;
   c(2).x() = 0.88729833462074168852;
@@ -81,7 +93,9 @@ LineGauss3::LineGauss3() : IntegrationFormulaBase<1>(3) {
 
 /*------------------------------------------------------------*/
 
-LineGauss4::LineGauss4() : IntegrationFormulaBase<1>(4) {
+LineGauss4::LineGauss4()
+  : IntegrationFormulaBase<1>(4)
+{
   c(0).x() = 0.069431844203;
   c(1).x() = 0.330009478208;
   c(2).x() = 0.669990521792;
@@ -95,7 +109,9 @@ LineGauss4::LineGauss4() : IntegrationFormulaBase<1>(4) {
 
 /*------------------------------------------------------------*/
 
-LineGauss5::LineGauss5() : IntegrationFormulaBase<1>(5) {
+LineGauss5::LineGauss5()
+  : IntegrationFormulaBase<1>(5)
+{
   c(0).x() = 0.0469100770307;
   c(1).x() = 0.230765344947;
   c(2).x() = 0.5;
@@ -111,7 +127,9 @@ LineGauss5::LineGauss5() : IntegrationFormulaBase<1>(5) {
 
 /*------------------------------------------------------------*/
 
-LineGauss6::LineGauss6() : IntegrationFormulaBase<1>(6) {
+LineGauss6::LineGauss6()
+  : IntegrationFormulaBase<1>(6)
+{
   c(0).x() = .03376524289842398608;
   c(1).x() = .16939530676686774318;
   c(2).x() = .38069040695840154568;
@@ -130,7 +148,9 @@ LineGauss6::LineGauss6() : IntegrationFormulaBase<1>(6) {
 
 /*------------------------------------------------------------*/
 
-LineGauss7::LineGauss7() : IntegrationFormulaBase<1>(7) {
+LineGauss7::LineGauss7()
+  : IntegrationFormulaBase<1>(7)
+{
   c(0).x() = .02544604382862073773;
   c(1).x() = .12923440720030278006;
   c(2).x() = .29707742431130141655;
@@ -151,7 +171,9 @@ LineGauss7::LineGauss7() : IntegrationFormulaBase<1>(7) {
 
 /*------------------------------------------------------------*/
 
-LineGauss8::LineGauss8() : IntegrationFormulaBase<1>(8) {
+LineGauss8::LineGauss8()
+  : IntegrationFormulaBase<1>(8)
+{
   c(0).x() = .01985507175123188415821955;
   c(1).x() = .10166676129318663020422305;
   c(2).x() = .2372337950418355070911305;
@@ -173,7 +195,9 @@ LineGauss8::LineGauss8() : IntegrationFormulaBase<1>(8) {
 
 /*------------------------------------------------------------*/
 
-LineGauss9::LineGauss9() : IntegrationFormulaBase<1>(9) {
+LineGauss9::LineGauss9()
+  : IntegrationFormulaBase<1>(9)
+{
   c(0).x() = .01591988024618695508;
   c(1).x() = .08198444633668210283;
   c(2).x() = .19331428364970480135;
@@ -198,7 +222,9 @@ LineGauss9::LineGauss9() : IntegrationFormulaBase<1>(9) {
 
 /*------------------------------------------------------------*/
 
-LineGauss10::LineGauss10() : IntegrationFormulaBase<1>(10) {
+LineGauss10::LineGauss10()
+  : IntegrationFormulaBase<1>(10)
+{
   c(0).x() = .01304673575;
   c(1).x() = .06746831665;
   c(2).x() = .16029521585;
@@ -225,7 +251,9 @@ LineGauss10::LineGauss10() : IntegrationFormulaBase<1>(10) {
 
 /*------------------------------------------------------------*/
 
-LineGauss11::LineGauss11() : IntegrationFormulaBase<1>(11) {
+LineGauss11::LineGauss11()
+  : IntegrationFormulaBase<1>(11)
+{
   c(0).x() = 0.010885670926971503598031;
   c(1).x() = 0.0564687001159523504624211;
   c(2).x() = 0.1349239972129753379532918;
@@ -253,7 +281,9 @@ LineGauss11::LineGauss11() : IntegrationFormulaBase<1>(11) {
 
 /*------------------------------------------------------------*/
 
-LineGauss12::LineGauss12() : IntegrationFormulaBase<1>(12) {
+LineGauss12::LineGauss12()
+  : IntegrationFormulaBase<1>(12)
+{
   c(0).x() = 0.00921968287664037465472545;
   c(1).x() = 0.04794137181476257166076705;
   c(2).x() = 0.1150486629028476564815531;
@@ -283,7 +313,9 @@ LineGauss12::LineGauss12() : IntegrationFormulaBase<1>(12) {
 
 /*------------------------------------------------------------*/
 
-LineGauss13::LineGauss13() : IntegrationFormulaBase<1>(13) {
+LineGauss13::LineGauss13()
+  : IntegrationFormulaBase<1>(13)
+{
   c(0).x() = 0.0079084726407059252635853;
   c(1).x() = 0.0412008003885110173967261;
   c(2).x() = 0.09921095463334504360289675;
@@ -315,7 +347,9 @@ LineGauss13::LineGauss13() : IntegrationFormulaBase<1>(13) {
 
 /*------------------------------------------------------------*/
 
-LineGauss14::LineGauss14() : IntegrationFormulaBase<1>(14) {
+LineGauss14::LineGauss14()
+  : IntegrationFormulaBase<1>(14)
+{
   c(0).x() = 0.00685809565159383057920135;
   c(1).x() = 0.03578255816821324133180445;
   c(2).x() = 0.08639934246511750340510265;

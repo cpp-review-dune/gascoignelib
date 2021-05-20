@@ -44,10 +44,12 @@ using namespace std;
 /*--------------------------------------*/
 
 namespace Gascoigne {
-string Int2String(int a) {
+string
+Int2String(int a)
+{
 #ifdef __OLDCOMPILER__
   int n = 1 + (int)log(a);
-  char *c;
+  char* c;
   c = new char[n];
   sprintf(c, "%d", a);
   string r = c;
@@ -64,7 +66,9 @@ string Int2String(int a) {
 
 /*--------------------------------------*/
 
-string Double2String(double a) {
+string
+Double2String(double a)
+{
   STRINGSTREAM ss;
   ss << a;
   string r;
@@ -74,13 +78,17 @@ string Double2String(double a) {
 
 /*--------------------------------------*/
 
-string GetBase(const char *buf, char sep) {
+string
+GetBase(const char* buf, char sep)
+{
   vector<string> all = StringSplit(buf, sep);
   assert(all.size());
   return all[0];
 }
 
-string GetTail(const char *buf, char sep) {
+string
+GetTail(const char* buf, char sep)
+{
   vector<string> all = StringSplit(buf, sep);
   assert(all.size());
   return all[all.size() - 1];
@@ -88,7 +96,9 @@ string GetTail(const char *buf, char sep) {
 
 /*--------------------------------------*/
 
-vector<string> StringSplit(const char *buf, char sep) {
+vector<string>
+StringSplit(const char* buf, char sep)
+{
   vector<string> words;
   ISTRINGSTREAM is(buf);
   while (!is.eof()) {
@@ -102,7 +112,9 @@ vector<string> StringSplit(const char *buf, char sep) {
   return words;
 }
 
-vector<string> StringSplit(const char *buf, char sep1, char sep2) {
+vector<string>
+StringSplit(const char* buf, char sep1, char sep2)
+{
   vector<string> words;
   ISTRINGSTREAM is(buf);
   while (!is.eof()) {
@@ -124,7 +136,9 @@ vector<string> StringSplit(const char *buf, char sep1, char sep2) {
 
 /*-----------------------------------------*/
 
-pair<string, vector<string>> SplitArgs(string s) {
+pair<string, vector<string>>
+SplitArgs(string s)
+{
   vector<string> vs = StringSplit(s.c_str(), '_');
   if (!vs.size()) {
     cerr << "SplitArgs()\t";

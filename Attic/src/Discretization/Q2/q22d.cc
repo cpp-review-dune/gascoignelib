@@ -37,14 +37,17 @@ using namespace std;
 /* ----------------------------------------- */
 
 namespace Gascoigne {
-Q22d::Q22d() : Q2() {
+Q22d::Q22d()
+  : Q2()
+{
   assert(HN == NULL);
   HN = new HNStructureQ22d;
 }
 
 /* ----------------------------------------- */
 
-Q22d::~Q22d() {
+Q22d::~Q22d()
+{
   if (HN)
     delete HN;
   HN = NULL;
@@ -54,12 +57,14 @@ Q22d::~Q22d() {
 
 /* ----------------------------------------- */
 
-int Q22d::GetPatchNumber(const Vertex2d &p0, Vertex2d &p) const {
+int
+Q22d::GetPatchNumber(const Vertex2d& p0, Vertex2d& p) const
+{
   int iq;
 
   for (iq = 0; iq < GetMesh()->npatches(); ++iq) {
     bool found = true;
-    const IntVector &IOP = GetMesh()->CoarseIndices(iq);
+    const IntVector& IOP = GetMesh()->CoarseIndices(iq);
 
     for (int d = 0; d < 2; ++d) {
       double min = GetMesh()->vertex2d(IOP[0])[d];
@@ -100,9 +105,10 @@ int Q22d::GetPatchNumber(const Vertex2d &p0, Vertex2d &p) const {
   }
 }
 
-void Q22d::InterpolateSolution(GlobalVector &u,
-                               const GlobalVector &uold) const {
-  const IntVector &vo2n = *GetMesh()->Vertexo2n();
+void
+Q22d::InterpolateSolution(GlobalVector& u, const GlobalVector& uold) const
+{
+  const IntVector& vo2n = *GetMesh()->Vertexo2n();
   nvector<bool> habschon(GetMesh()->nnodes(), 0);
 
   assert(vo2n.size() == uold.n());
@@ -159,7 +165,9 @@ void Q22d::InterpolateSolution(GlobalVector &u,
 
 /* ----------------------------------------- */
 
-void Q22d::VertexTransformation(const Vertex2d &p0, Vertex2d &p, int iq) const {
+void
+Q22d::VertexTransformation(const Vertex2d& p0, Vertex2d& p, int iq) const
+{
   nmatrix<double> T;
   Transformation(T, iq);
 
@@ -187,7 +195,9 @@ void Q22d::VertexTransformation(const Vertex2d &p0, Vertex2d &p, int iq) const {
 
 /* ----------------------------------------- */
 
-void Q22d::BasicInit(const ParamFile *paramfile) {
+void
+Q22d::BasicInit(const ParamFile* paramfile)
+{
   if (GetIntegrator() == NULL)
     PatchDiscretization::GetIntegratorPointer() = new GalerkinIntegratorQ2<2>;
   assert(GetIntegrator());
@@ -206,35 +216,37 @@ void Q22d::BasicInit(const ParamFile *paramfile) {
 
 /* ----------------------------------------- */
 
-void Q22d::ConstructInterpolator(MgInterpolatorInterface *I,
-                                 const MeshTransferInterface *MT) {
+void
+Q22d::ConstructInterpolator(MgInterpolatorInterface* I,
+                            const MeshTransferInterface* MT)
+{
   {
-    MgInterpolatorNested *IP = dynamic_cast<MgInterpolatorNested *>(I);
+    MgInterpolatorNested* IP = dynamic_cast<MgInterpolatorNested*>(I);
     if (IP) {
       IP->BasicInit(MT);
       return;
     }
   }
-  MgInterpolatorMatrix *IP = dynamic_cast<MgInterpolatorMatrix *>(I);
+  MgInterpolatorMatrix* IP = dynamic_cast<MgInterpolatorMatrix*>(I);
   assert(IP);
-  const GascoigneMeshTransfer *GMT =
-      dynamic_cast<const GascoigneMeshTransfer *>(MT);
+  const GascoigneMeshTransfer* GMT =
+    dynamic_cast<const GascoigneMeshTransfer*>(MT);
   assert(GMT);
   //
   // dast ist einfach von Q12d kopiert !!!!!
   //
 
-  const map<int, std::array<int, 2>> &zweier = GMT->GetZweier();
-  const map<int, std::array<int, 4>> &vierer = GMT->GetVierer();
-  const map<int, std::array<int, 8>> &achter = GMT->GetAchter();
-  const nvector<int> &c2f = GMT->GetC2f();
+  const map<int, std::array<int, 2>>& zweier = GMT->GetZweier();
+  const map<int, std::array<int, 4>>& vierer = GMT->GetVierer();
+  const map<int, std::array<int, 8>>& achter = GMT->GetAchter();
+  const nvector<int>& c2f = GMT->GetC2f();
 
   int n = c2f.size() + zweier.size() + vierer.size() + achter.size();
   int nt =
-      c2f.size() + 2 * zweier.size() + 4 * vierer.size() + 8 * achter.size();
+    c2f.size() + 2 * zweier.size() + 4 * vierer.size() + 8 * achter.size();
 
-  ColumnStencil &ST = IP->GetStencil();
-  nvector<double> &val = IP->GetAlpha();
+  ColumnStencil& ST = IP->GetStencil();
+  nvector<double>& val = IP->GetAlpha();
 
   SparseStructure SS;
 
@@ -243,21 +255,24 @@ void Q22d::ConstructInterpolator(MgInterpolatorInterface *I,
     SS.build_add(i, c2f[i]);
   }
   for (map<int, std::array<int, 2>>::const_iterator p = zweier.begin();
-       p != zweier.end(); p++) {
+       p != zweier.end();
+       p++) {
     int il = p->first;
     std::array<int, 2> n2 = p->second;
     for (int ii = 0; ii < 2; ii++)
       SS.build_add(il, n2[ii]);
   }
   for (map<int, std::array<int, 4>>::const_iterator p = vierer.begin();
-       p != vierer.end(); p++) {
+       p != vierer.end();
+       p++) {
     int il = p->first;
     std::array<int, 4> n4 = p->second;
     for (int ii = 0; ii < 4; ii++)
       SS.build_add(il, n4[ii]);
   }
   for (map<int, std::array<int, 8>>::const_iterator p = achter.begin();
-       p != achter.end(); p++) {
+       p != achter.end();
+       p++) {
     int il = p->first;
     std::array<int, 8> n8 = p->second;
     for (int ii = 0; ii < 8; ii++)
@@ -275,14 +290,16 @@ void Q22d::ConstructInterpolator(MgInterpolatorInterface *I,
     val[ST.Find(c2f[i], i)] = 1.;
   }
   for (map<int, std::array<int, 2>>::const_iterator p = zweier.begin();
-       p != zweier.end(); p++) {
+       p != zweier.end();
+       p++) {
     int il = p->first;
     std::array<int, 2> n2 = p->second;
     val[ST.Find(il, n2[0])] = 0.5;
     val[ST.Find(il, n2[1])] = 0.5;
   }
   for (map<int, std::array<int, 4>>::const_iterator p = vierer.begin();
-       p != vierer.end(); p++) {
+       p != vierer.end();
+       p++) {
     int il = p->first;
     std::array<int, 4> n4 = p->second;
     val[ST.Find(il, n4[0])] = 0.25;
@@ -291,7 +308,8 @@ void Q22d::ConstructInterpolator(MgInterpolatorInterface *I,
     val[ST.Find(il, n4[3])] = 0.25;
   }
   for (map<int, std::array<int, 8>>::const_iterator p = achter.begin();
-       p != achter.end(); p++) {
+       p != achter.end();
+       p++) {
     int il = p->first;
     std::array<int, 8> n8 = p->second;
     for (int i = 0; i < 8; i++) {

@@ -24,9 +24,9 @@
 #ifndef __GhostVectorAgent_h
 #define __GhostVectorAgent_h
 
+#include "compvector.h"
 #include "gascoigne.h"
 #include "vectorinterface.h"
-#include "compvector.h"
 #include <string>
 
 namespace Gascoigne {
@@ -39,11 +39,12 @@ namespace Gascoigne {
 ////
 /////////////////////////////////////////////
 
-class GhostVectorAgent : public std::map<VectorInterface, GlobalVector *> {
+class GhostVectorAgent : public std::map<VectorInterface, GlobalVector*>
+{
 public:
-  typedef std::map<VectorInterface, GlobalVector *>::const_iterator
-      const_iterator;
-  typedef std::map<VectorInterface, GlobalVector *>::iterator iterator;
+  typedef std::map<VectorInterface, GlobalVector*>::const_iterator
+    const_iterator;
+  typedef std::map<VectorInterface, GlobalVector*>::iterator iterator;
 
   //
   ////  Con(De)structor
@@ -52,13 +53,13 @@ public:
   GhostVectorAgent();
   ~GhostVectorAgent();
 
-  void Register(const VectorInterface &mg);
-  void Delete(VectorInterface &mg);
+  void Register(const VectorInterface& mg);
+  void Delete(VectorInterface& mg);
 
-  GlobalVector &operator()(const VectorInterface &g);
+  GlobalVector& operator()(const VectorInterface& g);
 
-  friend std::ostream &operator<<(std::ostream &os,
-                                  const GhostVectorAgent &gva) {
+  friend std::ostream& operator<<(std::ostream& os, const GhostVectorAgent& gva)
+  {
     int i = 0, n = gva.size();
     os << "GhostVectorAgent: size=" << n << ", ";
     for (auto p = gva.begin(); p != gva.end(); p++, i++) {

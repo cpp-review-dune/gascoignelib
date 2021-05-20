@@ -28,67 +28,88 @@ using namespace std;
 namespace Gascoigne {
 /**********************************************************/
 
-template <>
-void IntegratorWithSecond<2>::point_hesse(const FemInterface &E,
-                                          const Vertex<2> &v) const {
-  typedef FiniteElementWithSecond<2, 1, Transformation2d<BaseQ22dWithSecond>,
+template<>
+void
+IntegratorWithSecond<2>::point_hesse(const FemInterface& E,
+                                     const Vertex<2>& v) const
+{
+  typedef FiniteElementWithSecond<2,
+                                  1,
+                                  Transformation2d<BaseQ22dWithSecond>,
                                   BaseQ22dWithSecond>
-      FEWithSecond2d;
+    FEWithSecond2d;
 
-  const FEWithSecond2d *FE = dynamic_cast<const FEWithSecond2d *>(&E);
+  const FEWithSecond2d* FE = dynamic_cast<const FEWithSecond2d*>(&E);
 
   FE->ComputeHesse(v);
 }
 
 /* ----------------------------------------- */
 
-template <>
-void IntegratorWithSecond<3>::point_hesse(const FemInterface &E,
-                                          const Vertex<3> &v) const {
-  typedef FiniteElementWithSecond<3, 2, Transformation3d<BaseQ23dWithSecond>,
+template<>
+void
+IntegratorWithSecond<3>::point_hesse(const FemInterface& E,
+                                     const Vertex<3>& v) const
+{
+  typedef FiniteElementWithSecond<3,
+                                  2,
+                                  Transformation3d<BaseQ23dWithSecond>,
                                   BaseQ23dWithSecond>
-      FEWithSecond3d;
+    FEWithSecond3d;
 
-  const FEWithSecond3d *FE = dynamic_cast<const FEWithSecond3d *>(&E);
+  const FEWithSecond3d* FE = dynamic_cast<const FEWithSecond3d*>(&E);
 
   FE->ComputeHesse(v);
 }
 
 /* ----------------------------------------- */
 
-template <>
-void IntegratorWithSecond<2>::init_test_hesse(const FemInterface &E,
-                                              TestFunction &N, double w,
-                                              int i) const {
-  typedef FiniteElementWithSecond<2, 1, Transformation2d<BaseQ22dWithSecond>,
+template<>
+void
+IntegratorWithSecond<2>::init_test_hesse(const FemInterface& E,
+                                         TestFunction& N,
+                                         double w,
+                                         int i) const
+{
+  typedef FiniteElementWithSecond<2,
+                                  1,
+                                  Transformation2d<BaseQ22dWithSecond>,
                                   BaseQ22dWithSecond>
-      FEWithSecond2d;
+    FEWithSecond2d;
 
-  const FEWithSecond2d *FE = dynamic_cast<const FEWithSecond2d *>(&E);
+  const FEWithSecond2d* FE = dynamic_cast<const FEWithSecond2d*>(&E);
 
   FE->init_test_hesse(N, w, i);
 }
 
 /* ----------------------------------------- */
 
-template <>
-void IntegratorWithSecond<3>::init_test_hesse(const FemInterface &E,
-                                              TestFunction &N, double w,
-                                              int i) const {
-  typedef FiniteElementWithSecond<3, 2, Transformation3d<BaseQ23dWithSecond>,
+template<>
+void
+IntegratorWithSecond<3>::init_test_hesse(const FemInterface& E,
+                                         TestFunction& N,
+                                         double w,
+                                         int i) const
+{
+  typedef FiniteElementWithSecond<3,
+                                  2,
+                                  Transformation3d<BaseQ23dWithSecond>,
                                   BaseQ23dWithSecond>
-      FEWithSecond3d;
+    FEWithSecond3d;
 
-  const FEWithSecond3d *FE = dynamic_cast<const FEWithSecond3d *>(&E);
+  const FEWithSecond3d* FE = dynamic_cast<const FEWithSecond3d*>(&E);
 
   FE->init_test_hesse(N, w, i);
 }
 
 /* ----------------------------------------- */
 
-template <>
-void IntegratorWithSecond<2>::hesse(const FemInterface &E, FemFunction &UH,
-                                    const LocalVector &U) const {
+template<>
+void
+IntegratorWithSecond<2>::hesse(const FemInterface& E,
+                               FemFunction& UH,
+                               const LocalVector& U) const
+{
   UH.resize(U.ncomp());
 
   for (int c = 0; c < UH.size(); c++) {
@@ -109,9 +130,12 @@ void IntegratorWithSecond<2>::hesse(const FemInterface &E, FemFunction &UH,
 }
 /* ----------------------------------------- */
 
-template <>
-void IntegratorWithSecond<3>::hesse(const FemInterface &E, FemFunction &UH,
-                                    const LocalVector &U) const {
+template<>
+void
+IntegratorWithSecond<3>::hesse(const FemInterface& E,
+                               FemFunction& UH,
+                               const LocalVector& U) const
+{
   UH.resize(U.ncomp());
 
   for (int c = 0; c < UH.size(); c++) {
@@ -139,9 +163,12 @@ void IntegratorWithSecond<3>::hesse(const FemInterface &E, FemFunction &UH,
 
 /* ----------------------------------------- */
 
-template <int DIM>
-void IntegratorWithSecond<DIM>::hesse(const FemInterface &E, FemData &QH,
-                                      const LocalData &Q) const {
+template<int DIM>
+void
+IntegratorWithSecond<DIM>::hesse(const FemInterface& E,
+                                 FemData& QH,
+                                 const LocalData& Q) const
+{
   LocalData::const_iterator p = Q.begin();
   for (; p != Q.end(); p++) {
     hesse(E, QH[p->first], p->second);
@@ -150,12 +177,16 @@ void IntegratorWithSecond<DIM>::hesse(const FemInterface &E, FemData &QH,
 
 /* ----------------------------------------- */
 
-template <int DIM>
-double IntegratorWithSecond<DIM>::ComputeDomainFunctional(
-    const DomainFunctional &F, const FemInterface &FEM, const LocalVector &U,
-    const LocalData &Q, const LocalData &QC) const {
-  const IntegrationFormulaInterface &IF =
-      *GalerkinIntegratorQ2<DIM>::FormFormula();
+template<int DIM>
+double
+IntegratorWithSecond<DIM>::ComputeDomainFunctional(const DomainFunctional& F,
+                                                   const FemInterface& FEM,
+                                                   const LocalVector& U,
+                                                   const LocalData& Q,
+                                                   const LocalData& QC) const
+{
+  const IntegrationFormulaInterface& IF =
+    *GalerkinIntegratorQ2<DIM>::FormFormula();
 
   Vertex<DIM> x, xi;
   double j = 0.;
@@ -180,15 +211,18 @@ double IntegratorWithSecond<DIM>::ComputeDomainFunctional(
 
 /* ----------------------------------------- */
 
-template <int DIM>
-void IntegratorWithSecond<DIM>::Rhs(const DomainRightHandSide &f,
-                                    LocalVector &F, const FemInterface &FEM,
-                                    const LocalData &Q,
-                                    const LocalData &QC) const {
+template<int DIM>
+void
+IntegratorWithSecond<DIM>::Rhs(const DomainRightHandSide& f,
+                               LocalVector& F,
+                               const FemInterface& FEM,
+                               const LocalData& Q,
+                               const LocalData& QC) const
+{
   F.ReInit(f.GetNcomp(), FEM.n());
 
-  const IntegrationFormulaInterface &IF =
-      *GalerkinIntegratorQ2<DIM>::FormFormula();
+  const IntegrationFormulaInterface& IF =
+    *GalerkinIntegratorQ2<DIM>::FormFormula();
 
   F.zero();
   Vertex<DIM> x, xi;
@@ -200,7 +234,7 @@ void IntegratorWithSecond<DIM>::Rhs(const DomainRightHandSide &f,
     double h = GalerkinIntegratorQ2<DIM>::Volume2MeshSize(vol);
     double weight = IF.w(k) * vol;
     GalerkinIntegratorQ2<DIM>::universal_point(
-        FEM, GalerkinIntegratorQ2<DIM>::_QH, Q);
+      FEM, GalerkinIntegratorQ2<DIM>::_QH, Q);
     hesse(FEM, GalerkinIntegratorQ2<DIM>::_QH, Q);
 
     f.SetFemData(GalerkinIntegratorQ2<DIM>::_QH);
@@ -214,13 +248,16 @@ void IntegratorWithSecond<DIM>::Rhs(const DomainRightHandSide &f,
   }
 }
 
-template <int DIM>
-void Gascoigne::IntegratorWithSecond<DIM>::EstimateSecond(
-    LocalVector &F, const FemInterface &FEM, const LocalVector &U) const {
+template<int DIM>
+void
+Gascoigne::IntegratorWithSecond<DIM>::EstimateSecond(LocalVector& F,
+                                                     const FemInterface& FEM,
+                                                     const LocalVector& U) const
+{
   F.ReInit(U.ncomp(), 1);
 
-  const IntegrationFormulaInterface &IF =
-      *GalerkinIntegratorQ2<DIM>::FormFormula();
+  const IntegrationFormulaInterface& IF =
+    *GalerkinIntegratorQ2<DIM>::FormFormula();
 
   F.zero();
   Vertex<DIM> xi;

@@ -39,18 +39,21 @@ namespace Gascoigne {
 ///
 /////////////////////////////////////////////
 
-class SparseStructureAdaptor {
+class SparseStructureAdaptor
+{
 public:
 private:
 protected:
   int _nnodes;
-  const SparseStructure *SSP;
+  const SparseStructure* SSP;
 
-  int n_base() const {
+  int n_base() const
+  {
     assert(SSP);
     return SSP->n();
   }
-  int nentries_base() const {
+  int nentries_base() const
+  {
     assert(SSP);
     return SSP->ntotal();
   }
@@ -59,13 +62,16 @@ public:
   //
   ///  Constructor
   //
-  SparseStructureAdaptor() : SSP(NULL) {}
+  SparseStructureAdaptor()
+    : SSP(NULL)
+  {}
   virtual ~SparseStructureAdaptor() {}
 
   virtual std::string GetName() const = 0;
 
-  void InitStructure(const SparseStructureInterface *SS) {
-    SSP = dynamic_cast<const SparseStructure *>(SS);
+  void InitStructure(const SparseStructureInterface* SS)
+  {
+    SSP = dynamic_cast<const SparseStructure*>(SS);
     assert(SSP);
     _nnodes = SSP->n();
   }
@@ -75,9 +81,9 @@ public:
 
   virtual int n() const = 0;
   virtual int nentries() const = 0;
-  virtual void FillStencil(ColumnDiagStencil &S) const = 0;
+  virtual void FillStencil(ColumnDiagStencil& S) const = 0;
   virtual IntVector GetIndicesDirichlet(int inode,
-                                        const std::vector<int> &cv) const = 0;
+                                        const std::vector<int>& cv) const = 0;
 };
 } // namespace Gascoigne
 

@@ -27,14 +27,21 @@
 
 namespace Gascoigne {
 
-#define TEMPLATE template <class SOLVER, class PRECONDITIONER, class VECTOR>
+#define TEMPLATE template<class SOLVER, class PRECONDITIONER, class VECTOR>
 #define GMRESSPV GMRES<SOLVER, PRECONDITIONER, VECTOR>
 
 /********************************************************************/
 
 TEMPLATE
-inline GMRESSPV::GMRES(SOLVER &S_, PRECONDITIONER &P_, int vm)
-    : H(vm), gamma(vm + 1), ci(vm), si(vm), vmax(vm), S(S_), P(P_) {
+inline GMRESSPV::GMRES(SOLVER& S_, PRECONDITIONER& P_, int vm)
+  : H(vm)
+  , gamma(vm + 1)
+  , ci(vm)
+  , si(vm)
+  , vmax(vm)
+  , S(S_)
+  , P(P_)
+{
   left_precondition = 1;
   for (int i = 0; i < 3; i++) {
     new_memory();
@@ -44,7 +51,8 @@ inline GMRESSPV::GMRES(SOLVER &S_, PRECONDITIONER &P_, int vm)
 /********************************************************************/
 
 TEMPLATE
-inline GMRESSPV::~GMRES() {
+inline GMRESSPV::~GMRES()
+{
   for (int i = 0; i < mem.size(); ++i) {
     P.DeleteVector(mem[i]);
   }
@@ -54,7 +62,9 @@ inline GMRESSPV::~GMRES() {
 /********************************************************************/
 
 TEMPLATE
-inline void GMRESSPV::new_memory() {
+inline void
+GMRESSPV::new_memory()
+{
   int i = mem.size();
 
   std::string s = "gmres";
@@ -67,7 +77,9 @@ inline void GMRESSPV::new_memory() {
 /********************************************************************/
 
 TEMPLATE
-inline void GMRESSPV::init() {
+inline void
+GMRESSPV::init()
+{
   assert(H.size() == vmax);
   for (int i = 0; i < H.size(); i++) {
     H[i].zero();
@@ -81,7 +93,9 @@ inline void GMRESSPV::init() {
 /********************************************************************/
 
 TEMPLATE
-inline void GMRESSPV::givens_rotation(dvector &h, int col) {
+inline void
+GMRESSPV::givens_rotation(dvector& h, int col)
+{
   /*  Transformation into triagonal structure  */
 
   for (int i = 0; i < col; i++) {
@@ -100,8 +114,9 @@ inline void GMRESSPV::givens_rotation(dvector &h, int col) {
 /********************************************************************/
 
 TEMPLATE
-inline double GMRESSPV::orthogonalization(dvector &h, int dim,
-                                          VECTOR &vv) const {
+inline double
+GMRESSPV::orthogonalization(dvector& h, int dim, VECTOR& vv) const
+{
   for (int i = 0; i < dim; i++) {
     double d = S.ScalarProduct(vv, mem[i]);
     h[i] += d;
@@ -114,7 +129,9 @@ inline double GMRESSPV::orthogonalization(dvector &h, int dim,
 /********************************************************************/
 
 TEMPLATE
-inline bool GMRESSPV::reortho_test(const VECTOR &u, double norm) const {
+inline bool
+GMRESSPV::reortho_test(const VECTOR& u, double norm) const
+{
   bool test = 0;
   double delta = 1.e-3;
   double oldnorm = sqrt(S.ScalarProduct(u, u));
@@ -130,8 +147,12 @@ inline bool GMRESSPV::reortho_test(const VECTOR &u, double norm) const {
 /********************************************************************/
 
 TEMPLATE
-inline int GMRESSPV::restarted_solve(const Matrix &A, VECTOR &x,
-                                     const VECTOR &b, CGInfo &info) {
+inline int
+GMRESSPV::restarted_solve(const Matrix& A,
+                          VECTOR& x,
+                          const VECTOR& b,
+                          CGInfo& info)
+{
   int reached;
   for (int j = 0;; j++) {
     info.control().iteration() = j * (vmax - 1);
@@ -147,15 +168,16 @@ inline int GMRESSPV::restarted_solve(const Matrix &A, VECTOR &x,
 /********************************************************************/
 
 TEMPLATE
-inline int GMRESSPV::solve(const Matrix &A, VECTOR &x, const VECTOR &b,
-                           CGInfo &info) {
+inline int
+GMRESSPV::solve(const Matrix& A, VECTOR& x, const VECTOR& b, CGInfo& info)
+{
   init();
 
   int k0 = info.control().iteration();
 
   int reached = 0;
 
-  VECTOR &v = mem[0];
+  VECTOR& v = mem[0];
 
   VECTOR p("gmresp");
   // p.SetMultiLevelSolver(&P);
@@ -188,7 +210,7 @@ inline int GMRESSPV::solve(const Matrix &A, VECTOR &x, const VECTOR &b,
     if (dim >= mem.size()) {
       new_memory();
     }
-    VECTOR &vv = mem[dim];
+    VECTOR& vv = mem[dim];
     if (left_precondition) {
       S.vmulteq(A, p, mem[last], 1.);
       P.precondition(A, vv, p);
@@ -222,7 +244,9 @@ inline int GMRESSPV::solve(const Matrix &A, VECTOR &x, const VECTOR &b,
 /********************************************************************/
 
 TEMPLATE
-inline void GMRESSPV::solution(const Matrix &A, VECTOR &x, VECTOR &p, int dim) {
+inline void
+GMRESSPV::solution(const Matrix& A, VECTOR& x, VECTOR& p, int dim)
+{
   nmatrix<double> H1(dim + 1, dim);
   H1.zero();
   for (int j = 0; j < dim; j++) {

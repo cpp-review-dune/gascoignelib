@@ -35,135 +35,154 @@ typedef IntegrationFormulaBase<3> IntegrationFormula3d;
 
 /*------------------------------------------------------------*/
 
-class LineMidPoint : public IntegrationFormula1d {
+class LineMidPoint : public IntegrationFormula1d
+{
 public:
   LineMidPoint();
 };
 
 /*------------------------------------------------------------*/
 
-class LineTrapez : public IntegrationFormula1d {
+class LineTrapez : public IntegrationFormula1d
+{
 public:
   LineTrapez();
 };
 
 /*------------------------------------------------------------*/
 
-class LineSimpson : public IntegrationFormula1d {
+class LineSimpson : public IntegrationFormula1d
+{
 public:
   LineSimpson();
 };
 
 /*------------------------------------------------------------*/
 
-class LineGauss1 : public IntegrationFormula1d {
+class LineGauss1 : public IntegrationFormula1d
+{
 public:
   LineGauss1();
 };
 
 /*------------------------------------------------------------*/
 
-class LineGauss2 : public IntegrationFormula1d {
+class LineGauss2 : public IntegrationFormula1d
+{
 public:
   LineGauss2();
 };
 
 /*------------------------------------------------------------*/
 
-class LineGauss3 : public IntegrationFormula1d {
+class LineGauss3 : public IntegrationFormula1d
+{
 public:
   LineGauss3();
 };
 
 /*------------------------------------------------------------*/
 
-class LineGauss4 : public IntegrationFormula1d {
+class LineGauss4 : public IntegrationFormula1d
+{
 public:
   LineGauss4();
 };
 
 /*------------------------------------------------------------*/
 
-class LineGauss5 : public IntegrationFormula1d {
+class LineGauss5 : public IntegrationFormula1d
+{
 public:
   LineGauss5();
 };
 
 /*------------------------------------------------------------*/
 
-class LineGauss6 : public IntegrationFormula1d {
+class LineGauss6 : public IntegrationFormula1d
+{
 public:
   LineGauss6();
 };
 
 /*------------------------------------------------------------*/
 
-class LineGauss7 : public IntegrationFormula1d {
+class LineGauss7 : public IntegrationFormula1d
+{
 public:
   LineGauss7();
 };
 
 /*------------------------------------------------------------*/
 
-class LineGauss8 : public IntegrationFormula1d {
+class LineGauss8 : public IntegrationFormula1d
+{
 public:
   LineGauss8();
 };
 
 /*------------------------------------------------------------*/
 
-class LineGauss9 : public IntegrationFormula1d {
+class LineGauss9 : public IntegrationFormula1d
+{
 public:
   LineGauss9();
 };
 
 /*------------------------------------------------------------*/
 
-class LineGauss10 : public IntegrationFormula1d {
+class LineGauss10 : public IntegrationFormula1d
+{
 public:
   LineGauss10();
 };
 
 /*------------------------------------------------------------*/
 
-class LineGauss11 : public IntegrationFormula1d {
+class LineGauss11 : public IntegrationFormula1d
+{
 public:
   LineGauss11();
 };
 
 /*------------------------------------------------------------*/
 
-class LineGauss12 : public IntegrationFormula1d {
+class LineGauss12 : public IntegrationFormula1d
+{
 public:
   LineGauss12();
 };
 
 /*------------------------------------------------------------*/
 
-class LineGauss13 : public IntegrationFormula1d {
+class LineGauss13 : public IntegrationFormula1d
+{
 public:
   LineGauss13();
 };
 
 /*------------------------------------------------------------*/
 
-class LineGauss14 : public IntegrationFormula1d {
+class LineGauss14 : public IntegrationFormula1d
+{
 public:
   LineGauss14();
 };
 
 /*------------------------------------------------------------*/
 
-template <int N, class LineFormula>
-class TensorFormula2d : public IntegrationFormula2d {
+template<int N, class LineFormula>
+class TensorFormula2d : public IntegrationFormula2d
+{
 public:
   TensorFormula2d();
 };
 
 /*------------------------------------------------------------*/
 
-template <int N, class Line>
-class TensorFormula3d : public IntegrationFormula3d {
+template<int N, class Line>
+class TensorFormula3d : public IntegrationFormula3d
+{
 public:
   TensorFormula3d();
 };

@@ -57,42 +57,55 @@ namespace Gascoigne {
 // std::istream& operator>>(std::istream &s, std::set<std::string>& A);
 // std::istream& operator>>(std::istream &s, std::set<int>& A);
 
-template <typename T, size_t N>
-std::ostream &operator<<(std::ostream &s, const std::array<T, N> &A) {
+template<typename T, size_t N>
+std::ostream&
+operator<<(std::ostream& s, const std::array<T, N>& A)
+{
   copy(A.begin(), A.end(), std::ostream_iterator<T>(s, " "));
   return s;
 }
 
-template <typename T, size_t N>
-std::istream &operator>>(std::istream &s, std::array<T, N> &A) {
+template<typename T, size_t N>
+std::istream&
+operator>>(std::istream& s, std::array<T, N>& A)
+{
   auto p = A.begin();
   while (p != A.end())
     s >> *p++;
   return s;
 }
 
-template <typename T, size_t N>
-void ArrayBinWrite(std::ostream &s, const std::array<T, N> &A) {
+template<typename T, size_t N>
+void
+ArrayBinWrite(std::ostream& s, const std::array<T, N>& A)
+{
   int sizeT = sizeof(T);
-  s.write(reinterpret_cast<const char *>(A.data()), sizeT * N);
+  s.write(reinterpret_cast<const char*>(A.data()), sizeT * N);
 }
 
-template <typename T, size_t N>
-void ArrayBinRead(std::istream &s, std::array<T, N> &A) {
+template<typename T, size_t N>
+void
+ArrayBinRead(std::istream& s, std::array<T, N>& A)
+{
   int sizeT = sizeof(T);
-  s.read(reinterpret_cast<char *>(A.data()), sizeT * N);
+  s.read(reinterpret_cast<char*>(A.data()), sizeT * N);
 }
 
 /*----------------------------------------------*/
 
-template <class T>
-std::ostream &operator<<(std::ostream &s, const std::set<T> &A) {
+template<class T>
+std::ostream&
+operator<<(std::ostream& s, const std::set<T>& A)
+{
   std::ostream_iterator<T> os(s, " ");
   copy(A.begin(), A.end(), os);
   return s;
 }
 
-template <class T> std::istream &operator>>(std::istream &s, std::set<T> &A) {
+template<class T>
+std::istream&
+operator>>(std::istream& s, std::set<T>& A)
+{
   std::ostream_iterator<T> os(s, " ");
   copy(A.begin(), A.end(), os);
   return s;
@@ -100,15 +113,19 @@ template <class T> std::istream &operator>>(std::istream &s, std::set<T> &A) {
 
 /*---------------------------------------------*/
 
-template <class T>
-std::ostream &operator<<(std::ostream &s, const std::vector<T> &A) {
+template<class T>
+std::ostream&
+operator<<(std::ostream& s, const std::vector<T>& A)
+{
   std::ostream_iterator<T> os(s, " ");
   copy(A.begin(), A.end(), os);
   return s;
 }
 
-template <class T>
-std::istream &operator>>(std::istream &s, std::vector<T> &A) {
+template<class T>
+std::istream&
+operator>>(std::istream& s, std::vector<T>& A)
+{
   typename std::vector<T>::iterator p = A.begin();
   while (p != A.end())
     s >> *p++;
@@ -117,8 +134,10 @@ std::istream &operator>>(std::istream &s, std::vector<T> &A) {
 
 /*---------------------------------------------*/
 
-template <class T>
-std::ostream &putvector(const std::vector<T> &v, std::ostream &s) {
+template<class T>
+std::ostream&
+putvector(const std::vector<T>& v, std::ostream& s)
+{
   for (typename std::vector<T>::const_iterator p = v.begin(); p != v.end(); p++)
     p->put(s);
   return s;
@@ -126,8 +145,10 @@ std::ostream &putvector(const std::vector<T> &v, std::ostream &s) {
 
 /*------------------------------------------*/
 
-template <class T, class S>
-std::ostream &operator<<(std::ostream &os, const HASHMAP<T, S> &s) {
+template<class T, class S>
+std::ostream&
+operator<<(std::ostream& os, const HASHMAP<T, S>& s)
+{
   os << s.size() << std::endl;
   for (typename HASHMAP<T, S>::const_iterator p = s.begin(); p != s.end();
        p++) {
@@ -139,8 +160,10 @@ std::ostream &operator<<(std::ostream &os, const HASHMAP<T, S> &s) {
 
 /*------------------------------------------*/
 
-template <class T, class S>
-std::ostream &operator<<(std::ostream &os, const std::map<T, S> &s) {
+template<class T, class S>
+std::ostream&
+operator<<(std::ostream& os, const std::map<T, S>& s)
+{
   os << s.size() << std::endl;
   for (typename std::map<T, S>::const_iterator p = s.begin(); p != s.end();
        p++) {
@@ -152,39 +175,59 @@ std::ostream &operator<<(std::ostream &os, const std::map<T, S> &s) {
 
 /*---------------------------------------------*/
 
-void write_data(const GlobalVector &v, std::ostream &s);
-void read_data(GlobalVector &v, std::istream &s);
+void
+write_data(const GlobalVector& v, std::ostream& s);
+void
+read_data(GlobalVector& v, std::istream& s);
 
-void write_data(const int &v, std::ostream &s);
-void read_data(int &v, std::istream &s);
+void
+write_data(const int& v, std::ostream& s);
+void
+read_data(int& v, std::istream& s);
 
-template <size_t N, typename T>
-void write_data(const std::array<T, N> &v, std::ostream &s);
-template <size_t N, typename T>
-void read_data(std::array<T, N> &v, std::istream &s);
+template<size_t N, typename T>
+void
+write_data(const std::array<T, N>& v, std::ostream& s);
+template<size_t N, typename T>
+void
+read_data(std::array<T, N>& v, std::istream& s);
 
-void write_data(const double &v, std::ostream &s);
-void read_data(double &v, std::istream &s);
+void
+write_data(const double& v, std::ostream& s);
+void
+read_data(double& v, std::istream& s);
 
-void write_data(const std::string &v, std::ostream &s);
-void read_data(std::string &v, std::istream &s);
-
-/*---------------------------------------------*/
-
-template <class T> void write_data(const std::vector<T> &v, std::ostream &s);
-template <class T> void read_data(std::vector<T> &v, std::istream &s);
-
-/*---------------------------------------------*/
-
-template <class T> void write_data(const std::set<T> &v, std::ostream &s);
-template <class T> void read_data(std::set<T> &v, std::istream &s);
-
-/*---------------------------------------------*/
+void
+write_data(const std::string& v, std::ostream& s);
+void
+read_data(std::string& v, std::istream& s);
 
 /*---------------------------------------------*/
 
-template <class T, class S>
-void write_data(const std::map<T, S> &v, std::ostream &s) {
+template<class T>
+void
+write_data(const std::vector<T>& v, std::ostream& s);
+template<class T>
+void
+read_data(std::vector<T>& v, std::istream& s);
+
+/*---------------------------------------------*/
+
+template<class T>
+void
+write_data(const std::set<T>& v, std::ostream& s);
+template<class T>
+void
+read_data(std::set<T>& v, std::istream& s);
+
+/*---------------------------------------------*/
+
+/*---------------------------------------------*/
+
+template<class T, class S>
+void
+write_data(const std::map<T, S>& v, std::ostream& s)
+{
   s << v.size() << std::endl;
   for (typename std::map<T, S>::const_iterator it = v.begin(); it != v.end();
        ++it) {
@@ -197,7 +240,10 @@ void write_data(const std::map<T, S> &v, std::ostream &s) {
 
 /*---------------------------------------------*/
 
-template <class T, class S> void read_data(std::map<T, S> &v, std::istream &s) {
+template<class T, class S>
+void
+read_data(std::map<T, S>& v, std::istream& s)
+{
   size_t n;
   s >> n;
   for (int i = 0; i < n; ++i) {
@@ -210,8 +256,10 @@ template <class T, class S> void read_data(std::map<T, S> &v, std::istream &s) {
   }
 }
 
-template <class T, class S>
-void write_data(const HASHMAP<T, S> &v, std::ostream &s) {
+template<class T, class S>
+void
+write_data(const HASHMAP<T, S>& v, std::ostream& s)
+{
   s << v.size() << std::endl;
   for (typename HASHMAP<T, S>::const_iterator it = v.begin(); it != v.end();
        ++it) {
@@ -224,7 +272,10 @@ void write_data(const HASHMAP<T, S> &v, std::ostream &s) {
 
 /*---------------------------------------------*/
 
-template <class T, class S> void read_data(HASHMAP<T, S> &v, std::istream &s) {
+template<class T, class S>
+void
+read_data(HASHMAP<T, S>& v, std::istream& s)
+{
   size_t n;
   s >> n;
   for (int i = 0; i < n; ++i) {

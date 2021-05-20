@@ -37,22 +37,26 @@ namespace Gascoigne {
 ///
 /////////////////////////////////////////////
 
-class SimpleSparseStructureAdaptor : public SparseStructureAdaptor {
+class SimpleSparseStructureAdaptor : public SparseStructureAdaptor
+{
 public:
 private:
 protected:
 public:
-  SimpleSparseStructureAdaptor() : SparseStructureAdaptor() {}
+  SimpleSparseStructureAdaptor()
+    : SparseStructureAdaptor()
+  {}
 
   std::string GetName() const { return "Simple"; }
 
   int n() const { return n_base(); }
   int nentries() const { return nentries_base(); }
-  void FillStencil(ColumnDiagStencil &S) const;
+  void FillStencil(ColumnDiagStencil& S) const;
 
   int index(int i, int c) const { return i; }
 
-  IntVector GetIndicesDirichlet(int inode, const std::vector<int> &cv) const {
+  IntVector GetIndicesDirichlet(int inode, const std::vector<int>& cv) const
+  {
     return IntVector(1, inode);
   }
 };

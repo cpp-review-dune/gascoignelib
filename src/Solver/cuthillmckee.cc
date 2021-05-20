@@ -35,12 +35,13 @@ namespace Gascoigne {
 
 /* --------------------------------------------------------------- */
 
-CuthillMcKee::CuthillMcKee(const StencilInterface *s) {
+CuthillMcKee::CuthillMcKee(const StencilInterface* s)
+{
   S = 0;
   DS = 0;
   CS = 0;
-  CS = dynamic_cast<const ColumnStencil *>(s);
-  DS = dynamic_cast<const DynamicStencil *>(s);
+  CS = dynamic_cast<const ColumnStencil*>(s);
+  DS = dynamic_cast<const DynamicStencil*>(s);
   S = s;
   assert(CS || DS);
   assert(S);
@@ -48,7 +49,8 @@ CuthillMcKee::CuthillMcKee(const StencilInterface *s) {
 
 /* --------------------------------------------------------------- */
 
-CuthillMcKee::CuthillMcKee() {
+CuthillMcKee::CuthillMcKee()
+{
   //   M=0;
   DS = 0;
   CS = 0;
@@ -75,7 +77,9 @@ CuthillMcKee::CuthillMcKee() {
 
 /* --------------------------------------------------------------- */
 
-void CuthillMcKee::Permutate(IntVector &perm) {
+void
+CuthillMcKee::Permutate(IntVector& perm)
+{
   // mit metis graph aufbauen
   //
   // diese methode wird in StdSolver::PermutateIlu aufgerufen
@@ -128,8 +132,8 @@ void CuthillMcKee::Permutate(IntVector &perm) {
 
   for (int i = 0; i < n; ++i)
     Mperm[i] = perm[i];
-  METIS_NodeND(&n, &adj[0], &adjncy[0], NULL, &options[0], &Mperm[0],
-               &iperm[0]);
+  METIS_NodeND(
+    &n, &adj[0], &adjncy[0], NULL, &options[0], &Mperm[0], &iperm[0]);
   for (int i = 0; i < n; ++i)
     perm[i] = Mperm[i];
 
@@ -206,10 +210,13 @@ void CuthillMcKee::Permutate(IntVector &perm) {
 // }
 
 #ifdef __WITH_THREADS__
-void CuthillMcKee::Permutate(
-    IntVector &perm, const IntVector &nodes_in_domain,
-    const std::vector<std::vector<std::pair<int, int>>> &node2domain,
-    int domain) {
+void
+CuthillMcKee::Permutate(
+  IntVector& perm,
+  const IntVector& nodes_in_domain,
+  const std::vector<std::vector<std::pair<int, int>>>& node2domain,
+  int domain)
+{
   // mit metis graph aufbauen
   //
   // diese methode wird in StdSolver::PermutateIlu aufgerufen
@@ -294,8 +301,8 @@ void CuthillMcKee::Permutate(
   options[7] = 1;
   vector<int> iperm(n);
 
-  METIS_NodeND(&n, &adj[0], &adjncy[0], &numflag, &options[0], &perm[0],
-               &iperm[0]);
+  METIS_NodeND(
+    &n, &adj[0], &adjncy[0], &numflag, &options[0], &perm[0], &iperm[0]);
   // perm ist nun der Vector bei dem perm[i] sagt, das der Knoten
   // nodes_of_domain[i] auf nodes_of_domain_[perm[i]] abgebilded  wird.
 }

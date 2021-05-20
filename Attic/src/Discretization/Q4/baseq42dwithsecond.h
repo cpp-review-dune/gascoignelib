@@ -39,14 +39,15 @@ namespace Gascoigne {
 
 /**************************************************/
 
-class BaseQ42dWithSecond : public BaseQ42d {
+class BaseQ42dWithSecond : public BaseQ42d
+{
 protected:
   mutable DoubleVector dxx, dxy, dyy;
 
 public:
   BaseQ42dWithSecond();
 
-  void point(const Vertex2d &s) const;
+  void point(const Vertex2d& s) const;
 
   double phi_xx(int i) const { return dxx[i]; }
   double phi_yy(int i) const { return dyy[i]; }

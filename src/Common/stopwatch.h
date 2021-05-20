@@ -45,7 +45,8 @@ namespace Gascoigne {
  * StopWatch that measure the 'real time'
  *
  **/
-class StopWatch {
+class StopWatch
+{
 protected:
   std::chrono::high_resolution_clock::time_point last_time;
   std::chrono::duration<double> sum_time;
@@ -54,28 +55,35 @@ protected:
 
 public:
   StopWatch()
-      : sum_time(std::chrono::duration<double>::zero()), running(false) {}
+    : sum_time(std::chrono::duration<double>::zero())
+    , running(false)
+  {}
 
-  virtual void reset() {
+  virtual void reset()
+  {
     sum_time = std::chrono::duration<double>::zero();
     running = false;
   }
-  virtual void start() {
+  virtual void start()
+  {
     assert(!running);
     last_time = std::chrono::high_resolution_clock::now();
   }
-  virtual void stop() {
+  virtual void stop()
+  {
     std::chrono::high_resolution_clock::time_point now =
-        std::chrono::high_resolution_clock::now();
+      std::chrono::high_resolution_clock::now();
     running = false;
     sum_time += std::chrono::duration_cast<std::chrono::duration<double>>(
-        now - last_time);
+      now - last_time);
   }
-  virtual double read() const {
+  virtual double read() const
+  {
     assert(!running);
     return sum_time.count();
   }
-  virtual double read100() const {
+  virtual double read100() const
+  {
     return static_cast<double>(static_cast<int>(read() * 100)) / 100.0;
   }
 };
@@ -86,32 +94,40 @@ public:
  *
  **/
 
-class CPUStopWatch : public StopWatch {
+class CPUStopWatch : public StopWatch
+{
 protected:
   std::clock_t last_time;
   double sum_time;
 
 public:
-  CPUStopWatch() : sum_time(0) {}
+  CPUStopWatch()
+    : sum_time(0)
+  {}
 
-  void reset() {
+  void reset()
+  {
     sum_time = 0;
     running = false;
   }
-  void start() {
+  void start()
+  {
     assert(!running);
     last_time = std::clock();
   }
-  void stop() {
+  void stop()
+  {
     std::clock_t now = std::clock();
     running = false;
     sum_time += static_cast<double>(now - last_time) / CLOCKS_PER_SEC;
   }
-  double read() const {
+  double read() const
+  {
     assert(!running);
     return sum_time;
   }
-  double read100() const {
+  double read100() const
+  {
     return static_cast<double>(static_cast<int>(read() * 100)) / 100.0;
   }
 };
@@ -124,7 +140,8 @@ public:
  *
  **/
 
-class Timer {
+class Timer
+{
 protected:
   std::map<std::string, StopWatch> watches;
   std::map<std::string, CPUStopWatch> cpuwatches;
@@ -132,12 +149,14 @@ protected:
   std::map<std::string, size_t> counters;
 
 public:
-  void reset() {
+  void reset()
+  {
     watches.clear();
     cpuwatches.clear();
     counters.clear();
   }
-  void reset(const std::string &label) {
+  void reset(const std::string& label)
+  {
     auto it = watches.find(label);
     assert(it != watches.end());
     watches.erase(it);
@@ -151,50 +170,58 @@ public:
     counters.erase(counter);
   }
 
-  void start(const std::string &label) {
+  void start(const std::string& label)
+  {
     watches[label].start();
     cpuwatches[label].start();
   }
 
-  void stop(const std::string &label) {
+  void stop(const std::string& label)
+  {
     assert(watches.find(label) != watches.end());
     assert(cpuwatches.find(label) != cpuwatches.end());
     watches[label].stop();
     cpuwatches[label].stop();
   }
 
-  void count(const std::string &label) { counters[label]++; }
+  void count(const std::string& label) { counters[label]++; }
 
-  double read(const std::string &label) const {
+  double read(const std::string& label) const
+  {
     auto it = watches.find(label);
     assert(it != watches.end());
     return it->second.read();
   }
 
-  double read100(const std::string &label) const {
+  double read100(const std::string& label) const
+  {
     auto it = watches.find(label);
     assert(it != watches.end());
     return it->second.read100();
   }
 
-  double cpuread(const std::string &label) const {
+  double cpuread(const std::string& label) const
+  {
     auto it = cpuwatches.find(label);
     assert(it != cpuwatches.end());
     return it->second.read();
   }
-  double cpuread100(const std::string &label) const {
+  double cpuread100(const std::string& label) const
+  {
     auto it = cpuwatches.find(label);
     assert(it != cpuwatches.end());
     return it->second.read100();
   }
 
-  size_t counterread(const std::string &label) const {
+  size_t counterread(const std::string& label) const
+  {
     auto it = counters.find(label);
     assert(it != counters.end());
     return it->second;
   }
 
-  void print(const std::string &label) const {
+  void print(const std::string& label) const
+  {
     auto it = watches.find(label);
     assert(it != watches.end());
     auto cit = cpuwatches.find(label);
@@ -205,7 +232,8 @@ public:
               << cit->second.read() << std::endl;
   }
 
-  void print100(const std::string &label) const {
+  void print100(const std::string& label) const
+  {
     auto it = watches.find(label);
     assert(it != watches.end());
     auto cit = cpuwatches.find(label);
@@ -215,7 +243,8 @@ public:
               << cit->second.read100() << std::endl;
   }
 
-  void print100tofile(const std::string &filename) const {
+  void print100tofile(const std::string& filename) const
+  {
     std::ofstream watch_logfile(filename);
     watch_logfile.precision(12);
     for (auto it : watches) {
@@ -230,7 +259,8 @@ public:
     watch_logfile.close();
   }
 
-  void print() const {
+  void print() const
+  {
     std::cout << std::showpoint << std::fixed << std::setprecision(6);
     for (auto it : watches) {
       print(it.first);
@@ -242,7 +272,8 @@ public:
     std::cout << std::endl << std::noshowpoint;
   }
 
-  void print100() const {
+  void print100() const
+  {
     for (auto it : watches) {
       print100(it.first);
     }

@@ -38,21 +38,28 @@ namespace Gascoigne {
 ///
 //////////////////////////////////////////////
 
-class SplittingSolver : public TimeSolver {
+class SplittingSolver : public TimeSolver
+{
 protected:
-  MatrixInterface *_MAP2;
-  IluInterface *_MIP2;
-  DiscretizationInterface *_ZP2;
+  MatrixInterface* _MAP2;
+  IluInterface* _MIP2;
+  DiscretizationInterface* _ZP2;
   const ProblemDescriptorInterface *PD1, *PD2;
 
-  virtual DiscretizationInterface *CreateDiscretization_1() const = 0;
-  virtual DiscretizationInterface *CreateDiscretization_2() const = 0;
+  virtual DiscretizationInterface* CreateDiscretization_1() const = 0;
+  virtual DiscretizationInterface* CreateDiscretization_2() const = 0;
 
 public:
   SplittingSolver()
-      : TimeSolver(), _MAP2(NULL), _MIP2(NULL), _ZP2(NULL), PD1(NULL),
-        PD2(NULL) {}
-  ~SplittingSolver() {
+    : TimeSolver()
+    , _MAP2(NULL)
+    , _MIP2(NULL)
+    , _ZP2(NULL)
+    , PD1(NULL)
+    , PD2(NULL)
+  {}
+  ~SplittingSolver()
+  {
     if (_MAP2)
       delete _MAP2;
     _MAP2 = NULL;
@@ -63,7 +70,8 @@ public:
       delete _ZP2;
     _ZP2 = NULL;
   }
-  void SetProblem(const ProblemDescriptorInterface &PDX) {
+  void SetProblem(const ProblemDescriptorInterface& PDX)
+  {
     if (PD1 == NULL) {
       PD1 = &PDX;
     } else if (PD2 == NULL) {
@@ -71,15 +79,17 @@ public:
     }
     TimeSolver::SetProblem(PDX);
   }
-  void NewMesh(const MeshInterface *mp) {
+  void NewMesh(const MeshInterface* mp)
+  {
     TimeSolver::NewMesh(mp);
     _ZP2->ReInit(mp);
   }
-  void RegisterMatrix() {
+  void RegisterMatrix()
+  {
     if (GetProblemDescriptor() == PD1)
       TimeSolver::RegisterMatrix();
     else if (GetProblemDescriptor() == PD2) {
-      const Equation *EQ = GetProblemDescriptor()->GetEquation();
+      const Equation* EQ = GetProblemDescriptor()->GetEquation();
       assert(EQ);
       int ncomp = EQ->GetNcomp();
       if (_MAP2 == NULL)
@@ -89,35 +99,40 @@ public:
     } else
       abort();
   }
-  MatrixInterface *GetMatrix() const {
+  MatrixInterface* GetMatrix() const
+  {
     if (GetProblemDescriptor() == PD1)
       return TimeSolver::GetMatrix();
     else if (GetProblemDescriptor() == PD2)
       return _MAP2;
     abort();
   }
-  IluInterface *GetIlu() const {
+  IluInterface* GetIlu() const
+  {
     if (GetProblemDescriptor() == PD1)
       return TimeSolver::GetIlu();
     else if (GetProblemDescriptor() == PD2)
       return _MIP2;
     abort();
   }
-  const DiscretizationInterface *GetDiscretization() const {
+  const DiscretizationInterface* GetDiscretization() const
+  {
     if (GetProblemDescriptor() == PD1)
       return _ZP;
     else if (GetProblemDescriptor() == PD2)
       return _ZP2;
     abort();
   }
-  DiscretizationInterface *GetDiscretization() {
+  DiscretizationInterface* GetDiscretization()
+  {
     if (GetProblemDescriptor() == PD1)
       return _ZP;
     else if (GetProblemDescriptor() == PD2)
       return _ZP2;
     abort();
   }
-  void BasicInit(const ParamFile *paramfile, const int dimension) {
+  void BasicInit(const ParamFile* paramfile, const int dimension)
+  {
     _paramfile = paramfile;
     _facediscname = "none";
     _useUMFPACK = 0;

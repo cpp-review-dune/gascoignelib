@@ -33,8 +33,10 @@ using namespace std;
 /*---------------------------------------------------*/
 
 namespace Gascoigne {
-LevelMesh2d::LevelMesh2d(const HierarchicalMesh *hmp) : Index() {
-  HMP = dynamic_cast<const HierarchicalMesh2d *>(hmp);
+LevelMesh2d::LevelMesh2d(const HierarchicalMesh* hmp)
+  : Index()
+{
+  HMP = dynamic_cast<const HierarchicalMesh2d*>(hmp);
 }
 
 /*---------------------------------------------------*/
@@ -43,7 +45,9 @@ LevelMesh2d::~LevelMesh2d() {}
 
 /*---------------------------------------------------*/
 
-bool LevelMesh2d::EdgeIsHangingGlobalIndex(int i) const {
+bool
+LevelMesh2d::EdgeIsHangingGlobalIndex(int i) const
+{
   int igm = HMP->edge(i).master();
   int igs = HMP->edge(i).slave();
 
@@ -66,14 +70,18 @@ bool LevelMesh2d::EdgeIsHangingGlobalIndex(int i) const {
 
 /*---------------------------------------------------*/
 
-void LevelMesh2d::BasicInit(const IntSet &newq, const IntSet &oldq) {
+void
+LevelMesh2d::BasicInit(const IntSet& newq, const IntSet& oldq)
+{
   // doch sortiert
 
   int n = newq.size() + oldq.size();
   Index::Quadl2g().memory(n);
-  IntVector::const_iterator p =
-      set_union(newq.begin(), newq.end(), oldq.begin(), oldq.end(),
-                Index::Quadl2g().begin());
+  IntVector::const_iterator p = set_union(newq.begin(),
+                                          newq.end(),
+                                          oldq.begin(),
+                                          oldq.end(),
+                                          Index::Quadl2g().begin());
   n = p - Index::Quadl2g().begin();
 
   InitCells(n);
@@ -83,7 +91,9 @@ void LevelMesh2d::BasicInit(const IntSet &newq, const IntSet &oldq) {
 
 /*-----------------------------------------*/
 
-void LevelMesh2d::InitCells(int n) {
+void
+LevelMesh2d::InitCells(int n)
+{
   Index::Quadl2g().memory(n);
 
   sort(Index::Quadl2g().begin(), Index::Quadl2g().end(), LevelSorter2d(*HMP));
@@ -93,7 +103,9 @@ void LevelMesh2d::InitCells(int n) {
 
 /*-----------------------------------------*/
 
-void LevelMesh2d::InitNodes(int n) {
+void
+LevelMesh2d::InitNodes(int n)
+{
   IntSet nodes;
   for (int i = 0; i < n; i++) {
     int ind = Index::Quadl2g()[i];
@@ -106,11 +118,13 @@ void LevelMesh2d::InitNodes(int n) {
 
 /*-----------------------------------------*/
 
-void LevelMesh2d::InitEdges(int n) {
+void
+LevelMesh2d::InitEdges(int n)
+{
   // edges
   IntSet edges;
   for (int i = 0; i < n; i++) {
-    const Quad &Q = HMP->quad(Index::Quadl2g()[i]);
+    const Quad& Q = HMP->quad(Index::Quadl2g()[i]);
     for (int ii = 0; ii < 4; ii++) {
       edges.insert(Q.edge(ii));
     }
@@ -129,15 +143,17 @@ void LevelMesh2d::InitEdges(int n) {
 
 /*-----------------------------------------*/
 
-bool LevelMesh2d::BuildFathers(set<int> &Vaeter) const {
+bool
+LevelMesh2d::BuildFathers(set<int>& Vaeter) const
+{
   for (int i = 0; i < ncells(); i++) {
-    const Quad &q = quad(i);
+    const Quad& q = quad(i);
     int findex = q.father();
     if (findex == -1) {
       return 0;
     }
 
-    const Quad &qf = HMP->quad(findex);
+    const Quad& qf = HMP->quad(findex);
     for (int ii = 0; ii < qf.nchilds(); ii++) {
       int cindex = qf.child(ii);
       if (Quadg2lCheck(cindex) == -2) {
@@ -151,7 +167,9 @@ bool LevelMesh2d::BuildFathers(set<int> &Vaeter) const {
 
 /*-----------------------------------------*/
 
-bool LevelMesh2d::ConstructCellIndOfPatch(IntVector &dst) const {
+bool
+LevelMesh2d::ConstructCellIndOfPatch(IntVector& dst) const
+{
   set<int> Vaeter;
   BuildFathers(Vaeter);
 
@@ -172,7 +190,9 @@ bool LevelMesh2d::ConstructCellIndOfPatch(IntVector &dst) const {
 
 /*-----------------------------------------*/
 
-void LevelMesh2d::ConstructIndOfPatch(nvector<IntVector> &dst) const {
+void
+LevelMesh2d::ConstructIndOfPatch(nvector<IntVector>& dst) const
+{
   set<int> Vaeter;
   BuildFathers(Vaeter);
 
@@ -184,7 +204,7 @@ void LevelMesh2d::ConstructIndOfPatch(nvector<IntVector> &dst) const {
   set<int>::const_iterator pf = Vaeter.begin();
   while (pf != Vaeter.end()) {
     int findex = *pf;
-    const Quad &qf = HMP->quad(findex);
+    const Quad& qf = HMP->quad(findex);
 
     std::array<int, 4> FineQuads;
     for (int ii = 0; ii < qf.nchilds(); ii++) {
@@ -207,12 +227,14 @@ void LevelMesh2d::ConstructIndOfPatch(nvector<IntVector> &dst) const {
 
 /*---------------------------------------------------*/
 
-void LevelMesh2d::ConstructHangingStructureQuadratic(
-    QuadraticHNStructure3 &hnq2) const {
+void
+LevelMesh2d::ConstructHangingStructureQuadratic(
+  QuadraticHNStructure3& hnq2) const
+{
   hnq2.clear();
   set<int> habschon;
   for (int i = 0; i < ncells(); i++) {
-    const Quad &q = HMP->quad(Quadl2g(i));
+    const Quad& q = HMP->quad(Quadl2g(i));
     int father = q.father();
     if (father < 0)
       continue;
@@ -223,7 +245,7 @@ void LevelMesh2d::ConstructHangingStructureQuadratic(
       int neighbour = HMP->neighbour(father, in);
       if (neighbour < 0)
         continue;
-      const Quad &qfn = HMP->quad(neighbour);
+      const Quad& qfn = HMP->quad(neighbour);
       if (qfn.nchilds() == 0)
         continue;
 
@@ -245,7 +267,7 @@ void LevelMesh2d::ConstructHangingStructureQuadratic(
       int child = childs[0];
       if (Quadg2lCheck(child) >= 0)
         continue;
-      const Quad &qfc = HMP->quad(child);
+      const Quad& qfc = HMP->quad(child);
 
       if (qfc.nchilds() == 0)
         continue;
@@ -269,7 +291,7 @@ void LevelMesh2d::ConstructHangingStructureQuadratic(
 
       hnq2.insert(make_pair(hn, F));
 
-      const Quad &qfc2 = HMP->quad(childs[1]);
+      const Quad& qfc2 = HMP->quad(childs[1]);
       hn = Vertexg2l(HMP->QuadLawOrder().edge_vertex(qfc2, ne));
 
       swap(F[0], F[2]);
@@ -281,17 +303,18 @@ void LevelMesh2d::ConstructHangingStructureQuadratic(
 
 /*---------------------------------------------------*/
 
-void LevelMesh2d::ConstructHangingStructureQuartic(
-    QuarticHNStructure5 &hnq4) const {
+void
+LevelMesh2d::ConstructHangingStructureQuartic(QuarticHNStructure5& hnq4) const
+{
   hnq4.clear();
   assert(HMP->patchdepth() >= 2);
   int count = 0;
   std::set<int> habschon;
   for (int i = 0; i < ncells(); ++i) {
-    const Quad &q_c = HMP->quad(Quadl2g(i));
+    const Quad& q_c = HMP->quad(Quadl2g(i));
     int father_c = q_c.father();
     assert(father_c >= 0);
-    const Quad &f_c = HMP->quad(father_c);
+    const Quad& f_c = HMP->quad(father_c);
     int opa_c = f_c.father();
     assert(opa_c >= 0);
 
@@ -306,7 +329,7 @@ void LevelMesh2d::ConstructHangingStructureQuartic(
       // Nachbar existiert nicht
       if (opa_r < 0)
         continue;
-      const Quad &o_r = HMP->quad(opa_r);
+      const Quad& o_r = HMP->quad(opa_r);
       // muss einmal verfeinert sein
       assert(o_r.nchilds() != 0);
 
@@ -327,13 +350,13 @@ void LevelMesh2d::ConstructHangingStructureQuartic(
       HMP->QuadLawOrder().childs_of_edge(fathers_r, o_r, ne);
 
       // wenn gleiches Level, dann haengt nix.
-      const Quad &f0_r = HMP->quad(fathers_r[0]);
-      const Quad &f1_r = HMP->quad(fathers_r[1]);
+      const Quad& f0_r = HMP->quad(fathers_r[0]);
+      const Quad& f1_r = HMP->quad(fathers_r[1]);
       // groeber?
       if (f0_r.nchilds() == 0)
         continue;
       // gleiches level?
-      const Quad &q0_r = HMP->quad(f0_r.child(0));
+      const Quad& q0_r = HMP->quad(f0_r.child(0));
       if (q0_r.nchilds() == 0)
         continue;
 
@@ -384,7 +407,9 @@ void LevelMesh2d::ConstructHangingStructureQuartic(
 
 /*---------------------------------------------------*/
 
-void LevelMesh2d::check_leveljump() const {
+void
+LevelMesh2d::check_leveljump() const
+{
   LevelJumper Phi;
   for (int c = 0; c < ncells(); c++) {
     Phi.update(quad(c));
@@ -395,9 +420,11 @@ void LevelMesh2d::check_leveljump() const {
 
 /*---------------------------------------------------*/
 
-void LevelMesh2d::fill_opis(IntSet &dst, IntSet &oldquads) const {
+void
+LevelMesh2d::fill_opis(IntSet& dst, IntSet& oldquads) const
+{
   for (int i = 0; i < ncells(); i++) {
-    const Quad &Q = quad(i);
+    const Quad& Q = quad(i);
 
     int f = Q.father();
     assert(f >= 0);
@@ -415,7 +442,9 @@ void LevelMesh2d::fill_opis(IntSet &dst, IntSet &oldquads) const {
 
 /*---------------------------------------------------*/
 
-void LevelMesh2d::fill_childs(IntSet &dst, const Quad &Q) const {
+void
+LevelMesh2d::fill_childs(IntSet& dst, const Quad& Q) const
+{
   for (int ii = 0; ii < Q.nchilds(); ii++) {
     int qccindex = Q.child(ii);
     dst.insert(qccindex);
@@ -424,10 +453,12 @@ void LevelMesh2d::fill_childs(IntSet &dst, const Quad &Q) const {
 
 /*---------------------------------------------------*/
 
-void LevelMesh2d::fill_enkel(IntSet &oldquads, const Quad &Q) const {
+void
+LevelMesh2d::fill_enkel(IntSet& oldquads, const Quad& Q) const
+{
   for (int ii = 0; ii < Q.nchilds(); ii++) {
     int qccindex = Q.child(ii);
-    const Quad &qcc = HMP->quad(qccindex);
+    const Quad& qcc = HMP->quad(qccindex);
     for (int iii = 0; iii < qcc.nchilds(); iii++) {
       int qcindex = qcc.child(iii);
       if (Quadg2lCheck(qcindex) >= 0) {
@@ -439,10 +470,12 @@ void LevelMesh2d::fill_enkel(IntSet &oldquads, const Quad &Q) const {
 
 /*---------------------------------------------------*/
 
-bool LevelMesh2d::EnkelUniform(const Quad &Q) const {
+bool
+LevelMesh2d::EnkelUniform(const Quad& Q) const
+{
   for (int ii = 0; ii < Q.nchilds(); ii++) {
     int qccindex = Q.child(ii);
-    const Quad &qcc = HMP->quad(qccindex);
+    const Quad& qcc = HMP->quad(qccindex);
     for (int iii = 0; iii < qcc.nchilds(); iii++) {
       int qcindex = qcc.child(iii);
       if (Quadg2lCheck(qcindex) == -2) {
@@ -455,7 +488,9 @@ bool LevelMesh2d::EnkelUniform(const Quad &Q) const {
 
 /*---------------------------------------------------*/
 
-void LevelMesh2d::construct_lists(IntSet &newquads, IntSet &oldquads) const {
+void
+LevelMesh2d::construct_lists(IntSet& newquads, IntSet& oldquads) const
+{
   newquads.clear();
   oldquads.clear();
 
@@ -464,7 +499,7 @@ void LevelMesh2d::construct_lists(IntSet &newquads, IntSet &oldquads) const {
   set<int> Opis;
   fill_opis(Opis, oldquads);
   for (set<int>::const_iterator p = Opis.begin(); p != Opis.end(); p++) {
-    const Quad &Q = HMP->quad(*p);
+    const Quad& Q = HMP->quad(*p);
 
     if (EnkelUniform(Q)) {
       fill_childs(newquads, Q);
@@ -489,10 +524,10 @@ void LevelMesh2d::construct_lists(IntSet &newquads, IntSet &oldquads) const {
     // int rep=0;
     IntSet help(newquads);
     for (p = newquads.begin(); p != newquads.end(); p++) {
-      const Quad &q = HMP->quad(*p);
+      const Quad& q = HMP->quad(*p);
       if (!Phi.VertexOK(q)) {
         // rep++;
-        const Quad &qf = HMP->quad(q.father());
+        const Quad& qf = HMP->quad(q.father());
         for (int ii = 0; ii < 4; ii++) {
           help.erase(qf.child(ii));
         }
@@ -506,8 +541,10 @@ void LevelMesh2d::construct_lists(IntSet &newquads, IntSet &oldquads) const {
 
 /*---------------------------------------------------*/
 
-void LevelMesh2d::InitBoundaryHandler(BoundaryIndexHandler &BI,
-                                      const PatchIndexHandler &PIH) const {
+void
+LevelMesh2d::InitBoundaryHandler(BoundaryIndexHandler& BI,
+                                 const PatchIndexHandler& PIH) const
+{
   IntSet blines;
   for (int i = 0; i < HMP->nblines(); i++) {
     int q = HMP->bline(i).of_quad();
@@ -519,7 +556,7 @@ void LevelMesh2d::InitBoundaryHandler(BoundaryIndexHandler &BI,
   // which colors are there ?
   BI.clear();
   for (IntSet::const_iterator p = blines.begin(); p != blines.end(); p++) {
-    const BoundaryLine &bl = HMP->bline(*p);
+    const BoundaryLine& bl = HMP->bline(*p);
     int col = bl.material();
 
     BI.GetColors().insert(col);
@@ -540,7 +577,7 @@ void LevelMesh2d::InitBoundaryHandler(BoundaryIndexHandler &BI,
   vector<set<std::array<int, 2>>> H2(nc);
 
   for (IntSet::const_iterator q = blines.begin(); q != blines.end(); q++) {
-    const BoundaryLine &bl = HMP->bline(*q);
+    const BoundaryLine& bl = HMP->bline(*q);
     int col = bl.material();
 
     map<int, int>::const_iterator p = inv.find(col);
@@ -578,7 +615,7 @@ void LevelMesh2d::InitBoundaryHandler(BoundaryIndexHandler &BI,
     BI.GetLocal().insert(make_pair(color, v2));
   }
 
-  const nvector<IntVector> &patch2cell = PIH.GetAllPatch2Cell();
+  const nvector<IntVector>& patch2cell = PIH.GetAllPatch2Cell();
 
   nvector<int> cell2patch(PIH.npatches() << 2);
   for (int p = 0; p < patch2cell.size(); ++p)
@@ -586,10 +623,11 @@ void LevelMesh2d::InitBoundaryHandler(BoundaryIndexHandler &BI,
       cell2patch[patch2cell[p][i]] = p;
 
   for (IntSet::const_iterator c = BI.GetColors().begin();
-       c != BI.GetColors().end(); c++) {
+       c != BI.GetColors().end();
+       c++) {
     int col = *c;
-    const IntVector &cells = BI.Cells(col);
-    const IntVector &locals = BI.Localind(col);
+    const IntVector& cells = BI.Cells(col);
+    const IntVector& locals = BI.Localind(col);
     HASHSET<int> habschon;
 
     IntVector p1;

@@ -29,12 +29,16 @@
 /*-----------------------------------------*/
 
 namespace Gascoigne {
-class OneDirichletData : public DirichletData {
+class OneDirichletData : public DirichletData
+{
 protected:
 public:
-  OneDirichletData() : DirichletData() {}
+  OneDirichletData()
+    : DirichletData()
+  {}
   std::string GetName() const { return "One"; }
-  void operator()(Vector &b, const Vertex2d &v, int col) const {
+  void operator()(Vector& b, const Vertex2d& v, int col) const
+  {
     b.zero();
     b[0] = 1.;
   }

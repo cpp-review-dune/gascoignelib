@@ -30,7 +30,8 @@
 /***************************************************************/
 
 namespace Gascoigne {
-class VisuCompVector : public VisuData {
+class VisuCompVector : public VisuData
+{
 protected:
   typedef DoubleVector::iterator pointer;
   typedef DoubleVector::const_iterator const_pointer;
@@ -39,15 +40,23 @@ protected:
   int ncomp;
 
 public:
-  VisuCompVector(const DoubleVector &u) : uR(&u), zR(0) { ncomp = u.ncomp(); }
-  VisuCompVector(const DoubleVector &u, const DoubleVector &z)
-      : uR(&u), zR(&z) {
+  VisuCompVector(const DoubleVector& u)
+    : uR(&u)
+    , zR(0)
+  {
+    ncomp = u.ncomp();
+  }
+  VisuCompVector(const DoubleVector& u, const DoubleVector& z)
+    : uR(&u)
+    , zR(&z)
+  {
     ncomp = u.ncomp() + z.ncomp();
   }
 
   int visucomp() const { return ncomp; }
   int visun() const { return uR->n(); }
-  double visudata(int i, int c) const {
+  double visudata(int i, int c) const
+  {
     if (c < uR->ncomp())
       return (*uR)(i, c);
     return (*zR)(i, c - uR->ncomp());

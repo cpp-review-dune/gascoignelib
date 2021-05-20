@@ -6,7 +6,9 @@ using namespace std;
 /*-----------------------------------------*/
 
 namespace Gascoigne {
-template <int DIM> SolidEuler<DIM>::SolidEuler(const ParamFile *pf) {
+template<int DIM>
+SolidEuler<DIM>::SolidEuler(const ParamFile* pf)
+{
   DataFormatHandler DFH;
   DFH.insert("rho_s", &rho_s, 0.0);
   DFH.insert("lambda_s", &lambda_s, 0.0);
@@ -30,7 +32,10 @@ template <int DIM> SolidEuler<DIM>::SolidEuler(const ParamFile *pf) {
 
 //////////////////////////////////////////////////
 /*--------------------------------------------------------------------*/
-template <int DIM> void SolidEuler<DIM>::point_cell(int material) const {
+template<int DIM>
+void
+SolidEuler<DIM>::point_cell(int material) const
+{
   if (material == 1)
     domain = 1;
   if (material == 2)
@@ -39,9 +44,12 @@ template <int DIM> void SolidEuler<DIM>::point_cell(int material) const {
 /*--------------------------------------------------------------------*/
 #include "multiplex_solid_euler.xx"
 
-template <int DIM>
-void SolidEuler<DIM>::point(double h, const FemFunction &U,
-                            const Vertex<DIM> &v) const {
+template<int DIM>
+void
+SolidEuler<DIM>::point(double h,
+                       const FemFunction& U,
+                       const Vertex<DIM>& v) const
+{
   //__h = h;
   //__v = v;
 
@@ -58,24 +66,27 @@ void SolidEuler<DIM>::point(double h, const FemFunction &U,
     __j = __f.determinant();
 
     if (mat_law == "STVK") {
-      __e = 0.5 *
-            (__f.inverse().transpose() * __f.inverse() - MATRIX::Identity());
+      __e =
+        0.5 * (__f.inverse().transpose() * __f.inverse() - MATRIX::Identity());
       SIGMAs = (2.0 * mu_s * __e + lambda_s * __e.trace() * MATRIX::Identity());
     } else if (mat_law == "artery") {
       __c = __f.inverse().transpose() * __f.inverse();
       SIGMAs =
-          mu_s * pow(__j, 2.0 / 3.0) *
-              (MATRIX::Identity() - 1.0 / 3.0 * __c.trace() * __c.inverse()) +
-          0.5 * kapa_s * (pow(__j, -2.0) - 1.0) * __c.inverse();
+        mu_s * pow(__j, 2.0 / 3.0) *
+          (MATRIX::Identity() - 1.0 / 3.0 * __c.trace() * __c.inverse()) +
+        0.5 * kapa_s * (pow(__j, -2.0) - 1.0) * __c.inverse();
     } else
       abort();
     sigmas = __j * __f.inverse() * SIGMAs * __f.inverse().transpose();
   }
 }
 
-template <int DIM>
-void SolidEuler<DIM>::Form(VectorIterator b, const FemFunction &U,
-                           const TestFunction &N) const {
+template<int DIM>
+void
+SolidEuler<DIM>::Form(VectorIterator b,
+                      const FemFunction& U,
+                      const TestFunction& N) const
+{
   // phi =nabla N;
   VECTOR phi;
   multiplex_solid_euler_init_test<DIM>(phi, N);
@@ -109,10 +120,13 @@ void SolidEuler<DIM>::Form(VectorIterator b, const FemFunction &U,
   }
 }
 
-template <int DIM>
-void SolidEuler<DIM>::Matrix(EntryMatrix &A, const FemFunction &U,
-                             const TestFunction &M,
-                             const TestFunction &N) const {
+template<int DIM>
+void
+SolidEuler<DIM>::Matrix(EntryMatrix& A,
+                        const FemFunction& U,
+                        const TestFunction& M,
+                        const TestFunction& N) const
+{
   if (domain > 0) // solid
   {
     VECTOR phi;
@@ -132,66 +146,69 @@ void SolidEuler<DIM>::Matrix(EntryMatrix &A, const FemFunction &U,
   }
 }
 
-template <int DIM>
-void SolidEuler<DIM>::point_M(int j, const FemFunction &U,
-                              const TestFunction &M) const {
+template<int DIM>
+void
+SolidEuler<DIM>::point_M(int j,
+                         const FemFunction& U,
+                         const TestFunction& M) const
+{
   if (domain > 0) // solid
   {
     VECTOR psi;
     multiplex_solid_euler_init_test<DIM>(psi, M);
     for (int jj = 0; jj < DIM; ++jj) {
       if (mat_law == "STVK") {
-        MATRIX ej = 0.5 * (__f.inverse().transpose() * psi *
-                               __f.inverse().transpose().block(jj, 0, 1, DIM) *
-                               __f.inverse() +
-                           __f.inverse().transpose() *
-                               __f.inverse().block(0, jj, DIM, 1) *
-                               psi.transpose() * __f.inverse());
+        MATRIX ej =
+          0.5 *
+          (__f.inverse().transpose() * psi *
+             __f.inverse().transpose().block(jj, 0, 1, DIM) * __f.inverse() +
+           __f.inverse().transpose() * __f.inverse().block(0, jj, DIM, 1) *
+             psi.transpose() * __f.inverse());
         SIGMAs_dU =
-            (2.0 * mu_s * ej + lambda_s * ej.trace() * MATRIX::Identity());
+          (2.0 * mu_s * ej + lambda_s * ej.trace() * MATRIX::Identity());
       } else if (mat_law == "artery") {
         MATRIX __c_dU =
-            __f.inverse().transpose() * psi *
-                __f.inverse().transpose().block(jj, 0, 1, DIM) * __f.inverse() +
-            __f.inverse().transpose() * __f.inverse().block(0, jj, DIM, 1) *
-                psi.transpose() * __f.inverse();
+          __f.inverse().transpose() * psi *
+            __f.inverse().transpose().block(jj, 0, 1, DIM) * __f.inverse() +
+          __f.inverse().transpose() * __f.inverse().block(0, jj, DIM, 1) *
+            psi.transpose() * __f.inverse();
         MATRIX __c_dU_inverse = -__c.inverse() * __c_dU * __c.inverse();
         double __j_dU =
-            __j *
-            (-__f.inverse().block(0, jj, DIM, 1) * psi.transpose()).trace();
+          __j * (-__f.inverse().block(0, jj, DIM, 1) * psi.transpose()).trace();
 
         SIGMAs_dU =
-            mu_s * (2.0 / 3.0) * pow(__j, -1.0 / 3.0) * __j_dU *
-            (MATRIX::Identity() - 1.0 / 3.0 * __c.trace() * __c.inverse());
+          mu_s * (2.0 / 3.0) * pow(__j, -1.0 / 3.0) * __j_dU *
+          (MATRIX::Identity() - 1.0 / 3.0 * __c.trace() * __c.inverse());
         SIGMAs_dU += mu_s * pow(__j, +2.0 / 3.0) *
                      (-1.0 / 3.0 * __c_dU.trace() * __c.inverse());
         SIGMAs_dU += mu_s * pow(__j, +2.0 / 3.0) *
                      (-1.0 / 3.0 * __c.trace() * __c_dU_inverse);
         SIGMAs_dU +=
-            0.5 * kapa_s * (-2.0) * pow(__j, -3.0) * __j_dU * __c.inverse();
+          0.5 * kapa_s * (-2.0) * pow(__j, -3.0) * __j_dU * __c.inverse();
         SIGMAs_dU += 0.5 * kapa_s * (pow(__j, -2.0) - 1.0) * __c_dU_inverse;
       } else
         abort();
       sigmas_dU[jj] =
-          __j *
-              (-__f.inverse().block(0, jj, DIM, 1) * psi.transpose()).trace() *
-              __f.inverse() * SIGMAs * __f.inverse().transpose() +
-          __j *
-              (__f.inverse().block(0, jj, DIM, 1) * psi.transpose() *
-               __f.inverse()) *
-              SIGMAs * __f.inverse().transpose() +
-          __j * __f.inverse() * SIGMAs *
-              (__f.inverse().block(0, jj, DIM, 1) * psi.transpose() *
-               __f.inverse())
-                  .transpose() +
-          __j * __f.inverse() * SIGMAs_dU * __f.inverse().transpose();
+        __j * (-__f.inverse().block(0, jj, DIM, 1) * psi.transpose()).trace() *
+          __f.inverse() * SIGMAs * __f.inverse().transpose() +
+        __j *
+          (__f.inverse().block(0, jj, DIM, 1) * psi.transpose() *
+           __f.inverse()) *
+          SIGMAs * __f.inverse().transpose() +
+        __j * __f.inverse() * SIGMAs *
+          (__f.inverse().block(0, jj, DIM, 1) * psi.transpose() * __f.inverse())
+            .transpose() +
+        __j * __f.inverse() * SIGMAs_dU * __f.inverse().transpose();
     }
   }
 }
 
-template <int DIM>
-void SolidEuler<DIM>::MatrixBlock(EntryMatrix &A, const FemFunction &U,
-                                  const FemFunction &N) const {
+template<int DIM>
+void
+SolidEuler<DIM>::MatrixBlock(EntryMatrix& A,
+                             const FemFunction& U,
+                             const FemFunction& N) const
+{
   ;
   for (int j = 0; j < N.size(); ++j) // trial
   {

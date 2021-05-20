@@ -38,11 +38,16 @@ using namespace std;
 
 namespace Gascoigne {
 Algorithm::Algorithm()
-    : _MA(NULL), _SI(NULL), _paramfile(NULL), _gmresmemsize(100) {}
+  : _MA(NULL)
+  , _SI(NULL)
+  , _paramfile(NULL)
+  , _gmresmemsize(100)
+{}
 
 /*-----------------------------------------*/
 
-Algorithm::~Algorithm() {
+Algorithm::~Algorithm()
+{
   if (_MA != NULL) {
     delete _MA;
     _MA = NULL;
@@ -55,9 +60,11 @@ Algorithm::~Algorithm() {
 
 /*-----------------------------------------*/
 
-void Algorithm::BasicInit(const ParamFile *paramfile,
-                          const NumericInterface *NI,
-                          const ProblemContainer *PC) {
+void
+Algorithm::BasicInit(const ParamFile* paramfile,
+                     const NumericInterface* NI,
+                     const ProblemContainer* PC)
+{
   _paramfile = paramfile;
   _NI = NI;
 
@@ -73,7 +80,9 @@ void Algorithm::BasicInit(const ParamFile *paramfile,
 
 /*-------------------------------------------------------*/
 
-void Algorithm::PrintMeshInformation() const {
+void
+Algorithm::PrintMeshInformation() const
+{
   cout << " [l,n,c] " << GetMeshAgent()->nlevels() << " "
        << GetMeshAgent()->nnodes();
   cout << " " << GetMeshAgent()->ncells() << endl;
@@ -81,8 +90,9 @@ void Algorithm::PrintMeshInformation() const {
 
 /*-----------------------------------------*/
 
-void Algorithm::Newton(VectorInterface &u, const VectorInterface &f,
-                       NLInfo &nlinfo) {
+void
+Algorithm::Newton(VectorInterface& u, const VectorInterface& f, NLInfo& nlinfo)
+{
   VectorInterface y("y"), du("du");
 
   ReInitVector(du);
@@ -90,7 +100,7 @@ void Algorithm::Newton(VectorInterface &u, const VectorInterface &f,
 
   cout << endl << "  ";
   nlinfo.reset();
-  CGInfo &cginfo = nlinfo.GetLinearInfo();
+  CGInfo& cginfo = nlinfo.GetLinearInfo();
 
   // Newton Residual
 
@@ -176,7 +186,9 @@ void Algorithm::Newton(VectorInterface &u, const VectorInterface &f,
 
 /*-------------------------------------------------------*/
 
-void Algorithm::CopyVector(GlobalVector &dst, VectorInterface &src) const {
+void
+Algorithm::CopyVector(GlobalVector& dst, VectorInterface& src) const
+{
   GetSolver()->HNAverage(src);
 
   int nn = GetSolver()->GetGV(src).n();
@@ -192,8 +204,11 @@ void Algorithm::CopyVector(GlobalVector &dst, VectorInterface &src) const {
 
 /*-----------------------------------------*/
 
-void Algorithm::GmresSolve(VectorInterface &x, const VectorInterface &b,
-                           CGInfo &info) {
+void
+Algorithm::GmresSolve(VectorInterface& x,
+                      const VectorInterface& b,
+                      CGInfo& info)
+{
   // we could implement restarted gmres for maxiter > gmresmemsize
   // for now maxiter = min(gmresmemsize, linear_maxiter)
   int maxiter = Gascoigne::min(_gmresmemsize, info.user().maxiter());
@@ -211,7 +226,7 @@ void Algorithm::GmresSolve(VectorInterface &x, const VectorInterface &b,
   }
   int reached = 0;
 
-  VectorInterface &v = mem[0];
+  VectorInterface& v = mem[0];
   VectorInterface p("gmresp");
   ReInitVector(p);
   ReInitVector(v);
@@ -236,8 +251,8 @@ void Algorithm::GmresSolve(VectorInterface &x, const VectorInterface &b,
       mem.resize(i + 1, s);
       ReInitVector(mem[i]);
     }
-    VectorInterface &um = mem[m];
-    VectorInterface &un = mem[n];
+    VectorInterface& um = mem[m];
+    VectorInterface& un = mem[n];
     if (left_precondition) {
       GetSolver()->vmulteq(p, um, 1.);
       Precondition(un, p);
@@ -248,7 +263,7 @@ void Algorithm::GmresSolve(VectorInterface &x, const VectorInterface &b,
     }
 
     for (int i = 0; i < n; i++) {
-      VectorInterface &ui = mem[i];
+      VectorInterface& ui = mem[i];
       double d = GetSolver()->ScalarProduct(un, ui);
       GR.matrix(i, m) = d;
       GetSolver()->Add(un, -d, ui);
@@ -287,7 +302,9 @@ void Algorithm::GmresSolve(VectorInterface &x, const VectorInterface &b,
 
 /*-----------------------------------------*/
 
-void Algorithm::Precondition(VectorInterface &x, VectorInterface &y) {
+void
+Algorithm::Precondition(VectorInterface& x, VectorInterface& y)
+{
   GetSolver()->Equ(x, 1., y);
 }
 

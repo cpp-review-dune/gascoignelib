@@ -26,8 +26,10 @@
 using namespace std;
 
 namespace Gascoigne {
-template <int DIM, int Q>
-FaceIntegrator<DIM, Q>::FaceIntegrator() : FaceIntegratorInterface() {
+template<int DIM, int Q>
+FaceIntegrator<DIM, Q>::FaceIntegrator()
+  : FaceIntegratorInterface()
+{
   if (!FaceFormulaPointer()) {
     assert(2 <= DIM && DIM <= 3);
     assert(1 <= Q && Q <= 2);
@@ -45,12 +47,14 @@ FaceIntegrator<DIM, Q>::FaceIntegrator() : FaceIntegratorInterface() {
 
 //////////////////////////////////////////////////
 
-template <int DIM, int Q>
-void FaceIntegrator<DIM, Q>::universal_point_face(const FemInterface &FEM1,
-                                                  const FemInterface &FEM2,
-                                                  FemFunction &U1,
-                                                  FemFunction &U2,
-                                                  const LocalVector &U) const {
+template<int DIM, int Q>
+void
+FaceIntegrator<DIM, Q>::universal_point_face(const FemInterface& FEM1,
+                                             const FemInterface& FEM2,
+                                             FemFunction& U1,
+                                             FemFunction& U2,
+                                             const LocalVector& U) const
+{
   U1.resize(U.ncomp());
   U2.resize(U.ncomp());
 
@@ -77,33 +81,36 @@ void FaceIntegrator<DIM, Q>::universal_point_face(const FemInterface &FEM1,
     for (int iz = 0; iz < Q + 1; ++iz)
       for (int iy = 0; iy < Q + 1; ++iy)
         for (int ix = 0; ix < Q + 1; ++ix) {
-          FEM1.init_test_functions(__NN, 1.,
-                                   (Q + 1) * (Q + 1) + iz + (Q + 1) * iy + ix);
+          FEM1.init_test_functions(
+            __NN, 1., (Q + 1) * (Q + 1) + iz + (Q + 1) * iy + ix);
           for (int c = 0; c < U1.size(); c++)
             U1[c].add(U((Q + 1) * (2 * Q + 1) * iz + (2 * Q + 1) * iy + ix, c),
                       __NN);
-          FEM2.init_test_functions(__NN, 1.,
-                                   (Q + 1) * (Q + 1) * iz + (Q + 1) * iy + ix);
+          FEM2.init_test_functions(
+            __NN, 1., (Q + 1) * (Q + 1) * iz + (Q + 1) * iy + ix);
           for (int c = 0; c < U1.size(); c++)
             U2[c].add(
-                U((Q + 1) * (2 * Q + 1) * iz + (2 * Q + 1) * iy + ix + Q, c),
-                __NN);
+              U((Q + 1) * (2 * Q + 1) * iz + (2 * Q + 1) * iy + ix + Q, c),
+              __NN);
         }
   }
 }
 
 //////////////////////////////////////////////////
 
-template <int DIM, int Q>
-void FaceIntegrator<DIM, Q>::FaceForm(const FaceEquation &EQ, LocalVector &F,
-                                      const FemInterface &FEM1,
-                                      const FemInterface &FEM2,
-                                      const LocalVector &U) const {
+template<int DIM, int Q>
+void
+FaceIntegrator<DIM, Q>::FaceForm(const FaceEquation& EQ,
+                                 LocalVector& F,
+                                 const FemInterface& FEM1,
+                                 const FemInterface& FEM2,
+                                 const LocalVector& U) const
+{
   int n_dof = U.n();
 
   F.ReInit(EQ.GetNcomp(), n_dof);
 
-  const IntegrationFormulaInterface &IF = *FaceFormula();
+  const IntegrationFormulaInterface& IF = *FaceFormula();
 
   F.zero();
   Vertex<DIM> x1, x2, n;
@@ -150,13 +157,16 @@ void FaceIntegrator<DIM, Q>::FaceForm(const FaceEquation &EQ, LocalVector &F,
             _N2.zero();
             if (ix < Q + 1)
               FEM1.init_test_functions(
-                  _N1, weight, (Q + 1) * (Q + 1) * iz + iy * (Q + 1) + ix);
+                _N1, weight, (Q + 1) * (Q + 1) * iz + iy * (Q + 1) + ix);
             if (ix > Q - 1)
               FEM2.init_test_functions(
-                  _N2, weight, (Q + 1) * (Q + 1) * iz + iy * (Q + 1) + ix - Q);
+                _N2, weight, (Q + 1) * (Q + 1) * iz + iy * (Q + 1) + ix - Q);
             EQ.FaceForm(
-                F.start((Q + 1) * (2 * Q + 1) * iz + (2 * Q + 1) * iy + ix),
-                _U1, _U2, _N1, _N2);
+              F.start((Q + 1) * (2 * Q + 1) * iz + (2 * Q + 1) * iy + ix),
+              _U1,
+              _U2,
+              _N1,
+              _N2);
           }
     }
   }
@@ -164,11 +174,14 @@ void FaceIntegrator<DIM, Q>::FaceForm(const FaceEquation &EQ, LocalVector &F,
 
 /* ----------------------------------------- */
 
-template <int DIM, int Q>
-void FaceIntegrator<DIM, Q>::FaceMatrix(const FaceEquation &EQ, EntryMatrix &E,
-                                        const FemInterface &FEM1,
-                                        const FemInterface &FEM2,
-                                        const LocalVector &U) const {
+template<int DIM, int Q>
+void
+FaceIntegrator<DIM, Q>::FaceMatrix(const FaceEquation& EQ,
+                                   EntryMatrix& E,
+                                   const FemInterface& FEM1,
+                                   const FemInterface& FEM2,
+                                   const LocalVector& U) const
+{
   int n_dof = U.n();
 
   FemFunction NNN1(n_dof), NNN2(n_dof);
@@ -179,7 +192,7 @@ void FaceIntegrator<DIM, Q>::FaceMatrix(const FaceEquation &EQ, EntryMatrix &E,
   E.resize();
   E.zero();
 
-  const IntegrationFormulaInterface &IF = *FaceFormula();
+  const IntegrationFormulaInterface& IF = *FaceFormula();
 
   Vertex<DIM> x1, x2, n;
   Vertex<DIM - 1> xi;
@@ -229,10 +242,10 @@ void FaceIntegrator<DIM, Q>::FaceMatrix(const FaceEquation &EQ, EntryMatrix &E,
             NNN2[i].zero();
             if (ix < Q + 1)
               FEM1.init_test_functions(
-                  NNN1[i], sw, iz * (Q + 1) * (Q + 1) + iy * (Q + 1) + ix);
+                NNN1[i], sw, iz * (Q + 1) * (Q + 1) + iy * (Q + 1) + ix);
             if (ix > Q - 1)
               FEM2.init_test_functions(
-                  NNN2[i], sw, iz * (Q + 1) * (Q + 1) + iy * (Q + 1) + ix - Q);
+                NNN2[i], sw, iz * (Q + 1) * (Q + 1) + iy * (Q + 1) + ix - Q);
           }
     }
 

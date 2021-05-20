@@ -30,7 +30,9 @@
 /*-----------------------------------------------------*/
 
 namespace Gascoigne {
-template <class BASE> class Transformation3d {
+template<class BASE>
+class Transformation3d
+{
 protected:
   typedef nmatrix<double> Matrix;
 
@@ -40,31 +42,34 @@ protected:
 
   inline void ComputeDT() const;
   // second derivatives tensor
-  const nvector<Matrix> ComputeDDT(const Vertex3d &xi) const;
+  const nvector<Matrix> ComputeDDT(const Vertex3d& xi) const;
 
 public:
   Transformation3d();
 
-  const Matrix &DT() const { return dt; }
-  const Matrix &DTI() const { return dti; }
+  const Matrix& DT() const { return dt; }
+  const Matrix& DTI() const { return dti; }
 
   // inverse of second derivatives tensor
-  const nvector<Matrix> DDTI(const Vertex3d &xi) const;
+  const nvector<Matrix> DDTI(const Vertex3d& xi) const;
 
   inline double J() const;
   inline double G() const;
   inline Vertex3d x() const;
   inline Vertex3d normal() const;
-  inline void init(const Matrix &M) { X = M; }
-  inline void ReInit(const Matrix &M) const { X = M; }
-  inline void point(const Vertex3d &xi) const;
-  inline void point_boundary(int ie, const Vertex2d &s) const;
-  inline void GetCoordinates(Matrix &A) const { A.equ(1., X); }
+  inline void init(const Matrix& M) { X = M; }
+  inline void ReInit(const Matrix& M) const { X = M; }
+  inline void point(const Vertex3d& xi) const;
+  inline void point_boundary(int ie, const Vertex2d& s) const;
+  inline void GetCoordinates(Matrix& A) const { A.equ(1., X); }
 };
 
 /*-----------------------------------------------------*/
 
-template <class BASE> inline Transformation3d<BASE>::Transformation3d() : B() {
+template<class BASE>
+inline Transformation3d<BASE>::Transformation3d()
+  : B()
+{
   X.memory(3, B.n());
   dt.memory(3, 3);
   dti.memory(3, 3);
@@ -72,7 +77,10 @@ template <class BASE> inline Transformation3d<BASE>::Transformation3d() : B() {
 
 /*-----------------------------------------------------*/
 
-template <class BASE> inline Vertex3d Transformation3d<BASE>::x() const {
+template<class BASE>
+inline Vertex3d
+Transformation3d<BASE>::x() const
+{
   Vertex3d xp;
   for (int i = 0; i < B.n(); i++) {
     xp.x() += X(0, i) * B.phi(i);
@@ -84,7 +92,10 @@ template <class BASE> inline Vertex3d Transformation3d<BASE>::x() const {
 
 /*-----------------------------------------------------*/
 
-template <class BASE> inline Vertex3d Transformation3d<BASE>::normal() const {
+template<class BASE>
+inline Vertex3d
+Transformation3d<BASE>::normal() const
+{
   Vertex3d xn;
   dti.mult(xn, *B.normal3d());
   double xx = sqrt(xn * xn);
@@ -94,7 +105,10 @@ template <class BASE> inline Vertex3d Transformation3d<BASE>::normal() const {
 
 /*-----------------------------------------------------*/
 
-template <class BASE> inline void Transformation3d<BASE>::ComputeDT() const {
+template<class BASE>
+inline void
+Transformation3d<BASE>::ComputeDT() const
+{
   dt.zero();
   for (int i = 0; i < B.n(); i++) {
     dt(0, 0) += X(0, i) * B.phi_x(i);
@@ -122,10 +136,11 @@ template <class BASE> inline void Transformation3d<BASE>::ComputeDT() const {
 
 /*-----------------------------------------------------*/
 
-template <class BASE>
+template<class BASE>
 inline const nvector<nmatrix<double>>
-Transformation3d<BASE>::DDTI(const Vertex3d &xi) const {
-  const nvector<nmatrix<double>> &ddt = ComputeDDT(xi);
+Transformation3d<BASE>::DDTI(const Vertex3d& xi) const
+{
+  const nvector<nmatrix<double>>& ddt = ComputeDDT(xi);
 
   nvector<nmatrix<double>> ddti(3, nmatrix<double>(3, 3));
   Matrix dti_ = dti;
@@ -145,10 +160,11 @@ Transformation3d<BASE>::DDTI(const Vertex3d &xi) const {
 }
 
 /*-----------------------------------------------------*/
-template <class BASE>
+template<class BASE>
 inline const nvector<nmatrix<double>>
-Transformation3d<BASE>::ComputeDDT(const Vertex3d &xi) const {
-  const_cast<BASE *>(&B)->point(xi);
+Transformation3d<BASE>::ComputeDDT(const Vertex3d& xi) const
+{
+  const_cast<BASE*>(&B)->point(xi);
 
   nvector<nmatrix<double>> ddt(3, nmatrix<double>(3, 3));
   for (int i = 0; i < 3; ++i)
@@ -174,24 +190,30 @@ Transformation3d<BASE>::ComputeDDT(const Vertex3d &xi) const {
 
 /*-----------------------------------------------------*/
 
-template <class BASE>
-inline void Transformation3d<BASE>::point(const Vertex3d &xi) const {
+template<class BASE>
+inline void
+Transformation3d<BASE>::point(const Vertex3d& xi) const
+{
   B.point(xi);
   ComputeDT();
 }
 
 /*-----------------------------------------------------*/
 
-template <class BASE>
-inline void Transformation3d<BASE>::point_boundary(int ie,
-                                                   const Vertex2d &s) const {
+template<class BASE>
+inline void
+Transformation3d<BASE>::point_boundary(int ie, const Vertex2d& s) const
+{
   B.point_boundary(ie, s);
   ComputeDT();
 }
 
 /*-----------------------------------------------------*/
 
-template <class BASE> inline double Transformation3d<BASE>::J() const {
+template<class BASE>
+inline double
+Transformation3d<BASE>::J() const
+{
   double h = dt.det();
   if (h < 0) {
     std::cout << X << std::endl;
@@ -202,9 +224,12 @@ template <class BASE> inline double Transformation3d<BASE>::J() const {
 
 /*-----------------------------------------------------*/
 
-template <class BASE> inline double Transformation3d<BASE>::G() const {
+template<class BASE>
+inline double
+Transformation3d<BASE>::G() const
+{
   double d1phi = 0, d2phi = 0, d12phi = 0;
-  const std::array<int, 2> &fc = *B.faces();
+  const std::array<int, 2>& fc = *B.faces();
   for (int i = 0; i < 3; ++i) {
     d1phi += dt(i, fc[0]) * dt(i, fc[0]);
     d2phi += dt(i, fc[1]) * dt(i, fc[1]);

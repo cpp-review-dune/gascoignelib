@@ -25,15 +25,18 @@ using namespace Gascoigne;
 
 /* ----------------------------------------- */
 
-template <int DIM> class FSI_CI : public ComponentInformationBase {
+template<int DIM>
+class FSI_CI : public ComponentInformationBase
+{
 public:
-  void BasicInit(const ParamFile *pf) {}
+  void BasicInit(const ParamFile* pf) {}
 
   std::string GetName() const { return "solid CI"; }
 
   const int GetNScalars() const { return DIM; }
 
-  void GetScalarName(int i, std::string &s_name) const {
+  void GetScalarName(int i, std::string& s_name) const
+  {
     if (DIM == 3) {
       if (i == 0)
         s_name = "vx";
@@ -45,13 +48,15 @@ public:
   }
 
   const int GetNVectors() const { return 1; }
-  void GetVectorName(int i, std::string &s_name) const {
+  void GetVectorName(int i, std::string& s_name) const
+  {
     if (i == 0)
       s_name = "U_Vector";
     else
       abort();
   }
-  void GetVectorIndices(int i, array<int, 3> &fa_vectorindices) const {
+  void GetVectorIndices(int i, array<int, 3>& fa_vectorindices) const
+  {
     if (i == 0) {
       fa_vectorindices[0] = 0;
       fa_vectorindices[1] = 1;
@@ -60,10 +65,12 @@ public:
   }
 };
 
-class MyDD3d : public DirichletData {
+class MyDD3d : public DirichletData
+{
 protected:
 public:
-  MyDD3d(const ParamFile *pf) {
+  MyDD3d(const ParamFile* pf)
+  {
     // DataFormatHandler DFH;
     // DFH.insert("vmean" ,    &vmean , 0.0);
     // FileScanner FS(DFH, pf, "Equation");
@@ -71,17 +78,20 @@ public:
 
   std::string GetName() const { return "MyDD"; }
 
-  void operator()(DoubleVector &b, const Vertex3d &v, int color) const {
+  void operator()(DoubleVector& b, const Vertex3d& v, int color) const
+  {
     b.zero();
   }
 };
 
 // -----------------------------------------
 
-class ProblemDescriptor3d : public ProblemDescriptorBase {
+class ProblemDescriptor3d : public ProblemDescriptorBase
+{
 public:
   std::string GetName() const { return "solid"; }
-  void BasicInit(const ParamFile *pf) {
+  void BasicInit(const ParamFile* pf)
+  {
     GetParamFilePointer() = pf;
     GetEquationPointer() = new Solid<3>(GetParamFile());
     GetBoundaryEquationPointer() = new BoundarySolid<3>(GetParamFile());
@@ -95,11 +105,12 @@ public:
 
 /* ----------------------------------------- */
 
-class DistanceToFineMesh : public BoundaryFunction<3> {
+class DistanceToFineMesh : public BoundaryFunction<3>
+{
 
 protected:
   int col;
-  FineHierarchicalMesh3d *FHM;
+  FineHierarchicalMesh3d* FHM;
   mutable double r, rr, dx;
   mutable vector<int> quads_of_closest_node;
 
@@ -108,12 +119,14 @@ public:
   ~DistanceToFineMesh(){};
 
   std::string GetName() const { return "DistanceToFineMesh"; }
-  void BasicInit(FineHierarchicalMesh3d *FHM_loaded, int color) {
+  void BasicInit(FineHierarchicalMesh3d* FHM_loaded, int color)
+  {
     col = color;
     FHM = FHM_loaded;
   }
 
-  void newton(Vector &dst) const {
+  void newton(Vector& dst) const
+  {
     // Projektion of the node dst on surface with color col
     // surface described by boundaryelements of fine mesh FHM->nbquads()
     Vertex3d c = dst;
@@ -158,19 +171,21 @@ public:
         rr = 0;
         Vertex3d NewPoint_zwischen;
         rr = DistancePointTriangle(
-            NewPoint_zwischen, c,
-            FHM->vertex3d(FHM->vertex_of_bquad(quads_of_closest_node[i], 0)),
-            FHM->vertex3d(FHM->vertex_of_bquad(quads_of_closest_node[i], 1)),
-            FHM->vertex3d(FHM->vertex_of_bquad(quads_of_closest_node[i], 2)));
+          NewPoint_zwischen,
+          c,
+          FHM->vertex3d(FHM->vertex_of_bquad(quads_of_closest_node[i], 0)),
+          FHM->vertex3d(FHM->vertex_of_bquad(quads_of_closest_node[i], 1)),
+          FHM->vertex3d(FHM->vertex_of_bquad(quads_of_closest_node[i], 2)));
         if (rr < r) {
           r = rr;
           NewPoint = NewPoint_zwischen;
         }
         rr = DistancePointTriangle(
-            NewPoint_zwischen, c,
-            FHM->vertex3d(FHM->vertex_of_bquad(quads_of_closest_node[i], 0)),
-            FHM->vertex3d(FHM->vertex_of_bquad(quads_of_closest_node[i], 2)),
-            FHM->vertex3d(FHM->vertex_of_bquad(quads_of_closest_node[i], 3)));
+          NewPoint_zwischen,
+          c,
+          FHM->vertex3d(FHM->vertex_of_bquad(quads_of_closest_node[i], 0)),
+          FHM->vertex3d(FHM->vertex_of_bquad(quads_of_closest_node[i], 2)),
+          FHM->vertex3d(FHM->vertex_of_bquad(quads_of_closest_node[i], 3)));
         if (rr < r) {
           r = rr;
           NewPoint = NewPoint_zwischen;
@@ -179,7 +194,8 @@ public:
     }
     dst = NewPoint;
   }
-  double operator()(const Vertex3d &c) const {
+  double operator()(const Vertex3d& c) const
+  {
     cout << "operator() in DistanceToFineMesh not written" << endl;
     abort();
     return 0;
@@ -191,7 +207,8 @@ public:
   // http://www.boost.org/LICENSE_1_0.txt
   // http://www.geometrictools.com/License/Boost/LICENSE_1_0.txt
   // File Version: 3.0.0 (2016/06/19)
-  double Dot(const Vertex3d &U, const Vertex3d &V) const {
+  double Dot(const Vertex3d& U, const Vertex3d& V) const
+  {
     double dot = 0;
     for (int i = 0; i < 3; ++i) {
       dot += U[i] * V[i];
@@ -199,10 +216,12 @@ public:
     return dot;
   }
 
-  double DistancePointTriangle(Vertex3d &new_point, const Vertex3d &point,
-                               const Vertex3d &triangle1,
-                               const Vertex3d &triangle2,
-                               const Vertex3d &triangle3) const {
+  double DistancePointTriangle(Vertex3d& new_point,
+                               const Vertex3d& point,
+                               const Vertex3d& triangle1,
+                               const Vertex3d& triangle2,
+                               const Vertex3d& triangle3) const
+  {
     Vertex3d diff;
     Vertex3d edge0;
     Vertex3d edge1;
@@ -372,13 +391,16 @@ public:
 };
 /* ----------------------------------------- */
 #include "filescanner.h"
-class ProjectionOnFineMeshAgent : public LocalMeshAgent {
+class ProjectionOnFineMeshAgent : public LocalMeshAgent
+{
 protected:
   vector<DistanceToFineMesh> DTFM;
-  FineHierarchicalMesh3d *FHM;
+  FineHierarchicalMesh3d* FHM;
 
 public:
-  ProjectionOnFineMeshAgent(const ParamFile *paramfile) : FHM(NULL) {
+  ProjectionOnFineMeshAgent(const ParamFile* paramfile)
+    : FHM(NULL)
+  {
     LocalMeshAgent();
 
     string fine_grid_name;
@@ -406,14 +428,16 @@ public:
     }
   }
 
-  ~ProjectionOnFineMeshAgent() {
+  ~ProjectionOnFineMeshAgent()
+  {
     if (FHM != NULL) {
       delete FHM;
       FHM = NULL;
     }
   };
 
-  void BasicInit(const ParamFile *paramfile) {
+  void BasicInit(const ParamFile* paramfile)
+  {
 
     assert(HMP == NULL);
     int dim = 0;
@@ -437,9 +461,9 @@ public:
 
     if (dim == 3) {
       HMP = new LocalHierarchicalMesh3d;
-      for (map<int, BoundaryFunction<3> *>::const_iterator p =
-               _curved3d.begin();
-           p != _curved3d.end(); p++) {
+      for (map<int, BoundaryFunction<3>*>::const_iterator p = _curved3d.begin();
+           p != _curved3d.end();
+           p++) {
         HMP->AddShape(p->first, p->second);
       }
     } else {
@@ -455,15 +479,19 @@ public:
 
   /*-----------------------------------------*/
 
-  void BasicInit(const string &gridname, int dim, int patchdepth, int epatcher,
-                 bool goc2nc) {
+  void BasicInit(const string& gridname,
+                 int dim,
+                 int patchdepth,
+                 int epatcher,
+                 bool goc2nc)
+  {
     assert(HMP == NULL);
     _goc2nc = goc2nc;
     if (dim == 3) {
       HMP = new LocalHierarchicalMesh3d;
-      for (map<int, BoundaryFunction<3> *>::const_iterator p =
-               _curved3d.begin();
-           p != _curved3d.end(); p++) {
+      for (map<int, BoundaryFunction<3>*>::const_iterator p = _curved3d.begin();
+           p != _curved3d.end();
+           p++) {
         HMP->AddShape(p->first, p->second);
       }
     } else {

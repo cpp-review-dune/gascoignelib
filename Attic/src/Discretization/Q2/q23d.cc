@@ -37,11 +37,16 @@ using namespace std;
 /* ----------------------------------------- */
 
 namespace Gascoigne {
-Q23d::Q23d() : Q2() { HN = new HNStructureQ23d; }
+Q23d::Q23d()
+  : Q2()
+{
+  HN = new HNStructureQ23d;
+}
 
 /* ----------------------------------------- */
 
-Q23d::~Q23d() {
+Q23d::~Q23d()
+{
   if (HN)
     delete HN;
   HN = NULL;
@@ -51,9 +56,10 @@ Q23d::~Q23d() {
 
 /* ----------------------------------------- */
 
-void Q23d::InterpolateSolution(GlobalVector &u,
-                               const GlobalVector &uold) const {
-  const IntVector &vo2n = *GetMesh()->Vertexo2n();
+void
+Q23d::InterpolateSolution(GlobalVector& u, const GlobalVector& uold) const
+{
+  const IntVector& vo2n = *GetMesh()->Vertexo2n();
   nvector<bool> habschon(GetMesh()->nnodes(), 0);
 
   assert(vo2n.size() == uold.n());
@@ -184,12 +190,14 @@ void Q23d::InterpolateSolution(GlobalVector &u,
   }
 }
 
-int Q23d::GetPatchNumber(const Vertex3d &p0, Vertex3d &p) const {
+int
+Q23d::GetPatchNumber(const Vertex3d& p0, Vertex3d& p) const
+{
   int iq;
 
   for (iq = 0; iq < GetMesh()->npatches(); ++iq) {
     bool found = true;
-    const IntVector &IOP = GetMesh()->CoarseIndices(iq);
+    const IntVector& IOP = GetMesh()->CoarseIndices(iq);
 
     for (int d = 0; d < 3; ++d) {
       double min = GetMesh()->vertex3d(IOP[0])[d];
@@ -232,7 +240,9 @@ int Q23d::GetPatchNumber(const Vertex3d &p0, Vertex3d &p) const {
 
 /* ----------------------------------------- */
 
-void Q23d::VertexTransformation(const Vertex3d &p0, Vertex3d &p, int iq) const {
+void
+Q23d::VertexTransformation(const Vertex3d& p0, Vertex3d& p, int iq) const
+{
   nmatrix<double> T;
   Transformation(T, iq);
 
@@ -260,7 +270,9 @@ void Q23d::VertexTransformation(const Vertex3d &p0, Vertex3d &p, int iq) const {
 
 /* ----------------------------------------- */
 
-void Q23d::BasicInit(const ParamFile *paramfile) {
+void
+Q23d::BasicInit(const ParamFile* paramfile)
+{
   if (!PatchDiscretization::GetIntegrator())
     PatchDiscretization::GetIntegratorPointer() = new GalerkinIntegratorQ2<3>;
   assert(GetIntegrator());
@@ -280,9 +292,11 @@ void Q23d::BasicInit(const ParamFile *paramfile) {
 
 /* ----------------------------------------- */
 
-void Q23d::ConstructInterpolator(MgInterpolatorInterface *I,
-                                 const MeshTransferInterface *MT) {
-  MgInterpolatorNested *IP = dynamic_cast<MgInterpolatorNested *>(I);
+void
+Q23d::ConstructInterpolator(MgInterpolatorInterface* I,
+                            const MeshTransferInterface* MT)
+{
+  MgInterpolatorNested* IP = dynamic_cast<MgInterpolatorNested*>(I);
 
   assert(IP);
   IP->BasicInit(MT);

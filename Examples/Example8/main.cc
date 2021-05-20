@@ -33,25 +33,30 @@ using namespace Gascoigne;
 
 /*----------------------------------------------------------------------------*/
 
-class ChorinSolver : public SplittingSolver {
+class ChorinSolver : public SplittingSolver
+{
 protected:
-  DiscretizationInterface *CreateDiscretization_1() const {
+  DiscretizationInterface* CreateDiscretization_1() const
+  {
     return new Q1Lps2d;
   }
-  DiscretizationInterface *CreateDiscretization_2() const { return new Q12d; }
+  DiscretizationInterface* CreateDiscretization_2() const { return new Q12d; }
 };
 
 /*----------------------------------------------------------------------------*/
 
-class Numeric : public virtual NumericInterface {
+class Numeric : public virtual NumericInterface
+{
 public:
-  MeshAgentInterface *NewMeshAgent() const { return new CurvedMeshAgent; }
-  SolverInterface *NewSolver(int level) const { return new ChorinSolver; }
+  MeshAgentInterface* NewMeshAgent() const { return new CurvedMeshAgent; }
+  SolverInterface* NewSolver(int level) const { return new ChorinSolver; }
 };
 
 /*----------------------------------------------------------------------------*/
 
-int main(int argc, char **argv) {
+int
+main(int argc, char** argv)
+{
   ParamFile paramfile("gascoigne.param");
   if (argc >= 2) {
     paramfile.SetName(argv[1]);

@@ -38,32 +38,38 @@ namespace Gascoigne {
 ////
 /////////////////////////////////////////////
 
-template <int DIM> class GalerkinIntegrator : public BasicIntegrator {
+template<int DIM>
+class GalerkinIntegrator : public BasicIntegrator
+{
 private:
-  IntegrationFormulaInterface *IFF;
-  IntegrationFormulaInterface *IFE;
-  IntegrationFormulaInterface *IFB;
-  IntegrationFormulaInterface *IFM;
+  IntegrationFormulaInterface* IFF;
+  IntegrationFormulaInterface* IFE;
+  IntegrationFormulaInterface* IFB;
+  IntegrationFormulaInterface* IFM;
 
 protected:
-  virtual IntegrationFormulaInterface *&FormFormulaPointer() { return IFF; }
-  virtual IntegrationFormulaInterface *&ErrorFormulaPointer() { return IFE; }
-  virtual IntegrationFormulaInterface *&MassFormulaPointer() { return IFM; }
-  virtual IntegrationFormulaInterface *&BoundaryFormulaPointer() { return IFB; }
+  virtual IntegrationFormulaInterface*& FormFormulaPointer() { return IFF; }
+  virtual IntegrationFormulaInterface*& ErrorFormulaPointer() { return IFE; }
+  virtual IntegrationFormulaInterface*& MassFormulaPointer() { return IFM; }
+  virtual IntegrationFormulaInterface*& BoundaryFormulaPointer() { return IFB; }
 
-  virtual const IntegrationFormulaInterface *FormFormula() const {
+  virtual const IntegrationFormulaInterface* FormFormula() const
+  {
     assert(GalerkinIntegrator<DIM>::IFF);
     return GalerkinIntegrator<DIM>::IFF;
   }
-  virtual const IntegrationFormulaInterface *MassFormula() const {
+  virtual const IntegrationFormulaInterface* MassFormula() const
+  {
     assert(GalerkinIntegrator<DIM>::IFM);
     return GalerkinIntegrator<DIM>::IFM;
   }
-  virtual const IntegrationFormulaInterface *ErrorFormula() const {
+  virtual const IntegrationFormulaInterface* ErrorFormula() const
+  {
     assert(GalerkinIntegrator<DIM>::IFE);
     return GalerkinIntegrator<DIM>::IFE;
   }
-  virtual const IntegrationFormulaInterface *BoundaryFormula() const {
+  virtual const IntegrationFormulaInterface* BoundaryFormula() const
+  {
     assert(GalerkinIntegrator<DIM>::IFB);
     return GalerkinIntegrator<DIM>::IFB;
   }
@@ -81,75 +87,132 @@ public:
   std::string GetName() const { return "Galerkin"; }
   void BasicInit();
 
-  void Rhs(const DomainRightHandSide &RHS, LocalVector &F,
-           const FemInterface &FEM, const LocalData &Q,
-           const LocalData &QC) const;
-  void Form(const Equation &EQ, LocalVector &F, const FemInterface &FEM,
-            const LocalVector &U, const LocalData &Q,
-            const LocalData &QC) const;
-  void AdjointForm(const Equation &EQ, LocalVector &F, const FemInterface &FEM,
-                   const LocalVector &U, const LocalData &Q,
-                   const LocalData &QC) const;
-  void BoundaryForm(const BoundaryEquation &BE, LocalVector &F,
-                    const FemInterface &FEM, const LocalVector &U, int ile,
-                    int col, const LocalData &Q, const LocalData &QC) const;
-  void Matrix(const Equation &EQ, EntryMatrix &E, const FemInterface &FEM,
-              const LocalVector &U, const LocalData &Q,
-              const LocalData &QC) const;
-  void BoundaryMatrix(const BoundaryEquation &BE, EntryMatrix &E,
-                      const FemInterface &FEM, const LocalVector &U, int ile,
-                      int col, const LocalData &Q, const LocalData &QC) const;
-  double MassMatrix(EntryMatrix &E, const FemInterface &FEM) const;
-  void BoundaryMassMatrix(EntryMatrix &E, const FemInterface &FEM,
+  void Rhs(const DomainRightHandSide& RHS,
+           LocalVector& F,
+           const FemInterface& FEM,
+           const LocalData& Q,
+           const LocalData& QC) const;
+  void Form(const Equation& EQ,
+            LocalVector& F,
+            const FemInterface& FEM,
+            const LocalVector& U,
+            const LocalData& Q,
+            const LocalData& QC) const;
+  void AdjointForm(const Equation& EQ,
+                   LocalVector& F,
+                   const FemInterface& FEM,
+                   const LocalVector& U,
+                   const LocalData& Q,
+                   const LocalData& QC) const;
+  void BoundaryForm(const BoundaryEquation& BE,
+                    LocalVector& F,
+                    const FemInterface& FEM,
+                    const LocalVector& U,
+                    int ile,
+                    int col,
+                    const LocalData& Q,
+                    const LocalData& QC) const;
+  void Matrix(const Equation& EQ,
+              EntryMatrix& E,
+              const FemInterface& FEM,
+              const LocalVector& U,
+              const LocalData& Q,
+              const LocalData& QC) const;
+  void BoundaryMatrix(const BoundaryEquation& BE,
+                      EntryMatrix& E,
+                      const FemInterface& FEM,
+                      const LocalVector& U,
+                      int ile,
+                      int col,
+                      const LocalData& Q,
+                      const LocalData& QC) const;
+  double MassMatrix(EntryMatrix& E, const FemInterface& FEM) const;
+  void BoundaryMassMatrix(EntryMatrix& E,
+                          const FemInterface& FEM,
                           int ile) const;
-  void MassForm(const TimePattern &TP, LocalVector &F, const FemInterface &FEM,
-                const LocalVector &U) const;
+  void MassForm(const TimePattern& TP,
+                LocalVector& F,
+                const FemInterface& FEM,
+                const LocalVector& U) const;
 
-  void RhsPoint(LocalVector &b, const FemInterface &E, const Vertex<DIM> &p,
+  void RhsPoint(LocalVector& b,
+                const FemInterface& E,
+                const Vertex<DIM>& p,
                 int comp) const;
-  void DiracRhsPoint(LocalVector &b, const FemInterface &E,
-                     const Vertex<DIM> &p, const DiracRightHandSide &DRHS,
-                     int j, const LocalData &Q, const LocalData &QC) const;
-  double ComputePointValue(const FemInterface &E, const Vertex<DIM> &p,
-                           const LocalVector &U, int comp) const;
-  double ComputeDomainFunctional(const DomainFunctional &F,
-                                 const FemInterface &FEM, const LocalVector &U,
-                                 const LocalData &Q, const LocalData &QC) const;
-  double ComputeErrorDomainFunctional(const DomainFunctional &F,
-                                      const FemInterface &FEM,
-                                      const LocalVector &U, const LocalData &Q,
-                                      const LocalData &QC) const;
-  double ComputeBoundaryFunctional(const BoundaryFunctional &F,
-                                   const FemInterface &FEM, int ile, int col,
-                                   const LocalVector &U, const LocalData &Q,
-                                   const LocalData &QC) const;
-  void EvaluateCellRightHandSide(LocalVector &F, const DomainRightHandSide &CF,
-                                 const FemInterface &FEM, const LocalData &Q,
-                                 const LocalData &QC) const;
-  void EvaluateBoundaryCellRightHandSide(LocalVector &F,
-                                         const BoundaryRightHandSide &CF,
-                                         const FemInterface &FEM, int ile,
-                                         int col, const LocalData &Q,
-                                         const LocalData &QC) const;
+  void DiracRhsPoint(LocalVector& b,
+                     const FemInterface& E,
+                     const Vertex<DIM>& p,
+                     const DiracRightHandSide& DRHS,
+                     int j,
+                     const LocalData& Q,
+                     const LocalData& QC) const;
+  double ComputePointValue(const FemInterface& E,
+                           const Vertex<DIM>& p,
+                           const LocalVector& U,
+                           int comp) const;
+  double ComputeDomainFunctional(const DomainFunctional& F,
+                                 const FemInterface& FEM,
+                                 const LocalVector& U,
+                                 const LocalData& Q,
+                                 const LocalData& QC) const;
+  double ComputeErrorDomainFunctional(const DomainFunctional& F,
+                                      const FemInterface& FEM,
+                                      const LocalVector& U,
+                                      const LocalData& Q,
+                                      const LocalData& QC) const;
+  double ComputeBoundaryFunctional(const BoundaryFunctional& F,
+                                   const FemInterface& FEM,
+                                   int ile,
+                                   int col,
+                                   const LocalVector& U,
+                                   const LocalData& Q,
+                                   const LocalData& QC) const;
+  void EvaluateCellRightHandSide(LocalVector& F,
+                                 const DomainRightHandSide& CF,
+                                 const FemInterface& FEM,
+                                 const LocalData& Q,
+                                 const LocalData& QC) const;
+  void EvaluateBoundaryCellRightHandSide(LocalVector& F,
+                                         const BoundaryRightHandSide& CF,
+                                         const FemInterface& FEM,
+                                         int ile,
+                                         int col,
+                                         const LocalData& Q,
+                                         const LocalData& QC) const;
 
-  void ErrorsByExactSolution(LocalVector &dst, const FemInterface &FE,
-                             const ExactSolution &ES, const LocalVector &U,
-                             const LocalData &Q, const LocalData &QC) const;
+  void ErrorsByExactSolution(LocalVector& dst,
+                             const FemInterface& FE,
+                             const ExactSolution& ES,
+                             const LocalVector& U,
+                             const LocalData& Q,
+                             const LocalData& QC) const;
 
-  void BoundaryRhs(const BoundaryRightHandSide &RHS, LocalVector &F,
-                   const FemInterface &FEM, int ile, int col,
-                   const LocalData &Q, const LocalData &QC) const;
+  void BoundaryRhs(const BoundaryRightHandSide& RHS,
+                   LocalVector& F,
+                   const FemInterface& FEM,
+                   int ile,
+                   int col,
+                   const LocalData& Q,
+                   const LocalData& QC) const;
 
-  void IntegrateMassDiag(DoubleVector &F, const FemInterface &FEM) const;
+  void IntegrateMassDiag(DoubleVector& F, const FemInterface& FEM) const;
 
-  void IntegrateBoundaryMassDiag(DoubleVector &F, const FemInterface &FEM,
-                                 int ile, int col) const;
+  void IntegrateBoundaryMassDiag(DoubleVector& F,
+                                 const FemInterface& FEM,
+                                 int ile,
+                                 int col) const;
 
   // no warning for overloaded virtual function (2d/3d)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Woverloaded-virtual"
-  void RhsCurve(LocalVector &F, const FemInterface &FEM, Vertex<DIM> &xr0,
-                Vertex<DIM> &xr1, double H, double ND0, double ND1, int ncomp,
+  void RhsCurve(LocalVector& F,
+                const FemInterface& FEM,
+                Vertex<DIM>& xr0,
+                Vertex<DIM>& xr1,
+                double H,
+                double ND0,
+                double ND1,
+                int ncomp,
                 int comp) const;
 #pragma GCC diagnostic pop
 };

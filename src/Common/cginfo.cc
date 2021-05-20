@@ -30,7 +30,9 @@ using namespace std;
 /*******************************************************************/
 
 namespace Gascoigne {
-ostream &operator<<(ostream &s, const StatisticData &A) {
+ostream&
+operator<<(ostream& s, const StatisticData& A)
+{
   s << "StatisticData\n";
   s << "rate    "
     << "\t" << A.rate() << endl;
@@ -43,7 +45,9 @@ ostream &operator<<(ostream &s, const StatisticData &A) {
 
 /*******************************************************************/
 
-ostream &operator<<(ostream &s, const ControlData &A) {
+ostream&
+operator<<(ostream& s, const ControlData& A)
+{
   s << "ControlData\n";
   s << "status"
     << "\t" << A.status() << endl;
@@ -65,7 +69,9 @@ ostream &operator<<(ostream &s, const ControlData &A) {
 
 /*******************************************************************/
 
-ostream &operator<<(ostream &s, const UserData &A) {
+ostream&
+operator<<(ostream& s, const UserData& A)
+{
   s << "UserData\n";
   s << "tol"
     << "\t" << A.tol() << endl;
@@ -84,7 +90,9 @@ ostream &operator<<(ostream &s, const UserData &A) {
 
 /*******************************************************************/
 
-ostream &operator<<(ostream &s, const CGInfo &A) {
+ostream&
+operator<<(ostream& s, const CGInfo& A)
+{
   s << "CGInfo\n";
   s << A.statistics() << endl;
   s << A.control() << endl;
@@ -94,11 +102,16 @@ ostream &operator<<(ostream &s, const CGInfo &A) {
 
 /*******************************************************************/
 
-StatisticData::StatisticData() { reset(); }
+StatisticData::StatisticData()
+{
+  reset();
+}
 
 /*******************************************************************/
 
-void StatisticData::reset() {
+void
+StatisticData::reset()
+{
   _totaliter = 0;
   _rate = 0.;
   _lastrate = 1.;
@@ -106,11 +119,16 @@ void StatisticData::reset() {
 
 /*******************************************************************/
 
-ControlData::ControlData() { reset(); }
+ControlData::ControlData()
+{
+  reset();
+}
 
 /*******************************************************************/
 
-void ControlData::reset() {
+void
+ControlData::reset()
+{
   _residual = 0.;
   _correction = 0.;
   _iteration = 0;
@@ -121,7 +139,9 @@ void ControlData::reset() {
 
 /*******************************************************************/
 
-void CGInfo::compute_reduction_rate() {
+void
+CGInfo::compute_reduction_rate()
+{
   double b = CD.residual() / CD.firstresidual();
   double p = 1. / std::max(1, CD.iteration());
   SD.rate() = pow(b, p);
@@ -129,7 +149,8 @@ void CGInfo::compute_reduction_rate() {
 
 /*******************************************************************/
 
-CGInfo::CGInfo(double f, double t, int p, int m, const string &txt) {
+CGInfo::CGInfo(double f, double t, int p, int m, const string& txt)
+{
   UD.text() = txt;
 
   UD.miniter() = 0;
@@ -145,7 +166,8 @@ CGInfo::CGInfo(double f, double t, int p, int m, const string &txt) {
 
 /*******************************************************************/
 
-CGInfo::CGInfo(const string &txt) {
+CGInfo::CGInfo(const string& txt)
+{
   UD.text() = txt;
   double f = 1.e-6;
   double t = 1.e-14;
@@ -166,7 +188,9 @@ CGInfo::CGInfo(const string &txt) {
 
 /*------------------------------------------------------------------*/
 
-void CGInfo::reset() {
+void
+CGInfo::reset()
+{
   CD.reset();
   SD.rate() = 0.;
   SD.lastrate() = 0.;
@@ -174,7 +198,9 @@ void CGInfo::reset() {
 
 /*------------------------------------------------------------------*/
 
-bool CGInfo::check(double resi, double cori) {
+bool
+CGInfo::check(double resi, double cori)
+{
   double res = fabs(resi);
   double cor = fabs(cori);
 

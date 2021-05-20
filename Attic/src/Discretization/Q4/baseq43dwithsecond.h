@@ -37,7 +37,8 @@ namespace Gascoigne {
 ///
 /////////////////////////////////////////////
 
-class BaseQ43dWithSecond : public BaseQ43d {
+class BaseQ43dWithSecond : public BaseQ43d
+{
 
 protected:
   mutable DoubleVector dxx, dyy, dzz, dxy, dxz, dyz;
@@ -45,7 +46,7 @@ protected:
 public:
   BaseQ43dWithSecond();
 
-  void point(const Vertex3d &s) const;
+  void point(const Vertex3d& s) const;
 
   double phi_xx(int i) const { return dxx[i]; }
   double phi_yy(int i) const { return dyy[i]; }

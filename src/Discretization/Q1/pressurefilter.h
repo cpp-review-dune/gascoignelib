@@ -24,14 +24,15 @@
 #ifndef __PressureFilter_h
 #define __PressureFilter_h
 
-#include "gascoigne.h"
 #include "compvector.h"
+#include "gascoigne.h"
 #include "nvector.h"
 
 /*-----------------------------------------*/
 
 namespace Gascoigne {
-class PressureFilter : public DoubleVector {
+class PressureFilter : public DoubleVector
+{
 protected:
   IntVector component;
   double domainsize;
@@ -41,16 +42,16 @@ public:
   PressureFilter();
   ~PressureFilter();
 
-  void SetComponents(const IntVector &c) { component = c; }
+  void SetComponents(const IntVector& c) { component = c; }
   bool Active() const { return component.size() > 0; }
 
   void ReInit(int n, int nhn);
 
   void AddDomainPiece(double val) { domainsize += val; }
 
-  DoubleVector IntegrateVector(const GlobalVector &u) const;
-  void SubtractMean(GlobalVector &u) const;
-  void SubtractMeanAlgebraic(GlobalVector &u) const;
+  DoubleVector IntegrateVector(const GlobalVector& u) const;
+  void SubtractMean(GlobalVector& u) const;
+  void SubtractMeanAlgebraic(GlobalVector& u) const;
 };
 } // namespace Gascoigne
 

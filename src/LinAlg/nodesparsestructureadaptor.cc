@@ -28,7 +28,9 @@ using namespace std;
 /*-----------------------------------------*/
 
 namespace Gascoigne {
-void NodeSparseStructureAdaptor::FillStencil(ColumnDiagStencil &S) const {
+void
+NodeSparseStructureAdaptor::FillStencil(ColumnDiagStencil& S) const
+{
   S.start(0) = 0;
   for (int i = 0; i < SSP->n(); i++) {
     int srowsize = _ncomp * SSP->rowsize(i);
@@ -40,7 +42,8 @@ void NodeSparseStructureAdaptor::FillStencil(ColumnDiagStencil &S) const {
 
       int id = 0;
       for (SparseStructure::const_iterator p = SSP->rowbegin(i);
-           p != SSP->rowend(i); p++) {
+           p != SSP->rowend(i);
+           p++) {
         for (int d = 0; d < _ncomp; d++) {
           S.col(first + id) = index(*p, d);
           id++;
@@ -54,7 +57,8 @@ void NodeSparseStructureAdaptor::FillStencil(ColumnDiagStencil &S) const {
 
 IntVector
 NodeSparseStructureAdaptor::GetIndicesDirichlet(int inode,
-                                                const vector<int> &cv) const {
+                                                const vector<int>& cv) const
+{
   IntVector indices(cv.size());
   for (int ic = 0; ic < cv.size(); ic++) {
     indices[ic] = index(inode, cv[ic]);

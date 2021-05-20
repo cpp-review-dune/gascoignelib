@@ -38,7 +38,7 @@
 /*-----------------------------------------------------------*/
 
 namespace Gascoigne {
-template <size_t N, int E>
+template<size_t N, int E>
 class Cell : public std::array<int, N> /* das sind die vertex-no. */
 {
 protected:
@@ -52,23 +52,41 @@ protected:
 public:
   /* Constructors */
 
-  Cell() : std::array<int, N>(), qlevel(0), qfather(-1), mat(0), mat_Vanka(0) {
+  Cell()
+    : std::array<int, N>()
+    , qlevel(0)
+    , qfather(-1)
+    , mat(0)
+    , mat_Vanka(0)
+  {
     qedges.fill(-1);
   }
 
-  Cell(const Cell &c)
-      : std::array<int, N>(c), qlevel(c.level()), qfather(c.father()),
-        mat(c.material()), mat_Vanka(c.material_Vanka()),
-        bas_Vanka(c.basis_Vanka()), qchilds(c.childs()), qedges(c.edges()) {}
+  Cell(const Cell& c)
+    : std::array<int, N>(c)
+    , qlevel(c.level())
+    , qfather(c.father())
+    , mat(c.material())
+    , mat_Vanka(c.material_Vanka())
+    , bas_Vanka(c.basis_Vanka())
+    , qchilds(c.childs())
+    , qedges(c.edges())
+  {}
 
   Cell(int l, int f)
-      : std::array<int, N>(), qlevel(l), qfather(f), mat(0), mat_Vanka(0) {
+    : std::array<int, N>()
+    , qlevel(l)
+    , qfather(f)
+    , mat(0)
+    , mat_Vanka(0)
+  {
     this->fill(-17);
   }
 
   /* Operators */
 
-  Cell<N, E> &operator=(const Cell<N, E> &c) {
+  Cell<N, E>& operator=(const Cell<N, E>& c)
+  {
     vertex() = c.vertex();
     qlevel = c.level();
     qfather = c.father();
@@ -77,7 +95,8 @@ public:
     qedges = c.edges();
     return *this;
   }
-  bool operator==(const Cell<N, E> &c) const {
+  bool operator==(const Cell<N, E>& c) const
+  {
     if (vertex() == c.vertex())
       return 1;
     return 0;
@@ -86,40 +105,41 @@ public:
   /* Zugriff */
 
   int level() const { return qlevel; }
-  int &level() { return qlevel; }
+  int& level() { return qlevel; }
   int father() const { return qfather; }
-  int &father() { return qfather; }
+  int& father() { return qfather; }
   bool sleep() const { return qchilds.size() != 0; }
   int nchilds() const { return qchilds.size(); }
   int nvertexs() const { return N; }
   int child(int i) const { return qchilds[i]; }
-  int &child(int i) { return qchilds[i]; }
+  int& child(int i) { return qchilds[i]; }
   int vertex(int i) const { return (*this)[i]; }
-  int &vertex(int i) { return (*this)[i]; }
+  int& vertex(int i) { return (*this)[i]; }
   int edge(int i) const { return qedges[i]; }
-  int &edge(int i) { return qedges[i]; }
+  int& edge(int i) { return qedges[i]; }
 
-  const IntVector &childs() const { return qchilds; }
-  IntVector &childs() { return qchilds; }
-  const std::array<int, N> &vertex() const { return (*this); }
-  std::array<int, N> &vertex() { return (*this); }
-  const std::array<int, E> &edges() const { return qedges; }
-  std::array<int, E> &edges() { return qedges; }
+  const IntVector& childs() const { return qchilds; }
+  IntVector& childs() { return qchilds; }
+  const std::array<int, N>& vertex() const { return (*this); }
+  std::array<int, N>& vertex() { return (*this); }
+  const std::array<int, E>& edges() const { return qedges; }
+  std::array<int, E>& edges() { return qedges; }
 
   int material() const { return mat; }
-  int &material() { return mat; }
+  int& material() { return mat; }
 
   int material_Vanka() const { return mat_Vanka; }
-  int &material_Vanka() { return mat_Vanka; }
+  int& material_Vanka() { return mat_Vanka; }
 
   std::array<Vertex3d, 3> basis_Vanka() const { return bas_Vanka; }
-  std::array<Vertex3d, 3> &basis_Vanka() { return bas_Vanka; }
+  std::array<Vertex3d, 3>& basis_Vanka() { return bas_Vanka; }
 
   /* Functions */
 
-  template <int M>
-  void vertex_loc2glob(std::array<int, M> &ig,
-                       const std::array<int, M> &il) const {
+  template<int M>
+  void vertex_loc2glob(std::array<int, M>& ig,
+                       const std::array<int, M>& il) const
+  {
     typename std::array<int, M>::iterator gp = ig.begin();
     typename std::array<int, M>::const_iterator lp = il.begin();
     while (lp != il.end())
@@ -128,34 +148,37 @@ public:
 
   int global2local(int gi) const;
 
-  void BinWrite(std::ostream &s) const {
+  void BinWrite(std::ostream& s) const
+  {
     ArrayBinWrite(s, vertex());
     int sizeInt = sizeof(int);
-    s.write(reinterpret_cast<const char *>(&qlevel), sizeInt);
-    s.write(reinterpret_cast<const char *>(&qfather), sizeInt);
+    s.write(reinterpret_cast<const char*>(&qlevel), sizeInt);
+    s.write(reinterpret_cast<const char*>(&qfather), sizeInt);
     int nc = nchilds();
-    s.write(reinterpret_cast<const char *>(&nc), sizeInt);
+    s.write(reinterpret_cast<const char*>(&nc), sizeInt);
     for (int i = 0; i < nchilds(); i++) {
-      s.write(reinterpret_cast<const char *>(&qchilds[i]), sizeInt);
+      s.write(reinterpret_cast<const char*>(&qchilds[i]), sizeInt);
     }
     ArrayBinWrite(s, edges());
   }
 
-  void BinRead(std::istream &s) {
+  void BinRead(std::istream& s)
+  {
     ArrayBinRead(s, vertex());
     int sizeInt = sizeof(int);
-    s.read(reinterpret_cast<char *>(&qlevel), sizeInt);
-    s.read(reinterpret_cast<char *>(&qfather), sizeInt);
+    s.read(reinterpret_cast<char*>(&qlevel), sizeInt);
+    s.read(reinterpret_cast<char*>(&qfather), sizeInt);
     int nc;
-    s.read(reinterpret_cast<char *>(&nc), sizeInt);
+    s.read(reinterpret_cast<char*>(&nc), sizeInt);
     childs().resize(nc);
     for (int i = 0; i < nchilds(); i++) {
-      s.read(reinterpret_cast<char *>(&qchilds[i]), sizeInt);
+      s.read(reinterpret_cast<char*>(&qchilds[i]), sizeInt);
     }
     ArrayBinRead(s, edges());
   }
 
-  friend std::ostream &operator<<(std::ostream &s, const Cell &A) {
+  friend std::ostream& operator<<(std::ostream& s, const Cell& A)
+  {
     s << A.vertex() << " ";
     s << A.level() << " ";
     s << A.father() << " ";
@@ -167,7 +190,8 @@ public:
     return s;
   }
 
-  friend std::istream &operator>>(std::istream &s, Cell &A) {
+  friend std::istream& operator>>(std::istream& s, Cell& A)
+  {
     std::string symbol;
     int n;
     s >> A.vertex();
@@ -192,7 +216,10 @@ public:
   }
 };
 
-template <size_t N, int E> inline int Cell<N, E>::global2local(int gi) const {
+template<size_t N, int E>
+inline int
+Cell<N, E>::global2local(int gi) const
+{
   for (int i = 0; i < N; i++) {
     if (vertex(i) == gi)
       return i;

@@ -39,17 +39,21 @@ namespace Gascoigne {
 ////
 /////////////////////////////////////////////
 
-class Q1 : public CellDiscretization {
+class Q1 : public CellDiscretization
+{
 protected:
-  HNStructureInterface *HN;
+  HNStructureInterface* HN;
 
-  IntVector GetLocalIndices(int iq) const {
+  IntVector GetLocalIndices(int iq) const
+  {
     return GetMesh()->IndicesOfCell(iq);
   }
-  void LocalToGlobal(MatrixInterface &A, EntryMatrix &E, int iq,
+  void LocalToGlobal(MatrixInterface& A,
+                     EntryMatrix& E,
+                     int iq,
                      double s) const;
 
-  virtual HNStructureInterface *NewHNStructure() = 0;
+  virtual HNStructureInterface* NewHNStructure() = 0;
 
 public:
   //
@@ -64,27 +68,33 @@ public:
 
   //  const HNStructureQ1* GetHNStructure() const { return HN;}
 
-  void ReInit(const GascoigneMesh *MP);
-  void StrongDirichletMatrix(MatrixInterface &A, int col,
-                             const std::vector<int> &comp) const;
-  void StrongDirichletMatrixOnlyRow(MatrixInterface &A, int col,
-                                    const std::vector<int> &comp) const;
-  void StrongDirichletVectorZero(GlobalVector &u, int col,
-                                 const std::vector<int> &comp) const;
-  void HNAverage(GlobalVector &x) const;
-  void HNDistribute(GlobalVector &x) const;
-  void HNZero(GlobalVector &x) const;
-  bool HNZeroCheck(const GlobalVector &x) const;
-  void Matrix(MatrixInterface &A, const GlobalVector &u,
-              const ProblemDescriptorInterface &PD, double d) const;
-  void MassMatrix(MatrixInterface &A) const;
-  void Structure(SparseStructureInterface *SI) const;
-  void InitFilter(DoubleVector &F) const;
-  virtual void EnergyEstimator(EdgeInfoContainerInterface &EIC,
-                               DoubleVector &eta, const GlobalVector &u,
-                               const Equation &EQ,
-                               const DomainRightHandSide *RHS,
-                               const std::string &s_energytype,
+  void ReInit(const GascoigneMesh* MP);
+  void StrongDirichletMatrix(MatrixInterface& A,
+                             int col,
+                             const std::vector<int>& comp) const;
+  void StrongDirichletMatrixOnlyRow(MatrixInterface& A,
+                                    int col,
+                                    const std::vector<int>& comp) const;
+  void StrongDirichletVectorZero(GlobalVector& u,
+                                 int col,
+                                 const std::vector<int>& comp) const;
+  void HNAverage(GlobalVector& x) const;
+  void HNDistribute(GlobalVector& x) const;
+  void HNZero(GlobalVector& x) const;
+  bool HNZeroCheck(const GlobalVector& x) const;
+  void Matrix(MatrixInterface& A,
+              const GlobalVector& u,
+              const ProblemDescriptorInterface& PD,
+              double d) const;
+  void MassMatrix(MatrixInterface& A) const;
+  void Structure(SparseStructureInterface* SI) const;
+  void InitFilter(DoubleVector& F) const;
+  virtual void EnergyEstimator(EdgeInfoContainerInterface& EIC,
+                               DoubleVector& eta,
+                               const GlobalVector& u,
+                               const Equation& EQ,
+                               const DomainRightHandSide* RHS,
+                               const std::string& s_energytype,
                                double d_visc) const = 0;
 };
 } // namespace Gascoigne

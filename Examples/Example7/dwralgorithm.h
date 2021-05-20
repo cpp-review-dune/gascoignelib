@@ -37,19 +37,24 @@ namespace Gascoigne {
 ///
 //////////////////////////////////////////////
 
-class DwrAlgorithm : public MultiLevelAlgorithm {
+class DwrAlgorithm : public MultiLevelAlgorithm
+{
 protected:
-  DiscretizationInterface *CreateOtherDiscretization() const;
+  DiscretizationInterface* CreateOtherDiscretization() const;
 
-  void PrimalResidualsHigher(VectorInterface &f, const VectorInterface &u);
-  void DualResidualsHigher(VectorInterface &f, const VectorInterface &u,
-                           const VectorInterface &z);
+  void PrimalResidualsHigher(VectorInterface& f, const VectorInterface& u);
+  void DualResidualsHigher(VectorInterface& f,
+                           const VectorInterface& u,
+                           const VectorInterface& z);
 
 public:
-  DwrAlgorithm() : MultiLevelAlgorithm() {}
+  DwrAlgorithm()
+    : MultiLevelAlgorithm()
+  {}
   virtual ~DwrAlgorithm() {}
-  void AdaptiveLoop(const std::string &problemlabel,
-                    const std::string &duallabel, Functional &J);
+  void AdaptiveLoop(const std::string& problemlabel,
+                    const std::string& duallabel,
+                    Functional& J);
 };
 
 } // namespace Gascoigne

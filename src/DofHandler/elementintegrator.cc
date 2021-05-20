@@ -38,12 +38,16 @@ template class ElementIntegratorQ23d;
 template class ElementIntegratorQ43d;
 
 ////////////////////////////////////////////////// required for LPS
-template class ElementIntegrator<
-    2, PatchFormula2d<4, QuadGauss4>, PatchFormula2d<9, QuadGauss9>,
-    PatchFormula1d<2, LineGauss2>, PatchFormula2d<4, QuadGauss4>>;
-template class ElementIntegrator<
-    3, PatchFormula3d<8, HexGauss8>, PatchFormula3d<27, HexGauss27>,
-    PatchFormula2d<4, QuadGauss4>, PatchFormula3d<8, HexGauss8>>;
+template class ElementIntegrator<2,
+                                 PatchFormula2d<4, QuadGauss4>,
+                                 PatchFormula2d<9, QuadGauss9>,
+                                 PatchFormula1d<2, LineGauss2>,
+                                 PatchFormula2d<4, QuadGauss4>>;
+template class ElementIntegrator<3,
+                                 PatchFormula3d<8, HexGauss8>,
+                                 PatchFormula3d<27, HexGauss27>,
+                                 PatchFormula2d<4, QuadGauss4>,
+                                 PatchFormula3d<8, HexGauss8>>;
 
 /* ----------------------------------------- */
 

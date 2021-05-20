@@ -28,8 +28,10 @@ using namespace std;
 /*---------------------------------------------------*/
 
 namespace Gascoigne {
-template <int DIM>
-void BoundaryFunction<DIM>::grad(Vector &dst, const Vector &src) const {
+template<int DIM>
+void
+BoundaryFunction<DIM>::grad(Vector& dst, const Vector& src) const
+{
   double eps = 1e-6;
 
   for (int i = 0; i < DIM; i++) {
@@ -42,7 +44,10 @@ void BoundaryFunction<DIM>::grad(Vector &dst, const Vector &src) const {
 
 /*---------------------------------------------------*/
 
-template <int DIM> void BoundaryFunction<DIM>::newton(Vector &dst) const {
+template<int DIM>
+void
+BoundaryFunction<DIM>::newton(Vector& dst) const
+{
   int maxi = 10;
   double tol = 1.e-12;
 

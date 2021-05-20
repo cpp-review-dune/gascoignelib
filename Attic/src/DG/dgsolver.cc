@@ -5,8 +5,9 @@
 
 namespace Gascoigne {
 
-void DGSolver::Visu(const std::string &name, const VectorInterface &gu,
-                    int i) const {
+void
+DGSolver::Visu(const std::string& name, const VectorInterface& gu, int i) const
+{
   assert(gu.GetType() == "node");
   std::string filename = name;
   compose_name(filename, i);
@@ -20,11 +21,11 @@ void DGSolver::Visu(const std::string &name, const VectorInterface &gu,
          << "ASCII" << std::endl;
 
   ////////////////////////////////////////////////// Grid
-  const GascoigneMesh2d *M = dynamic_cast<const GascoigneMesh2d *>(GetMesh());
+  const GascoigneMesh2d* M = dynamic_cast<const GascoigneMesh2d*>(GetMesh());
   assert(M);
 
   // DG1 / DG2 ?
-  const GlobalVector &U = GetGV(gu);
+  const GlobalVector& U = GetGV(gu);
   int dgtype = 0;
   if (U.n() == M->ncells() * 4)
     dgtype = 1;
@@ -37,9 +38,9 @@ void DGSolver::Visu(const std::string &name, const VectorInterface &gu,
     // points // DG ... stupid? multiple times...
     VTKOUT << "DATASET UNSTRUCTURED_GRID" << std::endl
            << "POINTS " << M->ncells() * 4 << " DOUBLE" << std::endl;
-    int itoj[4] = {0, 1, 3, 2};
+    int itoj[4] = { 0, 1, 3, 2 };
     for (int c = 0; c < M->ncells(); ++c) {
-      const IntVector &ioc = M->IndicesOfCell(c);
+      const IntVector& ioc = M->IndicesOfCell(c);
       for (int i = 0; i < ioc.size(); ++i)
         VTKOUT << M->vertex2d(ioc[itoj[i]]) << " 0" << std::endl;
     }
@@ -77,15 +78,16 @@ void DGSolver::Visu(const std::string &name, const VectorInterface &gu,
     /// ones
     VTKOUT << "DATASET UNSTRUCTURED_GRID" << std::endl
            << "POINTS " << M->ncells() * 9 << " DOUBLE" << std::endl;
-    int itop[4] = {0, 2, 6, 8}; // corners of patch
+    int itop[4] = { 0, 2, 6, 8 }; // corners of patch
     // int itoj[4]= {0,1,3,2}; // counter-clockwise / lexico
-    int iinp[4][4] = {{0, 1, 4, 3},
-                      {1, 2, 5, 4},
-                      {3, 4, 7, 6},
-                      {4, 5, 8, 7}}; // cells in patch
-    int avge[4][3] = {{1, 0, 2}, {5, 2, 8}, {3, 0, 6}, {7, 6, 8}}; // edges
+    int iinp[4][4] = {
+      { 0, 1, 4, 3 }, { 1, 2, 5, 4 }, { 3, 4, 7, 6 }, { 4, 5, 8, 7 }
+    }; // cells in patch
+    int avge[4][3] = {
+      { 1, 0, 2 }, { 5, 2, 8 }, { 3, 0, 6 }, { 7, 6, 8 }
+    }; // edges
     for (int c = 0; c < M->ncells(); ++c) {
-      const IntVector &ioc = M->IndicesOfCell(c);
+      const IntVector& ioc = M->IndicesOfCell(c);
       assert(ioc.size() == 4);
       std::array<Vertex2d, 9> vop; // vertices of patch
 

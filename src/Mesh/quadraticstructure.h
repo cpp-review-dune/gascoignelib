@@ -30,8 +30,9 @@
 /*--------------------------------------------------------------*/
 
 namespace Gascoigne {
-template <int N>
-class QuadraticHNStructure : public std::map<int, fixarray<N, int>> {};
+template<int N>
+class QuadraticHNStructure : public std::map<int, fixarray<N, int>>
+{};
 } // namespace Gascoigne
 
 #endif

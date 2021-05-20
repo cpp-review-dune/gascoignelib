@@ -29,7 +29,9 @@ using namespace std;
 /* ----------------------------------------- */
 
 namespace Gascoigne {
-void Visualization::_rotatedvtk_pointdata(ofstream &out) const {
+void
+Visualization::_rotatedvtk_pointdata(ofstream& out) const
+{
   if (PointData) {
     int nn = mesh->nnodes() * i_rotatedvtk_slides;
 
@@ -38,7 +40,7 @@ void Visualization::_rotatedvtk_pointdata(ofstream &out) const {
     // p=PointDataInfo->sbegin();p!=PointDataInfo->send();++p)
     for (int i = 0; i < PointDataInfo->nscalars(); i++) {
       VisuDataInfo::siterator p =
-          (const_cast<VisuDataInfo *>(PointDataInfo))->GetSIterator(i);
+        (const_cast<VisuDataInfo*>(PointDataInfo))->GetSIterator(i);
       if (i == 0)
         out << "POINT_DATA " << nn << endl;
       out << "SCALARS " << p->first << " DOUBLE " << endl;
@@ -61,7 +63,7 @@ void Visualization::_rotatedvtk_pointdata(ofstream &out) const {
     // p=PointDataInfo->vbegin();p!=PointDataInfo->vend();++p) {
     for (int i = 0; i < PointDataInfo->nvectors(); i++) {
       VisuDataInfo::viterator p =
-          (const_cast<VisuDataInfo *>(PointDataInfo))->GetVIterator(i);
+        (const_cast<VisuDataInfo*>(PointDataInfo))->GetVIterator(i);
       out << "VECTORS " << p->first << " DOUBLE " << endl;
       for (int i_slide = 0; i_slide < i_rotatedvtk_slides; i_slide++) {
         for (int ind = 0; ind < PointData->visun(); ind++) {
@@ -90,7 +92,9 @@ void Visualization::_rotatedvtk_pointdata(ofstream &out) const {
 
 /* ----------------------------------------- */
 
-void Visualization::_rotatedvtk_celldata(ofstream &out) const {
+void
+Visualization::_rotatedvtk_celldata(ofstream& out) const
+{
   if (CellData) {
     CheckCellData();
 
@@ -102,7 +106,7 @@ void Visualization::_rotatedvtk_celldata(ofstream &out) const {
     // p=CellDataInfo->sbegin();p!=CellDataInfo->send();++p){
     for (int i = 0; i < CellDataInfo->nscalars(); i++) {
       VisuDataInfo::siterator p =
-          (const_cast<VisuDataInfo *>(CellDataInfo))->GetSIterator(i);
+        (const_cast<VisuDataInfo*>(CellDataInfo))->GetSIterator(i);
       if (i == 0)
         out << "CELL_DATA " << (i_rotatedvtk_slides - 1) * mesh->ncells()
             << endl;
@@ -123,7 +127,7 @@ void Visualization::_rotatedvtk_celldata(ofstream &out) const {
     // p=CellDataInfo->vbegin();p!=CellDataInfo->vend();++p){
     for (int i = 0; i < CellDataInfo->nvectors(); i++) {
       VisuDataInfo::viterator p =
-          (const_cast<VisuDataInfo *>(CellDataInfo))->GetVIterator(i);
+        (const_cast<VisuDataInfo*>(CellDataInfo))->GetVIterator(i);
       out << "VECTORS " << p->first << " DOUBLE " << endl;
       for (int ind = 0; ind < CellData->visun(); ind++) {
         abort();
@@ -144,14 +148,16 @@ void Visualization::_rotatedvtk_celldata(ofstream &out) const {
 
 /* ----------------------------------------- */
 
-void Visualization::_rotatedvtk_points(ofstream &out) const {
+void
+Visualization::_rotatedvtk_points(ofstream& out) const
+{
   int nn = mesh->nnodes();
   out << "POINTS " << nn * i_rotatedvtk_slides << " DOUBLE " << endl;
   if (mesh->dimension() == 2) {
     for (int i_slide = 0; i_slide < i_rotatedvtk_slides; i_slide++) {
       double d_phi = i_slide * d_rotatedvtk_angle;
       for (int i = 0; i < nn; i++) {
-        const Vertex2d &v = mesh->vertex2d(i);
+        const Vertex2d& v = mesh->vertex2d(i);
         double r = v.x();
         double x = r * cos(2. * M_PI * d_phi / 360.);
         double z = r * sin(2. * M_PI * d_phi / 360.);
@@ -169,7 +175,9 @@ void Visualization::_rotatedvtk_points(ofstream &out) const {
 
 /* ----------------------------------------- */
 
-void Visualization::_rotatedvtk_cells(ofstream &out) const {
+void
+Visualization::_rotatedvtk_cells(ofstream& out) const
+{
   int ne = mesh->ncells();
   int nn = mesh->nnodes();
 
@@ -208,7 +216,9 @@ void Visualization::_rotatedvtk_cells(ofstream &out) const {
 
 /* ----------------------------------------- */
 
-void Visualization::rotatedvtk(const string &bname) const {
+void
+Visualization::rotatedvtk(const string& bname) const
+{
   string name = bname;
   name += ".vtk";
 

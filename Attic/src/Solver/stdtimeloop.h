@@ -31,34 +31,41 @@
 /*-----------------------------------------*/
 
 namespace Gascoigne {
-class StdTimeLoop : public virtual StdLoop {
+class StdTimeLoop : public virtual StdLoop
+{
 protected:
   TimeInfo _timeinfo;
-  virtual std::string SolveTimePrimal(Matrix &A, VectorInterface &u,
-                                      VectorInterface &f);
+  virtual std::string SolveTimePrimal(Matrix& A,
+                                      VectorInterface& u,
+                                      VectorInterface& f);
 
   virtual void TimeInfoBroadcast();
-  void InitSolution(VectorInterface &u);
+  void InitSolution(VectorInterface& u);
 
-  virtual const StdTimeSolver *GetTimeSolver() const {
-    assert(dynamic_cast<const StdTimeSolver *>(
-        GetMultiLevelSolver()->GetSolver()));
-    return dynamic_cast<const StdTimeSolver *>(
-        GetMultiLevelSolver()->GetSolver());
+  virtual const StdTimeSolver* GetTimeSolver() const
+  {
+    assert(
+      dynamic_cast<const StdTimeSolver*>(GetMultiLevelSolver()->GetSolver()));
+    return dynamic_cast<const StdTimeSolver*>(
+      GetMultiLevelSolver()->GetSolver());
   }
-  virtual StdTimeSolver *GetTimeSolver() {
-    assert(dynamic_cast<StdTimeSolver *>(GetMultiLevelSolver()->GetSolver()));
-    return dynamic_cast<StdTimeSolver *>(GetMultiLevelSolver()->GetSolver());
+  virtual StdTimeSolver* GetTimeSolver()
+  {
+    assert(dynamic_cast<StdTimeSolver*>(GetMultiLevelSolver()->GetSolver()));
+    return dynamic_cast<StdTimeSolver*>(GetMultiLevelSolver()->GetSolver());
   }
 
 public:
-  StdTimeLoop() : StdLoop() {}
+  StdTimeLoop()
+    : StdLoop()
+  {}
 
-  void BasicInit(const ParamFile *paramfile, const ProblemContainer *PC,
-                 const FunctionalContainer *FC = NULL);
+  void BasicInit(const ParamFile* paramfile,
+                 const ProblemContainer* PC,
+                 const FunctionalContainer* FC = NULL);
 
-  void run(const std::string &problemlabel);
-  void adaptive_run(const std::string &problemlabel);
+  void run(const std::string& problemlabel);
+  void adaptive_run(const std::string& problemlabel);
 };
 } // namespace Gascoigne
 

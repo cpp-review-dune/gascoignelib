@@ -28,8 +28,10 @@ using namespace std;
 /*-----------------------------------------*/
 
 namespace Gascoigne {
-void MgInterpolatorMatrix::restrict_zero(GlobalVector &uL,
-                                         const GlobalVector &ul) const {
+void
+MgInterpolatorMatrix::restrict_zero(GlobalVector& uL,
+                                    const GlobalVector& ul) const
+{
   uL.zero();
   for (int i = 0; i < ST.n(); i++) {
     for (int pos = ST.start(i); pos < ST.stop(i); pos++) {
@@ -40,8 +42,10 @@ void MgInterpolatorMatrix::restrict_zero(GlobalVector &uL,
 
 /*-----------------------------------------*/
 
-void MgInterpolatorMatrix::prolongate_add(GlobalVector &ul,
-                                          const GlobalVector &uL) const {
+void
+MgInterpolatorMatrix::prolongate_add(GlobalVector& ul,
+                                     const GlobalVector& uL) const
+{
   for (int i = 0; i < ST.n(); i++) {
     for (int pos = ST.start(i); pos < ST.stop(i); pos++) {
       ul.add_node(i, val[pos], ST.col(pos), uL);
@@ -51,8 +55,10 @@ void MgInterpolatorMatrix::prolongate_add(GlobalVector &ul,
 
 /*-----------------------------------------*/
 
-void MgInterpolatorMatrix::SolutionTransfer(GlobalVector &uL,
-                                            const GlobalVector &ul) const {
+void
+MgInterpolatorMatrix::SolutionTransfer(GlobalVector& uL,
+                                       const GlobalVector& ul) const
+{
   uL.zero();
   for (int i = 0; i < ST.n(); i++) {
     for (int pos = ST.start(i); pos < ST.stop(i); pos++) {

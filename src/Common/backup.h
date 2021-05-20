@@ -31,38 +31,43 @@
 /********************************************************************/
 
 namespace Gascoigne {
-class WriteBackUp {
+class WriteBackUp
+{
 public:
-  WriteBackUp(const GlobalVector &, const std::string &);
+  WriteBackUp(const GlobalVector&, const std::string&);
 };
 
 /********************************************************************/
 
-class WriteBackUpBinary {
+class WriteBackUpBinary
+{
 public:
-  WriteBackUpBinary(const GlobalVector &, const std::string &);
+  WriteBackUpBinary(const GlobalVector&, const std::string&);
 };
 
 /********************************************************************/
 
-class ReadBackUp {
+class ReadBackUp
+{
 public:
-  ReadBackUp(const std::string &, int &, int &);
-  ReadBackUp(GlobalVector &, const std::string &);
+  ReadBackUp(const std::string&, int&, int&);
+  ReadBackUp(GlobalVector&, const std::string&);
 };
 
 /********************************************************************/
 
-class ReadBackUpResize {
+class ReadBackUpResize
+{
 public:
-  ReadBackUpResize(GlobalVector &, const std::string &);
+  ReadBackUpResize(GlobalVector&, const std::string&);
 };
 
 /********************************************************************/
 
-class ReadBackUpBinary {
+class ReadBackUpBinary
+{
 public:
-  ReadBackUpBinary(GlobalVector &, const std::string &);
+  ReadBackUpBinary(GlobalVector&, const std::string&);
 };
 } // namespace Gascoigne
 

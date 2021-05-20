@@ -8,7 +8,10 @@ using namespace std;
 
 namespace Gascoigne {
 
-template <int DIM> void Loop<DIM>::run(const std::string &problemlabel) {
+template<int DIM>
+void
+Loop<DIM>::run(const std::string& problemlabel)
+{
   ofstream func_log("functional.txt");
   func_log.precision(12);
   func_log << "cells\t"
@@ -49,9 +52,9 @@ template <int DIM> void Loop<DIM>::run(const std::string &problemlabel) {
 
     GetSolverInfos()->GetNLInfo().control().matrixmustbebuild() = 1;
     string solved =
-        GetMultiLevelSolver()->Solve(u, f, GetSolverInfos()->GetNLInfo());
+      GetMultiLevelSolver()->Solve(u, f, GetSolverInfos()->GetNLInfo());
 
-    NLInfo &nlinfo = GetSolverInfos()->GetNLInfo();
+    NLInfo& nlinfo = GetSolverInfos()->GetNLInfo();
     // anzahl newtonschritte
     double newton_Steps = nlinfo.statistics().totaliter();
     cout << "newton_Steps: " << newton_Steps << endl;
@@ -85,7 +88,7 @@ template <int DIM> void Loop<DIM>::run(const std::string &problemlabel) {
   func_log.close();
 
   string name = "Results/transformed_mesh";
-  LocalMeshAgent *lMA = dynamic_cast<LocalMeshAgent *>(GetMeshAgent());
+  LocalMeshAgent* lMA = dynamic_cast<LocalMeshAgent*>(GetMeshAgent());
   lMA->write_gup(name, GetMultiLevelSolver()->GetSolver()->GetGV(u));
   cout << " " << name << ".gup" << endl;
 

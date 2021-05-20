@@ -37,36 +37,43 @@ namespace Gascoigne {
 ///
 /////////////////////////////////////////////
 
-class CellDiscretization : public BasicDiscretization {
+class CellDiscretization : public BasicDiscretization
+{
 private:
 protected:
-  FemInterface *__FEM;
-  IntegratorInterface *__INT;
+  FemInterface* __FEM;
+  IntegratorInterface* __INT;
 
-  const FemInterface *GetFem() const {
+  const FemInterface* GetFem() const
+  {
     assert(__FEM);
     return __FEM;
   }
-  const IntegratorInterface *GetIntegrator() const {
+  const IntegratorInterface* GetIntegrator() const
+  {
     assert(__INT);
     return __INT;
   }
-  IntegratorInterface *&GetIntegratorPointer() { return __INT; }
-  FemInterface *&GetFemPointer() { return __FEM; }
+  IntegratorInterface*& GetIntegratorPointer() { return __INT; }
+  FemInterface*& GetFemPointer() { return __FEM; }
 
-  virtual void Transformation(FemInterface::Matrix &T, int iq) const;
+  virtual void Transformation(FemInterface::Matrix& T, int iq) const;
 
-  double ComputePointValue(const GlobalVector &u, const Vertex2d &p0,
+  double ComputePointValue(const GlobalVector& u,
+                           const Vertex2d& p0,
                            int comp) const;
-  double ComputePointValue(const GlobalVector &u, const Vertex3d &p0,
+  double ComputePointValue(const GlobalVector& u,
+                           const Vertex3d& p0,
                            int comp) const;
 
-  virtual int GetCellNumber(const Vertex2d &p0, Vertex2d &p, int c0 = 0) const {
+  virtual int GetCellNumber(const Vertex2d& p0, Vertex2d& p, int c0 = 0) const
+  {
     std::cerr << "\"CellDiscretization::GetCellNumber\" not written!"
               << std::endl;
     abort();
   }
-  virtual int GetCellNumber(const Vertex3d &p0, Vertex3d &p, int c0 = 0) const {
+  virtual int GetCellNumber(const Vertex3d& p0, Vertex3d& p, int c0 = 0) const
+  {
     std::cerr << "\"CellDiscretization::GetCellNumber\" not written!"
               << std::endl;
     abort();
@@ -74,24 +81,38 @@ protected:
 
   /////
 
-  void Transformation_HM(FemInterface::Matrix &T, const HierarchicalMesh *HM,
+  void Transformation_HM(FemInterface::Matrix& T,
+                         const HierarchicalMesh* HM,
                          int iq) const;
-  void GlobalToLocal_HM(LocalVector &U, const GlobalVector &u,
-                        const HierarchicalMesh *HM, int iq) const;
-  void swapIndices(IntVector &indices) const;
+  void GlobalToLocal_HM(LocalVector& U,
+                        const GlobalVector& u,
+                        const HierarchicalMesh* HM,
+                        int iq) const;
+  void swapIndices(IntVector& indices) const;
 
-  virtual void DiracRhsPoint(GlobalVector &f, const DiracRightHandSide &DRHS,
-                             const Vertex2d &p0, int i, double s) const;
-  virtual void DiracRhsPoint(GlobalVector &f, const DiracRightHandSide &DRHS,
-                             const Vertex3d &p0, int i, double s) const;
+  virtual void DiracRhsPoint(GlobalVector& f,
+                             const DiracRightHandSide& DRHS,
+                             const Vertex2d& p0,
+                             int i,
+                             double s) const;
+  virtual void DiracRhsPoint(GlobalVector& f,
+                             const DiracRightHandSide& DRHS,
+                             const Vertex3d& p0,
+                             int i,
+                             double s) const;
 
 public:
   //
   ////  Constructor
   //
 
-  CellDiscretization() : BasicDiscretization(), __FEM(NULL), __INT(NULL) {}
-  ~CellDiscretization() {
+  CellDiscretization()
+    : BasicDiscretization()
+    , __FEM(NULL)
+    , __INT(NULL)
+  {}
+  ~CellDiscretization()
+  {
     if (__FEM) {
       delete __FEM;
       __FEM = NULL;
@@ -104,78 +125,101 @@ public:
 
   std::string GetName() const { return "CellDiscretization"; }
 
-  void Structure(SparseStructureInterface *S) const;
+  void Structure(SparseStructureInterface* S) const;
 
-  void Form(GlobalVector &f, const GlobalVector &u,
-            const ProblemDescriptorInterface &PD, double d) const;
-  void AdjointForm(GlobalVector &f, const GlobalVector &u, const Equation &EQ,
+  void Form(GlobalVector& f,
+            const GlobalVector& u,
+            const ProblemDescriptorInterface& PD,
+            double d) const;
+  void AdjointForm(GlobalVector& f,
+                   const GlobalVector& u,
+                   const Equation& EQ,
                    double d) const;
-  void BoundaryForm(GlobalVector &f, const GlobalVector &u,
-                    const ProblemDescriptorInterface &PD, double d) const;
-  void Matrix(MatrixInterface &A, const GlobalVector &u,
-              const ProblemDescriptorInterface &PD, double) const;
-  void BoundaryMatrix(MatrixInterface &A, const GlobalVector &u,
-                      const ProblemDescriptorInterface &BE, double d) const;
-  void MassMatrix(MatrixInterface &M) const;
-  void BoundaryMassMatrix(MatrixInterface &A, const IntSet &Colors) const;
-  void MassForm(GlobalVector &f, const GlobalVector &u, const TimePattern &TP,
+  void BoundaryForm(GlobalVector& f,
+                    const GlobalVector& u,
+                    const ProblemDescriptorInterface& PD,
+                    double d) const;
+  void Matrix(MatrixInterface& A,
+              const GlobalVector& u,
+              const ProblemDescriptorInterface& PD,
+              double) const;
+  void BoundaryMatrix(MatrixInterface& A,
+                      const GlobalVector& u,
+                      const ProblemDescriptorInterface& BE,
+                      double d) const;
+  void MassMatrix(MatrixInterface& M) const;
+  void BoundaryMassMatrix(MatrixInterface& A, const IntSet& Colors) const;
+  void MassForm(GlobalVector& f,
+                const GlobalVector& u,
+                const TimePattern& TP,
                 double s) const;
 
-  void ComputeError(const GlobalVector &u, LocalVector &err,
-                    const ExactSolution *ES) const;
-  void AssembleError(GlobalVector &eta, const GlobalVector &u, LocalVector &err,
-                     const ExactSolution *ES) const;
+  void ComputeError(const GlobalVector& u,
+                    LocalVector& err,
+                    const ExactSolution* ES) const;
+  void AssembleError(GlobalVector& eta,
+                     const GlobalVector& u,
+                     LocalVector& err,
+                     const ExactSolution* ES) const;
 
-  void Rhs(GlobalVector &f, const ProblemDescriptorInterface &PD,
+  void Rhs(GlobalVector& f,
+           const ProblemDescriptorInterface& PD,
            double s) const;
-  void DiracRhs(GlobalVector &f, const DiracRightHandSide &DRHS,
+  void DiracRhs(GlobalVector& f,
+                const DiracRightHandSide& DRHS,
                 double s) const;
 
-  void BoundaryRhs(GlobalVector &f, const IntSet &Colors,
-                   const ProblemDescriptorInterface &PD, double s) const;
+  void BoundaryRhs(GlobalVector& f,
+                   const IntSet& Colors,
+                   const ProblemDescriptorInterface& PD,
+                   double s) const;
 
-  void InitFilter(DoubleVector &) const;
+  void InitFilter(DoubleVector&) const;
 
   // Functionals
-  double ComputeBoundaryFunctional(const GlobalVector &u, const IntSet &Colors,
-                                   const BoundaryFunctional &BF) const;
-  double ComputeDomainFunctional(const GlobalVector &u,
-                                 const DomainFunctional &F) const;
-  double ComputeErrorDomainFunctional(const GlobalVector &u,
-                                      const DomainFunctional &F) const;
+  double ComputeBoundaryFunctional(const GlobalVector& u,
+                                   const IntSet& Colors,
+                                   const BoundaryFunctional& BF) const;
+  double ComputeDomainFunctional(const GlobalVector& u,
+                                 const DomainFunctional& F) const;
+  double ComputeErrorDomainFunctional(const GlobalVector& u,
+                                      const DomainFunctional& F) const;
 
-  double ComputePointFunctional(const GlobalVector &u,
-                                const PointFunctional &FP) const;
+  double ComputePointFunctional(const GlobalVector& u,
+                                const PointFunctional& FP) const;
 
-  void EvaluateCellRightHandSide(GlobalVector &f, const DomainRightHandSide &CF,
+  void EvaluateCellRightHandSide(GlobalVector& f,
+                                 const DomainRightHandSide& CF,
                                  double d) const;
-  void EvaluateBoundaryCellRightHandSide(GlobalVector &f, const IntSet &Colors,
-                                         const BoundaryRightHandSide &CF,
+  void EvaluateBoundaryCellRightHandSide(GlobalVector& f,
+                                         const IntSet& Colors,
+                                         const BoundaryRightHandSide& CF,
                                          double d) const;
-  void EvaluateParameterRightHandSide(GlobalVector &f,
-                                      const DomainRightHandSide &CF,
+  void EvaluateParameterRightHandSide(GlobalVector& f,
+                                      const DomainRightHandSide& CF,
                                       double d) const;
-  void EvaluateBoundaryParameterRightHandSide(GlobalVector &f,
-                                              const IntSet &Colors,
-                                              const BoundaryRightHandSide &CF,
+  void EvaluateBoundaryParameterRightHandSide(GlobalVector& f,
+                                              const IntSet& Colors,
+                                              const BoundaryRightHandSide& CF,
                                               double d) const;
 
-  void InterpolateDomainFunction(GlobalVector &f,
-                                 const DomainFunction &DF) const;
-  void InterpolateCellDomainFunction(GlobalVector &f,
-                                     const DomainFunction &DF) const;
+  void InterpolateDomainFunction(GlobalVector& f,
+                                 const DomainFunction& DF) const;
+  void InterpolateCellDomainFunction(GlobalVector& f,
+                                     const DomainFunction& DF) const;
 
-  virtual nmatrix<double> GetLocalInterpolationWeights() const {
+  virtual nmatrix<double> GetLocalInterpolationWeights() const
+  {
     std::cerr
-        << "\"CellDiscretization::GetLocalInterpolationWeights\" not written!"
-        << std::endl;
+      << "\"CellDiscretization::GetLocalInterpolationWeights\" not written!"
+      << std::endl;
     abort();
   }
 
-  void GetVolumes(DoubleVector &a) const;
-  void GetAreas(DoubleVector &a, const IntSet &Colors) const;
-  void GetMassDiag(DoubleVector &a) const;
-  void GetBoundaryMassDiag(DoubleVector &a) const;
+  void GetVolumes(DoubleVector& a) const;
+  void GetAreas(DoubleVector& a, const IntSet& Colors) const;
+  void GetMassDiag(DoubleVector& a) const;
+  void GetBoundaryMassDiag(DoubleVector& a) const;
 };
 } // namespace Gascoigne
 

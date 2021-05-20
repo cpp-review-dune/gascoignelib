@@ -31,20 +31,29 @@
 /*-----------------------------------------*/
 
 namespace Gascoigne {
-class BoundaryFunctional : public virtual Functional {
+class BoundaryFunctional : public virtual Functional
+{
 private:
 protected:
 public:
-  BoundaryFunctional() : Functional() {}
+  BoundaryFunctional()
+    : Functional()
+  {}
   virtual ~BoundaryFunctional(){};
 
-  virtual double J(const FemFunction &U, const Vertex2d &v, const Vertex2d &n,
-                   int color) const {
+  virtual double J(const FemFunction& U,
+                   const Vertex2d& v,
+                   const Vertex2d& n,
+                   int color) const
+  {
     std::cerr << "\"BoundaryFunctional::J\" for 2d not written!" << std::endl;
     abort();
   }
-  virtual double J(const FemFunction &U, const Vertex3d &v, const Vertex3d &n,
-                   int color) const {
+  virtual double J(const FemFunction& U,
+                   const Vertex3d& v,
+                   const Vertex3d& n,
+                   int color) const
+  {
     std::cerr << "\"BoundaryFunctional::J\" for 3d not written!" << std::endl;
     abort();
   }

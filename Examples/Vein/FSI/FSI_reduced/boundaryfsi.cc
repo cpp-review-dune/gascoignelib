@@ -14,7 +14,9 @@ namespace Gascoigne {
 //////////////////////////////////////////////////
 
 ////////////////////////////////////////////////// BOUNDARY
-template <int DIM> BoundaryFSI<DIM>::BoundaryFSI(const ParamFile *pf) {
+template<int DIM>
+BoundaryFSI<DIM>::BoundaryFSI(const ParamFile* pf)
+{
   DataFormatHandler DFH;
   DFH.insert("nu_f", &__nu_f, 0.0);
   DFH.insert("rho_f", &__rho_f);
@@ -28,19 +30,23 @@ template <int DIM> BoundaryFSI<DIM>::BoundaryFSI(const ParamFile *pf) {
   cout << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" << endl;
 }
 
-template <int DIM>
-void BoundaryFSI<DIM>::Form(VectorIterator b, const FemFunction &U_Dummy,
-                            const TestFunction &N, int col) const {
+template<int DIM>
+void
+BoundaryFSI<DIM>::Form(VectorIterator b,
+                       const FemFunction& U_Dummy,
+                       const TestFunction& N,
+                       int col) const
+{
   //______________________________________________________________________________
   if (DIM == 3) {
     NU << (*U_Vec)[DIM + 1 + 0].x(), (*U_Vec)[DIM + 1 + 0].y(),
-        (*U_Vec)[DIM + 1 + 0].z(), (*U_Vec)[DIM + 1 + 1].x(),
-        (*U_Vec)[DIM + 1 + 1].y(), (*U_Vec)[DIM + 1 + 1].z(),
-        (*U_Vec)[DIM + 1 + 2].x(), (*U_Vec)[DIM + 1 + 2].y(),
-        (*U_Vec)[DIM + 1 + 2].z();
+      (*U_Vec)[DIM + 1 + 0].z(), (*U_Vec)[DIM + 1 + 1].x(),
+      (*U_Vec)[DIM + 1 + 1].y(), (*U_Vec)[DIM + 1 + 1].z(),
+      (*U_Vec)[DIM + 1 + 2].x(), (*U_Vec)[DIM + 1 + 2].y(),
+      (*U_Vec)[DIM + 1 + 2].z();
     NV << (*U_Vec)[1 + 0].x(), (*U_Vec)[1 + 0].y(), (*U_Vec)[1 + 0].z(),
-        (*U_Vec)[1 + 1].x(), (*U_Vec)[1 + 1].y(), (*U_Vec)[1 + 1].z(),
-        (*U_Vec)[1 + 2].x(), (*U_Vec)[1 + 2].y(), (*U_Vec)[1 + 2].z();
+      (*U_Vec)[1 + 1].x(), (*U_Vec)[1 + 1].y(), (*U_Vec)[1 + 1].z(),
+      (*U_Vec)[1 + 2].x(), (*U_Vec)[1 + 2].y(), (*U_Vec)[1 + 2].z();
   }
   // Berechnung einiger Werte
   // Deformationsgradient
@@ -49,14 +55,14 @@ void BoundaryFSI<DIM>::Form(VectorIterator b, const FemFunction &U_Dummy,
   //______________________________________________________________________________
   if (DIM == 3) {
     NU_OLD << (*UOLD_Vec)[DIM + 1 + 0].x(), (*UOLD_Vec)[DIM + 1 + 0].y(),
-        (*UOLD_Vec)[DIM + 1 + 0].z(), (*UOLD_Vec)[DIM + 1 + 1].x(),
-        (*UOLD_Vec)[DIM + 1 + 1].y(), (*UOLD_Vec)[DIM + 1 + 1].z(),
-        (*UOLD_Vec)[DIM + 1 + 2].x(), (*UOLD_Vec)[DIM + 1 + 2].y(),
-        (*UOLD_Vec)[DIM + 1 + 2].z();
+      (*UOLD_Vec)[DIM + 1 + 0].z(), (*UOLD_Vec)[DIM + 1 + 1].x(),
+      (*UOLD_Vec)[DIM + 1 + 1].y(), (*UOLD_Vec)[DIM + 1 + 1].z(),
+      (*UOLD_Vec)[DIM + 1 + 2].x(), (*UOLD_Vec)[DIM + 1 + 2].y(),
+      (*UOLD_Vec)[DIM + 1 + 2].z();
     NV_OLD << (*UOLD_Vec)[1 + 0].x(), (*UOLD_Vec)[1 + 0].y(),
-        (*UOLD_Vec)[1 + 0].z(), (*UOLD_Vec)[1 + 1].x(), (*UOLD_Vec)[1 + 1].y(),
-        (*UOLD_Vec)[1 + 1].z(), (*UOLD_Vec)[1 + 2].x(), (*UOLD_Vec)[1 + 2].y(),
-        (*UOLD_Vec)[1 + 2].z();
+      (*UOLD_Vec)[1 + 0].z(), (*UOLD_Vec)[1 + 1].x(), (*UOLD_Vec)[1 + 1].y(),
+      (*UOLD_Vec)[1 + 1].z(), (*UOLD_Vec)[1 + 2].x(), (*UOLD_Vec)[1 + 2].y(),
+      (*UOLD_Vec)[1 + 2].z();
   }
   // Berechnung einiger Werte
   // Deformationsgradient
@@ -80,17 +86,17 @@ void BoundaryFSI<DIM>::Form(VectorIterator b, const FemFunction &U_Dummy,
       if (((*U_Vec)[1 + 0].m() * __n[0] + (*U_Vec)[1 + 1].m() * __n[1] +
            (*U_Vec)[1 + 2].m() * __n[2]) < 0)
         b[i + 1] -=
-            0.5 * __THETA *
-            ((*U_Vec)[1 + 0].m() * __n[0] + (*U_Vec)[1 + 1].m() * __n[1] +
-             (*U_Vec)[1 + 2].m() * __n[2]) *
-            (*U_Vec)[1 + i].m() * N.m();
+          0.5 * __THETA *
+          ((*U_Vec)[1 + 0].m() * __n[0] + (*U_Vec)[1 + 1].m() * __n[1] +
+           (*U_Vec)[1 + 2].m() * __n[2]) *
+          (*U_Vec)[1 + i].m() * N.m();
       if (((*UOLD_Vec)[1 + 0].m() * __n[0] + (*UOLD_Vec)[1 + 1].m() * __n[1] +
            (*UOLD_Vec)[1 + 2].m() * __n[2]) < 0)
         b[i + 1] -=
-            0.5 * (1.0 - __THETA) *
-            ((*UOLD_Vec)[1 + 0].m() * __n[0] + (*UOLD_Vec)[1 + 1].m() * __n[1] +
-             (*UOLD_Vec)[1 + 2].m() * __n[2]) *
-            (*UOLD_Vec)[1 + i].m() * N.m();
+          0.5 * (1.0 - __THETA) *
+          ((*UOLD_Vec)[1 + 0].m() * __n[0] + (*UOLD_Vec)[1 + 1].m() * __n[1] +
+           (*UOLD_Vec)[1 + 2].m() * __n[2]) *
+          (*UOLD_Vec)[1 + i].m() * N.m();
     }
   }
 
@@ -101,36 +107,40 @@ void BoundaryFSI<DIM>::Form(VectorIterator b, const FemFunction &U_Dummy,
       if (((*U_Vec)[1 + 0].m() * __n[0] + (*U_Vec)[1 + 1].m() * __n[1] +
            (*U_Vec)[1 + 2].m() * __n[2]) < 0)
         b[i + 1] -=
-            0.5 * __THETA *
-            ((*U_Vec)[1 + 0].m() * __n[0] + (*U_Vec)[1 + 1].m() * __n[1] +
-             (*U_Vec)[1 + 2].m() * __n[2]) *
-            (*U_Vec)[1 + i].m() * N.m();
+          0.5 * __THETA *
+          ((*U_Vec)[1 + 0].m() * __n[0] + (*U_Vec)[1 + 1].m() * __n[1] +
+           (*U_Vec)[1 + 2].m() * __n[2]) *
+          (*U_Vec)[1 + i].m() * N.m();
       if (((*UOLD_Vec)[1 + 0].m() * __n[0] + (*UOLD_Vec)[1 + 1].m() * __n[1] +
            (*UOLD_Vec)[1 + 2].m() * __n[2]) < 0)
         b[i + 1] -=
-            0.5 * (1.0 - __THETA) *
-            ((*UOLD_Vec)[1 + 0].m() * __n[0] + (*UOLD_Vec)[1 + 1].m() * __n[1] +
-             (*UOLD_Vec)[1 + 2].m() * __n[2]) *
-            (*UOLD_Vec)[1 + i].m() * N.m();
+          0.5 * (1.0 - __THETA) *
+          ((*UOLD_Vec)[1 + 0].m() * __n[0] + (*UOLD_Vec)[1 + 1].m() * __n[1] +
+           (*UOLD_Vec)[1 + 2].m() * __n[2]) *
+          (*UOLD_Vec)[1 + i].m() * N.m();
     }
   }
 }
 
-template <int DIM>
-void BoundaryFSI<DIM>::Matrix(EntryMatrix &A, const FemFunction &U_Dummy,
-                              const TestFunction &M, const TestFunction &N,
-                              int col) const {
+template<int DIM>
+void
+BoundaryFSI<DIM>::Matrix(EntryMatrix& A,
+                         const FemFunction& U_Dummy,
+                         const TestFunction& M,
+                         const TestFunction& N,
+                         int col) const
+{
 
   //_______________________________________________________________
   if (DIM == 3) {
     NU << (*U_Vec)[DIM + 1 + 0].x(), (*U_Vec)[DIM + 1 + 0].y(),
-        (*U_Vec)[DIM + 1 + 0].z(), (*U_Vec)[DIM + 1 + 1].x(),
-        (*U_Vec)[DIM + 1 + 1].y(), (*U_Vec)[DIM + 1 + 1].z(),
-        (*U_Vec)[DIM + 1 + 2].x(), (*U_Vec)[DIM + 1 + 2].y(),
-        (*U_Vec)[DIM + 1 + 2].z(), NV << (*U_Vec)[1 + 0].x(),
-        (*U_Vec)[1 + 0].y(), (*U_Vec)[1 + 0].z(), (*U_Vec)[1 + 1].x(),
-        (*U_Vec)[1 + 1].y(), (*U_Vec)[1 + 1].z(), (*U_Vec)[1 + 2].x(),
-        (*U_Vec)[1 + 2].y(), (*U_Vec)[1 + 2].z();
+      (*U_Vec)[DIM + 1 + 0].z(), (*U_Vec)[DIM + 1 + 1].x(),
+      (*U_Vec)[DIM + 1 + 1].y(), (*U_Vec)[DIM + 1 + 1].z(),
+      (*U_Vec)[DIM + 1 + 2].x(), (*U_Vec)[DIM + 1 + 2].y(),
+      (*U_Vec)[DIM + 1 + 2].z(), NV << (*U_Vec)[1 + 0].x(), (*U_Vec)[1 + 0].y(),
+      (*U_Vec)[1 + 0].z(), (*U_Vec)[1 + 1].x(), (*U_Vec)[1 + 1].y(),
+      (*U_Vec)[1 + 1].z(), (*U_Vec)[1 + 2].x(), (*U_Vec)[1 + 2].y(),
+      (*U_Vec)[1 + 2].z();
   }
   //________________________________________________________________
 
@@ -152,23 +162,26 @@ void BoundaryFSI<DIM>::Matrix(EntryMatrix &A, const FemFunction &U_Dummy,
       if (((*U_Vec)[1 + 0].m() * __n[0] + (*U_Vec)[1 + 1].m() * __n[1] +
            (*U_Vec)[1 + 2].m() * __n[2]) < 0) {
         A(1 + i, j + 1) -=
-            0.5 * __THETA *
-            ((*U_Vec)[1 + 0].m() * __n[0] + (*U_Vec)[1 + 1].m() * __n[1] +
-             (*U_Vec)[1 + 2].m() * __n[2]) *
-            PHI[i] * N.m();
+          0.5 * __THETA *
+          ((*U_Vec)[1 + 0].m() * __n[0] + (*U_Vec)[1 + 1].m() * __n[1] +
+           (*U_Vec)[1 + 2].m() * __n[2]) *
+          PHI[i] * N.m();
         A(1 + i, j + 1) -=
-            0.5 * __THETA *
-            (PHI[0] * __n[0] + PHI[1] * __n[1] + PHI[2] * __n[2]) *
-            (*U_Vec)[1 + i].m() * N.m();
+          0.5 * __THETA *
+          (PHI[0] * __n[0] + PHI[1] * __n[1] + PHI[2] * __n[2]) *
+          (*U_Vec)[1 + i].m() * N.m();
       }
     }
   }
 }
 
-template <int DIM>
-void BoundaryFSI<DIM>::pointboundary(double h, const FemFunction &U_Dummy,
-                                     const Vertex<DIM> &v,
-                                     const Vertex<DIM> &n) const {
+template<int DIM>
+void
+BoundaryFSI<DIM>::pointboundary(double h,
+                                const FemFunction& U_Dummy,
+                                const Vertex<DIM>& v,
+                                const Vertex<DIM>& n) const
+{
 
   __n[0] = n[0];
   __n[1] = n[1];

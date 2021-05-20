@@ -26,11 +26,16 @@
 /*------------------------------------------------------------------*/
 
 namespace Gascoigne {
-BaseQ13d::BaseQ13d() { BasicInit(); }
+BaseQ13d::BaseQ13d()
+{
+  BasicInit();
+}
 
 /*------------------------------------------------------------------*/
 
-void BaseQ13d::point(const Vertex3d &s) const {
+void
+BaseQ13d::point(const Vertex3d& s) const
+{
   for (int i = 0; i < 8; i++) {
     int ix = i % 2;
     int iy = (i % 4) / 2;

@@ -39,7 +39,8 @@ namespace Gascoigne {
 ////
 /////////////////////////////////////////////
 
-class ColumnStencil : public virtual StencilInterface {
+class ColumnStencil : public virtual StencilInterface
+{
 protected:
   IndexVector scol, sstart;
 
@@ -48,50 +49,60 @@ public:
   ////  Con(De)structor
   //
 
-  ColumnStencil() : StencilInterface() {}
+  ColumnStencil()
+    : StencilInterface()
+  {}
   ~ColumnStencil() {}
 
-  const IndexVector &col() const { return scol; }
-  IndexVector &col() { return scol; }
-  const IndexVector &start() const { return sstart; }
-  IndexVector &start() { return sstart; }
+  const IndexVector& col() const { return scol; }
+  IndexVector& col() { return scol; }
+  const IndexVector& start() const { return sstart; }
+  IndexVector& start() { return sstart; }
 
   IndexType n() const { return sstart.size() - 1; }
   IndexType nentries() const { return scol.size(); }
-  IndexType rowsize(int i) const {
+  IndexType rowsize(int i) const
+  {
     assert((i >= 0) && (i + 1 < sstart.size()));
     return sstart[i + 1] - sstart[i];
   }
 
-  IndexType &col(int pos) {
+  IndexType& col(int pos)
+  {
     assert((pos >= 0) && (pos < scol.size()));
     return scol[pos];
   }
-  const IndexType &col(int pos) const {
+  const IndexType& col(int pos) const
+  {
     assert((pos >= 0) && (pos < scol.size()));
     return scol[pos];
   }
-  IndexType &start(int i) {
+  IndexType& start(int i)
+  {
     assert((i >= 0) && (i < sstart.size()));
     return sstart[i];
   }
-  const IndexType &start(int i) const {
+  const IndexType& start(int i) const
+  {
     assert((i >= 0) && (i < sstart.size()));
     return sstart[i];
   }
-  IndexType &stop(int i) {
+  IndexType& stop(int i)
+  {
     assert((i >= 0) && (i + 1 < sstart.size()));
     return sstart[i + 1];
   }
-  const IndexType &stop(int i) const {
+  const IndexType& stop(int i) const
+  {
     assert((i >= 0) && (i + 1 < sstart.size()));
     return sstart[i + 1];
   }
 
-  void memory(const SparseStructureInterface *);
+  void memory(const SparseStructureInterface*);
   void memory(int n, int nt);
 
-  virtual int Find(int i, int j) const {
+  virtual int Find(int i, int j) const
+  {
     for (int pos = start(i); pos < stop(i); pos++) {
       if (col(pos) == j)
         return pos;
@@ -102,7 +113,7 @@ public:
     return -1;
   }
 
-  std::ostream &Write(std::ostream &os) const;
+  std::ostream& Write(std::ostream& os) const;
 };
 } // namespace Gascoigne
 

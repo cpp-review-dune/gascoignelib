@@ -39,24 +39,27 @@ namespace Gascoigne {
 ///
 //////////////////////////////////////////////
 
-class StdTimeSolver : public virtual StdSolver {
+class StdTimeSolver : public virtual StdSolver
+{
 private:
   TimePattern _TP;
-  MatrixInterface *_MMP;
+  MatrixInterface* _MMP;
 
 protected:
   double _dt, _theta, _time;
   std::array<double, 2> _rhs;
 
-  MatrixInterface *&GetMassMatrixPointer() { return _MMP; }
+  MatrixInterface*& GetMassMatrixPointer() { return _MMP; }
 
-  const TimePattern &GetTimePattern() const { return _TP; }
-  TimePattern &GetTimePattern() { return _TP; }
+  const TimePattern& GetTimePattern() const { return _TP; }
+  TimePattern& GetTimePattern() { return _TP; }
 
-  virtual MatrixInterface *NewMassMatrix(int ncomp,
-                                         const std::string &matrixtype);
-  virtual std::string PrecondCGMass(GlobalVector &u, GlobalVector &f,
-                                    const TimePattern &TP, double s = 1.);
+  virtual MatrixInterface* NewMassMatrix(int ncomp,
+                                         const std::string& matrixtype);
+  virtual std::string PrecondCGMass(GlobalVector& u,
+                                    GlobalVector& f,
+                                    const TimePattern& TP,
+                                    double s = 1.);
 
 public:
   StdTimeSolver();
@@ -65,25 +68,29 @@ public:
   void RegisterMatrix();
   void ReInitMatrix();
 
-  void SetTimeData(double dt, double theta, double time, double oldrhs = -1.,
+  void SetTimeData(double dt,
+                   double theta,
+                   double time,
+                   double oldrhs = -1.,
                    double newrhs = 1.);
   double GetTime() const { return _time; }
-  virtual GascoigneVisualization *NewGascoigneVisualization() const;
+  virtual GascoigneVisualization* NewGascoigneVisualization() const;
 
-  void SetProblem(const ProblemDescriptorInterface &PDX);
+  void SetProblem(const ProblemDescriptorInterface& PDX);
 
-  void InitialCondition(VectorInterface &f, double d = 1.) const;
-  void TimeRhsOperator(VectorInterface &f, const VectorInterface &u) const;
-  void TimeRhs(int k, VectorInterface &f) const;
-  void Form(VectorInterface &y, const VectorInterface &x, double d) const;
-  void AssembleMatrix(Matrix &A, const VectorInterface &u, double d);
+  void InitialCondition(VectorInterface& f, double d = 1.) const;
+  void TimeRhsOperator(VectorInterface& f, const VectorInterface& u) const;
+  void TimeRhs(int k, VectorInterface& f) const;
+  void Form(VectorInterface& y, const VectorInterface& x, double d) const;
+  void AssembleMatrix(Matrix& A, const VectorInterface& u, double d);
   std::string GetName() const;
-  void L2Projection(VectorInterface &u, VectorInterface &f);
+  void L2Projection(VectorInterface& u, VectorInterface& f);
 
-  void SetMassMatrix(MatrixInterface &MM, bool init = false);
-  const MatrixInterface *GetMassMatrix() const { return _MMP; }
-  MatrixInterface *GetMassMatrix() { return _MMP; }
-  void MassMatrixVector(VectorInterface &gf, const VectorInterface &gu,
+  void SetMassMatrix(MatrixInterface& MM, bool init = false);
+  const MatrixInterface* GetMassMatrix() const { return _MMP; }
+  MatrixInterface* GetMassMatrix() { return _MMP; }
+  void MassMatrixVector(VectorInterface& gf,
+                        const VectorInterface& gu,
                         double d) const;
 };
 } // namespace Gascoigne

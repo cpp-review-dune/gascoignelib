@@ -29,22 +29,23 @@
 /*---------------------------------------------------*/
 
 namespace Gascoigne {
-class CoarseHierarchicalMesh3d : public HierarchicalMesh3d {
+class CoarseHierarchicalMesh3d : public HierarchicalMesh3d
+{
 protected:
   IntSet CellRefList, CellCoarseList;
   IntVector cn2o;
 
-  void loop(IntVector &dst);
+  void loop(IntVector& dst);
 
 public:
-  CoarseHierarchicalMesh3d(const HierarchicalMesh3d &);
+  CoarseHierarchicalMesh3d(const HierarchicalMesh3d&);
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Woverloaded-virtual"
   void BasicInit(int pdepth);
 #pragma GCC diagnostic pop
-  void GetRefinedList(IntVector &);
-  void GetCoarsedList(IntVector &);
-  void refine(const IntVector &cell_ref, const IntVector &cell_coarse);
+  void GetRefinedList(IntVector&);
+  void GetCoarsedList(IntVector&);
+  void refine(const IntVector& cell_ref, const IntVector& cell_coarse);
 };
 } // namespace Gascoigne
 

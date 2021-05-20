@@ -29,14 +29,18 @@ using namespace std;
 /*****************************************************************/
 
 namespace Gascoigne {
-void AdaptorData::ErrorMessage(const string &str1, const string &str2) const {
+void
+AdaptorData::ErrorMessage(const string& str1, const string& str2) const
+{
   cout << "AdaptorData: " << str1 << " " << str2 << " ?" << endl;
   exit(1);
 }
 
 /*****************************************************************/
 
-void AdaptorData::CheckEstimate() const {
+void
+AdaptorData::CheckEstimate() const
+{
   if (_estimate == "none")
     return;
   if (_estimate == "indicator")
@@ -53,7 +57,9 @@ void AdaptorData::CheckEstimate() const {
 
 /*****************************************************************/
 
-void AdaptorData::CheckAdaptor() const {
+void
+AdaptorData::CheckAdaptor() const
+{
   return;
 
   //   if (_adaptor=="none")   return;
@@ -75,7 +81,9 @@ void AdaptorData::CheckAdaptor() const {
 
 /*****************************************************************/
 
-void AdaptorData::CheckFunctional() const {
+void
+AdaptorData::CheckFunctional() const
+{
   if (_functional == "none")
     return;
   if (_functional == "drag")
@@ -92,7 +100,8 @@ void AdaptorData::CheckFunctional() const {
 
 /*-------------------------------------------------*/
 
-AdaptorData::AdaptorData() {
+AdaptorData::AdaptorData()
+{
   mnodes = 0;
   itol = 0.01;
   icfactor = 1.e8;
@@ -106,7 +115,9 @@ AdaptorData::AdaptorData() {
 
 /*-------------------------------------------------*/
 
-void AdaptorData::read(const ParamFile &pf) {
+void
+AdaptorData::read(const ParamFile& pf)
+{
   DataFormatHandler DH;
 
   DH.insert("maxnodes", &mnodes, 10000000);
@@ -129,7 +140,9 @@ void AdaptorData::read(const ParamFile &pf) {
 
 /*-------------------------------------------------*/
 
-void AdaptorData::reset() {
+void
+AdaptorData::reset()
+{
   indr = inr = inc = 0;
   ieta = 0.;
 }

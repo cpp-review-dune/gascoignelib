@@ -30,17 +30,18 @@ namespace Gascoigne {
 
 /**********************************************************/
 
-class PiQ2 {
+class PiQ2
+{
 protected:
-  const GascoigneMesh *_MP;
+  const GascoigneMesh* _MP;
   nvector<DoubleVector> _q2weight;
 
 public:
   PiQ2();
   ~PiQ2() {}
 
-  void Init(const GascoigneMesh *MI);
-  void vmult(GlobalVector &y, const GlobalVector &x) const;
+  void Init(const GascoigneMesh* MI);
+  void vmult(GlobalVector& y, const GlobalVector& x) const;
 };
 
 /**********************************************************/

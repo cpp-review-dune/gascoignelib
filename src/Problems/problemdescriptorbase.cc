@@ -31,13 +31,27 @@ namespace Gascoigne {
 /*------------------------------------------------------------------------------*/
 
 ProblemDescriptorBase::ProblemDescriptorBase()
-    : EQ(NULL), BEQ(NULL), RHS(NULL), DRHS(NULL), BRHS(NULL), FEQ(NULL),
-      BM(NULL), ES(NULL), IC(NULL), DD(NULL), PD(NULL), BIC(NULL), CI(NULL),
-      _time(0.0), _dt(0.0) {}
+  : EQ(NULL)
+  , BEQ(NULL)
+  , RHS(NULL)
+  , DRHS(NULL)
+  , BRHS(NULL)
+  , FEQ(NULL)
+  , BM(NULL)
+  , ES(NULL)
+  , IC(NULL)
+  , DD(NULL)
+  , PD(NULL)
+  , BIC(NULL)
+  , CI(NULL)
+  , _time(0.0)
+  , _dt(0.0)
+{}
 
 /*------------------------------------------------------------------------------*/
 
-ProblemDescriptorBase::~ProblemDescriptorBase() {
+ProblemDescriptorBase::~ProblemDescriptorBase()
+{
   if (BM != NULL) {
     delete BM;
     BM = NULL;
@@ -70,7 +84,9 @@ ProblemDescriptorBase::~ProblemDescriptorBase() {
 
 /*------------------------------------------------------------------------------*/
 
-ostream &ProblemDescriptorBase::OutputSettings(ostream &os) const {
+ostream&
+ProblemDescriptorBase::OutputSettings(ostream& os) const
+{
   if (DD)
     os << "DirichletData:            " << DD->GetName() << endl;
   if (PD)
@@ -90,7 +106,9 @@ ostream &ProblemDescriptorBase::OutputSettings(ostream &os) const {
 
 /*------------------------------------------------------------------------------*/
 
-void ProblemDescriptorBase::BasicInit(const ParamFile &pf) {
+void
+ProblemDescriptorBase::BasicInit(const ParamFile& pf)
+{
   _paramfile = pf;
 
   // read all input to control the solver
@@ -109,7 +127,9 @@ void ProblemDescriptorBase::BasicInit(const ParamFile &pf) {
 
 /*------------------------------------------------------------------------------*/
 
-void ProblemDescriptorBase::SetTime(double time, double dt) const {
+void
+ProblemDescriptorBase::SetTime(double time, double dt) const
+{
   _time = time;
   _dt = dt;
 

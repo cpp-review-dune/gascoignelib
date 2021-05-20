@@ -42,15 +42,19 @@ namespace Gascoigne {
 ///
 //////////////////////////////////////////////
 
-class StdPeriodicMapping : public virtual PeriodicMapping {
+class StdPeriodicMapping : public virtual PeriodicMapping
+{
 public:
-  StdPeriodicMapping() : PeriodicMapping() {}
+  StdPeriodicMapping()
+    : PeriodicMapping()
+  {}
 
   virtual ~StdPeriodicMapping() {}
 
   std::string GetName() const { return "StdPeriodicMapping"; }
 
-  virtual void transformCoords(Vertex2d &w, const Vertex2d &v) const {
+  virtual void transformCoords(Vertex2d& w, const Vertex2d& v) const
+  {
     /*-------------------------------------------------------
    | Affin-lineare Transformation, die die beiden
    | periodischen Raender aufeinander abbildet.
@@ -65,7 +69,8 @@ public:
     w.y() = v.y();
   }
 
-  virtual void transformCoords(Vertex3d &w, const Vertex3d &v) const {
+  virtual void transformCoords(Vertex3d& w, const Vertex3d& v) const
+  {
     /*-------------------------------------------------------
    | Affin-lineare Transformation, die die beiden
    | periodischen Raender aufeinander abbildet.

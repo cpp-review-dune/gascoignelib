@@ -30,7 +30,9 @@
 /*-----------------------------------------------------*/
 
 namespace Gascoigne {
-template <class BASE> class Transformation2d {
+template<class BASE>
+class Transformation2d
+{
 protected:
   typedef nmatrix<double> Matrix;
 
@@ -41,35 +43,39 @@ protected:
   inline void ComputeDT() const;
 
   // second derivatives tensor
-  const nvector<Matrix> ComputeDDT(const Vertex2d &xi) const;
+  const nvector<Matrix> ComputeDDT(const Vertex2d& xi) const;
 
 public:
   Transformation2d();
 
-  const Matrix &DT() const { return dt; }
-  const Matrix &DTI() const { return dti; }
+  const Matrix& DT() const { return dt; }
+  const Matrix& DTI() const { return dti; }
 
   // inverse of second derivatives tensor
-  const nvector<Matrix> DDTI(const Vertex2d &xi) const;
+  const nvector<Matrix> DDTI(const Vertex2d& xi) const;
 
   inline double J() const;
   inline double G() const;
   inline Vertex2d x() const;
   inline Vertex2d normal() const;
-  inline void init(const Matrix &M) {
+  inline void init(const Matrix& M)
+  {
     std::cerr << "init" << std::endl;
     abort();
     X = M;
   }
-  inline void ReInit(const Matrix &M) const { X = M; }
-  inline void point(const Vertex2d &xi) const;
-  inline void point_boundary(int ie, const Vertex1d &s) const;
-  inline void GetCoordinates(Matrix &A) const { A.equ(1., X); }
+  inline void ReInit(const Matrix& M) const { X = M; }
+  inline void point(const Vertex2d& xi) const;
+  inline void point_boundary(int ie, const Vertex1d& s) const;
+  inline void GetCoordinates(Matrix& A) const { A.equ(1., X); }
 };
 
 /*-----------------------------------------------------*/
 
-template <class BASE> inline Transformation2d<BASE>::Transformation2d() : B() {
+template<class BASE>
+inline Transformation2d<BASE>::Transformation2d()
+  : B()
+{
   int n = B.n();
   X.memory(2, n);
   dt.memory(2, 2);
@@ -78,7 +84,10 @@ template <class BASE> inline Transformation2d<BASE>::Transformation2d() : B() {
 
 /*-----------------------------------------------------*/
 
-template <class BASE> inline Vertex2d Transformation2d<BASE>::x() const {
+template<class BASE>
+inline Vertex2d
+Transformation2d<BASE>::x() const
+{
   Vertex2d xp;
   for (int i = 0; i < B.n(); i++) {
     xp.x() += X(0, i) * B.phi(i);
@@ -89,7 +98,10 @@ template <class BASE> inline Vertex2d Transformation2d<BASE>::x() const {
 
 /*-----------------------------------------------------*/
 
-template <class BASE> inline Vertex2d Transformation2d<BASE>::normal() const {
+template<class BASE>
+inline Vertex2d
+Transformation2d<BASE>::normal() const
+{
   Vertex2d xn;
   dti.mult(xn, *B.normal2d());
   double xx = sqrt(xn * xn);
@@ -99,7 +111,10 @@ template <class BASE> inline Vertex2d Transformation2d<BASE>::normal() const {
 
 /*-----------------------------------------------------*/
 
-template <class BASE> inline void Transformation2d<BASE>::ComputeDT() const {
+template<class BASE>
+inline void
+Transformation2d<BASE>::ComputeDT() const
+{
   dt.zero();
   for (int i = 0; i < B.n(); i++) {
     dt(0, 0) += X(0, i) * B.phi_x(i);
@@ -116,10 +131,11 @@ template <class BASE> inline void Transformation2d<BASE>::ComputeDT() const {
 
 /*-----------------------------------------------------*/
 
-template <class BASE>
+template<class BASE>
 inline const nvector<nmatrix<double>>
-Transformation2d<BASE>::ComputeDDT(const Vertex2d &xi) const {
-  const_cast<BASE *>(&B)->point(xi);
+Transformation2d<BASE>::ComputeDDT(const Vertex2d& xi) const
+{
+  const_cast<BASE*>(&B)->point(xi);
 
   nvector<nmatrix<double>> ddt(2, nmatrix<double>(2, 2));
   for (int i = 0; i < 2; ++i)
@@ -141,10 +157,11 @@ Transformation2d<BASE>::ComputeDDT(const Vertex2d &xi) const {
 
 /*-----------------------------------------------------*/
 
-template <class BASE>
+template<class BASE>
 inline const nvector<nmatrix<double>>
-Transformation2d<BASE>::DDTI(const Vertex2d &xi) const {
-  const nvector<nmatrix<double>> &ddt = ComputeDDT(xi);
+Transformation2d<BASE>::DDTI(const Vertex2d& xi) const
+{
+  const nvector<nmatrix<double>>& ddt = ComputeDDT(xi);
 
   nvector<nmatrix<double>> ddti(2, nmatrix<double>(2, 2));
   Matrix dti_ = dti;
@@ -165,30 +182,39 @@ Transformation2d<BASE>::DDTI(const Vertex2d &xi) const {
 
 /*-----------------------------------------------------*/
 
-template <class BASE>
-inline void Transformation2d<BASE>::point(const Vertex2d &xi) const {
+template<class BASE>
+inline void
+Transformation2d<BASE>::point(const Vertex2d& xi) const
+{
   B.point(xi);
   ComputeDT();
 }
 
 /*-----------------------------------------------------*/
 
-template <class BASE>
-inline void Transformation2d<BASE>::point_boundary(int ie,
-                                                   const Vertex1d &s) const {
+template<class BASE>
+inline void
+Transformation2d<BASE>::point_boundary(int ie, const Vertex1d& s) const
+{
   B.point_boundary(ie, s);
   ComputeDT();
 }
 
 /*-----------------------------------------------------*/
 
-template <class BASE> inline double Transformation2d<BASE>::J() const {
+template<class BASE>
+inline double
+Transformation2d<BASE>::J() const
+{
   return dt(0, 0) * dt(1, 1) - dt(1, 0) * dt(0, 1);
 }
 
 /*-----------------------------------------------------*/
 
-template <class BASE> inline double Transformation2d<BASE>::G() const {
+template<class BASE>
+inline double
+Transformation2d<BASE>::G() const
+{
   Vertex2d xt;
   dt.mult(xt, *B.tangent2d());
   return xt.norm_l2();

@@ -33,14 +33,17 @@ using namespace std;
 namespace Gascoigne {
 /**********************************************************/
 
-Q42d::Q42d() : Q4() {
+Q42d::Q42d()
+  : Q4()
+{
   assert(HN == NULL);
   HN = new HNStructureQ42d;
 }
 
 /**********************************************************/
 
-Q42d::~Q42d() {
+Q42d::~Q42d()
+{
   if (HN) {
     delete HN;
     HN = NULL;
@@ -49,12 +52,14 @@ Q42d::~Q42d() {
 
 /**********************************************************/
 
-int Q42d::GetPatchNumber(const Vertex2d &p0, Vertex2d &p) const {
+int
+Q42d::GetPatchNumber(const Vertex2d& p0, Vertex2d& p) const
+{
   int iq;
 
   for (iq = 0; iq < GetMesh()->nq4patches(); ++iq) {
     bool found = true;
-    const IntVector &IOP = GetMesh()->CoarseIndicesQ4(iq);
+    const IntVector& IOP = GetMesh()->CoarseIndicesQ4(iq);
 
     for (int d = 0; d < 2; ++d) {
       double min = GetMesh()->vertex2d(IOP[0])[d];
@@ -97,7 +102,9 @@ int Q42d::GetPatchNumber(const Vertex2d &p0, Vertex2d &p) const {
 
 /**********************************************************/
 
-void Q42d::VertexTransformation(const Vertex2d &p0, Vertex2d &p, int iq) const {
+void
+Q42d::VertexTransformation(const Vertex2d& p0, Vertex2d& p, int iq) const
+{
   nmatrix<double> T;
   Transformation(T, iq);
 
@@ -125,7 +132,9 @@ void Q42d::VertexTransformation(const Vertex2d &p0, Vertex2d &p, int iq) const {
 
 /**********************************************************/
 
-void Q42d::BasicInit(const ParamFile *paramfile) {
+void
+Q42d::BasicInit(const ParamFile* paramfile)
+{
   if (GetIntegrator() == NULL) {
     PatchDiscretization::GetIntegratorPointer() = new GalerkinIntegratorQ4<2>;
   }

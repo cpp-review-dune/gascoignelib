@@ -37,28 +37,36 @@ using namespace std;
 using namespace Gascoigne;
 
 /* ----------------------------------------- */
-class LocalEquation : public Equation {
+class LocalEquation : public Equation
+{
 public:
   string GetName() const { return "Local"; }
   int GetNcomp() const { return 1; }
-  void OperatorStrong(DoubleVector &b, const FemFunction &U) const {
+  void OperatorStrong(DoubleVector& b, const FemFunction& U) const
+  {
     b[0] += U[0].m() - U[0].D();
   }
-  void Form(VectorIterator b, const FemFunction &U,
-            const TestFunction &N) const {
+  void Form(VectorIterator b, const FemFunction& U, const TestFunction& N) const
+  {
     b[0] += U[0].m() * N.m() + U[0].x() * N.x() + U[0].y() * N.y();
   }
-  void Matrix(EntryMatrix &A, const FemFunction &U, const TestFunction &M,
-              const TestFunction &N) const {
+  void Matrix(EntryMatrix& A,
+              const FemFunction& U,
+              const TestFunction& M,
+              const TestFunction& N) const
+  {
     A(0, 0) += M.m() * N.m() + M.x() * N.x() + M.y() * N.y();
   }
 };
 
 /* ----------------------------------------- */
-class LocalLoop : public StdLoop {
+class LocalLoop : public StdLoop
+{
 public:
-  void BasicInit(const ParamFile *paramfile, const ProblemContainer *PC,
-                 const FunctionalContainer *FC = 0) {
+  void BasicInit(const ParamFile* paramfile,
+                 const ProblemContainer* PC,
+                 const FunctionalContainer* FC = 0)
+  {
     GetMeshAgentPointer() = new MeshAgent;
 
     if (paramfile == NULL) {
@@ -73,26 +81,31 @@ public:
 };
 
 /*---------------------------------------------------*/
-class LocalExactSolution : public ExactSolution {
+class LocalExactSolution : public ExactSolution
+{
 public:
-  LocalExactSolution() : ExactSolution() {}
+  LocalExactSolution()
+    : ExactSolution()
+  {}
 
   string GetName() const { return "LocalExactSolution"; }
-  double operator()(int c, const Vertex2d &v) const { return v.x() * v.y(); }
+  double operator()(int c, const Vertex2d& v) const { return v.x() * v.y(); }
   //   double operator()(int c, const Vertex2d& v)const{return v.x()*v.y()+11.;}
   int GetNcomp() const { return 1; }
 };
 
 /*---------------------------------------------------*/
-class ProblemDescriptor : public ProblemDescriptorBase {
+class ProblemDescriptor : public ProblemDescriptorBase
+{
 public:
-  void BasicInit(const ParamFile *pf) {
+  void BasicInit(const ParamFile* pf)
+  {
     GetEquationPointer() = new LocalEquation;
     GetExactSolutionPointer() = new LocalExactSolution();
     GetRightHandSidePointer() =
-        new RightHandSideByEquation(GetEquation(), GetExactSolution());
+      new RightHandSideByEquation(GetEquation(), GetExactSolution());
     GetDirichletDataPointer() =
-        new DirichletDataByExactSolution(GetExactSolution());
+      new DirichletDataByExactSolution(GetExactSolution());
 
     ProblemDescriptorBase::BasicInit(pf);
 
@@ -105,9 +118,14 @@ public:
 };
 
 /*---------------------------------------------------*/
-class LocalDomainFunctional : public virtual AllDomainFunctional {
+class LocalDomainFunctional : public virtual AllDomainFunctional
+{
 public:
-  LocalDomainFunctional() : AllDomainFunctional(1, 0) { ExactValue() = 11.25; }
+  LocalDomainFunctional()
+    : AllDomainFunctional(1, 0)
+  {
+    ExactValue() = 11.25;
+  }
   ~LocalDomainFunctional() {}
 
   string GetName() const { return "LocalDomain"; }
@@ -115,8 +133,10 @@ public:
 
 /*---------------------------------------------------*/
 
-int main(int argc, char **argv) {
-  const ParamFile *paramfile(NULL);
+int
+main(int argc, char** argv)
+{
+  const ParamFile* paramfile(NULL);
 
   if (argc == 2) {
     paramfile = new ParamFile(argv[1]);

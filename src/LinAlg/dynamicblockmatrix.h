@@ -33,16 +33,21 @@
 /*-------------------------------------------------------------*/
 
 namespace Gascoigne {
-template <class B> class DynamicBlockMatrix : public MatrixInterface {
+template<class B>
+class DynamicBlockMatrix : public MatrixInterface
+{
 private:
-  template <bool atom>
+  template<bool atom>
   void entry_universal(nvector<int>::const_iterator start1,
                        nvector<int>::const_iterator stop1,
                        nvector<int>::const_iterator start2,
-                       nvector<int>::const_iterator stop2, const EntryMatrix &M,
+                       nvector<int>::const_iterator stop2,
+                       const EntryMatrix& M,
                        double s = 1.);
-  template <bool atom>
-  void entry_universal(niiterator start, niiterator stop, const EntryMatrix &M,
+  template<bool atom>
+  void entry_universal(niiterator start,
+                       niiterator stop,
+                       const EntryMatrix& M,
                        double s = 1.);
 
 protected:
@@ -63,38 +68,45 @@ protected:
   // number of components
   int nc;
 
-  void matrix_vector_trans(int p, double *yp, const double *xp,
+  void matrix_vector_trans(int p,
+                           double* yp,
+                           const double* xp,
                            double s = 1.) const;
 
   // number of entries
-  int size() const {
+  int size() const
+  {
     std::cerr << "\"DynamicBlockMatrix::size\" not written!" << std::endl;
     abort();
   }
 
 public:
   DynamicBlockMatrix<B>();
-  DynamicBlockMatrix<B>(const DynamicBlockMatrix<B> &A);
+  DynamicBlockMatrix<B>(const DynamicBlockMatrix<B>& A);
   virtual ~DynamicBlockMatrix<B>() {}
 
   std::string GetName() const { return "DynamicBlockMatrix"; }
 
   /////// Zugriff //////////////////////
 
-  IndexType n() const {
+  IndexType n() const
+  {
     assert(smat.size() == DS.n());
     return DS.n();
   }
-  IndexType nentries() const {
+  IndexType nentries() const
+  {
     std::cerr << "\"DynamicBlockMatrix::nentries\" not written!" << std::endl;
     abort();
   }
-  IndexType ntotal() const {
+  IndexType ntotal() const
+  {
     std::cerr << "\"DynamicBlockMatrix::ntotal\" not written!" << std::endl;
     abort();
   }
 
-  int rowsize(int i) const {
+  int rowsize(int i) const
+  {
     assert(i < smat.size());
     assert(i < DS.cols.size());
     assert(smat[i].size() == DS.cols[i].size());
@@ -105,7 +117,8 @@ public:
   //////////////////////////////
   //////////////////////////////
   // Working on the Stencil
-  viterator vfind(int i, int j) {
+  viterator vfind(int i, int j)
+  {
     const_citerator cit = DS.cstart(i);
     viterator vit = vstart(i);
     for (; (cit != DS.cstop(i)) && (*cit != j); ++cit, ++vit) {
@@ -113,7 +126,8 @@ public:
     assert(cit != DS.cstop(i));
     return vit;
   }
-  const_viterator vfind(int i, int j) const {
+  const_viterator vfind(int i, int j) const
+  {
     const_citerator cit = DS.cstart(i);
     const_viterator vit = smat[i].begin();
     for (; (cit != DS.cstop(i)) && (*cit != j); ++cit, ++vit) {
@@ -121,14 +135,16 @@ public:
     assert(cit != DS.cstop(i));
     return vit;
   }
-  citerator cfind(int i, int j) {
+  citerator cfind(int i, int j)
+  {
     citerator cit = DS.cstart(i);
     for (; (cit != DS.cstop(i)) && (*cit != j); ++cit) {
     }
     assert(cit != DS.cstop(i));
     return cit;
   }
-  const_citerator cfind(int i, int j) const {
+  const_citerator cfind(int i, int j) const
+  {
     const_citerator cit = DS.cstart(i);
     for (; (cit != DS.cstop(i)) && (*cit != j); ++cit) {
     }
@@ -143,26 +159,31 @@ public:
   const_citerator cstop(int i) const { return DS.cstop(i); }
   citerator cstart(int i) { return DS.cstart(i); }
   citerator cstop(int i) { return DS.cstop(i); }
-  const_viterator vstart(int i) const {
+  const_viterator vstart(int i) const
+  {
     assert(i < n());
     return smat[i].begin();
   }
-  const_viterator vstop(int i) const {
+  const_viterator vstop(int i) const
+  {
     assert(i < n());
     return smat[i].end();
   }
-  viterator vstart(int i) {
+  viterator vstart(int i)
+  {
     assert(i < n());
     return smat[i].begin();
   }
-  viterator vstop(int i) {
+  viterator vstop(int i)
+  {
     assert(i < n());
     return smat[i].end();
   }
 
   // adds a coupling to the matrix, creates the entry in cols and smat (zero),
   // returns the iterator to the new value in smat
-  viterator add_coupling(int i, int j) {
+  viterator add_coupling(int i, int j)
+  {
     citerator cit = DS.cstart(i);
     viterator vit = smat[i].begin();
     for (; cit != DS.cstop(i); ++cit, ++vit)
@@ -175,61 +196,73 @@ public:
     return vit;
   }
 
-  const StencilInterface *GetStencil() const { return &DS; }
+  const StencilInterface* GetStencil() const { return &DS; }
 
   ///// Methods //////////////////////
 
   // void copy_entries(const MatrixInterface& S);
 
-  void AddMassWithDifferentStencil(const MatrixInterface *M,
-                                   const TimePattern &TP, double s = 1.);
+  void AddMassWithDifferentStencil(const MatrixInterface* M,
+                                   const TimePattern& TP,
+                                   double s = 1.);
 
-  DynamicBlockMatrix &operator=(const DynamicBlockMatrix<B> &S);
+  DynamicBlockMatrix& operator=(const DynamicBlockMatrix<B>& S);
   void transpose();
-  void ReInit(const SparseStructureInterface *);
-  void dirichlet(int i, const std::vector<int> &cv);
-  void dirichlet_only_row(int i, const std::vector<int> &cv);
+  void ReInit(const SparseStructureInterface*);
+  void dirichlet(int i, const std::vector<int>& cv);
+  void dirichlet_only_row(int i, const std::vector<int>& cv);
 
   void zero();
-  void entry_diag(int i, const nmatrix<double> &M);
+  void entry_diag(int i, const nmatrix<double>& M);
   void entry(nvector<int>::const_iterator start1,
              nvector<int>::const_iterator stop1,
              nvector<int>::const_iterator start2,
-             nvector<int>::const_iterator stop2, const EntryMatrix &M,
-             double s = 1.) {
+             nvector<int>::const_iterator stop2,
+             const EntryMatrix& M,
+             double s = 1.)
+  {
     std::cerr << "\"DynamicBlockMatrix::entry\" not written!" << std::endl;
     abort();
   }
   void entry(nvector<int>::const_iterator start,
-             nvector<int>::const_iterator stop, const EntryMatrix &M,
+             nvector<int>::const_iterator stop,
+             const EntryMatrix& M,
              double s = 1.);
 
   void entrydual(nvector<int>::const_iterator start,
-                 nvector<int>::const_iterator stop, const EntryMatrix &M,
-                 double s = 1.) {
+                 nvector<int>::const_iterator stop,
+                 const EntryMatrix& M,
+                 double s = 1.)
+  {
     std::cerr << "\"DynamicBlockMatrix::entrydual\" not written!" << std::endl;
     abort();
   }
 
-  void vmult(GlobalVector &y, const GlobalVector &x, double s = 1.) const;
-  void vmult(GlobalVector &y, const GlobalVector &x, const TimePattern &TP,
+  void vmult(GlobalVector& y, const GlobalVector& x, double s = 1.) const;
+  void vmult(GlobalVector& y,
+             const GlobalVector& x,
+             const TimePattern& TP,
              double s = 1.) const;
 
   /*-----------------------------------------------*/
 
-  void Jacobi(GlobalVector &x) const;
+  void Jacobi(GlobalVector& x) const;
 
   /*-----------------------------------------------*/
 
-  void FillInterfaceList(const nvector<int> &elements, nvector<int> &start,
-                         nvector<MatrixEntryType> &values) const {
+  void FillInterfaceList(const nvector<int>& elements,
+                         nvector<int>& start,
+                         nvector<MatrixEntryType>& values) const
+  {
     std::cerr << "\"DynamicBlockMatrix::FillInterfaceList\" not written!"
               << std::endl;
     abort();
   }
-  void FurbishInterface(double d, const nvector<int> &elements,
-                        const nvector<int> &start,
-                        const nvector<MatrixEntryType> &values) {
+  void FurbishInterface(double d,
+                        const nvector<int>& elements,
+                        const nvector<int>& start,
+                        const nvector<MatrixEntryType>& values)
+  {
     std::cerr << "\"DynamicBlockMatrix::FurbishInterface\" not written!"
               << std::endl;
     abort();
@@ -237,12 +270,14 @@ public:
 
   /*-----------------------------------------------*/
 
-  std::ostream &Write(std::ostream &s) const {
+  std::ostream& Write(std::ostream& s) const
+  {
     std::cerr << "\"DynamicBlockMatrix::Write\" not written!" << std::endl;
     abort();
   }
-  friend std::ostream &operator<<(std::ostream &s,
-                                  const DynamicBlockMatrix<B> &A) {
+  friend std::ostream& operator<<(std::ostream& s,
+                                  const DynamicBlockMatrix<B>& A)
+  {
     std::cerr << "\"ostream& operator<<(ostream &s, const "
                  "DynamicBlockMatrix<B>& A)\" not written!"
               << std::endl;

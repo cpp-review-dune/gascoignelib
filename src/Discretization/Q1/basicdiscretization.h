@@ -39,9 +39,10 @@ namespace Gascoigne {
 ///
 /////////////////////////////////////////////
 
-class BasicDiscretization : public DiscretizationInterface {
+class BasicDiscretization : public DiscretizationInterface
+{
 protected:
-  const GascoigneMesh *__MP;
+  const GascoigneMesh* __MP;
   mutable DataContainer __q;
 
 protected:
@@ -53,29 +54,38 @@ protected:
   mutable LocalData __QC;
   mutable LocalParameterData __QP;
 
-  virtual const DataContainer &GetDataContainer() const { return __q; }
-  virtual void SetDataContainer(const DataContainer &q) { __q = q; }
+  virtual const DataContainer& GetDataContainer() const { return __q; }
+  virtual void SetDataContainer(const DataContainer& q) { __q = q; }
 
-  virtual const GascoigneMesh *GetMesh() const {
+  virtual const GascoigneMesh* GetMesh() const
+  {
     assert(__MP);
     return __MP;
   }
 
   virtual void GlobalToGlobalData() const;
-  virtual void GlobalToLocal(LocalVector &U, const GlobalVector &u,
-                             int iq) const {
+  virtual void GlobalToLocal(LocalVector& U,
+                             const GlobalVector& u,
+                             int iq) const
+  {
     GlobalToLocalSingle(U, u, iq);
     GlobalToLocalData(iq);
   }
   virtual void GlobalToLocalData(int iq) const;
-  virtual void GlobalToLocalSingle(LocalVector &U, const GlobalVector &u,
+  virtual void GlobalToLocalSingle(LocalVector& U,
+                                   const GlobalVector& u,
                                    int iq) const;
-  virtual void GlobalToLocalCell(LocalVector &U, const GlobalVector &u,
+  virtual void GlobalToLocalCell(LocalVector& U,
+                                 const GlobalVector& u,
                                  int iq) const;
 
-  virtual void LocalToGlobal(GlobalVector &f, const LocalVector &F, int iq,
+  virtual void LocalToGlobal(GlobalVector& f,
+                             const LocalVector& F,
+                             int iq,
                              double s) const;
-  virtual void LocalToGlobal(MatrixInterface &A, EntryMatrix &E, int iq,
+  virtual void LocalToGlobal(MatrixInterface& A,
+                             EntryMatrix& E,
+                             int iq,
                              double s) const;
 
   virtual IntVector GetLocalIndices(int iq) const = 0;
@@ -87,40 +97,51 @@ public:
   BasicDiscretization();
   ~BasicDiscretization();
 
-  void BasicInit(const ParamFile &pf) {}
-  void ReInit(const GascoigneMesh *MP) { __MP = MP; }
+  void BasicInit(const ParamFile& pf) {}
+  void ReInit(const GascoigneMesh* MP) { __MP = MP; }
 
-  Vertex2d vertex2d(int i) const {
+  Vertex2d vertex2d(int i) const
+  {
     assert(i < GetMesh()->nnodes());
     return GetMesh()->vertex2d(i);
   }
-  Vertex3d vertex3d(int i) const {
+  Vertex3d vertex3d(int i) const
+  {
     assert(i < GetMesh()->nnodes());
     return GetMesh()->vertex3d(i);
   }
 
-  void VisuVtk(const ComponentInformation *CI, const ParamFile &pf,
-               const std::string &name, const GlobalVector &u, int i) const;
+  void VisuVtk(const ComponentInformation* CI,
+               const ParamFile& pf,
+               const std::string& name,
+               const GlobalVector& u,
+               int i) const;
 
-  virtual void AddNodeVector(const std::string &name,
-                             const GlobalVector *q) const {
+  virtual void AddNodeVector(const std::string& name,
+                             const GlobalVector* q) const
+  {
     __q.AddNodeVector(name, q);
   }
-  virtual void DeleteNodeVector(const std::string &name) const {
+  virtual void DeleteNodeVector(const std::string& name) const
+  {
     __q.DeleteNodeVector(name);
   }
-  virtual void AddCellVector(const std::string &name,
-                             const GlobalVector *q) const {
+  virtual void AddCellVector(const std::string& name,
+                             const GlobalVector* q) const
+  {
     __q.AddCellVector(name, q);
   }
-  virtual void DeleteCellVector(const std::string &name) const {
+  virtual void DeleteCellVector(const std::string& name) const
+  {
     __q.DeleteCellVector(name);
   }
-  virtual void AddParameterVector(const std::string &name,
-                                  const GlobalParameterVector *q) const {
+  virtual void AddParameterVector(const std::string& name,
+                                  const GlobalParameterVector* q) const
+  {
     __q.AddParameterVector(name, q);
   }
-  virtual void DeleteParameterVector(const std::string &name) const {
+  virtual void DeleteParameterVector(const std::string& name) const
+  {
     __q.DeleteParameterVector(name);
   }
 

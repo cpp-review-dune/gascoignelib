@@ -28,7 +28,9 @@ using namespace Gascoigne;
 
 /*---------------------------------------------------*/
 
-int main(int argc, char **argv) {
+int
+main(int argc, char** argv)
+{
 
   ParamFile paramfile("periodic.param");
   if (argc >= 2) {

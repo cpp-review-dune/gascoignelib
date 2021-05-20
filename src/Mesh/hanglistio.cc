@@ -33,7 +33,10 @@ using namespace std;
 /*********************************************************************/
 
 namespace Gascoigne {
-template <int N> ostream &operator<<(ostream &s, const HangList<N> &A) {
+template<int N>
+ostream&
+operator<<(ostream& s, const HangList<N>& A)
+{
   s << A.size() << " hangs" << endl;
   auto p = A.begin();
 
@@ -45,7 +48,10 @@ template <int N> ostream &operator<<(ostream &s, const HangList<N> &A) {
 
 /*********************************************************************/
 
-template <int N> istream &operator>>(istream &s, HangList<N> &A) {
+template<int N>
+istream&
+operator>>(istream& s, HangList<N>& A)
+{
   int n;
   string symbol;
 
@@ -65,10 +71,14 @@ template <int N> istream &operator>>(istream &s, HangList<N> &A) {
 
 /*********************************************************************/
 
-template ostream &operator<<(ostream &s, const HangList<2> &A);
-template ostream &operator<<(ostream &s, const HangList<4> &A);
-template istream &operator>>(istream &s, HangList<2> &A);
-template istream &operator>>(istream &s, HangList<4> &A);
+template ostream&
+operator<<(ostream& s, const HangList<2>& A);
+template ostream&
+operator<<(ostream& s, const HangList<4>& A);
+template istream&
+operator>>(istream& s, HangList<2>& A);
+template istream&
+operator>>(istream& s, HangList<4>& A);
 } // namespace Gascoigne
 
 #undef HANGMAP

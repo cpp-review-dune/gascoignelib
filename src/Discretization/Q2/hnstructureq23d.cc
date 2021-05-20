@@ -28,7 +28,10 @@ using namespace std;
 namespace Gascoigne {
 /*-----------------------------------------*/
 
-HNStructureQ23d::HNStructureQ23d() : HNStructureQ13d(), q1wei(3) {
+HNStructureQ23d::HNStructureQ23d()
+  : HNStructureQ13d()
+  , q1wei(3)
+{
   wei[0] = 0.375;
   q1wei[0] = 0.5;
   wei[1] = 0.75;
@@ -114,25 +117,29 @@ HNStructureQ23d::HNStructureQ23d() : HNStructureQ13d(), q1wei(3) {
 
 /*-----------------------------------------*/
 
-void HNStructureQ23d::Average(GlobalVector &u) const {
+void
+HNStructureQ23d::Average(GlobalVector& u) const
+{
   for (const_fiterator p = faces->begin(); p != faces->end(); p++) {
-    const std::array<int, 9> &f = p->second;
+    const std::array<int, 9>& f = p->second;
     u.equ_node(p->first, fwei[0], f[0], fwei[1], f[1], fwei[2], f[2]);
     u.add_node(p->first, fwei[3], f[3], fwei[4], f[4], fwei[5], f[5]);
     u.add_node(p->first, fwei[6], f[6], fwei[7], f[7], fwei[8], f[8]);
   }
   for (const_iterator p = edges->begin(); p != edges->end(); p++) {
-    const std::array<int, 3> &f = p->second;
+    const std::array<int, 3>& f = p->second;
     u.equ_node(p->first, wei[0], f[0], wei[1], f[1], wei[2], f[2]);
   }
 }
 
 /*-----------------------------------------*/
 
-void HNStructureQ23d::Distribute(GlobalVector &u) const {
+void
+HNStructureQ23d::Distribute(GlobalVector& u) const
+{
   for (const_fiterator p = faces->begin(); p != faces->end(); p++) {
     int i = p->first;
-    const std::array<int, 9> &f = p->second;
+    const std::array<int, 9>& f = p->second;
     for (int j = 0; j < 9; j++) {
       u.add_node(f[j], fwei[j], i);
     }
@@ -140,7 +147,7 @@ void HNStructureQ23d::Distribute(GlobalVector &u) const {
   }
   for (const_iterator p = edges->begin(); p != edges->end(); p++) {
     int i = p->first;
-    const std::array<int, 3> &f = p->second;
+    const std::array<int, 3>& f = p->second;
     for (int j = 0; j < 3; j++) {
       u.add_node(f[j], wei[j], i);
     }
@@ -150,8 +157,9 @@ void HNStructureQ23d::Distribute(GlobalVector &u) const {
 
 /*-----------------------------------------*/
 
-void HNStructureQ23d::CondenseHanging(EntryMatrix &E,
-                                      IntVector &indices) const {
+void
+HNStructureQ23d::CondenseHanging(EntryMatrix& E, IntVector& indices) const
+{
   assert(indices.size() == 27);
 
   CondenseHanging2er(E, indices);
@@ -160,8 +168,10 @@ void HNStructureQ23d::CondenseHanging(EntryMatrix &E,
 
 /*-----------------------------------------*/
 
-void HNStructureQ23d::CondenseHangingLowerHigher(EntryMatrix &E,
-                                                 IntVector &indices) const {
+void
+HNStructureQ23d::CondenseHangingLowerHigher(EntryMatrix& E,
+                                            IntVector& indices) const
+{
   assert(indices.size() == 27);
 
   CondenseHanging2erLowerHigher(E, indices);
@@ -170,8 +180,10 @@ void HNStructureQ23d::CondenseHangingLowerHigher(EntryMatrix &E,
 
 /*-----------------------------------------*/
 
-void HNStructureQ23d::CondenseHangingHigherLower(EntryMatrix &E,
-                                                 IntVector &indices) const {
+void
+HNStructureQ23d::CondenseHangingHigherLower(EntryMatrix& E,
+                                            IntVector& indices) const
+{
   assert(indices.size() == 27);
 
   CondenseHanging2erHigherLower(E, indices);
@@ -180,7 +192,9 @@ void HNStructureQ23d::CondenseHangingHigherLower(EntryMatrix &E,
 
 /*----------------------------------------------*/
 
-void HNStructureQ23d::CondenseHanging(IntVector &indices) const {
+void
+HNStructureQ23d::CondenseHanging(IntVector& indices) const
+{
   assert(indices.size() == 27);
 
   for (int i = 0; i < 27; i++) {
@@ -199,8 +213,9 @@ void HNStructureQ23d::CondenseHanging(IntVector &indices) const {
 
 /*----------------------------------------------*/
 
-void HNStructureQ23d::CondenseHanging2er(EntryMatrix &E,
-                                         nvector<int> &indices) const {
+void
+HNStructureQ23d::CondenseHanging2er(EntryMatrix& E, nvector<int>& indices) const
+{
   for (int i = 0; i < 12; i++) {
     std::array<int, 3> p = lnoe[i];
 
@@ -212,7 +227,7 @@ void HNStructureQ23d::CondenseHanging2er(EntryMatrix &E,
     if (q == edges->end())
       continue;
 
-    const std::array<int, 3> &f = q->second;
+    const std::array<int, 3>& f = q->second;
 
     indices[elim] = f[2];
 
@@ -234,8 +249,10 @@ void HNStructureQ23d::CondenseHanging2er(EntryMatrix &E,
 
 /*----------------------------------------------*/
 
-void HNStructureQ23d::CondenseHanging2erLowerHigher(
-    EntryMatrix &E, nvector<int> &indices) const {
+void
+HNStructureQ23d::CondenseHanging2erLowerHigher(EntryMatrix& E,
+                                               nvector<int>& indices) const
+{
   for (int i = 0; i < 12; i++) {
     std::array<int, 3> p = lnoe[i];
 
@@ -247,7 +264,7 @@ void HNStructureQ23d::CondenseHanging2erLowerHigher(
     if (q == edges->end())
       continue;
 
-    const std::array<int, 3> &f = q->second;
+    const std::array<int, 3>& f = q->second;
 
     indices[elim] = f[2];
 
@@ -269,8 +286,10 @@ void HNStructureQ23d::CondenseHanging2erLowerHigher(
 
 /*----------------------------------------------*/
 
-void HNStructureQ23d::CondenseHanging2erHigherLower(
-    EntryMatrix &E, nvector<int> &indices) const {
+void
+HNStructureQ23d::CondenseHanging2erHigherLower(EntryMatrix& E,
+                                               nvector<int>& indices) const
+{
   for (int i = 0; i < 12; i++) {
     std::array<int, 3> p = lnoe[i];
 
@@ -282,7 +301,7 @@ void HNStructureQ23d::CondenseHanging2erHigherLower(
     if (q == edges->end())
       continue;
 
-    const std::array<int, 3> &f = q->second;
+    const std::array<int, 3>& f = q->second;
 
     indices[elim] = f[2];
 
@@ -304,8 +323,9 @@ void HNStructureQ23d::CondenseHanging2erHigherLower(
 
 /*----------------------------------------------*/
 
-void HNStructureQ23d::CondenseHanging4er(EntryMatrix &E,
-                                         nvector<int> &indices) const {
+void
+HNStructureQ23d::CondenseHanging4er(EntryMatrix& E, nvector<int>& indices) const
+{
   for (int i = 0; i < 6; i++) {
     std::array<int, 5> lf = lnop[i];
 
@@ -317,7 +337,7 @@ void HNStructureQ23d::CondenseHanging4er(EntryMatrix &E,
     if (q == faces->end())
       continue;
 
-    const std::array<int, 9> &gf = q->second;
+    const std::array<int, 9>& gf = q->second;
 
     indices[elim] = gf[8];
 
@@ -360,8 +380,10 @@ void HNStructureQ23d::CondenseHanging4er(EntryMatrix &E,
 
 /*----------------------------------------------*/
 
-void HNStructureQ23d::CondenseHanging4erLowerHigher(
-    EntryMatrix &E, nvector<int> &indices) const {
+void
+HNStructureQ23d::CondenseHanging4erLowerHigher(EntryMatrix& E,
+                                               nvector<int>& indices) const
+{
   for (int i = 0; i < 6; i++) {
     std::array<int, 5> lf = lnop[i];
 
@@ -373,7 +395,7 @@ void HNStructureQ23d::CondenseHanging4erLowerHigher(
     if (q == faces->end())
       continue;
 
-    const std::array<int, 9> &gf = q->second;
+    const std::array<int, 9>& gf = q->second;
 
     indices[elim] = gf[8];
 
@@ -416,8 +438,10 @@ void HNStructureQ23d::CondenseHanging4erLowerHigher(
 
 /*----------------------------------------------*/
 
-void HNStructureQ23d::CondenseHanging4erHigherLower(
-    EntryMatrix &E, nvector<int> &indices) const {
+void
+HNStructureQ23d::CondenseHanging4erHigherLower(EntryMatrix& E,
+                                               nvector<int>& indices) const
+{
   for (int i = 0; i < 6; i++) {
     std::array<int, 5> lf = lnop[i];
 
@@ -429,7 +453,7 @@ void HNStructureQ23d::CondenseHanging4erHigherLower(
     if (q == faces->end())
       continue;
 
-    const std::array<int, 9> &gf = q->second;
+    const std::array<int, 9>& gf = q->second;
 
     indices[elim] = gf[8];
 

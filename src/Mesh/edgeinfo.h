@@ -24,30 +24,32 @@
 #ifndef __EdgeInfo_h
 #define __EdgeInfo_h
 
+#include "compvector.h"
 #include "edge.h"
 #include "gascoigne.h"
-#include "compvector.h"
 
 /**********************************************************/
 
 namespace Gascoigne {
-template <int DIM> class EdgeInfo {
+template<int DIM>
+class EdgeInfo
+{
 protected:
   int _count;
   std::array<int, 2 * DIM - 2> _vertex;
   LocalVector _u;
-  const Edge *_edge;
+  const Edge* _edge;
 
 public:
   EdgeInfo<DIM>() {}
   ~EdgeInfo<DIM>() {}
 
-  void BasicInit(const Edge *, int, const std::array<int, 2 * DIM - 2> &);
-  void AddNodes(const LocalVector &);
+  void BasicInit(const Edge*, int, const std::array<int, 2 * DIM - 2>&);
+  void AddNodes(const LocalVector&);
 
-  const std::array<int, 2 * DIM - 2> &GetVertex() const { return _vertex; }
-  const LocalVector &GetValue() const { return _u; }
-  const Edge &GetEdge() const { return *_edge; }
+  const std::array<int, 2 * DIM - 2>& GetVertex() const { return _vertex; }
+  const LocalVector& GetValue() const { return _u; }
+  const Edge& GetEdge() const { return *_edge; }
   int GetCount() const { return _count; }
   std::array<double, 2 * DIM - 2> GetNorm() const;
 

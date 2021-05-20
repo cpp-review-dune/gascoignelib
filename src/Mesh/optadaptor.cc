@@ -32,8 +32,11 @@ using namespace std;
 /*********************************************************************/
 
 namespace Gascoigne {
-OptAdaptor::OptAdaptor(AdaptorData &inf, DoubleVector &e, const DoubleVector &v)
-    : info(inf), vol(v), eta(e) {
+OptAdaptor::OptAdaptor(AdaptorData& inf, DoubleVector& e, const DoubleVector& v)
+  : info(inf)
+  , vol(v)
+  , eta(e)
+{
   p = info.dim();
   d = 2;
   if (d == 2) {
@@ -52,7 +55,9 @@ OptAdaptor::OptAdaptor(AdaptorData &inf, DoubleVector &e, const DoubleVector &v)
 
 /*********************************************************************/
 
-void OptAdaptor::prepare() {
+void
+OptAdaptor::prepare()
+{
   n_aimed = std::max(1, static_cast<int>(info.rfactor() * info.ncells()));
   n_aimed = std::min(info.maxnodes(), n_aimed);
 
@@ -91,7 +96,9 @@ void OptAdaptor::prepare() {
 
 /*********************************************************************/
 
-void OptAdaptor::coarse(IntVector &coarselist) {
+void
+OptAdaptor::coarse(IntVector& coarselist)
+{
   //  eta = h/h_aimed
 
   if (info.cfactor() <= 0.)
@@ -133,7 +140,9 @@ void OptAdaptor::coarse(IntVector &coarselist) {
 
 /*********************************************************************/
 
-void OptAdaptor::refine(IntVector &reflist) {
+void
+OptAdaptor::refine(IntVector& reflist)
+{
   reflist.resize(0);
 
   IntVector C(eta.size());
@@ -157,7 +166,9 @@ void OptAdaptor::refine(IntVector &reflist) {
 
 /*********************************************************************/
 
-void OptAdaptor::RefineGnuplot(IntVector &reflist) {
+void
+OptAdaptor::RefineGnuplot(IntVector& reflist)
+{
   reflist.resize(0);
 
   IntVector C(eta.size());

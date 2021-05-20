@@ -34,14 +34,16 @@ using namespace Gascoigne;
 
 /* ----------------------------------------- */
 
-class LocalEquation : public Equation {
+class LocalEquation : public Equation
+{
 private:
   mutable double _visc;
   mutable double _us, _vs;
   mutable double _h, _k, _r;
 
 public:
-  LocalEquation(const ParamFile *paramfile) {
+  LocalEquation(const ParamFile* paramfile)
+  {
     DataFormatHandler DFH;
     DFH.insert("visc", &_visc, 1.);
     DFH.insert("h", &_h, 0.4);
@@ -59,14 +61,15 @@ public:
 
   std::string GetName() const { return "Local"; }
   int GetNcomp() const { return 2; }
-  void SetTimePattern(TimePattern &P) const {
+  void SetTimePattern(TimePattern& P) const
+  {
     P.reservesize(GetNcomp(), GetNcomp(), 0.);
     P(0, 0) = 1.;
     P(1, 1) = 1.;
   }
 
-  void Form(VectorIterator b, const FemFunction &U,
-            const TestFunction &N) const {
+  void Form(VectorIterator b, const FemFunction& U, const TestFunction& N) const
+  {
     b[0] += _visc * (U[0].x() * N.x() + U[0].y() * N.y());
     b[1] += _visc * (U[1].x() * N.x() + U[1].y() * N.y());
 
@@ -78,8 +81,11 @@ public:
     b[1] += N.m() * (_k * _r * v - _k * s * v);
   }
 
-  void Matrix(EntryMatrix &A, const FemFunction &U, const TestFunction &M,
-              const TestFunction &N) const {
+  void Matrix(EntryMatrix& A,
+              const FemFunction& U,
+              const TestFunction& M,
+              const TestFunction& N) const
+  {
     A(0, 0) += _visc * (M.x() * N.x() + M.y() * N.y());
     A(1, 1) += _visc * (M.x() * N.x() + M.y() * N.y());
 
@@ -99,19 +105,22 @@ public:
 
 /* ----------------------------------------- */
 
-class LocalInitialCondition : public DomainRightHandSide {
+class LocalInitialCondition : public DomainRightHandSide
+{
 private:
   mutable double _us, _vs;
 
 public:
-  LocalInitialCondition(const LocalEquation *EQ) {
+  LocalInitialCondition(const LocalEquation* EQ)
+  {
     _us = EQ->GetUs();
     _vs = EQ->GetVs();
   }
 
   std::string GetName() const { return "Local"; }
   int GetNcomp() const { return 2; }
-  double operator()(int c, const Vertex2d &v) const {
+  double operator()(int c, const Vertex2d& v) const
+  {
     double x = v.x();
     double y = v.y();
     double eps1 = 2.e-7;
@@ -129,14 +138,16 @@ public:
 
 /* ----------------------------------------- */
 
-class ProblemDescriptor : public ProblemDescriptorBase {
+class ProblemDescriptor : public ProblemDescriptorBase
+{
 public:
   std::string GetName() const { return "Local"; }
-  void BasicInit(const ParamFile *pf) {
+  void BasicInit(const ParamFile* pf)
+  {
     GetParamFilePointer() = pf;
     GetEquationPointer() = new LocalEquation(GetParamFile());
-    const LocalEquation *LEQ =
-        dynamic_cast<const LocalEquation *>(GetEquation());
+    const LocalEquation* LEQ =
+      dynamic_cast<const LocalEquation*>(GetEquation());
     GetInitialConditionPointer() = new LocalInitialCondition(LEQ);
 
     ProblemDescriptorBase::BasicInit(pf);

@@ -32,12 +32,13 @@
 /*-------------------------------------------------------------------------*/
 
 namespace Gascoigne {
-class VisuEPS {
+class VisuEPS
+{
 protected:
   typedef std::pair<int, int> Line;
   typedef nvector<IntSet> Lines;
 
-  const GascoigneMesh *M;
+  const GascoigneMesh* M;
   int _i_compress;
 
   Lines lines;
@@ -49,7 +50,7 @@ protected:
   std::map<int, double> DOUBLEOPT;
 
   // sort line p (left,bottom) first
-  void Lexiko(Line &p) const;
+  void Lexiko(Line& p) const;
 
   // test if vertices a,b,c are aligned straightly
   bool InLine(int a, int b, int c) const;
@@ -57,7 +58,7 @@ protected:
   void CombineLines();
 
 public:
-  VisuEPS(const ParamFile &paramfile);
+  VisuEPS(const ParamFile& paramfile);
 
   /**
    * Options for output:
@@ -76,12 +77,19 @@ public:
    *   1: straightly aligned lines are combined to one (def)
    *
    **/
-  enum EPSOptions { WRITE_PATCH, LINEWIDTH, WIDTH, COMBINE_LINES };
+  enum EPSOptions
+  {
+    WRITE_PATCH,
+    LINEWIDTH,
+    WIDTH,
+    COMBINE_LINES
+  };
 
   void SetOption(EPSOptions o, int v);
   void SetOption(EPSOptions o, double v);
 
-  void SetMesh(const GascoigneMesh &PM) {
+  void SetMesh(const GascoigneMesh& PM)
+  {
     M = &PM;
     assert(M);
   }

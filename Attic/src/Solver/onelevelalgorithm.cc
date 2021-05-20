@@ -31,9 +31,11 @@ namespace Gascoigne {
 
 /*-----------------------------------------*/
 
-void OneLevelAlgorithm::BasicInit(const ParamFile *paramfile,
-                                  const NumericInterface *NI,
-                                  const ProblemContainer *PC) {
+void
+OneLevelAlgorithm::BasicInit(const ParamFile* paramfile,
+                             const NumericInterface* NI,
+                             const ProblemContainer* PC)
+{
   Algorithm::BasicInit(paramfile, NI);
 
   _S = GetNumeric()->NewSolver();
@@ -46,7 +48,9 @@ void OneLevelAlgorithm::BasicInit(const ParamFile *paramfile,
 
 /*-----------------------------------------*/
 
-void OneLevelAlgorithm::Precondition(VectorInterface &x, VectorInterface &y) {
+void
+OneLevelAlgorithm::Precondition(VectorInterface& x, VectorInterface& y)
+{
   CGInfo pinfo;
   pinfo.user().tol() = 1.e-12;
   pinfo.user().globaltol() = 1.e-12;
@@ -59,8 +63,11 @@ void OneLevelAlgorithm::Precondition(VectorInterface &x, VectorInterface &y) {
 
 /*-----------------------------------------*/
 
-void OneLevelAlgorithm::IluSolver(VectorInterface &du, const VectorInterface &f,
-                                  CGInfo &info) {
+void
+OneLevelAlgorithm::IluSolver(VectorInterface& du,
+                             const VectorInterface& f,
+                             CGInfo& info)
+{
   VectorInterface help("help");
   ReInitVector(help);
 
@@ -69,7 +76,7 @@ void OneLevelAlgorithm::IluSolver(VectorInterface &du, const VectorInterface &f,
     GetSolver()->MatrixResidual(help, du, f);
     double rnorm = GetSolver()->Norm(help);
 
-    StdSolver *SS = dynamic_cast<StdSolver *>(GetSolver());
+    StdSolver* SS = dynamic_cast<StdSolver*>(GetSolver());
     SS->GetIlu()->solve(GetSolver()->GetGV(help));
     double cnorm = GetSolver()->Norm(help);
 
@@ -81,8 +88,11 @@ void OneLevelAlgorithm::IluSolver(VectorInterface &du, const VectorInterface &f,
 
 /*-----------------------------------------*/
 
-void OneLevelAlgorithm::JacobiSolver(VectorInterface &du,
-                                     const VectorInterface &f, CGInfo &info) {
+void
+OneLevelAlgorithm::JacobiSolver(VectorInterface& du,
+                                const VectorInterface& f,
+                                CGInfo& info)
+{
   VectorInterface help("help");
   ReInitVector(help);
 
@@ -91,7 +101,7 @@ void OneLevelAlgorithm::JacobiSolver(VectorInterface &du,
     GetSolver()->MatrixResidual(help, du, f);
     double rnorm = GetSolver()->Norm(help);
 
-    StdSolver *SS = dynamic_cast<StdSolver *>(GetSolver());
+    StdSolver* SS = dynamic_cast<StdSolver*>(GetSolver());
     SS->GetMatrix()->Jacobi(GetSolver()->GetGV(help));
 
     double cnorm = GetSolver()->Norm(help);
@@ -104,7 +114,9 @@ void OneLevelAlgorithm::JacobiSolver(VectorInterface &du,
 
 /*-----------------------------------------*/
 
-void OneLevelAlgorithm::RunLinear(const std::string &problemlabel) {
+void
+OneLevelAlgorithm::RunLinear(const std::string& problemlabel)
+{
   GetSolver()->NewMesh(GetMeshAgent()->GetMesh(0));
 
   GetSolver()->SetProblem(*_PC->GetProblem(problemlabel));
@@ -145,7 +157,7 @@ void OneLevelAlgorithm::RunLinear(const std::string &problemlabel) {
 
   GetSolver()->Zero(du);
 
-  CGInfo &info = GetSolverInfos()->GetLInfo();
+  CGInfo& info = GetSolverInfos()->GetLInfo();
 
   IluSolver(du, f, info);
 
@@ -162,7 +174,9 @@ void OneLevelAlgorithm::RunLinear(const std::string &problemlabel) {
 
 /*-----------------------------------------*/
 
-void OneLevelAlgorithm::AssembleMatrixAndIlu(VectorInterface &u) {
+void
+OneLevelAlgorithm::AssembleMatrixAndIlu(VectorInterface& u)
+{
   GetSolver()->MatrixZero();
   GetSolver()->AssembleMatrix(u, 1.);
   GetSolver()->ComputeIlu(u);
@@ -170,15 +184,20 @@ void OneLevelAlgorithm::AssembleMatrixAndIlu(VectorInterface &u) {
 
 /*-----------------------------------------*/
 
-void OneLevelAlgorithm::LinearSolve(VectorInterface &du,
-                                    const VectorInterface &y, CGInfo &cginfo) {
+void
+OneLevelAlgorithm::LinearSolve(VectorInterface& du,
+                               const VectorInterface& y,
+                               CGInfo& cginfo)
+{
   cginfo.reset();
   IluSolver(du, y, cginfo);
 }
 
 /*-----------------------------------------*/
 
-void OneLevelAlgorithm::RunNonLinear(const std::string &problemlabel) {
+void
+OneLevelAlgorithm::RunNonLinear(const std::string& problemlabel)
+{
   GetSolver()->NewMesh(GetMeshAgent()->GetMesh(0));
 
   GetSolver()->SetProblem(*_PC->GetProblem(problemlabel));
@@ -208,7 +227,7 @@ void OneLevelAlgorithm::RunNonLinear(const std::string &problemlabel) {
   GetSolver()->ReInitMatrix();
   GetSolver()->MatrixZero();
 
-  NLInfo &nlinfo = GetSolverInfos()->GetNLInfo();
+  NLInfo& nlinfo = GetSolverInfos()->GetNLInfo();
 
   Newton(u, f, nlinfo);
 

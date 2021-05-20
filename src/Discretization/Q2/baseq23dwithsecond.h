@@ -37,14 +37,15 @@ namespace Gascoigne {
 ///
 /////////////////////////////////////////////
 
-class BaseQ23dWithSecond : public BaseQ23d {
+class BaseQ23dWithSecond : public BaseQ23d
+{
 private:
   mutable DoubleVector dxx, dxy, dxz, dyy, dyz, dzz;
 
 public:
   BaseQ23dWithSecond();
 
-  void point(const Vertex3d &s) const;
+  void point(const Vertex3d& s) const;
 
   double phi_xx(int i) const { return dxx[i]; }
   double phi_xy(int i) const { return dxy[i]; }

@@ -2,15 +2,16 @@
 #include "fmatrixblock.h"
 
 namespace Gascoigne {
-template <class B>
-void FSISparseBlockIlu<B>::copy_entries(const HASHMAP<int, int> &G2L,
-                                        const HASHSET<int> &INT,
-                                        const MatrixInterface *A) {
-  const SparseBlockMatrix<B> *MM =
-      dynamic_cast<const SparseBlockMatrix<B> *>(A);
+template<class B>
+void
+FSISparseBlockIlu<B>::copy_entries(const HASHMAP<int, int>& G2L,
+                                   const HASHSET<int>& INT,
+                                   const MatrixInterface* A)
+{
+  const SparseBlockMatrix<B>* MM = dynamic_cast<const SparseBlockMatrix<B>*>(A);
   assert(MM);
-  const ColumnDiagStencil *AS =
-      dynamic_cast<const ColumnDiagStencil *>(MM->GetStencil());
+  const ColumnDiagStencil* AS =
+    dynamic_cast<const ColumnDiagStencil*>(MM->GetStencil());
   assert(AS);
 
   B diagall;
@@ -40,7 +41,8 @@ void FSISparseBlockIlu<B>::copy_entries(const HASHMAP<int, int> &G2L,
       int pj = this->q[j];
       bool found = 0;
       for (int pos = SparseBlockMatrix<B>::US.start(i);
-           pos < SparseBlockMatrix<B>::US.stop(i); pos++) {
+           pos < SparseBlockMatrix<B>::US.stop(i);
+           pos++) {
         int k = SparseBlockMatrix<B>::US.col(pos);
         if (k == pj) {
           found = 1;

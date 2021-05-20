@@ -29,7 +29,9 @@ using namespace std;
 /********************************************************************/
 
 namespace Gascoigne {
-void Visualization::vu(const string &bname) const {
+void
+Visualization::vu(const string& bname) const
+{
   string name = bname;
   name += ".pie";
 
@@ -69,14 +71,16 @@ void Visualization::vu(const string &bname) const {
     CheckPointData();
     file << "SOLUTION Solution( ) =\n{\n";
     for (VisuDataInfo::siterator p = PointDataInfo->sbegin();
-         p != PointDataInfo->send(); ++p) {
+         p != PointDataInfo->send();
+         ++p) {
       file << " VARIABLE " << p->first << "( " << element;
       file << ", " << p->first;
       file << ", Elements, Zone );\n";
     }
     file << "};\n\n";
     for (VisuDataInfo::siterator p = PointDataInfo->sbegin();
-         p != PointDataInfo->send(); ++p) {
+         p != PointDataInfo->send();
+         ++p) {
       file << "CHAMP " << p->first << "( ) = {\n";
       output_solution(file, p->second);
       file << "};\n\n";

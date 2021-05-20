@@ -30,7 +30,9 @@ using namespace std;
 /* ----------------------------------------- */
 
 namespace Gascoigne {
-void Visualization::_vtk_pointdata(ofstream &out) const {
+void
+Visualization::_vtk_pointdata(ofstream& out) const
+{
   if (PointData) {
     int nn = mesh->nnodes();
 
@@ -39,7 +41,7 @@ void Visualization::_vtk_pointdata(ofstream &out) const {
     // p=PointDataInfo->sbegin();p!=PointDataInfo->send();++p)
     for (int i = 0; i < PointDataInfo->nscalars(); i++) {
       VisuDataInfo::siterator p =
-          (const_cast<VisuDataInfo *>(PointDataInfo))->GetSIterator(i);
+        (const_cast<VisuDataInfo*>(PointDataInfo))->GetSIterator(i);
       if (i == 0)
         out << "POINT_DATA " << nn << endl;
       out << "SCALARS " << p->first << " DOUBLE " << endl;
@@ -60,7 +62,7 @@ void Visualization::_vtk_pointdata(ofstream &out) const {
     // p=PointDataInfo->vbegin();p!=PointDataInfo->vend();++p) {
     for (int i = 0; i < PointDataInfo->nvectors(); i++) {
       VisuDataInfo::viterator p =
-          (const_cast<VisuDataInfo *>(PointDataInfo))->GetVIterator(i);
+        (const_cast<VisuDataInfo*>(PointDataInfo))->GetVIterator(i);
       out << "VECTORS " << p->first << " DOUBLE " << endl;
       for (int ind = 0; ind < PointData->visun(); ind++) {
         for (int ii = 0; ii < 2; ii++) {
@@ -86,7 +88,9 @@ void Visualization::_vtk_pointdata(ofstream &out) const {
 
 /* ----------------------------------------- */
 
-void Visualization::_vtk_celldata(ofstream &out) const {
+void
+Visualization::_vtk_celldata(ofstream& out) const
+{
   if (CellData) {
     CheckCellData();
 
@@ -98,7 +102,7 @@ void Visualization::_vtk_celldata(ofstream &out) const {
     // p=CellDataInfo->sbegin();p!=CellDataInfo->send();++p){
     for (int i = 0; i < CellDataInfo->nscalars(); i++) {
       VisuDataInfo::siterator p =
-          (const_cast<VisuDataInfo *>(CellDataInfo))->GetSIterator(i);
+        (const_cast<VisuDataInfo*>(CellDataInfo))->GetSIterator(i);
       if (i == 0)
         out << "CELL_DATA " << mesh->ncells() << endl;
       // if(p==CellDataInfo->sbegin()) out << "CELL_DATA " << mesh->ncells() <<
@@ -116,7 +120,7 @@ void Visualization::_vtk_celldata(ofstream &out) const {
     // p=CellDataInfo->vbegin();p!=CellDataInfo->vend();++p){
     for (int i = 0; i < CellDataInfo->nvectors(); i++) {
       VisuDataInfo::viterator p =
-          (const_cast<VisuDataInfo *>(CellDataInfo))->GetVIterator(i);
+        (const_cast<VisuDataInfo*>(CellDataInfo))->GetVIterator(i);
       out << "VECTORS " << p->first << " DOUBLE " << endl;
       for (int ind = 0; ind < CellData->visun(); ind++) {
         for (int ii = 0; ii < 2; ii++) {
@@ -136,7 +140,9 @@ void Visualization::_vtk_celldata(ofstream &out) const {
 
 /* ----------------------------------------- */
 
-void Visualization::_vtk_points(ofstream &out) const {
+void
+Visualization::_vtk_points(ofstream& out) const
+{
   int nn = mesh->nnodes();
   out << "POINTS " << nn << " DOUBLE " << endl;
   assert(mesh->dimension() == 2 || mesh->dimension() == 3);
@@ -154,7 +160,9 @@ void Visualization::_vtk_points(ofstream &out) const {
 
 /* ----------------------------------------- */
 
-void Visualization::_vtk_cells(ofstream &out) const {
+void
+Visualization::_vtk_cells(ofstream& out) const
+{
   int ne = mesh->ncells();
 
   int lenght = 0;
@@ -179,7 +187,9 @@ void Visualization::_vtk_cells(ofstream &out) const {
   out << endl;
 }
 
-void Visualization::_vtk_cellmaterial(ofstream &out) const {
+void
+Visualization::_vtk_cellmaterial(ofstream& out) const
+{
   int ne = mesh->ncells();
 
   out << endl
@@ -194,7 +204,9 @@ void Visualization::_vtk_cellmaterial(ofstream &out) const {
 
 /* ----------------------------------------- */
 
-void Visualization::vtk(const string &bname) const {
+void
+Visualization::vtk(const string& bname) const
+{
   string name = bname;
   name += ".vtk";
 

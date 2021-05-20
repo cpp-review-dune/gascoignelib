@@ -25,14 +25,15 @@
 #define __DomainRightHandSide_h
 
 #include "application.h"
-#include "vertex.h"
 #include "compvector.h"
+#include "vertex.h"
 
 namespace Gascoigne {
 
 /*-------------------------------------------------------*/
 
-class DomainRightHandSide : public virtual Application {
+class DomainRightHandSide : public virtual Application
+{
 private:
 protected:
 public:
@@ -45,30 +46,37 @@ public:
      of a copy constructor and the cloning of classes is required for
      multithreading.
   */
-  virtual DomainRightHandSide *createNew() const {
+  virtual DomainRightHandSide* createNew() const
+  {
     std::cerr << "\"DomainRightHandSide::createNew\" not written!" << std::endl;
     abort();
   }
 
   virtual int GetNcomp() const = 0;
 
-  virtual double operator()(int c, const Vertex2d &v) const {
+  virtual double operator()(int c, const Vertex2d& v) const
+  {
     std::cerr << "\"DomainRightHandSide::operator()\" not written" << std::endl;
     abort();
   }
-  virtual double operator()(int c, const Vertex3d &v) const {
+  virtual double operator()(int c, const Vertex3d& v) const
+  {
     std::cerr << "\"DomainRightHandSide::operator()\" not written" << std::endl;
     abort();
   }
 
-  virtual void operator()(VectorIterator b, const TestFunction &N,
-                          const Vertex2d &v) const {
+  virtual void operator()(VectorIterator b,
+                          const TestFunction& N,
+                          const Vertex2d& v) const
+  {
     for (int c = 0; c < GetNcomp(); c++) {
       b[c] += N.m() * (*this)(c, v);
     }
   }
-  virtual void operator()(VectorIterator b, const TestFunction &N,
-                          const Vertex3d &v) const {
+  virtual void operator()(VectorIterator b,
+                          const TestFunction& N,
+                          const Vertex3d& v) const
+  {
     for (int c = 0; c < GetNcomp(); c++) {
       b[c] += N.m() * (*this)(c, v);
     }

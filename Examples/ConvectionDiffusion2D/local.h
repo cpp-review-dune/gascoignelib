@@ -37,10 +37,12 @@ using namespace Gascoigne;
 
 /* ----------------------------------------- */
 
-class LocalDirichletData : public DirichletData {
+class LocalDirichletData : public DirichletData
+{
 public:
   std::string GetName() const { return "Local"; }
-  void operator()(DoubleVector &b, const Vertex2d &v, int col) const {
+  void operator()(DoubleVector& b, const Vertex2d& v, int col) const
+  {
     if (col != 80) {
       b[0] = 0.;
     } else {
@@ -51,10 +53,12 @@ public:
 
 /* ----------------------------------------- */
 
-class ProblemDescriptor : public ProblemDescriptorBase {
+class ProblemDescriptor : public ProblemDescriptorBase
+{
 public:
   std::string GetName() const { return "Local"; }
-  void BasicInit(const ParamFile *pf) {
+  void BasicInit(const ParamFile* pf)
+  {
     GetParamFilePointer() = pf;
     GetEquationPointer() = new LocalEquation(GetParamFile());
     GetDirichletDataPointer() = new LocalDirichletData;
@@ -64,18 +68,21 @@ public:
 
 /* ----------------------------------------- */
 
-class RunderKreis : public BoundaryFunction<2> {
+class RunderKreis : public BoundaryFunction<2>
+{
   double squareradius;
   Vertex2d center;
 
 public:
   std::string GetName() const { return "RunderKreis"; }
 
-  void BasicInit(Vertex2d c, double r) {
+  void BasicInit(Vertex2d c, double r)
+  {
     center = c;
     squareradius = r;
   }
-  double operator()(const Vertex2d &c) const {
+  double operator()(const Vertex2d& c) const
+  {
     double r = -squareradius;
     for (int i = 0; i < 2; i++) {
       double dx = c[i] - center[i];
@@ -87,12 +94,15 @@ public:
 
 /*---------------------------------------------------*/
 
-class BenchMarkMeshAgent : public MeshAgent {
+class BenchMarkMeshAgent : public MeshAgent
+{
 protected:
   RunderKreis RK;
 
 public:
-  BenchMarkMeshAgent() : MeshAgent() {
+  BenchMarkMeshAgent()
+    : MeshAgent()
+  {
     double r = 0.25;
     Vertex2d v(2., 2.);
     RK.BasicInit(v, r);
@@ -102,13 +112,15 @@ public:
 
 /* ----------------------------------------- */
 
-class LocalLoop : public StdLoop {
+class LocalLoop : public StdLoop
+{
 public:
-  void BasicInit(const ParamFile *paramfile, const ProblemContainer *PC) {
+  void BasicInit(const ParamFile* paramfile, const ProblemContainer* PC)
+  {
     GetMeshAgentPointer() = new BenchMarkMeshAgent;
     StdLoop::BasicInit(paramfile, PC);
   }
-  void run(const std::string &problemlabel);
+  void run(const std::string& problemlabel);
 };
 
 #endif

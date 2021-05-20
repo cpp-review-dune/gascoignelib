@@ -30,7 +30,9 @@ using namespace std;
 /*----------------------------------------------------------------------*/
 
 namespace Gascoigne {
-HexLawAndOrder::HexLawAndOrder(vector<Hex> &h) : hexs(h) {
+HexLawAndOrder::HexLawAndOrder(vector<Hex>& h)
+  : hexs(h)
+{
   // gibt die lokalen vertices einer face zurueck
   lvf[0][0] = 0;
   lvf[0][1] = 1;
@@ -357,8 +359,9 @@ HexLawAndOrder::HexLawAndOrder(vector<Hex> &h) : hexs(h) {
 /*----------------------------------------------------------------------*/
 /* laedt in E zum Hex q und einer face F die e-te Kante                 */
 
-int HexLawAndOrder::EdgeVertexOfFace(const Hex &q, const FaceVector &F,
-                                     int e) const {
+int
+HexLawAndOrder::EdgeVertexOfFace(const Hex& q, const FaceVector& F, int e) const
+{
   int face = local_face(q, F);
   int le = edgeofface[face][e];
   return edge_vertex(q, le);
@@ -366,8 +369,12 @@ int HexLawAndOrder::EdgeVertexOfFace(const Hex &q, const FaceVector &F,
 
 /*----------------------------------------------------------------------*/
 
-int HexLawAndOrder::LoadEdgeOfFace(const Hex &q, const FaceVector &F, int e,
-                                   EdgeVector &E) const {
+int
+HexLawAndOrder::LoadEdgeOfFace(const Hex& q,
+                               const FaceVector& F,
+                               int e,
+                               EdgeVector& E) const
+{
   int face = local_face(q, F);
   int edge = edgeofface[face][e];
   globalvertices_of_edge(q, E, edge);
@@ -377,7 +384,9 @@ int HexLawAndOrder::LoadEdgeOfFace(const Hex &q, const FaceVector &F, int e,
 /*----------------------------------------------------------------------*/
 
 // gibt ne globale face Nummer zurueck
-int HexLawAndOrder::InnerEdge(const Hex &h, int i) const {
+int
+HexLawAndOrder::InnerEdge(const Hex& h, int i) const
+{
   int j = lcfif[i][0];
   int k = coif[i][0];
 
@@ -386,8 +395,10 @@ int HexLawAndOrder::InnerEdge(const Hex &h, int i) const {
 
 /*----------------------------------------------------------------------*/
 
-int HexLawAndOrder::GlobalInnerFace(int c, int i) const {
-  const Hex &h = hexs[c];
+int
+HexLawAndOrder::GlobalInnerFace(int c, int i) const
+{
+  const Hex& h = hexs[c];
   int ie = InnerEdge(h, i);
   return h.edge(ie);
 }
@@ -395,8 +406,9 @@ int HexLawAndOrder::GlobalInnerFace(int c, int i) const {
 /*----------------------------------------------------------------------*/
 
 // gibt ne globale face Nummer zurueck
-int HexLawAndOrder::GlobalChildFace(const FaceVector &face, int q,
-                                    int j) const {
+int
+HexLawAndOrder::GlobalChildFace(const FaceVector& face, int q, int j) const
+{
   int ledge = local_face_index(q, face);
   int ic = ChildsOfFace(ledge, j);
   int child = hexs[q].child(ic);
@@ -408,8 +420,10 @@ int HexLawAndOrder::GlobalChildFace(const FaceVector &face, int q,
 /*---------------------------------------------------*/
 
 // laedt vertex indices in facevector
-void HexLawAndOrder::GetFace(FaceVector &face, int h, int e) const {
-  const Hex &H = hexs[h];
+void
+HexLawAndOrder::GetFace(FaceVector& face, int h, int e) const
+{
+  const Hex& H = hexs[h];
   for (int i = 0; i < 4; i++) {
     face[i] = H[lvf[e][i]];
   }
@@ -418,8 +432,11 @@ void HexLawAndOrder::GetFace(FaceVector &face, int h, int e) const {
 /*---------------------------------------------------*/
 
 // laedt vertex indices in edgevector
-void HexLawAndOrder::globalvertices_of_edge(const Hex &q, std::array<int, 2> &f,
-                                            int edge) const {
+void
+HexLawAndOrder::globalvertices_of_edge(const Hex& q,
+                                       std::array<int, 2>& f,
+                                       int edge) const
+{
   local_edge_index(f, edge);
 
   f[0] = q.vertex(f[0]);
@@ -428,11 +445,12 @@ void HexLawAndOrder::globalvertices_of_edge(const Hex &q, std::array<int, 2> &f,
 
 /*---------------------------------------------------*/
 
-int HexLawAndOrder::GetVertexOfEdge(int iq,
-                                    const std::array<int, 2> &edge) const {
+int
+HexLawAndOrder::GetVertexOfEdge(int iq, const std::array<int, 2>& edge) const
+{
   assert(iq >= 0);
 
-  const Hex &H = hexs[iq];
+  const Hex& H = hexs[iq];
 
   std::array<int, 2> v;
   EdgeArray<2> Edge(edge);
@@ -451,8 +469,11 @@ int HexLawAndOrder::GetVertexOfEdge(int iq,
 
 /*---------------------------------------------------*/
 
-void HexLawAndOrder::globalvertices_of_face(const Hex &q, std::array<int, 4> &f,
-                                            int face) const {
+void
+HexLawAndOrder::globalvertices_of_face(const Hex& q,
+                                       std::array<int, 4>& f,
+                                       int face) const
+{
   local_face_index(f, face);
 
   f[0] = q.vertex(f[0]);
@@ -463,8 +484,11 @@ void HexLawAndOrder::globalvertices_of_face(const Hex &q, std::array<int, 4> &f,
 
 /*---------------------------------------------------*/
 
-pair<int, int> HexLawAndOrder::GetChildFaces(const FaceVector &bigedge,
-                                             int bighex, int i) const {
+pair<int, int>
+HexLawAndOrder::GetChildFaces(const FaceVector& bigedge,
+                              int bighex,
+                              int i) const
+{
   // bigedge sind die vier vertex no der grossen face
   // bighex ist die no des vater hex
   // i ist die no der kleinen Kinderface (0<=i<=4)
@@ -492,7 +516,9 @@ pair<int, int> HexLawAndOrder::GetChildFaces(const FaceVector &bigedge,
 
 /*----------------------------------------------------------------------*/
 
-int HexLawAndOrder::local_face_index(int q, const FaceVector &face) const {
+int
+HexLawAndOrder::local_face_index(int q, const FaceVector& face) const
+{
   EdgeArray<4> f(face);
   EdgeArray<4> g(face);
   for (int i = 0; i < 6; i++) {
@@ -505,20 +531,27 @@ int HexLawAndOrder::local_face_index(int q, const FaceVector &face) const {
 
 /*----------------------------------------------------------------------*/
 
-void HexLawAndOrder::local_edge_index(EdgeVector &v, int edge) const {
+void
+HexLawAndOrder::local_edge_index(EdgeVector& v, int edge) const
+{
   v = lve[edge];
 }
 
 /*----------------------------------------------------------------------*/
 
-void HexLawAndOrder::local_face_index(FaceVector &v, int face) const {
+void
+HexLawAndOrder::local_face_index(FaceVector& v, int face) const
+{
   v = lvf[face];
 }
 
 /*----------------------------------------------------------------------*/
 
-void HexLawAndOrder::global_face_unsorted(FaceVector &faceglob, const Hex &h,
-                                          int face) const {
+void
+HexLawAndOrder::global_face_unsorted(FaceVector& faceglob,
+                                     const Hex& h,
+                                     int face) const
+{
   FaceVector faceloc;
   local_face_index(faceloc, face);
   h.vertex_loc2glob<4>(faceglob, faceloc);
@@ -526,8 +559,11 @@ void HexLawAndOrder::global_face_unsorted(FaceVector &faceglob, const Hex &h,
 
 /*----------------------------------------------------------------------*/
 
-void HexLawAndOrder::global_edge_unsorted(EdgeVector &edgeglob, const Hex &h,
-                                          int edge) const {
+void
+HexLawAndOrder::global_edge_unsorted(EdgeVector& edgeglob,
+                                     const Hex& h,
+                                     int edge) const
+{
   EdgeVector edgeloc;
   local_edge_index(edgeloc, edge);
   h.vertex_loc2glob<2>(edgeglob, edgeloc);
@@ -535,7 +571,9 @@ void HexLawAndOrder::global_edge_unsorted(EdgeVector &edgeglob, const Hex &h,
 
 /*----------------------------------------------------------------------*/
 
-void HexLawAndOrder::fill_corner_vertex_in_childs(const Hex &f) const {
+void
+HexLawAndOrder::fill_corner_vertex_in_childs(const Hex& f) const
+{
   hexs[f.child(0)].vertex(0) = f.vertex(0);
   hexs[f.child(1)].vertex(1) = f.vertex(1);
   hexs[f.child(2)].vertex(2) = f.vertex(2);
@@ -548,8 +586,9 @@ void HexLawAndOrder::fill_corner_vertex_in_childs(const Hex &f) const {
 
 /*----------------------------------------------------------------------*/
 
-void HexLawAndOrder::fill_middle_vertex_in_childs(const Hex &f,
-                                                  int number) const {
+void
+HexLawAndOrder::fill_middle_vertex_in_childs(const Hex& f, int number) const
+{
   hexs[f.child(0)].vertex(6) = number;
   hexs[f.child(1)].vertex(7) = number;
   hexs[f.child(2)].vertex(4) = number;
@@ -562,8 +601,11 @@ void HexLawAndOrder::fill_middle_vertex_in_childs(const Hex &f,
 
 /*----------------------------------------------------------------------*/
 
-void HexLawAndOrder::fill_face_vertex_in_childs(const Hex &f, int face,
-                                                int number) const {
+void
+HexLawAndOrder::fill_face_vertex_in_childs(const Hex& f,
+                                           int face,
+                                           int number) const
+{
   int c0 = childs_face[face][0];
   int c1 = childs_face[face][1];
   int c2 = childs_face[face][2];
@@ -577,8 +619,11 @@ void HexLawAndOrder::fill_face_vertex_in_childs(const Hex &f, int face,
 
 /*----------------------------------------------------------------------*/
 
-void HexLawAndOrder::fill_edge_vertex_in_childs(const Hex &f, int edge,
-                                                int number) const {
+void
+HexLawAndOrder::fill_edge_vertex_in_childs(const Hex& f,
+                                           int edge,
+                                           int number) const
+{
   int c0 = childs_edge[edge][0];
   int c1 = childs_edge[edge][1];
 
@@ -588,16 +633,20 @@ void HexLawAndOrder::fill_edge_vertex_in_childs(const Hex &f, int edge,
 
 /*-------- for regular one ---------------------------------------------*/
 
-void HexLawAndOrder::childs_of_global_face(FaceVector &child, const Hex &f,
-                                           const FaceVector &globalface) const {
+void
+HexLawAndOrder::childs_of_global_face(FaceVector& child,
+                                      const Hex& f,
+                                      const FaceVector& globalface) const
+{
   int localface = local_face(f, globalface);
   childs_of_face(child, f, localface);
 }
 
 /*---------------------------------------------------------------------*/
 
-int HexLawAndOrder::TestFaceOfOneChild(const Hex &H,
-                                       const FaceVector &F) const {
+int
+HexLawAndOrder::TestFaceOfOneChild(const Hex& H, const FaceVector& F) const
+{
   int lf = local_face(H, F);
 
   int childhex = 0;
@@ -610,8 +659,9 @@ int HexLawAndOrder::TestFaceOfOneChild(const Hex &H,
 
 /*---------------------------------------------------------------------*/
 
-int HexLawAndOrder::local_face(const Hex &f,
-                               const FaceVector &globalface) const {
+int
+HexLawAndOrder::local_face(const Hex& f, const FaceVector& globalface) const
+{
   // gives the local face number of a face
 
   EdgeArray<4> li(globalface); // wird gleich wieder ueberschrieben !!
@@ -627,8 +677,9 @@ int HexLawAndOrder::local_face(const Hex &f,
 
 /*---------------------------------------------------------------------*/
 
-void HexLawAndOrder::childs_of_face(FaceVector &child, const Hex &f,
-                                    int face) const {
+void
+HexLawAndOrder::childs_of_face(FaceVector& child, const Hex& f, int face) const
+{
   child[0] = f.child(childs_face[face][0]);
   child[1] = f.child(childs_face[face][1]);
   child[2] = f.child(childs_face[face][2]);
@@ -637,7 +688,9 @@ void HexLawAndOrder::childs_of_face(FaceVector &child, const Hex &f,
 
 /*----------------------------------------------------------------------*/
 
-int HexLawAndOrder::face_vertex(const Hex &f, int face) const {
+int
+HexLawAndOrder::face_vertex(const Hex& f, int face) const
+{
   if (!f.sleep())
     return -1;
 
@@ -651,8 +704,11 @@ int HexLawAndOrder::face_vertex(const Hex &f, int face) const {
 /*----------------------------------------------------------------------*/
 
 // fuer boundary newton
-void HexLawAndOrder::LoadEdgeVerticesOfFace(const Hex &f, int face,
-                                            FaceVector &dst) const {
+void
+HexLawAndOrder::LoadEdgeVerticesOfFace(const Hex& f,
+                                       int face,
+                                       FaceVector& dst) const
+{
   for (int i = 0; i < 4; i++) {
     int edge = edgeofface[face][i];
     dst[i] = edge_vertex(f, edge);
@@ -662,8 +718,9 @@ void HexLawAndOrder::LoadEdgeVerticesOfFace(const Hex &f, int face,
 /*----------------------------------------------------------------------*/
 
 // fuer boundary newton
-void HexLawAndOrder::LoadFaceVertices(const Hex &f,
-                                      std::array<int, 6> &dst) const {
+void
+HexLawAndOrder::LoadFaceVertices(const Hex& f, std::array<int, 6>& dst) const
+{
   for (int i = 0; i < 6; i++) {
     dst[i] = face_vertex(f, i);
   }
@@ -671,7 +728,9 @@ void HexLawAndOrder::LoadFaceVertices(const Hex &f,
 
 /*----------------------------------------------------------------------*/
 
-int HexLawAndOrder::edge_vertex(const Hex &f, int edge) const {
+int
+HexLawAndOrder::edge_vertex(const Hex& f, int edge) const
+{
   int lic = childs_edge[edge][0]; // local edgenumber of corresponding child
   int liv = vice[edge][0];
   int gic = f.child(lic);
@@ -681,13 +740,17 @@ int HexLawAndOrder::edge_vertex(const Hex &f, int edge) const {
 
 /*----------------------------------------------------------------------*/
 
-int HexLawAndOrder::middle_vertex(const Hex &f) const {
+int
+HexLawAndOrder::middle_vertex(const Hex& f) const
+{
   return hexs[f.child(0)].vertex(cell_midpoint[0]);
 }
 
 /*----------------------------------------------------------------------*/
 
-void HexLawAndOrder::load_face(FaceVector &v, const Hex &f, int face) const {
+void
+HexLawAndOrder::load_face(FaceVector& v, const Hex& f, int face) const
+{
   for (int i = 0; i < 4; i++) {
     v[i] = f.vertex(lvf[face][i]);
   }
@@ -695,17 +758,23 @@ void HexLawAndOrder::load_face(FaceVector &v, const Hex &f, int face) const {
 
 /*----------------------------------------------------------------------*/
 
-void HexLawAndOrder::GetGlobalOuterFaceOfChild(FaceVector &face, const Hex &f,
-                                               int c, int e) const {
+void
+HexLawAndOrder::GetGlobalOuterFaceOfChild(FaceVector& face,
+                                          const Hex& f,
+                                          int c,
+                                          int e) const
+{
   int childface = 0;
-  const Hex &child = hexs[f.child(c)];
+  const Hex& child = hexs[f.child(c)];
   load_face(face, child, childface);
 }
 
 /*----------------------------------------------------------------------*/
 
-void HexLawAndOrder::globalfacechildren_of_father(vector<FaceVector> &faces,
-                                                  const Hex &f) const {
+void
+HexLawAndOrder::globalfacechildren_of_father(vector<FaceVector>& faces,
+                                             const Hex& f) const
+{
   size_t n = 24;
   faces.resize(n);
 
@@ -719,7 +788,9 @@ void HexLawAndOrder::globalfacechildren_of_father(vector<FaceVector> &faces,
 
 /*---------------------------------------------------*/
 
-std::array<int, 9> HexLawAndOrder::PatchVerticesOfFace(int h, int face) const {
+std::array<int, 9>
+HexLawAndOrder::PatchVerticesOfFace(int h, int face) const
+{
   std::array<int, 4> f;
   GetFace(f, h, face);
   //  globalvertices_of_face(q,f,face);
@@ -730,7 +801,7 @@ std::array<int, 9> HexLawAndOrder::PatchVerticesOfFace(int h, int face) const {
   F[6] = f[0];
   F[8] = f[1];
 
-  const Hex &q = hexs[h];
+  const Hex& q = hexs[h];
   F[4] = face_vertex(q, face);
 
   F[1] = EdgeVertexOfFace(q, f, 2);
@@ -743,8 +814,9 @@ std::array<int, 9> HexLawAndOrder::PatchVerticesOfFace(int h, int face) const {
 
 /*---------------------------------------------------*/
 
-std::array<int, 9> HexLawAndOrder::GiveOrdering(const std::array<int, 9> &F,
-                                                const Hex &h) const {
+std::array<int, 9>
+HexLawAndOrder::GiveOrdering(const std::array<int, 9>& F, const Hex& h) const
+{
   int found = -1;
   std::array<int, 4> kk;
   kk[0] = 0;

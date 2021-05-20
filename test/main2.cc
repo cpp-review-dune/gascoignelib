@@ -38,10 +38,13 @@ using namespace std;
 using namespace Gascoigne;
 
 /* ----------------------------------------- */
-class LocalEquation : public NavierStokesGls2d {
+class LocalEquation : public NavierStokesGls2d
+{
 public:
   string GetName() const { return "Local"; }
-  LocalEquation() : NavierStokesGls2d() {
+  LocalEquation()
+    : NavierStokesGls2d()
+  {
     _penalty = 0.;
     _visc = 0.001;
     ST.delta0 = 1.;
@@ -53,12 +56,17 @@ public:
 };
 
 /* ----------------------------------------- */
-class LocalBoundaryRightHandSide : public BoundaryRightHandSide {
+class LocalBoundaryRightHandSide : public BoundaryRightHandSide
+{
 public:
   string GetName() const { return "Local"; }
   int GetNcomp() const { return 3; }
-  void operator()(VectorIterator b, const TestFunction &N, const Vertex2d &v,
-                  const Vertex2d &n, int col) const {
+  void operator()(VectorIterator b,
+                  const TestFunction& N,
+                  const Vertex2d& v,
+                  const Vertex2d& n,
+                  int col) const
+  {
 
     // b.zero();
     // assert(b.size()==3);
@@ -77,13 +85,15 @@ public:
 };
 
 /* ----------------------------------------- */
-class LocalSolver : public StdSolver {
-  DiscretizationInterface *NewDiscretization(int dimension,
-                                             const string &discname) {
+class LocalSolver : public StdSolver
+{
+  DiscretizationInterface* NewDiscretization(int dimension,
+                                             const string& discname)
+  {
     return new Q1Gls2d;
   }
-  void BasicInit(int level, const ParamFile *paramfile,
-                 const MeshInterface *MP) {
+  void BasicInit(int level, const ParamFile* paramfile, const MeshInterface* MP)
+  {
     DoubleVector d(3);
     d[0] = 0.01;
     d[1] = 0.1;
@@ -94,14 +104,18 @@ class LocalSolver : public StdSolver {
 };
 
 /* ----------------------------------------- */
-class LocalMultiLevelSolver : public StdMultiLevelSolver {
-  SolverInterface *NewSolver(int solverlevel) { return new LocalSolver; }
+class LocalMultiLevelSolver : public StdMultiLevelSolver
+{
+  SolverInterface* NewSolver(int solverlevel) { return new LocalSolver; }
 };
 /* ----------------------------------------- */
-class LocalLoop : public StdLoop {
+class LocalLoop : public StdLoop
+{
 public:
-  void BasicInit(const ParamFile *paramfile, const ProblemContainer *PC,
-                 const FunctionalContainer *FC = 0) {
+  void BasicInit(const ParamFile* paramfile,
+                 const ProblemContainer* PC,
+                 const FunctionalContainer* FC = 0)
+  {
     GetMeshAgentPointer() = new MeshAgent;
 
     int dim = 2;
@@ -115,9 +129,11 @@ public:
 };
 
 /*---------------------------------------------------*/
-class ProblemDescriptor : public ProblemDescriptorBase {
+class ProblemDescriptor : public ProblemDescriptorBase
+{
 public:
-  void BasicInit(const ParamFile *pf) {
+  void BasicInit(const ParamFile* pf)
+  {
     GetEquationPointer() = new LocalEquation;
     GetDirichletDataPointer() = new ZeroDirichletData();
     GetBoundaryRightHandSidePointer() = new LocalBoundaryRightHandSide();
@@ -136,9 +152,14 @@ public:
 };
 
 /*---------------------------------------------------*/
-class LocalDomainFunctional : public virtual AllDomainFunctional {
+class LocalDomainFunctional : public virtual AllDomainFunctional
+{
 public:
-  LocalDomainFunctional() : AllDomainFunctional(1, 0) { ExactValue() = 11.25; }
+  LocalDomainFunctional()
+    : AllDomainFunctional(1, 0)
+  {
+    ExactValue() = 11.25;
+  }
   ~LocalDomainFunctional() {}
 
   string GetName() const { return "LocalDomain"; }
@@ -146,8 +167,10 @@ public:
 
 /*---------------------------------------------------*/
 
-int main(int argc, char **argv) {
-  const ParamFile *paramfile(NULL);
+int
+main(int argc, char** argv)
+{
+  const ParamFile* paramfile(NULL);
 
   if (argc == 2) {
     paramfile = new ParamFile(argv[1]);

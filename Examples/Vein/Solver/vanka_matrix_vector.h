@@ -22,9 +22,11 @@
 
 namespace Gascoigne {
 
-class VertexCompare {
+class VertexCompare
+{
 public:
-  bool operator()(const Vertex3d &v1, const Vertex3d &v2) const {
+  bool operator()(const Vertex3d& v1, const Vertex3d& v2) const
+  {
     /*if (fabs(v1.y()-v2.y())<1.e-10)
     {
       return (v1.x()+1.e-10<v2.x());
@@ -41,9 +43,11 @@ public:
   }
 };
 
-class VertexCompare_y {
+class VertexCompare_y
+{
 public:
-  bool operator()(const Vertex3d &v1, const Vertex3d &v2) const {
+  bool operator()(const Vertex3d& v1, const Vertex3d& v2) const
+  {
     if (fabs(v1.y() - v2.y()) < 1.e-10)
       return (v1.x() + 1.e-10 < v2.x());
     else
@@ -51,9 +55,11 @@ public:
   }
 };
 
-class VertexCompare_x {
+class VertexCompare_x
+{
 public:
-  bool operator()(const Vertex3d &v1, const Vertex3d &v2) const {
+  bool operator()(const Vertex3d& v1, const Vertex3d& v2) const
+  {
     // Es kann bei passieren das
     if (fabs(v1.x() - v2.x()) < 1.e-10)
       return (v1.y() + 1.e-10 < v2.y());
@@ -62,8 +68,9 @@ public:
   }
 };
 
-template <int NCOMP>
-class Vanka_Matrix_Vector : public virtual Vanka_Matrix_Vector_base {
+template<int NCOMP>
+class Vanka_Matrix_Vector : public virtual Vanka_Matrix_Vector_base
+{
 private:
   // std::vector<Eigen::MatrixXd>	Inverse_Matrix_Vector;
   std::vector<Eigen::FullPivLU<Eigen::MatrixXd>> Inverse_LU_Vector;
@@ -73,15 +80,16 @@ private:
   std::vector<HASHMAP<int, int>> INP;
 
 public:
-  void build_patches(const GascoigneMesh *M) {
+  void build_patches(const GascoigneMesh* M)
+  {
     assert(M);
-    const GascoigneMesh3d *M3 = dynamic_cast<const GascoigneMesh3d *>(M);
+    const GascoigneMesh3d* M3 = dynamic_cast<const GascoigneMesh3d*>(M);
     assert(M3);
 
     patchindices.clear();
 
     std::map<int, std::map<Vertex3d, int, VertexCompare>>
-        X; // VertexHash, VertexEqual> X;
+      X; // VertexHash, VertexEqual> X;
     std::map<int, std::vector<int>> Z;
 
     // Zaehlen wieviele Patches in Urvaterblock
@@ -98,7 +106,7 @@ public:
     // Sortieren der Patche jeweils entsprechend dem lokalen Koordinatensystem
     // des Urvaters
     for (int p = 0; p < M3->npatches(); ++p) {
-      const IntVector &iop = *(M3->IndicesOfPatch(p));
+      const IntVector& iop = *(M3->IndicesOfPatch(p));
       // Umrechnung der Koordinaten des Patchmittelpunktes in lokales
       // Koordinatensystem
       Eigen::MatrixXd BasisM(3, 3);
@@ -201,8 +209,8 @@ public:
 
         std::set<int> tmp_set;
         for (int ii = 0; ii < combine_n_patches; ii++) {
-          const IntVector &iop = *(
-              M3->IndicesOfPatch(iter_Box.second[i * combine_n_patches + ii]));
+          const IntVector& iop =
+            *(M3->IndicesOfPatch(iter_Box.second[i * combine_n_patches + ii]));
           tmp_set.insert(iop.begin(), iop.end());
         }
         std::vector<int> tmp_vec(tmp_set.begin(), tmp_set.end());
@@ -242,15 +250,16 @@ public:
       */
   }
 
-  void ReInit(const MatrixInterface *A_Matrix) {
+  void ReInit(const MatrixInterface* A_Matrix)
+  {
 
-    const SparseBlockMatrix<FMatrixBlock<NCOMP>> *A =
-        dynamic_cast<const SparseBlockMatrix<FMatrixBlock<NCOMP>> *>(A_Matrix);
+    const SparseBlockMatrix<FMatrixBlock<NCOMP>>* A =
+      dynamic_cast<const SparseBlockMatrix<FMatrixBlock<NCOMP>>*>(A_Matrix);
     assert(A);
 
     assert(A);
-    const ColumnDiagStencil *SA =
-        dynamic_cast<const ColumnDiagStencil *>(A->GetStencil());
+    const ColumnDiagStencil* SA =
+      dynamic_cast<const ColumnDiagStencil*>(A->GetStencil());
     assert(SA);
 
     int npatch = patchindices.size();
@@ -278,14 +287,14 @@ public:
           if (INP[p].find(col) == INP[p].end())
             continue;
           int c = INP[p][col];
-          const FMatrixBlock<NCOMP> &B = (*A->mat(pos));
+          const FMatrixBlock<NCOMP>& B = (*A->mat(pos));
           for (int cr = 0; cr < NCOMP; ++cr)
             for (int cc = 0; cc < NCOMP; ++cc)
               Matrix_on_Block(NCOMP * r + cr, NCOMP * c + cc) = B(cr, cc);
         }
       }
       Inverse_LU_Vector.push_back(
-          Eigen::FullPivLU<Eigen::MatrixXd>(Matrix_on_Block));
+        Eigen::FullPivLU<Eigen::MatrixXd>(Matrix_on_Block));
 
       //  				 Inverse_Matrix_Vector[p]=Inverse_Matrix_Vector[p].inverse();
       //             Inverse_LU_Vector[p]=Inverse_Matrix_Vector[p].inverse();
@@ -298,7 +307,8 @@ public:
   //{
   //	return Inverse_Matrix_Vector[n];
   //}
-  Eigen::FullPivLU<Eigen::MatrixXd> &GetLU(int n) {
+  Eigen::FullPivLU<Eigen::MatrixXd>& GetLU(int n)
+  {
     return Inverse_LU_Vector[n];
   }
   // void delete_Matrix_Vector()
@@ -312,22 +322,26 @@ public:
 
   int patchindices_size() { return patchindices.size(); }
 
-  const std::vector<int> &Getpatchindices(int p) { return patchindices[p]; }
+  const std::vector<int>& Getpatchindices(int p) { return patchindices[p]; }
 
-  const HASHMAP<int, int> &GetINP(int p) { return INP[p]; }
+  const HASHMAP<int, int>& GetINP(int p) { return INP[p]; }
 
-  const std::vector<int> &Get_Vector_Columns(int p) {
+  const std::vector<int>& Get_Vector_Columns(int p)
+  {
     return Vector_Columns_Patch[p];
   }
 
-  std::vector<int>::iterator Get_Vector_Columns_begin(int n) {
+  std::vector<int>::iterator Get_Vector_Columns_begin(int n)
+  {
     return Vector_Columns_Patch[n].begin();
   }
 
-  std::vector<int>::iterator Get_Vector_Columns_end(int n) {
+  std::vector<int>::iterator Get_Vector_Columns_end(int n)
+  {
     return Vector_Columns_Patch[n].end();
   }
-  void clear() {
+  void clear()
+  {
     Vector_Columns_Patch.clear();
     Inverse_LU_Vector.clear();
     patchindices.clear();

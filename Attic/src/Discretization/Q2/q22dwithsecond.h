@@ -31,14 +31,16 @@ namespace Gascoigne {
 
 /**********************************************************/
 
-class Q22dWithSecond : public virtual Q22d {
+class Q22dWithSecond : public virtual Q22d
+{
 protected:
 public:
   std::string GetName() const { return "Q22dWithSecond"; }
 
-  void BasicInit(const ParamFile *paramfile);
+  void BasicInit(const ParamFile* paramfile);
 
-  double EstimateSecond(DoubleVector &eta, const GlobalVector &u,
+  double EstimateSecond(DoubleVector& eta,
+                        const GlobalVector& u,
                         double d = 1.) const;
 };
 

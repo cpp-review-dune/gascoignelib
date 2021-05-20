@@ -29,9 +29,12 @@ using namespace std;
 /**********************************************************/
 
 namespace Gascoigne {
-template <int DIM>
-void EdgeInfo<DIM>::BasicInit(const Edge *edge, int ncomp,
-                              const std::array<int, 2 * DIM - 2> &vertex) {
+template<int DIM>
+void
+EdgeInfo<DIM>::BasicInit(const Edge* edge,
+                         int ncomp,
+                         const std::array<int, 2 * DIM - 2>& vertex)
+{
   _count = 0;
   _edge = edge;
   _vertex = vertex;
@@ -41,7 +44,10 @@ void EdgeInfo<DIM>::BasicInit(const Edge *edge, int ncomp,
 
 /**********************************************************/
 
-template <int DIM> void EdgeInfo<DIM>::AddNodes(const LocalVector &u) {
+template<int DIM>
+void
+EdgeInfo<DIM>::AddNodes(const LocalVector& u)
+{
   for (int i = 0; i < 2 * DIM - 2; i++) {
     for (int c = 0; c < _u.ncomp(); c++) {
       _u(i, c) += u(i, c);
@@ -52,8 +58,10 @@ template <int DIM> void EdgeInfo<DIM>::AddNodes(const LocalVector &u) {
 
 /**********************************************************/
 
-template <int DIM>
-std::array<double, 2 * DIM - 2> EdgeInfo<DIM>::GetNorm() const {
+template<int DIM>
+std::array<double, 2 * DIM - 2>
+EdgeInfo<DIM>::GetNorm() const
+{
   std::array<double, 2 * DIM - 2> norm;
   norm.fill(0.);
 
@@ -67,7 +75,10 @@ std::array<double, 2 * DIM - 2> EdgeInfo<DIM>::GetNorm() const {
 
 /**********************************************************/
 
-template <int DIM> void EdgeInfo<DIM>::ShowStatistics() const {
+template<int DIM>
+void
+EdgeInfo<DIM>::ShowStatistics() const
+{
   cout << _count << ": " << _vertex << " = " << _u << endl;
 }
 

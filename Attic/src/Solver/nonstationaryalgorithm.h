@@ -37,27 +37,30 @@ namespace Gascoigne {
 ///
 //////////////////////////////////////////////
 
-class NonstationaryAlgorithm : public MultiLevelAlgorithm {
+class NonstationaryAlgorithm : public MultiLevelAlgorithm
+{
 protected:
   double dt, time, theta;
 
-  void InitSolution(const std::string &initial,
-                    Gascoigne::VectorInterface &u) const;
+  void InitSolution(const std::string& initial,
+                    Gascoigne::VectorInterface& u) const;
   void TimeInfoBroadcast();
 
 public:
-  NonstationaryAlgorithm() : MultiLevelAlgorithm() {}
+  NonstationaryAlgorithm()
+    : MultiLevelAlgorithm()
+  {}
   virtual ~NonstationaryAlgorithm() {}
 
-  virtual void BasicInit(const Gascoigne::ParamFile *paramfile,
-                         MultiLevelSolver *MLS,
-                         const Gascoigne::NumericInterface *NI,
-                         const Gascoigne::ProblemContainer *PC);
+  virtual void BasicInit(const Gascoigne::ParamFile* paramfile,
+                         MultiLevelSolver* MLS,
+                         const Gascoigne::NumericInterface* NI,
+                         const Gascoigne::ProblemContainer* PC);
 
-  void ImplicitEuler(const std::string &);
-  void CrankNicholson(const std::string &);
-  void ThetaScheme(const std::string &);
-  void FractionalStepThetaScheme(const std::string &);
+  void ImplicitEuler(const std::string&);
+  void CrankNicholson(const std::string&);
+  void ThetaScheme(const std::string&);
+  void FractionalStepThetaScheme(const std::string&);
 };
 } // namespace Gascoigne
 

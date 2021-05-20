@@ -31,16 +31,17 @@
 /*-----------------------------------------------------------*/
 
 namespace Gascoigne {
-class NCAdaptor {
+class NCAdaptor
+{
 protected:
   int _n;
   double _p;
   double etasum;
-  const DoubleVector &eta;
+  const DoubleVector& eta;
 
 public:
-  NCAdaptor(const ParamFile &paramfile, const DoubleVector &eta);
-  void refine(IntVector &ref, IntVector &coarse) const;
+  NCAdaptor(const ParamFile& paramfile, const DoubleVector& eta);
+  void refine(IntVector& ref, IntVector& coarse) const;
 };
 } // namespace Gascoigne
 

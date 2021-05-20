@@ -15,7 +15,7 @@
 /*-----------------------------------------*/
 
 namespace Gascoigne {
-template <int DIM>
+template<int DIM>
 class Solid : public Equation // , public BoundaryEquation
 {
 
@@ -37,7 +37,8 @@ protected:
 
   // mutable FemFunction *OLD, *DEF, *DEFOLD;
 
-  void SetFemData(FemData &q) const {
+  void SetFemData(FemData& q) const
+  {
     /*	assert(q.find("OLD")!=q.end());
             OLD = &q["OLD"];
 
@@ -52,22 +53,26 @@ protected:
 public:
   ~Solid() {}
   Solid() { abort(); }
-  Solid(const ParamFile *pf);
+  Solid(const ParamFile* pf);
 
   std::string GetName() const { return "Solid"; }
 
   int GetNcomp() const { return DIM; }
 
-  void point(double h, const FemFunction &U, const Vertex<DIM> &v) const;
-  void point_M(int j, const FemFunction &U, const TestFunction &M) const;
+  void point(double h, const FemFunction& U, const Vertex<DIM>& v) const;
+  void point_M(int j, const FemFunction& U, const TestFunction& M) const;
 
-  void Form(VectorIterator b, const FemFunction &U,
-            const TestFunction &N) const;
+  void Form(VectorIterator b,
+            const FemFunction& U,
+            const TestFunction& N) const;
 
-  void Matrix(EntryMatrix &A, const FemFunction &U, const TestFunction &M,
-              const TestFunction &N) const;
-  void MatrixBlock(EntryMatrix &A, const FemFunction &U,
-                   const FemFunction &NNN) const;
+  void Matrix(EntryMatrix& A,
+              const FemFunction& U,
+              const TestFunction& M,
+              const TestFunction& N) const;
+  void MatrixBlock(EntryMatrix& A,
+                   const FemFunction& U,
+                   const FemFunction& NNN) const;
 };
 
 } // namespace Gascoigne

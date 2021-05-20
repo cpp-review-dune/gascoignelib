@@ -27,7 +27,8 @@
 #include "gascoigne.h"
 
 namespace Gascoigne {
-void regular_update(IntSet &, IntSet &, IntVector &, IntVector &);
+void
+regular_update(IntSet&, IntSet&, IntVector&, IntVector&);
 }
 
 #endif

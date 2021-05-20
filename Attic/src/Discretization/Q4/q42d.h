@@ -30,10 +30,11 @@ namespace Gascoigne {
 
 /**********************************************************/
 
-class Q42d : public Q4 {
+class Q42d : public Q4
+{
 protected:
-  int GetPatchNumber(const Vertex2d &p0, Vertex2d &p) const;
-  void VertexTransformation(const Vertex2d &p0, Vertex2d &p, int iq) const;
+  int GetPatchNumber(const Vertex2d& p0, Vertex2d& p) const;
+  void VertexTransformation(const Vertex2d& p0, Vertex2d& p, int iq) const;
 
 public:
   Q42d();
@@ -41,7 +42,7 @@ public:
 
   std::string GetName() const { return "Q42d"; }
 
-  void BasicInit(const ParamFile *paramfile);
+  void BasicInit(const ParamFile* paramfile);
 };
 
 /**********************************************************/

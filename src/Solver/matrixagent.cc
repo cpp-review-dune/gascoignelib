@@ -31,27 +31,32 @@ MatrixAgent::MatrixAgent() {}
 
 /*-------------------------------------------------*/
 
-MatrixAgent::~MatrixAgent() {
+MatrixAgent::~MatrixAgent()
+{
   for (auto p = begin(); p != end(); p++) {
     if (p->second) {
       delete p->second;
       p->second = NULL;
     }
   }
-  std::map<Matrix, MatrixInterface *>::clear();
+  std::map<Matrix, MatrixInterface*>::clear();
 }
 
 /*-------------------------------------------------*/
 
-void MatrixAgent::Register(const Matrix &mg) {
+void
+MatrixAgent::Register(const Matrix& mg)
+{
   auto p = find(mg);
   if (p == end())
-    insert(std::make_pair(mg, static_cast<MatrixInterface *>(NULL)));
+    insert(std::make_pair(mg, static_cast<MatrixInterface*>(NULL)));
 }
 
 /*-------------------------------------------------*/
 
-void MatrixAgent::Delete(Matrix &mg) {
+void
+MatrixAgent::Delete(Matrix& mg)
+{
   auto p = find(mg);
   if (p != end()) {
     delete p->second;
@@ -61,7 +66,9 @@ void MatrixAgent::Delete(Matrix &mg) {
 
 /*-------------------------------------------------*/
 
-MatrixInterface &MatrixAgent::operator()(const Matrix &g) {
+MatrixInterface&
+MatrixAgent::operator()(const Matrix& g)
+{
   auto p = find(g);
   if (p == end()) {
     std::cerr << __FILE__ << ":" << __LINE__;
@@ -71,7 +78,7 @@ MatrixInterface &MatrixAgent::operator()(const Matrix &g) {
     std::cerr << " " << *this << std::endl;
     abort();
   }
-  MatrixInterface *vp = p->second;
+  MatrixInterface* vp = p->second;
   if (vp == NULL) {
     std::cerr << "MatrixAgent  MatrixInterface* NULL\t" << p->first;
     std::cerr << "\n" << *this << std::endl;
@@ -80,7 +87,9 @@ MatrixInterface &MatrixAgent::operator()(const Matrix &g) {
   return *vp;
 }
 
-const MatrixInterface &MatrixAgent::operator()(const Matrix &g) const {
+const MatrixInterface&
+MatrixAgent::operator()(const Matrix& g) const
+{
   const auto p = find(g);
   if (p == end()) {
     std::cerr << __FILE__ << ":" << __LINE__;
@@ -90,7 +99,7 @@ const MatrixInterface &MatrixAgent::operator()(const Matrix &g) const {
     std::cerr << " " << *this << std::endl;
     abort();
   }
-  MatrixInterface *vp = p->second;
+  MatrixInterface* vp = p->second;
   if (vp == NULL) {
     std::cerr << "MatrixAgent  MatrixInterface* NULL\t" << p->first;
     std::cerr << "\n" << *this << std::endl;

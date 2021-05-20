@@ -28,7 +28,9 @@ using namespace std;
 /*-------------------------------------------------------------*/
 
 namespace Gascoigne {
-void TwinStencil::diagonalfirst() {
+void
+TwinStencil::diagonalfirst()
+{
   // has to be called if later on an ilu factorization is performed
 
   for (int i = 0; i < n(); i++) {
@@ -52,7 +54,9 @@ void TwinStencil::diagonalfirst() {
 
 /*-------------------------------------------------------------*/
 
-int TwinStencil::half(int i) const {
+int
+TwinStencil::half(int i) const
+{
   for (int pos = sstart[i]; pos < sstart[i + 1]; pos++) {
     if (scol[pos] > i)
       return pos;
@@ -62,11 +66,17 @@ int TwinStencil::half(int i) const {
 
 /*-------------------------------------------------------------*/
 
-void TwinStencil::memory(int n, int nt) { ColumnStencil::memory(n, nt); }
+void
+TwinStencil::memory(int n, int nt)
+{
+  ColumnStencil::memory(n, nt);
+}
 
 /*-------------------------------------------------------------*/
 
-void TwinStencil::memory(const SparseStructureInterface *SA) {
+void
+TwinStencil::memory(const SparseStructureInterface* SA)
+{
   ColumnStencil::memory(SA);
   diagonalfirst();
 }

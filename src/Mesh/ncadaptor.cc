@@ -32,8 +32,9 @@ using namespace std;
 /*-----------------------------------------*/
 
 namespace Gascoigne {
-NCAdaptor::NCAdaptor(const ParamFile &paramfile, const DoubleVector &_eta)
-    : eta(_eta) {
+NCAdaptor::NCAdaptor(const ParamFile& paramfile, const DoubleVector& _eta)
+  : eta(_eta)
+{
   DataFormatHandler DH;
 
 #ifdef __OLDCOMPILER__
@@ -50,7 +51,9 @@ NCAdaptor::NCAdaptor(const ParamFile &paramfile, const DoubleVector &_eta)
 
 /*-----------------------------------------*/
 
-void NCAdaptor::refine(IntVector &ref, IntVector &coars) const {
+void
+NCAdaptor::refine(IntVector& ref, IntVector& coars) const
+{
   int n = eta.size();
   IntVector C(n);
   iota(C.begin(), C.end(), 0);

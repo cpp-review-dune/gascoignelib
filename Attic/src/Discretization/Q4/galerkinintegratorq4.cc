@@ -27,15 +27,22 @@ namespace Gascoigne {
 
 /* ----------------------------------------- */
 
-template <int DIM> GalerkinIntegratorQ4<DIM>::GalerkinIntegratorQ4() {}
+template<int DIM>
+GalerkinIntegratorQ4<DIM>::GalerkinIntegratorQ4()
+{}
 
 /* ----------------------------------------- */
 
-template <int DIM> GalerkinIntegratorQ4<DIM>::~GalerkinIntegratorQ4<DIM>() {}
+template<int DIM>
+GalerkinIntegratorQ4<DIM>::~GalerkinIntegratorQ4<DIM>()
+{}
 
 /* ----------------------------------------- */
 
-template <int DIM> void GalerkinIntegratorQ4<DIM>::BasicInit() {
+template<int DIM>
+void
+GalerkinIntegratorQ4<DIM>::BasicInit()
+{
   if (DIM == 2) {
     if (!GalerkinIntegrator<DIM>::FormFormulaPointer())
       GalerkinIntegrator<DIM>::FormFormulaPointer() = new QuadGauss16;

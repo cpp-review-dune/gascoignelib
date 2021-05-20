@@ -23,9 +23,13 @@ template class CGDiscQ22d;
 template class CGDiscQ13d;
 template class CGDiscQ23d;
 
-template class FiniteElement<2, 1, Transformation2d<BaseQ12dPatch>,
+template class FiniteElement<2,
+                             1,
+                             Transformation2d<BaseQ12dPatch>,
                              BaseQ12dPatch>;
-template class FiniteElement<3, 2, Transformation3d<BaseQ13dPatch>,
+template class FiniteElement<3,
+                             2,
+                             Transformation3d<BaseQ13dPatch>,
                              BaseQ13dPatch>;
 
 template class FiniteElement<2, 1, Transformation2d<BaseQ22d>, BaseQ22d>;

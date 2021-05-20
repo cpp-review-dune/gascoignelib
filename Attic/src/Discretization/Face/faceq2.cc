@@ -35,22 +35,25 @@ namespace Gascoigne {
 
 //////////////////////////////////////////////////
 
-template <int DIM> void FaceQ2<DIM>::BasicInit(const ParamFile *pf) {
+template<int DIM>
+void
+FaceQ2<DIM>::BasicInit(const ParamFile* pf)
+{
   if (!GetFem1Pointer()) {
     if (DIM == 2)
       GetFem1Pointer() =
-          new FiniteElement<2, 1, Transformation2d<BaseQ22d>, BaseQ22d>;
+        new FiniteElement<2, 1, Transformation2d<BaseQ22d>, BaseQ22d>;
     if (DIM == 3)
       GetFem1Pointer() =
-          new FiniteElement<3, 2, Transformation3d<BaseQ23d>, BaseQ23d>;
+        new FiniteElement<3, 2, Transformation3d<BaseQ23d>, BaseQ23d>;
   }
   if (!GetFem2Pointer()) {
     if (DIM == 2)
       GetFem2Pointer() =
-          new FiniteElement<2, 1, Transformation2d<BaseQ22d>, BaseQ22d>;
+        new FiniteElement<2, 1, Transformation2d<BaseQ22d>, BaseQ22d>;
     if (DIM == 3)
       GetFem2Pointer() =
-          new FiniteElement<3, 2, Transformation3d<BaseQ23d>, BaseQ23d>;
+        new FiniteElement<3, 2, Transformation3d<BaseQ23d>, BaseQ23d>;
   }
 
   if (!GetFaceIntegratorPointer())
@@ -59,7 +62,10 @@ template <int DIM> void FaceQ2<DIM>::BasicInit(const ParamFile *pf) {
 
 //////////////////////////////////////////////////
 
-template <int DIM> void FaceQ2<DIM>::ReInit(const GascoigneMesh *M) {
+template<int DIM>
+void
+FaceQ2<DIM>::ReInit(const GascoigneMesh* M)
+{
   // build face/edge-structur
   __MP = M;
   assert(__MP);
@@ -68,16 +74,19 @@ template <int DIM> void FaceQ2<DIM>::ReInit(const GascoigneMesh *M) {
 
 //////////////////////////////////////////////////
 
-template <> void FaceQ2<2>::build_faces() {
+template<>
+void
+FaceQ2<2>::build_faces()
+{
   this->__faces.clear();
-  const GascoigneMesh2d *GM = dynamic_cast<const GascoigneMesh2d *>(__MP);
+  const GascoigneMesh2d* GM = dynamic_cast<const GascoigneMesh2d*>(__MP);
   assert(GM->HasPatch());
 
   // list of neighbors (middle-node-of-line-of-patch)
   std::map<int, std::array<int, 2>> fm;
-  int ind[4] = {1, 5, 7, 3};
+  int ind[4] = { 1, 5, 7, 3 };
   for (int c = 0; c < GM->npatches(); ++c) {
-    const nvector<int> &iop = *(GM->IndicesOfPatch(c));
+    const nvector<int>& iop = *(GM->IndicesOfPatch(c));
     for (int i = 0; i < 4; ++i) {
       int f = iop[ind[i]];
       if (fm.find(f) == fm.end()) {
@@ -93,14 +102,15 @@ template <> void FaceQ2<2>::build_faces() {
 
   // create list of internal faces
   for (std::map<int, std::array<int, 2>>::const_iterator it = fm.begin();
-       it != fm.end(); ++it) {
+       it != fm.end();
+       ++it) {
     if (it->second[1] == -1)
       continue;
     assert(it->second[0] != -1);
     int c0 = it->second[0];
     int c1 = it->second[1];
-    const nvector<int> &I0 = *(GM->IndicesOfPatch(c0));
-    const nvector<int> &I1 = *(GM->IndicesOfPatch(c1));
+    const nvector<int>& I0 = *(GM->IndicesOfPatch(c0));
+    const nvector<int>& I1 = *(GM->IndicesOfPatch(c1));
 
     int f = it->first;
 
@@ -153,20 +163,26 @@ template <> void FaceQ2<2>::build_faces() {
   cout << "FaceQ2: build " << this->__faces.size() << " edges" << endl;
 }
 
-template <> void FaceQ2<3>::build_faces() {}
+template<>
+void
+FaceQ2<3>::build_faces()
+{}
 
 //////////////////////////////////////////////////
 
-template <int DIM>
-void FaceQ2<DIM>::TransformationFace(FemInterface::Matrix &T1,
-                                     FemInterface::Matrix &T2, int f) const {
-  const GascoigneMesh *PM = dynamic_cast<const GascoigneMesh *>(GetMesh());
+template<int DIM>
+void
+FaceQ2<DIM>::TransformationFace(FemInterface::Matrix& T1,
+                                FemInterface::Matrix& T2,
+                                int f) const
+{
+  const GascoigneMesh* PM = dynamic_cast<const GascoigneMesh*>(GetMesh());
   assert(PM);
 
   int dim = PM->dimension();
   int ne = PM->nodes_per_patch();
 
-  const nvector<int> &ei = this->GetFace(f);
+  const nvector<int>& ei = this->GetFace(f);
   assert(ei.size() == 15 + 30 * (DIM - 2));
 
   T1.memory(dim, ne);

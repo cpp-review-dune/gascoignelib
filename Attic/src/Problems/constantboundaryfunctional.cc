@@ -37,13 +37,16 @@ ConstantBoundaryFunctional::~ConstantBoundaryFunctional() {}
 /*-----------------------------------------*/
 
 ConstantBoundaryFunctional::ConstantBoundaryFunctional(
-    const vector<string> &args) {
+  const vector<string>& args)
+{
   Construct(args);
 }
 
 /*-----------------------------------------*/
 
-void ConstantBoundaryFunctional::Construct(const vector<string> &args) {
+void
+ConstantBoundaryFunctional::Construct(const vector<string>& args)
+{
   // Baustelle
   AddColor(atoi(args[0].c_str()));
   comp = atoi(args[1].c_str());
@@ -52,8 +55,9 @@ void ConstantBoundaryFunctional::Construct(const vector<string> &args) {
 
 /*-----------------------------------------*/
 
-double ConstantBoundaryFunctional::J(const FemFunction &U,
-                                     const Vertex2d &v) const {
+double
+ConstantBoundaryFunctional::J(const FemFunction& U, const Vertex2d& v) const
+{
   return value * U[comp].m();
 }
 } // namespace Gascoigne

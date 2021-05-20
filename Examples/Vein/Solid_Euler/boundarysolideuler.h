@@ -17,7 +17,9 @@
 /*-----------------------------------------*/
 
 namespace Gascoigne {
-template <int DIM> class BoundarySolidEuler : public BoundaryEquation {
+template<int DIM>
+class BoundarySolidEuler : public BoundaryEquation
+{
 
 protected:
   typedef Eigen::Matrix<double, DIM, DIM> MATRIX;
@@ -32,9 +34,10 @@ protected:
   mutable VECTOR g, V;
   double __nu_f, __rho_f;
   double p_2, p_4;
-  mutable FemFunction *VEL;
+  mutable FemFunction* VEL;
 
-  void SetFemData(FemData &q) const {
+  void SetFemData(FemData& q) const
+  {
     if (q.find("VEL") == q.end()) {
       std::cout << "VEL in solideulerbound not found" << std::endl;
       abort();
@@ -45,17 +48,24 @@ protected:
 public:
   ~BoundarySolidEuler() {}
   BoundarySolidEuler() { abort(); }
-  BoundarySolidEuler(const ParamFile *pf);
+  BoundarySolidEuler(const ParamFile* pf);
 
   std::string GetName() const { return "BoundaryPrestress"; }
 
   int GetNcomp() const { return DIM; }
-  void Form(VectorIterator b, const FemFunction &U, const TestFunction &N,
+  void Form(VectorIterator b,
+            const FemFunction& U,
+            const TestFunction& N,
             int col) const;
-  void Matrix(EntryMatrix &E, const FemFunction &U, const TestFunction &M,
-              const TestFunction &N, int col) const;
-  void pointboundary(double h, const FemFunction &U, const Vertex<DIM> &v,
-                     const Vertex<DIM> &n) const;
+  void Matrix(EntryMatrix& E,
+              const FemFunction& U,
+              const TestFunction& M,
+              const TestFunction& N,
+              int col) const;
+  void pointboundary(double h,
+                     const FemFunction& U,
+                     const Vertex<DIM>& v,
+                     const Vertex<DIM>& n) const;
 };
 
 } // namespace Gascoigne

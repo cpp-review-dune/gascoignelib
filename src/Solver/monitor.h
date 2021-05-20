@@ -37,7 +37,8 @@
 /*******************************************************************/
 
 namespace Gascoigne {
-class Monitor {
+class Monitor
+{
   int prec;
   int m_length[10], m_counter;
   int ps, _newmatrix;
@@ -51,19 +52,20 @@ protected:
   std::string protokoll, aos, bos;
   std::string texfile, numfile;
 
-  void error_io(const std::string &) const;
+  void error_io(const std::string&) const;
   void matrix_info(int) const;
   void print_message() const;
 
-  void PrintAscii(std::ostream &os, const std::string &) const;
-  void PrintAscii(std::ostream &os, int i) const { os << i; }
-  void PrintAscii(std::ostream &os, double d) const {
+  void PrintAscii(std::ostream& os, const std::string&) const;
+  void PrintAscii(std::ostream& os, int i) const { os << i; }
+  void PrintAscii(std::ostream& os, double d) const
+  {
     os.precision(prec);
     os << d;
   }
-  void PrintAscii(std::ostream &os, const IntVector &) const;
-  void PrintAscii(std::ostream &os, const DoubleVector &) const;
-  void PrintHeader(std::ostream &os) const;
+  void PrintAscii(std::ostream& os, const IntVector&) const;
+  void PrintAscii(std::ostream& os, const DoubleVector&) const;
+  void PrintHeader(std::ostream& os) const;
 
 public:
   int control;
@@ -71,38 +73,38 @@ public:
   mutable std::stringstream new_message;
 
   Monitor();
-  Monitor(const ParamFile &pf, int);
+  Monitor(const ParamFile& pf, int);
 
-  void SetAos(const std::string &s) { aos = s; }
-  void SetBos(const std::string &s) { bos = s; }
+  void SetAos(const std::string& s) { aos = s; }
+  void SetBos(const std::string& s) { bos = s; }
 
-  std::string &aim_of_simulation() { return aos; }
+  std::string& aim_of_simulation() { return aos; }
   int set_print_step(int i) { return ps = i; }
 
-  void set_directory(const std::string &dir);
+  void set_directory(const std::string& dir);
 
   void failed_step();
-  void pre_monitor(char *);
+  void pre_monitor(char*);
   void post_monitor();
-  void init(const ParamFile &pf, int);
+  void init(const ParamFile& pf, int);
   void mesh(int, int);
   void pre_nonlinear(int);
-  void post_nonlinear(const DoubleVector &, double, int, int, int);
-  void nonlinear_step(const CGInfo &, const NLInfo &) const;
-  int &new_matrix() { return _newmatrix; };
+  void post_nonlinear(const DoubleVector&, double, int, int, int);
+  void nonlinear_step(const CGInfo&, const NLInfo&) const;
+  int& new_matrix() { return _newmatrix; };
 
-  void Print(const std::string &s, std::string se = "\n") const;
+  void Print(const std::string& s, std::string se = "\n") const;
 
   void precision(int n) { prec = n; }
 
-  void PrintResults(const std::string &s = "\n") const;
+  void PrintResults(const std::string& s = "\n") const;
   void PrintResults(double) const;
   void PrintResults(int) const;
-  void PrintResults(const IntVector &iv) const;
-  void PrintResults(const DoubleVector &dv) const;
+  void PrintResults(const IntVector& iv) const;
+  void PrintResults(const DoubleVector& dv) const;
 
-  void PrintInfoSummary(const NLInfo &nlinfo) const;
-  void PrintInfoSummary(const CGInfo &nlinfo) const;
+  void PrintInfoSummary(const NLInfo& nlinfo) const;
+  void PrintInfoSummary(const CGInfo& nlinfo) const;
 };
 } // namespace Gascoigne
 

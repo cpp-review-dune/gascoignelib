@@ -28,10 +28,13 @@ using namespace Gascoigne;
 
 /*---------------------------------------------------*/
 
-class LocalLoop : public StdLoop {
+class LocalLoop : public StdLoop
+{
 public:
-  void BasicInit(const ParamFile *paramfile, const ProblemContainer *PC,
-                 const FunctionalContainer *FC) {
+  void BasicInit(const ParamFile* paramfile,
+                 const ProblemContainer* PC,
+                 const FunctionalContainer* FC)
+  {
     GetMeshAgentPointer() = new BenchMarkMeshAgent;
     StdLoop::BasicInit(paramfile, PC, FC);
   }
@@ -39,7 +42,9 @@ public:
 
 /*---------------------------------------------------*/
 
-int main(int argc, char **argv) {
+int
+main(int argc, char** argv)
+{
   ParamFile paramfile("bench.param");
   if (argc >= 2) {
     paramfile.SetName(argv[1]);

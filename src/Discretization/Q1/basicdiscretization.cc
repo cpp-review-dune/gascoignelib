@@ -30,7 +30,9 @@ using namespace std;
 
 namespace Gascoigne {
 BasicDiscretization::BasicDiscretization()
-    : DiscretizationInterface(), __MP(NULL) {}
+  : DiscretizationInterface()
+  , __MP(NULL)
+{}
 
 /* ----------------------------------------- */
 
@@ -38,11 +40,13 @@ BasicDiscretization::~BasicDiscretization() {}
 
 /* ----------------------------------------- */
 
-void BasicDiscretization::HNAverageData() const {
-  const GlobalData &gd = GetDataContainer().GetNodeData();
+void
+BasicDiscretization::HNAverageData() const
+{
+  const GlobalData& gd = GetDataContainer().GetNodeData();
   GlobalData::const_iterator p = gd.begin();
   for (; p != gd.end(); p++) {
-    GlobalVector *v = const_cast<GlobalVector *>(p->second);
+    GlobalVector* v = const_cast<GlobalVector*>(p->second);
     HNAverage(*v);
     //      cerr << "HNAverage " << p->first << endl;
   }
@@ -50,11 +54,13 @@ void BasicDiscretization::HNAverageData() const {
 
 /* ----------------------------------------- */
 
-void BasicDiscretization::HNZeroData() const {
-  const GlobalData &gd = GetDataContainer().GetNodeData();
+void
+BasicDiscretization::HNZeroData() const
+{
+  const GlobalData& gd = GetDataContainer().GetNodeData();
   GlobalData::const_iterator p = gd.begin();
   for (; p != gd.end(); p++) {
-    GlobalVector *v = const_cast<GlobalVector *>(p->second);
+    GlobalVector* v = const_cast<GlobalVector*>(p->second);
     HNZero(*v);
     //      cerr << "HNZero " << p->first << endl;
   }
@@ -62,15 +68,17 @@ void BasicDiscretization::HNZeroData() const {
 
 /* ----------------------------------------- */
 
-void BasicDiscretization::GlobalToLocalData(int iq) const {
-  const GlobalData &gnd = GetDataContainer().GetNodeData();
+void
+BasicDiscretization::GlobalToLocalData(int iq) const
+{
+  const GlobalData& gnd = GetDataContainer().GetNodeData();
   __QN.clear();
   GlobalData::const_iterator p = gnd.begin();
   for (; p != gnd.end(); p++) {
     GlobalToLocalSingle(__QN[p->first], *p->second, iq);
   }
 
-  const GlobalData &gcd = GetDataContainer().GetCellData();
+  const GlobalData& gcd = GetDataContainer().GetCellData();
   __QC.clear();
   GlobalData::const_iterator q = gcd.begin();
   for (; q != gcd.end(); q++) {
@@ -80,8 +88,10 @@ void BasicDiscretization::GlobalToLocalData(int iq) const {
 
 /* ----------------------------------------- */
 
-void BasicDiscretization::GlobalToGlobalData() const {
-  const GlobalParameterData &gpd = GetDataContainer().GetParameterData();
+void
+BasicDiscretization::GlobalToGlobalData() const
+{
+  const GlobalParameterData& gpd = GetDataContainer().GetParameterData();
   __QP.clear();
 
   for (auto p : gpd) {
@@ -91,9 +101,11 @@ void BasicDiscretization::GlobalToGlobalData() const {
 
 /* ----------------------------------------- */
 
-void BasicDiscretization::GlobalToLocalSingle(LocalVector &U,
-                                              const GlobalVector &u,
-                                              int iq) const {
+void
+BasicDiscretization::GlobalToLocalSingle(LocalVector& U,
+                                         const GlobalVector& u,
+                                         int iq) const
+{
   IntVector indices = GetLocalIndices(iq);
   U.ReInit(u.ncomp(), indices.size());
   for (int ii = 0; ii < indices.size(); ii++) {
@@ -104,9 +116,11 @@ void BasicDiscretization::GlobalToLocalSingle(LocalVector &U,
 
 /* ----------------------------------------- */
 
-void BasicDiscretization::GlobalToLocalCell(LocalVector &U,
-                                            const GlobalVector &u,
-                                            int iq) const {
+void
+BasicDiscretization::GlobalToLocalCell(LocalVector& U,
+                                       const GlobalVector& u,
+                                       int iq) const
+{
   U.ReInit(u.ncomp(), 1);
   for (int c = 0; c < u.ncomp(); ++c) {
     U(0, c) = u(iq, c);
@@ -115,8 +129,12 @@ void BasicDiscretization::GlobalToLocalCell(LocalVector &U,
 
 /* ----------------------------------------- */
 
-void BasicDiscretization::LocalToGlobal(GlobalVector &f, const LocalVector &F,
-                                        int iq, double s) const {
+void
+BasicDiscretization::LocalToGlobal(GlobalVector& f,
+                                   const LocalVector& F,
+                                   int iq,
+                                   double s) const
+{
   IntVector indices = GetLocalIndices(iq);
   for (int ii = 0; ii < indices.size(); ii++) {
     int i = indices[ii];
@@ -126,8 +144,12 @@ void BasicDiscretization::LocalToGlobal(GlobalVector &f, const LocalVector &F,
 
 /* ----------------------------------------- */
 
-void BasicDiscretization::LocalToGlobal(MatrixInterface &A, EntryMatrix &E,
-                                        int iq, double s) const {
+void
+BasicDiscretization::LocalToGlobal(MatrixInterface& A,
+                                   EntryMatrix& E,
+                                   int iq,
+                                   double s) const
+{
   IntVector indices = GetLocalIndices(iq);
   IntVector::const_iterator start = indices.begin();
   IntVector::const_iterator stop = indices.end();
@@ -136,10 +158,14 @@ void BasicDiscretization::LocalToGlobal(MatrixInterface &A, EntryMatrix &E,
 
 /*-----------------------------------------*/
 
-void BasicDiscretization::VisuVtk(const ComponentInformation *CI,
-                                  const ParamFile &pf, const std::string &name,
-                                  const GlobalVector &u, int i) const {
-  HNAverage(const_cast<GlobalVector &>(u));
+void
+BasicDiscretization::VisuVtk(const ComponentInformation* CI,
+                             const ParamFile& pf,
+                             const std::string& name,
+                             const GlobalVector& u,
+                             int i) const
+{
+  HNAverage(const_cast<GlobalVector&>(u));
 
   GascoigneVisualization Visu;
 
@@ -156,6 +182,6 @@ void BasicDiscretization::VisuVtk(const ComponentInformation *CI,
   Visu.step(i);
   Visu.write();
 
-  HNZero(const_cast<GlobalVector &>(u));
+  HNZero(const_cast<GlobalVector&>(u));
 }
 } // namespace Gascoigne

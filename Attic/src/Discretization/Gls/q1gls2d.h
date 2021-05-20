@@ -37,19 +37,22 @@ namespace Gascoigne {
 ////
 /////////////////////////////////////////////
 
-class Q1Gls2d : public Q12d {
+class Q1Gls2d : public Q12d
+{
 protected:
 public:
   //
   ////  Con(De)structor
   //
 
-  Q1Gls2d() : Q12d() {}
+  Q1Gls2d()
+    : Q12d()
+  {}
   ~Q1Gls2d() {}
 
   std::string GetName() const { return "Q1Gls2d"; }
 
-  void BasicInit(const ParamFile *pf);
+  void BasicInit(const ParamFile* pf);
 };
 } // namespace Gascoigne
 

@@ -30,7 +30,9 @@
 namespace Gascoigne {
 /* ----------------------------------------- */
 
-void Q2Lps3d::BasicInit(const ParamFile *paramfile) {
+void
+Q2Lps3d::BasicInit(const ParamFile* paramfile)
+{
   if (GetIntegrator() == NULL)
     GetIntegratorPointer() = new GalerkinLpsIntegratorQ2<3>;
   assert(GetIntegrator());

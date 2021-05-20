@@ -11,19 +11,22 @@ using namespace std;
 
 namespace Gascoigne {
 
-template <int DIM>
-void FSISolver<DIM>::smooth(int niter, VectorInterface &x,
-                            const VectorInterface &y,
-                            VectorInterface &h) const {
+template<int DIM>
+void
+FSISolver<DIM>::smooth(int niter,
+                       VectorInterface& x,
+                       const VectorInterface& y,
+                       VectorInterface& h) const
+{
   if (GetSolverData().GetLinearSmooth() == "vanka") {
     double omega = GetSolverData().GetOmega();
-    const GascoigneMesh2d *M = dynamic_cast<const GascoigneMesh2d *>(GetMesh());
+    const GascoigneMesh2d* M = dynamic_cast<const GascoigneMesh2d*>(GetMesh());
     assert(M);
-    const SparseBlockMatrix<FMatrixBlock<DIM>> *A =
-        dynamic_cast<const SparseBlockMatrix<FMatrixBlock<DIM>> *>(GetMatrix());
+    const SparseBlockMatrix<FMatrixBlock<DIM>>* A =
+      dynamic_cast<const SparseBlockMatrix<FMatrixBlock<DIM>>*>(GetMatrix());
     assert(A);
-    const ColumnDiagStencil *SA =
-        dynamic_cast<const ColumnDiagStencil *>(A->GetStencil());
+    const ColumnDiagStencil* SA =
+      dynamic_cast<const ColumnDiagStencil*>(A->GetStencil());
     assert(SA);
 
     std::vector<int> smooth_weight(GetGV(x).n(), 0);
@@ -35,7 +38,7 @@ void FSISolver<DIM>::smooth(int niter, VectorInterface &x,
     for (int iter = 0; iter < niter; iter++) {
       MatrixResidual(h, x, y);
       for (int p = 0; p < M->npatches(); ++p) {
-        const nvector<int> &iop = *(M->IndicesOfPatch(p));
+        const nvector<int>& iop = *(M->IndicesOfPatch(p));
         HASHMAP<int, int> inP;
         for (int i = 0; i < iop.size(); ++i)
           inP[iop[i]] = i;
@@ -56,7 +59,7 @@ void FSISolver<DIM>::smooth(int niter, VectorInterface &x,
             if (inP.find(col) == inP.end())
               continue;
             int c = inP[col];
-            const FMatrixBlock<DIM> &B = (*A->mat(pos));
+            const FMatrixBlock<DIM>& B = (*A->mat(pos));
             for (int cr = 0; cr < ncomp; ++cr)
               for (int cc = 0; cc < ncomp; ++cc)
                 P(ncomp * r + cr, ncomp * c + cc) = B(cr, cc);

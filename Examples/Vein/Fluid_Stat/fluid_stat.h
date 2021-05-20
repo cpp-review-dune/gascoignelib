@@ -14,7 +14,7 @@
 /*-----------------------------------------*/
 
 namespace Gascoigne {
-template <int DIM>
+template<int DIM>
 class Fluid_Stat : public LpsEquation // , public BoundaryEquation
 {
 
@@ -47,33 +47,41 @@ protected:
 public:
   ~Fluid_Stat() {}
   Fluid_Stat() { abort(); }
-  Fluid_Stat(const ParamFile *pf);
+  Fluid_Stat(const ParamFile* pf);
 
   std::string GetName() const { return "Fluid_Stat"; }
 
   int GetNcomp() const { return DIM + 1; }
 
-  void point(double h, const FemFunction &U, const Vertex<DIM> &v) const;
-  void point_M(int j, const FemFunction &U, const TestFunction &M) const;
+  void point(double h, const FemFunction& U, const Vertex<DIM>& v) const;
+  void point_M(int j, const FemFunction& U, const TestFunction& M) const;
   void point_cell(int material) const;
 
-  void Form(VectorIterator b, const FemFunction &U,
-            const TestFunction &N) const;
+  void Form(VectorIterator b,
+            const FemFunction& U,
+            const TestFunction& N) const;
 
-  void Matrix(EntryMatrix &A, const FemFunction &U, const TestFunction &M,
-              const TestFunction &N) const;
-  void MatrixBlock(EntryMatrix &A, const FemFunction &U,
-                   const FemFunction &NNN) const;
+  void Matrix(EntryMatrix& A,
+              const FemFunction& U,
+              const TestFunction& M,
+              const TestFunction& N) const;
+  void MatrixBlock(EntryMatrix& A,
+                   const FemFunction& U,
+                   const FemFunction& NNN) const;
 
   ////////////////////////////////////////////////// LPS
 
-  void lpspoint(double h, const FemFunction &U, const Vertex<DIM> &v) const;
+  void lpspoint(double h, const FemFunction& U, const Vertex<DIM>& v) const;
 
-  void StabForm(VectorIterator b, const FemFunction &U, const FemFunction &UP,
-                const TestFunction &N) const;
+  void StabForm(VectorIterator b,
+                const FemFunction& U,
+                const FemFunction& UP,
+                const TestFunction& N) const;
 
-  void StabMatrix(EntryMatrix &A, const FemFunction &U, const TestFunction &Np,
-                  const TestFunction &Mp) const;
+  void StabMatrix(EntryMatrix& A,
+                  const FemFunction& U,
+                  const TestFunction& Np,
+                  const TestFunction& Mp) const;
 };
 
 } // namespace Gascoigne

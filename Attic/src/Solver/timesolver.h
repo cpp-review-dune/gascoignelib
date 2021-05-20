@@ -41,18 +41,26 @@ namespace Gascoigne {
 ///
 //////////////////////////////////////////////
 
-class TimeSolver : public StdSolver {
+class TimeSolver : public StdSolver
+{
 private:
-  MatrixInterface *_MMP;
+  MatrixInterface* _MMP;
 
 protected:
   double theta, dt, time;
   TimePattern _TP;
-  MatrixInterface *&GetMassMatrixPointer() { return _MMP; }
+  MatrixInterface*& GetMassMatrixPointer() { return _MMP; }
 
 public:
-  TimeSolver() : StdSolver(), _MMP(NULL), theta(1.), dt(0.), time(0.) {}
-  ~TimeSolver() {
+  TimeSolver()
+    : StdSolver()
+    , _MMP(NULL)
+    , theta(1.)
+    , dt(0.)
+    , time(0.)
+  {}
+  ~TimeSolver()
+  {
     if (_MMP) {
       delete _MMP;
       _MMP = NULL;
@@ -61,36 +69,42 @@ public:
 
   std::string GetName() const { return "TimeSolver"; }
 
-  void SetTimeData(double dt, double theta, double time, double oldrhs = -1,
+  void SetTimeData(double dt,
+                   double theta,
+                   double time,
+                   double oldrhs = -1,
                    double newrhs = -1);
 
-  const MatrixInterface *GetMassMatrix() const { return _MMP; }
-  MatrixInterface *GetMassMatrix() { return _MMP; }
+  const MatrixInterface* GetMassMatrix() const { return _MMP; }
+  MatrixInterface* GetMassMatrix() { return _MMP; }
 
   void RegisterMatrix();
-  void SetProblem(const ProblemDescriptorInterface &PDX);
+  void SetProblem(const ProblemDescriptorInterface& PDX);
 
-  void ReInitTimePattern(const ProblemDescriptorInterface &PDX);
+  void ReInitTimePattern(const ProblemDescriptorInterface& PDX);
   void ReInitMatrix();
 
-  MatrixInterface *NewMassMatrix(int ncomp, const std::string &matrixtype) {
+  MatrixInterface* NewMassMatrix(int ncomp, const std::string& matrixtype)
+  {
     return new SimpleMatrix;
   }
 
-  void AssembleMatrix(const VectorInterface &gu, double d);
-  void Form(VectorInterface &gy, const VectorInterface &gx, double d) const;
-  void MassMatrixVector(VectorInterface &gf, const VectorInterface &gu,
+  void AssembleMatrix(const VectorInterface& gu, double d);
+  void Form(VectorInterface& gy, const VectorInterface& gx, double d) const;
+  void MassMatrixVector(VectorInterface& gf,
+                        const VectorInterface& gu,
                         double d) const;
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Woverloaded-virtual"
-  void InverseMassMatrix(VectorInterface &u, const VectorInterface &f,
-                         CGInfo &info);
+  void InverseMassMatrix(VectorInterface& u,
+                         const VectorInterface& f,
+                         CGInfo& info);
 #pragma GCC diagnostic pop
 
-  void precondition(VectorInterface &u, const VectorInterface &f);
-  void cgvmult(VectorInterface &y, const VectorInterface &x, double d) const;
-  void L2Projection(VectorInterface &Gu, VectorInterface &Gf);
+  void precondition(VectorInterface& u, const VectorInterface& f);
+  void cgvmult(VectorInterface& y, const VectorInterface& x, double d) const;
+  void L2Projection(VectorInterface& Gu, VectorInterface& Gf);
 };
 
 /*-------------------------------------------------------------*/

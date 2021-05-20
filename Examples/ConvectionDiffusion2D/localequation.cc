@@ -29,7 +29,9 @@ using namespace Gascoigne;
 
 /*-----------------------------------------*/
 
-LocalEquation::LocalEquation(const ParamFile *paramfile) : Equation() {
+LocalEquation::LocalEquation(const ParamFile* paramfile)
+  : Equation()
+{
   DataFormatHandler DFH;
   DFH.insert("sigma", &sigma, 0.);
   DFH.insert("visc", &visc, 1.);
@@ -39,22 +41,28 @@ LocalEquation::LocalEquation(const ParamFile *paramfile) : Equation() {
 
 /* ----------------------------------------- */
 
-void LocalEquation::glspoint(double h, const FemFunction &U,
-                             const Vertex2d &v) const {
+void
+LocalEquation::glspoint(double h, const FemFunction& U, const Vertex2d& v) const
+{
   ST.ReInit(h, visc, betax(), betay());
 }
 
 /* ----------------------------------------- */
 
-void LocalEquation::SetFemData(FemData &Q) const {
+void
+LocalEquation::SetFemData(FemData& Q) const
+{
   assert(Q.count("beta"));
   q = &Q["beta"];
 }
 
 /* ----------------------------------------- */
 
-void LocalEquation::Form(VectorIterator b, const FemFunction &U,
-                         const TestFunction &N) const {
+void
+LocalEquation::Form(VectorIterator b,
+                    const FemFunction& U,
+                    const TestFunction& N) const
+{
   b[0] += visc * (U[0].x() * N.x() + U[0].y() * N.y());
   b[0] += betax() * U[0].x() * N.m();
   b[0] += betay() * U[0].y() * N.m();
@@ -62,8 +70,12 @@ void LocalEquation::Form(VectorIterator b, const FemFunction &U,
 
 /* ----------------------------------------- */
 
-void LocalEquation::Matrix(EntryMatrix &A, const FemFunction &U,
-                           const TestFunction &M, const TestFunction &N) const {
+void
+LocalEquation::Matrix(EntryMatrix& A,
+                      const FemFunction& U,
+                      const TestFunction& M,
+                      const TestFunction& N) const
+{
   A(0, 0) += visc * (M.x() * N.x() + M.y() * N.y());
   A(0, 0) += betax() * M.x() * N.m();
   A(0, 0) += betay() * M.y() * N.m();
@@ -71,20 +83,28 @@ void LocalEquation::Matrix(EntryMatrix &A, const FemFunction &U,
 
 /* ----------------------------------------- */
 
-void LocalEquation::L(nvector<double> &dst, const FemFunction &U) const {
+void
+LocalEquation::L(nvector<double>& dst, const FemFunction& U) const
+{
   dst[0] = betax() * U[0].x() + betay() * U[0].y();
 }
 
 /* ----------------------------------------- */
 
-void LocalEquation::S(nmatrix<double> &dst, const FemFunction &U,
-                      const TestFunction &N) const {
+void
+LocalEquation::S(nmatrix<double>& dst,
+                 const FemFunction& U,
+                 const TestFunction& N) const
+{
   dst(0, 0) = ST.alpha() * (betax() * N.x() + betay() * N.y());
 }
 
 /* ----------------------------------------- */
 
-void LocalEquation::LMatrix(nmatrix<double> &dst, const FemFunction &U,
-                            const TestFunction &N) const {
+void
+LocalEquation::LMatrix(nmatrix<double>& dst,
+                       const FemFunction& U,
+                       const TestFunction& N) const
+{
   dst(0, 0) = betax() * N.x() + betay() * N.y();
 }

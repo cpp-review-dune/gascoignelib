@@ -34,10 +34,11 @@
 namespace Gascoigne {
 typedef std::map<int, int> IntMap;
 
-class MeshAgent {
+class MeshAgent
+{
 private:
-  std::map<int, BoundaryFunction<2> *> _curved2d;
-  std::map<int, BoundaryFunction<3> *> _curved3d;
+  std::map<int, BoundaryFunction<2>*> _curved2d;
+  std::map<int, BoundaryFunction<3>*> _curved3d;
 
   // Fuer die Zuordnung GM Nr auf altem Gitter zu GM Nr. auf neuem Gitter
   IntVector _cl2g, _celll2g;
@@ -48,10 +49,10 @@ private:
   nvector<IntVector> _q4patch, _q4toq2;
 
 protected:
-  HierarchicalMesh *HMP;
-  GascoigneMultiGridMesh *GMG;
+  HierarchicalMesh* HMP;
+  GascoigneMultiGridMesh* GMG;
   IntVector _periodicCols;
-  std::map<int, std::map<int, PeriodicMapping *>> _periodicMaps;
+  std::map<int, std::map<int, PeriodicMapping*>> _periodicMaps;
 
 public:
   MeshAgent();
@@ -61,72 +62,84 @@ public:
 
   virtual int GetDimension() const { return HMP->dimension(); }
 
-  virtual GascoigneMultiGridMesh *NewMultiGridMesh() {
+  virtual GascoigneMultiGridMesh* NewMultiGridMesh()
+  {
     return new GascoigneMultiGridMesh;
   }
 
-  virtual void BuildQ4PatchList(const IntVector &patchl2g);
+  virtual void BuildQ4PatchList(const IntVector& patchl2g);
 
   virtual void AssemblePeriodicBoundaries();
 
-  virtual GascoigneMesh *GMesh(int l) { return GMG->GetGascoigneMesh(l); }
+  virtual GascoigneMesh* GMesh(int l) { return GMG->GetGascoigneMesh(l); }
 
-  virtual void AddShape(int col, BoundaryFunction<2> *f) { _curved2d[col] = f; }
-  virtual void AddShape(int col, BoundaryFunction<3> *f) { _curved3d[col] = f; }
+  virtual void AddShape(int col, BoundaryFunction<2>* f) { _curved2d[col] = f; }
+  virtual void AddShape(int col, BoundaryFunction<3>* f) { _curved3d[col] = f; }
 
-  virtual std::map<int, BoundaryFunction<2> *> &GetShapes2d() {
+  virtual std::map<int, BoundaryFunction<2>*>& GetShapes2d()
+  {
     return _curved2d;
   }
-  virtual std::map<int, BoundaryFunction<3> *> &GetShapes3d() {
+  virtual std::map<int, BoundaryFunction<3>*>& GetShapes3d()
+  {
     return _curved3d;
   }
-  virtual const std::map<int, BoundaryFunction<2> *> &GetShapes2d() const {
+  virtual const std::map<int, BoundaryFunction<2>*>& GetShapes2d() const
+  {
     return _curved2d;
   }
-  virtual const std::map<int, BoundaryFunction<3> *> &GetShapes3d() const {
+  virtual const std::map<int, BoundaryFunction<3>*>& GetShapes3d() const
+  {
     return _curved3d;
   }
 
-  virtual void AddPeriodicMapping(int col, int col2, PeriodicMapping *map) {
+  virtual void AddPeriodicMapping(int col, int col2, PeriodicMapping* map)
+  {
     _periodicMaps[col][col2] = map;
   }
 
-  virtual void BasicInit(const ParamFile &pf);
-  virtual void BasicInit(const ParamFile &pf, int pdepth);
-  virtual void BasicInit(const std::string &gridname, int dim, int patchdepth,
-                         int epatcher, bool goc2nc = false);
+  virtual void BasicInit(const ParamFile& pf);
+  virtual void BasicInit(const ParamFile& pf, int pdepth);
+  virtual void BasicInit(const std::string& gridname,
+                         int dim,
+                         int patchdepth,
+                         int epatcher,
+                         bool goc2nc = false);
 
-  virtual const GascoigneMultiGridMesh &GetMultiGrid() const { return *GMG; }
-  virtual GascoigneMultiGridMesh &GetMultiGrid() { return *GMG; }
+  virtual const GascoigneMultiGridMesh& GetMultiGrid() const { return *GMG; }
+  virtual GascoigneMultiGridMesh& GetMultiGrid() { return *GMG; }
 
-  virtual HierarchicalMesh *GetHierarchicalMesh() { return HMP; }
-  virtual const HierarchicalMesh *GetHierarchicalMesh() const { return HMP; }
+  virtual HierarchicalMesh* GetHierarchicalMesh() { return HMP; }
+  virtual const HierarchicalMesh* GetHierarchicalMesh() const { return HMP; }
 
   virtual int nnodes() const { return GMG->GetGascoigneMesh(0)->nnodes(); }
   virtual int ncells() const { return GMG->GetGascoigneMesh(0)->ncells(); }
   virtual int nlevels() const { return GMG->nlevels(); }
 
-  virtual const GascoigneMesh *GetMesh() const {
+  virtual const GascoigneMesh* GetMesh() const
+  {
     return GMG->GetGascoigneMesh(0);
   }
-  virtual const GascoigneMesh *GetMesh(int l) const {
+  virtual const GascoigneMesh* GetMesh(int l) const
+  {
     return GMG->GetGascoigneMesh(l);
   }
 
-  virtual void read_gup(const std::string &fname);
-  virtual void read_gip(const std::string &fname);
-  virtual void write_gup(const std::string &fname) const;
-  virtual void write_gip(const std::string &fname) const;
-  virtual void write_inp(const std::string &fname) const;
+  virtual void read_gup(const std::string& fname);
+  virtual void read_gip(const std::string& fname);
+  virtual void write_gup(const std::string& fname) const;
+  virtual void write_gip(const std::string& fname) const;
+  virtual void write_inp(const std::string& fname) const;
   virtual void global_refine(int n);
   virtual void global_patch_coarsen(int n);
   virtual void random_patch_coarsen(double p, int n);
   virtual void random_patch_refine(double p, int n);
-  virtual void refine_nodes(IntVector &refnodes, IntVector &coarsenodes);
-  virtual void refine_nodes(IntVector &refnodes);
-  virtual void refine_cells(IntVector &ref);
+  virtual void refine_nodes(IntVector& refnodes, IntVector& coarsenodes);
+  virtual void refine_nodes(IntVector& refnodes);
+  virtual void refine_cells(IntVector& ref);
 
-  virtual const GascoigneMeshTransfer *GetTransfer(int l) const {
+  virtual const GascoigneMeshTransfer* GetTransfer(int l) const
+  {
     return GMG->GetTransfer(l);
   }
 
@@ -135,8 +148,8 @@ public:
   virtual void ClearCl2g() { _cl2g.clear(); }
   virtual const bool Goc2nc() const { return _goc2nc; }
 
-  virtual const IntVector &Celll2g() const { return _celll2g; }
-  virtual const IntMap &Cellg2l() const { return _cellg2l; }
+  virtual const IntVector& Celll2g() const { return _celll2g; }
+  virtual const IntMap& Cellg2l() const { return _cellg2l; }
 };
 } // namespace Gascoigne
 

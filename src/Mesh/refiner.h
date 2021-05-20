@@ -30,67 +30,84 @@
 /*************************************************************/
 
 namespace Gascoigne {
-class PointRefiner {
-  const GascoigneMesh &H;
-  const Vertex2d &V;
+class PointRefiner
+{
+  const GascoigneMesh& H;
+  const Vertex2d& V;
 
   nmatrix<double> A;
   bool VertexInQuad(int);
 
 public:
-  PointRefiner(const GascoigneMesh &h, const Vertex2d &v)
-      : H(h), V(v), A(2, 2) {}
+  PointRefiner(const GascoigneMesh& h, const Vertex2d& v)
+    : H(h)
+    , V(v)
+    , A(2, 2)
+  {}
 
-  void BuildCellList(std::vector<int> &);
+  void BuildCellList(std::vector<int>&);
 };
 
 /*************************************************************/
 
-class CircleRefiner {
-  const GascoigneMesh &H;
-  const Vertex3d &V;
+class CircleRefiner
+{
+  const GascoigneMesh& H;
+  const Vertex3d& V;
   double R;
 
   bool QuadOnRadius(int) const;
 
 public:
-  CircleRefiner(const GascoigneMesh &h, const Vertex3d &v, double r)
-      : H(h), V(v), R(r) {}
+  CircleRefiner(const GascoigneMesh& h, const Vertex3d& v, double r)
+    : H(h)
+    , V(v)
+    , R(r)
+  {}
 
-  void BuildCellList(std::vector<int> &);
+  void BuildCellList(std::vector<int>&);
 };
 
 /*************************************************************/
 
-class CylinderRefiner {
-  const GascoigneMesh &H;
-  const Vertex3d &V;
+class CylinderRefiner
+{
+  const GascoigneMesh& H;
+  const Vertex3d& V;
   double R;
   int D;
 
   bool QuadInCylinder(int) const;
 
 public:
-  CylinderRefiner(const GascoigneMesh &h, const Vertex3d &v, double r, int d)
-      : H(h), V(v), R(r), D(d) {}
+  CylinderRefiner(const GascoigneMesh& h, const Vertex3d& v, double r, int d)
+    : H(h)
+    , V(v)
+    , R(r)
+    , D(d)
+  {}
 
-  void BuildCellList(std::vector<int> &);
+  void BuildCellList(std::vector<int>&);
 };
 
 /*************************************************************/
 
-class BallRefiner {
-  const GascoigneMesh &H;
-  const Vertex3d &V;
+class BallRefiner
+{
+  const GascoigneMesh& H;
+  const Vertex3d& V;
   double R;
 
   bool QuadInBall(int) const;
 
 public:
-  BallRefiner(const GascoigneMesh &h, const Vertex3d &v, double r)
-      : H(h), V(v), R(r) {}
+  BallRefiner(const GascoigneMesh& h, const Vertex3d& v, double r)
+    : H(h)
+    , V(v)
+    , R(r)
+  {}
 
-  void BuildCellList(std::vector<int> &);
+  void BuildCellList(std::vector<int>&);
 };
 } // namespace Gascoigne
 

@@ -34,12 +34,19 @@ namespace Gascoigne {
 /*-------------------------------------------------------------*/
 
 MultiLevelSolver::MultiLevelSolver()
-    : _SP(0), _Interpolator(0), _MAP(NULL), _paramfile(NULL), _PC(NULL),
-      _PD(NULL), _NI(NULL) {}
+  : _SP(0)
+  , _Interpolator(0)
+  , _MAP(NULL)
+  , _paramfile(NULL)
+  , _PC(NULL)
+  , _PD(NULL)
+  , _NI(NULL)
+{}
 
 /*-------------------------------------------------------------*/
 
-MultiLevelSolver::~MultiLevelSolver() {
+MultiLevelSolver::~MultiLevelSolver()
+{
   for (int i = 0; i < _SP.size(); i++) {
     if (_SP[i]) {
       delete _SP[i];
@@ -56,10 +63,12 @@ MultiLevelSolver::~MultiLevelSolver() {
 
 /*-------------------------------------------------------------*/
 
-void MultiLevelSolver::BasicInit(const NumericInterface *NI,
-                                 const MeshAgentInterface *MAP,
-                                 const ParamFile *paramfile,
-                                 const ProblemContainer *PC) {
+void
+MultiLevelSolver::BasicInit(const NumericInterface* NI,
+                            const MeshAgentInterface* MAP,
+                            const ParamFile* paramfile,
+                            const ProblemContainer* PC)
+{
   _NI = NI;
   _MAP = MAP;
   _paramfile = paramfile;
@@ -68,7 +77,9 @@ void MultiLevelSolver::BasicInit(const NumericInterface *NI,
 
 /*-------------------------------------------------------------*/
 
-void MultiLevelSolver::ReInitVector(VectorInterface &v) {
+void
+MultiLevelSolver::ReInitVector(VectorInterface& v)
+{
   for (int level = 0; level < nlevels(); ++level) {
     GetSolver(level)->ReInitVector(v);
   }
@@ -76,7 +87,9 @@ void MultiLevelSolver::ReInitVector(VectorInterface &v) {
 
 /*-------------------------------------------------------------*/
 
-void MultiLevelSolver::DeleteVector(VectorInterface &v) {
+void
+MultiLevelSolver::DeleteVector(VectorInterface& v)
+{
   for (int l = 0; l < nlevels(); ++l) {
     GetSolver(l)->DeleteVector(v);
   }
@@ -84,7 +97,9 @@ void MultiLevelSolver::DeleteVector(VectorInterface &v) {
 
 /*-------------------------------------------------------------*/
 
-void MultiLevelSolver::NewSolvers() {
+void
+MultiLevelSolver::NewSolvers()
+{
   int oldnlevels = _SP.size();
 
   if (oldnlevels > nlevels()) {
@@ -110,7 +125,9 @@ void MultiLevelSolver::NewSolvers() {
 
 /*-------------------------------------------------------------*/
 
-void MultiLevelSolver::RegisterMatrix() {
+void
+MultiLevelSolver::RegisterMatrix()
+{
   for (int level = 0; level < nlevels(); ++level) {
     GetSolver(level)->RegisterMatrix();
   }
@@ -118,7 +135,9 @@ void MultiLevelSolver::RegisterMatrix() {
 
 /*-------------------------------------------------------------*/
 
-void MultiLevelSolver::ReInitMatrix() {
+void
+MultiLevelSolver::ReInitMatrix()
+{
   for (int level = 0; level < nlevels(); ++level) {
     GetSolver(level)->ReInitMatrix();
   }
@@ -126,9 +145,11 @@ void MultiLevelSolver::ReInitMatrix() {
 
 /*-------------------------------------------------------------*/
 
-void MultiLevelSolver::SolverNewMesh() {
+void
+MultiLevelSolver::SolverNewMesh()
+{
   for (int level = 0; level < nlevels(); ++level) {
-    const MeshInterface *MIP = GetMeshAgent()->GetMesh(level);
+    const MeshInterface* MIP = GetMeshAgent()->GetMesh(level);
     assert(MIP);
 
     int solverlevel = nlevels() - 1 - level;
@@ -138,7 +159,9 @@ void MultiLevelSolver::SolverNewMesh() {
 
 /*-------------------------------------------------------------*/
 
-void MultiLevelSolver::NewMgInterpolator() {
+void
+MultiLevelSolver::NewMgInterpolator()
+{
   for (int i = 0; i < _Interpolator.size(); ++i) {
     assert(_Interpolator[i] != NULL);
     delete _Interpolator[i];
@@ -155,7 +178,7 @@ void MultiLevelSolver::NewMgInterpolator() {
   for (int level = 0; level < nlevels() - 1; ++level) {
     int sl = nlevels() - level - 2;
 
-    const MeshTransferInterface *MT = GetMeshAgent()->GetTransfer(sl);
+    const MeshTransferInterface* MT = GetMeshAgent()->GetTransfer(sl);
     assert(MT);
     assert(_Interpolator[level]);
     GetSolver(level)->ConstructInterpolator(_Interpolator[level], MT);
@@ -164,7 +187,9 @@ void MultiLevelSolver::NewMgInterpolator() {
 
 /*-------------------------------------------------------------*/
 
-void MultiLevelSolver::SetProblem(const std::string &label) {
+void
+MultiLevelSolver::SetProblem(const std::string& label)
+{
   _PD = GetProblemContainer()->GetProblem(label);
   for (int level = 0; level < nlevels(); ++level) {
     int solverlevel = nlevels() - 1 - level;
@@ -175,7 +200,9 @@ void MultiLevelSolver::SetProblem(const std::string &label) {
 
 /*-------------------------------------------------------------*/
 
-void MultiLevelSolver::ReInit(const std::string &problemlabel) {
+void
+MultiLevelSolver::ReInit(const std::string& problemlabel)
+{
   NewSolvers();
   SolverNewMesh();
   NewMgInterpolator();
@@ -186,7 +213,9 @@ void MultiLevelSolver::ReInit(const std::string &problemlabel) {
 
 /*-------------------------------------------------------------*/
 
-void MultiLevelSolver::AssembleMatrix(VectorInterface &u) {
+void
+MultiLevelSolver::AssembleMatrix(VectorInterface& u)
+{
   SolutionTransfer(u);
   for (int l = 0; l <= ComputeLevel; l++) {
     GetSolver(l)->MatrixZero();
@@ -196,7 +225,9 @@ void MultiLevelSolver::AssembleMatrix(VectorInterface &u) {
 
 /*-------------------------------------------------------------*/
 
-void MultiLevelSolver::AssembleDualMatrix(VectorInterface &u) {
+void
+MultiLevelSolver::AssembleDualMatrix(VectorInterface& u)
+{
   for (int l = 0; l < nlevels(); l++) {
     GetSolver(l)->AssembleDualMatrix(u, 1.);
   }
@@ -204,7 +235,9 @@ void MultiLevelSolver::AssembleDualMatrix(VectorInterface &u) {
 
 /*-------------------------------------------------------------*/
 
-void MultiLevelSolver::Transfer(int high, int low, VectorInterface &u) const {
+void
+MultiLevelSolver::Transfer(int high, int low, VectorInterface& u) const
+{
   for (int l = high; l >= low; l--) {
     GetSolver(l)->HNAverage(u);
 
@@ -218,7 +251,9 @@ void MultiLevelSolver::Transfer(int high, int low, VectorInterface &u) const {
 
 /*-------------------------------------------------------------*/
 
-void MultiLevelSolver::SolutionTransfer(VectorInterface &u) const {
+void
+MultiLevelSolver::SolutionTransfer(VectorInterface& u) const
+{
   Transfer(ComputeLevel, 1, u);
 
   for (int l = ComputeLevel; l >= 1; l--)
@@ -227,7 +262,9 @@ void MultiLevelSolver::SolutionTransfer(VectorInterface &u) const {
 
 /*-------------------------------------------------------------*/
 
-void MultiLevelSolver::ComputeIlu() {
+void
+MultiLevelSolver::ComputeIlu()
+{
   for (int l = 0; l <= ComputeLevel; l++) {
     GetSolver(l)->ComputeIlu();
   }
@@ -235,7 +272,9 @@ void MultiLevelSolver::ComputeIlu() {
 
 /*-------------------------------------------------------------*/
 
-void MultiLevelSolver::ComputeIlu(VectorInterface &u) {
+void
+MultiLevelSolver::ComputeIlu(VectorInterface& u)
+{
   SolutionTransfer(u);
   for (int l = 0; l <= ComputeLevel; l++) {
     GetSolver(l)->ComputeIlu(u);

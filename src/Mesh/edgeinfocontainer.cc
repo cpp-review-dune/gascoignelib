@@ -28,35 +28,42 @@ using namespace std;
 /**********************************************************/
 
 namespace Gascoigne {
-template <int DIM> EdgeInfoContainer<DIM>::~EdgeInfoContainer<DIM>() {
-  for (int i = 0; i < nvector<EdgeInfo<DIM> *>::size(); i++) {
+template<int DIM>
+EdgeInfoContainer<DIM>::~EdgeInfoContainer<DIM>()
+{
+  for (int i = 0; i < nvector<EdgeInfo<DIM>*>::size(); i++) {
     if ((*this)[i]) {
       delete (*this)[i];
       (*this)[i] = NULL;
     }
   }
-  nvector<EdgeInfo<DIM> *>::resize(0);
+  nvector<EdgeInfo<DIM>*>::resize(0);
 }
 
 /**********************************************************/
 
-template <int DIM>
-void EdgeInfoContainer<DIM>::BasicInit(const HierarchicalMesh *HM, int ncomp) {
-  nvector<EdgeInfo<DIM> *>::resize(0);
+template<int DIM>
+void
+EdgeInfoContainer<DIM>::BasicInit(const HierarchicalMesh* HM, int ncomp)
+{
+  nvector<EdgeInfo<DIM>*>::resize(0);
   _HMP = HM;
   _ncomp = ncomp;
 
-  nvector<EdgeInfo<DIM> *>::resize(_HMP->nedges());
-  for (int i = 0; i < nvector<EdgeInfo<DIM> *>::size(); i++) {
+  nvector<EdgeInfo<DIM>*>::resize(_HMP->nedges());
+  for (int i = 0; i < nvector<EdgeInfo<DIM>*>::size(); i++) {
     (*this)[i] = NULL;
   }
 }
 
 /**********************************************************/
 
-template <> void EdgeInfoContainer<2>::ModifyHanging() {
-  const QuadLawAndOrder &QLAO =
-      dynamic_cast<const HierarchicalMesh2d *>(_HMP)->QuadLawOrder();
+template<>
+void
+EdgeInfoContainer<2>::ModifyHanging()
+{
+  const QuadLawAndOrder& QLAO =
+    dynamic_cast<const HierarchicalMesh2d*>(_HMP)->QuadLawOrder();
   std::array<int, 2> vertexes;
   LocalVector lu, lul, lur;
 
@@ -70,7 +77,7 @@ template <> void EdgeInfoContainer<2>::ModifyHanging() {
   for (int i = 0; i < size(); i++) {
     if ((*this)[i] != NULL && (*this)[i]->GetCount() == 1 &&
         (*this)[i]->GetEdge().slave() != -1) {
-      const Edge &edge = (*this)[i]->GetEdge();
+      const Edge& edge = (*this)[i]->GetEdge();
       vertexes = (*this)[i]->GetVertex();
 
       int left = QLAO.GlobalChildEdge(vertexes, edge.slave(), 0);
@@ -97,9 +104,12 @@ template <> void EdgeInfoContainer<2>::ModifyHanging() {
 
 /**********************************************************/
 
-template <> void EdgeInfoContainer<3>::ModifyHanging() {
-  const HexLawAndOrder &HLAO =
-      dynamic_cast<const HierarchicalMesh3d *>(_HMP)->HexLawOrder();
+template<>
+void
+EdgeInfoContainer<3>::ModifyHanging()
+{
+  const HexLawAndOrder& HLAO =
+    dynamic_cast<const HierarchicalMesh3d*>(_HMP)->HexLawOrder();
   std::array<int, 4> vertexes;
   LocalVector lugr, lulu, luru, lulo, luro;
 
@@ -117,7 +127,7 @@ template <> void EdgeInfoContainer<3>::ModifyHanging() {
   for (int i = 0; i < size(); i++) {
     if ((*this)[i] != NULL && (*this)[i]->GetCount() == 1 &&
         (*this)[i]->GetEdge().slave() != -1) {
-      const Edge &quad = (*this)[i]->GetEdge();
+      const Edge& quad = (*this)[i]->GetEdge();
       vertexes = (*this)[i]->GetVertex();
 
       int lu = HLAO.GlobalChildFace(vertexes, quad.master(), 0);
@@ -164,8 +174,11 @@ template <> void EdgeInfoContainer<3>::ModifyHanging() {
 
 /**********************************************************/
 
-template <int DIM> void EdgeInfoContainer<DIM>::ShowStatistics() const {
-  for (int i = 0; i < nvector<EdgeInfo<DIM> *>::size(); i++) {
+template<int DIM>
+void
+EdgeInfoContainer<DIM>::ShowStatistics() const
+{
+  for (int i = 0; i < nvector<EdgeInfo<DIM>*>::size(); i++) {
     if ((*this)[i] != NULL) {
       cout << "Edge " << i << ": ";
       (*this)[i]->ShowStatistics();

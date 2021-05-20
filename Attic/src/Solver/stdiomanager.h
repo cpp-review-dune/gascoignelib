@@ -36,7 +36,8 @@ namespace Gascoigne {
 ///
 /////////////////////////////////////////////
 
-class StdIoManager {
+class StdIoManager
+{
 protected:
   mutable std::string _dirname;
 
@@ -45,7 +46,7 @@ public:
   ///  Constructor
   //
 
-  StdIoManager(const std::string &dirname);
+  StdIoManager(const std::string& dirname);
 };
 } // namespace Gascoigne
 

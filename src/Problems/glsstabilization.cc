@@ -26,7 +26,9 @@
 /*--------------------------------------------------------------*/
 
 namespace Gascoigne {
-GlsStabilization::GlsStabilization() : Stabilization() {
+GlsStabilization::GlsStabilization()
+  : Stabilization()
+{
   _delta = _tau = 0.;
   delta0 = sdelta0 = tau0 = 0.;
   _sdelta.resize(1, 0.);
@@ -34,7 +36,9 @@ GlsStabilization::GlsStabilization() : Stabilization() {
 
 /*--------------------------------------------------------------*/
 
-void GlsStabilization::NavierStokes(double h, double visc) {
+void
+GlsStabilization::NavierStokes(double h, double visc)
+{
   _h = h;
 
   double val = xeta0 * visc / (h * h) + _norm / h;
@@ -49,7 +53,9 @@ void GlsStabilization::NavierStokes(double h, double visc) {
 
 /*--------------------------------------------------------------*/
 
-void GlsStabilization::ConvectionDiffusion(double visc) {
+void
+GlsStabilization::ConvectionDiffusion(double visc)
+{
   double val = xeta0 * visc / (_h * _h) + _norm / _h;
   if (dt > 0.) {
     val += _dtfactor / dt;

@@ -30,11 +30,12 @@
 /*---------------------------------------------------*/
 
 namespace Gascoigne {
-class LocalHierarchicalMesh3d : public HierarchicalMesh3d {
+class LocalHierarchicalMesh3d : public HierarchicalMesh3d
+{
 protected:
   /*  typedef  */
 
-  void inner_vertex_newton3d(const IntVector &, const IntSet &, const IntSet &);
+  void inner_vertex_newton3d(const IntVector&, const IntSet&, const IntSet&);
 };
 } // namespace Gascoigne
 

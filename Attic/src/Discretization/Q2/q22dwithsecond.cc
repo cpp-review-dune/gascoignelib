@@ -30,14 +30,18 @@ namespace Gascoigne {
 
 /**********************************************************/
 
-void Q22dWithSecond::BasicInit(const ParamFile *paramfile) {
+void
+Q22dWithSecond::BasicInit(const ParamFile* paramfile)
+{
   if (GetIntegrator() == NULL)
     GetIntegratorPointer() = new IntegratorWithSecond<2>;
   assert(GetIntegrator());
 
-  typedef FiniteElementWithSecond<2, 1, Transformation2d<BaseQ22dWithSecond>,
+  typedef FiniteElementWithSecond<2,
+                                  1,
+                                  Transformation2d<BaseQ22dWithSecond>,
                                   BaseQ22dWithSecond>
-      FEWithSecond;
+    FEWithSecond;
 
   if (GetFem() == NULL)
     GetFemPointer() = new FEWithSecond;
@@ -48,9 +52,11 @@ void Q22dWithSecond::BasicInit(const ParamFile *paramfile) {
 
 /* ----------------------------------------- */
 
-double Gascoigne::Q22dWithSecond::EstimateSecond(DoubleVector &eta,
-                                                 const GlobalVector &u,
-                                                 double dd) const {
+double
+Gascoigne::Q22dWithSecond::EstimateSecond(DoubleVector& eta,
+                                          const GlobalVector& u,
+                                          double dd) const
+{
   DoubleVector d(9);
   d[0] = 1.;
   d[1] = 2.;
@@ -71,8 +77,8 @@ double Gascoigne::Q22dWithSecond::EstimateSecond(DoubleVector &eta,
     GetFem()->ReInit(T);
 
     GlobalToLocal(__U, u, iq);
-    dynamic_cast<const IntegratorWithSecond<2> *>(GetIntegrator())
-        ->EstimateSecond(__F, *GetFem(), __U);
+    dynamic_cast<const IntegratorWithSecond<2>*>(GetIntegrator())
+      ->EstimateSecond(__F, *GetFem(), __U);
 
     IntVector indices = GetLocalIndices(iq);
 

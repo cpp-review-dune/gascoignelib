@@ -29,7 +29,8 @@
 /*-----------------------------------------*/
 
 namespace Gascoigne {
-class TimeInfo {
+class TimeInfo
+{
 protected:
   double _deltat, _time, _theta;
   double _tbegin, _tend;
@@ -53,7 +54,11 @@ public:
   double rhs() const;
 
   void iteration(int i);
-  void ReInit(double tb, double det, double te, const std::string &sch, int ne,
+  void ReInit(double tb,
+              double det,
+              double te,
+              const std::string& sch,
+              int ne,
               double t);
   void ReInitTheta();
   void scale_timestep(double s) { _deltat *= s; }

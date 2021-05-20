@@ -35,7 +35,9 @@ Extrapolator::~Extrapolator() {}
 
 /*-----------------------------------------*/
 
-void Extrapolator::Print() {
+void
+Extrapolator::Print()
+{
   int n = order.size();
   cout << "extra\t";
 
@@ -55,7 +57,9 @@ void Extrapolator::Print() {
 
 /*-----------------------------------------*/
 
-void Extrapolator::NewValues(const DoubleVector &J) {
+void
+Extrapolator::NewValues(const DoubleVector& J)
+{
   int n = J.size();
   if (!vals.size()) {
     valextra.resize(n);

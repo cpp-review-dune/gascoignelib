@@ -32,8 +32,9 @@ VtkVisu::~VtkVisu() {}
 
 /*-------------------------------------------------*/
 
-VtkVisu::VtkVisu(const GascoigneMesh &M, const std::string &name, int iter)
-    : Visualization() {
+VtkVisu::VtkVisu(const GascoigneMesh& M, const std::string& name, int iter)
+  : Visualization()
+{
   format("vtk");
   set_name(name);
   step(iter);
@@ -43,7 +44,9 @@ VtkVisu::VtkVisu(const GascoigneMesh &M, const std::string &name, int iter)
 
 /*-------------------------------------------------*/
 
-void VtkVisu::WriteNodeData(const DoubleVector &eta) {
+void
+VtkVisu::WriteNodeData(const DoubleVector& eta)
+{
   VisuDataInfo VDI(1);
   VisuDataNVector VD(eta);
 
@@ -55,7 +58,9 @@ void VtkVisu::WriteNodeData(const DoubleVector &eta) {
 
 /*-------------------------------------------------*/
 
-void VtkVisu::WriteCellData(const GlobalVector &eta) {
+void
+VtkVisu::WriteCellData(const GlobalVector& eta)
+{
   int ncomp = eta.ncomp();
 
   VisuDataInfo VDI(1);

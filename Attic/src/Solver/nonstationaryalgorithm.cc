@@ -32,10 +32,12 @@ using namespace std;
 namespace Gascoigne {
 /*-----------------------------------------*/
 
-void NonstationaryAlgorithm::BasicInit(const ParamFile *paramfile,
-                                       MultiLevelSolver *MLS,
-                                       const NumericInterface *NI,
-                                       const ProblemContainer *PC) {
+void
+NonstationaryAlgorithm::BasicInit(const ParamFile* paramfile,
+                                  MultiLevelSolver* MLS,
+                                  const NumericInterface* NI,
+                                  const ProblemContainer* PC)
+{
   MultiLevelAlgorithm::BasicInit(paramfile, MLS, NI, PC);
 
   DataFormatHandler DFH;
@@ -50,7 +52,9 @@ void NonstationaryAlgorithm::BasicInit(const ParamFile *paramfile,
 
 /*-------------------------------------------------*/
 
-void NonstationaryAlgorithm::TimeInfoBroadcast() {
+void
+NonstationaryAlgorithm::TimeInfoBroadcast()
+{
   for (int l = 0; l < GetMultiLevelSolver()->nlevels(); l++) {
     GetSolver(l)->SetTimeData(dt, theta, time);
   }
@@ -58,8 +62,10 @@ void NonstationaryAlgorithm::TimeInfoBroadcast() {
 
 /*-------------------------------------------------*/
 
-void NonstationaryAlgorithm::InitSolution(const string &initial,
-                                          VectorInterface &u) const {
+void
+NonstationaryAlgorithm::InitSolution(const string& initial,
+                                     VectorInterface& u) const
+{
   GetMultiLevelSolver()->GetSolver()->Zero(u);
 
   if (initial == "analytic")
@@ -78,21 +84,27 @@ void NonstationaryAlgorithm::InitSolution(const string &initial,
 
 /*-----------------------------------------*/
 
-void NonstationaryAlgorithm::ImplicitEuler(const std::string &problemlabel) {
+void
+NonstationaryAlgorithm::ImplicitEuler(const std::string& problemlabel)
+{
   theta = 1.;
   ThetaScheme(problemlabel);
 }
 
 /*-----------------------------------------*/
 
-void NonstationaryAlgorithm::CrankNicholson(const std::string &problemlabel) {
+void
+NonstationaryAlgorithm::CrankNicholson(const std::string& problemlabel)
+{
   theta = 0.5;
   ThetaScheme(problemlabel);
 }
 
 /*-----------------------------------------*/
 
-void NonstationaryAlgorithm::ThetaScheme(const std::string &problemlabel) {
+void
+NonstationaryAlgorithm::ThetaScheme(const std::string& problemlabel)
+{
   int niter;
   string initial;
 
@@ -115,7 +127,7 @@ void NonstationaryAlgorithm::ThetaScheme(const std::string &problemlabel) {
   ReInitVector(f);
   InitSolution(initial, u);
 
-  NLInfo &nlinfo = GetSolverInfos()->GetNLInfo();
+  NLInfo& nlinfo = GetSolverInfos()->GetNLInfo();
 
   for (int iter = 1; iter <= niter; iter++) {
     //
@@ -124,7 +136,7 @@ void NonstationaryAlgorithm::ThetaScheme(const std::string &problemlabel) {
     GetSolver()->Zero(f);
     if (theta != 1.) {
       GetSolver()->Rhs(f, 1. / theta - 1.);
-      const StdSolver *S = dynamic_cast<const StdSolver *>(GetSolver());
+      const StdSolver* S = dynamic_cast<const StdSolver*>(GetSolver());
       S->StdSolver::Form(f, u, 1. - 1. / theta);
     }
     GetSolver()->MassMatrixVector(f, u, 1. / (theta * dt));
@@ -156,8 +168,10 @@ void NonstationaryAlgorithm::ThetaScheme(const std::string &problemlabel) {
 
 /*-----------------------------------------*/
 
-void NonstationaryAlgorithm::FractionalStepThetaScheme(
-    const std::string &problemlabel) {
+void
+NonstationaryAlgorithm::FractionalStepThetaScheme(
+  const std::string& problemlabel)
+{
   int niter;
   string initial;
 
@@ -180,7 +194,7 @@ void NonstationaryAlgorithm::FractionalStepThetaScheme(
   ReInitVector(f);
   InitSolution(initial, u);
 
-  NLInfo &nlinfo = GetSolverInfos()->GetNLInfo();
+  NLInfo& nlinfo = GetSolverInfos()->GetNLInfo();
 
   double gamma = 1. - sqrt(0.5);
   double alpha = 2. - sqrt(2); // arbitrary in (0.5,1)
@@ -206,7 +220,7 @@ void NonstationaryAlgorithm::FractionalStepThetaScheme(
     if (step != 1)
       GetSolver()->Rhs(f, 1. / alpha);
 
-    const StdSolver *S = dynamic_cast<const StdSolver *>(GetSolver());
+    const StdSolver* S = dynamic_cast<const StdSolver*>(GetSolver());
     S->StdSolver::Form(f, u, -c);
     GetSolver()->MassMatrixVector(f, u, 1. / (theta * dt));
 

@@ -26,9 +26,10 @@
 namespace Gascoigne {
 /*-----------------------------------------------------*/
 
-template <int DIM, int BDIM, class TRAFO, class BASE>
+template<int DIM, int BDIM, class TRAFO, class BASE>
 FiniteElementWithSecond<DIM, BDIM, TRAFO, BASE>::FiniteElementWithSecond()
-    : FiniteElement<DIM, BDIM, TRAFO, BASE>() {
+  : FiniteElement<DIM, BDIM, TRAFO, BASE>()
+{
   hesse.reserve(FiniteElement<DIM, BDIM, TRAFO, BASE>::n());
   hesse.resize(FiniteElement<DIM, BDIM, TRAFO, BASE>::n(),
                nmatrix<double>(DIM, DIM));
@@ -36,9 +37,13 @@ FiniteElementWithSecond<DIM, BDIM, TRAFO, BASE>::FiniteElementWithSecond()
 
 /*-----------------------------------------------------*/
 
-template <int DIM, int BDIM, class TRAFO, class BASE>
-inline void FiniteElementWithSecond<DIM, BDIM, TRAFO, BASE>::init_test_hesse(
-    TestFunction &N, double w, int i) const {
+template<int DIM, int BDIM, class TRAFO, class BASE>
+inline void
+FiniteElementWithSecond<DIM, BDIM, TRAFO, BASE>::init_test_hesse(
+  TestFunction& N,
+  double w,
+  int i) const
+{
   N.aux("xx") = w * hesse[i](0, 0);
   N.aux("xy") = w * hesse[i](0, 1);
   N.aux("yy") = w * hesse[i](1, 1);

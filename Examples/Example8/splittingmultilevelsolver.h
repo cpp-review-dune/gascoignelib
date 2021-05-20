@@ -39,11 +39,13 @@ namespace Gascoigne {
 
 /*----------------------------------------------------------------------------*/
 
-class SplittingMultiLevelSolver : public MultiLevelSolver {
+class SplittingMultiLevelSolver : public MultiLevelSolver
+{
 protected:
-  std::vector<SolverInterface *> _SP2;
+  std::vector<SolverInterface*> _SP2;
 
-  void NewSolvers() {
+  void NewSolvers()
+  {
     int oldnlevels = _SP.size();
 
     if (oldnlevels > nlevels()) {
@@ -75,8 +77,12 @@ protected:
   }
 
 public:
-  SplittingMultiLevelSolver() : MultiLevelSolver(), _SP2(0) {}
-  ~SplittingMultiLevelSolver() {
+  SplittingMultiLevelSolver()
+    : MultiLevelSolver()
+    , _SP2(0)
+  {}
+  ~SplittingMultiLevelSolver()
+  {
     for (int i = 0; i < _SP.size(); i++) {
       delete _SP2[i];
       _SP2[i] = NULL;
@@ -84,7 +90,8 @@ public:
   }
   string GetName() const { return "SplittingMultiLevelSolver"; }
 
-  void ReInit(const std::string &problem1, const std::string &problem2) {
+  void ReInit(const std::string& problem1, const std::string& problem2)
+  {
     NewMgInterpolator();
     NewSolvers();
 
@@ -98,13 +105,15 @@ public:
     RegisterMatrix();
     ReInitMatrix();
   }
-  SolverInterface *GetSolver(int l) {
+  SolverInterface* GetSolver(int l)
+  {
     if (problem1)
       return _SP[l];
     else
       _SP2[l];
   }
-  const SolverInterface *GetSolver(int l) const {
+  const SolverInterface* GetSolver(int l) const
+  {
     if (problem1)
       return _SP[l];
     else

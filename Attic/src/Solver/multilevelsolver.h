@@ -48,20 +48,21 @@ namespace Gascoigne {
 ///
 //////////////////////////////////////////////
 
-class MultiLevelSolver {
+class MultiLevelSolver
+{
 protected:
-  std::vector<SolverInterface *> _SP;
-  std::vector<MgInterpolatorInterface *> _Interpolator;
+  std::vector<SolverInterface*> _SP;
+  std::vector<MgInterpolatorInterface*> _Interpolator;
 
-  const MeshAgentInterface *_MAP;
-  const ParamFile *_paramfile;
-  const ProblemContainer *_PC;
-  const ProblemDescriptorInterface *_PD;
-  const NumericInterface *_NI;
+  const MeshAgentInterface* _MAP;
+  const ParamFile* _paramfile;
+  const ProblemContainer* _PC;
+  const ProblemDescriptorInterface* _PD;
+  const NumericInterface* _NI;
 
   int ComputeLevel;
 
-  const MeshAgentInterface *GetMeshAgent() const { return _MAP; }
+  const MeshAgentInterface* GetMeshAgent() const { return _MAP; }
 
   void NewMgInterpolator();
   void SolverNewMesh();
@@ -69,8 +70,8 @@ protected:
   void RegisterMatrix();
   virtual void NewSolvers();
   // virtual SolverInterface* NewSolver(int solverlevel);
-  void Transfer(int high, int low, VectorInterface &u) const;
-  void SolutionTransfer(VectorInterface &u) const;
+  void Transfer(int high, int low, VectorInterface& u) const;
+  void SolutionTransfer(VectorInterface& u) const;
 
 public:
   // Constructor
@@ -79,54 +80,62 @@ public:
   virtual ~MultiLevelSolver();
 
   std::string GetName() const { return "MultiLevelSolver"; }
-  int nlevels() const {
+  int nlevels() const
+  {
     assert(GetMeshAgent());
     return GetMeshAgent()->nlevels();
   }
 
-  const ProblemContainer *GetProblemContainer() const { return _PC; };
+  const ProblemContainer* GetProblemContainer() const { return _PC; };
 
   int FinestLevel() const { return nlevels() - 1; }
 
-  SolverInterface *GetSolver(int l) {
+  SolverInterface* GetSolver(int l)
+  {
     assert(l < _SP.size());
     return _SP[l];
   }
-  const SolverInterface *GetSolver(int l) const {
+  const SolverInterface* GetSolver(int l) const
+  {
     assert(l < _SP.size());
     return _SP[l];
   }
-  SolverInterface *GetSolver() {
+  SolverInterface* GetSolver()
+  {
     assert(_SP.size() == nlevels());
     return _SP[FinestLevel()];
   }
-  const SolverInterface *GetSolver() const {
+  const SolverInterface* GetSolver() const
+  {
     assert(_SP.size() == nlevels());
     return _SP[FinestLevel()];
   }
 
-  std::vector<MgInterpolatorInterface *> &GetInterpolatorPointers() {
+  std::vector<MgInterpolatorInterface*>& GetInterpolatorPointers()
+  {
     return _Interpolator;
   }
-  const std::vector<MgInterpolatorInterface *> &
-  GetInterpolatorPointers() const {
+  const std::vector<MgInterpolatorInterface*>& GetInterpolatorPointers() const
+  {
     return _Interpolator;
   }
 
-  void BasicInit(const NumericInterface *NI, const MeshAgentInterface *,
-                 const ParamFile *paramfile, const ProblemContainer *PC);
+  void BasicInit(const NumericInterface* NI,
+                 const MeshAgentInterface*,
+                 const ParamFile* paramfile,
+                 const ProblemContainer* PC);
 
-  void ReInitVector(VectorInterface &v);
-  void DeleteVector(VectorInterface &g);
-  void SetProblem(const std::string &label);
-  void ReInit(const std::string &problemlabel);
-  void AssembleMatrix(VectorInterface &u);
-  void AssembleDualMatrix(VectorInterface &u);
+  void ReInitVector(VectorInterface& v);
+  void DeleteVector(VectorInterface& g);
+  void SetProblem(const std::string& label);
+  void ReInit(const std::string& problemlabel);
+  void AssembleMatrix(VectorInterface& u);
+  void AssembleDualMatrix(VectorInterface& u);
   void ComputeIlu();
-  void ComputeIlu(VectorInterface &u);
-  const DoubleVector ComputeFunctionals(VectorInterface &f,
-                                        const VectorInterface &u,
-                                        FunctionalContainer *FC) const;
+  void ComputeIlu(VectorInterface& u);
+  const DoubleVector ComputeFunctionals(VectorInterface& f,
+                                        const VectorInterface& u,
+                                        FunctionalContainer* FC) const;
 };
 } // namespace Gascoigne
 

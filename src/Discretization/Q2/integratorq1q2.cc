@@ -27,17 +27,26 @@
 namespace Gascoigne {
 /*---------------------------------------------------*/
 
-template <int DIM> void IntegratorQ1Q2<DIM>::BasicInit() {}
+template<int DIM>
+void
+IntegratorQ1Q2<DIM>::BasicInit()
+{}
 
 /* ----------------------------------------- */
 
-template <> double IntegratorQ1Q2<2>::Volume2MeshSize(double vol) const {
+template<>
+double
+IntegratorQ1Q2<2>::Volume2MeshSize(double vol) const
+{
   return sqrt(vol);
 }
 
 /* ----------------------------------------- */
 
-template <> double IntegratorQ1Q2<3>::Volume2MeshSize(double vol) const {
+template<>
+double
+IntegratorQ1Q2<3>::Volume2MeshSize(double vol) const
+{
   return cbrt(vol);
 }
 
@@ -50,8 +59,10 @@ template <> double IntegratorQ1Q2<3>::Volume2MeshSize(double vol) const {
  * (2-D) bzw 0 bis 7 (3-D)
  */
 
-template <int DIM>
-int IntegratorQ1Q2<DIM>::PatchMeshNr2IntegratorNr(int in) const {
+template<int DIM>
+int
+IntegratorQ1Q2<DIM>::PatchMeshNr2IntegratorNr(int in) const
+{
   if (DIM == 2) {
     return (1 - (in >> 1)) * in + (in >> 1) * (3 - (in % 2));
   }
@@ -65,9 +76,10 @@ int IntegratorQ1Q2<DIM>::PatchMeshNr2IntegratorNr(int in) const {
   abort();
 }
 
-template <int DIM>
-int IntegratorQ1Q2<DIM>::PatchMeshNr2IntegratorNrBoundary(int in,
-                                                          int ile) const {
+template<int DIM>
+int
+IntegratorQ1Q2<DIM>::PatchMeshNr2IntegratorNrBoundary(int in, int ile) const
+{
   if (DIM == 2) {
     if (ile == 0)
       return in;
@@ -141,17 +153,22 @@ int IntegratorQ1Q2<DIM>::PatchMeshNr2IntegratorNrBoundary(int in,
 
 /*---------------------------------------------------*/
 
-template <int DIM>
-void IntegratorQ1Q2<DIM>::Form(const Equation &EQ, LocalVector &F,
-                               const FemInterface &FemH,
-                               const FemInterface &FemL, const LocalVector &U,
-                               const LocalData &Q, const LocalData &QC) const {
+template<int DIM>
+void
+IntegratorQ1Q2<DIM>::Form(const Equation& EQ,
+                          LocalVector& F,
+                          const FemInterface& FemH,
+                          const FemInterface& FemL,
+                          const LocalVector& U,
+                          const LocalData& Q,
+                          const LocalData& QC) const
+{
   assert(FemH.n() == FemL.n());
 
   F.ReInit(U.ncomp(), FemH.n());
   F.zero();
 
-  IntegrationFormulaInterface *IF;
+  IntegrationFormulaInterface* IF;
   if (DIM == 2)
     IF = new PatchFormula2d<9, QuadGauss9>;
   else
@@ -210,12 +227,16 @@ void IntegratorQ1Q2<DIM>::Form(const Equation &EQ, LocalVector &F,
 
 /*---------------------------------------------------*/
 
-template <int DIM>
-void IntegratorQ1Q2<DIM>::AdjointForm(const Equation &EQ, LocalVector &F,
-                                      const FemInterface &FemH,
-                                      const FemInterface &FemL,
-                                      const LocalVector &Z, const LocalData &Q,
-                                      const LocalData &QC) const {
+template<int DIM>
+void
+IntegratorQ1Q2<DIM>::AdjointForm(const Equation& EQ,
+                                 LocalVector& F,
+                                 const FemInterface& FemH,
+                                 const FemInterface& FemL,
+                                 const LocalVector& Z,
+                                 const LocalData& Q,
+                                 const LocalData& QC) const
+{
   assert(FemH.n() == FemL.n());
 
   F.ReInit(Z.ncomp(), FemH.n());
@@ -228,7 +249,7 @@ void IntegratorQ1Q2<DIM>::AdjointForm(const Equation &EQ, LocalVector &F,
   E.resize();
   E.zero();
 
-  IntegrationFormulaInterface *IF;
+  IntegrationFormulaInterface* IF;
   if (DIM == 2)
     IF = new PatchFormula2d<9, QuadGauss9>;
   else
@@ -275,17 +296,21 @@ void IntegratorQ1Q2<DIM>::AdjointForm(const Equation &EQ, LocalVector &F,
 
 /*---------------------------------------------------*/
 
-template <int DIM>
-void IntegratorQ1Q2<DIM>::Rhs(const DomainRightHandSide &RHS, LocalVector &F,
-                              const FemInterface &FemH,
-                              const FemInterface &FemL, const LocalData &Q,
-                              const LocalData &QC) const {
+template<int DIM>
+void
+IntegratorQ1Q2<DIM>::Rhs(const DomainRightHandSide& RHS,
+                         LocalVector& F,
+                         const FemInterface& FemH,
+                         const FemInterface& FemL,
+                         const LocalData& Q,
+                         const LocalData& QC) const
+{
   assert(FemH.n() == FemL.n());
 
   F.ReInit(RHS.GetNcomp(), FemH.n());
   F.zero();
 
-  IntegrationFormulaInterface *IF;
+  IntegrationFormulaInterface* IF;
   if (DIM == 2)
     IF = new PatchFormula2d<9, QuadGauss9>;
   else
@@ -342,18 +367,23 @@ void IntegratorQ1Q2<DIM>::Rhs(const DomainRightHandSide &RHS, LocalVector &F,
 
 /*---------------------------------------------------*/
 
-template <int DIM>
-void IntegratorQ1Q2<DIM>::BoundaryRhs(const BoundaryRightHandSide &RHS,
-                                      LocalVector &F, const FemInterface &FemH,
-                                      const FemInterface &FemL, int ile,
-                                      int col, const LocalData &Q,
-                                      const LocalData &QC) const {
+template<int DIM>
+void
+IntegratorQ1Q2<DIM>::BoundaryRhs(const BoundaryRightHandSide& RHS,
+                                 LocalVector& F,
+                                 const FemInterface& FemH,
+                                 const FemInterface& FemL,
+                                 int ile,
+                                 int col,
+                                 const LocalData& Q,
+                                 const LocalData& QC) const
+{
   assert(FemH.n() == FemL.n());
 
   F.ReInit(RHS.GetNcomp(), FemH.n());
   F.zero();
 
-  IntegrationFormulaInterface *IF;
+  IntegrationFormulaInterface* IF;
   if (DIM == 2)
     IF = new PatchFormula1d<3, LineGauss3>;
   else
@@ -409,19 +439,24 @@ void IntegratorQ1Q2<DIM>::BoundaryRhs(const BoundaryRightHandSide &RHS,
 
 /*---------------------------------------------------*/
 
-template <int DIM>
-void IntegratorQ1Q2<DIM>::BoundaryForm(const BoundaryEquation &BE,
-                                       LocalVector &F, const FemInterface &FemH,
-                                       const FemInterface &FemL,
-                                       const LocalVector &U, int ile, int col,
-                                       LocalData &Q,
-                                       const LocalData &QC) const {
+template<int DIM>
+void
+IntegratorQ1Q2<DIM>::BoundaryForm(const BoundaryEquation& BE,
+                                  LocalVector& F,
+                                  const FemInterface& FemH,
+                                  const FemInterface& FemL,
+                                  const LocalVector& U,
+                                  int ile,
+                                  int col,
+                                  LocalData& Q,
+                                  const LocalData& QC) const
+{
   assert(FemH.n() == FemL.n());
 
   F.ReInit(BE.GetNcomp(), FemH.n());
   F.zero();
 
-  IntegrationFormulaInterface *IF;
+  IntegrationFormulaInterface* IF;
   if (DIM == 2)
     IF = new PatchFormula1d<3, LineGauss3>;
   else
@@ -480,15 +515,21 @@ void IntegratorQ1Q2<DIM>::BoundaryForm(const BoundaryEquation &BE,
 
 /*---------------------------------------------------*/
 
-template <int DIM>
-void IntegratorQ1Q2<DIM>::DiracRhsPoint(
-    LocalVector &b, const FemInterface &FemH, const FemInterface &FemL,
-    const Vertex<DIM> &p, const DiracRightHandSide &DRHS, int j,
-    const LocalData &Q, const LocalData &QC) const {
+template<int DIM>
+void
+IntegratorQ1Q2<DIM>::DiracRhsPoint(LocalVector& b,
+                                   const FemInterface& FemH,
+                                   const FemInterface& FemL,
+                                   const Vertex<DIM>& p,
+                                   const DiracRightHandSide& DRHS,
+                                   int j,
+                                   const LocalData& Q,
+                                   const LocalData& QC) const
+{
   assert(FemH.n() == FemL.n());
   b.zero();
 
-  IntegrationFormulaInterface *IF;
+  IntegrationFormulaInterface* IF;
   if (DIM == 2)
     IF = new PatchFormula2d<9, QuadGauss9>;
   else
@@ -510,9 +551,12 @@ void IntegratorQ1Q2<DIM>::DiracRhsPoint(
 
 /*---------------------------------------------------*/
 
-template <int DIM>
-double IntegratorQ1Q2<DIM>::IntegratorQ1Q2::MassMatrix(
-    EntryMatrix &E, const FemInterface &FemH, const FemInterface &FemL) const {
+template<int DIM>
+double
+IntegratorQ1Q2<DIM>::IntegratorQ1Q2::MassMatrix(EntryMatrix& E,
+                                                const FemInterface& FemH,
+                                                const FemInterface& FemL) const
+{
   FemFunction NnnH, NnnL;
 
   NnnH.resize(FemH.n());
@@ -524,7 +568,7 @@ double IntegratorQ1Q2<DIM>::IntegratorQ1Q2::MassMatrix(
   E.resize();
   E.zero();
 
-  IntegrationFormulaInterface *IF;
+  IntegrationFormulaInterface* IF;
   if (DIM == 2)
     IF = new PatchFormula2d<9, QuadGauss9>;
   else
@@ -558,18 +602,20 @@ double IntegratorQ1Q2<DIM>::IntegratorQ1Q2::MassMatrix(
 
 /*---------------------------------------------------------*/
 
-template <int DIM>
-void Gascoigne::IntegratorQ1Q2<DIM>::MassForm(const TimePattern &TP,
-                                              LocalVector &F,
-                                              const FemInterface &FemH,
-                                              const FemInterface &FemL,
-                                              const LocalVector &U) const {
+template<int DIM>
+void
+Gascoigne::IntegratorQ1Q2<DIM>::MassForm(const TimePattern& TP,
+                                         LocalVector& F,
+                                         const FemInterface& FemH,
+                                         const FemInterface& FemL,
+                                         const LocalVector& U) const
+{
   assert(FemH.n() == FemL.n());
 
   F.ReInit(U.ncomp(), FemH.n());
   F.zero();
 
-  IntegrationFormulaInterface *IF;
+  IntegrationFormulaInterface* IF;
   if (DIM == 2)
     IF = new PatchFormula2d<9, QuadGauss9>;
   else

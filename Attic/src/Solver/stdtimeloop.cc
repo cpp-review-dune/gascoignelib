@@ -30,9 +30,11 @@ using namespace std;
 /*-----------------------------------------*/
 
 namespace Gascoigne {
-void StdTimeLoop::BasicInit(const ParamFile *paramfile,
-                            const ProblemContainer *PC,
-                            const FunctionalContainer *FC) {
+void
+StdTimeLoop::BasicInit(const ParamFile* paramfile,
+                       const ProblemContainer* PC,
+                       const FunctionalContainer* FC)
+{
   StdLoop::BasicInit(paramfile, PC, FC);
 
   double tbegin, tend, deltat, theta;
@@ -56,20 +58,23 @@ void StdTimeLoop::BasicInit(const ParamFile *paramfile,
 
 /*-------------------------------------------------*/
 
-string StdTimeLoop::SolveTimePrimal(Matrix &A, VectorInterface &u,
-                                    VectorInterface &f) {
+string
+StdTimeLoop::SolveTimePrimal(Matrix& A, VectorInterface& u, VectorInterface& f)
+{
   GetTimeSolver()->SetBoundaryVector(f);
   GetTimeSolver()->SetPeriodicVector(u);
   GetTimeSolver()->SetBoundaryVector(u);
   string status =
-      GetMultiLevelSolver()->Solve(A, u, f, GetSolverInfos()->GetNLInfo());
+    GetMultiLevelSolver()->Solve(A, u, f, GetSolverInfos()->GetNLInfo());
 
   return status;
 }
 
 /*-------------------------------------------------*/
 
-void StdTimeLoop::adaptive_run(const std::string &problemlabel) {
+void
+StdTimeLoop::adaptive_run(const std::string& problemlabel)
+{
   Matrix A("A");
   VectorInterface u("u"), f("f");
   GlobalVector ualt;
@@ -115,7 +120,7 @@ void StdTimeLoop::adaptive_run(const std::string &problemlabel) {
     SolveTimePrimal(A, u, f);
     Output(u, _s_resultsdir + "/solve");
 
-    StdSolver *S = dynamic_cast<StdSolver *>(GetTimeSolver());
+    StdSolver* S = dynamic_cast<StdSolver*>(GetTimeSolver());
     assert(S);
     if (_iter < _niter) {
       CopyVector(ualt, u);
@@ -127,19 +132,26 @@ void StdTimeLoop::adaptive_run(const std::string &problemlabel) {
 
 /*-------------------------------------------------*/
 
-void StdTimeLoop::TimeInfoBroadcast() {
+void
+StdTimeLoop::TimeInfoBroadcast()
+{
   for (int l = 0; l < GetMultiLevelSolver()->nlevels(); l++) {
-    StdTimeSolver *TS =
-        dynamic_cast<StdTimeSolver *>(GetMultiLevelSolver()->GetSolver(l));
+    StdTimeSolver* TS =
+      dynamic_cast<StdTimeSolver*>(GetMultiLevelSolver()->GetSolver(l));
     assert(TS);
-    TS->SetTimeData(_timeinfo.dt(), _timeinfo.theta(), _timeinfo.time(),
-                    _timeinfo.oldrhs(), _timeinfo.rhs());
+    TS->SetTimeData(_timeinfo.dt(),
+                    _timeinfo.theta(),
+                    _timeinfo.time(),
+                    _timeinfo.oldrhs(),
+                    _timeinfo.rhs());
   }
 }
 
 /*-------------------------------------------------*/
 
-void StdTimeLoop::InitSolution(VectorInterface &u) {
+void
+StdTimeLoop::InitSolution(VectorInterface& u)
+{
   if (_initial == "analytic") {
     VectorInterface f("ff");
     GetMultiLevelSolver()->ReInitVector(f);
@@ -153,7 +165,9 @@ void StdTimeLoop::InitSolution(VectorInterface &u) {
 
 /*-------------------------------------------------*/
 
-void StdTimeLoop::run(const std::string &problemlabel) {
+void
+StdTimeLoop::run(const std::string& problemlabel)
+{
   VectorInterface u("u"), f("f");
   Matrix A("A");
 

@@ -32,7 +32,8 @@
 /*-----------------------------------------*/
 
 namespace Gascoigne {
-class FemInterface {
+class FemInterface
+{
 private:
 protected:
 public:
@@ -47,51 +48,62 @@ public:
   virtual double J() const = 0;
   virtual double G() const = 0;
 
-  virtual void x(Vertex2d &v) const {
+  virtual void x(Vertex2d& v) const
+  {
     std::cerr << "\"FemInterface::x\" not written!" << std::endl;
     abort();
   }
-  virtual void x(Vertex3d &v) const {
+  virtual void x(Vertex3d& v) const
+  {
     std::cerr << "\"FemInterface::x\" not written!" << std::endl;
     abort();
   }
 
-  virtual void normal(Vertex2d &v) const {
+  virtual void normal(Vertex2d& v) const
+  {
     std::cerr << "\"FemInterface::normal\" not written!" << std::endl;
     abort();
   }
-  virtual void normal(Vertex3d &v) const {
+  virtual void normal(Vertex3d& v) const
+  {
     std::cerr << "\"FemInterface::normal\" not written!" << std::endl;
     abort();
   }
 
-  virtual void point(const Vertex2d &v) const {
+  virtual void point(const Vertex2d& v) const
+  {
     std::cerr << "\"FemInterface::point\" not written!" << std::endl;
     abort();
   }
-  virtual void point(const Vertex3d &v) const {
+  virtual void point(const Vertex3d& v) const
+  {
     std::cerr << "\"FemInterface::point\" not written!" << std::endl;
     abort();
   }
 
-  virtual void point_boundary(int ie, const Vertex1d &v) const {
+  virtual void point_boundary(int ie, const Vertex1d& v) const
+  {
     std::cerr << "\"FemInterface::point_boundary\" not written!" << std::endl;
     abort();
   }
-  virtual void point_boundary(int ie, const Vertex2d &v) const {
+  virtual void point_boundary(int ie, const Vertex2d& v) const
+  {
     std::cerr << "\"FemInterface::point_boundary\" not written!" << std::endl;
     abort();
   }
 
-  virtual void ReInit(const Matrix &M) const = 0;
-  virtual void init_test_functions(TestFunction &Phi, double w,
+  virtual void ReInit(const Matrix& M) const = 0;
+  virtual void init_test_functions(TestFunction& Phi,
+                                   double w,
                                    int i) const = 0;
-  virtual void Anisotropy(DoubleMatrix &A) const {
+  virtual void Anisotropy(DoubleMatrix& A) const
+  {
     std::cerr << "\"FemInterface::Anisotropy\" not written!" << std::endl;
     abort();
   }
 
-  virtual void GetCoordinates(DoubleMatrix &A) const {
+  virtual void GetCoordinates(DoubleMatrix& A) const
+  {
     std::cerr << "\"FemInterface::GetCoordinates\" not written!" << std::endl;
     abort();
   }

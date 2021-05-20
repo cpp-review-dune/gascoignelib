@@ -31,9 +31,13 @@ using namespace std;
 /*---------------------------------------------------*/
 
 namespace Gascoigne {
-template <class C>
-void delete_cells(const IntSet &coarselist, vector<C> &liste,
-                  const IntVector &co2n, const IntVector &vo2n) {
+template<class C>
+void
+delete_cells(const IntSet& coarselist,
+             vector<C>& liste,
+             const IntVector& co2n,
+             const IntVector& vo2n)
+{
   for (unsigned oi = 0; oi < co2n.size(); ++oi) {
     int ni = co2n[oi];
     if (ni >= 0) {
@@ -68,18 +72,26 @@ void delete_cells(const IntSet &coarselist, vector<C> &liste,
 
 /*---------------------------------------------------*/
 
-template void delete_cells<Quad>(const IntSet &, vector<Quad> &,
-                                 const IntVector &, const IntVector &);
-template void delete_cells<Hex>(const IntSet &, vector<Hex> &,
-                                const IntVector &, const IntVector &);
+template void
+delete_cells<Quad>(const IntSet&,
+                   vector<Quad>&,
+                   const IntVector&,
+                   const IntVector&);
+template void
+delete_cells<Hex>(const IntSet&,
+                  vector<Hex>&,
+                  const IntVector&,
+                  const IntVector&);
 
-template void delete_cells<BoundaryCell<2>>(const IntSet &,
-                                            vector<BoundaryCell<2>> &,
-                                            const IntVector &,
-                                            const IntVector &);
+template void
+delete_cells<BoundaryCell<2>>(const IntSet&,
+                              vector<BoundaryCell<2>>&,
+                              const IntVector&,
+                              const IntVector&);
 
-template void delete_cells<BoundaryCell<4>>(const IntSet &,
-                                            vector<BoundaryCell<4>> &,
-                                            const IntVector &,
-                                            const IntVector &);
+template void
+delete_cells<BoundaryCell<4>>(const IntSet&,
+                              vector<BoundaryCell<4>>&,
+                              const IntVector&,
+                              const IntVector&);
 } // namespace Gascoigne

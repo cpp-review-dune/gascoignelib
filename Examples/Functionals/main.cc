@@ -31,7 +31,9 @@ using namespace std;
 
 /*---------------------------------------------------*/
 
-int main(int argc, char **argv) {
+int
+main(int argc, char** argv)
+{
   ParamFile paramfile("mesh1.param");
   if (argc >= 2) {
     paramfile.SetName(argv[1]);

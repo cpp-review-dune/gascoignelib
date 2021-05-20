@@ -15,7 +15,9 @@
 /*-----------------------------------------*/
 
 namespace Gascoigne {
-template <int DIM> class BoundaryFSI : public BoundaryEquation {
+template<int DIM>
+class BoundaryFSI : public BoundaryEquation
+{
 
 protected:
   typedef Eigen::Matrix<double, DIM, DIM> MATRIX;
@@ -30,7 +32,8 @@ protected:
 
   mutable FemFunction *U_Vec, *UOLD_Vec;
 
-  void SetFemData(FemData &q) const {
+  void SetFemData(FemData& q) const
+  {
 
     assert(q.find("U_Vec") != q.end());
     U_Vec = &q["U_Vec"];
@@ -42,19 +45,26 @@ protected:
 public:
   ~BoundaryFSI() {}
   BoundaryFSI() { abort(); }
-  BoundaryFSI(const ParamFile *pf);
+  BoundaryFSI(const ParamFile* pf);
 
   std::string GetName() const { return "BoundaryFSI"; }
 
   int GetNcomp() const { return DIM + 1; }
 
-  void Form(VectorIterator b, const FemFunction &U, const TestFunction &N,
+  void Form(VectorIterator b,
+            const FemFunction& U,
+            const TestFunction& N,
             int col) const;
-  void Matrix(EntryMatrix &E, const FemFunction &U, const TestFunction &M,
-              const TestFunction &N, int col) const;
+  void Matrix(EntryMatrix& E,
+              const FemFunction& U,
+              const TestFunction& M,
+              const TestFunction& N,
+              int col) const;
 
-  void pointboundary(double h, const FemFunction &U, const Vertex<DIM> &v,
-                     const Vertex<DIM> &n) const;
+  void pointboundary(double h,
+                     const FemFunction& U,
+                     const Vertex<DIM>& v,
+                     const Vertex<DIM>& n) const;
 };
 
 } // namespace Gascoigne

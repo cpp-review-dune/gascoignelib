@@ -29,24 +29,32 @@ using namespace std;
 
 namespace Gascoigne {
 
-template <int DIM>
+template<int DIM>
 EnergyEstimatorIntegrator<DIM>::EnergyEstimatorIntegrator()
-    : BasicIntegrator(), IF(NULL) {
+  : BasicIntegrator()
+  , IF(NULL)
+{
   _s_energytype = "energy_laplace";
   _d_visc = 1;
 }
 
-template <int DIM>
+template<int DIM>
 EnergyEstimatorIntegrator<DIM>::EnergyEstimatorIntegrator(
-    const std::string &s_energytype, double d_visc)
-    : BasicIntegrator(), IF(NULL) {
+  const std::string& s_energytype,
+  double d_visc)
+  : BasicIntegrator()
+  , IF(NULL)
+{
   _s_energytype = s_energytype;
   _d_visc = d_visc;
 }
 
 /**********************************************************/
 
-template <int DIM> void EnergyEstimatorIntegrator<DIM>::BasicInit() {
+template<int DIM>
+void
+EnergyEstimatorIntegrator<DIM>::BasicInit()
+{
   if (DIM == 2) {
     if (IF == NULL)
       IF = new QuadGauss4;
@@ -69,8 +77,9 @@ template <int DIM> void EnergyEstimatorIntegrator<DIM>::BasicInit() {
 
 /**********************************************************/
 
-template <int DIM>
-EnergyEstimatorIntegrator<DIM>::~EnergyEstimatorIntegrator() {
+template<int DIM>
+EnergyEstimatorIntegrator<DIM>::~EnergyEstimatorIntegrator()
+{
   if (IF) {
     delete IF;
     IF = NULL;
@@ -79,25 +88,31 @@ EnergyEstimatorIntegrator<DIM>::~EnergyEstimatorIntegrator() {
 
 /**********************************************************/
 
-template <>
-double EnergyEstimatorIntegrator<2>::Volume2MeshSize(double vol) const {
+template<>
+double
+EnergyEstimatorIntegrator<2>::Volume2MeshSize(double vol) const
+{
   return sqrt(vol);
 }
 
 /**********************************************************/
 
-template <>
-double EnergyEstimatorIntegrator<3>::Volume2MeshSize(double vol) const {
+template<>
+double
+EnergyEstimatorIntegrator<3>::Volume2MeshSize(double vol) const
+{
   return cbrt(vol);
 }
 
 /**********************************************************/
 
-template <int DIM>
-void EnergyEstimatorIntegrator<DIM>::Jumps(LocalVector &F,
-                                           const FemInterface &FEM,
-                                           const LocalVector &U,
-                                           int ile) const {
+template<int DIM>
+void
+EnergyEstimatorIntegrator<DIM>::Jumps(LocalVector& F,
+                                      const FemInterface& FEM,
+                                      const LocalVector& U,
+                                      int ile) const
+{
   Vertex<DIM> n;
 
   F.ReInit(U.ncomp(), 2 * DIM - 2);
@@ -139,11 +154,12 @@ void EnergyEstimatorIntegrator<DIM>::Jumps(LocalVector &F,
 
 /**********************************************************/
 
-template <int DIM>
+template<int DIM>
 double
-EnergyEstimatorIntegrator<DIM>::JumpNorm(const FemInterface &FEM,
+EnergyEstimatorIntegrator<DIM>::JumpNorm(const FemInterface& FEM,
                                          std::array<double, 2 * DIM - 2> jumps,
-                                         int ile) const {
+                                         int ile) const
+{
   double norm = 0.;
   for (int k = 0; k < 2 * DIM - 2; k++) {
     FEM.point_boundary(ile, _xi[k]);
@@ -156,12 +172,14 @@ EnergyEstimatorIntegrator<DIM>::JumpNorm(const FemInterface &FEM,
 
 /**********************************************************/
 
-template <int DIM>
-double EnergyEstimatorIntegrator<DIM>::Residual(const LocalVector &U,
-                                                const FemInterface &FEM,
-                                                const Equation &EQ,
-                                                const DomainRightHandSide *RHS,
-                                                const LocalData &Q) const {
+template<int DIM>
+double
+EnergyEstimatorIntegrator<DIM>::Residual(const LocalVector& U,
+                                         const FemInterface& FEM,
+                                         const Equation& EQ,
+                                         const DomainRightHandSide* RHS,
+                                         const LocalData& Q) const
+{
   double res = 0.;
   DoubleVector F(U.ncomp());
 

@@ -30,7 +30,9 @@ using namespace std;
 /********************************************************************/
 
 namespace Gascoigne {
-void Visualization::avs(const string &bname) const {
+void
+Visualization::avs(const string& bname) const
+{
   string name = bname;
   name += ".inp";
 
@@ -41,7 +43,8 @@ void Visualization::avs(const string &bname) const {
 
   bool CreateZero = 0;
   for (VisuDataInfo::viterator p = PointDataInfo->vbegin();
-       p != PointDataInfo->vend(); ++p) {
+       p != PointDataInfo->vend();
+       ++p) {
     if (p->second[2] == -1) {
       CreateZero = 1;
       continue;
@@ -83,7 +86,8 @@ void Visualization::avs(const string &bname) const {
     }
     out << endl;
     for (VisuDataInfo::siterator p = PointDataInfo->sbegin();
-         p != PointDataInfo->send(); ++p) {
+         p != PointDataInfo->send();
+         ++p) {
       out << p->first << "," << endl;
     }
     if (CreateZero)
@@ -92,7 +96,8 @@ void Visualization::avs(const string &bname) const {
     for (int ind = 0; ind < PointData->visun(); ind++) {
       out << endl << ind;
       for (VisuDataInfo::siterator p = PointDataInfo->sbegin();
-           p != PointDataInfo->send(); ++p) {
+           p != PointDataInfo->send();
+           ++p) {
         out << " " << PointData->visudata(ind, p->second);
       }
       if (CreateZero)

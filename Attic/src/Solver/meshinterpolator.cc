@@ -35,39 +35,51 @@ using namespace std;
 namespace Gascoigne {
 /**********************************************************/
 
-class ProjectionRightHandSide : public DomainRightHandSide {
+class ProjectionRightHandSide : public DomainRightHandSide
+{
 protected:
   int _ncomp;
   mutable FemFunction __U;
 
 public:
-  ProjectionRightHandSide(int ncomp) : DomainRightHandSide(), _ncomp(ncomp) {}
+  ProjectionRightHandSide(int ncomp)
+    : DomainRightHandSide()
+    , _ncomp(ncomp)
+  {}
   ~ProjectionRightHandSide() {}
 
   int GetNcomp() const { return _ncomp; }
   std::string GetName() const { return "ProjectionRightHandSide"; }
 
-  void SetFemData(FemData &q) const {
+  void SetFemData(FemData& q) const
+  {
     assert(q.count("U") == 1);
     __U = q["U"];
   }
 
-  void operator()(VectorIterator b, const TestFunction &N,
-                  const Vertex2d &v) const {
+  void operator()(VectorIterator b,
+                  const TestFunction& N,
+                  const Vertex2d& v) const
+  {
     for (int i = 0; i < _ncomp; i++)
       b[i] += __U[i].m() * N.m();
   }
-  void operator()(VectorIterator b, const TestFunction &N,
-                  const Vertex3d &v) const {
+  void operator()(VectorIterator b,
+                  const TestFunction& N,
+                  const Vertex3d& v) const
+  {
     for (int i = 0; i < _ncomp; i++)
       b[i] += __U[i].m() * N.m();
   }
 };
 
 /// @brief Dummy Problemdescriptor for the Projectionrighthandside
-class ProjectionRhsPD : public ProblemDescriptorBase {
+class ProjectionRhsPD : public ProblemDescriptorBase
+{
 public:
-  ProjectionRhsPD(int ncomp) : ProblemDescriptorBase() {
+  ProjectionRhsPD(int ncomp)
+    : ProblemDescriptorBase()
+  {
     GetRightHandSidePointer() = new ProjectionRightHandSide(ncomp);
   }
   std::string GetName() const { return "ProjectionRhsPD"; }
@@ -76,11 +88,15 @@ public:
 /**********************************************************/
 /**********************************************************/
 
-MeshInterpolator::MeshInterpolator() : _MA(NULL), _DI(NULL) {}
+MeshInterpolator::MeshInterpolator()
+  : _MA(NULL)
+  , _DI(NULL)
+{}
 
 /**********************************************************/
 
-MeshInterpolator::~MeshInterpolator() {
+MeshInterpolator::~MeshInterpolator()
+{
   if (_DI) {
     delete _DI;
     _DI = NULL;
@@ -93,7 +109,9 @@ MeshInterpolator::~MeshInterpolator() {
 
 /**********************************************************/
 
-void MeshInterpolator::CheckCell(int oldNumber, int newNumber) {
+void
+MeshInterpolator::CheckCell(int oldNumber, int newNumber)
+{
   assert(_Old->sleep(oldNumber) && _New->sleep(newNumber));
 
   int oc0 = _Old->child(oldNumber, 0), nc0 = _New->child(newNumber, 0);
@@ -124,7 +142,9 @@ void MeshInterpolator::CheckCell(int oldNumber, int newNumber) {
 
 /**********************************************************/
 
-void MeshInterpolator::Coarsen(int newNumber) {
+void
+MeshInterpolator::Coarsen(int newNumber)
+{
   for (int i = 0; i < _New->nchilds(newNumber); i++) {
     int ci = _New->child(newNumber, i);
     assert(_New->sleep(ci));
@@ -190,7 +210,9 @@ void MeshInterpolator::Coarsen(int newNumber) {
 
 /**********************************************************/
 
-void MeshInterpolator::Distribute(int oldNumber, int newNumber) {
+void
+MeshInterpolator::Distribute(int oldNumber, int newNumber)
+{
   assert(_Old->sleep(oldNumber) && _New->sleep(newNumber));
 
   int oc0 = _Old->child(oldNumber, 0), nc0 = _New->child(newNumber, 0);
@@ -210,7 +232,9 @@ void MeshInterpolator::Distribute(int oldNumber, int newNumber) {
 
 /**********************************************************/
 
-void MeshInterpolator::InitIndizes(int dim) {
+void
+MeshInterpolator::InitIndizes(int dim)
+{
   int sizeq2 = static_cast<int>(pow(3., static_cast<double>(dim)));
   _iq2.resize(sizeq2);
   if (dim == 2) {
@@ -256,7 +280,9 @@ void MeshInterpolator::InitIndizes(int dim) {
 
 /**********************************************************/
 
-void MeshInterpolator::InitInterpolationWeights(int dim) {
+void
+MeshInterpolator::InitInterpolationWeights(int dim)
+{
   // 1D-Gewichte fuer die automatische Berechnung der Q2-Gewichte
   nmatrix<double> w1d(3, 5, 0.);
   w1d(0, 0) = 1.;
@@ -404,10 +430,12 @@ void MeshInterpolator::InitInterpolationWeights(int dim) {
 
 /**********************************************************/
 
-void MeshInterpolator::RefineAndInterpolate(HierarchicalMesh *Mesh,
-                                            vector<pair<GlobalVector, int>> &u,
-                                            const IntSet &refine,
-                                            vector<vector<bool>> &done) {
+void
+MeshInterpolator::RefineAndInterpolate(HierarchicalMesh* Mesh,
+                                       vector<pair<GlobalVector, int>>& u,
+                                       const IntSet& refine,
+                                       vector<vector<bool>>& done)
+{
   IntVector coarse(0), childs(0);
   int oldcells = Mesh->ncells();
   for (IntSet::const_iterator p = refine.begin(); p != refine.end(); p++) {
@@ -501,29 +529,37 @@ void MeshInterpolator::RefineAndInterpolate(HierarchicalMesh *Mesh,
 
 /**********************************************************/
 
-void MeshInterpolator::AddVectorIntermediate(const GlobalVector &u, int order) {
+void
+MeshInterpolator::AddVectorIntermediate(const GlobalVector& u, int order)
+{
   _VecInt.push_back(make_pair(u, order));
 }
 
 /**********************************************************/
 
-void MeshInterpolator::AddVectorOld(const GlobalVector &u, int order) {
+void
+MeshInterpolator::AddVectorOld(const GlobalVector& u, int order)
+{
   _VecOld.push_back(make_pair(u, order));
   GetOriginalDiscretization()->HNAverage(_VecOld.back().first);
 }
 
 /**********************************************************/
 
-void MeshInterpolator::AddVectorNew(const GlobalVector &u, int order) {
+void
+MeshInterpolator::AddVectorNew(const GlobalVector& u, int order)
+{
   _VecNew.push_back(make_pair(u, order));
   GetDiscretization()->HNAverage(_VecNew.back().first);
 }
 
 /**********************************************************/
 
-void MeshInterpolator::AddCellVectorOld(const GlobalVector &u) {
+void
+MeshInterpolator::AddCellVectorOld(const GlobalVector& u)
+{
   GlobalVector cu(u.ncomp(), _Old->ncells());
-  const IntVector &celll2g = GetOriginalMeshAgent()->Celll2g();
+  const IntVector& celll2g = GetOriginalMeshAgent()->Celll2g();
   for (int i = 0; i < u.n(); i++) {
     for (int c = 0; c < u.ncomp(); c++) {
       cu(celll2g[i], c) = u(i, c);
@@ -534,9 +570,11 @@ void MeshInterpolator::AddCellVectorOld(const GlobalVector &u) {
 
 /**********************************************************/
 
-void MeshInterpolator::AddCellVectorNew(const GlobalVector &u) {
+void
+MeshInterpolator::AddCellVectorNew(const GlobalVector& u)
+{
   GlobalVector cu(u.ncomp(), _New->ncells());
-  const IntVector &celll2g = GetMeshAgent()->Celll2g();
+  const IntVector& celll2g = GetMeshAgent()->Celll2g();
   for (int i = 0; i < u.n(); i++) {
     for (int c = 0; c < u.ncomp(); c++) {
       cu(celll2g[i], c) = u(i, c);
@@ -547,12 +585,15 @@ void MeshInterpolator::AddCellVectorNew(const GlobalVector &u) {
 
 /**********************************************************/
 
-void MeshInterpolator::BasicInit(DiscretizationInterface *DI,
-                                 MeshAgentInterface *MA, const string &name) {
+void
+MeshInterpolator::BasicInit(DiscretizationInterface* DI,
+                            MeshAgentInterface* MA,
+                            const string& name)
+{
   _name = name;
 
   // Original-Solver und -MeshAgent speichern
-  MeshAgent *OMA = dynamic_cast<MeshAgent *>(MA);
+  MeshAgent* OMA = dynamic_cast<MeshAgent*>(MA);
   assert(OMA);
   _OMA = OMA;
 
@@ -567,7 +608,7 @@ void MeshInterpolator::BasicInit(DiscretizationInterface *DI,
   GetMeshAgent()->BasicInit(_name + ".gup", dim, 0, 0);
 
   // neue Discretization anlegen
-  const Q2 *Q2DP = dynamic_cast<const Q2 *>(GetOriginalDiscretization());
+  const Q2* Q2DP = dynamic_cast<const Q2*>(GetOriginalDiscretization());
   if (Q2DP) {
     if (dim == 2) {
       _DI = new Q22d;
@@ -589,7 +630,9 @@ void MeshInterpolator::BasicInit(DiscretizationInterface *DI,
 
 /**********************************************************/
 
-void Gascoigne::MeshInterpolator::ReInit() {
+void
+Gascoigne::MeshInterpolator::ReInit()
+{
   // Klassenvariablen initialisieren
   _BaseCells.clear();
   _ToBeRef.clear();
@@ -614,9 +657,11 @@ void Gascoigne::MeshInterpolator::ReInit() {
 
 /**********************************************************/
 
-void Gascoigne::MeshInterpolator::RefineNodeVector(GlobalVector &uNew,
-                                                   const GlobalVector &uOld) {
-  const Q2 *DI = dynamic_cast<const Q2 *>(GetOriginalDiscretization());
+void
+Gascoigne::MeshInterpolator::RefineNodeVector(GlobalVector& uNew,
+                                              const GlobalVector& uOld)
+{
+  const Q2* DI = dynamic_cast<const Q2*>(GetOriginalDiscretization());
   if (DI) {
     AddVectorNew(uOld, 2);
   } else {
@@ -625,8 +670,8 @@ void Gascoigne::MeshInterpolator::RefineNodeVector(GlobalVector &uNew,
 
   vector<vector<bool>> doneOld(_VecOld.size(),
                                vector<bool>(_Old->nnodes(), true)),
-      doneNew(_VecNew.size(), vector<bool>(_New->nnodes(), true));
-  HierarchicalMesh *Mesh;
+    doneNew(_VecNew.size(), vector<bool>(_New->nnodes(), true));
+  HierarchicalMesh* Mesh;
   if (_Old->ncells() < _New->ncells()) {
     cerr << "Only possible if new mesh is finer than old mesh" << endl;
   }
@@ -644,7 +689,8 @@ void Gascoigne::MeshInterpolator::RefineNodeVector(GlobalVector &uNew,
     _ToBeRef.clear();
     _ToBeRefNew.clear();
     for (IntSet::const_iterator pbc = _BaseCells.begin();
-         pbc != _BaseCells.end(); pbc++) {
+         pbc != _BaseCells.end();
+         pbc++) {
       CheckCell(*pbc, *pbc);
     }
     if (!_ToBeRef.empty()) {
@@ -671,14 +717,16 @@ void Gascoigne::MeshInterpolator::RefineNodeVector(GlobalVector &uNew,
 
 /**********************************************************/
 
-void MeshInterpolator::InterpolateCellVector(GlobalVector &out,
-                                             const GlobalVector &in) {
+void
+MeshInterpolator::InterpolateCellVector(GlobalVector& out,
+                                        const GlobalVector& in)
+{
   AddCellVectorNew(in);
 
   vector<vector<bool>> doneOld(_VecOld.size(),
                                vector<bool>(_Old->ncells(), true)),
-      doneNew(_VecNew.size(), vector<bool>(_New->ncells(), true));
-  HierarchicalMesh *Mesh;
+    doneNew(_VecNew.size(), vector<bool>(_New->ncells(), true));
+  HierarchicalMesh* Mesh;
   if (_Old->ncells() < _New->ncells()) {
     Mesh = _Old;
   } else {
@@ -698,7 +746,8 @@ void MeshInterpolator::InterpolateCellVector(GlobalVector &out,
     _ToBeRef.clear();
     _ToBeRefNew.clear();
     for (IntSet::const_iterator pbc = _BaseCells.begin();
-         pbc != _BaseCells.end(); pbc++) {
+         pbc != _BaseCells.end();
+         pbc++) {
       CheckCell(*pbc, *pbc);
     }
     if (!_ToBeRef.empty()) {
@@ -726,7 +775,7 @@ void MeshInterpolator::InterpolateCellVector(GlobalVector &out,
   out.ReInit(in.ncomp(), GetOriginalMeshAgent()->GetMesh(0)->ncells());
   out.zero();
 
-  const IntVector &cl2g = GetOriginalMeshAgent()->Celll2g();
+  const IntVector& cl2g = GetOriginalMeshAgent()->Celll2g();
   for (int i = 0; i < out.n(); i++) {
     int n = cl2g[i];
     out.equ_node(i, _NewCellNumber[n], _VecInt[0].first);
@@ -738,9 +787,10 @@ void MeshInterpolator::InterpolateCellVector(GlobalVector &out,
 
 /**********************************************************/
 
-void MeshInterpolator::RhsForProjection(GlobalVector &f,
-                                        const GlobalVector &u) {
-  const Q2 *DI = dynamic_cast<const Q2 *>(GetOriginalDiscretization());
+void
+MeshInterpolator::RhsForProjection(GlobalVector& f, const GlobalVector& u)
+{
+  const Q2* DI = dynamic_cast<const Q2*>(GetOriginalDiscretization());
   if (DI) {
     AddVectorNew(u, 2);
   } else {
@@ -749,8 +799,8 @@ void MeshInterpolator::RhsForProjection(GlobalVector &f,
 
   vector<vector<bool>> doneOld(_VecOld.size(),
                                vector<bool>(_Old->nnodes(), true)),
-      doneNew(_VecNew.size(), vector<bool>(_New->nnodes(), true));
-  HierarchicalMesh *Mesh;
+    doneNew(_VecNew.size(), vector<bool>(_New->nnodes(), true));
+  HierarchicalMesh* Mesh;
   if (_Old->ncells() < _New->ncells()) {
     Mesh = _Old;
   } else {
@@ -768,7 +818,8 @@ void MeshInterpolator::RhsForProjection(GlobalVector &f,
     _ToBeRef.clear();
     _ToBeRefNew.clear();
     for (IntSet::const_iterator pbc = _BaseCells.begin();
-         pbc != _BaseCells.end(); pbc++) {
+         pbc != _BaseCells.end();
+         pbc++) {
       CheckCell(*pbc, *pbc);
     }
     if (!_ToBeRef.empty()) {

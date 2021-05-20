@@ -29,78 +29,81 @@
 /*--------------------------------------------------*/
 
 namespace Gascoigne {
-class ProblemDescriptorBase : public ProblemDescriptorInterface {
+class ProblemDescriptorBase : public ProblemDescriptorInterface
+{
 public:
 private:
-  Equation *EQ;
-  BoundaryEquation *BEQ;
-  DomainRightHandSide *RHS;
-  DiracRightHandSide *DRHS;
-  BoundaryRightHandSide *BRHS;
+  Equation* EQ;
+  BoundaryEquation* BEQ;
+  DomainRightHandSide* RHS;
+  DiracRightHandSide* DRHS;
+  BoundaryRightHandSide* BRHS;
 
-  FaceEquation *FEQ;
-  BoundaryManager *BM;
-  ExactSolution *ES;
-  Application *IC;
-  DirichletData *DD;
-  PeriodicData *PD;
-  BoundaryInitialCondition *BIC;
-  ComponentInformation *CI;
+  FaceEquation* FEQ;
+  BoundaryManager* BM;
+  ExactSolution* ES;
+  Application* IC;
+  DirichletData* DD;
+  PeriodicData* PD;
+  BoundaryInitialCondition* BIC;
+  ComponentInformation* CI;
 
   ParamFile _paramfile;
   mutable double _time, _dt;
 
 protected:
-  Equation *&GetEquationPointer() { return EQ; }
-  BoundaryEquation *&GetBoundaryEquationPointer() { return BEQ; }
-  DomainRightHandSide *&GetRightHandSidePointer() { return RHS; }
-  DiracRightHandSide *&GetDiracRightHandSidePointer() { return DRHS; }
-  BoundaryRightHandSide *&GetBoundaryRightHandSidePointer() { return BRHS; }
+  Equation*& GetEquationPointer() { return EQ; }
+  BoundaryEquation*& GetBoundaryEquationPointer() { return BEQ; }
+  DomainRightHandSide*& GetRightHandSidePointer() { return RHS; }
+  DiracRightHandSide*& GetDiracRightHandSidePointer() { return DRHS; }
+  BoundaryRightHandSide*& GetBoundaryRightHandSidePointer() { return BRHS; }
 
-  FaceEquation *&GetFaceEquationPointer() { return FEQ; }
-  BoundaryManager *&GetBoundaryManagerPointer() { return BM; }
-  ExactSolution *&GetExactSolutionPointer() { return ES; }
-  Application *&GetInitialConditionPointer() { return IC; }
-  DirichletData *&GetDirichletDataPointer() { return DD; }
-  PeriodicData *&GetPeriodicDataPointer() { return PD; }
-  BoundaryInitialCondition *&GetBoundaryInitialConditionPointer() {
+  FaceEquation*& GetFaceEquationPointer() { return FEQ; }
+  BoundaryManager*& GetBoundaryManagerPointer() { return BM; }
+  ExactSolution*& GetExactSolutionPointer() { return ES; }
+  Application*& GetInitialConditionPointer() { return IC; }
+  DirichletData*& GetDirichletDataPointer() { return DD; }
+  PeriodicData*& GetPeriodicDataPointer() { return PD; }
+  BoundaryInitialCondition*& GetBoundaryInitialConditionPointer()
+  {
     return BIC;
   }
-  BoundaryManager *GetBoundaryManager() { return BM; }
+  BoundaryManager* GetBoundaryManager() { return BM; }
 
-  ComponentInformation *&GetComponentInformationPointer() { return CI; }
+  ComponentInformation*& GetComponentInformationPointer() { return CI; }
 
 public:
   ProblemDescriptorBase();
 
   ~ProblemDescriptorBase();
 
-  std::ostream &OutputSettings(std::ostream &os) const;
+  std::ostream& OutputSettings(std::ostream& os) const;
 
-  void BasicInit(const ParamFile &pf);
+  void BasicInit(const ParamFile& pf);
 
   // Gives the number of solution components.
   int GetNcomp() const { return GetEquation()->GetNcomp(); }
 
-  const ParamFile &GetParamFile() const { return _paramfile; }
-  ParamFile &GetParamFile() { return _paramfile; }
+  const ParamFile& GetParamFile() const { return _paramfile; }
+  ParamFile& GetParamFile() { return _paramfile; }
 
-  const Equation *GetEquation() const { return EQ; }
-  const BoundaryEquation *GetBoundaryEquation() const { return BEQ; }
-  const DomainRightHandSide *GetRightHandSide() const { return RHS; }
-  const DiracRightHandSide *GetDiracRightHandSide() const { return DRHS; }
-  const BoundaryRightHandSide *GetBoundaryRightHandSide() const { return BRHS; }
+  const Equation* GetEquation() const { return EQ; }
+  const BoundaryEquation* GetBoundaryEquation() const { return BEQ; }
+  const DomainRightHandSide* GetRightHandSide() const { return RHS; }
+  const DiracRightHandSide* GetDiracRightHandSide() const { return DRHS; }
+  const BoundaryRightHandSide* GetBoundaryRightHandSide() const { return BRHS; }
 
-  const DirichletData *GetDirichletData() const { return DD; }
-  const PeriodicData *GetPeriodicData() const { return PD; }
-  const BoundaryInitialCondition *GetBoundaryInitialCondition() const {
+  const DirichletData* GetDirichletData() const { return DD; }
+  const PeriodicData* GetPeriodicData() const { return PD; }
+  const BoundaryInitialCondition* GetBoundaryInitialCondition() const
+  {
     return BIC;
   }
-  const Application *GetInitialCondition() const { return IC; }
-  const ExactSolution *GetExactSolution() const { return ES; }
-  const FaceEquation *GetFaceEquation() const { return FEQ; }
-  const BoundaryManager *GetBoundaryManager() const { return BM; }
-  const ComponentInformation *GetComponentInformation() const { return CI; }
+  const Application* GetInitialCondition() const { return IC; }
+  const ExactSolution* GetExactSolution() const { return ES; }
+  const FaceEquation* GetFaceEquation() const { return FEQ; }
+  const BoundaryManager* GetBoundaryManager() const { return BM; }
+  const ComponentInformation* GetComponentInformation() const { return CI; }
 
   // stores the time and the time step
   // (should be moved to the problem data)

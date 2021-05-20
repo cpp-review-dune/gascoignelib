@@ -29,7 +29,9 @@ using namespace std;
 /* ----------------------------------------- */
 
 namespace Gascoigne {
-ostream &SimpleRowMatrix::Write(ostream &os) const {
+ostream&
+SimpleRowMatrix::Write(ostream& os) const
+{
   int n = ST.n();
   for (int i = 0; i < n; i++) {
     os << i << endl;
@@ -43,8 +45,11 @@ ostream &SimpleRowMatrix::Write(ostream &os) const {
 
 /* ----------------------------------------- */
 
-void SimpleRowMatrix::vmult(nvector<double> &y, const nvector<double> &x,
-                            double d) const {
+void
+SimpleRowMatrix::vmult(nvector<double>& y,
+                       const nvector<double>& x,
+                       double d) const
+{
   int n = ST.n();
   assert(n == y.size());
   assert(n == x.size());
@@ -62,23 +67,31 @@ void SimpleRowMatrix::vmult(nvector<double> &y, const nvector<double> &x,
 
 /* ----------------------------------------- */
 
-void SimpleRowMatrix::ReInit(int n, int nentries) {
+void
+SimpleRowMatrix::ReInit(int n, int nentries)
+{
   ST.memory(n, nentries);
   value.reservesize(nentries);
 }
 
 /* ----------------------------------------- */
 
-void SimpleRowMatrix::ReInit(const SparseStructureInterface *SI) {
-  const SparseStructure *S = dynamic_cast<const SparseStructure *>(SI);
+void
+SimpleRowMatrix::ReInit(const SparseStructureInterface* SI)
+{
+  const SparseStructure* S = dynamic_cast<const SparseStructure*>(SI);
   SimpleRowMatrix::ReInit(S->n(), S->ntotal());
   ST.memory(S);
 }
 
 /* ----------------------------------------- */
 
-void SimpleRowMatrix::entry(niiterator start, niiterator stop,
-                            const EntryMatrix &M, double s) {
+void
+SimpleRowMatrix::entry(niiterator start,
+                       niiterator stop,
+                       const EntryMatrix& M,
+                       double s)
+{
   int n = stop - start;
 
   for (int ii = 0; ii < n; ii++) {

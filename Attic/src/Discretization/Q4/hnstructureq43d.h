@@ -30,7 +30,8 @@ namespace Gascoigne {
 
 /**********************************************************/
 
-class HNStructureQ43d : public HNStructureQ23d {
+class HNStructureQ43d : public HNStructureQ23d
+{
 protected:
   typedef std::array<int, 6> EdgeVector;
   typedef std::array<int, 26> FaceVector;
@@ -42,52 +43,63 @@ protected:
 
   nmatrix<double> Medge, Mface, Mq2edge, Mq2face;
   nvector<std::array<double, 5>> w, wq2;
-  const std::map<int, EdgeVector> *q4edges;
-  const std::map<int, FaceVector> *q4faces;
+  const std::map<int, EdgeVector>* q4edges;
+  const std::map<int, FaceVector>* q4faces;
 
-  void add_column(EntryMatrix &A, const EntryMatrix &B, int j1, int j2,
+  void add_column(EntryMatrix& A,
+                  const EntryMatrix& B,
+                  int j1,
+                  int j2,
                   double s = 1.) const;
-  void add_row(EntryMatrix &A, const EntryMatrix &B, int i1, int i2,
+  void add_row(EntryMatrix& A,
+               const EntryMatrix& B,
+               int i1,
+               int i2,
                double s = 1.) const;
-  void GetHangingIndices(std::vector<int> &hang_e, std::vector<int> &hang_f,
-                         const IntVector &indices) const;
+  void GetHangingIndices(std::vector<int>& hang_e,
+                         std::vector<int>& hang_f,
+                         const IntVector& indices) const;
   int hanging(int i) const;
-  std::array<int, 5> local_nodes_on_edge(int e, const IntVector &indices) const;
+  std::array<int, 5> local_nodes_on_edge(int e, const IntVector& indices) const;
   std::array<int, 25> local_nodes_on_face(int e,
-                                          const IntVector &indices) const;
-  void modify_column_higher(EntryMatrix &E, const std::vector<int> &hang_e,
-                            const std::vector<int> &hang_f,
-                            const IntVector &indices) const;
-  void modify_column_lower(EntryMatrix &E, const std::vector<int> &hang_e,
-                           const std::vector<int> &hang_f,
-                           const IntVector &indices) const;
-  void modify_row_higher(EntryMatrix &E, const std::vector<int> &hang_e,
-                         const std::vector<int> &hang_f,
-                         const IntVector &indices) const;
-  void modify_row_lower(EntryMatrix &E, const std::vector<int> &hang_e,
-                        const std::vector<int> &hang_f,
-                        const IntVector &indices) const;
-  const EdgeVector &regular_nodes_on_edge(int i) const;
-  const FaceVector &regular_nodes_on_face(int i) const;
+                                          const IntVector& indices) const;
+  void modify_column_higher(EntryMatrix& E,
+                            const std::vector<int>& hang_e,
+                            const std::vector<int>& hang_f,
+                            const IntVector& indices) const;
+  void modify_column_lower(EntryMatrix& E,
+                           const std::vector<int>& hang_e,
+                           const std::vector<int>& hang_f,
+                           const IntVector& indices) const;
+  void modify_row_higher(EntryMatrix& E,
+                         const std::vector<int>& hang_e,
+                         const std::vector<int>& hang_f,
+                         const IntVector& indices) const;
+  void modify_row_lower(EntryMatrix& E,
+                        const std::vector<int>& hang_e,
+                        const std::vector<int>& hang_f,
+                        const IntVector& indices) const;
+  const EdgeVector& regular_nodes_on_edge(int i) const;
+  const FaceVector& regular_nodes_on_face(int i) const;
 
 public:
   HNStructureQ43d();
   ~HNStructureQ43d() {}
 
-  void ReInit(const GascoigneMesh *m);
+  void ReInit(const GascoigneMesh* m);
 
-  void CondenseHanging(IntVector &indices) const;
-  void CondenseHanging(EntryMatrix &E, IntVector &indices) const;
-  void CondenseHangingLowerHigher(EntryMatrix &E, IntVector &indices) const;
-  void CondenseHangingHigherLower(EntryMatrix &E, IntVector &indices) const;
-  void MatrixDiag(int ncomp, MatrixInterface &A) const;
-  void SparseStructureDiag(SparseStructure *S) const;
+  void CondenseHanging(IntVector& indices) const;
+  void CondenseHanging(EntryMatrix& E, IntVector& indices) const;
+  void CondenseHangingLowerHigher(EntryMatrix& E, IntVector& indices) const;
+  void CondenseHangingHigherLower(EntryMatrix& E, IntVector& indices) const;
+  void MatrixDiag(int ncomp, MatrixInterface& A) const;
+  void SparseStructureDiag(SparseStructure* S) const;
 
-  void Zero(GlobalVector &u) const;
-  void Average(GlobalVector &u) const;
-  void Distribute(GlobalVector &u) const;
+  void Zero(GlobalVector& u) const;
+  void Average(GlobalVector& u) const;
+  void Distribute(GlobalVector& u) const;
 
-  bool ZeroCheck(const GlobalVector &u) const;
+  bool ZeroCheck(const GlobalVector& u) const;
 };
 
 /**********************************************************/

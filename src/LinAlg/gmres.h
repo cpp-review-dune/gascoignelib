@@ -32,7 +32,9 @@
 /********************************************************************/
 
 namespace Gascoigne {
-template <class SOLVER, class PRECONDITIONER, class VECTOR> class GMRES {
+template<class SOLVER, class PRECONDITIONER, class VECTOR>
+class GMRES
+{
   typedef nvector<double> dvector;
 
   nvector<dvector> H;
@@ -43,22 +45,24 @@ template <class SOLVER, class PRECONDITIONER, class VECTOR> class GMRES {
   int vmax, left_precondition;
 
   void new_memory();
-  void givens_rotation(dvector &, int);
-  void solution(const Matrix &A, VECTOR &, VECTOR &, int);
-  double orthogonalization(dvector &, int, VECTOR &) const;
-  bool reortho_test(const VECTOR &, double) const;
+  void givens_rotation(dvector&, int);
+  void solution(const Matrix& A, VECTOR&, VECTOR&, int);
+  double orthogonalization(dvector&, int, VECTOR&) const;
+  bool reortho_test(const VECTOR&, double) const;
 
-  SOLVER &S;
-  PRECONDITIONER &P;
+  SOLVER& S;
+  PRECONDITIONER& P;
 
 public:
-  GMRES(SOLVER &, PRECONDITIONER &, int);
+  GMRES(SOLVER&, PRECONDITIONER&, int);
   ~GMRES();
   void init();
 
-  int solve(const Matrix &A, VECTOR &x, const VECTOR &b, CGInfo &info);
-  int restarted_solve(const Matrix &A, VECTOR &x, const VECTOR &b,
-                      CGInfo &info);
+  int solve(const Matrix& A, VECTOR& x, const VECTOR& b, CGInfo& info);
+  int restarted_solve(const Matrix& A,
+                      VECTOR& x,
+                      const VECTOR& b,
+                      CGInfo& info);
 };
 } // namespace Gascoigne
 

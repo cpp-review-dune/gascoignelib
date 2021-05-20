@@ -31,7 +31,9 @@ namespace Gascoigne {
 
 /*******************************************************************/
 
-ostream &operator<<(ostream &s, const NLStatisticData &A) {
+ostream&
+operator<<(ostream& s, const NLStatisticData& A)
+{
   s << "NLStatisticData\n";
   s << "newmatrix"
     << "\t" << A.newmatrix() << endl;
@@ -43,7 +45,9 @@ ostream &operator<<(ostream &s, const NLStatisticData &A) {
 
 /*******************************************************************/
 
-ostream &operator<<(ostream &s, const NLControlData &A) {
+ostream&
+operator<<(ostream& s, const NLControlData& A)
+{
   s << "NLControlData\n";
   s << "relax"
     << "\t" << A.relax() << endl;
@@ -57,7 +61,9 @@ ostream &operator<<(ostream &s, const NLControlData &A) {
 
 /*******************************************************************/
 
-ostream &operator<<(ostream &s, const NLUserData &A) {
+ostream&
+operator<<(ostream& s, const NLUserData& A)
+{
   s << "NLUserData\n";
   s << "rho"
     << "\t" << A.rho() << endl;
@@ -71,7 +77,9 @@ ostream &operator<<(ostream &s, const NLUserData &A) {
 
 /*******************************************************************/
 
-ostream &operator<<(ostream &s, const NLInfo &A) {
+ostream&
+operator<<(ostream& s, const NLInfo& A)
+{
   s << "NLInfo\n";
   s << A.statistics() << endl;
   s << A.control() << endl;
@@ -81,7 +89,9 @@ ostream &operator<<(ostream &s, const NLInfo &A) {
 
 /*******************************************************************/
 
-void NLStatisticData::reset() {
+void
+NLStatisticData::reset()
+{
   StatisticData::reset();
   _totalmatrix = 0;
   //_newmatrix = 0;
@@ -89,13 +99,16 @@ void NLStatisticData::reset() {
 
 /*******************************************************************/
 
-NLControlData::NLControlData() {
+NLControlData::NLControlData()
+{
   //_matrixmustbebuild = 1;
 }
 
 /*******************************************************************/
 
-void NLControlData::reset() {
+void
+NLControlData::reset()
+{
   ControlData::reset();
   _relax = 0;
   _laststepbad = 0;
@@ -103,7 +116,9 @@ void NLControlData::reset() {
 
 /*******************************************************************/
 
-NLUserData::NLUserData() : UserData() {
+NLUserData::NLUserData()
+  : UserData()
+{
   breaktol() = 1.e15;
   maxrelax() = 11;
   rho() = 0.3;
@@ -113,13 +128,22 @@ NLUserData::NLUserData() : UserData() {
 
 /*******************************************************************/
 
-void NLInfo::new_matrix() { CD.newmatrix() = 1; }
+void
+NLInfo::new_matrix()
+{
+  CD.newmatrix() = 1;
+}
 
 /*******************************************************************/
 
-NLInfo::NLInfo(CGInfo &info, double f, double t, int p, int m,
-               const string &txt)
-    : Linfo(info) {
+NLInfo::NLInfo(CGInfo& info,
+               double f,
+               double t,
+               int p,
+               int m,
+               const string& txt)
+  : Linfo(info)
+{
   UD.text() = txt;
 
   UD.miniter() = 0;
@@ -135,7 +159,9 @@ NLInfo::NLInfo(CGInfo &info, double f, double t, int p, int m,
 
 /*******************************************************************/
 
-void NLInfo::reset() {
+void
+NLInfo::reset()
+{
   //  SD.reset();
   SD.newmatrix() = 0;
   SD.rate() = 0.;
@@ -145,7 +171,9 @@ void NLInfo::reset() {
 
 /*******************************************************************/
 
-void NLInfo::compute_reduction_rate() {
+void
+NLInfo::compute_reduction_rate()
+{
   double b = CD.residual() / CD.firstresidual();
   double p = 1. / std::max(1, CD.iteration());
   SD.rate() = pow(b, p);
@@ -158,7 +186,9 @@ void NLInfo::compute_reduction_rate() {
 
 /*******************************************************************/
 
-void NLInfo::matrix_control() {
+void
+NLInfo::matrix_control()
+{
   //   cerr << "NLInfo::matrix_control()\t";
   //   cerr << GetLinearInfo().statistics().lastrate()<<"\t"<<UD.linrho()<<endl;
 
@@ -175,7 +205,9 @@ void NLInfo::matrix_control() {
 
 /*******************************************************************/
 
-std::string NLInfo::CheckMatrix() {
+std::string
+NLInfo::CheckMatrix()
+{
   std::string status = control().status();
   if (status != "converged") {
     control().matrixmustbebuild() = 1;
@@ -185,7 +217,9 @@ std::string NLInfo::CheckMatrix() {
 
 /*******************************************************************/
 
-string NLInfo::check_damping(int dampit, double res) {
+string
+NLInfo::check_damping(int dampit, double res)
+{
   CD.residual() = fabs(res);
   CD.relax() = dampit;
 
@@ -201,13 +235,17 @@ string NLInfo::check_damping(int dampit, double res) {
 
 /*******************************************************************/
 
-bool NLInfo::check(double resi, double cori) {
+bool
+NLInfo::check(double resi, double cori)
+{
   return check(CD.iteration(), resi, cori);
 }
 
 /*******************************************************************/
 
-bool NLInfo::check(int iter, double resi, double cori) {
+bool
+NLInfo::check(int iter, double resi, double cori)
+{
   double res = fabs(resi);
 
   double cor = fabs(cori);

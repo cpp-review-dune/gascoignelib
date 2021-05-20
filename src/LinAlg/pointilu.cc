@@ -36,7 +36,10 @@ using namespace std;
 
 namespace Gascoigne {
 PointIlu::PointIlu(int ncomp, string type)
-    : IluInterface(), SimpleIlu(), _ncomp(ncomp) {
+  : IluInterface()
+  , SimpleIlu()
+  , _ncomp(ncomp)
+{
   if (type == "node") {
     SSAP = new NodeSparseStructureAdaptor(_ncomp);
   } else if (type == "component") {
@@ -49,7 +52,8 @@ PointIlu::PointIlu(int ncomp, string type)
 
 /* ----------------------------------------- */
 
-PointIlu::~PointIlu() {
+PointIlu::~PointIlu()
+{
   if (SSAP) {
     delete SSAP;
     SSAP = NULL;
@@ -58,20 +62,23 @@ PointIlu::~PointIlu() {
 
 /* ----------------------------------------- */
 
-void PointIlu::ReInit(const SparseStructureInterface *S) {
+void
+PointIlu::ReInit(const SparseStructureInterface* S)
+{
   SSAP->InitStructure(S);
   SimpleIlu::ReInit(SSAP->n(), SSAP->nentries());
 }
 
 /* ----------------------------------------- */
 
-void PointIlu::ConstructStructure(const IntVector &perm,
-                                  const MatrixInterface &A) {
+void
+PointIlu::ConstructStructure(const IntVector& perm, const MatrixInterface& A)
+{
   assert(p.size() == perm.size());
   assert(q.size() == perm.size());
 
-  const ColumnDiagStencil *AS =
-      dynamic_cast<const ColumnDiagStencil *>(A.GetStencil());
+  const ColumnDiagStencil* AS =
+    dynamic_cast<const ColumnDiagStencil*>(A.GetStencil());
   assert(AS);
 
   ///////////////////////////////////////////////////////
@@ -116,7 +123,9 @@ void PointIlu::ConstructStructure(const IntVector &perm,
 }
 /*-------------------------------------------------------------*/
 
-void PointIlu::modify(int c, double s) {
+void
+PointIlu::modify(int c, double s)
+{
   for (int i = 0; i < ST.n(); ++i) {
     if ((i % _ncomp) == c) {
       double sum = 0.;

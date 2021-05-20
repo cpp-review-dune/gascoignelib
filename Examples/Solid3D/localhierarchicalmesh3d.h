@@ -30,14 +30,15 @@
 /*---------------------------------------------------*/
 
 namespace Gascoigne {
-class LocalHierarchicalMesh3d : public HierarchicalMesh3d {
+class LocalHierarchicalMesh3d : public HierarchicalMesh3d
+{
 protected:
   /*  typedef  */
 
-  void inner_vertex_newton3d(const IntVector &, const IntSet &, const IntSet &);
+  void inner_vertex_newton3d(const IntVector&, const IntSet&, const IntSet&);
 
 public:
-  void write_gup(const std::string &, const GlobalVector &u) const;
+  void write_gup(const std::string&, const GlobalVector& u) const;
 };
 } // namespace Gascoigne
 

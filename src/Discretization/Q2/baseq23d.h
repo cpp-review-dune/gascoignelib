@@ -46,7 +46,8 @@ namespace Gascoigne {
 ///
 /////////////////////////////////////////////
 
-class BaseQ23d : public Base3d {
+class BaseQ23d : public Base3d
+{
 
 protected:
   std::array<double, NDOF1d> a, b, c;
@@ -59,38 +60,44 @@ public:
   BaseQ23d();
 
   int n() const { return NDOF; }
-  void point(const Vertex3d &s) const;
+  void point(const Vertex3d& s) const;
 
   double phi(int i) const { return N[i]; }
   double phi_x(int i) const { return DN[i].x(); }
   double phi_y(int i) const { return DN[i].y(); }
   double phi_z(int i) const { return DN[i].z(); }
-  double phi_xx(int i) const {
+  double phi_xx(int i) const
+  {
     std::cerr << "\"BaseQ23d::phi_xx\" not written!" << std::endl;
     abort();
   }
-  double phi_yy(int i) const {
+  double phi_yy(int i) const
+  {
     std::cerr << "\"BaseQ23d::phi_yy\" not written!" << std::endl;
     abort();
   }
-  double phi_zz(int i) const {
+  double phi_zz(int i) const
+  {
     std::cerr << "\"BaseQ23d::phi_zz\" not written!" << std::endl;
     abort();
   }
-  double phi_xy(int i) const {
+  double phi_xy(int i) const
+  {
     std::cerr << "\"BaseQ23d::phi_xy\" not written!" << std::endl;
     abort();
   }
-  double phi_xz(int i) const {
+  double phi_xz(int i) const
+  {
     std::cerr << "\"BaseQ23d::phi_xz\" not written!" << std::endl;
     abort();
   }
-  double phi_yz(int i) const {
+  double phi_yz(int i) const
+  {
     std::cerr << "\"BaseQ23d::phi_yz\" not written!" << std::endl;
     abort();
   }
 
-  const Vertex3d &phi_grad(int i) const { return DN[i]; }
+  const Vertex3d& phi_grad(int i) const { return DN[i]; }
 };
 } // namespace Gascoigne
 

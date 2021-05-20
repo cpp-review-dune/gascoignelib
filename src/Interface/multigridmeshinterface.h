@@ -29,7 +29,8 @@
 /*--------------------------------------*/
 
 namespace Gascoigne {
-class MultiGridMeshInterface {
+class MultiGridMeshInterface
+{
 private:
 protected:
 public:
@@ -37,7 +38,7 @@ public:
   virtual ~MultiGridMeshInterface() {}
 
   virtual int nlevels() const = 0;
-  virtual const GascoigneMesh &operator()(int l) const = 0;
+  virtual const GascoigneMesh& operator()(int l) const = 0;
 };
 } // namespace Gascoigne
 

@@ -40,14 +40,16 @@ using namespace Gascoigne;
 
 /* ----------------------------------------- */
 
-class BenchMarkDirichletData : public DirichletData {
+class BenchMarkDirichletData : public DirichletData
+{
 protected:
   double vmax;
 
 public:
   BenchMarkDirichletData() { vmax = 0.3; }
   std::string GetName() const { return "Bench"; }
-  void operator()(DoubleVector &b, const Vertex2d &v, int color) const {
+  void operator()(DoubleVector& b, const Vertex2d& v, int color) const
+  {
 
     double y = v.y();
 
@@ -61,10 +63,12 @@ public:
 
 /* ----------------------------------------- */
 
-class ProblemDescriptor : public ProblemDescriptorBase {
+class ProblemDescriptor : public ProblemDescriptorBase
+{
 public:
   std::string GetName() const { return "Local"; }
-  void BasicInit(const ParamFile *pf) {
+  void BasicInit(const ParamFile* pf)
+  {
     GetParamFilePointer() = pf;
     GetEquationPointer() = new NavierStokesGls2d(GetParamFile());
     // GetEquationPointer() = new StokesLps2d(GetParamFile());
@@ -75,17 +79,20 @@ public:
 
 /* ----------------------------------------- */
 
-class RunderKreis : public BoundaryFunction<2> {
+class RunderKreis : public BoundaryFunction<2>
+{
   double _r;
   Vertex2d _c;
 
 public:
   std::string GetName() const { return "RunderKreis"; }
-  void BasicInit(Vertex2d c, double r) {
+  void BasicInit(Vertex2d c, double r)
+  {
     _c = c;
     _r = r;
   }
-  double operator()(const Vertex2d &c) const {
+  double operator()(const Vertex2d& c) const
+  {
     double r = -_r;
     for (int i = 0; i < 2; i++) {
       double dx = c[i] - _c[i];
@@ -97,12 +104,15 @@ public:
 
 /*---------------------------------------------------*/
 
-class BenchMarkMeshAgent : public MeshAgent {
+class BenchMarkMeshAgent : public MeshAgent
+{
 protected:
   RunderKreis RK;
 
 public:
-  BenchMarkMeshAgent() : MeshAgent() {
+  BenchMarkMeshAgent()
+    : MeshAgent()
+  {
     double r = 0.25;
     Vertex2d v(2., 2.);
     RK.BasicInit(v, r);
@@ -118,11 +128,13 @@ public:
 #include "residualfunctional.h"
 
 class LocalDomainFunctionals_FlagForce
-    : public virtual Gascoigne::ResidualFunctional {
+  : public virtual Gascoigne::ResidualFunctional
+{
 public:
   std::string _s_force_type;
   LocalDomainFunctionals_FlagForce(std::string s_force_type)
-      : ResidualFunctional() {
+    : ResidualFunctional()
+  {
     _s_force_type = s_force_type;
 
     if (s_force_type == "drag")
@@ -135,11 +147,12 @@ public:
     __scales.push_back(1);
     ExactValue() = 0.;
 
-    __DD = new Gascoigne::DirichletDataByColor(GetComps(), GetColors(),
-                                               GetScales());
+    __DD =
+      new Gascoigne::DirichletDataByColor(GetComps(), GetColors(), GetScales());
   }
 
-  std::string GetName() const {
+  std::string GetName() const
+  {
     return "LocalDomainFunctionals_FlagForce:" + _s_force_type;
   }
 };

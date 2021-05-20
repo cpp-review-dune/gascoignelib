@@ -9,11 +9,13 @@
 using namespace Gascoigne;
 using namespace std;
 
-class Drag : public virtual ResidualFunctional {
+class Drag : public virtual ResidualFunctional
+{
   std::string GetName() const { return "drag"; }
 
 public:
-  Drag() {
+  Drag()
+  {
     __comps.push_back(1);
     __scales.push_back(1.0);
     __cols.insert(80);
@@ -21,11 +23,13 @@ public:
     __DD = new DirichletDataByColor(GetComps(), GetColors(), GetScales());
   }
 };
-class Lift : public virtual ResidualFunctional {
+class Lift : public virtual ResidualFunctional
+{
   std::string GetName() const { return "lift"; }
 
 public:
-  Lift() {
+  Lift()
+  {
     __comps.push_back(2);
     __scales.push_back(1.0);
     __cols.insert(80);
@@ -36,7 +40,9 @@ public:
 
 /*---------------------------------------------------*/
 
-int main(int argc, char **argv) {
+int
+main(int argc, char** argv)
+{
   ParamFile pf("fsi-3.param");
   if (argc == 2)
     pf.SetName(argv[1]);

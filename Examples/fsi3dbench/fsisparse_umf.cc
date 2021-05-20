@@ -3,19 +3,21 @@
 
 namespace Gascoigne {
 
-template <class B>
-void FSISparseUmf<B>::copy_entries(const HASHMAP<int, int> &G2L,
-                                   const HASHSET<int> &INT,
-                                   const MatrixInterface *A) {
+template<class B>
+void
+FSISparseUmf<B>::copy_entries(const HASHMAP<int, int>& G2L,
+                              const HASHSET<int>& INT,
+                              const MatrixInterface* A)
+{
   // check if __AS and A are the same object...
   // then, we do not need __AS!!!
-  assert(static_cast<const void *>(this->__AS) == static_cast<const void *>(A));
+  assert(static_cast<const void*>(this->__AS) == static_cast<const void*>(A));
 
   // Copy Entries
   assert(this->__ncomp == this->__AS->mat(0)->ncomp());
 
-  const ColumnDiagStencil *ST =
-      dynamic_cast<const ColumnDiagStencil *>(this->__AS->GetStencil());
+  const ColumnDiagStencil* ST =
+    dynamic_cast<const ColumnDiagStencil*>(this->__AS->GetStencil());
   assert(ST);
   int pp = 0;
   for (int r = 0; r < ST->n(); ++r) {
@@ -30,7 +32,7 @@ void FSISparseUmf<B>::copy_entries(const HASHMAP<int, int> &G2L,
         auto it_col = G2L.find(col);
         bool col_found = (it_col != G2L.end());
 
-        const B &b = *this->__AS->mat(p);
+        const B& b = *this->__AS->mat(p);
         for (int cc = 0; cc < this->__ncomp; ++cc, ++pp) {
           // all fluid-fluid but not interface-fluid for velocity
           if ((col_found) && (row_found) && !((rc > 0) && (on_int))) {

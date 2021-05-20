@@ -29,13 +29,17 @@
 /*---------------------------------------------------*/
 
 namespace Gascoigne {
-class LevelSorter3d {
+class LevelSorter3d
+{
 protected:
-  const HierarchicalMesh3d &HM;
+  const HierarchicalMesh3d& HM;
 
 public:
-  LevelSorter3d(const HierarchicalMesh3d &HMHM) : HM(HMHM) {}
-  bool operator()(int i, int j) const {
+  LevelSorter3d(const HierarchicalMesh3d& HMHM)
+    : HM(HMHM)
+  {}
+  bool operator()(int i, int j) const
+  {
     return (HM.hex(i).level() > HM.hex(j).level());
   }
 };

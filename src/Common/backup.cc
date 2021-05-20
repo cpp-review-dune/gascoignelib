@@ -29,7 +29,8 @@ using namespace std;
 namespace Gascoigne {
 /********************************************************************/
 
-ReadBackUp::ReadBackUp(const string &name, int &size, int &comp) {
+ReadBackUp::ReadBackUp(const string& name, int& size, int& comp)
+{
   ifstream file;
   file.open(name.c_str());
 
@@ -43,7 +44,8 @@ ReadBackUp::ReadBackUp(const string &name, int &size, int &comp) {
 
 /********************************************************************/
 
-ReadBackUp::ReadBackUp(GlobalVector &u, const string &name) {
+ReadBackUp::ReadBackUp(GlobalVector& u, const string& name)
+{
   ifstream file;
   file.open(name.c_str());
 
@@ -96,7 +98,8 @@ ReadBackUp::ReadBackUp(GlobalVector &u, const string &name) {
 
 /********************************************************************/
 
-ReadBackUpResize::ReadBackUpResize(GlobalVector &u, const string &name) {
+ReadBackUpResize::ReadBackUpResize(GlobalVector& u, const string& name)
+{
   ifstream file;
   file.open(name.c_str());
 
@@ -148,7 +151,8 @@ ReadBackUpResize::ReadBackUpResize(GlobalVector &u, const string &name) {
 
 /********************************************************************/
 
-WriteBackUp::WriteBackUp(const GlobalVector &u, const string &bname) {
+WriteBackUp::WriteBackUp(const GlobalVector& u, const string& bname)
+{
   string name = bname + ".bup";
 
   ofstream file;
@@ -174,8 +178,8 @@ WriteBackUp::WriteBackUp(const GlobalVector &u, const string &bname) {
 
 /********************************************************************/
 
-WriteBackUpBinary::WriteBackUpBinary(const GlobalVector &u,
-                                     const string &bname) {
+WriteBackUpBinary::WriteBackUpBinary(const GlobalVector& u, const string& bname)
+{
   string name(bname);
   name += ".bip";
 
@@ -195,7 +199,8 @@ WriteBackUpBinary::WriteBackUpBinary(const GlobalVector &u,
 
 /********************************************************************/
 
-ReadBackUpBinary::ReadBackUpBinary(GlobalVector &u, const string &bname) {
+ReadBackUpBinary::ReadBackUpBinary(GlobalVector& u, const string& bname)
+{
   string name(bname);
 
   if (name.substr(name.size() - 4, 4) != ".bip")

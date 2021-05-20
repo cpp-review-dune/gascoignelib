@@ -49,18 +49,19 @@ namespace Gascoigne {
  *                 deren Fehlerindikatoren zusammen 70% betragen.
  */
 
-class DiplomandenAdaptor {
+class DiplomandenAdaptor
+{
 protected:
-  AdaptorData &info;
-  const DoubleVector &eta;
+  AdaptorData& info;
+  const DoubleVector& eta;
   int ppp;
 
   void analyse() const;
 
 public:
-  DiplomandenAdaptor(AdaptorData &, const DoubleVector &eta);
-  void refine(IntVector &ref);
-  void MalteRefine(IntVector &ref) const;
+  DiplomandenAdaptor(AdaptorData&, const DoubleVector& eta);
+  void refine(IntVector& ref);
+  void MalteRefine(IntVector& ref) const;
 };
 } // namespace Gascoigne
 

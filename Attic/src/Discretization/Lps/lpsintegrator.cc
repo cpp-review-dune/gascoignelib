@@ -30,20 +30,28 @@ namespace Gascoigne {
 
 /* ----------------------------------------- */
 
-template <> double LpsIntegrator<2>::Volume2MeshSize(double vol) const {
+template<>
+double
+LpsIntegrator<2>::Volume2MeshSize(double vol) const
+{
   return sqrt(vol);
 }
 
 /* ----------------------------------------- */
 
-template <> double LpsIntegrator<3>::Volume2MeshSize(double vol) const {
+template<>
+double
+LpsIntegrator<3>::Volume2MeshSize(double vol) const
+{
   return cbrt(vol);
 }
 
 /*-----------------------------------------*/
 
-template <int DIM>
-void LpsIntegrator<DIM>::Projection(const FemInterface &FEM) const {
+template<int DIM>
+void
+LpsIntegrator<DIM>::Projection(const FemInterface& FEM) const
+{
   for (int ii = 0; ii < FEM.n(); ii++) {
     FEM.init_test_functions(NLPS[ii], 1., ii);
   }
@@ -89,16 +97,21 @@ void LpsIntegrator<DIM>::Projection(const FemInterface &FEM) const {
 
 /*-----------------------------------------*/
 
-template <int DIM>
-void LpsIntegrator<DIM>::Form(const Equation &EQ, LocalVector &F,
-                              const FemInterface &FEM, const LocalVector &U,
-                              const LocalData &Q, const LocalData &QC) const {
+template<int DIM>
+void
+LpsIntegrator<DIM>::Form(const Equation& EQ,
+                         LocalVector& F,
+                         const FemInterface& FEM,
+                         const LocalVector& U,
+                         const LocalData& Q,
+                         const LocalData& QC) const
+{
   NLPS.resize(FEM.n());
   MLPS.resize(FEM.n());
 
-  const LpsEquation &LEQ = dynamic_cast<const LpsEquation &>(EQ);
+  const LpsEquation& LEQ = dynamic_cast<const LpsEquation&>(EQ);
 
-  const IntegrationFormulaInterface &IF = FormFormula();
+  const IntegrationFormulaInterface& IF = FormFormula();
   Vertex<DIM> x, xi;
 
   for (int k = 0; k < IF.n(); k++) {
@@ -130,10 +143,15 @@ void LpsIntegrator<DIM>::Form(const Equation &EQ, LocalVector &F,
 
 /*-----------------------------------------------------------*/
 
-template <int DIM>
-void LpsIntegrator<DIM>::Matrix(const Equation &EQ, EntryMatrix &E,
-                                const FemInterface &FEM, const LocalVector &U,
-                                const LocalData &Q, const LocalData &QC) const {
+template<int DIM>
+void
+LpsIntegrator<DIM>::Matrix(const Equation& EQ,
+                           EntryMatrix& E,
+                           const FemInterface& FEM,
+                           const LocalVector& U,
+                           const LocalData& Q,
+                           const LocalData& QC) const
+{
   assert(E.Ndof() == FEM.n());
   assert(E.Mdof() == FEM.n());
   assert(E.Ncomp() == U.ncomp());
@@ -141,9 +159,9 @@ void LpsIntegrator<DIM>::Matrix(const Equation &EQ, EntryMatrix &E,
   NLPS.resize(FEM.n());
   MLPS.resize(FEM.n());
 
-  const LpsEquation &LEQ = dynamic_cast<const LpsEquation &>(EQ);
+  const LpsEquation& LEQ = dynamic_cast<const LpsEquation&>(EQ);
 
-  const IntegrationFormulaInterface &IF = FormFormula();
+  const IntegrationFormulaInterface& IF = FormFormula();
   Vertex<DIM> x, xi;
   for (int k = 0; k < IF.n(); k++) {
     IF.xi(xi, k);

@@ -28,7 +28,9 @@ using namespace std;
 namespace Gascoigne {
 /**********************************************************/
 
-PiQ2::PiQ2() : _MP(NULL) {
+PiQ2::PiQ2()
+  : _MP(NULL)
+{
   _q2weight.resize(3, DoubleVector(5));
   _q2weight[0][0] = 1.;
   _q2weight[0][1] = 3. / 8.;
@@ -51,7 +53,9 @@ PiQ2::PiQ2() : _MP(NULL) {
 
 /**********************************************************/
 
-void PiQ2::Init(const GascoigneMesh *MI) {
+void
+PiQ2::Init(const GascoigneMesh* MI)
+{
   _MP = MI;
   assert(_MP);
   assert(_MP->HasQ4Patch());
@@ -59,7 +63,9 @@ void PiQ2::Init(const GascoigneMesh *MI) {
 
 /**********************************************************/
 
-void PiQ2::vmult(GlobalVector &pu, const GlobalVector &u) const {
+void
+PiQ2::vmult(GlobalVector& pu, const GlobalVector& u) const
+{
   int MAXZ = 1, MAXIZ = 1;
   if (_MP->dimension() == 3) {
     MAXZ = 5;
@@ -69,7 +75,7 @@ void PiQ2::vmult(GlobalVector &pu, const GlobalVector &u) const {
   pu.zero();
 
   for (int p = 0; p < _MP->nq4patches(); p++) {
-    const IntVector &q4patch = *_MP->IndicesOfQ4Patch(p);
+    const IntVector& q4patch = *_MP->IndicesOfQ4Patch(p);
     assert(q4patch.size() == npatch);
     for (int jx = 0; jx < 5; jx++) {
       for (int jy = 0; jy < 5; jy++) {

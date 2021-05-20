@@ -25,8 +25,10 @@
 #define __numderivative_h
 
 namespace Gascoigne {
-template <class C, class MAT, class VEC>
-void numderivative(C &application, MAT &M, const VEC &x, double eps = 1.e-4) {
+template<class C, class MAT, class VEC>
+void
+numderivative(C& application, MAT& M, const VEC& x, double eps = 1.e-4)
+{
   int m = x.size();
 
   VEC up(x), u(x), xp(x);

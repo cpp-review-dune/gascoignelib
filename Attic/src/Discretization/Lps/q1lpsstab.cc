@@ -32,8 +32,9 @@
 namespace Gascoigne {
 /* ----------------------------------------- */
 
-void Q1LpsStab::BasicInit(const ParamFile *paramfile,
-                          const HNStructureInterface *hn) {
+void
+Q1LpsStab::BasicInit(const ParamFile* paramfile, const HNStructureInterface* hn)
+{
   PatchDiscretization::BasicInit(paramfile);
   HN = hn;
   assert(HN);
@@ -41,8 +42,12 @@ void Q1LpsStab::BasicInit(const ParamFile *paramfile,
 
 /* ----------------------------------------- */
 
-void Q1LpsStab::LocalToGlobal(MatrixInterface &A, EntryMatrix &E, int iq,
-                              double s) const {
+void
+Q1LpsStab::LocalToGlobal(MatrixInterface& A,
+                         EntryMatrix& E,
+                         int iq,
+                         double s) const
+{
   nvector<int> indices = GetLocalIndices(iq);
   HN->CondenseHangingPatch(E, indices);
   nvector<int>::const_iterator start = indices.begin();
@@ -52,8 +57,10 @@ void Q1LpsStab::LocalToGlobal(MatrixInterface &A, EntryMatrix &E, int iq,
 
 /* ----------------------------------------- */
 
-void Q1LpsStab2d::BasicInit(const ParamFile *paramfile,
-                            const HNStructureInterface *hn) {
+void
+Q1LpsStab2d::BasicInit(const ParamFile* paramfile,
+                       const HNStructureInterface* hn)
+{
   assert(PatchDiscretization::GetIntegrator() == NULL);
   PatchDiscretization::GetIntegratorPointer() = new LpsIntegratorQ1<2>;
 
@@ -67,8 +74,10 @@ void Q1LpsStab2d::BasicInit(const ParamFile *paramfile,
 
 /* ----------------------------------------- */
 
-void Q1LpsStab3d::BasicInit(const ParamFile *paramfile,
-                            const HNStructureInterface *hn) {
+void
+Q1LpsStab3d::BasicInit(const ParamFile* paramfile,
+                       const HNStructureInterface* hn)
+{
   assert(PatchDiscretization::GetIntegrator() == NULL);
   PatchDiscretization::GetIntegratorPointer() = new LpsIntegratorQ1<3>;
 
@@ -82,7 +91,9 @@ void Q1LpsStab3d::BasicInit(const ParamFile *paramfile,
 
 /* ----------------------------------------- */
 
-void Q1LpsStab2d::Transformation(FemInterface::Matrix &T, int iq) const {
+void
+Q1LpsStab2d::Transformation(FemInterface::Matrix& T, int iq) const
+{
   int dim = 2;
   int ne = GetMesh()->nodes_per_cell(iq);
 
@@ -100,7 +111,9 @@ void Q1LpsStab2d::Transformation(FemInterface::Matrix &T, int iq) const {
 
 /* ----------------------------------------- */
 
-void Q1LpsStab3d::Transformation(FemInterface::Matrix &T, int iq) const {
+void
+Q1LpsStab3d::Transformation(FemInterface::Matrix& T, int iq) const
+{
   int dim = 3;
   int ne = GetMesh()->nodes_per_cell(iq);
 

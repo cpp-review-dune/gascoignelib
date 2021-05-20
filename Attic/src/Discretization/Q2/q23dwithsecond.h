@@ -31,12 +31,13 @@ namespace Gascoigne {
 
 /**********************************************************/
 
-class Q23dWithSecond : public virtual Q23d {
+class Q23dWithSecond : public virtual Q23d
+{
 protected:
 public:
   std::string GetName() const { return "Q23dWithSecond"; }
 
-  void BasicInit(const ParamFile *paramfile);
+  void BasicInit(const ParamFile* paramfile);
 };
 
 /**********************************************************/

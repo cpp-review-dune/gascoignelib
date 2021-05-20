@@ -37,7 +37,9 @@ namespace Gascoigne {
 ////
 /////////////////////////////////////////////
 
-template <int DIM> class GlsIntegratorQ2 : public GlsIntegrator<DIM> {
+template<int DIM>
+class GlsIntegratorQ2 : public GlsIntegrator<DIM>
+{
 public:
   //
   ////  Con(De)structor

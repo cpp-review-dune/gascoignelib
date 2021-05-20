@@ -41,14 +41,15 @@ namespace Gascoigne {
 ///
 /////////////////////////////////////////////
 
-class MeshInterface {
+class MeshInterface
+{
 private:
 protected:
 public:
   MeshInterface() {}
   virtual ~MeshInterface() {}
 
-  virtual void BasicInit(const ParamFile *pf) = 0;
+  virtual void BasicInit(const ParamFile* pf) = 0;
 
   virtual std::string GetName() const = 0;
 
@@ -59,75 +60,91 @@ public:
 
   virtual int nodes_per_cell(int i) const = 0;
   virtual int vertex_of_cell(int i, int ii) const = 0;
-  virtual const Vertex2d &vertex2d(int i) const {
+  virtual const Vertex2d& vertex2d(int i) const
+  {
     std::cerr << "\"MeshInterface::vertex2d\" not written!" << std::endl;
     abort();
   }
-  virtual const Vertex3d &vertex3d(int i) const {
+  virtual const Vertex3d& vertex3d(int i) const
+  {
     std::cerr << "\"MeshInterface::vertex3d\" not written!" << std::endl;
     abort();
   }
   virtual IntSet GetColors() const = 0;
-  virtual const IntVector *Vertexo2n() const = 0;
-  virtual IntVector IndicesOfCell(int iq) const {
+  virtual const IntVector* Vertexo2n() const = 0;
+  virtual IntVector IndicesOfCell(int iq) const
+  {
     std::cerr << "\"MeshInterface::IndicesOfCell\" not written!" << std::endl;
     abort();
   }
-  virtual const IntVector *CellOnBoundary(int color) const {
+  virtual const IntVector* CellOnBoundary(int color) const
+  {
     std::cerr << "\"MeshInterface::CellOnBoundary\" not written!" << std::endl;
     abort();
   }
-  virtual const IntVector *LocalOnBoundary(int color) const {
+  virtual const IntVector* LocalOnBoundary(int color) const
+  {
     std::cerr << "\"MeshInterface::LocalOnBoundary\" not written!" << std::endl;
     abort();
   }
-  virtual const IntVector *PatchOnBoundary(int color) const {
+  virtual const IntVector* PatchOnBoundary(int color) const
+  {
     std::cerr << "\"MeshInterface::PatchOnBoundary\" not written!" << std::endl;
     abort();
   }
-  virtual const IntVector *LocalPatchOnBoundary(int color) const {
+  virtual const IntVector* LocalPatchOnBoundary(int color) const
+  {
     std::cerr << "\"MeshInterface::LocalPatchOnBoundary\" not written!"
               << std::endl;
     abort();
   }
-  virtual const IntVector *VertexOnBoundary(int col) const {
+  virtual const IntVector* VertexOnBoundary(int col) const
+  {
     std::cerr << "\"MeshInterface::VertexOnBoundary\" not written!"
               << std::endl;
     abort();
   }
-  virtual const std::map<int, int> *GetPeriodicIndices() const {
+  virtual const std::map<int, int>* GetPeriodicIndices() const
+  {
     std::cerr << "\"MeshInterface::GetPeriodicIndices\" not written!"
               << std::endl;
     abort();
   }
   virtual int VtkType(int i) const = 0;
 
-  virtual const int material(int i) const {
+  virtual const int material(int i) const
+  {
     std::cerr << "\"MeshInterface::material\" written!" << std::endl;
     abort();
   }
-  virtual const int material_patch(int i) const {
+  virtual const int material_patch(int i) const
+  {
     std::cerr << "\"MeshInterface::material_patch\" not written!" << std::endl;
     abort();
   }
-  virtual const IntVector &GetPatch2Cell(int i) const {
+  virtual const IntVector& GetPatch2Cell(int i) const
+  {
     std::cerr << "\"MeshInterface::GetPatch2Cell\" not written!" << std::endl;
     abort();
   }
 
-  virtual const int material_Vanka(int i) const {
+  virtual const int material_Vanka(int i) const
+  {
     std::cerr << "\"MeshInterface::material\" written!" << std::endl;
     abort();
   }
-  virtual const int material_Vanka_patch(int i) const {
+  virtual const int material_Vanka_patch(int i) const
+  {
     std::cerr << "\"MeshInterface::material_patch\" not written!" << std::endl;
     abort();
   }
-  virtual const std::array<Vertex3d, 3> Vanka_basis(int i) const {
+  virtual const std::array<Vertex3d, 3> Vanka_basis(int i) const
+  {
     std::cerr << "\"MeshInterface::material\" written!" << std::endl;
     abort();
   }
-  virtual const std::array<Vertex3d, 3> Vanka_basis_patch(int i) const {
+  virtual const std::array<Vertex3d, 3> Vanka_basis_patch(int i) const
+  {
     std::cerr << "\"MeshInterface::material_patch\" not written!" << std::endl;
     abort();
   }

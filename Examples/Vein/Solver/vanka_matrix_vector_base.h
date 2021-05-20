@@ -21,54 +21,65 @@
 #include "iluinterface.h"
 
 namespace Gascoigne {
-class Vanka_Matrix_Vector_base {
+class Vanka_Matrix_Vector_base
+{
 private:
 public:
-  virtual void build_patches(const GascoigneMesh *M) {
+  virtual void build_patches(const GascoigneMesh* M)
+  {
     cout << "not written Vanka_Matrix_Vector_base" << endl;
     abort();
   }
 
-  virtual void ReInit(const MatrixInterface *A_Matrix) {
+  virtual void ReInit(const MatrixInterface* A_Matrix)
+  {
     cout << "not written Vanka_Matrix_Vector_base" << endl;
     abort();
   }
 
-  virtual Eigen::FullPivLU<Eigen::MatrixXd> &GetLU(int n) {
+  virtual Eigen::FullPivLU<Eigen::MatrixXd>& GetLU(int n)
+  {
     cout << "not written Vanka_Matrix_Vector_base" << endl;
     abort();
   }
 
-  virtual int patchindices_size() {
+  virtual int patchindices_size()
+  {
     cout << "not written Vanka_Matrix_Vector_base" << endl;
     abort();
   }
 
-  virtual const std::vector<int> &Getpatchindices(int p) {
+  virtual const std::vector<int>& Getpatchindices(int p)
+  {
     cout << "not written Vanka_Matrix_Vector_base" << endl;
     abort();
   }
 
-  virtual const HASHMAP<int, int> &GetINP(int p) {
+  virtual const HASHMAP<int, int>& GetINP(int p)
+  {
     cout << "not written Vanka_Matrix_Vector_base" << endl;
     abort();
   }
 
-  virtual const std::vector<int> &Get_Vector_Columns(int p) {
+  virtual const std::vector<int>& Get_Vector_Columns(int p)
+  {
     cout << "not written Vanka_Matrix_Vector_base" << endl;
     abort();
   }
 
-  virtual std::vector<int>::iterator Get_Vector_Columns_begin(int n) {
+  virtual std::vector<int>::iterator Get_Vector_Columns_begin(int n)
+  {
     cout << "not written Vanka_Matrix_Vector_base" << endl;
     abort();
   }
 
-  virtual std::vector<int>::iterator Get_Vector_Columns_end(int n) {
+  virtual std::vector<int>::iterator Get_Vector_Columns_end(int n)
+  {
     cout << "not written Vanka_Matrix_Vector_base" << endl;
     abort();
   }
-  virtual void clear() {
+  virtual void clear()
+  {
     cout << "not written Vanka_Matrix_Vector_base" << endl;
     abort();
   }

@@ -5,7 +5,9 @@
 using namespace Gascoigne;
 using namespace std;
 
-int main(int argc, char **argv) {
+int
+main(int argc, char** argv)
+{
   ParamFile pf("fsi-3.param");
   if (argc == 2)
     pf.SetName(argv[1]);

@@ -29,11 +29,16 @@
 /*------------------------------------------------------------------*/
 
 namespace Gascoigne {
-BaseQ12d::BaseQ12d() { BasicInit(); }
+BaseQ12d::BaseQ12d()
+{
+  BasicInit();
+}
 
 /*------------------------------------------------------------------*/
 
-void BaseQ12d::BasicInit() {
+void
+BaseQ12d::BasicInit()
+{
   N.resize(NDOF);
   DN.resize(NDOF);
   //   dxy.reservesize(NDOF);
@@ -46,7 +51,9 @@ void BaseQ12d::BasicInit() {
 
 /*------------------------------------------------------------------*/
 
-void BaseQ12d::point(const Vertex2d &s) const {
+void
+BaseQ12d::point(const Vertex2d& s) const
+{
   for (int i = 0; i < NDOF; i++) {
     int ix = i % NDOF1d;
     int iy = i / NDOF1d;

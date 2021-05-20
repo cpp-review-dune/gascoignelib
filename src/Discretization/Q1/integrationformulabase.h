@@ -30,8 +30,9 @@
 /*-----------------------------------------*/
 
 namespace Gascoigne {
-template <int DIM>
-class IntegrationFormulaBase : public IntegrationFormulaInterface {
+template<int DIM>
+class IntegrationFormulaBase : public IntegrationFormulaInterface
+{
 private:
   typedef Vertex<DIM> VERTEX;
 
@@ -40,7 +41,8 @@ private:
   std::vector<VERTEX> _ic;
 
 protected:
-  void ReInit(int n) {
+  void ReInit(int n)
+  {
     _in = n;
     _iw.reserve(n);
     _iw.resize(n);
@@ -49,21 +51,26 @@ protected:
   }
 
 public:
-  IntegrationFormulaBase<DIM>() : IntegrationFormulaInterface() {}
+  IntegrationFormulaBase<DIM>()
+    : IntegrationFormulaInterface()
+  {}
   IntegrationFormulaBase<DIM>(int n) { ReInit(n); }
-  IntegrationFormulaBase<DIM>(const IntegrationFormulaBase<DIM> &IF)
-      : _in(IF.n()), _iw(IF.w()), _ic(IF.c()) {}
+  IntegrationFormulaBase<DIM>(const IntegrationFormulaBase<DIM>& IF)
+    : _in(IF.n())
+    , _iw(IF.w())
+    , _ic(IF.c())
+  {}
 
   int n() const { return _in; }
   double w(int k) const { return _iw[k]; }
-  const VERTEX &c(int k) const { return _ic[k]; }
-  const DoubleVector &w() const { return _iw; }
+  const VERTEX& c(int k) const { return _ic[k]; }
+  const DoubleVector& w() const { return _iw; }
 
-  double &w(int k) { return _iw[k]; }
-  VERTEX &c(int k) { return _ic[k]; }
+  double& w(int k) { return _iw[k]; }
+  VERTEX& c(int k) { return _ic[k]; }
 
-  void xi(VERTEX &v, int k) const { v = _ic[k]; }
-  const std::vector<VERTEX> &c() const { return _ic; }
+  void xi(VERTEX& v, int k) const { v = _ic[k]; }
+  const std::vector<VERTEX>& c() const { return _ic; }
 };
 } // namespace Gascoigne
 

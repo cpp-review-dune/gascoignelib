@@ -32,19 +32,20 @@
 /*--------------------------------------------------------------*/
 
 namespace Gascoigne {
-class LevelMesh2d : public Index {
+class LevelMesh2d : public Index
+{
 protected:
   typedef std::map<int, std::array<int, 3>> QuadraticHNStructure3;
   typedef std::map<int, std::array<int, 6>> QuarticHNStructure5;
 
-  const HierarchicalMesh2d *HMP;
+  const HierarchicalMesh2d* HMP;
 
   void check_leveljump() const;
-  void fill_opis(IntSet &dst, IntSet &oldquads) const;
-  void fill_enkel(IntSet &dst, const Quad &Q) const;
-  void fill_childs(IntSet &dst, const Quad &Q) const;
-  bool EnkelUniform(const Quad &Q) const;
-  bool BuildFathers(std::set<int> &Vaeter) const;
+  void fill_opis(IntSet& dst, IntSet& oldquads) const;
+  void fill_enkel(IntSet& dst, const Quad& Q) const;
+  void fill_childs(IntSet& dst, const Quad& Q) const;
+  bool EnkelUniform(const Quad& Q) const;
+  bool BuildFathers(std::set<int>& Vaeter) const;
   void InitCells(int n);
   void InitNodes(int n);
   void InitEdges(int n);
@@ -52,16 +53,17 @@ protected:
 public:
   /*----- Constructor -----*/
 
-  LevelMesh2d(const HierarchicalMesh *hmp);
+  LevelMesh2d(const HierarchicalMesh* hmp);
   ~LevelMesh2d();
 
-  const HierarchicalMesh2d *GetHierarchicalMesh() const { return HMP; }
+  const HierarchicalMesh2d* GetHierarchicalMesh() const { return HMP; }
 
   int ncells() const { return Index::QuadSize(); }
-  const Quad &quad(int i) const { return HMP->quad(Quadl2g(i)); }
-  const Vertex2d &vertex2d(int i) const { return HMP->vertex2d(Vertexl2g(i)); }
+  const Quad& quad(int i) const { return HMP->quad(Quadl2g(i)); }
+  const Vertex2d& vertex2d(int i) const { return HMP->vertex2d(Vertexl2g(i)); }
 
-  int vertex_of_cell(int i, int j) const {
+  int vertex_of_cell(int i, int j) const
+  {
     return Vertexg2l(HMP->vertex_of_cell(Quadl2g(i), j));
   }
 
@@ -69,17 +71,17 @@ public:
 
   bool EdgeIsHangingGlobalIndex(int i) const;
 
-  void BasicInit(const IntSet &n, const IntSet &o);
+  void BasicInit(const IntSet& n, const IntSet& o);
 
   /*----- Functions for patches -----*/
 
-  void construct_lists(IntSet &newquads, IntSet &oldquads) const;
-  void ConstructHangingStructureQuadratic(QuadraticHNStructure3 &hnq2) const;
-  void ConstructHangingStructureQuartic(QuarticHNStructure5 &hnq4) const;
-  void InitBoundaryHandler(BoundaryIndexHandler &BI,
-                           const PatchIndexHandler &PIH) const;
-  void ConstructIndOfPatch(nvector<IntVector> &dstv) const;
-  bool ConstructCellIndOfPatch(IntVector &dstc) const;
+  void construct_lists(IntSet& newquads, IntSet& oldquads) const;
+  void ConstructHangingStructureQuadratic(QuadraticHNStructure3& hnq2) const;
+  void ConstructHangingStructureQuartic(QuarticHNStructure5& hnq4) const;
+  void InitBoundaryHandler(BoundaryIndexHandler& BI,
+                           const PatchIndexHandler& PIH) const;
+  void ConstructIndOfPatch(nvector<IntVector>& dstv) const;
+  bool ConstructCellIndOfPatch(IntVector& dstc) const;
 };
 } // namespace Gascoigne
 

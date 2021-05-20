@@ -30,9 +30,13 @@ using namespace std;
 /*---------------------------------------------------*/
 
 namespace Gascoigne {
-template <class C>
-void delete_cells(const IntSet &coarselist, vector<C> &liste,
-                  const vector<int> &co2n, const vector<int> &vo2n) {
+template<class C>
+void
+delete_cells(const IntSet& coarselist,
+             vector<C>& liste,
+             const vector<int>& co2n,
+             const vector<int>& vo2n)
+{
   for (unsigned oi = 0; oi < co2n.size(); ++oi) {
     int ni = co2n[oi];
     if (ni >= 0) {
@@ -67,11 +71,15 @@ void delete_cells(const IntSet &coarselist, vector<C> &liste,
 
 /*---------------------------------------------------*/
 
-template void delete_cells<Hex>(const IntSet &, vector<Hex> &,
-                                const vector<int> &, const vector<int> &);
+template void
+delete_cells<Hex>(const IntSet&,
+                  vector<Hex>&,
+                  const vector<int>&,
+                  const vector<int>&);
 
-template void delete_cells<BoundaryCell<4>>(const IntSet &,
-                                            vector<BoundaryCell<4>> &,
-                                            const vector<int> &,
-                                            const vector<int> &);
+template void
+delete_cells<BoundaryCell<4>>(const IntSet&,
+                              vector<BoundaryCell<4>>&,
+                              const vector<int>&,
+                              const vector<int>&);
 } // namespace Gascoigne

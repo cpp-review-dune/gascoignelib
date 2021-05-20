@@ -32,7 +32,8 @@
 namespace Gascoigne {
 /**************************************************/
 
-class BaseQ12dPatch : public Base2d {
+class BaseQ12dPatch : public Base2d
+{
 protected:
   mutable int pB;
   BaseQ12d B1;
@@ -41,14 +42,17 @@ protected:
   nvector<int> perm;
   mutable nvector<double> dxy;
 
-  void BasicInit() {
+  void BasicInit()
+  {
     N.resize(NDOF);
     DN.resize(NDOF);
     /*       dxy.resize(NDOF);   */
   }
 
 public:
-  BaseQ12dPatch() : perm(4) {
+  BaseQ12dPatch()
+    : perm(4)
+  {
     BasicInit();
 
     perm[0] = 0;
@@ -62,15 +66,17 @@ public:
   double phi_x(int i) const { return DN[i].x(); }
   double phi_y(int i) const { return DN[i].y(); }
   double phi_xx(int i) const { return 0.; }
-  double phi_xy(int i) const {
+  double phi_xy(int i) const
+  {
     std::cerr << "\"BaseQ12dPatch::phi_xy\" not written!" << std::endl;
     abort();
     //     return dxy[i];
   }
   double phi_yy(int i) const { return 0.; }
-  const Vertex2d &phi_grad(int i) const { return DN[i]; }
+  const Vertex2d& phi_grad(int i) const { return DN[i]; }
 
-  void point(const Vertex2d &s) const {
+  void point(const Vertex2d& s) const
+  {
     Vertex2d t(s);
     if ((s.x() <= 0.5) && (s.y() <= 0.5)) {
       pB = 0;

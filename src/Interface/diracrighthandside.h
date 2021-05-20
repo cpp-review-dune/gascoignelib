@@ -25,14 +25,15 @@
 #define __DiracRightHandSide_h
 
 #include "application.h"
-#include "vertex.h"
 #include "compvector.h"
+#include "vertex.h"
 #include <vector>
 
 /**********************************************************/
 
 namespace Gascoigne {
-class DiracRightHandSide : public virtual Application {
+class DiracRightHandSide : public virtual Application
+{
 private:
 protected:
   std::vector<Vertex2d> _v2d;
@@ -50,42 +51,53 @@ public:
      of a copy constructor and the cloning of classes is required for
      multithreading.
   */
-  virtual DiracRightHandSide *createNew() const {
+  virtual DiracRightHandSide* createNew() const
+  {
     std::cerr << "\"DRHS::createNew\" not written!" << std::endl;
     abort();
   }
 
-  virtual void BasicInit(const std::vector<Vertex2d> &v2d,
-                         const std::vector<int> &comps) {
+  virtual void BasicInit(const std::vector<Vertex2d>& v2d,
+                         const std::vector<int>& comps)
+  {
     _v2d = v2d;
     _comps = comps;
   }
-  virtual void BasicInit(const std::vector<Vertex3d> &v3d,
-                         const std::vector<int> &comps) {
+  virtual void BasicInit(const std::vector<Vertex3d>& v3d,
+                         const std::vector<int>& comps)
+  {
     _v3d = v3d;
     _comps = comps;
   }
 
-  virtual const std::vector<Vertex2d> &GetPoints2d() const { return _v2d; }
-  virtual const std::vector<Vertex3d> &GetPoints3d() const { return _v3d; }
+  virtual const std::vector<Vertex2d>& GetPoints2d() const { return _v2d; }
+  virtual const std::vector<Vertex3d>& GetPoints3d() const { return _v3d; }
 
-  virtual const std::vector<int> &GetComps() const { return _comps; }
+  virtual const std::vector<int>& GetComps() const { return _comps; }
 
-  virtual double operator()(int i, const Vertex2d &v) const {
+  virtual double operator()(int i, const Vertex2d& v) const
+  {
     std::cerr << "\"DiracRightHandSide::operator()\" not written!" << std::endl;
     abort();
   }
-  virtual double operator()(int i, const Vertex3d &v) const {
+  virtual double operator()(int i, const Vertex3d& v) const
+  {
     std::cerr << "\"DiracRightHandSide::operator()\" not written!" << std::endl;
     abort();
   }
 
-  virtual void operator()(int i, VectorIterator b, const TestFunction &N,
-                          const Vertex2d &v) const {
+  virtual void operator()(int i,
+                          VectorIterator b,
+                          const TestFunction& N,
+                          const Vertex2d& v) const
+  {
     b[_comps[i]] += N.m() * (*this)(i, v);
   }
-  virtual void operator()(int i, VectorIterator b, const TestFunction &N,
-                          const Vertex3d &v) const {
+  virtual void operator()(int i,
+                          VectorIterator b,
+                          const TestFunction& N,
+                          const Vertex3d& v) const
+  {
     b[_comps[i]] += N.m() * (*this)(i, v);
   }
 };

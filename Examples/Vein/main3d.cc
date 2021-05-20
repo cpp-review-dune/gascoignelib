@@ -9,22 +9,26 @@
 using namespace Gascoigne;
 using namespace std;
 
-class Drag : public virtual ResidualFunctional {
+class Drag : public virtual ResidualFunctional
+{
   std::string GetName() const { return "drag"; }
 
 public:
-  Drag() {
+  Drag()
+  {
     __comps.push_back(1);
     __scales.push_back(1.0);
     __cols.insert(84);
     __DD = new DirichletDataByColor(GetComps(), GetColors(), GetScales());
   }
 };
-class Lift : public virtual ResidualFunctional {
+class Lift : public virtual ResidualFunctional
+{
   std::string GetName() const { return "drag"; }
 
 public:
-  Lift() {
+  Lift()
+  {
     __comps.push_back(2);
     __scales.push_back(1.0);
     __cols.insert(84);
@@ -37,10 +41,12 @@ public:
 #include "FSI/FSI_reduced/boundaryfsi.h"
 #include "FSI/FSI_reduced/fsi.h"
 
-class ProblemDescriptorFSI3d : public ProblemDescriptorBase {
+class ProblemDescriptorFSI3d : public ProblemDescriptorBase
+{
 public:
   std::string GetName() const { return "fsi_reduced"; }
-  void BasicInit(const ParamFile *pf) {
+  void BasicInit(const ParamFile* pf)
+  {
     GetParamFilePointer() = pf;
     GetEquationPointer() = new FSI<3>(GetParamFile());
     GetBoundaryEquationPointer() = new BoundaryFSI<3>(GetParamFile());
@@ -53,10 +59,12 @@ public:
 /*---------------------------------------------------*/
 #include "FSI/MeshMotion/meshmotion.h"
 
-class ProblemDescriptormMeshMotion : public ProblemDescriptorBase {
+class ProblemDescriptormMeshMotion : public ProblemDescriptorBase
+{
 public:
   std::string GetName() const { return "meshmotion"; }
-  void BasicInit(const ParamFile *pf) {
+  void BasicInit(const ParamFile* pf)
+  {
     GetParamFilePointer() = pf;
     GetEquationPointer() = new MeshMotion<3>(GetParamFile());
     GetBoundaryEquationPointer() = NULL;
@@ -68,10 +76,12 @@ public:
 /*---------------------------------------------------*/
 #include "FSI/Deformation_Solid/def_solid.h"
 
-class ProblemDescriptormDef_Solid : public ProblemDescriptorBase {
+class ProblemDescriptormDef_Solid : public ProblemDescriptorBase
+{
 public:
   std::string GetName() const { return "def_solid"; }
-  void BasicInit(const ParamFile *pf) {
+  void BasicInit(const ParamFile* pf)
+  {
     GetParamFilePointer() = pf;
     GetEquationPointer() = new Def_Solid<3>(GetParamFile());
     GetBoundaryEquationPointer() = NULL;
@@ -84,10 +94,12 @@ public:
 #include "FSI/FSI_main/FSI_main.h"
 #include "FSI/FSI_main/FSI_main_dirichlet.h"
 
-class ProblemDescriptormFSI_main : public ProblemDescriptorBase {
+class ProblemDescriptormFSI_main : public ProblemDescriptorBase
+{
 public:
   std::string GetName() const { return "fsi_main"; }
-  void BasicInit(const ParamFile *pf) {
+  void BasicInit(const ParamFile* pf)
+  {
     GetParamFilePointer() = pf;
     GetEquationPointer() = new FSI_main<3>(GetParamFile());
     GetBoundaryEquationPointer() = NULL;
@@ -103,10 +115,12 @@ public:
 #include "Fluid_Stat/fluid_stat.h"
 #include "Fluid_Stat/fluid_stat_dirichlet.h"
 
-class ProblemDescriptorFluid_Stat3d : public ProblemDescriptorBase {
+class ProblemDescriptorFluid_Stat3d : public ProblemDescriptorBase
+{
 public:
   std::string GetName() const { return "fluid_stat"; }
-  void BasicInit(const ParamFile *pf) {
+  void BasicInit(const ParamFile* pf)
+  {
     GetParamFilePointer() = pf;
     GetEquationPointer() = new Fluid_Stat<3>(GetParamFile());
     GetBoundaryEquationPointer() = new Boundary_Fluid_Stat<3>(GetParamFile());
@@ -124,10 +138,12 @@ public:
 #include "Solid_Euler/solid_euler_dirichlet.h"
 #include "Solid_Euler/solideuler.h"
 
-class ProblemDescriptorSolid_Euler3d : public ProblemDescriptorBase {
+class ProblemDescriptorSolid_Euler3d : public ProblemDescriptorBase
+{
 public:
   std::string GetName() const { return "solid_euler"; }
-  void BasicInit(const ParamFile *pf) {
+  void BasicInit(const ParamFile* pf)
+  {
     GetParamFilePointer() = pf;
     GetEquationPointer() = new SolidEuler<3>(GetParamFile());
     GetBoundaryEquationPointer() = new BoundarySolidEuler<3>(GetParamFile());
@@ -141,7 +157,9 @@ public:
 
 /*---------------------------------------------------*/
 
-int main(int argc, char **argv) {
+int
+main(int argc, char** argv)
+{
   ParamFile pf_fsi_red("vein_fsi_reduced.param");
   ParamFile pf_meshmotion("vein_meshmotion.param");
   ParamFile pf_def_solid("vein_def_solid.param");

@@ -30,50 +30,61 @@ namespace Gascoigne {
 
 /**********************************************************/
 
-class HNStructureQ42d : public HNStructureQ22d {
+class HNStructureQ42d : public HNStructureQ22d
+{
 protected:
   nmatrix<double> M, Mq2;
   nvector<std::array<double, 5>> w, wq2;
-  const std::map<int, std::array<int, 6>> *q4edges;
+  const std::map<int, std::array<int, 6>>* q4edges;
 
   typedef std::map<int, std::array<int, 6>>::iterator iteratorq4;
   typedef std::map<int, std::array<int, 6>>::const_iterator const_iteratorq4;
 
-  void add_column(EntryMatrix &A, const EntryMatrix &B, int j1, int j2,
+  void add_column(EntryMatrix& A,
+                  const EntryMatrix& B,
+                  int j1,
+                  int j2,
                   double s = 1.) const;
-  void add_row(EntryMatrix &A, const EntryMatrix &B, int i1, int i2,
+  void add_row(EntryMatrix& A,
+               const EntryMatrix& B,
+               int i1,
+               int i2,
                double s = 1.) const;
-  void GetHangingIndices(std::vector<int> &hang,
-                         const IntVector &indices) const;
+  void GetHangingIndices(std::vector<int>& hang,
+                         const IntVector& indices) const;
   std::array<int, 5> local_nodes(int e, int n) const;
-  void modify_column_higher(EntryMatrix &E, const std::vector<int> &hang,
-                            const IntVector &indices) const;
-  void modify_column_lower(EntryMatrix &E, const std::vector<int> &hang,
-                           const IntVector &indices) const;
-  void modify_row_higher(EntryMatrix &E, const std::vector<int> &hang,
-                         const IntVector &indices) const;
-  void modify_row_lower(EntryMatrix &E, const std::vector<int> &hang,
-                        const IntVector &indices) const;
-  const std::array<int, 6> &regular_nodes(int i) const;
+  void modify_column_higher(EntryMatrix& E,
+                            const std::vector<int>& hang,
+                            const IntVector& indices) const;
+  void modify_column_lower(EntryMatrix& E,
+                           const std::vector<int>& hang,
+                           const IntVector& indices) const;
+  void modify_row_higher(EntryMatrix& E,
+                         const std::vector<int>& hang,
+                         const IntVector& indices) const;
+  void modify_row_lower(EntryMatrix& E,
+                        const std::vector<int>& hang,
+                        const IntVector& indices) const;
+  const std::array<int, 6>& regular_nodes(int i) const;
 
 public:
   HNStructureQ42d();
   ~HNStructureQ42d() {}
 
-  void ReInit(const GascoigneMesh *m);
+  void ReInit(const GascoigneMesh* m);
 
-  void CondenseHanging(IntVector &indices) const;
-  void CondenseHanging(EntryMatrix &E, IntVector &indices) const;
-  void CondenseHangingLowerHigher(EntryMatrix &E, IntVector &indices) const;
-  void CondenseHangingHigherLower(EntryMatrix &E, IntVector &indices) const;
-  void MatrixDiag(int ncomp, MatrixInterface &A) const;
-  void SparseStructureDiag(SparseStructure *S) const;
+  void CondenseHanging(IntVector& indices) const;
+  void CondenseHanging(EntryMatrix& E, IntVector& indices) const;
+  void CondenseHangingLowerHigher(EntryMatrix& E, IntVector& indices) const;
+  void CondenseHangingHigherLower(EntryMatrix& E, IntVector& indices) const;
+  void MatrixDiag(int ncomp, MatrixInterface& A) const;
+  void SparseStructureDiag(SparseStructure* S) const;
 
-  void Zero(GlobalVector &u) const;
-  void Average(GlobalVector &u) const;
-  void Distribute(GlobalVector &u) const;
+  void Zero(GlobalVector& u) const;
+  void Average(GlobalVector& u) const;
+  void Distribute(GlobalVector& u) const;
 
-  bool ZeroCheck(const GlobalVector &u) const;
+  bool ZeroCheck(const GlobalVector& u) const;
 };
 
 /**********************************************************/

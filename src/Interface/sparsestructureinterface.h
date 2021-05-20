@@ -35,7 +35,8 @@ namespace Gascoigne {
 ////
 /////////////////////////////////////////////
 
-class SparseStructureInterface {
+class SparseStructureInterface
+{
 private:
 protected:
 public:

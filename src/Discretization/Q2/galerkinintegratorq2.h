@@ -37,8 +37,9 @@ namespace Gascoigne {
 ////
 /////////////////////////////////////////////
 
-template <int DIM>
-class GalerkinIntegratorQ2 : virtual public GalerkinIntegrator<DIM> {
+template<int DIM>
+class GalerkinIntegratorQ2 : virtual public GalerkinIntegrator<DIM>
+{
 public:
   //
   ////  Con(De)structor

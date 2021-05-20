@@ -16,13 +16,16 @@ using namespace std;
 
 namespace Gascoigne {
 
-template <int DIM>
-void FSISolver<DIM>::smooth(int niter, VectorInterface &x,
-                            const VectorInterface &y,
-                            VectorInterface &h) const {
-  GlobalVector &gvX = GetGV(x);
-  const GlobalVector &gvY = GetGV(y);
-  GlobalVector &gvH = GetGV(h);
+template<int DIM>
+void
+FSISolver<DIM>::smooth(int niter,
+                       VectorInterface& x,
+                       const VectorInterface& y,
+                       VectorInterface& h) const
+{
+  GlobalVector& gvX = GetGV(x);
+  const GlobalVector& gvY = GetGV(y);
+  GlobalVector& gvH = GetGV(h);
 
   if (GetSolverData().GetLinearSmooth() == "vanka_jacobi" ||
       GetSolverData().GetLinearSmooth() == "vanka_jacobi_av" ||
@@ -34,11 +37,11 @@ void FSISolver<DIM>::smooth(int niter, VectorInterface &x,
     // const GascoigneMesh* M = dynamic_cast<const GascoigneMesh*> (GetMesh());
     // assert(M);
 
-    const SparseBlockMatrix<FMatrixBlock<DIM>> *A =
-        dynamic_cast<const SparseBlockMatrix<FMatrixBlock<DIM>> *>(GetMatrix());
+    const SparseBlockMatrix<FMatrixBlock<DIM>>* A =
+      dynamic_cast<const SparseBlockMatrix<FMatrixBlock<DIM>>*>(GetMatrix());
     assert(A);
-    const ColumnDiagStencil *SA =
-        dynamic_cast<const ColumnDiagStencil *>(A->GetStencil());
+    const ColumnDiagStencil* SA =
+      dynamic_cast<const ColumnDiagStencil*>(A->GetStencil());
     assert(SA);
 
     std::vector<int> smooth_weight;
@@ -58,7 +61,8 @@ void FSISolver<DIM>::smooth(int niter, VectorInterface &x,
           niter > 0) {
         MatrixResidual(h, x, y);
         for (vector<int>::iterator it_weight = smooth_weight.begin();
-             it_weight != smooth_weight.end(); it_weight++)
+             it_weight != smooth_weight.end();
+             it_weight++)
           *it_weight = 0;
       }
       if (vanka_type == "vanka_jacobi_av") {
@@ -66,7 +70,7 @@ void FSISolver<DIM>::smooth(int niter, VectorInterface &x,
       }
       for (int p = 0; p < Vanka_MV->patchindices_size(); p++) {
 
-        const nvector<int> &iop = Vanka_MV->Getpatchindices(p);
+        const nvector<int>& iop = Vanka_MV->Getpatchindices(p);
         // const HASHMAP<int,int>& inP=Vanka_MV->GetINP(p);
         // for (int i=0;i<iop.size();++i)
         //	inP[iop[i]]=i;
@@ -178,10 +182,13 @@ void FSISolver<DIM>::smooth(int niter, VectorInterface &x,
 
 /* -------------------------------------------------------*/
 
-template <int DIM> void FSISolver<DIM>::invert_local_matrices() const {
+template<int DIM>
+void
+FSISolver<DIM>::invert_local_matrices() const
+{
 
-  const SparseBlockMatrix<FMatrixBlock<3>> *A =
-      dynamic_cast<const SparseBlockMatrix<FMatrixBlock<3>> *>(GetMatrix());
+  const SparseBlockMatrix<FMatrixBlock<3>>* A =
+    dynamic_cast<const SparseBlockMatrix<FMatrixBlock<3>>*>(GetMatrix());
   assert(A);
 
   cout << "Vanka_MV->ReInit start" << endl;
@@ -243,7 +250,10 @@ template <int DIM> void FSISolver<DIM>::invert_local_matrices() const {
 }
 /* -------------------------------------------------------*/
 
-template <int DIM> void FSISolver<DIM>::ComputeIlu() const {
+template<int DIM>
+void
+FSISolver<DIM>::ComputeIlu() const
+{
   if ((GetSolverData().GetLinearSmooth() == "vanka_jacobi" ||
        GetSolverData().GetLinearSmooth() == "vanka_jacobi_av" ||
        GetSolverData().GetLinearSmooth() == "vanka_gs") &&
@@ -256,8 +266,10 @@ template <int DIM> void FSISolver<DIM>::ComputeIlu() const {
 
 /* -------------------------------------------------------*/
 
-template <int DIM>
-void FSISolver<DIM>::ComputeIlu(const VectorInterface &gu) const {
+template<int DIM>
+void
+FSISolver<DIM>::ComputeIlu(const VectorInterface& gu) const
+{
   if ((GetSolverData().GetLinearSmooth() == "vanka_jacobi" ||
        GetSolverData().GetLinearSmooth() == "vanka_jacobi_av" ||
        GetSolverData().GetLinearSmooth() == "vanka_gs") &&
@@ -267,14 +279,17 @@ void FSISolver<DIM>::ComputeIlu(const VectorInterface &gu) const {
     StdSolver::ComputeIlu(gu);
 }
 /* -------------------------------------------------------*/
-template <int DIM> void FSISolver<DIM>::RegisterMatrix() {
+template<int DIM>
+void
+FSISolver<DIM>::RegisterMatrix()
+{
   StdSolver::RegisterMatrix();
 
   if ((GetSolverData().GetLinearSmooth() == "vanka_jacobi" ||
        GetSolverData().GetLinearSmooth() == "vanka_jacobi_av" ||
        GetSolverData().GetLinearSmooth() == "vanka_gs") &&
       _directsolver == false) {
-    const GascoigneMesh *M = dynamic_cast<const GascoigneMesh *>(GetMesh());
+    const GascoigneMesh* M = dynamic_cast<const GascoigneMesh*>(GetMesh());
     assert(M);
     cout << "RegisterMatrix" << endl;
     if (Vanka_MV == NULL)
@@ -285,7 +300,9 @@ template <int DIM> void FSISolver<DIM>::RegisterMatrix() {
   }
 }
 /* -------------------------------------------------------*/
-template <int DIM> FSISolver<DIM>::~FSISolver() {
+template<int DIM>
+FSISolver<DIM>::~FSISolver()
+{
   if ((GetSolverData().GetLinearSmooth() == "vanka_jacobi" ||
        GetSolverData().GetLinearSmooth() == "vanka_jacobi_av" ||
        GetSolverData().GetLinearSmooth() == "vanka_gs") &&

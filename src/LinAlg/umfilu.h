@@ -39,62 +39,68 @@ namespace Gascoigne {
 ///
 /////////////////////////////////////////////
 
-class UmfIlu : virtual public IluInterface, public SimpleMatrix {
+class UmfIlu
+  : virtual public IluInterface
+  , public SimpleMatrix
+{
 private:
-  const SimpleMatrix *AP;
+  const SimpleMatrix* AP;
 
 protected:
   // fuer umfpack
-  double *Control;
-  double *Info;
+  double* Control;
+  double* Info;
   void *Symbolic, *Numeric;
 
 public:
   //
   ///  Constructor
   //
-  UmfIlu(const MatrixInterface *A);
+  UmfIlu(const MatrixInterface* A);
   ~UmfIlu();
 
   std::string GetName() const { return "UmfIlu"; }
 
   IndexType n() const { return GetStencil()->n(); };
-  void ReInit(const SparseStructureInterface *SS);
+  void ReInit(const SparseStructureInterface* SS);
 
-  void copy_entries(const MatrixInterface &A);
-  void ConstructStructure(const IntVector &perm, const MatrixInterface &A);
+  void copy_entries(const MatrixInterface& A);
+  void ConstructStructure(const IntVector& perm, const MatrixInterface& A);
   void Factorize();
-  void Solve(DoubleVector &x, const DoubleVector &b) const;
-  void SolveTranspose(DoubleVector &x, const DoubleVector &b);
+  void Solve(DoubleVector& x, const DoubleVector& b) const;
+  void SolveTranspose(DoubleVector& x, const DoubleVector& b);
 };
 
-class UmfIluLong : virtual public IluInterface, public SimpleMatrix {
+class UmfIluLong
+  : virtual public IluInterface
+  , public SimpleMatrix
+{
 private:
-  const SimpleMatrix *AP;
+  const SimpleMatrix* AP;
 
 protected:
   // fuer umfpack
-  double *Control;
-  double *Info;
+  double* Control;
+  double* Info;
   void *Symbolic, *Numeric;
 
 public:
   //
   ///  Constructor
   //
-  UmfIluLong(const MatrixInterface *A);
+  UmfIluLong(const MatrixInterface* A);
   ~UmfIluLong();
 
   std::string GetName() const { return "UmfIlu"; }
 
   IndexType n() const { return GetStencil()->n(); };
-  void ReInit(const SparseStructureInterface *SS);
+  void ReInit(const SparseStructureInterface* SS);
 
-  void copy_entries(const MatrixInterface &A);
-  void ConstructStructure(const IntVector &perm, const MatrixInterface &A);
+  void copy_entries(const MatrixInterface& A);
+  void ConstructStructure(const IntVector& perm, const MatrixInterface& A);
   void Factorize();
-  void Solve(DoubleVector &x, const DoubleVector &b) const;
-  void SolveTranspose(DoubleVector &x, const DoubleVector &b);
+  void Solve(DoubleVector& x, const DoubleVector& b) const;
+  void SolveTranspose(DoubleVector& x, const DoubleVector& b);
 };
 } // namespace Gascoigne
 

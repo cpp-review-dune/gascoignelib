@@ -30,15 +30,19 @@ using namespace std;
 namespace Gascoigne {
 /**********************************************************/
 
-DwrQ2Q4::DwrQ2Q4(StdSolver &S) : _S(S) {
+DwrQ2Q4::DwrQ2Q4(StdSolver& S)
+  : _S(S)
+{
   _P = _S.GetProblemDescriptor();
   _D = _S.GetDiscretization();
 }
 
 /**********************************************************/
 
-DiscretizationInterface *DwrQ2Q4::CreateOtherDiscretization() const {
-  DiscretizationInterface *D;
+DiscretizationInterface*
+DwrQ2Q4::CreateOtherDiscretization() const
+{
+  DiscretizationInterface* D;
 
   if (_S.GetMesh()->dimension() == 2) {
     D = new DwrFemQ2Q42d;
@@ -52,8 +56,11 @@ DiscretizationInterface *DwrQ2Q4::CreateOtherDiscretization() const {
 
 /**********************************************************/
 
-double DwrQ2Q4::ScalarProduct(DoubleVector &eta, const GlobalVector &f,
-                              const GlobalVector &z) const {
+double
+DwrQ2Q4::ScalarProduct(DoubleVector& eta,
+                       const GlobalVector& f,
+                       const GlobalVector& z) const
+{
   for (int i = 0; i < z.n(); i++) {
     for (int c = 0; c < z.ncomp(); c++) {
       eta[i] += fabs(f(i, c) * z(i, c));
@@ -64,20 +71,25 @@ double DwrQ2Q4::ScalarProduct(DoubleVector &eta, const GlobalVector &f,
 
 /**********************************************************/
 
-double DwrQ2Q4::ScalarProduct(DoubleVector &eta, const VectorInterface &gf,
-                              const VectorInterface &gz) const {
-  const GlobalVector &f = _S.GetGV(gf);
-  const GlobalVector &z = _S.GetGV(gz);
+double
+DwrQ2Q4::ScalarProduct(DoubleVector& eta,
+                       const VectorInterface& gf,
+                       const VectorInterface& gz) const
+{
+  const GlobalVector& f = _S.GetGV(gf);
+  const GlobalVector& z = _S.GetGV(gz);
 
   return ScalarProduct(eta, f, z);
 }
 
 /**********************************************************/
 
-double DwrQ2Q4::ScalarProductWithFluctuations(DoubleVector &eta,
-                                              const VectorInterface &gf,
-                                              const VectorInterface &gz) const {
-  const GlobalVector &f = _S.GetGV(gf);
+double
+DwrQ2Q4::ScalarProductWithFluctuations(DoubleVector& eta,
+                                       const VectorInterface& gf,
+                                       const VectorInterface& gz) const
+{
+  const GlobalVector& f = _S.GetGV(gf);
 
   GlobalVector dz(f.ncomp(), f.n());
   PiQ2 pi;
@@ -89,8 +101,9 @@ double DwrQ2Q4::ScalarProductWithFluctuations(DoubleVector &eta,
 
 /**********************************************************/
 
-void DwrQ2Q4::PrimalResidualsHigher(VectorInterface &gf,
-                                    const VectorInterface &gu) {
+void
+DwrQ2Q4::PrimalResidualsHigher(VectorInterface& gf, const VectorInterface& gu)
+{
   _S.GetGV(gf).zero();
 
   // only necessary if z has additional Dirichlet bc compared to u
@@ -98,7 +111,7 @@ void DwrQ2Q4::PrimalResidualsHigher(VectorInterface &gf,
   _S.Rhs(gf, -0.5);
   _S.Form(gf, gu, 0.5);
 
-  DiscretizationInterface *D = CreateOtherDiscretization();
+  DiscretizationInterface* D = CreateOtherDiscretization();
 
   _S.SetDiscretization(*D, true);
 
@@ -111,10 +124,12 @@ void DwrQ2Q4::PrimalResidualsHigher(VectorInterface &gf,
 
 /**********************************************************/
 
-void DwrQ2Q4::DualResidualsHigher(VectorInterface &gf,
-                                  const VectorInterface &gu,
-                                  const VectorInterface &gz,
-                                  const ProblemDescriptorInterface &PDI) {
+void
+DwrQ2Q4::DualResidualsHigher(VectorInterface& gf,
+                             const VectorInterface& gu,
+                             const VectorInterface& gz,
+                             const ProblemDescriptorInterface& PDI)
+{
   _S.GetGV(gf).zero();
   // dual problem
   _S.SetProblem(PDI);
@@ -129,7 +144,7 @@ void DwrQ2Q4::DualResidualsHigher(VectorInterface &gf,
   // residual respect Q4 test functions
   //
   {
-    DiscretizationInterface *D = CreateOtherDiscretization();
+    DiscretizationInterface* D = CreateOtherDiscretization();
     _S.SetDiscretization(*D, true);
 
     _S.Rhs(gf, 0.5);
@@ -145,9 +160,13 @@ void DwrQ2Q4::DualResidualsHigher(VectorInterface &gf,
 
 /**********************************************************/
 
-double DwrQ2Q4::Estimator(DoubleVector &eta, VectorInterface &gf,
-                          const VectorInterface &gu, const VectorInterface &gz,
-                          const ProblemDescriptorInterface &PDI) {
+double
+DwrQ2Q4::Estimator(DoubleVector& eta,
+                   VectorInterface& gf,
+                   const VectorInterface& gu,
+                   const VectorInterface& gz,
+                   const ProblemDescriptorInterface& PDI)
+{
   double rho = 0, rhostern = 0;
   eta.resize(_S.GetGV(gz).n());
 

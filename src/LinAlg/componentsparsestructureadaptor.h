@@ -37,13 +37,15 @@ namespace Gascoigne {
 ///
 /////////////////////////////////////////////
 
-class ComponentSparseStructureAdaptor : public NodeSparseStructureAdaptor {
+class ComponentSparseStructureAdaptor : public NodeSparseStructureAdaptor
+{
 public:
 private:
 protected:
 public:
   ComponentSparseStructureAdaptor(int ncomp)
-      : NodeSparseStructureAdaptor(ncomp) {}
+    : NodeSparseStructureAdaptor(ncomp)
+  {}
 
   int index(int i, int c) const { return i + c * n_base(); }
 

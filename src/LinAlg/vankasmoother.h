@@ -62,14 +62,15 @@
  * nodes for the patches.
  **/
 namespace Gascoigne {
-class VankaSmoother : public virtual IluInterface {
+class VankaSmoother : public virtual IluInterface
+{
 
 protected:
   typedef Eigen::Matrix<MatrixEntryType, Eigen::Dynamic, Eigen::Dynamic>
-      VankaMatrix;
+    VankaMatrix;
   typedef Eigen::Matrix<MatrixEntryType, Eigen::Dynamic, 1> VankaVector;
 
-  mutable const DofHandlerBase *_dofhandler;
+  mutable const DofHandlerBase* _dofhandler;
   int _ncomp, _sizeofpatch;
 
   std::vector<std::vector<int>> _patchlist;
@@ -77,41 +78,50 @@ protected:
 
 public:
   //////////////////// Constructor & Co
-  VankaSmoother() : _dofhandler(NULL), _ncomp(-1), _sizeofpatch(-1) {}
+  VankaSmoother()
+    : _dofhandler(NULL)
+    , _ncomp(-1)
+    , _sizeofpatch(-1)
+  {}
   ~VankaSmoother() {}
 
-  void SetDofHandler(const DofHandlerBase *dh) const { _dofhandler = dh; }
+  void SetDofHandler(const DofHandlerBase* dh) const { _dofhandler = dh; }
 
   std::string GetName() const { return "VankaSmoother"; }
 
   //////////////////// Access
-  IndexType n() const {
+  IndexType n() const
+  {
     assert(0);
     return 0;
   }
-  void ReInit(const SparseStructureInterface *A) {
+  void ReInit(const SparseStructureInterface* A)
+  {
     // nothing to be done, Vanka smoother does not depend on the stencil
   }
 
   //////////////////// Construction
-  void ConstructStructure(const IntVector &perm, const MatrixInterface &A);
-  void zero() {
+  void ConstructStructure(const IntVector& perm, const MatrixInterface& A);
+  void zero()
+  {
     // not necessary. entries will be copied
   }
-  void modify(int c, double s) {
+  void modify(int c, double s)
+  {
     // not necessary
   }
-  void compute_ilu() {
+  void compute_ilu()
+  {
     // directly done in ConstructStructure
   }
 
   //////////////////// Solve
-  void solve(GlobalVector &x) const;
+  void solve(GlobalVector& x) const;
 
-  template <int NCOMP>
+  template<int NCOMP>
   void copy_entries_sparseblockmatrix(
-      const SparseBlockMatrix<FMatrixBlock<NCOMP>> &A);
-  void copy_entries(const MatrixInterface &A);
+    const SparseBlockMatrix<FMatrixBlock<NCOMP>>& A);
+  void copy_entries(const MatrixInterface& A);
 };
 } // namespace Gascoigne
 

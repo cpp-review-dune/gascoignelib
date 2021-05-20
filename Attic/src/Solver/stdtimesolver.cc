@@ -31,13 +31,19 @@ using namespace std;
 
 namespace Gascoigne {
 StdTimeSolver::StdTimeSolver()
-    : StdSolver(), _MMP(NULL), _dt(0.), _theta(0.), _time(0.) {
+  : StdSolver()
+  , _MMP(NULL)
+  , _dt(0.)
+  , _theta(0.)
+  , _time(0.)
+{
   _rhs.fill(0.0);
 }
 
 /*-------------------------------------------------------------*/
 
-StdTimeSolver::~StdTimeSolver() {
+StdTimeSolver::~StdTimeSolver()
+{
   if (_MMP) {
     delete _MMP;
     _MMP = NULL;
@@ -46,12 +52,21 @@ StdTimeSolver::~StdTimeSolver() {
 
 /*-------------------------------------------------------*/
 
-string StdTimeSolver::GetName() const { return "StdTimeSolver"; }
+string
+StdTimeSolver::GetName() const
+{
+  return "StdTimeSolver";
+}
 
 /*-------------------------------------------------------------*/
 
-void StdTimeSolver::SetTimeData(double dt, double theta, double time,
-                                double oldrhs, double newrhs) {
+void
+StdTimeSolver::SetTimeData(double dt,
+                           double theta,
+                           double time,
+                           double oldrhs,
+                           double newrhs)
+{
   _dt = dt;
   _theta = theta;
   _time = time;
@@ -67,16 +82,20 @@ void StdTimeSolver::SetTimeData(double dt, double theta, double time,
 
 /*-------------------------------------------------------------*/
 
-GascoigneVisualization *StdTimeSolver::NewGascoigneVisualization() const {
-  GascoigneVisualization *p_gv = new GascoigneVisualization;
+GascoigneVisualization*
+StdTimeSolver::NewGascoigneVisualization() const
+{
+  GascoigneVisualization* p_gv = new GascoigneVisualization;
   p_gv->set_time(_time);
   return p_gv;
 }
 
 /*-------------------------------------------------------------*/
 
-void StdTimeSolver::SetProblem(const ProblemDescriptorInterface &PDX) {
-  const Equation *EQ = PDX.GetEquation();
+void
+StdTimeSolver::SetProblem(const ProblemDescriptorInterface& PDX)
+{
+  const Equation* EQ = PDX.GetEquation();
 
   if (EQ) {
     GetTimePattern().reservesize(EQ->GetNcomp(), EQ->GetNcomp(), 0.);
@@ -92,7 +111,9 @@ void StdTimeSolver::SetProblem(const ProblemDescriptorInterface &PDX) {
 
 /*-------------------------------------------------------*/
 
-void StdTimeSolver::RegisterMatrix() {
+void
+StdTimeSolver::RegisterMatrix()
+{
   int ncomp = GetProblemDescriptor()->GetNcomp();
 
   if (GetMassMatrixPointer() == NULL)
@@ -103,7 +124,9 @@ void StdTimeSolver::RegisterMatrix() {
 
 /*-------------------------------------------------------*/
 
-void StdTimeSolver::ReInitMatrix() {
+void
+StdTimeSolver::ReInitMatrix()
+{
   std::cout << "Muss an neues matrix-handling angepasst werden" << std::endl;
   abort();
   // GetDiscretization()->InitFilter(_PF);
@@ -122,26 +145,28 @@ void StdTimeSolver::ReInitMatrix() {
 
 /*-------------------------------------------------------*/
 
-MatrixInterface *StdTimeSolver::NewMassMatrix(int ncomp,
-                                              const string &matrixtype) {
+MatrixInterface*
+StdTimeSolver::NewMassMatrix(int ncomp, const string& matrixtype)
+{
   return new SimpleMatrix;
 }
 
 /*-------------------------------------------------------------*/
 
-void Gascoigne::StdTimeSolver::InitialCondition(VectorInterface &gf,
-                                                double d) const {
-  GlobalVector &f = GetGV(gf);
+void
+Gascoigne::StdTimeSolver::InitialCondition(VectorInterface& gf, double d) const
+{
+  GlobalVector& f = GetGV(gf);
   HNAverageData();
 
-  const Application *IC = GetProblemDescriptor()->GetInitialCondition();
-  const BoundaryInitialCondition *NIC =
-      GetProblemDescriptor()->GetBoundaryInitialCondition();
+  const Application* IC = GetProblemDescriptor()->GetInitialCondition();
+  const BoundaryInitialCondition* NIC =
+    GetProblemDescriptor()->GetBoundaryInitialCondition();
 
   if (IC) {
     bool done = false;
-    const DomainInitialCondition *DRHS =
-        dynamic_cast<const DomainInitialCondition *>(IC);
+    const DomainInitialCondition* DRHS =
+      dynamic_cast<const DomainInitialCondition*>(IC);
     if (DRHS) {
       // TODO: Has to be changed so that the call to Rhs actually uses the
       // initial condition,
@@ -149,8 +174,8 @@ void Gascoigne::StdTimeSolver::InitialCondition(VectorInterface &gf,
       GetDiscretization()->Rhs(f, *DRHS, d);
       done = true;
     }
-    const DiracInitialCondition *NDRHS =
-        dynamic_cast<const DiracInitialCondition *>(IC);
+    const DiracInitialCondition* NDRHS =
+      dynamic_cast<const DiracInitialCondition*>(IC);
     if (NDRHS) {
       GetDiscretization()->DiracRhs(f, *NDRHS, d);
       done = true;
@@ -164,10 +189,10 @@ void Gascoigne::StdTimeSolver::InitialCondition(VectorInterface &gf,
   }
   if (NIC) {
     assert(NIC->GetNcomp() == f.ncomp());
-    const BoundaryManager *BM = GetProblemDescriptor()->GetBoundaryManager();
+    const BoundaryManager* BM = GetProblemDescriptor()->GetBoundaryManager();
     // TODO: Has to be changed so that it uses the initial condition
-    GetDiscretization()->BoundaryRhs(f, BM->GetBoundaryRightHandSideColors(),
-                                     *NIC, d);
+    GetDiscretization()->BoundaryRhs(
+      f, BM->GetBoundaryRightHandSideColors(), *NIC, d);
   }
   HNZeroData();
   HNDistribute(gf);
@@ -175,15 +200,17 @@ void Gascoigne::StdTimeSolver::InitialCondition(VectorInterface &gf,
 
 /*-------------------------------------------------------*/
 
-void StdTimeSolver::TimeRhsOperator(VectorInterface &gf,
-                                    const VectorInterface &gu) const {
+void
+StdTimeSolver::TimeRhsOperator(VectorInterface& gf,
+                               const VectorInterface& gu) const
+{
   assert(_theta > 0.);
   double d = -(1. - _theta) / _theta;
   StdSolver::Form(gf, gu, d);
 
   if (_dt > 0.) {
-    GlobalVector &f = GetGV(gf);
-    const GlobalVector &u = GetGV(gu);
+    GlobalVector& f = GetGV(gf);
+    const GlobalVector& u = GetGV(gu);
 
     double d = 1. / (_dt * _theta);
     GetMassMatrix()->vmult_time(f, u, GetTimePattern(), d);
@@ -192,24 +219,31 @@ void StdTimeSolver::TimeRhsOperator(VectorInterface &gf,
 
 /*-------------------------------------------------------*/
 
-void StdTimeSolver::MassMatrixVector(VectorInterface &gf,
-                                     const VectorInterface &gu,
-                                     double d) const {
-  GlobalVector &f = GetGV(gf);
-  const GlobalVector &u = GetGV(gu);
+void
+StdTimeSolver::MassMatrixVector(VectorInterface& gf,
+                                const VectorInterface& gu,
+                                double d) const
+{
+  GlobalVector& f = GetGV(gf);
+  const GlobalVector& u = GetGV(gu);
   GetMassMatrix()->vmult_time(f, u, GetTimePattern(), d);
 }
 
 /*-------------------------------------------------------*/
 
-void StdTimeSolver::TimeRhs(int k, VectorInterface &gf) const {
+void
+StdTimeSolver::TimeRhs(int k, VectorInterface& gf) const
+{
   StdSolver::Rhs(gf, _rhs[k - 1]);
 }
 
 /*-------------------------------------------------------*/
 
-void StdTimeSolver::Form(VectorInterface &gy, const VectorInterface &gx,
-                         double d) const {
+void
+StdTimeSolver::Form(VectorInterface& gy,
+                    const VectorInterface& gx,
+                    double d) const
+{
   StdSolver::Form(gy, gx, d);
 
   if (_dt == 0.)
@@ -219,8 +253,8 @@ void StdTimeSolver::Form(VectorInterface &gy, const VectorInterface &gx,
 
   double scale = d / (_dt * _theta);
 
-  const GlobalVector &x = GetGV(gx);
-  GlobalVector &y = GetGV(gy);
+  const GlobalVector& x = GetGV(gx);
+  GlobalVector& y = GetGV(gy);
 
   assert(y.n() == x.n());
   GetMassMatrix()->vmult_time(y, x, GetTimePattern(), scale);
@@ -228,8 +262,9 @@ void StdTimeSolver::Form(VectorInterface &gy, const VectorInterface &gx,
 
 /*-------------------------------------------------------*/
 
-void StdTimeSolver::AssembleMatrix(Matrix &A, const VectorInterface &gu,
-                                   double d) {
+void
+StdTimeSolver::AssembleMatrix(Matrix& A, const VectorInterface& gu, double d)
+{
   StdSolver::AssembleMatrix(A, gu, d);
 
   if (_dt == 0.)
@@ -237,8 +272,8 @@ void StdTimeSolver::AssembleMatrix(Matrix &A, const VectorInterface &gu,
   assert(_theta > 0.);
 
   double scale = d / (_dt * _theta);
-  GetMatrix(A).AddMassWithDifferentStencil(GetMassMatrix(), GetTimePattern(),
-                                           scale);
+  GetMatrix(A).AddMassWithDifferentStencil(
+    GetMassMatrix(), GetTimePattern(), scale);
 
   StdSolver::PeriodicMatrix(A);
   StdSolver::DirichletMatrix(A);
@@ -246,9 +281,11 @@ void StdTimeSolver::AssembleMatrix(Matrix &A, const VectorInterface &gu,
 
 /*-------------------------------------------------------*/
 
-void StdTimeSolver::L2Projection(VectorInterface &Gu, VectorInterface &Gf) {
-  GlobalVector &u = GetGV(Gu);
-  GlobalVector &f = GetGV(Gf);
+void
+StdTimeSolver::L2Projection(VectorInterface& Gu, VectorInterface& Gf)
+{
+  GlobalVector& u = GetGV(Gu);
+  GlobalVector& f = GetGV(Gf);
 
   TimePattern TP(u.ncomp());
   TP.zero();
@@ -265,8 +302,12 @@ void StdTimeSolver::L2Projection(VectorInterface &Gu, VectorInterface &Gf) {
 
 /*-------------------------------------------------------*/
 
-string StdTimeSolver::PrecondCGMass(GlobalVector &u, GlobalVector &f,
-                                    const TimePattern &TP, double s) {
+string
+StdTimeSolver::PrecondCGMass(GlobalVector& u,
+                             GlobalVector& f,
+                             const TimePattern& TP,
+                             double s)
+{
   bool reached;
   int iter = 0;
 
@@ -277,7 +318,7 @@ string StdTimeSolver::PrecondCGMass(GlobalVector &u, GlobalVector &f,
   assert(u.ncomp() == g.ncomp());
   assert(u.n() == g.n());
 
-  SimpleMatrix *SM = dynamic_cast<SimpleMatrix *>(GetMassMatrix());
+  SimpleMatrix* SM = dynamic_cast<SimpleMatrix*>(GetMassMatrix());
   assert(SM);
   SM->PrepareJacobi(s);
 
@@ -310,7 +351,7 @@ string StdTimeSolver::PrecondCGMass(GlobalVector &u, GlobalVector &f,
     Res = r * r;
     cout << "\t\tpcg " << iter << "\t" << sqrt(Res) << endl;
     if (Res < GetSolverData().GetCgMassTol() * GetSolverData().GetCgMassTol() *
-                  FirstRes ||
+                FirstRes ||
         sqrt(Res) < GetSolverData().GetCgMassGlobalTol()) {
       reached = true;
     }
@@ -329,7 +370,9 @@ string StdTimeSolver::PrecondCGMass(GlobalVector &u, GlobalVector &f,
 
 /*-------------------------------------------------------*/
 
-void StdTimeSolver::SetMassMatrix(Gascoigne::MatrixInterface &MM, bool init) {
+void
+StdTimeSolver::SetMassMatrix(Gascoigne::MatrixInterface& MM, bool init)
+{
   if (init) {
     SparseStructure SA;
     GetDiscretization()->Structure(&SA);

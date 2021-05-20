@@ -11,7 +11,9 @@ using namespace std;
 /*-----------------------------------------*/
 
 namespace Gascoigne {
-template <int DIM> FSI<DIM>::FSI(const ParamFile *pf) {
+template<int DIM>
+FSI<DIM>::FSI(const ParamFile* pf)
+{
   DataFormatHandler DFH;
   DFH.insert("rho_s", &rho_s, 0.0);
   DFH.insert("pp_e", &pp_e, 0.0);
@@ -52,7 +54,10 @@ template <int DIM> FSI<DIM>::FSI(const ParamFile *pf) {
 
 #include "multiplex.xx"
 
-template <int DIM> void FSI<DIM>::point_cell(int material) const {
+template<int DIM>
+void
+FSI<DIM>::point_cell(int material) const
+{
   // if(InterfaceResidual)
   //	{
   //		if(material==2) domain=-1;
@@ -67,9 +72,12 @@ template <int DIM> void FSI<DIM>::point_cell(int material) const {
   }
 }
 
-template <int DIM>
-void FSI<DIM>::point(double h, const FemFunction &U_dummy,
-                     const Vertex<DIM> &v) const {
+template<int DIM>
+void
+FSI<DIM>::point(double h,
+                const FemFunction& U_dummy,
+                const Vertex<DIM>& v) const
+{
   __h = h;
   __v = v;
   // domain = chi(v);
@@ -137,15 +145,15 @@ void FSI<DIM>::point(double h, const FemFunction &U_dummy,
           (F_PRES.inverse().transpose() * F.transpose() * F * F_PRES.inverse() -
            MATRIX::Identity());
       MATRIX E_old = 0.5 * (F_PRES.inverse().transpose() * F_old.transpose() *
-                                F_old * F_PRES.inverse() -
+                              F_old * F_PRES.inverse() -
                             MATRIX::Identity());
 
       MATRIX SIGMAs_el =
-          (2.0 * mu_s * E + lambda_s * E.trace() * MATRIX::Identity());
+        (2.0 * mu_s * E + lambda_s * E.trace() * MATRIX::Identity());
       MATRIX SIGMAs_el_old =
-          (2.0 * mu_s * E_old + lambda_s * E_old.trace() * MATRIX::Identity());
+        (2.0 * mu_s * E_old + lambda_s * E_old.trace() * MATRIX::Identity());
       SIGMAs =
-          J_PRES * F_PRES.inverse() * SIGMAs_el * F_PRES.inverse().transpose();
+        J_PRES * F_PRES.inverse() * SIGMAs_el * F_PRES.inverse().transpose();
       SIGMAs_old = J_PRES * F_PRES.inverse() * SIGMAs_el_old *
                    F_PRES.inverse().transpose();
     } else if (mat_law == "artery") {
@@ -154,16 +162,15 @@ void FSI<DIM>::point(double h, const FemFunction &U_dummy,
                      F_PRES.inverse();
 
       MATRIX SIGMAs_el =
-          mu_s * pow(J, -2.0 / 3.0) *
-              (MATRIX::Identity() - 1.0 / 3.0 * C.trace() * C.inverse()) +
-          0.5 * kapa_s * (pow(J, 2.0) - 1.0) * C.inverse();
+        mu_s * pow(J, -2.0 / 3.0) *
+          (MATRIX::Identity() - 1.0 / 3.0 * C.trace() * C.inverse()) +
+        0.5 * kapa_s * (pow(J, 2.0) - 1.0) * C.inverse();
       MATRIX SIGMAs_el_old =
-          mu_s * pow(J_old, -2.0 / 3.0) *
-              (MATRIX::Identity() -
-               1.0 / 3.0 * C_old.trace() * C_old.inverse()) +
-          0.5 * kapa_s * (pow(J_old, 2.0) - 1.0) * C_old.inverse();
+        mu_s * pow(J_old, -2.0 / 3.0) *
+          (MATRIX::Identity() - 1.0 / 3.0 * C_old.trace() * C_old.inverse()) +
+        0.5 * kapa_s * (pow(J_old, 2.0) - 1.0) * C_old.inverse();
       SIGMAs =
-          J_PRES * F_PRES.inverse() * SIGMAs_el * F_PRES.inverse().transpose();
+        J_PRES * F_PRES.inverse() * SIGMAs_el * F_PRES.inverse().transpose();
       SIGMAs_old = J_PRES * F_PRES.inverse() * SIGMAs_el_old *
                    F_PRES.inverse().transpose();
     } else
@@ -171,17 +178,20 @@ void FSI<DIM>::point(double h, const FemFunction &U_dummy,
   }
 }
 
-template <int DIM>
-void FSI<DIM>::Form(VectorIterator b, const FemFunction &U_dummy,
-                    const TestFunction &N) const {
+template<int DIM>
+void
+FSI<DIM>::Form(VectorIterator b,
+               const FemFunction& U_dummy,
+               const TestFunction& N) const
+{
   VECTOR phi;
   multiplex_init_test<DIM>(phi, N);
 
   if (domain < 0) // fluid
   {
     // divergence
-    b[0] += rho_f * J * (F.inverse().transpose().array() * NV.array()).sum() *
-            N.m();
+    b[0] +=
+      rho_f * J * (F.inverse().transpose().array() * NV.array()).sum() * N.m();
 
     // time-derivative
     if (true) {
@@ -248,9 +258,13 @@ void FSI<DIM>::Form(VectorIterator b, const FemFunction &U_dummy,
   }
 }
 
-template <int DIM>
-void FSI<DIM>::Matrix(EntryMatrix &A, const FemFunction &U_dummy,
-                      const TestFunction &M, const TestFunction &N) const {
+template<int DIM>
+void
+FSI<DIM>::Matrix(EntryMatrix& A,
+                 const FemFunction& U_dummy,
+                 const TestFunction& M,
+                 const TestFunction& N) const
+{
 
   VECTOR phi;
   multiplex_init_test<DIM>(phi, N);
@@ -366,7 +380,7 @@ void FSI<DIM>::Matrix(EntryMatrix &A, const FemFunction &U_dummy,
     for (int j = 0; j < DIM; ++j) // Fj Sigma \nabla phi
       // A(j+1,j+1+DIM) += __THETA * (SIGMA_dF[j].transpose()*phi)(0,0);
       A(j + 1, j + 1) +=
-          __THETA * (SIGMA_dF[j].transpose() * phi)(0, 0) * __THETA * __DT;
+        __THETA * (SIGMA_dF[j].transpose() * phi)(0, 0) * __THETA * __DT;
 
     for (int j = 0; j < DIM; ++j) // F Sigma_j \nabla phi
     {
@@ -384,9 +398,12 @@ void FSI<DIM>::Matrix(EntryMatrix &A, const FemFunction &U_dummy,
   }
 }
 
-template <int DIM>
-void FSI<DIM>::point_M(int j, const FemFunction &U_dummy,
-                       const TestFunction &M) const {
+template<int DIM>
+void
+FSI<DIM>::point_M(int j,
+                  const FemFunction& U_dummy,
+                  const TestFunction& M) const
+{
   VECTOR psi;
   multiplex_init_test<DIM>(psi, M);
   for (int j = 0; j < DIM; ++j) {
@@ -404,10 +421,10 @@ void FSI<DIM>::point_M(int j, const FemFunction &U_dummy,
 
     for (int j = 0; j < DIM; ++j) {
       TENSOR_dV[j] =
-          rho_f * nu_f * J *
-          (F.inverse().block(0, j, DIM, 1) * psi.transpose() +
-           (F.inverse().block(0, j, DIM, 1) * psi.transpose()).transpose()) *
-          F.inverse().transpose();
+        rho_f * nu_f * J *
+        (F.inverse().block(0, j, DIM, 1) * psi.transpose() +
+         (F.inverse().block(0, j, DIM, 1) * psi.transpose()).transpose()) *
+        F.inverse().transpose();
       // TENSOR_dU[j]
       //   = rho_f * nu_f * J *
       //   (Fij[j]*NV + (Fij[j]*NV).transpose())  * F.inverse().transpose() //
@@ -418,7 +435,7 @@ void FSI<DIM>::point_M(int j, const FemFunction &U_dummy,
       //	    DIVERGENCE_U[j] = rho_f * J *
       //(Fij[j].transpose().array()*NV.array()).sum();
       DIVERGENCE_V[j] =
-          rho_f * J * (psi.transpose() * F.inverse().block(0, j, DIM, 1))(0, 0);
+        rho_f * J * (psi.transpose() * F.inverse().block(0, j, DIM, 1))(0, 0);
 
       CONV_dV2[j] = J * rho_f * (psi.transpose() * F.inverse() * V)(0, 0);
       // CONV_dU[j] = rho_f * NV * F.inverse()*V*Jj[j]
@@ -451,12 +468,12 @@ void FSI<DIM>::point_M(int j, const FemFunction &U_dummy,
         SIGMA_dF[j] = (psi.transpose() * SIGMAs).transpose();
       for (int j = 0; j < DIM; ++j) {
         MATRIX Ej = 0.5 * (F_PRES.inverse().transpose() * psi *
-                               (F.block(j, 0, 1, DIM)) * F_PRES.inverse() +
+                             (F.block(j, 0, 1, DIM)) * F_PRES.inverse() +
                            F_PRES.inverse().transpose() *
-                               F.block(j, 0, 1, DIM).transpose() *
-                               psi.transpose() * F_PRES.inverse());
+                             F.block(j, 0, 1, DIM).transpose() *
+                             psi.transpose() * F_PRES.inverse());
         MATRIX SIGMA_dU_el =
-            (2.0 * mu_s * Ej + lambda_s * Ej.trace() * MATRIX::Identity());
+          (2.0 * mu_s * Ej + lambda_s * Ej.trace() * MATRIX::Identity());
         SIGMA_dU[j] = F * J_PRES * F_PRES.inverse() * SIGMA_dU_el *
                       F_PRES.inverse().transpose();
       }
@@ -470,15 +487,15 @@ void FSI<DIM>::point_M(int j, const FemFunction &U_dummy,
                       F_PRES.inverse();
         MATRIX C_dU_inverse = -C.inverse() * C_dU * C.inverse();
         double J_dU =
-            J * (F.inverse().block(0, j, DIM, 1) * psi.transpose()).trace();
+          J * (F.inverse().block(0, j, DIM, 1) * psi.transpose()).trace();
 
         MATRIX SIGMA_dU_el =
-            mu_s * (-2.0 / 3.0) * pow(J, -5.0 / 3.0) * J_dU *
-            (MATRIX::Identity() - 1.0 / 3.0 * C.trace() * C.inverse());
-        SIGMA_dU_el += mu_s * pow(J, -2.0 / 3.0) *
-                       (-1.0 / 3.0 * C_dU.trace() * C.inverse());
+          mu_s * (-2.0 / 3.0) * pow(J, -5.0 / 3.0) * J_dU *
+          (MATRIX::Identity() - 1.0 / 3.0 * C.trace() * C.inverse());
         SIGMA_dU_el +=
-            mu_s * pow(J, -2.0 / 3.0) * (-1.0 / 3.0 * C.trace() * C_dU_inverse);
+          mu_s * pow(J, -2.0 / 3.0) * (-1.0 / 3.0 * C_dU.trace() * C.inverse());
+        SIGMA_dU_el +=
+          mu_s * pow(J, -2.0 / 3.0) * (-1.0 / 3.0 * C.trace() * C_dU_inverse);
         SIGMA_dU_el += 0.5 * kapa_s * 2.0 * J * J_dU * C.inverse();
         SIGMA_dU_el += 0.5 * kapa_s * (pow(J, 2.0) - 1.0) * C_dU_inverse;
         SIGMA_dU[j] = F * J_PRES * F_PRES.inverse() * SIGMA_dU_el *
@@ -488,9 +505,12 @@ void FSI<DIM>::point_M(int j, const FemFunction &U_dummy,
   }
 }
 
-template <int DIM>
-void FSI<DIM>::MatrixBlock(EntryMatrix &A, const FemFunction &U_dummy,
-                           const FemFunction &N) const {
+template<int DIM>
+void
+FSI<DIM>::MatrixBlock(EntryMatrix& A,
+                      const FemFunction& U_dummy,
+                      const FemFunction& N) const
+{
   ;
   for (int j = 0; j < N.size(); ++j) // trial
   {
@@ -638,9 +658,10 @@ M, const TestFunction& N) const
 
 ////////////////////////////////////////////////// LPS
 
-template <int DIM>
-void FSI<DIM>::lpspoint(double h, const FemFunction &U,
-                        const Vertex<DIM> &v) const {
+template<int DIM>
+void
+FSI<DIM>::lpspoint(double h, const FemFunction& U, const Vertex<DIM>& v) const
+{
 
   // double vel =10.0;
   double vel = 1.0 * sqrt((*U_Vec)[1].m() * (*U_Vec)[1].m() +
@@ -650,9 +671,13 @@ void FSI<DIM>::lpspoint(double h, const FemFunction &U,
   lps = lps0 / (vel / h + nu_f / h / h);
   // domain = chi(v);
 }
-template <int DIM>
-void FSI<DIM>::StabForm(VectorIterator b, const FemFunction &U,
-                        const FemFunction &UP, const TestFunction &N) const {
+template<int DIM>
+void
+FSI<DIM>::StabForm(VectorIterator b,
+                   const FemFunction& U,
+                   const FemFunction& UP,
+                   const TestFunction& N) const
+{
   if (domain < 0) /// fludi
   {
     for (int i = 0; i < DIM; ++i)
@@ -660,10 +685,13 @@ void FSI<DIM>::StabForm(VectorIterator b, const FemFunction &U,
   }
 }
 
-template <int DIM>
-void FSI<DIM>::StabMatrix(EntryMatrix &A, const FemFunction &U,
-                          const TestFunction &Np,
-                          const TestFunction &Mp) const {
+template<int DIM>
+void
+FSI<DIM>::StabMatrix(EntryMatrix& A,
+                     const FemFunction& U,
+                     const TestFunction& Np,
+                     const TestFunction& Mp) const
+{
   if (domain < 0) {
     for (int i = 0; i < DIM; ++i)
       A(0, 0) += lps * Mp[i + 1] * Np[i + 1];

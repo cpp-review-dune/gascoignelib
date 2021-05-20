@@ -36,10 +36,11 @@
 namespace Gascoigne {
 
 class ProblemContainer
-    : public std::map<std::string, const ProblemDescriptorInterface *> {
+  : public std::map<std::string, const ProblemDescriptorInterface*>
+{
 public:
-  void AddProblem(const std::string &label,
-                  const ProblemDescriptorInterface *P) {
+  void AddProblem(const std::string& label, const ProblemDescriptorInterface* P)
+  {
     if (find(label) != end()) {
       std::cerr << "Problemdescriptor " << label << " already present!\n";
       abort();
@@ -47,7 +48,8 @@ public:
     (*this)[label] = P;
   }
 
-  void RemoveProblem(const std::string &label) {
+  void RemoveProblem(const std::string& label)
+  {
     if (find(label) == end()) {
       std::cerr << "Problemdescriptor " << label << " not present!\n";
       abort();
@@ -55,7 +57,8 @@ public:
     this->erase(label);
   }
 
-  const ProblemDescriptorInterface *GetProblem(const std::string &label) const {
+  const ProblemDescriptorInterface* GetProblem(const std::string& label) const
+  {
     if (find(label) == end()) {
       std::cerr << "Problemdescriptor " << label << " not present!\n";
       abort();

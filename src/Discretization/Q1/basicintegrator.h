@@ -38,7 +38,8 @@ namespace Gascoigne {
 ////
 /////////////////////////////////////////////
 
-class BasicIntegrator : public IntegratorInterface {
+class BasicIntegrator : public IntegratorInterface
+{
 private:
 protected:
   mutable FemFunction _NNN;
@@ -48,16 +49,20 @@ protected:
   mutable CellData _QCH;
 
 public:
-  void universal_point(const FemInterface &FEM, FemFunction &UH,
-                       const LocalVector &U) const;
-  void universal_point(CellFunction &UCH, const LocalVector &UC,
+  void universal_point(const FemInterface& FEM,
+                       FemFunction& UH,
+                       const LocalVector& U) const;
+  void universal_point(CellFunction& UCH,
+                       const LocalVector& UC,
                        int i = 0) const;
-  void universal_point(FemFunction &UH, const LocalVector &U,
-                       const FemFunction &NN) const;
+  void universal_point(FemFunction& UH,
+                       const LocalVector& U,
+                       const FemFunction& NN) const;
 
-  void universal_point(const FemInterface &FEM, FemData &QH,
-                       const LocalData &Q) const;
-  void universal_point(CellData &QCH, const LocalData &QC, int i = 0) const;
+  void universal_point(const FemInterface& FEM,
+                       FemData& QH,
+                       const LocalData& Q) const;
+  void universal_point(CellData& QCH, const LocalData& QC, int i = 0) const;
 
   //
   ////  Con(De)structor

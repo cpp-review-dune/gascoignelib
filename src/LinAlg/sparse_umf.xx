@@ -14,50 +14,79 @@ using namespace std;
 
 namespace Gascoigne {
 
-extern "C" long umfpack_dl_symbolic(long n, long m, const long Ap[],
-                                    const long Ai[], const double Ax[],
-                                    void **Symbolic,
-                                    const double Control[UMFPACK_CONTROL],
-                                    double Info[UMFPACK_INFO]);
-extern "C" long umfpack_dl_numeric(const long Ap[], const long Ai[],
-                                   const double Ax[], void *Symbolic,
-                                   void **Numeric,
-                                   const double Control[UMFPACK_CONTROL],
-                                   double Info[UMFPACK_INFO]);
-extern "C" long umfpack_dl_solve(long sys, const long Ap[], const long Ai[],
-                                 const double Ax[], double X[],
-                                 const double B[], void *Numeric,
-                                 const double Control[UMFPACK_CONTROL],
-                                 double Info[UMFPACK_INFO]);
-extern "C" void umfpack_dl_free_symbolic(void **Symbolic);
-extern "C" void umfpack_dl_free_numeric(void **Numeric);
+extern "C" long
+umfpack_dl_symbolic(long n,
+                    long m,
+                    const long Ap[],
+                    const long Ai[],
+                    const double Ax[],
+                    void** Symbolic,
+                    const double Control[UMFPACK_CONTROL],
+                    double Info[UMFPACK_INFO]);
+extern "C" long
+umfpack_dl_numeric(const long Ap[],
+                   const long Ai[],
+                   const double Ax[],
+                   void* Symbolic,
+                   void** Numeric,
+                   const double Control[UMFPACK_CONTROL],
+                   double Info[UMFPACK_INFO]);
+extern "C" long
+umfpack_dl_solve(long sys,
+                 const long Ap[],
+                 const long Ai[],
+                 const double Ax[],
+                 double X[],
+                 const double B[],
+                 void* Numeric,
+                 const double Control[UMFPACK_CONTROL],
+                 double Info[UMFPACK_INFO]);
+extern "C" void
+umfpack_dl_free_symbolic(void** Symbolic);
+extern "C" void
+umfpack_dl_free_numeric(void** Numeric);
 
-extern "C" long umfpack_dl_triplet_to_col(long n, long nz, const long Ti[],
-                                          const long Tj[], const double Tx[],
-                                          long Bp[], long Bi[], double Bx[]);
+extern "C" long
+umfpack_dl_triplet_to_col(long n,
+                          long nz,
+                          const long Ti[],
+                          const long Tj[],
+                          const double Tx[],
+                          long Bp[],
+                          long Bi[],
+                          double Bx[]);
 
-extern "C" void umfpack_dl_report_status(const double Control[UMFPACK_CONTROL],
-                                         long status);
-extern "C" void umfpack_dl_report_info(const double Control[UMFPACK_CONTROL],
-                                       const double Info[UMFPACK_INFO]);
+extern "C" void
+umfpack_dl_report_status(const double Control[UMFPACK_CONTROL], long status);
+extern "C" void
+umfpack_dl_report_info(const double Control[UMFPACK_CONTROL],
+                       const double Info[UMFPACK_INFO]);
 extern "C" void
 umfpack_dl_report_control(const double Control[UMFPACK_CONTROL]);
 extern "C" long
-umfpack_dl_report_symbolic(const char name[], void *Symbolic,
+umfpack_dl_report_symbolic(const char name[],
+                           void* Symbolic,
                            const double Control[UMFPACK_CONTROL]);
 extern "C" long
-umfpack_dl_report_numeric(const char name[], void *Numeric,
+umfpack_dl_report_numeric(const char name[],
+                          void* Numeric,
                           const double Control[UMFPACK_CONTROL]);
 extern "C" void
 umfpack_dl_report_control(const double Control[UMFPACK_CONTROL]);
-extern "C" void umfpack_dl_defaults(const double Control[UMFPACK_CONTROL]);
+extern "C" void
+umfpack_dl_defaults(const double Control[UMFPACK_CONTROL]);
 
 //  ==================================================
 
 // This Constructor cannot work, if A is not supplied
-template <class B>
+template<class B>
 SparseUmf<B>::SparseUmf()
-    : __AS(0), Control(NULL), Info(NULL), Symbolic(NULL), Numeric(NULL) {
+  : __AS(0)
+  , Control(NULL)
+  , Info(NULL)
+  , Symbolic(NULL)
+  , Numeric(NULL)
+{
   // __ncomp = 0;
 
   // Control = new double[UMFPACK_CONTROL];
@@ -65,10 +94,14 @@ SparseUmf<B>::SparseUmf()
   // Control[0] = 2;
 }
 
-template <class B>
-SparseUmf<B>::SparseUmf(const MatrixInterface *A)
-    : Control(NULL), Info(NULL), Symbolic(NULL), Numeric(NULL) {
-  __AS = dynamic_cast<const SparseBlockMatrix<B> *>(A);
+template<class B>
+SparseUmf<B>::SparseUmf(const MatrixInterface* A)
+  : Control(NULL)
+  , Info(NULL)
+  , Symbolic(NULL)
+  , Numeric(NULL)
+{
+  __AS = dynamic_cast<const SparseBlockMatrix<B>*>(A);
   assert(__AS);
   __ncomp = 0;
 
@@ -76,8 +109,11 @@ SparseUmf<B>::SparseUmf(const MatrixInterface *A)
   umfpack_dl_defaults(Control);
   Control[0] = 2;
 }
-template <class B> void SparseUmf<B>::SetMatrix(const MatrixInterface *A) {
-  __AS = dynamic_cast<const SparseBlockMatrix<B> *>(A);
+template<class B>
+void
+SparseUmf<B>::SetMatrix(const MatrixInterface* A)
+{
+  __AS = dynamic_cast<const SparseBlockMatrix<B>*>(A);
   assert(__AS);
 
   __ncomp = 0;
@@ -89,7 +125,9 @@ template <class B> void SparseUmf<B>::SetMatrix(const MatrixInterface *A) {
   }
 }
 
-template <class B> SparseUmf<B>::~SparseUmf() {
+template<class B>
+SparseUmf<B>::~SparseUmf()
+{
   umfpack_dl_free_symbolic(&Symbolic);
   umfpack_dl_free_numeric(&Numeric);
 
@@ -103,17 +141,19 @@ template <class B> SparseUmf<B>::~SparseUmf() {
 
 //  ==================================================
 
-template <class B>
-void SparseUmf<B>::ConstructStructure(const IntVector &perm,
-                                      const MatrixInterface &__XXX) {
+template<class B>
+void
+SparseUmf<B>::ConstructStructure(const IntVector& perm,
+                                 const MatrixInterface& __XXX)
+{
   assert(__AS);
   // reinit size of UMFPACK-structure
-  const ColumnStencil *ST =
-      dynamic_cast<const ColumnStencil *>(__AS->GetStencil());
+  const ColumnStencil* ST =
+    dynamic_cast<const ColumnStencil*>(__AS->GetStencil());
   // check if __AS and A are the same object...
   // then, we do not need __AS!!!
   //    assert ( (long int) (__AS) == (long int) (&__XXX));
-  assert(static_cast<const void *>(__AS) == static_cast<const void *>(&__XXX));
+  assert(static_cast<const void*>(__AS) == static_cast<const void*>(&__XXX));
 
   assert(ST);
   __ncomp = __AS->mat(0)->ncomp();
@@ -150,11 +190,11 @@ void SparseUmf<B>::ConstructStructure(const IntVector &perm,
 
   umfpack_dl_free_symbolic(&Symbolic);
 
-  const long *sb = &(*__Ap.begin());
-  const long *cb = &(*__Ac.begin());
+  const long* sb = &(*__Ap.begin());
+  const long* cb = &(*__Ac.begin());
 
   int status =
-      umfpack_dl_symbolic(n_umf, n_umf, sb, cb, NULL, &Symbolic, Control, Info);
+    umfpack_dl_symbolic(n_umf, n_umf, sb, cb, NULL, &Symbolic, Control, Info);
 
   if (status != UMFPACK_OK) {
     umfpack_dl_report_info(Control, Info);
@@ -166,8 +206,10 @@ void SparseUmf<B>::ConstructStructure(const IntVector &perm,
   }
 }
 
-template <class B>
-void SparseUmf<B>::ConstructStructure(int ncomp, const SparseStructure &SS) {
+template<class B>
+void
+SparseUmf<B>::ConstructStructure(int ncomp, const SparseStructure& SS)
+{
   abort();
 
   __ncomp = ncomp;
@@ -205,11 +247,11 @@ void SparseUmf<B>::ConstructStructure(int ncomp, const SparseStructure &SS) {
 
   umfpack_dl_free_symbolic(&Symbolic);
 
-  const long *sb = &(*__Ap.begin());
-  const long *cb = &(*__Ac.begin());
+  const long* sb = &(*__Ap.begin());
+  const long* cb = &(*__Ac.begin());
 
   int status =
-      umfpack_dl_symbolic(n_umf, n_umf, sb, cb, NULL, &Symbolic, Control, Info);
+    umfpack_dl_symbolic(n_umf, n_umf, sb, cb, NULL, &Symbolic, Control, Info);
 
   if (status != UMFPACK_OK) {
     umfpack_dl_report_info(Control, Info);
@@ -221,22 +263,25 @@ void SparseUmf<B>::ConstructStructure(int ncomp, const SparseStructure &SS) {
   }
 }
 
-template <class B> void SparseUmf<B>::copy_entries(const MatrixInterface &A) {
+template<class B>
+void
+SparseUmf<B>::copy_entries(const MatrixInterface& A)
+{
   // check if __AS and A are the same object...
   // then, we do not need __AS!!!
-  assert(static_cast<const void *>(&__AS) == static_cast<const void *>(&A));
+  assert(static_cast<const void*>(&__AS) == static_cast<const void*>(&A));
 
   // Copy Entries
   assert(__ncomp == __AS->mat(0)->ncomp());
 
-  const ColumnStencil *ST =
-      dynamic_cast<const ColumnStencil *>(__AS->GetStencil());
+  const ColumnStencil* ST =
+    dynamic_cast<const ColumnStencil*>(__AS->GetStencil());
   assert(ST);
   int pp = 0;
   for (int r = 0; r < ST->n(); ++r) {
     for (int rc = 0; rc < __ncomp; ++rc) {
       for (int p = ST->start(r); p != ST->stop(r); ++p) {
-        const B &b = *__AS->mat(p);
+        const B& b = *__AS->mat(p);
         for (int cc = 0; cc < __ncomp; ++cc, ++pp) {
           assert(pp < __Ax.size());
           __Ax[pp] = b(rc, cc);
@@ -246,17 +291,18 @@ template <class B> void SparseUmf<B>::copy_entries(const MatrixInterface &A) {
   }
 }
 
-template <class B>
-void SparseUmf<B>::add_entries(double s, const MatrixInterface *A) {
+template<class B>
+void
+SparseUmf<B>::add_entries(double s, const MatrixInterface* A)
+{
   abort();
-  const SparseBlockMatrix<B> *AS =
-      dynamic_cast<const SparseBlockMatrix<B> *>(A);
+  const SparseBlockMatrix<B>* AS = dynamic_cast<const SparseBlockMatrix<B>*>(A);
   assert(AS);
 
   // Copy Entries
   assert(__ncomp == AS->mat(0)->ncomp());
-  const ColumnStencil *ST =
-      dynamic_cast<const ColumnStencil *>(AS->GetStencil());
+  const ColumnStencil* ST =
+    dynamic_cast<const ColumnStencil*>(AS->GetStencil());
   cout << ST->nentries() << "\t" << __Ax.size() << endl;
 
   assert(ST);
@@ -264,7 +310,7 @@ void SparseUmf<B>::add_entries(double s, const MatrixInterface *A) {
   for (int r = 0; r < ST->n(); ++r) {
     for (int rc = 0; rc < __ncomp; ++rc) {
       for (int p = ST->start(r); p != ST->stop(r); ++p) {
-        const B &b = *AS->mat(p);
+        const B& b = *AS->mat(p);
         for (int cc = 0; cc < __ncomp; ++cc, ++pp) {
           assert(pp < __Ax.size());
           __Ax[pp] += s * b(rc, cc);
@@ -276,14 +322,17 @@ void SparseUmf<B>::add_entries(double s, const MatrixInterface *A) {
 
 // ==================================================
 
-template <class B> void SparseUmf<B>::compute_ilu() {
+template<class B>
+void
+SparseUmf<B>::compute_ilu()
+{
   umfpack_dl_free_numeric(&Numeric);
 
-  const long *sb = &(*__Ap.begin());
-  const long *cb = &(*__Ac.begin());
-  const double *mb = &(*__Ax.begin());
+  const long* sb = &(*__Ap.begin());
+  const long* cb = &(*__Ac.begin());
+  const double* mb = &(*__Ax.begin());
   int status =
-      umfpack_dl_numeric(sb, cb, mb, Symbolic, &Numeric, Control, Info);
+    umfpack_dl_numeric(sb, cb, mb, Symbolic, &Numeric, Control, Info);
   if (status != UMFPACK_OK) {
     umfpack_dl_report_info(Control, Info);
     umfpack_dl_report_status(Control, status);
@@ -294,19 +343,22 @@ template <class B> void SparseUmf<B>::compute_ilu() {
 
 /*-----------------------------------------*/
 
-template <class B> void SparseUmf<B>::solve(GlobalVector &x) const {
+template<class B>
+void
+SparseUmf<B>::solve(GlobalVector& x) const
+{
   assert(__ncomp == x.ncomp());
   assert(__Ap.size() == x.size() + 1);
 
-  const long *sb = &(*__Ap.begin());
-  const long *cb = &(*__Ac.begin());
-  const double *mb = &(*__Ax.begin());
+  const long* sb = &(*__Ap.begin());
+  const long* cb = &(*__Ac.begin());
+  const double* mb = &(*__Ax.begin());
 
   GlobalVector b = x;
-  double *xb = &(*x.begin());
-  const double *bb = &(*b.begin());
+  double* xb = &(*x.begin());
+  const double* bb = &(*b.begin());
   int status =
-      umfpack_dl_solve(UMFPACK_At, sb, cb, mb, xb, bb, Numeric, Control, Info);
+    umfpack_dl_solve(UMFPACK_At, sb, cb, mb, xb, bb, Numeric, Control, Info);
 
   if (status != UMFPACK_OK) {
     umfpack_dl_report_info(Control, Info);
@@ -316,8 +368,11 @@ template <class B> void SparseUmf<B>::solve(GlobalVector &x) const {
   }
 }
 
-template <class B> double SparseUmf<B>::exec(std::string cmd) const {
-  FILE *pipe = popen(cmd.c_str(), "r");
+template<class B>
+double
+SparseUmf<B>::exec(std::string cmd) const
+{
+  FILE* pipe = popen(cmd.c_str(), "r");
   if (!pipe)
     return 0;
   char buffer[128];
@@ -330,11 +385,24 @@ template <class B> double SparseUmf<B>::exec(std::string cmd) const {
   return atof(result.c_str());
 }
 
-template <class B> void SparseUmf<B>::do_precondition() { abort(); }
+template<class B>
+void
+SparseUmf<B>::do_precondition()
+{
+  abort();
+}
 
-template <class B> void SparseUmf<B>::undo_precondition() { abort(); }
+template<class B>
+void
+SparseUmf<B>::undo_precondition()
+{
+  abort();
+}
 
-template <class B> double SparseUmf<B>::condition_number() const {
+template<class B>
+double
+SparseUmf<B>::condition_number() const
+{
   abort();
 
   int N = __Ap.size() - 1;

@@ -32,7 +32,8 @@
 /*-----------------------------------------*/
 
 namespace Gascoigne {
-class MgInterpolatorNested : public virtual MgInterpolatorInterface {
+class MgInterpolatorNested : public virtual MgInterpolatorInterface
+{
 private:
   std::map<int, std::array<int, 2>> zweier;
   std::map<int, std::array<int, 4>> vierer;
@@ -41,21 +42,23 @@ private:
   IntVector c2f;
 
 public:
-  std::map<int, std::array<int, 2>> &GetZweier() { return zweier; }
-  std::map<int, std::array<int, 4>> &GetVierer() { return vierer; }
-  std::map<int, std::array<int, 8>> &GetAchter() { return achter; }
+  std::map<int, std::array<int, 2>>& GetZweier() { return zweier; }
+  std::map<int, std::array<int, 4>>& GetVierer() { return vierer; }
+  std::map<int, std::array<int, 8>>& GetAchter() { return achter; }
 
-  IntVector &GetC2F() { return c2f; }
-  const IntVector &GetC2F() const { return c2f; }
+  IntVector& GetC2F() { return c2f; }
+  const IntVector& GetC2F() const { return c2f; }
 
-  MgInterpolatorNested() : MgInterpolatorInterface() {}
+  MgInterpolatorNested()
+    : MgInterpolatorInterface()
+  {}
 
-  void BasicInit(const MeshTransferInterface *MT);
+  void BasicInit(const MeshTransferInterface* MT);
 
-  void restrict_zero(GlobalVector &, const GlobalVector &) const;
-  void prolongate_add(GlobalVector &, const GlobalVector &) const;
-  void SolutionTransfer(GlobalVector &, const GlobalVector &) const;
-  void Pi(GlobalVector &u) const;
+  void restrict_zero(GlobalVector&, const GlobalVector&) const;
+  void prolongate_add(GlobalVector&, const GlobalVector&) const;
+  void SolutionTransfer(GlobalVector&, const GlobalVector&) const;
+  void Pi(GlobalVector& u) const;
 };
 } // namespace Gascoigne
 

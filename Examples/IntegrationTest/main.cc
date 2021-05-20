@@ -33,13 +33,16 @@ using namespace Gascoigne;
 
 /*---------------------------------------------------*/
 
-class LocalSolver : public StdSolver {
+class LocalSolver : public StdSolver
+{
 public:
-  LocalSolver() : StdSolver(){};
+  LocalSolver()
+    : StdSolver(){};
   ~LocalSolver() {}
 
-  double Integral(const VectorInterface &gu) const {
-    const GlobalVector &u = GetGV(gu);
+  double Integral(const VectorInterface& gu) const
+  {
+    const GlobalVector& u = GetGV(gu);
     HNAverage(gu);
     assert(GetDiscretization()->HNZeroCheck(u) == 0);
 
@@ -47,22 +50,27 @@ public:
     HNZero(gu);
     return dst[0];
   }
-  DiscretizationInterface *NewDiscretization(int dimension,
-                                             const string &discname) {
+  DiscretizationInterface* NewDiscretization(int dimension,
+                                             const string& discname)
+  {
     return new Q12d;
   }
-  void NewMesh(int l, const MeshInterface *MP) {
+  void NewMesh(int l, const MeshInterface* MP)
+  {
     StdSolver::NewMesh(l, MP);
     GetDiscretization()->InitFilter(_PF);
   }
-  void BasicInit(int level, const ParamFile *paramfile, const int dimension) {
+  void BasicInit(int level, const ParamFile* paramfile, const int dimension)
+  {
     StdSolver::BasicInit(level, paramfile, dimension);
   }
 };
 
 /*---------------------------------------------------*/
 
-double f(double x, double t) {
+double
+f(double x, double t)
+{
   double xx = 0.5 + 0.25 * cos(2 * M_PI * t);
   double yy = 0.5 + 0.25 * sin(2 * M_PI * t);
   double u = 1. / (1. + (x - xx) * (x - xx) + yy * yy);
@@ -72,7 +80,9 @@ double f(double x, double t) {
 
 /*---------------------------------------------------*/
 
-int main(int argc, char **argv) {
+int
+main(int argc, char** argv)
+{
   ParamFile paramfile("mesh.param");
   if (argc >= 2) {
     paramfile.SetName(argv[1]);
@@ -88,12 +98,12 @@ int main(int argc, char **argv) {
   for (int iter = 1; iter <= niter; iter++) {
     LocalSolver S;
 
-    const MeshInterface *MI = M.GetMesh(0);
+    const MeshInterface* MI = M.GetMesh(0);
     S.BasicInit(iter, &paramfile, MI->dimension());
     S.NewMesh(iter, MI);
 
     S.ReInitVector(gu, 1);
-    GlobalVector &u = S.GetGV(gu);
+    GlobalVector& u = S.GetGV(gu);
     u.resize(MI->nnodes());
 
     for (int i = 0; i < u.n(); i++) {

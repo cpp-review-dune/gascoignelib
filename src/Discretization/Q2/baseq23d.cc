@@ -31,7 +31,8 @@ namespace Gascoigne {
 
 /*------------------------------------------------------------------*/
 
-BaseQ23d::BaseQ23d() {
+BaseQ23d::BaseQ23d()
+{
   N.resize(NDOF);
   DN.resize(NDOF);
   // DDN.resize(NDOF);
@@ -51,7 +52,9 @@ BaseQ23d::BaseQ23d() {
 
 /*------------------------------------------------------------------*/
 
-void BaseQ23d::point(const Vertex3d &s) const {
+void
+BaseQ23d::point(const Vertex3d& s) const
+{
   for (int i = 0; i < NDOF; i++) {
     // nicht geprueft !!!!!!!!!!
     //       int ix = i%NDOF1d;

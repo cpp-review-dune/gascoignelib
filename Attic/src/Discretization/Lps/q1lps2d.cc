@@ -26,7 +26,8 @@
 namespace Gascoigne {
 /* ----------------------------------------- */
 
-Q1Lps2d::~Q1Lps2d() {
+Q1Lps2d::~Q1Lps2d()
+{
   if (S)
     delete S;
   S = 0;
@@ -34,7 +35,9 @@ Q1Lps2d::~Q1Lps2d() {
 
 /* ----------------------------------------- */
 
-void Q1Lps2d::BasicInit(const ParamFile *paramfile) {
+void
+Q1Lps2d::BasicInit(const ParamFile* paramfile)
+{
   Q12d::BasicInit(paramfile);
   S = new Q1LpsStab2d;
   S->BasicInit(paramfile, HN);
@@ -42,21 +45,29 @@ void Q1Lps2d::BasicInit(const ParamFile *paramfile) {
 
 /* ----------------------------------------- */
 
-void Q1Lps2d::ReInit(const GascoigneMesh *M) {
+void
+Q1Lps2d::ReInit(const GascoigneMesh* M)
+{
   Q12d::ReInit(M);
   S->ReInit(M);
 }
 
 /* ----------------------------------------- */
 
-void Q1Lps2d::Structure(SparseStructureInterface *SI) const {
+void
+Q1Lps2d::Structure(SparseStructureInterface* SI) const
+{
   S->Structure(SI);
 }
 
 /* ----------------------------------------- */
 
-void Q1Lps2d::StabForm(GlobalVector &f, const GlobalVector &u,
-                       const ProblemDescriptorInterface &PD, double d) const {
+void
+Q1Lps2d::StabForm(GlobalVector& f,
+                  const GlobalVector& u,
+                  const ProblemDescriptorInterface& PD,
+                  double d) const
+{
   assert(0);
 
   //  S->Form(f,u,EQ,d);
@@ -64,16 +75,24 @@ void Q1Lps2d::StabForm(GlobalVector &f, const GlobalVector &u,
 
 /* ----------------------------------------- */
 
-void Q1Lps2d::Form(GlobalVector &f, const GlobalVector &u,
-                   const ProblemDescriptorInterface &PD, double d) const {
+void
+Q1Lps2d::Form(GlobalVector& f,
+              const GlobalVector& u,
+              const ProblemDescriptorInterface& PD,
+              double d) const
+{
   Q12d::Form(f, u, PD, d);
   S->Form(f, u, PD, d);
 }
 
 /* ----------------------------------------- */
 
-void Q1Lps2d::Matrix(MatrixInterface &A, const GlobalVector &u,
-                     const ProblemDescriptorInterface &PD, double d) const {
+void
+Q1Lps2d::Matrix(MatrixInterface& A,
+                const GlobalVector& u,
+                const ProblemDescriptorInterface& PD,
+                double d) const
+{
   Q12d::Matrix(A, u, PD, d);
   S->Matrix(A, u, PD, d);
 }

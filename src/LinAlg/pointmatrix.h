@@ -39,11 +39,14 @@ namespace Gascoigne {
 ///
 /////////////////////////////////////////////
 
-class PointMatrix : public SimpleMatrix, virtual public MatrixInterface {
+class PointMatrix
+  : public SimpleMatrix
+  , virtual public MatrixInterface
+{
 private:
 protected:
   int _ncomp;
-  SparseStructureAdaptor *SSAP;
+  SparseStructureAdaptor* SSAP;
 
 public:
   //
@@ -55,33 +58,43 @@ public:
   std::string GetName() const { return "PointMatrix"; }
 
   void zero() { SimpleMatrix::zero(); }
-  void vmult(GlobalVector &y, const GlobalVector &x, double d = 1.) const;
-  void vmult_transpose(GlobalVector &y, const GlobalVector &x,
+  void vmult(GlobalVector& y, const GlobalVector& x, double d = 1.) const;
+  void vmult_transpose(GlobalVector& y,
+                       const GlobalVector& x,
                        double d = 1.) const;
 
-  const StencilInterface *GetStencil() const {
+  const StencilInterface* GetStencil() const
+  {
     return SimpleMatrix::GetStencil();
   }
-  void ReInit(const SparseStructureInterface *S);
+  void ReInit(const SparseStructureInterface* S);
 
-  void entry(niiterator start, niiterator stop, const EntryMatrix &M,
+  void entry(niiterator start,
+             niiterator stop,
+             const EntryMatrix& M,
              double s = 1.);
-  void entry(niiterator start1, niiterator stop1, niiterator start2,
-             niiterator stop2, const EntryMatrix &M, double s = 1.);
-  void entry_diag(int i, const nmatrix<double> &M);
-  void dirichlet(int i, const std::vector<int> &cv);
-  void dirichlet_only_row(int i, const std::vector<int> &cv);
-  void periodic(const std::map<int, int> &m_PeriodicPairs,
-                const IntVector &iv_Components);
+  void entry(niiterator start1,
+             niiterator stop1,
+             niiterator start2,
+             niiterator stop2,
+             const EntryMatrix& M,
+             double s = 1.);
+  void entry_diag(int i, const nmatrix<double>& M);
+  void dirichlet(int i, const std::vector<int>& cv);
+  void dirichlet_only_row(int i, const std::vector<int>& cv);
+  void periodic(const std::map<int, int>& m_PeriodicPairs,
+                const IntVector& iv_Components);
 
   void transpose() { SimpleMatrix::transpose(); }
 
-  void AddMassWithDifferentStencil(const MatrixInterface *M,
-                                   const TimePattern &TP, double s = 1.);
-  void AddMassWithDifferentStencilJacobi(const MatrixInterface *M,
-                                         const TimePattern &TP, double s = 1.);
+  void AddMassWithDifferentStencil(const MatrixInterface* M,
+                                   const TimePattern& TP,
+                                   double s = 1.);
+  void AddMassWithDifferentStencilJacobi(const MatrixInterface* M,
+                                         const TimePattern& TP,
+                                         double s = 1.);
 
-  void RestrictMatrix(const MgInterpolatorMatrix &I, const PointMatrix &Ah);
+  void RestrictMatrix(const MgInterpolatorMatrix& I, const PointMatrix& Ah);
 };
 
 } // namespace Gascoigne

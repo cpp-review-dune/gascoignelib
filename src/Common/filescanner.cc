@@ -36,7 +36,9 @@ namespace Gascoigne {
 
 /***************************************************/
 
-FileScanner::FileScanner(DataFormatHandler &D) : DH(D) {
+FileScanner::FileScanner(DataFormatHandler& D)
+  : DH(D)
+{
   complain = 0;
   blocksymbol = "//Block";
   _i_defaultvalues_level = 0;
@@ -46,9 +48,11 @@ FileScanner::FileScanner(DataFormatHandler &D) : DH(D) {
 
 /***************************************************/
 
-FileScanner::FileScanner(DataFormatHandler &D, const ParamFile &pf,
-                         const string &blockname)
-    : DH(D) {
+FileScanner::FileScanner(DataFormatHandler& D,
+                         const ParamFile& pf,
+                         const string& blockname)
+  : DH(D)
+{
   complain = 0;
   blocksymbol = "//Block";
   _i_defaultvalues_level = 0;
@@ -59,7 +63,9 @@ FileScanner::FileScanner(DataFormatHandler &D, const ParamFile &pf,
 
 /***************************************************/
 
-void FileScanner::_assert(bool b, const vector<string> &words) const {
+void
+FileScanner::_assert(bool b, const vector<string>& words) const
+{
   if (!b) {
     cerr << "*** FileScanner:\tWrong number of arguments in row\t" << words
          << endl;
@@ -69,7 +75,9 @@ void FileScanner::_assert(bool b, const vector<string> &words) const {
 
 /***************************************************/
 
-void FileScanner::readfile(const ParamFile &pf, const string &blockname) {
+void
+FileScanner::readfile(const ParamFile& pf, const string& blockname)
+{
 
   string inputname = pf.GetName();
   LineScanner LS(inputname);
@@ -117,9 +125,11 @@ void FileScanner::readfile(const ParamFile &pf, const string &blockname) {
     string s_paramfile = pf.GetName();
 
     DFH.insert("files", &vs_files);
-    DFH.insert("save_all_to_file", &_i_defaultvalues_save_all_to_file,
+    DFH.insert("save_all_to_file",
+               &_i_defaultvalues_save_all_to_file,
                _i_defaultvalues_save_all_to_file);
-    DFH.insert("save_filename", &_s_defaultvalues_save_filename,
+    DFH.insert("save_filename",
+               &_s_defaultvalues_save_filename,
                _s_defaultvalues_save_filename);
     FileScanner FS(DFH);
     FS._i_defaultvalues_level = _i_defaultvalues_level;
@@ -232,8 +242,7 @@ void FileScanner::readfile(const ParamFile &pf, const string &blockname) {
                             ios_base::out);
       createheader << "#!/usr/bin/env perl" << endl;
       createheader
-          << "# to generate param-file, simply execute this perl-script"
-          << endl;
+        << "# to generate param-file, simply execute this perl-script" << endl;
       createheader << "$colwidth=35;" << endl;
       createheader << "" << endl;
       createheader << "open(FH, $0);" << endl;
@@ -265,8 +274,8 @@ void FileScanner::readfile(const ParamFile &pf, const string &blockname) {
       createheader << "    $data{$key}=\"$2     $data{$key}\";" << endl;
       createheader << "  }" << endl;
       createheader
-          << "  printf(\"\\%-${colwidth}s \\%s\\n\",$names[1],$data{$key});"
-          << endl;
+        << "  printf(\"\\%-${colwidth}s \\%s\\n\",$names[1],$data{$key});"
+        << endl;
       createheader << "}" << endl;
       createheader << "print \"\\n//Block nix\\n\";" << endl;
       createheader << "close(F);" << endl;
@@ -285,7 +294,7 @@ void FileScanner::readfile(const ParamFile &pf, const string &blockname) {
     char ca_date[100];
     {
       time_t t_date;
-      struct tm *tmzgr;
+      struct tm* tmzgr;
       t_date = time(NULL);
       tmzgr = localtime(&t_date);
       strftime(ca_date, 100, "%Y.%m.%d-%H:%M", tmzgr);
@@ -302,7 +311,9 @@ void FileScanner::readfile(const ParamFile &pf, const string &blockname) {
 
 /***************************************************/
 
-void FileScanner::FormatToValue(const vector<string> &words) {
+void
+FileScanner::FormatToValue(const vector<string>& words)
+{
   string keyword_type;
   string keyword = words[0];
   DH.get(keyword_type, keyword);
@@ -427,7 +438,9 @@ void FileScanner::FormatToValue(const vector<string> &words) {
 
 /***************************************************/
 
-void FileScanner::print(const string &blockname) const {
+void
+FileScanner::print(const string& blockname) const
+{
   cout << "=====================" << endl;
   cout << blocksymbol << " " << blockname << endl << endl;
   DH.print(cout);

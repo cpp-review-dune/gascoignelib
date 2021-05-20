@@ -34,12 +34,15 @@
 
 /*-----------------------------------------*/
 
-class BenchMarkSplitDirichletData : public Gascoigne::DirichletData {
+class BenchMarkSplitDirichletData : public Gascoigne::DirichletData
+{
 public:
   BenchMarkSplitDirichletData() {}
   std::string GetName() const { return "BenchMarkSplit"; }
-  void operator()(Gascoigne::DoubleVector &b, const Gascoigne::Vertex2d &v,
-                  int color) const {
+  void operator()(Gascoigne::DoubleVector& b,
+                  const Gascoigne::Vertex2d& v,
+                  int color) const
+  {
     b.zero();
     /*     if (color!=80) */
     /*       { */
@@ -52,18 +55,23 @@ public:
 
 /*---------------------------------------------------*/
 
-class VelocityRhs : public Gascoigne::DomainRightHandSide {
-  mutable const Gascoigne::TestFunction *pressure;
+class VelocityRhs : public Gascoigne::DomainRightHandSide
+{
+  mutable const Gascoigne::TestFunction* pressure;
 
 public:
-  VelocityRhs() : Gascoigne::DomainRightHandSide() {}
+  VelocityRhs()
+    : Gascoigne::DomainRightHandSide()
+  {}
   std::string GetName() const { return "VelocityRhs"; }
   int GetNcomp() const { return 2; }
-  void SetFemData(Gascoigne::FemData &d) const {
+  void SetFemData(Gascoigne::FemData& d) const
+  {
     auto it = d.find("pressure");
     pressure = &(it->second)[0];
   }
-  double operator()(int c, const Gascoigne::Vertex2d &v) const {
+  double operator()(int c, const Gascoigne::Vertex2d& v) const
+  {
     if (c == 0)
       return -pressure->x();
     else if (c == 1)
@@ -75,10 +83,12 @@ public:
 
 /*---------------------------------------------------*/
 
-class VelocityProblemDescriptor : public Gascoigne::ProblemDescriptorBase {
+class VelocityProblemDescriptor : public Gascoigne::ProblemDescriptorBase
+{
 public:
   std::string GetName() const { return "VelocityProblemDescriptor"; }
-  void BasicInit(const Gascoigne::ParamFile *pf) {
+  void BasicInit(const Gascoigne::ParamFile* pf)
+  {
     GetParamFilePointer() = pf;
     GetEquationPointer() = new NavierStokesSplitLps2d(GetParamFile());
     GetRightHandSidePointer() = new VelocityRhs;
@@ -90,38 +100,48 @@ public:
 
 /*---------------------------------------------------*/
 
-class PressureRhs : public Gascoigne::DomainRightHandSide {
+class PressureRhs : public Gascoigne::DomainRightHandSide
+{
   mutable const Gascoigne::TestFunction *v, *u;
 
 public:
-  PressureRhs() : Gascoigne::DomainRightHandSide() {}
+  PressureRhs()
+    : Gascoigne::DomainRightHandSide()
+  {}
   std::string GetName() const { return "PressureRhs"; }
   int GetNcomp() const { return 1; }
-  void SetFemData(Gascoigne::FemData &d) const {
+  void SetFemData(Gascoigne::FemData& d) const
+  {
     auto it = d.find("velocity");
     v = &(it->second)[0];
     u = &(it->second)[1];
   }
-  double operator()(int c, const Gascoigne::Vertex2d &) const {
+  double operator()(int c, const Gascoigne::Vertex2d&) const
+  {
     return -(v->x() + u->y()) / GetTimeStep();
   }
 };
 
 /*---------------------------------------------------*/
 
-class NoDirichletBoundaries : public Gascoigne::BoundaryManager {
+class NoDirichletBoundaries : public Gascoigne::BoundaryManager
+{
 public:
-  NoDirichletBoundaries() : Gascoigne::BoundaryManager() {}
+  NoDirichletBoundaries()
+    : Gascoigne::BoundaryManager()
+  {}
   ~NoDirichletBoundaries() {}
-  void BasicInit(const Gascoigne::ParamFile *pf) {}
+  void BasicInit(const Gascoigne::ParamFile* pf) {}
 };
 
 /*---------------------------------------------------*/
 
-class PressureProblemDescriptor : public Gascoigne::ProblemDescriptorBase {
+class PressureProblemDescriptor : public Gascoigne::ProblemDescriptorBase
+{
 public:
   std::string GetName() const { return "PressureProblemDescriptor"; }
-  void BasicInit(const Gascoigne::ParamFile *pf) {
+  void BasicInit(const Gascoigne::ParamFile* pf)
+  {
     GetParamFilePointer() = pf;
     GetEquationPointer() = new Gascoigne::Laplace2d;
     GetRightHandSidePointer() = new PressureRhs;
