@@ -75,7 +75,7 @@ GascoigneVisualization::AddVector(const ComponentInformation* CI,
   // add vectors
   {
     IndexType nvectors = CI->GetNVectors();
-    std::array<IndexType, 3> fa_vectorindices;
+    std::array<int, 3> fa_vectorindices;
     std::string s_name;
     IndexType i_notset = 0;
     for (IndexType i = 0; i < nvectors; i++) {
@@ -110,7 +110,7 @@ GascoigneVisualization::AddVector(const GlobalVector* v)
 
   IndexType vector_index = 0;
   if (ncomp >= 2) {
-    std::array<IndexType, 3> ff;
+    std::array<int, 3> ff;
     int dim = mesh->dimension();
     if (dim == 3) {
       ff[0] = 1;

@@ -63,7 +63,7 @@ ComponentInformationBase::GetVectorName(IndexType i, std::string& s_name) const
 void
 ComponentInformationBase::GetVectorIndices(
   IndexType i,
-  std::array<IndexType, 3>& fa_vectorindices) const
+  std::array<int, 3>& fa_vectorindices) const
 {
   if (GetDimension() == 2) {
     fa_vectorindices[0] = 1;

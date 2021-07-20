@@ -39,14 +39,13 @@ class VisuDataInfo
 {
 protected:
   std::map<std::string, IndexType> scalars;
-  std::map<std::string, std::array<IndexType, 3>> vectors;
+  std::map<std::string, std::array<int, 3>> vectors;
   std::map<std::string, IndexType> scalar_order;
   std::map<std::string, IndexType> vector_order;
 
 public:
   typedef std::map<std::string, IndexType>::const_iterator siterator;
-  typedef std::map<std::string, std::array<IndexType, 3>>::const_iterator
-    viterator;
+  typedef std::map<std::string, std::array<int, 3>>::const_iterator viterator;
 
   VisuDataInfo() {}
   VisuDataInfo(IndexType ncomp) { AddScalars(ncomp); }
@@ -93,7 +92,7 @@ public:
   }
   void AddVector(IndexType index,
                  const std::string& name,
-                 const std::array<IndexType, 3>& i)
+                 const std::array<int, 3>& i)
   {
     vector_order[name] = index;
     vectors[name] = i;
@@ -105,7 +104,7 @@ public:
   IndexType nvectors() const { return vectors.size(); }
 
   const std::map<std::string, IndexType>& Scalars() const { return scalars; }
-  const std::map<std::string, std::array<IndexType, 3>>& Vectors() const
+  const std::map<std::string, std::array<int, 3>>& Vectors() const
   {
     return vectors;
   }
