@@ -176,9 +176,8 @@ StdLoop::GetFunctionalNames() const
 /*-------------------------------------------------*/
 
 DoubleVector
-StdLoop::Functionals(Vector& u, Vector& f)
+StdLoop::Functionals(Vector& u, Vector& f, bool output)
 {
-  bool output = true;
 
   const std::vector<std::string> N = GetFunctionalNames();
   const DoubleVector J = ComputeFunctionals(f, u);

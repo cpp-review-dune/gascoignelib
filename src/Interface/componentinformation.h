@@ -73,9 +73,8 @@ public:
   virtual void GetScalarName(IndexType i, std::string& s_name) const = 0;
   virtual const IndexType GetNVectors() const = 0;
   virtual void GetVectorName(IndexType i, std::string& s_name) const = 0;
-  virtual void GetVectorIndices(
-    IndexType i,
-    std::array<IndexType, 3>& fa_vectorindices) const = 0;
+  virtual void GetVectorIndices(IndexType i,
+                                std::array<int, 3>& fa_vectorindices) const = 0;
 };
 } // namespace Gascoigne
 

@@ -71,7 +71,7 @@ protected:
   virtual void AdaptMesh(const DoubleVector& eta);
   virtual void AdaptMesh(const DoubleVector& eta,
                          std::string refine_or_coarsen_step);
-  virtual DoubleVector Functionals(Vector& u, Vector& f);
+  virtual DoubleVector Functionals(Vector& u, Vector& f, bool output = true);
   virtual double Estimator(DoubleVector& eta, Vector& u, Vector& f);
 
 public:
