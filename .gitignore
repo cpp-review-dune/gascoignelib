@@ -19,3 +19,5 @@ cmake*
 /doc/html/
 /doc/latex/
 /doc/taginformation.cmake
+
+lib

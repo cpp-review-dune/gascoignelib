@@ -59,10 +59,14 @@ public:
 
   std::ostream& Write(std::ostream& os) const;
 
+  StencilInterface* GetStencil() { return &ST; }
   const StencilInterface* GetStencil() const { return &ST; }
+
   double& GetValue(int pos) { return value[pos]; }
   const double& GetValue(int pos) const { return value[pos]; }
+  double& GetValue(int i, int j) { return value[ST.Find(i, j)]; }
   const double& GetValue(int i, int j) const { return value[ST.Find(i, j)]; }
+  DoubleVector& GetValues() { return value; }
   const DoubleVector& GetValues() const { return value; }
 
   void zero() { value.zero(); }
@@ -72,6 +76,7 @@ public:
              niiterator stop,
              const EntryMatrix& M,
              double s = 1.);
+
   void vmult(DoubleVector& y, const DoubleVector& x, double d = 1.) const;
   void vmult_transpose(DoubleVector& y,
                        const DoubleVector& x,

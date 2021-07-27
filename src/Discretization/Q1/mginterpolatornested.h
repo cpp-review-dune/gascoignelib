@@ -53,7 +53,7 @@ public:
     : MgInterpolatorInterface()
   {}
 
-  void BasicInit(const MeshTransferInterface* MT);
+  virtual void BasicInit(const MeshTransferInterface* MT);
 
   void restrict_zero(GlobalVector&, const GlobalVector&) const;
   void prolongate_add(GlobalVector&, const GlobalVector&) const;
