@@ -45,6 +45,12 @@ public:
   {}
   ~PatchIndexHandler() {}
 
+  ////////////////////////////////////////////////// TEMP 06. October 2021 can
+  /// all be removed
+  void ConstructQ4PatchByQ2Patch(const nvector<IntVector>& coarseq2patches);
+  ////////////////////////////////////////////////// TEMP 06. October 2021 can
+  /// all be removed
+
   int& GetDim() { return dim; }
   bool& GetHasPatch() { return haspatch; }
   bool& GetHasQ4Patch() { return hasq4patch; }

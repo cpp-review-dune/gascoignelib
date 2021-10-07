@@ -119,6 +119,9 @@ BoundaryIndexHandler::Verteces(int color) const
   if (p == verteces.end()) {
     cerr << "BoundaryIndexHandler::Vertices\tcolor not found: " << color
          << endl;
+
+    std::cout << verteces << std::endl;
+
     abort();
   }
   return p->second;

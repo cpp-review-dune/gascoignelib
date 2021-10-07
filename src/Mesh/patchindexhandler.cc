@@ -26,6 +26,53 @@
 /*-----------------------------------------*/
 
 namespace Gascoigne {
+
+void
+PatchIndexHandler::ConstructQ4PatchByQ2Patch(
+  const nvector<IntVector>& coarseq2patches)
+{
+  assert(haspatch);
+  assert(coarseq2patches.size() * 4 == indexofpatch.size());
+
+  hasq4patch = true;
+
+  // construct temporary map on fine mesh: from (n1,n2) -> q2patch
+  // (n1,n2) are the two opposite nodes of the q2 patch.
+  std::map<std::array<int, 2>, int> fine_diag2q2patch;
+  for (int q = 0; q < indexofpatch.size(); ++q) {
+    const IntVector& pi = indexofpatch[q];
+    assert(pi.size() == 9); // only 2d
+    fine_diag2q2patch[{ pi[0], pi[8] }] = q;
+  }
+
+  indexofq4patch.clear();
+  indexofq4patch.resize(coarseq2patches.size(), IntVector(25, 0.));
+
+  // run over all coarse q2 patches and enter indices and cells
+
+  for (int q = 0; q < coarseq2patches.size(); ++q) {
+    const IntVector& cpi = coarseq2patches[q];
+
+    assert(cpi.size() == 9);
+
+    for (int iy = 0; iy < 2; ++iy)
+      for (int ix = 0; ix < 2; ++ix) {
+        int n0 = cpi[3 * iy + ix]; // lower/left node of patch
+        int n1 = cpi[3 * iy + ix + 4];
+
+        assert(fine_diag2q2patch.find({ n0, n1 }) != fine_diag2q2patch.end());
+        const IntVector& fpi = indexofpatch[fine_diag2q2patch[{ n0, n1 }]];
+
+        int F0 = 10 * iy + 2 * ix; // first index in fine patch
+        for (int cy = 0; cy < 3; ++cy)
+          for (int cx = 0; cx < 3; ++cx)
+            indexofq4patch[q][F0 + 5 * cy + cx] = fpi[3 * cy + cx];
+      }
+  }
+}
+////////////////////////////////////////////////// TEMP 06. October 2021 can
+/// all be removed
+
 IntVector
 PatchIndexHandler::Q2IndicesOfQ4Patch(int i) const
 {

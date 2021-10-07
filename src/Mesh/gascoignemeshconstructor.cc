@@ -101,6 +101,17 @@ GascoigneMeshConstructor::Loop2d()
   }
   delete FM;
   FM = NULL;
+
+  ////////////////////////////////////////////////// TEMP Thomas 06. Oktober
+  /// 2021
+  for (int level = 1; level < GMG->nlevels(); level++) {
+    GMG->GetGascoigneMesh(level - 1)
+      ->GetPatchIndexHandler()
+      .ConstructQ4PatchByQ2Patch(
+        GMG->GetGascoigneMesh(level)->GetPatchIndexHandler().GetIndex());
+  }
+  ////////////////////////////////////////////////// TEMP Thomas 06. Oktober
+  /// 2021
 }
 
 /*---------------------------------------------------*/
