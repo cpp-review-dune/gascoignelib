@@ -99,6 +99,7 @@ public:
     }
     return *vp;
   };
+
   const T& operator()(const std::string& g) const
   {
     auto p = std::map<std::string, T*>::find(g);

@@ -51,85 +51,85 @@ protected:
   std::chrono::high_resolution_clock::time_point last_time;
   std::chrono::duration<double> sum_time;
 
+  std::clock_t last_cpu_time;
+  double sum_cpu_time;
+
+  size_t activations;
+
   bool running;
 
 public:
   StopWatch()
     : sum_time(std::chrono::duration<double>::zero())
+    , sum_cpu_time(0)
+    , activations(0)
     , running(false)
   {}
 
   virtual void reset()
   {
     sum_time = std::chrono::duration<double>::zero();
+    sum_cpu_time = 0;
     running = false;
   }
+  
   virtual void start()
   {
-    assert(!running);
-    last_time = std::chrono::high_resolution_clock::now();
+    if (!running) {
+      activations++;
+      last_time = std::chrono::high_resolution_clock::now();
+      last_cpu_time = std::clock();
+      running = true;
+    }
   }
+
   virtual void stop()
   {
     std::chrono::high_resolution_clock::time_point now =
       std::chrono::high_resolution_clock::now();
-    running = false;
     sum_time += std::chrono::duration_cast<std::chrono::duration<double>>(
       now - last_time);
+    last_time = std::chrono::high_resolution_clock::now();
+
+    std::clock_t now_cpu = std::clock();
+    sum_cpu_time +=
+      static_cast<double>(now_cpu - last_cpu_time) / CLOCKS_PER_SEC;
+    last_cpu_time = std::clock();
+
+    running = false;
   }
+
   virtual double read() const
   {
     assert(!running);
     return sum_time.count();
   }
+
+  double readPerActivations() const
+  {
+    assert(!running);
+    return sum_time.count() / activations;
+  }
+
+  virtual double readCPU() const
+  {
+    assert(!running);
+    return sum_cpu_time;
+  }
+
   virtual double read100() const
   {
     return static_cast<double>(static_cast<int>(read() * 100)) / 100.0;
   }
-};
 
-/**
- *
- * StopWatch that measure the 'cpu time'
- *
- **/
-
-class CPUStopWatch : public StopWatch
-{
-protected:
-  std::clock_t last_time;
-  double sum_time;
-
-public:
-  CPUStopWatch()
-    : sum_time(0)
-  {}
-
-  void reset()
-  {
-    sum_time = 0;
-    running = false;
-  }
-  void start()
-  {
-    assert(!running);
-    last_time = std::clock();
-  }
-  void stop()
-  {
-    std::clock_t now = std::clock();
-    running = false;
-    sum_time += static_cast<double>(now - last_time) / CLOCKS_PER_SEC;
-  }
-  double read() const
-  {
-    assert(!running);
-    return sum_time;
-  }
-  double read100() const
+  double readCPU100() const
   {
     return static_cast<double>(static_cast<int>(read() * 100)) / 100.0;
   }
+
+  size_t readActivations() const { return activations; }
+
+  bool isRunning() const { return running; }
 };
 
 /*----------------------------------------------------*/
@@ -144,44 +144,31 @@ class Timer
 {
 protected:
   std::map<std::string, StopWatch> watches;
-  std::map<std::string, CPUStopWatch> cpuwatches;
-
   std::map<std::string, size_t> counters;
 
 public:
   void reset()
   {
     watches.clear();
-    cpuwatches.clear();
     counters.clear();
   }
   void reset(const std::string& label)
   {
     auto it = watches.find(label);
     assert(it != watches.end());
-    watches.erase(it);
-
-    auto cpuit = cpuwatches.find(label);
-    assert(cpuit != cpuwatches.end());
-    cpuwatches.erase(cpuit);
+    it->second.reset();
 
     auto counter = counters.find(label);
     assert(counter != counters.end());
     counters.erase(counter);
   }
 
-  void start(const std::string& label)
-  {
-    watches[label].start();
-    cpuwatches[label].start();
-  }
+  void start(const std::string& label) { watches[label].start(); }
 
   void stop(const std::string& label)
   {
     assert(watches.find(label) != watches.end());
-    assert(cpuwatches.find(label) != cpuwatches.end());
     watches[label].stop();
-    cpuwatches[label].stop();
   }
 
   void count(const std::string& label) { counters[label]++; }
@@ -202,15 +189,15 @@ public:
 
   double cpuread(const std::string& label) const
   {
-    auto it = cpuwatches.find(label);
-    assert(it != cpuwatches.end());
-    return it->second.read();
+    auto it = watches.find(label);
+    assert(it != watches.end());
+    return it->second.readCPU();
   }
   double cpuread100(const std::string& label) const
   {
-    auto it = cpuwatches.find(label);
-    assert(it != cpuwatches.end());
-    return it->second.read100();
+    auto it = watches.find(label);
+    assert(it != watches.end());
+    return it->second.readCPU100();
   }
 
   size_t counterread(const std::string& label) const
@@ -224,37 +211,30 @@ public:
   {
     auto it = watches.find(label);
     assert(it != watches.end());
-    auto cit = cpuwatches.find(label);
-    assert(cit != cpuwatches.end());
 
     std::cout << std::setw(24) << std::left << label << std::setw(12)
               << std::right << it->second.read() << std::setw(12) << std::right
-              << cit->second.read() << std::endl;
+              << it->second.readCPU() << std::setw(12) << std::right
+              << it->second.readPerActivations() << std::setw(12) << std::right
+              << it->second.readActivations() << std::endl;
   }
 
   void print100(const std::string& label) const
   {
     auto it = watches.find(label);
     assert(it != watches.end());
-    auto cit = cpuwatches.find(label);
-    assert(cit != cpuwatches.end());
 
     std::cout << label << "\t" << it->second.read100() << "\t"
-              << cit->second.read100() << std::endl;
+              << it->second.readCPU100() << std::endl;
   }
 
   void print100tofile(const std::string& filename) const
   {
     std::ofstream watch_logfile(filename);
     watch_logfile.precision(12);
-    for (auto it : watches) {
-      auto itt = watches.find(it.first);
-      assert(itt != watches.end());
-      auto cit = cpuwatches.find(it.first);
-      assert(cit != cpuwatches.end());
-
-      watch_logfile << it.first << "\t" << itt->second.read100() << "\t"
-                    << cit->second.read100() << std::endl;
+    for (const auto& it : watches) {
+      watch_logfile << it.first << "\t" << it.second.read100() << "\t"
+                    << it.second.readCPU100() << std::endl;
     }
     watch_logfile.close();
   }
