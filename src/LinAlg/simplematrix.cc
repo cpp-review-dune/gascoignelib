@@ -93,7 +93,7 @@ SimpleMatrix::vmult_time(GlobalVector& y,
 {
   int n = ST.n();
   assert(n == y.n());
-  assert(n == x.n());
+  // assert(n == x.n());
   assert(x.ncomp() == y.ncomp());
 
   for (int i = 0; i < n; i++) {
