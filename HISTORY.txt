@@ -1,3 +1,92 @@
+%%%% November 2020
+
+- SolverData moved to ProblemDescriptor. If multiple problems are
+  solved it is now simple to have different pressure filters, solvers,
+  etc.
+- MeshAgentInterface removed. New interface class is MeshAgent itself
+
+
+
+%%%% Oktober 2020
+
+- Multigrid vectors _cor, _res, _mg0, _mg1 are initialized locally on
+  the fly. This helps to clean everything up. There is no drawback in
+  terms of computational cost by re-initializing these vectors in each
+  call of the multigrid. (tested with NavierStokes3d)
+- StdMultiLevelSolver::ReInit() does not depend on the problem any
+  more. It must be called whenever a new mesh is given. Hence,
+  SetProblem must be called separately.
+- Matrix and ILU are no longer members of the Solver. Instead,
+  matrices are stored in the matrix_agent (similar to the
+  GhostVectorAgent) and defined in the loop. 
+- ParamFile is mostly a reference (has been pointer before)
+
+
+%%%% Anfang 2018
+
+%%% C++
+
+use of some c++-11 features
+
+
+%%% Gas
+
+stc/Common/filescanner.cc	 complain = 0 ist jetzt std.
+stc/Interface/gascoignehash.h	 HASHMAP und HASHSET definiert
+
+src/Common/fixarray   		 GELOESCHT
+
+fixarray wird durch  std::array ersetzt. Andere Reihenfolge der
+Template parameter: T Typ, N Anzahl
+fixarray<N,T> aber array<T,N>
+
+Es fehlt noch, numfixarray entsprechend anzupassen und Reihenfolge Tauschen.
+
+
+%%%% November 2018
+
+* gascoignemath.h     entfernt. War nicht notwendig. max/min
+  		      	  Funktionen in std
+
+* SolverInterface     entfernt. War immer von StdSolver abgeleitet
+
+* NumericInterface + Algorithms umkopiert. Muss neu angepasst werden,
+  verschiedene dateien, die gegenseitig voneinander abhaengig waren.
+
+* MeshInterface,PatchMesh     entfernt
+
+Macht bei HierarchicalMesh keinen Sinn. Ist etwas ganz anderes als
+GascoigneMesh.
+Die Sequenz MeshInterface -> PatchMesh -> GascoigneMesh wird nie
+anders genutzt, d.h. GascoigneMesh neue Basis
+
+* GascoigneMesh -> DofHandler
+
+Die Gascoigne-Meshes heissen nun DofHandler und sind als Template in
+der Dimension geschrieben. Noch gibt es die alten klassen als typedef
+auf DofHandler<2> und DofHandler<3>. Sollen aber verschwinden und in
+Zukunft durch einen guten, allgemeineren DofHandler ausgetauscht
+werden. 
+
+******* Bei Lukas
+
+* Parallelisierung in CGDisc
+
+* Entfernung von allen alten discs und integratoren
+
+* Problem/NavierStokes neu
+
+
+********* Equation / EquationData
+
+Equations are now created on the fly within the
+discretization. Necessary for parallelization. mutable is not any more
+required, equations must not be const
+
+All data that is persistent is within an Data-object that is part of
+the ProblemDescriptor and passed to the equation in the constructor
+(if needed). Example: src/Problem/navierstokes.h
+
 Version 08.10.2004
 =================
 *meidner
