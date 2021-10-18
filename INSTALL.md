@@ -2,13 +2,13 @@
 
 This is just a quick guide with some minimum instructions. For details and options we refer to the webpage
 
-[www.gascoigne.de]
+[www.gascoigne.de](www.gascoigne.de)
 
 ## Requirements
 
 For installation, we require:
 
-1) A c++ compiler, e.g. g++ or clang++ supporting at least c++-11 or c++-14.
+1) A C++ compiler, e.g. g++ or clang++ supporting at least C++-11.
 
 
 2) cmake, see
@@ -36,7 +36,7 @@ We assume that the Gascoigne Library is found in a directory called
 
 > GAS/GascoigneLib
 
-This is the directory where you should find this file here
+This is the directory where you should find this file
 
 > GAS/GascoigneLib/INSTALL.md
 
@@ -48,11 +48,11 @@ Then, to configure, just call
 
 > cd GAS/build
 > 
-> cmake ../GascoigneLib
+> cmake GAS/GascoigneLib
 
 And finally, for compilation, in the same directory type
 
-> make
+> make 
 
 You are done. The Library GascoigneLib will be placed in 
 
