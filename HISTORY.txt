@@ -1,0 +1,234 @@
+%%%% November 2020
+
+- SolverData moved to ProblemDescriptor. If multiple problems are
+  solved it is now simple to have different pressure filters, solvers,
+  etc.
+- MeshAgentInterface removed. New interface class is MeshAgent itself
+
+
+
+%%%% Oktober 2020
+
+- Multigrid vectors _cor, _res, _mg0, _mg1 are initialized locally on
+  the fly. This helps to clean everything up. There is no drawback in
+  terms of computational cost by re-initializing these vectors in each
+  call of the multigrid. (tested with NavierStokes3d)
+- StdMultiLevelSolver::ReInit() does not depend on the problem any
+  more. It must be called whenever a new mesh is given. Hence,
+  SetProblem must be called separately.
+- Matrix and ILU are no longer members of the Solver. Instead,
+  matrices are stored in the matrix_agent (similar to the
+  GhostVectorAgent) and defined in the loop. 
+- ParamFile is mostly a reference (has been pointer before)
+
+
+%%%% Anfang 2018
+
+%%% C++
+
+use of some c++-11 features
+
+
+%%% Gas
+
+stc/Common/filescanner.cc	 complain = 0 ist jetzt std.
+stc/Interface/gascoignehash.h	 HASHMAP und HASHSET definiert
+
+src/Common/fixarray   		 GELOESCHT
+
+fixarray wird durch  std::array ersetzt. Andere Reihenfolge der
+Template parameter: T Typ, N Anzahl
+fixarray<N,T> aber array<T,N>
+
+Es fehlt noch, numfixarray entsprechend anzupassen und Reihenfolge Tauschen.
+
+
+%%%% November 2018
+
+* gascoignemath.h     entfernt. War nicht notwendig. max/min
+  		      	  Funktionen in std
+
+* SolverInterface     entfernt. War immer von StdSolver abgeleitet
+
+* NumericInterface + Algorithms umkopiert. Muss neu angepasst werden,
+  verschiedene dateien, die gegenseitig voneinander abhaengig waren.
+
+* MeshInterface,PatchMesh     entfernt
+
+Macht bei HierarchicalMesh keinen Sinn. Ist etwas ganz anderes als
+GascoigneMesh.
+Die Sequenz MeshInterface -> PatchMesh -> GascoigneMesh wird nie
+anders genutzt, d.h. GascoigneMesh neue Basis
+
+* GascoigneMesh -> DofHandler
+
+Die Gascoigne-Meshes heissen nun DofHandler und sind als Template in
+der Dimension geschrieben. Noch gibt es die alten klassen als typedef
+auf DofHandler<2> und DofHandler<3>. Sollen aber verschwinden und in
+Zukunft durch einen guten, allgemeineren DofHandler ausgetauscht
+werden. 
+
+******* Bei Lukas
+
+* Parallelisierung in CGDisc
+
+* Entfernung von allen alten discs und integratoren
+
+* Problem/NavierStokes neu
+
+
+********* Equation / EquationData
+
+Equations are now created on the fly within the
+discretization. Necessary for parallelization. mutable is not any more
+required, equations must not be const
+
+All data that is persistent is within an Data-object that is part of
+the ProblemDescriptor and passed to the equation in the constructor
+(if needed). Example: src/Problem/navierstokes.h
+
+Version 08.10.2004
+=================
+*meidner
+1) NeumannData und RobinData vereinheitlicht: Anstatt NeumannData ist nun BoundaryRightHandSide und anstatt RobinData BoundaryEquation zu verwenden. Diese Bezeichnungen gelten auch im ProblemDescriptor. Im BondaryManager gibt es wie zuvor noch "dirichlet", "neumann" und "robin". Die Bedeutung von "dirichlet" ist klar. "neumann" baut die BoundaryRightHandSide und "robin" die BoundaryEquation fuer die jeweils angegebene Farbe auf. Somit aendert sich hier nichts.
+
+
+Version 28.07.2004
+==================
+*meidner
+Interface-Klassen aufgeraeumt:
+1) Equation ist von Application abgeleitet -> GetNcomp() anstatt ncomp(), nur noch eine Variante von point: point(h,U,v).
+2) Kein BeautifulName in Functionalen mehr -> GetName() verwenden, da nicht mehr anderweitig verwendet.
+3) Kein RightHandSideData mehr sondern nur noch DomainRightHandSide und PointRightHandSide
+4) Kein InitialCondition mehr sondern nur noch DomainInitialCondition und PointInitialCondition definiert 
+   als typedefs auf die entsprechenden RightHandSides
+5) Die meisten (Time)Solver- und MultiLevelSolver-Funktionen ins entsprechende Inteface uebernommen.
+
+Version 22.06.2004
+==================
+*meidner
+1) eMail-Versand beim CVS-Commit eingebaut
+
+Version 22.06.2004
+==================
+*meidner
+1) RightHandSideData nur noch leere Basisklasse fuer DomainRightHandSide und DiracRightHandSide
+2) DiracRightHandSide und PointFunctional durch die von Boris erstellten NewDiracRightHandSide und 
+   NewPointFunctional ersetzt.
+
+Version 18.06.2004
+==================
+* braack:
+1) Umfpack wird nur noch benutzt, falls WITHUMFPACK gesetzt ist.
+* schmich:
+2) umfilu.cc verwendet jetzt die Aufrufe von Umfpack v4.1 und neuer; die alten sind bislang nur auskommentiert.
+   Fuer Linux kompilierte libumfpack.a und libamd.a unter /home/people/schmich/Open4All verfuegbar.
+3) Flag WITHUMFPACK durch __WITHUMFPACK__ ersetzt.
+
+
+Version 30.05.2004
+==================
+*becker:
+1) CMakeGlobal leicht geaendert: ERFORDERT ANpassung in .gascoignerc (s. gascoignerc_example) , da
+   i) die Steuervariablen hier um "CACH" ergaenzt werden
+   ii) die Variablen fuer die path auch "...PATH" statt "...PREFIX" heissen
+
+
+Version 27.05.2004
+==================
+*becker:
+1) loop hat "AddFunctional" statt "SetFunctionals"
+2) SolverInterface::Residual() jetzt SolverInterface::Form()
+3) neu Klasse "ProblemDescriptorBase"  -- keine virtuellen Fkt "Construc..." meh
+
+
+Version 23.04.2004
+==================
+
+* schmich:
+1) Version aufgeraeumt
+2) EnergyEstimator und EdgeInfos aufgeraeumt. Die Integrator-Funktion fuer den EnergyEstimator sind nun
+nicht mehr im Galerkin-Integrator, sondern in einem eigenen EnergyEstimatorIntegrator (um der Verwechslungsgefahr
+in der Namensgebung (z.B. "Residual" fuer den Residuenanteil) vorzubeugen. Ausserdem wurde die Notation
+an die Standardschreibweise (Gross-Kleinschreibung) angepasst.
+
+
+Version 19.04.2004
+==================
+
+* meidner
+1) RhsNeumann verwendet die uebergebene Equation-Refenrenz nicht. Deshalb EQ aus 
+Funktionsprototyp in Interface entfernt.
+
+
+Version 27.02.2004
+==================
+
+* meidner:
+1) Die Verwaltung der Global- und LocalData läuft jetzt über Maps.
+
+
+Version 21.02.2004
+==================
+
+* roland:
+1) gekruemmte raender sind nicht mehr in der bibliothek,
+sondern werden lokal erzeugt, siehe Example/NavierStokes2D
+2) diverses aufgeraeumt
+3) nur noch eine bib: libGascoigneStd.lib
+4) kein Starter mehr
+5) "StdMultiLevelSolver::RegisterVector" merkt sich nur den Namen;
+   zum nachtraeglichen Hinzufuegen von Vektoren gibt es
+	"StdMultiLevelSolver::RegisterVectorAndMemory"
+6) wer mir erklaert, warum die Fehler in Test1 nicht kleiner als 1e-6 sind,
+kriegt ein Bier von mir!
+
+
+Version 17.02.2004
+==================
+
+* roland:
+1) Version in reverse order
+2) dir test mit test1 (=Laplace2D)
+3) test1 ist ein bsp. ohne paramfile (prophylaktisch)
+   !?   GetMesh()->BasicInit() wird nicht mehr von BasicLoop aufgerifen, falls der pointer !=NULL.
+
+   
+Version 01.2004 (24.01.2004)
+============================
+* roland: class ParamFile introduced
+* some changes in MeshInterface
+
+
+Version 01.2004 (23.01.2004)
+============================
+
+* FunctionalManager deleted
+  Nun ruft man aus dem main auf "loop.SetFunctionals(J);"
+  hierbei ist J ein vector<const Functional*>
+* Loops aufgeraeumt, nun ruft man "run(const ProblemDescriptorInterface*)" auf.
+
+
+Version 01.2004 (07.01.2004)
+============================
+
+* braack: src/Solver/stdmultilevelsolver.cc
+bug fixed (SolutionTransfer hanging nodes)
+
+* meidner: src/Common/nvector.h, compvector.h
+BinaryWrite BinaryRead rewritten and tested
+
+* meidner: Examples/Control
+updated
+
+
+Version 12.2003
+===============
+
+* roland: src
+Mesh* replaced by MeshInterface* 
+MgTransferInterface new introduced
+bug for hanging nodes reintroduced
+
+* roland: CMakeLists.txt
+redesigned
