@@ -27,6 +27,7 @@
 #include "compvector.h"
 #include "gascoigne.h"
 #include <array>
+#include <iostream>
 #include <string>
 
 #include <map>

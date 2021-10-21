@@ -33,7 +33,7 @@
 
 namespace Gascoigne {
 template<class B>
-class SparseBlockMatrix : public MatrixInterface
+class SparseBlockMatrix : public virtual MatrixInterface
 {
 private:
 protected:

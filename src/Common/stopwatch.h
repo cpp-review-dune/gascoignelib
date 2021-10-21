@@ -72,7 +72,7 @@ public:
     sum_cpu_time = 0;
     running = false;
   }
-  
+
   virtual void start()
   {
     if (!running) {
