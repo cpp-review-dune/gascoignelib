@@ -701,7 +701,6 @@ void
 StdSolver::HNZero(const Vector& x) const
 {
   GetDiscretization()->HNZero(const_cast<GlobalVector&>(GetGV(x)));
-  ;
 }
 void
 StdSolver::HNDistribute(Vector& x) const

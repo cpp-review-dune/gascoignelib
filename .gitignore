@@ -21,3 +21,4 @@ cmake*
 /doc/taginformation.cmake
 
 lib
+build
