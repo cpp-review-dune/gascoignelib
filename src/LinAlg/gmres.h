@@ -28,11 +28,14 @@
 #include "matrix.h"
 #include "mult.h"
 #include "nvector.h"
+#include "stdmultilevelsolver.h"
+#include "stdsolver.h"
+#include "vectorinterface.h"
 
 /********************************************************************/
 
 namespace Gascoigne {
-template<class SOLVER, class PRECONDITIONER, class VECTOR>
+
 class GMRES
 {
   typedef nvector<double> dvector;
@@ -40,28 +43,28 @@ class GMRES
   nvector<dvector> H;
   nvector<double> gamma, ci, si;
 
-  std::vector<VECTOR> mem;
+  std::vector<Vector> mem;
 
   int vmax, left_precondition;
 
   void new_memory();
   void givens_rotation(dvector&, int);
-  void solution(const Matrix& A, VECTOR&, VECTOR&, int);
-  double orthogonalization(dvector&, int, VECTOR&) const;
-  bool reortho_test(const VECTOR&, double) const;
+  void solution(const Matrix& A, Vector&, Vector&, int);
+  double orthogonalization(dvector&, int, Vector&) const;
+  bool reortho_test(const Vector&, double) const;
 
-  SOLVER& S;
-  PRECONDITIONER& P;
+  StdSolver& S;
+  StdMultiLevelSolver& P;
 
 public:
-  GMRES(SOLVER&, PRECONDITIONER&, int);
+  GMRES(StdSolver&, StdMultiLevelSolver&, int);
   ~GMRES();
   void init();
 
-  int solve(const Matrix& A, VECTOR& x, const VECTOR& b, CGInfo& info);
+  int solve(const Matrix& A, Vector& x, const Vector& b, CGInfo& info);
   int restarted_solve(const Matrix& A,
-                      VECTOR& x,
-                      const VECTOR& b,
+                      Vector& x,
+                      const Vector& b,
                       CGInfo& info);
 };
 } // namespace Gascoigne
