@@ -1589,19 +1589,22 @@ StdSolver::PermutateIlu(Matrix& A, const Vector& gu) const
   IntVector perm(n);
 
   iota(perm.begin(), perm.end(), 0);
-  if (GetSolverData().GetIluSort() == "cuthillmckee") {
-    CuthillMcKee cmc(GetMatrix(A).GetStencil());
-    cmc.Permutate(perm);
-  } else if (GetSolverData().GetIluSort() == "streamdirection") {
-    const Equation* EQ = GetProblemDescriptor()->GetEquation();
-    (void)EQ;
-    assert(EQ);
-    assert(GetSolverData().GetStreamDirection().size() <= EQ->GetNcomp());
-    StreamDirection sd(GetMesh(), GetMatrix(A).GetStencil(), u);
-    sd.Permutate(perm, GetSolverData().GetStreamDirection());
-  } else if (GetSolverData().GetIluSort() == "vectordirection") {
-    VecDirection vd(GetMesh());
-    vd.Permutate(perm, GetSolverData().GetVectorDirection());
+  if (_matrixtype != "vanka") // no need to sort for vanka
+  {
+    if (GetSolverData().GetIluSort() == "cuthillmckee") {
+      CuthillMcKee cmc(GetMatrix(A).GetStencil());
+      cmc.Permutate(perm);
+    } else if (GetSolverData().GetIluSort() == "streamdirection") {
+      const Equation* EQ = GetProblemDescriptor()->GetEquation();
+      (void)EQ;
+      assert(EQ);
+      assert(GetSolverData().GetStreamDirection().size() <= EQ->GetNcomp());
+      StreamDirection sd(GetMesh(), GetMatrix(A).GetStencil(), u);
+      sd.Permutate(perm, GetSolverData().GetStreamDirection());
+    } else if (GetSolverData().GetIluSort() == "vectordirection") {
+      VecDirection vd(GetMesh());
+      vd.Permutate(perm, GetSolverData().GetVectorDirection());
+    }
   }
   GetIlu(A).ConstructStructure(perm, GetMatrix(A));
 }
