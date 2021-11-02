@@ -1548,19 +1548,11 @@ StdSolver::ComputeIlu(Matrix& A, const Vector& gu) const
     if (GetSolverData().GetLinearSmooth() == "ilu") {
     GlobalTimer.start("---> ilu");
     int ncomp = GetProblemDescriptor()->GetNcomp();
-    GlobalTimer.start("---> ilu A");
     PermutateIlu(A, gu);
-    GlobalTimer.stop("---> ilu A");
-    GlobalTimer.start("---> ilu B");
     GetIlu(A).zero();
     GetIlu(A).copy_entries(GetMatrix(A));
-    GlobalTimer.stop("---> ilu B");
-    GlobalTimer.start("---> ilu C");
     modify_ilu(GetIlu(A), ncomp);
-    GlobalTimer.stop("---> ilu C");
-    GlobalTimer.start("---> ilu D");
     GetIlu(A).compute_ilu();
-    GlobalTimer.stop("---> ilu D");
     GlobalTimer.stop("---> ilu");
   }
 }
