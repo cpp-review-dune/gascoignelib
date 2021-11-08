@@ -678,7 +678,7 @@ StdMultiLevelSolver::Gmres(const Matrix& A,
   int n = DataP.GmresMemSize();
 
   StdSolver* S = dynamic_cast<StdSolver*>(GetSolver(ComputeLevel));
-  GMRES<StdSolver, StdMultiLevelSolver, Vector> gmres(*S, *this, n);
+  GMRES gmres(*S, *this, n);
 
   gmres.solve(A, x, f, info);
 }

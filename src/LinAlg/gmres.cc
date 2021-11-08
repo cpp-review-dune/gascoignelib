@@ -21,19 +21,15 @@
  *
  **/
 
-#include "compose_name.h"
 #include "gmres.h"
+#include "compose_name.h"
 #include "nmatrix.h"
 
 namespace Gascoigne {
 
-#define TEMPLATE template<class SOLVER, class PRECONDITIONER, class VECTOR>
-#define GMRESSPV GMRES<SOLVER, PRECONDITIONER, VECTOR>
-
 /********************************************************************/
 
-TEMPLATE
-inline GMRESSPV::GMRES(SOLVER& S_, PRECONDITIONER& P_, int vm)
+GMRES::GMRES(StdSolver& S_, StdMultiLevelSolver& P_, int vm)
   : H(vm)
   , gamma(vm + 1)
   , ci(vm)
@@ -50,8 +46,7 @@ inline GMRESSPV::GMRES(SOLVER& S_, PRECONDITIONER& P_, int vm)
 
 /********************************************************************/
 
-TEMPLATE
-inline GMRESSPV::~GMRES()
+GMRES::~GMRES()
 {
   for (int i = 0; i < mem.size(); ++i) {
     P.DeleteVector(mem[i]);
@@ -61,9 +56,8 @@ inline GMRESSPV::~GMRES()
 
 /********************************************************************/
 
-TEMPLATE
-inline void
-GMRESSPV::new_memory()
+void
+GMRES::new_memory()
 {
   int i = mem.size();
 
@@ -76,9 +70,8 @@ GMRESSPV::new_memory()
 
 /********************************************************************/
 
-TEMPLATE
-inline void
-GMRESSPV::init()
+void
+GMRES::init()
 {
   assert(H.size() == vmax);
   for (int i = 0; i < H.size(); i++) {
@@ -92,9 +85,8 @@ GMRESSPV::init()
 
 /********************************************************************/
 
-TEMPLATE
-inline void
-GMRESSPV::givens_rotation(dvector& h, int col)
+void
+GMRES::givens_rotation(dvector& h, int col)
 {
   /*  Transformation into triagonal structure  */
 
@@ -113,9 +105,8 @@ GMRESSPV::givens_rotation(dvector& h, int col)
 
 /********************************************************************/
 
-TEMPLATE
-inline double
-GMRESSPV::orthogonalization(dvector& h, int dim, VECTOR& vv) const
+double
+GMRES::orthogonalization(dvector& h, int dim, Vector& vv) const
 {
   for (int i = 0; i < dim; i++) {
     double d = S.ScalarProduct(vv, mem[i]);
@@ -128,9 +119,8 @@ GMRESSPV::orthogonalization(dvector& h, int dim, VECTOR& vv) const
 
 /********************************************************************/
 
-TEMPLATE
-inline bool
-GMRESSPV::reortho_test(const VECTOR& u, double norm) const
+bool
+GMRES::reortho_test(const Vector& u, double norm) const
 {
   bool test = 0;
   double delta = 1.e-3;
@@ -146,12 +136,11 @@ GMRESSPV::reortho_test(const VECTOR& u, double norm) const
 
 /********************************************************************/
 
-TEMPLATE
-inline int
-GMRESSPV::restarted_solve(const Matrix& A,
-                          VECTOR& x,
-                          const VECTOR& b,
-                          CGInfo& info)
+int
+GMRES::restarted_solve(const Matrix& A,
+                       Vector& x,
+                       const Vector& b,
+                       CGInfo& info)
 {
   int reached;
   for (int j = 0;; j++) {
@@ -167,9 +156,8 @@ GMRESSPV::restarted_solve(const Matrix& A,
 
 /********************************************************************/
 
-TEMPLATE
-inline int
-GMRESSPV::solve(const Matrix& A, VECTOR& x, const VECTOR& b, CGInfo& info)
+int
+GMRES::solve(const Matrix& A, Vector& x, const Vector& b, CGInfo& info)
 {
   init();
 
@@ -177,9 +165,9 @@ GMRESSPV::solve(const Matrix& A, VECTOR& x, const VECTOR& b, CGInfo& info)
 
   int reached = 0;
 
-  VECTOR& v = mem[0];
+  Vector& v = mem[0];
 
-  VECTOR p("gmresp");
+  Vector p("gmresp");
   // p.SetMultiLevelSolver(&P);
   P.ReInitVector(p);
   P.Equ(p, 1., v);
@@ -210,7 +198,7 @@ GMRESSPV::solve(const Matrix& A, VECTOR& x, const VECTOR& b, CGInfo& info)
     if (dim >= mem.size()) {
       new_memory();
     }
-    VECTOR& vv = mem[dim];
+    Vector& vv = mem[dim];
     if (left_precondition) {
       S.vmulteq(A, p, mem[last], 1.);
       P.precondition(A, vv, p);
@@ -243,9 +231,8 @@ GMRESSPV::solve(const Matrix& A, VECTOR& x, const VECTOR& b, CGInfo& info)
 
 /********************************************************************/
 
-TEMPLATE
-inline void
-GMRESSPV::solution(const Matrix& A, VECTOR& x, VECTOR& p, int dim)
+void
+GMRES::solution(const Matrix& A, Vector& x, Vector& p, int dim)
 {
   nmatrix<double> H1(dim + 1, dim);
   H1.zero();
@@ -271,6 +258,3 @@ GMRESSPV::solution(const Matrix& A, VECTOR& x, VECTOR& p, int dim)
   }
 }
 } // namespace Gascoigne
-
-#undef TEMPLATE
-#undef GMRESSPV

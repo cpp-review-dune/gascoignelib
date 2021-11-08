@@ -241,6 +241,7 @@ public:
 
   void print() const
   {
+    std::cout << "\n*** Timer ***\n";
     std::cout << std::showpoint << std::fixed << std::setprecision(6);
     for (auto it : watches) {
       print(it.first);
