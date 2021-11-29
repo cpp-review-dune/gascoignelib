@@ -39,6 +39,8 @@
 #include "hnstructureq22d.h"
 #include "hnstructureq23d.h"
 
+#include "triabase2d.h"
+
 namespace Gascoigne {
 namespace atom_ops {
 inline void
@@ -1215,6 +1217,12 @@ public:
   }
 };
 
+#define CGDiscP12d                                                             \
+  CGDisc<                                                                      \
+    2,                                                                         \
+    1,                                                                         \
+    FiniteElement<2, 1, Transformation2d<TriaQuadBase<2>>, TriaQuadBase<2>>,   \
+    ElementIntegratorP12d>
 #define CGDiscQ12d                                                             \
   CGDisc<2,                                                                    \
          1,                                                                    \

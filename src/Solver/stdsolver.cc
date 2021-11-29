@@ -284,10 +284,12 @@ StdSolver::NewDiscretization(int dimension, const string& discname)
       return new CGDiscQ12d;
     else if (discname == "CGQ2")
       return new CGDiscQ22d;
+
+    else if (discname == "CGP1")
+      return new CGDiscP12d;
+
     else if (discname == "CGQ1Lps")
       return new CGDiscQ12dLps;
-    else if (discname == "CGQ2Lps")
-      return new CGDiscQ22dLps;
 
     else if (discname == "LQ1")
       return new LagrangeDiscQ12d;

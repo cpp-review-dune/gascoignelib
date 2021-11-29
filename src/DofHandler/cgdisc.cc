@@ -18,6 +18,9 @@
 #include "patchintegrationformula.h"
 
 namespace Gascoigne {
+
+template class CGDiscP12d;
+
 template class CGDiscQ12d;
 template class CGDiscQ22d;
 template class CGDiscQ13d;
