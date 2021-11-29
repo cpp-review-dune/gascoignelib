@@ -29,6 +29,7 @@ using namespace std;
 /*---------------------------------------------------*/
 
 namespace Gascoigne {
+
 GascoigneMeshConstructor::GascoigneMeshConstructor(const HierarchicalMesh* hm,
                                                    GascoigneMultiGridMesh* gmg)
   : HM(hm)
@@ -176,6 +177,7 @@ LevelMesh3d*
 GascoigneMeshConstructor::LevelUpdate3d(GascoigneMesh* GM,
                                         const IntSet& newquads,
                                         const IntSet& oldquads) const
+
 {
   LevelMesh3d* CM = new LevelMesh3d(HM);
   CM->BasicInit(newquads, oldquads);
