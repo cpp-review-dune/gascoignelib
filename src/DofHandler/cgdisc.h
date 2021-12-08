@@ -292,7 +292,7 @@ public:
   }
 
   ////////////////////////////////////////////////// handling local / global
-  void GlobalToGlobalData(LocalParameterData& QP) const
+  virtual void GlobalToGlobalData(LocalParameterData& QP) const
   {
     const GlobalParameterData& gpd = GetDataContainer().GetParameterData();
     QP.clear();
@@ -300,10 +300,10 @@ public:
     for (auto p : gpd)
       QP.insert(make_pair(p.first, *p.second));
   }
-  void LocalToGlobal_ohnecritic(MatrixInterface& A,
-                                EntryMatrix& E,
-                                int iq,
-                                double s) const
+  virtual void LocalToGlobal_ohnecritic(MatrixInterface& A,
+                                        EntryMatrix& E,
+                                        int iq,
+                                        double s) const
   {
     IntVector indices = GetDofHandler()->GetElement(DEGREE, iq);
 
@@ -314,10 +314,10 @@ public:
     //#pragma omp critical
     A.entry(start, stop, E, s);
   }
-  void LocalToGlobal_ohnecritic(GlobalVector& f,
-                                const LocalVector& F,
-                                int iq,
-                                double s) const
+  virtual void LocalToGlobal_ohnecritic(GlobalVector& f,
+                                        const LocalVector& F,
+                                        int iq,
+                                        double s) const
   {
     IntVector indices = GetDofHandler()->GetElement(DEGREE, iq);
     for (int ii = 0; ii < indices.size(); ii++) {
@@ -327,7 +327,10 @@ public:
     }
   }
 
-  void LocalToGlobal(MatrixInterface& A, EntryMatrix& E, int iq, double s) const
+  virtual void LocalToGlobal(MatrixInterface& A,
+                             EntryMatrix& E,
+                             int iq,
+                             double s) const
   {
     IntVector indices = GetDofHandler()->GetElement(DEGREE, iq);
 
@@ -338,17 +341,19 @@ public:
 
     A.entry(start, stop, E, s);
   }
-  void LocalToGlobal(GlobalVector& f,
-                     const LocalVector& F,
-                     int iq,
-                     double s) const
+  virtual void LocalToGlobal(GlobalVector& f,
+                             const LocalVector& F,
+                             int iq,
+                             double s) const
   {
     IntVector indices = GetDofHandler()->GetElement(DEGREE, iq);
     for (int ii = 0; ii < indices.size(); ii++) {
       atom_ops::add_node(s, indices[ii], f, ii, F);
     }
   }
-  void GlobalToLocal(LocalVector& U, const GlobalVector& u, int iq) const
+  virtual void GlobalToLocal(LocalVector& U,
+                             const GlobalVector& u,
+                             int iq) const
   {
     IntVector indices = GetDofHandler()->GetElement(DEGREE, iq);
     U.ReInit(u.ncomp(), indices.size());
@@ -357,13 +362,15 @@ public:
       U.equ_node(ii, i, u);
     }
   }
-  void GlobalToLocalCell(LocalVector& U, const GlobalVector& u, int iq) const
+  virtual void GlobalToLocalCell(LocalVector& U,
+                                 const GlobalVector& u,
+                                 int iq) const
   {
     U.ReInit(u.ncomp(), 1);
     for (int c = 0; c < u.ncomp(); ++c)
       U(0, c) = u(iq, c);
   }
-  void GlobalToLocalData(int iq, LocalData& QN, LocalData& QC) const
+  virtual void GlobalToLocalData(int iq, LocalData& QN, LocalData& QC) const
   {
     const GlobalData& gnd = GetDataContainer().GetNodeData();
     QN.clear();
