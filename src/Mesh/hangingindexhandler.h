@@ -38,7 +38,43 @@ protected:
   typedef std::array<int, 4> IntVector4;
 
   std::map<int, std::array<int, 3>> hnq2;
+
+  // // Average
+  // U[it->first] = 0.5 * (U[it->second[0]] + U[it->second[1]]);
+  // // Zero
+  // U[it->first] = 0.
+  // // Distribute
+  // U[it->second[0] ] += 0.5 * U[it->first]
+  // U[it->second[1] ] += 0.5 * U[it->first]
+    
+
+  // -S0-*--*
+  //  *  |  |
+  //  fa-*--*
+  //  *  |  |
+  // -S1-*- *   
+  //  *  |  |
+  //  fb-*--*
+  //  *  |  |
+  // -S2 *- *   
+
+  //  fa -> (S0,S1,S2)
+  //  fb -> (S2,S1,S0)
+
+    // fuer 3D
+    // 
   std::map<int, std::array<int, 9>> hnq2face;
+  // // Average
+  // U[it->first] = 0.25 * (U[it->second[0]] + U[it->second[1]] + U[it->second[3]] + U[it->second[4]]);
+  // // Zero
+  // U[it->first] = 0.
+  // // Distribute
+  // U[it->second[0] ] += 0.25 * U[it->first]
+  // U[it->second[1] ] += 0.25 * U[it->first]
+  // U[it->second[3] ] += 0.25 * U[it->first]
+  // U[it->second[4] ] += 0.25 * U[it->first]
+    
+
 
   std::map<int, std::array<int, 6>> hnq4;
   std::map<int, std::array<int, 26>> hnq4face;
