@@ -58,8 +58,8 @@ public:
   //
   ////  Con(De)structor
   //
-  ElementIntegrator<DIM, IFF, IFE, IFB, IFM>(){};
-  ~ElementIntegrator<DIM, IFF, IFE, IFB, IFM>(){};
+  ElementIntegrator(){};
+  ~ElementIntegrator(){};
 
   // Integration-Formulas
   virtual IntegrationFormulaInterface* NewIFF() const { return new IFF; }

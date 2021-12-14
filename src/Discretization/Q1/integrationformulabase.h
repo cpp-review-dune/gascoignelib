@@ -51,11 +51,11 @@ protected:
   }
 
 public:
-  IntegrationFormulaBase<DIM>()
+  IntegrationFormulaBase()
     : IntegrationFormulaInterface()
   {}
-  IntegrationFormulaBase<DIM>(int n) { ReInit(n); }
-  IntegrationFormulaBase<DIM>(const IntegrationFormulaBase<DIM>& IF)
+  IntegrationFormulaBase(int n) { ReInit(n); }
+  IntegrationFormulaBase(const IntegrationFormulaBase<DIM>& IF)
     : _in(IF.n())
     , _iw(IF.w())
     , _ic(IF.c())

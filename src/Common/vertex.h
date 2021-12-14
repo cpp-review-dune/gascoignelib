@@ -33,22 +33,22 @@ template<int N>
 class Vertex : public numfixarray<N, double>
 {
 public:
-  Vertex<N>()
+  Vertex()
     : numfixarray<N, double>()
   {}
-  Vertex<N>(const Vertex& c)
+  Vertex(const Vertex& c)
     : numfixarray<N, double>(c)
   {}
-  Vertex<N>(const double& x0)
+  Vertex(const double& x0)
     : numfixarray<N, double>(x0)
   {}
-  Vertex<N>(const double& x0, const double& y0)
+  Vertex(const double& x0, const double& y0)
     : numfixarray<N, double>()
   {
     x() = x0;
     y() = y0;
   }
-  Vertex<N>(const double& x0, const double& y0, const double& z0)
+  Vertex(const double& x0, const double& y0, const double& z0)
     : numfixarray<N, double>()
   {
     x() = x0;
@@ -56,12 +56,12 @@ public:
     z() = z0;
   }
 
-  Vertex<N>& operator=(const Vertex<N>& c)
+  Vertex& operator=(const Vertex<N>& c)
   {
     numfixarray<N, double>::operator=(c);
     return *this;
   }
-  Vertex<N>& operator=(double d)
+  Vertex& operator=(double d)
   {
     numfixarray<N, double>::operator=(d);
     return *this;

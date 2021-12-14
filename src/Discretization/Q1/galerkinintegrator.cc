@@ -74,7 +74,7 @@ GalerkinIntegrator<DIM>::BasicInit()
 /* ----------------------------------------- */
 
 template<int DIM>
-GalerkinIntegrator<DIM>::~GalerkinIntegrator<DIM>()
+GalerkinIntegrator<DIM>::~GalerkinIntegrator()
 {
   if (FormFormulaPointer()) {
     delete FormFormulaPointer();

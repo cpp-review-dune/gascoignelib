@@ -40,10 +40,10 @@ protected:
   int PatchMeshNr2IntegratorNrBoundary(int in, int ile) const;
 
 public:
-  IntegratorQ1Q2<DIM>()
+  IntegratorQ1Q2()
     : BasicIntegrator()
   {}
-  ~IntegratorQ1Q2<DIM>() {}
+  ~IntegratorQ1Q2() {}
 
   std::string GetName() const { return "IntegratorQ1Q2"; }
   void BasicInit();
