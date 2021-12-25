@@ -44,8 +44,7 @@ protected:
 
 public:
   EnergyEstimatorIntegrator();
-  EnergyEstimatorIntegrator(const std::string& s_energytype,
-                                 double d_visc);
+  EnergyEstimatorIntegrator(const std::string& s_energytype, double d_visc);
   ~EnergyEstimatorIntegrator();
 
   void BasicInit();
