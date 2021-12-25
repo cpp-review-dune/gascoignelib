@@ -81,8 +81,8 @@ public:
   ////  Con(De)structor
   //
 
-  GalerkinIntegrator<DIM>();
-  ~GalerkinIntegrator<DIM>();
+  GalerkinIntegrator();
+  ~GalerkinIntegrator();
 
   std::string GetName() const { return "Galerkin"; }
   void BasicInit();

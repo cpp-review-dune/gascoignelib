@@ -34,10 +34,10 @@ class NodeMatrix : public numfixarray<N * N, T>
 {
 
 public:
-  NodeMatrix<N, T>()
+  NodeMatrix()
     : numfixarray<N * N, T>()
   {}
-  NodeMatrix<N, T>(const T& A)
+  NodeMatrix(const T& A)
     : numfixarray<N * N, T>(A)
   {}
 

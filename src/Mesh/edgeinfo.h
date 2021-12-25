@@ -41,8 +41,8 @@ protected:
   const Edge* _edge;
 
 public:
-  EdgeInfo<DIM>() {}
-  ~EdgeInfo<DIM>() {}
+  EdgeInfo() {}
+  ~EdgeInfo() {}
 
   void BasicInit(const Edge*, int, const std::array<int, 2 * DIM - 2>&);
   void AddNodes(const LocalVector&);

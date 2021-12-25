@@ -34,7 +34,7 @@ template<size_t N>
 class EdgeArray : public std::array<int, N>
 {
 public:
-  EdgeArray<N>(const std::array<int, N>& e);
+  EdgeArray(const std::array<int, N>& e);
 
   bool operator==(const std::array<int, N>& e) const;
 

@@ -52,8 +52,8 @@ public:
   ////  Con(De)structor
   //
 
-  ElementLpsIntegrator<DIM, IFF, IFE, IFB, IFM>(){};
-  ~ElementLpsIntegrator<DIM, IFF, IFE, IFB, IFM>(){};
+  ElementLpsIntegrator(){};
+  ~ElementLpsIntegrator(){};
 
   std::string GetName() const { return "ElementLpsIntegrator"; }
 

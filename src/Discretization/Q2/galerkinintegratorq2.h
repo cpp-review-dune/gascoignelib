@@ -44,9 +44,9 @@ public:
   //
   ////  Con(De)structor
   //
-  GalerkinIntegratorQ2<DIM>();
+  GalerkinIntegratorQ2();
 
-  ~GalerkinIntegratorQ2<DIM>();
+  ~GalerkinIntegratorQ2();
   std::string GetName() const { return "GalerkinIntegratorQ2"; }
 
   void BasicInit();

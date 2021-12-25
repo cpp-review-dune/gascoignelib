@@ -63,8 +63,8 @@ protected:
   };
 
 public:
-  SparseBlockIlu<B>();
-  SparseBlockIlu<B>(const SparseBlockIlu<B>& I);
+  SparseBlockIlu();
+  SparseBlockIlu(const SparseBlockIlu<B>& I);
   ~SparseBlockIlu();
 
   std::string GetName() const { return "SparseBlockIlu"; }

@@ -52,8 +52,8 @@ protected:
   IndexType n() const { return DynamicBlockMatrix<B>::n(); };
 
 public:
-  DynamicBlockIlu<B>();
-  DynamicBlockIlu<B>(const DynamicBlockIlu<B>& I);
+  DynamicBlockIlu();
+  DynamicBlockIlu(const DynamicBlockIlu<B>& I);
   ~DynamicBlockIlu();
 
   viterator vdiag(int i) { return DynamicBlockMatrix<B>::vdiag(i); }
