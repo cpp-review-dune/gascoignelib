@@ -79,6 +79,8 @@ public:
     , qfather(f)
     , mat(0)
     , mat_Vanka(0)
+    , qchilds(0)
+    , qedges()
   {
     this->fill(-17);
   }

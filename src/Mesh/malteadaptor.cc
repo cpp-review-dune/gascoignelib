@@ -166,7 +166,8 @@ MalteAdaptor::coarse(IntVector& coars) const
 
   cout << "DIFF " << diff << endl;
   if (diff > 0)
-    coars.insert(coars.begin(), C.end() - diff, C.end());
+    for (int i = maxnodes; i < C.size(); ++i)
+      coars.push_back(C[i]);
 }
 
 /*-----------------------------------------*/
