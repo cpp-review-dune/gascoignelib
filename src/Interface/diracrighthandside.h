@@ -41,6 +41,8 @@ protected:
 
   std::vector<int> _comps;
 
+  std::vector<double> _weights;
+
 public:
   DiracRightHandSide() {}
   virtual ~DiracRightHandSide() {}
@@ -58,22 +60,28 @@ public:
   }
 
   virtual void BasicInit(const std::vector<Vertex2d>& v2d,
-                         const std::vector<int>& comps)
+                         const std::vector<int>& comps,
+                         const std::vector<double>& weights)
   {
     _v2d = v2d;
     _comps = comps;
+    _weights = weights;
   }
   virtual void BasicInit(const std::vector<Vertex3d>& v3d,
-                         const std::vector<int>& comps)
+                         const std::vector<int>& comps,
+                         const std::vector<double>& weights)
   {
     _v3d = v3d;
     _comps = comps;
+    _weights = weights;
   }
 
   virtual const std::vector<Vertex2d>& GetPoints2d() const { return _v2d; }
   virtual const std::vector<Vertex3d>& GetPoints3d() const { return _v3d; }
 
   virtual const std::vector<int>& GetComps() const { return _comps; }
+
+  virtual const std::vector<double>& GetWeights() const { return _weights; }
 
   virtual double operator()(int i, const Vertex2d& v) const
   {

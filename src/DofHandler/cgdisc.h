@@ -300,32 +300,32 @@ public:
     for (auto p : gpd)
       QP.insert(make_pair(p.first, *p.second));
   }
-  virtual void LocalToGlobal_ohnecritic(MatrixInterface& A,
-                                        EntryMatrix& E,
-                                        int iq,
-                                        double s) const
-  {
-    IntVector indices = GetDofHandler()->GetElement(DEGREE, iq);
+  // virtual void LocalToGlobal_ohnecritic(MatrixInterface& A,
+  //                                       EntryMatrix& E,
+  //                                       int iq,
+  //                                       double s) const
+  // {
+  //   IntVector indices = GetDofHandler()->GetElement(DEGREE, iq);
 
-    // HANGING NODES
-    HN->CondenseHanging(E, indices);
-    IntVector::const_iterator start = indices.begin();
-    IntVector::const_iterator stop = indices.end();
-    //#pragma omp critical
-    A.entry(start, stop, E, s);
-  }
-  virtual void LocalToGlobal_ohnecritic(GlobalVector& f,
-                                        const LocalVector& F,
-                                        int iq,
-                                        double s) const
-  {
-    IntVector indices = GetDofHandler()->GetElement(DEGREE, iq);
-    for (int ii = 0; ii < indices.size(); ii++) {
-      int i = indices[ii];
-      //#pragma omp critical
-      f.add_node(i, s, ii, F);
-    }
-  }
+  //   // HANGING NODES
+  //   HN->CondenseHanging(E, indices);
+  //   IntVector::const_iterator start = indices.begin();
+  //   IntVector::const_iterator stop = indices.end();
+  //   //#pragma omp critical
+  //   A.entry(start, stop, E, s);
+  // }
+  // virtual void LocalToGlobal_ohnecritic(GlobalVector& f,
+  //                                       const LocalVector& F,
+  //                                       int iq,
+  //                                       double s) const
+  // {
+  //   IntVector indices = GetDofHandler()->GetElement(DEGREE, iq);
+  //   for (int ii = 0; ii < indices.size(); ii++) {
+  //     int i = indices[ii];
+  //     //#pragma omp critical
+  //     f.add_node(i, s, ii, F);
+  //   }
+  // }
 
   virtual void LocalToGlobal(MatrixInterface& A,
                              EntryMatrix& E,
@@ -433,8 +433,16 @@ public:
       // super simple...
 
       std::vector<Vertex2d> v2d = DRHS.GetPoints2d();
+      std::vector<double> w = DRHS.GetWeights();
       assert(nn == v2d.size());
-
+      assert(nn == w.size());
+      if (w.size()!=nn)
+	{
+	  std::cerr << "You have to stecify a weight for each point." << std::endl;
+	  abort();
+	}
+      
+      
       for (int i = 0; i < nn; ++i) {
         int j = 0;
         for (j = 0; j < ndofs(); ++j) {
@@ -447,9 +455,39 @@ public:
           std::cerr << "point " << v2d[i] << " not found" << std::endl;
           abort();
         }
-        f(j, comps[i]) += 1.0;
+        f(j, comps[i]) += w[i];
       }
+    } else if (DIM == 3) {
+      // super simple...
+      std::vector<Vertex3d> v3d = DRHS.GetPoints3d();
+      std::vector<double> w = DRHS.GetWeights();
+      if (w.size()!=nn)
+	{
+	  std::cerr << "You have to stecify a weight for each point." << std::endl;
+	  abort();
+	}
+      
+      assert(nn == v3d.size());
+      assert(nn == w.size());
+
+      for (int i = 0; i < nn; ++i) {
+        int j = 0;
+        for (j = 0; j < ndofs(); ++j) {
+          double dist = pow(v3d[i].x() - vertex3d(j).x(), 2.0) +
+                        pow(v3d[i].y() - vertex3d(j).y(), 2.0) +
+                        pow(v3d[i].z() - vertex3d(j).z(), 2.0);
+          if (dist < 1.e-12)
+            break;
+        }
+        if (j == ndofs()) {
+          std::cerr << "point " << v3d[i] << " not found" << std::endl;
+          abort();
+        }
+        f(j, comps[i]) += w[i];
+      }
+
     }
+
     // else if (dim == 3)
     //   {
     // 	abort();
@@ -990,7 +1028,7 @@ public:
         Transformation(T, iq);
         finiteelement.ReInit(T);
         integrator.MassMatrix(__E, finiteelement);
-        LocalToGlobal_ohnecritic(A, __E, iq, 1.);
+        LocalToGlobal(A, __E, iq, 1.);
       }
       HN->MatrixDiag(1, A);
     }
