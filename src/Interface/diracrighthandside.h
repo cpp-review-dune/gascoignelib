@@ -36,12 +36,10 @@ class DiracRightHandSide : public virtual Application
 {
 private:
 protected:
-  std::vector<Vertex2d> _v2d;
-  std::vector<Vertex3d> _v3d;
-
-  std::vector<int> _comps;
-
-  std::vector<double> _weights;
+  mutable std::vector<Vertex2d> _v2d;
+  mutable std::vector<Vertex3d> _v3d;
+  mutable std::vector<int> _comps;
+  mutable std::vector<double> _weights;
 
 public:
   DiracRightHandSide() {}
