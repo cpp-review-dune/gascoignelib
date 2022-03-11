@@ -331,13 +331,14 @@ Visualization::output_vertexs(ofstream& file) const
 {
   if (mesh->dimension() == 2) {
     for (int i = 0; i < mesh->nnodes(); i++) {
-      file << mesh->vertex2d(i) << endl;
+      file << mesh->vertex2d(i) << '\n';
     }
   } else {
     for (int i = 0; i < mesh->nnodes(); i++) {
-      file << mesh->vertex3d(i) << endl;
+      file << mesh->vertex3d(i) << '\n';
     }
   }
+  file << flush;
 }
 
 /********************************************************************/
@@ -347,25 +348,26 @@ Visualization::output_vertexs_by_component(ofstream& file) const
 {
   if (mesh->dimension() == 2) {
     for (int i = 0; i < mesh->nnodes(); i++) {
-      file << " " << mesh->vertex2d(i).x();
+      file << ' ' << mesh->vertex2d(i).x();
     }
-    file << endl;
+    file << '\n';
     for (int i = 0; i < mesh->nnodes(); i++) {
-      file << " " << mesh->vertex2d(i).y();
+      file << ' ' << mesh->vertex2d(i).y();
     }
   } else {
     for (int i = 0; i < mesh->nnodes(); i++) {
-      file << " " << mesh->vertex3d(i).x();
+      file << ' ' << mesh->vertex3d(i).x();
     }
-    file << endl;
+    file << '\n';
     for (int i = 0; i < mesh->nnodes(); i++) {
-      file << " " << mesh->vertex3d(i).y();
+      file << ' ' << mesh->vertex3d(i).y();
     }
-    file << endl;
+    file << '\n';
     for (int i = 0; i < mesh->nnodes(); i++) {
-      file << " " << mesh->vertex3d(i).z();
+      file << ' ' << mesh->vertex3d(i).z();
     }
   }
+  file << flush;
 }
 
 /********************************************************************/
@@ -377,10 +379,11 @@ Visualization::output_quads(ofstream& file, const string& text) const
     for (int c = 0; c < mesh->ncells(); c++) {
       file << text;
       for (int i = 0; i < 4; i++) {
-        file << mesh->vertex_of_cell(c, i) + 1 << " ";
+        file << mesh->vertex_of_cell(c, i) + 1 << ' ';
       }
-      file << endl;
+      file << '\n';
     }
+    file << flush;
   }
 }
 
@@ -393,10 +396,11 @@ Visualization::output_hexs(ofstream& file, const string& text) const
     for (int c = 0; c < mesh->ncells(); c++) {
       file << text;
       for (int i = 0; i < 8; i++) {
-        file << mesh->vertex_of_cell(c, i) + 1 << " ";
+        file << mesh->vertex_of_cell(c, i) + 1 << ' ';
       }
-      file << endl;
+      file << '\n';
     }
+    file << flush;
   }
 }
 
@@ -406,7 +410,7 @@ void
 Visualization::output_solution(ofstream& file, int c) const
 {
   for (int ind = 0; ind < PointData->visun(); ind++) {
-    file << PointData->visudata(ind, c) << " ";
+    file << PointData->visudata(ind, c) << ' ';
   }
 }
 } // namespace Gascoigne

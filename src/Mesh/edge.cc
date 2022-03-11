@@ -105,10 +105,10 @@ Edge::BinRead(istream& s)
 ostream&
 operator<<(ostream& s, const Edge& A)
 {
-  s << A.master() << " ";
-  s << A.LocalMasterIndex() << " ";
-  s << A.slave() << " ";
-  s << A.LocalSlaveIndex() << " " << endl;
+  s << A.master() << ' ';
+  s << A.LocalMasterIndex() << ' ';
+  s << A.slave() << ' ';
+  s << A.LocalSlaveIndex() << ' ' << endl;
 
   return s;
 }

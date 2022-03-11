@@ -1289,8 +1289,8 @@ HierarchicalMesh3d::WriteAll(const string& name) const
 {
   ofstream out(name.c_str());
 
-  out << dimension() << " dimension" << endl;
-  out << nnodes() << " vertexs" << endl;
+  out << dimension() << " dimension" << '\n';
+  out << nnodes() << " vertexs" << '\n';
   out << mnlevels << " mnlevels" << endl;
 
   cerr << "HierarchicalMesh3d::WriteAll()\n";
@@ -1313,18 +1313,19 @@ HierarchicalMesh3d::write_inp(const string& name) const
   }
 
   int nt = ncells() + nbquads();
-  file << nnodes() << " " << nt << " " << 0 << " " << 0 << " " << 0 << endl;
+  file << nnodes() << ' ' << nt << ' ' << 0 << ' ' << 0 << ' ' << 0 << '\n';
 
   for (int i = 0; i < nnodes(); i++)
-    file << i << " " << vertex3d(i) << " " << endl;
+    file << i << ' ' << vertex3d(i) << ' ' << '\n';
 
   for (int i = 0; i < ncells(); i++) {
-    file << i << " " << 0 << " hex " << hex(i).vertex() << endl;
+    file << i << ' ' << 0 << " hex " << hex(i).vertex() << '\n';
   }
   for (int i = 0; i < nbquads(); i++) {
-    file << i << " " << bquad(i).material() << " quad " << bquad(i).vertex()
-         << endl;
+    file << i << ' ' << bquad(i).material() << " quad " << bquad(i).vertex()
+         << '\n';
   }
+  file << flush;
 }
 
 /*---------------------------------------------------*/
@@ -1388,7 +1389,7 @@ HierarchicalMesh3d::check_inp(const string& name)
   // fehlerabfragen ....
   if (nt != (nl + nq + nh)) {
     cerr << "wrong number of cells: " << nt << endl;
-    cerr << "lines quads hexs: " << nl << " " << nq << " " << nh << endl;
+    cerr << "lines quads hexs: " << nl << ' ' << nq << ' ' << nh << endl;
     abort();
   }
 
@@ -1538,25 +1539,25 @@ HierarchicalMesh3d::write_gup(const string& bname) const
 
   ofstream out(name.c_str());
 
-  out << dimension() << " dimension" << endl;
-  out << nnodes() << " vertexs" << endl;
+  out << dimension() << " dimension" << '\n';
+  out << nnodes() << " vertexs" << '\n';
 
   for (int i = 0; i < nnodes(); i++) {
-    out << " " << vertex3d(i) << endl;
+    out << ' ' << vertex3d(i) << '\n';
   }
-  out << hexs.size() << " hexs" << endl;
+  out << hexs.size() << " hexs" << '\n';
   for (int i = 0; i < hexs.size(); i++) {
     out << hex(i);
   }
-  out << QuadHang << endl;
-  out << LineHang << endl;
-  out << Bquads.size() << " boundaryquads" << endl;
+  out << QuadHang << '\n';
+  out << LineHang << '\n';
+  out << Bquads.size() << " boundaryquads" << '\n';
   for (int i = 0; i < Bquads.size(); i++) {
-    out << Bquads[i].material() << " " << Bquads[i] << endl;
+    out << Bquads[i].material() << ' ' << Bquads[i] << '\n';
   }
-  out << endl << edges.size() << " edges" << endl;
+  out << '\n' << edges.size() << " edges" << '\n';
   for (int i = 0; i < edges.size(); i++) {
-    out << " " << edges[i];
+    out << ' ' << edges[i];
   }
   out.close();
 }

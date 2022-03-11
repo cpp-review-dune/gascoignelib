@@ -155,7 +155,7 @@ GascoigneMeshConstructor::Loop3d()
 
     FM->construct_lists(newquads, oldquads);
     //      cout << "*** construct_lists " << level << "\t" << newquads.size()
-    //      << " " << oldquads.size() << endl;
+    //      << ' ' << oldquads.size() << endl;
 
     CM = LevelUpdate3d(GM, newquads, oldquads);
 

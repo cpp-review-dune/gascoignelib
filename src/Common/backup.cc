@@ -163,14 +163,14 @@ WriteBackUp::WriteBackUp(const GlobalVector& u, const string& bname)
     cerr << "BackUp: writing error" << endl;
     exit(10);
   }
-  file << u.n() << " " << u.ncomp() << endl;
+  file << u.n() << " " << u.ncomp() << '\n';
 
   file.precision(16);
   for (IndexType i = 0; i < u.n(); i++) {
     for (ShortIndexType c = 0; c < u.ncomp(); c++) {
       file << u(i, c) << " ";
     }
-    file << endl;
+    file << '\n';
   }
   file << "BackUpEnd" << endl;
   file.close();

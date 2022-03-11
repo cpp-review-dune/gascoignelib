@@ -479,7 +479,7 @@ HierarchicalMesh2d::basic_refine2d(HangContainer2d& hangset,
   int nv = ov + vdiff;
   int nc = oc + cdiff;
 
-  //   cerr << "nv ov vdiff " << nv <<" "<< ov<<" "<< vdiff<<endl;
+  //   cerr << "nv ov vdiff " << nv <<' '<< ov<<' '<< vdiff<<'\n';
 
   clear_transfer_lists();
 
@@ -603,7 +603,7 @@ HierarchicalMesh2d::new_quads(const HangContainer2d& hangset,
                               int nvold,
                               const IntSet& CellRefList)
 {
-  // cerr << "new_quads()" << endl;
+  // cerr << "new_quads()" << '\n';
   // neue zellen erzeugen
   // eintragen der "Vater-Vertexs" in den kindern
 
@@ -1209,18 +1209,18 @@ HierarchicalMesh2d::WriteAll(const string& name) const
 {
   ofstream out(name.c_str());
 
-  out << dimension() << " dimension" << endl;
-  out << nnodes() << " vertexs" << endl;
-  out << mnlevels << " mnlevels" << endl;
+  out << dimension() << " dimension" << '\n';
+  out << nnodes() << " vertexs" << '\n';
+  out << mnlevels << " mnlevels" << '\n';
 
-  out << "vertexs2d\n" << vertexs2d << endl;
+  out << "vertexs2d\n" << vertexs2d << '\n';
 
-  out << "vo2n\n" << vo2n << endl;
-  out << "co2n\n" << co2n << endl;
-  out << "eo2n\n" << eo2n << endl;
+  out << "vo2n\n" << vo2n << '\n';
+  out << "co2n\n" << co2n << '\n';
+  out << "eo2n\n" << eo2n << '\n';
 
-  out << "quads\n" << quads << endl;
-  out << "Blines\n" << Blines << endl;
+  out << "quads\n" << quads << '\n';
+  out << "Blines\n" << Blines << '\n';
   out << "LineHang\n" << LineHang << endl;
 
   out.close();
@@ -1247,18 +1247,19 @@ HierarchicalMesh2d::write_inp(const string& bname) const
   }
 
   int nt = ncells() + nblines();
-  file << nnodes() << " " << nt << " " << 0 << " " << 0 << " " << 0 << endl;
+  file << nnodes() << ' ' << nt << ' ' << 0 << ' ' << 0 << ' ' << 0 << '\n';
 
   for (int i = 0; i < nnodes(); i++)
-    file << i << " " << vertex2d(i) << " " << 0. << endl;
+    file << i << ' ' << vertex2d(i) << ' ' << 0. << '\n';
 
   for (int i = 0; i < ncells(); i++) {
-    file << i << " " << 0 << " quad " << quad(i).vertex() << endl;
+    file << i << ' ' << 0 << " quad " << quad(i).vertex() << '\n';
   }
   for (int i = 0; i < nblines(); i++) {
-    file << i << " " << bline(i).material() << " line " << bline(i).vertex()
-         << endl;
+    file << i << ' ' << bline(i).material() << " line " << bline(i).vertex()
+         << '\n';
   }
+  file << flush;
 }
 
 /*---------------------------------------------------*/
@@ -1275,29 +1276,31 @@ HierarchicalMesh2d::write_vtk(const string& name) const
 
   int nn = nnodes();
 
-  file << "# vtk DataFile Version 2.4 " << endl;
-  file << "output from GascoigneStd" << endl;
-  file << "ASCII" << endl;
-  file << "DATASET UNSTRUCTURED_GRID" << endl;
-  file << "POINTS " << nn << " FLOAT " << endl;
+  file << "# vtk DataFile Version 2.4 " << '\n';
+  file << "output from GascoigneStd" << '\n';
+  file << "ASCII" << '\n';
+  file << "DATASET UNSTRUCTURED_GRID" << '\n';
+  file << "POINTS " << nn << " FLOAT " << '\n';
 
   int ne = ncells();
   for (int i = 0; i < nn; i++) {
-    file << vertex2d(i) << " " << 0 << endl;
+    file << vertex2d(i) << ' ' << 0 << '\n';
   }
 
-  file << endl << "CELLS " << ne << " " << 5 * ne << endl;
+  file << '\n' << "CELLS " << ne << ' ' << 5 * ne << '\n';
 
   for (int c = 0; c < ne; c++) {
-    file << 4 << " ";
+    file << 4 << ' ';
     for (int i = 0; i < 4; i++) {
-      file << vertex_of_cell(c, i) << " ";
+      file << vertex_of_cell(c, i) << ' ';
     }
-    file << endl;
+    file << '\n';
   }
-  file << endl << "CELL_TYPES " << ne << endl;
+  file << '\n' << "CELL_TYPES " << ne << '\n';
   for (int i = 0; i < ne; i++)
-    file << 9 << " ";
+    file << 9 << ' ';
+
+  file << flush;
 }
 
 /*---------------------------------------------------*/
@@ -1467,26 +1470,26 @@ HierarchicalMesh2d::write_gup(const string& bname) const
   ofstream out(name.c_str());
 
   out.precision(16);
-  out << dimension() << " dimension" << endl;
-  out << nnodes() << " vertexs" << endl;
+  out << dimension() << " dimension" << '\n';
+  out << nnodes() << " vertexs" << '\n';
 
   for (int i = 0; i < nnodes(); i++) {
-    out << " " << vertex2d(i) << endl;
+    out << ' ' << vertex2d(i) << '\n';
   }
-  out << quads.size() << " quads" << endl;
+  out << quads.size() << " quads" << '\n';
 
   for (int i = 0; i < quads.size(); i++) {
     out << quad(i);
   }
-  out << LineHang << endl;
+  out << LineHang << '\n';
 
-  out << Blines.size() << " boundarylines" << endl;
+  out << Blines.size() << " boundarylines" << '\n';
   for (int i = 0; i < Blines.size(); i++) {
-    out << Blines[i].material() << " " << Blines[i];
+    out << Blines[i].material() << ' ' << Blines[i];
   }
-  out << endl << endl << edges.size() << " edges" << endl;
+  out << '\n' << '\n' << edges.size() << " edges" << '\n';
   for (int i = 0; i < edges.size(); i++) {
-    out << " " << edges[i];
+    out << ' ' << edges[i];
   }
   out << endl;
   out.close();
@@ -1916,7 +1919,7 @@ HierarchicalMesh2d::regular_grid2d_three(IntSet& CellRef,
       coarse++;
     }
   }
-  // cout << "(" << ref << " " << coarse << ")\n";
+  // cout << "(" << ref << ' ' << coarse << ")\n";
   return ref + coarse;
 }
 
@@ -2311,13 +2314,14 @@ HierarchicalMesh2d::writeq2(const IntVector& a,
     for (int i = 0; i < a.size(); ++i) {
       const Quad& Q = quads[a[i]];
       if (b[i] == p) {
-        aus << vertex2d(Q[0]) << endl;
-        aus << vertex2d(Q[1]) << endl;
-        aus << vertex2d(Q[2]) << endl;
-        aus << vertex2d(Q[3]) << endl;
-        aus << vertex2d(Q[0]) << endl << endl;
+        aus << vertex2d(Q[0]) << '\n';
+        aus << vertex2d(Q[1]) << '\n';
+        aus << vertex2d(Q[2]) << '\n';
+        aus << vertex2d(Q[3]) << '\n';
+        aus << vertex2d(Q[0]) << '\n' << '\n';
       }
     }
+    aus << flush;
     aus.close();
   }
 }

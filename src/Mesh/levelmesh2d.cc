@@ -535,7 +535,7 @@ LevelMesh2d::construct_lists(IntSet& newquads, IntSet& oldquads) const
       }
     }
     newquads = help;
-    // cerr << "\t Regular Iteration\t" << count++ << " " << rep << endl;
+    // cerr << "\t Regular Iteration\t" << count++ << ' ' << rep << endl;
   }
 }
 

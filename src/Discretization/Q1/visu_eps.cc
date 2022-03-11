@@ -212,10 +212,10 @@ VisuEPS::WriteGrid(string fname, int iter)
       it = lines[i].begin();
       int from = i;
       int next = *it;
-      out << (M->vertex2d(start) - offset)[0] * scale << " "
+      out << (M->vertex2d(start) - offset)[0] * scale << ' '
           << (M->vertex2d(start) - offset)[1] * scale << " m";
       while (lines[from].size() > 0) {
-        out << " " << (M->vertex2d(next) - offset)[0] * scale << " "
+        out << ' ' << (M->vertex2d(next) - offset)[0] * scale << ' '
             << (M->vertex2d(next) - offset)[1] * scale << " x";
         it = lines[next].begin();
         lines[from].erase(next);

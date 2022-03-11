@@ -32,7 +32,7 @@ namespace Gascoigne {
 void
 AdaptorData::ErrorMessage(const string& str1, const string& str2) const
 {
-  cout << "AdaptorData: " << str1 << " " << str2 << " ?" << endl;
+  cout << "AdaptorData: " << str1 << ' ' << str2 << " ?" << endl;
   exit(1);
 }
 

@@ -55,8 +55,8 @@ ostream&
 operator<<(ostream& s, const Hang& A)
 {
   s << A.hanging() << " : ";
-  s << A.rneighbour() << " ";
-  s << A.cneighbour() << " ";
+  s << A.rneighbour() << ' ';
+  s << A.cneighbour() << ' ';
   return s;
 }
 

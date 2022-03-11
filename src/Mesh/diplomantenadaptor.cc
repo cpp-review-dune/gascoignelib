@@ -75,8 +75,8 @@ DiplomandenAdaptor::analyse() const
       theta + eta[C[i]] * (x + 1. / ppp) + s / (reduction * eta.size());
     // theta += dx*dx;
     // double f = theta + dx * (x+1./ppp) + s/(reduction*eta.size());
-    file << x << " " << f << endl;
-    cout << x << " " << f << endl;
+    file << x << ' ' << f << endl;
+    cout << x << ' ' << f << endl;
   }
   file.close();
 }

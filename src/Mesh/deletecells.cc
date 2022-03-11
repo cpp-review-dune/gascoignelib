@@ -46,7 +46,7 @@ delete_cells(const IntSet& coarselist,
       for (unsigned i = 0; i < q.vertex().size(); ++i) {
         q.vertex(i) = vo2n[q.vertex(i)];
         if (q.vertex(i) == -1) {
-          cerr << "Vertex invalid in " << oi << " " << ni << endl;
+          cerr << "Vertex invalid in " << oi << ' ' << ni << endl;
           // cerr << vo2n[liste[oi].vertex(i)]<<endl;
           // cerr << q.vertex();
           abort();

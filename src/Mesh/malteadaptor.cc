@@ -223,7 +223,7 @@ MalteAdaptor::refine_and_coarse(IntVector& ref, IntVector& coars) const
     if (x + y > 1.01)
       break;
   }
-  // cout << "ref,coarse = " << ixopt << " " << iyopt << endl;
+  // cout << "ref,coarse = " << ixopt << ' ' << iyopt << endl;
 
   coars.insert(coars.begin(), C.end() - iyopt, C.end());
 

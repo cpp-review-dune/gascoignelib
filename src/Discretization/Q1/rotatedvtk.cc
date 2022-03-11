@@ -42,29 +42,29 @@ Visualization::_rotatedvtk_pointdata(ofstream& out) const
       VisuDataInfo::siterator p =
         (const_cast<VisuDataInfo*>(PointDataInfo))->GetSIterator(i);
       if (i == 0)
-        out << "POINT_DATA " << nn << endl;
-      out << "SCALARS " << p->first << " DOUBLE " << endl;
-      out << "LOOKUP_TABLE default" << endl;
+        out << "POINT_DATA " << nn << '\n';
+      out << "SCALARS " << p->first << " DOUBLE " << '\n';
+      out << "LOOKUP_TABLE default" << '\n';
       for (int i_slide = 0; i_slide < i_rotatedvtk_slides; i_slide++) {
         for (int ind = 0; ind < PointData->visun(); ind++) {
           if (mesh->dimension() == 2) {
             out << PointData->visudata2(ind, p->second, mesh->vertex2d(ind))
-                << endl;
+                << '\n';
           } else {
             abort();
             out << PointData->visudata2(ind, p->second, mesh->vertex3d(ind))
-                << endl;
+                << '\n';
           }
         }
       }
-      out << endl << endl;
+      out << '\n' << '\n';
     }
     // for(VisuDataInfo::viterator
     // p=PointDataInfo->vbegin();p!=PointDataInfo->vend();++p) {
     for (int i = 0; i < PointDataInfo->nvectors(); i++) {
       VisuDataInfo::viterator p =
         (const_cast<VisuDataInfo*>(PointDataInfo))->GetVIterator(i);
-      out << "VECTORS " << p->first << " DOUBLE " << endl;
+      out << "VECTORS " << p->first << " DOUBLE " << '\n';
       for (int i_slide = 0; i_slide < i_rotatedvtk_slides; i_slide++) {
         for (int ind = 0; ind < PointData->visun(); ind++) {
           for (int ii = 0; ii < 2; ii++) {
@@ -72,21 +72,22 @@ Visualization::_rotatedvtk_pointdata(ofstream& out) const
               abort();
               // out <<
               // PointData->visudata2(ind,p->second[ii],mesh->vertex2d(ind)) <<
-              // " ";
+              // ' ';
             } else {
               abort();
             }
           }
           if (p->second[2] == -1) {
-            out << 0. << " ";
+            out << 0. << ' ';
           } else {
-            out << PointData->visudata(ind, p->second[2]) << " ";
+            out << PointData->visudata(ind, p->second[2]) << ' ';
           }
-          out << endl;
+          out << '\n';
         }
       }
-      out << endl << endl;
+      out << '\n' << '\n';
     }
+    out << flush;
   }
 }
 
@@ -98,7 +99,7 @@ Visualization::_rotatedvtk_celldata(ofstream& out) const
   if (CellData) {
     CheckCellData();
 
-    // cout << "CellDataInfo->nscalars()" << CellDataInfo->nscalars() << endl;
+    // cout << "CellDataInfo->nscalars()" << CellDataInfo->nscalars() << '\n';
     //
     // die reihenfolge der elemente per index ist wesentlich, es reicht nicht
     // nur sie per iterator aus CellDataInfo raus zu holen
@@ -109,40 +110,41 @@ Visualization::_rotatedvtk_celldata(ofstream& out) const
         (const_cast<VisuDataInfo*>(CellDataInfo))->GetSIterator(i);
       if (i == 0)
         out << "CELL_DATA " << (i_rotatedvtk_slides - 1) * mesh->ncells()
-            << endl;
+            << '\n';
       // if(p==CellDataInfo->sbegin()) out << "CELL_DATA " << mesh->ncells() <<
-      // endl;
-      out << "SCALARS " << p->first << " DOUBLE " << endl;
-      out << "LOOKUP_TABLE default" << endl;
+      // '\n';
+      out << "SCALARS " << p->first << " DOUBLE " << '\n';
+      out << "LOOKUP_TABLE default" << '\n';
 
       for (int i_slide = 0; i_slide < i_rotatedvtk_slides; i_slide++) {
         for (int ind = 0; ind < CellData->visun(); ind++) {
-          out << CellData->visudata(ind, p->second) << endl;
+          out << CellData->visudata(ind, p->second) << '\n';
         }
       }
-      out << endl << endl;
+      out << '\n' << '\n';
     }
-    // cout << "CellDataInfo->nvectors()" << CellDataInfo->nvectors() << endl;
+    // cout << "CellDataInfo->nvectors()" << CellDataInfo->nvectors() << '\n';
     // for(VisuDataInfo::viterator
     // p=CellDataInfo->vbegin();p!=CellDataInfo->vend();++p){
     for (int i = 0; i < CellDataInfo->nvectors(); i++) {
       VisuDataInfo::viterator p =
         (const_cast<VisuDataInfo*>(CellDataInfo))->GetVIterator(i);
-      out << "VECTORS " << p->first << " DOUBLE " << endl;
+      out << "VECTORS " << p->first << " DOUBLE " << '\n';
       for (int ind = 0; ind < CellData->visun(); ind++) {
         abort();
         for (int ii = 0; ii < 2; ii++) {
-          out << CellData->visudata(ind, p->second[ii]) << " ";
+          out << CellData->visudata(ind, p->second[ii]) << ' ';
         }
         if (p->second[2] == -1) {
-          out << 0. << " ";
+          out << 0. << ' ';
         } else {
-          out << CellData->visudata(ind, p->second[2]) << " ";
+          out << CellData->visudata(ind, p->second[2]) << ' ';
         }
-        out << endl;
+        out << '\n';
       }
-      out << endl << endl;
+      out << '\n' << '\n';
     }
+    out << flush;
   }
 }
 
@@ -152,7 +154,7 @@ void
 Visualization::_rotatedvtk_points(ofstream& out) const
 {
   int nn = mesh->nnodes();
-  out << "POINTS " << nn * i_rotatedvtk_slides << " DOUBLE " << endl;
+  out << "POINTS " << nn * i_rotatedvtk_slides << " DOUBLE " << '\n';
   if (mesh->dimension() == 2) {
     for (int i_slide = 0; i_slide < i_rotatedvtk_slides; i_slide++) {
       double d_phi = i_slide * d_rotatedvtk_angle;
@@ -162,7 +164,7 @@ Visualization::_rotatedvtk_points(ofstream& out) const
         double x = r * cos(2. * M_PI * d_phi / 360.);
         double z = r * sin(2. * M_PI * d_phi / 360.);
         double y = v.y();
-        out << x << " " << y << " " << z << endl;
+        out << x << ' ' << y << ' ' << z << '\n';
       }
     }
   } else if (mesh->dimension() == 3) {
@@ -186,29 +188,28 @@ Visualization::_rotatedvtk_cells(ofstream& out) const
     lenght += 2 * mesh->nodes_per_cell(c) + 1;
   }
 
-  out << endl
-      << "CELLS " << (i_rotatedvtk_slides - 1) * ne << " "
-      << (i_rotatedvtk_slides - 1) * lenght << endl;
+  out << '\n'
+      << "CELLS " << (i_rotatedvtk_slides - 1) * ne << ' '
+      << (i_rotatedvtk_slides - 1) * lenght << '\n';
 
   for (int i_slide = 0; i_slide < i_rotatedvtk_slides - 1; i_slide++) {
     for (int c = 0; c < ne; c++) {
       int nle = mesh->nodes_per_cell(c);
-      out << 2 * nle << " ";
+      out << 2 * nle << ' ';
       for (int ii = 0; ii < nle; ii++) {
-        out << i_slide * nn + mesh->vertex_of_cell(c, ii) << " ";
+        out << i_slide * nn + mesh->vertex_of_cell(c, ii) << ' ';
       }
       for (int ii = 0; ii < nle; ii++) {
-        out << (i_slide + 1) * nn + mesh->vertex_of_cell(c, ii) << " ";
+        out << (i_slide + 1) * nn + mesh->vertex_of_cell(c, ii) << ' ';
       }
-      out << endl;
+      out << '\n';
     }
   }
-  out << endl;
-  out << endl << "CELL_TYPES " << (i_rotatedvtk_slides - 1) * ne << endl;
+  out << '\n';
+  out << '\n' << "CELL_TYPES " << (i_rotatedvtk_slides - 1) * ne << '\n';
   for (int i_slide = 0; i_slide < i_rotatedvtk_slides - 1; i_slide++) {
     for (int c = 0; c < ne; c++) {
-      out << "12"
-          << " "; // VTK Typ 12 = hexaeder
+      out << "12" << ' '; // VTK Typ 12 = hexaeder
     }
   }
   out << endl;
@@ -227,10 +228,10 @@ Visualization::rotatedvtk(const string& bname) const
 
   //  Header
 
-  out << "# vtk DataFile Version 4.2 " << endl;
-  out << "output from GascoigneStd, " << title << endl;
-  out << "ASCII" << endl;
-  out << "DATASET UNSTRUCTURED_GRID" << endl;
+  out << "# vtk DataFile Version 4.2 " << '\n';
+  out << "output from GascoigneStd, " << title << '\n';
+  out << "ASCII" << '\n';
+  out << "DATASET UNSTRUCTURED_GRID" << '\n';
 
   //  Mesh
 

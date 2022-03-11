@@ -36,7 +36,7 @@ operator<<(ostream& s, const NLStatisticData& A)
 {
   s << "NLStatisticData\n";
   s << "newmatrix"
-    << "\t" << A.newmatrix() << endl;
+    << "\t" << A.newmatrix() << '\n';
   s << "totalmatrix"
     << "\t" << A.totalmatrix() << endl;
   s << static_cast<StatisticData>(A);
@@ -50,9 +50,9 @@ operator<<(ostream& s, const NLControlData& A)
 {
   s << "NLControlData\n";
   s << "relax"
-    << "\t" << A.relax() << endl;
+    << "\t" << A.relax() << '\n';
   s << "newmatrix"
-    << "\t" << A.newmatrix() << endl;
+    << "\t" << A.newmatrix() << '\n';
   s << "laststepbad"
     << "\t" << A.laststepbad() << endl;
   s << static_cast<ControlData>(A);
@@ -66,9 +66,9 @@ operator<<(ostream& s, const NLUserData& A)
 {
   s << "NLUserData\n";
   s << "rho"
-    << "\t" << A.rho() << endl;
+    << "\t" << A.rho() << '\n';
   s << "linrho"
-    << "\t" << A.linrho() << endl;
+    << "\t" << A.linrho() << '\n';
   s << "maxrelax"
     << "\t" << A.maxrelax() << endl;
   s << static_cast<UserData>(A);
@@ -81,8 +81,8 @@ ostream&
 operator<<(ostream& s, const NLInfo& A)
 {
   s << "NLInfo\n";
-  s << A.statistics() << endl;
-  s << A.control() << endl;
+  s << A.statistics() << '\n';
+  s << A.control() << '\n';
   s << A.user() << endl;
   return s;
 }
@@ -190,7 +190,7 @@ void
 NLInfo::matrix_control()
 {
   //   cerr << "NLInfo::matrix_control()\t";
-  //   cerr << GetLinearInfo().statistics().lastrate()<<"\t"<<UD.linrho()<<endl;
+  //   cerr << GetLinearInfo().statistics().lastrate()<<"\t"<<UD.linrho()<<'\n';
 
   bool nonlinbad = (CD.iteration() > 0) && (SD.lastrate() > UD.rho());
   bool linbad = (GetLinearInfo().statistics().lastrate() > UD.linrho());

@@ -43,46 +43,48 @@ Visualization::_vtk_pointdata(ofstream& out) const
       VisuDataInfo::siterator p =
         (const_cast<VisuDataInfo*>(PointDataInfo))->GetSIterator(i);
       if (i == 0)
-        out << "POINT_DATA " << nn << endl;
-      out << "SCALARS " << p->first << " DOUBLE " << endl;
-      out << "LOOKUP_TABLE default" << endl;
+        out << "POINT_DATA " << nn << '\n';
+      out << "SCALARS " << p->first << " DOUBLE " << '\n';
+      out << "LOOKUP_TABLE default" << '\n';
       for (int ind = 0; ind < PointData->visun(); ind++) {
         if (mesh->dimension() == 2) {
           assert(ind < mesh->nnodes());
           out << PointData->visudata2(ind, p->second, mesh->vertex2d(ind))
-              << endl;
+              << '\n';
         } else {
           out << PointData->visudata2(ind, p->second, mesh->vertex3d(ind))
-              << endl;
+              << '\n';
         }
       }
-      out << endl << endl;
+      out << '\n' << '\n';
     }
+    out << flush;
     // for(VisuDataInfo::viterator
     // p=PointDataInfo->vbegin();p!=PointDataInfo->vend();++p) {
     for (int i = 0; i < PointDataInfo->nvectors(); i++) {
       VisuDataInfo::viterator p =
         (const_cast<VisuDataInfo*>(PointDataInfo))->GetVIterator(i);
-      out << "VECTORS " << p->first << " DOUBLE " << endl;
+      out << "VECTORS " << p->first << " DOUBLE " << '\n';
       for (int ind = 0; ind < PointData->visun(); ind++) {
         for (int ii = 0; ii < 2; ii++) {
           if (mesh->dimension() == 2) {
             out << PointData->visudata2(ind, p->second[ii], mesh->vertex2d(ind))
-                << " ";
+                << ' ';
           } else {
             out << PointData->visudata2(ind, p->second[ii], mesh->vertex3d(ind))
-                << endl;
+                << '\n';
           }
         }
         if (p->second[2] == -1) {
-          out << 0. << " ";
+          out << 0. << ' ';
         } else {
-          out << PointData->visudata(ind, p->second[2]) << " ";
+          out << PointData->visudata(ind, p->second[2]) << ' ';
         }
-        out << endl;
+        out << '\n';
       }
-      out << endl << endl;
+      out << '\n' << '\n';
     }
+    out << flush;
   }
 }
 
@@ -94,7 +96,7 @@ Visualization::_vtk_celldata(ofstream& out) const
   if (CellData) {
     CheckCellData();
 
-    // cout << "CellDataInfo->nscalars()" << CellDataInfo->nscalars() << endl;
+    // cout << "CellDataInfo->nscalars()" << CellDataInfo->nscalars() << '\n';
     //
     // die reihenfolge der elemente per index ist wesentlich, es reicht nicht
     // nur sie per iterator aus CellDataInfo raus zu holen
@@ -104,37 +106,39 @@ Visualization::_vtk_celldata(ofstream& out) const
       VisuDataInfo::siterator p =
         (const_cast<VisuDataInfo*>(CellDataInfo))->GetSIterator(i);
       if (i == 0)
-        out << "CELL_DATA " << mesh->ncells() << endl;
+        out << "CELL_DATA " << mesh->ncells() << '\n';
       // if(p==CellDataInfo->sbegin()) out << "CELL_DATA " << mesh->ncells() <<
-      // endl;
-      out << "SCALARS " << p->first << " DOUBLE " << endl;
-      out << "LOOKUP_TABLE default" << endl;
+      // '\n';
+      out << "SCALARS " << p->first << " DOUBLE " << '\n';
+      out << "LOOKUP_TABLE default" << '\n';
 
       for (int ind = 0; ind < CellData->visun(); ind++) {
-        out << CellData->visudata(ind, p->second) << endl;
+        out << CellData->visudata(ind, p->second) << '\n';
       }
-      out << endl << endl;
+      out << '\n' << '\n';
     }
-    // cout << "CellDataInfo->nvectors()" << CellDataInfo->nvectors() << endl;
+    out << flush;
+    // cout << "CellDataInfo->nvectors()" << CellDataInfo->nvectors() << '\n';
     // for(VisuDataInfo::viterator
     // p=CellDataInfo->vbegin();p!=CellDataInfo->vend();++p){
     for (int i = 0; i < CellDataInfo->nvectors(); i++) {
       VisuDataInfo::viterator p =
         (const_cast<VisuDataInfo*>(CellDataInfo))->GetVIterator(i);
-      out << "VECTORS " << p->first << " DOUBLE " << endl;
+      out << "VECTORS " << p->first << " DOUBLE " << '\n';
       for (int ind = 0; ind < CellData->visun(); ind++) {
         for (int ii = 0; ii < 2; ii++) {
-          out << CellData->visudata(ind, p->second[ii]) << " ";
+          out << CellData->visudata(ind, p->second[ii]) << ' ';
         }
         if (p->second[2] == -1) {
-          out << 0. << " ";
+          out << 0. << ' ';
         } else {
-          out << CellData->visudata(ind, p->second[2]) << " ";
+          out << CellData->visudata(ind, p->second[2]) << ' ';
         }
-        out << endl;
+        out << '\n';
       }
-      out << endl << endl;
+      out << '\n' << '\n';
     }
+    out << flush;
   }
 }
 
@@ -144,15 +148,15 @@ void
 Visualization::_vtk_points(ofstream& out) const
 {
   int nn = mesh->nnodes();
-  out << "POINTS " << nn << " DOUBLE " << endl;
+  out << "POINTS " << nn << " DOUBLE " << '\n';
   assert(mesh->dimension() == 2 || mesh->dimension() == 3);
   if (mesh->dimension() == 2) {
     for (int i = 0; i < nn; i++) {
-      out << mesh->vertex2d(i) << " " << 0 << endl;
+      out << mesh->vertex2d(i) << ' ' << 0 << '\n';
     }
   } else if (mesh->dimension() == 3) {
     for (int i = 0; i < nn; i++) {
-      out << mesh->vertex3d(i) << endl;
+      out << mesh->vertex3d(i) << '\n';
     }
   }
   out << endl;
@@ -170,19 +174,19 @@ Visualization::_vtk_cells(ofstream& out) const
     lenght += mesh->nodes_per_cell(c) + 1;
   }
 
-  out << endl << "CELLS " << ne << " " << lenght << endl;
+  out << '\n' << "CELLS " << ne << ' ' << lenght << '\n';
 
   for (int c = 0; c < ne; c++) {
     int nle = mesh->nodes_per_cell(c);
-    out << nle << " ";
+    out << nle << ' ';
     for (int ii = 0; ii < nle; ii++) {
-      out << mesh->vertex_of_cell(c, ii) << " ";
+      out << mesh->vertex_of_cell(c, ii) << ' ';
     }
-    out << endl;
+    out << '\n';
   }
-  out << endl << "CELL_TYPES " << ne << endl;
+  out << '\n' << "CELL_TYPES " << ne << '\n';
   for (int c = 0; c < ne; c++) {
-    out << mesh->VtkType(c) << " ";
+    out << mesh->VtkType(c) << ' ';
   }
   out << endl;
 }
@@ -192,13 +196,13 @@ Visualization::_vtk_cellmaterial(ofstream& out) const
 {
   int ne = mesh->ncells();
 
-  out << endl
-      << "CELL_DATA " << ne << endl
-      << "FIELD FieldData 1" << endl
-      << "material 1 " << ne << " int" << endl;
+  out << '\n'
+      << "CELL_DATA " << ne << '\n'
+      << "FIELD FieldData 1" << '\n'
+      << "material 1 " << ne << " int" << '\n';
 
   for (int c = 0; c < ne; c++)
-    out << mesh->material(c) << " ";
+    out << mesh->material(c) << ' ';
   out << endl;
 }
 
@@ -215,12 +219,12 @@ Visualization::vtk(const string& bname) const
 
   //  Header
 
-  out << "# vtk DataFile Version 2.0 " << endl;
-  out << "output from GascoigneStd, " << title << endl;
-  out << "ASCII" << endl;
-  out << "DATASET UNSTRUCTURED_GRID" << endl;
-  out << "FIELD FieldData 1" << endl;
-  out << "TIME 1 1 double" << endl;
+  out << "# vtk DataFile Version 2.0 " << '\n';
+  out << "output from GascoigneStd, " << title << '\n';
+  out << "ASCII" << '\n';
+  out << "DATASET UNSTRUCTURED_GRID" << '\n';
+  out << "FIELD FieldData 1" << '\n';
+  out << "TIME 1 1 double" << '\n';
   out << time << endl;
 
   //  Mesh

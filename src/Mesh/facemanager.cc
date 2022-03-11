@@ -266,7 +266,7 @@ FaceManager::SortHangings()
     if (s < 0)
       continue;
     if (hex(m).sleep() && !hex(s).sleep()) {
-      // cout << "Swapping " << m << " " << s << endl;
+      // cout << "Swapping " << m << ' ' << s << endl;
       swap(edges[i].master(), edges[i].slave());
       swap(edges[i].LocalMasterIndex(), edges[i].LocalSlaveIndex());
     }
@@ -357,7 +357,7 @@ FaceManager::NeighbourTester() const
   }
   for (int i = 0; i < x.size(); i++) {
     if (x[i] > 2) {
-      cout << "BSE Test " << i << " " << x[i] << endl;
+      cout << "BSE Test " << i << ' ' << x[i] << endl;
     }
   }
   for (int i = 0; i < hexs.size(); i++) {
@@ -377,7 +377,7 @@ FaceManager::NeighbourTester() const
       }
 
       if (nachbar == -10) {
-        cout << "BSE Test " << i << " " << e << " edgenumber " << edge << endl;
+        cout << "BSE Test " << i << ' ' << e << " edgenumber " << edge << endl;
       }
     }
   }

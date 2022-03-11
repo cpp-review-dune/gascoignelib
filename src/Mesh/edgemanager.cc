@@ -63,7 +63,7 @@ EdgeManager::BSETest() const
   }
   for (int i = 0; i < x.size(); i++) {
     if (x[i] > 2) {
-      cout << "problem 1 in edge " << i << " " << x[i] << endl;
+      cout << "problem 1 in edge " << i << ' ' << x[i] << endl;
     }
   }
   for (int i = 0; i < quads.size(); i++) {
@@ -88,7 +88,7 @@ EdgeManager::BSETest() const
       }
 
       if (nachbar == -10) {
-        cout << "problem 2 in edge " << i << " " << e << " edgenumber " << edge
+        cout << "problem 2 in edge " << i << ' ' << e << " edgenumber " << edge
              << " f= " << f << endl;
       }
     }
@@ -153,7 +153,7 @@ EdgeManager::Update()
     int s = edges[i].slave();
     if (m < 0) {
       cerr << "EdgeManager::update()" << endl;
-      cerr << "Master negativ " << i << " " << m << endl;
+      cerr << "Master negativ " << i << ' ' << m << endl;
       abort();
     }
     int nm = co2n[m];
@@ -317,7 +317,7 @@ EdgeManager::OldHangings(HangContainer2d& hangset, const IntSet& CellRefList)
 
         gedge = quads[cp.first].edge(cp.second);
         if (gedge < 0) {
-          cout << "###gedge negativ:" << bigmaster << " " << bigslave << endl;
+          cout << "###gedge negativ:" << bigmaster << ' ' << bigslave << endl;
         }
       }
       int ledge = -1;
@@ -371,7 +371,7 @@ EdgeManager::SwappedEdges()
   }
   if (m != SwappedEdge.size()) {
     cout << "ERROR: Inconsistency in SwappedEdges2d" << endl;
-    cout << m << " " << SwappedEdge.size() << endl;
+    cout << m << ' ' << SwappedEdge.size() << endl;
     exit(1);
   }
   for (int i = 0; i < quads.size(); i++) {
@@ -556,7 +556,7 @@ EdgeManager::NeighbourTester() const
     for (int e = 0; e < 4; e++) {
       int ind = quads[q].edge(e);
       if (ind < 0) {
-        cout << "* Q=" << q << " edge=" << e << " " << ind << endl;
+        cout << "* Q=" << q << " edge=" << e << ' ' << ind << endl;
       }
     }
   }

@@ -50,33 +50,33 @@ Visualization::avs(const string& bname) const
       continue;
     }
   }
-  out << mesh->nnodes() << " " << mesh->ncells();
-  out << " " << nc << " 0 0 " << endl;
+  out << mesh->nnodes() << ' ' << mesh->ncells();
+  out << ' ' << nc << " 0 0 " << '\n';
 
   if (mesh->dimension() == 2) {
     for (int i = 0; i < mesh->nnodes(); i++) {
-      out << i + 1 << " " << mesh->vertex2d(i) << " " << 0 << endl;
+      out << i + 1 << ' ' << mesh->vertex2d(i) << ' ' << 0 << '\n';
     }
   } else {
     for (int i = 0; i < mesh->nnodes(); i++) {
-      out << i + 1 << " " << mesh->vertex3d(i) << endl;
+      out << i + 1 << ' ' << mesh->vertex3d(i) << '\n';
     }
   }
   if (mesh->dimension() == 2) {
     for (int c = 0; c < mesh->ncells(); c++) {
       out << c + 1 << " 1 quad ";
       for (int i = 0; i < 4; i++) {
-        out << mesh->vertex_of_cell(c, i) + 1 << " ";
+        out << mesh->vertex_of_cell(c, i) + 1 << ' ';
       }
-      out << endl;
+      out << '\n';
     }
   } else {
     for (int c = 0; c < mesh->ncells(); c++) {
       out << c + 1 << " 1 hex ";
       for (int i = 0; i < 8; i++) {
-        out << mesh->vertex_of_cell(c, i) + 1 << " ";
+        out << mesh->vertex_of_cell(c, i) + 1 << ' ';
       }
-      out << endl;
+      out << '\n';
     }
   }
   if (PointData) {
@@ -84,21 +84,21 @@ Visualization::avs(const string& bname) const
     for (int c = 0; c < nc; c++) {
       out << " 1";
     }
-    out << endl;
+    out << '\n';
     for (VisuDataInfo::siterator p = PointDataInfo->sbegin();
          p != PointDataInfo->send();
          ++p) {
-      out << p->first << "," << endl;
+      out << p->first << "," << '\n';
     }
     if (CreateZero)
       out << "null,";
 
     for (int ind = 0; ind < PointData->visun(); ind++) {
-      out << endl << ind;
+      out << '\n' << ind;
       for (VisuDataInfo::siterator p = PointDataInfo->sbegin();
            p != PointDataInfo->send();
            ++p) {
-        out << " " << PointData->visudata(ind, p->second);
+        out << ' ' << PointData->visudata(ind, p->second);
       }
       if (CreateZero)
         out << " 0";

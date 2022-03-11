@@ -62,22 +62,22 @@ operator<<(ostream& os, const Index& I)
   os << "Vertex l2g " << I.VertexSize() << endl;
   os << I.Vertexl2g();
   os << "Vertex g2l " << I.VertexSize() << endl;
-  os << I.Vertexg2l() << " ";
+  os << I.Vertexg2l() << ' ';
 
   os << "Edge l2g " << I.EdgeSize() << endl;
   os << I.Edgel2g();
   os << "Edge g2l " << I.EdgeSize() << endl;
-  os << I.Edgeg2l() << " ";
+  os << I.Edgeg2l() << ' ';
 
   os << "Hex l2g " << I.HexSize() << endl;
   os << I.Hexl2g();
   os << "Hex g2l " << I.HexSize() << endl;
-  os << I.Hexg2l() << " ";
+  os << I.Hexg2l() << ' ';
 
   os << "Quad l2g " << I.QuadSize() << endl;
   os << I.Quadl2g();
   os << "Quad g2l " << I.QuadSize() << endl;
-  os << I.Quadg2l() << " ";
+  os << I.Quadg2l() << ' ';
 
   return os;
 }

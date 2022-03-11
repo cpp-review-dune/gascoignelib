@@ -38,27 +38,27 @@ Visualization::gmv(const string& bname) const
   ofstream file(name.c_str());
   FILE_ERROR(file, name);
 
-  file << "gmvinput ascii" << endl;
-  file << "nodes " << mesh->nnodes() << endl;
+  file << "gmvinput ascii" << '\n';
+  file << "nodes " << mesh->nnodes() << '\n';
 
   output_vertexs_by_component(file);
 
-  file << endl << "cells " << mesh->ncells() << endl;
+  file << '\n' << "cells " << mesh->ncells() << '\n';
 
   output_quads(file, "quad 4 ");
   output_hexs(file, "hex 8 ");
 
   if (PointData) {
     CheckPointData();
-    file << "variable" << endl;
+    file << "variable" << '\n';
     for (VisuDataInfo::siterator p = PointDataInfo->sbegin();
          p != PointDataInfo->send();
          ++p) {
-      file << p->first << " 1" << endl;
+      file << p->first << " 1" << '\n';
       output_solution(file, p->second);
-      file << endl;
+      file << '\n';
     }
-    file << "endvars" << endl;
+    file << "endvars" << '\n';
   }
   file << "endgmv" << endl;
   file.close();

@@ -393,7 +393,7 @@ LevelMesh3d::ConstructHangingStructureQuadratic(
       }
     }
   }
-  //  cout << "****** LevelM 3d " << hnq2face.size() << " " << hnq2 .size() <<
+  //  cout << "****** LevelM 3d " << hnq2face.size() << ' ' << hnq2 .size() <<
   //  endl;
 }
 
@@ -826,7 +826,7 @@ LevelMesh3d::construct_lists(IntSet& newhexs, IntSet& oldhexs) const
       }
     }
     newhexs = help;
-    //       cerr << "\t Regular Iteration\t" << count++ << " " << rep << endl;
+    //       cerr << "\t Regular Iteration\t" << count++ << ' ' << rep << endl;
   }
 }
 
