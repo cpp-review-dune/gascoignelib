@@ -35,9 +35,20 @@
 #include "sparsestructure.h"
 #include "stopwatch.h"
 
+#include "finiteelement.h"
+
 #include "hnstructureq13d.h"
 #include "hnstructureq22d.h"
 #include "hnstructureq23d.h"
+
+#include "elementintegrator.h"
+#include "elementlpsintegrator.h"
+
+#include "baseq12d.h"
+#include "baseq13d.h"
+#include "baseq13dpatch.h"
+#include "baseq22d.h"
+#include "baseq23d.h"
 
 namespace Gascoigne {
 namespace atom_ops {
@@ -115,6 +126,9 @@ public:
   //// Functions called from the Solver
   //
   std::string GetName() const { return "CG Discretization"; }
+
+  // Q12d Q13d Q22d Q32d
+
   // Visualization
   void VisuVtk(const ComponentInformation* CI,
                const ParamFile& pf,
@@ -1215,50 +1229,39 @@ public:
   }
 };
 
-#define CGDiscQ12d                                                             \
-  CGDisc<2,                                                                    \
-         1,                                                                    \
-         FiniteElement<2, 1, Transformation2d<BaseQ12d>, BaseQ12d>,            \
-         ElementIntegratorQ12d>
-#define CGDiscQ22d                                                             \
-  CGDisc<2,                                                                    \
-         2,                                                                    \
-         FiniteElement<2, 1, Transformation2d<BaseQ22d>, BaseQ22d>,            \
-         ElementIntegratorQ22d>
-#define CGDiscQ13d                                                             \
-  CGDisc<3,                                                                    \
-         1,                                                                    \
-         FiniteElement<3, 2, Transformation3d<BaseQ13d>, BaseQ13d>,            \
-         ElementIntegratorQ13d>
-#define CGDiscQ23d                                                             \
-  CGDisc<3,                                                                    \
-         2,                                                                    \
-         FiniteElement<3, 2, Transformation3d<BaseQ23d>, BaseQ23d>,            \
-         ElementIntegratorQ23d>
+typedef CGDisc<2, 1, FiniteElementQ12d, ElementIntegratorQ12d> CGDiscQ12d;
+typedef CGDisc<2, 2, FiniteElementQ22d, ElementIntegratorQ22d> CGDiscQ22d;
+typedef CGDisc<3, 1, FiniteElementQ13d, ElementIntegratorQ13d> CGDiscQ13d;
+typedef CGDisc<3, 2, FiniteElementQ23d, ElementIntegratorQ23d> CGDiscQ23d;
 
 ////// LPS
-#define CGDiscQ12dLps                                                          \
-  CGDisc<2,                                                                    \
-         2,                                                                    \
-         FiniteElement<2, 1, Transformation2d<BaseQ12dPatch>, BaseQ12dPatch>,  \
-         ElementLpsIntegratorQ12d>
+// typedef CGDisc<2,
+//          2,
+//          FiniteElement<2, 1, Transformation2d<BaseQ12dPatch>, BaseQ12dPatch>,
+//          ElementLpsIntegratorQ12d> CGDiscQ12dLps;
+typedef CGDisc<2,
+               2,
+               FiniteElement<2, 1, Transformation2d<BaseQ12d>, BaseQ12d>,
+               ElementLpsIntegratorQ12d>
+  CGDiscQ12dLps;
 
-#define CGDiscQ22dLps                                                          \
-  CGDisc<2,                                                                    \
-         2,                                                                    \
-         FiniteElement<2, 1, Transformation2d<BaseQ22d>, BaseQ22d>,            \
-         ElementLpsIntegratorQ22d>
+typedef CGDisc<2,
+               2,
+               FiniteElement<2, 1, Transformation2d<BaseQ22d>, BaseQ22d>,
+               ElementLpsIntegratorQ22d>
+  CGDiscQ22dLps;
 
-#define CGDiscQ13dLps                                                          \
-  CGDisc<3,                                                                    \
-         2,                                                                    \
-         FiniteElement<3, 2, Transformation3d<BaseQ13dPatch>, BaseQ13dPatch>,  \
-         ElementLpsIntegratorQ13d>
-#define CGDiscQ23dLps                                                          \
-  CGDisc<3,                                                                    \
-         2,                                                                    \
-         FiniteElement<3, 2, Transformation3d<BaseQ23d>, BaseQ23d>,            \
-         ElementLpsIntegratorQ23d>
+typedef CGDisc<
+  3,
+  2,
+  FiniteElement<3, 2, Transformation3d<BaseQ13dPatch>, BaseQ13dPatch>,
+  ElementLpsIntegratorQ13d>
+  CGDiscQ13dLps;
+typedef CGDisc<3,
+               2,
+               FiniteElement<3, 2, Transformation3d<BaseQ23d>, BaseQ23d>,
+               ElementLpsIntegratorQ23d>
+  CGDiscQ23dLps;
 
 } // namespace Gascoigne
 

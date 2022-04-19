@@ -30,7 +30,9 @@
  **/
 
 #include "elementintegrator.h"
+#include "integrationformula.h"
 #include "lpsequation.h"
+#include "patchintegrationformula.h"
 
 namespace Gascoigne {
 
@@ -207,24 +209,25 @@ public:
     }
   }
 };
-} // namespace Gascoigne
 
-#define ElementLpsIntegratorQ12d                                               \
-  ElementLpsIntegrator<2,                                                      \
-                       PatchFormula2d<4, QuadGauss4>,                          \
-                       PatchFormula2d<9, QuadGauss9>,                          \
-                       PatchFormula1d<2, LineGauss2>,                          \
-                       PatchFormula2d<4, QuadGauss4>>
-#define ElementLpsIntegratorQ22d                                               \
-  ElementLpsIntegrator<2, QuadGauss9, QuadGauss16, LineGauss3, QuadGauss9>
-#define ElementLpsIntegratorQ13d                                               \
-  ElementLpsIntegrator<3,                                                      \
-                       PatchFormula3d<8, HexGauss8>,                           \
-                       PatchFormula3d<27, HexGauss27>,                         \
-                       PatchFormula2d<4, QuadGauss4>,                          \
-                       PatchFormula3d<8, HexGauss8>>
-#define ElementLpsIntegratorQ23d                                               \
-  ElementLpsIntegrator<3, HexGauss27, HexGauss64, QuadGauss9, HexGauss27>
+typedef ElementLpsIntegrator<2,
+                             PatchFormula2d<4, QuadGauss4>,
+                             PatchFormula2d<9, QuadGauss9>,
+                             PatchFormula1d<2, LineGauss2>,
+                             PatchFormula2d<4, QuadGauss4>>
+  ElementLpsIntegratorQ12d;
+typedef ElementLpsIntegrator<2, QuadGauss9, QuadGauss16, LineGauss3, QuadGauss9>
+  ElementLpsIntegratorQ22d;
+typedef ElementLpsIntegrator<3,
+                             PatchFormula3d<8, HexGauss8>,
+                             PatchFormula3d<27, HexGauss27>,
+                             PatchFormula2d<4, QuadGauss4>,
+                             PatchFormula3d<8, HexGauss8>>
+  ElementLpsIntegratorQ13d;
+typedef ElementLpsIntegrator<3, HexGauss27, HexGauss64, QuadGauss9, HexGauss27>
+  ElementLpsIntegratorQ23d;
+
+} // namespace Gascoigne
 
 /*----------------------------   elementlpsintegrator.h
  * ---------------------------*/

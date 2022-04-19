@@ -53,8 +53,8 @@ class GMRES
   double orthogonalization(dvector&, int, Vector&) const;
   bool reortho_test(const Vector&, double) const;
 
-  StdSolver& S;
-  StdMultiLevelSolver& P;
+  StdSolver& solver;
+  StdMultiLevelSolver& precon;
 
 public:
   GMRES(StdSolver&, StdMultiLevelSolver&, int);

@@ -30,8 +30,7 @@
 
 namespace Gascoigne {
 typedef Transformation2d<BaseQ12d> TQ1_2D;
-
-template class FiniteElementQ12d;
+template class FiniteElement<2, 1, Transformation2d<BaseQ12d>, BaseQ12d>;
 } // namespace Gascoigne
 
 /*-----------------------------------------------------*/

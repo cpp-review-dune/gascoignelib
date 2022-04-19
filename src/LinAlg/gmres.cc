@@ -35,8 +35,8 @@ GMRES::GMRES(StdSolver& S_, StdMultiLevelSolver& P_, int vm)
   , ci(vm)
   , si(vm)
   , vmax(vm)
-  , S(S_)
-  , P(P_)
+  , solver(S_)
+  , precon(P_)
 {
   left_precondition = 1;
   for (int i = 0; i < 3; i++) {
@@ -49,7 +49,7 @@ GMRES::GMRES(StdSolver& S_, StdMultiLevelSolver& P_, int vm)
 GMRES::~GMRES()
 {
   for (int i = 0; i < mem.size(); ++i) {
-    P.DeleteVector(mem[i]);
+    precon.DeleteVector(mem[i]);
   }
   mem.clear();
 }
@@ -64,8 +64,8 @@ GMRES::new_memory()
   std::string s = "gmres";
   compose_name(s, i);
   mem.resize(i + 1, s);
-  // mem[i].SetMultiLevelSolver(&P);
-  P.ReInitVector(mem[i]);
+  // mem[i].SetMultiLevelSolver(&precon);
+  precon.ReInitVector(mem[i]);
 }
 
 /********************************************************************/
@@ -109,11 +109,11 @@ double
 GMRES::orthogonalization(dvector& h, int dim, Vector& vv) const
 {
   for (int i = 0; i < dim; i++) {
-    double d = S.ScalarProduct(vv, mem[i]);
+    double d = solver.ScalarProduct(vv, mem[i]);
     h[i] += d;
-    S.Add(vv, -d, mem[i]);
+    solver.Add(vv, -d, mem[i]);
   }
-  h[dim] = sqrt(S.ScalarProduct(vv, vv));
+  h[dim] = sqrt(solver.ScalarProduct(vv, vv));
   return h[dim];
 }
 
@@ -124,7 +124,7 @@ GMRES::reortho_test(const Vector& u, double norm) const
 {
   bool test = 0;
   double delta = 1.e-3;
-  double oldnorm = sqrt(S.ScalarProduct(u, u));
+  double oldnorm = sqrt(solver.ScalarProduct(u, u));
   double newnorm = oldnorm + delta * norm;
 
   if (oldnorm == newnorm) {
@@ -168,20 +168,20 @@ GMRES::solve(const Matrix& A, Vector& x, const Vector& b, CGInfo& info)
   Vector& v = mem[0];
 
   Vector p("gmresp");
-  // p.SetMultiLevelSolver(&P);
-  P.ReInitVector(p);
-  P.Equ(p, 1., v);
+  // p.SetMultiLevelSolver(&precon);
+  precon.ReInitVector(p);
+  precon.Equ(p, 1., v);
 
   if (left_precondition) {
-    S.residualgmres(A, p, x, b);
-    P.precondition(A, v, p);
+    solver.residualgmres(A, p, x, b);
+    precon.precondition(A, v, p);
   } else {
-    S.residualgmres(A, v, x, b);
+    solver.residualgmres(A, v, x, b);
   }
 
-  double rho = sqrt(S.ScalarProduct(v, v));
+  double rho = sqrt(solver.ScalarProduct(v, v));
   if (rho == 0.) {
-    P.DeleteVector(p);
+    precon.DeleteVector(p);
     return 1;
   }
 
@@ -189,7 +189,7 @@ GMRES::solve(const Matrix& A, Vector& x, const Vector& b, CGInfo& info)
 
   // reached = info.check(rho,0);
 
-  S.Equ(v, 1. / rho, v);
+  solver.Equ(v, 1. / rho, v);
 
   int dim = 0;
   while ((dim < vmax - 1) && !reached) {
@@ -200,18 +200,18 @@ GMRES::solve(const Matrix& A, Vector& x, const Vector& b, CGInfo& info)
     }
     Vector& vv = mem[dim];
     if (left_precondition) {
-      S.vmulteq(A, p, mem[last], 1.);
-      P.precondition(A, vv, p);
+      solver.vmulteq(A, p, mem[last], 1.);
+      precon.precondition(A, vv, p);
     } else {
-      S.Zero(p);
-      P.precondition(A, p, mem[last]);
-      S.vmulteq(A, vv, p, 1.);
+      solver.Zero(p);
+      precon.precondition(A, p, mem[last]);
+      solver.vmulteq(A, vv, p, 1.);
     }
     double s = orthogonalization(H[last], dim, vv);
     if (reortho_test(vv, s)) {
       s = orthogonalization(H[last], dim, vv);
     }
-    S.Equ(vv, 1. / s, vv);
+    solver.Equ(vv, 1. / s, vv);
 
     givens_rotation(H[last], last);
 
@@ -225,7 +225,7 @@ GMRES::solve(const Matrix& A, Vector& x, const Vector& b, CGInfo& info)
 
   solution(A, x, p, dim);
 
-  P.DeleteVector(p);
+  precon.DeleteVector(p);
   return reached;
 }
 
@@ -247,14 +247,14 @@ GMRES::solution(const Matrix& A, Vector& x, Vector& p, int dim)
 
   if (left_precondition) {
     for (int i = 0; i < dim; i++)
-      S.Add(x, h[i], mem[i]);
+      solver.Add(x, h[i], mem[i]);
   } else {
-    S.Zero(p);
+    solver.Zero(p);
     for (int i = 0; i < dim; i++)
-      S.Add(p, h[i], mem[i]);
-    S.Equ(mem[0], 0., mem[0]);
-    P.precondition(A, mem[0], p);
-    S.Add(x, 1., mem[0]);
+      solver.Add(p, h[i], mem[i]);
+    solver.Equ(mem[0], 0., mem[0]);
+    precon.precondition(A, mem[0], p);
+    solver.Add(x, 1., mem[0]);
   }
 }
 } // namespace Gascoigne

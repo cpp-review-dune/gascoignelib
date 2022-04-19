@@ -24,7 +24,13 @@
 #ifndef __FiniteElement_h
 #define __FiniteElement_h
 
+#include "baseq12d.h"
+#include "baseq13d.h"
+#include "baseq22d.h"
+#include "baseq23d.h"
 #include "feminterface.h"
+#include "transformation2d.h"
+#include "transformation3d.h"
 
 /*-----------------------------------------------------*/
 
@@ -89,14 +95,14 @@ public:
   void GetCoordinates(DoubleMatrix& A) const { T.GetCoordinates(A); }
 };
 
-#define FiniteElementQ12d                                                      \
-  FiniteElement<2, 1, Transformation2d<BaseQ12d>, BaseQ12d>
-#define FiniteElementQ22d                                                      \
-  FiniteElement<2, 1, Transformation2d<BaseQ22d>, BaseQ22d>
-#define FiniteElementQ13d                                                      \
-  FiniteElement<3, 2, Transformation3d<BaseQ13d>, BaseQ13d>
-#define FiniteElementQ23d                                                      \
-  FiniteElement<3, 2, Transformation3d<BaseQ23d>, BaseQ23d>
+typedef FiniteElement<2, 1, Transformation2d<BaseQ12d>, BaseQ12d>
+  FiniteElementQ12d;
+typedef FiniteElement<2, 1, Transformation2d<BaseQ22d>, BaseQ22d>
+  FiniteElementQ22d;
+typedef FiniteElement<3, 2, Transformation3d<BaseQ13d>, BaseQ13d>
+  FiniteElementQ13d;
+typedef FiniteElement<3, 2, Transformation3d<BaseQ23d>, BaseQ23d>
+  FiniteElementQ23d;
 
 } // namespace Gascoigne
 
