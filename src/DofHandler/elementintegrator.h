@@ -32,6 +32,7 @@
 #include "basicintegrator.h"
 #include "integrationformula.h"
 #include "integrationformulasummed.h"
+#include "triaintegrationformula.h"
 
 namespace Gascoigne {
 
@@ -57,8 +58,8 @@ public:
   //
   ////  Con(De)structor
   //
-  ElementIntegrator<DIM, IFF, IFE, IFB, IFM>(){};
-  ~ElementIntegrator<DIM, IFF, IFE, IFB, IFM>(){};
+  ElementIntegrator(){};
+  ~ElementIntegrator(){};
 
   // Integration-Formulas
   virtual IntegrationFormulaInterface* NewIFF() const { return new IFF; }
@@ -201,6 +202,13 @@ public:
                 int comp) const;
 #pragma GCC diagnostic pop
 };
+
+#define ElementIntegratorP12d                                                  \
+  ElementIntegrator<2,                                                         \
+                    TriaQuadFormula<TriaSixpointFormula>,                      \
+                    TriaQuadFormula<TriaSixpointFormula>,                      \
+                    LineGauss2,                                                \
+                    TriaQuadFormula<TriaSixpointFormula>>
 
 #define ElementIntegratorQ12d                                                  \
   ElementIntegrator<2, QuadGauss4, QuadGauss9, LineGauss2, QuadGauss4>

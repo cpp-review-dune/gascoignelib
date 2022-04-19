@@ -79,6 +79,8 @@ public:
     , qfather(f)
     , mat(0)
     , mat_Vanka(0)
+    , qchilds(0)
+    , qedges()
   {
     this->fill(-17);
   }
@@ -197,12 +199,25 @@ public:
     s >> A.vertex();
     s >> A.level();
     s >> A.father();
-    s >> A.material();
+
+    // old version without material?
+    bool oldversion = false;
     s >> symbol;
+    try {
+      A.material() = std::stoi(symbol);
+    } catch (const std::exception& e) {
+      A.material() = 0;
+      oldversion = true;
+    }
+    if (!oldversion) // new version: mat was correct,
+      s >> symbol;   // now read symbol
+    //
+
     if (symbol != "@") {
       std::cout << "ERROR: Cell::operator>>" << std::endl;
       exit(1);
     }
+
     s >> n;
     A.childs().resize(n);
     s >> A.childs();
@@ -212,6 +227,7 @@ public:
       exit(1);
     }
     s >> A.edges();
+
     return s;
   }
 };

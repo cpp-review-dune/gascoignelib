@@ -53,9 +53,9 @@ protected:
 public:
   int size() const { return smat.size(); }
 
-  SparseBlockMatrix<B>();
-  SparseBlockMatrix<B>(const SparseBlockMatrix<B>& A);
-  virtual ~SparseBlockMatrix<B>() {}
+  SparseBlockMatrix();
+  SparseBlockMatrix(const SparseBlockMatrix<B>& A);
+  virtual ~SparseBlockMatrix() {}
 
   void transpose();
 

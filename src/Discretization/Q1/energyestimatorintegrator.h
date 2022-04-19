@@ -43,10 +43,9 @@ protected:
   const IntegrationFormulaInterface& GetFormula() const { return *IF; }
 
 public:
-  EnergyEstimatorIntegrator<DIM>();
-  EnergyEstimatorIntegrator<DIM>(const std::string& s_energytype,
-                                 double d_visc);
-  ~EnergyEstimatorIntegrator<DIM>();
+  EnergyEstimatorIntegrator();
+  EnergyEstimatorIntegrator(const std::string& s_energytype, double d_visc);
+  ~EnergyEstimatorIntegrator();
 
   void BasicInit();
   std::string GetName() const { return "EnergyEstimator"; }

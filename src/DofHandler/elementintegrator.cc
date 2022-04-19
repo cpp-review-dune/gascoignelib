@@ -29,6 +29,8 @@ using namespace std;
 
 namespace Gascoigne {
 
+template class ElementIntegratorP12d;
+
 template class ElementIntegratorQ12d;
 template class ElementIntegratorQ22d;
 template class ElementIntegratorQ42d;

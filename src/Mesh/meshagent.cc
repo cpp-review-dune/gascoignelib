@@ -82,8 +82,11 @@ MeshAgent::ReInit()
   //////////////////////////////
   GMG->ReInit(GetDimension(), HMP->nlevels() - HMP->patchdepth());
 
+  GlobalTimer.start("---> mesh 2");
   GascoigneMeshConstructor MGM(HMP, GMG);
   MGM.BasicInit();
+  GlobalTimer.stop("---> mesh 2");
+
   _celll2g = MGM.Celll2g();
   _cellg2l = MGM.Cellg2l();
   if (HMP->patchdepth() >= 2) {
@@ -502,10 +505,10 @@ MeshAgent::global_patch_coarsen(int n)
 void
 MeshAgent::global_refine(int n)
 {
-  GlobalTimer.start("---> mesh");
+  GlobalTimer.start("---> mesh (gref)");
   assert(HMP);
   HMP->global_refine(n);
-  GlobalTimer.stop("---> mesh");
+  GlobalTimer.stop("---> mesh (gref)");
   ReInit();
 }
 

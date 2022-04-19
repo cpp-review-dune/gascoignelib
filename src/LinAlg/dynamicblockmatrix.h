@@ -81,9 +81,9 @@ protected:
   }
 
 public:
-  DynamicBlockMatrix<B>();
-  DynamicBlockMatrix<B>(const DynamicBlockMatrix<B>& A);
-  virtual ~DynamicBlockMatrix<B>() {}
+  DynamicBlockMatrix();
+  DynamicBlockMatrix(const DynamicBlockMatrix<B>& A);
+  virtual ~DynamicBlockMatrix() {}
 
   std::string GetName() const { return "DynamicBlockMatrix"; }
 

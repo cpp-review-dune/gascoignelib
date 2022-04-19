@@ -30,7 +30,7 @@ SET (GASCOIGNE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 #### not necessarily used in derived projects
 OPTION(WITH_UMFPACK      "Build with support for UMFPACK" ON)
 OPTION(WITH_UMFPACK_LONG "Long-integer indices in UMFPACK >4GB matrices" OFF)
-OPTION(WITH_THREADS      "Build with support for openmp" OFF)
+
 
 #
 # Include directories:
@@ -45,9 +45,19 @@ SET(GASCOIGNE_CXX_FLAGS
   )
 
 
+OPTION(WITH_THREADS      "Build with support for openmp" OFF)
 IF(WITH_THREADS)
+
+  # require OPENMP
+  
+  find_package(OpenMP REQUIRED)
+  set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
+  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+  set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
   SET(GASCOIGNE_CXX_FLAGS "${GASCOIGNE_CXX_FLAGS} -fopenmp")
-ENDIF(WITH_THREADS)
+
+endif()
+
 
 #
 # Search for metis:

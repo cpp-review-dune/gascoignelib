@@ -37,8 +37,8 @@ protected:
   const T* wp;
 
 public:
-  CompareLess<T>() {}
-  CompareLess<T>(const T& w) { wp = &w; }
+  CompareLess() {}
+  CompareLess(const T& w) { wp = &w; }
   bool operator()(int i1, int i2) const
   {
     if ((*wp)[i1] < (*wp)[i2])

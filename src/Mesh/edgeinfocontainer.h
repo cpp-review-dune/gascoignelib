@@ -54,8 +54,8 @@ protected:
   int _ncomp;
 
 public:
-  EdgeInfoContainer<DIM>() {}
-  ~EdgeInfoContainer<DIM>();
+  EdgeInfoContainer() {}
+  ~EdgeInfoContainer();
 
   void BasicInit(const HierarchicalMesh*, int);
   void ModifyHanging();

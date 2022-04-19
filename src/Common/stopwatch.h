@@ -147,6 +147,9 @@ protected:
   std::map<std::string, size_t> counters;
 
 public:
+  const std::map<std::string, StopWatch>& GetWatches() const { return watches; }
+  const std::map<std::string, size_t>& GetCounters() const { return counters; }
+
   void reset()
   {
     watches.clear();

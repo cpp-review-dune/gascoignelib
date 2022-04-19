@@ -29,7 +29,7 @@ using namespace std;
 
 namespace Gascoigne {
 template<int DIM>
-EdgeInfoContainer<DIM>::~EdgeInfoContainer<DIM>()
+EdgeInfoContainer<DIM>::~EdgeInfoContainer()
 {
   for (int i = 0; i < nvector<EdgeInfo<DIM>*>::size(); i++) {
     if ((*this)[i]) {

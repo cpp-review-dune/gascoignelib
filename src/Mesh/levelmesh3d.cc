@@ -34,6 +34,7 @@ using namespace std;
 /*---------------------------------------------------*/
 
 namespace Gascoigne {
+
 LevelMesh3d::LevelMesh3d(const HierarchicalMesh* hmp)
   : Index()
 {
@@ -51,6 +52,7 @@ LevelMesh3d::BasicInit(const IntSet& newh, const IntSet& oldh)
 {
   int n = newh.size() + oldh.size();
   Index::Hexl2g().memory(n);
+
   IntVector::const_iterator p = set_union(newh.begin(),
                                           newh.end(),
                                           oldh.begin(),
@@ -81,6 +83,7 @@ void
 LevelMesh3d::InitNodes(int n)
 {
   IntSet nodes;
+
   for (int i = 0; i < n; i++) {
     int ind = Index::Hexl2g()[i];
     for (int ii = 0; ii < 8; ii++) {
