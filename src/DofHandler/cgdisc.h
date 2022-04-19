@@ -448,13 +448,12 @@ public:
       std::vector<double> w = DRHS.GetWeights();
       assert(nn == v2d.size());
       assert(nn == w.size());
-      if (w.size()!=nn)
-	{
-	  std::cerr << "You have to stecify a weight for each point." << std::endl;
-	  abort();
-	}
-      
-      
+      if (w.size() != nn) {
+        std::cerr << "You have to stecify a weight for each point."
+                  << std::endl;
+        abort();
+      }
+
       for (int i = 0; i < nn; ++i) {
         int j = 0;
         for (j = 0; j < ndofs(); ++j) {
@@ -473,12 +472,12 @@ public:
       // super simple...
       std::vector<Vertex3d> v3d = DRHS.GetPoints3d();
       std::vector<double> w = DRHS.GetWeights();
-      if (w.size()!=nn)
-	{
-	  std::cerr << "You have to stecify a weight for each point." << std::endl;
-	  abort();
-	}
-      
+      if (w.size() != nn) {
+        std::cerr << "You have to stecify a weight for each point."
+                  << std::endl;
+        abort();
+      }
+
       assert(nn == v3d.size());
       assert(nn == w.size());
 
@@ -1273,6 +1272,8 @@ public:
     }
   }
 };
+
+typedef CGDisc<2, 1, FiniteElementQ22d, ElementIntegratorP12d> CGDiscP12d;
 
 typedef CGDisc<2, 1, FiniteElementQ12d, ElementIntegratorQ12d> CGDiscQ12d;
 typedef CGDisc<2, 2, FiniteElementQ22d, ElementIntegratorQ22d> CGDiscQ22d;
