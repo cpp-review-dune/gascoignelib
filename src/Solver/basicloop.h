@@ -108,9 +108,9 @@ protected:
     _clock_write, _clock_estimate;
 
   int _niter, _iter;
-  bool _writeVtk;
-  bool _writeBupGup;
-  bool _writeInp;
+  int _writeVtk;
+  int _writeBupGup;
+  int _writeInp;
 
   std::string _reload, _initial;
   std::string _s_resultsdir;

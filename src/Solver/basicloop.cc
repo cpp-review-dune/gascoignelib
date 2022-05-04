@@ -57,9 +57,9 @@ BasicLoop::BasicLoop(const ParamFile& paramfile,
   DFH.insert("niter", &_niter, 1);
   DFH.insert("initial", &_initial, "boundary");
   DFH.insert("reload", &_reload, "none");
-  DFH.insert("writevtk", &_writeVtk, true);
-  DFH.insert("writebupgup", &_writeBupGup, true);
-  DFH.insert("writeinp", &_writeInp, false);
+  DFH.insert("writevtk", &_writeVtk, 1);
+  DFH.insert("writebupgup", &_writeBupGup, 1);
+  DFH.insert("writeinp", &_writeInp, 0);
   DFH.insert("resultsdir", &_s_resultsdir, "Results");
   DFH.insert("copy_param_file", &s_copy_param_file, "no");
   FileScanner FS(DFH);
@@ -125,9 +125,9 @@ BasicLoop::BasicInit(const ParamFile& paramfile,
   DFH.insert("niter", &_niter, 1);
   DFH.insert("initial", &_initial, "boundary");
   DFH.insert("reload", &_reload, "none");
-  DFH.insert("writevtk", &_writeVtk, true);
-  DFH.insert("writebupgup", &_writeBupGup, true);
-  DFH.insert("writeinp", &_writeInp, false);
+  DFH.insert("writevtk", &_writeVtk, 1);
+  DFH.insert("writebupgup", &_writeBupGup, 1);
+  DFH.insert("writeinp", &_writeInp, 0);
   DFH.insert("resultsdir", &_s_resultsdir, "Results");
   DFH.insert("copy_param_file", &s_copy_param_file, "no");
   FileScanner FS(DFH);
@@ -183,14 +183,17 @@ BasicLoop::PrintMeshInformation(int outputlevel) const
 void
 BasicLoop::Output(const Vector& u, string name) const
 {
-  if (_writeVtk) {
-    GetMultiLevelSolver()->GetSolver()->Visu(name, u, _iter);
+  if (_writeVtk !=0) {
+    if (_iter%_writeVtk == 0)
+      GetMultiLevelSolver()->GetSolver()->Visu(name, u, _iter);
   }
-  if (_writeBupGup) {
-    WriteMeshAndSolution(name, u);
+  if (_writeBupGup != 0) {
+    if (_iter%_writeBupGup == 0)
+      WriteMeshAndSolution(name, u);
   }
-  if (_writeInp) {
-    WriteMeshInp(name);
+  if (_writeInp != 0) {
+    if (_iter%_writeInp == 0)
+      WriteMeshInp(name);
   }
 }
 

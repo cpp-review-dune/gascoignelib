@@ -170,7 +170,11 @@ public:
 
   void stop(const std::string& label)
   {
-    assert(watches.find(label) != watches.end());
+    if (watches.find(label) == watches.end())
+      {
+	std::cerr << "StopWatch: did not find running StopWatch with label " << label << std::endl;
+	abort();
+      }
     watches[label].stop();
   }
 
