@@ -183,15 +183,15 @@ BasicLoop::PrintMeshInformation(int outputlevel) const
 void
 BasicLoop::Output(const Vector& u, string name) const
 {
-  if (_writeVtk !=0) {
+  if (_writeVtk > 0) {
     if (_iter%_writeVtk == 0)
       GetMultiLevelSolver()->GetSolver()->Visu(name, u, _iter);
   }
-  if (_writeBupGup != 0) {
+  if (_writeBupGup > 0) {
     if (_iter%_writeBupGup == 0)
       WriteMeshAndSolution(name, u);
   }
-  if (_writeInp != 0) {
+  if (_writeInp > 0) {
     if (_iter%_writeInp == 0)
       WriteMeshInp(name);
   }
