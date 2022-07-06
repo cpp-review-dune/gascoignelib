@@ -1,0 +1,20 @@
+{
+    "AdaptiveElasticity3dVertex": {
+        "executable": "AdaptiveElasticity3dVertex",
+        "copyfiles": ["box.inp"],
+        "parameterfile": "adaptiveelasticity3d.param",
+        "prerefine": 5
+    },
+    "AdaptiveElasticity3dEdge": {
+        "executable": "AdaptiveElasticity3dEdge",
+        "copyfiles": ["box.inp"],
+        "parameterfile": "adaptiveelasticity3d.param",
+        "prerefine": 5
+    },
+    "AdaptiveElasticity3dFace": {
+        "executable": "AdaptiveElasticity3dFace",
+        "copyfiles": ["box.inp"],
+        "parameterfile": "adaptiveelasticity3d.param",
+        "prerefine": 4
+    }
+}

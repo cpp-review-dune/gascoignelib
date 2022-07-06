@@ -22,3 +22,4 @@ cmake*
 
 lib
 build
+**/__pycache__

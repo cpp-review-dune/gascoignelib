@@ -150,6 +150,7 @@ public:
                          const FunctionalContainer* FC);
 
   void run(const std::string& problemlabel);
+  void timerun(const std::string& problemlabel);
   void ClockOutput() const;
 };
 } // namespace Gascoigne

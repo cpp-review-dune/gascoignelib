@@ -1,0 +1,30 @@
+set(HEAT_EXEC Heat)
+
+FILE(GLOB_RECURSE HEAT_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/*.cc)
+ADD_EXECUTABLE(${HEAT_EXEC} ${HEAT_SOURCE})
+
+target_compile_definitions(${HEAT_EXEC} PUBLIC
+	${GASCOIGNE_DEFINITIONS}
+)
+
+target_include_directories(${HEAT_EXEC} PUBLIC
+	${GASCOIGNE_INCLUDE_DIRS}
+	${CMAKE_CURRENT_SOURCE_DIR}
+)
+
+target_link_libraries(${HEAT_EXEC} 
+	GascoigneStd
+)
+
+# IF(USE_CUDA)
+# 	target_include_directories(${HEAT_EXEC} PUBLIC
+# 		${GASCUDA_INCLUDE_DIRS}
+# 	)
+
+# 	target_link_libraries(${HEAT_EXEC} 
+# 		GasCuda
+# 	)
+# ENDIF(USE_CUDA)
+
+set(ALL_CXX_SOURCE_FILES ${ALL_CXX_SOURCE_FILES} ${HEAT_SOURCE} PARENT_SCOPE)
+

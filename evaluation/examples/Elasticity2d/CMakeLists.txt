@@ -1,0 +1,37 @@
+set(ELASTICITY_2D Elasticity2d)
+
+SET(ELASTICITY_SOURCE 
+	${CMAKE_CURRENT_SOURCE_DIR}/elasticityproblem.h
+	${CMAKE_CURRENT_SOURCE_DIR}/local.h
+)
+
+ADD_EXECUTABLE(${ELASTICITY_2D} ${ELASTICITY_SOURCE} ${CMAKE_CURRENT_SOURCE_DIR}/main.cc)
+
+target_compile_definitions(${ELASTICITY_2D} PUBLIC
+	${GASCOIGNE_DEFINITIONS}
+)
+
+target_include_directories(${ELASTICITY_2D} PUBLIC
+	${GASCOIGNE_INCLUDE_DIRS}
+	${CMAKE_CURRENT_SOURCE_DIR}
+)
+
+target_link_libraries(${ELASTICITY_2D} 
+	GascoigneStd
+)
+
+# IF(USE_CUDA)
+# 	target_include_directories(${ELASTICITY_2D} PUBLIC
+# 		${CUDA_INCLUDE_DIRS}
+# 		${GASCUDA_INCLUDE_DIRS}
+# 	)
+
+# 	target_link_libraries(${ELASTICITY_2D} 
+# 		GasCuda
+# 		${CUDA_LIBRARIES}
+# 		${CUDA_cusparse_LIBRARY}
+# 	)
+# ENDIF(USE_CUDA)
+
+set(ALL_CXX_SOURCE_FILES ${ALL_CXX_SOURCE_FILES} ${ELASTICITY_SOURCE} PARENT_SCOPE)
+

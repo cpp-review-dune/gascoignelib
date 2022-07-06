@@ -654,14 +654,14 @@ StdSolver::ReInitMatrix(const Matrix& A)
     assert(dynamic_cast<const VankaSmoother*>(ilu->second));
     dynamic_cast<const VankaSmoother*>(ilu->second)->SetDofHandler(GetMesh());
   }
-  
+
   ////////// setup the stencil
   // is it a drawback that the stencil cannot be reused for multiple matrices?
-  
+
   SparseStructure SA;
   GetDiscretization()->Structure(&SA);
   AddPeriodicNodes(&SA);
-  
+
   matrix->second->ReInit(&SA);
 
   if (ilu->second != NULL)
@@ -1536,7 +1536,7 @@ StdSolver::PeriodicMatrix(Matrix& A) const
 
 void
 StdSolver::ComputeIlu(Matrix& A, const Vector& gu) const
-{  
+{
 #ifdef __WITH_UMFPACK__
   if (_directsolver && _useUMFPACK) {
     GlobalTimer.start("---> direct");

@@ -1,0 +1,38 @@
+{
+    "Heat": {
+        "executable": "Heat",
+        "copyfiles": ["square.inp"],
+        "parameterfile": "heat.param",
+        "prerefine": 5
+    },
+    "MultiHeat": {
+        "executable": "MultiHeat",
+        "copyfiles": ["square.inp"],
+        "parameterfile": "multiheat.param",
+        "prerefine": 5
+    },
+    "Elasticity2d": {
+        "executable": "Elasticity2d",
+        "copyfiles": ["square.inp"],
+        "parameterfile": "elasticity2d.param",
+        "prerefine": 3
+    },
+    "Elasticity3d": {
+        "executable": "Elasticity3d",
+        "copyfiles": ["box.inp"],
+        "parameterfile": "elasticity3d.param",
+        "prerefine": 2
+    },
+    "AdaptiveElasticity2d": {
+        "executable": "AdaptiveElasticity2d",
+        "copyfiles": ["square.inp"],
+        "parameterfile": "adaptiveelasticity2d.param",
+        "prerefine": 3
+    },
+    "AdaptiveElasticity3dEdge": {
+        "executable": "AdaptiveElasticity3dEdge",
+        "copyfiles": ["box.inp"],
+        "parameterfile": "adaptiveelasticity3d.param",
+        "prerefine": 2
+    }
+}

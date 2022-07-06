@@ -36,7 +36,10 @@ using namespace std;
 
 /*-----------------------------------------*/
 
+double __TIME;
 namespace Gascoigne {
+extern Timer GlobalTimer;
+
 BasicLoop::BasicLoop()
   : _MA(NULL)
   , _ML(NULL)
@@ -75,6 +78,7 @@ BasicLoop::BasicLoop(const ParamFile& paramfile,
   // GetMultiLevelSolverPointer() = new StdMultiLevelSolver;
 
   _ML = new StdMultiLevelSolver(GetMeshAgent(), _paramfile, PC, FC);
+
   GetMultiLevelSolver()->GetMonitor().set_directory(_s_resultsdir);
   GetSolverInfosPointer() = new SolverInfos;
   GetSolverInfos()->BasicInit(_paramfile);
@@ -184,15 +188,15 @@ void
 BasicLoop::Output(const Vector& u, string name) const
 {
   if (_writeVtk > 0) {
-    if (_iter%_writeVtk == 0)
+    if (_iter % _writeVtk == 0)
       GetMultiLevelSolver()->GetSolver()->Visu(name, u, _iter);
   }
   if (_writeBupGup > 0) {
-    if (_iter%_writeBupGup == 0)
+    if (_iter % _writeBupGup == 0)
       WriteMeshAndSolution(name, u);
   }
   if (_writeInp > 0) {
-    if (_iter%_writeInp == 0)
+    if (_iter % _writeInp == 0)
       WriteMeshInp(name);
   }
 }
@@ -399,6 +403,51 @@ BasicLoop::run(const std::string& problemlabel)
       GetMeshAgent()->global_refine(1);
     }
   }
+}
+
+void
+BasicLoop::timerun(const std::string& problemlabel)
+{
+  Vector u("u");
+  Vector f("f");
+  Vector old("old");
+  Matrix A("A");
+
+  GetMultiLevelSolver()->ReInit();
+  GetMultiLevelSolver()->SetProblem(problemlabel);
+  GetMultiLevelSolver()->ReInitMatrix(A);
+  GetMultiLevelSolver()->ReInitVector(u);
+  GetMultiLevelSolver()->ReInitVector(f);
+  GetMultiLevelSolver()->ReInitVector(old);
+  InitSolution(u);
+
+  double dt;
+  DataFormatHandler DFH;
+  DFH.insert("dt", &dt, 1.);
+  FileScanner FS(DFH, _paramfile, "Equation");
+  assert(dt > 0);
+
+  GetSolverInfos()->GetNLInfo().control().matrixmustbebuild() = 1;
+
+  PrintMeshInformation();
+  GlobalTimer.reset();
+
+  __TIME = 0;
+  for (_iter = 1; _iter <= _niter; _iter++) {
+    GlobalTimer.start("iteration");
+
+    std::cout << "\n******************** Time Step " << _iter << "\t" << __TIME
+              << " -> " << __TIME + dt << std::endl;
+    __TIME += dt;
+    GetMultiLevelSolver()->Equ(old, 1., u);
+
+    GetMultiLevelSolver()->AddNodeVector("OLD", old);
+    Solve(A, u, f);
+    GetMultiLevelSolver()->DeleteNodeVector("OLD");
+    GlobalTimer.stop("iteration");
+    // GlobalTimer.print();
+  }
+  GlobalTimer.print();
 }
 } // namespace Gascoigne
 
