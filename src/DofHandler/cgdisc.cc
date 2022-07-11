@@ -70,6 +70,7 @@ template class CGDisc<
   2,
   FiniteElement<3, 2, Transformation3d<BaseQ13dPatch>, BaseQ13dPatch>,
   ElementLpsIntegratorQ13d>;
+  
 template class CGDisc<3,
                       2,
                       FiniteElement<3, 2, Transformation3d<BaseQ23d>, BaseQ23d>,
@@ -77,7 +78,7 @@ template class CGDisc<3,
 
 template class CGDisc<2,
                       2,
-                      FiniteElement<2, 1, Transformation2d<BaseQ12d>, BaseQ12d>,
+                      FiniteElement<2, 1, Transformation2d<BaseQ12dPatch>, BaseQ12dPatch>,
                       ElementLpsIntegratorQ12d>;
 template class CGDisc<2,
                       2,
