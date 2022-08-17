@@ -23,7 +23,11 @@
 
 #include <functionalcontainer.h>
 #include <problemcontainer.h>
-// #include <stdtimeloop.h>
+#ifdef USE_CUDA
+#include <cudaloop.h>
+#else
+#include <stdloop.h>
+#endif
 
 #include "gascoignemesh2d.h"
 #include "local.h"
@@ -36,7 +40,11 @@ double __TIME;
 namespace Gascoigne {
 extern Timer GlobalTimer;
 
+#ifdef USE_CUDA
+class MyLoop : public CudaLoop
+#else
 class MyLoop : public StdLoop
+#endif
 {
 public:
   void adaptiverun(const std::string& problemlabel)

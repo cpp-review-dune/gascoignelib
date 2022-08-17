@@ -16,15 +16,5 @@ target_link_libraries(${HEAT_EXEC}
 	GascoigneStd
 )
 
-# IF(USE_CUDA)
-# 	target_include_directories(${HEAT_EXEC} PUBLIC
-# 		${GASCUDA_INCLUDE_DIRS}
-# 	)
-
-# 	target_link_libraries(${HEAT_EXEC} 
-# 		GasCuda
-# 	)
-# ENDIF(USE_CUDA)
-
 set(ALL_CXX_SOURCE_FILES ${ALL_CXX_SOURCE_FILES} ${HEAT_SOURCE} PARENT_SCOPE)
 

@@ -57,7 +57,7 @@ CudaCSRMatrixInterface::copy_data(
                                    CUSPARSE_INDEX_32I,
                                    CUSPARSE_INDEX_BASE_ZERO,
                                    type));
-};
+}
 
 template<int B>
 std::vector<FMatrixBlock<B>>
@@ -82,7 +82,7 @@ CudaCSRMatrixInterface::copy_data(const SparseBlockMatrix<FMatrixBlock<B>>& sbm)
 
   copy_data<B>(
     sbm.mat(), dynamic_cast<const ColumnStencil*>(sbm.GetStencil()), _n);
-};
+}
 
 template<int B>
 void
@@ -110,7 +110,7 @@ CudaCSRMatrixInterface::copy_data(
 
   copy_data<B>(
     matrixdata, dynamic_cast<const ColumnStencil*>(sbm->GetStencil()), cols);
-};
+}
 
 /**
  * Creates inverted diagonal matrix for jacobian
@@ -138,7 +138,7 @@ CudaCSRMatrixInterface::get_inverse_diagonal(
             device_mat->csrColIdxsDevice);
 
   return std::dynamic_pointer_cast<CudaCSRMatrixInterface>(device_mat);
-};
+}
 
 CudaCSRMatrixInterface::CudaCSRMatrixInterface(cusparseHandle_t sparse_handle,
                                                IndexType n,
@@ -183,41 +183,49 @@ CudaCSRMatrixInterface::CudaCSRMatrixInterface(cusparseHandle_t sparse_handle,
     copy_data<1>(dynamic_cast<const SparseBlockMatrix<FMatrixBlock<1>>&>(mat));
     return;
   } catch (std::bad_cast e) {
+    (void)e;
   }
   try {
     copy_data<2>(dynamic_cast<const SparseBlockMatrix<FMatrixBlock<2>>&>(mat));
     return;
   } catch (std::bad_cast e) {
+    (void)e;
   }
   try {
     copy_data<3>(dynamic_cast<const SparseBlockMatrix<FMatrixBlock<3>>&>(mat));
     return;
   } catch (std::bad_cast e) {
+    (void)e;
   }
   try {
     copy_data<4>(dynamic_cast<const SparseBlockMatrix<FMatrixBlock<4>>&>(mat));
     return;
   } catch (std::bad_cast e) {
+    (void)e;
   }
   try {
     copy_data<5>(dynamic_cast<const SparseBlockMatrix<FMatrixBlock<5>>&>(mat));
     return;
   } catch (std::bad_cast e) {
+    (void)e;
   }
   try {
     copy_data<6>(dynamic_cast<const SparseBlockMatrix<FMatrixBlock<6>>&>(mat));
     return;
   } catch (std::bad_cast e) {
+    (void)e;
   }
   try {
     copy_data<7>(dynamic_cast<const SparseBlockMatrix<FMatrixBlock<7>>&>(mat));
     return;
   } catch (std::bad_cast e) {
+    (void)e;
   }
   try {
     copy_data<8>(dynamic_cast<const SparseBlockMatrix<FMatrixBlock<8>>&>(mat));
     return;
   } catch (std::bad_cast e) {
+    (void)e;
   }
 }
 
@@ -289,48 +297,56 @@ CudaCSRMatrixInterface::get_inverse_diagonal(cusparseHandle_t sparse_handle,
       sparse_handle,
       dynamic_cast<const SparseBlockMatrix<FMatrixBlock<1>>&>(mat));
   } catch (std::bad_cast e) {
+    (void)e;
   }
   try {
     return get_inverse_diagonal<2>(
       sparse_handle,
       dynamic_cast<const SparseBlockMatrix<FMatrixBlock<2>>&>(mat));
   } catch (std::bad_cast e) {
+    (void)e;
   }
   try {
     return get_inverse_diagonal<3>(
       sparse_handle,
       dynamic_cast<const SparseBlockMatrix<FMatrixBlock<3>>&>(mat));
   } catch (std::bad_cast e) {
+    (void)e;
   }
   try {
     return get_inverse_diagonal<4>(
       sparse_handle,
       dynamic_cast<const SparseBlockMatrix<FMatrixBlock<4>>&>(mat));
   } catch (std::bad_cast e) {
+    (void)e;
   }
   try {
     return get_inverse_diagonal<5>(
       sparse_handle,
       dynamic_cast<const SparseBlockMatrix<FMatrixBlock<5>>&>(mat));
   } catch (std::bad_cast e) {
+    (void)e;
   }
   try {
     return get_inverse_diagonal<6>(
       sparse_handle,
       dynamic_cast<const SparseBlockMatrix<FMatrixBlock<6>>&>(mat));
   } catch (std::bad_cast e) {
+    (void)e;
   }
   try {
     return get_inverse_diagonal<7>(
       sparse_handle,
       dynamic_cast<const SparseBlockMatrix<FMatrixBlock<7>>&>(mat));
   } catch (std::bad_cast e) {
+    (void)e;
   }
   try {
     return get_inverse_diagonal<8>(
       sparse_handle,
       dynamic_cast<const SparseBlockMatrix<FMatrixBlock<8>>&>(mat));
   } catch (std::bad_cast e) {
+    (void)e;
   }
   abort();
 }

@@ -7,7 +7,6 @@
  * ---------------------------*/
 
 #include <mginterpolatornested.h>
-#include <scaledimatrixblock.h>
 #include <simplematrix.h>
 
 #include "cudacsrmatrixinterface.h"

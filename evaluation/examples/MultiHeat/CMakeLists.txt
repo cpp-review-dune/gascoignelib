@@ -19,19 +19,6 @@ target_link_libraries(${MULTIHEAT_EXEC}
 	GascoigneStd
 )
 
-# IF(USE_CUDA)
-# 	target_include_directories(${MULTIHEAT_EXEC} PUBLIC
-# 		${CUDA_INCLUDE_DIRS}
-# 		${GASCUDA_INCLUDE_DIRS}
-# 	)
-
-# 	target_link_libraries(${MULTIHEAT_EXEC} 
-# 		GasCuda
-# 		${CUDA_LIBRARIES}
-# 		${CUDA_cusparse_LIBRARY}
-# 	)
-# ENDIF(USE_CUDA)
-
 set(ALL_CXX_SOURCE_FILES ${ALL_CXX_SOURCE_FILES} ${MULTIHEAT_SOURCE} PARENT_SCOPE)
 
 

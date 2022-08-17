@@ -10,19 +10,6 @@
 
 namespace Gascoigne {
 
-/// Is not templated and runs the cuda part.
-void
-reorganise_host(size_t n,
-                size_t n_entries,
-                size_t n_row_max,
-                size_t n_comp,
-                MatrixEntryType* src_vals,
-                size_t* src_rows,
-                size_t* src_cols,
-                MatrixEntryType* dest_vals,
-                int32_t* dest_rows,
-                int32_t* dest_cols);
-
 template<int B>
 void
 reorganise(const std::vector<FMatrixBlock<B>>& data,
@@ -32,7 +19,6 @@ reorganise(const std::vector<FMatrixBlock<B>>& data,
            int32_t* dest_cols)
 {
   size_t n_comp = B;
-  size_t n_entries = data.size();
   size_t n = cs->n();
 
   const IndexVector& start = cs->start();
@@ -40,13 +26,6 @@ reorganise(const std::vector<FMatrixBlock<B>>& data,
 
   const IndexVector& col = cs->col();
   std::vector<int> col_int(col.begin(), col.end());
-  // size_t max_entries = 0;
-  // for (size_t i = 0; i < n; ++i) {
-  //   size_t div = start[i + 1] - start[i];
-  //   if (div > max_entries) {
-  //     max_entries = div;
-  //   }
-  // }
 
   MatrixEntryType* src_vals = nullptr;
   CHECK_CUDA(cudaMalloc(&src_vals, data.size() * sizeof(FMatrixBlock<B>)));
@@ -87,17 +66,6 @@ reorganise(const std::vector<FMatrixBlock<B>>& data,
                                   dest_vals,
                                   dest_rows,
                                   dest_cols));
-
-  // reorganise_host(n,
-  //                 n_entries,
-  //                 n_comp,
-  //                 max_entries,
-  //                 src_vals,
-  //                 src_rows,
-  //                 src_cols,
-  //                 dest_vals,
-  //                 dest_rows,
-  //                 dest_cols);
 
   CHECK_CUDA(cudaFree(src_vals));
   src_vals = nullptr;

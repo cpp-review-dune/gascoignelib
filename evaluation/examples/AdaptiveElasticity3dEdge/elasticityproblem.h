@@ -74,7 +74,7 @@ class HeatDD : public DirichletData
 {
 protected:
 public:
-  HeatDD(const ParamFile& pf)
+  HeatDD(const ParamFile&)
     : DirichletData()
   {
     colors.clear();

@@ -148,8 +148,8 @@ class TestGascogine(unittest.TestCase):
 
     def setUp(self):
         self.eps = 2
-        self.reference = read(os.getcwd() + "/evaluation/reference/")
-        self.keys = generateKeys(self.reference)
+        # self.reference = read(os.getcwd() + "/evaluation/reference/")
+        # self.keys = generateKeys(self.reference)
         self.test_folder = runExamples()
         self.test_data = read(self.test_folder)
 

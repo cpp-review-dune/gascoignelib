@@ -108,7 +108,7 @@ protected:
 public:
   int GetNcomp() const { return 2 * DIM; }
 
-  double operator()(int c, const Vertex2d& v) const
+  double operator()(int c, const Vertex2d&) const
   {
     if (c != DIM - 1) // Kraft nur in y-Richtung (2d) und z-Richtung (3d)
       return 0.;

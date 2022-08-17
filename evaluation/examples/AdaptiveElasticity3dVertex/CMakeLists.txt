@@ -20,18 +20,5 @@ target_link_libraries(${ADAPTIVE_ELASTICITY_3D}
 	GascoigneStd
 )
 
-# IF(USE_CUDA)
-# 	target_include_directories(${ADAPTIVE_ELASTICITY_3D} PUBLIC
-# 		${CUDA_INCLUDE_DIRS}
-# 		${GASCUDA_INCLUDE_DIRS}
-# 	)
-
-# 	target_link_libraries(${ADAPTIVE_ELASTICITY_3D} 
-# 		GasCuda
-# 		${CUDA_LIBRARIES}
-# 		${CUDA_cusparse_LIBRARY}
-# 	)
-# ENDIF(USE_CUDA)
-
 set(ALL_CXX_SOURCE_FILES ${ALL_CXX_SOURCE_FILES} ${ELASTICITY_SOURCE} PARENT_SCOPE)
 

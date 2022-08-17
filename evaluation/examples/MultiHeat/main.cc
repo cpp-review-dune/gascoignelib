@@ -27,6 +27,12 @@
 #include "local.h"
 #include "paramfile.h"
 
+#ifdef USE_CUDA
+#include <cudaloop.h>
+#else
+#include <stdloop.h>
+#endif
+
 /*---------------------------------------------------*/
 
 int
@@ -51,7 +57,12 @@ main(int argc, char** argv)
   // Functionals
   Gascoigne::FunctionalContainer FC;
 
-  Gascoigne::StdLoop loop;
+#ifdef USE_CUDA
+  Gascoigne::CudaLoop loop;
+#else
+  Gascoigne::BasicLoop loop;
+#endif
+
   loop.BasicInit(paramfile, &PC, &FC);
   loop.timerun("heat");
 
