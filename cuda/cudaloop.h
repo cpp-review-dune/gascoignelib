@@ -22,8 +22,6 @@ public:
   void BasicInit(const ParamFile&,
                  const ProblemContainer*,
                  const FunctionalContainer*) override;
-
-  // void timerun(const std::string&);
 };
 
 } // namespace Gascoigne

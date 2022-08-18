@@ -183,11 +183,11 @@ public:
               const TestFunction& N) const
   {
 
-    for (size_t i = 0; i < DIM; ++i) {
+    for (int i = 0; i < DIM; ++i) {
       // dt v
       A(i, i + DIM) += M.m() / data.dt * N.m();
 
-      for (size_t j = 0; j < DIM; ++j) {
+      for (int j = 0; j < DIM; ++j) {
         A(i, i) += 2.0 * data.mu / data.rho * M[j + 1] * N[j + 1];
         A(i, j) += 2.0 * data.mu / data.rho * M[i + 1] * N[j + 1];
         A(i, j) += data.lambda / data.rho * M[j + 1] * N[i + 1];

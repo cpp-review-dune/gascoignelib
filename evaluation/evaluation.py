@@ -4,6 +4,9 @@ import unittest
 import subprocess as sp
 import os
 import json
+import yaml
+import numpy as np
+import matplotlib.pyplot as plt
 
 class dir:
     def __init__(self, root):
@@ -44,9 +47,8 @@ def runExamples():
     root_dir = dir(os.getcwd())
     evaluation_dir = dir(str(root_dir) + "evaluation/")
 
-    commit = sp.run(["git", "rev-parse", "--short", "HEAD"], capture_output=True, text=True)
     builddir = dir(str(root_dir) + "build/")
-    outputfolder = dir(str(builddir) + "eval-" + (commit.stdout).strip() + "/")
+    outputfolder = dir(str(builddir) + "data" + "/")
 
 
     if not os.path.isdir(str(builddir)):
@@ -66,7 +68,6 @@ def runExamples():
     os.chdir('build')
 
     for device in ["CPU", "GPU"]:
-    # for device in [ "GPU", ]:
         print("Building " + device)
         os.mkdir(device)
         os.chdir(device)
@@ -88,13 +89,13 @@ def runExamples():
                 os.mkdir(str(outputfolder))
             os.chdir(folder)
             for file in example["copyfiles"]:
-                sp.run(["cp", str(root_dir) + 'evaluation/examples/' + folder + "/" + file, "."])
-            with open(str(evaluation_dir) + example["parameterfile"], 'r') as f:
+                sp.run(["cp", str(evaluation_dir) + 'examples/' + folder + "/" + file, "."])
+            with open(str(evaluation_dir) + 'examples/' + folder + "/" + example["parameterfile"], 'r') as f:
                 paramfile = f.read()
             for preref in range(1,example["prerefine"]):
                 print("Prerefine-level: " + str(preref))
                 paramfile_out = paramfile.replace("{{prerefine}}", str(preref))
-                with open(example["parameterfile"], 'w') as f:
+                with open(example["parameterfile"].replace(".template", ''), 'w') as f:
                     f.write(paramfile_out)
                 with open(str(outputfolder) + "/" + folder + "_" + device + "_" + str(preref) + ".txt", "w") as f:
                     f.write("*** Parafile ***\n")
@@ -131,8 +132,28 @@ def read(root):
                         if len(times) > 0:
                             if len(times) == 4:
                                 insert(data, [experiment[0], timer.strip(), int(experiment[2]), experiment[1], "time"], float(times[0]))
-                            insert(data, [experiment[0], timer.strip(), int(experiment[2]), experiment[1], "count"], times[-1])
+                            insert(data, [experiment[0], timer.strip(), int(experiment[2]), experiment[1], "count"], int(times[-1]))
     return data
+
+def reorganiseData(raw_data):
+    fine_data = {}
+    for examples, examples_data in raw_data.items():
+        for metrics, metric_data in examples_data.items():
+            if len(metric_data) == 0:
+                continue
+            for device, device_data in list(metric_data.values())[0].items():
+                for type, type_data in device_data.items():
+                    key_list = []
+                    value_list = []
+                    try:
+                        for refinement in sorted(metric_data.keys()):
+                            key_list.append(refinement)
+                            value_list.append(metric_data[refinement][device][type])
+                        insert(fine_data, [examples, metrics, type, device, 'key'], np.array(key_list))
+                        insert(fine_data, [examples, metrics, type, device, 'value'], np.array(value_list))
+                    except KeyError:
+                        pass
+    return fine_data
 
 def generateKeys(data):
     keys = []
@@ -164,8 +185,16 @@ class TestGascogine(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    root = sys.argv[1]
-    data = TestGascogine.read(root)
-    print(str(data))
-    runner = unittest.main()
+    # test_folder = runExamples()
+    raw_data = read("build/data")
+    keys = generateKeys(raw_data)
+    np_data = reorganiseData(raw_data)
 
+    # Example for plotting the CPU iteration time of the Heat Example
+    heat = np_data["Heat"]["iteration"]["time"]["CPU"]
+    fig, ax = plt.subplots()
+    ax.plot(heat["key"], heat["value"])
+    ax.set(xlabel='Refinement Level', ylabel='time (s)',
+        title='CPU iteration time of the Heat Example')
+    ax.grid()
+    fig.savefig("test.png")
