@@ -185,7 +185,7 @@ class TestGascogine(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    # test_folder = runExamples()
+    test_folder = runExamples()
     raw_data = read("build/data")
     keys = generateKeys(raw_data)
     np_data = reorganiseData(raw_data)
