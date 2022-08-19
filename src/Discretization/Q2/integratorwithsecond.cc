@@ -121,7 +121,7 @@ IntegratorWithSecond<2>::hesse(const FemInterface& E,
   for (int i = 0; i < E.n(); i++) {
     init_test_hesse(E, _NN, 1., i);
 
-    for (int c = 0; c < UH.size(); c++) {
+    for (ShortIndexType c = 0; c < UH.size(); c++) {
       UH[c].aux("xx") += U(i, c) * _NN.aux("xx");
       UH[c].aux("xy") += U(i, c) * _NN.aux("xy");
       UH[c].aux("yy") += U(i, c) * _NN.aux("yy");
@@ -150,7 +150,7 @@ IntegratorWithSecond<3>::hesse(const FemInterface& E,
   for (int i = 0; i < E.n(); i++) {
     init_test_hesse(E, _NN, 1., i);
 
-    for (int c = 0; c < UH.size(); c++) {
+    for (ShortIndexType c = 0; c < UH.size(); c++) {
       UH[c].aux("xx") += U(i, c) * _NN.aux("xx");
       UH[c].aux("xy") += U(i, c) * _NN.aux("xy");
       UH[c].aux("yy") += U(i, c) * _NN.aux("yy");
@@ -179,11 +179,12 @@ IntegratorWithSecond<DIM>::hesse(const FemInterface& E,
 
 template<int DIM>
 double
-IntegratorWithSecond<DIM>::ComputeDomainFunctional(const DomainFunctional& F,
-                                                   const FemInterface& FEM,
-                                                   const LocalVector& U,
-                                                   const LocalData& Q,
-                                                   const LocalData& QC) const
+IntegratorWithSecond<DIM>::ComputeDomainFunctional(
+  const DomainFunctional& F,
+  const FemInterface& FEM,
+  const LocalVector& U,
+  const LocalData& Q,
+  const LocalData& /*QC*/) const
 {
   const IntegrationFormulaInterface& IF =
     *GalerkinIntegratorQ2<DIM>::FormFormula();
@@ -217,7 +218,7 @@ IntegratorWithSecond<DIM>::Rhs(const DomainRightHandSide& f,
                                LocalVector& F,
                                const FemInterface& FEM,
                                const LocalData& Q,
-                               const LocalData& QC) const
+                               const LocalData& /*QC*/) const
 {
   F.ReInit(f.GetNcomp(), FEM.n());
 
@@ -281,7 +282,7 @@ Gascoigne::IntegratorWithSecond<DIM>::EstimateSecond(LocalVector& F,
     for (int i = 0; i < FEM.n(); i++) {
       FEM.init_test_functions(GalerkinIntegratorQ2<DIM>::_NN, 1., i);
       init_test_hesse(FEM, GalerkinIntegratorQ2<DIM>::_NN, 1., i);
-      for (int c = 0; c < this->_UH.size(); c++) {
+      for (ShortIndexType c = 0; c < this->_UH.size(); c++) {
         this->_UH[c].add(U(i, c), this->_NN);
         this->_UH[c].aux("xx") += U(i, c) * this->_NN.aux("xx");
         this->_UH[c].aux("xy") += U(i, c) * this->_NN.aux("xy");
@@ -289,7 +290,7 @@ Gascoigne::IntegratorWithSecond<DIM>::EstimateSecond(LocalVector& F,
       }
     }
 
-    for (int c = 0; c < this->_UH.size(); c++) {
+    for (ShortIndexType c = 0; c < this->_UH.size(); c++) {
       F(0, c) += vol * weight *
                  (this->_UH[c].aux("xx") * this->_UH[c].aux("xx") +
                   2 * this->_UH[c].aux("xy") * this->_UH[c].aux("xy") +

@@ -42,9 +42,9 @@ public:
 
   void SetGlobalVector(const GlobalVector* v);
 
-  int visucomp() const;
-  int visun() const;
-  double visudata(int i, int c) const;
+  ShortIndexType visucomp() const;
+  IndexType visun() const;
+  double visudata(IndexType i, ShortIndexType c) const;
 };
 } // namespace Gascoigne
 

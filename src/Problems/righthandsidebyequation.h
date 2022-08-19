@@ -48,7 +48,7 @@ public:
   }
 
   std::string GetName() const { return "RightHandSideByEquation"; }
-  int GetNcomp() const { return _EQ->GetNcomp(); }
+  ShortIndexType GetNcomp() const { return _EQ->GetNcomp(); }
 
   double operator()(int c, const Vertex2d& v) const
   {

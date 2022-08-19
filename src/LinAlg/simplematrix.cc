@@ -306,7 +306,7 @@ SimpleMatrix::transpose()
 /*-----------------------------------------*/
 
 void
-SimpleMatrix::entry_diag(int i, const nmatrix<double>& M)
+SimpleMatrix::entry_diag(IndexType i, const nmatrix<double>& M)
 {
   int pos = ST.Find(i, i);
   value[pos] = M(0, 0);

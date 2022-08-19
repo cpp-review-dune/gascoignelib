@@ -79,7 +79,7 @@ public:
              niiterator stop2,
              const EntryMatrix& M,
              double s = 1.);
-  void entry_diag(int i, const nmatrix<double>& M);
+  void entry_diag(IndexType i, const nmatrix<double>& M);
   void dirichlet(int i, const std::vector<int>& cv);
   void dirichlet_only_row(int i, const std::vector<int>& cv);
   void periodic(const std::map<int, int>& m_PeriodicPairs,

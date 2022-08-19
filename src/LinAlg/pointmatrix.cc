@@ -183,7 +183,7 @@ PointMatrix::periodic(const map<int, int>& m_PeriodicPairs,
 /*-----------------------------------------*/
 
 void
-PointMatrix::entry_diag(int i, const nmatrix<double>& M)
+PointMatrix::entry_diag(IndexType i, const nmatrix<double>& M)
 {
   IntVector cv(_ncomp);
   iota(cv.begin(), cv.end(), 0);

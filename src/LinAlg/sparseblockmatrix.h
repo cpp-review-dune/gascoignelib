@@ -133,7 +133,7 @@ public:
              const GlobalVector& x,
              const TimePattern& TP,
              double s = 1.) const;
-  void entry_diag(int i, const nmatrix<double>& M);
+  void entry_diag(IndexType i, const nmatrix<double>& M);
 
   /*-----------------------------------------------*/
 

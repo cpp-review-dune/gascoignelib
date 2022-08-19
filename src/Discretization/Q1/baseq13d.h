@@ -64,7 +64,7 @@ protected:
     /*       dyz.reservesize(NDOF); */
     /*       dxyz.reservesize(NDOF); */
   }
-  double psi_x(int i, double x) const { return b[i]; }
+  double psi_x(int i, double /*x*/) const { return b[i]; }
 
 public:
   BaseQ13d();
@@ -75,28 +75,28 @@ public:
   double phi_x(int i) const { return DN[i].x(); }
   double phi_y(int i) const { return DN[i].y(); }
   double phi_z(int i) const { return DN[i].z(); }
-  double phi_xx(int i) const { return 0.; }
-  double phi_yy(int i) const { return 0.; }
-  double phi_zz(int i) const { return 0.; }
-  double phi_xy(int i) const
+  double phi_xx(int /*i*/) const { return 0.; }
+  double phi_yy(int /*i*/) const { return 0.; }
+  double phi_zz(int /*i*/) const { return 0.; }
+  double phi_xy(int /*i*/) const
   {
     std::cerr << "\"BaseQ13d::phi_xy\" not written!" << std::endl;
     abort();
     //     return dxy[i];
   }
-  double phi_xz(int i) const
+  double phi_xz(int /*i*/) const
   {
     std::cerr << "\"BaseQ13d::phi_xz\" not written!" << std::endl;
     abort();
     //     return dxz[i];
   }
-  double phi_yz(int i) const
+  double phi_yz(int /*i*/) const
   {
     std::cerr << "\"BaseQ13d::phi_yz\" not written!" << std::endl;
     abort();
     //     return dyz[i];
   }
-  double phi_xyz(int i) const
+  double phi_xyz(int /*i*/) const
   {
     std::cerr << "\"BaseQ13d::phi_xyz\" not written!" << std::endl;
     abort();

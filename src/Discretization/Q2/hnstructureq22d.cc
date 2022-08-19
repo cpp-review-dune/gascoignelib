@@ -59,7 +59,7 @@ void
 HNStructureQ22d::Average(GlobalVector& u) const
 {
   for (const_iterator p = edges->begin(); p != edges->end(); p++) {
-    const std::array<int, 3>& f = p->second;
+    const std::array<IndexType, 3>& f = p->second;
     u.equ_node(p->first, wei[0], f[0], wei[1], f[1], wei[2], f[2]);
   }
 }
@@ -70,8 +70,8 @@ void
 HNStructureQ22d::Distribute(GlobalVector& u) const
 {
   for (const_iterator p = edges->begin(); p != edges->end(); p++) {
-    int i = p->first;
-    for (int j = 0; j < 3; j++) {
+    IndexType i = p->first;
+    for (IndexType j = 0; j < 3; j++) {
       u.add_node(p->second[j], wei[j], i);
     }
     u.zero_node(i);
@@ -81,17 +81,17 @@ HNStructureQ22d::Distribute(GlobalVector& u) const
 /*-----------------------------------------*/
 
 void
-HNStructureQ22d::CondenseHanging(EntryMatrix& E, IntVector& indices) const
+HNStructureQ22d::CondenseHanging(EntryMatrix& E, IndexVector& indices) const
 {
-  for (int ii = 0; ii < 4; ii++) // nur 4 kandiaten koennen haengen !!
+  for (IndexType ii = 0; ii < 4; ii++) // nur 4 kandiaten koennen haengen !!
   {
-    int i = indices[2 * ii + 1];
+    IndexType i = indices[2 * ii + 1];
     if (!hanging(i))
       continue;
 
-    const std::array<int, 3>& f = regular_nodes(i);
+    const std::array<IndexType, 3>& f = regular_nodes(i);
 
-    std::array<int, 3> p = lnoe[ii];
+    std::array<IndexType, 3> p = lnoe[ii];
 
     if ((indices[p[0]] == f[1]) && (indices[p[1]] == f[0])) {
       swap(p[0], p[1]);
@@ -113,17 +113,17 @@ HNStructureQ22d::CondenseHanging(EntryMatrix& E, IntVector& indices) const
 
 void
 HNStructureQ22d::CondenseHangingLowerHigher(EntryMatrix& E,
-                                            IntVector& indices) const
+                                            IndexVector& indices) const
 {
-  for (int ii = 0; ii < 4; ii++) // nur 4 kandiaten koennen haengen !!
+  for (IndexType ii = 0; ii < 4; ii++) // nur 4 kandiaten koennen haengen !!
   {
-    int i = indices[2 * ii + 1];
+    IndexType i = indices[2 * ii + 1];
     if (!hanging(i))
       continue;
 
-    const std::array<int, 3>& f = regular_nodes(i);
+    const std::array<IndexType, 3>& f = regular_nodes(i);
 
-    std::array<int, 3> p = lnoe[ii];
+    std::array<IndexType, 3> p = lnoe[ii];
 
     if ((indices[p[0]] == f[1]) && (indices[p[1]] == f[0])) {
       swap(p[0], p[1]);
@@ -145,17 +145,17 @@ HNStructureQ22d::CondenseHangingLowerHigher(EntryMatrix& E,
 
 void
 HNStructureQ22d::CondenseHangingHigherLower(EntryMatrix& E,
-                                            IntVector& indices) const
+                                            IndexVector& indices) const
 {
-  for (int ii = 0; ii < 4; ii++) // nur 4 kandiaten koennen haengen !!
+  for (IndexType ii = 0; ii < 4; ii++) // nur 4 kandiaten koennen haengen !!
   {
-    int i = indices[2 * ii + 1];
+    IndexType i = indices[2 * ii + 1];
     if (!hanging(i))
       continue;
 
-    const std::array<int, 3>& f = regular_nodes(i);
+    const std::array<IndexType, 3>& f = regular_nodes(i);
 
-    std::array<int, 3> p = lnoe[ii];
+    std::array<IndexType, 3> p = lnoe[ii];
 
     if ((indices[p[0]] == f[1]) && (indices[p[1]] == f[0])) {
       swap(p[0], p[1]);
@@ -177,12 +177,12 @@ HNStructureQ22d::CondenseHangingHigherLower(EntryMatrix& E,
 
 void
 HNStructureQ22d::CondenseHangingMixed(EntryMatrix& E,
-                                      IntVector& indices,
-                                      int k) const
+                                      IndexVector& indices,
+                                      IndexType k) const
 {
   assert(indices.size() == 14);
 
-  IntVector xx(9, -1);
+  IndexVector xx(9, -1);
   xx[1] = 9;
   xx[3] = 10;
   xx[5] = 12;
@@ -209,17 +209,17 @@ HNStructureQ22d::CondenseHangingMixed(EntryMatrix& E,
     xx[6] = 7;
     xx[8] = 8;
   }
-  for (int ii = 0; ii < 4; ii++) // nur 4 kandiaten koennen haengen !!
+
+  for (IndexType ii = 0; ii < 4; ii++) // nur 4 kandiaten koennen haengen !!
   {
-    int i = indices[xx[2 * ii + 1]];
-    ;
+    IndexType i = indices[xx[2 * ii + 1]];
 
     if (!hanging(i))
       continue;
 
-    const std::array<int, 3>& f = regular_nodes(i);
+    const std::array<IndexType, 3>& f = regular_nodes(i);
 
-    std::array<int, 3> p = lnoe[ii];
+    std::array<IndexType, 3> p = lnoe[ii];
 
     if ((indices[xx[p[0]]] == f[1]) && (indices[xx[p[1]]] == f[0])) {
       swap(p[0], p[1]);
@@ -239,18 +239,18 @@ HNStructureQ22d::CondenseHangingMixed(EntryMatrix& E,
 
 /*-----------------------------------------*/
 
-/*void HNStructureQ22d::NewCondenseHanging(EntryMatrix& E, IntVector& indices1,
-IntVector& indices2) const
+/*void HNStructureQ22d::NewCondenseHanging(EntryMatrix& E, IndexType& indices1,
+IndexType& indices2) const
 {
-  for(int ii=0; ii<4; ii++) // nur 4 kandiaten koennen haengen !!
+  for(IndexType ii=0; ii<4; ii++) // nur 4 kandiaten koennen haengen !!
     {
-      int i = indices1[2*ii+1];
+      IndexType i = indices1[2*ii+1];
 
       if(!hanging(i)) continue;
 
-      const std::array<int,3>& f = regular_nodes(i);
+      const std::array<IndexType,3>& f = regular_nodes(i);
 
-      std::array<int,3> p = lnoe[ii];
+      std::array<IndexType,3> p = lnoe[ii];
 
       if ( (indices1[p[0]]==f[1]) && (indices1[p[1]]==f[0]) )
         {
@@ -263,14 +263,14 @@ IntVector& indices2) const
       E.add_row        (p[1],p[2],weight(1));
       E.multiply_row   (p[2],     weight(2));
     }
-  for(int ii=0; ii<4; ii++) // nur 4 kandiaten koennen haengen !!
+  for(IndexType ii=0; ii<4; ii++) // nur 4 kandiaten koennen haengen !!
     {
-      int i = indices2[2*ii+1];
+      IndexType i = indices2[2*ii+1];
       if(!hanging(i)) continue;
 
-      const std::array<int,3>& f = regular_nodes(i);
+      const std::array<IndexType,3>& f = regular_nodes(i);
 
-      std::array<int,3> p = lnoe[ii];
+      std::array<IndexType,3> p = lnoe[ii];
 
       if ( (indices2[p[0]]==f[1]) && (indices2[p[1]]==f[0]) )
         {
@@ -288,11 +288,11 @@ IntVector& indices2) const
 /*-----------------------------------------*/
 
 void
-HNStructureQ22d::CondenseHanging(IntVector& indices) const
+HNStructureQ22d::CondenseHanging(IndexVector& indices) const
 {
-  for (int ii = 0; ii < 4; ii++) {
-    int j = lnoe[ii][2];
-    int i = indices[j];
+  for (IndexType ii = 0; ii < 4; ii++) {
+    IndexType j = lnoe[ii][2];
+    IndexType i = indices[j];
 
     if (hanging(i))
       indices[j] = regular_nodes(i)[2];

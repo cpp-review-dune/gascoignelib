@@ -34,10 +34,10 @@ namespace Gascoigne {
 class HangingIndexHandler
 {
 protected:
-  typedef std::array<int, 2> IntVector2;
-  typedef std::array<int, 4> IntVector4;
+  // typedef std::array<IndexType, 2> IntVector2;
+  // typedef std::array<IndexType, 4> IntVector4;
 
-  std::map<int, std::array<int, 3>> hnq2;
+  std::map<IndexType, std::array<IndexType, 3>> hnq2;
 
   // // Average
   // U[it->first] = 0.5 * (U[it->second[0]] + U[it->second[1]]);
@@ -62,7 +62,7 @@ protected:
 
   // fuer 3D
   //
-  std::map<int, std::array<int, 9>> hnq2face;
+  std::map<IndexType, std::array<IndexType, 9>> hnq2face;
   // // Average
   // U[it->first] = 0.25 * (U[it->second[0]] + U[it->second[1]] +
   // U[it->second[3]] + U[it->second[4]]);
@@ -74,14 +74,14 @@ protected:
   // U[it->second[3] ] += 0.25 * U[it->first]
   // U[it->second[4] ] += 0.25 * U[it->first]
 
-  std::map<int, std::array<int, 6>> hnq4;
-  std::map<int, std::array<int, 26>> hnq4face;
+  std::map<IndexType, std::array<IndexType, 6>> hnq4;
+  std::map<IndexType, std::array<IndexType, 26>> hnq4face;
 
 public:
   HangingIndexHandler();
 
-  void Equal(const std::map<int, std::array<int, 3>>& h2,
-             const std::map<int, std::array<int, 9>>& h2f)
+  void Equal(const std::map<IndexType, std::array<IndexType, 3>>& h2,
+             const std::map<IndexType, std::array<IndexType, 9>>& h2f)
   {
     hnq2 = h2;
     hnq2face = h2f;
@@ -91,27 +91,40 @@ public:
 
   // zugriff
 
-  const std::map<int, std::array<int, 3>>* GetStructure() const
+  const std::map<IndexType, std::array<IndexType, 3>>* GetStructure() const
   {
     return &hnq2;
   }
-  const std::map<int, std::array<int, 9>>* GetStructureFace() const
+  const std::map<IndexType, std::array<IndexType, 9>>* GetStructureFace() const
   {
     return &hnq2face;
   }
-  std::map<int, std::array<int, 3>>* GetStructure() { return &hnq2; }
-  std::map<int, std::array<int, 9>>* GetStructureFace() { return &hnq2face; }
+  std::map<IndexType, std::array<IndexType, 3>>* GetStructure()
+  {
+    return &hnq2;
+  }
+  std::map<IndexType, std::array<IndexType, 9>>* GetStructureFace()
+  {
+    return &hnq2face;
+  }
 
-  const std::map<int, std::array<int, 6>>* GetQ4Structure() const
+  const std::map<IndexType, std::array<IndexType, 6>>* GetQ4Structure() const
   {
     return &hnq4;
   }
-  const std::map<int, std::array<int, 26>>* GetQ4StructureFace() const
+  const std::map<IndexType, std::array<IndexType, 26>>* GetQ4StructureFace()
+    const
   {
     return &hnq4face;
   }
-  std::map<int, std::array<int, 6>>* GetQ4Structure() { return &hnq4; }
-  std::map<int, std::array<int, 26>>* GetQ4StructureFace() { return &hnq4face; }
+  std::map<IndexType, std::array<IndexType, 6>>* GetQ4Structure()
+  {
+    return &hnq4;
+  }
+  std::map<IndexType, std::array<IndexType, 26>>* GetQ4StructureFace()
+  {
+    return &hnq4face;
+  }
 };
 } // namespace Gascoigne
 

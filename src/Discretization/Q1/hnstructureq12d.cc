@@ -71,7 +71,7 @@ HNStructureQ12d::SparseStructureDiag(SparseStructure* S) const
 {
   assert(edges);
   for (const_iterator p = edges->begin(); p != edges->end(); p++) {
-    int i = p->first;
+    IndexType i = p->first;
     S->build_add(i, i);
   }
 }
@@ -86,10 +86,10 @@ HNStructureQ12d::ReInit(const GascoigneMesh* M)
 
 /*-----------------------------------------*/
 
-const std::array<int, 3>&
-HNStructureQ12d::regular_nodes(int i) const
+const HNStructureQ1::EdgeVector&
+HNStructureQ12d::regular_nodes(IndexType i) const
 {
-  map<int, EdgeVector>::const_iterator p = edges->find(i);
+  auto p = edges->find(i);
 
   assert(p != edges->end());
   //   if (p!=edges->end())
@@ -101,18 +101,18 @@ HNStructureQ12d::regular_nodes(int i) const
 /*----------------------------------------------*/
 
 void
-HNStructureQ12d::CondenseHanging(IntVector& indices) const
+HNStructureQ12d::CondenseHanging(IndexVector& indices) const
 {
   assert(indices.size() == lnoe.size());
   for (int ii = 0; ii < indices.size(); ii++) {
-    std::array<int, 3> p = lnoe[ii];
+    EdgeVector p = lnoe[ii];
 
-    int& hang = indices[p[1]];
+    IndexType& hang = indices[p[1]];
 
     if (!hanging(hang))
       continue;
 
-    const std::array<int, 3>& f = regular_nodes(hang);
+    const EdgeVector& f = regular_nodes(hang);
 
     if ((indices[p[0]] == f[0]) || (indices[p[2]] == f[0]))
       hang = f[1];
@@ -126,18 +126,18 @@ HNStructureQ12d::CondenseHanging(IntVector& indices) const
 /*----------------------------------------------*/
 
 void
-HNStructureQ12d::CondenseHanging(EntryMatrix& E, IntVector& indices) const
+HNStructureQ12d::CondenseHanging(EntryMatrix& E, IndexVector& indices) const
 {
   assert(indices.size() == lnoe.size());
   for (int ii = 0; ii < indices.size(); ii++) {
-    std::array<int, 3> p = lnoe[ii];
+    EdgeVector p = lnoe[ii];
 
-    int& hang = indices[p[1]];
+    IndexType& hang = indices[p[1]];
 
     if (!hanging(hang))
       continue;
 
-    const std::array<int, 3>& f = regular_nodes(hang);
+    const EdgeVector& f = regular_nodes(hang);
 
     if ((indices[p[2]] == f[0]) || (indices[p[2]] == f[1]))
       swap(p[0], p[2]);
@@ -160,14 +160,15 @@ HNStructureQ12d::CondenseHanging(EntryMatrix& E, IntVector& indices) const
 /*----------------------------------------------*/
 
 void
-HNStructureQ12d::CondenseHangingPatch(EntryMatrix& E, IntVector& indices) const
+HNStructureQ12d::CondenseHangingPatch(EntryMatrix& E,
+                                      IndexVector& indices) const
 {
   assert(indices.size() == 9);
 
   for (int ii = 0; ii < 4; ii++) {
-    std::array<int, 3> p = lnop[ii];
+    EdgeVector p = lnop[ii];
 
-    int i = indices[p[2]];
+    IndexType i = indices[p[2]];
     if (!hanging(i))
       continue;
 
@@ -182,8 +183,8 @@ HNStructureQ12d::CondenseHangingPatch(EntryMatrix& E, IntVector& indices) const
 
 /*----------------------------------------------*/
 
-int
-HNStructureQ12d::hanging(int i) const
+IndexType
+HNStructureQ12d::hanging(IndexType i) const
 {
   assert(edges);
   if (edges->find(i) != edges->end())
@@ -196,7 +197,7 @@ HNStructureQ12d::hanging(int i) const
 void
 HNStructureQ12d::Zero(GlobalVector& u) const
 {
-  for (const_iterator p = edges->begin(); p != edges->end(); p++) {
+  for (auto p = edges->begin(); p != edges->end(); p++) {
     u.zero_node(p->first);
   }
 }
@@ -206,9 +207,9 @@ HNStructureQ12d::Zero(GlobalVector& u) const
 bool
 HNStructureQ12d::ZeroCheck(const GlobalVector& u) const
 {
-  for (const_iterator p = edges->begin(); p != edges->end(); p++) {
-    int i = p->first;
-    for (int c = 0; c < u.ncomp(); c++) {
+  for (auto p = edges->begin(); p != edges->end(); p++) {
+    IndexType i = p->first;
+    for (ShortIndexType c = 0; c < u.ncomp(); c++) {
       if (u(i, c) != 0.)
         return 1;
     }
@@ -221,8 +222,8 @@ HNStructureQ12d::ZeroCheck(const GlobalVector& u) const
 void
 HNStructureQ12d::Average(GlobalVector& u) const
 {
-  for (const_iterator p = edges->begin(); p != edges->end(); p++) {
-    const std::array<int, 3>& f = p->second;
+  for (auto p = edges->begin(); p != edges->end(); p++) {
+    const auto& f = p->second;
     u.equ_node(p->first, wei[0], f[0], wei[1], f[1]);
   }
 }
@@ -232,8 +233,8 @@ HNStructureQ12d::Average(GlobalVector& u) const
 void
 HNStructureQ12d::Distribute(GlobalVector& u) const
 {
-  for (const_iterator p = edges->begin(); p != edges->end(); p++) {
-    int i = p->first;
+  for (auto p = edges->begin(); p != edges->end(); p++) {
+    IndexType i = p->first;
 
     u.add_node(p->second[0], wei[0], i);
     u.add_node(p->second[1], wei[1], i);
@@ -245,11 +246,11 @@ HNStructureQ12d::Distribute(GlobalVector& u) const
 /*-----------------------------------------*/
 
 void
-HNStructureQ12d::MatrixDiag(int ncomp, MatrixInterface& A) const
+HNStructureQ12d::MatrixDiag(ShortIndexType ncomp, MatrixInterface& A) const
 {
   nmatrix<double> M(ncomp);
   M.identity();
-  for (const_iterator p = edges->begin(); p != edges->end(); p++) {
+  for (auto p = edges->begin(); p != edges->end(); p++) {
     A.entry_diag(p->first, M);
   }
 }

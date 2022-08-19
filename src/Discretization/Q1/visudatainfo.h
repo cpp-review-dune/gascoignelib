@@ -85,7 +85,7 @@ public:
     abort();
   }
 
-  void AddScalar(IndexType index, const std::string& name, int i)
+  void AddScalar(IndexType index, const std::string& name, IndexType i)
   {
     scalar_order[name] = index;
     scalars[name] = i;

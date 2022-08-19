@@ -22,6 +22,7 @@ target_compile_options(${GASCOIGNE_LIBRARY} PUBLIC
 	-pedantic
 	-Wextra
 	-Wconversion
+	-Werror
 	-Wold-style-cast
 )
 

@@ -79,27 +79,29 @@ LineScanner::split(vector<string>& words, const vector<char>& c) const
 
 /***************************************************/
 
-int
+size_t
 LineScanner::NextLine(vector<double>& words)
 {
   string toto;
   getline(fp, toto);
 
-  if (fp.eof())
+  if (fp.eof()) {
     return -1;
+  }
 
   vector<string> s1 = StringSplit(toto.c_str(), ' ', '\t');
 
   words.resize(s1.size());
-  for (int i = 0; i < s1.size(); i++)
+  for (int i = 0; i < s1.size(); i++) {
     words[i] = atof(s1[i].c_str());
+  }
 
   return words.size();
 }
 
 /***************************************************/
 
-int
+size_t
 LineScanner::NextLine(vector<string>& words)
 {
   string toto;
@@ -130,7 +132,7 @@ LineScanner::NextLine(vector<string>& words)
 
 /***************************************************/
 
-int
+size_t
 LineScanner::NextLine(vector<string>& words, const vector<int>& w)
 {
   // usefull to read formated FORTRAN data bases

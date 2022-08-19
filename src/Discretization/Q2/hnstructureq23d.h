@@ -35,30 +35,30 @@ class HNStructureQ23d : public HNStructureQ13d
   std::array<double, 9> fwei, fq1wei;
   DoubleVector q1wei;
 
-  std::array<std::array<int, 3>, 12> lnoe;
-  std::array<std::array<int, 5>, 6> lnop;
+  std::array<std::array<IndexType, 3>, 12> lnoe;
+  std::array<std::array<IndexType, 5>, 6> lnop;
 
-  void CondenseHanging2er(EntryMatrix& E, nvector<int>& indices) const;
+  void CondenseHanging2er(EntryMatrix& E, nvector<IndexType>& indices) const;
   void CondenseHanging2erLowerHigher(EntryMatrix& E,
-                                     nvector<int>& indices) const;
+                                     nvector<IndexType>& indices) const;
   void CondenseHanging2erHigherLower(EntryMatrix& E,
-                                     nvector<int>& indices) const;
-  void CondenseHanging4er(EntryMatrix& E, nvector<int>& indices) const;
+                                     nvector<IndexType>& indices) const;
+  void CondenseHanging4er(EntryMatrix& E, nvector<IndexType>& indices) const;
   void CondenseHanging4erLowerHigher(EntryMatrix& E,
-                                     nvector<int>& indices) const;
+                                     nvector<IndexType>& indices) const;
   void CondenseHanging4erHigherLower(EntryMatrix& E,
-                                     nvector<int>& indices) const;
+                                     nvector<IndexType>& indices) const;
 
 public:
   HNStructureQ23d();
 
   void Average(GlobalVector& u) const;
   void Distribute(GlobalVector& u) const;
-  void CondenseHanging(EntryMatrix& E, IntVector& indices) const;
-  void CondenseHangingLowerHigher(EntryMatrix& E, IntVector& indices) const;
-  void CondenseHangingHigherLower(EntryMatrix& E, IntVector& indices) const;
-  void CondenseHanging(IntVector& indices) const;
-  void CondenseHangingPatch(EntryMatrix& E, IntVector& indices) const
+  void CondenseHanging(EntryMatrix& E, IndexVector& indices) const;
+  void CondenseHangingLowerHigher(EntryMatrix& E, IndexVector& indices) const;
+  void CondenseHangingHigherLower(EntryMatrix& E, IndexVector& indices) const;
+  void CondenseHanging(IndexVector& indices) const;
+  void CondenseHangingPatch(EntryMatrix& /*E*/, IndexVector& /*indices*/) const
   {
     std::cerr << "\"HNStructureQ23d::CondenseHangingPatch\" not written!"
               << std::endl;

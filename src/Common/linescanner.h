@@ -39,9 +39,9 @@ public:
   LineScanner(const std::string& filename);
   ~LineScanner();
 
-  int NextLine(std::vector<double>& words);
-  int NextLine(std::vector<std::string>& words);
-  int NextLine(std::vector<std::string>& words, const std::vector<int>& w);
+  size_t NextLine(std::vector<double>& words);
+  size_t NextLine(std::vector<std::string>& words);
+  size_t NextLine(std::vector<std::string>& words, const std::vector<int>& w);
 
   void split(std::vector<std::string>& words, const char& c) const;
   void split(std::vector<std::string>& words, const std::vector<char>& c) const;

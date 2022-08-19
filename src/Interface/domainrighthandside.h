@@ -52,7 +52,7 @@ public:
     abort();
   }
 
-  virtual int GetNcomp() const = 0;
+  virtual ShortIndexType GetNcomp() const = 0;
 
   virtual double operator()(int c, const Vertex2d& v) const
   {

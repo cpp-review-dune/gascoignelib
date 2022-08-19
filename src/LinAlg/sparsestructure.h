@@ -58,37 +58,37 @@ public:
   IndexType ntotal() const { return sntot; }
 
   const Indices& indices() const { return sindices; }
-  const IntSet& row(int i) const
+  const IntSet& row(IndexType i) const
   {
     assert((i >= 0) && (i < sindices.size()));
     return sindices[i];
   }
-  IntSet& row(int i)
+  IntSet& row(IndexType i)
   {
     assert((i >= 0) && (i < sindices.size()));
     return sindices[i];
   }
-  IntSet::iterator rowbegin(int i)
+  IntSet::iterator rowbegin(IndexType i)
   {
     assert((i >= 0) && (i < sindices.size()));
     return row(i).begin();
   }
-  IntSet::iterator rowend(int i)
+  IntSet::iterator rowend(IndexType i)
   {
     assert((i >= 0) && (i < sindices.size()));
     return row(i).end();
   }
-  IntSet::const_iterator rowbegin(int i) const
+  IntSet::const_iterator rowbegin(IndexType i) const
   {
     assert((i >= 0) && (i < sindices.size()));
     return row(i).begin();
   }
-  IntSet::const_iterator rowend(int i) const
+  IntSet::const_iterator rowend(IndexType i) const
   {
     assert((i >= 0) && (i < sindices.size()));
     return row(i).end();
   }
-  int rowsize(int i) const
+  IndexType rowsize(IndexType i) const
   {
     assert((i >= 0) && (i < sindices.size()));
     return row(i).size();
@@ -98,11 +98,11 @@ public:
   void statistics(std::ostream&) const;
 
   SparseStructure& operator=(const SparseStructure& B);
-  void build_begin(int n);
-  void build_clear(int i);
-  void build_add(int i, int j) { row(i).insert(j); }
+  void build_begin(IndexType n);
+  void build_clear(IndexType i);
+  void build_add(IndexType i, IndexType j) { row(i).insert(j); }
   template<class IT>
-  void build_add(int i, IT lsf, IT lsl)
+  void build_add(IndexType i, IT lsf, IT lsl)
   {
     for (IT p = lsf; p != lsl; p++)
       row(i).insert(*p);
@@ -121,7 +121,7 @@ public:
   }
   void build_end();
 
-  void hanging_node(int, int, int);
+  void hanging_node(IndexType, IndexType, IndexType);
 
   void enlarge(const SparseStructure&);
   void enlarge_lu();

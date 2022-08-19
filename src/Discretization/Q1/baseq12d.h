@@ -55,7 +55,7 @@ protected:
 
   void BasicInit();
 
-  double psi_x(int i, double x) const { return b[i]; }
+  double psi_x(int i, double /*x*/) const { return b[i]; }
 
 public:
   BaseQ12d();
@@ -67,10 +67,10 @@ public:
   double phi(int i) const { return N[i]; }
   double phi_x(int i) const { return DN[i].x(); }
   double phi_y(int i) const { return DN[i].y(); }
-  double phi_xx(int i) const { return 0.; }
-  double phi_yy(int i) const { return 0.; }
+  double phi_xx(int /*i*/) const { return 0.; }
+  double phi_yy(int /*i*/) const { return 0.; }
   /*   double phi_xy(int i) const {return 0.;} */
-  double phi_xy(int i) const
+  double phi_xy(int /*i*/) const
   {
     std::cerr << "\"BaseQ12d::phi_xy\" not written!" << std::endl;
     abort();

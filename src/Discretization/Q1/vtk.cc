@@ -34,7 +34,7 @@ void
 Visualization::_vtk_pointdata(ofstream& out) const
 {
   if (PointData) {
-    int nn = mesh->nnodes();
+    IndexType nn = mesh->nnodes();
 
     CheckPointData();
     // for(VisuDataInfo::siterator
@@ -143,7 +143,7 @@ Visualization::_vtk_celldata(ofstream& out) const
 void
 Visualization::_vtk_points(ofstream& out) const
 {
-  int nn = mesh->nnodes();
+  IndexType nn = mesh->nnodes();
   out << "POINTS " << nn << " DOUBLE " << endl;
   assert(mesh->dimension() == 2 || mesh->dimension() == 3);
   if (mesh->dimension() == 2) {
@@ -163,7 +163,7 @@ Visualization::_vtk_points(ofstream& out) const
 void
 Visualization::_vtk_cells(ofstream& out) const
 {
-  int ne = mesh->ncells();
+  IndexType ne = mesh->ncells();
 
   int lenght = 0;
   for (int c = 0; c < ne; c++) {
@@ -190,7 +190,7 @@ Visualization::_vtk_cells(ofstream& out) const
 void
 Visualization::_vtk_cellmaterial(ofstream& out) const
 {
-  int ne = mesh->ncells();
+  IndexType ne = mesh->ncells();
 
   out << endl
       << "CELL_DATA " << ne << endl

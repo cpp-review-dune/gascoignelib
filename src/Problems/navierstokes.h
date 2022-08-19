@@ -115,7 +115,7 @@ public:
 
   std::string GetName() const { return "NavierStokes - LPS - "; }
 
-  int GetNcomp() const { return DIM + 1; }
+  ShortIndexType GetNcomp() const { return DIM + 1; }
 
   /// Variational formulation
   void Form(VectorIterator b, const FemFunction& U, const TestFunction& N) const
@@ -313,7 +313,7 @@ public:
 
   std::string GetName() const { return "NavierStokes - LPS - Time"; }
 
-  int GetNcomp() const { return DIM + 1; }
+  ShortIndexType GetNcomp() const { return DIM + 1; }
 
   /// Retrieves old solution OLD
   void SetFemData(FemData& q) const

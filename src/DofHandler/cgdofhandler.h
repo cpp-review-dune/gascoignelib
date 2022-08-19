@@ -101,10 +101,10 @@ public:
 
   /// General Access
   int dimension() const { return DIM; }
-  int dofs_per_element() const { return pow(M, DIM); }
-  int ndofs() const { return nx.size(); }
-  int nelements() const { return nc.size() / dofs_per_element(); }
-  int nhanging() const { return HangingHandler.GetStructure()->size(); }
+  int dofs_per_element() const { return static_cast<int>(pow(M, DIM)); }
+  IndexType ndofs() const { return nx.size(); }
+  IndexType nelements() const { return nc.size() / dofs_per_element(); }
+  IndexType nhanging() const { return HangingHandler.GetStructure()->size(); }
 
   IntVector GetElement(int iq) const
   {
@@ -122,8 +122,8 @@ public:
   const std::vector<Vertex<DIM>>& GetVertexVector() const { return nx; }
 
   const Vertex<DIM>& vertex(int i) const { return nx[i]; }
-  virtual const Vertex<2>& vertex2d(int i) const { abort(); }
-  virtual const Vertex<3>& vertex3d(int i) const { abort(); }
+  virtual const Vertex<2>& vertex2d(int /*i*/) const { abort(); }
+  virtual const Vertex<3>& vertex3d(int /*i*/) const { abort(); }
 
   ////// Boundary
   const IntVector* ElementOnBoundary(int color) const
@@ -134,18 +134,18 @@ public:
   {
     return &(BoundaryHandler.Localind(color));
   }
-  const IntVector* ElementOnBoundary(int degree, int color) const
+  const IntVector* ElementOnBoundary(int /*degree*/, int /*color*/) const
   {
     std::cerr << "Element on Boundary with degree not used!" << std::endl;
     abort();
   }
-  const IntVector* ElementLocalOnBoundary(int degree, int color) const
+  const IntVector* ElementLocalOnBoundary(int /*degree*/, int /*color*/) const
   {
     std::cerr << "ElementLocal on Boundary with degree not used!" << std::endl;
     abort();
   }
 
-  int VtkType(int i) const { return (DIM == 2) ? 9 : 12; }
+  int VtkType(int /*i*/) const { return (DIM == 2) ? 9 : 12; }
 
   int vertex_of_cell(int i, int ii) const
   {
@@ -153,19 +153,19 @@ public:
   }
 
   /// Dummy? Old Interface
-  int ncells() const { abort(); }
-  int nelements(int degree) const { abort(); }
-  int nodes_per_cell(int i) const { abort(); }
-  int nnodes() const { abort(); }
+  IndexType ncells() const { abort(); }
+  IndexType nelements(int /*degree*/) const { abort(); }
+  int nodes_per_cell(int /*i*/) const { abort(); }
+  IndexType nnodes() const { abort(); }
 
-  IntVector IndicesOfCell(int iq) const
+  IntVector IndicesOfCell(int /*iq*/) const
   {
     std::cerr << "CGDofHandler: Use GetElement" << std::endl;
     assert(0);
     return IntVector();
   }
 
-  IntVector GetElement(int degree, int iq) const
+  IntVector GetElement(int /*degree*/, int /*iq*/) const
   {
     std::cerr << "GetElement with degree not used" << std::endl;
     abort();

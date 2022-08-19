@@ -125,7 +125,7 @@ EnergyEstimatorIntegrator<DIM>::Jumps(LocalVector& F,
     BasicIntegrator::universal_point(FEM, _UH, U);
 
     if (_s_energytype == "energy" || _s_energytype == "energy_laplace") {
-      for (int c = 0; c < U.ncomp(); c++) {
+      for (ShortIndexType c = 0; c < U.ncomp(); c++) {
         F(i, c) += _d_visc * (n.x() * _UH[c].x() + n.y() * _UH[c].y());
         if (DIM == 3)
           F(i, c) += _d_visc * (n.z() * _UH[c].z());
@@ -137,7 +137,7 @@ EnergyEstimatorIntegrator<DIM>::Jumps(LocalVector& F,
         F(i, 0) += -n.z() * _UH[0].m();
 
       // jump of the value visc * \del_n v :
-      for (int c = 1; c < U.ncomp(); c++) {
+      for (ShortIndexType c = 1; c < U.ncomp(); c++) {
         F(i, c) += _d_visc * (n.x() * _UH[c].x() + n.y() * _UH[c].y());
         if (DIM == 3)
           F(i, c) += _d_visc * (n.z() * _UH[c].z());

@@ -106,7 +106,7 @@ class HeatRhs : public DomainRightHandSide
 {
 protected:
 public:
-  int GetNcomp() const { return 2 * DIM; }
+  ShortIndexType GetNcomp() const { return 2 * DIM; }
 
   double operator()(int c, const Vertex2d&) const
   {
@@ -151,7 +151,7 @@ public:
     : data(PD)
   {}
 
-  int GetNcomp() const { return 2 * DIM; } //
+  ShortIndexType GetNcomp() const { return 2 * DIM; } //
 
   void SetFemData(FemData& q) const
   {

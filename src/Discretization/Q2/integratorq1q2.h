@@ -72,7 +72,7 @@ public:
                    const FemInterface& FemL,
                    const LocalVector& U,
                    const LocalData& Q,
-                   const LocalData& QC) const;
+                   const LocalData& /*QC*/) const;
   void BoundaryRhs(const BoundaryRightHandSide& RHS,
                    LocalVector& F,
                    const FemInterface& FemH,
@@ -97,7 +97,7 @@ public:
                      const DiracRightHandSide& DRHS,
                      int j,
                      const LocalData& Q,
-                     const LocalData& QC) const;
+                     const LocalData& /*QC*/) const;
 
   double MassMatrix(EntryMatrix& E,
                     const FemInterface& FemH,

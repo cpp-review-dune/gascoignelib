@@ -55,7 +55,7 @@ public:
   DofHandlerBase(){};
   virtual ~DofHandlerBase() {}
 
-  virtual void BasicInit(const ParamFile* pf)
+  virtual void BasicInit(const ParamFile* /*pf*/)
   {
     std::cerr << "\"DofHandler:BasicInit\" not written!" << std::endl;
     abort();
@@ -64,19 +64,19 @@ public:
   //////////////////////////////////////////////////
   // Access
   virtual int dimension() const = 0;
-  virtual int nnodes() const = 0;
-  virtual int nhanging() const { return 0; }
-  virtual int ncells() const = 0;
-  virtual int nelements(int degree) const = 0;
+  virtual IndexType nnodes() const = 0;
+  virtual IndexType nhanging() const { return 0; }
+  virtual IndexType ncells() const = 0;
+  virtual IndexType nelements(int degree) const = 0;
 
   virtual int nodes_per_cell(int i) const = 0;
   virtual int vertex_of_cell(int i, int ii) const = 0;
-  virtual const Vertex2d& vertex2d(int i) const
+  virtual const Vertex2d& vertex2d(int /*i*/) const
   {
     std::cerr << "\"MeshInterface::vertex2d\" not written!" << std::endl;
     abort();
   }
-  virtual const Vertex3d& vertex3d(int i) const
+  virtual const Vertex3d& vertex3d(int /*i*/) const
   {
     std::cerr << "\"MeshInterface::vertex3d\" not written!" << std::endl;
     abort();
@@ -117,21 +117,21 @@ public:
   virtual int VtkType(int i) const = 0;
 
   // wird von DofHandler2d/3d ueberschrieben
-  virtual IntVector IndicesOfCell(int iq) const
+  virtual IntVector IndicesOfCell(int /*iq*/) const
   {
     std::cerr << "\"DofHandler:IndicesOfCell\" not written!" << std::endl;
     abort();
   }
 
-  virtual bool CellIsCurved(int iq) const { return 0; }
+  virtual bool CellIsCurved(int /*iq*/) const { return 0; }
   virtual int nedges() const { return 0; }
 
-  virtual IntVector GetElement(int degree, int iq) const
+  virtual IntVector GetElement(int /*degree*/, int /*iq*/) const
   {
     std::cerr << "DofHandler::GetElement" << std::endl;
     abort();
   }
-  virtual int nodes_per_element(int degree) const
+  virtual int nodes_per_element(int /*degree*/) const
   {
     std::cerr << "DofHandler::nodes_per_element" << std::endl;
     abort();
@@ -169,17 +169,19 @@ public:
   }
 
   // Access: material
-  virtual const int material(int i) const
+  virtual int material(int i) const
   {
     assert(i < mat.size());
     return mat[i];
   }
-  virtual const int material_patch(int i) const
+
+  virtual int material_patch(int i) const
   {
     assert(i < matpatch.size());
     return matpatch[i];
   }
-  const int material(int degree, int i) const
+
+  int material(int degree, int i) const
   {
     if (degree == 1)
       return material(i);
@@ -187,11 +189,13 @@ public:
       return material_patch(i);
     abort();
   }
+
   virtual int& material(int i)
   {
     assert(i < mat.size());
     return mat[i];
   }
+
   virtual int& material_patch(int i)
   {
     assert(i < matpatch.size());
@@ -292,12 +296,12 @@ public:
     return basis_Vanka_patch;
   }
 
-  virtual const int material_Vanka(int i) const
+  virtual int material_Vanka(int i) const
   {
     assert(i < mat_Vanka.size());
     return mat_Vanka[i];
   }
-  virtual const int material_Vanka_patch(int i) const
+  virtual int material_Vanka_patch(int i) const
   {
     assert(i < mat_Vanka_patch.size());
     return mat_Vanka_patch[i];
@@ -330,9 +334,9 @@ public:
   const std::vector<Vertex<DIM>>& GetVertexVector() const { return nx; }
 
   int dimension() const { return DIM; }
-  int nnodes() const { return nx.size(); }
-  int ncells() const { return nc.size() / ((DIM == 2) ? 4 : 8); }
-  int nelements(int degree) const
+  IndexType nnodes() const { return nx.size(); }
+  IndexType ncells() const { return nc.size() / ((DIM == 2) ? 4 : 8); }
+  IndexType nelements(int degree) const
   {
     if (degree == 1)
       return ncells();
@@ -342,9 +346,9 @@ public:
       abort();
   }
 
-  int nhanging() const { return HangingHandler.GetStructure()->size(); }
+  IndexType nhanging() const { return HangingHandler.GetStructure()->size(); }
 
-  int nodes_per_cell(int i) const { return (DIM == 2) ? 4 : 8; }
+  int nodes_per_cell(int /*i*/) const { return (DIM == 2) ? 4 : 8; }
   int nodes_per_element(int degree) const
   {
     if (degree == 1)
@@ -355,7 +359,7 @@ public:
       abort();
   }
 
-  int VtkType(int i) const { return (DIM == 2) ? 9 : 12; }
+  int VtkType(int /*i*/) const { return (DIM == 2) ? 9 : 12; }
 
   const Vertex<DIM>& vertex(int i) const
   {

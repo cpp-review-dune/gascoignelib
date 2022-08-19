@@ -96,7 +96,7 @@ class HeatRhs : public DomainRightHandSide
 {
 protected:
 public:
-  int GetNcomp() const { return COMP; }
+  ShortIndexType GetNcomp() const { return COMP; }
 
   double operator()(int /*unused*/, const Vertex2d& v) const
   {
@@ -121,7 +121,10 @@ public:
     : data(PD)
   {}
 
-  int GetNcomp() const { return COMP; } // COMP components. all do the same
+  ShortIndexType GetNcomp() const
+  {
+    return COMP;
+  } // COMP components. all do the same
 
   void SetFemData(FemData& q) const
   {

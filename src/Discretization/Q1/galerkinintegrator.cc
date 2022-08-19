@@ -275,10 +275,10 @@ GalerkinIntegrator<DIM>::AdjointForm(const Equation& EQ,
     }
   }
   for (int i = 0; i < FEM.n(); i++) {
-    for (int c = 0; c < Z.ncomp(); c++) {
+    for (ShortIndexType c = 0; c < Z.ncomp(); c++) {
       double sum = 0.;
       for (int j = 0; j < FEM.n(); j++) {
-        for (int d = 0; d < Z.ncomp(); d++) {
+        for (ShortIndexType d = 0; d < Z.ncomp(); d++) {
           sum += E(j, i, d, c) * Z(j, d);
         }
       }
@@ -527,8 +527,8 @@ Gascoigne::GalerkinIntegrator<DIM>::MassForm(const TimePattern& TP,
     BasicIntegrator::universal_point(FEM, _UH, U);
     for (int i = 0; i < FEM.n(); i++) {
       FEM.init_test_functions(_NN, weight, i);
-      for (int m = 0; m < TP.n(); m++) {
-        for (int n = 0; n < TP.n(); n++) {
+      for (ShortIndexType m = 0; m < TP.n(); m++) {
+        for (ShortIndexType n = 0; n < TP.n(); n++) {
           F(i, m) += TP(m, n) * _UH[n].m() * _NN.m();
         }
       }
@@ -543,7 +543,7 @@ void
 GalerkinIntegrator<DIM>::RhsPoint(LocalVector& F,
                                   const FemInterface& E,
                                   const Vertex<DIM>& p,
-                                  int comp) const
+                                  ShortIndexType comp) const
 {
   F.zero();
 
@@ -785,7 +785,7 @@ GalerkinIntegrator<DIM>::ErrorsByExactSolution(LocalVector& dst,
                                                const FemInterface& FE,
                                                const ExactSolution& ES,
                                                const LocalVector& U,
-                                               const LocalData& Q,
+                                               const LocalData& /*Q*/,
                                                const LocalData& QC) const
 {
   BasicIntegrator::universal_point(_QCH, QC);
@@ -803,14 +803,14 @@ GalerkinIntegrator<DIM>::ErrorsByExactSolution(LocalVector& dst,
     double weight = IF.w(k) * vol;
 
     FE.x(x);
-    for (int c = 0; c < U.ncomp(); c++) {
+    for (ShortIndexType c = 0; c < U.ncomp(); c++) {
       _UH[c].m() -= ES(c, x);
       _UH[c].x() -= ES.x(c, x);
       _UH[c].y() -= ES.y(c, x);
       if (DIM == 3)
         _UH[c].z() -= ES.z(c, x);
     }
-    for (int c = 0; c < U.ncomp(); c++) {
+    for (ShortIndexType c = 0; c < U.ncomp(); c++) {
       // L2 Norm
       dst(0, c) += weight * _UH[c].m() * _UH[c].m();
       // H1 Seminorm
@@ -857,7 +857,7 @@ void
 GalerkinIntegrator<DIM>::IntegrateBoundaryMassDiag(DoubleVector& F,
                                                    const FemInterface& FEM,
                                                    int ile,
-                                                   int col) const
+                                                   int /*col*/) const
 {
   F.resize(FEM.n());
 
@@ -892,8 +892,8 @@ GalerkinIntegrator<DIM>::RhsCurve(LocalVector& F,
                                   double H,
                                   double ND0,
                                   double ND1,
-                                  int ncomp,
-                                  int comp) const
+                                  ShortIndexType ncomp,
+                                  ShortIndexType comp) const
 {
   if (DIM == 3) {
     cerr << "GalerkinIntegrator<3>::RhsCurve not implemented yet!" << endl;

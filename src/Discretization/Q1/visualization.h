@@ -76,10 +76,10 @@ protected:
   void output_hexs(std::ofstream&, const std::string& s = "") const;
   void output_vertexs_by_component(std::ofstream&) const;
 
-  int CheckPointData() const;
-  int CheckCellData() const;
+  size_t CheckPointData() const;
+  size_t CheckCellData() const;
 
-  void output_solution(std::ofstream&, int) const;
+  void output_solution(std::ofstream&, IndexType) const;
 
   virtual void _vtk_pointdata(std::ofstream& out) const;
   virtual void _vtk_celldata(std::ofstream& out) const;

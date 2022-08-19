@@ -33,7 +33,7 @@ namespace Gascoigne {
 template<class T>
 class nmatrix : public nvector<T>
 {
-  int nn, mm;
+  size_t nn, mm;
 
 public:
   typedef typename nvector<T>::const_iterator const_iterator;

@@ -235,7 +235,7 @@ IntegratorQ1Q2<DIM>::AdjointForm(const Equation& EQ,
                                  const FemInterface& FemL,
                                  const LocalVector& Z,
                                  const LocalData& Q,
-                                 const LocalData& QC) const
+                                 const LocalData& /*QC*/) const
 {
   assert(FemH.n() == FemL.n());
 
@@ -281,10 +281,10 @@ IntegratorQ1Q2<DIM>::AdjointForm(const Equation& EQ,
     }
   }
   for (int i = 0; i < FemH.n(); i++) {
-    for (int c = 0; c < Z.ncomp(); c++) {
+    for (ShortIndexType c = 0; c < Z.ncomp(); c++) {
       double sum = 0.;
       for (int j = 0; j < FemL.n(); j++) {
-        for (int d = 0; d < Z.ncomp(); d++) {
+        for (ShortIndexType d = 0; d < Z.ncomp(); d++) {
           sum += E(j, i, d, c) * Z(j, d);
         }
       }
@@ -524,7 +524,7 @@ IntegratorQ1Q2<DIM>::DiracRhsPoint(LocalVector& b,
                                    const DiracRightHandSide& DRHS,
                                    int j,
                                    const LocalData& Q,
-                                   const LocalData& QC) const
+                                   const LocalData& /*QC*/) const
 {
   assert(FemH.n() == FemL.n());
   b.zero();
@@ -632,7 +632,7 @@ Gascoigne::IntegratorQ1Q2<DIM>::MassForm(const TimePattern& TP,
     BasicIntegrator::universal_point(FemL, _UH, U);
     for (int i = 0; i < FemH.n(); i++) {
       FemH.init_test_functions(_NN, weight, i);
-      for (int m = 0; m < TP.n(); m++) {
+      for (ShortIndexType m = 0; m < TP.n(); m++) {
         for (int n = 0; n < TP.n(); n++) {
           F(i, m) += TP(m, n) * _UH[n].m() * _NN.m();
         }

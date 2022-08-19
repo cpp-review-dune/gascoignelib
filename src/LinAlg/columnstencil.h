@@ -61,40 +61,40 @@ public:
 
   IndexType n() const { return sstart.size() - 1; }
   IndexType nentries() const { return scol.size(); }
-  IndexType rowsize(int i) const
+  IndexType rowsize(IndexType i) const
   {
-    assert((i >= 0) && (i + 1 < sstart.size()));
+    assert(i + 1 < sstart.size());
     return sstart[i + 1] - sstart[i];
   }
 
-  IndexType& col(int pos)
+  IndexType& col(IndexType pos)
   {
-    assert((pos >= 0) && (pos < scol.size()));
+    assert(pos < scol.size());
     return scol[pos];
   }
-  const IndexType& col(int pos) const
+  const IndexType& col(IndexType pos) const
   {
-    assert((pos >= 0) && (pos < scol.size()));
+    assert(pos < scol.size());
     return scol[pos];
   }
-  IndexType& start(int i)
+  IndexType& start(IndexType i)
   {
-    assert((i >= 0) && (i < sstart.size()));
+    assert(i < sstart.size());
     return sstart[i];
   }
-  const IndexType& start(int i) const
+  const IndexType& start(IndexType i) const
   {
-    assert((i >= 0) && (i < sstart.size()));
+    assert(i < sstart.size());
     return sstart[i];
   }
-  IndexType& stop(int i)
+  IndexType& stop(IndexType i)
   {
-    assert((i >= 0) && (i + 1 < sstart.size()));
+    assert(i + 1 < sstart.size());
     return sstart[i + 1];
   }
-  const IndexType& stop(int i) const
+  const IndexType& stop(IndexType i) const
   {
-    assert((i >= 0) && (i + 1 < sstart.size()));
+    assert(i + 1 < sstart.size());
     return sstart[i + 1];
   }
 

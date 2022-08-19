@@ -63,7 +63,7 @@ add_node(double s,
 {
   const int iif = i_f * f.ncomp();
   const int iiF = i_F * F.ncomp();
-  for (int c = 0; c < f.ncomp(); c++) {
+  for (ShortIndexType c = 0; c < f.ncomp(); c++) {
 #pragma omp atomic update
     f[iif + c] += s * F[iiF + c];
   }
@@ -185,7 +185,7 @@ public:
     datacontainer.DeleteParameterVector(name);
   }
 
-  void BasicInit(const ParamFile& pf)
+  void BasicInit(const ParamFile& /*pf*/)
   {
     assert(HN == NULL);
     HN = NewHNStructure();
@@ -211,12 +211,12 @@ public:
     return GetDofHandler()->vertex3d(i);
   }
 
-  int ndofs() const { return GetDofHandler()->nnodes(); }
-  int nelements() const { return GetDofHandler()->nelements(DEGREE); }
+  IndexType ndofs() const { return GetDofHandler()->nnodes(); }
+  IndexType nelements() const { return GetDofHandler()->nelements(DEGREE); }
   int ndegree() const { return DEGREE; }
-  int nhanging() const { return GetDofHandler()->nhanging(); }
+  IndexType nhanging() const { return GetDofHandler()->nhanging(); }
 
-  int ndofs_withouthanging() const
+  IndexType ndofs_withouthanging() const
   {
     return ndofs() - nhanging();
     // HANGING NODES
@@ -262,7 +262,7 @@ public:
     assert(GetDofHandler()->dimension() == DIM);
     int ne = GetDofHandler()->nodes_per_element(DEGREE);
 
-    IntVector indices = GetDofHandler()->GetElement(DEGREE, iq);
+    IndexVector indices = GetDofHandler()->GetElement(DEGREE, iq);
     assert(ne == indices.size());
 
     T.memory(DIM, ne);
@@ -303,7 +303,7 @@ public:
 
     S->build_begin(ndofs());
     for (int iq = 0; iq < GetDofHandler()->nelements(DEGREE); iq++) {
-      IntVector indices = GetDofHandler()->GetElement(DEGREE, iq);
+      IndexVector indices = GetDofHandler()->GetElement(DEGREE, iq);
       // HANGING NODES
       HN->CondenseHanging(indices);
       S->build_add(indices.begin(), indices.end());
@@ -327,12 +327,12 @@ public:
   //                                       int iq,
   //                                       double s) const
   // {
-  //   IntVector indices = GetDofHandler()->GetElement(DEGREE, iq);
+  //   IndexVector indices = GetDofHandler()->GetElement(DEGREE, iq);
 
   //   // HANGING NODES
   //   HN->CondenseHanging(E, indices);
-  //   IntVector::const_iterator start = indices.begin();
-  //   IntVector::const_iterator stop = indices.end();
+  //   IndexVector::const_iterator start = indices.begin();
+  //   IndexVector::const_iterator stop = indices.end();
   //   //#pragma omp critical
   //   A.entry(start, stop, E, s);
   // }
@@ -341,7 +341,7 @@ public:
   //                                       int iq,
   //                                       double s) const
   // {
-  //   IntVector indices = GetDofHandler()->GetElement(DEGREE, iq);
+  //   IndexVector indices = GetDofHandler()->GetElement(DEGREE, iq);
   //   for (int ii = 0; ii < indices.size(); ii++) {
   //     int i = indices[ii];
   //     //#pragma omp critical
@@ -354,12 +354,12 @@ public:
                              int iq,
                              double s) const
   {
-    IntVector indices = GetDofHandler()->GetElement(DEGREE, iq);
+    IndexVector indices = GetDofHandler()->GetElement(DEGREE, iq);
 
     // HANGING NODES
     HN->CondenseHanging(E, indices);
-    IntVector::const_iterator start = indices.begin();
-    IntVector::const_iterator stop = indices.end();
+    IndexVector::const_iterator start = indices.begin();
+    IndexVector::const_iterator stop = indices.end();
 
     A.entry(start, stop, E, s);
   }
@@ -368,7 +368,7 @@ public:
                              int iq,
                              double s) const
   {
-    IntVector indices = GetDofHandler()->GetElement(DEGREE, iq);
+    IndexVector indices = GetDofHandler()->GetElement(DEGREE, iq);
     for (int ii = 0; ii < indices.size(); ii++) {
       atom_ops::add_node(s, indices[ii], f, ii, F);
     }
@@ -377,7 +377,7 @@ public:
                              const GlobalVector& u,
                              int iq) const
   {
-    IntVector indices = GetDofHandler()->GetElement(DEGREE, iq);
+    IndexVector indices = GetDofHandler()->GetElement(DEGREE, iq);
     U.ReInit(u.ncomp(), indices.size());
     for (int ii = 0; ii < indices.size(); ii++) {
       int i = indices[ii];
@@ -389,8 +389,9 @@ public:
                                  int iq) const
   {
     U.ReInit(u.ncomp(), 1);
-    for (int c = 0; c < u.ncomp(); ++c)
+    for (ShortIndexType c = 0; c < u.ncomp(); ++c) {
       U(0, c) = u(iq, c);
+    }
   }
   virtual void GlobalToLocalData(int iq, LocalData& QN, LocalData& QC) const
   {
@@ -446,10 +447,12 @@ public:
     }
   }
 
-  void DiracRhs(GlobalVector& f, const DiracRightHandSide& DRHS, double s) const
+  void DiracRhs(GlobalVector& f,
+                const DiracRightHandSide& DRHS,
+                double /*s*/) const
   {
     const std::vector<int>& comps = DRHS.GetComps();
-    int nn = comps.size();
+    size_t nn = comps.size();
 
     if (DIM == 2) {
       // super simple...
@@ -476,7 +479,7 @@ public:
           std::cerr << "point " << v2d[i] << " not found" << std::endl;
           abort();
         }
-        f(j, comps[i]) += w[i];
+        f(j, static_cast<ShortIndexType>(comps[i])) += w[i];
       }
     } else if (DIM == 3) {
       // super simple...
@@ -504,7 +507,7 @@ public:
           std::cerr << "point " << v3d[i] << " not found" << std::endl;
           abort();
         }
-        f(j, comps[i]) += w[i];
+        f(j, static_cast<ShortIndexType>(comps[i])) += w[i];
       }
 
     }
@@ -574,8 +577,8 @@ public:
       NRHS->SetParameterData(QP);
       // NRHS->SetTime(PD.time(),PD.dt());
       for (auto col : Colors) {
-        const IntVector& q = *GetDofHandler()->ElementOnBoundary(DEGREE, col);
-        const IntVector& l =
+        const IndexVector& q = *GetDofHandler()->ElementOnBoundary(DEGREE, col);
+        const IndexVector& l =
           *GetDofHandler()->ElementLocalOnBoundary(DEGREE, col);
 #pragma omp for schedule(static)
         for (int i = 0; i < q.size(); i++) {
@@ -660,8 +663,8 @@ public:
       BEQ->SetTime(PD.time(), PD.dt());
 
       for (auto col : COLS) {
-        const IntVector& q = *GetDofHandler()->ElementOnBoundary(DEGREE, col);
-        const IntVector& l =
+        const IndexVector& q = *GetDofHandler()->ElementOnBoundary(DEGREE, col);
+        const IndexVector& l =
           *GetDofHandler()->ElementLocalOnBoundary(DEGREE, col);
 #pragma omp for schedule(static)
         for (int i = 0; i < q.size(); i++) {
@@ -710,8 +713,8 @@ public:
       BEQ->SetTime(PD.time(), PD.dt());
 
       for (const auto col : COLS) {
-        const IntVector& q = *GetDofHandler()->ElementOnBoundary(DEGREE, col);
-        const IntVector& l =
+        const IndexVector& q = *GetDofHandler()->ElementOnBoundary(DEGREE, col);
+        const IndexVector& l =
           *GetDofHandler()->ElementLocalOnBoundary(DEGREE, col);
 #pragma omp for schedule(static)
         for (int i = 0; i < q.size(); i++) {
@@ -783,8 +786,8 @@ public:
 
     double j = 0.;
     for (const auto col : Colors) {
-      const IntVector& q = *GetDofHandler()->ElementOnBoundary(DEGREE, col);
-      const IntVector& l =
+      const IndexVector& q = *GetDofHandler()->ElementOnBoundary(DEGREE, col);
+      const IndexVector& l =
         *GetDofHandler()->ElementLocalOnBoundary(DEGREE, col);
       for (int i = 0; i < q.size(); i++) {
         int iq = q[i];
@@ -836,7 +839,7 @@ public:
     for (iq = 0; iq < GetDofHandler()->nelements(DEGREE); ++iq) {
       bool found = true;
 
-      IntVector indices = GetDofHandler()->GetElement(DEGREE, iq);
+      IndexVector indices = GetDofHandler()->GetElement(DEGREE, iq);
 
       for (int d = 0; d < DIM; ++d) {
         // double
@@ -896,7 +899,7 @@ public:
   ////////////////////////////////////////////////// Functionals
   double ComputePointValue(const GlobalVector& u,
                            const Vertex2d& p0,
-                           int comp) const
+                           ShortIndexType comp) const
   {
     // very simple version. Only finds nodes
     for (int n = 0; n < GetDofHandler()->nnodes(); ++n) {
@@ -904,7 +907,7 @@ public:
       for (int d = 0; d < DIM; ++d)
         dist += pow(GetDofHandler()->vertex(n)[d] - p0[d], 2.0);
       if (dist < sqrt(1.e-13))
-        return u(n, comp);
+        return u(n, static_cast<ShortIndexType>(comp));
     }
     std::cerr << "DofHandler::ComputePointValue. Vertex " << p0 << " not found!"
               << std::endl;
@@ -934,7 +937,7 @@ public:
   }
   double ComputePointValue(const GlobalVector& u,
                            const Vertex3d& p0,
-                           int comp) const
+                           ShortIndexType comp) const
   {
     /*// very simple version. Only finds nodes
     for (int n=0;n<GetDofHandler()->nnodes();++n)
@@ -983,7 +986,7 @@ public:
     int dim = GetDofHandler()->dimension();
     assert(dim == DIM);
     std::vector<int> comps = FP.GetComps();
-    int nn = comps.size();
+    size_t nn = comps.size();
 
     std::vector<double> up(nn, 0);
 
@@ -992,13 +995,15 @@ public:
       assert(nn == v2d.size());
 
       for (int i = 0; i < nn; ++i) {
-        up[i] = ComputePointValue(u, v2d[i], comps[i]);
+        up[i] =
+          ComputePointValue(u, v2d[i], static_cast<ShortIndexType>(comps[i]));
       }
     } else if (dim == 3) {
       auto v3d = FP.GetPoints3d();
       assert(nn == v3d.size());
       for (int i = 0; i < nn; ++i) {
-        up[i] = ComputePointValue(u, v3d[i], comps[i]);
+        up[i] =
+          ComputePointValue(u, v3d[i], static_cast<ShortIndexType>(comps[i]));
       }
     } else {
       std::cout << "wronng dimension: dim = " << dim << std::endl;
@@ -1081,7 +1086,7 @@ public:
       double cellsize = integrator.MassMatrix(E, finiteelement);
       PF->AddDomainPiece(cellsize);
 
-      IntVector ind = GetDofHandler()->GetElement(DEGREE, iq);
+      IndexVector ind = GetDofHandler()->GetElement(DEGREE, iq);
       HN->CondenseHanging(E, ind);
 
       for (int i = 0; i < ind.size(); i++)
@@ -1101,7 +1106,7 @@ public:
       return; // no Dirichlet Data
 
     for (const auto color : DD->dirichlet_colors()) {
-      const IntVector& bv = *GetDofHandler()->VertexOnBoundary(color);
+      const IndexVector& bv = *GetDofHandler()->VertexOnBoundary(color);
 
       LocalParameterData QP;
       GlobalToGlobalData(QP);
@@ -1119,14 +1124,14 @@ public:
         auto p = GetDataContainer().GetNodeData().begin();
         for (; p != GetDataContainer().GetNodeData().end(); p++) {
           QH[p->first].resize(p->second->ncomp());
-          for (int c = 0; c < p->second->ncomp(); c++) {
+          for (ShortIndexType c = 0; c < p->second->ncomp(); c++) {
             QH[p->first][c].m() = p->second->operator()(index, c);
           }
         }
         const Vertex<DIM>& v = GetDofHandler()->vertex(index);
         (*DD)(ff, v, color);
         for (auto comp : DD->components_on_color(color))
-          u(index, comp) = d * ff[comp];
+          u(index, static_cast<ShortIndexType>(comp)) = d * ff[comp];
       }
     }
   }
@@ -1138,7 +1143,7 @@ public:
       return; // no Dirichlet Data
 
     for (auto color : DD->dirichlet_colors()) {
-      const IntVector& bv = *GetDofHandler()->VertexOnBoundary(color);
+      const IndexVector& bv = *GetDofHandler()->VertexOnBoundary(color);
 #pragma omp parallel for
       for (int i = 0; i < bv.size(); i++)
         A.dirichlet(bv[i], DD->components_on_color(color));
@@ -1152,7 +1157,7 @@ public:
       return; // no Dirichlet Data
 
     for (auto color : DD->dirichlet_colors()) {
-      const IntVector& bv = *GetDofHandler()->VertexOnBoundary(color);
+      const IndexVector& bv = *GetDofHandler()->VertexOnBoundary(color);
 #pragma omp parallel for
       for (int i = 0; i < bv.size(); i++)
         A.dirichlet_only_row(bv[i], DD->components_on_color(color));
@@ -1166,13 +1171,13 @@ public:
       return; // no Dirichlet Data
 
     for (auto color : DD->dirichlet_colors()) {
-      const IntVector& bv = *GetDofHandler()->VertexOnBoundary(color);
+      const IndexVector& bv = *GetDofHandler()->VertexOnBoundary(color);
 
 #pragma omp parallel for
       for (int i = 0; i < bv.size(); i++) {
         int index = bv[i];
         for (auto comp : DD->components_on_color(color))
-          u(index, comp) = 0.;
+          u(index, static_cast<ShortIndexType>(comp)) = 0.;
       }
     }
   }
@@ -1187,7 +1192,7 @@ public:
       dynamic_cast<const GascoigneMesh*>(GetDofHandler());
     assert(GMP);
     DoubleVector ff(u.ncomp(), 0.);
-    const IntVector& bv = *GMP->VertexOnBoundary(col);
+    const IndexVector& bv = *GMP->VertexOnBoundary(col);
 
     FemData QH;
 
@@ -1197,7 +1202,7 @@ public:
 
     // for(int ii=0;ii<comp.size();ii++)
     //{
-    //  int c = comp[ii];
+    //  ShortIndexType c = comp[ii];
     //  if(c<0) {
     //    cerr << "negative component: " << c << endl;
     //    abort();
@@ -1214,7 +1219,7 @@ public:
       GlobalData::const_iterator p = GetDataContainer().GetNodeData().begin();
       for (; p != GetDataContainer().GetNodeData().end(); p++) {
         QH[p->first].resize(p->second->ncomp());
-        for (int c = 0; c < p->second->ncomp(); c++) {
+        for (ShortIndexType c = 0; c < p->second->ncomp(); c++) {
           QH[p->first][c].m() = p->second->operator()(index, c);
         }
       }
@@ -1225,7 +1230,7 @@ public:
 
       BF(ff, v, col);
       for (int iii = 0; iii < comp.size(); iii++) {
-        int c = comp[iii];
+        ShortIndexType c = static_cast<ShortIndexType>(comp[iii]);
         u(index, c) = d * ff[c];
       }
     }
@@ -1236,7 +1241,7 @@ public:
                     LocalVector& err,
                     const ExactSolution* ES) const
   {
-    int ncomp = u.ncomp();
+    ShortIndexType ncomp = u.ncomp();
     err.ncomp() = ncomp;
     err.reservesize(3);
     err = 0.;
@@ -1268,7 +1273,7 @@ public:
 
         // this update must be guarded for multithreading
 #pragma omp critical
-        for (int c = 0; c < ncomp; c++) {
+        for (ShortIndexType c = 0; c < ncomp; c++) {
           err(0, c) += lerr(0, c);
           err(1, c) += lerr(1, c);
           err(2, c) = std::max(err(2, c), lerr(2, c));
@@ -1276,7 +1281,7 @@ public:
       }
     }
 
-    for (int c = 0; c < ncomp; c++) {
+    for (ShortIndexType c = 0; c < ncomp; c++) {
       err(0, c) = sqrt(err(0, c));
       err(1, c) = sqrt(err(1, c));
     }

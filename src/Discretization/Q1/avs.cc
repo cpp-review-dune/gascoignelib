@@ -39,7 +39,7 @@ Visualization::avs(const string& bname) const
   ofstream out(name.c_str());
   FILE_ERROR(out, name);
 
-  int nc = CheckPointData();
+  size_t nc = CheckPointData();
 
   bool CreateZero = 0;
   for (VisuDataInfo::viterator p = PointDataInfo->vbegin();
@@ -98,7 +98,7 @@ Visualization::avs(const string& bname) const
       for (VisuDataInfo::siterator p = PointDataInfo->sbegin();
            p != PointDataInfo->send();
            ++p) {
-        out << " " << PointData->visudata(ind, p->second);
+        out << " " << PointData->visudata(ind, static_cast<int>(p->second));
       }
       if (CreateZero)
         out << " 0";

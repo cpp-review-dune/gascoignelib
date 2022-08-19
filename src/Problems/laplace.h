@@ -62,7 +62,7 @@ public:
   Laplace<DIM>* createNew() const { return new Laplace<DIM>(data); }
 
   std::string GetName() const { return "Laplace"; }
-  int GetNcomp() const { return 1; }
+  ShortIndexType GetNcomp() const { return 1; }
   void point(double h, const FemFunction& U, const Vertex2d& v) const {}
 
   void Form(VectorIterator b, const FemFunction& U, const TestFunction& N) const

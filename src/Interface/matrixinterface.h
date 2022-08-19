@@ -104,7 +104,7 @@ public:
   //
   /// for hanging nodes
   //
-  virtual void entry_diag(int i, const nmatrix<double>& M) = 0;
+  virtual void entry_diag(IndexType i, const nmatrix<double>& M) = 0;
 
   //
   /// for boundary conditions

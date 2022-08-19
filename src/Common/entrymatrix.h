@@ -37,27 +37,37 @@ protected:
   typedef DoubleVector::iterator iterator;
   typedef std::vector<DoubleVector> Vector;
 
-  int ndof, mdof, ncomp, mcomp, nmdof, nmcomp;
-  int ind;
+  IndexType ndof, mdof, nmdof;
+  ShortIndexType ncomp, mcomp, nmcomp;
+  IndexType ind;
   //  iterator         pind;
   DoubleVector val;
 
-  int dofindex(int i, int j) const { return nmcomp * (mdof * i + j); }
-  int compindex(int c, int d) const { return mcomp * c + d; }
-  int index(int i, int j, int c, int d) const
+  IndexType dofindex(IndexType i, IndexType j) const
+  {
+    return nmcomp * (mdof * i + j);
+  }
+  IndexType compindex(ShortIndexType c, ShortIndexType d) const
+  {
+    return mcomp * c + d;
+  }
+  IndexType index(IndexType i,
+                  IndexType j,
+                  ShortIndexType c,
+                  ShortIndexType d) const
   {
     return dofindex(i, j) + compindex(c, d);
   }
 
 public:
   EntryMatrix() {}
-  EntryMatrix(int nd, int nc)
+  EntryMatrix(IndexType nd, IndexType nc)
   {
     SetDimensionDof(nd, nd);
     SetDimensionComp(nc, nc);
     resize();
   }
-  EntryMatrix(int nd, int md, int nc, int mc)
+  EntryMatrix(IndexType nd, IndexType md, ShortIndexType nc, ShortIndexType mc)
   {
     SetDimensionDof(nd, md);
     SetDimensionComp(nc, mc);
@@ -65,28 +75,40 @@ public:
   }
   ~EntryMatrix() { val.clear(); }
 
-  const_iterator begin(int i, int j) const
+  const_iterator begin(IndexType i, IndexType j) const
   {
     return val.begin() + dofindex(i, j);
   }
-  iterator begin(int i, int j) { return val.begin() + dofindex(i, j); }
-  const_iterator end(int i, int j) const
+  iterator begin(IndexType i, IndexType j)
+  {
+    return val.begin() + dofindex(i, j);
+  }
+  const_iterator end(IndexType i, IndexType j) const
   {
     return val.begin() + dofindex(i, j + 1);
   }
-  iterator end(int i, int j) { return val.begin() + dofindex(i, j + 1); }
+  iterator end(IndexType i, IndexType j)
+  {
+    return val.begin() + dofindex(i, j + 1);
+  }
 
-  void SetDofIndex(int i, int j) { ind = dofindex(i, j); }
-  double operator()(int c, int d) const { return val[ind + compindex(c, d)]; }
-  double& operator()(int c, int d) { return val[ind + compindex(c, d)]; }
+  void SetDofIndex(IndexType i, IndexType j) { ind = dofindex(i, j); }
+  double operator()(ShortIndexType c, ShortIndexType d) const
+  {
+    return val[ind + compindex(c, d)];
+  }
+  double& operator()(ShortIndexType c, ShortIndexType d)
+  {
+    return val[ind + compindex(c, d)];
+  }
 
-  void SetDimensionDof(int n, int m)
+  void SetDimensionDof(IndexType n, IndexType m)
   {
     ndof = n;
     mdof = m;
     nmdof = n * m;
   }
-  void SetDimensionComp(int n, int m)
+  void SetDimensionComp(IndexType n, IndexType m)
   {
     ncomp = n;
     mcomp = m;
@@ -94,20 +116,26 @@ public:
   }
   void resize() { val.reservesize(nmdof * nmcomp); }
 
-  int Ncomp() const { return ncomp; }
-  int Mcomp() const { return mcomp; }
-  int Ndof() const { return ndof; }
-  int Mdof() const { return mdof; }
+  ShortIndexType Ncomp() const { return ncomp; }
+  ShortIndexType Mcomp() const { return mcomp; }
+  IndexType Ndof() const { return ndof; }
+  IndexType Mdof() const { return mdof; }
 
-  double operator()(int i, int j, int c, int d) const
+  double operator()(IndexType i,
+                    IndexType j,
+                    ShortIndexType c,
+                    ShortIndexType d) const
   {
     return val[index(i, j, c, d)];
   }
-  double& operator()(int i, int j, int c, int d)
+  double& operator()(IndexType i,
+                     IndexType j,
+                     ShortIndexType c,
+                     ShortIndexType d)
   {
     return val[index(i, j, c, d)];
   }
-  double operator()(int i, int j, int p) const
+  double operator()(IndexType i, IndexType j, IndexType p) const
   {
     return val[dofindex(i, j) + p];
   }
@@ -119,11 +147,11 @@ public:
     s << A.Ndof() << "\t" << A.Mdof() << std::endl;
     s << A.Ncomp() << "\t" << A.Mcomp() << std::endl;
 
-    for (int i = 0; i < A.Ndof(); i++) {
-      for (int j = 0; j < A.Mdof(); j++) {
+    for (IndexType i = 0; i < A.Ndof(); i++) {
+      for (IndexType j = 0; j < A.Mdof(); j++) {
         s << "\n[" << i << "," << j << "] ";
-        for (int c = 0; c < A.Ncomp(); c++) {
-          for (int d = 0; d < A.Mcomp(); d++) {
+        for (ShortIndexType c = 0; c < A.Ncomp(); c++) {
+          for (ShortIndexType d = 0; d < A.Mcomp(); d++) {
             s << A(i, j, c, d) << " ";
           }
         }
@@ -132,7 +160,11 @@ public:
     return s;
   }
 
-  void add(int il, int jl, int i, int j, const EntryMatrix& E)
+  void add(IndexType il,
+           IndexType jl,
+           IndexType i,
+           IndexType j,
+           const EntryMatrix& E)
   {
     iterator p = begin(il, jl);
     const_iterator q = end(il, jl);
@@ -141,18 +173,18 @@ public:
       *p++ += *pE++;
   }
 
-  void zero_row(int i1)
+  void zero_row(IndexType i1)
   {
-    for (int j = 0; j < mdof; j++) {
+    for (IndexType j = 0; j < mdof; j++) {
       iterator p1 = begin(i1, j);
       const_iterator q1 = end(i1, j);
       while (p1 != q1)
         *p1++ = 0.;
     }
   }
-  void zero_column(int j1)
+  void zero_column(IndexType j1)
   {
-    for (int i = 0; i < ndof; i++) {
+    for (IndexType i = 0; i < ndof; i++) {
       iterator p1 = begin(i, j1);
       const_iterator q1 = end(i, j1);
       while (p1 != q1)
@@ -160,9 +192,9 @@ public:
     }
   }
 
-  void add_row(int i1, int i2, double s = 1.)
+  void add_row(IndexType i1, IndexType i2, double s = 1.)
   {
-    for (int j = 0; j < mdof; j++) {
+    for (IndexType j = 0; j < mdof; j++) {
       iterator p1 = begin(i1, j);
       const_iterator p2 = begin(i2, j);
       const_iterator q1 = end(i1, j);
@@ -171,9 +203,9 @@ public:
     }
   }
 
-  void add_column(int j1, int j2, double s = 1.)
+  void add_column(IndexType j1, IndexType j2, double s = 1.)
   {
-    for (int i = 0; i < ndof; i++) {
+    for (IndexType i = 0; i < ndof; i++) {
       iterator p1 = begin(i, j1);
       const_iterator p2 = begin(i, j2);
       const_iterator q1 = end(i, j1);
@@ -182,24 +214,24 @@ public:
     }
   }
 
-  void add_column_row(int i1, int i2)
+  void add_column_row(IndexType i1, IndexType i2)
   {
     add_column(i1, i2);
     add_row(i1, i2);
   }
 
-  void multiply_row(int i, double s = 1.)
+  void multiply_row(IndexType i, double s = 1.)
   {
-    for (int j = 0; j < mdof; j++) {
+    for (IndexType j = 0; j < mdof; j++) {
       iterator p = begin(i, j);
       const_iterator q = end(i, j);
       while (p != q)
         *p++ *= s;
     }
   }
-  void multiply_column(int j, double s = 1.)
+  void multiply_column(IndexType j, double s = 1.)
   {
-    for (int i = 0; i < ndof; i++) {
+    for (IndexType i = 0; i < ndof; i++) {
       iterator p = begin(i, j);
       const_iterator q = end(i, j);
       while (p != q)
@@ -207,20 +239,20 @@ public:
     }
   }
 
-  void multiply_column_row(int j, double s = 1.)
+  void multiply_column_row(IndexType j, double s = 1.)
   {
     multiply_column(j, s);
     multiply_row(j, s);
   }
 
-  void distribute_row(int s, int t1, int t2)
+  void distribute_row(IndexType s, IndexType t1, IndexType t2)
   {
     add_column(t1, s, 0.5);
     add_column(t2, s, 0.5);
     multiply_column(s, 0.);
   }
 
-  void distribute_column(int s, int t1, int t2)
+  void distribute_column(IndexType s, IndexType t1, IndexType t2)
   {
     add_row(t1, s, 0.5);
     add_row(t2, s, 0.5);
@@ -228,12 +260,12 @@ public:
   }
   void transpose(EntryMatrix& E)
   {
-    for (int i = 0; i < ndof; i++) {
-      for (int j = 0; j < mdof; j++) {
+    for (IndexType i = 0; i < ndof; i++) {
+      for (IndexType j = 0; j < mdof; j++) {
         SetDofIndex(i, j);
         E.SetDofIndex(j, i);
-        for (int c = 0; c < ncomp; c++) {
-          for (int d = 0; d < mcomp; d++) {
+        for (ShortIndexType c = 0; c < ncomp; c++) {
+          for (ShortIndexType d = 0; d < mcomp; d++) {
             (*this)(c, d) = E(d, c);
           }
         }
@@ -248,11 +280,11 @@ public:
   }
   void mult(Vector& y, const Vector& x)
   {
-    for (int i = 0; i < ndof; i++) {
-      for (int j = 0; j < mdof; j++) {
+    for (IndexType i = 0; i < ndof; i++) {
+      for (IndexType j = 0; j < mdof; j++) {
         SetDofIndex(i, j);
-        for (int c = 0; c < ncomp; c++) {
-          for (int d = 0; d < mcomp; d++) {
+        for (ShortIndexType c = 0; c < ncomp; c++) {
+          for (ShortIndexType d = 0; d < mcomp; d++) {
             y[i][c] += (*this)(c, d) * x[j][d];
           }
         }

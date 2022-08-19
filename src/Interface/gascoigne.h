@@ -56,8 +56,9 @@ typedef nvector<double> LocalParameterVector;
 typedef std::map<std::string, const GlobalParameterVector*> GlobalParameterData;
 typedef std::map<std::string, LocalParameterVector> LocalParameterData;
 
-typedef nvector<int> IntVector;
 typedef nvector<IndexType> IndexVector;
+typedef nvector<ShortIndexType> ShortIndexVector;
+typedef nvector<int> IntVector;
 typedef nvector<double> DoubleVector;
 typedef nmatrix<double> DoubleMatrix;
 typedef std::set<int> IntSet;

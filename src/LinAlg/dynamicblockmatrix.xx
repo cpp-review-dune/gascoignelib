@@ -381,7 +381,7 @@ DynamicBlockMatrix<B>::entry(nvector<int>::const_iterator start,
 
 template<class B>
 void
-DynamicBlockMatrix<B>::entry_diag(int i, const nmatrix<double>& M)
+DynamicBlockMatrix<B>::entry_diag(IndexType i, const nmatrix<double>& M)
 {
   vdiag(i)->entry(M);
 }
