@@ -40,19 +40,21 @@ public:
 
   void Average(GlobalVector& u) const;
   void Distribute(GlobalVector& u) const;
-  void CondenseHanging(EntryMatrix& E, IntVector& indices) const;
-  void CondenseHangingLowerHigher(EntryMatrix& E, IntVector& indices) const;
-  void CondenseHangingHigherLower(EntryMatrix& E, IntVector& indices) const;
-  void CondenseHangingMixed(EntryMatrix& E, IntVector& indices, int k) const;
-  void CondenseHanging(IntVector& indices) const;
-  void CondenseHangingPatch(EntryMatrix& E, IntVector& indices) const
+  void CondenseHanging(EntryMatrix& E, IndexVector& indices) const;
+  void CondenseHangingLowerHigher(EntryMatrix& E, IndexVector& indices) const;
+  void CondenseHangingHigherLower(EntryMatrix& E, IndexVector& indices) const;
+  void CondenseHangingMixed(EntryMatrix& E,
+                            IndexVector& indices,
+                            IndexType k) const;
+  void CondenseHanging(IndexVector& indices) const;
+  void CondenseHangingPatch(EntryMatrix& /*E*/, IndexVector& /*indices*/) const
   {
     std::cerr << "\"HNStructureQ22d::CondenseHangingPatch\" not written!"
               << std::endl;
     abort();
   }
 
-  // void NewCondenseHanging(EntryMatrix& E, IntVector& indices1, IntVector&
+  // void NewCondenseHanging(EntryMatrix& E, IndexVector& indices1, IndexVector&
   // indices2) const;
 };
 } // namespace Gascoigne

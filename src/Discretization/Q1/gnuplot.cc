@@ -155,7 +155,7 @@ Visualization::gnuplot(const string& name) const
       continue;
 
     DoubleVector x(i);
-    int comp = PointData->visucomp();
+    ShortIndexType comp = PointData->visucomp();
     GlobalVector f(comp);
     f.resize(i);
     i = 0;
@@ -164,7 +164,7 @@ Visualization::gnuplot(const string& name) const
         const Vertex3d& V = mesh->vertex3d(ind);
         if (GP[k].TestVertex(V)) {
           x[i] = GP[k].SetVertex(V);
-          for (int c = 0; c < comp; c++) {
+          for (ShortIndexType c = 0; c < comp; c++) {
             f(i, c) = PointData->visudata(ind, c);
           }
           i++;
@@ -175,7 +175,7 @@ Visualization::gnuplot(const string& name) const
         const Vertex2d& V = mesh->vertex2d(ind);
         if (GP[k].TestVertex(V)) {
           x[i] = GP[k].SetVertex(V);
-          for (int c = 0; c < comp; c++) {
+          for (ShortIndexType c = 0; c < comp; c++) {
             f(i, c) = PointData->visudata(ind, c);
           }
           i++;
@@ -203,7 +203,7 @@ Visualization::gnuplot(const string& name) const
 
     for (int i = 0; i < x.size(); i++) {
       out << x[C[i]];
-      for (int c = 0; c < comp; c++) {
+      for (ShortIndexType c = 0; c < comp; c++) {
         out << "  " << f(C[i], c);
       }
       out << endl;

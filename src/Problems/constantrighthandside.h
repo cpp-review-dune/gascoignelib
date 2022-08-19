@@ -40,7 +40,7 @@ public:
     , ncomp(n)
   {}
   std::string GetName() const { return "one"; }
-  int GetNcomp() const { return ncomp; }
+  ShortIndexType GetNcomp() const { return ncomp; }
   double operator()(int c, const Vertex2d& v) const { return 1.; }
   double operator()(int c, const Vertex3d& v) const { return 1.; }
 };
@@ -57,7 +57,7 @@ public:
   ConstantRightHandSideData(const std::vector<std::string>& args);
   ConstantRightHandSideData(const int ncomp, const int comp, const double d);
   std::string GetName() const { return "constant"; }
-  int GetNcomp() const { return _ncomp; }
+  ShortIndexType GetNcomp() const { return _ncomp; }
   double operator()(int c, const Vertex2d& v) const;
   double operator()(int c, const Vertex3d& v) const;
 };
@@ -78,7 +78,7 @@ public:
 
   std::string GetName() const { return "one_onecomp"; }
 
-  int GetNcomp() const { return ncomp; }
+  ShortIndexType GetNcomp() const { return ncomp; }
 
   double operator()(int c, const Vertex2d&) const
   {
@@ -98,7 +98,7 @@ public:
 
 class RectangleRightHandSideData : public DomainRightHandSide
 {
-  int ncomp, comp; // ist die Komponente die Eins ist
+  ShortIndexType ncomp, comp; // ist die Komponente die Eins ist
   double x0, x1, y0, y1, z0, z1;
 
 public:
@@ -140,7 +140,7 @@ public:
 
   std::string GetName() const { return "RectangleRightHandSideData"; }
 
-  int GetNcomp() const { return ncomp; }
+  ShortIndexType GetNcomp() const { return ncomp; }
 
   double operator()(int c, const Vertex2d& V) const
   {

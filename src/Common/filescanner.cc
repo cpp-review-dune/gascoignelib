@@ -94,7 +94,7 @@ FileScanner::readfile(const ParamFile& pf, const string& blockname)
   }
 
   vector<string> words;
-  int nwords = 0;
+  size_t nwords = 0;
   bool searchblock = (blockname != "");
   bool blockfound = !searchblock;
   bool helpfound = 0;
@@ -157,11 +157,12 @@ FileScanner::readfile(const ParamFile& pf, const string& blockname)
     }
   }
 
-  while (nwords >= 0) {
+  while (true) {
     nwords = LS.NextLine(words);
 
-    if (nwords == 0)
+    if (nwords == 0) {
       continue;
+    }
 
     if (words[0] != blocksymbol)
       continue;
@@ -188,23 +189,27 @@ FileScanner::readfile(const ParamFile& pf, const string& blockname)
   // scanning parameters in block
   //
   if (blockfound) {
-    while (nwords >= 0) {
+    while (true) {
       nwords = LS.NextLine(words);
 
-      if (nwords == 0)
+      if (nwords == 0) {
         continue;
+      }
 
       // testing if next block begins
       //
-      if (words[0] == blocksymbol)
+      if (words[0] == blocksymbol) {
         break;
+      }
       //
       // testing commentaries
       //
-      if (words[0] == "/*")
+      if (words[0] == "/*") {
         continue;
-      if (words[0] == "//")
+      }
+      if (words[0] == "//") {
         continue;
+      }
 
       if (nwords == 1) {
         cout << "where is the parameter \"" << words[0] << "\" ?" << endl;
@@ -332,7 +337,7 @@ FileScanner::FormatToValue(const vector<string>& words)
       DH.setvalue(keyword, false);
     }
   } else if (keyword_type == "float") {
-    float value = atof(words[1].c_str());
+    float value = static_cast<float>(atof(words[1].c_str()));
     DH.setvalue(keyword, value);
   } else if (keyword_type == "double") {
     double value = atof(words[1].c_str());

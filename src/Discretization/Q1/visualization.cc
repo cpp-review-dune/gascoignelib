@@ -249,33 +249,32 @@ Visualization::write()
 
 /********************************************************************/
 
-int
+size_t
 Visualization::CheckPointData() const
 {
   if (PointData == NULL)
     return 0;
 
-  set<int> comps;
+  set<IndexType> comps;
 
   // scalars
   for (VisuDataInfo::siterator p = PointDataInfo->sbegin();
        p != PointDataInfo->send();
        ++p) {
-    int q = p->second;
+    IndexType q = p->second;
 
-    assert(q >= 0);
     assert(q < PointData->visucomp());
 
     comps.insert(q);
   }
 
   // vectors
-  if (0)
+  if (0) {
     for (VisuDataInfo::viterator p = PointDataInfo->vbegin();
          p != PointDataInfo->vend();
          ++p) {
       for (int i = 0; i < 3; i++) {
-        int q = p->second[i];
+        IndexType q = p->second[i];
 
         assert(q >= -1);
         assert(q < PointData->visucomp());
@@ -283,24 +282,25 @@ Visualization::CheckPointData() const
         comps.insert(q);
       }
     }
+  }
   return comps.size();
 }
 
 /********************************************************************/
 
-int
+size_t
 Visualization::CheckCellData() const
 {
   if (!CellData)
     return 0;
 
-  set<int> comps;
+  set<IndexType> comps;
 
   // scalars
   for (VisuDataInfo::siterator p = CellDataInfo->sbegin();
        p != CellDataInfo->send();
        ++p) {
-    if ((p->second < 0) || (p->second >= CellData->visucomp())) {
+    if (p->second >= CellData->visucomp()) {
       cerr << "Visualization::CheckCellData()\n";
       cerr << "scalar does not exist " << p->second << endl;
       exit(1);
@@ -403,7 +403,7 @@ Visualization::output_hexs(ofstream& file, const string& text) const
 /********************************************************************/
 
 void
-Visualization::output_solution(ofstream& file, int c) const
+Visualization::output_solution(ofstream& file, IndexType c) const
 {
   for (int ind = 0; ind < PointData->visun(); ind++) {
     file << PointData->visudata(ind, c) << " ";

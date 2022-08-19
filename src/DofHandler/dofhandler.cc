@@ -90,14 +90,14 @@ DofHandler<3>::vertex3d(int i) const
 // wrong dimension
 template<>
 const Vertex<3>&
-DofHandler<2>::vertex3d(int i) const
+DofHandler<2>::vertex3d(int /*i*/) const
 {
   std::cerr << "Error: no 3d-vertex in 2d!" << std::endl;
   abort();
 }
 template<>
 const Vertex<2>&
-DofHandler<3>::vertex2d(int i) const
+DofHandler<3>::vertex2d(int /*i*/) const
 {
   std::cerr << "Error: no 2d-vertex in 3d!" << std::endl;
   abort();

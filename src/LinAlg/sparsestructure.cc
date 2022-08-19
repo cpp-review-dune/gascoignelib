@@ -83,7 +83,7 @@ SparseStructure::operator=(const SparseStructure& A)
 /*----------------------------------------------*/
 
 void
-SparseStructure::build_begin(int n)
+SparseStructure::build_begin(IndexType n)
 {
   sindices.reserve(n);
   sindices.resize(n);
@@ -102,7 +102,7 @@ SparseStructure::build_clear(int i)
 /*----------------------------------------------*/
 
 void
-SparseStructure::hanging_node(int hi, int n1, int n2)
+SparseStructure::hanging_node(IndexType hi, IndexType n1, IndexType n2)
 {
   // neu (eliminiert den hn in sich selbst und dann in den anderen), mit
   // gascoigne nicht getestet!

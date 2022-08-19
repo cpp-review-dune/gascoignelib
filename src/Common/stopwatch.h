@@ -108,7 +108,7 @@ public:
   double readPerActivations() const
   {
     assert(!running);
-    return sum_time.count() / activations;
+    return sum_time.count() / static_cast<double>(activations);
   }
 
   virtual double readCPU() const

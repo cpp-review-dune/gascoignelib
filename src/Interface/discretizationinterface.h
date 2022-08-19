@@ -89,8 +89,9 @@ public:
   virtual void BasicInit(const ParamFile& pf) = 0;
   virtual void ReInit(const GascoigneMesh* M) = 0;
 
-  virtual int ndofs() const = 0; // returns the number of degrees of freedom
-  virtual int nelements()
+  virtual IndexType ndofs()
+    const = 0; // returns the number of degrees of freedom
+  virtual IndexType nelements()
     const = 0; // returns the number of elements in the discretization
   virtual int ndegree() const
   {
@@ -99,7 +100,7 @@ public:
               << std::endl;
     return 1;
   }
-  virtual int ndofs_withouthanging() const { return ndofs(); }
+  virtual IndexType ndofs_withouthanging() const { return ndofs(); }
   virtual Vertex2d vertex2d(int i) const { abort(); }
   virtual Vertex3d vertex3d(int i) const { abort(); }
 

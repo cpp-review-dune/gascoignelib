@@ -109,7 +109,7 @@ public:
 #pragma GCC diagnostic pop
 
   void transpose();
-  void entry_diag(int i, const nmatrix<double>& M);
+  void entry_diag(IndexType i, const nmatrix<double>& M);
 
   void PrepareJacobi(double s = 1.);
   void JacobiVector(GlobalVector& y) const;

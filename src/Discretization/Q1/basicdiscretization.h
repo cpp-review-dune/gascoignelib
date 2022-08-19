@@ -97,7 +97,7 @@ public:
   BasicDiscretization();
   ~BasicDiscretization();
 
-  void BasicInit(const ParamFile& pf) {}
+  void BasicInit(const ParamFile& /*pf*/) {}
   void ReInit(const GascoigneMesh* MP) { __MP = MP; }
 
   Vertex2d vertex2d(int i) const

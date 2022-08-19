@@ -39,7 +39,7 @@ PressureFilter::~PressureFilter() {}
 /*-----------------------------------------*/
 
 void
-PressureFilter::ReInit(int n, int nhn)
+PressureFilter::ReInit(IndexType n, IndexType nhn)
 {
   resize(n);
   zero();
@@ -58,7 +58,7 @@ PressureFilter::IntegrateVector(const GlobalVector& u) const
   DoubleVector dst(u.ncomp(), 0.);
 
   for (int i = 0; i < component.size(); i++) {
-    int c = component[i];
+    ShortIndexType c = component[i];
     for (int j = 0; j < u.n(); j++) {
       dst[c] += u(j, c) * (*this)[j];
     }
@@ -76,7 +76,7 @@ PressureFilter::SubtractMean(GlobalVector& u) const
   DoubleVector mean = IntegrateVector(u);
 
   for (int i = 0; i < component.size(); i++) {
-    int comp = component[i];
+    ShortIndexType comp = component[i];
     double sub = mean[comp] / domainsize;
     u.CompAdd(comp, -sub);
   }
@@ -88,12 +88,12 @@ void
 PressureFilter::SubtractMeanAlgebraic(GlobalVector& u) const
 {
   for (int i = 0; i < component.size(); i++) {
-    int comp = component[i];
+    ShortIndexType comp = component[i];
     double d = 0.;
     for (int j = 0; j < u.n(); j++) {
       d += u(j, comp);
     }
-    d /= u.n() - nhanging;
+    d /= static_cast<double>(u.n() - nhanging);
     u.CompAdd(comp, -d);
   }
 }

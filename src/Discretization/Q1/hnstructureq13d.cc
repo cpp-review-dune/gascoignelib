@@ -131,8 +131,8 @@ HNStructureQ13d::ZeroCheck(const GlobalVector& u) const
     return r;
 
   for (const_fiterator p = faces->begin(); p != faces->end(); p++) {
-    int i = p->first;
-    for (int c = 0; c < u.ncomp(); c++) {
+    IndexType i = p->first;
+    for (ShortIndexType c = 0; c < u.ncomp(); c++) {
       if (u(i, c) != 0.)
         return 1;
     }
@@ -148,8 +148,8 @@ HNStructureQ13d::Zero(GlobalVector& u) const
   HNStructureQ12d::Zero(u);
 
   for (const_fiterator p = faces->begin(); p != faces->end(); p++) {
-    int i = p->first;
-    for (int c = 0; c < u.ncomp(); c++)
+    IndexType i = p->first;
+    for (ShortIndexType c = 0; c < u.ncomp(); c++)
       u.zero_node(i);
   }
 }
@@ -162,8 +162,8 @@ HNStructureQ13d::Average(GlobalVector& u) const
   HNStructureQ12d::Average(u);
 
   for (const_fiterator p = faces->begin(); p != faces->end(); p++) {
-    int i = p->first;
-    const std::array<int, 9>& f = p->second;
+    IndexType i = p->first;
+    const std::array<IndexType, 9>& f = p->second;
     u.equ_node(i, 0.25, f[0], 0.25, f[1], 0.25, f[3], 0.25, f[4]);
   }
 }
@@ -176,8 +176,8 @@ HNStructureQ13d::Distribute(GlobalVector& u) const
   HNStructureQ12d::Distribute(u);
 
   for (const_fiterator p = faces->begin(); p != faces->end(); p++) {
-    int i = p->first;
-    const std::array<int, 9>& f = p->second;
+    IndexType i = p->first;
+    const std::array<IndexType, 9>& f = p->second;
 
     u.add_node(f[0], 0.25, i);
     u.add_node(f[1], 0.25, i);
@@ -189,10 +189,10 @@ HNStructureQ13d::Distribute(GlobalVector& u) const
 
 /*-----------------------------------------*/
 
-int
-HNStructureQ13d::hanging(int i) const
+IndexType
+HNStructureQ13d::hanging(IndexType i) const
 {
-  int r = HNStructureQ12d::hanging(i);
+  IndexType r = HNStructureQ12d::hanging(i);
 
   if (r > 0)
     return 2;
@@ -204,7 +204,7 @@ HNStructureQ13d::hanging(int i) const
 /*-----------------------------------------*/
 
 void
-HNStructureQ13d::MatrixDiag(int ncomp, MatrixInterface& A) const
+HNStructureQ13d::MatrixDiag(ShortIndexType ncomp, MatrixInterface& A) const
 {
   HNStructureQ12d::MatrixDiag(ncomp, A);
 
@@ -223,20 +223,20 @@ HNStructureQ13d::SparseStructureDiag(SparseStructure* S) const
   HNStructureQ12d::SparseStructureDiag(S);
 
   for (const_fiterator p = faces->begin(); p != faces->end(); p++) {
-    int i = p->first;
+    IndexType i = p->first;
     S->build_add(i, i);
   }
 }
 
 /*----------------------------------------------*/
 
-std::array<int, 4>
-HNStructureQ13d::GetHangingFace(int i) const
+std::array<IndexType, 4>
+HNStructureQ13d::GetHangingFace(IndexType i) const
 {
   const_fiterator p = faces->find(i);
   assert(p != faces->end());
 
-  std::array<int, 4> Face;
+  std::array<IndexType, 4> Face;
   Face[0] = p->second[0];
   Face[1] = p->second[1];
   Face[2] = p->second[3];
@@ -247,13 +247,13 @@ HNStructureQ13d::GetHangingFace(int i) const
 
 /*----------------------------------------------*/
 
-std::array<int, 2>
-HNStructureQ13d::GetHangingEdge(int i) const
+std::array<IndexType, 2>
+HNStructureQ13d::GetHangingEdge(IndexType i) const
 {
-  map<int, EdgeVector>::const_iterator p = edges->find(i);
+  map<IndexType, EdgeVector>::const_iterator p = edges->find(i);
   assert(p != edges->end());
 
-  std::array<int, 2> Edge;
+  std::array<IndexType, 2> Edge;
   Edge[0] = p->second[0];
   Edge[1] = p->second[1];
 
@@ -263,7 +263,7 @@ HNStructureQ13d::GetHangingEdge(int i) const
 /*----------------------------------------------*/
 
 void
-HNStructureQ13d::CondenseHanging(IntVector& indices) const
+HNStructureQ13d::CondenseHanging(IndexVector& indices) const
 {
   CondenseHanging2er(indices);
   CondenseHanging4er(indices);
@@ -272,7 +272,7 @@ HNStructureQ13d::CondenseHanging(IntVector& indices) const
 /*----------------------------------------------*/
 
 void
-HNStructureQ13d::CondenseHanging(EntryMatrix& E, IntVector& indices) const
+HNStructureQ13d::CondenseHanging(EntryMatrix& E, IndexVector& indices) const
 {
   CondenseHanging2er(E, indices);
   CondenseHanging4er(E, indices);
@@ -281,24 +281,24 @@ HNStructureQ13d::CondenseHanging(EntryMatrix& E, IntVector& indices) const
 /*----------------------------------------------*/
 
 void
-HNStructureQ13d::CondenseHanging4er(EntryMatrix& E, IntVector& indices) const
+HNStructureQ13d::CondenseHanging4er(EntryMatrix& E, IndexVector& indices) const
 {
-  IntVector x(0), y(0);
+  IndexVector x(0), y(0);
 
-  for (int ii = 0; ii < 8; ii++) {
-    int j = indices[ii];
+  for (IndexType ii = 0; ii < 8; ii++) {
+    IndexType j = indices[ii];
 
     if (hanging(j) == 4) // 4er haengender Knoten
     {
-      std::array<int, 4> Face = GetHangingFace(j);
+      std::array<IndexType, 4> Face = GetHangingFace(j);
 
       x.push_back(ii);
-      for (int i = 0; i < 4; i++) {
-        int FaceIndex = Face[i];
+      for (IndexType i = 0; i < 4; i++) {
+        IndexType FaceIndex = Face[i];
         //
         // suche ob FaceIndex schon in indices sind
         //
-        int jj = 0;
+        IndexType jj = 0;
         bool found = 0;
         while ((jj < 8) && !found) {
           found = (indices[jj] == FaceIndex);
@@ -314,17 +314,17 @@ HNStructureQ13d::CondenseHanging4er(EntryMatrix& E, IntVector& indices) const
   }
   assert(y.size() == 3 * x.size());
 
-  int counter = 0;
-  for (int i = 0; i < x.size(); i++) {
-    int i1 = x[i]; // new node !
+  IndexType counter = 0;
+  for (IndexType i = 0; i < x.size(); i++) {
+    IndexType i1 = x[i]; // new node !
 
     E.multiply_column_row(i1, 0.25);
-    int last = counter + 3;
+    IndexType last = counter + 3;
 
     assert(last <= y.size());
 
     for (; counter < last; counter++) {
-      int i2 = y[counter]; // already there
+      IndexType i2 = y[counter]; // already there
       E.add_column_row(i2, i1);
     }
   }
@@ -333,20 +333,20 @@ HNStructureQ13d::CondenseHanging4er(EntryMatrix& E, IntVector& indices) const
 /*----------------------------------------------*/
 
 void
-HNStructureQ13d::Couplings(IntVector& indices) const
+HNStructureQ13d::Couplings(IndexVector& indices) const
 {
   // fuer Structure (nicht bigstencil)
   //
   // erst alle haengenden lines ersetzen
   //
-  int linecount = 0;
-  int quadcount = 0;
+  IndexType linecount = 0;
+  IndexType quadcount = 0;
 
   //    auto p0 = indices.begin();
   //    auto p1 = indices.end();
 
-  for (int i = 0; i < 8; i++) {
-    int& ind = indices[i];
+  for (IndexType i = 0; i < 8; i++) {
+    IndexType& ind = indices[i];
 
     if (hanging(ind) != 2)
       continue;
@@ -354,12 +354,12 @@ HNStructureQ13d::Couplings(IntVector& indices) const
     linecount++;
 
     // const IntVector2& line = hang(ind);
-    std::array<int, 2> line = GetHangingEdge(ind);
+    std::array<IndexType, 2> line = GetHangingEdge(ind);
 
-    for (int k = 0; k < 2; k++) {
+    for (IndexType k = 0; k < 2; k++) {
       // entweder gibt es newindex schon oder muss hinzugefuegt werden
       //
-      int newindex = line[k];
+      IndexType newindex = line[k];
       auto p = find(indices.begin(), indices.end(), newindex);
       if (p == indices.end()) {
         ind = newindex;
@@ -369,18 +369,18 @@ HNStructureQ13d::Couplings(IntVector& indices) const
   }
   // jetzt duerften zu haengenden quads
   // nur noch ein vertex nicht eingetragen sein
-  for (int i = 0; i < 8; i++) {
-    int& ind = indices[i];
+  for (IndexType i = 0; i < 8; i++) {
+    IndexType& ind = indices[i];
 
     if (hanging(ind) != 4)
       continue;
 
     quadcount++;
 
-    std::array<int, 4> face = GetHangingFace(ind);
+    std::array<IndexType, 4> face = GetHangingFace(ind);
 
-    for (int k = 0; k < 4; k++) {
-      int newindex = face[k];
+    for (IndexType k = 0; k < 4; k++) {
+      IndexType newindex = face[k];
       auto p = find(indices.begin(), indices.end(), newindex);
       if (p == indices.end()) {
         ind = newindex;
@@ -398,23 +398,23 @@ HNStructureQ13d::Couplings(IntVector& indices) const
 /*----------------------------------------------*/
 
 void
-HNStructureQ13d::CondenseHanging2er(EntryMatrix& E, IntVector& indices) const
+HNStructureQ13d::CondenseHanging2er(EntryMatrix& E, IndexVector& indices) const
 {
-  IntVector x(0), y(0);
+  IndexVector x(0), y(0);
 
-  for (int ii = 0; ii < 8; ii++) {
-    int i = indices[ii];
+  for (IndexType ii = 0; ii < 8; ii++) {
+    IndexType i = indices[ii];
 
     if (hanging(i) == 2) // 2er haengender Knoten
     {
-      std::array<int, 2> Edge = GetHangingEdge(i);
+      std::array<IndexType, 2> Edge = GetHangingEdge(i);
 
       x.push_back(ii);
 
-      for (int iii = 0; iii < 2; iii++) {
-        int ir = Edge[iii];
+      for (IndexType iii = 0; iii < 2; iii++) {
+        IndexType ir = Edge[iii];
         bool found = 0;
-        for (int iiii = 0; (iiii < 8) && !found; iiii++) {
+        for (IndexType iiii = 0; (iiii < 8) && !found; iiii++) {
           if (ir == indices[iiii]) {
             found = 1;
             y.push_back(iiii);
@@ -428,9 +428,9 @@ HNStructureQ13d::CondenseHanging2er(EntryMatrix& E, IntVector& indices) const
   assert(x.size() == y.size());
   assert(x.size() <= 3);
 
-  for (int i = 0; i < x.size(); i++) {
-    int i1 = x[i]; // new node !
-    int i2 = y[i]; // already there
+  for (IndexType i = 0; i < x.size(); i++) {
+    IndexType i1 = x[i]; // new node !
+    IndexType i2 = y[i]; // already there
 
     E.multiply_column_row(i1, 0.5);
     E.add_column_row(i2, i1);
@@ -440,19 +440,19 @@ HNStructureQ13d::CondenseHanging2er(EntryMatrix& E, IntVector& indices) const
 /*----------------------------------------------*/
 
 void
-HNStructureQ13d::CondenseHanging2er(IntVector& indices) const
+HNStructureQ13d::CondenseHanging2er(IndexVector& indices) const
 {
-  for (int ii = 0; ii < 8; ii++) {
-    int i = indices[ii];
+  for (IndexType ii = 0; ii < 8; ii++) {
+    IndexType i = indices[ii];
 
     if (hanging(i) == 2) // 2er haengender Knoten
     {
-      std::array<int, 2> Edge = GetHangingEdge(i);
+      std::array<IndexType, 2> Edge = GetHangingEdge(i);
 
-      for (int iii = 0; iii < 2; iii++) {
-        int ir = Edge[iii];
+      for (IndexType iii = 0; iii < 2; iii++) {
+        IndexType ir = Edge[iii];
         bool found = 0;
-        for (int iiii = 0; (iiii < 8) && !found; iiii++) {
+        for (IndexType iiii = 0; (iiii < 8) && !found; iiii++) {
           if (ir == indices[iiii]) {
             found = 1;
           }
@@ -467,21 +467,21 @@ HNStructureQ13d::CondenseHanging2er(IntVector& indices) const
 /*----------------------------------------------*/
 
 void
-HNStructureQ13d::CondenseHanging4er(IntVector& indices) const
+HNStructureQ13d::CondenseHanging4er(IndexVector& indices) const
 {
-  for (int ii = 0; ii < 8; ii++) {
-    int j = indices[ii];
+  for (IndexType ii = 0; ii < 8; ii++) {
+    IndexType j = indices[ii];
 
     if (hanging(j) == 4) // 4er haengender Knoten
     {
-      std::array<int, 4> Face = GetHangingFace(j);
+      std::array<IndexType, 4> Face = GetHangingFace(j);
 
-      for (int i = 0; i < 4; i++) {
-        int FaceIndex = Face[i];
+      for (IndexType i = 0; i < 4; i++) {
+        IndexType FaceIndex = Face[i];
         //
         // suche ob FaceIndex schon in indices sind
         //
-        int jj = 0;
+        IndexType jj = 0;
         bool found = 0;
         while ((jj < 8) && !found) {
           found = (indices[jj] == FaceIndex);
@@ -498,19 +498,20 @@ HNStructureQ13d::CondenseHanging4er(IntVector& indices) const
 /*----------------------------------------------*/
 
 void
-HNStructureQ13d::CondenseHangingPatch(EntryMatrix& E, IntVector& indices) const
+HNStructureQ13d::CondenseHangingPatch(EntryMatrix& E,
+                                      IndexVector& indices) const
 {
   assert(indices.size() == 27);
 
-  for (int ii = 0; ii < 6; ii++) {
-    int i = indices[lnop[ii][4]];
+  for (IndexType ii = 0; ii < 6; ii++) {
+    IndexType i = indices[lnop[ii][4]];
 
     if (hanging(i) != 4)
       continue;
 
-    const std::array<int, 5>& p = lnop[ii];
+    const std::array<IndexType, 5>& p = lnop[ii];
 
-    int elim = p[4];
+    IndexType elim = p[4];
 
     E.add_column(p[0], elim, 0.25);
     E.add_column(p[1], elim, 0.25);
@@ -524,15 +525,15 @@ HNStructureQ13d::CondenseHangingPatch(EntryMatrix& E, IntVector& indices) const
     E.multiply_column(elim, 0.);
     E.multiply_row(elim, 0.);
   }
-  for (int ii = 0; ii < 12; ii++) {
-    int i = indices[lnoe[ii][1]];
+  for (IndexType ii = 0; ii < 12; ii++) {
+    IndexType i = indices[lnoe[ii][1]];
 
     if (hanging(i) != 2)
       continue;
 
-    const std::array<int, 3>& p = lnoe[ii];
+    const std::array<IndexType, 3>& p = lnoe[ii];
 
-    int elim = p[1];
+    IndexType elim = p[1];
 
     E.add_column(p[0], elim, 0.5);
     E.add_column(p[2], elim, 0.5);

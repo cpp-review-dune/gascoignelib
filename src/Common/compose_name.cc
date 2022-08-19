@@ -25,7 +25,7 @@
 #include "stdio.h"
 #include <iostream>
 
-#include <iostream>
+#include "gascoigne.h"
 
 using namespace std;
 
@@ -73,10 +73,10 @@ compose_name(string& s, int i, int l)
 }
 
 void
-compose_name_without_dot(string& s, int i)
+compose_name_without_dot(string& s, IndexType i)
 {
   char cname[200];
-  sprintf(cname, "%s%03d", s.c_str(), i);
+  sprintf(cname, "%s%03ld", s.c_str(), i);
   s = cname;
 }
 } // namespace Gascoigne

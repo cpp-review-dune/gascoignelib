@@ -127,7 +127,7 @@ public:
   }
 
   // Elements
-  virtual int GetNcomp() const = 0;
+  virtual ShortIndexType GetNcomp() const = 0;
   virtual void Form(VectorIterator b,
                     const FemFunction& U,
                     const TestFunction& N) const = 0;

@@ -40,9 +40,9 @@ public:
     : vp(&v)
   {}
 
-  int visucomp() const { return 1; }
-  int visun() const { return vp->size(); }
-  double visudata(int i, int c) const { return (*vp)[i]; }
+  ShortIndexType visucomp() const { return 1; }
+  IndexType visun() const { return vp->size(); }
+  double visudata(IndexType i, ShortIndexType /*c*/) const { return (*vp)[i]; }
 };
 } // namespace Gascoigne
 

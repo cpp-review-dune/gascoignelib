@@ -82,7 +82,7 @@ public:
   void BasicInit(const ParamFile& pf);
 
   // Gives the number of solution components.
-  int GetNcomp() const { return GetEquation()->GetNcomp(); }
+  ShortIndexType GetNcomp() const { return GetEquation()->GetNcomp(); }
 
   const ParamFile& GetParamFile() const { return _paramfile; }
   ParamFile& GetParamFile() { return _paramfile; }

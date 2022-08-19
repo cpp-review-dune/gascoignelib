@@ -38,7 +38,7 @@ Extrapolator::~Extrapolator() {}
 void
 Extrapolator::Print()
 {
-  int n = order.size();
+  size_t n = order.size();
   cout << "extra\t";
 
   cout.precision(12);
@@ -60,7 +60,7 @@ Extrapolator::Print()
 void
 Extrapolator::NewValues(const DoubleVector& J)
 {
-  int n = J.size();
+  size_t n = J.size();
   if (!vals.size()) {
     valextra.resize(n);
     order.resize(n);
@@ -68,7 +68,7 @@ Extrapolator::NewValues(const DoubleVector& J)
     order = -1.;
   }
   vals.push_back(J);
-  int nv = vals.size();
+  size_t nv = vals.size();
   if (nv >= 3) {
     for (int i = 0; i < n; i++) {
       double j0 = vals[nv - 3][i];

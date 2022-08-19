@@ -54,7 +54,7 @@ protected:
 
   double psi(int i, double x) const { return a[i] + b[i] * x + c[i] * x * x; }
   double psi_x(int i, double x) const { return b[i] + 2. * c[i] * x; }
-  double psi_xx(int i, double x) const { return 2. * c[i]; }
+  double psi_xx(int i, double /*x*/) const { return 2. * c[i]; }
 
 public:
   BaseQ22d();
@@ -65,17 +65,17 @@ public:
   double phi(int i) const { return N[i]; }
   double phi_x(int i) const { return DN[i].x(); }
   double phi_y(int i) const { return DN[i].y(); }
-  double phi_xx(int i) const
+  double phi_xx(int /*i*/) const
   {
     std::cerr << "\"BaseQ22d::phi_xx\" not written!" << std::endl;
     abort();
   }
-  double phi_yy(int i) const
+  double phi_yy(int /*i*/) const
   {
     std::cerr << "\"BaseQ22d::phi_yy\" not written!" << std::endl;
     abort();
   }
-  double phi_xy(int i) const
+  double phi_xy(int /*i*/) const
   {
     std::cerr << "\"BaseQ22d::phi_xy\" not written!" << std::endl;
     abort();

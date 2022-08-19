@@ -63,7 +63,7 @@ public:
     : nvector<T>(NN * n, d)
     , N(NN)
   {}
-  CompVector(ShortIndexType NN, size_t n, T* b, T* e)
+  CompVector(ShortIndexType NN, size_t /*n*/, T* b, T* e)
     : nvector<T>(std::vector<double>(b, e))
     , N(NN)
   {}
@@ -112,7 +112,7 @@ public:
   }
   T& operator()(IndexType i, ShortIndexType c) { return *(start(i) + c); }
 
-  void ReInit(size_t ncomp, size_t n)
+  void ReInit(ShortIndexType ncomp, size_t n)
   {
     assert(ncomp);
     N = ncomp;
@@ -138,7 +138,7 @@ public:
   void resize(size_t n, const T& s = 0.) { nvector<T>::resize(n * N, s); }
   void total_reservesize(size_t n) { nvector<T>::reservesize(n); }
 
-  void equ_node(int i, double d0)
+  void equ_node(IndexType i, double d0)
   {
     iterator p = start(i);
     const_iterator q = start(i) + N;
@@ -153,7 +153,7 @@ public:
       p += N;
     }
   }
-  void scale_node(int i, double d0)
+  void scale_node(IndexType i, double d0)
   {
     iterator p = start(i);
     const_iterator q = start(i) + N;
@@ -161,7 +161,7 @@ public:
       *(p++) *= d0;
   }
 
-  void add_node(int i, double d0, const nvector<T>& u0)
+  void add_node(IndexType i, double d0, const nvector<T>& u0)
   {
     iterator p = start(i);
     const_iterator pp = p + N;
@@ -170,7 +170,7 @@ public:
       *(p++) += d0 * *(q++);
   }
 
-  void equ_node(int i, int j, const CompVector<T>& u0)
+  void equ_node(IndexType i, IndexType j, const CompVector<T>& u0)
   {
     iterator p = start(i);
     const_iterator pp = p + N;
@@ -179,7 +179,7 @@ public:
       *(p++) = *(q++);
   }
 
-  void equ_node(int i, double d0, int i0, const CompVector<T>& u0)
+  void equ_node(IndexType i, double d0, IndexType i0, const CompVector<T>& u0)
   {
     iterator p = start(i);
     const_iterator pp = p + N;
@@ -187,7 +187,7 @@ public:
     while (p != pp)
       *(p++) = d0 * *(q++);
   }
-  void equ_node(int i, double d0, int i0, double d1, int i1)
+  void equ_node(IndexType i, double d0, IndexType i0, double d1, IndexType i1)
   {
     iterator p = start(i);
     const_iterator pp = p + N;
@@ -196,7 +196,13 @@ public:
     while (p != pp)
       *(p++) = d0 * *q0++ + d1 * *q1++;
   }
-  void equ_node(int i, double d0, int i0, double d1, int i1, double d2, int i2)
+  void equ_node(IndexType i,
+                double d0,
+                IndexType i0,
+                double d1,
+                IndexType i1,
+                double d2,
+                IndexType i2)
   {
     iterator p = start(i);
     const_iterator pp = p + N;
@@ -206,7 +212,13 @@ public:
     while (p != pp)
       *(p++) = d0 * *q0++ + d1 * *q1++ + d2 * *q2++;
   }
-  void add_node(int i, double d0, int i0, double d1, int i1, double d2, int i2)
+  void add_node(IndexType i,
+                double d0,
+                IndexType i0,
+                double d1,
+                IndexType i1,
+                double d2,
+                IndexType i2)
   {
     iterator p = start(i);
     const_iterator pp = p + N;
@@ -216,25 +228,25 @@ public:
     while (p != pp)
       *(p++) += d0 * *q0++ + d1 * *q1++ + d2 * *q2++;
   }
-  void add_node(int i,
+  void add_node(IndexType i,
                 double d0,
-                int i0,
+                IndexType i0,
                 double d1,
-                int i1,
+                IndexType i1,
                 double d2,
-                int i2,
+                IndexType i2,
                 double d3,
-                int i3,
+                IndexType i3,
                 double d4,
-                int i4,
+                IndexType i4,
                 double d5,
-                int i5,
+                IndexType i5,
                 double d6,
-                int i6,
+                IndexType i6,
                 double d7,
-                int i7,
+                IndexType i7,
                 double d8,
-                int i8)
+                IndexType i8)
   {
     iterator p = start(i);
     const_iterator pp = p + N;
@@ -251,15 +263,15 @@ public:
       *(p++) += d0 * *p0++ + d1 * *p1++ + d2 * *p2++ + d3 * *p3++ + d4 * *p4++ +
                 d5 * *p5++ + d6 * *p6++ + d7 * *p7++ + d8 * *p8++;
   }
-  void equ_node(int i,
+  void equ_node(IndexType i,
                 double d0,
-                int i0,
+                IndexType i0,
                 double d1,
-                int i1,
+                IndexType i1,
                 double d2,
-                int i2,
+                IndexType i2,
                 double d3,
-                int i3)
+                IndexType i3)
   {
     iterator p = start(i);
     const_iterator pp = p + N;
@@ -270,12 +282,12 @@ public:
     while (p != pp)
       *(p++) = d0 * *q0++ + d1 * *q1++ + d2 * *q2++ + d3 * *q3++;
   }
-  void equ_node(int i,
+  void equ_node(IndexType i,
                 double d0,
-                int i0,
+                IndexType i0,
                 const CompVector<T>& u0,
                 double d1,
-                int i1,
+                IndexType i1,
                 const CompVector<T>& u1)
   {
     iterator p = start(i);
@@ -295,7 +307,7 @@ public:
     }
   }
 
-  void zero_node(int i)
+  void zero_node(IndexType i)
   {
     iterator p = start(i);
     const_iterator q = p + N;
@@ -304,7 +316,7 @@ public:
       *(p++) = 0.;
   }
 
-  void add_node(int i, double d0, int i0)
+  void add_node(IndexType i, double d0, IndexType i0)
   {
     iterator p = start(i);
     const_iterator q = start(i0);
@@ -312,7 +324,7 @@ public:
       *(p++) += d0 * *(q++);
   }
 
-  void add_node(int i, double d0, int i0, double d1, int i1)
+  void add_node(IndexType i, double d0, IndexType i0, double d1, IndexType i1)
   {
     iterator p = start(i);
     const_iterator q0 = start(i0);
@@ -321,7 +333,7 @@ public:
       *(p++) += d0 * *(q0++) + d1 * *(q1++);
   }
 
-  void add_node(int i, double d0, int i0, const CompVector<T>& u0)
+  void add_node(IndexType i, double d0, IndexType i0, const CompVector<T>& u0)
   {
     iterator p = start(i);
     const_iterator q = u0.start(i0);
@@ -390,14 +402,14 @@ public:
     }
   }
   //////////////////////////////////////
-  void FillLocal(int i, nvector<double>& uloc) const
+  void FillLocal(IndexType i, nvector<double>& uloc) const
   {
     assert(uloc.size() == N);
     const_iterator first = start(i);
     for (ShortIndexType ii = 0; ii < N; ++ii)
       uloc[ii] = *first++;
   }
-  void node_zero(int i)
+  void node_zero(IndexType i)
   {
     iterator first = start(i);
     const_iterator last = stop(i);
@@ -424,7 +436,7 @@ public:
     iterator first = std::vector<T>::begin() + c1;
     const_iterator first2 = y.begin() + c2;
     const_iterator last = std::vector<T>::end();
-    int N2 = y.ncomp();
+    ShortIndexType N2 = y.ncomp();
 
     while (first < last) {
       *first += d * *first2;
@@ -454,7 +466,7 @@ public:
     iterator first = std::vector<T>::begin() + c1;
     const_iterator first2 = y.begin() + c2;
     const_iterator last = std::vector<T>::end();
-    int N2 = y.ncomp();
+    ShortIndexType N2 = y.ncomp();
 
     while (first < last) {
       *first = d * *first2;

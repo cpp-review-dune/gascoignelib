@@ -122,7 +122,7 @@ void
 read_data(GlobalVector& v, istream& s)
 {
   int n;
-  int ncomp;
+  ShortIndexType ncomp;
   s >> n;
   s >> ncomp;
   v.ncomp() = ncomp;

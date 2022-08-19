@@ -73,7 +73,7 @@ class PrepareEdges
 public:
   std::map<PEdge, int> edges;
 
-  int nedges() const { return edges.size(); }
+  IndexType nedges() const { return edges.size(); }
 
   template<int DIM>
   void InitEdges(const DofHandler<DIM>& DH)
@@ -216,7 +216,7 @@ class PrepareFaces
 public:
   std::map<PFace, int> faces;
 
-  int nfaces() const { return faces.size(); }
+  IndexType nfaces() const { return faces.size(); }
 
   template<int DIM>
   void InitFaces(const DofHandler<DIM>& DH)
@@ -310,8 +310,8 @@ CGDofHandler<DIM, M>::InitFromGascoigneMesh(const DofHandler<DIM>& GM)
 
   const IntVector& GM_nc = GM.GetCellVector();
   const std::vector<Vertex<DIM>>& GM_nv = GM.GetVertexVector();
-  int GM_ncells = GM.ncells();
-  int GM_ndofs = GM_nv.size();
+  IndexType GM_ncells = GM.ncells();
+  IndexType GM_ndofs = GM_nv.size();
 
   ////////// preparation
   // first, dof's on the nodes. This is the Gascoignemesh structure, e.g. first
@@ -326,13 +326,14 @@ CGDofHandler<DIM, M>::InitFromGascoigneMesh(const DofHandler<DIM>& GM)
   if (DIM == 3)
     prepfaces.InitFaces(GM);
 
-  int dofs_on_nodes = GM_ndofs;
-  int dofs_on_edges = (M - 2) * prepedges.nedges();
+  int dofs_on_nodes = static_cast<int>(GM_ndofs);
+  int dofs_on_edges = (M - 2) * static_cast<int>(prepedges.nedges());
   int dofs_on_faces = 0;
   if (DIM == 3)
-    dofs_on_faces = (M - 2) * (M - 2) * prepfaces.nfaces();
+    dofs_on_faces = (M - 2) * (M - 2) * static_cast<int>(prepfaces.nfaces());
 
-  int dofs_on_elements = pow(M - 2, DIM) * GM_ncells;
+  int dofs_on_elements =
+    static_cast<int>(pow(M - 2, DIM)) * static_cast<int>(GM_ncells);
 
   int ndofs = dofs_on_nodes + dofs_on_edges + dofs_on_faces + dofs_on_elements;
   std::cout << "CGDofHandler " << ndofs << "\t" << dofs_on_nodes << " "

@@ -39,8 +39,8 @@ HNStructureQ23d::HNStructureQ23d()
   wei[2] = -0.125;
   q1wei[2] = 0.;
 
-  for (int i = 0; i < 3; i++) {
-    for (int j = 0; j < 3; j++) {
+  for (IndexType i = 0; i < 3; i++) {
+    for (IndexType j = 0; j < 3; j++) {
       fwei[3 * i + j] = wei[i] * wei[j];
       fq1wei[3 * i + j] = q1wei[i] * q1wei[j];
     }
@@ -121,13 +121,13 @@ void
 HNStructureQ23d::Average(GlobalVector& u) const
 {
   for (const_fiterator p = faces->begin(); p != faces->end(); p++) {
-    const std::array<int, 9>& f = p->second;
+    const std::array<IndexType, 9>& f = p->second;
     u.equ_node(p->first, fwei[0], f[0], fwei[1], f[1], fwei[2], f[2]);
     u.add_node(p->first, fwei[3], f[3], fwei[4], f[4], fwei[5], f[5]);
     u.add_node(p->first, fwei[6], f[6], fwei[7], f[7], fwei[8], f[8]);
   }
   for (const_iterator p = edges->begin(); p != edges->end(); p++) {
-    const std::array<int, 3>& f = p->second;
+    const std::array<IndexType, 3>& f = p->second;
     u.equ_node(p->first, wei[0], f[0], wei[1], f[1], wei[2], f[2]);
   }
 }
@@ -138,17 +138,17 @@ void
 HNStructureQ23d::Distribute(GlobalVector& u) const
 {
   for (const_fiterator p = faces->begin(); p != faces->end(); p++) {
-    int i = p->first;
-    const std::array<int, 9>& f = p->second;
-    for (int j = 0; j < 9; j++) {
+    IndexType i = p->first;
+    const std::array<IndexType, 9>& f = p->second;
+    for (IndexType j = 0; j < 9; j++) {
       u.add_node(f[j], fwei[j], i);
     }
     u.zero_node(i);
   }
   for (const_iterator p = edges->begin(); p != edges->end(); p++) {
-    int i = p->first;
-    const std::array<int, 3>& f = p->second;
-    for (int j = 0; j < 3; j++) {
+    IndexType i = p->first;
+    const std::array<IndexType, 3>& f = p->second;
+    for (IndexType j = 0; j < 3; j++) {
       u.add_node(f[j], wei[j], i);
     }
     u.zero_node(i);
@@ -158,7 +158,7 @@ HNStructureQ23d::Distribute(GlobalVector& u) const
 /*-----------------------------------------*/
 
 void
-HNStructureQ23d::CondenseHanging(EntryMatrix& E, IntVector& indices) const
+HNStructureQ23d::CondenseHanging(EntryMatrix& E, IndexVector& indices) const
 {
   assert(indices.size() == 27);
 
@@ -170,7 +170,7 @@ HNStructureQ23d::CondenseHanging(EntryMatrix& E, IntVector& indices) const
 
 void
 HNStructureQ23d::CondenseHangingLowerHigher(EntryMatrix& E,
-                                            IntVector& indices) const
+                                            IndexVector& indices) const
 {
   assert(indices.size() == 27);
 
@@ -182,7 +182,7 @@ HNStructureQ23d::CondenseHangingLowerHigher(EntryMatrix& E,
 
 void
 HNStructureQ23d::CondenseHangingHigherLower(EntryMatrix& E,
-                                            IntVector& indices) const
+                                            IndexVector& indices) const
 {
   assert(indices.size() == 27);
 
@@ -193,18 +193,18 @@ HNStructureQ23d::CondenseHangingHigherLower(EntryMatrix& E,
 /*----------------------------------------------*/
 
 void
-HNStructureQ23d::CondenseHanging(IntVector& indices) const
+HNStructureQ23d::CondenseHanging(IndexVector& indices) const
 {
   assert(indices.size() == 27);
 
-  for (int i = 0; i < 27; i++) {
-    int h = indices[i];
+  for (IndexType i = 0; i < 27; i++) {
+    IndexType h = indices[i];
 
-    const_fiterator p = faces->find(h);
+    auto p = faces->find(h);
     if (p != faces->end()) {
       indices[i] = p->second[8];
     } else {
-      const_iterator q = edges->find(h);
+      auto q = edges->find(h);
       if (q != edges->end())
         indices[i] = q->second[2];
     }
@@ -214,20 +214,21 @@ HNStructureQ23d::CondenseHanging(IntVector& indices) const
 /*----------------------------------------------*/
 
 void
-HNStructureQ23d::CondenseHanging2er(EntryMatrix& E, nvector<int>& indices) const
+HNStructureQ23d::CondenseHanging2er(EntryMatrix& E,
+                                    nvector<IndexType>& indices) const
 {
-  for (int i = 0; i < 12; i++) {
-    std::array<int, 3> p = lnoe[i];
+  for (IndexType i = 0; i < 12; i++) {
+    std::array<IndexType, 3> p = lnoe[i];
 
-    int elim = p[1];
-    int h = indices[elim];
+    IndexType elim = p[1];
+    IndexType h = indices[elim];
 
     const_iterator q = edges->find(h);
 
     if (q == edges->end())
       continue;
 
-    const std::array<int, 3>& f = q->second;
+    const std::array<IndexType, 3>& f = q->second;
 
     indices[elim] = f[2];
 
@@ -250,21 +251,22 @@ HNStructureQ23d::CondenseHanging2er(EntryMatrix& E, nvector<int>& indices) const
 /*----------------------------------------------*/
 
 void
-HNStructureQ23d::CondenseHanging2erLowerHigher(EntryMatrix& E,
-                                               nvector<int>& indices) const
+HNStructureQ23d::CondenseHanging2erLowerHigher(
+  EntryMatrix& E,
+  nvector<IndexType>& indices) const
 {
-  for (int i = 0; i < 12; i++) {
-    std::array<int, 3> p = lnoe[i];
+  for (IndexType i = 0; i < 12; i++) {
+    std::array<IndexType, 3> p = lnoe[i];
 
-    int elim = p[1];
-    int h = indices[elim];
+    IndexType elim = p[1];
+    IndexType h = indices[elim];
 
     const_iterator q = edges->find(h);
 
     if (q == edges->end())
       continue;
 
-    const std::array<int, 3>& f = q->second;
+    const std::array<IndexType, 3>& f = q->second;
 
     indices[elim] = f[2];
 
@@ -287,21 +289,22 @@ HNStructureQ23d::CondenseHanging2erLowerHigher(EntryMatrix& E,
 /*----------------------------------------------*/
 
 void
-HNStructureQ23d::CondenseHanging2erHigherLower(EntryMatrix& E,
-                                               nvector<int>& indices) const
+HNStructureQ23d::CondenseHanging2erHigherLower(
+  EntryMatrix& E,
+  nvector<IndexType>& indices) const
 {
-  for (int i = 0; i < 12; i++) {
-    std::array<int, 3> p = lnoe[i];
+  for (IndexType i = 0; i < 12; i++) {
+    std::array<IndexType, 3> p = lnoe[i];
 
-    int elim = p[1];
-    int h = indices[elim];
+    IndexType elim = p[1];
+    IndexType h = indices[elim];
 
     const_iterator q = edges->find(h);
 
     if (q == edges->end())
       continue;
 
-    const std::array<int, 3>& f = q->second;
+    const std::array<IndexType, 3>& f = q->second;
 
     indices[elim] = f[2];
 
@@ -324,28 +327,29 @@ HNStructureQ23d::CondenseHanging2erHigherLower(EntryMatrix& E,
 /*----------------------------------------------*/
 
 void
-HNStructureQ23d::CondenseHanging4er(EntryMatrix& E, nvector<int>& indices) const
+HNStructureQ23d::CondenseHanging4er(EntryMatrix& E,
+                                    nvector<IndexType>& indices) const
 {
-  for (int i = 0; i < 6; i++) {
-    std::array<int, 5> lf = lnop[i];
+  for (IndexType i = 0; i < 6; i++) {
+    std::array<IndexType, 5> lf = lnop[i];
 
-    int elim = lf[4];
-    int h = indices[elim];
+    IndexType elim = lf[4];
+    IndexType h = indices[elim];
 
     const_fiterator q = faces->find(h);
 
     if (q == faces->end())
       continue;
 
-    const std::array<int, 9>& gf = q->second;
+    const std::array<IndexType, 9>& gf = q->second;
 
     indices[elim] = gf[8];
 
-    std::array<int, 8> x;
+    std::array<IndexType, 8> x;
     x.fill(-1);
 
-    for (int j = 0; j < indices.size(); j++) {
-      int k = indices[j];
+    for (IndexType j = 0; j < indices.size(); j++) {
+      IndexType k = indices[j];
       if (k == gf[2])
         x[2] = j;
       else if (k == gf[5])
@@ -355,8 +359,8 @@ HNStructureQ23d::CondenseHanging4er(EntryMatrix& E, nvector<int>& indices) const
       else if (k == gf[7])
         x[7] = j;
     }
-    for (int j = 0; j < 4; j++) {
-      int k = indices[lf[j]];
+    for (IndexType j = 0; j < 4; j++) {
+      IndexType k = indices[lf[j]];
       if (k == gf[0])
         x[0] = lf[j];
       else if (k == gf[1])
@@ -368,8 +372,7 @@ HNStructureQ23d::CondenseHanging4er(EntryMatrix& E, nvector<int>& indices) const
       else
         assert(0);
     }
-    for (int j = 0; j < 8; j++) {
-      assert(x[j] >= 0);
+    for (IndexType j = 0; j < 8; j++) {
       E.add_column(x[j], elim, fwei[j]);
       E.add_row(x[j], elim, fwei[j]);
     }
@@ -381,29 +384,30 @@ HNStructureQ23d::CondenseHanging4er(EntryMatrix& E, nvector<int>& indices) const
 /*----------------------------------------------*/
 
 void
-HNStructureQ23d::CondenseHanging4erLowerHigher(EntryMatrix& E,
-                                               nvector<int>& indices) const
+HNStructureQ23d::CondenseHanging4erLowerHigher(
+  EntryMatrix& E,
+  nvector<IndexType>& indices) const
 {
-  for (int i = 0; i < 6; i++) {
-    std::array<int, 5> lf = lnop[i];
+  for (IndexType i = 0; i < 6; i++) {
+    std::array<IndexType, 5> lf = lnop[i];
 
-    int elim = lf[4];
-    int h = indices[elim];
+    IndexType elim = lf[4];
+    IndexType h = indices[elim];
 
     const_fiterator q = faces->find(h);
 
     if (q == faces->end())
       continue;
 
-    const std::array<int, 9>& gf = q->second;
+    const std::array<IndexType, 9>& gf = q->second;
 
     indices[elim] = gf[8];
 
-    std::array<int, 8> x;
+    std::array<IndexType, 8> x;
     x.fill(-1);
 
-    for (int j = 0; j < indices.size(); j++) {
-      int k = indices[j];
+    for (IndexType j = 0; j < indices.size(); j++) {
+      IndexType k = indices[j];
       if (k == gf[2])
         x[2] = j;
       else if (k == gf[5])
@@ -413,8 +417,8 @@ HNStructureQ23d::CondenseHanging4erLowerHigher(EntryMatrix& E,
       else if (k == gf[7])
         x[7] = j;
     }
-    for (int j = 0; j < 4; j++) {
-      int k = indices[lf[j]];
+    for (IndexType j = 0; j < 4; j++) {
+      IndexType k = indices[lf[j]];
       if (k == gf[0])
         x[0] = lf[j];
       else if (k == gf[1])
@@ -426,8 +430,7 @@ HNStructureQ23d::CondenseHanging4erLowerHigher(EntryMatrix& E,
       else
         assert(0);
     }
-    for (int j = 0; j < 8; j++) {
-      assert(x[j] >= 0);
+    for (IndexType j = 0; j < 8; j++) {
       E.add_column(x[j], elim, fq1wei[j]);
       E.add_row(x[j], elim, fwei[j]);
     }
@@ -439,29 +442,30 @@ HNStructureQ23d::CondenseHanging4erLowerHigher(EntryMatrix& E,
 /*----------------------------------------------*/
 
 void
-HNStructureQ23d::CondenseHanging4erHigherLower(EntryMatrix& E,
-                                               nvector<int>& indices) const
+HNStructureQ23d::CondenseHanging4erHigherLower(
+  EntryMatrix& E,
+  nvector<IndexType>& indices) const
 {
-  for (int i = 0; i < 6; i++) {
-    std::array<int, 5> lf = lnop[i];
+  for (IndexType i = 0; i < 6; i++) {
+    std::array<IndexType, 5> lf = lnop[i];
 
-    int elim = lf[4];
-    int h = indices[elim];
+    IndexType elim = lf[4];
+    IndexType h = indices[elim];
 
     const_fiterator q = faces->find(h);
 
     if (q == faces->end())
       continue;
 
-    const std::array<int, 9>& gf = q->second;
+    const std::array<IndexType, 9>& gf = q->second;
 
     indices[elim] = gf[8];
 
-    std::array<int, 8> x;
+    std::array<IndexType, 8> x;
     x.fill(-1);
 
-    for (int j = 0; j < indices.size(); j++) {
-      int k = indices[j];
+    for (IndexType j = 0; j < indices.size(); j++) {
+      IndexType k = indices[j];
       if (k == gf[2])
         x[2] = j;
       else if (k == gf[5])
@@ -471,8 +475,8 @@ HNStructureQ23d::CondenseHanging4erHigherLower(EntryMatrix& E,
       else if (k == gf[7])
         x[7] = j;
     }
-    for (int j = 0; j < 4; j++) {
-      int k = indices[lf[j]];
+    for (IndexType j = 0; j < 4; j++) {
+      IndexType k = indices[lf[j]];
       if (k == gf[0])
         x[0] = lf[j];
       else if (k == gf[1])
@@ -484,8 +488,7 @@ HNStructureQ23d::CondenseHanging4erHigherLower(EntryMatrix& E,
       else
         assert(0);
     }
-    for (int j = 0; j < 8; j++) {
-      assert(x[j] >= 0);
+    for (IndexType j = 0; j < 8; j++) {
       E.add_column(x[j], elim, fwei[j]);
       E.add_row(x[j], elim, fq1wei[j]);
     }

@@ -213,7 +213,7 @@ public:
   void dirichlet_only_row(int i, const std::vector<int>& cv);
 
   void zero();
-  void entry_diag(int i, const nmatrix<double>& M);
+  void entry_diag(IndexType i, const nmatrix<double>& M);
   void entry(nvector<int>::const_iterator start1,
              nvector<int>::const_iterator stop1,
              nvector<int>::const_iterator start2,

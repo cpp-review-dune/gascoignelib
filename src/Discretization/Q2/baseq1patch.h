@@ -65,14 +65,14 @@ public:
   double phi(int i) const { return N[i]; }
   double phi_x(int i) const { return DN[i].x(); }
   double phi_y(int i) const { return DN[i].y(); }
-  double phi_xx(int i) const { return 0.; }
-  double phi_xy(int i) const
+  double phi_xx(int /*i*/) const { return 0.; }
+  double phi_xy(int /*i*/) const
   {
     std::cerr << "\"BaseQ12dPatch::phi_xy\" not written!" << std::endl;
     abort();
     //     return dxy[i];
   }
-  double phi_yy(int i) const { return 0.; }
+  double phi_yy(int /*i*/) const { return 0.; }
   const Vertex2d& phi_grad(int i) const { return DN[i]; }
 
   void point(const Vertex2d& s) const

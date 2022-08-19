@@ -39,12 +39,12 @@ namespace Gascoigne {
 template<int DIM, int NODES>
 class HangingNodes : public HNStructureInterface
 {
-  typedef std::array<int, 3> EdgeVector;
-  typedef std::array<int, 9> FaceVector;
+  typedef std::array<IndexType, 3> EdgeVector;
+  typedef std::array<IndexType, 9> FaceVector;
 
 protected:
-  const std::map<int, EdgeVector>* edges;
-  const std::map<int, FaceVector>* faces;
+  const std::map<IndexType, EdgeVector>* edges;
+  const std::map<IndexType, FaceVector>* faces;
 
   std::array<double, NODES> wei;
   std::array<double, NODES * NODES> fwei;
@@ -130,18 +130,18 @@ public:
   bool ZeroCheck(const GlobalVector& u) const
   {
     for (auto it : *edges)
-      for (int c = 0; c < u.ncomp(); c++)
+      for (ShortIndexType c = 0; c < u.ncomp(); c++)
         if (u(it.first, c) != 0.)
           return 1;
     if (DIM == 3)
       for (auto it : *faces)
-        for (int c = 0; c < u.ncomp(); c++)
+        for (ShortIndexType c = 0; c < u.ncomp(); c++)
           if (u(it.first, c) != 0.)
             return 1;
     return 0;
   }
 
-  int nhnodes() const
+  IndexType nhnodes() const
   {
     if (DIM == 2)
       return edges->size();
@@ -162,22 +162,22 @@ public:
     return 0;
   }
 
-  std::array<int, 2> GetHangingEdge(int i) const
+  std::array<IndexType, 2> GetHangingEdge(int i) const
   {
     auto p = edges->find(i);
     assert(p != edges->end());
 
-    std::array<int, 2> Edge;
+    std::array<IndexType, 2> Edge;
     for (int j = 0; j < 2; ++j)
       Edge[j] = p->second[j];
     return Edge;
   }
-  std::array<int, 4> GetHangingFace(int i) const
+  std::array<IndexType, 4> GetHangingFace(int i) const
   {
     auto p = faces->find(i);
     assert(p != faces->end());
 
-    std::array<int, 4> Face;
+    std::array<IndexType, 4> Face;
     Face[0] = p->second[0];
     Face[1] = p->second[1];
     Face[2] = p->second[3];
@@ -192,7 +192,7 @@ public:
     return p->second;
   }
 
-  void CondenseHanging(IntVector& indices) const
+  void CondenseHanging(IndexVector& indices) const
   {
     if (DIM == 2)
       assert(indices.size() == NODES * NODES);
@@ -241,7 +241,7 @@ public:
     {
 
       for (int i = 0; i < indices.size(); ++i) {
-        int node = indices[i];
+        IndexType node = indices[i];
         auto edge = edges->find(node);
         if (edge != edges->end()) // node hangs, replace index i
           indices[i] = edge->second[NODES - 1];
@@ -257,7 +257,7 @@ public:
 
   void CondenseHanging(EntryMatrix& E, IntVector& indices) const;
 
-  void CondenseHangingPatch(EntryMatrix& E, IntVector& indices) const
+  void CondenseHangingPatch(EntryMatrix& /*E*/, IntVector& /*indices*/) const
   {
     //      assert(0);
   }

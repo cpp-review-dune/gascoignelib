@@ -120,7 +120,7 @@ public:
   void RhsPoint(LocalVector& b,
                 const FemInterface& E,
                 const Vertex<DIM>& p,
-                int comp) const;
+                ShortIndexType comp) const;
   void DiracRhsPoint(LocalVector& b,
                      const FemInterface& E,
                      const Vertex<DIM>& p,
@@ -135,7 +135,7 @@ public:
   double ComputePointValue(const FemInterface& E,
                            const Vertex<DIM>& p,
                            const LocalVector& U,
-                           int comp) const;
+                           ShortIndexType comp) const;
   double ComputeDomainFunctional(const DomainFunctional& F,
                                  const FemInterface& FEM,
                                  const LocalVector& U,
@@ -198,8 +198,8 @@ public:
                 double H,
                 double ND0,
                 double ND1,
-                int ncomp,
-                int comp) const;
+                ShortIndexType ncomp,
+                ShortIndexType comp) const;
 #pragma GCC diagnostic pop
 };
 

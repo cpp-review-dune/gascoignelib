@@ -138,7 +138,7 @@ public:
   void RhsPoint(LocalVector& b,
                 const FemInterface& E,
                 const Vertex<DIM>& p,
-                int comp) const;
+                ShortIndexType comp) const;
   void DiracRhsPoint(LocalVector& b,
                      const FemInterface& E,
                      const Vertex<DIM>& p,
@@ -200,7 +200,7 @@ public:
   void IntegrateBoundaryMassDiag(DoubleVector& F,
                                  const FemInterface& FEM,
                                  int ile,
-                                 int col) const;
+                                 int) const;
 
   // no warning for overloaded virtual function (2d/3d)
 #pragma GCC diagnostic push
@@ -212,8 +212,8 @@ public:
                 double H,
                 double ND0,
                 double ND1,
-                int ncomp,
-                int comp) const;
+                ShortIndexType ncomp,
+                ShortIndexType comp) const;
 #pragma GCC diagnostic pop
 };
 } // namespace Gascoigne

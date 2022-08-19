@@ -38,7 +38,7 @@ class WaveEquation : public Gascoigne::Equation
 public:
   WaveEquation();
 
-  int GetNcomp() const { return 1; }
+  ShortIndexType GetNcomp() const { return 1; }
 
   std::string GetName() const { return "WaveEquation"; }
 
@@ -64,7 +64,7 @@ class WaveBoundaryEquation : public Gascoigne::BoundaryEquation
 
 public:
   WaveBoundaryEquation();
-  int GetNcomp() const { return 1; }
+  ShortIndexType GetNcomp() const { return 1; }
 
   std::string GetName() const { return "WaveBoundaryEquation"; }
 

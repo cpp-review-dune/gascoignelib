@@ -122,7 +122,7 @@ BasicDiscretization::GlobalToLocalCell(LocalVector& U,
                                        int iq) const
 {
   U.ReInit(u.ncomp(), 1);
-  for (int c = 0; c < u.ncomp(); ++c) {
+  for (ShortIndexType c = 0; c < u.ncomp(); ++c) {
     U(0, c) = u(iq, c);
   }
 }

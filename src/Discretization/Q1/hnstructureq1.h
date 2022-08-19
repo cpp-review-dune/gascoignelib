@@ -33,9 +33,9 @@ namespace Gascoigne {
 class HNStructureQ1 : public virtual HNStructureInterface
 {
 protected:
-  typedef std::array<int, 3> EdgeVector;
-  typedef std::map<int, EdgeVector>::iterator iterator;
-  typedef std::map<int, EdgeVector>::const_iterator const_iterator;
+  typedef std::array<IndexType, 3> EdgeVector;
+  typedef std::map<IndexType, EdgeVector>::iterator iterator;
+  typedef std::map<IndexType, EdgeVector>::const_iterator const_iterator;
 
 public:
   HNStructureQ1() {}

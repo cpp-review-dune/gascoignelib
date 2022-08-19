@@ -65,7 +65,7 @@ public:
   virtual std::string GetName() const { return "No Name"; }
 
   // Gives the number of solution components.
-  virtual int GetNcomp() const
+  virtual ShortIndexType GetNcomp() const
   {
     std::cerr << "ProblemDescriptor::GetNcomp() must be written!" << std::endl;
     abort();

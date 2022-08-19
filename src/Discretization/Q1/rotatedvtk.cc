@@ -33,7 +33,7 @@ void
 Visualization::_rotatedvtk_pointdata(ofstream& out) const
 {
   if (PointData) {
-    int nn = mesh->nnodes() * i_rotatedvtk_slides;
+    IndexType nn = mesh->nnodes() * i_rotatedvtk_slides;
 
     CheckPointData();
     // for(VisuDataInfo::siterator
@@ -151,7 +151,7 @@ Visualization::_rotatedvtk_celldata(ofstream& out) const
 void
 Visualization::_rotatedvtk_points(ofstream& out) const
 {
-  int nn = mesh->nnodes();
+  IndexType nn = mesh->nnodes();
   out << "POINTS " << nn * i_rotatedvtk_slides << " DOUBLE " << endl;
   if (mesh->dimension() == 2) {
     for (int i_slide = 0; i_slide < i_rotatedvtk_slides; i_slide++) {
@@ -178,8 +178,8 @@ Visualization::_rotatedvtk_points(ofstream& out) const
 void
 Visualization::_rotatedvtk_cells(ofstream& out) const
 {
-  int ne = mesh->ncells();
-  int nn = mesh->nnodes();
+  IndexType ne = mesh->ncells();
+  IndexType nn = mesh->nnodes();
 
   int lenght = 0;
   for (int c = 0; c < ne; c++) {

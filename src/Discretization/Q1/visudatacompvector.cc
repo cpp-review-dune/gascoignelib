@@ -53,7 +53,7 @@ VisuDataCompVector::SetGlobalVector(const GlobalVector* v)
 
 /*---------------------------------------------------*/
 
-int
+ShortIndexType
 VisuDataCompVector::visucomp() const
 {
   return _v->ncomp();
@@ -61,7 +61,7 @@ VisuDataCompVector::visucomp() const
 
 /*---------------------------------------------------*/
 
-int
+IndexType
 VisuDataCompVector::visun() const
 {
   return _v->n();
@@ -70,7 +70,7 @@ VisuDataCompVector::visun() const
 /*---------------------------------------------------*/
 
 double
-VisuDataCompVector::visudata(int i, int c) const
+VisuDataCompVector::visudata(IndexType i, ShortIndexType c) const
 {
   assert(_v);
   assert(i < _v->n());

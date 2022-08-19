@@ -68,7 +68,10 @@ public:
       abort();
   }
 
-  void point_boundary(int ie, const Vertex<DIM - 1>& v) const { abort(); }
+  void point_boundary(int /*ie*/, const Vertex<DIM - 1>& /*v*/) const
+  {
+    abort();
+  }
   const std::array<int, 2>* faces() const { abort(); }
 
   // access values
@@ -172,7 +175,7 @@ CGBase<2, 2>::psi(int i, double x) const
 }
 template<>
 inline double
-CGBase<2, 2>::psi_x(int i, double x) const
+CGBase<2, 2>::psi_x(int i, double /*x*/) const
 {
   return alpha[i][0];
 }
@@ -271,7 +274,7 @@ CGBase<3, 2>::psi(int i, double x) const
 }
 template<>
 inline double
-CGBase<3, 2>::psi_x(int i, double x) const
+CGBase<3, 2>::psi_x(int i, double /*x*/) const
 {
   return alpha[i][0];
 }

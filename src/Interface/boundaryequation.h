@@ -55,7 +55,7 @@ public:
     abort();
   }
 
-  virtual int GetNcomp() const = 0;
+  virtual ShortIndexType GetNcomp() const = 0;
 
   virtual void Form(VectorIterator b,
                     const FemFunction& U,
