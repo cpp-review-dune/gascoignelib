@@ -41,12 +41,12 @@ CoarseHierarchicalMesh2d::BasicInit(int depth)
   if (depth == 1) {
     loop(cn2o);
   } else if (depth == 2) {
-    IntVector cn2oA, cn2oB;
-    IntVector co2n2;
+    IndexVector cn2oA, cn2oB;
+    IndexVector co2n2;
     loop(cn2oA);
     co2n2 = co2n;
     loop(cn2oB);
-    IntVector co2n3(co2n2.size());
+    IndexVector co2n3(co2n2.size());
     for (int i = 0; i < co2n2.size(); i++) {
       if (co2n2[i] < 0) {
         co2n3[i] = co2n2[i];
@@ -75,7 +75,7 @@ CoarseHierarchicalMesh2d::BasicInit(int depth)
 /*---------------------------------------------------*/
 
 void
-CoarseHierarchicalMesh2d::loop(IntVector& dst)
+CoarseHierarchicalMesh2d::loop(IndexVector& dst)
 {
   global_coarse();
   dst.resize(ncells());
@@ -91,13 +91,13 @@ CoarseHierarchicalMesh2d::loop(IntVector& dst)
 /*---------------------------------------------------*/
 
 void
-CoarseHierarchicalMesh2d::refine(const IntVector& cell_ref_old,
-                                 const IntVector& cell_coarse_old)
+CoarseHierarchicalMesh2d::refine(const IndexVector& cell_ref_old,
+                                 const IndexVector& cell_coarse_old)
 {
   CellRefList.clear();
   CellCoarseList.clear();
 
-  IntVector cell_ref(0), cell_coarse(0);
+  IndexVector cell_ref(0), cell_coarse(0);
 
   for (int i = 0; i < cell_ref_old.size(); i++) {
     int newc = co2n[cell_ref_old[i]];
@@ -115,10 +115,10 @@ CoarseHierarchicalMesh2d::refine(const IntVector& cell_ref_old,
 /*---------------------------------------------------*/
 
 void
-CoarseHierarchicalMesh2d::GetRefinedList(IntVector& ref)
+CoarseHierarchicalMesh2d::GetRefinedList(IndexVector& ref)
 {
   ref.resize(0);
-  IntVector ref2;
+  IndexVector ref2;
   Set2Vec(ref2, CellRefList);
   for (int i = 0; i < ref2.size(); i++) {
     int j = cn2o[ref2[i]];
@@ -130,10 +130,10 @@ CoarseHierarchicalMesh2d::GetRefinedList(IntVector& ref)
 /*---------------------------------------------------*/
 
 void
-CoarseHierarchicalMesh2d::GetCoarsedList(IntVector& coarse)
+CoarseHierarchicalMesh2d::GetCoarsedList(IndexVector& coarse)
 {
   coarse.resize(0);
-  IntVector coarse2;
+  IndexVector coarse2;
   Set2Vec(coarse2, CellCoarseList);
   for (int i = 0; i < coarse2.size(); i++) {
     int j = cn2o[coarse2[i]];

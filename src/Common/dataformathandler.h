@@ -46,8 +46,10 @@ private:
   template<typename T>
   using NameMap = std::map<std::string, T>;
 
+  typedef NameMap<void*> TypeVoid;
   typedef NameMap<std::string*> TypeString;
   typedef NameMap<int*> TypeInt;
+  typedef NameMap<IndexType*> TypeIndex;
   typedef NameMap<bool*> TypeBool; // neu
   typedef NameMap<float*> TypeFloat;
   typedef NameMap<double*> TypeDouble;
@@ -58,6 +60,7 @@ private:
 
   typedef NameMap<std::vector<double>*> TypeVectorDouble;
   typedef NameMap<IntVector*> TypeVectorInt;
+  typedef NameMap<IndexVector*> TypeVectorIndex;
   typedef NameMap<std::vector<std::string>*> TypeVectorString;
 
   typedef NameMap<std::set<int>*> TypeSetInt;
@@ -65,10 +68,12 @@ private:
 
   typedef NameMap<std::map<int, IntVector>*> TypeMapIntVectorInt;
 
-  std::set<NameType> NT;
+  std::map<std::string, std::string> NT;
 
+  TypeVoid TV;
   TypeString TS;
   TypeInt TI;
+  TypeIndex TId;
   TypeBool TB; // neu
   TypeFloat TF;
   TypeDouble TD;
@@ -77,6 +82,7 @@ private:
 
   TypeVectorDouble TND;
   TypeVectorInt TNI;
+  TypeVectorIndex TNId;
   TypeVectorString TVS;
 
   TypeSetInt TSI;
@@ -86,14 +92,13 @@ private:
 
   TypeStringDouble TSD;
 
-  std::string search(std::string& fo, const std::string& name);
-
 public:
   void clear()
   {
     NT.clear();
     TS.clear();
     TI.clear();
+    TId.clear();
     TB.clear();
     TF.clear();
     TD.clear();
@@ -101,6 +106,7 @@ public:
     TF3D.clear();
     TND.clear();
     TNI.clear();
+    TNId.clear();
     TVS.clear();
     TSI.clear();
     TSVS.clear();
@@ -109,8 +115,12 @@ public:
   }
 
   // without default values
+  template<typename T>
+  void insert(const std::string& name, T val);
+
   void insert(const std::string&, std::string*);
   void insert(const std::string&, int*);
+  void insert(const std::string&, IndexType*);
   void insert(const std::string&, bool*); // neu
   void insert(const std::string&, float*);
   void insert(const std::string&, double*);
@@ -120,6 +130,7 @@ public:
 
   void insert(const std::string&, std::vector<double>*);
   void insert(const std::string&, IntVector*);
+  void insert(const std::string&, IndexVector*);
   void insert(const std::string&, std::vector<std::string>*);
 
   void insert(const std::string&, IntSet*);
@@ -133,6 +144,7 @@ public:
   // with default values
   void insert(const std::string&, std::string*, const std::string&);
   void insert(const std::string&, int*, int);
+  void insert(const std::string&, IndexType*, IndexType);
   void insert(const std::string&, bool*, bool); // neu
   void insert(const std::string&, float*, float);
   void insert(const std::string&, double*, double);
@@ -144,11 +156,13 @@ public:
               std::array<double, 3>&);
   void insert(const std::string&, std::vector<double>*, std::vector<double>&);
   void insert(const std::string&, IntVector*, IntVector&);
+  void insert(const std::string&, IndexVector*, IndexVector&);
 
   void get(std::string&, const std::string&);
 
   void setvalue(const std::string&, const std::string&);
   void setvalue(const std::string&, int);
+  void setvalue(const std::string&, IndexType);
   void setvalue(const std::string&, bool); // neu
   void setvalue(const std::string&, float);
   void setvalue(const std::string&, double);
@@ -158,6 +172,7 @@ public:
 
   void setvalue(const std::string&, std::vector<double>&);
   void setvalue(const std::string&, IntVector&);
+  void setvalue(const std::string&, IndexVector&);
   void setvalue(const std::string&, std::vector<std::string>&);
 
   void setvalue(const std::string&, IntSet&);

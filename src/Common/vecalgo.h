@@ -27,21 +27,25 @@
 #include <set>
 #include <vector>
 
+#include "../Interface/gascoigne.h"
+
 namespace Gascoigne {
 void
-transfer(int n, std::vector<int>& tr, const std::set<int>& del);
+transfer(IndexType n,
+         std::vector<IndexType>& tr,
+         const std::set<IndexType>& del);
 void
-transfer(int n, std::vector<int>& tr, std::vector<int>& del);
+transfer(IndexType n, std::vector<IndexType>& tr, std::vector<IndexType>& del);
 
 template<class C>
 void
-compress(std::vector<C>& dst, const std::vector<int>& src)
+compress(std::vector<C>& dst, const std::vector<IndexType>& src)
 {
-  // int n = 0;
-  int mmax = 0;
+  // IndexType n = 0;
+  IndexType mmax = 0;
 
-  for (int i = 0; i < src.size(); i++) {
-    int j = src[i];
+  for (IndexType i = 0; i < src.size(); i++) {
+    IndexType j = src[i];
     if (j >= 0) {
       dst[j] = dst[i];
       mmax = std::max(mmax, j);

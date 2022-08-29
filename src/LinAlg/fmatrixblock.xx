@@ -40,8 +40,8 @@ template<int N>
 void
 FMatrixBlock<N>::add(double s, const TimePattern& TP)
 {
-  for (int i = 0; i < N; i++) {
-    for (int j = 0; j < N; j++) {
+  for (IndexType i = 0; i < N; i++) {
+    for (IndexType j = 0; j < N; j++) {
       NodeMatrix<N, MatrixEntryType>::value(i, j) += s * TP(i, j);
     }
   }
@@ -51,47 +51,47 @@ FMatrixBlock<N>::add(double s, const TimePattern& TP)
 
 template<int N>
 void
-FMatrixBlock<N>::DirichletRow(const std::vector<int>& cv)
+FMatrixBlock<N>::DirichletRow(const std::vector<IndexType>& cv)
 {
-  for (int i = 0; i < cv.size(); i++) {
-    int c = cv[i];
-    for (int d = 0; d < N; d++)
+  for (IndexType i = 0; i < cv.size(); i++) {
+    IndexType c = cv[i];
+    for (IndexType d = 0; d < N; d++)
       NodeMatrix<N, MatrixEntryType>::value(c, d) = 0.;
   }
 }
 
 template<int N>
 void
-FMatrixBlock<N>::DirichletCol(const std::vector<int>& cv)
+FMatrixBlock<N>::DirichletCol(const std::vector<IndexType>& cv)
 {
-  for (int i = 0; i < cv.size(); i++) {
-    int c = cv[i];
-    for (int d = 0; d < N; d++)
+  for (IndexType i = 0; i < cv.size(); i++) {
+    IndexType c = cv[i];
+    for (IndexType d = 0; d < N; d++)
       NodeMatrix<N, MatrixEntryType>::value(d, c) = 0.;
   }
 }
 
 template<int N>
 void
-FMatrixBlock<N>::DirichletDiag(const std::vector<int>& cv)
+FMatrixBlock<N>::DirichletDiag(const std::vector<IndexType>& cv)
 {
-  for (int i = 0; i < cv.size(); i++) {
-    int c = cv[i];
+  for (IndexType i = 0; i < cv.size(); i++) {
+    IndexType c = cv[i];
     NodeMatrix<N, MatrixEntryType>::value(c, c) = 1.;
   }
 }
 
 template<int N>
 void
-FMatrixBlock<N>::zero_row(int c)
+FMatrixBlock<N>::zero_row(IndexType c)
 {
-  for (int i = 0; i < N; i++)
+  for (IndexType i = 0; i < N; i++)
     NodeMatrix<N, MatrixEntryType>::value(c, i) = 0.;
 }
 
 template<int N>
 void
-FMatrixBlock<N>::uno_diag(int c)
+FMatrixBlock<N>::uno_diag(IndexType c)
 {
   NodeMatrix<N, MatrixEntryType>::value(c, c) = 1.;
 }
@@ -100,7 +100,7 @@ FMatrixBlock<N>::uno_diag(int c)
 
 template<int N>
 MatrixEntryType&
-FMatrixBlock<N>::diag(int i)
+FMatrixBlock<N>::diag(IndexType i)
 {
   return (*this)(i, i);
 }
@@ -109,10 +109,10 @@ FMatrixBlock<N>::diag(int i)
 
 template<int N>
 void
-FMatrixBlock<N>::getrow(std::vector<double>& v, int i)
+FMatrixBlock<N>::getrow(std::vector<double>& v, IndexType i)
 {
   v.clear();
-  for (int j = 0; j < N; j++)
+  for (IndexType j = 0; j < N; j++)
     v.push_back((*this)(i, j));
 }
 
@@ -120,10 +120,10 @@ FMatrixBlock<N>::getrow(std::vector<double>& v, int i)
 
 template<int N>
 void
-FMatrixBlock<N>::getcolumn(std::vector<double>& v, int i)
+FMatrixBlock<N>::getcolumn(std::vector<double>& v, IndexType i)
 {
   v.clear();
-  for (int j = 0; j < N; j++)
+  for (IndexType j = 0; j < N; j++)
     v.push_back((*this)(j, i));
 }
 
@@ -131,9 +131,9 @@ FMatrixBlock<N>::getcolumn(std::vector<double>& v, int i)
 
 template<int N>
 void
-FMatrixBlock<N>::setrow(std::vector<double>& v, int i)
+FMatrixBlock<N>::setrow(std::vector<double>& v, IndexType i)
 {
-  for (int j = 0; j < N; j++)
+  for (IndexType j = 0; j < N; j++)
     (*this)(i, j) = v[j];
 }
 
@@ -141,9 +141,9 @@ FMatrixBlock<N>::setrow(std::vector<double>& v, int i)
 
 template<int N>
 void
-FMatrixBlock<N>::setcolumn(std::vector<double>& v, int i)
+FMatrixBlock<N>::setcolumn(std::vector<double>& v, IndexType i)
 {
-  for (int j = 0; j < N; j++)
+  for (IndexType j = 0; j < N; j++)
     (*this)(j, i) = v[j];
 }
 
@@ -153,8 +153,8 @@ template<int N>
 void
 FMatrixBlock<N>::entry(const nmatrix<double>& E)
 {
-  for (int c = 0; c < N; c++) {
-    for (int d = 0; d < N; d++) {
+  for (IndexType c = 0; c < N; c++) {
+    for (IndexType d = 0; d < N; d++) {
 #pragma omp atomic update
       NodeMatrix<N, MatrixEntryType>::value(c, d) += E(c, d);
     }
@@ -165,10 +165,10 @@ FMatrixBlock<N>::entry(const nmatrix<double>& E)
 
 template<int N>
 void
-FMatrixBlock<N>::entry(int i, int j, const EntryMatrix& E, double s)
+FMatrixBlock<N>::entry(IndexType i, IndexType j, const EntryMatrix& E, double s)
 {
-  for (int c = 0; c < N; c++) {
-    for (int d = 0; d < N; d++) {
+  for (IndexType c = 0; c < N; c++) {
+    for (IndexType d = 0; d < N; d++) {
 #pragma omp atomic update
       NodeMatrix<N, MatrixEntryType>::value(c, d) += s * E(i, j, c, d);
     }
@@ -179,10 +179,13 @@ FMatrixBlock<N>::entry(int i, int j, const EntryMatrix& E, double s)
 
 template<int N>
 void
-FMatrixBlock<N>::dual_entry(int i, int j, const EntryMatrix& E, double s)
+FMatrixBlock<N>::dual_entry(IndexType i,
+                            IndexType j,
+                            const EntryMatrix& E,
+                            double s)
 {
-  for (int c = 0; c < N; c++) {
-    for (int d = 0; d < N; d++) {
+  for (IndexType c = 0; c < N; c++) {
+    for (IndexType d = 0; d < N; d++) {
       NodeMatrix<N, MatrixEntryType>::value(c, d) += s * E(j, i, d, c);
     }
   }
@@ -194,8 +197,8 @@ template<int N>
 void
 FMatrixBlock<N>::transpose()
 {
-  for (int i = 0; i < N; i++) {
-    for (int j = 0; j < i; j++) {
+  for (IndexType i = 0; i < N; i++) {
+    for (IndexType j = 0; j < i; j++) {
       std::swap(NodeMatrix<N, MatrixEntryType>::value(i, j),
                 NodeMatrix<N, MatrixEntryType>::value(j, i));
     }
@@ -208,8 +211,8 @@ template<int N>
 void
 FMatrixBlock<N>::transpose(FMatrixBlock<N>& A)
 {
-  for (int i = 0; i < N; i++) {
-    for (int j = 0; j < N; j++) {
+  for (IndexType i = 0; i < N; i++) {
+    for (IndexType j = 0; j < N; j++) {
       std::swap(NodeMatrix<N, MatrixEntryType>::value(i, j), A(j, i));
     }
   }
@@ -221,8 +224,8 @@ template<int N>
 void
 FMatrixBlock<N>::copy_transpose(const FMatrixBlock<N>& A)
 {
-  for (int i = 0; i < N; i++) {
-    for (int j = 0; j < N; j++) {
+  for (IndexType i = 0; i < N; i++) {
+    for (IndexType j = 0; j < N; j++) {
       NodeMatrix<N, MatrixEntryType>::value(i, j) = A(j, i);
     }
   }

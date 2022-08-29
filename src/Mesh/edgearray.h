@@ -31,14 +31,14 @@
 
 namespace Gascoigne {
 template<size_t N>
-class EdgeArray : public std::array<int, N>
+class EdgeArray : public std::array<IndexType, N>
 {
 public:
-  EdgeArray(const std::array<int, N>& e);
+  EdgeArray(const std::array<IndexType, N>& e);
 
-  bool operator==(const std::array<int, N>& e) const;
+  bool operator==(const std::array<IndexType, N>& e) const;
 
-  int sum() const;
+  IndexType sum() const;
 
   void BinWrite(std::ostream& s) const
   {

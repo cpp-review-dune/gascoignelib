@@ -148,10 +148,11 @@ putvector(const std::vector<T>& v, std::ostream& s)
 
 template<class T, class S>
 std::ostream&
-operator<<(std::ostream& os, const HASHMAP<T, S>& s)
+operator<<(std::ostream& os, const std::unordered_map<T, S>& s)
 {
   os << s.size() << std::endl;
-  for (typename HASHMAP<T, S>::const_iterator p = s.begin(); p != s.end();
+  for (typename std::unordered_map<T, S>::const_iterator p = s.begin();
+       p != s.end();
        p++) {
     os << p->first << "->" << p->second << " ";
   }
@@ -259,10 +260,11 @@ read_data(std::map<T, S>& v, std::istream& s)
 
 template<class T, class S>
 void
-write_data(const HASHMAP<T, S>& v, std::ostream& s)
+write_data(const std::unordered_map<T, S>& v, std::ostream& s)
 {
   s << v.size() << std::endl;
-  for (typename HASHMAP<T, S>::const_iterator it = v.begin(); it != v.end();
+  for (typename std::unordered_map<T, S>::const_iterator it = v.begin();
+       it != v.end();
        ++it) {
     write_data(it->first, s);
     s << std::endl;
@@ -275,7 +277,7 @@ write_data(const HASHMAP<T, S>& v, std::ostream& s)
 
 template<class T, class S>
 void
-read_data(HASHMAP<T, S>& v, std::istream& s)
+read_data(std::unordered_map<T, S>& v, std::istream& s)
 {
   size_t n;
   s >> n;

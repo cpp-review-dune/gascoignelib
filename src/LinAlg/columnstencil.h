@@ -99,11 +99,11 @@ public:
   }
 
   void memory(const SparseStructureInterface*);
-  void memory(int n, int nt);
+  void memory(IndexType n, IndexType nt);
 
-  virtual int Find(int i, int j) const
+  virtual IndexType Find(IndexType i, IndexType j) const
   {
-    for (int pos = start(i); pos < stop(i); pos++) {
+    for (IndexType pos = start(i); pos < stop(i); pos++) {
       if (col(pos) == j)
         return pos;
     }

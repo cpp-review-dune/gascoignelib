@@ -152,14 +152,14 @@ SparseUmf<B>::ConstructStructure(const IntVector& perm,
     dynamic_cast<const ColumnStencil*>(__AS->GetStencil());
   // check if __AS and A are the same object...
   // then, we do not need __AS!!!
-  //    assert ( (long int) (__AS) == (long int) (&__XXX));
+  //    assert ( (long IndexType) (__AS) == (long IndexType) (&__XXX));
   assert(static_cast<const void*>(__AS) == static_cast<const void*>(&__XXX));
 
   assert(ST);
   __ncomp = __AS->mat(0)->ncomp();
 
-  int n = ST->n();
-  int nentries = ST->nentries();
+  IndexType n = ST->n();
+  IndexType nentries = ST->nentries();
 
   // reserve size for matrix-entries
   __Ax.resize(__ncomp * __ncomp * nentries);
@@ -167,12 +167,12 @@ SparseUmf<B>::ConstructStructure(const IntVector& perm,
   __Ap.clear();
 
   __Ap.push_back(0);
-  for (int r = 0; r < n; ++r) {
-    for (int rc = 0; rc < __ncomp; ++rc) {
-      for (int p = ST->start(r); p != ST->stop(r); ++p) {
-        int c = ST->col(p);
+  for (IndexType r = 0; r < n; ++r) {
+    for (IndexType rc = 0; rc < __ncomp; ++rc) {
+      for (IndexType p = ST->start(r); p != ST->stop(r); ++p) {
+        IndexType c = ST->col(p);
         // insert column-values
-        for (int cc = 0; cc < __ncomp; ++cc)
+        for (IndexType cc = 0; cc < __ncomp; ++cc)
           __Ac.push_back(c * __ncomp + cc);
       }
       __Ap.push_back(__Ac.size());
@@ -208,7 +208,8 @@ SparseUmf<B>::ConstructStructure(const IntVector& perm,
 
 template<class B>
 void
-SparseUmf<B>::ConstructStructure(int ncomp, const SparseStructure& SS)
+SparseUmf<B>::ConstructStructure(ShortIndexType ncomp,
+                                 const SparseStructure& SS)
 {
   abort();
 
@@ -223,13 +224,13 @@ SparseUmf<B>::ConstructStructure(int ncomp, const SparseStructure& SS)
   __Ap.clear();
 
   __Ap.push_back(0);
-  for (int r = 0; r < n; ++r) {
-    for (int rc = 0; rc < __ncomp; ++rc) {
-      for (set<int>::const_iterator p = SS.rowbegin(r); p != SS.rowend(r);
+  for (IndexType r = 0; r < n; ++r) {
+    for (IndexType rc = 0; rc < __ncomp; ++rc) {
+      for (set<IndexType>::const_iterator p = SS.rowbegin(r); p != SS.rowend(r);
            ++p) {
-        int c = *p;
+        IndexType c = *p;
         // insert column-values
-        for (int cc = 0; cc < __ncomp; ++cc)
+        for (IndexType cc = 0; cc < __ncomp; ++cc)
           __Ac.push_back(c * __ncomp + cc);
       }
       __Ap.push_back(__Ac.size());
@@ -250,7 +251,7 @@ SparseUmf<B>::ConstructStructure(int ncomp, const SparseStructure& SS)
   const long* sb = &(*__Ap.begin());
   const long* cb = &(*__Ac.begin());
 
-  int status =
+  IndexType status =
     umfpack_dl_symbolic(n_umf, n_umf, sb, cb, NULL, &Symbolic, Control, Info);
 
   if (status != UMFPACK_OK) {
@@ -277,12 +278,12 @@ SparseUmf<B>::copy_entries(const MatrixInterface& A)
   const ColumnStencil* ST =
     dynamic_cast<const ColumnStencil*>(__AS->GetStencil());
   assert(ST);
-  int pp = 0;
-  for (int r = 0; r < ST->n(); ++r) {
-    for (int rc = 0; rc < __ncomp; ++rc) {
-      for (int p = ST->start(r); p != ST->stop(r); ++p) {
+  IndexType pp = 0;
+  for (IndexType r = 0; r < ST->n(); ++r) {
+    for (IndexType rc = 0; rc < __ncomp; ++rc) {
+      for (IndexType p = ST->start(r); p != ST->stop(r); ++p) {
         const B& b = *__AS->mat(p);
-        for (int cc = 0; cc < __ncomp; ++cc, ++pp) {
+        for (IndexType cc = 0; cc < __ncomp; ++cc, ++pp) {
           assert(pp < __Ax.size());
           __Ax[pp] = b(rc, cc);
         }
@@ -306,12 +307,12 @@ SparseUmf<B>::add_entries(double s, const MatrixInterface* A)
   cout << ST->nentries() << "\t" << __Ax.size() << endl;
 
   assert(ST);
-  int pp = 0;
-  for (int r = 0; r < ST->n(); ++r) {
-    for (int rc = 0; rc < __ncomp; ++rc) {
-      for (int p = ST->start(r); p != ST->stop(r); ++p) {
+  IndexType pp = 0;
+  for (IndexType r = 0; r < ST->n(); ++r) {
+    for (IndexType rc = 0; rc < __ncomp; ++rc) {
+      for (IndexType p = ST->start(r); p != ST->stop(r); ++p) {
         const B& b = *AS->mat(p);
-        for (int cc = 0; cc < __ncomp; ++cc, ++pp) {
+        for (IndexType cc = 0; cc < __ncomp; ++cc, ++pp) {
           assert(pp < __Ax.size());
           __Ax[pp] += s * b(rc, cc);
         }
@@ -405,7 +406,7 @@ SparseUmf<B>::condition_number() const
 {
   abort();
 
-  int N = __Ap.size() - 1;
+  IndexType N = __Ap.size() - 1;
   assert(N > 0);
 
   ostringstream ss;
@@ -415,9 +416,9 @@ SparseUmf<B>::condition_number() const
   string datname = ss.str();
   ofstream OUT(datname.c_str());
 
-  for (int r = 0; r < __Ap.size() - 1; ++r) {
-    for (int p = __Ap[r]; p < __Ap[r + 1]; ++p) {
-      int c = __Ac[p];
+  for (IndexType r = 0; r < __Ap.size() - 1; ++r) {
+    for (IndexType p = __Ap[r]; p < __Ap[r + 1]; ++p) {
+      IndexType c = __Ac[p];
 
       double v = __Ax[p];
       if ((v == 0) && (r != c))

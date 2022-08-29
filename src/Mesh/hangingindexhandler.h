@@ -87,7 +87,7 @@ public:
     hnq2face = h2f;
   }
 
-  void CopyLevel2Nibble(const HangingIndexHandler& Lhih, IntVector& Vg2l);
+  void CopyLevel2Nibble(const HangingIndexHandler& Lhih, IndexVector& Vg2l);
 
   // zugriff
 

@@ -106,7 +106,7 @@ BasicDiscretization::GlobalToLocalSingle(LocalVector& U,
                                          const GlobalVector& u,
                                          int iq) const
 {
-  IntVector indices = GetLocalIndices(iq);
+  IndexVector indices = GetLocalIndices(iq);
   U.ReInit(u.ncomp(), indices.size());
   for (int ii = 0; ii < indices.size(); ii++) {
     int i = indices[ii];
@@ -135,7 +135,7 @@ BasicDiscretization::LocalToGlobal(GlobalVector& f,
                                    int iq,
                                    double s) const
 {
-  IntVector indices = GetLocalIndices(iq);
+  IndexVector indices = GetLocalIndices(iq);
   for (int ii = 0; ii < indices.size(); ii++) {
     int i = indices[ii];
     f.add_node(i, s, ii, F);
@@ -150,9 +150,9 @@ BasicDiscretization::LocalToGlobal(MatrixInterface& A,
                                    int iq,
                                    double s) const
 {
-  IntVector indices = GetLocalIndices(iq);
-  IntVector::const_iterator start = indices.begin();
-  IntVector::const_iterator stop = indices.end();
+  IndexVector indices = GetLocalIndices(iq);
+  IndexVector::const_iterator start = indices.begin();
+  IndexVector::const_iterator stop = indices.end();
   A.entry(start, stop, E, s);
 }
 

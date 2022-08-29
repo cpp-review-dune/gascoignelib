@@ -32,12 +32,12 @@ namespace Gascoigne {
 /*************************************************************/
 
 void
-transfer(int n, vector<int>& tr, const set<int>& del)
+transfer(IndexType n, vector<IndexType>& tr, const set<IndexType>& del)
 {
   tr.resize(n, -1);
 
-  int count = 0;
-  for (int i = 0; i < n; ++i) {
+  IndexType count = 0;
+  for (IndexType i = 0; i < n; ++i) {
     if (del.find(i) == del.end()) {
       tr[i] = count++;
     }
@@ -47,7 +47,7 @@ transfer(int n, vector<int>& tr, const set<int>& del)
 /*************************************************************/
 
 void
-transfer(int n, vector<int>& tr, vector<int>& del)
+transfer(IndexType n, vector<IndexType>& tr, vector<IndexType>& del)
 {
   tr.resize(n, -1);
 
@@ -58,10 +58,10 @@ transfer(int n, vector<int>& tr, vector<int>& del)
 
   sort(del.begin(), del.end());
 
-  int count = 0;
-  int pos = 0;
+  IndexType count = 0;
+  IndexType pos = 0;
 
-  for (int i = 0; i < n; ++i) {
+  for (IndexType i = 0; i < n; ++i) {
     while ((pos < del.size()) && (del[pos] < i)) {
       pos++;
     }

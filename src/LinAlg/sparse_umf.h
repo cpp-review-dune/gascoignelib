@@ -36,7 +36,7 @@ protected:
   std::vector<long> __Ap, __Ac;
   nvector<double> __Ax;
 
-  int __ncomp;
+  ShortIndexType __ncomp;
 
 public:
   //
@@ -77,8 +77,8 @@ public:
   void add_entries(double s, const MatrixInterface* A);
 
   void ConstructStructure(const IntVector& perm, const MatrixInterface& A);
-  void ConstructStructure(int ncomp, const SparseStructure& SS);
-  void modify(int c, double s) {}
+  void ConstructStructure(ShortIndexType ncomp, const SparseStructure& SS);
+  void modify(IndexType c, double s) {}
   void compute_ilu();
 
   void solve(GlobalVector& x) const;

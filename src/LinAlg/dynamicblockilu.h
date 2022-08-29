@@ -36,12 +36,12 @@ class DynamicBlockIlu
   , public DynamicBlockMatrix<B>
 {
 protected:
-  typedef typename std::list<int>::const_iterator const_citerator;
-  typedef typename std::list<int>::iterator citerator;
+  typedef typename std::list<IndexType>::const_iterator const_citerator;
+  typedef typename std::list<IndexType>::iterator citerator;
   typedef typename std::list<B>::const_iterator const_viterator;
   typedef typename std::list<B>::iterator viterator;
 
-  nvector<int> p, q;
+  nvector<IndexType> p, q;
   GlobalVector* yp;
 
   void backward() const;
@@ -56,38 +56,51 @@ public:
   DynamicBlockIlu(const DynamicBlockIlu<B>& I);
   ~DynamicBlockIlu();
 
-  viterator vdiag(int i) { return DynamicBlockMatrix<B>::vdiag(i); }
-  const_viterator vdiag(int i) const { return DynamicBlockMatrix<B>::vdiag(i); }
-  citerator cdiag(int i) { return DynamicBlockMatrix<B>::cdiag(i); }
-  const_citerator cdiag(int i) const { return DynamicBlockMatrix<B>::cdiag(i); }
-  const_citerator cstart(int i) const
+  viterator vdiag(IndexType i) { return DynamicBlockMatrix<B>::vdiag(i); }
+  const_viterator vdiag(IndexType i) const
+  {
+    return DynamicBlockMatrix<B>::vdiag(i);
+  }
+  citerator cdiag(IndexType i) { return DynamicBlockMatrix<B>::cdiag(i); }
+  const_citerator cdiag(IndexType i) const
+  {
+    return DynamicBlockMatrix<B>::cdiag(i);
+  }
+  const_citerator cstart(IndexType i) const
   {
     return DynamicBlockMatrix<B>::cstart(i);
   }
-  const_citerator cstop(int i) const { return DynamicBlockMatrix<B>::cstop(i); }
-  citerator cstart(int i) { return DynamicBlockMatrix<B>::cstart(i); }
-  citerator cstop(int i) { return DynamicBlockMatrix<B>::cstop(i); }
-  const_viterator vstart(int i) const
+  const_citerator cstop(IndexType i) const
+  {
+    return DynamicBlockMatrix<B>::cstop(i);
+  }
+  citerator cstart(IndexType i) { return DynamicBlockMatrix<B>::cstart(i); }
+  citerator cstop(IndexType i) { return DynamicBlockMatrix<B>::cstop(i); }
+  const_viterator vstart(IndexType i) const
   {
     return DynamicBlockMatrix<B>::vstart(i);
   }
-  const_viterator vstop(int i) const { return DynamicBlockMatrix<B>::vstop(i); }
-  viterator vstart(int i) { return DynamicBlockMatrix<B>::vstart(i); }
-  viterator vstop(int i) { return DynamicBlockMatrix<B>::vstop(i); }
+  const_viterator vstop(IndexType i) const
+  {
+    return DynamicBlockMatrix<B>::vstop(i);
+  }
+  viterator vstart(IndexType i) { return DynamicBlockMatrix<B>::vstart(i); }
+  viterator vstop(IndexType i) { return DynamicBlockMatrix<B>::vstop(i); }
 
   std::string GetName() const { return "DynamicBlockIlu"; }
 
-  nvector<int>& GetP() { return p; }
-  nvector<int>& GetQ() { return q; }
-  const nvector<int>& GetP() const { return p; }
-  const nvector<int>& GetQ() const { return q; }
+  nvector<IndexType>& GetP() { return p; }
+  nvector<IndexType>& GetQ() { return q; }
+  const nvector<IndexType>& GetP() const { return p; }
+  const nvector<IndexType>& GetQ() const { return q; }
 
-  void modify(int c, double s);
+  void modify(IndexType c, double s);
   void zero() { DynamicBlockMatrix<B>::zero(); }
 
   void compute_ilu();
   void ReInit(const SparseStructureInterface* SI);
-  void ConstructStructure(const nvector<int>& perm, const MatrixInterface& A);
+  void ConstructStructure(const nvector<IndexType>& perm,
+                          const MatrixInterface& A);
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Woverloaded-virtual"
   void copy_entries(const MatrixInterface* A);

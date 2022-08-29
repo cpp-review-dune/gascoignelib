@@ -30,8 +30,6 @@
 
 #include "gascoignehash.h"
 
-#define HANGMAP HASHMAP<EdgeArray<2>, int, EdgeHash<2>>
-
 using namespace std;
 
 /*---------------------------------------------------*/
@@ -39,8 +37,8 @@ using namespace std;
 namespace Gascoigne {
 EdgeManager::EdgeManager(vector<Edge>& e,
                          vector<Quad>& q,
-                         const IntVector& con,
-                         IntVector& eon)
+                         const IndexVector& con,
+                         IndexVector& eon)
   : edges(e)
   , quads(q)
   , co2n(con)
@@ -54,31 +52,31 @@ void
 EdgeManager::BSETest() const
 {
   cout << "BSE Tester:\n";
-  IntVector x(edges.size());
-  for (int i = 0; i < quads.size(); i++) {
-    for (int e = 0; e < 4; e++) {
-      int edge = quads[i].edge(e);
+  IndexVector x(edges.size());
+  for (IndexType i = 0; i < quads.size(); i++) {
+    for (IndexType e = 0; e < 4; e++) {
+      IndexType edge = quads[i].edge(e);
       x[edge]++;
     }
   }
-  for (int i = 0; i < x.size(); i++) {
+  for (IndexType i = 0; i < x.size(); i++) {
     if (x[i] > 2) {
       cout << "problem 1 in edge " << i << " " << x[i] << endl;
     }
   }
-  for (int i = 0; i < quads.size(); i++) {
-    for (int e = 0; e < 4; e++) {
-      int edge = quads[i].edge(e);
+  for (IndexType i = 0; i < quads.size(); i++) {
+    for (IndexType e = 0; e < 4; e++) {
+      IndexType edge = quads[i].edge(e);
 
       if (edge < 0)
         continue;
       const Edge& E = edges[edge];
-      int m = E.master();
-      int s = E.slave();
-      int ml = E.LocalMasterIndex();
-      int sl = E.LocalSlaveIndex();
-      int nachbar = -10;
-      int f = -1;
+      IndexType m = E.master();
+      IndexType s = E.slave();
+      IndexType ml = E.LocalMasterIndex();
+      IndexType sl = E.LocalSlaveIndex();
+      IndexType nachbar = -10;
+      IndexType f = -1;
       if (m == i) {
         nachbar = s;
         f = sl;
@@ -98,28 +96,28 @@ EdgeManager::BSETest() const
 /*---------------------------------------------------*/
 
 void
-EdgeManager::LoadEdgeElimination(IntVector& edel,
-                                 const IntSet& CellCoarseList,
+EdgeManager::LoadEdgeElimination(IndexVector& edel,
+                                 const IndexSet& CellCoarseList,
                                  const HangContainer2d& hangset) const
 {
   edel.resize(4 * CellCoarseList.size() + 2 * hangset.NToBeDeleted());
 
-  int n = 0;
+  IndexType n = 0;
 
-  IntSet::const_iterator cp;
+  IndexSet::const_iterator cp;
 
   for (cp = CellCoarseList.begin(); cp != CellCoarseList.end(); cp++) {
     if (*cp < 0)
       continue;
 
-    for (int e = 0; e < 4; e++) {
+    for (IndexType e = 0; e < 4; e++) {
       edel[n++] = QuadLaO.GlobalInnerEdge(*cp, e);
     }
   }
   HangList<2>::const_iterator p = hangset.Deleting().begin();
 
   for (; p != hangset.Deleting().end(); p++) {
-    for (int i = 0; i < 2; i++) {
+    for (IndexType i = 0; i < 2; i++) {
       edel[n++] = QuadLaO.GlobalChildEdge(p->first, p->second.rneighbour(), i);
     }
   }
@@ -129,9 +127,9 @@ EdgeManager::LoadEdgeElimination(IntVector& edel,
 /*---------------------------------------------------*/
 
 void
-EdgeManager::Build(const IntSet& CellRefList, HangContainer2d& hangset)
+EdgeManager::Build(const IndexSet& CellRefList, HangContainer2d& hangset)
 {
-  //    IntVector SwappedEdge;
+  //    IndexVector SwappedEdge;
 
   Update();
   InnerEdges(CellRefList);
@@ -148,15 +146,15 @@ EdgeManager::Build(const IntSet& CellRefList, HangContainer2d& hangset)
 void
 EdgeManager::Update()
 {
-  for (int i = 0; i < edges.size(); i++) {
-    int m = edges[i].master();
-    int s = edges[i].slave();
+  for (IndexType i = 0; i < edges.size(); i++) {
+    IndexType m = edges[i].master();
+    IndexType s = edges[i].slave();
     if (m < 0) {
       cerr << "EdgeManager::update()" << endl;
       cerr << "Master negativ " << i << " " << m << endl;
       abort();
     }
-    int nm = co2n[m];
+    IndexType nm = co2n[m];
     if (nm >= 0) {
       edges[i].master() = nm;
       if (s >= 0) {
@@ -176,25 +174,25 @@ EdgeManager::Update()
 /*---------------------------------------------------*/
 
 void
-EdgeManager::InnerEdges(const IntSet& CellRefList)
+EdgeManager::InnerEdges(const IndexSet& CellRefList)
 {
-  int n = edges.size();
-  int nv1 = CellRefList.size();
+  IndexType n = edges.size();
+  IndexType nv1 = CellRefList.size();
 
   edges.reserve(n + 4 * nv1);
   edges.resize(n + 4 * nv1);
 
-  IntSet::const_iterator cp;
+  IndexSet::const_iterator cp;
 
   for (cp = CellRefList.begin(); cp != CellRefList.end(); cp++) {
-    int f = co2n[*cp];
+    IndexType f = co2n[*cp];
 
-    for (int e = 0; e < 4; e++) {
-      int ic = quad(f).child(e);
-      int ie = QuadLaO.InnerEdgeOfChild(e, 0);
+    for (IndexType e = 0; e < 4; e++) {
+      IndexType ic = quad(f).child(e);
+      IndexType ie = QuadLaO.InnerEdgeOfChild(e, 0);
       quad(ic).edge(ie) = n;
 
-      int oe = QuadLaO.OuterEdgeOfChild(e, 0);
+      IndexType oe = QuadLaO.OuterEdgeOfChild(e, 0);
       quads[ic].edge(oe) = -1;
       oe = QuadLaO.OuterEdgeOfChild(e, 1);
       quad(ic).edge(oe) = -1;
@@ -224,8 +222,8 @@ EdgeManager::InnerEdges(const IntSet& CellRefList)
 void
 EdgeManager::OuterEdges(const HangContainer2d& hangset)
 {
-  int n = edges.size();
-  int nn = n + 2 * hangset.NToBeCreated();
+  IndexType n = edges.size();
+  IndexType nn = n + 2 * hangset.NToBeCreated();
 
   edges.reserve(nn);
   edges.resize(nn);
@@ -233,15 +231,15 @@ EdgeManager::OuterEdges(const HangContainer2d& hangset)
   HangList<2>::const_iterator p = hangset.Creating().begin();
 
   for (; p != hangset.Creating().end(); p++) {
-    for (int i = 0; i < 2; i++) {
+    for (IndexType i = 0; i < 2; i++) {
       EdgeVector edge;
-      int hang = p->second.hanging();
-      int rneigh = p->second.rneighbour();
-      pair<int, int> cp =
+      IndexType hang = p->second.hanging();
+      IndexType rneigh = p->second.rneighbour();
+      pair<IndexType, IndexType> cp =
         QuadLaO.GetChildEdges(edge, p->first, hang, rneigh, i);
 
-      int cellindex = cp.first;
-      int edgeindex = cp.second;
+      IndexType cellindex = cp.first;
+      IndexType edgeindex = cp.second;
 
       Edge E(cellindex, edgeindex);
 
@@ -249,12 +247,12 @@ EdgeManager::OuterEdges(const HangContainer2d& hangset)
 
       edges[n] = E;
 
-      int bigslave = p->second.cneighbour();
+      IndexType bigslave = p->second.cneighbour();
 
       if (bigslave >= 0) {
         if (quads[bigslave].sleep()) {
-          int slave = 0;
-          for (int j = 0; j < 4; j++) {
+          IndexType slave = 0;
+          for (IndexType j = 0; j < 4; j++) {
             slave = quads[bigslave].child(j);
             edgeindex = QuadLaO.local_edge_index(slave, edge);
             if (edgeindex >= 0)
@@ -277,7 +275,7 @@ EdgeManager::OuterEdges(const HangContainer2d& hangset)
 /*---------------------------------------------------*/
 
 void
-EdgeManager::OldHangings(HangContainer2d& hangset, const IntSet& CellRefList)
+EdgeManager::OldHangings(HangContainer2d& hangset, const IndexSet& CellRefList)
 {
   HangList<2>::iterator p = hangset.NotAnyMore().begin();
 
@@ -285,9 +283,9 @@ EdgeManager::OldHangings(HangContainer2d& hangset, const IntSet& CellRefList)
     if (p->second.hanging() < 0)
       continue;
 
-    int bigslave = p->second.cneighbour();
-    int bigmaster = p->second.rneighbour();
-    int hang = p->second.hanging();
+    IndexType bigslave = p->second.cneighbour();
+    IndexType bigmaster = p->second.rneighbour();
+    IndexType hang = p->second.hanging();
 
     if (hang < 0)
       continue;
@@ -300,14 +298,14 @@ EdgeManager::OldHangings(HangContainer2d& hangset, const IntSet& CellRefList)
       cout << "BIGSLAVE sleeps" << endl;
       exit(1);
     }
-    for (int i = 0; i < 2; i++) {
+    for (IndexType i = 0; i < 2; i++) {
       EdgeVector edge;
 
-      int rneigh = p->second.rneighbour();
-      pair<int, int> cp =
+      IndexType rneigh = p->second.rneighbour();
+      pair<IndexType, IndexType> cp =
         QuadLaO.GetChildEdges(edge, p->first, hang, rneigh, i);
 
-      int gedge = quads[cp.first].edge(cp.second);
+      IndexType gedge = quads[cp.first].edge(cp.second);
       if (gedge < 0) {
         swap(bigmaster, bigslave);
         swap(p->second.rneighbour(), p->second.cneighbour());
@@ -320,11 +318,11 @@ EdgeManager::OldHangings(HangContainer2d& hangset, const IntSet& CellRefList)
           cout << "###gedge negativ:" << bigmaster << " " << bigslave << endl;
         }
       }
-      int ledge = -1;
-      int slave = -1;
-      int master = cp.first;
+      IndexType ledge = -1;
+      IndexType slave = -1;
+      IndexType master = cp.first;
 
-      for (int j = 0; j < 4; j++) {
+      for (IndexType j = 0; j < 4; j++) {
         slave = quads[bigslave].child(j);
         ledge = QuadLaO.local_edge_index(slave, edge);
         if (ledge >= 0)
@@ -358,13 +356,13 @@ EdgeManager::OldHangings(HangContainer2d& hangset, const IntSet& CellRefList)
 void
 EdgeManager::SwappedEdges()
 {
-  int n = 0;
-  int m = 0;
-  for (int i = 0; i < quads.size(); i++) {
+  IndexType n = 0;
+  IndexType m = 0;
+  for (IndexType i = 0; i < quads.size(); i++) {
     const Quad& q = quads[i];
     if (q.sleep())
       continue;
-    for (int e = 0; e < 4; e++) {
+    for (IndexType e = 0; e < 4; e++) {
       if (q.edge(e) < 0)
         m++;
     }
@@ -374,13 +372,13 @@ EdgeManager::SwappedEdges()
     cout << m << " " << SwappedEdge.size() << endl;
     exit(1);
   }
-  for (int i = 0; i < quads.size(); i++) {
+  for (IndexType i = 0; i < quads.size(); i++) {
     Quad& q = quads[i];
     if (q.sleep())
       continue;
-    for (int e = 0; e < 4; e++) {
+    for (IndexType e = 0; e < 4; e++) {
       if (q.edge(e) < 0) {
-        int ei = SwappedEdge[n++];
+        IndexType ei = SwappedEdge[n++];
         q.edge(e) = ei;
 
         edges[ei].setmaster(i, e);
@@ -391,20 +389,20 @@ EdgeManager::SwappedEdges()
 
 /*---------------------------------------------------*/
 
-std::array<int, 2>
-EdgeManager::ChildrenOfEdge(int e) const
+std::array<IndexType, 2>
+EdgeManager::ChildrenOfEdge(IndexType e) const
 {
-  int s = edges[e].slave();
-  int is = edges[e].LocalSlaveIndex();
+  IndexType s = edges[e].slave();
+  IndexType is = edges[e].LocalSlaveIndex();
 
   if (s < 0) {
     cerr << "EdgeManager::ChildrenOfEdge()";
     cerr << "no slave\n";
     abort();
   }
-  std::array<int, 2> f;
-  for (int ii = 0; ii < 2; ii++) {
-    int ic = quad(s).child(QuadLaO.ChildsOfEdge(is, ii));
+  std::array<IndexType, 2> f;
+  for (IndexType ii = 0; ii < 2; ii++) {
+    IndexType ic = quad(s).child(QuadLaO.ChildsOfEdge(is, ii));
     f[ii] = quad(ic).edge(QuadLaO.ChildEdge(is));
   }
   return f;
@@ -417,13 +415,13 @@ EdgeManager::DeleteEdges()
 {
   compress(edges, eo2n);
 
-  for (int i = 0; i < quads.size(); i++) {
+  for (IndexType i = 0; i < quads.size(); i++) {
     Quad& Q = quads[i];
     if (co2n[i] < 0) {
       Q.edges().fill(-1);
     } else {
-      for (int e = 0; e < 4; e++) {
-        int ne = eo2n[Q.edge(e)];
+      for (IndexType e = 0; e < 4; e++) {
+        IndexType ne = eo2n[Q.edge(e)];
         if (ne < 0) {
           cout << "\neo2n " << ne;
           exit(1);
@@ -437,10 +435,10 @@ EdgeManager::DeleteEdges()
 /*---------------------------------------------------*/
 
 bool
-EdgeManager::EdgeIsHanging(int e) const
+EdgeManager::EdgeIsHanging(IndexType e) const
 {
-  int m = edges[e].master();
-  int s = edges[e].slave();
+  IndexType m = edges[e].master();
+  IndexType s = edges[e].slave();
   if (s < 0)
     return 0;
   if (quad(m).sleep() && !quad(s).sleep())
@@ -455,8 +453,8 @@ EdgeManager::EdgeIsHanging(int e) const
 bool
 EdgeManager::EdgeIsHanging(const Edge& e) const
 {
-  int m = e.master();
-  int s = e.slave();
+  IndexType m = e.master();
+  IndexType s = e.slave();
   if (s < 0)
     return 0;
   if (quad(m).sleep() && !quad(s).sleep())
@@ -473,33 +471,33 @@ EdgeManager::SortHangings()
 {
   // edges with hanging nodes swapped to the end of list
 
-  vector<int> perm(edges.size());
+  vector<IndexType> perm(edges.size());
   iota(perm.begin(), perm.end(), 0);
   stable_sort(perm.begin(), perm.end(), HangEdgeSort(*this));
   stable_sort(edges.begin(), edges.end(), HangEdgeSort2(*this));
 
-  int i = edges.size();
+  IndexType i = edges.size();
   while (EdgeIsHanging(i - 1))
     i--;
 
-  vector<int> permi(perm.size());
-  for (int i = 0; i < perm.size(); i++)
+  vector<IndexType> permi(perm.size());
+  for (IndexType i = 0; i < perm.size(); i++)
     permi[perm[i]] = i;
 
-  for (int i = 0; i < quads.size(); i++) {
-    for (int ii = 0; ii < 4; ii++)
+  for (IndexType i = 0; i < quads.size(); i++) {
+    for (IndexType ii = 0; ii < 4; ii++)
       quads[i].edge(ii) = permi[quad(i).edge(ii)];
   }
-  for (int i = 0; i < eo2n.size(); i++) {
+  for (IndexType i = 0; i < eo2n.size(); i++) {
     if (eo2n[i] >= 0)
       eo2n[i] = permi[eo2n[i]];
   }
 
   // master of each edge is allways the coarser quad
 
-  for (int i = 0; i < edges.size(); i++) {
-    int m = edges[i].master();
-    int s = edges[i].slave();
+  for (IndexType i = 0; i < edges.size(); i++) {
+    IndexType m = edges[i].master();
+    IndexType s = edges[i].slave();
     if (s < 0)
       continue;
     if (quad(m).sleep() && !quad(s).sleep()) {
@@ -514,28 +512,28 @@ EdgeManager::SortHangings()
 void
 EdgeManager::InitEdges()
 {
-  HANGMAP H;
+  std::unordered_map<EdgeVector, IndexType, EdgeVector> H;
 
   EdgeVector e;
-  for (int i = 0; i < quads.size(); i++) {
-    for (int j = 0; j < 4; j++) {
+  for (IndexType i = 0; i < quads.size(); i++) {
+    for (IndexType j = 0; j < 4; j++) {
       e[0] = quads[i].vertex(j);
       e[1] = quads[i].vertex((j + 1) % 4);
 
       if (e[1] < e[0])
         swap(e[0], e[1]);
 
-      HANGMAP::iterator yes = H.find(e);
+      auto yes = H.find(e);
 
       if (yes != H.end()) {
-        int k = yes->second;
+        IndexType k = yes->second;
         edges[k].slave() = i;
         edges[k].LocalSlaveIndex() = j;
         quads[i].edge(j) = k;
         H.erase(yes);
       } else {
         Edge E(i, j);
-        int n = edges.size();
+        IndexType n = edges.size();
         edges.push_back(E);
         H.insert(make_pair(e, n));
         quads[i].edge(j) = n;
@@ -549,22 +547,22 @@ EdgeManager::InitEdges()
 void
 EdgeManager::NeighbourTester() const
 {
-  int n = quads.size();
-  vector<std::array<int, 4>> vecino(n);
+  IndexType n = quads.size();
+  vector<std::array<IndexType, 4>> vecino(n);
 
-  for (int q = 0; q < quads.size(); q++) {
-    for (int e = 0; e < 4; e++) {
-      int ind = quads[q].edge(e);
+  for (IndexType q = 0; q < quads.size(); q++) {
+    for (IndexType e = 0; e < 4; e++) {
+      IndexType ind = quads[q].edge(e);
       if (ind < 0) {
         cout << "* Q=" << q << " edge=" << e << " " << ind << endl;
       }
     }
   }
-  for (int q = 0; q < quads.size(); q++) {
-    for (int e = 0; e < 4; e++) {
-      int ind = quads[q].edge(e);
-      int m = edges[ind].master();
-      int s = edges[ind].slave();
+  for (IndexType q = 0; q < quads.size(); q++) {
+    for (IndexType e = 0; e < 4; e++) {
+      IndexType ind = quads[q].edge(e);
+      IndexType m = edges[ind].master();
+      IndexType s = edges[ind].slave();
       if (m == q) {
         vecino[q][e] = s;
       } else if (s == q) {
@@ -580,5 +578,3 @@ EdgeManager::NeighbourTester() const
 } // namespace Gascoigne
 
 /*------------------------------------------------------*/
-
-#undef HANGMAP

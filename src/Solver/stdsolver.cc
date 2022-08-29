@@ -229,7 +229,9 @@ StdSolver::NewMesh(const GascoigneMesh* mp)
 /*-----------------------------------------*/
 
 void
-StdSolver::SetDefaultValues(string discname, string matrixtype, int ndirect)
+StdSolver::SetDefaultValues(string discname,
+                            string matrixtype,
+                            IndexType ndirect)
 {
   _discname = discname;
   _matrixtype = matrixtype;
@@ -239,7 +241,7 @@ StdSolver::SetDefaultValues(string discname, string matrixtype, int ndirect)
 /*-------------------------------------------------------*/
 
 void
-StdSolver::BasicInit(const ParamFile& paramfile, const int dimension)
+StdSolver::BasicInit(const ParamFile& paramfile, const IndexType dimension)
 //                            const NumericInterface *NI)
 {
   _paramfile = paramfile;
@@ -271,7 +273,7 @@ StdSolver::BasicInit(const ParamFile& paramfile, const int dimension)
 /*-------------------------------------------------------*/
 
 DiscretizationInterface*
-StdSolver::NewDiscretization(int dimension, const string& discname)
+StdSolver::NewDiscretization(IndexType dimension, const string& discname)
 {
   // if (_NI)
   // {
@@ -346,7 +348,7 @@ StdSolver::NewDiscretization(int dimension, const string& discname)
 /*-------------------------------------------------------------*/
 
 MatrixInterface*
-StdSolver::NewMatrix(int ncomp, const string& matrixtype)
+StdSolver::NewMatrix(IndexType ncomp, const string& matrixtype)
 {
   if (_directsolver || matrixtype == "point_node") {
     return new PointMatrix(ncomp, "node");
@@ -400,7 +402,7 @@ StdSolver::NewMatrix(int ncomp, const string& matrixtype)
 /*-------------------------------------------------------------*/
 
 IluInterface*
-StdSolver::NewIlu(const Matrix& A, int ncomp, const string& matrixtype)
+StdSolver::NewIlu(const Matrix& A, IndexType ncomp, const string& matrixtype)
 {
 #ifdef __WITH_UMFPACK__
   if (_directsolver && _useUMFPACK) {
@@ -501,18 +503,18 @@ StdSolver::AddPeriodicNodes(SparseStructure* SA)
   const GascoigneMesh* GMP = dynamic_cast<const GascoigneMesh*>(p_mesh);
   assert(GMP);
 
-  map<int, map<int, int>> mm_PeriodicPairs =
+  map<IndexType, map<IndexType, IndexType>> mm_PeriodicPairs =
     GMP->GetBoundaryIndexHandler().GetPeriodicPairs();
 
   for (IntVector::const_iterator p_col = iv_PeriodicColors.begin();
        p_col != iv_PeriodicColors.end();
        p_col += 2) {
-    int col = *p_col;
+    IndexType col = *p_col;
 
-    IntSet is_neighbours1;
-    IntSet is_neighbours2;
+    IndexSet is_neighbours1;
+    IndexSet is_neighbours2;
 
-    for (map<int, int>::const_iterator p_pair = mm_PeriodicPairs[col].begin();
+    for (const auto p_pair = mm_PeriodicPairs[col].begin();
          p_pair != mm_PeriodicPairs[col].end();
          p_pair++) {
       // beide raender abgrasen und die kopplungen in columns1 und columns2
@@ -520,14 +522,14 @@ StdSolver::AddPeriodicNodes(SparseStructure* SA)
       is_neighbours1 = SA->row(p_pair->first);
       is_neighbours2 = SA->row(p_pair->second);
 
-      for (IntSet::const_iterator p_neighbour1 = is_neighbours1.begin();
+      for (IndexSet::const_iterator p_neighbour1 = is_neighbours1.begin();
            p_neighbour1 != is_neighbours1.end();
            p_neighbour1++) {
         SA->build_add(p_pair->second, *p_neighbour1);
         SA->build_add(*p_neighbour1, p_pair->second);
       }
 
-      for (IntSet::const_iterator p_neighbour2 = is_neighbours2.begin();
+      for (IndexSet::const_iterator p_neighbour2 = is_neighbours2.begin();
            p_neighbour2 != is_neighbours2.end();
            p_neighbour2++) {
         SA->build_add(p_pair->first, *p_neighbour2);
@@ -551,17 +553,17 @@ StdSolver::RegisterVector(const Vector& g)
 void
 StdSolver::ReInitVector(Vector& dst)
 {
-  int ncomp = GetProblemDescriptor()->GetNcomp();
+  IndexType ncomp = GetProblemDescriptor()->GetNcomp();
   ReInitVector(dst, ncomp);
 }
 
 /*-------------------------------------------------------*/
 
 void
-StdSolver::ReInitVector(Vector& dst, int comp)
+StdSolver::ReInitVector(Vector& dst, IndexType comp)
 {
-  int n = GetDiscretization()->ndofs();
-  int nc = GetDiscretization()->nelements();
+  IndexType n = GetDiscretization()->ndofs();
+  IndexType nc = GetDiscretization()->nelements();
 
   // Vector already registered ?
   //
@@ -801,11 +803,11 @@ StdSolver::SetBoundaryVectorZero(Vector& gf) const
   // GlobalVector &f = GetGV(gf);
 
   // const BoundaryManager *BM = GetProblemDescriptor()->GetBoundaryManager();
-  // const IntSet &Colors = BM->GetDirichletDataColors();
+  // const IndexSet &Colors = BM->GetDirichletDataColors();
 
-  // for (IntSet::const_iterator p = Colors.begin(); p != Colors.end(); p++)
+  // for (IndexSet::const_iterator p = Colors.begin(); p != Colors.end(); p++)
   // {
-  //   int col = *p;
+  //   IndexType col = *p;
   //   const IntVector &comp = BM->GetDirichletDataComponents(col);
   //   GetDiscretization()->StrongDirichletVectorZero(f, col, comp);
   //    }
@@ -869,19 +871,20 @@ StdSolver::SetBoundaryVectorStrong(Vector& gf,
   abort();
   // GlobalVector &f = GetGV(gf);
 
-  // IntSet PrefCol = DD.preferred_colors();
-  // list<int> colors(BM.GetDirichletDataColors().begin(),
+  // IndexSet PrefCol = DD.preferred_colors();
+  // list<IndexType> colors(BM.GetDirichletDataColors().begin(),
   //                  BM.GetDirichletDataColors().end());
 
-  // for (IntSet::const_iterator p = PrefCol.begin(); p != PrefCol.end(); p++)
+  // for (IndexSet::const_iterator p = PrefCol.begin(); p != PrefCol.end(); p++)
   // {
-  //   int col = *p;
+  //   IndexType col = *p;
   //   colors.remove(col);
   //   colors.push_back(col);
   // }
-  // for (list<int>::const_iterator p = colors.begin(); p != colors.end(); p++)
+  // for (list<IndexType>::const_iterator p = colors.begin(); p != colors.end();
+  // p++)
   // {
-  //   int col = *p;
+  //   IndexType col = *p;
   //   const IntVector &comp = BM.GetDirichletDataComponents(col);
   //   GetDiscretization()->StrongDirichletVector(f, DD, col, comp, d);
   // }
@@ -897,12 +900,12 @@ StdSolver::SetPeriodicVectorStrong(Vector& gf,
 {
   GlobalVector& f = GetGV(gf);
 
-  list<int> periodic_cols(BM.GetPeriodicDataColors().begin(),
-                          BM.GetPeriodicDataColors().end());
-  for (list<int>::const_iterator p = periodic_cols.begin();
+  list<IndexType> periodic_cols(BM.GetPeriodicDataColors().begin(),
+                                BM.GetPeriodicDataColors().end());
+  for (list<IndexType>::const_iterator p = periodic_cols.begin();
        p != periodic_cols.end();
        p++) {
-    int col = *p;
+    IndexType col = *p;
     const IntVector& comp = BM.GetPeriodicDataComponents(col);
     GetDiscretization()->StrongPeriodicVector(f, PD, col, comp, d);
   }
@@ -921,17 +924,18 @@ StdSolver::SetPeriodicVectorZero(Vector& gf) const
   const GascoigneMesh* GMP = dynamic_cast<const GascoigneMesh*>(p_mesh);
   assert(GMP);
 
-  map<int, map<int, int>> mm_PeriodicPairs =
+  map<IndexType, map<IndexType, IndexType>> mm_PeriodicPairs =
     GMP->GetBoundaryIndexHandler().GetPeriodicPairs();
 
   for (IntVector::const_iterator p_col = iv_PeriodicColors.begin();
        p_col != iv_PeriodicColors.end();) {
-    int col = *p_col++;
+    IndexType col = *p_col++;
     *p_col++;
 
     const IntVector& iv_PeriodicComponents = BM->GetPeriodicDataComponents(col);
 
-    for (map<int, int>::const_iterator p_pair = mm_PeriodicPairs[col].begin();
+    for (map<IndexType, IndexType>::const_iterator p_pair =
+           mm_PeriodicPairs[col].begin();
          p_pair != mm_PeriodicPairs[col].end();
          p_pair++) {
       for (IntVector::const_iterator p_comp = iv_PeriodicComponents.begin();
@@ -948,7 +952,7 @@ StdSolver::SetPeriodicVectorZero(Vector& gf) const
 /*-------------------------------------------------------*/
 
 void
-StdSolver::smooth(int niter,
+StdSolver::smooth(IndexType niter,
                   const Matrix& A,
                   Vector& x,
                   const Vector& y,
@@ -958,7 +962,7 @@ StdSolver::smooth(int niter,
   GlobalTimer.start("---> smooth");
   double omega = GetSolverData().GetOmega();
 
-  for (int iter = 0; iter < niter; iter++) {
+  for (IndexType iter = 0; iter < niter; iter++) {
     if (GetSolverData().GetLinearSmooth() == "ilu") {
       GlobalTimer.stop("---> smooth");
       MatrixResidual(A, h, x, y);
@@ -993,7 +997,7 @@ StdSolver::smooth_pre(const Matrix& A,
                       const Vector& y,
                       Vector& help) const
 {
-  int niter = GetSolverData().GetIterPre();
+  IndexType niter = GetSolverData().GetIterPre();
   smooth(niter, A, x, y, help);
 }
 
@@ -1019,7 +1023,7 @@ StdSolver::smooth_exact(const Matrix& A,
   } else
 #endif
   {
-    int niter = GetSolverData().GetIterExact();
+    IndexType niter = GetSolverData().GetIterExact();
     smooth(niter, A, x, y, help);
   }
 }
@@ -1032,7 +1036,7 @@ StdSolver::smooth_post(const Matrix& A,
                        const Vector& y,
                        Vector& help) const
 {
-  int niter = GetSolverData().GetIterPost();
+  IndexType niter = GetSolverData().GetIterPost();
   smooth(niter, A, x, y, help);
 }
 
@@ -1106,19 +1110,19 @@ StdSolver::BoundaryInit(Vector& Gu) const
     abort();
   }
 
-  int color = 0;
-  int ncomp = GetProblemDescriptor()->GetNcomp();
+  IndexType color = 0;
+  IndexType ncomp = GetProblemDescriptor()->GetNcomp();
   DoubleVector y(ncomp);
 
-  int dim = GetMesh()->dimension();
+  IndexType dim = GetMesh()->dimension();
 
-  for (int ind = 0; ind < GetDiscretization()->ndofs(); ind++) {
+  for (IndexType ind = 0; ind < GetDiscretization()->ndofs(); ind++) {
     if (dim == 2)
       (*DD)(y, GetDiscretization()->vertex2d(ind), color);
     else
       (*DD)(y, GetDiscretization()->vertex3d(ind), color);
 
-    for (int c = 0; c < u.ncomp(); c++) {
+    for (IndexType c = 0; c < u.ncomp(); c++) {
       u(ind, c) = y[c];
     }
   }
@@ -1140,13 +1144,13 @@ StdSolver::SolutionInit(Vector& Gu) const
   assert(u.ncomp() == GetProblemDescriptor()->GetNcomp());
 
   assert(0);
-  for (int ind = 0; ind < GetMesh()->nnodes(); ind++) {
+  for (IndexType ind = 0; ind < GetMesh()->nnodes(); ind++) {
     if (GetMesh()->dimension() == 2) {
-      for (int c = 0; c < u.ncomp(); c++) {
+      for (IndexType c = 0; c < u.ncomp(); c++) {
         u(ind, c) = (*u0)(c, GetMesh()->vertex2d(ind));
       }
     } else {
-      for (int c = 0; c < u.ncomp(); c++) {
+      for (IndexType c = 0; c < u.ncomp(); c++) {
         u(ind, c) = (*u0)(c, GetMesh()->vertex3d(ind));
       }
     }
@@ -1292,8 +1296,8 @@ StdSolver::ComputeResidualFunctional(Vector& gf,
   // // modification needed when funcitonal is not on dirichlet boundary
   // //    SetBoundaryVectorStrong(gz, *BM, *ABD); >>>>>
 
-  // IntSet       PrefCol = ABD->preferred_colors();
-  // nvector<int> comps   = FP->GetComps();
+  // IndexSet       PrefCol = ABD->preferred_colors();
+  // nvector<IndexType> comps   = FP->GetComps();
 
   // for (auto it : PrefCol)
   //   GetDiscretization()->StrongDirichletVector(GetGV(gz), *ABD, it,
@@ -1527,12 +1531,12 @@ StdSolver::PeriodicMatrix(Matrix& A) const
   const GascoigneMesh* GMP = dynamic_cast<const GascoigneMesh*>(p_mesh);
   assert(GMP);
 
-  map<int, map<int, int>> mm_PeriodicPairs =
+  map<IndexType, map<IndexType, IndexType>> mm_PeriodicPairs =
     GMP->GetBoundaryIndexHandler().GetPeriodicPairs();
 
   for (IntVector::const_iterator p_col = iv_PeriodicColors.begin();
        p_col != iv_PeriodicColors.end();) {
-    int col = *p_col++;
+    IndexType col = *p_col++;
     *p_col++;
 
     const IntVector iv_PeriodicComponents = BM->GetPeriodicDataComponents(col);
@@ -1562,7 +1566,7 @@ StdSolver::ComputeIlu(Matrix& A, const Vector& gu) const
 #endif
     if (GetSolverData().GetLinearSmooth() == "ilu") {
     GlobalTimer.start("---> ilu");
-    int ncomp = GetProblemDescriptor()->GetNcomp();
+    IndexType ncomp = GetProblemDescriptor()->GetNcomp();
     PermutateIlu(A, gu);
     GetIlu(A).zero();
     GetIlu(A).copy_entries(GetMatrix(A));
@@ -1575,7 +1579,7 @@ StdSolver::ComputeIlu(Matrix& A, const Vector& gu) const
 /*-------------------------------------------------------*/
 
 void
-StdSolver::modify_ilu(IluInterface& I, int ncomp) const
+StdSolver::modify_ilu(IluInterface& I, IndexType ncomp) const
 {
   if (GetSolverData().GetIluModify().size() == 0)
     return;
@@ -1587,7 +1591,7 @@ StdSolver::modify_ilu(IluInterface& I, int ncomp) const
     // assert(GetSolverData().GetIluModify().size()==ncomp);
   }
 
-  for (int c = 0; c < ncomp; c++) {
+  for (IndexType c = 0; c < ncomp; c++) {
     double s = GetSolverData().GetIluModify(c);
     I.modify(c, s);
   }
@@ -1600,7 +1604,7 @@ StdSolver::PermutateIlu(Matrix& A, const Vector& gu) const
 {
   const GlobalVector& u = GetGV(gu);
 
-  int n = GetMatrix(A).GetStencil()->n();
+  IndexType n = GetMatrix(A).GetStencil()->n();
   IntVector perm(n);
 
   iota(perm.begin(), perm.end(), 0);
@@ -1627,7 +1631,7 @@ StdSolver::PermutateIlu(Matrix& A, const Vector& gu) const
 /* -------------------------------------------------------*/
 
 void
-StdSolver::Visu(const string& name, const Vector& gu, int i) const
+StdSolver::Visu(const string& name, const Vector& gu, IndexType i) const
 {
   GlobalTimer.start("---> visu");
   if (gu.GetType() == "node") {
@@ -1644,7 +1648,9 @@ StdSolver::Visu(const string& name, const Vector& gu, int i) const
 /* -------------------------------------------------------*/
 
 void
-StdSolver::PointVisu(const string& name, const GlobalVector& u, int i) const
+StdSolver::PointVisu(const string& name,
+                     const GlobalVector& u,
+                     IndexType i) const
 {
   GetDiscretization()->VisuVtk(
     GetProblemDescriptor()->GetComponentInformation(), _paramfile, name, u, i);
@@ -1653,7 +1659,9 @@ StdSolver::PointVisu(const string& name, const GlobalVector& u, int i) const
 /* -------------------------------------------------------*/
 
 void
-StdSolver::CellVisu(const string& name, const GlobalVector& u, int i) const
+StdSolver::CellVisu(const string& name,
+                    const GlobalVector& u,
+                    IndexType i) const
 {
   GascoigneVisualization Visu;
 
@@ -1676,7 +1684,7 @@ StdSolver::CellVisu(const string& name, const GlobalVector& u, int i) const
 /* -------------------------------------------------------*/
 
 void
-StdSolver::VisuGrid(const string& name, int i) const
+StdSolver::VisuGrid(const string& name, IndexType i) const
 {
   assert(GetMesh());
 
@@ -1836,7 +1844,10 @@ StdSolver::AssembleDualMatrix(Matrix& A, const Vector& gu, double d)
 /*---------------------------------------------------*/
 
 void
-StdSolver::RhsCurve(Vector& f, const Curve& C, int comp, int N) const
+StdSolver::RhsCurve(Vector& f,
+                    const Curve& C,
+                    IndexType comp,
+                    IndexType N) const
 {
   HNAverageData();
 
@@ -1862,8 +1873,8 @@ StdSolver::ScalarProductWithFluctuations(DoubleVector& eta,
   pi.Init(GetMesh());
   pi.vmult(dz, z);
 
-  for (int i = 0; i < z.n(); i++) {
-    for (int c = 0; c < z.ncomp(); c++) {
+  for (IndexType i = 0; i < z.n(); i++) {
+    for (IndexType c = 0; c < z.ncomp(); c++) {
       eta[i] += fabs(f(i, c) * dz(i, c));
     }
   }

@@ -47,7 +47,7 @@ protected:
   }
 
 public:
-  int ncomp() const { return 4; }
+  IndexType ncomp() const { return 4; }
 
   MatrixEntryType laplx() const { return lapx; }
   MatrixEntryType laply() const { return lapy; }
@@ -77,8 +77,8 @@ public:
   void operator+=(const CFDBlock3d&);
   void operator-=(const CFDBlock3d&);
 
-  MatrixEntryType operator()(int i, int j) const;
-  MatrixEntryType& diag(int i);
+  MatrixEntryType operator()(IndexType i, IndexType j) const;
+  MatrixEntryType& diag(IndexType i);
 
   void zero();
   void transpose();
@@ -89,18 +89,18 @@ public:
     std::cerr << "CFDBlock3d::copy_transpose noch schreiben" << std::endl;
   }
 
-  void getrow(std::vector<double>& v, int i) { abort(); }
-  void getcolumn(std::vector<double>& v, int i) { abort(); }
-  void setrow(std::vector<double>& v, int i) { abort(); }
-  void setcolumn(std::vector<double>& v, int i) { abort(); }
+  void getrow(std::vector<double>& v, IndexType i) { abort(); }
+  void getcolumn(std::vector<double>& v, IndexType i) { abort(); }
+  void setrow(std::vector<double>& v, IndexType i) { abort(); }
+  void setcolumn(std::vector<double>& v, IndexType i) { abort(); }
 
-  void DirichletRow(const std::vector<int>& cv);
-  void DirichletCol(const std::vector<int>& cv);
-  void DirichletDiag(const std::vector<int>& cv);
+  void DirichletRow(const std::vector<IndexType>& cv);
+  void DirichletCol(const std::vector<IndexType>& cv);
+  void DirichletDiag(const std::vector<IndexType>& cv);
 
   void entry(const nmatrix<double>&);
-  void entry(int i, int j, const EntryMatrix&, double s = 1.);
-  void dual_entry(int i, int j, const EntryMatrix&, double s = 1.);
+  void entry(IndexType i, IndexType j, const EntryMatrix&, double s = 1.);
+  void dual_entry(IndexType i, IndexType j, const EntryMatrix&, double s = 1.);
   void inverse();
   void submult(const CFDBlock3d&, const CFDBlock3d&);
   void vmult(iterator) const;

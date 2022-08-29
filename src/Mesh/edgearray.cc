@@ -30,15 +30,15 @@ namespace Gascoigne {
 /*--------------------------------------------------------------*/
 
 template<size_t N>
-EdgeArray<N>::EdgeArray(const std::array<int, N>& e)
-  : std::array<int, N>(e)
+EdgeArray<N>::EdgeArray(const std::array<IndexType, N>& e)
+  : std::array<IndexType, N>(e)
 {}
 
 /*--------------------------------------------------------------*/
 
 template<>
 bool
-EdgeArray<2>::operator==(const std::array<int, 2>& A) const
+EdgeArray<2>::operator==(const std::array<IndexType, 2>& A) const
 {
   // the correctness of this method relies on all vertices (in *this) being
   // different
@@ -53,7 +53,7 @@ EdgeArray<2>::operator==(const std::array<int, 2>& A) const
 /*--------------------------------------------------------------*/
 
 template<>
-int
+IndexType
 EdgeArray<2>::sum() const
 {
   return (*this)[0] + (*this)[1];
@@ -63,7 +63,7 @@ EdgeArray<2>::sum() const
 
 template<>
 bool
-EdgeArray<4>::operator==(const std::array<int, 4>& A) const
+EdgeArray<4>::operator==(const std::array<IndexType, 4>& A) const
 {
   // the correctness of this method relies on all vertices (in *this) being
   // different
@@ -84,7 +84,7 @@ EdgeArray<4>::operator==(const std::array<int, 4>& A) const
 /*--------------------------------------------------------------*/
 
 template<>
-int
+IndexType
 EdgeArray<4>::sum() const
 {
   return (*this)[0] + (*this)[1] + (*this)[2] + (*this)[3];

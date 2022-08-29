@@ -85,13 +85,14 @@ DynamicBlockMatrix<B>::ReInit(const SparseStructureInterface* SI)
 
   DS.cols.clear();
   DS.cols.resize(SS->n());
-  int count = 0;
-  for (int i = 0; i < SS->n(); ++i)
-    for (std::set<int>::const_iterator p = SS->rowbegin(i); p != SS->rowend(i);
+  IndexType count = 0;
+  for (IndexType i = 0; i < SS->n(); ++i)
+    for (std::set<IndexType>::const_iterator p = SS->rowbegin(i);
+         p != SS->rowend(i);
          p++, ++count)
       DS.cols[i].push_back(*p);
   smat.resize(SS->n());
-  for (int i = 0; i < SS->n(); ++i)
+  for (IndexType i = 0; i < SS->n(); ++i)
     smat[i].resize(DS.cols[i].size());
   const_viterator it = smat[0].begin();
   assert(it != smat[0].end());
@@ -104,7 +105,7 @@ template<class B>
 void
 DynamicBlockMatrix<B>::zero()
 {
-  for (int i = 0; i < smat.size(); i++)
+  for (IndexType i = 0; i < smat.size(); i++)
     for (viterator it = smat[i].begin(); it != smat[i].end(); ++it)
       it->zero();
 }
@@ -113,12 +114,12 @@ DynamicBlockMatrix<B>::zero()
 
 template<class B>
 void
-DynamicBlockMatrix<B>::dirichlet(int i, const std::vector<int>& cv)
+DynamicBlockMatrix<B>::dirichlet(IndexType i, const std::vector<IndexType>& cv)
 {
   const_citerator cit = DS.cstart(i);
   viterator vit = smat[i].begin();
   for (; cit != DS.cstop(i); ++cit, ++vit) {
-    int j = *cit;
+    IndexType j = *cit;
     vit->DirichletRow(cv);
     // das ist N^2 !!!!
     vfind(j, i)->DirichletCol(cv);
@@ -130,7 +131,8 @@ DynamicBlockMatrix<B>::dirichlet(int i, const std::vector<int>& cv)
 
 template<class B>
 void
-DynamicBlockMatrix<B>::dirichlet_only_row(int i, const std::vector<int>& cv)
+DynamicBlockMatrix<B>::dirichlet_only_row(IndexType i,
+                                          const std::vector<IndexType>& cv)
 {
   const_citerator cit = DS.cstart(i);
   viterator vit = smat[i].begin();
@@ -147,7 +149,7 @@ DynamicBlockMatrix<B>::vmult(GlobalVector& y,
                              const GlobalVector& x,
                              double s) const
 {
-  for (int i = 0; i < n(); i++) {
+  for (IndexType i = 0; i < n(); i++) {
     GlobalVector::iterator off = y.start(i);
     const_citerator ci = DS.cstart(i);
     const_viterator vi = smat[i].begin();
@@ -171,13 +173,13 @@ DynamicBlockMatrix<B>::AddMassWithDifferentStencil(const MatrixInterface* M,
   assert(USM);
 
   assert(n() == USM->n());
-  for (int i = 0; i < USM->n(); i++) {
+  for (IndexType i = 0; i < USM->n(); i++) {
     //////////////////////////
     // Why do we search here??? perhaps it's necessary, who knows...
     //////////////////////////
-    // 	    for(int pos = USM->start(i); pos<USM->stop(i); pos++)
+    // 	    for(IndexType pos = USM->start(i); pos<USM->stop(i); pos++)
     // 	    {
-    // 		int j = USM->col(pos);
+    // 		IndexType j = USM->col(pos);
     // 		double sm = s * MP->GetValue(pos);
     // 		vfind(i,j)->add(sm,TP);
     // 	    }
@@ -186,8 +188,8 @@ DynamicBlockMatrix<B>::AddMassWithDifferentStencil(const MatrixInterface* M,
     /////////////////////////
     const_citerator cit = DS.cstart(i);
     viterator vit = vstart(i);
-    for (int pos = USM->start(i); pos < USM->stop(i); ++pos) {
-      int j = USM->col(pos);
+    for (IndexType pos = USM->start(i); pos < USM->stop(i); ++pos) {
+      IndexType j = USM->col(pos);
       double sm = s * MP->GetValue(pos);
       for (; cit != DS.cstop(i); ++cit, ++vit)
         if (*cit == j)
@@ -207,7 +209,7 @@ DynamicBlockMatrix<B>::vmult(GlobalVector& y,
                              const TimePattern& TP,
                              double s) const
 {
-  for (int i = 0; i < n(); i++) {
+  for (IndexType i = 0; i < n(); i++) {
     GlobalVector::iterator off = y.start(i);
     const_citerator ci = DS.cstart(i);
     const_viterator vi = smat[i].begin();
@@ -228,7 +230,7 @@ DynamicBlockMatrix<B>::transpose()
   // due to dynamic fill-ins it is also very
   // unlikely, that this matrix is symmetric!
 
-  for (int i = 0; i < n(); i++) {
+  for (IndexType i = 0; i < n(); i++) {
     vdiag(i)->transpose();
     const_citerator ci = cdiag(i);
     ++ci;
@@ -259,14 +261,14 @@ DynamicBlockMatrix<B>::transpose()
 // 	else
 // 	{
 // 	    zero();
-// 	    for(int i=0;i<US.n();i++)
+// 	    for(IndexType i=0;i<US.n();i++)
 // 	    {
-// 		for(int posA=AS->start(i); posA<AS->stop(i); posA++)
+// 		for(IndexType posA=AS->start(i); posA<AS->stop(i); posA++)
 // 		{
-// 		    int jA = AS->col(posA);
-// 		    for(int pos=US.start(i); pos<US.stop(i); pos++)
+// 		    IndexType jA = AS->col(posA);
+// 		    for(IndexType pos=US.start(i); pos<US.stop(i); pos++)
 // 		    {
-// 			int j = US.col(pos);
+// 			IndexType j = US.col(pos);
 // 			if(jA==j)  *mat(pos) += *A.mat(posA);
 // 		    }
 // 		}
@@ -280,7 +282,7 @@ template<class B>
 void
 DynamicBlockMatrix<B>::Jacobi(GlobalVector& x) const
 {
-  for (int i = 0; i < n(); i++) {
+  for (IndexType i = 0; i < n(); i++) {
     double a = 1. / ((*vdiag(i))(0, 0));
     *(x.start(i)) *= a;
   }
@@ -290,18 +292,18 @@ DynamicBlockMatrix<B>::Jacobi(GlobalVector& x) const
 
 template<class B>
 void
-DynamicBlockMatrix<B>::entry(nvector<int>::const_iterator start,
-                             nvector<int>::const_iterator stop,
+DynamicBlockMatrix<B>::entry(nvector<IndexType>::const_iterator start,
+                             nvector<IndexType>::const_iterator stop,
                              const EntryMatrix& M,
                              double s)
 {
-  nvector<int>::const_iterator p, q;
-  int ii = 0;
+  nvector<IndexType>::const_iterator p, q;
+  IndexType ii = 0;
   for (p = start; p != stop; p++) {
-    int i = *p;
-    int jj = 0;
+    IndexType i = *p;
+    IndexType jj = 0;
     for (q = start; q != stop; q++) {
-      int j = *q;
+      IndexType j = *q;
       viterator vit = smat[i].begin();
       for (const_citerator cit = DS.cstart(i); cit != DS.cstop(i);
            ++cit, ++vit) {
@@ -319,22 +321,23 @@ DynamicBlockMatrix<B>::entry(nvector<int>::const_iterator start,
 // /*-------------------------------------------------------------*/
 
 //     template<class B>
-//     void DynamicBlockMatrix<B>::entry(nvector<int>::const_iterator start1,
-// 				      nvector<int>::const_iterator stop1,
-// 				      nvector<int>::const_iterator start2,
-// 				      nvector<int>::const_iterator stop2,
+//     void DynamicBlockMatrix<B>::entry(nvector<IndexType>::const_iterator
+//     start1,
+// 				      nvector<IndexType>::const_iterator stop1,
+// 				      nvector<IndexType>::const_iterator start2,
+// 				      nvector<IndexType>::const_iterator stop2,
 // 				      const EntryMatrix& M, double s)
 //     {
-// 	nvector<int>::const_iterator p, q;
-// 	int ii = 0;
+// 	nvector<IndexType>::const_iterator p, q;
+// 	IndexType ii = 0;
 // 	for (p=start1; p!=stop1; p++)
 // 	{
-// 	    int i = *p;
-// 	    int jj = 0;
+// 	    IndexType i = *p;
+// 	    IndexType jj = 0;
 // 	    for(q=start2; q!=stop2; q++)
 // 	    {
-// 		int j = *q;
-// 		for(int pos=US.start(i);pos<US.stop(i);pos++)
+// 		IndexType j = *q;
+// 		for(IndexType pos=US.start(i);pos<US.stop(i);pos++)
 // 		{
 // 		    if(US.col(pos)==j)
 // 		    {
@@ -351,19 +354,20 @@ DynamicBlockMatrix<B>::entry(nvector<int>::const_iterator start,
 // /*-------------------------------------------------------------*/
 
 //     template<class B>
-//     void DynamicBlockMatrix<B>::entrydual(nvector<int>::const_iterator start,
-//     nvector<int>::const_iterator stop, const EntryMatrix& M, double s)
+//     void DynamicBlockMatrix<B>::entrydual(nvector<IndexType>::const_iterator
+//     start, nvector<IndexType>::const_iterator stop, const EntryMatrix& M,
+//     double s)
 //     {
-// 	nvector<int>::const_iterator p, q;
-// 	int ii = 0;
+// 	nvector<IndexType>::const_iterator p, q;
+// 	IndexType ii = 0;
 // 	for (p=start; p!=stop; p++)
 // 	{
-// 	    int i = *p;
-// 	    int jj = 0;
+// 	    IndexType i = *p;
+// 	    IndexType jj = 0;
 // 	    for(q=start; q!=stop; q++)
 // 	    {
-// 		int j = *q;
-// 		for(int pos=US.start(i);pos<US.stop(i);pos++)
+// 		IndexType j = *q;
+// 		for(IndexType pos=US.start(i);pos<US.stop(i);pos++)
 // 		{
 // 		    if(US.col(pos)==j)
 // 		    {

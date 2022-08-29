@@ -34,21 +34,20 @@
 namespace Gascoigne {
 class EdgeManager
 {
-  typedef std::array<int, 2> EdgeVector;
 
 protected:
   std::vector<Edge>& edges;
   std::vector<Quad>& quads;
-  const IntVector& co2n;
-  IntVector& eo2n;
+  const IndexVector& co2n;
+  IndexVector& eo2n;
 
-  IntVector SwappedEdge;
+  IndexVector SwappedEdge;
   QuadLawAndOrder QuadLaO;
 
   void Update();
-  void InnerEdges(const IntSet& CellRefList);
+  void InnerEdges(const IndexSet& CellRefList);
   void OuterEdges(const HangContainer2d& hangset);
-  void OldHangings(HangContainer2d& hangset, const IntSet& CellRefList);
+  void OldHangings(HangContainer2d& hangset, const IndexSet& CellRefList);
   void SwappedEdges();
   void NeighbourTester() const;
 
@@ -57,21 +56,21 @@ protected:
 public:
   EdgeManager(std::vector<Edge>&,
               std::vector<Quad>&,
-              const IntVector& con,
-              IntVector& eon);
+              const IndexVector& con,
+              IndexVector& eon);
 
-  const Quad& quad(int i) const { return quads[i]; }
-  Quad& quad(int i) { return quads[i]; }
+  const Quad& quad(IndexType i) const { return quads[i]; }
+  Quad& quad(IndexType i) { return quads[i]; }
 
-  std::array<int, 2> ChildrenOfEdge(int e) const;
+  std::array<IndexType, 2> ChildrenOfEdge(IndexType e) const;
 
-  bool EdgeIsHanging(int e) const;
+  bool EdgeIsHanging(IndexType e) const;
   bool EdgeIsHanging(const Edge& e) const;
 
-  void LoadEdgeElimination(IntVector& edel,
-                           const IntSet& CellCoarseList,
+  void LoadEdgeElimination(IndexVector& edel,
+                           const IndexSet& CellCoarseList,
                            const HangContainer2d& hangset) const;
-  void Build(const IntSet& CellRefList, HangContainer2d&);
+  void Build(const IndexSet& CellRefList, HangContainer2d&);
   void DeleteEdges();
   void InitEdges();
   void SortHangings();

@@ -38,7 +38,7 @@
 using namespace std;
 
 namespace Gascoigne {
-typedef triple<int, int, int> tint;
+typedef triple<IndexType, IndexType, IndexType> tint;
 
 /*------------------------------------------------------*/
 
@@ -84,12 +84,12 @@ HierarchicalMesh3d::operator=(const HierarchicalMesh3d& H)
 
 /*------------------------------------------------------*/
 
-pair<int, int>
-HierarchicalMesh3d::GetBoundaryInformation(int i) const
+pair<IndexType, IndexType>
+HierarchicalMesh3d::GetBoundaryInformation(IndexType i) const
 {
-  int material = -1;
-  int le = -1;
-  int ib = GetBoundaryCellOfCurved(i);
+  IndexType material = -1;
+  IndexType le = -1;
+  IndexType ib = GetBoundaryCellOfCurved(i);
   if (ib >= 0) {
     material = bquad(ib).material();
     le = bquad(ib).edge_in_quad();
@@ -100,7 +100,7 @@ HierarchicalMesh3d::GetBoundaryInformation(int i) const
 /*------------------------------------------------------*/
 
 const BoundaryFunction<3>*
-HierarchicalMesh3d::quad_shape(int i) const
+HierarchicalMesh3d::quad_shape(IndexType i) const
 {
   if (GetCurvedShapes().empty())
     return NULL;
@@ -113,12 +113,12 @@ HierarchicalMesh3d::quad_shape(int i) const
 
 /*------------------------------------------------------*/
 
-set<int>
+set<IndexType>
 HierarchicalMesh3d::GetColors() const
 {
-  set<int> coleur;
+  set<IndexType> coleur;
 
-  for (int i = 0; i < nbquads(); i++) {
+  for (IndexType i = 0; i < nbquads(); i++) {
     coleur.insert(bquad(i).material());
   }
   return coleur;
@@ -126,19 +126,19 @@ HierarchicalMesh3d::GetColors() const
 
 /*------------------------------------------------------*/
 
-int
+IndexType
 HierarchicalMesh3d::FindPatchDepth() const
 {
   // simple version, sucht nur p=1, p=0
-  for (int i = 0; i < ncells(); i++) {
+  for (IndexType i = 0; i < ncells(); i++) {
     const Hex& q = hex(i);
     if (q.sleep())
       continue;
-    int father = q.father();
+    IndexType father = q.father();
     if (father == -1)
       return 0;
     const Hex& qf = hex(father);
-    for (int ii = 0; ii < 8; ii++) {
+    for (IndexType ii = 0; ii < 8; ii++) {
       if (hex(qf.child(ii)).sleep())
         return 0;
     }
@@ -156,10 +156,10 @@ HierarchicalMesh3d::InitHexOfCurved()
   if (GetCurvedShapes().empty())
     return;
 
-  for (int il = 0; il < nbquads(); ++il) {
+  for (IndexType il = 0; il < nbquads(); ++il) {
     const BoundaryQuad& B = bquad(il);
     if (GetCurvedShapes().Curved(B.material())) {
-      int iq = B.of_quad();
+      IndexType iq = B.of_quad();
       hexofcurved.insert(make_pair(iq, il));
     }
   }
@@ -168,16 +168,16 @@ HierarchicalMesh3d::InitHexOfCurved()
 /*------------------------------------------------------*/
 
 void
-HierarchicalMesh3d::prepare3d(const IntVector& cell_ref,
-                              const IntVector& cell_coarse,
-                              IntSet& CellRefList,
-                              IntSet& CellCoarseList)
+HierarchicalMesh3d::prepare3d(const IndexVector& cell_ref,
+                              const IndexVector& cell_coarse,
+                              IndexSet& CellRefList,
+                              IndexSet& CellCoarseList)
 {
   /* copies cell_ref into CellRefList without duplets  */
 
-  for (IntVector::const_iterator cp = cell_ref.begin(); cp != cell_ref.end();
+  for (IndexVector::const_iterator cp = cell_ref.begin(); cp != cell_ref.end();
        ++cp) {
-    int c = *cp;
+    IndexType c = *cp;
     if ((c >= 0) && (c < hexs.size())) {
       if (!hexs[c].sleep()) {
         CellRefList.insert(c);
@@ -188,10 +188,10 @@ HierarchicalMesh3d::prepare3d(const IntVector& cell_ref,
   /* copies cell_coarse into CellCoarseList without duplets
      checks if coarse cell in refine list */
 
-  IntSet help;
+  IndexSet help;
 
-  for (int i = 0; i < cell_coarse.size(); i++) {
-    int ic = cell_coarse[i];
+  for (IndexType i = 0; i < cell_coarse.size(); i++) {
+    IndexType ic = cell_coarse[i];
     if ((ic < 0) || (ic >= hexs.size()))
       continue;
 
@@ -209,20 +209,20 @@ HierarchicalMesh3d::prepare3d(const IntVector& cell_ref,
 
   for (HangList<4>::const_iterator Lp = QuadHang.begin(); Lp != QuadHang.end();
        Lp++) {
-    int cn = Lp->second.cneighbour();
+    IndexType cn = Lp->second.cneighbour();
     if (help.find(cn) != help.end())
       help.erase(cn);
   }
 
   /* marks the father */
 
-  multiset<int> ff;
+  multiset<IndexType> ff;
 
-  for (IntSet::const_iterator hp = help.begin(); hp != help.end(); ++hp) {
+  for (IndexSet::const_iterator hp = help.begin(); hp != help.end(); ++hp) {
     ff.insert(hex(*hp).father());
   }
 
-  for (multiset<int>::iterator fp = ff.begin(); fp != ff.end(); ++fp) {
+  for (multiset<IndexType>::iterator fp = ff.begin(); fp != ff.end(); ++fp) {
     if (ff.count(*fp) == 8) {
       CellCoarseList.insert(*fp);
     }
@@ -233,15 +233,15 @@ HierarchicalMesh3d::prepare3d(const IntVector& cell_ref,
 
 void
 HierarchicalMesh3d::FaceCoarse(HangContainer3d& hangset,
-                               const IntSet& cellcoarse) const
+                               const IndexSet& cellcoarse) const
 {
-  std::array<int, 4> quadglob;
+  std::array<IndexType, 4> quadglob;
   for (IntSetIt cp = cellcoarse.begin(); cp != cellcoarse.end(); ++cp) {
-    int f = *cp;
-    for (int face = 0; face < 6; ++face) {
+    IndexType f = *cp;
+    for (IndexType face = 0; face < 6; ++face) {
       HexLaO.global_face_unsorted(quadglob, hex(f), face);
 
-      int ve = HexLaO.face_vertex(hex(f), face);
+      IndexType ve = HexLaO.face_vertex(hex(f), face);
       hangset.face_coarse(quadglob, f, ve);
     }
   }
@@ -251,12 +251,12 @@ HierarchicalMesh3d::FaceCoarse(HangContainer3d& hangset,
 
 void
 HierarchicalMesh3d::FaceRefine(HangContainer3d& hangset,
-                               const IntSet& cellref) const
+                               const IndexSet& cellref) const
 {
-  std::array<int, 4> quadglob;
+  std::array<IndexType, 4> quadglob;
   for (IntSetIt cp = cellref.begin(); cp != cellref.end(); ++cp) {
-    int f = *cp;
-    for (int face = 0; face < 6; ++face) {
+    IndexType f = *cp;
+    for (IndexType face = 0; face < 6; ++face) {
       HexLaO.global_face_unsorted(quadglob, hex(f), face);
       hangset.face_refine(quadglob, f);
     }
@@ -267,25 +267,25 @@ HierarchicalMesh3d::FaceRefine(HangContainer3d& hangset,
 
 void
 HierarchicalMesh3d::UpdateHangingEdges(HangContainer3d& hangset,
-                                       const IntSet& cellref,
-                                       const IntSet& cellcoarse) const
+                                       const IndexSet& cellref,
+                                       const IndexSet& cellcoarse) const
 {
   HangList<2> oldhangs(LineHang);
   hangset.build_hanging_lines(oldhangs);
-  std::array<int, 2> lineglob;
+  std::array<IndexType, 2> lineglob;
 
   for (IntSetIt cp = cellcoarse.begin(); cp != cellcoarse.end(); ++cp) {
-    int f = *cp;
-    for (int edge = 0; edge < 12; ++edge) {
+    IndexType f = *cp;
+    for (IndexType edge = 0; edge < 12; ++edge) {
       HexLaO.global_edge_unsorted(lineglob, hex(f), edge);
 
-      int ve = HexLaO.edge_vertex(hex(f), edge);
+      IndexType ve = HexLaO.edge_vertex(hex(f), edge);
       hangset.line_coarse(lineglob, f, ve);
     }
   }
   for (IntSetIt cp = cellref.begin(); cp != cellref.end(); ++cp) {
-    int f = *cp;
-    for (int edge = 0; edge < 12; ++edge) {
+    IndexType f = *cp;
+    for (IndexType edge = 0; edge < 12; ++edge) {
       HexLaO.global_edge_unsorted(lineglob, hex(f), edge);
 
       hangset.line_refine(lineglob, f, oldhangs);
@@ -297,8 +297,8 @@ HierarchicalMesh3d::UpdateHangingEdges(HangContainer3d& hangset,
 
 void
 HierarchicalMesh3d::UpdateHangs(HangContainer3d& hangset,
-                                const IntSet& cellref,
-                                const IntSet& cellcoarse)
+                                const IndexSet& cellref,
+                                const IndexSet& cellcoarse)
 {
   // faces
   FaceCoarse(hangset, cellcoarse);
@@ -317,14 +317,14 @@ void
 HierarchicalMesh3d::ghost_fill_neighbours3d()
 {
   FaceVector quadglob;
-  for (int ic = 0; ic < hexs.size(); ic++) {
-    for (int i = 0; i < 6; i++) {
+  for (IndexType ic = 0; ic < hexs.size(); ic++) {
+    for (IndexType i = 0; i < 6; i++) {
       HexLaO.global_face_unsorted(quadglob, hex(ic), i);
       HangList<4>::iterator p = QuadHang.find(quadglob);
 
       if (p != QuadHang.end()) {
-        int cn = p->second.cneighbour();
-        int rn = p->second.rneighbour();
+        IndexType cn = p->second.cneighbour();
+        IndexType rn = p->second.rneighbour();
 
         // coarse neighbour
         if ((cn == -1) && (rn != ic)) {
@@ -345,14 +345,14 @@ void
 HierarchicalMesh3d::ghost_fill_neighbours2d()
 {
   EdgeVector lineglob;
-  for (int ic = 0; ic < hexs.size(); ic++) {
-    for (int i = 0; i < 12; i++) {
+  for (IndexType ic = 0; ic < hexs.size(); ic++) {
+    for (IndexType i = 0; i < 12; i++) {
       HexLaO.global_edge_unsorted(lineglob, hex(ic), i);
       LineHangList::iterator p = LineHang.find(lineglob);
 
       if (p != LineHang.end()) {
-        int cn = p->second.cneighbour();
-        int rn = p->second.rneighbour();
+        IndexType cn = p->second.cneighbour();
+        IndexType rn = p->second.rneighbour();
 
         // coarse neighbour
         if ((cn == -1) && (rn != ic)) {
@@ -371,30 +371,30 @@ HierarchicalMesh3d::ghost_fill_neighbours2d()
 
 void
 HierarchicalMesh3d::basic_refine3d(HangContainer3d& hangset,
-                                   const IntSet& CellRefList,
-                                   const IntSet& CellCoarseList)
+                                   const IndexSet& CellRefList,
+                                   const IndexSet& CellCoarseList)
 {
-  int ov = nnodes();
-  int oc = hexs.size();
-  int oe = edges.size();
+  IndexType ov = nnodes();
+  IndexType oc = hexs.size();
+  IndexType oe = edges.size();
 
-  int csub = 8 * CellCoarseList.size();
-  int cadd = 8 * CellRefList.size();
+  IndexType csub = 8 * CellCoarseList.size();
+  IndexType cadd = 8 * CellRefList.size();
 
-  int vsub = hangset.nDel() + CellCoarseList.size();
-  int vadd = hangset.nNew() + CellRefList.size();
+  IndexType vsub = hangset.nDel() + CellCoarseList.size();
+  IndexType vadd = hangset.nNew() + CellRefList.size();
 
-  int cdiff = cadd - csub;
-  int vdiff = vadd - vsub;
+  IndexType cdiff = cadd - csub;
+  IndexType vdiff = vadd - vsub;
 
-  int nv = ov + vdiff;
-  int nc = oc + cdiff;
+  IndexType nv = ov + vdiff;
+  IndexType nc = oc + cdiff;
 
   clear_transfer_lists();
 
   /* delete vertex */
 
-  IntVector vdel, cdel, edel;
+  IndexVector vdel, cdel, edel;
 
   for (IntSetCIt p = CellCoarseList.begin(); p != CellCoarseList.end(); p++) {
     const Hex& q = hex(*p);
@@ -411,7 +411,7 @@ HierarchicalMesh3d::basic_refine3d(HangContainer3d& hangset,
   if (withfaces)
     EM.LoadFaceElimination(edel, CellCoarseList, hangset);
 
-  IntSet QuadRefList, QuadCoarseList, ccdel;
+  IndexSet QuadRefList, QuadCoarseList, ccdel;
 
   boundary_prepare3d(QuadRefList, QuadCoarseList, ccdel, hangset);
 
@@ -419,7 +419,7 @@ HierarchicalMesh3d::basic_refine3d(HangContainer3d& hangset,
   transfer(ov, vo2n, vdel);
   transfer(oe, eo2n, edel);
 
-  IntVector cnew(cadd), vnew(vadd);
+  IndexVector cnew(cadd), vnew(vadd);
   iota(cnew.begin(), cnew.end(), oc - csub);
   iota(vnew.begin(), vnew.end(), ov - vsub);
 
@@ -450,7 +450,7 @@ HierarchicalMesh3d::basic_refine3d(HangContainer3d& hangset,
 
   //   Lukas ?????
   //
-  IntSet adjustvertex;
+  IndexSet adjustvertex;
   //   write_inp("refined0.inp");
   boundary_newton3d(adjustvertex);
   //   write_inp("refined1.inp");
@@ -476,9 +476,9 @@ HierarchicalMesh3d::basic_refine3d(HangContainer3d& hangset,
 void
 HierarchicalMesh3d::Testing()
 {
-  for (int i = 0; i < edges.size(); i++) {
-    int m = edges[i].master();
-    int s = edges[i].slave();
+  for (IndexType i = 0; i < edges.size(); i++) {
+    IndexType m = edges[i].master();
+    IndexType s = edges[i].slave();
 
     if (s < 0)
       continue;
@@ -492,18 +492,18 @@ HierarchicalMesh3d::Testing()
 /*---------------------------------------------------*/
 
 void
-HierarchicalMesh3d::boundary_newton3d(IntSet& adjustvertex)
+HierarchicalMesh3d::boundary_newton3d(IndexSet& adjustvertex)
 {
   if (GetCurvedShapes().empty())
     return;
 
-  for (int i = 0; i < Bquads.size(); i++) {
+  for (IndexType i = 0; i < Bquads.size(); i++) {
     BoundaryQuad& bl = Bquads[i];
-    int color = bl.material();
+    IndexType color = bl.material();
 
     if (GetCurvedShapes().Curved(color)) {
-      for (int j = 0; j < 4; j++) {
-        int k = bl.vertex(j);
+      for (IndexType j = 0; j < 4; j++) {
+        IndexType k = bl.vertex(j);
 
         GetCurvedShapes().newton(color, vertexs3d[k]);
         adjustvertex.insert(k);
@@ -515,12 +515,12 @@ HierarchicalMesh3d::boundary_newton3d(IntSet& adjustvertex)
 /*---------------------------------------------------*/
 
 void
-HierarchicalMesh3d::boundary_prepare3d(IntSet& QuadRefList,
-                                       IntSet& QuadCoarseList,
-                                       IntSet& ccdel,
+HierarchicalMesh3d::boundary_prepare3d(IndexSet& QuadRefList,
+                                       IndexSet& QuadCoarseList,
+                                       IndexSet& ccdel,
                                        const HangContainer3d& hangset)
 {
-  for (int i = 0; i < Bquads.size(); i++) {
+  for (IndexType i = 0; i < Bquads.size(); i++) {
     const BoundaryQuad& bl = Bquads[i];
 
     FaceVector lineglob;
@@ -533,7 +533,7 @@ HierarchicalMesh3d::boundary_prepare3d(IntSet& QuadRefList,
     if (bl.sleep()) {
       if (hangset.ToBeDeleted(lineglob)) {
         QuadCoarseList.insert(i);
-        for (int j = 0; j < 4; j++)
+        for (IndexType j = 0; j < 4; j++)
           ccdel.insert(bl.child(j));
       }
     } else {
@@ -547,20 +547,22 @@ HierarchicalMesh3d::boundary_prepare3d(IntSet& QuadRefList,
 /*---------------------------------------------------*/
 
 void
-HierarchicalMesh3d::new_boundary3d(IntSet& ref, IntSet& coarse, IntSet& ccdel)
+HierarchicalMesh3d::new_boundary3d(IndexSet& ref,
+                                   IndexSet& coarse,
+                                   IndexSet& ccdel)
 {
-  int oc = Bquads.size();
-  int csub = 4 * coarse.size();
-  int cadd = 4 * ref.size();
-  int nc = oc + cadd - csub;
+  IndexType oc = Bquads.size();
+  IndexType csub = 4 * coarse.size();
+  IndexType cadd = 4 * ref.size();
+  IndexType nc = oc + cadd - csub;
 
-  IntVector lo2n;
+  IndexVector lo2n;
   transfer(oc, lo2n, ccdel);
   delete_cells<BoundaryQuad>(coarse, Bquads, lo2n, vo2n);
 
   update_boundary_data3d(coarse);
 
-  IntVector cnew(cadd);
+  IndexVector cnew(cadd);
   iota(cnew.begin(), cnew.end(), oc - csub);
 
   Bquads.reserve(nc);
@@ -572,11 +574,11 @@ HierarchicalMesh3d::new_boundary3d(IntSet& ref, IntSet& coarse, IntSet& ccdel)
 /*---------------------------------------------------*/
 
 void
-HierarchicalMesh3d::update_boundary_data3d(const IntSet& LCoarse)
+HierarchicalMesh3d::update_boundary_data3d(const IndexSet& LCoarse)
 {
-  int no = Bquads.size() - 4 * LCoarse.size();
-  for (int i = 0; i < no; ++i) {
-    int oq = Bquads[i].of_quad();
+  IndexType no = Bquads.size() - 4 * LCoarse.size();
+  for (IndexType i = 0; i < no; ++i) {
+    IndexType oq = Bquads[i].of_quad();
 
     assert(co2n[oq] >= 0);
 
@@ -587,32 +589,32 @@ HierarchicalMesh3d::update_boundary_data3d(const IntSet& LCoarse)
 /*---------------------------------------------------*/
 
 void
-HierarchicalMesh3d::new_bquads(const IntVector& lo2n,
-                               const IntVector& cnew,
-                               const IntSet& LRef)
+HierarchicalMesh3d::new_bquads(const IndexVector& lo2n,
+                               const IndexVector& cnew,
+                               const IndexSet& LRef)
 {
-  int nci = 0;
+  IndexType nci = 0;
 
   vector<Quad> emptyq;
 
   for (IntSetIt cp = LRef.begin(); cp != LRef.end(); ++cp) {
-    int father = lo2n[*cp];
+    IndexType father = lo2n[*cp];
 
     assert(father != -1);
 
     BoundaryQuad& bqf = Bquads[father];
     // change father boundary
-    vector<int>& qc = bqf.childs();
+    vector<IndexType>& qc = bqf.childs();
     qc.resize(4);
 
-    int face = bqf.edge_in_quad(); // face index in hex
-    int hexi = bqf.of_quad();      // hex index of father
+    IndexType face = bqf.edge_in_quad(); // face index in hex
+    IndexType hexi = bqf.of_quad();      // hex index of father
     FaceVector chvec;
     HexLaO.childs_of_face(chvec, hex(hexi), face);
 
-    for (int ic = 0; ic < 4; ic++) {
-      int childhex = chvec[ic];
-      int inold = cnew[nci + ic];
+    for (IndexType ic = 0; ic < 4; ic++) {
+      IndexType childhex = chvec[ic];
+      IndexType inold = cnew[nci + ic];
       // set childs in father
       qc[ic] = inold;
       // set properties of childs
@@ -635,14 +637,14 @@ HierarchicalMesh3d::new_bquads(const IntVector& lo2n,
 
 void
 HierarchicalMesh3d::new_vertexs3d(HangContainer3d& hangset,
-                                  const IntVector& vnew,
-                                  const IntSet& CellRefList)
+                                  const IndexVector& vnew,
+                                  const IndexSet& CellRefList)
 {
-  int nv1 = CellRefList.size();
+  IndexType nv1 = CellRefList.size();
 
   IntSetIt cp = CellRefList.begin();
-  for (int i = 0; i < nv1; i++) {
-    int f = co2n[*cp++];
+  for (IndexType i = 0; i < nv1; i++) {
+    IndexType f = co2n[*cp++];
     new_middle_vertex3d(vnew[i], f);
   }
   /* new vertexes on faces */
@@ -662,16 +664,16 @@ HierarchicalMesh3d::new_vertexs3d(HangContainer3d& hangset,
 /*---------------------------------------------------*/
 
 void
-HierarchicalMesh3d::new_middle_vertex3d(int i, int f)
+HierarchicalMesh3d::new_middle_vertex3d(IndexType i, IndexType f)
 {
-  int v0 = hexs[f].vertex(0);
-  int v1 = hexs[f].vertex(1);
-  int v2 = hexs[f].vertex(2);
-  int v3 = hexs[f].vertex(3);
-  int v4 = hexs[f].vertex(4);
-  int v5 = hexs[f].vertex(5);
-  int v6 = hexs[f].vertex(6);
-  int v7 = hexs[f].vertex(7);
+  IndexType v0 = hexs[f].vertex(0);
+  IndexType v1 = hexs[f].vertex(1);
+  IndexType v2 = hexs[f].vertex(2);
+  IndexType v3 = hexs[f].vertex(3);
+  IndexType v4 = hexs[f].vertex(4);
+  IndexType v5 = hexs[f].vertex(5);
+  IndexType v6 = hexs[f].vertex(6);
+  IndexType v7 = hexs[f].vertex(7);
 
   Vertex3d w1, w2;
 
@@ -699,31 +701,31 @@ HierarchicalMesh3d::new_middle_vertex3d(int i, int f)
 
 void
 HierarchicalMesh3d::new_hexs(const HangContainer3d& hangset,
-                             const IntVector& cnew,
-                             const IntVector& vnew,
-                             int nvold,
-                             const IntSet& CellRefList)
+                             const IndexVector& cnew,
+                             const IndexVector& vnew,
+                             IndexType nvold,
+                             const IndexSet& CellRefList)
 {
   // neue zellen erzeugen
   // eintragen der "Vater-Vertexs" in den kindern
 
-  int nci = 0;
-  int ivm = 0;
+  IndexType nci = 0;
+  IndexType ivm = 0;
 
   for (IntSetCIt cp = CellRefList.begin(); cp != CellRefList.end(); cp++) {
-    int father = co2n[*cp];
+    IndexType father = co2n[*cp];
 
     assert(father != -1);
 
-    vector<int>& qc = hexs[father].childs();
+    vector<IndexType>& qc = hexs[father].childs();
     qc.resize(8);
-    int material = hexs[father].material();
-    int material_Vanka = hexs[father].material_Vanka();
+    IndexType material = hexs[father].material();
+    IndexType material_Vanka = hexs[father].material_Vanka();
     std::array<Vertex3d, 3> basis_Vanka = hexs[father].basis_Vanka();
 
-    int childlevel = hexs[father].level() + 1;
-    for (int ic = 0; ic < 8; ic++) {
-      int inold = cnew[nci + ic];
+    IndexType childlevel = hexs[father].level() + 1;
+    for (IndexType ic = 0; ic < 8; ic++) {
+      IndexType inold = cnew[nci + ic];
       qc[ic] = inold;
       hexs[inold].level() = childlevel;
       hexs[inold].father() = father;
@@ -740,9 +742,9 @@ HierarchicalMesh3d::new_hexs(const HangContainer3d& hangset,
     nci += 8;
 
     // Edge Vertex -- linehanginfo schon ok (hanging) !
-    int ive(-1);
+    IndexType ive(-1);
     FaceVector faceglob;
-    for (int i = 0; i < 6; i++) {
+    for (IndexType i = 0; i < 6; i++) {
       HexLaO.global_face_unsorted(faceglob, hex(father), i);
 
       ive = hangset.vertex_index(faceglob);
@@ -751,8 +753,8 @@ HierarchicalMesh3d::new_hexs(const HangContainer3d& hangset,
 
       HexLaO.fill_face_vertex_in_childs(hexs[father], i, ive);
     }
-    std::array<int, 2> lineglob;
-    for (int i = 0; i < 12; i++) {
+    std::array<IndexType, 2> lineglob;
+    for (IndexType i = 0; i < 12; i++) {
       HexLaO.global_edge_unsorted(lineglob, hex(father), i);
 
       ive = hangset.vertex_index(lineglob);
@@ -773,24 +775,24 @@ HierarchicalMesh3d::new_hexs(const HangContainer3d& hangset,
 /*---------------------------------------------------*/
 
 void
-HierarchicalMesh3d::inner_vertex_newton3d(const IntVector& vnew,
-                                          const IntSet& CellRefList,
-                                          const IntSet& adjustvertex)
+HierarchicalMesh3d::inner_vertex_newton3d(const IndexVector& vnew,
+                                          const IndexSet& CellRefList,
+                                          const IndexSet& adjustvertex)
 {
   if (GetCurvedShapes().empty())
     return;
 
   // baue lokalen set auf um spaeter nicht alle hex zu justieren
-  IntSet Hexset;
-  for (int i = 0; i < Bquads.size(); i++) {
-    int hi = Bquads[i].of_quad();
+  IndexSet Hexset;
+  for (IndexType i = 0; i < Bquads.size(); i++) {
+    IndexType hi = Bquads[i].of_quad();
     Hexset.insert(hi);
   }
 
   IntSetIt cp = CellRefList.begin();
 
-  for (int i = 0; i < CellRefList.size(); i++) {
-    int hi = co2n[*cp++];
+  for (IndexType i = 0; i < CellRefList.size(); i++) {
+    IndexType hi = co2n[*cp++];
     const Hex& h = hex(hi);
 
     if (Hexset.find(hi) == Hexset.end())
@@ -798,24 +800,24 @@ HierarchicalMesh3d::inner_vertex_newton3d(const IntVector& vnew,
 
     // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> NEU
     // edges
-    for (int e = 0; e < 12; ++e) {
-      int ev = HexLaO.edge_vertex(h, e);
+    for (IndexType e = 0; e < 12; ++e) {
+      IndexType ev = HexLaO.edge_vertex(h, e);
       if (adjustvertex.find(ev) != adjustvertex.end())
         continue;
 
-      std::array<int, 2> fe;
+      std::array<IndexType, 2> fe;
       HexLaO.globalvertices_of_edge(h, fe, e);
       vertexs3d[ev] = vertexs3d[fe[0]];
       vertexs3d[ev] += vertexs3d[fe[1]];
       vertexs3d[ev] *= 0.5;
     }
     // faces
-    for (int f = 0; f < 6; ++f) {
-      int fv = HexLaO.face_vertex(h, f);
+    for (IndexType f = 0; f < 6; ++f) {
+      IndexType fv = HexLaO.face_vertex(h, f);
       if (adjustvertex.find(fv) != adjustvertex.end())
         continue;
 
-      std::array<int, 4> fe;
+      std::array<IndexType, 4> fe;
       HexLaO.LoadEdgeVerticesOfFace(h, f, fe);
       vertexs3d[fv].equ(0.25,
                         vertexs3d[fe[0]],
@@ -827,7 +829,7 @@ HierarchicalMesh3d::inner_vertex_newton3d(const IntVector& vnew,
                         vertexs3d[fe[3]]);
     }
     // middle
-    /*     int cv = HexLaO.middle_vertex(h);
+    /*     IndexType cv = HexLaO.middle_vertex(h);
          assert (adjustvertex.find(cv)==adjustvertex.end());
 
          // weighted sum of edge vertices
@@ -839,7 +841,7 @@ HierarchicalMesh3d::inner_vertex_newton3d(const IntVector& vnew,
          assert(fabs(edgewgt + facewgt + nodewgt - 1.0)<1.e-10);
 
          // All vertices of the patch
-         vector<int> pv;
+         vector<IndexType> pv;
          pv.push_back(h.vertex(0));
          pv.push_back(HexLaO.edge_vertex(h,0));
          pv.push_back(h.vertex(1));
@@ -879,20 +881,20 @@ HierarchicalMesh3d::inner_vertex_newton3d(const IntVector& vnew,
          assert(hz>hy);
 
 
-         for (int z=0;z<3;++z)
+         for (IndexType z=0;z<3;++z)
            {
-             int i0=9*z;
+             IndexType i0=9*z;
 
              // edges orthogonal to z
-             int ed[4][3]= {{1,0,2},{3,0,6},{5,2,8},{7,6,8}};
-             for (int e=0;e<4;++e)
+             IndexType ed[4][3]= {{1,0,2},{3,0,6},{5,2,8},{7,6,8}};
+             for (IndexType e=0;e<4;++e)
                {
-                 int ev = pv[i0+ed[e][0]];
+                 IndexType ev = pv[i0+ed[e][0]];
                  if (adjustvertex.find(ev)!=adjustvertex.end()) continue;
                  vertexs3d[ev].equ(0.5,vertexs3d[pv[i0+ed[e][1]]],0.5,vertexs3d[pv[i0+ed[e][2]]]);
                }
 
-             int mv = pv[i0+4];
+             IndexType mv = pv[i0+4];
              if (adjustvertex.find(mv)!=adjustvertex.end()) continue;
              vertexs3d[mv].equ(0.25,vertexs3d[pv[i0+1]],
                                0.25,vertexs3d[pv[i0+3]],
@@ -901,26 +903,26 @@ HierarchicalMesh3d::inner_vertex_newton3d(const IntVector& vnew,
            }
       */
 
-    int fv = HexLaO.middle_vertex(h);
+    IndexType fv = HexLaO.middle_vertex(h);
     assert(adjustvertex.find(fv) == adjustvertex.end());
-    std::array<int, 6> fe;
+    std::array<IndexType, 6> fe;
     HexLaO.LoadFaceVertices(h, fe);
     vertexs3d[fv] = 0;
-    for (int i = 0; i < 6; ++i)
+    for (IndexType i = 0; i < 6; ++i)
       vertexs3d[fv] += vertexs3d[fe[i]];
     vertexs3d[fv] *= 1. / 6.;
     // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< NEU
 
     //       // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ALT
-    //       for (int face=0; face<6; face++)
+    //       for (IndexType face=0; face<6; face++)
     // 	{
     // 	  HexLaO.LoadEdgeVerticesOfFace(h,face,v);
-    // 	  int mv = HexLaO.face_vertex(h,face);
+    // 	  IndexType mv = HexLaO.face_vertex(h,face);
     // 	  if (adjustvertex.find(mv)!=adjustvertex.end()) continue;
     // 	  new_face_vertex3d(mv,v);
     // 	}
-    // //       std::array<int,6> w;
-    // //       int mv = HexLaO.middle_vertex(h);
+    // //       std::array<IndexType,6> w;
+    // //       IndexType mv = HexLaO.middle_vertex(h);
     // //       HexLaO.LoadFaceVertices(h,w);
     // //       new_vertex3d(mv,w);
     //       // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< ALT
@@ -932,16 +934,16 @@ HierarchicalMesh3d::inner_vertex_newton3d(const IntVector& vnew,
 void
 HierarchicalMesh3d::basic_fill_neighbours3d()
 {
-  int n = 0;
+  IndexType n = 0;
   FaceVector faceglob;
-  for (int ic = 0; ic < hexs.size(); ic++) {
-    for (int i = 0; i < 6; i++) {
+  for (IndexType ic = 0; ic < hexs.size(); ic++) {
+    for (IndexType i = 0; i < 6; i++) {
       HexLaO.global_face_unsorted(faceglob, hex(ic), i);
       HangList<4>::iterator p = QuadHang.find(faceglob);
 
       if (p != QuadHang.end()) {
-        int cn = p->second.cneighbour();
-        int rn = p->second.rneighbour();
+        IndexType cn = p->second.cneighbour();
+        IndexType rn = p->second.rneighbour();
 
         if ((cn == -1) && (!hexs[ic].sleep())) {
           n++;
@@ -961,15 +963,15 @@ void
 HierarchicalMesh3d::init_quad(BoundaryQuad& newquad)
 {
   FaceVector v;
-  IntSet newquad_set;
+  IndexSet newquad_set;
   newquad_set.insert(newquad[0]);
   newquad_set.insert(newquad[1]);
   newquad_set.insert(newquad[2]);
   newquad_set.insert(newquad[3]);
-  for (int i = 0; i < hexs.size(); i++) {
-    for (int face = 0; face < 6; face++) {
+  for (IndexType i = 0; i < hexs.size(); i++) {
+    for (IndexType face = 0; face < 6; face++) {
       HexLaO.global_face_unsorted(v, hex(i), face);
-      IntSet v_set;
+      IndexSet v_set;
       v_set.insert(v[0]);
       v_set.insert(v[1]);
       v_set.insert(v[2]);
@@ -1003,12 +1005,13 @@ HierarchicalMesh3d::init_edges3d()
 /*---------------------------------------------------*/
 
 void
-HierarchicalMesh3d::GetVertexesOfFace(std::array<int, 5>& v, int e) const
+HierarchicalMesh3d::GetVertexesOfFace(std::array<IndexType, 5>& v,
+                                      IndexType e) const
 {
   const Edge& E = edge(e);
   const Hex* Q = &hex(E.master());
 
-  int le = E.LocalMasterIndex();
+  IndexType le = E.LocalMasterIndex();
   v[0] = (*Q)[le];
   v[1] = (*Q)[(le + 1) % 8];
   v[2] = (*Q)[(le + 2) % 8];
@@ -1027,12 +1030,13 @@ HierarchicalMesh3d::GetVertexesOfFace(std::array<int, 5>& v, int e) const
 /*---------------------------------------------------*/
 
 void
-HierarchicalMesh3d::GetVertexesOfFace(std::array<int, 4>& v, int e) const
+HierarchicalMesh3d::GetVertexesOfFace(std::array<IndexType, 4>& v,
+                                      IndexType e) const
 {
   const Edge& E = edge(e);
   const Hex* Q = &hex(E.master());
 
-  int le = E.LocalMasterIndex();
+  IndexType le = E.LocalMasterIndex();
   v[0] = (*Q)[le];
   v[1] = (*Q)[(le + 1) % 8];
   v[2] = (*Q)[(le + 2) % 8];
@@ -1041,49 +1045,49 @@ HierarchicalMesh3d::GetVertexesOfFace(std::array<int, 4>& v, int e) const
 
 /*------------------------------------------------------*/
 
-int
-HierarchicalMesh3d::Vater(const int i) const
+IndexType
+HierarchicalMesh3d::Vater(const IndexType i) const
 {
   return hex(i).father();
 }
 
 /*------------------------------------------------------*/
 
-int
-HierarchicalMesh3d::nactivedescendants(int i) const
+IndexType
+HierarchicalMesh3d::nactivedescendants(IndexType i) const
 {
   if (!hexs[i].sleep())
     return 1;
-  int k = 0;
-  for (int j = 0; j < hexs[i].nchilds(); ++j)
+  IndexType k = 0;
+  for (IndexType j = 0; j < hexs[i].nchilds(); ++j)
     k += nactivedescendants(hexs[i].child(j));
   return k;
 }
 
 /*------------------------------------------------------*/
 
-IntVector
-HierarchicalMesh3d::GetVertices(int c) const
+IndexVector
+HierarchicalMesh3d::GetVertices(IndexType c) const
 {
-  IntVector v;
-  for (int i = 0; i < hexs[c].nvertexs(); ++i)
+  IndexVector v;
+  for (IndexType i = 0; i < hexs[c].nvertexs(); ++i)
     v.push_back(hexs[c][i]);
   return v;
 }
 
 /*------------------------------------------------------*/
 
-IntVector
-HierarchicalMesh3d::Nachkommen(const int i) const
+IndexVector
+HierarchicalMesh3d::Nachkommen(const IndexType i) const
 {
-  IntVector k = Kinder(i);
+  IndexVector k = Kinder(i);
   if (k.size() == 0)
     return k;
-  IntVector k1;
-  int ks = k.size();
-  for (int i = 0; i < ks; ++i) {
-    IntVector k1 = Nachkommen(k[i]);
-    for (int j = 0; j < k1.size(); ++j)
+  IndexVector k1;
+  IndexType ks = k.size();
+  for (IndexType i = 0; i < ks; ++i) {
+    IndexVector k1 = Nachkommen(k[i]);
+    for (IndexType j = 0; j < k1.size(); ++j)
       k.push_back(k1[j]);
   }
   return k;
@@ -1091,22 +1095,22 @@ HierarchicalMesh3d::Nachkommen(const int i) const
 
 /*------------------------------------------------------*/
 
-IntVector
-HierarchicalMesh3d::Kinder(const int i) const
+IndexVector
+HierarchicalMesh3d::Kinder(const IndexType i) const
 {
-  IntVector k = hex(i).childs();
+  IndexVector k = hex(i).childs();
   return k;
 }
 
 /*------------------------------------------------------*/
 
-IntVector
-HierarchicalMesh3d::Geschwister(const int i) const
+IndexVector
+HierarchicalMesh3d::Geschwister(const IndexType i) const
 {
   const Hex& q = hex(i);
-  int father = q.father();
+  IndexType father = q.father();
   if (father == -1) {
-    IntVector n(1, i);
+    IndexVector n(1, i);
     return n;
   }
   return Kinder(father);
@@ -1114,17 +1118,17 @@ HierarchicalMesh3d::Geschwister(const int i) const
 
 /*------------------------------------------------------*/
 
-std::array<int, 4>
-HierarchicalMesh3d::ChildrenOfFace(int e) const
+std::array<IndexType, 4>
+HierarchicalMesh3d::ChildrenOfFace(IndexType e) const
 {
-  int s = edge(e).slave();
-  int is = edge(e).LocalSlaveIndex();
+  IndexType s = edge(e).slave();
+  IndexType is = edge(e).LocalSlaveIndex();
 
   assert(s >= 0);
 
-  std::array<int, 4> f;
-  for (int ii = 0; ii < 4; ii++) {
-    int ic = hex(s).child(HexLaO.ChildsOfFace(is, ii));
+  std::array<IndexType, 4> f;
+  for (IndexType ii = 0; ii < 4; ii++) {
+    IndexType ic = hex(s).child(HexLaO.ChildsOfFace(is, ii));
     f[ii] = hex(ic).edge(HexLaO.ChildFace(is));
   }
   return f;
@@ -1133,9 +1137,9 @@ HierarchicalMesh3d::ChildrenOfFace(int e) const
 /*---------------------------------------------------*/
 
 void
-HierarchicalMesh3d::GetAwakeCells(set<int>& v) const
+HierarchicalMesh3d::GetAwakeCells(set<IndexType>& v) const
 {
-  for (int i = 0; i < ncells(); i++) {
+  for (IndexType i = 0; i < ncells(); i++) {
     if (!hexs[i].sleep())
       v.insert(i);
   }
@@ -1144,11 +1148,11 @@ HierarchicalMesh3d::GetAwakeCells(set<int>& v) const
 /*---------------------------------------------------*/
 
 void
-HierarchicalMesh3d::GetAwakePatchs(set<int>& v) const
+HierarchicalMesh3d::GetAwakePatchs(set<IndexType>& v) const
 {
-  for (int i = 0; i < ncells(); i++) {
+  for (IndexType i = 0; i < ncells(); i++) {
     if (!hexs[i].sleep()) {
-      int f = hexs[i].father();
+      IndexType f = hexs[i].father();
       assert(f != -1);
       v.insert(f);
     }
@@ -1158,12 +1162,12 @@ HierarchicalMesh3d::GetAwakePatchs(set<int>& v) const
 /*---------------------------------------------------*/
 
 void
-HierarchicalMesh3d::ConstructQ2PatchMesh(IntVector& q2patchmesh) const
+HierarchicalMesh3d::ConstructQ2PatchMesh(IndexVector& q2patchmesh) const
 {
-  typedef set<int>::iterator It;
-  set<int> patche;
+  typedef set<IndexType>::iterator It;
+  set<IndexType> patche;
   GetAwakePatchs(patche);
-  vector<set<int>> patch_on_level(nlevels());
+  vector<set<IndexType>> patch_on_level(nlevels());
   q2patchmesh.resize(0);
   for (It it = patche.begin(); it != patche.end(); ++it)
     patch_on_level[hexs[*it].level()].insert(*it);
@@ -1171,14 +1175,14 @@ HierarchicalMesh3d::ConstructQ2PatchMesh(IntVector& q2patchmesh) const
   for (It it = patch_on_level[0].begin(); it != patch_on_level[0].end(); ++it)
     q2patchmesh.push_back(*it);
   // der Rest wird eins groeber
-  for (int l = 1; l < nlevels(); ++l) {
+  for (IndexType l = 1; l < nlevels(); ++l) {
     It it = patch_on_level[l].begin();
     while (it != patch_on_level[l].end()) {
-      int v = hexs[*it].father();
+      IndexType v = hexs[*it].father();
       assert(v != -1);
       q2patchmesh.push_back(v);
-      IntVector nk = Nachkommen(v);
-      for (int i = 0; i < nk.size(); ++i)
+      IndexVector nk = Nachkommen(v);
+      for (IndexType i = 0; i < nk.size(); ++i)
         patch_on_level[hexs[nk[i]].level()].erase(nk[i]);
       it = patch_on_level[l].begin();
     }
@@ -1187,36 +1191,36 @@ HierarchicalMesh3d::ConstructQ2PatchMesh(IntVector& q2patchmesh) const
 
 /*---------------------------------------------------*/
 
-IntVector
-HierarchicalMesh3d::ConstructQ4Patch(int c) const
+IndexVector
+HierarchicalMesh3d::ConstructQ4Patch(IndexType c) const
 {
-  IntVector patch(125, -1);
-  for (int i = 0; i < 125; i++) {
+  IndexVector patch(125, -1);
+  for (IndexType i = 0; i < 125; i++) {
     // Vertex i steht an Position (x,y,z)
-    int x = i % 5;
-    int y = (i % 25) / 5;
-    int z = i / 25;
+    IndexType x = i % 5;
+    IndexType y = (i % 25) / 5;
+    IndexType z = i / 25;
 
     // Position von erstem Kind
-    int fcx = x / 3;
-    int fcy = y / 3;
-    int fcz = z / 3;
+    IndexType fcx = x / 3;
+    IndexType fcy = y / 3;
+    IndexType fcz = z / 3;
     // Index davon
-    int fci = fcz * 4 + fcy * 2 + abs(fcx - fcy);
+    IndexType fci = fcz * 4 + fcy * 2 + abs(fcx - fcy);
 
     // Position von Kind im Kind
-    int scx = (x - 2 * fcx) / 2;
-    int scy = (y - 2 * fcy) / 2;
-    int scz = (z - 2 * fcz) / 2;
+    IndexType scx = (x - 2 * fcx) / 2;
+    IndexType scy = (y - 2 * fcy) / 2;
+    IndexType scz = (z - 2 * fcz) / 2;
     // Index davon
-    int sci = scz * 4 + scy * 2 + abs(scx - scy);
+    IndexType sci = scz * 4 + scy * 2 + abs(scx - scy);
 
     // Position des Vertex
-    int vx = x - 2 * fcx - scx;
-    int vy = y - 2 * fcy - scy;
-    int vz = z - 2 * fcz - scz;
+    IndexType vx = x - 2 * fcx - scx;
+    IndexType vy = y - 2 * fcy - scy;
+    IndexType vz = z - 2 * fcz - scz;
     // Index davon
-    int vi = vz * 4 + vy * 2 + abs(vx - vy);
+    IndexType vi = vz * 4 + vy * 2 + abs(vx - vy);
 
     patch[i] = hexs[hexs[hexs[c].child(fci)].child(sci)].vertex(vi);
   }
@@ -1225,14 +1229,14 @@ HierarchicalMesh3d::ConstructQ4Patch(int c) const
 
 /*---------------------------------------------------*/
 
-int
-HierarchicalMesh3d::NodeOnFace(int e) const
+IndexType
+HierarchicalMesh3d::NodeOnFace(IndexType e) const
 {
   // only for real hanging nodes
-  int m = edge(e).master();
-  int im = edge(e).LocalMasterIndex();
-  int s = edge(e).slave();
-  int is = edge(e).LocalSlaveIndex();
+  IndexType m = edge(e).master();
+  IndexType im = edge(e).LocalMasterIndex();
+  IndexType s = edge(e).slave();
+  IndexType is = edge(e).LocalSlaveIndex();
 
   if (s < 0) {
     assert(hex(im).sleep());
@@ -1244,13 +1248,13 @@ HierarchicalMesh3d::NodeOnFace(int e) const
 
 /*------------------------------------------------------*/
 
-int
-HierarchicalMesh3d::neighbour(int c, int le) const
+IndexType
+HierarchicalMesh3d::neighbour(IndexType c, IndexType le) const
 {
   const Hex& Q = hex(c);
   const Edge& E = edge(Q.edge(le));
-  int m = E.master();
-  int nq = m;
+  IndexType m = E.master();
+  IndexType nq = m;
   if (m == c)
     nq = E.slave();
   return nq;
@@ -1258,14 +1262,14 @@ HierarchicalMesh3d::neighbour(int c, int le) const
 
 /*---------------------------------------------------*/
 
-int
-HierarchicalMesh3d::neighbour_neighbour(int c, int le) const
+IndexType
+HierarchicalMesh3d::neighbour_neighbour(IndexType c, IndexType le) const
 {
   assert(le < 6);
-  int n = neighbour(c, le);
+  IndexType n = neighbour(c, le);
   assert(n >= 0);
 
-  int nn = 0;
+  IndexType nn = 0;
   for (nn = 0; nn < 6; ++nn)
     if (c == neighbour(n, nn))
       break;
@@ -1312,16 +1316,16 @@ HierarchicalMesh3d::write_inp(const string& name) const
     abort();
   }
 
-  int nt = ncells() + nbquads();
+  IndexType nt = ncells() + nbquads();
   file << nnodes() << " " << nt << " " << 0 << " " << 0 << " " << 0 << endl;
 
-  for (int i = 0; i < nnodes(); i++)
+  for (IndexType i = 0; i < nnodes(); i++)
     file << i << " " << vertex3d(i) << " " << endl;
 
-  for (int i = 0; i < ncells(); i++) {
+  for (IndexType i = 0; i < ncells(); i++) {
     file << i << " " << 0 << " hex " << hex(i).vertex() << endl;
   }
-  for (int i = 0; i < nbquads(); i++) {
+  for (IndexType i = 0; i < nbquads(); i++) {
     file << i << " " << bquad(i).material() << " quad " << bquad(i).vertex()
          << endl;
   }
@@ -1342,26 +1346,26 @@ HierarchicalMesh3d::check_inp(const string& name)
   }
 
   bool first_one = 1;
-  int nv, nl, nq, nh, nt;
-  int n_unkonwn;
+  IndexType nv, nl, nq, nh, nt;
+  IndexType n_unkonwn;
   file >> nv >> nt >> n_unkonwn >> n_unkonwn >> n_unkonwn;
 
   Vertex3d c;
-  int ind;
-  for (int i = 0; i < nv; i++) {
+  IndexType ind;
+  for (IndexType i = 0; i < nv; i++) {
     file >> ind >> c;
   }
 
   nh = 0;
   nq = 0;
   nl = 0;
-  std::array<int, 8> ih;
-  std::array<int, 4> iq;
-  std::array<int, 2> il;
-  for (int i = 0; i < nt; i++) {
+  std::array<IndexType, 8> ih;
+  std::array<IndexType, 4> iq;
+  std::array<IndexType, 2> il;
+  for (IndexType i = 0; i < nt; i++) {
     string name;
     string mat;
-    int ii;
+    IndexType ii;
     file >> ii >> mat >> name;
     if (name == "hex") {
       file >> ih;
@@ -1408,9 +1412,9 @@ HierarchicalMesh3d::read_inp(const string& name)
   bool first_one = p.first;
   tint n = p.second;
 
-  int nl = n.first;
-  int nq = n.second;
-  int nh = n.third;
+  IndexType nl = n.first;
+  IndexType nq = n.second;
+  IndexType nh = n.third;
 
   ifstream file(name.c_str());
   if (!file.is_open()) {
@@ -1419,7 +1423,7 @@ HierarchicalMesh3d::read_inp(const string& name)
     abort();
   }
 
-  int nv, nt, n_unkonwn;
+  IndexType nv, nt, n_unkonwn;
 
   file >> nv >> nt >> n_unkonwn >> n_unkonwn >> n_unkonwn;
 
@@ -1436,25 +1440,25 @@ HierarchicalMesh3d::read_inp(const string& name)
   Bquads.resize(nq);
 
   Vertex3d c;
-  int ind;
-  for (int i = 0; i < nv; i++) {
+  IndexType ind;
+  for (IndexType i = 0; i < nv; i++) {
     file >> ind >> c;
     vertexs3d[i] = c;
   }
-  std::array<int, 8> ihv;
-  std::array<int, 4> iqv;
+  std::array<IndexType, 8> ihv;
+  std::array<IndexType, 4> iqv;
 
-  int ih = 0;
-  int iq = 0;
-  for (int i = 0; i < nt; i++) {
+  IndexType ih = 0;
+  IndexType iq = 0;
+  for (IndexType i = 0; i < nt; i++) {
     string name;
-    int unknown;
+    IndexType unknown;
     string matstring;
     file >> unknown >> matstring >> name;
     if (name == "hex") {
       file >> ihv;
       if (first_one)
-        for (int iii = 0; iii < 8; iii++)
+        for (IndexType iii = 0; iii < 8; iii++)
           ihv[iii]--;
       hexs[ih].vertex() = ihv;
       hexs[ih].material() = atoi(matstring.c_str());
@@ -1499,7 +1503,7 @@ HierarchicalMesh3d::read_inp(const string& name)
       v_orient.push_back(make_pair(v_zw, v_zw.norm()));
 
       std::sort(v_orient.begin(), v_orient.end(), sort_pred());
-      for (int i = 0; i < 3; i++) {
+      for (IndexType i = 0; i < 3; i++) {
         hexs[ih].basis_Vanka()[i] = v_orient[i].first;
       }
       /*----------------------------------------------*/
@@ -1507,7 +1511,7 @@ HierarchicalMesh3d::read_inp(const string& name)
     } else if (name == "quad") {
       file >> iqv;
       if (first_one)
-        for (int iii = 0; iii < 4; iii++)
+        for (IndexType iii = 0; iii < 4; iii++)
           iqv[iii]--;
 
       BoundaryQuad li;
@@ -1541,21 +1545,21 @@ HierarchicalMesh3d::write_gup(const string& bname) const
   out << dimension() << " dimension" << endl;
   out << nnodes() << " vertexs" << endl;
 
-  for (int i = 0; i < nnodes(); i++) {
+  for (IndexType i = 0; i < nnodes(); i++) {
     out << " " << vertex3d(i) << endl;
   }
   out << hexs.size() << " hexs" << endl;
-  for (int i = 0; i < hexs.size(); i++) {
+  for (IndexType i = 0; i < hexs.size(); i++) {
     out << hex(i);
   }
   out << QuadHang << endl;
   out << LineHang << endl;
   out << Bquads.size() << " boundaryquads" << endl;
-  for (int i = 0; i < Bquads.size(); i++) {
+  for (IndexType i = 0; i < Bquads.size(); i++) {
     out << Bquads[i].material() << " " << Bquads[i] << endl;
   }
   out << endl << edges.size() << " edges" << endl;
-  for (int i = 0; i < edges.size(); i++) {
+  for (IndexType i = 0; i < edges.size(); i++) {
     out << " " << edges[i];
   }
   out.close();
@@ -1567,7 +1571,7 @@ void
 HierarchicalMesh3d::write_gip(const string& bname) const
 {
   string name = bname;
-  int name_size = name.size();
+  IndexType name_size = name.size();
   if (name_size < 4)
     name += ".gip";
   if (name.substr(name_size - 4, 4) != ".gip") {
@@ -1577,33 +1581,33 @@ HierarchicalMesh3d::write_gip(const string& bname) const
   ofstream out(name.c_str(), ios_base::out | ios_base::binary);
 
   out.precision(16);
-  int dim = dimension(), n = nnodes(), sizeInt = sizeof(int);
+  IndexType dim = dimension(), n = nnodes(), sizeInt = sizeof(IndexType);
   out.write(reinterpret_cast<const char*>(&dim), sizeInt);
   out.write(reinterpret_cast<const char*>(&n), sizeInt);
 
-  for (int i = 0; i < nnodes(); i++) {
+  for (IndexType i = 0; i < nnodes(); i++) {
     ArrayBinWrite(out, vertex3d(i));
   }
 
-  int nhexs = hexs.size();
+  IndexType nhexs = hexs.size();
   out.write(reinterpret_cast<const char*>(&nhexs), sizeInt);
 
-  for (int i = 0; i < hexs.size(); i++) {
+  for (IndexType i = 0; i < hexs.size(); i++) {
     ArrayBinWrite(out, hex(i));
   }
 
   QuadHang.BinWrite(out);
   LineHang.BinWrite(out);
-  int nbquads = Bquads.size();
+  IndexType nbquads = Bquads.size();
   out.write(reinterpret_cast<const char*>(&nbquads), sizeInt);
-  for (int i = 0; i < Bquads.size(); i++) {
-    int mat = Bquads[i].material();
+  for (IndexType i = 0; i < Bquads.size(); i++) {
+    IndexType mat = Bquads[i].material();
     out.write(reinterpret_cast<const char*>(&mat), sizeInt);
     Bquads[i].BinWrite(out);
   }
-  int nedges = edges.size();
+  IndexType nedges = edges.size();
   out.write(reinterpret_cast<const char*>(&nedges), sizeInt);
-  for (int i = 0; i < edges.size(); i++) {
+  for (IndexType i = 0; i < edges.size(); i++) {
     edges[i].BinWrite(out);
   }
   out.close();
@@ -1625,8 +1629,8 @@ HierarchicalMesh3d::read_gup(const string& name)
   QuadHang.clear();
   LineHang.clear();
 
-  int n;
-  int dim;
+  IndexType n;
+  IndexType dim;
   file >> dim >> symbol >> n >> symbol;
 
   assert(dim == 3);
@@ -1639,7 +1643,7 @@ HierarchicalMesh3d::read_gup(const string& name)
 
   assert(symbol == "vertexs");
 
-  for (int i = 0; i < n; i++) {
+  for (IndexType i = 0; i < n; i++) {
     file >> vertexs3d[i];
   }
   if (_i_showoutput) {
@@ -1652,7 +1656,7 @@ HierarchicalMesh3d::read_gup(const string& name)
 
   hexs.reserve(n);
   hexs.resize(n);
-  for (int i = 0; i < hexs.size(); i++) {
+  for (IndexType i = 0; i < hexs.size(); i++) {
     file >> hexs[i];
   }
   if (_i_showoutput) {
@@ -1668,11 +1672,11 @@ HierarchicalMesh3d::read_gup(const string& name)
   }
 
   file >> n >> symbol;
-  int number = 0;
+  IndexType number = 0;
   assert(symbol == "boundaryquads");
 
   BoundaryQuad bol;
-  for (int i = 0; i < n; i++) {
+  for (IndexType i = 0; i < n; i++) {
     file >> bol.material() >> bol;
     Bquads.push_back(bol);
   }
@@ -1687,7 +1691,7 @@ HierarchicalMesh3d::read_gup(const string& name)
   }
   if (symbol == "edges") {
     Edge e;
-    for (int i = 0; i < n; i++) {
+    for (IndexType i = 0; i < n; i++) {
       file >> e;
       edges.push_back(e);
     }
@@ -1704,7 +1708,7 @@ void
 HierarchicalMesh3d::read_gip(const string& bname)
 {
   string name = bname;
-  int name_size = name.size();
+  IndexType name_size = name.size();
   if (name_size < 4)
     name += ".gip";
   if (name.substr(name_size - 4, 4) != ".gip") {
@@ -1725,7 +1729,7 @@ HierarchicalMesh3d::read_gip(const string& bname)
   QuadHang.clear();
   LineHang.clear();
 
-  int n, dim, sizeInt = sizeof(int);
+  IndexType n, dim, sizeInt = sizeof(IndexType);
   file.read(reinterpret_cast<char*>(&dim), sizeInt);
   file.read(reinterpret_cast<char*>(&n), sizeInt);
 
@@ -1737,7 +1741,7 @@ HierarchicalMesh3d::read_gip(const string& bname)
   vertexs3d.reserve(n);
   vertexs3d.resize(n);
 
-  for (int i = 0; i < n; i++) {
+  for (IndexType i = 0; i < n; i++) {
     ArrayBinRead(file, vertexs3d[i]);
   }
   if (_i_showoutput) {
@@ -1746,7 +1750,7 @@ HierarchicalMesh3d::read_gip(const string& bname)
   file.read(reinterpret_cast<char*>(&n), sizeInt);
   hexs.reserve(n);
   hexs.resize(n);
-  for (int i = 0; i < hexs.size(); i++) {
+  for (IndexType i = 0; i < hexs.size(); i++) {
     hexs[i].BinRead(file);
   }
   if (_i_showoutput) {
@@ -1761,9 +1765,9 @@ HierarchicalMesh3d::read_gip(const string& bname)
     cout << LineHang.size() << " linehangs, ";
   }
   file.read(reinterpret_cast<char*>(&n), sizeInt);
-  int number = 0;
+  IndexType number = 0;
   BoundaryQuad bol;
-  for (int i = 0; i < n; i++) {
+  for (IndexType i = 0; i < n; i++) {
     file.read(reinterpret_cast<char*>(&bol.material()), sizeInt);
     bol.BinRead(file);
     Bquads.push_back(bol);
@@ -1777,7 +1781,7 @@ HierarchicalMesh3d::read_gip(const string& bname)
     cout << n << " edges" << endl;
   }
   Edge e;
-  for (int i = 0; i < n; i++) {
+  for (IndexType i = 0; i < n; i++) {
     e.BinRead(file);
     edges.push_back(e);
   }
@@ -1789,20 +1793,20 @@ HierarchicalMesh3d::read_gip(const string& bname)
 
 /*---------------------------------------------------*/
 
-int
-HierarchicalMesh3d::regular_grid3d_one(IntSet& celllist,
-                                       IntVector& coarsesub,
-                                       const IntSet& CellRefList,
-                                       const IntSet& CellCoarseList)
+IndexType
+HierarchicalMesh3d::regular_grid3d_one(IndexSet& celllist,
+                                       IndexVector& coarsesub,
+                                       const IndexSet& CellRefList,
+                                       const IndexSet& CellCoarseList)
 {
   /* detects jump over two levels across LineHangs */
 
-  int n = 0;
+  IndexType n = 0;
   HangList<4>::const_iterator hp;
 
   for (hp = QuadHang.begin(); hp != QuadHang.end(); ++hp) {
-    int cr = hp->second.rneighbour();
-    int cn = hp->second.cneighbour();
+    IndexType cr = hp->second.rneighbour();
+    IndexType cn = hp->second.cneighbour();
 
     assert(cr >= 0);
 
@@ -1814,7 +1818,7 @@ HierarchicalMesh3d::regular_grid3d_one(IntSet& celllist,
       HexLaO.childs_of_global_face(f, hex(cr), hp->first);
 
       for (unsigned i = 0; i < f.size(); ++i) {
-        int c = f[i];
+        IndexType c = f[i];
 
         if ((CellRefList.find(c) != CellRefList.end()) || (hexs[c].sleep())) {
           if (CellCoarseList.find(cn) != CellCoarseList.end()) {
@@ -1843,26 +1847,26 @@ HierarchicalMesh3d::regular_grid3d_one(IntSet& celllist,
 
 /*---------------------------------------------------*/
 
-int
-HierarchicalMesh3d::regular_grid3d_one(IntVector& celllist,
-                                       IntVector& coarsesub,
-                                       const IntSet& CellRefList,
-                                       const IntSet& CellCoarseList)
+IndexType
+HierarchicalMesh3d::regular_grid3d_one(IndexVector& celllist,
+                                       IndexVector& coarsesub,
+                                       const IndexSet& CellRefList,
+                                       const IndexSet& CellCoarseList)
 {
-  IntSet h;
+  IndexSet h;
   Vec2Set(h, celllist);
-  int r = regular_grid3d_one(h, coarsesub, CellRefList, CellCoarseList);
+  IndexType r = regular_grid3d_one(h, coarsesub, CellRefList, CellCoarseList);
   Set2Vec(celllist, h);
   return r;
 
   /* detects jump over two levels across LineHangs */
 
-  // int n = 0;
+  // IndexType n = 0;
   HangList<4>::const_iterator hp;
 
   for (hp = QuadHang.begin(); hp != QuadHang.end(); ++hp) {
-    int cr = hp->second.rneighbour();
-    int cn = hp->second.cneighbour();
+    IndexType cr = hp->second.rneighbour();
+    IndexType cn = hp->second.cneighbour();
     assert(cr >= 0);
 
     if (cn != -1) {
@@ -1873,7 +1877,7 @@ HierarchicalMesh3d::regular_grid3d_one(IntVector& celllist,
       HexLaO.childs_of_global_face(f, hex(cr), hp->first);
 
       for (unsigned i = 0; i < f.size(); ++i) {
-        int c = f[i];
+        IndexType c = f[i];
 
         if ((CellRefList.find(c) != CellRefList.end()) || (hexs[c].sleep())) {
           if (CellCoarseList.find(cn) != CellCoarseList.end()) {
@@ -1881,8 +1885,8 @@ HierarchicalMesh3d::regular_grid3d_one(IntVector& celllist,
             break;
           } else {
             assert(!hex(cn).sleep());
-            int number = 0;
-            for (int kk = 0; kk < celllist.size(); kk++) {
+            IndexType number = 0;
+            for (IndexType kk = 0; kk < celllist.size(); kk++) {
               if (celllist[kk] == cn)
                 number++;
             }
@@ -1901,16 +1905,16 @@ HierarchicalMesh3d::regular_grid3d_one(IntVector& celllist,
 
 /*---------------------------------------------------*/
 
-int
-HierarchicalMesh3d::regular_grid3d_two(IntVector& celllist,
-                                       const IntSet& CellRefList)
+IndexType
+HierarchicalMesh3d::regular_grid3d_two(IndexVector& celllist,
+                                       const IndexSet& CellRefList)
 {
   /* detects more than 4 HangFaces on one Hex */
 
-  IntVector nh(hexs.size());
+  IndexVector nh(hexs.size());
   for (HangList<4>::const_iterator p = QuadHang.begin(); p != QuadHang.end();
        p++) {
-    int i = p->second.cneighbour();
+    IndexType i = p->second.cneighbour();
     if (i < 0)
       continue;
     if (hex(i).sleep())
@@ -1920,7 +1924,7 @@ HierarchicalMesh3d::regular_grid3d_two(IntVector& celllist,
 
     nh[i]++;
   }
-  for (int i = 0; i < hexs.size(); i++) {
+  for (IndexType i = 0; i < hexs.size(); i++) {
     if (nh[i] > 4) {
       // pair<IntSetIt,bool> pp = celllist.insert(i);
       // if(pp.second)  nto++;
@@ -1935,25 +1939,25 @@ HierarchicalMesh3d::regular_grid3d_two(IntVector& celllist,
 /*---------------------------------------------------*/
 
 void
-HierarchicalMesh3d::GetMinMaxLevels(IntVector& maxi,
-                                    IntVector& mini,
-                                    const IntSet& CellRef) const
+HierarchicalMesh3d::GetMinMaxLevels(IndexVector& maxi,
+                                    IndexVector& mini,
+                                    const IndexSet& CellRef) const
 {
   // set maximal levels for vertices
   //
   maxi.resize(nnodes());
   mini.resize(nnodes());
   mini = 1000;
-  for (int i = 0; i < hexs.size(); i++) {
+  for (IndexType i = 0; i < hexs.size(); i++) {
     const Hex& q = hex(i);
     if (q.sleep())
       continue;
 
-    int lev = q.level();
+    IndexType lev = q.level();
     if (CellRef.find(i) != CellRef.end())
       lev++;
-    for (int j = 0; j < 8; j++) {
-      int k = q[j];
+    for (IndexType j = 0; j < 8; j++) {
+      IndexType k = q[j];
       maxi[k] = std::max(maxi[k], lev);
       mini[k] = std::min(mini[k], lev);
     }
@@ -1962,29 +1966,29 @@ HierarchicalMesh3d::GetMinMaxLevels(IntVector& maxi,
 
 /*---------------------------------------------------*/
 
-int
-HierarchicalMesh3d::regular_grid3d_three_refine(IntSet& CellRef) const
+IndexType
+HierarchicalMesh3d::regular_grid3d_three_refine(IndexSet& CellRef) const
 {
-  IntVector maxlevel, minlevel;
+  IndexVector maxlevel, minlevel;
 
   GetMinMaxLevels(maxlevel, minlevel, CellRef);
 
-  set<int> cand;
-  for (int i = 0; i < nnodes(); i++) {
+  set<IndexType> cand;
+  for (IndexType i = 0; i < nnodes(); i++) {
     if (maxlevel[i] >= minlevel[i] + 2) {
       cand.insert(i);
     }
   }
 
-  int ref = 0;
-  for (int i = 0; i < hexs.size(); i++) {
+  IndexType ref = 0;
+  for (IndexType i = 0; i < hexs.size(); i++) {
     const Hex& q = hex(i);
     if (q.sleep())
       continue;
-    int lev = q.level();
-    for (int j = 0; j < 8; j++) {
-      int k = q[j];
-      set<int>::const_iterator p = cand.find(k);
+    IndexType lev = q.level();
+    for (IndexType j = 0; j < 8; j++) {
+      IndexType k = q[j];
+      set<IndexType>::const_iterator p = cand.find(k);
       if (p != cand.end()) {
         if (CellRef.find(i) == CellRef.end()) {
           if (maxlevel[k] >= lev + 2)
@@ -1999,40 +2003,40 @@ HierarchicalMesh3d::regular_grid3d_three_refine(IntSet& CellRef) const
 
 /*---------------------------------------------------*/
 
-int
-HierarchicalMesh3d::regular_grid3d_three_coarse(IntSet& CellRef,
-                                                IntSet& CellCoarse) const
+IndexType
+HierarchicalMesh3d::regular_grid3d_three_coarse(IndexSet& CellRef,
+                                                IndexSet& CellCoarse) const
 {
-  int maxl = 0;
-  vector<IntSet> LevelCellCoarse;
+  IndexType maxl = 0;
+  vector<IndexSet> LevelCellCoarse;
   {
-    IntSet::const_iterator p = CellCoarse.begin();
+    IndexSet::const_iterator p = CellCoarse.begin();
     for (; p != CellCoarse.end(); p++) {
       const Hex& q = hex(*p);
-      int lev = q.level();
+      IndexType lev = q.level();
       maxl = std::max(maxl, lev);
     }
     LevelCellCoarse.resize(maxl + 1);
     p = CellCoarse.begin();
     for (; p != CellCoarse.end(); p++) {
       const Hex& q = hex(*p);
-      int lev = q.level();
+      IndexType lev = q.level();
       LevelCellCoarse[lev].insert(*p);
     }
   }
-  int coarse = 0;
-  for (int i = maxl; i >= 0; i--) {
-    IntVector maxlevel, minlevel;
+  IndexType coarse = 0;
+  for (IndexType i = maxl; i >= 0; i--) {
+    IndexVector maxlevel, minlevel;
 
     GetMinMaxLevels(maxlevel, minlevel, CellRef);
 
-    IntSet coarsesub;
-    IntSet::const_iterator p = LevelCellCoarse[i].begin();
+    IndexSet coarsesub;
+    IndexSet::const_iterator p = LevelCellCoarse[i].begin();
     for (; p != LevelCellCoarse[i].end(); p++) {
       const Hex& q = hex(*p);
-      int lev = q.level();
-      for (int j = 0; j < 8; j++) {
-        int k = q[j];
+      IndexType lev = q.level();
+      for (IndexType j = 0; j < 8; j++) {
+        IndexType k = q[j];
         if (lev + 1 < maxlevel[k]) {
           coarsesub.insert(*p);
           continue;
@@ -2055,9 +2059,9 @@ HierarchicalMesh3d::regular_grid3d_three_coarse(IntSet& CellRef,
 void
 HierarchicalMesh3d::global_coarse3d()
 {
-  IntSet RefList, CoarseList;
+  IndexSet RefList, CoarseList;
 
-  for (int i = 0; i < hexs.size(); i++) {
+  for (IndexType i = 0; i < hexs.size(); i++) {
     const Hex& q = hexs[i];
     if (q.sleep())
       continue;
@@ -2078,14 +2082,14 @@ HierarchicalMesh3d::global_coarse3d()
 /*---------------------------------------------------*/
 
 void
-HierarchicalMesh3d::LoadFathers3d(IntVector& v) const
+HierarchicalMesh3d::LoadFathers3d(IndexVector& v) const
 {
-  IntSet fathers;
+  IndexSet fathers;
 
-  for (int i = 0; i < v.size(); i++) {
+  for (IndexType i = 0; i < v.size(); i++) {
     if (hex(v[i]).level() == 0)
       continue;
-    int f = hex(v[i]).father();
+    IndexType f = hex(v[i]).father();
 
     assert(f >= 0);
 
@@ -2097,17 +2101,17 @@ HierarchicalMesh3d::LoadFathers3d(IntVector& v) const
 /*---------------------------------------------------*/
 
 void
-HierarchicalMesh3d::FillVertexLevels(IntVector& dst) const
+HierarchicalMesh3d::FillVertexLevels(IndexVector& dst) const
 {
   dst.resize(nnodes(), 100);
-  for (int i = 0; i < ncells(); i++) {
+  for (IndexType i = 0; i < ncells(); i++) {
     const Hex& Q = hexs[i];
     if (Q.sleep())
       continue;
 
-    int level = Q.level();
-    for (int j = 0; j < 8; j++) {
-      int k = Q[j];
+    IndexType level = Q.level();
+    for (IndexType j = 0; j < 8; j++) {
+      IndexType k = Q[j];
       dst[k] = std::min(dst[k], level);
     }
   }
@@ -2116,37 +2120,37 @@ HierarchicalMesh3d::FillVertexLevels(IntVector& dst) const
 /*---------------------------------------------------*/
 
 void
-HierarchicalMesh3d::RefineCoarseNodes(IntSet& dst,
-                                      const IntVector& refnodes,
-                                      const IntVector& vertexlevel) const
+HierarchicalMesh3d::RefineCoarseNodes(IndexSet& dst,
+                                      const IndexVector& refnodes,
+                                      const IndexVector& vertexlevel) const
 {
-  IntSet h;
+  IndexSet h;
 
   Vec2Set(h, refnodes);
 
   dst.clear();
-  for (int i = 0; i < ncells(); i++) {
+  for (IndexType i = 0; i < ncells(); i++) {
     const Hex& Q = hexs[i];
     if (Q.sleep())
       continue;
 
-    int f = Q.father();
+    IndexType f = Q.father();
     if (f < 0)
       continue;
 
     const Hex& QF = hexs[f];
 
-    for (int j = 0; j < 8; j++) {
-      int k = Q[j];
+    for (IndexType j = 0; j < 8; j++) {
+      IndexType k = Q[j];
       if (h.find(k) == h.end())
         continue;
 
-      int minlevel = vertexlevel[QF[0]];
-      for (int v = 1; v < 8; v++) {
+      IndexType minlevel = vertexlevel[QF[0]];
+      for (IndexType v = 1; v < 8; v++) {
         minlevel = std::min(minlevel, vertexlevel[QF[v]]);
       }
-      for (int v = 0; v < 8; v++) {
-        int w = QF[v];
+      for (IndexType v = 0; v < 8; v++) {
+        IndexType w = QF[v];
         assert(w < vertexlevel.size());
         if (vertexlevel[w] == minlevel) {
           dst.insert(w);
@@ -2159,17 +2163,17 @@ HierarchicalMesh3d::RefineCoarseNodes(IntSet& dst,
 /*---------------------------------------------------*/
 
 void
-HierarchicalMesh3d::VertexToCells(IntVector& dst,
-                                  const IntSet& src,
-                                  const IntVector& vertexlevel) const
+HierarchicalMesh3d::VertexToCells(IndexVector& dst,
+                                  const IndexSet& src,
+                                  const IndexVector& vertexlevel) const
 {
-  for (int i = 0; i < ncells(); i++) {
+  for (IndexType i = 0; i < ncells(); i++) {
     const Hex& Q = hexs[i];
     if (Q.sleep())
       continue;
-    int level = Q.level();
-    for (int j = 0; j < 8; j++) {
-      int k = Q[j];
+    IndexType level = Q.level();
+    for (IndexType j = 0; j < 8; j++) {
+      IndexType k = Q[j];
       if (vertexlevel[k] == level) {
         if (src.find(k) != src.end()) {
           dst.push_back(i);
@@ -2182,18 +2186,19 @@ HierarchicalMesh3d::VertexToCells(IntVector& dst,
 /*---------------------------------------------------*/
 
 void
-HierarchicalMesh3d::VertexToCellsCoarsening(IntVector& dst,
-                                            const IntSet& src,
-                                            const IntVector& vertexlevel) const
+HierarchicalMesh3d::VertexToCellsCoarsening(
+  IndexVector& dst,
+  const IndexSet& src,
+  const IndexVector& vertexlevel) const
 {
-  for (int i = 0; i < ncells(); i++) {
+  for (IndexType i = 0; i < ncells(); i++) {
     const Hex& Q = hexs[i];
     if (Q.sleep())
       continue;
-    int level = Q.level();
-    int count = 0;
-    for (int j = 0; j < 8; j++) {
-      int k = Q[j];
+    IndexType level = Q.level();
+    IndexType count = 0;
+    for (IndexType j = 0; j < 8; j++) {
+      IndexType k = Q[j];
       if (vertexlevel[k] == level) {
         if (src.find(k) != src.end()) {
           count++;
@@ -2209,13 +2214,15 @@ HierarchicalMesh3d::VertexToCellsCoarsening(IntVector& dst,
 /*---------------------------------------------------*/
 
 void
-HierarchicalMesh3d::recursive_childs(int q, IntVector& ref, int d) const
+HierarchicalMesh3d::recursive_childs(IndexType q,
+                                     IndexVector& ref,
+                                     IndexType d) const
 {
   if (d > 0) {
     const Hex& Q = hex(q);
     assert(Q.sleep());
-    for (int j = 0; j < 8; j++) {
-      int child = Q.child(j);
+    for (IndexType j = 0; j < 8; j++) {
+      IndexType child = Q.child(j);
       recursive_childs(child, ref, d - 1);
     }
   } else {
@@ -2226,9 +2233,10 @@ HierarchicalMesh3d::recursive_childs(int q, IntVector& ref, int d) const
 /*---------------------------------------------------*/
 
 void
-HierarchicalMesh3d::patch_refine(IntVector& cell_ref, IntVector& cell_coarse)
+HierarchicalMesh3d::patch_refine(IndexVector& cell_ref,
+                                 IndexVector& cell_coarse)
 {
-  for (int i = 0; i < pdepth; i++) {
+  for (IndexType i = 0; i < pdepth; i++) {
     LoadFathers3d(cell_ref);
     LoadFathers3d(cell_coarse);
   }
@@ -2240,12 +2248,12 @@ HierarchicalMesh3d::patch_refine(IntVector& cell_ref, IntVector& cell_coarse)
   CM.GetRefinedList(cell_ref);
   CM.GetCoarsedList(cell_coarse);
 
-  IntVector ref(0), coarse(0);
+  IndexVector ref(0), coarse(0);
 
-  for (int i = 0; i < cell_ref.size(); i++) {
+  for (IndexType i = 0; i < cell_ref.size(); i++) {
     recursive_childs(cell_ref[i], ref, pdepth);
   }
-  for (int i = 0; i < cell_coarse.size(); i++) {
+  for (IndexType i = 0; i < cell_coarse.size(); i++) {
     recursive_childs(cell_coarse[i], coarse, pdepth + 1);
   }
   refine(ref, coarse);
@@ -2254,20 +2262,20 @@ HierarchicalMesh3d::patch_refine(IntVector& cell_ref, IntVector& cell_coarse)
 /*---------------------------------------------------*/
 
 void
-HierarchicalMesh3d::refine(const IntVector& cell_ref,
-                           const IntVector& cell_coarse)
+HierarchicalMesh3d::refine(const IndexVector& cell_ref,
+                           const IndexVector& cell_coarse)
 {
-  IntSet CellRefList, CellCoarseList;
+  IndexSet CellRefList, CellCoarseList;
   _refine3d(CellRefList, CellCoarseList, cell_ref, cell_coarse);
 }
 
 /*---------------------------------------------------*/
 
 void
-HierarchicalMesh3d::_refine3d(IntSet& CellRefList,
-                              IntSet& CellCoarseList,
-                              const IntVector& cell_ref,
-                              const IntVector& cell_coarse)
+HierarchicalMesh3d::_refine3d(IndexSet& CellRefList,
+                              IndexSet& CellCoarseList,
+                              const IndexVector& cell_ref,
+                              const IndexVector& cell_coarse)
 {
   prepare3d(cell_ref, cell_coarse, CellRefList, CellCoarseList);
 
@@ -2288,10 +2296,10 @@ HierarchicalMesh3d::_refine3d(IntSet& CellRefList,
 /*---------------------------------------------------*/
 
 void
-HierarchicalMesh3d::delete_vertexs3d(const IntVector& vo2n)
+HierarchicalMesh3d::delete_vertexs3d(const IndexVector& vo2n)
 {
   for (unsigned oi = 0; oi < vo2n.size(); ++oi) {
-    int ni = vo2n[oi];
+    IndexType ni = vo2n[oi];
     if (ni >= 0) {
       vertexs3d[ni] = vertexs3d[oi];
     }
@@ -2305,7 +2313,7 @@ HierarchicalMesh3d::post_refine3d()
 {
   // check_mesh3d();
   mnlevels = 0;
-  for (int i = 0; i < hexs.size(); i++) {
+  for (IndexType i = 0; i < hexs.size(); i++) {
     mnlevels = std::max(mnlevels, hexs[i].level());
   }
 }
@@ -2313,7 +2321,7 @@ HierarchicalMesh3d::post_refine3d()
 /*---------------------------------------------------*/
 
 void
-HierarchicalMesh3d::new_edge_vertex3d(int nv, const EdgeVector& v)
+HierarchicalMesh3d::new_edge_vertex3d(IndexType nv, const EdgeVector& v)
 {
   vertexs3d[nv].equ(0.5, vertexs3d[v[0]], 0.5, vertexs3d[v[1]]);
 }
@@ -2321,7 +2329,7 @@ HierarchicalMesh3d::new_edge_vertex3d(int nv, const EdgeVector& v)
 /*---------------------------------------------------*/
 
 void
-HierarchicalMesh3d::new_face_vertex3d(int nv, const FaceVector& v)
+HierarchicalMesh3d::new_face_vertex3d(IndexType nv, const FaceVector& v)
 {
   vertexs3d[nv].equ(0.25,
                     vertexs3d[v[0]],
@@ -2336,7 +2344,8 @@ HierarchicalMesh3d::new_face_vertex3d(int nv, const FaceVector& v)
 /*---------------------------------------------------*/
 
 void
-HierarchicalMesh3d::new_vertex3d(int nv, const std::array<int, 6>& v)
+HierarchicalMesh3d::new_vertex3d(IndexType nv,
+                                 const std::array<IndexType, 6>& v)
 {
   cout << "@ " << vertexs3d[nv] << "\t";
   double d = 1. / 6.;
@@ -2363,14 +2372,14 @@ HierarchicalMesh3d::check_mesh3d() const
 
   // check quads
 
-  int cmin = 0, cmax = hexs.size();
-  int vmin = 0, vmax = nnodes();
+  IndexType cmin = 0, cmax = hexs.size();
+  IndexType vmin = 0, vmax = nnodes();
 
   for (vector<Hex>::const_iterator p = hexs.begin(); p != hexs.end(); p++) {
     const Hex& q = *p;
 
     // check vertex id
-    for (int i = 0; i < q.nvertexs(); i++) {
+    for (IndexType i = 0; i < q.nvertexs(); i++) {
       if ((q.vertex(i) < vmin) || (q.vertex(i) > vmax)) {
         cerr << "Vertex invalid in Cell: " << *p << " : ";
         cerr << q.vertex(i) << endl;
@@ -2378,7 +2387,7 @@ HierarchicalMesh3d::check_mesh3d() const
       }
     }
     // check child id
-    for (int i = 0; i < q.nchilds(); i++) {
+    for (IndexType i = 0; i < q.nchilds(); i++) {
       if ((q.child(i) < cmin) || (q.child(i) > cmax)) {
         cerr << "Chid invalid in Cell: " << *p << " : ";
         cerr << q.child(i) << endl;
@@ -2390,7 +2399,7 @@ HierarchicalMesh3d::check_mesh3d() const
   // check quadhang
   for (HangList<4>::const_iterator hp = QuadHang.begin(); hp != QuadHang.end();
        ++hp) {
-    int cr = hp->second.rneighbour();
+    IndexType cr = hp->second.rneighbour();
     if (cr == -1) {
       cerr << "Refine Neighbour invalid in hang: ";
       // cerr << *hp << endl;

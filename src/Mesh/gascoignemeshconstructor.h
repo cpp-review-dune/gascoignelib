@@ -40,7 +40,7 @@ typedef std::map<int, int> IntMap;
 class GascoigneMeshConstructor
 {
 private:
-  IntVector _cl2g, _pl2g;
+  IndexVector _cl2g, _pl2g;
   IntMap _cg2l;
 
 protected:
@@ -58,11 +58,11 @@ protected:
   virtual void Construct3d(GascoigneMesh* NM, const LevelMesh3d* LM) const;
 
   virtual LevelMesh2d* LevelUpdate2d(GascoigneMesh* GM,
-                                     const IntSet& newquads,
-                                     const IntSet& oldquads) const;
+                                     const IndexSet& newquads,
+                                     const IndexSet& oldquads) const;
   virtual LevelMesh3d* LevelUpdate3d(GascoigneMesh* GM,
-                                     const IntSet& newquads,
-                                     const IntSet& oldquads) const;
+                                     const IndexSet& newquads,
+                                     const IndexSet& oldquads) const;
   virtual void Loop2d();
   virtual void Loop3d();
 
@@ -72,8 +72,8 @@ public:
   virtual ~GascoigneMeshConstructor() {}
 
   virtual void BasicInit();
-  const IntVector& Patchl2g() const { return _pl2g; }
-  const IntVector& Celll2g() const { return _cl2g; }
+  const IndexVector& Patchl2g() const { return _pl2g; }
+  const IndexVector& Celll2g() const { return _cl2g; }
   const IntMap& Cellg2l() const { return _cg2l; }
 };
 } // namespace Gascoigne

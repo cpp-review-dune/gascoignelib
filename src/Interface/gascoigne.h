@@ -73,6 +73,9 @@ typedef std::map<std::string, FemFunction> FemData;
 typedef nvector<double> CellFunction;
 typedef std::map<std::string, CellFunction> CellData;
 
+typedef std::array<IndexType, 2> EdgeVector;
+typedef std::array<IndexType, 4> FaceVector;
+
 #define BASE_CLONEABLE(Type) virtual Type* createNew() const = 0;
 
 #define CLONEABLE(Type)                                                        \

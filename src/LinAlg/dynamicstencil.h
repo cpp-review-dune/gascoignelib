@@ -36,32 +36,32 @@ namespace Gascoigne {
 class DynamicStencil : public StencilInterface
 {
 protected:
-  typedef std::list<int>::const_iterator const_citerator;
-  typedef std::list<int>::iterator citerator;
+  typedef std::list<IndexType>::const_iterator const_citerator;
+  typedef std::list<IndexType>::iterator citerator;
 
   // the column for every entry in the row
 
 public:
-  std::vector<std::list<int>> cols;
+  std::vector<std::list<IndexType>> cols;
 
   IndexType n() const { return cols.size(); }
 
-  const_citerator cstart(int i) const
+  const_citerator cstart(IndexType i) const
   {
     assert(i < n());
     return cols[i].begin();
   }
-  const_citerator cstop(int i) const
+  const_citerator cstop(IndexType i) const
   {
     assert(i < n());
     return cols[i].end();
   }
-  citerator cstart(int i)
+  citerator cstart(IndexType i)
   {
     assert(i < n());
     return cols[i].begin();
   }
-  citerator cstop(int i)
+  citerator cstop(IndexType i)
   {
     assert(i < n());
     return cols[i].end();

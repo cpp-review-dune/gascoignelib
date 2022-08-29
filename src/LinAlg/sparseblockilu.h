@@ -36,7 +36,7 @@ class SparseBlockIlu
   , public SparseBlockMatrix<B>
 {
 protected:
-  nvector<int> p, q;
+  nvector<IndexType> p, q;
   GlobalVector* yp;
 
   void backward() const;
@@ -45,19 +45,19 @@ protected:
   virtual void her(GlobalVector& x) const;
 
   IndexType n() const { return SparseBlockMatrix<B>::US.n(); };
-  const IndexType& start(int i) const
+  const IndexType& start(IndexType i) const
   {
     return SparseBlockMatrix<B>::US.start(i);
   };
-  const IndexType& stop(int i) const
+  const IndexType& stop(IndexType i) const
   {
     return SparseBlockMatrix<B>::US.stop(i);
   };
-  const IndexType& col(int pos) const
+  const IndexType& col(IndexType pos) const
   {
     return SparseBlockMatrix<B>::US.col(pos);
   };
-  const IndexType& diag(int i) const
+  const IndexType& diag(IndexType i) const
   {
     return SparseBlockMatrix<B>::US.diag(i);
   };
@@ -69,19 +69,20 @@ public:
 
   std::string GetName() const { return "SparseBlockIlu"; }
 
-  void dirichletILU(int i, const std::vector<int>& cv);
+  void dirichletILU(IndexType i, const std::vector<IndexType>& cv);
 
-  nvector<int>& GetP() { return p; }
-  nvector<int>& GetQ() { return q; }
-  const nvector<int>& GetP() const { return p; }
-  const nvector<int>& GetQ() const { return q; }
+  nvector<IndexType>& GetP() { return p; }
+  nvector<IndexType>& GetQ() { return q; }
+  const nvector<IndexType>& GetP() const { return p; }
+  const nvector<IndexType>& GetQ() const { return q; }
 
-  void modify(int c, double s);
+  void modify(IndexType c, double s);
   void zero() { SparseBlockMatrix<B>::zero(); }
 
   void compute_ilu();
   void ReInit(const SparseStructureInterface* SI);
-  void ConstructStructure(const nvector<int>& perm, const MatrixInterface& A);
+  void ConstructStructure(const nvector<IndexType>& perm,
+                          const MatrixInterface& A);
 
   void copy_entries(const MatrixInterface& A);
 

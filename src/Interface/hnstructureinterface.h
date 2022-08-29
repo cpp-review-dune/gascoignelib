@@ -54,7 +54,7 @@ public:
   virtual ~HNStructureInterface() {}
 
   virtual void ReInit(const GascoigneMesh* m) = 0;
-  virtual void MatrixDiag(int ncomp, MatrixInterface& A) const = 0;
+  virtual void MatrixDiag(ShortIndexType ncomp, MatrixInterface& A) const = 0;
   virtual void SparseStructureDiag(SparseStructure* S) const = 0;
 
   virtual void CondenseHanging(IndexVector& indices) const = 0;

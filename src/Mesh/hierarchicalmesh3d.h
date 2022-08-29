@@ -57,7 +57,7 @@ protected:
   typedef HangList<2> LineHangList;
   typedef HangList<4> QuadHangList;
   typedef BoundaryFunction<3> BoundaryFunction3d;
-  typedef std::map<int, std::array<int, 8>> HexChilds;
+  typedef std::map<IndexType, std::array<IndexType, 8>> HexChilds;
 
   /*  Data  */
 
@@ -72,91 +72,100 @@ protected:
   LineHangList LineHang;
   QuadHangList QuadHang;
   HexLawAndOrder HexLaO;
-  std::map<int, int> hexofcurved;
+  std::map<IndexType, IndexType> hexofcurved;
 
   /*  Functionen  */
-  int Vater(const int i) const;
-  IntVector Nachkommen(const int i) const;
-  IntVector Geschwister(const int i) const;
-  IntVector Kinder(const int i) const;
+  IndexType Vater(const IndexType i) const;
+  IndexVector Nachkommen(const IndexType i) const;
+  IndexVector Geschwister(const IndexType i) const;
+  IndexVector Kinder(const IndexType i) const;
 
   void post_refine3d();
 
-  void delete_vertexs3d(const IntVector&);
+  void delete_vertexs3d(const IndexVector&);
 
-  void new_edge_vertex3d(int, const EdgeVector&);
-  void new_face_vertex3d(int, const FaceVector&);
-  void new_vertex3d(int, const std::array<int, 6>&);
+  void new_edge_vertex3d(IndexType, const EdgeVector&);
+  void new_face_vertex3d(IndexType, const FaceVector&);
+  void new_vertex3d(IndexType, const std::array<IndexType, 6>&);
 
   void check_mesh3d() const;
 
   std::pair<bool, tint> check_inp(const std::string&);
-  std::pair<int, int> GetBoundaryInformation(int i) const;
+  std::pair<IndexType, IndexType> GetBoundaryInformation(IndexType i) const;
 
   void init_quad(BoundaryQuad&);
 
   void build_neighbours() const;
 
-  void prepare3d(const IntVector&, const IntVector&, IntSet&, IntSet&);
+  void prepare3d(const IndexVector&, const IndexVector&, IndexSet&, IndexSet&);
   void new_hexs(const HangContainer3d&,
-                const IntVector&,
-                const IntVector&,
-                int,
-                const IntSet&);
+                const IndexVector&,
+                const IndexVector&,
+                IndexType,
+                const IndexSet&);
   void ghost_fill_neighbours2d();
   void ghost_fill_neighbours3d();
   void UpdateHangs(HangContainer3d& hangset,
-                   const IntSet& cellref,
-                   const IntSet& cellcoarse);
-  void FaceCoarse(HangContainer3d&, const IntSet&) const;
-  void FaceRefine(HangContainer3d&, const IntSet&) const;
+                   const IndexSet& cellref,
+                   const IndexSet& cellcoarse);
+  void FaceCoarse(HangContainer3d&, const IndexSet&) const;
+  void FaceRefine(HangContainer3d&, const IndexSet&) const;
   void UpdateHangingEdges(HangContainer3d& hangset,
-                          const IntSet& cellref,
-                          const IntSet& cellcoarse) const;
-  void boundary_prepare3d(IntSet&, IntSet&, IntSet&, const HangContainer3d&);
-  void new_boundary3d(IntSet&, IntSet&, IntSet&);
-  void new_vertexs3d(HangContainer3d&, const IntVector&, const IntSet&);
-  void basic_refine3d(HangContainer3d&, const IntSet&, const IntSet&);
+                          const IndexSet& cellref,
+                          const IndexSet& cellcoarse) const;
+  void boundary_prepare3d(IndexSet&,
+                          IndexSet&,
+                          IndexSet&,
+                          const HangContainer3d&);
+  void new_boundary3d(IndexSet&, IndexSet&, IndexSet&);
+  void new_vertexs3d(HangContainer3d&, const IndexVector&, const IndexSet&);
+  void basic_refine3d(HangContainer3d&, const IndexSet&, const IndexSet&);
   void basic_fill_neighbours3d();
-  virtual void boundary_newton3d(IntSet&);
-  virtual void inner_vertex_newton3d(const IntVector&,
-                                     const IntSet&,
-                                     const IntSet&);
-  void update_boundary_data3d(const IntSet&);
-  void new_bquads(const IntVector&, const IntVector&, const IntSet&);
-  void new_middle_vertex3d(int, int);
+  virtual void boundary_newton3d(IndexSet&);
+  virtual void inner_vertex_newton3d(const IndexVector&,
+                                     const IndexSet&,
+                                     const IndexSet&);
+  void update_boundary_data3d(const IndexSet&);
+  void new_bquads(const IndexVector&, const IndexVector&, const IndexSet&);
+  void new_middle_vertex3d(IndexType, IndexType);
 
-  int regular_grid3d_one(IntSet&, IntVector&, const IntSet&, const IntSet&);
-  int regular_grid3d_one(IntVector&, IntVector&, const IntSet&, const IntSet&);
-  int regular_grid3d_two(IntVector&, const IntSet&);
-  int regular_grid3d_three_refine(IntSet&) const;
-  int regular_grid3d_three_coarse(IntSet&, IntSet&) const;
+  IndexType regular_grid3d_one(IndexSet&,
+                               IndexVector&,
+                               const IndexSet&,
+                               const IndexSet&);
+  IndexType regular_grid3d_one(IndexVector&,
+                               IndexVector&,
+                               const IndexSet&,
+                               const IndexSet&);
+  IndexType regular_grid3d_two(IndexVector&, const IndexSet&);
+  IndexType regular_grid3d_three_refine(IndexSet&) const;
+  IndexType regular_grid3d_three_coarse(IndexSet&, IndexSet&) const;
 
-  void GetMinMaxLevels(IntVector& maxi,
-                       IntVector& mini,
-                       const IntSet& CellRef) const;
+  void GetMinMaxLevels(IndexVector& maxi,
+                       IndexVector& mini,
+                       const IndexSet& CellRef) const;
 
   void init_edges3d();
-  void LoadFathers3d(IntVector& v) const;
+  void LoadFathers3d(IndexVector& v) const;
 
-  void _refine3d(IntSet&, IntSet&, const IntVector&, const IntVector&);
+  void _refine3d(IndexSet&, IndexSet&, const IndexVector&, const IndexVector&);
   void FillNeighbourFaces(const Hex& father,
                           const FaceVector& Face,
-                          int rneigh);
-  void FillNeighbourFaces(int M, int S, const FaceVector& Face);
+                          IndexType rneigh);
+  void FillNeighbourFaces(IndexType M, IndexType S, const FaceVector& Face);
   void InitHexOfCurved();
-  int FindPatchDepth() const;
-  void FillVertexLevels(IntVector& dst) const;
-  void RefineCoarseNodes(IntSet& dst,
-                         const IntVector& refnodes,
-                         const IntVector& vertexlevel) const;
-  void VertexToCells(IntVector& dst,
-                     const IntSet& src,
-                     const IntVector& vertexlevel) const;
-  void VertexToCellsCoarsening(IntVector& dst,
-                               const IntSet& src,
-                               const IntVector& vertexlevel) const;
-  void recursive_childs(int q, IntVector& ref, int d) const;
+  IndexType FindPatchDepth() const;
+  void FillVertexLevels(IndexVector& dst) const;
+  void RefineCoarseNodes(IndexSet& dst,
+                         const IndexVector& refnodes,
+                         const IndexVector& vertexlevel) const;
+  void VertexToCells(IndexVector& dst,
+                     const IndexSet& src,
+                     const IndexVector& vertexlevel) const;
+  void VertexToCellsCoarsening(IndexVector& dst,
+                               const IndexSet& src,
+                               const IndexVector& vertexlevel) const;
+  void recursive_childs(IndexType q, IndexVector& ref, IndexType d) const;
 
   struct sort_pred
   {
@@ -178,14 +187,14 @@ public:
 
   /*  Zugriff  */
 
-  int dimension() const { return 3; }
+  IndexType dimension() const { return 3; }
 
-  int nnodes() const { return vertexs3d.size(); }
-  int ncells() const { return hexs.size(); }
-  int nbquads() const { return Bquads.size(); }
+  IndexType nnodes() const { return vertexs3d.size(); }
+  IndexType ncells() const { return hexs.size(); }
+  IndexType nbquads() const { return Bquads.size(); }
 
-  int nodes_per_cell(int i) const { return 8; }
-  int VtkType(int i) const { return 12; }
+  IndexType nodes_per_cell(IndexType i) const { return 8; }
+  IndexType VtkType(IndexType i) const { return 12; }
 
   const CurvedShapes<3>& GetCurvedShapes() const { return _curvedshapes; }
   CurvedShapes<3>& GetCurvedShapes() { return _curvedshapes; }
@@ -193,24 +202,33 @@ public:
   const VertexVec3d& GetVertexVector() const { return vertexs3d; }
   VertexVec3d& GetVertexVector() { return vertexs3d; }
 
-  const Vertex3d& vertex3d(int i) const { return vertexs3d[i]; }
+  const Vertex3d& vertex3d(IndexType i) const { return vertexs3d[i]; }
 
-  const Hex& hex(int i) const { return hexs[i]; }
-  const BoundaryQuad& bquad(int i) const { return Bquads[i]; }
+  const Hex& hex(IndexType i) const { return hexs[i]; }
+  const BoundaryQuad& bquad(IndexType i) const { return Bquads[i]; }
 
-  int vertex_of_cell(int i, int ii) const { return hexs[i].vertex(ii); }
-  int vertex_of_bquad(int i, int ii) const { return Bquads[i].vertex(ii); }
-  int face_of_hex(int i, int ii) const { return hexs[i].edge(ii); }
-  int level(int i) const { return hexs[i].level(); }
-  bool sleep(int i) const { return hexs[i].sleep(); }
+  IndexType vertex_of_cell(IndexType i, IndexType ii) const
+  {
+    return hexs[i].vertex(ii);
+  }
+  IndexType vertex_of_bquad(IndexType i, IndexType ii) const
+  {
+    return Bquads[i].vertex(ii);
+  }
+  IndexType face_of_hex(IndexType i, IndexType ii) const
+  {
+    return hexs[i].edge(ii);
+  }
+  IndexType level(IndexType i) const { return hexs[i].level(); }
+  bool sleep(IndexType i) const { return hexs[i].sleep(); }
 
-  int child(int i, int ii) const { return hexs[i].child(ii); }
-  int nchilds(int i) const { return hexs[i].nchilds(); }
+  IndexType child(IndexType i, IndexType ii) const { return hexs[i].child(ii); }
+  IndexType nchilds(IndexType i) const { return hexs[i].nchilds(); }
 
   const HexLawAndOrder& HexLawOrder() const { return HexLaO; }
   const LineHangList& linehang() const { return LineHang; }
   const QuadHangList& quadhanglist() const { return QuadHang; }
-  const BoundaryFunction3d* quad_shape(int i) const;
+  const BoundaryFunction3d* quad_shape(IndexType i) const;
 
   const std::vector<BoundaryQuad>& quad_list() const { return Bquads; }
 
@@ -218,7 +236,10 @@ public:
   const HexVec& hex() const { return hexs; }
   const BQuadVec& bquad() const { return Bquads; }
   const QuadHangList& quadhang() const { return QuadHang; }
-  const std::map<int, int>& GetHexOfCurved() const { return hexofcurved; }
+  const std::map<IndexType, IndexType>& GetHexOfCurved() const
+  {
+    return hexofcurved;
+  }
 
   /*  Functionen  */
 
@@ -235,39 +256,39 @@ public:
 
   void global_coarse3d();
 
-  void refine(const IntVector&, const IntVector&);
-  void patch_refine(IntVector&, IntVector&);
-  //  int    smooth_edges();
+  void refine(const IndexVector&, const IndexVector&);
+  void patch_refine(IndexVector&, IndexVector&);
+  //  IndexType    smooth_edges();
   void FillAllBoundaryLines();
 
-  pint EdgeNeighbour(int i, int e) const;
+  pint EdgeNeighbour(IndexType i, IndexType e) const;
 
-  int NodeOnFace(int e) const;
-  std::array<int, 4> ChildrenOfFace(int e) const;
+  IndexType NodeOnFace(IndexType e) const;
+  std::array<IndexType, 4> ChildrenOfFace(IndexType e) const;
 
-  void GetVertexesOfFace(std::array<int, 4>&, int) const;
-  void GetVertexesOfFace(std::array<int, 5>&, int) const;
-  void GetAwakePatchs(std::set<int>&) const;
-  void GetAwakeCells(std::set<int>&) const;
-  void ConstructQ2PatchMesh(IntVector& pm) const;
-  IntVector ConstructQ4Patch(int c) const;
-  std::set<int> GetColors() const;
+  void GetVertexesOfFace(std::array<IndexType, 4>&, IndexType) const;
+  void GetVertexesOfFace(std::array<IndexType, 5>&, IndexType) const;
+  void GetAwakePatchs(std::set<IndexType>&) const;
+  void GetAwakeCells(std::set<IndexType>&) const;
+  void ConstructQ2PatchMesh(IndexVector& pm) const;
+  IndexVector ConstructQ4Patch(IndexType c) const;
+  std::set<IndexType> GetColors() const;
 
-  int nactivedescendants(int i) const;
-  IntVector GetVertices(int c) const;
+  IndexType nactivedescendants(IndexType i) const;
+  IndexVector GetVertices(IndexType c) const;
 
-  int GetBoundaryCellOfCurved(int iq) const
+  IndexType GetBoundaryCellOfCurved(IndexType iq) const
   {
-    std::map<int, int>::const_iterator p = hexofcurved.find(iq);
+    std::map<IndexType, IndexType>::const_iterator p = hexofcurved.find(iq);
     if (p != hexofcurved.end())
       return p->second;
     return -1;
   }
   void Testing();
-  int neighbour(int c, int le) const;
-  int neighbour_neighbour(int c, int le) const;
+  IndexType neighbour(IndexType c, IndexType le) const;
+  IndexType neighbour_neighbour(IndexType c, IndexType le) const;
 
-  void AddShape(int col, BoundaryFunction<3>* f)
+  void AddShape(IndexType col, BoundaryFunction<3>* f)
   {
     GetCurvedShapes().AddShape(col, f);
   }
@@ -276,22 +297,22 @@ public:
     abort();
 
     //   // connectivity - patch based
-    //    std::set<int> patches;
+    //    std::set<IndexType> patches;
     //    GetAwakePatchs(patches);
     //    idx_t nn = nnodes();
-    //    std::vector<std::set<int>> n2n_set(nn);
+    //    std::vector<std::set<IndexType>> n2n_set(nn);
 
     //    for (auto it : patches)
     //    {
     //      // list of vertices in patch
     //      const Hex &H = hex(it);
 
-    //      std::set<int> nh; // vertices in patch
+    //      std::set<IndexType> nh; // vertices in patch
     //      assert(H.nchilds() == 8);
-    //      for (int c = 0; c < H.nchilds(); ++c)
+    //      for (IndexType c = 0; c < H.nchilds(); ++c)
     //      {
     //        const Hex &C = hex(H.child(c));
-    //        for (int n = 0; n < 8; ++n)
+    //        for (IndexType n = 0; n < 8; ++n)
     //          nh.insert(C[n]);
     //      }
     //      assert(nh.size() == 27);
@@ -300,7 +321,7 @@ public:
     //          n2n_set[i1].insert(i2);
     //    }
 
-    //    for (int i = 0; i < n2n_set.size(); ++i)
+    //    for (IndexType i = 0; i < n2n_set.size(); ++i)
     //      assert(n2n_set[i].size() > 1);
 
     //    std::ofstream matrix_log("unsortedmatrix.txt");
@@ -312,9 +333,9 @@ public:
     //    std::vector<idx_t> adj(nn + 1, 0);
     //    std::vector<idx_t> adjncy;
 
-    //    int count = 0;
+    //    IndexType count = 0;
     //    adj[0] = 0;
-    //    for (int r = 0; r < n2n_set.size(); ++r) // loop over 'rows'
+    //    for (IndexType r = 0; r < n2n_set.size(); ++r) // loop over 'rows'
     //    {
     //      for (auto it : n2n_set[r]) // loop over 'cols'
     //      {
@@ -329,7 +350,7 @@ public:
     // //   /*
     // //       std::vector<idx_t> iperm(nn);
     // //       std::vector<idx_t> perm(nn);
-    // //       for (int i=0;i<nn;++i)
+    // //       for (IndexType i=0;i<nn;++i)
     // //         perm[i]=i;
 
     // //       //////////// METIS!!!!
@@ -350,13 +371,13 @@ public:
     //                           undirectedS,
     //                           property<vertex_color_t,
     //                                    default_color_type,
-    //                                    property<vertex_degree_t, int>>>
+    //                                    property<vertex_degree_t, IndexType>>>
     //        Graph;
     //    typedef graph_traits<Graph>::vertex_descriptor Vertex;
     //    typedef graph_traits<Graph>::vertices_size_type size_type;
 
     //   Graph G(nn);
-    //    for (int i = 0; i < nn; i++)
+    //    for (IndexType i = 0; i < nn; i++)
     //    {
     //      for (auto j : n2n_set[i])
     //        if (j <= i)
@@ -389,22 +410,22 @@ public:
     //    // vertices
     //    VertexVec3d newVV(nnodes());
     //    VertexVec3d &origVV = GetVertexVector();
-    //    for (int i = 0; i < nnodes(); ++i)
+    //    for (IndexType i = 0; i < nnodes(); ++i)
     //      newVV[i] = origVV[perm[i]];
-    //    for (int i = 0; i < nnodes(); ++i)
+    //    for (IndexType i = 0; i < nnodes(); ++i)
     //      origVV[i] = newVV[i];
 
-    //    for (int i = 0; i < vo2n.size(); ++i)
+    //    for (IndexType i = 0; i < vo2n.size(); ++i)
     //      vo2n[i] = iperm[vo2n[i]];
 
     //    // hex
-    //    for (int h = 0; h < hexs.size(); ++h)
-    //      for (int n = 0; n < 8; ++n)
+    //    for (IndexType h = 0; h < hexs.size(); ++h)
+    //      for (IndexType n = 0; n < 8; ++n)
     //        hexs[h][n] = iperm[hexs[h][n]];
 
     //    // cell
-    //    for (int h = 0; h < Bquads.size(); ++h)
-    //      for (int n = 0; n < 4; ++n)
+    //    for (IndexType h = 0; h < Bquads.size(); ++h)
+    //      for (IndexType n = 0; n < 4; ++n)
     //        Bquads[h][n] = iperm[Bquads[h][n]];
 
     //    check_mesh3d();
@@ -416,12 +437,12 @@ public:
     //      // list of vertices in patch
     //      const Hex &H = hex(it);
 
-    //      std::set<int> nh; // vertices in patch
+    //      std::set<IndexType> nh; // vertices in patch
     //      assert(H.nchilds() == 8);
-    //      for (int c = 0; c < H.nchilds(); ++c)
+    //      for (IndexType c = 0; c < H.nchilds(); ++c)
     //      {
     //        const Hex &C = hex(H.child(c));
-    //        for (int n = 0; n < 8; ++n)
+    //        for (IndexType n = 0; n < 8; ++n)
     //          nh.insert(C[n]);
     //      }
     //      assert(nh.size() == 27);
@@ -430,7 +451,7 @@ public:
     //          n2n_set[i1].insert(i2);
     //    }
 
-    //   for (int i = 0; i < n2n_set.size(); ++i)
+    //   for (IndexType i = 0; i < n2n_set.size(); ++i)
     //      assert(n2n_set[i].size() > 1);
 
     //    std::ofstream matrix_sorted_log("sortedmatrix.txt");

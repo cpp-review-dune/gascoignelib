@@ -100,19 +100,22 @@ public:
   void InitFromGascoigneMesh(const DofHandler<DIM>& GM);
 
   /// General Access
-  int dimension() const { return DIM; }
-  int dofs_per_element() const { return static_cast<int>(pow(M, DIM)); }
+  IndexType dimension() const { return DIM; }
+  IndexType dofs_per_element() const
+  {
+    return static_cast<IndexType>(pow(M, DIM));
+  }
   IndexType ndofs() const { return nx.size(); }
   IndexType nelements() const { return nc.size() / dofs_per_element(); }
   IndexType nhanging() const { return HangingHandler.GetStructure()->size(); }
 
-  IntVector GetElement(int iq) const
+  IndexVector GetElement(IndexType iq) const
   {
     abort();
 
-    IntVector tmp;
-    int start = dofs_per_element() * iq;
-    for (int i = 0; i < dofs_per_element(); ++i)
+    IndexVector tmp;
+    IndexType start = dofs_per_element() * iq;
+    for (IndexType i = 0; i < dofs_per_element(); ++i)
       tmp.push_back(nc[start + i]);
     return tmp;
   }
@@ -121,51 +124,53 @@ public:
   std::vector<Vertex<DIM>>& GetVertexVector() { return nx; }
   const std::vector<Vertex<DIM>>& GetVertexVector() const { return nx; }
 
-  const Vertex<DIM>& vertex(int i) const { return nx[i]; }
-  virtual const Vertex<2>& vertex2d(int /*i*/) const { abort(); }
-  virtual const Vertex<3>& vertex3d(int /*i*/) const { abort(); }
+  const Vertex<DIM>& vertex(IndexType i) const { return nx[i]; }
+  virtual const Vertex<2>& vertex2d(IndexType /*i*/) const { abort(); }
+  virtual const Vertex<3>& vertex3d(IndexType /*i*/) const { abort(); }
 
   ////// Boundary
-  const IntVector* ElementOnBoundary(int color) const
+  const IndexVector* ElementOnBoundary(IndexType color) const
   {
     return &(BoundaryHandler.Cells(color));
   }
-  const IntVector* ElementLocalOnBoundary(int color) const
+  const IndexVector* ElementLocalOnBoundary(IndexType color) const
   {
     return &(BoundaryHandler.Localind(color));
   }
-  const IntVector* ElementOnBoundary(int /*degree*/, int /*color*/) const
+  const IndexVector* ElementOnBoundary(IndexType /*degree*/,
+                                       IndexType /*color*/) const
   {
     std::cerr << "Element on Boundary with degree not used!" << std::endl;
     abort();
   }
-  const IntVector* ElementLocalOnBoundary(int /*degree*/, int /*color*/) const
+  const IndexVector* ElementLocalOnBoundary(IndexType /*degree*/,
+                                            IndexType /*color*/) const
   {
     std::cerr << "ElementLocal on Boundary with degree not used!" << std::endl;
     abort();
   }
 
-  int VtkType(int /*i*/) const { return (DIM == 2) ? 9 : 12; }
+  IndexType VtkType(IndexType /*i*/) const { return (DIM == 2) ? 9 : 12; }
 
-  int vertex_of_cell(int i, int ii) const
+  IndexType vertex_of_cell(IndexType i, IndexType ii) const
   {
     return nc[dofs_per_element() * i + ii];
   }
 
   /// Dummy? Old Interface
   IndexType ncells() const { abort(); }
-  IndexType nelements(int /*degree*/) const { abort(); }
-  int nodes_per_cell(int /*i*/) const { abort(); }
+  IndexType nelements(IndexType /*degree*/) const { abort(); }
+  IndexType nodes_per_cell(IndexType /*i*/) const { abort(); }
   IndexType nnodes() const { abort(); }
 
-  IntVector IndicesOfCell(int /*iq*/) const
+  IndexVector IndicesOfCell(IndexType /*iq*/) const
   {
     std::cerr << "CGDofHandler: Use GetElement" << std::endl;
     assert(0);
-    return IntVector();
+    return IndexVector();
   }
 
-  IntVector GetElement(int /*degree*/, int /*iq*/) const
+  IndexVector GetElement(IndexType /*degree*/, IndexType /*iq*/) const
   {
     std::cerr << "GetElement with degree not used" << std::endl;
     abort();
@@ -174,37 +179,37 @@ public:
 
 template<>
 inline const Vertex<2>&
-CGDofHandler<2, 2>::vertex2d(int i) const
+CGDofHandler<2, 2>::vertex2d(IndexType i) const
 {
   return vertex(i);
 }
 template<>
 inline const Vertex<2>&
-CGDofHandler<2, 3>::vertex2d(int i) const
+CGDofHandler<2, 3>::vertex2d(IndexType i) const
 {
   return vertex(i);
 }
 template<>
 inline const Vertex<2>&
-CGDofHandler<2, 5>::vertex2d(int i) const
+CGDofHandler<2, 5>::vertex2d(IndexType i) const
 {
   return vertex(i);
 }
 template<>
 inline const Vertex<3>&
-CGDofHandler<3, 2>::vertex3d(int i) const
+CGDofHandler<3, 2>::vertex3d(IndexType i) const
 {
   return vertex(i);
 }
 template<>
 inline const Vertex<3>&
-CGDofHandler<3, 3>::vertex3d(int i) const
+CGDofHandler<3, 3>::vertex3d(IndexType i) const
 {
   return vertex(i);
 }
 template<>
 inline const Vertex<3>&
-CGDofHandler<3, 5>::vertex3d(int i) const
+CGDofHandler<3, 5>::vertex3d(IndexType i) const
 {
   return vertex(i);
 }
