@@ -55,8 +55,8 @@ BoundaryIndexHandler::check() const
   cerr << "All Colors: " << colors << endl;
   for (IntSet::const_iterator p = colors.begin(); p != colors.end(); ++p) {
     cerr << "color: " << *p;
-    const IntVector& v = Verteces(*p);
-    for (int i = 0; i < v.size(); i++) {
+    const IndexVector& v = Verteces(*p);
+    for (IndexType i = 0; i < v.size(); i++) {
       if (v[i] < 0) {
         cerr << "....BoundaryIndexHandler::check() ERROR\n";
         abort();
@@ -87,14 +87,14 @@ BoundaryIndexHandler::Equal(const IntSet& col,
 /*--------------------------------------------------------------*/
 
 void
-BoundaryIndexHandler::CopySetToVector(const vector<IntSet>& H,
-                                      const IntVector& colorvec,
+BoundaryIndexHandler::CopySetToVector(const vector<IndexSet>& H,
+                                      const IndexVector& colorvec,
                                       VecMap& dst) const
 {
-  for (int i = 0; i < H.size(); i++) {
-    IntVector v;
+  for (IndexType i = 0; i < H.size(); i++) {
+    IndexVector v;
     Set2Vec(v, H[i]);
-    int color = colorvec[i];
+    IndexType color = colorvec[i];
     dst.insert(make_pair(color, v));
   }
 }
@@ -112,8 +112,8 @@ BoundaryIndexHandler::clear()
 
 /*--------------------------------------------------------------*/
 
-const IntVector&
-BoundaryIndexHandler::Verteces(int color) const
+const IndexVector&
+BoundaryIndexHandler::Verteces(IndexType color) const
 {
   VecMap::const_iterator p = verteces.find(color);
   if (p == verteces.end()) {
@@ -126,8 +126,8 @@ BoundaryIndexHandler::Verteces(int color) const
 
 /*--------------------------------------------------------------*/
 
-const IntVector&
-BoundaryIndexHandler::Cells(int color) const
+const IndexVector&
+BoundaryIndexHandler::Cells(IndexType color) const
 {
   VecMap::const_iterator p = cells.find(color);
   if (p == cells.end()) {
@@ -139,8 +139,8 @@ BoundaryIndexHandler::Cells(int color) const
 
 /*--------------------------------------------------------------*/
 
-const IntVector&
-BoundaryIndexHandler::Localind(int color) const
+const IndexVector&
+BoundaryIndexHandler::Localind(IndexType color) const
 {
   VecMap::const_iterator p = localci.find(color);
   if (p == localci.end()) {
@@ -153,8 +153,8 @@ BoundaryIndexHandler::Localind(int color) const
 
 /*--------------------------------------------------------------*/
 
-const IntVector&
-BoundaryIndexHandler::Patches(int color) const
+const IndexVector&
+BoundaryIndexHandler::Patches(IndexType color) const
 {
   VecMap::const_iterator p = patches.find(color);
   if (p == patches.end()) {
@@ -166,8 +166,8 @@ BoundaryIndexHandler::Patches(int color) const
 
 /*--------------------------------------------------------------*/
 
-const IntVector&
-BoundaryIndexHandler::LocalPatchind(int color) const
+const IndexVector&
+BoundaryIndexHandler::LocalPatchind(IndexType color) const
 {
   VecMap::const_iterator p = localpi.find(color);
   if (p == localpi.end()) {
@@ -182,14 +182,14 @@ BoundaryIndexHandler::LocalPatchind(int color) const
 
 void
 BoundaryIndexHandler::SetPeriodicPairs(
-  std::map<int, std::map<int, int>> mm_PeriodicPairs)
+  std::map<IndexType, std::map<IndexType, IndexType>> mm_PeriodicPairs)
 {
   _PeriodicPairs = mm_PeriodicPairs;
 }
 
 /*--------------------------------------------------------------*/
 
-const std::map<int, std::map<int, int>>
+const std::map<IndexType, std::map<IndexType, IndexType>>
 BoundaryIndexHandler::GetPeriodicPairs() const
 {
   return _PeriodicPairs;

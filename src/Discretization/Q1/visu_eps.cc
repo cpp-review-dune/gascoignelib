@@ -154,15 +154,15 @@ VisuEPS::WriteGrid(string fname, int iter)
         }
       }
   } else {
-    vector<int> bu(4);
+    IndexVector bu(4);
     bu[0] = 0;
     bu[1] = 2;
     bu[2] = 8;
     bu[3] = 6;
-    for (int i = 0; i < M->npatches(); ++i) {
-      const IntVector& vop = *M->IndicesOfPatch(i);
+    for (IndexType i = 0; i < M->npatches(); ++i) {
+      const IndexVector& vop = *M->IndicesOfPatch(i);
 
-      for (int j = 0; j < 4; ++j) {
+      for (IndexType j = 0; j < 4; ++j) {
         pair<int, int> pu(vop[bu[j]], vop[bu[(j + 1) % 4]]);
         Lexiko(pu);
         assert(pu.first != pu.second);

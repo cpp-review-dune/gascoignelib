@@ -41,10 +41,10 @@ class DofHandlerBase
 {
 protected:
   // VANKA: muss weg
-  IntVector mat_Vanka, mat_Vanka_patch;
+  IndexVector mat_Vanka, mat_Vanka_patch;
   std::vector<std::array<Vertex3d, 3>> basis_Vanka, basis_Vanka_patch;
 
-  IntVector nc, vo2n, mat, matpatch;
+  IndexVector nc, vo2n, mat, matpatch;
   PatchIndexHandler PatchHandler;
   BoundaryIndexHandler BoundaryHandler;
   HangingIndexHandler HangingHandler;
@@ -63,28 +63,28 @@ public:
 
   //////////////////////////////////////////////////
   // Access
-  virtual int dimension() const = 0;
+  virtual IndexType dimension() const = 0;
   virtual IndexType nnodes() const = 0;
   virtual IndexType nhanging() const { return 0; }
   virtual IndexType ncells() const = 0;
-  virtual IndexType nelements(int degree) const = 0;
+  virtual IndexType nelements(IndexType degree) const = 0;
 
-  virtual int nodes_per_cell(int i) const = 0;
-  virtual int vertex_of_cell(int i, int ii) const = 0;
-  virtual const Vertex2d& vertex2d(int /*i*/) const
+  virtual IndexType nodes_per_cell(IndexType i) const = 0;
+  virtual IndexType vertex_of_cell(IndexType i, IndexType ii) const = 0;
+  virtual const Vertex2d& vertex2d(IndexType /*i*/) const
   {
     std::cerr << "\"MeshInterface::vertex2d\" not written!" << std::endl;
     abort();
   }
-  virtual const Vertex3d& vertex3d(int /*i*/) const
+  virtual const Vertex3d& vertex3d(IndexType /*i*/) const
   {
     std::cerr << "\"MeshInterface::vertex3d\" not written!" << std::endl;
     abort();
   }
 
-  virtual const IntVector& GetCellVector() const { return nc; }
-  virtual const IntVector& GetMaterialVector() const { return mat; }
-  virtual const IntVector& GetMaterialPatchVector() const { return matpatch; }
+  virtual const IndexVector& GetCellVector() const { return nc; }
+  virtual const IndexVector& GetMaterialVector() const { return mat; }
+  virtual const IndexVector& GetMaterialPatchVector() const { return matpatch; }
 
   virtual const PatchIndexHandler& GetPatchIndexHandler() const
   {
@@ -98,11 +98,11 @@ public:
   {
     return HangingHandler;
   }
-  virtual const IntVector* Vertexo2n() const { return &vo2n; }
+  virtual const IndexVector* Vertexo2n() const { return &vo2n; }
 
-  virtual IntVector& GetCellVector() { return nc; }
-  virtual IntVector& GetMaterialVector() { return mat; }
-  virtual IntVector& GetMaterialPatchVector() { return matpatch; }
+  virtual IndexVector& GetCellVector() { return nc; }
+  virtual IndexVector& GetMaterialVector() { return mat; }
+  virtual IndexVector& GetMaterialPatchVector() { return matpatch; }
 
   virtual PatchIndexHandler& GetPatchIndexHandler() { return PatchHandler; }
   virtual BoundaryIndexHandler& GetBoundaryIndexHandler()
@@ -113,75 +113,78 @@ public:
   {
     return HangingHandler;
   }
-  virtual IntVector* Vertexo2n() { return &vo2n; }
-  virtual int VtkType(int i) const = 0;
+  virtual IndexVector* Vertexo2n() { return &vo2n; }
+  virtual IndexType VtkType(IndexType i) const = 0;
 
   // wird von DofHandler2d/3d ueberschrieben
-  virtual IntVector IndicesOfCell(int /*iq*/) const
+  virtual IndexVector IndicesOfCell(IndexType /*iq*/) const
   {
     std::cerr << "\"DofHandler:IndicesOfCell\" not written!" << std::endl;
     abort();
   }
 
-  virtual bool CellIsCurved(int /*iq*/) const { return 0; }
-  virtual int nedges() const { return 0; }
+  virtual bool CellIsCurved(IndexType /*iq*/) const { return 0; }
+  virtual IndexType nedges() const { return 0; }
 
-  virtual IntVector GetElement(int /*degree*/, int /*iq*/) const
+  virtual IndexVector GetElement(IndexType /*degree*/, IndexType /*iq*/) const
   {
     std::cerr << "DofHandler::GetElement" << std::endl;
     abort();
   }
-  virtual int nodes_per_element(int /*degree*/) const
+  virtual IndexType nodes_per_element(IndexType /*degree*/) const
   {
     std::cerr << "DofHandler::nodes_per_element" << std::endl;
     abort();
   }
 
   // Access: Patch-Structure
-  virtual int nodes_per_patch() const { return PatchHandler.nodes_per_patch(); }
-  virtual int nodes_per_q4patch() const
+  virtual IndexType nodes_per_patch() const
+  {
+    return PatchHandler.nodes_per_patch();
+  }
+  virtual IndexType nodes_per_q4patch() const
   {
     return PatchHandler.nodes_per_q4patch();
   }
   virtual bool HasPatch() const { return PatchHandler.HasPatch(); }
   virtual bool HasQ4Patch() const { return PatchHandler.HasQ4Patch(); }
-  virtual int npatches() const { return PatchHandler.npatches(); }
-  virtual int nq4patches() const { return PatchHandler.nq4patches(); }
-  virtual const IntVector* IndicesOfPatch(int i) const
+  virtual IndexType npatches() const { return PatchHandler.npatches(); }
+  virtual IndexType nq4patches() const { return PatchHandler.nq4patches(); }
+  virtual const IndexVector* IndicesOfPatch(IndexType i) const
   {
     return &(PatchHandler.IndicesOfPatch(i));
   }
-  virtual const IntVector* IndicesOfQ4Patch(int i) const
+  virtual const IndexVector* IndicesOfQ4Patch(IndexType i) const
   {
     return &(PatchHandler.IndicesOfQ4Patch(i));
   }
-  virtual IntVector Q2IndicesOfQ4Patch(int i) const
+  virtual IndexVector Q2IndicesOfQ4Patch(IndexType i) const
   {
     return PatchHandler.Q2IndicesOfQ4Patch(i);
   }
-  virtual IntVector CoarseIndices(int iq) const
+  virtual IndexVector CoarseIndices(IndexType iq) const
   {
     return PatchHandler.CoarseIndices(iq);
   }
-  virtual IntVector CoarseIndicesQ4(int iq) const
+  virtual IndexVector CoarseIndicesQ4(IndexType iq) const
   {
     return PatchHandler.CoarseIndicesQ4(iq);
   }
 
   // Access: material
-  virtual int material(int i) const
+  virtual IndexType material(IndexType i) const
   {
     assert(i < mat.size());
     return mat[i];
   }
 
-  virtual int material_patch(int i) const
+  virtual IndexType material_patch(IndexType i) const
   {
     assert(i < matpatch.size());
     return matpatch[i];
   }
 
-  int material(int degree, int i) const
+  IndexType material(IndexType degree, IndexType i) const
   {
     if (degree == 1)
       return material(i);
@@ -190,41 +193,42 @@ public:
     abort();
   }
 
-  virtual int& material(int i)
+  virtual IndexType& material(IndexType i)
   {
     assert(i < mat.size());
     return mat[i];
   }
 
-  virtual int& material_patch(int i)
+  virtual IndexType& material_patch(IndexType i)
   {
     assert(i < matpatch.size());
     return matpatch[i];
   }
 
   // Access: boundary
-  virtual const IntVector* VertexOnBoundary(int color) const
+  virtual const IndexVector* VertexOnBoundary(IndexType color) const
   {
     return &(BoundaryHandler.Verteces(color));
   }
-  virtual const IntVector* CellOnBoundary(int color) const
+  virtual const IndexVector* CellOnBoundary(IndexType color) const
   {
     return &(BoundaryHandler.Cells(color));
   }
-  virtual const IntVector* LocalOnBoundary(int color) const
+  virtual const IndexVector* LocalOnBoundary(IndexType color) const
   {
     return &(BoundaryHandler.Localind(color));
   }
-  virtual const IntVector* PatchOnBoundary(int color) const
+  virtual const IndexVector* PatchOnBoundary(IndexType color) const
   {
     return &(BoundaryHandler.Patches(color));
   }
-  virtual const IntVector* LocalPatchOnBoundary(int color) const
+  virtual const IndexVector* LocalPatchOnBoundary(IndexType color) const
   {
     return &(BoundaryHandler.LocalPatchind(color));
   }
 
-  virtual const IntVector* ElementOnBoundary(int degree, int color) const
+  virtual const IndexVector* ElementOnBoundary(IndexType degree,
+                                               IndexType color) const
   {
     if (degree == 1)
       return CellOnBoundary(color);
@@ -233,7 +237,8 @@ public:
     else
       abort();
   }
-  virtual const IntVector* ElementLocalOnBoundary(int degree, int color) const
+  virtual const IndexVector* ElementLocalOnBoundary(IndexType degree,
+                                                    IndexType color) const
   {
     if (degree == 1)
       return LocalOnBoundary(color);
@@ -243,35 +248,35 @@ public:
       abort();
   }
 
-  virtual std::set<int> GetColors() const
-  {
-    return BoundaryHandler.GetColors();
-  }
+  virtual IndexSet GetColors() const { return BoundaryHandler.GetColors(); }
 
-  virtual int& material_Vanka(int i)
+  virtual IndexType& material_Vanka(IndexType i)
   {
     assert(i < mat_Vanka.size());
     return mat_Vanka[i];
   }
-  virtual int& material_Vanka_patch(int i)
+  virtual IndexType& material_Vanka_patch(IndexType i)
   {
     assert(i < mat_Vanka_patch.size());
     return mat_Vanka_patch[i];
   }
-  virtual std::array<Vertex3d, 3>& Vanka_basis(int i)
+  virtual std::array<Vertex3d, 3>& Vanka_basis(IndexType i)
   {
     assert(i < basis_Vanka.size());
     return basis_Vanka[i];
   }
-  virtual std::array<Vertex3d, 3>& Vanka_basis_patch(int i)
+  virtual std::array<Vertex3d, 3>& Vanka_basis_patch(IndexType i)
   {
     assert(i < basis_Vanka_patch.size());
     return basis_Vanka[i];
   }
 
   // VANKA: muss weg
-  virtual const IntVector& GetMaterialVankaVector() const { return mat_Vanka; }
-  virtual const IntVector& GetMaterialVankaPatchVector() const
+  virtual const IndexVector& GetMaterialVankaVector() const
+  {
+    return mat_Vanka;
+  }
+  virtual const IndexVector& GetMaterialVankaPatchVector() const
   {
     return mat_Vanka_patch;
   }
@@ -285,8 +290,8 @@ public:
   {
     return basis_Vanka_patch;
   }
-  virtual IntVector& GetMaterialVankaVector() { return mat_Vanka; }
-  virtual IntVector& GetMaterialVankaPatchVector() { return mat_Vanka_patch; }
+  virtual IndexVector& GetMaterialVankaVector() { return mat_Vanka; }
+  virtual IndexVector& GetMaterialVankaPatchVector() { return mat_Vanka_patch; }
   virtual std::vector<std::array<Vertex3d, 3>>& GetbasisVankaVector()
   {
     return basis_Vanka;
@@ -296,22 +301,22 @@ public:
     return basis_Vanka_patch;
   }
 
-  virtual int material_Vanka(int i) const
+  virtual IndexType material_Vanka(IndexType i) const
   {
     assert(i < mat_Vanka.size());
     return mat_Vanka[i];
   }
-  virtual int material_Vanka_patch(int i) const
+  virtual IndexType material_Vanka_patch(IndexType i) const
   {
     assert(i < mat_Vanka_patch.size());
     return mat_Vanka_patch[i];
   }
-  virtual const std::array<Vertex3d, 3> Vanka_basis(int i) const
+  virtual const std::array<Vertex3d, 3> Vanka_basis(IndexType i) const
   {
     assert(i < basis_Vanka.size());
     return basis_Vanka[i];
   }
-  const std::array<Vertex3d, 3> Vanka_basis_patch(int i) const
+  const std::array<Vertex3d, 3> Vanka_basis_patch(IndexType i) const
   {
     assert(i < basis_Vanka_patch.size());
     return basis_Vanka_patch[i];
@@ -333,10 +338,10 @@ public:
   std::vector<Vertex<DIM>>& GetVertexVector() { return nx; }
   const std::vector<Vertex<DIM>>& GetVertexVector() const { return nx; }
 
-  int dimension() const { return DIM; }
+  IndexType dimension() const { return DIM; }
   IndexType nnodes() const { return nx.size(); }
   IndexType ncells() const { return nc.size() / ((DIM == 2) ? 4 : 8); }
-  IndexType nelements(int degree) const
+  IndexType nelements(IndexType degree) const
   {
     if (degree == 1)
       return ncells();
@@ -348,8 +353,8 @@ public:
 
   IndexType nhanging() const { return HangingHandler.GetStructure()->size(); }
 
-  int nodes_per_cell(int /*i*/) const { return (DIM == 2) ? 4 : 8; }
-  int nodes_per_element(int degree) const
+  IndexType nodes_per_cell(IndexType /*i*/) const { return (DIM == 2) ? 4 : 8; }
+  IndexType nodes_per_element(IndexType degree) const
   {
     if (degree == 1)
       return nodes_per_cell(0);
@@ -359,24 +364,26 @@ public:
       abort();
   }
 
-  int VtkType(int /*i*/) const { return (DIM == 2) ? 9 : 12; }
+  IndexType VtkType(IndexType /*i*/) const { return (DIM == 2) ? 9 : 12; }
 
-  const Vertex<DIM>& vertex(int i) const
+  const Vertex<DIM>& vertex(IndexType i) const
   {
     assert(i < nx.size());
     return nx[i];
   }
 
-  virtual const Vertex<2>& vertex2d(int i) const;
-  virtual const Vertex<3>& vertex3d(int i) const;
+  virtual const Vertex<2>& vertex2d(IndexType i) const;
+  virtual const Vertex<3>& vertex3d(IndexType i) const;
 
-  int vertex_of_cell(int i, int ii) const
+  IndexType vertex_of_cell(IndexType i, IndexType ii) const
   {
     assert(nodes_per_cell(i) * i + ii < nc.size());
     return nc[nodes_per_cell(i) * i + ii];
   }
 
-  virtual int CornerIndices(int degree, int iq, int ii) const
+  virtual IndexType CornerIndices(IndexType degree,
+                                  IndexType iq,
+                                  IndexType ii) const
   {
     if (degree == 1) {
       assert(nodes_per_cell(iq) * iq + ii < nc.size());
@@ -388,9 +395,9 @@ public:
     return 0;
   }
 
-  IntVector IndicesOfCell(int iq) const;
+  IndexVector IndicesOfCell(IndexType iq) const;
 
-  IntVector GetElement(int degree, int iq) const
+  IndexVector GetElement(IndexType degree, IndexType iq) const
   {
     if (degree == 1)
       return IndicesOfCell(iq);

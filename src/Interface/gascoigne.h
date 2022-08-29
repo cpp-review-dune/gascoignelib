@@ -62,6 +62,7 @@ typedef nvector<int> IntVector;
 typedef nvector<double> DoubleVector;
 typedef nmatrix<double> DoubleMatrix;
 typedef std::set<int> IntSet;
+typedef std::set<IndexType> IndexSet;
 
 typedef nmatrix<double> TimePattern;
 

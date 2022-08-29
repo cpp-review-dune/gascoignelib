@@ -19,11 +19,11 @@ CUDA_ADD_LIBRARY( ${GASCOIGNE_LIBRARY} ${GASCOIGNE_SOURCE} SHARED )
 
 target_compile_options(${GASCOIGNE_LIBRARY} PUBLIC
 	-std=c++11
-	-pedantic
-	-Wextra
-	-Wconversion
-	-Werror
-	-Wold-style-cast
+	# -pedantic
+	# -Wextra
+	# -Wconversion
+	# -Werror
+	# -Wold-style-cast
 )
 
 set_target_properties(${GASCOIGNE_LIBRARY} PROPERTIES POSITION_INDEPENDENT_CODE ON)

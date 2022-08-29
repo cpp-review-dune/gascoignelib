@@ -1125,6 +1125,7 @@ public:
       }
     }
   }
+
   void StrongDirichletMatrix(MatrixInterface& A,
                              const ProblemDescriptorInterface& PD) const
   {
@@ -1139,6 +1140,7 @@ public:
         A.dirichlet(bv[i], DD->components_on_color(color));
     }
   }
+
   void StrongDirichletMatrixOnlyRow(MatrixInterface& A,
                                     const ProblemDescriptorInterface& PD) const
   {
@@ -1153,6 +1155,7 @@ public:
         A.dirichlet_only_row(bv[i], DD->components_on_color(color));
     }
   }
+
   void StrongDirichletVectorZero(GlobalVector& u,
                                  const ProblemDescriptorInterface& PD) const
   {
@@ -1165,7 +1168,7 @@ public:
 
 #pragma omp parallel for
       for (int i = 0; i < bv.size(); i++) {
-        int index = bv[i];
+        IndexType index = bv[i];
         for (auto comp : DD->components_on_color(color))
           u(index, static_cast<ShortIndexType>(comp)) = 0.;
       }
@@ -1202,8 +1205,8 @@ public:
     //  }
     //}
 
-    for (int i = 0; i < bv.size(); i++) {
-      int index = bv[i];
+    for (IndexType i = 0; i < bv.size(); i++) {
+      IndexType index = bv[i];
 
       QH.clear();
       GlobalData::const_iterator p = GetDataContainer().GetNodeData().begin();

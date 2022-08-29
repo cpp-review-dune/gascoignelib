@@ -43,27 +43,30 @@ private:
   typedef std::pair<std::string, std::string> NameType;
   typedef std::pair<std::string, double> StringDouble;
 
-  typedef std::map<std::string, std::string*> TypeString;
-  typedef std::map<std::string, int*> TypeInt;
-  typedef std::map<std::string, bool*> TypeBool; // neu
-  typedef std::map<std::string, float*> TypeFloat;
-  typedef std::map<std::string, double*> TypeDouble;
-  typedef std::map<std::string, StringDouble*> TypeStringDouble;
+  template<typename T>
+  using NameMap = std::map<std::string, T>;
 
-  typedef std::map<std::string, std::array<double, 2>*> TypeFix2Double;
-  typedef std::map<std::string, std::array<double, 3>*> TypeFix3Double;
+  typedef NameMap<std::string*> TypeString;
+  typedef NameMap<int*> TypeInt;
+  typedef NameMap<bool*> TypeBool; // neu
+  typedef NameMap<float*> TypeFloat;
+  typedef NameMap<double*> TypeDouble;
+  typedef NameMap<StringDouble*> TypeStringDouble;
 
-  typedef std::map<std::string, std::vector<double>*> TypeVectorDouble;
-  typedef std::map<std::string, IntVector*> TypeVectorInt;
-  typedef std::map<std::string, std::vector<std::string>*> TypeVectorString;
+  typedef NameMap<std::array<double, 2>*> TypeFix2Double;
+  typedef NameMap<std::array<double, 3>*> TypeFix3Double;
 
-  typedef std::map<std::string, std::set<int>*> TypeSetInt;
-  typedef std::map<std::string, std::set<std::vector<std::string>>*>
-    TypeSetVectorString;
+  typedef NameMap<std::vector<double>*> TypeVectorDouble;
+  typedef NameMap<IntVector*> TypeVectorInt;
+  typedef NameMap<std::vector<std::string>*> TypeVectorString;
 
-  typedef std::map<std::string, std::map<int, IntVector>*> TypeMapIntVectorInt;
+  typedef NameMap<std::set<int>*> TypeSetInt;
+  typedef NameMap<std::set<std::vector<std::string>>*> TypeSetVectorString;
+
+  typedef NameMap<std::map<int, IntVector>*> TypeMapIntVectorInt;
 
   std::set<NameType> NT;
+
   TypeString TS;
   TypeInt TI;
   TypeBool TB; // neu

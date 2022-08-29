@@ -78,10 +78,10 @@ public:
   //
   typedef IntVector::const_iterator niiterator;
 
-  virtual void entry(nvector<int>::const_iterator start1,
-                     nvector<int>::const_iterator stop1,
-                     nvector<int>::const_iterator start2,
-                     nvector<int>::const_iterator stop2,
+  virtual void entry(nvector<IndexType>::const_iterator start1,
+                     nvector<IndexType>::const_iterator stop1,
+                     nvector<IndexType>::const_iterator start2,
+                     nvector<IndexType>::const_iterator stop2,
                      const EntryMatrix& M,
                      double s = 1.)
   {
@@ -109,36 +109,40 @@ public:
   //
   /// for boundary conditions
   //
-  virtual void scale_diag(int i, const std::vector<int>& cv, double s)
+  virtual void scale_diag(IndexType i,
+                          const std::vector<IndexType>& cv,
+                          double s)
   {
     std::cerr << "\"MatrixInterface::scale_diag\" not written!" << std::endl;
     abort();
   }
-  virtual void dirichlet(int i, const std::vector<int>& cv)
+  virtual void dirichlet(IndexType i, const std::vector<IndexType>& cv)
   {
     std::cerr << "\"MatrixInterface::dirichlet\" not written!" << std::endl;
     abort();
   }
-  virtual void dirichlet_only_row(int i, const std::vector<int>& indices)
+  virtual void dirichlet_only_row(IndexType i,
+                                  const std::vector<IndexType>& indices)
   {
     std::cerr << "\"MatrixInterface::dirichlet_only_row\" not written!"
               << std::endl;
     abort();
   }
-  virtual void dirichlet_only_column(int i, const std::vector<int>& indices)
+  virtual void dirichlet_only_column(IndexType i,
+                                     const std::vector<IndexType>& indices)
   {
     std::cerr << "\"MatrixInterface::dirichlet_only_column\" not written!"
               << std::endl;
     abort();
   }
-  virtual void dirichlet_only_row_no_diag(int i,
-                                          const std::vector<int>& indices)
+  virtual void dirichlet_only_row_no_diag(IndexType i,
+                                          const std::vector<IndexType>& indices)
   {
     std::cerr << "\"MatrixInterface::dirichlet_only_row_no_diag\" not written!"
               << std::endl;
     abort();
   }
-  virtual void periodic(const std::map<int, int>& m_PeriodicPairs,
+  virtual void periodic(const std::map<IndexType, IndexType>& m_PeriodicPairs,
                         const IntVector& iv_Components)
   {
     std::cerr << "\"MatrixInterface::periodic\" not written!" << std::endl;
@@ -170,8 +174,8 @@ public:
 
   /*-----------------------------------------------*/
 
-  virtual void FillInterfaceList(const nvector<int>& elements,
-                                 nvector<int>& start,
+  virtual void FillInterfaceList(const nvector<IndexType>& elements,
+                                 nvector<IndexType>& start,
                                  nvector<MatrixEntryType>& values) const
   {
     std::cerr << "\"MatrixInterface::FillInterfaceList\" not written!"
@@ -179,8 +183,8 @@ public:
     abort();
   }
   virtual void FurbishInterface(double d,
-                                const nvector<int>& elements,
-                                const nvector<int>& start,
+                                const nvector<IndexType>& elements,
+                                const nvector<IndexType>& start,
                                 const nvector<MatrixEntryType>& values)
   {
     std::cerr << "\"MatrixInterface::FurbishInterface\" not written!"
