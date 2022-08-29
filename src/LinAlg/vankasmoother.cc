@@ -4,7 +4,7 @@
 namespace Gascoigne {
 //////////////////// Construction
 void
-VankaSmoother::ConstructStructure(const IntVector& perm,
+VankaSmoother::ConstructStructure(const IndexVector& perm,
                                   const MatrixInterface& A)
 {
   assert(_dofhandler);
@@ -45,16 +45,16 @@ VankaSmoother::ConstructStructure(const IntVector& perm,
     assert(0);
 
   ////////// Construct patches
-  int patchlevel = 2;
+  IndexType patchlevel = 2;
 
-  int npatches = _dofhandler->nelements(patchlevel);
+  IndexType npatches = _dofhandler->nelements(patchlevel);
   _sizeofpatch = _dofhandler->nodes_per_element(patchlevel);
-  _patchlist.resize(npatches, std::vector<int>(_sizeofpatch));
+  _patchlist.resize(npatches, std::vector<IndexType>(_sizeofpatch));
 #pragma omp parallel for schedule(static)
-  for (int p = 0; p < npatches; ++p) {
-    const IntVector iop = _dofhandler->GetElement(patchlevel, p);
+  for (IndexType p = 0; p < npatches; ++p) {
+    const IndexVector iop = _dofhandler->GetElement(patchlevel, p);
     assert(iop.size() == _patchlist[p].size());
-    for (int i = 0; i < iop.size(); ++i)
+    for (IndexType i = 0; i < iop.size(); ++i)
       _patchlist[p][i] = iop[i];
   }
 
@@ -72,8 +72,8 @@ VankaSmoother::copy_entries_sparseblockmatrix(
 
   // Copy entries & assemble ILU
 #pragma omp parallel for schedule(static)
-  for (int p = 0; p < _patchlist.size(); ++p) {
-    int sop = _patchlist[p].size();
+  for (IndexType p = 0; p < _patchlist.size(); ++p) {
+    IndexType sop = _patchlist[p].size();
     //	assert(_patchlist[p].size() == _sizeofpatch);
 
     VankaMatrix Matrix_on_Block;
@@ -81,29 +81,29 @@ VankaSmoother::copy_entries_sparseblockmatrix(
     Matrix_on_Block.setZero();
 
     // inverse index set? store globally?
-    HASHMAP<int, int> INP;
-    for (int i = 0; i < _patchlist[p].size(); ++i)
+    std::unordered_map<IndexType, IndexType> INP;
+    for (IndexType i = 0; i < _patchlist[p].size(); ++i)
       INP[_patchlist[p][i]] = i;
 
-    for (int r = 0; r < sop; ++r) {
+    for (IndexType r = 0; r < sop; ++r) {
       assert(r < _patchlist[p].size());
-      int row = _patchlist[p][r];
+      IndexType row = _patchlist[p][r];
       assert(row < S.n());
 
       // Copy Matrix
-      for (int pos = S.start(row); pos < S.stop(row); ++pos) {
-        int col = S.col(pos);
+      for (IndexType pos = S.start(row); pos < S.stop(row); ++pos) {
+        IndexType col = S.col(pos);
         /* columnsinpatch.insert(col); */
 
         // find inverse index. Skip, if not n patch
         auto inverseindex = INP.find(col);
         if (inverseindex == INP.end())
           continue;
-        int c = inverseindex->second;
+        IndexType c = inverseindex->second;
 
         const FMatrixBlock<NCOMP>& B = (*A.mat(pos));
-        for (int cr = 0; cr < NCOMP; ++cr)
-          for (int cc = 0; cc < NCOMP; ++cc)
+        for (IndexType cr = 0; cr < NCOMP; ++cr)
+          for (IndexType cc = 0; cc < NCOMP; ++cc)
             Matrix_on_Block(NCOMP * r + cr, NCOMP * c + cc) = B(cr, cc);
       }
     }
@@ -121,7 +121,7 @@ VankaSmoother::copy_entries_sparseblockmatrix(
 
 //   // Copy entries & assemble ILU
 // #pragma omp parallel for schedule(static)
-//   for (int p = 0; p < _patchlist.size(); ++p)
+//   for (IndexType p = 0; p < _patchlist.size(); ++p)
 //   {
 //     assert(_patchlist[p].size() == _sizeofpatch);
 
@@ -130,31 +130,31 @@ VankaSmoother::copy_entries_sparseblockmatrix(
 //     Matrix_on_Block.setZero();
 
 //     // inverse index set? store globally?
-//     HASHMAP<int, int> INP;
-//     for (int i = 0; i < _patchlist[p].size(); ++i)
+//     std::unordered_map<IndexType, IndexType> INP;
+//     for (IndexType i = 0; i < _patchlist[p].size(); ++i)
 //       INP[_patchlist[p][i]] = i;
 
-//     for (int r = 0; r < _sizeofpatch; ++r)
+//     for (IndexType r = 0; r < _sizeofpatch; ++r)
 //     {
 //       assert(r < _patchlist[p].size());
-//       int row = _patchlist[p][r];
+//       IndexType row = _patchlist[p][r];
 //       assert(row < S.n());
 
 //       // Copy Matrix
-//       for (int pos = S.start(row); pos < S.stop(row); ++pos)
+//       for (IndexType pos = S.start(row); pos < S.stop(row); ++pos)
 //       {
-//         int col = S.col(pos);
+//         IndexType col = S.col(pos);
 //         /* columnsinpatch.insert(col); */
 
 //         // find inverse index. Skip, if not n patch
 //         auto inverseindex = INP.find(col);
 //         if (inverseindex == INP.end())
 //           continue;
-//         int c = inverseindex->second;
+//         IndexType c = inverseindex->second;
 
 //         const FMatrixBlock<NCOMP>& B = (*A.mat(pos));
-//         for (int cr = 0; cr < NCOMP; ++cr)
-//           for (int cc = 0; cc < NCOMP; ++cc)
+//         for (IndexType cr = 0; cr < NCOMP; ++cr)
+//           for (IndexType cc = 0; cc < NCOMP; ++cc)
 //             Matrix_on_Block(NCOMP * r + cr, NCOMP * c + cc) = B(cr, cc);
 //       }
 //     }
@@ -200,16 +200,16 @@ VankaSmoother::solve(GlobalVector& x) const
   // set solution to zero
   x.zero();
   // vector for averaging
-  std::vector<int> count(x.n(), 0);
+  std::vector<IndexType> count(x.n(), 0);
 
 #pragma omp parallel
   {
 #pragma omp for schedule(static)
-    for (int p = 0; p < _patchlist.size(); ++p) {
+    for (IndexType p = 0; p < _patchlist.size(); ++p) {
       // copy local patch-vector
       VankaVector H(_sizeofpatch * _ncomp);
-      for (int r = 0; r < _sizeofpatch; ++r)
-        for (int c = 0; c < _ncomp; ++c)
+      for (IndexType r = 0; r < _sizeofpatch; ++r)
+        for (IndexType c = 0; c < _ncomp; ++c)
           H(_ncomp * r + c, 0) = B(_patchlist[p][r], c);
 
       // perform inversion
@@ -218,10 +218,10 @@ VankaSmoother::solve(GlobalVector& x) const
       _lu[p].matrixLU().triangularView<Eigen::Upper>().solveInPlace(H);
 
       // update
-      for (int r = 0; r < _sizeofpatch; ++r) {
+      for (IndexType r = 0; r < _sizeofpatch; ++r) {
 #pragma omp atomic update
         count[_patchlist[p][r]]++;
-        for (int c = 0; c < _ncomp; ++c)
+        for (IndexType c = 0; c < _ncomp; ++c)
 #pragma omp atomic update
           x(_patchlist[p][r], c) += H(_ncomp * r + c, 0);
       }
@@ -229,7 +229,7 @@ VankaSmoother::solve(GlobalVector& x) const
 #pragma omp barrier
     // average
 #pragma omp for schedule(static)
-    for (int i = 0; i < x.n(); ++i) {
+    for (IndexType i = 0; i < x.n(); ++i) {
       assert(count[i] > 0);
       x.scale_node(i, 1.0 / count[i]);
     }

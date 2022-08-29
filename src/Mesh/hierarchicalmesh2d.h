@@ -45,8 +45,8 @@ protected:
   typedef std::vector<BoundaryLine> BLineVec;
   typedef HangList<2> LineHangList;
 
-  typedef triple<int, int, int> tint;
-  typedef std::map<std::array<int, 2>, HierarchicalMesh2d::BoundaryLine>
+  typedef triple<IndexType, IndexType, IndexType> tint;
+  typedef std::map<std::array<IndexType, 2>, HierarchicalMesh2d::BoundaryLine>
     HangBLList;
 
   /*  Data  */
@@ -59,72 +59,78 @@ protected:
   BLineVec Blines;
   LineHangList LineHang;
   QuadLawAndOrder QuadLaO;
-  std::map<int, int> quadofcurved;
+  std::map<IndexType, IndexType> quadofcurved;
 
   /*  Functionen  */
 
   void post_refine2d();
 
-  void delete_vertexs2d(const IntVector&);
+  void delete_vertexs2d(const IndexVector&);
 
-  void new_edge_vertex2d(int, const EdgeVector&);
-  void new_face_vertex2d(int, const FaceVector&);
+  void new_edge_vertex2d(IndexType, const EdgeVector&);
+  void new_face_vertex2d(IndexType, const FaceVector&);
 
   void check_mesh2d() const;
-  void prepare2d(const IntVector&, const IntVector&, IntSet&, IntSet&);
+  void prepare2d(const IndexVector&, const IndexVector&, IndexSet&, IndexSet&);
   std::pair<bool, tint> check_inp(const std::string&);
-  void ghost2d(HangContainer2d&, const IntSet&, const IntSet&);
-  void ghostglobalcoarse(HangContainer2d&, const IntSet&);
+  void ghost2d(HangContainer2d&, const IndexSet&, const IndexSet&);
+  void ghostglobalcoarse(HangContainer2d&, const IndexSet&);
   void ghost_fill_neighbours2d();
   void basic_fill_neighbours2d();
-  void new_vertexs2d(HangContainer2d&, const IntVector&, const IntSet&);
+  void new_vertexs2d(HangContainer2d&, const IndexVector&, const IndexSet&);
   void new_quads(const HangContainer2d&,
-                 const IntVector&,
-                 const IntVector&,
-                 int,
-                 const IntSet&);
+                 const IndexVector&,
+                 const IndexVector&,
+                 IndexType,
+                 const IndexSet&);
 
-  void change_hangs2d(const IntVector&, const IntVector&);
-  void change_vertexs2d(const IntVector&);
-  void change_quads2d(const IntVector&, const IntVector&);
-  void boundary_prepare2d(IntSet&, IntSet&, IntSet&, const HangContainer2d&);
-  void new_boundary2d(IntSet&, IntSet&, IntSet&);
+  void change_hangs2d(const IndexVector&, const IndexVector&);
+  void change_vertexs2d(const IndexVector&);
+  void change_quads2d(const IndexVector&, const IndexVector&);
+  void boundary_prepare2d(IndexSet&,
+                          IndexSet&,
+                          IndexSet&,
+                          const HangContainer2d&);
+  void new_boundary2d(IndexSet&, IndexSet&, IndexSet&);
 
-  void basic_refine2d(HangContainer2d&, const IntSet&, const IntSet&);
+  void basic_refine2d(HangContainer2d&, const IndexSet&, const IndexSet&);
 
   void init_line(BoundaryLine&);
-  void new_lines(const IntVector&, const IntVector&, const IntSet&);
+  void new_lines(const IndexVector&, const IndexVector&, const IndexSet&);
   void boundary_newton2d();
-  void inner_vertex_newton2d(const IntVector&, const IntSet&);
-  void update_boundary_data2d(const IntSet&);
+  void inner_vertex_newton2d(const IndexVector&, const IndexSet&);
+  void update_boundary_data2d(const IndexSet&);
 
-  int regular_grid2d_one(IntSet&, IntVector&, IntSet&, IntSet&) const;
-  int regular_grid2d_two(IntSet&, IntSet&) const;
-  int regular_grid2d_three(IntSet&, IntSet&) const;
-  int regular_grid2d_three_refine(IntSet&) const;
-  int regular_grid2d_three_coarse(IntSet&, IntSet&) const;
+  IndexType regular_grid2d_one(IndexSet&,
+                               IndexVector&,
+                               IndexSet&,
+                               IndexSet&) const;
+  IndexType regular_grid2d_two(IndexSet&, IndexSet&) const;
+  IndexType regular_grid2d_three(IndexSet&, IndexSet&) const;
+  IndexType regular_grid2d_three_refine(IndexSet&) const;
+  IndexType regular_grid2d_three_coarse(IndexSet&, IndexSet&) const;
 
-  void GetMinMaxLevels(IntVector& maxi,
-                       IntVector& mini,
-                       const IntSet& CellRef) const;
+  void GetMinMaxLevels(IndexVector& maxi,
+                       IndexVector& mini,
+                       const IndexSet& CellRef) const;
   void init_edges2d();
 
-  void LoadFathers(IntVector& v) const;
+  void LoadFathers(IndexVector& v) const;
 
-  void _refine2d(IntSet&, IntSet&, const IntVector&, const IntVector&);
+  void _refine2d(IndexSet&, IndexSet&, const IndexVector&, const IndexVector&);
   void InitQuadOfCurved();
-  int FindPatchDepth() const;
-  void FillVertexLevels(IntVector& dst) const;
-  void RefineCoarseNodes(IntSet& dst,
-                         const IntVector& refnodes,
-                         const IntVector& vertexlevel) const;
-  void VertexToCells(IntVector& dst,
-                     const IntSet& src,
-                     const IntVector& vertexlevel) const;
-  void VertexToCellsCoarsening(IntVector& dst,
-                               const IntSet& src,
-                               const IntVector& vertexlevel) const;
-  void recursive_childs(int q, IntVector& ref, int d) const;
+  IndexType FindPatchDepth() const;
+  void FillVertexLevels(IndexVector& dst) const;
+  void RefineCoarseNodes(IndexSet& dst,
+                         const IndexVector& refnodes,
+                         const IndexVector& vertexlevel) const;
+  void VertexToCells(IndexVector& dst,
+                     const IndexSet& src,
+                     const IndexVector& vertexlevel) const;
+  void VertexToCellsCoarsening(IndexVector& dst,
+                               const IndexSet& src,
+                               const IndexVector& vertexlevel) const;
+  void recursive_childs(IndexType q, IndexVector& ref, IndexType d) const;
 
   struct sort_pred
   {
@@ -146,12 +152,12 @@ public:
 
   /*  Zugriff  */
 
-  int dimension() const { return 2; }
-  int nnodes() const { return vertexs2d.size(); }
-  int ncells() const { return quads.size(); }
-  int nblines() const { return Blines.size(); }
-  int nodes_per_cell(int i) const { return 4; }
-  int VtkType(int i) const { return 9; }
+  IndexType dimension() const { return 2; }
+  IndexType nnodes() const { return vertexs2d.size(); }
+  IndexType ncells() const { return quads.size(); }
+  IndexType nblines() const { return Blines.size(); }
+  IndexType nodes_per_cell(IndexType i) const { return 4; }
+  IndexType VtkType(IndexType i) const { return 9; }
 
   const CurvedShapes<2>& GetCurvedShapes() const { return _curvedshapes; }
   CurvedShapes<2>& GetCurvedShapes() { return _curvedshapes; }
@@ -159,26 +165,38 @@ public:
   const VertexVec2d& GetVertexVector() const { return vertexs2d; }
   VertexVec2d& GetVertexVector() { return vertexs2d; }
 
-  const Vertex2d& vertex2d(int i) const { return vertexs2d[i]; }
+  const Vertex2d& vertex2d(IndexType i) const { return vertexs2d[i]; }
 
-  const Quad& quad(int i) const { return quads[i]; }
-  const BoundaryLine& bline(int i) const { return Blines[i]; }
-  std::pair<int, int> GetBoundaryInformation(int i) const;
+  const Quad& quad(IndexType i) const { return quads[i]; }
+  const BoundaryLine& bline(IndexType i) const { return Blines[i]; }
+  std::pair<IndexType, IndexType> GetBoundaryInformation(IndexType i) const;
 
-  int vertex_of_cell(int i, int ii) const { return quads[i].vertex(ii); }
-  int vertex_of_bline(int i, int ii) const { return Blines[i].vertex(ii); }
-  int edge_of_quad(int i, int ii) const { return quads[i].edge(ii); }
-  int level(int i) const { return quads[i].level(); }
-  bool sleep(int i) const { return quads[i].sleep(); }
+  IndexType vertex_of_cell(IndexType i, IndexType ii) const
+  {
+    return quads[i].vertex(ii);
+  }
+  IndexType vertex_of_bline(IndexType i, IndexType ii) const
+  {
+    return Blines[i].vertex(ii);
+  }
+  IndexType edge_of_quad(IndexType i, IndexType ii) const
+  {
+    return quads[i].edge(ii);
+  }
+  IndexType level(IndexType i) const { return quads[i].level(); }
+  bool sleep(IndexType i) const { return quads[i].sleep(); }
 
-  int child(int i, int ii) const { return quads[i].child(ii); }
-  int nchilds(int i) const { return quads[i].nchilds(); }
+  IndexType child(IndexType i, IndexType ii) const
+  {
+    return quads[i].child(ii);
+  }
+  IndexType nchilds(IndexType i) const { return quads[i].nchilds(); }
 
-  int QuadNeighbour(const Quad&, int) const;
+  IndexType QuadNeighbour(const Quad&, IndexType) const;
 
   const QuadLawAndOrder& QuadLawOrder() const { return QuadLaO; }
   const LineHangList& linehanglist() const { return LineHang; }
-  const BoundaryFunction2d* line_shape(int i) const;
+  const BoundaryFunction2d* line_shape(IndexType i) const;
 
   const std::vector<BoundaryLine>& line_list() const { return Blines; }
 
@@ -186,16 +204,19 @@ public:
   const QuadVec& quad() const { return quads; }
   const BLineVec& bline() const { return Blines; }
   const LineHangList& linehang() const { return LineHang; }
-  const std::map<int, int>& GetQuadOfCurved() const { return quadofcurved; }
+  const std::map<IndexType, IndexType>& GetQuadOfCurved() const
+  {
+    return quadofcurved;
+  }
 
   /*  Functionen  */
 
-  int Vater(const int i) const;
-  IntVector Nachkommen(const int i) const;
-  IntVector Geschwister(const int i) const;
-  IntVector Kinder(const int i) const;
-  int nactivedescendants(int i) const;
-  IntVector GetVertices(int c) const;
+  IndexType Vater(const IndexType i) const;
+  IndexVector Nachkommen(const IndexType i) const;
+  IndexVector Geschwister(const IndexType i) const;
+  IndexVector Kinder(const IndexType i) const;
+  IndexType nactivedescendants(IndexType i) const;
+  IndexVector GetVertices(IndexType c) const;
 
   void write(const std::string&) const;
   void write_gup(const std::string&) const;
@@ -212,39 +233,41 @@ public:
 
   void global_coarse();
 
-  void refine(const IntVector&, const IntVector&);
-  void patch_refine(IntVector&, IntVector&);
-  int smooth_edges();
+  void refine(const IndexVector&, const IndexVector&);
+  void patch_refine(IndexVector&, IndexVector&);
+  IndexType smooth_edges();
   void FillAllBoundaryLines();
 
-  pint EdgeNeighbour(int i, int e) const;
-  void VertexNeighbours2d(std::set<int>&, int i) const;
+  pint EdgeNeighbour(IndexType i, IndexType e) const;
+  void VertexNeighbours2d(std::set<IndexType>&, IndexType i) const;
 
-  int NodeOnEdge(int e) const;
-  std::array<int, 2> ChildrenOfEdge(int e) const;
+  IndexType NodeOnEdge(IndexType e) const;
+  std::array<IndexType, 2> ChildrenOfEdge(IndexType e) const;
 
-  void GetVertexesOfEdge(std::array<int, 3>&, int) const;
-  void GetVertexesOfEdge(std::array<int, 2>&, int) const;
-  void GetAwakePatchs(std::set<int>&) const;
-  void GetAwakeCells(std::set<int>&) const;
-  void ConstructQ2PatchMesh(IntVector& pm) const;
-  IntVector ConstructQ4Patch(int c) const;
-  std::set<int> GetColors() const;
-  int GetBoundaryCellOfCurved(int iq) const
+  void GetVertexesOfEdge(std::array<IndexType, 3>&, IndexType) const;
+  void GetVertexesOfEdge(std::array<IndexType, 2>&, IndexType) const;
+  void GetAwakePatchs(std::set<IndexType>&) const;
+  void GetAwakeCells(std::set<IndexType>&) const;
+  void ConstructQ2PatchMesh(IndexVector& pm) const;
+  IndexVector ConstructQ4Patch(IndexType c) const;
+  std::set<IndexType> GetColors() const;
+  IndexType GetBoundaryCellOfCurved(IndexType iq) const
   {
-    std::map<int, int>::const_iterator p = quadofcurved.find(iq);
+    std::map<IndexType, IndexType>::const_iterator p = quadofcurved.find(iq);
     if (p != quadofcurved.end())
       return p->second;
     return -1;
   }
 
-  std::set<int> CellNeighbours(int i) const;
+  std::set<IndexType> CellNeighbours(IndexType i) const;
 
-  int neighbour(int c, int le) const;
+  IndexType neighbour(IndexType c, IndexType le) const;
   void FillVolumes(DoubleVector& vol) const;
-  void writeq2(const IntVector& a, const std::vector<int>& b, int np) const;
+  void writeq2(const IndexVector& a,
+               const std::vector<IndexType>& b,
+               IndexType np) const;
 
-  void AddShape(int col, BoundaryFunction<2>* f)
+  void AddShape(IndexType col, BoundaryFunction<2>* f)
   {
     GetCurvedShapes().AddShape(col, f);
   }
@@ -253,22 +276,22 @@ public:
     abort();
 
     //   // connectivity - patch based
-    //    std::set<int> patches;
+    //    std::set<IndexType> patches;
     //    GetAwakePatchs(patches);
     //    idx_t nn = nnodes();
-    //    std::vector<std::set<int>> n2n_set(nn);
+    //    std::vector<std::set<IndexType>> n2n_set(nn);
 
     //    for (auto it : patches)
     //    {
     //      // list of vertices in patch
     //      const Quad &Q = quad(it);
 
-    //      std::set<int> nh; // vertices in patch
+    //      std::set<IndexType> nh; // vertices in patch
     //      assert(Q.nchilds() == 4);
-    //      for (int c = 0; c < Q.nchilds(); ++c)
+    //      for (IndexType c = 0; c < Q.nchilds(); ++c)
     //      {
     //        const Quad &C = quad(Q.child(c));
-    //        for (int n = 0; n < 4; ++n)
+    //        for (IndexType n = 0; n < 4; ++n)
     //          nh.insert(C[n]);
     //      }
     //      assert(nh.size() == 9);
@@ -277,7 +300,7 @@ public:
     //          n2n_set[i1].insert(i2);
     //    }
 
-    //    for (int i = 0; i < n2n_set.size(); ++i)
+    //    for (IndexType i = 0; i < n2n_set.size(); ++i)
     //      assert(n2n_set[i].size() > 1);
 
     //    std::ofstream matrix_log("unsortedmatrix.txt");
@@ -289,9 +312,9 @@ public:
     //    std::vector<idx_t> adj(nn + 1, 0);
     //    std::vector<idx_t> adjncy;
 
-    //    int count = 0;
+    //    IndexType count = 0;
     //    adj[0] = 0;
-    //    for (int r = 0; r < n2n_set.size(); ++r) // loop over 'rows'
+    //    for (IndexType r = 0; r < n2n_set.size(); ++r) // loop over 'rows'
     //    {
     //      for (auto it : n2n_set[r]) // loop over 'cols'
     //      {
@@ -306,7 +329,7 @@ public:
     // //   /*
     // //       std::vector<idx_t> iperm(nn);
     // //       std::vector<idx_t> perm(nn);
-    // //       for (int i=0;i<nn;++i)
+    // //       for (IndexType i=0;i<nn;++i)
     // //         perm[i]=i;
 
     // //       //////////// METIS!!!!
@@ -327,13 +350,13 @@ public:
     //                           undirectedS,
     //                           property<vertex_color_t,
     //                                    default_color_type,
-    //                                    property<vertex_degree_t, int>>>
+    //                                    property<vertex_degree_t, IndexType>>>
     //        Graph;
     //    typedef graph_traits<Graph>::vertex_descriptor Vertex;
     //    typedef graph_traits<Graph>::vertices_size_type size_type;
 
     //   Graph G(nn);
-    //    for (int i = 0; i < nn; i++)
+    //    for (IndexType i = 0; i < nn; i++)
     //    {
     //      for (auto j : n2n_set[i])
     //        if (j <= i)
@@ -366,22 +389,22 @@ public:
     //    // vertices
     //    VertexVec2d newVV(nnodes());
     //    VertexVec2d &origVV = GetVertexVector();
-    //    for (int i = 0; i < nnodes(); ++i)
+    //    for (IndexType i = 0; i < nnodes(); ++i)
     //      newVV[i] = origVV[perm[i]];
-    //    for (int i = 0; i < nnodes(); ++i)
+    //    for (IndexType i = 0; i < nnodes(); ++i)
     //      origVV[i] = newVV[i];
 
-    //    for (int i = 0; i < vo2n.size(); ++i)
+    //    for (IndexType i = 0; i < vo2n.size(); ++i)
     //      	vo2n[i] = iperm[vo2n[i]];
 
     //    // hex
-    //    for (int q = 0; q < quads.size(); ++q)
-    //      for (int n = 0; n < 4; ++n)
+    //    for (IndexType q = 0; q < quads.size(); ++q)
+    //      for (IndexType n = 0; n < 4; ++n)
     //       	quads[q][n] = iperm[quads[q][n]];
 
     //    // cell
-    //    for (int h = 0; h < Blines.size(); ++h)
-    //      for (int n = 0; n < 2; ++n)
+    //    for (IndexType h = 0; h < Blines.size(); ++h)
+    //      for (IndexType n = 0; n < 2; ++n)
     //        Blines[h][n] = iperm[Blines[h][n]];
 
     //    check_mesh2d();
@@ -393,12 +416,12 @@ public:
     //      // list of vertices in patch
     //      const Quad &Q = quad(it);
 
-    //      std::set<int> nh; // vertices in patch
+    //      std::set<IndexType> nh; // vertices in patch
     //      assert(Q.nchilds() == 4);
-    //      for (int c = 0; c < Q.nchilds(); ++c)
+    //      for (IndexType c = 0; c < Q.nchilds(); ++c)
     //      {
     //        const Quad &C = quad(Q.child(c));
-    //        for (int n = 0; n < 4; ++n)
+    //        for (IndexType n = 0; n < 4; ++n)
     //          nh.insert(C[n]);
     //      }
     //      assert(nh.size() == 9);
@@ -407,7 +430,7 @@ public:
     //          n2n_set[i1].insert(i2);
     //    }
 
-    //   for (int i = 0; i < n2n_set.size(); ++i)
+    //   for (IndexType i = 0; i < n2n_set.size(); ++i)
     //      assert(n2n_set[i].size() > 1);
 
     //    std::ofstream matrix_sorted_log("sortedmatrix.txt");

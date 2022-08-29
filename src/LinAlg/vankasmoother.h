@@ -71,9 +71,9 @@ protected:
   typedef Eigen::Matrix<MatrixEntryType, Eigen::Dynamic, 1> VankaVector;
 
   mutable const DofHandlerBase* _dofhandler;
-  int _ncomp, _sizeofpatch;
+  IndexType _ncomp, _sizeofpatch;
 
-  std::vector<std::vector<int>> _patchlist;
+  std::vector<std::vector<IndexType>> _patchlist;
   mutable std::vector<Eigen::PartialPivLU<VankaMatrix>> _lu;
 
 public:
@@ -101,12 +101,12 @@ public:
   }
 
   //////////////////// Construction
-  void ConstructStructure(const IntVector& perm, const MatrixInterface& A);
+  void ConstructStructure(const IndexVector& perm, const MatrixInterface& A);
   void zero()
   {
     // not necessary. entries will be copied
   }
-  void modify(int c, double s)
+  void modify(IndexType c, double s)
   {
     // not necessary
   }

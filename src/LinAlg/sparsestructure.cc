@@ -36,7 +36,7 @@ operator<<(ostream& s, const SparseStructure& A)
 {
   A.statistics(s);
   s << endl;
-  for (int i = 0; i < A.n(); i++) {
+  for (IndexType i = 0; i < A.n(); i++) {
     s << i << " :: " << A.row(i) << endl;
   }
   s << endl;
@@ -69,14 +69,14 @@ SparseStructure::operator=(const SparseStructure& A)
 
 // SparseStructure::SparseStructure(const ColumnStencil& S) : US(&S)
 // {
-//   int n = S.n();
-//   int ntot = S.nentries();
+//   IndexType n = S.n();
+//   IndexType ntot = S.nentries();
 //   sindices.reserve(n);
 //   sindices.resize (n);
 //   sntot = ntot;
 
-//   for(int i=0;i<n;i++)
-//     for(int pos=S.start(i);pos<S.stop(i);pos++)
+//   for(IndexType i=0;i<n;i++)
+//     for(IndexType pos=S.start(i);pos<S.stop(i);pos++)
 //       sindices[i].insert(S.col(pos));
 // }
 
@@ -87,14 +87,14 @@ SparseStructure::build_begin(IndexType n)
 {
   sindices.reserve(n);
   sindices.resize(n);
-  for (int i = 0; i < n; i++)
+  for (IndexType i = 0; i < n; i++)
     sindices[i].clear();
 }
 
 /*----------------------------------------------*/
 
 void
-SparseStructure::build_clear(int i)
+SparseStructure::build_clear(IndexType i)
 {
   row(i).clear();
 }
@@ -108,7 +108,7 @@ SparseStructure::hanging_node(IndexType hi, IndexType n1, IndexType n2)
   // gascoigne nicht getestet!
   row(hi).erase(hi);
 
-  for (set<int>::const_iterator p = rowbegin(hi); p != rowend(hi); p++) {
+  for (set<IndexType>::const_iterator p = rowbegin(hi); p != rowend(hi); p++) {
     row(*p).erase(hi);
     row(*p).insert(n1);
     row(*p).insert(n2);
@@ -120,7 +120,7 @@ SparseStructure::hanging_node(IndexType hi, IndexType n1, IndexType n2)
   row(hi).insert(hi);
 
   //   // alte version, lief mit gascoigne !
-  //   for (set<int>::const_iterator p=rowbegin(hi); p!=rowend(hi); p++)
+  //   for (set<IndexType>::const_iterator p=rowbegin(hi); p!=rowend(hi); p++)
   //     {
   //       if (*p!=hi)
   // 	{
@@ -142,7 +142,7 @@ void
 SparseStructure::build_end()
 {
   sntot = 0;
-  for (int i = 0; i < n(); i++) {
+  for (IndexType i = 0; i < n(); i++) {
     sntot += row(i).size();
   }
 }
@@ -156,7 +156,7 @@ SparseStructure::enlarge_lu()
   for (IndexType i = 0; i < n(); i++) {
     IndexType imax = 0;
     IndexType imin = n();
-    for (set<int>::iterator p = rowbegin(i); p != rowend(i); ++p) {
+    for (set<IndexType>::iterator p = rowbegin(i); p != rowend(i); ++p) {
       IndexType j = *p;
       imin = std::min(imin, j);
       imax = std::max(imax, j);
@@ -168,9 +168,9 @@ SparseStructure::enlarge_lu()
   }
   // cerr << "bandbreite: " << maxbw << endl;
   for (IndexType i = 0; i < n(); i++) {
-    int imin = std::max(static_cast<IndexType>(0), i - maxbw);
-    int imax = std::min(i + maxbw, n() - 1);
-    for (int im = imin; im <= imax; im++) {
+    IndexType imin = std::max(static_cast<IndexType>(0), i - maxbw);
+    IndexType imax = std::min(i + maxbw, n() - 1);
+    for (IndexType im = imin; im <= imax; im++) {
       row(i).insert(im);
     }
   }
@@ -182,9 +182,9 @@ SparseStructure::enlarge_lu()
 void
 SparseStructure::enlarge(const SparseStructure& S)
 {
-  for (int i = 0; i < n(); i++) {
-    for (set<int>::iterator p = S.rowbegin(i); p != S.rowend(i); ++p) {
-      int j = *p;
+  for (IndexType i = 0; i < n(); i++) {
+    for (set<IndexType>::iterator p = S.rowbegin(i); p != S.rowend(i); ++p) {
+      IndexType j = *p;
       row(i).insert(S.rowbegin(j), S.rowend(j));
     }
   }
@@ -197,27 +197,28 @@ void
 SparseStructure::enlarge_for_lu(const IntVector& p)
 {
   assert(p.size() == n());
-  vector<set<int>> transpose(n());
+  vector<set<IndexType>> transpose(n());
 
   IntVector q(n());
-  for (int i = 0; i < n(); ++i)
+  for (IndexType i = 0; i < n(); ++i)
     q[p[i]] = i;
 
-  for (int row = 0; row < n(); ++row)
-    for (set<int>::iterator col = rowbegin(row); col != rowend(row); ++col)
+  for (IndexType row = 0; row < n(); ++row)
+    for (set<IndexType>::iterator col = rowbegin(row); col != rowend(row);
+         ++col)
       transpose[*col].insert(row);
 
-  for (int row = 0; row < n(); row++) {
-    int row1 = p[row];
+  for (IndexType row = 0; row < n(); row++) {
+    IndexType row1 = p[row];
 
-    for (set<int>::iterator col1 = rowbegin(row1); col1 != rowend(row1);
+    for (set<IndexType>::iterator col1 = rowbegin(row1); col1 != rowend(row1);
          ++col1) {
-      int col = q[*col1];
+      IndexType col = q[*col1];
       if (col >= row) {
-        for (set<int>::iterator down1 = transpose[row1].begin();
+        for (set<IndexType>::iterator down1 = transpose[row1].begin();
              down1 != transpose[row1].end();
              ++down1) {
-          int down = q[*down1];
+          IndexType down = q[*down1];
           if (down > row) {
             this->row(*down1).insert(*col1);
             transpose[*col1].insert(*down1);

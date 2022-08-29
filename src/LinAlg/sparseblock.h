@@ -18,7 +18,7 @@ class SparseBlock : public numfixarray<SPARSE_NENTRIES, MatrixEntryType>
   typedef nvector<double>::const_iterator const_viterator;
 
 public:
-  int ncomp() const { return SPARSE_NROWS; }
+  ShortIndexType ncomp() const { return SPARSE_NROWS; }
 
   inline void operator*=(const SparseBlock&) { assert(0); }
   void operator*=(double s) { assert(0); }
@@ -27,17 +27,17 @@ public:
   void transpose(SparseBlock& A) { assert(0); }
   void copy_transpose(const SparseBlock& A) { assert(0); }
 
-  void zero_row(int) { assert(0); }
-  void uno_diag(int) { assert(0); }
-  MatrixEntryType& diag(int i) { assert(0); }
-  void getrow(std::vector<double>& v, int i) { assert(0); }
-  void getcolumn(std::vector<double>& v, int i) { assert(0); }
-  void setrow(std::vector<double>& v, int i) { assert(0); }
-  void setcolumn(std::vector<double>& v, int i) { assert(0); }
+  void zero_row(IndexType) { assert(0); }
+  void uno_diag(IndexType) { assert(0); }
+  MatrixEntryType& diag(IndexType i) { assert(0); }
+  void getrow(std::vector<double>& v, IndexType i) { assert(0); }
+  void getcolumn(std::vector<double>& v, IndexType i) { assert(0); }
+  void setrow(std::vector<double>& v, IndexType i) { assert(0); }
+  void setcolumn(std::vector<double>& v, IndexType i) { assert(0); }
 
-  double operator()(int r, int c) const
+  double operator()(IndexType r, IndexType c) const
   {
-    int p = SPARSE_START[r];
+    IndexType p = SPARSE_START[r];
     for (; p < SPARSE_START[r + 1]; ++p)
       if (SPARSE_COL[p] == c)
         break;
@@ -47,28 +47,28 @@ public:
     return numfixarray<SPARSE_NENTRIES, MatrixEntryType>::operator[](p);
   }
 
-  void DirichletRow(const std::vector<int>& cv)
+  void DirichletRow(const std::vector<IndexType>& cv)
   {
     for (auto row : cv) {
-      for (int p = SPARSE_START[row]; p < SPARSE_START[row + 1]; ++p)
+      for (IndexType p = SPARSE_START[row]; p < SPARSE_START[row + 1]; ++p)
         numfixarray<SPARSE_NENTRIES, MatrixEntryType>::operator[](p) = 0;
     }
   }
 
-  void DirichletCol(const std::vector<int>& cv)
+  void DirichletCol(const std::vector<IndexType>& cv)
   {
     for (auto col : cv) {
-      for (int r = 0; r < SPARSE_NROWS; ++r)
-        for (int p = SPARSE_START[r]; p < SPARSE_START[r + 1]; ++p)
+      for (IndexType r = 0; r < SPARSE_NROWS; ++r)
+        for (IndexType p = SPARSE_START[r]; p < SPARSE_START[r + 1]; ++p)
           if (SPARSE_COL[p] == col)
             numfixarray<SPARSE_NENTRIES, MatrixEntryType>::operator[](p) = 0;
     }
   }
 
-  void DirichletDiag(const std::vector<int>& cv)
+  void DirichletDiag(const std::vector<IndexType>& cv)
   {
     for (auto row : cv) {
-      int p;
+      IndexType p;
       for (p = SPARSE_START[row]; p < SPARSE_START[row + 1]; ++p)
         if (SPARSE_COL[p] == row)
           break;
@@ -80,18 +80,18 @@ public:
 
   void entry(const nmatrix<double>&) { assert(0); }
 
-  void entry(int i, int j, const EntryMatrix& E, double s = 1.)
+  void entry(IndexType i, IndexType j, const EntryMatrix& E, double s = 1.)
   {
-    for (int row = 0; row < SPARSE_NROWS; ++row)
-      for (int p = SPARSE_START[row]; p < SPARSE_START[row + 1]; ++p) {
-        int col = SPARSE_COL[p];
+    for (IndexType row = 0; row < SPARSE_NROWS; ++row)
+      for (IndexType p = SPARSE_START[row]; p < SPARSE_START[row + 1]; ++p) {
+        IndexType col = SPARSE_COL[p];
 #pragma omp atomic update
         numfixarray<SPARSE_NENTRIES, MatrixEntryType>::operator[](p) +=
           s * E(i, j, row, col);
       }
   }
 
-  void dual_entry(int i, int j, const EntryMatrix&, double s = 1.)
+  void dual_entry(IndexType i, IndexType j, const EntryMatrix&, double s = 1.)
   {
     assert(0);
   }
@@ -110,12 +110,12 @@ public:
   {
     auto it = this->begin();
     //	numfixarray<STRUCT::NENTRIES,MatrixEntryType>::begin();
-    for (int row = 0; row < SPARSE_NROWS; ++row) {
+    for (IndexType row = 0; row < SPARSE_NROWS; ++row) {
       double sum = 0.0;
 
-      for (int pos = SPARSE_START[row]; pos < SPARSE_START[row + 1];
+      for (IndexType pos = SPARSE_START[row]; pos < SPARSE_START[row + 1];
            ++pos, ++it) {
-        int col = SPARSE_COL[pos];
+        IndexType col = SPARSE_COL[pos];
         sum += (*it) * *(q0 + col);
       }
 

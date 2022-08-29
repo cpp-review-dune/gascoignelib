@@ -35,8 +35,8 @@ template<int DIM>
 class EdgeInfo
 {
 protected:
-  int _count;
-  std::array<int, 2 * DIM - 2> _vertex;
+  IndexType _count;
+  std::array<IndexType, 2 * DIM - 2> _vertex;
   LocalVector _u;
   const Edge* _edge;
 
@@ -44,13 +44,18 @@ public:
   EdgeInfo() {}
   ~EdgeInfo() {}
 
-  void BasicInit(const Edge*, int, const std::array<int, 2 * DIM - 2>&);
+  void BasicInit(const Edge*,
+                 IndexType,
+                 const std::array<IndexType, 2 * DIM - 2>&);
   void AddNodes(const LocalVector&);
 
-  const std::array<int, 2 * DIM - 2>& GetVertex() const { return _vertex; }
+  const std::array<IndexType, 2 * DIM - 2>& GetVertex() const
+  {
+    return _vertex;
+  }
   const LocalVector& GetValue() const { return _u; }
   const Edge& GetEdge() const { return *_edge; }
-  int GetCount() const { return _count; }
+  IndexType GetCount() const { return _count; }
   std::array<double, 2 * DIM - 2> GetNorm() const;
 
   void ShowStatistics() const;

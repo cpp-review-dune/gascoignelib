@@ -83,8 +83,8 @@ HangingNodes<2, 3>::HangingNodes()
 {
   wei[0] = 0.5;
   wei[1] = 0.5;
-  for (int i = 0; i < 3; ++i)
-    for (int j = 0; j < 3; ++j)
+  for (IndexType i = 0; i < 3; ++i)
+    for (IndexType j = 0; j < 3; ++j)
       fwei[3 * i + j] = wei[i] * wei[j];
 
   lnoe[0][0] = 0;
@@ -137,8 +137,8 @@ HangingNodes<3, 3>::HangingNodes()
   wei[0] = 0.375;
   wei[1] = 0.75;
   wei[2] = -0.125;
-  for (int i = 0; i < 3; ++i)
-    for (int j = 0; j < 3; ++j)
+  for (IndexType i = 0; i < 3; ++i)
+    for (IndexType j = 0; j < 3; ++j)
       fwei[3 * i + j] = wei[i] * wei[j];
 
   lnoe[0][0] = 0;
@@ -214,18 +214,18 @@ HangingNodes<3, 3>::HangingNodes()
 
 template<>
 void
-HangingNodes<2, 2>::CondenseHanging(EntryMatrix& E, IntVector& indices) const
+HangingNodes<2, 2>::CondenseHanging(EntryMatrix& E, IndexVector& indices) const
 {
   assert(indices.size() == lnoe.size());
-  for (int ii = 0; ii < indices.size(); ii++) {
-    std::array<int, 3> p = lnoe[ii];
+  for (IndexType ii = 0; ii < indices.size(); ii++) {
+    std::array<IndexType, 3> p = lnoe[ii];
 
-    int& hang = indices[p[1]];
+    IndexType& hang = indices[p[1]];
 
     if (!hanging(hang))
       continue;
 
-    const std::array<int, 3>& f = regular_nodes(hang);
+    const std::array<IndexType, 3>& f = regular_nodes(hang);
 
     if ((indices[p[2]] == f[0]) || (indices[p[2]] == f[1]))
       std::swap(p[0], p[2]);
@@ -247,17 +247,17 @@ HangingNodes<2, 2>::CondenseHanging(EntryMatrix& E, IntVector& indices) const
 
 template<>
 void
-HangingNodes<2, 3>::CondenseHanging(EntryMatrix& E, IntVector& indices) const
+HangingNodes<2, 3>::CondenseHanging(EntryMatrix& E, IndexVector& indices) const
 {
-  for (int ii = 0; ii < 4; ii++) // nur 4 kandiaten koennen haengen !!
+  for (IndexType ii = 0; ii < 4; ii++) // nur 4 kandiaten koennen haengen !!
   {
-    int i = indices[2 * ii + 1];
+    IndexType i = indices[2 * ii + 1];
     if (!hanging(i))
       continue;
 
-    const std::array<int, 3>& f = regular_nodes(i);
+    const std::array<IndexType, 3>& f = regular_nodes(i);
 
-    std::array<int, 3> p = lnoe[ii];
+    std::array<IndexType, 3> p = lnoe[ii];
 
     if ((indices[p[0]] == f[1]) && (indices[p[1]] == f[0])) {
       std::swap(p[0], p[1]);
@@ -277,24 +277,24 @@ HangingNodes<2, 3>::CondenseHanging(EntryMatrix& E, IntVector& indices) const
 
 template<>
 void
-HangingNodes<3, 2>::CondenseHanging(EntryMatrix& E, IntVector& indices) const
+HangingNodes<3, 2>::CondenseHanging(EntryMatrix& E, IndexVector& indices) const
 {
   if (1) {
-    IntVector x(0), y(0);
+    IndexVector x(0), y(0);
 
-    for (int ii = 0; ii < 8; ii++) {
-      int i = indices[ii];
+    for (IndexType ii = 0; ii < 8; ii++) {
+      IndexType i = indices[ii];
 
       if (hanging(i) == 2) // 2er haengender Knoten
       {
-        std::array<int, 2> Edge = GetHangingEdge(i);
+        std::array<IndexType, 2> Edge = GetHangingEdge(i);
 
         x.push_back(ii);
 
-        for (int iii = 0; iii < 2; iii++) {
-          int ir = Edge[iii];
+        for (IndexType iii = 0; iii < 2; iii++) {
+          IndexType ir = Edge[iii];
           bool found = 0;
-          for (int iiii = 0; (iiii < 8) && !found; iiii++) {
+          for (IndexType iiii = 0; (iiii < 8) && !found; iiii++) {
             if (ir == indices[iiii]) {
               found = 1;
               y.push_back(iiii);
@@ -308,31 +308,31 @@ HangingNodes<3, 2>::CondenseHanging(EntryMatrix& E, IntVector& indices) const
     assert(x.size() == y.size());
     assert(x.size() <= 3);
 
-    for (int i = 0; i < x.size(); i++) {
-      int i1 = x[i]; // new node !
-      int i2 = y[i]; // already there
+    for (IndexType i = 0; i < x.size(); i++) {
+      IndexType i1 = x[i]; // new node !
+      IndexType i2 = y[i]; // already there
 
       E.multiply_column_row(i1, 0.5);
       E.add_column_row(i2, i1);
     }
   }
   if (1) {
-    IntVector x(0), y(0);
+    IndexVector x(0), y(0);
 
-    for (int ii = 0; ii < 8; ii++) {
-      int j = indices[ii];
+    for (IndexType ii = 0; ii < 8; ii++) {
+      IndexType j = indices[ii];
 
       if (hanging(j) == 4) // 4er haengender Knoten
       {
-        std::array<int, 4> Face = GetHangingFace(j);
+        std::array<IndexType, 4> Face = GetHangingFace(j);
 
         x.push_back(ii);
-        for (int i = 0; i < 4; i++) {
-          int FaceIndex = Face[i];
+        for (IndexType i = 0; i < 4; i++) {
+          IndexType FaceIndex = Face[i];
           //
           // suche ob FaceIndex schon in indices sind
           //
-          int jj = 0;
+          IndexType jj = 0;
           bool found = 0;
           while ((jj < 8) && !found) {
             found = (indices[jj] == FaceIndex);
@@ -348,17 +348,17 @@ HangingNodes<3, 2>::CondenseHanging(EntryMatrix& E, IntVector& indices) const
     }
     assert(y.size() == 3 * x.size());
 
-    int counter = 0;
-    for (int i = 0; i < x.size(); i++) {
-      int i1 = x[i]; // new node !
+    IndexType counter = 0;
+    for (IndexType i = 0; i < x.size(); i++) {
+      IndexType i1 = x[i]; // new node !
 
       E.multiply_column_row(i1, 0.25);
-      int last = counter + 3;
+      IndexType last = counter + 3;
 
       assert(last <= y.size());
 
       for (; counter < last; counter++) {
-        int i2 = y[counter]; // already there
+        IndexType i2 = y[counter]; // already there
         E.add_column_row(i2, i1);
       }
     }
@@ -367,14 +367,14 @@ HangingNodes<3, 2>::CondenseHanging(EntryMatrix& E, IntVector& indices) const
 
 template<>
 void
-HangingNodes<3, 3>::CondenseHanging(EntryMatrix& E, IntVector& indices) const
+HangingNodes<3, 3>::CondenseHanging(EntryMatrix& E, IndexVector& indices) const
 {
   if (1) {
 
-    IntVector x(0), y(0);
+    IndexVector x(0), y(0);
 
-    for (int ii = 0; ii < 8; ii++) {
-      int i = indices[ii];
+    for (IndexType ii = 0; ii < 8; ii++) {
+      IndexType i = indices[ii];
 
       if (hanging(i) == 2) // 2er haengender Knoten
       {
@@ -382,10 +382,10 @@ HangingNodes<3, 3>::CondenseHanging(EntryMatrix& E, IntVector& indices) const
 
         x.push_back(ii);
 
-        for (int iii = 0; iii < 2; iii++) {
-          int ir = Edge[iii];
+        for (IndexType iii = 0; iii < 2; iii++) {
+          IndexType ir = Edge[iii];
           bool found = 0;
-          for (int iiii = 0; (iiii < 8) && !found; iiii++) {
+          for (IndexType iiii = 0; (iiii < 8) && !found; iiii++) {
             if (ir == indices[iiii]) {
               found = 1;
               y.push_back(iiii);
@@ -399,9 +399,9 @@ HangingNodes<3, 3>::CondenseHanging(EntryMatrix& E, IntVector& indices) const
     assert(x.size() == y.size());
     assert(x.size() <= 3);
 
-    for (int i = 0; i < x.size(); i++) {
-      int i1 = x[i]; // new node !
-      int i2 = y[i]; // already there
+    for (IndexType i = 0; i < x.size(); i++) {
+      IndexType i1 = x[i]; // new node !
+      IndexType i2 = y[i]; // already there
 
       E.multiply_column_row(i1, 0.5);
       E.add_column_row(i2, i1);
@@ -410,18 +410,18 @@ HangingNodes<3, 3>::CondenseHanging(EntryMatrix& E, IntVector& indices) const
 
   if (1) {
 
-    for (int i = 0; i < 12; i++) {
-      std::array<int, 3> p = lnoe[i];
+    for (IndexType i = 0; i < 12; i++) {
+      std::array<IndexType, 3> p = lnoe[i];
 
-      int elim = p[1];
-      int h = indices[elim];
+      IndexType elim = p[1];
+      IndexType h = indices[elim];
 
       auto q = edges->find(h);
 
       if (q == edges->end())
         continue;
 
-      const std::array<int, 3>& f = q->second;
+      const std::array<IndexType, 3>& f = q->second;
 
       indices[elim] = f[2];
 
@@ -440,26 +440,26 @@ HangingNodes<3, 3>::CondenseHanging(EntryMatrix& E, IntVector& indices) const
       E.multiply_row(elim, wei[2]);
     }
 
-    for (int i = 0; i < 6; i++) {
-      std::array<int, 5> lf = lnop[i];
+    for (IndexType i = 0; i < 6; i++) {
+      std::array<IndexType, 5> lf = lnop[i];
 
-      int elim = lf[4];
-      int h = indices[elim];
+      IndexType elim = lf[4];
+      IndexType h = indices[elim];
 
       auto q = faces->find(h);
 
       if (q == faces->end())
         continue;
 
-      const std::array<int, 9>& gf = q->second;
+      const std::array<IndexType, 9>& gf = q->second;
 
       indices[elim] = gf[8];
 
-      std::array<int, 8> x;
+      std::array<IndexType, 8> x;
       x.fill(-1);
 
-      for (int j = 0; j < indices.size(); j++) {
-        int k = indices[j];
+      for (IndexType j = 0; j < indices.size(); j++) {
+        IndexType k = indices[j];
         if (k == gf[2])
           x[2] = j;
         else if (k == gf[5])
@@ -469,8 +469,8 @@ HangingNodes<3, 3>::CondenseHanging(EntryMatrix& E, IntVector& indices) const
         else if (k == gf[7])
           x[7] = j;
       }
-      for (int j = 0; j < 4; j++) {
-        int k = indices[lf[j]];
+      for (IndexType j = 0; j < 4; j++) {
+        IndexType k = indices[lf[j]];
         if (k == gf[0])
           x[0] = lf[j];
         else if (k == gf[1])
@@ -482,7 +482,7 @@ HangingNodes<3, 3>::CondenseHanging(EntryMatrix& E, IntVector& indices) const
         else
           assert(0);
       }
-      for (int j = 0; j < 8; j++) {
+      for (IndexType j = 0; j < 8; j++) {
         assert(x[j] >= 0);
         E.add_column(x[j], elim, fwei[j]);
         E.add_row(x[j], elim, fwei[j]);

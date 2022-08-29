@@ -93,7 +93,7 @@ public:
     const = 0; // returns the number of degrees of freedom
   virtual IndexType nelements()
     const = 0; // returns the number of elements in the discretization
-  virtual int ndegree() const
+  virtual IndexType ndegree() const
   {
     std::cerr << "\"DiscretizationInterface::ndegree\" not written!\n"
                  "Continuing anyways."

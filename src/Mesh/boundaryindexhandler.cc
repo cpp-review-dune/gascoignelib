@@ -34,9 +34,9 @@ namespace Gascoigne {
 ostream&
 operator<<(ostream& s, const BoundaryIndexHandler& A)
 {
-  const IntSet& colors = A.GetColors();
+  const IndexSet& colors = A.GetColors();
   cerr << "All Colors: " << colors << endl;
-  for (IntSet::const_iterator p = colors.begin(); p != colors.end(); ++p) {
+  for (auto p = colors.begin(); p != colors.end(); ++p) {
     cerr << "color: " << *p;
     cerr << "\n\tVertices: " << A.Verteces(*p);
     cerr << "\n\tCells: " << A.Cells(*p);
@@ -51,9 +51,9 @@ operator<<(ostream& s, const BoundaryIndexHandler& A)
 void
 BoundaryIndexHandler::check() const
 {
-  const IntSet& colors = GetColors();
+  const IndexSet& colors = GetColors();
   cerr << "All Colors: " << colors << endl;
-  for (IntSet::const_iterator p = colors.begin(); p != colors.end(); ++p) {
+  for (auto p = colors.begin(); p != colors.end(); ++p) {
     cerr << "color: " << *p;
     const IndexVector& v = Verteces(*p);
     for (IndexType i = 0; i < v.size(); i++) {
@@ -69,7 +69,7 @@ BoundaryIndexHandler::check() const
 /*--------------------------------------------------------------*/
 
 void
-BoundaryIndexHandler::Equal(const IntSet& col,
+BoundaryIndexHandler::Equal(const IndexSet& col,
                             const VecMap& v,
                             const VecMap& c,
                             const VecMap& l,

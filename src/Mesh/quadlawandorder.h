@@ -52,10 +52,9 @@ namespace Gascoigne {
 class QuadLawAndOrder
 {
 protected:
-  typedef std::map<int, int> LocVertexLocEdge;
+  typedef std::map<IndexType, IndexType> LocVertexLocEdge;
   typedef std::vector<LocVertexLocEdge> LocVertexLocVertexLocEdge;
-  typedef std::array<int, 2> EdgeVector;
-  typedef std::array<int, 2> QuadVector;
+  typedef std::array<IndexType, 2> QuadVector;
 
   // Daten fuer Suchen von kindern an hang
 
@@ -66,46 +65,59 @@ protected:
   std::vector<Quad>& quads;
 
   std::array<EdgeVector, 4> childs_edge, vice;
-  std::array<int, 4> child_point_cell, child_point_vertex;
-  std::array<int, 9> gc, gv;
+  std::array<IndexType, 4> child_point_cell, child_point_vertex;
+  std::array<IndexType, 9> gc, gv;
 
-  std::array<std::array<int, 2>, 4> ieoc, oeoc;
+  std::array<std::array<IndexType, 2>, 4> ieoc, oeoc;
 
-  int local_edge(const Quad& f, const EdgeVector& globaledge) const;
+  IndexType local_edge(const Quad& f, const EdgeVector& globaledge) const;
 
 public:
   QuadLawAndOrder(std::vector<Quad>& q);
 
-  int cell_midpoint(int i) const { return (i + 2) % 4; }
-  int global_index(const Quad& q, int i) const;
+  IndexType cell_midpoint(IndexType i) const { return (i + 2) % 4; }
+  IndexType global_index(const Quad& q, IndexType i) const;
 
   void fill_corner_vertex_in_childs(const Quad& f) const;
-  void fill_edge_vertex_in_childs(const Quad& f, int e, int i) const;
-  void fill_middle_vertex_in_childs(const Quad& f, int i) const;
+  void fill_edge_vertex_in_childs(const Quad& f,
+                                  IndexType e,
+                                  IndexType i) const;
+  void fill_middle_vertex_in_childs(const Quad& f, IndexType i) const;
 
   //   edges
 
-  int ChildEdge(int e) const { return e; }
-  int ChildsOfEdge(int e, int i) const { return childs_edge[e][i]; }
-  int InnerEdgeOfChild(int c, int i) const { return ieoc[c][i]; }
-  int OuterEdgeOfChild(int c, int i) const { return oeoc[c][i]; }
-  int GlobalInnerEdge(int c, int i) const;
+  IndexType ChildEdge(IndexType e) const { return e; }
+  IndexType ChildsOfEdge(IndexType e, IndexType i) const
+  {
+    return childs_edge[e][i];
+  }
+  IndexType InnerEdgeOfChild(IndexType c, IndexType i) const
+  {
+    return ieoc[c][i];
+  }
+  IndexType OuterEdgeOfChild(IndexType c, IndexType i) const
+  {
+    return oeoc[c][i];
+  }
+  IndexType GlobalInnerEdge(IndexType c, IndexType i) const;
 
-  std::pair<int, int> GetChildEdges(EdgeVector& edge,
-                                    const EdgeVector& bigedge,
-                                    int hanging,
-                                    int bigquad,
-                                    int i) const;
+  std::pair<IndexType, IndexType> GetChildEdges(EdgeVector& edge,
+                                                const EdgeVector& bigedge,
+                                                IndexType hanging,
+                                                IndexType bigquad,
+                                                IndexType i) const;
 
-  int GlobalChildEdge(const EdgeVector& edge, int q, int j) const;
-  void local_edge_index(EdgeVector& index, int edge) const;
-  int local_edge_index(int, const EdgeVector&) const;
+  IndexType GlobalChildEdge(const EdgeVector& edge,
+                            IndexType q,
+                            IndexType j) const;
+  void local_edge_index(EdgeVector& index, IndexType edge) const;
+  IndexType local_edge_index(IndexType, const EdgeVector&) const;
 
-  int middle_vertex(const Quad& f) const;
-  int edge_vertex(const Quad& f, int edge) const;
+  IndexType middle_vertex(const Quad& f) const;
+  IndexType edge_vertex(const Quad& f, IndexType edge) const;
 
   /* for boundaries */
-  void childs_of_edge(QuadVector& child, const Quad& f, int edge) const;
+  void childs_of_edge(QuadVector& child, const Quad& f, IndexType edge) const;
 
   /* for regular */
   void childs_of_global_edge(QuadVector& child,
@@ -116,12 +128,12 @@ public:
                                     const Quad& f) const;
 
   /* for hierarchicalmesh / find in liehanglist */
-  void global_edge_unsorted(std::array<int, 2>& lineglob,
+  void global_edge_unsorted(std::array<IndexType, 2>& lineglob,
                             const Quad& q,
-                            int edge) const;
+                            IndexType edge) const;
 
   /* fuer mginterpolator */
-  void globalvertices_of_edge(const Quad&, EdgeVector&, int) const;
+  void globalvertices_of_edge(const Quad&, EdgeVector&, IndexType) const;
 };
 } // namespace Gascoigne
 

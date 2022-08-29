@@ -88,7 +88,7 @@ protected:
                              int iq,
                              double s) const;
 
-  virtual IntVector GetLocalIndices(int iq) const = 0;
+  virtual IndexVector GetLocalIndices(int iq) const = 0;
 
 public:
   //

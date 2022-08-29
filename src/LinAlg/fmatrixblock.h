@@ -42,7 +42,7 @@ class FMatrixBlock : public NodeMatrix<N, MatrixEntryType>
   typedef nvector<double>::const_iterator const_viterator;
 
 public:
-  int ncomp() const { return N; }
+  IndexType ncomp() const { return N; }
 
   inline void operator*=(const FMatrixBlock<N>&);
   void operator*=(double s);
@@ -51,21 +51,21 @@ public:
   void transpose(FMatrixBlock<N>& A);
   void copy_transpose(const FMatrixBlock<N>& A);
 
-  void zero_row(int);
-  void uno_diag(int);
-  MatrixEntryType& diag(int i);
-  void getrow(std::vector<double>& v, int i);
-  void getcolumn(std::vector<double>& v, int i);
-  void setrow(std::vector<double>& v, int i);
-  void setcolumn(std::vector<double>& v, int i);
+  void zero_row(IndexType);
+  void uno_diag(IndexType);
+  MatrixEntryType& diag(IndexType i);
+  void getrow(std::vector<double>& v, IndexType i);
+  void getcolumn(std::vector<double>& v, IndexType i);
+  void setrow(std::vector<double>& v, IndexType i);
+  void setcolumn(std::vector<double>& v, IndexType i);
 
-  void DirichletRow(const std::vector<int>& cv);
-  void DirichletCol(const std::vector<int>& cv);
-  void DirichletDiag(const std::vector<int>& cv);
+  void DirichletRow(const std::vector<IndexType>& cv);
+  void DirichletCol(const std::vector<IndexType>& cv);
+  void DirichletDiag(const std::vector<IndexType>& cv);
 
   void entry(const nmatrix<double>&);
-  void entry(int i, int j, const EntryMatrix&, double s = 1.);
-  void dual_entry(int i, int j, const EntryMatrix&, double s = 1.);
+  void entry(IndexType i, IndexType j, const EntryMatrix&, double s = 1.);
+  void dual_entry(IndexType i, IndexType j, const EntryMatrix&, double s = 1.);
   void inverse();
   inline void vmult(viterator) const;
   void mult(FMatrixBlock<N>&, const FMatrixBlock<N>&) const;
@@ -80,7 +80,7 @@ public:
         auto pB = B.begin() + i * N;
         auto qB = pB + N;
 
-        // for (int k=0; k<N; k++)
+        // for (IndexType k=0; k<N; k++)
         for (; pB != qB; pB++) {
           // value(i,j) -= B(i,k) * C(k,j);
           *p -= *pB * *pC;
@@ -93,15 +93,15 @@ public:
 
   void add(double s, const FMatrixBlock<N>& A)
   {
-    for (int i = 0; i < N; i++) {
-      for (int j = 0; j < N; j++) {
+    for (IndexType i = 0; i < N; i++) {
+      for (IndexType j = 0; j < N; j++) {
         NodeMatrix<N, MatrixEntryType>::value(i, j) += s * A(i, j);
       }
     }
   }
   void adddiag(const nvector<double>& s, double l)
   {
-    for (int i = 0; i < N; i++) {
+    for (IndexType i = 0; i < N; i++) {
       NodeMatrix<N, MatrixEntryType>::value(i, i) += s[i] * l;
     }
   }
@@ -124,8 +124,8 @@ public:
   {
     const_iterator pm = numfixarray<N * N, MatrixEntryType>::begin();
 
-    for (int k = 0; k < N; k++) {
-      for (int h = 0; h < N; h++) {
+    for (IndexType k = 0; k < N; k++) {
+      for (IndexType h = 0; h < N; h++) {
         // sum += M(k,h) * (*(q0+h));
         *p++ += *pm++ * *q0;
       }
@@ -150,19 +150,19 @@ public:
   void vector_get(nvector<MatrixEntryType>& v) const
   {
     v.resize(numfixarray<N * N, MatrixEntryType>::size());
-    for (int i = 0; i < numfixarray<N * N, MatrixEntryType>::size(); ++i)
+    for (IndexType i = 0; i < numfixarray<N * N, MatrixEntryType>::size(); ++i)
       v[i] = NodeMatrix<N, MatrixEntryType>::operator[](i);
   }
   void vector_set(nvector<MatrixEntryType>& v)
   {
     assert(v.size() == this->size());
-    for (int i = 0; i < numfixarray<N * N, MatrixEntryType>::size(); ++i)
+    for (IndexType i = 0; i < numfixarray<N * N, MatrixEntryType>::size(); ++i)
       NodeMatrix<N, MatrixEntryType>::operator[](i) = v[i];
   }
   void vector_add(double d, nvector<MatrixEntryType>& v)
   {
     assert(v.size() == N * N);
-    for (int i = 0; i < NodeMatrix<N, MatrixEntryType>::size(); ++i)
+    for (IndexType i = 0; i < NodeMatrix<N, MatrixEntryType>::size(); ++i)
       NodeMatrix<N, MatrixEntryType>::operator[](i) += d * v[i];
   }
 };
@@ -174,13 +174,13 @@ inline void
 FMatrixBlock<N>::operator*=(const FMatrixBlock<N>& B)
 {
   numfixarray<N, double> vhelp;
-  for (int i = 0; i < N; i++) {
-    for (int j = 0; j < N; j++) {
+  for (IndexType i = 0; i < N; i++) {
+    for (IndexType j = 0; j < N; j++) {
       vhelp[j] = NodeMatrix<N, MatrixEntryType>::value(i, j);
     }
-    for (int j = 0; j < N; j++) {
+    for (IndexType j = 0; j < N; j++) {
       NodeMatrix<N, MatrixEntryType>::value(i, j) = 0.;
-      for (int k = 0; k < N; k++) {
+      for (IndexType k = 0; k < N; k++) {
         NodeMatrix<N, MatrixEntryType>::value(i, j) += vhelp[k] * B(k, j);
       }
     }

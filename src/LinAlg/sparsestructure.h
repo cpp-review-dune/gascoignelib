@@ -34,14 +34,14 @@ namespace Gascoigne {
 class SparseStructure : public SparseStructureInterface
 {
 protected:
-  typedef std::vector<IntSet> Indices;
+  typedef std::vector<IndexSet> Indices;
 
-  int sntot;
+  IndexType sntot;
   Indices sindices;
 
 public:
-  typedef IntSet::iterator iterator;
-  typedef IntSet::const_iterator const_iterator;
+  typedef IndexSet::iterator iterator;
+  typedef IndexSet::const_iterator const_iterator;
 
   SparseStructure()
     : sntot(0)
@@ -58,32 +58,32 @@ public:
   IndexType ntotal() const { return sntot; }
 
   const Indices& indices() const { return sindices; }
-  const IntSet& row(IndexType i) const
+  const IndexSet& row(IndexType i) const
   {
     assert((i >= 0) && (i < sindices.size()));
     return sindices[i];
   }
-  IntSet& row(IndexType i)
+  IndexSet& row(IndexType i)
   {
     assert((i >= 0) && (i < sindices.size()));
     return sindices[i];
   }
-  IntSet::iterator rowbegin(IndexType i)
+  IndexSet::iterator rowbegin(IndexType i)
   {
     assert((i >= 0) && (i < sindices.size()));
     return row(i).begin();
   }
-  IntSet::iterator rowend(IndexType i)
+  IndexSet::iterator rowend(IndexType i)
   {
     assert((i >= 0) && (i < sindices.size()));
     return row(i).end();
   }
-  IntSet::const_iterator rowbegin(IndexType i) const
+  IndexSet::const_iterator rowbegin(IndexType i) const
   {
     assert((i >= 0) && (i < sindices.size()));
     return row(i).begin();
   }
-  IntSet::const_iterator rowend(IndexType i) const
+  IndexSet::const_iterator rowend(IndexType i) const
   {
     assert((i >= 0) && (i < sindices.size()));
     return row(i).end();

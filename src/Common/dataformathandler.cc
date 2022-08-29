@@ -32,6 +32,14 @@ namespace Gascoigne {
 
 /***************************************************/
 
+template<typename T>
+void
+DataFormatHandler::insert(const string& name, T val)
+{
+  NT.insert({ std::string(typeid(T).name()), name });
+  TV.insert({ name, static_cast<void*>(val) });
+}
+
 void
 DataFormatHandler::insert(const string& nm, string* pos)
 {
@@ -50,6 +58,16 @@ DataFormatHandler::insert(const string& nm, int* pos)
   NameType p = make_pair(name, type);
   NT.insert(p);
   TI.insert(make_pair(name, pos));
+}
+
+void
+DataFormatHandler::insert(const string& nm, IndexType* pos)
+{
+  string type = "IndexType";
+  string name = nm;
+  NameType p = make_pair(name, type);
+  NT.insert(p);
+  TId.insert(make_pair(name, pos));
 }
 
 void
@@ -109,13 +127,10 @@ DataFormatHandler::insert(const string& nm, std::array<double, 3>* pos)
 /*-----------------------------------------*/
 
 void
-DataFormatHandler::insert(const string& nm, vector<double>* pos)
+DataFormatHandler::insert(const string& name, vector<double>* pos)
 {
-  string type = "vector<double>";
-  string name = nm;
-  NameType p = make_pair(name, type);
-  NT.insert(p);
-  TND.insert(make_pair(name, pos));
+  NT.insert({ name, std::string("vector<double>") });
+  TND.insert({ name, pos });
 }
 
 void
@@ -126,6 +141,16 @@ DataFormatHandler::insert(const string& nm, IntVector* pos)
   NameType p = make_pair(name, type);
   NT.insert(p);
   TNI.insert(make_pair(name, pos));
+}
+
+void
+DataFormatHandler::insert(const string& nm, IndexVector* pos)
+{
+  string type = "IndexVector";
+  string name = nm;
+  NameType p = make_pair(name, type);
+  NT.insert(p);
+  TNId.insert(make_pair(name, pos));
 }
 
 void
@@ -205,6 +230,13 @@ DataFormatHandler::insert(const string& nm, int* pos, int def)
 }
 
 void
+DataFormatHandler::insert(const string& nm, IndexType* pos, IndexType def)
+{
+  insert(nm, pos);
+  *pos = def;
+}
+
+void
 DataFormatHandler::insert(const string& nm, bool* pos, bool def)
 {
   insert(nm, pos);
@@ -259,6 +291,13 @@ DataFormatHandler::insert(const string& nm, IntVector* pos, IntVector& def)
   *pos = def;
 }
 
+void
+DataFormatHandler::insert(const string& nm, IndexVector* pos, IndexVector& def)
+{
+  insert(nm, pos);
+  *pos = def;
+}
+
 /***************************************************/
 
 void
@@ -278,6 +317,16 @@ DataFormatHandler::setvalue(const string& name, int value)
   TypeInt::const_iterator p;
   p = TI.find(name);
   if (p != TI.end()) {
+    *(p->second) = value;
+    return;
+  }
+}
+
+void
+DataFormatHandler::setvalue(const string& name, IndexType value)
+{
+  auto p = TId.find(name);
+  if (p != TId.end()) {
     *(p->second) = value;
     return;
   }
@@ -363,6 +412,17 @@ DataFormatHandler::setvalue(const string& name, IntVector& value)
 }
 
 void
+DataFormatHandler::setvalue(const string& name, IndexVector& value)
+{
+  auto p = TNId.find(name);
+  if (p != TNId.end()) {
+    p->second->resize(value.size());
+    *(p->second) = value;
+    return;
+  }
+}
+
+void
 DataFormatHandler::setvalue(const string& name, vector<string>& value)
 {
   TypeVectorString::const_iterator p;
@@ -430,41 +490,13 @@ DataFormatHandler::insertvalue(const string& name, vector<string>& value)
 
 /***************************************************/
 
-string
-DataFormatHandler::search(string& fo, const string& name)
-{
-  set<NameType>::const_iterator p = NT.find(make_pair(name, fo));
-  if (p != NT.end()) {
-    return p->second;
-  }
-  string leer = "";
-  return leer;
-}
-
-/***************************************************/
-
 void
 DataFormatHandler::get(string& f, const string& name)
 {
-  array<string, 14> s = { "string",
-                          "integer",
-                          "float",
-                          "double",
-                          "std::array<double,2>",
-                          "vector<double>",
-                          "IntVector",
-                          "vector<string>",
-                          "map<int,IntVector >",
-                          "set<vector<string> >",
-                          "StringDouble",
-                          "set<int>",
-                          "std::array<double,3>",
-                          "bool" };
   f = "";
-  for (int i = 0; i < s.size(); i++) {
-    f = search(s[i], name);
-    if (f != "")
-      break;
+  auto p = NT.find(name);
+  if (p != NT.end()) {
+    f = p->second;
   }
 }
 
@@ -532,6 +564,15 @@ DataFormatHandler::print(ostream& s) const
     s << p6->second->size();
     s << "     ";
     s << *(p6->second);
+    s << "\n";
+  }
+  auto p61 = TNId.begin();
+  for (; p61 != TNId.end(); p6++) {
+    s << p61->first;
+    s << "     ";
+    s << p61->second->size();
+    s << "     ";
+    s << *(p61->second);
     s << "\n";
   }
   TypeVectorString::const_iterator p7 = TVS.begin();

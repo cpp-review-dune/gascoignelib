@@ -40,7 +40,7 @@ operator<<(ostream& s, const ColumnStencil& A)
 /*-------------------------------------------------------------*/
 
 void
-ColumnStencil::memory(int n, int nt)
+ColumnStencil::memory(IndexType n, IndexType nt)
 {
   scol.reservesize(nt);
   sstart.reservesize(n + 1);
@@ -57,11 +57,11 @@ ColumnStencil::memory(const SparseStructureInterface* SI)
   memory(SS->n(), SS->ntotal());
 
   sstart[0] = 0;
-  for (int i = 0; i < SS->n(); i++) {
-    int first = sstart[i];
+  for (IndexType i = 0; i < SS->n(); i++) {
+    IndexType first = sstart[i];
     sstart[i + 1] = first + SS->rowsize(i);
-    int id = 0;
-    for (set<int>::const_iterator p = SS->rowbegin(i); p != SS->rowend(i);
+    IndexType id = 0;
+    for (set<IndexType>::const_iterator p = SS->rowbegin(i); p != SS->rowend(i);
          p++) {
       scol[first + id] = *p;
       id++;
@@ -75,8 +75,8 @@ std::ostream&
 ColumnStencil::Write(std::ostream& os) const
 {
   os << n() << "\t" << nentries() << "\n\n" << sstart << "\n\n";
-  for (int i = 0; i < n(); i++) {
-    for (int pos = start(i); pos < stop(i); pos++) {
+  for (IndexType i = 0; i < n(); i++) {
+    for (IndexType pos = start(i); pos < stop(i); pos++) {
       os << col(pos) << " ";
     }
     os << std::endl;

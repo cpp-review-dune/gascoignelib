@@ -47,7 +47,7 @@ GascoigneMeshConstructor::BasicInit()
   else
     Loop3d();
 
-  IntVector& v1 = *GMG->GetGascoigneMesh(0)->Vertexo2n();
+  IndexVector& v1 = *GMG->GetGascoigneMesh(0)->Vertexo2n();
   v1.reservesize(HM->Vertexo2n()->size());
   v1 = *HM->Vertexo2n();
 }
@@ -59,7 +59,7 @@ GascoigneMeshConstructor::Loop2d()
 {
   finestlevel = 1;
 
-  set<int> newquads, oldquads;
+  IndexSet newquads, oldquads;
   HM->GetAwakeCells(newquads);
 
   GascoigneMesh* GM0 = GMG->GetGascoigneMesh(0);
@@ -84,7 +84,7 @@ GascoigneMeshConstructor::Loop2d()
   const HierarchicalMesh2d* HMP = dynamic_cast<const HierarchicalMesh2d*>(HM);
   assert(HMP);
 
-  for (int level = 1; level < GMG->nlevels(); level++) {
+  for (IndexType level = 1; level < GMG->nlevels(); level++) {
     finestlevel = 0;
 
     GascoigneMesh* GM = GMG->GetGascoigneMesh(level);
@@ -110,7 +110,7 @@ GascoigneMeshConstructor::Loop3d()
 {
   finestlevel = 1;
 
-  set<int> newquads, oldquads;
+  IndexSet newquads, oldquads;
   HM->GetAwakeCells(newquads);
 
   GascoigneMesh* GM0 = GMG->GetGascoigneMesh(0);
@@ -136,7 +136,7 @@ GascoigneMeshConstructor::Loop3d()
   const HierarchicalMesh3d* HMP = dynamic_cast<const HierarchicalMesh3d*>(HM);
   assert(HMP);
 
-  for (int level = 1; level < GMG->nlevels(); level++) {
+  for (IndexType level = 1; level < GMG->nlevels(); level++) {
     finestlevel = 0;
 
     GascoigneMesh* GM = GMG->GetGascoigneMesh(level);
@@ -162,8 +162,8 @@ GascoigneMeshConstructor::Loop3d()
 
 LevelMesh2d*
 GascoigneMeshConstructor::LevelUpdate2d(GascoigneMesh* GM,
-                                        const IntSet& newquads,
-                                        const IntSet& oldquads) const
+                                        const IndexSet& newquads,
+                                        const IndexSet& oldquads) const
 {
   LevelMesh2d* CM = new LevelMesh2d(HM);
   CM->BasicInit(newquads, oldquads);
@@ -175,8 +175,8 @@ GascoigneMeshConstructor::LevelUpdate2d(GascoigneMesh* GM,
 
 LevelMesh3d*
 GascoigneMeshConstructor::LevelUpdate3d(GascoigneMesh* GM,
-                                        const IntSet& newquads,
-                                        const IntSet& oldquads) const
+                                        const IndexSet& newquads,
+                                        const IndexSet& oldquads) const
 
 {
   LevelMesh3d* CM = new LevelMesh3d(HM);
@@ -195,16 +195,16 @@ GascoigneMeshConstructor::Construct2d(GascoigneMesh* NNM,
 
   assert(NM);
 
-  IntVector& nc = NM->GetCellVector();
+  IndexVector& nc = NM->GetCellVector();
   vector<Vertex2d>& nx = NM->GetVertexVector();
-  IntVector& mat = NM->GetMaterialVector();
-  IntVector& matpatch = NM->GetMaterialPatchVector();
+  IndexVector& mat = NM->GetMaterialVector();
+  IndexVector& matpatch = NM->GetMaterialPatchVector();
 
   // zellen
   nc.reservesize(4 * LM->ncells());
   mat.reservesize(LM->ncells());
-  for (int i = 0; i < LM->ncells(); i++) {
-    for (int ii = 0; ii < 4; ii++)
+  for (IndexType i = 0; i < LM->ncells(); i++) {
+    for (IndexType ii = 0; ii < 4; ii++)
       nc[4 * i + ii] = LM->vertex_of_cell(i, ii);
     mat[i] = LM->quad(i).material();
   }
@@ -213,7 +213,7 @@ GascoigneMeshConstructor::Construct2d(GascoigneMesh* NNM,
 
   nx.reserve(LM->nnodes());
   nx.resize(LM->nnodes());
-  for (int i = 0; i < LM->nnodes(); i++) {
+  for (IndexType i = 0; i < LM->nnodes(); i++) {
     nx[i] = LM->vertex2d(i);
   }
 
@@ -226,10 +226,10 @@ GascoigneMeshConstructor::Construct2d(GascoigneMesh* NNM,
   PatchToCell2d(PIH, LM);
 
   // Material Patch
-  const nvector<IntVector>& p2c = PIH.GetAllPatch2Cell();
+  const nvector<IndexVector>& p2c = PIH.GetAllPatch2Cell();
   assert(p2c.size() == NM->npatches());
   matpatch.resize(p2c.size());
-  for (int ip = 0; ip < NM->npatches(); ++ip) {
+  for (IndexType ip = 0; ip < NM->npatches(); ++ip) {
     assert(p2c[ip].size() > 0);
     assert(p2c[ip][0] < mat.size());
     matpatch[ip] = mat[p2c[ip][0]];
@@ -254,13 +254,13 @@ GascoigneMeshConstructor::Construct3d(GascoigneMesh* NNM,
 
   assert(NM);
 
-  IntVector& nc = NM->GetCellVector();
+  IndexVector& nc = NM->GetCellVector();
   vector<Vertex3d>& nx = NM->GetVertexVector();
-  IntVector& mat = NM->GetMaterialVector();
-  IntVector& matpatch = NM->GetMaterialPatchVector();
+  IndexVector& mat = NM->GetMaterialVector();
+  IndexVector& matpatch = NM->GetMaterialPatchVector();
 
-  IntVector& mat_Vanka = NM->GetMaterialVankaVector();
-  IntVector& matpatch_Vanka = NM->GetMaterialVankaPatchVector();
+  IndexVector& mat_Vanka = NM->GetMaterialVankaVector();
+  IndexVector& matpatch_Vanka = NM->GetMaterialVankaPatchVector();
 
   std::vector<std::array<Vertex3d, 3>>& basis_Vanka = NM->GetbasisVankaVector();
   std::vector<std::array<Vertex3d, 3>>& basis_Vanka_patch =
@@ -272,8 +272,8 @@ GascoigneMeshConstructor::Construct3d(GascoigneMesh* NNM,
   mat_Vanka.reservesize(LM->ncells());
   basis_Vanka.resize(LM->ncells());
 
-  for (int i = 0; i < LM->ncells(); i++) {
-    for (int ii = 0; ii < 8; ii++)
+  for (IndexType i = 0; i < LM->ncells(); i++) {
+    for (IndexType ii = 0; ii < 8; ii++)
       nc[8 * i + ii] = LM->vertex_of_cell(i, ii);
     mat[i] = LM->hex(i).material();
     mat_Vanka[i] = LM->hex(i).material_Vanka();
@@ -284,7 +284,7 @@ GascoigneMeshConstructor::Construct3d(GascoigneMesh* NNM,
 
   nx.reserve(LM->nnodes());
   nx.resize(LM->nnodes());
-  for (int i = 0; i < LM->nnodes(); i++) {
+  for (IndexType i = 0; i < LM->nnodes(); i++) {
     nx[i] = LM->vertex3d(i);
   }
 
@@ -300,13 +300,13 @@ GascoigneMeshConstructor::Construct3d(GascoigneMesh* NNM,
   PatchToCell3d(PIH, LM);
 
   // Material Patch
-  const nvector<IntVector>& p2c = PIH.GetAllPatch2Cell();
+  const nvector<IndexVector>& p2c = PIH.GetAllPatch2Cell();
   assert(p2c.size() == NM->npatches());
   matpatch.resize(p2c.size());
   matpatch_Vanka.resize(p2c.size());
   basis_Vanka_patch.resize(p2c.size());
 
-  for (int ip = 0; ip < NM->npatches(); ++ip) {
+  for (IndexType ip = 0; ip < NM->npatches(); ++ip) {
     assert(p2c[ip].size() > 0);
     assert(p2c[ip][0] < mat.size());
     matpatch[ip] = mat[p2c[ip][0]];
@@ -330,22 +330,22 @@ void
 GascoigneMeshConstructor::PatchToCell2d(PatchIndexHandler& PIH,
                                         const LevelMesh2d* LM) const
 {
-  IntVector ci;
+  IndexVector ci;
   LM->ConstructCellIndOfPatch(ci);
 
-  int np = ci.size();
+  IndexType np = ci.size();
 
-  nvector<IntVector>& patch2cell = PIH.GetAllPatch2Cell();
+  nvector<IndexVector>& patch2cell = PIH.GetAllPatch2Cell();
   patch2cell.resize(np);
 
   const HierarchicalMesh2d* HM2d = dynamic_cast<const HierarchicalMesh2d*>(HM);
   assert(HM2d);
 
-  for (int i = 0; i < np; ++i) {
-    int j = ci[i];
+  for (IndexType i = 0; i < np; ++i) {
+    IndexType j = ci[i];
     const Quad& q = HM2d->quad(j);
     patch2cell[i].resize(4);
-    for (int p = 0; p < 4; ++p) {
+    for (IndexType p = 0; p < 4; ++p) {
       patch2cell[i][p] = LM->Quadg2l(q.child(p));
       assert(patch2cell[i][p] >= 0);
     }
@@ -358,22 +358,22 @@ void
 GascoigneMeshConstructor::PatchToCell3d(PatchIndexHandler& PIH,
                                         const LevelMesh3d* LM) const
 {
-  IntVector ci;
+  IndexVector ci;
   LM->ConstructCellIndOfPatch(ci);
 
-  int np = ci.size();
+  IndexType np = ci.size();
 
-  nvector<IntVector>& patch2cell = PIH.GetAllPatch2Cell();
+  nvector<IndexVector>& patch2cell = PIH.GetAllPatch2Cell();
   patch2cell.resize(np);
 
   const HierarchicalMesh3d* HM3d = dynamic_cast<const HierarchicalMesh3d*>(HM);
   assert(HM3d);
 
-  for (int i = 0; i < np; ++i) {
-    int j = ci[i];
+  for (IndexType i = 0; i < np; ++i) {
+    IndexType j = ci[i];
     const Hex& q = HM3d->hex(j);
     patch2cell[i].resize(8);
-    for (int p = 0; p < 8; ++p) {
+    for (IndexType p = 0; p < 8; ++p) {
       patch2cell[i][p] = LM->Hexg2l(q.child(p));
       assert(patch2cell[i][p] >= 0);
     }

@@ -70,19 +70,20 @@ private:
   // 0.
 
 #ifdef __WITH_THREADS__
-  int __n_threads, __min_patches_per_thread;
+  IndexType __n_threads, __min_patches_per_thread;
   bool __with_thread_ilu;
-  std::vector<std::vector<int>> __thread_domain2node;
+  std::vector<std::vector<IndexType>> __thread_domain2node;
   // First component of pair is domain in wich the node lies, second is
   // local index of this node in __thread_domain2node
-  std::vector<std::vector<std::pair<int, int>>> __thread_node2domain;
+  std::vector<std::vector<std::pair<IndexType, IndexType>>>
+    __thread_node2domain;
 #endif
 
   // 1. Gitter
 
   const GascoigneMesh* _MP;
   const HierarchicalMesh* _HM;
-  std::map<int, int> _PeriodicPairs;
+  std::map<IndexType, IndexType> _PeriodicPairs;
 
 #ifdef USE_CUDA
   static constexpr bool use_cuda = true;
@@ -96,7 +97,7 @@ private:
 
 protected:
 #ifdef __WITH_THREADS__
-  int NThreads() const { return __n_threads; }
+  IndexType NThreads() const { return __n_threads; }
 #endif
 
   // 3. Discretization
@@ -117,12 +118,12 @@ protected:
 
   bool _distribute;
 
-  mutable int _ndirect;
+  mutable IndexType _ndirect;
   mutable bool _directsolver;
   mutable std::string _discname;
   mutable std::string _matrixtype;
 
-  mutable int _PrimalSolve;
+  mutable IndexType _PrimalSolve;
   ParamFile _paramfile;
 
   bool _useUMFPACK;
@@ -169,27 +170,28 @@ protected:
 
   virtual void SetDefaultValues(std::string discname,
                                 std::string matrixtype,
-                                int ndirect);
+                                IndexType ndirect);
 
   virtual DiscretizationInterface* NewDiscretization(
-    int dimension,
+    IndexType dimension,
     const std::string& discname);
-  virtual MatrixInterface* NewMatrix(int ncomp, const std::string& matrixtype);
+  virtual MatrixInterface* NewMatrix(IndexType ncomp,
+                                     const std::string& matrixtype);
   virtual IluInterface* NewIlu(const Matrix& A,
-                               int ncomp,
+                               IndexType ncomp,
                                const std::string& matrixtype);
 
   //
   /// new interface-function for individual size of vectors
   //
 
-  virtual void smooth(int niter,
+  virtual void smooth(IndexType niter,
                       const Matrix& A,
                       Vector& x,
                       const Vector& y,
                       Vector& h) const;
   virtual void PermutateIlu(Matrix& A, const Vector& gu) const;
-  virtual void modify_ilu(IluInterface& I, int ncomp) const;
+  virtual void modify_ilu(IluInterface& I, IndexType ncomp) const;
 
   virtual DoubleVector IntegrateSolutionVector(const Vector& u) const;
   virtual void _check_consistency(const Equation* EQ,
@@ -202,7 +204,7 @@ public:
 
   virtual std::string GetName() const { return "StdSolver"; }
 
-  virtual void BasicInit(const ParamFile& paramfile, const int dimension);
+  virtual void BasicInit(const ParamFile& paramfile, const IndexType dimension);
   ////                const NumericInterface *NI);
   virtual void SetProblem(const ProblemDescriptorInterface& PDX);
   virtual void SetDiscretization(DiscretizationInterface& DI,
@@ -275,14 +277,14 @@ public:
   virtual void OutputSettings() const;
   virtual void PointVisu(const std::string& name,
                          const GlobalVector& u,
-                         int i) const;
+                         IndexType i) const;
   virtual void CellVisu(const std::string& name,
                         const GlobalVector& u,
-                        int i) const;
+                        IndexType i) const;
 
   virtual void ConstructInterpolator(MgInterpolatorInterface* I,
                                      const MeshTransferInterface* MT);
-  virtual void VisuGrid(const std::string& name, int i) const;
+  virtual void VisuGrid(const std::string& name, IndexType i) const;
 
   //
   /// vector & Matrix  - manamgement
@@ -292,7 +294,7 @@ public:
 
   virtual void RegisterVector(const Vector& g);
   virtual void ReInitVector(Vector& dst);
-  virtual void ReInitVector(Vector& dst, int comp);
+  virtual void ReInitVector(Vector& dst, IndexType comp);
 
   // Access to Vector & Matrix Data
   virtual GlobalVector& GetGV(Vector& u) const { return vector_agent(u); }
@@ -333,7 +335,9 @@ public:
   /// vector - io
   //
 
-  virtual void Visu(const std::string& name, const Vector& u, int i) const;
+  virtual void Visu(const std::string& name,
+                    const Vector& u,
+                    IndexType i) const;
   virtual void Write(const Vector& u, const std::string& filename) const;
   virtual void Read(Vector& u, const std::string& filename) const;
 
@@ -504,7 +508,10 @@ public:
   virtual void SAdd(double s1, Vector& dst, double s2, const Vector& src) const;
   virtual double Norm(const Vector& dst) const;
 
-  virtual void RhsCurve(Vector& f, const Curve& C, int comp, int N) const;
+  virtual void RhsCurve(Vector& f,
+                        const Curve& C,
+                        IndexType comp,
+                        IndexType N) const;
   virtual double ScalarProductWithFluctuations(DoubleVector& eta,
                                                const Vector& gf,
                                                const Vector& gz) const;

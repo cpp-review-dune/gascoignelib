@@ -21,8 +21,8 @@ SparseUmf<SparseBlock>::ConstructStructure(const IntVector& perm,
   __ncomp = __AS->mat(0)->ncomp();
   assert(__ncomp == SPARSE_NROWS);
 
-  int n = ST->n();
-  int nentries = ST->nentries();
+  IndexType n = ST->n();
+  IndexType nentries = ST->nentries();
 
   // reserve size for matrix-entries
   __Ax.resize(SPARSE_NENTRIES * nentries);
@@ -31,15 +31,15 @@ SparseUmf<SparseBlock>::ConstructStructure(const IntVector& perm,
   __Ap.clear();
   __Ap.push_back(0);
 
-  for (int rA = 0; rA < n; ++rA)
+  for (IndexType rA = 0; rA < n; ++rA)
   // insert myblock at r,c
   // row-wise, sorted in row
   {
     // use structure indicated in LDBLOCKSTRUCT
-    for (int rb = 0; rb < SPARSE_NROWS; ++rb) {
-      for (int pA = ST->start(rA); pA != ST->stop(rA); ++pA) {
-        int cA = ST->col(pA);
-        for (int p = SPARSE_START[rb]; p < SPARSE_START[rb + 1]; ++p)
+    for (IndexType rb = 0; rb < SPARSE_NROWS; ++rb) {
+      for (IndexType pA = ST->start(rA); pA != ST->stop(rA); ++pA) {
+        IndexType cA = ST->col(pA);
+        for (IndexType p = SPARSE_START[rb]; p < SPARSE_START[rb + 1]; ++p)
           __Ac.push_back(__ncomp * cA + SPARSE_COL[p]);
       }
       __Ap.push_back(__Ac.size());
@@ -86,12 +86,13 @@ SparseUmf<SparseBlock>::copy_entries(const MatrixInterface& A)
   const ColumnStencil* ST =
     dynamic_cast<const ColumnStencil*>(__AS->GetStencil());
   assert(ST);
-  int pp = 0;
-  for (int rA = 0; rA < ST->n(); ++rA)
-    for (int rn = 0; rn < SPARSE_NROWS; ++rn) {
-      for (int pA = ST->start(rA); pA != ST->stop(rA); ++pA) {
+  IndexType pp = 0;
+  for (IndexType rA = 0; rA < ST->n(); ++rA)
+    for (IndexType rn = 0; rn < SPARSE_NROWS; ++rn) {
+      for (IndexType pA = ST->start(rA); pA != ST->stop(rA); ++pA) {
         const SparseBlock& b = *__AS->mat(pA);
-        for (int p = SPARSE_START[rn]; p < SPARSE_START[rn + 1]; ++p, ++pp)
+        for (IndexType p = SPARSE_START[rn]; p < SPARSE_START[rn + 1];
+             ++p, ++pp)
           __Ax[pp] = b[p];
       }
     }

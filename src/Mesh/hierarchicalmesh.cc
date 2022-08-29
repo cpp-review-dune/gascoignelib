@@ -96,7 +96,9 @@ HierarchicalMesh::clear_transfer_lists()
 /*------------------------------------------------------*/
 
 void
-HierarchicalMesh::SetParameters(string gridname, int patchdepth, int epatcher)
+HierarchicalMesh::SetParameters(string gridname,
+                                IndexType patchdepth,
+                                IndexType epatcher)
 {
   pdepth = patchdepth;
   etapatcher = epatcher;
@@ -123,10 +125,10 @@ HierarchicalMesh::SetParameters(string gridname, int patchdepth, int epatcher)
 /*------------------------------------------------------*/
 
 void
-HierarchicalMesh::BasicInit(const ParamFile& pf, int pdepth)
+HierarchicalMesh::BasicInit(const ParamFile& pf, IndexType pdepth)
 {
-  int patchdepth, epatcher;
-  int prerefine;
+  IndexType patchdepth, epatcher;
+  IndexType prerefine;
   string gridname;
 
   DataFormatHandler DFH;
@@ -153,15 +155,15 @@ HierarchicalMesh::BasicInit(const ParamFile& pf, int pdepth)
 /*---------------------------------------------------*/
 
 void
-HierarchicalMesh::global_refine(int k)
+HierarchicalMesh::global_refine(IndexType k)
 {
-  IntVector cell_coarse(0);
+  IndexVector cell_coarse(0);
 
   if (k == 0) {
     refine(cell_coarse, cell_coarse);
   } else {
-    for (int i = 0; i < k; i++) {
-      IntVector v(ncells());
+    for (IndexType i = 0; i < k; i++) {
+      IndexVector v(ncells());
       iota(v.begin(), v.end(), 0);
       refine(v, cell_coarse);
     }
@@ -171,12 +173,12 @@ HierarchicalMesh::global_refine(int k)
 /*---------------------------------------------------*/
 
 void
-HierarchicalMesh::global_patch_coarsen(int k)
+HierarchicalMesh::global_patch_coarsen(IndexType k)
 {
-  IntVector cell_refine(0);
+  IndexVector cell_refine(0);
 
-  for (int i = 0; i < k; i++) {
-    IntVector cell_coarse(ncells());
+  for (IndexType i = 0; i < k; i++) {
+    IndexVector cell_coarse(ncells());
     iota(cell_coarse.begin(), cell_coarse.end(), 0);
     patch_refine(cell_refine, cell_coarse);
   }
@@ -185,24 +187,24 @@ HierarchicalMesh::global_patch_coarsen(int k)
 /*---------------------------------------------------*/
 
 void
-HierarchicalMesh::random_refine(double p, int c)
+HierarchicalMesh::random_refine(double p, IndexType c)
 {
-  int nq = ncells();
-  int nc = 1 + static_cast<int>(p * nq);
+  IndexType nq = ncells();
+  IndexType nc = 1 + static_cast<IndexType>(p * nq);
 
   if (p < 0)
     nc = 0;
 
-  IntVector cell_ref(nc), cell_coarse;
+  IndexVector cell_ref(nc), cell_coarse;
 
-  IntVector v(ncells());
+  IndexVector v(ncells());
 
-  for (int i = 0; i < ncells(); ++i)
+  for (IndexType i = 0; i < ncells(); ++i)
     if (random() % 100 < 100.0 * p)
       cell_ref.push_back(i);
 
   if (c) {
-    int nq = ncells();
+    IndexType nq = ncells();
     cell_coarse.resize(nq);
     iota(cell_coarse.begin(), cell_coarse.end(), 0);
   }
@@ -212,17 +214,17 @@ HierarchicalMesh::random_refine(double p, int c)
 /*---------------------------------------------------*/
 
 void
-HierarchicalMesh::random_patch_coarsen(double p, int r)
+HierarchicalMesh::random_patch_coarsen(double p, IndexType r)
 {
-  int nq = ncells();
-  int nc = 1 + static_cast<int>(p * nq);
+  IndexType nq = ncells();
+  IndexType nc = 1 + static_cast<IndexType>(p * nq);
 
   nc = std::min(nc, nq);
   if (p < 0)
     nc = 0;
 
-  IntVector cell_coarsen(nc), cell_refine;
-  IntVector v(ncells());
+  IndexVector cell_coarsen(nc), cell_refine;
+  IndexVector v(ncells());
   iota(v.begin(), v.end(), 0);
 
   std::cerr << " Random_sample noch nicht implementiert!!!" << std::endl;
@@ -230,7 +232,7 @@ HierarchicalMesh::random_patch_coarsen(double p, int r)
   //  random_sample(v.begin(),v.end(),cell_coarsen.begin(),cell_coarsen.end());
 
   if (r) {
-    int nq = ncells();
+    IndexType nq = ncells();
     cell_refine.resize(nq);
     iota(cell_refine.begin(), cell_refine.end(), 0);
   }
@@ -240,26 +242,26 @@ HierarchicalMesh::random_patch_coarsen(double p, int r)
 /*---------------------------------------------------*/
 
 void
-HierarchicalMesh::random_patch_refine(double p, int c)
+HierarchicalMesh::random_patch_refine(double p, IndexType c)
 {
-  int nq = ncells();
-  int nc = 1 + static_cast<int>(p * nq);
+  IndexType nq = ncells();
+  IndexType nc = 1 + static_cast<IndexType>(p * nq);
 
   nc = std::min(nc, nq);
   if (p < 0)
     nc = 0;
   assert(p > 0);
 
-  IntVector cell_ref, cell_coarse;
+  IndexVector cell_ref, cell_coarse;
 
   while (cell_ref.size() == 0)
-    for (int i = 0; i < ncells(); ++i)
+    for (IndexType i = 0; i < ncells(); ++i)
       if (random() % ncells() < 100 * p)
         cell_ref.push_back(i);
   cout << cell_ref << endl;
 
   if (c) {
-    int nq = ncells();
+    IndexType nq = ncells();
     cell_coarse.resize(nq);
     iota(cell_coarse.begin(), cell_coarse.end(), 0);
   }
@@ -269,11 +271,11 @@ HierarchicalMesh::random_patch_refine(double p, int c)
 /*---------------------------------------------------*/
 
 void
-HierarchicalMesh::vertex_patch_refine(IntVector& refnodes,
-                                      IntVector& coarsenodes)
+HierarchicalMesh::vertex_patch_refine(IndexVector& refnodes,
+                                      IndexVector& coarsenodes)
 {
-  IntVector ref, coarse, vertexlevel;
-  IntSet refcoarsenodes, coarsecoarsenodes;
+  IndexVector ref, coarse, vertexlevel;
+  IndexSet refcoarsenodes, coarsecoarsenodes;
 
   FillVertexLevels(vertexlevel);
 
@@ -296,10 +298,10 @@ HierarchicalMesh::vertex_patch_refine(IntVector& refnodes,
 /*---------------------------------------------------*/
 
 void
-HierarchicalMesh::vertex_patch_refine(IntVector& refnodes)
+HierarchicalMesh::vertex_patch_refine(IndexVector& refnodes)
 {
-  IntVector ref, coarse, vertexlevel;
-  IntSet refcoarsenodes;
+  IndexVector ref, coarse, vertexlevel;
+  IndexSet refcoarsenodes;
 
   FillVertexLevels(vertexlevel);
 
@@ -319,15 +321,15 @@ HierarchicalMesh::vertex_patch_refine(IntVector& refnodes)
 /*---------------------------------------------------*/
 
 void
-HierarchicalMesh::update_edges(IntVector& SwappedEdge)
+HierarchicalMesh::update_edges(IndexVector& SwappedEdge)
 {
-  for (int i = 0; i < edges.size(); i++) {
-    int m = edges[i].master();
-    int s = edges[i].slave();
+  for (IndexType i = 0; i < edges.size(); i++) {
+    IndexType m = edges[i].master();
+    IndexType s = edges[i].slave();
 
     assert(m >= 0);
 
-    int nm = co2n[m];
+    IndexType nm = co2n[m];
     if (nm >= 0) {
       edges[i].master() = nm;
       if (s >= 0) {

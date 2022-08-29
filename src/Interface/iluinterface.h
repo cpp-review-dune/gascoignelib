@@ -40,7 +40,7 @@ public:
   virtual IndexType n() const = 0;
   virtual std::string GetName() const = 0;
   virtual void ReInit(const SparseStructureInterface* A) = 0;
-  virtual void ConstructStructure(const IntVector& perm,
+  virtual void ConstructStructure(const IndexVector& perm,
                                   const MatrixInterface& A) = 0;
 
   virtual void dirichletILU(int i, const std::vector<int>& cv)

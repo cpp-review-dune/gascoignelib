@@ -38,7 +38,7 @@ class Index
 protected:
   typedef std::map<int, int> IntMap;
 
-  IntVector vl2g, el2g, hl2g, ql2g;
+  IndexVector vl2g, el2g, hl2g, ql2g;
   IntMap vg2l, eg2l, hg2l, qg2l;
 
 public:
@@ -47,9 +47,9 @@ protected:
   // Local To Global
   ////////////////
 
-  const IntVector& Vertexl2g() const { return vl2g; }
-  const IntVector& Edgel2g() const { return el2g; }
-  IntVector& Edgel2g() { return el2g; }
+  const IndexVector& Vertexl2g() const { return vl2g; }
+  const IndexVector& Edgel2g() const { return el2g; }
+  IndexVector& Edgel2g() { return el2g; }
 
   int Edgel2g(int i) const { return el2g[i]; }
 
@@ -64,10 +64,10 @@ public:
 
   int Vertexl2g(int i) const { return vl2g[i]; }
 
-  IntVector& Quadl2g() { return ql2g; }
-  IntVector& Hexl2g() { return hl2g; }
-  const IntVector& Hexl2g() const { return hl2g; }
-  const IntVector& Quadl2g() const { return ql2g; }
+  IndexVector& Quadl2g() { return ql2g; }
+  IndexVector& Hexl2g() { return hl2g; }
+  const IndexVector& Hexl2g() const { return hl2g; }
+  const IndexVector& Quadl2g() const { return ql2g; }
   int Quadl2g(int i) const
   {
     assert(i < ql2g.size());

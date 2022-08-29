@@ -38,28 +38,28 @@ HangingIndexHandler::HangingIndexHandler()
 
 void
 HangingIndexHandler::CopyLevel2Nibble(const HangingIndexHandler& Lhih,
-                                      IntVector& Vg2l)
+                                      IndexVector& Vg2l)
 {
   hnq2.clear();
   hnq2face.clear();
 
-  map<int, std::array<int, 3>>::const_iterator it3 =
+  map<IndexType, std::array<IndexType, 3>>::const_iterator it3 =
     Lhih.GetStructure()->begin();
-  map<int, std::array<int, 9>>::const_iterator it9 =
+  map<IndexType, std::array<IndexType, 9>>::const_iterator it9 =
     Lhih.GetStructureFace()->begin();
-  map<int, std::array<int, 3>>::const_iterator end3 =
+  map<IndexType, std::array<IndexType, 3>>::const_iterator end3 =
     Lhih.GetStructure()->end();
-  map<int, std::array<int, 9>>::const_iterator end9 =
+  map<IndexType, std::array<IndexType, 9>>::const_iterator end9 =
     Lhih.GetStructureFace()->end();
 
   for (; it3 != end3; ++it3) {
-    int gf = it3->first;
-    int lf = Vg2l[gf];
+    IndexType gf = it3->first;
+    IndexType lf = Vg2l[gf];
     if (lf < 0)
       continue;
-    std::array<int, 3> tmp;
-    int gut = 3;
-    for (int i = 0; i < 3; ++i) {
+    std::array<IndexType, 3> tmp;
+    IndexType gut = 3;
+    for (IndexType i = 0; i < 3; ++i) {
       tmp[i] = Vg2l[it3->second[i]];
       if (tmp[i] < 0)
         --gut;
@@ -70,13 +70,13 @@ HangingIndexHandler::CopyLevel2Nibble(const HangingIndexHandler& Lhih,
     hnq2[lf] = tmp;
   }
   for (; it9 != end9; ++it9) {
-    int gf = it9->first;
-    int lf = Vg2l[gf];
+    IndexType gf = it9->first;
+    IndexType lf = Vg2l[gf];
     if (lf < 0)
       continue;
-    std::array<int, 9> tmp;
-    int gut = 9;
-    for (int i = 0; i < 9; ++i) {
+    std::array<IndexType, 9> tmp;
+    IndexType gut = 9;
+    for (IndexType i = 0; i < 9; ++i) {
       tmp[i] = Vg2l[it9->second[i]];
       if (tmp[i] < 0)
         --gut;

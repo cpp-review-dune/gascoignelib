@@ -53,10 +53,10 @@ CFDBlock3d::zero()
 /**********************************************************/
 
 void
-CFDBlock3d::DirichletRow(const vector<int>& cv)
+CFDBlock3d::DirichletRow(const vector<IndexType>& cv)
 {
-  for (int i = 0; i < cv.size(); i++) {
-    int c = cv[i];
+  for (IndexType i = 0; i < cv.size(); i++) {
+    IndexType c = cv[i];
     if (c == 1)
       gradx() = 0.;
     else if (c == 2)
@@ -75,10 +75,10 @@ CFDBlock3d::DirichletRow(const vector<int>& cv)
 /**********************************************************/
 
 void
-CFDBlock3d::DirichletCol(const vector<int>& cv)
+CFDBlock3d::DirichletCol(const vector<IndexType>& cv)
 {
-  for (int i = 0; i < cv.size(); i++) {
-    int c = cv[i];
+  for (IndexType i = 0; i < cv.size(); i++) {
+    IndexType c = cv[i];
     if (c == 1)
       divx() = 0.;
     else if (c == 2)
@@ -97,10 +97,10 @@ CFDBlock3d::DirichletCol(const vector<int>& cv)
 /**********************************************************/
 
 void
-CFDBlock3d::DirichletDiag(const vector<int>& cv)
+CFDBlock3d::DirichletDiag(const vector<IndexType>& cv)
 {
-  for (int i = 0; i < cv.size(); i++) {
-    int c = cv[i];
+  for (IndexType i = 0; i < cv.size(); i++) {
+    IndexType c = cv[i];
     if (c == 1)
       laplx() = 1.;
     if (c == 2)
@@ -113,7 +113,7 @@ CFDBlock3d::DirichletDiag(const vector<int>& cv)
 /**********************************************************/
 
 MatrixEntryType
-CFDBlock3d::operator()(int i, int j) const
+CFDBlock3d::operator()(IndexType i, IndexType j) const
 {
   if (i == 0) {
     assert(0 <= j && j <= 3);
@@ -148,7 +148,7 @@ CFDBlock3d::operator()(int i, int j) const
 /**********************************************************/
 
 MatrixEntryType&
-CFDBlock3d::diag(int i)
+CFDBlock3d::diag(IndexType i)
 {
   assert(0 <= i && i <= 3);
   if (i == 0)
@@ -232,7 +232,7 @@ CFDBlock3d::entry(const nmatrix<double>& E)
 /**********************************************************/
 
 void
-CFDBlock3d::entry(int i, int j, const EntryMatrix& E, double d)
+CFDBlock3d::entry(IndexType i, IndexType j, const EntryMatrix& E, double d)
 {
 #pragma omp atomic update
   s += d * E(i, j, 0, 0);
@@ -260,7 +260,7 @@ CFDBlock3d::entry(int i, int j, const EntryMatrix& E, double d)
 /**********************************************************/
 
 void
-CFDBlock3d::dual_entry(int i, int j, const EntryMatrix& E, double d)
+CFDBlock3d::dual_entry(IndexType i, IndexType j, const EntryMatrix& E, double d)
 {
   std::cerr << "\"CFDBlock3d::dual_entry\" not written!" << std::endl;
   abort();

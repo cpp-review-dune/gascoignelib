@@ -40,7 +40,7 @@ public:
   virtual ~EdgeInfoContainerInterface() {}
 
   virtual const HierarchicalMesh* GetMesh() const = 0;
-  virtual void BasicInit(const HierarchicalMesh*, int) = 0;
+  virtual void BasicInit(const HierarchicalMesh*, IndexType) = 0;
 };
 
 template<int DIM>
@@ -51,13 +51,13 @@ class EdgeInfoContainer
 
 protected:
   const HierarchicalMesh* _HMP;
-  int _ncomp;
+  ShortIndexType _ncomp;
 
 public:
   EdgeInfoContainer() {}
   ~EdgeInfoContainer();
 
-  void BasicInit(const HierarchicalMesh*, int);
+  void BasicInit(const HierarchicalMesh*, IndexType);
   void ModifyHanging();
 
   const HierarchicalMesh* GetMesh() const { return _HMP; }

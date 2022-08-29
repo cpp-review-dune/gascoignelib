@@ -76,7 +76,7 @@ public:
   //
   /// for matrix assembling
   //
-  typedef IntVector::const_iterator niiterator;
+  typedef IndexVector::const_iterator niiterator;
 
   virtual void entry(nvector<IndexType>::const_iterator start1,
                      nvector<IndexType>::const_iterator stop1,

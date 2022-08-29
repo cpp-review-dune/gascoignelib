@@ -52,91 +52,112 @@ namespace Gascoigne {
 class HexLawAndOrder
 {
 protected:
-  /* typedef's */
-  typedef std::array<int, 2> EdgeVector;
-  typedef std::array<int, 4> FaceVector;
-
   /* reference */
   std::vector<Hex>& hexs;
 
   /* data */
   std::array<EdgeVector, 12> lve, vice, childs_edge;
   std::array<FaceVector, 6> lvf, vicf, childs_face;
-  std::array<int, 8> cell_midpoint;
-  std::array<std::array<int, 3>, 8> ieoc;
-  std::array<std::array<int, 2>, 12> coif, lcfif;
-  std::array<std::array<int, 4>, 6> edgeofface;
-  std::array<std::array<int, 9>, 4> hnpf;
+  std::array<IndexType, 8> cell_midpoint;
+  std::array<std::array<IndexType, 3>, 8> ieoc;
+  std::array<std::array<IndexType, 2>, 12> coif, lcfif;
+  std::array<std::array<IndexType, 4>, 6> edgeofface;
+  std::array<std::array<IndexType, 9>, 4> hnpf;
 
-  void local_edge_index(EdgeVector& index, int) const;
-  void local_face_index(FaceVector& index, int) const;
-  void GetGlobalOuterFaceOfChild(FaceVector&, const Hex& f, int c, int e) const;
+  void local_edge_index(EdgeVector& index, IndexType) const;
+  void local_face_index(FaceVector& index, IndexType) const;
+  void GetGlobalOuterFaceOfChild(FaceVector&,
+                                 const Hex& f,
+                                 IndexType c,
+                                 IndexType e) const;
 
 public:
   HexLawAndOrder(std::vector<Hex>&);
 
   void fill_corner_vertex_in_childs(const Hex&) const;
-  void fill_middle_vertex_in_childs(const Hex&, int) const;
-  void fill_face_vertex_in_childs(const Hex&, int, int) const;
-  void fill_edge_vertex_in_childs(const Hex&, int, int) const;
+  void fill_middle_vertex_in_childs(const Hex&, IndexType) const;
+  void fill_face_vertex_in_childs(const Hex&, IndexType, IndexType) const;
+  void fill_edge_vertex_in_childs(const Hex&, IndexType, IndexType) const;
 
-  int face_vertex(const Hex&, int) const;
-  int edge_vertex(const Hex&, int) const;
-  int middle_vertex(const Hex&) const;
+  IndexType face_vertex(const Hex&, IndexType) const;
+  IndexType edge_vertex(const Hex&, IndexType) const;
+  IndexType middle_vertex(const Hex&) const;
   void globalvertices_of_edge(const Hex& q,
-                              std::array<int, 2>& f,
-                              int ie) const;
+                              std::array<IndexType, 2>& f,
+                              IndexType ie) const;
   void globalvertices_of_face(const Hex& q,
-                              std::array<int, 4>& f,
-                              int ie) const;
-  void LoadEdgeVerticesOfFace(const Hex& f, int face, FaceVector& dst) const;
-  void LoadFaceVertices(const Hex& f, std::array<int, 6>& dst) const;
+                              std::array<IndexType, 4>& f,
+                              IndexType ie) const;
+  void LoadEdgeVerticesOfFace(const Hex& f,
+                              IndexType face,
+                              FaceVector& dst) const;
+  void LoadFaceVertices(const Hex& f, std::array<IndexType, 6>& dst) const;
 
   // faces
 
-  int LocalChildFaceOfInnerFace(int e, int i) const { return lcfif[e][i]; }
-  int ChildOfInnerFace(int e, int i) const { return coif[e][i]; }
-  int ChildFace(int e) const { return e; }
-  int ChildsOfFace(int f, int i) const { return childs_face[f][i]; }
-  int local_face(const Hex&, const FaceVector&) const;
-  int GlobalInnerFace(int c, int i) const;
-  int GlobalChildFace(const FaceVector& edge, int q, int j) const;
-  void GetFace(FaceVector&, int h, int e) const;
-  void global_face_unsorted(FaceVector&, const Hex&, int) const;
-  void childs_of_face(FaceVector&, const Hex&, int) const;
+  IndexType LocalChildFaceOfInnerFace(IndexType e, IndexType i) const
+  {
+    return lcfif[e][i];
+  }
+  IndexType ChildOfInnerFace(IndexType e, IndexType i) const
+  {
+    return coif[e][i];
+  }
+  IndexType ChildFace(IndexType e) const { return e; }
+  IndexType ChildsOfFace(IndexType f, IndexType i) const
+  {
+    return childs_face[f][i];
+  }
+  IndexType local_face(const Hex&, const FaceVector&) const;
+  IndexType GlobalInnerFace(IndexType c, IndexType i) const;
+  IndexType GlobalChildFace(const FaceVector& edge,
+                            IndexType q,
+                            IndexType j) const;
+  void GetFace(FaceVector&, IndexType h, IndexType e) const;
+  void global_face_unsorted(FaceVector&, const Hex&, IndexType) const;
+  void childs_of_face(FaceVector&, const Hex&, IndexType) const;
   void childs_of_global_face(FaceVector& child,
                              const Hex&,
                              const FaceVector&) const;
 
-  std::pair<int, int> GetChildFaces(const FaceVector& bigedge,
-                                    int bighex,
-                                    int i) const;
+  std::pair<IndexType, IndexType> GetChildFaces(const FaceVector& bigedge,
+                                                IndexType bighex,
+                                                IndexType i) const;
 
   // edges
 
-  void global_edge_unsorted(EdgeVector&, const Hex&, int) const;
-  int GlobalChildEdge(const EdgeVector& edge, int q, int j) const;
-  int InnerEdge(const Hex&, int i) const;
-  int InnerEdgeOfChild(int c, int i) const { return ieoc[c][i]; }
+  void global_edge_unsorted(EdgeVector&, const Hex&, IndexType) const;
+  IndexType GlobalChildEdge(const EdgeVector& edge,
+                            IndexType q,
+                            IndexType j) const;
+  IndexType InnerEdge(const Hex&, IndexType i) const;
+  IndexType InnerEdgeOfChild(IndexType c, IndexType i) const
+  {
+    return ieoc[c][i];
+  }
 
-  void load_face(FaceVector&, const Hex&, int) const;
-  int local_face_index(int, const FaceVector&) const;
+  void load_face(FaceVector&, const Hex&, IndexType) const;
+  IndexType local_face_index(IndexType, const FaceVector&) const;
   void globalfacechildren_of_father(std::vector<FaceVector>& faces,
                                     const Hex& f) const;
-  int LoadEdgeOfFace(const Hex& q,
-                     const FaceVector& F,
-                     int e,
-                     EdgeVector& E) const;
-  int LocalEdgeOfLocalFace(int face, int e) const
+  IndexType LoadEdgeOfFace(const Hex& q,
+                           const FaceVector& F,
+                           IndexType e,
+                           EdgeVector& E) const;
+  IndexType LocalEdgeOfLocalFace(IndexType face, IndexType e) const
   {
     return edgeofface[face][e];
   }
-  int TestFaceOfOneChild(const Hex& f, const FaceVector& F) const;
-  int GetVertexOfEdge(int iq, const std::array<int, 2>& edge) const;
-  int EdgeVertexOfFace(const Hex& q, const FaceVector& F, int e) const;
-  std::array<int, 9> PatchVerticesOfFace(int hex, int face) const;
-  std::array<int, 9> GiveOrdering(const std::array<int, 9>& F,
-                                  const Hex& qfn) const;
+  IndexType TestFaceOfOneChild(const Hex& f, const FaceVector& F) const;
+  IndexType GetVertexOfEdge(IndexType iq,
+                            const std::array<IndexType, 2>& edge) const;
+  IndexType EdgeVertexOfFace(const Hex& q,
+                             const FaceVector& F,
+                             IndexType e) const;
+  std::array<IndexType, 9> PatchVerticesOfFace(IndexType hex,
+                                               IndexType face) const;
+  std::array<IndexType, 9> GiveOrdering(const std::array<IndexType, 9>& F,
+                                        const Hex& qfn) const;
 };
 } // namespace Gascoigne
 

@@ -46,17 +46,18 @@ public:
   int operator()(const EdgeArray<N>& h) const { return h.sum(); }
 };
 
-#define HANGMAP HASHMAP<EdgeArray<N>, Hang, EdgeHash<N>>
-
 /*------------------------------------------------------*/
 
 template<int N>
-class HangList : public HANGMAP
+class HangList : public std::unordered_map<EdgeArray<N>, Hang, EdgeHash<N>>
 {
 protected:
 public:
-  typedef typename HANGMAP::iterator iterator;
-  typedef typename HANGMAP::const_iterator const_iterator;
+  typedef typename std::unordered_map<EdgeArray<N>, Hang, EdgeHash<N>>::iterator
+    iterator;
+  typedef
+    typename std::unordered_map<EdgeArray<N>, Hang, EdgeHash<N>>::const_iterator
+      const_iterator;
 
   void update(const std::vector<int>&);
   void update(const std::vector<int>&, const std::vector<int>&);
@@ -79,7 +80,5 @@ operator>>(std::istream& s, HangList<N>& A);
 } // namespace Gascoigne
 
 /*------------------------------------------------------*/
-
-#undef HANGMAP
 
 #endif

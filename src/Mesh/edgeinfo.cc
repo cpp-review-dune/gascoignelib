@@ -32,8 +32,8 @@ namespace Gascoigne {
 template<int DIM>
 void
 EdgeInfo<DIM>::BasicInit(const Edge* edge,
-                         int ncomp,
-                         const std::array<int, 2 * DIM - 2>& vertex)
+                         IndexType ncomp,
+                         const std::array<IndexType, 2 * DIM - 2>& vertex)
 {
   _count = 0;
   _edge = edge;
@@ -48,8 +48,8 @@ template<int DIM>
 void
 EdgeInfo<DIM>::AddNodes(const LocalVector& u)
 {
-  for (int i = 0; i < 2 * DIM - 2; i++) {
-    for (int c = 0; c < _u.ncomp(); c++) {
+  for (IndexType i = 0; i < 2 * DIM - 2; i++) {
+    for (IndexType c = 0; c < _u.ncomp(); c++) {
       _u(i, c) += u(i, c);
     }
   }
@@ -65,8 +65,8 @@ EdgeInfo<DIM>::GetNorm() const
   std::array<double, 2 * DIM - 2> norm;
   norm.fill(0.);
 
-  for (int i = 0; i < 2 * DIM - 2; i++) {
-    for (int c = 0; c < _u.ncomp(); c++) {
+  for (IndexType i = 0; i < 2 * DIM - 2; i++) {
+    for (IndexType c = 0; c < _u.ncomp(); c++) {
       norm[i] += _u(i, c) * _u(i, c);
     }
   }
