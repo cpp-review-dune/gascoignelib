@@ -41,12 +41,12 @@ DofHandler<3>::GetName() const
 }
 
 template<>
-IntVector
-DofHandler<2>::IndicesOfCell(int iq) const
+IndexVector
+DofHandler<2>::IndicesOfCell(IndexType iq) const
 {
-  IntVector indices(4);
+  IndexVector indices(4);
 
-  int iq4 = iq * 4;
+  IndexType iq4 = iq * 4;
 
   indices[0] = nc[iq4];
   indices[1] = nc[iq4 + 1];
@@ -56,12 +56,12 @@ DofHandler<2>::IndicesOfCell(int iq) const
   return indices;
 }
 template<>
-IntVector
-DofHandler<3>::IndicesOfCell(int iq) const
+IndexVector
+DofHandler<3>::IndicesOfCell(IndexType iq) const
 {
-  IntVector indices(8);
+  IndexVector indices(8);
 
-  int offset = 8 * iq;
+  IndexType offset = 8 * iq;
 
   indices[0] = nc[offset];
   indices[1] = nc[offset + 1];
@@ -77,27 +77,25 @@ DofHandler<3>::IndicesOfCell(int iq) const
 
 template<>
 const Vertex<2>&
-DofHandler<2>::vertex2d(int i) const
+DofHandler<2>::vertex2d(IndexType i) const
 {
   return vertex(i);
 }
 template<>
 const Vertex<3>&
-DofHandler<3>::vertex3d(int i) const
+DofHandler<3>::vertex3d(IndexType i) const
 {
   return vertex(i);
 }
 // wrong dimension
 template<>
-const Vertex<3>&
-DofHandler<2>::vertex3d(int /*i*/) const
+const Vertex<3>& DofHandler<2>::vertex3d(IndexType /*i*/) const
 {
   std::cerr << "Error: no 3d-vertex in 2d!" << std::endl;
   abort();
 }
 template<>
-const Vertex<2>&
-DofHandler<3>::vertex2d(int /*i*/) const
+const Vertex<2>& DofHandler<3>::vertex2d(IndexType /*i*/) const
 {
   std::cerr << "Error: no 2d-vertex in 3d!" << std::endl;
   abort();

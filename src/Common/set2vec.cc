@@ -22,31 +22,43 @@
  **/
 
 #include "set2vec.h"
+#include "gascoigne.h"
 
 using namespace std;
 
 namespace Gascoigne {
 
 /*---------------------------------------------------*/
-
+template<typename T>
 void
-Set2Vec(vector<int>& v, const set<int>& h)
+Set2Vec(vector<T>& v, const set<T>& h)
 {
   v.resize(h.size());
-  int j = 0;
-  for (set<int>::const_iterator p = h.begin(); p != h.end(); p++) {
+  size_t j = 0;
+  for (auto p = h.begin(); p != h.end(); p++) {
     v[j++] = *p;
   }
 }
+template void
+Set2Vec<int>(vector<int>& v, const set<int>& h);
+template void
+Set2Vec<IndexType>(vector<IndexType>& v, const set<IndexType>& h);
 
 /*---------------------------------------------------*/
 
+template<typename T>
 void
-Vec2Set(set<int>& h, const vector<int>& v)
+Vec2Set(set<T>& h, const vector<T>& v)
 {
   h.clear();
-  for (int i = 0; i < v.size(); i++) {
+  for (size_t i = 0; i < v.size(); i++) {
     h.insert(v[i]);
   }
 }
+
+template void
+Vec2Set<int>(set<int>& h, const vector<int>& v);
+template void
+Vec2Set<IndexType>(set<IndexType>& h, const vector<IndexType>& v);
+
 } // namespace Gascoigne

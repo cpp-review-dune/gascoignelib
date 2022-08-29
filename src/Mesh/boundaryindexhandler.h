@@ -34,44 +34,46 @@ namespace Gascoigne {
 class BoundaryIndexHandler
 {
 protected:
-  typedef std::map<int, IntVector> VecMap;
+  typedef std::map<IndexType, IndexVector> VecMap;
 
-  IntSet AllColors;
+  IndexSet AllColors;
   VecMap verteces, cells, localci, patches, localpi;
 
-  std::map<int, std::map<int, int>> _PeriodicPairs;
+  std::map<IndexType, std::map<IndexType, IndexType>> _PeriodicPairs;
 
 public:
-  void CopySetToVector(const std::vector<IntSet>&,
-                       const IntVector&,
+  void CopySetToVector(const std::vector<IndexSet>&,
+                       const IndexVector&,
                        VecMap&) const;
 
   void clear();
 
-  const IntSet& GetColors() const { return AllColors; }
+  const IndexSet& GetColors() const { return AllColors; }
   const VecMap& GetVertex() const { return verteces; }
   const VecMap& GetCell() const { return cells; }
   const VecMap& GetLocal() const { return localci; }
   const VecMap& GetPatch() const { return patches; }
   const VecMap& GetLocalPatch() const { return localpi; }
 
-  IntSet& GetColors() { return AllColors; }
+  IndexSet& GetColors() { return AllColors; }
   VecMap& GetVertex() { return verteces; }
   VecMap& GetCell() { return cells; }
   VecMap& GetLocal() { return localci; }
   VecMap& GetPatch() { return patches; }
   VecMap& GetLocalPatch() { return localpi; }
 
-  const IntVector& Verteces(int col) const;
-  const IntVector& Cells(int col) const;
-  const IntVector& Localind(int col) const;
-  const IntVector& Patches(int col) const;
-  const IntVector& LocalPatchind(int col) const;
+  const IndexVector& Verteces(IndexType col) const;
+  const IndexVector& Cells(IndexType col) const;
+  const IndexVector& Localind(IndexType col) const;
+  const IndexVector& Patches(IndexType col) const;
+  const IndexVector& LocalPatchind(IndexType col) const;
 
-  void SetPeriodicPairs(std::map<int, std::map<int, int>> mm_PeriodicPairs);
-  const std::map<int, std::map<int, int>> GetPeriodicPairs() const;
+  void SetPeriodicPairs(
+    std::map<IndexType, std::map<IndexType, IndexType>> mm_PeriodicPairs);
+  const std::map<IndexType, std::map<IndexType, IndexType>> GetPeriodicPairs()
+    const;
 
-  void Equal(const IntSet& col,
+  void Equal(const IndexSet& col,
              const VecMap& v,
              const VecMap& c,
              const VecMap& l,

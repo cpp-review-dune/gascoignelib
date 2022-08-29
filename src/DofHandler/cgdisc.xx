@@ -9,7 +9,7 @@ CGDisc<DIM, DEGREE, FINITEELEMENT, INTEGRATOR>::InterpolateSolution(
   const GlobalVector& uold) const
 {
   if (DIM == 2) {
-    const IntVector& vo2n = *GetDofHandler()->Vertexo2n();
+    const IndexVector& vo2n = *GetDofHandler()->Vertexo2n();
     nvector<bool> habschon(GetDofHandler()->nnodes(), 0);
 
     assert(vo2n.size() == uold.n());
@@ -39,7 +39,7 @@ CGDisc<DIM, DEGREE, FINITEELEMENT, INTEGRATOR>::InterpolateSolution(
     nodes[3][2] = 8;
 
     for (int iq = 0; iq < GetDofHandler()->npatches(); ++iq) {
-      IntVector vi = *GetDofHandler()->IndicesOfPatch(iq);
+      IndexVector vi = *GetDofHandler()->IndicesOfPatch(iq);
 
       for (int j = 0; j < nodes.size(); j++) {
         int v = vi[nodes[j][0]];
@@ -64,7 +64,7 @@ CGDisc<DIM, DEGREE, FINITEELEMENT, INTEGRATOR>::InterpolateSolution(
     }
   } else if (DIM == 3) {
 
-    const IntVector& vo2n = *GetDofHandler()->Vertexo2n();
+    const IndexVector& vo2n = *GetDofHandler()->Vertexo2n();
     nvector<bool> habschon(GetDofHandler()->nnodes(), 0);
 
     assert(vo2n.size() == uold.n());
@@ -148,7 +148,7 @@ CGDisc<DIM, DEGREE, FINITEELEMENT, INTEGRATOR>::InterpolateSolution(
     w[5][4] = 26;
 
     for (int iq = 0; iq < GetDofHandler()->npatches(); ++iq) {
-      IntVector vi = *GetDofHandler()->IndicesOfPatch(iq);
+      IndexVector vi = *GetDofHandler()->IndicesOfPatch(iq);
 
       for (int j = 0; j < nodes.size(); j++) {
         int v = vi[nodes[j][0]];

@@ -33,8 +33,8 @@ class PatchIndexHandler
 {
 protected:
   bool haspatch, hasq4patch;
-  nvector<IntVector> indexofpatch, indexofq4patch;
-  nvector<IntVector> patch2cell, q4patch2cell;
+  nvector<IndexVector> indexofpatch, indexofq4patch;
+  nvector<IndexVector> patch2cell, q4patch2cell;
 
   int dim;
 
@@ -48,40 +48,40 @@ public:
   int& GetDim() { return dim; }
   bool& GetHasPatch() { return haspatch; }
   bool& GetHasQ4Patch() { return hasq4patch; }
-  nvector<IntVector>& GetIndex() { return indexofpatch; }
-  const nvector<IntVector>& GetIndex() const { return indexofpatch; }
-  nvector<IntVector>& GetIndexQ4() { return indexofq4patch; }
-  const nvector<IntVector>& GetIndexQ4() const
+  nvector<IndexVector>& GetIndex() { return indexofpatch; }
+  const nvector<IndexVector>& GetIndex() const { return indexofpatch; }
+  nvector<IndexVector>& GetIndexQ4() { return indexofq4patch; }
+  const nvector<IndexVector>& GetIndexQ4() const
   {
     assert(hasq4patch);
     return indexofq4patch;
   }
 
-  IntVector& GetPatch2Cell(int i)
+  IndexVector& GetPatch2Cell(int i)
   {
     assert(i < patch2cell.size());
     return patch2cell[i];
   }
-  const IntVector& GetPatch2Cell(int i) const
+  const IndexVector& GetPatch2Cell(int i) const
   {
     assert(i < patch2cell.size());
     return patch2cell[i];
   }
-  IntVector& GetQ4Patch2Cell(int i)
+  IndexVector& GetQ4Patch2Cell(int i)
   {
     assert(i < q4patch2cell.size());
     return q4patch2cell[i];
   }
-  const IntVector& GetQ4Patch2Cell(int i) const
+  const IndexVector& GetQ4Patch2Cell(int i) const
   {
     assert(hasq4patch && i < q4patch2cell.size());
     return q4patch2cell[i];
   }
 
-  nvector<IntVector>& GetAllPatch2Cell() { return patch2cell; }
-  const nvector<IntVector>& GetAllPatch2Cell() const { return patch2cell; }
-  nvector<IntVector>& GetAllQ4Patch2Cell() { return q4patch2cell; }
-  const nvector<IntVector>& GetAllQ4Patch2Cell() const
+  nvector<IndexVector>& GetAllPatch2Cell() { return patch2cell; }
+  const nvector<IndexVector>& GetAllPatch2Cell() const { return patch2cell; }
+  nvector<IndexVector>& GetAllQ4Patch2Cell() { return q4patch2cell; }
+  const nvector<IndexVector>& GetAllQ4Patch2Cell() const
   {
     assert(hasq4patch);
     return q4patch2cell;
@@ -93,15 +93,15 @@ public:
   bool HasQ4Patch() const { return hasq4patch; }
   int Dim() const { return dim; }
 
-  const IntVector& IndicesOfPatch(int i) const { return indexofpatch[i]; }
-  const IntVector& IndicesOfQ4Patch(int i) const
+  const IndexVector& IndicesOfPatch(int i) const { return indexofpatch[i]; }
+  const IndexVector& IndicesOfQ4Patch(int i) const
   {
     assert(hasq4patch);
     return indexofq4patch[i];
   }
-  IntVector Q2IndicesOfQ4Patch(int i) const;
-  IntVector CoarseIndices(int iq) const;
-  IntVector CoarseIndicesQ4(int iq) const;
+  IndexVector Q2IndicesOfQ4Patch(int i) const;
+  IndexVector CoarseIndices(int iq) const;
+  IndexVector CoarseIndicesQ4(int iq) const;
 
   int nodes_per_patch() const
   {

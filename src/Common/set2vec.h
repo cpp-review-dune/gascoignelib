@@ -30,10 +30,15 @@
 /*---------------------------------------------------*/
 
 namespace Gascoigne {
+
+template<typename T>
 void
-Set2Vec(std::vector<int>& v, const std::set<int>& h);
+Set2Vec(std::vector<T>& v, const std::set<T>& h);
+
+template<typename T>
 void
-Vec2Set(std::set<int>& h, const std::vector<int>& v);
+Vec2Set(std::set<T>& h, const std::vector<T>& v);
+
 } // namespace Gascoigne
 
 #endif

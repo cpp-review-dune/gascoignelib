@@ -421,8 +421,7 @@ DataFormatHandler::setvalue(const string& name, StringDouble& value)
 void
 DataFormatHandler::insertvalue(const string& name, vector<string>& value)
 {
-  TypeSetVectorString::const_iterator p;
-  p = TSVS.find(name);
+  TypeSetVectorString::const_iterator p = TSVS.find(name);
   if (p != TSVS.end()) {
     p->second->insert(value);
     return;
@@ -447,21 +446,20 @@ DataFormatHandler::search(string& fo, const string& name)
 void
 DataFormatHandler::get(string& f, const string& name)
 {
-  vector<string> s(14);
-  s[0] = "string";
-  s[1] = "integer";
-  s[2] = "float";
-  s[3] = "double";
-  s[4] = "std::array<double,2>";
-  s[5] = "vector<double>";
-  s[6] = "IntVector";
-  s[7] = "vector<string>";
-  s[8] = "map<int,IntVector >";
-  s[9] = "set<vector<string> >";
-  s[10] = "StringDouble";
-  s[11] = "set<int>";
-  s[12] = "std::array<double,3>";
-  s[13] = "bool";
+  array<string, 14> s = { "string",
+                          "integer",
+                          "float",
+                          "double",
+                          "std::array<double,2>",
+                          "vector<double>",
+                          "IntVector",
+                          "vector<string>",
+                          "map<int,IntVector >",
+                          "set<vector<string> >",
+                          "StringDouble",
+                          "set<int>",
+                          "std::array<double,3>",
+                          "bool" };
   f = "";
   for (int i = 0; i < s.size(); i++) {
     f = search(s[i], name);

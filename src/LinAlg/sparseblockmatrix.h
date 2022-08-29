@@ -43,15 +43,15 @@ protected:
 
   ColumnDiagStencil US;
   std::vector<B> smat;
-  int nc;
+  IndexType nc;
 
-  void matrix_vector_trans(int p,
+  void matrix_vector_trans(IndexType p,
                            double* yp,
                            const double* xp,
                            double s = 1.) const;
 
 public:
-  int size() const { return smat.size(); }
+  IndexType size() const { return smat.size(); }
 
   SparseBlockMatrix();
   SparseBlockMatrix(const SparseBlockMatrix<B>& A);
@@ -63,12 +63,12 @@ public:
 
   /////// Zugriff //////////////////////
 
-  const_iterator mat(int pos) const
+  const_iterator mat(IndexType pos) const
   {
     assert(pos < smat.size());
     return smat.begin() + pos;
   }
-  iterator mat(int pos)
+  iterator mat(IndexType pos)
   {
     assert(pos < smat.size());
     return smat.begin() + pos;
@@ -76,11 +76,11 @@ public:
 
   const StencilInterface* GetStencil() const { return &US; }
 
-  int n() const { return US.n(); };
-  int nentries() const { return US.nentries(); };
-  int ntotal() const { return smat.size(); };
+  IndexType n() const { return US.n(); };
+  IndexType nentries() const { return US.nentries(); };
+  IndexType ntotal() const { return smat.size(); };
 
-  int rowsize(int i) const { return US.start(i + 1) - US.start(i); }
+  IndexType rowsize(IndexType i) const { return US.start(i + 1) - US.start(i); }
   const std::vector<B>& mat() const { return smat; }
 
   ///// Methods //////////////////////
@@ -97,34 +97,35 @@ public:
   SparseBlockMatrix& operator=(const SparseBlockMatrix<B>& S);
 
   void ReInit(const SparseStructureInterface*);
-  void scale_diag(int i, const std::vector<int>& cv, double s);
-  void dirichlet(int i, const std::vector<int>& cv);
-  void dirichlet_only_row(int i, const std::vector<int>& cv);
-  void dirichlet_only_column(int i, const std::vector<int>& cv);
-  void dirichlet_only_row_no_diag(int i, const std::vector<int>& cv);
-  void periodic(const std::map<int, int>& m_PeriodicPairs,
+  void scale_diag(IndexType i, const std::vector<IndexType>& cv, double s);
+  void dirichlet(IndexType i, const std::vector<IndexType>& cv);
+  void dirichlet_only_row(IndexType i, const std::vector<IndexType>& cv);
+  void dirichlet_only_column(IndexType i, const std::vector<IndexType>& cv);
+  void dirichlet_only_row_no_diag(IndexType i,
+                                  const std::vector<IndexType>& cv);
+  void periodic(const std::map<IndexType, IndexType>& m_PeriodicPairs,
                 const IntVector& iv_Components);
 
   void zero();
-  void entry(nvector<int>::const_iterator start1,
-             nvector<int>::const_iterator stop1,
-             nvector<int>::const_iterator start2,
-             nvector<int>::const_iterator stop2,
+  void entry(nvector<IndexType>::const_iterator start1,
+             nvector<IndexType>::const_iterator stop1,
+             nvector<IndexType>::const_iterator start2,
+             nvector<IndexType>::const_iterator stop2,
              const EntryMatrix& M,
              double s = 1.);
-  void entry(nvector<int>::const_iterator start,
-             nvector<int>::const_iterator stop,
+  void entry(nvector<IndexType>::const_iterator start,
+             nvector<IndexType>::const_iterator stop,
              const EntryMatrix& M,
              double s = 1.);
-  void entrydual(nvector<int>::const_iterator start,
-                 nvector<int>::const_iterator stop,
+  void entrydual(nvector<IndexType>::const_iterator start,
+                 nvector<IndexType>::const_iterator stop,
                  const EntryMatrix& M,
                  double s = 1.);
 
   void GaussSeidel(GlobalVector& y, const GlobalVector& x) const;
   void Jacobi(GlobalVector& x) const;
 
-  void MatrixResidualSome(const std::vector<int>& indices,
+  void MatrixResidualSome(const std::vector<IndexType>& indices,
                           GlobalVector& h,
                           const GlobalVector& x,
                           const GlobalVector& y) const;
@@ -137,12 +138,12 @@ public:
 
   /*-----------------------------------------------*/
 
-  void FillInterfaceList(const nvector<int>& elements,
-                         nvector<int>& start,
+  void FillInterfaceList(const nvector<IndexType>& elements,
+                         nvector<IndexType>& start,
                          nvector<MatrixEntryType>& values) const;
   void FurbishInterface(double d,
-                        const nvector<int>& elements,
-                        const nvector<int>& start,
+                        const nvector<IndexType>& elements,
+                        const nvector<IndexType>& start,
                         const nvector<MatrixEntryType>& values);
 
   /*-----------------------------------------------*/

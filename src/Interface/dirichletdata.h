@@ -40,7 +40,7 @@ namespace Gascoigne {
 ///@brief
 /// Interface class for Dirichlet Boundary Conditions
 
-/// void operator()(Vector& b, const Vertex2d& v, int col)
+/// void operator()(Vector& b, const Vertex2d& v, IndexType col)
 /// gets the coordinate v and color of boundarypart "col" and
 /// sets the values of b. b is a vector of length ncomp
 ///
@@ -50,8 +50,8 @@ class DirichletData : public virtual Application
 {
 private:
 protected:
-  std::set<int> colors; // colors where Dirichlet data is given
-  std::map<int, IntVector> comp_on_color; // components for each color
+  IndexSet colors; // colors where Dirichlet data is given
+  std::map<IndexType, IndexVector> comp_on_color; // components for each color
 
 public:
   DirichletData(const ParamFile& pf)
@@ -69,29 +69,33 @@ public:
   }
   virtual ~DirichletData() {}
 
-  virtual void operator()(DoubleVector& b, const Vertex2d& v, int col) const
+  virtual void operator()(DoubleVector& b,
+                          const Vertex2d& v,
+                          IndexType col) const
   {
     std::cerr << "\"DirichletData::operator()\" not written!" << std::endl;
     abort();
   }
 
-  virtual void operator()(DoubleVector& b, const Vertex3d& v, int col) const
+  virtual void operator()(DoubleVector& b,
+                          const Vertex3d& v,
+                          IndexType col) const
   {
     std::cerr << "\"DirichletData::operator()\" not written!" << std::endl;
     abort();
   }
 
-  virtual std::set<int> preferred_colors() const { return std::set<int>(); }
+  virtual IndexSet preferred_colors() const { return IndexSet(); }
 
-  virtual const std::set<int>& dirichlet_colors() const { return colors; }
-  virtual std::set<int>& dirichlet_colors() { return colors; }
+  virtual const IndexSet& dirichlet_colors() const { return colors; }
+  virtual IndexSet& dirichlet_colors() { return colors; }
 
-  virtual const std::vector<int>& components_on_color(int c) const
+  virtual const IndexVector& components_on_color(IndexType c) const
   {
     assert(comp_on_color.find(c) != comp_on_color.end());
     return comp_on_color.find(c)->second;
   }
-  virtual std::vector<int>& components_on_color(int c)
+  virtual IndexVector& components_on_color(IndexType c)
   {
     assert(comp_on_color.find(c) != comp_on_color.end());
     return comp_on_color.find(c)->second;
