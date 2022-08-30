@@ -34,21 +34,19 @@
 namespace Gascoigne {
 class FaceManager
 {
-  typedef std::array<int, 4> FaceVector;
-
 protected:
   std::vector<Edge>& edges;
   std::vector<Hex>& hexs;
-  const IntVector& co2n;
-  IntVector& eo2n;
+  const IndexVector& co2n;
+  IndexVector& eo2n;
 
-  IntVector SwappedEdge;
+  IndexVector SwappedEdge;
   HexLawAndOrder HexLaO;
 
   void Update();
-  void InnerFaces(const IntSet& CellRefList);
+  void InnerFaces(const IndexSet& CellRefList);
   void OuterFaces(const HangContainer3d& hangset);
-  void OldHangings(HangContainer3d& hangset3d, const IntSet& CellRefList);
+  void OldHangings(HangContainer3d& hangset3d, const IndexSet& CellRefList);
   void SwappedFaces();
   void NeighbourTester() const;
   void FillNeighbourFaces(const Hex& M, const Hex& S, const FaceVector& Face);
@@ -56,8 +54,8 @@ protected:
 public:
   FaceManager(std::vector<Edge>&,
               std::vector<Hex>&,
-              const IntVector& con,
-              IntVector& eon);
+              const IndexVector& con,
+              IndexVector& eon);
 
   const Hex& hex(int i) const { return hexs[i]; }
   Hex& hex(int i) { return hexs[i]; }
@@ -67,10 +65,10 @@ public:
   bool EdgeIsHanging(int e) const;
   bool EdgeIsHanging(const Edge& e) const;
 
-  void LoadFaceElimination(IntVector& edel,
-                           const IntSet& CellCoarseList,
+  void LoadFaceElimination(IndexVector& edel,
+                           const IndexSet& CellCoarseList,
                            const HangContainer3d& hangset) const;
-  void Build(const IntSet& CellRefList, HangContainer3d&);
+  void Build(const IndexSet& CellRefList, HangContainer3d&);
   void DeleteFaces();
   void InitFaces();
   void SortHangings();

@@ -36,33 +36,33 @@ void
 Pi::vmult(CompVector<double>& y, const CompVector<double>& x, double s) const
 {
   y.zero();
-  int ncomp = x.ncomp();
+  IndexType ncomp = x.ncomp();
   assert(ncomp == y.ncomp());
   {
-    map<int, std::array<int, 2>>::const_iterator p;
+    map<IndexType, std::array<IndexType, 2>>::const_iterator p;
     for (p = edge.begin(); p != edge.end(); p++) {
-      int i = p->first;
-      const std::array<int, 2>& f = p->second;
-      for (int c = 0; c < ncomp; c++)
+      IndexType i = p->first;
+      const std::array<IndexType, 2>& f = p->second;
+      for (IndexType c = 0; c < ncomp; c++)
         y(i, c) = x(i, c) - 0.5 * (x(f[0], c) + x(f[1], c));
     }
   }
   {
-    map<int, std::array<int, 4>>::const_iterator p;
+    map<IndexType, std::array<IndexType, 4>>::const_iterator p;
     for (p = face.begin(); p != face.end(); p++) {
-      int i = p->first;
-      const std::array<int, 4>& f = p->second;
-      for (int c = 0; c < ncomp; c++)
+      IndexType i = p->first;
+      const std::array<IndexType, 4>& f = p->second;
+      for (IndexType c = 0; c < ncomp; c++)
         y(i, c) =
           x(i, c) - 0.25 * (x(f[0], c) + x(f[1], c) + x(f[2], c) + x(f[3], c));
     }
   }
   {
-    map<int, std::array<int, 8>>::const_iterator p;
+    map<IndexType, std::array<IndexType, 8>>::const_iterator p;
     for (p = cell.begin(); p != cell.end(); p++) {
-      int i = p->first;
-      const std::array<int, 8>& f = p->second;
-      for (int c = 0; c < ncomp; c++)
+      IndexType i = p->first;
+      const std::array<IndexType, 8>& f = p->second;
+      for (IndexType c = 0; c < ncomp; c++)
         y(i, c) =
           x(i, c) - 0.125 * (x(f[0], c) + x(f[1], c) + x(f[2], c) + x(f[3], c) +
                              x(f[4], c) + x(f[5], c) + x(f[6], c) + x(f[7], c));
@@ -95,10 +95,10 @@ Pi::Init2d(const GascoigneMesh2d* MP)
 {
   assert(MP->HasPatch());
 
-  for (int i = 0; i < MP->npatches(); i++) {
-    const nvector<int>& ind = *MP->IndicesOfPatch(i);
+  for (IndexType i = 0; i < MP->npatches(); i++) {
+    const nvector<IndexType>& ind = *MP->IndicesOfPatch(i);
     {
-      std::array<int, 4> f;
+      std::array<IndexType, 4> f;
       f[0] = ind[0];
       f[1] = ind[2];
       f[2] = ind[6];
@@ -106,7 +106,7 @@ Pi::Init2d(const GascoigneMesh2d* MP)
       face.insert(make_pair(ind[4], f));
     }
     {
-      std::array<int, 2> f;
+      std::array<IndexType, 2> f;
       f[0] = ind[0];
       f[1] = ind[2];
       edge.insert(make_pair(ind[1], f));
@@ -130,11 +130,11 @@ Pi::Init3d(const GascoigneMesh3d* MP)
 {
   assert(MP->HasPatch());
 
-  for (int i = 0; i < MP->npatches(); i++) {
-    const nvector<int>& ind = *MP->IndicesOfPatch(i);
+  for (IndexType i = 0; i < MP->npatches(); i++) {
+    const nvector<IndexType>& ind = *MP->IndicesOfPatch(i);
 
     {
-      std::array<int, 8> f;
+      std::array<IndexType, 8> f;
       f[0] = ind[0];
       f[1] = ind[2];
       f[2] = ind[6];
@@ -146,7 +146,7 @@ Pi::Init3d(const GascoigneMesh3d* MP)
       cell.insert(make_pair(ind[13], f));
     }
     {
-      std::array<int, 4> f;
+      std::array<IndexType, 4> f;
       f[0] = ind[0];
       f[1] = ind[2];
       f[2] = ind[6];
@@ -180,7 +180,7 @@ Pi::Init3d(const GascoigneMesh3d* MP)
       face.insert(make_pair(ind[12], f));
     }
     {
-      std::array<int, 2> f;
+      std::array<IndexType, 2> f;
       f[0] = ind[0];
       f[1] = ind[2];
       edge.insert(make_pair(ind[1], f));

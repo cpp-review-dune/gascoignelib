@@ -58,7 +58,7 @@ DiplomandenAdaptor::analyse() const
   // double s = 1.;
   double reduction = 1. - pow(0.5, info.local_conv());
 
-  IntVector C(eta.size());
+  IndexVector C(eta.size());
   iota(C.begin(), C.end(), 0);
 
   typedef CompareObjectBigToSmall<DoubleVector> CoC;
@@ -84,7 +84,7 @@ DiplomandenAdaptor::analyse() const
 /*-----------------------------------------*/
 
 void
-DiplomandenAdaptor::MalteRefine(IntVector& ref) const
+DiplomandenAdaptor::MalteRefine(IndexVector& ref) const
 {
   if (eta.size() == 0)
     return;
@@ -92,7 +92,7 @@ DiplomandenAdaptor::MalteRefine(IntVector& ref) const
   double alpha = info.local_conv(); // lokale konvergenzordnung in h
   double beta = info.global_conv(); // globale konvergenzordnung
 
-  IntVector C(eta.size());
+  IndexVector C(eta.size());
   iota(C.begin(), C.end(), 0);
 
   typedef CompareObjectBigToSmall<DoubleVector> CoC;
@@ -133,7 +133,7 @@ DiplomandenAdaptor::MalteRefine(IntVector& ref) const
 /*-----------------------------------------*/
 
 void
-DiplomandenAdaptor::refine(IntVector& ref)
+DiplomandenAdaptor::refine(IndexVector& ref)
 {
   int n = eta.size();
 
@@ -143,7 +143,7 @@ DiplomandenAdaptor::refine(IntVector& ref)
   double alpha = info.local_conv(); // konvergenzordnung
   double t = 1. - pow(0.5, alpha);
 
-  IntVector C(eta.size());
+  IndexVector C(eta.size());
   iota(C.begin(), C.end(), 0);
 
   typedef CompareObjectBigToSmall<DoubleVector> CoC;

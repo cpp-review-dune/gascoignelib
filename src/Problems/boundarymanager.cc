@@ -54,7 +54,7 @@ BoundaryManager::BasicInit(const ParamFile& pf)
     abort();
   }
 
-  map<int, IntVector>::const_iterator p = _compsDirichlet.begin();
+  map<IndexType, IndexVector>::const_iterator p = _compsDirichlet.begin();
   for (; p != _compsDirichlet.end(); p++) {
     if (_colsDirichlet.find(p->first) == _colsDirichlet.end()) {
       cerr << "BoundaryManager::BoundaryManager()\n";

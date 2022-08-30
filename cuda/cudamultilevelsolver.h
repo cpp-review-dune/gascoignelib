@@ -22,20 +22,20 @@ public:
                        const FunctionalContainer* FC = NULL);
   virtual ~CudaMultiLevelSolver();
 
-  StdSolver* NewSolver(int) override;
+  StdSolver* NewSolver(IndexType) override;
   void NewMgInterpolator() override;
 
-  void LinearMg(int finelevel,
-                int coarselevel,
+  void LinearMg(IndexType finelevel,
+                IndexType coarselevel,
                 const Matrix& A,
                 Vector& u,
                 const Vector& f,
                 CGInfo& info) override;
   void mgstep(std::vector<double>& res,
               std::vector<double>& rw,
-              int l,
-              int maxl,
-              int minl,
+              IndexType l,
+              IndexType maxl,
+              IndexType minl,
               std::string& p0,
               std::string p,
               const Matrix& A,

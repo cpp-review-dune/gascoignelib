@@ -106,14 +106,14 @@ MalteAdaptor::Expectation(double thetax,
 /*-----------------------------------------*/
 
 void
-MalteAdaptor::refine(IntVector& ref) const
+MalteAdaptor::refine(IndexVector& ref) const
 {
   if (etasum == 0)
     return;
 
   int n = eta.size();
 
-  IntVector C(n);
+  IndexVector C(n);
   iota(C.begin(), C.end(), 0);
 
   typedef CompareObjectBigToSmall<DoubleVector> CoC;
@@ -148,14 +148,14 @@ MalteAdaptor::refine(IntVector& ref) const
 /*-----------------------------------------*/
 
 void
-MalteAdaptor::coarse(IntVector& coars) const
+MalteAdaptor::coarse(IndexVector& coars) const
 {
   coars.resize(0);
   if (etasum == 0)
     return;
 
   int n = eta.size();
-  IntVector C(n);
+  IndexVector C(n);
   iota(C.begin(), C.end(), 0);
 
   typedef CompareObjectBigToSmall<DoubleVector> CoC;
@@ -173,14 +173,14 @@ MalteAdaptor::coarse(IntVector& coars) const
 /*-----------------------------------------*/
 
 void
-MalteAdaptor::refine_and_coarse(IntVector& ref, IntVector& coars) const
+MalteAdaptor::refine_and_coarse(IndexVector& ref, IndexVector& coars) const
 {
   if (etasum == 0)
     return;
 
   int n = eta.size();
 
-  IntVector C(n);
+  IndexVector C(n);
   iota(C.begin(), C.end(), 0);
 
   typedef CompareObjectBigToSmall<DoubleVector> CoC;
@@ -233,7 +233,7 @@ MalteAdaptor::refine_and_coarse(IntVector& ref, IntVector& coars) const
 /*-----------------------------------------*/
 
 void
-MalteAdaptor::refine(IntVector& ref, IntVector& coars) const
+MalteAdaptor::refine(IndexVector& ref, IndexVector& coars) const
 {
   coars.resize(0);
   ref.resize(0);

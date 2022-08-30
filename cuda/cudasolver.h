@@ -71,8 +71,10 @@ public:
   GlobalVector& CopyBack(Vector& u) const;
   void DeleteVector(Vector& p) const override;
 
-  void BasicInit(const ParamFile& paramfile, const int dimension) override;
-  MatrixInterface* NewMatrix(int ncomp, const std::string& matrixtype) override;
+  void BasicInit(const ParamFile& paramfile,
+                 const IndexType dimension) override;
+  MatrixInterface* NewMatrix(IndexType ncomp,
+                             const std::string& matrixtype) override;
   void NewMesh(const GascoigneMesh* mp) override;
   void SetProblem(const ProblemDescriptorInterface& PDX) override;
   void AssembleMatrix(Matrix& A, const Vector& u, double d) const override;
@@ -90,7 +92,7 @@ public:
                       Vector& gy,
                       const Vector& gx,
                       const Vector& gb) const override;
-  void smooth(int niter,
+  void smooth(IndexType niter,
               const Matrix& A,
               Vector& x,
               const Vector& y,

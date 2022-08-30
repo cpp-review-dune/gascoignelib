@@ -29,16 +29,16 @@ using namespace std;
 /*----------------------------------------------------------------------*/
 
 namespace Gascoigne {
-int
+IndexType
 QuadLawAndOrder::local_edge(const Quad& f, const EdgeVector& globaledge) const
 {
   // globaledge muss sortiert sein !!!!!
-  int li = f.global2local(globaledge[0]);
+  IndexType li = f.global2local(globaledge[0]);
   // gives the local edge number of an edge
 
   LocVertexLocEdge::const_iterator lvle = lvlvle[li].begin();
-  int li2 = lvle->first;
-  int gi2 = f.vertex(li2);
+  IndexType li2 = lvle->first;
+  IndexType gi2 = f.vertex(li2);
 
   if (find(globaledge.begin(), globaledge.end(), gi2) != globaledge.end()) {
     return lvle->second;
@@ -49,44 +49,46 @@ QuadLawAndOrder::local_edge(const Quad& f, const EdgeVector& globaledge) const
 
 /*----------------------------------------------------------------------*/
 
-int
-QuadLawAndOrder::GlobalInnerEdge(int c, int i) const
+IndexType
+QuadLawAndOrder::GlobalInnerEdge(IndexType c, IndexType i) const
 {
-  int ic = quads[c].child(i);
-  int ie = InnerEdgeOfChild(i, 0);
+  IndexType ic = quads[c].child(i);
+  IndexType ie = InnerEdgeOfChild(i, 0);
   return quads[ic].edge(ie);
 }
 
 /*----------------------------------------------------------------------*/
 
-int
-QuadLawAndOrder::GlobalChildEdge(const EdgeVector& edge, int q, int j) const
+IndexType
+QuadLawAndOrder::GlobalChildEdge(const EdgeVector& edge,
+                                 IndexType q,
+                                 IndexType j) const
 {
-  int ledge = local_edge_index(q, edge);
-  int ic = ChildsOfEdge(ledge, j);
-  int child = quads[q].child(ic);
-  int iedge = ChildEdge(ledge);
+  IndexType ledge = local_edge_index(q, edge);
+  IndexType ic = ChildsOfEdge(ledge, j);
+  IndexType child = quads[q].child(ic);
+  IndexType iedge = ChildEdge(ledge);
 
   return quads[child].edge(iedge);
 }
 
 /*---------------------------------------------------*/
 
-pair<int, int>
+pair<IndexType, IndexType>
 QuadLawAndOrder::GetChildEdges(EdgeVector& edge,
                                const EdgeVector& bigedge,
-                               int hanging,
-                               int bigquad,
-                               int i) const
+                               IndexType hanging,
+                               IndexType bigquad,
+                               IndexType i) const
 {
-  int bigeind = local_edge_index(bigquad, bigedge);
-  int ic = ChildsOfEdge(bigeind, i);
-  int q = quads[bigquad].child(ic);
+  IndexType bigeind = local_edge_index(bigquad, bigedge);
+  IndexType ic = ChildsOfEdge(bigeind, i);
+  IndexType q = quads[bigquad].child(ic);
 
   edge[0] = hanging;
   edge[1] = bigedge[0];
 
-  int iedge = local_edge_index(q, edge);
+  IndexType iedge = local_edge_index(q, edge);
 
   if (iedge < 0) {
     edge[1] = bigedge[1];
@@ -97,8 +99,8 @@ QuadLawAndOrder::GetChildEdges(EdgeVector& edge,
 
 /*----------------------------------------------------------------------*/
 
-int
-QuadLawAndOrder::global_index(const Quad& q, int i) const
+IndexType
+QuadLawAndOrder::global_index(const Quad& q, IndexType i) const
 {
   return quads[q.child(gc[i])].vertex(gv[i]);
 }
@@ -106,7 +108,7 @@ QuadLawAndOrder::global_index(const Quad& q, int i) const
 /*----------------------------------------------------------------------*/
 
 void
-QuadLawAndOrder::local_edge_index(EdgeVector& index, int edge) const
+QuadLawAndOrder::local_edge_index(EdgeVector& index, IndexType edge) const
 {
   index[0] = edge % 4;
   index[1] = (edge + 1) % 4;
@@ -117,7 +119,7 @@ QuadLawAndOrder::local_edge_index(EdgeVector& index, int edge) const
 void
 QuadLawAndOrder::globalvertices_of_edge(const Quad& q,
                                         EdgeVector& index,
-                                        int edge) const
+                                        IndexType edge) const
 {
   local_edge_index(index, edge);
 
@@ -140,11 +142,11 @@ QuadLawAndOrder::fill_corner_vertex_in_childs(const Quad& f) const
 
 void
 QuadLawAndOrder::fill_edge_vertex_in_childs(const Quad& f,
-                                            int edge,
-                                            int number) const
+                                            IndexType edge,
+                                            IndexType number) const
 {
-  int c0 = childs_edge[edge][0];
-  int c1 = childs_edge[edge][1];
+  IndexType c0 = childs_edge[edge][0];
+  IndexType c1 = childs_edge[edge][1];
   quads[f.child(c0)].vertex(vice[edge][0]) = number;
   quads[f.child(c1)].vertex(vice[edge][1]) = number;
 }
@@ -152,7 +154,8 @@ QuadLawAndOrder::fill_edge_vertex_in_childs(const Quad& f,
 /*----------------------------------------------------------------------*/
 
 void
-QuadLawAndOrder::fill_middle_vertex_in_childs(const Quad& f, int number) const
+QuadLawAndOrder::fill_middle_vertex_in_childs(const Quad& f,
+                                              IndexType number) const
 {
   quads[f.child(0)].vertex(2) = number;
   quads[f.child(1)].vertex(3) = number;
@@ -162,7 +165,7 @@ QuadLawAndOrder::fill_middle_vertex_in_childs(const Quad& f, int number) const
 
 /*----------------------------------------------------------------------*/
 
-int
+IndexType
 QuadLawAndOrder::middle_vertex(const Quad& f) const
 {
   return quads[f.child(0)].vertex(cell_midpoint(0));
@@ -170,14 +173,14 @@ QuadLawAndOrder::middle_vertex(const Quad& f) const
 
 /*----------------------------------------------------------------------*/
 
-int
-QuadLawAndOrder::edge_vertex(const Quad& f, int edge) const
+IndexType
+QuadLawAndOrder::edge_vertex(const Quad& f, IndexType edge) const
 {
   if (!f.sleep())
     return -1;
-  int lic = childs_edge[edge][0];
-  int liv = vice[edge][0];
-  int gic = f.child(lic);
+  IndexType lic = childs_edge[edge][0];
+  IndexType liv = vice[edge][0];
+  IndexType gic = f.child(lic);
 
   return quads[gic].vertex(liv);
 }
@@ -187,7 +190,7 @@ QuadLawAndOrder::edge_vertex(const Quad& f, int edge) const
 void
 QuadLawAndOrder::childs_of_edge(QuadVector& child,
                                 const Quad& f,
-                                int edge) const
+                                IndexType edge) const
 {
   child[0] = f.child(childs_edge[edge][0]);
   child[1] = f.child(childs_edge[edge][1]);
@@ -200,18 +203,18 @@ QuadLawAndOrder::childs_of_global_edge(QuadVector& child,
                                        const Quad& f,
                                        const EdgeVector& globaledge) const
 {
-  int localedge = local_edge(f, globaledge);
+  IndexType localedge = local_edge(f, globaledge);
   childs_of_edge(child, f, localedge);
 }
 
 /*----------------------------------------------------------------------*/
 
 void
-QuadLawAndOrder::global_edge_unsorted(std::array<int, 2>& lineglob,
+QuadLawAndOrder::global_edge_unsorted(std::array<IndexType, 2>& lineglob,
                                       const Quad& q,
-                                      int edge) const
+                                      IndexType edge) const
 {
-  std::array<int, 2> lineloc;
+  std::array<IndexType, 2> lineloc;
   local_edge_index(lineloc, edge);
   q.vertex_loc2glob<2>(lineglob, lineloc);
 }
@@ -244,16 +247,16 @@ QuadLawAndOrder::globaledgechildren_of_father(vector<EdgeVector>& edges,
   edges[7][0] = global_index(f, 0);
   edges[7][1] = global_index(f, 7);
 
-  for (int i = 0; i < n; i++)
+  for (IndexType i = 0; i < n; i++)
     sort(edges[i].begin(), edges[i].end());
 }
 
 /*----------------------------------------------------------------------*/
 
-int
-QuadLawAndOrder::local_edge_index(int q, const EdgeVector& edge) const
+IndexType
+QuadLawAndOrder::local_edge_index(IndexType q, const EdgeVector& edge) const
 {
-  for (int i = 0; i < 4; i++) {
+  for (IndexType i = 0; i < 4; i++) {
     if ((edge[0] == quads[q].vertex(i)) &&
         (edge[1] == quads[q].vertex((i + 1) % 4)))
       return i;
@@ -321,17 +324,17 @@ QuadLawAndOrder::QuadLawAndOrder(vector<Quad>& q)
   gv[8] = 2;
 
   lvlvle.resize(4);
-  lvlvle[0].insert(make_pair<int, int>(1, 0));
-  lvlvle[0].insert(make_pair<int, int>(3, 3));
+  lvlvle[0].insert(make_pair<IndexType, IndexType>(1, 0));
+  lvlvle[0].insert(make_pair<IndexType, IndexType>(3, 3));
 
-  lvlvle[1].insert(make_pair<int, int>(2, 1));
-  lvlvle[1].insert(make_pair<int, int>(0, 0));
+  lvlvle[1].insert(make_pair<IndexType, IndexType>(2, 1));
+  lvlvle[1].insert(make_pair<IndexType, IndexType>(0, 0));
 
-  lvlvle[2].insert(make_pair<int, int>(1, 1));
-  lvlvle[2].insert(make_pair<int, int>(3, 2));
+  lvlvle[2].insert(make_pair<IndexType, IndexType>(1, 1));
+  lvlvle[2].insert(make_pair<IndexType, IndexType>(3, 2));
 
-  lvlvle[3].insert(make_pair<int, int>(2, 2));
-  lvlvle[3].insert(make_pair<int, int>(0, 3));
+  lvlvle[3].insert(make_pair<IndexType, IndexType>(2, 2));
+  lvlvle[3].insert(make_pair<IndexType, IndexType>(0, 3));
 
   ieoc[0][0] = 1;
   ieoc[0][1] = 2;

@@ -51,7 +51,7 @@ HangContainer2d::NeighbourSwapper()
   for (HangList<2>::iterator p = VertexToBeDeleted.begin();
        p != VertexToBeDeleted.end();
        p++) {
-    int r = p->second.rneighbour();
+    IndexType r = p->second.rneighbour();
     if (r < 0) {
       p->second.rneighbour() = p->second.cneighbour();
       p->second.cneighbour() = r;
@@ -62,7 +62,7 @@ HangContainer2d::NeighbourSwapper()
 /*********************************************************************/
 
 void
-HangContainer2d::load_elimination(IntVector& v) const
+HangContainer2d::load_elimination(IndexVector& v) const
 {
   for (HangList<2>::const_iterator p = VertexToBeDeleted.begin();
        p != VertexToBeDeleted.end();
@@ -74,7 +74,7 @@ HangContainer2d::load_elimination(IntVector& v) const
 /*********************************************************************/
 
 void
-HangContainer2d::update_olds(IntVector& v, const IntVector& c)
+HangContainer2d::update_olds(IndexVector& v, const IndexVector& c)
 {
   VertexToBeCreated.update(v, c);
   VertexToBeDeleted.update(v, c);
@@ -84,7 +84,7 @@ HangContainer2d::update_olds(IntVector& v, const IntVector& c)
 
 /*********************************************************************/
 
-int
+IndexType
 HangContainer2d::vertex_index(const EdgeVector& edge) const
 {
   HangList<2>::const_iterator p;
@@ -107,7 +107,7 @@ HangContainer2d::vertex_index(const EdgeVector& edge) const
 /*********************************************************************/
 
 void
-HangContainer2d::update_news(const IntVector& vnew, int i)
+HangContainer2d::update_news(const IndexVector& vnew, IndexType i)
 {
   // cerr << "new_hangs()" << endl;
   // newhangs-hanging setzten fuer new-quad und linehang fuer die zukunft
@@ -127,7 +127,9 @@ HangContainer2d::update_news(const IntVector& vnew, int i)
 /*********************************************************************/
 
 void
-HangContainer2d::ghost_coarse(EdgeVector& edge, int f, int edge_vertex)
+HangContainer2d::ghost_coarse(EdgeVector& edge,
+                              IndexType f,
+                              IndexType edge_vertex)
 {
   assert(!find_in_linehang<2>(VertexToBeDeleted, edge).second);
 
@@ -148,7 +150,7 @@ HangContainer2d::ghost_coarse(EdgeVector& edge, int f, int edge_vertex)
 /*********************************************************************/
 
 void
-HangContainer2d::ghost_refine(EdgeVector& edge, int f)
+HangContainer2d::ghost_refine(EdgeVector& edge, IndexType f)
 {
   HangList<2>::iterator d = VertexToBeDeleted.find(edge);
   HangList<2>::iterator e = Hanging.find(edge);

@@ -31,35 +31,35 @@ CudaMgInterpolatorNested::check_matrices(IndexType n_comp,
 {
   if (prolongate == nullptr) {
     IntVector c2f = GT->GetC2f();
-    std::map<int, std::array<int, 2>> zweier = GT->GetZweier();
-    std::map<int, std::array<int, 4>> vierer = GT->GetVierer();
-    std::map<int, std::array<int, 8>> achter = GT->GetAchter();
+    std::map<IndexType, std::array<IndexType, 2>> zweier = GT->GetZweier();
+    std::map<IndexType, std::array<IndexType, 4>> vierer = GT->GetVierer();
+    std::map<IndexType, std::array<IndexType, 8>> achter = GT->GetAchter();
 
     SparseStructure saRestrict;
     saRestrict.build_begin(H);
     SparseStructure saProlongate;
     saProlongate.build_begin(h);
 
-    for (int i = 0; i < c2f.size(); i++) {
+    for (IndexType i = 0; i < c2f.size(); i++) {
       saRestrict.build_add(i, c2f[i]);
       saProlongate.build_add(c2f[i], i);
     }
     for (auto p = zweier.begin(); p != zweier.end(); p++) {
-      int il = p->first;
+      IndexType il = p->first;
       for (const auto& n : p->second) {
         saRestrict.build_add(n, il);
         saProlongate.build_add(il, n);
       }
     }
     for (auto p = vierer.begin(); p != vierer.end(); p++) {
-      int il = p->first;
+      IndexType il = p->first;
       for (const auto& n : p->second) {
         saRestrict.build_add(n, il);
         saProlongate.build_add(il, n);
       }
     }
     for (auto p = achter.begin(); p != achter.end(); p++) {
-      int il = p->first;
+      IndexType il = p->first;
       for (const auto& n : p->second) {
         saRestrict.build_add(n, il);
         saProlongate.build_add(il, n);
@@ -74,26 +74,26 @@ CudaMgInterpolatorNested::check_matrices(IndexType n_comp,
     restrict->ReInit(&saRestrict);
     prolongate->ReInit(&saProlongate);
 
-    for (int i = 0; i < c2f.size(); i++) {
+    for (IndexType i = 0; i < c2f.size(); i++) {
       restrict->GetValue(i, c2f[i]) = 1;
       prolongate->GetValue(c2f[i], i) = 1;
     }
     for (auto p = zweier.begin(); p != zweier.end(); p++) {
-      int il = p->first;
+      IndexType il = p->first;
       for (const auto& n : p->second) {
         restrict->GetValue(n, il) = 0.5;
         prolongate->GetValue(il, n) = 0.5;
       }
     }
     for (auto p = vierer.begin(); p != vierer.end(); p++) {
-      int il = p->first;
+      IndexType il = p->first;
       for (const auto& n : p->second) {
         restrict->GetValue(n, il) = 0.25;
         prolongate->GetValue(il, n) = 0.25;
       }
     }
     for (auto p = achter.begin(); p != achter.end(); p++) {
-      int il = p->first;
+      IndexType il = p->first;
       for (const auto& n : p->second) {
         restrict->GetValue(n, il) = 0.125;
         prolongate->GetValue(il, n) = 0.125;

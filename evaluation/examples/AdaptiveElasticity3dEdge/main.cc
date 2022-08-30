@@ -68,7 +68,7 @@ public:
       const GascoigneMesh3d* M3d = dynamic_cast<const GascoigneMesh3d*>(
         GetMultiLevelSolver()->GetSolver()->GetMesh());
       assert(M3d);
-      IntVector ref, coa;
+      IndexVector ref, coa;
       for (int i = 0; i < M3d->nnodes(); ++i) {
         const Vertex3d& v = M3d->vertex3d(i);
         if (v.x() == 0 && v.y() == 0) {

@@ -76,7 +76,7 @@ public:
   void copy_entries(const MatrixInterface& A);
   void add_entries(double s, const MatrixInterface* A);
 
-  void ConstructStructure(const IntVector& perm, const MatrixInterface& A);
+  void ConstructStructure(const IndexVector& perm, const MatrixInterface& A);
   void ConstructStructure(ShortIndexType ncomp, const SparseStructure& SS);
   void modify(IndexType c, double s) {}
   void compute_ilu();

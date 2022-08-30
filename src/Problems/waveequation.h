@@ -24,6 +24,8 @@
 #ifndef __waveequation_h
 #define __waveequation_h
 
+#include "../Interface/gascoigne.h"
+
 #include "boundaryequation.h"
 #include "equation.h"
 
@@ -38,7 +40,7 @@ class WaveEquation : public Gascoigne::Equation
 public:
   WaveEquation();
 
-  ShortIndexType GetNcomp() const { return 1; }
+  Gascoigne::ShortIndexType GetNcomp() const { return 1; }
 
   std::string GetName() const { return "WaveEquation"; }
 
@@ -64,7 +66,7 @@ class WaveBoundaryEquation : public Gascoigne::BoundaryEquation
 
 public:
   WaveBoundaryEquation();
-  ShortIndexType GetNcomp() const { return 1; }
+  Gascoigne::ShortIndexType GetNcomp() const { return 1; }
 
   std::string GetName() const { return "WaveBoundaryEquation"; }
 

@@ -1085,19 +1085,21 @@ HierarchicalMesh2d::ConstructQ4Patch(IndexType c) const
     IndexType fcx = x / 3;
     IndexType fcy = y / 3;
     // Index davon
-    IndexType fci = fcy * 2 + abs(fcx - fcy);
+    IndexType fci =
+      fcy * 2 + abs(static_cast<long>(fcx) - static_cast<long>(fcy));
 
     // Position vom Kind im Kind
     IndexType scx = (x - 2 * fcx) / 2;
     IndexType scy = (y - 2 * fcy) / 2;
     // Index davon
-    IndexType sci = scy * 2 + abs(scx - scy);
+    IndexType sci =
+      scy * 2 + abs(static_cast<long>(scx) - static_cast<long>(scy));
 
     // Position des Vertex
     IndexType vx = x - 2 * fcx - scx;
     IndexType vy = y - 2 * fcy - scy;
     // Index davon
-    IndexType vi = vy * 2 + abs(vx - vy);
+    IndexType vi = vy * 2 + abs(static_cast<long>(vx) - static_cast<long>(vy));
 
     patch[i] = quads[quads[quads[c].child(fci)].child(sci)].vertex(vi);
   }
@@ -1362,7 +1364,8 @@ HierarchicalMesh2d::check_inp(const string& name)
 
   file.close();
 
-  return make_pair(first_one, make_triple(nl, nq, 0));
+  return make_pair(first_one,
+                   make_triple<IndexType, IndexType, IndexType>(nl, nq, 0));
 }
 
 /*---------------------------------------------------*/

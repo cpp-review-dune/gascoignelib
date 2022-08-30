@@ -8,7 +8,7 @@ namespace Gascoigne {
 
 template<>
 void
-SparseUmf<SparseBlock>::ConstructStructure(const IntVector& perm,
+SparseUmf<SparseBlock>::ConstructStructure(const IndexVector& perm,
                                            const MatrixInterface& __XXX)
 {
   assert(__AS);

@@ -34,7 +34,7 @@ namespace Gascoigne {
 class PressureFilter : public DoubleVector
 {
 protected:
-  ShortIndexVector component;
+  IndexVector component;
   double domainsize;
   IndexType nhanging;
 
@@ -42,7 +42,7 @@ public:
   PressureFilter();
   ~PressureFilter();
 
-  void SetComponents(const ShortIndexVector& c) { component = c; }
+  void SetComponents(const IndexVector& c) { component = c; }
   bool Active() const { return component.size() > 0; }
 
   void ReInit(IndexType n, IndexType nhn);

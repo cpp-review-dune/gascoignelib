@@ -36,9 +36,9 @@ namespace Gascoigne {
 class Pi
 {
 protected:
-  std::map<int, std::array<int, 2>> edge;
-  std::map<int, std::array<int, 4>> face;
-  std::map<int, std::array<int, 8>> cell;
+  std::map<IndexType, std::array<IndexType, 2>> edge;
+  std::map<IndexType, std::array<IndexType, 4>> face;
+  std::map<IndexType, std::array<IndexType, 8>> cell;
 
   void Init2d(const GascoigneMesh2d* MP);
   void Init3d(const GascoigneMesh3d* MP);

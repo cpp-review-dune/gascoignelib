@@ -35,7 +35,7 @@ using namespace std;
 /* ----------------------------------------- */
 
 namespace Gascoigne {
-PointIlu::PointIlu(int ncomp, string type)
+PointIlu::PointIlu(IndexType ncomp, string type)
   : IluInterface()
   , SimpleIlu()
   , _ncomp(ncomp)
@@ -72,7 +72,7 @@ PointIlu::ReInit(const SparseStructureInterface* S)
 /* ----------------------------------------- */
 
 void
-PointIlu::ConstructStructure(const IntVector& perm, const MatrixInterface& A)
+PointIlu::ConstructStructure(const IndexVector& perm, const MatrixInterface& A)
 {
   assert(p.size() == perm.size());
   assert(q.size() == perm.size());
@@ -82,38 +82,38 @@ PointIlu::ConstructStructure(const IntVector& perm, const MatrixInterface& A)
   assert(AS);
 
   ///////////////////////////////////////////////////////
-  for (int i = 0; i < AS->n(); i++) {
+  for (IndexType i = 0; i < AS->n(); i++) {
     assert(AS->rowsize(i) >= 0);
   }
   ///////////////////////////////////////////////////////
-  int n = AS->n();
+  IndexType n = AS->n();
   p = perm;
-  for (int i = 0; i < n; i++)
+  for (IndexType i = 0; i < n; i++)
     q[p[i]] = i;
 
   IndexType zmax = 1;
-  for (int i = 0; i < n; i++) {
+  for (IndexType i = 0; i < n; i++) {
     zmax = std::max(zmax, AS->rowsize(i));
   }
-  IntVector ppi(zmax), picol(zmax);
+  IndexVector ppi(zmax), picol(zmax);
 
   ST.start(0) = 0;
-  for (int i = 0; i < n; i++) {
-    int pi = p[i];
-    int ni = AS->rowsize(pi);
+  for (IndexType i = 0; i < n; i++) {
+    IndexType pi = p[i];
+    IndexType ni = AS->rowsize(pi);
     ST.stop(i) = ST.start(i) + ni;
 
-    int count = 0;
-    for (int pos = AS->start(pi); pos < AS->stop(pi); pos++) {
+    IndexType count = 0;
+    for (IndexType pos = AS->start(pi); pos < AS->stop(pi); pos++) {
       picol[count++] = q[AS->col(pos)];
     }
     iota(ppi.begin(), ppi.begin() + ni, 0);
-    sort(ppi.begin(), ppi.begin() + ni, CompareLess<IntVector>(picol));
+    sort(ppi.begin(), ppi.begin() + ni, CompareLess<IndexVector>(picol));
 
-    for (int ii = 0; ii < ni; ii++) {
+    for (IndexType ii = 0; ii < ni; ii++) {
       ST.col(ST.start(i) + ii) = picol[ppi[ii]];
     }
-    for (int pos = ST.start(i); pos < ST.stop(i); pos++) {
+    for (IndexType pos = ST.start(i); pos < ST.stop(i); pos++) {
       if (ST.col(pos) == i) {
         ST.diag(i) = pos;
         continue;
@@ -124,12 +124,12 @@ PointIlu::ConstructStructure(const IntVector& perm, const MatrixInterface& A)
 /*-------------------------------------------------------------*/
 
 void
-PointIlu::modify(int c, double s)
+PointIlu::modify(IndexType c, double s)
 {
-  for (int i = 0; i < ST.n(); ++i) {
+  for (IndexType i = 0; i < ST.n(); ++i) {
     if ((i % _ncomp) == c) {
       double sum = 0.;
-      for (int pos = ST.start(i); pos < ST.stop(i); pos++) {
+      for (IndexType pos = ST.start(i); pos < ST.stop(i); pos++) {
         sum += fabs(value[pos]);
       }
       sum -= fabs(value[ST.diag(i)]);

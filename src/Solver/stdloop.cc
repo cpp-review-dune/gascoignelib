@@ -333,7 +333,7 @@ StdLoop::AdaptMesh(const DoubleVector& eta, string refine_or_coarsen_step)
       GetMeshAgent()->random_patch_coarsen(_p, 0);
     }
   } else if (_refiner == "eta") {
-    IntVector refnodes, coarsenodes, dummynodes;
+    IndexVector refnodes, coarsenodes, dummynodes;
 
     MalteAdaptor A(_paramfile, eta);
     A.refine(refnodes, coarsenodes);
@@ -343,7 +343,7 @@ StdLoop::AdaptMesh(const DoubleVector& eta, string refine_or_coarsen_step)
     if (refine_or_coarsen_step == "refine")
       GetMeshAgent()->refine_nodes(refnodes);
   } else if (_refiner == "dip") {
-    IntVector refnodes, coarsenodes;
+    IndexVector refnodes, coarsenodes;
 
     AdaptorData info;
     info.rfactor() = 1.;
@@ -409,7 +409,7 @@ StdLoop::AdaptMesh(const DoubleVector& eta)
       _p *= 1.1;
     GetMeshAgent()->random_patch_coarsen(_p, 0);
   } else if (_refiner == "eta") {
-    IntVector refnodes, coarsenodes;
+    IndexVector refnodes, coarsenodes;
 
     MalteAdaptor A(_paramfile, eta);
     A.refine(refnodes, coarsenodes);
@@ -429,7 +429,7 @@ StdLoop::AdaptMesh(const DoubleVector& eta)
 
     GetMeshAgent()->refine_nodes(refnodes, coarsenodes);
   } else if (_refiner == "dip") {
-    IntVector refnodes, coarsenodes;
+    IndexVector refnodes, coarsenodes;
 
     AdaptorData info;
     info.rfactor() = 1.;

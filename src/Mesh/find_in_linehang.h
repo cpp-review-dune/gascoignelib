@@ -29,10 +29,11 @@
 namespace Gascoigne {
 template<int N>
 std::pair<typename HangList<N>::iterator, bool>
-find_in_linehang(HangList<N>& LineHang, const std::array<int, N>& lineglob)
+find_in_linehang(HangList<N>& LineHang,
+                 const std::array<IndexType, N>& lineglob)
 {
   // sort(lineglob.begin(),lineglob.end());
-  typename HangList<N>::iterator p = LineHang.find(lineglob);
+  auto p = LineHang.find(lineglob);
   bool b = 0;
   if (p != LineHang.end())
     b = 1;

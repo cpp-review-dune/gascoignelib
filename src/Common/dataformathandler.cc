@@ -32,13 +32,32 @@ namespace Gascoigne {
 
 /***************************************************/
 
-template<typename T>
-void
-DataFormatHandler::insert(const string& name, T val)
-{
-  NT.insert({ std::string(typeid(T).name()), name });
-  TV.insert({ name, static_cast<void*>(val) });
-}
+// template<typename T>
+// void
+// DataFormatHandler::insert(const string& name, T val)
+// {
+//   NT.insert({ std::string(typeid(T).name()), name });
+//   TV.insert({ name, static_cast<void*>(val) });
+// }
+
+// template<typename T>
+// void
+// DataFormatHandler::insert(const std::string& name, T* val, T def)
+// {
+//   insert(name, val);
+//   *val = def;
+// }
+
+// template<typename T>
+// void
+// DataFormatHandler::setvalue(const std::string& name, T val)
+// {
+//   auto p = TV.find(name);
+//   if (p != TV.end()) {
+//     *(static_cast<T*>(p->second)) = val;
+//     return;
+//   }
+// }
 
 void
 DataFormatHandler::insert(const string& nm, string* pos)
@@ -178,6 +197,18 @@ DataFormatHandler::insert(const string& nm, map<int, IntVector>* pos)
 /*-----------------------------------------*/
 
 void
+DataFormatHandler::insert(const string& nm, map<IndexType, IndexVector>* pos)
+{
+  string type = "map<IndexType,IndexVector >";
+  string name = nm;
+  NameType p = make_pair(name, type);
+  NT.insert(p);
+  TMIdNId.insert(make_pair(name, pos));
+}
+
+/*-----------------------------------------*/
+
+void
 DataFormatHandler::insert(const string& nm, IntSet* pos)
 {
   string type = "set<int>";
@@ -185,6 +216,18 @@ DataFormatHandler::insert(const string& nm, IntSet* pos)
   NameType p = make_pair(name, type);
   NT.insert(p);
   TSI.insert(make_pair(name, pos));
+}
+
+/*-----------------------------------------*/
+
+void
+DataFormatHandler::insert(const string& nm, IndexSet* pos)
+{
+  string type = "set<IndexType>";
+  string name = nm;
+  NameType p = make_pair(name, type);
+  NT.insert(p);
+  TSId.insert(make_pair(name, pos));
 }
 
 /*-----------------------------------------*/
@@ -440,6 +483,17 @@ DataFormatHandler::setvalue(const string& name, IntSet& value)
   TypeSetInt::const_iterator p;
   p = TSI.find(name);
   if (p != TSI.end()) {
+    *(p->second) = value;
+    return;
+  }
+}
+
+void
+DataFormatHandler::setvalue(const string& name, IndexSet& value)
+{
+  TypeIndexSet::const_iterator p;
+  p = TSId.find(name);
+  if (p != TSId.end()) {
     *(p->second) = value;
     return;
   }

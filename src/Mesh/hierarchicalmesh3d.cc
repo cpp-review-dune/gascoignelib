@@ -1206,21 +1206,24 @@ HierarchicalMesh3d::ConstructQ4Patch(IndexType c) const
     IndexType fcy = y / 3;
     IndexType fcz = z / 3;
     // Index davon
-    IndexType fci = fcz * 4 + fcy * 2 + abs(fcx - fcy);
+    IndexType fci =
+      fcz * 4 + fcy * 2 + abs(static_cast<long>(fcx) - static_cast<long>(fcy));
 
     // Position von Kind im Kind
     IndexType scx = (x - 2 * fcx) / 2;
     IndexType scy = (y - 2 * fcy) / 2;
     IndexType scz = (z - 2 * fcz) / 2;
     // Index davon
-    IndexType sci = scz * 4 + scy * 2 + abs(scx - scy);
+    IndexType sci =
+      scz * 4 + scy * 2 + abs(static_cast<long>(scx) - static_cast<long>(scy));
 
     // Position des Vertex
     IndexType vx = x - 2 * fcx - scx;
     IndexType vy = y - 2 * fcy - scy;
     IndexType vz = z - 2 * fcz - scz;
     // Index davon
-    IndexType vi = vz * 4 + vy * 2 + abs(vx - vy);
+    IndexType vi =
+      vz * 4 + vy * 2 + abs(static_cast<long>(vx) - static_cast<long>(vy));
 
     patch[i] = hexs[hexs[hexs[c].child(fci)].child(sci)].vertex(vi);
   }

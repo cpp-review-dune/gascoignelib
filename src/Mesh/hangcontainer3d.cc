@@ -71,9 +71,9 @@ HangContainer3d::build_hanging_lines(const HangList<2>& oldhangs)
   for (HangList<4>::const_iterator p = FaceHanging.begin();
        p != FaceHanging.end();
        p++) {
-    const std::array<int, 4>& F = p->first;
-    std::array<int, 2> edge;
-    for (int i = 0; i < 4; i++) {
+    const std::array<IndexType, 4>& F = p->first;
+    std::array<IndexType, 2> edge;
+    for (IndexType i = 0; i < 4; i++) {
       edge[0] = F[i];
       edge[1] = F[(i + 1) % 4];
 
@@ -84,8 +84,8 @@ HangContainer3d::build_hanging_lines(const HangList<2>& oldhangs)
           // alter Hang
           Hanging.insert(make_pair(edge, old->second));
         } else {
-          int f = p->second.rneighbour();
-          int c = p->second.cneighbour();
+          IndexType f = p->second.rneighbour();
+          IndexType c = p->second.cneighbour();
           Hang h(-1, f, c);
           Hanging.insert(make_pair(edge, h));
         }
@@ -109,7 +109,7 @@ HangContainer3d::NeighbourSwapper()
   for (HangList<4>::iterator p = FaceToBeDeleted.begin();
        p != FaceToBeDeleted.end();
        p++) {
-    int r = p->second.rneighbour();
+    IndexType r = p->second.rneighbour();
     if (r < 0) {
       p->second.rneighbour() = p->second.cneighbour();
       p->second.cneighbour() = r;
@@ -129,7 +129,7 @@ HangContainer3d::make_consistent()
 /*********************************************************************/
 
 void
-HangContainer3d::load_elimination(IntVector& v) const
+HangContainer3d::load_elimination(IndexVector& v) const
 {
   HangContainer2d::load_elimination(v);
   for (HangList<4>::const_iterator p = FaceToBeDeleted.begin();
@@ -142,7 +142,7 @@ HangContainer3d::load_elimination(IntVector& v) const
 /*********************************************************************/
 
 void
-HangContainer3d::update_olds(IntVector& v, const IntVector& c)
+HangContainer3d::update_olds(IndexVector& v, const IndexVector& c)
 {
   HangContainer2d::update_olds(v, c);
   FaceToBeCreated.update(v, c);
@@ -153,11 +153,11 @@ HangContainer3d::update_olds(IntVector& v, const IntVector& c)
 /*********************************************************************/
 
 void
-HangContainer3d::update_news(const IntVector& vnew, int offset)
+HangContainer3d::update_news(const IndexVector& vnew, IndexType offset)
 {
   // cerr << "new_hangs()" << endl;
   // newhangs-hanging setzten fuer new-quad und linehang fuer die zukunft
-  int i = offset;
+  IndexType i = offset;
   for (HangList<4>::iterator p = FaceToBeCreated.begin();
        p != FaceToBeCreated.end();
        p++) {
@@ -173,7 +173,7 @@ HangContainer3d::update_news(const IntVector& vnew, int offset)
 
 /*********************************************************************/
 
-int
+IndexType
 HangContainer3d::vertex_index(const FaceVector& face) const
 {
   HangList<4>::const_iterator Np = FaceToBeCreated.find(face);
@@ -196,7 +196,7 @@ HangContainer3d::vertex_index(const FaceVector& face) const
 /*********************************************************************/
 
 void
-HangContainer3d::face_refine(const FaceVector& face, int f)
+HangContainer3d::face_refine(const FaceVector& face, IndexType f)
 {
   pair<HangList<4>::iterator, bool> p = find_in_linehang<4>(FaceHanging, face);
   if (p.second) {
@@ -242,7 +242,9 @@ HangContainer3d::face_refine(const FaceVector& face, int f)
 /*********************************************************************/
 
 void
-HangContainer3d::face_coarse(const FaceVector& face, int f, int face_vertex)
+HangContainer3d::face_coarse(const FaceVector& face,
+                             IndexType f,
+                             IndexType face_vertex)
 {
   pair<HangList<4>::iterator, bool> p = find_in_linehang<4>(FaceHanging, face);
 
@@ -298,7 +300,9 @@ HangContainer3d::output() const
 /*********************************************************************/
 
 void
-HangContainer3d::line_coarse(EdgeVector& edge, int f, int edge_vertex)
+HangContainer3d::line_coarse(EdgeVector& edge,
+                             IndexType f,
+                             IndexType edge_vertex)
 {
   HangList<2>::iterator p = Hanging.find(edge);
 
@@ -314,7 +318,7 @@ HangContainer3d::line_coarse(EdgeVector& edge, int f, int edge_vertex)
 
 void
 HangContainer3d::line_refine(EdgeVector& edge,
-                             int f,
+                             IndexType f,
                              const HangList<2>& oldhangs)
 {
   if (VertexToBeCreated.find(edge) == VertexToBeCreated.end()) {
@@ -330,13 +334,13 @@ HangContainer3d::line_refine(EdgeVector& edge,
 /*********************************************************************/
 
 // void HangContainer3d::decide_new_line_vertex(const EdgeVector& edge,
-// 					     int f)
+// 					     IndexType f)
 // {
 //   HangList<2>::const_iterator p = Hanging.find(edge);
 
 //   if (p!=Hanging.end())
 //     {
-//       int h = p->second.hanging();
+//       IndexType h = p->second.hanging();
 //       if (h>=0) return;  // vertex gibts schon
 //     }
 //   if (VertexToBeCreated.find(edge)!=VertexToBeCreated.end())

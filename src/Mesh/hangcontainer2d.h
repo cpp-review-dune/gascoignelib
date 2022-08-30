@@ -33,8 +33,6 @@ namespace Gascoigne {
 class HangContainer2d
 {
 protected:
-  typedef std::array<int, 2> EdgeVector;
-
   HangList<2> VertexToBeDeleted; // ehemals haengende Knoten
   HangList<2> VertexToBeCreated; // neue haengende Knoten
   HangList<2> NotAnyMoreHanging; // Knoten bleibt aber haengt nicht mehr
@@ -48,8 +46,8 @@ public:
 
   // Zugriff
 
-  int NToBeDeleted() const { return VertexToBeDeleted.size(); }
-  int NToBeCreated() const { return VertexToBeCreated.size(); }
+  IndexType NToBeDeleted() const { return VertexToBeDeleted.size(); }
+  IndexType NToBeCreated() const { return VertexToBeCreated.size(); }
 
   const HangList<2>& Deleting() const { return VertexToBeDeleted; }
   const HangList<2>& Creating() const { return VertexToBeCreated; }
@@ -64,15 +62,15 @@ public:
     VertexToBeCreated.make_consistent(VertexToBeDeleted);
   }
 
-  void load_elimination(IntVector&) const;
+  void load_elimination(IndexVector&) const;
 
-  void update_olds(IntVector&, const IntVector&);
-  void update_news(const IntVector&, int);
+  void update_olds(IndexVector&, const IndexVector&);
+  void update_news(const IndexVector&, IndexType);
 
-  int vertex_index(const EdgeVector&) const;
+  IndexType vertex_index(const EdgeVector&) const;
 
-  void ghost_coarse(EdgeVector&, int, int);
-  void ghost_refine(EdgeVector&, int);
+  void ghost_coarse(EdgeVector&, IndexType, IndexType);
+  void ghost_refine(EdgeVector&, IndexType);
 
   void NeighbourSwapper();
 };

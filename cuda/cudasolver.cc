@@ -98,13 +98,13 @@ CudaSolver::DeleteVector(Vector& p) const
 }
 
 void
-CudaSolver::BasicInit(const ParamFile& paramfile, const int dimension)
+CudaSolver::BasicInit(const ParamFile& paramfile, const IndexType dimension)
 {
   StdSolver::BasicInit(paramfile, dimension);
 }
 
 MatrixInterface*
-CudaSolver::NewMatrix(int ncomp, const std::string& matrixtype)
+CudaSolver::NewMatrix(IndexType ncomp, const std::string& matrixtype)
 {
   this->ncomp = ncomp;
   this->matrixtype = matrixtype;
@@ -170,14 +170,15 @@ CudaSolver::NewMesh(const GascoigneMesh* mp)
 
   SparseStructure diagonalStructure;
   diagonalStructure.build_begin(nnodes);
-  for (int i = 0; i < nnodes; ++i) {
+  for (IndexType i = 0; i < nnodes; ++i) {
     diagonalStructure.build_add(i, i);
   }
   diagonalStructure.build_end();
 
   const auto& hnstructure = mp->GetHangingIndexHandler();
-  const std::map<int, std::array<int, 3>>* hnq2 = hnstructure.GetStructure();
-  const std::map<int, std::array<int, 9>>* hnq2face =
+  const std::map<IndexType, std::array<IndexType, 3>>* hnq2 =
+    hnstructure.GetStructure();
+  const std::map<IndexType, std::array<IndexType, 9>>* hnq2face =
     hnstructure.GetStructureFace();
 
   SparseStructure saHNAverage;
@@ -197,7 +198,7 @@ CudaSolver::NewMesh(const GascoigneMesh* mp)
     build_structure(saHNAverage, saHNDistribute, *hnq2face, 9);
   }
 
-  for (int i = 0; i < nnodes; ++i) {
+  for (IndexType i = 0; i < nnodes; ++i) {
     saHNDistribute.build_add(i, i);
     saHNAverage.build_add(i, i);
   }
@@ -207,7 +208,7 @@ CudaSolver::NewMesh(const GascoigneMesh* mp)
   hn_zero->ReInit(&diagonalStructure);
   hn_average->ReInit(&saHNAverage);
   hn_distribute->ReInit(&saHNDistribute);
-  for (int i = 0; i < nnodes; ++i) {
+  for (IndexType i = 0; i < nnodes; ++i) {
     hn_zero->GetValue(i, i) = 1;
     hn_average->GetValue(i, i) = 1;
     hn_distribute->GetValue(i, i) = 1;
@@ -227,8 +228,8 @@ CudaSolver::NewMesh(const GascoigneMesh* mp)
   } else if (disc_name == "Q23d") {
     MatrixEntryType wei2d[] = { 0.375, 0.75, -0.125 };
     MatrixEntryType wei3d[9];
-    for (int i = 0; i < 3; i++) {
-      for (int j = 0; j < 3; j++) {
+    for (IndexType i = 0; i < 3; i++) {
+      for (IndexType j = 0; j < 3; j++) {
         wei3d[3 * i + j] = wei2d[i] * wei2d[j];
       }
     }
@@ -255,7 +256,7 @@ CudaSolver::SetProblem(const ProblemDescriptorInterface& PDX)
 
   SparseStructure diagonalStructure;
   diagonalStructure.build_begin(nnodes);
-  for (int i = 0; i < nnodes; ++i) {
+  for (IndexType i = 0; i < nnodes; ++i) {
     diagonalStructure.build_add(i, i);
   }
   diagonalStructure.build_end();
@@ -276,19 +277,19 @@ CudaSolver::SetProblem(const ProblemDescriptorInterface& PDX)
   CS.memory(&diagonalStructure);
 
   std::vector<TimePattern> values(nnodes, identity);
-  for (int col : DD->dirichlet_colors()) {
+  for (IndexType col : DD->dirichlet_colors()) {
 
-    nvector<int> comps = DD->components_on_color(col);
+    nvector<IndexType> comps = DD->components_on_color(col);
 
     TimePattern pattern(ncomp);
     pattern.identity();
-    for (int i : comps) {
+    for (IndexType i : comps) {
       pattern(i, i) = 0;
     }
 
-    nvector<int> nodes = BIH.Verteces(col);
-    for (int i : nodes) {
-      for (int j = 0; j < ncomp; ++j) {
+    nvector<IndexType> nodes = BIH.Verteces(col);
+    for (IndexType i : nodes) {
+      for (IndexType j = 0; j < ncomp; ++j) {
         values[i](j, j) *= pattern(j, j);
       }
     }
@@ -342,7 +343,7 @@ CudaSolver::vmulteq(const Matrix& A,
 }
 
 void
-CudaSolver::smooth(int niter,
+CudaSolver::smooth(IndexType niter,
                    const Matrix& A,
                    Vector& x,
                    const Vector& y,
@@ -355,7 +356,7 @@ CudaSolver::smooth(int niter,
   GlobalTimer.start("---> smooth");
   double omega = GetSolverData().GetOmega();
   // std::cout << Norm(h) << " " << Norm(x) << std::endl;
-  for (int iter = 0; iter < niter; iter++) {
+  for (IndexType iter = 0; iter < niter; iter++) {
     if (GetSolverData().GetLinearSmooth() == "jacobi") {
       GlobalTimer.stop("---> smooth");
       MatrixResidual(A, h, x, y);

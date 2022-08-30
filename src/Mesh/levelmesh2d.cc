@@ -309,7 +309,7 @@ LevelMesh2d::ConstructHangingStructureQuartic(QuarticHNStructure5& hnq4) const
   hnq4.clear();
   assert(HMP->patchdepth() >= 2);
   IndexType count = 0;
-  std::IndexSet habschon;
+  IndexSet habschon;
   for (IndexType i = 0; i < ncells(); ++i) {
     const Quad& q_c = HMP->quad(Quadl2g(i));
     IndexType father_c = q_c.father();
@@ -628,7 +628,7 @@ LevelMesh2d::InitBoundaryHandler(BoundaryIndexHandler& BI,
     IndexType col = *c;
     const IndexVector& cells = BI.Cells(col);
     const IndexVector& locals = BI.Localind(col);
-    HASHSET<IndexType> habschon;
+    std::unordered_set<IndexType> habschon;
 
     IndexVector p1;
     IndexVector p2;

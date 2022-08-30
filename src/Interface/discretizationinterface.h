@@ -101,8 +101,8 @@ public:
     return 1;
   }
   virtual IndexType ndofs_withouthanging() const { return ndofs(); }
-  virtual Vertex2d vertex2d(int i) const { abort(); }
-  virtual Vertex3d vertex3d(int i) const { abort(); }
+  virtual Vertex2d vertex2d(IndexType i) const { abort(); }
+  virtual Vertex3d vertex3d(IndexType i) const { abort(); }
 
   virtual void Structure(SparseStructureInterface* S) const = 0;
   virtual void Form(GlobalVector& f,
@@ -151,7 +151,7 @@ public:
                        const ParamFile& pf,
                        const std::string& name,
                        const GlobalVector& u,
-                       int i) const
+                       IndexType i) const
   {
     std::cerr << "\"DiscretizationInterface::VisuVtk not written!" << std::endl;
     abort();
@@ -244,17 +244,18 @@ public:
     abort();
   }
   virtual void StrongDirichletMatrix(MatrixInterface& A,
-                                     int col,
-                                     const std::vector<int>& comp) const
+                                     IndexType col,
+                                     const std::vector<IndexType>& comp) const
   {
     std::cerr
       << "\"DiscretizationInterface::StrongDirichletmatrix\" not written!"
       << std::endl;
     abort();
   }
-  virtual void StrongDirichletMatrixOnlyRow(MatrixInterface& A,
-                                            int col,
-                                            const std::vector<int>& comp) const
+  virtual void StrongDirichletMatrixOnlyRow(
+    MatrixInterface& A,
+    IndexType col,
+    const std::vector<IndexType>& comp) const
   {
     std::cerr << "\"DiscretizationInterface::StrongDirichletMatrixOnlyRow\" "
                  "not written!"
@@ -263,8 +264,8 @@ public:
   }
   virtual void StrongDirichletVector(GlobalVector& u,
                                      const DirichletData& BF,
-                                     int col,
-                                     const std::vector<int>& comp,
+                                     IndexType col,
+                                     const std::vector<IndexType>& comp,
                                      double d = 1.) const
   {
     std::cerr
@@ -272,9 +273,10 @@ public:
       << std::endl;
     abort();
   }
-  virtual void StrongDirichletVectorZero(GlobalVector& u,
-                                         int col,
-                                         const std::vector<int>& comp) const
+  virtual void StrongDirichletVectorZero(
+    GlobalVector& u,
+    IndexType col,
+    const std::vector<IndexType>& comp) const
   {
     std::cerr
       << "\"DiscretizationInterface::StrongDirichletVectorZero\" not written!"
@@ -283,8 +285,8 @@ public:
   }
   virtual void StrongPeriodicVector(GlobalVector& u,
                                     const PeriodicData& BF,
-                                    int col,
-                                    const std::vector<int>& comp,
+                                    IndexType col,
+                                    const std::vector<IndexType>& comp,
                                     double d = 1.) const
   {
     std::cerr
@@ -507,7 +509,10 @@ public:
     abort();
   }
 
-  virtual void RhsCurve(GlobalVector& F, const Curve& C, int comp, int N) const
+  virtual void RhsCurve(GlobalVector& F,
+                        const Curve& C,
+                        IndexType comp,
+                        IndexType N) const
   {
     std::cerr << "\"DiscretizationInterface::RhsCurve\" not written!"
               << std::endl;

@@ -40,12 +40,24 @@ class HeatProblem : public Gascoigne::ProblemDescriptorBase
 public:
   void BasicInit(const Gascoigne::ParamFile& pf)
   {
+    std::cerr << "Past: " << __FILE__ << ":" << std::to_string(__LINE__)       \
+              << " in " << __FUNCTION__ << std::endl;                          \
     data.BasicInit(pf);
 
+    std::cerr << "Past: " << __FILE__ << ":" << std::to_string(__LINE__)       \
+              << " in " << __FUNCTION__ << std::endl;                          \
     GetParamFile() = pf;
+    std::cerr << "Past: " << __FILE__ << ":" << std::to_string(__LINE__)       \
+              << " in " << __FUNCTION__ << std::endl;                          \
     GetEquationPointer() = new Gascoigne::HeatEquation(data);
+    std::cerr << "Past: " << __FILE__ << ":" << std::to_string(__LINE__)       \
+              << " in " << __FUNCTION__ << std::endl;                          \
     GetDirichletDataPointer() = new Gascoigne::HeatDD(pf);
+    std::cerr << "Past: " << __FILE__ << ":" << std::to_string(__LINE__)       \
+              << " in " << __FUNCTION__ << std::endl;                          \
     GetRightHandSidePointer() = new Gascoigne::HeatRhs;
+    std::cerr << "Past: " << __FILE__ << ":" << std::to_string(__LINE__)       \
+              << " in " << __FUNCTION__ << std::endl;                          \
 
     ProblemDescriptorBase::BasicInit(pf);
   }

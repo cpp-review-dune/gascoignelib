@@ -43,7 +43,14 @@ template<int N>
 class EdgeHash
 {
 public:
-  int operator()(const EdgeArray<N>& h) const { return h.sum(); }
+  size_t operator()(const EdgeArray<N>& h) const
+  {
+    size_t hash = std::hash<IndexType>{}(h[0]);
+    for (size_t i = 1; i < N; ++i) {
+      hash ^= std::hash<IndexType>{}(h[i]) << i;
+    }
+    return hash;
+  }
 };
 
 /*------------------------------------------------------*/
@@ -59,8 +66,8 @@ public:
     typename std::unordered_map<EdgeArray<N>, Hang, EdgeHash<N>>::const_iterator
       const_iterator;
 
-  void update(const std::vector<int>&);
-  void update(const std::vector<int>&, const std::vector<int>&);
+  void update(const std::vector<IndexType>&);
+  void update(const std::vector<IndexType>&, const std::vector<IndexType>&);
   void make_consistent(HangList<N>&);
   void move(HangList<N>& src, iterator& p);
   HangList<N>& operator=(const HangList<N>& A);

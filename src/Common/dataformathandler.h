@@ -46,7 +46,7 @@ private:
   template<typename T>
   using NameMap = std::map<std::string, T>;
 
-  typedef NameMap<void*> TypeVoid;
+  // typedef NameMap<void*> TypeVoid;
   typedef NameMap<std::string*> TypeString;
   typedef NameMap<int*> TypeInt;
   typedef NameMap<IndexType*> TypeIndex;
@@ -63,14 +63,17 @@ private:
   typedef NameMap<IndexVector*> TypeVectorIndex;
   typedef NameMap<std::vector<std::string>*> TypeVectorString;
 
-  typedef NameMap<std::set<int>*> TypeSetInt;
+  typedef NameMap<IntSet*> TypeSetInt;
+  typedef NameMap<IndexSet*> TypeIndexSet;
   typedef NameMap<std::set<std::vector<std::string>>*> TypeSetVectorString;
 
   typedef NameMap<std::map<int, IntVector>*> TypeMapIntVectorInt;
+  typedef NameMap<std::map<IndexType, IndexVector>*> TypeMapIndexVectorIndex;
 
   std::map<std::string, std::string> NT;
 
-  TypeVoid TV;
+  // TypeVoid TV;
+
   TypeString TS;
   TypeInt TI;
   TypeIndex TId;
@@ -86,9 +89,11 @@ private:
   TypeVectorString TVS;
 
   TypeSetInt TSI;
+  TypeIndexSet TSId;
   TypeSetVectorString TSVS;
 
   TypeMapIntVectorInt TMINI;
+  TypeMapIndexVectorIndex TMIdNId;
 
   TypeStringDouble TSD;
 
@@ -109,15 +114,23 @@ public:
     TNId.clear();
     TVS.clear();
     TSI.clear();
+    TSId.clear();
     TSVS.clear();
     TMINI.clear();
+    TMIdNId.clear();
     TSD.clear();
   }
 
-  // without default values
-  template<typename T>
-  void insert(const std::string& name, T val);
+  // template<typename T>
+  // void insert(const std::string& name, T val);
 
+  // template<typename T>
+  // void insert(const std::string& name, T* val, T def);
+
+  // template<typename T>
+  // void setvalue(const std::string& name, T val);
+
+  // without default values
   void insert(const std::string&, std::string*);
   void insert(const std::string&, int*);
   void insert(const std::string&, IndexType*);
@@ -134,9 +147,11 @@ public:
   void insert(const std::string&, std::vector<std::string>*);
 
   void insert(const std::string&, IntSet*);
+  void insert(const std::string&, IndexSet*);
   void insert(const std::string&, std::set<std::vector<std::string>>*);
 
   void insert(const std::string&, std::map<int, IntVector>*);
+  void insert(const std::string&, std::map<IndexType, IndexVector>*);
   void insert(const std::string&, std::map<int, std::string>*);
 
   void insert(int, StringDouble*);
@@ -176,6 +191,7 @@ public:
   void setvalue(const std::string&, std::vector<std::string>&);
 
   void setvalue(const std::string&, IntSet&);
+  void setvalue(const std::string&, IndexSet&);
 
   void setvalue(const std::string&, std::pair<int, IntVector>&);
 

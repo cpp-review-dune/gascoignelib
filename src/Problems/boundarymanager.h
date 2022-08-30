@@ -49,9 +49,9 @@ class BoundaryManager
 {
 protected:
   IntSet _colsDirichlet, _colsRightHandSide, _colsEquation, _colsFunctional;
-  IntVector _colsPeriodic;
-  std::map<int, IntVector> _compsDirichlet;
-  std::map<int, IntVector> _compsPeriodic;
+  IndexVector _colsPeriodic;
+  std::map<IndexType, IndexVector> _compsDirichlet;
+  std::map<IndexType, IndexVector> _compsPeriodic;
 
 public:
   BoundaryManager() {}
@@ -61,15 +61,21 @@ public:
 
   virtual std::string GetName() const { return "Std"; }
 
-  void AddDirichletData(int col, int c)
+  void AddDirichletData(IndexType col, IndexType c)
   {
     _colsDirichlet.insert(col);
     _compsDirichlet[col].push_back(c);
   }
-  void AddPeriodicData(int col, int c) { _compsPeriodic[col].push_back(c); }
-  void AddBoundaryRightHandSide(int col) { _colsRightHandSide.insert(col); }
-  void AddBoundaryEquation(int col) { _colsEquation.insert(col); }
-  void AddBoundaryFunctional(int col) { _colsFunctional.insert(col); }
+  void AddPeriodicData(IndexType col, IndexType c)
+  {
+    _compsPeriodic[col].push_back(c);
+  }
+  void AddBoundaryRightHandSide(IndexType col)
+  {
+    _colsRightHandSide.insert(col);
+  }
+  void AddBoundaryEquation(IndexType col) { _colsEquation.insert(col); }
+  void AddBoundaryFunctional(IndexType col) { _colsFunctional.insert(col); }
 
   std::ostream& print(std::ostream& s) const;
 
@@ -89,14 +95,15 @@ public:
   {
     return _colsDirichlet;
   }
-  virtual const IntVector& GetPeriodicDataColors() const
+  virtual const IndexVector& GetPeriodicDataColors() const
   {
     return _colsPeriodic;
   }
 
-  virtual const IntVector& GetDirichletDataComponents(int c) const
+  virtual const IndexVector& GetDirichletDataComponents(IndexType c) const
   {
-    std::map<int, IntVector>::const_iterator p = _compsDirichlet.find(c);
+    std::map<IndexType, IndexVector>::const_iterator p =
+      _compsDirichlet.find(c);
     if (p == _compsDirichlet.end()) {
       std::cerr << "BoundaryManager::GetDirichletComponents()" << std::endl;
       std::cerr << "No such color " << c << std::endl;
@@ -106,9 +113,9 @@ public:
     return p->second;
   }
 
-  virtual const IntVector& GetPeriodicDataComponents(int c) const
+  virtual const IndexVector& GetPeriodicDataComponents(IndexType c) const
   {
-    std::map<int, IntVector>::const_iterator p = _compsPeriodic.find(c);
+    std::map<IndexType, IndexVector>::const_iterator p = _compsPeriodic.find(c);
     if (p == _compsPeriodic.end()) {
       std::cerr << "BoundaryManager::GetPeriodicComponents()" << std::endl;
       std::cerr << "No such color " << c << std::endl;
