@@ -37,14 +37,14 @@ class StreamDirection
   const ColumnStencil* S;
   const GlobalVector& X;
 
-  void Permutate(IntVector& perm);
+  void Permutate(IndexVector& perm);
 
 public:
   StreamDirection(const GascoigneMesh* m,
                   const StencilInterface* s,
                   const GlobalVector& x);
 
-  void Permutate(IntVector& perm, const IntVector d);
+  void Permutate(IndexVector& perm, const IndexVector d);
 
   bool operator()(int i, int j) const;
   double est(int i, int j) const;
@@ -57,12 +57,12 @@ class VecDirection
   int dimension;
   const GascoigneMesh* M;
 
-  void Permutate(IntVector& perm);
+  void Permutate(IndexVector& perm);
 
 public:
   VecDirection(const GascoigneMesh* m);
 
-  void Permutate(IntVector& perm, DoubleVector v);
+  void Permutate(IndexVector& perm, DoubleVector v);
 
   bool operator()(int i, int j) const;
 };

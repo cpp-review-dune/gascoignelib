@@ -488,7 +488,7 @@ StdSolver::AddPeriodicNodes(SparseStructure* SA)
   -------------------------------------------------------*/
 
   const BoundaryManager* BM = GetProblemDescriptor()->GetBoundaryManager();
-  const IntVector& iv_PeriodicColors = BM->GetPeriodicDataColors();
+  const IndexVector& iv_PeriodicColors = BM->GetPeriodicDataColors();
 
   const GascoigneMesh* p_mesh = GetMesh();
   const GascoigneMesh* GMP = dynamic_cast<const GascoigneMesh*>(p_mesh);
@@ -497,7 +497,7 @@ StdSolver::AddPeriodicNodes(SparseStructure* SA)
   map<IndexType, map<IndexType, IndexType>> mm_PeriodicPairs =
     GMP->GetBoundaryIndexHandler().GetPeriodicPairs();
 
-  for (IntVector::const_iterator p_col = iv_PeriodicColors.begin();
+  for (IndexVector::const_iterator p_col = iv_PeriodicColors.begin();
        p_col != iv_PeriodicColors.end();
        p_col += 2) {
     IndexType col = *p_col;
@@ -505,7 +505,7 @@ StdSolver::AddPeriodicNodes(SparseStructure* SA)
     IndexSet is_neighbours1;
     IndexSet is_neighbours2;
 
-    for (const auto p_pair = mm_PeriodicPairs[col].begin();
+    for (IndexMap::const_iterator p_pair = mm_PeriodicPairs[col].begin();
          p_pair != mm_PeriodicPairs[col].end();
          p_pair++) {
       // beide raender abgrasen und die kopplungen in columns1 und columns2
@@ -799,7 +799,7 @@ StdSolver::SetBoundaryVectorZero(Vector& gf) const
   // for (IndexSet::const_iterator p = Colors.begin(); p != Colors.end(); p++)
   // {
   //   IndexType col = *p;
-  //   const IntVector &comp = BM->GetDirichletDataComponents(col);
+  //   const IndexVector &comp = BM->GetDirichletDataComponents(col);
   //   GetDiscretization()->StrongDirichletVectorZero(f, col, comp);
   //    }
 }
@@ -876,7 +876,7 @@ StdSolver::SetBoundaryVectorStrong(Vector& gf,
   // p++)
   // {
   //   IndexType col = *p;
-  //   const IntVector &comp = BM.GetDirichletDataComponents(col);
+  //   const IndexVector &comp = BM.GetDirichletDataComponents(col);
   //   GetDiscretization()->StrongDirichletVector(f, DD, col, comp, d);
   // }
 }
@@ -897,7 +897,7 @@ StdSolver::SetPeriodicVectorStrong(Vector& gf,
        p != periodic_cols.end();
        p++) {
     IndexType col = *p;
-    const IntVector& comp = BM.GetPeriodicDataComponents(col);
+    const IndexVector& comp = BM.GetPeriodicDataComponents(col);
     GetDiscretization()->StrongPeriodicVector(f, PD, col, comp, d);
   }
 }
@@ -908,7 +908,7 @@ void
 StdSolver::SetPeriodicVectorZero(Vector& gf) const
 {
   const BoundaryManager* BM = GetProblemDescriptor()->GetBoundaryManager();
-  const IntVector& iv_PeriodicColors = BM->GetPeriodicDataColors();
+  const IndexVector& iv_PeriodicColors = BM->GetPeriodicDataColors();
 
   GlobalVector& f = GetGV(gf);
   const GascoigneMesh* p_mesh = GetMesh();
@@ -918,18 +918,19 @@ StdSolver::SetPeriodicVectorZero(Vector& gf) const
   map<IndexType, map<IndexType, IndexType>> mm_PeriodicPairs =
     GMP->GetBoundaryIndexHandler().GetPeriodicPairs();
 
-  for (IntVector::const_iterator p_col = iv_PeriodicColors.begin();
+  for (IndexVector::const_iterator p_col = iv_PeriodicColors.begin();
        p_col != iv_PeriodicColors.end();) {
     IndexType col = *p_col++;
     *p_col++;
 
-    const IntVector& iv_PeriodicComponents = BM->GetPeriodicDataComponents(col);
+    const IndexVector& iv_PeriodicComponents =
+      BM->GetPeriodicDataComponents(col);
 
     for (map<IndexType, IndexType>::const_iterator p_pair =
            mm_PeriodicPairs[col].begin();
          p_pair != mm_PeriodicPairs[col].end();
          p_pair++) {
-      for (IntVector::const_iterator p_comp = iv_PeriodicComponents.begin();
+      for (IndexVector::const_iterator p_comp = iv_PeriodicComponents.begin();
            p_comp != iv_PeriodicComponents.end();
            p_comp++) {
         f(p_pair->second, *p_comp) =
@@ -1516,7 +1517,7 @@ StdSolver::PeriodicMatrix(Matrix& A) const
   -------------------------------------------------------*/
 
   const BoundaryManager* BM = GetProblemDescriptor()->GetBoundaryManager();
-  const IntVector& iv_PeriodicColors = BM->GetPeriodicDataColors();
+  const IndexVector& iv_PeriodicColors = BM->GetPeriodicDataColors();
 
   const GascoigneMesh* p_mesh = GetMesh();
   const GascoigneMesh* GMP = dynamic_cast<const GascoigneMesh*>(p_mesh);
@@ -1525,12 +1526,13 @@ StdSolver::PeriodicMatrix(Matrix& A) const
   map<IndexType, map<IndexType, IndexType>> mm_PeriodicPairs =
     GMP->GetBoundaryIndexHandler().GetPeriodicPairs();
 
-  for (IntVector::const_iterator p_col = iv_PeriodicColors.begin();
+  for (IndexVector::const_iterator p_col = iv_PeriodicColors.begin();
        p_col != iv_PeriodicColors.end();) {
     IndexType col = *p_col++;
     *p_col++;
 
-    const IntVector iv_PeriodicComponents = BM->GetPeriodicDataComponents(col);
+    const IndexVector iv_PeriodicComponents =
+      BM->GetPeriodicDataComponents(col);
 
     GetMatrix(A).periodic(mm_PeriodicPairs[col], iv_PeriodicComponents);
   }
@@ -1596,7 +1598,7 @@ StdSolver::PermutateIlu(Matrix& A, const Vector& gu) const
   const GlobalVector& u = GetGV(gu);
 
   IndexType n = GetMatrix(A).GetStencil()->n();
-  IntVector perm(n);
+  IndexVector perm(n);
 
   iota(perm.begin(), perm.end(), 0);
   if (_matrixtype != "vanka") // no need to sort for vanka

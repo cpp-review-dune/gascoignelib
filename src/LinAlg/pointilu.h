@@ -44,7 +44,7 @@ class PointIlu
   , virtual public IluInterface
 {
 protected:
-  int _ncomp;
+  IndexType _ncomp;
   SparseStructureAdaptor* SSAP;
 
 public:
@@ -52,7 +52,7 @@ public:
   ///  Constructor
   //
 
-  PointIlu(int ncomp, std::string type);
+  PointIlu(IndexType ncomp, std::string type);
   ~PointIlu();
 
   std::string GetName() const { return "PointIlu"; }
@@ -62,8 +62,8 @@ public:
   IndexType n() const { return GetStencil()->n(); };
   void zero() { SimpleIlu::zero(); }
 
-  void ConstructStructure(const IntVector& perm, const MatrixInterface& A);
-  void modify(int c, double s);
+  void ConstructStructure(const IndexVector& perm, const MatrixInterface& A);
+  void modify(IndexType c, double s);
   void copy_entries(const MatrixInterface& A) { SimpleIlu::copy_entries(A); }
   void compute_ilu() { SimpleIlu::compute_ilu(); }
   void solve(GlobalVector& x) const { SimpleIlu::solve(x); }

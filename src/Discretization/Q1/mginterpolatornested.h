@@ -35,16 +35,16 @@ namespace Gascoigne {
 class MgInterpolatorNested : public virtual MgInterpolatorInterface
 {
 private:
-  std::map<int, std::array<int, 2>> zweier;
-  std::map<int, std::array<int, 4>> vierer;
-  std::map<int, std::array<int, 8>> achter;
+  std::map<IndexType, std::array<IndexType, 2>> zweier;
+  std::map<IndexType, std::array<IndexType, 4>> vierer;
+  std::map<IndexType, std::array<IndexType, 8>> achter;
 
   IntVector c2f;
 
 public:
-  std::map<int, std::array<int, 2>>& GetZweier() { return zweier; }
-  std::map<int, std::array<int, 4>>& GetVierer() { return vierer; }
-  std::map<int, std::array<int, 8>>& GetAchter() { return achter; }
+  std::map<IndexType, std::array<IndexType, 2>>& GetZweier() { return zweier; }
+  std::map<IndexType, std::array<IndexType, 4>>& GetVierer() { return vierer; }
+  std::map<IndexType, std::array<IndexType, 8>>& GetAchter() { return achter; }
 
   IntVector& GetC2F() { return c2f; }
   const IntVector& GetC2F() const { return c2f; }

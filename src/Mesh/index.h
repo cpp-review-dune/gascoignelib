@@ -36,10 +36,8 @@ namespace Gascoigne {
 class Index
 {
 protected:
-  typedef std::map<int, int> IntMap;
-
   IndexVector vl2g, el2g, hl2g, ql2g;
-  IntMap vg2l, eg2l, hg2l, qg2l;
+  IndexMap vg2l, eg2l, hg2l, qg2l;
 
 public:
 protected:
@@ -78,8 +76,8 @@ public:
     assert(i < hl2g.size());
     return hl2g[i];
   }
-  const IntMap& Quadg2l() const { return qg2l; }
-  const IntMap& Hexg2l() const { return hg2l; }
+  const IndexMap& Quadg2l() const { return qg2l; }
+  const IndexMap& Hexg2l() const { return hg2l; }
 
   ////////////////
   // Sizes
@@ -99,13 +97,13 @@ public:
   // Global To Local
   ////////////////
 
-  const IntMap& Vertexg2l() const { return vg2l; }
-  const IntMap& Edgeg2l() const { return eg2l; }
-  IntMap& Edgeg2l() { return eg2l; }
+  const IndexMap& Vertexg2l() const { return vg2l; }
+  const IndexMap& Edgeg2l() const { return eg2l; }
+  IndexMap& Edgeg2l() { return eg2l; }
 
   int Quadg2l(int i) const
   {
-    std::map<int, int>::const_iterator ip = qg2l.find(i);
+    const auto ip = qg2l.find(i);
     if (ip == qg2l.end()) {
       std::cerr << "Index:: Quadg2l" << std::endl;
       std::cerr << "there is no "
@@ -116,7 +114,7 @@ public:
   }
   int Hexg2l(int i) const
   {
-    std::map<int, int>::const_iterator ip = hg2l.find(i);
+    const auto ip = hg2l.find(i);
     if (ip == hg2l.end()) {
       std::cerr << "Index:: Hexg2l" << std::endl;
       std::cerr << "there is no "
@@ -127,7 +125,7 @@ public:
   }
   int Vertexg2l(int i) const
   {
-    std::map<int, int>::const_iterator ip = vg2l.find(i);
+    const auto ip = vg2l.find(i);
     if (ip == vg2l.end()) {
       std::cerr << "Index:: Vertexg2l" << std::endl;
       std::cerr << "there is no "
@@ -138,7 +136,7 @@ public:
   }
   int Edgeg2l(int i) const
   {
-    std::map<int, int>::const_iterator ip = eg2l.find(i);
+    const auto ip = eg2l.find(i);
     if (ip == eg2l.end()) {
       std::cerr << "Index:: Edgeg2l" << std::endl;
       std::cerr << "there is no "
@@ -156,28 +154,28 @@ public:
 
   int Vertexg2lCheck(int i) const
   {
-    IntMap::const_iterator ip = vg2l.find(i);
+    const auto ip = vg2l.find(i);
     if (ip == vg2l.end())
       return -2;
     return ip->second;
   }
   int Edgeg2lCheck(int i) const
   {
-    IntMap::const_iterator ip = eg2l.find(i);
+    const auto ip = eg2l.find(i);
     if (ip == eg2l.end())
       return -2;
     return ip->second;
   }
   int Quadg2lCheck(int i) const
   {
-    IntMap::const_iterator ip = qg2l.find(i);
+    const auto ip = qg2l.find(i);
     if (ip == qg2l.end())
       return -2;
     return ip->second;
   }
   int Hexg2lCheck(int i) const
   {
-    IntMap::const_iterator ip = hg2l.find(i);
+    const auto ip = hg2l.find(i);
     if (ip == hg2l.end())
       return -2;
     return ip->second;
@@ -185,8 +183,8 @@ public:
 
   friend std::ostream& operator<<(std::ostream& os, const Index& I);
 
-  void InitNodes(const IntSet& nodes);
-  void InitEdges(const IntSet& edges);
+  void InitNodes(const IndexSet& nodes);
+  void InitEdges(const IndexSet& edges);
   void InitQuads();
   void InitHexs();
 };

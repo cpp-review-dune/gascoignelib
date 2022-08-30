@@ -33,10 +33,10 @@ using namespace std;
 namespace Gascoigne {
 template<class C>
 void
-delete_cells(const IntSet& coarselist,
+delete_cells(const IndexSet& coarselist,
              vector<C>& liste,
-             const IntVector& co2n,
-             const IntVector& vo2n)
+             const IndexVector& co2n,
+             const IndexVector& vo2n)
 {
   for (unsigned oi = 0; oi < co2n.size(); ++oi) {
     int ni = co2n[oi];
@@ -52,7 +52,7 @@ delete_cells(const IntSet& coarselist,
           abort();
         }
       }
-      IntSet::iterator p = coarselist.find(oi);
+      IndexSet::iterator p = coarselist.find(oi);
       if (p != coarselist.end()) {
         q.childs().resize(0);
       }
@@ -73,25 +73,25 @@ delete_cells(const IntSet& coarselist,
 /*---------------------------------------------------*/
 
 template void
-delete_cells<Quad>(const IntSet&,
+delete_cells<Quad>(const IndexSet&,
                    vector<Quad>&,
-                   const IntVector&,
-                   const IntVector&);
+                   const IndexVector&,
+                   const IndexVector&);
 template void
-delete_cells<Hex>(const IntSet&,
+delete_cells<Hex>(const IndexSet&,
                   vector<Hex>&,
-                  const IntVector&,
-                  const IntVector&);
+                  const IndexVector&,
+                  const IndexVector&);
 
 template void
-delete_cells<BoundaryCell<2>>(const IntSet&,
+delete_cells<BoundaryCell<2>>(const IndexSet&,
                               vector<BoundaryCell<2>>&,
-                              const IntVector&,
-                              const IntVector&);
+                              const IndexVector&,
+                              const IndexVector&);
 
 template void
-delete_cells<BoundaryCell<4>>(const IntSet&,
+delete_cells<BoundaryCell<4>>(const IndexSet&,
                               vector<BoundaryCell<4>>&,
-                              const IntVector&,
-                              const IntVector&);
+                              const IndexVector&,
+                              const IndexVector&);
 } // namespace Gascoigne

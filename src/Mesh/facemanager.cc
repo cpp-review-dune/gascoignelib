@@ -38,8 +38,8 @@ using namespace std;
 namespace Gascoigne {
 FaceManager::FaceManager(vector<Edge>& e,
                          vector<Hex>& q,
-                         const IntVector& con,
-                         IntVector& eon)
+                         const IndexVector& con,
+                         IndexVector& eon)
   : edges(e)
   , hexs(q)
   , co2n(con)
@@ -135,7 +135,7 @@ FaceManager::Update()
 /*---------------------------------------------------*/
 
 void
-FaceManager::Build(const IntSet& CellRefList, HangContainer3d& hangset)
+FaceManager::Build(const IndexSet& CellRefList, HangContainer3d& hangset)
 {
   SwappedEdge.resize(0);
 
@@ -152,7 +152,7 @@ FaceManager::Build(const IntSet& CellRefList, HangContainer3d& hangset)
 /*---------------------------------------------------*/
 
 void
-FaceManager::InnerFaces(const IntSet& CellRefList)
+FaceManager::InnerFaces(const IndexSet& CellRefList)
 {
   int n = edges.size();
   int nv1 = CellRefList.size();
@@ -160,7 +160,7 @@ FaceManager::InnerFaces(const IntSet& CellRefList)
   edges.reserve(n + 12 * nv1);
   edges.resize(n + 12 * nv1);
 
-  IntSet::const_iterator cp;
+  IndexSet::const_iterator cp;
 
   for (cp = CellRefList.begin(); cp != CellRefList.end(); cp++) {
     int f = co2n[*cp];
@@ -308,15 +308,15 @@ FaceManager::EdgeIsHanging(const Edge& e) const
 /*---------------------------------------------------*/
 
 void
-FaceManager::LoadFaceElimination(IntVector& edel,
-                                 const IntSet& CellCoarseList,
+FaceManager::LoadFaceElimination(IndexVector& edel,
+                                 const IndexSet& CellCoarseList,
                                  const HangContainer3d& hangset) const
 {
   edel.resize(12 * CellCoarseList.size());
 
   int n = 0;
 
-  IntSet::const_iterator cp;
+  IndexSet::const_iterator cp;
 
   for (cp = CellCoarseList.begin(); cp != CellCoarseList.end(); cp++) {
     if (*cp < 0)
@@ -348,7 +348,7 @@ FaceManager::LoadFaceElimination(IntVector& edel,
 void
 FaceManager::NeighbourTester() const
 {
-  IntVector x(edges.size());
+  IndexVector x(edges.size());
   for (int i = 0; i < hexs.size(); i++) {
     for (int e = 0; e < 6; e++) {
       int edge = hexs[i].edge(e);
@@ -484,7 +484,7 @@ FaceManager::OuterFaces(const HangContainer3d& hangset)
 /*---------------------------------------------------*/
 
 void
-FaceManager::OldHangings(HangContainer3d& hangset, const IntSet& CellRefList)
+FaceManager::OldHangings(HangContainer3d& hangset, const IndexSet& CellRefList)
 {
   HangList<4>::iterator p = hangset.FaceNotMore().begin();
 

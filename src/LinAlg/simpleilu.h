@@ -41,7 +41,7 @@ namespace Gascoigne {
 class SimpleIlu : public SimpleMatrix
 {
 protected:
-  IntVector p, q;
+  IndexVector p, q;
   mutable DoubleVector yp;
 
   void hin(const DoubleVector& y) const;

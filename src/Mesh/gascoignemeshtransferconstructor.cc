@@ -35,25 +35,25 @@ GascoigneMeshTransferConstructor2d::GascoigneMeshTransferConstructor2d(
   const LevelMesh2d* LMcoarse)
 {
   IntVector& c2f = GMT->GetC2f();
-  map<int, std::array<int, 2>>& zweier = GMT->GetZweier();
-  map<int, std::array<int, 4>>& vierer = GMT->GetVierer();
-  map<int, int>& CellEiner = GMT->GetCellEiner();
-  map<int, std::array<int, 4>>& CellVierer = GMT->GetCellVierer();
+  map<IndexType, std::array<IndexType, 2>>& zweier = GMT->GetZweier();
+  map<IndexType, std::array<IndexType, 4>>& vierer = GMT->GetVierer();
+  map<IndexType, IndexType>& CellEiner = GMT->GetCellEiner();
+  map<IndexType, std::array<IndexType, 4>>& CellVierer = GMT->GetCellVierer();
 
   const QuadLawAndOrder& LaO = HM->QuadLawOrder();
 
   CellEiner.clear();
   CellVierer.clear();
   // Zellen
-  for (int i = 0; i < LMcoarse->ncells(); i++) {
-    int igq = LMcoarse->Quadl2g(i);
+  for (IndexType i = 0; i < LMcoarse->ncells(); i++) {
+    IndexType igq = LMcoarse->Quadl2g(i);
     if (LMfine->Quadg2l().find(igq) != LMfine->Quadg2l().end()) {
       CellEiner[i] = LMfine->Quadg2l(igq);
     } else {
       // kinder suchen
-      std::array<int, 4> n4;
-      for (int ii = 0; ii < 4; ii++) {
-        int ic = HM->quad(igq).child(ii);
+      std::array<IndexType, 4> n4;
+      for (IndexType ii = 0; ii < 4; ii++) {
+        IndexType ic = HM->quad(igq).child(ii);
         n4[ii] = LMfine->Quadg2l(ic);
       }
       CellVierer[i] = n4;
@@ -62,45 +62,45 @@ GascoigneMeshTransferConstructor2d::GascoigneMeshTransferConstructor2d(
 
   // 1er
   c2f.reservesize(LMcoarse->nnodes());
-  for (int iL = 0; iL < LMcoarse->nnodes(); iL++) {
-    int ig = LMcoarse->Vertexl2g(iL);
-    int il = LMfine->Vertexg2l(ig);
+  for (IndexType iL = 0; iL < LMcoarse->nnodes(); iL++) {
+    IndexType ig = LMcoarse->Vertexl2g(iL);
+    IndexType il = LMfine->Vertexg2l(ig);
 
     c2f[iL] = il;
   }
 
   // 2er 4er 8er (!)
-  for (int i = 0; i < LMcoarse->ncells(); i++) {
-    int igq = LMcoarse->Quadl2g(i);
+  for (IndexType i = 0; i < LMcoarse->ncells(); i++) {
+    IndexType igq = LMcoarse->Quadl2g(i);
     if (LMfine->Quadg2l().find(igq) != LMfine->Quadg2l().end())
       continue;
     const Quad& q = HM->quad(igq);
 
     // verfeinertes quad --> vierer
 
-    std::array<int, 4> n4;
-    int igm = LaO.middle_vertex(q);
-    int ilm = LMfine->Vertexg2l(igm);
-    for (int ii = 0; ii < 4; ii++) {
-      int ig = q.vertex(ii);
-      int iL = LMcoarse->Vertexg2l(ig);
+    std::array<IndexType, 4> n4;
+    IndexType igm = LaO.middle_vertex(q);
+    IndexType ilm = LMfine->Vertexg2l(igm);
+    for (IndexType ii = 0; ii < 4; ii++) {
+      IndexType ig = q.vertex(ii);
+      IndexType iL = LMcoarse->Vertexg2l(ig);
       n4[ii] = iL;
     }
     vierer[ilm] = n4;
 
     // edges
-    for (int ie = 0; ie < 4; ie++) {
-      int ige = LaO.edge_vertex(q, ie);
-      int ile = LMfine->Vertexg2l(ige);
+    for (IndexType ie = 0; ie < 4; ie++) {
+      IndexType ige = LaO.edge_vertex(q, ie);
+      IndexType ile = LMfine->Vertexg2l(ige);
       if (LMcoarse->Vertexg2lCheck(ige) != -2)
         continue;
 
-      std::array<int, 2> f;
+      std::array<IndexType, 2> f;
       LaO.globalvertices_of_edge(q, f, ie);
 
-      std::array<int, 2> n2;
-      for (int ii = 0; ii < 2; ii++) {
-        int iL = LMcoarse->Vertexg2l(f[ii]);
+      std::array<IndexType, 2> n2;
+      for (IndexType ii = 0; ii < 2; ii++) {
+        IndexType iL = LMcoarse->Vertexg2l(f[ii]);
         n2[ii] = iL;
       }
       zweier[ile] = n2;
@@ -123,58 +123,58 @@ GascoigneMeshTransferConstructor3d::GascoigneMeshTransferConstructor3d(
   //   abort();
 
   IntVector& c2f = GMT->GetC2f();
-  map<int, std::array<int, 2>>& zweier = GMT->GetZweier();
-  map<int, std::array<int, 4>>& vierer = GMT->GetVierer();
-  map<int, std::array<int, 8>>& achter = GMT->GetAchter();
+  map<IndexType, std::array<IndexType, 2>>& zweier = GMT->GetZweier();
+  map<IndexType, std::array<IndexType, 4>>& vierer = GMT->GetVierer();
+  map<IndexType, std::array<IndexType, 8>>& achter = GMT->GetAchter();
 
   const HexLawAndOrder& LaO = HM->HexLawOrder();
 
   // 1er
   c2f.reservesize(LMcoarse->nnodes());
-  for (int iL = 0; iL < LMcoarse->nnodes(); iL++) {
-    int ig = LMcoarse->Vertexl2g(iL);
-    int il = LMfine->Vertexg2l(ig);
+  for (IndexType iL = 0; iL < LMcoarse->nnodes(); iL++) {
+    IndexType ig = LMcoarse->Vertexl2g(iL);
+    IndexType il = LMfine->Vertexg2l(ig);
     c2f[iL] = il;
   }
   // 2er 4er 8er (!)
-  for (int i = 0; i < LMcoarse->ncells(); i++) {
-    int igq = LMcoarse->Hexl2g(i);
+  for (IndexType i = 0; i < LMcoarse->ncells(); i++) {
+    IndexType igq = LMcoarse->Hexl2g(i);
     if (LMfine->Hexg2l().find(igq) != LMfine->Hexg2l().end())
       continue;
     const Hex& q = HM->hex(igq);
 
     // verfeinertes hex
 
-    std::array<int, 8> n8;
-    int igm = LaO.middle_vertex(q);
-    int ilm = LMfine->Vertexg2l(igm);
-    for (int ii = 0; ii < 8; ii++) {
-      int ig = q.vertex(ii);
+    std::array<IndexType, 8> n8;
+    IndexType igm = LaO.middle_vertex(q);
+    IndexType ilm = LMfine->Vertexg2l(igm);
+    for (IndexType ii = 0; ii < 8; ii++) {
+      IndexType ig = q.vertex(ii);
       // 8er
       n8[ii] = LMcoarse->Vertexg2l(ig);
     }
     achter[ilm] = n8;
     // faces
-    for (int ie = 0; ie < 6; ie++) {
-      int ige = LaO.face_vertex(q, ie);
-      int ile = LMfine->Vertexg2l(ige);
+    for (IndexType ie = 0; ie < 6; ie++) {
+      IndexType ige = LaO.face_vertex(q, ie);
+      IndexType ile = LMfine->Vertexg2l(ige);
       if (LMcoarse->Vertexg2lCheck(ige) != -2)
         continue;
-      std::array<int, 4> f, n4;
+      std::array<IndexType, 4> f, n4;
       LaO.globalvertices_of_face(q, f, ie);
-      for (int ii = 0; ii < 4; ii++) {
+      for (IndexType ii = 0; ii < 4; ii++) {
         // 4er
         n4[ii] = LMcoarse->Vertexg2l(f[ii]);
       }
       vierer[ile] = n4;
     }
     // edges
-    for (int ie = 0; ie < 12; ie++) {
-      int ige = LaO.edge_vertex(q, ie);
-      int ile = LMfine->Vertexg2l(ige);
+    for (IndexType ie = 0; ie < 12; ie++) {
+      IndexType ige = LaO.edge_vertex(q, ie);
+      IndexType ile = LMfine->Vertexg2l(ige);
       if (LMcoarse->Vertexg2lCheck(ige) != -2)
         continue;
-      std::array<int, 2> f, n2;
+      std::array<IndexType, 2> f, n2;
       LaO.globalvertices_of_edge(q, f, ie);
 
       n2[0] = LMcoarse->Vertexg2l(f[0]);

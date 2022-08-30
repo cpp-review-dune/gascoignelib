@@ -52,16 +52,16 @@ template<int N>
 istream&
 operator>>(istream& s, HangList<N>& A)
 {
-  int n;
+  IndexType n;
   string symbol;
 
   s >> n >> symbol;
 
   assert(symbol == "hangs");
 
-  std::array<int, N> ev;
+  std::array<IndexType, N> ev;
   Hang info;
-  for (int i = 0; i < n; i++) {
+  for (IndexType i = 0; i < n; i++) {
     s >> ev >> symbol >> info;
     A.insert(make_pair(ev, info));
   }

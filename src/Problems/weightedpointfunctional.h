@@ -42,10 +42,10 @@ public:
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Woverloaded-virtual"
   void BasicInit(const std::vector<Vertex2d>& v2d,
-                 const std::vector<int>& comps,
+                 const std::vector<ShortIndexType>& comps,
                  const std::vector<double>& weights);
   void BasicInit(const std::vector<Vertex3d>& v3d,
-                 const std::vector<int>& comps,
+                 const std::vector<ShortIndexType>& comps,
                  const std::vector<double>& weights);
 #pragma GCC diagnostic pop
 

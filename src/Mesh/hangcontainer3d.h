@@ -32,8 +32,6 @@ namespace Gascoigne {
 class HangContainer3d : public HangContainer2d
 {
 public:
-  typedef std::array<int, 4> FaceVector;
-
   HangList<4> FaceToBeDeleted, FaceToBeCreated;
   HangList<4> FaceNotAnyMore;
   HangList<4>& FaceHanging;
@@ -49,26 +47,32 @@ public:
   void make_consistent();
   void output() const;
 
-  int nFaceVertexesToBeDeleted() const { return FaceToBeDeleted.size(); }
+  IndexType nFaceVertexesToBeDeleted() const { return FaceToBeDeleted.size(); }
 
-  int nDel() const { return VertexToBeDeleted.size() + FaceToBeDeleted.size(); }
-  int nNew() const { return VertexToBeCreated.size() + FaceToBeCreated.size(); }
+  IndexType nDel() const
+  {
+    return VertexToBeDeleted.size() + FaceToBeDeleted.size();
+  }
+  IndexType nNew() const
+  {
+    return VertexToBeCreated.size() + FaceToBeCreated.size();
+  }
 
-  void load_elimination(IntVector&) const;
-  int vertex_index(const EdgeVector& v) const
+  void load_elimination(IndexVector&) const;
+  IndexType vertex_index(const EdgeVector& v) const
   {
     return HangContainer2d::vertex_index(v);
   }
-  int vertex_index(const FaceVector&) const;
+  IndexType vertex_index(const FaceVector&) const;
 
-  void update_olds(IntVector&, const IntVector&);
-  void update_news(const IntVector&, int);
+  void update_olds(IndexVector&, const IndexVector&);
+  void update_news(const IndexVector&, IndexType);
 
-  void face_coarse(const FaceVector&, int, int);
-  void face_refine(const FaceVector&, int);
+  void face_coarse(const FaceVector&, IndexType, IndexType);
+  void face_refine(const FaceVector&, IndexType);
 
-  void line_coarse(EdgeVector&, int, int);
-  void line_refine(EdgeVector&, int, const HangList<2>& oldhangs);
+  void line_coarse(EdgeVector&, IndexType, IndexType);
+  void line_refine(EdgeVector&, IndexType, const HangList<2>& oldhangs);
 
   void NeighbourSwapper();
   void clear_hanging_lines();

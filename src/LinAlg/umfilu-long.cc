@@ -166,7 +166,8 @@ UmfIluLong::copy_entries(const MatrixInterface& A)
 /*-------------------------------------------------------------*/
 
 void
-UmfIluLong::ConstructStructure(const IntVector& perm, const MatrixInterface& A)
+UmfIluLong::ConstructStructure(const IndexVector& perm,
+                               const MatrixInterface& A)
 {}
 
 /*-----------------------------------------*/

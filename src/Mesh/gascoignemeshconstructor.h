@@ -35,13 +35,12 @@
 /*-----------------------------------------*/
 
 namespace Gascoigne {
-typedef std::map<int, int> IntMap;
 
 class GascoigneMeshConstructor
 {
 private:
   IndexVector _cl2g, _pl2g;
-  IntMap _cg2l;
+  IndexMap _cg2l;
 
 protected:
   const HierarchicalMesh* HM;
@@ -74,7 +73,7 @@ public:
   virtual void BasicInit();
   const IndexVector& Patchl2g() const { return _pl2g; }
   const IndexVector& Celll2g() const { return _cl2g; }
-  const IntMap& Cellg2l() const { return _cg2l; }
+  const IndexMap& Cellg2l() const { return _cg2l; }
 };
 } // namespace Gascoigne
 

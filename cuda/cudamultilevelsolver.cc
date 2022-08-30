@@ -32,24 +32,24 @@ extern Timer GlobalTimer;
 
 void
 ActivateCuda(CudaMultiLevelSolver* smls,
-             int finelevel,
-             int coarselevel,
+             IndexType finelevel,
+             IndexType coarselevel,
              std::initializer_list<const Vector*> vectors)
 {
   for (size_t i = coarselevel; i <= finelevel; i++) {
-    static_cast<CudaSolver*>(smls->GetSolver(static_cast<int>(i)))
+    static_cast<CudaSolver*>(smls->GetSolver(static_cast<IndexType>(i)))
       ->ActivateCuda(vectors);
   }
 }
 
 void
 DeactivateCuda(CudaMultiLevelSolver* smls,
-               int finelevel,
-               int coarselevel,
+               IndexType finelevel,
+               IndexType coarselevel,
                std::initializer_list<Vector*> vectors)
 {
   for (size_t i = coarselevel; i <= finelevel; i++) {
-    static_cast<CudaSolver*>(smls->GetSolver(static_cast<int>(i)))
+    static_cast<CudaSolver*>(smls->GetSolver(static_cast<IndexType>(i)))
       ->DeactivateCuda(vectors);
   }
 }
@@ -67,8 +67,7 @@ CudaMultiLevelSolver::CudaMultiLevelSolver(const MeshAgent* MAP,
 
 CudaMultiLevelSolver::~CudaMultiLevelSolver() {}
 
-auto
-CudaMultiLevelSolver::NewSolver(int /*solverlevel*/) -> StdSolver*
+auto CudaMultiLevelSolver::NewSolver(IndexType /*solverlevel*/) -> StdSolver*
 {
   return new CudaSolver;
 }
@@ -86,15 +85,15 @@ CudaMultiLevelSolver::NewMgInterpolator()
   }
   _Interpolator.resize(nlevels() - 1, NULL);
 
-  for (int l = 0; l < nlevels() - 1; ++l) {
+  for (IndexType l = 0; l < nlevels() - 1; ++l) {
     _Interpolator[l] = new CudaMgInterpolatorNested;
   }
 
   //
   // Interpolator [l] :   interpoliert   (l+1)->l  (fein->grob)
   //
-  for (int level = 0; level < nlevels() - 1; ++level) {
-    int sl = nlevels() - level - 2;
+  for (IndexType level = 0; level < nlevels() - 1; ++level) {
+    IndexType sl = nlevels() - level - 2;
 
     const MeshTransferInterface* MT = GetMeshAgent()->GetTransfer(sl);
     assert(MT);
@@ -104,8 +103,8 @@ CudaMultiLevelSolver::NewMgInterpolator()
 }
 
 void
-CudaMultiLevelSolver::LinearMg(int finelevel,
-                               int coarselevel,
+CudaMultiLevelSolver::LinearMg(IndexType finelevel,
+                               IndexType coarselevel,
                                const Matrix& A,
                                Vector& u,
                                const Vector& f,
@@ -113,7 +112,7 @@ CudaMultiLevelSolver::LinearMg(int finelevel,
 {
   GlobalTimer.start("--> LinearMg");
 
-  for (int level = coarselevel; level < nlevels(); level++) {
+  for (IndexType level = coarselevel; level < nlevels(); level++) {
     if (GetSolver(level)->DirectSolver()) {
       coarselevel = level;
     }
@@ -125,7 +124,7 @@ CudaMultiLevelSolver::LinearMg(int finelevel,
 
   assert(finelevel >= coarselevel);
 
-  int nl = nlevels();
+  IndexType nl = nlevels();
   DoubleVector res(nl, 0.), rw(nl, 0.);
 
   Vector mg0("mg0_");
@@ -147,7 +146,7 @@ CudaMultiLevelSolver::LinearMg(int finelevel,
   info.check(res[finelevel], rw[finelevel]);
 
   bool reached = false; // mindestens einen schritt machen
-  for (int it = 0; !reached; it++) {
+  for (IndexType it = 0; !reached; it++) {
     std::string p = DataP.MgType();
     std::string p0 = p;
     if (p == "F") {
@@ -170,9 +169,9 @@ CudaMultiLevelSolver::LinearMg(int finelevel,
 void
 CudaMultiLevelSolver::mgstep(std::vector<double>& res,
                              std::vector<double>& rw,
-                             int l,
-                             int finelevel,
-                             int coarselevel,
+                             IndexType l,
+                             IndexType finelevel,
+                             IndexType coarselevel,
                              std::string& p0,
                              std::string p,
                              const Matrix& A,
@@ -208,7 +207,7 @@ CudaMultiLevelSolver::mgstep(std::vector<double>& res,
 
   solver_lm1->Zero(u);
 
-  int j = 0;
+  IndexType j = 0;
   if (p0 == "V") {
     j = 1;
   } else if (p0 == "W") {
@@ -217,7 +216,7 @@ CudaMultiLevelSolver::mgstep(std::vector<double>& res,
     j = 3;
   }
 
-  for (int i = 0; i < j; ++i) {
+  for (IndexType i = 0; i < j; ++i) {
     mgstep(res, rw, l - 1, finelevel, coarselevel, p0, p, A, u, b, v);
   }
 

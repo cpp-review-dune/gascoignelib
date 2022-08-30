@@ -40,7 +40,7 @@ VecDirection::VecDirection(const GascoigneMesh* m)
 /* --------------------------------------------------------------- */
 
 void
-VecDirection::Permutate(IntVector& perm)
+VecDirection::Permutate(IndexVector& perm)
 {
   assert(dimension == M->dimension());
   stable_sort(perm.begin(), perm.end(), *this);
@@ -49,7 +49,7 @@ VecDirection::Permutate(IntVector& perm)
 /* --------------------------------------------------------------- */
 
 void
-VecDirection::Permutate(IntVector& perm, DoubleVector v)
+VecDirection::Permutate(IndexVector& perm, DoubleVector v)
 {
   if (v.size() == 0) {
     v.resize(M->dimension(), 0);
@@ -103,7 +103,7 @@ StreamDirection::StreamDirection(const GascoigneMesh* m,
 /* --------------------------------------------------------------- */
 
 void
-StreamDirection::Permutate(IntVector& perm)
+StreamDirection::Permutate(IndexVector& perm)
 {
   assert(dimension == M->dimension());
   //  assert(perm.size()==M->nnodes());
@@ -118,8 +118,8 @@ StreamDirection::Permutate(IntVector& perm)
   int ncomp = perm.size() / M->nnodes();
   // Zu allen Knoten den Nachfolger
   // und Vorgaenger finden.
-  IntVector next(n, -1);
-  IntVector prev(n, -1);
+  IndexVector next(n, -1);
+  IndexVector prev(n, -1);
   // Matrixzeilen durchlaufen
   for (int row = 0; row < n; ++row) {
     assert(next[row] == -1);
@@ -184,7 +184,7 @@ StreamDirection::Permutate(IntVector& perm)
 /* --------------------------------------------------------------- */
 
 void
-StreamDirection::Permutate(IntVector& perm, const IntVector d)
+StreamDirection::Permutate(IndexVector& perm, const IndexVector d)
 {
   dimension = d.size();
   assert(dimension > 1);

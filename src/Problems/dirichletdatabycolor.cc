@@ -29,8 +29,8 @@ using namespace std;
 
 namespace Gascoigne {
 DirichletDataByColor::DirichletDataByColor(const ParamFile& pf,
-                                           nvector<int> comps,
-                                           const set<int>& cl,
+                                           nvector<IndexType> comps,
+                                           const set<IndexType>& cl,
                                            nvector<double> s)
   : DirichletData(pf)
   , __cols(cl)
@@ -45,8 +45,8 @@ DirichletDataByColor::DirichletDataByColor(const ParamFile& pf,
   assert(__cols.size() > 0);
 }
 
-DirichletDataByColor::DirichletDataByColor(nvector<int> comps,
-                                           const set<int>& cl,
+DirichletDataByColor::DirichletDataByColor(nvector<IndexType> comps,
+                                           const set<IndexType>& cl,
                                            nvector<double> s)
   : __cols(cl)
   , __comps(comps)
@@ -63,8 +63,8 @@ DirichletDataByColor::DirichletDataByColor(nvector<int> comps,
   }
 }
 
-DirichletDataByColor::DirichletDataByColor(int comps,
-                                           std::set<int>& cl,
+DirichletDataByColor::DirichletDataByColor(IndexType comps,
+                                           std::set<IndexType>& cl,
                                            double s)
   : __cols(cl)
 {
@@ -78,18 +78,18 @@ DirichletDataByColor::DirichletDataByColor(const vector<string>& args)
 {
   bool ok = true;
 
-  int n = args.size();
+  IndexType n = args.size();
   if (n < 5)
     ok = false;
-  int ncol = atoi(args[0].c_str());
+  IndexType ncol = atoi(args[0].c_str());
   if (n < 4 + ncol)
     ok = false;
-  for (int i = 0; i < ncol; ++i)
+  for (IndexType i = 0; i < ncol; ++i)
     __cols.insert(atoi(args[i + 1].c_str()));
-  int ncomp = atoi(args[ncol + 1].c_str());
+  IndexType ncomp = atoi(args[ncol + 1].c_str());
   if (n != 2 * ncomp + ncol + 2)
     ok = false;
-  for (int i = 0; i < ncol; ++i) {
+  for (IndexType i = 0; i < ncol; ++i) {
     __comps.push_back(atoi(args[2 * i + ncol + 2].c_str()));
     __scales.push_back(atof(args[2 * i + ncol + 3].c_str()));
   }
@@ -106,12 +106,12 @@ DirichletDataByColor::DirichletDataByColor(const vector<string>& args)
 void
 DirichletDataByColor::operator()(DoubleVector& b,
                                  const Vertex2d& v,
-                                 int col) const
+                                 IndexType col) const
 {
   b.zero();
 
   if (__cols.find(col) != __cols.end())
-    for (int i = 0; i < __comps.size(); ++i)
+    for (IndexType i = 0; i < __comps.size(); ++i)
       b[__comps[i]] = __scales[i];
 }
 
@@ -120,17 +120,17 @@ DirichletDataByColor::operator()(DoubleVector& b,
 void
 DirichletDataByColor::operator()(DoubleVector& b,
                                  const Vertex3d& v,
-                                 int col) const
+                                 IndexType col) const
 {
   b.zero();
   if (__cols.find(col) != __cols.end())
-    for (int i = 0; i < __comps.size(); ++i)
+    for (IndexType i = 0; i < __comps.size(); ++i)
       b[__comps[i]] = __scales[i];
 }
 
 /*-----------------------------------------*/
 
-set<int>
+set<IndexType>
 DirichletDataByColor::preferred_colors() const
 {
   return __cols;

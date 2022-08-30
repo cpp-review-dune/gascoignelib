@@ -60,8 +60,8 @@ protected:
 
 public:
   DiplomandenAdaptor(AdaptorData&, const DoubleVector& eta);
-  void refine(IntVector& ref);
-  void MalteRefine(IntVector& ref) const;
+  void refine(IndexVector& ref);
+  void MalteRefine(IndexVector& ref) const;
 };
 } // namespace Gascoigne
 

@@ -61,7 +61,7 @@ public:
       const GascoigneMesh2d* M2d = dynamic_cast<const GascoigneMesh2d*>(
         GetMultiLevelSolver()->GetSolver()->GetMesh());
       assert(M2d);
-      IntVector ref, coa;
+      IndexVector ref, coa;
       for (int i = 0; i < M2d->nnodes(); ++i) {
         const Vertex2d& v = M2d->vertex2d(i);
         if (((v.x() == 0) && (v.y() == 0)) || (v.x() == 2)) {

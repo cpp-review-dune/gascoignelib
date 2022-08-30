@@ -48,7 +48,7 @@ typedef float MatrixEntryType;
 typedef double MatrixEntryType;
 #endif
 
-typedef unsigned long int IndexType;       // data type for global indices
+typedef size_t IndexType;                  // data type for global indices
 typedef unsigned short int ShortIndexType; // data type for local indices
 
 typedef nvector<double> GlobalParameterVector;
@@ -58,11 +58,12 @@ typedef std::map<std::string, LocalParameterVector> LocalParameterData;
 
 typedef nvector<IndexType> IndexVector;
 typedef nvector<ShortIndexType> ShortIndexVector;
+typedef std::set<IndexType> IndexSet;
+typedef std::map<IndexType, IndexType> IndexMap;
 typedef nvector<int> IntVector;
 typedef nvector<double> DoubleVector;
 typedef nmatrix<double> DoubleMatrix;
 typedef std::set<int> IntSet;
-typedef std::set<IndexType> IndexSet;
 
 typedef nmatrix<double> TimePattern;
 

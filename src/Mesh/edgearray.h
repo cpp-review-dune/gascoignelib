@@ -27,6 +27,8 @@
 #include <array>
 #include <iostream>
 
+#include "../Interface/gascoigne.h"
+
 /*-----------------------------------------*/
 
 namespace Gascoigne {

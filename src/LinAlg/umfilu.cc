@@ -183,7 +183,7 @@ UmfIlu::copy_entries(const MatrixInterface& A)
 /*-------------------------------------------------------------*/
 
 void
-UmfIlu::ConstructStructure(const IntVector& perm, const MatrixInterface& A)
+UmfIlu::ConstructStructure(const IndexVector& perm, const MatrixInterface& A)
 {}
 
 /*-----------------------------------------*/

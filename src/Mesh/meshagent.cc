@@ -93,14 +93,14 @@ MeshAgent::ReInit()
     BuildQ4PatchList(MGM.Patchl2g());
     assert(_q4patch.size() == _q4toq2.size());
     PatchIndexHandler& PIH = GMesh(0)->GetPatchIndexHandler();
-    nvector<IntVector>& q4patch2cell = PIH.GetAllQ4Patch2Cell();
+    nvector<IndexVector>& q4patch2cell = PIH.GetAllQ4Patch2Cell();
     q4patch2cell.clear();
-    for (int i = 0; i < _q4patch.size(); i++) {
-      IntVector q2p = _q4toq2[i];
-      IntVector q4p2c(0);
-      for (int j = 0; j < q2p.size(); j++) {
-        int p = q2p[j];
-        IntVector cells = PIH.GetPatch2Cell(p);
+    for (IndexType i = 0; i < _q4patch.size(); i++) {
+      IndexVector q2p = _q4toq2[i];
+      IndexVector q4p2c(0);
+      for (IndexType j = 0; j < q2p.size(); j++) {
+        IndexType p = q2p[j];
+        IndexVector cells = PIH.GetPatch2Cell(p);
         q4p2c.insert(q4p2c.end(), cells.begin(), cells.end());
       }
       q4patch2cell.push_back(q4p2c);
@@ -110,17 +110,17 @@ MeshAgent::ReInit()
 
   if (_goc2nc) {
     _co2n.clear();
-    for (int i = 0; i < _cl2g.size(); i++) {
-      int cn_i = _cl2g[i];       // HM Num nach alter nummerierung
+    for (IndexType i = 0; i < _cl2g.size(); i++) {
+      IndexType cn_i = _cl2g[i]; // HM Num nach alter nummerierung
       cn_i = HMP->Cello2n(cn_i); // HM Num nach neuer nummerierung
       if (cn_i < 0) {
         // Hier wurde vergroebert
       } else {
-        set<int> kinder;
+        set<IndexType> kinder;
         // Zuordnung alte GM Nummern zu neuen
         if (HMP->sleep(cn_i)) {
           // Zelle verfeinert
-          for (int j = 0; j < HMP->nchilds(cn_i); j++) {
+          for (IndexType j = 0; j < HMP->nchilds(cn_i); j++) {
             kinder.insert(_cellg2l[HMP->child(cn_i, j)]);
           }
         } else {
@@ -137,7 +137,7 @@ MeshAgent::ReInit()
     // den fathers Vektor neu fuellen
     _fathers.clear();
     _fathers.resize(_cl2g.size());
-    for (int i = 0; i < _fathers.size(); i++) {
+    for (IndexType i = 0; i < _fathers.size(); i++) {
       _fathers[i] = HMP->Vater(_cl2g[i]);
     }
   }
@@ -149,19 +149,19 @@ MeshAgent::ReInit()
 /*-----------------------------------------*/
 
 void
-MeshAgent::BuildQ4PatchList(const IntVector& patchl2g)
+MeshAgent::BuildQ4PatchList(const IndexVector& patchl2g)
 {
   _q4patch.resize(0);
   _q4toq2.resize(0);
-  IntSet q2patch, q4patchset;
+  IndexSet q2patch, q4patchset;
   HMP->GetAwakePatchs(q2patch);
-  for (IntSet::const_iterator p = q2patch.begin(); p != q2patch.end(); p++) {
+  for (IndexSet::const_iterator p = q2patch.begin(); p != q2patch.end(); p++) {
     assert(*p != -1);
-    int vater = HMP->Vater(*p);
+    IndexType vater = HMP->Vater(*p);
     assert(vater != -1);
     q4patchset.insert(vater);
   }
-  for (IntSet::const_iterator p = q4patchset.begin(); p != q4patchset.end();
+  for (IndexSet::const_iterator p = q4patchset.begin(); p != q4patchset.end();
        p++) {
     _q4patch.push_back(HMP->ConstructQ4Patch(*p));
   }
@@ -171,12 +171,12 @@ MeshAgent::BuildQ4PatchList(const IntVector& patchl2g)
          << endl;
     abort();
   }
-  HASHMAP<int, int> patchg2l;
-  for (int i = 0; i < patchl2g.size(); i++) {
+  std::unordered_map<IndexType, IndexType> patchg2l;
+  for (IndexType i = 0; i < patchl2g.size(); i++) {
     // Edit patchg2l[patchl2g[i]] = i;
     patchg2l.insert(make_pair(patchl2g[i], i));
   }
-  IntVector perm(4);
+  IndexVector perm(4);
   perm[0] = 0;
   perm[1] = 1;
   perm[2] = 3;
@@ -189,12 +189,12 @@ MeshAgent::BuildQ4PatchList(const IntVector& patchl2g)
     perm[7] = 6;
   }
   _q4toq2.resize(q4patchset.size());
-  int q4_l = 0;
-  for (IntSet::const_iterator p = q4patchset.begin(); p != q4patchset.end();
+  IndexType q4_l = 0;
+  for (IndexSet::const_iterator p = q4patchset.begin(); p != q4patchset.end();
        p++, q4_l++) {
-    const IntVector& K = HMP->Kinder(*p);
+    const IndexVector& K = HMP->Kinder(*p);
     assert(K.size() == perm.size());
-    for (int i = 0; i < K.size(); i++) {
+    for (IndexType i = 0; i < K.size(); i++) {
       assert(patchg2l.find(K[perm[i]]) != patchg2l.end());
       _q4toq2[q4_l].push_back(patchg2l[K[perm[i]]]);
     }
@@ -214,28 +214,28 @@ MeshAgent::AssemblePeriodicBoundaries()
   | Spalten bzw. Eintraege miteinander kombiniert werden
   | muessen.
   -------------------------------------------------------*/
-  int i_dim = GetDimension();
+  IndexType i_dim = GetDimension();
 
   if (_periodicCols.size() != 0) {
-    int n = GMG->nlevels();
+    IndexType n = GMG->nlevels();
 
-    for (int i = 0; i < n; i++) {
+    for (IndexType i = 0; i < n; i++) {
       GascoigneMesh* p_mesh = GMG->GetGascoigneMesh(i);
       GascoigneMesh* GMP = dynamic_cast<GascoigneMesh*>(p_mesh);
       assert(GMP);
 
       // TODO: das soll eigentlich zu Solver gehoeren, damit die anderen Member
       // darauf zugreifen koennen
-      map<int, map<int, int>> mm_PeriodicPairs;
+      map<IndexType, map<IndexType, IndexType>> mm_PeriodicPairs;
 
       assert(_periodicCols.size() % 2 == 0);
 
-      for (IntVector::const_iterator p_col = _periodicCols.begin();
+      for (IndexVector::const_iterator p_col = _periodicCols.begin();
            p_col != _periodicCols.end();
            p_col++) {
-        map<int, int> m_PeriodicPairsCol1, m_PeriodicPairsCol2;
-        int col_v = *p_col;
-        int col_w = *(++p_col);
+        map<IndexType, IndexType> m_PeriodicPairsCol1, m_PeriodicPairsCol2;
+        IndexType col_v = *p_col;
+        IndexType col_w = *(++p_col);
 
         if (_periodicMaps.find(col_v) == _periodicMaps.end()) {
           cerr << "Periodic mapping not found: " << col_v << " --> " << col_w
@@ -248,23 +248,23 @@ MeshAgent::AssemblePeriodicBoundaries()
           abort();
         }
 
-        IntVector iv_FirstBoundary = *(GMP->VertexOnBoundary(col_v));
-        IntVector iv_SecondBoundary = *(GMP->VertexOnBoundary(col_w));
+        IndexVector iv_FirstBoundary = *(GMP->VertexOnBoundary(col_v));
+        IndexVector iv_SecondBoundary = *(GMP->VertexOnBoundary(col_w));
 
         double max_diff_bestfit = 0.;
 
         // process each node on the first boundary
-        for (IntVector::const_iterator p_first = iv_FirstBoundary.begin();
+        for (IndexVector::const_iterator p_first = iv_FirstBoundary.begin();
              p_first != iv_FirstBoundary.end();
              p_first++) {
           if (i_dim == 2) {
             Vertex2d first = GMP->vertex2d(*p_first);
             Vertex2d otherside;
             _periodicMaps[col_v][col_w]->transformCoords(otherside, first);
-            int bestfit;
+            IndexType bestfit;
             double diff, diff_bestfit;
             Vertex2d second;
-            IntVector::const_iterator p_second = iv_SecondBoundary.begin();
+            IndexVector::const_iterator p_second = iv_SecondBoundary.begin();
             second = GMP->vertex2d(*p_second);
             bestfit = *p_second;
             diff_bestfit =
@@ -293,10 +293,10 @@ MeshAgent::AssemblePeriodicBoundaries()
             Vertex3d first = GMP->vertex3d(*p_first);
             Vertex3d otherside;
             _periodicMaps[col_v][col_w]->transformCoords(otherside, first);
-            int bestfit;
+            IndexType bestfit;
             double diff, diff_bestfit;
             Vertex3d second;
-            IntVector::const_iterator p_second = iv_SecondBoundary.begin();
+            IndexVector::const_iterator p_second = iv_SecondBoundary.begin();
             second = GMP->vertex3d(*p_second);
             bestfit = *p_second;
             diff_bestfit =
@@ -358,10 +358,10 @@ MeshAgent::BasicInit(const ParamFile& paramfile)
 /*-----------------------------------------*/
 
 void
-MeshAgent::BasicInit(const ParamFile& paramfile, int pdepth)
+MeshAgent::BasicInit(const ParamFile& paramfile, IndexType pdepth)
 {
   assert(HMP == NULL);
-  int dim = 0;
+  IndexType dim = 0;
 
   {
     DataFormatHandler DFH;
@@ -382,14 +382,16 @@ MeshAgent::BasicInit(const ParamFile& paramfile, int pdepth)
 
   if (dim == 2) {
     HMP = new HierarchicalMesh2d;
-    for (map<int, BoundaryFunction<2>*>::const_iterator p = _curved2d.begin();
+    for (map<IndexType, BoundaryFunction<2>*>::const_iterator p =
+           _curved2d.begin();
          p != _curved2d.end();
          p++) {
       HMP->AddShape(p->first, p->second);
     }
   } else if (dim == 3) {
     HMP = new HierarchicalMesh3d;
-    for (map<int, BoundaryFunction<3>*>::const_iterator p = _curved3d.begin();
+    for (map<IndexType, BoundaryFunction<3>*>::const_iterator p =
+           _curved3d.begin();
          p != _curved3d.end();
          p++) {
       HMP->AddShape(p->first, p->second);
@@ -409,23 +411,25 @@ MeshAgent::BasicInit(const ParamFile& paramfile, int pdepth)
 
 void
 MeshAgent::BasicInit(const string& gridname,
-                     int dim,
-                     int patchdepth,
-                     int epatcher,
+                     IndexType dim,
+                     IndexType patchdepth,
+                     IndexType epatcher,
                      bool goc2nc)
 {
   assert(HMP == NULL);
   _goc2nc = goc2nc;
   if (dim == 2) {
     HMP = new HierarchicalMesh2d;
-    for (map<int, BoundaryFunction<2>*>::const_iterator p = _curved2d.begin();
+    for (map<IndexType, BoundaryFunction<2>*>::const_iterator p =
+           _curved2d.begin();
          p != _curved2d.end();
          p++) {
       HMP->AddShape(p->first, p->second);
     }
   } else if (dim == 3) {
     HMP = new HierarchicalMesh3d;
-    for (map<int, BoundaryFunction<3>*>::const_iterator p = _curved3d.begin();
+    for (map<IndexType, BoundaryFunction<3>*>::const_iterator p =
+           _curved3d.begin();
          p != _curved3d.end();
          p++) {
       HMP->AddShape(p->first, p->second);
@@ -493,7 +497,7 @@ MeshAgent::write_inp(const string& fname) const
 /*-----------------------------------------*/
 
 void
-MeshAgent::global_patch_coarsen(int n)
+MeshAgent::global_patch_coarsen(IndexType n)
 {
   assert(HMP);
   HMP->global_patch_coarsen(n);
@@ -503,7 +507,7 @@ MeshAgent::global_patch_coarsen(int n)
 /*-----------------------------------------*/
 
 void
-MeshAgent::global_refine(int n)
+MeshAgent::global_refine(IndexType n)
 {
   GlobalTimer.start("---> mesh (gref)");
   assert(HMP);
@@ -515,7 +519,7 @@ MeshAgent::global_refine(int n)
 /*-----------------------------------------*/
 
 void
-MeshAgent::random_patch_coarsen(double p, int n)
+MeshAgent::random_patch_coarsen(double p, IndexType n)
 {
   assert(HMP);
   HMP->random_patch_coarsen(p, n);
@@ -525,7 +529,7 @@ MeshAgent::random_patch_coarsen(double p, int n)
 /*-----------------------------------------*/
 
 void
-MeshAgent::random_patch_refine(double p, int n)
+MeshAgent::random_patch_refine(double p, IndexType n)
 {
   GlobalTimer.start("---> mesh");
   assert(HMP);
@@ -537,16 +541,16 @@ MeshAgent::random_patch_refine(double p, int n)
 /*-----------------------------------------*/
 
 void
-MeshAgent::refine_nodes(IntVector& refnodes)
+MeshAgent::refine_nodes(IndexVector& refnodes)
 {
-  IntVector coarsenodes(0);
+  IndexVector coarsenodes(0);
   refine_nodes(refnodes, coarsenodes);
 }
 
 /*-----------------------------------------*/
 
 void
-MeshAgent::refine_nodes(IntVector& refnodes, IntVector& coarsenodes)
+MeshAgent::refine_nodes(IndexVector& refnodes, IndexVector& coarsenodes)
 {
   GlobalTimer.start("---> mesh");
   assert(HMP);
@@ -558,13 +562,13 @@ MeshAgent::refine_nodes(IntVector& refnodes, IntVector& coarsenodes)
 /*-----------------------------------------*/
 
 void
-MeshAgent::refine_cells(IntVector& ref)
+MeshAgent::refine_cells(IndexVector& ref)
 {
-  IntVector refnodes;
+  IndexVector refnodes;
 
-  for (int i = 0; i < ref.size(); i++) {
-    int cell = ref[i];
-    for (int j = 0; j < HMP->nodes_per_cell(cell); j++) {
+  for (IndexType i = 0; i < ref.size(); i++) {
+    IndexType cell = ref[i];
+    for (IndexType j = 0; j < HMP->nodes_per_cell(cell); j++) {
       refnodes.push_back(HMP->vertex_of_cell(cell, j));
     }
   }
@@ -573,12 +577,12 @@ MeshAgent::refine_cells(IntVector& ref)
 
 /*----------------------------------------*/
 
-const set<int>
-MeshAgent::Cello2n(int i) const
+const set<IndexType>
+MeshAgent::Cello2n(IndexType i) const
 {
-  map<int, set<int>>::const_iterator p = _co2n.find(i);
+  map<IndexType, set<IndexType>>::const_iterator p = _co2n.find(i);
   if (p == _co2n.end()) {
-    return set<int>();
+    return set<IndexType>();
   } else {
     return p->second;
   }
@@ -586,8 +590,8 @@ MeshAgent::Cello2n(int i) const
 
 /*----------------------------------------*/
 
-const int
-MeshAgent::Cello2nFather(int i) const
+const IndexType
+MeshAgent::Cello2nFather(IndexType i) const
 {
   assert(_co2n.find(i) == _co2n.end());
   // Umrechnung alte HM nummer in neue GM nummer

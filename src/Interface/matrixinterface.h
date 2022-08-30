@@ -143,7 +143,7 @@ public:
     abort();
   }
   virtual void periodic(const std::map<IndexType, IndexType>& m_PeriodicPairs,
-                        const IntVector& iv_Components)
+                        const IndexVector& iv_Components)
   {
     std::cerr << "\"MatrixInterface::periodic\" not written!" << std::endl;
     abort();

@@ -512,7 +512,7 @@ EdgeManager::SortHangings()
 void
 EdgeManager::InitEdges()
 {
-  std::unordered_map<EdgeVector, IndexType, EdgeVector> H;
+  std::unordered_map<EdgeVector, IndexType, EdgeHash<2>> H;
 
   EdgeVector e;
   for (IndexType i = 0; i < quads.size(); i++) {

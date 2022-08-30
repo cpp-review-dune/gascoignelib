@@ -34,7 +34,7 @@ HangList<N>::operator=(const HangList<N>& A)
 {
   const_iterator hp = A.begin();
   while (hp != A.end()) {
-    std::array<int, N> fa(hp->first);
+    std::array<IndexType, N> fa(hp->first);
 
     Hang nh = hp->second;
 
@@ -60,25 +60,26 @@ HangList<N>::move(HangList<N>& src, iterator& p)
 
 template<int N>
 void
-HangList<N>::update(const std::vector<int>& vo2n, const std::vector<int>& co2n)
+HangList<N>::update(const std::vector<IndexType>& vo2n,
+                    const std::vector<IndexType>& co2n)
 {
   HangList<N> HangCopy(*this);
   this->clear();
   const_iterator hp = HangCopy.begin();
   while (hp != HangCopy.end()) {
-    std::array<int, N> fa(hp->first);
-    for (int i = 0; i < N; i++)
+    std::array<IndexType, N> fa(hp->first);
+    for (IndexType i = 0; i < N; i++)
       fa[i] = vo2n[fa[i]];
 
-    int nh = hp->second.hanging();
+    IndexType nh = hp->second.hanging();
     if (nh >= 0)
       nh = vo2n[nh];
 
-    int nc = hp->second.cneighbour();
+    IndexType nc = hp->second.cneighbour();
     if (nc >= 0)
       nc = co2n[nc];
 
-    int nr = hp->second.rneighbour();
+    IndexType nr = hp->second.rneighbour();
     if (nr >= 0)
       nr = co2n[nr];
 
@@ -92,20 +93,20 @@ HangList<N>::update(const std::vector<int>& vo2n, const std::vector<int>& co2n)
 
 template<int N>
 void
-HangList<N>::update(const std::vector<int>& vo2n)
+HangList<N>::update(const std::vector<IndexType>& vo2n)
 {
   HangList<N> HangCopy(*this);
   this->clear();
 
   const_iterator hp = HangCopy.begin();
   while (hp != HangCopy.end()) {
-    std::array<int, N> fa(hp->first);
-    for (int i = 0; i < N; i++)
+    std::array<IndexType, N> fa(hp->first);
+    for (IndexType i = 0; i < N; i++)
       fa[i] = vo2n[fa[i]];
 
-    int nh = hp->second.hanging();
-    int rn = hp->second.rneighbour();
-    int cn = hp->second.cneighbour();
+    IndexType nh = hp->second.hanging();
+    IndexType rn = hp->second.rneighbour();
+    IndexType cn = hp->second.cneighbour();
     if (nh >= 0)
       nh = vo2n[nh];
 
@@ -162,10 +163,10 @@ HangList<N>::BinRead(std::istream& s)
   int n, sizeInt = sizeof(int);
   s.read(reinterpret_cast<char*>(&n), sizeInt);
 
-  std::array<int, N> ev;
+  std::array<IndexType, N> ev;
   Hang info;
 
-  for (int i = 0; i < n; i++) {
+  for (IndexType i = 0; i < n; i++) {
     ArrayBinRead(s, ev);
     ArrayBinRead(s, info);
     this->insert(std::make_pair(ev, info));

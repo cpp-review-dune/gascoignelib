@@ -38,7 +38,7 @@ protected:
   int bicgstab_pstep;
   DoubleVector _ilum;
   DoubleVector vector_direction;
-  IntVector stream_direction, _pfilter;
+  IndexVector stream_direction, _pfilter;
   double omega;
   std::string ilusort, linear_smooth, bicgstab_residual;
 
@@ -53,8 +53,8 @@ protected:
 public:
   void BasicInit(const ParamFile& pf);
 
-  const IntVector& GetPfilter() const { return _pfilter; }
-  void SetPfilter(const IntVector& pfilter) { _pfilter = pfilter; }
+  const IndexVector& GetPfilter() const { return _pfilter; }
+  void SetPfilter(const IndexVector& pfilter) { _pfilter = pfilter; }
 
   double GetIluModify(int c) const { return _ilum[c]; }
   const DoubleVector& GetIluModify() const { return _ilum; }
@@ -67,7 +67,7 @@ public:
   int GetIterPost() const { return iter_post; }
   int GetIterExact() const { return iter_exact; }
   const std::string& GetIluSort() const { return ilusort; }
-  const IntVector& GetStreamDirection() const { return stream_direction; }
+  const IndexVector& GetStreamDirection() const { return stream_direction; }
   const DoubleVector& GetVectorDirection() const { return vector_direction; }
 
   int GetBiCGStabPStep() const { return bicgstab_pstep; }

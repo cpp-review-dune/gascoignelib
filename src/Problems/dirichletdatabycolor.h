@@ -32,27 +32,27 @@ namespace Gascoigne {
 class DirichletDataByColor : public DirichletData
 {
 protected:
-  std::set<int> __cols;
-  nvector<int> __comps;
+  std::set<IndexType> __cols;
+  nvector<IndexType> __comps;
   nvector<double> __scales;
 
 public:
   DirichletDataByColor(const ParamFile& pf,
-                       nvector<int> comps,
-                       const std::set<int>& cl,
+                       nvector<IndexType> comps,
+                       const std::set<IndexType>& cl,
                        nvector<double> s);
-  DirichletDataByColor(nvector<int> comps,
-                       const std::set<int>& cl,
+  DirichletDataByColor(nvector<IndexType> comps,
+                       const std::set<IndexType>& cl,
                        nvector<double> s);
-  DirichletDataByColor(int comps, std::set<int>& cl, double s);
+  DirichletDataByColor(IndexType comps, std::set<IndexType>& cl, double s);
   DirichletDataByColor(const std::vector<std::string>& args);
   ~DirichletDataByColor() {}
 
   std::string GetName() const { return "DirichletDataByColor"; }
 
-  std::set<int> preferred_colors() const;
-  void operator()(DoubleVector& b, const Vertex2d& V, int color) const;
-  void operator()(DoubleVector& b, const Vertex3d& V, int color) const;
+  std::set<IndexType> preferred_colors() const;
+  void operator()(DoubleVector& b, const Vertex2d& V, IndexType color) const;
+  void operator()(DoubleVector& b, const Vertex3d& V, IndexType color) const;
 };
 } // namespace Gascoigne
 

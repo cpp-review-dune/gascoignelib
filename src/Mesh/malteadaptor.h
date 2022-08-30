@@ -53,13 +53,13 @@ protected:
   double Expectation(double theta, double x) const;
   double Expectation(double thetax, double thetay, double x, double y) const;
   double ExpectationCoarsening(double theta, double x) const;
-  void refine_and_coarse(IntVector& ref, IntVector& coarse) const;
+  void refine_and_coarse(IndexVector& ref, IndexVector& coarse) const;
 
 public:
   MalteAdaptor(const ParamFile& pf, const DoubleVector& eta);
-  void coarse(IntVector& coarse) const;
-  void refine(IntVector& ref) const;
-  void refine(IntVector& ref, IntVector& coarse) const;
+  void coarse(IndexVector& coarse) const;
+  void refine(IndexVector& ref) const;
+  void refine(IndexVector& ref, IndexVector& coarse) const;
 };
 } // namespace Gascoigne
 

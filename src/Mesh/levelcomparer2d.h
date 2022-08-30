@@ -32,10 +32,10 @@ namespace Gascoigne {
 class LevelComparer2d
 {
   const HierarchicalMesh2d& Mesh;
-  const IntVector& v;
+  const IndexVector& v;
 
 public:
-  LevelComparer2d(const HierarchicalMesh2d& HM, const IntVector& vv)
+  LevelComparer2d(const HierarchicalMesh2d& HM, const IndexVector& vv)
     : Mesh(HM)
     , v(vv){};
 

@@ -57,8 +57,8 @@ protected: ///!!!!
   std::vector<MgInterpolatorInterface*> _Interpolator;
 
   mutable StopWatch _clock_residual, _clock_solve;
-  mutable int ComputeLevel;
-  mutable int oldnlevels;
+  mutable IndexType ComputeLevel;
+  mutable IndexType oldnlevels;
 
   ParamFile _paramfile;
 
@@ -91,7 +91,7 @@ public:
 
   virtual void ReInitMatrix(const Matrix& A);
   virtual void ReInitVector(Vector& v);
-  virtual void ReInitVector(Vector& v, int comp);
+  virtual void ReInitVector(Vector& v, IndexType comp);
 
   //////////////////////////////////////////////////
   // Access
@@ -107,7 +107,7 @@ public:
     return _PD;
   }
 
-  virtual StdSolver*& GetSolverPointer(int l)
+  virtual StdSolver*& GetSolverPointer(IndexType l)
   {
     assert(l < _SP.size());
     return _SP[l];
@@ -117,10 +117,10 @@ public:
   // Solver
   virtual void NewSolvers();
 
-  virtual StdSolver* NewSolver(int solverlevel);
+  virtual StdSolver* NewSolver(IndexType solverlevel);
   virtual void NewMgInterpolator();
   virtual void SolverNewMesh();
-  virtual void SetComputeLevel(int level) { ComputeLevel = level; }
+  virtual void SetComputeLevel(IndexType level) { ComputeLevel = level; }
   virtual std::vector<MgInterpolatorInterface*>& GetInterpolatorPointers()
   {
     return _Interpolator;
@@ -145,12 +145,12 @@ public:
     _FC = FC;
   }
 
-  virtual StdSolver* GetSolver(int l)
+  virtual StdSolver* GetSolver(IndexType l)
   {
     assert(l < _SP.size());
     return _SP[l];
   }
-  virtual const StdSolver* GetSolver(int l) const
+  virtual const StdSolver* GetSolver(IndexType l) const
   {
     assert(l < _SP.size());
     return _SP[l];
@@ -183,9 +183,9 @@ public:
   }
   virtual void mgstep(std::vector<double>& res,
                       std::vector<double>& rw,
-                      int l,
-                      int maxl,
-                      int minl,
+                      IndexType l,
+                      IndexType maxl,
+                      IndexType minl,
                       std::string& p0,
                       std::string p,
                       const Matrix& A,
@@ -196,18 +196,18 @@ public:
   virtual void Cg(Vector& x, const Vector& f, CGInfo& info);
   virtual void Gmres(const Matrix& A, Vector& x, const Vector& f, CGInfo& info);
 
-  virtual void SolutionTransfer(int high, int low, Vector& u) const;
-  virtual void Transfer(int high, int low, Vector& u) const;
+  virtual void SolutionTransfer(IndexType high, IndexType low, Vector& u) const;
+  virtual void Transfer(IndexType high, IndexType low, Vector& u) const;
 
   virtual void ViewProtocoll() const;
 
-  virtual int nlevels() const
+  virtual IndexType nlevels() const
   {
     assert(GetMeshAgent());
     return GetMeshAgent()->nlevels();
   }
-  virtual int FinestLevel() const { return nlevels() - 1; }
-  virtual int CoarsestLevel() const { return 0; }
+  virtual IndexType FinestLevel() const { return nlevels() - 1; }
+  virtual IndexType CoarsestLevel() const { return 0; }
 
   Monitor& GetMonitor() { return MON; }
 
@@ -221,12 +221,12 @@ public:
 
   // neue vektoren
 
-  virtual std::string LinearSolve(int level,
+  virtual std::string LinearSolve(IndexType level,
                                   const Matrix& A,
                                   Vector& u,
                                   const Vector& b,
                                   CGInfo& info);
-  virtual std::string Solve(int level,
+  virtual std::string Solve(IndexType level,
                             Matrix& A,
                             Vector& x,
                             const Vector& b,
@@ -275,8 +275,8 @@ public:
 
   virtual void vmulteq(const Matrix& A, Vector& y, const Vector& x) const;
 
-  virtual void LinearMg(int minlevel,
-                        int maxlevel,
+  virtual void LinearMg(IndexType minlevel,
+                        IndexType maxlevel,
                         const Matrix& A,
                         Vector& u,
                         const Vector& f,

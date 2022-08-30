@@ -31,10 +31,10 @@
 namespace Gascoigne {
 template<class C>
 void
-delete_cells(const IntSet&,
+delete_cells(const IndexSet&,
              std::vector<C>&,
-             const IntVector&,
-             const IntVector&);
+             const IndexVector&,
+             const IndexVector&);
 }
 
 /*---------------------------------------------------*/

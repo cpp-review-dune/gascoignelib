@@ -85,9 +85,9 @@ operator<<(ostream& os, const Index& I)
 /*---------------------------------------------------*/
 
 void
-Index::InitNodes(const IntSet& nodes)
+Index::InitNodes(const IndexSet& nodes)
 {
-  typedef IntSet::const_iterator iterator;
+  typedef IndexSet::const_iterator iterator;
   int n = nodes.size();
   vl2g.memory(n);
   int count = 0;
@@ -105,9 +105,9 @@ Index::InitNodes(const IntSet& nodes)
 /*---------------------------------------------------*/
 
 void
-Index::InitEdges(const IntSet& edges)
+Index::InitEdges(const IndexSet& edges)
 {
-  typedef IntSet::const_iterator iterator;
+  typedef IndexSet::const_iterator iterator;
   int n = edges.size();
   el2g.memory(n);
   int count = 0;

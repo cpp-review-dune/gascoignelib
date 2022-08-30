@@ -922,7 +922,7 @@ LevelMesh3d::InitBoundaryHandler(BoundaryIndexHandler& BI,
     IndexType col = *c;
     const IndexVector& cells = BI.Cells(col);
     const IndexVector& locals = BI.Localind(col);
-    HASHSET<IndexType> habschon;
+    std::unordered_set<IndexType> habschon;
 
     IndexVector p1;
     IndexVector p2;
@@ -944,4 +944,3 @@ LevelMesh3d::InitBoundaryHandler(BoundaryIndexHandler& BI,
   }
 }
 } // namespace Gascoigne
-#undef HASHSET
