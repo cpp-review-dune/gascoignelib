@@ -44,7 +44,7 @@ class Cell : public std::array<IndexType, N> /* das sind die vertex-no. */
 protected:
   /* Data */
 
-  IndexType qlevel, qfather, mat, mat_Vanka;
+  int qlevel, qfather, mat, mat_Vanka;
   std::array<Vertex3d, 3> bas_Vanka;
   IndexVector qchilds;
   std::array<IndexType, E> qedges; /* edge numbers */
@@ -106,10 +106,10 @@ public:
 
   /* Zugriff */
 
-  IndexType level() const { return qlevel; }
-  IndexType& level() { return qlevel; }
-  IndexType father() const { return qfather; }
-  IndexType& father() { return qfather; }
+  int level() const { return qlevel; }
+  int& level() { return qlevel; }
+  int father() const { return qfather; }
+  int& father() { return qfather; }
   bool sleep() const { return qchilds.size() != 0; }
   IndexType nchilds() const { return qchilds.size(); }
   IndexType nvertexs() const { return N; }
@@ -127,11 +127,11 @@ public:
   const std::array<IndexType, E>& edges() const { return qedges; }
   std::array<IndexType, E>& edges() { return qedges; }
 
-  IndexType material() const { return mat; }
-  IndexType& material() { return mat; }
+  int material() const { return mat; }
+  int& material() { return mat; }
 
-  IndexType material_Vanka() const { return mat_Vanka; }
-  IndexType& material_Vanka() { return mat_Vanka; }
+  int material_Vanka() const { return mat_Vanka; }
+  int& material_Vanka() { return mat_Vanka; }
 
   std::array<Vertex3d, 3> basis_Vanka() const { return bas_Vanka; }
   std::array<Vertex3d, 3>& basis_Vanka() { return bas_Vanka; }

@@ -194,6 +194,7 @@ public:
   void setvalue(const std::string&, IndexSet&);
 
   void setvalue(const std::string&, std::pair<int, IntVector>&);
+  void setvalue(const std::string&, std::pair<IndexType, IndexVector>&);
 
   void setvalue(const std::string&, StringDouble&);
 

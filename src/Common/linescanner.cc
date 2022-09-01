@@ -58,9 +58,9 @@ LineScanner::split(vector<string>& words, const char& c) const
 
   vector<string> help(words);
   words.resize(0);
-  for (int i = 0; i < help.size(); i++) {
+  for (size_t i = 0; i < help.size(); i++) {
     vector<string> s = StringSplit(help[i].c_str(), c);
-    for (int j = 0; j < s.size(); j++) {
+    for (size_t j = 0; j < s.size(); j++) {
       if (s[j] != "")
         words.push_back(s[j]);
     }
@@ -72,14 +72,14 @@ LineScanner::split(vector<string>& words, const char& c) const
 void
 LineScanner::split(vector<string>& words, const vector<char>& c) const
 {
-  for (int i = 0; i < c.size(); i++) {
+  for (size_t i = 0; i < c.size(); i++) {
     split(words, c[i]);
   }
 }
 
 /***************************************************/
 
-size_t
+int
 LineScanner::NextLine(vector<double>& words)
 {
   string toto;
@@ -92,7 +92,7 @@ LineScanner::NextLine(vector<double>& words)
   vector<string> s1 = StringSplit(toto.c_str(), ' ', '\t');
 
   words.resize(s1.size());
-  for (int i = 0; i < s1.size(); i++) {
+  for (size_t i = 0; i < s1.size(); i++) {
     words[i] = atof(s1[i].c_str());
   }
 
@@ -101,7 +101,7 @@ LineScanner::NextLine(vector<double>& words)
 
 /***************************************************/
 
-size_t
+int
 LineScanner::NextLine(vector<string>& words)
 {
   string toto;
@@ -119,9 +119,9 @@ LineScanner::NextLine(vector<string>& words)
     }
   }
   string tab = "\t";
-  for (int i = 0; i < s1.size(); i++) {
+  for (size_t i = 0; i < s1.size(); i++) {
     vector<string> s2 = StringSplit(s1[i].c_str(), tab[0]);
-    for (int j = 0; j < s2.size(); j++) {
+    for (size_t j = 0; j < s2.size(); j++) {
       if (s2[j] != "")
         words.push_back(s2[j]);
     }
@@ -132,7 +132,7 @@ LineScanner::NextLine(vector<string>& words)
 
 /***************************************************/
 
-size_t
+int
 LineScanner::NextLine(vector<string>& words, const vector<int>& w)
 {
   // usefull to read formated FORTRAN data bases
@@ -146,7 +146,7 @@ LineScanner::NextLine(vector<string>& words, const vector<int>& w)
     return -1;
 
   int j = 0;
-  for (int i = 0; i < w.size(); i++) {
+  for (size_t i = 0; i < w.size(); i++) {
     if (j + w[i] <= toto.size()) {
       words[i] = toto.substr(j, w[i]);
     } else {

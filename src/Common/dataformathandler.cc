@@ -522,6 +522,29 @@ DataFormatHandler::setvalue(const string& name, pair<int, IntVector>& value)
 }
 
 void
+DataFormatHandler::setvalue(const string& name,
+                            pair<IndexType, IndexVector>& value)
+{
+  TypeMapIndexVectorIndex::const_iterator p;
+  p = TMIdNId.find(name);
+  if (p != TMIdNId.end()) {
+    // das klappt nur einmal! naemlich das erste mal
+    // wenn der map schon value.first enthaellt dann wurde value.second nicht
+    // eingefuegt und der alte wert bleibt drin
+    // pair<TypeMapIntVectorInt::iterator,bool> pair_result =
+    // p->second->insert(value);
+    // pair_result.second == false : d.h. der alte wert wurde NICHT
+    // ueberschrieben
+    p->second->insert(value);
+
+    // hiermit wird erzwungen dass der neue wert eingetragen wird, falls der
+    // schluessel schon drin war
+    p->second->operator[](value.first) = value.second;
+    return;
+  }
+}
+
+void
 DataFormatHandler::setvalue(const string& name, StringDouble& value)
 {
   TypeStringDouble::const_iterator p;

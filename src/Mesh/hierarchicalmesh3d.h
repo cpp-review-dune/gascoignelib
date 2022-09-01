@@ -277,7 +277,7 @@ public:
   IndexType nactivedescendants(IndexType i) const;
   IndexVector GetVertices(IndexType c) const;
 
-  IndexType GetBoundaryCellOfCurved(IndexType iq) const
+  int GetBoundaryCellOfCurved(IndexType iq) const
   {
     std::map<IndexType, IndexType>::const_iterator p = hexofcurved.find(iq);
     if (p != hexofcurved.end())

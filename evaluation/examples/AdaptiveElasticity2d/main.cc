@@ -62,7 +62,7 @@ public:
         GetMultiLevelSolver()->GetSolver()->GetMesh());
       assert(M2d);
       IndexVector ref, coa;
-      for (int i = 0; i < M2d->nnodes(); ++i) {
+      for (IndexType i = 0; i < M2d->nnodes(); ++i) {
         const Vertex2d& v = M2d->vertex2d(i);
         if (((v.x() == 0) && (v.y() == 0)) || (v.x() == 2)) {
           ref.push_back(i);

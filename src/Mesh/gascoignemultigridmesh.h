@@ -46,31 +46,31 @@ public:
   GascoigneMultiGridMesh();
   virtual ~GascoigneMultiGridMesh();
 
-  int nlevels() const { return M.size(); }
+  size_t nlevels() const { return M.size(); }
 
-  const GascoigneMesh& operator()(int l) const
+  const GascoigneMesh& operator()(size_t l) const
   {
     assert((l >= 0) && (l < M.size()));
     return *M[l];
   }
 
-  const GascoigneMesh* GetGascoigneMesh(int l) const
+  const GascoigneMesh* GetGascoigneMesh(size_t l) const
   {
     assert((l >= 0) && (l < M.size()));
     return M[l];
   }
-  GascoigneMesh* GetGascoigneMesh(int l)
+  GascoigneMesh* GetGascoigneMesh(size_t l)
   {
     assert((l >= 0) && (l < M.size()));
     return M[l];
   }
 
-  GascoigneMeshTransfer* GetTransfer(int l)
+  GascoigneMeshTransfer* GetTransfer(size_t l)
   {
     assert((l >= 0) && (l < T.size()));
     return T[l];
   }
-  const GascoigneMeshTransfer* GetTransfer(int l) const
+  const GascoigneMeshTransfer* GetTransfer(size_t l) const
   {
     assert((l >= 0) && (l < T.size()));
     return T[l];

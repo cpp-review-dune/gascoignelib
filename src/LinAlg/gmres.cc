@@ -48,7 +48,7 @@ GMRES::GMRES(StdSolver& S_, StdMultiLevelSolver& P_, int vm)
 
 GMRES::~GMRES()
 {
-  for (int i = 0; i < mem.size(); ++i) {
+  for (size_t i = 0; i < mem.size(); ++i) {
     precon.DeleteVector(mem[i]);
   }
   mem.clear();
@@ -59,10 +59,10 @@ GMRES::~GMRES()
 void
 GMRES::new_memory()
 {
-  int i = mem.size();
+  size_t i = mem.size();
 
   std::string s = "gmres";
-  compose_name(s, i);
+  compose_name(s, static_cast<int>(i));
   mem.resize(i + 1, s);
   // mem[i].SetMultiLevelSolver(&precon);
   precon.ReInitVector(mem[i]);
@@ -74,7 +74,7 @@ void
 GMRES::init()
 {
   assert(H.size() == vmax);
-  for (int i = 0; i < H.size(); i++) {
+  for (size_t i = 0; i < H.size(); i++) {
     H[i].zero();
     H[i].resize(i + 2, 0.);
   }

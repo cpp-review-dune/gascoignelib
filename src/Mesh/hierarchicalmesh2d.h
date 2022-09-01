@@ -251,7 +251,7 @@ public:
   void ConstructQ2PatchMesh(IndexVector& pm) const;
   IndexVector ConstructQ4Patch(IndexType c) const;
   std::set<IndexType> GetColors() const;
-  IndexType GetBoundaryCellOfCurved(IndexType iq) const
+  int GetBoundaryCellOfCurved(IndexType iq) const
   {
     std::map<IndexType, IndexType>::const_iterator p = quadofcurved.find(iq);
     if (p != quadofcurved.end())

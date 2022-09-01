@@ -47,7 +47,7 @@ CoarseHierarchicalMesh2d::BasicInit(int depth)
     co2n2 = co2n;
     loop(cn2oB);
     IndexVector co2n3(co2n2.size());
-    for (int i = 0; i < co2n2.size(); i++) {
+    for (size_t i = 0; i < co2n2.size(); i++) {
       if (co2n2[i] < 0) {
         co2n3[i] = co2n2[i];
       } else {
@@ -60,7 +60,7 @@ CoarseHierarchicalMesh2d::BasicInit(int depth)
 
     cn2o.resize(ncells());
     cn2o = -1;
-    for (int i = 0; i < cn2oB.size(); i++) {
+    for (size_t i = 0; i < cn2oB.size(); i++) {
       int j = cn2oB[i];
       if (j >= 0) {
         int k = cn2oA[j];
@@ -80,7 +80,7 @@ CoarseHierarchicalMesh2d::loop(IndexVector& dst)
   global_coarse();
   dst.resize(ncells());
   dst = -1;
-  for (int i = 0; i < co2n.size(); i++) {
+  for (size_t i = 0; i < co2n.size(); i++) {
     int j = co2n[i];
     assert(j < ncells());
     if (j >= 0)
@@ -99,12 +99,12 @@ CoarseHierarchicalMesh2d::refine(const IndexVector& cell_ref_old,
 
   IndexVector cell_ref(0), cell_coarse(0);
 
-  for (int i = 0; i < cell_ref_old.size(); i++) {
+  for (size_t i = 0; i < cell_ref_old.size(); i++) {
     int newc = co2n[cell_ref_old[i]];
     if (newc >= 0)
       cell_ref.push_back(newc);
   }
-  for (int i = 0; i < cell_coarse_old.size(); i++) {
+  for (size_t i = 0; i < cell_coarse_old.size(); i++) {
     int newc = co2n[cell_coarse_old[i]];
     if (newc >= 0)
       cell_coarse.push_back(newc);
@@ -120,7 +120,7 @@ CoarseHierarchicalMesh2d::GetRefinedList(IndexVector& ref)
   ref.resize(0);
   IndexVector ref2;
   Set2Vec(ref2, CellRefList);
-  for (int i = 0; i < ref2.size(); i++) {
+  for (size_t i = 0; i < ref2.size(); i++) {
     int j = cn2o[ref2[i]];
     assert(j >= 0);
     ref.push_back(j);
@@ -135,7 +135,7 @@ CoarseHierarchicalMesh2d::GetCoarsedList(IndexVector& coarse)
   coarse.resize(0);
   IndexVector coarse2;
   Set2Vec(coarse2, CellCoarseList);
-  for (int i = 0; i < coarse2.size(); i++) {
+  for (size_t i = 0; i < coarse2.size(); i++) {
     int j = cn2o[coarse2[i]];
     if (j >= 0)
       coarse.push_back(j);

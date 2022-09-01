@@ -150,9 +150,8 @@ EdgeManager::Update()
     IndexType m = edges[i].master();
     IndexType s = edges[i].slave();
     if (m < 0) {
-      cerr << "EdgeManager::update()" << endl;
-      cerr << "Master negativ " << i << " " << m << endl;
-      abort();
+      throw std::runtime_error("EdgeManager::update(): Master negativ (i,m)" +
+                               std::to_string(i) + " " + std::to_string(m));
     }
     IndexType nm = co2n[m];
     if (nm >= 0) {
@@ -259,8 +258,8 @@ EdgeManager::OuterEdges(const HangContainer2d& hangset)
               break;
           }
           if (edgeindex < 0) {
-            cout << slave << " ###smallind 2 " << edgeindex << endl;
-            exit(1);
+            throw std::runtime_error(std::to_string(slave) + " ###smallind 2 " +
+                                     std::to_string(edgeindex));
           }
           quads[slave].edge(edgeindex) = n;
           edges[n].slave() = slave;
@@ -283,9 +282,9 @@ EdgeManager::OldHangings(HangContainer2d& hangset, const IndexSet& CellRefList)
     if (p->second.hanging() < 0)
       continue;
 
-    IndexType bigslave = p->second.cneighbour();
-    IndexType bigmaster = p->second.rneighbour();
-    IndexType hang = p->second.hanging();
+    int bigslave = p->second.cneighbour();
+    int bigmaster = p->second.rneighbour();
+    int hang = p->second.hanging();
 
     if (hang < 0)
       continue;
@@ -295,8 +294,7 @@ EdgeManager::OldHangings(HangContainer2d& hangset, const IndexSet& CellRefList)
       continue;
 
     if (!quads[bigslave].sleep()) {
-      cout << "BIGSLAVE sleeps" << endl;
-      exit(1);
+      throw std::runtime_error("BIGSLAVE sleeps");
     }
     for (IndexType i = 0; i < 2; i++) {
       EdgeVector edge;
@@ -325,12 +323,12 @@ EdgeManager::OldHangings(HangContainer2d& hangset, const IndexSet& CellRefList)
       for (IndexType j = 0; j < 4; j++) {
         slave = quads[bigslave].child(j);
         ledge = QuadLaO.local_edge_index(slave, edge);
-        if (ledge >= 0)
+        if (ledge >= 0 && ledge != -1)
           break;
       }
       if (ledge < 0) {
-        cout << slave << " ###ledge " << ledge << endl;
-        exit(1);
+        throw std::runtime_error(std::to_string(slave) + " ###ledge " +
+                                 std::to_string(ledge));
       }
       Edge& E = edges[gedge];
 
@@ -339,9 +337,9 @@ EdgeManager::OldHangings(HangContainer2d& hangset, const IndexSet& CellRefList)
           E.master() = master;
           E.LocalMasterIndex() = E.LocalSlaveIndex();
         } else {
-          cout << endl << "bad master" << master << ": ";
-          cout << E.master() << "-" << E.slave() << endl;
-          exit(1);
+          throw std::runtime_error("bad master" + std::to_string(master) +
+                                   ": " + std::to_string(E.master()) + "-" +
+                                   std::to_string(E.slave()));
         }
       }
       quads[slave].edge(ledge) = gedge;
@@ -368,9 +366,9 @@ EdgeManager::SwappedEdges()
     }
   }
   if (m != SwappedEdge.size()) {
-    cout << "ERROR: Inconsistency in SwappedEdges2d" << endl;
-    cout << m << " " << SwappedEdge.size() << endl;
-    exit(1);
+    throw std::out_of_range(
+      "ERROR: Inconsistency in SwappedEdges2d: " + std::to_string(m) + " " +
+      std::to_string(SwappedEdge.size()));
   }
   for (IndexType i = 0; i < quads.size(); i++) {
     Quad& q = quads[i];
@@ -396,9 +394,7 @@ EdgeManager::ChildrenOfEdge(IndexType e) const
   IndexType is = edges[e].LocalSlaveIndex();
 
   if (s < 0) {
-    cerr << "EdgeManager::ChildrenOfEdge()";
-    cerr << "no slave\n";
-    abort();
+    throw std::runtime_error("EdgeManager::ChildrenOfEdge(): no slave");
   }
   std::array<IndexType, 2> f;
   for (IndexType ii = 0; ii < 2; ii++) {
@@ -423,8 +419,7 @@ EdgeManager::DeleteEdges()
       for (IndexType e = 0; e < 4; e++) {
         IndexType ne = eo2n[Q.edge(e)];
         if (ne < 0) {
-          cout << "\neo2n " << ne;
-          exit(1);
+          throw std::runtime_error("eo2n: " + std::to_string(ne));
         }
         Q.edge(e) = ne;
       }

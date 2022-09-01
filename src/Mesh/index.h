@@ -66,12 +66,12 @@ public:
   IndexVector& Hexl2g() { return hl2g; }
   const IndexVector& Hexl2g() const { return hl2g; }
   const IndexVector& Quadl2g() const { return ql2g; }
-  int Quadl2g(int i) const
+  int Quadl2g(size_t i) const
   {
     assert(i < ql2g.size());
     return ql2g[i];
   }
-  int Hexl2g(int i) const
+  int Hexl2g(size_t i) const
   {
     assert(i < hl2g.size());
     return hl2g[i];
@@ -83,15 +83,15 @@ public:
   // Sizes
   ////////////////
 
-  int nnodes() const { return VertexSize(); }
-  int VertexSize() const { return vl2g.size(); }
-  int VertexGSize() const { return vg2l.size(); }
-  int EdgeSize() const { return el2g.size(); }
-  int EdgeGSize() const { return eg2l.size(); }
-  int HexSize() const { return hl2g.size(); }
-  int HexGSize() const { return hg2l.size(); }
-  int QuadSize() const { return ql2g.size(); }
-  int QuadGSize() const { return qg2l.size(); }
+  size_t nnodes() const { return VertexSize(); }
+  size_t VertexSize() const { return vl2g.size(); }
+  size_t VertexGSize() const { return vg2l.size(); }
+  size_t EdgeSize() const { return el2g.size(); }
+  size_t EdgeGSize() const { return eg2l.size(); }
+  size_t HexSize() const { return hl2g.size(); }
+  size_t HexGSize() const { return hg2l.size(); }
+  size_t QuadSize() const { return ql2g.size(); }
+  size_t QuadGSize() const { return qg2l.size(); }
 
   ////////////////
   // Global To Local

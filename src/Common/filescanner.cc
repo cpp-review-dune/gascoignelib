@@ -94,7 +94,7 @@ FileScanner::readfile(const ParamFile& pf, const string& blockname)
   }
 
   vector<string> words;
-  size_t nwords = 0;
+  int nwords = 0;
   bool searchblock = (blockname != "");
   bool blockfound = !searchblock;
   bool helpfound = 0;
@@ -136,7 +136,7 @@ FileScanner::readfile(const ParamFile& pf, const string& blockname)
     FS.NoComplain();
     FS.readfile(pf, "DefaultValues");
 
-    for (int i = 0; i < vs_files.size(); i++) {
+    for (size_t i = 0; i < vs_files.size(); i++) {
       DataFormatHandler DFH2;
       string s_filename;
       string s_keyname = vs_files[i];
@@ -157,7 +157,8 @@ FileScanner::readfile(const ParamFile& pf, const string& blockname)
     }
   }
 
-  while (true) {
+  // Scanning for Block
+  while (nwords >= 0) {
     nwords = LS.NextLine(words);
 
     if (nwords == 0) {
@@ -330,6 +331,9 @@ FileScanner::FormatToValue(const vector<string>& words)
   } else if (keyword_type == "integer") {
     int value = atoi(words[1].c_str());
     DH.setvalue(keyword, value);
+  } else if (keyword_type == "IndexType") {
+    IndexType value = atoi(words[1].c_str());
+    DH.setvalue(keyword, value);
   } else if (keyword_type == "bool") {
     if (words[1] == "true" || words[1] == "1") {
       DH.setvalue(keyword, true);
@@ -356,35 +360,47 @@ FileScanner::FormatToValue(const vector<string>& words)
   /*----------------------------------------------*/
 
   else if (keyword_type == "vector<double>") {
-    int n = atoi(words[1].c_str());
+    size_t n = atoi(words[1].c_str());
     _assert(words.size() > n + 1, words);
     // wenn n==0, dann ist auch n=0 gemeint: rufe setvalue auch dafuer auf
     if (n >= 0) {
       vector<double> value(n);
-      for (int i = 0; i < n; i++) {
+      for (size_t i = 0; i < n; i++) {
         value[i] = atof(words[i + 2].c_str());
       }
       DH.setvalue(keyword, value);
     }
   } else if (keyword_type == "IntVector") {
-    int n = atoi(words[1].c_str());
+    size_t n = atoi(words[1].c_str());
     _assert(words.size() > n + 1, words);
     // cerr << "-----" << n << " " << words.size() << endl;
     // wenn n==0, dann ist auch n=0 gemeint: rufe setvalue auch dafuer auf
     if (n >= 0) {
       IntVector value(n);
-      for (int i = 0; i < n; i++) {
+      for (size_t i = 0; i < n; i++) {
+        value[i] = atoi(words[i + 2].c_str());
+      }
+      DH.setvalue(keyword, value);
+    }
+  } else if (keyword_type == "IndexVector") {
+    IndexType n = atoi(words[1].c_str());
+    _assert(words.size() > n + 1, words);
+    // cerr << "-----" << n << " " << words.size() << endl;
+    // wenn n==0, dann ist auch n=0 gemeint: rufe setvalue auch dafuer auf
+    if (n >= 0) {
+      IndexVector value(n);
+      for (size_t i = 0; i < n; i++) {
         value[i] = atoi(words[i + 2].c_str());
       }
       DH.setvalue(keyword, value);
     }
   } else if (keyword_type == "vector<string>") {
-    int n = atoi(words[1].c_str());
+    size_t n = atoi(words[1].c_str());
     _assert(words.size() > n + 1, words);
     // wenn n==0, dann ist auch n=0 gemeint: rufe setvalue auch dafuer auf
     if (n >= 0) {
       vector<string> value(n);
-      for (int i = 0; i < n; i++) {
+      for (size_t i = 0; i < n; i++) {
         value[i] = words[i + 2];
       }
       DH.setvalue(keyword, value);
@@ -395,33 +411,54 @@ FileScanner::FormatToValue(const vector<string>& words)
 
   else if (keyword_type == "map<int,IntVector >") {
     int col = atoi(words[1].c_str());
-    int n = atoi(words[2].c_str());
+    size_t n = atoi(words[2].c_str());
     IntVector value(n);
     _assert(words.size() > n + 2, words);
-    for (int i = 0; i < n; i++)
+    for (size_t i = 0; i < n; i++)
       value[i] = atoi(words[i + 3].c_str());
     pair<int, IntVector> p = make_pair(col, value);
+    DH.setvalue(keyword, p);
+  } else if (keyword_type == "map<IndexType,IndexVector >") {
+    IndexType col = atoi(words[1].c_str());
+    IndexType n = atoi(words[2].c_str());
+    IndexVector value(n);
+    _assert(words.size() > n + 2, words);
+    for (size_t i = 0; i < n; i++)
+      value[i] = atoi(words[i + 3].c_str());
+    pair<IndexType, IndexVector> p = make_pair(col, value);
     DH.setvalue(keyword, p);
   }
 
   /*----------------------------------------------*/
 
   else if (keyword_type == "set<vector<string> >") {
-    int n = atoi(words[1].c_str());
+    size_t n = atoi(words[1].c_str());
     vector<string> value(n);
     _assert(words.size() > n + 1, words);
-    for (int i = 0; i < n; i++)
+    for (size_t i = 0; i < n; i++)
       value[i] = words[i + 2];
 
     DH.insertvalue(keyword, value);
   }
 
   else if (keyword_type == "set<int>") {
-    int n = atoi(words[1].c_str());
+    size_t n = atoi(words[1].c_str());
     set<int> value;
     _assert(words.size() > n + 1, words);
-    for (int i = 0; i < n; i++) {
+    for (size_t i = 0; i < n; i++) {
       int v = atoi(words[i + 2].c_str());
+      value.insert(v);
+    }
+
+    DH.setvalue(keyword, value);
+  }
+
+  else if (keyword_type == "set<IndexType>") {
+    IndexType n = atoi(words[1].c_str());
+    set<IndexType> value;
+    _assert(words.size() > n + 1, words);
+    for (IndexType i = 0; i < n; i++) {
+      IndexType v = atoi(words[i + 2].c_str());
       value.insert(v);
     }
 

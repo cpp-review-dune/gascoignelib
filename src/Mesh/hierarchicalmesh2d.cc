@@ -87,8 +87,8 @@ HierarchicalMesh2d::operator=(const HierarchicalMesh2d& H)
 pair<IndexType, IndexType>
 HierarchicalMesh2d::GetBoundaryInformation(IndexType i) const
 {
-  IndexType material = -1;
-  IndexType le = -1;
+  int material = -1;
+  int le = -1;
   IndexType ib = GetBoundaryCellOfCurved(i);
   if (ib >= 0) {
     material = bline(ib).material();
@@ -107,7 +107,7 @@ HierarchicalMesh2d::FindPatchDepth() const
     const Quad& q = quad(i);
     if (q.sleep())
       continue;
-    IndexType father = q.father();
+    int father = q.father();
     if (father == -1)
       return 0;
     const Quad& qf = quad(father);
@@ -228,7 +228,7 @@ IndexVector
 HierarchicalMesh2d::Geschwister(const IndexType i) const
 {
   const Quad& q = quad(i);
-  IndexType father = q.father();
+  int father = q.father();
   if (father == -1) {
     IndexVector n(1, i);
     return n;
@@ -412,8 +412,8 @@ HierarchicalMesh2d::ghost_fill_neighbours2d()
       LineHangList::iterator p = LineHang.find(lineglob);
 
       if (p != LineHang.end()) {
-        IndexType cn = p->second.cneighbour();
-        IndexType rn = p->second.rneighbour();
+        int cn = p->second.cneighbour();
+        int rn = p->second.rneighbour();
 
         // coarse neighbour
 
@@ -443,8 +443,8 @@ HierarchicalMesh2d::basic_fill_neighbours2d()
       LineHangList::iterator p = LineHang.find(lineglob);
 
       if (p != LineHang.end()) {
-        IndexType cn = p->second.cneighbour();
-        IndexType rn = p->second.rneighbour();
+        int cn = p->second.cneighbour();
+        int rn = p->second.rneighbour();
 
         if ((cn == -1) && (!quads[ic].sleep())) {
           p->second.cneighbour() = ic;
@@ -1032,7 +1032,7 @@ HierarchicalMesh2d::GetAwakePatchs(set<IndexType>& v) const
 
   for (IndexType i = 0; i < ncells(); i++) {
     if (!quads[i].sleep()) {
-      IndexType f = quads[i].father();
+      int f = quads[i].father();
       assert(f != -1);
       v.insert(f);
     }
@@ -1058,7 +1058,7 @@ HierarchicalMesh2d::ConstructQ2PatchMesh(IndexVector& q2patchmesh) const
   for (IndexType l = 1; l < nlevels(); ++l) {
     It it = patch_on_level[l].begin();
     while (it != patch_on_level[l].end()) {
-      IndexType v = quads[*it].father();
+      int v = quads[*it].father();
       assert(v != -1);
       q2patchmesh.push_back(v);
       IndexVector nk = Nachkommen(v);
@@ -1076,32 +1076,31 @@ HierarchicalMesh2d::ConstructQ4Patch(IndexType c) const
 {
   IndexVector patch(25, -1);
 
-  for (IndexType i = 0; i < 25; i++) {
+  for (int i = 0; i < 25; i++) {
     // Vertex i steht an Position (x,y)
-    IndexType x = i % 5;
-    IndexType y = i / 5;
+    int x = i % 5;
+    int y = i / 5;
 
     // Position von erstem Kind
-    IndexType fcx = x / 3;
-    IndexType fcy = y / 3;
+    int fcx = x / 3;
+    int fcy = y / 3;
     // Index davon
-    IndexType fci =
-      fcy * 2 + abs(static_cast<long>(fcx) - static_cast<long>(fcy));
+    int fci = fcy * 2 + abs(fcx - fcy);
 
     // Position vom Kind im Kind
-    IndexType scx = (x - 2 * fcx) / 2;
-    IndexType scy = (y - 2 * fcy) / 2;
+    int scx = (x - 2 * fcx) / 2;
+    int scy = (y - 2 * fcy) / 2;
     // Index davon
-    IndexType sci =
-      scy * 2 + abs(static_cast<long>(scx) - static_cast<long>(scy));
+    int sci = scy * 2 + abs(scx - scy);
 
     // Position des Vertex
-    IndexType vx = x - 2 * fcx - scx;
-    IndexType vy = y - 2 * fcy - scy;
+    int vx = x - 2 * fcx - scx;
+    int vy = y - 2 * fcy - scy;
     // Index davon
-    IndexType vi = vy * 2 + abs(static_cast<long>(vx) - static_cast<long>(vy));
+    int vi = vy * 2 + abs(vx - vy);
 
-    patch[i] = quads[quads[quads[c].child(fci)].child(sci)].vertex(vi);
+    patch[i] = static_cast<IndexType>(
+      quads[quads[quads[c].child(fci)].child(sci)].vertex(vi));
   }
   return patch;
 }
@@ -1120,8 +1119,8 @@ HierarchicalMesh2d::CellNeighbours(IndexType iq) const
   for (IndexType i = 0; i < 4; i++) {
     IndexType ge = q.edge(i);
     const Edge& e = edge(ge);
-    IndexType m = e.master();
-    IndexType s = e.slave();
+    int m = e.master();
+    int s = e.slave();
     if (m != -1) {
       if (!quad(m).sleep())
         neighbors.insert(m);
@@ -1762,8 +1761,8 @@ HierarchicalMesh2d::regular_grid2d_one(IndexSet& celllist,
   LineHangList::const_iterator hp = LineHang.begin();
 
   for (; hp != LineHang.end(); ++hp) {
-    IndexType cr = hp->second.rneighbour();
-    IndexType cn = hp->second.cneighbour();
+    int cr = hp->second.rneighbour();
+    int cn = hp->second.cneighbour();
 
     assert(cr >= 0);
 
@@ -2017,29 +2016,31 @@ HierarchicalMesh2d::regular_grid2d_three_coarse(IndexSet& CellRef,
     }
   }
   IndexType coarse = 0;
-  for (IndexType i = maxl; i >= 0; i--) {
+  for (int i = maxl; i >= 0; i--) {
     IndexVector maxlevel, minlevel;
 
     GetMinMaxLevels(maxlevel, minlevel, CellRef);
 
     IndexSet coarsesub;
-    IndexSet::const_iterator p = LevelCellCoarse[i].begin();
-    for (; p != LevelCellCoarse[i].end(); p++) {
-      const Quad& q = quad(*p);
+    // IndexSet::const_iterator p = LevelCellCoarse[i].begin();
+    // for (; p != LevelCellCoarse[i].end(); p++) {
+    for (const IndexType& p : LevelCellCoarse[i]) {
+      const Quad& q = quad(p);
       IndexType lev = q.level();
       for (IndexType j = 0; j < 4; j++) {
         IndexType k = q[j];
         if (lev + 1 < maxlevel[k]) {
-          coarsesub.insert(*p);
+          coarsesub.insert(p);
           continue;
         }
       }
     }
-    // CellCoarse.erase(coarsesub.begin(),coarsesub.end());
-    p = coarsesub.begin();
-    for (; p != coarsesub.end(); p++) {
-      if (CellCoarse.find(*p) != CellCoarse.end()) {
-        CellCoarse.erase(*p);
+    // // CellCoarse.erase(coarsesub.begin(),coarsesub.end());
+    // p = coarsesub.begin();
+    // for (; p != coarsesub.end(); p++) {
+    for (const IndexType& p : coarsesub) {
+      if (CellCoarse.find(p) != CellCoarse.end()) {
+        CellCoarse.erase(p);
         coarse++;
       }
     }

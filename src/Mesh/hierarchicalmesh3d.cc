@@ -1868,8 +1868,8 @@ HierarchicalMesh3d::regular_grid3d_one(IndexVector& celllist,
   HangList<4>::const_iterator hp;
 
   for (hp = QuadHang.begin(); hp != QuadHang.end(); ++hp) {
-    IndexType cr = hp->second.rneighbour();
-    IndexType cn = hp->second.cneighbour();
+    int cr = hp->second.rneighbour();
+    int cn = hp->second.cneighbour();
     assert(cr >= 0);
 
     if (cn != -1) {
