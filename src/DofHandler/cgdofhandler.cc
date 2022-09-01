@@ -174,7 +174,7 @@ public:
    *  0--2+y  1--0-x 3--1-y 2--3+x   +--x
    *
    **/
-  IndexType orientation(IndexType a, IndexType b) const
+  int orientation(IndexType a, IndexType b) const
   {
     if ((I[0] == a) && (I[1] == b))
       return +1;
@@ -283,7 +283,7 @@ public:
     auto it = faces.find(face);
     assert(it != faces.end());
     IndexType faceid = it->second;
-    IndexType o = face.orientation(a, b);
+    int o = face.orientation(a, b);
     if (o == 1)
       return faceid * (M - 2) * (M - 2) + (M - 2) * iy + ix;
     else if (o == 2)

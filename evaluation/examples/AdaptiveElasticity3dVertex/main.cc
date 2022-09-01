@@ -65,12 +65,12 @@ public:
     }
 
     // initial refinement of the mesh
-    for (size_t a = 0; a < adarefine; ++a) {
+    for (int a = 0; a < adarefine; ++a) {
       const GascoigneMesh3d* M3d = dynamic_cast<const GascoigneMesh3d*>(
         GetMultiLevelSolver()->GetSolver()->GetMesh());
       assert(M3d);
       IndexVector ref, coa;
-      for (int i = 0; i < M3d->nnodes(); ++i) {
+      for (IndexType i = 0; i < M3d->nnodes(); ++i) {
         const Vertex3d& v = M3d->vertex3d(i);
         if (v.x() == 0 && v.y() == 0 && v.z() == 0) {
           ref.push_back(i);

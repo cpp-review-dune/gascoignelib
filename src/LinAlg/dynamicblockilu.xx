@@ -133,7 +133,7 @@ DynamicBlockIlu<B>::copy_entries(const MatrixInterface* A)
   const DynamicBlockMatrix<B>* MM =
     dynamic_cast<const DynamicBlockMatrix<B>*>(A);
   assert(MM);
-  for (int i = 0; i < DynamicBlockMatrix<B>::n(); ++i) {
+  for (size_t i = 0; i < DynamicBlockMatrix<B>::n(); ++i) {
     int pi = p[i];
     const_viterator vposA = MM->vstart(pi);
     for (const_citerator cposA = MM->cstart(pi); cposA != MM->cstop(pi);

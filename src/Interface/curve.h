@@ -71,7 +71,7 @@ public:
   virtual void Vertices(nvector<Vertex2d>& V, const nvector<double>& t) const
   {
     assert(V.size() == t.size());
-    for (int i = 0; i < t.size(); ++i) {
+    for (size_t i = 0; i < t.size(); ++i) {
       V[i].x() = X(t[i]);
       V[i].y() = Y(t[i]);
     }

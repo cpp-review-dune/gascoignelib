@@ -36,13 +36,13 @@ GascoigneMultiGridMesh::GascoigneMultiGridMesh() {}
 
 GascoigneMultiGridMesh::~GascoigneMultiGridMesh()
 {
-  for (int l = 0; l < M.size(); l++) {
+  for (size_t l = 0; l < M.size(); l++) {
     if (M[l] != NULL) {
       delete M[l];
       M[l] = NULL;
     }
   }
-  for (int l = 0; l < T.size(); l++) {
+  for (size_t l = 0; l < T.size(); l++) {
     if (T[l] != NULL) {
       delete T[l];
       T[l] = NULL;
@@ -87,25 +87,25 @@ void
 GascoigneMultiGridMesh::ReInit(int dim, int nlevels)
 {
   // Mesh
-  for (int l = 0; l < M.size(); l++) {
+  for (size_t l = 0; l < M.size(); l++) {
     if (M[l] != NULL) {
       delete M[l];
       M[l] = NULL;
     }
   }
   M.resize(nlevels);
-  for (int l = 0; l < M.size(); l++) {
+  for (size_t l = 0; l < M.size(); l++) {
     M[l] = NewMesh(dim);
   }
   // Transfer
-  for (int l = 0; l < T.size(); l++) {
+  for (size_t l = 0; l < T.size(); l++) {
     if (T[l] != NULL) {
       delete T[l];
       T[l] = NULL;
     }
   }
   T.resize(nlevels - 1);
-  for (int l = 0; l < T.size(); l++) {
+  for (size_t l = 0; l < T.size(); l++) {
     T[l] = NewTransfer(dim);
   }
 }

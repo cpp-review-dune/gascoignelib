@@ -57,22 +57,22 @@ public:
     return indexofq4patch;
   }
 
-  IndexVector& GetPatch2Cell(int i)
+  IndexVector& GetPatch2Cell(size_t i)
   {
     assert(i < patch2cell.size());
     return patch2cell[i];
   }
-  const IndexVector& GetPatch2Cell(int i) const
+  const IndexVector& GetPatch2Cell(size_t i) const
   {
     assert(i < patch2cell.size());
     return patch2cell[i];
   }
-  IndexVector& GetQ4Patch2Cell(int i)
+  IndexVector& GetQ4Patch2Cell(size_t i)
   {
     assert(i < q4patch2cell.size());
     return q4patch2cell[i];
   }
-  const IndexVector& GetQ4Patch2Cell(int i) const
+  const IndexVector& GetQ4Patch2Cell(size_t i) const
   {
     assert(hasq4patch && i < q4patch2cell.size());
     return q4patch2cell[i];
@@ -87,8 +87,8 @@ public:
     return q4patch2cell;
   }
 
-  int npatches() const { return indexofpatch.size(); }
-  int nq4patches() const { return indexofq4patch.size(); }
+  size_t npatches() const { return indexofpatch.size(); }
+  size_t nq4patches() const { return indexofq4patch.size(); }
   bool HasPatch() const { return haspatch; }
   bool HasQ4Patch() const { return hasq4patch; }
   int Dim() const { return dim; }

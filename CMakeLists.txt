@@ -50,7 +50,7 @@ SET(GASCOIGNE_INCLUDE_DIRS
 # Setup compiler flags and compile definitions:
 #
 SET(GASCOIGNE_CXX_FLAGS
-  "-std=c++11 -pedantic -Wall -Wno-sign-compare -Wold-style-cast -Wno-unknown-pragmas" CACHE STRING "Configuration flags"
+  "-std=c++11 -pedantic -Wall -Wno-unknown-pragmas" CACHE STRING "Configuration flags"
   )
 
 #

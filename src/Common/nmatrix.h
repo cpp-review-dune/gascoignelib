@@ -110,8 +110,8 @@ public:
                 << A.m() << std::endl;
       abort();
     }
-    for (int i = 0; i < n(); i++) {
-      for (int j = 0; j < m(); j++) {
+    for (size_t i = 0; i < n(); i++) {
+      for (size_t j = 0; j < m(); j++) {
         (*this)(i, j) = A(i, j);
       }
     }
@@ -126,7 +126,7 @@ public:
   void identity()
   {
     nvector<T>::zero();
-    for (int i = 0; i < n(); i++) {
+    for (size_t i = 0; i < n(); i++) {
       (*this)(i, i) = 1.;
     }
   }
@@ -155,9 +155,9 @@ public:
   void gram(const nmatrix<T>& B)
   {
     nvector<T>::zero();
-    for (int i = 0; i < n(); i++) {
-      for (int j = 0; j < m(); j++) {
-        for (int k = 0; k < B.n(); k++) {
+    for (size_t i = 0; i < n(); i++) {
+      for (size_t j = 0; j < m(); j++) {
+        for (size_t k = 0; k < B.n(); k++) {
           (*this)(i, j) += B(k, i) * B(k, j);
         }
       }
@@ -167,8 +167,8 @@ public:
   {
     nmatrix<T> B(*this);
     resize(m(), n());
-    for (int i = 0; i < n(); i++) {
-      for (int j = 0; j < m(); j++) {
+    for (size_t i = 0; i < n(); i++) {
+      for (size_t j = 0; j < m(); j++) {
         (*this)(i, j) = B(j, i);
       }
     }
@@ -180,9 +180,9 @@ public:
     assert(A.n() == this->n());
     assert(A.m() == B.m());
     A.zero();
-    for (int i = 0; i < A.n(); i++) {
-      for (int j = 0; j < A.m(); j++) {
-        for (int k = 0; k < m(); k++) {
+    for (size_t i = 0; i < A.n(); i++) {
+      for (size_t j = 0; j < A.m(); j++) {
+        for (size_t k = 0; k < m(); k++) {
           A(i, j) += (*this)(i, k) * B(k, j);
         }
       }
@@ -196,9 +196,9 @@ public:
     assert(A.m() == B.m());
     /* A = (*this)^T * B */
     A.zero();
-    for (int i = 0; i < A.n(); i++) {
-      for (int j = 0; j < A.m(); j++) {
-        for (int k = 0; k < n(); k++) {
+    for (size_t i = 0; i < A.n(); i++) {
+      for (size_t j = 0; j < A.m(); j++) {
+        for (size_t k = 0; k < n(); k++) {
           A(i, j) += (*this)(k, i) * B(k, j);
         }
       }
@@ -214,7 +214,7 @@ public:
 
     while (p != std::vector<T>::end()) {
       px = x.begin();
-      for (int j = 0; j < m(); j++) {
+      for (size_t j = 0; j < m(); j++) {
         *py += s * (*p++) * (*px++);
       }
       py++;
@@ -229,7 +229,7 @@ public:
 
     while (p != std::vector<T>::end()) {
       px = x.begin();
-      for (int j = 0; j < m(); j++) {
+      for (size_t j = 0; j < m(); j++) {
         *py += (*p++) * (*px++);
       }
       py++;
@@ -245,7 +245,7 @@ public:
 
     while (p != std::vector<T>::end()) {
       py = y.begin();
-      for (int j = 0; j < n(); j++) {
+      for (size_t j = 0; j < n(); j++) {
         (*py) += s * (*p++) * (*px);
         py++;
       }
@@ -263,7 +263,7 @@ public:
     while (p != std::vector<T>::end()) {
       px = x.begin();
       *py = 0.;
-      for (int j = 0; j < m(); j++) {
+      for (size_t j = 0; j < m(); j++) {
         *py += s * (*p++) * (*px++);
       }
       py++;
@@ -280,7 +280,7 @@ public:
 
     while (p != std::vector<T>::end()) {
       py = y.begin();
-      for (int j = 0; j < n(); j++) {
+      for (size_t j = 0; j < n(); j++) {
         (*py) += (*p++) * (*px);
         py++;
       }
@@ -295,7 +295,7 @@ public:
     const_iterator p = std::vector<T>::begin();
 
     while (p != std::vector<T>::end()) {
-      for (int j = 0; j < n(); j++) {
+      for (size_t j = 0; j < n(); j++) {
         (*py) += s * (*p++) * (*px);
         py++;
       }
@@ -312,7 +312,7 @@ public:
 
     while (p != std::vector<T>::end()) {
       px = px0;
-      for (int j = 0; j < m(); j++) {
+      for (size_t j = 0; j < m(); j++) {
         *py += s * (*p++) * (*px++);
       }
       py++;
@@ -329,7 +329,7 @@ public:
 
     y.zero();
     while (p != std::vector<T>::end()) {
-      for (int j = 0; j < n(); j++) {
+      for (size_t j = 0; j < n(); j++) {
         (*py) += (*p++) * (*px);
         py++;
       }
@@ -344,12 +344,12 @@ public:
     // vmult with the adjoint matrix
     const_iterator p = std::vector<T>::begin();
 
-    for (int i = 0; i < m(); i++) {
+    for (size_t i = 0; i < m(); i++) {
       (*py++) = 0.;
     }
     py -= m();
     while (p != std::vector<T>::end()) {
-      for (int j = 0; j < n(); j++) {
+      for (size_t j = 0; j < n(); j++) {
         (*py) += (*p++) * (*px);
         py++;
       }
@@ -364,10 +364,10 @@ public:
   {
     /* LU decomposition */
 
-    for (int i = 1; i < n(); i++) {
-      for (int k = 0; k < i; k++) {
+    for (size_t i = 1; i < n(); i++) {
+      for (size_t k = 0; k < i; k++) {
         value(i, k) /= value(k, k);
-        for (int j = k + 1; j < n(); j++) {
+        for (size_t j = k + 1; j < n(); j++) {
           value(i, j) -= value(i, k) * value(k, j);
         }
       }
@@ -433,10 +433,10 @@ public:
     }
     /* LU decomposition */
 
-    for (int i = 1; i < n(); i++) {
-      for (int k = 0; k < i; k++) {
+    for (size_t i = 1; i < n(); i++) {
+      for (size_t k = 0; k < i; k++) {
         value(i, k) /= value(k, k);
-        for (int j = k + 1; j < n(); j++) {
+        for (size_t j = k + 1; j < n(); j++) {
           value(i, j) -= value(i, k) * value(k, j);
         }
       }
@@ -444,10 +444,10 @@ public:
 
     /* Inverse von L */
 
-    for (int ncol = 0; ncol < n() - 1; ncol++) {
-      for (int i = ncol + 1; i < n(); i++) {
+    for (size_t ncol = 0; ncol < n() - 1; ncol++) {
+      for (size_t i = ncol + 1; i < n(); i++) {
         value(i, ncol) = -value(i, ncol);
-        for (int k = ncol + 1; k < i; k++) {
+        for (size_t k = ncol + 1; k < i; k++) {
           value(i, ncol) -= value(i, k) * value(k, ncol);
         }
       }
@@ -455,10 +455,10 @@ public:
 
     /* Inverse von U */
 
-    for (int nlin = 0; nlin < n(); nlin++) {
-      for (int j = nlin + 1; j < n(); j++) {
+    for (size_t nlin = 0; nlin < n(); nlin++) {
+      for (size_t j = nlin + 1; j < n(); j++) {
         value(nlin, j) /= -value(nlin, nlin);
-        for (int k = nlin + 1; k < j; k++) {
+        for (size_t k = nlin + 1; k < j; k++) {
           value(nlin, j) -= value(nlin, k) * value(k, j);
         }
         value(nlin, j) /= value(j, j);
@@ -468,15 +468,15 @@ public:
 
     /* Inverse von A */
 
-    for (int ncol = 0; ncol < n(); ncol++) {
-      for (int i = 0; i < ncol + 1; i++) {
-        for (int k = ncol + 1; k < n(); k++) {
+    for (size_t ncol = 0; ncol < n(); ncol++) {
+      for (size_t i = 0; i < ncol + 1; i++) {
+        for (size_t k = ncol + 1; k < n(); k++) {
           value(i, ncol) += value(i, k) * value(k, ncol);
         }
       }
-      for (int i = ncol + 1; i < n(); i++) {
+      for (size_t i = ncol + 1; i < n(); i++) {
         value(i, ncol) *= value(i, i);
-        for (int k = i + 1; k < n(); k++) {
+        for (size_t k = i + 1; k < n(); k++) {
           value(i, ncol) += value(i, k) * value(k, ncol);
         }
       }
@@ -488,17 +488,17 @@ public:
     nvector<int> p(n());
     iota(p.begin(), p.end(), 0);
 
-    for (int j = 0; j < n(); j++) {
+    for (size_t j = 0; j < n(); j++) {
       double max = fabs(value(j, j));
-      int r = j;
-      for (int i = j + 1; i < n(); i++) {
+      size_t r = j;
+      for (size_t i = j + 1; i < n(); i++) {
         if (fabs(value(i, j)) > max) {
           max = fabs(value(i, j));
           r = i;
         }
       }
       if (r > j) {
-        for (int k = 0; k < n(); k++) {
+        for (size_t k = 0; k < n(); k++) {
           // swap(value(j,k),value(r,k));
           T h = value(j, k);
           value(j, k) = value(r, k);
@@ -512,26 +512,26 @@ public:
 
       double hr = 1. / value(j, j);
       value(j, j) = hr;
-      for (int k = 0; k < n(); k++) {
+      for (size_t k = 0; k < n(); k++) {
         if (k == j)
           continue;
-        for (int i = 0; i < n(); i++) {
+        for (size_t i = 0; i < n(); i++) {
           if (i == j)
             continue;
           value(i, k) -= value(i, j) * value(j, k) * hr;
         }
       }
-      for (int i = 0; i < n(); i++) {
+      for (size_t i = 0; i < n(); i++) {
         value(i, j) *= hr;
         value(j, i) *= -hr;
       }
       value(j, j) = hr;
     }
     nvector<double> hv(n());
-    for (int i = 0; i < n(); i++) {
-      for (int k = 0; k < n(); k++)
+    for (size_t i = 0; i < n(); i++) {
+      for (size_t k = 0; k < n(); k++)
         hv[p[k]] = value(i, k);
-      for (int k = 0; k < n(); k++)
+      for (size_t k = 0; k < n(); k++)
         value(i, k) = hv[k];
     }
   }

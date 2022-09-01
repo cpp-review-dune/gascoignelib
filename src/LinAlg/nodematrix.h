@@ -50,11 +50,11 @@ public:
   void reserve(int) const {};
   void resize(int) const {};
 
-  int m() const { return N; }
+  size_t m() const { return N; }
 
   friend std::ostream& operator<<(std::ostream& s, const NodeMatrix<N, T>& A)
   {
-    for (int c = 0; c < N * N; c++)
+    for (size_t c = 0; c < N * N; c++)
       s << A[c] << " ";
     s << "\t";
     return s;
@@ -63,13 +63,13 @@ public:
   void identity()
   {
     numfixarray<N * N, T>::zero();
-    for (int d = 0; d < N; d++) {
+    for (size_t d = 0; d < N; d++) {
       value(d, d) = 1.;
     }
   }
   void zero_component(int c)
   {
-    for (int d = 0; d < N; d++) {
+    for (size_t d = 0; d < N; d++) {
       value(c, d) = 0.;
     }
   }
@@ -79,9 +79,9 @@ public:
   void addmult(double k, const NodeMatrix<N, T>& A, const NodeMatrix<N, T>& B)
   // this += k*A*B
   {
-    for (int i = 0; i < N; i++) {
-      for (int j = 0; j < N; j++) {
-        for (int k = 0; k < N; k++) {
+    for (size_t i = 0; i < N; i++) {
+      for (size_t j = 0; j < N; j++) {
+        for (size_t k = 0; k < N; k++) {
           value(i, j) += k * A.value(i, k) * B.value(k, j);
         }
       }
@@ -106,10 +106,10 @@ public:
 
     // LU decomposition
 
-    for (int i = 1; i < N; i++) {
-      for (int k = 0; k < i; k++) {
+    for (size_t i = 1; i < N; i++) {
+      for (size_t k = 0; k < i; k++) {
         value(i, k) /= value(k, k);
-        for (int j = k + 1; j < N; j++) {
+        for (size_t j = k + 1; j < N; j++) {
           value(i, j) -= value(i, k) * value(k, j);
         }
       }
@@ -117,10 +117,10 @@ public:
 
     // Inverse von L
 
-    for (int ncol = 0; ncol < N - 1; ncol++) {
-      for (int i = ncol + 1; i < N; i++) {
+    for (size_t ncol = 0; ncol < N - 1; ncol++) {
+      for (size_t i = ncol + 1; i < N; i++) {
         value(i, ncol) = -value(i, ncol);
-        for (int k = ncol + 1; k < i; k++) {
+        for (size_t k = ncol + 1; k < i; k++) {
           value(i, ncol) -= value(i, k) * value(k, ncol);
         }
       }
@@ -128,10 +128,10 @@ public:
 
     // Inverse von U
 
-    for (int nlin = 0; nlin < N; nlin++) {
-      for (int j = nlin + 1; j < N; j++) {
+    for (size_t nlin = 0; nlin < N; nlin++) {
+      for (size_t j = nlin + 1; j < N; j++) {
         value(nlin, j) /= -value(nlin, nlin);
-        for (int k = nlin + 1; k < j; k++) {
+        for (size_t k = nlin + 1; k < j; k++) {
           value(nlin, j) -= value(nlin, k) * value(k, j);
         }
         value(nlin, j) /= value(j, j);
@@ -141,15 +141,15 @@ public:
 
     // Inverse von A
 
-    for (int ncol = 0; ncol < N; ncol++) {
-      for (int i = 0; i < ncol + 1; i++) {
-        for (int k = ncol + 1; k < N; k++) {
+    for (size_t ncol = 0; ncol < N; ncol++) {
+      for (size_t i = 0; i < ncol + 1; i++) {
+        for (size_t k = ncol + 1; k < N; k++) {
           value(i, ncol) += value(i, k) * value(k, ncol);
         }
       }
-      for (int i = ncol + 1; i < N; i++) {
+      for (size_t i = ncol + 1; i < N; i++) {
         value(i, ncol) *= value(i, i);
-        for (int k = i + 1; k < N; k++) {
+        for (size_t k = i + 1; k < N; k++) {
           value(i, ncol) += value(i, k) * value(k, ncol);
         }
       }
@@ -160,7 +160,7 @@ public:
   {
     std::vector<int> p(N);
 
-    int i, j, k, r;
+    size_t i, j, k, r;
     double max, hr;
 
     for (i = 0; i < N; i++)

@@ -54,7 +54,8 @@ protected:
 
   /*  Data  */
 
-  IndexType mnlevels, pdepth, etapatcher;
+  int mnlevels;
+  IndexType pdepth, etapatcher;
   IndexVector vo2n, eo2n, co2n;
   EdgeVec edges;
 
@@ -194,7 +195,7 @@ public:
     return std::set<IndexType>();
   }
 
-  virtual IndexType GetBoundaryCellOfCurved(IndexType iq) const { return -1; }
+  virtual int GetBoundaryCellOfCurved(IndexType iq) const { return -1; }
 
   virtual void AddShape(IndexType col, BoundaryFunction<2>* f)
   {

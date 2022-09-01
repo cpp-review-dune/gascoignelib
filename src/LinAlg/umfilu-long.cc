@@ -129,7 +129,7 @@ UmfIluLong::ReInit(const SparseStructureInterface* SS)
   nvector<long> start_long;
 
   start_long.resize(start.size());
-  for (int i = 0; i < start.size(); i++) {
+  for (size_t i = 0; i < start.size(); i++) {
     start_long[i] = static_cast<long>(start[i]);
   }
 
@@ -137,7 +137,7 @@ UmfIluLong::ReInit(const SparseStructureInterface* SS)
   nvector<long> col_long;
 
   col_long.resize(col.size());
-  for (int i = 0; i < col.size(); i++) {
+  for (size_t i = 0; i < col.size(); i++) {
     col_long[i] = static_cast<long>(col[i]);
   }
 
@@ -189,7 +189,7 @@ UmfIluLong::Factorize()
   nvector<long> start_long;
 
   start_long.resize(start.size());
-  for (int i = 0; i < start.size(); i++) {
+  for (size_t i = 0; i < start.size(); i++) {
     start_long[i] = static_cast<long>(start[i]);
   }
 
@@ -197,7 +197,7 @@ UmfIluLong::Factorize()
   nvector<long> col_long;
 
   col_long.resize(col.size());
-  for (int i = 0; i < col.size(); i++) {
+  for (size_t i = 0; i < col.size(); i++) {
     col_long[i] = static_cast<long>(col[i]);
   }
 
@@ -228,7 +228,7 @@ UmfIluLong::Solve(DoubleVector& x, const DoubleVector& b) const
   nvector<long> start_long;
 
   start_long.resize(start.size());
-  for (int i = 0; i < start.size(); i++) {
+  for (size_t i = 0; i < start.size(); i++) {
     start_long[i] = static_cast<long>(start[i]);
   }
 
@@ -236,7 +236,7 @@ UmfIluLong::Solve(DoubleVector& x, const DoubleVector& b) const
   nvector<long> col_long;
 
   col_long.resize(col.size());
-  for (int i = 0; i < col.size(); i++) {
+  for (size_t i = 0; i < col.size(); i++) {
     col_long[i] = static_cast<long>(col[i]);
   }
 
@@ -269,7 +269,7 @@ UmfIluLong::SolveTranspose(DoubleVector& x, const DoubleVector& b)
   nvector<long> start_long;
 
   start_long.resize(start.size());
-  for (int i = 0; i < start.size(); i++) {
+  for (size_t i = 0; i < start.size(); i++) {
     start_long[i] = static_cast<long>(start[i]);
   }
 
@@ -277,7 +277,7 @@ UmfIluLong::SolveTranspose(DoubleVector& x, const DoubleVector& b)
   nvector<long> col_long;
 
   col_long.resize(col.size());
-  for (int i = 0; i < col.size(); i++) {
+  for (size_t i = 0; i < col.size(); i++) {
     col_long[i] = static_cast<long>(col[i]);
   }
 

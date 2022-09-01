@@ -178,9 +178,9 @@ public:
                            const FemFunction& U,
                            const FemFunction& N) const
   {
-    for (int j = 0; j < N.size(); j++) {
+    for (size_t j = 0; j < N.size(); j++) {
       point_M(U, N[j]);
-      for (int i = 0; i < N.size(); i++) {
+      for (size_t i = 0; i < N.size(); i++) {
         A.SetDofIndex(i, j);
         Matrix(A, U, N[j], N[i]);
       }

@@ -166,7 +166,7 @@ HangList<N>::BinRead(std::istream& s)
   std::array<IndexType, N> ev;
   Hang info;
 
-  for (IndexType i = 0; i < n; i++) {
+  for (int i = 0; i < n; i++) {
     ArrayBinRead(s, ev);
     ArrayBinRead(s, info);
     this->insert(std::make_pair(ev, info));

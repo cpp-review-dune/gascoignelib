@@ -42,11 +42,11 @@ Extrapolator::Print()
   cout << "extra\t";
 
   cout.precision(12);
-  for (int i = 0; i < n; i++) {
+  for (size_t i = 0; i < n; i++) {
     cout << fixed << std::setw(16) << valextra[i];
   }
   cout << endl << "[rate]\t";
-  for (int i = 0; i < n; i++) {
+  for (size_t i = 0; i < n; i++) {
     cout.precision(4);
     cout << setw(8) << "[";
     cout << setw(4) << order[i] << "]";
@@ -70,7 +70,7 @@ Extrapolator::NewValues(const DoubleVector& J)
   vals.push_back(J);
   size_t nv = vals.size();
   if (nv >= 3) {
-    for (int i = 0; i < n; i++) {
+    for (size_t i = 0; i < n; i++) {
       double j0 = vals[nv - 3][i];
       double j1 = vals[nv - 2][i];
       double j2 = vals[nv - 1][i];

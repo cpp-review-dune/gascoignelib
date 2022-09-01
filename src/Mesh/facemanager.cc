@@ -56,7 +56,7 @@ FaceManager::InitFaces()
 
   FaceVector e;
 
-  for (int i = 0; i < hexs.size(); i++) {
+  for (size_t i = 0; i < hexs.size(); i++) {
     for (int j = 0; j < 6; j++) {
       HexLaO.global_face_unsorted(e, hex(i), j);
 
@@ -70,7 +70,7 @@ FaceManager::InitFaces()
         H.erase(yes);
       } else {
         Edge E(i, j);
-        int n = edges.size();
+        size_t n = edges.size();
         edges.push_back(E);
         H.insert(make_pair(e, n));
         hexs[i].edge(j) = n;
@@ -87,7 +87,7 @@ FaceManager::DeleteFaces()
 {
   compress(edges, eo2n);
 
-  for (int i = 0; i < hexs.size(); i++) {
+  for (size_t i = 0; i < hexs.size(); i++) {
     Hex& H = hexs[i];
     if (co2n[i] < 0) {
       H.edges().fill(-1);
@@ -109,7 +109,7 @@ FaceManager::DeleteFaces()
 void
 FaceManager::Update()
 {
-  for (int i = 0; i < edges.size(); i++) {
+  for (size_t i = 0; i < edges.size(); i++) {
     int m = edges[i].master();
     int s = edges[i].slave();
 
@@ -154,8 +154,8 @@ FaceManager::Build(const IndexSet& CellRefList, HangContainer3d& hangset)
 void
 FaceManager::InnerFaces(const IndexSet& CellRefList)
 {
-  int n = edges.size();
-  int nv1 = CellRefList.size();
+  size_t n = edges.size();
+  size_t nv1 = CellRefList.size();
 
   edges.reserve(n + 12 * nv1);
   edges.resize(n + 12 * nv1);
@@ -165,7 +165,7 @@ FaceManager::InnerFaces(const IndexSet& CellRefList)
   for (cp = CellRefList.begin(); cp != CellRefList.end(); cp++) {
     int f = co2n[*cp];
 
-    for (int e = 0; e < 12; e++) {
+    for (size_t e = 0; e < 12; e++) {
       int icl = HexLaO.ChildOfInnerFace(e, 0);
       int ic = hexs[f].child(icl);
       int ie = HexLaO.LocalChildFaceOfInnerFace(e, 0);
@@ -239,20 +239,20 @@ FaceManager::SortHangings()
   stable_sort(perm.begin(), perm.end(), HangFaceSort(*this));
   stable_sort(edges.begin(), edges.end(), HangFaceSort2(*this));
 
-  int i = edges.size();
+  size_t i = edges.size();
   while (EdgeIsHanging(i - 1))
     i--;
 
-  vector<int> permi(perm.size());
-  for (int i = 0; i < perm.size(); i++)
+  vector<IndexType> permi(perm.size());
+  for (size_t i = 0; i < perm.size(); i++)
     permi[perm[i]] = i;
 
-  for (int i = 0; i < hexs.size(); i++) {
-    for (int ii = 0; ii < 6; ii++) {
+  for (size_t i = 0; i < hexs.size(); i++) {
+    for (size_t ii = 0; ii < 6; ii++) {
       hexs[i].edge(ii) = permi[hex(i).edge(ii)];
     }
   }
-  for (int i = 0; i < eo2n.size(); i++) {
+  for (size_t i = 0; i < eo2n.size(); i++) {
     if (eo2n[i] >= 0) {
       eo2n[i] = permi[eo2n[i]];
     }
@@ -260,7 +260,7 @@ FaceManager::SortHangings()
 
   // master of each edge is allways the coarser hex
 
-  for (int i = 0; i < edges.size(); i++) {
+  for (size_t i = 0; i < edges.size(); i++) {
     int m = edges[i].master();
     int s = edges[i].slave();
     if (s < 0)
@@ -349,18 +349,18 @@ void
 FaceManager::NeighbourTester() const
 {
   IndexVector x(edges.size());
-  for (int i = 0; i < hexs.size(); i++) {
+  for (size_t i = 0; i < hexs.size(); i++) {
     for (int e = 0; e < 6; e++) {
       int edge = hexs[i].edge(e);
       x[edge]++;
     }
   }
-  for (int i = 0; i < x.size(); i++) {
+  for (size_t i = 0; i < x.size(); i++) {
     if (x[i] > 2) {
       cout << "BSE Test " << i << " " << x[i] << endl;
     }
   }
-  for (int i = 0; i < hexs.size(); i++) {
+  for (size_t i = 0; i < hexs.size(); i++) {
     for (int e = 0; e < 6; e++) {
       int edge = hexs[i].edge(e);
 
@@ -443,7 +443,7 @@ FaceManager::FillNeighbourFaces(const Hex& HM,
 void
 FaceManager::OuterFaces(const HangContainer3d& hangset)
 {
-  int n = edges.size();
+  size_t n = edges.size();
 
   edges.reserve(n + 4 * hangset.FaceCreating().size());
   edges.resize(n + 4 * hangset.FaceCreating().size());
@@ -537,7 +537,7 @@ FaceManager::SwappedFaces()
 {
   int n = 0;
   int m = 0;
-  for (int i = 0; i < hexs.size(); i++) {
+  for (size_t i = 0; i < hexs.size(); i++) {
     const Hex& q = hexs[i];
     for (int e = 0; e < 6; e++) {
       if (q.edge(e) < 0)
@@ -546,7 +546,7 @@ FaceManager::SwappedFaces()
   }
   assert(m == SwappedEdge.size());
 
-  for (int i = 0; i < hexs.size(); i++) {
+  for (size_t i = 0; i < hexs.size(); i++) {
     Hex& q = hexs[i];
     if (q.sleep())
       continue;

@@ -48,32 +48,18 @@ main(int argc, char** argv)
   Gascoigne::HeatProblem LPD;
   LPD.BasicInit(paramfile);
 
-    std::cerr << "Past: " << __FILE__ << ":" << std::to_string(__LINE__)       \
-              << " in " << __FUNCTION__ << std::endl;                          \
   Gascoigne::ProblemContainer PC;
   PC.AddProblem("heat", &LPD);
 
-    std::cerr << "Past: " << __FILE__ << ":" << std::to_string(__LINE__)       \
-              << " in " << __FUNCTION__ << std::endl;                          \
-  // Functionals
   Gascoigne::FunctionalContainer FC;
-
-    std::cerr << "Past: " << __FILE__ << ":" << std::to_string(__LINE__)       \
-              << " in " << __FUNCTION__ << std::endl;                          \
 
 #ifdef USE_CUDA
   Gascoigne::CudaLoop loop;
 #else
   Gascoigne::BasicLoop loop;
 #endif
-    std::cerr << "Past: " << __FILE__ << ":" << std::to_string(__LINE__)       \
-              << " in " << __FUNCTION__ << std::endl;                          \
   loop.BasicInit(paramfile, &PC, &FC);
-    std::cerr << "Past: " << __FILE__ << ":" << std::to_string(__LINE__)       \
-              << " in " << __FUNCTION__ << std::endl;                          \
   loop.timerun("heat");
-    std::cerr << "Past: " << __FILE__ << ":" << std::to_string(__LINE__)       \
-              << " in " << __FUNCTION__ << std::endl;                          \
 
   return 0;
 }
