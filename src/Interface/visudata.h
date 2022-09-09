@@ -39,16 +39,20 @@ public:
 
   virtual ShortIndexType visucomp() const { return 0; }
   virtual IndexType visun() const { return 0; }
-  virtual double visudata(int i, IndexType c) const
+  virtual double visudata(IndexType i, ShortIndexType c) const
   {
     std::cerr << "\"VisuData::visudata\" not written!" << std::endl;
     abort();
   }
-  virtual double visudata2(int i, IndexType c, const Vertex2d& v) const
+  virtual double visudata2(IndexType i,
+                           ShortIndexType c,
+                           const Vertex2d& v) const
   {
     return visudata(i, c);
   }
-  virtual double visudata2(int i, IndexType c, const Vertex3d& v) const
+  virtual double visudata2(IndexType i,
+                           ShortIndexType c,
+                           const Vertex3d& v) const
   {
     return visudata(i, c);
   }

@@ -321,7 +321,7 @@ public:
 
   virtual void RegisterVector(const Vector& g);
   virtual void ReInitVector(Vector& dst);
-  virtual void ReInitVector(Vector& dst, IndexType comp);
+  virtual void ReInitVector(Vector& dst, ShortIndexType comp);
 
   // Access to Vector & Matrix Data
   virtual GlobalVector& GetGV(Vector& u) const
