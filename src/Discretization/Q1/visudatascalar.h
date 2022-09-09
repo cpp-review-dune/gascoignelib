@@ -24,6 +24,8 @@
 #ifndef __visudatascalar_h
 #define __visudatascalar_h
 
+#include "../Interface/gascoigne.h"
+
 #include "nvector.h"
 #include "visudata.h"
 
@@ -41,9 +43,9 @@ public:
     : vR(v)
   {}
 
-  virtual int visucomp() const { return 1; }
-  virtual int visun() const { return vR.size(); }
-  virtual double visudata(int i, int c) const
+  virtual ShortIndexType visucomp() const { return 1; }
+  virtual IndexType visun() const { return vR.size(); }
+  virtual double visudata(IndexType i, ShortIndexType /*c*/) const
   {
     assert(i < vR.size());
     return vR[i];

@@ -551,7 +551,7 @@ StdSolver::ReInitVector(Vector& dst)
 /*-------------------------------------------------------*/
 
 void
-StdSolver::ReInitVector(Vector& dst, IndexType comp)
+StdSolver::ReInitVector(Vector& dst, ShortIndexType comp)
 {
   IndexType n = GetDiscretization()->ndofs();
   IndexType nc = GetDiscretization()->nelements();
@@ -565,25 +565,25 @@ StdSolver::ReInitVector(Vector& dst, IndexType comp)
   }
   assert(p != vector_agent.end());
 
-  // GlobalVector already registered ?
-  //
-  if (p->second == NULL) {
-    p->second = new GlobalVector;
-  }
-
-  // resize GlobalVector
-  //
-  p->second->ncomp() = comp;
-
+  IndexType size = 0;
   if (dst.GetType() == "node") {
-    p->second->reservesize(n);
+    size = n;
   } else if (dst.GetType() == "cell") {
-    p->second->reservesize(nc);
+    size = nc;
   } else if (dst.GetType() == "parameter") {
-    p->second->reservesize(1);
+    size = 1;
   } else {
     cerr << "No such vector type: " << dst.GetType() << endl;
     abort();
+  }
+
+  // GlobalVector already registered ?
+  //
+  if (p->second == nullptr) {
+    p->second = new GlobalVector(comp, size);
+  } else {
+    p->second->ncomp() = comp;
+    p->second->reserve(size);
   }
 }
 

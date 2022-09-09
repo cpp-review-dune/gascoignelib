@@ -53,9 +53,9 @@ public:
     ncomp = u.ncomp() + z.ncomp();
   }
 
-  int visucomp() const { return ncomp; }
-  int visun() const { return uR->n(); }
-  double visudata(int i, int c) const
+  ShortIndexType visucomp() const { return ncomp; }
+  IndexType visun() const { return uR->n(); }
+  double visudata(IndexType i, ShortIndexType c) const
   {
     if (c < uR->ncomp())
       return (*uR)(i, c);
