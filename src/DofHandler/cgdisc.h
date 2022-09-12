@@ -59,8 +59,10 @@ add_node(double s,
          IndexType i_F,
          const LocalVector& __restrict__ F)
 {
-  const ShortIndexType iif = i_f * f.ncomp();
-  const ShortIndexType iiF = i_F * F.ncomp();
+  const IndexType iif = i_f * f.ncomp();
+  const IndexType iiF = i_F * F.ncomp();
+  assert(iif < f.size());
+  assert(iiF < F.size());
   for (ShortIndexType c = 0; c < f.ncomp(); c++) {
 #pragma omp atomic update
     f[iif + c] += s * F[iiF + c];
