@@ -86,13 +86,13 @@ public:
 
   void operator()(DoubleVector& b,
                   const Vertex2d& /*unused*/,
-                  int /*unused*/) const
+                  IndexType /*unused*/) const
   {
     b.zero();
   }
   void operator()(DoubleVector& b,
                   const Vertex3d& /*unused*/,
-                  int /*unused*/) const
+                  IndexType /*unused*/) const
   {
     b.zero();
   }
