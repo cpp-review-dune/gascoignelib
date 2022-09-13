@@ -1,0 +1,55 @@
+//Block Loop
+
+niter               20
+estimator           none
+initial             boundary
+refiner             global
+writevtk            0
+writebupgup         0
+
+
+//Block BoundaryManager
+
+// this is now set in HeatDD (heatproblem.h)
+
+//dirichlet           1      4
+//dirichletcomp       4      1       0 
+
+
+//Block Mesh
+dimension           2
+prerefine           8
+gridname            square.inp
+
+
+//Block Equation
+lambda              0.01
+dt		            0.02
+
+//Block MultiLevelSolver
+linearsolve         gmres
+nonlinear_tol       1e-5
+nonlinear_rho		0.1
+
+coarselevel         -1     // only fine mesh, no multigrid!
+gmressize           100
+linear_maxiter		100
+
+linear_tol          1.e-6
+
+//Block Solver
+
+matrixtype		    block
+
+discname 	        CGQ1
+ndirect             1
+
+iterpre             4
+iterpost            4
+iterexact           10
+
+
+linear_smooth       jacobi
+omega               0.9  
+
+//Block nix

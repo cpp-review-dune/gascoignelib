@@ -456,7 +456,7 @@ nvector<T>::add(const T& d, const nvector<T>& v)
 
   while (first != last) {
     (*first++) += d * (*first2++);
-   }
+  }
 }
 
 /**************************************************/
