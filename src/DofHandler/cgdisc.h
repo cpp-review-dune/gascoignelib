@@ -46,6 +46,7 @@
 
 #include "baseq12d.h"
 #include "baseq13d.h"
+#include "baseq1patch.h"
 #include "baseq13dpatch.h"
 #include "baseq22d.h"
 #include "baseq23d.h"
@@ -1281,10 +1282,10 @@ typedef CGDisc<3, 1, FiniteElementQ13d, ElementIntegratorQ13d> CGDiscQ13d;
 typedef CGDisc<3, 2, FiniteElementQ23d, ElementIntegratorQ23d> CGDiscQ23d;
 
 ////// LPS
-// typedef CGDisc<2,
-//          2,
-//          FiniteElement<2, 1, Transformation2d<BaseQ12dPatch>, BaseQ12dPatch>,
-//          ElementLpsIntegratorQ12d> CGDiscQ12dLps;
+typedef CGDisc<2,
+         2,
+         FiniteElement<2, 1, Transformation2d<BaseQ12dPatch>, BaseQ12dPatch>,
+         ElementIntegratorQ12dPatch> CGDiscQ12dPatch;
 typedef CGDisc<2,
                2,
                FiniteElement<2, 1, Transformation2d<BaseQ12d>, BaseQ12d>,

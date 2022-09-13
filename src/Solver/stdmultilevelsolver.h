@@ -95,6 +95,8 @@ public:
 
   //////////////////////////////////////////////////
   // Access
+  
+  virtual const int GetComputeLevel() const { return ComputeLevel; }
 
   virtual const MeshAgent* GetMeshAgent() const { return _MAP; }
   virtual std::vector<StdSolver*>& GetSolverPointers() { return _SP; }

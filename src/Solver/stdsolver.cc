@@ -285,6 +285,9 @@ StdSolver::NewDiscretization(int dimension, const string& discname)
     else if (discname == "CGQ2")
       return new CGDiscQ22d;
 
+    else if (discname == "CGQ1Patch")
+      return new CGDiscQ12dPatch;
+
     else if (discname == "CGP1")
       return new CGDiscP12d;
 
