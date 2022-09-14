@@ -7,8 +7,6 @@ PROJECT(GASCOIGNE CXX C)
 SET(GASCOIGNE_LIBRARY GascoigneStd)
 
 
-
-
 #### CMAKE CONFIG
 CMAKE_MINIMUM_REQUIRED(VERSION 3.0)
 cmake_policy(SET CMP0042 NEW)
@@ -20,10 +18,10 @@ INCLUDE(CMakeOptions.txt)
 
 #### Directory Settings
 
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../lib)
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../lib)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../bin)
-#SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/../lib"  CACHE PATH "output path for libraries")
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+#SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"  CACHE PATH "output path for libraries")
 SET (GASCOIGNE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
 #### Options for Gascoigne Core Library
@@ -35,7 +33,18 @@ OPTION(WITH_UMFPACK_LONG "Long-integer indices in UMFPACK >4GB matrices" OFF)
 #
 # Include directories:
 #
-INCLUDE(CMakeLists_Includes.txt)
+SET(GASCOIGNE_INCLUDE_DIRS
+  ${GASCOIGNE_DIR}/src/Common
+  ${GASCOIGNE_DIR}/src/DofHandler
+  ${GASCOIGNE_DIR}/src/Discretization/Q1
+  ${GASCOIGNE_DIR}/src/Discretization/Q2
+  ${GASCOIGNE_DIR}/src/Discretization/DG
+  ${GASCOIGNE_DIR}/src/Interface
+  ${GASCOIGNE_DIR}/src/LinAlg
+  ${GASCOIGNE_DIR}/src/Mesh
+  ${GASCOIGNE_DIR}/src/Problems
+  ${GASCOIGNE_DIR}/src/Solver
+)
 
 #
 # Setup compiler flags and compile definitions:
@@ -44,23 +53,20 @@ SET(GASCOIGNE_CXX_FLAGS
   "-std=c++11 -pedantic -Wall -Wno-sign-compare -Wold-style-cast -Wno-unknown-pragmas" CACHE STRING "Configuration flags"
   )
 
-
-OPTION(WITH_THREADS      "Build with support for openmp" OFF)
+#
+# OpenMP/THREADS
+#
+OPTION(WITH_THREADS "Build with support for openmp" OFF)
 IF(WITH_THREADS)
-
-  # require OPENMP
-  
   find_package(OpenMP REQUIRED)
   set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
   set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
   SET(GASCOIGNE_CXX_FLAGS "${GASCOIGNE_CXX_FLAGS} -fopenmp")
-
 endif()
 
-
 #
-# Search for metis:
+# METIS
 #
 FIND_PACKAGE(METIS REQUIRED)
 
@@ -68,7 +74,7 @@ LIST(APPEND GASCOIGNE_INCLUDE_DIRS ${METIS_INCLUDE_DIRS})
 LIST(APPEND GASCOIGNE_LIBRARIES ${METIS_LIBRARIES})
 
 #
-# Search for UMFPACK:
+# UMFPACK
 #
 IF(WITH_UMFPACK)
   FIND_PACKAGE(UMFPACK REQUIRED)
@@ -84,7 +90,7 @@ IF(WITH_UMFPACK)
 ENDIF()
 
 #
-# Search for blas:
+# Search for BLAS:
 #
 FIND_PACKAGE(BLAS REQUIRED)
 
@@ -112,6 +118,9 @@ IF(HAVE_TR1_UNORDERED_MAP)
   LIST(APPEND GASCOIGNE_DEFINITIONS -D __NEWER_THAN_GCC_4_2__)
 ENDIF()
 
+#
+# Build Setup
+#
 SEPARATE_ARGUMENTS(GASCOIGNE_CXX_FLAGS)
 ADD_COMPILE_OPTIONS(${GASCOIGNE_CXX_FLAGS})
 ADD_DEFINITIONS(${GASCOIGNE_DEFINITIONS})
@@ -121,7 +130,6 @@ SET(GASCOIGNE_LIBS "GascoigneStd${BUILD_ENDING}")
 #
 # Code Quality
 #
-
 OPTION(USE_IWYU "Use include what you use for include optimization" OFF)
 IF(USE_IWYU)
     find_program(IWYU include-what-you-use HINTS /usr/bin/)
@@ -151,12 +159,29 @@ if(USE_CLANG_FORMAT)
   endif()
 endif()
 
-ADD_SUBDIRECTORY(src)
-# ADD_SUBDIRECTORY(doc)
+#
+# GASCOIGNE
+#
+IF(NOT USE_CUDA)
+  ADD_SUBDIRECTORY(src)
+ELSE()
+  ADD_SUBDIRECTORY(cuda)
+ENDIF()
 
+#
+# Evaluation
+#
+OPTION(BUILD_TESTS "Build the Testing environment" ON)
+IF(BUILD_TESTS)
+  ADD_SUBDIRECTORY(evaluation/examples)
+ENDIF(BUILD_TESTS)
 
+#
+# DOXYGEN
+#
 OPTION(BUILD_DOXYGEN "Build the documentatino" OFF)
 IF(BUILD_DOXYGEN)
+  ADD_SUBDIRECTORY(doc)
   find_package(Doxygen)
   if(DOXYGEN_FOUND)
     set(DOXYGEN_IN ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in)

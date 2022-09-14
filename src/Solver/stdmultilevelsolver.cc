@@ -469,6 +469,8 @@ StdMultiLevelSolver::mgstep(vector<double>& res,
                             Vector& b,
                             Vector& v)
 {
+  GlobalTimer.count("--> mgstep");
+
   if (l == coarselevel) {
     if (p == "F") {
       p0 = "V";

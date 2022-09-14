@@ -22,3 +22,5 @@ cmake*
 
 lib
 build
+**/__pycache__
+test.png

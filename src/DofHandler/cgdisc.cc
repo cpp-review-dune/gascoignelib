@@ -84,5 +84,9 @@ template class CGDisc<2,
                       2,
                       FiniteElement<2, 1, Transformation2d<BaseQ22d>, BaseQ22d>,
                       ElementLpsIntegratorQ22d>;
+template class  CGDisc<2,
+         2,
+         FiniteElement<2, 1, Transformation2d<BaseQ12dPatch>, BaseQ12dPatch>,
+		       ElementIntegratorQ12dPatch>;
 
 } // namespace Gascoigne

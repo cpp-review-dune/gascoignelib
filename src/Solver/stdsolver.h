@@ -96,7 +96,10 @@ private:
 
 protected:
 #ifdef __WITH_THREADS__
-  int NThreads() const { return __n_threads; }
+  int NThreads() const
+  {
+    return __n_threads;
+  }
 #endif
 
   // 3. Discretization
@@ -138,7 +141,10 @@ protected:
 
   // 0. Zugriff
 
-  const GascoigneMesh*& GetMeshPointer() { return _MP; }
+  const GascoigneMesh*& GetMeshPointer()
+  {
+    return _MP;
+  }
 
   // virtual SolverData& GetSolverData()
   // {
@@ -148,8 +154,14 @@ protected:
   {
     return GetProblemDescriptor()->GetSolverData();
   }
-  virtual PressureFilter& GetPfilter() { return _PF; }
-  virtual const PressureFilter& GetPfilter() const { return _PF; }
+  virtual PressureFilter& GetPfilter()
+  {
+    return _PF;
+  }
+  virtual const PressureFilter& GetPfilter() const
+  {
+    return _PF;
+  }
 
   // 0.3 Matrizen
 
@@ -158,7 +170,10 @@ protected:
   //   return _MAP;
   // }
 
-  virtual DiscretizationInterface*& GetDiscretizationPointer() { return _ZP; }
+  virtual DiscretizationInterface*& GetDiscretizationPointer()
+  {
+    return _ZP;
+  }
 
   // virtual IluInterface*& GetIluPointer()
   // {
@@ -200,7 +215,10 @@ public:
   StdSolver();
   virtual ~StdSolver();
 
-  virtual std::string GetName() const { return "StdSolver"; }
+  virtual std::string GetName() const
+  {
+    return "StdSolver";
+  }
 
   virtual void BasicInit(const ParamFile& paramfile, const int dimension);
   ////                const NumericInterface *NI);
@@ -215,11 +233,17 @@ public:
     }
     return nullptr;
   }
-  virtual const ParamFile& GetParamfile() const { return _paramfile; }
+  virtual const ParamFile& GetParamfile() const
+  {
+    return _paramfile;
+  }
 
   virtual void NewMesh(const GascoigneMesh* MP);
 
-  virtual const GascoigneMesh* GetMesh() const { return _MP; }
+  virtual const GascoigneMesh* GetMesh() const
+  {
+    return _MP;
+  }
 
   // 0.2 Discretization
 
@@ -242,7 +266,10 @@ public:
   //   return _MIP;
   // }
 
-  virtual bool DirectSolver() const { return _directsolver; }
+  virtual bool DirectSolver() const
+  {
+    return _directsolver;
+  }
 
   virtual void AddNodeVector(const std::string& name, const Vector& q)
   {
@@ -295,7 +322,10 @@ public:
   virtual void ReInitVector(Vector& dst, int comp);
 
   // Access to Vector & Matrix Data
-  virtual GlobalVector& GetGV(Vector& u) const { return vector_agent(u); }
+  virtual GlobalVector& GetGV(Vector& u) const
+  {
+    return vector_agent(u);
+  }
   virtual const GlobalVector& GetGV(const Vector& u) const
   {
     return vector_agent(u);
@@ -310,7 +340,10 @@ public:
   {
     return matrix_agent(A);
   }
-  virtual IluInterface& GetIlu(Matrix& A) const { return ilu_agent(A); }
+  virtual IluInterface& GetIlu(Matrix& A) const
+  {
+    return ilu_agent(A);
+  }
   virtual const IluInterface& GetIlu(const Matrix& A) const
   {
     return ilu_agent(A);
@@ -320,8 +353,14 @@ public:
   /// vector - hanging nodes
   //
 
-  virtual bool GetDistribute() const { return _distribute; }
-  virtual void SetDistribute(bool dist) { _distribute = dist; }
+  virtual bool GetDistribute() const
+  {
+    return _distribute;
+  }
+  virtual void SetDistribute(bool dist)
+  {
+    _distribute = dist;
+  }
 
   virtual void HNAverage(const Vector& x) const;
   virtual void HNZero(const Vector& x) const;
@@ -490,8 +529,14 @@ public:
   /// HierarchicalMesh
   //
 
-  virtual const HierarchicalMesh*& GetHierarchicalMeshPointer() { return _HM; }
-  virtual const HierarchicalMesh* GetHierarchicalMesh() const { return _HM; }
+  virtual const HierarchicalMesh*& GetHierarchicalMeshPointer()
+  {
+    return _HM;
+  }
+  virtual const HierarchicalMesh* GetHierarchicalMesh() const
+  {
+    return _HM;
+  }
 
   //
   /// for gmres

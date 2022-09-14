@@ -1282,10 +1282,10 @@ typedef CGDisc<3, 1, FiniteElementQ13d, ElementIntegratorQ13d> CGDiscQ13d;
 typedef CGDisc<3, 2, FiniteElementQ23d, ElementIntegratorQ23d> CGDiscQ23d;
 
 ////// LPS
-// typedef CGDisc<2,
-//          2,
-//          FiniteElement<2, 1, Transformation2d<BaseQ12dPatch>, BaseQ12dPatch>,
-//          ElementLpsIntegratorQ12d> CGDiscQ12dLps;
+typedef CGDisc<2,
+         2,
+         FiniteElement<2, 1, Transformation2d<BaseQ12dPatch>, BaseQ12dPatch>,
+         ElementIntegratorQ12dPatch> CGDiscQ12dPatch;
 typedef CGDisc<2,
                2,
                FiniteElement<2, 1, Transformation2d<BaseQ12dPatch>, BaseQ12dPatch>,

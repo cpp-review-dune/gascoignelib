@@ -1,0 +1,189 @@
+/**
+ *
+ * Copyright (C) 2004, 2005, 2006, 2007, 2010, 2018 by the Gascoigne 3D authors
+ *
+ * This file is part of Gascoigne 3D
+ *
+ * Gascoigne 3D is free software: you can redistribute it
+ * and/or modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation, either
+ * version 3 of the License, or (at your option) any later
+ * version.
+ *
+ * Gascoigne 3D is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU General Public License for more
+ * details.
+ *
+ * Please refer to the file LICENSE.TXT for further information
+ * on this license.
+ *
+ **/
+
+#include "mixedelementintegrator.h"
+#include "patchintegrationformula.h"
+#include "stopwatch.h"
+
+using namespace std;
+
+/* ----------------------------------------- */
+
+namespace Gascoigne {
+
+extern Timer GlobalTimer;
+
+template<int DIM, class IFF, class IFE, class IFB, class IFM>
+void
+MixedElementIntegrator<DIM, IFF, IFE, IFB, IFM>::Rhs(
+  const DomainRightHandSide& f,
+  LocalVector& F,
+  const FemInterface& FEMTRIAL,
+  const FemInterface& FEMTEST,
+  const LocalData& Q,
+  const LocalData& QC) const
+{
+  assert(FEMTRIAL.n() == FEMTEST.n());
+  F.ReInit(f.GetNcomp(), FEMTRIAL.n());
+
+  universal_point(_QCH, QC);
+  f.SetCellData(_QCH);
+
+  IntegrationFormulaInterface* IF = NewIFF();
+
+  F.zero();
+  Vertex<DIM> x, xi;
+  for (int k = 0; k < IF->n(); k++) {
+
+    IF->xi(xi, k);
+    FEMTRIAL.point(xi);
+    FEMTEST.point(xi);
+
+    double vol = FEMTRIAL.J();
+    assert(fabs(FEMTRIAL.J() - FEMTEST.J()) < 1.e-14);
+    double h = Volume2MeshSize(vol);
+    double weight = IF->w(k) * vol;
+
+    universal_point(FEMTRIAL, _QH, Q);
+
+    f.SetCellSize(h);
+    f.SetFemData(_QH);
+    FEMTRIAL.x(x);
+
+    f.point(x);
+    for (int i = 0; i < FEMTEST.n(); i++) {
+      FEMTEST.init_test_functions(_NN, weight, i);
+      f(F.start(i), _NN, x);
+    }
+  }
+
+  delete IF;
+}
+
+/* ----------------------------------------- */
+
+template<int DIM, class IFF, class IFE, class IFB, class IFM>
+void
+MixedElementIntegrator<DIM, IFF, IFE, IFB, IFM>::Form(
+  const Equation& EQ,
+  LocalVector& F,
+  const FemInterface& FEMTRIAL,
+  const FemInterface& FEMTEST,
+  const LocalVector& U,
+  const LocalData& Q,
+  const LocalData& QC) const
+{
+  F.ReInit(EQ.GetNcomp(), FEMTRIAL.n());
+
+  universal_point(_QCH, QC);
+  EQ.SetCellData(_QCH);
+
+  IntegrationFormulaInterface* IF = NewIFF();
+
+  F.zero();
+  Vertex<DIM> x, xi;
+
+  for (int k = 0; k < IF->n(); k++) {
+    IF->xi(xi, k);
+    FEMTRIAL.point(xi);
+    FEMTEST.point(xi);
+
+    double vol = FEMTRIAL.J();
+    double h = Volume2MeshSize(vol);
+    double weight = IF->w(k) * vol;
+    universal_point(FEMTRIAL, _UH, U);
+    universal_point(FEMTRIAL, _QH, Q);
+    FEMTRIAL.x(x);
+
+    EQ.SetFemData(_QH);
+    EQ.point(h, _UH, x);
+    for (int i = 0; i < FEMTEST.n(); i++) {
+      FEMTEST.init_test_functions(_NN, weight, i);
+      EQ.Form(F.start(i), _UH, _NN);
+    }
+  }
+
+  delete IF;
+}
+
+/* ----------------------------------------- */
+
+template<int DIM, class IFF, class IFE, class IFB, class IFM>
+void
+MixedElementIntegrator<DIM, IFF, IFE, IFB, IFM>::Matrix(
+  const Equation& EQ,
+  EntryMatrix& E,
+  const FemInterface& FEMTRIAL,
+  const FemInterface& FEMTEST,
+  const LocalVector& U,
+  const LocalData& Q,
+  const LocalData& QC) const
+{
+  FemFunction NNNTRIAL(FEMTRIAL.n());
+  FemFunction NNNTEST(FEMTEST.n());
+  assert(FEMTRIAL.n() == FEMTEST.n());
+
+  E.SetDimensionDof(FEMTRIAL.n(), FEMTRIAL.n());
+  E.SetDimensionComp(U.ncomp(), U.ncomp());
+  E.resize();
+  E.zero();
+
+  universal_point(_QCH, QC);
+  EQ.SetCellData(_QCH);
+
+  IntegrationFormulaInterface* IF = NewIFF();
+
+  Vertex<DIM> x, xi;
+  for (int k = 0; k < IF->n(); k++) {
+    IF->xi(xi, k);
+    FEMTRIAL.point(xi);
+    FEMTEST.point(xi);
+    double vol = FEMTRIAL.J();
+    double h = Volume2MeshSize(vol);
+    double weight = IF->w(k) * vol;
+    universal_point(FEMTRIAL, _UH, U);
+    universal_point(FEMTRIAL, _QH, Q);
+    FEMTRIAL.x(x);
+    EQ.SetFemData(_QH);
+    EQ.pointmatrix(h, _UH, x);
+
+    double sw = sqrt(weight);
+    for (int i = 0; i < FEMTEST.n(); i++) {
+      FEMTRIAL.init_test_functions(NNNTRIAL[i], sw, i);
+      FEMTEST.init_test_functions(NNNTEST[i], sw, i);
+    }
+
+    //    EQ.MatrixBlock(E, _UH, _NNN);
+    for (int j = 0; j < FEMTRIAL.n(); j++) {
+      for (int i = 0; i < FEMTEST.n(); i++) {
+        E.SetDofIndex(i, j);
+        EQ.Matrix(E, _UH, NNNTRIAL[j], NNNTEST[i]);
+      }
+    }
+  }
+  delete IF;
+}
+
+/* ----------------------------------------- */
+
+} // namespace Gascoigne

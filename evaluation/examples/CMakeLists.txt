@@ -1,0 +1,8 @@
+ADD_SUBDIRECTORY(Heat)
+ADD_SUBDIRECTORY(MultiHeat)
+ADD_SUBDIRECTORY(Elasticity2d)
+ADD_SUBDIRECTORY(Elasticity3d)
+ADD_SUBDIRECTORY(AdaptiveElasticity2d)
+ADD_SUBDIRECTORY(AdaptiveElasticity3dFace)
+ADD_SUBDIRECTORY(AdaptiveElasticity3dEdge)
+ADD_SUBDIRECTORY(AdaptiveElasticity3dVertex)

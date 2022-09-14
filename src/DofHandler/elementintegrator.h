@@ -33,6 +33,7 @@
 #include "integrationformula.h"
 #include "integrationformulasummed.h"
 #include "triaintegrationformula.h"
+#include "patchintegrationformula.h"
 
 namespace Gascoigne {
 
@@ -224,6 +225,15 @@ public:
 #define ElementIntegratorQ43d                                                  \
   ElementIntegrator<3, HexGauss125, HexGauss216, QuadGauss16, HexGauss125>
 
+typedef ElementIntegrator<2,
+			  PatchFormula2d<4, QuadGauss4>,
+			  PatchFormula2d<9, QuadGauss9>,
+			  PatchFormula1d<2, LineGauss2>,
+			  PatchFormula2d<4, QuadGauss4>>
+  ElementIntegratorQ12dPatch;
+
+
+  
 } // namespace Gascoigne
 
 /*----------------------------   elementintegrator.h

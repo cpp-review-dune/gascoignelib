@@ -34,4 +34,5 @@ ELSE(NOT MATRIX_DOUBLE_PRECISION)
   message(STATUS "Using Double Percision for MatrixEntryType!")
 ENDIF(NOT MATRIX_DOUBLE_PRECISION)
 
+OPTION(USE_CUDA "Use cusparse implementation" OFF)
 
