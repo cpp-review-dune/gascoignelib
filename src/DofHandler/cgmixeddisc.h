@@ -1,7 +1,7 @@
 /*----------------------------   cgdisc.h     ---------------------------*/
 /*      $Id:$                 */
-#ifndef __cgdisc_H
-#define __cgdisc_H
+#ifndef __cgmixeddisc_H
+#define __cgmixeddisc_H
 /*----------------------------   cgdisc.h     ---------------------------*/
 
 /**
@@ -41,7 +41,7 @@
 #include "hnstructureq22d.h"
 #include "hnstructureq23d.h"
 
-#include "elementintegrator.h"
+#include "mixedelementintegrator.h"
 #include "elementlpsintegrator.h"
 
 #include "baseq12d.h"
@@ -54,7 +54,7 @@
 namespace Gascoigne {
 namespace atom_ops {
 inline void
-add_node(double s,
+add_node_mixed(double s,
          int i_f,
          GlobalVector& __restrict__ f,
          int i_F,
@@ -339,7 +339,7 @@ public:
   //   for (int ii = 0; ii < indices.size(); ii++) {
   //     int i = indices[ii];
   //     //#pragma omp critical
-  //     f.add_node(i, s, ii, F);
+  //     f.add_node_mixed(i, s, ii, F);
   //   }
   // }
 
@@ -364,7 +364,7 @@ public:
   {
     IntVector indices = GetDofHandler()->GetElement(DEGREE, iq);
     for (int ii = 0; ii < indices.size(); ii++) {
-      atom_ops::add_node(s, indices[ii], f, ii, F);
+      atom_ops::add_node_mixed(s, indices[ii], f, ii, F);
     }
   }
   virtual void GlobalToLocal(LocalVector& U,
@@ -402,7 +402,12 @@ public:
       GlobalToLocalCell(QC[q->first], *q->second, iq);
     }
   }
-  void InterpolateSolution(GlobalVector& u, const GlobalVector& uold) const;
+  void InterpolateSolution(GlobalVector& u, const GlobalVector& uold) const
+  {
+    //!!!
+    u.zero();
+  }
+  
 
   // assemble of the weak formulation for all test functions
   void Form(GlobalVector& f,
@@ -506,7 +511,7 @@ public:
 #pragma omp parallel
     {
       nmatrix<double> T;
-      FINITEELEMENTTRIAL finiteelementrial;
+      FINITEELEMENTTRIAL finiteelementtrial;
       FINITEELEMENTTEST finiteelementtest;
       INTEGRATOR integrator;
       integrator.BasicInit();
@@ -520,7 +525,7 @@ public:
 #pragma omp for schedule(static)
       for (int iq = 0; iq < GetDofHandler()->nelements(DEGREE); ++iq) {
         Transformation(T, iq);
-        finiteelementtrial.ReInit(T);
+	finiteelementtrial.ReInit(T);
         finiteelementtest.ReInit(T);
 
         GlobalToLocal(__U, u, iq);
@@ -543,14 +548,12 @@ public:
                     const ProblemDescriptorInterface& PD,
                     double d) const
   {
-    abort();
   }
   void BoundaryMatrix(MatrixInterface& A,
                       const GlobalVector& u,
                       const ProblemDescriptorInterface& PD,
                       double d) const
   {
-    abort();
   }
 
   ////////////////////////////////////////////////// Functionals
@@ -607,7 +610,7 @@ public:
 
   void InitFilter(nvector<double>& F) const
   {
-    abort();
+
   }
   ////////////////////////////////////////////////// Dirichlet Data
   //// NEW Interface
@@ -755,7 +758,7 @@ public:
                     LocalVector& err,
                     const ExactSolution* ES) const
   {
-    abort();
+    //    abort();
   }
 };
 
@@ -764,7 +767,7 @@ typedef CGMixedDisc<
   2,
   2,
   FiniteElement<2, 1, Transformation2d<BaseQ12dPatch>, BaseQ12dPatch>,
-  FiniteElement<2, 1, Transformation2d<BaseQ12dPatch>, BaseQ12d>,
+  FiniteElement<2, 1, Transformation2d<BaseQ12dPatch>, BaseQ22d>,
   MixedElementIntegratorQ12dPatch>
   CGMixedDiscQ12dPatch;
 

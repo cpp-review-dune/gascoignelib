@@ -1,8 +1,8 @@
 /*----------------------------   elementintegrator.h
  * ---------------------------*/
 /*      $Id:$                 */
-#ifndef __elementintegrator_H
-#define __elementintegrator_H
+#ifndef __mixedelementintegrator_H
+#define __mixedelementintegrator_H
 /*----------------------------   elementintegrator.h
  * ---------------------------*/
 

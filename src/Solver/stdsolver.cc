@@ -64,6 +64,7 @@
 #include "baseq22d.h"
 #include "baseq23d.h"
 #include "cgdisc.h"
+#include "cgmixeddisc.h"
 #include "lagrangedisc.h"
 
 #include "elementintegrator.h"
@@ -279,6 +280,7 @@ StdSolver::NewDiscretization(int dimension, const string& discname)
   // else
   // {
   // }
+  std::cout << discname << std::endl;
 
   if (dimension == 2) {
     if (discname == "CGQ1")
@@ -288,6 +290,9 @@ StdSolver::NewDiscretization(int dimension, const string& discname)
 
     else if (discname == "CGQ1Patch")
       return new CGDiscQ12dPatch;
+
+    else if (discname == "CGQ1Mixed")
+      return new CGMixedDiscQ12dPatch;
 
     else if (discname == "CGP1")
       return new CGDiscP12d;
