@@ -96,8 +96,7 @@ StdSolver::StdSolver()
   , _PrimalSolve(1)
   , _useUMFPACK(true)
 // , omega_domain(0.)
-{
-}
+{}
 
 /*-----------------------------------------*/
 
