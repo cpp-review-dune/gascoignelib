@@ -80,8 +80,9 @@ public:
     colors.clear();
     colors.insert(4);
     comp_on_color.clear();
-    for (int i = 0; i < 2 * DIM; ++i)
+    for (int i = 0; i < 2 * DIM; ++i) {
       comp_on_color[4].push_back(i);
+    }
   }
 
   void operator()(DoubleVector& b,

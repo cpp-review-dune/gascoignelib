@@ -96,7 +96,11 @@ public:
   CGDisc()
     : HN(NULL)
   {}
-  ~CGDisc() {}
+  ~CGDisc()
+  {
+    delete HN;
+    HN = nullptr;
+  }
 
   //    HNStructureInterface* NewHNStructure() {abort();}
   HNStructureInterface* NewHNStructure()
