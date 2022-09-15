@@ -64,6 +64,7 @@
 #include "baseq22d.h"
 #include "baseq23d.h"
 #include "cgdisc.h"
+#include "cgmixeddisc.h"
 #include "lagrangedisc.h"
 
 #include "elementintegrator.h"
@@ -95,7 +96,8 @@ StdSolver::StdSolver()
   , _PrimalSolve(1)
   , _useUMFPACK(true)
 // , omega_domain(0.)
-{}
+{
+}
 
 /*-----------------------------------------*/
 
@@ -280,12 +282,19 @@ StdSolver::NewDiscretization(IndexType dimension, const string& discname)
   // else
   // {
   // }
+  std::cout << discname << std::endl;
 
   if (dimension == 2) {
     if (discname == "CGQ1")
       return new CGDiscQ12d;
     else if (discname == "CGQ2")
       return new CGDiscQ22d;
+
+    else if (discname == "CGQ1Patch")
+      return new CGDiscQ12dPatch;
+
+    else if (discname == "CGQ1Mixed")
+      return new CGMixedDiscQ12dPatch;
 
     else if (discname == "CGP1")
       return new CGDiscP12d;
