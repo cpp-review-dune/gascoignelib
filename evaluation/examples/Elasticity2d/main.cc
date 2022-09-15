@@ -50,7 +50,7 @@ main(int argc, char** argv)
   }
 
   // <**>
-  Gascoigne::HeatProblem<HEAT_COMP> LPD;
+  Gascoigne::HeatProblem<2> LPD;
   // <**>
 
   LPD.BasicInit(paramfile);

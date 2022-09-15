@@ -52,6 +52,10 @@ ProblemDescriptorBase::ProblemDescriptorBase()
 
 ProblemDescriptorBase::~ProblemDescriptorBase()
 {
+  if (EQ != NULL) {
+    delete EQ;
+    EQ = NULL;
+  }
   if (BM != NULL) {
     delete BM;
     BM = NULL;
@@ -79,6 +83,10 @@ ProblemDescriptorBase::~ProblemDescriptorBase()
   if (CI != NULL) {
     delete CI;
     CI = NULL;
+  }
+  if (RHS != NULL) {
+    delete RHS;
+    RHS = NULL;
   }
 }
 

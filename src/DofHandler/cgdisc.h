@@ -97,9 +97,12 @@ protected:
 public:
   CGDisc()
     : HN(NULL)
+  {}
+  ~CGDisc()
   {
+    delete HN;
+    HN = nullptr;
   }
-  ~CGDisc() {}
 
   //    HNStructureInterface* NewHNStructure() {abort();}
   HNStructureInterface* NewHNStructure()
