@@ -58,6 +58,11 @@ SET(GASCOIGNE_CXX_FLAGS
   "-std=c++11 -pedantic -Wall -Wno-sign-compare -Wold-style-cast -Wno-unknown-pragmas" CACHE STRING "Configuration flags"
   )
 
+OPTION(VANKA_FLOAT      "Use float for vanka smoother" OFF)
+IF(VANKA_FLOAT)
+  add_compile_definitions(VANKA_FLOAT)
+endif()
+
 #
 # OpenMP/THREADS
 #
