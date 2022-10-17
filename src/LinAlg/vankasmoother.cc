@@ -3,9 +3,11 @@
 
 namespace Gascoigne {
 //////////////////// Construction
+
+template<typename NUMBER>
 void
-VankaSmoother::ConstructStructure(const IntVector& perm,
-                                  const MatrixInterface& A)
+VankaSmootherT<NUMBER>::ConstructStructure(const IntVector& perm,
+                                           const MatrixInterface& A)
 {
   assert(_dofhandler);
   const SparseBlockMatrix<FMatrixBlock<1>>* M1 =
@@ -23,7 +25,7 @@ VankaSmoother::ConstructStructure(const IntVector& perm,
   const SparseBlockMatrix<FMatrixBlock<7>>* M7 =
     dynamic_cast<const SparseBlockMatrix<FMatrixBlock<7>>*>(&A);
   if (!(M1 || M2 || M3 || M4 || M5 || M6 || M7)) {
-    std::cerr << "VankaSmoother: wrong matrix" << std::endl;
+    std::cerr << "VankaSmootherT: wrong matrix" << std::endl;
     abort();
   }
 
@@ -62,9 +64,10 @@ VankaSmoother::ConstructStructure(const IntVector& perm,
   _lu.resize(npatches, Eigen::PartialPivLU<VankaMatrix>(_sizeofpatch * _ncomp));
 }
 
+template<typename NUMBER>
 template<int NCOMP>
 void
-VankaSmoother::copy_entries_sparseblockmatrix(
+VankaSmootherT<NUMBER>::copy_entries_sparseblockmatrix(
   const SparseBlockMatrix<FMatrixBlock<NCOMP>>& A)
 {
   const ColumnDiagStencil& S =
@@ -104,7 +107,8 @@ VankaSmoother::copy_entries_sparseblockmatrix(
         const FMatrixBlock<NCOMP>& B = (*A.mat(pos));
         for (int cr = 0; cr < NCOMP; ++cr)
           for (int cc = 0; cc < NCOMP; ++cc)
-            Matrix_on_Block(NCOMP * r + cr, NCOMP * c + cc) = B(cr, cc);
+            Matrix_on_Block(NCOMP * r + cr, NCOMP * c + cc) =
+              static_cast<NUMBER>(B(cr, cc));
       }
     }
     // Compute LU
@@ -113,7 +117,7 @@ VankaSmoother::copy_entries_sparseblockmatrix(
 }
 
 // template <int NCOMP>
-// void VankaSmoother::copy_entries_sparseblockmatrix(
+// void VankaSmootherT::copy_entries_sparseblockmatrix(
 //   const SparseBlockMatrix<FMatrixBlock<NCOMP>>& A)
 // {
 //   const ColumnDiagStencil& S =
@@ -162,9 +166,9 @@ VankaSmoother::copy_entries_sparseblockmatrix(
 //     _lu[p].compute(Matrix_on_Block);
 //   }
 // }
-
+template<typename NUMBER>
 void
-VankaSmoother::copy_entries(const MatrixInterface& A)
+VankaSmootherT<NUMBER>::copy_entries(const MatrixInterface& A)
 {
   if (_ncomp == 1)
     copy_entries_sparseblockmatrix(
@@ -188,9 +192,9 @@ VankaSmoother::copy_entries(const MatrixInterface& A)
     copy_entries_sparseblockmatrix(
       dynamic_cast<const SparseBlockMatrix<FMatrixBlock<7>>&>(A));
 }
-
+template<typename NUMBER>
 void
-VankaSmoother::solve(GlobalVector& x) const
+VankaSmootherT<NUMBER>::solve(GlobalVector& x) const
 {
   assert(x.ncomp() == _ncomp);
   ////////////////////// Jacobi smoother
@@ -210,12 +214,15 @@ VankaSmoother::solve(GlobalVector& x) const
       VankaVector H(_sizeofpatch * _ncomp);
       for (int r = 0; r < _sizeofpatch; ++r)
         for (int c = 0; c < _ncomp; ++c)
-          H(_ncomp * r + c, 0) = B(_patchlist[p][r], c);
+          H(_ncomp * r + c, 0) = static_cast<NUMBER>(B(_patchlist[p][r], c));
 
       // perform inversion
       H = _lu[p].permutationP() * H;
-      _lu[p].matrixLU().triangularView<Eigen::UnitLower>().solveInPlace(H);
-      _lu[p].matrixLU().triangularView<Eigen::Upper>().solveInPlace(H);
+      _lu[p]
+        .matrixLU()
+        .template triangularView<Eigen::UnitLower>()
+        .solveInPlace(H);
+      _lu[p].matrixLU().template triangularView<Eigen::Upper>().solveInPlace(H);
 
       // update
       for (int r = 0; r < _sizeofpatch; ++r) {
@@ -223,7 +230,8 @@ VankaSmoother::solve(GlobalVector& x) const
         count[_patchlist[p][r]]++;
         for (int c = 0; c < _ncomp; ++c)
 #pragma omp atomic update
-          x(_patchlist[p][r], c) += H(_ncomp * r + c, 0);
+          x(_patchlist[p][r], c) +=
+            static_cast<MatrixEntryType>(H(_ncomp * r + c, 0));
       }
     }
 #pragma omp barrier
@@ -231,9 +239,13 @@ VankaSmoother::solve(GlobalVector& x) const
 #pragma omp for schedule(static)
     for (int i = 0; i < x.n(); ++i) {
       assert(count[i] > 0);
-      x.scale_node(i, 1.0 / count[i]);
+      x.scale_node(i,
+                   static_cast<MatrixEntryType>(1) /
+                     static_cast<MatrixEntryType>(count[i]));
     }
   }
 }
 
+template class VankaSmootherT<double>;
+template class VankaSmootherT<float>;
 } // namespace Gascoigne

@@ -62,13 +62,12 @@
  * nodes for the patches.
  **/
 namespace Gascoigne {
-class VankaSmoother : public virtual IluInterface
+template<typename NUMBER = MatrixEntryType>
+class VankaSmootherT : public virtual IluInterface
 {
-
 protected:
-  typedef Eigen::Matrix<MatrixEntryType, Eigen::Dynamic, Eigen::Dynamic>
-    VankaMatrix;
-  typedef Eigen::Matrix<MatrixEntryType, Eigen::Dynamic, 1> VankaVector;
+  typedef Eigen::Matrix<NUMBER, Eigen::Dynamic, Eigen::Dynamic> VankaMatrix;
+  typedef Eigen::Matrix<NUMBER, Eigen::Dynamic, 1> VankaVector;
 
   mutable const DofHandlerBase* _dofhandler;
   int _ncomp, _sizeofpatch;
@@ -78,12 +77,13 @@ protected:
 
 public:
   //////////////////// Constructor & Co
-  VankaSmoother()
+  VankaSmootherT()
     : _dofhandler(NULL)
     , _ncomp(-1)
     , _sizeofpatch(-1)
-  {}
-  ~VankaSmoother() {}
+  {
+  }
+  ~VankaSmootherT() {}
 
   void SetDofHandler(const DofHandlerBase* dh) const { _dofhandler = dh; }
 
@@ -123,6 +123,12 @@ public:
     const SparseBlockMatrix<FMatrixBlock<NCOMP>>& A);
   void copy_entries(const MatrixInterface& A);
 };
+
+#ifdef VANKA_FLOAT
+using VankaSmoother = VankaSmootherT<float>;
+#else
+using VankaSmoother = VankaSmootherT<MatrixEntryType>;
+#endif
 } // namespace Gascoigne
 
 /*----------------------------   vank_smoother.h ---------------------------*/
