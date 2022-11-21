@@ -40,7 +40,8 @@ private:
 public:
   MgInterpolatorMatrix()
     : MgInterpolatorInterface()
-  {}
+  {
+  }
 
   ColumnStencil& GetStencil() { return ST; }
   const ColumnStencil& GetStencil() const { return ST; }

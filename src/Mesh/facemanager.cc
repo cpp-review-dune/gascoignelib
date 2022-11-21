@@ -45,7 +45,8 @@ FaceManager::FaceManager(vector<Edge>& e,
   , co2n(con)
   , eo2n(eon)
   , HexLaO(q)
-{}
+{
+}
 
 /*---------------------------------------------------*/
 

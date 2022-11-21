@@ -35,7 +35,8 @@ GascoigneMeshConstructor::GascoigneMeshConstructor(const HierarchicalMesh* hm,
   : HM(hm)
   , GMG(gmg)
   , finestlevel(0)
-{}
+{
+}
 
 /*---------------------------------------------------*/
 

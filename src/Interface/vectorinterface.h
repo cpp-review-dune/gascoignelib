@@ -47,7 +47,8 @@ public:
   Vector(const std::string& name)
     : std::string(name)
     , _type("node")
-  {}
+  {
+  }
   Vector(const std::string& name, const std::string& type)
     : std::string(name)
   {
@@ -57,7 +58,8 @@ public:
   Vector(const Vector& v)
     : std::string(v)
     , _type(v.GetType())
-  {}
+  {
+  }
   virtual ~Vector() {}
 
   void SetName(const std::string& name) { GetName() = name; }

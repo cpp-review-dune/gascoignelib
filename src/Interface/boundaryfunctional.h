@@ -38,21 +38,22 @@ protected:
 public:
   BoundaryFunctional()
     : Functional()
-  {}
+  {
+  }
   virtual ~BoundaryFunctional(){};
 
-  virtual double J(const FemFunction& U,
-                   const Vertex2d& v,
-                   const Vertex2d& n,
-                   int color) const
+  virtual double J([[maybe_unused]] const FemFunction& U,
+                   [[maybe_unused]] const Vertex2d& v,
+                   [[maybe_unused]] const Vertex2d& n,
+                   [[maybe_unused]] int color) const
   {
     std::cerr << "\"BoundaryFunctional::J\" for 2d not written!" << std::endl;
     abort();
   }
-  virtual double J(const FemFunction& U,
-                   const Vertex3d& v,
-                   const Vertex3d& n,
-                   int color) const
+  virtual double J([[maybe_unused]] const FemFunction& U,
+                   [[maybe_unused]] const Vertex3d& v,
+                   [[maybe_unused]] const Vertex3d& n,
+                   [[maybe_unused]] int color) const
   {
     std::cerr << "\"BoundaryFunctional::J\" for 3d not written!" << std::endl;
     abort();

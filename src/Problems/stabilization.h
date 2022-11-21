@@ -47,7 +47,8 @@ public:
     , _norm(0.)
     , alpha0(0.2)
     , xeta0(6.)
-  {}
+  {
+  }
   ~Stabilization() {}
 
   double alpha0, xeta0;

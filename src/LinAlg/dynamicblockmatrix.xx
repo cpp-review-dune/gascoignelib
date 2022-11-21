@@ -33,14 +33,16 @@ namespace Gascoigne {
 template<class B>
 DynamicBlockMatrix<B>::DynamicBlockMatrix()
   : MatrixInterface()
-{}
+{
+}
 
 /*-------------------------------------------------------------*/
 
 template<class B>
 DynamicBlockMatrix<B>::DynamicBlockMatrix(const DynamicBlockMatrix<B>& A)
   : MatrixInterface()
-{}
+{
+}
 
 /*-------------------------------------------------------------*/
 

@@ -178,13 +178,15 @@ UmfIlu::ReInit(const SparseStructureInterface* SS)
 
 void
 UmfIlu::copy_entries(const MatrixInterface& A)
-{}
+{
+}
 
 /*-------------------------------------------------------------*/
 
 void
 UmfIlu::ConstructStructure(const IntVector& perm, const MatrixInterface& A)
-{}
+{
+}
 
 /*-----------------------------------------*/
 

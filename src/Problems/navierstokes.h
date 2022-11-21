@@ -106,7 +106,8 @@ protected:
 public:
   NavierStokesLps<DIM>(const NavierStokesData& PD)
     : data(PD)
-  {}
+  {
+  }
 
   NavierStokesLps<DIM>* createNew() const
   {

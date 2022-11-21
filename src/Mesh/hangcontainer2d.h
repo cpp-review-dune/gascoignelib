@@ -44,7 +44,8 @@ protected:
 public:
   HangContainer2d(HangList<2>& lh)
     : Hanging(lh)
-  {}
+  {
+  }
 
   // Zugriff
 

@@ -48,7 +48,8 @@ public:
   GascoigneVisualization()
     : Visualization()
     , _v(NULL)
-  {}
+  {
+  }
   ~GascoigneVisualization() {}
 
   void AddPointVector(const ComponentInformation* CI, const GlobalVector* v);

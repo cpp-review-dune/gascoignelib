@@ -57,7 +57,8 @@ protected:
 public:
   Laplace(const LaplaceData& PD)
     : data(PD)
-  {}
+  {
+  }
 
   Laplace<DIM>* createNew() const { return new Laplace<DIM>(data); }
 

@@ -59,10 +59,12 @@ public:
 
   Matrix(const std::string& label)
     : std::string(label)
-  {}
+  {
+  }
   Matrix(const Matrix& mat)
     : std::string(mat)
-  {}
+  {
+  }
   virtual ~Matrix() {}
 };
 } // namespace Gascoigne

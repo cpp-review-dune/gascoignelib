@@ -47,7 +47,8 @@ class StdPeriodicMapping : public virtual PeriodicMapping
 public:
   StdPeriodicMapping()
     : PeriodicMapping()
-  {}
+  {
+  }
 
   virtual ~StdPeriodicMapping() {}
 

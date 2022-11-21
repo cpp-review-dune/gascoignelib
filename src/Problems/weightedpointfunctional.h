@@ -36,7 +36,8 @@ protected:
 public:
   WeightedPointFunctional()
     : PointFunctional()
-  {}
+  {
+  }
   ~WeightedPointFunctional() {}
 
 #pragma GCC diagnostic push
@@ -49,11 +50,17 @@ public:
                  const std::vector<double>& weights);
 #pragma GCC diagnostic pop
 
-  const std::vector<double>& GetWeights() const { return _weights; }
+  const std::vector<double>& GetWeights() const
+  {
+    return _weights;
+  }
 
   double J(const std::vector<double>& u) const;
 
-  std::string GetName() const { return "WeightedPointFunctional"; }
+  std::string GetName() const
+  {
+    return "WeightedPointFunctional";
+  }
 };
 } // namespace Gascoigne
 /**********************************************************/

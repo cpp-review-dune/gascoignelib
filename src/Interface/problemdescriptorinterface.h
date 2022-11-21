@@ -60,7 +60,7 @@ public:
   ProblemDescriptorInterface() {}
   virtual ~ProblemDescriptorInterface() {}
 
-  virtual void BasicInit(const ParamFile& pf) {}
+  virtual void BasicInit([[maybe_unused]] const ParamFile& pf) {}
 
   virtual std::string GetName() const { return "No Name"; }
 

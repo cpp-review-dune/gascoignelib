@@ -75,7 +75,8 @@ StdLoop::~StdLoop() {}
 
 void
 StdLoop::ClockOutput() const
-{}
+{
+}
 
 /*-----------------------------------------*/
 

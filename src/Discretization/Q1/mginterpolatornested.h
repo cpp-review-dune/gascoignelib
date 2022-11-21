@@ -51,7 +51,8 @@ public:
 
   MgInterpolatorNested()
     : MgInterpolatorInterface()
-  {}
+  {
+  }
 
   virtual void BasicInit(const MeshTransferInterface* MT);
 

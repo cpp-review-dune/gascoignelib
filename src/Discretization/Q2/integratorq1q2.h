@@ -42,7 +42,8 @@ protected:
 public:
   IntegratorQ1Q2()
     : BasicIntegrator()
-  {}
+  {
+  }
   ~IntegratorQ1Q2() {}
 
   std::string GetName() const { return "IntegratorQ1Q2"; }

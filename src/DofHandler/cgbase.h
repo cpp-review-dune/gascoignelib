@@ -35,9 +35,18 @@ protected:
   std::array<std::array<double, M>, M> alpha; // the 1d coefficients
 
 public:
-  CGBase() { abort(); }
-  double psi(int i, double x) const { abort(); }
-  double psi_x(int i, double x) const { abort(); }
+  CGBase()
+  {
+    abort();
+  }
+  double psi(int i, double x) const
+  {
+    abort();
+  }
+  double psi_x(int i, double x) const
+  {
+    abort();
+  }
 
   // initialize
   void point(const Vertex<DIM>& v) const
@@ -68,8 +77,14 @@ public:
       abort();
   }
 
-  void point_boundary(int ie, const Vertex<DIM - 1>& v) const { abort(); }
-  const std::array<int, 2>* faces() const { abort(); }
+  void point_boundary(int ie, const Vertex<DIM - 1>& v) const
+  {
+    abort();
+  }
+  const std::array<int, 2>* faces() const
+  {
+    abort();
+  }
 
   // access values
   double phi(int i) const
@@ -99,10 +114,22 @@ public:
     return DN[i];
   }
 
-  const Vertex2d* normal2d() const { abort(); }
-  const Vertex2d* tangent2d() const { abort(); }
-  const Vertex3d* normal3d() const { abort(); }
-  const Vertex3d* tangent3d() const { abort(); }
+  const Vertex2d* normal2d() const
+  {
+    abort();
+  }
+  const Vertex2d* tangent2d() const
+  {
+    abort();
+  }
+  const Vertex3d* normal3d() const
+  {
+    abort();
+  }
+  const Vertex3d* tangent3d() const
+  {
+    abort();
+  }
 };
 
 ////////////////////////////////////////////////// Constructor

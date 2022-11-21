@@ -32,7 +32,8 @@ namespace Gascoigne {
 HangContainer3d::HangContainer3d(HangList<2>& lh2, HangList<4>& lh3)
   : HangContainer2d(lh2)
   , FaceHanging(lh3)
-{}
+{
+}
 
 /*********************************************************************/
 

@@ -39,16 +39,19 @@ public:
   InterpolElement()
     : std::array<int, N>()
     , nv(-1)
-  {}
+  {
+  }
   InterpolElement(const InterpolElement& i)
     : std::array<int, N>(i)
     , nv(i.nv)
-  {}
+  {
+  }
 
   InterpolElement(const std::array<int, N>& f, int n)
     : std::array<int, N>(f)
     , nv(n)
-  {}
+  {
+  }
 };
 
 /*---------------------------------------------------*/

@@ -37,7 +37,7 @@ DirichletDataByColor::DirichletDataByColor(const ParamFile& pf,
   , __comps(comps)
   , __scales(s)
 {
-  for (auto col : __cols)
+  for ([[maybe_unused]] auto col : __cols)
     assert(colors.find(col) != colors.end());
 
   assert(__comps.size() == __scales.size());

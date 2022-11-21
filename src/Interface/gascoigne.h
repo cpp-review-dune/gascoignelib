@@ -74,7 +74,10 @@ typedef std::map<std::string, CellFunction> CellData;
 #define BASE_CLONEABLE(Type) virtual Type* createNew() const = 0;
 
 #define CLONEABLE(Type)                                                        \
-  virtual Type* createNew() const override { return new Type(*this); }
+  virtual Type* createNew() const override                                     \
+  {                                                                            \
+    return new Type(*this);                                                    \
+  }
 } // namespace Gascoigne
 
 #endif

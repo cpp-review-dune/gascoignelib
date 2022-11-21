@@ -29,7 +29,8 @@
 namespace Gascoigne {
 CoarseHierarchicalMesh2d::CoarseHierarchicalMesh2d(const HierarchicalMesh2d& HM)
   : HierarchicalMesh2d(HM)
-{}
+{
+}
 
 /*---------------------------------------------------*/
 

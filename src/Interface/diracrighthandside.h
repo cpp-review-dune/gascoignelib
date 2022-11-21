@@ -81,12 +81,14 @@ public:
 
   virtual const std::vector<double>& GetWeights() const { return _weights; }
 
-  virtual double operator()(int i, const Vertex2d& v) const
+  virtual double operator()([[maybe_unused]] int i,
+                            [[maybe_unused]] const Vertex2d& v) const
   {
     std::cerr << "\"DiracRightHandSide::operator()\" not written!" << std::endl;
     abort();
   }
-  virtual double operator()(int i, const Vertex3d& v) const
+  virtual double operator()([[maybe_unused]] int i,
+                            [[maybe_unused]] const Vertex3d& v) const
   {
     std::cerr << "\"DiracRightHandSide::operator()\" not written!" << std::endl;
     abort();

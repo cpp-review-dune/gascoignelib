@@ -32,7 +32,8 @@ namespace Gascoigne {
 BasicDiscretization::BasicDiscretization()
   : DiscretizationInterface()
   , __MP(NULL)
-{}
+{
+}
 
 /* ----------------------------------------- */
 

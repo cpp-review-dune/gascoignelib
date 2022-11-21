@@ -41,8 +41,8 @@
 #include "hnstructureq22d.h"
 #include "hnstructureq23d.h"
 
-#include "mixedelementintegrator.h"
 #include "elementlpsintegrator.h"
+#include "mixedelementintegrator.h"
 
 #include "baseq12d.h"
 #include "baseq13d.h"
@@ -55,10 +55,10 @@ namespace Gascoigne {
 namespace atom_ops {
 inline void
 add_node_mixed(double s,
-         int i_f,
-         GlobalVector& __restrict__ f,
-         int i_F,
-         const LocalVector& __restrict__ F)
+               int i_f,
+               GlobalVector& __restrict__ f,
+               int i_F,
+               const LocalVector& __restrict__ F)
 {
   const int iif = i_f * f.ncomp();
   const int iiF = i_F * F.ncomp();
@@ -407,7 +407,6 @@ public:
     //!!!
     u.zero();
   }
-  
 
   // assemble of the weak formulation for all test functions
   void Form(GlobalVector& f,
@@ -525,7 +524,7 @@ public:
 #pragma omp for schedule(static)
       for (int iq = 0; iq < GetDofHandler()->nelements(DEGREE); ++iq) {
         Transformation(T, iq);
-	finiteelementtrial.ReInit(T);
+        finiteelementtrial.ReInit(T);
         finiteelementtest.ReInit(T);
 
         GlobalToLocal(__U, u, iq);
@@ -608,10 +607,7 @@ public:
     abort();
   }
 
-  void InitFilter(nvector<double>& F) const
-  {
-
-  }
+  void InitFilter(nvector<double>& F) const {}
   ////////////////////////////////////////////////// Dirichlet Data
   //// NEW Interface
   ////////////////////////////////////////////////// Dirichlet Data

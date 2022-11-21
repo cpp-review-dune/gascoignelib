@@ -43,7 +43,8 @@ protected:
 public:
   TwinStencil()
     : ColumnStencil()
-  {}
+  {
+  }
   ~TwinStencil() {}
 
   int diag(int i) const { return sstart[i]; }

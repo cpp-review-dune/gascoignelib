@@ -35,7 +35,8 @@ protected:
 public:
   OneDirichletData()
     : DirichletData()
-  {}
+  {
+  }
   std::string GetName() const { return "One"; }
   void operator()(Vector& b, const Vertex2d& v, int col) const
   {

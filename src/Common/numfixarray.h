@@ -44,7 +44,8 @@ public:
   numfixarray(const T& d) { std::array<T, N>::fill(d); }
   numfixarray(const numfixarray<N, T>& v)
     : std::array<T, N>(v)
-  {}
+  {
+  }
 
   // Output
   template<size_t NN, typename TT>

@@ -45,7 +45,8 @@ typedef triple<int, int, int> tint;
 HierarchicalMesh3d::HierarchicalMesh3d()
   : HierarchicalMesh()
   , HexLaO(hexs)
-{}
+{
+}
 
 /*------------------------------------------------------*/
 

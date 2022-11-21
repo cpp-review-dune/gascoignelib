@@ -42,7 +42,8 @@ public:
   PatchIndexHandler()
     : haspatch(false)
     , hasq4patch(false)
-  {}
+  {
+  }
   ~PatchIndexHandler() {}
 
   ////////////////////////////////////////////////// TEMP 06. October 2021 can

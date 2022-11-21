@@ -44,16 +44,20 @@ public:
   ~nvector() {}
   nvector()
     : std::vector<T>()
-  {}
+  {
+  }
   nvector(size_t n)
     : std::vector<T>(n)
-  {}
+  {
+  }
   nvector(size_t n, const T& d)
     : std::vector<T>(n, d)
-  {}
+  {
+  }
   nvector(const std::vector<T>& v)
     : std::vector<T>(v)
-  {}
+  {
+  }
 
   friend std::ostream& operator<<(std::ostream& s, const nvector<T>& A)
   {

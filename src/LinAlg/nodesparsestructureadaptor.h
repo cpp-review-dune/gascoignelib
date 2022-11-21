@@ -48,7 +48,8 @@ public:
   NodeSparseStructureAdaptor(int ncomp)
     : SparseStructureAdaptor()
     , _ncomp(ncomp)
-  {}
+  {
+  }
 
   std::string GetName() const { return "Node"; }
 

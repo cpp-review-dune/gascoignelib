@@ -70,23 +70,25 @@ template class CGDisc<
   2,
   FiniteElement<3, 2, Transformation3d<BaseQ13dPatch>, BaseQ13dPatch>,
   ElementLpsIntegratorQ13d>;
-  
+
 template class CGDisc<3,
                       2,
                       FiniteElement<3, 2, Transformation3d<BaseQ23d>, BaseQ23d>,
                       ElementLpsIntegratorQ23d>;
 
-template class CGDisc<2,
-                      2,
-                      FiniteElement<2, 1, Transformation2d<BaseQ12dPatch>, BaseQ12dPatch>,
-                      ElementLpsIntegratorQ12d>;
+template class CGDisc<
+  2,
+  2,
+  FiniteElement<2, 1, Transformation2d<BaseQ12dPatch>, BaseQ12dPatch>,
+  ElementLpsIntegratorQ12d>;
 template class CGDisc<2,
                       2,
                       FiniteElement<2, 1, Transformation2d<BaseQ22d>, BaseQ22d>,
                       ElementLpsIntegratorQ22d>;
-template class  CGDisc<2,
-         2,
-         FiniteElement<2, 1, Transformation2d<BaseQ12dPatch>, BaseQ12dPatch>,
-		       ElementIntegratorQ12dPatch>;
+template class CGDisc<
+  2,
+  2,
+  FiniteElement<2, 1, Transformation2d<BaseQ12dPatch>, BaseQ12dPatch>,
+  ElementIntegratorQ12dPatch>;
 
 } // namespace Gascoigne

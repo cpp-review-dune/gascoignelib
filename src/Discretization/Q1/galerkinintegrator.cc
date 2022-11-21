@@ -35,7 +35,8 @@ GalerkinIntegrator<DIM>::GalerkinIntegrator()
   , IFE(NULL)
   , IFB(NULL)
   , IFM(NULL)
-{}
+{
+}
 
 /* ----------------------------------------- */
 

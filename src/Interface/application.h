@@ -51,7 +51,8 @@ public:
   Application()
     : _dt(0.)
     , _time(0.)
-  {}
+  {
+  }
   virtual ~Application() {}
 
   virtual std::string GetName() const { return "No Name"; }
@@ -65,9 +66,9 @@ public:
   double GetTime() const { return _time; }
   double GetTimeStep() const { return _dt; }
 
-  virtual void SetFemData(FemData& q) const {}
-  virtual void SetCellData(CellData& q) const {}
-  virtual void SetParameterData(LocalParameterData& q) const {}
+  virtual void SetFemData([[maybe_unused]] FemData& q) const {}
+  virtual void SetCellData([[maybe_unused]] CellData& q) const {}
+  virtual void SetParameterData([[maybe_unused]] LocalParameterData& q) const {}
 };
 } // namespace Gascoigne
 

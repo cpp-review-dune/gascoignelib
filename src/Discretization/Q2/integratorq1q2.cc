@@ -30,7 +30,8 @@ namespace Gascoigne {
 template<int DIM>
 void
 IntegratorQ1Q2<DIM>::BasicInit()
-{}
+{
+}
 
 /* ----------------------------------------- */
 

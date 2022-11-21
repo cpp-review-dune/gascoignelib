@@ -33,7 +33,8 @@ protected:
 public:
   Line(int l = 0, int f = -1)
     : Cell(l, f)
-  {}
+  {
+  }
 
   int nnchild() { return 2; }
 };

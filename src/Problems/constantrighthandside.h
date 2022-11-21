@@ -38,7 +38,8 @@ public:
   OneRightHandSideData(int n)
     : DomainRightHandSide()
     , ncomp(n)
-  {}
+  {
+  }
   std::string GetName() const { return "one"; }
   int GetNcomp() const { return ncomp; }
   double operator()(int c, const Vertex2d& v) const { return 1.; }
@@ -74,7 +75,8 @@ public:
     : DomainRightHandSide()
     , ncomp(n)
     , comp(c)
-  {}
+  {
+  }
 
   std::string GetName() const { return "one_onecomp"; }
 

@@ -46,7 +46,8 @@ public:
   SparseStructure()
     : sntot(0)
     , sindices(0)
-  {}
+  {
+  }
 
   void clear()
   {

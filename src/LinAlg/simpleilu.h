@@ -58,7 +58,8 @@ public:
 
   SimpleIlu()
     : SimpleMatrix()
-  {}
+  {
+  }
 
   int n() const { return GetStencil()->n(); };
   void zero() { SimpleMatrix::zero(); }

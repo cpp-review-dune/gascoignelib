@@ -95,16 +95,37 @@ public:
   {
     assert(0);
   }
-  void inverse() { assert(0); }
-  inline void vmult(viterator) const { assert(0); }
-  void mult(SparseBlock&, const SparseBlock&) const { assert(0); }
+  void inverse()
+  {
+    assert(0);
+  }
+  inline void vmult(viterator) const
+  {
+    assert(0);
+  }
+  void mult(SparseBlock&, const SparseBlock&) const
+  {
+    assert(0);
+  }
 
-  void submult(const SparseBlock& B, const SparseBlock& C) { assert(0); }
+  void submult(const SparseBlock& B, const SparseBlock& C)
+  {
+    assert(0);
+  }
 
-  void add(double s, const SparseBlock& A) { assert(0); }
-  void adddiag(const nvector<double>& s, double l) { assert(0); }
+  void add(double s, const SparseBlock& A)
+  {
+    assert(0);
+  }
+  void adddiag(const nvector<double>& s, double l)
+  {
+    assert(0);
+  }
 
-  void add(double s, const TimePattern& TP) { assert(0); }
+  void add(double s, const TimePattern& TP)
+  {
+    assert(0);
+  }
 
   void cadd(double s, viterator p, const_viterator q0) const
   {
@@ -124,15 +145,33 @@ public:
     }
   }
 
-  void caddtrans(double s, viterator p, const_viterator q0) const { assert(0); }
-  void subtract(viterator p0, const_viterator q0) const { assert(0); }
-  std::ostream& print(std::ostream& s) const { assert(0); }
+  void caddtrans(double s, viterator p, const_viterator q0) const
+  {
+    assert(0);
+  }
+  void subtract(viterator p0, const_viterator q0) const
+  {
+    assert(0);
+  }
+  std::ostream& print(std::ostream& s) const
+  {
+    assert(0);
+  }
 
   // Zugriff auf Inhalt ueber ganzen Vektor, damits auch ohne
   // Struktur geht.
-  void vector_get(nvector<MatrixEntryType>& v) const { assert(0); }
-  void vector_set(nvector<MatrixEntryType>& v) { assert(0); }
-  void vector_add(double d, nvector<MatrixEntryType>& v) { assert(0); }
+  void vector_get(nvector<MatrixEntryType>& v) const
+  {
+    assert(0);
+  }
+  void vector_set(nvector<MatrixEntryType>& v)
+  {
+    assert(0);
+  }
+  void vector_add(double d, nvector<MatrixEntryType>& v)
+  {
+    assert(0);
+  }
 
   friend std::ostream& operator<<(std::ostream& s, const SparseBlock& A)
   {

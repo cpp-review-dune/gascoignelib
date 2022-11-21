@@ -51,11 +51,13 @@ public:
   ExactSolution()
     : Application()
     , eps(1.e-6)
-  {}
+  {
+  }
   virtual ~ExactSolution() {}
 
   ////////// 2d
-  virtual double operator()(int c, const Vertex2d& v) const
+  virtual double operator()([[maybe_unused]] int c,
+                            [[maybe_unused]] const Vertex2d& v) const
   {
     std::cerr << "\"ExactSolution::operator()\" not written!" << std::endl;
     abort();
@@ -63,14 +65,19 @@ public:
 
   virtual double x(int c, const Vertex2d& v) const;
   virtual double y(int c, const Vertex2d& v) const;
-  virtual double z(int c, const Vertex2d& v) const { abort(); }
+  virtual double z([[maybe_unused]] int c,
+                   [[maybe_unused]] const Vertex2d& v) const
+  {
+    abort();
+  }
   virtual double xx(int c, const Vertex2d& v) const;
   virtual double yx(int c, const Vertex2d& v) const;
   virtual double xy(int c, const Vertex2d& v) const;
   virtual double yy(int c, const Vertex2d& v) const;
 
   ////////// 3d
-  virtual double operator()(int c, const Vertex3d& v) const
+  virtual double operator()([[maybe_unused]] int c,
+                            [[maybe_unused]] const Vertex3d& v) const
   {
     std::cerr << "\"ExactSolution::operator()\" not written!" << std::endl;
     abort();

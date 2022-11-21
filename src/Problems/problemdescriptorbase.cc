@@ -46,7 +46,8 @@ ProblemDescriptorBase::ProblemDescriptorBase()
   , CI(NULL)
   , _time(0.0)
   , _dt(0.0)
-{}
+{
+}
 
 /*------------------------------------------------------------------------------*/
 

@@ -55,7 +55,10 @@ protected:
 
   void BasicInit();
 
-  double psi_x(int i, double x) const { return b[i]; }
+  double psi_x([[maybe_unused]] int i, [[maybe_unused]] double x) const
+  {
+    return b[i];
+  }
 
 public:
   BaseQ12d();

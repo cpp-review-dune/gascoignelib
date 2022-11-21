@@ -31,7 +31,8 @@ namespace Gascoigne {
 VisuDataCompVector::VisuDataCompVector()
   : VisuData()
   , _v(NULL)
-{}
+{
+}
 
 /*---------------------------------------------------*/
 

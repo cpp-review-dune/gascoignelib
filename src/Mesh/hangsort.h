@@ -35,7 +35,8 @@ protected:
 public:
   HangEdgeSort(const EdgeManager& H)
     : HR(H)
-  {}
+  {
+  }
   bool operator()(int i, int j) const
   {
     return !HR.EdgeIsHanging(i) && HR.EdgeIsHanging(j);
@@ -52,7 +53,8 @@ protected:
 public:
   HangEdgeSort2(const EdgeManager& H)
     : HR(H)
-  {}
+  {
+  }
   bool operator()(const Edge& i, const Edge& j) const
   {
     return !HR.EdgeIsHanging(i) && HR.EdgeIsHanging(j);

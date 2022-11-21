@@ -48,7 +48,8 @@ protected:
 public:
   ComponentInformationBase()
     : ComponentInformation()
-  {}
+  {
+  }
   virtual ~ComponentInformationBase() {}
 
   virtual void BasicInit(const ParamFile* pf) {}

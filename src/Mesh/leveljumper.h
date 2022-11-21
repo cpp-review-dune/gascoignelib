@@ -65,7 +65,8 @@ class LevelJumper
 public:
   LevelJumper()
     : Phi()
-  {}
+  {
+  }
 
   void update(const Quad& Q)
   {

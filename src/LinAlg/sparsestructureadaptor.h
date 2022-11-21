@@ -64,7 +64,8 @@ public:
   //
   SparseStructureAdaptor()
     : SSP(NULL)
-  {}
+  {
+  }
   virtual ~SparseStructureAdaptor() {}
 
   virtual std::string GetName() const = 0;

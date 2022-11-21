@@ -48,7 +48,8 @@ public:
     : Application()
     , exact(0.)
     , exactisknown(0)
-  {}
+  {
+  }
   ~Functional() {}
   Functional(const Functional& F)
     : Application(F)

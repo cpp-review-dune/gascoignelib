@@ -30,7 +30,8 @@ using namespace std;
 namespace Gascoigne {
 BasicIntegrator::BasicIntegrator()
   : IntegratorInterface()
-{}
+{
+}
 
 /*---------------------------------------------------------*/
 

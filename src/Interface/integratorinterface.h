@@ -59,44 +59,44 @@ public:
 
   virtual void BasicInit() {}
 
-  virtual void Rhs(const DomainRightHandSide& RHS,
-                   LocalVector& F,
-                   const FemInterface& FEM,
-                   const LocalData& Q,
-                   const LocalData& QC) const
+  virtual void Rhs([[maybe_unused]] const DomainRightHandSide& RHS,
+                   [[maybe_unused]] LocalVector& F,
+                   [[maybe_unused]] const FemInterface& FEM,
+                   [[maybe_unused]] const LocalData& Q,
+                   [[maybe_unused]] const LocalData& QC) const
   {
     std::cerr << "\"IntegratorInterface::Rhs\" not written!" << std::endl;
     abort();
   }
-  virtual void Form(const Equation& EQ,
-                    LocalVector& F,
-                    const FemInterface& FEM,
-                    const LocalVector& U,
-                    const LocalData& Q,
-                    const LocalData& QC) const
+  virtual void Form([[maybe_unused]] const Equation& EQ,
+                    [[maybe_unused]] LocalVector& F,
+                    [[maybe_unused]] const FemInterface& FEM,
+                    [[maybe_unused]] const LocalVector& U,
+                    [[maybe_unused]] const LocalData& Q,
+                    [[maybe_unused]] const LocalData& QC) const
   {
     std::cerr << "\"IntegratorInterface::Form\" not written!" << std::endl;
     abort();
   }
-  virtual void AdjointForm(const Equation& EQ,
-                           LocalVector& F,
-                           const FemInterface& FEM,
-                           const LocalVector& U,
-                           const LocalData& Q,
-                           const LocalData& QC) const
+  virtual void AdjointForm([[maybe_unused]] const Equation& EQ,
+                           [[maybe_unused]] LocalVector& F,
+                           [[maybe_unused]] const FemInterface& FEM,
+                           [[maybe_unused]] const LocalVector& U,
+                           [[maybe_unused]] const LocalData& Q,
+                           [[maybe_unused]] const LocalData& QC) const
   {
     std::cerr << "\"IntegratorInterface::AdjointForm\" not written!"
               << std::endl;
     abort();
   }
 
-  virtual void BoundaryRhs(const BoundaryRightHandSide& RHS,
-                           LocalVector& F,
-                           const FemInterface& FEM,
-                           int ile,
-                           int col,
-                           const LocalData& Q,
-                           const LocalData& QC) const
+  virtual void BoundaryRhs([[maybe_unused]] const BoundaryRightHandSide& RHS,
+                           [[maybe_unused]] LocalVector& F,
+                           [[maybe_unused]] const FemInterface& FEM,
+                           [[maybe_unused]] int ile,
+                           [[maybe_unused]] int col,
+                           [[maybe_unused]] const LocalData& Q,
+                           [[maybe_unused]] const LocalData& QC) const
   {
     std::cerr << "\"IntegratorInterface::BoundaryRhs\" not written!"
               << std::endl;

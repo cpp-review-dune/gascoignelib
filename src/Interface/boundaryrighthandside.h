@@ -54,7 +54,8 @@ protected:
 public:
   BoundaryRightHandSide()
     : Application()
-  {}
+  {
+  }
   ~BoundaryRightHandSide() {}
 
   /**
@@ -71,19 +72,19 @@ public:
 
   virtual int GetNcomp() const = 0;
 
-  virtual double operator()(int c,
-                            const Vertex2d& v,
-                            const Vertex2d& n,
-                            int color) const
+  virtual double operator()([[maybe_unused]] int c,
+                            [[maybe_unused]] const Vertex2d& v,
+                            [[maybe_unused]] const Vertex2d& n,
+                            [[maybe_unused]] int color) const
   {
     std::cerr << "\"BoundaryRightHandSide::operator()\" not written!"
               << std::endl;
     abort();
   }
-  virtual double operator()(int c,
-                            const Vertex3d& v,
-                            const Vertex3d& n,
-                            int color) const
+  virtual double operator()([[maybe_unused]] int c,
+                            [[maybe_unused]] const Vertex3d& v,
+                            [[maybe_unused]] const Vertex3d& n,
+                            [[maybe_unused]] int color) const
   {
     std::cerr << "\"BoundaryRightHandSide::operator()\" not written!"
               << std::endl;
@@ -111,7 +112,7 @@ public:
     }
   }
 
-  virtual void SetCellSize(double h) const {}
+  virtual void SetCellSize([[maybe_unused]] double h) const {}
 };
 
 typedef BoundaryRightHandSide BoundaryInitialCondition;

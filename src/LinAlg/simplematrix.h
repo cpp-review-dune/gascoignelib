@@ -52,7 +52,8 @@ public:
   //
   SimpleMatrix()
     : MatrixInterface()
-  {}
+  {
+  }
   ~SimpleMatrix() {}
 
   std::string GetName() const { return "SimpleMatrix"; }

@@ -35,13 +35,16 @@ class Vertex : public numfixarray<N, double>
 public:
   Vertex()
     : numfixarray<N, double>()
-  {}
+  {
+  }
   Vertex(const Vertex& c)
     : numfixarray<N, double>(c)
-  {}
+  {
+  }
   Vertex(const double& x0)
     : numfixarray<N, double>(x0)
-  {}
+  {
+  }
   Vertex(const double& x0, const double& y0)
     : numfixarray<N, double>()
   {

@@ -47,27 +47,32 @@ public:
     : nvector<T>()
     , nn(0)
     , mm(0)
-  {}
+  {
+  }
   nmatrix(size_t n)
     : nvector<T>(n * n)
     , nn(n)
     , mm(n)
-  {}
+  {
+  }
   nmatrix(size_t n, size_t m)
     : nvector<T>(n * m)
     , nn(n)
     , mm(m)
-  {}
+  {
+  }
   nmatrix(size_t n, size_t m, const T& d)
     : nvector<T>(n * m, d)
     , nn(n)
     , mm(m)
-  {}
+  {
+  }
   nmatrix(const nmatrix<T>& m)
     : nvector<T>(m)
     , nn(m.n())
     , mm(m.m())
-  {}
+  {
+  }
 
   /*
     Fonctions memoire

@@ -30,7 +30,8 @@ PressureFilter::PressureFilter()
   : nvector<double>()
   , domainsize(0.)
   , nhanging(0)
-{}
+{
+}
 
 /*-----------------------------------------*/
 

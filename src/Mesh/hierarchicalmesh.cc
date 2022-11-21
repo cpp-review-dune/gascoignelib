@@ -43,7 +43,8 @@ HierarchicalMesh::HierarchicalMesh()
   , etapatcher(1)
   , _i_showoutput(0)
   , withfaces(1)
-{}
+{
+}
 
 /*------------------------------------------------------*/
 

@@ -52,7 +52,8 @@ public:
 
   RowColumnStencil()
     : ColumnStencil()
-  {}
+  {
+  }
   ~RowColumnStencil() {}
 
   const nvector<int>& row() const { return srow; }

@@ -63,7 +63,8 @@ SparseBlockIlu<B>::~SparseBlockIlu()
 template<class B>
 void
 SparseBlockIlu<B>::ReInit(const SparseStructureInterface* SI)
-{}
+{
+}
 
 /*-------------------------------------------------------------*/
 

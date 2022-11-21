@@ -43,7 +43,8 @@ protected:
 public:
   PointFunctional()
     : Functional()
-  {}
+  {
+  }
   virtual ~PointFunctional() {}
 
   virtual void BasicInit(const std::vector<Vertex2d>& v2d,
@@ -64,7 +65,7 @@ public:
 
   virtual const std::vector<int>& GetComps() const { return _comps; }
 
-  virtual double J(const std::vector<double>& u) const
+  virtual double J([[maybe_unused]] const std::vector<double>& u) const
   {
     std::cerr << "\"PointFunctional::J\" not written" << std::endl;
     abort();

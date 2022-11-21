@@ -46,21 +46,24 @@ protected:
 public:
   DomainFunctional()
     : Functional()
-  {}
+  {
+  }
   virtual ~DomainFunctional() {}
 
-  virtual double J(const FemFunction& U, const Vertex2d& v) const
+  virtual double J([[maybe_unused]] const FemFunction& U,
+                   [[maybe_unused]] const Vertex2d& v) const
   {
     std::cerr << "\"DomainFunctional::J\" not written" << std::endl;
     abort();
   }
 
-  virtual double J(const FemFunction& U, const Vertex3d& v) const
+  virtual double J([[maybe_unused]] const FemFunction& U,
+                   [[maybe_unused]] const Vertex3d& v) const
   {
     std::cerr << "\"DomainFunctional::J\" not written" << std::endl;
     abort();
   }
-  virtual void point_cell(int material) const {}
+  virtual void point_cell([[maybe_unused]] int material) const {}
 };
 } // namespace Gascoigne
 

@@ -64,7 +64,8 @@ public:
     , sum_cpu_time(0)
     , activations(0)
     , running(false)
-  {}
+  {
+  }
 
   virtual void reset()
   {

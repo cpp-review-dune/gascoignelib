@@ -45,7 +45,8 @@ protected:
 public:
   SimpleSparseStructureAdaptor()
     : SparseStructureAdaptor()
-  {}
+  {
+  }
 
   std::string GetName() const { return "Simple"; }
 

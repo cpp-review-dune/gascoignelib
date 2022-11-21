@@ -537,14 +537,14 @@ CGDofHandler<DIM, M>::InitFromGascoigneMesh(const DofHandler<DIM>& GM)
     else
       abort();
   }
-  for (auto it : nc)
+  for ([[maybe_unused]] auto it : nc)
     assert(it >= 0);
 
   //////////////////// check that all dofs are found
   std::vector<bool> df(ndofs, false);
   for (auto it : nc)
     df[it] = true;
-  for (auto it : df)
+  for ([[maybe_unused]] auto it : df)
     assert(it);
 
   //////////////////// create vertex coordinates
@@ -700,7 +700,7 @@ CGDofHandler<DIM, M>::InitFromGascoigneMesh(const DofHandler<DIM>& GM)
         for (int i = 0; i < 4; ++i) {
           int ei = eof[GM_l][i];
           PEdge edge(GM_nc[GM_s + lve[ei][0]], GM_nc[GM_s + lve[ei][1]]);
-          auto ite = prepedges.edges.find(edge);
+          [[maybe_unused]] auto ite = prepedges.edges.find(edge);
           assert(ite != prepedges.edges.end());
           for (int ix = 0; ix < M - 2; ++ix)
             dofoncolor.insert(
@@ -713,7 +713,7 @@ CGDofHandler<DIM, M>::InitFromGascoigneMesh(const DofHandler<DIM>& GM)
                    GM_nc[GM_s + lvf[GM_l][1]],
                    GM_nc[GM_s + lvf[GM_l][3]],
                    GM_nc[GM_s + lvf[GM_l][2]]);
-        auto it = prepfaces.faces.find(face);
+        [[maybe_unused]] auto it = prepfaces.faces.find(face);
         assert(it != prepfaces.faces.end());
         for (int iy = 0; iy < M - 2; ++iy)
           for (int ix = 0; ix < M - 2; ++ix)

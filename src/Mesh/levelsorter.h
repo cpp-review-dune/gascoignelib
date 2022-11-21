@@ -35,7 +35,8 @@ protected:
 public:
   LevelSorter2d(const HierarchicalMesh2d& HMHM)
     : HM(HMHM)
-  {}
+  {
+  }
   bool operator()(int i, int j) const
   {
     return (HM.quad(i).level() > HM.quad(j).level());
@@ -52,7 +53,8 @@ protected:
 public:
   HangEdgeSort3(const LevelMesh2d& L)
     : LR(L)
-  {}
+  {
+  }
   bool operator()(int i, int j) const
   {
     return (!LR.EdgeIsHangingGlobalIndex(i) && LR.EdgeIsHangingGlobalIndex(j));

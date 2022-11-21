@@ -71,7 +71,8 @@ public:
     , bas_Vanka(c.basis_Vanka())
     , qchilds(c.childs())
     , qedges(c.edges())
-  {}
+  {
+  }
 
   Cell(int l, int f)
     : std::array<int, N>()

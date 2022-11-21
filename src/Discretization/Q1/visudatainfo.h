@@ -53,7 +53,8 @@ public:
   VisuDataInfo(const VisuDataInfo& V)
     : scalars(V.Scalars())
     , vectors(V.Vectors())
-  {}
+  {
+  }
   VisuDataInfo& operator=(const VisuDataInfo& V);
 
   bool operator!=(const VisuDataInfo& V) const;

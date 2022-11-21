@@ -38,7 +38,8 @@ GalerkinIntegratorQ2<DIM>::GalerkinIntegratorQ2()
 
 template<int DIM>
 GalerkinIntegratorQ2<DIM>::~GalerkinIntegratorQ2()
-{}
+{
+}
 
 /* ----------------------------------------- */
 

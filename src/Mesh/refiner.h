@@ -43,7 +43,8 @@ public:
     : H(h)
     , V(v)
     , A(2, 2)
-  {}
+  {
+  }
 
   void BuildCellList(std::vector<int>&);
 };
@@ -63,7 +64,8 @@ public:
     : H(h)
     , V(v)
     , R(r)
-  {}
+  {
+  }
 
   void BuildCellList(std::vector<int>&);
 };
@@ -85,7 +87,8 @@ public:
     , V(v)
     , R(r)
     , D(d)
-  {}
+  {
+  }
 
   void BuildCellList(std::vector<int>&);
 };
@@ -105,7 +108,8 @@ public:
     : H(h)
     , V(v)
     , R(r)
-  {}
+  {
+  }
 
   void BuildCellList(std::vector<int>&);
 };

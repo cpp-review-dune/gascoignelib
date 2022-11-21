@@ -46,7 +46,7 @@ SparseUmf<SparseBlock>::ConstructStructure(const IntVector& perm,
     }
   }
   long n_umf = n * __ncomp;
-  long n_entries_umf = SPARSE_NENTRIES * nentries;
+  [[maybe_unused]] long n_entries_umf = SPARSE_NENTRIES * nentries;
 
   assert(__Ac.size() == n_entries_umf);
   assert(__Ax.size() == n_entries_umf);

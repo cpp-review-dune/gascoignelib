@@ -38,7 +38,8 @@ protected:
 public:
   HangFaceSort(const FaceManager& H)
     : HR(H)
-  {}
+  {
+  }
   bool operator()(int i, int j) const
   {
     return !HR.EdgeIsHanging(i) && HR.EdgeIsHanging(j);
@@ -56,7 +57,8 @@ protected:
 public:
   HangFaceSort2(const FaceManager& H)
     : HR(H)
-  {}
+  {
+  }
   bool operator()(const Edge& i, const Edge& j) const
   {
     return !HR.EdgeIsHanging(i) && HR.EdgeIsHanging(j);

@@ -38,7 +38,8 @@ protected:
 public:
   VisuDataNVector(const DoubleVector& v)
     : vp(&v)
-  {}
+  {
+  }
 
   int visucomp() const { return 1; }
   int visun() const { return vp->size(); }

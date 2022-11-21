@@ -180,7 +180,7 @@ SparseUmf<B>::ConstructStructure(const IntVector& perm,
   }
 
   long n_umf = n * __ncomp;
-  long n_entries_umf = nentries * __ncomp * __ncomp;
+  [[maybe_unused]] long n_entries_umf = nentries * __ncomp * __ncomp;
 
   assert(__Ac.size() == n_entries_umf);
   assert(__Ax.size() == n_entries_umf);
@@ -237,7 +237,7 @@ SparseUmf<B>::ConstructStructure(int ncomp, const SparseStructure& SS)
   }
 
   IndexType n_umf = n * __ncomp;
-  IndexType n_entries_umf = nentries * __ncomp * __ncomp;
+  [[maybe_unused]] IndexType n_entries_umf = nentries * __ncomp * __ncomp;
 
   assert(__Ac.size() == n_entries_umf);
   assert(__Ax.size() == n_entries_umf);

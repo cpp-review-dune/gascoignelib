@@ -51,7 +51,8 @@ GnuplotData::GnuplotData(const string& s, const Vertex3d& _pos)
 GnuplotData::GnuplotData(const GnuplotData& GP)
   : plane(GP.plane)
   , pos(GP.pos)
-{}
+{
+}
 
 /*-----------------------------------------*/
 

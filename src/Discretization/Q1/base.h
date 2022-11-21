@@ -53,7 +53,7 @@ public:
     return NULL;
   }
 
-  virtual double psi(int i, double x) const
+  virtual double psi([[maybe_unused]] int i, [[maybe_unused]] double x) const
   {
     error("psi");
     return 0;

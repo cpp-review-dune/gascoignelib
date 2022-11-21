@@ -39,19 +39,19 @@ public:
   virtual int n() const = 0;
   virtual double w(int k) const = 0;
 
-  virtual void xi(Vertex1d& v, int k) const
+  virtual void xi([[maybe_unused]] Vertex1d& v, [[maybe_unused]] int k) const
   {
     std::cerr << "\"IntegrationFormulaInterface::xi\" not written!"
               << std::endl;
     abort();
   }
-  virtual void xi(Vertex2d& v, int k) const
+  virtual void xi([[maybe_unused]] Vertex2d& v, [[maybe_unused]] int k) const
   {
     std::cerr << "\"IntegrationFormulaInterface::xi\" not written!"
               << std::endl;
     abort();
   }
-  virtual void xi(Vertex3d& v, int k) const
+  virtual void xi([[maybe_unused]] Vertex3d& v, [[maybe_unused]] int k) const
   {
     std::cerr << "\"IntegrationFormulaInterface::xi\" not written!"
               << std::endl;

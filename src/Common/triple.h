@@ -39,12 +39,14 @@ struct triple
     : first(T1())
     , second(T2())
     , third(T3())
-  {}
+  {
+  }
   triple(const T1& a, const T2& b, const T3& c)
     : first(a)
     , second(b)
     , third(c)
-  {}
+  {
+  }
 
 #ifdef __STL_MEMBER_TEMPLATES
   template<class U1, class U2, class U3>
@@ -52,7 +54,8 @@ struct triple
     : first(p.first)
     , second(p.second)
     , third(p.third)
-  {}
+  {
+  }
 #endif
 };
 

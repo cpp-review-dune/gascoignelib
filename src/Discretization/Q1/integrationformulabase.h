@@ -53,13 +53,15 @@ protected:
 public:
   IntegrationFormulaBase()
     : IntegrationFormulaInterface()
-  {}
+  {
+  }
   IntegrationFormulaBase(int n) { ReInit(n); }
   IntegrationFormulaBase(const IntegrationFormulaBase<DIM>& IF)
     : _in(IF.n())
     , _iw(IF.w())
     , _ic(IF.c())
-  {}
+  {
+  }
 
   int n() const { return _in; }
   double w(int k) const { return _iw[k]; }

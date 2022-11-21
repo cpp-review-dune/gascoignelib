@@ -50,23 +50,28 @@ public:
   CompVector()
     : nvector<T>()
     , N(0)
-  {}
+  {
+  }
   CompVector(ShortIndexType NN)
     : nvector<T>()
     , N(NN)
-  {}
+  {
+  }
   CompVector(ShortIndexType NN, size_t n)
     : nvector<T>(NN * n)
     , N(NN)
-  {}
+  {
+  }
   CompVector(ShortIndexType NN, size_t n, const T& d)
     : nvector<T>(NN * n, d)
     , N(NN)
-  {}
-  CompVector(ShortIndexType NN, size_t n, T* b, T* e)
+  {
+  }
+  CompVector(ShortIndexType NN, [[maybe_unused]] size_t n, T* b, T* e)
     : nvector<T>(std::vector<double>(b, e))
     , N(NN)
-  {}
+  {
+  }
   CompVector(const std::vector<T>& u)
   {
     N = 1;
@@ -77,7 +82,8 @@ public:
   CompVector(const CompVector& u)
     : nvector<T>(u)
     , N(u.ncomp())
-  {}
+  {
+  }
 
   CompVector& operator=(const CompVector& u)
   {

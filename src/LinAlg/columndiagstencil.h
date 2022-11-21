@@ -48,7 +48,8 @@ public:
   //
   ColumnDiagStencil()
     : ColumnStencil()
-  {}
+  {
+  }
   ~ColumnDiagStencil() {}
 
   const IndexVector& diag() const { return sdiag; }

@@ -46,7 +46,7 @@ public:
   {
     prolongate_add(ul, uL);
   }
-  virtual void Pi(GlobalVector& u) const
+  virtual void Pi([[maybe_unused]] GlobalVector& u) const
   {
     std::cerr << "\"MgInterpolatorInterface::Pi\" not written!" << std::endl;
     abort();

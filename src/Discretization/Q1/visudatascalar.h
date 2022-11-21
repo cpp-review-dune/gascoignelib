@@ -39,7 +39,8 @@ public:
   virtual ~VisuDataScalar() {}
   VisuDataScalar(const DoubleVector& v)
     : vR(v)
-  {}
+  {
+  }
 
   virtual int visucomp() const { return 1; }
   virtual int visun() const { return vR.size(); }

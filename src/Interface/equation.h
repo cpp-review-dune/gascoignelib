@@ -75,7 +75,8 @@ public:
   //
   Equation()
     : Application()
-  {}
+  {
+  }
   virtual ~Equation() {}
 
   /**
@@ -90,28 +91,40 @@ public:
     abort();
   }
 
-  virtual void OperatorStrong(DoubleVector& b, const FemFunction& U) const
+  virtual void OperatorStrong([[maybe_unused]] DoubleVector& b,
+                              [[maybe_unused]] const FemFunction& U) const
   {
     std::cerr << "\"Equation::OperatorStrong\" not written!" << std::endl;
     abort();
   }
-  virtual void Pattern(TimePattern& TP) const
+  virtual void Pattern([[maybe_unused]] TimePattern& TP) const
   {
     std::cerr << "\"Equation::SetTimePattern\" not written!" << std::endl;
     abort();
   }
 
-  virtual void point_cell(int material) const {}
+  virtual void point_cell([[maybe_unused]] int material) const {}
 
   /// point is called once the quadrature point is defined and the finite
   /// element function U is initialized in this point.
-  virtual void point(double h, const FemFunction& U, const Vertex2d& v) const {}
-  virtual void point(double h, const FemFunction& U, const Vertex3d& v) const {}
+  virtual void point([[maybe_unused]] double h,
+                     [[maybe_unused]] const FemFunction& U,
+                     [[maybe_unused]] const Vertex2d& v) const
+  {
+  }
+  virtual void point([[maybe_unused]] double h,
+                     [[maybe_unused]] const FemFunction& U,
+                     [[maybe_unused]] const Vertex3d& v) const
+  {
+  }
 
   /// point_M is after calling point(...) and before calling Matrix(...) here,
   /// the update M is initialized in the quadrature point and more values can
   /// be precomputed
-  virtual void point_M(const FemFunction& U, const TestFunction& M) const {}
+  virtual void point_M([[maybe_unused]] const FemFunction& U,
+                       [[maybe_unused]] const TestFunction& M) const
+  {
+  }
 
   virtual void pointmatrix(double h,
                            const FemFunction& U,
@@ -137,28 +150,32 @@ public:
                       const TestFunction& N) const = 0;
 
   // Boundary
-  virtual void Form(VectorIterator b,
-                    const FemFunction& U,
-                    const TestFunction& N,
-                    int col) const
-  {}
-  virtual void Matrix(EntryMatrix& E,
-                      const FemFunction& U,
-                      const TestFunction& M,
-                      const TestFunction& N,
-                      int col) const
-  {}
+  virtual void Form([[maybe_unused]] VectorIterator b,
+                    [[maybe_unused]] const FemFunction& U,
+                    [[maybe_unused]] const TestFunction& N,
+                    [[maybe_unused]] int col) const
+  {
+  }
+  virtual void Matrix([[maybe_unused]] EntryMatrix& E,
+                      [[maybe_unused]] const FemFunction& U,
+                      [[maybe_unused]] const TestFunction& M,
+                      [[maybe_unused]] const TestFunction& N,
+                      [[maybe_unused]] int col) const
+  {
+  }
 
-  virtual void pointboundary(double h,
-                             const FemFunction& U,
-                             const Vertex2d& v,
-                             const Vertex2d& n) const
-  {}
-  virtual void pointboundary(double h,
-                             const FemFunction& U,
-                             const Vertex3d& v,
-                             const Vertex3d& n) const
-  {}
+  virtual void pointboundary([[maybe_unused]] double h,
+                             [[maybe_unused]] const FemFunction& U,
+                             [[maybe_unused]] const Vertex2d& v,
+                             [[maybe_unused]] const Vertex2d& n) const
+  {
+  }
+  virtual void pointboundary([[maybe_unused]] double h,
+                             [[maybe_unused]] const FemFunction& U,
+                             [[maybe_unused]] const Vertex3d& v,
+                             [[maybe_unused]] const Vertex3d& n) const
+  {
+  }
   virtual void pointmatrixboundary(double h,
                                    const FemFunction& U,
                                    const Vertex2d& v,

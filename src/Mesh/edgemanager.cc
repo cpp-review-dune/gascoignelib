@@ -46,7 +46,8 @@ EdgeManager::EdgeManager(vector<Edge>& e,
   , co2n(con)
   , eo2n(eon)
   , QuadLaO(q)
-{}
+{
+}
 
 /*---------------------------------------------------*/
 

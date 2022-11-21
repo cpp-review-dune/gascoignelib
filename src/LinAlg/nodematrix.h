@@ -36,10 +36,12 @@ class NodeMatrix : public numfixarray<N * N, T>
 public:
   NodeMatrix()
     : numfixarray<N * N, T>()
-  {}
+  {
+  }
   NodeMatrix(const T& A)
     : numfixarray<N * N, T>(A)
-  {}
+  {
+  }
 
   T& operator()(int i, int j) { return (*this)[j + i * N]; }
   const T& operator()(int i, int j) const { return (*this)[j + i * N]; }

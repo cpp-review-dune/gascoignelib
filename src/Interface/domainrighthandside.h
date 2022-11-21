@@ -54,12 +54,15 @@ public:
 
   virtual int GetNcomp() const = 0;
 
-  virtual double operator()(int c, const Vertex2d& v) const
+  virtual double operator()([[maybe_unused]] int c,
+                            [[maybe_unused]] const Vertex2d& v) const
   {
     std::cerr << "\"DomainRightHandSide::operator()\" not written" << std::endl;
     abort();
   }
-  virtual double operator()(int c, const Vertex3d& v) const
+  [[maybe_unused]] virtual double operator()(
+    [[maybe_unused]] int c,
+    [[maybe_unused]] const Vertex3d& v) const
   {
     std::cerr << "\"DomainRightHandSide::operator()\" not written" << std::endl;
     abort();
@@ -82,8 +85,8 @@ public:
     }
   }
 
-  virtual void SetCellSize(double h) const {}
-  virtual void point_cell(int material) const {}
+  virtual void SetCellSize([[maybe_unused]] double h) const {}
+  virtual void point_cell([[maybe_unused]] int material) const {}
 };
 
 typedef DomainRightHandSide DomainInitialCondition;

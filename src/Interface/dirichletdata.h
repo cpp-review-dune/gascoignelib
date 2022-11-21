@@ -69,13 +69,17 @@ public:
   }
   virtual ~DirichletData() {}
 
-  virtual void operator()(DoubleVector& b, const Vertex2d& v, int col) const
+  virtual void operator()([[maybe_unused]] DoubleVector& b,
+                          [[maybe_unused]] const Vertex2d& v,
+                          [[maybe_unused]] int col) const
   {
     std::cerr << "\"DirichletData::operator()\" not written!" << std::endl;
     abort();
   }
 
-  virtual void operator()(DoubleVector& b, const Vertex3d& v, int col) const
+  virtual void operator()([[maybe_unused]] DoubleVector& b,
+                          [[maybe_unused]] const Vertex3d& v,
+                          [[maybe_unused]] int col) const
   {
     std::cerr << "\"DirichletData::operator()\" not written!" << std::endl;
     abort();

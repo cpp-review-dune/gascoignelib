@@ -51,7 +51,8 @@ class PeriodicMapping : public virtual Application
 public:
   PeriodicMapping()
     : Application()
-  {}
+  {
+  }
 
   virtual ~PeriodicMapping() {}
 

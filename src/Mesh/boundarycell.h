@@ -40,12 +40,14 @@ public:
     : Cell<N, NEDGES>(l, f)
     , eiq(0)
     , oq(0)
-  {}
+  {
+  }
   BoundaryCell(const BoundaryCell& c)
     : Cell<N, NEDGES>(c)
     , eiq(c.edge_in_quad())
     , oq(c.of_quad())
-  {}
+  {
+  }
 
   int nnchild() const { return N; }
   int edge_in_quad() const { return eiq; }

@@ -40,7 +40,8 @@ protected:
 public:
   BoundaryEquation()
     : Application()
-  {}
+  {
+  }
   ~BoundaryEquation() {}
 
   /**
@@ -67,16 +68,18 @@ public:
                       const TestFunction& N,
                       int col) const = 0;
 
-  virtual void pointboundary(double h,
-                             const FemFunction& U,
-                             const Vertex2d& v,
-                             const Vertex2d& n) const
-  {}
-  virtual void pointboundary(double h,
-                             const FemFunction& U,
-                             const Vertex3d& v,
-                             const Vertex3d& n) const
-  {}
+  virtual void pointboundary([[maybe_unused]] double h,
+                             [[maybe_unused]] const FemFunction& U,
+                             [[maybe_unused]] const Vertex2d& v,
+                             [[maybe_unused]] const Vertex2d& n) const
+  {
+  }
+  virtual void pointboundary([[maybe_unused]] double h,
+                             [[maybe_unused]] const FemFunction& U,
+                             [[maybe_unused]] const Vertex3d& v,
+                             [[maybe_unused]] const Vertex3d& n) const
+  {
+  }
   virtual void pointmatrixboundary(double h,
                                    const FemFunction& U,
                                    const Vertex2d& v,

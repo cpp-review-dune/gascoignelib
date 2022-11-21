@@ -45,7 +45,8 @@ namespace Gascoigne {
 HierarchicalMesh2d::HierarchicalMesh2d()
   : HierarchicalMesh()
   , QuadLaO(quads)
-{}
+{
+}
 
 /*------------------------------------------------------*/
 

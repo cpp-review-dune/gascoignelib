@@ -50,11 +50,14 @@ class PeriodicData : public virtual Application
 public:
   PeriodicData()
     : Application()
-  {}
+  {
+  }
 
   virtual ~PeriodicData() {}
 
-  virtual void operator()(DoubleVector& b, const Vertex2d& v, int col) const
+  virtual void operator()([[maybe_unused]] DoubleVector& b,
+                          [[maybe_unused]] const Vertex2d& v,
+                          [[maybe_unused]] int col) const
   {
     /*-------------------------------------------------------
    | Falls auf einem der beiden Raender ein Offset addiert
@@ -65,7 +68,9 @@ public:
    -------------------------------------------------------*/
   }
 
-  virtual void operator()(DoubleVector& b, const Vertex3d& v, int col) const
+  virtual void operator()([[maybe_unused]] DoubleVector& b,
+                          [[maybe_unused]] const Vertex3d& v,
+                          [[maybe_unused]] int col) const
   {
     /*-------------------------------------------------------
    | Falls auf einem der beiden Raender ein Offset addiert

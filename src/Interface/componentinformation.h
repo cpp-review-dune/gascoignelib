@@ -52,7 +52,7 @@ public:
   ComponentInformation() { PDI = NULL; }
   virtual ~ComponentInformation() {}
 
-  virtual void BasicInit(const ParamFile* pf) {}
+  virtual void BasicInit([[maybe_unused]] const ParamFile* pf) {}
 
   virtual std::string GetName() const = 0;
   virtual int GetDimension() const { return _i_dimension; };
@@ -66,8 +66,8 @@ public:
     return PDI;
   };
 
-  const int ncomp() const { return GetNScalars(); };
-  const IndexType GetNcomp() const { return GetNScalars(); };
+  int ncomp() const { return GetNScalars(); };
+  IndexType GetNcomp() const { return GetNScalars(); };
 
   virtual const IndexType GetNScalars() const = 0;
   virtual void GetScalarName(IndexType i, std::string& s_name) const = 0;

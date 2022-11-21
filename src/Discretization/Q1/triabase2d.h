@@ -34,15 +34,30 @@ protected:
   mutable std::array<Vertex2d, NDOFS> DN; // first derivatives
 
 public:
-  constexpr int n() const { return NDOFS; }
+  constexpr int n() const
+  {
+    return NDOFS;
+  }
 
-  double psi(int i, double x) const { abort(); }
-  double psi_x(int i, double x) const { abort(); }
+  double psi(int i, double x) const
+  {
+    abort();
+  }
+  double psi_x(int i, double x) const
+  {
+    abort();
+  }
 
   // initialize
-  void point(const Vertex2d& v) const { abort(); }
+  void point(const Vertex2d& v) const
+  {
+    abort();
+  }
 
-  void point_boundary(int ie, const Vertex<1>& v) const { abort(); }
+  void point_boundary(int ie, const Vertex<1>& v) const
+  {
+    abort();
+  }
 
   // access values
   double phi(int i) const
@@ -71,10 +86,22 @@ public:
     return DN[i];
   }
 
-  const Vertex2d* normal2d() const { abort(); }
-  const Vertex2d* tangent2d() const { abort(); }
-  const Vertex3d* normal3d() const { abort(); }
-  const Vertex3d* tangent3d() const { abort(); }
+  const Vertex2d* normal2d() const
+  {
+    abort();
+  }
+  const Vertex2d* tangent2d() const
+  {
+    abort();
+  }
+  const Vertex3d* normal3d() const
+  {
+    abort();
+  }
+  const Vertex3d* tangent3d() const
+  {
+    abort();
+  }
 #undef NDOFS
 };
 
@@ -147,7 +174,10 @@ protected:
   mutable Vertex2d bn, bt; // normal and tangential on the boundary
 
 public:
-  constexpr int n() const { return NDOFS; }
+  constexpr int n() const
+  {
+    return NDOFS;
+  }
 #undef NDOFS
 
   // initialize
@@ -281,10 +311,22 @@ public:
     return DN[i];
   }
 
-  const Vertex2d* normal2d() const { return &bn; }
-  const Vertex2d* tangent2d() const { return &bt; }
-  const Vertex3d* normal3d() const { abort(); }
-  const Vertex3d* tangent3d() const { abort(); }
+  const Vertex2d* normal2d() const
+  {
+    return &bn;
+  }
+  const Vertex2d* tangent2d() const
+  {
+    return &bt;
+  }
+  const Vertex3d* normal3d() const
+  {
+    abort();
+  }
+  const Vertex3d* tangent3d() const
+  {
+    abort();
+  }
 };
 
 }

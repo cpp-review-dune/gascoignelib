@@ -55,7 +55,7 @@ public:
   DofHandlerBase(){};
   virtual ~DofHandlerBase() {}
 
-  virtual void BasicInit(const ParamFile* pf)
+  virtual void BasicInit([[maybe_unused]] const ParamFile* pf)
   {
     std::cerr << "\"DofHandler:BasicInit\" not written!" << std::endl;
     abort();
@@ -71,12 +71,12 @@ public:
 
   virtual int nodes_per_cell(int i) const = 0;
   virtual int vertex_of_cell(int i, int ii) const = 0;
-  virtual const Vertex2d& vertex2d(int i) const
+  virtual const Vertex2d& vertex2d([[maybe_unused]] int i) const
   {
     std::cerr << "\"MeshInterface::vertex2d\" not written!" << std::endl;
     abort();
   }
-  virtual const Vertex3d& vertex3d(int i) const
+  virtual const Vertex3d& vertex3d([[maybe_unused]] int i) const
   {
     std::cerr << "\"MeshInterface::vertex3d\" not written!" << std::endl;
     abort();
@@ -117,21 +117,22 @@ public:
   virtual int VtkType(int i) const = 0;
 
   // wird von DofHandler2d/3d ueberschrieben
-  virtual IntVector IndicesOfCell(int iq) const
+  virtual IntVector IndicesOfCell([[maybe_unused]] int iq) const
   {
     std::cerr << "\"DofHandler:IndicesOfCell\" not written!" << std::endl;
     abort();
   }
 
-  virtual bool CellIsCurved(int iq) const { return 0; }
+  virtual bool CellIsCurved([[maybe_unused]] int iq) const { return 0; }
   virtual int nedges() const { return 0; }
 
-  virtual IntVector GetElement(int degree, int iq) const
+  virtual IntVector GetElement([[maybe_unused]] int degree,
+                               [[maybe_unused]] int iq) const
   {
     std::cerr << "DofHandler::GetElement" << std::endl;
     abort();
   }
-  virtual int nodes_per_element(int degree) const
+  virtual int nodes_per_element([[maybe_unused]] int degree) const
   {
     std::cerr << "DofHandler::nodes_per_element" << std::endl;
     abort();
@@ -169,17 +170,17 @@ public:
   }
 
   // Access: material
-  virtual const int material(int i) const
+  virtual int material(int i) const
   {
     assert(i < mat.size());
     return mat[i];
   }
-  virtual const int material_patch(int i) const
+  virtual int material_patch(int i) const
   {
     assert(i < matpatch.size());
     return matpatch[i];
   }
-  const int material(int degree, int i) const
+  int material(int degree, int i) const
   {
     if (degree == 1)
       return material(i);
@@ -292,22 +293,22 @@ public:
     return basis_Vanka_patch;
   }
 
-  virtual const int material_Vanka(int i) const
+  virtual int material_Vanka(int i) const
   {
     assert(i < mat_Vanka.size());
     return mat_Vanka[i];
   }
-  virtual const int material_Vanka_patch(int i) const
+  virtual int material_Vanka_patch(int i) const
   {
     assert(i < mat_Vanka_patch.size());
     return mat_Vanka_patch[i];
   }
-  virtual const std::array<Vertex3d, 3> Vanka_basis(int i) const
+  virtual std::array<Vertex3d, 3> Vanka_basis(int i) const
   {
     assert(i < basis_Vanka.size());
     return basis_Vanka[i];
   }
-  const std::array<Vertex3d, 3> Vanka_basis_patch(int i) const
+  std::array<Vertex3d, 3> Vanka_basis_patch(int i) const
   {
     assert(i < basis_Vanka_patch.size());
     return basis_Vanka_patch[i];

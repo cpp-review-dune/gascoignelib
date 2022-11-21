@@ -51,7 +51,8 @@ public:
 
   ColumnStencil()
     : StencilInterface()
-  {}
+  {
+  }
   ~ColumnStencil() {}
 
   const IndexVector& col() const { return scol; }

@@ -42,7 +42,8 @@ MeshAgent::MeshAgent()
   : _goc2nc(false)
   , HMP(NULL)
   , GMG(NULL)
-{}
+{
+}
 
 /*-----------------------------------------*/
 

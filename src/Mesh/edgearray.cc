@@ -32,7 +32,8 @@ namespace Gascoigne {
 template<size_t N>
 EdgeArray<N>::EdgeArray(const std::array<int, N>& e)
   : std::array<int, N>(e)
-{}
+{
+}
 
 /*--------------------------------------------------------------*/
 

@@ -40,7 +40,8 @@ class CG
 public:
   CG(S& s)
     : solver(s)
-  {}
+  {
+  }
 
   void solve(V& x, const V& b, CGInfo& info);
 };

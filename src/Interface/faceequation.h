@@ -54,21 +54,24 @@ public:
   //
   FaceEquation()
     : Application()
-  {}
+  {
+  }
   virtual ~FaceEquation() {}
 
-  virtual void point_face(double h,
-                          const FemFunction& U1,
-                          const FemFunction& U2,
-                          const Vertex2d& v,
-                          const Vertex2d& n) const
-  {}
-  virtual void point_face(double h,
-                          const FemFunction& U1,
-                          const FemFunction& U2,
-                          const Vertex3d& v,
-                          const Vertex3d& n) const
-  {}
+  virtual void point_face([[maybe_unused]] double h,
+                          [[maybe_unused]] const FemFunction& U1,
+                          [[maybe_unused]] const FemFunction& U2,
+                          [[maybe_unused]] const Vertex2d& v,
+                          [[maybe_unused]] const Vertex2d& n) const
+  {
+  }
+  virtual void point_face([[maybe_unused]] double h,
+                          [[maybe_unused]] const FemFunction& U1,
+                          [[maybe_unused]] const FemFunction& U2,
+                          [[maybe_unused]] const Vertex3d& v,
+                          [[maybe_unused]] const Vertex3d& n) const
+  {
+  }
 
   virtual void pointmatrix_face(double h,
                                 const FemFunction& U1,
