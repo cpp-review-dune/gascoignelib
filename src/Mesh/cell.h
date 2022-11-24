@@ -243,6 +243,21 @@ Cell<N, E>::global2local(IndexType gi) const
   }
   return -1;
 }
+
+class Line : public Cell<2, 0>
+{
+protected:
+public:
+  Line(int l = 0, int f = -1)
+    : Cell(l, f)
+  {}
+
+  int nnchild() { return 2; }
+};
+
+typedef Cell<4, 4> Quad;
+typedef Cell<8, 6> Hex;
+
 } // namespace Gascoigne
 
 /*---------------------------------------------------*/

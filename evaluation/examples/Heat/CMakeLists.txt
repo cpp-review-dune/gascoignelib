@@ -14,6 +14,7 @@ target_include_directories(${HEAT_EXEC} PUBLIC
 
 target_link_libraries(${HEAT_EXEC} 
 	GascoigneStd
+	gcov
 )
 
 set(ALL_CXX_SOURCE_FILES ${ALL_CXX_SOURCE_FILES} ${HEAT_SOURCE} PARENT_SCOPE)

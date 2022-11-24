@@ -161,6 +161,10 @@ public:
   void random_patch_coarsen(double, IndexType k = 0);
   void random_double_patch_refine(double, IndexType k = 1);
   void clear_transfer_lists();
+
+  virtual void read_inp(const std::string&) = 0;
+  virtual void read_gup(const std::string&) = 0;
+  virtual void read_gip(const std::string&) = 0;
   virtual void write_gip(const std::string&) const = 0;
   virtual void write_gup(const std::string&) const = 0;
   virtual void write_inp(const std::string&) const = 0;
@@ -178,9 +182,6 @@ public:
 
   virtual std::set<IndexType> GetColors() const = 0;
 
-  virtual void read_inp(const std::string&) = 0;
-  virtual void read_gup(const std::string&) = 0;
-  virtual void read_gip(const std::string&) = 0;
   virtual void refine(const IndexVector&, const IndexVector&) = 0;
   virtual void patch_refine(IndexVector&, IndexVector&) = 0;
   virtual void vertex_patch_refine(IndexVector& ref, IndexVector& coarse);

@@ -34,7 +34,6 @@
 #include "deletecells.h"
 #include "facemanager.h"
 #include "levelcomparer3d.h"
-#include "quad.h"
 #include "regular_update.h"
 
 using namespace std;

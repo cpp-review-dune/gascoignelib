@@ -29,6 +29,7 @@
 #include "boundaryfunction.h"
 #include "gascoignemultigridmesh.h"
 #include "hierarchicalmesh.h"
+#include "p4estmesh2d.h"
 
 /*-----------------------------------------*/
 

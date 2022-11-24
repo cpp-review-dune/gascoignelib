@@ -38,7 +38,6 @@
 int
 main(int argc, char** argv)
 {
-
   // Set the name of the parameter file.
   Gascoigne::ParamFile paramfile("heat.param");
   if (argc >= 2) {

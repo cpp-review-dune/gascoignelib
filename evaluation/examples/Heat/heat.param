@@ -10,8 +10,8 @@ writebupgup         0
 
 //Block BoundaryManager
 
-dirichlet           1      4
-dirichletcomp       4      1       0 
+dirichlet           1      2
+dirichletcomp       2      1       0 
 
 
 //Block Mesh

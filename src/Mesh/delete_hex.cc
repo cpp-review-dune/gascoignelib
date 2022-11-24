@@ -22,8 +22,8 @@
  **/
 
 #include "boundarycell.h"
+#include "cell.h"
 #include "deletecells.h"
-#include "hex.h"
 
 using namespace std;
 

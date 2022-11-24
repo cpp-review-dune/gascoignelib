@@ -28,9 +28,9 @@
 
 #include "boundaryfunction.h"
 #include "boundaryline.h"
+#include "cell.h"
 #include "hangcontainer2d.h"
 #include "hierarchicalmesh.h"
-#include "quad.h"
 #include "quadlawandorder.h"
 
 /*---------------------------------------------------*/

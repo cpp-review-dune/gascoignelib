@@ -24,7 +24,7 @@
 #ifndef __hexlawandorder_h
 #define __hexlawandorder_h
 
-#include "hex.h"
+#include "cell.h"
 #include <map>
 
 /*            2

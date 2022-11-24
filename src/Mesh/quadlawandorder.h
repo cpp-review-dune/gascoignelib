@@ -24,7 +24,7 @@
 #ifndef __quadlawandorder_h
 #define __quadlawandorder_h
 
-#include "quad.h"
+#include "cell.h"
 #include <map>
 
 /*            2

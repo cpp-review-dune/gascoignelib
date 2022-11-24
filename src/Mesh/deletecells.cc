@@ -23,8 +23,7 @@
 
 #include "deletecells.h"
 #include "boundarycell.h"
-#include "hex.h"
-#include "quad.h"
+#include "cell.h"
 
 using namespace std;
 

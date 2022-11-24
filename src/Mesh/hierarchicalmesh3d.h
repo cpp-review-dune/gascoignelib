@@ -30,8 +30,8 @@
 
 #include "boundaryfunction.h"
 #include "boundaryquad.h"
+#include "cell.h"
 #include "hangcontainer3d.h"
-#include "hex.h"
 #include "hexlawandorder.h"
 #include "hierarchicalmesh.h"
 

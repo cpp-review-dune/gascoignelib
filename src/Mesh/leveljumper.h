@@ -23,8 +23,7 @@
 
 #ifndef __leveljumper_h
 
-#include "hex.h"
-#include "quad.h"
+#include "cell.h"
 #include <map>
 #include <math.h>
 
@@ -96,7 +95,7 @@ public:
   {
     for (int ii = 0; ii < 4; ii++) {
       if (Phi[Q[ii]].Maxi() > Q.level() + 1) {
-        // 	      std::cerr << "§§§\t" << Q[ii] << " " << Phi[ Q[ii]
+        // 	      std::cerr << "ï¿½ï¿½ï¿½\t" << Q[ii] << " " << Phi[ Q[ii]
         // ].Maxi() << " " << Q.level() << std::endl;
         return 0;
       }
