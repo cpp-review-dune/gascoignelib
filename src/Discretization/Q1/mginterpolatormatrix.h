@@ -26,6 +26,7 @@
 
 #include "columnstencil.h"
 #include "gascoigne.h"
+#include "meshtransferinterface.h"
 #include "mginterpolatorinterface.h"
 
 /*-----------------------------------------*/
@@ -34,19 +35,17 @@ namespace Gascoigne {
 class MgInterpolatorMatrix : public virtual MgInterpolatorInterface
 {
 private:
-  ColumnStencil ST;
-  DoubleVector val;
+  // We store two matrices, one for restrict, one for prolongate
+  // to allow for parallelization of the matrix-vector product
+  ColumnStencil STfine, STcoarse;
+  DoubleVector valfine, valcoarse;
 
 public:
   MgInterpolatorMatrix()
     : MgInterpolatorInterface()
-  {}
-
-  ColumnStencil& GetStencil() { return ST; }
-  const ColumnStencil& GetStencil() const { return ST; }
-
-  DoubleVector& GetAlpha() { return val; }
-  double Alpha(int pos) const { return val[pos]; }
+  {
+  }
+  void BasicInit(const MeshTransferInterface* MT);
 
   void restrict_zero(GlobalVector& uL, const GlobalVector& ul) const;
   void prolongate_add(GlobalVector& ul, const GlobalVector& uL) const;
