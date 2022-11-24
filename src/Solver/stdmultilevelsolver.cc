@@ -281,8 +281,8 @@ StdMultiLevelSolver::NewMgInterpolator()
   _Interpolator.resize(nlevels() - 1, NULL);
 
   for (int l = 0; l < nlevels() - 1; ++l)
-    //  _Interpolator[l] = new MgInterpolatorMatrix;
-    _Interpolator[l] = new MgInterpolatorNested;
+    _Interpolator[l] = new MgInterpolatorMatrix;
+  //_Interpolator[l] = new MgInterpolatorNested;
 
   //
   // Interpolator [l] :   interpoliert   (l+1)->l  (fein->grob)
