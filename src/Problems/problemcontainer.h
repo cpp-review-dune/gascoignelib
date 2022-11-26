@@ -29,9 +29,10 @@
 /*----------------------------   problemcontainer.h
  * ---------------------------*/
 
-#include "problemdescriptorinterface.h"
 #include <map>
 #include <string>
+
+#include "../Interface/problemdescriptorinterface.h"
 
 namespace Gascoigne {
 

@@ -24,8 +24,8 @@
 #ifndef __levelcomparer3d_h
 #define __levelcomparer3d_h
 
-#include "compareclass.h"
-#include "gascoigne.h"
+#include "../Common/compareclass.h"
+#include "../Interface/gascoigne.h"
 
 /*---------------------------------------------------*/
 

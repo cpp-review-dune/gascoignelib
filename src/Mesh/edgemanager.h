@@ -24,8 +24,9 @@
 #ifndef __edgemanager_h
 #define __edgemanager_h
 
+#include "../Interface/gascoigne.h"
+
 #include "edge.h"
-#include "gascoigne.h"
 #include "hangcontainer2d.h"
 #include "quadlawandorder.h"
 

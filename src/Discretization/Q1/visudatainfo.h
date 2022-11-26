@@ -25,12 +25,11 @@
 #define __visudatainfo_h
 
 #include <array>
-
-#include "gascoigne.h"
-#include "visudata.h"
-
 #include <map>
 #include <string>
+
+#include "../../Interface/gascoigne.h"
+#include "../../Interface/visudata.h"
 
 /*-------------------------------------------------------------------------*/
 

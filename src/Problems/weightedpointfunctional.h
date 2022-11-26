@@ -24,7 +24,7 @@
 #ifndef __WeightedPointFunctional_h
 #define __WeightedPointFunctional_h
 
-#include "pointfunctional.h"
+#include "../Interface/pointfunctional.h"
 
 /**********************************************************/
 namespace Gascoigne {

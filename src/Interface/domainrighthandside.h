@@ -24,9 +24,10 @@
 #ifndef __DomainRightHandSide_h
 #define __DomainRightHandSide_h
 
+#include "../Common/compvector.h"
+#include "../Common/vertex.h"
+
 #include "application.h"
-#include "compvector.h"
-#include "vertex.h"
 
 namespace Gascoigne {
 

@@ -24,7 +24,8 @@
 #ifndef __HNStructureQ13d_h
 #define __HNStructureQ13d_h
 
-#include "entrymatrix.h"
+#include "../../Common/entrymatrix.h"
+
 #include "hnstructureq12d.h"
 
 /*-----------------------------------------*/

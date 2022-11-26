@@ -24,11 +24,12 @@
 #ifndef __compvector_h
 #define __compvector_h
 
-#include "gascoigne.h"
-#include "nmatrix.h"
-#include "nvector.h"
 #include <cassert>
 #include <cmath>
+
+#include "../Interface/gascoigne.h"
+#include "nmatrix.h"
+#include "nvector.h"
 
 /*------------------------------------------------------*/
 

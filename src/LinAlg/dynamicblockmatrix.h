@@ -24,11 +24,13 @@
 #ifndef __dynamicblockmatrix_h
 #define __dynamicblockmatrix_h
 
-#include "dynamicstencil.h"
-#include "gascoigne.h"
-#include "matrixinterface.h"
-#include "sparsestructure.h"
 #include <list>
+
+#include "../Interface/gascoigne.h"
+#include "../Interface/matrixinterface.h"
+
+#include "dynamicstencil.h"
+#include "sparsestructure.h"
 
 /*-------------------------------------------------------------*/
 

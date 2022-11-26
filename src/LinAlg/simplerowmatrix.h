@@ -24,7 +24,8 @@
 #ifndef __SimpleRowMatrix_h
 #define __SimpleRowMatrix_h
 
-#include "matrixinterface.h"
+#include "../Interface/matrixinterface.h"
+
 #include "rowcolumnstencil.h"
 
 namespace Gascoigne {

@@ -24,7 +24,7 @@
 #ifndef __Extrapolator_h
 #define __Extrapolator_h
 
-#include "gascoigne.h"
+#include "../Interface/gascoigne.h"
 
 /*-----------------------------------------*/
 

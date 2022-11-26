@@ -22,7 +22,8 @@
  **/
 
 #include "coarsehierarchicalmesh3d.h"
-#include "set2vec.h"
+
+#include "../Common/set2vec.h"
 
 /*---------------------------------------------------*/
 

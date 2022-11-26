@@ -24,9 +24,10 @@
 #ifndef __Transformation3d_h
 #define __Transformation3d_h
 
-#include "baseq13dpatch.h"
-#include "nmatrix.h"
-#include "vertex.h"
+#include "../../Common/nmatrix.h"
+#include "../../Common/vertex.h"
+
+#include "../Q2/baseq13dpatch.h"
 /*-----------------------------------------------------*/
 
 namespace Gascoigne {

@@ -24,13 +24,13 @@
 #ifndef __gmresclass_h
 #define __gmresclass_h
 
-#include "cginfo.h"
-#include "matrix.h"
-#include "mult.h"
-#include "nvector.h"
-#include "stdmultilevelsolver.h"
-#include "stdsolver.h"
-#include "vectorinterface.h"
+#include "../Common/cginfo.h"
+#include "../Common/mult.h"
+#include "../Common/nvector.h"
+#include "../Interface/matrix.h"
+#include "../Interface/vectorinterface.h"
+#include "../Solver/stdmultilevelsolver.h"
+#include "../Solver/stdsolver.h"
 
 /********************************************************************/
 

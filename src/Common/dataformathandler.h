@@ -24,15 +24,16 @@
 #ifndef __dataformathandler_h
 #define __dataformathandler_h
 
-#include "nvector.h"
+#include <array>
 #include <map>
 #include <set>
+#include <string>
 #include <utility>
 #include <vector>
 
-#include "gascoigne.h"
-#include <array>
-#include <string>
+#include "../Interface/gascoigne.h"
+
+#include "nvector.h"
 
 /***************************************************/
 

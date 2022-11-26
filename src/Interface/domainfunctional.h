@@ -24,9 +24,10 @@
 #ifndef __DomainFunctional_h
 #define __DomainFunctional_h
 
+#include "../Common/vertex.h"
+
 #include "functional.h"
 #include "gascoigne.h"
-#include "vertex.h"
 
 namespace Gascoigne {
 

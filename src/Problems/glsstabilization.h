@@ -24,7 +24,8 @@
 #ifndef __GlsStabilization_h
 #define __GlsStabilization_h
 
-#include "gascoigne.h"
+#include "../Interface/gascoigne.h"
+
 #include "stabilization.h"
 
 /*-------------------------------------------*/

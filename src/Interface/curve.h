@@ -24,8 +24,8 @@
 #ifndef __Curve_h
 #define __Curve_h
 
-#include "nvector.h"
-#include "vertex.h"
+#include "../Common/nvector.h"
+#include "../Common/vertex.h"
 
 namespace Gascoigne {
 /*-----------------------------------------*/

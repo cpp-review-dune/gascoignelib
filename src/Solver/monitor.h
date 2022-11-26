@@ -25,14 +25,14 @@
 #define __monitor_h
 
 #include <iostream>
-#include <vector>
-
-#include "cginfo.h"
-#include "gascoigne.h"
-#include "nlinfo.h"
-#include "paramfile.h"
 #include <sstream>
 #include <string>
+#include <vector>
+
+#include "../Common/cginfo.h"
+#include "../Common/nlinfo.h"
+#include "../Common/paramfile.h"
+#include "../Interface/gascoigne.h"
 
 /*******************************************************************/
 

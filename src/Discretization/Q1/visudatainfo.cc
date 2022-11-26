@@ -22,7 +22,8 @@
  **/
 
 #include "visudatainfo.h"
-#include "compose_name.h"
+
+#include "../../Common/compose_name.h"
 
 using namespace std;
 

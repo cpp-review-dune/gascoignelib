@@ -27,8 +27,8 @@
  *
  **/
 
-#include "entrymatrix.h"
-#include "hnstructureinterface.h"
+#include "../Common/entrymatrix.h"
+#include "../Interface/hnstructureinterface.h"
 
 /*-----------------------------------------*/
 

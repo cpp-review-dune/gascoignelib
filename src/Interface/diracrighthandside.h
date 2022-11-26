@@ -24,10 +24,12 @@
 #ifndef __DiracRightHandSide_h
 #define __DiracRightHandSide_h
 
-#include "application.h"
-#include "compvector.h"
-#include "vertex.h"
 #include <vector>
+
+#include "../Common/compvector.h"
+#include "../Common/vertex.h"
+
+#include "application.h"
 
 /**********************************************************/
 

@@ -24,8 +24,8 @@
 #ifndef __integrationformulainterface_h
 #define __integrationformulainterface_h
 
-#include "nvector.h"
-#include "vertex.h"
+#include "../Common/nvector.h"
+#include "../Common/vertex.h"
 
 /*------------------------------------------------------------*/
 

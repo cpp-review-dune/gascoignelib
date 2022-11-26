@@ -24,8 +24,9 @@
 #ifndef __DomainFunction_h
 #define __DomainFunction_h
 
+#include "../Common/vertex.h"
+
 #include "application.h"
-#include "vertex.h"
 
 namespace Gascoigne {
 

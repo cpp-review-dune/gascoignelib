@@ -21,18 +21,19 @@
  *
  **/
 
-#include <functionalcontainer.h>
-#include <problemcontainer.h>
+#include <Common/paramfile.h>
+#include <Interface/gascoigne.h>
+#include <Mesh/gascoignemesh3d.h>
+#include <Problems/functionalcontainer.h>
+#include <Problems/problemcontainer.h>
+
 #ifdef USE_CUDA
 #include <cudaloop.h>
 #else
-#include <stdloop.h>
+#include <Solver/stdloop.h>
 #endif
 
-#include "gascoigne.h"
-#include "gascoignemesh3d.h"
 #include "local.h"
-#include "paramfile.h"
 
 #define HEAT_COMP 3
 

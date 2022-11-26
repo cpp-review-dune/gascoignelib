@@ -22,10 +22,12 @@
  **/
 
 #include "ncadaptor.h"
-#include "compareclass.h"
-#include "filescanner.h"
+
 #include <limits>
 #include <numeric>
+
+#include "../Common/compareclass.h"
+#include "../Common/filescanner.h"
 
 using namespace std;
 

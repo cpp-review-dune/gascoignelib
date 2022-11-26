@@ -22,16 +22,18 @@
  **/
 
 #include "stdloop.h"
-#include "adaptordata.h"
-#include "diplomantenadaptor.h"
-#include "filescanner.h"
-#include "malteadaptor.h"
-#include "meshagent.h"
+
+#include <iomanip>
+
+#include "../Common/filescanner.h"
+#include "../Mesh/adaptordata.h"
+#include "../Mesh/diplomantenadaptor.h"
+#include "../Mesh/malteadaptor.h"
+#include "../Mesh/meshagent.h"
+
 #include "monitoring.h"
 #include "stdmultilevelsolver.h"
 #include "stdsolver.h"
-
-#include <iomanip>
 
 using namespace std;
 

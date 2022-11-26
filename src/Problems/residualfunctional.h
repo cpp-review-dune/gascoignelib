@@ -24,11 +24,12 @@
 #ifndef __ResidualFunctional_h
 #define __ResidualFunctional_h
 
-#include "dirichletdata.h"
-#include "functional.h"
-#include "periodicdata.h"
 #include <set>
 #include <string>
+
+#include "../Interface/dirichletdata.h"
+#include "../Interface/functional.h"
+#include "../Interface/periodicdata.h"
 
 /*-----------------------------------------*/
 

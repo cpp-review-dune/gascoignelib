@@ -24,9 +24,10 @@
 #ifndef __StdLoop_h
 #define __StdLoop_h
 
-#include "adaptordata.h"
+#include "../Common/extrapolator.h"
+#include "../Mesh/adaptordata.h"
+
 #include "basicloop.h"
-#include "extrapolator.h"
 
 /*-----------------------------------------*/
 

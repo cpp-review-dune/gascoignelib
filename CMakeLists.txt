@@ -33,24 +33,25 @@ OPTION(WITH_UMFPACK_LONG "Long-integer indices in UMFPACK >4GB matrices" OFF)
 #
 # Include directories:
 #
-SET(GASCOIGNE_INCLUDE_DIRS
-  ${GASCOIGNE_DIR}/src/Common
-  ${GASCOIGNE_DIR}/src/DofHandler
-  ${GASCOIGNE_DIR}/src/Discretization/Q1
-  ${GASCOIGNE_DIR}/src/Discretization/Q2
-  ${GASCOIGNE_DIR}/src/Discretization/DG
-  ${GASCOIGNE_DIR}/src/Interface
-  ${GASCOIGNE_DIR}/src/LinAlg
-  ${GASCOIGNE_DIR}/src/Mesh
-  ${GASCOIGNE_DIR}/src/Problems
-  ${GASCOIGNE_DIR}/src/Solver
-)
+# SET(GASCOIGNE_INCLUDE_DIRS
+#   ${GASCOIGNE_DIR}/src/Common
+#   ${GASCOIGNE_DIR}/src/DofHandler
+#   ${GASCOIGNE_DIR}/src/Discretization/Q1
+#   ${GASCOIGNE_DIR}/src/Discretization/Q2
+#   ${GASCOIGNE_DIR}/src/Discretization/DG
+#   ${GASCOIGNE_DIR}/src/Interface
+#   ${GASCOIGNE_DIR}/src/LinAlg
+#   ${GASCOIGNE_DIR}/src/Mesh
+#   ${GASCOIGNE_DIR}/src/Problems
+#   ${GASCOIGNE_DIR}/src/Solver
+# )
+SET(GASCOIGNE_INCLUDE_DIRS ${GASCOIGNE_DIR}/src/)
 
 #
 # Setup compiler flags and compile definitions:
 #
 SET(GASCOIGNE_CXX_FLAGS
-  "-std=c++11 -pedantic -Wall -Wno-unknown-pragmas" CACHE STRING "Configuration flags"
+  "-std=c++11 -pedantic -Wall -Wno-unknown-pragmas -Wsign-compare" CACHE STRING "Configuration flags"
   )
 
 #

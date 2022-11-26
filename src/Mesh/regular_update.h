@@ -24,7 +24,7 @@
 #ifndef __regular_update_h
 #define __regular_update_h
 
-#include "gascoigne.h"
+#include "../Interface/gascoigne.h"
 
 namespace Gascoigne {
 void

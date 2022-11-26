@@ -24,8 +24,9 @@
 #ifndef __levelmesh3d_h
 #define __levelmesh3d_h
 
+#include "../Interface/gascoigne.h"
+
 #include "boundaryindexhandler.h"
-#include "gascoigne.h"
 #include "hierarchicalmesh3d.h"
 #include "index.h"
 #include "patchindexhandler.h"

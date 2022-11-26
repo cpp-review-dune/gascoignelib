@@ -24,16 +24,17 @@
 #ifndef __StdMultiLevelSolver_h
 #define __StdMultiLevelSolver_h
 
-#include "functionalcontainer.h"
-#include "meshagent.h"
-#include "mginterpolatorinterface.h"
+#include "../Common/stopwatch.h"
+#include "../Interface/mginterpolatorinterface.h"
+#include "../Interface/problemdescriptorinterface.h"
+#include "../Interface/vectorinterface.h"
+#include "../Mesh/meshagent.h"
+#include "../Problems/functionalcontainer.h"
+#include "../Problems/problemcontainer.h"
+
 #include "monitor.h"
-#include "problemcontainer.h"
-#include "problemdescriptorinterface.h"
 #include "stdmultilevelsolverdata.h"
 #include "stdsolver.h"
-#include "stopwatch.h"
-#include "vectorinterface.h"
 
 /*-------------------------------------------------------------*/
 

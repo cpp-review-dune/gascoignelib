@@ -24,13 +24,14 @@
 #ifndef __IntegratorInterface_h
 #define __IntegratorInterface_h
 
+#include "../Common/entrymatrix.h"
+
 #include "boundaryequation.h"
 #include "boundaryfunctional.h"
 #include "boundaryrighthandside.h"
 #include "diracrighthandside.h"
 #include "domainfunctional.h"
 #include "domainrighthandside.h"
-#include "entrymatrix.h"
 #include "equation.h"
 #include "exactsolution.h"
 #include "feminterface.h"

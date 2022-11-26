@@ -24,11 +24,13 @@
 #ifndef __periodicdata_h
 #define __periodicdata_h
 
-#include "application.h"
-#include "nvector.h"
-#include "vertex.h"
 #include <set>
 #include <string>
+
+#include "../Common/nvector.h"
+#include "../Common/vertex.h"
+
+#include "application.h"
 
 /*-----------------------------------------*/
 

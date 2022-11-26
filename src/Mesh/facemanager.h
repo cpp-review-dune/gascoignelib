@@ -24,8 +24,9 @@
 #ifndef __facemanager_h
 #define __facemanager_h
 
+#include "../Interface/gascoigne.h"
+
 #include "edge.h"
-#include "gascoigne.h"
 #include "hangcontainer3d.h"
 #include "hexlawandorder.h"
 

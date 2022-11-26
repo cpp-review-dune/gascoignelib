@@ -24,8 +24,9 @@
 #ifndef __gnuplotdata_h
 #define __gnuplotdata_h
 
-#include "vertex.h"
 #include <string>
+
+#include "../../Common/vertex.h"
 
 /*-----------------------------------------*/
 

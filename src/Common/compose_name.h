@@ -26,7 +26,7 @@
 
 #include <string>
 
-#include "gascoigne.h"
+#include "../Interface/gascoigne.h"
 
 namespace Gascoigne {
 void

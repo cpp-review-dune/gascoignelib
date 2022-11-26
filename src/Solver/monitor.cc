@@ -22,12 +22,14 @@
  **/
 
 #include "monitor.h"
-#include "filescanner.h"
-#include "stlio.h"
+
 #include <cstdio>
 #include <cstring>
 #include <fstream>
 #include <string>
+
+#include "../Common/filescanner.h"
+#include "../Common/stlio.h"
 
 using namespace std;
 

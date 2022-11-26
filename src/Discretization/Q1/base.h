@@ -24,8 +24,9 @@
 #ifndef __base_h
 #define __base_h
 
-#include "vertex.h"
 #include <string>
+
+#include "../../Common/vertex.h"
 
 /**************************************************/
 

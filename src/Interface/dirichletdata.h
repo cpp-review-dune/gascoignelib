@@ -24,12 +24,14 @@
 #ifndef __dirichletdata_h
 #define __dirichletdata_h
 
-#include "application.h"
-#include "filescanner.h"
-#include "nvector.h"
-#include "vertex.h"
 #include <set>
 #include <string>
+
+#include "../Common/filescanner.h"
+#include "../Common/nvector.h"
+#include "../Common/vertex.h"
+
+#include "application.h"
 
 /*-----------------------------------------*/
 

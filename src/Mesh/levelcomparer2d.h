@@ -24,7 +24,7 @@
 #ifndef __levelcomparer2d_h
 #define __levelcomparer2d_h
 
-#include "compareclass.h"
+#include "../Common/compareclass.h"
 
 /*---------------------------------------------------*/
 

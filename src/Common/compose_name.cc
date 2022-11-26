@@ -21,11 +21,12 @@
  *
  **/
 
-#include "compose_name.h"
-#include "stdio.h"
 #include <iostream>
+#include <stdio.h>
 
-#include "gascoigne.h"
+#include "../Interface/gascoigne.h"
+
+#include "compose_name.h"
 
 using namespace std;
 

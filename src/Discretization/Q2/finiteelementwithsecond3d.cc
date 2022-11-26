@@ -22,10 +22,13 @@
  **/
 
 #include "finiteelementwithsecond3d.xx"
-#include "../Q1/finiteelement.xx"
-#include "baseq23dwithsecond.h"
 #include "finiteelementwithsecond.xx"
-#include "transformation3d.h"
+
+#include "../Q1/finiteelement.xx"
+
+#include "../Q1/transformation3d.h"
+
+#include "baseq23dwithsecond.h"
 
 /*-----------------------------------------------------*/
 namespace Gascoigne {

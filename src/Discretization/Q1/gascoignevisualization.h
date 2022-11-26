@@ -24,7 +24,8 @@
 #ifndef __GascoigneVisualization_h
 #define __GascoigneVisualization_h
 
-#include "gascoigne.h"
+#include "../../Interface/gascoigne.h"
+
 #include "visualization.h"
 #include "visudatacompvector.h"
 

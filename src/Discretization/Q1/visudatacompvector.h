@@ -24,9 +24,9 @@
 #ifndef __visudatacompvector_h
 #define __visudatacompvector_h
 
-#include "compvector.h"
-#include "gascoigne.h"
-#include "visudata.h"
+#include "../../Common/compvector.h"
+#include "../../Interface/gascoigne.h"
+#include "../../Interface/visudata.h"
 
 /*----------------------------------------------*/
 

@@ -24,10 +24,11 @@
 #ifndef __HNStructureInterface_h
 #define __HNStructureInterface_h
 
+#include "../LinAlg/sparsestructure.h"
+#include "../Mesh/gascoignemesh.h"
+
 #include "gascoigne.h"
-#include "gascoignemesh.h"
 #include "matrixinterface.h"
-#include "sparsestructure.h"
 
 /*-----------------------------------------*/
 

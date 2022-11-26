@@ -22,8 +22,10 @@
  **/
 
 #include "solverinfos.h"
-#include "filescanner.h"
+
 #include <cassert>
+
+#include "../Common/filescanner.h"
 
 using namespace std;
 

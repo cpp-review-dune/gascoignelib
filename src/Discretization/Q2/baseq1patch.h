@@ -24,7 +24,7 @@
 #ifndef __baseq12dPatch_h
 #define __baseq12dPatch_h
 
-#include "baseq12d.h"
+#include "../Q1/baseq12d.h"
 
 #define NDOF 9
 #define NDOF1d 3

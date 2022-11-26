@@ -24,9 +24,10 @@
 #ifndef __EdgeInfo_h
 #define __EdgeInfo_h
 
-#include "compvector.h"
+#include "../Common/compvector.h"
+#include "../Interface/gascoigne.h"
+
 #include "edge.h"
-#include "gascoigne.h"
 
 /**********************************************************/
 

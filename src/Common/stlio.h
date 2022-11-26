@@ -24,17 +24,17 @@
 #ifndef __stlio_h
 #define __stlio_h
 
-#include "compvector.h"
-#include "gascoigne.h"
 #include <array>
 #include <iostream>
-#include <string>
-
 #include <map>
 #include <set>
+#include <string>
 #include <vector>
 
-#include "gascoignehash.h"
+#include "../Interface/gascoigne.h"
+#include "../Interface/gascoignehash.h"
+
+#include "compvector.h"
 
 /*---------------------------------------------*/
 

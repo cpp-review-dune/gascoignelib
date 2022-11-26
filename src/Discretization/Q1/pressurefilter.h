@@ -24,9 +24,9 @@
 #ifndef __PressureFilter_h
 #define __PressureFilter_h
 
-#include "compvector.h"
-#include "gascoigne.h"
-#include "nvector.h"
+#include "../../Common/compvector.h"
+#include "../../Common/nvector.h"
+#include "../../Interface/gascoigne.h"
 
 /*-----------------------------------------*/
 

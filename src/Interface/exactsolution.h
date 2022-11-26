@@ -24,9 +24,11 @@
 #ifndef __ExactSolution_h
 #define __ExactSolution_h
 
-#include "application.h"
-#include "vertex.h"
 #include <string>
+
+#include "../Common/vertex.h"
+
+#include "application.h"
 
 /*-----------------------------------------*/
 

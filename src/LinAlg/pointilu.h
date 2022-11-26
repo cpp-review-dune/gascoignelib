@@ -24,7 +24,8 @@
 #ifndef __PointIlu_h
 #define __PointIlu_h
 
-#include "iluinterface.h"
+#include "../Interface/iluinterface.h"
+
 #include "simpleilu.h"
 #include "sparsestructureadaptor.h"
 

@@ -21,16 +21,18 @@
  *
  **/
 
+#include <iomanip>
+
+#include "../Common/backup.h"
+#include "../Common/compose_name.h"
+#include "../Common/filescanner.h"
+#include "../Common/gostream.h"
+#include "../Mesh/adaptordata.h"
+#include "../Mesh/meshagent.h"
+
 #include "basicloop.h"
-#include "adaptordata.h"
-#include "backup.h"
-#include "compose_name.h"
-#include "filescanner.h"
-#include "gostream.h"
-#include "meshagent.h"
 #include "monitoring.h"
 #include "stdmultilevelsolver.h"
-#include <iomanip>
 
 using namespace std;
 

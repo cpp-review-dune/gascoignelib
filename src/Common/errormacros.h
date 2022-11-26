@@ -26,8 +26,8 @@
 
 #define FILE_ERROR(FILE, NAME)                                                 \
   if (!FILE.is_open()) {                                                       \
-    std::cerr << " Could not open file " << NAME << std::endl;                 \
-    ;                                                                          \
+    throw std::runtime_error(std::string(" Could not open file ") +            \
+                             std::string(NAME));                               \
   }
 
 #endif

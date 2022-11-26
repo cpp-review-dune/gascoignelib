@@ -28,8 +28,8 @@
 #include <list>
 #include <vector>
 
-#include "gascoigne.h"
-#include "stencilinterface.h"
+#include "../Interface/gascoigne.h"
+#include "../Interface/stencilinterface.h"
 
 namespace Gascoigne {
 

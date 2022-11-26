@@ -24,23 +24,22 @@
 #ifndef __BasicLoop_h
 #define __BasicLoop_h
 
-#include "adaptordata.h"
-#include "extrapolator.h"
-#include "meshagent.h"
+#include "../Common/extrapolator.h"
+#include "../Common/paramfile.h"
+#include "../Common/stopwatch.h"
+#include "../Discretization/Q1/visualization.h"
+#include "../Discretization/Q1/visudatacompvector.h"
+#include "../Discretization/Q1/visudatanvector.h"
+#include "../Interface/matrix.h"
+#include "../Interface/problemdescriptorinterface.h"
+#include "../Interface/vectorinterface.h"
+#include "../Mesh/adaptordata.h"
+#include "../Mesh/meshagent.h"
+#include "../Problems/functionalcontainer.h"
+
 #include "monitor.h"
-#include "stdmultilevelsolver.h"
-#include "visualization.h"
-#include "visudatacompvector.h"
-#include "visudatanvector.h"
-
-#include "functionalcontainer.h"
-#include "paramfile.h"
-#include "problemdescriptorinterface.h"
 #include "solverinfos.h"
-#include "stopwatch.h"
-#include "vectorinterface.h"
-
-#include "matrix.h"
+#include "stdmultilevelsolver.h"
 
 /*-----------------------------------------*/
 

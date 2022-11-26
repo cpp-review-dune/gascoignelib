@@ -26,7 +26,8 @@
 
 #ifdef __WITH_UMFPACK__
 
-#include "iluinterface.h"
+#include "../Interface/iluinterface.h"
+
 #include "simplematrix.h"
 
 namespace Gascoigne {

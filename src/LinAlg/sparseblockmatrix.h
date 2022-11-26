@@ -24,9 +24,10 @@
 #ifndef __sparseblockmatrix_h
 #define __sparseblockmatrix_h
 
+#include "../Interface/gascoigne.h"
+#include "../Interface/matrixinterface.h"
+
 #include "columndiagstencil.h"
-#include "gascoigne.h"
-#include "matrixinterface.h"
 #include "sparsestructure.h"
 
 /*-------------------------------------------------------------*/

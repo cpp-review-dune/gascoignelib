@@ -24,11 +24,12 @@
 #ifndef __boundarymanager_h
 #define __boundarymanager_h
 
-#include "gascoigne.h"
-#include "paramfile.h"
-#include "stlio.h"
 #include <map>
 #include <string>
+
+#include "../Common/paramfile.h"
+#include "../Common/stlio.h"
+#include "../Interface/gascoigne.h"
 
 namespace Gascoigne {
 

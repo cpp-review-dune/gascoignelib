@@ -27,12 +27,12 @@
  *
  **/
 
-#include "boundaryequation.h"
-#include "dirichletdata.h"
-#include "domainrighthandside.h"
-#include "equation.h"
-#include "lpsequation.h"
-#include "paramfile.h"
+#include <Common/paramfile.h>
+#include <Interface/boundaryequation.h>
+#include <Interface/dirichletdata.h>
+#include <Interface/domainrighthandside.h>
+#include <Interface/equation.h>
+#include <Interface/lpsequation.h>
 
 /*-----------------------------------------*/
 

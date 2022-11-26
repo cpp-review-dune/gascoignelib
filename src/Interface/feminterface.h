@@ -24,10 +24,12 @@
 #ifndef __FemInterface_h
 #define __FemInterface_h
 
-#include "gascoigne.h"
-#include "nmatrix.h"
-#include "vertex.h"
 #include <string>
+
+#include "../Common/nmatrix.h"
+#include "../Common/vertex.h"
+
+#include "gascoigne.h"
 
 /*-----------------------------------------*/
 

@@ -37,8 +37,8 @@
 #include <set>
 #include <string>
 
-#include "derivativevector.h"
-#include "nmatrix.h"
+#include "../Common/derivativevector.h"
+#include "../Common/nmatrix.h"
 
 namespace Gascoigne {
 

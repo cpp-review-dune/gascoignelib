@@ -21,9 +21,10 @@
  *
  **/
 
-#include "gascoignehash.h"
 #include "hanglist.h"
-#include "stlio.h"
+
+#include "../Common/stlio.h"
+#include "../Interface/gascoignehash.h"
 
 #define HANGMAP HASHMAP<EdgeArray<N>, int, EdgeHash<N>>
 

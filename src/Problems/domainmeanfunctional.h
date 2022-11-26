@@ -24,8 +24,9 @@
 #ifndef __DomainMeanFunctional_h
 #define __DomainMeanFunctional_h
 
-#include "domainfunctional.h"
 #include <set>
+
+#include "../Interface/domainfunctional.h"
 
 /*-----------------------------------------*/
 

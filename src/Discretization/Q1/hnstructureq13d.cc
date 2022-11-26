@@ -22,8 +22,10 @@
  **/
 
 #include "hnstructureq13d.h"
-#include "gascoignemesh.h"
+
 #include <algorithm>
+
+#include "../../Mesh/gascoignemesh.h"
 
 using namespace std;
 

@@ -21,7 +21,7 @@
  *
  **/
 
-#include "exactsolution.h"
+#include "../Interface/exactsolution.h"
 
 /*-----------------------------------------*/
 

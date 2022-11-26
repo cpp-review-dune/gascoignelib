@@ -24,7 +24,7 @@
 #ifndef __monitoring_h
 #define __monitoring_h
 
-#include "nvector.h"
+#include "../Common/nvector.h"
 
 /*---------------------------------------------------------*/
 

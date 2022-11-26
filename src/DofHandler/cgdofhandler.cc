@@ -22,8 +22,9 @@
  **/
 
 #include "cgdofhandler.h"
-#include "baseq12d.h"
-#include "baseq13d.h"
+
+#include "../Discretization/Q1/baseq12d.h"
+#include "../Discretization/Q1/baseq13d.h"
 
 /*-----------------------------------------*/
 

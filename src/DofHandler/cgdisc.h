@@ -26,31 +26,29 @@
  * on this license.
  *
  **/
-#include "discretizationinterface.h"
-#include "mginterpolatormatrix.h"
-#include "mginterpolatornested.h"
+
 //#include "omp.h"
-#include "gascoignevisualization.h"
-#include "pressurefilter.h"
-#include "problemdescriptorbase.h"
-#include "sparsestructure.h"
-#include "stopwatch.h"
 
-#include "finiteelement.h"
-
-#include "hnstructureq13d.h"
-#include "hnstructureq22d.h"
-#include "hnstructureq23d.h"
+#include "../Common/stopwatch.h"
+#include "../Discretization/Q1/baseq12d.h"
+#include "../Discretization/Q1/baseq13d.h"
+#include "../Discretization/Q1/finiteelement.h"
+#include "../Discretization/Q1/gascoignevisualization.h"
+#include "../Discretization/Q1/hnstructureq13d.h"
+#include "../Discretization/Q1/mginterpolatornested.h"
+#include "../Discretization/Q1/pressurefilter.h"
+#include "../Discretization/Q2/baseq13dpatch.h"
+#include "../Discretization/Q2/baseq1patch.h"
+#include "../Discretization/Q2/baseq22d.h"
+#include "../Discretization/Q2/baseq23d.h"
+#include "../Discretization/Q2/hnstructureq22d.h"
+#include "../Discretization/Q2/hnstructureq23d.h"
+#include "../Interface/discretizationinterface.h"
+#include "../LinAlg/sparsestructure.h"
+#include "../Problems/problemdescriptorbase.h"
 
 #include "elementintegrator.h"
 #include "elementlpsintegrator.h"
-
-#include "baseq12d.h"
-#include "baseq13d.h"
-#include "baseq13dpatch.h"
-#include "baseq1patch.h"
-#include "baseq22d.h"
-#include "baseq23d.h"
 
 namespace Gascoigne {
 namespace atom_ops {

@@ -29,9 +29,10 @@
 /*----------------------------   functionalcontainer.h
  * ---------------------------*/
 
-#include "functional.h"
 #include <map>
 #include <string>
+
+#include "../Interface/functional.h"
 
 namespace Gascoigne {
 

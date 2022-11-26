@@ -24,8 +24,9 @@
 #ifndef __optadaptor_h
 #define __optadaptor_h
 
+#include "../Interface/gascoigne.h"
+
 #include "adaptordata.h"
-#include "gascoigne.h"
 
 /*********************************************************************/
 

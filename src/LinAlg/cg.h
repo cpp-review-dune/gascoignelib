@@ -24,7 +24,7 @@
 #ifndef __cg_h
 #define __cg_h
 
-#include "cginfo.h"
+#include "../Common/cginfo.h"
 
 /********************************************************************/
 

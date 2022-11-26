@@ -6,8 +6,9 @@
 /*----------------------------   triaintegrationformulas.h
  * ---------------------------*/
 
+#include "../../Interface/integrationformulainterface.h"
+
 #include "integrationformula.h"
-#include "integrationformulainterface.h"
 
 namespace Gascoigne {
 

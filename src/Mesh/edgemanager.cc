@@ -22,13 +22,15 @@
  **/
 
 #include "edgemanager.h"
-#include "hangsort.h"
-#include "vecalgo.h"
+
 #include <algorithm>
 #include <map>
 #include <numeric>
 
-#include "gascoignehash.h"
+#include "../Common/vecalgo.h"
+#include "../Interface/gascoignehash.h"
+
+#include "hangsort.h"
 
 using namespace std;
 

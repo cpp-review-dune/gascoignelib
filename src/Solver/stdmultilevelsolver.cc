@@ -23,13 +23,15 @@
  **/
 
 #include "stdmultilevelsolver.h"
-#include "cg.h"
-#include "compose_name.h"
-#include "gascoignemultigridmesh.h"
-#include "gmres.h"
-#include "mginterpolatormatrix.h"
-#include "mginterpolatornested.h"
+
 #include <iomanip>
+
+#include "../Common/compose_name.h"
+#include "../Discretization/Q1/mginterpolatormatrix.h"
+#include "../Discretization/Q1/mginterpolatornested.h"
+#include "../LinAlg/cg.h"
+#include "../LinAlg/gmres.h"
+#include "../Mesh/gascoignemultigridmesh.h"
 
 using namespace std;
 

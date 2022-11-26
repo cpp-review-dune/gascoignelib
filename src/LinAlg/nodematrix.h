@@ -24,7 +24,7 @@
 #ifndef __nodematrix_h
 #define __nodematrix_h
 
-#include "numfixarray.h"
+#include "../Common/numfixarray.h"
 
 /**************************************************/
 

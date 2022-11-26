@@ -24,8 +24,8 @@
 #ifndef __IntegrationFormulaBase_h
 #define __IntegrationFormulaBase_h
 
-#include "gascoigne.h"
-#include "integrationformulainterface.h"
+#include "../../Interface/gascoigne.h"
+#include "../../Interface/integrationformulainterface.h"
 
 /*-----------------------------------------*/
 

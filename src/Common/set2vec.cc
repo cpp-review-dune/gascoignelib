@@ -21,8 +21,9 @@
  *
  **/
 
+#include "../Interface/gascoigne.h"
+
 #include "set2vec.h"
-#include "gascoigne.h"
 
 using namespace std;
 

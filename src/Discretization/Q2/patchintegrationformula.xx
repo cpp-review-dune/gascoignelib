@@ -21,7 +21,7 @@
  *
  **/
 
-#include "integrationformula.h"
+#include "../Q1/integrationformula.h"
 
 namespace Gascoigne {
 

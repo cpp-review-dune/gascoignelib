@@ -24,9 +24,10 @@
 #ifndef __SimpleMatrix_h
 #define __SimpleMatrix_h
 
+#include "../Common/compvector.h"
+#include "../Interface/matrixinterface.h"
+
 #include "columndiagstencil.h"
-#include "compvector.h"
-#include "matrixinterface.h"
 #include "sparsestructureadaptor.h"
 
 namespace Gascoigne {

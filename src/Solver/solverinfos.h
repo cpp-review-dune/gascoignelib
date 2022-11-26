@@ -24,9 +24,10 @@
 #ifndef __SolverInfos_h
 #define __SolverInfos_h
 
-#include "nlinfo.h"
-#include "paramfile.h"
 #include <map>
+
+#include "../Common/nlinfo.h"
+#include "../Common/paramfile.h"
 
 /*---------------------------------------------------------------*/
 

@@ -25,28 +25,26 @@
 #ifndef __StdSolver_h
 #define __StdSolver_h
 
-#include "domainfunction.h"
-#include "gascoigne.h"
-#include "gascoignemesh.h"
-#include "gascoignevisualization.h"
+#include "../Common/stopwatch.h"
+#include "../Discretization/Q1/gascoignevisualization.h"
+#include "../Discretization/Q1/pressurefilter.h"
+#include "../Interface/discretizationinterface.h"
+#include "../Interface/domainfunction.h"
+#include "../Interface/gascoigne.h"
+#include "../Interface/iluinterface.h"
+#include "../Interface/matrixinterface.h"
+#include "../Interface/multigridmeshinterface.h"
+#include "../Interface/pointfunctional.h"
+#include "../Interface/problemdescriptorinterface.h"
+#include "../Interface/vectorinterface.h"
+#include "../LinAlg/sparsestructure.h"
+#include "../Mesh/gascoignemesh.h"
+#include "../Mesh/hierarchicalmesh.h"
+#include "../Problems/residualfunctional.h"
 
 #include "ghostagent.h"
 #include "iluagent.h"
-
-#include "hierarchicalmesh.h"
-#include "multigridmeshinterface.h"
-#include "pointfunctional.h"
-#include "pressurefilter.h"
-#include "residualfunctional.h"
 #include "solverdata.h"
-#include "sparsestructure.h"
-#include "stopwatch.h"
-
-#include "discretizationinterface.h"
-#include "iluinterface.h"
-#include "matrixinterface.h"
-#include "problemdescriptorinterface.h"
-#include "vectorinterface.h"
 
 /*-----------------------------------------*/
 

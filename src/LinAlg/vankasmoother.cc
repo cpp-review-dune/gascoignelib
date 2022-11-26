@@ -1,5 +1,6 @@
 #include "vankasmoother.h"
-#include "gascoignehash.h"
+
+#include "../Interface/gascoignehash.h"
 
 namespace Gascoigne {
 //////////////////// Construction

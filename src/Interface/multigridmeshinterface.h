@@ -24,7 +24,7 @@
 #ifndef __multigridmeshinterface_h
 #define __multigridmeshinterface_h
 
-#include "gascoignemesh.h"
+#include "../Mesh/gascoignemesh.h"
 
 /*--------------------------------------*/
 

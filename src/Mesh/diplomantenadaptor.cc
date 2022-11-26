@@ -22,10 +22,11 @@
  **/
 
 #include "diplomantenadaptor.h"
-#include "compareclass.h"
-#include <numeric>
 
 #include <fstream>
+#include <numeric>
+
+#include "../Common/compareclass.h"
 
 using namespace std;
 

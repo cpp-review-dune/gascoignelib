@@ -21,11 +21,14 @@
  *
  **/
 
-#include "finiteelementwithsecond2d.xx"
 #include "../Q1/finiteelement.xx"
-#include "baseq22dwithsecond.h"
+
 #include "finiteelementwithsecond.xx"
-#include "transformation2d.h"
+#include "finiteelementwithsecond2d.xx"
+
+#include "../Q1/transformation2d.h"
+
+#include "baseq22dwithsecond.h"
 
 /*-----------------------------------------------------*/
 

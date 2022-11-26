@@ -24,7 +24,7 @@
 #ifndef __deletecell_h
 #define __deletecell_h
 
-#include "gascoigne.h"
+#include "../Interface/gascoigne.h"
 
 /*---------------------------------------------------*/
 

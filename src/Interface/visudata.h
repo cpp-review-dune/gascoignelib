@@ -24,7 +24,9 @@
 #ifndef __visudata_h
 #define __visudata_h
 
-#include "vertex.h"
+#include "../Common/vertex.h"
+
+#include "gascoigne.h"
 
 /***************************************************************/
 

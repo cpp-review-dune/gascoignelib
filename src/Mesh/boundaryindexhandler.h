@@ -24,9 +24,10 @@
 #ifndef __boundaryindexhandler_h
 #define __boundaryindexhandler_h
 
-#include "gascoigne.h"
 #include <map>
 #include <set>
+
+#include "../Interface/gascoigne.h"
 
 /*--------------------------------------------------------------*/
 

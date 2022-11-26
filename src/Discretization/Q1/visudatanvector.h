@@ -24,8 +24,8 @@
 #ifndef __VisuDataNVector_h
 #define __VisuDataNVector_h
 
-#include "nvector.h"
-#include "visudata.h"
+#include "../../Common/nvector.h"
+#include "../../Interface/visudata.h"
 
 /*-----------------------------------------*/
 

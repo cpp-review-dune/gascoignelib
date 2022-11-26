@@ -22,7 +22,8 @@
  **/
 
 #include "mginterpolatornested.h"
-#include "gascoignemeshtransfer.h"
+
+#include "../../Mesh/gascoignemeshtransfer.h"
 
 using namespace std;
 

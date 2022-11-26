@@ -24,9 +24,10 @@
 #ifndef __HangingIndexHandler_h
 #define __HangingIndexHandler_h
 
-#include "gascoigne.h"
 #include <array>
 #include <map>
+
+#include "../Interface/gascoigne.h"
 
 /*-----------------------------------------*/
 

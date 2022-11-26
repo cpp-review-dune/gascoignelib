@@ -24,10 +24,11 @@
 #ifndef __GascoigneMeshTransfer_h
 #define __GascoigneMeshTransfer_h
 
-#include "gascoigne.h"
-#include "meshtransferinterface.h"
 #include <array>
 #include <map>
+
+#include "../Interface/gascoigne.h"
+#include "../Interface/meshtransferinterface.h"
 
 /*-----------------------------------------*/
 

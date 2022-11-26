@@ -27,16 +27,18 @@
  *
  **/
 
-#include "discretizationinterface.h"
-#include "mginterpolatornested.h"
 //#include "omp.h"
+
+#include "../Common/stopwatch.h"
+#include "../Discretization/Q1/gascoignevisualization.h"
+#include "../Discretization/Q1/mginterpolatornested.h"
+#include "../Discretization/Q1/pressurefilter.h"
+#include "../Interface/discretizationinterface.h"
+#include "../LinAlg/sparsestructure.h"
+#include "../Problems/problemdescriptorbase.h"
+
 #include "cgbase.h"
 #include "cgdofhandler.h"
-#include "gascoignevisualization.h"
-#include "pressurefilter.h"
-#include "problemdescriptorbase.h"
-#include "sparsestructure.h"
-#include "stopwatch.h"
 
 namespace Gascoigne {
 

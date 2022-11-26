@@ -21,14 +21,15 @@
  *
  **/
 
-#include "pointilu.h"
-#include "compareclass.h"
-#include "componentsparsestructureadaptor.h"
-#include "nodesparsestructureadaptor.h"
-#include "pointmatrix.h"
 #include <numeric>
 
-#include "gascoigne.h"
+#include "../Common/compareclass.h"
+#include "../Interface/gascoigne.h"
+
+#include "componentsparsestructureadaptor.h"
+#include "nodesparsestructureadaptor.h"
+#include "pointilu.h"
+#include "pointmatrix.h"
 
 using namespace std;
 

@@ -24,10 +24,16 @@
 #ifndef __DiscretizationInterface_h
 #define __DiscretizationInterface_h
 
+#include <string>
+
+#include "../Common/compvector.h"
+#include "../Common/paramfile.h"
+#include "../Mesh/gascoignemesh.h"
+#include "../Problems/problemdescriptorbase.h"
+
 #include "boundaryequation.h"
 #include "boundaryfunctional.h"
 #include "boundaryrighthandside.h"
-#include "compvector.h"
 #include "curve.h"
 #include "datacontainer.h"
 #include "diracrighthandside.h"
@@ -38,14 +44,10 @@
 #include "equation.h"
 #include "exactsolution.h"
 #include "gascoigne.h"
-#include "gascoignemesh.h"
 #include "matrixinterface.h"
 #include "meshtransferinterface.h"
 #include "mginterpolatorinterface.h"
-#include "paramfile.h"
 #include "pointfunctional.h"
-#include "problemdescriptorbase.h"
-#include <string>
 
 namespace Gascoigne {
 

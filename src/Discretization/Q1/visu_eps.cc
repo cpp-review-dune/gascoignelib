@@ -22,9 +22,11 @@
  **/
 
 #include "visu_eps.h"
-#include "compose_name.h"
-#include "filescanner.h"
+
 #include <fstream>
+
+#include "../../Common/compose_name.h"
+#include "../../Common/filescanner.h"
 
 using namespace std;
 

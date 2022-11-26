@@ -29,10 +29,11 @@
  *
  **/
 
+#include "../Discretization/Q1/integrationformula.h"
+#include "../Discretization/Q2/patchintegrationformula.h"
+#include "../Interface/lpsequation.h"
+
 #include "elementintegrator.h"
-#include "integrationformula.h"
-#include "lpsequation.h"
-#include "patchintegrationformula.h"
 
 namespace Gascoigne {
 

@@ -24,9 +24,10 @@
 #ifndef __sparsestructure_h
 #define __sparsestructure_h
 
-#include "gascoigne.h"
-#include "sparsestructureinterface.h"
 #include <vector>
+
+#include "../Interface/gascoigne.h"
+#include "../Interface/sparsestructureinterface.h"
 
 /*------------------------------------------------------------------------*/
 

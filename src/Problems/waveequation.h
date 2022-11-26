@@ -24,10 +24,9 @@
 #ifndef __waveequation_h
 #define __waveequation_h
 
+#include "../Interface/boundaryequation.h"
+#include "../Interface/equation.h"
 #include "../Interface/gascoigne.h"
-
-#include "boundaryequation.h"
-#include "equation.h"
 
 /*---------------------------------------------------*/
 

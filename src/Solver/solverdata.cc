@@ -22,7 +22,8 @@
  **/
 
 #include "solverdata.h"
-#include "filescanner.h"
+
+#include "../Common/filescanner.h"
 
 using namespace std;
 

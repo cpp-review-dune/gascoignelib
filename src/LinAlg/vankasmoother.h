@@ -27,10 +27,11 @@
  *
  **/
 
-#include "dofhandler.h"
+#include "../DofHandler/dofhandler.h"
+#include "../Interface/gascoigne.h"
+#include "../Interface/iluinterface.h"
+
 #include "fmatrixblock.h"
-#include "gascoigne.h"
-#include "iluinterface.h"
 #include "sparseblockmatrix.h"
 
 // we use Eigen to store and invert the local matrices

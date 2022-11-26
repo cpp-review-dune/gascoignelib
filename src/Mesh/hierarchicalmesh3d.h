@@ -24,14 +24,16 @@
 #ifndef __hierarchicalmesh3d_h
 #define __hierarchicalmesh3d_h
 
+#include <fstream>
+
+#include "../Common/vertex.h"
+
 #include "boundaryfunction.h"
 #include "boundaryquad.h"
 #include "hangcontainer3d.h"
 #include "hex.h"
 #include "hexlawandorder.h"
 #include "hierarchicalmesh.h"
-#include "vertex.h"
-#include <fstream>
 
 // /// Hier muessen wir was machen. Das ist zuviel in der h-Datei...
 //  #include <../../boost/config.hpp>

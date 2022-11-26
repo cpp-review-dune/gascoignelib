@@ -24,10 +24,11 @@
 #ifndef __MeshAgent_h
 #define __MeshAgent_h
 
+#include "../Problems/stdperiodicmapping.h"
+
 #include "boundaryfunction.h"
 #include "gascoignemultigridmesh.h"
 #include "hierarchicalmesh.h"
-#include "stdperiodicmapping.h"
 
 /*-----------------------------------------*/
 

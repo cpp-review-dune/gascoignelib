@@ -24,11 +24,13 @@
 #ifndef __FiniteElement_h
 #define __FiniteElement_h
 
+#include "../../Interface/feminterface.h"
+
+#include "../Q2/baseq22d.h"
+#include "../Q2/baseq23d.h"
+
 #include "baseq12d.h"
 #include "baseq13d.h"
-#include "baseq22d.h"
-#include "baseq23d.h"
-#include "feminterface.h"
 #include "transformation2d.h"
 #include "transformation3d.h"
 

@@ -24,10 +24,11 @@
 #ifndef __ComponentInformation_h
 #define __ComponentInformation_h
 
+#include "../Common/filescanner.h"
+#include "../Common/gostream.h"
+#include "../Common/stringutil.h"
+
 #include "application.h"
-#include "filescanner.h"
-#include "gostream.h"
-#include "stringutil.h"
 
 namespace Gascoigne {
 

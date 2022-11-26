@@ -38,11 +38,11 @@
  *   BaseQ2      for the test-space
  **/
 
-#include "basicintegrator.h"
-#include "integrationformula.h"
-#include "integrationformulasummed.h"
-#include "patchintegrationformula.h"
-#include "triaintegrationformula.h"
+#include "../Discretization/Q1/basicintegrator.h"
+#include "../Discretization/Q1/integrationformula.h"
+#include "../Discretization/Q1/integrationformulasummed.h"
+#include "../Discretization/Q1/triaintegrationformula.h"
+#include "../Discretization/Q2/patchintegrationformula.h"
 
 namespace Gascoigne {
 

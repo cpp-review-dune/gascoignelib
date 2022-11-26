@@ -22,8 +22,9 @@
  **/
 
 #include "stdmultilevelsolverdata.h"
-#include "filescanner.h"
-#include "stringutil.h"
+
+#include "../Common/filescanner.h"
+#include "../Common/stringutil.h"
 
 using namespace std;
 

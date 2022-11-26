@@ -24,7 +24,7 @@
 #ifndef __HNStructureQ22d_h
 #define __HNStructureQ22d_h
 
-#include "hnstructureq12d.h"
+#include "../Q1/hnstructureq12d.h"
 
 namespace Gascoigne {
 
