@@ -21,12 +21,13 @@
  *
  **/
 
-// -*- c++ -*-
-#include "compareclass.h"
 #include "sparseblockilu.h"
 
-#include "sparsestructure.h"
 #include <numeric>
+
+#include "../Common/compareclass.h"
+
+#include "sparsestructure.h"
 
 /*-------------------------------------------------------------*/
 

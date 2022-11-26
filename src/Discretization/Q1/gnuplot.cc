@@ -20,15 +20,15 @@
  * on this license.
  *
  **/
-
 #include "gnuplot.h"
-#include "compareclass.h"
-#include "compvector.h"
-#include "errormacros.h"
-#include "visualization.h"
 
 #include <algorithm>
 #include <numeric>
+
+#include "../../Common/compareclass.h"
+#include "../../Common/compvector.h"
+#include "../../Common/errormacros.h"
+#include "visualization.h"
 
 using namespace std;
 

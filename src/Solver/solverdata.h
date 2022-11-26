@@ -24,9 +24,10 @@
 #ifndef __SolverData_h
 #define __SolverData_h
 
-#include "gascoigne.h"
-#include "paramfile.h"
 #include <string>
+
+#include "../Common/paramfile.h"
+#include "../Interface/gascoigne.h"
 
 /*----------------------------------------------*/
 

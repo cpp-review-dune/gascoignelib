@@ -22,18 +22,20 @@
  **/
 
 #include "hierarchicalmesh3d.h"
+
+#include <fstream>
+#include <numeric>
+
+#include "../Common/set2vec.h"
+#include "../Common/stlio.h"
+#include "../Common/vecalgo.h"
+
 #include "coarsehierarchicalmesh3d.h"
 #include "deletecells.h"
 #include "facemanager.h"
 #include "levelcomparer3d.h"
 #include "quad.h"
 #include "regular_update.h"
-#include "set2vec.h"
-#include "stlio.h"
-#include "vecalgo.h"
-
-#include <fstream>
-#include <numeric>
 
 using namespace std;
 

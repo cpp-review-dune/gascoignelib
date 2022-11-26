@@ -24,9 +24,10 @@
 #ifndef __MalteAdaptor_h
 #define __MalteAdaptor_h
 
+#include "../Common/paramfile.h"
+#include "../Interface/gascoigne.h"
+
 #include "adaptordata.h"
-#include "gascoigne.h"
-#include "paramfile.h"
 
 namespace Gascoigne {
 

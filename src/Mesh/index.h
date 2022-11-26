@@ -27,8 +27,8 @@
 #include <map>
 #include <set>
 
-#include "gascoigne.h"
-#include "stlio.h"
+#include "../Common/stlio.h"
+#include "../Interface/gascoigne.h"
 
 /*------------------------------------------*/
 

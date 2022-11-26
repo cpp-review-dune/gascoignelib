@@ -25,6 +25,10 @@
 #define __IntegratorWithSecond_h
 
 #include "../Q1/finiteelement.xx"
+
+#include "../Q1/transformation2d.h"
+#include "../Q1/transformation3d.h"
+
 #include "baseq22dwithsecond.h"
 #include "baseq23dwithsecond.h"
 #include "finiteelementwithsecond.h"
@@ -32,8 +36,6 @@
 #include "finiteelementwithsecond2d.xx"
 #include "finiteelementwithsecond3d.xx"
 #include "galerkinintegratorq2.h"
-#include "transformation2d.h"
-#include "transformation3d.h"
 
 /**********************************************************/
 

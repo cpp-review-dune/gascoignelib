@@ -24,11 +24,12 @@
 #ifndef __local_h
 #define __local_h
 
-#include "componentinformationbase.h"
+#include <Common/stopwatch.h>
+#include <Problems/problemdescriptorbase.h>
+#include <Solver/componentinformationbase.h>
+#include <Solver/stdloop.h>
+
 #include "elasticityproblem.h"
-#include "problemdescriptorbase.h"
-#include "stdloop.h"
-#include "stopwatch.h"
 
 extern double __TIME;
 

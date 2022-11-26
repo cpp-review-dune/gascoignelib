@@ -24,7 +24,7 @@
 #ifndef __FiniteElementWithSecond_h
 #define __FiniteElementWithSecond_h
 
-#include "finiteelement.h"
+#include "../Q1/finiteelement.h"
 
 namespace Gascoigne {
 template<int DIM, int BDIM, class TRAFO, class BASE>

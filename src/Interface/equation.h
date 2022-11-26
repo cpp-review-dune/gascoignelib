@@ -24,10 +24,11 @@
 #ifndef __Equation_h
 #define __Equation_h
 
+#include "../Common/compvector.h"
+#include "../Common/entrymatrix.h"
+#include "../Common/vertex.h"
+
 #include "application.h"
-#include "compvector.h"
-#include "entrymatrix.h"
-#include "vertex.h"
 
 /*-------------------------------------------------------------------------*/
 

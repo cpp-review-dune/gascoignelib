@@ -24,7 +24,8 @@
 #ifndef __sparseblockilu_h
 #define __sparseblockilu_h
 
-#include "iluinterface.h"
+#include "../Interface/iluinterface.h"
+
 #include "sparseblockmatrix.h"
 
 /*-------------------------------------------------------------*/

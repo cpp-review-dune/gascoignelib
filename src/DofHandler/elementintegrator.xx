@@ -22,7 +22,8 @@
  **/
 
 #include "elementintegrator.h"
-#include "patchintegrationformula.h"
+
+#include "../Discretization/Q2/patchintegrationformula.h"
 
 using namespace std;
 

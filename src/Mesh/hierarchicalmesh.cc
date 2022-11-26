@@ -25,12 +25,12 @@
 #include "hierarchicalmesh.h"
 #undef __STL_NO_DRAND48
 
-#include "filescanner.h"
-#include "stringutil.h"
-#include <numeric>
-
 #include <algorithm>
+#include <numeric>
 #include <random>
+
+#include "../Common/filescanner.h"
+#include "../Common/stringutil.h"
 
 using namespace std;
 

@@ -22,9 +22,9 @@
  **/
 
 #include "sparsestructure.h"
-#include "stlio.h"
 
-#include "gascoigne.h"
+#include "../Common/stlio.h"
+#include "../Interface/gascoigne.h"
 
 using namespace std;
 

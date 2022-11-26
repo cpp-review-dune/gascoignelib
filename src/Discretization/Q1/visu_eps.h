@@ -24,10 +24,11 @@
 #ifndef __visu_eps_h
 #define __visu_eps_h
 
-#include "gascoigne.h"
-#include "gascoignemesh.h"
-#include "string"
 #include <map>
+#include <string>
+
+#include "../../Interface/gascoigne.h"
+#include "../../Mesh/gascoignemesh.h"
 
 /*-------------------------------------------------------------------------*/
 

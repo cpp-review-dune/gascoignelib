@@ -24,7 +24,7 @@
 #ifndef __ProblemDescriptorBase_h
 #define __ProblemDescriptorBase_h
 
-#include "problemdescriptorinterface.h"
+#include "../Interface/problemdescriptorinterface.h"
 
 /*--------------------------------------------------*/
 

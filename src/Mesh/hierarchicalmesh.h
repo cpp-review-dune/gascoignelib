@@ -24,17 +24,18 @@
 #ifndef __hierarchicalmesh_h
 #define __hierarchicalmesh_h
 
+#include <string>
 #include <utility>
 
-#include "compvector.h"
+#include "../Common/compvector.h"
+#include "../Common/paramfile.h"
+#include "../Common/triple.h"
+#include "../Common/vertex.h"
+#include "../Interface/gascoigne.h"
+
 #include "curvedshapes.h"
 #include "edge.h"
-#include "gascoigne.h"
 #include "hanglist.h"
-#include "paramfile.h"
-#include "triple.h"
-#include "vertex.h"
-#include <string>
 
 /*---------------------------------------------------*/
 

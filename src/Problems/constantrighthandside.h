@@ -24,7 +24,7 @@
 #ifndef __ConstantRightHandSide_h
 #define __ConstantRightHandSide_h
 
-#include "domainrighthandside.h"
+#include "../Interface/domainrighthandside.h"
 
 /*-----------------------------------------*/
 

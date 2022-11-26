@@ -24,9 +24,9 @@
 #ifndef __MgInterpolatorMatrix_h
 #define __MgInterpolatorMatrix_h
 
-#include "columnstencil.h"
-#include "gascoigne.h"
-#include "mginterpolatorinterface.h"
+#include "../../Interface/gascoigne.h"
+#include "../../Interface/mginterpolatorinterface.h"
+#include "../../LinAlg/columnstencil.h"
 
 /*-----------------------------------------*/
 

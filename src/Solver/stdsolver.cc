@@ -22,60 +22,51 @@
  *
  **/
 
+#include "stdsolver.h"
+
 #include <iomanip>
 #include <list>
-
-#include "stdsolver.h"
 #include <numeric>
-
-#include "pointilu.h"
-#include "pointmatrix.h"
-
-#include "dynamicblockilu.h"
-#include "dynamicblockmatrix.h"
-
-#include "vankasmoother.h"
-
-/*--------------------------------*/
-#include "cfdblock3d.h"
-#include "fmatrixblock.h"
-#include "sparseblockilu.h"
 
 /*--------------------------------*/
 #ifdef __WITH_UMFPACK__
-#include "sparse_umf.h"
-#include "umfilu.h"
+#include "../LinAlg/sparse_umf.h"
+#include "../LinAlg/umfilu.h"
 #endif
 /*--------------------------------*/
 
-#include "backup.h"
+#include "../Common/backup.h"
+#include "../Common/stopwatch.h"
+#include "../Discretization/Q1/baseq12d.h"
+#include "../Discretization/Q1/baseq13d.h"
+#include "../Discretization/Q1/finiteelement.h"
+#include "../Discretization/Q1/transformation2d.h"
+#include "../Discretization/Q1/transformation3d.h"
+#include "../Discretization/Q1/visu_eps.h"
+#include "../Discretization/Q2/baseq1patch.h"
+#include "../Discretization/Q2/baseq22d.h"
+#include "../Discretization/Q2/baseq23d.h"
+#include "../Discretization/Q2/patchintegrationformula.h"
+#include "../DofHandler/cgdisc.h"
+#include "../DofHandler/cgmixeddisc.h"
+#include "../DofHandler/elementintegrator.h"
+#include "../DofHandler/elementlpsintegrator.h"
+#include "../DofHandler/lagrangedisc.h"
+#include "../Interface/diracrighthandside.h"
+#include "../Interface/glsequation.h"
+#include "../Interface/lpsequation.h"
+#include "../LinAlg/cfdblock3d.h"
+#include "../LinAlg/dynamicblockilu.h"
+#include "../LinAlg/dynamicblockmatrix.h"
+#include "../LinAlg/fmatrixblock.h"
+#include "../LinAlg/pointilu.h"
+#include "../LinAlg/pointmatrix.h"
+#include "../LinAlg/sparseblockilu.h"
+#include "../LinAlg/vankasmoother.h"
+
 #include "cuthillmckee.h"
 #include "ilupermutate.h"
 #include "pi.h"
-#include "stopwatch.h"
-#include "visu_eps.h"
-
-#include "diracrighthandside.h"
-
-//////////////////// Discretization
-#include "baseq12d.h"
-#include "baseq13d.h"
-#include "baseq1patch.h"
-#include "baseq22d.h"
-#include "baseq23d.h"
-#include "cgdisc.h"
-#include "cgmixeddisc.h"
-#include "lagrangedisc.h"
-
-#include "elementintegrator.h"
-#include "elementlpsintegrator.h"
-#include "finiteelement.h"
-#include "patchintegrationformula.h"
-#include "transformation2d.h"
-#include "transformation3d.h"
-
-#include "glsequation.h"
-#include "lpsequation.h"
 
 using namespace std;
 

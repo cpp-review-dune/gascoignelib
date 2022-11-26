@@ -24,9 +24,9 @@
 #ifndef __BasicDiscretization_h
 #define __BasicDiscretization_h
 
-#include "discretizationinterface.h"
-#include "feminterface.h"
-#include "integratorinterface.h"
+#include "../../Interface/discretizationinterface.h"
+#include "../../Interface/feminterface.h"
+#include "../../Interface/integratorinterface.h"
 
 namespace Gascoigne {
 

@@ -28,9 +28,9 @@
  *
  **/
 
-#include "gascoigne.h"
-#include "iluinterface.h"
-#include "matrix.h"
+#include "../Interface/gascoigne.h"
+#include "../Interface/iluinterface.h"
+#include "../Interface/matrix.h"
 
 namespace Gascoigne {
 

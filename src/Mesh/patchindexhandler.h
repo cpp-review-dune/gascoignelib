@@ -24,7 +24,7 @@
 #ifndef __PatchIndexHandler_h
 #define __PatchIndexHandler_h
 
-#include "gascoigne.h"
+#include "../Interface/gascoigne.h"
 
 /*-----------------------------------------*/
 

@@ -22,10 +22,12 @@
  **/
 
 #include "malteadaptor.h"
-#include "compareclass.h"
-#include "filescanner.h"
+
 #include <fstream>
 #include <numeric>
+
+#include "../Common/compareclass.h"
+#include "../Common/filescanner.h"
 
 using namespace std;
 

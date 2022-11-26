@@ -24,9 +24,10 @@
 #ifndef __adaptordata_h
 #define __adaptordata_h
 
-#include "paramfile.h"
 #include <stdio.h>
 #include <string>
+
+#include "../Common/paramfile.h"
 
 namespace Gascoigne {
 class AdaptorData

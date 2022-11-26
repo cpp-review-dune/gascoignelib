@@ -24,8 +24,9 @@
 #ifndef __IntegratorQ1Q2_h
 #define __IntegratorQ1Q2_h
 
-#include "basicintegrator.h"
-#include "domainrighthandside.h"
+#include "../../Interface/domainrighthandside.h"
+
+#include "../Q1/basicintegrator.h"
 
 namespace Gascoigne {
 

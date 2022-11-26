@@ -24,7 +24,7 @@
 #ifndef __stdperiodicmapping_h
 #define __stdperiodicmapping_h
 
-#include "periodicmapping.h"
+#include "../Interface/periodicmapping.h"
 
 /*-----------------------------------------*/
 

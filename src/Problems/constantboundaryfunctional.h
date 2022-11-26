@@ -24,7 +24,7 @@
 #ifndef __ConstantBoundaryFunctional_h
 #define __ConstantBoundaryFunctional_h
 
-#include "boundaryfunctional.h"
+#include "../Interface/boundaryfunctional.h"
 
 /*-----------------------------------------*/
 

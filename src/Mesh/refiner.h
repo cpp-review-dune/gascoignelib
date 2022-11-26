@@ -24,8 +24,9 @@
 #ifndef __refiner_h
 #define __refiner_h
 
+#include "../Common/nmatrix.h"
+
 #include "gascoignemesh.h"
-#include "nmatrix.h"
 
 /*************************************************************/
 

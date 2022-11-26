@@ -24,11 +24,12 @@
 #ifndef __cell_h
 #define __cell_h
 
-#include "gascoigne.h"
-#include "stlio.h"
-#include "vertex.h"
 #include <array>
 #include <string>
+
+#include "../Common/stlio.h"
+#include "../Common/vertex.h"
+#include "../Interface/gascoigne.h"
 
 /*-----------------------------------------------------------*/
 

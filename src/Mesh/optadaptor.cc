@@ -22,10 +22,11 @@
  **/
 
 #include "optadaptor.h"
-#include "compareclass.h"
 
 #include <fstream>
 #include <numeric>
+
+#include "../Common/compareclass.h"
 
 using namespace std;
 

@@ -24,12 +24,14 @@
 #ifndef __BoundaryRightHandSide_h
 #define __BoundaryRightHandSide_h
 
-#include "application.h"
-#include "gascoigne.h"
-#include "nvector.h"
-#include "vertex.h"
 #include <set>
 #include <string>
+
+#include "../Common/nvector.h"
+#include "../Common/vertex.h"
+
+#include "application.h"
+#include "gascoigne.h"
 
 /*-------------------------------------------------------*/
 

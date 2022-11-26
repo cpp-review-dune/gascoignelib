@@ -24,7 +24,8 @@
 #ifndef __vtkvisu_h
 #define __vtkvisu_h
 
-#include "compvector.h"
+#include "../../Common/compvector.h"
+
 #include "visualization.h"
 
 /*--------------------------------------------------*/

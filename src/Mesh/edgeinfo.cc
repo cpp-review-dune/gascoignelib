@@ -22,7 +22,8 @@
  **/
 
 #include "edgeinfo.h"
-#include "stlio.h"
+
+#include "../Common/stlio.h"
 
 using namespace std;
 

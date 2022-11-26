@@ -24,7 +24,7 @@
 #ifndef __DirichletDataByColor_h
 #define __DirichletDataByColor_h
 
-#include "dirichletdata.h"
+#include "../Interface/dirichletdata.h"
 
 /*-----------------------------------------*/
 

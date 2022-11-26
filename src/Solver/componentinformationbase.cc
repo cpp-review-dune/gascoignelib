@@ -22,9 +22,10 @@
  **/
 
 #include "componentinformationbase.h"
-#include "compose_name.h"
-#include "domainrighthandside.h"
-#include "problemdescriptorinterface.h"
+
+#include "../Common/compose_name.h"
+#include "../Interface/domainrighthandside.h"
+#include "../Interface/problemdescriptorinterface.h"
 
 namespace Gascoigne {
 std::string

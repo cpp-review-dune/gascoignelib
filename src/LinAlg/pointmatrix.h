@@ -24,8 +24,9 @@
 #ifndef __PointMatrix_h
 #define __PointMatrix_h
 
-#include "matrixinterface.h"
-#include "mginterpolatormatrix.h"
+#include "../Discretization/Q1/mginterpolatormatrix.h"
+#include "../Interface/matrixinterface.h"
+
 #include "simplematrix.h"
 #include "sparsestructureadaptor.h"
 

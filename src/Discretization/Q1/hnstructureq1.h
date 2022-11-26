@@ -24,8 +24,9 @@
 #ifndef __HNStructureQ1_h
 #define __HNStructureQ1_h
 
-#include "hnstructureinterface.h"
 #include <map>
+
+#include "../../Interface/hnstructureinterface.h"
 
 /*-----------------------------------------*/
 

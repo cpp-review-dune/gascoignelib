@@ -24,7 +24,7 @@
 #ifndef __GalerkinIntegratorQ2_h
 #define __GalerkinIntegratorQ2_h
 
-#include "galerkinintegrator.h"
+#include "../Q1/galerkinintegrator.h"
 
 namespace Gascoigne {
 

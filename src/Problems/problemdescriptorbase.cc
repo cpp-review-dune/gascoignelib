@@ -22,7 +22,8 @@
  **/
 
 #include "problemdescriptorbase.h"
-#include "componentinformationbase.h"
+
+#include "../Solver/componentinformationbase.h"
 
 using namespace std;
 

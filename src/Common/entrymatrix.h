@@ -24,7 +24,8 @@
 #ifndef __entrymatrix_h
 #define __entrymatrix_h
 
-#include "gascoigne.h"
+#include "../Interface/gascoigne.h"
+
 #include "gostream.h"
 
 /*-------------------------------------------------------------*/

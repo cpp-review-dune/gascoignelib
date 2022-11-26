@@ -22,11 +22,13 @@
  **/
 
 #include "visualization.h"
-#include "compose_name.h"
-#include "errormacros.h"
-#include "filescanner.h"
-#include "stlio.h"
+
 #include <set>
+
+#include "../../Common/compose_name.h"
+#include "../../Common/errormacros.h"
+#include "../../Common/filescanner.h"
+#include "../../Common/stlio.h"
 
 using namespace std;
 

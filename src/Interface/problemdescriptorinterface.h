@@ -24,10 +24,11 @@
 #ifndef __ProblemDescriptorInterface_h
 #define __ProblemDescriptorInterface_h
 
-#include "filescanner.h"
+#include "../Common/filescanner.h"
+#include "../Problems/boundarymanager.h"
+#include "../Solver/solverdata.h"
 
 #include "boundaryequation.h"
-#include "boundarymanager.h"
 #include "boundaryrighthandside.h"
 #include "componentinformation.h"
 #include "diracrighthandside.h"
@@ -37,8 +38,6 @@
 #include "exactsolution.h"
 #include "faceequation.h"
 #include "periodicdata.h"
-
-#include "solverdata.h"
 
 namespace Gascoigne {
 /////////////////////////////////////////////

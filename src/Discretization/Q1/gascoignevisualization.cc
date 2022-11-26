@@ -22,8 +22,9 @@
  **/
 
 #include "gascoignevisualization.h"
-#include "componentinformation.h"
-#include "compose_name.h"
+
+#include "../../Common/compose_name.h"
+#include "../../Interface/componentinformation.h"
 
 /*-----------------------------------------*/
 

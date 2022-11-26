@@ -21,17 +21,17 @@
  *
  **/
 
-#include <functionalcontainer.h>
-#include <problemcontainer.h>
+#include <Common/paramfile.h>
+#include <Interface/gascoigne.h>
+#include <Problems/functionalcontainer.h>
+#include <Problems/problemcontainer.h>
 
-#include "gascoigne.h"
 #include "local.h"
-#include "paramfile.h"
 
 #ifdef USE_CUDA
 #include <cudaloop.h>
 #else
-#include <stdloop.h>
+#include <Solver/stdloop.h>
 #endif
 
 #define HEAT_COMP 3

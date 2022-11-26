@@ -24,8 +24,9 @@
 #ifndef __dynamicblockilu_h
 #define __dynamicblockilu_h
 
+#include "../Interface/iluinterface.h"
+
 #include "dynamicblockmatrix.h"
-#include "iluinterface.h"
 
 /*-------------------------------------------------------------*/
 

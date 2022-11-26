@@ -22,9 +22,11 @@
  **/
 
 #include "boundaryindexhandler.h"
-#include "set2vec.h"
-#include "stlio.h"
+
 #include <set>
+
+#include "../Common/set2vec.h"
+#include "../Common/stlio.h"
 
 using namespace std;
 

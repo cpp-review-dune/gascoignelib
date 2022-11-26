@@ -4,11 +4,12 @@
 #define __cgbase_H
 /*----------------------------   cgbase.h     ---------------------------*/
 
-#include "numfixarray.h"
-#include "vertex.h"
 #include <array>
 #include <cmath>
 #include <iostream>
+
+#include "../Common/numfixarray.h"
+#include "../Common/vertex.h"
 
 namespace Gascoigne {
 

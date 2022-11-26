@@ -22,20 +22,22 @@
  **/
 
 #include "hierarchicalmesh2d.h"
-#include "coarsehierarchicalmesh2d.h"
-#include "deletecells.h"
-#include "edgemanager.h"
-#include "levelcomparer2d.h"
-#include "regular_update.h"
-#include "set2vec.h"
-#include "stlio.h"
-#include "vecalgo.h"
 
 #include <fstream>
 #include <iterator>
 #include <numeric>
 #include <set>
 #include <stdio.h>
+
+#include "../Common/set2vec.h"
+#include "../Common/stlio.h"
+#include "../Common/vecalgo.h"
+
+#include "coarsehierarchicalmesh2d.h"
+#include "deletecells.h"
+#include "edgemanager.h"
+#include "levelcomparer2d.h"
+#include "regular_update.h"
 
 using namespace std;
 
@@ -2317,7 +2319,7 @@ HierarchicalMesh2d::writeq2(const IndexVector& a,
 {
   char s[29];
   for (IndexType p = 0; p < np; ++p) {
-    sprintf(s, "n_%d_%d", ncells(), p);
+    sprintf(s, "n_%ld_%ld", ncells(), p);
     ofstream aus(s);
 
     for (IndexType i = 0; i < a.size(); ++i) {

@@ -4,8 +4,8 @@
 #define __sparseblock_H
 /*----------------------------   sparseblock.h     ---------------------------*/
 
-#include "entrymatrix.h"
-#include "gascoigne.h"
+#include "../Common/entrymatrix.h"
+#include "../Interface/gascoigne.h"
 
 #include "sparse_20.h"
 

@@ -24,9 +24,10 @@
 #ifndef __numerusclaususadaptor
 #define __numerusclaususadaptor
 
-#include "gascoigne.h"
-#include "paramfile.h"
 #include <string>
+
+#include "../Common/paramfile.h"
+#include "../Interface/gascoigne.h"
 
 /*-----------------------------------------------------------*/
 

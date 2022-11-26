@@ -22,7 +22,8 @@
  **/
 
 #include "waveequation.h"
-#include "filescanner.h"
+
+#include "../Common/filescanner.h"
 
 using namespace Gascoigne;
 

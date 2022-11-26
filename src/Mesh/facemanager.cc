@@ -22,13 +22,16 @@
  **/
 
 #include "facemanager.h"
-#include "hangfacesort.h"
-#include "stlio.h"
-#include "vecalgo.h"
+
 #include <algorithm>
 #include <numeric>
-
 #include <unordered_map>
+
+#include "../Common/stlio.h"
+#include "../Common/vecalgo.h"
+
+#include "hangfacesort.h"
+
 #define HANGMAP unordered_map<EdgeArray<4>, int, EdgeHash<4>>
 
 using namespace std;

@@ -24,9 +24,11 @@
 #ifndef __BoundaryFunctional_h
 #define __BoundaryFunctional_h
 
-#include "functional.h"
-#include "vertex.h"
 #include <set>
+
+#include "../Common/vertex.h"
+
+#include "functional.h"
 
 /*-----------------------------------------*/
 

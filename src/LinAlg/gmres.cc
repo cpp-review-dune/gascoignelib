@@ -22,8 +22,9 @@
  **/
 
 #include "gmres.h"
-#include "compose_name.h"
-#include "nmatrix.h"
+
+#include "../Common/compose_name.h"
+#include "../Common/nmatrix.h"
 
 namespace Gascoigne {
 

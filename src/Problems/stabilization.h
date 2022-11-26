@@ -24,7 +24,7 @@
 #ifndef __stabilization_h
 #define __stabilization_h
 
-#include "nvector.h"
+#include "../Common/nvector.h"
 
 /*-------------------------------------------*/
 

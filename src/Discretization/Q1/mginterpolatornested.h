@@ -24,10 +24,11 @@
 #ifndef __MgInterpolatorNested_h
 #define __MgInterpolatorNested_h
 
-#include "gascoigne.h"
-#include "meshtransferinterface.h"
-#include "mginterpolatorinterface.h"
 #include <map>
+
+#include "../../Interface/gascoigne.h"
+#include "../../Interface/meshtransferinterface.h"
+#include "../../Interface/mginterpolatorinterface.h"
 
 /*-----------------------------------------*/
 

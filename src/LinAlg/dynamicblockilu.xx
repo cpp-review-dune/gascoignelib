@@ -21,11 +21,11 @@
  *
  **/
 
-// -*- C++ -*-
-#include "compareclass.h"
 #include "dynamicblockilu.h"
 
 #include <numeric>
+
+#include "../Common/compareclass.h"
 
 /*-------------------------------------------------------------*/
 

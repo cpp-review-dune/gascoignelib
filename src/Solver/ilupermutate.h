@@ -24,9 +24,9 @@
 #ifndef __ilupermutate_H
 #define __ilupermutate_H
 
-#include "columnstencil.h"
-#include "compvector.h"
-#include "gascoignemesh.h"
+#include "../Common/compvector.h"
+#include "../LinAlg/columnstencil.h"
+#include "../Mesh/gascoignemesh.h"
 
 namespace Gascoigne {
 class StreamDirection

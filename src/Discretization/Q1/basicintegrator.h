@@ -24,8 +24,8 @@
 #ifndef __BasicIntegrator_h
 #define __BasicIntegrator_h
 
-#include "gascoigne.h"
-#include "integratorinterface.h"
+#include "../../Interface/gascoigne.h"
+#include "../../Interface/integratorinterface.h"
 
 namespace Gascoigne {
 

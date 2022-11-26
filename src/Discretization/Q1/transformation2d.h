@@ -24,8 +24,8 @@
 #ifndef __Transformation2d_h
 #define __Transformation2d_h
 
-#include "nmatrix.h"
-#include "vertex.h"
+#include "../../Common/nmatrix.h"
+#include "../../Common/vertex.h"
 
 /*-----------------------------------------------------*/
 

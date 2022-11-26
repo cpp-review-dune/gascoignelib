@@ -24,11 +24,12 @@
 #ifndef __Pi_h
 #define __Pi_h
 
-#include "compvector.h"
-#include "gascoignemesh2d.h"
-#include "gascoignemesh3d.h"
 #include <array>
 #include <map>
+
+#include "../Common/compvector.h"
+#include "../Mesh/gascoignemesh2d.h"
+#include "../Mesh/gascoignemesh3d.h"
 
 namespace Gascoigne {
 /*-----------------------------------------*/

@@ -21,10 +21,12 @@
  *
  **/
 
-#include "gascoignehash.h"
 #include "hanglist.h"
-#include "stlio.h"
+
 #include <cassert>
+
+#include "../Common/stlio.h"
+#include "../Interface/gascoignehash.h"
 
 using namespace std;
 

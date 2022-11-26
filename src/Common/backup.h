@@ -24,9 +24,10 @@
 #ifndef __backup_h
 #define __backup_h
 
-#include "compvector.h"
-#include "gascoigne.h"
 #include <string>
+
+#include "../Interface/gascoigne.h"
+#include "compvector.h"
 
 /********************************************************************/
 

@@ -24,13 +24,15 @@
 #ifndef __GascoigneMeshConstructor_h
 #define __GascoigneMeshConstructor_h
 
-#include "gascoigne.h"
+#include <map>
+
+#include "../Interface/gascoigne.h"
+
 #include "gascoignemesh2d.h"
 #include "gascoignemesh3d.h"
 #include "gascoignemultigridmesh.h"
 #include "levelmesh2d.h"
 #include "levelmesh3d.h"
-#include <map>
 
 /*-----------------------------------------*/
 

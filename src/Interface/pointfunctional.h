@@ -24,9 +24,11 @@
 #ifndef __PointFunctional_h
 #define __PointFunctional_h
 
-#include "functional.h"
-#include "vertex.h"
 #include <vector>
+
+#include "../Common/vertex.h"
+
+#include "functional.h"
 
 /**********************************************************/
 

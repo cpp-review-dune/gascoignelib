@@ -6,7 +6,8 @@
 
 //#ifdef __WITH_UMFPACK__
 
-#include "iluinterface.h"
+#include "../Interface/iluinterface.h"
+
 #include "sparseblockmatrix.h"
 
 namespace Gascoigne {

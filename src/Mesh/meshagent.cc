@@ -22,14 +22,16 @@
  **/
 
 #include "meshagent.h"
-#include "filescanner.h"
-#include "gascoignehash.h"
+
+#include "../Common/filescanner.h"
+#include "../Common/stopwatch.h"
+#include "../Common/stringutil.h"
+#include "../Discretization/Q1/visualization.h"
+#include "../Interface/gascoignehash.h"
+
 #include "gascoignemeshconstructor.h"
 #include "hierarchicalmesh2d.h"
 #include "hierarchicalmesh3d.h"
-#include "stopwatch.h"
-#include "stringutil.h"
-#include "visualization.h"
 
 using namespace std;
 

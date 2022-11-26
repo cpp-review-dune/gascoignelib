@@ -24,13 +24,15 @@
 #ifndef __baseq23d_h
 #define __baseq23d_h
 
-#include "base3d.h"
-#include "numfixarray.h"
-#include "vertex.h"
 #include <cassert>
 #include <string>
 #include <utility>
 #include <vector>
+
+#include "../../Common/numfixarray.h"
+#include "../../Common/vertex.h"
+
+#include "../Q1/base3d.h"
 
 #define NDOF 27
 #define NDOF1d 3

@@ -24,11 +24,12 @@
 #ifndef __hanglist_h
 #define __hanglist_h
 
-#include "edgearray.h"
-#include "hang.h"
 #include <string>
 
-#include "gascoignehash.h"
+#include "../Interface/gascoignehash.h"
+
+#include "edgearray.h"
+#include "hang.h"
 
 /*------------------------------------------------------*/
 

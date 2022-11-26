@@ -24,14 +24,16 @@
 #ifndef __curvedshapes_h
 #define __curvedshapes_h
 
-#include "boundaryfunction.h"
-#include "boundaryline.h"
-#include "boundaryquad.h"
-#include "vertex.h"
 #include <map>
 #include <set>
 #include <string>
 #include <vector>
+
+#include "../Common/vertex.h"
+
+#include "boundaryfunction.h"
+#include "boundaryline.h"
+#include "boundaryquad.h"
 
 /******************************************************/
 

@@ -24,7 +24,8 @@
 #ifndef __MgInterpolatorInterface_h
 #define __MgInterpolatorInterface_h
 
-#include "compvector.h"
+#include "../Common/compvector.h"
+
 #include "gascoigne.h"
 
 /*--------------------------------------------------------*/

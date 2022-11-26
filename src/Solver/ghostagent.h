@@ -24,9 +24,10 @@
 #ifndef __GhostAgent_h
 #define __GhostAgent_h
 
-#include "gascoigne.h"
-#include "matrixinterface.h"
 #include <string>
+
+#include "../Interface/gascoigne.h"
+#include "../Interface/matrixinterface.h"
 
 namespace Gascoigne {
 

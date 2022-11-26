@@ -24,8 +24,9 @@
 #ifndef __boundaryfunction_h
 #define __boundaryfunction_h
 
-#include "vertex.h"
 #include <string>
+
+#include "../Common/vertex.h"
 
 /*---------------------------------------------------*/
 

@@ -21,8 +21,9 @@
  *
  **/
 
-#include "errormacros.h"
 #include "visualization.h"
+
+#include "../../Common/errormacros.h"
 
 using namespace std;
 

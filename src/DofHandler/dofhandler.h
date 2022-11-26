@@ -27,12 +27,12 @@
  *
  **/
 
-#include "boundaryindexhandler.h"
-#include "gascoigne.h"
-#include "hangingindexhandler.h"
-#include "paramfile.h"
-#include "patchindexhandler.h"
-#include "vertex.h"
+#include "../Common/paramfile.h"
+#include "../Common/vertex.h"
+#include "../Interface/gascoigne.h"
+#include "../Mesh/boundaryindexhandler.h"
+#include "../Mesh/hangingindexhandler.h"
+#include "../Mesh/patchindexhandler.h"
 
 /*-----------------------------------------*/
 

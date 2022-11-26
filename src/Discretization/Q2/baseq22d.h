@@ -24,12 +24,14 @@
 #ifndef __baseq22d_h
 #define __baseq22d_h
 
-#include "base2d.h"
-#include "numfixarray.h"
-#include "vertex.h"
 #include <string>
 #include <utility>
 #include <vector>
+
+#include "../../Common/numfixarray.h"
+#include "../../Common/vertex.h"
+
+#include "../Q1/base2d.h"
 
 #define NDOF 9
 #define NDOF1d 3

@@ -24,10 +24,11 @@
 #ifndef __StdMultiLevelSolverData_h
 #define __StdMultiLevelSolverData_h
 
-#include "cginfo.h"
-#include "paramfile.h"
 #include <iostream>
 #include <map>
+
+#include "../Common/cginfo.h"
+#include "../Common/paramfile.h"
 
 /**********************************************************/
 

@@ -24,8 +24,8 @@
 #ifndef __cuthillmckee_h
 #define __cuthillmckee_h
 
-#include "columnstencil.h"
-#include "dynamicstencil.h"
+#include "../LinAlg/columnstencil.h"
+#include "../LinAlg/dynamicstencil.h"
 
 /* CuthillMcKee
  *

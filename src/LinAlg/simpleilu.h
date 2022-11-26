@@ -24,7 +24,8 @@
 #ifndef __SimpleIlu_h
 #define __SimpleIlu_h
 
-#include "matrixinterface.h"
+#include "../Interface/matrixinterface.h"
+
 #include "simplematrix.h"
 
 namespace Gascoigne {

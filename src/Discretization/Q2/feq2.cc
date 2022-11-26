@@ -22,14 +22,16 @@
  **/
 
 #include "../Q1/finiteelement.xx"
-#include "baseq12d.h"
+
+#include "../Q1/baseq12d.h"
+#include "../Q1/finiteelement.h"
+#include "../Q1/transformation2d.h"
+#include "../Q1/transformation3d.h"
+
 #include "baseq13dpatch.h"
 #include "baseq1patch.h"
 #include "baseq22d.h"
 #include "baseq23d.h"
-#include "finiteelement.h"
-#include "transformation2d.h"
-#include "transformation3d.h"
 
 namespace Gascoigne {
 /*-----------------------------------------------------*/

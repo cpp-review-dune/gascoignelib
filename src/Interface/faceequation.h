@@ -27,9 +27,10 @@
 #define __faceequation_H
 /*----------------------------   faceequation.h ---------------------------*/
 
+#include "../Common/entrymatrix.h"
+#include "../Common/vertex.h"
+
 #include "application.h"
-#include "entrymatrix.h"
-#include "vertex.h"
 
 /*-------------------------------------------------------------------------*/
 

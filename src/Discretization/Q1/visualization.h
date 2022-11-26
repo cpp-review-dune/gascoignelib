@@ -24,14 +24,15 @@
 #ifndef __visualization_h
 #define __visualization_h
 
-#include "gascoignemesh.h"
-#include "gnuplot.h"
-#include "paramfile.h"
-#include "visudata.h"
-#include "visudatainfo.h"
-
 #include <fstream>
 #include <stdio.h>
+
+#include "../../Common/paramfile.h"
+#include "../../Interface/visudata.h"
+#include "../../Mesh/gascoignemesh.h"
+
+#include "gnuplot.h"
+#include "visudatainfo.h"
 
 /*--------------------------------------------------*/
 

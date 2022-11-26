@@ -1,21 +1,21 @@
 #include "cgdisc.xx"
 
-#include "baseq12d.h"
-#include "baseq13d.h"
-#include "baseq22d.h"
-#include "baseq23d.h"
+#include "../Discretization/Q1/finiteelement.xx"
+
+#include "../Discretization/Q1/baseq12d.h"
+#include "../Discretization/Q1/baseq13d.h"
+#include "../Discretization/Q1/finiteelement.h"
+#include "../Discretization/Q1/integrationformula.h"
+#include "../Discretization/Q1/transformation2d.h"
+#include "../Discretization/Q1/transformation3d.h"
+#include "../Discretization/Q2/baseq13dpatch.h"
+#include "../Discretization/Q2/baseq1patch.h"
+#include "../Discretization/Q2/baseq22d.h"
+#include "../Discretization/Q2/baseq23d.h"
+#include "../Discretization/Q2/patchintegrationformula.h"
+
 #include "elementintegrator.h"
 #include "elementlpsintegrator.h"
-#include "finiteelement.h"
-#include "integrationformula.h"
-#include "transformation2d.h"
-#include "transformation3d.h"
-
-#include "baseq13dpatch.h"
-#include "baseq1patch.h"
-
-#include "finiteelement.xx"
-#include "patchintegrationformula.h"
 
 namespace Gascoigne {
 

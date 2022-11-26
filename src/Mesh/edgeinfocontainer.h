@@ -24,10 +24,11 @@
 #ifndef __EdgeInfoContainer_h
 #define __EdgeInfoContainer_h
 
+#include "../Common/nvector.h"
+
 #include "edgeinfo.h"
 #include "hierarchicalmesh2d.h"
 #include "hierarchicalmesh3d.h"
-#include "nvector.h"
 
 /**********************************************************/
 

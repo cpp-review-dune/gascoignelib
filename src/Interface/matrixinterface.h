@@ -24,13 +24,15 @@
 #ifndef __matrixinterface_h
 #define __matrixinterface_h
 
-#include "compvector.h"
-#include "entrymatrix.h"
+#include <string>
+
+#include "../Common/compvector.h"
+#include "../Common/entrymatrix.h"
+
 #include "gascoigne.h"
 #include "periodicdata.h"
 #include "sparsestructureinterface.h"
 #include "stencilinterface.h"
-#include <string>
 
 /*-------------------------------------------------------------*/
 

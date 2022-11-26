@@ -24,9 +24,9 @@
 #ifndef __ColumnStencil_h
 #define __ColumnStencil_h
 
-#include "gascoigne.h"
-#include "sparsestructureinterface.h"
-#include "stencilinterface.h"
+#include "../Interface/gascoigne.h"
+#include "../Interface/sparsestructureinterface.h"
+#include "../Interface/stencilinterface.h"
 
 namespace Gascoigne {
 

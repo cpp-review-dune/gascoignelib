@@ -22,8 +22,9 @@
  **/
 
 #include "mixedelementintegrator.h"
-#include "patchintegrationformula.h"
-#include "stopwatch.h"
+
+#include "../Common/stopwatch.h"
+#include "../Discretization/Q2/patchintegrationformula.h"
 
 using namespace std;
 

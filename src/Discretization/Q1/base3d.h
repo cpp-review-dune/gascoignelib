@@ -24,8 +24,9 @@
 #ifndef __base3d_h
 #define __base3d_h
 
+#include "../../Interface/gascoigne.h"
+
 #include "base.h"
-#include "gascoigne.h"
 
 /**************************************************/
 

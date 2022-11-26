@@ -22,11 +22,14 @@
  **/
 
 #include "levelmesh2d.h"
-#include "gascoignehash.h"
+
+#include <algorithm>
+
+#include "../Common/set2vec.h"
+#include "../Interface/gascoignehash.h"
+
 #include "leveljumper.h"
 #include "levelsorter.h"
-#include "set2vec.h"
-#include <algorithm>
 
 using namespace std;
 

@@ -24,7 +24,7 @@
 #ifndef __PatchIntegrationFormula_h
 #define __PatchIntegrationFormula_h
 
-#include "integrationformula.h"
+#include "../Q1/integrationformula.h"
 
 namespace Gascoigne {
 

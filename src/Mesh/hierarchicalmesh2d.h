@@ -24,13 +24,14 @@
 #ifndef __hierarchicalmesh2d_h
 #define __hierarchicalmesh2d_h
 
+#include "../Common/vertex.h"
+
 #include "boundaryfunction.h"
 #include "boundaryline.h"
 #include "hangcontainer2d.h"
 #include "hierarchicalmesh.h"
 #include "quad.h"
 #include "quadlawandorder.h"
-#include "vertex.h"
 
 /*---------------------------------------------------*/
 

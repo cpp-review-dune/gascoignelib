@@ -24,8 +24,9 @@
 #ifndef __DiplomandenAdaptor_h
 #define __DiplomandenAdaptor_h
 
+#include "../Interface/gascoigne.h"
+
 #include "adaptordata.h"
-#include "gascoigne.h"
 
 /*-----------------------------------------*/
 

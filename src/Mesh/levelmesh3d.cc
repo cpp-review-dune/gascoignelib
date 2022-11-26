@@ -22,12 +22,15 @@
  **/
 
 #include "levelmesh3d.h"
-#include "gascoignehash.h"
+
+#include <algorithm>
+
+#include "../Common/nmatrix.h"
+#include "../Common/set2vec.h"
+#include "../Interface/gascoignehash.h"
+
 #include "leveljumper.h"
 #include "levelsorter3d.h"
-#include "nmatrix.h"
-#include "set2vec.h"
-#include <algorithm>
 
 using namespace std;
 

@@ -24,7 +24,8 @@
 #ifndef __hangcontainer2d_h
 #define __hangcontainer2d_h
 
-#include "gascoigne.h"
+#include "../Interface/gascoigne.h"
+
 #include "hanglist.h"
 
 /*********************************************************************/

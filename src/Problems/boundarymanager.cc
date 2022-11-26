@@ -22,8 +22,9 @@
  **/
 
 #include "boundarymanager.h"
-#include "filescanner.h"
-#include "stlio.h"
+
+#include "../Common/filescanner.h"
+#include "../Common/stlio.h"
 
 using namespace std;
 
