@@ -656,7 +656,7 @@ StdMultiLevelSolver::NewtonLinearSolve(const Matrix& A,
          DataP.LinearSolve() == "direct");
 
   if (DataP.LinearSolve() == "mg") {
-    IndexType clevel = std::max(DataP.CoarseLevel(), 0l);
+    IndexType clevel = std::max(DataP.CoarseLevel(), static_cast<IndexType>(0));
     if (DataP.CoarseLevel() == -1)
       clevel = FinestLevel();
     LinearMg(ComputeLevel, clevel, A, x, b, info);
@@ -812,7 +812,7 @@ StdMultiLevelSolver::LinearSolve(IndexType level,
 
   info.reset();
 
-  IndexType clevel = std::max(DataP.CoarseLevel(), 0l);
+  IndexType clevel = std::max(DataP.CoarseLevel(), static_cast<IndexType>(0));
   if (DataP.CoarseLevel() == -1)
     clevel = FinestLevel();
 
@@ -945,7 +945,7 @@ StdMultiLevelSolver::precondition(const Matrix& A, Vector& x, Vector& y)
   precinfo.reset();
   precinfo.check(0., 0.);
 
-  IndexType clevel = std::max(DataP.CoarseLevel(), 0l);
+  IndexType clevel = std::max(DataP.CoarseLevel(), static_cast<IndexType>(0));
   if (DataP.CoarseLevel() == -1)
     clevel = FinestLevel();
 

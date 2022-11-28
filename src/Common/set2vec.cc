@@ -41,8 +41,6 @@ Set2Vec(vector<T>& v, const set<T>& h)
   }
 }
 template void
-Set2Vec<int>(vector<int>& v, const set<int>& h);
-template void
 Set2Vec<IndexType>(vector<IndexType>& v, const set<IndexType>& h);
 
 /*---------------------------------------------------*/
@@ -57,8 +55,6 @@ Vec2Set(set<T>& h, const vector<T>& v)
   }
 }
 
-template void
-Vec2Set<int>(set<int>& h, const vector<int>& v);
 template void
 Vec2Set<IndexType>(set<IndexType>& h, const vector<IndexType>& v);
 

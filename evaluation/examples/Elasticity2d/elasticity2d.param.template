@@ -8,14 +8,6 @@ writevtk            0
 writebupgup         0
 
 
-//Block BoundaryManager
-
-// this is now set in HeatDD (heatproblem.h)
-
-//dirichlet           1      4
-//dirichletcomp       4      1       0 
-
-
 //Block Mesh
 dimension           2
 prerefine           {{prerefine}}

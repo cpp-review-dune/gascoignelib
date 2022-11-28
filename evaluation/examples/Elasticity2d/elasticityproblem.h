@@ -78,10 +78,10 @@ public:
     : DirichletData()
   {
     colors.clear();
-    colors.insert(4);
+    colors.insert(2);
     comp_on_color.clear();
     for (int i = 0; i < 2 * DIM; ++i) {
-      comp_on_color[4].push_back(i);
+      comp_on_color[2].push_back(i);
     }
   }
 

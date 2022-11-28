@@ -33,8 +33,6 @@
 #include <Solver/stdloop.h>
 #endif
 
-#define HEAT_COMP 2
-
 double __TIME;
 
 /*---------------------------------------------------*/
@@ -73,4 +71,4 @@ main(int argc, char** argv)
   return 0;
 }
 
-template class Gascoigne::HeatRhs<HEAT_COMP>;
+template class Gascoigne::HeatRhs<2>;

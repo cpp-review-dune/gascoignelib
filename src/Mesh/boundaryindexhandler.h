@@ -35,8 +35,6 @@ namespace Gascoigne {
 class BoundaryIndexHandler
 {
 protected:
-  typedef std::map<IndexType, IndexVector> VecMap;
-
   IndexSet AllColors;
   VecMap verteces, cells, localci, patches, localpi;
 
