@@ -25,8 +25,8 @@
 #define __hanglist_h
 
 #include <string>
-
-#include "../Interface/gascoignehash.h"
+#include <unordered_map>
+#include <unordered_set>
 
 #include "edgearray.h"
 #include "hang.h"

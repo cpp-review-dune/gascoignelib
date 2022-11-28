@@ -24,9 +24,10 @@
 #include "hanglist.h"
 
 #include <cassert>
+#include <unordered_map>
+#include <unordered_set>
 
 #include "../Common/stlio.h"
-#include "../Interface/gascoignehash.h"
 
 using namespace std;
 

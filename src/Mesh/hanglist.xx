@@ -23,8 +23,10 @@
 
 #include "hanglist.h"
 
+#include <unordered_map>
+#include <unordered_set>
+
 #include "../Common/stlio.h"
-#include "../Interface/gascoignehash.h"
 
 #define HANGMAP HASHMAP<EdgeArray<N>, int, EdgeHash<N>>
 

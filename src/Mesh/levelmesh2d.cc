@@ -24,9 +24,10 @@
 #include "levelmesh2d.h"
 
 #include <algorithm>
+#include <unordered_map>
+#include <unordered_set>
 
 #include "../Common/set2vec.h"
-#include "../Interface/gascoignehash.h"
 
 #include "leveljumper.h"
 #include "levelsorter.h"
