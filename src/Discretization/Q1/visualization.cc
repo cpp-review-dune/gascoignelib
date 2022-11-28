@@ -205,7 +205,7 @@ Visualization::active(int i) const
 /********************************************************************/
 
 void
-Visualization::step(int i)
+Visualization::step(IndexType i)
 {
   if ((pstep == -1) || (!active(i))) {
     if (pstep < 0)

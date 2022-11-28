@@ -112,7 +112,7 @@ VisuEPS::InLine(int a, int b, int c) const
 /* -------------------------------------------------- */
 
 void
-VisuEPS::WriteGrid(string fname, int iter)
+VisuEPS::WriteGrid(string fname, IndexType iter)
 {
   assert(M);
 

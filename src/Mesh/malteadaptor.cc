@@ -37,7 +37,7 @@ namespace Gascoigne {
 MalteAdaptor::MalteAdaptor(const ParamFile& pf, const DoubleVector& _eta)
   : eta(_eta)
 {
-  int idim = 0;
+  IndexType idim = 0;
   N = eta.size();
 
   DataFormatHandler DH;
@@ -113,7 +113,7 @@ MalteAdaptor::refine(IndexVector& ref) const
   if (etasum == 0)
     return;
 
-  int n = eta.size();
+  IndexType n = eta.size();
 
   IndexVector C(n);
   iota(C.begin(), C.end(), 0);

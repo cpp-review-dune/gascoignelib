@@ -32,11 +32,11 @@ namespace Gascoigne {
 void
 compose_name(std::string&, double, std::string f = "%5.2f");
 void
-compose_name(std::string&, int);
+compose_name(std::string&, IndexType);
 void
-compose_name(std::string&, int, std::string t);
+compose_name(std::string&, IndexType, std::string t);
 void
-compose_name(std::string&, int, int);
+compose_name(std::string&, IndexType, IndexType);
 void
 compose_name_without_dot(std::string&, IndexType);
 } // namespace Gascoigne

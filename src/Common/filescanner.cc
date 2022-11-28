@@ -328,9 +328,9 @@ FileScanner::FormatToValue(const vector<string>& words)
 
   if (keyword_type == "string") {
     DH.setvalue(keyword, words[1]);
-  } else if (keyword_type == "integer") {
-    int value = atoi(words[1].c_str());
-    DH.setvalue(keyword, value);
+    // } else if (keyword_type == "integer") {
+    //   int value = atoi(words[1].c_str());
+    //   DH.setvalue(keyword, value);
   } else if (keyword_type == "IndexType") {
     IndexType value = atoi(words[1].c_str());
     DH.setvalue(keyword, value);
@@ -370,18 +370,18 @@ FileScanner::FormatToValue(const vector<string>& words)
       }
       DH.setvalue(keyword, value);
     }
-  } else if (keyword_type == "IntVector") {
-    size_t n = atoi(words[1].c_str());
-    _assert(words.size() > n + 1, words);
-    // cerr << "-----" << n << " " << words.size() << endl;
-    // wenn n==0, dann ist auch n=0 gemeint: rufe setvalue auch dafuer auf
-    if (n >= 0) {
-      IntVector value(n);
-      for (size_t i = 0; i < n; i++) {
-        value[i] = atoi(words[i + 2].c_str());
-      }
-      DH.setvalue(keyword, value);
-    }
+    // } else if (keyword_type == "IntVector") {
+    //   size_t n = atoi(words[1].c_str());
+    //   _assert(words.size() > n + 1, words);
+    //   // cerr << "-----" << n << " " << words.size() << endl;
+    //   // wenn n==0, dann ist auch n=0 gemeint: rufe setvalue auch dafuer auf
+    //   if (n >= 0) {
+    //     IntVector value(n);
+    //     for (size_t i = 0; i < n; i++) {
+    //       value[i] = atoi(words[i + 2].c_str());
+    //     }
+    //     DH.setvalue(keyword, value);
+    //   }
   } else if (keyword_type == "IndexVector") {
     IndexType n = atoi(words[1].c_str());
     _assert(words.size() > n + 1, words);
@@ -409,16 +409,16 @@ FileScanner::FormatToValue(const vector<string>& words)
 
   /*----------------------------------------------*/
 
-  else if (keyword_type == "map<int,IntVector >") {
-    int col = atoi(words[1].c_str());
-    size_t n = atoi(words[2].c_str());
-    IntVector value(n);
-    _assert(words.size() > n + 2, words);
-    for (size_t i = 0; i < n; i++)
-      value[i] = atoi(words[i + 3].c_str());
-    pair<int, IntVector> p = make_pair(col, value);
-    DH.setvalue(keyword, p);
-  } else if (keyword_type == "map<IndexType,IndexVector >") {
+  // else if (keyword_type == "map<int,IntVector >") {
+  //   int col = atoi(words[1].c_str());
+  //   size_t n = atoi(words[2].c_str());
+  //   IntVector value(n);
+  //   _assert(words.size() > n + 2, words);
+  //   for (size_t i = 0; i < n; i++)
+  //     value[i] = atoi(words[i + 3].c_str());
+  //   pair<int, IntVector> p = make_pair(col, value);
+  //   DH.setvalue(keyword, p);
+  else if (keyword_type == "map<IndexType,IndexVector >") {
     IndexType col = atoi(words[1].c_str());
     IndexType n = atoi(words[2].c_str());
     IndexVector value(n);
@@ -441,17 +441,17 @@ FileScanner::FormatToValue(const vector<string>& words)
     DH.insertvalue(keyword, value);
   }
 
-  else if (keyword_type == "set<int>") {
-    size_t n = atoi(words[1].c_str());
-    set<int> value;
-    _assert(words.size() > n + 1, words);
-    for (size_t i = 0; i < n; i++) {
-      int v = atoi(words[i + 2].c_str());
-      value.insert(v);
-    }
+  // else if (keyword_type == "set<int>") {
+  //   size_t n = atoi(words[1].c_str());
+  //   set<int> value;
+  //   _assert(words.size() > n + 1, words);
+  //   for (size_t i = 0; i < n; i++) {
+  //     int v = atoi(words[i + 2].c_str());
+  //     value.insert(v);
+  //   }
 
-    DH.setvalue(keyword, value);
-  }
+  //   DH.setvalue(keyword, value);
+  // }
 
   else if (keyword_type == "set<IndexType>") {
     IndexType n = atoi(words[1].c_str());

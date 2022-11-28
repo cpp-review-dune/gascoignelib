@@ -63,7 +63,7 @@ GMRES::new_memory()
   size_t i = mem.size();
 
   std::string s = "gmres";
-  compose_name(s, static_cast<int>(i));
+  compose_name(s, static_cast<IndexType>(i));
   mem.resize(i + 1, s);
   // mem[i].SetMultiLevelSolver(&precon);
   precon.ReInitVector(mem[i]);

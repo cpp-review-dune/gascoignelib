@@ -36,7 +36,7 @@ StdMultiLevelSolverData::StdMultiLevelSolverData(const ParamFile& param)
   _countresidual = 0;
 
   double prec_tol, prec_globaltol;
-  int prec_maxiter, prec_pstep;
+  IndexType prec_maxiter, prec_pstep;
 
   DataFormatHandler DFH;
   DFH.insert("linearsolve", &_linearsolve, "mg");
@@ -84,7 +84,7 @@ StdMultiLevelSolverData::BasicInit(const ParamFile& param)
   _countresidual = 0;
 
   double prec_tol, prec_globaltol;
-  int prec_maxiter, prec_pstep;
+  IndexType prec_maxiter, prec_pstep;
 
   DataFormatHandler DFH;
   DFH.insert("linearsolve", &_linearsolve, "mg");

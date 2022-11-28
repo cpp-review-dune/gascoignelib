@@ -49,7 +49,7 @@ namespace Gascoigne {
 class BoundaryManager
 {
 protected:
-  IntSet _colsDirichlet, _colsRightHandSide, _colsEquation, _colsFunctional;
+  IndexSet _colsDirichlet, _colsRightHandSide, _colsEquation, _colsFunctional;
   IndexVector _colsPeriodic;
   std::map<IndexType, IndexVector> _compsDirichlet;
   std::map<IndexType, IndexVector> _compsPeriodic;
@@ -80,19 +80,19 @@ public:
 
   std::ostream& print(std::ostream& s) const;
 
-  virtual const IntSet& GetBoundaryRightHandSideColors() const
+  virtual const IndexSet& GetBoundaryRightHandSideColors() const
   {
     return _colsRightHandSide;
   }
-  virtual const IntSet& GetBoundaryEquationColors() const
+  virtual const IndexSet& GetBoundaryEquationColors() const
   {
     return _colsEquation;
   }
-  virtual const IntSet& GetBoundaryFunctionalColors() const
+  virtual const IndexSet& GetBoundaryFunctionalColors() const
   {
     return _colsFunctional;
   }
-  virtual const IntSet& GetDirichletDataColors() const
+  virtual const IndexSet& GetDirichletDataColors() const
   {
     return _colsDirichlet;
   }

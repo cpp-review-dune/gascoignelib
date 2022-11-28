@@ -28,11 +28,13 @@
 #include <string>
 
 #include "../Common/paramfile.h"
+#include "../Interface/gascoigne.h"
 
 namespace Gascoigne {
 class AdaptorData
 {
-  int inc, inr, indr, inactual, idim, mnodes, iorder;
+  int inc, inr, indr, inactual, iorder;
+  IndexType idim, mnodes;
   double irfactor, icfactor, idrfactor, iminf, imaxf, itol, ieta, _randomp;
   double iglobal_conv, ilocal_conv;
 
@@ -54,9 +56,9 @@ public:
 
   int order() const { return iorder; }
   int& order() { return iorder; }
-  int dim() const { return idim; }
-  int& dim() { return idim; }
-  int maxnodes() const { return mnodes; }
+  IndexType dim() const { return idim; }
+  IndexType& dim() { return idim; }
+  IndexType maxnodes() const { return mnodes; }
   int ncells() const { return inactual; }
   int& ncells() { return inactual; }
   int nc() const { return inc; }

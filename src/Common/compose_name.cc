@@ -32,10 +32,10 @@ using namespace std;
 
 namespace Gascoigne {
 void
-compose_name(string& s, int i)
+compose_name(string& s, IndexType i)
 {
   char cname[200];
-  sprintf(cname, "%s.%05d", s.c_str(), i);
+  sprintf(cname, "%s.%05ld", s.c_str(), i);
   s = cname;
 }
 
@@ -50,21 +50,21 @@ compose_name(string& s, double d, string f)
 }
 
 void
-compose_name(string& s, int i, string t)
+compose_name(string& s, IndexType i, string t)
 {
   char cname[200];
-  sprintf(cname, "%s.%05d.%s", s.c_str(), i, t.c_str());
+  sprintf(cname, "%s.%05ld.%s", s.c_str(), i, t.c_str());
   s = cname;
 }
 
 void
-compose_name(string& s, int i, int l)
+compose_name(string& s, IndexType i, IndexType l)
 {
   std::cerr << "compose_name: das ist bloedsinn" << std::endl;
   abort();
 
   char ll[1];
-  sprintf(ll, "%01d", l);
+  sprintf(ll, "%01ld", l);
   string format("%s.%0");
   format += ll;
   format += "d";

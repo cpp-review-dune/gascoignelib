@@ -47,9 +47,9 @@ protected:
   // for computational time measurement
   mutable StopWatch _clock_newmesh, _clock_solve, _clock_write;
 
-  int _nmin, _nmax, _coarse;
+  IndexType _nmin, _nmax, _coarse;
   double _p;
-  int _random_coarsening;
+  IndexType _random_coarsening;
 
   /// if yes: print statistic on the runtime after each iteration
   bool _runtime_statistics;

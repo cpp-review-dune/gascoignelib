@@ -34,7 +34,7 @@ namespace Gascoigne {
 class OptAdaptor
 {
 protected:
-  int d, p, p2, p4, n_aimed;
+  IndexType d, p, p2, p4, n_aimed;
   int refined, double_refined, coarsened, marge, used;
 
   double co, dd, pp, factor;

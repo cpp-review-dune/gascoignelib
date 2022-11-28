@@ -40,7 +40,7 @@ protected:
   typedef nvector<IntSet> Lines;
 
   const GascoigneMesh* M;
-  int _i_compress;
+  IndexType _i_compress;
 
   Lines lines;
   int n_lines;
@@ -94,7 +94,7 @@ public:
     M = &PM;
     assert(M);
   }
-  void WriteGrid(std::string fname, int iter);
+  void WriteGrid(std::string fname, IndexType iter);
 };
 } // namespace Gascoigne
 

@@ -41,8 +41,8 @@ class FileScanner
   void _assert(bool b, const std::vector<std::string>& words) const;
 
 public:
-  int _i_defaultvalues_level;
-  int _i_defaultvalues_save_all_to_file;
+  IndexType _i_defaultvalues_level;
+  IndexType _i_defaultvalues_save_all_to_file;
   std::string _s_defaultvalues_save_filename;
 
   FileScanner(DataFormatHandler& D,
