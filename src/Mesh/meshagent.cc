@@ -23,11 +23,13 @@
 
 #include "meshagent.h"
 
+#include <unordered_map>
+#include <unordered_set>
+
 #include "../Common/filescanner.h"
 #include "../Common/stopwatch.h"
 #include "../Common/stringutil.h"
 #include "../Discretization/Q1/visualization.h"
-#include "../Interface/gascoignehash.h"
 
 #include "gascoignemeshconstructor.h"
 #include "hierarchicalmesh2d.h"

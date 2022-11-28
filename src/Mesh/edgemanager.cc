@@ -26,9 +26,10 @@
 #include <algorithm>
 #include <map>
 #include <numeric>
+#include <unordered_map>
+#include <unordered_set>
 
 #include "../Common/vecalgo.h"
-#include "../Interface/gascoignehash.h"
 
 #include "hangsort.h"
 

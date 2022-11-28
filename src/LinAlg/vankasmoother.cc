@@ -1,6 +1,7 @@
 #include "vankasmoother.h"
 
-#include "../Interface/gascoignehash.h"
+#include <unordered_map>
+#include <unordered_set>
 
 namespace Gascoigne {
 //////////////////// Construction
