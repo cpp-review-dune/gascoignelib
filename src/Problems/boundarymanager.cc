@@ -34,7 +34,7 @@ namespace Gascoigne {
 void
 BoundaryManager::BasicInit(const ParamFile& pf)
 {
-  IntSet colsNeumann, colsRobin;
+  IndexSet colsNeumann, colsRobin;
 
   DataFormatHandler DF;
   DF.insert("neumann", &colsNeumann); // not longer supported

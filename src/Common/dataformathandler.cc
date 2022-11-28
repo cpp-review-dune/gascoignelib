@@ -69,15 +69,15 @@ DataFormatHandler::insert(const string& nm, string* pos)
   TS.insert(make_pair(name, pos));
 }
 
-void
-DataFormatHandler::insert(const string& nm, int* pos)
-{
-  string type = "integer";
-  string name = nm;
-  NameType p = make_pair(name, type);
-  NT.insert(p);
-  TI.insert(make_pair(name, pos));
-}
+// void
+// DataFormatHandler::insert(const string& nm, int* pos)
+// {
+//   string type = "integer";
+//   string name = nm;
+//   NameType p = make_pair(name, type);
+//   NT.insert(p);
+//   TI.insert(make_pair(name, pos));
+// }
 
 void
 DataFormatHandler::insert(const string& nm, IndexType* pos)
@@ -152,15 +152,15 @@ DataFormatHandler::insert(const string& name, vector<double>* pos)
   TND.insert({ name, pos });
 }
 
-void
-DataFormatHandler::insert(const string& nm, IntVector* pos)
-{
-  string type = "IntVector";
-  string name = nm;
-  NameType p = make_pair(name, type);
-  NT.insert(p);
-  TNI.insert(make_pair(name, pos));
-}
+// void
+// DataFormatHandler::insert(const string& nm, IntVector* pos)
+// {
+//   string type = "IntVector";
+//   string name = nm;
+//   NameType p = make_pair(name, type);
+//   NT.insert(p);
+//   TNI.insert(make_pair(name, pos));
+// }
 
 void
 DataFormatHandler::insert(const string& nm, IndexVector* pos)
@@ -184,15 +184,15 @@ DataFormatHandler::insert(const string& nm, vector<string>* pos)
 
 /*-----------------------------------------*/
 
-void
-DataFormatHandler::insert(const string& nm, map<int, IntVector>* pos)
-{
-  string type = "map<int,IntVector >";
-  string name = nm;
-  NameType p = make_pair(name, type);
-  NT.insert(p);
-  TMINI.insert(make_pair(name, pos));
-}
+// void
+// DataFormatHandler::insert(const string& nm, map<int, IntVector>* pos)
+// {
+//   string type = "map<int,IntVector >";
+//   string name = nm;
+//   NameType p = make_pair(name, type);
+//   NT.insert(p);
+//   TMINI.insert(make_pair(name, pos));
+// }
 
 /*-----------------------------------------*/
 
@@ -208,15 +208,15 @@ DataFormatHandler::insert(const string& nm, map<IndexType, IndexVector>* pos)
 
 /*-----------------------------------------*/
 
-void
-DataFormatHandler::insert(const string& nm, IntSet* pos)
-{
-  string type = "set<int>";
-  string name = nm;
-  NameType p = make_pair(name, type);
-  NT.insert(p);
-  TSI.insert(make_pair(name, pos));
-}
+// void
+// DataFormatHandler::insert(const string& nm, IntSet* pos)
+// {
+//   string type = "set<int>";
+//   string name = nm;
+//   NameType p = make_pair(name, type);
+//   NT.insert(p);
+//   TSI.insert(make_pair(name, pos));
+// }
 
 /*-----------------------------------------*/
 
@@ -265,12 +265,12 @@ DataFormatHandler::insert(const string& nm, string* pos, const string& def)
   *pos = def;
 }
 
-void
-DataFormatHandler::insert(const string& nm, int* pos, int def)
-{
-  insert(nm, pos);
-  *pos = def;
-}
+// void
+// DataFormatHandler::insert(const string& nm, int* pos, int def)
+// {
+//   insert(nm, pos);
+//   *pos = def;
+// }
 
 void
 DataFormatHandler::insert(const string& nm, IndexType* pos, IndexType def)
@@ -327,12 +327,12 @@ DataFormatHandler::insert(const string& nm,
   *pos = def;
 }
 
-void
-DataFormatHandler::insert(const string& nm, IntVector* pos, IntVector& def)
-{
-  insert(nm, pos);
-  *pos = def;
-}
+// void
+// DataFormatHandler::insert(const string& nm, IntVector* pos, IntVector& def)
+// {
+//   insert(nm, pos);
+//   *pos = def;
+// }
 
 void
 DataFormatHandler::insert(const string& nm, IndexVector* pos, IndexVector& def)
@@ -354,16 +354,16 @@ DataFormatHandler::setvalue(const string& name, const string& value)
   }
 }
 
-void
-DataFormatHandler::setvalue(const string& name, int value)
-{
-  TypeInt::const_iterator p;
-  p = TI.find(name);
-  if (p != TI.end()) {
-    *(p->second) = value;
-    return;
-  }
-}
+// void
+// DataFormatHandler::setvalue(const string& name, int value)
+// {
+//   TypeInt::const_iterator p;
+//   p = TI.find(name);
+//   if (p != TI.end()) {
+//     *(p->second) = value;
+//     return;
+//   }
+// }
 
 void
 DataFormatHandler::setvalue(const string& name, IndexType value)
@@ -442,17 +442,17 @@ DataFormatHandler::setvalue(const string& name, vector<double>& value)
   }
 }
 
-void
-DataFormatHandler::setvalue(const string& name, IntVector& value)
-{
-  TypeVectorInt::const_iterator p;
-  p = TNI.find(name);
-  if (p != TNI.end()) {
-    p->second->resize(value.size());
-    *(p->second) = value;
-    return;
-  }
-}
+// void
+// DataFormatHandler::setvalue(const string& name, IntVector& value)
+// {
+//   TypeVectorInt::const_iterator p;
+//   p = TNI.find(name);
+//   if (p != TNI.end()) {
+//     p->second->resize(value.size());
+//     *(p->second) = value;
+//     return;
+//   }
+// }
 
 void
 DataFormatHandler::setvalue(const string& name, IndexVector& value)
@@ -477,16 +477,16 @@ DataFormatHandler::setvalue(const string& name, vector<string>& value)
   }
 }
 
-void
-DataFormatHandler::setvalue(const string& name, IntSet& value)
-{
-  TypeSetInt::const_iterator p;
-  p = TSI.find(name);
-  if (p != TSI.end()) {
-    *(p->second) = value;
-    return;
-  }
-}
+// void
+// DataFormatHandler::setvalue(const string& name, IntSet& value)
+// {
+//   TypeSetInt::const_iterator p;
+//   p = TSI.find(name);
+//   if (p != TSI.end()) {
+//     *(p->second) = value;
+//     return;
+//   }
+// }
 
 void
 DataFormatHandler::setvalue(const string& name, IndexSet& value)
@@ -499,27 +499,27 @@ DataFormatHandler::setvalue(const string& name, IndexSet& value)
   }
 }
 
-void
-DataFormatHandler::setvalue(const string& name, pair<int, IntVector>& value)
-{
-  TypeMapIntVectorInt::const_iterator p;
-  p = TMINI.find(name);
-  if (p != TMINI.end()) {
-    // das klappt nur einmal! naemlich das erste mal
-    // wenn der map schon value.first enthaellt dann wurde value.second nicht
-    // eingefuegt und der alte wert bleibt drin
-    // pair<TypeMapIntVectorInt::iterator,bool> pair_result =
-    // p->second->insert(value);
-    // pair_result.second == false : d.h. der alte wert wurde NICHT
-    // ueberschrieben
-    p->second->insert(value);
+// void
+// DataFormatHandler::setvalue(const string& name, pair<int, IntVector>& value)
+// {
+//   TypeMapIntVectorInt::const_iterator p;
+//   p = TMINI.find(name);
+//   if (p != TMINI.end()) {
+//     // das klappt nur einmal! naemlich das erste mal
+//     // wenn der map schon value.first enthaellt dann wurde value.second nicht
+//     // eingefuegt und der alte wert bleibt drin
+//     // pair<TypeMapIntVectorInt::iterator,bool> pair_result =
+//     // p->second->insert(value);
+//     // pair_result.second == false : d.h. der alte wert wurde NICHT
+//     // ueberschrieben
+//     p->second->insert(value);
 
-    // hiermit wird erzwungen dass der neue wert eingetragen wird, falls der
-    // schluessel schon drin war
-    p->second->operator[](value.first) = value.second;
-    return;
-  }
-}
+//     // hiermit wird erzwungen dass der neue wert eingetragen wird, falls der
+//     // schluessel schon drin war
+//     p->second->operator[](value.first) = value.second;
+//     return;
+//   }
+// }
 
 void
 DataFormatHandler::setvalue(const string& name,
@@ -589,13 +589,13 @@ DataFormatHandler::print(ostream& s) const
     s << *(p->second);
     s << "\n";
   }
-  TypeInt::const_iterator p1 = TI.begin();
-  for (; p1 != TI.end(); p1++) {
-    s << p1->first;
-    s << "     ";
-    s << *(p1->second);
-    s << "\n";
-  }
+  // TypeInt::const_iterator p1 = TI.begin();
+  // for (; p1 != TI.end(); p1++) {
+  //   s << p1->first;
+  //   s << "     ";
+  //   s << *(p1->second);
+  //   s << "\n";
+  // }
   TypeFloat::const_iterator p2 = TF.begin();
   for (; p2 != TF.end(); p2++) {
     s << p2->first;
@@ -634,17 +634,17 @@ DataFormatHandler::print(ostream& s) const
     s << *(p5->second);
     s << "\n";
   }
-  TypeVectorInt::const_iterator p6 = TNI.begin();
-  for (; p6 != TNI.end(); p6++) {
-    s << p6->first;
-    s << "     ";
-    s << p6->second->size();
-    s << "     ";
-    s << *(p6->second);
-    s << "\n";
-  }
+  // TypeVectorInt::const_iterator p6 = TNI.begin();
+  // for (; p6 != TNI.end(); p6++) {
+  //   s << p6->first;
+  //   s << "     ";
+  //   s << p6->second->size();
+  //   s << "     ";
+  //   s << *(p6->second);
+  //   s << "\n";
+  // }
   auto p61 = TNId.begin();
-  for (; p61 != TNId.end(); p6++) {
+  for (; p61 != TNId.end(); p61++) {
     s << p61->first;
     s << "     ";
     s << p61->second->size();
@@ -661,22 +661,22 @@ DataFormatHandler::print(ostream& s) const
     s << *(p7->second);
     s << "\n";
   }
-  TypeMapIntVectorInt::const_iterator p8 = TMINI.begin();
-  for (; p8 != TMINI.end(); p8++) {
-    map<int, IntVector>::const_iterator p = p8->second->begin();
-    map<int, IntVector>::const_iterator end = p8->second->end();
-    for (; p != end; p++) {
-      s << p8->first;
-      s << "[";
-      s << p->first;
-      s << "]";
-      s << "     ";
-      s << p->second.size();
-      s << "     ";
-      s << p->second;
-      s << "\n";
-    }
-  }
+  // TypeMapIntVectorInt::const_iterator p8 = TMINI.begin();
+  // for (; p8 != TMINI.end(); p8++) {
+  //   map<int, IntVector>::const_iterator p = p8->second->begin();
+  //   map<int, IntVector>::const_iterator end = p8->second->end();
+  //   for (; p != end; p++) {
+  //     s << p8->first;
+  //     s << "[";
+  //     s << p->first;
+  //     s << "]";
+  //     s << "     ";
+  //     s << p->second.size();
+  //     s << "     ";
+  //     s << p->second;
+  //     s << "\n";
+  //   }
+  // }
   TypeSetVectorString::const_iterator p9 = TSVS.begin();
   for (; p9 != TSVS.end(); p9++) {
     s << p9->first;
@@ -698,15 +698,15 @@ DataFormatHandler::print(ostream& s) const
     s << *(p11->second);
     s << "\n";
   }
-  TypeSetInt::const_iterator p12 = TSI.begin();
-  for (; p12 != TSI.end(); p12++) {
-    s << p12->first;
-    s << "     ";
-    s << p12->second->size();
-    s << "     ";
-    s << *(p12->second);
-    s << "\n";
-  }
+  // TypeSetInt::const_iterator p12 = TSI.begin();
+  // for (; p12 != TSI.end(); p12++) {
+  //   s << p12->first;
+  //   s << "     ";
+  //   s << p12->second->size();
+  //   s << "     ";
+  //   s << *(p12->second);
+  //   s << "\n";
+  // }
 }
 
 /***************************************************/

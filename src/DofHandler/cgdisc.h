@@ -557,7 +557,7 @@ public:
   }
 
   void BoundaryRhs(GlobalVector& f,
-                   const IntSet& Colors,
+                   const IndexSet& Colors,
                    const BoundaryRightHandSide& BRHS,
                    double s) const
   {

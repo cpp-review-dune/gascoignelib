@@ -29,6 +29,7 @@
 
 #include "../Common/cginfo.h"
 #include "../Common/paramfile.h"
+#include "../Interface/gascoigne.h"
 
 /**********************************************************/
 
@@ -38,13 +39,13 @@ class StdMultiLevelSolverData
 protected:
   std::string _solver, _mgtype, _linearsolve, _nonlinearsolve;
   mutable int _countresidual;
-  int _coarselevel;
-  int _i_show_nonlinear_comp_residuals, _i_show_linear_comp_residuals,
+  IndexType _coarselevel;
+  IndexType _i_show_nonlinear_comp_residuals, _i_show_linear_comp_residuals,
     _i_show_comp_residual_names;
-  int _i_save_nonlinear_comp_residuals, _i_save_linear_comp_residuals;
+  IndexType _i_save_nonlinear_comp_residuals, _i_save_linear_comp_residuals;
   double _mgomega;
 
-  int _gmresmemsize;
+  IndexType _gmresmemsize;
   CGInfo precinfo;
 
 public:
@@ -57,9 +58,9 @@ public:
   std::string& Solver() { return _solver; }
   int& CountResidual() const { return _countresidual; }
 
-  int CoarseLevel() const { return _coarselevel; }
+  IndexType CoarseLevel() const { return _coarselevel; }
 
-  int& CoarseLevel() { return _coarselevel; }
+  IndexType& CoarseLevel() { return _coarselevel; }
 
   std::string& MgType() { return _mgtype; }
   double& MgOmega() { return _mgomega; }

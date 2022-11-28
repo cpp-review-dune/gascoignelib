@@ -48,7 +48,7 @@ class MalteAdaptor
 {
 protected:
   const DoubleVector& eta;
-  int ppp, coarsening, refining, maxnodes, N;
+  IndexType ppp, coarsening, refining, maxnodes, N;
   double etasum, gamma, alpha, beta, yfactor;
 
   double Expectation(double theta, double x) const;

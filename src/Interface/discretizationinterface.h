@@ -211,7 +211,7 @@ public:
     abort();
   }
   virtual void BoundaryRhs(GlobalVector& f,
-                           const IntSet& Colors,
+                           const IndexSet& Colors,
                            const BoundaryRightHandSide& BRHS,
                            double s) const
   {
@@ -378,7 +378,7 @@ public:
   }
 
   virtual double ComputeBoundaryFunctional(const GlobalVector& u,
-                                           const IntSet& Colors,
+                                           const IndexSet& Colors,
                                            const BoundaryFunctional& BF) const
   {
     std::cerr
@@ -424,7 +424,7 @@ public:
 
   virtual void EvaluateBoundaryCellRightHandSide(
     GlobalVector& f,
-    const IntSet& Colors,
+    const IndexSet& Colors,
     const BoundaryRightHandSide& CF,
     double d = 1.) const
   {
@@ -446,7 +446,7 @@ public:
 
   virtual void EvaluateBoundaryParameterRightHandSide(
     GlobalVector& f,
-    const IntSet& Colors,
+    const IndexSet& Colors,
     const BoundaryRightHandSide& CF,
     double d = 1.) const
   {

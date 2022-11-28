@@ -56,9 +56,9 @@ protected:
 
   bool avsa, gmva, vigiea, vua, gnua, teca, vtka, compress;
   bool b_rotatedvtk;
-  int i_rotatedvtk_slides;
+  IndexType i_rotatedvtk_slides;
   double d_rotatedvtk_angle;
-  int pstep, showoutput;
+  IndexType pstep, showoutput;
   double time, tstep, nexttime;
   bool cellmaterial;
   /* Functions */
@@ -147,7 +147,7 @@ public:
   }
   void set_gnuplotdata(const std::vector<GnuplotData>& gp) { GP = gp; }
 
-  void step(int);
+  void step(IndexType);
   int active(int) const;
   void format(const std::string&);
 

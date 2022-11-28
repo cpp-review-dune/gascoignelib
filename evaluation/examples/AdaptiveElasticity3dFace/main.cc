@@ -56,7 +56,7 @@ public:
 
     GetMultiLevelSolver()->ReInit();
 
-    int adarefine = 0;
+    IndexType adarefine = 0;
     {
       DataFormatHandler DFH;
       DFH.insert("adarefine", &adarefine, 1);

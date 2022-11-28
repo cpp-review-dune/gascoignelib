@@ -35,8 +35,8 @@ namespace Gascoigne {
 class SolverData
 {
 protected:
-  int exact_lu, enlarge, iter_pre, iter_post, iter_exact;
-  int bicgstab_pstep;
+  IndexType exact_lu, enlarge, iter_pre, iter_post, iter_exact;
+  IndexType bicgstab_pstep;
   DoubleVector _ilum;
   DoubleVector vector_direction;
   IndexVector stream_direction, _pfilter;
@@ -48,7 +48,7 @@ protected:
   // iter/miniter wird immer iteriert.
   double bicgstab_miniter;
 
-  int _cgMassMaxIter;
+  IndexType _cgMassMaxIter;
   double _cgMassTol, _cgMassGlobalTol;
 
 public:

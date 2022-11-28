@@ -35,7 +35,7 @@ namespace Gascoigne {
 class NCAdaptor
 {
 protected:
-  int _n;
+  IndexType _n;
   double _p;
   double etasum;
   const DoubleVector& eta;
