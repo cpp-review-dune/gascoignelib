@@ -210,10 +210,7 @@ public:
   }
 
   void ShowOutput(IndexType i) const { _i_showoutput = i; }
-  virtual void ProjectBoundary()
-  {
-    std::cout << "ProjectBoundary not written" << std::endl;
-  }
+  virtual void ProjectBoundary() { WARNING("ProjectBoundary not written"); }
 };
 } // namespace Gascoigne
 

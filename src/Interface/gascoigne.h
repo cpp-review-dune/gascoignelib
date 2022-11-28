@@ -48,8 +48,8 @@ typedef float MatrixEntryType;
 typedef double MatrixEntryType;
 #endif
 
-typedef long IndexType;       // data type for global indices
-typedef short ShortIndexType; // data type for local indices
+typedef int IndexType;      // data type for global indices
+typedef int ShortIndexType; // data type for local indices
 
 typedef nvector<double> GlobalParameterVector;
 typedef nvector<double> LocalParameterVector;
@@ -59,6 +59,7 @@ typedef std::map<std::string, LocalParameterVector> LocalParameterData;
 typedef nvector<IndexType> IndexVector;
 typedef std::set<IndexType> IndexSet;
 typedef std::map<IndexType, IndexType> IndexMap;
+typedef std::map<IndexType, IndexVector> VecMap;
 typedef nvector<ShortIndexType> ShortIndexVector;
 typedef nvector<int> IntVector;
 typedef nvector<double> DoubleVector;
@@ -81,6 +82,58 @@ typedef std::array<IndexType, 4> FaceVector;
 
 #define CLONEABLE(Type)                                                        \
   virtual Type* createNew() const override { return new Type(*this); }
+
+/**
+ * @brief Marker throwing error when not implemented
+ *
+ */
+#define NOT_IMPLEMENTED                                                        \
+  {                                                                            \
+    throw std::runtime_error(std::string("Unimplemented funtion in ") +        \
+                             std::string(__FILE__) + std::string(":") +        \
+                             std::to_string(__LINE__) + std::string(" ") +     \
+                             std::string(__FUNCTION__));                       \
+  }
+/**
+ * @brief Marker throwing error when not implemented
+ *
+ */
+#define ERROR(Error)                                                           \
+  {                                                                            \
+    throw std::runtime_error(std::string(Error) + std::string(" in ") +        \
+                             std::string(__FILE__) + std::string(":") +        \
+                             std::to_string(__LINE__) + std::string(" ") +     \
+                             std::string(__FUNCTION__));                       \
+  }
+
+/**
+ * @brief Marker to reminde of todos
+ *
+ */
+#define TO_DO                                                                  \
+  {                                                                            \
+    printf("Todo in %s:%i %s\n", __FILE__, __LINE__, __FUNCTION__);            \
+  }
+
+/**
+ * @brief Marker to reminde of todos
+ *
+ */
+#define WARNING(Warning)                                                       \
+  {                                                                            \
+    printf(                                                                    \
+      "WARNING: %s in %s:%i %s\n", Warning, __FILE__, __LINE__, __FUNCTION__); \
+  }
+
+/**
+ * Helpfull marker for debuging purpose
+ */
+#define CHECK                                                                  \
+  {                                                                            \
+    std::cerr << "Past: " << __FILE__ << ":" << std::to_string(__LINE__)       \
+              << " in " << __FUNCTION__ << std::endl;                          \
+  }
+
 } // namespace Gascoigne
 
 #endif

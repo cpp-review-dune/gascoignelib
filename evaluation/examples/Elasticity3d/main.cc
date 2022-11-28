@@ -34,8 +34,6 @@
 #include <Solver/stdloop.h>
 #endif
 
-#define HEAT_COMP 3
-
 double __TIME;
 
 /*---------------------------------------------------*/
@@ -51,7 +49,7 @@ main(int argc, char** argv)
   }
 
   // <**>
-  Gascoigne::HeatProblem<HEAT_COMP> LPD;
+  Gascoigne::HeatProblem<3> LPD;
   // <**>
 
   LPD.BasicInit(paramfile);
@@ -73,4 +71,4 @@ main(int argc, char** argv)
   return 0;
 }
 
-template class Gascoigne::HeatRhs<HEAT_COMP>;
+template class Gascoigne::HeatRhs<3>;
