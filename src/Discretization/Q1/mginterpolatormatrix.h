@@ -25,6 +25,7 @@
 #define __MgInterpolatorMatrix_h
 
 #include "../../Interface/gascoigne.h"
+#include "../../Interface/meshtransferinterface.h"
 #include "../../Interface/mginterpolatorinterface.h"
 #include "../../LinAlg/columnstencil.h"
 
@@ -42,8 +43,7 @@ private:
 public:
   MgInterpolatorMatrix()
     : MgInterpolatorInterface()
-  {
-  }
+  {}
   void BasicInit(const MeshTransferInterface* MT);
 
   void restrict_zero(GlobalVector& uL, const GlobalVector& ul) const;

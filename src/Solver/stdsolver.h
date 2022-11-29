@@ -95,10 +95,7 @@ private:
 
 protected:
 #ifdef __WITH_THREADS__
-  int NThreads() const
-  {
-    return __n_threads;
-  }
+  int NThreads() const { return __n_threads; }
 #endif
 
   // 3. Discretization

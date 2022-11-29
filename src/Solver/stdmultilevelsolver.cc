@@ -112,8 +112,7 @@ StdMultiLevelSolver::StdMultiLevelSolver()
   , _PD(0)
   , _PC(0)
   , _FC(0)
-{
-}
+{}
 
 StdMultiLevelSolver::StdMultiLevelSolver(const MeshAgent* MAP,
                                          const ParamFile& paramfile,
@@ -127,8 +126,7 @@ StdMultiLevelSolver::StdMultiLevelSolver(const MeshAgent* MAP,
   , _PC(PC)
   , _FC(FC)
   , DataP(_paramfile)
-{
-}
+{}
 
 /*-------------------------------------------------------------*/
 

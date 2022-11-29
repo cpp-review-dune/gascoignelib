@@ -35,6 +35,7 @@
 #include "../Discretization/Q1/finiteelement.h"
 #include "../Discretization/Q1/gascoignevisualization.h"
 #include "../Discretization/Q1/hnstructureq13d.h"
+#include "../Discretization/Q1/mginterpolatormatrix.h"
 #include "../Discretization/Q1/mginterpolatornested.h"
 #include "../Discretization/Q1/pressurefilter.h"
 #include "../Discretization/Q2/baseq13dpatch.h"

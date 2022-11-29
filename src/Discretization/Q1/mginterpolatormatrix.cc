@@ -22,8 +22,10 @@
  **/
 
 #include "mginterpolatormatrix.h"
-#include "gascoignemeshtransfer.h"
-#include "sparsestructure.h"
+
+#include "../../Mesh/gascoignemeshtransfer.h"
+
+#include "../../LinAlg/sparsestructure.h"
 
 using namespace std;
 
