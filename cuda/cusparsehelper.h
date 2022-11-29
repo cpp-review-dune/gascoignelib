@@ -3,8 +3,8 @@
 
 #include <vector>
 
-#include "columndiagstencil.h"
-#include "fmatrixblock.h"
+#include "../src/LinAlg/columndiagstencil.h"
+#include "../src/LinAlg/fmatrixblock.h"
 
 #include "check_cuda.h"
 

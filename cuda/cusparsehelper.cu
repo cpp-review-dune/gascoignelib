@@ -1,12 +1,11 @@
 #include "cusparsehelper.h"
 
+#include <cuda_runtime.h>
 #include <vector>
 
-#include <cuda_runtime.h>
-
-#include "columnstencil.h"
-#include "fmatrixblock.h"
-#include "gascoigne.h"
+#include "../src/Interface/gascoigne.h"
+#include "../src/LinAlg/columnstencil.h"
+#include "../src/LinAlg/fmatrixblock.h"
 
 #include "check_cuda.h"
 
