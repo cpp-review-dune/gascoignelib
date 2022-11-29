@@ -128,19 +128,29 @@ ADD_DEFINITIONS(${GASCOIGNE_DEFINITIONS})
 
 SET(GASCOIGNE_LIBS "GascoigneStd${BUILD_ENDING}")
 
+
+#
+# GASCOIGNE
+#
+IF(NOT USE_CUDA)
+  ADD_SUBDIRECTORY(src)
+ELSE()
+  ADD_SUBDIRECTORY(cuda)
+ENDIF()
+
 #
 # Code Quality
 #
-OPTION(USE_IWYU "Use include what you use for include optimization" OFF)
-IF(USE_IWYU)
-    find_program(IWYU include-what-you-use HINTS /usr/bin/)
-    if(NOT IWYU)
-        message("IWYU not found!")
-    endif()
+# OPTION(USE_IWYU "Use include what you use for include optimization" OFF)
+# IF(USE_IWYU)
+#     find_program(IWYU include-what-you-use HINTS /usr/bin/)
+#     if(NOT IWYU)
+#         message("IWYU not found!")
+#     endif()
 
-    set_property(TARGET ${GASCOIGNE_LIBRARY} 
-        PROPERTY CXX_INCLUDE_WHAT_YOU_USE ${IWYU})
-endif()
+#     set_property(TARGET ${GASCOIGNE_LIBRARY} 
+#         PROPERTY CXX_INCLUDE_WHAT_YOU_USE ${IWYU})
+# endif()
 
 OPTION(USE_CLANG_FORMAT "Formats the codebase" ON)
 if(USE_CLANG_FORMAT)
@@ -159,15 +169,6 @@ if(USE_CLANG_FORMAT)
     message(STATUS "Could not find clang-format")
   endif()
 endif()
-
-#
-# GASCOIGNE
-#
-IF(NOT USE_CUDA)
-  ADD_SUBDIRECTORY(src)
-ELSE()
-  ADD_SUBDIRECTORY(cuda)
-ENDIF()
 
 #
 # Evaluation

@@ -12,3 +12,14 @@ target_compile_options(${GASCOIGNE_LIBRARY} PRIVATE ${GASCOIGNE_CXX_FLAGS} "-Wno
 #  COMPILE_DEFINITIONS "${GASCOIGNE_DEFINITIONS}"
 #  COMPILE_FLAGS "${GASCOIGNE_CXX_FLAGS}"
 #  )
+
+OPTION(USE_IWYU "Use include what you use for include optimization" ON)
+IF(USE_IWYU)
+    find_program(IWYU include-what-you-use HINTS /usr/bin/)
+    if(NOT IWYU)
+        message("IWYU not found!")
+    endif()
+
+    set_property(TARGET ${GASCOIGNE_LIBRARY} 
+        PROPERTY CXX_INCLUDE_WHAT_YOU_USE ${IWYU}  "-Xiwyu")
+endif()
