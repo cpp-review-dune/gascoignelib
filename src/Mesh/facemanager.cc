@@ -32,7 +32,7 @@
 
 #include "hangfacesort.h"
 
-#define HANGMAP unordered_map<EdgeArray<4>, int, EdgeHash<4>>
+#define HANGMAP unordered_map<EdgeArray<4>, IndexType, EdgeHash<4>>
 
 using namespace std;
 
@@ -60,13 +60,13 @@ FaceManager::InitFaces()
   FaceVector e;
 
   for (size_t i = 0; i < hexs.size(); i++) {
-    for (int j = 0; j < 6; j++) {
+    for (IndexType j = 0; j < 6; j++) {
       HexLaO.global_face_unsorted(e, hex(i), j);
 
       HANGMAP::iterator yes = H.find(e);
 
       if (yes != H.end()) {
-        int k = yes->second;
+        IndexType k = yes->second;
         edges[k].slave() = i;
         edges[k].LocalSlaveIndex() = j;
         hexs[i].edge(j) = k;
@@ -95,9 +95,9 @@ FaceManager::DeleteFaces()
     if (co2n[i] < 0) {
       H.edges().fill(-1);
     } else {
-      for (int e = 0; e < 6; e++) {
-        int edge = H.edge(e);
-        int newe = eo2n[edge];
+      for (IndexType e = 0; e < 6; e++) {
+        IndexType edge = H.edge(e);
+        IndexType newe = eo2n[edge];
 
         assert(newe >= 0);
 
@@ -113,12 +113,12 @@ void
 FaceManager::Update()
 {
   for (size_t i = 0; i < edges.size(); i++) {
-    int m = edges[i].master();
-    int s = edges[i].slave();
+    IndexType m = edges[i].master();
+    IndexType s = edges[i].slave();
 
     assert(m >= 0);
 
-    int nm = co2n[m];
+    IndexType nm = co2n[m];
     if (nm >= 0) {
       edges[i].master() = nm;
       if (s >= 0) {
@@ -166,20 +166,20 @@ FaceManager::InnerFaces(const IndexSet& CellRefList)
   IndexSet::const_iterator cp;
 
   for (cp = CellRefList.begin(); cp != CellRefList.end(); cp++) {
-    int f = co2n[*cp];
+    IndexType f = co2n[*cp];
 
     for (size_t e = 0; e < 12; e++) {
-      int icl = HexLaO.ChildOfInnerFace(e, 0);
-      int ic = hexs[f].child(icl);
-      int ie = HexLaO.LocalChildFaceOfInnerFace(e, 0);
+      IndexType icl = HexLaO.ChildOfInnerFace(e, 0);
+      IndexType ic = hexs[f].child(icl);
+      IndexType ie = HexLaO.LocalChildFaceOfInnerFace(e, 0);
 
       hexs[ic].edge(ie) = n;
 
       Edge E(ic, ie);
 
-      int icl2 = HexLaO.ChildOfInnerFace(e, 1);
-      int ic2 = hexs[f].child(icl2);
-      int ie2 = HexLaO.LocalChildFaceOfInnerFace(e, 1);
+      IndexType icl2 = HexLaO.ChildOfInnerFace(e, 1);
+      IndexType ic2 = hexs[f].child(icl2);
+      IndexType ie2 = HexLaO.LocalChildFaceOfInnerFace(e, 1);
       hexs[ic2].edge(ie2) = n;
 
       E.slave() = ic2;
@@ -198,11 +198,11 @@ FaceManager::Check(const HangContainer3d& hangset) const
 {
   HangList<4>::const_iterator p = hangset.FaceNotMore().begin();
 
-  int ok = 1;
+  IndexType ok = 1;
   for (; p != hangset.FaceNotMore().end(); p++) {
-    int hang = p->second.hanging();
-    int M = p->second.rneighbour();
-    int S = p->second.cneighbour();
+    IndexType hang = p->second.hanging();
+    IndexType M = p->second.rneighbour();
+    IndexType S = p->second.cneighbour();
 
     if (hang < 0)
       continue;
@@ -237,7 +237,7 @@ FaceManager::SortHangings()
 {
   // edges with hanging nodes swapped to the end of list
 
-  vector<int> perm(edges.size());
+  vector<IndexType> perm(edges.size());
   iota(perm.begin(), perm.end(), 0);
   stable_sort(perm.begin(), perm.end(), HangFaceSort(*this));
   stable_sort(edges.begin(), edges.end(), HangFaceSort2(*this));
@@ -264,8 +264,8 @@ FaceManager::SortHangings()
   // master of each edge is allways the coarser hex
 
   for (size_t i = 0; i < edges.size(); i++) {
-    int m = edges[i].master();
-    int s = edges[i].slave();
+    IndexType m = edges[i].master();
+    IndexType s = edges[i].slave();
     if (s < 0)
       continue;
     if (hex(m).sleep() && !hex(s).sleep()) {
@@ -279,10 +279,10 @@ FaceManager::SortHangings()
 /*---------------------------------------------------*/
 
 bool
-FaceManager::EdgeIsHanging(int e) const
+FaceManager::EdgeIsHanging(IndexType e) const
 {
-  int m = edges[e].master();
-  int s = edges[e].slave();
+  IndexType m = edges[e].master();
+  IndexType s = edges[e].slave();
   if (s < 0)
     return 0;
   if (hex(m).sleep() && !hex(s).sleep())
@@ -297,8 +297,8 @@ FaceManager::EdgeIsHanging(int e) const
 bool
 FaceManager::EdgeIsHanging(const Edge& e) const
 {
-  int m = e.master();
-  int s = e.slave();
+  IndexType m = e.master();
+  IndexType s = e.slave();
   if (s < 0)
     return 0;
   if (hex(m).sleep() && !hex(s).sleep())
@@ -317,7 +317,7 @@ FaceManager::LoadFaceElimination(IndexVector& edel,
 {
   edel.resize(12 * CellCoarseList.size());
 
-  int n = 0;
+  IndexType n = 0;
 
   IndexSet::const_iterator cp;
 
@@ -326,7 +326,7 @@ FaceManager::LoadFaceElimination(IndexVector& edel,
       continue;
 
     const Hex& H = hexs[*cp];
-    for (int f = 0; f < 12; f++) {
+    for (IndexType f = 0; f < 12; f++) {
       edel[n++] = HexLaO.InnerEdge(H, f);
     }
   }
@@ -336,8 +336,8 @@ FaceManager::LoadFaceElimination(IndexVector& edel,
 
   for (; p != hangset.FaceDeleting().end(); p++) {
     const FaceVector& F = p->first;
-    int h = p->second.rneighbour();
-    for (int i = 0; i < 4; i++) {
+    IndexType h = p->second.rneighbour();
+    for (IndexType i = 0; i < 4; i++) {
       edel[n++] = HexLaO.GlobalChildFace(F, h, i);
     }
   }
@@ -353,8 +353,8 @@ FaceManager::NeighbourTester() const
 {
   IndexVector x(edges.size());
   for (size_t i = 0; i < hexs.size(); i++) {
-    for (int e = 0; e < 6; e++) {
-      int edge = hexs[i].edge(e);
+    for (IndexType e = 0; e < 6; e++) {
+      IndexType edge = hexs[i].edge(e);
       x[edge]++;
     }
   }
@@ -364,15 +364,15 @@ FaceManager::NeighbourTester() const
     }
   }
   for (size_t i = 0; i < hexs.size(); i++) {
-    for (int e = 0; e < 6; e++) {
-      int edge = hexs[i].edge(e);
+    for (IndexType e = 0; e < 6; e++) {
+      IndexType edge = hexs[i].edge(e);
 
       if (edge < 0)
         continue;
       const Edge& E = edges[edge];
-      int m = E.master();
-      int s = E.slave();
-      int nachbar = -10;
+      IndexType m = E.master();
+      IndexType s = E.slave();
+      IndexType nachbar = -10;
       if (m == i) {
         nachbar = s;
       } else if (s == i) {
@@ -393,28 +393,28 @@ FaceManager::FillNeighbourFaces(const Hex& HM,
                                 const Hex& HS,
                                 const FaceVector& Face)
 {
-  int MF = HexLaO.local_face(HM, Face);
-  int SF = HexLaO.local_face(HS, Face);
+  IndexType MF = HexLaO.local_face(HM, Face);
+  IndexType SF = HexLaO.local_face(HS, Face);
 
   FaceVector m, s;
   HexLaO.childs_of_face(m, HM, MF);
   HexLaO.childs_of_face(s, HS, SF);
 
-  int mf = HexLaO.ChildFace(MF);
-  int sf = HexLaO.ChildFace(SF);
+  IndexType mf = HexLaO.ChildFace(MF);
+  IndexType sf = HexLaO.ChildFace(SF);
 
   //  cout <<  endl << "FACE " << Face << endl;
-  for (int i = 0; i < 4; i++) {
-    int master = m[i];
+  for (IndexType i = 0; i < 4; i++) {
+    IndexType master = m[i];
 
     FaceVector face;
     HexLaO.GetFace(face, master, mf);
 
     //      cout << master <<" master child face " << face << endl;
 
-    int slave = -1;
-    int sj = -1;
-    for (int j = 0; (j < 4) && (sj < 0); j++) {
+    IndexType slave = -1;
+    IndexType sj = -1;
+    for (IndexType j = 0; (j < 4) && (sj < 0); j++) {
       slave = s[j];
       sj = HexLaO.local_face_index(slave, face);
     }
@@ -423,7 +423,7 @@ FaceManager::FillNeighbourFaces(const Hex& HM,
 
     Hex& hs = hexs[slave];
     const Hex& hm = hexs[master];
-    int e = hm.edge(mf);
+    IndexType e = hm.edge(mf);
 
     assert(hs.edge(sj) == -1);
 
@@ -455,13 +455,13 @@ FaceManager::OuterFaces(const HangContainer3d& hangset)
 
   // neue Kinder-faces erzeugen
   for (; p != hangset.FaceCreating().end(); p++) {
-    int rneigh = p->second.rneighbour();
+    IndexType rneigh = p->second.rneighbour();
 
-    for (int i = 0; i < 4; i++) {
-      pair<int, int> cp = HexLaO.GetChildFaces(p->first, rneigh, i);
+    for (IndexType i = 0; i < 4; i++) {
+      pair<IndexType, IndexType> cp = HexLaO.GetChildFaces(p->first, rneigh, i);
 
-      int cellindex = cp.first;
-      int edgeindex = cp.second;
+      IndexType cellindex = cp.first;
+      IndexType edgeindex = cp.second;
 
       hexs[cellindex].edge(edgeindex) = n;
 
@@ -471,8 +471,8 @@ FaceManager::OuterFaces(const HangContainer3d& hangset)
   p = hangset.FaceCreating().begin();
 
   for (; p != hangset.FaceCreating().end(); p++) {
-    int M = p->second.rneighbour();
-    int S = p->second.cneighbour();
+    IndexType M = p->second.rneighbour();
+    IndexType S = p->second.cneighbour();
     // wenn neue Kinder-faces nicht hangen, dann Nachbarn eintragen
     if (S >= 0) {
       const Hex& HM = hexs[M];
@@ -492,9 +492,9 @@ FaceManager::OldHangings(HangContainer3d& hangset, const IndexSet& CellRefList)
   HangList<4>::iterator p = hangset.FaceNotMore().begin();
 
   for (; p != hangset.FaceNotMore().end(); p++) {
-    int hang = p->second.hanging();
-    int M = p->second.rneighbour();
-    int S = p->second.cneighbour();
+    IndexType hang = p->second.hanging();
+    IndexType M = p->second.rneighbour();
+    IndexType S = p->second.cneighbour();
 
     if (hang < 0)
       continue;
@@ -509,21 +509,21 @@ FaceManager::OldHangings(HangContainer3d& hangset, const IndexSet& CellRefList)
     const FaceVector& F = p->first;
 
     //       cout << M << " Master " << HM;
-    //       for (int i=0; i<HS.nchilds(); i++)
+    //       for (IndexType i=0; i<HS.nchilds(); i++)
     // 	{
-    // 	  int j = HM.child(i);
+    // 	  IndexType j = HM.child(i);
     // 	  cout << j << "child " << hexs[j];
     // 	}
     //       cout << S << " Slave " << HS << endl;
 
-    //       for (int i=0; i<HS.nchilds(); i++)
+    //       for (IndexType i=0; i<HS.nchilds(); i++)
     // 	{
-    // 	  int j = HS.child(i);
+    // 	  IndexType j = HS.child(i);
     // 	  cout << j << " hild " << hexs[j];
     // 	}
 
-    int em = HexLaO.TestFaceOfOneChild(HM, F);
-    int es = HexLaO.TestFaceOfOneChild(HS, F);
+    IndexType em = HexLaO.TestFaceOfOneChild(HM, F);
+    IndexType es = HexLaO.TestFaceOfOneChild(HS, F);
 
     if (es < 0) {
       FillNeighbourFaces(HM, HS, F);
@@ -538,11 +538,11 @@ FaceManager::OldHangings(HangContainer3d& hangset, const IndexSet& CellRefList)
 void
 FaceManager::SwappedFaces()
 {
-  int n = 0;
-  int m = 0;
+  IndexType n = 0;
+  IndexType m = 0;
   for (size_t i = 0; i < hexs.size(); i++) {
     const Hex& q = hexs[i];
-    for (int e = 0; e < 6; e++) {
+    for (IndexType e = 0; e < 6; e++) {
       if (q.edge(e) < 0)
         m++;
     }
@@ -553,9 +553,9 @@ FaceManager::SwappedFaces()
     Hex& q = hexs[i];
     if (q.sleep())
       continue;
-    for (int e = 0; e < 6; e++) {
+    for (IndexType e = 0; e < 6; e++) {
       if (q.edge(e) < 0) {
-        int ei = SwappedEdge[n++];
+        IndexType ei = SwappedEdge[n++];
         q.edge(e) = ei;
 
         edges[ei].setmaster(i, e);
