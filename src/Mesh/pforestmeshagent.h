@@ -29,8 +29,10 @@
 #include <utility>
 #include <vector>
 
-#include <p4est_bits.h>
+#include <p4est.h>
 #include <p4est_vtk.h>
+#include <p8est.h>
+#include <p8est_vtk.h>
 
 #include "../Common/compvector.h"
 #include "../Common/paramfile.h"
@@ -46,28 +48,30 @@
 /*---------------------------------------------------*/
 
 namespace Gascoigne {
-class P4estMeshAgent
+
+template<typename PForest, typename PTree, typename PQuad, typename PConn>
+class PForestMeshAgent
 {
 public:
-  struct quadrant_data_t
+  struct pquadrant_data_t
   {
     IndexType index;
     bool refine; ///< flag when true gets refinde in refine_cells
   };
 
-  struct p4est_data_t
+  struct pforest_data_t
   {
     IndexType MAX_INDEX = 0;
   };
 
 private:
-  p4est_t* p4est;
-  p4est_connectivity_t* conn;
-  p4est_data_t p4est_data;
+  PForest* pforest;
+  PConn* conn;
+  pforest_data_t pforest_data;
 
 public:
-  P4estMeshAgent();
-  virtual ~P4estMeshAgent();
+  PForestMeshAgent();
+  virtual ~PForestMeshAgent();
 
   virtual void BasicInit(const ParamFile& pf);
 
@@ -76,6 +80,12 @@ public:
   virtual void global_refine(IndexType n);
   virtual void refine_cells(IndexVector& ref);
 };
+
+using P4estMeshAgent =
+  PForestMeshAgent<p4est, p4est_tree_t, p4est_quadrant_t, p4est_connectivity_t>;
+using P8estMeshAgent =
+  PForestMeshAgent<p8est, p8est_tree_t, p8est_quadrant_t, p8est_connectivity_t>;
+
 } // namespace Gascoigne
 
 /*---------------------------------------------------*/

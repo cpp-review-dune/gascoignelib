@@ -1,0 +1,5 @@
+//Block Mesh
+prerefine           2
+gridname            box.inp
+
+//Block nix

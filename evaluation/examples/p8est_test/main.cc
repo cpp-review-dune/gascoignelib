@@ -33,9 +33,9 @@ int
 main(int argc, char** argv)
 {
   // Set the name of the parameter file.
-  ParamFile paramfile("p4est.param");
+  ParamFile paramfile("p8est.param");
 
-  P4estMeshAgent pma;
+  P8estMeshAgent pma;
   pma.BasicInit(paramfile);
   IndexVector refine_cells;
   refine_cells.push_back(44);
