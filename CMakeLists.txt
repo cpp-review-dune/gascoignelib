@@ -1,15 +1,19 @@
-set(CMAKE_CXX_FLAGS_RELEASE "_UNSET" CACHE STRING "")
-PROJECT(GASCOIGNE CXX C)
+
+
+#### CMAKE CONFIG
+CMAKE_MINIMUM_REQUIRED(VERSION 3.16)
+cmake_policy(SET CMP0042 NEW)
+cmake_policy(SET CMP0048 NEW)
+
+PROJECT(GASCOIGNE VERSION 1.0.0 LANGUAGES CXX C)
 
 #
 # The name of the library:
 #
 SET(GASCOIGNE_LIBRARY GascoigneStd)
 
-
-#### CMAKE CONFIG
-CMAKE_MINIMUM_REQUIRED(VERSION 3.0)
-cmake_policy(SET CMP0042 NEW)
+set(CMAKE_CXX_FLAGS_RELEASE "_UNSET" CACHE STRING "")
+set(CMAKE_CXX_STANDARD 20) ## C++ standart (14 is required vor gtest)
 LIST(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/)
 
 
@@ -33,25 +37,13 @@ OPTION(WITH_UMFPACK_LONG "Long-integer indices in UMFPACK >4GB matrices" OFF)
 #
 # Include directories:
 #
-# SET(GASCOIGNE_INCLUDE_DIRS
-#   ${GASCOIGNE_DIR}/src/Common
-#   ${GASCOIGNE_DIR}/src/DofHandler
-#   ${GASCOIGNE_DIR}/src/Discretization/Q1
-#   ${GASCOIGNE_DIR}/src/Discretization/Q2
-#   ${GASCOIGNE_DIR}/src/Discretization/DG
-#   ${GASCOIGNE_DIR}/src/Interface
-#   ${GASCOIGNE_DIR}/src/LinAlg
-#   ${GASCOIGNE_DIR}/src/Mesh
-#   ${GASCOIGNE_DIR}/src/Problems
-#   ${GASCOIGNE_DIR}/src/Solver
-# )
 SET(GASCOIGNE_INCLUDE_DIRS ${GASCOIGNE_DIR}/src/)
 
 #
 # Setup compiler flags and compile definitions:
 #
 SET(GASCOIGNE_CXX_FLAGS
-  "-std=c++11 -pedantic -Wall -Wno-unknown-pragmas -Wno-sign-compare" CACHE STRING "Configuration flags"
+  "-std=c++2a -pedantic -Wall -Wno-unknown-pragmas -Wno-sign-compare" CACHE STRING "Configuration flags"
   )
 
 #
@@ -105,27 +97,6 @@ FIND_PACKAGE(BLAS REQUIRED)
 
 LIST(APPEND GASCOIGNE_LIBRARIES ${BLAS_LIBRARIES})
 SET(GASCOIGNE_LINKER_FLAGS "${GASCOIGNE_LINKER_FLAGS} ${BLAS_LINKER_FLAGS}")
-
-#
-# Check whether tr1/unordered_map is available:
-#
-INCLUDE(CheckCXXSourceCompiles)
-
-CHECK_CXX_SOURCE_COMPILES(
-  "
-  #include <tr1/unordered_map>
-  int main()
-  {
-  std::tr1::unordered_map<int, int> foo;
-  return 0;
-  }
-  "
-  HAVE_TR1_UNORDERED_MAP
-  )
-
-IF(HAVE_TR1_UNORDERED_MAP)
-  LIST(APPEND GASCOIGNE_DEFINITIONS -D __NEWER_THAN_GCC_4_2__)
-ENDIF()
 
 #
 # Build Setup
@@ -184,6 +155,7 @@ endif()
 OPTION(BUILD_TESTS "Build the Testing environment" ON)
 IF(BUILD_TESTS)
   ADD_SUBDIRECTORY(evaluation/examples)
+  ADD_SUBDIRECTORY(test)
 ENDIF(BUILD_TESTS)
 
 #
