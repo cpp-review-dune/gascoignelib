@@ -71,6 +71,7 @@ private:
 
 public:
   PForestMeshAgent();
+  PForestMeshAgent(const std::string& gridname, IndexType prerefine);
   virtual ~PForestMeshAgent();
 
   virtual void BasicInit(const ParamFile& pf);
@@ -83,6 +84,15 @@ public:
   virtual void global_refine(IndexType n);
   virtual void refine_cells(IndexVector& ref);
 };
+
+template<typename PForest, typename PTree, typename PQuad, typename PConn>
+inline PForestMeshAgent<PForest, PTree, PQuad, PConn>::PForestMeshAgent(
+  const std::string& gridname,
+  IndexType prerefine)
+{
+  read_inp(gridname);
+  global_refine(prerefine);
+}
 
 template<typename PForest, typename PTree, typename PQuad, typename PConn>
 inline IndexType
