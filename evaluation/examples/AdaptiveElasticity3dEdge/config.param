@@ -1,6 +1,6 @@
 //Block Loop
 
-niter               200
+niter               20
 estimator           none
 initial             boundary
 refiner             global
@@ -8,11 +8,19 @@ writevtk            0
 writebupgup         0
 
 
-//Block Mesh
-dimension           2
-prerefine           {{prerefine}}
-gridname            square.inp
+//Block BoundaryManager
 
+// this is now set in HeatDD (heatproblem.h)
+
+//dirichlet           1      4
+//dirichletcomp       4      1       0 
+
+
+//Block Mesh
+dimension           3
+prerefine           2
+gridname            mesh.inp
+adarefine           6
 
 //Block Equation
 
@@ -27,7 +35,7 @@ linearsolve         gmres
 nonlinear_tol       1e-5
 nonlinear_rho		0.1
 
-coarselevel         1     // only fine mesh, no multigrid!
+coarselevel         -1     // only fine mesh, no multigrid!
 gmressize           100
 linear_maxiter		100
 
@@ -47,6 +55,6 @@ iterexact           10
 
 
 linear_smooth       jacobi
-omega               0.7
+omega               0.5  
 
 //Block nix

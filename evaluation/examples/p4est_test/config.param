@@ -1,5 +1,5 @@
 //Block Mesh
 prerefine           3
-gridname            square.inp
+gridname            mesh.inp
 
 //Block nix

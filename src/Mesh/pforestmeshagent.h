@@ -75,11 +75,21 @@ public:
 
   virtual void BasicInit(const ParamFile& pf);
 
+  virtual IndexType trees_count() const;
+  virtual IndexType quad_count() const;
+
   virtual void read_inp(const std::string& fname);
   virtual void write_vtk(const std::string& fname) const;
   virtual void global_refine(IndexType n);
   virtual void refine_cells(IndexVector& ref);
 };
+
+template<typename PForest, typename PTree, typename PQuad, typename PConn>
+inline IndexType
+PForestMeshAgent<PForest, PTree, PQuad, PConn>::trees_count() const
+{
+  return pforest->trees->elem_count;
+}
 
 using P4estMeshAgent =
   PForestMeshAgent<p4est, p4est_tree_t, p4est_quadrant_t, p4est_connectivity_t>;

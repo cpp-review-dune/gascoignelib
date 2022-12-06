@@ -157,6 +157,18 @@ P8estMeshAgent::BasicInit(const ParamFile& pf)
   global_refine(prerefine);
 }
 
+template<>
+IndexType
+P8estMeshAgent::quad_count() const
+{
+  IndexType quad_count = 0;
+  for (IndexType i = 0; i < trees_count(); ++i) {
+    p8est_tree_t* tree = p8est_tree_array_index(pforest->trees, i);
+    quad_count += tree->quadrants.elem_count;
+  }
+  return quad_count;
+}
+
 template class PForestMeshAgent<p8est,
                                 p8est_tree_t,
                                 p8est_quadrant_t,

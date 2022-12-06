@@ -39,7 +39,7 @@ int
 main(int argc, char** argv)
 {
   // Set the name of the parameter file.
-  Gascoigne::ParamFile paramfile("heat.param");
+  Gascoigne::ParamFile paramfile("config.param");
   if (argc >= 2) {
     paramfile.SetName(argv[1]);
   }

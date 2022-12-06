@@ -1,6 +1,6 @@
 //Block Loop
 
-niter               200
+niter               20
 estimator           none
 initial             boundary
 refiner             global
@@ -17,10 +17,10 @@ writebupgup         0
 
 
 //Block Mesh
-dimension           2
-prerefine           {{prerefine}}
-gridname            square.inp
-
+dimension           3
+prerefine           2
+gridname            mesh.inp
+adarefine           6
 
 //Block Equation
 
@@ -35,7 +35,7 @@ linearsolve         gmres
 nonlinear_tol       1e-5
 nonlinear_rho		0.1
 
-coarselevel         1
+coarselevel         -1     // only fine mesh, no multigrid!
 gmressize           100
 linear_maxiter		100
 
@@ -46,7 +46,7 @@ linear_tol          1.e-6
 matrixtype	block
 
 
-discname 	        CGQ2
+discname 	        CGQ1
 ndirect             1
 
 iterpre             4
@@ -55,6 +55,6 @@ iterexact           10
 
 
 linear_smooth       jacobi
-omega               0.7
+omega               0.5  
 
 //Block nix

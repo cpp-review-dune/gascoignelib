@@ -19,8 +19,9 @@ writebupgup         0
 //Block Mesh
 dimension           3
 prerefine           2
-gridname            box.inp
-adarefine           6
+gridname            mesh.inp
+adarefine           {{prerefine}}
+
 
 //Block Equation
 
@@ -32,21 +33,21 @@ dt		        0.025
 
 //Block MultiLevelSolver
 linearsolve         gmres
-nonlinear_tol       1e-5
+nonlinear_tol       1e-8
 nonlinear_rho		0.1
 
-coarselevel         -1     // only fine mesh, no multigrid!
+coarselevel         1
 gmressize           100
 linear_maxiter		100
 
-linear_tol          1.e-6
+linear_tol          1.e-4
 
 //Block Solver
 
 matrixtype	block
 
 
-discname 	        CGQ1
+discname 	        CGQ2
 ndirect             1
 
 iterpre             4

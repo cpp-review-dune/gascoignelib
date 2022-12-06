@@ -43,7 +43,7 @@ main(int argc, char** argv)
 {
 
   // Set the name of the parameter file.
-  Gascoigne::ParamFile paramfile("elasticity3d.param");
+  Gascoigne::ParamFile paramfile("config.param");
   if (argc >= 2) {
     paramfile.SetName(argv[1]);
   }

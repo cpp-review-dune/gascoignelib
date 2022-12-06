@@ -33,7 +33,7 @@ int
 main(int argc, char** argv)
 {
   // Set the name of the parameter file.
-  ParamFile paramfile("p8est.param");
+  ParamFile paramfile("config.param");
 
   P8estMeshAgent pma;
   pma.BasicInit(paramfile);

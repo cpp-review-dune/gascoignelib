@@ -19,8 +19,8 @@ writebupgup         0
 //Block Mesh
 dimension           3
 prerefine           2
-gridname            box.inp
-adarefine           6
+gridname            mesh.inp
+
 
 //Block Equation
 

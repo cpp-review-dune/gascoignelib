@@ -18,8 +18,8 @@ writebupgup         0
 
 //Block Mesh
 dimension           3
-prerefine           2
-gridname            box.inp
+prerefine           {{prerefine}}
+gridname            mesh.inp
 
 
 //Block Equation
@@ -35,7 +35,7 @@ linearsolve         gmres
 nonlinear_tol       1e-5
 nonlinear_rho		0.1
 
-coarselevel         -1     // only fine mesh, no multigrid!
+coarselevel         1     // only fine mesh, no multigrid!
 gmressize           100
 linear_maxiter		100
 
