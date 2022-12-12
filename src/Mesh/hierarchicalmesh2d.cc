@@ -715,13 +715,11 @@ void
 HierarchicalMesh2d::init_line(BoundaryLine& newline)
 {
   std::array<int, 2> v;
-  std::array<int, 2> v_rev;
   for (int i = 0; i < quads.size(); i++) {
     for (int edge = 0; edge < 4; edge++) {
       v[0] = quad(i).vertex(edge);
       v[1] = quad(i).vertex((edge + 1) % 4);
-      v_rev = { { v[1], v[0] } };
-      if (newline == v || newline == v_rev) {
+      if (newline == v) {
         newline.of_quad() = i;
         newline.edge_in_quad() = edge;
         return;
