@@ -1,0 +1,12 @@
+SET(GASCOIGNE_INCLUDE_DIRS
+  ${GASCOIGNE_DIR}/src/Common
+  ${GASCOIGNE_DIR}/src/DofHandler
+  ${GASCOIGNE_DIR}/src/Discretization/Q1
+  ${GASCOIGNE_DIR}/src/Discretization/Q2
+  ${GASCOIGNE_DIR}/src/Discretization/DG
+  ${GASCOIGNE_DIR}/src/Interface
+  ${GASCOIGNE_DIR}/src/LinAlg
+  ${GASCOIGNE_DIR}/src/Mesh
+  ${GASCOIGNE_DIR}/src/Problems
+  ${GASCOIGNE_DIR}/src/Solver
+)
