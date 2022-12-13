@@ -30,11 +30,14 @@
 #include <vector>
 
 #include <p4est.h>
+#include <p4est_ghost.h>
+#include <p4est_lnodes.h>
+#include <p4est_mesh.h>
 #include <p4est_vtk.h>
-#include <p8est.h>
-#include <p8est_vtk.h>
 
 #include "../Common/compvector.h"
+#include "../Common/dataformathandler.h"
+#include "../Common/filescanner.h"
 #include "../Common/paramfile.h"
 #include "../Common/triple.h"
 #include "../Common/vertex.h"
@@ -49,8 +52,7 @@
 
 namespace Gascoigne {
 
-template<typename PForest, typename PTree, typename PQuad, typename PConn>
-class PForestMeshAgent
+class P4estMeshAgent
 {
 public:
   struct pquadrant_data_t
@@ -65,16 +67,18 @@ public:
   };
 
 private:
-  PForest* pforest;
-  PConn* conn;
+  p4est_t* pforest;
+  p4est_connectivity_t* conn;
+  p4est_lnodes_t* plnodes;
+
   pforest_data_t pforest_data;
 
 public:
-  PForestMeshAgent();
-  PForestMeshAgent(const std::string& gridname, IndexType prerefine);
-  virtual ~PForestMeshAgent();
+  P4estMeshAgent(){};
+  P4estMeshAgent(const std::string& gridname, IndexType prerefine = 0);
+  virtual ~P4estMeshAgent();
 
-  virtual void BasicInit(const ParamFile& pf);
+  virtual void basic_init(const ParamFile& pf);
 
   virtual IndexType trees_count() const;
   virtual IndexType quad_count() const;
@@ -84,27 +88,6 @@ public:
   virtual void global_refine(IndexType n);
   virtual void refine_cells(IndexVector& ref);
 };
-
-template<typename PForest, typename PTree, typename PQuad, typename PConn>
-inline PForestMeshAgent<PForest, PTree, PQuad, PConn>::PForestMeshAgent(
-  const std::string& gridname,
-  IndexType prerefine)
-{
-  read_inp(gridname);
-  global_refine(prerefine);
-}
-
-template<typename PForest, typename PTree, typename PQuad, typename PConn>
-inline IndexType
-PForestMeshAgent<PForest, PTree, PQuad, PConn>::trees_count() const
-{
-  return pforest->trees->elem_count;
-}
-
-using P4estMeshAgent =
-  PForestMeshAgent<p4est, p4est_tree_t, p4est_quadrant_t, p4est_connectivity_t>;
-using P8estMeshAgent =
-  PForestMeshAgent<p8est, p8est_tree_t, p8est_quadrant_t, p8est_connectivity_t>;
 
 } // namespace Gascoigne
 

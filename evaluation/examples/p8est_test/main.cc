@@ -23,7 +23,7 @@
 
 #include <Common/paramfile.h>
 #include <Interface/gascoigne.h>
-#include <Mesh/pforestmeshagent.h>
+#include <Mesh/p8estmeshagent.h>
 
 /*---------------------------------------------------*/
 
@@ -36,7 +36,7 @@ main(int argc, char** argv)
   ParamFile paramfile("config.param");
 
   P8estMeshAgent pma;
-  pma.BasicInit(paramfile);
+  pma.basic_init(paramfile);
   IndexVector refine_cells;
   refine_cells.push_back(44);
   pma.refine_cells(refine_cells);

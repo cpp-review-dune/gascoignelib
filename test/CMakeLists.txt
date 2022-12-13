@@ -27,8 +27,7 @@ target_include_directories(test PUBLIC
 	${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-configure_file(square.inp ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
-configure_file(square_2.inp ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+file(COPY data DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/Results)
 
 include(GoogleTest)
