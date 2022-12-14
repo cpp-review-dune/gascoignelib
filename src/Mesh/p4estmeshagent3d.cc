@@ -21,12 +21,12 @@
  *
  **/
 
-#include "p8estmeshagent.h"
+#include "p4estmeshagent3d.h"
 
 #include <p4est_to_p8est.h>
 
-#define P4estMeshAgent P8estMeshAgent
+#define P4estMeshAgent2d P4estMeshAgent3d
 
-#include "p4estmeshagent.cc"
+#include "p4estmeshagent2d.cc"
 
 #undef P4estMeshAgent

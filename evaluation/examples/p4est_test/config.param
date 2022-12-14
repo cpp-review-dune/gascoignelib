@@ -1,4 +1,5 @@
 //Block Mesh
+dimension           2
 prerefine           3
 gridname            mesh.inp
 

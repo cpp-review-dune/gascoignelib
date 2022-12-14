@@ -21,9 +21,11 @@
  *
  **/
 
+#include <memory>
+
 #include <Common/paramfile.h>
 #include <Interface/gascoigne.h>
-#include <Mesh/p4estmeshagent.h>
+#include <Mesh/p4estmeshagentbase.h>
 
 /*---------------------------------------------------*/
 
@@ -35,12 +37,11 @@ main(int argc, char** argv)
   // Set the name of the parameter file.
   ParamFile paramfile("config.param");
 
-  P4estMeshAgent pma;
-  pma.basic_init(paramfile);
+  auto pma = P4estMeshAgentBase::create(paramfile);
   IndexVector refine_cells;
   refine_cells.push_back(44);
-  pma.refine_cells(refine_cells);
-  pma.write_vtk("Results/solve.00000");
+  pma->refine_cells(refine_cells);
+  pma->write_vtk("Results/solve.00000");
 
   return 0;
 }

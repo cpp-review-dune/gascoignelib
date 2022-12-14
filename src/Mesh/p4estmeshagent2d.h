@@ -47,24 +47,14 @@
 #include "edge.h"
 #include "hanglist.h"
 #include "hierarchicalmesh2d.h"
+#include "p4estmeshagentbase.h"
 
 /*---------------------------------------------------*/
 
 namespace Gascoigne {
 
-class P4estMeshAgent
+class P4estMeshAgent2d : public P4estMeshAgentBase
 {
-public:
-  struct pquadrant_data_t
-  {
-    IndexType index;
-    bool refine; ///< flag when true gets refinde in refine_cells
-  };
-
-  struct pforest_data_t
-  {
-    IndexType MAX_INDEX = 0;
-  };
 
 private:
   p4est_t* pforest;
@@ -74,18 +64,16 @@ private:
   pforest_data_t pforest_data;
 
 public:
-  P4estMeshAgent(){};
-  P4estMeshAgent(const std::string& gridname, IndexType prerefine = 0);
-  virtual ~P4estMeshAgent();
-
-  virtual void basic_init(const ParamFile& pf);
+  P4estMeshAgent2d(const std::string& gridname,
+                   IndexType prerefine = 0,
+                   IndexType comp = 1);
+  virtual ~P4estMeshAgent2d();
 
   virtual IndexType trees_count() const;
   virtual IndexType quad_count() const;
 
-  virtual void read_inp(const std::string& fname);
   virtual void write_vtk(const std::string& fname) const;
-  virtual void global_refine(IndexType n);
+  virtual void global_refine(IndexType n = 1);
   virtual void refine_cells(IndexVector& ref);
 };
 

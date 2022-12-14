@@ -21,38 +21,22 @@
  *
  **/
 
-#ifndef __p8estmesh2d_h
-#define __p8estmesh2d_h
+#ifndef __p4estmeshagentbase_h
+#define __p4estmeshagentbase_h
 
-#include <set>
+#include <memory>
 #include <string>
-#include <utility>
-#include <vector>
 
-#include <p8est.h>
-#include <p8est_ghost.h>
-#include <p8est_lnodes.h>
-#include <p8est_mesh.h>
-#include <p8est_vtk.h>
-
-#include "../Common/compvector.h"
 #include "../Common/dataformathandler.h"
 #include "../Common/filescanner.h"
 #include "../Common/paramfile.h"
-#include "../Common/triple.h"
-#include "../Common/vertex.h"
 #include "../Interface/gascoigne.h"
-
-#include "curvedshapes.h"
-#include "edge.h"
-#include "hanglist.h"
-#include "hierarchicalmesh2d.h"
 
 /*---------------------------------------------------*/
 
 namespace Gascoigne {
 
-class P8estMeshAgent
+class P4estMeshAgentBase
 {
 public:
   struct pquadrant_data_t
@@ -66,31 +50,23 @@ public:
     IndexType MAX_INDEX = 0;
   };
 
-private:
-  p8est_t* pforest;
-  p8est_connectivity_t* conn;
-  p8est_lnodes_t* plnodes;
-
-  pforest_data_t pforest_data;
+protected:
+  P4estMeshAgentBase(){};
+  virtual ~P4estMeshAgentBase(){};
 
 public:
-  P8estMeshAgent(){};
-  P8estMeshAgent(const std::string& gridname, IndexType prerefine = 0);
-  virtual ~P8estMeshAgent();
+  static std::shared_ptr<P4estMeshAgentBase> create(const ParamFile& pf);
 
-  virtual void basic_init(const ParamFile& pf);
+  virtual IndexType trees_count() const = 0;
+  virtual IndexType quad_count() const = 0;
 
-  virtual IndexType trees_count() const;
-  virtual IndexType quad_count() const;
-
-  virtual void read_inp(const std::string& fname);
-  virtual void write_vtk(const std::string& fname) const;
-  virtual void global_refine(IndexType n);
-  virtual void refine_cells(IndexVector& ref);
+  virtual void write_vtk(const std::string& fname) const = 0;
+  virtual void global_refine(IndexType n = 1) = 0;
+  virtual void refine_cells(IndexVector& ref) = 0;
 };
 
 } // namespace Gascoigne
 
 /*---------------------------------------------------*/
 
-#endif //__p4estmesh2d_h
+#endif //__p4estmeshagentbase_h

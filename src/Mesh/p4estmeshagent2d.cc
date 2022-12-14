@@ -22,7 +22,7 @@
  **/
 
 #ifndef P4_TO_P8
-#include "p4estmeshagent.h"
+#include "p4estmeshagent2d.h"
 #endif
 
 #include <algorithm>
@@ -35,51 +35,20 @@ p4est_quadrant_init_fn(p4est_t* p4est,
                        p4est_topidx_t which_tree,
                        p4est_quadrant_t* quadrant)
 {
-  P4estMeshAgent::pforest_data_t* pforest_data =
-    ((P4estMeshAgent::pforest_data_t*)(p4est->user_pointer));
-  ((P4estMeshAgent::pquadrant_data_t*)(quadrant->p.user_data))->index =
+  P4estMeshAgentBase::pforest_data_t* pforest_data =
+    ((P4estMeshAgentBase::pforest_data_t*)(p4est->user_pointer));
+  ((P4estMeshAgentBase::pquadrant_data_t*)(quadrant->p.user_data))->index =
     pforest_data->MAX_INDEX++;
 }
 
-P4estMeshAgent::P4estMeshAgent(const std::string& gridname, IndexType prerefine)
-{
-  read_inp(gridname);
-  global_refine(prerefine);
-}
-
-P4estMeshAgent::~P4estMeshAgent()
-{
-  /* Destroy the p4est and the connectivity structure. */
-  p4est_destroy(pforest);
-  p4est_connectivity_destroy(conn);
-}
-
-void
-P4estMeshAgent::basic_init(const ParamFile& pf)
-{
-  IndexType prerefine;
-  std::string gridname;
-
-  DataFormatHandler DFH;
-
-  DFH.insert("gridname", &gridname, "none");
-  DFH.insert("prerefine", &prerefine, 0);
-
-  FileScanner FS(DFH);
-  FS.readfile(pf, "Mesh");
-
-  read_inp(gridname);
-  global_refine(prerefine);
-}
-
-IndexType
-P4estMeshAgent::trees_count() const
-{
-  return pforest->trees->elem_count;
-}
-
-void
-P4estMeshAgent::read_inp(const std::string& gridname)
+/***
+ * @param gridname File name of grid
+ * @param prerefine Number of global refinments after initial creation
+ * @param comp Number of components in dof
+ */
+P4estMeshAgent2d::P4estMeshAgent2d(const std::string& gridname,
+                                   IndexType prerefine,
+                                   IndexType comp)
 {
   conn = p4est_connectivity_read_inp(gridname.c_str());
   if (conn == NULL) {
@@ -96,25 +65,40 @@ P4estMeshAgent::read_inp(const std::string& gridname)
                       &pforest_data);
 
   /* Create the ghost layer to learn about parallel neighbors. */
-  p8est_ghost_t* ghost = p4est_ghost_new(pforest, P4EST_CONNECT_FULL);
+  p4est_ghost_t* ghost = p4est_ghost_new(pforest, P4EST_CONNECT_FULL);
 
   /* Create a node numbering for continuous linear finite elements. */
-  plnodes = p4est_lnodes_new(pforest, ghost, 1);
+  plnodes = p4est_lnodes_new(pforest, ghost, comp);
 
   /* Destroy the ghost structure -- no longer needed after node creation. */
-  p4est_ghost_destroy (ghost);
+  p4est_ghost_destroy(ghost);
   ghost = NULL;
+  global_refine(prerefine);
+}
+
+P4estMeshAgent2d::~P4estMeshAgent2d()
+{
+  /* Destroy the p4est and the connectivity structure. */
+  p4est_destroy(pforest);
+  p4est_connectivity_destroy(conn);
+  p4est_lnodes_destroy(plnodes);
+}
+
+IndexType
+P4estMeshAgent2d::trees_count() const
+{
+  return pforest->trees->elem_count;
 }
 
 void
-P4estMeshAgent::write_vtk(const std::string& fname) const
+P4estMeshAgent2d::write_vtk(const std::string& fname) const
 {
   /* Write the forest to disk for visualization, one file per processor. */
   p4est_vtk_write_file(pforest, NULL, fname.c_str());
 }
 
 void
-P4estMeshAgent::global_refine(IndexType refine_level)
+P4estMeshAgent2d::global_refine(IndexType refine_level)
 {
   /** Callback function to decide on refinement.
    *
@@ -137,7 +121,7 @@ P4estMeshAgent::global_refine(IndexType refine_level)
 }
 
 void
-P4estMeshAgent::refine_cells(IndexVector& ref)
+P4estMeshAgent2d::refine_cells(IndexVector& ref)
 {
   for (IndexType i = 0; i < pforest->trees->elem_count; ++i) {
     p4est_tree_t* tree = p4est_tree_array_index(pforest->trees, i);
@@ -167,7 +151,7 @@ P4estMeshAgent::refine_cells(IndexVector& ref)
 }
 
 IndexType
-P4estMeshAgent::quad_count() const
+P4estMeshAgent2d::quad_count() const
 {
   IndexType quad_count = 0;
   for (IndexType i = 0; i < trees_count(); ++i) {
