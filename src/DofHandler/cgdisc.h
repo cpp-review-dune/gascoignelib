@@ -48,6 +48,8 @@
 #include "../LinAlg/sparsestructure.h"
 #include "../Problems/problemdescriptorbase.h"
 
+#include "dofhandler.h"
+#include "dofhandlerbase.h"
 #include "elementintegrator.h"
 #include "elementlpsintegrator.h"
 

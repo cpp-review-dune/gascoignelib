@@ -28,7 +28,7 @@
  **/
 
 // class will be replaced by DofHandler
-#include "../DofHandler/dofhandler.h"
+#include "../DofHandler/dofhandlerbase.h"
 
 namespace Gascoigne {
 typedef DofHandlerBase GascoigneMesh;

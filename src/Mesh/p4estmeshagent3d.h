@@ -30,6 +30,7 @@
 #include <vector>
 
 #include <p8est.h>
+#include <p8est_connectivity.h>
 #include <p8est_ghost.h>
 #include <p8est_lnodes.h>
 #include <p8est_mesh.h>
@@ -68,8 +69,10 @@ public:
                    IndexType comp = 1);
   virtual ~P4estMeshAgent3d();
 
-  virtual IndexType trees_count() const;
-  virtual IndexType quad_count() const;
+  virtual IndexType num_cells() const;
+
+  virtual IndexType num_nodes() const;
+  virtual IndexVector get_nodes_of_cell(IndexType cell) const;
 
   virtual void write_vtk(const std::string& fname) const;
   virtual void global_refine(IndexType n = 1);

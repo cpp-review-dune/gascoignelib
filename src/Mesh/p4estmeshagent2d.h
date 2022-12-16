@@ -34,6 +34,7 @@
 #include <p4est_lnodes.h>
 #include <p4est_mesh.h>
 #include <p4est_vtk.h>
+#include <p8est_connectivity.h>
 
 #include "../Common/compvector.h"
 #include "../Common/dataformathandler.h"
@@ -69,8 +70,10 @@ public:
                    IndexType comp = 1);
   virtual ~P4estMeshAgent2d();
 
-  virtual IndexType trees_count() const;
-  virtual IndexType quad_count() const;
+  virtual IndexType num_cells() const;
+
+  virtual IndexType num_nodes() const;
+  virtual IndexVector get_nodes_of_cell(IndexType cell) const;
 
   virtual void write_vtk(const std::string& fname) const;
   virtual void global_refine(IndexType n = 1);

@@ -41,14 +41,11 @@ class P4estMeshAgentBase
 public:
   struct pquadrant_data_t
   {
-    IndexType index;
     bool refine; ///< flag when true gets refinde in refine_cells
   };
 
   struct pforest_data_t
-  {
-    IndexType MAX_INDEX = 0;
-  };
+  {};
 
 protected:
   P4estMeshAgentBase(){};
@@ -57,8 +54,11 @@ protected:
 public:
   static std::shared_ptr<P4estMeshAgentBase> create(const ParamFile& pf);
 
-  virtual IndexType trees_count() const = 0;
-  virtual IndexType quad_count() const = 0;
+  virtual IndexType num_cells() const = 0;
+
+  virtual IndexType num_nodes() const = 0;
+  virtual IndexVector get_nodes_of_cell(
+    IndexType cell) const = 0; //< @return IndexVector of lnodes related to cell
 
   virtual void write_vtk(const std::string& fname) const = 0;
   virtual void global_refine(IndexType n = 1) = 0;

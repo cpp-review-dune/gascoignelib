@@ -34,21 +34,16 @@ void
 p4est_quadrant_init_fn(p4est_t* p4est,
                        p4est_topidx_t which_tree,
                        p4est_quadrant_t* quadrant)
-{
-  P4estMeshAgentBase::pforest_data_t* pforest_data =
-    ((P4estMeshAgentBase::pforest_data_t*)(p4est->user_pointer));
-  ((P4estMeshAgentBase::pquadrant_data_t*)(quadrant->p.user_data))->index =
-    pforest_data->MAX_INDEX++;
-}
+{}
 
 /***
  * @param gridname File name of grid
  * @param prerefine Number of global refinments after initial creation
- * @param comp Number of components in dof
+ * @param degree The Degree of the Finite elements
  */
 P4estMeshAgent2d::P4estMeshAgent2d(const std::string& gridname,
                                    IndexType prerefine,
-                                   IndexType comp)
+                                   IndexType degree)
 {
   conn = p4est_connectivity_read_inp(gridname.c_str());
   if (conn == NULL) {
@@ -64,16 +59,17 @@ P4estMeshAgent2d::P4estMeshAgent2d(const std::string& gridname,
                       p4est_quadrant_init_fn,
                       &pforest_data);
 
+  global_refine(prerefine);
+
   /* Create the ghost layer to learn about parallel neighbors. */
   p4est_ghost_t* ghost = p4est_ghost_new(pforest, P4EST_CONNECT_FULL);
 
   /* Create a node numbering for continuous linear finite elements. */
-  plnodes = p4est_lnodes_new(pforest, ghost, comp);
+  plnodes = p4est_lnodes_new(pforest, ghost, degree);
 
   /* Destroy the ghost structure -- no longer needed after node creation. */
   p4est_ghost_destroy(ghost);
   ghost = NULL;
-  global_refine(prerefine);
 }
 
 P4estMeshAgent2d::~P4estMeshAgent2d()
@@ -84,12 +80,48 @@ P4estMeshAgent2d::~P4estMeshAgent2d()
   p4est_lnodes_destroy(plnodes);
 }
 
+/**
+ * @return IndexType Number of quads/hexes in mesh
+ */
 IndexType
-P4estMeshAgent2d::trees_count() const
+P4estMeshAgent2d::num_cells() const
 {
-  return pforest->trees->elem_count;
+  IndexType quad_count = 0;
+  for (IndexType i = 0; i < pforest->trees->elem_count; ++i) {
+    p4est_tree_t* tree = p4est_tree_array_index(pforest->trees, i);
+    quad_count += tree->quadrants.elem_count;
+  }
+  return quad_count;
 }
 
+/**
+ * @return the number of lnodes in the mesh
+ */
+IndexType
+P4estMeshAgent2d::num_nodes() const
+{
+  return plnodes->num_local_elements;
+}
+
+/**
+ * @param cell Index of the cell for witch the lnode index is looked up
+ * @return IndexVector the lnode indices of the cell
+ */
+IndexVector
+P4estMeshAgent2d::get_nodes_of_cell(IndexType cell) const
+{
+  IndexVector nodes(P4EST_CHILDREN);
+  for (IndexType i = 0; i < P4EST_CHILDREN; ++i) {
+    nodes[i] = plnodes->element_nodes[P4EST_CHILDREN * cell + i];
+  }
+  return nodes;
+}
+
+/**
+ * @brief Generates a vtk output file
+ *
+ * @param fname Filename/path of vtk file to write
+ */
 void
 P4estMeshAgent2d::write_vtk(const std::string& fname) const
 {
@@ -97,6 +129,11 @@ P4estMeshAgent2d::write_vtk(const std::string& fname) const
   p4est_vtk_write_file(pforest, NULL, fname.c_str());
 }
 
+/**
+ * @brief subdevides all cells of the mesh refine_level of times
+ *
+ * @param refine_level Number of subdevisions
+ */
 void
 P4estMeshAgent2d::global_refine(IndexType refine_level)
 {
@@ -129,7 +166,8 @@ P4estMeshAgent2d::refine_cells(IndexVector& ref)
       p4est_quadrant_t* quadrant =
         p4est_quadrant_array_index(&(tree->quadrants), j);
       pquadrant_data_t* data = ((pquadrant_data_t*)quadrant->p.user_data);
-      if (std::find(ref.begin(), ref.end(), data->index) != ref.end()) {
+      if (std::find(ref.begin(), ref.end(), tree->quadrants_offset + j) !=
+          ref.end()) {
         data->refine = true;
       } else {
         data->refine = false;
@@ -148,17 +186,6 @@ P4estMeshAgent2d::refine_cells(IndexVector& ref)
   };
 
   p4est_refine(pforest, 0, refine_fn, p4est_quadrant_init_fn);
-}
-
-IndexType
-P4estMeshAgent2d::quad_count() const
-{
-  IndexType quad_count = 0;
-  for (IndexType i = 0; i < trees_count(); ++i) {
-    p4est_tree_t* tree = p4est_tree_array_index(pforest->trees, i);
-    quad_count += tree->quadrants.elem_count;
-  }
-  return quad_count;
 }
 
 } // namespace Gascoigne

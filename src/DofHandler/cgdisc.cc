@@ -49,8 +49,8 @@ CGDiscQ23d::GetName() const
 {
   return "Q23d";
 }
-template class CGDisc<3, 2, FiniteElementQ23d, ElementIntegratorQ23d>;
 
+template class CGDisc<3, 2, FiniteElementQ23d, ElementIntegratorQ23d>;
 template class CGDisc<2, 1, FiniteElementQ22d, ElementIntegratorP12d>;
 
 template class FiniteElement<2,

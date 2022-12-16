@@ -46,6 +46,7 @@
 #include "../LinAlg/sparsestructure.h"
 #include "../Problems/problemdescriptorbase.h"
 
+#include "dofhandler.h"
 #include "elementlpsintegrator.h"
 #include "mixedelementintegrator.h"
 
