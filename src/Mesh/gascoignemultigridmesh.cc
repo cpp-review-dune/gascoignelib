@@ -22,8 +22,7 @@
  **/
 
 #include "gascoignemultigridmesh.h"
-#include "gascoignemesh2d.h"
-#include "gascoignemesh3d.h"
+#include "../DofHandler/dofhandler.h"
 #include "gascoignemeshtransfer2d.h"
 #include "gascoignemeshtransfer3d.h"
 
@@ -52,15 +51,15 @@ GascoigneMultiGridMesh::~GascoigneMultiGridMesh()
 
 /*-----------------------------------------*/
 
-GascoigneMesh*
+DofHandlerBase*
 GascoigneMultiGridMesh::NewMesh(int dim)
 {
   assert(2 <= dim && dim <= 3);
 
   if (dim == 2)
-    return new GascoigneMesh2d;
+    return new DofHandler2d;
   else if (dim == 3)
-    return new GascoigneMesh3d;
+    return new DofHandler3d;
 
   abort();
 }

@@ -21,15 +21,15 @@
  *
  **/
 
-#include "p4estmeshagentbase.h"
+#include "p4estmeshagent.h"
 
 #include "p4estmeshagent2d.h"
 #include "p4estmeshagent3d.h"
 
 namespace Gascoigne {
 
-std::shared_ptr<P4estMeshAgentBase>
-P4estMeshAgentBase::create(const ParamFile& pf)
+std::shared_ptr<P4estMeshAgent>
+P4estMeshAgent::create(const ParamFile& pf)
 {
   IndexType dimension;
   IndexType prerefine;

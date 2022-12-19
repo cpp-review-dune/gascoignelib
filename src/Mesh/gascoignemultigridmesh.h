@@ -24,9 +24,11 @@
 #ifndef __GascoigneMultiGridMesh_h
 #define __GascoigneMultiGridMesh_h
 
-#include "gascoignemesh.h"
-#include "gascoignemeshtransfer.h"
 #include <vector>
+
+#include "../DofHandler/dofhandlerbase.h"
+
+#include "gascoignemeshtransfer.h"
 
 /*-----------------------------------------*/
 
@@ -34,10 +36,10 @@ namespace Gascoigne {
 class GascoigneMultiGridMesh
 {
 protected:
-  std::vector<GascoigneMesh*> M;
+  std::vector<DofHandlerBase*> M;
   std::vector<GascoigneMeshTransfer*> T;
 
-  virtual GascoigneMesh* NewMesh(int dim);
+  virtual DofHandlerBase* NewMesh(int dim);
   virtual GascoigneMeshTransfer* NewTransfer(int dim);
 
 public:
@@ -48,18 +50,18 @@ public:
 
   size_t nlevels() const { return M.size(); }
 
-  const GascoigneMesh& operator()(size_t l) const
+  const DofHandlerBase& operator()(size_t l) const
   {
     assert((l >= 0) && (l < M.size()));
     return *M[l];
   }
 
-  const GascoigneMesh* GetGascoigneMesh(size_t l) const
+  const DofHandlerBase* GetGascoigneMesh(size_t l) const
   {
     assert((l >= 0) && (l < M.size()));
     return M[l];
   }
-  GascoigneMesh* GetGascoigneMesh(size_t l)
+  DofHandlerBase* GetGascoigneMesh(size_t l)
   {
     assert((l >= 0) && (l < M.size()));
     return M[l];

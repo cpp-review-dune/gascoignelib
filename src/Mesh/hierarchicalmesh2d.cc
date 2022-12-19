@@ -2319,7 +2319,7 @@ HierarchicalMesh2d::writeq2(const IndexVector& a,
 {
   char s[29];
   for (IndexType p = 0; p < np; ++p) {
-    sprintf(s, "n_%ld_%ld", ncells(), p);
+    sprintf(s, "n_%d_%d", ncells(), p);
     ofstream aus(s);
 
     for (IndexType i = 0; i < a.size(); ++i) {

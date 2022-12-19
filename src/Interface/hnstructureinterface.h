@@ -24,8 +24,8 @@
 #ifndef __HNStructureInterface_h
 #define __HNStructureInterface_h
 
+#include "../DofHandler/dofhandlerbase.h"
 #include "../LinAlg/sparsestructure.h"
-#include "../Mesh/gascoignemesh.h"
 
 #include "gascoigne.h"
 #include "matrixinterface.h"
@@ -54,7 +54,7 @@ public:
   HNStructureInterface() {}
   virtual ~HNStructureInterface() {}
 
-  virtual void ReInit(const GascoigneMesh* m) = 0;
+  virtual void ReInit(const DofHandlerBase* m) = 0;
   virtual void MatrixDiag(ShortIndexType ncomp, MatrixInterface& A) const = 0;
   virtual void SparseStructureDiag(SparseStructure* S) const = 0;
 

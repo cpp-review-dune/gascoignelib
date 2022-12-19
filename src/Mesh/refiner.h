@@ -26,21 +26,21 @@
 
 #include "../Common/nmatrix.h"
 
-#include "gascoignemesh.h"
+#include "../DofHandler/dofhandlerbase.h"
 
 /*************************************************************/
 
 namespace Gascoigne {
 class PointRefiner
 {
-  const GascoigneMesh& H;
+  const DofHandlerBase& H;
   const Vertex2d& V;
 
   nmatrix<double> A;
   bool VertexInQuad(int);
 
 public:
-  PointRefiner(const GascoigneMesh& h, const Vertex2d& v)
+  PointRefiner(const DofHandlerBase& h, const Vertex2d& v)
     : H(h)
     , V(v)
     , A(2, 2)
@@ -53,14 +53,14 @@ public:
 
 class CircleRefiner
 {
-  const GascoigneMesh& H;
+  const DofHandlerBase& H;
   const Vertex3d& V;
   double R;
 
   bool QuadOnRadius(int) const;
 
 public:
-  CircleRefiner(const GascoigneMesh& h, const Vertex3d& v, double r)
+  CircleRefiner(const DofHandlerBase& h, const Vertex3d& v, double r)
     : H(h)
     , V(v)
     , R(r)
@@ -73,7 +73,7 @@ public:
 
 class CylinderRefiner
 {
-  const GascoigneMesh& H;
+  const DofHandlerBase& H;
   const Vertex3d& V;
   double R;
   int D;
@@ -81,7 +81,7 @@ class CylinderRefiner
   bool QuadInCylinder(int) const;
 
 public:
-  CylinderRefiner(const GascoigneMesh& h, const Vertex3d& v, double r, int d)
+  CylinderRefiner(const DofHandlerBase& h, const Vertex3d& v, double r, int d)
     : H(h)
     , V(v)
     , R(r)
@@ -95,14 +95,14 @@ public:
 
 class BallRefiner
 {
-  const GascoigneMesh& H;
+  const DofHandlerBase& H;
   const Vertex3d& V;
   double R;
 
   bool QuadInBall(int) const;
 
 public:
-  BallRefiner(const GascoigneMesh& h, const Vertex3d& v, double r)
+  BallRefiner(const DofHandlerBase& h, const Vertex3d& v, double r)
     : H(h)
     , V(v)
     , R(r)

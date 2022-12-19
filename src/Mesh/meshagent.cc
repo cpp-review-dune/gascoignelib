@@ -224,8 +224,8 @@ MeshAgent::AssemblePeriodicBoundaries()
     IndexType n = GMG->nlevels();
 
     for (IndexType i = 0; i < n; i++) {
-      GascoigneMesh* p_mesh = GMG->GetGascoigneMesh(i);
-      GascoigneMesh* GMP = dynamic_cast<GascoigneMesh*>(p_mesh);
+      DofHandlerBase* p_mesh = GMG->GetGascoigneMesh(i);
+      DofHandlerBase* GMP = dynamic_cast<DofHandlerBase*>(p_mesh);
       assert(GMP);
 
       // TODO: das soll eigentlich zu Solver gehoeren, damit die anderen Member

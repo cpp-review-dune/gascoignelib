@@ -197,7 +197,7 @@ public:
     HN = NewHNStructure();
     assert(HN);
   }
-  void ReInit(const GascoigneMesh* M)
+  void ReInit(const DofHandlerBase* M)
   {
     dofhandler = dynamic_cast<const DofHandler<DIM>*>(M);
     assert(dofhandler);
@@ -1199,8 +1199,8 @@ public:
                             const std::vector<ShortIndexType>& comp,
                             double d) const
   {
-    const GascoigneMesh* GMP =
-      dynamic_cast<const GascoigneMesh*>(GetDofHandler());
+    const DofHandlerBase* GMP =
+      dynamic_cast<const DofHandlerBase*>(GetDofHandler());
     assert(GMP);
     DoubleVector ff(u.ncomp(), 0.);
     const IndexVector& bv = *GMP->VertexOnBoundary(col);

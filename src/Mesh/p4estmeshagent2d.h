@@ -31,7 +31,6 @@
 
 #include <p4est.h>
 #include <p4est_ghost.h>
-#include <p4est_lnodes.h>
 #include <p4est_mesh.h>
 #include <p4est_vtk.h>
 #include <p8est_connectivity.h>
@@ -48,21 +47,17 @@
 #include "edge.h"
 #include "hanglist.h"
 #include "hierarchicalmesh2d.h"
-#include "p4estmeshagentbase.h"
+#include "p4estmeshagent.h"
 
 /*---------------------------------------------------*/
 
 namespace Gascoigne {
 
-class P4estMeshAgent2d : public P4estMeshAgentBase
+class P4estMeshAgent2d : public P4estMeshAgent
 {
-
 private:
   p4est_t* pforest;
   p4est_connectivity_t* conn;
-  p4est_lnodes_t* plnodes;
-
-  pforest_data_t pforest_data;
 
 public:
   P4estMeshAgent2d(const std::string& gridname,
@@ -70,14 +65,13 @@ public:
                    IndexType comp = 1);
   virtual ~P4estMeshAgent2d();
 
-  virtual IndexType num_cells() const;
+  IndexType num_cells() const;
 
-  virtual IndexType num_nodes() const;
-  virtual IndexVector get_nodes_of_cell(IndexType cell) const;
+  void write_vtk(const std::string& fname) const;
+  void global_refine(IndexType n = 1);
+  void refine_cells(IndexVector& ref);
 
-  virtual void write_vtk(const std::string& fname) const;
-  virtual void global_refine(IndexType n = 1);
-  virtual void refine_cells(IndexVector& ref);
+  std::shared_ptr<P4estDofHandler> create_dofhandler(IndexType degree) const;
 };
 
 } // namespace Gascoigne

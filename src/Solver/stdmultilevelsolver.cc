@@ -257,7 +257,7 @@ void
 StdMultiLevelSolver::SolverNewMesh()
 {
   for (IndexType level = 0; level < nlevels(); ++level) {
-    const GascoigneMesh* MIP = GetMeshAgent()->GetMesh(level);
+    const DofHandlerBase* MIP = GetMeshAgent()->GetMesh(level);
     assert(MIP);
 
     IndexType solverlevel = nlevels() - 1 - level;

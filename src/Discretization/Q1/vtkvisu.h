@@ -35,7 +35,7 @@ namespace Gascoigne {
 class VtkVisu : public Visualization
 {
 public:
-  VtkVisu(const GascoigneMesh& M, const std::string& name, int iter);
+  VtkVisu(const DofHandlerBase& M, const std::string& name, int iter);
   ~VtkVisu();
 
   void WriteNodeData(const DoubleVector& eta);

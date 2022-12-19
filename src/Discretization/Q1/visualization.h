@@ -28,8 +28,8 @@
 #include <stdio.h>
 
 #include "../../Common/paramfile.h"
+#include "../../DofHandler/dofhandlerbase.h"
 #include "../../Interface/visudata.h"
-#include "../../Mesh/gascoignemesh.h"
 
 #include "gnuplot.h"
 #include "visudatainfo.h"
@@ -42,7 +42,7 @@ class Visualization
 protected:
   /* Data */
 
-  const GascoigneMesh* mesh;
+  const DofHandlerBase* mesh;
   const VisuData* PointData;
   const VisuData* CellData;
   const VisuDataInfo* PointDataInfo;
@@ -122,7 +122,7 @@ public:
   Visualization(const Visualization&);
   Visualization& operator=(const Visualization&);
 
-  void SetMesh(const GascoigneMesh* M) { mesh = M; }
+  void SetMesh(const DofHandlerBase* M) { mesh = M; }
 
   /* Functions */
 

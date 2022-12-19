@@ -42,7 +42,7 @@ namespace Gascoigne {
 class BasicDiscretization : public DiscretizationInterface
 {
 protected:
-  const GascoigneMesh* __MP;
+  const DofHandlerBase* __MP;
   mutable DataContainer __q;
 
 protected:
@@ -57,7 +57,7 @@ protected:
   virtual const DataContainer& GetDataContainer() const { return __q; }
   virtual void SetDataContainer(const DataContainer& q) { __q = q; }
 
-  virtual const GascoigneMesh* GetMesh() const
+  virtual const DofHandlerBase* GetMesh() const
   {
     assert(__MP);
     return __MP;
@@ -98,7 +98,7 @@ public:
   ~BasicDiscretization();
 
   void BasicInit(const ParamFile& /*pf*/) {}
-  void ReInit(const GascoigneMesh* MP) { __MP = MP; }
+  void ReInit(const DofHandlerBase* MP) { __MP = MP; }
 
   Vertex2d vertex2d(int i) const
   {

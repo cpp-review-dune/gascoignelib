@@ -28,8 +28,7 @@
 #include <map>
 
 #include "../Common/compvector.h"
-#include "../Mesh/gascoignemesh2d.h"
-#include "../Mesh/gascoignemesh3d.h"
+#include "../DofHandler/dofhandler.h"
 
 namespace Gascoigne {
 /*-----------------------------------------*/
@@ -41,13 +40,13 @@ protected:
   std::map<IndexType, std::array<IndexType, 4>> face;
   std::map<IndexType, std::array<IndexType, 8>> cell;
 
-  void Init2d(const GascoigneMesh2d* MP);
-  void Init3d(const GascoigneMesh3d* MP);
+  void Init2d(const DofHandler2d* MP);
+  void Init3d(const DofHandler3d* MP);
 
 public:
   Pi();
 
-  void Init(const GascoigneMesh* MP);
+  void Init(const DofHandlerBase* MP);
 
   void vmult(CompVector<double>& y,
              const CompVector<double>& x,

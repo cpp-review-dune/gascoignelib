@@ -48,20 +48,17 @@
 #include "edge.h"
 #include "hanglist.h"
 #include "hierarchicalmesh2d.h"
-#include "p4estmeshagentbase.h"
+#include "p4estmeshagent.h"
 
 /*---------------------------------------------------*/
 
 namespace Gascoigne {
 
-class P4estMeshAgent3d : public P4estMeshAgentBase
+class P4estMeshAgent3d : public P4estMeshAgent
 {
 private:
   p8est_t* pforest;
   p8est_connectivity_t* conn;
-  p8est_lnodes_t* plnodes;
-
-  pforest_data_t pforest_data;
 
 public:
   P4estMeshAgent3d(const std::string& gridname,
@@ -71,12 +68,12 @@ public:
 
   virtual IndexType num_cells() const;
 
-  virtual IndexType num_nodes() const;
-  virtual IndexVector get_nodes_of_cell(IndexType cell) const;
-
   virtual void write_vtk(const std::string& fname) const;
   virtual void global_refine(IndexType n = 1);
   virtual void refine_cells(IndexVector& ref);
+
+  virtual std::shared_ptr<P4estDofHandler> create_dofhandler(
+    IndexType degree) const;
 };
 
 } // namespace Gascoigne

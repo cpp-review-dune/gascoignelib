@@ -3,36 +3,36 @@
         "executable": "Heat",
         "copyfiles": ["mesh.inp"],
         "parameterfile": "config.param.template",
-        "prerefine": 7
+        "prerefine": 1
     },
     "MultiHeat": {
         "executable": "MultiHeat",
         "copyfiles": ["mesh.inp"],
         "parameterfile": "config.param.template",
-        "prerefine": 7
+        "prerefine": 1
     },
     "Elasticity2d": {
         "executable": "Elasticity2d",
         "copyfiles": ["mesh.inp"],
         "parameterfile": "config.param.template",
-        "prerefine": 5
+        "prerefine": 1
     },
     "Elasticity3d": {
         "executable": "Elasticity3d",
         "copyfiles": ["mesh.inp"],
         "parameterfile": "config.param.template",
-        "prerefine": 4
+        "prerefine": 1
     },
     "AdaptiveElasticity2d": {
         "executable": "AdaptiveElasticity2d",
         "copyfiles": ["mesh.inp"],
         "parameterfile": "config.param.template",
-        "prerefine": 5
+        "prerefine": 1
     },
     "AdaptiveElasticity3dEdge": {
         "executable": "AdaptiveElasticity3dEdge",
         "copyfiles": ["mesh.inp"],
         "parameterfile": "config.param.template",
-        "prerefine": 4
+        "prerefine": 1
     }
 }

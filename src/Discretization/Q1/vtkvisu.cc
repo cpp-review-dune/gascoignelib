@@ -32,7 +32,7 @@ VtkVisu::~VtkVisu() {}
 
 /*-------------------------------------------------*/
 
-VtkVisu::VtkVisu(const GascoigneMesh& M, const std::string& name, int iter)
+VtkVisu::VtkVisu(const DofHandlerBase& M, const std::string& name, int iter)
   : Visualization()
 {
   format("vtk");

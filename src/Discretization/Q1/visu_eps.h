@@ -27,8 +27,8 @@
 #include <map>
 #include <string>
 
+#include "../../DofHandler/dofhandlerbase.h"
 #include "../../Interface/gascoigne.h"
-#include "../../Mesh/gascoignemesh.h"
 
 /*-------------------------------------------------------------------------*/
 
@@ -39,7 +39,7 @@ protected:
   typedef std::pair<int, int> Line;
   typedef nvector<IntSet> Lines;
 
-  const GascoigneMesh* M;
+  const DofHandlerBase* M;
   IndexType _i_compress;
 
   Lines lines;
@@ -89,7 +89,7 @@ public:
   void SetOption(EPSOptions o, int v);
   void SetOption(EPSOptions o, double v);
 
-  void SetMesh(const GascoigneMesh& PM)
+  void SetMesh(const DofHandlerBase& PM)
   {
     M = &PM;
     assert(M);

@@ -21,8 +21,8 @@
  *
  **/
 
-#ifndef __p4estmeshagentbase_h
-#define __p4estmeshagentbase_h
+#ifndef __p4estmeshagent_h
+#define __p4estmeshagent_h
 
 #include <memory>
 #include <string>
@@ -30,13 +30,14 @@
 #include "../Common/dataformathandler.h"
 #include "../Common/filescanner.h"
 #include "../Common/paramfile.h"
+#include "../DofHandler/p4estdofhandler.h"
 #include "../Interface/gascoigne.h"
 
 /*---------------------------------------------------*/
 
 namespace Gascoigne {
 
-class P4estMeshAgentBase
+class P4estMeshAgent
 {
 public:
   struct pquadrant_data_t
@@ -44,29 +45,25 @@ public:
     bool refine; ///< flag when true gets refinde in refine_cells
   };
 
-  struct pforest_data_t
-  {};
-
 protected:
-  P4estMeshAgentBase(){};
-  virtual ~P4estMeshAgentBase(){};
+  P4estMeshAgent(){};
+  virtual ~P4estMeshAgent(){};
 
 public:
-  static std::shared_ptr<P4estMeshAgentBase> create(const ParamFile& pf);
+  static std::shared_ptr<P4estMeshAgent> create(const ParamFile& pf);
 
   virtual IndexType num_cells() const = 0;
-
-  virtual IndexType num_nodes() const = 0;
-  virtual IndexVector get_nodes_of_cell(
-    IndexType cell) const = 0; //< @return IndexVector of lnodes related to cell
 
   virtual void write_vtk(const std::string& fname) const = 0;
   virtual void global_refine(IndexType n = 1) = 0;
   virtual void refine_cells(IndexVector& ref) = 0;
+
+  virtual std::shared_ptr<P4estDofHandler> create_dofhandler(
+    IndexType degree) const = 0;
 };
 
 } // namespace Gascoigne
 
 /*---------------------------------------------------*/
 
-#endif //__p4estmeshagentbase_h
+#endif //__p4estmeshagent_h

@@ -23,6 +23,8 @@
 
 #ifndef P4_TO_P8
 #include "p4estmeshagent2d.h"
+
+#include "../DofHandler/p4estdofhandler2d.h"
 #endif
 
 #include <algorithm>
@@ -30,13 +32,7 @@
 
 namespace Gascoigne {
 
-void
-p4est_quadrant_init_fn(p4est_t* p4est,
-                       p4est_topidx_t which_tree,
-                       p4est_quadrant_t* quadrant)
-{}
-
-/***
+/**
  * @param gridname File name of grid
  * @param prerefine Number of global refinments after initial creation
  * @param degree The Degree of the Finite elements
@@ -44,6 +40,8 @@ p4est_quadrant_init_fn(p4est_t* p4est,
 P4estMeshAgent2d::P4estMeshAgent2d(const std::string& gridname,
                                    IndexType prerefine,
                                    IndexType degree)
+  : pforest(nullptr)
+  , conn(nullptr)
 {
   conn = p4est_connectivity_read_inp(gridname.c_str());
   if (conn == NULL) {
@@ -53,23 +51,10 @@ P4estMeshAgent2d::P4estMeshAgent2d(const std::string& gridname,
   }
 
   /* Create a forest that is not refined; it consists of the root octant. */
-  pforest = p4est_new(sc_MPI_COMM_NULL,
-                      conn,
-                      sizeof(pquadrant_data_t),
-                      p4est_quadrant_init_fn,
-                      &pforest_data);
+  pforest = p4est_new(
+    sc_MPI_COMM_NULL, conn, sizeof(pquadrant_data_t), nullptr, nullptr);
 
   global_refine(prerefine);
-
-  /* Create the ghost layer to learn about parallel neighbors. */
-  p4est_ghost_t* ghost = p4est_ghost_new(pforest, P4EST_CONNECT_FULL);
-
-  /* Create a node numbering for continuous linear finite elements. */
-  plnodes = p4est_lnodes_new(pforest, ghost, degree);
-
-  /* Destroy the ghost structure -- no longer needed after node creation. */
-  p4est_ghost_destroy(ghost);
-  ghost = NULL;
 }
 
 P4estMeshAgent2d::~P4estMeshAgent2d()
@@ -77,44 +62,6 @@ P4estMeshAgent2d::~P4estMeshAgent2d()
   /* Destroy the p4est and the connectivity structure. */
   p4est_destroy(pforest);
   p4est_connectivity_destroy(conn);
-  p4est_lnodes_destroy(plnodes);
-}
-
-/**
- * @return IndexType Number of quads/hexes in mesh
- */
-IndexType
-P4estMeshAgent2d::num_cells() const
-{
-  IndexType quad_count = 0;
-  for (IndexType i = 0; i < pforest->trees->elem_count; ++i) {
-    p4est_tree_t* tree = p4est_tree_array_index(pforest->trees, i);
-    quad_count += tree->quadrants.elem_count;
-  }
-  return quad_count;
-}
-
-/**
- * @return the number of lnodes in the mesh
- */
-IndexType
-P4estMeshAgent2d::num_nodes() const
-{
-  return plnodes->num_local_elements;
-}
-
-/**
- * @param cell Index of the cell for witch the lnode index is looked up
- * @return IndexVector the lnode indices of the cell
- */
-IndexVector
-P4estMeshAgent2d::get_nodes_of_cell(IndexType cell) const
-{
-  IndexVector nodes(P4EST_CHILDREN);
-  for (IndexType i = 0; i < P4EST_CHILDREN; ++i) {
-    nodes[i] = plnodes->element_nodes[P4EST_CHILDREN * cell + i];
-  }
-  return nodes;
 }
 
 /**
@@ -131,6 +78,8 @@ P4estMeshAgent2d::write_vtk(const std::string& fname) const
 
 /**
  * @brief subdevides all cells of the mesh refine_level of times
+ *
+ * Warning: Recreates node indexing.
  *
  * @param refine_level Number of subdevisions
  */
@@ -153,10 +102,17 @@ P4estMeshAgent2d::global_refine(IndexType refine_level)
    * This is important when starting with an unrefined forest */
 
   for (IndexType level = 0; level < refine_level; ++level) {
-    p4est_refine(pforest, 0, refine_fn, p4est_quadrant_init_fn);
+    p4est_refine(pforest, 0, refine_fn, nullptr);
   }
 }
 
+/**
+ * @brief
+ *
+ * Warning: Recreates node indexing.
+ *
+ * @param ref Vector of indices of cells that will be subdevided.
+ */
 void
 P4estMeshAgent2d::refine_cells(IndexVector& ref)
 {
@@ -185,7 +141,24 @@ P4estMeshAgent2d::refine_cells(IndexVector& ref)
     return 0;
   };
 
-  p4est_refine(pforest, 0, refine_fn, p4est_quadrant_init_fn);
+  p4est_refine(pforest, 0, refine_fn, nullptr);
 }
+
+/**
+ * @return IndexType Number of quads/hexes in mesh
+ */
+IndexType
+P4estMeshAgent2d::num_cells() const
+{
+  return pforest->global_num_quadrants;
+}
+
+#ifndef P4_TO_P8
+std::shared_ptr<P4estDofHandler>
+P4estMeshAgent2d::create_dofhandler(IndexType degree) const
+{
+  return std::make_shared<P4estDofHandler2d>(pforest, degree);
+}
+#endif
 
 } // namespace Gascoigne

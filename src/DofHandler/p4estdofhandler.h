@@ -1,12 +1,12 @@
-/*----------------------------   gascoignemesh3d.h ---------------------------*/
+/*----------------------------   p4estdofhandler.h ---------------------------*/
 /*      $Id:$                 */
-#ifndef __gascoignemesh3d_H
-#define __gascoignemesh3d_H
-/*----------------------------   gascoignemesh3d.h ---------------------------*/
+#ifndef __p4estdofhandler_H
+#define __p4estdofhandler_H
+/*----------------------------   p4estdofhandler.h ---------------------------*/
 
 /**
  *
- * Copyright (C) 2004, 2005, 2007, 2018 by the Gascoigne 3D authors
+ * Copyright (C) 2018 by the Gascoigne 3D authors
  *
  * This file is part of Gascoigne 3D
  *
@@ -27,17 +27,19 @@
  *
  **/
 
-// class will be replaced by DofHandler
-
-#include "../DofHandler/dofhandler.h"
-
-#include "gascoignemesh.h"
+#include "../Interface/gascoigne.h"
 
 namespace Gascoigne {
-typedef DofHandler<3> GascoigneMesh3d;
-}
 
-/*----------------------------   gascoignemesh3d.h ---------------------------*/
-/* end of #ifndef __gascoignemesh3d_H */
-#endif
-/*----------------------------   gascoignemesh3d.h ---------------------------*/
+class P4estDofHandler
+{
+private:
+  IndexType degree = 1; //< Degree of lnodes.
+
+public:
+  virtual IndexVector get_nodes_of_cell(IndexType cell) const = 0;
+  virtual IndexType num_nodes() const = 0;
+};
+
+}
+#endif //__p4estdofhandler_H

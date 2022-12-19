@@ -57,7 +57,7 @@ public:
   HangingNodes();
   ~HangingNodes() {}
 
-  void ReInit(const GascoigneMesh* M)
+  void ReInit(const DofHandlerBase* M)
   {
     edges = M->GetHangingIndexHandler().GetStructure();
     assert(edges);

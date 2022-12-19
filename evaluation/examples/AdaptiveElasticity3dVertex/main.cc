@@ -30,8 +30,8 @@
 #endif
 
 #include <Common/paramfile.h>
+#include <DofHandler/dofhandler.h>
 #include <Interface/gascoigne.h>
-#include <Mesh/gascoignemesh3d.h>
 
 #include "local.h"
 
@@ -67,7 +67,7 @@ public:
 
     // initial refinement of the mesh
     for (int a = 0; a < adarefine; ++a) {
-      const GascoigneMesh3d* M3d = dynamic_cast<const GascoigneMesh3d*>(
+      const DofHandler3d* M3d = dynamic_cast<const DofHandler3d*>(
         GetMultiLevelSolver()->GetSolver()->GetMesh());
       assert(M3d);
       IndexVector ref, coa;

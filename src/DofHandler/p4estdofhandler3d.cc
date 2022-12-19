@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (C) 2004 by the Gascoigne 3D authors
+ * Copyright (C) 2004, 2005, 2006 by the Gascoigne 3D authors
  *
  * This file is part of Gascoigne 3D
  *
@@ -21,25 +21,12 @@
  *
  **/
 
-#ifndef __multigridmeshinterface_h
-#define __multigridmeshinterface_h
+#include "p4estdofhandler3d.h"
 
-#include "../DofHandler/dofhandlerbase.h"
+#include <p4est_to_p8est.h>
 
-/*--------------------------------------*/
+#define P4estDofHandler2d P4estDofHandler3d
 
-namespace Gascoigne {
-class MultiGridMeshInterface
-{
-private:
-protected:
-public:
-  MultiGridMeshInterface() {}
-  virtual ~MultiGridMeshInterface() {}
+#include "p4estdofhandler2d.cc"
 
-  virtual int nlevels() const = 0;
-  virtual const DofHandlerBase& operator()(int l) const = 0;
-};
-} // namespace Gascoigne
-
-#endif
+#undef P4estMeshAgent

@@ -22,7 +22,7 @@
  **/
 
 #include <Common/paramfile.h>
-#include <Mesh/gascoignemesh2d.h>
+#include <DofHandler/dofhandler.h>
 #include <Problems/functionalcontainer.h>
 #include <Problems/problemcontainer.h>
 
@@ -59,7 +59,7 @@ public:
 
     // initial refinement of the mesh
     for (size_t adarefine = 0; adarefine < 2; ++adarefine) {
-      const GascoigneMesh2d* M2d = dynamic_cast<const GascoigneMesh2d*>(
+      const DofHandler2d* M2d = dynamic_cast<const DofHandler2d*>(
         GetMultiLevelSolver()->GetSolver()->GetMesh());
       assert(M2d);
       IndexVector ref, coa;

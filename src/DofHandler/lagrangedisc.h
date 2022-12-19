@@ -110,7 +110,7 @@ public:
   {
     // HANGING NODES
   }
-  void ReInit(const GascoigneMesh* GM)
+  void ReInit(const DofHandlerBase* GM)
   {
     const DofHandler<DIM>* DH = dynamic_cast<const DofHandler<DIM>*>(GM);
     assert(DH);

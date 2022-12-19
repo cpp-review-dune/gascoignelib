@@ -45,7 +45,7 @@ public:
   ~HNStructureQ12d() {}
   IndexType nhnodes() const { return edges->size(); }
   void SparseStructureDiag(SparseStructure* S) const;
-  void ReInit(const GascoigneMesh* m);
+  void ReInit(const DofHandlerBase* m);
 
   void MatrixDiag(ShortIndexType ncomp, MatrixInterface& A) const;
   void Average(GlobalVector& u) const;

@@ -25,22 +25,22 @@
 #define __ilupermutate_H
 
 #include "../Common/compvector.h"
+#include "../DofHandler/dofhandlerbase.h"
 #include "../LinAlg/columnstencil.h"
-#include "../Mesh/gascoignemesh.h"
 
 namespace Gascoigne {
 class StreamDirection
 {
   int dimension;
   int dx, dy, dz;
-  const GascoigneMesh* M;
+  const DofHandlerBase* M;
   const ColumnStencil* S;
   const GlobalVector& X;
 
   void Permutate(IndexVector& perm);
 
 public:
-  StreamDirection(const GascoigneMesh* m,
+  StreamDirection(const DofHandlerBase* m,
                   const StencilInterface* s,
                   const GlobalVector& x);
 
@@ -55,12 +55,12 @@ class VecDirection
   Vertex2d dir2d;
   Vertex3d dir3d;
   int dimension;
-  const GascoigneMesh* M;
+  const DofHandlerBase* M;
 
   void Permutate(IndexVector& perm);
 
 public:
-  VecDirection(const GascoigneMesh* m);
+  VecDirection(const DofHandlerBase* m);
 
   void Permutate(IndexVector& perm, DoubleVector v);
 

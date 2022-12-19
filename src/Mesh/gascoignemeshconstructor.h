@@ -28,8 +28,7 @@
 
 #include "../Interface/gascoigne.h"
 
-#include "gascoignemesh2d.h"
-#include "gascoignemesh3d.h"
+#include "../DofHandler/dofhandler.h"
 #include "gascoignemultigridmesh.h"
 #include "levelmesh2d.h"
 #include "levelmesh3d.h"
@@ -55,13 +54,13 @@ protected:
   virtual void PatchToCell3d(PatchIndexHandler& PIH,
                              const LevelMesh3d* LM) const;
 
-  virtual void Construct2d(GascoigneMesh* NM, const LevelMesh2d* LM) const;
-  virtual void Construct3d(GascoigneMesh* NM, const LevelMesh3d* LM) const;
+  virtual void Construct2d(DofHandlerBase* NM, const LevelMesh2d* LM) const;
+  virtual void Construct3d(DofHandlerBase* NM, const LevelMesh3d* LM) const;
 
-  virtual LevelMesh2d* LevelUpdate2d(GascoigneMesh* GM,
+  virtual LevelMesh2d* LevelUpdate2d(DofHandlerBase* GM,
                                      const IndexSet& newquads,
                                      const IndexSet& oldquads) const;
-  virtual LevelMesh3d* LevelUpdate3d(GascoigneMesh* GM,
+  virtual LevelMesh3d* LevelUpdate3d(DofHandlerBase* GM,
                                      const IndexSet& newquads,
                                      const IndexSet& oldquads) const;
   virtual void Loop2d();

@@ -178,7 +178,7 @@ BasicLoop::PrintMeshInformation(int outputlevel) const
 
   if (outputlevel) {
     for (int l = 0; l < GetMeshAgent()->nlevels(); l++) {
-      const GascoigneMesh* M = GetMeshAgent()->GetMesh(l);
+      const DofHandlerBase* M = GetMeshAgent()->GetMesh(l);
       cout << l << " [n,c] " << M->nnodes() << " " << M->ncells() << endl;
     }
   }

@@ -71,7 +71,10 @@ public:
 
   virtual void AssemblePeriodicBoundaries();
 
-  virtual GascoigneMesh* GMesh(IndexType l) { return GMG->GetGascoigneMesh(l); }
+  virtual DofHandlerBase* GMesh(IndexType l)
+  {
+    return GMG->GetGascoigneMesh(l);
+  }
 
   virtual void AddShape(IndexType col, BoundaryFunction<2>* f)
   {
@@ -130,11 +133,11 @@ public:
   }
   virtual IndexType nlevels() const { return GMG->nlevels(); }
 
-  virtual const GascoigneMesh* GetMesh() const
+  virtual const DofHandlerBase* GetMesh() const
   {
     return GMG->GetGascoigneMesh(0);
   }
-  virtual const GascoigneMesh* GetMesh(IndexType l) const
+  virtual const DofHandlerBase* GetMesh(IndexType l) const
   {
     return GMG->GetGascoigneMesh(l);
   }

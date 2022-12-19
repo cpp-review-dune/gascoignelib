@@ -73,16 +73,16 @@ Pi::vmult(CompVector<double>& y, const CompVector<double>& x, double s) const
 /*-----------------------------------------*/
 
 void
-Pi::Init(const GascoigneMesh* MP)
+Pi::Init(const DofHandlerBase* MP)
 {
   edge.clear();
   face.clear();
   cell.clear();
-  const GascoigneMesh3d* NMP = dynamic_cast<const GascoigneMesh3d*>(MP);
+  const DofHandler3d* NMP = dynamic_cast<const DofHandler3d*>(MP);
   if (NMP) {
     Init3d(NMP);
   } else {
-    const GascoigneMesh2d* NMP2 = dynamic_cast<const GascoigneMesh2d*>(MP);
+    const DofHandler2d* NMP2 = dynamic_cast<const DofHandler2d*>(MP);
     assert(NMP2);
     Init2d(NMP2);
   }
@@ -91,7 +91,7 @@ Pi::Init(const GascoigneMesh* MP)
 /*-----------------------------------------*/
 
 void
-Pi::Init2d(const GascoigneMesh2d* MP)
+Pi::Init2d(const DofHandler2d* MP)
 {
   assert(MP->HasPatch());
 
@@ -126,7 +126,7 @@ Pi::Init2d(const GascoigneMesh2d* MP)
 /*-----------------------------------------*/
 
 void
-Pi::Init3d(const GascoigneMesh3d* MP)
+Pi::Init3d(const DofHandler3d* MP)
 {
   assert(MP->HasPatch());
 

@@ -123,6 +123,9 @@ public:
   }
 };
 
+typedef DofHandler<2> DofHandler2d;
+typedef DofHandler<3> DofHandler3d;
+
 } // namespace Gascoigne
 
 /*----------------------------   dofhandler.h     ---------------------------*/

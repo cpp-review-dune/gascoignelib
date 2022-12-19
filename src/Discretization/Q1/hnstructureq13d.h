@@ -59,7 +59,7 @@ public:
 
   IndexType nhnodes() const { return edges->size() + faces->size(); }
 
-  void ReInit(const GascoigneMesh* m);
+  void ReInit(const DofHandlerBase* m);
   IndexType hanging(IndexType i) const;
 
   void MatrixDiag(ShortIndexType ncomp, MatrixInterface& A) const;

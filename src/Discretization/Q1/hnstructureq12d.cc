@@ -23,7 +23,7 @@
 
 #include "hnstructureq12d.h"
 
-#include "../../Mesh/gascoignemesh.h"
+#include "../../DofHandler/dofhandlerbase.h"
 
 using namespace std;
 
@@ -80,7 +80,7 @@ HNStructureQ12d::SparseStructureDiag(SparseStructure* S) const
 /*--------------------------------------------------------*/
 
 void
-HNStructureQ12d::ReInit(const GascoigneMesh* M)
+HNStructureQ12d::ReInit(const DofHandlerBase* M)
 {
   edges = M->GetHangingIndexHandler().GetStructure();
 }

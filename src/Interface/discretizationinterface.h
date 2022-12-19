@@ -28,7 +28,7 @@
 
 #include "../Common/compvector.h"
 #include "../Common/paramfile.h"
-#include "../Mesh/gascoignemesh.h"
+#include "../DofHandler/dofhandlerbase.h"
 #include "../Problems/problemdescriptorbase.h"
 
 #include "boundaryequation.h"
@@ -89,7 +89,7 @@ public:
   virtual void DeleteParameterVector(const std::string& name) const = 0;
 
   virtual void BasicInit(const ParamFile& pf) = 0;
-  virtual void ReInit(const GascoigneMesh* M) = 0;
+  virtual void ReInit(const DofHandlerBase* M) = 0;
 
   virtual IndexType ndofs()
     const = 0; // returns the number of degrees of freedom

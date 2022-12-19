@@ -28,6 +28,7 @@
 #include "../Common/stopwatch.h"
 #include "../Discretization/Q1/gascoignevisualization.h"
 #include "../Discretization/Q1/pressurefilter.h"
+#include "../DofHandler/dofhandlerbase.h"
 #include "../Interface/discretizationinterface.h"
 #include "../Interface/domainfunction.h"
 #include "../Interface/gascoigne.h"
@@ -38,7 +39,6 @@
 #include "../Interface/problemdescriptorinterface.h"
 #include "../Interface/vectorinterface.h"
 #include "../LinAlg/sparsestructure.h"
-#include "../Mesh/gascoignemesh.h"
 #include "../Mesh/hierarchicalmesh.h"
 #include "../Problems/residualfunctional.h"
 
@@ -79,7 +79,7 @@ private:
 
   // 1. Gitter
 
-  const GascoigneMesh* _MP;
+  const DofHandlerBase* _MP;
   const HierarchicalMesh* _HM;
   std::map<IndexType, IndexType> _PeriodicPairs;
 
@@ -137,7 +137,7 @@ protected:
 
   // 0. Zugriff
 
-  const GascoigneMesh*& GetMeshPointer() { return _MP; }
+  const DofHandlerBase*& GetMeshPointer() { return _MP; }
 
   // virtual SolverData& GetSolverData()
   // {
@@ -217,9 +217,9 @@ public:
   }
   virtual const ParamFile& GetParamfile() const { return _paramfile; }
 
-  virtual void NewMesh(const GascoigneMesh* MP);
+  virtual void NewMesh(const DofHandlerBase* MP);
 
-  virtual const GascoigneMesh* GetMesh() const { return _MP; }
+  virtual const DofHandlerBase* GetMesh() const { return _MP; }
 
   // 0.2 Discretization
 

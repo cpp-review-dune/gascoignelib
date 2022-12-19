@@ -200,7 +200,7 @@ StdSolver::SetDiscretization(DiscretizationInterface& DI, bool init)
 /*-------------------------------------------------------*/
 
 void
-StdSolver::NewMesh(const GascoigneMesh* mp)
+StdSolver::NewMesh(const DofHandlerBase* mp)
 {
   _MP = mp;
   assert(_MP);
@@ -489,8 +489,8 @@ StdSolver::AddPeriodicNodes(SparseStructure* SA)
   const BoundaryManager* BM = GetProblemDescriptor()->GetBoundaryManager();
   const IndexVector& iv_PeriodicColors = BM->GetPeriodicDataColors();
 
-  const GascoigneMesh* p_mesh = GetMesh();
-  const GascoigneMesh* GMP = dynamic_cast<const GascoigneMesh*>(p_mesh);
+  const DofHandlerBase* p_mesh = GetMesh();
+  const DofHandlerBase* GMP = dynamic_cast<const DofHandlerBase*>(p_mesh);
   assert(GMP);
 
   map<IndexType, map<IndexType, IndexType>> mm_PeriodicPairs =
@@ -910,8 +910,8 @@ StdSolver::SetPeriodicVectorZero(Vector& gf) const
   const IndexVector& iv_PeriodicColors = BM->GetPeriodicDataColors();
 
   GlobalVector& f = GetGV(gf);
-  const GascoigneMesh* p_mesh = GetMesh();
-  const GascoigneMesh* GMP = dynamic_cast<const GascoigneMesh*>(p_mesh);
+  const DofHandlerBase* p_mesh = GetMesh();
+  const DofHandlerBase* GMP = dynamic_cast<const DofHandlerBase*>(p_mesh);
   assert(GMP);
 
   map<IndexType, map<IndexType, IndexType>> mm_PeriodicPairs =
@@ -1518,8 +1518,8 @@ StdSolver::PeriodicMatrix(Matrix& A) const
   const BoundaryManager* BM = GetProblemDescriptor()->GetBoundaryManager();
   const IndexVector& iv_PeriodicColors = BM->GetPeriodicDataColors();
 
-  const GascoigneMesh* p_mesh = GetMesh();
-  const GascoigneMesh* GMP = dynamic_cast<const GascoigneMesh*>(p_mesh);
+  const DofHandlerBase* p_mesh = GetMesh();
+  const DofHandlerBase* GMP = dynamic_cast<const DofHandlerBase*>(p_mesh);
   assert(GMP);
 
   map<IndexType, map<IndexType, IndexType>> mm_PeriodicPairs =

@@ -25,7 +25,7 @@
 
 #include <algorithm>
 
-#include "../../Mesh/gascoignemesh.h"
+#include "../../DofHandler/dofhandlerbase.h"
 
 using namespace std;
 
@@ -115,7 +115,7 @@ HNStructureQ13d::~HNStructureQ13d() {}
 /*--------------------------------------------------------*/
 
 void
-HNStructureQ13d::ReInit(const GascoigneMesh* M)
+HNStructureQ13d::ReInit(const DofHandlerBase* M)
 {
   edges = M->GetHangingIndexHandler().GetStructure();
   faces = M->GetHangingIndexHandler().GetStructureFace();
