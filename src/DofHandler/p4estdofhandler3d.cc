@@ -71,24 +71,24 @@ P4estDofHandler2d::write_vtk(std::string file_name, GlobalVector vec) const
   out << std::endl;
 
   // Writing mesh structur
-//   IndexType ne = p4est->global_num_quadrants;
-//   int lenght = ne*5;
+  //   IndexType ne = p4est->global_num_quadrants;
+  //   int lenght = ne*5;
 
-//   out << std::endl << "CELLS " << ne << " " << lenght << std::endl;
+  //   out << std::endl << "CELLS " << ne << " " << lenght << std::endl;
 
-//   for (int c = 0; c < ne; c++) {
-//     int nle = 4;
-//     out << nle << " ";
-//     for (int ii = 0; ii < nle; ii++) {
-//       out << mesh->vertex_of_cell(c, ii) << " ";
-//     }
-//     out << endl;
-//   }
-//   out << endl << "CELL_TYPES " << ne << endl;
-//   for (int c = 0; c < ne; c++) {
-//     out << mesh->VtkType(c) << " ";
-//   }
-//   out << endl;
+  //   for (int c = 0; c < ne; c++) {
+  //     int nle = 4;
+  //     out << nle << " ";
+  //     for (int ii = 0; ii < nle; ii++) {
+  //       out << mesh->vertex_of_cell(c, ii) << " ";
+  //     }
+  //     out << endl;
+  //   }
+  //   out << endl << "CELL_TYPES " << ne << endl;
+  //   for (int c = 0; c < ne; c++) {
+  //     out << mesh->VtkType(c) << " ";
+  //   }
+  //   out << endl;
 
   out.close();
 }

@@ -44,7 +44,9 @@ main(int argc, char** argv)
   pma->write_vtk("Results/solve.00000");
 
   auto dof = pma->create_dofhandler(1);
-  dof->write_vtk("out.vtk", GlobalVector());
+  GlobalVector vec(dof->num_nodes(), 1);
+  vec[0] = 1;
+  dof->write_vtk("out.vtk", vec);
 
   return 0;
 }

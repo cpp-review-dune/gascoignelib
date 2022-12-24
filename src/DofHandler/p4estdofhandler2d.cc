@@ -75,23 +75,26 @@ P4estDofHandler2d::write_vtk(std::string file_name, GlobalVector vec) const
   out << time << std::endl;
 
   // Writing Points of the Mesh
-  IndexType nn = p4est->global_num_quadrants * 4;
-  out << "POINTS " << nn << " DOUBLE " << std::endl;
+  IndexType num_vertex = p4est->global_num_quadrants * 4;
+  out << "POINTS " << num_vertex << " DOUBLE " << std::endl;
 
   for (IndexType i = 0; i < p4est->trees->elem_count; ++i) {
     p4est_tree_t* tree = p4est_tree_array_index(p4est->trees, i);
     for (IndexType j = 0; j < tree->quadrants.elem_count; ++j) {
       p4est_quadrant_t* quadrant =
         p4est_quadrant_array_index(&(tree->quadrants), j);
-      for(IndexType k = 0; k < 4; ++k) {
+      for (IndexType k = 0; k < 4; ++k) {
         // Counting in a cirle arount the Quad
         IndexType y = k >> 1;
         IndexType x = (k >> 1) ^ (k & 1);
 
         double vxyz[3];
         double quad_lenght = P4EST_QUADRANT_LEN(quadrant->level);
-        p4est_qcoord_to_vertex(
-          p4est->connectivity, i, quadrant->x+ x * quad_lenght, quadrant->y+y*quad_lenght, vxyz);
+        p4est_qcoord_to_vertex(p4est->connectivity,
+                               i,
+                               quadrant->x + x * quad_lenght,
+                               quadrant->y + y * quad_lenght,
+                               vxyz);
         Vertex2d coordinates(vxyz[0], vxyz[1], vxyz[2]);
         out << coordinates << " " << 0 << std::endl;
       }
@@ -100,27 +103,40 @@ P4estDofHandler2d::write_vtk(std::string file_name, GlobalVector vec) const
   out << std::endl;
 
   // Writing mesh structur
-  IndexType ne = p4est->global_num_quadrants;
-  int lenght = ne*5;
+  IndexType num_quads = p4est->global_num_quadrants;
+  int lenght = num_quads * 5;
 
-  out << std::endl << "CELLS " << ne << " " << lenght << std::endl;
+  out << std::endl << "CELLS " << num_quads << " " << lenght << std::endl;
 
   for (IndexType i = 0; i < p4est->trees->elem_count; ++i) {
     p4est_tree_t* tree = p4est_tree_array_index(p4est->trees, i);
-    for (IndexType j = 0; j < tree->quadrants.elem_count; ++j) { 
+    for (IndexType j = 0; j < tree->quadrants.elem_count; ++j) {
       IndexType id = (tree->quadrants_offset + j) * 4;
       int nle = 4;
       out << nle << " ";
-      for (IndexType k = 0; k < nle; k++){
+      for (IndexType k = 0; k < nle; k++) {
         out << id + k << " ";
       }
       out << std::endl;
     }
   }
 
-  out << std::endl << "CELL_TYPES " << ne << std::endl;
-  for (int c = 0; c < ne; c++) {
+  out << std::endl << "CELL_TYPES " << num_quads << std::endl;
+  for (int c = 0; c < num_quads; c++) {
     out << 9 << " ";
+  }
+  out << std::endl << std::endl;
+
+  // Writing Vector
+  out << "POINT_DATA " << num_vertex << std::endl;
+  out << "SCALARS "
+      << "u000"
+      << " DOUBLE " << std::endl;
+  out << "LOOKUP_TABLE default" << std::endl;
+  for (IndexType ind = 0; ind < num_quads; ind++) {
+    for(IndexType j = 0; j < 4; ++j){
+      out << float(vec[lnodes->element_nodes[P4EST_CHILDREN * ind + j]]) << std::endl;
+    }
   }
   out << std::endl;
 
