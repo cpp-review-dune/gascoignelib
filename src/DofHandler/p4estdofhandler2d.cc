@@ -2,6 +2,8 @@
 #include "p4estdofhandler2d.h"
 #endif
 
+#include <fstream>
+
 #include "../Interface/gascoigne.h"
 
 namespace Gascoigne {
@@ -11,6 +13,7 @@ namespace Gascoigne {
  *
  */
 P4estDofHandler2d::P4estDofHandler2d(p4est_t* p4est, IndexType degree)
+  : p4est(p4est)
 {
   /* Create the ghost layer to learn about parallel neighbors. */
   p4est_ghost_t* ghost = p4est_ghost_new(p4est, P4EST_CONNECT_FULL);
@@ -48,5 +51,82 @@ P4estDofHandler2d::num_nodes() const
 {
   return lnodes->num_local_elements;
 }
+
+#ifndef P4_TO_P8
+/**
+ * @brief
+ *
+ * @param file_name
+ * @param vec
+ */
+void
+P4estDofHandler2d::write_vtk(std::string file_name, GlobalVector vec) const
+{
+  IndexType time = 0;
+
+  std::ofstream out(file_name.c_str());
+
+  out << "# vtk DataFile Version 2.0 " << std::endl;
+  out << "output from GascoigneStd" << std::endl;
+  out << "ASCII" << std::endl;
+  out << "DATASET UNSTRUCTURED_GRID" << std::endl;
+  out << "FIELD FieldData 1" << std::endl;
+  out << "TIME 1 1 double" << std::endl;
+  out << time << std::endl;
+
+  // Writing Points of the Mesh
+  IndexType nn = p4est->global_num_quadrants * 4;
+  out << "POINTS " << nn << " DOUBLE " << std::endl;
+
+  for (IndexType i = 0; i < p4est->trees->elem_count; ++i) {
+    p4est_tree_t* tree = p4est_tree_array_index(p4est->trees, i);
+    for (IndexType j = 0; j < tree->quadrants.elem_count; ++j) {
+      p4est_quadrant_t* quadrant =
+        p4est_quadrant_array_index(&(tree->quadrants), j);
+      for(IndexType k = 0; k < 4; ++k) {
+        // Counting in a cirle arount the Quad
+        IndexType y = k >> 1;
+        IndexType x = (k >> 1) ^ (k & 1);
+
+        double vxyz[3];
+        double quad_lenght = P4EST_QUADRANT_LEN(quadrant->level);
+        p4est_qcoord_to_vertex(
+          p4est->connectivity, i, quadrant->x+ x * quad_lenght, quadrant->y+y*quad_lenght, vxyz);
+        Vertex2d coordinates(vxyz[0], vxyz[1], vxyz[2]);
+        out << coordinates << " " << 0 << std::endl;
+      }
+    }
+  }
+  out << std::endl;
+
+  // Writing mesh structur
+  IndexType ne = p4est->global_num_quadrants;
+  int lenght = ne*5;
+
+  out << std::endl << "CELLS " << ne << " " << lenght << std::endl;
+
+  for (IndexType i = 0; i < p4est->trees->elem_count; ++i) {
+    p4est_tree_t* tree = p4est_tree_array_index(p4est->trees, i);
+    for (IndexType j = 0; j < tree->quadrants.elem_count; ++j) { 
+      IndexType id = (tree->quadrants_offset + j) * 4;
+      int nle = 4;
+      out << nle << " ";
+      for (IndexType k = 0; k < nle; k++){
+        out << id + k << " ";
+      }
+      out << std::endl;
+    }
+  }
+
+  out << std::endl << "CELL_TYPES " << ne << std::endl;
+  for (int c = 0; c < ne; c++) {
+    out << 9 << " ";
+  }
+  out << std::endl;
+
+  out.close();
+}
+
+#endif // P4_TO_P8
 
 }

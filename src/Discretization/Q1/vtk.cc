@@ -40,11 +40,10 @@ Visualization::_vtk_pointdata(ofstream& out) const
     CheckPointData();
     // for(VisuDataInfo::siterator
     // p=PointDataInfo->sbegin();p!=PointDataInfo->send();++p)
+    out << "POINT_DATA " << nn << endl;
     for (int i = 0; i < PointDataInfo->nscalars(); i++) {
       VisuDataInfo::siterator p =
         (const_cast<VisuDataInfo*>(PointDataInfo))->GetSIterator(i);
-      if (i == 0)
-        out << "POINT_DATA " << nn << endl;
       out << "SCALARS " << p->first << " DOUBLE " << endl;
       out << "LOOKUP_TABLE default" << endl;
       for (int ind = 0; ind < PointData->visun(); ind++) {

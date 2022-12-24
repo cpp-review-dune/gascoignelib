@@ -27,6 +27,7 @@
  *
  **/
 
+#include "../Common/compvector.h"
 #include "../Interface/gascoigne.h"
 
 namespace Gascoigne {
@@ -39,6 +40,9 @@ private:
 public:
   virtual IndexVector get_nodes_of_cell(IndexType cell) const = 0;
   virtual IndexType num_nodes() const = 0;
+  virtual IndexType dimension() const = 0;
+
+  virtual void write_vtk(std::string file_name, GlobalVector vec) const = 0;
 };
 
 }

@@ -43,5 +43,8 @@ main(int argc, char** argv)
   pma->refine_cells(refine_cells);
   pma->write_vtk("Results/solve.00000");
 
+  auto dof = pma->create_dofhandler(1);
+  dof->write_vtk("out.vtk", GlobalVector());
+
   return 0;
 }
