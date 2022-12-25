@@ -29,6 +29,7 @@
 
 #include "../Common/compvector.h"
 #include "../Interface/gascoigne.h"
+#include "../Solver/ghostagent.h"
 
 namespace Gascoigne {
 
@@ -42,7 +43,10 @@ public:
   virtual IndexType num_nodes() const = 0;
   virtual IndexType dimension() const = 0;
 
-  virtual void write_vtk(std::string file_name, GlobalVector vec) const = 0;
+  virtual void write_vtk(std::string file_name,
+                         double time,
+                         GhostVectorAgent& gva,
+                         std::vector<std::string> vectors) const = 0;
 };
 
 }

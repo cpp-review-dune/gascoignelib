@@ -52,7 +52,10 @@ public:
   IndexType dimension() const { return 3; };
   Vertex3d vertex3d(IndexType node_index) const;
 
-  void write_vtk(std::string file_name, GlobalVector vec) const;
+  void write_vtk(std::string file_name,
+                 double time,
+                 GhostVectorAgent& gva,
+                 std::vector<std::string> vectors) const;
 };
 
 }

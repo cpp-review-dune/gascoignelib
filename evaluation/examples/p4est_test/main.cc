@@ -22,10 +22,12 @@
  **/
 
 #include <memory>
+#include <vector>
 
 #include <Common/paramfile.h>
 #include <Interface/gascoigne.h>
 #include <Mesh/p4estmeshagent.h>
+#include <Solver/ghostagent.h>
 
 /*---------------------------------------------------*/
 
@@ -44,9 +46,17 @@ main(int argc, char** argv)
   pma->write_vtk("Results/solve.00000");
 
   auto dof = pma->create_dofhandler(1);
-  GlobalVector vec(dof->num_nodes(), 1);
-  vec[0] = 1;
-  dof->write_vtk("out.vtk", vec);
+  
+  GhostVectorAgent gva;
+  gva.Register("u");
+  gva["u"] = new GlobalVector(dof->num_nodes(), 1);
+  (*gva["u"])[0] = 1.0;
+
+  gva.Register("v");
+  gva["v"] = new GlobalVector(dof->num_nodes(), 1);
+  (*gva["v"])[1] = 1.0;
+
+  dof->write_vtk("out.vtk", .0, gva, std::vector<std::string>({ "u", "v" }));
 
   return 0;
 }

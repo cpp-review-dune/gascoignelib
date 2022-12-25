@@ -60,9 +60,11 @@ P4estDofHandler2d::num_nodes() const
  * @param vec
  */
 void
-P4estDofHandler2d::write_vtk(std::string file_name, GlobalVector vec) const
+P4estDofHandler2d::write_vtk(std::string file_name,
+                             double time,
+                             GhostVectorAgent& gva,
+                             std::vector<std::string> vectors) const
 {
-  IndexType time = 0;
 
   std::ofstream out(file_name.c_str());
 
@@ -84,9 +86,9 @@ P4estDofHandler2d::write_vtk(std::string file_name, GlobalVector vec) const
       p4est_quadrant_t* quadrant =
         p4est_quadrant_array_index(&(tree->quadrants), j);
       for (IndexType k = 0; k < 4; ++k) {
-        // Counting in a cirle arount the Quad
-        IndexType y = k >> 1;
-        IndexType x = (k >> 1) ^ (k & 1);
+        // Counting in a circle arount the Quad
+        IndexType y = (k / 2) & 1;   // 0;0;1;1
+        IndexType x = (y) ^ (k & 1); // 0;1;1;0
 
         double vxyz[3];
         double quad_lenght = P4EST_QUADRANT_LEN(quadrant->level);
@@ -129,16 +131,21 @@ P4estDofHandler2d::write_vtk(std::string file_name, GlobalVector vec) const
 
   // Writing Vector
   out << "POINT_DATA " << num_vertex << std::endl;
-  out << "SCALARS "
-      << "u000"
-      << " DOUBLE " << std::endl;
-  out << "LOOKUP_TABLE default" << std::endl;
-  for (IndexType ind = 0; ind < num_quads; ind++) {
-    for(IndexType j = 0; j < 4; ++j){
-      out << float(vec[lnodes->element_nodes[P4EST_CHILDREN * ind + j]]) << std::endl;
+  for (const std::string& vec_name : vectors) {
+    GlobalVector* vec = gva[vec_name];
+    if (!vec) {
+      continue;
     }
+    out << "SCALARS " << vec_name << " DOUBLE " << std::endl;
+    out << "LOOKUP_TABLE default" << std::endl;
+    for (IndexType ind = 0; ind < num_quads; ind++) {
+      for (IndexType j = 0; j < 4; ++j) {
+        out << float((*vec)[lnodes->element_nodes[P4EST_CHILDREN * ind + j]])
+            << std::endl;
+      }
+    }
+    out << std::endl;
   }
-  out << std::endl;
 
   out.close();
 }

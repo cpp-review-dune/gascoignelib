@@ -39,9 +39,12 @@ namespace Gascoigne {
  * @param vec
  */
 void
-P4estDofHandler2d::write_vtk(std::string file_name, GlobalVector vec) const
+P4estDofHandler2d::write_vtk(std::string file_name,
+                             double time,
+                             GhostVectorAgent& gva,
+                             std::vector<std::string> vectors) const
 {
-  IndexType time = 0;
+
   std::ofstream out(file_name.c_str());
 
   out << "# vtk DataFile Version 2.0 " << std::endl;
@@ -53,42 +56,77 @@ P4estDofHandler2d::write_vtk(std::string file_name, GlobalVector vec) const
   out << time << std::endl;
 
   // Writing Points of the Mesh
-  IndexType nn = lnodes->num_local_elements;
-  out << "POINTS " << nn << " DOUBLE " << std::endl;
+  IndexType num_vertex = p4est->global_num_quadrants * 4;
+  out << "POINTS " << num_vertex << " DOUBLE " << std::endl;
 
   for (IndexType i = 0; i < p4est->trees->elem_count; ++i) {
-    p8est_tree_t* tree = p4est_tree_array_index(p4est->trees, i);
+    p4est_tree_t* tree = p4est_tree_array_index(p4est->trees, i);
     for (IndexType j = 0; j < tree->quadrants.elem_count; ++j) {
-      p8est_quadrant_t* quadrant =
+      p4est_quadrant_t* quadrant =
         p4est_quadrant_array_index(&(tree->quadrants), j);
-      double vxyz[3];
-      p8est_qcoord_to_vertex(
-        p4est->connectivity, i, quadrant->x, quadrant->y, quadrant->z, vxyz);
-      Vertex2d coordinates(vxyz[0], vxyz[1], vxyz[2]);
-      out << coordinates << " " << 0 << std::endl;
+      for (IndexType k = 0; k < 8; ++k) {
+        // Counting in a circle arount the Quad
+        IndexType y = (k / 2) & 1;   // 0;0;1;1;0;0;1;1
+        IndexType x = (y) ^ (k & 1); // 0;1;1;0;0;1;1;0
+        IndexType z = (k / 4) & 1;   // 0;0;0;0;1;1;1;1
+
+        double vxyz[3];
+        double quad_lenght = P8EST_QUADRANT_LEN(quadrant->level);
+        p8est_qcoord_to_vertex(p4est->connectivity,
+                               i,
+                               quadrant->x + x * quad_lenght,
+                               quadrant->y + y * quad_lenght,
+                               quadrant->z + z * quad_lenght,
+                               vxyz);
+        Vertex3d coordinates(vxyz[0], vxyz[1], vxyz[2]);
+        out << coordinates << " " << 0 << std::endl;
+      }
     }
   }
   out << std::endl;
 
   // Writing mesh structur
-  //   IndexType ne = p4est->global_num_quadrants;
-  //   int lenght = ne*5;
+  IndexType num_quads = p4est->global_num_quadrants;
+  int lenght = num_quads * 5;
 
-  //   out << std::endl << "CELLS " << ne << " " << lenght << std::endl;
+  out << std::endl << "CELLS " << num_quads << " " << lenght << std::endl;
 
-  //   for (int c = 0; c < ne; c++) {
-  //     int nle = 4;
-  //     out << nle << " ";
-  //     for (int ii = 0; ii < nle; ii++) {
-  //       out << mesh->vertex_of_cell(c, ii) << " ";
-  //     }
-  //     out << endl;
-  //   }
-  //   out << endl << "CELL_TYPES " << ne << endl;
-  //   for (int c = 0; c < ne; c++) {
-  //     out << mesh->VtkType(c) << " ";
-  //   }
-  //   out << endl;
+  for (IndexType i = 0; i < p4est->trees->elem_count; ++i) {
+    p8est_tree_t* tree = p8est_tree_array_index(p4est->trees, i);
+    for (IndexType j = 0; j < tree->quadrants.elem_count; ++j) {
+      IndexType id = (tree->quadrants_offset + j) * 4;
+      int nle = 4;
+      out << nle << " ";
+      for (IndexType k = 0; k < nle; k++) {
+        out << id + k << " ";
+      }
+      out << std::endl;
+    }
+  }
+
+  out << std::endl << "CELL_TYPES " << num_quads << std::endl;
+  for (int c = 0; c < num_quads; c++) {
+    out << 9 << " ";
+  }
+  out << std::endl << std::endl;
+
+  // Writing Vector
+  for (const std::string& vec_name : vectors) {
+    GlobalVector* vec = gva[vec_name];
+    if (!vec) {
+      continue;
+    }
+    out << "POINT_DATA " << num_vertex << std::endl;
+    out << "SCALARS " << vec_name << " DOUBLE " << std::endl;
+    out << "LOOKUP_TABLE default" << std::endl;
+    for (IndexType ind = 0; ind < num_quads; ind++) {
+      for (IndexType j = 0; j < 4; ++j) {
+        out << float((*vec)[lnodes->element_nodes[P4EST_CHILDREN * ind + j]])
+            << std::endl;
+      }
+    }
+    out << std::endl;
+  }
 
   out.close();
 }

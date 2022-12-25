@@ -52,7 +52,10 @@ public:
   IndexType dimension() const { return 2; };
   Vertex2d vertex2d(IndexType node_index) const;
 
-  void write_vtk(std::string file_name, GlobalVector vec) const;
+  void write_vtk(std::string file_name,
+                 double time,
+                 GhostVectorAgent& gva,
+                 std::vector<std::string> vectors) const;
 };
 }
 #endif //__p4estdofhandler2d_H
