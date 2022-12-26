@@ -35,7 +35,4 @@ template class SparseBlockMatrix<FMatrixBlock<5>>;
 template class SparseBlockMatrix<FMatrixBlock<6>>;
 template class SparseBlockMatrix<FMatrixBlock<7>>;
 template class SparseBlockMatrix<FMatrixBlock<8>>;
-
-template class SparseBlockMatrix<SparseBlock>;
-
 } // namespace Gascoigne

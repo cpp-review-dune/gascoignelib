@@ -35,7 +35,7 @@ void
 compose_name(string& s, IndexType i)
 {
   char cname[200];
-  sprintf(cname, "%s.%05ld", s.c_str(), i);
+  sprintf(cname, "%s.%05d", s.c_str(), i);
   s = cname;
 }
 
@@ -53,7 +53,7 @@ void
 compose_name(string& s, IndexType i, string t)
 {
   char cname[200];
-  sprintf(cname, "%s.%05ld.%s", s.c_str(), i, t.c_str());
+  sprintf(cname, "%s.%05d.%s", s.c_str(), i, t.c_str());
   s = cname;
 }
 
@@ -64,7 +64,7 @@ compose_name(string& s, IndexType i, IndexType l)
   abort();
 
   char ll[1];
-  sprintf(ll, "%01ld", l);
+  sprintf(ll, "%01d", l);
   string format("%s.%0");
   format += ll;
   format += "d";
@@ -77,7 +77,7 @@ void
 compose_name_without_dot(string& s, IndexType i)
 {
   char cname[200];
-  sprintf(cname, "%s%03ld", s.c_str(), i);
+  sprintf(cname, "%s%03d", s.c_str(), i);
   s = cname;
 }
 } // namespace Gascoigne

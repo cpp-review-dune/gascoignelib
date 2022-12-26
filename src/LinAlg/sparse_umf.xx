@@ -180,6 +180,8 @@ SparseUmf<B>::ConstructStructure(const IndexVector& perm,
   }
 
   long n_umf = n * __ncomp;
+
+#if DEBUG
   long n_entries_umf = nentries * __ncomp * __ncomp;
 
   assert(__Ac.size() == n_entries_umf);
@@ -187,6 +189,7 @@ SparseUmf<B>::ConstructStructure(const IndexVector& perm,
   assert(__Ap.size() == n_umf + 1);
   assert(__Ap.size() > 0);
   assert(__Ap[__Ap.size() - 1] == n_entries_umf);
+#endif
 
   umfpack_dl_free_symbolic(&Symbolic);
 
@@ -238,6 +241,8 @@ SparseUmf<B>::ConstructStructure(ShortIndexType ncomp,
   }
 
   IndexType n_umf = n * __ncomp;
+
+#if DEBUG
   IndexType n_entries_umf = nentries * __ncomp * __ncomp;
 
   assert(__Ac.size() == n_entries_umf);
@@ -245,6 +250,7 @@ SparseUmf<B>::ConstructStructure(ShortIndexType ncomp,
   assert(__Ap.size() == n_umf + 1);
   assert(__Ap.size() > 0);
   assert(__Ap[__Ap.size() - 1] == n_entries_umf);
+#endif
 
   umfpack_dl_free_symbolic(&Symbolic);
 

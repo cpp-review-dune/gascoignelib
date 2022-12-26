@@ -37,12 +37,14 @@ DirichletDataByColor::DirichletDataByColor(const ParamFile& pf,
   , __comps(comps)
   , __scales(s)
 {
+#ifdef DEBUG
   for (auto col : __cols)
     assert(colors.find(col) != colors.end());
 
   assert(__comps.size() == __scales.size());
   assert(__comps.size() > 0);
   assert(__cols.size() > 0);
+#endif
 }
 
 DirichletDataByColor::DirichletDataByColor(nvector<IndexType> comps,

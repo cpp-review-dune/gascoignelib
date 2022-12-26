@@ -46,6 +46,8 @@ SparseUmf<SparseBlock>::ConstructStructure(const IndexVector& perm,
     }
   }
   long n_umf = n * __ncomp;
+
+#if DEBUG
   long n_entries_umf = SPARSE_NENTRIES * nentries;
 
   assert(__Ac.size() == n_entries_umf);
@@ -54,6 +56,7 @@ SparseUmf<SparseBlock>::ConstructStructure(const IndexVector& perm,
   assert(n * SPARSE_NROWS + 1 == __Ap.size());
   assert(__Ap.size() > 0);
   assert(__Ap[__Ap.size() - 1] == n_entries_umf);
+#endif
 
   umfpack_dl_free_symbolic(&Symbolic);
 

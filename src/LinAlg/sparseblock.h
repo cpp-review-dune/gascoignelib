@@ -20,20 +20,20 @@ class SparseBlock : public numfixarray<SPARSE_NENTRIES, MatrixEntryType>
 public:
   ShortIndexType ncomp() const { return SPARSE_NROWS; }
 
-  inline void operator*=(const SparseBlock&) { assert(0); }
-  void operator*=(double s) { assert(0); }
+  virtual void operator*=(const SparseBlock&) = 0;
+  virtual void operator*=(double s) = 0;
 
-  void transpose() { assert(0); }
-  void transpose(SparseBlock& A) { assert(0); }
-  void copy_transpose(const SparseBlock& A) { assert(0); }
+  virtual void transpose() = 0;
+  virtual void transpose(SparseBlock& A) = 0;
+  virtual void copy_transpose(const SparseBlock& A) = 0;
 
-  void zero_row(IndexType) { assert(0); }
-  void uno_diag(IndexType) { assert(0); }
-  MatrixEntryType& diag(IndexType i) { assert(0); }
-  void getrow(std::vector<double>& v, IndexType i) { assert(0); }
-  void getcolumn(std::vector<double>& v, IndexType i) { assert(0); }
-  void setrow(std::vector<double>& v, IndexType i) { assert(0); }
-  void setcolumn(std::vector<double>& v, IndexType i) { assert(0); }
+  virtual void zero_row(IndexType) = 0;
+  virtual void uno_diag(IndexType) = 0;
+  virtual MatrixEntryType& diag(IndexType i) = 0;
+  virtual void getrow(std::vector<double>& v, IndexType i) = 0;
+  virtual void getcolumn(std::vector<double>& v, IndexType i) = 0;
+  virtual void setrow(std::vector<double>& v, IndexType i) = 0;
+  virtual void setcolumn(std::vector<double>& v, IndexType i) = 0;
 
   double operator()(IndexType r, IndexType c) const
   {
@@ -78,7 +78,7 @@ public:
     }
   }
 
-  void entry(const nmatrix<double>&) { assert(0); }
+  virtual void entry(const nmatrix<double>&) = 0;
 
   void entry(IndexType i, IndexType j, const EntryMatrix& E, double s = 1.)
   {
@@ -95,16 +95,16 @@ public:
   {
     assert(0);
   }
-  void inverse() { assert(0); }
-  inline void vmult(viterator) const { assert(0); }
-  void mult(SparseBlock&, const SparseBlock&) const { assert(0); }
+  virtual void inverse() = 0;
+  virtual void vmult(viterator) const = 0;
+  virtual void mult(SparseBlock&, const SparseBlock&) const = 0;
 
-  void submult(const SparseBlock& B, const SparseBlock& C) { assert(0); }
+  virtual void submult(const SparseBlock& B, const SparseBlock& C) = 0;
 
-  void add(double s, const SparseBlock& A) { assert(0); }
-  void adddiag(const nvector<double>& s, double l) { assert(0); }
+  virtual void add(double s, const SparseBlock& A) = 0;
+  virtual void adddiag(const nvector<double>& s, double l) = 0;
 
-  void add(double s, const TimePattern& TP) { assert(0); }
+  virtual void add(double s, const TimePattern& TP) = 0;
 
   void cadd(double s, viterator p, const_viterator q0) const
   {
@@ -124,19 +124,19 @@ public:
     }
   }
 
-  void caddtrans(double s, viterator p, const_viterator q0) const { assert(0); }
-  void subtract(viterator p0, const_viterator q0) const { assert(0); }
-  std::ostream& print(std::ostream& s) const { assert(0); }
+  virtual void caddtrans(double s, viterator p, const_viterator q0) const = 0;
+  virtual void subtract(viterator p0, const_viterator q0) const = 0;
+  virtual std::ostream& print(std::ostream& s) const = 0;
 
   // Zugriff auf Inhalt ueber ganzen Vektor, damits auch ohne
   // Struktur geht.
-  void vector_get(nvector<MatrixEntryType>& v) const { assert(0); }
-  void vector_set(nvector<MatrixEntryType>& v) { assert(0); }
-  void vector_add(double d, nvector<MatrixEntryType>& v) { assert(0); }
+  virtual void vector_get(nvector<MatrixEntryType>& v) const = 0;
+  virtual void vector_set(nvector<MatrixEntryType>& v) = 0;
+  virtual void vector_add(double d, nvector<MatrixEntryType>& v) = 0;
 
   friend std::ostream& operator<<(std::ostream& s, const SparseBlock& A)
   {
-    assert(0);
+    return s;
   }
 };
 

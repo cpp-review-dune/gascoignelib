@@ -225,8 +225,12 @@ PointMatrix::entry(niiterator start1,
                    double s)
 {
   int n1 = stop1 - start1;
+
+#if DEBUG
   int n2 = stop2 - start2;
   assert(n1 == n2);
+#endif
+
   for (int ii = 0; ii < n1; ii++) {
     int i = *(start1 + ii);
     for (int c = 0; c < _ncomp; c++) {
