@@ -153,12 +153,10 @@ P4estMeshAgent2d::num_cells() const
   return pforest->global_num_quadrants;
 }
 
-#ifndef P4_TO_P8
 std::shared_ptr<P4estDofHandler>
 P4estMeshAgent2d::create_dofhandler(IndexType degree) const
 {
   return std::make_shared<P4estDofHandler2d>(pforest, degree);
 }
-#endif
 
 } // namespace Gascoigne

@@ -26,16 +26,7 @@
 #include <p4est_to_p8est.h>
 
 #define P4estMeshAgent2d P4estMeshAgent3d
+#define P4estDofHandler2d P4estDofHandler3d
+#include "../DofHandler/p4estdofhandler3d.h"
 
 #include "p4estmeshagent2d.cc"
-
-#undef P4estMeshAgent2d
-
-#include "../DofHandler/p4estdofhandler3d.h"
-namespace Gascoigne {
-std::shared_ptr<P4estDofHandler>
-P4estMeshAgent3d::create_dofhandler(IndexType degree) const
-{
-  return std::make_shared<P4estDofHandler3d>(pforest, degree);
-}
-}

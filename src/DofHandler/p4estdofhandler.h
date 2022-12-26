@@ -35,13 +35,19 @@ namespace Gascoigne {
 
 class P4estDofHandler
 {
-private:
-  IndexType degree = 1; //< Degree of lnodes.
+protected:
+  IndexType _dimension = 2; //< Degree of lnodes.
+  IndexType _degree = 1;    //< Degree of lnodes.
+  P4estDofHandler(IndexType dimension, IndexType degree)
+    : _dimension(dimension)
+    , _degree(degree){};
 
 public:
+  IndexType nodes_per_cell() const { return pow(_degree + 1, _dimension); };
   virtual IndexVector get_nodes_of_cell(IndexType cell) const = 0;
   virtual IndexType num_nodes() const = 0;
-  virtual IndexType dimension() const = 0;
+  IndexType dimension() const { return _dimension; };
+  IndexType degree() const { return _degree; }; //< degree of the lnodes
 
   virtual void write_vtk(std::string file_name,
                          double time,

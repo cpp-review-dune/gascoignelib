@@ -40,7 +40,7 @@ namespace Gascoigne {
 class P4estDofHandler2d : public P4estDofHandler
 {
 private:
-  p4est_t* p4est;
+  p4est_t* p4est; //< Not owned
   p4est_lnodes_t* lnodes;
 
 public:
@@ -49,7 +49,6 @@ public:
 
   IndexVector get_nodes_of_cell(IndexType cell) const;
   IndexType num_nodes() const;
-  IndexType dimension() const { return 2; };
   Vertex2d vertex2d(IndexType node_index) const;
 
   void write_vtk(std::string file_name,
