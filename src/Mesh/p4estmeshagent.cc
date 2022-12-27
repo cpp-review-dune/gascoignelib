@@ -48,8 +48,7 @@ P4estMeshAgent::create(const ParamFile& pf)
       return std::make_shared<P4estMeshAgent2d>(gridname, prerefine);
     case 3:
       return std::make_shared<P4estMeshAgent3d>(gridname, prerefine);
-    default:
-      return nullptr;
   }
+  return nullptr;
 }
 } // namespace Gascoigne

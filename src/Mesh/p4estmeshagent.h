@@ -54,6 +54,7 @@ public:
 
   virtual IndexType num_cells() const = 0;
 
+  /** Write the mesh as vtk without data */
   virtual void write_vtk(const std::string& fname) const = 0;
   virtual void global_refine(IndexType n = 1) = 0;
   virtual void refine_cells(IndexVector& ref) = 0;
