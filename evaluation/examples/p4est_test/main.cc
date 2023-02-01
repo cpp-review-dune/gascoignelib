@@ -43,16 +43,16 @@ main(int argc, char** argv)
   IndexVector refine_cells = { 44 };
   pma->refine_cells(refine_cells);
 
-  auto dof = pma->create_dofhandler(1);
+  auto dof = pma->create_dofhandler(2);
 
   GhostVectorAgent gva;
   gva.Register("u");
   gva["u"] = new GlobalVector(dof->num_nodes(), 1, 0);
-  (*gva["u"])[0] = 1.0;
+  (*gva["u"])[13] = 1.0;
 
   gva.Register("v");
   gva["v"] = new GlobalVector(dof->num_nodes(), 1, 0);
-  (*gva["v"])[1] = 1.0;
+  (*gva["v"])[19] = 1.0;
 
   dof->write_vtk(
     "Results/solve.00000.vtk", .0, gva, std::vector<std::string>({ "u", "v" }));

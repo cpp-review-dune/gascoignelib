@@ -41,20 +41,18 @@ main(int argc, char** argv)
   refine_cells.push_back(44);
   pma->refine_cells(refine_cells);
 
-  pma->write_vtk("Results/solve.00000");
-
-  auto dof = pma->create_dofhandler(1);
+  auto dof = pma->create_dofhandler(2);
 
   GhostVectorAgent gva;
   gva.Register("u");
   gva["u"] = new GlobalVector(dof->num_nodes(), 1, 0);
-  (*gva["u"])[0] = 1.0;
+  (*gva["u"])[42] = 1.0;
 
   gva.Register("v");
   gva["v"] = new GlobalVector(dof->num_nodes(), 1, 0);
-  (*gva["v"])[1] = 1.0;
+  (*gva["v"])[93] = 1.0;
 
-  dof->write_vtk("out.vtk", .0, gva, std::vector<std::string>({ "u", "v" }));
+  dof->write_vtk("Results/solve.00000.vtk", .0, gva, std::vector<std::string>({ "u", "v" }));
 
   return 0;
 }

@@ -87,22 +87,23 @@ P4estDofHandler2d::write_vtk(std::string file_name,
     for (IndexType j = 0; j < tree->quadrants.elem_count; ++j) {
       p4est_quadrant_t* quadrant =
         p4est_quadrant_array_index(&(tree->quadrants), j);
+
+#ifdef P4_TO_P8
+      float node_pos[27][3] = {{0,0,0},{1,0,0},{1,1,0},{0,1,0},{0,0,1},{1,0,1},{1,1,1},{0,1,1},{0.5,0,0},{1,0.5,0},{0.5,1,0},{0,0.5,0},{0.5,0,1},{1,0.5,1},{0.5,1,1},{0,0.5,1},{0,0,0.5},{1,0,0.5},{1,1,0.5},{0,1,0.5},{0,0.5,0.5},{1,0.5,0.5},{0.5,0,0.5},{0.5,1,0.5},{0.5,0.5,0},{0.5,0.5,1},{0.5,0.5,0.5}};
+#else
+      float node_pos[9][2] = {{0,0},{1,0},{1,1},{0,1},{0.5,0},{1,0.5},{0.5,1},{0,0.5},{0.5,0.5}};
+#endif
       for (IndexType k = 0; k < nodes_per_cell(); ++k) {
         // Counting in a circle arount the Quad
-#ifdef P4_TO_P8
-        IndexType z = (k / 4) % 2; // 0;0;0;0;1;1;1;1
-#endif
-        IndexType y = (k / 2) % 2; // 0;0;1;1;0;0;1;1
-        IndexType x = k % 2;       // 0;1;1;0;0;1;1;0
 
         double vxyz[3] = { 0, 0, 0 };
         double quad_lenght = P4EST_QUADRANT_LEN(quadrant->level);
         p4est_qcoord_to_vertex(p4est->connectivity,
                                i,
-                               quadrant->x + x * quad_lenght,
-                               quadrant->y + y * quad_lenght,
+                               quadrant->x + node_pos[k][0] * quad_lenght,
+                               quadrant->y + node_pos[k][1] * quad_lenght,
 #ifdef P4_TO_P8
-                               quadrant->z + z * quad_lenght,
+                               quadrant->z + node_pos[k][2] * quad_lenght,
 #endif
                                vxyz);
         Vertex3d coordinates(vxyz[0], vxyz[1], vxyz[2]);
@@ -114,15 +115,15 @@ P4estDofHandler2d::write_vtk(std::string file_name,
 
   // Writing mesh structur
   IndexType num_cells = p4est->global_num_quadrants;
-  int lenght = num_cells * (P4EST_CHILDREN + 1);
+  int lenght = num_cells * (nodes_per_cell() + 1);
 
   out << std::endl << "CELLS " << num_cells << " " << lenght << std::endl;
 
   for (IndexType i = 0; i < p4est->trees->elem_count; ++i) {
     p4est_tree_t* tree = p4est_tree_array_index(p4est->trees, i);
     for (IndexType j = 0; j < tree->quadrants.elem_count; ++j) {
-      IndexType id = (tree->quadrants_offset + j) * P4EST_CHILDREN;
-      int nle = P4EST_CHILDREN;
+      IndexType id = (tree->quadrants_offset + j) * nodes_per_cell();
+      int nle = nodes_per_cell();
       out << nle << " ";
       for (IndexType k = 0; k < nle; k++) {
         out << id + k << " ";
@@ -132,17 +133,46 @@ P4estDofHandler2d::write_vtk(std::string file_name,
   }
 
   out << std::endl << "CELL_TYPES " << num_cells << std::endl;
-#ifndef P4_TO_P8
-  IndexType celltype = 8;
+  IndexType celltype = -1;
+#ifdef P4_TO_P8
+  if(_degree==1){
+    celltype = 12;
+  } else if(_degree==2){
+    celltype = 29;
+  }
 #else
-  IndexType celltype = 11;
+  if(_degree==1){
+    celltype = 9;
+  } else if(_degree==2){
+    celltype = 28;
+  }
 #endif
+
   for (int c = 0; c < num_cells; c++) {
     out << celltype << " ";
   }
   out << std::endl << std::endl;
 
   // Writing Vector
+  IndexType* node_order = nullptr;
+#ifdef P4_TO_P8
+  IndexType node_order_q13[8] = {0,1,3,2,4,5,7,6};
+  IndexType node_order_q23[27] = {0,2,8,6,18,20,26,24,1,5,7,3,19,23,25,21,9,11,17,15,12,14,10,16,4,22,13};
+  if(_degree==1){
+    node_order = node_order_q13;
+  } else if(_degree==2){
+    node_order = node_order_q23;
+  }
+#else
+  IndexType node_order_q12[4] = {0,1,3,2};
+  IndexType node_order_q22[9] = {0,2,8,6,1,5,7,3,4};
+  if(_degree==1){
+    node_order = node_order_q12;
+  } else if(_degree==2){
+    node_order = node_order_q22;
+  }
+#endif
+
   out << "POINT_DATA " << num_vertex << std::endl;
   for (const std::string& vec_name : vectors) {
     GlobalVector* vec = gva[vec_name];
@@ -153,7 +183,7 @@ P4estDofHandler2d::write_vtk(std::string file_name,
     out << "LOOKUP_TABLE default" << std::endl;
     for (IndexType ind = 0; ind < num_cells; ind++) {
       for (IndexType j = 0; j < nodes_per_cell(); ++j) {
-        out << float((*vec)[lnodes->element_nodes[nodes_per_cell() * ind + j]])
+        out << float((*vec)[lnodes->element_nodes[nodes_per_cell() * ind + node_order[j]]])
             << std::endl;
       }
     }

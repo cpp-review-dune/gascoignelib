@@ -36,7 +36,7 @@ namespace Gascoigne {
 class P4estDofHandler
 {
 protected:
-  IndexType _dimension = 2; //< Degree of lnodes.
+  IndexType _dimension = 2; //< Dimensions of grid.
   IndexType _degree = 1;    //< Degree of lnodes.
   P4estDofHandler(IndexType dimension, IndexType degree)
     : _dimension(dimension)
@@ -48,6 +48,8 @@ public:
   virtual IndexType num_nodes() const = 0;
   IndexType dimension() const { return _dimension; };
   IndexType degree() const { return _degree; }; //< degree of the lnodes
+
+  // get coordinate of quad
 
   virtual void write_vtk(std::string file_name,
                          double time,
