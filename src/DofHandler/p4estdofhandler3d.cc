@@ -26,6 +26,7 @@
 #include <p4est_to_p8est.h>
 
 #define P4estDofHandler2d P4estDofHandler3d
+#define DIM 3
 
 #include "p4estdofhandler2d.cc"
 

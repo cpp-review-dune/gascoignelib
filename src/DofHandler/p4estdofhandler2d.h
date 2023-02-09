@@ -35,6 +35,8 @@
 
 #include "p4estdofhandler.h"
 
+#define DIM 2
+
 namespace Gascoigne {
 
 class P4estDofHandler2d : public P4estDofHandler
@@ -42,14 +44,21 @@ class P4estDofHandler2d : public P4estDofHandler
 private:
   p4est_t* p4est; //< Not owned
   p4est_lnodes_t* lnodes;
+  std::vector<std::array<MatrixEntryType, 2>> lnode_pos; //< Position of the lnodes
+
+  void reorder_hanging_nodes();
+  void generate_lnode_pos();
+  void insert_hn(IndexType global_quad_id, IndexType c1, IndexType c2, IndexType where);
 
 public:
   P4estDofHandler2d(p4est_t* pforest, IndexType degree);
   virtual ~P4estDofHandler2d();
 
   IndexVector get_nodes_of_cell(IndexType cell) const;
+  IndexType get_node_of_cell(IndexType cell, IndexType i) const;
   IndexType num_nodes() const;
-  Vertex2d vertex2d(IndexType node_index) const;
+  IndexType num_haning() const;
+  std::array<MatrixEntryType, 2> vertex(IndexType node_index) const;
 
   void write_vtk(std::string file_name,
                  double time,

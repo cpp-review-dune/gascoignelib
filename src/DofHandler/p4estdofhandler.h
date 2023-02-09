@@ -38,6 +38,9 @@ class P4estDofHandler
 protected:
   IndexType _dimension = 2; //< Dimensions of grid.
   IndexType _degree = 1;    //< Degree of lnodes.
+
+  std::vector<std::vector<IndexType>> hn; //< Haning Nodes structure
+  
   P4estDofHandler(IndexType dimension, IndexType degree)
     : _dimension(dimension)
     , _degree(degree){};
@@ -45,7 +48,9 @@ protected:
 public:
   IndexType nodes_per_cell() const { return pow(_degree + 1, _dimension); };
   virtual IndexVector get_nodes_of_cell(IndexType cell) const = 0;
+  virtual IndexType get_node_of_cell(IndexType cell, IndexType i) const = 0;
   virtual IndexType num_nodes() const = 0;
+  virtual IndexType num_haning() const = 0;
   IndexType dimension() const { return _dimension; };
   IndexType degree() const { return _degree; }; //< degree of the lnodes
 

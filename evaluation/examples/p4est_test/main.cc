@@ -40,19 +40,21 @@ main(int argc, char** argv)
   ParamFile paramfile("config.param");
 
   auto pma = P4estMeshAgent::create(paramfile);
-  IndexVector refine_cells = { 44 };
+  IndexVector refine_cells = { 1 };
   pma->refine_cells(refine_cells);
+
+  pma->write_vtk("Results/mesh");
 
   auto dof = pma->create_dofhandler(2);
 
   GhostVectorAgent gva;
   gva.Register("u");
   gva["u"] = new GlobalVector(dof->num_nodes(), 1, 0);
-  (*gva["u"])[13] = 1.0;
+  (*gva["u"])[dof->num_nodes()-1] = 1.0;
 
   gva.Register("v");
   gva["v"] = new GlobalVector(dof->num_nodes(), 1, 0);
-  (*gva["v"])[19] = 1.0;
+  (*gva["v"])[dof->num_nodes()-2] = 1.0;
 
   dof->write_vtk(
     "Results/solve.00000.vtk", .0, gva, std::vector<std::string>({ "u", "v" }));
