@@ -128,7 +128,14 @@ void P4estDofHandler2d::insert_hn(IndexType global_quad_id, IndexType c1, IndexT
   if(_degree == 2){
     c1 = corner_degree1to2[c1];
     c2 = corner_degree1to2[c2];
+
+    if( where % 2 == 0 && is_haning(get_node_of_cell(global_quad_id, where))){
+      lnodes->element_nodes[nodes_per_cell() * global_quad_id + where] = get_node_of_cell(global_quad_id, where);
+      return;
+    }
   }
+
+
 
   IndexType n0 = get_node_of_cell(global_quad_id, c1);
   IndexType n1 = get_node_of_cell(global_quad_id, c2);
@@ -162,32 +169,33 @@ P4estDofHandler2d::reorder_hanging_nodes(){
         continue;
       }
 
-      if(_degree == 2){
-        for(IndexType k = 0; k < P4EST_CHILDREN; ++k){
-          if(hanging_corner[k] != -1){
-            IndexType between = (corner_degree1to2[k] + corner_degree1to2[hanging_corner[k]]) / 2;
-            lnodes->element_nodes[nodes_per_cell() * global_quad_id + corner_degree1to2[k]] = get_node_of_cell(global_quad_id, between);
-            insert_hn(global_quad_id, k, hanging_corner[k], between);
-          }
-        }
-
-        for(IndexType c1 = 0; c1 < P4EST_CHILDREN-1; ++c1){
-          if(hanging_corner[c1] != -1){
-            for(IndexType c2 = c1+1; c2 < P4EST_CHILDREN; ++c2){
-              if(hanging_corner[c2] != -1){
-                IndexType between = (corner_degree1to2[c1] + corner_degree1to2[c2]) / 2;
-                insert_hn(global_quad_id, c1, c2, between);
-              }
-            }
-          }
-        }
-      } else {
+      if(_degree == 1){
         for(IndexType k = 0; k < P4EST_CHILDREN; ++k){
           if(hanging_corner[k] != -1){
             insert_hn(global_quad_id, k, hanging_corner[k], k);
           }
         }
-        
+        continue;
+      }
+      
+      // Degree == 2
+      for(IndexType k = 0; k < P4EST_CHILDREN; ++k){
+        if(hanging_corner[k] != -1){
+          IndexType between = (corner_degree1to2[k] + corner_degree1to2[hanging_corner[k]]) / 2;
+          lnodes->element_nodes[nodes_per_cell() * global_quad_id + corner_degree1to2[k]] = get_node_of_cell(global_quad_id, between);
+          insert_hn(global_quad_id, k, hanging_corner[k], between);
+        }
+      }
+
+      for(IndexType c1 = 0; c1 < P4EST_CHILDREN-1; ++c1){
+        if(hanging_corner[c1] != -1){
+          for(IndexType c2 = c1+1; c2 < P4EST_CHILDREN; ++c2){
+            if(hanging_corner[c2] != -1){
+              IndexType between = (corner_degree1to2[c1] + corner_degree1to2[c2]) / 2;
+              insert_hn(global_quad_id, c1, c2, between);
+            }
+          }
+        }
       }
     }
   }

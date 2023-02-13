@@ -42,7 +42,7 @@ main(int argc, char** argv)
   refine_cells.push_back(0);
   pma->refine_cells(refine_cells);
 
-  auto dof = std::static_pointer_cast<P4estDofHandler3d>(pma->create_dofhandler(2));
+  auto dof = pma->create_dofhandler(2);
 
   GhostVectorAgent gva;
   gva.Register("u");
@@ -50,12 +50,6 @@ main(int argc, char** argv)
   (*gva["u"])[2] = 1.0;
   (*gva["u"])[4] = 1.0;
   (*gva["u"])[6] = 1.0;
-
-  gva.Register("v");
-  gva["v"] = new GlobalVector(dof->num_nodes(), 1, 0);
-  for(IndexType i = 0; i < dof->num_nodes(); ++i){
-    (*gva["v"])[i] = dof->vertex(i)[2];
-  }
 
   gva.Register("x");
   gva["x"] = new GlobalVector(dof->num_nodes(), 1, 0);

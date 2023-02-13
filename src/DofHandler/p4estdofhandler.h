@@ -51,6 +51,7 @@ public:
   virtual IndexType get_node_of_cell(IndexType cell, IndexType i) const = 0;
   virtual IndexType num_nodes() const = 0;
   virtual IndexType num_haning() const = 0;
+  IndexType is_haning(IndexType index) const { return index > num_nodes() - num_haning();};
   IndexType dimension() const { return _dimension; };
   IndexType degree() const { return _degree; }; //< degree of the lnodes
 

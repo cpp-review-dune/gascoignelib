@@ -45,7 +45,7 @@ main(int argc, char** argv)
 
   pma->write_vtk("Results/mesh");
 
-  auto dof = pma->create_dofhandler(2);
+  auto dof = pma->create_dofhandler(1);
 
   GhostVectorAgent gva;
   gva.Register("u");
@@ -56,8 +56,20 @@ main(int argc, char** argv)
   gva["v"] = new GlobalVector(dof->num_nodes(), 1, 0);
   (*gva["v"])[dof->num_nodes()-2] = 1.0;
 
+  gva.Register("x");
+  gva["x"] = new GlobalVector(dof->num_nodes(), 1, 0);
+  for(auto i : dof->get_nodes_of_cell(3)){
+    (*gva["x"])[i] = 1;
+  }
+
+  gva.Register("w");
+  gva["w"] = new GlobalVector(dof->num_nodes(), 1, 0);
+  for(IndexType i = dof->num_nodes() - dof->num_haning(); i < dof->num_nodes(); ++i){
+    (*gva["w"])[i] = 1;
+  }
+
   dof->write_vtk(
-    "Results/solve.00000.vtk", .0, gva, std::vector<std::string>({ "u", "v" }));
+    "Results/solve.00000.vtk", .0, gva, std::vector<std::string>({ "u", "v", "w", "x" }));
 
   return 0;
 }
