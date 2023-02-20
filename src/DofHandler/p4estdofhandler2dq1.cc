@@ -1,12 +1,6 @@
-/*----------------------------   p4estdofhandler.h ---------------------------*/
-/*      $Id:$                 */
-#ifndef __p4estdofhandler3d_H
-#define __p4estdofhandler3d_H
-/*----------------------------   p4estdofhandler.h ---------------------------*/
-
 /**
  *
- * Copyright (C) 2018 by the Gascoigne 3D authors
+ * Copyright (C) 2004, 2005, 2006 by the Gascoigne 3D authors
  *
  * This file is part of Gascoigne 3D
  *
@@ -27,14 +21,8 @@
  *
  **/
 
-#include <p8est.h>
-#include <p8est_lnodes.h>
+#include "p4estdofhandler2d.h"
 
-#include <p4est_to_p8est.h>
+#define DEGREE 1
 
-#define DIMENSION 3
-#define P4estDofHandler P4estDofHandler3d
-
-#include "p4estdofhandler.hxx"
-
-#endif //__p4estdofhandler3d_H
+#include "p4estdofhandler.xx"

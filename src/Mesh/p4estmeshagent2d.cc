@@ -153,10 +153,15 @@ P4estMeshAgent2d::num_cells() const
   return pforest->global_num_quadrants;
 }
 
-std::shared_ptr<P4estDofHandler>
+std::shared_ptr<P4estDofHandlerBase>
 P4estMeshAgent2d::create_dofhandler(IndexType degree) const
 {
-  return std::make_shared<P4estDofHandler2d>(pforest, degree);
+  if (degree == 1) {
+    return std::make_shared<P4estDofHandler2d<1>>(pforest);
+  } else if (degree == 2) {
+    return std::make_shared<P4estDofHandler2d<2>>(pforest);
+  }
+  ERROR("Degree not implemented: " + std::to_string(degree) + " ")
 }
 
 } // namespace Gascoigne

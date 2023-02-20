@@ -72,7 +72,7 @@ public:
   virtual void global_refine(IndexType n = 1);
   virtual void refine_cells(IndexVector& ref);
 
-  virtual std::shared_ptr<P4estDofHandler> create_dofhandler(
+  virtual std::shared_ptr<P4estDofHandlerBase> create_dofhandler(
     IndexType degree) const;
 };
 

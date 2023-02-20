@@ -30,7 +30,7 @@
 #include "../Common/dataformathandler.h"
 #include "../Common/filescanner.h"
 #include "../Common/paramfile.h"
-#include "../DofHandler/p4estdofhandler.h"
+#include "../DofHandler/p4estdofhandlerbase.h"
 #include "../Interface/gascoigne.h"
 
 /*---------------------------------------------------*/
@@ -59,7 +59,7 @@ public:
   virtual void global_refine(IndexType n = 1) = 0;
   virtual void refine_cells(IndexVector& ref) = 0;
 
-  virtual std::shared_ptr<P4estDofHandler> create_dofhandler(
+  virtual std::shared_ptr<P4estDofHandlerBase> create_dofhandler(
     IndexType degree) const = 0;
 };
 

@@ -30,10 +30,10 @@
 #include <vector>
 
 #include <p4est.h>
+#include <p4est_connectivity.h>
 #include <p4est_ghost.h>
 #include <p4est_mesh.h>
 #include <p4est_vtk.h>
-#include <p8est_connectivity.h>
 
 #include "../Common/compvector.h"
 #include "../Common/dataformathandler.h"
@@ -71,7 +71,8 @@ public:
   void global_refine(IndexType n = 1);
   void refine_cells(IndexVector& ref);
 
-  std::shared_ptr<P4estDofHandler> create_dofhandler(IndexType degree) const;
+  std::shared_ptr<P4estDofHandlerBase> create_dofhandler(
+    IndexType degree) const;
 };
 
 } // namespace Gascoigne

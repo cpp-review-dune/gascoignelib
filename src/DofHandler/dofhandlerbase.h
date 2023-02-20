@@ -31,8 +31,9 @@
 #include "../Common/vertex.h"
 #include "../Interface/gascoigne.h"
 #include "../Mesh/boundaryindexhandler.h"
-#include "../Mesh/hangingindexhandler.h"
 #include "../Mesh/patchindexhandler.h"
+
+#include "hangingindexhandler.h"
 
 /*-----------------------------------------*/
 

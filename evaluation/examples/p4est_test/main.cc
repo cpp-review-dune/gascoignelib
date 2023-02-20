@@ -49,27 +49,29 @@ main(int argc, char** argv)
 
   GhostVectorAgent gva;
   gva.Register("u");
-  gva["u"] = new GlobalVector(dof->num_nodes(), 1, 0);
-  (*gva["u"])[dof->num_nodes()-1] = 1.0;
+  gva["u"] = new GlobalVector(dof->nnodes(), 1, 0);
+  (*gva["u"])[dof->nnodes() - 1] = 1.0;
 
   gva.Register("v");
-  gva["v"] = new GlobalVector(dof->num_nodes(), 1, 0);
-  (*gva["v"])[dof->num_nodes()-2] = 1.0;
+  gva["v"] = new GlobalVector(dof->nnodes(), 1, 0);
+  (*gva["v"])[dof->nnodes() - 2] = 1.0;
 
   gva.Register("x");
-  gva["x"] = new GlobalVector(dof->num_nodes(), 1, 0);
-  for(auto i : dof->get_nodes_of_cell(3)){
+  gva["x"] = new GlobalVector(dof->nnodes(), 1, 0);
+  for (auto i : dof->get_nodes_of_cell(3)) {
     (*gva["x"])[i] = 1;
   }
 
   gva.Register("w");
-  gva["w"] = new GlobalVector(dof->num_nodes(), 1, 0);
-  for(IndexType i = dof->num_nodes() - dof->num_haning(); i < dof->num_nodes(); ++i){
+  gva["w"] = new GlobalVector(dof->nnodes(), 1, 0);
+  for (IndexType i = dof->nnodes() - dof->nhanging(); i < dof->nnodes(); ++i) {
     (*gva["w"])[i] = 1;
   }
 
-  dof->write_vtk(
-    "Results/solve.00000.vtk", .0, gva, std::vector<std::string>({ "u", "v", "w", "x" }));
+  dof->write_vtk("Results/solve.00000.vtk",
+                 .0,
+                 gva,
+                 std::vector<std::string>({ "u", "v", "w", "x" }));
 
   return 0;
 }

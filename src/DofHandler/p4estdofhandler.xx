@@ -1,0 +1,413 @@
+#include <algorithm>
+#include <fstream>
+
+#include "../Interface/gascoigne.h"
+#include "../LinAlg/sparsestructure.h"
+
+namespace Gascoigne {
+
+/**
+ * @brief Recreates the lnodes for current mesh refinement.
+ *
+ */
+template<IndexType DEG>
+P4estDofHandler<DEG>::P4estDofHandler(p4est_t* p4est)
+  : P4estDofHandlerBase()
+  , p4est(p4est)
+{
+  /* Create the ghost layer to learn about parallel neighbors. */
+  p4est_ghost_t* ghost = p4est_ghost_new(p4est, P4EST_CONNECT_FULL);
+  /* Create a node numbering for continuous linear finite elements. */
+  lnodes = p4est_lnodes_new(p4est, ghost, DEG);
+  /* Destroy the ghost structure -- no longer needed after node creation. */
+  p4est_ghost_destroy(ghost);
+  ghost = NULL;
+
+  reorder_hanging_nodes();
+  lnode_pos = generate_lnode_pos(_hn);
+}
+
+template<IndexType DEG>
+P4estDofHandler<DEG>::~P4estDofHandler<DEG>()
+{
+  p4est_lnodes_destroy(lnodes);
+}
+
+template<IndexType DEG>
+IndexType
+P4estDofHandler<DEG>::dimension() const
+{
+  return DIMENSION;
+}
+
+template<IndexType DEG>
+IndexType
+P4estDofHandler<DEG>::degree() const
+{
+  return DEGREE;
+}
+
+/**
+ * @param cell Index of the cell for witch the lnode index is looked up
+ * @return IndexVector the lnode indices of the cell
+ */
+template<IndexType DEG>
+IndexVector
+P4estDofHandler<DEG>::get_nodes_of_cell(IndexType cell) const
+{
+  IndexVector nodes(nodes_per_cell());
+  for (IndexType i = 0; i < nodes_per_cell(); ++i) {
+    nodes[i] = get_node_of_cell(cell, i);
+  }
+  return nodes;
+}
+
+/**
+ * @param cell Index of the cell for witch the lnode index is looked up
+ * @return IndexVector the lnode indices of the cell
+ */
+template<IndexType DEG>
+IndexType
+P4estDofHandler<DEG>::get_node_of_cell(IndexType cell, IndexType i) const
+{
+  return lnodes->element_nodes[nodes_per_cell() * cell + i];
+}
+
+/**
+ * @return the number of lnodes in the mesh
+ */
+template<IndexType DEG>
+IndexType
+P4estDofHandler<DEG>::nnodes() const
+{
+  return _hn.n();
+}
+
+/**
+ * @return the number of lnodes in the mesh
+ */
+template<IndexType DEG>
+IndexType
+P4estDofHandler<DEG>::nnothanging() const
+{
+  return lnodes->num_local_nodes;
+}
+
+/**
+ * @return the number of lnodes in the mesh
+ */
+template<IndexType DEG>
+IndexType
+P4estDofHandler<DEG>::nhanging() const
+{
+  return _hn.n() - nnothanging();
+}
+
+template<IndexType DEG>
+std::array<MatrixEntryType, DIMENSION>
+P4estDofHandler<DEG>::vertex(IndexType node_index) const
+{
+  return lnode_pos[node_index];
+}
+
+const static IndexType corner_degree1to2[8] = { 0, 2, 6, 8, 18, 20, 24, 26 };
+
+template<IndexType DEG>
+void
+P4estDofHandler<DEG>::insert_hn(std::vector<std::vector<IndexType>>& hn,
+                                IndexType glob_quad,
+                                IndexType c1,
+                                IndexType c2,
+                                IndexType where)
+{
+#if DEGREE == 2
+    c1 = corner_degree1to2[c1];
+    c2 = corner_degree1to2[c2];
+#endif
+
+  IndexType n0 = get_node_of_cell(glob_quad, c1);
+  IndexType n1 = get_node_of_cell(glob_quad, c2);
+
+#if DEGREE == 2
+    if (where % 2 == 0 && is_haning(get_node_of_cell(glob_quad, where))) {
+      auto& hening = hn[get_node_of_cell(glob_quad, where) - nnothanging()];
+      if (std::find(hening.begin(), hening.end(), n0) == hening.end()) {
+        hening.emplace_back(n0);
+        hening.emplace_back(n1);
+      }
+      return;
+    }
+#endif
+
+  // Determen if hn exists or add hn and get id
+  IndexType hn_id = 0;
+  for (IndexType j = 0; j < hn.size(); ++j) {
+    if ((hn[j][0] == n0 && hn[j][1] == n1) ||
+        (hn[j][0] == n1 && hn[j][1] == n0)) {
+      hn_id = lnodes->num_local_nodes + j;
+      break;
+    }
+  }
+  if (!hn_id) {
+    hn_id = nnothanging() + hn.size();
+    std::vector<IndexType> node = { n0, n1 };
+    hn.emplace_back(node);
+  }
+
+  // Adding the Hanging Node Indices to lnode strukture !! Do NOT do this at
+  // home !!
+  lnodes->element_nodes[nodes_per_cell() * glob_quad + where] = hn_id;
+}
+
+static const int ones = P4EST_CHILDREN - 1; /**< One bit per dimension. */
+
+template<IndexType DEG>
+void
+P4estDofHandler<DEG>::reorder_hanging_nodes()
+{
+  std::vector<std::vector<IndexType>> hn;
+
+  for (IndexType i = 0; i < p4est->trees->elem_count; ++i) {
+    p4est_tree_t* tree = p4est_tree_array_index(p4est->trees, i);
+    for (IndexType q = 0; q < tree->quadrants.elem_count; ++q) {
+      IndexType glob_quad = (tree->quadrants_offset + q);
+      if(!lnodes->face_code[glob_quad]){
+        continue;
+      }
+      int hanging_corner[P4EST_CHILDREN];
+
+      // Decode the information from p{4,8}est_lnodes_t for a given element.
+      p4est_lnodes_code_t face_code = lnodes->face_code[glob_quad];
+      const int c = (int)(face_code & ones);
+      int work = (int)(face_code >> P4EST_DIM);
+
+      /* These two corners are never hanging by construction. */
+      hanging_corner[c] = hanging_corner[c ^ ones] = -1;
+      for (int k = 0; k < P4EST_DIM; ++k) {
+        /* Process face hanging corners. */
+        int h = c ^ (1 << k);
+        hanging_corner[h ^ ones] = (work & 1) ? c : -1;
+#if DIMENSION == 3
+        /* Process edge hanging corners. */
+        hanging_corner[h] = (work & P4EST_CHILDREN) ? c : -1;
+#endif
+        work >>= 1;
+      }
+
+#if DEGREE == 1
+        for (IndexType k = 0; k < P4EST_CHILDREN; ++k) {
+          if (hanging_corner[k] != -1) {
+            insert_hn(hn, glob_quad, k, hanging_corner[k], k);
+          }
+        }
+#elif DEGREE == 2
+      for (IndexType k = 0; k < P4EST_CHILDREN; ++k) {
+        if (hanging_corner[k] != -1) {
+          IndexType between =
+            (corner_degree1to2[k] + corner_degree1to2[hanging_corner[k]]) / 2;
+          lnodes->element_nodes[nodes_per_cell() * glob_quad +
+                                corner_degree1to2[k]] =
+            get_node_of_cell(glob_quad, between);
+          insert_hn(hn, glob_quad, k, hanging_corner[k], between);
+        }
+      }
+
+      for (IndexType c1 = 0; c1 < P4EST_CHILDREN - 1; ++c1) {
+        if (hanging_corner[c1] != -1) {
+          for (IndexType c2 = c1 + 1; c2 < P4EST_CHILDREN; ++c2) {
+            if (hanging_corner[c2] != -1) {
+              insert_hn(hn,
+                        glob_quad,
+                        c1,
+                        c2,
+                        (corner_degree1to2[c1] + corner_degree1to2[c2]) / 2);
+            }
+          }
+        }
+      }
+#endif
+    }
+  }
+
+  SparseStructure sparsestructure;
+  sparsestructure.build_begin(nnothanging() + hn.size());
+  for (IndexType i = 0; i < hn.size(); ++i) {
+    for (IndexType j = 0; j < hn[i].size(); ++j) {
+      sparsestructure.build_add(i + lnodes->num_local_nodes, hn[i][j]);
+    }
+  }
+  sparsestructure.build_end();
+
+  _hn.memory(&sparsestructure);
+}
+
+template<IndexType DEG>
+std::vector<std::array<MatrixEntryType, DIMENSION>>
+P4estDofHandler<DEG>::generate_lnode_pos(const ColumnStencil& _hn)
+{
+  std::vector<std::array<MatrixEntryType, DIMENSION>> lnode_pos(nnodes());
+
+  for (IndexType i = 0; i < p4est->trees->elem_count; ++i) {
+    p4est_tree_t* tree = p4est_tree_array_index(p4est->trees, i);
+    for (IndexType q = 0; q < tree->quadrants.elem_count; ++q) {
+      IndexType glob_quad = (tree->quadrants_offset + q);
+      p4est_quadrant_t* quadrant =
+        p4est_quadrant_array_index(&(tree->quadrants), q);
+
+      double _degree_length = P4EST_QUADRANT_LEN(quadrant->level) /
+                              DEG; //< Distance between two lnodes at DEG
+      IndexType degp1 = DEG + 1;   //< Degree Plus One for Indexing
+
+      for (IndexType k = 0; k < nodes_per_cell(); ++k) {
+        double vxyz[3] = { 0, 0, 0 };
+        p4est_qcoord_to_vertex(
+          p4est->connectivity,
+          i,
+          quadrant->x + k % (degp1)*_degree_length,
+          quadrant->y + (k / degp1) % degp1 * _degree_length,
+#if DIMENSION == 3
+          quadrant->z + (k / (degp1 * degp1)) % degp1 * _degree_length,
+#endif
+          vxyz);
+
+        lnode_pos[get_node_of_cell(glob_quad, k)] = {
+          vxyz[0],
+          vxyz[1],
+#if DIMENSION == 3
+          vxyz[2]
+#endif
+        };
+      }
+    }
+  }
+
+  for (IndexType i = nnothanging(); i < nnodes(); ++i) {
+    MatrixEntryType weight = 1. / _hn.rowsize(i);
+    lnode_pos[i] = { 0,
+                     0,
+#if DIMENSION == 3
+                     0
+#endif
+    };
+    for (IndexType j = _hn.start(i); j < _hn.stop(i); ++j) {
+      lnode_pos[i] = { (lnode_pos[i][0] + lnode_pos[_hn.col(j)][0] * weight),
+                       (lnode_pos[i][1] + lnode_pos[_hn.col(j)][1] * weight),
+#if DIMENSION == 3
+                       (lnode_pos[i][2] + lnode_pos[_hn.col(j)][2] * weight)
+#endif
+      };
+    }
+  }
+  return lnode_pos;
+}
+
+/**
+ * @brief Writes a vtk file for further processing
+ *
+ * @param file_name Where to warite
+ * @param time What timestep to date it
+ * @param gva A GhostVectorAgent from the dof
+ * @param vectors Vectors from the gva that are written
+ */
+template<IndexType DEG>
+void
+P4estDofHandler<DEG>::write_vtk(std::string file_name,
+                                double time,
+                                GhostVectorAgent& gva,
+                                std::vector<std::string> vectors) const
+{
+
+  std::ofstream out(file_name.c_str());
+
+  out << "# vtk DataFile Version 2.0 " << std::endl;
+  out << "output from GascoigneStd" << std::endl;
+  out << "ASCII" << std::endl;
+  out << "DATASET UNSTRUCTURED_GRID" << std::endl;
+  out << "FIELD FieldData 1" << std::endl;
+  out << "TIME 1 1 double" << std::endl;
+  out << time << std::endl << std::endl;
+
+  // Writing Points of the Mesh
+  out << "POINTS " << nnodes() << " DOUBLE " << std::endl;
+
+  for (IndexType i = 0; i < nnodes(); ++i) {
+    out << lnode_pos[i][0] << " " << lnode_pos[i][1] << " ";
+#if DIMENSION == 3
+    out << lnode_pos[i][2];
+#else
+    out << "0";
+#endif
+    out << std::endl;
+  }
+  out << std::endl;
+
+  // Writing mesh structur
+  IndexType num_cells = p4est->global_num_quadrants;
+  int lenght = num_cells * (nodes_per_cell() + 1);
+
+  out << std::endl << "CELLS " << num_cells << " " << lenght << std::endl;
+
+#if DIMENSION == 2
+#if DEGREE == 1
+  IndexType node_order[4] = { 0, 1, 3, 2 };
+#elif DEGREE == 2
+  IndexType node_order[9] = { 0, 2, 8, 6, 1, 5, 7, 3, 4 };
+#endif
+#else
+#if DEGREE == 1
+  IndexType node_order[8] = { 0, 1, 3, 2, 4, 5, 7, 6 };
+#elif DEGREE == 2
+  IndexType node_order[27] = { 0,  2,  8,  6,  18, 20, 26, 24, 1,
+                                   5,  7,  3,  19, 23, 25, 21, 9,  11,
+                                   17, 15, 12, 14, 10, 16, 4,  22, 13 };
+#endif
+#endif
+
+  for (IndexType ind = 0; ind < num_cells; ind++) {
+    int nle = nodes_per_cell();
+    out << nle << " ";
+    for (IndexType j = 0; j < nodes_per_cell(); ++j) {
+      out << get_node_of_cell(ind, node_order[j]) << " ";
+    }
+    out << std::endl;
+  }
+
+  out << std::endl << "CELL_TYPES " << num_cells << std::endl;
+  for (int c = 0; c < num_cells; c++) {
+#if DIMENSION == 2
+#if DEGREE == 1
+    out << "9 ";
+#elif DEGREE == 2
+    out << "28 ";
+#endif
+#else
+#if DEGREE == 1
+    out << "12 ";
+#elif DEGREE == 2
+    out << "29 ";
+#endif
+#endif
+  }
+  out << std::endl << std::endl;
+
+  // Writing Vector
+  out << "POINT_DATA " << nnodes() << std::endl;
+  for (const std::string& vec_name : vectors) {
+    GlobalVector* vec = gva[vec_name];
+    if (!vec) {
+      continue;
+    }
+    out << "SCALARS " << vec_name << " DOUBLE " << std::endl;
+    out << "LOOKUP_TABLE default" << std::endl;
+    for (IndexType ind = 0; ind < nnodes(); ind++) {
+      out << float((*vec)[ind]) << std::endl;
+    }
+    out << std::endl;
+  }
+
+  out.close();
+}
+
+template class P4estDofHandler<DEGREE>;
+
+}

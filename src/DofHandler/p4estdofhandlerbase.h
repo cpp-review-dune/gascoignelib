@@ -1,7 +1,7 @@
 /*----------------------------   p4estdofhandler.h ---------------------------*/
 /*      $Id:$                 */
-#ifndef __p4estdofhandler_H
-#define __p4estdofhandler_H
+#ifndef __p4estdofhandlerbase_H
+#define __p4estdofhandlerbase_H
 /*----------------------------   p4estdofhandler.h ---------------------------*/
 
 /**
@@ -29,33 +29,30 @@
 
 #include "../Common/compvector.h"
 #include "../Interface/gascoigne.h"
+#include "../LinAlg/columnstencil.h"
 #include "../Solver/ghostagent.h"
 
 namespace Gascoigne {
 
-class P4estDofHandler
+class P4estDofHandlerBase
 {
 protected:
-  IndexType _dimension = 2; //< Dimensions of grid.
-  IndexType _degree = 1;    //< Degree of lnodes.
+  ColumnStencil _hn;
 
-  std::vector<std::vector<IndexType>> hn; //< Haning Nodes structure
-  
-  P4estDofHandler(IndexType dimension, IndexType degree)
-    : _dimension(dimension)
-    , _degree(degree){};
+  P4estDofHandlerBase(){};
 
 public:
-  IndexType nodes_per_cell() const { return pow(_degree + 1, _dimension); };
+  IndexType nodes_per_cell() const { return pow(degree() + 1, dimension()); };
   virtual IndexVector get_nodes_of_cell(IndexType cell) const = 0;
   virtual IndexType get_node_of_cell(IndexType cell, IndexType i) const = 0;
-  virtual IndexType num_nodes() const = 0;
-  virtual IndexType num_haning() const = 0;
-  IndexType is_haning(IndexType index) const { return index > num_nodes() - num_haning();};
-  IndexType dimension() const { return _dimension; };
-  IndexType degree() const { return _degree; }; //< degree of the lnodes
 
-  // get coordinate of quad
+  virtual IndexType nnodes() const = 0;
+  virtual IndexType nnothanging() const = 0;
+  virtual IndexType nhanging() const = 0;
+  IndexType is_haning(IndexType index) const { return index > nnothanging(); };
+
+  virtual IndexType dimension() const = 0;
+  virtual IndexType degree() const = 0; //< degree of the lnodes
 
   virtual void write_vtk(std::string file_name,
                          double time,
@@ -64,4 +61,4 @@ public:
 };
 
 }
-#endif //__p4estdofhandler_H
+#endif //__p4estdofhandlerbase_H
