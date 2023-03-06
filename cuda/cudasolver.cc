@@ -26,10 +26,6 @@ CudaSolver::CudaSolver()
 {
   CHECK_CUSPARSE(cusparseCreate(&sparse_handle));
   CHECK_CUBLAS(cublasCreate(&blas_handle));
-
-  hn_zero = std::make_shared<SimpleMatrix>();
-  hn_average = std::make_shared<SimpleMatrix>();
-  hn_distribute = std::make_shared<SimpleMatrix>();
 }
 
 CudaSolver::~CudaSolver()
@@ -80,6 +76,16 @@ CudaSolver::GetCV(const Vector& u) const
 {
   return *cva[u];
 }
+// Access to Vector & Matrix Data
+std::shared_ptr<CudaCSRMatrixInterface>
+CudaSolver::GetCudaMatrix(const Matrix& A) const
+{
+  if (!cuda_mat_agent[A]) {
+    cuda_mat_agent.emplace(
+      A, std::make_shared<CudaCSRMatrixInterface>(sparse_handle, GetMatrix(A)));
+  }
+  return cuda_mat_agent[A];
+}
 
 GlobalVector&
 CudaSolver::CopyBack(Vector& gu) const
@@ -103,27 +109,14 @@ CudaSolver::BasicInit(const ParamFile& paramfile, const int dimension)
   StdSolver::BasicInit(paramfile, dimension);
 }
 
-MatrixInterface*
-CudaSolver::NewMatrix(int ncomp, const std::string& matrixtype)
-{
-  this->ncomp = ncomp;
-  this->matrixtype = matrixtype;
-  return StdSolver::NewMatrix(ncomp, matrixtype);
-}
-
 void
 CudaSolver::AssembleMatrix(Matrix& A, const Vector& u, double d) const
 {
   StdSolver::AssembleMatrix(A, u, d);
-  GlobalTimer.start("---> matrix");
-  const MatrixInterface& sbm = GetMatrix(A);
 
-  if ((matrixtype == "block") || (matrixtype == "sparseumf") ||
-      (matrixtype == "vanka")) {
-    mat = std::make_shared<CudaCSRMatrixInterface>(sparse_handle, sbm);
-    dia_invers =
-      CudaCSRMatrixInterface::get_inverse_diagonal(sparse_handle, sbm);
-  }
+  GlobalTimer.start("---> matrix");
+  cuda_mat_agent.emplace(
+    A, std::make_shared<CudaCSRMatrixInterface>(sparse_handle, GetMatrix(A)));
   GlobalTimer.stop("---> matrix");
 }
 
@@ -159,11 +152,14 @@ set_values(std::shared_ptr<SimpleMatrix> hn_average,
 }
 
 void
-CudaSolver::NewMesh(const GascoigneMesh* mp)
+CudaSolver::SetProblem(const ProblemDescriptorInterface& PDX)
 {
-  StdSolver::NewMesh(mp);
+  StdSolver::SetProblem(PDX);
+
+  const auto mp = GetMesh();
 
   nnodes = mp->nnodes();
+  IndexType ncomp = PDX.GetNcomp();
 
   DiscretizationInterface* discretisation = this->GetDiscretization();
   auto disc_name = discretisation->GetName();
@@ -203,6 +199,11 @@ CudaSolver::NewMesh(const GascoigneMesh* mp)
   }
   saHNAverage.build_end();
   saHNDistribute.build_end();
+
+  std::shared_ptr<SimpleMatrix> hn_zero = std::make_shared<SimpleMatrix>();
+  std::shared_ptr<SimpleMatrix> hn_average = std::make_shared<SimpleMatrix>();
+  std::shared_ptr<SimpleMatrix> hn_distribute =
+    std::make_shared<SimpleMatrix>();
 
   hn_zero->ReInit(&diagonalStructure);
   hn_average->ReInit(&saHNAverage);
@@ -244,30 +245,18 @@ CudaSolver::NewMesh(const GascoigneMesh* mp)
     hn_distribute->GetValue(entry.first, entry.first) = 0;
     hn_zero->GetValue(entry.first, entry.first) = 0;
   }
-}
-
-void
-CudaSolver::SetProblem(const ProblemDescriptorInterface& PDX)
-{
-  StdSolver::SetProblem(PDX);
-
-  ncomp = PDX.GetNcomp();
-
-  SparseStructure diagonalStructure;
-  diagonalStructure.build_begin(nnodes);
-  for (int i = 0; i < nnodes; ++i) {
-    diagonalStructure.build_add(i, i);
-  }
-  diagonalStructure.build_end();
 
   TimePattern identity(ncomp);
   identity.identity();
-  hn_distribute_device = std::make_shared<CudaCSRMatrixInterface>(
-    sparse_handle, hn_distribute, &identity, 0);
-  hn_zero_device = std::make_shared<CudaCSRMatrixInterface>(
-    sparse_handle, hn_zero, &identity, 0);
-  hn_average_device = std::make_shared<CudaCSRMatrixInterface>(
-    sparse_handle, hn_average, &identity, 0);
+  cuda_mat_agent.emplace("hn_distribute",
+                         std::make_shared<CudaCSRMatrixInterface>(
+                           sparse_handle, *hn_distribute, &identity, 0));
+  cuda_mat_agent.emplace("hn_zero",
+                         std::make_shared<CudaCSRMatrixInterface>(
+                           sparse_handle, *hn_zero, &identity, 0));
+  cuda_mat_agent.emplace("hn_average",
+                         std::make_shared<CudaCSRMatrixInterface>(
+                           sparse_handle, *hn_average, &identity, 0));
 
   const BoundaryIndexHandler& BIH = GetMesh()->GetBoundaryIndexHandler();
   const DirichletData* DD = GetProblemDescriptor()->GetDirichletData();
@@ -275,6 +264,9 @@ CudaSolver::SetProblem(const ProblemDescriptorInterface& PDX)
   ColumnStencil CS;
   CS.memory(&diagonalStructure);
 
+  if (!DD) {
+    return;
+  }
   std::vector<TimePattern> values(nnodes, identity);
   for (int col : DD->dirichlet_colors()) {
 
@@ -293,28 +285,22 @@ CudaSolver::SetProblem(const ProblemDescriptorInterface& PDX)
       }
     }
   }
-  dirichlet_zeros = std::make_shared<CudaCSRMatrixInterface>(
-    sparse_handle, values, &CS, nnodes);
+  cuda_mat_agent.emplace("dirichlet_zeros",
+                         std::make_shared<CudaCSRMatrixInterface>(
+                           sparse_handle, values, &CS, nnodes));
 }
 
 void
 CudaSolver::vmult(const Matrix& A, Vector& gy, const Vector& gx, double d) const
 {
   if (!oncuda) {
-    GlobalTimer.start("---> vmult");
-    ActivateCuda({ &gy, &gx });
-    GlobalTimer.stop("---> vmult");
-    vmult(A, gy, gx, d);
-    GlobalTimer.start("---> vmult");
-    DeactivateCuda({ &gy });
-    GlobalTimer.stop("---> vmult");
-    // StdSolver::vmult(A, gy, gx, d);
+    StdSolver::vmult(A, gy, gx, d);
     return;
   }
   GlobalTimer.start("---> vmult");
   CudaVectorInterface& y = GetCV(gy);
   CudaVectorInterface& x = GetCV(gx);
-  mat->vmult(y, x, d, 1);
+  GetCudaMatrix(A)->vmult(y, x, d, 1);
   GlobalTimer.stop("---> vmult");
 }
 
@@ -325,14 +311,7 @@ CudaSolver::vmulteq(const Matrix& A,
                     double d) const
 {
   if (!oncuda) {
-    GlobalTimer.start("---> vmult");
-    ActivateCuda({ &gy, &gx });
-    GlobalTimer.stop("---> vmult");
-    vmulteq(A, gy, gx, d);
-    GlobalTimer.start("---> vmult");
-    DeactivateCuda({ &gy });
-    GlobalTimer.stop("---> vmult");
-    // StdSolver::vmulteq(A, gy, gx, d);
+    StdSolver::vmulteq(A, gy, gx, d);
     return;
   }
   GlobalTimer.start("---> vmult");
@@ -360,9 +339,7 @@ CudaSolver::smooth(int niter,
       GlobalTimer.stop("---> smooth");
       MatrixResidual(A, h, x, y);
       GlobalTimer.start("---> smooth");
-      CudaVectorInterface tmp(GetCV(h).n, GetCV(h).n_comp);
-      dia_invers->vmult(tmp, GetCV(h), 1, 0);
-      GetCV(h) = tmp;
+      GetCudaMatrix(A)->Jacobi(GetCV(h));
       Add(x, omega, h);
     } else if (GetSolverData().GetLinearSmooth() == "richardson") {
       MatrixResidual(A, h, x, y);
@@ -395,6 +372,16 @@ CudaSolver::MatrixResidual(const Matrix& A,
     SubtractMeanAlgebraic(gy);
     ActivateCuda({ &gy });
   }
+}
+
+void
+CudaSolver::Jacobi(const Matrix& A, Vector& y) const
+{
+  if (!oncuda) {
+    StdSolver::Jacobi(A, y);
+    return;
+  }
+  GetCudaMatrix(A)->Jacobi(GetCV(y));
 }
 
 /**
@@ -455,7 +442,7 @@ CudaSolver::HNZero(const Vector& x) const
   }
 
   CudaVectorInterface tmp(GetCV(x).n, GetCV(x).n_comp);
-  hn_zero_device->vmult(tmp, GetCV(x), 1, 0);
+  GetCudaMatrix(Matrix("hn_zero"))->vmult(tmp, GetCV(x), 1, 0);
   GetCV(x) = tmp;
 }
 
@@ -470,7 +457,7 @@ CudaSolver::HNDistribute(Vector& x) const
 
   CudaVectorInterface tmp(x_cuda.n, x_cuda.n_comp);
   // tmp = x_cuda;
-  hn_distribute_device->vmult(tmp, x_cuda, 1, 0);
+  GetCudaMatrix(Matrix("hn_distribute"))->vmult(tmp, x_cuda, 1, 0);
   x_cuda = tmp;
 }
 
@@ -484,7 +471,7 @@ CudaSolver::HNAverage(const Vector& x) const
 
   CudaVectorInterface tmp(GetCV(x).n, GetCV(x).n_comp);
   // tmp = GetCV(x);
-  hn_average_device->vmult(tmp, GetCV(x), 1, 0);
+  GetCudaMatrix(Matrix("hn_average"))->vmult(tmp, GetCV(x), 1, 0);
   GetCV(x) = tmp;
 }
 
@@ -496,7 +483,7 @@ CudaSolver::SetBoundaryVectorZero(Vector& gf) const
     return;
   }
   CudaVectorInterface tmp(GetCV(gf).n, GetCV(gf).n_comp);
-  dirichlet_zeros->vmult(tmp, GetCV(gf), 1, 0);
+  GetCudaMatrix(Matrix("dirichlet_zeros"))->vmult(tmp, GetCV(gf), 1, 0);
   GetCV(gf) = tmp;
 }
 

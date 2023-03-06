@@ -31,25 +31,23 @@ extern Timer GlobalTimer;
 // **************************************************
 
 void
-ActivateCuda(CudaMultiLevelSolver* smls,
-             int finelevel,
-             int coarselevel,
-             std::initializer_list<const Vector*> vectors)
+CudaMultiLevelSolver::ActivateCuda(int finelevel,
+                                   int coarselevel,
+                                   std::initializer_list<const Vector*> vectors)
 {
   for (size_t i = coarselevel; i <= finelevel; i++) {
-    static_cast<CudaSolver*>(smls->GetSolver(static_cast<int>(i)))
+    static_cast<CudaSolver*>(this->GetSolver(static_cast<int>(i)))
       ->ActivateCuda(vectors);
   }
 }
 
 void
-DeactivateCuda(CudaMultiLevelSolver* smls,
-               int finelevel,
-               int coarselevel,
-               std::initializer_list<Vector*> vectors)
+CudaMultiLevelSolver::DeactivateCuda(int finelevel,
+                                     int coarselevel,
+                                     std::initializer_list<Vector*> vectors)
 {
   for (size_t i = coarselevel; i <= finelevel; i++) {
-    static_cast<CudaSolver*>(smls->GetSolver(static_cast<int>(i)))
+    static_cast<CudaSolver*>(this->GetSolver(static_cast<int>(i)))
       ->DeactivateCuda(vectors);
   }
 }
@@ -133,7 +131,7 @@ CudaMultiLevelSolver::LinearMg(int finelevel,
   ReInitVector(mg0);
   ReInitVector(mg1);
 
-  ActivateCuda(this, finelevel, coarselevel, { &mg0, &f, &mg1, &u });
+  ActivateCuda(finelevel, coarselevel, { &mg0, &f, &mg1, &u });
 
   CudaSolver* solver = static_cast<CudaSolver*>(GetSolver(finelevel));
 
@@ -157,7 +155,7 @@ CudaMultiLevelSolver::LinearMg(int finelevel,
     reached = info.check(res[finelevel], rw[finelevel]);
   }
 
-  DeactivateCuda(this, finelevel, coarselevel, { &u });
+  DeactivateCuda(finelevel, coarselevel, { &u });
 
   DeleteVector(mg0);
   DeleteVector(mg1);

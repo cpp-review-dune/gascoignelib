@@ -13,7 +13,7 @@
 namespace Gascoigne {
 
 __device__ void
-copy_shared(MatrixEntryType* dest, MatrixEntryType* src, size_t size)
+copy_shared(MatrixEntryType* dest, const MatrixEntryType* src, size_t size)
 {
   for (size_t i = 0; i < size; ++i) {
     dest[i] = src[i];
@@ -25,8 +25,8 @@ __global__ void
 invert_device(size_t n,
               size_t n_comp,
               size_t shared_per_mat,
-              MatrixEntryType* src_vals,
-              IndexType* src_diag,
+              const MatrixEntryType* src_vals,
+              const IndexType* src_diag,
               MatrixEntryType* dest_vals,
               int32_t* dest_rows,
               int32_t* dest_cols)
@@ -121,8 +121,8 @@ invert_device(size_t n,
 void
 invert_host(size_t n,
             size_t n_comp,
-            MatrixEntryType* src_vals,
-            IndexType* src_diag,
+            const MatrixEntryType* src_vals,
+            const IndexType* src_diag,
             MatrixEntryType* dest_vals,
             int32_t* dest_rows,
             int32_t* dest_cols)

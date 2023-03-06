@@ -424,6 +424,7 @@ public:
                               Vector& y,
                               const Vector& x,
                               const Vector& b) const;
+  virtual void Jacobi(const Matrix& A, Vector& y) const;
   virtual void vmult(const Matrix& A,
                      Vector& y,
                      const Vector& x,

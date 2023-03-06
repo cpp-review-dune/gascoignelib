@@ -53,6 +53,8 @@ private:
   const cudaDataType type = CUDA_R_64F;
 #endif
 
+  CudaCSRMatrixInterface* dia_invers = nullptr;
+
   size_t _n;
   size_t _n_entries;
   size_t _n_comp;
@@ -75,60 +77,58 @@ private:
   /**
    * Buffer for vmult on device
    */
+  mutable bool bufferSet = false;
   mutable void* dBuffer = nullptr;
 
   /// Construct blank matrix, without any data
 
-  template<int B>
-  static std::shared_ptr<CudaCSRMatrixInterface> get_inverse_diagonal(
-    cusparseHandle_t,
-    const SparseBlockMatrix<FMatrixBlock<B>>&);
+  CudaCSRMatrixInterface* get_inverse_diagonal(const MatrixEntryType* src_vals,
+                                               const StencilInterface* stencil);
 
   template<int B>
   std::vector<FMatrixBlock<B>> patterToFMatrix(const std::vector<TimePattern>&);
 
   template<int B>
-  void copy_data(const std::vector<FMatrixBlock<B>>&,
-                 const ColumnStencil*,
-                 IndexType);
+  void copy_data(const std::vector<FMatrixBlock<B>>& matrixdata,
+                 const StencilInterface* stencil,
+                 IndexType cols);
 
   template<int B>
-  void copy_data(const SparseBlockMatrix<FMatrixBlock<B>>&);
-
-  template<int B>
-  void copy_data(const std::shared_ptr<Gascoigne::SimpleMatrix>&,
-                 const TimePattern*,
-                 IndexType);
-
-public:
-  CudaCSRMatrixInterface(cusparseHandle_t sparse_handle,
-                         IndexType n,
-                         IndexType n_entries,
-                         IndexType n_comp);
-  /// Construct matrix from MatrixInterface
-
-  CudaCSRMatrixInterface(cusparseHandle_t, const MatrixInterface&);
-  CudaCSRMatrixInterface(cusparseHandle_t,
-                         const std::vector<TimePattern>&,
-                         const ColumnStencil*,
-                         IndexType);
-  CudaCSRMatrixInterface(cusparseHandle_t,
-                         const std::shared_ptr<Gascoigne::SimpleMatrix>&,
-                         const TimePattern*,
-                         IndexType);
-
-  // CudaCSRMatrixInterface(cusparseHandle_t sparse_handle,
-  //               const std::vector<MatrixEntryType> &csrVals,
-  //               const std::vector<int32_t> &csrRowIdxs,
-  //               const std::vector<int32_t> &csrColIdxs);
-  virtual ~CudaCSRMatrixInterface();
+  void copy_data(const SimpleMatrix&, const TimePattern*, IndexType);
 
   /**
    * Creates a inverted diagonal matrix of this one.
    */
-  static std::shared_ptr<CudaCSRMatrixInterface> get_inverse_diagonal(
-    cusparseHandle_t,
-    const MatrixInterface&);
+  std::shared_ptr<CudaCSRMatrixInterface> get_inverse_diagonal(
+    const CudaCSRMatrixInterface&);
+
+  CudaCSRMatrixInterface(cusparseHandle_t sparse_handle,
+                         IndexType n,
+                         IndexType n_entries,
+                         IndexType n_comp);
+
+public:
+  /// Construct matrix from MatrixInterface
+
+  CudaCSRMatrixInterface(cusparseHandle_t, const MatrixInterface&);
+
+  template<int B>
+  CudaCSRMatrixInterface(cusparseHandle_t,
+                         const std::vector<FMatrixBlock<B>>&,
+                         const ColumnStencil*,
+                         IndexType);
+
+  CudaCSRMatrixInterface(cusparseHandle_t,
+                         const std::vector<TimePattern>&,
+                         const ColumnStencil*,
+                         IndexType);
+
+  CudaCSRMatrixInterface(cusparseHandle_t,
+                         const SimpleMatrix&,
+                         const TimePattern*,
+                         IndexType);
+
+  virtual ~CudaCSRMatrixInterface();
 
   size_t n() const { return _n; }
   size_t n_comp() const { return _n_comp; };
@@ -142,6 +142,8 @@ public:
              const CudaVectorInterface& x,
              double d,
              double b) const;
+
+  void Jacobi(CudaVectorInterface& x) const;
 
   /**
    * Operator to overwrite the values;
