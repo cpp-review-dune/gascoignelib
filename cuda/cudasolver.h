@@ -41,21 +41,10 @@ protected:
   mutable bool oncuda = false;
   mutable CudaVectorAgent cva;
 
-  IndexType ncomp = 1;
   IndexType nnodes = 0;
-  std::string matrixtype;
 
-  mutable std::shared_ptr<CudaCSRMatrixInterface> mat = nullptr;
-  mutable std::shared_ptr<CudaCSRMatrixInterface> dia_invers = nullptr;
-
-  std::shared_ptr<SimpleMatrix> hn_zero;
-  std::shared_ptr<SimpleMatrix> hn_average;
-  std::shared_ptr<SimpleMatrix> hn_distribute;
-  std::shared_ptr<CudaCSRMatrixInterface> hn_zero_device = nullptr;
-  std::shared_ptr<CudaCSRMatrixInterface> hn_average_device = nullptr;
-  std::shared_ptr<CudaCSRMatrixInterface> hn_distribute_device = nullptr;
-
-  std::shared_ptr<CudaCSRMatrixInterface> dirichlet_zeros;
+  mutable std::map<std::string, std::shared_ptr<CudaCSRMatrixInterface>>
+    cuda_mat_agent;
 
 public:
   CudaSolver();
@@ -68,12 +57,12 @@ public:
 
   CudaVectorInterface& InitCV(const Vector& u) const;
   CudaVectorInterface& GetCV(const Vector& u) const;
+  std::shared_ptr<CudaCSRMatrixInterface> GetCudaMatrix(const Matrix& A) const;
+
   GlobalVector& CopyBack(Vector& u) const;
   void DeleteVector(Vector& p) const override;
 
   void BasicInit(const ParamFile& paramfile, const int dimension) override;
-  MatrixInterface* NewMatrix(int ncomp, const std::string& matrixtype) override;
-  void NewMesh(const GascoigneMesh* mp) override;
   void SetProblem(const ProblemDescriptorInterface& PDX) override;
   void AssembleMatrix(Matrix& A, const Vector& u, double d) const override;
 
@@ -90,6 +79,7 @@ public:
                       Vector& gy,
                       const Vector& gx,
                       const Vector& gb) const override;
+  void Jacobi(const Matrix& A, Vector& y) const override;
   void smooth(int niter,
               const Matrix& A,
               Vector& x,

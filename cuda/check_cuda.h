@@ -35,7 +35,7 @@ void inline print_stacktrace()
                   cudaGetErrorString(status),                                  \
                   status);                                                     \
       print_stacktrace();                                                      \
-      std::exit(1);                                                            \
+      throw std::runtime_error("Cuda Error");                                  \
     }                                                                          \
   }
 
@@ -49,7 +49,7 @@ void inline print_stacktrace()
                   cusparseGetErrorString(status),                              \
                   status);                                                     \
       print_stacktrace();                                                      \
-      std::exit(1);                                                            \
+      throw std::runtime_error("Cuda Error");                                  \
     }                                                                          \
   }
 
@@ -62,7 +62,7 @@ void inline print_stacktrace()
                   __LINE__,                                                    \
                   status);                                                     \
       print_stacktrace();                                                      \
-      std::exit(1);                                                            \
+      throw std::runtime_error("Cuda Error");                                  \
     }                                                                          \
   }
 

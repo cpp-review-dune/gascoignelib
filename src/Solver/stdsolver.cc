@@ -781,6 +781,12 @@ StdSolver::MatrixResidual(const Matrix& A,
   SubtractMeanAlgebraic(gy);
 }
 
+void
+StdSolver::Jacobi(const Matrix& A, Vector& y) const
+{
+  GetMatrix(A).Jacobi(GetGV(y));
+}
+
 /*-------------------------------------------------------*/
 
 void
@@ -960,7 +966,7 @@ StdSolver::smooth(int niter,
       GlobalTimer.stop("---> smooth");
       MatrixResidual(A, h, x, y);
       GlobalTimer.start("---> smooth");
-      GetMatrix(A).Jacobi(GetGV(h));
+      Jacobi(A, h);
       Add(x, omega, h);
     } else if (GetSolverData().GetLinearSmooth() == "richardson") {
       MatrixResidual(A, h, x, y);

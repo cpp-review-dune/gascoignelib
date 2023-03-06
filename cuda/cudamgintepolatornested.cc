@@ -103,9 +103,9 @@ CudaMgInterpolatorNested::check_matrices(IndexType n_comp,
     TimePattern pattern(n_comp);
     pattern.identity();
     restrict_device = std::make_shared<CudaCSRMatrixInterface>(
-      sparse_handle, restrict, &pattern, prolongate->GetStencil()->n());
+      sparse_handle, *restrict, &pattern, prolongate->GetStencil()->n());
     prolongate_device = std::make_shared<CudaCSRMatrixInterface>(
-      sparse_handle, prolongate, &pattern, restrict->GetStencil()->n());
+      sparse_handle, *prolongate, &pattern, restrict->GetStencil()->n());
   }
 }
 
