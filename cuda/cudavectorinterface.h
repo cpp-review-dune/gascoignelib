@@ -59,11 +59,17 @@ struct CudaVectorInterface
   /// Adds \par y to this.
   void add(cublasHandle_t, double, const CudaVectorInterface& y);
 
+  /// Adds \par y to this.
+  void sadd(cublasHandle_t, double, double, const CudaVectorInterface& y);
+
   /// Scals the vector by factor d
   void scal(cublasHandle_t, double d);
 
   /// Norm of the vector.
   double norm(cublasHandle_t) const;
+
+  /// Dotproduct of vector with vector v
+  double dot(cublasHandle_t handle, const CudaVectorInterface& v) const;
 
   /// Zeros all data.
   void zero();

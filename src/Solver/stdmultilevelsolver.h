@@ -91,7 +91,6 @@ public:
 
   virtual void ReInitMatrix(const Matrix& A);
   virtual void ReInitVector(Vector& v);
-  virtual void ReInitVector(Vector& v, int comp);
 
   //////////////////////////////////////////////////
   // Access
@@ -155,6 +154,7 @@ public:
     assert(l < _SP.size());
     return _SP[l];
   }
+
   virtual StdSolver* GetSolver()
   {
     assert(_SP.size() == nlevels());
@@ -170,9 +170,9 @@ public:
   // Functionals
   virtual const std::vector<std::string> GetFunctionalNames() const;
   virtual const DoubleVector GetExactValues() const;
-  virtual const DoubleVector ComputeFunctionals(Vector& f, const Vector& u);
+  virtual const DoubleVector ComputeFunctionals(Vector& f, Vector& u);
   virtual const DoubleVector ComputeFunctionals(Vector& f,
-                                                const Vector& u,
+                                                Vector& u,
                                                 FunctionalContainer* FC);
 
   //////////////////////////////////////////////////
@@ -244,9 +244,7 @@ public:
                                        const GlobalVector& uold) const;
 
   virtual void NewtonVectorZero(Vector& w) const;
-  virtual double NewtonResidual(Vector& y,
-                                const Vector& x,
-                                const Vector& b) const;
+  virtual double NewtonResidual(Vector& y, Vector& x, const Vector& b) const;
   virtual double NewtonUpdate(double& rr,
                               Vector& x,
                               Vector& dx,
@@ -283,7 +281,7 @@ public:
                         CGInfo&);
 
   virtual double ComputeFunctional(Vector& f,
-                                   const Vector& u,
+                                   Vector& u,
                                    const std::string& label);
 
   virtual void AssembleDualMatrix(Matrix& A, Vector& u);
@@ -294,6 +292,9 @@ public:
   virtual void DeleteVector(Vector& p);
   virtual void Equ(Vector& dst, double s, const Vector& src) const;
   virtual void Zero(Vector& dst) const;
+
+  virtual void RestrictZero(IndexType level, Vector& b, const Vector& v) const;
+  virtual void ProlongateAdd(IndexType level, Vector& b, const Vector& v) const;
 
   virtual void AddNodeVector(const std::string& name, Vector& q);
   virtual void DeleteNodeVector(const std::string& q);

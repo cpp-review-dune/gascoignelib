@@ -173,12 +173,40 @@ CudaVectorInterface::add(cublasHandle_t handle,
                            1));
 }
 
+/**
+ * this = a * this + d * v
+ */
+void
+CudaVectorInterface::sadd(cublasHandle_t handle,
+                          double a,
+                          double d,
+                          const CudaVectorInterface& v)
+{
+  scal(handle, a);
+  add(handle, d, v);
+}
+
 double
 CudaVectorInterface::norm(cublasHandle_t handle) const
 {
   double result = 0;
   CHECK_CUBLAS(cublasDnrm2(
     handle, static_cast<int>(n * n_comp), valuesDevice, 1, &result));
+  return result;
+}
+
+double
+CudaVectorInterface::dot(cublasHandle_t handle,
+                         const CudaVectorInterface& v) const
+{
+  double result = 0;
+  CHECK_CUBLAS(cublasDdot(handle,
+                          static_cast<int>(n * n_comp),
+                          valuesDevice,
+                          1,
+                          v.valuesDevice,
+                          1,
+                          &result));
   return result;
 }
 

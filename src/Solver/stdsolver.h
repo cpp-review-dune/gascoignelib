@@ -191,7 +191,7 @@ protected:
   virtual void PermutateIlu(Matrix& A, const Vector& gu) const;
   virtual void modify_ilu(IluInterface& I, int ncomp) const;
 
-  virtual DoubleVector IntegrateSolutionVector(const Vector& u) const;
+  virtual DoubleVector IntegrateSolutionVector(Vector& u) const;
   virtual void _check_consistency(const Equation* EQ,
                                   const DiscretizationInterface* DI) const;
   virtual void DirichletMatrixOnlyRow(Matrix& A) const;
@@ -290,16 +290,12 @@ public:
 
   virtual void ReInitMatrix(const Matrix& A);
 
-  virtual void RegisterVector(const Vector& g);
   virtual void ReInitVector(Vector& dst);
-  virtual void ReInitVector(Vector& dst, int comp);
+  virtual void DeleteVector(Vector& p) const;
 
   // Access to Vector & Matrix Data
-  virtual GlobalVector& GetGV(Vector& u) const { return vector_agent(u); }
-  virtual const GlobalVector& GetGV(const Vector& u) const
-  {
-    return vector_agent(u);
-  }
+  virtual GlobalVector& GetGV(Vector& u) const;
+  virtual const GlobalVector& GetGV(const Vector& u) const;
 
   // Access to Vector & Matrix Data
   virtual MatrixInterface& GetMatrix(Matrix& A) const
@@ -323,8 +319,8 @@ public:
   virtual bool GetDistribute() const { return _distribute; }
   virtual void SetDistribute(bool dist) { _distribute = dist; }
 
-  virtual void HNAverage(const Vector& x) const;
-  virtual void HNZero(const Vector& x) const;
+  virtual void HNAverage(Vector& x) const;
+  virtual void HNZero(Vector& x) const;
   virtual void HNDistribute(Vector& x) const;
   virtual void HNAverageData() const;
   virtual void HNZeroData() const;
@@ -353,8 +349,8 @@ public:
   /// vector - residual (integration)
   //
 
-  virtual void Form(Vector& y, const Vector& x, double d) const;
-  virtual void AdjointForm(Vector& y, const Vector& x, double d) const;
+  virtual void Form(Vector& y, Vector& x, double d) const;
+  virtual void AdjointForm(Vector& y, Vector& x, double d) const;
 
   //
   /// vector - boundary condition
@@ -419,12 +415,12 @@ public:
   /// vector - matrix
   //
 
-  virtual void AssembleMatrix(Matrix& A, const Vector& u, double d) const;
+  virtual void AssembleMatrix(Matrix& A, Vector& u, double d) const;
   virtual void DirichletMatrix(Matrix& A) const;
   virtual void PeriodicMatrix(Matrix& A) const;
   virtual void MatrixZero(Matrix& A) const;
   virtual void ComputeIlu(Matrix& A, const Vector& u) const;
-  virtual void AssembleDualMatrix(Matrix& A, const Vector& gu, double d);
+  virtual void AssembleDualMatrix(Matrix& A, Vector& gu, double d);
   virtual void MassMatrixVector(Vector& f, const Vector& gu, double d) const
   {
     abort();
@@ -439,26 +435,24 @@ public:
   /// vector - "postprocessing"
   //
 
-  virtual void ComputeError(const Vector& u, GlobalVector& err) const;
+  virtual void ComputeError(Vector& u, GlobalVector& err) const;
   virtual void AssembleError(GlobalVector& eta,
-                             const Vector& u,
+                             Vector& u,
                              GlobalVector& err) const;
-  virtual double ComputeFunctional(Vector& f,
-                                   const Vector& u,
-                                   const Functional* FP);
+  virtual double ComputeFunctional(Vector& f, Vector& u, const Functional* FP);
 
   virtual double ComputeBoundaryFunctional(Vector& f,
-                                           const Vector& u,
+                                           Vector& u,
                                            Vector& z,
                                            const BoundaryFunctional* FP) const;
-  virtual double ComputeDomainFunctional(const Vector& u,
+  virtual double ComputeDomainFunctional(Vector& u,
                                          const DomainFunctional* FP) const;
   virtual double ComputePointFunctional(Vector& f,
-                                        const Vector& u,
+                                        Vector& u,
                                         Vector& z,
                                         const PointFunctional* NFP) const;
   virtual double ComputeResidualFunctional(Vector& f,
-                                           const Vector& u,
+                                           Vector& u,
                                            Vector& z,
                                            const ResidualFunctional* FP) const;
   virtual void EvaluateCellRightHandSide(Vector& f,
@@ -497,7 +491,6 @@ public:
   //
   /// for gmres
   //
-  virtual void DeleteVector(Vector& p) const;
 
   virtual double ScalarProduct(const Vector& y, const Vector& x) const;
   virtual void Equ(Vector& dst, double s, const Vector& src) const;

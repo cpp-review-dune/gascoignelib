@@ -531,10 +531,16 @@ StdSolver::AddPeriodicNodes(SparseStructure* SA)
 
 /*-------------------------------------------------------*/
 
-void
-StdSolver::RegisterVector(const Vector& g)
+// Access to Vector & Matrix Data
+GlobalVector&
+StdSolver::GetGV(Vector& u) const
 {
-  vector_agent.Register(g);
+  return vector_agent(u);
+}
+const GlobalVector&
+StdSolver::GetGV(const Vector& u) const
+{
+  return vector_agent(u);
 }
 
 /*-------------------------------------------------------*/
@@ -542,47 +548,37 @@ StdSolver::RegisterVector(const Vector& g)
 void
 StdSolver::ReInitVector(Vector& dst)
 {
-  int ncomp = GetProblemDescriptor()->GetNcomp();
-  ReInitVector(dst, ncomp);
+  IndexType size = 1;
+  if (dst.GetType() == "node") {
+    size = GetDiscretization()->ndofs();
+  } else if (dst.GetType() == "cell") {
+    size = GetDiscretization()->nelements();
+  } else if (dst.GetType() == "parameter") {
+    size = 1;
+  } else {
+    throw std::runtime_error(std::string("Can not initialize vector of type ") +
+                             dst.GetType());
+  }
+
+  IndexType comp = GetProblemDescriptor()->GetNcomp();
+  auto& p = vector_agent[dst];
+
+  // If not allready in Vector Agent reserve new
+  if (p == NULL) {
+    p = new GlobalVector(comp, size, 0);
+  } else {
+    p->ncomp() = comp;
+    p->reservesize(size);
+    p->zero();
+  }
 }
 
-/*-------------------------------------------------------*/
+/*---------------------------------------------------*/
 
 void
-StdSolver::ReInitVector(Vector& dst, int comp)
+StdSolver::DeleteVector(Vector& p) const
 {
-  int n = GetDiscretization()->ndofs();
-  int nc = GetDiscretization()->nelements();
-
-  // Vector already registered ?
-  //
-  GhostVectorAgent::iterator p = vector_agent.find(dst);
-  if (p == vector_agent.end()) {
-    vector_agent.Register(dst);
-    p = vector_agent.find(dst);
-  }
-  assert(p != vector_agent.end());
-
-  // GlobalVector already registered ?
-  //
-  if (p->second == NULL) {
-    p->second = new GlobalVector;
-  }
-
-  // resize GlobalVector
-  //
-  p->second->ncomp() = comp;
-
-  if (dst.GetType() == "node") {
-    p->second->reservesize(n);
-  } else if (dst.GetType() == "cell") {
-    p->second->reservesize(nc);
-  } else if (dst.GetType() == "parameter") {
-    p->second->reservesize(1);
-  } else {
-    cerr << "No such vector type: " << dst.GetType() << endl;
-    abort();
-  }
+  vector_agent.Delete(p);
 }
 
 /*-------------------------------------------------------*/
@@ -592,67 +588,51 @@ StdSolver::ReInitMatrix(const Matrix& A)
 {
   GlobalTimer.start("---> matrix init");
 
-  // number of components in current problem
   IndexType ncomp = GetProblemDescriptor()->GetNcomp();
-  //////////
-  ////////// create new matrix
-  //////////
-  auto matrix = matrix_agent.find(A);
-  if (matrix == matrix_agent.end()) {
-    matrix_agent.Register(A);
-    matrix = matrix_agent.find(A);
-  }
-  assert(matrix != matrix_agent.end());
+
+  auto& matrix = matrix_agent[A];
 
   // check if matrix is an umfpack object. If yes, delete it
 #ifdef __WITH_UMFPACK__
-  if (_useUMFPACK && matrix->second != NULL) {
-    SimpleMatrix* SM = dynamic_cast<SimpleMatrix*>(matrix->second);
+  if (_useUMFPACK && matrix != NULL) {
+    SimpleMatrix* SM = dynamic_cast<SimpleMatrix*>(matrix);
     if ((SM && !_directsolver && _matrixtype != "point_node") ||
         (!SM && _directsolver)) {
-      delete matrix->second;
-      matrix->second = NULL;
+      delete matrix;
+      matrix = NULL;
     }
   }
 #endif
 
-  // create new matrix
-  if (matrix->second == NULL)
-    matrix->second = NewMatrix(ncomp, _matrixtype);
-
-  //////////
-  ////////// create new ilu
-  //////////
-  auto ilu = ilu_agent.find(A);
-  if (ilu == ilu_agent.end()) {
-    ilu_agent.Register(A);
-    ilu = ilu_agent.find(A);
+  if (matrix == NULL) {
+    matrix = NewMatrix(ncomp, _matrixtype);
   }
-  assert(ilu != ilu_agent.end());
+
+  auto& ilu = ilu_agent[A];
 
   // if umfpack is used and matrix is umfpack object, delete it
 #ifdef __WITH_UMFPACK__
-  if (_useUMFPACK && ilu->second != NULL) {
+  if (_useUMFPACK && ilu != NULL) {
 #ifdef __WITH_UMFPACK_LONG__
-    UmfIluLong* UM = dynamic_cast<UmfIluLong*>(ilu->second);
+    UmfIluLong* UM = dynamic_cast<UmfIluLong*>(ilu);
 #else
-    UmfIlu* UM = dynamic_cast<UmfIlu*>(ilu->second);
+    UmfIlu* UM = dynamic_cast<UmfIlu*>(ilu);
 #endif
 
     if ((UM && !_directsolver) || (!UM && _directsolver)) {
-      delete ilu->second;
-      ilu->second = NULL;
+      delete ilu;
+      ilu = NULL;
     }
   }
 #endif
 
-  if (ilu->second == NULL)
-    ilu->second = NewIlu(A, ncomp, _matrixtype);
+  if (ilu == NULL)
+    ilu = NewIlu(A, ncomp, _matrixtype);
 
   // if Vankasmoother is used, attach dofhandler
   if (!_directsolver && (_matrixtype == "vanka")) {
-    assert(dynamic_cast<const VankaSmoother*>(ilu->second));
-    dynamic_cast<const VankaSmoother*>(ilu->second)->SetDofHandler(GetMesh());
+    assert(dynamic_cast<const VankaSmoother*>(ilu));
+    dynamic_cast<const VankaSmoother*>(ilu)->SetDofHandler(GetMesh());
   }
 
   ////////// setup the stencil
@@ -662,10 +642,10 @@ StdSolver::ReInitMatrix(const Matrix& A)
   GetDiscretization()->Structure(&SA);
   AddPeriodicNodes(&SA);
 
-  matrix->second->ReInit(&SA);
+  matrix->ReInit(&SA);
 
-  if (ilu->second != NULL)
-    ilu->second->ReInit(&SA);
+  if (ilu != NULL)
+    ilu->ReInit(&SA);
 
   GlobalTimer.stop("---> matrix init");
 }
@@ -699,14 +679,14 @@ StdSolver::HNZeroData() const
   GetDiscretization()->HNZeroData();
 }
 void
-StdSolver::HNAverage(const Vector& x) const
+StdSolver::HNAverage(Vector& x) const
 {
-  GetDiscretization()->HNAverage(const_cast<GlobalVector&>(GetGV(x)));
+  GetDiscretization()->HNAverage(GetGV(x));
 }
 void
-StdSolver::HNZero(const Vector& x) const
+StdSolver::HNZero(Vector& x) const
 {
-  GetDiscretization()->HNZero(const_cast<GlobalVector&>(GetGV(x)));
+  GetDiscretization()->HNZero(GetGV(x));
 }
 void
 StdSolver::HNDistribute(Vector& x) const
@@ -1036,7 +1016,7 @@ StdSolver::smooth_post(const Matrix& A,
 /*-------------------------------------------------------*/
 
 void
-StdSolver::Form(Vector& gy, const Vector& gx, double d) const
+StdSolver::Form(Vector& gy, Vector& gx, double d) const
 {
   GlobalTimer.start("---> form");
 
@@ -1062,7 +1042,7 @@ StdSolver::Form(Vector& gy, const Vector& gx, double d) const
 /*-------------------------------------------------------*/
 
 void
-StdSolver::AdjointForm(Vector& gy, const Vector& gx, double d) const
+StdSolver::AdjointForm(Vector& gy, Vector& gx, double d) const
 {
   GlobalVector& y = GetGV(gy);
   const GlobalVector& x = GetGV(gx);
@@ -1153,7 +1133,7 @@ StdSolver::SolutionInit(Vector& Gu) const
 /*-------------------------------------------------------*/
 
 void
-StdSolver::ComputeError(const Vector& u, GlobalVector& err) const
+StdSolver::ComputeError(Vector& u, GlobalVector& err) const
 {
   if (GetProblemDescriptor()->GetExactSolution() == NULL)
     return;
@@ -1166,9 +1146,7 @@ StdSolver::ComputeError(const Vector& u, GlobalVector& err) const
 /*-------------------------------------------------------*/
 
 void
-StdSolver::AssembleError(GlobalVector& eta,
-                         const Vector& u,
-                         GlobalVector& err) const
+StdSolver::AssembleError(GlobalVector& eta, Vector& u, GlobalVector& err) const
 {
   if (GetProblemDescriptor()->GetExactSolution() == NULL)
     return;
@@ -1181,7 +1159,7 @@ StdSolver::AssembleError(GlobalVector& eta,
 /*-------------------------------------------------------*/
 
 double
-StdSolver::ComputeFunctional(Vector& gf, const Vector& gu, const Functional* FP)
+StdSolver::ComputeFunctional(Vector& gf, Vector& gu, const Functional* FP)
 {
   Vector gh("XXX");
   ReInitVector(gh);
@@ -1214,7 +1192,7 @@ StdSolver::ComputeFunctional(Vector& gf, const Vector& gu, const Functional* FP)
 
 double
 StdSolver::ComputeBoundaryFunctional(Vector& gf,
-                                     const Vector& gu,
+                                     Vector& gu,
                                      Vector& gz,
                                      const BoundaryFunctional* FP) const
 {
@@ -1231,8 +1209,7 @@ StdSolver::ComputeBoundaryFunctional(Vector& gf,
 /*-------------------------------------------------------*/
 
 double
-StdSolver::ComputeDomainFunctional(const Vector& gu,
-                                   const DomainFunctional* FP) const
+StdSolver::ComputeDomainFunctional(Vector& gu, const DomainFunctional* FP) const
 {
   HNAverage(gu);
   HNAverageData();
@@ -1246,7 +1223,7 @@ StdSolver::ComputeDomainFunctional(const Vector& gu,
 
 double
 StdSolver::ComputePointFunctional(Vector& gf,
-                                  const Vector& gu,
+                                  Vector& gu,
                                   Vector& gz,
                                   const PointFunctional* FP) const
 {
@@ -1262,7 +1239,7 @@ StdSolver::ComputePointFunctional(Vector& gf,
 
 double
 StdSolver::ComputeResidualFunctional(Vector& gf,
-                                     const Vector& gu,
+                                     Vector& gu,
                                      Vector& gz,
                                      const ResidualFunctional* FP) const
 {
@@ -1463,7 +1440,7 @@ StdSolver::Rhs(Vector& gf, double d) const
 /*-------------------------------------------------------*/
 
 void
-StdSolver::AssembleMatrix(Matrix& A, const Vector& gu, double d) const
+StdSolver::AssembleMatrix(Matrix& A, Vector& gu, double d) const
 {
   GlobalTimer.start("---> matrix");
 
@@ -1719,7 +1696,7 @@ StdSolver::ConstructInterpolator(MgInterpolatorInterface* I,
 /* -------------------------------------------------------*/
 
 DoubleVector
-StdSolver::IntegrateSolutionVector(const Vector& gu) const
+StdSolver::IntegrateSolutionVector(Vector& gu) const
 {
   HNAverage(gu);
   DoubleVector dst = GetPfilter().IntegrateVector(GetGV(gu));
@@ -1756,14 +1733,6 @@ StdSolver::SubtractMeanAlgebraic(Vector& gx) const
     GetPfilter().SubtractMeanAlgebraic(x);
     HNZero(gx);
   }
-}
-
-/*---------------------------------------------------*/
-
-void
-StdSolver::DeleteVector(Vector& p) const
-{
-  vector_agent.Delete(p);
 }
 
 /*-----------------------------------------*/
@@ -1809,7 +1778,7 @@ StdSolver::ScalarProduct(const Vector& y, const Vector& x) const
 /*---------------------------------------------------*/
 
 void
-StdSolver::AssembleDualMatrix(Matrix& A, const Vector& gu, double d)
+StdSolver::AssembleDualMatrix(Matrix& A, Vector& gu, double d)
 {
   GlobalTimer.start("---> matrix");
 

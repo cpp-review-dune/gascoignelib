@@ -62,14 +62,6 @@ public:
     }
   };
 
-  void Register(const std::string& mg)
-  {
-    auto p = std::map<std::string, T*>::find(mg);
-    if (p == std::map<std::string, T*>::end()) {
-      std::map<std::string, T*>::emplace(mg, static_cast<T*>(NULL));
-    }
-  };
-
   void Delete(std::string& mg)
   {
     auto p = std::map<std::string, T*>::find(mg);
@@ -83,19 +75,11 @@ public:
   {
     auto p = std::map<std::string, T*>::find(g);
     if (p == std::map<std::string, T*>::end()) {
-      std::cerr << __FILE__ << ":" << __LINE__;
-      std::cerr << ": GhostAgent::operator(): ERROR" << std::endl;
-      std::cerr << __FILE__ << ":" << __LINE__;
-      std::cerr << ": Ghostvector '" << g
-                << "' not found in list of: " << std::endl;
-      std::cerr << " " << *this << std::endl;
-      abort();
+      throw std::runtime_error("Element not in GhostAgent");
     }
     T* vp = p->second;
     if (vp == NULL) {
-      std::cerr << "GhostAgent  T* NULL\t" << p->first;
-      std::cerr << "\n" << *this << std::endl;
-      abort();
+      throw std::runtime_error("Element in GhostAgent not initialized");
     }
     return *vp;
   };
@@ -104,19 +88,11 @@ public:
   {
     auto p = std::map<std::string, T*>::find(g);
     if (p == std::map<std::string, T*>::end()) {
-      std::cerr << __FILE__ << ":" << __LINE__;
-      std::cerr << ": GhostAgent::operator(): ERROR" << std::endl;
-      std::cerr << __FILE__ << ":" << __LINE__;
-      std::cerr << ": Ghostvector '" << g
-                << "' not found in list of: " << std::endl;
-      std::cerr << " " << *this << std::endl;
-      abort();
+      throw std::runtime_error("Element not in GhostAgent");
     }
     T* vp = p->second;
     if (vp == NULL) {
-      std::cerr << "GhostAgent  T* NULL\t" << p->first;
-      std::cerr << "\n" << *this << std::endl;
-      abort();
+      throw std::runtime_error("Element in GhostAgent not initialized");
     }
     return *vp;
   };

@@ -34,23 +34,15 @@ public:
   StdSolver* NewSolver(int) override;
   void NewMgInterpolator() override;
 
-  void LinearMg(int finelevel,
-                int coarselevel,
-                const Matrix& A,
-                Vector& u,
-                const Vector& f,
-                CGInfo& info) override;
-  void mgstep(std::vector<double>& res,
-              std::vector<double>& rw,
-              int l,
-              int maxl,
-              int minl,
-              std::string& p0,
-              std::string p,
-              const Matrix& A,
-              Vector& u,
-              Vector& b,
-              Vector& v) override;
+  void NewtonLinearSolve(const Matrix& A,
+                         Vector& x,
+                         const Vector& b,
+                         CGInfo& info);
+
+  void RestrictZero(IndexType level, Vector& b, const Vector& v) const override;
+  void ProlongateAdd(IndexType level,
+                     Vector& b,
+                     const Vector& v) const override;
 };
 
 } // namespace Gascoigne
