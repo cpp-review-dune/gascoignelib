@@ -49,6 +49,7 @@ CudaSolver::ActivateCuda(std::initializer_list<const Vector*> vectors) const
 void
 CudaSolver::DeactivateCuda(std::initializer_list<Vector*> vectors) const
 {
+  oncuda = false;
   GlobalTimer.count("---> DeactivateCuda");
   GlobalTimer.stop("--> oncuda");
   GlobalTimer.start("---> copy");
@@ -56,7 +57,22 @@ CudaSolver::DeactivateCuda(std::initializer_list<Vector*> vectors) const
     CopyBack(*vec);
   }
   GlobalTimer.stop("---> copy");
-  oncuda = false;
+}
+
+void
+CudaSolver::ReInitVector(Vector& dst)
+{
+  StdSolver::ReInitVector(dst);
+  if (oncuda) {
+    InitCV(dst);
+  }
+}
+
+void
+CudaSolver::DeleteVector(Vector& p) const
+{
+  StdSolver::DeleteVector(p);
+  cva.Delete(p);
 }
 
 CudaVectorInterface&
@@ -64,18 +80,43 @@ CudaSolver::InitCV(const Vector& u) const
 {
   GlobalTimer.count("---> InitCV");
   if (cva.find(u) == cva.end()) {
-    cva.emplace(u, new CudaVectorInterface(GetGV(u)));
+    cva.emplace(u, new CudaVectorInterface(StdSolver::GetGV(u)));
   } else {
-    *cva[u] = GetGV(u);
+    *cva[u] = StdSolver::GetGV(u);
   }
   return *cva[u];
 }
 
 CudaVectorInterface&
+CudaSolver::GetCV(Vector& u) const
+{
+  return *cva[u];
+}
+
+const CudaVectorInterface&
 CudaSolver::GetCV(const Vector& u) const
 {
   return *cva[u];
 }
+
+GlobalVector&
+CudaSolver::GetGV(Vector& u) const
+{
+  if (oncuda) {
+    throw std::runtime_error("Accesing CPU Vector while computing on CUDA");
+  }
+  return StdSolver::GetGV(u);
+}
+
+const GlobalVector&
+CudaSolver::GetGV(const Vector& u) const
+{
+  if (oncuda) {
+    throw std::runtime_error("Accesing CPU Vector while computing on CUDA");
+  }
+  return StdSolver::GetGV(u);
+}
+
 // Access to Vector & Matrix Data
 std::shared_ptr<CudaCSRMatrixInterface>
 CudaSolver::GetCudaMatrix(const Matrix& A) const
@@ -97,20 +138,13 @@ CudaSolver::CopyBack(Vector& gu) const
 }
 
 void
-CudaSolver::DeleteVector(Vector& p) const
-{
-  StdSolver::DeleteVector(p);
-  cva.Delete(p);
-}
-
-void
 CudaSolver::BasicInit(const ParamFile& paramfile, const int dimension)
 {
   StdSolver::BasicInit(paramfile, dimension);
 }
 
 void
-CudaSolver::AssembleMatrix(Matrix& A, const Vector& u, double d) const
+CudaSolver::AssembleMatrix(Matrix& A, Vector& u, double d) const
 {
   StdSolver::AssembleMatrix(A, u, d);
 
@@ -295,11 +329,16 @@ CudaSolver::vmult(const Matrix& A, Vector& gy, const Vector& gx, double d) const
 {
   if (!oncuda) {
     StdSolver::vmult(A, gy, gx, d);
+    // ActivateCuda({ &gy, &gx });
+    // CudaVectorInterface& y = GetCV(gy);
+    // const CudaVectorInterface& x = GetCV(gx);
+    // GetCudaMatrix(A)->vmult(y, x, d, 1);
+    // DeactivateCuda({ &gy });
     return;
   }
   GlobalTimer.start("---> vmult");
   CudaVectorInterface& y = GetCV(gy);
-  CudaVectorInterface& x = GetCV(gx);
+  const CudaVectorInterface& x = GetCV(gx);
   GetCudaMatrix(A)->vmult(y, x, d, 1);
   GlobalTimer.stop("---> vmult");
 }
@@ -433,8 +472,18 @@ CudaSolver::Norm(const Vector& gdst) const
   return GetCV(gdst).norm(blas_handle);
 }
 
+double
+CudaSolver::ScalarProduct(const Vector& y, const Vector& x) const
+{
+  if (!oncuda) {
+    return StdSolver::ScalarProduct(y, x);
+  }
+
+  return GetCV(y).dot(blas_handle, GetCV(x));
+}
+
 void
-CudaSolver::HNZero(const Vector& x) const
+CudaSolver::HNZero(Vector& x) const
 {
   if (!IsOnCuda()) {
     StdSolver::HNZero(x);
@@ -462,7 +511,7 @@ CudaSolver::HNDistribute(Vector& x) const
 }
 
 void
-CudaSolver::HNAverage(const Vector& x) const
+CudaSolver::HNAverage(Vector& x) const
 {
   if (!IsOnCuda()) {
     StdSolver::HNAverage(x);
@@ -473,6 +522,22 @@ CudaSolver::HNAverage(const Vector& x) const
   // tmp = GetCV(x);
   GetCudaMatrix(Matrix("hn_average"))->vmult(tmp, GetCV(x), 1, 0);
   GetCV(x) = tmp;
+}
+
+void
+CudaSolver::residualgmres(const Matrix& A,
+                          Vector& gy,
+                          const Vector& gx,
+                          const Vector& gb) const
+{
+  if (!IsOnCuda()) {
+    StdSolver::residualgmres(A, gy, gx, gb);
+    return;
+  }
+
+  vmulteq(A, gy, gx, 1.);
+  GetCV(gy).sadd(blas_handle, -1., 1., GetCV(gb));
+  SetBoundaryVectorZero(gy);
 }
 
 void

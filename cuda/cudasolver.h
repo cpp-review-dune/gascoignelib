@@ -55,16 +55,22 @@ public:
 
   bool IsOnCuda() const { return oncuda; };
 
+  void ReInitVector(Vector& dst) override;
+  void DeleteVector(Vector& p) const override;
+
   CudaVectorInterface& InitCV(const Vector& u) const;
-  CudaVectorInterface& GetCV(const Vector& u) const;
+  CudaVectorInterface& GetCV(Vector& u) const;
+  const CudaVectorInterface& GetCV(const Vector& u) const;
+  virtual GlobalVector& GetGV(Vector& u) const;
+  virtual const GlobalVector& GetGV(const Vector& u) const;
+
   std::shared_ptr<CudaCSRMatrixInterface> GetCudaMatrix(const Matrix& A) const;
 
   GlobalVector& CopyBack(Vector& u) const;
-  void DeleteVector(Vector& p) const override;
 
   void BasicInit(const ParamFile& paramfile, const int dimension) override;
   void SetProblem(const ProblemDescriptorInterface& PDX) override;
-  void AssembleMatrix(Matrix& A, const Vector& u, double d) const override;
+  void AssembleMatrix(Matrix& A, Vector& u, double d) const override;
 
   void vmult(const Matrix& A,
              Vector& y,
@@ -91,10 +97,16 @@ public:
   void Equ(Vector& dst, double s, const Vector& src) const override;
   void Add(Vector& dst, double s, const Vector& src) const override;
   double Norm(const Vector& dst) const override;
+  double ScalarProduct(const Vector& y, const Vector& x) const override;
 
-  void HNZero(const Vector& x) const override;
+  void HNZero(Vector& x) const override;
   void HNDistribute(Vector& x) const override;
-  void HNAverage(const Vector& x) const override;
+  void HNAverage(Vector& x) const override;
+
+  void residualgmres(const Matrix& A,
+                     Vector& gy,
+                     const Vector& gx,
+                     const Vector& gb) const override;
   void SetBoundaryVectorZero(Vector& gf) const;
 };
 } // namespace Gascoigne

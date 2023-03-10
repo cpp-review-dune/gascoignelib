@@ -198,16 +198,6 @@ StdMultiLevelSolver::ReInitVector(Vector& v)
 /*-------------------------------------------------------------*/
 
 void
-StdMultiLevelSolver::ReInitVector(Vector& v, int comp)
-{
-  for (int level = 0; level < nlevels(); ++level) {
-    GetSolver(level)->ReInitVector(v, comp);
-  }
-}
-
-/*-------------------------------------------------------------*/
-
-void
 StdMultiLevelSolver::NewSolvers()
 {
   oldnlevels = GetSolverPointers().size();
@@ -348,7 +338,7 @@ StdMultiLevelSolver::GetExactValues() const
 
 const DoubleVector
 StdMultiLevelSolver::ComputeFunctionals(Vector& f,
-                                        const Vector& u,
+                                        Vector& u,
                                         FunctionalContainer* FC)
 {
   if (!FC)
@@ -366,7 +356,7 @@ StdMultiLevelSolver::ComputeFunctionals(Vector& f,
 /*-------------------------------------------------------------*/
 
 const DoubleVector
-StdMultiLevelSolver::ComputeFunctionals(Vector& f, const Vector& u)
+StdMultiLevelSolver::ComputeFunctionals(Vector& f, Vector& u)
 {
   if (!GetFunctionalContainer())
     return DoubleVector(0);
@@ -487,8 +477,8 @@ StdMultiLevelSolver::mgstep(vector<double>& res,
     GetSolver(l)->smooth_pre(A, u, b, v);
     GetSolver(l)->MatrixResidual(A, v, u, b);
 
-    _Interpolator[l - 1]->restrict_zero(GetSolver(l - 1)->GetGV(b),
-                                        GetSolver(l)->GetGV(v));
+    RestrictZero(l - 1, b, v);
+
     GetSolver(l - 1)->HNDistribute(b);
     GetSolver(l - 1)->SetBoundaryVectorZero(b);
 
@@ -514,8 +504,7 @@ StdMultiLevelSolver::mgstep(vector<double>& res,
 
     GetSolver(l - 1)->HNAverage(u);
 
-    _Interpolator[l - 1]->prolongate_add(GetSolver(l)->GetGV(v),
-                                         GetSolver(l - 1)->GetGV(u));
+    ProlongateAdd(l, v, u);
 
     GetSolver(l - 1)->HNZero(u);
 
@@ -607,9 +596,7 @@ StdMultiLevelSolver::NewtonVectorZero(Vector& w) const
 /*-------------------------------------------------------------*/
 
 double
-StdMultiLevelSolver::NewtonResidual(Vector& y,
-                                    const Vector& x,
-                                    const Vector& b) const
+StdMultiLevelSolver::NewtonResidual(Vector& y, Vector& x, const Vector& b) const
 {
   _clock_residual.start();
   DataP.CountResidual()++;
@@ -859,7 +846,7 @@ StdMultiLevelSolver::Solve(int level,
 
 double
 StdMultiLevelSolver::ComputeFunctional(Vector& f,
-                                       const Vector& u,
+                                       Vector& u,
                                        const std::string& label)
 {
   const Functional* FP = GetFunctionalContainer()->GetFunctional(label);
@@ -969,6 +956,34 @@ StdMultiLevelSolver::Zero(Vector& dst) const
   for (int l = 0; l < nlevels(); l++) {
     GetSolver(l)->Zero(dst);
   }
+}
+
+/**
+ * Multigrid interpolation of vector v to coarse level vector b
+ *
+ * @param level of outputvector b
+ */
+void
+StdMultiLevelSolver::RestrictZero(IndexType level,
+                                  Vector& b,
+                                  const Vector& v) const
+{
+  _Interpolator[level]->restrict_zero(GetSolver(level)->GetGV(b),
+                                      GetSolver(level + 1)->GetGV(v));
+}
+
+/**
+ * Multigrid interpolation of coarse level vector v to fine level vector b
+ *
+ * @param level of outputvector b
+ */
+void
+StdMultiLevelSolver::ProlongateAdd(IndexType level,
+                                   Vector& b,
+                                   const Vector& v) const
+{
+  _Interpolator[level + 1]->prolongate_add(GetSolver(level)->GetGV(b),
+                                           GetSolver(level + 1)->GetGV(v));
 }
 
 /*-------------------------------------------------------------*/

@@ -313,7 +313,7 @@ BasicLoop::Solve(Matrix& A, Vector& u, Vector& f, string name)
 /*-------------------------------------------------*/
 
 void
-BasicLoop::ComputeGlobalErrors(const Vector& u)
+BasicLoop::ComputeGlobalErrors(Vector& u)
 {
   GetMultiLevelSolver()->GetSolver()->ComputeError(u, _GlobalErr);
   if (_GlobalErr.size() > 0) {

@@ -102,145 +102,70 @@ CudaMultiLevelSolver::NewMgInterpolator()
 }
 
 void
-CudaMultiLevelSolver::LinearMg(int finelevel,
-                               int coarselevel,
-                               const Matrix& A,
-                               Vector& u,
-                               const Vector& f,
-                               CGInfo& info)
+CudaMultiLevelSolver::NewtonLinearSolve(const Matrix& A,
+                                        Vector& x,
+                                        const Vector& b,
+                                        CGInfo& info)
 {
-  GlobalTimer.start("--> LinearMg");
+  _clock_solve.start();
+  info.reset();
+  GetSolver(FinestLevel())->Zero(x);
 
-  for (int level = coarselevel; level < nlevels(); level++) {
-    if (GetSolver(level)->DirectSolver()) {
-      coarselevel = level;
-    }
-  }
-  // wir haben auf einem hoeheren level einen direkten loeser...
-  if (coarselevel > finelevel) {
-    coarselevel = finelevel;
-  }
+  assert(DataP.LinearSolve() == "mg" || DataP.LinearSolve() == "gmres" ||
+         DataP.LinearSolve() == "direct");
 
-  assert(finelevel >= coarselevel);
-
-  int nl = nlevels();
-  DoubleVector res(nl, 0.), rw(nl, 0.);
-
-  Vector mg0("mg0_");
-  Vector mg1("mg1_");
-  ReInitVector(mg0);
-  ReInitVector(mg1);
-
-  ActivateCuda(finelevel, coarselevel, { &mg0, &f, &mg1, &u });
-
-  CudaSolver* solver = static_cast<CudaSolver*>(GetSolver(finelevel));
-
-  solver->Equ(mg0, 1., f);
-
-  solver->MatrixResidual(A, mg1, u, mg0);
-
-  res[finelevel] = solver->Norm(mg1);
-
-  rw[finelevel] = 0.;
-  info.check(res[finelevel], rw[finelevel]);
-
-  bool reached = false; // mindestens einen schritt machen
-  for (int it = 0; !reached; it++) {
-    std::string p = DataP.MgType();
-    std::string p0 = p;
-    if (p == "F") {
-      p0 = "W";
-    }
-    mgstep(res, rw, finelevel, finelevel, coarselevel, p0, p, A, u, mg0, mg1);
-    reached = info.check(res[finelevel], rw[finelevel]);
+  if (DataP.LinearSolve() == "mg") {
+    int clevel = std::max(DataP.CoarseLevel(), 0);
+    if (DataP.CoarseLevel() == -1)
+      clevel = FinestLevel();
+    ActivateCuda(ComputeLevel, clevel, { &x, &b });
+    LinearMg(ComputeLevel, clevel, A, x, b, info);
+    DeactivateCuda(ComputeLevel, clevel, { &x });
+  } else if (DataP.LinearSolve() == "direct") {
+    int clevel = FinestLevel();
+    ActivateCuda(ComputeLevel, clevel, { &x, &b });
+    LinearMg(ComputeLevel, clevel, A, x, b, info);
+    DeactivateCuda(ComputeLevel, clevel, { &x });
+  } else if (DataP.LinearSolve() == "gmres") {
+    ActivateCuda(ComputeLevel, ComputeLevel, { &x, &b });
+    Gmres(A, x, b, info);
+    DeactivateCuda(ComputeLevel, ComputeLevel, { &x });
   }
 
-  DeactivateCuda(finelevel, coarselevel, { &u });
-
-  DeleteVector(mg0);
-  DeleteVector(mg1);
-  GlobalTimer.stop("--> LinearMg");
+  GetSolver(ComputeLevel)->SubtractMean(x);
+  _clock_solve.stop();
 }
 
 /**
- * Expects vor GetSolver(l) to be Cuda Activated
+ * Multigrid interpolation of vector v to coarse level vector b
+ *
+ * @param level of outputvector b
  */
 void
-CudaMultiLevelSolver::mgstep(std::vector<double>& res,
-                             std::vector<double>& rw,
-                             int l,
-                             int finelevel,
-                             int coarselevel,
-                             std::string& p0,
-                             std::string p,
-                             const Matrix& A,
-                             Vector& u,
-                             Vector& b,
-                             Vector& v)
+CudaMultiLevelSolver::RestrictZero(IndexType level,
+                                   Vector& b,
+                                   const Vector& v) const
 {
-  GlobalTimer.count("--> mgstep");
+  dynamic_cast<CudaMgInterpolatorNested*>(_Interpolator[level])
+    ->restrict_zero(
+      static_cast<const CudaSolver*>(GetSolver(level))->GetCV(b),
+      static_cast<const CudaSolver*>(GetSolver(level + 1))->GetCV(v));
+}
 
-  CudaSolver* solver_l = static_cast<CudaSolver*>(GetSolver(l));
-  CudaSolver* solver_lm1 = static_cast<CudaSolver*>(GetSolver(l - 1));
-
-  if (l == coarselevel) {
-    if (p == "F") {
-      p0 = "V";
-    }
-    solver_l->smooth_exact(A, u, b, v);
-    if (coarselevel == finelevel) {
-      solver_l->MatrixResidual(A, v, u, b);
-      res[l] = solver_l->Norm(v);
-    }
-    return;
-  }
-
-  solver_l->smooth_pre(A, u, b, v);
-  solver_l->MatrixResidual(A, v, u, b);
-
-  dynamic_cast<CudaMgInterpolatorNested*>(_Interpolator[l - 1])
-    ->restrict_zero(solver_lm1->GetCV(b), solver_l->GetCV(v));
-
-  solver_lm1->HNDistribute(b);
-  solver_lm1->SetBoundaryVectorZero(b);
-
-  solver_lm1->Zero(u);
-
-  int j = 0;
-  if (p0 == "V") {
-    j = 1;
-  } else if (p0 == "W") {
-    j = 2;
-  } else if (p0 == "F") {
-    j = 3;
-  }
-
-  for (int i = 0; i < j; ++i) {
-    mgstep(res, rw, l - 1, finelevel, coarselevel, p0, p, A, u, b, v);
-  }
-
-  if ((l == 0) && (p == "F")) {
-    p0 = "W";
-  }
-
-  rw[l] = solver_lm1->Norm(u);
-  solver_lm1->HNAverage(u);
-
-  solver_l->Zero(v);
-
-  dynamic_cast<CudaMgInterpolatorNested*>(_Interpolator[l - 1])
-    ->prolongate_add(solver_l->GetCV(v), solver_lm1->GetCV(u));
-
-  solver_lm1->HNZero(u);
-
-  solver_l->HNZero(v);
-  solver_l->SetBoundaryVectorZero(v);
-
-  solver_l->Add(u, DataP.MgOmega(), v);
-
-  solver_l->smooth_post(A, u, b, v);
-  solver_l->MatrixResidual(A, v, u, b);
-  res[l] = solver_l->Norm(v);
+/**
+ * Multigrid interpolation of coarse level vector v to fine level vector b
+ *
+ * @param level of outputvector b
+ */
+void
+CudaMultiLevelSolver::ProlongateAdd(IndexType level,
+                                    Vector& b,
+                                    const Vector& v) const
+{
+  dynamic_cast<CudaMgInterpolatorNested*>(_Interpolator[level + 1])
+    ->prolongate_add(
+      static_cast<const CudaSolver*>(GetSolver(level))->GetCV(b),
+      static_cast<const CudaSolver*>(GetSolver(level + 1))->GetCV(v));
 }
 
 /*-------------------------------------------------------------*/

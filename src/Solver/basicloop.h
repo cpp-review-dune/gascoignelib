@@ -131,7 +131,7 @@ protected:
   virtual void Output(const Vector& u, std::string name) const;
   virtual void Output(const Vector& u) { Output(u, _s_resultsdir + "/solve"); }
 
-  virtual void ComputeGlobalErrors(const Vector& u);
+  virtual void ComputeGlobalErrors(Vector& u);
 
   virtual void InitSolution(Vector& u);
   virtual void CopyVector(GlobalVector& dst, Vector& src);
