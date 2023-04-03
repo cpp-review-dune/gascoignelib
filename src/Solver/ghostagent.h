@@ -75,11 +75,11 @@ public:
   {
     auto p = std::map<std::string, T*>::find(g);
     if (p == std::map<std::string, T*>::end()) {
-      throw std::runtime_error("Element not in GhostAgent");
+      throw std::runtime_error("Element not in GhostAgent: " + g);
     }
     T* vp = p->second;
     if (vp == NULL) {
-      throw std::runtime_error("Element in GhostAgent not initialized");
+      throw std::runtime_error("Element in GhostAgent not initialized: " + g);
     }
     return *vp;
   };
@@ -88,11 +88,11 @@ public:
   {
     auto p = std::map<std::string, T*>::find(g);
     if (p == std::map<std::string, T*>::end()) {
-      throw std::runtime_error("Element not in GhostAgent");
+      throw std::runtime_error("Element not in GhostAgent: " + g);
     }
     T* vp = p->second;
     if (vp == NULL) {
-      throw std::runtime_error("Element in GhostAgent not initialized");
+      throw std::runtime_error("Element in GhostAgent not initialized: " + g);
     }
     return *vp;
   };

@@ -103,7 +103,8 @@ GlobalVector&
 CudaSolver::GetGV(Vector& u) const
 {
   if (oncuda) {
-    throw std::runtime_error("Accesing CPU Vector while computing on CUDA");
+    throw std::runtime_error(
+      std::string("Accesing CPU Vector while computing on CUDA. Vector: ") + u);
   }
   return StdSolver::GetGV(u);
 }
@@ -112,7 +113,8 @@ const GlobalVector&
 CudaSolver::GetGV(const Vector& u) const
 {
   if (oncuda) {
-    throw std::runtime_error("Accesing CPU Vector while computing on CUDA");
+    throw std::runtime_error(
+      std::string("Accesing CPU Vector while computing on CUDA. Vector: ") + u);
   }
   return StdSolver::GetGV(u);
 }
@@ -282,46 +284,15 @@ CudaSolver::SetProblem(const ProblemDescriptorInterface& PDX)
 
   TimePattern identity(ncomp);
   identity.identity();
-  cuda_mat_agent.emplace("hn_distribute",
+  cuda_mat_agent.emplace("hn_distribute" + std::to_string(ncomp),
                          std::make_shared<CudaCSRMatrixInterface>(
                            sparse_handle, *hn_distribute, &identity, 0));
-  cuda_mat_agent.emplace("hn_zero",
+  cuda_mat_agent.emplace("hn_zero" + std::to_string(ncomp),
                          std::make_shared<CudaCSRMatrixInterface>(
                            sparse_handle, *hn_zero, &identity, 0));
-  cuda_mat_agent.emplace("hn_average",
+  cuda_mat_agent.emplace("hn_average" + std::to_string(ncomp),
                          std::make_shared<CudaCSRMatrixInterface>(
                            sparse_handle, *hn_average, &identity, 0));
-
-  const BoundaryIndexHandler& BIH = GetMesh()->GetBoundaryIndexHandler();
-  const DirichletData* DD = GetProblemDescriptor()->GetDirichletData();
-
-  ColumnStencil CS;
-  CS.memory(&diagonalStructure);
-
-  if (!DD) {
-    return;
-  }
-  std::vector<TimePattern> values(nnodes, identity);
-  for (int col : DD->dirichlet_colors()) {
-
-    nvector<int> comps = DD->components_on_color(col);
-
-    TimePattern pattern(ncomp);
-    pattern.identity();
-    for (int i : comps) {
-      pattern(i, i) = 0;
-    }
-
-    nvector<int> nodes = BIH.Verteces(col);
-    for (int i : nodes) {
-      for (int j = 0; j < ncomp; ++j) {
-        values[i](j, j) *= pattern(j, j);
-      }
-    }
-  }
-  cuda_mat_agent.emplace("dirichlet_zeros",
-                         std::make_shared<CudaCSRMatrixInterface>(
-                           sparse_handle, values, &CS, nnodes));
 }
 
 void
@@ -491,7 +462,8 @@ CudaSolver::HNZero(Vector& x) const
   }
 
   CudaVectorInterface tmp(GetCV(x).n, GetCV(x).n_comp);
-  GetCudaMatrix(Matrix("hn_zero"))->vmult(tmp, GetCV(x), 1, 0);
+  GetCudaMatrix(Matrix("hn_zero" + std::to_string(GetCV(x).n_comp)))
+    ->vmult(tmp, GetCV(x), 1, 0);
   GetCV(x) = tmp;
 }
 
@@ -506,7 +478,8 @@ CudaSolver::HNDistribute(Vector& x) const
 
   CudaVectorInterface tmp(x_cuda.n, x_cuda.n_comp);
   // tmp = x_cuda;
-  GetCudaMatrix(Matrix("hn_distribute"))->vmult(tmp, x_cuda, 1, 0);
+  GetCudaMatrix(Matrix("hn_distribute" + std::to_string(GetCV(x).n_comp)))
+    ->vmult(tmp, x_cuda, 1, 0);
   x_cuda = tmp;
 }
 
@@ -520,7 +493,8 @@ CudaSolver::HNAverage(Vector& x) const
 
   CudaVectorInterface tmp(GetCV(x).n, GetCV(x).n_comp);
   // tmp = GetCV(x);
-  GetCudaMatrix(Matrix("hn_average"))->vmult(tmp, GetCV(x), 1, 0);
+  GetCudaMatrix(Matrix("hn_average" + std::to_string(GetCV(x).n_comp)))
+    ->vmult(tmp, GetCV(x), 1, 0);
   GetCV(x) = tmp;
 }
 
@@ -547,8 +521,56 @@ CudaSolver::SetBoundaryVectorZero(Vector& gf) const
     StdSolver::SetBoundaryVectorZero(gf);
     return;
   }
+
+  if (cuda_mat_agent.find("dirichlet_zeros" +
+                          std::to_string(GetCV(gf).n_comp)) ==
+      cuda_mat_agent.end()) {
+    IndexType ncomp = GetCV(gf).n_comp;
+
+    const BoundaryIndexHandler& BIH = GetMesh()->GetBoundaryIndexHandler();
+    const DirichletData* DD = GetProblemDescriptor()->GetDirichletData();
+
+    if (!DD) {
+      return;
+    }
+
+    SparseStructure diagonalStructure;
+    diagonalStructure.build_begin(nnodes);
+    for (int i = 0; i < nnodes; ++i) {
+      diagonalStructure.build_add(i, i);
+    }
+    diagonalStructure.build_end();
+
+    TimePattern identity(ncomp);
+    identity.identity();
+
+    ColumnStencil CS;
+    CS.memory(&diagonalStructure);
+    std::vector<TimePattern> values(nnodes, identity);
+    for (int col : DD->dirichlet_colors()) {
+
+      nvector<int> comps = DD->components_on_color(col);
+
+      TimePattern pattern(ncomp);
+      pattern.identity();
+      for (int i : comps) {
+        pattern(i, i) = 0;
+      }
+
+      nvector<int> nodes = BIH.Verteces(col);
+      for (int i : nodes) {
+        for (int j = 0; j < ncomp; ++j) {
+          values[i](j, j) *= pattern(j, j);
+        }
+      }
+    }
+    cuda_mat_agent.emplace("dirichlet_zeros" + std::to_string(ncomp),
+                           std::make_shared<CudaCSRMatrixInterface>(
+                             sparse_handle, values, &CS, nnodes));
+  }
   CudaVectorInterface tmp(GetCV(gf).n, GetCV(gf).n_comp);
-  GetCudaMatrix(Matrix("dirichlet_zeros"))->vmult(tmp, GetCV(gf), 1, 0);
+  GetCudaMatrix(Matrix("dirichlet_zeros" + std::to_string(GetCV(gf).n_comp)))
+    ->vmult(tmp, GetCV(gf), 1, 0);
   GetCV(gf) = tmp;
 }
 

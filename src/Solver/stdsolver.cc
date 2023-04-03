@@ -1709,11 +1709,11 @@ StdSolver::IntegrateSolutionVector(Vector& gu) const
 void
 StdSolver::SubtractMean(Vector& gx) const
 {
-  GlobalVector& x = GetGV(gx);
   // In each nonlinear step: applied to Newton correction,
   // in each smoothing step
   //
   if (GetPfilter().Active()) {
+    GlobalVector& x = GetGV(gx);
     GetDiscretization()->HNZeroCheck(x);
     GetPfilter().SubtractMean(x);
     HNZero(gx);
