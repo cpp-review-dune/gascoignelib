@@ -979,8 +979,8 @@ StdMultiLevelSolver::ProlongateAdd(IndexType level,
                                    Vector& b,
                                    const Vector& v) const
 {
-  _Interpolator[level + 1]->prolongate_add(GetSolver(level)->GetGV(b),
-                                           GetSolver(level + 1)->GetGV(v));
+  _Interpolator[level]->prolongate_add(GetSolver(level + 1)->GetGV(b),
+                                       GetSolver(level)->GetGV(v));
 }
 
 /*-------------------------------------------------------------*/

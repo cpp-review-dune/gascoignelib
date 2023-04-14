@@ -90,12 +90,18 @@ CudaSolver::InitCV(const Vector& u) const
 CudaVectorInterface&
 CudaSolver::GetCV(Vector& u) const
 {
+  if (cva[u] == nullptr) {
+    throw std::runtime_error(std::string("Vector not initialized: ") + u);
+  }
   return *cva[u];
 }
 
 const CudaVectorInterface&
 CudaSolver::GetCV(const Vector& u) const
 {
+  if (cva[u] == nullptr) {
+    throw std::runtime_error(std::string("Vector not initialized: ") + u);
+  }
   return *cva[u];
 }
 
@@ -137,12 +143,6 @@ CudaSolver::CopyBack(Vector& gu) const
   GlobalVector& u = GetGV(gu);
   cva[gu]->copy_back(u);
   return u;
-}
-
-void
-CudaSolver::BasicInit(const ParamFile& paramfile, const int dimension)
-{
-  StdSolver::BasicInit(paramfile, dimension);
 }
 
 void

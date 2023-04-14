@@ -25,17 +25,14 @@ class CudaMgInterpolatorNested : public MgInterpolatorNested
   mutable std::shared_ptr<SimpleMatrix> restrict;
   mutable std::shared_ptr<SimpleMatrix> prolongate;
 
-  mutable size_t ncomp = 1;
-  mutable std::string matrixtype;
-  mutable std::shared_ptr<CudaCSRMatrixInterface> restrict_device = nullptr;
-  mutable std::shared_ptr<CudaCSRMatrixInterface> prolongate_device = nullptr;
+  mutable std::map<std::string, std::shared_ptr<CudaCSRMatrixInterface>>
+    mat_agent;
 
   void check_matrices(IndexType, IndexType H, IndexType h) const;
 
 public:
   CudaMgInterpolatorNested();
 
-  void BasicInit(const MeshTransferInterface* MT) override;
   void restrict_zero(GlobalVector&, const GlobalVector&) const override;
   void restrict_zero(CudaVectorInterface&, const CudaVectorInterface&) const;
   void prolongate_add(GlobalVector&, const GlobalVector&) const override;

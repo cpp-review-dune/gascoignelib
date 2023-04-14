@@ -31,22 +31,18 @@ extern Timer GlobalTimer;
 // **************************************************
 
 void
-CudaMultiLevelSolver::ActivateCuda(int finelevel,
-                                   int coarselevel,
-                                   std::initializer_list<const Vector*> vectors)
+CudaMultiLevelSolver::ActivateCuda(std::initializer_list<const Vector*> vectors)
 {
-  for (size_t i = coarselevel; i <= finelevel; i++) {
+  for (size_t i = 0; i <= FinestLevel(); i++) {
     static_cast<CudaSolver*>(this->GetSolver(static_cast<int>(i)))
       ->ActivateCuda(vectors);
   }
 }
 
 void
-CudaMultiLevelSolver::DeactivateCuda(int finelevel,
-                                     int coarselevel,
-                                     std::initializer_list<Vector*> vectors)
+CudaMultiLevelSolver::DeactivateCuda(std::initializer_list<Vector*> vectors)
 {
-  for (size_t i = coarselevel; i <= finelevel; i++) {
+  for (size_t i = 0; i <= FinestLevel(); i++) {
     static_cast<CudaSolver*>(this->GetSolver(static_cast<int>(i)))
       ->DeactivateCuda(vectors);
   }
@@ -118,18 +114,18 @@ CudaMultiLevelSolver::NewtonLinearSolve(const Matrix& A,
     int clevel = std::max(DataP.CoarseLevel(), 0);
     if (DataP.CoarseLevel() == -1)
       clevel = FinestLevel();
-    ActivateCuda(ComputeLevel, clevel, { &x, &b });
+    ActivateCuda({ &x, &b });
     LinearMg(ComputeLevel, clevel, A, x, b, info);
-    DeactivateCuda(ComputeLevel, clevel, { &x });
+    DeactivateCuda({ &x });
   } else if (DataP.LinearSolve() == "direct") {
     int clevel = FinestLevel();
-    ActivateCuda(ComputeLevel, clevel, { &x, &b });
+    ActivateCuda({ &x, &b });
     LinearMg(ComputeLevel, clevel, A, x, b, info);
-    DeactivateCuda(ComputeLevel, clevel, { &x });
+    DeactivateCuda({ &x });
   } else if (DataP.LinearSolve() == "gmres") {
-    ActivateCuda(ComputeLevel, ComputeLevel, { &x, &b });
+    ActivateCuda({ &x, &b });
     Gmres(A, x, b, info);
-    DeactivateCuda(ComputeLevel, ComputeLevel, { &x });
+    DeactivateCuda({ &x });
   }
 
   GetSolver(ComputeLevel)->SubtractMean(x);
@@ -162,10 +158,10 @@ CudaMultiLevelSolver::ProlongateAdd(IndexType level,
                                     Vector& b,
                                     const Vector& v) const
 {
-  dynamic_cast<CudaMgInterpolatorNested*>(_Interpolator[level + 1])
+  dynamic_cast<CudaMgInterpolatorNested*>(_Interpolator[level])
     ->prolongate_add(
-      static_cast<const CudaSolver*>(GetSolver(level))->GetCV(b),
-      static_cast<const CudaSolver*>(GetSolver(level + 1))->GetCV(v));
+      static_cast<const CudaSolver*>(GetSolver(level + 1))->GetCV(b),
+      static_cast<const CudaSolver*>(GetSolver(level))->GetCV(v));
 }
 
 /*-------------------------------------------------------------*/

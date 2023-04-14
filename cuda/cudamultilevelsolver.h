@@ -15,13 +15,8 @@ class StdSolver;
 class CudaMultiLevelSolver : public virtual StdMultiLevelSolver
 {
 protected:
-  void ActivateCuda(int finelevel,
-                    int coarselevel,
-                    std::initializer_list<const Vector*> vectors);
-
-  void DeactivateCuda(int finelevel,
-                      int coarselevel,
-                      std::initializer_list<Vector*> vectors);
+  void ActivateCuda(std::initializer_list<const Vector*> vectors);
+  void DeactivateCuda(std::initializer_list<Vector*> vectors);
 
 public:
   CudaMultiLevelSolver();
