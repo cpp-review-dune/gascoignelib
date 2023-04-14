@@ -34,7 +34,7 @@
 namespace Gascoigne {
 class MgInterpolatorNested : public virtual MgInterpolatorInterface
 {
-private:
+protected:
   std::map<int, std::array<int, 2>> zweier;
   std::map<int, std::array<int, 4>> vierer;
   std::map<int, std::array<int, 8>> achter;

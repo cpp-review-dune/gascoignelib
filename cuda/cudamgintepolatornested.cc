@@ -19,22 +19,11 @@ CudaMgInterpolatorNested::CudaMgInterpolatorNested()
 }
 
 void
-CudaMgInterpolatorNested::BasicInit(const MeshTransferInterface* MT)
-{
-  GT = dynamic_cast<const GascoigneMeshTransfer*>(MT);
-}
-
-void
 CudaMgInterpolatorNested::check_matrices(IndexType n_comp,
                                          IndexType H,
                                          IndexType h) const
 {
   if (prolongate == nullptr) {
-    IntVector c2f = GT->GetC2f();
-    std::map<int, std::array<int, 2>> zweier = GT->GetZweier();
-    std::map<int, std::array<int, 4>> vierer = GT->GetVierer();
-    std::map<int, std::array<int, 8>> achter = GT->GetAchter();
-
     SparseStructure saRestrict;
     saRestrict.build_begin(H);
     SparseStructure saProlongate;
@@ -99,13 +88,20 @@ CudaMgInterpolatorNested::check_matrices(IndexType n_comp,
         prolongate->GetValue(il, n) = 0.125;
       }
     }
-
+  }
+  if (mat_agent.find("restrict" + std::to_string(n_comp)) == mat_agent.end()) {
     TimePattern pattern(n_comp);
     pattern.identity();
-    restrict_device = std::make_shared<CudaCSRMatrixInterface>(
-      sparse_handle, *restrict, &pattern, prolongate->GetStencil()->n());
-    prolongate_device = std::make_shared<CudaCSRMatrixInterface>(
-      sparse_handle, *prolongate, &pattern, restrict->GetStencil()->n());
+
+    mat_agent.emplace(
+      "restrict" + std::to_string(n_comp),
+      std::make_shared<CudaCSRMatrixInterface>(
+        sparse_handle, *restrict, &pattern, prolongate->GetStencil()->n()));
+
+    mat_agent.emplace(
+      "prolongate" + std::to_string(n_comp),
+      std::make_shared<CudaCSRMatrixInterface>(
+        sparse_handle, *prolongate, &pattern, restrict->GetStencil()->n()));
   }
 }
 
@@ -134,8 +130,8 @@ CudaMgInterpolatorNested::restrict_zero(CudaVectorInterface& x_H,
 {
   GlobalTimer.count("---> restrict device");
   check_matrices(x_H.n_comp, x_H.n, x_h.n);
-  // x_H.zero();
-  restrict_device->vmult(x_H, x_h, 1, 0);
+  x_H.zero();
+  mat_agent["restrict" + std::to_string(x_H.n_comp)]->vmult(x_H, x_h, 1, 0);
 }
 
 // x_H -> x_h
@@ -163,7 +159,7 @@ CudaMgInterpolatorNested::prolongate_add(CudaVectorInterface& x_h,
 {
   GlobalTimer.count("---> prolongate device");
   check_matrices(x_H.n_comp, x_H.n, x_h.n);
-  prolongate_device->vmult(x_h, x_H, 1, 0);
+  mat_agent["prolongate" + std::to_string(x_H.n_comp)]->vmult(x_h, x_H, 1, 0);
 }
 
 }

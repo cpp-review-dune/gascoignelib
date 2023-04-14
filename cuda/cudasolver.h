@@ -68,7 +68,6 @@ public:
 
   GlobalVector& CopyBack(Vector& u) const;
 
-  void BasicInit(const ParamFile& paramfile, const int dimension) override;
   void SetProblem(const ProblemDescriptorInterface& PDX) override;
   void AssembleMatrix(Matrix& A, Vector& u, double d) const override;
 
