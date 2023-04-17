@@ -298,9 +298,10 @@ public:
       HN->CondenseHanging(indices);
       S->build_add(indices.begin(), indices.end());
     }
-    S->build_end();
     // HANGING NODES
     HN->SparseStructureDiag(S);
+
+    S->build_end();
   }
 
   ////////////////////////////////////////////////// handling local / global
