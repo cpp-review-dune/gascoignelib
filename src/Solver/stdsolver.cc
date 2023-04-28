@@ -554,21 +554,27 @@ StdSolver::GetGV(const Vector& u) const
 
 /*-------------------------------------------------------*/
 
-void
-StdSolver::ReInitVector(Vector& dst)
+IndexType
+StdSolver::VectorSize(Vector& dst) const
 {
-  IndexType size = 1;
   if (dst.GetType() == "node") {
-    size = GetDiscretization()->ndofs();
+    return GetDiscretization()->ndofs();
   } else if (dst.GetType() == "cell") {
-    size = GetDiscretization()->nelements();
+    return GetDiscretization()->nelements();
   } else if (dst.GetType() == "parameter") {
-    size = 1;
+    return 1;
   } else {
     throw std::runtime_error(std::string("Can not initialize vector of type ") +
                              dst.GetType());
   }
+}
 
+/*-------------------------------------------------------*/
+
+void
+StdSolver::ReInitVector(Vector& dst)
+{
+  IndexType size = VectorSize(dst);
   IndexType comp = GetProblemDescriptor()->GetNcomp();
   auto& p = vector_agent[dst];
 

@@ -62,9 +62,20 @@ CudaSolver::DeactivateCuda(std::initializer_list<Vector*> vectors) const
 void
 CudaSolver::ReInitVector(Vector& dst)
 {
-  StdSolver::ReInitVector(dst);
-  if (oncuda) {
-    InitCV(dst);
+  if (!oncuda) {
+    StdSolver::ReInitVector(dst);
+    return;
+  }
+
+  IndexType size = VectorSize(dst);
+  IndexType comp = GetProblemDescriptor()->GetNcomp();
+
+  // If not allready in Vector Agent reserve new
+  if (cva[dst] == nullptr) {
+    cva[dst] = new CudaVectorInterface(size, comp);
+  } else {
+    GetCV(dst).reserve(size, comp);
+    Zero(dst);
   }
 }
 

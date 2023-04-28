@@ -317,6 +317,7 @@ public:
 
   virtual void ReInitMatrix(const Matrix& A);
 
+  virtual IndexType VectorSize(Vector& dst) const;
   virtual void ReInitVector(Vector& dst);
   virtual void DeleteVector(Vector& p) const;
 

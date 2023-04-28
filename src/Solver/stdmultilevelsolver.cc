@@ -443,8 +443,8 @@ StdMultiLevelSolver::LinearMg(int finelevel,
     reached = info.check(res[finelevel], rw[finelevel]);
   }
 
-  DeleteVector(mg0);
-  DeleteVector(mg1);
+  // DeleteVector(mg0);
+  // DeleteVector(mg1);
 }
 
 /*-------------------------------------------------------------*/
