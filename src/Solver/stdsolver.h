@@ -322,19 +322,8 @@ public:
   virtual void DeleteVector(Vector& p) const;
 
   // Access to Vector & Matrix Data
-<<<<<<< HEAD
-  virtual GlobalVector& GetGV(Vector& u) const
-  {
-    return vector_agent(u);
-  }
-  virtual const GlobalVector& GetGV(const Vector& u) const
-  {
-    return vector_agent(u);
-  }
-=======
   virtual GlobalVector& GetGV(Vector& u) const;
   virtual const GlobalVector& GetGV(const Vector& u) const;
->>>>>>> getting gmres running on CUDA
 
   // Access to Vector & Matrix Data
   virtual MatrixInterface& GetMatrix(Matrix& A) const
