@@ -331,6 +331,10 @@ SimpleMatrix::PrepareJacobi(double s)
 void
 SimpleMatrix::JacobiVector(GlobalVector& y) const
 {
+  if (_diag.size() != ST.n()) {
+    const_cast<SimpleMatrix*>(this)->PrepareJacobi(1);
+  }
+
   int n = ST.n();
   assert(n == y.n());
 
@@ -346,6 +350,10 @@ SimpleMatrix::JacobiVector(GlobalVector& y) const
 void
 SimpleMatrix::Jacobi(GlobalVector& y) const
 {
+  if (_diag.size() != ST.n()) {
+    const_cast<SimpleMatrix*>(this)->PrepareJacobi(1);
+  }
+
   int n = ST.n();
   assert(n == y.n());
 
@@ -364,6 +372,10 @@ SimpleMatrix::vmult_time_Jacobi(GlobalVector& y,
                                 const TimePattern& TP,
                                 double s) const
 {
+  if (_diag.size() != ST.n()) {
+    const_cast<SimpleMatrix*>(this)->PrepareJacobi(1);
+  }
+
   int n = ST.n();
   assert(n == y.n());
   assert(n == x.n());
