@@ -1,0 +1,65 @@
+//Block Loop
+
+niter        2
+estimator    none
+refiner      global
+writebupgup  0
+
+extrapolate  yes     // extrapolate functional values
+
+writevtk     0
+writebupgup  0
+
+
+//Block BoundaryManager
+
+dirichlet        3      4 8 80 
+
+dirichletcomp    4      2       1 2
+dirichletcomp    8      2       1 2
+dirichletcomp   80      2       1 2
+
+functional 1 80
+
+
+//Block Mesh
+
+dimension 2
+prerefine 4
+gridname  bench2d.inp
+patchdepth 2
+
+//Block Equation
+
+visc            1.e-3
+delta           0.0
+alpha           0.1
+
+vmax		0.3
+
+symmetrictensor	0
+
+
+//Block MultiLevelSolver
+
+linearsolve		mg
+nonlinear_tol		1e-8
+nonlinear_rho		0.1
+
+//Block Solver
+
+
+//matrixtype	vanka
+//omega 0.5
+matrixtype block
+
+
+discname 	CGQ2Lps
+ilum            3  0.01  0.1  0.1
+ndirect		10
+
+iterexact	8
+iterpre		4
+iterpost	4
+
+//Block nix

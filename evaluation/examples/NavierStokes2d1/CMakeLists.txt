@@ -1,0 +1,20 @@
+set(NS_EXEC NavierStokes2d1)
+
+FILE(GLOB_RECURSE NS_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/*.cc)
+ADD_EXECUTABLE(${NS_EXEC} ${NS_SOURCE})
+
+target_compile_definitions(${NS_EXEC} PUBLIC
+	${GASCOIGNE_DEFINITIONS}
+)
+
+target_include_directories(${NS_EXEC} PUBLIC
+	${GASCOIGNE_INCLUDE_DIRS}
+	${CMAKE_CURRENT_SOURCE_DIR}
+)
+
+target_link_libraries(${NS_EXEC} 
+	GascoigneStd
+)
+
+set(ALL_CXX_SOURCE_FILES ${ALL_CXX_SOURCE_FILES} ${NS_SOURCE} PARENT_SCOPE)
+
